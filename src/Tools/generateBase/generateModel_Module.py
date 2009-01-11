@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Mon Nov 26 22:03:58 2007 by generateDS.py.
+# Generated Sun Jan 11 02:25:41 2009 by generateDS.py.
 #
 
 import sys
@@ -216,7 +216,7 @@ class GenerateModel:
 
 class PythonExport:
     subclass = None
-    def __init__(self, FatherNamespace='', Name='', Reference=0, FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
+    def __init__(self, FatherNamespace='', Name='', Reference=0, FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', NumberProtocol=0, Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
         self.FatherNamespace = FatherNamespace
         self.Name = Name
         self.Reference = Reference
@@ -227,6 +227,7 @@ class PythonExport:
         self.Constructor = Constructor
         self.TwinPointer = TwinPointer
         self.Include = Include
+        self.NumberProtocol = NumberProtocol
         self.Delete = Delete
         self.Documentation = Documentation
         if Methode is None:
@@ -279,6 +280,8 @@ class PythonExport:
     def setTwinpointer(self, TwinPointer): self.TwinPointer = TwinPointer
     def getInclude(self): return self.Include
     def setInclude(self, Include): self.Include = Include
+    def getNumberprotocol(self): return self.NumberProtocol
+    def setNumberprotocol(self, NumberProtocol): self.NumberProtocol = NumberProtocol
     def getDelete(self): return self.Delete
     def setDelete(self, Delete): self.Delete = Delete
     def export(self, outfile, level, name_='PythonExport'):
@@ -302,6 +305,8 @@ class PythonExport:
             outfile.write(' Constructor="%s"' % (self.getConstructor(), ))
         outfile.write(' TwinPointer="%s"' % (self.getTwinpointer(), ))
         outfile.write(' Include="%s"' % (self.getInclude(), ))
+        if self.getNumberprotocol() is not None:
+            outfile.write(' NumberProtocol="%s"' % (self.getNumberprotocol(), ))
         if self.getDelete() is not None:
             outfile.write(' Delete="%s"' % (self.getDelete(), ))
     def exportChildren(self, outfile, level, name_='PythonExport'):
@@ -340,6 +345,8 @@ class PythonExport:
         outfile.write('TwinPointer = "%s",\n' % (self.getTwinpointer(),))
         showIndent(outfile, level)
         outfile.write('Include = "%s",\n' % (self.getInclude(),))
+        showIndent(outfile, level)
+        outfile.write('NumberProtocol = "%s",\n' % (self.getNumberprotocol(),))
         showIndent(outfile, level)
         outfile.write('Delete = "%s",\n' % (self.getDelete(),))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -414,6 +421,13 @@ class PythonExport:
             self.TwinPointer = attrs.get('TwinPointer').value
         if attrs.get('Include'):
             self.Include = attrs.get('Include').value
+        if attrs.get('NumberProtocol'):
+            if attrs.get('NumberProtocol').value in ('true', '1'):
+                self.NumberProtocol = 1
+            elif attrs.get('NumberProtocol').value in ('false', '0'):
+                self.NumberProtocol = 0
+            else:
+                raise ValueError('Bad boolean attribute (NumberProtocol)')
         if attrs.get('Delete'):
             if attrs.get('Delete').value in ('true', '1'):
                 self.Delete = 1
@@ -1591,6 +1605,14 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             val = attrs.get('Include', None)
             if val is not None:
                 obj.setInclude(val)
+            val = attrs.get('NumberProtocol', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setNumberprotocol(1)
+                elif val in ('false', '0'):
+                    obj.setNumberprotocol(0)
+                else:
+                    self.reportError('"NumberProtocol" attribute must be boolean ("true", "1", "false", "0")')
             val = attrs.get('Delete', None)
             if val is not None:
                 if val in ('true', '1'):

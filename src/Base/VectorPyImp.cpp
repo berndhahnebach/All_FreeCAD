@@ -91,6 +91,53 @@ int VectorPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return 0;
 }
 
+PyObject* VectorPy::number_add_handler(PyObject *self, PyObject *other)
+{
+    if (!PyObject_TypeCheck(self, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "First arg must be Vector");
+        return 0;
+    }
+    if (!PyObject_TypeCheck(other, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "Second arg must be Vector");
+        return 0;
+    }
+    Base::Vector3d a = static_cast<VectorPy*>(self)->value();
+    Base::Vector3d b = static_cast<VectorPy*>(other)->value();
+    return new VectorPy(a+b);
+}
+
+PyObject* VectorPy::number_subtract_handler(PyObject *self, PyObject *other)
+{
+    if (!PyObject_TypeCheck(self, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "First arg must be Vector");
+        return 0;
+    }
+    if (!PyObject_TypeCheck(other, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "Second arg must be Vector");
+        return 0;
+    }
+    Base::Vector3d a = static_cast<VectorPy*>(self)->value();
+    Base::Vector3d b = static_cast<VectorPy*>(other)->value();
+    return new VectorPy(a-b);
+}
+
+PyObject* VectorPy::number_multiply_handler(PyObject *self, PyObject *other)
+{
+    if (!PyObject_TypeCheck(self, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "First arg must be Vector");
+        return 0;
+    }
+    if (!PyObject_TypeCheck(other, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "Second arg must be Vector");
+        return 0;
+    }
+    Base::Vector3d a = static_cast<VectorPy*>(self)->value();
+    Base::Vector3d b = static_cast<VectorPy*>(other)->value();
+
+    Py::Float mult(a * b);
+    return Py::new_reference_to(mult);
+}
+
 PyObject*  VectorPy::add(PyObject *args)
 {
     PyObject *obj;

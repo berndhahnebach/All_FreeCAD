@@ -10,6 +10,7 @@
 		Namespace="Base"
 		Constructor="true"
 		Delete="true"
+		NumberProtocol="true"
 		FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
@@ -19,16 +20,16 @@
     <Methode Name="move">
       <Documentation>
         <UserDocu>
-          move(Vector)
-          Move the matrix along the vector
+move(Vector)
+Move the matrix along the vector
         </UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="scale">
       <Documentation>
         <UserDocu>
-          scale(Vector)
-          Scale the matrix with the vector
+scale(Vector)
+Scale the matrix with the vector
         </UserDocu>
       </Documentation>
     </Methode>
@@ -60,16 +61,32 @@
     <Methode Name="multiply">
       <Documentation>
         <UserDocu>
-          multiply(Matrix|Vector)
-          Multiply a matrix or vector with this matrix
+multiply(Matrix|Vector)
+Multiply a matrix or vector with this matrix
         </UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="invert">
       <Documentation>
         <UserDocu>
-          inverse()
-          Compute the inverse matrix, if possible
+invert() -> None
+Compute the inverse matrix, if possible
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="inverse">
+      <Documentation>
+        <UserDocu>
+inverse() -> Matrix
+Compute the inverse matrix, if possible
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="determinant">
+      <Documentation>
+        <UserDocu>
+determinant() -> Float
+Compute the determinant of the matrix
         </UserDocu>
       </Documentation>
     </Methode>

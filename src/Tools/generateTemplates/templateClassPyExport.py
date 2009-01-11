@@ -45,6 +45,9 @@ class @self.export.Namespace@Export @self.export.Name@ : public @self.export.Fat
 public:
     static PyTypeObject   Type;
     static PyMethodDef    Methods[];
++ if (self.export.NumberProtocol):
+    static PyNumberMethods Number[];
+-
     static PyGetSetDef    GetterSetter[];
     static PyParentObject Parents[];
     virtual PyTypeObject *GetType(void) {return &Type;};
@@ -71,8 +74,19 @@ public:
 -
     //@}
 
++ if (self.export.NumberProtocol):
+    /** @name callbacks and implementers for the python object number protocol */
+    //@{
+    /// callback for the number_add_handler
+    static PyObject * number_add_handler (PyObject *self, PyObject *other);
+    /// callback for the number_subtract_handler
+    static PyObject * number_subtract_handler (PyObject *self, PyObject *other);
+    /// callback for the number_multiply_handler
+    static PyObject * number_multiply_handler (PyObject *self, PyObject *other);
+    //@}
+-
 
-    /** @name callbacks and implementers for the python object methods */
+    /** @name callbacks and implementers for the python object attributes */
     //@{
 + for i in self.export.Attribute:
     ///getter callback for the @i.Name@ attribute
@@ -87,8 +101,8 @@ public:
     /// setter for the @i.Name@ attribute
     void set@i.Name@(Py::@i.Parameter.Type@ arg);
 -
-    //@}
 -
+    //@}
 
 + if(self.export.CustomAttributes != None):
     /// getter method for special attributes (e.g. dynamic ones)
@@ -150,7 +164,11 @@ PyTypeObject @self.export.Name@::Type = {
     __setattr,                                        /*tp_setattr*/
     0,                                                /*tp_compare*/
     __repr,                                           /*tp_repr*/
++ if (self.export.NumberProtocol):
+    @self.export.Namespace@::@self.export.Name@::Number,      /*tp_as_number*/
+= else:
     0,                                                /*tp_as_number*/
+-
     0,                                                /*tp_as_sequence*/
     0,                                                /*tp_as_mapping*/
     0,                                                /*tp_hash*/
@@ -201,6 +219,15 @@ PyMethodDef @self.export.Name@::Methods[] = {
 -
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
+
++ if (self.export.NumberProtocol):
+PyNumberMethods @self.export.Name@::Number[] = {
+    number_add_handler,
+    number_subtract_handler,
+    number_multiply_handler,
+    NULL
+};
+-
 
 /// Attribute structure of @self.export.Name@
 PyGetSetDef @self.export.Name@::GetterSetter[] = {
@@ -567,6 +594,26 @@ PyObject* @self.export.Name@::@i.Name@(PyObject *args)
     return 0;
 }
 -
+
++ if (self.export.NumberProtocol):
+PyObject* @self.export.Name@::number_add_handler(PyObject *self, PyObject *other)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* @self.export.Name@::number_subtract_handler(PyObject *self, PyObject *other)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *other)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
 + for i in self.export.Attribute:
 
 Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
@@ -639,6 +686,27 @@ PyObject* @self.export.Name@::@i.Name@(PyObject * /*args*/)
     return 0;
 }
 -
+
++ if (self.export.NumberProtocol):
+PyObject* @self.export.Name@::number_add_handler(PyObject *self, PyObject *other)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* @self.export.Name@::number_subtract_handler(PyObject *self, PyObject *other)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *other)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
+
 + for i in self.export.Attribute:
 
 Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
