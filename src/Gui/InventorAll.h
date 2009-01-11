@@ -79,6 +79,7 @@
 #include <Inventor/manips/SoTransformerManip.h>
 #include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoAntiSquish.h>
+#include <Inventor/nodes/SoAsciiText.h>
 #include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoCallback.h> 
 #include <Inventor/nodes/SoComplexity.h>
