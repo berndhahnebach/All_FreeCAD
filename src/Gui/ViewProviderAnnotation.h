@@ -28,6 +28,7 @@
 
 class SoFontStyle;
 class SoText2;
+class SoAsciiText;
 class SoBaseColor;
 class SoTranslation;
 
@@ -59,6 +60,7 @@ protected:
 private:
     SoFontStyle      * pFont;
     SoText2          * pLabel;
+    SoAsciiText      * pLabel3d;
     SoBaseColor      * pColor;
     SoTranslation    * pTranslation;
 

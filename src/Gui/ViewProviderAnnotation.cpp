@@ -28,6 +28,7 @@
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoFontStyle.h>
 # include <Inventor/nodes/SoText2.h>
+# include <Inventor/nodes/SoAsciiText.h>
 # include <Inventor/nodes/SoTranslation.h>
 #endif
 
@@ -53,6 +54,8 @@ ViewProviderAnnotation::ViewProviderAnnotation()
     pFont->ref();
     pLabel = new SoText2();
     pLabel->ref();
+    pLabel3d = new SoAsciiText();
+    pLabel3d->ref();
     pColor = new SoBaseColor();
     pColor->ref();
     pTranslation = new SoTranslation();
@@ -66,6 +69,7 @@ ViewProviderAnnotation::~ViewProviderAnnotation()
 {
     pFont->unref();
     pLabel->unref();
+    pLabel3d->unref();
     pColor->unref();
     pTranslation->unref();
 }
@@ -77,12 +81,18 @@ void ViewProviderAnnotation::onChanged(const App::Property* prop)
         pColor->rgb.setValue(c.r,c.g,c.b);
     }
     else if (prop == &Justification) {
-        if (Justification.getValue() == 0)
+        if (Justification.getValue() == 0) {
             pLabel->justification = SoText2::LEFT;
-        else if (Justification.getValue() == 1)
+            pLabel3d->justification = SoAsciiText::LEFT;
+        }
+        else if (Justification.getValue() == 1) {
             pLabel->justification = SoText2::RIGHT;
-        else if (Justification.getValue() == 2)
+            pLabel3d->justification = SoAsciiText::RIGHT;
+        }
+        else if (Justification.getValue() == 2) {
             pLabel->justification = SoText2::CENTER;
+            pLabel3d->justification = SoAsciiText::CENTER;
+        }
     }
     else if (prop == &FontSize) {
         pFont->size = FontSize.getValue();
@@ -96,14 +106,18 @@ std::vector<std::string> ViewProviderAnnotation::getDisplayModes(void) const
 {
     // add modes
     std::vector<std::string> StrList;
-    StrList.push_back("Base");
+    StrList.push_back("Screen");
+    StrList.push_back("World");
     return StrList;
 }
 
 void ViewProviderAnnotation::setDisplayMode(const char* ModeName)
 {
-    if (strcmp(ModeName, "Base") == 0)
-        setDisplayMaskMode("Base");
+    if (strcmp(ModeName, "Screen") == 0)
+        setDisplayMaskMode("Screen");
+    else if (strcmp(ModeName, "World")==0)
+        setDisplayMaskMode("World");
+
     ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
@@ -112,11 +126,20 @@ void ViewProviderAnnotation::attach(App::DocumentObject* f)
     ViewProviderDocumentObject::attach(f);
 
     SoAnnotation* anno = new SoAnnotation();
+    SoAnnotation* anno3d = new SoAnnotation();
+
     anno->addChild(pTranslation);
     anno->addChild(pColor);
     anno->addChild(pFont);
     anno->addChild(pLabel);
-    addDisplayMaskMode(anno, "Base");
+
+    anno3d->addChild(pTranslation);
+    anno3d->addChild(pColor);
+    anno3d->addChild(pFont);
+    anno3d->addChild(pLabel3d);
+
+    addDisplayMaskMode(anno, "Screen");
+    addDisplayMaskMode(anno3d, "World");
 }
 
 void ViewProviderAnnotation::updateData(const App::Property* prop)
@@ -126,8 +149,10 @@ void ViewProviderAnnotation::updateData(const App::Property* prop)
         const std::vector<std::string> lines = static_cast<const App::PropertyStringList*>(prop)->getValues();
         int index=0;
         pLabel->string.setNum((int)lines.size());
+        pLabel3d->string.setNum((int)lines.size());
         for (std::vector<std::string>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
             pLabel->string.set1Value(index++, SbString(it->c_str()));
+            pLabel3d->string.set1Value(index++, SbString(it->c_str()));
         }
     }
     else if (prop->getTypeId() == App::PropertyVector::getClassTypeId() &&
