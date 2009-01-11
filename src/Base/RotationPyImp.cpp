@@ -26,6 +26,7 @@
 #include "Base/Rotation.h"
 
 // inclusion of the generated files (generated out of RotationPy.xml)
+#include "VectorPy.h"
 #include "RotationPy.h"
 #include "RotationPy.cpp"
 
@@ -44,9 +45,29 @@ PyObject *RotationPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // P
 }
 
 // constructor method
-int RotationPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    return 0;
+    PyObject* o;
+    if (PyArg_ParseTuple(args, "")) {
+        return 0;
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(Base::RotationPy::Type), &o)) {
+        Base::Rotation *rot = static_cast<Base::RotationPy*>(o)->getRotationPtr();
+        getRotationPtr()->setValue(rot->getValue());
+        return 0;
+    }
+
+    PyErr_Clear();
+    double angle;
+    if (PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type), &o, &angle)) {
+        getRotationPtr()->setValue(static_cast<Base::VectorPy*>(o)->value(), angle);
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "empty parameter list, four floats or Vector and float");
+    return -1;
 }
 
 PyObject* RotationPy::invert(PyObject * args)

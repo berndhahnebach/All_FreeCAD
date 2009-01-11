@@ -90,6 +90,51 @@ int MatrixPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
+PyObject* MatrixPy::number_add_handler(PyObject *self, PyObject *other)
+{
+    if (!PyObject_TypeCheck(self, &(MatrixPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "First arg must be Matrix");
+        return 0;
+    }
+    if (!PyObject_TypeCheck(other, &(MatrixPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "Second arg must be Matrix");
+        return 0;
+    }
+    Base::Matrix4D a = static_cast<MatrixPy*>(self)->value();
+    Base::Matrix4D b = static_cast<MatrixPy*>(other)->value();
+    return new MatrixPy(a+b);
+}
+
+PyObject* MatrixPy::number_subtract_handler(PyObject *self, PyObject *other)
+{
+    if (!PyObject_TypeCheck(self, &(MatrixPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "First arg must be Matrix");
+        return 0;
+    }
+    if (!PyObject_TypeCheck(other, &(MatrixPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "Second arg must be Matrix");
+        return 0;
+    }
+    Base::Matrix4D a = static_cast<MatrixPy*>(self)->value();
+    Base::Matrix4D b = static_cast<MatrixPy*>(other)->value();
+    return new MatrixPy(a-b);
+}
+
+PyObject* MatrixPy::number_multiply_handler(PyObject *self, PyObject *other)
+{
+    if (!PyObject_TypeCheck(self, &(MatrixPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "First arg must be Matrix");
+        return 0;
+    }
+    if (!PyObject_TypeCheck(other, &(MatrixPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "Second arg must be Matrix");
+        return 0;
+    }
+    Base::Matrix4D a = static_cast<MatrixPy*>(self)->value();
+    Base::Matrix4D b = static_cast<MatrixPy*>(other)->value();
+    return new MatrixPy(a*b);
+}
+
 PyObject* MatrixPy::move(PyObject * args)
 {
     double x,y,z;
@@ -276,6 +321,34 @@ PyObject* MatrixPy::invert(PyObject * args)
     PY_CATCH;
 
     Py_Return;
+}
+
+PyObject* MatrixPy::inverse(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    PY_TRY {
+        if (getMatrixPtr()->determinant() > DBL_EPSILON) {
+            Base::Matrix4D m = *getMatrixPtr();
+            m.inverse();
+            return new MatrixPy(m);
+        }
+        else {
+            PyErr_SetString(PyExc_Exception, "Cannot invert singular matrix");
+            return 0;
+        }
+    }
+    PY_CATCH;
+
+    Py_Return;
+}
+
+PyObject* MatrixPy::determinant(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    return PyFloat_FromDouble(getMatrixPtr()->determinant());
 }
 
 Py::Float MatrixPy::getA11(void) const

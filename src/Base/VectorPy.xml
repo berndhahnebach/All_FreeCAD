@@ -9,7 +9,8 @@
 		FatherInclude="Base/PyObjectBase.h" 
 		Namespace="Base" 
 		Constructor="true"
-		Delete="true" 
+		Delete="true"
+		NumberProtocol="true"
 		FatherNamespace="Base">
 	<Documentation>
 		<Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
