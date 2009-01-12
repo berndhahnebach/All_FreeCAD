@@ -38,6 +38,8 @@ public:
     //@{
     Rotation();
     Rotation(const Vector3d& axis, const double fAngle);
+    /// set the Rotation in Euler form (radians)
+    Rotation(double A,double B,double C);
     Rotation(const Matrix4D& matrix);
     Rotation(const double q[4]);
     Rotation(const double q0, const double q1, const double q2, const double q3);
@@ -75,6 +77,10 @@ public:
     void scaleAngle(const double scaleFactor);
     //@}
 
+    /// set the Rotation in Euler form (radians)
+    void setEuler(double A,double B,double C);
+    /// get the Rotation in Euler form (radians)
+    void getEuler(double &A,double &B,double &C);
     static Rotation slerp(const Rotation & rot0, const Rotation & rot1, double t);
     static Rotation identity(void);
 
