@@ -37,6 +37,7 @@
 #include <time.h>
 #include <float.h>
 #include <fcntl.h>
+#include <math.h>
 
 #ifdef FC_OS_WIN32
 #include <direct.h>
