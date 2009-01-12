@@ -115,6 +115,14 @@ void ViewProviderSketch::CoordsOnSketchPlane(double &u, double &v,const Base::Ve
 {
 	// Plane form
 	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
+
+    // move to position of Sketch
+    const Base::Placement Plz = getSketchObject()->Placement.getValue();
+    R0 = Plz._pos ; 
+    Plz._rot.multVec(RN,RN);
+    Plz._rot.multVec(RX,RX);
+    Plz._rot.multVec(RY,RY);
+
 	// line 
 	Base::Vector3f r2 = pNear - pFar;
 	Base::Vector3d R1(pNear .x,pNear .y,pNear .z),RA(r2.x,r2.y,r2.z);
