@@ -86,7 +86,7 @@ unsigned int SketchFlatInterface::addLine(double x, double y)
 {
 	hEntity he;
 	he = SketchAddEntity(ENTITY_LINE_SEGMENT);
-	ForcePoint(POINT_FOR_ENTITY(he, 0), x, y);
+	ForcePoint(POINT_FOR_ENTITY(he, 0), x*1000, y*1000);
     return POINT_FOR_ENTITY(he, 1);
 }
 
@@ -119,7 +119,7 @@ int SketchFlatInterface::nbrOfCurves(void)
 void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int curve)
 {
 	SketchCurve *c = &(SK->curve[curve]);
-	double chordTol = 0.1;
+	double chordTol = 0.5;
 
     int pts = 0;
     int iters = 0;
@@ -154,8 +154,8 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int
 
         if(Distance(xm, ym, xml, yml) < chordTol) {
             // Looks good
-			coords.push_back(Base::Vector3d(xi,yi,0));
-            coords.push_back(Base::Vector3d(xf,yf,0));
+			coords.push_back(Base::Vector3d(xi/1000.0,yi/1000.0,0));
+            coords.push_back(Base::Vector3d(xf/1000.0,yf/1000.0,0));
 
             from = tryTo;
             tryTo = finalTo;
@@ -166,10 +166,11 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int
         }
 
         iters++;
-        if(pts > 200 || iters > 1000) {
+        if(pts >50 || iters > 200) {
             // If we get too many points trying to plot the thing cleverly
             // and adaptively, then give up and just generate 200 evenly
             // spaced points.
+			coords.clear();
             SK->pwls = pwls0;
             double t;
             CurveEval(c, 0, &xi, &yi);
@@ -177,8 +178,8 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int
             double dt = 1.0/steps;
             for(t = dt; t < 1 + dt; t += dt) {
                 CurveEval(c, t, &xf, &yf);
-				coords.push_back(Base::Vector3d(xi,yi,0));
-                coords.push_back(Base::Vector3d(xf,yf,0));
+				coords.push_back(Base::Vector3d(xi/1000.0,yi/1000.0,0));
+                coords.push_back(Base::Vector3d(xf/1000.0,yf/1000.0,0));
                 xi = xf;
                 yi = yf;
             }
@@ -194,6 +195,8 @@ int SketchFlatInterface::nbrOfPoints(void)
 void SketchFlatInterface::getPoint(int Nbr,double &x,double &y)
 {
     EvalPoint(SK->point[Nbr], &x, &y);
+	x=x/1000.0;
+	y=y/1000.0;
 }
 
 int SketchFlatInterface::getPoint(int Nbr)
@@ -208,12 +211,16 @@ int SketchFlatInterface::nbrOfLines(void)
 void SketchFlatInterface::getLine(int Nbr,double &x0, double &y0, double &dx, double &dy)
 {
 	LineToParametric(SK->line[Nbr], &x0, &y0, &dx, &dy);
+	x0=x0/1000.0;
+	y0=y0/1000.0;
+	dx=dx/1000.0;
+	dy=dy/1000.0;
 }
 
 
 void SketchFlatInterface::forcePoint(int point, double x, double y)
 {
-	ForcePoint(point, x, y);
+	ForcePoint(point, x*1000.0, y*1000.0);
 }
 
 void SketchFlatInterface::solve(void)
