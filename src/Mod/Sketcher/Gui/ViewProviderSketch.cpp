@@ -234,7 +234,7 @@ bool ViewProviderSketch::HandlePreselection(SoPickedPoint* Point)
 {
     if(Point){
         //Base::Console().Log("Point pick\n");
-        const SoDetail* detail = Point->getDetail(PointSet);
+        const SoDetail* detail = Point->getDetail();
         if ( detail && detail->getTypeId() == SoPointDetail::getClassTypeId() ) {
             // get the index
             unsigned long idx = ((SoPointDetail*)detail)->getCoordinateIndex();
@@ -247,12 +247,10 @@ bool ViewProviderSketch::HandlePreselection(SoPickedPoint* Point)
                     CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
                 PreselectCurve = -1;
             }
-            //Base::Console().Log("Point pick%d\n",idx);
+            Base::Console().Log("Point pick%d\n",idx);
             return true;
-        }else {
-            // details from the Curves
-            const SoDetail* detail = Point->getDetail(CurveSet);
-            if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
+        }
+		if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
                 // get the index
                 unsigned long idx = ((SoLineDetail*)detail)->getPartIndex();
                 if(PreselectCurve != idx){
@@ -265,18 +263,16 @@ bool ViewProviderSketch::HandlePreselection(SoPickedPoint* Point)
                     PreselectPoint = -1;
                 }
                 
-                //Base::Console().Log("Curve pick%d\n",idx);
+                Base::Console().Log("Curve pick%d\n",idx);
                 return true;
-            }else {
-                // details from the Datum lines
-                const SoDetail* detail = Point->getDetail(LineSet);
-                if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
+            }
+		if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
                     // get the index
                     unsigned long idx = ((SoLineDetail*)detail)->getPartIndex();
                     Base::Console().Log("Datum pick%d\n",idx);
                     return true;
-                }
-            }
+                
+            
         }
     }
     if(PreselectCurve >= 0)

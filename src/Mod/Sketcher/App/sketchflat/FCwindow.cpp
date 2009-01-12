@@ -558,7 +558,7 @@ void uiSetMeasurementAreaText(char *str)
 //-----------------------------------------------------------------------------
 void uiSetConsistencyStatusText(char *str, int bk)
 {
-    Base::Console().Log("Status: %s \n",str);
+    //Base::Console().Log("Status: %s \n",str);
     //ConsistencyStatusColor = bk;
     //SendMessage(ConsistencyStatus, WM_SETTEXT, 0, (LPARAM)str);
 }
