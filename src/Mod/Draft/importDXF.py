@@ -24,13 +24,16 @@ __author__ = "Yorik van Havre"
 __url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 
 '''
-This script uses a DXF-parsing library created by Stani, Kitsu and Migius for Blender
+This script uses a DXF-parsing library created by Stani,
+Kitsu and Migius for Blender
 
 imports:
-line, polylines, lwpolylines, arcs, circles, texts, mtexts, layers (as groups), colors
+line, polylines, lwpolylines, arcs, circles, texts,
+mtexts, layers (as groups), colors
 
 exports:
-lines, polylines, lwpolylines, circles, arcs, texts, colors,layers (from groups)
+lines, polylines, lwpolylines, circles, arcs,
+texts, colors,layers (from groups)
 '''
 
 import FreeCAD, os, Part, math, re, string

@@ -29,6 +29,16 @@ Report to Draft.py for info
 from PyQt4 import QtCore,QtGui
 import FreeCAD, FreeCADGui, os
 
+def findicons():
+	"checks if Draft is installed system-wide or user-wide, and loads icon file"
+	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft/"
+	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft/"
+	if os.path.exists(path1): filepath = path1+"icons.svg"
+	else: filepath = path2+"icons.svg"
+	iconmap = QtGui.QPixmap()
+	iconmap.load(filepath)
+	return iconmap
+
 #---------------------------------------------------------------------------
 # Customized widgets
 #---------------------------------------------------------------------------
@@ -66,7 +76,7 @@ class toolBar:
 				paramcolor = self.params.GetUnsigned("color")>>8
 				paramlinewidth = self.params.GetInt("linewidth")
 
-				icondir = self.findicons()
+				icons = findicons()
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
 				self.draftToolbar = draftToolbar
@@ -119,7 +129,7 @@ class toolBar:
 
 				self.lockButton = QtGui.QPushButton(draftToolbar)
 				self.lockButton.setGeometry(QtCore.QRect(500,3,20,20))
-				self.lockButton.setIcon(QtGui.QIcon(icondir + "lock.svg"))
+				self.lockButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(512,64,64,64))))
 				self.lockButton.setIconSize(QtCore.QSize(16, 16))
 				self.lockButton.setObjectName("lockButton")
 				self.lockButton.setCheckable(True)
@@ -134,21 +144,21 @@ class toolBar:
 
 				self.undoButton = QtGui.QPushButton(draftToolbar)
 				self.undoButton.setGeometry(QtCore.QRect(610,3,60,20))
-				self.undoButton.setIcon(QtGui.QIcon(icondir + "rotate.svg"))
+				self.undoButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(64,64,64,64))))
 				self.undoButton.setIconSize(QtCore.QSize(16, 16))
 				self.undoButton.setObjectName("undoButton")
 				self.undoButton.hide()
 
 				self.finishButton = QtGui.QPushButton(draftToolbar)
 				self.finishButton.setGeometry(QtCore.QRect(673,3,80,20))
-				self.finishButton.setIcon(QtGui.QIcon(icondir + "finish.svg"))
+				self.finishButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(448,64,64,64))))
 				self.finishButton.setIconSize(QtCore.QSize(16, 16))
 				self.finishButton.setObjectName("finishButton")
 				self.finishButton.hide()
 
 				self.closeButton = QtGui.QPushButton(draftToolbar)
 				self.closeButton.setGeometry(QtCore.QRect(756,3,60,20))
-				self.closeButton.setIcon(QtGui.QIcon(icondir + "lock.svg"))
+				self.closeButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(512,64,64,64))))
 				self.closeButton.setIconSize(QtCore.QSize(16, 16))
 				self.closeButton.setObjectName("closeButton")
 				self.closeButton.hide()
@@ -197,7 +207,7 @@ class toolBar:
 
 				self.applyButton = QtGui.QPushButton(draftToolbar)
 				self.applyButton.setGeometry(QtCore.QRect(870,2,22,22))
-				self.applyButton.setIcon(QtGui.QIcon(icondir + "apply.svg"))
+				self.applyButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(384,64,64,64))))
 				self.applyButton.setIconSize(QtCore.QSize(16, 16))
 				self.applyButton.setObjectName("applyButton")
 
@@ -360,12 +370,6 @@ class toolBar:
 # Processing functions
 #---------------------------------------------------------------------------
 
-			def findicons(self):
-				"checks if Draft is installed system-wide or user-wide"
-				path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft/icons/"
-				path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft/icons/"
-				if os.path.exists(path1): return path1
-				else: return path2
 					
 			def getcol(self):
 				"opens a color picker dialog"
@@ -466,6 +470,7 @@ class toolBar:
 
 			def sendText(self):
 				"this function sends the entered text to the active draft command"
+
 				self.sourceCmd.text=unicode(self.textValue.text())
 				self.sourceCmd.createObject()
 
@@ -502,6 +507,30 @@ class toolBar:
 # Initialization
 #---------------------------------------------------------------------------
 
+		# adding command icons to FreeCAD
+		iconfile = findicons()
+		icons = {}
+		icons['Draft_line']=iconfile.copy(QtCore.QRect(0,0,64,64))
+		icons['Draft_polyline']=iconfile.copy(QtCore.QRect(64,0,64,64))
+		icons['Draft_rectangle']=iconfile.copy(QtCore.QRect(128,0,64,64))
+		icons['Draft_circle']=iconfile.copy(QtCore.QRect(196,0,64,64))
+		icons['Draft_arc']=iconfile.copy(QtCore.QRect(256,0,64,64))
+		icons['Draft_text']=iconfile.copy(QtCore.QRect(320,0,64,64))
+		icons['Draft_move']=iconfile.copy(QtCore.QRect(0,64,64,64))
+		icons['Draft_rotate']=iconfile.copy(QtCore.QRect(64,64,64,64))
+		icons['Draft_offset']=iconfile.copy(QtCore.QRect(128,64,64,64))
+		icons['Draft_trimex']=iconfile.copy(QtCore.QRect(196,64,64,64))
+		icons['Draft_upgrade']=iconfile.copy(QtCore.QRect(256,64,64,64))
+		icons['Draft_downgrade']=iconfile.copy(QtCore.QRect(320,64,64,64))
+		icons['Draft_apply']=iconfile.copy(QtCore.QRect(384,64,64,64))
+		icons['Draft_finish']=iconfile.copy(QtCore.QRect(448,64,64,64))
+		icons['Draft_lock']=iconfile.copy(QtCore.QRect(512,64,64,64))
+		for name,icon in icons.iteritems():
+			ba = QtCore.QByteArray()
+			bu = QtCore.QBuffer(ba)
+			icon.save(bu,'XPM')
+			FreeCADGui.addIcon(name,str(ba))
+			
 		self.app = QtGui.qApp
 		self.mw = self.app.activeWindow()
 		self.draftWidget = DraftDockWidget()
