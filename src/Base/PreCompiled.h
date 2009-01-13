@@ -32,12 +32,13 @@
 #include <Python.h>
 
 // standard
-#include <stdio.h>
-#include <assert.h>
-#include <time.h>
-#include <float.h>
 #include <fcntl.h>
-#include <math.h>
+#include <cstdio>
+#include <cassert>
+#include <time.h>
+#include <cfloat>
+#include <cmath>
+#include <climits>
 
 #ifdef FC_OS_WIN32
 #include <direct.h>

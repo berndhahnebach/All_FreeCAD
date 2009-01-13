@@ -525,42 +525,85 @@ void Application::addImportType(const char* Type, const char* ModuleName)
     }
 }
 
-const char* Application::getImportType(const char* Type) const
+std::vector<std::string> Application::getImportModules(const char* Type) const
 {
-    for ( std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it ) {
+    std::vector<std::string> modules;
+    for (std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it) {
         const std::vector<std::string>& types = it->types;
-        for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
+        for (std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt) {
 #ifdef __GNUC__
-            if ( strcasecmp(Type,jt->c_str()) == 0 )
+            if (strcasecmp(Type,jt->c_str()) == 0)
 #else
-            if ( _stricmp(Type,jt->c_str()) == 0 )
+            if (_stricmp(Type,jt->c_str()) == 0)
 #endif
-                return it->module.c_str();
+                modules.push_back(it->module);
         }
     }
 
-    return 0;
+    return modules;
 }
 
-std::map<std::string,std::string> Application::getImportTypes(void) const
+std::vector<std::string> Application::getImportModules() const
 {
-    std::map<std::string,std::string> endings;
+    std::vector<std::string> modules;
+    for (std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it)
+        modules.push_back(it->module);
+    std::sort(modules.begin(), modules.end());
+    modules.erase(std::unique(modules.begin(), modules.end()), modules.end());
+    return modules;
+}
 
-    for ( std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it ) {
+std::vector<std::string> Application::getImportTypes(const char* Module) const
+{
+    std::vector<std::string> types;
+    for (std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it) {
+#ifdef __GNUC__
+        if (strcasecmp(Module,it->module.c_str()) == 0)
+#else
+        if (_stricmp(Module,it->module.c_str()) == 0)
+#endif
+            types.insert(types.end(), it->types.begin(), it->types.end());
+    }
+
+    return types;
+}
+
+std::vector<std::string> Application::getImportTypes(void) const
+{
+    std::vector<std::string> types;
+    for (std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it) {
+        types.insert(types.end(), it->types.begin(), it->types.end());
+    }
+
+    std::sort(types.begin(), types.end());
+    types.erase(std::unique(types.begin(), types.end()), types.end());
+
+    return types;
+}
+
+std::map<std::string, std::string> Application::getImportFilters(const char* Type) const
+{
+    std::map<std::string, std::string> moduleFilter;
+    for (std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it) {
         const std::vector<std::string>& types = it->types;
-        for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
-            endings[*jt] = it->module;;
+        for (std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt) {
+#ifdef __GNUC__
+            if (strcasecmp(Type,jt->c_str()) == 0)
+#else
+            if (_stricmp(Type,jt->c_str()) == 0)
+#endif
+                moduleFilter[it->filter] = it->module;
         }
     }
 
-    return endings;
+    return moduleFilter;
 }
 
-std::vector<std::string> Application::getImportFilters(void) const
+std::map<std::string, std::string> Application::getImportFilters(void) const
 {
-    std::vector<std::string> filter;
-    for ( std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it ) {
-        filter.push_back(it->filter);
+    std::map<std::string, std::string> filter;
+    for (std::vector<FileTypeItem>::const_iterator it = _mImportTypes.begin(); it != _mImportTypes.end(); ++it) {
+        filter[it->filter] = it->module;
     }
 
     return filter;
@@ -595,42 +638,85 @@ void Application::addExportType(const char* Type, const char* ModuleName)
     }
 }
 
-const char* Application::getExportType(const char* Type) const
+std::vector<std::string> Application::getExportModules(const char* Type) const
 {
-    for ( std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it ) {
+    std::vector<std::string> modules;
+    for (std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it) {
         const std::vector<std::string>& types = it->types;
-        for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
+        for (std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt) {
 #ifdef __GNUC__
-            if ( strcasecmp(Type,jt->c_str()) == 0 )
+            if (strcasecmp(Type,jt->c_str()) == 0)
 #else
-            if ( _stricmp(Type,jt->c_str()) == 0 )
+            if (_stricmp(Type,jt->c_str()) == 0)
 #endif
-                return it->module.c_str();
+                modules.push_back(it->module);
         }
     }
 
-    return 0;
+    return modules;
 }
 
-std::map<std::string,std::string> Application::getExportTypes(void) const
+std::vector<std::string> Application::getExportModules() const
 {
-    std::map<std::string,std::string> endings;
+    std::vector<std::string> modules;
+    for (std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it)
+        modules.push_back(it->module);
+    std::sort(modules.begin(), modules.end());
+    modules.erase(std::unique(modules.begin(), modules.end()), modules.end());
+    return modules;
+}
 
-    for ( std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it ) {
+std::vector<std::string> Application::getExportTypes(const char* Module) const
+{
+    std::vector<std::string> types;
+    for (std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it) {
+#ifdef __GNUC__
+        if (strcasecmp(Module,it->module.c_str()) == 0)
+#else
+        if (_stricmp(Module,it->module.c_str()) == 0)
+#endif
+            types.insert(types.end(), it->types.begin(), it->types.end());
+    }
+
+    return types;
+}
+
+std::vector<std::string> Application::getExportTypes(void) const
+{
+    std::vector<std::string> types;
+    for (std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it) {
+        types.insert(types.end(), it->types.begin(), it->types.end());
+    }
+
+    std::sort(types.begin(), types.end());
+    types.erase(std::unique(types.begin(), types.end()), types.end());
+
+    return types;
+}
+
+std::map<std::string, std::string> Application::getExportFilters(const char* Type) const
+{
+    std::map<std::string, std::string> moduleFilter;
+    for (std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it) {
         const std::vector<std::string>& types = it->types;
-        for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt ) {
-            endings[*jt] = it->module;;
+        for (std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt) {
+#ifdef __GNUC__
+            if (strcasecmp(Type,jt->c_str()) == 0)
+#else
+            if (_stricmp(Type,jt->c_str()) == 0)
+#endif
+                moduleFilter[it->filter] = it->module;
         }
     }
 
-    return endings;
+    return moduleFilter;
 }
 
-std::vector<std::string> Application::getExportFilters(void) const
+std::map<std::string, std::string> Application::getExportFilters(void) const
 {
-    std::vector<std::string> filter;
-    for ( std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it ) {
-        filter.push_back(it->filter);
+    std::map<std::string, std::string> filter;
+    for (std::vector<FileTypeItem>::const_iterator it = _mExportTypes.begin(); it != _mExportTypes.end(); ++it) {
+        filter[it->filter] = it->module;
     }
 
     return filter;
@@ -938,8 +1024,6 @@ void Application::processCmdLineFiles(void)
 {
     Base::Console().Log("Init: Processing command line files\n");
 
-    std::map<std::string,std::string> EndingMap = App::GetApplication().getImportTypes();
-
     // cycling through all the open files
     unsigned short count = 0;
     count = atoi(mConfig["OpenFileCount"].c_str());
@@ -969,16 +1053,18 @@ void Application::processCmdLineFiles(void)
             else if (File.hasExtension("py")) {
                 Base::Interpreter().loadModule(File.fileNamePure().c_str());
             }
-            else if (EndingMap.find(Ext) != EndingMap.end()) {
-                Base::Interpreter().loadModule(EndingMap.find(Ext)->second.c_str());
-                Base::Interpreter().runStringArg("import %s",EndingMap.find(Ext)->second.c_str());
-                Base::Interpreter().runStringArg("%s.open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.filePath().c_str());
-                Base::Console().Log("Command line open: %s.Open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.filePath().c_str());
-            }
             else {
-                Console().Warning("File format not suported: %s \n", File.filePath().c_str());
+                std::vector<std::string> mods = App::GetApplication().getImportModules(Ext.c_str());
+                if (!mods.empty()) {
+                    Base::Interpreter().loadModule(mods.front().c_str());
+                    Base::Interpreter().runStringArg("import %s",mods.front().c_str());
+                    Base::Interpreter().runStringArg("%s.open(\"%s\")",mods.front().c_str(),File.filePath().c_str());
+                    Base::Console().Log("Command line open: %s.Open(\"%s\")",mods.front().c_str(),File.filePath().c_str());
+                }
+                else {
+                    Console().Warning("File format not supported: %s \n", File.filePath().c_str());
+                }
             }
-
         }
         catch (const Base::Exception& e) {
             Console().Error("Exception while processing file: %s [%s]\n", File.filePath().c_str(), e.what());

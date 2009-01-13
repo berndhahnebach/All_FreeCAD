@@ -47,6 +47,7 @@
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "Document.h"
+#include "FileDialog.h"
 #include "Application.h"
 #include "MainWindow.h"
 #include "MenuManager.h"
@@ -541,6 +542,7 @@ void View3DInventor::dropEvent (QDropEvent * e)
     const QMimeData* data = e->mimeData();
     if (data->hasUrls()) {
         QList<QUrl> uri = data->urls();
+        QStringList files;
         App::Document* pDoc = getAppDocument();
         if (pDoc) {
             for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
@@ -548,16 +550,19 @@ void View3DInventor::dropEvent (QDropEvent * e)
                 if ( info.exists() && info.isFile() ) {
                     if (info.isSymLink())
                         info.setFile(info.readLink());
-                    // First check the complete extension
-                    if (App::GetApplication().getImportType(info.completeSuffix().toAscii()))
-                        Application::Instance->importFrom(info.absoluteFilePath().toUtf8(), pDoc->getName());
-                    // Don't get the complete extension
-                    else if (App::GetApplication().getImportType( info.suffix().toAscii()))
-                        Application::Instance->importFrom(info.absoluteFilePath().toUtf8(), pDoc->getName());
+                    files << info.absoluteFilePath();
                 }
             }
+
+            const char *docName = pDoc->getName();
+            SelectModule::Dict dict = SelectModule::importHandler(files);
+            // load the files with the associated modules
+            for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
+                Application::Instance->importFrom(it.key().toUtf8(), docName, it.value().toAscii());
+            }
         }
-    } else {
+    }
+    else {
         MDIView::dropEvent(e);
     }
 }

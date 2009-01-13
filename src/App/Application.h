@@ -169,22 +169,36 @@ public:
      *  @see OpenHandlerFactorySingleton
      */
     //@{
-    /// register a filetype and a module name
+    /// Register an import filetype and a module name
     void addImportType(const char* Type, const char* ModuleName);
-    /// checks if a type is already registered and returns the module name on success or NULL at fail
-    const char* getImportType(const char* Type) const;
-    /// returns a map of all registered filetypes
-    std::map<std::string,std::string> getImportTypes(void) const;
-    std::vector<std::string> getImportFilters(void) const;
+    /// Return a list of modules that support the given filetype.
+    std::vector<std::string> getImportModules(const char* Type) const;
+    /// Return a list of all modules.
+    std::vector<std::string> getImportModules() const;
+    /// Return a list of filetypes that are supported by a module.
+    std::vector<std::string> getImportTypes(const char* Module) const;
+    /// Return a list of all filetypes.
+    std::vector<std::string> getImportTypes(void) const;
+    /// Return the import filters with modules of a given filetype.
+    std::map<std::string, std::string> getImportFilters(const char* Type) const;
+    /// Return a list of all import filters.
+    std::map<std::string, std::string> getImportFilters(void) const;
     //@}
     //@{
-    /// register a filetype and a module name
+    /// Register an export filetype and a module name
     void addExportType(const char* Type, const char* ModuleName);
-    /// checks if a type is already registered and returns the module name on success or 0 otherwise
-    const char* getExportType(const char* Type) const;
-    /// returns a map of all registered filetypes
-    std::map<std::string,std::string> getExportTypes(void) const;
-    std::vector<std::string> getExportFilters(void) const;
+    /// Return a list of modules that support the given filetype.
+    std::vector<std::string> getExportModules(const char* Type) const;
+    /// Return a list of all modules.
+    std::vector<std::string> getExportModules() const;
+    /// Return a list of filetypes that are supported by a module.
+    std::vector<std::string> getExportTypes(const char* Module) const;
+    /// Return a list of all filetypes.
+    std::vector<std::string> getExportTypes(void) const;
+    /// Return the export filters with modules of a given filetype.
+    std::map<std::string, std::string> getExportFilters(const char* Type) const;
+    /// Return a list of all export filters.
+    std::map<std::string, std::string> getExportFilters(void) const;
     //@}
 
     /** @name Init, Destruct an Access methods */

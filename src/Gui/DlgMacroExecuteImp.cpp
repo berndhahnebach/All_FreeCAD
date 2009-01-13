@@ -146,7 +146,7 @@ void DlgMacroExecuteImp::on_editButton_clicked()
     QDir dir(this->macroPath);
     QString file = QString::fromAscii("%1/%2").arg(dir.absolutePath()).arg(item->text(0));
 
-    Application::Instance->open(file.toUtf8());
+    Application::Instance->open(file.toUtf8(), "FreeCADGui");
     close();
 }
 

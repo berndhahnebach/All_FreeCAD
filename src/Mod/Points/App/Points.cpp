@@ -65,9 +65,10 @@ Data::Segment* PointKernel::getSubElement(const char* Type, unsigned long n) con
 
 Base::BoundBox3d PointKernel::getBoundBox(void)const
 {
-    Base::BoundBox3d Bnd;
-        
-    return Bnd;
+    Base::BoundBox3d bnd;
+    for (const_point_iterator it = begin(); it != end(); ++it)
+        bnd.Add(*it);
+    return bnd;
 }
 
 void PointKernel::operator = (const PointKernel& Kernel)

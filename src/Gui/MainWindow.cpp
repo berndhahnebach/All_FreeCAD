@@ -964,8 +964,13 @@ void MainWindow::dropEvent (QDropEvent* e)
             if (info.exists() && info.isFile()) {
                 if (info.isSymLink())
                     info.setFile(info.readLink());
-                if (App::GetApplication().getImportType(info.completeSuffix().toAscii()) ||
-                    App::GetApplication().getImportType(info.suffix().toAscii())) {
+                std::vector<std::string> module = App::GetApplication()
+                    .getImportModules(info.completeSuffix().toAscii());
+                if (module.empty()) {
+                    module = App::GetApplication()
+                        .getImportModules(info.suffix().toAscii());
+                }
+                if (!module.empty()) {
                     // ok, we support files with this extension
                     files << info.absoluteFilePath();
                     // we load non-project files, i.e. we must create a new document
@@ -976,8 +981,10 @@ void MainWindow::dropEvent (QDropEvent* e)
         }
 
         const char *docName = pDoc ? pDoc->getName() : "";
-        for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it) {
-            Application::Instance->importFrom(it->toUtf8(), docName);
+        SelectModule::Dict dict = SelectModule::importHandler(files);
+        // load the files with the associated modules
+        for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
+            Application::Instance->importFrom(it.key().toUtf8(), docName, it.value().toAscii());
         }
     }
     else {

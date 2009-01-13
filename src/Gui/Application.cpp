@@ -194,28 +194,27 @@ Application::~Application()
 // creating std commands
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void Application::open(const char* FileName)
+void Application::open(const char* FileName, const char* Module)
 {
     WaitCursor wc;
     Base::FileInfo File(FileName);
     string te = File.extension();
-    const char* Mod = App::GetApplication().getImportType(te.c_str());
 
-    if (Mod != 0) {
+    if (Module != 0) {
         // issue module loading
-        Command::doCommand(Command::App, "import %s", Mod);
-
+        Command::doCommand(Command::App, "import %s", Module);
+/*
         // issue gui module loading
         try {
-            Command::doCommand(Command::Gui, "import %sGui", Mod);
+            Command::doCommand(Command::Gui, "import %sGui", Module);
         }
         catch (const Base::PyException&){
             // ignore this type of exception (e.g. if Mod is already a Gui module)
-        }
+        }*/
 
         try {
             // load the file with the module
-            Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
+            Command::doCommand(Command::App, "%s.open(\"%s\")", Module, File.filePath().c_str());
             // ViewFit
             if (!File.hasExtension("FCStd") && sendHasMsgToActiveView("ViewFit"))
                 //Command::doCommand(Command::Gui, "Gui.activeDocument().activeView().fitAll()");
@@ -237,36 +236,35 @@ void Application::open(const char* FileName)
     }
 }
 
-void Application::importFrom(const char* FileName, const char* DocName)
+void Application::importFrom(const char* FileName, const char* DocName, const char* Module)
 {
     WaitCursor wc;
     Base::FileInfo File(FileName);
     std::string te = File.extension();
-    const char* Mod = App::GetApplication().getImportType( te.c_str() );
 
-    if (Mod != 0) {
+    if (Module != 0) {
         // issue module loading
-        Command::doCommand(Command::App, "import %s", Mod);
-
+        Command::doCommand(Command::App, "import %s", Module);
+/*
         // issue gui module loading
         try {
-            Command::doCommand(Command::Gui, "import %sGui", Mod);
+            Command::doCommand(Command::Gui, "import %sGui", Module);
         }
         catch (const Base::PyException&) {
             // ignore this type of exception (e.g. if Mod is already a Gui module)
-        }
+        }*/
 
         try {
             // load the file with the module
             if (File.hasExtension("FCStd")) {
                 Command::doCommand(Command::App, "%s.open(\"%s\")"
-                                               , Mod, File.filePath().c_str());
+                                               , Module, File.filePath().c_str());
                 if (activeDocument())
                     activeDocument()->setModified(false);
             }
             else {
                 Command::doCommand(Command::App, "%s.insert(\"%s\",\"%s\")"
-                                               , Mod, File.filePath().c_str(), DocName);
+                                               , Module, File.filePath().c_str(), DocName);
                 getDocument(DocName)->setModified(true);
             }
 
@@ -286,14 +284,13 @@ void Application::importFrom(const char* FileName, const char* DocName)
     }
 }
 
-void Application::exportTo(const char* FileName, const char* DocName)
+void Application::exportTo(const char* FileName, const char* DocName, const char* Module)
 {
     WaitCursor wc;
     Base::FileInfo File(FileName);
     std::string te = File.extension();
-    const char* Mod = App::GetApplication().getExportType(te.c_str());
 
-    if (Mod != 0) {
+    if (Module != 0) {
         try {
             std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
                 (App::DocumentObject::getClassTypeId(),DocName);
@@ -309,8 +306,8 @@ void Application::exportTo(const char* FileName, const char* DocName)
                     << (*it)->getNameInDocument() << "\"))" << std::endl;
             }
 
-            str << "import " << Mod << std::endl;
-            str << Mod << ".export(__objs__,\"" << File.filePath() << "\")" << std::endl;
+            str << "import " << Module << std::endl;
+            str << Module << ".export(__objs__,\"" << File.filePath() << "\")" << std::endl;
             str << "del __objs__" << std::endl;
 
             std::string code = str.str();

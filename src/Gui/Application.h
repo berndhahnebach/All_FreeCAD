@@ -62,11 +62,11 @@ public:
     /** @name methods for support of files */
     //@{
     /// open a file
-    void open(const char* FileName);
+    void open(const char* FileName, const char* Module);
     /// import a file into the document DocName
-    void importFrom(const char* FileName, const char* DocName);
+    void importFrom(const char* FileName, const char* DocName, const char* Module);
     /// Export objects from the document DocName to a single file
-    void exportTo(const char* FileName, const char* DocName);
+    void exportTo(const char* FileName, const char* DocName, const char* Module);
     //@}
 
 

@@ -115,4 +115,4 @@ class DrawingWorkbench ( Workbench ):
 Gui.addWorkbench(DrawingWorkbench())
 
 # Append the open handler
-FreeCAD.EndingAdd("Image formats (*.svg *.svgz)","DrawingGui")
+FreeCAD.addImportType("Drawing (*.svg *.svgz)","DrawingGui")

@@ -73,27 +73,30 @@ void StdCmdOpen::activated(int iMsg)
     formatList = QObject::tr(supported);
     formatList += QLatin1String(" (");
 
-    std::map<std::string,std::string> EndingMap = App::GetApplication().getImportTypes();
-    std::map<std::string,std::string>::const_iterator It;
-    for (It=EndingMap.begin();It != EndingMap.end();++It) {
+    std::vector<std::string> filetypes = App::GetApplication().getImportTypes();
+    std::vector<std::string>::const_iterator it;
+    for (it=filetypes.begin();it != filetypes.end();++it) {
         formatList += QLatin1String(" *.");
-        formatList += QLatin1String(It->first.c_str());
+        formatList += QLatin1String(it->c_str());
     }
 
     formatList += QLatin1String(");;");
 
-    std::vector<std::string> FilterList = App::GetApplication().getImportFilters();
-    std::vector<std::string>::const_iterator Jt;
-    for (Jt=FilterList.begin();Jt != FilterList.end();++Jt) {
-        formatList += QLatin1String((*Jt).c_str());
+    std::map<std::string, std::string> FilterList = App::GetApplication().getImportFilters();
+    std::map<std::string, std::string>::const_iterator jt;
+    for (jt=FilterList.begin();jt != FilterList.end();++jt) {
+        formatList += QLatin1String(jt->first.c_str());
         formatList += QLatin1String(";;");
     }
     formatList += QObject::tr(allFiles);
 
-    QStringList FileList = FileDialog::getOpenFileNames(getMainWindow(),
-        QObject::tr("Open document"), QString(), formatList);
-    for (QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it) {
-        getGuiApplication()->open((*it).toUtf8());
+    QString selectedFilter;
+    QStringList fileList = FileDialog::getOpenFileNames(getMainWindow(),
+        QObject::tr("Open document"), QString(), formatList, &selectedFilter);
+    // load the files with the associated modules
+    SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
+    for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
+        getGuiApplication()->open(it.key().toUtf8(), it.value().toAscii());
     }
 }
 
@@ -125,31 +128,38 @@ void StdCmdImport::activated(int iMsg)
     formatList = QObject::tr(supported);
     formatList += QLatin1String(" (");
 
-    std::map<std::string,std::string> EndingMap = App::GetApplication().getImportTypes();
-    EndingMap.erase("FCStd"); // ignore the project file format
-    std::map<std::string,std::string>::const_iterator It;
-    for (It=EndingMap.begin();It != EndingMap.end();++It) {
-        formatList += QLatin1String(" *.");
-        formatList += QLatin1String(It->first.c_str());
+    std::vector<std::string> filetypes = App::GetApplication().getImportTypes();
+    std::vector<std::string>::const_iterator it;
+    for (it=filetypes.begin();it != filetypes.end();++it) {
+        if (*it != "FCStd") {
+            // ignore the project file format
+            formatList += QLatin1String(" *.");
+            formatList += QLatin1String(it->c_str());
+        }
     }
 
     formatList += QLatin1String(");;");
 
-    std::vector<std::string> FilterList = App::GetApplication().getImportFilters();
-    std::vector<std::string>::const_iterator Jt;
-    for (Jt=FilterList.begin();Jt != FilterList.end();++Jt) {
+    std::map<std::string, std::string> FilterList = App::GetApplication().getImportFilters();
+    std::map<std::string, std::string>::const_iterator jt;
+    for (jt=FilterList.begin();jt != FilterList.end();++jt) {
         // ignore the project file format
-        if (Jt->find("(*.FCStd)") == std::string::npos) {
-            formatList += QLatin1String(Jt->c_str());
+        if (jt->first.find("(*.FCStd)") == std::string::npos) {
+            formatList += QLatin1String(jt->first.c_str());
             formatList += QLatin1String(";;");
         }
     }
     formatList += QObject::tr(allFiles);
 
-    QStringList FileList = FileDialog::getOpenFileNames(getMainWindow(),
-        QObject::tr("Import file"), QString(), formatList);
-    for (QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it) {
-        getGuiApplication()->importFrom((*it).toUtf8(),getActiveGuiDocument()->getDocument()->getName());
+    QString selectedFilter;
+    QStringList fileList = FileDialog::getOpenFileNames(getMainWindow(),
+        QObject::tr("Import file"), QString(), formatList, &selectedFilter);
+    SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
+    // load the files with the associated modules
+    for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
+        getGuiApplication()->importFrom(it.key().toUtf8(),
+            getActiveGuiDocument()->getDocument()->getName(),
+            it.value().toAscii());
     }
 }
 
@@ -186,31 +196,40 @@ void StdCmdExport::activated(int iMsg)
     formatList = QObject::tr(supported);
     formatList += QLatin1String(" (");
 
-    std::map<std::string,std::string> EndingMap = App::GetApplication().getExportTypes();
-    EndingMap.erase("FCStd"); // ignore the project file format
-    std::map<std::string,std::string>::const_iterator It;
-    for (It=EndingMap.begin();It != EndingMap.end();++It) {
-        formatList += QLatin1String(" *.");
-        formatList += QLatin1String(It->first.c_str());
+    std::vector<std::string> filetypes = App::GetApplication().getExportTypes();
+    std::vector<std::string>::const_iterator it;
+    for (it=filetypes.begin();it != filetypes.end();++it) {
+        if (*it != "FCStd") {
+            // ignore the project file format
+            formatList += QLatin1String(" *.");
+            formatList += QLatin1String(it->c_str());
+        }
     }
 
     formatList += QLatin1String(");;");
 
-    std::vector<std::string> FilterList = App::GetApplication().getExportFilters();
-    std::vector<std::string>::const_iterator Jt;
-    for (Jt=FilterList.begin();Jt != FilterList.end();++Jt) {
+    std::map<std::string, std::string> FilterList = App::GetApplication().getExportFilters();
+    std::map<std::string, std::string>::const_iterator jt;
+    for (jt=FilterList.begin();jt != FilterList.end();++jt) {
         // ignore the project file format
-        if (Jt->find("(*.FCStd)") == std::string::npos) {
-            formatList += QLatin1String(Jt->c_str());
+        if (jt->first.find("(*.FCStd)") == std::string::npos) {
+            formatList += QLatin1String(jt->first.c_str());
             formatList += QLatin1String(";;");
         }
     }
 
+    QString selectedFilter;
     QString fileName = FileDialog::getSaveFileName(getMainWindow(),
-        QObject::tr("Export file"), QString(), formatList);
-    if (!fileName.isEmpty())
-        getGuiApplication()->exportTo(fileName.toUtf8(),getActiveGuiDocument()
-        ->getDocument()->getName());
+        QObject::tr("Export file"), QString(), formatList, &selectedFilter);
+    if (!fileName.isEmpty()) {
+        SelectModule::Dict dict = SelectModule::exportHandler(fileName, selectedFilter);
+        // export the files with the associated modules
+        for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
+            getGuiApplication()->exportTo(it.key().toUtf8(),
+                getActiveGuiDocument()->getDocument()->getName(),
+                it.value().toAscii());
+        }
+    }
 }
 
 bool StdCmdExport::isActive(void)
