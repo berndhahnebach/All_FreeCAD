@@ -1,7 +1,5 @@
 
 #***************************************************************************
-#*   FreeCAD Draft Workbench -                                             *
-#*   Author: Yorik van Havre - http://yorik.orgfree.com                    *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -21,78 +19,122 @@
 #*                                                                         *
 #***************************************************************************
 
+'''
+    This script imports SVG files in FreeCAD. Currently only reads the following entities:
+    path containing lines, arcs, and simpe bezier curves (quadratic & smoothed not supported)
+    rect
+    line
+'''
 
-#    This script imports SVG files in FreeCAD. Currently only path (M, L, C and A commands)
-#    and rect types are read, and any curved segment gets flattened...
-#    All this will be fixed and enhanced later on...
+import xml.sax, string, FreeCAD, FreeCADGui, os, Part
+from draftlibs import fcvec
 
-# the following line is needed for registering this script in freecad io system
-filetype="SVG file as geometry (*.svg)"
-
-import xml.sax, string, FreeCAD, FreeCADGui, os
-
-plines=[]
+vec = FreeCAD.Vector
 pythonopen = open
+
 class svgHandler(xml.sax.ContentHandler):
 
+	def __init__(self):
+		self.result = []
+	
 	def startElement(self, name, attrs):
-	
-#		processing paths
-	
+
+		# processing paths
+
 		if name == "path":
-			for (k,v) in attrs.items():
-				if k == "d":
-					organized=v.split()
-					currentpline=[]
-					currentpoint=[]
-					nextline=""
-					for i in organized:
-						if i == "M" or i == "m":
-							if currentpline != []:
-								plines.append(currentpline)
-								currentpline=[]
-							nextline="normalpoint"
-						elif i == "":
+			for (keyword,data) in attrs.items():
+				if keyword == "d":
+					data = data.replace(',',' ')
+					data = data.split()
+					path = []
+					point = []
+					lastvec = None
+					command = None
+					for d in data:
+						if (d[0] == "M"):
+							command = "move"
+							point = []
+							if len(d)>1:
+								d.pop[0]
+								point.append(d)
+						elif (d[0] == "L"):
+							command = "line"
+							point = []
+							if len(d)>1:
+								d.pop[0]
+								point.append(d)
+						elif (d[0] == "H"):
+							command = "horizontal"
+							point = []
+							if len(d)>1:
+								d.pop[0]
+								point.append(d)
+						elif (d[0] == "V"):
+							command = "vertical"
+							point = []
+							if len(d)>1:
+								d.pop[0]
+								point.append(d)
+						elif (d[0] == "A"):
+							command = "arc"
+							point = []
+							if len(d)>1:
+								d.pop[0]
+								point.append(d)
+						elif (d[0] == "Z"):
+							command = "close"
+							point = []
+							if len(d)>1:
+								d.pop[0]
+								point.append(d)
+						elif (d == ""):
 							pass
-						elif i == "L" or i == "l":
-							nextline="normalpoint"
-						elif i == "C" or i == "c":
-							pass
-						elif i == "A" or i == "a":
-							nextline="arcfirstline"
-						elif i == "Z" or i == "z":
-							currentpline.append(currentpline[0])
-						elif nextline=="arcfirstline":
-							if i.find(',')==-1:
-								nextline="arcsecondline"
-							else:
-								nextline="arcthirdline"
-						elif nextline=="arcsecondline":
-							nextline="arcthirdline"
-						elif nextline=="arcthirdline":
-							nextline="arcfourthline"
-						elif nextline=="arcfourthline":
-							nextline="arcfifthline"
-						elif nextline=="arcfifthline":
-							nextline="normalpoint"
-						elif nextline=="normalpoint":
-							if i.find(',')==-1:
-								nextline="secondcoord"
-								currentpoint=[]
-								currentpoint.append(i)
-							else: 
-								currentpoint=(i.split(','))
-								currentpline.append(currentpoint)
-						elif nextline=="secondcoord":
-								currentpoint.append(i)
-								currentpline.append(currentpoint)
-								nextline=="normalpoint"
-					if currentpline !=[]:
-						plines.append(currentpline)
-						currentpline=[]
-					
-#		processing paths
-	
+						else:
+							point.append(d)
+
+						if (len(point)==2) and (command=="move"):
+							if path:
+								self.result.append(path)
+								path = []
+							lastvec = (vec(point[0],point[1],0))
+							command = None
+						elif (len(point)==2) and (command=="line"):
+							seg = {}
+							currentvec = vec(point[0],point[1],0)
+							seg['type'] = 'line'
+							seg['data'] = []
+							seg['data'].append(lastvec)
+							seg['data'].append(currentvec)
+							lastvec = currentvec
+							path.append(seg)
+							command = None
+						elif (len(point)==1) and (command=="horizontal"):
+							seg = {}
+							lasty = path[-1].y
+							currentvec = vec(point[0],lasty,0)
+							seg['type'] = 'line'
+							seg['data'] = []
+							seg['data'].append(lastvec)
+							seg['data'].append(currentvec)
+							lastvec = currentvec
+							path.append(seg)
+							command = None
+						elif (len(point)==1) and (command=="vertical"):
+							seg = {}
+							lastx = path[-1].x
+							currentvec = vec(lastx,point[0],0)
+							seg['type'] = 'line'
+							seg['data'] = []
+							seg['data'].append(lastvec)
+							seg['data'].append(currentvec)
+							lastvec = currentvec
+							path.append(seg)
+							command = None
+						elif (len(point)==
+
+
+		# processing rects
+
 		if name == "rect":
 			for (k,v) in attrs.items():
 				if k == "x":
@@ -109,7 +151,7 @@ class svgHandler(xml.sax.ContentHandler):
 			currentpline.append([float(rectx)+float(rectw),float(recty)+float(recth)])
 			currentpline.append([rectx,float(recty)+float(recth)])
 			currentpline.append([rectx,recty])
-			plines.append(currentpline)
+			self.result.append(currentpline)
 			currentpline=[]
 
 #		processing lines
@@ -127,51 +169,35 @@ class svgHandler(xml.sax.ContentHandler):
 			currentpline=[]
 			currentpline.append([x1,y1])
 			currentpline.append([x2,y2])
-			plines.append(currentpline)
+			self.result.append(currentpline)
 			currentpline=[]
 
-
-# main course
-			
 def open(filename):
-	global plines
-	plines=[]		
+
+	global parser
 	parser = xml.sax.make_parser()
 	parser.setContentHandler(svgHandler())
 	parser.parse(pythonopen(filename))
 
-# integrity test against BAD formated svg!!! Another time I'll do a routine to fix it before processing
+	result = parser._cont_handler.result
 
-	for i in plines:
-		for j in i:
-			for k in j:
-				try:
-					k = float(k)
-				except:
-					print "found bad formatting in point", j
-					print "operation aborted. Please fix the svg file manually"
-					raise
-	
-# drawing FreeCAD objects
+	# drawing FreeCAD objects
 
 	docname=os.path.split(filename)[1]
 	doc=FreeCAD.newDocument(docname)
-	for polyline in plines:
-		if (len(polyline.points) > 1):
+	for polyline in result:
+		edges = []
+		if (len(polyline) > 1):
 			newob = doc.addObject("Part::Feature","Path")
 			points = []
 			for p in polyline:
 				v=FreeCAD.Vector(float(p[0]),-float(p[1]),0.0)
 				points.append(v)
 			if (len(points)>1):
-				sh = Part.makeLine((points[0].x,points[0].y,points[0].z),(points[1].x,points[1].y,points[1].z))
-				for i in range(1,len(points)-1):
-					newseg = Part.makeLine((points[i].x,points[i].y,points[i].z),(points[i+1].x,points[i+1].y,points[i+1].z))
-					sh = sh.fuse(newseg)
-			if (polyline.closed == 1):
-				l=len(points)-1
-				newseg = Part.makeLine((points[l].x,points[l].y,points[l].z),(points[0].x,points[0].y,points[0].z))
-				sh = sh.fuse(newseg)
+				for i in range(0,len(points)-1):
+					if not fcvec.equals(points[i],points[i+1]):
+						edges.append(Part.Line(points[i],points[i+1]).toShape())
+					else: print "debug: skipped one null segment"
+			sh = Part.Wire(edges)
 			newob.Shape = sh
 	doc.recompute()
-

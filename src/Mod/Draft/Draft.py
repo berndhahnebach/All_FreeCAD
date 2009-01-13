@@ -74,6 +74,7 @@ from pivy import coin
 from draftlibs import fcvec
 from draftlibs import fcgeo
 
+
 # Constants
 
 snapStack = [] #storing two last snapped objects, so we can check for intersection
@@ -535,7 +536,7 @@ class line:
 		self.max=2
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/line.svg',
+		return {'Pixmap'  : 'Draft_line',
 			'MenuText': 'Line',
 			'ToolTip': 'Creates a 2-point line. CTRL to snap, SHIFT to constrain'}
 
@@ -688,7 +689,7 @@ class polyline(line):
 	def __init__(self):
 		self.max=128
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/polyline.svg',
+		return {'Pixmap'  : 'Draft_polyline',
 			'MenuText': 'Polyline',
 			'ToolTip': 'Creates a 2-point line. CTRL to snap, SHIFT to constrain'}
 
@@ -701,7 +702,7 @@ class finishLine:
 			if (activeCommand.featureName == "Line"):
 				activeCommand.finish(False)
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/finish.svg',
+		return {'Pixmap'  : 'Draft_finish',
 			'MenuText': 'Finish Line',
 			'ToolTip': 'Finishes a line without closing it'}
 
@@ -714,7 +715,7 @@ class closeLine:
 			if (activeCommand.featureName == "Line"):
 				activeCommand.finish(True)
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/lock.svg',
+		return {'Pixmap'  : 'Draft_lock',
 			'MenuText': 'Close Line',
 			'ToolTip': 'Closes the line being drawn'}
 
@@ -727,7 +728,7 @@ class undoLine:
 			if (activeCommand.featureName == "Line"):
 				activeCommand.undolast()
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/rotate.svg',
+		return {'Pixmap'  : 'Draft_rotate',
 			'MenuText': 'Undo last segment',
 			'ToolTip': 'Undoes the last drawn segment of the line being drawn'}
 
@@ -736,7 +737,7 @@ class rectangle:
 	"This class creates a rectangle."
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/rectangle.svg',
+		return {'Pixmap'  : 'Draft_rectangle',
 			'MenuText': 'Rectangle',
 			'ToolTip': 'Creates a 2-point rectangle. CTRL to snap'}
 
@@ -861,7 +862,7 @@ class arc:
 		self.featureName = "Arc"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/arc.svg',
+		return {'Pixmap'  : 'Draft_arc',
 			'MenuText': 'Arc',
 			'ToolTip': 'Creates an arc. CTRL to snap, SHIFT to constrain, ALT to go counter-clockwise'}
 
@@ -1089,7 +1090,7 @@ class circle(arc):
 		self.featureName = "Circle"
 		
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/circle.svg',
+		return {'Pixmap'  : 'Draft_circle',
 			'MenuText': 'Circle',
 			'ToolTip': 'Creates a circle. CTRL to snap'}
 
@@ -1102,7 +1103,7 @@ class annotation:
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/text.svg',
+		return {'Pixmap'  : 'Draft_text',
 			'MenuText': 'Text',
 			'ToolTip': 'Creates an annotation. CTRL to snap'}
 
@@ -1194,7 +1195,7 @@ class move:
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/move.svg',
+		return {'Pixmap'  : 'Draft_move',
 			'MenuText': 'Move',
 			'ToolTip': 'Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy'}
 
@@ -1339,7 +1340,7 @@ class applyStyle:
 	"this class applies the current line width and line color to selected objects"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/apply.svg',
+		return {'Pixmap'  : 'Draft_apply',
 			'MenuText': 'Apply Style',
 			'ToolTip': 'Applies current line width and color to selected objects'}
 
@@ -1379,7 +1380,7 @@ class rotate:
 
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/rotate.svg',
+		return {'Pixmap'  : 'Draft_rotate',
 			'MenuText': 'Rotate',
 			'ToolTip': 'Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy'}
 
@@ -1622,7 +1623,7 @@ class offset:
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/offset.svg',
+		return {'Pixmap'  : 'Draft_offset',
 			'MenuText': 'Offset',
 			'ToolTip': 'Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy'}
 
@@ -1871,7 +1872,7 @@ class upgrade:
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/upgrade.svg',
+		return {'Pixmap'  : 'Draft_upgrade',
 			'MenuText': 'Upgrade',
 			'ToolTip': 'Joins the selected objects into one, or converts closed wires to filled faces, or unite faces'}
 
@@ -1926,7 +1927,7 @@ class upgrade:
 			for ob in self.sel:
 				for e in ob.Shape.Edges:
 					edges.append(e)
-			w = Part.Wire(edges)
+			w = Part.Wire(fcgeo.sortEdges(edges))
 			newob = self.doc.addObject("Part::Feature","Wire")
 			newob.Shape = w
 			formatObject(newob,lastob)
@@ -1948,7 +1949,7 @@ class downgrade:
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Mod/Draft/icons/downgrade.svg',
+		return {'Pixmap'  : 'Draft_downgrade',
 			'MenuText': 'Downgrade',
 			'ToolTip': 'Explodes the selected objects into simpler objects, or subtract faces'}
 
@@ -2016,7 +2017,7 @@ class trimex:
 	"this tool trims or extends lines, polylines and arcs. SHIFT constrains to the last point."
 
 	def GetResources(self):
-		return {'Pixmap' : 'Mod/Draft/icons/trimex.svg',
+		return {'Pixmap' : 'Draft_trimex',
 			'MenuText' : 'TrimExtend',
 			'ToolTip' : 'Trims or Extends the selected object. SHIFT constrains to current segment, ALT inverts'}
 
@@ -2251,9 +2252,11 @@ class trimex:
 
 
 #---------------------------------------------------------------------------
-# Adds the commands to the FreeCAD command manager
+# Adds the icons & commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
 
+
+		
 # drawing commands
 FreeCADGui.addCommand('Draft_Line',line())
 FreeCADGui.addCommand('Draft_Polyline',polyline())
