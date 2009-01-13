@@ -172,6 +172,52 @@ private:
 // ----------------------------------------------------------------------
 
 /**
+ * The SelectModule class provides a list of radio buttons to choose
+ * the module that should handle a certain file type.
+ * @author Werner Mayer
+ */
+class GuiExport SelectModule : public QDialog
+{
+    Q_OBJECT
+
+public:
+    typedef QMap<QString, QString> Dict;
+
+    SelectModule (const QString& type, const Dict&, QWidget* parent);
+    virtual ~SelectModule();
+    QString getModule() const;
+
+    /** @name Import/Export handler 
+     * These methods accepts a file name or a list of file names and return
+     * a map of file names with the associated Python module that should open
+     * the file.
+     */
+    //@{
+    static Dict exportHandler(const QString& fn, const QString& filter=QString());
+    static Dict importHandler(const QString& fn, const QString& filter=QString());
+    static Dict importHandler(const QStringList& fn, const QString& filter=QString());
+    //@}
+
+    void accept();
+    void reject();
+
+private Q_SLOTS:
+    void onButtonClicked();
+
+private:
+    QPushButton *okButton;
+    QButtonGroup* group;
+    QGridLayout *gridLayout;
+    QHBoxLayout *hboxLayout;
+    QGroupBox *groupBox;
+    QGridLayout *gridLayout1;
+    QSpacerItem *spacerItem;
+    QSpacerItem *spacerItem1;
+};
+
+// ----------------------------------------------------------------------
+
+/**
  * Simple class to write the read bytes directly into Qt's QByteArray.
  * This class can only be used for writing but not reading purposes.
  * @author Werner Mayer

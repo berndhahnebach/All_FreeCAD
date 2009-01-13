@@ -27,6 +27,7 @@
 #include <App/Application.h>
 
 #include "FileDialog.h"
+#include "MainWindow.h"
 #include "BitmapFactory.h"
 
 using namespace Gui;
@@ -438,6 +439,193 @@ void FileChooser::setButtonText( const QString& txt )
 QString FileChooser::buttonText() const
 {
     return button->text();
+}
+
+// ----------------------------------------------------------------------
+
+SelectModule::SelectModule (const QString& type, const SelectModule::Dict& types, QWidget * parent)
+  : QDialog(parent, Qt::WindowTitleHint)
+{
+    setWindowTitle(tr("Select module"));
+    groupBox = new QGroupBox(this);
+    groupBox->setTitle(tr("Open %1 as").arg(type));
+
+    group = new QButtonGroup(this);
+    gridLayout = new QGridLayout(this);
+    gridLayout->setSpacing(6);
+    gridLayout->setMargin(9);
+
+    gridLayout1 = new QGridLayout(groupBox);
+    gridLayout1->setSpacing(6);
+    gridLayout1->setMargin(9);
+
+    int index = 0;
+    for (SelectModule::Dict::const_iterator it = types.begin(); it != types.end(); ++it) {
+        QRadioButton* button = new QRadioButton(groupBox);
+
+        QRegExp rx;
+        QString filter = it.key();
+        QString module = it.value();
+
+        // ignore file types in (...)
+        rx.setPattern(QLatin1String("\\s+\\([\\w\\*\\s\\.]+\\)$"));
+        int pos = rx.indexIn(filter);
+        if (pos != -1) {
+            filter = filter.left(pos);
+        }
+
+        // ignore Gui suffix in module name
+        rx.setPattern(QLatin1String("Gui$"));
+        pos = rx.indexIn(module);
+        if (pos != -1) {
+            module = module.left(pos);
+        }
+
+        button->setText(QString::fromAscii("%1 (%2)").arg(filter).arg(module));
+        button->setObjectName(it.value());
+        gridLayout1->addWidget(button, index, 0, 1, 1);
+        group->addButton(button, index);
+        index++;
+    }
+
+    gridLayout->addWidget(groupBox, 0, 0, 1, 1);
+    spacerItem = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    gridLayout->addItem(spacerItem, 1, 0, 1, 1);
+
+    hboxLayout = new QHBoxLayout();
+    hboxLayout->setSpacing(6);
+    hboxLayout->setMargin(0);
+    spacerItem1 = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    hboxLayout->addItem(spacerItem1);
+
+    okButton = new QPushButton(this);
+    okButton->setObjectName(QString::fromUtf8("okButton"));
+    okButton->setText(tr("Select"));
+    okButton->setEnabled(false);
+
+    hboxLayout->addWidget(okButton);
+    gridLayout->addLayout(hboxLayout, 2, 0, 1, 1);
+
+    // connections
+    connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(group, SIGNAL(buttonClicked(int)), this, SLOT(onButtonClicked()));
+}
+
+SelectModule::~SelectModule()
+{
+}
+
+void SelectModule::accept()
+{
+    if (group->checkedButton())
+        QDialog::accept();
+}
+
+void SelectModule::reject()
+{
+    if (group->checkedButton())
+        QDialog::reject();
+}
+
+void SelectModule::onButtonClicked()
+{
+    if (group->checkedButton())
+        okButton->setEnabled(true);
+    else
+        okButton->setEnabled(false);
+}
+
+QString SelectModule::getModule() const
+{
+    QAbstractButton* button = group->checkedButton();
+    return (button ? button->objectName() : QString());
+}
+
+SelectModule::Dict SelectModule::exportHandler(const QString& fileName, const QString& filter)
+{
+    // first check if there is a certain filter selected
+    SelectModule::Dict dict;
+    if (!filter.isEmpty()) {
+        // If an export filter is specified search directly for the module
+        std::map<std::string, std::string> filterList = App::GetApplication().getExportFilters();
+        std::map<std::string, std::string>::const_iterator it;
+        it = filterList.find((const char*)filter.toUtf8());
+        if (it != filterList.end()) {
+            dict[fileName] = QString::fromAscii(it->second.c_str());
+            return dict;
+        }
+    }
+
+    // if no export filter was set then simply use the first matching module
+    QFileInfo fi(fileName);
+    QString ext = fi.suffix().toLower();
+    std::vector<std::string> modules = App::GetApplication().getExportModules(ext.toAscii());
+    // set the default module handler
+    if (!modules.empty())
+        dict[fileName] = QString::fromAscii(modules.front().c_str());
+
+    return dict;
+}
+
+SelectModule::Dict SelectModule::importHandler(const QString& fileName, const QString& filter)
+{
+    return importHandler(QStringList() << fileName, filter);
+}
+
+SelectModule::Dict SelectModule::importHandler(const QStringList& fileNames, const QString& filter)
+{
+    // first check if there is a certain filter selected
+    SelectModule::Dict dict;
+    if (!filter.isEmpty()) {
+        // If an import filter is specified search directly for the module
+        std::map<std::string, std::string> filterList = App::GetApplication().getImportFilters();
+        std::map<std::string, std::string>::const_iterator it;
+        it = filterList.find((const char*)filter.toUtf8());
+        if (it != filterList.end()) {
+            QString module = QString::fromAscii(it->second.c_str());
+            for (QStringList::const_iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
+                dict[*it] = module;
+            }
+            return dict;
+        }
+    }
+
+    // the global filter (or no filter) was selected. We now try to sort filetypes that are
+    // handled by more than one module and ask to the user to select one.
+    QMap<QString, SelectModule::Dict> filetypeHandler;
+    QMap<QString, QStringList > fileExtension;
+    for (QStringList::const_iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
+        QFileInfo fi(*it);
+        QString ext = fi.completeSuffix().toLower();
+        std::map<std::string, std::string> filters = App::GetApplication().getImportFilters(ext.toAscii());
+        
+        if (filters.empty()) {
+            ext = fi.suffix().toLower();
+            filters = App::GetApplication().getImportFilters(ext.toAscii());
+        }
+
+        fileExtension[ext].push_back(*it);
+        for (std::map<std::string, std::string>::iterator jt = filters.begin(); jt != filters.end(); ++jt)
+            filetypeHandler[ext][QString::fromUtf8(jt->first.c_str())] = QString::fromAscii(jt->second.c_str());
+        // set the default module handler
+        if (!filters.empty())
+            dict[*it] = QString::fromAscii(filters.begin()->second.c_str());
+    }
+
+    for (QMap<QString, SelectModule::Dict>::const_iterator it = filetypeHandler.begin(); 
+        it != filetypeHandler.end(); ++it) {
+        if (it.value().size() > 1) {
+            SelectModule dlg(it.key(),it.value(), getMainWindow());
+            if (dlg.exec()) {
+                QString mod = dlg.getModule();
+                const QStringList& files = fileExtension[it.key()];
+                for (QStringList::const_iterator jt = files.begin(); jt != files.end(); ++jt)
+                    dict[*jt] = mod;
+            }
+        }
+    }
+
+    return dict;
 }
 
 // ----------------------------------------------------------------------

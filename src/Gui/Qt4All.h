@@ -56,6 +56,7 @@
 #include <QActionGroup>
 #include <qapplication.h>
 #include <QBitmap>
+#include <QButtonGroup>
 #include <qcheckbox.h>
 #include <qclipboard.h>
 #include <qcolordialog.h>

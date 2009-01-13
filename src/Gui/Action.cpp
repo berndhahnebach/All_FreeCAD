@@ -32,12 +32,14 @@
 #include "Application.h"
 #include "Command.h"
 #include "DlgUndoRedo.h"
+#include "FileDialog.h"
 #include "MainWindow.h"
 #include "WhatsThis.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
 
 #include <Base/Exception.h>
+#include <App/Application.h>
 
 using namespace Gui;
 using namespace Gui::Dialog;
@@ -575,9 +577,14 @@ void RecentFilesAction::activateFile(int id)
         QMessageBox::critical(getMainWindow(), tr("File not found"), tr("The file '%1' cannot be opened.").arg(filename));
         files.removeAll(filename);
         setFiles(files);
-    } else {
+    }
+    else {
         // invokes appendFile()
-        Application::Instance->open(filename.toUtf8());
+        SelectModule::Dict dict = SelectModule::importHandler(filename);
+        for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
+            Application::Instance->open(it.key().toUtf8(), it.value().toAscii());
+            break;
+        }
     }
 }
 

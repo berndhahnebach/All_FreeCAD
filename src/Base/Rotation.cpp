@@ -22,11 +22,13 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <cmath>
+# include <climits>
+#endif
 
 #include "Rotation.h"
 #include "Matrix.h"
-
-#define M_PI       3.14159265358979323846
 
 using namespace Base;
 
@@ -380,34 +382,34 @@ void Rotation::setEuler(double A,double B,double C)
     double c1c2 = c1*c2;
     double s1s2 = s1*s2;
     quat[3] =c1c2*c3 - s1s2*s3;
-  	quat[0] =c1c2*s3 + s1s2*c3;
-	quat[1] =s1*c2*c3 + c1*s2*s3;
-	quat[2] =c1*s2*c3 - s1*c2*s3;
-
+    quat[0] =c1c2*s3 + s1s2*c3;
+    quat[1] =s1*c2*c3 + c1*s2*s3;
+    quat[2] =c1*s2*c3 - s1*c2*s3;
 }
 
-void Rotation::getEuler(double &A,double &B,double &C)
+void Rotation::getEuler(double &A,double &B,double &C) const
 {
     // from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
     double sqw = quat[3]*quat[3];
     double sqx = quat[0]*quat[0];
     double sqy = quat[1]*quat[1];
     double sqz = quat[2]*quat[2];
-	double unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
-	double test = quat[0]*quat[1] + quat[2]*quat[3];
-	if (test > 0.499*unit) { // singularity at north pole
-		A = 2 * atan2(quat[0],quat[3]);
-		B = M_PI/2;
-		C = 0;
-		return;
-	}
-	if (test < -0.499*unit) { // singularity at south pole
-		A = -2 * atan2(quat[0],quat[3]);
-		B = -M_PI/2;
-		C = 0;
-		return;
-	}
+    double unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
+    double test = quat[0]*quat[1] + quat[2]*quat[3];
+    if (test > 0.499*unit) { // singularity at north pole
+        A = 2 * atan2(quat[0],quat[3]);
+        B = D_PI/2;
+        C = 0;
+        return;
+    }
+    if (test < -0.499*unit) { // singularity at south pole
+        A = -2 * atan2(quat[0],quat[3]);
+        B = -D_PI/2;
+        C = 0;
+        return;
+    }
+
     A = atan2(2*quat[1]*quat[3]-2*quat[0]*quat[2] , sqx - sqy - sqz + sqw);
-	B = asin(2*test/unit);
-	C = atan2(2*quat[0]*quat[3]-2*quat[1]*quat[2] , -sqx + sqy - sqz + sqw);
+    B = asin(2*test/unit);
+    C = atan2(2*quat[0]*quat[3]-2*quat[1]*quat[2] , -sqx + sqy - sqz + sqw);
 }

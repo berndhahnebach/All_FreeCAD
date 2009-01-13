@@ -354,12 +354,36 @@ PyObject* Application::sGetImportType(PyObject * /*self*/, PyObject *args,PyObje
         return NULL;                             // NULL triggers exception
 
     if (psKey) {
-        return Py_BuildValue("s",GetApplication().getImportType(psKey));
+        Py::List list;
+        std::vector<std::string> modules = GetApplication().getImportModules(psKey);
+        for (std::vector<std::string>::iterator it = modules.begin(); it != modules.end(); ++it) {
+            list.append(Py::String(*it));
+        }
+
+        return Py::new_reference_to(list);
     }
     else {
-        return Interpreter().CreateFrom(GetApplication().getImportTypes());
-    }
+        Py::Dict dict;
+        std::vector<std::string> types = GetApplication().getImportTypes();
+        for (std::vector<std::string>::iterator it = types.begin(); it != types.end(); ++it) {
+            std::vector<std::string> modules = GetApplication().getImportModules(it->c_str());
+            if (modules.empty()) {
+                dict.setItem(it->c_str(), Py::None());
+            }
+            else if (modules.size() == 1) {
+                dict.setItem(it->c_str(), Py::String(modules.front()));
+            }
+            else {
+                Py::List list;
+                for (std::vector<std::string>::iterator jt = modules.begin(); jt != modules.end(); ++jt) {
+                    list.append(Py::String(*jt));
+                }
+                dict.setItem(it->c_str(), list);
+            }
+        }
 
+        return Py::new_reference_to(dict);
+    }
 }
 
 PyObject* Application::sAddExportType(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
@@ -382,12 +406,36 @@ PyObject* Application::sGetExportType(PyObject * /*self*/, PyObject *args,PyObje
         return NULL;                             // NULL triggers exception
 
     if (psKey) {
-        return Py_BuildValue("s",GetApplication().getExportType(psKey));
+        Py::List list;
+        std::vector<std::string> modules = GetApplication().getExportModules(psKey);
+        for (std::vector<std::string>::iterator it = modules.begin(); it != modules.end(); ++it) {
+            list.append(Py::String(*it));
+        }
+
+        return Py::new_reference_to(list);
     }
     else {
-        return Interpreter().CreateFrom(GetApplication().getExportTypes());
-    }
+        Py::Dict dict;
+        std::vector<std::string> types = GetApplication().getExportTypes();
+        for (std::vector<std::string>::iterator it = types.begin(); it != types.end(); ++it) {
+            std::vector<std::string> modules = GetApplication().getExportModules(it->c_str());
+            if (modules.empty()) {
+                dict.setItem(it->c_str(), Py::None());
+            }
+            else if (modules.size() == 1) {
+                dict.setItem(it->c_str(), Py::String(modules.front()));
+            }
+            else {
+                Py::List list;
+                for (std::vector<std::string>::iterator jt = modules.begin(); jt != modules.end(); ++jt) {
+                    list.append(Py::String(*jt));
+                }
+                dict.setItem(it->c_str(), list);
+            }
+        }
 
+        return Py::new_reference_to(dict);
+    }
 }
 
 PyObject* Application::sListDocuments(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
