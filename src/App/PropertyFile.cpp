@@ -58,7 +58,12 @@ PropertyFileIncluded::PropertyFileIncluded()
 
 PropertyFileIncluded::~PropertyFileIncluded()
 {
-
+	
+	// clean up
+	if(_cValue != ""){
+		Base::FileInfo file(_cValue.c_str());
+		file.deleteFile();
+	}
 }
 
 std::string PropertyFileIncluded::getDocTransientPath(void) const
@@ -197,15 +202,19 @@ void PropertyFileIncluded::Save (Writer &writer) const
         writer.Stream() << writer.ind() << "<FileIncluded file=\"\">" << endl;
 	
 		// write the file in the XML stream
-		writer.insertBinFile(_cValue.c_str());
+		if(_cValue != "")
+			writer.insertBinFile(_cValue.c_str());
 
         writer.Stream() << writer.ind() <<"</FileIncluded>" << endl ;
     }
     else {
 		// instead initiate a extra file 
-		Base::FileInfo file(_cValue.c_str());
-        writer.Stream() << writer.ind() << "<FileIncluded file=\"" << 
-        writer.addFile(file.fileName().c_str(), this) << "\"/>" << std::endl;
+		if(_cValue != ""){
+			Base::FileInfo file(_cValue.c_str());
+			writer.Stream() << writer.ind() << "<FileIncluded file=\"" << 
+			writer.addFile(file.fileName().c_str(), this) << "\"/>" << std::endl;
+		}else
+			writer.Stream() << writer.ind() << "<FileIncluded file=\"\"/>" << std::endl;
     }
 
 }
@@ -245,23 +254,44 @@ void PropertyFileIncluded::RestoreDocFile(Base::Reader &reader)
 
     // copy plain data
 	int8_t ch;
+	from >> ch;
 	while(from){
-		from >> ch;
 		to.put(char(ch));
+		from >> ch;
 	}
 }
 
 Property *PropertyFileIncluded::Copy(void) const
 {
     PropertyFileIncluded *p= new PropertyFileIncluded();
-    p->_cValue = _cValue;
+
+	if(_cValue != ""){
+		Base::FileInfo file(_cValue);
+
+		// create a new name in the document transient directory
+		Base::FileInfo NewName(Base::FileInfo::getTempFileName(file.fileName().c_str(),file.dirPath().c_str()));
+		NewName.deleteFile();
+		// move the file 
+		file.renameFile(NewName.filePath().c_str());
+		// remember the new name for the Undo
+		p->_cValue = NewName.filePath().c_str();
+	}
+
     return p;
 }
 
 void PropertyFileIncluded::Paste(const Property &from)
 {
     aboutToSetValue();
-    _cValue = dynamic_cast<const PropertyFileIncluded&>(from)._cValue;
+	Base::FileInfo file(_cValue);
+	// delete old file (if still there)
+	file.deleteFile();
+	if(dynamic_cast<const PropertyFileIncluded&>(from)._cValue != ""){
+		// move the saved files back in place
+		Base::FileInfo NewFile(dynamic_cast<const PropertyFileIncluded&>(from)._cValue);
+		NewFile.renameFile(_cValue.c_str());
+	}else
+		_cValue="";
     hasSetValue();
 }
 

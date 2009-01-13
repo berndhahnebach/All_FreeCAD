@@ -576,3 +576,61 @@ class DocumentPlatformCases(unittest.TestCase):
   def tearDown(self):
     #closing doc
     FreeCAD.closeDocument("PlatformTests")
+class DocumentFileIncludeCases(unittest.TestCase):
+  def setUp(self):
+    self.Doc = FreeCAD.newDocument("FileIncludeTests")
+    self.L1 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject1")
+    self.TempPath = tempfile.gettempdir()
+    # testing with undo
+    self.Doc.UndoMode = 1
+    
+
+  def testApplyFiles(self):
+    # creating a file in the Transient directory of the document
+    file = open(self.Doc.getTempFileName("test"),"w")
+    file.write("test No1")
+    file.close()  
+    # applaing the file
+    self.Doc.openTransaction("Transaction1")
+    self.L1.File = (file.name,"Test.txt")
+    # read again
+    file = open(self.L1.File,"r")
+    self.failUnless(file.read()=="test No1")
+    file.close()
+    file = open(self.TempPath+"/testNest.txt","w")
+    file.write("test No2")
+    file.close()  
+        # applaing the file
+    self.Doc.openTransaction("Transaction2")
+    self.L1.File = file.name
+    # read again
+    file = open(self.L1.File,"r")
+    self.failUnless(file.read()=="test No2")
+    file.close()
+    self.Doc.undo()
+    # read again
+    file = open(self.L1.File,"r")
+    self.failUnless(file.read()=="test No1")
+    file.close()
+    self.Doc.redo()
+    # read again
+    file = open(self.L1.File,"r")
+    self.failUnless(file.read()=="test No2")
+    file.close()
+    # Save restore test
+    self.Doc.FileName = self.TempPath+"/FileIncludeTest.fcstd"
+    self.Doc.save()
+    FreeCAD.closeDocument("FileIncludeTests")
+    self.Doc = FreeCAD.open(self.TempPath+"/FileIncludeTest.fcstd")
+    # check if the file is still there
+    self.L1 = self.Doc.getObject("FileObject1")
+    file = open(self.L1.File,"r")
+    res = file.read()
+    FreeCAD.Console.PrintLog( res +"\n")
+    self.failUnless(res=="test No2")
+    file.close()
+    
+
+  def tearDown(self):
+    #closing doc
+    FreeCAD.closeDocument("FileIncludeTest")
