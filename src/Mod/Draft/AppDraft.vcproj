@@ -156,7 +156,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -166,7 +166,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -180,7 +180,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -190,7 +190,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -204,7 +204,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -214,13 +214,37 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\importDXF.py"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputName).py ..."
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
+						Outputs="$(OutDir)\$(InputName).py"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputName).py ..."
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
+						Outputs="$(OutDir)\$(InputName).py"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\importOCA.py"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -252,7 +276,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -262,7 +286,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -276,7 +300,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -286,7 +310,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -300,7 +324,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -310,7 +334,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).py ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).py"
 					/>
 				</FileConfiguration>
@@ -327,7 +351,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -337,7 +361,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -351,7 +375,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -361,7 +385,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -375,7 +399,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -385,7 +409,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -399,7 +423,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -409,7 +433,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -423,7 +447,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -433,31 +457,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
-							Outputs="$(OutDir)\draftlibs\$(InputName).py"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\draftlibs\fcvec.py"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
-							Outputs="$(OutDir)\draftlibs\$(InputName).py"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -471,7 +471,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -481,7 +481,31 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Copying $(InputName).py ..."
-							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;"
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
+							Outputs="$(OutDir)\draftlibs\$(InputName).py"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\draftlibs\fcvec.py"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputName).py ..."
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
+							Outputs="$(OutDir)\draftlibs\$(InputName).py"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputName).py ..."
+							CommandLine="copy &quot;$(InputDir)\$(InputName).py&quot; &quot;$(OutDir)\draftlibs\$(InputName).py&quot;&#x0D;&#x0A;"
 							Outputs="$(OutDir)\draftlibs\$(InputName).py"
 						/>
 					</FileConfiguration>
@@ -492,7 +516,7 @@
 			Name="Icons"
 			>
 			<File
-				RelativePath=".\icons\apply.svg"
+				RelativePath="icons.svg"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -500,7 +524,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\icons\$(InputName).svg"
 					/>
 				</FileConfiguration>
@@ -510,13 +534,13 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\icons\$(InputName).svg"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\icons\arc.svg"
+				RelativePath="preferences-Draft.svg"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -524,7 +548,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\icons\$(InputName).svg"
 					/>
 				</FileConfiguration>
@@ -534,343 +558,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\circle.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\downgrade.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\finish.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\line.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\lock.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\move.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\offset.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\polyline.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\preferences-Draft.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\rectangle.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\rotate.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\text.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\trimex.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\icons\upgrade.svg"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\icons\$(InputName).svg"
 					/>
 				</FileConfiguration>
@@ -888,7 +576,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).ui ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).ui&quot; &quot;$(OutDir)\$(InputName).ui&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).ui&quot; &quot;$(OutDir)\$(InputName).ui&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).ui"
 					/>
 				</FileConfiguration>
@@ -898,7 +586,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).ui ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).ui&quot; &quot;$(OutDir)\$(InputName).ui&quot;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).ui&quot; &quot;$(OutDir)\$(InputName).ui&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\$(InputName).ui"
 					/>
 				</FileConfiguration>
