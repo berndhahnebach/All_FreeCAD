@@ -54,13 +54,13 @@ public:
 
     Reference(T* p) : _toHandle(p) {
         if (_toHandle)
-            _toHandle->AttachRef(this);
+            _toHandle->ref();
     }
 
     /** Copy constructor */
     Reference(const Reference<T>& p) : _toHandle(p._toHandle) {
         if (_toHandle)
-            _toHandle->AttachRef(this);
+            _toHandle->ref();
     }
 
     /** destructor
@@ -70,7 +70,7 @@ public:
      */
     ~Reference() {
         if (_toHandle)
-            _toHandle->DetachRef(this);
+            _toHandle->unref();
     }
 
     //**************************************************************************
@@ -82,10 +82,10 @@ public:
         if (_toHandle == p)
             return *this;
         if (_toHandle)
-            _toHandle->DetachRef(this);
+            _toHandle->unref();
         _toHandle = p;
         if (_toHandle)
-            _toHandle->AttachRef(this);
+            _toHandle->ref();
         return *this;
     }
 
@@ -95,10 +95,10 @@ public:
         if (_toHandle == p._toHandle)
             return *this;
         if (_toHandle)
-            _toHandle->DetachRef(this);
+            _toHandle->unref();
         _toHandle = p._toHandle;
         if (_toHandle)
-            _toHandle->AttachRef(this);
+            _toHandle->ref();
         return *this;
     }
 
@@ -165,9 +165,8 @@ public:
     Handled();
     virtual ~Handled();
 
-    void  AttachRef(void* pHandle);
-    void  DetachRef(void* pHandle);
-    virtual void  OnLastRef() {}
+    void  ref() const;
+    void  unref() const;
 
     long getRefCount(void) const {
         return _lRefCount;
