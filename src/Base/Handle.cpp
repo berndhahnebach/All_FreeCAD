@@ -54,16 +54,15 @@ Handled::~Handled()
 //**************************************************************************
 // separator for other implemetation aspects
 
-void  Handled::AttachRef(void* /*pHandle*/)
+void  Handled::ref() const
 {
-    _lRefCount++;
+    const_cast<Handled*>(this)->_lRefCount++;
 }
 
-void  Handled::DetachRef(void* /*pHandle*/)
+void  Handled::unref() const
 {
     assert(_lRefCount > 0);
-    if (--_lRefCount == 0) {
-        OnLastRef();
+    if (--const_cast<Handled*>(this)->_lRefCount == 0) {
         try {
             delete this;
         }
