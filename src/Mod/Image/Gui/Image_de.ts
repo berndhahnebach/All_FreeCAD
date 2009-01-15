@@ -1,5 +1,20 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>CmdImageCapturerTest</name>
+    <message>
+        <source>Image</source>
+        <translation>Bild</translation>
+    </message>
+    <message>
+        <source>CapturerTest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>test camara capturing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdImageOpen</name>
     <message>
         <source>Image</source>
@@ -19,6 +34,10 @@
     <message>
         <source>Undefined type of colour space for image viewing</source>
         <translation>Unbekannter Farbraumtyp</translation>
+    </message>
+    <message>
+        <source>GLImageBox::getPixFormat</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -87,12 +106,15 @@
         <translation>Bildformate (*.png *.xpm *.jpg *.bmp)</translation>
     </message>
     <message>
-        <source>Open image file dialog</source>
-        <translation>Dialog zum Öffnen einer Bilddatei</translation>
-    </message>
-    <message>
         <source>Choose an image file to open</source>
         <translation>Bilddatei zum Öffnen auswählen</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Image</source>
+        <translation>Bild</translation>
     </message>
 </context>
 </TS>

@@ -84,6 +84,8 @@ void FilletRadiusDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpt
 
 // --------------------------------------------------------------
 
+/* TRANSLATOR PartGui::DlgFilletEdges */
+
 DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl)
 {

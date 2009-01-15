@@ -1,6 +1,6 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name>QObject</name>
+    <name>CmdMeshBoundingBox</name>
     <message>
         <source>Mesh</source>
         <translation>Netz</translation>
@@ -38,6 +38,32 @@
     <message>
         <source>Mesh</source>
         <translation>Netz</translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshDifference</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshEvaluateFacet</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Face info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information about face</source>
+        <translation>Information über Dreieck</translation>
     </message>
 </context>
 <context>
@@ -116,6 +142,21 @@
     <message>
         <source>Exports a mesh to file</source>
         <translation>Netz in eine Datei exportieren</translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshFillInteractiveHole</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Close hole</source>
+        <translation>Loch schließen</translation>
+    </message>
+    <message>
+        <source>Close holes interactively</source>
+        <translation>Loch interaktiv schließen</translation>
     </message>
 </context>
 <context>
@@ -209,6 +250,21 @@
     </message>
 </context>
 <context>
+    <name>CmdMeshFromGeometry</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Create mesh from geometry...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create mesh from the selected geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdMeshHarmonizeNormals</name>
     <message>
         <source>Mesh</source>
@@ -239,6 +295,17 @@
     </message>
 </context>
 <context>
+    <name>CmdMeshIntersection</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdMeshPolyCut</name>
     <message>
         <source>Mesh</source>
@@ -254,18 +321,48 @@
     </message>
 </context>
 <context>
-    <name>CmdMeshPolyPick</name>
+    <name>CmdMeshPolySegm</name>
     <message>
         <source>Mesh</source>
         <translation>Netz</translation>
     </message>
     <message>
-        <source>Surface info</source>
-        <translation>Flächeninformation</translation>
+        <source>Make segment</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Creates a segment from a picked polygon</source>
-        <translation>Erstellt ein Segment anhand eines ausgewählten Polygons</translation>
+        <source>Creates a mesh segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshPolySplit</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Split mesh</source>
+        <translation>Netz auftrennen</translation>
+    </message>
+    <message>
+        <source>Splits a mesh into two meshes</source>
+        <translation>Netz in zwei Teile trennen</translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshRemoveCompByHand</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Remove components by hand...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mark a component to remove it from the mesh</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -314,6 +411,17 @@
     </message>
 </context>
 <context>
+    <name>CmdMeshUnion</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdMeshVertexCurvature</name>
     <message>
         <source>Mesh</source>
@@ -329,7 +437,22 @@
     </message>
 </context>
 <context>
-    <name>Gui::DockWindow</name>
+    <name>CmdMeshVertexCurvatureInfo</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Curvature info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information about curvature</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DockEvaluateMeshImp</name>
     <message>
         <source>Evaluate Mesh</source>
         <translation>Netz auswerten</translation>
@@ -378,24 +501,12 @@
         <translation>Erneut laden</translation>
     </message>
     <message>
-        <source>Duplicate points</source>
-        <translation>Doppelte Punkte</translation>
-    </message>
-    <message>
         <source>Analyze</source>
         <translation>Analysieren</translation>
     </message>
     <message>
         <source>Repair</source>
         <translation>Reparieren</translation>
-    </message>
-    <message>
-        <source>Non-Manifolds</source>
-        <translation>Nichtmannigfaltigkeiten</translation>
-    </message>
-    <message>
-        <source>Duplicate faces</source>
-        <translation>Doppelte Facetten</translation>
     </message>
     <message>
         <source>Orientation</source>
@@ -412,6 +523,26 @@
     <message>
         <source>Number of faces:</source>
         <translation>Anzahl Facetten:</translation>
+    </message>
+    <message>
+        <source>Duplicated faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicated points</source>
+        <translation>Doppelte Punkte</translation>
+    </message>
+    <message>
+        <source>Non-manifolds</source>
+        <translation>Nichtmannigfaltigkeiten</translation>
+    </message>
+    <message>
+        <source>Self-intersections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All above tests together</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -491,6 +622,30 @@
     <message>
         <source>Duplicated points</source>
         <translation>Doppelte Punkte</translation>
+    </message>
+    <message>
+        <source>Orientation</source>
+        <translation>Orientierung</translation>
+    </message>
+    <message>
+        <source>Indices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degenerations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicated faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No self-intersections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Self-intersections</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -586,6 +741,10 @@
         <source>Create %1</source>
         <translation>Erstelle %1</translation>
     </message>
+    <message>
+        <source>No active document</source>
+        <translation>Kein aktives Dokument</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -596,10 +755,6 @@
     <message>
         <source>Export mesh</source>
         <translation>Netz exportieren</translation>
-    </message>
-    <message>
-        <source>Export</source>
-        <translation>Exportieren</translation>
     </message>
     <message>
         <source>Solid Mesh</source>
@@ -626,8 +781,123 @@
         <translation>Komponenten entfernen mit bis maximal vorgegebener Anzahl Dreiecken:</translation>
     </message>
     <message>
+        <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
+        <translation>Alle Netz-Dateien (*.stl *.ast *.bms *.obj)</translation>
+    </message>
+    <message>
+        <source>Binary STL (*.stl)</source>
+        <translation>Binäres STL (*.stl)</translation>
+    </message>
+    <message>
+        <source>ASCII STL (*.ast)</source>
+        <translation>ASCII STL (*.ast)</translation>
+    </message>
+    <message>
+        <source>Binary Mesh (*.bms)</source>
+        <translation>Netz-Binärformat (*.bms)</translation>
+    </message>
+    <message>
+        <source>Alias Mesh (*.obj)</source>
+        <translation>Alias-Format (*.obj)</translation>
+    </message>
+    <message>
+        <source>Inventor V2.1 ascii (*.iv)</source>
+        <translation>Inventor V2.1 ascii (*.iv)</translation>
+    </message>
+    <message>
+        <source>All Files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
+    </message>
+    <message>
+        <source>ASCII STL (*.stl)</source>
+        <translation>ASCII STL (*.stl)</translation>
+    </message>
+    <message>
+        <source>VRML V2.0 (*.wrl *.vrml)</source>
+        <translation>VRML V2.0 (*.wrl *.vrml)</translation>
+    </message>
+    <message>
+        <source>Compressed VRML 2.0 (*.wrz)</source>
+        <translation>Komprimiertes VRML 2.0 (*.wrz)</translation>
+    </message>
+    <message>
+        <source>Nastran (*.nas *.bdf)</source>
+        <translation>Nastran (*.nas *.bdf)</translation>
+    </message>
+    <message>
+        <source>Python module def (*.py)</source>
+        <translation>Python-Modul (*.py)</translation>
+    </message>
+    <message>
+        <source>Meshing Tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter tolerance for meshing geometry:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The mesh &apos;%1&apos; is </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>not a solid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a solid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min=&lt;%1,%2,%3&gt;
+
+Max=&lt;%4,%5,%6&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[Points: %1, Edges: %2 Faces: %3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The picked polygon seems to have self-overlappings.
+
+This could lead to strange rersults.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Leave info mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Index: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Leave hole-filling mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Leave removal mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
         <source>Analyze</source>
-        <translation>Analyse</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Meshes</source>
+        <translation>&amp;Netze</translation>
     </message>
     <message>
         <source>Mesh tools</source>
@@ -636,10 +906,6 @@
     <message>
         <source>Mesh test suite</source>
         <translation>Netz Testumgebung</translation>
-    </message>
-    <message>
-        <source>&amp;Meshes</source>
-        <translation>&amp;Netze</translation>
     </message>
 </context>
 </TS>

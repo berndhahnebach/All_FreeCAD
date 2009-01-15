@@ -33,6 +33,8 @@
 
 using namespace PartGui;
 
+/* TRANSLATOR PartGui::DlgBooleanOperation */
+
 DlgBooleanOperation::DlgBooleanOperation(QWidget* parent, Qt::WFlags fl)
   : QDialog( parent, fl )
 {
