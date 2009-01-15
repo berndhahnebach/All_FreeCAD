@@ -33,6 +33,8 @@ using namespace Gui;
 
 bool StdCmdDescription::_descrMode = false;
 
+/* TRANSLATOR Gui::StdCmdDescription */
+
 StdCmdDescription::StdCmdDescription()
   : Command("Std_DescriptionMode")
 {
