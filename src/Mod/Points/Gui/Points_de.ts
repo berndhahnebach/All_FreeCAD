@@ -78,15 +78,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Action</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nbr. of Points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -107,7 +99,7 @@
     </message>
     <message>
         <source>Points format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkteformat:</translation>
     </message>
     <message>
         <source>Next block:</source>
@@ -162,16 +154,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nbr. of previewd lines:</source>
+        <source>100</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>100</source>
+        <source>Number of points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of previewd lines:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
+    <message>
+        <source>Ascii Points (*.asc);;All Files (*.*)</source>
+        <translation>Ascii Punkte (*.asc);;Alle Dateien (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
     <message>
         <source>Points tools</source>
         <translation>Punkte Werkzeuge</translation>

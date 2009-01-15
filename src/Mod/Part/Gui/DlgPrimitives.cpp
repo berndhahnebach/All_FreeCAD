@@ -35,6 +35,8 @@
 
 using namespace PartGui;
 
+/* TRANSLATOR PartGui::DlgPrimitives */
+
 DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialogComp<Ui_DlgPrimitives>(parent, fl)
 {
