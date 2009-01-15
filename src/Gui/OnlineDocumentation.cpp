@@ -385,6 +385,8 @@ void HttpServer::discardClient()
 
 // --------------------------------------------------------------------
 
+/* TRANSLATOR Gui::StdCmdPythonHelp */
+
 StdCmdPythonHelp::StdCmdPythonHelp()
   : Command("Std_PythonHelp"), server(0)
 {
