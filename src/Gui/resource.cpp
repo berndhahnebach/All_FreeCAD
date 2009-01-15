@@ -46,6 +46,7 @@
 using namespace Gui;
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::WidgetFactorySupplier */
 /**
  * Registers all preference pages or widgets to create them dynamically at any later time.
  */

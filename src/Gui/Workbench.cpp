@@ -337,6 +337,8 @@ PyObject* Workbench::getPyObject()
 
 // --------------------------------------------------------------------
 
+/* TRANSLATOR Gui::StdWorkbench */
+
 TYPESYSTEM_SOURCE(Gui::StdWorkbench, Gui::Workbench)
 
 StdWorkbench::StdWorkbench()

@@ -3,7 +3,8 @@ noinst_LTLIBRARIES=libpropertyeditor.la
 BUILT_SOURCES=\
 		moc_PropertyEditor.cpp \
 		moc_PropertyItem.cpp \
-		moc_PropertyItemDelegate.cpp
+		moc_PropertyItemDelegate.cpp \
+		moc_PropertyModel.cpp
 
 libpropertyeditor_la_SOURCES=\
 		PropertyEditor.cpp \

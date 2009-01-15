@@ -29,6 +29,8 @@
 
 using namespace Gui;
 
+/* TRANSLATOR Gui::Flag */
+
 Flag::Flag(QWidget* parent)
   : QLabel(parent), coord(0.0f, 0.0f, 0.0f)
 {

@@ -37,12 +37,14 @@ namespace Dialog {
  */
 class DlgActivateWindowImp : public QDialog, public Ui_DlgActivateWindow
 {
+    Q_OBJECT
+
 public:
-  DlgActivateWindowImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgActivateWindowImp();
+    DlgActivateWindowImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgActivateWindowImp();
 
 protected:
-  void accept();
+    void accept();
 };
 
 } // namespace Dialog

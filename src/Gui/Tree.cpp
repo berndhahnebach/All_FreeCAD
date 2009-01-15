@@ -53,6 +53,7 @@ QPixmap* TreeDockWidget::documentPixmap = 0;
 const int TreeWidget::DocumentType = 1000;
 const int TreeWidget::ObjectType = 1001;
 
+/* TRANSLATOR Gui::TreeWidget */
 TreeWidget::TreeWidget(QWidget* parent)
     : QTreeWidget(parent)
 {
@@ -344,6 +345,7 @@ void TreeWidget::drawRow(QPainter *painter, const QStyleOptionViewItem &options,
 
 // ----------------------------------------------------------------------------
 
+/* TRANSLATOR Gui::TreeDockWidget */
 TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
   : DockWindow(pcDocument,parent), fromOutside(false)
 {

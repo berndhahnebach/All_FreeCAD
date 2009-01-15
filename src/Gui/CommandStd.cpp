@@ -59,8 +59,6 @@ using namespace Gui;
 // Std_Workbench
 //===========================================================================
 
-/* TRANSLATOR Gui::StdCmdWorkbench */
-
 DEF_STD_CMD_AC(StdCmdWorkbench);
 
 StdCmdWorkbench::StdCmdWorkbench()
@@ -120,8 +118,6 @@ Action * StdCmdWorkbench::createAction(void)
 // Std_RecentFiles
 //===========================================================================
 
-/* TRANSLATOR Gui::StdCmdRecentFiles */
-
 DEF_STD_CMD_C(StdCmdRecentFiles)
 
 StdCmdRecentFiles::StdCmdRecentFiles()
@@ -165,7 +161,6 @@ Action * StdCmdRecentFiles::createAction(void)
 // Std_About
 //===========================================================================
 
-/* TRANSLATOR Gui::StdCmdAbout */
 DEF_STD_CMD_ACL(StdCmdAbout)
 
 StdCmdAbout::StdCmdAbout()

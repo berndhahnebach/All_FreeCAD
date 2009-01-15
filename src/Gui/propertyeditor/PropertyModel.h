@@ -30,6 +30,8 @@ namespace PropertyEditor {
 class PropertyItem;
 class PropertyModel : public QAbstractItemModel
 {
+    Q_OBJECT
+
 public:
     PropertyModel(QObject* parent);
     virtual ~PropertyModel();

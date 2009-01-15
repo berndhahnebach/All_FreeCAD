@@ -33,6 +33,8 @@ namespace Dialog {
 
 class SceneModel : public QStandardItemModel
 {
+    Q_OBJECT
+
 public:
     SceneModel(QObject* parent);
     virtual ~SceneModel();
@@ -49,6 +51,8 @@ private:
 
 class DlgInspector : public QDialog
 {
+    Q_OBJECT
+
 public:
     DlgInspector(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgInspector();

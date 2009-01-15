@@ -380,8 +380,6 @@ bool NetworkRetriever::testWget()
 
 // --------------------------------------------------------------------
 
-/* TRANSLATOR Gui::StdCmdDownloadOnlineHelp */
-
 StdCmdDownloadOnlineHelp::StdCmdDownloadOnlineHelp( QObject * parent)
   : QObject(parent), Command("Std_DownloadOnlineHelp")
 {
