@@ -443,6 +443,8 @@ QString FileChooser::buttonText() const
 
 // ----------------------------------------------------------------------
 
+/* TRANSLATOR Gui::SelectModule */
+
 SelectModule::SelectModule (const QString& type, const SelectModule::Dict& types, QWidget * parent)
   : QDialog(parent, Qt::WindowTitleHint)
 {

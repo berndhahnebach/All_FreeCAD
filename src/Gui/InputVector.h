@@ -54,6 +54,8 @@ private:
     virtual void directionActivated(int) = 0;
 };
 
+/* TRANSLATOR Gui::LocationDialog */
+
 /** This is the template class that implements the interface of LocationDialog.
  * The template argument can be the Ui interface class built by uic out of a
  * .ui file.

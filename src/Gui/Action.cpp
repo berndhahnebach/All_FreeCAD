@@ -372,6 +372,7 @@ void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
     }
 }
 
+/* TRANSLATOR Gui::WorkbenchGroup */
 WorkbenchGroup::WorkbenchGroup (  Command* pcCmd, QObject * parent )
   : ActionGroup( pcCmd, parent )
 {
@@ -499,6 +500,8 @@ void WorkbenchGroup::slotRemoveWorkbench(const char* name)
 }
 
 // --------------------------------------------------------------------
+
+/* TRANSLATOR Gui::RecentFilesAction */
 
 RecentFilesAction::RecentFilesAction ( Command* pcCmd, QObject * parent )
   : ActionGroup( pcCmd, parent ), visibleItems(4), maximumItems(20)

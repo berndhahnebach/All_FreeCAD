@@ -6,6 +6,7 @@ BUILT_SOURCES=\
 		moc_Action.cpp \
 		moc_CallTips.cpp \
 		moc_DlgActionsImp.cpp \
+		moc_DlgActivateWindowImp.cpp \
 		moc_DlgCommandsImp.cpp \
 		moc_DlgCustomizeImp.cpp \
 		moc_DlgDisplayPropertiesImp.cpp \
@@ -44,6 +45,7 @@ BUILT_SOURCES=\
 		moc_PythonEditor.cpp \
 		moc_EditorView.cpp \
 		moc_ReportView.cpp \
+		moc_SceneInspector.cpp \
 		moc_SelectionView.cpp \
 		moc_SpinBox.cpp \
 		moc_Splashscreen.cpp \

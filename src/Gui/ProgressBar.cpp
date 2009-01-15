@@ -161,7 +161,7 @@ void Sequencer::showRemainingTime()
         if ( elapsed > 1000 && rest > 100 ) {
             QTime time( 0,0, 0);
             time = time.addSecs( rest/1000 );
-            QString remain = ProgressBar::tr("Remaining: %1").arg( time.toString() );
+            QString remain = Gui::ProgressBar::tr("Remaining: %1").arg( time.toString() );
             QString status = QString::fromAscii("%1\t[%2]").arg(txt).arg(remain);
             getMainWindow()->statusBar()->showMessage(status);
         }

@@ -35,6 +35,8 @@
 using namespace Gui::PropertyEditor;
 
 
+/* TRANSLATOR Gui::PropertyEditor::PropertyModel */
+
 PropertyModel::PropertyModel(QObject* parent)
     : QAbstractItemModel(parent)
 {
@@ -208,3 +210,5 @@ void PropertyModel::buildUp(const std::map<std::string, std::vector<App::Propert
 
     reset();
 }
+
+#include "moc_PropertyModel.cpp"

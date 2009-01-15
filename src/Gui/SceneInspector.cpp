@@ -32,6 +32,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::SceneModel */
+
 SceneModel::SceneModel(QObject* parent)
     : QStandardItemModel(parent)
 {
@@ -94,6 +96,8 @@ void SceneModel::setNode(QModelIndex index, SoNode* node)
 
 // --------------------------------------------------------
 
+/* TRANSLATOR Gui::Dialog::DlgInspector */
+
 DlgInspector::DlgInspector(QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl)
 {
@@ -122,3 +126,5 @@ void DlgInspector::setNode(SoNode* node)
     header->setResizeMode(0, QHeaderView::Stretch);
     header->setMovable(false);
 }
+
+#include "moc_SceneInspector.cpp"

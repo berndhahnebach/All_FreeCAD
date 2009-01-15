@@ -30,8 +30,6 @@
 
 using namespace Gui;
 
-/* TRANSLATOR Gui::StdCmdDescription */
-
 
 bool StdCmdDescription::_descrMode = false;
 

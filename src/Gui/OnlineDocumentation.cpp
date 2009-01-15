@@ -441,14 +441,14 @@ void StdCmdPythonHelp::activated(int iMsg)
 
         // print error message on failure
         if (failed) {
-            QMessageBox::critical(Gui::getMainWindow(), HttpServer::tr("No Browser"), 
-                HttpServer::tr("Unable to open your browser.\n\n"
+            QMessageBox::critical(Gui::getMainWindow(), QObject::tr("No Browser"), 
+                QObject::tr("Unable to open your browser.\n\n"
                 "Please open a browser window and type in: http://localhost:%1.").arg(port));
         }
     }
     else {
-        QMessageBox::critical(Gui::getMainWindow(), HttpServer::tr("No Server"), 
-            HttpServer::tr("Unable to start the server to port %1: %2.").arg(port).arg(server->errorString()));
+        QMessageBox::critical(Gui::getMainWindow(), QObject::tr("No Server"), 
+            QObject::tr("Unable to start the server to port %1: %2.").arg(port).arg(server->errorString()));
     }
 }
 

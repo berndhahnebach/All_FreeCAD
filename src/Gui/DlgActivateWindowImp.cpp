@@ -33,6 +33,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgActivateWindowImp */
+
 /**
  *  Constructs a DlgActivateWindowImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
@@ -91,3 +93,5 @@ void DlgActivateWindowImp::accept()
 
     QDialog::accept();
 }
+
+#include "moc_DlgActivateWindowImp.cpp"
