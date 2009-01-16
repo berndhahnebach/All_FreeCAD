@@ -58,58 +58,56 @@ PropertyFileIncluded::PropertyFileIncluded()
 
 PropertyFileIncluded::~PropertyFileIncluded()
 {
-	
-	// clean up
-	if(_cValue != ""){
-		Base::FileInfo file(_cValue.c_str());
-		file.deleteFile();
-	}
+    // clean up
+    if (!_cValue.empty()) {
+        Base::FileInfo file(_cValue.c_str());
+        file.deleteFile();
+    }
 }
 
 std::string PropertyFileIncluded::getDocTransientPath(void) const
 {
-	PropertyContainer *co = getContainer();
-	if(co->isDerivedFrom(DocumentObject::getClassTypeId()))
-		return dynamic_cast<DocumentObject*>(co)->getDocument()->TransientDir.getValue();
+    PropertyContainer *co = getContainer();
+    if (co->isDerivedFrom(DocumentObject::getClassTypeId()))
+        return dynamic_cast<DocumentObject*>(co)->getDocument()->TransientDir.getValue();
 
-	return std::string();
+    return std::string();
 }
 
 std::string PropertyFileIncluded::getExchangeTempFile(void) const
 {
-    return Base::FileInfo::getTempFileName(Base::FileInfo(getValue()).fileName().c_str(), getDocTransientPath().c_str());
-    //return std::string();
+    return Base::FileInfo::getTempFileName(Base::FileInfo
+        (getValue()).fileName().c_str(), getDocTransientPath().c_str());
 }
-
 
 void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 {
    if (sFile) {
-		if(_cValue == sFile)
-			throw Base::Exception("Not possible to set the same file!");
+        if (_cValue == sFile)
+            throw Base::Exception("Not possible to set the same file!");
 
-	    aboutToSetValue(); // undo redo by move the file away with temp name
+        aboutToSetValue(); // undo redo by move the file away with temp name
 
-		// remove old file (if not moved by undo)
-		Base::FileInfo value(_cValue);
-		if(value.exists())
-			value.deleteFile();
+        // remove old file (if not moved by undo)
+        Base::FileInfo value(_cValue);
+        if (value.exists())
+            value.deleteFile();
 
-		Base::FileInfo file(sFile);
-		std::string pathTrans = getDocTransientPath();
-		std::string path = file.dirPath();
-		std::string pathAct = value.dirPath();
-	
-		if(sName)
-			_cValue = path + "/" + sName;
-		else 
-			if(value.fileName() == "")
-				_cValue = pathTrans + "/" + file.fileName();
+        Base::FileInfo file(sFile);
+        std::string pathTrans = getDocTransientPath();
+        std::string path = file.dirPath();
+        std::string pathAct = value.dirPath();
 
-		if(path == pathTrans)
-			file.renameFile(_cValue.c_str());
-		else
-			file.copyTo(_cValue.c_str());
+        if (sName)
+            _cValue = path + "/" + sName;
+        else 
+            if (value.fileName().empty())
+                _cValue = pathTrans + "/" + file.fileName();
+
+        if (path == pathTrans)
+            file.renameFile(_cValue.c_str());
+        else
+            file.copyTo(_cValue.c_str());
 
         hasSetValue();
     }
@@ -144,48 +142,50 @@ void PropertyFileIncluded::setPyObject(PyObject *value)
         string = PyString_AsString(FileName);
     }
     else if (PyTuple_Check(value)) {
-		if(PyTuple_Size(value) != 2)
-			throw Py::TypeError("Tuple need size of (filePath,newFileName)"); 
-		PyObject* file = PyTuple_GetItem(value,0);
-		PyObject* name = PyTuple_GetItem(value,1);
+        if (PyTuple_Size(value) != 2)
+            throw Py::TypeError("Tuple need size of (filePath,newFileName)"); 
+        PyObject* file = PyTuple_GetItem(value,0);
+        PyObject* name = PyTuple_GetItem(value,1);
 
-		// decoding file
-		std::string fileStr;
-		if (PyUnicode_Check(file)) {
-			PyObject* unicode = PyUnicode_AsUTF8String(file);
-			fileStr = PyString_AsString(unicode);
-			Py_DECREF(unicode);
-		}
-		else if (PyString_Check(file)) {
-			fileStr = PyString_AsString(file);
-		}
-		else if (PyFile_Check(file)) {
-			PyObject* FileName = PyFile_Name(file);
-			fileStr = PyString_AsString(FileName);
-		} else {
-			std::string error = std::string("first in tuple must be a file or string");
-			error += value->ob_type->tp_name;
-			throw Py::TypeError(error);
-		}
+        // decoding file
+        std::string fileStr;
+        if (PyUnicode_Check(file)) {
+            PyObject* unicode = PyUnicode_AsUTF8String(file);
+            fileStr = PyString_AsString(unicode);
+            Py_DECREF(unicode);
+        }
+        else if (PyString_Check(file)) {
+            fileStr = PyString_AsString(file);
+        }
+        else if (PyFile_Check(file)) {
+            PyObject* FileName = PyFile_Name(file);
+            fileStr = PyString_AsString(FileName);
+        }
+        else {
+            std::string error = std::string("first in tuple must be a file or string");
+            error += value->ob_type->tp_name;
+            throw Py::TypeError(error);
+        }
 
-		// decoding name
-		std::string nameStr;
-		if (PyString_Check(name)) {
-			nameStr = PyString_AsString(name);
-		}
-		else if (PyFile_Check(name)) {
-			PyObject* FileName = PyFile_Name(name);
-			nameStr = PyString_AsString(FileName);
-		} else {
-			std::string error = std::string("second in tuple must be a string");
-			error += value->ob_type->tp_name;
-			throw Py::TypeError(error);
-		}
+        // decoding name
+        std::string nameStr;
+        if (PyString_Check(name)) {
+            nameStr = PyString_AsString(name);
+        }
+        else if (PyFile_Check(name)) {
+            PyObject* FileName = PyFile_Name(name);
+            nameStr = PyString_AsString(FileName);
+        }
+        else {
+            std::string error = std::string("second in tuple must be a string");
+            error += value->ob_type->tp_name;
+            throw Py::TypeError(error);
+        }
 
-		setValue(fileStr.c_str(),nameStr.c_str());
-		return;
-	
-	}
+        setValue(fileStr.c_str(),nameStr.c_str());
+        return;
+
+    }
     else {
         std::string error = std::string("type must be str or file");
         error += value->ob_type->tp_name;
@@ -200,21 +200,22 @@ void PropertyFileIncluded::Save (Writer &writer) const
 {
     if (writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<FileIncluded file=\"\">" << endl;
-	
-		// write the file in the XML stream
-		if(_cValue != "")
-			writer.insertBinFile(_cValue.c_str());
+
+        // write the file in the XML stream
+        if (!_cValue.empty())
+            writer.insertBinFile(_cValue.c_str());
 
         writer.Stream() << writer.ind() <<"</FileIncluded>" << endl ;
     }
     else {
-		// instead initiate a extra file 
-		if(_cValue != ""){
-			Base::FileInfo file(_cValue.c_str());
-			writer.Stream() << writer.ind() << "<FileIncluded file=\"" << 
-			writer.addFile(file.fileName().c_str(), this) << "\"/>" << std::endl;
-		}else
-			writer.Stream() << writer.ind() << "<FileIncluded file=\"\"/>" << std::endl;
+        // instead initiate a extra file 
+        if (!_cValue.empty()) {
+            Base::FileInfo file(_cValue.c_str());
+            writer.Stream() << writer.ind() << "<FileIncluded file=\"" << 
+            writer.addFile(file.fileName().c_str(), this) << "\"/>" << std::endl;
+        }
+        else
+            writer.Stream() << writer.ind() << "<FileIncluded file=\"\"/>" << std::endl;
     }
 
 }
@@ -235,47 +236,47 @@ void PropertyFileIncluded::Restore(Base::XMLReader &reader)
 void PropertyFileIncluded::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream to(writer.Stream());
-	std::ifstream from(_cValue.c_str());
-	
-	if (!from) throw Base::Exception("PropertyFileIncluded::SaveDocFile() File in document transient dir deleted");
-	
-	char ch;
-	while (from.get(ch)) to << (ch);
+    std::ifstream from(_cValue.c_str());
 
+    if (!from) throw Base::Exception("PropertyFileIncluded::SaveDocFile() File in document transient dir deleted");
+
+    char ch;
+    while (from.get(ch))
+        to << (ch);
 }
 
 void PropertyFileIncluded::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream from(reader);
 
-	std::ofstream to(_cValue.c_str());
-	if (!to) 
+    std::ofstream to(_cValue.c_str());
+    if (!to) 
         throw Base::Exception("PropertyFileIncluded::RestoreDocFile() File in document transient dir deleted");
 
     // copy plain data
-	int8_t ch;
-	from >> ch;
-	while(from){
-		to.put(char(ch));
-		from >> ch;
-	}
+    int8_t ch;
+    from >> ch;
+    while(from){
+        to.put(char(ch));
+        from >> ch;
+    }
 }
 
 Property *PropertyFileIncluded::Copy(void) const
 {
     PropertyFileIncluded *p= new PropertyFileIncluded();
 
-	if(_cValue != ""){
-		Base::FileInfo file(_cValue);
+    if (!_cValue.empty()) {
+        Base::FileInfo file(_cValue);
 
-		// create a new name in the document transient directory
-		Base::FileInfo NewName(Base::FileInfo::getTempFileName(file.fileName().c_str(),file.dirPath().c_str()));
-		NewName.deleteFile();
-		// move the file 
-		file.renameFile(NewName.filePath().c_str());
-		// remember the new name for the Undo
-		p->_cValue = NewName.filePath().c_str();
-	}
+        // create a new name in the document transient directory
+        Base::FileInfo NewName(Base::FileInfo::getTempFileName(file.fileName().c_str(),file.dirPath().c_str()));
+        NewName.deleteFile();
+        // move the file 
+        file.renameFile(NewName.filePath().c_str());
+        // remember the new name for the Undo
+        p->_cValue = NewName.filePath().c_str();
+    }
 
     return p;
 }
@@ -283,15 +284,16 @@ Property *PropertyFileIncluded::Copy(void) const
 void PropertyFileIncluded::Paste(const Property &from)
 {
     aboutToSetValue();
-	Base::FileInfo file(_cValue);
-	// delete old file (if still there)
-	file.deleteFile();
-	if(dynamic_cast<const PropertyFileIncluded&>(from)._cValue != ""){
-		// move the saved files back in place
-		Base::FileInfo NewFile(dynamic_cast<const PropertyFileIncluded&>(from)._cValue);
-		NewFile.renameFile(_cValue.c_str());
-	}else
-		_cValue="";
+    Base::FileInfo file(_cValue);
+    // delete old file (if still there)
+    file.deleteFile();
+    if (!dynamic_cast<const PropertyFileIncluded&>(from)._cValue.empty()) {
+        // move the saved files back in place
+        Base::FileInfo NewFile(dynamic_cast<const PropertyFileIncluded&>(from)._cValue);
+        NewFile.renameFile(_cValue.c_str());
+    }
+    else
+        _cValue.clear();
     hasSetValue();
 }
 

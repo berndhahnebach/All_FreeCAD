@@ -67,21 +67,25 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  Qt::WFlags fl )
     policy.setHorizontalStretch(3);
     paramValue->setSizePolicy(policy);
 
+#if 0 // This is needed for Qt's lupdate
+    qApp->translate( "Gui::Dialog::DlgParameterImp", "System parameter" );
+    qApp->translate( "Gui::Dialog::DlgParameterImp", "User parameter" );
+#endif
+
     const std::map<std::string,ParameterManager *> rcList = App::GetApplication().GetParameterSetList();
-    for( std::map<std::string,ParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
-    {
-        SetNameComboBox->addItem(QString::fromAscii(It->first.c_str()));
+    for (std::map<std::string,ParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++) {
+        parameterSet->addItem(tr(It->first.c_str()), QVariant(QByteArray(It->first.c_str())));
     }
 
-    QString cStr = tr("User parameter");
-    SetNameComboBox->setCurrentIndex( SetNameComboBox->findText(cStr) );
-    onParameterSetChange(cStr);
-    SetNameComboBox->hide();
+    QByteArray cStr("User parameter");
+    parameterSet->setCurrentIndex(parameterSet->findData(cStr));
+    onChangeParameterSet(parameterSet->currentIndex());
+    //parameterSet->hide();
 
-    connect( SetNameComboBox, SIGNAL( activated( const QString& ) ), 
-             this, SLOT( onParameterSetChange( const QString& ) ) );
-    connect( paramGroup, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), 
-             this, SLOT( onGroupSelected(QTreeWidgetItem*) ) );
+    connect(parameterSet, SIGNAL(activated(int)), 
+            this, SLOT(onChangeParameterSet(int)));
+    connect(paramGroup, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), 
+            this, SLOT(onGroupSelected(QTreeWidgetItem*)));
     onGroupSelected(paramGroup->currentItem());
 }
 
@@ -191,9 +195,11 @@ void DlgParameterImp::onGroupSelected( QTreeWidgetItem * item )
 }
 
 /** Switches the type of parameters either to user or system parameters. */
-void DlgParameterImp::onParameterSetChange(const QString& rcString)
+void DlgParameterImp::onChangeParameterSet(int index)
 {
-    ParameterManager* rcParMngr = App::GetApplication().GetParameterSet(rcString.toAscii());
+    ParameterManager* rcParMngr = App::GetApplication().GetParameterSet(parameterSet->itemData(index).toByteArray());
+    if (!rcParMngr)
+        return
 
     // remove all labels
     paramGroup->clear();
