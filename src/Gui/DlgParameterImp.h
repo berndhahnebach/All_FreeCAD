@@ -50,11 +50,10 @@ public:
     void accept();
     void reject();
 
-public Q_SLOTS:
-    void onParameterSetChange(const QString& rcString);
+protected Q_SLOTS:
+    void onChangeParameterSet(int);
     void on_buttonSaveToDisk_clicked();
 
-protected Q_SLOTS:
     void onGroupSelected(QTreeWidgetItem *);
     void on_closeButton_clicked();
 

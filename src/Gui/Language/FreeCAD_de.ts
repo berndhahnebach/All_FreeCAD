@@ -1,4 +1,4 @@
-﻿<!DOCTYPE TS><TS>
+<!DOCTYPE TS><TS>
 <defaultcodec>iso8859-1</defaultcodec>
 <context>
     <name>Gui::AccelLineEdit</name>
@@ -8,47 +8,10 @@
     </message>
 </context>
 <context>
-    <name>Gui::CheckListDialog</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation>A&amp;bbrechen</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::CheckMessageBox</name>
-    <message>
-        <source>Never show this message again.</source>
-        <translation>Diese Meldung nicht mehr anzeigen.</translation>
-    </message>
-</context>
-<context>
     <name>Gui::Command</name>
     <message>
         <source>Standard</source>
         <translation>Standard</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::CommandLineBase</name>
-    <message>
-        <source>Simple Python console</source>
-        <translation>Einfaches Python Eingabefeld</translation>
-    </message>
-    <message>
-        <source>Open Console</source>
-        <translation>Konsole öffnen</translation>
-    </message>
-    <message>
-        <source>Clear Console</source>
-        <translation>Konsoleninhalt löschen</translation>
-    </message>
-    <message>
-        <source>A really nesty error occurred in the running script</source>
-        <translation>Ein schwerer Fehler ist bei der Ausführung des Skripts aufgetreten</translation>
     </message>
 </context>
 <context>
@@ -60,29 +23,6 @@
     <message>
         <source>&amp;Cancel</source>
         <translation>A&amp;bbrechen</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::CustomToolBar</name>
-    <message>
-        <source>Standard views</source>
-        <translation>Standardansichten</translation>
-    </message>
-    <message>
-        <source>Special Ops</source>
-        <translation>Spezialfunktionen</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation>Datei</translation>
-    </message>
-    <message>
-        <source>Macro</source>
-        <translation>Makro</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation>Ansicht</translation>
     </message>
 </context>
 <context>
@@ -133,6 +73,13 @@
     <message>
         <source>&amp;Cancel</source>
         <translation>A&amp;bbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgActivateWindowImp</name>
+    <message>
+        <source>Windows</source>
+        <translation>Fenster</translation>
     </message>
 </context>
 <context>
@@ -266,12 +213,17 @@
         <source>Please select a macro item first.</source>
         <translation>Wählen Sie bitte vorher ein Makroelement aus.</translation>
     </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgCustomToolBoxbarsImp</name>
     <message>
-        <source>Toolbox bars</source>
-        <translation>Werkzeugleisten</translation>
+        <source>Icons</source>
+        <translation>Symbole</translation>
+    </message>
+    <message>
+        <source>Macros</source>
+        <translation>Makros</translation>
+    </message>
+    <message>
+        <source>Macro not found</source>
+        <translation>Makro nicht gefunden</translation>
     </message>
 </context>
 <context>
@@ -280,9 +232,20 @@
         <source>Commands</source>
         <translation>Befehle</translation>
     </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgCustomCommandsImp</name>
     <message>
         <source>Category</source>
         <translation>Kategorie</translation>
+    </message>
+    <message>
+        <source>Icon</source>
+        <translation>Symbol</translation>
+    </message>
+    <message>
+        <source>Command</source>
+        <translation>Befehl</translation>
     </message>
 </context>
 <context>
@@ -343,10 +306,6 @@
 <context>
     <name>Gui::Dialog::DlgCustomKeyboardImp</name>
     <message>
-        <source>Not defined</source>
-        <translation>Nicht definiert</translation>
-    </message>
-    <message>
         <source>Multiple defined shortcut</source>
         <translation>Mehrfach belegte Tastenkombination</translation>
     </message>
@@ -365,32 +324,31 @@ Please define another shortcut.</source>
         <translation>Die Tastenkombination &apos;%1&apos; wird bereits von &apos;%2&apos; verwendet. 
 Wählen Sie bitte eine andere Tastenkombination.</translation>
     </message>
+    <message>
+        <source>Icon</source>
+        <translation>Symbol</translation>
+    </message>
+    <message>
+        <source>Command</source>
+        <translation>Befehl</translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation>kein</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgCustomToolBoxbarsImp</name>
+    <message>
+        <source>Toolbox bars</source>
+        <translation>Werkzeugleisten</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgCustomToolbars</name>
     <message>
-        <source>New custom bar</source>
-        <translation>Neue Symbolleiste erstellen</translation>
-    </message>
-    <message>
-        <source>Specify the name of the new custom bar, please.</source>
-        <translation>Geben Sie bitte den Namen für die neue Symbolleiste an.</translation>
-    </message>
-    <message>
-        <source>Delete selected bars</source>
-        <translation>Ausgewählte Symbolleisten entfernen</translation>
-    </message>
-    <message>
         <source>Toolbars</source>
         <translation>Symbolleisten</translation>
-    </message>
-    <message>
-        <source>Setup Toolbar</source>
-        <translation>Symbolleiste einrichten</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>Erstellen</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -429,12 +387,48 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>&lt;b&gt;Ausgewähltes Element nach unten verschieben.&lt;/b&gt;&lt;p&gt;Das Element wird innerhalb der Hierarchiestufe verschoben.&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>Available commands</source>
-        <translation>Verfügbare Befehle</translation>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Bemerkung:&lt;/span&gt; Die Änderungen werden beim nächsten Laden des Arbeitsbereiches wirksam&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Current commands</source>
-        <translation>Verwendete Befehle</translation>
+        <source>New...</source>
+        <translation>Neu...</translation>
+    </message>
+    <message>
+        <source>Rename...</source>
+        <translation>Umbenenneb...</translation>
+    </message>
+    <message>
+        <source>Icon</source>
+        <translation>Symbol</translation>
+    </message>
+    <message>
+        <source>Command</source>
+        <translation>Befehl</translation>
+    </message>
+    <message>
+        <source>&lt;Separator&gt;</source>
+        <translation>&lt;Separator&gt;</translation>
+    </message>
+    <message>
+        <source>New toolbar</source>
+        <translation>Neue Symbolleiste</translation>
+    </message>
+    <message>
+        <source>Toolbar name:</source>
+        <translation>Name der Symbolleiste:</translation>
+    </message>
+    <message>
+        <source>Duplicated name</source>
+        <translation>Doppelter Namen</translation>
+    </message>
+    <message>
+        <source>The toolbar name &apos;%1&apos; is already used</source>
+        <translation>Der Name der Symbolleiste &apos;%1&apos; wird bereits verwendet</translation>
+    </message>
+    <message>
+        <source>Rename toolbar</source>
+        <translation>Symbolleiste umbenennen</translation>
     </message>
 </context>
 <context>
@@ -506,20 +500,8 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>Editor</translation>
     </message>
     <message>
-        <source>Font settings:</source>
-        <translation>Schrift:</translation>
-    </message>
-    <message>
         <source>Size:</source>
         <translation>Größe:</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation>Schriftart:</translation>
-    </message>
-    <message>
-        <source>Window settings</source>
-        <translation>Fenstereinstellungen</translation>
     </message>
     <message>
         <source>Enable line numbers</source>
@@ -528,106 +510,6 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
     <message>
         <source>Enable folding</source>
         <translation>Faltung zulassen</translation>
-    </message>
-    <message>
-        <source>Colors</source>
-        <translation>Farben</translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation>5</translation>
-    </message>
-    <message>
-        <source>6</source>
-        <translation>6</translation>
-    </message>
-    <message>
-        <source>7</source>
-        <translation>7</translation>
-    </message>
-    <message>
-        <source>8</source>
-        <translation>8</translation>
-    </message>
-    <message>
-        <source>9</source>
-        <translation>9</translation>
-    </message>
-    <message>
-        <source>10</source>
-        <translation>10</translation>
-    </message>
-    <message>
-        <source>11</source>
-        <translation>11</translation>
-    </message>
-    <message>
-        <source>12</source>
-        <translation>12</translation>
-    </message>
-    <message>
-        <source>13</source>
-        <translation>13</translation>
-    </message>
-    <message>
-        <source>14</source>
-        <translation>14</translation>
-    </message>
-    <message>
-        <source>15</source>
-        <translation>15</translation>
-    </message>
-    <message>
-        <source>16</source>
-        <translation>16</translation>
-    </message>
-    <message>
-        <source>17</source>
-        <translation>17</translation>
-    </message>
-    <message>
-        <source>18</source>
-        <translation>18</translation>
-    </message>
-    <message>
-        <source>19</source>
-        <translation>19</translation>
-    </message>
-    <message>
-        <source>20</source>
-        <translation>20</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation>Beispiel</translation>
-    </message>
-    <message>
-        <source># Short Python sample
-import sys
-def foo(begin, end):
-<byte value="x9"/>i=begin
-<byte value="x9"/>while (i&lt;end):
-<byte value="x9"/><byte value="x9"/>print i
-<byte value="x9"/><byte value="x9"/>i=i+1
-<byte value="x9"/><byte value="x9"/>print &quot;Text&quot;
-
-foo(0, 20)
-</source>
-        <translation># Short Python sample
-import sys
-def foo(begin, end):
-<byte value="x9"/>i=begin
-<byte value="x9"/>while (i&lt;end):
-<byte value="x9"/><byte value="x9"/>print i
-<byte value="x9"/><byte value="x9"/>i=i+1
-<byte value="x9"/><byte value="x9"/>print &quot;Text&quot;
-
-foo(0, 20)
-</translation>
-    </message>
-    <message>
-        <source>Tabs</source>
-        <translation>Einrückung</translation>
     </message>
     <message>
         <source>Tab size:</source>
@@ -645,6 +527,26 @@ foo(0, 20)
         <source>Insert spaces</source>
         <translation>Leerzeichen-Einrückung beibehalten</translation>
     </message>
+    <message>
+        <source>Options</source>
+        <translation>Optionen</translation>
+    </message>
+    <message>
+        <source>Indentation</source>
+        <translation>Einrückung</translation>
+    </message>
+    <message>
+        <source>Display Items</source>
+        <translation>Elemente</translation>
+    </message>
+    <message>
+        <source>Family:</source>
+        <translation>Familie:</translation>
+    </message>
+    <message>
+        <source>Preview:</source>
+        <translation>Vorschau:</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgGeneral</name>
@@ -659,10 +561,6 @@ foo(0, 20)
     <message>
         <source>Size of recent file list</source>
         <translation>Anzahl der zuletzt benutzten Dateien</translation>
-    </message>
-    <message>
-        <source>Drag and drop</source>
-        <translation>Drag and drop</translation>
     </message>
     <message>
         <source>Main window</source>
@@ -681,16 +579,16 @@ foo(0, 20)
         <translation>Sprache auswählen:</translation>
     </message>
     <message>
-        <source>Allow drag&amp;&amp;drop of menu items</source>
-        <translation>Drag&amp;&amp;Drop von Menüeinträgen zulassen</translation>
-    </message>
-    <message>
         <source>Auto load module after startup:</source>
         <translation>Lade Modul automatisch nach Startvorgang:</translation>
     </message>
     <message>
         <source>Switch to tab of report window:</source>
         <translation>Wechsle zu Reiter des Ausgabefensters:</translation>
+    </message>
+    <message>
+        <source>Startup</source>
+        <translation>Start</translation>
     </message>
 </context>
 <context>
@@ -706,6 +604,13 @@ foo(0, 20)
     <message>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgInspector</name>
+    <message>
+        <source>Scene Inspector</source>
+        <translation>Scene Inspector</translation>
     </message>
 </context>
 <context>
@@ -770,6 +675,10 @@ Diese Datei ist bereits vorhanden.</translation>
     <message>
         <source>Do you really want to delete the macro &apos;%1&apos;?</source>
         <translation>Möchten Sie das Makro &apos;%1&apos; wirklich löschen?</translation>
+    </message>
+    <message>
+        <source>Macros</source>
+        <translation>Makros</translation>
     </message>
 </context>
 <context>
@@ -856,10 +765,6 @@ Diese Datei ist bereits vorhanden.</translation>
 <context>
     <name>Gui::Dialog::DlgOnlineHelp</name>
     <message>
-        <source>http://free-cad.sourceforge.net/index.html</source>
-        <translation>http://free-cad.sourceforge.net/index.html</translation>
-    </message>
-    <message>
         <source>Use proxy</source>
         <translation>Proxy verwenden</translation>
     </message>
@@ -898,6 +803,10 @@ Diese Datei ist bereits vorhanden.</translation>
     <message>
         <source>Enable user authorization</source>
         <translation>Benutzerauthentifizierung aktivieren</translation>
+    </message>
+    <message>
+        <source>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</source>
+        <translation>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</translation>
     </message>
 </context>
 <context>
@@ -955,6 +864,18 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     <message>
         <source>Value</source>
         <translation>Wert</translation>
+    </message>
+    <message>
+        <source>User parameter</source>
+        <translation>Benutzerdefinierte Parameter</translation>
+    </message>
+    <message>
+        <source>Invalid input</source>
+        <translation>Ungültige Eingabe</translation>
+    </message>
+    <message>
+        <source>Invalid key name &apos;%1&apos;</source>
+        <translation>Ungültiger Schlüsselname &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -1163,6 +1084,18 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>Orthographic rendering</source>
         <translation>Orthographische Darstellung</translation>
     </message>
+    <message>
+        <source>3D Mouse Model</source>
+        <translation>3D Mausmodell</translation>
+    </message>
+    <message>
+        <source>Simple model</source>
+        <translation>Einfaches Modell</translation>
+    </message>
+    <message>
+        <source>Full model</source>
+        <translation>Vollwertiges Modell</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
@@ -1277,6 +1210,10 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>The minimum value must be lower than &apos;%1&apos;.</source>
         <translation>Der Minimalwert muss kleiner &apos;%1&apos; sein.</translation>
     </message>
+    <message>
+        <source>The maximum value must be higher than the minimum value.</source>
+        <translation>Der Maximalwert muss größer als der Minimalwert sein.</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsDocument</name>
@@ -1305,14 +1242,22 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Transaktionen speichern (Automatisches Speichern)</translation>
     </message>
     <message>
-        <source>discard saved transaction after document saved</source>
-        <translation>Gespeicherte Transaktionen verwerfen nachdem Dokument gespeichert wurde</translation>
-    </message>
-    <message>
         <source>Document save compression level
 (0 = none, 9 = highest, 3 = default)</source>
         <translation>Kompressionsstufe beim Speichern des Dokuments
 (0 = keine, 9 = höchste, 3 = standardmäßige Kompression)</translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <translation>Speichern</translation>
+    </message>
+    <message>
+        <source>Discard saved transaction after saving document</source>
+        <translation>Transaktionen nach Speichern von Dokument verwerfen</translation>
+    </message>
+    <message>
+        <source>Save thumbnail into project file when saving document</source>
+        <translation>Beim Speichern des Dokumentes Miniaturansicht in Projektdatei speichrn</translation>
     </message>
 </context>
 <context>
@@ -1373,6 +1318,10 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>Python error</source>
         <translation>Pythonfehler</translation>
     </message>
+    <message>
+        <source>Items</source>
+        <translation>Elemente</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsImage</name>
@@ -1387,10 +1336,6 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     <message>
         <source>&amp;Width:</source>
         <translation>&amp;Breite:</translation>
-    </message>
-    <message>
-        <source> Pixel</source>
-        <translation>Pixel</translation>
     </message>
     <message>
         <source>&amp;Height:</source>
@@ -1467,6 +1412,106 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     <message>
         <source>Insert comment</source>
         <translation>Kommentar einfügen</translation>
+    </message>
+    <message>
+        <source>Pixel</source>
+        <translation>Pixel</translation>
+    </message>
+    <message>
+        <source>Current screen</source>
+        <translation>Aktueller Bildschirm</translation>
+    </message>
+    <message>
+        <source>Icon       32  x 32</source>
+        <translation>Symbol 32 x 32</translation>
+    </message>
+    <message>
+        <source>Icon       64 x 64</source>
+        <translation>Symbol 64 x 64</translation>
+    </message>
+    <message>
+        <source>Icon       128 x 128</source>
+        <translation>Symbol 128 x 128</translation>
+    </message>
+    <message>
+        <source>CGA       320 x 200</source>
+        <translation>CGA 320 x 320</translation>
+    </message>
+    <message>
+        <source>QVGA     320 x 240</source>
+        <translation>QVGA 320 x 240</translation>
+    </message>
+    <message>
+        <source>VGA       640 x 480</source>
+        <translation>VGA 640 x 480</translation>
+    </message>
+    <message>
+        <source>NTSC     720 x 480</source>
+        <translation>NISC 720 x 480</translation>
+    </message>
+    <message>
+        <source>PAL        768 x 578</source>
+        <translation>PAL 768 x 578</translation>
+    </message>
+    <message>
+        <source>SVGA     800 x 600</source>
+        <translation>SVGA 800 x 600</translation>
+    </message>
+    <message>
+        <source>XGA       1024 x 768</source>
+        <translation>XGA 1024 x 768</translation>
+    </message>
+    <message>
+        <source>HD720   1280 x 720</source>
+        <translation>HD720 1280 x 720</translation>
+    </message>
+    <message>
+        <source>SXGA     1280 x 1024</source>
+        <translation>SXGA 1280 x 1024</translation>
+    </message>
+    <message>
+        <source>SXGA+   1400 x 1050</source>
+        <translation>SXGA+ 1400 x 1050</translation>
+    </message>
+    <message>
+        <source>UXGA     1600 x 1200</source>
+        <translation>UXGA 1600 x 1200</translation>
+    </message>
+    <message>
+        <source>HD1080 1920 x 1080</source>
+        <translation>HD1080 1920 x 1080</translation>
+    </message>
+    <message>
+        <source>WUXGA  1920 x 1200</source>
+        <translation>WUXGA 1920 x 1200</translation>
+    </message>
+    <message>
+        <source>QXGA     2048 x 1538</source>
+        <translation>QXGA 2048 x 1538</translation>
+    </message>
+    <message>
+        <source>WQXGA  2560 x 1600</source>
+        <translation>WQXGA 2560 x 1600</translation>
+    </message>
+    <message>
+        <source>QSXGA   2560 x 2048</source>
+        <translation>QSXGA 2560 x 2024</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>QUXGA   3200 × 2400</source>
+        <translation>QUXGA 3200 x 2400</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>HUXGA   6400 × 4800</source>
+        <translation>HUXGA 6400 x 4800</translation>
+    </message>
+    <message>
+        <source>!!!          10000 x 10000</source>
+        <translation>!!! 10000 x 10000</translation>
+    </message>
+    <message>
+        <source>Standard sizes:</source>
+        <translation>Standardauflösungen:</translation>
     </message>
 </context>
 <context>
@@ -1548,6 +1593,46 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::Dialog::DlgTipOfTheDayImp</name>
+    <message>
+        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; or press the Help item in the Help menu.</source>
+        <translation>Wenn Sie mehr über FreeCAD erfahren möchten, besuchen Sie &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; oder drücken Sie auf Hilfe im Hilfe-Menü.</translation>
+    </message>
+    <message>
+        <source>Download failed: %1
+</source>
+        <translation>Download fehlgeschlagen: %1
+</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::InputVector</name>
+    <message>
+        <source>Input vector</source>
+        <translation>Eingabevektor</translation>
+    </message>
+    <message>
+        <source>Vector</source>
+        <translation>Vektor</translation>
+    </message>
+    <message>
+        <source>Z:</source>
+        <translation>Z:</translation>
+    </message>
+    <message>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::ParameterGroup</name>
     <message>
         <source>Add sub-group</source>
@@ -1586,24 +1671,12 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Parameter in Datei schreiben</translation>
     </message>
     <message>
-        <source>Export</source>
-        <translation>Exportieren</translation>
-    </message>
-    <message>
         <source>Import parameter from file</source>
         <translation>Parameter aus Datei lesen</translation>
     </message>
     <message>
-        <source>Import</source>
-        <translation>Importieren</translation>
-    </message>
-    <message>
         <source>Import Error</source>
         <translation>Fehler bei Importieren</translation>
-    </message>
-    <message>
-        <source>Reading of &apos;%1&apos; failed.</source>
-        <translation>Lesen von &apos;%1&apos; fehlgeschlagen.</translation>
     </message>
     <message>
         <source>Expand</source>
@@ -1612,6 +1685,14 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     <message>
         <source>Collapse</source>
         <translation>Reduzieren</translation>
+    </message>
+    <message>
+        <source>XML (*.FCParam)</source>
+        <translation>XML (*.FCParam)</translation>
+    </message>
+    <message>
+        <source>Reading from &apos;%1&apos; failed.</source>
+        <translation>Lesen von &apos;%1&apos; fehlgeschlagen.</translation>
     </message>
 </context>
 <context>
@@ -1656,70 +1737,109 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>Change value</source>
         <translation>Wert ändern</translation>
     </message>
+    <message>
+        <source>New</source>
+        <translation>Neu</translation>
+    </message>
 </context>
 <context>
-    <name>Gui::Dialog::UndoRedoDialog</name>
+    <name>Gui::Dialog::Placement</name>
+    <message>
+        <source>Placement</source>
+        <translation>Placement</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
     <message>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <source>No Undo</source>
-        <translation>Nicht rückgängig machbar</translation>
+        <source>Translation:</source>
+        <translation>Verschiebung:</translation>
     </message>
     <message>
-        <source>Undoes %1 action(s)</source>
-        <translation>Macht %1 Aktion(en) rückgängig</translation>
+        <source>Z:</source>
+        <translation>Z:</translation>
     </message>
     <message>
-        <source>Redoes %1 action(s)</source>
-        <translation>Stellt %1 Aktion(en) wieder her</translation>
+        <source>Y:</source>
+        <translation>Y:</translation>
     </message>
     <message>
-        <source>No info</source>
-        <translation>Kein Informationen</translation>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <source>Rotation:</source>
+        <translation>Drehung:</translation>
+    </message>
+    <message>
+        <source>Angle:</source>
+        <translation>Winkel:</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation>Z</translation>
+    </message>
+    <message>
+        <source>User defined...</source>
+        <translation>Benutzerdefiniert...</translation>
+    </message>
+    <message>
+        <source>Axis:</source>
+        <translation>Achse:</translation>
     </message>
 </context>
 <context>
-    <name>QDockWidget</name>
+    <name>Gui::Dialog::SceneInspector</name>
     <message>
-        <source>Report view</source>
-        <translation>Ausgabefenster</translation>
+        <source>Dialog</source>
+        <translation>Dialog</translation>
     </message>
     <message>
-        <source>Help view</source>
-        <translation>Hilfefenster</translation>
-    </message>
-    <message>
-        <source>Tree view</source>
-        <translation>Baumansicht</translation>
-    </message>
-    <message>
-        <source>Toolbox</source>
-        <translation>Werkzeugkasten</translation>
-    </message>
-    <message>
-        <source>Property view</source>
-        <translation>Eigenschaften</translation>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
-    <name>Gui::DockWnd::ButtonGroup</name>
+    <name>Gui::Dialog::SceneModel</name>
     <message>
-        <source>Show buttons as icon</source>
-        <translation>Zeige Knöpfe mit Symbolen an</translation>
+        <source>Inventor Tree</source>
+        <translation>Szenengraph</translation>
     </message>
     <message>
-        <source>Show buttons as text</source>
-        <translation>Zeige Knöpfe als Text an</translation>
+        <source>Nodes</source>
+        <translation>Knoten</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::DlgTreeWidget</name>
+    <message>
+        <source>Dialog</source>
+        <translation>Dialog</translation>
     </message>
     <message>
-        <source>Background color...</source>
-        <translation>Hintergrundfarbe wählen...</translation>
+        <source>Items</source>
+        <translation>Elemente</translation>
     </message>
     <message>
-        <source>Reset background color</source>
-        <translation>Hintergrundfarbe zurücksetzen</translation>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
     </message>
 </context>
 <context>
@@ -1756,6 +1876,10 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>Starting of %1 failed</source>
         <translation>Start von %1 fehlgeschlagen</translation>
     </message>
+    <message>
+        <source>All Html files (*.html *.htm)</source>
+        <translation>Alle Html-Dateien (*.html *.htm)</translation>
+    </message>
 </context>
 <context>
     <name>Gui::DockWnd::PropertyView</name>
@@ -1766,14 +1890,6 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     <message>
         <source>View</source>
         <translation>Ansicht</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation>Name</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation>Wert</translation>
     </message>
     <message>
         <source>Data</source>
@@ -1806,6 +1922,14 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
+    <message>
+        <source>Save Report Output</source>
+        <translation>Ausgabe speichern</translation>
+    </message>
+    <message>
+        <source>Plain Text Files (*.txt *.log)</source>
+        <translation>Einfache Textdateien (*.txt *.log)</translation>
+    </message>
 </context>
 <context>
     <name>Gui::DockWnd::ReportView</name>
@@ -1819,17 +1943,14 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::DockWnd::SelectionView</name>
+    <message>
+        <source>Property View</source>
+        <translation>Eigenschaften-Ansicht</translation>
+    </message>
+</context>
+<context>
     <name>Gui::DockWnd::TextBrowser</name>
-    <message>
-        <source>Can&apos;t load &apos;%1&apos;.
-Do you want to start your favourite external browser instead?</source>
-        <translation>%1 konnte nicht geladen werden.
-Möchten Sie stattdessen einen externen Browser auswählen?</translation>
-    </message>
-    <message>
-        <source>Can&apos;t decode &apos;%1&apos;</source>
-        <translation>Die Datei &apos;%1&apos; kann nicht angezeigt werden</translation>
-    </message>
     <message>
         <source>Copy</source>
         <translation>Kopieren</translation>
@@ -1854,6 +1975,91 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
         <source>Select all</source>
         <translation>Alles auswählen</translation>
     </message>
+    <message>
+        <source>Could not open file.</source>
+        <translation>Datei konnte nicht geöffnet werden.</translation>
+    </message>
+    <message>
+        <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
+        <translation>Sie haben versucht, die Adresse %1 aufzurufen, die im Moment nicht erreichbar ist. Stellen Sie sicher, dass die URL existiert und versuchen Sie die Seite erneut zu laden.</translation>
+    </message>
+    <message>
+        <source>Connecting to %1</source>
+        <translation>Verbinden mit %1</translation>
+    </message>
+    <message>
+        <source>Sending to %1</source>
+        <translation>Senden an %1</translation>
+    </message>
+    <message>
+        <source>Reading from %1</source>
+        <translation>Lesen von %1</translation>
+    </message>
+    <message>
+        <source>Download failed: %1.</source>
+        <translation>Download fehlgeschlagen: %1.</translation>
+    </message>
+    <message>
+        <source>No description for</source>
+        <translation>Keine Beschreibung für</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::EditorView</name>
+    <message>
+        <source>Modified file</source>
+        <translation>Geänderte Datei</translation>
+    </message>
+    <message>
+        <source>%1.
+
+This has been modified outside of the source editor. Do you want to reload it?</source>
+        <translation>%1. 
+
+Diese Datei wurde außerhalb des Editors verändert. Wollen Sie sie erneut laden?</translation>
+    </message>
+    <message>
+        <source>Unsaved document</source>
+        <translation>Nicht gespeichertes Dokument</translation>
+    </message>
+    <message>
+        <source>The document has been modified.
+Do you want to save your changes?</source>
+        <translation>Das Dokument wurde geändert.
+Sollen die Änderungen gespeichert werden?</translation>
+    </message>
+    <message>
+        <source>FreeCAD macro (*.FCMacro);;Python (*.py)</source>
+        <translation>FreeCAD-Makro (*.FCMacro);;Python (*.py)</translation>
+    </message>
+    <message>
+        <source>Export PDF</source>
+        <translation>PDF exportieren</translation>
+    </message>
+    <message>
+        <source>PDF file (*.pdf)</source>
+        <translation>PDF-Datei (*.pdf)</translation>
+    </message>
+    <message>
+        <source>untitled[*]</source>
+        <translation>Unbenannt[*]</translation>
+    </message>
+    <message>
+        <source> - Editor</source>
+        <translation> - Editor</translation>
+    </message>
+    <message>
+        <source>%1 chars removed</source>
+        <translation>%1 Zeichen gelöscht</translation>
+    </message>
+    <message>
+        <source>%1 chars added</source>
+        <translation>%1 Zeichen hinzugefügt</translation>
+    </message>
+    <message>
+        <source>Formatted</source>
+        <translation>Formatiert</translation>
+    </message>
 </context>
 <context>
     <name>Gui::FileChooser</name>
@@ -1869,16 +2075,6 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
 <context>
     <name>Gui::FileDialog</name>
     <message>
-        <source>&apos;%1&apos; already exists.
-Replace existing file?</source>
-        <translation>&apos;%1&apos; existiert bereits.
-Möchten Sie die Datei überschreiben?</translation>
-    </message>
-    <message>
-        <source>Existing file</source>
-        <translation>Vorhandene Datei</translation>
-    </message>
-    <message>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
@@ -1892,6 +2088,40 @@ Möchten Sie die Datei überschreiben?</translation>
     <message>
         <source>Extended</source>
         <translation>Erweitert</translation>
+    </message>
+    <message>
+        <source>All files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Flag</name>
+    <message>
+        <source>Top left</source>
+        <translation>Oben links</translation>
+    </message>
+    <message>
+        <source>Bottom left</source>
+        <translation>Unten links</translation>
+    </message>
+    <message>
+        <source>Top right</source>
+        <translation>Oben rechts</translation>
+    </message>
+    <message>
+        <source>Bottom right</source>
+        <translation>Unten rechts</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::LocationDialog</name>
+    <message>
+        <source>Wrong direction</source>
+        <translation>Falsche Richtung</translation>
+    </message>
+    <message>
+        <source>Direction must not be the null vector</source>
+        <translation>Richtungsvektor darf nicht der Nullvektor sein</translation>
     </message>
 </context>
 <context>
@@ -1911,94 +2141,26 @@ Möchten Sie die Datei überschreiben?</translation>
         <source>Dimension</source>
         <translation>Abmessung</translation>
     </message>
-</context>
-<context>
-    <name>Gui::MenuManager</name>
     <message>
-        <source>&amp;File</source>
-        <translation>&amp;Datei</translation>
+        <source>Toogles this toolbar</source>
+        <translation>Symbolleiste ein-/ausschalten</translation>
     </message>
     <message>
-        <source>&amp;View</source>
-        <translation>&amp;Ansicht</translation>
-    </message>
-    <message>
-        <source>&amp;Tools</source>
-        <translation>&amp;Werkzeuge</translation>
-    </message>
-    <message>
-        <source>&amp;Windows</source>
-        <translation>&amp;Fenster</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation>&amp;Hilfe</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Bearbeiten</translation>
-    </message>
-    <message>
-        <source>&amp;3D View</source>
-        <translation>&amp;3D Ansicht</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom</source>
-        <translation>&amp;Zoom</translation>
+        <source>Toogles this dockable window</source>
+        <translation>Andockbares Fenster ein-/ausschalten</translation>
     </message>
 </context>
 <context>
     <name>Gui::NetworkRetriever</name>
-    <message>
-        <source>Download finished.</source>
-        <translation>Download wurde beendet.</translation>
-    </message>
-    <message>
-        <source>Download Online help</source>
-        <translation>Herunterladen der Online-Hilfe</translation>
-    </message>
-    <message>
-        <source>Cannot find host &apos;%1&apos;.</source>
-        <translation>Rechner &apos;%1&apos; konnte nicht gefunden werden.</translation>
-    </message>
     <message>
         <source>Download started...
 </source>
         <translation>Download hat begonnen...
 </translation>
     </message>
-    <message>
-        <source>Download finished.
-</source>
-        <translation>Download beendet.
-</translation>
-    </message>
-    <message>
-        <source>Download failed.
-</source>
-        <translation>Download fehlgeschlagen.
-</translation>
-    </message>
-    <message>
-        <source>Download was canceled.
-</source>
-        <translation>Download wurde abgebrochen.
-</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::PreviewLabel</name>
-    <message>
-        <source>Preview</source>
-        <translation>Voransicht</translation>
-    </message>
 </context>
 <context>
     <name>Gui::ProgressBar</name>
-    <message>
-        <source>Measuring...</source>
-        <translation>Messen...</translation>
-    </message>
     <message>
         <source>Remaining: %1</source>
         <translation>Verbleibend: %1</translation>
@@ -2013,17 +2175,14 @@ Möchten Sie die Datei überschreiben?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::PropertyEditor::FileEditorItem</name>
+    <name>Gui::PropertyEditor::PropertyModel</name>
     <message>
-        <source>Choose a file</source>
-        <translation>Datei auswählen</translation>
+        <source>Property</source>
+        <translation>Eigenschaft</translation>
     </message>
-</context>
-<context>
-    <name>Gui::PropertyEditor::PixmapEditorItem</name>
     <message>
-        <source>Choose a Pixmap...</source>
-        <translation>Bilddatei auswählen...</translation>
+        <source>Value</source>
+        <translation>Wert</translation>
     </message>
 </context>
 <context>
@@ -2040,44 +2199,59 @@ Möchten Sie die Datei überschreiben?</translation>
         <source>Insert file name...</source>
         <translation>Dateinamen einfügen...</translation>
     </message>
-</context>
-<context>
-    <name>Gui::PythonEditView</name>
     <message>
-        <source>Unsaved document</source>
-        <translation>Nicht gespeichertes Dokument</translation>
+        <source>System exit</source>
+        <translation>System beenden</translation>
     </message>
     <message>
-        <source>Save changes to %1?</source>
-        <translation>Sollen die Änderugen in %1 gespeichert werden?</translation>
+        <source>The application is still running.
+Do you want to exit without saving your data?</source>
+        <translation>Die Anwendung läuft immer noch.
+Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     </message>
     <message>
-        <source>Saving aborted</source>
-        <translation>Speichern abgebrochen</translation>
+        <source>Python console</source>
+        <translation>Python-Konsole</translation>
     </message>
     <message>
-        <source>Loaded document %1</source>
-        <translation>Geladenes Dokument %1</translation>
+        <source>Unhandled PyCXX exception.</source>
+        <translation>Unbehnadelte PyCXX-Ausnahme.</translation>
     </message>
     <message>
-        <source>Printing...</source>
-        <translation>Drucken...</translation>
+        <source>Unhandled FreeCAD exception.</source>
+        <translation>Unbehandelte FreeCAD-Ausnahme.</translation>
     </message>
     <message>
-        <source>File %1 saved</source>
-        <translation>Datei %1 wurde gespeichert</translation>
+        <source>Unhandled unknown C++ exception.</source>
+        <translation>Unbehandelte C++-Ausnahme.</translation>
     </message>
     <message>
-        <source>Modified file</source>
-        <translation>Geänderte Datei</translation>
+        <source>&amp;Copy command</source>
+        <translation>&amp;Befehle kopieren</translation>
     </message>
     <message>
-        <source>%1.
-
-This has been modified outside of the source editor. Do you want to reload it?</source>
-        <translation>%1. 
-
-Diese Datei wurde außerhalb des Editors verändert. Wollen Sie sie erneut laden?</translation>
+        <source>&amp;Copy history</source>
+        <translation>&amp;Verlauf kopieren</translation>
+    </message>
+    <message>
+        <source>Macro Files (*.FCMacro *.py)</source>
+        <translation>Makro-Dateien (*.FCMacro *.py)</translation>
+    </message>
+    <message>
+        <source>Insert file name</source>
+        <translation>Dateinamen einfügen</translation>
+    </message>
+    <message>
+        <source>All Files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
+    </message>
+    <message>
+        <source>Python Input Dialog</source>
+        <translation>Pythoneingabe-Dialog</translation>
+    </message>
+    <message>
+        <source>Input for Python:</source>
+        <translation>Eingabe an Python:</translation>
     </message>
 </context>
 <context>
@@ -2092,18 +2266,33 @@ Diese Datei wurde außerhalb des Editors verändert. Wollen Sie sie erneut laden
     </message>
 </context>
 <context>
-    <name>Gui::StdCmdAbout</name>
+    <name>Gui::RecentFilesAction</name>
     <message>
-        <source>Help</source>
-        <translation>Hilfe</translation>
+        <source>Open file %1</source>
+        <translation>Öffne Datei %1</translation>
     </message>
     <message>
-        <source>&amp;About %1</source>
-        <translation>&amp;Über %1</translation>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
     </message>
     <message>
-        <source>About %1</source>
-        <translation>Über %1</translation>
+        <source>The file &apos;%1&apos; cannot be opened.</source>
+        <translation>Die Datei &apos;%1&apos; kann nicht geöffnet werden.</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::SelectModule</name>
+    <message>
+        <source>Select module</source>
+        <translation>Modul auswählen</translation>
+    </message>
+    <message>
+        <source>Open %1 as</source>
+        <translation>Öffne %1 als</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Wähle</translation>
     </message>
 </context>
 <context>
@@ -2122,76 +2311,81 @@ Diese Datei wurde außerhalb des Editors verändert. Wollen Sie sie erneut laden
     </message>
 </context>
 <context>
-    <name>Gui::StdCmdMRU</name>
+    <name>Gui::StdCmdPythonHelp</name>
+    <message>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
+    </message>
+    <message>
+        <source>Python Modules</source>
+        <translation>Python-Module</translation>
+    </message>
+    <message>
+        <source>Opens a browser to show the Python modules</source>
+        <translation>Browser zum Anzeigen aller Python-Module öffnen</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::StdWorkbench</name>
+    <message>
+        <source>&amp;File</source>
+        <translation>&amp;Datei</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Bearbeiten</translation>
+    </message>
+    <message>
+        <source>Standard views</source>
+        <translation>Standardansichten</translation>
+    </message>
+    <message>
+        <source>&amp;3D View</source>
+        <translation>&amp;3D Ansicht</translation>
+    </message>
+    <message>
+        <source>&amp;Zoom</source>
+        <translation>&amp;Zoom</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation>Sichtbarkeit</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation>&amp;Ansicht</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation>&amp;Werkzeuge</translation>
+    </message>
+    <message>
+        <source>&amp;Windows</source>
+        <translation>&amp;Fenster</translation>
+    </message>
+    <message>
+        <source>&amp;Online-help</source>
+        <translation>&amp;Online-Hilfe</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
+    </message>
     <message>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <source>Recent files</source>
-        <translation>Letzte Dateien</translation>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
-    <message>
-        <source>Recent file list</source>
-        <translation>Zuletzt geöffnete Dateien</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::StdCmdOnlineHelp</name>
-    <message>
-        <source>Help</source>
-        <translation>Hilfe</translation>
-    </message>
-    <message>
-        <source>Download online help</source>
-        <translation>Online-Hilfe herunterladen</translation>
-    </message>
-    <message>
-        <source>Download %1&apos;s online help</source>
-        <translation>Online-Hilfe von %1 herunterladen</translation>
-    </message>
-    <message>
-        <source>Stop downloading</source>
-        <translation>Herunterladevorgang abbrechen</translation>
-    </message>
-    <message>
-        <source>Non-existing directory</source>
-        <translation>Nicht existierendes Verzeichnis</translation>
-    </message>
-    <message>
-        <source>The directory &apos;%1&apos; does not exist.
-
-Do you want to specify an existing directory?</source>
-        <translation>Das Verzeichnis &apos;%1&apos; existiert nicht.
-
-Möchten Sie ein existierendes Verzeichnis angeben?</translation>
-    </message>
-    <message>
-        <source>Missing permission</source>
-        <translation>Fehlende Berechtigung</translation>
-    </message>
-    <message>
-        <source>You don&apos;t have write permission to &apos;%1&apos;
-
-Do you want to specify another directory?</source>
-        <translation>Sie haben keine Schreibberechtigung für &apos;%1&apos;
-
-Möchten Sie ein anderes Verzeichnis angeben?</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::StdCmdWorkbench</name>
     <message>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <source>Workbench</source>
-        <translation>Arbeitsbereich</translation>
-    </message>
-    <message>
-        <source>Switch between workbenches</source>
-        <translation>Zwischen Arbeitsbereichen wechseln</translation>
+        <source>Special Ops</source>
+        <translation>Spezialfunktionen</translation>
     </message>
 </context>
 <context>
@@ -2208,51 +2402,91 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <source>French</source>
         <translation>Französisch</translation>
     </message>
+    <message>
+        <source>Italian</source>
+        <translation>Italienisch</translation>
+    </message>
+    <message>
+        <source>Japanese</source>
+        <translation>Japanisch</translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation>Chinesisch</translation>
+    </message>
 </context>
 <context>
-    <name>Gui::TreeView</name>
+    <name>Gui::TreeDockWidget</name>
+    <message>
+        <source>Tree view</source>
+        <translation>Baumansicht</translation>
+    </message>
     <message>
         <source>Labels &amp; Attributes</source>
         <translation>Bezeichnungen &amp; Eigenschaften</translation>
     </message>
+    <message>
+        <source>Application</source>
+        <translation>Applikation</translation>
+    </message>
 </context>
 <context>
-    <name>QObject</name>
+    <name>Gui::TreeWidget</name>
+    <message>
+        <source>Create group...</source>
+        <translation>Grupper erstellen...</translation>
+    </message>
+    <message>
+        <source>Create a group</source>
+        <translation>Erstelle eine Gruppe</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation>Gruppe</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::WidgetFactorySupplier</name>
     <message>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <source>Viewer</source>
+        <source>Display</source>
         <translation>Anzeige</translation>
     </message>
+</context>
+<context>
+    <name>Gui::WorkbenchGroup</name>
     <message>
-        <source>Save Report Output</source>
-        <translation>Ausgabe speichern</translation>
+        <source>Select the &apos;%1&apos; workbench</source>
+        <translation>Wähle den Arbeitsbereich %1</translation>
     </message>
+</context>
+<context>
+    <name>QDockWidget</name>
+    <message>
+        <source>Report view</source>
+        <translation>Ausgabefenster</translation>
+    </message>
+    <message>
+        <source>Tree view</source>
+        <translation>Baumansicht</translation>
+    </message>
+    <message>
+        <source>Property view</source>
+        <translation>Eigenschaften</translation>
+    </message>
+    <message>
+        <source>Selection view</source>
+        <translation>Selektionsansicht</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
     <message>
         <source>Save Macro</source>
         <translation>Makro speichern</translation>
-    </message>
-    <message>
-        <source>True</source>
-        <translation>True</translation>
-    </message>
-    <message>
-        <source>False</source>
-        <translation>False</translation>
-    </message>
-    <message>
-        <source>Qt Linguist</source>
-        <translation>Qt Linguist</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>Warnung</translation>
-    </message>
-    <message>
-        <source>Critical Error</source>
-        <translation>Kritischer Fehler</translation>
     </message>
     <message>
         <source>New sub-group</source>
@@ -2295,10 +2529,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Gruppe umbenennen</translation>
     </message>
     <message>
-        <source>Cannot rename this group.</source>
-        <translation>Diese Gruppe kann nicht umbenannt werden.</translation>
-    </message>
-    <message>
         <source>Existing group</source>
         <translation>Bereits vorhandene Gruppe</translation>
     </message>
@@ -2327,14 +2557,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Dokument unter neuem Dateinamen speichern...</translation>
     </message>
     <message>
-        <source>Overwrite file &apos;%1&apos; ?</source>
-        <translation>Datei &apos;%1&apos; überschreiben?</translation>
-    </message>
-    <message>
-        <source>File overwrite confirmation</source>
-        <translation>Überschreiben von Datei bestätigen</translation>
-    </message>
-    <message>
         <source>Saving aborted</source>
         <translation>Speichern abgebrochen</translation>
     </message>
@@ -2359,10 +2581,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Ansichten speichern...</translation>
     </message>
     <message>
-        <source>Restore views...</source>
-        <translation>Ansichten wiederherstellen...</translation>
-    </message>
-    <message>
         <source>Freeze view</source>
         <translation>Ansicht einfrieren</translation>
     </message>
@@ -2383,23 +2601,208 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Datei nicht gefunden</translation>
     </message>
     <message>
-        <source>The file &apos;%1&apos; cannot be opened.</source>
-        <translation>Die Datei &apos;%1&apos; kann nicht geöffnet werden.</translation>
+        <source>Unknown filetype</source>
+        <translation>Unbekannter Dateityp</translation>
+    </message>
+    <message>
+        <source>Cannot open unknown filetype: %1</source>
+        <translation>Kann unbekannten Dateityp nicht öffnen: %1</translation>
+    </message>
+    <message>
+        <source>Cannot save to unknown filetype: %1</source>
+        <translation>Kann in unbekannten Dateityp nicht speichern: %1</translation>
+    </message>
+    <message>
+        <source>Workbench failure</source>
+        <translation>Wechsel von Arbeitsbereich fehlgeschlagen</translation>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>FreeCAD Help</source>
+        <translation>FreeCAD-Hilfe</translation>
+    </message>
+    <message>
+        <source>Unable to launch Qt Assistant (%1)</source>
+        <translation>Qt Assistant (%1) kann nicht gestartet werden</translation>
+    </message>
+    <message>
+        <source>Exception</source>
+        <translation>Ausnahme</translation>
+    </message>
+    <message>
+        <source>Open document</source>
+        <translation>Öffne Dokument</translation>
+    </message>
+    <message>
+        <source>Import file</source>
+        <translation>Importiere Datei</translation>
+    </message>
+    <message>
+        <source>Export file</source>
+        <translation>Exportiere Datei</translation>
+    </message>
+    <message>
+        <source>Printing...</source>
+        <translation>Drucken...</translation>
+    </message>
+    <message>
+        <source>Cannot load workbench</source>
+        <translation>Kann Arbeitsbereich nicht laden</translation>
+    </message>
+    <message>
+        <source>A general error occurred while loading the workbench</source>
+        <translation>Allgemeiner Fehler beim Laden des Arbeitsbereiches aufgetreten</translation>
+    </message>
+    <message>
+        <source>Cannot open file %1</source>
+        <translation>Kann Datei %1 nicht öffnen</translation>
+    </message>
+    <message>
+        <source>Load views...</source>
+        <translation>Ansichten laden...</translation>
+    </message>
+    <message>
+        <source>Clear views</source>
+        <translation>Ansichten löschen</translation>
+    </message>
+    <message>
+        <source>Restore views</source>
+        <translation>Ansichten wiederherstellen</translation>
+    </message>
+    <message>
+        <source>Importing the restored views would clear the already stored views.
+Do you want to continue?</source>
+        <translation>Wiederherstellen der importierten Ansichten löscht die bereits gespeicherten Ansichten.
+Wollen Sie fortfahren?</translation>
+    </message>
+    <message>
+        <source>Restore frozen views</source>
+        <translation>Eingefrorene Ansichten wiederherstellen</translation>
+    </message>
+    <message>
+        <source>Cannot open file &apos;%1&apos;.</source>
+        <translation>Kann Datei &apos;%1&apos; nicht öffnen.</translation>
+    </message>
+    <message>
+        <source>Docked</source>
+        <translation>Angedockt</translation>
+    </message>
+    <message>
+        <source>Undocked</source>
+        <translation>Abgedockt</translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
+        <translation>Vollbild</translation>
+    </message>
+    <message>
+        <source>The group &apos;%1&apos; cannot be renamed.</source>
+        <translation>Die Gruppe &apos;%1&apos; kann nicht umbenannt werden.</translation>
+    </message>
+    <message>
+        <source>Save FreeCAD Document</source>
+        <translation>FreeCAD-Dokument speichern</translation>
+    </message>
+    <message>
+        <source>FreeCAD document (*.FCStd)</source>
+        <translation>FreeCAD-Dokument (*.FCStd)</translation>
+    </message>
+    <message>
+        <source>Cannot open help file</source>
+        <translation>Kann Hilfedatei nicht öffnen</translation>
+    </message>
+    <message>
+        <source>Finish</source>
+        <translation>Beenden</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <source>Inner</source>
+        <translation>Innen</translation>
+    </message>
+    <message>
+        <source>Outer</source>
+        <translation>Außen</translation>
+    </message>
+    <message>
+        <source>No Browser</source>
+        <translation>Kein Browser</translation>
+    </message>
+    <message>
+        <source>Unable to open your browser.
+
+Please open a browser window and type in: http://localhost:%1.</source>
+        <translation>Kann Browser nicht öffnen.
+
+Bitte starten Sie einen Browser und geben darin ein: http://localhost:%1.</translation>
+    </message>
+    <message>
+        <source>No Server</source>
+        <translation>Kein Server</translation>
+    </message>
+    <message>
+        <source>Unable to start the server to port %1: %2.</source>
+        <translation>Kann Server auf Port %1 nicht starten: %2.</translation>
+    </message>
+    <message>
+        <source>Unable to open your system browser.</source>
+        <translation>Kann Systembrowser nicht starten.</translation>
+    </message>
+    <message>
+        <source>Options...</source>
+        <translation>Einstellungen...</translation>
+    </message>
+    <message>
+        <source>Out of memory</source>
+        <translation>Nicht genügend Speicher</translation>
+    </message>
+    <message>
+        <source>Cannot find file %1</source>
+        <translation>Kann Datei %1 nicht finden</translation>
+    </message>
+    <message>
+        <source>Cannot find file %1 neither in %2 nor in %3</source>
+        <translation>Kann Datei %1 weder in %2 nich in %3 finden</translation>
     </message>
 </context>
 <context>
-    <name>StdCameraType</name>
+    <name>QTextEdit</name>
     <message>
-        <source>Standard-View</source>
-        <translation>Standardansicht</translation>
+        <source>&amp;Copy</source>
+        <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <source>Orthographic view</source>
-        <translation>Orthographische Ansicht</translation>
+        <source>&amp;Paste</source>
+        <translation>Ein&amp;fügen</translation>
     </message>
     <message>
-        <source>Perspective view</source>
-        <translation>Perspektivische Ansicht</translation>
+        <source>Select All</source>
+        <translation>Alles auswählen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdAbout</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>&amp;About %1</source>
+        <translation>&amp;Über %1</translation>
+    </message>
+    <message>
+        <source>About %1</source>
+        <translation>Über %1</translation>
     </message>
 </context>
 <context>
@@ -2460,6 +2863,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Arrange Icons</source>
         <translation>Symbole anordnen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdCascadeWindows</name>
+    <message>
+        <source>Window</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Cascade</source>
+        <translation>Ü&amp;berlappend anordnen</translation>
+    </message>
+    <message>
+        <source>Tile pragmatic</source>
+        <translation>Überlappend anordnen</translation>
     </message>
 </context>
 <context>
@@ -2574,12 +2992,12 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Werkzeuge</translation>
     </message>
     <message>
-        <source>E&amp;xecute macro ...</source>
-        <translation>Mak&amp;ro ausführen...</translation>
+        <source>Macros ...</source>
+        <translation>Makros...</translation>
     </message>
     <message>
-        <source>Opens a Dialog let you execute a recorded macro</source>
-        <translation>Öffnet Dialog zur Ausführung eines Makros</translation>
+        <source>Opens a dialog to let you execute a recorded macro</source>
+        <translation>Öffnet Dialog zum Ausführen eines gespeichrten Makros</translation>
     </message>
 </context>
 <context>
@@ -2654,7 +3072,69 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Toggles this window</source>
-        <translation>Fenster ein-/ausblenden</translation>
+        <translation>Fenster ein/ausblenden</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdDownloadOnlineHelp</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>Download online help</source>
+        <translation>Online-Hilfe herunterladen</translation>
+    </message>
+    <message>
+        <source>Download %1&apos;s online help</source>
+        <translation>Online-Hilfe von %1 herunterladen</translation>
+    </message>
+    <message>
+        <source>Non-existing directory</source>
+        <translation>Nicht existierendes Verzeichnis</translation>
+    </message>
+    <message>
+        <source>The directory &apos;%1&apos; does not exist.
+
+Do you want to specify an existing directory?</source>
+        <translation>Das Verzeichnis &apos;%1&apos; existiert nicht.
+
+Möchten Sie ein existierendes Verzeichnis angeben?</translation>
+    </message>
+    <message>
+        <source>Missing permission</source>
+        <translation>Fehlende Berechtigung</translation>
+    </message>
+    <message>
+        <source>You don&apos;t have write permission to &apos;%1&apos;
+
+Do you want to specify another directory?</source>
+        <translation>Sie haben keine Schreibberechtigung für &apos;%1&apos;
+
+Möchten Sie ein anderes Verzeichnis angeben?</translation>
+    </message>
+    <message>
+        <source>Stop downloading</source>
+        <translation>Downloadvorgang abbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdExport</name>
+    <message>
+        <source>File</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <source>&amp;Export...</source>
+        <translation>&amp;Exportieren...</translation>
+    </message>
+    <message>
+        <source>Export an object in the active document</source>
+        <translation>Objekt im aktiven Dokument exportieren</translation>
+    </message>
+    <message>
+        <source>Supported formats</source>
+        <translation>Unterstützte Formate</translation>
     </message>
 </context>
 <context>
@@ -2673,6 +3153,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdFreeCADWebsite</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>FreeCAD Website</source>
+        <translation>FreeCAD Webseite</translation>
+    </message>
+    <message>
+        <source>The FreeCAD website</source>
+        <translation>Die FreeCAD Webseite</translation>
+    </message>
+</context>
+<context>
     <name>StdCmdFreezeViews</name>
     <message>
         <source>Standard-View</source>
@@ -2688,33 +3183,56 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
-    <name>StdCmdMDITabbed</name>
+    <name>StdCmdHideObjects</name>
     <message>
-        <source>Window</source>
-        <translation>Fenster</translation>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-        <source>MDI tabbed</source>
-        <translation>MDI-Modus</translation>
+        <source>Hide all objects</source>
+        <translation>Alle Objekte ausblenden</translation>
     </message>
     <message>
-        <source>Set the tabbed MDI mode</source>
-        <translation>In MDI-Modus umschalten</translation>
+        <source>Hide all objects in the document</source>
+        <translation>Alle Objekte im Dokument ausblenden</translation>
     </message>
 </context>
 <context>
-    <name>StdCmdMDIToplevel</name>
+    <name>StdCmdHideSelection</name>
     <message>
-        <source>Window</source>
-        <translation>Fenster</translation>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-        <source>MDI seperate windows</source>
-        <translation>Toplevel-Modus</translation>
+        <source>Hide selection</source>
+        <translation>Auswahl ausblenden</translation>
     </message>
     <message>
-        <source>Set the seperate window MDI mode</source>
-        <translation>In Toplevel-Modus umschalten</translation>
+        <source>Hide all selected objects</source>
+        <translation>Alle ausgewählten Objekte ausblenden</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdImport</name>
+    <message>
+        <source>File</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <source>&amp;Import...</source>
+        <translation>&amp;Importieren...</translation>
+    </message>
+    <message>
+        <source>Import a file in the active document</source>
+        <translation>Datei in das aktive Dokument importieren</translation>
+    </message>
+    <message>
+        <source>Supported formats</source>
+        <translation>Unterstützte Formate</translation>
+    </message>
+    <message>
+        <source>All files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
 </context>
 <context>
@@ -2733,6 +3251,17 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdMeasureDistance</name>
+    <message>
+        <source>View</source>
+        <translation>Ansicht</translation>
+    </message>
+    <message>
+        <source>Measure distance</source>
+        <translation>Abstand messen</translation>
+    </message>
+</context>
+<context>
     <name>StdCmdNew</name>
     <message>
         <source>File</source>
@@ -2745,6 +3274,47 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Create a new empty Document</source>
         <translation>Neues Dokument erstellen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdOnlineHelp</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>Show help to the application</source>
+        <translation>Hilfe zur Applikation anzeigen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdOnlineHelpPython</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>Python Manuals</source>
+        <translation>Python-Handbuch</translation>
+    </message>
+    <message>
+        <source>Show the Python documentation</source>
+        <translation>Python-Dokumentation anzeigen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdOnlineHelpWebsite</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>Help Website</source>
+        <translation>Hilfe-Webseite</translation>
+    </message>
+    <message>
+        <source>The website where the help is maintained</source>
+        <translation>Die Webseite, wo die Hilfe gepflegt wird</translation>
     </message>
 </context>
 <context>
@@ -2771,17 +3341,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
-    <name>StdCmdOrthographicCamera</name>
-    <message>
-        <source>Standard-View</source>
-        <translation>Standardansicht</translation>
-    </message>
-    <message>
-        <source>Orthographic view</source>
-        <translation>Orthographische Ansicht</translation>
-    </message>
-</context>
-<context>
     <name>StdCmdPaste</name>
     <message>
         <source>Edit</source>
@@ -2794,17 +3353,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Paste operation</source>
         <translation>Einfügen</translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdPerspectiveCamera</name>
-    <message>
-        <source>Standard-View</source>
-        <translation>Standardansicht</translation>
-    </message>
-    <message>
-        <source>Perspective view</source>
-        <translation>Perspektivische Ansicht</translation>
     </message>
 </context>
 <context>
@@ -2823,6 +3371,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdPrintPdf</name>
+    <message>
+        <source>File</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <source>&amp;Export PDF...</source>
+        <translation>PDF &amp;exportieren...</translation>
+    </message>
+    <message>
+        <source>Export the document as PDF</source>
+        <translation>Das Dokument als PDF exportieren</translation>
+    </message>
+</context>
+<context>
     <name>StdCmdProjectInfo</name>
     <message>
         <source>File</source>
@@ -2835,6 +3398,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Show details of the currently active project</source>
         <translation>Details des momentan aktiven Projekts anzeigen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdPythonWebsite</name>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>Python Website</source>
+        <translation>Python-Webseite</translation>
+    </message>
+    <message>
+        <source>The official Python website</source>
+        <translation>Die offizielle Python-Webseite</translation>
     </message>
 </context>
 <context>
@@ -2861,6 +3439,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Random color</source>
         <translation>Zufälige Farbe</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdRecentFiles</name>
+    <message>
+        <source>File</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <source>Recent files</source>
+        <translation>Letzte Dateien</translation>
+    </message>
+    <message>
+        <source>Recent file list</source>
+        <translation>Zuletzt geöffnete Dateien</translation>
     </message>
 </context>
 <context>
@@ -2924,18 +3517,78 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
-    <name>StdCmdSetMaterial</name>
+    <name>StdCmdSceneInspector</name>
+    <message>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
+    </message>
+    <message>
+        <source>Scene inspector...</source>
+        <translation>Scene inspector...</translation>
+    </message>
+    <message>
+        <source>Scene inspector</source>
+        <translation>Szenengraph untersuchen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdSelectAll</name>
+    <message>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
+    </message>
+    <message>
+        <source>Select &amp;All</source>
+        <translation>&amp;Alles auswählen</translation>
+    </message>
+    <message>
+        <source>Select all</source>
+        <translation>Alles auswählen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdSetAppearance</name>
     <message>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
     <message>
-        <source>Display...</source>
-        <translation>Anzeige...</translation>
+        <source>Appearance...</source>
+        <translation>Darstellung...</translation>
     </message>
     <message>
         <source>Sets the display properties of the selected object</source>
         <translation>Setzen der Anzeigeeigenschaften des ausgewählten Objektes</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdShowObjects</name>
+    <message>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
+    </message>
+    <message>
+        <source>Show all objects</source>
+        <translation>Alle Objekte einblenden</translation>
+    </message>
+    <message>
+        <source>Show all objects in the document</source>
+        <translation>Alle Objekte im Dokument einblenden</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdShowSelection</name>
+    <message>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
+    </message>
+    <message>
+        <source>Show selection</source>
+        <translation>Auswahl einblenden</translation>
+    </message>
+    <message>
+        <source>Show all selected objects</source>
+        <translation>Alle ausgewählten Objekte einblenden</translation>
     </message>
 </context>
 <context>
@@ -2950,26 +3603,11 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Toggles the status bar</source>
-        <translation>Statuszeile ein-/ausblenden</translation>
+        <translation>Statuszeile ein/ausblenden</translation>
     </message>
 </context>
 <context>
-    <name>StdCmdTilePra</name>
-    <message>
-        <source>Window</source>
-        <translation>Fenster</translation>
-    </message>
-    <message>
-        <source>&amp;Cascade</source>
-        <translation>Ü&amp;berlappend anordnen</translation>
-    </message>
-    <message>
-        <source>Tile pragmatic</source>
-        <translation>Überlappend anordnen</translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdTileVer</name>
+    <name>StdCmdTileWindows</name>
     <message>
         <source>Window</source>
         <translation>Fenster</translation>
@@ -3014,6 +3652,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdToggleObjects</name>
+    <message>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
+    </message>
+    <message>
+        <source>Toggle all objects</source>
+        <translation>Alle Objekte umkehren</translation>
+    </message>
+    <message>
+        <source>Toggles visibility of all objects in the active document</source>
+        <translation>Die Sichtbarkeit aller Objekte im aktiven Dokument umkehren</translation>
+    </message>
+</context>
+<context>
     <name>StdCmdToggleVisibility</name>
     <message>
         <source>Standard-View</source>
@@ -3021,7 +3674,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Toggle visibility</source>
-        <translation>Ein-/Ausblenden</translation>
+        <translation>Ein/Ausblenden</translation>
     </message>
     <message>
         <source>Toggles visibility</source>
@@ -3040,7 +3693,22 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Toggles this window</source>
-        <translation>Fenster ein-/ausblenden</translation>
+        <translation>Fenster ein/ausblenden</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdTreeSelection</name>
+    <message>
+        <source>View</source>
+        <translation>Ansicht</translation>
+    </message>
+    <message>
+        <source>Go to selection</source>
+        <translation>Gehe zu Selektion</translation>
+    </message>
+    <message>
+        <source>Scroll to first selected item</source>
+        <translation>Zum ersten selektierten Element rollen</translation>
     </message>
 </context>
 <context>
@@ -3056,6 +3724,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Undo exactly one action</source>
         <translation>Letzte Aktion rückgängig machen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdUserInterface</name>
+    <message>
+        <source>View</source>
+        <translation>Ansicht</translation>
+    </message>
+    <message>
+        <source>Dock views</source>
+        <translation>Fenster andocken</translation>
+    </message>
+    <message>
+        <source>Dock all top-level views</source>
+        <translation>Alle Top-Level-Fenster andocken</translation>
     </message>
 </context>
 <context>
@@ -3161,6 +3844,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Fits the whole content on the screen</source>
         <translation>Inhalt auf Bildschirmgröße einpassen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdViewFitSelection</name>
+    <message>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
+    </message>
+    <message>
+        <source>Fit selection</source>
+        <translation>Selektion einpassen</translation>
+    </message>
+    <message>
+        <source>Fits the selected content on the screen</source>
+        <translation>Selektierte Objekte auf den Bildschirm einpassen</translation>
     </message>
 </context>
 <context>
@@ -3370,6 +4068,51 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdWorkbench</name>
+    <message>
+        <source>View</source>
+        <translation>Ansicht</translation>
+    </message>
+    <message>
+        <source>Workbench</source>
+        <translation>Arbeitsbereich</translation>
+    </message>
+    <message>
+        <source>Switch between workbenches</source>
+        <translation>Zwischen Arbeitsbereichen wechseln</translation>
+    </message>
+</context>
+<context>
+    <name>StdOrthographicCamera</name>
+    <message>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
+    </message>
+    <message>
+        <source>Orthographic view</source>
+        <translation>Orthographische Ansicht</translation>
+    </message>
+    <message>
+        <source>Switches to orthographic view mode</source>
+        <translation>In orthographische Ansicht wechseln</translation>
+    </message>
+</context>
+<context>
+    <name>StdPerspectiveCamera</name>
+    <message>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
+    </message>
+    <message>
+        <source>Perspective view</source>
+        <translation>Perspektivische Ansicht</translation>
+    </message>
+    <message>
+        <source>Switches to perspective view mode</source>
+        <translation>In perspektivische Ansicht wechseln</translation>
+    </message>
+</context>
+<context>
     <name>StdViewBoxZoom</name>
     <message>
         <source>Standard-View</source>
@@ -3393,18 +4136,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Display the active view either in fullscreen, in undocked or docked mode</source>
         <translation>Aktives Fenster im Vollbild-Modus, im abgedockten oder angedockten Modus anzeigen</translation>
-    </message>
-    <message>
-        <source>Docked</source>
-        <translation>Angedockt</translation>
-    </message>
-    <message>
-        <source>Undocked</source>
-        <translation>Abgedockt</translation>
-    </message>
-    <message>
-        <source>Fullscreen</source>
-        <translation>Vollbild</translation>
     </message>
 </context>
 <context>
