@@ -80,7 +80,7 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  Qt::WFlags fl )
     QByteArray cStr("User parameter");
     parameterSet->setCurrentIndex(parameterSet->findData(cStr));
     onChangeParameterSet(parameterSet->currentIndex());
-    //parameterSet->hide();
+    parameterSet->hide();
 
     connect(parameterSet, SIGNAL(activated(int)), 
             this, SLOT(onChangeParameterSet(int)));
