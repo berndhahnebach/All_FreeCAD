@@ -877,6 +877,10 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>Invalid key name &apos;%1&apos;</source>
         <translation>Ungültiger Schlüsselname &apos;%1&apos;</translation>
     </message>
+    <message>
+        <source>System parameter</source>
+        <translation>Systemparameter</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgPreferences</name>

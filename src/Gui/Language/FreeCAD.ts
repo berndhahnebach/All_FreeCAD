@@ -912,6 +912,10 @@ Specify another directory, please.</source>
         <source>Invalid key name &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>System parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgPreferences</name>
