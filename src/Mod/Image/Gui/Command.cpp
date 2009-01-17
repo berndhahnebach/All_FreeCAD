@@ -30,6 +30,10 @@
 
 #include <Mod/Image/App/CaptureClass.h>
 
+#include <cv.h>
+#include <highgui.h>
+
+
 #include "ImageView.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -87,6 +91,44 @@ CmdImageCapturerTest::CmdImageCapturerTest()
 
 void CmdImageCapturerTest::activated(int iMsg)
 {
+
+#if 1
+
+	    // Reading an image
+    QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
+                                             QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"));
+    if (s.isEmpty()) return;
+
+  IplImage* image = cvLoadImage( 
+    (const char*)s.toLatin1(),
+    CV_LOAD_IMAGE_GRAYSCALE
+  );
+ IplImage* src = cvLoadImage( (const char*)s.toLatin1() ); //Changed for prettier show in color
+  CvMemStorage* storage = cvCreateMemStorage(0);
+  cvSmooth(image, image, CV_GAUSSIAN, 5, 5 );
+   CvSeq* results = cvHoughCircles( 
+    image, 
+    storage, 
+    CV_HOUGH_GRADIENT, 
+    2, 
+    image->width/10 
+  ); 
+  for( int i = 0; i < results->total; i++ ) {
+    float* p = (float*) cvGetSeqElem( results, i );
+    CvPoint pt = cvPoint( cvRound( p[0] ), cvRound( p[1] ) );
+    cvCircle( 
+      src,
+      pt, 
+      cvRound( p[2] ),
+      CV_RGB(0xff,0,0) 
+    );
+  }
+  cvNamedWindow( "cvHoughCircles", 1 );
+  cvShowImage( "cvHoughCircles", src);
+  cvWaitKey(0);
+
+
+#else
   struct tm *newtime;
 #if defined (_MSC_VER)
   struct _timeb tstruct;
@@ -115,6 +157,7 @@ void CmdImageCapturerTest::activated(int iMsg)
     if(cap.getOneCapture(buff)==27)
           break;
   }
+#endif
 }
 
 void CreateImageCommands(void)
