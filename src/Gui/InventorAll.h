@@ -60,6 +60,7 @@
 #include <Inventor/details/SoFaceDetail.h>
 #include <Inventor/details/SoLineDetail.h>
 #include <Inventor/details/SoPointDetail.h>
+#include <Inventor/draggers/SoDragger.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/draggers/SoTrackballDragger.h>
 #include <Inventor/elements/SoCoordinateElement.h>
@@ -75,6 +76,7 @@
 #include <Inventor/events/SoSpaceballButtonEvent.h>
 #include <Inventor/fields/SoMFColor.h>
 #include <Inventor/fields/SoSFVec3f.h>
+#include <Inventor/manips/SoCenterballManip.h>
 #include <Inventor/manips/SoClipPlaneManip.h>
 #include <Inventor/manips/SoTransformerManip.h>
 #include <Inventor/nodes/SoAnnotation.h>

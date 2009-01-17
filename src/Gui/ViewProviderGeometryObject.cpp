@@ -26,6 +26,9 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <qpixmap.h>
+# include <Inventor/actions/SoSearchAction.h>
+# include <Inventor/draggers/SoDragger.h>
+# include <Inventor/manips/SoCenterballManip.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCamera.h>
 # include <Inventor/nodes/SoDrawStyle.h>
@@ -33,6 +36,7 @@
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoSwitch.h>
 # include <Inventor/nodes/SoDirectionalLight.h>
+# include <Inventor/sensors/SoNodeSensor.h> 
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/actions/SoRayPickAction.h> 
 #endif
@@ -42,10 +46,13 @@
 #include "View3DInventorViewer.h"
 #include "SoFCSelection.h"
 #include "SoFCBoundingBox.h"
+#include "Application.h"
+#include "Document.h"
 #include "Window.h"
 
 #include <Base/Placement.h>
 #include <App/PropertyGeo.h>
+#include <App/GeoFeature.h>
 
 
 using namespace Gui;
@@ -137,7 +144,7 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
             pcShapeMaterial->transparency = trans;
             ShapeMaterial.setTransparency(trans);
         }
-    } 
+    }
     else if ( prop == &ShapeMaterial ) {
         const App::Material& Mat = ShapeMaterial.getValue();
         long value = (long)(100*Mat.transparency);
@@ -188,6 +195,96 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
         pcTransform->rotation.setValue(q0,q1,q2,q3);
         pcTransform->translation.setValue(px,py,pz);
     }
+}
+
+bool ViewProviderGeometryObject::doubleClicked(void)
+{
+    Gui::Application::Instance->activeDocument()->setEdit(this);
+    return true;
+}
+
+bool ViewProviderGeometryObject::setEdit(int ModNum)
+{
+    SoSearchAction sa;
+    sa.setInterest(SoSearchAction::FIRST);
+    sa.setSearchingAll(FALSE);
+    sa.setNode(this->pcTransform);
+    sa.apply(pcRoot);
+    SoPath * path = sa.getPath();
+    if (path) {
+        SoCenterballManip * manip = new SoCenterballManip;
+        SoDragger* dragger = manip->getDragger();
+        dragger->addStartCallback(dragStartCallback, this);
+        dragger->addFinishCallback(dragFinishCallback, this);
+        // Attach a sensor to the transform manipulator and set it as its user
+        // data to delete it when the view provider leaves the edit mode
+        SoNodeSensor* sensor = new SoNodeSensor(sensorCallback, this);
+        //sensor->setPriority(0);
+        sensor->attach(manip);
+        manip->setUserData(sensor);
+        return manip->replaceNode(path);
+    }
+
+    return false;
+}
+
+void ViewProviderGeometryObject::unsetEdit(void)
+{
+    SoSearchAction sa;
+    sa.setType(SoCenterballManip::getClassTypeId());
+    sa.setInterest(SoSearchAction::FIRST);
+    sa.apply(pcRoot);
+    SoPath * path = sa.getPath();
+
+    // No transform manipulator found.
+    if (!path)
+        return;
+
+    // The manipulator has a sensor as user data and this sensor contains the view provider
+    SoCenterballManip * manip = static_cast<SoCenterballManip*>(path->getTail());
+    SoNodeSensor* sensor = reinterpret_cast<SoNodeSensor*>(manip->getUserData());
+
+    // detach sensor
+    sensor->detach();
+    delete sensor;
+
+    SoTransform* transform = this->pcTransform;
+    manip->replaceManip(path, transform);
+
+    App::GeoFeature* geometry = static_cast<App::GeoFeature*>(this->pcObject);
+    this->updateData(&geometry->Placement);
+}
+
+void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
+{
+    SoNodeSensor* sensor = static_cast<SoNodeSensor*>(s);
+    SoNode* node = sensor->getAttachedNode();
+
+    if (node && node->getTypeId().isDerivedFrom(SoCenterballManip::getClassTypeId())) {
+        // apply the transformation data to the placement
+        SoCenterballManip* manip = static_cast<SoCenterballManip*>(node);
+        float q0, q1, q2, q3;
+        SbVec3f move = manip->translation.getValue();
+        manip->rotation.getValue().getValue(q0, q1, q2, q3);
+    
+        // get the geometry
+        ViewProviderGeometryObject* view = reinterpret_cast<ViewProviderGeometryObject*>(data);
+        App::GeoFeature* geometry = static_cast<App::GeoFeature*>(view->pcObject);
+        Base::Placement p;
+        p._pos.Set(move[0],move[1],move[2]);
+        p._rot.setValue(q0,q1,q2,q3);
+        geometry->Placement.setValue(p);
+    }
+}
+
+void ViewProviderGeometryObject::dragStartCallback(void *data, SoDragger *)
+{
+    // This is called when a manipulator is about to manipulating
+}
+
+void ViewProviderGeometryObject::dragFinishCallback(void *data, SoDragger *)
+{
+    // This is called when a manipulator has done manipulating
 }
 
 SoPickedPointList ViewProviderGeometryObject::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const

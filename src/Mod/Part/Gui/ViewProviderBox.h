@@ -43,18 +43,15 @@ namespace PartGui {
 
 class AppPartGuiExport ViewProviderBox:public ViewProviderPart
 {
-  PROPERTY_HEADER(PartGui::ViewProviderBox);
+    PROPERTY_HEADER(PartGui::ViewProviderBox);
 
 public:
-  /// constructor
-  ViewProviderBox();
-  /// destructor
-  virtual ~ViewProviderBox();
+    /// constructor
+    ViewProviderBox();
+    /// destructor
+    virtual ~ViewProviderBox();
 
-  std::vector<std::string> getDisplayModes(void) const;
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-
+    std::vector<std::string> getDisplayModes(void) const;
 
 protected:
 

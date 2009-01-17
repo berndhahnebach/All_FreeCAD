@@ -29,6 +29,8 @@
 
 class SoPickedPointList;
 class SoSwitch;
+class SoSensor;
+class SoDragger;
 class SbVec2s;
 
 namespace Gui {
@@ -63,6 +65,12 @@ public:
      */
     void attach(App::DocumentObject *pcObject);
     void updateData(const App::Property*);
+    /** @name Edit methods */
+    //@{
+    bool doubleClicked(void);
+    bool setEdit(int ModNum = 0);
+    void unsetEdit(void);
+    //@}
 
     SoFCSelection* getHighlightNode() const { return pcHighlight; }
     /**
@@ -82,6 +90,11 @@ protected:
     void showBoundingBox(bool);
     /// get called by the container whenever a property has been changed
     void onChanged(const App::Property* prop);
+
+private:
+    static void sensorCallback(void * data, SoSensor * sensor);
+    static void dragStartCallback(void * data, SoDragger * d);
+    static void dragFinishCallback(void * data, SoDragger * d);
 
 protected:
     SoFCSelection    * pcHighlight;
