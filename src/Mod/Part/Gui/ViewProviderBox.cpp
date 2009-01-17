@@ -73,15 +73,3 @@ std::vector<std::string> ViewProviderBox::getDisplayModes(void) const
 
   return StrList;
 }
-
-
-void ViewProviderBox::setEdit(void)
-{
-
-}
-
-void ViewProviderBox::unsetEdit(void)
-{
-
-}
-

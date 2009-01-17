@@ -216,10 +216,13 @@ bool View3DInventorViewer::setEdit(Gui::ViewProvider* p, int ModNum)
         return false;
     if (this->inEdit)
         return false; // only one view provider is editable at a time
-    this->inEdit = p;
-    addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->inEdit);
-    p->setEdit(ModNum);
-    return true;
+    bool ok = p->setEdit(ModNum);
+    if (ok) {
+        this->inEdit = p;
+        addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->inEdit);
+    }
+
+    return ok;
 }
 
 /// reset from edit mode

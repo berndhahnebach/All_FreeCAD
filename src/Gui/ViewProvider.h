@@ -121,7 +121,7 @@ public:
     virtual bool isShow(void) const;
     //@}
 
-   /** @name Edit methods
+    /** @name Edit methods
      * if the Viewprovider goes in edit mode
      * you can handle most of the events in the viewer by yourself
      */
@@ -131,6 +131,7 @@ public:
     virtual bool setEdit(int ModNum = 0);
     /// is called when you loose the edit mode
     virtual void unsetEdit(void);
+    //@}
     /// is called when the provider is in edit and the mouse is moved
     virtual bool mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm, SoPickedPoint* Point)
     { return false; }

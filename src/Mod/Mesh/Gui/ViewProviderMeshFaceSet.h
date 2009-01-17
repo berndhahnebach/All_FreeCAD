@@ -55,7 +55,7 @@ class SoFCMeshObjectShape;
  */
 class MeshGuiExport ViewProviderMeshFaceSet : public Gui::ViewProviderGeometryObject
 {
-    PROPERTY_HEADER(TriangulationGui::ViewProviderMeshFaceSet);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshFaceSet);
 
 public:
     ViewProviderMeshFaceSet();
@@ -75,6 +75,7 @@ public:
 
     /** @name Polygon picking */
     //@{
+    bool doubleClicked(void){return false;}
     /// Sets the edit mnode
     bool setEdit(int ModNum=0);
     /// Unsets the edit mode
