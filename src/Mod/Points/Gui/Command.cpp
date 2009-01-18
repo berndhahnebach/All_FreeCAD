@@ -162,7 +162,6 @@ void CmdPointsTransform::activated(int iMsg)
     // This is a test command to transform a point cloud directly written in C++ (not Python)
     Base::Placement trans;
     trans._rot = Base::Rotation(Base::Vector3d(0.0, 0.0, 1.0), 1.570796);
-    App::Document* pDoc = App::GetApplication().getActiveDocument();
 
     openCommand("Transform points");
     std::vector<App::DocumentObject*> points = getSelection().getObjectsOfType(Points::Feature::getClassTypeId());

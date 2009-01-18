@@ -541,7 +541,6 @@ void StdCmdShowSelection::activated(int iMsg)
     // go through all documents
     const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
     for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
-        Document *pcDoc = Application::Instance->getDocument(*it);
         const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
             (App::DocumentObject::getClassTypeId(), (*it)->getName());
         for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
@@ -576,7 +575,6 @@ void StdCmdHideSelection::activated(int iMsg)
     // go through all documents
     const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
     for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
-        Document *pcDoc = Application::Instance->getDocument(*it);
         const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
             (App::DocumentObject::getClassTypeId(), (*it)->getName());
         for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
