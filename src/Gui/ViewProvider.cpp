@@ -164,7 +164,6 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
         // Mouse Movement handling
     }
     else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
-        const SoLocation2Event * const event = (const SoLocation2Event *) ev;
         if (Provider->mouseMove(pNear,pFar,Point))
             node->setHandled();
     }

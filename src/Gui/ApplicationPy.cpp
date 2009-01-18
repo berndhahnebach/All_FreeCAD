@@ -274,7 +274,6 @@ PYFUNCIMP_S(Application,sExport)
 
         // get the view that belongs to the found document
         if (doc) {
-            Gui::Document* gui = Instance->getDocument(doc);
             QString fileName = QString::fromUtf8(filename);
             QFileInfo fi;
             fi.setFile(fileName);
