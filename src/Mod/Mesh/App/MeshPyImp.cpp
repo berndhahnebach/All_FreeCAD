@@ -501,6 +501,20 @@ PyObject*  MeshPy::addMesh(PyObject *args)
     Py_Return;
 }
 
+PyObject*  MeshPy::setPoint(PyObject *args)
+{
+    unsigned long index;
+    PyObject* pnt;
+    if (!PyArg_ParseTuple(args, "kO!",&index, &(Base::VectorPy::Type), &pnt))
+        return NULL;
+
+    PY_TRY {
+        getMeshObjectPtr()->setPoint(index, static_cast<Base::VectorPy*>(pnt)->value());
+    } PY_CATCH;
+
+    Py_Return;
+}
+
 PyObject* MeshPy::getSegment(PyObject *args)
 {
     unsigned long index;
