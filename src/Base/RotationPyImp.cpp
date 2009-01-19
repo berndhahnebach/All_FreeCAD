@@ -35,7 +35,15 @@ using namespace Base;
 // returns a string which represents the object e.g. when printed in python
 const char *RotationPy::representation(void) const
 {
-    return "<Rotation object>";
+    RotationPy::PointerType ptr = reinterpret_cast<RotationPy::PointerType>(_pcTwinPointer);
+    std::stringstream str;
+    str << "Quaternion (";
+    str << ptr->getValue()[0] << ","<< ptr->getValue()[1] << "," << ptr->getValue()[2] << "," << ptr->getValue()[3];
+    str << ")";
+
+    static std::string buf;
+    buf = str.str();
+    return buf.c_str();
 }
 
 PyObject *RotationPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
@@ -76,6 +84,16 @@ PyObject* RotationPy::invert(PyObject * args)
         return 0;
     this->getRotationPtr()->invert();
     Py_Return;
+}
+
+PyObject* RotationPy::multVec(PyObject * args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &obj))
+        return NULL;
+    Base::Vector3d vec(static_cast<VectorPy*>(obj)->value());
+    getRotationPtr()->multVec(vec, vec);
+    return new VectorPy(new Vector3d(vec));
 }
 
 Py::Tuple RotationPy::getQ(void) const

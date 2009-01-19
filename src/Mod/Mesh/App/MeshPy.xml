@@ -92,6 +92,11 @@ Example:
 				<UserDocu>Apply a rotation to the mesh</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="transform">
+			<Documentation>
+				<UserDocu>Apply a transformation to the mesh</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="transformToEigen">
 			<Documentation>
 				<UserDocu>Transform the mesh to its eigenbase</UserDocu>

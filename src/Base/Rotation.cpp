@@ -280,7 +280,7 @@ Rotation & Rotation::operator*=(const Rotation & q)
     return *this;
 }
 
-Rotation Rotation::operator*(const Rotation & q)
+Rotation Rotation::operator*(const Rotation & q) const
 {
     Rotation quat(*this);
     quat *= q;

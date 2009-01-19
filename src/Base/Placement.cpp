@@ -83,3 +83,25 @@ bool Placement::operator != (const Placement& that) const
 {
     return !(*this == that);
 }
+
+Placement & Placement::operator*=(const Placement & p)
+{
+    Base::Vector3d tmp(p._pos);
+    this->_rot.multVec(tmp, tmp);
+    this->_pos += tmp;
+    this->_rot *= p._rot;
+    return *this;
+}
+
+Placement Placement::operator*(const Placement & p) const
+{
+    Placement plm(*this);
+    plm *= p;
+    return plm;
+}
+
+void Placement::multVec(const Vector3d & src, Vector3d & dst) const
+{
+    this->_rot.multVec(src, dst);
+    dst += this->_pos;
+}

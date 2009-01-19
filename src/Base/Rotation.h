@@ -73,7 +73,7 @@ public:
     /** Operators. */
     //@{
     Rotation & operator*=(const Rotation & q);
-    Rotation operator *(const Rotation & q);
+    Rotation operator *(const Rotation & q) const;
     bool operator==(const Rotation & q) const;
     bool operator!=(const Rotation & q) const;
 
