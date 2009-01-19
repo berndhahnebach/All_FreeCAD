@@ -514,7 +514,7 @@ void CmdMeshExport::activated(int iMsg)
             format = fi.suffix();
         openCommand("Export Mesh");
         doCommand(Doc,"FreeCAD.ActiveDocument.getObject(\"%s\").Mesh.write(\"%s\")",
-                 (const char*)fi.baseName().toAscii(),
+                 docObj->getNameInDocument(),
                  (const char*)fn.toUtf8());
         commitCommand();
     }

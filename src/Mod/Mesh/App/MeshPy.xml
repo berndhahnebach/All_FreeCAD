@@ -122,6 +122,14 @@ Example:
 				<UserDocu>Combine this mesh with another mesh.</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="setPoint">
+			<Documentation>
+				<UserDocu>
+					setPoint(int, Vector)
+					Sets the point at index.
+				</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="getSegment">
 			<Documentation>
 				<UserDocu>Get a list of facet indices that describes a segment</UserDocu>
