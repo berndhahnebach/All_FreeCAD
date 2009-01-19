@@ -34,6 +34,18 @@ int Py::Vector::Vector_TypeCheck(PyObject * obj)
     return PyObject_TypeCheck(obj, &(Base::VectorPy::Type));
 }
 
+bool Py::Vector::accepts (PyObject *obj) const
+{
+    if (obj && Vector_TypeCheck (obj)) {
+        return true;
+    }
+    else if (PyTuple_Check(obj)) {
+        return (PyTuple_Size(obj) == 3);
+    }
+
+    return false;
+}
+
 Py::Vector::Vector (const Base::Vector3d& v)
 {
     set(new Base::VectorPy(v), true);
@@ -67,5 +79,10 @@ Py::Vector& Py::Vector::operator= (const Base::Vector3f& v)
 
 Base::Vector3d Py::Vector::toVector() const
 {
-    return static_cast<Base::VectorPy*>(ptr())->value();
+    if (Vector_TypeCheck (ptr())) {
+        return static_cast<Base::VectorPy*>(ptr())->value();
+    }
+    else {
+        return Base::getVectorFromTuple<double>(ptr());
+    }
 }

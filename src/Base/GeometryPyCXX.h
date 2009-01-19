@@ -26,6 +26,10 @@
 
 #include <CXX/Objects.hxx>
 #include "Vector3D.h"
+#include "Matrix.h"
+#include "MatrixPy.h"
+#include "Rotation.h"
+#include "RotationPy.h"
 
 namespace Base {
 template <typename T>
@@ -41,6 +45,7 @@ inline Vector3<T> getVectorFromTuple(PyObject* o)
 
 namespace Py {
 
+// Implementing the vector class in the fashion of the PyCXX library.
 class BaseExport Vector : public Object
 {
 public:
@@ -54,12 +59,10 @@ public:
 
     explicit Vector (const Base::Vector3d&);
     explicit Vector (const Base::Vector3f&);
+    virtual bool accepts (PyObject *pyob) const;
 
     Vector(const Object& other): Object(other.ptr()) {
         validate();
-    }
-    virtual bool accepts (PyObject *pyob) const {
-        return pyob && Vector_TypeCheck (pyob);
     }
     Vector& operator= (const Object& rhs)
     {
@@ -75,6 +78,64 @@ public:
 private:
     static int Vector_TypeCheck(PyObject *);
 };
+
+// Implementing geometric classes as template in the fashion of the PyCXX library.
+template <class T, class Py>
+class GeometryT : public Object
+{
+public:
+    explicit GeometryT (PyObject *pyob, bool owned): Object(pyob, owned) {
+        validate();
+    }
+    GeometryT (const GeometryT& ob): Object(*ob) {
+        validate();
+    }
+    explicit GeometryT ()
+    {
+        set(new Py(T()), true);
+        validate();
+    }
+    explicit GeometryT (const T& v)
+    {
+        set(new Py(v), true);
+        validate();
+    }
+    GeometryT(const Object& other): Object(other.ptr()) {
+        validate();
+    }
+    virtual bool accepts (PyObject *pyob) const {
+        return pyob && Geometry_TypeCheck (pyob);
+    }
+    GeometryT& operator= (const Object& rhs)
+    {
+        return (*this = *rhs);
+    }
+    GeometryT& operator= (PyObject* rhsp)
+    {
+        if(ptr() == rhsp) return *this;
+        set (rhsp, false);
+        return *this;
+    }
+    GeometryT& operator= (const T&)
+    {
+        set (new Py(v), true);
+        return *this;
+    }
+    T toGeometry() const
+    {
+        return static_cast<Py*>(ptr())->value();
+    }
+
+private:
+    static int Geometry_TypeCheck(PyObject * obj)
+    {
+        return PyObject_TypeCheck(obj, &(Py::Type));
+    }
+};
+
+// PyCXX wrapper classes for MatrixPy, RotationPy, ...
+typedef GeometryT<Base::Matrix4D, Base::MatrixPy>   Matrix;
+typedef GeometryT<Base::Rotation, Base::RotationPy> Rotation;
 
 }
 

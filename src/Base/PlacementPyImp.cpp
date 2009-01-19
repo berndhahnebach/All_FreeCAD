@@ -23,13 +23,15 @@
 
 #include "PreCompiled.h"
 
-#include "Base/Placement.h"
+#include "Placement.h"
+#include "GeometryPyCXX.h"
 
 // inclusion of the generated files (generated out of PlacementPy.xml)
 #include "PlacementPy.h"
 #include "PlacementPy.cpp"
 #include "Matrix.h"
 #include "MatrixPy.h"
+#include "RotationPy.h"
 #include "VectorPy.h"
 
 using namespace Base;
@@ -103,6 +105,25 @@ PyObject* PlacementPy::move(PyObject * args)
     Py_Return;
 }
 
+PyObject* PlacementPy::multiply(PyObject * args)
+{
+    PyObject *plm;
+    if (!PyArg_ParseTuple(args, "O!", &(PlacementPy::Type), &plm))
+        return NULL;
+    Placement mult = (*getPlacementPtr()) * (*static_cast<PlacementPy*>(plm)->getPlacementPtr());
+    return new PlacementPy(new Placement(mult));
+}
+
+PyObject* PlacementPy::multVec(PyObject * args)
+{
+    PyObject *vec;
+    if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &vec))
+        return NULL;
+    Base::Vector3d pnt(static_cast<VectorPy*>(vec)->value());
+    getPlacementPtr()->multVec(pnt, pnt);
+    return new VectorPy(new Vector3d(pnt));
+}
+
 PyObject* PlacementPy::toMatrix(PyObject * args)
 {
     if (!PyArg_ParseTuple(args, ""))
@@ -121,37 +142,38 @@ PyObject* PlacementPy::inverse(PyObject * args)
 
 Py::Object PlacementPy::getBase(void) const
 {
-    return Py::Object(new VectorPy(getPlacementPtr()->_pos));
+    return Py::Vector(getPlacementPtr()->_pos);
 }
 
 void PlacementPy::setBase(Py::Object arg)
 {
-    PyObject* p = arg.ptr();
-    if (PyObject_TypeCheck(p, &(VectorPy::Type))) {
-        getPlacementPtr()->_pos = static_cast<VectorPy*>(p)->value();
-    }
-    else {
-        std::string error = std::string("type must be 'Vector', not ");
-        error += p->ob_type->tp_name;
-        throw Py::TypeError(error);
-    }
+    getPlacementPtr()->_pos = Py::Vector(arg).toVector();
 }
 
-Py::Tuple PlacementPy::getRotation(void) const
+Py::Object PlacementPy::getRotation(void) const
 {
-    Py::Tuple rot(4);
-    for (int i=0; i<4; i++)
-        rot[i]=Py::Float(getPlacementPtr()->_rot.getValue()[i]);
-    return rot;
+    return Py::Rotation(getPlacementPtr()->_rot);
 }
 
-void PlacementPy::setRotation(Py::Tuple arg)
+void PlacementPy::setRotation(Py::Object arg)
 {
-    getPlacementPtr()->_rot.setValue((double)Py::Float(arg[0]),
-                                     (double)Py::Float(arg[1]),
-                                     (double)Py::Float(arg[2]),
-                                     (double)Py::Float(arg[3])
-                                     );
+    Py::Rotation rot;
+    if (rot.accepts(arg.ptr())) {
+        getPlacementPtr()->_rot = Py::Rotation(arg).toGeometry();
+        return;
+    }
+    Py::Tuple tuple;
+    if (tuple.accepts(arg.ptr())) {
+        tuple = arg;
+        getPlacementPtr()->_rot.setValue((double)Py::Float(tuple[0]),
+                                         (double)Py::Float(tuple[1]),
+                                         (double)Py::Float(tuple[2]),
+                                         (double)Py::Float(tuple[3])
+                                         );
+        return;
+    }
+
+    throw Py::TypeError("either Rotation or tuple of four floats expected");
 }
 
 PyObject *PlacementPy::getCustomAttributes(const char* /*attr*/) const

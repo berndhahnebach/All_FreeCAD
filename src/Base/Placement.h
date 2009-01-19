@@ -50,8 +50,16 @@ public:
     void invert();
     Placement inverse() const;
 
+    /** Operators. */
+    //@{
+    Placement & operator*=(const Placement & p);
+    Placement operator *(const Placement & p) const;
     bool operator == (const Placement&) const;
     bool operator != (const Placement&) const;
+
+    void multVec(const Vector3d & src, Vector3d & dst) const;
+    //@}
+
 
     Vector3<double> _pos;
     Base::Rotation  _rot;

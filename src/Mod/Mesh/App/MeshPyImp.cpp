@@ -337,6 +337,19 @@ PyObject*  MeshPy::rotate(PyObject *args)
     Py_Return;
 }
 
+PyObject*  MeshPy::transform(PyObject *args)
+{
+    PyObject *mat;
+    if (!PyArg_ParseTuple(args, "O!",&(Base::MatrixPy::Type), &mat))
+        return NULL;
+
+    PY_TRY {
+        getMeshObjectPtr()->applyTransform(static_cast<Base::MatrixPy*>(mat)->value());
+    } PY_CATCH;
+
+    Py_Return;
+}
+
 PyObject*  MeshPy::transformToEigen(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))

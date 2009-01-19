@@ -22,8 +22,25 @@ scaling or other distortion is needed.
 	</Documentation>
 		<Methode Name="move">
 			<Documentation>
-				<UserDocu>move(Vector) 
-Move the Placement along the vector
+				<UserDocu>
+					move(Vector) 
+					Move the placement along the vector
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="multiply">
+			<Documentation>
+				<UserDocu>
+					multiply(Placement)
+					Multiply this placement with another placement
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="multVec">
+			<Documentation>
+				<UserDocu>
+					multVector(Vector) -> Vector
+					Compute the transformed vector using the placement
 				</UserDocu>
 			</Documentation>
 		</Methode>
@@ -53,7 +70,7 @@ Move the Placement along the vector
 			<Documentation>
 				<UserDocu>Orientation of the placement expressed as rotation</UserDocu>
 			</Documentation>
-			<Parameter Name="Rotation" Type="Tuple" />
+			<Parameter Name="Rotation" Type="Object" />
 		</Attribute>
 	</PythonExport>
 </GenerateModel>
