@@ -25,11 +25,31 @@
 import FreeCAD, os, unittest, tempfile
 
 class ConsoleTestCase(unittest.TestCase):
+    def setUp(self):
+        self.count = 0
+
     def testPrint(self):
         FreeCAD.Console.PrintMessage("   Printing message\n")
         FreeCAD.Console.PrintError("   Printing error\n")
         FreeCAD.Console.PrintWarning("   Printing warning\n")
         FreeCAD.Console.PrintLog("   Printing Log\n")
+
+    def testPrintFromThread(self):
+        import thread, time
+        def adder():
+            lock.acquire()
+            self.count=self.count+1
+            # call of Console method is thread-safe
+            FreeCAD.Console.PrintMessage(str(self.count)+"\n")
+            lock.release()
+
+        lock=thread.allocate_lock()
+        for i in range(10):
+            thread.start_new(adder,())
+
+        time.sleep(3)
+        self.failUnless(self.count==10,"Synchronization of threads failed")
+        FreeCAD.Console.PrintMessage(str(self.count)+"\n")
 
 #    def testStatus(self):
 #        SLog = FreeCAD.GetStatus("Console","Log")
@@ -56,6 +76,9 @@ class ConsoleTestCase(unittest.TestCase):
 #        FreeCAD.SetStatus("Console","Err",SErr)
 #        FreeCAD.SetStatus("Console","Wrn",SWrn)
 #        FreeCAD.SetStatus("Console","Msg",SMsg)
+
+    def tearDown(self):
+        pass
 
 class ParameterTestCase(unittest.TestCase):
     def setUp(self):
