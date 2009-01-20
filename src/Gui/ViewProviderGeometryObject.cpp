@@ -184,6 +184,14 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
         pcBoundingBox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
     }
     else if (prop->isDerivedFrom(App::PropertyPlacement::getClassTypeId())) {
+        // Note: If R is the rotation, c the rotation center and t the translation
+        // vector then Inventor applies the following transformation: R*(x-c)+c+t
+        // In FreeCAD a placement only has a rotation and a translation part but
+        // no rotation center. This means that the following equation must be ful-
+        // filled: R * (x-c) + c + t = R * x + t
+        //    <==> R * x + t - R * c + c = R * x + t
+        //    <==> (I-R) * c = 0 ==> c = 0
+        // This means that the center point must be the origin!
         Base::Placement p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
         float q0 = (float)p._rot.getValue()[0];
         float q1 = (float)p._rot.getValue()[1];
@@ -194,6 +202,7 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
         float pz = (float)p._pos.z;
         pcTransform->rotation.setValue(q0,q1,q2,q3);
         pcTransform->translation.setValue(px,py,pz);
+        pcTransform->center.setValue(0.0f,0.0f,0.0f);
     }
 }
 
@@ -265,14 +274,28 @@ void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
         SoCenterballManip* manip = static_cast<SoCenterballManip*>(node);
         float q0, q1, q2, q3;
         SbVec3f move = manip->translation.getValue();
+        SbVec3f center = manip->center.getValue();
         manip->rotation.getValue().getValue(q0, q1, q2, q3);
     
-        // get the geometry
+        // get the placement
         ViewProviderGeometryObject* view = reinterpret_cast<ViewProviderGeometryObject*>(data);
         App::GeoFeature* geometry = static_cast<App::GeoFeature*>(view->pcObject);
+        // Note: If R is the rotation, c the rotation center and t the translation
+        // vector then Inventor applies the following transformation: R*(x-c)+c+t
+        // In FreeCAD a placement only has a rotation and a translation part but
+        // no rotation center. This means that we must devide the transformation
+        // in a rotation and translation part.
+        // R * (x-c) + c + t = R * x - R * c + c + t
+        // The rotation part is R, the translation part t', however, is:
+        // t' = t + c - R * c
         Base::Placement p;
-        p._pos.Set(move[0],move[1],move[2]);
         p._rot.setValue(q0,q1,q2,q3);
+        Base::Vector3d t(move[0],move[1],move[2]);
+        Base::Vector3d c(center[0],center[1],center[2]);
+        t += c;
+        p._rot.multVec(c,c);
+        t -= c;
+        p._pos = t;
         geometry->Placement.setValue(p);
     }
 }
