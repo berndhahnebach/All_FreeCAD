@@ -69,7 +69,7 @@ Todo list:
 # import FreeCAD modules
 import FreeCAD, FreeCADGui, Part, math, sys
 sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
-from FreeCAD import Base
+from FreeCAD import Base, Vector
 from pivy import coin
 from draftlibs import fcvec
 from draftlibs import fcgeo
@@ -77,7 +77,8 @@ from draftlibs import fcgeo
 
 # Constants
 
-snapStack = [] #storing two last snapped objects, so we can check for intersection
+normal = Vector(0,0,1) # temporary normal for all objects (always horiontal)
+snapStack = [] # storing two last snapped objects, so we can check for intersection
 
 #---------------------------------------------------------------------------
 # General common functions used by the constructors
@@ -137,12 +138,12 @@ def snapPoint (target,point,cursor,ctrl=False):
 						if (target.constrain == 0):
 							if ((last.y > p1.y) and (last.y < p2.y) or (last.y > p2.y) and (last.y < p1.y)):
 								pc = (last.y-p1.y)/(p2.y-p1.y)
-								constrainpoint = (FreeCAD.Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
+								constrainpoint = (Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
 								snapArray.append([constrainpoint,1,constrainpoint]) # constrainpoint
 						if (target.constrain == 1):
 							if ((last.x > p1.x) and (last.x < p2.x) or (last.x > p2.x) and (last.x < p1.x)):
 								pc = (last.x-p1.x)/(p2.x-p1.x)
-								constrainpoint = (FreeCAD.Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
+								constrainpoint = (Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
 								snapArray.append([constrainpoint,1,constrainpoint]) # constrainpoint
 					if (len(snapStack) == 2):
 						last = snapStack[1]
@@ -158,15 +159,15 @@ def snapPoint (target,point,cursor,ctrl=False):
 					pos = j.Curve.Center
 					for i in [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330]:
 						ang = math.radians(i)
-						cur = FreeCAD.Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
+						cur = Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
 						snapArray.append([cur,1,cur])
 					for i in [15,37.5,52.5,75,105,127.5,142.5,165,195,217.5,232.5,255,285,307.5,322.5,345]:
 						ang = math.radians(i)
-						cur = FreeCAD.Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
+						cur = Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
 						snapArray.append([cur,0,pos])
 
 		else:
-			cur = FreeCAD.Vector(snapped['x'],snapped['y'],snapped['z'])
+			cur = Vector(snapped['x'],snapped['y'],snapped['z'])
 			snapArray = [[cur,2,cur]]
 
 		# calculating shortest distance
@@ -352,7 +353,7 @@ class rectangleTracker:
 		self.switch.addChild(node)
 		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
 		sg.addChild(self.switch)
-		self.origin = FreeCAD.Vector(0,0,0)
+		self.origin = Vector(0,0,0)
 		self.switch.whichChild = -1
 
 	def __del__(self):
@@ -595,7 +596,7 @@ class line:
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = FreeCAD.Vector(point.x,point.y,point.z)
+			ctrlPoint = Vector(point.x,point.y,point.z)
 			if (arg["ShiftDown"]): # constraining
 				point = constrainPoint(self,point)
 			else:
@@ -670,7 +671,7 @@ class line:
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
-		point = FreeCAD.Vector(numx,numy,numz)
+		point = Vector(numx,numy,numz)
 		self.node.append(point)
 		self.linetrack.p1(point)
 		self.drawSegment(point)
@@ -790,10 +791,10 @@ class rectangle:
 			miny = self.node[1].y
 			maxy = self.node[0].y
 
-		edges.append(Part.Line(FreeCAD.Vector(minx,maxy,z),FreeCAD.Vector(maxx,maxy,z)).toShape())
-		edges.append(Part.Line(FreeCAD.Vector(maxx,maxy,z),FreeCAD.Vector(maxx,miny,z)).toShape())
-		edges.append(Part.Line(FreeCAD.Vector(maxx,miny,z),FreeCAD.Vector(minx,miny,z)).toShape())
-		edges.append(Part.Line(FreeCAD.Vector(minx,miny,z),FreeCAD.Vector(minx,maxy,z)).toShape())
+		edges.append(Part.Line(Vector(minx,maxy,z),Vector(maxx,maxy,z)).toShape())
+		edges.append(Part.Line(Vector(maxx,maxy,z),Vector(maxx,miny,z)).toShape())
+		edges.append(Part.Line(Vector(maxx,miny,z),Vector(minx,miny,z)).toShape())
+		edges.append(Part.Line(Vector(minx,miny,z),Vector(minx,maxy,z)).toShape())
 			
 		shape=Part.Wire(edges)
 		self.doc.openTransaction("Create "+self.featureName) 
@@ -828,7 +829,7 @@ class rectangle:
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
-		point = FreeCAD.Vector(numx,numy,numz)
+		point = Vector(numx,numy,numz)
 		self.appendPoint(point)
 
 	def appendPoint(self,point):
@@ -909,7 +910,7 @@ class arc:
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = FreeCAD.Vector(point.x,point.y,point.z)
+			ctrlPoint = Vector(point.x,point.y,point.z)
 			if (arg["ShiftDown"]): # constraining
 				point = constrainPoint(self,point)
 			else:
@@ -942,7 +943,7 @@ class arc:
 				else:
 					pc = [-math.cos(angle)*self.rad,math.sin(angle)*self.rad]
 					angle = math.pi-angle
-				self.linetrack.p2(FreeCAD.Vector(self.center.x+pc[0],self.center.y+pc[1],point.z))
+				self.linetrack.p2(Vector(self.center.x+pc[0],self.center.y+pc[1],point.z))
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -975,7 +976,7 @@ class arc:
 					else:
 						sweep = -(self.firstangle+(2*math.pi-angle))
 				self.arctrack.update(sweep)
-				self.linetrack.p2(FreeCAD.Vector(self.center.x+pc[0],self.center.y+pc[1],point.z))
+				self.linetrack.p2(Vector(self.center.x+pc[0],self.center.y+pc[1],point.z))
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -1028,19 +1029,18 @@ class arc:
 
 	def drawArc(self):
 		if self.closedCircle:
-			arc = Part.makeCircle(self.rad)
-			arc.translate(self.center)
+			arc = Part.Circle(self.center,normal,self.rad).toShape()
 		else:
-			radvec = FreeCAD.Vector(self.rad,0,0)
-			p1 = fcvec.add(self.center,fcvec.rotate(radvec,self.firstangle))
-			p3 = fcvec.add(self.center,fcvec.rotate(radvec,self.lastangle))
+			radvec = Vector(self.rad,0,0)
+			p1 = Vector.add(self.center,fcvec.rotate(radvec,self.firstangle))
+			p3 = Vector.add(self.center,fcvec.rotate(radvec,self.lastangle))
 			if self.firstangle < self.lastangle:
 				mid = self.firstangle+(self.lastangle-self.firstangle)/2
 			else:
 				half = (self.lastangle-(math.pi*2-self.firstangle))/2
 				mid = self.lastangle-half
 			if not self.clockwise: mid = mid + math.pi
-			p2 = fcvec.add(self.center,fcvec.rotate(radvec,mid))			       
+			p2 = Vector.add(self.center,fcvec.rotate(radvec,mid))			       
 			arc = Part.Arc(p1,p2,p3).toShape()
 		self.obj.Shape = arc
 		formatObject(self.obj)
@@ -1049,7 +1049,7 @@ class arc:
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
-		self.center = FreeCAD.Vector(numx,numy,numz)
+		self.center = Vector(numx,numy,numz)
 		self.node = [self.center]
 		self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
 		self.arctrack.on()
@@ -1168,7 +1168,7 @@ class annotation:
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
-		point = FreeCAD.Vector(numx,numy,numz)
+		point = Vector(numx,numy,numz)
 		self.node.append(point)
 		self.ui.textUi()
 		self.ui.textValue.setFocus()
@@ -1267,7 +1267,7 @@ class move:
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = FreeCAD.Vector(point.x,point.y,point.z)
+			ctrlPoint = Vector(point.x,point.y,point.z)
 			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 			if (arg["ShiftDown"]): # constraining
 				point = constrainPoint(self,point)
@@ -1315,7 +1315,7 @@ class move:
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
-		point = FreeCAD.Vector(numx,numy,numz)
+		point = Vector(numx,numy,numz)
 		if (self.node == []):
 			self.node.append(point)
 			self.ui.isRelative.show()
@@ -1469,7 +1469,7 @@ class rotate:
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = FreeCAD.Vector(point.x,point.y,point.z)
+			ctrlPoint = Vector(point.x,point.y,point.z)
 			if (arg["ShiftDown"]): # constraining
 				point = constrainPoint(self,point)
 			else:
@@ -1574,7 +1574,7 @@ class rotate:
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
-		self.center = FreeCAD.Vector(numx,numy,numz)
+		self.center = Vector(numx,numy,numz)
 		self.node = [self.center]
 		self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
 		self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
@@ -1708,7 +1708,7 @@ class offset:
 			if (arg["ShiftDown"]) and self.constrainSeg:
 				dist = fcgeo.findPerpendicular(point,self.edges,self.constrainSeg[1])
 				self.constraintrack.p1(self.edges[self.constrainSeg[1]].Vertexes[0].Point)
-				self.constraintrack.p2(fcvec.add(point,dist[0]))
+				self.constraintrack.p2(Vector.add(point,dist[0]))
 				self.constraintrack.on()
 			else:
 				dist = fcgeo.findPerpendicular(point,self.edges)
@@ -1718,7 +1718,7 @@ class offset:
 				self.linetrack.on()
 				for g in self.ghost: g.on()
 				self.linetrack.p1(point)
-				dvec = fcvec.add(point,dist[0])
+				dvec = Vector.add(point,dist[0])
 				self.linetrack.p2(dvec)
 				self.redraw(dist)
 				self.ui.radiusValue.setText("%.2f" % dist[0].Length)
@@ -1791,7 +1791,7 @@ class offset:
 			offedge2 = fcgeo.offset(prev,offset2)
 			inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 			first = inter[fcgeo.findClosest(edge.Vertexes[0].Point,inter)]
-		else: first = fcvec.add(edge.Vertexes[0].Point,offset1)
+		else: first = Vector.add(edge.Vertexes[0].Point,offset1)
 					
 		# iterating throught edges, offsetting the last vertex
 		for i in range(len(self.edges)):
@@ -1813,7 +1813,7 @@ class offset:
 				offedge2 = fcgeo.offset(next,offset2)
 				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 				last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
-			else: last = fcvec.add(edge.Vertexes[-1].Point,offset1)
+			else: last = Vector.add(edge.Vertexes[-1].Point,offset1)
 			
 			if isinstance(edge.Curve,Part.Line):
 				self.ghost[i].p1(first)
@@ -1826,7 +1826,7 @@ class offset:
 					chord = fcvec.new(first,last)
 					perp = fcvec.crossproduct(chord)
 					scaledperp = fcvec.scale(fcvec.normalized(perp),rad)
-					midpoint = fcvec.add(center,scaledperp)
+					midpoint = Vector.add(center,scaledperp)
 					ang1=fcvec.angle(fcvec.new(center,first))
 					ang2=fcvec.angle(fcvec.new(center,last))
 					if ang1 > ang2: ang1,ang2 = ang2,ang1
@@ -1838,7 +1838,7 @@ class offset:
 					if (len(edge.Vertexes) > 1):
 						newedges.append(Part.Arc(first,midpoint,last).toShape())
 					else:
-						newedges.append(Part.Circle(center,FreeCAD.Vector(0,0,1),rad).toShape())
+						newedges.append(Part.Circle(center,Vector(0,0,1),rad).toShape())
 			first = last
 		if real: return newedges
 				
@@ -2160,7 +2160,7 @@ class trimex:
 			perp = fcvec.crossproduct(fcgeo.vec(edge))
 			chord = fcvec.new(point,v1)
 			proj = fcvec.project(chord,perp)
-			self.newpoint = fcvec.add(point,proj)
+			self.newpoint = Vector.add(point,proj)
 			dist = fcvec.new(self.newpoint,v1).Length
 			ghost.p1(self.newpoint)
 			ghost.p2(v2)
@@ -2169,14 +2169,14 @@ class trimex:
 				if self.force:
 					ray = fcvec.new(v1,self.newpoint)
 					ray = fcvec.scale(ray,self.force/ray.Length)
-					self.newpoint = fcvec.add(v1,ray)
+					self.newpoint = Vector.add(v1,ray)
 				newedges.append(Part.Line(self.newpoint,v2).toShape())
 		else:
 			center = edge.Curve.Center
 			rad = edge.Curve.Radius
 			ang1 = fcvec.angle(fcvec.new(center,v2))
 			ang2 = fcvec.angle(fcvec.new(center,point))
-			self.newpoint=fcvec.add(center,fcvec.rotate(FreeCAD.Vector(rad,0,0),-ang2))
+			self.newpoint=Vector.add(center,fcvec.rotate(Vector(rad,0,0),-ang2))
 			self.ui.labelRadius.setText("Angle")
 			dist = math.degrees(-ang2)
 			if ang1 > ang2: ang1,ang2 = ang2,ang1
@@ -2187,12 +2187,12 @@ class trimex:
 			if real:
 				if self.force:
 					angle = math.radians(self.force)
-					newray = fcvec.rotate(FreeCAD.Vector(rad,0,0),angle)
-					self.newpoint = fcvec.add(center,newray)
+					newray = fcvec.rotate(Vector(rad,0,0),angle)
+					self.newpoint = Vector.add(center,newray)
 				chord = fcvec.new(self.newpoint,v2)
 				perp = fcvec.crossproduct(chord)
 				scaledperp = fcvec.scale(fcvec.normalized(perp),rad)
-				midpoint = fcvec.add(center,scaledperp)
+				midpoint = Vector.add(center,scaledperp)
 				newedges.append(Part.Arc(self.newpoint,midpoint,v2).toShape())
 		ghost.on()
 

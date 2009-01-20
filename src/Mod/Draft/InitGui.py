@@ -191,6 +191,7 @@ Gui.addWorkbench(DraftWorkbench)
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
 App.addExportType("Autodesk DXF (*.dxf)","importDXF")
+App.addExportType("SVG (*.svg)","importSVG")
 Gui.addPreferencePage(draftpath+"userprefs.ui","Draft")
 Gui.addIconPath(draftpath)
 
