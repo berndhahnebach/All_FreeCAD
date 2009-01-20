@@ -525,6 +525,7 @@ class toolBar:
 		icons['Draft_apply']=iconfile.copy(QtCore.QRect(384,64,64,64))
 		icons['Draft_finish']=iconfile.copy(QtCore.QRect(448,64,64,64))
 		icons['Draft_lock']=iconfile.copy(QtCore.QRect(512,64,64,64))
+		icons['preferences-draft']=iconfile.copy(QtCore.QRect(384,0,64,64))
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()
 			bu = QtCore.QBuffer(ba)
