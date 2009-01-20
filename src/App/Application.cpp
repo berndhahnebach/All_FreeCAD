@@ -1156,15 +1156,9 @@ void Application::LoadParameters(void)
 
 
 #if 1
-
-#if (defined(_MSC_VER) && (_MSC_VER < 1500))
-// fix weird error while linking boost???
-namespace boost
-{
-namespace program_options {
-std::string arg="arg";
-}
-}
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+// fix weird error while linking boost (all versions of VC)
+namespace boost { namespace program_options { std::string arg="arg"; } }
 #endif
 
 pair<string, string> customSyntax(const string& s)
