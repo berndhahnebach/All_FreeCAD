@@ -360,9 +360,9 @@ PythonConsole::PythonConsole(QWidget *parent)
 
     // try to override Python's stdout/err
     Base::PyGILStateLocker lock;
-    d->_stdoutPy = new PythonStdoutPy(this);
-    d->_stderrPy = new PythonStderrPy(this);
-    d->_stdinPy  = new PythonStdinPy (this);
+    d->_stdoutPy = new PythonStdout(this);
+    d->_stderrPy = new PythonStderr(this);
+    d->_stdinPy  = new PythonStdin (this);
     d->_stdout = PySys_GetObject("stdout");
     d->_stderr = PySys_GetObject("stderr");
     d->_stdin  = PySys_GetObject("stdin");

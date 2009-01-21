@@ -21,12 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef GUI_PYTHON_CONSOLE_PY_H
-#define GUI_PYTHON_CONSOLE_PY_H
+#ifndef GUI_PYTHONCONSOLE_PY_H
+#define GUI_PYTHONCONSOLE_PY_H
 
-#include <Base/PyObjectBase.h>
-
-#include "PythonEditor.h"
+#include <CXX/Extensions.hxx>
 
 namespace Gui {
 class PythonConsole;
@@ -35,102 +33,69 @@ class PythonConsole;
  * Python class for redirection of stdout to FreeCAD's Python
  * console window. This allows to show all Python messages in  
  * the same window where the commands are performed.
- * @see PythonStderrPy
+ * @see PythonStderr
  * @see PythonConsole
  * @author Werner Mayer
  */
-class GuiExport PythonStdoutPy : public Base::PyObjectBase
+class PythonStdout : public Py::PythonExtension<PythonStdout> 
 {
-  /// always start with Py_Header
-  Py_Header;
-
-protected:
-  ~PythonStdoutPy();
+private:
+    PythonConsole* pyConsole;
 
 public:
-  PythonStdoutPy(PythonConsole *pcWb, PyTypeObject *T = &Type);
+    static void init_type(void);    // announce properties and methods
 
-  static PyObject *PyMake(PyObject *, PyObject *);
+    PythonStdout(PythonConsole *pc);
+    ~PythonStdout();
 
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
-  virtual PyObject *_repr(void);                // the representation
-  PyObject *_getattr(char *attr);               // __getattr__ function
-  int _setattr(char *attr, PyObject *value);    // __setattr__ function
-
-  PYFUNCDEF_D(PythonStdoutPy,write)
-  PYFUNCDEF_D(PythonStdoutPy,flush)
-
-private:
-  PythonConsole* pyConsole;
+    Py::Object repr();
+    Py::Object write(const Py::Tuple&);
+    Py::Object flush(const Py::Tuple&);
 };
 
 /**
  * Python class for redirection of stderr to FreeCAD's Python
  * console window. This allows to show all Python messages in 
  * the same window where the commands are performed.
- * @see PythonStdoutPy
+ * @see PythonStdout
  * @see PythonConsole
  * @author Werner Mayer
  */
-class GuiExport PythonStderrPy : public Base::PyObjectBase
+class PythonStderr : public Py::PythonExtension<PythonStderr> 
 {
-  /// always start with Py_Header
-  Py_Header;
-
-protected:
-  ~PythonStderrPy();
+private:
+    PythonConsole* pyConsole;
 
 public:
-  PythonStderrPy(PythonConsole *pcWb, PyTypeObject *T = &Type);
+    static void init_type(void);    // announce properties and methods
 
-  static PyObject *PyMake(PyObject *, PyObject *);
+    PythonStderr(PythonConsole *pc);
+    ~PythonStderr();
 
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
-  virtual PyObject *_repr(void);                // the representation
-  PyObject *_getattr(char *attr);               // __getattr__ function
-  int _setattr(char *attr, PyObject *value);    // __setattr__ function
-
-  PYFUNCDEF_D(PythonStderrPy,write)
-  PYFUNCDEF_D(PythonStderrPy,flush)
-
-private:
-  PythonConsole* pyConsole;
+    Py::Object repr();
+    Py::Object write(const Py::Tuple&);
+    Py::Object flush(const Py::Tuple&);
 };
 
 /**
  * Python class for redirection of stdin to an input dialog of Qt.
  * @author Werner Mayer
  */
-class GuiExport PythonStdinPy : public Base::PyObjectBase
+class PythonStdin : public Py::PythonExtension<PythonStdin> 
 {
-  /// always start with Py_Header
-  Py_Header;
-
-protected:
-  ~PythonStdinPy();
+private:
+    PythonConsole* pyConsole;
 
 public:
-  PythonStdinPy(PythonConsole *pcWb, PyTypeObject *T = &Type);
+    static void init_type(void);    // announce properties and methods
 
-  static PyObject *PyMake(PyObject *, PyObject *);
+    PythonStdin(PythonConsole *pc);
+    ~PythonStdin();
 
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
-  virtual PyObject *_repr(void);                // the representation
-  PyObject *_getattr(char *attr);               // __getattr__ function
-  int _setattr(char *attr, PyObject *value);    // __setattr__ function
-
-  PYFUNCDEF_D(PythonStdinPy,readline)
-
-private:
-  PythonConsole* pyConsole;
+    Py::Object repr();
+    Py::Object readline(const Py::Tuple&);
 };
 
 } // namespace Gui
 
-#endif // GUI_PYTHON_CONSOLE_PY_H
+#endif // GUI_PYTHONCONSOLE_PY_H

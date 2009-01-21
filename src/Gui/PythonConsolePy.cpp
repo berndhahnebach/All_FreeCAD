@@ -35,298 +35,152 @@
 
 using namespace Gui;
 
-//--------------------------------------------------------------------------
-// Type structure
-//--------------------------------------------------------------------------
-PyTypeObject PythonStdoutPy::Type = {
-    PyObject_HEAD_INIT(&PyType_Type)
-    0,                      /*ob_size*/
-    "PythonStdout",       /*tp_name*/
-    sizeof(PythonStdoutPy), /*tp_basicsize*/
-    0,                      /*tp_itemsize*/
-    /* methods */
-    PyDestructor,           /*tp_dealloc*/
-    0,                      /*tp_print*/
-    __getattr,              /*tp_getattr*/
-    __setattr,              /*tp_setattr*/
-    0,                      /*tp_compare*/
-    __repr,                 /*tp_repr*/
-    0,                      /*tp_as_number*/
-    0,                      /*tp_as_sequence*/
-    0,                      /*tp_as_mapping*/
-    0,                      /*tp_hash*/
-    0,                      /*tp_call */
-};
+void PythonStdout::init_type()
+{
+    behaviors().name("PythonStdout");
+    behaviors().doc("Redirection of stdout to FreeCAD's Python console window");
+    // you must have overwritten the virtual functions
+    behaviors().supportRepr();
+    add_varargs_method("write",&PythonStdout::write,"write()");
+    add_varargs_method("flush",&PythonStdout::flush,"flush()");
+}
 
-//--------------------------------------------------------------------------
-// Methods structure
-//--------------------------------------------------------------------------
-PyMethodDef PythonStdoutPy::Methods[] = {
-    PYMETHODEDEF(write)
-    PYMETHODEDEF(flush)
-    {NULL, NULL}          /* Sentinel */
-};
-
-//--------------------------------------------------------------------------
-// Parents structure
-//--------------------------------------------------------------------------
-PyParentObject PythonStdoutPy::Parents[] = {&PyObjectBase::Type, NULL};     
-
-PythonStdoutPy::PythonStdoutPy(PythonConsole *con, PyTypeObject *T)
- : PyObjectBase(0, T), pyConsole(con)
+PythonStdout::PythonStdout(PythonConsole *pc)
+  : pyConsole(pc)
 {
 }
 
-PythonStdoutPy::~PythonStdoutPy()
+PythonStdout::~PythonStdout()
 {
 }
 
-PyObject *PythonStdoutPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+Py::Object PythonStdout::repr()
 {
-    return 0;
+    std::string s;
+    std::ostringstream s_out;
+    s_out << "PythonStdout";
+    return Py::String(s_out.str());
 }
 
-//--------------------------------------------------------------------------
-// WorkbenchPy representation
-//--------------------------------------------------------------------------
-PyObject *PythonStdoutPy::_repr(void)
+Py::Object PythonStdout::write(const Py::Tuple& args)
 {
-    return Py_BuildValue("s", "PythonStdout");
-}
-
-//--------------------------------------------------------------------------
-// WorkbenchPy Attributes
-//--------------------------------------------------------------------------
-PyObject *PythonStdoutPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
-{
-    _getattr_up(PyObjectBase); 
-} 
-
-int PythonStdoutPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-    return PyObjectBase::_setattr(attr, value); 	// send up to parent
-} 
-
-//--------------------------------------------------------------------------
-// Python wrappers
-//--------------------------------------------------------------------------
-PYFUNCIMP_D(PythonStdoutPy,write)
-{
-    PyObject *output;
-    if (!PyArg_ParseTuple(args, "O", &output)) {
-        PyErr_Clear();
-        Py_INCREF(Py_None);
-        return Py_None; // Do not provoke error messages 
+    try {
+        Py::Object output(args[0]);
+        if (PyUnicode_Check(output.ptr())) {
+            PyObject* unicode = PyUnicode_AsUTF8String(output.ptr());
+            const char* string = PyString_AsString(unicode);
+            pyConsole->insertPythonOutput(QString::fromUtf8(string));
+            Py_DECREF(unicode);
+        }
+        else {
+            Py::String text(args[0]);
+            std::string string = (std::string)text;
+            pyConsole->insertPythonOutput(QString::fromUtf8(string.c_str()));
+        }
+    }
+    catch (Py::Exception& e) {
+        // Do not provoke error messages 
+        e.clear();
     }
 
-    if (PyUnicode_Check(output)) {
-        PyObject* unicode = PyUnicode_AsUTF8String(output);
-        const char* string = PyString_AsString(unicode);
-        pyConsole->insertPythonOutput(QString::fromUtf8(string));
-        Py_DECREF(unicode);
-    }
-    else if (PyString_Check(output)) {
-        const char* string = PyString_AsString(output);
-        pyConsole->insertPythonOutput(QString::fromUtf8(string));
-    }
-
-    Py_INCREF(Py_None);
-    return Py_None;
-} 
-
-PYFUNCIMP_D(PythonStdoutPy,flush)
-{
-    Py_INCREF(Py_None);
-    return Py_None;
-} 
-
-// -------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-// Type structure
-//--------------------------------------------------------------------------
-PyTypeObject PythonStderrPy::Type = {
-    PyObject_HEAD_INIT(&PyType_Type)
-    0,                      /*ob_size*/
-    "PythonStderr",       /*tp_name*/
-    sizeof(PythonStderrPy), /*tp_basicsize*/
-    0,                      /*tp_itemsize*/
-    /* methods */
-    PyDestructor,           /*tp_dealloc*/
-    0,                      /*tp_print*/
-    __getattr,              /*tp_getattr*/
-    __setattr,              /*tp_setattr*/
-    0,                      /*tp_compare*/
-    __repr,                 /*tp_repr*/
-    0,                      /*tp_as_number*/
-    0,                      /*tp_as_sequence*/
-    0,                      /*tp_as_mapping*/
-    0,                      /*tp_hash*/
-    0,                      /*tp_call */
-};
-
-//--------------------------------------------------------------------------
-// Methods structure
-//--------------------------------------------------------------------------
-PyMethodDef PythonStderrPy::Methods[] = {
-    PYMETHODEDEF(write)
-    PYMETHODEDEF(flush)
-    {NULL, NULL}          /* Sentinel */
-};
-
-//--------------------------------------------------------------------------
-// Parents structure
-//--------------------------------------------------------------------------
-PyParentObject PythonStderrPy::Parents[] = {&PyObjectBase::Type, NULL};     
-
-PythonStderrPy::PythonStderrPy(PythonConsole *con, PyTypeObject *T)
- : PyObjectBase(0, T), pyConsole(con)
-{
+    return Py::None();
 }
 
-PythonStderrPy::~PythonStderrPy()
+Py::Object PythonStdout::flush(const Py::Tuple&)
 {
-}
-
-PyObject *PythonStderrPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
-{
-    return 0;
-}
-
-//--------------------------------------------------------------------------
-// WorkbenchPy representation
-//--------------------------------------------------------------------------
-PyObject *PythonStderrPy::_repr(void)
-{
-    return Py_BuildValue("s", "PythonStderr");
-}
-
-//--------------------------------------------------------------------------
-// WorkbenchPy Attributes
-//--------------------------------------------------------------------------
-PyObject *PythonStderrPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
-{
-    _getattr_up(PyObjectBase); 
-}
-
-int PythonStderrPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{
-    return PyObjectBase::_setattr(attr, value); 	// send up to parent
-}
-
-//--------------------------------------------------------------------------
-// Python wrappers
-//--------------------------------------------------------------------------
-PYFUNCIMP_D(PythonStderrPy,write)
-{
-    PyObject *output;
-    if (!PyArg_ParseTuple(args, "O", &output)) {
-        PyErr_Clear();
-        Py_INCREF(Py_None);
-        return Py_None; // Do not provoke error messages 
-    }
-
-    if (PyUnicode_Check(output)) {
-        PyObject* unicode = PyUnicode_AsUTF8String(output);
-        const char* string = PyString_AsString(unicode);
-        pyConsole->insertPythonError(QString::fromUtf8(string));
-        Py_DECREF(unicode);
-    }
-    else if (PyString_Check(output)) {
-        const char* string = PyString_AsString(output);
-        pyConsole->insertPythonError(QString::fromUtf8(string));
-    }
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-PYFUNCIMP_D(PythonStderrPy,flush)
-{
-    Py_INCREF(Py_None);
-    return Py_None;
+    return Py::None();
 }
 
 // -------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-// Type structure
-//--------------------------------------------------------------------------
-PyTypeObject PythonStdinPy::Type = {
-    PyObject_HEAD_INIT(&PyType_Type)
-    0,                      /*ob_size*/
-    "PythonStdin",        /*tp_name*/
-    sizeof(PythonStdinPy),  /*tp_basicsize*/
-    0,                      /*tp_itemsize*/
-    /* methods */
-    PyDestructor,           /*tp_dealloc*/
-    0,                      /*tp_print*/
-    __getattr,              /*tp_getattr*/
-    __setattr,              /*tp_setattr*/
-    0,                      /*tp_compare*/
-    __repr,                 /*tp_repr*/
-    0,                      /*tp_as_number*/
-    0,                      /*tp_as_sequence*/
-    0,                      /*tp_as_mapping*/
-    0,                      /*tp_hash*/
-    0,                      /*tp_call */
-};
+void PythonStderr::init_type()
+{
+    behaviors().name("PythonStderr");
+    behaviors().doc("Redirection of stdout to FreeCAD's Python console window");
+    // you must have overwritten the virtual functions
+    behaviors().supportRepr();
+    add_varargs_method("write",&PythonStderr::write,"write()");
+    add_varargs_method("flush",&PythonStderr::flush,"flush()");
+}
 
-//--------------------------------------------------------------------------
-// Methods structure
-//--------------------------------------------------------------------------
-PyMethodDef PythonStdinPy::Methods[] = {
-    PYMETHODEDEF(readline)
-    {NULL, NULL}          /* Sentinel */
-};
-
-//--------------------------------------------------------------------------
-// Parents structure
-//--------------------------------------------------------------------------
-PyParentObject PythonStdinPy::Parents[] = {&PyObjectBase::Type, NULL};     
-
-PythonStdinPy::PythonStdinPy(PythonConsole *con, PyTypeObject *T)
- : PyObjectBase(0, T), pyConsole(con)
+PythonStderr::PythonStderr(PythonConsole *pc)
+  : pyConsole(pc)
 {
 }
 
-PythonStdinPy::~PythonStdinPy()
+PythonStderr::~PythonStderr()
 {
 }
 
-PyObject *PythonStdinPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+Py::Object PythonStderr::repr()
 {
-    return 0;
+    std::string s;
+    std::ostringstream s_out;
+    s_out << "PythonStderr";
+    return Py::String(s_out.str());
 }
 
-//--------------------------------------------------------------------------
-// WorkbenchPy representation
-//--------------------------------------------------------------------------
-PyObject *PythonStdinPy::_repr(void)
+Py::Object PythonStderr::write(const Py::Tuple& args)
 {
-    return Py_BuildValue("s", "PythonStdin");
+    try {
+        Py::Object output(args[0]);
+        if (PyUnicode_Check(output.ptr())) {
+            PyObject* unicode = PyUnicode_AsUTF8String(output.ptr());
+            const char* string = PyString_AsString(unicode);
+            pyConsole->insertPythonError(QString::fromUtf8(string));
+            Py_DECREF(unicode);
+        }
+        else {
+            Py::String text(args[0]);
+            std::string string = (std::string)text;
+            pyConsole->insertPythonError(QString::fromUtf8(string.c_str()));
+        }
+    }
+    catch (Py::Exception& e) {
+        // Do not provoke error messages
+        e.clear();
+    }
+
+    return Py::None();
 }
 
-//--------------------------------------------------------------------------
-// WorkbenchPy Attributes
-//--------------------------------------------------------------------------
-PyObject *PythonStdinPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
+Py::Object PythonStderr::flush(const Py::Tuple&)
 {
-    _getattr_up(PyObjectBase); 
+    return Py::None();
 }
 
-int PythonStdinPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+// -------------------------------------------------------------------------
+
+void PythonStdin::init_type()
 {
-    return PyObjectBase::_setattr(attr, value); 	// send up to parent
+    behaviors().name("PythonStdin");
+    behaviors().doc("Redirection of stdin to FreeCAD to open an input dialog");
+    // you must have overwritten the virtual functions
+    behaviors().supportRepr();
+    add_varargs_method("readline",&PythonStdin::readline,"readline()");
 }
 
-//--------------------------------------------------------------------------
-// Python wrappers
-//--------------------------------------------------------------------------
-PYFUNCIMP_D(PythonStdinPy,readline)
+PythonStdin::PythonStdin(PythonConsole *pc)
+  : pyConsole(pc)
+{
+}
+
+PythonStdin::~PythonStdin()
+{
+}
+
+Py::Object PythonStdin::repr()
+{
+    std::string s;
+    std::ostringstream s_out;
+    s_out << "PythonStdin";
+    return Py::String(s_out.str());
+}
+
+Py::Object PythonStdin::readline(const Py::Tuple& args)
 {
     QString txt = QInputDialog::getText(pyConsole,
         Gui::PythonConsole::tr("Python Input Dialog"),
         Gui::PythonConsole::tr("Input for Python:"), QLineEdit::Normal);
-    return Py_BuildValue("s", (const char*)txt.toAscii());
-} 
+    return Py::String((const char*)txt.toAscii());
+}
