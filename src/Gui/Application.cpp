@@ -57,6 +57,7 @@
 #include "Selection.h"
 #include "BitmapFactory.h"
 #include "SoFCDB.h"
+#include "PythonConsolePy.h"
 
 #include "View3DInventor.h"
 #include "ViewProvider.h"
@@ -145,6 +146,11 @@ Application::Application()
         "Selection module");
     Py_INCREF(pSelectionModule);
     PyModule_AddObject(module, "Selection", pSelectionModule);
+
+    // Python console binding
+    PythonStdout::init_type();
+    PythonStderr::init_type();
+    PythonStdin ::init_type();
 
     d = new ApplicationP;
 

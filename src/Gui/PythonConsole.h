@@ -133,8 +133,8 @@ private:
 private:
     struct PythonConsoleP* d;
 
-    friend class PythonStdoutPy;
-    friend class PythonStderrPy;
+    friend class PythonStdout;
+    friend class PythonStderr;
 
 private:
     PythonConsoleHighlighter* pythonSyntax;
