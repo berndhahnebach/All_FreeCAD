@@ -159,7 +159,7 @@ void PlacementPy::setRotation(Py::Object arg)
 {
     Py::Rotation rot;
     if (rot.accepts(arg.ptr())) {
-        getPlacementPtr()->_rot = Py::Rotation(arg).toGeometry();
+        getPlacementPtr()->_rot = (Base::Rotation)Py::Rotation(arg);
         return;
     }
     Py::Tuple tuple;

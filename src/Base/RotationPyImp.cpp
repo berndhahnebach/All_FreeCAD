@@ -74,6 +74,13 @@ int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    PyErr_Clear();
+    double q0, q1, q2, q3;
+    if (PyArg_ParseTuple(args, "dddd", &q0, &q1, &q2, &q3)) {
+        getRotationPtr()->setValue(q0, q1, q2, q3);
+        return 0;
+    }
+
     PyErr_SetString(PyExc_Exception, "empty parameter list, four floats or Vector and float");
     return -1;
 }
