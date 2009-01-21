@@ -30,6 +30,8 @@
 #include "MatrixPy.h"
 #include "Rotation.h"
 #include "RotationPy.h"
+#include "Placement.h"
+#include "PlacementPy.h"
 
 namespace Base {
 template <typename T>
@@ -79,8 +81,19 @@ private:
     static int Vector_TypeCheck(PyObject *);
 };
 
-// Implementing geometric classes as template in the fashion of the PyCXX library.
-template <class T, class Py>
+/**
+ * This is a template class to provide wrapper classes for geometric classes like
+ * Base::Matrix4D, Base::Rotation and their Python binding classes.
+ * Since the class inherits from Py::Object it can be used in the same fashion as
+ * Py::String, Py::List, etc. to simplify the usage with them.
+ * @author Werner Mayer
+ */
+// The first template parameter represents the basic geometric class e.g. Rotation,
+// the second parameter is reserved for its Python binding class, i.e. RotationPy.
+// The third template parameter is the definition of a pointer to the method
+// of the Python binding class to return the managed geometric instance. In our
+// example this is the method RotationPy::getRotationPtr.
+template <class T, class PyT, T* (PyT::*valuePtr)() const>
 class GeometryT : public Object
 {
 public:
@@ -92,12 +105,12 @@ public:
     }
     explicit GeometryT ()
     {
-        set(new Py(T()), true);
+        set(new PyT(T()), true);
         validate();
     }
     explicit GeometryT (const T& v)
     {
-        set(new Py(v), true);
+        set(new PyT(v), true);
         validate();
     }
     GeometryT(const Object& other): Object(other.ptr()) {
@@ -118,24 +131,40 @@ public:
     }
     GeometryT& operator= (const T&)
     {
-        set (new Py(v), true);
+        set (new PyT(v), true);
         return *this;
     }
-    T toGeometry() const
+    const T& getValue() const
     {
-        return static_cast<Py*>(ptr())->value();
+        // cast the PyObject pointer to the matching sub-class
+        // and call then the defined member function
+        PyT* py = static_cast<PyT*>(ptr());
+        T* v = (py->*valuePtr)();
+        return *v;
+    }
+    operator T() const
+    {
+        // cast the PyObject pointer to the matching sub-class
+        // and call then the defined member function
+        PyT* py = static_cast<PyT*>(ptr());
+        T* v = (py->*valuePtr)();
+        return *v;
     }
 
 private:
     static int Geometry_TypeCheck(PyObject * obj)
     {
-        return PyObject_TypeCheck(obj, &(Py::Type));
+        return PyObject_TypeCheck(obj, &(PyT::Type));
     }
 };
 
-// PyCXX wrapper classes for MatrixPy, RotationPy, ...
-typedef GeometryT<Base::Matrix4D, Base::MatrixPy>   Matrix;
-typedef GeometryT<Base::Rotation, Base::RotationPy> Rotation;
+// PyCXX wrapper classes Py::Matrix, Py::Rotation, Py::Placement, ...
+typedef GeometryT<Base::Matrix4D, Base::MatrixPy,
+                 &Base::MatrixPy::getMatrixPtr>         Matrix;
+typedef GeometryT<Base::Rotation, Base::RotationPy,
+                 &Base::RotationPy::getRotationPtr>     Rotation;
+typedef GeometryT<Base::Placement, Base::PlacementPy,
+                 &Base::PlacementPy::getPlacementPtr>   Placement;
 
 }
 
