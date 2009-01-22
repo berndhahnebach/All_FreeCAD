@@ -59,7 +59,8 @@ void CmdPartCylinder::activated(int iMsg)
     if (dlg.exec()== QDialog::Accepted) {
         Base::Vector3f dir = dlg.getDirection();
         openCommand("Create Part Cylinder");
-        doCommand(Doc,"import Base,Part");
+        doCommand(Doc,"from FreeCAD import Base");
+        doCommand(Doc,"import Part");
         doCommand(Doc,"__cf__ = App.ActiveDocument.addObject(\"Part::Cylinder\",\"Cylinder\")");
         doCommand(Doc,"__cf__.Location = Base.Vector(%f,%f,%f)",
                         dlg.xPos->value(),
@@ -107,7 +108,8 @@ void CmdPartBox::activated(int iMsg)
     if (dlg.exec()== QDialog::Accepted) {
         Base::Vector3f dir = dlg.getDirection();
         openCommand("Part Box Create");
-        doCommand(Doc,"import Base,Part");
+        doCommand(Doc,"from FreeCAD import Base");
+        doCommand(Doc,"import Part");
         doCommand(Doc,"__fb__ = App.ActiveDocument.addObject(\"Part::Box\",\"PartBox\")");
         doCommand(Doc,"__fb__.Location = Base.Vector(%f,%f,%f)",
                                  dlg.xPos->value(),
