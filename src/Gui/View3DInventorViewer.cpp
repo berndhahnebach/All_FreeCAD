@@ -1616,52 +1616,82 @@ void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
   ContextMenu.exec( QCursor::pos() );
 }
 
-Base::Vector3f View3DInventorViewer::getViewDirection() const
+SbVec3f View3DInventorViewer::getViewDirection() const
 {
-  SoCamera* pCam = getCamera();
-  SbViewVolume  vol = pCam->getViewVolume (); 
-
-  // get the normal of the front clipping plane
-  SbPlane nearPlane = vol.getPlane( vol.nearDist );
-  SbVec3f n = nearPlane.getNormal();
-  float nx, ny, nz; n.getValue(nx, ny, nz);
-
-  Base::Vector3f viewDir(nx, ny, nz);
-  viewDir.Normalize();
-
-  return viewDir;
+    SoCamera* cam = this->getCamera();
+    SbRotation camrot = cam->orientation.getValue();
+    SbVec3f lookat(0, 0, -1); // init to default view direction vector
+    camrot.multVec(lookat, lookat);
+    return lookat;
 }
 
-void View3DInventorViewer::getFrontClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const
+SbVec3f View3DInventorViewer::getUpDirection() const
 {
-  SoCamera* pCam = getCamera();  
-  SbViewVolume  vol = pCam->getViewVolume (); 
-
-  // get the normal of the front clipping plane
-  SbPlane nearPlane = vol.getPlane( vol.nearDist );
-  SbVec3f n = nearPlane.getNormal();
-  float nx, ny, nz; n.getValue(nx, ny, nz);
-  float d = nearPlane.getDistanceFromOrigin();
-
-  rcNormal.Set(nx, ny, nz);
-  rcNormal.Normalize();
-  rcPt.Set(d*rcNormal.x, d*rcNormal.y, d*rcNormal.z);
+    SoCamera* cam = this->getCamera();
+    SbRotation camrot = cam->orientation.getValue();
+    SbVec3f upvec(0, 1, 0); // init to default up vector
+    camrot.multVec(upvec, upvec);
+    return upvec;
 }
 
-void View3DInventorViewer::getBackClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const
+SbVec3f View3DInventorViewer::getPointOnScreen(const SbVec2s& pnt) const
 {
-  SoCamera* pCam = getCamera();  
-  SbViewVolume  vol = pCam->getViewVolume (); 
+    const SbViewportRegion& vp = this->getViewportRegion();
 
-  // get the normal of the back clipping plane
-  SbPlane farPlane = vol.getPlane( vol.nearDist+vol.nearToFar );
-  SbVec3f n = farPlane.getNormal();
-  float nx, ny, nz; n.getValue(nx, ny, nz);
-  float d = farPlane.getDistanceFromOrigin();
+    short x,y; pnt.getValue(x,y);
+    SbVec2f siz = vp.getViewportSize();
+    float dX, dY; siz.getValue(dX, dY);
 
-  rcNormal.Set(nx, ny, nz);
-  rcNormal.Normalize();
-  rcPt.Set(d*rcNormal.x, d*rcNormal.y, d*rcNormal.z);
+    float fRatio = vp.getViewportAspectRatio();
+    float pX = (float)x / float(vp.getViewportSizePixels()[0]);
+    float pY = (float)y / float(vp.getViewportSizePixels()[1]);
+
+    // now calculate the real points respecting aspect ratio information
+    //
+    if (fRatio > 1.0f) {
+        pX = (pX - 0.5f*dX) * fRatio + 0.5f*dX;
+    }
+    else if (fRatio < 1.0f) {
+        pY = (pY - 0.5f*dY) / fRatio + 0.5f*dY;
+    }
+
+    SoCamera* pCam = this->getCamera();
+    SbViewVolume  vol = pCam->getViewVolume(); 
+    
+    SbLine line; SbVec3f pt;
+    SbPlane focalPlane = vol.getPlane(pCam->focalDistance.getValue());
+    vol.projectPointToLine(SbVec2f(pX,pY), line);
+    focalPlane.intersect(line, pt);
+    
+    return pt;
+}
+
+void View3DInventorViewer::getFrontClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
+{
+    SoCamera* pCam = getCamera();
+    SbViewVolume  vol = pCam->getViewVolume();
+
+    // get the normal of the front clipping plane
+    SbPlane nearPlane = vol.getPlane(vol.nearDist);
+    float d = nearPlane.getDistanceFromOrigin();
+    rcNormal = nearPlane.getNormal();
+    rcNormal.normalize();
+    float nx, ny, nz; rcNormal.getValue(nx, ny, nz);
+    rcPt.setValue(d*rcNormal[0], d*rcNormal[1], d*rcNormal[2]);
+}
+
+void View3DInventorViewer::getBackClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
+{
+    SoCamera* pCam = getCamera();
+    SbViewVolume  vol = pCam->getViewVolume(); 
+
+    // get the normal of the back clipping plane
+    SbPlane farPlane = vol.getPlane(vol.nearDist+vol.nearToFar);
+    float d = farPlane.getDistanceFromOrigin();
+    rcNormal = farPlane.getNormal();
+    rcNormal.normalize();
+    float nx, ny, nz; rcNormal.getValue(nx, ny, nz);
+    rcPt.setValue(d*rcNormal[0], d*rcNormal[1], d*rcNormal[2]);
 }
 
 void View3DInventorViewer::toggleClippingPlane()

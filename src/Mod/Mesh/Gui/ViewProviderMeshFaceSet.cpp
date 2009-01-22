@@ -370,16 +370,16 @@ void ViewProviderMeshFaceSet::clipMeshCallback(void * ud, SoEventCallback * n)
     view->render();
 }
 
-void ViewProviderMeshFaceSet::partMeshCallback(void * ud, SoEventCallback * n)
+void ViewProviderMeshFaceSet::partMeshCallback(void * ud, SoEventCallback * cb)
 {
     // show the wait cursor because this could take quite some time
     Gui::WaitCursor wc;
 
     // When this callback function is invoked we must in either case leave the edit mode
-    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(cb->getUserData());
     view->setEditing(false);
     view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), partMeshCallback,ud);
-    n->setHandled();
+    cb->setHandled();
 
     SbBool clip_inner;
     std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
@@ -389,8 +389,9 @@ void ViewProviderMeshFaceSet::partMeshCallback(void * ud, SoEventCallback * n)
         clPoly.push_back(clPoly.front());
 
     // get the normal of the front clipping plane
-    Base::Vector3f cPoint, cNormal;
-    view->getFrontClippingPlane(cPoint, cNormal);
+    SbVec3f b,n;
+    view->getFrontClippingPlane(b, n);
+    Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = view->getCamera();  
     SbViewVolume  vol = pCam->getViewVolume(); 
 
@@ -426,16 +427,16 @@ void ViewProviderMeshFaceSet::partMeshCallback(void * ud, SoEventCallback * n)
     view->render();
 }
 
-void ViewProviderMeshFaceSet::segmMeshCallback(void * ud, SoEventCallback * n)
+void ViewProviderMeshFaceSet::segmMeshCallback(void * ud, SoEventCallback * cb)
 {
     // show the wait cursor because this could take quite some time
     Gui::WaitCursor wc;
 
     // When this callback function is invoked we must in either case leave the edit mode
-    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(cb->getUserData());
     view->setEditing(false);
     view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), segmMeshCallback,ud);
-    n->setHandled();
+    cb->setHandled();
 
     SbBool clip_inner;
     std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
@@ -445,8 +446,9 @@ void ViewProviderMeshFaceSet::segmMeshCallback(void * ud, SoEventCallback * n)
         clPoly.push_back(clPoly.front());
 
     // get the normal of the front clipping plane
-    Base::Vector3f cPoint, cNormal;
-    view->getFrontClippingPlane(cPoint, cNormal);
+    SbVec3f b,n;
+    view->getFrontClippingPlane(b, n);
+    Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = view->getCamera();  
     SbViewVolume  vol = pCam->getViewVolume(); 
 
@@ -500,8 +502,9 @@ void ViewProviderMeshFaceSet::getFacetsFromPolygon(const std::vector<SbVec2f>& p
                                                    std::vector<unsigned long>& indices) const
 {
     // get the normal of the front clipping plane
-    Base::Vector3f cPoint, cNormal;
-    Viewer.getFrontClippingPlane(cPoint, cNormal);
+    SbVec3f b,n;
+    Viewer.getFrontClippingPlane(b, n);
+    Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = Viewer.getCamera();  
     SbViewVolume  vol = pCam->getViewVolume(); 
 

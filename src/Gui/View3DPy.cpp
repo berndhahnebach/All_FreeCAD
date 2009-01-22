@@ -671,36 +671,11 @@ PYFUNCIMP_D(View3DPy,getSize)
 
 PYFUNCIMP_D(View3DPy,getPoint)
 {
-    int x,y;
-    if (!PyArg_ParseTuple(args, "ii", &x, &y))     // convert args: Python->C 
+    short x,y;
+    if (!PyArg_ParseTuple(args, "hh", &x, &y))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
     try {
-        const SbViewportRegion& vp = _pcView->getViewer()->getViewportRegion();
-
-        SbVec2f siz = vp.getViewportSize();
-        float dX, dY; siz.getValue(dX, dY);
-
-        float fRatio = vp.getViewportAspectRatio();
-        float pX = (float)x / float(vp.getViewportSizePixels()[0]);
-        float pY = (float)y / float(vp.getViewportSizePixels()[1]);
-
-        // now calculate the real points respecting aspect ratio information
-        //
-        if (fRatio > 1.0f) {
-            pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
-        }
-        else if (fRatio < 1.0f) {
-            pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
-        }
-        
-        SoCamera* pCam = _pcView->getViewer()->getCamera();  
-        SbViewVolume  vol = pCam->getViewVolume(); 
-        
-        SbLine line; SbVec3f pt;
-        SbPlane focalPlane = vol.getPlane(pCam->focalDistance.getValue());
-        vol.projectPointToLine(SbVec2f(pX,pY), line);
-        focalPlane.intersect(line, pt);
-        
+        SbVec3f pt = _pcView->getViewer()->getPointOnScreen(SbVec2s(x,y));
         return new Base::VectorPy(Base::Vector3f(pt[0], pt[1], pt[2]));
     } catch (const Py::Exception&) {
         return NULL;

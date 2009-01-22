@@ -149,14 +149,19 @@ public:
   /** @name Clipping plane
    */
   //@{
-  /** Returns the view direction from the viewport in direction to the user's eye point which is actually the normal of the front clipping plane. The vector
-   * is normalized to length of 1.
+  /** Returns the view direction from the user's eye point in direction to the
+   * viewport which is actually the negative normal of the front clipping plane.
+   * The vector is normalized to length of 1.
    */
-  Base::Vector3f getViewDirection() const;
+  SbVec3f getViewDirection() const;
+  /** Returns the up direction */
+  SbVec3f getUpDirection() const;
+  /** Returns the 3d point on the focal plane to the given 2d point. */
+  SbVec3f getPointOnScreen(const SbVec2s&) const;
   /** Returns the front clipping plane represented by its normal and base point. */
-  void getFrontClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const;
+  void getFrontClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const;
   /** Returns the back clipping plane represented by its normal and base point. */
-  void getBackClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const;
+  void getBackClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const;
   /** Adds or remove a manipulator to/from the scenegraph. */
   void toggleClippingPlane();
   /** Checks whether a clipping plane is set or not. */
