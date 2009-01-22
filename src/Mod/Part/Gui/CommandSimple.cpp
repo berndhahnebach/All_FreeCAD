@@ -72,7 +72,8 @@ void CmdPartSimpleCylinder::activated(int iMsg)
     if (dlg.exec()== QDialog::Accepted) {
         Base::Vector3f dir = dlg.getDirection();
         openCommand("Create Part Cylinder");
-        doCommand(Doc,"import Base,Part");
+        doCommand(Doc,"from FreeCAD import Base");
+        doCommand(Doc,"import Part");
         doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Feature\",\"Cylinder\")"
                       ".Shape=Part.makeCylinder(%f,%f,"
                       "Base.Vector(%f,%f,%f),"

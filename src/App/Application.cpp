@@ -162,7 +162,7 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
     PyObject* pAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
     Py::Module(pAppModule).setAttr(std::string("ActiveDocument"),Py::None());
 
-    PyObject* pConsoleModule = Py_InitModule3("Console", ConsoleSingleton::Methods, Console_doc);
+    PyObject* pConsoleModule = Py_InitModule3("__FreeCADConsole__", ConsoleSingleton::Methods, Console_doc);
 
     // introducing additional classes
 
@@ -184,11 +184,12 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
     // Note: Create an own module 'Base' which should provide the python
     // binding classes from the base module. At a later stage we should 
     // remove these types from the FreeCAD module.
-    PyObject* pBaseModule = Py_InitModule3("Base", NULL, NULL);
-    PyModule_AddObject(pBaseModule, "Vector", pyVecType.o);
-    PyModule_AddObject(pBaseModule, "Matrix", pyMtxType.o);
-    PyModule_AddObject(pBaseModule, "BoundBox", pyBoundBoxType.o);
-
+    PyObject* pBaseModule = Py_InitModule3("__FreeCADBase__", NULL,
+        "The Base module contains the classes for the geometric basics\n"
+        "like vector, matrix, bounding box, placement, rotation, ...");
+    Base::Interpreter().addType(&Base::VectorPy     ::Type,pBaseModule,"Vector");
+    Base::Interpreter().addType(&Base::MatrixPy     ::Type,pBaseModule,"Matrix");
+    Base::Interpreter().addType(&Base::BoundBoxPy   ::Type,pBaseModule,"BoundBox");
     Base::Interpreter().addType(&Base::PlacementPy  ::Type,pBaseModule,"Placement");
     Base::Interpreter().addType(&Base::RotationPy   ::Type,pBaseModule,"Rotation");
 

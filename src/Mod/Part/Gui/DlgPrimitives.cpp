@@ -40,7 +40,8 @@ using namespace PartGui;
 DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialogComp<Ui_DlgPrimitives>(parent, fl)
 {
-    Gui::Command::doCommand(Gui::Command::Doc, "import Base,Part,PartGui");
+    Gui::Command::doCommand(Gui::Command::Doc, "from FreeCAD import Base");
+    Gui::Command::doCommand(Gui::Command::Doc, "import Part,PartGui");
 }
 
 /*  

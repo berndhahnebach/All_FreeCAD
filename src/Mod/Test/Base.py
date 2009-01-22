@@ -34,13 +34,13 @@ class ConsoleTestCase(unittest.TestCase):
         FreeCAD.Console.PrintWarning("   Printing warning\n")
         FreeCAD.Console.PrintLog("   Printing Log\n")
 
-    def testPrintFromThread(self):
+    def testSynchronPrintFromThread(self):
         import thread, time
         def adder():
             lock.acquire()
             self.count=self.count+1
             # call of Console method is thread-safe
-            FreeCAD.Console.PrintMessage(str(self.count)+"\n")
+            FreeCAD.Console.PrintMessage("Call from Python thread: count="+str(self.count)+"\n")
             lock.release()
 
         lock=thread.allocate_lock()
@@ -49,6 +49,20 @@ class ConsoleTestCase(unittest.TestCase):
 
         time.sleep(3)
         self.failUnless(self.count==10,"Synchronization of threads failed")
+        FreeCAD.Console.PrintMessage(str(self.count)+"\n")
+
+    def testAsynchronPrintFromThread(self):
+        import thread, time
+        def adder():
+            self.count=self.count+1
+            # call of Console method is thread-safe
+            FreeCAD.Console.PrintMessage("Call from Python thread (not synchronized): count="+str(self.count)+"\n")
+
+        lock=thread.allocate_lock()
+        for i in range(10):
+            thread.start_new(adder,())
+
+        time.sleep(3)
         FreeCAD.Console.PrintMessage(str(self.count)+"\n")
 
 #    def testStatus(self):
