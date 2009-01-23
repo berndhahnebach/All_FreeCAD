@@ -34,7 +34,7 @@ class TemplatePyModWorkbench ( Workbench ):
 	def Initialize(self):
 		import Commands
 
-		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2","TemplatePyMod_Cmd3"])
+		self.appendToolbar("TemplateTools",["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2","TemplatePyMod_Cmd3","TemplatePyMod_Cmd4"])
 
 		menu = ["ModulePy &Commands","PyModuleCommands"]
 		list = ["TemplatePyMod_Cmd1","TemplatePyMod_Cmd2","TemplatePyMod_Cmd3"]

@@ -730,7 +730,7 @@ struct PyMethodDef Part_methods[] = {
      "makeCircle(radius,[angle1,angle2]) -- Make a circle with a given radius\n"
      "By default angle1=0 and angle2=2*PI"},
     {"makeSphere" ,makeSphere,METH_VARARGS,
-     "makeSphere(radius,[angle1,angle2,angle3]) -- Make a sphere with a given radius\n"
+     "makeSphere(radius,[Point, Normal, angle1,angle2,angle3]) -- Make a sphere with a given radius\n"
      "By default angle1=0, angle2=0.5*PI and angle3=2*PI"},
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
      "makeCylinder(radius,height,[angle]) -- Make a cylinder with a given radius and height\n"
