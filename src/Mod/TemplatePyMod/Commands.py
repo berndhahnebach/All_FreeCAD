@@ -91,10 +91,73 @@ class TemplatePyMod_Cmd3:
     def GetResources(self):
         return {'Pixmap'  : 'python', 'MenuText': 'Import PyQt4', 'ToolTip': 'Add a workbench for PyQt4 samples'}
 
+class SphereCreator:
+	def __init__(self):
+		import Part
+		self.pt = Part
+		self.mode = False
+		FreeCAD.Console.PrintMessage("Create instance of SphereCreator\n")
+
+	def __del__(self):
+		FreeCAD.Console.PrintMessage("Delete instance of SphereCreator\n")
+
+	def enter(self):
+		if (self.mode):
+			return
+		self.mode = True
+		FreeCAD.Console.PrintMessage("Enter sphere creation mode\n")
+		self.av = FreeCADGui.ActiveDocument.ActiveView
+		self.cb = self.av.addEventCallback("SoMouseButtonEvent",self.create)
+		self.ex = self.av.addEventCallback("SoKeyboardEvent",self.exit)
+
+	def leave(self):
+		if (not self.mode):
+			return
+		self.mode = False
+		FreeCAD.Console.PrintMessage("Leave sphere creation mode\n")
+		self.av.removeEventCallback("SoMouseButtonEvent",self.cb)
+		self.av.removeEventCallback("SoKeyboardEvent",self.ex)
+
+	def create(self, info):
+		down = (info["State"] == "DOWN")
+		pos = info["Position"]
+		if (down):
+			pnt = self.av.getPoint(pos[0],pos[1])
+			FreeCAD.Console.PrintMessage("Clicked on position: ("+str(pos[0])+", "+str(pos[0])+")")
+			msg = " -> (%f,%f,%f)\n" % (pnt.x, pnt.y, pnt.z)
+			FreeCAD.Console.PrintMessage(msg)
+			sph=self.pt.makeSphere(1.0, pnt)
+			self.pt.show(sph)
+
+	def exit(self, info):
+		esc = (info["Key"] == "ESCAPE")
+		if (esc):
+			self.leave()
+
+
+class TemplatePyMod_Cmd4:
+	def __init__(self):
+		self.sc = SphereCreator()
+
+	def __del__(self):
+		FreeCAD.Console.PrintError('TemplatePyMod_Cmd4 was destroyed\n')
+
+	def Activated(self):
+		if FreeCADGui.ActiveDocument != None:
+			self.sc.enter()
+		else:
+			FreeCAD.Console.PrintWarning('A 3d view must be created\n')
+
+	def GetResources(self):
+		return {'Pixmap'  : 'python', 'MenuText': 'Create spheres...', 'ToolTip': 'Click on the screen to create a sphere'}
+
+
+
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
 addCommand('TemplatePyMod_Cmd1',TemplatePyMod_Cmd1())
 addCommand('TemplatePyMod_Cmd2',TemplatePyMod_Cmd2())
 addCommand('TemplatePyMod_Cmd3',TemplatePyMod_Cmd3())
+FreeCADGui.addCommand('TemplatePyMod_Cmd4',TemplatePyMod_Cmd4())
 
