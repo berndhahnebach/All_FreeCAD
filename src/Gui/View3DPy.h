@@ -21,13 +21,71 @@
  ***************************************************************************/
 
 
-#include "../Base/PyObjectBase.h"
+#ifndef GUI_VIEW3DPY_H
+#define GUI_VIEW3DPY_H
+
+#include <Base/PyObjectBase.h>
+#include <CXX/Extensions.hxx>
 
 class SoEventCallback;
 
 namespace Gui {
 
 class View3DInventor;
+
+class View3DInventorPy : public Py::PythonExtension<View3DInventorPy>
+{
+public:
+    static void init_type(void);    // announce properties and methods
+
+    View3DInventorPy(View3DInventor *vi);
+    ~View3DInventorPy();
+
+    Py::Object repr();
+    Py::Object getattr(const char *);
+    int setattr(const char *, const Py::Object &);
+
+    Py::Object message(const Py::Tuple&);
+    Py::Object fitAll(const Py::Tuple&);
+    Py::Object viewBottom(const Py::Tuple&);
+    Py::Object viewFront(const Py::Tuple&);
+    Py::Object viewLeft(const Py::Tuple&);
+    Py::Object viewRear(const Py::Tuple&);
+    Py::Object viewRight(const Py::Tuple&);
+    Py::Object viewTop(const Py::Tuple&);
+    Py::Object viewAxometric(const Py::Tuple&);
+    Py::Object dump(const Py::Tuple&);
+    Py::Object setStereoType(const Py::Tuple&);
+    Py::Object getStereoType(const Py::Tuple&);
+    Py::Object listStereoTypes(const Py::Tuple&);
+    Py::Object saveImage(const Py::Tuple&);
+    Py::Object saveVectorGraphic(const Py::Tuple&);
+    Py::Object getCamera(const Py::Tuple&);
+    Py::Object setCamera(const Py::Tuple&);
+    Py::Object getCameraType(const Py::Tuple&);
+    Py::Object setCameraType(const Py::Tuple&);
+    Py::Object listCameraTypes(const Py::Tuple&);
+    Py::Object getCursorPos(const Py::Tuple&);
+    Py::Object getObjectInfo(const Py::Tuple&);
+    Py::Object getSize(const Py::Tuple&);
+    Py::Object getPoint(const Py::Tuple&);
+    Py::Object addEventCallback(const Py::Tuple&);
+    Py::Object removeEventCallback(const Py::Tuple&);
+    Py::Object setAnnotation(const Py::Tuple&);
+    Py::Object removeAnnotation(const Py::Tuple&);
+    Py::Object getSceneGraph(const Py::Tuple&);
+    Py::Object getViewer(const Py::Tuple&);
+    Py::Object addEventCallbackPivy(const Py::Tuple&);
+    Py::Object removeEventCallbackPivy(const Py::Tuple&);
+
+private:
+    static void eventCallback(void * ud, SoEventCallback * n);
+    static void eventCallbackPivy(void * ud, SoEventCallback * n);
+
+private:
+    View3DInventor* _view;
+    friend class View3DInventor;
+};
 
 /** The View3D python class 
  */
@@ -89,5 +147,6 @@ private:
     Gui::View3DInventor *_pcView;
 };
 
-} // namespace App
+} // namespace Gui
 
+#endif //GUI_VIEW3DPY_H

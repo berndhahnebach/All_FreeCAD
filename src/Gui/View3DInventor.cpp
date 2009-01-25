@@ -120,7 +120,7 @@ View3DInventor::~View3DInventor()
     }
 
     if (_viewerPy) {
-        _viewerPy->setInvalid();
+        static_cast<View3DInventorPy*>(_viewerPy)->_view = 0;
         Py_DECREF(_viewerPy);
     }
 
@@ -130,7 +130,7 @@ View3DInventor::~View3DInventor()
 PyObject *View3DInventor::getPyObject(void)
 {
     if (!_viewerPy)
-        _viewerPy = new View3DPy(this);
+        _viewerPy = new View3DInventorPy(this);
 
     Py_INCREF(_viewerPy);
     return _viewerPy;
@@ -333,7 +333,7 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
   }else if(strcmp("ViewAxo",pMsg) == 0 ){
     float root = (float)(sqrt(3.0)/4.0);
     SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(-0.333333f, -0.166666f, -0.333333f, -root);
+    cam->orientation.setValue(-0.353553f, -0.146447f, -0.353553f, 0.853553f);
     _viewer->viewAll();
     return true;
   }else if(strcmp("OrthographicCamera",pMsg) == 0 ){

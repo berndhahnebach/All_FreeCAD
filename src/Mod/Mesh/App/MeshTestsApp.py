@@ -69,3 +69,56 @@ class MeshGeoTestCases(unittest.TestCase):
 		# does definitely NOT intersect
 		res=f1.intersect(f2)
 		self.failUnless(len(res) == 0)
+
+class PivyTestCases(unittest.TestCase):
+	def setUp(self):
+		# set up a planar face with 2 triangles
+		self.planarMesh = []
+		FreeCAD.newDocument("MeshTest")
+
+	def testRayPick(self):
+		if not FreeCAD.GuiUp:
+			return
+		self.planarMesh.append( [-16.097176,-29.891157,15.987688] ) 
+		self.planarMesh.append( [-16.176304,-29.859991,15.947966] )
+		self.planarMesh.append( [-16.071451,-29.900553,15.912505] )
+		self.planarMesh.append( [-16.092241,-29.893408,16.020439] )
+		self.planarMesh.append( [-16.007210,-29.926180,15.967641] )
+		self.planarMesh.append( [-16.064457,-29.904951,16.090832] )
+		planarMeshObject = Mesh.Mesh(self.planarMesh)
+
+		from pivy import coin, sogui; import FreeCADGui
+		Mesh.show(planarMeshObject)
+		view=FreeCADGui.ActiveDocument.ActiveView.getViewer()
+		rp=coin.SoRayPickAction(view.getViewportRegion())
+		rp.setRay(coin.SbVec3f(-16.05,16.0,16.0),coin.SbVec3f(0,-1,0))
+		rp.apply(view.getSceneManager().getSceneGraph())
+		pp=rp.getPickedPoint()
+		self.failUnless(pp != None)
+		det=pp.getDetail()
+		self.failUnless(det.getTypeId() == coin.SoFaceDetail.getClassTypeId())
+		det=coin.cast(det,str(det.getTypeId().getName()))
+		self.failUnless(det.getFaceIndex() == 1)
+
+	def testPrimitiveCount(self):
+		if not FreeCAD.GuiUp:
+			return
+		self.planarMesh.append( [-16.097176,-29.891157,15.987688] ) 
+		self.planarMesh.append( [-16.176304,-29.859991,15.947966] )
+		self.planarMesh.append( [-16.071451,-29.900553,15.912505] )
+		self.planarMesh.append( [-16.092241,-29.893408,16.020439] )
+		self.planarMesh.append( [-16.007210,-29.926180,15.967641] )
+		self.planarMesh.append( [-16.064457,-29.904951,16.090832] )
+		planarMeshObject = Mesh.Mesh(self.planarMesh)
+
+		from pivy import coin, sogui; import FreeCADGui
+		Mesh.show(planarMeshObject)
+		view=FreeCADGui.ActiveDocument.ActiveView.getViewer()
+		pc=coin.SoGetPrimitiveCountAction()
+		pc.apply(view.getSceneGraph())
+		self.failUnless(pc.getTriangleCount() == 2)
+		self.failUnless(pc.getPointCount() == 6)
+
+	def tearDown(self):
+		#closing doc
+		FreeCAD.closeDocument("MeshTest")

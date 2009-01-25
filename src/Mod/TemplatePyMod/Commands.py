@@ -104,19 +104,19 @@ class SphereCreator:
 	def enter(self):
 		if (self.mode):
 			return
-		self.mode = True
 		FreeCAD.Console.PrintMessage("Enter sphere creation mode\n")
 		self.av = FreeCADGui.ActiveDocument.ActiveView
 		self.cb = self.av.addEventCallback("SoMouseButtonEvent",self.create)
 		self.ex = self.av.addEventCallback("SoKeyboardEvent",self.exit)
+		self.mode = True
 
 	def leave(self):
 		if (not self.mode):
 			return
-		self.mode = False
 		FreeCAD.Console.PrintMessage("Leave sphere creation mode\n")
 		self.av.removeEventCallback("SoMouseButtonEvent",self.cb)
 		self.av.removeEventCallback("SoKeyboardEvent",self.ex)
+		self.mode = False
 
 	def create(self, info):
 		down = (info["State"] == "DOWN")

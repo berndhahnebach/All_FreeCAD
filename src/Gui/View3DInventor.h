@@ -103,7 +103,7 @@ protected:
 
 private:
     View3DInventorViewer * _viewer;
-    View3DPy *_viewerPy;
+    PyObject *_viewerPy;
     QTimer * stopSpinTimer;
 
     // friends
