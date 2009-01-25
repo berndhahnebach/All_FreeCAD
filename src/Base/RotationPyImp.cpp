@@ -93,6 +93,15 @@ PyObject* RotationPy::invert(PyObject * args)
     Py_Return;
 }
 
+PyObject* RotationPy::multiply(PyObject * args)
+{
+    PyObject *rot;
+    if (!PyArg_ParseTuple(args, "O!", &(RotationPy::Type), &rot))
+        return NULL;
+    Rotation mult = (*getRotationPtr()) * (*static_cast<RotationPy*>(rot)->getRotationPtr());
+    return new RotationPy(new Rotation(mult));
+}
+
 PyObject* RotationPy::multVec(PyObject * args)
 {
     PyObject *obj;

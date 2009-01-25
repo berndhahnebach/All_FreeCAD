@@ -24,6 +24,14 @@
 				</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="multiply">
+			<Documentation>
+				<UserDocu>
+					multiply(Rotation)
+					Multiply this quaternion with another quaternion
+				</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="multVec">
 			<Documentation>
 				<UserDocu>

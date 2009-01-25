@@ -283,7 +283,7 @@ void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
         // Note: If R is the rotation, c the rotation center and t the translation
         // vector then Inventor applies the following transformation: R*(x-c)+c+t
         // In FreeCAD a placement only has a rotation and a translation part but
-        // no rotation center. This means that we must devide the transformation
+        // no rotation center. This means that we must divide the transformation
         // in a rotation and translation part.
         // R * (x-c) + c + t = R * x - R * c + c + t
         // The rotation part is R, the translation part t', however, is:
@@ -303,11 +303,13 @@ void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
 void ViewProviderGeometryObject::dragStartCallback(void *data, SoDragger *)
 {
     // This is called when a manipulator is about to manipulating
+    Gui::Application::Instance->activeDocument()->openCommand("Transform");
 }
 
 void ViewProviderGeometryObject::dragFinishCallback(void *data, SoDragger *)
 {
     // This is called when a manipulator has done manipulating
+    Gui::Application::Instance->activeDocument()->commitCommand();
 }
 
 SoPickedPointList ViewProviderGeometryObject::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const

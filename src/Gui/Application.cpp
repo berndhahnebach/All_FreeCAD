@@ -58,6 +58,7 @@
 #include "BitmapFactory.h"
 #include "SoFCDB.h"
 #include "PythonConsolePy.h"
+#include "View3DPy.h"
 
 #include "View3DInventor.h"
 #include "ViewProvider.h"
@@ -148,9 +149,10 @@ Application::Application()
     PyModule_AddObject(module, "Selection", pSelectionModule);
 
     // Python console binding
-    PythonStdout::init_type();
-    PythonStderr::init_type();
-    PythonStdin ::init_type();
+    PythonStdout    ::init_type();
+    PythonStderr    ::init_type();
+    PythonStdin     ::init_type();
+    View3DInventorPy::init_type();
 
     d = new ApplicationP;
 

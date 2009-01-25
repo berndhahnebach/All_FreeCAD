@@ -237,14 +237,16 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         union PyType_Object guidoctypeobj = {&Gui::DocumentPy::Type};
         if (PyObject_IsSubclass(type.ptr(), guidoctypeobj.o) == 1) {
             Gui::DocumentPy* docpy = (Gui::DocumentPy*)(inst.ptr());
-            App::Document* document = docpy->getDocumentPtr()->getDocument();
-            // Make sure that the C++ object is alive
-            if (document) {
-                std::vector<App::DocumentObject*> objects = document->getObjects();
-                Py::List list;
-                for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
-                    list.append(Py::String((*it)->getNameInDocument()));
-                extractTipsFromObject(inst, list, tips);
+            if (docpy->getDocumentPtr()) {
+                App::Document* document = docpy->getDocumentPtr()->getDocument();
+                // Make sure that the C++ object is alive
+                if (document) {
+                    std::vector<App::DocumentObject*> objects = document->getObjects();
+                    Py::List list;
+                    for (std::vector<App::DocumentObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+                        list.append(Py::String((*it)->getNameInDocument()));
+                    extractTipsFromObject(inst, list, tips);
+                }
             }
         }
 

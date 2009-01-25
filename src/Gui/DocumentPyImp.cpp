@@ -174,7 +174,7 @@ Py::Object DocumentPy::getActiveView(void) const
     Gui::MDIView *view = getDocumentPtr()->getActiveView();
     if (view) {
         // already incremented in getPyObject().
-        return Py::Object(view->getPyObject());
+        return Py::Object(view->getPyObject(), true);
     } else {
         return Py::None();
     }
