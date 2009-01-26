@@ -92,7 +92,7 @@ CmdImageCapturerTest::CmdImageCapturerTest()
 void CmdImageCapturerTest::activated(int iMsg)
 {
 
-#if 1
+#if 0
 
 	    // Reading an image
     QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
