@@ -331,7 +331,6 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     _viewer->viewAll();
     return true;
   }else if(strcmp("ViewAxo",pMsg) == 0 ){
-    float root = (float)(sqrt(3.0)/4.0);
     SoCamera* cam = _viewer->getCamera();
     cam->orientation.setValue(-0.353553f, -0.146447f, -0.353553f, 0.853553f);
     _viewer->viewAll();
