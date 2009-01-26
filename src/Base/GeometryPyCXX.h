@@ -129,7 +129,7 @@ public:
         set (rhsp, false);
         return *this;
     }
-    GeometryT& operator= (const T&)
+    GeometryT& operator= (const T& v)
     {
         set (new PyT(v), true);
         return *this;
