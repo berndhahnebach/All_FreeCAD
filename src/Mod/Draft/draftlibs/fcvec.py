@@ -22,76 +22,92 @@
 "a vector math library for FreeCAD"
 
 import math,FreeCAD
+from FreeCAD import Vector
+
+PREC = 4	# Precision of comparisions
 
 def tup(first):
 	"returns a tuple (x,y,z) with the vector coords"
-	if isinstance(first,FreeCAD.Vector):
+	if isinstance(first,Vector):
 		return (first.x,first.y,first.z)
 
 def new(first, other):
 	"new(Vector,Vector) - creates a new vector from first one to second one"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
-		return FreeCAD.Vector(other.x-first.x, other.y-first.y, other.z-first.z)
+	if isinstance(first,Vector) and isinstance(other,Vector):
+		return Vector(other.x-first.x, other.y-first.y, other.z-first.z)
 
 def add(first, other):
-	"add(Vector,Vector) - adds two vectors"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
-		return FreeCAD.Vector(first.x+other.x, first.y+other.y, first.z+other.z)
+	"add(Vector,Vector) - adds two vectors. OBSOLETE - use Vector.add()"
+	if isinstance(first,Vector) and isinstance(other,Vector):
+		return Vector(first.x+other.x, first.y+other.y, first.z+other.z)
 
 def sub(first, other):
-	"sub(Vector,Vector) - subtracts second vector from first one"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
-		return FreeCAD.Vector(first.x-other.x, first.y-other.y, first.z-other.z)
+	'''
+	sub(Vector,Vector) - subtracts second vector from first one.
+	OBSOLETE - use Vector.sub()
+	'''
+	if isinstance(first,Vector) and isinstance(other,Vector):
+		return Vector(first.x-other.x, first.y-other.y, first.z-other.z)
 
 def neg(first):
 	"neg(Vector) - returns an opposite (negative) vector"
-	if isinstance(first,FreeCAD.Vector):
-		return FreeCAD.Vector(-first.x, -first.y, -first.z)
+	if isinstance(first,Vector):
+		return Vector(-first.x, -first.y, -first.z)
 
 def equals(first,other):
-	"returns True if both vectors are equal. The important point is that we round off a bit to 4 digits, which is what the Part module uses"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
-		if (round(first.x,4) == round(other.x,4)) and (round(first.y,4) == round(other.y,4)) and (round(first.z,4) == round(other.z,4)):
-			return True
-		else: return False
+	'''returns True if both vectors are equal. The important point
+	is that we round off a bit (default to 4 digits, which is what the Part module uses).
+	'''
+	if isinstance(first,Vector) and isinstance(other,Vector):
+		if (round(first.x,PREC) == round(other.x,PREC)):
+			if (round(first.y,PREC) == round(other.y,PREC)):
+				if (round(first.z,PREC) == round(other.z,PREC)):
+					return True
+		return False
 
 def scale(first,scalar):
 	"scale(Vector,Float) - scales (multiplies) a vector by a factor"
-	if isinstance(first,FreeCAD.Vector):
-		return FreeCAD.Vector(first.x*scalar, first.y*scalar, first.z*scalar)
+	if isinstance(first,Vector):
+		return Vector(first.x*scalar, first.y*scalar, first.z*scalar)
 
 def length(first):
 	"lengh(Vector) - gives vector length - OBSOLETE! use Vector.Length instead!"
-	if isinstance(first,FreeCAD.Vector):
+	if isinstance(first,Vector):
 		return math.sqrt(first.x*first.x + first.y*first.y + first.z*first.z)
 
 def dist(first, other):
 	"dist(Vector,Vector) - returns the distance between both points/vectors"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
+	if isinstance(first,Vector) and isinstance(other,Vector):
 		return math.sqrt((first.x-other.x)*(first.x-other.x) + (first.y-other.y)*(first.y-other.y) + (first.z-other.z)*(first.z-other.z))
 
 def normalized(first):
 	"normalized(Vector) - returns a unit vector"
-	if isinstance(first,FreeCAD.Vector):
+	if isinstance(first,Vector):
 		l=length(first)
 		if (l!=0):
-			return FreeCAD.Vector(first.x/l, first.y/l, first.z/l)
+			return Vector(first.x/l, first.y/l, first.z/l)
 		else:
 			return 0
 
 def dotproduct(first, other):
 	"dotproduct(Vector,Vector) - returns the dot product of both vectors"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
+	if isinstance(first,Vector) and isinstance(other,Vector):
 		return (first.x*other.x + first.y*other.y + first.z*other.z)
 
-def crossproduct(first, other=FreeCAD.Vector(0,0,1)):
-	"crossproduct(Vector,Vector) - returns the cross product of both vectors. If only one is given, cross product is made with vertical axis, thus returning its perpendicular in XY plane"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
-		return FreeCAD.Vector(first.y*other.z - first.z*other.y, first.z*other.x - first.x*other.z, first.x*other.y - first.y*other.x)
+def crossproduct(first, other=Vector(0,0,1)):
+	'''
+	crossproduct(Vector,Vector) - returns the cross product of both vectors.
+	If only one is given, cross product is made with vertical axis,
+	thus returning its perpendicular in XY plane
+	'''
+	if isinstance(first,Vector) and isinstance(other,Vector):
+		return Vector(first.y*other.z - first.z*other.y, first.z*other.x - first.x*other.z, first.x*other.y - first.y*other.x)
 
-def angle(first, other=FreeCAD.Vector(1,0,0)):
-	"angle(Vector,Vector) - returns the angle in radians between the two vectors. If only one is given, angle is between the vector and the horizontal East direction"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
+def angle(first, other=Vector(1,0,0)):
+	'''angle(Vector,Vector) - returns the angle in radians between the two vectors.
+	If only one is given, angle is between the vector and the horizontal East direction
+	'''
+	if isinstance(first,Vector) and isinstance(other,Vector):
 		dp=dotproduct(normalized(first),normalized(other))
 		if (dp >= -1) and (dp <= 1):
 			angle = math.acos(dotproduct(normalized(first),normalized(other)))
@@ -104,23 +120,23 @@ def angle(first, other=FreeCAD.Vector(1,0,0)):
 
 def project(first, other):
 	"project(Vector,Vector): projects the first vector onto the second one"
-	if isinstance(first,FreeCAD.Vector) and isinstance(other,FreeCAD.Vector):
+	if isinstance(first,Vector) and isinstance(other,Vector):
 		return scale(other, dotproduct(first,other)/dotproduct(other,other))
 
 def rotate(first,angle):
 	"rotate(Vector,Float): rotates the first Vector around the origin Z axis, at the given angle."
-	if isinstance(first,FreeCAD.Vector):
-		return FreeCAD.Vector(math.cos(angle)*first.x-math.sin(angle)*first.y,math.sin(angle)*first.x+math.cos(angle)*first.y,first.z)
+	if isinstance(first,Vector):
+		return Vector(math.cos(angle)*first.x-math.sin(angle)*first.y,math.sin(angle)*first.x+math.cos(angle)*first.y,first.z)
 
 def intersect(p1,p2,p3,p4,infinite1=True,infinite2=True):
 	'''
 	intersect(Vector,Vector,Vector,Vector,[infinite1],[infinite2])
 	finds the intersection point between 2 lines (p1,p2) and (p3,p4)
-	if infinite1 is True, edge1 will be considered infinite
-	if infinite2 is True, edge2 will be considered infinite
+	if infinite1 is True, edge p1-p2 will be considered infinite
+	if infinite2 is True, edge p3-p4 will be considered infinite
 	'''
 
-	if isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector) and isinstance(p3, FreeCAD.Vector) and isinstance(p4, FreeCAD.Vector):
+	if isinstance(p1, Vector) and isinstance(p2, Vector) and isinstance(p3, Vector) and isinstance(p4, Vector):
 		numa = (p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)
 		numb = (p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)
 		denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y)
@@ -137,7 +153,7 @@ def intersect(p1,p2,p3,p4,infinite1=True,infinite2=True):
 				return None
 		x = p1.x + ua * (p2.x - p1.x)
 		y = p1.y + ua * (p2.y - p1.y)
-		return FreeCAD.Vector(x,y,p1.z)
+		return Vector(x,y,p1.z)
 	else:
 		return None
 
