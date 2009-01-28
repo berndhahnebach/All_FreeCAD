@@ -1,4 +1,4 @@
-add_definitions(-DFCAppDrawing -DFC_DEBUG)
+add_definitions(-DFCAppComplete -DFC_DEBUG)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -8,12 +8,12 @@ include_directories(
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
-		 set(Drawing_LIBS
+		 set(Complete_LIBS
 		 		 Part
 		 		 TKHLR
 		 		 FreeCADApp)
 else(WIN32)
-#libDrawing_la_LIBADD   = \
+#libComplete_la_LIBADD   = \
 #		 		 -l@PYTHON_LIB@ \
 #		 		 -lboost_regex \
 #		 		 -lxerces-c \
@@ -52,18 +52,18 @@ SET(Features_SRCS
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 
-SET(Drawing_SRCS
+SET(Complete_SRCS
 		 ${Features_SRCS}
-		 AppDrawing.cpp
-		 AppDrawingPy.cpp
+		 AppComplete.cpp
+		 AppCompletePy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
 )
 
-add_library(Drawing SHARED ${Drawing_SRCS})
+add_library(Complete SHARED ${Complete_SRCS})
 
-target_link_libraries(Drawing ${Drawing_LIBS})
+target_link_libraries(Complete ${Complete_LIBS})
 
-set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")
+set_target_properties(Complete PROPERTIES SUFFIX ".pyd")
 
-install(TARGETS Drawing DESTINATION lib)
+install(TARGETS Complete DESTINATION lib)
