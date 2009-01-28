@@ -9,4 +9,5 @@ install(
 		 		 Init.py
 		 		 InitGui.py
 		 DESTINATION
-		 		 Mod/Assemgly)
+		 		 Mod/Complete
+				 )

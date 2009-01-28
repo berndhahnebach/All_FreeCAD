@@ -1,6 +1,6 @@
 project(FreeCAD_trunk)
 
-cmake_minimum_required(VERSION 2.4.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 if(COMMAND cmake_policy)
 		 cmake_policy(SET CMP0003 NEW)
@@ -22,6 +22,58 @@ if(WIN32)
 else(WIN32)
 		 set(PLATFORM_CP cp)
 endif(WIN32)
+
+
+# ================================================================================
+
+
+# --------------------------------------------------------------------------------
+# General includes when LibPack is copied in source tree
+
+link_directories(${CMAKE_SOURCE_DIR}/lib)
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
+set(PYTHON_DEBUG_LIBRARIES python25)
+set(PYTHON_LIBRARIES python25_d)
+set(PYTHON_FOUND TRUE)
+
+set(COIN_DEBUG_LIBRARIES coin2d)
+set(COIN_LIBRARIES coin2)
+set(COIN_FOUND TRUE)
+
+set(Boost_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include)
+set(Boost_LIBRARIES boost_program_options boost_regex boost_signals boost_system)
+set(Boost_FOUND TRUE)
+
+set(ATLAS_LIBRARIES importlib_atlas)
+set(ATLAS_FOUND TRUE)
+
+set(OCC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/OpenCascade)
+set(OCC_FOUND TRUE)
+
+set(OPENCV_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include/OpenCV)
+set(OPENCV_LIBRARIES cv cxcore cvhaartraining)
+set(OPENCV_FOUND TRUE)
+
+set(SO_QT_DEBUG_LIBRARIES soqt1d)
+set(SO_QT_LIBRARIES soqt1)
+set(SO_QT_FOUND TRUE)
+
+set(XERCES_LIBRARIES xerces-c_2)
+set(XERCES_FOUND TRUE)
+
+set(ZLIB_INCLUDE_DIR ${ZLIB_SRC_DIR})
+set(ZLIB_LIBRARIES z)
+set(ZLIB_FOUND TRUE)
+
+set(ATLAS_LIBRARIES importlib_atlas)
+set(ATLAS_FOUND TRUE)
+
+set(XERCES_LIBRARIES xerces-c_2)
+set(XERCES_FOUND TRUE)
+
+# -------------------------------- Macros --------------------------------
+
 
 macro(copy_to_local_output_paths SOURCE_PATHS)
 		 if(CMAKE_CFG_INTDIR STREQUAL .)
@@ -63,82 +115,16 @@ macro(copy_to_main_output_paths SOURCE_PATHS)
 		 endif(NOT ${DEBUG_MAIN_OUTPUT_PATH} STREQUAL ${RELEASE_MAIN_OUTPUT_PATH})
 endmacro(copy_to_main_output_paths)
 
-# -------------------------------- Python --------------------------------
-
-# sets ${PYTHON_INCLUDE_PATH}, ${PYTHON_DEBUG_LIBRARIES} and ${PYTHON_LIBRARIES}
-
-find_package(PythonLibs REQUIRED)
-find_package(PythonInterp REQUIRED)
-
-#link_directories("C:\\Program Files\\Python 2.5\\libs")
-
-# -------------------------------- Qt --------------------------------
-
-# sets ${QT_LIBRARIES}
-
-find_package(Qt4 REQUIRED)
-
-set(QT_USE_QTNETWORK TRUE)
-set(QT_USE_QTOPENGL TRUE)
-set(QT_USE_QTSVG TRUE)
-set(QT_USE_QTUITOOLS TRUE)
-
-include(${QT_USE_FILE})
-
-# -------------------------------- Platform specific config --------------------------------
-
-if(WIN32)
-		 include(ConfigWin.cmake)
-endif(WIN32)
-
-# -------------------------------- Verify that everything was found --------------------------------
-
-if(NOT ATLAS_FOUND)
-		 message(FATAL_ERROR "atlas not found")
-endif(NOT ATLAS_FOUND)
-
-if(NOT Boost_FOUND)
-		 message(FATAL_ERROR "boost not found")
-endif(NOT Boost_FOUND)
-
-if(NOT COIN_FOUND)
-		 message(FATAL_ERROR "coin not found")
-endif(NOT COIN_FOUND)
-
-if(NOT OCC_FOUND)
-		 message(FATAL_ERROR "Open CASCADE not found")
-endif(NOT OCC_FOUND)
-
-if(NOT OPENCV_FOUND)
-		 message(FATAL_ERROR "opencv not found")
-endif(NOT OPENCV_FOUND)
-
-if(NOT SO_QT_FOUND)
-		 message(FATAL_ERROR "SoQt not found")
-endif(NOT SO_QT_FOUND)
-
-if(NOT XERCES_FOUND)
-		 message(FATAL_ERROR "xerces not found")
-endif(NOT XERCES_FOUND)
-
-if(NOT ZLIB_FOUND)
-		 message(FATAL_ERROR "zlib not found")
-endif(NOT ZLIB_FOUND)
-
-
-# -------------------------------- Macros --------------------------------
-
-
 # It would be a bit cleaner to generate these files in ${CMAKE_CURRENT_BINARY_DIR}
 
 macro(generate_from_xml BASE_NAME)
 		 file(TO_NATIVE_PATH ${CMAKE_SOURCE_DIR}/src/Tools/generate.py TOOL_PATH)
 		 file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${BASE_NAME}.xml SOURCE_PATH)
 		 add_custom_command(
-		 		 OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/${BASE_NAME}.h ${CMAKE_CURRENT_SOURCE_DIR}/${BASE_NAME}.cpp
-		 		 COMMAND ${PYTHON_EXECUTABLE} ${TOOL_PATH} ${SOURCE_PATH}
-		 		 MAIN_DEPENDENCY ${BASE_NAME}.xml
-		 		 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		 		 OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${BASE_NAME}.h" "${CMAKE_CURRENT_SOURCE_DIR}/${BASE_NAME}.cpp"
+		 		 COMMAND "${PYTHON_EXECUTABLE}" "${TOOL_PATH}" "${SOURCE_PATH}"
+		 		 MAIN_DEPENDENCY "${BASE_NAME}.xml"
+		 		 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 		 		 COMMENT Building ${BASE_NAME}.h/.cpp out of ${BASE_NAME}.xml)
 endmacro(generate_from_xml)
 
@@ -163,23 +149,29 @@ include(AddFileDependencies)
 
 macro(fc_wrap_cpp outfiles )
 		 # get include dirs
-		 QT4_GET_MOC_INC_DIRS(moc_includes)
-		 QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
-
-		 foreach(it ${moc_files})
-		 		 get_filename_component(it ${it} ABSOLUTE)
-		 		 QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-		 		 QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
-		 		 set(${outfiles} ${${outfiles}} ${outfile})
-		 		 add_file_dependencies(${it} ${outfile})
-		 endforeach(it)
+#		 QT4_GET_MOC_INC_DIRS(moc_includes)
+#		 QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+#
+#		 foreach(it ${moc_files})
+#		 		 get_filename_component(it ${it} ABSOLUTE)
+#		 		 QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+#		 		 QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
+#		 		 set(${outfiles} ${${outfiles}} ${outfile})
+#		 		 add_file_dependencies(${it} ${outfile})
+#		 endforeach(it)
 endmacro(fc_wrap_cpp)
+
+# generates the ui -> cpp h files
+macro(qt4_wrap_ui infiles )
+
+endmacro(qt4_wrap_ui)
+
 
 # This is a special version of the built in macro qt4_add_resources that generates .cpp files
 
 macro(fc_add_resources outfiles )
-    QT4_EXTRACT_OPTIONS(rcc_files rcc_options ${ARGN})
-
+    #QT4_EXTRACT_OPTIONS(rcc_files rcc_options ${ARGN})
+	set(ARGN )
     foreach (it ${rcc_files})
       get_filename_component(outfilename ${it} NAME_WE)
       get_filename_component(infile ${it} ABSOLUTE)
