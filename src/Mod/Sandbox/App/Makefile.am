@@ -1,0 +1,44 @@
+
+lib_LTLIBRARIES=libSandbox.la Sandbox.la
+
+libSandbox_la_SOURCES=\
+		AppSandboxPy.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
+
+
+# the library search path.
+libSandbox_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libSandbox_la_CPPFLAGS = -DSandboxAppExport=
+
+libSandbox_la_LIBADD   = \
+		-l@PYTHON_LIB@ \
+		-lxerces-c \
+		-lFreeCADBase \
+		-lFreeCADApp
+
+#--------------------------------------------------------------------------------------
+# Loader of libSandbox
+
+Sandbox_la_SOURCES=\
+		AppSandbox.cpp
+
+# the library search path.
+Sandbox_la_LDFLAGS = $(libSandbox_la_LDFLAGS) -module -avoid-version
+Sandbox_la_CPPFLAGS = $(libSandbox_la_CPPFLAGS)
+
+Sandbox_la_LIBADD   = \
+		$(libSandbox_la_LIBADD) \
+		-lSandbox
+
+Sandbox_la_DEPENDENCIES = libSandbox.la
+
+#--------------------------------------------------------------------------------------
+
+# set the include path found by configure
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+
+libdir = $(prefix)/Mod/Sandbox
+
+EXTRA_DIST = \
+		AppSandbox.vcproj
