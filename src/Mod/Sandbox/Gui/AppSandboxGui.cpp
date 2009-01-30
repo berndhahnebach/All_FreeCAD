@@ -27,6 +27,8 @@
 #endif
 
 #include <Base/Console.h>
+#include <CXX/Extensions.hxx>
+#include <CXX/Objects.hxx>
 #include <Gui/Application.h>
 
 #include "Workbench.h"
@@ -35,11 +37,21 @@
 void CreateSandboxCommands(void);
 
 
-/* registration table  */
-extern struct PyMethodDef SandboxGui_methods[];
+/* module functions */
 
-PyDoc_STRVAR(module_SandboxGui_doc,
-"This module is the SandboxGui module.");
+class SandboxModuleGui : public Py::ExtensionModule<SandboxModuleGui>
+{
+
+public:
+    SandboxModuleGui() : Py::ExtensionModule<SandboxModuleGui>("SandboxModuleGui")
+    {
+        initialize("This module is the SandboxGui module"); // register with Python
+    }
+    
+    virtual ~SandboxModuleGui() {}
+
+private:
+};
 
 
 /* Python entry */
@@ -55,14 +67,10 @@ void SandboxGuiExport initSandboxGui()
     CreateSandboxCommands();
     SandboxGui::Workbench::init();
 
-    // ADD YOUR CODE HERE
-    //
-    //
-
-    (void) Py_InitModule3("SandboxGui", SandboxGui_methods, module_SandboxGui_doc);   /* mod name, table ptr */
+    // the following constructor call registers our extension module
+    // with the Python runtime system
+    static SandboxModuleGui* module = new SandboxModuleGui;
     Base::Console().Log("Loading GUI of Sandbox module... done\n");
-
-    return;
 }
 
 } // extern "C"

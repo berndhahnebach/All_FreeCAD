@@ -292,10 +292,6 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\AppSandboxPy.cpp"
-			>
-		</File>
-		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration
