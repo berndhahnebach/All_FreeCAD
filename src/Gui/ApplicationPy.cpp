@@ -109,68 +109,63 @@ PyMethodDef Application::Methods[] = {
   {NULL, NULL}		/* Sentinel */
 };
 
-PYFUNCIMP_S(Application,sActiveDocument)
+PyObject* Application::sActiveDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
 
     Document *pcDoc =  Instance->activeDocument();
     if (pcDoc) {
-	    return pcDoc->getPyObject();
+        return pcDoc->getPyObject();
     } else {
         Py_Return;
     }
 } 
 
-PYFUNCIMP_S(Application,sGetDocument)
+PyObject* Application::sGetDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char *pstr=0;
-  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception
+    char *pstr=0;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception
 
-  Document *pcDoc =  Instance->getDocument(pstr);
-  if ( !pcDoc )
-  {
-    PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
-    return 0L;
-  }
+    Document *pcDoc =  Instance->getDocument(pstr);
+    if (!pcDoc) {
+        PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
+        return 0L;
+    }
 
-  return pcDoc->getPyObject();
+    return pcDoc->getPyObject();
 } 
 
-PYFUNCIMP_S(Application,sHide)
+PyObject* Application::sHide(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char *psFeatStr;
-  if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
+    char *psFeatStr;
+    if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
 
-  Document *pcDoc =  Instance->activeDocument();
+    Document *pcDoc =  Instance->activeDocument();
 
-  if(pcDoc)
-  {
-    pcDoc->setHide(psFeatStr);  
-  }
-    
-   Py_Return;
+    if (pcDoc)
+        pcDoc->setHide(psFeatStr);  
+
+    Py_Return;
 } 
 
-PYFUNCIMP_S(Application,sShow)
+PyObject* Application::sShow(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char *psFeatStr;
-  if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
+    char *psFeatStr;
+    if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
 
-  Document *pcDoc =  Instance->activeDocument();
+    Document *pcDoc =  Instance->activeDocument();
 
-  if(pcDoc)
-  {
-    pcDoc->setShow(psFeatStr);  
-  }
-    
-   Py_Return;
+    if (pcDoc)
+        pcDoc->setShow(psFeatStr);  
+
+    Py_Return;
 } 
 
-PYFUNCIMP_S(Application,sOpen)
+PyObject* Application::sOpen(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     // only used to open Python files
     const char* Name;
@@ -216,7 +211,7 @@ PYFUNCIMP_S(Application,sOpen)
     Py_Return;
 }
 
-PYFUNCIMP_S(Application,sInsert)
+PyObject* Application::sInsert(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     const char* Name;
     const char* DocName;
@@ -253,7 +248,7 @@ PYFUNCIMP_S(Application,sInsert)
     Py_Return;
 }
 
-PYFUNCIMP_S(Application,sExport)
+PyObject* Application::sExport(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     PyObject* object;
     const char* filename;
@@ -291,55 +286,56 @@ PYFUNCIMP_S(Application,sExport)
     Py_Return;
 }
 
-PYFUNCIMP_S(Application,sSendActiveView)
+PyObject* Application::sSendActiveView(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char *psCommandStr;
-  if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
+    char *psCommandStr;
+    if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
 
-  const char* ppReturn=0;
-  if(!Instance->sendMsgToActiveView(psCommandStr,&ppReturn))
-    Base::Console().Warning("Unknown view command: %s\n",psCommandStr);
+    const char* ppReturn=0;
+    if (!Instance->sendMsgToActiveView(psCommandStr,&ppReturn))
+        Base::Console().Warning("Unknown view command: %s\n",psCommandStr);
 
-  // Print the return value to the output
-  if (ppReturn) {
-    return Py_BuildValue("s",ppReturn);
-  }
+    // Print the return value to the output
+    if (ppReturn) {
+        return Py_BuildValue("s",ppReturn);
+    }
 
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
-PYFUNCIMP_S(Application,sUpdateGui)
+PyObject* Application::sUpdateGui(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
 
-  qApp->processEvents();
+    qApp->processEvents();
 
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
-PYFUNCIMP_S(Application,sCreateDialog)
+PyObject* Application::sCreateDialog(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char* fn = 0;
-  if (!PyArg_ParseTuple(args, "s", &fn))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
+    char* fn = 0;
+    if (!PyArg_ParseTuple(args, "s", &fn))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
 
-  PyObject* pPyResource=0L;
-  try{
-    pPyResource = new PyResource();
-    ((PyResource*)pPyResource)->load(fn);
-  } catch (const Base::Exception& e)
-  {
-    PyErr_SetString(PyExc_AssertionError, e.what());
-  }
+    PyObject* pPyResource=0L;
+    try{
+        pPyResource = new PyResource();
+        ((PyResource*)pPyResource)->load(fn);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_AssertionError, e.what());
+        return NULL;
+    }
 
-  return pPyResource;
+    return pPyResource;
 } 
 
-PYFUNCIMP_S(Application,sAddPreferencePage)
+PyObject* Application::sAddPreferencePage(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *fn, *grp;
     if (!PyArg_ParseTuple(args, "ss", &fn,&grp))     // convert args: Python->C 
@@ -358,27 +354,26 @@ PYFUNCIMP_S(Application,sAddPreferencePage)
     return Py_None;
 } 
 
-PYFUNCIMP_S(Application,sActivateWorkbenchHandler)
+PyObject* Application::sActivateWorkbenchHandler(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
+    char*       psKey;
+    if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
 
-  // search for workbench handler from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
-  if ( !pcWorkbench )
-  {
-    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
-    return NULL;
-  }
+    // search for workbench handler from the dictionary
+    PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
+    if (!pcWorkbench) {
+        PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
+        return NULL;
+    }
 
-  Instance->activateWorkbench(psKey);
+    Instance->activateWorkbench(psKey);
 
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
-PYFUNCIMP_S(Application,sAddWorkbenchHandler)
+PyObject* Application::sAddWorkbenchHandler(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     PyObject*   pcObject;
     std::string item;
@@ -436,96 +431,90 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
     return Py_None;
 }
 
-PYFUNCIMP_S(Application,sRemoveWorkbenchHandler)
+PyObject* Application::sRemoveWorkbenchHandler(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
+    char*       psKey;
+    if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
 
-  PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,psKey); 
-  if ( !wb )
-  {
-    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
-    return NULL;
-  }
+    PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,psKey); 
+    if (!wb) {
+        PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
+        return NULL;
+    }
 
+    Instance->signalRemoveWorkbench(psKey);
+    PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
 
-  Instance->signalRemoveWorkbench(psKey);
-  PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
-
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
-PYFUNCIMP_S(Application,sGetWorkbenchHandler)
+PyObject* Application::sGetWorkbenchHandler(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char* psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                                // NULL triggers exception 
-
+    char* psKey;
+    if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+        return NULL;                                // NULL triggers exception 
    
-  // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
-  if ( !pcWorkbench )
-  {
-    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
-    return NULL;
-  }
+    // get the python workbench object from the dictionary
+    PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
+    if (!pcWorkbench) {
+        PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
+        return NULL;
+    }
 
-  Py_INCREF(pcWorkbench);
-  return pcWorkbench;
+    Py_INCREF(pcWorkbench);
+    return pcWorkbench;
 } 
 
-PYFUNCIMP_S(Application,sListWorkbenchHandlers)
+PyObject* Application::sListWorkbenchHandlers(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  Py_INCREF(Instance->_pcWorkbenchDictionary);
-  return Instance->_pcWorkbenchDictionary;
+    Py_INCREF(Instance->_pcWorkbenchDictionary);
+    return Instance->_pcWorkbenchDictionary;
 } 
 
-PYFUNCIMP_S(Application,sActiveWorkbenchHandler)
+PyObject* Application::sActiveWorkbenchHandler(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                       // NULL triggers exception 
 
-  Workbench* actWb = WorkbenchManager::instance()->active();
-  if ( !actWb )
-  {
-    PyErr_SetString(PyExc_AssertionError, "No active workbench\n");		
-    return NULL;
-  }
+    Workbench* actWb = WorkbenchManager::instance()->active();
+    if (!actWb) {
+        PyErr_SetString(PyExc_AssertionError, "No active workbench\n");		
+        return NULL;
+    }
 
-  // get the python workbench object from the dictionary
-  std::string key = actWb->name();
-  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, key.c_str());
-  if ( !pcWorkbench )
-  {
-    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", key.c_str());
-    return NULL;
-  }
+    // get the python workbench object from the dictionary
+    std::string key = actWb->name();
+    PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, key.c_str());
+    if (!pcWorkbench) {
+        PyErr_Format(PyExc_KeyError, "No such workbench '%s'", key.c_str());
+        return NULL;
+    }
 
-  // object get incremented
-  Py_INCREF(pcWorkbench);
-  return pcWorkbench;
+    // object get incremented
+    Py_INCREF(pcWorkbench);
+    return pcWorkbench;
 } 
 
-PYFUNCIMP_S(Application,sAddIconPath)
+PyObject* Application::sAddIconPath(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char* filePath;
-  if (!PyArg_ParseTuple(args, "s", &filePath))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-  QString path = QString::fromUtf8(filePath);
-  if (QDir::isRelativePath(path)) {
-    // Home path ends with '/'
-    QString home = QString::fromUtf8(App::GetApplication().GetHomePath());
-    path = home + path;
-  }
+    char* filePath;
+    if (!PyArg_ParseTuple(args, "s", &filePath))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
+    QString path = QString::fromUtf8(filePath);
+    if (QDir::isRelativePath(path)) {
+        // Home path ends with '/'
+        QString home = QString::fromUtf8(App::GetApplication().GetHomePath());
+        path = home + path;
+    }
 
-  BitmapFactory().addPath(path);  
-  Py_INCREF(Py_None);
-  return Py_None;
+    BitmapFactory().addPath(path);  
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
-PYFUNCIMP_S(Application,sAddIcon)
+PyObject* Application::sAddIcon(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *iconName;
     char *pixmap;
@@ -562,30 +551,28 @@ PYFUNCIMP_S(Application,sAddIcon)
     return Py_None;
 }
 
-PYFUNCIMP_S(Application,sAddCommand)
+PyObject* Application::sAddCommand(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char*       pName;
-  char*       pActivateionString=0;
-  PyObject*   pcCmdObj;
-  if (!PyArg_ParseTuple(args, "sO|s", &pName,&pcCmdObj,&pActivateionString))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
+    char*       pName;
+    char*       pActivateionString=0;
+    PyObject*   pcCmdObj;
+    if (!PyArg_ParseTuple(args, "sO|s", &pName,&pcCmdObj,&pActivateionString))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
 
-  //Py_INCREF(pcObject);
+    Application::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj,pActivateionString));
 
-  Application::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj,pActivateionString));
-
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 
 
-PYFUNCIMP_S(Application,sRunCommand)
+PyObject* Application::sRunCommand(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char*       pName;
-  if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
+    char*       pName;
+    if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception 
 
-  Application::Instance->commandManager().runCommandByName(pName);
+    Application::Instance->commandManager().runCommandByName(pName);
 
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
 } 

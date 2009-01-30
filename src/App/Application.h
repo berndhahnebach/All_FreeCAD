@@ -252,28 +252,28 @@ private:
     //---------------------------------------------------------------------
 
     // static python wrapper of the exported functions
-    PYFUNCDEF_S(sGetParam);
-    PYFUNCDEF_S(sGetVersion);
-    PYFUNCDEF_S(sGetConfig);
-    PYFUNCDEF_S(sSetConfig);
-    PYFUNCDEF_S(sDumpConfig);
-    PYFUNCDEF_S(sTemplateAdd);
-    PYFUNCDEF_S(sTemplateDelete);
-    PYFUNCDEF_S(sTemplateGet);
-    PYFUNCDEF_S(sAddImportType);
-    PYFUNCDEF_S(sGetImportType);
-    PYFUNCDEF_S(sAddExportType);
-    PYFUNCDEF_S(sGetExportType);
+    static PyObject* sGetParam          (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sGetVersion        (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sGetConfig         (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sSetConfig         (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sDumpConfig        (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sTemplateAdd       (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sTemplateDelete    (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sTemplateGet       (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sAddImportType     (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sGetImportType     (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sAddExportType     (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sGetExportType     (PyObject *self,PyObject *args,PyObject *kwd);
 
-    PYFUNCDEF_S(sOpenDocument);
-    PYFUNCDEF_S(sSaveDocument);
-    PYFUNCDEF_S(sSaveDocumentAs);
-    PYFUNCDEF_S(sNewDocument);
-    PYFUNCDEF_S(sCloseDocument);
-    PYFUNCDEF_S(sActiveDocument);
-    PYFUNCDEF_S(sSetActiveDocument);
-    PYFUNCDEF_S(sGetDocument);
-    PYFUNCDEF_S(sListDocuments);
+    static PyObject* sOpenDocument      (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sSaveDocument      (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sSaveDocumentAs    (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sNewDocument       (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sCloseDocument     (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sActiveDocument    (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sSetActiveDocument (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sGetDocument       (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sListDocuments     (PyObject *self,PyObject *args,PyObject *kwd);
 
     static PyMethodDef    Methods[]; 
 

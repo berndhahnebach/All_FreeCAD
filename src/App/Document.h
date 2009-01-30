@@ -59,11 +59,13 @@ namespace App
 {
 
 /// The document class
-class AppExport Document :public App::PropertyContainer
+class AppExport Document : public App::PropertyContainer
 {
     PROPERTY_HEADER(App::Document);
 
 public:
+    /** @name Properties */
+    //@{
     /// holds the long name of the document (utf-8 coded)
     PropertyString Label;
     /// full qualified (with path) file name (utf-8 coded)
@@ -77,6 +79,7 @@ public:
     PropertyString Comment;
     PropertyString Id;
     PropertyString TransientDir;
+    //@}
 
     /** @name Signals of the document */
     //@{
@@ -166,6 +169,10 @@ public:
     bool isTouched(void) const;
     /// returns all touched objects
     std::vector<App::DocumentObject *> getTouched(void) const;
+    /// set the document to be closable, this is on by default.
+    void setClosable(bool);
+    /// check whether the document can be closed
+    bool isClosable() const;
     /// Recompute all touched features
     void recompute();
     /// Recompute only one feature
