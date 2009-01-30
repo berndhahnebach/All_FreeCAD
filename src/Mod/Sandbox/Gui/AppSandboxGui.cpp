@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 #include <CXX/Extensions.hxx>
 #include <CXX/Objects.hxx>
 #include <Gui/Application.h>
@@ -43,7 +44,7 @@ class SandboxModuleGui : public Py::ExtensionModule<SandboxModuleGui>
 {
 
 public:
-    SandboxModuleGui() : Py::ExtensionModule<SandboxModuleGui>("SandboxModuleGui")
+    SandboxModuleGui() : Py::ExtensionModule<SandboxModuleGui>("SandboxGui")
     {
         initialize("This module is the SandboxGui module"); // register with Python
     }
@@ -60,6 +61,15 @@ void SandboxGuiExport initSandboxGui()
 {
     if (!Gui::Application::Instance) {
         PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
+
+    // Load Python modules this module depends on
+    try {
+        Base::Interpreter().loadModule("Sandbox");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
         return;
     }
 
