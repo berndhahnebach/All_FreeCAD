@@ -37,7 +37,7 @@ class SandboxModule : public Py::ExtensionModule<SandboxModule>
 {
 
 public:
-    SandboxModule() : Py::ExtensionModule<SandboxModule>("SandboxModule")
+    SandboxModule() : Py::ExtensionModule<SandboxModule>("Sandbox")
     {
         initialize("This module is the Sandbox module"); // register with Python
     }
