@@ -169,8 +169,18 @@ PyObject* Application::sCloseDocument(PyObject * /*self*/, PyObject *args,PyObje
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
-    if ( GetApplication().closeDocument(pstr) == false ) {
+    Document* doc = GetApplication().getDocument(pstr);
+    if (!doc) {
         PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
+        return NULL;
+    }
+    if (!doc->isClosable()) {
+        PyErr_Format(PyExc_RuntimeError, "The document '%s' is not closable for the moment", pstr);
+        return NULL;
+    }
+
+    if (GetApplication().closeDocument(pstr) == false) {
+        PyErr_Format(PyExc_RuntimeError, "Closing the document '%s' failed", pstr);
         return NULL;
     }
 
@@ -197,27 +207,25 @@ PyObject* Application::sSaveDocument(PyObject * /*self*/, PyObject *args,PyObjec
 
     Py_Return;
 }
-/*
-PYFUNCIMP_S(Application,sSaveDocumentAs)
+#if 0
+PyObject* Application::sSaveDocumentAs(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
-  char *pDoc, *pFileName;
-  if (!PyArg_ParseTuple(args, "ss", &pDoc, &pFileName))     // convert args: Python->C
-    return NULL;                             // NULL triggers exception
+    char *pDoc, *pFileName;
+    if (!PyArg_ParseTuple(args, "ss", &pDoc, &pFileName))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
 
-  Document* doc = GetApplication().getDocument(pDoc);
-  if ( doc )
-  {
-    doc->saveAs( pFileName );
-  }
-  else
-  {
-    PyErr_Format(PyExc_NameError, "Unknown document '%s'", pDoc);
-    return NULL;
-  }
+    Document* doc = GetApplication().getDocument(pDoc);
+    if (doc) {
+        doc->saveAs( pFileName );
+    }
+    else {
+        PyErr_Format(PyExc_NameError, "Unknown document '%s'", pDoc);
+        return NULL;
+    }
 
-  Py_Return;
+    Py_Return;
 }
-*/
+#endif
 PyObject* Application::sActiveDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C

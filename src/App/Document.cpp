@@ -120,6 +120,7 @@ struct DocumentP
     int iTransactionCount;
     std::map<int,Transaction*> mTransactions;
     bool rollback;
+    bool closable;
     int iUndoMode;
 
     DocumentP() {
@@ -129,6 +130,7 @@ struct DocumentP
         iTransactionMode = 0;
         iTransactionCount = 0;
         rollback = false;
+        closable = true;
         iUndoMode = 0;
     }
 };
@@ -824,6 +826,16 @@ vector<DocumentObject*> Document::getTouched(void) const
             result.push_back(*It);
 
     return result;
+}
+
+void Document::setClosable(bool c)
+{
+    d->closable = c;
+}
+
+bool Document::isClosable() const
+{
+    return d->closable;
 }
 
 void Document::recompute()

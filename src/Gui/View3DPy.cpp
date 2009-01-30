@@ -131,6 +131,24 @@ Py::Object View3DInventorPy::repr()
     return Py::String(s_out.str());
 }
 
+View3DInventorPy::method_varargs_handler View3DInventorPy::pycxx_handler = 0;
+
+PyObject *View3DInventorPy::method_varargs_ext_handler(PyObject *_self_and_name_tuple, PyObject *_args)
+{
+    try {
+        return pycxx_handler(_self_and_name_tuple, _args);
+    }
+    catch (const Base::Exception& e) {
+        throw Py::Exception(e.what());
+    }
+    catch (const std::exception& e) {
+        throw Py::Exception(e.what());
+    }
+    catch(...) {
+        throw Py::Exception("Unknown C++ exception");
+    }
+}
+
 Py::Object View3DInventorPy::getattr(const char * attr)
 {
     if (!_view) {
@@ -140,7 +158,14 @@ Py::Object View3DInventorPy::getattr(const char * attr)
         throw Py::RuntimeError(s_out.str());
     }
     else {
-        return Py::PythonExtension<View3DInventorPy>::getattr(attr);
+        Py::Object obj = Py::PythonExtension<View3DInventorPy>::getattr(attr);
+        if (PyCFunction_Check(obj.ptr())) {
+            PyCFunctionObject* op = reinterpret_cast<PyCFunctionObject*>(obj.ptr());
+            if (!pycxx_handler)
+                pycxx_handler = op->m_ml->ml_meth;
+            op->m_ml->ml_meth = method_varargs_ext_handler;
+        }
+        return obj;
     }
 }
 
