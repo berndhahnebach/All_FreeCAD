@@ -27,26 +27,35 @@
 #endif
 
 #include <Base/Console.h>
+#include <CXX/Extensions.hxx>
+#include <CXX/Objects.hxx>
 
 
-/* registration table  */
-extern struct PyMethodDef Sandbox_methods[];
+/* module functions */
 
-PyDoc_STRVAR(module_Sandbox_doc,
-"This module is the Sandbox module.");
+class SandboxModule : public Py::ExtensionModule<SandboxModule>
+{
+
+public:
+    SandboxModule() : Py::ExtensionModule<SandboxModule>("SandboxModule")
+    {
+        initialize("This module is the Sandbox module"); // register with Python
+    }
+    
+    virtual ~SandboxModule() {}
+
+private:
+};
 
 
 /* Python entry */
 extern "C" {
 void SandboxAppExport initSandbox() {
 
-    // ADD YOUR CODE HERE
-    //
-    //
-    (void) Py_InitModule3("Sandbox", Sandbox_methods, module_Sandbox_doc);   /* mod name, table ptr */
+    // the following constructor call registers our extension module
+    // with the Python runtime system
+    static SandboxModule* module = new SandboxModule;
     Base::Console().Log("Loading Sandbox module... done\n");
-
-    return;
 }
 
 } // extern "C"

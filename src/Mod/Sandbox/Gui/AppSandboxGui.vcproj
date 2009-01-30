@@ -298,32 +298,6 @@
 			>
 		</Filter>
 		<File
-			RelativePath=".\Resources\Sandbox.qrc"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Rcc&apos;ing $(InputName).qrc ..."
-					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
-					Outputs="$(InputDir)qrc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Rcc&apos;ing $(InputName).qrc ..."
-					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
-					Outputs="$(InputDir)qrc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="AppSandboxGui.cpp"
 			>
 			<FileConfiguration
@@ -344,10 +318,6 @@
 					PreprocessorDefinitions=""
 				/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\AppSandboxGuiPy.cpp"
-			>
 		</File>
 		<File
 			RelativePath="Command.cpp"
@@ -398,6 +368,32 @@
 		<File
 			RelativePath="PreCompiled.h"
 			>
+		</File>
+		<File
+			RelativePath=".\Resources\Sandbox.qrc"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Rcc&apos;ing $(InputName).qrc ..."
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)qrc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Rcc&apos;ing $(InputName).qrc ..."
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)qrc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Workbench.cpp"
