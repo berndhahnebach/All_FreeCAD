@@ -87,10 +87,8 @@ class AbortException;
  *    Base::Sequencer().stop ();
  *  }catch(const Base::AbortException&){
  *    // cleanup your data if needed
- *    // no need to call stop() or halt()
  *  }catch(...){
  *    // cleanup your data
- *    Base::Sequencer().halt();
  *  }
  *
  *  \endcode
@@ -99,10 +97,8 @@ class AbortException;
  * that the exception AbortException could be thrown, e.g. in case the ESC was pressed. So in this
  * case it's always a good idea to use the sequencer within a try-catch block.
  *
- * \note In case the operation was aborted Sequencer().stop() or Sequencer().halt() needs not to be
- * called in the catch-block since SequencerBase cleans up internal data on its own. But if another
- * type of exception is thrown and you want to stop your operations and hence the sequencer use
- * Sequencer().halt() instead of Sequencer().stop(). This stops all running levels of the sequencer.
+ * \note In case the operation was aborted Sequencer().stop() needs not to be called in the catch
+ * block since SequencerBase cleans up internal data on its own.
  * @see SequencerLauncher
  *
  * \note In case several nested sequencers are used then no percentage progress is possible any more
@@ -139,17 +135,13 @@ public:
      * the operation cannot be aborted and the sequencer just acts as an indicator of how
      * long the operation will take.
      */
-    bool next( bool canAbort = false );
+    bool next(bool canAbort = false);
     /**
      * Reduces the number of pending operations by one and stops the
      * sequencer if all operations are finished. It returns false if there are still
      * pending operations, otherwise it returns true.
      */
     bool stop();
-    /**
-     * This is an emergency stop and terminates all running levels of the sequencer.
-     */
-    void halt();
     /**
      * Breaks the sequencer if needed. The default implementation does nothing.
      * Every pause() must eventually be followed by a corresponding @ref resume().
@@ -165,7 +157,7 @@ public:
      * don't get invoked any more until the sequencer gets unlocked again.
      * This method returns the previous lock state.
      */
-    bool setLocked( bool bLock );
+    bool setLocked(bool bLock);
     /** Returns true if the sequencer was locked, false otherwise. */
     bool isLocked() const;
     /** Returns true if the sequencer is running, otherwise returns false. */
@@ -243,6 +235,17 @@ private:
     static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */
 };
 
+/** This special sequencer might be useful if you want to suppress any indication
+ * of the progress to the user.
+ */
+class BaseExport EmptySequencer : public Base::SequencerBase
+{
+public:
+    /** construction */
+    EmptySequencer();
+    /** Destruction */
+    ~EmptySequencer();
+};
 
 /**
  * \brief This class writes the progress to the console window.
@@ -292,7 +295,7 @@ private:
  *    try{
  *       runOperation();
  *    } catch(...) {
- *       // the programmer forgot to halt the sequencer here ( Base::Sequencer().halt() )
+ *       // the programmer forgot to stop the sequencer here
  *       // Under circumstances the sequencer never gets stopped so the keyboard never gets ungrabbed and
  *       // all Gui events still gets filtered.
  *    }
@@ -304,7 +307,7 @@ private:
  *
  *    for (int i=0; i<10; i++)
  *    {
- *      // do something (e.g. here can be thrown an exception)
+ *      // do something where an exception be thrown
  *      ...
  *      Base::Sequencer().next ();
  *    }
@@ -327,7 +330,7 @@ private:
  *    try{
  *       runOperation();
  *    } catch(...) {
- *       // the programmer forgot to halt the sequencer here ( Base::Sequencer().halt() )
+ *       // the programmer forgot to halt the sequencer here
  *       // If SequencerLauncher leaves its scope the object gets destructed automatically and
  *       // stops the running sequencer.
  *    }
@@ -356,7 +359,7 @@ class BaseExport SequencerLauncher
 public:
     SequencerLauncher(const char* pszStr, size_t steps);
     ~SequencerLauncher();
-    bool next( bool canAbort = false );
+    bool next(bool canAbort = false);
 };
 
 /** Access to the only SequencerBase instance */

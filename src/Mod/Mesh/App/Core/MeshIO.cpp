@@ -367,7 +367,6 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
     }
     catch (const Base::MemoryException&) {
         _rclMesh.Clear();
-        Base::Sequencer().halt();
         throw; // Throw the same instance of Base::MemoryException
     }
     catch (const Base::AbortException&) {
@@ -376,12 +375,10 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
     }
     catch (const Base::Exception&) {
         _rclMesh.Clear();
-        Base::Sequencer().halt();
         throw;  // Throw the same instance of Base::Exception
     }
     catch (...) {
         _rclMesh.Clear();
-        Base::Sequencer().halt();
         throw;
     }
 

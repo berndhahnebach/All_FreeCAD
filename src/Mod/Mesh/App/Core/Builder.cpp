@@ -36,7 +36,7 @@
 using namespace MeshCore;
 
 
-MeshBuilder::MeshBuilder (MeshKernel& kernel) : _meshKernel(kernel)
+MeshBuilder::MeshBuilder (MeshKernel& kernel) : _meshKernel(kernel), _seq(0)
 {
     _fSaveTolerance = MeshDefinitions::_fMinPointDistanceD1;
 }
@@ -44,6 +44,7 @@ MeshBuilder::MeshBuilder (MeshKernel& kernel) : _meshKernel(kernel)
 MeshBuilder::~MeshBuilder (void)
 {
     MeshDefinitions::_fMinPointDistanceD1 = _fSaveTolerance;
+    delete this->_seq;
 }
 
 void MeshBuilder::SetTolerance(float fTol)
@@ -91,7 +92,7 @@ void MeshBuilder::Initialize (unsigned long ctFacets, bool deletion)
         _pointsIterator.reserve((unsigned long)(float(ctPoints)*1.10f));
     }
 
-    Base::Sequencer().start("create mesh structure...", ctFacets * 2);
+    this->_seq = new Base::SequencerLauncher("create mesh structure...", ctFacets * 2);
 }
 
 void MeshBuilder::AddFacet (const MeshGeomFacet& facet, bool takeFlag, bool takeProperty)
@@ -114,7 +115,7 @@ void MeshBuilder::AddFacet (const Base::Vector3f& pt1, const Base::Vector3f& pt2
 
 void MeshBuilder::AddFacet (Base::Vector3f* facetPoints, unsigned char flag, unsigned long prop)
 {
-    Base::Sequencer().next(true); // allow to cancel
+    this->_seq->next(true); // allow to cancel
 
     // adjust circulation direction
     if ((((facetPoints[1] - facetPoints[0]) % (facetPoints[2] - facetPoints[0])) * facetPoints[3]) < 0.0f)
@@ -157,7 +158,7 @@ void MeshBuilder::SetNeighbourhood ()
 
     for (MeshFacetArray::_TIterator it = _meshKernel._aclFacetArray.begin(); it != _meshKernel._aclFacetArray.end(); it++)
     {
-        Base::Sequencer().next(true); // allow to cancel
+        this->_seq->next(true); // allow to cancel
         MeshFacet& mf = *it;
 
         for (int i = 0; i < 3; i++)
@@ -247,5 +248,4 @@ void MeshBuilder::Finish (bool freeMemory)
     }
 
     _meshKernel.RecalcBoundBox();
-    Base::Sequencer().stop();
 }
