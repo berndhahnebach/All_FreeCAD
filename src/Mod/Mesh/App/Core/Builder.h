@@ -29,6 +29,9 @@
 #include "MeshKernel.h"
 #include <Base/Vector3D.h>
 
+namespace Base {
+class SequencerLauncher;
+}
 
 namespace MeshCore
 {
@@ -96,7 +99,8 @@ private:
     //@}
 
     MeshKernel& _meshKernel;
-    std::set<MeshPoint>	_points;
+    std::set<MeshPoint> _points;
+    Base::SequencerLauncher* _seq;
 
     // keep an array of iterators pointing to the vertex inside the set to save memory
     typedef std::pair<std::set<MeshPoint>::iterator, bool> MeshPointIterator;

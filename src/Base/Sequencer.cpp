@@ -50,8 +50,8 @@ SequencerBase& SequencerBase::Instance ()
 }
 
 SequencerBase::SequencerBase()
-        : nProgress(0), nTotalSteps(0), _bLocked(false), _bCanceled(false),
-        _nInstStarted(0), _nMaxInstStarted(1), _nLastPercentage(-1), _nNewSteps(0)
+  : nProgress(0), nTotalSteps(0), _bLocked(false), _bCanceled(false),
+   _nInstStarted(0), _nMaxInstStarted(1), _nLastPercentage(-1), _nNewSteps(0)
 {
     _setGlobalInstance();
 }
@@ -79,7 +79,7 @@ bool SequencerBase::start(const char* pszStr, size_t steps)
     _nInstStarted++;
 
     // several sequencer started
-    if ( _nInstStarted > _nMaxInstStarted ) {
+    if (_nInstStarted > _nMaxInstStarted) {
         // if more instances of the sequencer are running then we switch to busy indicator
         // because it's not possible to determine the total number of steps
         nTotalSteps = 0;
@@ -87,7 +87,7 @@ bool SequencerBase::start(const char* pszStr, size_t steps)
         _nNewSteps = steps;
 
         // reimplemented in sub-classes
-        if ( !_bLocked )
+        if (!_bLocked)
             startStep();
     }
     else if (_nInstStarted == 1) {
@@ -99,7 +99,7 @@ bool SequencerBase::start(const char* pszStr, size_t steps)
         setText(pszStr);
 
         // reimplemented in sub-classes
-        if ( !_bLocked )
+        if (!_bLocked)
             startStep();
 
         ret = true;
@@ -119,11 +119,11 @@ bool SequencerBase::next(bool canAbort)
     int perc = (int)((float)nProgress * (100.0f / fDiv));
 
     // do only an update if we have increased by one percent
-    if ( perc > _nLastPercentage ) {
+    if (perc > _nLastPercentage) {
         _nLastPercentage = perc;
 
         // if not locked
-        if ( !_bLocked )
+        if (!_bLocked)
             nextStep(canAbort);
     }
 
@@ -140,7 +140,7 @@ bool SequencerBase::stop()
     if (_nInstStarted == 0) {
         resetData();
     }
-    else if ( _nInstStarted < 0) {
+    else if (_nInstStarted < 0) {
         // stop() has been called too often
         _nInstStarted = 0;
 #ifdef FC_DEBUG
@@ -151,14 +151,6 @@ bool SequencerBase::stop()
     return (_nInstStarted == 0);
 }
 
-void SequencerBase::halt()
-{
-    if (_nInstStarted != 0) {
-        _nInstStarted = 0;
-        resetData();
-    }
-}
-
 void SequencerBase::pause()
 {
 }
@@ -167,7 +159,7 @@ void SequencerBase::resume()
 {
 }
 
-bool SequencerBase::setLocked( bool bLocked )
+bool SequencerBase::setLocked(bool bLocked)
 {
     bool old = _bLocked;
     _bLocked = bLocked;
@@ -222,6 +214,16 @@ void SequencerBase::setText(const char*)
 
 // ---------------------------------------------------------
 
+EmptySequencer::EmptySequencer()
+{
+}
+
+EmptySequencer::~EmptySequencer()
+{
+}
+
+// ---------------------------------------------------------
+
 using Base::ConsoleSequencer;
 
 ConsoleSequencer::ConsoleSequencer ()
@@ -257,7 +259,7 @@ void ConsoleSequencer::resetData()
 
 SequencerLauncher::SequencerLauncher(const char* pszStr, size_t steps)
 {
-    SequencerBase::Instance().start( pszStr, steps );
+    SequencerBase::Instance().start(pszStr, steps);
 }
 
 SequencerLauncher::~SequencerLauncher()
@@ -265,7 +267,7 @@ SequencerLauncher::~SequencerLauncher()
     SequencerBase::Instance().stop();
 }
 
-bool SequencerLauncher::next( bool canAbort )
+bool SequencerLauncher::next(bool canAbort)
 {
-    return SequencerBase::Instance().next( canAbort );
+    return SequencerBase::Instance().next(canAbort);
 }
