@@ -61,7 +61,7 @@ App::DocumentObjectExecReturn *ImportIges::execute(void)
 
     // just do show the wait cursor when the Gui is up
     Base::SequencerLauncher seq("Load IGES", 1);
-    Base::Sequencer().next();
+    seq.next();
 
     TopoShape aShape;
     aShape.importIges((const Standard_CString)FileName.getValue());

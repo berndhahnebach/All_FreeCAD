@@ -321,7 +321,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
  
   for (unsigned long i = 0; i <= ulNbOfPoints; i++)
   {
-    Base::Sequencer().next();
+    seq.next();
     gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
 
     // go through the whole Mesh
@@ -611,7 +611,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
  
   for (unsigned long i = 0; i < ulNbOfPoints; i++)
   {
-    Base::Sequencer().next();
+    seq.next();
     gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
     Base::Vector3f LinePoint((float)gpPt.X(),
                              (float)gpPt.Y(),

@@ -34,6 +34,10 @@
 
 #include <Base/Vector3D.h>
 
+namespace Base {
+class SequencerLauncher;
+}
+
 // TODO: Replace OCC stuff with ublas & co
 
 namespace Reen {
@@ -411,18 +415,18 @@ protected:
    * Berechnet die Matrix zum ersten Glättungsterm
    * (siehe Diss. U.Dietz)
    */
-  virtual void CalcFirstSmoothMatrix();
+  virtual void CalcFirstSmoothMatrix(Base::SequencerLauncher&);
 
   /**
    * Berechnet die Matrix zum zweiten Glättunsterm
    * (siehe Diss. U.Dietz)
    */
-  virtual void CalcSecondSmoothMatrix();
+  virtual void CalcSecondSmoothMatrix(Base::SequencerLauncher&);
 
   /**
    * Berechnet die Matrix zum dritten Glättungsterm
    */
-  virtual void CalcThirdSmoothMatrix();
+  virtual void CalcThirdSmoothMatrix(Base::SequencerLauncher&);
 
 protected:
   BSplineBasis           _clUSpline;        //! B-Spline-Basisfunktion in u-Richtung

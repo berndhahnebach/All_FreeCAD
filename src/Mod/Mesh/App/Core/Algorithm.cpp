@@ -891,7 +891,7 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
       }
     }
 
-    Base::Sequencer().next();
+    seq.next();
   }
 }
 
@@ -973,7 +973,7 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
       }
     }
 
-    Base::Sequencer().next();
+    seq.next();
   }
 
   // remove duplicates
@@ -1092,7 +1092,7 @@ void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const Base::ViewPr
         std::sort(aulAllElements.begin(), aulAllElements.end());
         aulAllElements.erase(std::unique(aulAllElements.begin(), aulAllElements.end()), aulAllElements.end());
 
-        Base::Sequencer().start( "Check facets", aulAllElements.size() );
+        Base::SequencerLauncher seq( "Check facets", aulAllElements.size() );
 
         for (it = aulAllElements.begin(); it != aulAllElements.end(); it++)
         {
@@ -1120,14 +1120,13 @@ void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const Base::ViewPr
                  raulFacets.push_back(*it);
             }
 
-            Base::Sequencer().next();
+            seq.next();
         }
-        Base::Sequencer().stop();
     }
     // Dreiecke ausserhalb schneiden, dann alles durchsuchen
     else
     {
-      Base::Sequencer().start("Check facets", _rclMesh.CountFacets());
+      Base::SequencerLauncher seq("Check facets", _rclMesh.CountFacets());
       for (clIter.Init(); clIter.More(); clIter.Next())
       {
           for (int j=0; j<3; j++)
@@ -1139,9 +1138,8 @@ void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const Base::ViewPr
                   break;
               }
           }
-          Base::Sequencer().next();
+          seq.next();
       }
-      Base::Sequencer().stop();
     }
 }
 

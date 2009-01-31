@@ -130,13 +130,14 @@ void Sequencer::setProgress(int step)
     // if number of total steps is unknown then incrementy only by one
     if ( nTotalSteps == 0 ) {
         int elapsed = d->progressTime.elapsed();
-        // allow an update every 200 milliseconds only
-        if ( elapsed > 200 ) {
+        // allow an update every 500 milliseconds only
+        if (elapsed > 500) {
             d->progressTime.restart();
             d->bar->setValue(d->bar->value()+1);
             qApp->processEvents();
         }
-    } else {
+    }
+    else {
         d->bar->setValue(step);
         showRemainingTime();
         d->bar->resetObserveEventFilter();

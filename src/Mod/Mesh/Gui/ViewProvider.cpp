@@ -300,7 +300,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
     }
 
     pcMeshFaces->coordIndex.set1Value(4*j+3, SO_END_FACE_INDEX);
-    Base::Sequencer().next( false ); // don't allow to cancel
+    seq.next(false); // don't allow to cancel
   }
   // enable notification again
   pcMeshFaces->coordIndex.enableNotify(true);

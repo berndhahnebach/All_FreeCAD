@@ -721,7 +721,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
                     fZ = (float)std::atof(what[7].first);
                     clFacet.SetNormal(Base::Vector3f(fX, fY, fZ));
                     clFacetAry.push_back(clFacet);
-                    Base::Sequencer().next( true ); // allow to cancel
+                    seq.next(true); // allow to cancel
                 } else 
                     flag = false;
             } while (std::getline(rstrIn, line) && flag);
@@ -747,7 +747,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
                     clPoint.y = (float)std::atof(what[4].first);
                     clPoint.z = (float)std::atof(what[7].first);
                     aclPoints.push_back(clPoint);
-                    Base::Sequencer().next( true ); // allow to cancel
+                    seq.next(true); // allow to cancel
                 } else 
                     flag = false;
             } while (std::getline(rstrIn, line) && flag);
@@ -794,7 +794,7 @@ bool MeshInput::LoadInventor (std::istream &rstrIn)
                                 clFacet._aclPoints[i] = aclPoints[ulPoints[i]];
                             clFacetAry.push_back(clFacet);
                         }
-                        Base::Sequencer().next( true ); // allow to cancel
+                        seq.next(true); // allow to cancel
                     }
                 }
             } while (std::getline(rstrIn, line) && flag);
@@ -1048,7 +1048,7 @@ bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
         rstrOut << "  endfacet" << std::endl;
 
         ++clIter; 
-        Base::Sequencer().next( true );// allow to cancel
+        seq.next(true);// allow to cancel
     }
 
     rstrOut << "endsolid Mesh" << std::endl;
@@ -1098,7 +1098,7 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
         rstrOut.write((const char*)&usAtt, sizeof(usAtt));
 
         ++clIter;
-        Base::Sequencer().next( true ); // allow to cancel
+        seq.next(true); // allow to cancel
     }
 
     return true;
@@ -1118,7 +1118,7 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
     // vertices
     for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
         rstrOut << "v " << it->x << " " << it->y << " " << it->z << std::endl;
-        Base::Sequencer().next(true); // allow to cancel
+        seq.next(true); // allow to cancel
     }
 
     // facet indices (no texture and normal indices)
@@ -1126,7 +1126,7 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
         rstrOut << "f " << it->_aulPoints[0]+1 << " "
                         << it->_aulPoints[1]+1 << " "
                         << it->_aulPoints[2]+1 << std::endl;
-        Base::Sequencer().next(true); // allow to cancel
+        seq.next(true); // allow to cancel
     }
 
     return true;
@@ -1246,7 +1246,7 @@ bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
                 << pclFacet->GetNormal().z;
         ++clIter;
 
-        Base::Sequencer().next( true ); // allow to cancel
+        seq.next(true); // allow to cancel
     }
 
     rstrOut << " ]\n\n  }" << std::endl;
@@ -1270,7 +1270,7 @@ bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
                 << clPtIter->y << "  "
                 << clPtIter->z;
         ++clPtIter;
-        Base::Sequencer().next( true ); // allow to cancel
+        seq.next(true); // allow to cancel
     }
 
     rstrOut << " ]\n\n  }" << std::endl;
@@ -1318,7 +1318,7 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
     MeshFacetIterator clTIter(_rclMesh);
     int iIndx = 1, iDec, iSign, iCount = 0;
 
-    Base::Sequencer().start("Saving...", _rclMesh.CountFacets() + 1);
+    Base::SequencerLauncher seq("Saving...", _rclMesh.CountFacets() + 1);
 
     rstrOut.precision(3);
     rstrOut.setf(std::ios::fixed | std::ios::showpoint);
@@ -1385,7 +1385,7 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
         rstrOut << clPIter->z << std::endl;
 
         iIndx++;
-        Base::Sequencer().next();
+        seq.next();
     }
 
     iIndx = 1;
@@ -1439,12 +1439,10 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
 //    sprintf(szBuf, "CTRIA3 %d 0 %d %d %d\n", iIndx, clTIter.GetIndices()._aulPoints[0]+1, clTIter.GetIndices()._aulPoints[1]+1, clTIter.GetIndices()._aulPoints[2]+1);
 //    rstrOut.write(szBuf, strlen(szBuf));
         iIndx++;
-        Base::Sequencer().next();
+        seq.next();
     }
 
     rstrOut << "ENDDATA";
-
-    Base::Sequencer().stop();
 
     return true;
 }
@@ -1641,7 +1639,7 @@ bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclC
         else
             rstrOut << "\n";
 
-        Base::Sequencer().next();
+        seq.next();
     }
 
     rstrOut << "      ]\n    }" << std::endl;  // end write coord
@@ -1664,7 +1662,7 @@ bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclC
                 rstrOut << ",\n";
             else
                 rstrOut << "\n";
-            Base::Sequencer().next();
+            seq.next();
         }
 
         rstrOut << "      ]\n    }" << std::endl;
@@ -1685,7 +1683,7 @@ bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclC
         else
             rstrOut << "\n";
 
-        Base::Sequencer().next();
+        seq.next();
     }
 
     rstrOut << "    ]\n  }" << std::endl;  // End IndexedFaceSet
