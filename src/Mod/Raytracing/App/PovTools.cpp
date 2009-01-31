@@ -122,13 +122,10 @@ void PovTools::writeShape(const char *FileName,
            float fMeshDeviation)
 {
 
-  Base::Sequencer().start("Meshing Shape", 0);
   Base::Console().Log("Meshing with Deviation: %f\n",fMeshDeviation);
 
   TopExp_Explorer ex;
-	BRepMesh_IncrementalMesh MESH(Shape,fMeshDeviation);
-
-  Base::Sequencer().stop();
+  BRepMesh_IncrementalMesh MESH(Shape,fMeshDeviation);
 
   // open the file and write
   std::ofstream fout(FileName);
@@ -136,7 +133,7 @@ void PovTools::writeShape(const char *FileName,
   // counting faces and start sequencer
   int l = 1;
   for (ex.Init(Shape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
-  Base::Sequencer().start("Writing file", l);
+  Base::SequencerLauncher seq("Writing file", l);
 
   // write the file
   fout <<  "// Written by FreeCAD http://free-cad.sf.net/" << endl;
@@ -190,11 +187,11 @@ void PovTools::writeShape(const char *FileName,
     fout << "  }" << endl
          << "} // end of Face"<< l << endl << endl;
 
-		delete [] vertexnormals;
-		delete [] vertices;
-		delete [] cons;
+    delete [] vertexnormals;
+    delete [] vertices;
+    delete [] cons;
 
-    Base::Sequencer().next();
+    seq.next();
 
   } // end of face loop
 
@@ -205,8 +202,6 @@ void PovTools::writeShape(const char *FileName,
     fout << "mesh2{ " << PartName << i << "}" << endl;
   }
   fout << "}" << endl << endl;
-
-  Base::Sequencer().stop();
 
 
   fout.close();
@@ -220,13 +215,10 @@ void PovTools::writeShapeCSV(const char *FileName,
 {
   const char cSeperator = ',';
 
-  Base::Sequencer().start("Meshing Shape", 0);
   Base::Console().Log("Meshing with Deviation: %f\n",fMeshDeviation);
 
   TopExp_Explorer ex;
-	BRepMesh_IncrementalMesh MESH(Shape,fMeshDeviation);
-
-  Base::Sequencer().stop();
+  BRepMesh_IncrementalMesh MESH(Shape,fMeshDeviation);
 
   // open the file and write
   std::ofstream fout(FileName);
@@ -234,7 +226,7 @@ void PovTools::writeShapeCSV(const char *FileName,
   // counting faces and start sequencer
   int l = 1;
   for (ex.Init(Shape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
-  Base::Sequencer().start("Writing file", l);
+  Base::SequencerLauncher seq("Writing file", l);
 
   // write the file
   l = 1;
@@ -265,18 +257,15 @@ void PovTools::writeShapeCSV(const char *FileName,
            << endl;
     }
 
-		delete [] vertexnormals;
-		delete [] vertices;
-		delete [] cons;
+    delete [] vertexnormals;
+    delete [] vertices;
+    delete [] cons;
 
-    Base::Sequencer().next();
+    seq.next();
 
   } // end of face loop
 
-  Base::Sequencer().stop();
-
   fout.close();
-
 }
 
 

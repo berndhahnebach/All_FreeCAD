@@ -58,7 +58,7 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
 
     // just do show the wait cursor when the Gui is up
     Base::SequencerLauncher seq("Load STEP", 1);
-    Base::Sequencer().next();
+    seq.next();
 
     if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
         throw Base::Exception("Cannot open file Step file");

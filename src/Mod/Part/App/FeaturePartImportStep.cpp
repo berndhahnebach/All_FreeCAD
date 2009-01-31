@@ -59,7 +59,7 @@ App::DocumentObjectExecReturn *ImportStep::execute(void)
 
     // just do show the wait cursor when the Gui is up
     Base::SequencerLauncher seq("Load STEP", 1);
-    Base::Sequencer().next();
+    seq.next();
 
     TopoShape aShape;
     aShape.importStep((const Standard_CString)FileName.getValue());

@@ -283,7 +283,7 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
 
         // In either case we must go to the next entry
         entry = zipstream.getNextEntry();
-        Base::Sequencer().next();
+        seq.next();
     }
 }
 

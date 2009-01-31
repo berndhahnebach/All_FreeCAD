@@ -886,7 +886,7 @@ void BSplineParameterCorrection::DoParameterCorrection(unsigned short usIter)
   float fMaxDiff=0.0f, fMaxScalar=1.0f;
   float fWeight = _fSmoothInfluence;
 
-  Base::Sequencer().start("Calc surface...", usIter*_pvcPoints->Length());
+  Base::SequencerLauncher seq("Calc surface...", usIter*_pvcPoints->Length());
 
   do
   {
@@ -944,7 +944,7 @@ void BSplineParameterCorrection::DoParameterCorrection(unsigned short usIter)
         fMaxDiff = std::max<float>(float(fabs(fDeltaV)), fMaxDiff);
       }
 
-      Base::Sequencer().next();
+      seq.next();
     }
 
     if (_bSmoothing)
@@ -958,8 +958,6 @@ void BSplineParameterCorrection::DoParameterCorrection(unsigned short usIter)
     i++;
   }
   while(i<usIter && fMaxDiff > FLOAT_EPS && fMaxScalar < 0.99);
-
-  Base::Sequencer().stop();
 }
 
 bool BSplineParameterCorrection::SolveWithoutSmoothing()
@@ -1109,11 +1107,10 @@ void BSplineParameterCorrection::CalcSmoothingTerms(bool bRecalc, float fFirst, 
 {
   if (bRecalc)
   {
-      Base::Sequencer().start("Initializing...", 3 * _usUCtrlpoints * _usUCtrlpoints * _usVCtrlpoints * _usVCtrlpoints);
-    CalcFirstSmoothMatrix();
-    CalcSecondSmoothMatrix();
-    CalcThirdSmoothMatrix();
-    Base::Sequencer().stop();
+    Base::SequencerLauncher seq("Initializing...", 3 * _usUCtrlpoints * _usUCtrlpoints * _usVCtrlpoints * _usVCtrlpoints);
+    CalcFirstSmoothMatrix(seq);
+    CalcSecondSmoothMatrix(seq);
+    CalcThirdSmoothMatrix(seq);
   }
 
   _clSmoothMatrix = fFirst  * _clFirstMatrix  + 
@@ -1121,7 +1118,7 @@ void BSplineParameterCorrection::CalcSmoothingTerms(bool bRecalc, float fFirst, 
                     fThird  * _clThirdMatrix  ;
 }
 
-void BSplineParameterCorrection::CalcFirstSmoothMatrix()
+void BSplineParameterCorrection::CalcFirstSmoothMatrix(Base::SequencerLauncher& seq)
 {
   unsigned long m=0;
   for (unsigned long k=0; k<_usUCtrlpoints; k++)
@@ -1138,7 +1135,7 @@ void BSplineParameterCorrection::CalcFirstSmoothMatrix()
                                   _clVSpline.GetIntegralOfProductOfBSplines(j,l,0,0) +
                                   _clUSpline.GetIntegralOfProductOfBSplines(i,k,0,0) *
                                   _clVSpline.GetIntegralOfProductOfBSplines(j,l,1,1);
-          Base::Sequencer().next();
+          seq.next();
           n++;
         }
       }
@@ -1147,7 +1144,7 @@ void BSplineParameterCorrection::CalcFirstSmoothMatrix()
   }
 }
 
-void BSplineParameterCorrection::CalcSecondSmoothMatrix()
+void BSplineParameterCorrection::CalcSecondSmoothMatrix(Base::SequencerLauncher& seq)
 {
   unsigned long m=0;
   for (unsigned long k=0; k<_usUCtrlpoints; k++)
@@ -1166,7 +1163,7 @@ void BSplineParameterCorrection::CalcSecondSmoothMatrix()
                                   _clVSpline.GetIntegralOfProductOfBSplines(j,l,1,1) +
                                   _clUSpline.GetIntegralOfProductOfBSplines(i,k,0,0) *
                                   _clVSpline.GetIntegralOfProductOfBSplines(j,l,2,2);
-          Base::Sequencer().next();
+          seq.next();
           n++;
         }
       }
@@ -1175,7 +1172,7 @@ void BSplineParameterCorrection::CalcSecondSmoothMatrix()
   }
 }
 
-void BSplineParameterCorrection::CalcThirdSmoothMatrix()
+void BSplineParameterCorrection::CalcThirdSmoothMatrix(Base::SequencerLauncher& seq)
 {
   unsigned long m=0;
   for (unsigned long k=0; k<_usUCtrlpoints; k++)
@@ -1204,7 +1201,7 @@ void BSplineParameterCorrection::CalcThirdSmoothMatrix()
                                 _clVSpline.GetIntegralOfProductOfBSplines(j,l,1,3) +
                                 _clUSpline.GetIntegralOfProductOfBSplines(i,k,0,0) *
                                 _clVSpline.GetIntegralOfProductOfBSplines(j,l,3,3) ;
-          Base::Sequencer().next();
+          seq.next();
           n++;
         }
       }

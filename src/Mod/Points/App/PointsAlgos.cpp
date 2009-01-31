@@ -73,17 +73,14 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
 
     Base::ifstream tmp_str(fi, std::ios::in);
 
-    Base::Sequencer().start("Counting lines...", 10);
-    Base::Sequencer().next();
     // estimating size
     while (std::getline(tmp_str,line))
         LineCnt++;
-    Base::Sequencer().stop();
 
     // resize the PointKernel
     points.resize(LineCnt);
 
-    Base::Sequencer().start( "Loading points...", LineCnt );
+    Base::SequencerLauncher seq( "Loading points...", LineCnt );
 
     // again to the beginning
     Base::ifstream file(fi, std::ios::in);
@@ -98,7 +95,7 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
                 pt.z = std::atof(what[7].first);
 
                 points.setPoint(LineCnt,pt);
-                Base::Sequencer().next();
+                seq.next();
                 LineCnt++;
             }
         }
@@ -113,6 +110,4 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
     //       and read in the file twice. But then the size of the kernel is too high
     if (LineCnt < (int)points.size())
         points.erase(LineCnt, points.size());
-
-    Base::Sequencer().stop();
 }

@@ -308,7 +308,7 @@ bool MeshEvalTopology::Evaluate ()
             edges.push_back(item);
         }
 
-        Base::Sequencer().next();
+        seq.next();
     }
 
     // sort the edges
@@ -491,7 +491,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
         std::vector<unsigned long> aulGridElements;
         clGridIter.GetElements(aulGridElements);
 
-        Base::Sequencer().next();
+        seq.next();
         if (aulGridElements.size()==0)
             continue;
 
@@ -564,7 +564,7 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<Base::Vect
         std::vector<unsigned long> aulGridElements;
         clGridIter.GetElements(aulGridElements);
 
-        Base::Sequencer().next();
+        seq.next();
         if (aulGridElements.size()==0)
             continue;
 
@@ -634,7 +634,7 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<unsigned l
         std::vector<unsigned long> aulGridElements;
         clGridIter.GetElements(aulGridElements);
 
-        Base::Sequencer().next();
+        seq.next();
         if (aulGridElements.size()==0)
             continue;
 
@@ -731,7 +731,7 @@ bool MeshEvalNeighbourhood::Evaluate ()
             edges.push_back(item);
         }
 
-        Base::Sequencer().next();
+        seq.next();
     }
 
     // sort the edges
@@ -797,7 +797,7 @@ std::vector<unsigned long> MeshEvalNeighbourhood::GetIndices() const
             edges.push_back(item);
         }
 
-        Base::Sequencer().next();
+        seq.next();
     }
 
     // sort the edges

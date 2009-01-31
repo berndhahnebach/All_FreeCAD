@@ -44,15 +44,15 @@ using namespace Gui;
 DEF_STD_CMD_A(FCCmdTest1);
 
 FCCmdTest1::FCCmdTest1()
-  :Command("Std_Test1")
+  : Command("Std_Test1")
 {
-  sGroup        = "Standard-Test";
-  sMenuText     = "Test1";
-  sToolTipText  = "Test function 1";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Std_Tool1";
-  iAccel        = Qt::CTRL+Qt::Key_T;
+    sGroup        = "Standard-Test";
+    sMenuText     = "Test1";
+    sToolTipText  = "Test function 1";
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Std_Tool1";
+    iAccel        = Qt::CTRL+Qt::Key_T;
 }
 
 void FCCmdTest1::activated(int iMsg)
@@ -62,8 +62,8 @@ void FCCmdTest1::activated(int iMsg)
 
 bool FCCmdTest1::isActive(void)
 {
-  //return (GetActiveOCCDocument()!=NULL);
-  return true;
+    //return (GetActiveOCCDocument()!=NULL);
+    return true;
 }
 
 //===========================================================================
@@ -72,15 +72,15 @@ bool FCCmdTest1::isActive(void)
 DEF_STD_CMD_A(FCCmdTest2);
 
 FCCmdTest2::FCCmdTest2()
-	:Command("Std_Test2")
+  : Command("Std_Test2")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Test2";
-	sToolTipText	= "Test function 2";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool2";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Test2";
+    sToolTipText    = "Test function 2";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool2";
+    iAccel          = 0;
 }
 
 
@@ -92,7 +92,7 @@ void FCCmdTest2::activated(int iMsg)
 
 bool FCCmdTest2::isActive(void)
 {
-  return (getDocument()!=NULL);
+    return (getDocument()!=NULL);
 }
 
 //===========================================================================
@@ -114,16 +114,14 @@ FCCmdTest3::FCCmdTest3()
 
 void FCCmdTest3::activated(int iMsg)
 {
-
-  App::Document *pcDoc = getDocument();
-	if(!pcDoc) return;
-
+    App::Document *pcDoc = getDocument();
+    if (!pcDoc) return;
 }
 
 
 bool FCCmdTest3::isActive(void)
 {
-  return (getDocument()!=NULL);
+    return (getDocument()!=NULL);
 }
 
 //===========================================================================
@@ -155,7 +153,7 @@ void FCCmdTest4::activated(int iMsg)
 
 bool FCCmdTest4::isActive(void)
 {
-  return (getDocument()!=NULL);
+    return (getDocument()!=NULL);
 }
 
 //===========================================================================
@@ -228,42 +226,42 @@ bool FCCmdTest6::isActive(void)
 DEF_STD_CMD_A(CmdTestProgress1);
 
 CmdTestProgress1::CmdTestProgress1()
-	:Command("Std_TestProgress1")
+  : Command("Std_TestProgress1")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Breakable bar";
-	sToolTipText	= "Test a breakable progress bar";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool7";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Breakable bar";
+    sToolTipText    = "Test a breakable progress bar";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool7";
+    iAccel          = 0;
 }
 
 void CmdTestProgress1::activated(int iMsg)
 {
-	try
-	{
-    QMutex mutex;
-    mutex.lock();
-		unsigned long steps = 1000;
-		Base::Sequencer().start("Starting progress bar", steps);
-		
-		for (unsigned long i=0; i<steps;i++)
-		{
-			Base::Sequencer().next(true);
-			QWaitCondition().wait(&mutex, 30);
-		}
+    try
+    {
+        QMutex mutex;
+        mutex.lock();
+        unsigned long steps = 1000;
+        Base::SequencerLauncher seq("Starting progress bar", steps);
 
-		Base::Sequencer().stop();
-	}
-	catch (...)
-	{
-	}
+        for (unsigned long i=0; i<steps;i++)
+        {
+            seq.next(true);
+            QWaitCondition().wait(&mutex, 30);
+        }
+
+        mutex.unlock();
+    }
+    catch (...)
+    {
+    }
 }
 
 bool CmdTestProgress1::isActive(void)
 {
-	return ( !Base::Sequencer().isRunning() );
+    return (!Base::Sequencer().isRunning());
 }
 
 //===========================================================================
@@ -272,42 +270,40 @@ bool CmdTestProgress1::isActive(void)
 DEF_STD_CMD_A(CmdTestProgress2);
 
 CmdTestProgress2::CmdTestProgress2()
-	:Command("Std_TestProgress2")
+  : Command("Std_TestProgress2")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Unbreakable bar";
-	sToolTipText	= "Test a unbreakable progress bar";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool7";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Unbreakable bar";
+    sToolTipText    = "Test a unbreakable progress bar";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool7";
+    iAccel          = 0;
 }
 
 void CmdTestProgress2::activated(int iMsg)
 {
-	try
-	{
-    QMutex mutex;
-    mutex.lock();
-		unsigned long steps = 1000;
-		Base::Sequencer().start("Starting progress bar", steps);
-		
-		for (unsigned long i=0; i<steps;i++)
-		{
-			Base::Sequencer().next(false);
-			QWaitCondition().wait(&mutex, 10);
-		}
+    try
+    {
+        QMutex mutex;
+        mutex.lock();
+        unsigned long steps = 1000;
+        Base::SequencerLauncher seq("Starting progress bar", steps);
 
-		Base::Sequencer().stop();
-	}
-	catch (...)
-	{
-	}
+        for (unsigned long i=0; i<steps;i++)
+        {
+            seq.next(false);
+            QWaitCondition().wait(&mutex, 10);
+        }
+    }
+    catch (...)
+    {
+    }
 }
 
 bool CmdTestProgress2::isActive(void)
 {
-	return ( !Base::Sequencer().isRunning() );
+    return ( !Base::Sequencer().isRunning() );
 }
 
 //===========================================================================
@@ -316,72 +312,67 @@ bool CmdTestProgress2::isActive(void)
 DEF_STD_CMD_A(CmdTestProgress3);
 
 CmdTestProgress3::CmdTestProgress3()
-	:Command("Std_TestProgress3")
+  : Command("Std_TestProgress3")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Nested progress bar";
-	sToolTipText	= "Test nested progress bar";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool8";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Nested progress bar";
+    sToolTipText    = "Test nested progress bar";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool8";
+    iAccel          = 0;
 }
 
 void CmdTestProgress3::activated(int iMsg)
 {
-	try
-	{
-    // level 1
-    QMutex mutex;
-    mutex.lock();
-		unsigned long steps = 5;
-		Base::Sequencer().start("Starting progress bar", steps);
-		for (unsigned long i=0; i<steps;i++)
-		{
-			QWaitCondition().wait(&mutex, 200);
-			Base::Sequencer().next(true);
-
-      // level 2
-      unsigned long steps = 6;
-      Base::Sequencer().start("Starting progress bar", steps);
-      for (unsigned long j=0; j<steps;j++)
-      {
-			  QWaitCondition().wait(&mutex, 150);
-        Base::Sequencer().next(true);
-
-        // level 3
-        unsigned long steps = 7;
-        Base::Sequencer().start("Starting progress bar", steps);
-        for (unsigned long k=0; k<steps;k++)
+    try
+    {
+        // level 1
+        QMutex mutex;
+        mutex.lock();
+        unsigned long steps = 5;
+        Base::SequencerLauncher seq1("Starting progress bar", steps);
+        for (unsigned long i=0; i<steps;i++)
         {
-			    QWaitCondition().wait(&mutex, 100);
-          Base::Sequencer().next(true);
+            QWaitCondition().wait(&mutex, 200);
+            seq1.next(true);
 
-          // level 4
-          unsigned long steps = 8;
-          Base::Sequencer().start("Starting progress bar", steps);
-          for (unsigned long l=0; l<steps;l++)
-          {
-			      QWaitCondition().wait(&mutex, 5);
-            Base::Sequencer().next(true);
-          }
-          Base::Sequencer().stop();
+            // level 2
+            unsigned long steps = 6;
+            Base::SequencerLauncher seq2("Starting progress bar", steps);
+            for (unsigned long j=0; j<steps;j++)
+            {
+                QWaitCondition().wait(&mutex, 150);
+                seq2.next(true);
+
+                // level 3
+                unsigned long steps = 7;
+                Base::SequencerLauncher seq3("Starting progress bar", steps);
+                for (unsigned long k=0; k<steps;k++)
+                {
+                    QWaitCondition().wait(&mutex, 100);
+                    seq3.next(true);
+
+                    // level 4
+                    unsigned long steps = 8;
+                    Base::SequencerLauncher seq4("Starting progress bar", steps);
+                    for (unsigned long l=0; l<steps;l++)
+                    {
+                        QWaitCondition().wait(&mutex, 5);
+                        seq4.next(true);
+                    }
+                }
+            }
         }
-        Base::Sequencer().stop();
-      }
-      Base::Sequencer().stop();
-		}
-		Base::Sequencer().stop();
-	}
-	catch (...)
-	{
-	}
+    }
+    catch (...)
+    {
+    }
 }
-
 
 bool CmdTestProgress3::isActive(void)
 {
-	return ( !Base::Sequencer().isRunning() );
+    return ( !Base::Sequencer().isRunning() );
 }
 
 
@@ -389,17 +380,17 @@ namespace Gui {
 
 void CreateTestCommands(void)
 {
-	CommandManager &rcCmdMgr = Application::Instance->commandManager();
+    CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
-	rcCmdMgr.addCommand(new FCCmdTest1());
-	rcCmdMgr.addCommand(new FCCmdTest2());
-	rcCmdMgr.addCommand(new FCCmdTest3());
-	rcCmdMgr.addCommand(new FCCmdTest4());
-	rcCmdMgr.addCommand(new FCCmdTest5());
-	rcCmdMgr.addCommand(new FCCmdTest6());
-	rcCmdMgr.addCommand(new CmdTestProgress1());
-	rcCmdMgr.addCommand(new CmdTestProgress2());
-  rcCmdMgr.addCommand(new CmdTestProgress3());
+    rcCmdMgr.addCommand(new FCCmdTest1());
+    rcCmdMgr.addCommand(new FCCmdTest2());
+    rcCmdMgr.addCommand(new FCCmdTest3());
+    rcCmdMgr.addCommand(new FCCmdTest4());
+    rcCmdMgr.addCommand(new FCCmdTest5());
+    rcCmdMgr.addCommand(new FCCmdTest6());
+    rcCmdMgr.addCommand(new CmdTestProgress1());
+    rcCmdMgr.addCommand(new CmdTestProgress2());
+    rcCmdMgr.addCommand(new CmdTestProgress3());
 }
 
 } // namespace Gui
