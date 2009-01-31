@@ -54,7 +54,7 @@ private:
 extern "C" {
 void SandboxAppExport initSandbox() {
 
-    static Sandbox::DocumentReceiver* dr = Sandbox::DocumentReceiver::globalInstance();
+    Sandbox::DocumentProtector::init();
 
     // the following constructor call registers our extension module
     // with the Python runtime system

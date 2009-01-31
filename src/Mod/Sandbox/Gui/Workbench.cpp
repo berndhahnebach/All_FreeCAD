@@ -49,7 +49,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* test = new Gui::MenuItem;
     root->insertItem( item, test );
     test->setCommand("Sandbox");
-    *test << "Sandbox_Test";
+    *test << "Sandbox_Thread" << "Sandbox_BusyThread" << "Sandbox_NoThread";
     return root;
 }
 
@@ -58,16 +58,12 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
     test->setCommand( "Sandbox Tools" );
-    *test << "Sandbox_Test"; 
+    *test << "Sandbox_Thread" << "Sandbox_BusyThread" << "Sandbox_NoThread"; 
     return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
-    test->setCommand( "Sandbox Tools" );
-    *test << "Sandbox_Test"; 
-    return root;
+    return 0;
 }
 

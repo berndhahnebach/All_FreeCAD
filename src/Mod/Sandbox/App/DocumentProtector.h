@@ -24,8 +24,10 @@
 #ifndef SANDBOX_DOCUMENTPROTECTOR_H
 #define SANDBOX_DOCUMENTPROTECTOR_H
 
-#include <QObject>
 #include <string>
+#include <boost/signals.hpp>
+#include <boost/bind.hpp>
+#include <App/DocumentObserver.h>
 
 namespace App {
     class Document;
@@ -34,44 +36,36 @@ namespace App {
 
 namespace Sandbox {
 
-class SandboxAppExport DocumentProtector
+class SandboxAppExport DocumentProtector : public App::DocumentObserver
 {
 public:
     DocumentProtector(App::Document*);
     ~DocumentProtector();
+
+    static void init();
 
     App::DocumentObject *addObject(const std::string& type, const std::string& name="");
     void removeObject(const std::string& name);
     void recompute();
 
 private:
-    App::Document* doc;
+    /** Checks if a new document was created */
+    void slotCreatedDocument(App::Document& Doc);
+    /** Checks if the given document is about to be closed */
+    void slotDeletedDocument(App::Document& Doc);
+    /** Checks if a new object was added. */
+    void slotCreatedObject(App::DocumentObject& Obj);
+    /** Checks if the given object is about to be removed. */
+    void slotDeletedObject(App::DocumentObject& Obj);
+    /** The property of an observed object has changed */
+    void slotChangedObject(App::DocumentObject& Obj, App::Property& Prop);
+    void validate();
+
+private:
     App::DocumentObject* obj;
 
     // friends
     friend class DocumentReceiver;
-};
-
-class DocumentReceiver : public QObject
-{
-
-public:
-    DocumentReceiver(QObject *parent = 0) : QObject(parent)
-    {
-    }
-    ~DocumentReceiver()
-    {
-    }
-
-    static DocumentReceiver *globalInstance();
-
-protected:
-    void customEvent(QEvent*);
-    void wakeupThread();
-    void postEventAndWait(QEvent*);
-
-    // friends
-    friend class DocumentProtector;
 };
 
 }
