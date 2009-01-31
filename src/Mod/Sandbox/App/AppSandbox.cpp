@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -30,6 +30,8 @@
 #include <CXX/Extensions.hxx>
 #include <CXX/Objects.hxx>
 
+#include "DocumentProtector.h"
+
 
 /* module functions */
 
@@ -51,6 +53,8 @@ private:
 /* Python entry */
 extern "C" {
 void SandboxAppExport initSandbox() {
+
+    static Sandbox::DocumentReceiver* dr = Sandbox::DocumentReceiver::globalInstance();
 
     // the following constructor call registers our extension module
     // with the Python runtime system

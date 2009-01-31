@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -54,6 +54,15 @@
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
+
+// QtCore
+#include <QObject>
+#include <QCoreApplication>
+#include <QEvent>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QWaitCondition>
+#include <QThread>
 
 #endif //_PreComp_
 

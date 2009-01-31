@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -27,9 +27,12 @@
 #endif
 
 #include <Base/Console.h>
+#include <App/Application.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+
+#include <Mod/Sandbox/App/DocumentThread.h>
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -44,17 +47,19 @@ CmdSandboxTest::CmdSandboxTest()
 {
     sAppModule    = "Sandbox";
     sGroup        = QT_TR_NOOP("Sandbox");
-    sMenuText     = QT_TR_NOOP("Hello");
+    sMenuText     = QT_TR_NOOP("Test thread");
     sToolTipText  = QT_TR_NOOP("Sandbox Test function");
     sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
     sStatusTip    = QT_TR_NOOP("Sandbox Test function");
     sPixmap       = "Test1";
-    iAccel        = Qt::CTRL+Qt::Key_H;
 }
 
 void CmdSandboxTest::activated(int iMsg)
 {
-    Base::Console().Message("Hello, World!\n");
+    App::GetApplication().newDocument("Thread");
+    Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
+    QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
+    dt->start();
 }
 
 void CreateSandboxCommands(void)

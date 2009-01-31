@@ -21,28 +21,24 @@
  ***************************************************************************/
 
 
-#ifndef Sandbox_WORKBENCH_H
-#define Sandbox_WORKBENCH_H
+#ifndef SANDBOX_DOCUMENTTHREAD_H
+#define SANDBOX_DOCUMENTTHREAD_H
 
-#include <Gui/Workbench.h>
+#include <QThread>
 
-namespace SandboxGui {
+namespace Sandbox {
 
-class Workbench : public Gui::StdWorkbench
+class SandboxAppExport DocumentThread : public QThread
 {
-    TYPESYSTEM_HEADER();
-
 public:
-    Workbench();
-    virtual ~Workbench();
+    DocumentThread(QObject* parent=0);
+    ~DocumentThread();
 
 protected:
-    Gui::MenuItem* setupMenuBar() const;
-    Gui::ToolBarItem* setupToolBars() const;
-    Gui::ToolBarItem* setupCommandBars() const;
+    void run();
 };
 
-} // namespace SandboxGui
+}
 
+#endif // SANDBOX_DOCUMENTTHREAD_H
 
-#endif // Sandbox_WORKBENCH_H 
