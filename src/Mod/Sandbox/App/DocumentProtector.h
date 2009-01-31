@@ -21,28 +21,60 @@
  ***************************************************************************/
 
 
-#ifndef Sandbox_WORKBENCH_H
-#define Sandbox_WORKBENCH_H
+#ifndef SANDBOX_DOCUMENTPROTECTOR_H
+#define SANDBOX_DOCUMENTPROTECTOR_H
 
-#include <Gui/Workbench.h>
+#include <QObject>
+#include <string>
 
-namespace SandboxGui {
+namespace App {
+    class Document;
+    class DocumentObject;
+}
 
-class Workbench : public Gui::StdWorkbench
+namespace Sandbox {
+
+class SandboxAppExport DocumentProtector
 {
-    TYPESYSTEM_HEADER();
-
 public:
-    Workbench();
-    virtual ~Workbench();
+    DocumentProtector(App::Document*);
+    ~DocumentProtector();
 
-protected:
-    Gui::MenuItem* setupMenuBar() const;
-    Gui::ToolBarItem* setupToolBars() const;
-    Gui::ToolBarItem* setupCommandBars() const;
+    App::DocumentObject *addObject(const std::string& type, const std::string& name="");
+    void removeObject(const std::string& name);
+    void recompute();
+
+private:
+    App::Document* doc;
+    App::DocumentObject* obj;
+
+    // friends
+    friend class DocumentReceiver;
 };
 
-} // namespace SandboxGui
+class DocumentReceiver : public QObject
+{
 
+public:
+    DocumentReceiver(QObject *parent = 0) : QObject(parent)
+    {
+    }
+    ~DocumentReceiver()
+    {
+    }
 
-#endif // Sandbox_WORKBENCH_H 
+    static DocumentReceiver *globalInstance();
+
+protected:
+    void customEvent(QEvent*);
+    void wakeupThread();
+    void postEventAndWait(QEvent*);
+
+    // friends
+    friend class DocumentProtector;
+};
+
+}
+
+#endif // SANDBOX_DOCUMENTPROTECTOR_H
+

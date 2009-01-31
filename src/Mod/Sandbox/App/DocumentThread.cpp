@@ -21,28 +21,32 @@
  ***************************************************************************/
 
 
-#ifndef Sandbox_WORKBENCH_H
-#define Sandbox_WORKBENCH_H
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
 
-#include <Gui/Workbench.h>
+#include "DocumentThread.h"
+#include "DocumentProtector.h"
 
-namespace SandboxGui {
+#include <App/Application.h>
+#include <App/Document.h>
 
-class Workbench : public Gui::StdWorkbench
+using namespace Sandbox;
+
+
+DocumentThread::DocumentThread(QObject* parent)
+  : QThread(parent)
 {
-    TYPESYSTEM_HEADER();
+}
 
-public:
-    Workbench();
-    virtual ~Workbench();
+DocumentThread::~DocumentThread()
+{
+}
 
-protected:
-    Gui::MenuItem* setupMenuBar() const;
-    Gui::ToolBarItem* setupToolBars() const;
-    Gui::ToolBarItem* setupCommandBars() const;
-};
-
-} // namespace SandboxGui
-
-
-#endif // Sandbox_WORKBENCH_H 
+void DocumentThread::run()
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    DocumentProtector dp(doc);
+    App::DocumentObject* obj = dp.addObject("Mesh::Cube", "MyCube");
+    dp.recompute();
+}
