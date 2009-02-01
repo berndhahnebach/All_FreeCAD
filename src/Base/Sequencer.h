@@ -32,6 +32,7 @@ namespace Base
 {
 
 class AbortException;
+class SequencerLauncher;
 
 /**
  * \brief This class gives the user an indication of the progress of an operation and
