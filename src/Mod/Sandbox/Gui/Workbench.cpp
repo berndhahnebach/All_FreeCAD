@@ -50,7 +50,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     root->insertItem( item, test );
     test->setCommand("Threads");
     *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
-          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python";
+          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python"
+          << "Sandbox_Dialog" << "Sandbox_FileDialog";
     return root;
 }
 
@@ -60,7 +61,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
     test->setCommand( "Sandbox Tools" );
     *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
-          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python"; 
+          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python"
+          << "Sandbox_Dialog" << "Sandbox_FileDialog"; 
     return root;
 }
 
