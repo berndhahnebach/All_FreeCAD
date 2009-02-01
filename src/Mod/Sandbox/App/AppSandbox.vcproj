@@ -300,6 +300,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\DocumentProtectorPy.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\DocumentProtectorPy.h"
+			>
+		</File>
+		<File
 			RelativePath=".\DocumentThread.cpp"
 			>
 		</File>

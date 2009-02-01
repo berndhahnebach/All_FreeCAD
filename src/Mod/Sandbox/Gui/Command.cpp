@@ -54,9 +54,11 @@ CmdSandboxThread1::CmdSandboxThread1()
 void CmdSandboxThread1::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
-    Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
-    QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
-    dt->start();
+    for (int i=0; i<5; i++) {
+        Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
+        QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
+        dt->start();
+    }
 }
 
 // -------------------------------------------------------------------------------
@@ -183,6 +185,60 @@ void CmdSandboxThread4::activated(int iMsg)
     dp.recompute();
 }
 
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxThread6);
+
+CmdSandboxThread6::CmdSandboxThread6()
+  :Command("Sandbox_Python")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Python thread");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool6";
+}
+
+void CmdSandboxThread6::activated(int iMsg)
+{
+#if 0 // deadlock???
+    doCommand(Doc,
+        "import thread, time, Sandbox\n"
+        "def adder(doc):\n"
+        "    lock.acquire()\n"
+        "    dp=Sandbox.DocumentProtector(doc)\n"
+        "    dp.addObject(\"Mesh::Ellipsoid\",\"Mesh\")\n"
+        "    dp.recompute()\n"
+        "    lock.release()\n"
+        "\n"
+        "lock=thread.allocate_lock()\n"
+        "doc=App.newDocument()\n"
+        "for i in range(1):\n"
+        "    thread.start_new(adder,(doc,))\n"
+        "\n"
+        "time.sleep(1)\n"
+    );
+    doCommand(Doc,
+        "from PyQt4 import QtCore; import Sandbox\n"
+        "class Thread(QtCore.QThread):\n"
+        "    def run(self):\n"
+        "        dp=Sandbox.DocumentProtector(doc)\n"
+        "        dp.addObject(\"Mesh::Ellipsoid\",\"Mesh\")\n"
+        "        dp.recompute()\n"
+        "\n"
+        "doc=App.newDocument()\n"
+        "threads=[]\n"
+        "for i in range(2):\n"
+        "    thread=Thread()\n"
+        "    threads.append(thread)\n"
+        "    thread.start()\n"
+        "\n"
+    );
+#endif
+}
+
 void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -191,4 +247,5 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxThread3());
     rcCmdMgr.addCommand(new CmdSandboxThread4());
     rcCmdMgr.addCommand(new CmdSandboxThread5());
+    rcCmdMgr.addCommand(new CmdSandboxThread6());
 }

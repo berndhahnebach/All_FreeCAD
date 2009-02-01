@@ -27,10 +27,12 @@
 #endif
 
 #include <Base/Console.h>
+#include <App/DocumentPy.h>
 #include <CXX/Extensions.hxx>
 #include <CXX/Objects.hxx>
 
 #include "DocumentProtector.h"
+#include "DocumentProtectorPy.h"
 
 
 /* module functions */
@@ -41,12 +43,22 @@ class SandboxModule : public Py::ExtensionModule<SandboxModule>
 public:
     SandboxModule() : Py::ExtensionModule<SandboxModule>("Sandbox")
     {
+        Sandbox::DocumentProtectorPy::init_type();
+        add_varargs_method("DocumentProtector",&SandboxModule::new_DocumentProtector,"DocumentProtector(Document)");
         initialize("This module is the Sandbox module"); // register with Python
     }
     
     virtual ~SandboxModule() {}
 
 private:
+    Py::Object new_DocumentProtector(const Py::Tuple& args)
+    {
+        PyObject* o;
+        if (!PyArg_ParseTuple(args.ptr(), "O!",&(App::DocumentPy::Type), &o))
+            throw Py::Exception();
+        App::DocumentPy* doc = static_cast<App::DocumentPy*>(o);
+        return Py::asObject(new Sandbox::DocumentProtectorPy(doc));
+    }
 };
 
 
