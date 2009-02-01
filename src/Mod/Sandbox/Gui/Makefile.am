@@ -2,7 +2,6 @@
 lib_LTLIBRARIES=libSandboxGui.la SandboxGui.la
 
 libSandboxGui_la_SOURCES=\
-		AppSandboxGuiPy.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \

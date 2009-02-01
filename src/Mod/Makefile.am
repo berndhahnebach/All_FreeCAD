@@ -15,6 +15,8 @@ SUBDIRS += ReverseEngineering
 endif
 endif
 
+#SUBDIRS += Sandbox
+
 EXTRA_DIST = \
 		__init__.py
 

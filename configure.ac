@@ -614,6 +614,9 @@ src/Mod/Complete/Gui/Resources/Makefile
 src/Mod/Draft/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
+src/Mod/Sandbox/Makefile
+src/Mod/Sandbox/App/Makefile
+src/Mod/Sandbox/Gui/Makefile
 src/Mod/TemplatePyMod/Makefile
 src/Tools/Makefile
 src/Tools/_TEMPLATE_/Makefile

@@ -2,7 +2,12 @@
 lib_LTLIBRARIES=libSandbox.la Sandbox.la
 
 libSandbox_la_SOURCES=\
-		AppSandboxPy.cpp \
+		DocumentProtector.cpp \
+		DocumentProtector.h \
+		DocumentProtectorPy.cpp \
+		DocumentProtectorPy.h \
+		DocumentThread.cpp \
+		DocumentThread.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
@@ -14,6 +19,7 @@ libSandbox_la_CPPFLAGS = -DSandboxAppExport=
 libSandbox_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lQtCore \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -36,7 +42,7 @@ Sandbox_la_DEPENDENCIES = libSandbox.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 libdir = $(prefix)/Mod/Sandbox
 

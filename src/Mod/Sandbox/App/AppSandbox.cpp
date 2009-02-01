@@ -70,7 +70,7 @@ void SandboxAppExport initSandbox() {
 
     // the following constructor call registers our extension module
     // with the Python runtime system
-    static SandboxModule* module = new SandboxModule;
+    (void)new SandboxModule;
     Base::Console().Log("Loading Sandbox module... done\n");
 }
 

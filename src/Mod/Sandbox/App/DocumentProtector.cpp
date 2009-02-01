@@ -28,6 +28,7 @@
 # include <QEvent>
 # include <QMutex>
 # include <QMutexLocker>
+# include <QThread>
 # include <QWaitCondition>
 #endif
 

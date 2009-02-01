@@ -79,7 +79,7 @@ void SandboxGuiExport initSandboxGui()
 
     // the following constructor call registers our extension module
     // with the Python runtime system
-    static SandboxModuleGui* module = new SandboxModuleGui;
+    (void)new SandboxModuleGui;
     Base::Console().Log("Loading GUI of Sandbox module... done\n");
 }
 
