@@ -32,6 +32,7 @@
 #include <App/Document.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+#include <Gui/MainWindow.h>
 
 #include <Mod/Sandbox/App/DocumentThread.h>
 #include <Mod/Sandbox/App/DocumentProtector.h>
@@ -44,7 +45,7 @@ CmdSandboxThread1::CmdSandboxThread1()
 {
     sAppModule    = "Sandbox";
     sGroup        = QT_TR_NOOP("Sandbox");
-    sMenuText     = QT_TR_NOOP("Test thread");
+    sMenuText     = QT_TR_NOOP("Run several threads");
     sToolTipText  = QT_TR_NOOP("Sandbox Test function");
     sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
     sStatusTip    = QT_TR_NOOP("Sandbox Test function");
@@ -64,29 +65,6 @@ void CmdSandboxThread1::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread5);
-
-CmdSandboxThread5::CmdSandboxThread5()
-  :Command("Sandbox_WorkerThread")
-{
-    sAppModule    = "Sandbox";
-    sGroup        = QT_TR_NOOP("Sandbox");
-    sMenuText     = QT_TR_NOOP("Worker thread");
-    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
-    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
-    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
-    sPixmap       = "Std_Tool1";
-}
-
-void CmdSandboxThread5::activated(int iMsg)
-{
-    Sandbox::WorkerThread* wt = new Sandbox::WorkerThread();
-    QObject::connect(wt, SIGNAL(finished()), wt, SLOT(deleteLater()));
-    wt->start();
-}
-
-// -------------------------------------------------------------------------------
-
 DEF_STD_CMD(CmdSandboxThread2);
 
 CmdSandboxThread2::CmdSandboxThread2()
@@ -94,7 +72,7 @@ CmdSandboxThread2::CmdSandboxThread2()
 {
     sAppModule    = "Sandbox";
     sGroup        = QT_TR_NOOP("Sandbox");
-    sMenuText     = QT_TR_NOOP("Test busy thread");
+    sMenuText     = QT_TR_NOOP("Thread and sequencer");
     sToolTipText  = QT_TR_NOOP("Sandbox Test function");
     sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
     sStatusTip    = QT_TR_NOOP("Sandbox Test function");
@@ -132,7 +110,7 @@ CmdSandboxThread3::CmdSandboxThread3()
 {
     sAppModule    = "Sandbox";
     sGroup        = QT_TR_NOOP("Sandbox");
-    sMenuText     = QT_TR_NOOP("Test busy thread");
+    sMenuText     = QT_TR_NOOP("Thread and no sequencer");
     sToolTipText  = QT_TR_NOOP("Sandbox Test function");
     sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
     sStatusTip    = QT_TR_NOOP("Sandbox Test function");
@@ -168,7 +146,7 @@ CmdSandboxThread4::CmdSandboxThread4()
 {
     sAppModule    = "Sandbox";
     sGroup        = QT_TR_NOOP("Sandbox");
-    sMenuText     = QT_TR_NOOP("Test no thread");
+    sMenuText     = QT_TR_NOOP("GUI thread");
     sToolTipText  = QT_TR_NOOP("Sandbox Test function");
     sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
     sStatusTip    = QT_TR_NOOP("Sandbox Test function");
@@ -186,6 +164,29 @@ void CmdSandboxThread4::activated(int iMsg)
     // this forces an exception
     App::DocumentObject* obj2 = dp.addObject("Mesh::Cube", "MyCube");
     dp.recompute();
+}
+
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxThread5);
+
+CmdSandboxThread5::CmdSandboxThread5()
+  :Command("Sandbox_WorkerThread")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Worker thread");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool1";
+}
+
+void CmdSandboxThread5::activated(int iMsg)
+{
+    Sandbox::WorkerThread* wt = new Sandbox::WorkerThread();
+    QObject::connect(wt, SIGNAL(finished()), wt, SLOT(deleteLater()));
+    wt->start();
 }
 
 // -------------------------------------------------------------------------------
@@ -242,6 +243,59 @@ void CmdSandboxThread6::activated(int iMsg)
 #endif
 }
 
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxThread7);
+
+CmdSandboxThread7::CmdSandboxThread7()
+  :Command("Sandbox_Dialog")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Thread and modal dialog");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool7";
+}
+
+void CmdSandboxThread7::activated(int iMsg)
+{
+    App::GetApplication().newDocument("Thread");
+    Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
+    dt->setObjectName(QString::fromAscii("MyMesh"));
+    QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
+    dt->start();
+    //QFileDialog::getOpenFileName();
+    QColorDialog::getColor(Qt::white,Gui::getMainWindow());
+}
+
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxThread8);
+
+CmdSandboxThread8::CmdSandboxThread8()
+  :Command("Sandbox_FileDialog")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Thread and file dialog");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool7";
+}
+
+void CmdSandboxThread8::activated(int iMsg)
+{
+    App::GetApplication().newDocument("Thread");
+    Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
+    dt->setObjectName(QString::fromAscii("MyMesh"));
+    QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
+    dt->start();
+    QFileDialog::getOpenFileName();
+}
+
 void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -251,4 +305,6 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxThread4());
     rcCmdMgr.addCommand(new CmdSandboxThread5());
     rcCmdMgr.addCommand(new CmdSandboxThread6());
+    rcCmdMgr.addCommand(new CmdSandboxThread7());
+    rcCmdMgr.addCommand(new CmdSandboxThread8());
 }
