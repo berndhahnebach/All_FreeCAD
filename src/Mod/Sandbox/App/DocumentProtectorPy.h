@@ -21,51 +21,44 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef SANDBOX_DOCUMENTPROTECTORPY_H
+#define SANDBOX_DOCUMENTPROTECTORPY_H
 
-#ifndef _PreComp_
-#endif
+#include <CXX/Extensions.hxx>
 
-#include "Workbench.h"
-#include <Gui/MenuManager.h>
-#include <Gui/ToolBarManager.h>
-
-using namespace SandboxGui;
-
-TYPESYSTEM_SOURCE(SandboxGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
-{
+namespace App {
+class DocumentPy;
 }
 
-Workbench::~Workbench()
+namespace Sandbox {
+
+class DocumentProtector;
+class DocumentProtectorPy : public Py::PythonExtension<DocumentProtectorPy>
 {
+public:
+    static void init_type(void);    // announce properties and methods
+
+    DocumentProtectorPy(App::DocumentPy *doc);
+    ~DocumentProtectorPy();
+
+    Py::Object repr();
+    Py::Object getattr(const char *);
+    int setattr(const char *, const Py::Object &);
+
+    Py::Object addObject(const Py::Tuple&);
+    Py::Object recompute(const Py::Tuple&);
+
+private:
+    typedef PyObject* (*method_varargs_handler)(PyObject *_self, PyObject *_args);
+    static method_varargs_handler pycxx_handler;
+    static PyObject *method_varargs_ext_handler(PyObject *_self, PyObject *_args);
+
+private:
+    DocumentProtector* _dp;
+    friend class DocumentProtector;
+};
+
 }
 
-Gui::MenuItem* Workbench::setupMenuBar() const
-{
-    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
-    Gui::MenuItem* item = root->findItem( "&Windows" );
-    Gui::MenuItem* test = new Gui::MenuItem;
-    root->insertItem( item, test );
-    test->setCommand("Threads");
-    *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
-          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python";
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
-    test->setCommand( "Sandbox Tools" );
-    *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
-          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python"; 
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    return 0;
-}
+#endif // SANDBOX_DOCUMENTPROTECTORPY_H
 

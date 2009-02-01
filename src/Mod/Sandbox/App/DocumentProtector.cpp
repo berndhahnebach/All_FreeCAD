@@ -134,6 +134,7 @@ void DocumentReceiver::postEventAndWait(QEvent* e)
         delete e;
     }
     else {
+        QMutexLocker access(&gProtectorStopMutex);
         QMutexLocker lock(&gProtectorWaitMutex);
         QCoreApplication::postEvent(this, e);
         gProtectorEventProcessed.wait(&gProtectorWaitMutex); // waits for wait to finish
@@ -143,6 +144,7 @@ void DocumentReceiver::postEventAndWait(QEvent* e)
 // Wake up the waiting automation thread
 void DocumentReceiver::wakeupThread()
 {
+    //QMutexLocker access(&gProtectorStopMutex);
     QMutexLocker lock(&gProtectorWaitMutex);
     gProtectorEventProcessed.wakeAll();
 }
