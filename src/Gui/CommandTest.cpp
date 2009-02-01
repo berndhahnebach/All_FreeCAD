@@ -375,6 +375,60 @@ bool CmdTestProgress3::isActive(void)
     return ( !Base::Sequencer().isRunning() );
 }
 
+//===========================================================================
+// Std_TestProgress4
+//===========================================================================
+DEF_STD_CMD_A(CmdTestProgress4);
+
+CmdTestProgress4::CmdTestProgress4()
+  : Command("Std_TestProgress4")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Mixed nested bar";
+    sToolTipText    = "Test a mixed up nested progress bar";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool7";
+    iAccel          = 0;
+}
+
+void CmdTestProgress4::activated(int iMsg)
+{
+    try
+    {
+        QMutex mutex;
+        mutex.lock();
+        unsigned long steps = 50;
+        Base::SequencerLauncher* seq = new Base::SequencerLauncher("Starting progress bar", steps);
+
+        for (unsigned long i=0; i<steps;i++)
+        {
+            QWaitCondition().wait(&mutex, 5);
+            if (i == 45) {
+                delete seq;
+                seq = 0;
+            }
+            if (seq) {
+                seq->next(false);
+            }
+            Base::SequencerLauncher seq2("Starting progress bar", steps);
+            for (unsigned long j=0; j<steps;j++)
+            {
+                QWaitCondition().wait(&mutex, (seq ? 5 : 50));
+                seq2.next(true);
+            }
+        }
+    }
+    catch (...)
+    {
+    }
+}
+
+bool CmdTestProgress4::isActive(void)
+{
+    return (!Base::Sequencer().isRunning());
+}
+
 
 namespace Gui {
 
@@ -391,6 +445,7 @@ void CreateTestCommands(void)
     rcCmdMgr.addCommand(new CmdTestProgress1());
     rcCmdMgr.addCommand(new CmdTestProgress2());
     rcCmdMgr.addCommand(new CmdTestProgress3());
+    rcCmdMgr.addCommand(new CmdTestProgress4());
 }
 
 } // namespace Gui

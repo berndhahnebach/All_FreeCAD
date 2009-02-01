@@ -53,7 +53,7 @@ Sequencer* Sequencer::_pclSingleton = 0L;
 Sequencer* Sequencer::instance()
 {
     // not initialized?
-    if ( !_pclSingleton )
+    if (!_pclSingleton)
     {
         _pclSingleton = new Sequencer();
     }
@@ -75,6 +75,11 @@ Sequencer::~Sequencer ()
 
 void Sequencer::pause()
 {
+    QThread *currentThread = QThread::currentThread();
+    QThread *thr = d->bar->thread(); // this is the main thread
+    if (thr != currentThread)
+        return;
+
     // allow key handling of dialog and restore cursor
     d->bar->leaveControlEvents();
     d->waitCursor->restoreCursor();
@@ -83,6 +88,11 @@ void Sequencer::pause()
 
 void Sequencer::resume()
 {
+    QThread *currentThread = QThread::currentThread();
+    QThread *thr = d->bar->thread(); // this is the main thread
+    if (thr != currentThread)
+        return;
+
     QApplication::restoreOverrideCursor();
     d->waitCursor->setWaitCursor();
     // must be called as last to get control before WaitCursor
@@ -91,6 +101,11 @@ void Sequencer::resume()
 
 void Sequencer::startStep()
 {
+    QThread *currentThread = QThread::currentThread();
+    QThread *thr = d->bar->thread(); // this is the main thread
+    if (thr != currentThread)
+        return;
+
     d->bar->setRange(0, (int)nTotalSteps);
     if ( nTotalSteps == 0 ) {
         d->progressTime.start();
@@ -106,6 +121,11 @@ void Sequencer::startStep()
 
 void Sequencer::nextStep(bool canAbort)
 {
+    QThread *currentThread = QThread::currentThread();
+    QThread *thr = d->bar->thread(); // this is the main thread
+    if (thr != currentThread)
+        return;
+
     if (wasCanceled() && canAbort) {
         // restore cursor
         pause();
@@ -120,7 +140,8 @@ void Sequencer::nextStep(bool canAbort)
             rejectCancel();
             setProgress((int)nProgress+1);
         }
-    } else {
+    }
+    else {
         setProgress((int)nProgress+1);
     }
 }
@@ -128,7 +149,7 @@ void Sequencer::nextStep(bool canAbort)
 void Sequencer::setProgress(int step)
 {
     // if number of total steps is unknown then incrementy only by one
-    if ( nTotalSteps == 0 ) {
+    if (nTotalSteps == 0) {
         int elapsed = d->progressTime.elapsed();
         // allow an update every 500 milliseconds only
         if (elapsed > 500) {
@@ -171,6 +192,11 @@ void Sequencer::showRemainingTime()
 
 void Sequencer::resetData()
 {
+    QThread *currentThread = QThread::currentThread();
+    QThread *thr = d->bar->thread(); // this is the main thread
+    if (thr != currentThread)
+        return;
+
     d->bar->reset();
     // Note: Under Qt 4.1.4 this forces to run QWindowsStyle::eventFilter() twice 
     // handling the same event thus a warning is printed. Possibly, this is a bug
@@ -187,6 +213,11 @@ void Sequencer::resetData()
 
 void Sequencer::abort()
 {
+    QThread *currentThread = QThread::currentThread();
+    QThread *thr = d->bar->thread(); // this is the main thread
+    if (thr != currentThread)
+        return;
+
     //resets
     resetData();
     Base::AbortException exc("Aborting...");
@@ -195,6 +226,11 @@ void Sequencer::abort()
 
 void Sequencer::setText (const char* pszTxt)
 {
+    QThread *currentThread = QThread::currentThread();
+    QThread *thr = d->bar->thread(); // this is the main thread
+    if (thr != currentThread)
+        return;
+
     // print message to the statusbar
     d->text = pszTxt ? QString::fromUtf8(pszTxt) : QLatin1String("");
     getMainWindow()->statusBar()->showMessage(d->text);

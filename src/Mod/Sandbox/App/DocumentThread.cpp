@@ -28,6 +28,7 @@
 #include "DocumentThread.h"
 #include "DocumentProtector.h"
 
+#include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <App/Document.h>
 
@@ -47,6 +48,34 @@ void DocumentThread::run()
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
     DocumentProtector dp(doc);
-    App::DocumentObject* obj = dp.addObject("Mesh::Cube", "MyCube");
+    App::DocumentObject* obj = dp.addObject("Mesh::Ellipsoid", "MyCube");
     dp.recompute();
+}
+
+// --------------------------------------
+
+WorkerThread::WorkerThread(QObject* parent)
+  : QThread(parent)
+{
+}
+
+WorkerThread::~WorkerThread()
+{
+}
+
+void WorkerThread::run()
+{
+#ifdef FC_DEBUG
+    int max = 10000;
+#else
+    int max = 100000000;
+#endif
+    Base::SequencerLauncher seq("Do something meaningful...", max);
+    double val=0;
+    for (int i=0; i<max; i++) {
+        for (int j=0; j<max; j++) {
+            val = sin(0.12345);
+        }
+        seq.next(true);
+    }
 }

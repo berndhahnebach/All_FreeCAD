@@ -38,6 +38,16 @@ protected:
     void run();
 };
 
+class SandboxAppExport WorkerThread : public QThread
+{
+public:
+    WorkerThread(QObject* parent=0);
+    ~WorkerThread();
+
+protected:
+    void run();
+};
+
 }
 
 #endif // SANDBOX_DOCUMENTTHREAD_H
