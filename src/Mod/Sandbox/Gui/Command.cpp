@@ -56,6 +56,7 @@ void CmdSandboxThread1::activated(int iMsg)
     App::GetApplication().newDocument("Thread");
     for (int i=0; i<5; i++) {
         Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
+        dt->setObjectName(QString::fromAscii("MyMesh_%1").arg(i));
         QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
         dt->start();
     }
@@ -104,6 +105,7 @@ void CmdSandboxThread2::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
+    dt->setObjectName(QString::fromAscii("MyMesh"));
     QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
     dt->start();
 #ifdef FC_DEBUG
@@ -141,6 +143,7 @@ void CmdSandboxThread3::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
+    dt->setObjectName(QString::fromAscii("MyMesh"));
     QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
     dt->start();
 #ifdef FC_DEBUG

@@ -48,7 +48,7 @@ void DocumentThread::run()
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
     DocumentProtector dp(doc);
-    App::DocumentObject* obj = dp.addObject("Mesh::Ellipsoid", "MyCube");
+    App::DocumentObject* obj = dp.addObject("Mesh::Ellipsoid", (const char*)objectName().toAscii());
     dp.recompute();
 }
 
