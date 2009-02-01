@@ -221,12 +221,12 @@ PyMethodDef @self.export.Name@::Methods[] = {
 };
 
 + if (self.export.NumberProtocol):
-PyNumberMethods @self.export.Name@::Number[] = {
+PyNumberMethods @self.export.Name@::Number[] = { {
     number_add_handler,
     number_subtract_handler,
     number_multiply_handler,
     NULL
-};
+} };
 -
 
 /// Attribute structure of @self.export.Name@

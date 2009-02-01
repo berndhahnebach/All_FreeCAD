@@ -25,13 +25,13 @@
 #define PY_GEOMETRYPY_H
 
 #include <CXX/Objects.hxx>
-#include "Vector3D.h"
-#include "Matrix.h"
-#include "MatrixPy.h"
-#include "Rotation.h"
-#include "RotationPy.h"
-#include "Placement.h"
-#include "PlacementPy.h"
+#include <Base/Vector3D.h>
+#include <Base/Matrix.h>
+#include <Base/MatrixPy.h>
+#include <Base/Rotation.h>
+#include <Base/RotationPy.h>
+#include <Base/Placement.h>
+#include <Base/PlacementPy.h>
 
 namespace Base {
 template <typename T>

@@ -422,7 +422,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
 
         // getting the transformation of the shape/face
         //gp_Trsf myTransf;
-        Standard_Boolean identity = true;
+        //Standard_Boolean identity = true;
         TopLoc_Location aLoc;
 
         // try to triangulate the edge
