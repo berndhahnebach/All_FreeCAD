@@ -83,7 +83,7 @@ class TestWorkbench ( Workbench ):
 		self.appendMenu(menu,list)
 
 		menu = ["Test &Commands","Progress bar"]
-		list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3"]
+		list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3", "Std_TestProgress4"]
 		self.appendMenu(menu,list)
 
 		list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3"]

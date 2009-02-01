@@ -109,19 +109,9 @@ class AbortException;
  */
 class BaseExport SequencerBase
 {
-public:
-    /**
-     * Returns the last created sequencer instance.
-     * If you create an instance of a class inheriting SequencerBase
-     * this object is retrieved instead.
-     *
-     * This mechanism is very useful to have an own sequencer for each layer of FreeCAD.
-     * For example, if FreeCAD is running in server mode you have/need no GUI layer
-     * and therewith no (graphical) progress bar; in this case ConsoleSequencer is taken.
-     * But in cases FreeCAD is running with GUI the @ref Gui::ProgressBar is taken instead.
-     * @see Sequencer
-     */
-    static SequencerBase& Instance();
+    friend class SequencerLauncher;
+
+protected:
     /**
      * Starts a new operation, returns false if there is already a pending operation,
      * otherwise it returns true.
@@ -142,6 +132,20 @@ public:
      * pending operations, otherwise it returns true.
      */
     bool stop();
+
+public:
+    /**
+     * Returns the last created sequencer instance.
+     * If you create an instance of a class inheriting SequencerBase
+     * this object is retrieved instead.
+     *
+     * This mechanism is very useful to have an own sequencer for each layer of FreeCAD.
+     * For example, if FreeCAD is running in server mode you have/need no GUI layer
+     * and therewith no (graphical) progress bar; in this case ConsoleSequencer is taken.
+     * But in cases FreeCAD is running with GUI the @ref Gui::ProgressBar is taken instead.
+     * @see Sequencer
+     */
+    static SequencerBase& Instance();
     /**
      * Breaks the sequencer if needed. The default implementation does nothing.
      * Every pause() must eventually be followed by a corresponding @ref resume().
@@ -217,11 +221,8 @@ protected:
     size_t nTotalSteps; /**< Stores the total number of steps */
 
 private:
-    /**
-     * Sets a global sequencer object.
-     * Access to the last registered
-     * object is performed by
-     * @see Sequencer().
+    /** Sets a global sequencer object.
+     * Access to the last registered object is performed by @see Sequencer().
      */
     void _setGlobalInstance ();
 
@@ -233,6 +234,7 @@ private:
     int _nLastPercentage; /**< Progress in percent. */
     size_t _nNewSteps; /**< Is used for nested calls of the sequencer. */
     static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */
+    static SequencerLauncher* _topLauncher; /**< The outermost launcher */
 };
 
 /** This special sequencer might be useful if you want to suppress any indication

@@ -48,8 +48,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* item = root->findItem( "&Windows" );
     Gui::MenuItem* test = new Gui::MenuItem;
     root->insertItem( item, test );
-    test->setCommand("Sandbox");
-    *test << "Sandbox_Thread" << "Sandbox_BusyThread" << "Sandbox_NoThread";
+    test->setCommand("Threads");
+    *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
+          << "Sandbox_BlockThread" << "Sandbox_NoThread";
     return root;
 }
 
@@ -58,7 +59,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
     test->setCommand( "Sandbox Tools" );
-    *test << "Sandbox_Thread" << "Sandbox_BusyThread" << "Sandbox_NoThread"; 
+    *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
+          << "Sandbox_BlockThread" << "Sandbox_NoThread"; 
     return root;
 }
 

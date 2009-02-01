@@ -39,6 +39,8 @@ using namespace Base;
  */
 std::vector<SequencerBase*> SequencerBase::_aclInstances;
 
+SequencerLauncher* SequencerBase::_topLauncher = 0;
+
 SequencerBase& SequencerBase::Instance ()
 {
     // not initialized?
@@ -71,6 +73,8 @@ void SequencerBase::_setGlobalInstance ()
 bool SequencerBase::start(const char* pszStr, size_t steps)
 {
     bool ret = false;
+    if (SequencerBase::_topLauncher)
+        return false;
 
     // reset current state of progress (in percent)
     _nLastPercentage = -1;
@@ -136,6 +140,9 @@ void SequencerBase::nextStep( bool )
 
 bool SequencerBase::stop()
 {
+    if (SequencerBase::_topLauncher)
+        return false;
+
     _nInstStarted--;
     if (_nInstStarted == 0) {
         resetData();
@@ -260,14 +267,20 @@ void ConsoleSequencer::resetData()
 SequencerLauncher::SequencerLauncher(const char* pszStr, size_t steps)
 {
     SequencerBase::Instance().start(pszStr, steps);
+    if (!SequencerBase::_topLauncher)
+        SequencerBase::_topLauncher = this;
 }
 
 SequencerLauncher::~SequencerLauncher()
 {
+    if (SequencerBase::_topLauncher == this)
+        SequencerBase::_topLauncher = 0;
     SequencerBase::Instance().stop();
 }
 
 bool SequencerLauncher::next(bool canAbort)
 {
+    if (SequencerBase::_topLauncher != this)
+        return true; // ignore
     return SequencerBase::Instance().next(canAbort);
 }
