@@ -23,7 +23,9 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qobject.h>
+# include <QObject>
+# include <QEventLoop>
+# include <QTimer>
 #endif
 
 #include <Base/Console.h>
@@ -296,6 +298,47 @@ void CmdSandboxThread8::activated(int iMsg)
     QFileDialog::getOpenFileName();
 }
 
+// -------------------------------------------------------------------------------
+
+class CmdSandboxEventLoop : public Gui::Command
+{
+public:
+    CmdSandboxEventLoop();
+protected:
+    void activated(int iMsg);
+    bool isActive(void);
+private:
+    QEventLoop loop;
+};
+
+CmdSandboxEventLoop::CmdSandboxEventLoop()
+  :Command("Sandbox_EventLoop")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Local event loop");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool6";
+}
+
+void CmdSandboxEventLoop::activated(int iMsg)
+{
+    QTimer timer;
+    timer.setSingleShot(true);
+    QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+
+    timer.start(5000); // 5s timeout
+    loop.exec();
+    Base::Console().Message("CmdSandboxEventLoop: timeout\n");
+}
+
+bool CmdSandboxEventLoop::isActive(void)
+{
+    return (!loop.isRunning());
+}
+
 void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -307,4 +350,5 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxThread6());
     rcCmdMgr.addCommand(new CmdSandboxThread7());
     rcCmdMgr.addCommand(new CmdSandboxThread8());
+    rcCmdMgr.addCommand(new CmdSandboxEventLoop);
 }

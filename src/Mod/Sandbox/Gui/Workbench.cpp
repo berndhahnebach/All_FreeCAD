@@ -52,6 +52,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
           << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python"
           << "Sandbox_Dialog" << "Sandbox_FileDialog";
+    Gui::MenuItem* misc = new Gui::MenuItem;
+    root->insertItem(item, misc);
+    misc->setCommand("Misc");
+    *misc << "Sandbox_EventLoop";
     return root;
 }
 
