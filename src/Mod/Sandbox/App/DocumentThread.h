@@ -25,6 +25,11 @@
 #define SANDBOX_DOCUMENTTHREAD_H
 
 #include <QThread>
+#include <Base/Handle.h>
+
+namespace Mesh {
+    class MeshObject;
+}
 
 namespace Sandbox {
 
@@ -46,6 +51,22 @@ public:
 
 protected:
     void run();
+};
+
+class SandboxAppExport MeshLoaderThread : public QThread
+{
+public:
+    MeshLoaderThread(const QString&, QObject* parent=0);
+    ~MeshLoaderThread();
+
+    Base::Reference<Mesh::MeshObject> getMesh() const;
+
+protected:
+    void run();
+
+private:
+    QString filename;
+    Base::Reference<Mesh::MeshObject> mesh;
 };
 
 }

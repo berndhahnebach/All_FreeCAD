@@ -31,6 +31,7 @@
 #include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <App/Document.h>
+#include <Mod/Mesh/App/Mesh.h>
 
 using namespace Sandbox;
 
@@ -79,3 +80,26 @@ void WorkerThread::run()
         seq.next(true);
     }
 }
+
+// --------------------------------------
+
+MeshLoaderThread::MeshLoaderThread(const QString& fn, QObject* parent)
+  : QThread(parent), filename(fn)
+{
+}
+
+MeshLoaderThread::~MeshLoaderThread()
+{
+}
+
+Base::Reference<Mesh::MeshObject> MeshLoaderThread::getMesh() const
+{
+    return this->mesh;
+}
+
+void MeshLoaderThread::run()
+{
+    this->mesh = new Mesh::MeshObject();
+    this->mesh->load((const char*)filename.toUtf8());
+}
+

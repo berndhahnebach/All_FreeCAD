@@ -35,9 +35,11 @@
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
+#include <Gui/FileDialog.h>
 
 #include <Mod/Sandbox/App/DocumentThread.h>
 #include <Mod/Sandbox/App/DocumentProtector.h>
+#include <Mod/Mesh/App/MeshFeature.h>
 
 
 DEF_STD_CMD(CmdSandboxThread1);
@@ -339,6 +341,66 @@ bool CmdSandboxEventLoop::isActive(void)
     return (!loop.isRunning());
 }
 
+// -------------------------------------------------------------------------------
+
+class CmdSandboxMeshLoader : public Gui::Command
+{
+public:
+    CmdSandboxMeshLoader();
+protected:
+    void activated(int iMsg);
+    bool isActive(void);
+private:
+    QEventLoop loop;
+};
+
+CmdSandboxMeshLoader::CmdSandboxMeshLoader()
+  :Command("Sandbox_MeshLoad")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Load mesh in thread");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool6";
+}
+
+void CmdSandboxMeshLoader::activated(int iMsg)
+{
+    // use current path as default
+    QStringList filter;
+    filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
+    filter << QObject::tr("Binary STL (*.stl)");
+    filter << QObject::tr("ASCII STL (*.ast)");
+    filter << QObject::tr("Binary Mesh (*.bms)");
+    filter << QObject::tr("Alias Mesh (*.obj)");
+    filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
+    //filter << "Nastran (*.nas *.bdf)";
+    filter << QObject::tr("All Files (*.*)");
+
+    // Allow multi selection
+    QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
+        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+
+    Sandbox::MeshLoaderThread thread(fn);
+    QObject::connect(&thread, SIGNAL(finished()), &loop, SLOT(quit()));
+
+    thread.start();
+    loop.exec();
+
+    Base::Reference<Mesh::MeshObject> data = thread.getMesh();
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    Mesh::Feature* mesh = static_cast<Mesh::Feature*>(doc->addObject("Mesh::Feature","Mesh"));
+    mesh->Mesh.setValuePtr((Mesh::MeshObject*)data);
+    mesh->purgeTouched();
+}
+
+bool CmdSandboxMeshLoader::isActive(void)
+{
+    return (hasActiveDocument() && !loop.isRunning());
+}
+
 void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -351,4 +413,5 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxThread7());
     rcCmdMgr.addCommand(new CmdSandboxThread8());
     rcCmdMgr.addCommand(new CmdSandboxEventLoop);
+    rcCmdMgr.addCommand(new CmdSandboxMeshLoader);
 }

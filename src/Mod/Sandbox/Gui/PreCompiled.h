@@ -30,9 +30,11 @@
 #ifdef FC_OS_WIN32
 # define SandboxAppExport __declspec(dllimport)
 # define SandboxGuiExport __declspec(dllexport)
+# define MeshExport       __declspec(dllimport)
 #else // for Linux
 # define SandboxAppExport
 # define SandboxGuiExport
+# define MeshExport
 #endif
 
 #ifdef _PreComp_
