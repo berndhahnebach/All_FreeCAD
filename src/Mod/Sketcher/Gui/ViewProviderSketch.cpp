@@ -51,7 +51,8 @@ using namespace Sketcher;
 using namespace std;
 
 const float fCurveColor[] =     {1.0f,1.0f,1.0f}; 
-const float fPointColor[] =     {0.9f,0.9f,0.9f}; 
+const float fCurveConstructionColor[] = {0.6f,0.6f,0.6f}; 
+const float fPointColor[] =             {0.9f,0.9f,0.9f}; 
 const float fPreselectColor[] = {0.8f,0.0f,0.0f}; 
 const float fSelectColor[] =    {1.0f,0.0f,0.0f}; 
 const float fDatumLineColor[] = {0.0f,0.8f,0.0f}; 
@@ -233,7 +234,7 @@ bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vect
 bool ViewProviderSketch::HandlePreselection(SoPickedPoint* Point)
 {
     if(Point){
-        //Base::Console().Log("Point pick\n");
+        Base::Console().Log("Point pick\n");
         const SoDetail* detail = Point->getDetail();
         if ( detail && detail->getTypeId() == SoPointDetail::getClassTypeId() ) {
             // get the index
@@ -297,13 +298,14 @@ void ViewProviderSketch::draw(void)
 	double x,y;
 	double x0, y0, dx, dy;
     int i=0,l=0,r=0;
+	bool Construction;
 	// sketchflat generate curves out of enteties:
 	SketchFlat->setUpRendering();
 
 	// go throug the curves and collect the points
 	int Nbr = SketchFlat->nbrOfCurves();
 	for( i=0 ; i<Nbr;++i){
-		SketchFlat->getCurvePoints(coords,i);
+		SketchFlat->getCurvePoints(coords,Construction,i);
         std::vector<Base::Vector3d>::const_iterator it=coords.begin();
 	    while(it!=coords.end()){
 		    CurvesCoordinate->point.set1Value(r,SbVec3f(it->x,it->y,0.0f));
@@ -312,7 +314,7 @@ void ViewProviderSketch::draw(void)
             ++it;r++;
 	    }
 		CurveSet->numVertices.set1Value(i,coords.size());
-		CurvesMaterials->diffuseColor.set1Value(i,fCurveColor);
+		CurvesMaterials->diffuseColor.set1Value(i,Construction?fCurveConstructionColor:fCurveColor);
         coords.clear();
 	}
 
@@ -320,8 +322,8 @@ void ViewProviderSketch::draw(void)
 	for(i=0 ; i<SketchFlat->nbrOfLines();++i){
 		LinesMaterials->diffuseColor.set1Value(i,fDatumLineColor);
 		SketchFlat->getLine(i, x0, y0, dx, dy);
-		LinesCoordinate->point.set1Value(i*2  ,SbVec3f(x0-dx*5,y0-dy*5,0.0f));
-		LinesCoordinate->point.set1Value(i*2+1,SbVec3f(x0+dx*5,y0+dy*5,0.0f));
+		LinesCoordinate->point.set1Value(i*2  ,SbVec3f(x0-dx*50,y0-dy*50,0.0f));
+		LinesCoordinate->point.set1Value(i*2+1,SbVec3f(x0+dx*50,y0+dy*50,0.0f));
 		LineSet->numVertices.set1Value(i,2);
 	}
 

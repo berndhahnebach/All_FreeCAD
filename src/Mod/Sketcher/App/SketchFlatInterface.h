@@ -60,7 +60,7 @@ public:
 	int getPoint(int Nbr);
 	int nbrOfLines(void);
 	void getLine(int Nbr,double &x0, double &y0, double &dx, double &dy);
-	void getCurvePoints(std::vector<Base::Vector3d> &coords,int curve);
+	void getCurvePoints(std::vector<Base::Vector3d> &coords,bool &Construction ,int curve);
 	void forcePoint(int point, double x, double y);
 
 	void solve(void);

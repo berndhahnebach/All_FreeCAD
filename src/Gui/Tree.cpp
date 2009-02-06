@@ -151,6 +151,7 @@ Qt::DropActions TreeWidget::supportedDropActions () const
 void TreeWidget::mouseDoubleClickEvent ( QMouseEvent * event ) 
 {
     QTreeWidgetItem* Item = itemAt(event->pos());
+	if(!Item) return;
     if (Item->type() == TreeWidget::DocumentType) {
         QTreeWidget::mouseDoubleClickEvent(event);
     }
