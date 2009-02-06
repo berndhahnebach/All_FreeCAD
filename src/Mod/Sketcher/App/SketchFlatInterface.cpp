@@ -116,7 +116,7 @@ int SketchFlatInterface::nbrOfCurves(void)
 	return SK->curves;
 }
 
-void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int curve)
+void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,bool &Construction, int curve)
 {
 	SketchCurve *c = &(SK->curve[curve]);
 	double chordTol = 0.5;
@@ -130,6 +130,8 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int
     double tryTo = finalTo;
 
     int pwls0 = SK->pwls;
+
+	Construction = c->construction;
 
     while(from < (finalTo - 0.001)) {
         double xi, yi;      // Starting point of the line we are considering
@@ -166,7 +168,7 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int
         }
 
         iters++;
-        if(pts >50 || iters > 200) {
+        if(pts >15 || iters > 50) {
             // If we get too many points trying to plot the thing cleverly
             // and adaptively, then give up and just generate 200 evenly
             // spaced points.
@@ -174,7 +176,7 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,int
             SK->pwls = pwls0;
             double t;
             CurveEval(c, 0, &xi, &yi);
-            double steps = 200;
+            double steps = 50;
             double dt = 1.0/steps;
             for(t = dt; t < 1 + dt; t += dt) {
                 CurveEval(c, t, &xf, &yf);

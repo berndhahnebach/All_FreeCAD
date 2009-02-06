@@ -300,6 +300,8 @@ SoPickedPoint* ViewProvider::getPointOnRay(const SbVec3f& pos,const SbVec3f& dir
 {
     SoRayPickAction rp(viewer.getViewportRegion());
     rp.setRay(pos,dir);
+	//rp.setPickAll(true);
+	//rp.setRadius(2);
     rp.apply(pcRoot);
 
     // returns a copy of the point
