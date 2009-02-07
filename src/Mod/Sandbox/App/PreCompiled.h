@@ -64,6 +64,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QWaitCondition>
+#include <QSemaphore>
 #include <QThread>
 
 #endif //_PreComp_
