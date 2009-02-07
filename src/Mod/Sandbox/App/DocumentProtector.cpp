@@ -28,6 +28,7 @@
 # include <QEvent>
 # include <QMutex>
 # include <QMutexLocker>
+# include <QSemaphore>
 # include <QThread>
 # include <QWaitCondition>
 #endif
@@ -42,56 +43,65 @@ using namespace Sandbox;
 
 namespace Sandbox {
 
-QMutex gProtectorStopMutex(QMutex::Recursive);
-QWaitCondition gProtectorEventProcessed;
-QMutex gProtectorWaitMutex(QMutex::NonRecursive);  // must be non-recursive when used with a wait condition
-
 static const int QT_CUSTOM_EVENT_ADD_OBJECT = 10000;
 static const int QT_CUSTOM_EVENT_REM_OBJECT = 10001;
 static const int QT_CUSTOM_EVENT_RECOMPUTE  = 10002;
 
-class CustomAddObjectEvent : public QEvent
+class CustomDocumentProtectorEvent : public QEvent
+{
+public:
+    CustomDocumentProtectorEvent(int type, DocumentProtector* dp)
+        : QEvent(QEvent::Type(type)), dp(dp), semaphore(0)
+    {
+    }
+    ~CustomDocumentProtectorEvent()
+    {
+        if (semaphore)
+            semaphore->release();
+    }
+
+    DocumentProtector* dp;
+    QSemaphore* semaphore;
+};
+
+class CustomAddObjectEvent : public CustomDocumentProtectorEvent
 {
 public:
     CustomAddObjectEvent(DocumentProtector* dp, const std::string& type, const std::string& name)
-        : QEvent(QEvent::Type(QT_CUSTOM_EVENT_ADD_OBJECT)), dp(dp), type(type), name(name)
+        : CustomDocumentProtectorEvent(QT_CUSTOM_EVENT_ADD_OBJECT, dp), type(type), name(name)
     {
     }
     ~CustomAddObjectEvent()
     {
     }
 
-    DocumentProtector* dp;
     std::string type, name;
 };
 
-class CustomRemoveObjectEvent : public QEvent
+class CustomRemoveObjectEvent : public CustomDocumentProtectorEvent
 {
 public:
     CustomRemoveObjectEvent(DocumentProtector* dp, const std::string& name)
-        : QEvent(QEvent::Type(QT_CUSTOM_EVENT_REM_OBJECT)), dp(dp), name(name)
+        : CustomDocumentProtectorEvent(QT_CUSTOM_EVENT_REM_OBJECT, dp), name(name)
     {
     }
     ~CustomRemoveObjectEvent()
     {
     }
 
-    DocumentProtector* dp;
     std::string name;
 };
 
-class CustomRecomputeEvent : public QEvent
+class CustomRecomputeEvent : public CustomDocumentProtectorEvent
 {
 public:
     CustomRecomputeEvent(DocumentProtector* dp)
-        : QEvent(QEvent::Type(QT_CUSTOM_EVENT_RECOMPUTE)), dp(dp)
+        : CustomDocumentProtectorEvent(QT_CUSTOM_EVENT_RECOMPUTE, dp)
     {
     }
     ~CustomRecomputeEvent()
     {
     }
-
-    DocumentProtector* dp;
 };
 
 class DocumentReceiver : public QObject
@@ -109,8 +119,7 @@ public:
 
 protected:
     void customEvent(QEvent*);
-    void wakeupThread();
-    void postEventAndWait(QEvent*);
+    void postEventAndWait(CustomDocumentProtectorEvent*);
 
     // friends
     friend class DocumentProtector;
@@ -124,7 +133,7 @@ DocumentReceiver *DocumentReceiver::globalInstance()
 }
 
 // Posts an event and waits for it to finish processing
-void DocumentReceiver::postEventAndWait(QEvent* e)
+void DocumentReceiver::postEventAndWait(CustomDocumentProtectorEvent* e)
 {
     QThread *currentThread = QThread::currentThread();
     QThread *thr = this->thread(); // this is the main thread
@@ -135,19 +144,12 @@ void DocumentReceiver::postEventAndWait(QEvent* e)
         delete e;
     }
     else {
-        QMutexLocker access(&gProtectorStopMutex);
-        QMutexLocker lock(&gProtectorWaitMutex);
-        QCoreApplication::postEvent(this, e);
-        gProtectorEventProcessed.wait(&gProtectorWaitMutex); // waits for wait to finish
+        QSemaphore semaphore;
+        e->semaphore = &semaphore;
+        QCoreApplication::postEvent(DocumentReceiver::globalInstance(), e);
+        // wait until the event has been processed
+        semaphore.acquire();
     }
-}
-
-// Wake up the waiting automation thread
-void DocumentReceiver::wakeupThread()
-{
-    //QMutexLocker access(&gProtectorStopMutex);
-    QMutexLocker lock(&gProtectorWaitMutex);
-    gProtectorEventProcessed.wakeAll();
 }
 
 void DocumentReceiver::customEvent(QEvent* e)
@@ -156,18 +158,15 @@ void DocumentReceiver::customEvent(QEvent* e)
         CustomAddObjectEvent *ev = static_cast<CustomAddObjectEvent*>(e);
         DocumentProtector* dp = ev->dp;
         dp->obj = dp->getDocument()->addObject(ev->type.c_str(), ev->name.c_str());
-        wakeupThread();
     }
     else if ((int)e->type() == QT_CUSTOM_EVENT_REM_OBJECT) {
         CustomRemoveObjectEvent *ev = static_cast<CustomRemoveObjectEvent*>(e);
         DocumentProtector* dp = ev->dp;
         dp->getDocument()->remObject(ev->name.c_str());
-        wakeupThread();
     }
     else if ((int)e->type() == QT_CUSTOM_EVENT_RECOMPUTE) {
         CustomRecomputeEvent *ev = static_cast<CustomRecomputeEvent*>(e);
         ev->dp->getDocument()->recompute();
-        wakeupThread();
     }
 }
 
