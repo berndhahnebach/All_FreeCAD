@@ -51,7 +51,7 @@ using namespace Sketcher;
 using namespace std;
 
 const float fCurveColor[] =     {1.0f,1.0f,1.0f}; 
-const float fCurveConstructionColor[] = {0.6f,0.6f,0.6f}; 
+const float fCurveConstructionColor[] = {0.2f,1.0f,0.2f}; 
 const float fPointColor[] =             {0.9f,0.9f,0.9f}; 
 const float fPreselectColor[] = {0.8f,0.0f,0.0f}; 
 const float fSelectColor[] =    {1.0f,0.0f,0.0f}; 
@@ -304,6 +304,7 @@ void ViewProviderSketch::draw(void)
 
 	// go throug the curves and collect the points
 	int Nbr = SketchFlat->nbrOfCurves();
+
 	for( i=0 ; i<Nbr;++i){
 		SketchFlat->getCurvePoints(coords,Construction,i);
         std::vector<Base::Vector3d>::const_iterator it=coords.begin();
