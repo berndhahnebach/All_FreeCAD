@@ -168,7 +168,7 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,boo
         }
 
         iters++;
-        if(pts >15 || iters > 50) {
+        if(pts >15 || iters > 30) {
             // If we get too many points trying to plot the thing cleverly
             // and adaptively, then give up and just generate 200 evenly
             // spaced points.
@@ -176,7 +176,7 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,boo
             SK->pwls = pwls0;
             double t;
             CurveEval(c, 0, &xi, &yi);
-            double steps = 50;
+            double steps = 20;
             double dt = 1.0/steps;
             for(t = dt; t < 1 + dt; t += dt) {
                 CurveEval(c, t, &xf, &yf);
@@ -230,6 +230,16 @@ void SketchFlatInterface::solve(void)
 	Solve();
 }
 
+std::string SketchFlatInterface::getGeo(void)
+{
+	for(int i = 0; i<SK->entities; ++i)
+	{
+		SK->entity[i];
+
+
+	}
+	return std::string();
+}
 
 
 
