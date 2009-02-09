@@ -30,11 +30,13 @@
 # include <iostream>
 # include <sstream>
 # ifdef FC_OS_LINUX
-# include <time.h>
 # include <unistd.h>
 # include <pwd.h>
 # include <sys/types.h>
 # endif
+# include <ctime>
+# include <csignal>
+# include <eh.h>
 # include <boost/program_options.hpp>
 #endif
 
@@ -823,6 +825,32 @@ static void freecadNewHandler ()
 }
 #endif
 
+void segmentation_fault_handler(int sig)
+{
+    switch (sig) {
+        case SIGSEGV:
+            std::cerr << "Illegal storage access..." << std::endl;
+            break;
+        case SIGABRT:
+            std::cerr << "Abnormal program termination..." << std::endl;
+            break;
+        default:
+            std::cerr << "Unknown error occurred..." << std::endl;
+            break;
+    }
+}
+
+void unhandled_exception_handler()
+{
+    std::cerr << "Unhandled exception..." << std::endl;
+}
+
+void unexpection_error_handler()
+{
+    std::cerr << "Unexpected error occurred..." << std::endl;
+    terminate();
+}
+
 
 void Application::init(int argc, char ** argv)
 {
@@ -831,9 +859,15 @@ void Application::init(int argc, char ** argv)
 #ifdef _MSC_VER // Microsoft compiler
         _set_new_handler ( freecadNewHandler ); // Setup new handler
         _set_new_mode( 1 ); // Re-route malloc failures to new handler !
-#else // Ansi compiler
+#else   // Ansi compiler
         std::set_new_handler (freecadNewHandler); // ANSI new handler
 #endif
+        // if an unexpected crash occurs we can install a handler function to
+        // write some additional information
+        ::signal(SIGSEGV,segmentation_fault_handler);
+        ::signal(SIGABRT,segmentation_fault_handler);
+        ::set_terminate(unhandled_exception_handler);
+        ::set_unexpected(unexpection_error_handler);
 
         initTypes();
 
@@ -1233,7 +1267,8 @@ void Application::ParseOptions(int ac, char ** av)
     // config file
     std::string descr("write a log file to:\n");
     descr += mConfig["UserAppData"];
-    descr += "FreeCAD.log";
+    descr += mConfig["ExeName"];
+    descr += ".log";
     boost::program_options::options_description config("Configuration");
     config.add_options()
     //("write-log,l", value<string>(), "write a log file")
@@ -1378,7 +1413,7 @@ void Application::ParseOptions(int ac, char ** av)
     if (vm.count("write-log")) {
         mConfig["LoggingFile"] = "1";
         //mConfig["LoggingFileName"] = vm["write-log"].as<string>();
-        mConfig["LoggingFileName"] = mConfig["UserAppData"] + "FreeCAD.log";
+        mConfig["LoggingFileName"] = mConfig["UserAppData"] + mConfig["ExeName"] + ".log";
     }
 
     if (vm.count("run-test")) {
