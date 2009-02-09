@@ -52,7 +52,7 @@
 using Base::Console;
 using App::Application;
 
-const char sBanner[] = "(c) Juergen Riegel, Werner Mayer 2001-2008\n"\
+const char sBanner[] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n"\
                        "  #####                 ####  ###   ####  \n" \
                        "  #                    #      # #   #   # \n" \
                        "  #     ##  #### ####  #     #   #  #   # \n" \
@@ -71,7 +71,7 @@ int main( int argc, char ** argv )
     App::Application::Config()["AppDataSkipVendor"] = "true";
     App::Application::Config()["ExeVersion"] = "0.7";
 
-    // set the banner (for loging and console)
+    // set the banner (for logging and console)
     App::Application::Config()["ConsoleBanner"] = sBanner;
 
     try {

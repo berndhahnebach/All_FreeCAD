@@ -24,7 +24,7 @@
 #ifndef __PRECOMPILED__
 #define __PRECOMPILED__
 
-#include "../FCConfig.h"
+#include <FCConfig.h>
 
 
 // here get the warnings of too long specifiers disabled (needed for VC6)
@@ -38,9 +38,11 @@
 
 
 // standard
-#include <stdio.h>
-#include <assert.h>
-#include <time.h>
+#include <cstdio>
+#include <cassert>
+#include <ctime>
+#include <csignal>
+#include <eh.h>
 
 #ifdef FC_OS_WIN32
 #include <direct.h>
