@@ -43,6 +43,19 @@ namespace Gui {
 class GuiExport SoFCOffscreenRenderer : public SoOffscreenRenderer
 {
 public:
+    /** The SoOffscreenRenderer base class seems to have a huge memory leak. Whenever
+     * an instance is created internal memory doesn't get freed when destroying it.
+     * Thus, SoFCOffscreenRenderer is implemented as singleton to allow to create only
+     * one global instance. So, the memory is leaking for this instance only.
+     */
+    static SoFCOffscreenRenderer& instance();
+
+private:
+    SoFCOffscreenRenderer(const SoFCOffscreenRenderer&);
+    SoFCOffscreenRenderer& operator=(const SoFCOffscreenRenderer&);
+    static SoFCOffscreenRenderer* inst;
+
+protected:
   /**
    * Constructor. Argument is the \a viewportregion we should use when rendering. An internal 
    * SoGLRenderAction will be constructed. 
@@ -57,6 +70,8 @@ public:
    * Destructor. 
    */
   ~SoFCOffscreenRenderer();
+
+public:
   /** 
    * Writes the rendered image buffer directly into a QImage object
    * instead of an image file.
