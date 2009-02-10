@@ -1051,95 +1051,92 @@ StdViewScreenShot::StdViewScreenShot()
 
 void StdViewScreenShot::activated(int iMsg)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if ( view )
-  {
-    QStringList formats;
-    SbViewportRegion vp(view->getViewer()->getViewportRegion());
-    {
-      SoFCOffscreenRenderer rd(vp);
-      formats = rd.getWriteImageFiletypeInfo();
-    }
-
-    QStringList filter;
-    QString selFilter;
-    for (QStringList::Iterator it = formats.begin(); it != formats.end(); ++it)
-    {
-        filter << QString::fromAscii("%1 %2 (*.%3)").arg((*it).toUpper()).
-          arg(QObject::tr("files")).arg((*it).toLower());
-    }
-
-    FileOptionsDialog fd(getMainWindow(), 0);
-    fd.setFileMode(QFileDialog::AnyFile);
-    fd.setAcceptMode(QFileDialog::AcceptSave);
-    fd.setWindowTitle(QObject::tr("Save picture"));
-    fd.setFilters(filter);
-
-    // create the image options widget
-    DlgSettingsImageImp* opt = new DlgSettingsImageImp(&fd);
-    SbVec2s sz = vp.getWindowSize();
-    opt->setImageSize((int)sz[0], (int)sz[1]);
-
-    fd.setOptionsWidget(FileOptionsDialog::ExtensionRight, opt);
-    fd.setConfirmOverwrite(true);
-    opt->onSelectedFilter(fd.selectedFilter());
-    QObject::connect(&fd, SIGNAL(filterSelected(const QString&)),
-                     opt, SLOT(onSelectedFilter(const QString&)));
-
-    if (fd.exec() == QDialog::Accepted) {
-      selFilter = fd.selectedFilter();
-      QString fn = fd.selectedFiles().front();
-      // We must convert '\' path separators to '/' before otherwise
-      // Python would interpret them as escape sequences.
-      fn.replace(QLatin1Char('\\'), QLatin1Char('/'));
-
-      Gui::WaitCursor wc;
-
-      // get the defined values
-      int w = opt->imageWidth();
-      int h = opt->imageHeight();
-
-      // search for the matching format
-      QString format = formats.front(); // take the first as default
-      for (QStringList::Iterator it = formats.begin(); it != formats.end(); ++it)
-      {
-        if (selFilter.startsWith((*it).toUpper()))
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if (view) {
+        QStringList formats;
+        SbViewportRegion vp(view->getViewer()->getViewportRegion());
         {
-          format = *it;
-          break;
+            SoFCOffscreenRenderer& rd = SoFCOffscreenRenderer::instance();
+            formats = rd.getWriteImageFiletypeInfo();
         }
-      }
 
-      // which background chosen
-      const char* background;
-      switch(opt->backgroundType()){
-        case 0:  background="Current"; break;
-        case 1:  background="White"; break;
-        case 2:  background="Black"; break;
-        case 3:  background="Transparent"; break;
-        default: background="Current"; break;
-      }
+        QStringList filter;
+        QString selFilter;
+        for (QStringList::Iterator it = formats.begin(); it != formats.end(); ++it) {
+            filter << QString::fromAscii("%1 %2 (*.%3)").arg((*it).toUpper()).
+                arg(QObject::tr("files")).arg((*it).toLower());
+        }
 
-      QString comment = opt->comment();
-      if (!comment.isEmpty()) {
-        // Replace newline escape sequence trough '\\n' string to build one big string, otherwise Python would interpret it as an invalid command. 
-        // Python does the decoding for us.
-        QStringList lines = comment.split(QLatin1String("\n"), QString::KeepEmptyParts );
-        comment = lines.join(QLatin1String("\\n"));
-        doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s','%s')",
-            fn.toUtf8().constData(),w,h,background,comment.toUtf8().constData());
-      }
-      else {
-        doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s')",
-            fn.toUtf8().constData(),w,h,background);
-      }
+        FileOptionsDialog fd(getMainWindow(), 0);
+        fd.setFileMode(QFileDialog::AnyFile);
+        fd.setAcceptMode(QFileDialog::AcceptSave);
+        fd.setWindowTitle(QObject::tr("Save picture"));
+        fd.setFilters(filter);
+
+        // create the image options widget
+        DlgSettingsImageImp* opt = new DlgSettingsImageImp(&fd);
+        SbVec2s sz = vp.getWindowSize();
+        opt->setImageSize((int)sz[0], (int)sz[1]);
+
+        fd.setOptionsWidget(FileOptionsDialog::ExtensionRight, opt);
+        fd.setConfirmOverwrite(true);
+        opt->onSelectedFilter(fd.selectedFilter());
+        QObject::connect(&fd, SIGNAL(filterSelected(const QString&)),
+                         opt, SLOT(onSelectedFilter(const QString&)));
+
+        if (fd.exec() == QDialog::Accepted) {
+            selFilter = fd.selectedFilter();
+            QString fn = fd.selectedFiles().front();
+            // We must convert '\' path separators to '/' before otherwise
+            // Python would interpret them as escape sequences.
+            fn.replace(QLatin1Char('\\'), QLatin1Char('/'));
+
+            Gui::WaitCursor wc;
+
+            // get the defined values
+            int w = opt->imageWidth();
+            int h = opt->imageHeight();
+
+            // search for the matching format
+            QString format = formats.front(); // take the first as default
+            for (QStringList::Iterator it = formats.begin(); it != formats.end(); ++it) {
+                if (selFilter.startsWith((*it).toUpper())) {
+                    format = *it;
+                    break;
+                }
+            }
+
+            // which background chosen
+            const char* background;
+            switch(opt->backgroundType()){
+                case 0:  background="Current"; break;
+                case 1:  background="White"; break;
+                case 2:  background="Black"; break;
+                case 3:  background="Transparent"; break;
+                default: background="Current"; break;
+            }
+
+            QString comment = opt->comment();
+            if (!comment.isEmpty()) {
+                // Replace newline escape sequence trough '\\n' string to build one big string,
+                // otherwise Python would interpret it as an invalid command. 
+                // Python does the decoding for us.
+                QStringList lines = comment.split(QLatin1String("\n"), QString::KeepEmptyParts );
+                    comment = lines.join(QLatin1String("\\n"));
+                doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s','%s')",
+                            fn.toUtf8().constData(),w,h,background,comment.toUtf8().constData());
+            }
+            else {
+                doCommand(Gui,"Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s')",
+                            fn.toUtf8().constData(),w,h,background);
+            }
+        }
     }
-  }
 }
 
 bool StdViewScreenShot::isActive(void)
 {
-  return isViewOfType(Gui::View3DInventor::getClassTypeId());
+    return isViewOfType(Gui::View3DInventor::getClassTypeId());
 }
 
 

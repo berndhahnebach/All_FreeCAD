@@ -43,6 +43,16 @@ void writeJPEGComment(const std::string&, QByteArray&);
 
 // ---------------------------------------------------------------
 
+SoFCOffscreenRenderer* SoFCOffscreenRenderer::inst = 0;
+
+
+SoFCOffscreenRenderer& SoFCOffscreenRenderer::instance()
+{
+    if (inst==0)
+        inst = new SoFCOffscreenRenderer(SbViewportRegion());
+    return *inst;
+}
+
 SoFCOffscreenRenderer::SoFCOffscreenRenderer (const SbViewportRegion &viewportregion)
   : SoOffscreenRenderer(viewportregion)
 {
