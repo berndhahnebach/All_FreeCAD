@@ -65,7 +65,10 @@ private:
     App::DocumentObject* obj;
 
     // friends
-    friend class DocumentReceiver;
+    friend class CustomDocumentProtectorEvent;
+    friend class CustomAddObjectEvent;
+    friend class CustomRemoveObjectEvent;
+    friend class CustomRecomputeEvent;
 };
 
 }
