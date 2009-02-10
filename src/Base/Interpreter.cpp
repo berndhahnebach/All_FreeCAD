@@ -198,13 +198,15 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
         PyErr_Fetch(&errobj, &errdata, &errtraceback);
 
         Exception exc; // do not use PyException since this clears the error indicator
-        if ( PyString_Check( errdata ) )
-            exc.setMessage( PyString_AsString( errdata ) );
+        if (PyString_Check(errdata))
+            exc.setMessage(PyString_AsString(errdata));
         PyErr_Restore(errobj, errdata, errtraceback);
-        if ( PyErr_Occurred() )
+        if (PyErr_Occurred())
             PyErr_Print();
         throw exc;
     }
+    else
+        Py_DECREF(presult);
 }
 
 void InterpreterSingleton::runFile(const char*pxFileName)

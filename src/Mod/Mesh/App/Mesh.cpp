@@ -983,7 +983,7 @@ MeshObject* MeshObject::createSphere(float radius, int sampling)
     // load the 'BuildRegularGeoms' module
     Base::PyGILStateLocker lock;
     try {
-        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"),true);
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Sphere"));
         Py::Tuple args(2);
@@ -1004,7 +1004,7 @@ MeshObject* MeshObject::createEllipsoid(float radius1, float radius2, int sampli
     // load the 'BuildRegularGeoms' module
     Base::PyGILStateLocker lock;
     try {
-        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"),true);
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Ellipsoid"));
         Py::Tuple args(3);
@@ -1026,7 +1026,7 @@ MeshObject* MeshObject::createCylinder(float radius, float length, int closed, f
     // load the 'BuildRegularGeoms' module
     Base::PyGILStateLocker lock;
     try {
-        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"),true);
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cylinder"));
         Py::Tuple args(5);
@@ -1050,7 +1050,7 @@ MeshObject* MeshObject::createCone(float radius1, float radius2, float len, int 
     // load the 'BuildRegularGeoms' module
     Base::PyGILStateLocker lock;
     try {
-        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"),true);
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cone"));
         Py::Tuple args(6);
@@ -1075,7 +1075,7 @@ MeshObject* MeshObject::createTorus(float radius1, float radius2, int sampling)
     // load the 'BuildRegularGeoms' module
     Base::PyGILStateLocker lock;
     try {
-        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"),true);
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Toroid"));
         Py::Tuple args(3);
@@ -1097,7 +1097,7 @@ MeshObject* MeshObject::createCube(float length, float width, float height)
     // load the 'BuildRegularGeoms' module
     Base::PyGILStateLocker lock;
     try {
-        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"));
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"),true);
         Py::Dict dict = module.getDict();
         Py::Callable call(dict.getItem("Cube"));
         Py::Tuple args(3);

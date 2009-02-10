@@ -66,7 +66,7 @@ PyObject* ViewProviderDocumentObjectPy::update(PyObject *args)
 Py::Object ViewProviderDocumentObjectPy::getObject(void) const
 {
     App::DocumentObject* obj = getViewProviderDocumentObjectPtr()->getObject();
-    return Py::Object(obj->getPyObject());
+    return Py::Object(obj->getPyObject(), true); // do not inc'ref twice
 }
 
 PyObject *ViewProviderDocumentObjectPy::getCustomAttributes(const char* /*attr*/) const
