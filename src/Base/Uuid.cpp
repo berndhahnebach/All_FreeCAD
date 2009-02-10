@@ -84,7 +84,7 @@ std::string Uuid::CreateUuid(void)
     std::string Uuid;
     PyGILStateLocker lock;
     try {
-        Py::Module module(PyImport_ImportModule("uuid"));
+        Py::Module module(PyImport_ImportModule("uuid"),true);
         Py::Callable method(module.getAttr("uuid4"));
         Py::Tuple arg;
         Py::Object guid = method.apply(arg);

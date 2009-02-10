@@ -85,7 +85,7 @@ Py::List DocumentObjectPy::getState(void) const
 Py::Object DocumentObjectPy::getViewObject(void) const
 {
     try {
-        Py::Module module(PyImport_ImportModule("FreeCADGui"));
+        Py::Module module(PyImport_ImportModule("FreeCADGui"),true);
         Py::Callable method(module.getAttr("getDocument"));
         Py::Tuple arg(1);
         arg.setItem(0, Py::String(getDocumentObjectPtr()->getDocument()->getName()));
@@ -101,7 +101,7 @@ Py::Object DocumentObjectPy::getViewObject(void) const
             e.clear();
             return Py::None();
         }
-        // FreeCADGui is loaded, so there must be something else wrong
+        // FreeCADGui is loaded, so there must be wrong something else
         throw; // re-throw
     }
 }

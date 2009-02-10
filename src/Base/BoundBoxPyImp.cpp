@@ -257,7 +257,7 @@ PyObject*  BoundBoxPy::isCutPlane(PyObject *args)
 
 Py::Object BoundBoxPy::getCenter(void) const
 {
-    return Py::Object(new VectorPy(new Vector3d(getBoundBoxPtr()->CalcCenter())));
+    return Py::Vector(getBoundBoxPtr()->CalcCenter());
 }
 
 Py::Float BoundBoxPy::getXMax(void) const

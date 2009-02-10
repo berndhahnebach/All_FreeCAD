@@ -32,6 +32,7 @@
 #include <Base/RotationPy.h>
 #include <Base/Placement.h>
 #include <Base/PlacementPy.h>
+#include <Base/BoundBoxPy.h>
 
 namespace Base {
 template <typename T>
@@ -105,12 +106,12 @@ public:
     }
     explicit GeometryT ()
     {
-        set(new PyT(T()), true);
+        set(new PyT(new T()), true);
         validate();
     }
     explicit GeometryT (const T& v)
     {
-        set(new PyT(v), true);
+        set(new PyT(new T(v)), true);
         validate();
     }
     GeometryT(const Object& other): Object(other.ptr()) {
@@ -159,6 +160,8 @@ private:
 };
 
 // PyCXX wrapper classes Py::Matrix, Py::Rotation, Py::Placement, ...
+typedef GeometryT<Base::BoundBox3d, Base::BoundBoxPy,
+                 &Base::BoundBoxPy::getBoundBoxPtr>     BoundingBox;
 typedef GeometryT<Base::Matrix4D, Base::MatrixPy,
                  &Base::MatrixPy::getMatrixPtr>         Matrix;
 typedef GeometryT<Base::Rotation, Base::RotationPy,

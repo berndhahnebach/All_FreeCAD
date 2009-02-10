@@ -113,8 +113,8 @@ PyObject*  DocumentPy::getObject(PyObject *args)
 
     PY_TRY {
         ViewProvider *pcView = getDocumentPtr()->getViewProviderByName(sName);
-	    if (pcView)
-		    return pcView->getPyObject();
+        if (pcView)
+            return pcView->getPyObject();
         else {
             Py_Return;
         }
@@ -130,9 +130,9 @@ PyObject*  DocumentPy::activeObject(PyObject *args)
         App::DocumentObject *pcFtr = getDocumentPtr()->getDocument()->getActiveObject();
         if (pcFtr) {
             ViewProvider *pcView = getDocumentPtr()->getViewProvider(pcFtr);
-	        return pcView->getPyObject();
+            return pcView->getPyObject();
         } else {
-		    Py_Return;
+            Py_Return;
         }
     } PY_CATCH;
 }
@@ -158,7 +158,7 @@ Py::Object DocumentPy::getActiveObject(void) const
     App::DocumentObject *object = getDocumentPtr()->getDocument()->getActiveObject();
     if (object) {
         ViewProvider *viewObj = getDocumentPtr()->getViewProvider(object);
-        return Py::Object(viewObj->getPyObject());
+        return Py::Object(viewObj->getPyObject(), true);
     } else {
         return Py::None();
     }

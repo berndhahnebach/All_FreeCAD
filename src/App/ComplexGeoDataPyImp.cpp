@@ -31,6 +31,7 @@
 #include <Base/BoundBoxPy.h>
 #include <Base/MatrixPy.h>
 #include <Base/PlacementPy.h>
+#include <Base/GeometryPyCXX.h>
 
 using namespace Data;
 using namespace Base;
@@ -43,13 +44,12 @@ const char *ComplexGeoDataPy::representation(void) const
 
 Py::Object ComplexGeoDataPy::getBoundBox(void) const
 {
-    return Py::Object(new BoundBoxPy(new BoundBox3d(getComplexGeoDataPtr()->getBoundBox())));
+    return Py::BoundingBox(getComplexGeoDataPtr()->getBoundBox());
 }
 
 Py::Object ComplexGeoDataPy::getPlacement(void) const
 {
-    Base::Placement trf = getComplexGeoDataPtr()->getPlacement();
-    return Py::Object(new Base::PlacementPy(new Base::Placement(trf)));
+    return Py::Placement(getComplexGeoDataPtr()->getPlacement());
 }
 
 void  ComplexGeoDataPy::setPlacement(Py::Object arg)
@@ -68,8 +68,7 @@ void  ComplexGeoDataPy::setPlacement(Py::Object arg)
 
 Py::Object ComplexGeoDataPy::getMatrix(void) const
 {
-    Base::Matrix4D mat = getComplexGeoDataPtr()->getTransform();
-    return Py::Object(new Base::MatrixPy(mat));
+    return Py::Matrix(getComplexGeoDataPtr()->getTransform());
 }
 
 void  ComplexGeoDataPy::setMatrix(Py::Object arg)
