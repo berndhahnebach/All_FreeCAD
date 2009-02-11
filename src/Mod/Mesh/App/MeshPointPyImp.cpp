@@ -122,7 +122,7 @@ Py::Object MeshPointPy::getNormal(void) const
     Base::Vector3d* v = new Base::Vector3d(getMeshPointPtr()->Mesh->getPointNormal(getMeshPointPtr()->Index));
     Base::VectorPy* normal = new Base::VectorPy(v);
     normal->setConst();
-    return Py::Object(normal);
+    return Py::Object(normal,true);
 }
 
 Py::Object MeshPointPy::getVector(void) const
@@ -131,7 +131,7 @@ Py::Object MeshPointPy::getVector(void) const
     
     Base::VectorPy* vec = new Base::VectorPy(*ptr);
     vec->setConst();
-    return Py::Object(vec);
+    return Py::Object(vec,true);
 }
 
 Py::Float MeshPointPy::getx(void) const

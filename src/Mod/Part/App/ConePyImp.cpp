@@ -219,9 +219,7 @@ Py::Object ConePy::getApex(void) const
     Handle_Geom_ConicalSurface s = Handle_Geom_ConicalSurface::DownCast
         (getGeomConePtr()->handle());
     gp_Pnt loc = s->Apex();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 Py::Float ConePy::getRadius(void) const
@@ -257,9 +255,7 @@ Py::Object ConePy::getCenter(void) const
     Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
         (getGeomConePtr()->handle());
     gp_Pnt loc = s->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 void ConePy::setCenter(Py::Object arg)
@@ -289,9 +285,7 @@ Py::Object ConePy::getAxis(void) const
     Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
         (getGeometryPtr()->handle());
     gp_Dir dir = s->Axis().Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void ConePy::setAxis(Py::Object arg)

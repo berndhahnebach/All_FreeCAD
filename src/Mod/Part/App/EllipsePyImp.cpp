@@ -166,24 +166,21 @@ Py::Object EllipsePy::getFocus1(void) const
 {
     Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
     gp_Pnt loc = ellipse->Focus1();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 Py::Object EllipsePy::getFocus2(void) const
 {
     Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
     gp_Pnt loc = ellipse->Focus2();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 Py::Object EllipsePy::getCenter(void) const
 {
     Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
     gp_Pnt loc = ellipse->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 void EllipsePy::setCenter(Py::Object arg)
@@ -215,8 +212,7 @@ Py::Object EllipsePy::getAxis(void) const
     Handle_Geom_Ellipse ellipse = Handle_Geom_Ellipse::DownCast(getGeomEllipsePtr()->handle());
     gp_Ax1 axis = ellipse->Axis();
     gp_Dir dir = axis.Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void EllipsePy::setAxis(Py::Object arg)

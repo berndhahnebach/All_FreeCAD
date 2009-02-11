@@ -114,8 +114,7 @@ Py::Object SpherePy::getCenter(void) const
     Handle_Geom_SphericalSurface sphere = Handle_Geom_SphericalSurface::DownCast
         (getGeomSpherePtr()->handle());
     gp_Pnt loc = sphere->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 void SpherePy::setCenter(Py::Object arg)
@@ -145,9 +144,7 @@ Py::Object SpherePy::getAxis(void) const
     Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
         (getGeometryPtr()->handle());
     gp_Dir dir = s->Axis().Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void SpherePy::setAxis(Py::Object arg)

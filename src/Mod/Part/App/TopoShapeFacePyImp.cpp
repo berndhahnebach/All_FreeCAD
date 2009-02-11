@@ -49,6 +49,7 @@
 #include <GProp_GProps.hxx>
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "TopoShape.h"
 #include "TopoShapeSolidPy.h"
@@ -215,7 +216,7 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_Plane this_surf = Handle_Geom_Plane::DownCast
                 (plane->handle());
             this_surf->SetPln(adapt.Plane());
-            return Py::Object(new PlanePy(plane));
+            return Py::Object(new PlanePy(plane),true);
         }
     case GeomAbs_Cylinder:
         {
@@ -223,7 +224,7 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_CylindricalSurface this_surf = Handle_Geom_CylindricalSurface::DownCast
                 (cylinder->handle());
             this_surf->SetCylinder(adapt.Cylinder());
-            return Py::Object(new CylinderPy(cylinder));
+            return Py::Object(new CylinderPy(cylinder),true);
         }
     case GeomAbs_Cone:
         {
@@ -231,7 +232,7 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_ConicalSurface this_surf = Handle_Geom_ConicalSurface::DownCast
                 (cone->handle());
             this_surf->SetCone(adapt.Cone());
-            return Py::Object(new ConePy(cone));
+            return Py::Object(new ConePy(cone),true);
         }
     case GeomAbs_Sphere:
         {
@@ -239,7 +240,7 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_SphericalSurface this_surf = Handle_Geom_SphericalSurface::DownCast
                 (sphere->handle());
             this_surf->SetSphere(adapt.Sphere());
-            return Py::Object(new SpherePy(sphere));
+            return Py::Object(new SpherePy(sphere),true);
         }
     case GeomAbs_Torus:
         {
@@ -247,17 +248,17 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_ToroidalSurface this_surf = Handle_Geom_ToroidalSurface::DownCast
                 (toroid->handle());
             this_surf->SetTorus(adapt.Torus());
-            return Py::Object(new ToroidPy(toroid));
+            return Py::Object(new ToroidPy(toroid),true);
         }
     case GeomAbs_BezierSurface:
         {
             GeomBezierSurface* surf = new GeomBezierSurface(adapt.Bezier());
-            return Py::Object(new BezierSurfacePy(surf));
+            return Py::Object(new BezierSurfacePy(surf),true);
         }
     case GeomAbs_BSplineSurface:
         {
             GeomBSplineSurface* surf = new GeomBSplineSurface(adapt.BSpline());
-            return Py::Object(new BSplineSurfacePy(surf));
+            return Py::Object(new BSplineSurfacePy(surf),true);
         }
     case GeomAbs_SurfaceOfRevolution:
         {
@@ -265,7 +266,7 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_SurfaceOfRevolution rev = Handle_Geom_SurfaceOfRevolution::DownCast(s);
             if (!rev.IsNull()) {
                 GeomSurfaceOfRevolution* surf = new GeomSurfaceOfRevolution(rev);
-                return Py::Object(new SurfaceOfRevolutionPy(surf));
+                return Py::Object(new SurfaceOfRevolutionPy(surf),true);
             }
         }
     case GeomAbs_SurfaceOfExtrusion:
@@ -274,7 +275,7 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_SurfaceOfLinearExtrusion ext = Handle_Geom_SurfaceOfLinearExtrusion::DownCast(s);
             if (!ext.IsNull()) {
                 GeomSurfaceOfExtrusion* surf = new GeomSurfaceOfExtrusion(ext);
-                return Py::Object(new SurfaceOfExtrusionPy(surf));
+                return Py::Object(new SurfaceOfExtrusionPy(surf),true);
             }
         }
     case GeomAbs_OffsetSurface:
@@ -283,7 +284,7 @@ Py::Object TopoShapeFacePy::getSurface() const
             Handle_Geom_OffsetSurface off = Handle_Geom_OffsetSurface::DownCast(s);
             if (!off.IsNull()) {
                 GeomOffsetSurface* surf = new GeomOffsetSurface(off);
-                return Py::Object(new OffsetSurfacePy(surf));
+                return Py::Object(new OffsetSurfacePy(surf),true);
             }
         }
     case GeomAbs_OtherSurface:
@@ -312,7 +313,7 @@ Py::Object TopoShapeFacePy::getCenterOfMass(void) const
     GProp_GProps props;
     BRepGProp::SurfaceProperties(getTopoShapePtr()->_Shape, props);
     gp_Pnt c = props.CentreOfMass();
-    return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
+    return Py::Vector(Base::Vector3d(c.X(),c.Y(),c.Z()));
 }
 
 PyObject *TopoShapeFacePy::getCustomAttributes(const char* attr) const

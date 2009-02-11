@@ -29,6 +29,7 @@
 #endif
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Geometry.h"
 #include "HyperbolaPy.h"
@@ -142,9 +143,7 @@ Py::Object HyperbolaPy::getFocus1(void) const
     Handle_Geom_Hyperbola c = Handle_Geom_Hyperbola::DownCast
         (getGeometryPtr()->handle());
     gp_Pnt loc = c->Focus1();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 Py::Object HyperbolaPy::getFocus2(void) const
@@ -152,9 +151,7 @@ Py::Object HyperbolaPy::getFocus2(void) const
     Handle_Geom_Hyperbola c = Handle_Geom_Hyperbola::DownCast
         (getGeometryPtr()->handle());
     gp_Pnt loc = c->Focus2();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 Py::Float HyperbolaPy::getParameter(void) const
@@ -192,9 +189,7 @@ Py::Object HyperbolaPy::getLocation(void) const
     Handle_Geom_Hyperbola c = Handle_Geom_Hyperbola::DownCast
         (getGeometryPtr()->handle());
     gp_Pnt loc = c->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 void HyperbolaPy::setLocation(Py::Object arg)
@@ -228,9 +223,7 @@ Py::Object HyperbolaPy::getAxis(void) const
     Handle_Geom_Hyperbola c = Handle_Geom_Hyperbola::DownCast
         (getGeometryPtr()->handle());
     gp_Dir dir = c->Axis().Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void HyperbolaPy::setAxis(Py::Object arg)

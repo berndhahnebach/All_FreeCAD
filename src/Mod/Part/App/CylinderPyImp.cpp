@@ -232,9 +232,7 @@ Py::Object CylinderPy::getCenter(void) const
     Handle_Geom_CylindricalSurface cyl = Handle_Geom_CylindricalSurface::DownCast
         (getGeomCylinderPtr()->handle());
     gp_Pnt loc = cyl->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 void CylinderPy::setCenter(Py::Object arg)
@@ -264,9 +262,7 @@ Py::Object CylinderPy::getAxis(void) const
     Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
         (getGeometryPtr()->handle());
     gp_Dir dir = s->Axis().Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void CylinderPy::setAxis(Py::Object arg)

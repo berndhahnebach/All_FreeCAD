@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Geometry.h"
 #include "ParabolaPy.h"
@@ -82,9 +83,7 @@ Py::Object ParabolaPy::getFocus(void) const
     Handle_Geom_Parabola c = Handle_Geom_Parabola::DownCast
         (getGeometryPtr()->handle());
     gp_Pnt loc = c->Focus();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 Py::Float ParabolaPy::getParameter(void) const
@@ -98,9 +97,7 @@ Py::Object ParabolaPy::getLocation(void) const
     Handle_Geom_Parabola c = Handle_Geom_Parabola::DownCast
         (getGeometryPtr()->handle());
     gp_Pnt loc = c->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 void ParabolaPy::setLocation(Py::Object arg)
@@ -134,9 +131,7 @@ Py::Object ParabolaPy::getAxis(void) const
     Handle_Geom_Parabola c = Handle_Geom_Parabola::DownCast
         (getGeometryPtr()->handle());
     gp_Dir dir = c->Axis().Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void ParabolaPy::setAxis(Py::Object arg)

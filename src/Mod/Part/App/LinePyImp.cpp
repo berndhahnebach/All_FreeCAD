@@ -33,6 +33,7 @@
 #endif
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Geometry.h"
 #include "LinePy.h"
@@ -154,9 +155,7 @@ Py::Object LinePy::getStartPoint(void) const
     Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast
         (this->getGeomLineSegmentPtr()->handle());
     gp_Pnt pnt = this_curve->StartPoint();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 }
 
 void LinePy::setStartPoint(Py::Object arg)
@@ -212,9 +211,7 @@ Py::Object LinePy::getEndPoint(void) const
     Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast
         (this->getGeomLineSegmentPtr()->handle());
     gp_Pnt pnt = this_curve->EndPoint();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 }
 
 void LinePy::setEndPoint(Py::Object arg)
