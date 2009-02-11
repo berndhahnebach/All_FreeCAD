@@ -95,7 +95,7 @@ Py::Object FacetPy::getNormal(void) const
 {
     Base::VectorPy* normal = new Base::VectorPy(getFacetPtr()->GetNormal());
     normal->setConst();
-    return Py::Object(normal);
+    return Py::Object(normal,true);
 }
 
 PyObject*  FacetPy::intersect(PyObject *args)

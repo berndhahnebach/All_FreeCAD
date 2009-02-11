@@ -180,8 +180,7 @@ Py::Object CirclePy::getCenter(void) const
 {
     Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
     gp_Pnt loc = circle->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)loc.X(), (float)loc.Y(), (float)loc.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(loc.X(), loc.Y(), loc.Z()));
 }
 
 void  CirclePy::setCenter(Py::Object arg)
@@ -209,8 +208,7 @@ Py::Object CirclePy::getAxis(void) const
     Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
     gp_Ax1 axis = circle->Axis();
     gp_Dir dir = axis.Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f((float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void  CirclePy::setAxis(Py::Object arg)

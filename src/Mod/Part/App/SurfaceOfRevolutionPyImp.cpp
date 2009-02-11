@@ -88,7 +88,7 @@ Py::Object SurfaceOfRevolutionPy::getLocation(void) const
     Handle_Geom_SurfaceOfRevolution curve = Handle_Geom_SurfaceOfRevolution::DownCast
         (getGeometryPtr()->handle());
     const gp_Pnt& pnt = curve->Location();
-    return Py::Object(new Base::VectorPy(Base::Vector3d(pnt.X(),pnt.Y(),pnt.Z())));
+    return Py::Vector(Base::Vector3d(pnt.X(),pnt.Y(),pnt.Z()));
 }
 
 void  SurfaceOfRevolutionPy::setLocation(Py::Object arg)
@@ -118,7 +118,7 @@ Py::Object SurfaceOfRevolutionPy::getDirection(void) const
     Handle_Geom_SurfaceOfRevolution curve = Handle_Geom_SurfaceOfRevolution::DownCast
         (getGeometryPtr()->handle());
     const gp_Dir& dir = curve->Direction();
-    return Py::Object(new Base::VectorPy(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+    return Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z()));
 }
 
 void  SurfaceOfRevolutionPy::setDirection(Py::Object arg)

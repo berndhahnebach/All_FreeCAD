@@ -30,6 +30,7 @@
 #endif
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Geometry.h"
 #include "BezierCurvePy.h"
@@ -371,9 +372,7 @@ Py::Object BezierCurvePy::getStartPoint(void) const
     Handle_Geom_BezierCurve c = Handle_Geom_BezierCurve::DownCast
         (getGeometryPtr()->handle());
     gp_Pnt pnt = c->StartPoint();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3d(
-        pnt.X(), pnt.Y(), pnt.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 }
 
 Py::Object BezierCurvePy::getEndPoint(void) const
@@ -381,9 +380,7 @@ Py::Object BezierCurvePy::getEndPoint(void) const
     Handle_Geom_BezierCurve c = Handle_Geom_BezierCurve::DownCast
         (getGeometryPtr()->handle());
     gp_Pnt pnt = c->EndPoint();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3d(
-        pnt.X(), pnt.Y(), pnt.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 }
 
 PyObject *BezierCurvePy::getCustomAttributes(const char* /*attr*/) const

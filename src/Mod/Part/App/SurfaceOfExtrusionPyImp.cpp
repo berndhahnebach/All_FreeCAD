@@ -84,7 +84,7 @@ Py::Object SurfaceOfExtrusionPy::getDirection(void) const
     Handle_Geom_SurfaceOfLinearExtrusion curve = Handle_Geom_SurfaceOfLinearExtrusion::DownCast
         (getGeometryPtr()->handle());
     const gp_Dir& dir = curve->Direction();
-    return Py::Object(new Base::VectorPy(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+    return Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z()));
 }
 
 void  SurfaceOfExtrusionPy::setDirection(Py::Object arg)

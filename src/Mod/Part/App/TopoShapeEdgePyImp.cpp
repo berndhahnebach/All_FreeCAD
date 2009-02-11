@@ -50,6 +50,7 @@
 #include <GProp_GProps.hxx>
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "TopoShape.h"
 #include "TopoShapeFacePy.h"
@@ -181,7 +182,7 @@ Py::Object TopoShapeEdgePy::getCurve() const
                 (this_curv->BasisCurve());
             this_line->SetLin(adapt.Line());
             this_curv->SetTrim(adapt.FirstParameter(), adapt.LastParameter());
-            return Py::Object(new LinePy(line));
+            return Py::Object(new LinePy(line),true);
         }
     case GeomAbs_Circle:
         {
@@ -191,7 +192,7 @@ Py::Object TopoShapeEdgePy::getCurve() const
             this_curv->SetCirc(adapt.Circle());
             //Standard_Real dd = adapt.FirstParameter();
             //Standard_Real ee = adapt.LastParameter();
-            return Py::Object(new CirclePy(circle));
+            return Py::Object(new CirclePy(circle),true);
         }
     case GeomAbs_Ellipse:
         {
@@ -199,7 +200,7 @@ Py::Object TopoShapeEdgePy::getCurve() const
             Handle_Geom_Ellipse this_curv = Handle_Geom_Ellipse::DownCast
                 (elips->handle());
             this_curv->SetElips(adapt.Ellipse());
-            return Py::Object(new EllipsePy(elips));
+            return Py::Object(new EllipsePy(elips),true);
         }
     case GeomAbs_Hyperbola:
         {
@@ -207,7 +208,7 @@ Py::Object TopoShapeEdgePy::getCurve() const
             Handle_Geom_Hyperbola this_curv = Handle_Geom_Hyperbola::DownCast
                 (hypr->handle());
             this_curv->SetHypr(adapt.Hyperbola());
-            return Py::Object(new HyperbolaPy(hypr));
+            return Py::Object(new HyperbolaPy(hypr),true);
         }
     case GeomAbs_Parabola:
         {
@@ -215,17 +216,17 @@ Py::Object TopoShapeEdgePy::getCurve() const
             Handle_Geom_Parabola this_curv = Handle_Geom_Parabola::DownCast
                 (parab->handle());
             this_curv->SetParab(adapt.Parabola());
-            return Py::Object(new ParabolaPy(parab));
+            return Py::Object(new ParabolaPy(parab),true);
         }
     case GeomAbs_BezierCurve:
         {
             GeomBezierCurve* curve = new GeomBezierCurve(adapt.Bezier());
-            return Py::Object(new BezierCurvePy(curve));
+            return Py::Object(new BezierCurvePy(curve),true);
         }
     case GeomAbs_BSplineCurve:
         {
             GeomBSplineCurve* curve = new GeomBSplineCurve(adapt.BSpline());
-            return Py::Object(new BSplineCurvePy(curve));
+            return Py::Object(new BSplineCurvePy(curve),true);
         }
     case GeomAbs_OtherCurve:
         break;
@@ -239,7 +240,7 @@ Py::Object TopoShapeEdgePy::getCenterOfMass(void) const
     GProp_GProps props;
     BRepGProp::LinearProperties(getTopoShapePtr()->_Shape, props);
     gp_Pnt c = props.CentreOfMass();
-    return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
+    return Py::Vector(Base::Vector3d(c.X(),c.Y(),c.Z()));
 }
 
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const

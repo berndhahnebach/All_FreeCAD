@@ -27,6 +27,7 @@
 #include <GProp_GProps.hxx>
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Mod/Part/App/TopoShape.h"
 
@@ -58,7 +59,7 @@ Py::Object TopoShapeSolidPy::getCenterOfMass(void) const
     GProp_GProps props;
     BRepGProp::VolumeProperties(getTopoShapePtr()->_Shape, props);
     gp_Pnt c = props.CentreOfMass();
-    return Py::Object(new Base::VectorPy(Base::Vector3d(c.X(),c.Y(),c.Z())));
+    return Py::Vector(Base::Vector3d(c.X(),c.Y(),c.Z()));
 }
 
 PyObject *TopoShapeSolidPy::getCustomAttributes(const char* /*attr*/) const

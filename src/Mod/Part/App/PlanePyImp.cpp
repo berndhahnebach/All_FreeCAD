@@ -36,6 +36,7 @@
 #endif
 
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "Geometry.h"
 #include "LinePy.h"
@@ -175,9 +176,7 @@ Py::Object PlanePy::getPosition(void) const
     Handle_Geom_Plane this_surf = Handle_Geom_Plane::DownCast
         (this->getGeomPlanePtr()->handle());
     gp_Pnt pnt = this_surf->Location();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 }
 
 void PlanePy::setPosition(Py::Object arg)
@@ -218,9 +217,7 @@ Py::Object PlanePy::getAxis(void) const
     Handle_Geom_ElementarySurface s = Handle_Geom_ElementarySurface::DownCast
         (getGeometryPtr()->handle());
     gp_Dir dir = s->Axis().Direction();
-    Base::VectorPy* vec = new Base::VectorPy(Base::Vector3f(
-        (float)dir.X(), (float)dir.Y(), (float)dir.Z()));
-    return Py::Object(vec);
+    return Py::Vector(Base::Vector3d(dir.X(), dir.Y(), dir.Z()));
 }
 
 void PlanePy::setAxis(Py::Object arg)

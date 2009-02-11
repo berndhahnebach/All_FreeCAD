@@ -97,7 +97,7 @@ Py::Object OffsetCurvePy::getOffsetDirection(void) const
 {
     Handle_Geom_OffsetCurve curve = Handle_Geom_OffsetCurve::DownCast(getGeometryPtr()->handle());
     const gp_Dir& dir = curve->Direction();
-    return Py::Object(new Base::VectorPy(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+    return Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z()));
 }
 
 void OffsetCurvePy::setOffsetDirection(Py::Object arg)
