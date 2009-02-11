@@ -55,11 +55,15 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
             getMeshObjectPtr()->operator = (*static_cast<MeshPy*>(pcObj)->getMeshObjectPtr());
         }
         else if (PyList_Check(pcObj)) {
-            if(!addFacets(args))
+            PyObject* ret = addFacets(args);
+            Py_XDECREF(ret);
+            if (!ret)
                 return -1;
         }
         else if (PyTuple_Check(pcObj)) {
-            if (!addFacets(args))
+            PyObject* ret = addFacets(args);
+            Py_XDECREF(ret);
+            if (!ret)
                 return -1;
         }
         else if (PyString_Check(pcObj)) {

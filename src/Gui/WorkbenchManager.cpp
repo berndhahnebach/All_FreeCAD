@@ -96,11 +96,23 @@ Workbench* WorkbenchManager::createWorkbench (const std::string& name, const std
     return wb;
 }
 
-Workbench* WorkbenchManager::getWorkbench (const std::string& name)
+void WorkbenchManager::removeWorkbench(const std::string& name)
+{
+    std::map<std::string, Workbench*>::iterator it = _workbenches.find(name);
+    if (it != _workbenches.end()) {
+        Workbench* wb = it->second;
+        _workbenches.erase(it);
+        if (_activeWorkbench == wb)
+            _activeWorkbench = 0;
+        delete wb;
+    }
+}
+
+Workbench* WorkbenchManager::getWorkbench (const std::string& name) const
 {
     Workbench* wb=0;
 
-    std::map<std::string, Workbench*>::iterator it = _workbenches.find(name);
+    std::map<std::string, Workbench*>::const_iterator it = _workbenches.find(name);
     if (it != _workbenches.end()) {
         // returns the already created object
         wb = it->second;

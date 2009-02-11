@@ -178,10 +178,11 @@ int PyObjectBase::_setattr(char *attr, PyObject *value)
         return -1; // filter out softspace
     PyObject *w;
     // As fallback solution use Python's default method to get generic attributes
-    w = PyString_InternFromString(attr);
+    w = PyString_InternFromString(attr); // new reference
     if (w != NULL) {
         // call methods from tp_getset if defined
         int res = PyObject_GenericSetAttr(this, w, value);
+        Py_DECREF(w);
         return res;
     } else {
         // Throw an exception for unknown attributes
