@@ -363,10 +363,12 @@ void WorkbenchComboBox::onActivated(QAction* action)
 
 void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
 {
+    QVariant item = itemData(currentIndex());
     QList<QAction*> a = actions();
     for (QList<QAction*>::Iterator it = a.begin(); it != a.end(); ++it) {
         if ((*it)->objectName() == name) {
-            (*it)->trigger();
+            if ((*it)->data() != item)
+                (*it)->trigger();
             break;
         }
     }

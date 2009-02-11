@@ -182,6 +182,10 @@ Application::~Application()
     SoFCDB::finish();
     SoQt::done();
 
+    {
+    Base::PyGILStateLocker lock;
+    Py_DECREF(_pcWorkbenchDictionary);
+    }
 #if (COIN_MAJOR_VERSION >= 2) && (COIN_MINOR_VERSION >= 4)
     SoDB::finish();
 #elif (COIN_MAJOR_VERSION >= 3)
@@ -641,7 +645,7 @@ bool Application::activateWorkbench(const char* name)
             type = result.as_std_string();
             if (type == "Gui::PythonWorkbench") {
                 Workbench* wb = WorkbenchManager::instance()->createWorkbench(name, type);
-                handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
+                handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject(), true));
             }
 
             // import the matching module first
@@ -664,7 +668,7 @@ bool Application::activateWorkbench(const char* name)
         // which could be created after loading the appropriate module
         if (!handler.hasAttr(std::string("__Workbench__"))) {
             Workbench* wb = WorkbenchManager::instance()->getWorkbench(name);
-            if (wb) handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject()));
+            if (wb) handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject(), true));
         }
 
         // If the method Deactivate is available we call it

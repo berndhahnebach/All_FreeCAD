@@ -444,6 +444,7 @@ PyObject* Application::sRemoveWorkbenchHandler(PyObject * /*self*/, PyObject *ar
     }
 
     Instance->signalRemoveWorkbench(psKey);
+    WorkbenchManager::instance()->removeWorkbench(psKey);
     PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
 
     Py_INCREF(Py_None);
