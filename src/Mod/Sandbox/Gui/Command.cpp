@@ -42,9 +42,9 @@
 #include <Mod/Mesh/App/MeshFeature.h>
 
 
-DEF_STD_CMD(CmdSandboxThread1);
+DEF_STD_CMD(CmdSandboxDocumentThread);
 
-CmdSandboxThread1::CmdSandboxThread1()
+CmdSandboxDocumentThread::CmdSandboxDocumentThread()
   :Command("Sandbox_Thread")
 {
     sAppModule    = "Sandbox";
@@ -56,7 +56,7 @@ CmdSandboxThread1::CmdSandboxThread1()
     sPixmap       = "Std_Tool1";
 }
 
-void CmdSandboxThread1::activated(int iMsg)
+void CmdSandboxDocumentThread::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     for (int i=0; i<5; i++) {
@@ -69,9 +69,9 @@ void CmdSandboxThread1::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread2);
+DEF_STD_CMD(CmdSandboxDocThreadWithSeq);
 
-CmdSandboxThread2::CmdSandboxThread2()
+CmdSandboxDocThreadWithSeq::CmdSandboxDocThreadWithSeq()
   :Command("Sandbox_SeqThread")
 {
     sAppModule    = "Sandbox";
@@ -83,7 +83,7 @@ CmdSandboxThread2::CmdSandboxThread2()
     sPixmap       = "Std_Tool2";
 }
 
-void CmdSandboxThread2::activated(int iMsg)
+void CmdSandboxDocThreadWithSeq::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
@@ -107,9 +107,9 @@ void CmdSandboxThread2::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread3);
+DEF_STD_CMD(CmdSandboxDocThreadBusy);
 
-CmdSandboxThread3::CmdSandboxThread3()
+CmdSandboxDocThreadBusy::CmdSandboxDocThreadBusy()
   :Command("Sandbox_BlockThread")
 {
     sAppModule    = "Sandbox";
@@ -121,7 +121,7 @@ CmdSandboxThread3::CmdSandboxThread3()
     sPixmap       = "Std_Tool3";
 }
 
-void CmdSandboxThread3::activated(int iMsg)
+void CmdSandboxDocThreadBusy::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
@@ -143,9 +143,9 @@ void CmdSandboxThread3::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread4);
+DEF_STD_CMD(CmdSandboxDocumentNoThread);
 
-CmdSandboxThread4::CmdSandboxThread4()
+CmdSandboxDocumentNoThread::CmdSandboxDocumentNoThread()
   :Command("Sandbox_NoThread")
 {
     sAppModule    = "Sandbox";
@@ -157,7 +157,7 @@ CmdSandboxThread4::CmdSandboxThread4()
     sPixmap       = "Std_Tool4";
 }
 
-void CmdSandboxThread4::activated(int iMsg)
+void CmdSandboxDocumentNoThread::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     App::Document* doc = App::GetApplication().getActiveDocument();
@@ -172,9 +172,9 @@ void CmdSandboxThread4::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread5);
+DEF_STD_CMD(CmdSandboxWorkerThread);
 
-CmdSandboxThread5::CmdSandboxThread5()
+CmdSandboxWorkerThread::CmdSandboxWorkerThread()
   :Command("Sandbox_WorkerThread")
 {
     sAppModule    = "Sandbox";
@@ -186,7 +186,7 @@ CmdSandboxThread5::CmdSandboxThread5()
     sPixmap       = "Std_Tool1";
 }
 
-void CmdSandboxThread5::activated(int iMsg)
+void CmdSandboxWorkerThread::activated(int iMsg)
 {
     Sandbox::WorkerThread* wt = new Sandbox::WorkerThread();
     QObject::connect(wt, SIGNAL(finished()), wt, SLOT(deleteLater()));
@@ -195,23 +195,21 @@ void CmdSandboxThread5::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread6);
+DEF_STD_CMD(CmdSandboxPythonLockThread);
 
-CmdSandboxThread6::CmdSandboxThread6()
-  :Command("Sandbox_Python")
+CmdSandboxPythonLockThread::CmdSandboxPythonLockThread()
+  :Command("Sandbox_PythonLockThread")
 {
     sAppModule    = "Sandbox";
     sGroup        = QT_TR_NOOP("Sandbox");
-    sMenuText     = QT_TR_NOOP("Python thread");
-    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
-    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
-    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
-    sPixmap       = "Std_Tool6";
+    sMenuText     = QT_TR_NOOP("Locked Python threads");
+    sToolTipText  = QT_TR_NOOP("Use Python's thread module where each thread is locked");
+    sWhatsThis    = QT_TR_NOOP("Use Python's thread module where each thread is locked");
+    sStatusTip    = QT_TR_NOOP("Use Python's thread module where each thread is locked");
 }
 
-void CmdSandboxThread6::activated(int iMsg)
+void CmdSandboxPythonLockThread::activated(int iMsg)
 {
-#if 0 // deadlock???
     doCommand(Doc,
         "import thread, time, Sandbox\n"
         "def adder(doc):\n"
@@ -223,11 +221,62 @@ void CmdSandboxThread6::activated(int iMsg)
         "\n"
         "lock=thread.allocate_lock()\n"
         "doc=App.newDocument()\n"
-        "for i in range(1):\n"
+        "for i in range(2):\n"
         "    thread.start_new(adder,(doc,))\n"
         "\n"
         "time.sleep(1)\n"
     );
+}
+
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxPythonNolockThread);
+
+CmdSandboxPythonNolockThread::CmdSandboxPythonNolockThread()
+  :Command("Sandbox_NolockPython")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Unlocked Python threads");
+    sToolTipText  = QT_TR_NOOP("Use Python's thread module where each thread is unlocked");
+    sWhatsThis    = QT_TR_NOOP("Use Python's thread module where each thread is unlocked");
+    sStatusTip    = QT_TR_NOOP("Use Python's thread module where each thread is unlocked");
+}
+
+void CmdSandboxPythonNolockThread::activated(int iMsg)
+{
+    doCommand(Doc,
+        "import thread, time, Sandbox\n"
+        "def adder(doc):\n"
+        "    dp=Sandbox.DocumentProtector(doc)\n"
+        "    dp.addObject(\"Mesh::Ellipsoid\",\"Mesh\")\n"
+        "    dp.recompute()\n"
+        "\n"
+        "doc=App.newDocument()\n"
+        "for i in range(2):\n"
+        "    thread.start_new(adder,(doc,))\n"
+        "\n"
+        "time.sleep(1)\n"
+    );
+}
+
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxPyQtThread);
+
+CmdSandboxPyQtThread::CmdSandboxPyQtThread()
+  :Command("Sandbox_PyQtThread")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("PyQt threads");
+    sToolTipText  = QT_TR_NOOP("Use PyQt's thread module");
+    sWhatsThis    = QT_TR_NOOP("Use PyQt's thread module");
+    sStatusTip    = QT_TR_NOOP("Use PyQt's thread module");
+}
+
+void CmdSandboxPyQtThread::activated(int iMsg)
+{
     doCommand(Doc,
         "from PyQt4 import QtCore; import Sandbox\n"
         "class Thread(QtCore.QThread):\n"
@@ -244,14 +293,39 @@ void CmdSandboxThread6::activated(int iMsg)
         "    thread.start()\n"
         "\n"
     );
-#endif
 }
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread7);
+DEF_STD_CMD(CmdSandboxPythonThread);
 
-CmdSandboxThread7::CmdSandboxThread7()
+CmdSandboxPythonThread::CmdSandboxPythonThread()
+  :Command("Sandbox_Python")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Python threads");
+    sToolTipText  = QT_TR_NOOP("Use class PythonThread running Python code in its run() method");
+    sWhatsThis    = QT_TR_NOOP("Use class PythonThread running Python code in its run() method");
+    sStatusTip    = QT_TR_NOOP("Use class PythonThread running Python code in its run() method");
+}
+
+void CmdSandboxPythonThread::activated(int iMsg)
+{
+    App::GetApplication().newDocument("Thread");
+    for (int i=0; i<5; i++) {
+        Sandbox::PythonThread* pt = new Sandbox::PythonThread();
+        pt->setObjectName(QString::fromAscii("MyMesh_%1").arg(i));
+        QObject::connect(pt, SIGNAL(finished()), pt, SLOT(deleteLater()));
+        pt->start();
+    }
+}
+
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxDocThreadWithDialog);
+
+CmdSandboxDocThreadWithDialog::CmdSandboxDocThreadWithDialog()
   :Command("Sandbox_Dialog")
 {
     sAppModule    = "Sandbox";
@@ -263,7 +337,7 @@ CmdSandboxThread7::CmdSandboxThread7()
     sPixmap       = "Std_Tool7";
 }
 
-void CmdSandboxThread7::activated(int iMsg)
+void CmdSandboxDocThreadWithDialog::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
@@ -276,9 +350,9 @@ void CmdSandboxThread7::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
-DEF_STD_CMD(CmdSandboxThread8);
+DEF_STD_CMD(CmdSandboxDocThreadWithFileDlg);
 
-CmdSandboxThread8::CmdSandboxThread8()
+CmdSandboxDocThreadWithFileDlg::CmdSandboxDocThreadWithFileDlg()
   :Command("Sandbox_FileDialog")
 {
     sAppModule    = "Sandbox";
@@ -290,7 +364,7 @@ CmdSandboxThread8::CmdSandboxThread8()
     sPixmap       = "Std_Tool7";
 }
 
-void CmdSandboxThread8::activated(int iMsg)
+void CmdSandboxDocThreadWithFileDlg::activated(int iMsg)
 {
     App::GetApplication().newDocument("Thread");
     Sandbox::DocumentThread* dt = new Sandbox::DocumentThread();
@@ -404,14 +478,17 @@ bool CmdSandboxMeshLoader::isActive(void)
 void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-    rcCmdMgr.addCommand(new CmdSandboxThread1());
-    rcCmdMgr.addCommand(new CmdSandboxThread2());
-    rcCmdMgr.addCommand(new CmdSandboxThread3());
-    rcCmdMgr.addCommand(new CmdSandboxThread4());
-    rcCmdMgr.addCommand(new CmdSandboxThread5());
-    rcCmdMgr.addCommand(new CmdSandboxThread6());
-    rcCmdMgr.addCommand(new CmdSandboxThread7());
-    rcCmdMgr.addCommand(new CmdSandboxThread8());
+    rcCmdMgr.addCommand(new CmdSandboxDocumentThread());
+    rcCmdMgr.addCommand(new CmdSandboxDocThreadWithSeq());
+    rcCmdMgr.addCommand(new CmdSandboxDocThreadBusy());
+    rcCmdMgr.addCommand(new CmdSandboxDocumentNoThread());
+    rcCmdMgr.addCommand(new CmdSandboxWorkerThread());
+    rcCmdMgr.addCommand(new CmdSandboxPythonLockThread());
+    rcCmdMgr.addCommand(new CmdSandboxPythonNolockThread());
+    rcCmdMgr.addCommand(new CmdSandboxPyQtThread());
+    rcCmdMgr.addCommand(new CmdSandboxPythonThread());
+    rcCmdMgr.addCommand(new CmdSandboxDocThreadWithDialog());
+    rcCmdMgr.addCommand(new CmdSandboxDocThreadWithFileDlg());
     rcCmdMgr.addCommand(new CmdSandboxEventLoop);
     rcCmdMgr.addCommand(new CmdSandboxMeshLoader);
 }

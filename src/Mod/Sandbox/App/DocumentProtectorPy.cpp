@@ -126,7 +126,11 @@ Py::Object DocumentProtectorPy::addObject(const Py::Tuple& args)
     char* name="";
     if (!PyArg_ParseTuple(args.ptr(), "s|s",&type, &name))
         throw Py::Exception();
+    // release the global interpreter lock
+    PyThreadState* state = PyEval_SaveThread();
     App::DocumentObject* obj = _dp->addObject(type, name);
+    // grab the global interpreter lock again
+    PyEval_RestoreThread(state);
     if (!obj) {
         std::string s;
         std::ostringstream s_out;
@@ -140,6 +144,10 @@ Py::Object DocumentProtectorPy::recompute(const Py::Tuple& args)
 {
     if (!PyArg_ParseTuple(args.ptr(), ""))
         throw Py::Exception();
+    // release the global interpreter lock
+    PyThreadState* state = PyEval_SaveThread();
     _dp->recompute();
+    // grab the global interpreter lock again
+    PyEval_RestoreThread(state);
     return Py::None();
 }

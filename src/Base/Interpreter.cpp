@@ -240,8 +240,6 @@ bool InterpreterSingleton::loadModule(const char* psModName)
     if (!module)
         throw PyException();
 
-    Py_XINCREF(module);
-
     return true;
 }
 
