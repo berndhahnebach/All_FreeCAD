@@ -1657,7 +1657,7 @@ SbVec3f View3DInventorViewer::getPointOnScreen(const SbVec2s& pnt) const
 
     SoCamera* pCam = this->getCamera();
     SbViewVolume  vol = pCam->getViewVolume(); 
-    
+
     SbLine line; SbVec3f pt;
     SbPlane focalPlane = vol.getPlane(pCam->focalDistance.getValue());
     vol.projectPointToLine(SbVec2f(pX,pY), line);
@@ -1733,19 +1733,36 @@ bool View3DInventorViewer::hasClippingPlane() const
  */
 bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm) const
 {
- // attempting raypick in the event_cb() callback method
-  SoRayPickAction rp( getViewportRegion() );
-  rp.setPoint(pos);
-  rp.apply(getSceneManager()->getSceneGraph());
-  SoPickedPoint *Point = rp.getPickedPoint();  
+    // attempting raypick in the event_cb() callback method
+    SoRayPickAction rp(getViewportRegion());
+    rp.setPoint(pos);
+    rp.apply(getSceneManager()->getSceneGraph());
+    SoPickedPoint *Point = rp.getPickedPoint();
 
-  if(Point)
-  {
-    point = Point->getObjectPoint();
-    norm  = Point->getObjectNormal();
-    return true;
-  }else
+    if (Point) {
+        point = Point->getObjectPoint();
+        norm  = Point->getObjectNormal();
+        return true;
+    }
+
     return false;
+}
+
+/**
+ * This method is provided for convenience and does basically the same as method above unless that it
+ * returns an SoPickedPoint object with additional information.
+ * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
+ */
+SoPickedPoint* View3DInventorViewer::pickPoint(const SbVec2s& pos) const
+{
+    SoRayPickAction rp(getViewportRegion());
+    rp.setPoint(pos);
+    rp.apply(getSceneManager()->getSceneGraph());
+
+    // returns a copy of the point
+    SoPickedPoint* pick = rp.getPickedPoint();
+    //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
+    return (pick ? new SoPickedPoint(*pick) : 0);
 }
 
 void View3DInventorViewer::pubSeekToPoint(const SbVec2s& pos)
@@ -1756,23 +1773,6 @@ void View3DInventorViewer::pubSeekToPoint(const SbVec2s& pos)
 void View3DInventorViewer::pubSeekToPoint(const SbVec3f& pos)
 {
     this->seekToPoint(pos);
-}
-
-/**
- * This method is provided for convenience and does basically the same as method above unless that it
- * returns an SoPickedPoint object with additional information.
- * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
- */
-SoPickedPoint* View3DInventorViewer::pickPoint(const SbVec2s& pos) const
-{
-  SoRayPickAction rp( getViewportRegion() );
-  rp.setPoint(pos);
-  rp.apply(getSceneManager()->getSceneGraph());
-
-  // returns a copy of the point
-  SoPickedPoint* pick = rp.getPickedPoint();
-  //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
-  return (pick ? new SoPickedPoint(*pick) : 0);
 }
 
 void View3DInventorViewer::boxZoom(const SbBox2s& box)

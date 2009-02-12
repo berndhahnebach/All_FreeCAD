@@ -41,13 +41,13 @@ class UnitTestDialog : public QDialog, public Ui_UnitTest
 
 public:
     void showErrorDialog(const char* title, const char* message);
-    void addUnitTest( const QString& unit );
-    void setUnitTest( const QString& unit );
+    void addUnitTest(const QString& unit);
+    void setUnitTest(const QString& unit);
     QString getUnitTest() const;
-    void setStatusText( const QString& text );
-    void setProgressFraction( float fraction, const QString& = QString::null );
+    void setStatusText(const QString& text);
+    void setProgressFraction(float fraction, const QString& = QString::null);
     void clearErrorList();
-    void insertError( const QString& failure, const QString& details );
+    void insertError(const QString& failure, const QString& details);
     void setRunCount(int);
     void setFailCount(int);
     void setErrorCount(int);
@@ -60,12 +60,12 @@ public:
     static bool hasInstance();
 
 protected:
-    UnitTestDialog( QWidget* parent = 0, Qt::WFlags f = 0 );
+    UnitTestDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~UnitTestDialog();
-    void setProgressColor( const QColor& col);
+    void setProgressColor(const QColor& col);
 
 public Q_SLOTS:
-    void on_treeViewFailure_itemDoubleClicked ( QTreeWidgetItem * item, int column );
+    void on_treeViewFailure_itemDoubleClicked (QTreeWidgetItem * item, int column);
     void on_helpButton_clicked();
     void on_aboutButton_clicked();
     void on_startButton_clicked();
