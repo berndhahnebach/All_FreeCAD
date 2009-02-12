@@ -363,11 +363,20 @@ void WorkbenchComboBox::onActivated(QAction* action)
 
 void WorkbenchComboBox::onWorkbenchActivated(const QString& name)
 {
-    QVariant item = itemData(currentIndex());
+    // There might be more than only one instance of WorkbenchComboBox there.
+    // However, all of them share the same QAction objects. Thus, if the user
+    // has  selected one it also gets checked. Then Application::activateWorkbench
+    // also invokes this slot method by calling the signal workbenchActivated in
+    // MainWindow. If calling activateWorkbench() from within the Python console
+    // the matching action must be set by calling this function.
+    // To avoid to recursively (but only one recursion level) call Application::
+    // activateWorkbench the method refreshWorkbenchList() shouldn't set the
+    // checked item.
+    //QVariant item = itemData(currentIndex());
     QList<QAction*> a = actions();
     for (QList<QAction*>::Iterator it = a.begin(); it != a.end(); ++it) {
         if ((*it)->objectName() == name) {
-            if ((*it)->data() != item)
+            if (/*(*it)->data() != item*/!(*it)->isChecked())
                 (*it)->trigger();
             break;
         }
@@ -439,8 +448,11 @@ void WorkbenchGroup::refreshWorkbenchList()
         workbenches[i]->setToolTip(tip);
         workbenches[i]->setStatusTip(tr("Select the '%1' workbench").arg(it.key()));
         workbenches[i]->setVisible(true);
-        if ( items[i] == active )
-        workbenches[i]->setChecked(true);
+        // Note: See remark at WorkbenchComboBox::onWorkbenchActivated
+        // Calling setChecked() here causes to uncheck the current item
+        // item in comboboxes these action were added to.
+        //if (items[i] == active)
+        //workbenches[i]->setChecked(true);
     }
 
     // if less workbenches than actions

@@ -49,6 +49,8 @@
 #include "NetworkRetriever.h"
 #include "OnlineDocumentation.h"
 #include "GuiConsole.h"
+#include "WorkbenchManager.h"
+#include "Workbench.h"
 
 using Base::Console;
 using Base::Sequencer;
@@ -64,38 +66,47 @@ DEF_STD_CMD_AC(StdCmdWorkbench);
 StdCmdWorkbench::StdCmdWorkbench()
   : Command("Std_Workbench")
 {
-  sGroup        = QT_TR_NOOP("View");
-  sMenuText     = QT_TR_NOOP("Workbench");
-  sToolTipText  = QT_TR_NOOP("Switch between workbenches");
-  sWhatsThis    = "Std_Workbench";
-  sStatusTip    = QT_TR_NOOP("Switch between workbenches");
-  sPixmap       = "FCIcon";
-  iAccel        = 0;
+    sGroup        = QT_TR_NOOP("View");
+    sMenuText     = QT_TR_NOOP("Workbench");
+    sToolTipText  = QT_TR_NOOP("Switch between workbenches");
+    sWhatsThis    = "Std_Workbench";
+    sStatusTip    = QT_TR_NOOP("Switch between workbenches");
+    sPixmap       = "FCIcon";
+    iAccel        = 0;
 }
 
-void StdCmdWorkbench::activated(int iMsg)
+void StdCmdWorkbench::activated(int i)
 {
-  try {
-    QList<QAction*> items = ((WorkbenchGroup*)_pcAction)->actions();
-    doCommand(Gui, "Gui.activateWorkbench(\"%s\")", (const char*)items[iMsg]->objectName().toAscii());
-  } catch(const Base::PyException& e) {
-    QString msg(QLatin1String(e.what()));
-    // ignore '<type 'exceptions.*Error'>' prefixes
-    QRegExp rx;
-    rx.setPattern(QLatin1String("^\\s*<type 'exceptions.\\w*'>:\\s*"));
-    int pos = rx.indexIn(msg);
-    if ( pos != -1 )
-      msg = msg.mid(rx.matchedLength());
-    QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), msg); 
-  } catch(...) {
-    QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
-      QObject::tr("A general error occurred while loading the workbench")); 
-  }
+    try {
+        Workbench* w = WorkbenchManager::instance()->active();
+        QList<QAction*> items = static_cast<WorkbenchGroup*>(_pcAction)->actions();
+        std::string switch_to = (const char*)items[i]->objectName().toAscii();
+        if (w) {
+            std::string current_w = w->name();
+            if (switch_to == current_w)
+                return;
+        }
+        doCommand(Gui, "Gui.activateWorkbench(\"%s\")", switch_to.c_str());
+    }
+    catch(const Base::PyException& e) {
+        QString msg(QLatin1String(e.what()));
+        // ignore '<type 'exceptions.*Error'>' prefixes
+        QRegExp rx;
+        rx.setPattern(QLatin1String("^\\s*<type 'exceptions.\\w*'>:\\s*"));
+        int pos = rx.indexIn(msg);
+        if (pos != -1)
+            msg = msg.mid(rx.matchedLength());
+        QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), msg); 
+    }
+    catch(...) {
+        QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
+            QObject::tr("A general error occurred while loading the workbench")); 
+    }
 }
 
 bool StdCmdWorkbench::isActive(void)
 {
-  return true;
+    return true;
 }
 
 Action * StdCmdWorkbench::createAction(void)

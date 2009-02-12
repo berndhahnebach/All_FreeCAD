@@ -53,6 +53,16 @@ protected:
     void run();
 };
 
+class SandboxAppExport PythonThread : public QThread
+{
+public:
+    PythonThread(QObject* parent=0);
+    ~PythonThread();
+
+protected:
+    void run();
+};
+
 class SandboxAppExport MeshLoaderThread : public QThread
 {
 public:

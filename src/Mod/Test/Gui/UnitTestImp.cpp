@@ -148,10 +148,12 @@ void UnitTestDialog::on_startButton_clicked()
     setProgressColor(QColor(40,210,43)); // a darker green
     this->startButton->setDisabled(true);
     try {
-        Base::Interpreter().runString("import qtunittest");
-        Base::Interpreter().runString("__qt_test__=qtunittest.QtTestRunner(0,\"\")");
-        Base::Interpreter().runString("__qt_test__.runClicked()");
-        Base::Interpreter().runString("del __qt_test__");
+        Base::Interpreter().runString(
+            "import qtunittest, gc\n"
+            "__qt_test__=qtunittest.QtTestRunner(0,\"\")\n"
+            "__qt_test__.runClicked()\n"
+            "del __qt_test__\n"
+            "gc.collect()\n");
     }
     catch (const Base::PyException& e) {
         std::string msg = e.what();

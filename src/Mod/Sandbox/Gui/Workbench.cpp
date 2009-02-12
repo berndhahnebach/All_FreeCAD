@@ -45,12 +45,16 @@ Workbench::~Workbench()
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
     Gui::MenuItem* root = StdWorkbench::setupMenuBar();
-    Gui::MenuItem* item = root->findItem( "&Windows" );
+    Gui::MenuItem* item = root->findItem("&Windows");
     Gui::MenuItem* test = new Gui::MenuItem;
-    root->insertItem( item, test );
+    root->insertItem(item, test);
+    Gui::MenuItem* threads = new Gui::MenuItem;
+    threads->setCommand("Python Threads");
+    *threads << "Sandbox_PythonLockThread" << "Sandbox_NolockPython"
+             << "Sandbox_PyQtThread" << "Sandbox_Python";
     test->setCommand("Threads");
     *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
-          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python"
+          << "Sandbox_BlockThread" << "Sandbox_NoThread" << threads << "Separator"
           << "Sandbox_Dialog" << "Sandbox_FileDialog";
     Gui::MenuItem* misc = new Gui::MenuItem;
     root->insertItem(item, misc);
@@ -65,7 +69,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
     test->setCommand( "Sandbox Tools" );
     *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
-          << "Sandbox_BlockThread" << "Sandbox_NoThread" << "Sandbox_Python"
+          << "Sandbox_BlockThread" << "Sandbox_NoThread"
           << "Sandbox_Dialog" << "Sandbox_FileDialog"; 
     return root;
 }

@@ -666,6 +666,7 @@ bool PythonCommand::isActive(void)
         }
     }
     catch(Py::Exception& e) {
+        Base::PyGILStateLocker lock;
         e.clear();
         return false;
     }
