@@ -42,7 +42,6 @@
 #include <cassert>
 #include <ctime>
 #include <csignal>
-#include <eh.h>
 
 #ifdef FC_OS_WIN32
 #include <direct.h>
@@ -66,6 +65,7 @@
 #include <sstream>
 #include <queue>
 #include <bitset>
+#include <exception>
 
 // Boost
 #include <boost/signals.hpp>
