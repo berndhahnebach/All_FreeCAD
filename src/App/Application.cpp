@@ -29,6 +29,7 @@
 #ifndef _PreComp_
 # include <iostream>
 # include <sstream>
+# include <exception>
 # ifdef FC_OS_LINUX
 # include <unistd.h>
 # include <pwd.h>
@@ -36,7 +37,6 @@
 # endif
 # include <ctime>
 # include <csignal>
-# include <eh.h>
 # include <boost/program_options.hpp>
 #endif
 
@@ -864,10 +864,10 @@ void Application::init(int argc, char ** argv)
 #endif
         // if an unexpected crash occurs we can install a handler function to
         // write some additional information
-        ::signal(SIGSEGV,segmentation_fault_handler);
-        ::signal(SIGABRT,segmentation_fault_handler);
-        ::set_terminate(unhandled_exception_handler);
-        ::set_unexpected(unexpection_error_handler);
+        std::signal(SIGSEGV,segmentation_fault_handler);
+        std::signal(SIGABRT,segmentation_fault_handler);
+        std::set_terminate(unhandled_exception_handler);
+        std::set_unexpected(unexpection_error_handler);
 
         initTypes();
 
