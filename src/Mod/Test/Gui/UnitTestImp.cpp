@@ -76,7 +76,7 @@ bool UnitTestDialog::hasInstance()
  *  TRUE to construct a modal dialog.
  */
 UnitTestDialog::UnitTestDialog(QWidget* parent, Qt::WFlags f)
-  : QDialog( parent, f )
+  : QDialog(parent, f)
 {
     this->setupUi(this);
     // As it doesn't seem to be able to change the "Highlight" color for the active colorgroup
@@ -100,7 +100,7 @@ UnitTestDialog::~UnitTestDialog()
 /**
  * Sets the color to the progressbar to \a col.
  */
-void UnitTestDialog::setProgressColor( const QColor& col)
+void UnitTestDialog::setProgressColor(const QColor& col)
 {
     QPalette pl = this->progressBar->palette();
     pl.setColor(QPalette::Active, QPalette::Highlight, col);
@@ -111,7 +111,7 @@ void UnitTestDialog::setProgressColor( const QColor& col)
 /**
  * Opens a dialog to display a detailed description about the error.
  */
-void UnitTestDialog::on_treeViewFailure_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void UnitTestDialog::on_treeViewFailure_itemDoubleClicked(QTreeWidgetItem * item, int column)
 {
     QMessageBox::information(this, item->text(0), item->data(0, Qt::UserRole).toString());
 }
@@ -149,8 +149,9 @@ void UnitTestDialog::on_startButton_clicked()
     this->startButton->setDisabled(true);
     try {
         Base::Interpreter().runString("import qtunittest");
-        Base::Interpreter().runString("g=qtunittest.QtTestRunner(0,\"\")");
-        Base::Interpreter().runString("g.runClicked()");
+        Base::Interpreter().runString("__qt_test__=qtunittest.QtTestRunner(0,\"\")");
+        Base::Interpreter().runString("__qt_test__.runClicked()");
+        Base::Interpreter().runString("del __qt_test__");
     }
     catch (const Base::PyException& e) {
         std::string msg = e.what();
@@ -197,7 +198,7 @@ void UnitTestDialog::reset()
 /**
  * Adds a unit test. If a test with name \a unit already is added then nothing happens.
  */
-void UnitTestDialog::addUnitTest( const QString& unit )
+void UnitTestDialog::addUnitTest(const QString& unit)
 {
     int ct = this->comboTests->count();
     for (int i=0; i<ct; i++) {
@@ -211,7 +212,7 @@ void UnitTestDialog::addUnitTest( const QString& unit )
 /**
  * Sets the unit test. If the item is not there yet it gets added.
  */
-void UnitTestDialog::setUnitTest( const QString& unit )
+void UnitTestDialog::setUnitTest(const QString& unit)
 {
     addUnitTest(unit);
     for (int i=0; i<this->comboTests->count(); i++) {
@@ -233,7 +234,7 @@ QString UnitTestDialog::getUnitTest() const
 /**
  * Sets the text in the status bar.
  */
-void UnitTestDialog::setStatusText( const QString& text )
+void UnitTestDialog::setStatusText(const QString& text)
 {
     this->textLabelStatus->setText(text);
 }
@@ -243,7 +244,7 @@ void UnitTestDialog::setStatusText( const QString& text )
  * It also sets the color of the progress bar to red if a failure or error in the unit 
  * test occurred.
  */
-void UnitTestDialog::setProgressFraction( float fraction, const QString& color )
+void UnitTestDialog::setProgressFraction(float fraction, const QString& color)
 {
     if (fraction==0.0f) {
         this->progressBar->setRange(0, 100);
@@ -269,7 +270,7 @@ void UnitTestDialog::clearErrorList()
  * Inserts an item with text \a failure to the listview. \a details will be shown
  * when double-clicking on the matching listitem.
  */
-void UnitTestDialog::insertError( const QString& failure, const QString& details )
+void UnitTestDialog::insertError(const QString& failure, const QString& details)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(treeViewFailure);
     item->setText(0,failure);

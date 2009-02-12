@@ -33,6 +33,54 @@
 #include <Gui/Language/Translator.h>
 #include <Base/Console.h>
 
+class UnitTestModule : public Py::ExtensionModule<UnitTestModule>
+{
+
+public:
+    UnitTestModule() : Py::ExtensionModule<UnitTestModule>("QtUnitGui")
+    {
+        TestGui::UnitTestDialogPy::init_type();
+        add_varargs_method("UnitTest",&UnitTestModule::new_UnitTest,"UnitTest");
+        add_varargs_method("setTest",&UnitTestModule::setTest,"setTest");
+        add_varargs_method("addTest",&UnitTestModule::addTest,"addTest");
+        initialize("This module is the QtUnitGui module"); // register with Python
+    }
+    
+    virtual ~UnitTestModule() {}
+
+private:
+    Py::Object new_UnitTest(const Py::Tuple& args)
+    {
+        return Py::asObject(new TestGui::UnitTestDialogPy());
+    }
+    Py::Object setTest(const Py::Tuple& args)
+    {
+        char *pstr=0;
+        if (!PyArg_ParseTuple(args.ptr(), "|s", &pstr))
+            throw Py::Exception();
+
+        TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
+        if (pstr)
+            dlg->setUnitTest(QString::fromLatin1(pstr));
+        dlg->show();
+        dlg->raise();
+        return Py::None();
+    }
+    Py::Object addTest(const Py::Tuple& args)
+    {
+        char *pstr=0;
+        if (!PyArg_ParseTuple(args.ptr(), "|s", &pstr))
+            throw Py::Exception();
+
+        TestGui::UnitTestDialog* dlg = TestGui::UnitTestDialog::instance();
+        if (pstr)
+            dlg->addUnitTest(QString::fromLatin1(pstr));
+        dlg->show();
+        dlg->raise();
+        return Py::None();
+    }
+};
+
 static PyObject* addTest(PyObject *self, PyObject *args)          
 {
     char *pstr=0;
@@ -79,10 +127,14 @@ void loadTestResource()
 extern "C" {
 void AppTestGuiExport initQtUnitGui()
 {
-    if(PyType_Ready(&TestGui::UnitTestPy::Type) < 0) return;
-    PyObject* pyModule = Py_InitModule("QtUnitGui", TestGui_methods);   /* mod name, table ptr */
-    union PyType_Object pyDlgType = {&TestGui::UnitTestPy::Type};
-    PyModule_AddObject(pyModule, "UnitTest", pyDlgType.o);
+    // the following constructor call registers our extension module
+    // with the Python runtime system
+    (void)new UnitTestModule;
+
+    //if(PyType_Ready(&TestGui::UnitTestPy::Type) < 0) return;
+    //PyObject* pyModule = Py_InitModule("QtUnitGui", TestGui_methods);   /* mod name, table ptr */
+    //union PyType_Object pyDlgType = {&TestGui::UnitTestPy::Type};
+    //PyModule_AddObject(pyModule, "UnitTest", pyDlgType.o);
     Base::Console().Log("Loading GUI of Test module... done\n");
 
     // add resources and reloads the translators
