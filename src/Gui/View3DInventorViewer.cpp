@@ -485,18 +485,19 @@ void View3DInventorViewer::savePicture(const char* filename, int w, int h,
         root->addChild(cb);
     root->addChild(foregroundroot);
 
-    // render the scene
-    SbBool ok = renderer.render(root);
-    if (ok) {
+    try {
+        // render the scene
+        if (!renderer.render(root))
+            throw Base::Exception("Offscreen rendering failed");
         // set matrix for miba
         renderer._Matrix = camera->getViewVolume().getMatrix();
         //bool ok = renderer.writeToImageFile(filename, filetypeextension);
         renderer.writeToImageFile(filename, comment);
         root->unref();
     }
-    else {
+    catch (...) {
         root->unref();
-        throw Base::Exception("Offscreen rendering failed");
+        throw; // re-throw exception
     }
 }
 
@@ -551,15 +552,16 @@ void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage
         root->addChild(cb);
     root->addChild(foregroundroot);
 
-    // render the scene
-    SbBool ok = renderer.render(root);
-    if (ok) {
+    try {
+        // render the scene
+        if (!renderer.render(root))
+            throw Base::Exception("Offscreen rendering failed");
         renderer.writeToImage(img);
         root->unref();
     }
-    else {
+    catch(...) {
         root->unref();
-        throw Base::Exception("Offscreen rendering failed");
+        throw; // re-throw exception
     }
 }
 
