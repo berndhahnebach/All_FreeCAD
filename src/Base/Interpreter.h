@@ -75,7 +75,13 @@ public:
     virtual ~SystemExitException() throw() {}
 };
 
-// Helper class to lock/unlock the global interpreter lock
+/** If the application starts we release immediately the global interpreter lock
+ * (GIL) once the Python interpreter is initialized, i.e. no thread -- including
+ * the main thread doesn't hold the GIL. Thus, every thread must instantiate an
+ * object of PyGILStateLocker if it needs to access protected areas in Python or
+ * areas where the lock is needed. It's best to create the instance on the stack,
+ * not on the heap.
+ */
 class BaseExport PyGILStateLocker
 {
 public:
@@ -90,6 +96,33 @@ public:
 
 private:
     PyGILState_STATE gstate;
+};
+
+/**
+ * If a thread holds the global interpreter lock (GIL) but runs a long operation
+ * in C where it doesn't need to hold the GIL it can release it temporarily. Or
+ * if the thread has to run code in the main thread where Python code may be 
+ * executed it must release the GIL to avoid a deadlock. In either case the thread
+ * must hold the GIL when instantiating an object of PyGILStateRelease.
+ * As PyGILStateLocker it's best to create an instance of PyGILStateRelease on the
+ * stack.
+ */
+class BaseExport PyGILStateRelease
+{
+public:
+    PyGILStateRelease()
+    {
+        // release the global interpreter lock
+        state = PyEval_SaveThread();
+    }
+    ~PyGILStateRelease()
+    {
+        // grab the global interpreter lock again
+        PyEval_RestoreThread(state);
+    }
+
+private:
+    PyThreadState* state;
 };
 
 
@@ -132,6 +165,7 @@ public:
     bool loadModule(const char* psModName);
     /// Add an addtional pyhton path
     void addPythonPath(const char* Path);
+    static void addType(PyTypeObject* Type,PyObject* Module, const char * Name);
     //@}
 
     /** @name Cleanup
@@ -171,26 +205,7 @@ public:
     void cleanupSWIG(const char* TypeName);
     //@}
 
-    /** @name std container to Python container helpers
-     */
-    //@{
-    /// create a dictionary object from a string map, returns a reference
-    PyObject *CreateFrom(const std::map<std::string,std::string> &StringMap);
-    //@}
-
-
-    /** @name object, mthode and attribute query
-     *  This methods are used for code completion facility
-     */
-    //@{
-    /// returns a list of methods providet by the specified object
-    vector<string> getmethodsList(const char *){return vector<string>(); }
-    /// returns a list of attributes providet by the specified object
-    vector<string> getAttributeList(const char *){return vector<string>(); }
-    //@}
-
-
-    /** @name methods for debuging facility
+    /** @name methods for debugging facility
      */
     //@{
     /// sets the file name which should be debuged
@@ -210,13 +225,11 @@ public:
     /// replaces all char with escapes for usage in python console
     static const std::string strToPython(const char* Str);
     static const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());}
-    static void addType(PyTypeObject* Type,PyObject* Module, const char * Name);
     //@}
 
 protected:
     // singleton
     static InterpreterSingleton *_pcSingelton;
-    friend InterpreterSingleton &GetInterpreter(void);
 
 private:
     std::string _cDebugFileName;

@@ -243,6 +243,16 @@ bool InterpreterSingleton::loadModule(const char* psModName)
     return true;
 }
 
+void InterpreterSingleton::addType(PyTypeObject* Type,PyObject* Module, const char * Name)
+{
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
+    if (PyType_Ready(Type) < 0) return;
+    union PyType_Object pyType = {Type};
+    PyModule_AddObject(Module, Name, pyType.o);
+}
+
 void InterpreterSingleton::addPythonPath(const char* Path)
 {
     PyGILStateLocker locker;
@@ -251,6 +261,19 @@ void InterpreterSingleton::addPythonPath(const char* Path)
     PyList_Append(list, path);
     Py_DECREF(path);
     PySys_SetObject("path", list);
+}
+
+const char* InterpreterSingleton::init(int argc,char *argv[])
+{
+    if (!Py_IsInitialized()) {
+        Py_SetProgramName(argv[0]);
+        PyEval_InitThreads();
+        Py_Initialize();
+        PySys_SetArgv(argc, argv);
+        this->_global = PyEval_SaveThread();
+    }
+
+    return Py_GetPath();
 }
 
 int InterpreterSingleton::cleanup(void (*func)(void))
@@ -302,19 +325,6 @@ void InterpreterSingleton::Destruct(void)
     assert(_pcSingelton);
     delete _pcSingelton;
     _pcSingelton = 0;
-}
-
-const char* InterpreterSingleton::init(int argc,char *argv[])
-{
-    if (!Py_IsInitialized()) {
-        Py_SetProgramName(argv[0]);
-        PyEval_InitThreads();
-        Py_Initialize();
-        PySys_SetArgv(argc, argv);
-        this->_global = PyEval_SaveThread();
-    }
-
-    return Py_GetPath();
 }
 
 int InterpreterSingleton::runCommandLine(const char *prompt)
@@ -411,7 +421,6 @@ void InterpreterSingleton::dbgStep(void)
 
 }
 
-
 const std::string InterpreterSingleton::strToPython(const char* Str)
 {
     std::string result;
@@ -435,31 +444,6 @@ const std::string InterpreterSingleton::strToPython(const char* Str)
     }
 
     return result;
-}
-
-void InterpreterSingleton::addType(PyTypeObject* Type,PyObject* Module, const char * Name)
-{
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
-    if (PyType_Ready(Type) < 0) return;
-    union PyType_Object pyType = {Type};
-    PyModule_AddObject(Module, Name, pyType.o);
-}
-
-PyObject *InterpreterSingleton::CreateFrom(const std::map<std::string,std::string> &StringMap)
-{
-    PyObject *Dict = PyDict_New();
-    PyObject *pKey,*pValue;
-
-    for (std::map<std::string,std::string>::const_iterator It = StringMap.begin();It != StringMap.end();It++) {
-        pKey   = PyString_FromString(It->first.c_str());
-        pValue = PyString_FromString(It->second.c_str());
-        PyDict_SetItem(Dict, pKey, pValue);
-    }
-
-    return Dict;
-
 }
 
 // --------------------------------------------------------------------

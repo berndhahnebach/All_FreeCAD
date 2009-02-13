@@ -25,6 +25,7 @@
 #define SANDBOX_DOCUMENTTHREAD_H
 
 #include <QThread>
+#include <QMutex>
 #include <Base/Handle.h>
 
 namespace Mesh {
@@ -61,6 +62,7 @@ public:
 
 protected:
     void run();
+    static QMutex mutex;
 };
 
 class SandboxAppExport MeshLoaderThread : public QThread

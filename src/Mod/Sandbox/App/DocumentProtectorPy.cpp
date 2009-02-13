@@ -29,6 +29,7 @@
 #include "DocumentProtector.h"
 
 #include <Base/Exception.h>
+#include <Base/Interpreter.h>
 #include <App/DocumentPy.h>
 #include <App/DocumentObject.h>
 #include <App/DocumentObjectPy.h>
@@ -73,6 +74,7 @@ DocumentProtectorPy::method_varargs_handler DocumentProtectorPy::pycxx_handler =
 
 PyObject *DocumentProtectorPy::method_varargs_ext_handler(PyObject *_self_and_name_tuple, PyObject *_args)
 {
+    Base::PyGILStateRelease unlock;
     try {
         return pycxx_handler(_self_and_name_tuple, _args);
     }
@@ -126,11 +128,7 @@ Py::Object DocumentProtectorPy::addObject(const Py::Tuple& args)
     char* name="";
     if (!PyArg_ParseTuple(args.ptr(), "s|s",&type, &name))
         throw Py::Exception();
-    // release the global interpreter lock
-    PyThreadState* state = PyEval_SaveThread();
     App::DocumentObject* obj = _dp->addObject(type, name);
-    // grab the global interpreter lock again
-    PyEval_RestoreThread(state);
     if (!obj) {
         std::string s;
         std::ostringstream s_out;
@@ -144,10 +142,6 @@ Py::Object DocumentProtectorPy::recompute(const Py::Tuple& args)
 {
     if (!PyArg_ParseTuple(args.ptr(), ""))
         throw Py::Exception();
-    // release the global interpreter lock
-    PyThreadState* state = PyEval_SaveThread();
     _dp->recompute();
-    // grab the global interpreter lock again
-    PyEval_RestoreThread(state);
     return Py::None();
 }
