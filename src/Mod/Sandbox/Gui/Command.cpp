@@ -300,7 +300,7 @@ void CmdSandboxPyQtThread::activated(int iMsg)
 DEF_STD_CMD(CmdSandboxPythonThread);
 
 CmdSandboxPythonThread::CmdSandboxPythonThread()
-  :Command("Sandbox_Python")
+  :Command("Sandbox_PythonThread")
 {
     sAppModule    = "Sandbox";
     sGroup        = QT_TR_NOOP("Sandbox");
@@ -319,6 +319,32 @@ void CmdSandboxPythonThread::activated(int iMsg)
         QObject::connect(pt, SIGNAL(finished()), pt, SLOT(deleteLater()));
         pt->start();
     }
+}
+
+// -------------------------------------------------------------------------------
+
+DEF_STD_CMD(CmdSandboxPythonMainThread);
+
+CmdSandboxPythonMainThread::CmdSandboxPythonMainThread()
+  :Command("Sandbox_PythonMainThread")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Python main thread");
+    sToolTipText  = QT_TR_NOOP("Run python code in main thread");
+    sWhatsThis    = QT_TR_NOOP("Run python code in main thread");
+    sStatusTip    = QT_TR_NOOP("Run python code in main thread");
+}
+
+void CmdSandboxPythonMainThread::activated(int iMsg)
+{
+    doCommand(Doc,
+        "import Sandbox\n"
+        "doc=App.newDocument()\n"
+        "dp=Sandbox.DocumentProtector(doc)\n"
+        "dp.addObject(\"Mesh::Ellipsoid\",\"Mesh\")\n"
+        "dp.recompute()\n"
+    );
 }
 
 // -------------------------------------------------------------------------------
@@ -487,6 +513,7 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxPythonNolockThread());
     rcCmdMgr.addCommand(new CmdSandboxPyQtThread());
     rcCmdMgr.addCommand(new CmdSandboxPythonThread());
+    rcCmdMgr.addCommand(new CmdSandboxPythonMainThread());
     rcCmdMgr.addCommand(new CmdSandboxDocThreadWithDialog());
     rcCmdMgr.addCommand(new CmdSandboxDocThreadWithFileDlg());
     rcCmdMgr.addCommand(new CmdSandboxEventLoop);

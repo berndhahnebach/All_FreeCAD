@@ -51,7 +51,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* threads = new Gui::MenuItem;
     threads->setCommand("Python Threads");
     *threads << "Sandbox_PythonLockThread" << "Sandbox_NolockPython"
-             << "Sandbox_PyQtThread" << "Sandbox_Python";
+             << "Sandbox_PyQtThread" << "Sandbox_PythonThread" << "Sandbox_PythonMainThread";
     test->setCommand("Threads");
     *test << "Sandbox_Thread" << "Sandbox_WorkerThread" << "Sandbox_SeqThread"
           << "Sandbox_BlockThread" << "Sandbox_NoThread" << threads << "Separator"
