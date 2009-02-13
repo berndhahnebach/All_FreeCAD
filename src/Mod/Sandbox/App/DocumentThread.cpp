@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QMutexLocker>
 #endif
 
 #include "DocumentThread.h"
@@ -85,6 +86,8 @@ void WorkerThread::run()
 
 // --------------------------------------
 
+QMutex PythonThread::mutex(QMutex::Recursive);
+
 PythonThread::PythonThread(QObject* parent)
   : QThread(parent)
 {
@@ -96,6 +99,7 @@ PythonThread::~PythonThread()
 
 void PythonThread::run()
 {
+    QMutexLocker mutex_lock(&mutex);
     Base::PyGILStateLocker locker;
     try {
 #if 0
