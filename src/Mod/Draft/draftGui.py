@@ -38,6 +38,20 @@ def findicons():
 	iconmap = QtGui.QPixmap()
 	iconmap.load(filepath)
 	return iconmap
+	
+def getMainWindow():
+	"""
+	returns the main window 
+	"""
+	# using QtGui.qApp.activeWindow() isn't very reliable because if another
+	# widget than the mainwindow is active (e.g. a dialog) the wrong widget is
+	# returned
+	toplevel = QtGui.qApp.topLevelWidgets()
+	for i in toplevel:
+		if i.metaObject().className() == "Gui::MainWindow":
+			return i
+	raise Exception("No main window found")
+	
 
 #---------------------------------------------------------------------------
 # Customized widgets
@@ -533,7 +547,7 @@ class toolBar:
 			FreeCADGui.addIcon(name,str(ba))
 			
 		self.app = QtGui.qApp
-		self.mw = self.app.activeWindow()
+		self.mw = getMainWindow()
 		self.draftWidget = DraftDockWidget()
 		self.ui = Ui_draftToolbar()
 		self.ui.setupUi(self.draftWidget)
