@@ -9,7 +9,7 @@ libSandboxGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libSandboxGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libSandboxGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Mesh/App -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libSandboxGui_la_CPPFLAGS = -DSandboxAppExport= -DSandboxGuiExport=
 
@@ -20,6 +20,7 @@ libSandboxGui_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
+		-lMesh \
 		-lSandbox
 
 #--------------------------------------------------------------------------------------
