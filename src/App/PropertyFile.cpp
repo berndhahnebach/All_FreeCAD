@@ -235,30 +235,30 @@ void PropertyFileIncluded::Restore(Base::XMLReader &reader)
 
 void PropertyFileIncluded::SaveDocFile (Base::Writer &writer) const
 {
-    Base::OutputStream to(writer.Stream());
     std::ifstream from(_cValue.c_str());
+    if (!from)
+        throw Base::Exception("PropertyFileIncluded::SaveDocFile() "
+        "File in document transient dir deleted");
 
-    if (!from) throw Base::Exception("PropertyFileIncluded::SaveDocFile() File in document transient dir deleted");
-
-    char ch;
-    while (from.get(ch))
-        to << (ch);
+    // copy plain data
+    unsigned char c;
+    std::ostream& to = writer.Stream();
+    while (from.get((char&)c)) {
+        to.put((const char)c);
+    }
 }
 
 void PropertyFileIncluded::RestoreDocFile(Base::Reader &reader)
 {
-    Base::InputStream from(reader);
-
     std::ofstream to(_cValue.c_str());
     if (!to) 
-        throw Base::Exception("PropertyFileIncluded::RestoreDocFile() File in document transient dir deleted");
+        throw Base::Exception("PropertyFileIncluded::RestoreDocFile() "
+        "File in document transient dir deleted");
 
     // copy plain data
-    int8_t ch;
-    from >> ch;
-    while(from){
-        to.put(char(ch));
-        from >> ch;
+    unsigned char c;
+    while (reader.get((char&)c)) {
+        to.put((const char)c);
     }
 }
 

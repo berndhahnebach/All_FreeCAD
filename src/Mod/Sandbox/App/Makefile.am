@@ -13,7 +13,7 @@ libSandbox_la_SOURCES=\
 
 
 # the library search path.
-libSandbox_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libSandbox_la_LDFLAGS = -L../../../Base -L../../../App -L../../Mesh/App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libSandbox_la_CPPFLAGS = -DSandboxAppExport=
 
 libSandbox_la_LIBADD   = \
@@ -21,7 +21,8 @@ libSandbox_la_LIBADD   = \
 		-lxerces-c \
 		-lQtCore \
 		-lFreeCADBase \
-		-lFreeCADApp
+		-lFreeCADApp \
+		-lMesh
 
 #--------------------------------------------------------------------------------------
 # Loader of libSandbox

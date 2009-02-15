@@ -590,7 +590,7 @@ class DocumentFileIncludeCases(unittest.TestCase):
     file = open(self.Doc.getTempFileName("test"),"w")
     file.write("test No1")
     file.close()  
-    # applaing the file
+    # applying the file
     self.Doc.openTransaction("Transaction1")
     self.L1.File = (file.name,"Test.txt")
     # read again
@@ -600,7 +600,7 @@ class DocumentFileIncludeCases(unittest.TestCase):
     file = open(self.TempPath+"/testNest.txt","w")
     file.write("test No2")
     file.close()  
-        # applaing the file
+    # applying the file
     self.Doc.openTransaction("Transaction2")
     self.L1.File = file.name
     # read again
