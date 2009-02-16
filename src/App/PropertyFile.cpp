@@ -100,19 +100,20 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 
         if (sName)
             _cValue = path + "/" + sName;
-        else 
-            if (value.fileName().empty())
-                _cValue = pathTrans + "/" + file.fileName();
+        else if (value.fileName().empty())
+            _cValue = pathTrans + "/" + file.fileName();
 
-        if (path == pathTrans)
-            file.renameFile(_cValue.c_str());
-        else
+        if (path == pathTrans) {
+            bool done = file.renameFile(_cValue.c_str());
+            assert(done);
+        }
+        else {
             file.copyTo(_cValue.c_str());
+        }
 
         hasSetValue();
     }
 }
-
 
 const char* PropertyFileIncluded::getValue(void) const
 {
@@ -273,7 +274,8 @@ Property *PropertyFileIncluded::Copy(void) const
         Base::FileInfo NewName(Base::FileInfo::getTempFileName(file.fileName().c_str(),file.dirPath().c_str()));
         NewName.deleteFile();
         // move the file 
-        file.renameFile(NewName.filePath().c_str());
+        bool done = file.renameFile(NewName.filePath().c_str());
+        assert(done);
         // remember the new name for the Undo
         p->_cValue = NewName.filePath().c_str();
     }
@@ -290,7 +292,8 @@ void PropertyFileIncluded::Paste(const Property &from)
     if (!dynamic_cast<const PropertyFileIncluded&>(from)._cValue.empty()) {
         // move the saved files back in place
         Base::FileInfo NewFile(dynamic_cast<const PropertyFileIncluded&>(from)._cValue);
-        NewFile.renameFile(_cValue.c_str());
+        bool done = NewFile.renameFile(_cValue.c_str());
+        assert(done);
     }
     else
         _cValue.clear();
