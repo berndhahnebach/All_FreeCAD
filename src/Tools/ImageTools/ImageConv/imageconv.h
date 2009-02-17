@@ -26,8 +26,8 @@
 #include <string>
 #include <vector>
 
-#include <qpixmap.h>
-#include <qdir.h>
+#include <QPixmap>
+#include <QDir>
 
 // defines
 #define TString std::string
@@ -39,7 +39,7 @@
 // the command line parser class
 class CCmdLineParser : public CCmdLine
 {
-  public:
+public:
     CCmdLineParser (int argc, char** argv);
     ~CCmdLineParser () {}
 
@@ -50,7 +50,7 @@ class CCmdLineParser : public CCmdLine
 
 class CICException
 {
-  public:
+public:
     CICException(const QString& text) 
       : msg(text) {}
     CICException(const CICException& e) 
@@ -60,7 +60,7 @@ class CICException
     QString what() const
     { return msg; }
 
-  private:
+private:
     QString msg;
 };
 
@@ -68,10 +68,10 @@ class CICException
 
 class CImageConvApp
 {
-  public:
-    CImageConvApp(const QString& nameFilter = "", const QString& sFile = "Images.cpp");
+public:
+    CImageConvApp(const QString& sFile = "Images.cpp");
     void SetOutputFile(const QString& sFile);
-    void SetNameFilter(const QString& nameFilter);
+    void SetNameFilters(const QStringList& nameFilter);
     bool Save(const QString& fn);
     bool Load(const QString& fn);
     bool ConvertToXPM(bool bAppendToFile = false);
@@ -86,7 +86,7 @@ class CImageConvApp
     static void Error();
     static void Version();
 
-  private:
+private:
     bool m_bUpdate;
     static QString  m_Executable;
     static QString  m_BmpFactory;

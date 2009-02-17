@@ -1,12 +1,9 @@
 TEMPLATE = app
-OBJECTS_DIR = .obj
-SOURCES = main.cpp \
-		CmdLine.cpp \
-		imageconv.cpp
+CONFIG += debug console
+TARGET += 
+DEPENDPATH += .
+INCLUDEPATH += .
 
-HEADERS = CmdLine.h \
-		imageconv.h
-
-CONFIG = warn_off qt
-
-TARGET   = imageconv
+# Input
+HEADERS += CmdLine.h imageconv.h
+SOURCES += CmdLine.cpp imageconv.cpp main.cpp
