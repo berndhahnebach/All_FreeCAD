@@ -70,8 +70,18 @@ public:
   /// Observer message from the Selection
   virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
 
+  void setAnimationEnabled(const SbBool enable);
+  SbBool isAnimationEnabled(void) const;
+
+  void startAnimating(const SbVec3f& axis, float velocity);
   void stopAnimating(void);
   SbBool isAnimating(void) const;
+
+  void setFeedbackVisibility(const SbBool enable);
+  SbBool isFeedbackVisible(void) const;
+
+  void setFeedbackSize(const int size);
+  int getFeedbackSize(void) const;
 
   virtual void setViewing(SbBool enable);
   virtual void setCursorEnabled(SbBool enable);
@@ -205,9 +215,6 @@ public:
   void drawLine (int x1, int y1, int x2, int y2);
   //@}
 
-  bool bDrawAxisCross;
-  bool bAllowSpining;
-
   void setGradientBackgroud(bool b);
   void setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor );
   void setEnabledFPSCounter(bool b);
@@ -244,7 +251,6 @@ protected:
   static void interactionLoggerCB(void * ud, SoAction* action);
 
   bool _bRejectSelection;
-  SbBool MenuEnabled;
   SbTime MoveTime;
   SbTime CenterTime;
 
@@ -318,6 +324,7 @@ private:
   SbBool editing;
   QCursor editCursor;
   SbBool redirected;
+  SbBool menuenabled;
 
   void clearLog(void);
   void addToLog(const SbVec2s pos, const SbTime time);
