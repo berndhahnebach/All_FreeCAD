@@ -139,8 +139,8 @@ PyObject *View3DInventor::getPyObject(void)
 void View3DInventor::setViewerDefaults(void)
 {
     _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
-    _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
-    _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
+    _viewer->setFeedbackVisibility(hGrp->GetBool("CornerCoordSystem",true));
+    _viewer->setAnimationEnabled(hGrp->GetBool("UseAutoRotation" ,true));
     _viewer->setGradientBackgroud( (hGrp->GetBool("Gradient",true)) );
     unsigned long col = hGrp->GetUnsigned("BackgroundColor",0);
     float r,g,b;

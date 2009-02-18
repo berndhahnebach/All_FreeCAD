@@ -237,8 +237,8 @@ void View3DInventorViewer::resetEdit(void)
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
   : inherited (parent, name, embed, type, build), inEdit(0),
-    MenuEnabled(TRUE), pcMouseModel(0),_bSpining(false),
-    _iMouseModel(1), editing(FALSE), redirected(FALSE)
+    pcMouseModel(0),_bSpining(false), _iMouseModel(1),
+    editing(FALSE), redirected(FALSE), menuenabled(TRUE)
 {
     // set the layout for the flags
     _flaglayout = new FlagLayout(3);
@@ -285,9 +285,6 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     cam->height = 10;
     cam->nearDistance = 0;
     cam->farDistance = 10;
-
-    bDrawAxisCross = true;
-    bAllowSpining  = true;
 
     this->foregroundroot->addChild(cam);
     this->foregroundroot->addChild(lm);
@@ -856,7 +853,7 @@ void View3DInventorViewer::actualRedraw(void)
     glClear(GL_DEPTH_BUFFER_BIT);
     glra->apply(this->foregroundroot);
 
-    if (bDrawAxisCross) { this->drawAxisCross(); }
+    if (this->axiscrossEnabled) { this->drawAxisCross(); }
 
     // draw lines for the flags
     int ct = _flaglayout->count();
@@ -1198,7 +1195,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
 
     if ((currentmode == View3DInventorViewer::DRAGGING) && (this->log.historysize >= 3)) {
       SbTime stoptime = (ev->getTime() - this->log.time[0]);
-      if (bAllowSpining && stoptime.getValue() < 0.100) {
+      if (this->spinanimatingallowed && stoptime.getValue() < 0.100) {
         const SbVec2s glsize(this->getGLSize());
         SbVec3f from = this->spinprojector->project(SbVec2f(float(this->log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
                                                             float(this->log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
@@ -1397,7 +1394,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
        
             // check on start spining
             SbTime stoptime = (ev->getTime() - log.time[0]);
-            if (bAllowSpining && stoptime.getValue() < 0.100) {
+            if (this->spinanimatingallowed && stoptime.getValue() < 0.100) {
               const SbVec2s glsize(this->getGLSize());
               SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
                                                             float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
@@ -1486,7 +1483,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
 //    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
 
     if(MoveMode && ZoomMode){
-      zoom(getCamera(),(posn[1] - prevnormalized[1]) * 10.0f);
+      this->zoomByCursor(posn, prevnormalized);
       processed = true;
     }else if(MoveMode && RotMode) {
       addToLog(ev->getPosition(), ev->getTime());
@@ -1598,12 +1595,12 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
 
 void View3DInventorViewer::setPopupMenuEnabled(const SbBool on)
 {
-  this->MenuEnabled = on;
+  this->menuenabled = on;
 }
 
 SbBool View3DInventorViewer::isPopupMenuEnabled(void) const
 {
-  return this->MenuEnabled;
+  return this->menuenabled;
 }
 
 void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
@@ -2132,6 +2129,31 @@ void View3DInventorViewer::drawLine (int x1, int y1, int x2, int y2)
 }
 
 /*!
+  Decide if it should be possible to start a spin animation of the
+  model in the viewer by releasing the mouse button while dragging.
+
+  If the \a enable flag is \c FALSE and we're currently animating, the
+  spin will be stopped.
+*/
+void
+View3DInventorViewer::setAnimationEnabled(const SbBool enable)
+{
+  this->spinanimatingallowed = enable;
+  if (!enable && this->isAnimating()) { this->stopAnimating(); }
+}
+
+/*!
+  Query whether or not it is possible to start a spinning animation by
+  releasing the left mouse button while dragging the mouse.
+*/
+
+SbBool
+View3DInventorViewer::isAnimationEnabled(void) const
+{
+  return this->spinanimatingallowed;
+}
+
+/*!
   Query if the model in the viewer is currently in spinning mode after
   a user drag.
 */
@@ -2140,12 +2162,95 @@ SbBool View3DInventorViewer::isAnimating(void) const
   return this->currentmode == View3DInventorViewer::SPINNING;
 }
 
+/*!
+ * Starts programmatically the viewer in animation mode. The given axis direction
+ * is always in screen coordinates, not in world coordinates.
+ * todo: Set rotation venter
+ */
+void View3DInventorViewer::startAnimating(const SbVec3f& axis, float velocity)
+{
+    if (isAnimating() || !isAnimationEnabled()) return;
+
+    //this->spin(SbVec2f(0.5f, 0.5f));
+    this->spinincrement = SbRotation::identity();
+    //SbVec3f from(0,0,1), to(0,1,0);
+    //SbRotation rot = this->spinprojector->getRotation(from, to);
+    SbRotation rot;
+    rot.setValue(axis, velocity);
+    //rot.invert();
+    //rot.scaleAngle(velocity);
+
+    //SbVec3f axis;
+    //float radians;
+    //rot.getValue(axis, radians);
+    //if ((radians > 0.01f) && (deltatime < 0.300)) {
+    this->setViewing(true);
+    this->setMode(View3DInventorViewer::SPINNING);
+    this->spinRotation = rot;
+    //}
+}
+
 void View3DInventorViewer::stopAnimating(void)
 {
   if (this->currentmode != View3DInventorViewer::SPINNING) {
     return;
   }
-  this->setMode(this->isViewing() ? View3DInventorViewer::IDLE : View3DInventorViewer::INTERACT);
+  this->setMode(this->isViewing() ? 
+      View3DInventorViewer::IDLE : View3DInventorViewer::INTERACT);
+}
+
+/*!
+  Set the flag deciding whether or not to show the axis cross.
+*/
+
+void
+View3DInventorViewer::setFeedbackVisibility(const SbBool enable)
+{
+  if (enable == this->axiscrossEnabled) {
+    return;
+  }
+  this->axiscrossEnabled = enable;
+
+  if (this->isViewing()) { this->scheduleRedraw(); }
+}
+
+/*!
+  Check if the feedback axis cross is visible.
+*/
+
+SbBool
+View3DInventorViewer::isFeedbackVisible(void) const
+{
+  return this->axiscrossEnabled;
+}
+
+/*!
+  Set the size of the feedback axiscross.  The value is interpreted as
+  an approximate percentage chunk of the dimensions of the total
+  canvas.
+*/
+void
+View3DInventorViewer::setFeedbackSize(const int size)
+{
+  if (size < 1) {
+    return;
+  }
+
+  this->axiscrossSize = size;
+
+  if (this->isFeedbackVisible() && this->isViewing()) {
+    this->scheduleRedraw();
+  }
+}
+
+/*!
+  Return the size of the feedback axis cross. Default is 10.
+*/
+
+int
+View3DInventorViewer::getFeedbackSize(void) const
+{
+  return this->axiscrossSize;
 }
 
 /*!
@@ -2484,7 +2589,6 @@ void View3DInventorViewer::spin(const SbVec2f & pointerpos)
   // when the user quickly trigger (as in "click-drag-release") a spin
   // animation.
   if (this->spinsamplecounter > 3) this->spinsamplecounter = 3;
-  
 }
 
 // ************************************************************************
@@ -2495,7 +2599,7 @@ void View3DInventorViewer::zoomByCursor(const SbVec2f & thispos, const SbVec2f &
 {
   // There is no "geometrically correct" value, 20 just seems to give
   // about the right "feel".
-  zoom(this->getCamera(), (thispos[1] - prevpos[1]) * 10.0f);
+  zoom(this->getCamera(), (thispos[1] - prevpos[1]) * 10.0f/*20.0f*/);
 }
 
 // *************************************************************************

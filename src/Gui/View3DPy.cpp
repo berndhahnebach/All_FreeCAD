@@ -69,6 +69,8 @@ void View3DInventorPy::init_type()
     add_varargs_method("viewRight",&View3DInventorPy::viewRight,"viewRight()");
     add_varargs_method("viewTop",&View3DInventorPy::viewTop,"viewTop()");
     add_varargs_method("viewAxometric",&View3DInventorPy::viewAxometric,"viewAxometric()");
+    add_varargs_method("startAnimating",&View3DInventorPy::startAnimating,"startAnimating()");
+    add_varargs_method("stopAnimating",&View3DInventorPy::stopAnimating,"stopAnimating()");
     add_varargs_method("dump",&View3DInventorPy::dump,"dump()");
     add_varargs_method("setStereoType",&View3DInventorPy::setStereoType,"setStereoType()");
     add_varargs_method("getStereoType",&View3DInventorPy::getStereoType,"getStereoType()");
@@ -384,6 +386,24 @@ Py::Object View3DInventorPy::viewAxometric(const Py::Tuple& args)
         throw Py::Exception("Unknown C++ exception");
     }
 
+    return Py::None();
+}
+
+Py::Object View3DInventorPy::startAnimating(const Py::Tuple& args)
+{
+    float x,y,z;
+    float velocity;
+    if (!PyArg_ParseTuple(args.ptr(), "ffff", &x,&y,&z,&velocity))
+        throw Py::Exception();
+    _view->getViewer()->startAnimating(SbVec3f(x,y,z),velocity);
+    return Py::None();
+}
+
+Py::Object View3DInventorPy::stopAnimating(const Py::Tuple& args)
+{
+    if (!PyArg_ParseTuple(args.ptr(), ""))
+        throw Py::Exception();
+    _view->getViewer()->stopAnimating();
     return Py::None();
 }
 

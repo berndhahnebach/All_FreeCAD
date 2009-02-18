@@ -109,8 +109,8 @@ void SplitView3DInventor::setViewerDefaults(void)
 
   for ( std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it ) {
     (*it)->setStereoOffset(stereoOffset);
-    (*it)->bDrawAxisCross = drawAxisCross;
-    (*it)->bAllowSpining =  allowSpinning;
+    (*it)->setFeedbackVisibility(drawAxisCross);
+    (*it)->setAnimationEnabled(allowSpinning);
     (*it)->setGradientBackgroud(gradientBackG);
     (*it)->setBackgroundColor(SbColor(r, g, b));
     (*it)->setGradientBackgroudColor( SbColor(r2, g2, b2), SbColor(r3, g3, b3) );
