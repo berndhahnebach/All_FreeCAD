@@ -958,10 +958,7 @@ std::vector<Base::Vector3f> MeshKernel::CalcVertexNormals() const
 
     normals.resize(CountPoints());
 
-    // data structure to hold all faces belongs to one vertex
     unsigned long p1,p2,p3;
-
-    // collecting all Facetes indices belonging to a vertex index
     unsigned int ct = CountFacets();
     for (unsigned int pFIter = 0;pFIter < ct; pFIter++) {
         GetFacetPoints(pFIter,p1,p2,p3);

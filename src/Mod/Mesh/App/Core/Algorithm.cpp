@@ -1650,18 +1650,31 @@ float MeshAlgorithm::CalculateMinimumGridLength(float fLength, const Base::Bound
 
 void MeshRefPointToFacets::Rebuild (void)
 {
-  clear();
+    _map.clear();
 
-  const MeshPointArray& rPoints = _rclMesh.GetPoints();
-  resize(rPoints.size());
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    _map.resize(rPoints.size());
 
-  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
-  for (MeshFacetArray::_TConstIterator pFIter = rFacets.begin(); pFIter != rFacets.end(); pFIter++)
-  {
-    operator[](pFIter->_aulPoints[0]).insert(pFIter);
-    operator[](pFIter->_aulPoints[1]).insert(pFIter);
-    operator[](pFIter->_aulPoints[2]).insert(pFIter);
-  }
+    MeshFacetArray::_TConstIterator pFBegin = rFacets.begin();
+    for (MeshFacetArray::_TConstIterator pFIter = rFacets.begin(); pFIter != rFacets.end(); ++pFIter) {
+        _map[pFIter->_aulPoints[0]].insert(pFIter - pFBegin);
+        _map[pFIter->_aulPoints[1]].insert(pFIter - pFBegin);
+        _map[pFIter->_aulPoints[2]].insert(pFIter - pFBegin);
+    }
+}
+
+Base::Vector3f MeshRefPointToFacets::GetNormal(unsigned long pos, float threshold) const
+{
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    const std::set<unsigned long>& n = _map[pos];
+    Base::Vector3f normal;
+    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
+        normal += _rclMesh.GetNormal(rFacets[*it]);
+    }
+
+    normal.Normalize();
+    return normal;
 }
 
 std::set<unsigned long> MeshRefPointToFacets::NeighbourPoints(const std::vector<unsigned long>& pt, int level) const
@@ -1696,87 +1709,145 @@ std::set<unsigned long> MeshRefPointToFacets::NeighbourPoints(const std::vector<
 /// @todo
 void MeshRefPointToFacets::Neighbours (unsigned long ulFacetInd, float fMpxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb)
 {
-  rclNb.clear();
-  Base::Vector3f  clCenter = _rclMesh.GetFacet(ulFacetInd).GetGravityPoint();
+    rclNb.clear();
+    Base::Vector3f  clCenter = _rclMesh.GetFacet(ulFacetInd).GetGravityPoint();
 
-  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
-  SearchNeighbours(rFacets.begin() + ulFacetInd, clCenter, fMpxDist * fMpxDist, rclNb);
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    SearchNeighbours(rFacets.begin() + ulFacetInd, clCenter, fMpxDist * fMpxDist, rclNb);
 
-  for (std::vector<MeshFacetArray::_TConstIterator>::iterator i = rclNb.begin(); i != rclNb.end(); i++)
-    (*i)->ResetFlag(MeshFacet::VISIT);  
+    for (std::vector<MeshFacetArray::_TConstIterator>::iterator i = rclNb.begin(); i != rclNb.end(); i++)
+        (*i)->ResetFlag(MeshFacet::VISIT);  
 }
 
 /// @todo
 void MeshRefPointToFacets::SearchNeighbours(MeshFacetArray::_TConstIterator pFIter, const Base::Vector3f &rclCenter, float fMpxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb)
 {
-  if (pFIter->IsFlag(MeshFacet::VISIT) == true)
-    return;
+    if (pFIter->IsFlag(MeshFacet::VISIT) == true)
+        return;
 
-  if (Base::DistanceP2(rclCenter, _rclMesh.GetFacet(*pFIter).GetGravityPoint()) > fMpxDist)
-    return;
+    if (Base::DistanceP2(rclCenter, _rclMesh.GetFacet(*pFIter).GetGravityPoint()) > fMpxDist)
+        return;
 
-  rclNb.push_back(pFIter);
-  pFIter->SetFlag(MeshFacet::VISIT);
+    rclNb.push_back(pFIter);
+    pFIter->SetFlag(MeshFacet::VISIT);
 
-  const MeshPointArray& rPoints = _rclMesh.GetPoints();
-  MeshPointArray::_TConstIterator pPBegin = rPoints.begin();
-   
-  for (int i = 0; i < 3; i++)
-  {
-    MeshPointArray::_TConstIterator pPIter = rPoints.begin() + pFIter->_aulPoints[i];
-    const std::set<MeshFacetArray::_TConstIterator> &rclFacets = operator[](pPIter - pPBegin);
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    MeshPointArray::_TConstIterator pPBegin = rPoints.begin();
 
-    for (std::set<MeshFacetArray::_TConstIterator>::const_iterator j = rclFacets.begin(); j != rclFacets.end(); j++)
-    {
-      SearchNeighbours(*j, rclCenter, fMpxDist, rclNb);
+    for (int i = 0; i < 3; i++) {
+        MeshPointArray::_TConstIterator pPIter = rPoints.begin() + pFIter->_aulPoints[i];
+        const std::set<MeshFacetArray::_TConstIterator> &f = operator[](pPIter - pPBegin);
+
+        for (std::set<MeshFacetArray::_TConstIterator>::const_iterator j = f.begin(); j != f.end(); ++j) {
+            SearchNeighbours(*j, rclCenter, fMpxDist, rclNb);
+        }
     }
-  }
+}
+
+std::set<MeshFacetArray::_TConstIterator>
+MeshRefPointToFacets::operator[] (unsigned long pos) const
+{
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    MeshFacetArray::_TConstIterator  pBegin = rFacets.begin();
+    std::set<MeshCore::MeshFacetArray::_TConstIterator> fts;
+
+    const std::set<unsigned long>& n = _map[pos];
+    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
+        fts.insert(pBegin + *it);
+    }
+
+    return fts;
 }
 
 //----------------------------------------------------------------------------
 
 void MeshRefFacetToFacets::Rebuild (void)
 {
-  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
-  MeshFacetArray::_TConstIterator pFBegin = rFacets.begin();
-  std::set<MeshFacetArray::_TConstIterator> clEmptySet;
+    _map.clear();
 
-  clear();
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    _map.resize(rFacets.size());
 
-  MeshRefPointToFacets  clRPF(_rclMesh);
-  
-  for (MeshFacetArray::_TConstIterator pFIter = pFBegin; pFIter != rFacets.end(); pFIter++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      const std::set<MeshFacetArray::_TConstIterator> &rclNBSet = clRPF[pFIter->_aulPoints[i]];
-      operator[](pFIter - pFBegin).insert(rclNBSet.begin(), rclNBSet.end());
+    MeshRefPointToFacets  vertexFace(_rclMesh);
+    MeshFacetArray::_TConstIterator pFBegin = rFacets.begin();
+    for (MeshFacetArray::_TConstIterator pFIter = pFBegin; pFIter != rFacets.end(); ++pFIter) {
+        for (int i = 0; i < 3; i++) {
+            std::set<MeshFacetArray::_TConstIterator> faces = vertexFace[pFIter->_aulPoints[i]];
+            for (std::set<MeshFacetArray::_TConstIterator>::iterator it = faces.begin(); it != faces.end(); ++it)
+                _map[pFIter - pFBegin].insert(*it - pFBegin);
+        }
     }
-  }
+}
+
+std::set<MeshFacetArray::_TConstIterator>
+MeshRefFacetToFacets::operator[] (unsigned long pos) const
+{
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    MeshFacetArray::_TConstIterator  pBegin = rFacets.begin();
+    std::set<MeshCore::MeshFacetArray::_TConstIterator> fts;
+
+    const std::set<unsigned long>& n = _map[pos];
+    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
+        fts.insert(pBegin + *it);
+    }
+
+    return fts;
 }
 
 //----------------------------------------------------------------------------
 
 void MeshRefPointToPoints::Rebuild (void)
 {
-  clear();
+    _map.clear();
 
-  const MeshPointArray& rPoints = _rclMesh.GetPoints();
-  resize(rPoints.size());
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    _map.resize(rPoints.size());
 
-  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
-  MeshPointArray::_TConstIterator  pBegin = rPoints.begin();
-  for (MeshFacetArray::_TConstIterator pFIter = rFacets.begin(); pFIter != rFacets.end(); pFIter++)
-  {
-    unsigned long ulP0 = pFIter->_aulPoints[0];
-    unsigned long ulP1 = pFIter->_aulPoints[1];
-    unsigned long ulP2 = pFIter->_aulPoints[2];
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    for (MeshFacetArray::_TConstIterator pFIter = rFacets.begin(); pFIter != rFacets.end(); ++pFIter) {
+        unsigned long ulP0 = pFIter->_aulPoints[0];
+        unsigned long ulP1 = pFIter->_aulPoints[1];
+        unsigned long ulP2 = pFIter->_aulPoints[2];
 
-    operator[](ulP0).insert(pBegin + ulP1);
-    operator[](ulP0).insert(pBegin + ulP2);
-    operator[](ulP1).insert(pBegin + ulP0);
-    operator[](ulP1).insert(pBegin + ulP2);
-    operator[](ulP2).insert(pBegin + ulP0);
-    operator[](ulP2).insert(pBegin + ulP1);
-  }
+        _map[ulP0].insert(ulP1);
+        _map[ulP0].insert(ulP2);
+        _map[ulP1].insert(ulP0);
+        _map[ulP1].insert(ulP2);
+        _map[ulP2].insert(ulP0);
+        _map[ulP2].insert(ulP1);
+    }
+}
+
+Base::Vector3f MeshRefPointToPoints::GetNormal(unsigned long pos) const
+{
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    MeshCore::PlaneFit pf;
+    pf.AddPoint(rPoints[pos]);
+    MeshCore::MeshPoint center = rPoints[pos];
+    const std::set<unsigned long>& cv = _map[pos];
+    for (std::set<unsigned long>::const_iterator cv_it = cv.begin(); cv_it !=cv.end(); ++cv_it) {
+        pf.AddPoint(rPoints[*cv_it]);
+        center += rPoints[*cv_it];
+    }
+
+    pf.Fit();
+
+    Base::Vector3f normal = pf.GetNormal();
+    normal.Normalize();
+    return normal;
+}
+
+std::set<MeshPointArray::_TConstIterator>
+MeshRefPointToPoints::operator[] (unsigned long pos) const
+{
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    MeshPointArray::_TConstIterator  pBegin = rPoints.begin();
+    std::set<MeshCore::MeshPointArray::_TConstIterator> pts;
+
+    const std::set<unsigned long>& n = _map[pos];
+    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
+        pts.insert(pBegin + *it);
+    }
+
+    return pts;
 }
