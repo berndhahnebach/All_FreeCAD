@@ -27,7 +27,7 @@
 #include <Inventor/fields/SoSFUInt32.h>
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/nodes/SoSubNode.h>
-#include <Inventor/nodes/SoShape.h>
+#include <Inventor/nodes/SoVertexShape.h>
 #include <Inventor/elements/SoReplacedElement.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Mesh.h>
@@ -108,8 +108,8 @@ protected:
  *
  * @author Werner Mayer
  */
-class MeshGuiExport SoFCMeshObjectShape : public SoShape {
-    typedef SoShape inherited;
+class MeshGuiExport SoFCMeshObjectShape : public SoVertexShape {
+    typedef SoVertexShape inherited;
 
     SO_NODE_HEADER(SoFCMeshObjectShape);
 
@@ -118,6 +118,9 @@ public:
     SoFCMeshObjectShape();
 
     unsigned int MaximumTriangles;
+
+    SbBool generateDefaultNormals(SoState * state, SoNormalBundle * bundle);
+    SbBool generateDefaultNormals(SoState * state, SoNormalCache * cache);
 
 protected:
     virtual void GLRender(SoGLRenderAction *action);
@@ -130,11 +133,18 @@ protected:
                                             const SoPrimitiveVertex * v2,
                                             const SoPrimitiveVertex * v3,
                                             SoPickedPoint * pp);
+    SbBool getVertexData(SoState * state,
+                         const SbVec3f *& normals,
+                         const int32_t *& nindices,
+                         const SbBool needNormals,
+                         SbBool & normalCacheUsed);
 
 private:
     enum Binding {
         OVERALL = 0,
+        PER_FACE,
         PER_FACE_INDEXED,
+        PER_VERTEX,
         PER_VERTEX_INDEXED,
         NONE = OVERALL
     };
@@ -144,11 +154,15 @@ private:
     virtual ~SoFCMeshObjectShape() {};
     virtual void notify(SoNotList * list);
     Binding findMaterialBinding(SoState * const state) const;
+    Binding findNormalBinding(SoState * const state) const;
     // Draw faces
     void drawFaces(const Mesh::MeshObject *, SoMaterialBundle* mb, Binding bind, 
-                   SbBool needNormals, SbBool ccw) const;
+                   const SbVec3f *n, SbBool needNormals, SbBool ccw) const;
     void drawPoints(const Mesh::MeshObject *, SbBool needNormals, SbBool ccw) const;
     unsigned int countTriangles(SoAction * action) const;
+    SbVec3f* generatePerVertexNormals(const Mesh::MeshObject *,
+                                      const float crease_angle,
+                                      const SbBool ccw = TRUE) const;
 
 private:
     bool meshChanged;

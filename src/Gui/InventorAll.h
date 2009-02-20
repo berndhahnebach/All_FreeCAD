@@ -57,6 +57,7 @@
 #include <Inventor/annex/HardCopy/SoVectorOutput.h>
 #include <Inventor/bundles/SoMaterialBundle.h>
 #include <Inventor/bundles/SoTextureCoordinateBundle.h>
+#include <Inventor/caches/SoNormalCache.h>
 #include <Inventor/details/SoFaceDetail.h>
 #include <Inventor/details/SoLineDetail.h>
 #include <Inventor/details/SoPointDetail.h>
@@ -64,7 +65,10 @@
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/draggers/SoTrackballDragger.h>
 #include <Inventor/elements/SoCoordinateElement.h>
+#include <Inventor/elements/SoCreaseAngleElement.h>
 #include <Inventor/elements/SoGLCacheContextElement.h>
+#include <Inventor/elements/SoNormalBindingElement.h>
+#include <Inventor/elements/SoNormalElement.h>
 #include <Inventor/elements/SoReplacedElement.h>
 #include <Inventor/errors/SoDebugError.h> 
 #include <Inventor/errors/SoReadError.h>
