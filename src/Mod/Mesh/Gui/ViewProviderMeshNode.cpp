@@ -286,7 +286,7 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
 
     // get the normal of the front clipping plane
     SbVec3f b,n;
-    Viewer.getFrontClippingPlane(b, n);
+    Viewer.getNearPlane(b, n);
     Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = Viewer.getCamera();  
     SbViewVolume  vol = pCam->getViewVolume (); 

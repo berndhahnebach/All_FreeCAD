@@ -199,7 +199,7 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 
     // faces
     SoGroup* pcFlatRoot = new SoGroup();
-
+    //pShapeHints->creaseAngle = F_PI;
     pcFlatRoot->addChild(pShapeHints);
     pcFlatRoot->addChild(pcShapeMaterial);
     pcFlatRoot->addChild(pcMatBinding);
@@ -390,7 +390,7 @@ void ViewProviderMeshFaceSet::partMeshCallback(void * ud, SoEventCallback * cb)
 
     // get the normal of the front clipping plane
     SbVec3f b,n;
-    view->getFrontClippingPlane(b, n);
+    view->getNearPlane(b, n);
     Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = view->getCamera();  
     SbViewVolume  vol = pCam->getViewVolume(); 
@@ -447,7 +447,7 @@ void ViewProviderMeshFaceSet::segmMeshCallback(void * ud, SoEventCallback * cb)
 
     // get the normal of the front clipping plane
     SbVec3f b,n;
-    view->getFrontClippingPlane(b, n);
+    view->getNearPlane(b, n);
     Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = view->getCamera();  
     SbViewVolume  vol = pCam->getViewVolume(); 
@@ -503,7 +503,7 @@ void ViewProviderMeshFaceSet::getFacetsFromPolygon(const std::vector<SbVec2f>& p
 {
     // get the normal of the front clipping plane
     SbVec3f b,n;
-    Viewer.getFrontClippingPlane(b, n);
+    Viewer.getNearPlane(b, n);
     Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = Viewer.getCamera();  
     SbViewVolume  vol = pCam->getViewVolume(); 
