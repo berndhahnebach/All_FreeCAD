@@ -160,7 +160,7 @@ public:
    */
   //@{
   /** Returns the view direction from the user's eye point in direction to the
-   * viewport which is actually the negative normal of the front clipping plane.
+   * viewport which is actually the negative normal of the near plane.
    * The vector is normalized to length of 1.
    */
   SbVec3f getViewDirection() const;
@@ -168,14 +168,18 @@ public:
   SbVec3f getUpDirection() const;
   /** Returns the 3d point on the focal plane to the given 2d point. */
   SbVec3f getPointOnScreen(const SbVec2s&) const;
-  /** Returns the front clipping plane represented by its normal and base point. */
-  void getFrontClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const;
-  /** Returns the back clipping plane represented by its normal and base point. */
-  void getBackClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const;
+  /** Returns the near plane represented by its normal and base point. */
+  void getNearPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const;
+  /** Returns the far plane represented by its normal and base point. */
+  void getFarPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const;
   /** Adds or remove a manipulator to/from the scenegraph. */
   void toggleClippingPlane();
   /** Checks whether a clipping plane is set or not. */
   bool hasClippingPlane() const;
+  /** Project the given normalized 2d point onto the near plane */
+  SbVec3f projectOnNearPlane(const SbVec2f&) const;
+  /** Project the given normalized 2d point onto the far plane */
+  SbVec3f projectOnFarPlane(const SbVec2f&) const;
   //@}
 
   /** 

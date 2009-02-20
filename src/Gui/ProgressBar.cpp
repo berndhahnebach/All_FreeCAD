@@ -103,19 +103,23 @@ void Sequencer::startStep()
 {
     QThread *currentThread = QThread::currentThread();
     QThread *thr = d->bar->thread(); // this is the main thread
-    if (thr != currentThread)
-        return;
-
-    d->bar->setRange(0, (int)nTotalSteps);
-    if ( nTotalSteps == 0 ) {
-        d->progressTime.start();
+    if (thr != currentThread) {
+        d->bar->setRange(0, (int)nTotalSteps);
+        QMetaObject::invokeMethod(d->bar, "show", Qt::QueuedConnection);
     }
+    else {
+        d->bar->setRange(0, (int)nTotalSteps);
+        if ( nTotalSteps == 0 ) {
+            d->progressTime.start();
+            //d->bar->aboutToShow();
+        }
 
-    if ( pendingOperations() == 1 ) {
-        d->measureTime.start();
-        d->waitCursor = new Gui::WaitCursor;
-        d->bar->enterControlEvents();
-        d->bar->aboutToShow();
+        if ( pendingOperations() == 1 ) {
+            d->measureTime.start();
+            d->waitCursor = new Gui::WaitCursor;
+            d->bar->enterControlEvents();
+            d->bar->aboutToShow();
+        }
     }
 }
 
@@ -123,26 +127,29 @@ void Sequencer::nextStep(bool canAbort)
 {
     QThread *currentThread = QThread::currentThread();
     QThread *thr = d->bar->thread(); // this is the main thread
-    if (thr != currentThread)
-        return;
-
-    if (wasCanceled() && canAbort) {
-        // restore cursor
-        pause();
-        bool ok = d->bar->canAbort();
-        // continue and show up wait cursor if needed
-        resume();
-
-        // force to abort the operation
-        if ( ok ) {
-            abort();
-        } else {
-            rejectCancel();
-            setProgress((int)nProgress+1);
-        }
+    if (thr != currentThread) {
+        QMetaObject::invokeMethod(d->bar, "setValue", Qt::/*Blocking*/QueuedConnection,
+            QGenericReturnArgument(), Q_ARG(int,nProgress+1));
     }
     else {
-        setProgress((int)nProgress+1);
+        if (wasCanceled() && canAbort) {
+            // restore cursor
+            pause();
+            bool ok = d->bar->canAbort();
+            // continue and show up wait cursor if needed
+            resume();
+
+            // force to abort the operation
+            if ( ok ) {
+                abort();
+            } else {
+                rejectCancel();
+                setProgress((int)nProgress+1);
+            }
+        }
+        else {
+            setProgress((int)nProgress+1);
+        }
     }
 }
 
@@ -194,8 +201,9 @@ void Sequencer::resetData()
 {
     QThread *currentThread = QThread::currentThread();
     QThread *thr = d->bar->thread(); // this is the main thread
-    if (thr != currentThread)
-        return;
+    if (thr != currentThread) {
+        QMetaObject::invokeMethod(d->bar, "hide", Qt::QueuedConnection);
+    }
 
     d->bar->reset();
     // Note: Under Qt 4.1.4 this forces to run QWindowsStyle::eventFilter() twice 

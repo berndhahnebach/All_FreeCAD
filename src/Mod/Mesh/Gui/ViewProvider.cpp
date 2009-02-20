@@ -332,6 +332,7 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
     SoShapeHints * flathints = new SoShapeHints;
     flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
     flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+//    flathints->creaseAngle = F_PI;
     pcFlatRoot->addChild(flathints);
   }
 
@@ -554,7 +555,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 
     // get the normal of the front clipping plane
     SbVec3f b,n;
-    Viewer.getFrontClippingPlane(b, n);
+    Viewer.getNearPlane(b, n);
     Base::Vector3f cPoint(b[0],b[1],b[2]), cNormal(n[0],n[1],n[2]);
     SoCamera* pCam = Viewer.getCamera();  
     SbViewVolume  vol = pCam->getViewVolume (); 

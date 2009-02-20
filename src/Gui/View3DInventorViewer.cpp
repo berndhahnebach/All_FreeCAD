@@ -1665,10 +1665,10 @@ SbVec3f View3DInventorViewer::getPointOnScreen(const SbVec2s& pnt) const
     return pt;
 }
 
-void View3DInventorViewer::getFrontClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
+void View3DInventorViewer::getNearPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
 {
     SoCamera* pCam = getCamera();
-    SbViewVolume  vol = pCam->getViewVolume();
+    SbViewVolume vol = pCam->getViewVolume();
 
     // get the normal of the front clipping plane
     SbPlane nearPlane = vol.getPlane(vol.nearDist);
@@ -1679,10 +1679,10 @@ void View3DInventorViewer::getFrontClippingPlane(SbVec3f& rcPt, SbVec3f& rcNorma
     rcPt.setValue(d*rcNormal[0], d*rcNormal[1], d*rcNormal[2]);
 }
 
-void View3DInventorViewer::getBackClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
+void View3DInventorViewer::getFarPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
 {
     SoCamera* pCam = getCamera();
-    SbViewVolume  vol = pCam->getViewVolume(); 
+    SbViewVolume vol = pCam->getViewVolume();
 
     // get the normal of the back clipping plane
     SbPlane farPlane = vol.getPlane(vol.nearDist+vol.nearToFar);
@@ -1691,6 +1691,24 @@ void View3DInventorViewer::getBackClippingPlane(SbVec3f& rcPt, SbVec3f& rcNormal
     rcNormal.normalize();
     float nx, ny, nz; rcNormal.getValue(nx, ny, nz);
     rcPt.setValue(d*rcNormal[0], d*rcNormal[1], d*rcNormal[2]);
+}
+
+SbVec3f View3DInventorViewer::projectOnNearPlane(const SbVec2f& pt) const
+{
+    SbVec3f pt1, pt2;
+    SoCamera* cam = this->getCamera();
+    SbViewVolume vol = cam->getViewVolume();
+    vol.projectPointToLine(pt, pt1, pt2);
+    return pt1;
+}
+
+SbVec3f View3DInventorViewer::projectOnFarPlane(const SbVec2f& pt) const
+{
+    SbVec3f pt1, pt2;
+    SoCamera* cam = this->getCamera();
+    SbViewVolume vol = cam->getViewVolume();
+    vol.projectPointToLine(pt, pt1, pt2);
+    return pt2;
 }
 
 void View3DInventorViewer::toggleClippingPlane()
