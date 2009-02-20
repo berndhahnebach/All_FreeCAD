@@ -112,6 +112,10 @@ public:
      * by summarizing the normals of the associated facets.
      */
     std::vector<Base::Vector3f> CalcVertexNormals() const;
+    /** Calculates the normal to the given facet. */
+    inline Base::Vector3f GetNormal (const MeshFacet &rclFacet) const;
+    /** Calculates the gravity point to the given facet. */
+    inline Base::Vector3f GetGravityPoint (const MeshFacet &rclFacet) const;
 
     /** Returns the facet at the given index. This method is rather slow and should be
      * called occassionally only. For fast access the MeshFacetIterator interface should
@@ -411,10 +415,6 @@ protected:
 
     /** Adjusts the facet's orierntation to the given normal direction. */
     inline void AdjustNormal (MeshFacet &rclFacet, const Base::Vector3f &rclNormal);
-    /** Calculates the normal to the given facet. */
-    inline Base::Vector3f GetNormal (const MeshFacet &rclFacet) const;
-    /** Calculates the gravity point to the given facet. */
-    inline Base::Vector3f GetGravityPoint (const MeshFacet &rclFacet) const;
 
     MeshPointArray   _aclPointArray; /**< Holds the array of geometric points. */
     MeshFacetArray   _aclFacetArray; /**< Holds the array of facets. */

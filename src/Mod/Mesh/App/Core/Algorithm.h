@@ -294,31 +294,30 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class MeshExport MeshRefPointToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
+class MeshExport MeshRefPointToFacets
 {
 public:
-  /// Construction
-  MeshRefPointToFacets (const MeshKernel &rclM) : _rclMesh(rclM) 
-  { Rebuild(); }
-  /// Destruction
-  ~MeshRefPointToFacets (void)
-  {
-    for (std::vector<std::set<MeshFacetArray::_TConstIterator> >::iterator it = begin(); it != end(); ++it)
-      it->clear();
-    clear();
-    std::vector<std::set<MeshFacetArray::_TConstIterator> >().swap(*this);
-  }
+    /// Construction
+    MeshRefPointToFacets (const MeshKernel &rclM) : _rclMesh(rclM) 
+    { Rebuild(); }
+    /// Destruction
+    ~MeshRefPointToFacets (void)
+    { }
 
-  /// Rebuilds up data structure
-  void Rebuild (void);
-  std::set<unsigned long> NeighbourPoints(const std::vector<unsigned long>& , int level) const;
-  void Neighbours (unsigned long ulFacetInd, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
+    /// Rebuilds up data structure
+    void Rebuild (void);
+    std::set<MeshFacetArray::_TConstIterator> operator[] (unsigned long) const;
+    std::set<unsigned long> NeighbourPoints(const std::vector<unsigned long>& , int level) const;
+    void Neighbours (unsigned long ulFacetInd, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
+    Base::Vector3f GetNormal(unsigned long, float threshold) const;
 
 protected:
-  void SearchNeighbours(MeshFacetArray::_TConstIterator pFIter, const Base::Vector3f &rclCenter, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
+    void SearchNeighbours(MeshFacetArray::_TConstIterator pFIter, const Base::Vector3f &rclCenter, 
+        float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
 
 protected:
-  const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    std::vector<std::set<unsigned long> > _map;
 };
 
 /**
@@ -327,29 +326,25 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class MeshExport MeshRefFacetToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
+class MeshExport MeshRefFacetToFacets
 {
 public:
-  /// Construction
-  MeshRefFacetToFacets (const MeshKernel &rclM) : _rclMesh(rclM)
-  { Rebuild(); }
-  /// Destruction
-  ~MeshRefFacetToFacets (void)
-  {
-    for (std::vector<std::set<MeshFacetArray::_TConstIterator> >::iterator it = begin(); it != end(); ++it)
-      it->clear();
-    clear();
-    std::vector<std::set<MeshFacetArray::_TConstIterator> >().swap(*this);
-  }
-  /// Rebuilds up data structure
-  void Rebuild (void);
+    /// Construction
+    MeshRefFacetToFacets (const MeshKernel &rclM) : _rclMesh(rclM)
+    { Rebuild(); }
+    /// Destruction
+    ~MeshRefFacetToFacets (void)
+    { }
+    /// Rebuilds up data structure
+    void Rebuild (void);
 
-  /// Returns a set of facets sharing one or more points with the facet with index \a ulFacetIndex.
-  const std::set<MeshFacetArray::_TConstIterator>& Neighbours (unsigned long ulFacetIndex) const
-  { return operator[](ulFacetIndex); }
+    /// Returns a set of facets sharing one or more points with the facet with
+    /// index \a ulFacetIndex.
+    std::set<MeshFacetArray::_TConstIterator> operator[] (unsigned long) const;
 
 protected:
-  const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    std::vector<std::set<unsigned long> > _map;
 };
 
 /**
@@ -358,26 +353,24 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class MeshExport MeshRefPointToPoints : public std::vector<std::set<MeshPointArray::_TConstIterator> >
+class MeshExport MeshRefPointToPoints
 {
 public:
-  /// Construction
-  MeshRefPointToPoints (const MeshKernel &rclM) : _rclMesh(rclM) 
-  { Rebuild(); }
-  /// Destruction
-  ~MeshRefPointToPoints (void)
-  {
-    for (std::vector<std::set<MeshPointArray::_TConstIterator> >::iterator it = begin(); it != end(); ++it)
-      it->clear();
-    clear();
-    std::vector<std::set<MeshPointArray::_TConstIterator> >().swap(*this);
-  }
+    /// Construction
+    MeshRefPointToPoints (const MeshKernel &rclM) : _rclMesh(rclM) 
+    { Rebuild(); }
+    /// Destruction
+    ~MeshRefPointToPoints (void)
+    { }
 
-  /// Rebuilds up data structure
-  void Rebuild (void);
+    /// Rebuilds up data structure
+    void Rebuild (void);
+    std::set<MeshPointArray::_TConstIterator> operator[] (unsigned long) const;
+    Base::Vector3f GetNormal(unsigned long) const;
 
 protected:
-  const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    std::vector<std::set<unsigned long> > _map;
 };
 
 }; // namespace MeshCore 

@@ -3317,7 +3317,7 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
 
 
 
-        for (unsigned long i=0; i<rf2pt.size(); i++)
+        for (unsigned long i=0; i<mesh.CountPoints(); i++)
         {
             // Satz von Dreiecken zu jedem Punkt
             const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
@@ -4062,7 +4062,7 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
         MeshCore::MeshRefPointToFacets rf2pt(mesh);
         MeshCore::MeshGeomFacet t_face;
 
-        int NumOfPoints = rf2pt.size();
+        int NumOfPoints = mesh.CountPoints();
 
         //int NumOfPoints = mesh.CountPoints();
 
@@ -4073,7 +4073,7 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
         {
 
             err = 0.0;
-            for (unsigned long i=0; i<rf2pt.size(); i++)
+            for (unsigned long i=0; i<mesh.CountPoints(); i++)
             {
                 // Satz von Dreiecken zu jedem Punkt
                 const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
