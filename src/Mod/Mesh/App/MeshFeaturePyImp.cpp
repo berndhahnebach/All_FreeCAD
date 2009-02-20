@@ -73,6 +73,20 @@ PyObject*  MeshFeaturePy::harmonizeNormals(PyObject *args)
     Py_Return; 
 }
 
+PyObject*  MeshFeaturePy::smooth(PyObject *args)
+{
+    int iter=1;
+    float d_max=FLOAT_MAX;
+    if (!PyArg_ParseTuple(args, "|if", &iter,&d_max))
+        return NULL;
+
+    PY_TRY {
+        getFeaturePtr()->Mesh.smooth(iter, d_max);
+    } PY_CATCH;
+
+    Py_Return; 
+}
+
 PyObject*  MeshFeaturePy::removeNonManifolds(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))

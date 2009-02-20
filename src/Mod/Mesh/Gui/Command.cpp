@@ -1049,6 +1049,39 @@ bool CmdMeshEvaluateSolid::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
+DEF_STD_CMD_A(CmdMeshSmoothing);
+
+CmdMeshSmoothing::CmdMeshSmoothing()
+  :Command("Mesh_Smoothing")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Smooth");
+    sToolTipText  = QT_TR_NOOP("Smooth the selected meshes");
+    sWhatsThis    = "Mesh_Smoothing";
+    sStatusTip    = QT_TR_NOOP("Smooth the selected meshes");
+}
+
+void CmdMeshSmoothing::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    openCommand("Smooth");
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        App::Document* doc = (*it)->getDocument();
+        doCommand(Doc,"App.getDocument(\"%s\").getObject(\"%s\").smooth()"
+                     ,doc->getName(), (*it)->getNameInDocument());
+    }
+    commitCommand();
+}
+
+bool CmdMeshSmoothing::isActive(void)
+{
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshHarmonizeNormals);
 
 CmdMeshHarmonizeNormals::CmdMeshHarmonizeNormals()
@@ -1504,6 +1537,7 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshEvaluateSolid());
   rcCmdMgr.addCommand(new CmdMeshHarmonizeNormals());
   rcCmdMgr.addCommand(new CmdMeshFlipNormals());
+  rcCmdMgr.addCommand(new CmdMeshSmoothing());
   rcCmdMgr.addCommand(new CmdMeshFixDegenerations());
   rcCmdMgr.addCommand(new CmdMeshFixDuplicateFaces());
   rcCmdMgr.addCommand(new CmdMeshFixDuplicatePoints());

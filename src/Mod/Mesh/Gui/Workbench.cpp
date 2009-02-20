@@ -77,7 +77,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_FromGeometry" << "Separator"
           << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" 
           << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents"
-          << "Mesh_RemoveCompByHand" << "Separator" 
+          << "Mesh_RemoveCompByHand" << "Mesh_Smoothing" << "Separator" 
           << "Mesh_BuildRegularSolid" << boolean << "Separator" << "Mesh_PolyCut"
           << "Mesh_PolySplit" << "Mesh_PolySegm" << "Mesh_ToolMesh" << "Mesh_VertexCurvature";
     return root;
