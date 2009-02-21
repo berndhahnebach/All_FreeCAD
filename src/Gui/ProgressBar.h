@@ -34,6 +34,7 @@ namespace Gui {
 
 struct SequencerPrivate;
 struct ProgressBarPrivate;
+class ProgressBar;
 
 /**
  * FreeCAD's progress bar for long operations
@@ -41,15 +42,13 @@ struct ProgressBarPrivate;
  *
  * \code
  * unsigned long steps = ...
- * Base::Sequencer().start("Starting progress bar", 0);
+ * Base::SequencerLauncher seq("Starting progress bar", 0);
  *
  * for (unsigned long i=0; i<steps;i++)
  * {
- *   Base::Sequencer().next();
+ *   seq.next();
  *   // do one step of your algorithm
  * }
- *
- * Base::Sequencer().stop();
  * 
  * \endcode
  *
@@ -59,30 +58,27 @@ struct ProgressBarPrivate;
  * void function1()
  * {
  *   unsigned long steps = ...
- *   Base::Sequencer().start("Starting progress bar", 0);
+ *   Base::SequencerLauncger seq("Starting progress bar", 0);
  *
  *   for (unsigned long i=0; i<steps;i++)
  *   {
- *     Base::Sequencer().next();
+ *     seq.next();
  *     // do one step of your algorithm
  *   }
  *
- *   Base::Sequencer().stop();
  * }
  * 
  * void function2()
  * {
  *   unsigned long steps = ...
- *   Base::Sequencer().start("Starting progress bar", 0);
+ *   Base::SequencerLauncher seq("Starting progress bar", 0);
  *
  *   for (unsigned long i=0; i<steps;i++)
  *   {
- *     Base::Sequencer().next();
+ *     seq.next();
  *     // do one step of your algorithm calling function1
  *     function1();
  *   }
- *
- *   Base::Sequencer().stop();
  * }
  *
  * \endcode
@@ -104,9 +100,8 @@ public:
     void pause();
     /** This sets the wait cursor again and grabs the keyboard. @see pause() */
     void resume();
-    /** Resets the sequencer */
-    void resetData();
-    /** Returns an instance of the progress bar. It creates an if needed. */
+    bool isGuiThread() const;
+    /** Returns an instance of the progress bar. It creates one if needed. */
     QProgressBar* getProgressBar(QWidget* parent=0);
 
 protected:
@@ -121,6 +116,8 @@ protected:
     void startStep();
     /** Increase the progress bar. */
     void nextStep(bool canAbort);
+    /** Resets the sequencer */
+    void resetData();
     void showRemainingTime();
 
 private:
@@ -132,6 +129,8 @@ private:
     //@}
     SequencerPrivate* d;
     static Sequencer* _pclSingleton;
+
+    friend class ProgressBar;
 };
 
 class ProgressBar : public QProgressBar
@@ -155,19 +154,20 @@ public:
 public Q_SLOTS:
     /** Sets the time that must pass before the progress bar appears to \a ms.
     */
-    void setMinimumDuration ( int ms );
+    void setMinimumDuration (int ms);
 
     bool canAbort() const;
 
 protected:
-    void showEvent( QShowEvent* );
-    void hideEvent( QHideEvent* );
+    void showEvent(QShowEvent*);
+    void hideEvent(QHideEvent*);
 
 protected Q_SLOTS:
     /* Shows the progress bar if it is still hidden after the operation has been started
     * and minimumDuration milliseconds have passed.
     */
     void delayedShow();
+    void aboutToShow();
 
 private:
     /** @name for internal use only */
@@ -175,9 +175,8 @@ private:
     void resetObserveEventFilter();
     /** Gets the events under control */
     void enterControlEvents();
-    /** Loses the control over incoming events*/
+    /** Looses the control over incoming events*/
     void leaveControlEvents();
-    void aboutToShow();
     //@}
     ProgressBarPrivate* d;
     Sequencer* sequencer;
