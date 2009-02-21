@@ -93,11 +93,7 @@ public:
     /**
      * Sets the active window to \a view.
      */
-    void setActiveWindow( MDIView* view );
-    /**
-     * Sets text to the pane in the status bar.
-     */
-    void setPaneText(int i, QString text);
+    void setActiveWindow(MDIView* view);
     /**
      * MRU: Appends \a file to the list of recent files.
      */
@@ -133,6 +129,10 @@ public:
     //@}
 
 public Q_SLOTS:
+    /**
+     * Sets text to the pane in the status bar.
+     */
+    void setPaneText(int i, QString text);
     /**
      * Arranges all child windows in a horizontal tile pattern.
      */

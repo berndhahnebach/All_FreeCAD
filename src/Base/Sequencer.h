@@ -36,7 +36,7 @@ class SequencerLauncher;
 
 /**
  * \brief This class gives the user an indication of the progress of an operation and
- * it is used to reassure them that the application is still running.
+ * it is used to reassure him that the application is still running.
  *
  * Here are some code snippets of how to use the sequencer:
  *  \code
@@ -44,67 +44,65 @@ class SequencerLauncher;
  *  #include <Base/Sequencer.h>
  *
  *  //first example
- *  if (Base::Sequencer().start ("my text", 10))
+ *  Base::SequencerLauncher seq("my text", 10))
  *  for (int i=0; i<10; i++)
  *  {
  *    // do something
- *    Base::Sequencer().next ();
+ *    seq.next ();
  *  }
- *  Base::Sequencer().stop ();
  *
  *  //second example
- *  if (Base::Sequencer().start ("my text", 10))
+ *  Base::SequencerLauncher seq("my text", 10))
  *  do
  *  {
  *    // do something
  *  }
- *  while ( Base::Sequencer().next() );
- *  Base::Sequencer().stop ();
+ *  while (seq.next());
  *
  *  \endcode
  *
- * The implementation of this class also supports the nesting of several running
- * operations at a time.
+ * The implementation of this class also supports several nested instances
+ * at a time. But note, that only the first instance has an effect. Any further
+ * sequencer instance doesn't influence the total numer of iteration steps. This
+ * is simply because it's impossible to get the exact number of iteration steps
+ * for nested instances and thus we have either too few steps estimated then the 
+ * sequencer may indicate 100% but the algorithm still running or we have too many
+ * steps estimated so that the an algorithm may stop long before the sequencer
+ * reaches 100%. 
  *
  *  \code
- *  try{
+ *  try {
  *    //start the first operation
- *    Base::Sequencer().start ("my text", 10)
+ *    Base::SequencerLauncher seq1("my text", 10)
  *    for (int i=0; i<10, i++)
  *    {
  *      // do something
  *
  *      // start the second operation while the first one is still running
- *      Base::Sequencer().start ("another text", 10);
+ *      Base::SequencerLauncher seq2("another text", 10);
  *      for (int j=0; j<10; j++)
  *      {
  *        // do something different
- *        Base::Sequencer().next ();
+ *        seq2.next ();
  *      }
- *      Base::Sequencer().stop ();
  *
- *      Base::Sequencer().next ( true ); // allow to cancel
+ *      seq1.next ( true ); // allow to cancel
  *    }
- *    Base::Sequencer().stop ();
- *  }catch(const Base::AbortException&){
+ *  }
+ *  catch(const Base::AbortException&){
  *    // cleanup your data if needed
- *  }catch(...){
- *    // cleanup your data
  *  }
  *
  *  \endcode
  *
- * \note If using the sequencer with Sequencer().next(\a true ) then you must take into account
- * that the exception AbortException could be thrown, e.g. in case the ESC was pressed. So in this
- * case it's always a good idea to use the sequencer within a try-catch block.
+ * \note If using the sequencer with SequencerLauncher.next(\a true) then you must
+ * take into account that the exception \a AbortException could be thrown, e.g. in
+ * case the ESC button was pressed. So in this case it's always a good idea to use
+ * the sequencer within a try-catch block.
  *
- * \note In case the operation was aborted Sequencer().stop() needs not to be called in the catch
- * block since SequencerBase cleans up internal data on its own.
- * @see SequencerLauncher
- *
- * \note In case several nested sequencers are used then no percentage progress is possible any more
- * because the number of total steps cannot be determined for sure. Then a busy indicator is shown
- * instead of.
+ * \note Instances of SequencerLauncher should always be created on the stack.
+ * This is because if an exception somewhere is thrown the destructor is auto-
+ * matically called to clean-up internal data.
  *
  * \author Werner Mayer
  */
@@ -121,16 +119,18 @@ protected:
     bool start(const char* pszStr, size_t steps);
     /**
      * Performs the next step and returns true if the operation is not yet finished.
+     * But note, when 0 was passed to start() as the number of total steps this method
+     * always returns false.
+     *
      * In this method nextStep() gets invoked that can be reimplemented in sub-classes.
      * If \a canAbort is true then the operations can be aborted, otherwise (the default)
-     * the operation cannot be aborted and the sequencer just acts as an indicator of how
-     * long the operation will take.
+     * the operation cannot be aborted. In case it gets aborted an exception AbortException
+     * is thrown.
      */
     bool next(bool canAbort = false);
     /**
-     * Reduces the number of pending operations by one and stops the
-     * sequencer if all operations are finished. It returns false if there are still
-     * pending operations, otherwise it returns true.
+     * Stops the sequencer if all operations are finished. It returns false if
+     * there are still pending operations, otherwise it returns true.
      */
     bool stop();
 
@@ -154,7 +154,7 @@ public:
      */
     virtual void pause();
     /**
-     * Continue with progress. The default implementation does nothing.
+     * Continues with progress. The default implementation does nothing.
      * @see pause(), @see Gui::ProgressBar.
      */
     virtual void resume();
@@ -178,15 +178,10 @@ public:
     void tryToCancel();
     /**
      * If you tried to cancel but then decided to continue the operation.
-     * E.g. in @ref Gui::ProgressBar a dialog appears asking if you really want to cancel. If you decide
-     * to continue this method must be called.
+     * E.g. in @ref Gui::ProgressBar a dialog appears asking if you really want to
+     * cancel. If you decide to continue this method must be called.
      */
     void rejectCancel();
-    /**
-     * Returns the number of pending operations. This number complies with the number
-     * of calls of @ref start() and @ref stop().
-     */
-    int pendingOperations() const;
     /** Returns the current state of progress in percent. */
     int progressInPercent() const;
 
@@ -208,12 +203,14 @@ protected:
     /**
      * This method can be reimplemented in sub-classes to give the user a feedback
      * when the next is performed. The default implementation does nothing. If \a canAbort
-     * is true then the pending operation can aborted, otherwise not.
+     * is true then the pending operation can aborted, otherwise not. Depending on the
+     * re-implementation this method can throw an AbortException if canAbort is true.
      */
     virtual void nextStep(bool canAbort);
     /**
      * Resets internal data.
-     * If you want to reimplement this method, it is very important to call it ín your code.
+     * If you want to reimplement this method, it is very important to call it ín
+     * the re-implemented method.
      */
     virtual void resetData();
 
@@ -229,11 +226,7 @@ private:
 
     bool _bLocked; /**< Lock/unlock sequencer. */
     bool _bCanceled; /**< Is set to true if the last pending operation was canceled */
-    int _nInstStarted; /**< Stores the number of pending operations */
-    int _nMaxInstStarted; /**< Stores the number of maximum pending operations until all pending operations
-                            are finished. */
     int _nLastPercentage; /**< Progress in percent. */
-    size_t _nNewSteps; /**< Is used for nested calls of the sequencer. */
     static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */
     static SequencerLauncher* _topLauncher; /**< The outermost launcher */
 };
@@ -348,9 +341,8 @@ private:
  *    {
  *      // do something (e.g. here can be thrown an exception)
  *      ...
- *      Base::Sequencer().next ();
+ *      seq.next ();
  *    }
- *    // Base::Sequencer().stop() needs not to be called, the destructor of SequencerLauncher does it for us.
  *  }
  *
  * \endcode
