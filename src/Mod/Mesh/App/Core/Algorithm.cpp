@@ -1664,13 +1664,15 @@ void MeshRefPointToFacets::Rebuild (void)
     }
 }
 
-Base::Vector3f MeshRefPointToFacets::GetNormal(unsigned long pos, float threshold) const
+Base::Vector3f MeshRefPointToFacets::GetNormal(unsigned long pos) const
 {
     const MeshFacetArray& rFacets = _rclMesh.GetFacets();
     const std::set<unsigned long>& n = _map[pos];
     Base::Vector3f normal;
+    MeshGeomFacet f;
     for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
-        normal += _rclMesh.GetNormal(rFacets[*it]);
+        f = _rclMesh.GetFacet(*it);
+        normal += f.Area() * f.GetNormal();
     }
 
     normal.Normalize();

@@ -309,7 +309,7 @@ public:
     std::set<MeshFacetArray::_TConstIterator> operator[] (unsigned long) const;
     std::set<unsigned long> NeighbourPoints(const std::vector<unsigned long>& , int level) const;
     void Neighbours (unsigned long ulFacetInd, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
-    Base::Vector3f GetNormal(unsigned long, float threshold) const;
+    Base::Vector3f GetNormal(unsigned long) const;
 
 protected:
     void SearchNeighbours(MeshFacetArray::_TConstIterator pFIter, const Base::Vector3f &rclCenter, 
