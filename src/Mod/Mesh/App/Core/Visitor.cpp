@@ -105,7 +105,7 @@ unsigned long MeshKernel::VisitNeighbourFacetsOverCorners (MeshFacetVisitor &rcl
       for (int i = 0; i < 3; i++)
       {
         const MeshFacet &rclFacet = raclFAry[*pCurrFacet];
-        std::set<MeshFacetArray::_TConstIterator> &raclNB = clRPF[rclFacet._aulPoints[i]];
+        std::set<MeshFacetArray::_TConstIterator> raclNB = clRPF[rclFacet._aulPoints[i]];
         for (std::set<MeshFacetArray::_TConstIterator>::iterator pINb = raclNB.begin(); pINb != raclNB.end(); pINb++)
         {
           if ((*pINb)->IsFlag(MeshFacet::VISIT) == false)  // nur besuchen wenn VISIT Flag nicht gesetzt
@@ -144,7 +144,7 @@ unsigned long MeshKernel::VisitNeighbourPoints (MeshPointVisitor &rclPVisitor, u
     // besuche alle Nachbarn des aktuellen Level
     for (clCurrIter = aclCurrentLevel.begin(); clCurrIter < aclCurrentLevel.end(); ++clCurrIter)
     {
-      std::set<MeshPointArray::_TConstIterator> &raclNB = clNPs[*clCurrIter];
+      std::set<MeshPointArray::_TConstIterator> raclNB = clNPs[*clCurrIter];
       for (std::set<MeshPointArray::_TConstIterator>::iterator pINb = raclNB.begin(); pINb != raclNB.end(); ++pINb)
       {
         if ((*pINb)->IsFlag(MeshPoint::VISIT) == false)  // nur besuchen wenn VISIT Flag nicht gesetzt
