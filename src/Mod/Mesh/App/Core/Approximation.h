@@ -149,7 +149,7 @@ public:
      * Returns the distance from the point \a rcPoint to the fitted plane. If Fit() has not been
      * called FLOAT_MAX is returned.
      */ 
-    float GetDistanceToPlane(Base::Vector3f const &rcPoint) const;
+    float GetDistanceToPlane(const Base::Vector3f &rcPoint) const;
     /**
      * Returns the standard deviation from the points to the fitted plane. If Fit() has not been
      * called FLOAT_MAX is returned.

@@ -35,7 +35,7 @@
 // #include <boost.h>  Contents of boost.h
 
 // Allow control over DLL version being built
-#if defined(unix) || defined(__unix) || defined(__unix__)
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 #  define BOOST_DECL
 #elif defined(ZIPIOS_DLL)
 #  ifdef ZIPIOS_EXPORTS
@@ -48,7 +48,7 @@
 #endif
 // end of contents of boost.h
 
-#if defined(unix) || defined(__unix) || defined(__unix__)
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 #include <sys/types.h>
 #endif
 
