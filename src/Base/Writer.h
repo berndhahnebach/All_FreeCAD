@@ -25,8 +25,9 @@
 
 
 #include <string>
+#include <sstream>
 #include <vector>
-#include <assert.h>
+#include <cassert>
 
 #include "zipios/zipios-config.h"
 #include "zipios/zipfile.h"
