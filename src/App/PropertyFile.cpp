@@ -277,6 +277,7 @@ Property *PropertyFileIncluded::Copy(void) const
         bool done = file.renameFile(NewName.filePath().c_str());
         assert(done);
         // remember the new name for the Undo
+		//printf("Copy this=%p Befor=%s After=%s\n",p,p->_cValue.c_str(),NewName.filePath().c_str());
         p->_cValue = NewName.filePath().c_str();
     }
 
@@ -289,6 +290,8 @@ void PropertyFileIncluded::Paste(const Property &from)
     Base::FileInfo file(_cValue);
     // delete old file (if still there)
     file.deleteFile();
+	//printf("Paste this=%p Befor=%s After=%s\n",from,p->_cValue.c_str(),NewName.filePath().c_str());
+
     if (!dynamic_cast<const PropertyFileIncluded&>(from)._cValue.empty()) {
         // move the saved files back in place
         Base::FileInfo NewFile(dynamic_cast<const PropertyFileIncluded&>(from)._cValue);
