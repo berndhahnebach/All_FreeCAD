@@ -52,9 +52,10 @@ short SketchObject::mustExecute() const
 
 App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
-    //SketchFlatInterface temp;
-    //temp.load(SketchFlatFile.getValue());
+    SketchFlatInterface temp;
+    temp.load(SketchFlatFile.getValue());
 
+	temp.getGeoAsShape();
 
     return App::DocumentObject::StdReturn;
 }

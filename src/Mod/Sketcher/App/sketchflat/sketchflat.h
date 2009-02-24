@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <Base/Exception.h>
+
 #include <math.h>
 
 // Generally useful definitions
@@ -319,7 +321,7 @@ void dbp2(char *str, ...);
         uiError("at file " __FILE__ " line %d", __LINE__); \
         dbp("at file " __FILE__ " line %d", __LINE__); \
         if(0) *((char *)0) = 1; \
-        exit(-1); \
+		throw Base::Exception(); \
     } while(0)
 // For a non-fatal error; print a message the first few times it happens,
 // then shut up about it.

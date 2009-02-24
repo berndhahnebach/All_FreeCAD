@@ -29,6 +29,8 @@
 #define CREATE_MENU_TABLES
 #include "sketchflat.h"
 
+#include <Base/Console.h>
+
 #define FREEZE_SUBKEY "SketchFlat"
 //#include "freeze.h"
 
@@ -125,8 +127,8 @@ void dbp(char *str, ...)
 
     va_start(f, str);
     _vsnprintf(buf+7, sizeof(buf)-100, str, f);
-    OutputDebugString(buf);
-    OutputDebugString("\n");
+    Base::Console().Log(buf);
+    Base::Console().Log("\n");
 }
 void dbp2(char *str, ...)
 {
@@ -138,8 +140,8 @@ void dbp2(char *str, ...)
 
     va_start(f, str);
     _vsnprintf(buf+7, sizeof(buf)-100, str, f);
-    OutputDebugString(buf);
-    OutputDebugString("\n");
+    Base::Console().Log(buf);
+    Base::Console().Log("\n");
 }
 
 //-----------------------------------------------------------------------------
@@ -212,11 +214,12 @@ int uiSaveFileYesNoCancel(void)
 //-----------------------------------------------------------------------------
 void uiError(char *str, ...)
 {
-    //va_list f;
-    //char buf[1024];
-    //va_start(f, str);
-    //vsprintf(buf, str, f);
+    va_list f;
+    char buf[1024];
+    va_start(f, str);
+    vsprintf(buf, str, f);
 
+	Base::Console().Error(buf);
     //HWND h = GetForegroundWindow();
     //MessageBox(h, buf, "SketchFlat Error", MB_OK | MB_ICONERROR);
 }

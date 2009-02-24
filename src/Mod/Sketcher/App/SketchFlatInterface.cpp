@@ -241,6 +241,52 @@ std::string SketchFlatInterface::getGeo(void)
 	return std::string();
 }
 
+Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
+{
+	int point=-1;
+	int NumberOfPoints;
+	double x,y;
+	struct points2D {
+		points2D(double x,double y):x(x),y(y){}
+
+		double x;
+		double y;
+	};
+
+	std::vector<points2D> points;
+
+	for(int i = 0; i<SK->entities; ++i)
+	{
+		switch(SK->entity[i].type){
+			case ENTITY_DATUM_POINT  :      
+			case ENTITY_DATUM_LINE   :  
+				break;
+			case ENTITY_LINE_SEGMENT :  
+				NumberOfPoints = SK->entity[i].points;
+				for(int p=0; p<NumberOfPoints; p++){
+					EvalPoint(SK->point[POINT_FOR_ENTITY(i, p)], &x, &y);
+					points.push_back(points2D(x/1000.0,y/1000.0));
+				}
+				break;
+
+			case ENTITY_CIRCLE       :   
+			case ENTITY_CIRCULAR_ARC :  
+				for(int p=0; i<SK->entity[i].points; p++)
+					EvalPoint(SK->point[POINT_FOR_ENTITY(i, p)], &x, &y);
+				SK->entity[i].lines;
+				SK->entity[i].params;
+				break;
+			case ENTITY_CUBIC_SPLINE : 
+			case ENTITY_TTF_TEXT     :   
+			case ENTITY_IMPORTED     :
+				break;
+		}
+
+	}
+
+	return Part::TopoShape();
+}
+
 
 
 
