@@ -156,3 +156,75 @@ void MeshLoaderThread::run()
     this->mesh->load((const char*)filename.toUtf8());
 }
 
+// --------------------------------------
+
+PROPERTY_SOURCE(Sandbox::SandboxObject, App::DocumentObject)
+
+SandboxObject::SandboxObject()
+{
+    ADD_PROPERTY(Integer,(4711)  );
+}
+
+SandboxObject::~SandboxObject()
+{
+}
+
+short SandboxObject::mustExecute(void) const
+{
+    if (Integer.isTouched())
+        return 1;
+    return 0;
+}
+
+App::DocumentObjectExecReturn *SandboxObject::execute(void)
+{
+    Base::Console().Message("SandboxObject::execute()\n");
+    return 0;
+}
+
+void SandboxObject::onChanged(const App::Property* prop)
+{
+    if (prop == &Integer)
+        Base::Console().Message("SandboxObject::onChanged(%d)\n", Integer.getValue());
+    App::DocumentObject::onChanged(prop);
+}
+
+void SandboxObject::setIntValue(int v)
+{
+    Base::Console().Message("SandboxObject::setIntValue(%d)\n", v);
+    Integer.setValue(v);
+}
+
+void SandboxObject::resetValue()
+{
+    Base::Console().Message("SandboxObject::resetValue()\n");
+    Integer.setValue(4711);
+}
+
+DocumentTestThread::DocumentTestThread(QObject* parent)
+  : QThread(parent)
+{
+}
+
+DocumentTestThread::~DocumentTestThread()
+{
+}
+
+void DocumentTestThread::run()
+{
+    Base::Console().Message("DocumentTestThread::run()\n");
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    DocumentProtector dp(doc);
+    SandboxObject* obj = static_cast<SandboxObject*>(dp.addObject("Sandbox::SandboxObject"));
+
+    DocumentObjectProtector op(obj);
+    App::PropertyString Name;Name.setValue("MyLabel");
+    op.setProperty("Label", Name);
+
+    App::PropertyInteger Int;Int.setValue(2);
+    op.setProperty("Integer", Int);
+    op.execute(CallableWithArgs<SandboxObject,int,&SandboxObject::setIntValue>(obj,4));
+
+    dp.recompute();
+    op.execute(Callable<SandboxObject,&SandboxObject::resetValue>(obj));
+}

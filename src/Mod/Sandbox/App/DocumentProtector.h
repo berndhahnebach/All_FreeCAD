@@ -60,15 +60,79 @@ private:
     /** The property of an observed object has changed */
     void slotChangedObject(App::DocumentObject& Obj, App::Property& Prop);
     void validate();
+};
+
+class AbstractCallable
+{
+public:
+    AbstractCallable()
+    {
+    }
+    virtual ~AbstractCallable()
+    {
+    }
+
+    virtual void operator()() const = 0;
+};
+
+template <class T, void (T::*method)()>
+class Callable : public AbstractCallable
+{
+public:
+    Callable(App::DocumentObject* o) : obj(o)
+    {
+    }
+    virtual ~Callable()
+    {
+    }
+
+    virtual void operator()() const
+    {
+        T* v = static_cast<T*>(obj);
+        (v->*method)();
+    }
 
 private:
     App::DocumentObject* obj;
+};
 
-    // friends
-    friend class CustomDocumentProtectorEvent;
-    friend class CustomAddObjectEvent;
-    friend class CustomRemoveObjectEvent;
-    friend class CustomRecomputeEvent;
+template <class T, class Arg, void (T::*method)(Arg)>
+class CallableWithArgs : public AbstractCallable
+{
+public:
+    CallableWithArgs(App::DocumentObject* o, Arg a) : obj(o), arg(a)
+    {
+    }
+    virtual ~CallableWithArgs()
+    {
+    }
+
+    virtual void operator()() const
+    {
+        T* v = static_cast<T*>(obj);
+        (v->*method)(arg);
+    }
+
+private:
+    App::DocumentObject* obj;
+    Arg arg;
+};
+
+class SandboxAppExport DocumentObjectProtector
+{
+public:
+    DocumentObjectProtector(App::DocumentObject*);
+    ~DocumentObjectProtector();
+
+    App::DocumentObject* getObject() const;
+    bool setProperty(const std::string& name, const App::Property& p);
+    void execute(const AbstractCallable&);
+
+private:
+    void validate();
+
+private:
+    App::DocumentObject* obj;
 };
 
 }

@@ -27,6 +27,7 @@
 #include <QThread>
 #include <QMutex>
 #include <Base/Handle.h>
+#include <App/DocumentObject.h>
 
 namespace Mesh {
     class MeshObject;
@@ -79,6 +80,37 @@ protected:
 private:
     QString filename;
     Base::Reference<Mesh::MeshObject> mesh;
+};
+
+class SandboxObject : public App::DocumentObject
+{
+    PROPERTY_HEADER(SandboxObject);
+
+public:
+    SandboxObject();
+    ~SandboxObject();
+
+    App::PropertyInteger Integer;
+
+    short mustExecute(void) const;
+    App::DocumentObjectExecReturn *execute(void);
+    void onChanged(const App::Property* prop);
+    const char* getViewProviderName(void) const {
+        return "Gui::ViewProviderDocumentObject";
+    }
+
+    void setIntValue(int);
+    void resetValue();
+};
+
+class SandboxAppExport DocumentTestThread : public QThread
+{
+public:
+    DocumentTestThread(QObject* parent=0);
+    ~DocumentTestThread();
+
+protected:
+    void run();
 };
 
 }

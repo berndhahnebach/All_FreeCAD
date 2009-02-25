@@ -69,6 +69,30 @@ void CmdSandboxDocumentThread::activated(int iMsg)
 
 // -------------------------------------------------------------------------------
 
+DEF_STD_CMD(CmdSandboxDocumentTestThread);
+
+CmdSandboxDocumentTestThread::CmdSandboxDocumentTestThread()
+  :Command("Sandbox_TestThread")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Test thread");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool1";
+}
+
+void CmdSandboxDocumentTestThread::activated(int iMsg)
+{
+    App::GetApplication().newDocument("Thread");
+    Sandbox::DocumentTestThread* dt = new Sandbox::DocumentTestThread();
+    QObject::connect(dt, SIGNAL(finished()), dt, SLOT(deleteLater()));
+    dt->start();
+}
+
+// -------------------------------------------------------------------------------
+
 DEF_STD_CMD(CmdSandboxDocThreadWithSeq);
 
 CmdSandboxDocThreadWithSeq::CmdSandboxDocThreadWithSeq()
@@ -505,6 +529,7 @@ void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
     rcCmdMgr.addCommand(new CmdSandboxDocumentThread());
+    rcCmdMgr.addCommand(new CmdSandboxDocumentTestThread());
     rcCmdMgr.addCommand(new CmdSandboxDocThreadWithSeq());
     rcCmdMgr.addCommand(new CmdSandboxDocThreadBusy());
     rcCmdMgr.addCommand(new CmdSandboxDocumentNoThread());

@@ -36,6 +36,7 @@
 #include "DocumentProtector.h"
 
 #include <App/Document.h>
+#include <App/DocumentObject.h>
 #include <Base/Exception.h>
 
 using namespace Sandbox;
@@ -45,29 +46,28 @@ namespace Sandbox {
 
 static const int QT_CUSTOM_EVENT_PROTECTOR = 10000;
 
-class CustomDocumentProtectorEvent : public QEvent
+class AbstractCustomProtectorEvent : public QEvent
 {
 public:
-    CustomDocumentProtectorEvent(DocumentProtector* dp)
-        : QEvent(QEvent::Type(QT_CUSTOM_EVENT_PROTECTOR)), dp(dp), semaphore(0)
+    AbstractCustomProtectorEvent()
+        : QEvent(QEvent::Type(QT_CUSTOM_EVENT_PROTECTOR)), semaphore(0)
     {
     }
-    ~CustomDocumentProtectorEvent()
+    ~AbstractCustomProtectorEvent()
     {
         if (semaphore)
             semaphore->release();
     }
     virtual void execute() = 0;
 
-    DocumentProtector* dp;
     QSemaphore* semaphore;
 };
 
-class CustomAddObjectEvent : public CustomDocumentProtectorEvent
+class CustomAddObjectEvent : public AbstractCustomProtectorEvent
 {
 public:
-    CustomAddObjectEvent(DocumentProtector* dp, const std::string& type, const std::string& name)
-        : CustomDocumentProtectorEvent(dp), type(type), name(name)
+    CustomAddObjectEvent(App::DocumentObject** o, App::Document* d, const std::string& type, const std::string& name)
+        : obj(o), doc(d), type(type), name(name)
     {
     }
     ~CustomAddObjectEvent()
@@ -75,17 +75,19 @@ public:
     }
     void execute()
     {
-        dp->obj = dp->getDocument()->addObject(this->type.c_str(), this->name.c_str());
+        *obj = doc->addObject(this->type.c_str(), this->name.c_str());
     }
 
+protected:
+    App::DocumentObject** obj;
+    App::Document* doc;
     std::string type, name;
 };
 
-class CustomRemoveObjectEvent : public CustomDocumentProtectorEvent
+class CustomRemoveObjectEvent : public AbstractCustomProtectorEvent
 {
 public:
-    CustomRemoveObjectEvent(DocumentProtector* dp, const std::string& name)
-        : CustomDocumentProtectorEvent(dp), name(name)
+    CustomRemoveObjectEvent(App::Document* d, const std::string& n) : doc(d), name(n)
     {
     }
     ~CustomRemoveObjectEvent()
@@ -93,17 +95,18 @@ public:
     }
     void execute()
     {
-        dp->getDocument()->remObject(this->name.c_str());
+        doc->remObject(this->name.c_str());
     }
 
+protected:
+    App::Document* doc;
     std::string name;
 };
 
-class CustomRecomputeEvent : public CustomDocumentProtectorEvent
+class CustomRecomputeEvent : public AbstractCustomProtectorEvent
 {
 public:
-    CustomRecomputeEvent(DocumentProtector* dp)
-        : CustomDocumentProtectorEvent(dp)
+    CustomRecomputeEvent(App::Document* d) : doc(d)
     {
     }
     ~CustomRecomputeEvent()
@@ -111,8 +114,50 @@ public:
     }
     void execute()
     {
-        dp->getDocument()->recompute();
+        doc->recompute();
     }
+
+protected:
+    App::Document* doc;
+};
+
+class CustomPropertyEvent : public AbstractCustomProtectorEvent
+{
+public:
+    CustomPropertyEvent(App::Property& p, const App::Property& v)
+      : property(p), value(v)
+    {
+    }
+    ~CustomPropertyEvent()
+    {
+    }
+    void execute()
+    {
+        property.Paste(value);
+    }
+
+protected:
+    App::Property& property;
+    const App::Property& value;
+};
+
+class CustomCallableEvent : public AbstractCustomProtectorEvent
+{
+public:
+    CustomCallableEvent(const AbstractCallable& call)
+      : callable(call)
+    {
+    }
+    ~CustomCallableEvent()
+    {
+    }
+    void execute()
+    {
+        callable();
+    }
+
+protected:
+    const AbstractCallable& callable;
 };
 
 class DocumentReceiver : public QObject
@@ -133,6 +178,7 @@ protected:
 
     // friends
     friend class DocumentProtector;
+    friend class DocumentObjectProtector;
 };
 
 Q_GLOBAL_STATIC(DocumentReceiver, theInstance)
@@ -155,7 +201,7 @@ void DocumentReceiver::postEventAndWait(QEvent* e)
     }
     else {
         QSemaphore semaphore;
-        static_cast<CustomDocumentProtectorEvent*>(e)->semaphore = &semaphore;
+        static_cast<AbstractCustomProtectorEvent*>(e)->semaphore = &semaphore;
         QCoreApplication::postEvent(DocumentReceiver::globalInstance(), e);
         // wait until the event has been processed
         semaphore.acquire();
@@ -165,14 +211,14 @@ void DocumentReceiver::postEventAndWait(QEvent* e)
 void DocumentReceiver::customEvent(QEvent* e)
 {
     if ((int)e->type() == QT_CUSTOM_EVENT_PROTECTOR) {
-        static_cast<CustomDocumentProtectorEvent*>(e)->execute();
+        static_cast<AbstractCustomProtectorEvent*>(e)->execute();
     }
 }
 
 }
 
 DocumentProtector::DocumentProtector(App::Document* doc)
-  : App::DocumentObserver(doc), obj(0)
+  : App::DocumentObserver(doc)
 {
 }
 
@@ -218,17 +264,60 @@ void DocumentProtector::validate()
 App::DocumentObject *DocumentProtector::addObject(const std::string& type, const std::string& name)
 {
     validate();
-    DocumentReceiver::globalInstance()->postEventAndWait(new CustomAddObjectEvent(this, type, name));
-    return this->obj;
+    App::DocumentObject* obj;
+    DocumentReceiver::globalInstance()->postEventAndWait
+        (new CustomAddObjectEvent(&obj, this->getDocument(), type, name));
+    return obj;
 }
 
 void DocumentProtector::removeObject(const std::string& name)
 {
     validate();
+    DocumentReceiver::globalInstance()->postEventAndWait
+        (new CustomRemoveObjectEvent(this->getDocument(), name));
 }
 
 void DocumentProtector::recompute()
 {
     validate();
-    DocumentReceiver::globalInstance()->postEventAndWait(new CustomRecomputeEvent(this));
+    DocumentReceiver::globalInstance()->postEventAndWait
+        (new CustomRecomputeEvent(this->getDocument()));
 }
+
+// ------------------------------------------
+
+DocumentObjectProtector::DocumentObjectProtector(App::DocumentObject* o) : obj(o)
+{
+}
+
+DocumentObjectProtector::~DocumentObjectProtector()
+{
+}
+
+void DocumentObjectProtector::validate()
+{
+    if (!obj)
+        throw Base::Exception("Handled document object is null");
+}
+
+App::DocumentObject* DocumentObjectProtector::getObject() const
+{
+    return this->obj;
+}
+
+bool DocumentObjectProtector::setProperty(const std::string& name, const App::Property& value)
+{
+    validate();
+    App::Property* prop = obj->getPropertyByName(name.c_str());
+    if (!prop)
+        return false;
+    DocumentReceiver::globalInstance()->postEventAndWait(new CustomPropertyEvent(*prop, value));
+    return true;
+}
+
+void DocumentObjectProtector::execute(const AbstractCallable& call)
+{
+    validate();
+    DocumentReceiver::globalInstance()->postEventAndWait(new CustomCallableEvent(call));
+}
+
