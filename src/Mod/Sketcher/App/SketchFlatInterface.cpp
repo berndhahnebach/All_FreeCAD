@@ -244,14 +244,20 @@ std::string SketchFlatInterface::getGeo(void)
 Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 {
 	int point=-1;
-	int NumberOfPoints;
-	double x,y;
+    hPoint pt0=0, pt1=0, pt2=0;
+    hParam prm0=0;
+
+	double x,y,R;
 	struct points2D {
 		points2D(double x,double y):x(x),y(y){}
 
 		double x;
 		double y;
 	};
+	for(int i=0; i<nbrOfPoints();i++){
+		getPoint(i,x,y);
+	}
+
 
 	std::vector<points2D> points;
 
@@ -262,19 +268,37 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 			case ENTITY_DATUM_LINE   :  
 				break;
 			case ENTITY_LINE_SEGMENT :  
-				NumberOfPoints = SK->entity[i].points;
-				for(int p=0; p<NumberOfPoints; p++){
-					EvalPoint(SK->point[POINT_FOR_ENTITY(i, p)], &x, &y);
-					points.push_back(points2D(x/1000.0,y/1000.0));
-				}
+				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
+				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
+					
+				EvalPoint(pt0, &x, &y);
+				//points.push_back(points2D(x,y));
+				EvalPoint(pt1, &x, &y);
+				//points.push_back(points2D(x,y));
+				
 				break;
 
 			case ENTITY_CIRCLE       :   
+				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
+				prm0 = PARAM_FOR_ENTITY(SK->entity[i].id, 0);
+
+				EvalPoint(pt0, &x, &y);
+				R = EvalParam(prm0);
+
+	            break;
+
+
 			case ENTITY_CIRCULAR_ARC :  
-				for(int p=0; i<SK->entity[i].points; p++)
-					EvalPoint(SK->point[POINT_FOR_ENTITY(i, p)], &x, &y);
-				SK->entity[i].lines;
-				SK->entity[i].params;
+				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
+				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
+				pt2 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
+					
+				EvalPoint(pt0, &x, &y);
+				//points.push_back(points2D(x,y));
+				EvalPoint(pt1, &x, &y);
+				//points.push_back(points2D(x,y));
+				EvalPoint(pt2, &x, &y);
+				//points.push_back(points2D(x,y));
 				break;
 			case ENTITY_CUBIC_SPLINE : 
 			case ENTITY_TTF_TEXT     :   
