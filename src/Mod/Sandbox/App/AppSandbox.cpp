@@ -31,6 +31,7 @@
 #include <CXX/Extensions.hxx>
 #include <CXX/Objects.hxx>
 
+#include "DocumentThread.h"
 #include "DocumentProtector.h"
 #include "DocumentProtectorPy.h"
 
@@ -66,7 +67,8 @@ private:
 extern "C" {
 void SandboxAppExport initSandbox() {
 
-    Sandbox::DocumentProtector::init();
+    Sandbox::DocumentProtector  ::init();
+    Sandbox::SandboxObject      ::init();
 
     // the following constructor call registers our extension module
     // with the Python runtime system
