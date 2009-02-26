@@ -348,7 +348,7 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 			case ENTITY_CIRCULAR_ARC :{  
 				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
 				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
-				pt2 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
+				pt2 = POINT_FOR_ENTITY(SK->entity[i].id, 2);
 					
 				EvalPoint(pt0, &x, &y);
 				gp_Pnt V1(x/1000.0,y/1000.0,0);
@@ -360,10 +360,12 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 				EvalPoint(pt2, &x, &y);
 				gp_Pnt V3(x/1000.0,y/1000.0,0);
 				//points.push_back(points2D(x,y));
-				gp_Circ circ(gp_Ax2(V1,gp_Dir(0,0,1),gp_Dir(1,0,0)),V1.Distance(V2));
+				double rad = V3.Distance(V2);
+				gp_Circ circ(gp_Ax2(V3,gp_Dir(0,0,1),gp_Dir(1,0,0)),rad);
             
 				//GC_MakeCircle circ(V1,gp_Dir(0,0,1),V1.Distance(V2));
-				GC_MakeArcOfCircle arc(circ,0.0,3.1415,true);
+				//GC_MakeArcOfCircle arc(circ,0.0,3.1415,true);
+				GC_MakeArcOfCircle arc(circ,V2,V1,true);
             
 				if (!arc.IsDone()) 
 					throw Base::Exception(gce_ErrorStatusText(arc.Status()));
