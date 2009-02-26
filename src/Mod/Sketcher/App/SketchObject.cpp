@@ -55,7 +55,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     SketchFlatInterface temp;
     temp.load(SketchFlatFile.getValue());
 
-	temp.getGeoAsShape();
+	this->Shape.setValue(temp.getGeoAsShape());
 
     return App::DocumentObject::StdReturn;
 }
