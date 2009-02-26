@@ -131,7 +131,7 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,boo
 
     int pwls0 = SK->pwls;
 
-	Construction = c->construction;
+	Construction = c->construction != 0;
 
     while(from < (finalTo - 0.001)) {
         double xi, yi;      // Starting point of the line we are considering
@@ -234,11 +234,48 @@ std::string SketchFlatInterface::getGeo(void)
 {
 	for(int i = 0; i<SK->entities; ++i)
 	{
-		SK->entity[i];
+		SketchEntity e=SK->entity[i];
 
 
 	}
 	return std::string();
+}
+
+const char* gce_ErrorStatusText(gce_ErrorType et)
+{
+    switch (et)
+    {
+    case gce_Done:
+        return "Construction was successful";
+    case gce_ConfusedPoints:
+        return "Two points are coincident";
+    case gce_NegativeRadius:
+        return "Radius value is negative";
+    case gce_ColinearPoints:
+        return "Three points are collinear";
+    case gce_IntersectionError:
+        return "Intersection cannot be computed";
+    case gce_NullAxis:
+        return "Axis is undefined";
+    case gce_NullAngle:
+        return "Angle value is invalid (usually null)";
+    case gce_NullRadius:
+        return "Radius is null";
+    case gce_InvertAxis:
+        return "Axis value is invalid";
+    case gce_BadAngle:
+        return "Angle value is invalid";
+    case gce_InvertRadius:
+        return "Radius value is incorrect (usually with respect to another radius)";
+    case gce_NullFocusLength:
+        return "Focal distance is null";
+    case gce_NullVector:
+        return "Vector is null";
+    case gce_BadEquation:
+        return "Coefficients are incorrect (applies to the equation of a geometric object)";
+    default:
+        return "Creation of geometry failed";
+    }
 }
 
 Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
@@ -246,69 +283,116 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 	int point=-1;
     hPoint pt0=0, pt1=0, pt2=0;
     hParam prm0=0;
-
+	bool bFirst=true;
 	double x,y,R;
-	struct points2D {
-		points2D(double x,double y):x(x),y(y){}
+	//struct points2D {
+	//	points2D(double x,double y):x(x),y(y){}
 
-		double x;
-		double y;
-	};
-	for(int i=0; i<nbrOfPoints();i++){
-		getPoint(i,x,y);
-	}
+	//	double x;
+	//	double y;
+	//};
+	//for(int i=0; i<nbrOfPoints();i++){
+	//	getPoint(i,x,y);
+	//}
 
 
-	std::vector<points2D> points;
+	//std::vector<points2D> points;
+
+	Part::TopoShape result;
 
 	for(int i = 0; i<SK->entities; ++i)
 	{
+		Handle_Geom_Curve curve;
+		if(SK->entity[i].construction)
+			continue;
+
 		switch(SK->entity[i].type){
 			case ENTITY_DATUM_POINT  :      
 			case ENTITY_DATUM_LINE   :  
 				break;
-			case ENTITY_LINE_SEGMENT :  
+			case ENTITY_LINE_SEGMENT :{  
 				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
 				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
 					
 				EvalPoint(pt0, &x, &y);
+				gp_Pnt V1(x/1000.0,y/1000.0,0);
 				//points.push_back(points2D(x,y));
 				EvalPoint(pt1, &x, &y);
+				gp_Pnt V2(x/1000.0,y/1000.0,0);
 				//points.push_back(points2D(x,y));
-				
-				break;
+				//if (V1 == V2) Standard_Failure::Raise("Both points are equal");
+				GC_MakeSegment ms(V1, V2);
+				if (!ms.IsDone()) 
+					throw Base::Exception(gce_ErrorStatusText(ms.Status()));
+				curve = ms.Value();
 
+				break;
+									  }
 			case ENTITY_CIRCLE       :   
+			{
 				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
 				prm0 = PARAM_FOR_ENTITY(SK->entity[i].id, 0);
 
 				EvalPoint(pt0, &x, &y);
+				gp_Pnt V1(x/1000.0,y/1000.0,0);
+
 				R = EvalParam(prm0);
+				
+				GC_MakeCircle circ(V1,gp_Dir(0,0,1),R/1000.0);
+				if (!circ.IsDone()) 
+					throw Base::Exception(gce_ErrorStatusText(circ.Status()));
+				curve = circ.Value();
 
 	            break;
-
-
-			case ENTITY_CIRCULAR_ARC :  
+			}
+			case ENTITY_CIRCULAR_ARC :{  
 				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
 				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
 				pt2 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
 					
 				EvalPoint(pt0, &x, &y);
+				gp_Pnt V1(x/1000.0,y/1000.0,0);
+
 				//points.push_back(points2D(x,y));
 				EvalPoint(pt1, &x, &y);
+				gp_Pnt V2(x/1000.0,y/1000.0,0);
 				//points.push_back(points2D(x,y));
 				EvalPoint(pt2, &x, &y);
+				gp_Pnt V3(x/1000.0,y/1000.0,0);
 				//points.push_back(points2D(x,y));
+				gp_Circ circ(gp_Ax2(V1,gp_Dir(0,0,1),gp_Dir(1,0,0)),V1.Distance(V2));
+            
+				//GC_MakeCircle circ(V1,gp_Dir(0,0,1),V1.Distance(V2));
+				GC_MakeArcOfCircle arc(circ,0.0,3.1415,true);
+            
+				if (!arc.IsDone()) 
+					throw Base::Exception(gce_ErrorStatusText(arc.Status()));
+                
+				curve = arc.Value();
+
 				break;
+									  }
 			case ENTITY_CUBIC_SPLINE : 
 			case ENTITY_TTF_TEXT     :   
 			case ENTITY_IMPORTED     :
 				break;
 		}
+		if(!curve.IsNull()){
+            BRepBuilderAPI_MakeEdge mkEdge(curve, curve->FirstParameter(), curve->LastParameter());
+			if(bFirst){
+				result._Shape = mkEdge.Edge();
+				bFirst=false;
+			}else{
+				BRepAlgoAPI_Fuse mkFuse(result._Shape, mkEdge.Edge());
+				if (!mkFuse.IsDone()) 
+					throw Base::Exception("SketchFlatInterface::getGeoAsShape(): Can not fuse Shape!");
+				result._Shape = mkFuse.Shape();
+			}
+		}
 
 	}
 
-	return Part::TopoShape();
+	return result;
 }
 
 
