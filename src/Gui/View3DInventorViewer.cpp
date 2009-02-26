@@ -77,7 +77,7 @@
 # include <Inventor/VRMLnodes/SoVRMLGroup.h>
 #endif
 
-#include <strstream>
+#include <sstream>
 #include <Base/Console.h>
 #include <Base/gzstream.h>
 #include <Base/Stream.h>
