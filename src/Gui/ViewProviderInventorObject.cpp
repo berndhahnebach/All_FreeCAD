@@ -34,7 +34,6 @@
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
 #include <sstream>
-#include <strstream>
 
 using namespace Gui;
 

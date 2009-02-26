@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 
-#include <strstream>
+#include <sstream>
 #include <CXX/Objects.hxx>
 #include <Base/zipios/zipfile.h>
 #include <Base/Interpreter.h>
