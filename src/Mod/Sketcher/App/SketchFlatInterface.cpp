@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 #endif
 
+#include <Base/Console.h>
+
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "SketchFlatInterface.h"
 #include "SketchFlat/sketchflat.h"
@@ -299,6 +301,7 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 	//std::vector<points2D> points;
 
 	Part::TopoShape result;
+	BRepBuilderAPI_MakeWire mkWire;
 
 	for(int i = 0; i<SK->entities; ++i)
 	{
@@ -381,18 +384,23 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 		}
 		if(!curve.IsNull()){
             BRepBuilderAPI_MakeEdge mkEdge(curve, curve->FirstParameter(), curve->LastParameter());
-			if(bFirst){
-				result._Shape = mkEdge.Edge();
-				bFirst=false;
-			}else{
-				BRepAlgoAPI_Fuse mkFuse(result._Shape, mkEdge.Edge());
-				if (!mkFuse.IsDone()) 
-					throw Base::Exception("SketchFlatInterface::getGeoAsShape(): Can not fuse Shape!");
-				result._Shape = mkFuse.Shape();
-			}
+			mkWire.Add(mkEdge);
+			//if(bFirst){
+			//	result._Shape = mkEdge.Edge();
+			//	bFirst=false;
+			//}else{
+			//	BRepAlgoAPI_Fuse mkFuse(result._Shape, mkEdge.Edge());
+			//	if (!mkFuse.IsDone()) 
+			//		throw Base::Exception("SketchFlatInterface::getGeoAsShape(): Can not fuse Shape!");
+			//	result._Shape = mkFuse.Shape();
+			//}
 		}
 
 	}
+	if(mkWire.IsDone())
+		result._Shape = mkWire.Wire();
+	else
+		Base::Console().Warning("Sketch not created, possibly inner Wires!");
 
 	return result;
 }

@@ -47,7 +47,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("PartDesign"));
-    *part << "PartDesign_ConstraintAxle";
+    *part << "PartDesign_Pad";
      return root;
 }
 

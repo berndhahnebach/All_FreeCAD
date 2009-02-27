@@ -33,33 +33,41 @@
 
 using namespace std;
 
-DEF_STD_CMD(CmdPartDesignConstraintAxle);
+//===========================================================================
+// Part_Pad
+//===========================================================================
+DEF_STD_CMD_A(CmdPartDesignPad);
 
-CmdPartDesignConstraintAxle::CmdPartDesignConstraintAxle()
-	:Command("PartDesign_ConstraintAxle")
+CmdPartDesignPad::CmdPartDesignPad()
+  :Command("PartDesign_Pad")
 {
-    sAppModule      = "PartDesign";
-    sGroup          = QT_TR_NOOP("PartDesign");
-    sMenuText       = QT_TR_NOOP("Constraint Axle...");
-    sToolTipText    = QT_TR_NOOP("set a axle constraint between two objects");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "actions/document-new";
+    sAppModule    = "PartDesign";
+    sGroup        = QT_TR_NOOP("PartDesign");
+    sMenuText     = QT_TR_NOOP("Pad...");
+    sToolTipText  = QT_TR_NOOP("Pad a selected sketch");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    iAccel        = 0;
 }
 
-
-void CmdPartDesignConstraintAxle::activated(int iMsg)
+void CmdPartDesignPad::activated(int iMsg)
 {
-    // load the file with the module
-    //Command::doCommand(Command::Gui, "import PartDesign, PartDesignGui");
-      
+    openCommand("Exrud");
+    doCommand(Doc,"f = App.activeDocument().addObject(\"PartDesign::Pad\",\"Pad\")");
+    doCommand(Doc,"f.Base = Simple");
+    doCommand(Doc,"f.Dir = (0.0,0.0,1.0)");
+    commitCommand();
+    updateActive();
 }
 
-
+bool CmdPartDesignPad::isActive(void)
+{
+    return hasActiveDocument();
+}
 
 void CreatePartDesignCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
-    rcCmdMgr.addCommand(new CmdPartDesignConstraintAxle());
+    rcCmdMgr.addCommand(new CmdPartDesignPad());
  }
