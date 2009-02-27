@@ -225,6 +225,14 @@
 		<Filter
 			Name="Features"
 			>
+			<File
+				RelativePath=".\FeaturePad.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePad.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="AppPartDesign.cpp"

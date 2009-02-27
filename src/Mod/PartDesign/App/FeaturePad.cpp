@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2009 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,42 +23,47 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <Python.h>
 #endif
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
- 
+
 #include "FeaturePad.h"
 
-extern struct PyMethodDef PartDesign_methods[];
 
-PyDoc_STRVAR(module_PartDesign_doc,
-"This module is the PartDesign module.");
+using namespace PartDesign;
 
 
-/* Python entry */
-extern "C" {
-void AppPartDesignExport initPartDesign()
+PROPERTY_SOURCE(PartDesign::Pad, Part::Feature)
+
+Pad::Pad()
 {
-    // load dependend module
-    try {
-        Base::Interpreter().loadModule("Part");
-        //Base::Interpreter().loadModule("Mesh");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        return;
-    }
-    Py_InitModule3("PartDesign", PartDesign_methods, module_PartDesign_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading PartDesign module... done\n");
-
-
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
- 
-    PartDesign::Pad        ::init();
+    ADD_PROPERTY(Base,(0));
+    ADD_PROPERTY(Dir,(Base::Vector3f(0.0f,0.0f,1.0f)));
 }
 
-} // extern "C"
+short Pad::mustExecute() const
+{
+    if (Base.isTouched() ||
+        Dir.isTouched() )
+        return 1;
+    return 0;
+}
+
+App::DocumentObjectExecReturn *Pad::execute(void)
+{
+    App::DocumentObject* link = Base.getValue();
+    if (!link)
+        return new App::DocumentObjectExecReturn("No object linked");
+    if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+        return new App::DocumentObjectExecReturn("Linked object is not a Part object");
+    Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
+
+    Base::Vector3f v = Dir.getValue();
+    gp_Vec vec(v.x,v.y,v.z);
+
+    // Now, let's get the TopoDS_Shape
+    TopoDS_Shape swept = base->Shape.getShape().makePrism(vec);
+    if (swept.IsNull())
+        return new App::DocumentObjectExecReturn("Resulting shape is null");
+    this->Shape.setValue(swept);
+    return App::DocumentObject::StdReturn;
+}
