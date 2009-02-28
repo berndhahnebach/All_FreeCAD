@@ -456,4 +456,91 @@ void LabelButton::setValue(const QVariant& val)
     valueChanged(_val);
 }
 
+// ----------------------------------------------------------------------
+
+ToolTip* ToolTip::inst = 0;
+
+ToolTip* ToolTip::instance()
+{
+    if (!inst)
+        inst = new ToolTip();
+    return inst;
+}
+
+ToolTip::ToolTip() : installed(false), hidden(true)
+{
+}
+
+ToolTip::~ToolTip()
+{
+}
+
+void ToolTip::installEventFilter()
+{
+    if (this->installed)
+        return;
+    qApp->installEventFilter(this);
+    this->installed = true;
+}
+
+void ToolTip::removeEventFilter()
+{
+    if (!this->installed)
+        return;
+    qApp->removeEventFilter(this);
+    this->installed = false;
+}
+
+void ToolTip::showText(const QPoint & pos, const QString & text, QWidget * w)
+{
+    ToolTip* tip = instance();
+    if (!text.isEmpty()) {
+        // install this object to filter timer events for the tooltip label
+        tip->installEventFilter();
+        tip->pos = pos;
+        tip->text = text;
+        tip->w = w;
+        // show text with a short delay
+        tip->tooltipTimer.start(80, tip);
+    }
+    else {
+        // do immediately
+        QToolTip::showText(pos, text, w);
+    }
+}
+
+void ToolTip::timerEvent(QTimerEvent *e)
+{
+    if (e->timerId() == tooltipTimer.timerId()) {
+        QToolTip::showText(pos, text, w);
+        tooltipTimer.stop();
+        displayTime.restart();
+    }
+}
+
+bool ToolTip::eventFilter(QObject* o, QEvent*e)
+{
+    // This is a trick to circumvent that the tooltip gets hidden immediately
+    // after it gets visible. We just filter out all timer events to keep the
+    // label visible.
+    if (o->inherits("QLabel")) {
+        QLabel* label = qobject_cast<QLabel*>(o);
+        // Ignore the timer events to prevent from being closed
+        if (label->windowFlags() & Qt::ToolTip) {
+            if (e->type() == QEvent::Show) {
+                this->hidden = false;
+            }
+            else if (e->type() == QEvent::Hide) {
+                removeEventFilter();
+                this->hidden = true;
+            }
+            else if (e->type() == QEvent::Timer && 
+                !this->hidden && displayTime.elapsed() < 5000) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 #include "moc_Widgets.cpp"

@@ -131,7 +131,7 @@ public:
     void RestoreDocFile(Base::Reader &reader);
     void save(const char* file) const;
     void save(std::ostream&) const;
-    void load(const char* file);
+    bool load(const char* file);
     void load(std::istream&);
     //@}
 

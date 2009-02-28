@@ -371,7 +371,7 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
     }
     catch (const Base::AbortException&) {
         _rclMesh.Clear();
-        throw; // Throw the same instance of Base::AbortException
+        return false;
     }
     catch (const Base::Exception&) {
         _rclMesh.Clear();

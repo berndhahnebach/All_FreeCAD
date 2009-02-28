@@ -32,7 +32,7 @@
 # include <fstream>
 # include <climits>
 # include <cstring>
-# if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+# if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
 # include <dirent.h>
 # include <unistd.h>
 # include <sys/stat.h>

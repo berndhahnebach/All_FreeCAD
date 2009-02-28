@@ -287,7 +287,7 @@ void Sequencer::setText (const char* pszTxt)
     }
 }
 
-bool Sequencer::isGuiThread() const
+bool Sequencer::isBlocking() const
 {
     return d->guiThread;
 }

@@ -158,6 +158,13 @@ public:
      * @see pause(), @see Gui::ProgressBar.
      */
     virtual void resume();
+    /**
+     * Returns true if the running sequencer is blocking any user input.
+     * This might be only of interest of the GUI where the progress bar or dialog
+     * is used from a thread. If started from a thread this method should return
+     * false, otherwise true. The default implementation always returns true.
+     */
+    virtual bool isBlocking() const;
     /** If \a bLock is true then the sequencer gets locked. startStep() and nextStep()
      * don't get invoked any more until the sequencer gets unlocked again.
      * This method returns the previous lock state.

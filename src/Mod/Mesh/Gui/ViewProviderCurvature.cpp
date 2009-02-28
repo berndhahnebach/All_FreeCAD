@@ -34,6 +34,9 @@
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <algorithm>
+# include <QCursor>
+# include <QToolTip>
+# include <QWhatsThis>
 #endif
 
 // Here the FreeCAD includes sorted by Base,App,Gui......
@@ -51,6 +54,7 @@
 #include <Gui/SoFCColorBar.h>
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/ViewProviderGeometryObject.h>
+#include <Gui/Widgets.h>
 
 #include <Mod/Mesh/App/MeshProperties.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -341,7 +345,7 @@ void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback
             view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
             view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), curvatureInfoCallback);
         }
-        else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+        else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::UP) {
             const SoPickedPoint * point = n->getPickedPoint();
             if (point == NULL) {
                 Base::Console().Message("No facet picked.\n");
@@ -412,9 +416,11 @@ void ViewProviderMeshCurvature::curvatureInfo(int index1, int index2, int index3
             print = false;
         }
 
-        QString info;
+        QString info, what;
         if (print) {
             info = QString(QLatin1String("%1: <%2, %3, %4>"))
+                .arg(QString::fromLatin1(mode.c_str())).arg(fVal1).arg(fVal2).arg(fVal3);
+            what = QString::fromAscii("%1\nv1: %2\nv2: %3\nv3: %4")
                 .arg(QString::fromLatin1(mode.c_str())).arg(fVal1).arg(fVal2).arg(fVal3);
         }
         else {
@@ -422,5 +428,6 @@ void ViewProviderMeshCurvature::curvatureInfo(int index1, int index2, int index3
         }
 
         Gui::getMainWindow()->setPaneText(1,info);
+        Gui::ToolTip::showText(QCursor::pos(), what);
     }
 }

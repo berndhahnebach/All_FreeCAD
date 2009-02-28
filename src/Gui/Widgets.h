@@ -219,6 +219,42 @@ private:
     QVariant _val;
 };
 
+// ----------------------------------------------------------------------
+
+/**
+ * Qt's tooltip does not work as expected with some classes, e.g. when showing
+ * it in the 3d view it immediately receives a timer event to destroy itself.
+ * This class is thought to circumvent this behaviour by filtering the internal
+ * timer events.
+ * @author Werner Mayer
+ */
+class GuiExport ToolTip : public QObject
+{
+public:
+    static void showText(const QPoint & pos, const QString & text, QWidget * w = 0);
+
+protected:
+    static ToolTip* instance();
+
+    ToolTip();
+    virtual ~ToolTip();
+
+    void timerEvent(QTimerEvent *e);
+    bool eventFilter(QObject* o, QEvent*e);
+
+    void installEventFilter();
+    void removeEventFilter();
+
+private:
+    bool installed, hidden;
+    static ToolTip* inst;
+    QString text;
+    QPoint pos;
+    QPointer<QWidget> w; // need guard in case widget gets destroyed
+    QBasicTimer tooltipTimer;
+    QTime displayTime;
+};
+
 } // namespace Gui
 
 #endif // GUI_WIDGETS_H
