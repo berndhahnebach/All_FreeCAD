@@ -199,18 +199,58 @@ case $host_os in
     fi
     if test "$ac_have_qt_framework" = yes; then
     # Qt as framework installed 
-    QT_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtGui -Wl,-framework,QtOpenGL -Wl,-framework,QtCore -Wl,-framework,Qt3Support -Wl,-framework,QtNetwork -Wl,-framework,QtXml -Wl,-framework,QtSql -Wl,-framework,QtSvg"
-    QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers -I$fc_qt4_frm/QtGui.framework/Headers -I$fc_qt4_frm/QtCore.framework/Headers -I$fc_qt4_frm/QtOpenGL.framework/Headers -I$fc_qt4_frm/QtNetwork.framework/Headers -I$fc_qt4_frm/QtSvg.framework/Headers"
+    QT_LIBS="-Wl,-F$fc_qt4_frm"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtGui"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtOpenGL"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtCore"
+    QT_LIBS="$QT_LIBS -Wl,-framework,Qt3Support"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtNetwork"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtXml"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtSql"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtSvg"
+
+    QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtGui.framework/Headers"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtCore.framework/Headers"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtOpenGL.framework/Headers"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtNetwork.framework/Headers"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtSvg.framework/Headers"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtXml.framework/Headers"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtUiTools.framework/Headers"
     else
     # Qt not as framework installed 
-    QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg"
-    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork -I$fc_qt4_include/QtSvg"
+    QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg -lQtXml"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtGui"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtCore"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtOpenGL"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtNetwork"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtSvg"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtXml"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtUiTools"
     fi
     ;;
   *)  # UNIX/Linux based
     AC_PATH_XTRA
     QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg -lQtXml $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
-    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork -I$fc_qt4_include/QtSvg -I$fc_qt4_include/QtXml -I$fc_qt4_include/QtUiTools $X_CFLAGS"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtGui"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtCore"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtOpenGL"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtNetwork"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtSvg"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtXml"
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtUiTools $X_CFLAGS"
+    #QT4_CFLAGS="-I$fc_qt4_include"
+    #QT4_LIBS="-L$fc_qt4_lib $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+    #QT4_CORE_CFLAGS="-I$fc_qt4_include/QtCore"
+    #QT4_CORE_LIBS="-lQtCore"
+    #QT4_GUI_CFLAGS="-I$fc_qt4_include/QtGui"
+    #QT4_GUI_LIBS="-lQtGui"
+    #QT4_NETWORK_CFLAGS="-I$fc_qt4_include/QtNetwork"
+    #QT4_NETWORK_LIBS="-lQtNetwork"
+    #QT4_XML_CFLAGS="-I$fc_qt4_include/QtXml"
+    #QT4_XML_LIBS="-lQtXml"
     ;;
 esac
 
