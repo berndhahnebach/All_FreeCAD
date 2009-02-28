@@ -96,6 +96,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QProgressBar>
+#include <QProgressDialog>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <QScrollArea>

@@ -39,6 +39,7 @@ BUILT_SOURCES=\
 		moc_OnlineDocumentation.cpp \
 		moc_PrefWidgets.cpp \
 		moc_ProgressBar.cpp \
+		moc_ProgressDialog.cpp \
 		moc_PropertyPage.cpp \
 		moc_PropertyView.cpp \
 		moc_PythonConsole.cpp \
@@ -224,6 +225,7 @@ libFreeCADGui_la_SOURCES=\
 		PreCompiled.h \
 		PrefWidgets.cpp \
 		ProgressBar.cpp \
+		ProgressDialog.cpp \
 		PropertyPage.cpp \
 		PropertyView.cpp \
 		PythonConsole.cpp \
@@ -316,6 +318,7 @@ include_HEADERS=\
 		NetworkRetriever.h \
 		PrefWidgets.h \
 		ProgressBar.h \
+		ProgressDialog.h \
 		PropertyPage.h \
 		PropertyView.h \
 		PythonConsole.h \

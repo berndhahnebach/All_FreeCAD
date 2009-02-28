@@ -133,6 +133,11 @@ void SequencerBase::resume()
 {
 }
 
+bool SequencerBase::isBlocking() const
+{
+    return true;
+}
+
 bool SequencerBase::setLocked(bool bLocked)
 {
     bool old = this->_bLocked;

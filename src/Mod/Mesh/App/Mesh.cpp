@@ -261,10 +261,14 @@ void MeshObject::save(std::ostream& out) const
     _kernel.Write(out);
 }
 
-void MeshObject::load(const char* file)
+bool MeshObject::load(const char* file)
 {
-    MeshCore::MeshInput aReader(_kernel);
-    aReader.LoadAny(file);
+    MeshCore::MeshKernel kernel;
+    MeshCore::MeshInput aReader(kernel);
+    if (!aReader.LoadAny(file))
+        return false;
+
+    _kernel.Swap(kernel);
     this->_segments.clear();
 
 #ifndef FC_DEBUG
@@ -286,6 +290,8 @@ void MeshObject::load(const char* file)
         Base::Console().Log("Check for defects in mesh data structure failed\n");
     }
 #endif
+
+    return true;
 }
 
 void MeshObject::load(std::istream& in)

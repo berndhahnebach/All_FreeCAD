@@ -100,7 +100,7 @@ public:
     void pause();
     /** This sets the wait cursor again and grabs the keyboard. @see pause() */
     void resume();
-    bool isGuiThread() const;
+    bool isBlocking() const;
     /** Returns an instance of the progress bar. It creates one if needed. */
     QProgressBar* getProgressBar(QWidget* parent=0);
 

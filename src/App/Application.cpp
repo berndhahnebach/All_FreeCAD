@@ -30,7 +30,7 @@
 # include <iostream>
 # include <sstream>
 # include <exception>
-# ifdef FC_OS_LINUX
+# if defined(FC_OS_LINUX) || defined(FC_OS_MACOSX)
 # include <unistd.h>
 # include <pwd.h>
 # include <sys/types.h>

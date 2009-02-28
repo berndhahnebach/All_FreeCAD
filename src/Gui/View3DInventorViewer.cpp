@@ -82,6 +82,7 @@
 #include <Base/gzstream.h>
 #include <Base/Stream.h>
 #include <Base/FileInfo.h>
+#include <Base/Sequencer.h>
 #include <Base/zipios/gzipoutputstream.h>
 
 #include "View3DInventorViewer.h"
@@ -101,7 +102,6 @@
 #include "Application.h"
 #include "Document.h"
 #include "MouseModel.h"
-#include "ProgressBar.h"
 
 #include "ViewProvider.h"
 // build in Inventor
@@ -951,8 +951,8 @@ void View3DInventorViewer::printDimension()
  */
 void View3DInventorViewer::processEvent(QEvent * event)
 {
-    if (!Gui::Sequencer::instance()->isRunning() ||
-        !Gui::Sequencer::instance()->isGuiThread())
+    if (!Base::Sequencer().isRunning() ||
+        !Base::Sequencer().isBlocking())
         inherited::processEvent(event);
 }
 
