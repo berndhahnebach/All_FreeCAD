@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModDraft" Name="Draft" FileSource="..\Mod\Draft">
-        <Component Id="CompModDraft" Guid="bb6ad720-0746-11de-8c30-0800200c9a66">
+        <Component Id="CompModDraft" Guid="a5baca60-076f-11de-8c30-0800200c9a66">
             <File Id="DraftInitPy" Name="Init.py" DiskId="1" />
             <File Id="DraftInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="DraftPy" Name="Draft.py" DiskId="1" />
