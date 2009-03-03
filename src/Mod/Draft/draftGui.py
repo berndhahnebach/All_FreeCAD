@@ -35,19 +35,17 @@ def findicons():
 	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft/"
 	if os.path.exists(path1): filepath = path1+"icons.svg"
 	else: filepath = path2+"icons.svg"
-	if QtCore.QT_VERSION<0x040300:
-		# Don't know how to extract the size of the SVG graphic automatically
-		iconmap = QtGui.QPixmap(704,192)
+	iconmap = QtGui.QPixmap()
+	if not iconmap.load(filepath):
+		# If loading by plug-in fails do it the conventional way
 		file=QtCore.QFile(filepath)
 		file.open(QtCore.QFile.ReadOnly)
 		ba=file.readAll()
-		painter=QtGui.QPainter(iconmap)
 		render=QtSvg.QSvgRenderer(ba)
+		iconmap = QtGui.QPixmap(render.viewBox().width(),render.viewBox().height())
+		painter=QtGui.QPainter(iconmap)
 		render.render(painter)
 		painter.end()
-	else:
-		iconmap = QtGui.QPixmap()
-		iconmap.load(filepath)
 	return iconmap
 	
 def getMainWindow():
