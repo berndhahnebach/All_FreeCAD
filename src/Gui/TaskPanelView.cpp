@@ -54,11 +54,11 @@ TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
     setWindowTitle( tr( "Task View" ) );
 
 	//ui.setupUi(this);
+	iisTaskPanel* taskPanel = new iisTaskPanel(this);
 
-	iisTaskBox *tb1 = new iisTaskBox(
-		QPixmap(QString::fromAscii("D:/# Projekte/FreeCAD/FreeCAD_0.7/src/3rdParty/iisTaskPanel/tests/styles/images/win/filenew.png")),QString::fromAscii("Group of Tasks"),true, this);
+	iisTaskBox *tb1 = new iisTaskBox(QPixmap(QString::fromAscii("D:/# Projekte/FreeCAD/FreeCAD_0.7/src/3rdParty/iisTaskPanel/tests/styles/images/win/filenew.png")),QString::fromAscii("Group of Tasks"),true, this);
 	//ui.panel->addWidget(tb1);
-	//this->addWidget(tb1);
+	taskPanel->addWidget(tb1);
 
 	iisIconLabel *i1 = new iisIconLabel(QPixmap(QString::fromAscii(":/images/win/zoomin.png")),QString::fromAscii( "Do Task 1"), tb1);
 	tb1->addIconLabel(i1);
@@ -86,7 +86,7 @@ TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
 	//tb1->groupLayout()->addWidget(i5);
 
 	iisTaskBox *tb2 = new iisTaskBox(QPixmap(QString::fromAscii(":/images/win/fileprint.png")), QString::fromAscii("Another Group of Tasks"), true, this);
-	//this->addWidget(tb2);
+	taskPanel->addWidget(tb2);
 
 	iisIconLabel *i21 = new iisIconLabel(QPixmap(QString::fromAscii(":/images/win/filenew.png")), QString::fromAscii("Do Task 2.1"), tb2);
 	tb2->addIconLabel(i21);
@@ -100,7 +100,7 @@ TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
 	//tb2->groupLayout()->addWidget(i23);
 
 	iisTaskBox *tb3 = new iisTaskBox(QPixmap(), QString::fromAscii("Group without Icons"), true, this);
-	//this->addWidget(tb3);
+	taskPanel->addWidget(tb3);
 
 	iisIconLabel *i31 = new iisIconLabel(QPixmap(), QString::fromAscii("Do Task 3.1"), tb3);
 	tb3->addIconLabel(i31);
@@ -114,11 +114,11 @@ TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
 
 	// Other widgets can be also added to the panel
 	QLabel *l1 = new QLabel(QString::fromAscii("A group without header"), this);
-	//this->addWidget(l1);
+	taskPanel->addWidget(l1);
 
 
 	iisTaskGroup *tb4 = new iisTaskGroup(this);
-	//this->addWidget(tb4);
+	taskPanel->addWidget(tb4);
 
 	iisIconLabel *i41 = new iisIconLabel(QPixmap(QString::fromAscii(":/images/win/textbold.png")), QString::fromAscii("Do Task 4.1"), tb4);
 	tb4->addIconLabel(i41);
@@ -126,7 +126,8 @@ TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
 	iisIconLabel *i42 = new iisIconLabel(QPixmap(), QString::fromAscii("Do Task 4.2"), tb4);
 	tb4->addIconLabel(i42);
 
-	//this->addStretch();
+	
+	taskPanel->addStretch();
 
 	//resize( 200, 200 );
 
