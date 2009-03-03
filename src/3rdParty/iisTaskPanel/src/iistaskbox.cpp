@@ -125,7 +125,7 @@ void iisTaskBox::processShow()
 		myGroup->show();
 		setFixedHeight(m_fullHeight+myHeader->height());
 		setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-		setMaximumHeight(INT_MAX);
+		setMaximumHeight(QWIDGETSIZE_MAX);
 		setMinimumHeight(0);
 		return;
 	}
@@ -146,10 +146,12 @@ void iisTaskBox::paintEvent ( QPaintEvent * event )
 	QPainter p(this);
 
 	if (myDummy->isVisible()) {
+#if QT_VERSION >= 0x040202
 		if (m_foldDirection < 0)
 			p.setOpacity((double)m_foldStep / myScheme->groupFoldSteps);
 		else
 			p.setOpacity((double)(myScheme->groupFoldSteps-m_foldStep) / myScheme->groupFoldSteps);
+#endif
 
 		p.drawPixmap(myDummy->x(),myDummy->y(),m_foldPixmap);
 
