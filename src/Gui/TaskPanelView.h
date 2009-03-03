@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -34,15 +34,12 @@
 #include "DockWindow.h"
 #include "Selection.h"
 
-class QPixmap;
-
-
 namespace Gui {
 namespace DockWnd {
 
 /** A test class. A more elaborate class description.
  */
-class TaskPanelView :public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+class TaskPanelView : public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
@@ -70,16 +67,6 @@ public:
 
     /// get called when the document is changed or updated
     virtual void onUpdate(void);
-
-    //static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
-
-    QListWidget* selectionView;
-
-protected:
-    void changeEvent(QEvent *e);
-
-	//Ui::testClass ui;
-
 };
 
 } // namespace DockWnd

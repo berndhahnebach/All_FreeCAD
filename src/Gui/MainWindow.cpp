@@ -247,11 +247,10 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pcSelectionView->setMinimumWidth(210);
     pDockMgr->registerDockWindow("Std_SelectionView", pcSelectionView);
 
-	
     // TaskPanel view
     TaskPanelView* pcTaskPanelView = new TaskPanelView(0, this);
     pcTaskPanelView->setObjectName
-        (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Selection view")));
+        (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Task View")));
     pcTaskPanelView->setMinimumWidth(210);
     pDockMgr->registerDockWindow("Std_TaskPanelView", pcTaskPanelView);
 
