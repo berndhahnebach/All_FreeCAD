@@ -59,7 +59,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="QtCore4.lib QtGui4.lib"
+				AdditionalDependencies="QtCored4.lib QtGuid4.lib"
 				OutputFile="..\..\..\bin\TaskBar_d.dll"
 				AdditionalLibraryDirectories="..\..\..\lib"
 				GenerateDebugInformation="true"
@@ -185,7 +185,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -195,7 +195,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -213,7 +213,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -223,7 +223,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -241,7 +241,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -251,7 +251,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -269,7 +269,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -279,7 +279,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -297,7 +297,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -307,7 +307,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -321,7 +321,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Rcc&apos;ing $(InputName).qrc ..."
-					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)qrc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -331,7 +331,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Rcc&apos;ing $(InputName).qrc ..."
-					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+					CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)qrc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -345,7 +345,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -355,7 +355,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -373,7 +373,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -383,7 +383,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -401,7 +401,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -411,7 +411,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
