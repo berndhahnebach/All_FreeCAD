@@ -30,9 +30,11 @@
 #ifdef FC_OS_WIN32
 # define PartDesignAppExport __declspec(dllimport)
 # define PartDesignGuiExport __declspec(dllexport)
+# define AppPartExport       __declspec(dllimport)
 #else // for Linux
 # define PartDesignAppExport
 # define PartDesignGuiExport
+# define AppPartExport     
 #endif
 
 

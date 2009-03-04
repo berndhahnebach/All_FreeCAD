@@ -27,8 +27,11 @@
 
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+#include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
+
+#include <Mod/Part/App/Part2DObject.h>
 
 
 using namespace std;
@@ -52,12 +55,24 @@ CmdPartDesignPad::CmdPartDesignPad()
 
 void CmdPartDesignPad::activated(int iMsg)
 {
-    openCommand("Exrud");
-    doCommand(Doc,"f = App.activeDocument().addObject(\"PartDesign::Pad\",\"Pad\")");
-    doCommand(Doc,"f.Base = Simple");
-    doCommand(Doc,"f.Dir = (0.0,0.0,1.0)");
-    commitCommand();
+    unsigned int n = getSelection().countObjectsOfType(Part::Part2DObject::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select a Sketch or 2D object."));
+        return;
+    }
+
+    std::string FeatName = getUniqueObjectName("Pad");
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    openCommand("Make Pad");
+    doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pad\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Dir = (0.0,0.0,100.0)",FeatName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
     updateActive();
+    commitCommand();
 }
 
 bool CmdPartDesignPad::isActive(void)

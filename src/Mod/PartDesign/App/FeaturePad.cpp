@@ -60,10 +60,18 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     Base::Vector3f v = Dir.getValue();
     gp_Vec vec(v.x,v.y,v.z);
 
+	gp_Pln Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1));
+
     // Now, let's get the TopoDS_Shape
-    TopoDS_Shape swept = base->Shape.getShape().makePrism(vec);
-    if (swept.IsNull())
-        return new App::DocumentObjectExecReturn("Resulting shape is null");
-    this->Shape.setValue(swept);
+	TopoDS_Wire theWire = TopoDS::Wire(Shape.getShape()._Shape);
+	BRepBuilderAPI_MakeFace FaceBuilder = BRepBuilderAPI_MakeFace(Pln,theWire);
+	if(FaceBuilder.IsDone()){
+		TopoDS_Face FaceProfile = FaceBuilder.Face();
+		// Make a solid out of the face
+		BRepPrimAPI_MakePrism PrismMaker = BRepPrimAPI_MakePrism(FaceProfile , vec);
+		if(PrismMaker.IsDone()){
+			this->Shape.setValue(PrismMaker.Shape());
+		}
+	}
     return App::DocumentObject::StdReturn;
 }
