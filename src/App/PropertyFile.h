@@ -107,6 +107,8 @@ public:
 
 protected:
     std::string _cValue;
+	std::string _BaseFileName;
+
 };
 
 
