@@ -579,22 +579,25 @@ class DocumentPlatformCases(unittest.TestCase):
 class DocumentFileIncludeCases(unittest.TestCase):
   def setUp(self):
     self.Doc = FreeCAD.newDocument("FileIncludeTests")
-    self.L1 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject1")
-    self.Filename = self.L1.File
-    self.TempPath = tempfile.gettempdir()
     # testing with undo
     self.Doc.UndoMode = 1
     
 
   def testApplyFiles(self):
+    self.Doc.openTransaction("Transaction0")
+    self.L1 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject1")
+    self.failUnless(self.L1.File =="")
+    self.Filename = self.L1.File
+    
+    self.Doc.openTransaction("Transaction1")
+    self.TempPath = tempfile.gettempdir()
     # creating a file in the Transient directory of the document
     file = open(self.Doc.getTempFileName("test"),"w")
     file.write("test No1")
     file.close()  
     # applying the file
-    self.Doc.openTransaction("Transaction1")
     self.L1.File = (file.name,"Test.txt")
-    Filename_Ta1 = self.L1.File
+    self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
     # read again
     file = open(self.L1.File,"r")
     self.failUnless(file.read()=="test No1")
@@ -605,31 +608,32 @@ class DocumentFileIncludeCases(unittest.TestCase):
     # applying the file
     self.Doc.openTransaction("Transaction2")
     self.L1.File = file.name
-    Filename_Ta2 = self.L1.File
+    self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
     # read again
     file = open(self.L1.File,"r")
     self.failUnless(file.read()=="test No2")
     file.close()
     self.Doc.undo()
+    self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
+    # read again
+    file = open(self.L1.File,"r")
+    self.failUnless(file.read()=="test No1")
+    file.close()
+    self.Doc.undo()
+    # read again
+    self.failUnless(self.L1.File == "")
+    self.Doc.redo()
+    self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
     # read again
     file = open(self.L1.File,"r")
     self.failUnless(file.read()=="test No1")
     file.close()
     self.Doc.redo()
+    self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
     # read again
     file = open(self.L1.File,"r")
     self.failUnless(file.read()=="test No2")
     file.close()
-    # compare filenames
-    self.failUnless(self.L1.File==Filename_Ta2)
-    self.Doc.undo()
-    self.failUnless(self.L1.File==Filename_Ta1)
-    self.Doc.undo()
-    self.failUnless(self.L1.File==self.Filename)
-    self.Doc.redo()
-    self.failUnless(self.L1.File==Filename_Ta1)
-    self.Doc.redo()
-    self.failUnless(self.L1.File==Filename_Ta2)
     # Save restore test
     self.Doc.FileName = self.TempPath+"/FileIncludeTest.fcstd"
     self.Doc.save()
@@ -641,7 +645,7 @@ class DocumentFileIncludeCases(unittest.TestCase):
     res = file.read()
     FreeCAD.Console.PrintLog( res +"\n")
     self.failUnless(res=="test No2")
-    self.failUnless(self.L1.File==Filename_Ta2)
+    self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
     file.close()
     
 
