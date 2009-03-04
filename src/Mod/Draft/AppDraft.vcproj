@@ -500,8 +500,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\$(InputName).svg&quot;&#x0D;&#x0A;"
+						Outputs="$(OutDir)\$(InputName).svg"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -510,8 +510,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\$(InputName).svg&quot;&#x0D;&#x0A;"
+						Outputs="$(OutDir)\$(InputName).svg"
 					/>
 				</FileConfiguration>
 			</File>
@@ -524,7 +524,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\$(InputName).svg&quot;&#x0D;&#x0A;"
 						Outputs="$(OutDir)\icons\$(InputName).svg"
 					/>
 				</FileConfiguration>
@@ -534,8 +534,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputName).svg ..."
-						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\icons\$(InputName).svg&quot;&#x0D;&#x0A;"
-						Outputs="$(OutDir)\icons\$(InputName).svg"
+						CommandLine="copy &quot;$(InputDir)\$(InputName).svg&quot; &quot;$(OutDir)\$(InputName).svg&quot;&#x0D;&#x0A;"
+						Outputs="$(OutDir)\$(InputName).svg"
 					/>
 				</FileConfiguration>
 			</File>

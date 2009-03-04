@@ -542,6 +542,8 @@ PyObject* Application::sAddIcon(PyObject * /*self*/, PyObject *args,PyObject * /
     }
 
     if (icon.isNull()) {
+		Base::Console().Log("Application::sAddIcon(): Size = %d\n",content.size());
+		//Base::Console().Log(content.c_str());
         PyErr_SetString(PyExc_Exception, "Invalid icon");
         return NULL;
     }
