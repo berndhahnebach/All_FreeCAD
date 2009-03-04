@@ -28,6 +28,7 @@
 
 #include "sketchflat.h"
 
+/*
 extern void NiceFont(HWND x);
 extern HWND CreateWindowClient(DWORD exStyle, char *className, char *windowName,
     DWORD style, int x, int y, int width, int height, HWND parent,
@@ -42,7 +43,7 @@ static HWND SpacingBox;
 static HWND FontList;
 static HWND OkButton;
 static HWND CancelButton;
-
+*/
 static BOOL DialogDone, DialogCancel;
 
 // A fixed limit is useful here, to avoid wasting huge amounts of time.
@@ -67,6 +68,7 @@ void txtuiGetDefaultFont(char *str)
     //strcat(str, "\\arial.ttf");
 }
 
+/*
 static LRESULT CALLBACK 
     TextWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -94,7 +96,7 @@ static LRESULT CALLBACK
 
     return TRUE;
 }
-
+*/
 static void MakeWindowClass(void)
 {
     //WNDCLASSEX wc;

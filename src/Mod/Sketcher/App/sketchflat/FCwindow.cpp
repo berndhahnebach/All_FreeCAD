@@ -37,6 +37,7 @@
 
 void uiEnableMenuById(int id, BOOL enabled);
 
+/*
 extern HINSTANCE   Instance;
 extern HWND        MainWindow;
 
@@ -54,7 +55,8 @@ static HBRUSH   BlackBrush;
 static HPEN     SolidPens[MAX_COLORS];
 static HPEN     DashedPens[MAX_COLORS];
 static HBRUSH   SolidBrushes[MAX_COLORS];
-
+*/
+/*
 // Controls in the main window, that are always shown;
 #define RIGHT_PALETTE_WIDTH 210
 static HWND  MainTab;
@@ -85,13 +87,14 @@ static int DerivedItemCount;
 // We use the text box to edit a dimension on the drawing, by moving it
 // to the appropriate point on the actual drawing.
 static HWND  TextEntryBox;
-
+*/
 // Keep a record of the most recent mouse activity.
 static struct {
     int     x;
     int     y;
 } LastMousePos;
 
+/*
 // This is a back-buffer that's compatible with our paint DC; we draw
 // the sketch into BackDc, then blit it over in a single operation,
 // no flicker.
@@ -100,7 +103,8 @@ static HBITMAP BackBitmap;
 
 HMENU MakeMainWindowMenus(void);
 void ProcessMenu(int id);
-
+*/
+/*
 //-----------------------------------------------------------------------------
 // Set a control to use the pretty font that I like.
 //-----------------------------------------------------------------------------
@@ -119,6 +123,7 @@ static HFONT Lucida(int size)
         ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
         FF_DONTCARE, "Lucida Console");
 }
+*/
 static void CreateFontsBrushesPens(void)
 {
     //// A proportional-width font, for general UI use.
@@ -185,15 +190,17 @@ static int MapY(int y)
 // And their inverses, for when we go the other way
 static int UnmapX(int x)
 {
-    RECT r;
-    GetClientRect(MainWindow, &r);
-    return x + (r.right - r.left - RIGHT_PALETTE_WIDTH)/2;
+    //RECT r;
+    //GetClientRect(MainWindow, &r);
+    //return x + (r.right - r.left - RIGHT_PALETTE_WIDTH)/2;
+    return 0;
 }
 static int UnmapY(int y)
 {
-    RECT r;
-    GetClientRect(MainWindow, &r);
-    return (r.bottom - r.top - STATUS_BAR_HEIGHT)/2 - y;
+    //RECT r;
+    //GetClientRect(MainWindow, &r);
+    //return (r.bottom - r.top - STATUS_BAR_HEIGHT)/2 - y;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -818,9 +825,10 @@ void uiSetMainWindowTitle(char *str)
 // These draw into the back-buffer that gets brought forward at the end
 // of our paint handler.
 //-----------------------------------------------------------------------------
+/*
 static int  CurrentColor;
 static BOOL CurrentlyDashed;
-static HBRUSH CurrentBrush;
+static HBRUSH CurrentBrush;*/
 static void SetPen(void)
 {
     //if(CurrentColor >= MAX_COLORS || CurrentColor < 0) {
