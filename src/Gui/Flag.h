@@ -27,6 +27,7 @@
 #include <QLayout>
 #include <QRect>
 #include <QWidgetItem>
+#include <QGLWidget>
 #include <Inventor/SbVec3f.h>
 
 namespace Gui {
@@ -34,18 +35,51 @@ namespace Gui {
 /**
  * @author Werner Mayer
  */
-class GuiExport Flag : public QLabel
+#if 1
+class GuiExport Flag : public QGLWidget
 {
     Q_OBJECT
 
 public:
     Flag(QWidget* parent=0);
     ~Flag();
-    QSize sizeHint() const;
 
+    QSize sizeHint() const;
     void setOrigin(const SbVec3f&);
     const SbVec3f& getOrigin() const;
     void drawLine(int tox, int toy);
+    void setText(const QString&);
+
+protected:
+    void initializeGL();
+    void resizeGL(int width, int height);
+    void paintGL();
+
+    void paintEvent(QPaintEvent *);
+    void mouseMoveEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *);
+    void resizeEvent(QResizeEvent *);
+    void contextMenuEvent(QContextMenuEvent *);
+
+private:
+    QString text;
+    SbVec3f coord;
+    QPoint dragPosition;
+};
+#else
+class GuiExport Flag : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Flag(QWidget* parent=0);
+    ~Flag();
+
+    QSize sizeHint() const;
+    void setOrigin(const SbVec3f&);
+    const SbVec3f& getOrigin() const;
+    void drawLine(int tox, int toy);
+    void setText(const QString&);
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -55,9 +89,12 @@ protected:
     void contextMenuEvent(QContextMenuEvent *);
 
 private:
+    QString text;
     SbVec3f coord;
     QPoint dragPosition;
+    QImage image;
 };
+#endif
 
 class FlagLayout : public QLayout
 {

@@ -31,17 +31,53 @@ using namespace Gui;
 
 /* TRANSLATOR Gui::Flag */
 
+#if 1
+
+// TODO: Rename to Annotation
+//       Support transparency
+//       Embed complete widgets
+
 Flag::Flag(QWidget* parent)
-  : QLabel(parent), coord(0.0f, 0.0f, 0.0f)
+  : QGLWidget(parent), coord(0.0f, 0.0f, 0.0f)
 {
-    // use white background by default
-    setAutoFillBackground(true);
-    QPalette pal = this->palette();
-    pal.setColor(QPalette::Window,Qt::white);
-    this->setPalette(pal);
-    this->setIndent(10);
     this->setFixedHeight(20);
 }
+
+void Flag::initializeGL()
+{
+    qglClearColor(Qt::white);
+}
+
+void Flag::paintGL()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glColor3f(0.0f,0.0f,0.0f);
+    qglColor(Qt::black);
+    renderText(10,15,this->text);
+}
+
+void Flag::resizeGL(int width, int height)
+{
+    return;
+    //int side = qMin(width, height);
+    //glViewport((width - side) / 2, (height - side) / 2, side, side);
+
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadIdentity();
+    //glFrustum(-1.0, +1.0, -1.0, 1.0, 5.0, 60.0);
+    //glMatrixMode(GL_MODELVIEW);
+    //glLoadIdentity();
+    //glTranslated(0.0, 0.0, -40.0);
+}
+
+#else
+
+Flag::Flag(QWidget* parent)
+  : QWidget(parent), coord(0.0f, 0.0f, 0.0f)
+{
+    this->setFixedHeight(20);
+}
+#endif
 
 Flag::~Flag()
 {
@@ -114,31 +150,47 @@ void Flag::drawLine (int tox, int toy)
     glPopMatrix();
 }
 
-void Flag::resizeEvent(QResizeEvent * )
+void Flag::setText(const QString& t)
 {
-    int w = width();
-    int h = height();
-    QPolygon p;
-    if (false) {
-        p.append(QPoint(0, 0));
-        p.append(QPoint(w-h/2, 0));
-        p.append(QPoint(w, h/2));
-        p.append(QPoint(w-h/2, h));
-        p.append(QPoint(0, h));
-    }
-    else {
-        p.append(QPoint(0, h/2));
-        p.append(QPoint(h/2, 0));
-        p.append(QPoint(w, 0));
-        p.append(QPoint(w, h));
-        p.append(QPoint(h/2, h));
-    }
-    setMask(QRegion(p));
+    this->text = t;
+}
+
+void Flag::resizeEvent(QResizeEvent * e)
+{
+#if 0
+    image = QImage(this->size(), QImage::Format_ARGB32);
+
+    QPainter painter;
+    painter.begin(&image);
+    painter.fillRect(image.rect(), Qt::white);
+    painter.setPen(Qt::black);
+    painter.drawText(10, 15, this->text);
+    painter.end();
+#endif
 }
 
 void Flag::paintEvent(QPaintEvent* e)
 {
-    QLabel::paintEvent(e);
+#if 1
+    QGLWidget::paintEvent(e);
+#else
+#if 1
+    QPainter painter;
+    painter.begin(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    painter.drawImage((width() - image.width())/2, 0, image);
+    painter.end();
+#else
+    // draw the overlayed text using QPainter
+    QPainter p(this);
+    p.fillRect(this->rect(), Qt::white);
+    p.setPen(Qt::black);
+    p.setBrush(Qt::NoBrush);
+    QFontMetrics fm(p.font());
+    p.drawText(10, 15, this->text);
+#endif
+#endif
 }
 
 void Flag::mouseMoveEvent(QMouseEvent *e)
