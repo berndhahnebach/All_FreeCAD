@@ -20,9 +20,9 @@
 #ifndef __SKETCHFLAT_H
 #define __SKETCHFLAT_H
 
-#include <windows.h>
-#include <commctrl.h>
-#include <commdlg.h>
+//#include <windows.h>
+//#include <commctrl.h>
+//#include <commdlg.h>
 
 #include <setjmp.h>
 #include <stdlib.h>

@@ -32,6 +32,7 @@
 
 #include "sketchflat.h"
 
+/*
 void NiceFont(HWND x);
 HWND CreateWindowClient(DWORD exStyle, char *className, char *windowName,
     DWORD style, int x, int y, int width, int height, HWND parent,
@@ -48,15 +49,16 @@ static HWND CancelButton;
 static HWND Textboxes[MAX_BOXES];
 static HWND Lists[MAX_BOXES];
 static HWND Labels[MAX_BOXES];
-
 static LONG_PTR PrevNumOnlyProc[MAX_BOXES];
 
 static BOOL DialogDone;
 static BOOL DialogCancel;
+*/
 
 //-----------------------------------------------------------------------------
 // Don't allow any characters other than -0-9. in the box.
 //-----------------------------------------------------------------------------
+/*
 static LRESULT CALLBACK MyNumOnlyProc(HWND hwnd, UINT msg, WPARAM wParam,
     LPARAM lParam)
 {
@@ -78,7 +80,8 @@ static LRESULT CALLBACK MyNumOnlyProc(HWND hwnd, UINT msg, WPARAM wParam,
     //oops();
 	return 0;
 }
-
+*/
+/*
 static void MakeControls(int boxes, char **labels, DWORD numMask)
 {
     //int i, j;
@@ -122,14 +125,15 @@ static void MakeControls(int boxes, char **labels, DWORD numMask)
     //    268, 41, 70, 23, SimpleDialog, NULL, Instance, NULL); 
     //NiceFont(CancelButton);
 }
-
+*/
 //-----------------------------------------------------------------------------
 // Window proc for the dialog boxes. Handles Ok/Cancel stuff.
 //-----------------------------------------------------------------------------
+/*
 static LRESULT CALLBACK SimpleProc(HWND hwnd, UINT msg, WPARAM wParam,
     LPARAM lParam)
 {
- /*   switch (msg) {
+   switch (msg) {
         case WM_NOTIFY:
             break;
 
@@ -152,11 +156,11 @@ static LRESULT CALLBACK SimpleProc(HWND hwnd, UINT msg, WPARAM wParam,
 
         default:
             return DefWindowProc(hwnd, msg, wParam, lParam);
-    }*/
+    }
 
     return 1;
 }
-
+*/
 static void MakeSimpleWindowClass(void)
 {
     //WNDCLASSEX wc;

@@ -34,10 +34,11 @@
 #define FREEZE_SUBKEY "SketchFlat"
 //#include "freeze.h"
 
+/*
 HINSTANCE Instance;
 HWND      MainWindow;
 HMENU     SubMenus[20];
-
+*/
 extern BOOL  EditingLayerListLabel;
 
 // We'll keep these here because they get saved in the registry.
@@ -414,80 +415,80 @@ static BOOL IsForNavigation(int key)
 }
 static BOOL ProcessKeyDown(int key)
 {
-    int i;
+    //int i;
 
-    // There's a textbox that we place on the drawing, to enter the values
-    // of dimensions. When it's visible, it should get keys.
-    if(uiTextEntryBoxIsVisible()) {
-        if((key >= '0' && key <= '9') || key == VK_OEM_MINUS ||
-            (key >= VK_NUMPAD0 && key <= VK_NUMPAD9) ||
-            key == VK_SUBTRACT ||
-            key == VK_DECIMAL ||
-            key == VK_OEM_PERIOD || IsForNavigation(key))
-        {
-            return FALSE;
-        }
-    }
+    //// There's a textbox that we place on the drawing, to enter the values
+    //// of dimensions. When it's visible, it should get keys.
+    //if(uiTextEntryBoxIsVisible()) {
+    //    if((key >= '0' && key <= '9') || key == VK_OEM_MINUS ||
+    //        (key >= VK_NUMPAD0 && key <= VK_NUMPAD9) ||
+    //        key == VK_SUBTRACT ||
+    //        key == VK_DECIMAL ||
+    //        key == VK_OEM_PERIOD || IsForNavigation(key))
+    //    {
+    //        return FALSE;
+    //    }
+    //}
 
-    // The labels in the list of sketches/layers are editable. When that
-    // textbox is shown, it should get keys.
-    if(EditingLayerListLabel) {
-        if((key >= 'A' && key <= 'Z') || (key >= '0' && key <= '9') ||
-            key == VK_OEM_MINUS ||
-            IsForNavigation(key) || key == VK_RETURN || key == VK_ESCAPE)
-        {
-            return FALSE;
-        } else {
-            // Swallow additional keys; they probably don't want to use
-            // menu accelerators while editing the label.
-            return TRUE;
-        }
-    }
+    //// The labels in the list of sketches/layers are editable. When that
+    //// textbox is shown, it should get keys.
+    //if(EditingLayerListLabel) {
+    //    if((key >= 'A' && key <= 'Z') || (key >= '0' && key <= '9') ||
+    //        key == VK_OEM_MINUS ||
+    //        IsForNavigation(key) || key == VK_RETURN || key == VK_ESCAPE)
+    //    {
+    //        return FALSE;
+    //    } else {
+    //        // Swallow additional keys; they probably don't want to use
+    //        // menu accelerators while editing the label.
+    //        return TRUE;
+    //    }
+    //}
 
-    // These ones are useful to navigate the "consistency lists" in the
-    // right-side toolbar.
-    if(key == VK_LEFT || key == VK_RIGHT || key == VK_UP || key == VK_DOWN) {
-        return FALSE;
-    }
+    //// These ones are useful to navigate the "consistency lists" in the
+    //// right-side toolbar.
+    //if(key == VK_LEFT || key == VK_RIGHT || key == VK_UP || key == VK_DOWN) {
+    //    return FALSE;
+    //}
 
 
-    if(GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-        if(key >= 'A' && key <= 'Z') {
-            // Map the control characters appropriately.
-            key -= 'A';
-            key += 1;
-        }
-    }
+    //if(GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+    //    if(key >= 'A' && key <= 'Z') {
+    //        // Map the control characters appropriately.
+    //        key -= 'A';
+    //        key += 1;
+    //    }
+    //}
 
-    int subMenu = -1;
-    for(i = 0; i < arraylen(Menus); i++) {
-        if(Menus[i].level == 0) {
-            subMenu++;
-        }
+    //int subMenu = -1;
+    //for(i = 0; i < arraylen(Menus); i++) {
+    //    if(Menus[i].level == 0) {
+    //        subMenu++;
+    //    }
 
-        if(Menus[i].accelerator == key) {
-            // We don't want the keyboard shortcut to work when the menu is
-            // disabled.
-            if(EnableMenuItem(SubMenus[subMenu], Menus[i].id, MF_ENABLED) ==
-                    MF_ENABLED)
-            {
-                // If e.g. we're dragging something in the sketch mode GUI, 
-                // then stop that.
-                CancelSketchModeOperation();
-                (*(Menus[i].fn))(Menus[i].id);
-                return TRUE;
-            } else {
-                // We just accidentally enabled a disabled menu item, so
-                // fix that. I'm not sure how to query the state without
-                // changing it.
-                EnableMenuItem(SubMenus[subMenu], Menus[i].id, MF_GRAYED);
-            }
-        }
-    }
+    //    if(Menus[i].accelerator == key) {
+    //        // We don't want the keyboard shortcut to work when the menu is
+    //        // disabled.
+    //        if(EnableMenuItem(SubMenus[subMenu], Menus[i].id, MF_ENABLED) ==
+    //                MF_ENABLED)
+    //        {
+    //            // If e.g. we're dragging something in the sketch mode GUI, 
+    //            // then stop that.
+    //            CancelSketchModeOperation();
+    //            (*(Menus[i].fn))(Menus[i].id);
+    //            return TRUE;
+    //        } else {
+    //            // We just accidentally enabled a disabled menu item, so
+    //            // fix that. I'm not sure how to query the state without
+    //            // changing it.
+    //            EnableMenuItem(SubMenus[subMenu], Menus[i].id, MF_GRAYED);
+    //        }
+    //    }
+    //}
 
-    // Otherwise no harm, though; pass it along to the general-purpose
-    // keypress handler.
-    KeyPressed(key);
+    //// Otherwise no harm, though; pass it along to the general-purpose
+    //// keypress handler.
+    //KeyPressed(key);
     return TRUE;
 }
 
