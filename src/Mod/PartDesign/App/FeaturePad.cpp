@@ -57,9 +57,28 @@ App::DocumentObjectExecReturn *Pad::execute(void)
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
     Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
 
+	/* Version from the blog
+	Handle(Geom_Surface) aSurf = new Geom_Plane (gp::XOY());
+	//anti-clockwise circles if too look from surface normal
+	Handle(Geom_Curve) anExtC = new Geom_Circle (gp::XOY(), 10.);
+	Handle(Geom_Curve) anIntC = new Geom_Circle (gp::XOY(), 5.);
+	TopoDS_Edge anExtE = BRepBuilderAPI_MakeEdge (anExtC);
+	TopoDS_Edge anIntE = BRepBuilderAPI_MakeEdge (anExtC);
+	TopoDS_Wire anExtW = BRepBuilderAPI_MakeWire (anExtE);
+	TopoDS_Wire anIntW = BRepBuilderAPI_MakeWire (anIntE);
+	BRep_Builder aB;
+	TopoDS_Face aFace;
+	aB.MakeFace (aFace, aSurf, Precision::Confusion());
+	//aB. (aFace, aSurf);
+	aB.Add (aFace, anExtW);
+	//aB.Add (aFace, anIntW.Reversed()); //material should lie on the right of the inner wire
+
+	this->Shape.setValue(aFace);
+	*/
+
+	/* Version from First Application
     Base::Vector3f v = Dir.getValue();
     gp_Vec vec(v.x,v.y,v.z);
-
 	gp_Pln Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1));
 
     // Now, let's get the TopoDS_Shape
@@ -73,5 +92,20 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 			this->Shape.setValue(PrismMaker.Shape());
 		}
 	}
+	*/
+
+	Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
+	//anti-clockwise circles if too look from surface normal
+
+	TopoDS_Wire theWire = TopoDS::Wire(Shape.getShape()._Shape);
+
+	BRep_Builder aB;
+	TopoDS_Face aFace;
+	aB.MakeFace (aFace, aSurf, Precision::Confusion());
+	aB.Add (aFace, theWire);
+	//aB.Add (aFace, anIntW.Reversed()); //material should lie on the right of the inner wire
+
+	this->Shape.setValue(aFace);
+
     return App::DocumentObject::StdReturn;
 }
