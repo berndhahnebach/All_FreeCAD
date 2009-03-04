@@ -35,7 +35,7 @@
 				Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" 
 				Language="1033" 
 				Version='$(var.ProductVersion)' 
-				Manufacturer="Juergen Riegel (juergen.riegel@web.de)">
+				Manufacturer="Juergen Riegel (FreeCAD@juergen-riegel.net)">
         <Package Description="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package" 
 				Comments="for details about FreeCAD see http://free-cad.sourceforge.net" 
 				InstallerVersion="200" 
@@ -61,7 +61,7 @@
 		</Upgrade>
 
 		<Property Id="ARPCOMMENTS">Greatest CAD ever ;-)</Property>
-		<Property Id="ARPCONTACT">Juergen Riegel (juergen.riegel@web.de)</Property>
+		<Property Id="ARPCONTACT">Juergen Riegel (FreeCAD@juergen-riegel.net)</Property>
 		<Property Id="ARPHELPLINK">http://sourceforge.net/forum/forum.php?forum_id=161659</Property>
 		<Property Id="ARPURLINFOABOUT">http://free-cad.sourceforge.net/</Property>
 		<Property Id="ARPURLUPDATEINFO">http://sourceforge.net/project/showfiles.php?group_id=49159</Property>
@@ -124,7 +124,6 @@
             <ComponentRef Id="CompModSketcher" />
             <ComponentRef Id="CompModDraft" />
             <ComponentRef Id="CompModDraftLib" />
-            <ComponentRef Id="CompModDraftIcons" />
             <ComponentRef Id="CompModTest" />
             <ComponentRef Id="CompModCam" />
 	        <ComponentRef Id="CompModDrawingTemplates" />

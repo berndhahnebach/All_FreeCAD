@@ -32,6 +32,8 @@
             <File Id="importOCAPy" Name="importOCA.py" DiskId="1" />
             <File Id="importSVGPy" Name="importSVG.py" DiskId="1" />
             <File Id="userprefsUi" Name="userprefs.ui" DiskId="1" />
+            <File Id="DraftIconsSvg" Name="icons.svg" DiskId="1" />
+            <File Id="DraftPreferencesDraftSvg" Name="preferences-draft.svg" DiskId="1" />
         </Component>
 		<Directory Id="ModDraftLib" Name="draftlibs" FileSource="..\Mod\Draft\draftlibs">
 	        <Component Id="CompModDraftLib" Guid="d19c08b0-0747-11de-8c30-0800200c9a66">
@@ -42,12 +44,6 @@
 	            <File Id="DraftLibdxfReaderPy" Name="dxfReader.py" DiskId="1" />
 	            <File Id="DraftLibfcgeoPy" Name="fcgeo.py" DiskId="1" />
 	            <File Id="DraftLibfcvecPy" Name="fcvec.py" DiskId="1" />
-	        </Component>
-		</Directory>
-		<Directory Id="ModDraftIcons" Name="icons" FileSource="..\Mod\Draft\icons">
-	        <Component Id="CompModDraftIcons" Guid="2f730380-0748-11de-8c30-0800200c9a66">
-	            <File Id="DraftIconsSvg" Name="icons.svg" DiskId="1" />
-	            <File Id="DraftPreferencesDraftSvg" Name="preferences-draft.svg" DiskId="1" />
 	        </Component>
 		</Directory>
     </Directory>
