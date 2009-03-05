@@ -2,7 +2,9 @@
 lib_LTLIBRARIES=libPartDesign.la PartDesign.la
 
 libPartDesign_la_SOURCES=\
-                AppPartDesignPy.cpp \
+		AppPartDesignPy.cpp \
+		FeaturePad.cpp \
+		FeaturePad.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
@@ -22,20 +24,9 @@ libPartDesign_la_LIBADD   = \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
-		-lTKSTEP \
-		-lTKIGES \
-		-lTKSTL \
-		-lTKShHealing \
 		-lTKXSBase \
-		-lTKBool \
-		-lTKBO \
 		-lTKBRep \
-		-lTKTopAlgo \
-		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lTKOffset \
-		-lTKPrim \
-		-lTKHLR
+		-lTKGeomBase 
 
 #--------------------------------------------------------------------------------------
 # Loader of libPartDesign

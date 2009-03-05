@@ -23,6 +23,13 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <gp_Pln.hxx>
+# include <BRep_Builder.hxx>
+# include <Geom_Plane.hxx>
+# include <Handle_Geom_Surface.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Face.hxx>
+# include <TopoDS_Wire.hxx>
 #endif
 
 
@@ -43,7 +50,7 @@ Pad::Pad()
 short Pad::mustExecute() const
 {
     if (Base.isTouched() ||
-        Dir.isTouched() )
+        Dir.isTouched())
         return 1;
     return 0;
 }
@@ -55,7 +62,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
         return new App::DocumentObjectExecReturn("No object linked");
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
-    Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
+    //Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
 
 	/* Version from the blog
 	Handle(Geom_Surface) aSurf = new Geom_Plane (gp::XOY());

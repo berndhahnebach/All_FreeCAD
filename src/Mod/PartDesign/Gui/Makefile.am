@@ -3,21 +3,19 @@ SUBDIRS=Resources
 
 lib_LTLIBRARIES=libPartDesignGui.la PartDesignGui.la
 
-BUILT_SOURCES=\
-		moc_PartDesignView.cpp
-
 libPartDesignGui_la_SOURCES=\
 		AppPartDesignGuiPy.cpp \
 		Command.cpp \
-		PartDesignView.cpp \
-		PartDesignView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Workbench.cpp \
 		Workbench.h
 
 # the library search path.
-libPartDesignGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartDesignGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \
+	-L../../Part/App -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+
 libPartDesignGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DPartDesignAppExport= -DPartDesignGuiExport=
 
 libPartDesignGui_la_LIBADD   = \
@@ -27,6 +25,7 @@ libPartDesignGui_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
+		-lPart \
 		-lPartDesign
 
 #--------------------------------------------------------------------------------------
@@ -63,7 +62,8 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+INCLUDES=-I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. \
+		$(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC)
 
 
 libdir = $(prefix)/Mod/PartDesign
