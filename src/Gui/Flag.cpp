@@ -29,6 +29,104 @@
 
 using namespace Gui;
 
+#if 0 // Test functions with transparency
+#if 1
+    QDialog* dlg = Gui::getMainWindow()->findChild<QDialog*>();
+    QImage image;
+    if (dlg) {
+        QPixmap p = QPixmap::grabWidget(dlg);
+        image = p.toImage();
+    }
+    else {
+        QImage img(128,128, QImage::Format_ARGB32);
+        img.fill(qRgba(255, 255, 255, 127));
+        QPainter painter;
+        painter.begin(&img);
+        painter.setPen(Qt::black);
+        painter.drawText(25, 50, QLatin1String("Hello, World!"));
+        painter.end();
+        image = img;
+    }
+#else
+    QPixmap pm (128,128);
+    QBitmap mask (128,128);
+    mask.fill(Qt::color0);
+
+    QPainter painter(&mask);
+    painter.drawText(QPoint(0, 0), QLatin1String("Hello, World!"));
+    pm.setMask(mask);
+
+    QImage img = pm.toImage();
+    img.load(QLatin1String("C:/Temp/tux.png"),"PNG");
+#endif
+
+#include "MainWindow.h"
+void drawImage(QGLWidget* w,double x1, double y1, double x2, double y2, QImage pic)
+{
+    //pic.save(QLatin1String("C:/Temp/texture.png"),"PNG");
+#if 0
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4d(0.0,0.0,1.0,0.2f);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0,0); glVertex2f(x1,y1);
+    glTexCoord2d(1,0); glVertex2f(x2,y1);
+    glTexCoord2d(1,1); glVertex2f(x2,y2);
+    glTexCoord2d(0,1); glVertex2f(x1,y2);
+    glEnd();
+    glPopAttrib();
+#elif 0
+    pic = QGLWidget::convertToGLFormat(pic);
+    glRasterPos2d(x1,y1);
+    glDrawPixels(pic.width(),pic.height(),GL_RGBA,GL_UNSIGNED_BYTE,pic.bits());
+#elif 0
+    pic = QGLWidget::convertToGLFormat(pic);
+    int texid = w->bindTexture(pic);
+    glColor3f(1,1,1);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0,0); glVertex2f(x1,y1);
+    glTexCoord2d(1,0); glVertex2f(x2,y1);
+    glTexCoord2d(1,1); glVertex2f(x2,y2);
+    glTexCoord2d(0,1); glVertex2f(x1,y2);
+    glEnd();
+    //    glEnable(GL_LIGHTING);
+    w->deleteTexture(texid);
+#elif 0
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4d(0.0,0.0,1.0,0.2f);
+    int texid = w->bindTexture(pic);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0,0); glVertex2f(x1,y1);
+    glTexCoord2d(1,0); glVertex2f(x2,y1);
+    glTexCoord2d(1,1); glVertex2f(x2,y2);
+    glTexCoord2d(0,1); glVertex2f(x1,y2);
+    glEnd();
+    //    glEnable(GL_LIGHTING);
+    w->deleteTexture(texid);
+    glPopAttrib();
+#elif 1
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4d(0.0,0.0,1.0,0.2f);
+    pic = QGLWidget::convertToGLFormat(pic);
+    glRasterPos2d(x1,y1);
+    glDrawPixels(pic.width(),pic.height(),GL_RGBA,GL_UNSIGNED_BYTE,pic.bits());
+    glPopAttrib();
+#endif
+}
+
+#endif
+
 /* TRANSLATOR Gui::Flag */
 
 #if 1
@@ -51,7 +149,6 @@ void Flag::initializeGL()
 void Flag::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glColor3f(0.0f,0.0f,0.0f);
     qglColor(Qt::black);
     renderText(10,15,this->text);
 }
@@ -97,6 +194,7 @@ void Flag::drawLine (int tox, int toy)
 {
     if (!isVisible())
         return;
+
     // Get position of line
     QSize s = parentWidget()->size();
     SbVec2s view(s.width(), s.height());
