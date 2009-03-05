@@ -3,12 +3,19 @@ lib_LTLIBRARIES=libMeshPart.la MeshPart.la
 
 libMeshPart_la_SOURCES=\
                 AppMeshPartPy.cpp \
+		CurveProjector.cpp \
+		CurveProjector.h \
+		MeshAlgos.cpp \
+		MeshAlgos.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
 
 # the library search path.
-libMeshPart_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMeshPart_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
+	-L../../../Mod/Mesh/App $(all_libraries) -L$(OCC_LIB) \
+	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+
 libMeshPart_la_CPPFLAGS = -DMeshPartAppExport=
 
 libMeshPart_la_LIBADD   = \
@@ -18,24 +25,16 @@ libMeshPart_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lPart \
+		-lMesh \
 		-lTKernel \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
-		-lTKSTEP \
-		-lTKIGES \
-		-lTKSTL \
-		-lTKShHealing \
 		-lTKXSBase \
-		-lTKBool \
-		-lTKBO \
 		-lTKBRep \
 		-lTKTopAlgo \
 		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lTKOffset \
-		-lTKPrim \
-		-lTKHLR
+		-lTKGeomBase
 
 #--------------------------------------------------------------------------------------
 # Loader of libMeshPart

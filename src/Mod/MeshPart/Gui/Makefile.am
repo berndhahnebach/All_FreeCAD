@@ -2,22 +2,21 @@ SUBDIRS=Resources
 
 lib_LTLIBRARIES=libMeshPartGui.la MeshPartGui.la
 
-BUILT_SOURCES=\
-		moc_MeshPartView.cpp
-
 libMeshPartGui_la_SOURCES=\
 		AppMeshPartGuiPy.cpp \
 		Command.cpp \
-		MeshPartView.cpp \
-		MeshPartView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Workbench.cpp \
 		Workbench.h
 
 # the library search path.
-libMeshPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libMeshPartGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DMeshPartAppExport= -DMeshPartGuiExport=
+libMeshPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
+	-L../../Mesh/App -L../../Part/App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+
+libMeshPartGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" \
+	-DMeshPartAppExport= -DMeshPartGuiExport=
 
 libMeshPartGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
@@ -26,6 +25,8 @@ libMeshPartGui_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
+		-lMesh \
+		-lPart \
 		-lMeshPart
 
 #--------------------------------------------------------------------------------------
