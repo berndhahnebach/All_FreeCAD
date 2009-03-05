@@ -1,3 +1,10 @@
+/***************************************************************************
+ *                                                                         *
+ *   Copyright: http://www.ii-system.com                                   *
+ *   License:   LGPL                                                       *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "iistaskpanelscheme.h"
 
 iisTaskPanelScheme* iisTaskPanelScheme::myDefaultScheme = 0;

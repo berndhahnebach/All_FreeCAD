@@ -1,3 +1,10 @@
+/***************************************************************************
+ *                                                                         *
+ *   Copyright: http://www.ii-system.com                                   *
+ *   License:   LGPL                                                       *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef IISWINXPTASKPANELSCHEME_H
 #define IISWINXPTASKPANELSCHEME_H
 
