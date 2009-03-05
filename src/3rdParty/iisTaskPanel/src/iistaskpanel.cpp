@@ -1,3 +1,10 @@
+/***************************************************************************
+ *                                                                         *
+ *   Copyright: http://www.ii-system.com                                   *
+ *   License:   LGPL                                                       *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "iistaskpanel.h"
 #include "iistaskpanelscheme.h"
 #include "iistaskbox.h"

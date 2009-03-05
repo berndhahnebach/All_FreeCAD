@@ -1,3 +1,10 @@
+/***************************************************************************
+ *                                                                         *
+ *   Copyright: http://www.ii-system.com                                   *
+ *   License:   LGPL                                                       *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef IISTASKPANELSCHEME_H
 #define IISTASKPANELSCHEME_H
 

@@ -1,3 +1,10 @@
+/***************************************************************************
+ *                                                                         *
+ *   Copyright: http://www.ii-system.com                                   *
+ *   License:   LGPL                                                       *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "iistaskheader.h"
 #include "iistaskpanelscheme.h"
 #include "iisiconlabel.h"

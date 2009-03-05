@@ -1,3 +1,10 @@
+/***************************************************************************
+ *                                                                         *
+ *   Copyright: http://www.ii-system.com                                   *
+ *   License:   LGPL                                                       *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "iiswinxptaskpanelscheme.h"
 
 iisWinXPTaskPanelScheme* iisWinXPTaskPanelScheme::myDefaultXPScheme = 0;
