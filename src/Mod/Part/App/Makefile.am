@@ -23,6 +23,7 @@ BUILT_SOURCES=\
 		SurfaceOfExtrusionPy.cpp \
 		SurfaceOfRevolutionPy.cpp \
 		PartFeaturePy.cpp \
+		Part2DObjectPy.cpp \
 		TopoShapeCompoundPy.cpp \
 		TopoShapeCompSolidPy.cpp \
 		TopoShapeEdgePy.cpp \
@@ -55,6 +56,7 @@ libPart_la_BUILT=\
 		SurfaceOfExtrusionPy.h \
 		SurfaceOfRevolutionPy.h \
 		PartFeaturePy.h \
+		Part2DObjectPy.h \
 		TopoShapeCompoundPy.h \
 		TopoShapeCompSolidPy.h \
 		TopoShapeEdgePy.h \
@@ -106,6 +108,7 @@ libPart_la_SOURCES=\
 		PartFeature.cpp \
 		PartFeaturePyImp.cpp \
 		Part2DObject.cpp \
+		Part2DObjectPyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrimitiveFeature.cpp \
@@ -231,6 +234,7 @@ EXTRA_DIST = \
 		SurfaceOfExtrusionPy.xml \
 		SurfaceOfRevolutionPy.xml \
 		PartFeaturePy.xml \
+		Part2DObjectPy.xml \
 		TopoShapePy.xml \
 		TopoShapeCompSolidPy.xml \
 		TopoShapeCompoundPy.xml \
