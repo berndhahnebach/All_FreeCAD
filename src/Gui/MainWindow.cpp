@@ -54,7 +54,7 @@
 #include "Tree.h"
 #include "PropertyView.h"
 #include "SelectionView.h"
-#include "TaskPanelView.h"
+//#include "TaskPanelView.h"
 #include "MenuManager.h"
 //#include "ToolBox.h"
 #include "HelpView.h"
