@@ -659,6 +659,14 @@ TopoDS_Shape TopoShape::section(TopoDS_Shape shape) const
     return mkSection.Shape();
 }
 
+TopoDS_Shape TopoShape::makePipe(const TopoDS_Wire& spine) const
+{
+    if (this->_Shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
+    if (spine.IsNull()) Standard_Failure::Raise("cannot sweep along empty spine");
+    BRepOffsetAPI_MakePipe mkPipe(spine,this->_Shape);
+    return mkPipe.Shape();
+}
+
 TopoDS_Shape TopoShape::makePrism(const gp_Vec& vec) const
 {
     if (this->_Shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");

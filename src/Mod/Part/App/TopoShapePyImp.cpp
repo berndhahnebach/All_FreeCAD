@@ -617,14 +617,11 @@ PyObject* TopoShapePy::makePipe(PyObject *args)
     PyObject *pShape;
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pShape)) {
         try {
-            TopoDS_Shape shape = this->getTopoShapePtr()->_Shape;
-            if (shape.IsNull()) Standard_Failure::Raise("cannot sweep empty shape");
             TopoDS_Shape wire = static_cast<TopoShapePy*>(pShape)->getTopoShapePtr()->_Shape;
             if (wire.IsNull()) Standard_Failure::Raise("cannot sweep along empty wire");
             if (wire.ShapeType() != TopAbs_WIRE)
                 Standard_Failure::Raise("spine shape is not a wire");
-            BRepOffsetAPI_MakePipe mkPipe(TopoDS::Wire(wire),shape);
-            shape = mkPipe.Shape();
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePipe(TopoDS::Wire(wire));
             return new TopoShapePy(new TopoShape(shape));
         }
         catch (Standard_Failure) {
