@@ -41,11 +41,10 @@ namespace Mesh {
 
 namespace MeshGui {
 class ViewProviderMeshDefects;
-typedef boost::signals::connection Connection;
 
 /**
- * The GuiCleanupHandler class is used to cleanup GUI elements from the MeshGui module when the application is about to be 
- * closed.
+ * The GuiCleanupHandler class is used to cleanup GUI elements from the MeshGui
+ * module when the application is about to be closed.
  * @author Werner Mayer
  */
 class CleanupHandler : public QObject

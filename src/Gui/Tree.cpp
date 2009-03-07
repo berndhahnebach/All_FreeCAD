@@ -575,8 +575,9 @@ void DocumentItem::slotResetEdit(Gui::ViewProviderDocumentObject& v)
 {
     std::string name (v.getObject()->getNameInDocument());
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
-    if (it != ObjectMap.end()) 
-        it->second->setBackgroundColor(0,Qt::white);
+    if (it != ObjectMap.end()) {
+        it->second->setData(0, Qt::BackgroundColorRole,QVariant());
+    }
 }
 
 void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)

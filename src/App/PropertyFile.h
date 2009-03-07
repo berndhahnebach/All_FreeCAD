@@ -39,7 +39,6 @@ namespace Base {
 class Writer;
 }
 
-
 namespace App
 {
 
@@ -54,7 +53,8 @@ public:
     PropertyFile(void);
     virtual ~PropertyFile();
     
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFileItem"; }
+    virtual const char* getEditorName(void) const
+    { return "Gui::PropertyEditor::PropertyFileItem"; }
 };
 
 /** File include properties
@@ -82,7 +82,8 @@ public:
     void setValue(const char* sFile, const char* sName=0);
     const char* getValue(void) const;
 
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFileIncludedItem"; }
+    virtual const char* getEditorName(void) const
+    { return "Gui::PropertyEditor::PropertyPathItem"; }
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);
     
@@ -95,8 +96,8 @@ public:
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
 
-	// get the transient path if the property is in a DocumentObject
-	std::string getDocTransientPath(void) const;
+    // get the transient path if the property is in a DocumentObject
+    std::string getDocTransientPath(void) const;
 
     /** get a temp file name in the transient path of the document.
       * Using this file for new Version of the file and set 
@@ -107,8 +108,7 @@ public:
 
 protected:
     std::string _cValue;
-	std::string _BaseFileName;
-
+    std::string _BaseFileName;
 };
 
 

@@ -58,6 +58,8 @@
 
 #include <Mod/Mesh/App/MeshProperties.h>
 #include <Mod/Mesh/App/MeshFeature.h>
+#include <Mod/Mesh/App/FeatureMeshCurvature.h>
+#include <Mod/Mesh/App/MeshProperties.h>
 
 #include "ViewProvider.h"
 #include "ViewProviderCurvature.h"
@@ -148,10 +150,42 @@ void ViewProviderMeshCurvature::init(const Mesh::PropertyCurvatureList* pCurvInf
     pcColorBar->setRange( fMin, fMax, 3 );
 }
 
+void ViewProviderMeshCurvature::slotCreatedObject(App::DocumentObject& Obj)
+{
+}
+
+void ViewProviderMeshCurvature::slotDeletedObject(App::DocumentObject& Obj)
+{
+}
+
+void ViewProviderMeshCurvature::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
+{
+    // we get this for any object for that a property has changed. Thus, we must regard that object
+    // which is linked by our link property
+    App::DocumentObject* object = static_cast<Mesh::Curvature*>(pcObject)->Source.getValue();
+    if (object == &Obj) {
+        const Mesh::PropertyMeshKernel& mesh = static_cast<Mesh::Feature*>(object)->Mesh;
+        if ((&mesh) == (&Prop)) {
+            const Mesh::MeshObject& kernel = mesh.getValue();
+            pcColorMat->diffuseColor.setNum((int)kernel.countPoints());
+            pcColorMat->transparency.setNum((int)kernel.countPoints());
+        }
+    }
+}
+
+void ViewProviderMeshCurvature::slotCreatedDocument(App::Document& Doc)
+{
+}
+
+void ViewProviderMeshCurvature::slotDeletedDocument(App::Document& Doc)
+{
+}
+
 void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
 {
     // creats the standard viewing modes
     inherited::attach(pcFeat);
+    attachDocument(pcFeat->getDocument());
 
     SoShapeHints * flathints = new SoShapeHints;
     flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;

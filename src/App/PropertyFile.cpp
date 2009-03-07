@@ -83,7 +83,7 @@ std::string PropertyFileIncluded::getExchangeTempFile(void) const
 
 void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 {
-   if (sFile) {
+    if (sFile) {
         if (_cValue == sFile)
             throw Base::Exception("Not possible to set the same file!");
 
@@ -99,22 +99,22 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
         std::string path = file.dirPath();
         std::string pathAct = value.dirPath();
 
-		// if a special name given, use this instead
-		if (sName){
+        // if a special name given, use this instead
+        if (sName) {
             _cValue = path + "/" + sName;
-			_BaseFileName = sName;
-		}else
-			if (value.fileName().empty()){
-				_cValue = pathTrans + "/" + file.fileName();
-				_BaseFileName = file.fileName();
-			}
+            _BaseFileName = sName;
+        }
+        else if (value.fileName().empty()) {
+            _cValue = pathTrans + "/" + file.fileName();
+            _BaseFileName = file.fileName();
+        }
 
-		// if the files is already in transient dir of the document, just use it
+        // if the files is already in transient dir of the document, just use it
         if (path == pathTrans) {
             bool done = file.renameFile(_cValue.c_str());
             assert(done);
         }
-		// otherwise copy from origin location 
+        // otherwise copy from origin location 
         else {
             bool done = file.copyTo(_cValue.c_str());
             //assert(done);
@@ -227,7 +227,6 @@ void PropertyFileIncluded::Save (Writer &writer) const
         else
             writer.Stream() << writer.ind() << "<FileIncluded file=\"\"/>" << std::endl;
     }
-
 }
 
 void PropertyFileIncluded::Restore(Base::XMLReader &reader)
@@ -240,7 +239,7 @@ void PropertyFileIncluded::Restore(Base::XMLReader &reader)
         reader.addFile(file.c_str(),this);
         // is in the document transient path
         _cValue = getDocTransientPath() + "/" + file;
-		_BaseFileName = file;
+        _BaseFileName = file;
     }
 }
 
@@ -277,8 +276,8 @@ Property *PropertyFileIncluded::Copy(void) const
 {
     PropertyFileIncluded *p= new PropertyFileIncluded();
 
-	// remember the base name
-	p->_BaseFileName = _BaseFileName;
+    // remember the base name
+    p->_BaseFileName = _BaseFileName;
 
     if (!_cValue.empty()) {
         Base::FileInfo file(_cValue);
@@ -290,7 +289,7 @@ Property *PropertyFileIncluded::Copy(void) const
         bool done = file.renameFile(NewName.filePath().c_str());
         assert(done);
         // remember the new name for the Undo
-		Base::Console().Log("Copy this=%p Befor=%s After=%s\n",p,p->_cValue.c_str(),NewName.filePath().c_str());
+        Base::Console().Log("Copy this=%p Befor=%s After=%s\n",p,p->_cValue.c_str(),NewName.filePath().c_str());
         p->_cValue = NewName.filePath().c_str();
     }
 
@@ -303,13 +302,12 @@ void PropertyFileIncluded::Paste(const Property &from)
     Base::FileInfo file(_cValue);
     // delete old file (if still there)
     file.deleteFile();
-	printf("Paste this=%p from=%s actual=%s\n",from,dynamic_cast<const PropertyFileIncluded&>(from)._cValue.c_str(),_cValue.c_str());
-	const PropertyFileIncluded &fileInc = dynamic_cast<const PropertyFileIncluded&>(from);
+    const PropertyFileIncluded &fileInc = dynamic_cast<const PropertyFileIncluded&>(from);
 
     if (!fileInc._cValue.empty()) {
         // move the saved files back in place
         Base::FileInfo NewFile(fileInc._cValue);
-		_cValue = NewFile.dirPath() + "/" + fileInc._BaseFileName;
+        _cValue = NewFile.dirPath() + "/" + fileInc._BaseFileName;
         bool done = NewFile.renameFile(_cValue.c_str());
         assert(done);
     }

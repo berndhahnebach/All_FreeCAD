@@ -644,7 +644,7 @@ StdCmdSelectAll::StdCmdSelectAll()
 #if QT_VERSION >= 0x040200
     sPixmap       = "edit-select-all";
 #endif
-    iAccel        = Qt::CTRL+Qt::Key_A;
+    //iAccel        = Qt::CTRL+Qt::Key_A; // superseeds shortcuts for text edits
 }
 
 void StdCmdSelectAll::activated(int iMsg)

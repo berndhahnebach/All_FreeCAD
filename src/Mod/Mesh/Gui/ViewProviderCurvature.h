@@ -24,6 +24,7 @@
 #define MESHGUI_VIEWPROVIDER_MESH_CURVATURE_H
 
 #include <Base/Observer.h>
+#include <App/DocumentObserver.h>
 #include "ViewProvider.h"
 
 class SoSeparator;
@@ -54,7 +55,8 @@ namespace MeshGui {
  *
  * @author Werner Mayer
  */
-class MeshGuiExport ViewProviderMeshCurvature : public Gui::ViewProviderDocumentObject, 
+class MeshGuiExport ViewProviderMeshCurvature : public Gui::ViewProviderDocumentObject,
+                                                public App::DocumentObserver,
                                                 public Base::Observer<int> {
     typedef Gui::ViewProviderDocumentObject inherited;
 
@@ -90,6 +92,17 @@ protected:
 
 private:
     void init(const Mesh::PropertyCurvatureList *prop);
+
+    /** Checks if a new document was created */
+    void slotCreatedDocument(App::Document& Doc);
+    /** Checks if the given document is about to be closed */
+    void slotDeletedDocument(App::Document& Doc);
+    /** Checks if a new object was added. */
+    void slotCreatedObject(App::DocumentObject& Obj);
+    /** Checks if the given object is about to be removed. */
+    void slotDeletedObject(App::DocumentObject& Obj);
+    /** The property of an observed object has changed */
+    void slotChangedObject(App::DocumentObject& Obj, App::Property& Prop);
 
 protected:
     SoMaterial       * pcColorMat;
