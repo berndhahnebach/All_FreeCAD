@@ -25,7 +25,7 @@
 #define PART_TOPOSHAPE_H
 
 #include <gp_Vec.hxx>
-#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <App/ComplexGeoData.h>
 
@@ -120,6 +120,7 @@ public:
 
     /** Sweeping */
     //@{
+    TopoDS_Shape makePipe(const TopoDS_Wire&) const;
     TopoDS_Shape makePrism(const gp_Vec&) const;
     TopoDS_Shape revolve(const gp_Ax1&, double d) const;
     TopoDS_Shape makeThickSolid(const TopTools_ListOfShape& remFace,
