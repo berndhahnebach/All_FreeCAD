@@ -39,7 +39,8 @@ def findicons():
 	if not iconmap.load(filepath):
 		# If loading by plug-in fails do it the conventional way
 		file=QtCore.QFile(filepath)
-		file.open(QtCore.QFile.ReadOnly)
+		if not file.open(QtCore.QFile.ReadOnly):
+			raise Exception("Cannot open file %s" % (filepath))
 		ba=file.readAll()
 		render=QtSvg.QSvgRenderer(ba)
 		iconmap = QtGui.QPixmap(render.viewBox().width(),render.viewBox().height())
