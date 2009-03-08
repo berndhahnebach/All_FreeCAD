@@ -145,7 +145,7 @@ void SketchFlatInterface::getCurvePoints(std::vector<Base::Vector3d> &coords,boo
             // A cubic might pass through the midpoint of the line connecting 
             // its endpoints, but deviate from that line elsewhere.
             if(tryTo - from > 0.1) {
-                tryTo = min(finalTo, from + 0.1);
+                tryTo = std::min<double>(finalTo, from + 0.1);
             }
         }
 

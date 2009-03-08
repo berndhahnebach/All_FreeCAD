@@ -108,6 +108,7 @@ static struct {
     MenuHandler *fn;
 } Menus[] = {
     { 0, "&File",                           0,          0,                          NULL },
+#if 0
     { 1, "&New\tCtrl+N",                    CTRL('N'),  MNU_NEW,                    MenuFile },
     { 1, "&Open...\tCtrl+O",                CTRL('O'),  MNU_OPEN,                   MenuFile },
     { 1, "&Save\tCtrl+S",                   CTRL('S'),  MNU_SAVE,                   MenuFile },
@@ -201,6 +202,7 @@ static struct {
     { 0, "&Help",                           0,          0,                          NULL },
 //    { 1, "&Manual\tF1",                     VK_F1,      MNU_MANUAL,                 MenuManual },
     { 1, "&About\t",                        0,          MNU_ABOUT,                  MenuAbout },
+#endif
 };
 #endif
 

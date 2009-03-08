@@ -262,8 +262,8 @@ double ForDrawnConstraint(int op, SketchConstraint *c, double *x, double *y)
                         yA += toMicronsNotAffine(13);
                         yB -= toMicronsNotAffine(13);
                     }
-                    return min(Distance(*x, *y, xA, yA),
-                               Distance(*x, *y, xB, yB)) - 10;
+                    return std::min<double>(Distance(*x, *y, xA, yA),
+                                            Distance(*x, *y, xB, yB)) - 10;
                 }
             }
             oopsnf();
@@ -351,7 +351,7 @@ pointOnSomething:
                     xp + xo -dx, yp + yo - dy, dx*2, dy*2, TRUE);
                 double dB = DistanceFromPointToLine(*x, *y,
                     xp - xo -dx, yp - yo - dy, dx*2, dy*2, TRUE);
-                return min(dA, dB);
+                return std::min<double>(dA, dB);
             }
 
             oopsnf();
@@ -393,7 +393,7 @@ pointOnSomething:
                     xp + xo -dx, yp + yo - dy, dx*2, dy*2, TRUE);
                 double dB = DistanceFromPointToLine(*x, *y,
                     xp - xo -dx, yp - yo - dy, dx*2, dy*2, TRUE);
-                return min(dA, dB);
+                return std::min<double>(dA, dB);
             }
 
             oopsnf();
@@ -573,7 +573,7 @@ pointOnSomething:
                     if(d[i] < 0) d[i] = 0;
                 }
 
-                return min(d[0], d[1]);
+                return std::min<double>(d[0], d[1]);
             }
 
             oopsnf();

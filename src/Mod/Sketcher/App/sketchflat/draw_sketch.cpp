@@ -996,6 +996,7 @@ static void ChooseFileForImported(SketchEntity *e)
 
 void SketchKeyPressed(int key)
 {
+#if 0
     if(uiTextEntryBoxIsVisible()) {
         if(key == VK_RETURN) {
             if(Hover.which == SEL_CONSTRAINT) {
@@ -1031,6 +1032,7 @@ void SketchKeyPressed(int key)
             UpdateStatusBar();
             break;
     }
+#endif
 }
 
 //=============================================================================
