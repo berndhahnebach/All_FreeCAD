@@ -79,7 +79,7 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
     pcColorBar = new Gui::SoFCColorBar;
     pcColorBar->Attach(this);
     pcColorBar->ref();
-    pcColorBar->setRange( -0.1f, 0.1f, 3 );
+    pcColorBar->setRange(-0.5f, 0.5f, 3);
     pcLinkRoot = new SoGroup;
     pcLinkRoot->ref();
 }
@@ -169,6 +169,7 @@ void ViewProviderMeshCurvature::slotChangedObject(App::DocumentObject& Obj, App:
             const Mesh::MeshObject& kernel = mesh.getValue();
             pcColorMat->diffuseColor.setNum((int)kernel.countPoints());
             pcColorMat->transparency.setNum((int)kernel.countPoints());
+            static_cast<Mesh::Curvature*>(pcObject)->Source.touch(); // make sure to recompute the feature
         }
     }
 }
@@ -206,6 +207,22 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
     pcColorShadedRoot->addChild(pcLinkRoot);
 
     addDisplayMaskMode(pcColorShadedRoot, "ColorShaded");
+
+    // Check for an already existing color bar
+    Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
+    if ( pcBar ) {
+        float fMin = pcColorBar->getMinValue();
+        float fMax = pcColorBar->getMaxValue();
+
+        // Attach to the foreign color bar and delete our own bar
+        pcBar->Attach(this);
+        pcBar->ref();
+        pcBar->setRange(fMin, fMax, 3);
+        pcBar->Notify(0);
+        pcColorBar->Detach(this);
+        pcColorBar->unref();
+        pcColorBar = pcBar;
+    }
 }
 
 void ViewProviderMeshCurvature::updateData(const App::Property* prop)
@@ -229,23 +246,10 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
     else if (prop->getTypeId() == Mesh::PropertyCurvatureList::getClassTypeId()) {
         const Mesh::PropertyCurvatureList* curv = static_cast<const Mesh::PropertyCurvatureList*>(prop);
         if (curv->getSize() < 3) return; // invalid array
+#if 0 // FIXME: Do not always change the range
         init(curv); // init color bar
+#endif
         setActiveMode();
-        // Check for an already existing color bar
-        Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
-        if ( pcBar ) {
-            float fMin = pcColorBar->getMinValue();
-            float fMax = pcColorBar->getMaxValue();
-
-            // Attach to the foreign color bar and delete our own bar
-            pcBar->Attach(this);
-            pcBar->ref();
-            pcBar->setRange(fMin, fMax, 3);
-            pcBar->Notify(0);
-            pcColorBar->Detach(this);
-            pcColorBar->unref();
-            pcColorBar = pcBar;
-        }
     }
 }
 
