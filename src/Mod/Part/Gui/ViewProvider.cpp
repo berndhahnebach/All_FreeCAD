@@ -913,14 +913,14 @@ void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
     coords->point.setNum(nCtU * nCtV + knots.size());
 
     int index=0;
-    coords->point.startEditing();
+    SbVec3f* verts = coords->point.startEditing();
     for (std::vector<std::vector<gp_Pnt> >::iterator u = poles.begin(); u != poles.end(); ++u) {
         for (std::vector<gp_Pnt>::iterator v = u->begin(); v != u->end(); ++v) {
-            coords->point.set1Value(index++, (float)v->X(), (float)v->Y(), (float)v->Z());
+            verts[index++].setValue((float)v->X(), (float)v->Y(), (float)v->Z());
         }
     }
     for (std::list<gp_Pnt>::iterator k = knots.begin(); k != knots.end(); ++k) {
-        coords->point.set1Value(index++, (float)k->X(), (float)k->Y(), (float)k->Z());
+        verts[index++].setValue((float)k->X(), (float)k->Y(), (float)k->Z());
     }
     coords->point.finishEditing();
 

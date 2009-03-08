@@ -61,7 +61,7 @@ def makeBottle(myWidth=50.0, myHeight=70.0, myThickness=30.0):
 	
 	myNeckRadius = myThickness / 4.
 	myNeckHeight = myHeight / 10
-	myNeck = Part.makeCylinder(neckLocation,neckNormal,myNeckRadius,myNeckHeight)	
+	myNeck = Part.makeCylinder(myNeckRadius,myNeckHeight,neckLocation,neckNormal)	
 	myBody = myBody.fuse(myNeck)
 
 	faceToRemove = 0

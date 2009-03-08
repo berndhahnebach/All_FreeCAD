@@ -92,11 +92,14 @@
 # include <BRepMesh.hxx>
 # include <BRepBuilderAPI_Sewing.hxx>
 # include <ShapeFix_Shape.hxx>
+# include <XSControl_WorkSession.hxx>
+# include <Transfer_TransientProcess.hxx>
 
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>
 
 #include "TopoShape.h"
+#include "ProgressIndicator.h"
 
 using namespace Part;
 
@@ -307,11 +310,17 @@ void TopoShape::importIges(const char *FileName)
         if (aReader.ReadFile((const Standard_CString)FileName) != IFSelect_RetDone)
             throw Base::Exception("Error in reading IGES");
 
+        Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
+        pi->NewScope(100, "Reading IGES...");
+        pi->Show();
+        aReader.WS()->MapReader()->SetProgress(pi);
+
         // make brep
         aReader.ClearShapes();
         aReader.TransferRoots();
         // one shape, who contain's all subshapes
         this->_Shape = aReader.OneShape();
+        pi->EndScope();
     }
     catch (Standard_Failure) {
         Handle(Standard_Failure) aFail = Standard_Failure::Caught();

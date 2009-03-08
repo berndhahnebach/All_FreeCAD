@@ -243,6 +243,11 @@ SequencerLauncher::~SequencerLauncher()
     SequencerBase::Instance().stop();
 }
 
+void SequencerLauncher::setText (const char* pszTxt)
+{
+    SequencerBase::Instance().setText(pszTxt);
+}
+
 bool SequencerLauncher::next(bool canAbort)
 {
     if (SequencerBase::_topLauncher != this)

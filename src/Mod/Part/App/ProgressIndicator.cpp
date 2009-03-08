@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,49 +20,72 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <fcntl.h>
 #endif
 
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/FileInfo.h>
-#include "FeaturePartImportIges.h"
-
+#include "ProgressIndicator.h"
 
 using namespace Part;
+/*!
+  \code
+  #include <XSControl_WorkSession.hxx>
+  #include <Transfer_TransientProcess.hxx>
 
-PROPERTY_SOURCE(Part::ImportIges, Part::Feature)
+  STEPControl_Reader aReader;
+  Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
 
+  pi->NewScope(20, "Loading STEP file...");
+  pi->Show();
+  aReader.ReadFile("myfile.stp");
+  pi->EndScope();
 
-ImportIges::ImportIges(void)
+  Handle(StepData_StepModel) Model = aReader.StepModel();
+  pi->NewScope(80, "Translating...");
+  pi->Show();
+  aReader.WS()->MapReader()->SetProgress(pi);
+  Standard_Integer nbr = aReader.NbRootsForTransfer();
+  for ( Standard_Integer n = 1; n<= nbr; n++) {
+    ...
+  }
+
+  pi->EndScope();
+  \encode
+ */
+ProgressIndicator::ProgressIndicator (int theMaxVal)
 {
-    ADD_PROPERTY(FileName,(""));
+    this->cancel = Standard_False;
+    this->myProgress = new Base::SequencerLauncher("", theMaxVal);
+    SetScale (0, theMaxVal, 1);
 }
 
-short ImportIges::mustExecute() const
+ProgressIndicator::~ProgressIndicator ()
 {
-    if (FileName.isTouched())
-        return 1;
-    return 0;
+    delete this->myProgress;
 }
 
-App::DocumentObjectExecReturn *ImportIges::execute(void)
+Standard_Boolean ProgressIndicator::Show (const Standard_Boolean theForce)
 {
-    Base::FileInfo fi(FileName.getValue());
-    if (!fi.isReadable()) {
-        Base::Console().Log("ImportIges::execute() not able to open %s!\n",FileName.getValue());
-        std::string error = std::string("Cannot open file ") + FileName.getValue();
-        return new App::DocumentObjectExecReturn(error);
+    if (theForce) {
+        Handle(TCollection_HAsciiString) aName = GetScope(1).GetName(); //current step
+        if (!aName.IsNull())
+            this->myProgress->setText (aName->ToCString());
     }
 
-    TopoShape aShape;
-    aShape.importIges((const Standard_CString)FileName.getValue());
-    this->Shape.setValue(aShape);
+    Standard_Real aPc = GetPosition(); //always within [0,1]
+    //Standard_Integer aVal = (Standard_Integer)(aPc * GetValue());
+    try {
+        this->myProgress->next();
+    }
+    catch (const Base::AbortException&) {
+        this->cancel = Standard_True;
+    }
 
-    return App::DocumentObject::StdReturn;
+    return Standard_True;
 }
 
-
+Standard_Boolean ProgressIndicator::UserBreak()
+{
+    return this->cancel;
+}
