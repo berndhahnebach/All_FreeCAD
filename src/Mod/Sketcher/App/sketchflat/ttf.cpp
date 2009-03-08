@@ -367,7 +367,7 @@ static BOOL LoadFontFromFile(char *file, char *displayName)
         fclose(OpenTtf);
         return FALSE;
     }
-    displayNameLength = min(displayNameLength, 100);
+    displayNameLength = std::min<int>(displayNameLength, 100);
 
     if(displayName) {
         // Find the display name, and store it in the provided buffer.
@@ -462,7 +462,7 @@ static BOOL LoadFontFromFile(char *file, char *displayName)
 
     WORD  hmtxAdvanceWidth;
     SWORD hmtxLsb;
-    for(i = 0; i < min(MAX_GLYPHS, hheaNumberOfMetrics); i++) {
+    for(i = 0; i < std::min<WORD>((WORD)MAX_GLYPHS, hheaNumberOfMetrics); i++) {
         hmtxAdvanceWidth = GetWORD();
         hmtxLsb          = (SWORD)GetWORD();
 

@@ -32,11 +32,9 @@
 #include <Standard_Byte.hxx>
 #include <Standard_Character.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_Container.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ctype.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DBHandle.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_DimensionMismatch.hxx>
@@ -154,7 +152,6 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepMesh.hxx>
-#include <BRepMesh_Discret.hxx>
 #include <BRepMesh_Edge.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepMesh_Triangle.hxx>
