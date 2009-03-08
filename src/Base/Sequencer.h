@@ -361,6 +361,7 @@ class BaseExport SequencerLauncher
 public:
     SequencerLauncher(const char* pszStr, size_t steps);
     ~SequencerLauncher();
+    void setText (const char* pszTxt);
     bool next(bool canAbort = false);
 };
 

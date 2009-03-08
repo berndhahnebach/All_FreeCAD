@@ -112,6 +112,7 @@ libPart_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrimitiveFeature.cpp \
+		ProgressIndicator.cpp \
 		PropertyTopoShape.cpp \
 		TopoShape.cpp \
 		TopoShapeCompoundPyImp.cpp \
@@ -147,6 +148,7 @@ include_HEADERS=\
 		PartFeature.h \
 		Part2DObject.h \
 		PrimitiveFeature.h \
+		ProgressIndicator.h \
 		PropertyTopoShape.h \
 		TopoShape.h
 
