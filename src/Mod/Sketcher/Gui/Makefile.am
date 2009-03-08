@@ -2,14 +2,9 @@ SUBDIRS=Resources
 
 lib_LTLIBRARIES=libSketcherGui.la SketcherGui.la
 
-BUILT_SOURCES=\
-		moc_SketcherView.cpp
-
 libSketcherGui_la_SOURCES=\
 		AppSketcherGuiPy.cpp \
 		Command.cpp \
-		SketcherView.cpp \
-		SketcherView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProviderSketch.cpp \
@@ -18,9 +13,15 @@ libSketcherGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \
+		-L../../Part/App -L../../Part/Gui -L../App \
+		$(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) \
+		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libSketcherGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DSketcherAppExport= -DSketcherGuiExport=
+
+libSketcherGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" \
+		-DSketcherAppExport= -DSketcherGuiExport=
 
 libSketcherGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
@@ -29,6 +30,8 @@ libSketcherGui_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
+		-lPart \
+		-lPartGui \
 		-lSketcher
 
 #--------------------------------------------------------------------------------------
@@ -65,7 +68,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC)
 
 
 libdir = $(prefix)/Mod/Sketcher

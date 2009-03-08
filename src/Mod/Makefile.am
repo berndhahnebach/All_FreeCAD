@@ -6,12 +6,12 @@ SUBDIRS += Mesh
 endif
 
 if OCC_LIBRARY_FILES
-SUBDIRS += Part Raytracing Drawing
+SUBDIRS += Part PartDesign Raytracing Drawing Sketcher
 endif
 
 if GTS_LIBRARY_FILES
 if OCC_LIBRARY_FILES
-SUBDIRS += ReverseEngineering
+SUBDIRS += ReverseEngineering MeshPart
 endif
 endif
 

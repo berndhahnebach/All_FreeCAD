@@ -34,6 +34,7 @@
 # define SketcherGuiExport __declspec(dllexport)
 #else // for Linux
 # define AppSketcherExport 
+# define AppPartExport
 # define PartAppExport     
 # define AppPartGuiExport     
 # define SketcherGuiExport 

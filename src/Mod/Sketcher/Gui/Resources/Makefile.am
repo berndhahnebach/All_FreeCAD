@@ -1,30 +1,28 @@
 noinst_LTLIBRARIES=libResources.la
 
 BUILT_SOURCES=\
-		qrc_Drawing.cpp 
+		qrc_Sketcher.cpp 
 
 nodist_libResources_la_SOURCES=\
-		qrc_Drawing.cpp 
+		qrc_Sketcher.cpp 
 
 EXTRA_DIST = \
-		icons/actions/document-new.png \
-		icons/actions/document-new.svg \
-		icons/actions/drawing-landscape-A0.svg \
-		icons/actions/drawing-landscape-A1.svg \
-		icons/actions/drawing-landscape-A2.svg \
-		icons/actions/drawing-landscape.svg \
-		icons/actions/drawing-view.svg \
-		icons/actions/drawing-landscape-A3.svg \
-		icons/actions/drawing-landscape-A4.svg \
-		icons/actions/drawing-landscape-new.svg \
-		icons/actions/drawing-portrait-A4.svg \
-		icons/Page.svg \
-		icons/Pages.svg \
-		icons/View.svg \
-		translations/Drawing_de.qm \
-		translations/Drawing_de.ts \
-		Drawing.qrc \
-		UpdateResources.bat
+		icons/Sketcher_ConstrainHorizontal.svg \
+		icons/Sketcher_ConstrainLock.svg \
+		icons/Sketcher_ConstrainVertical.svg \
+		icons/Sketcher_CreateArc.png \
+		icons/Sketcher_CreateCircle.png \
+		icons/Sketcher_CreateLine.png \
+		icons/Sketcher_CreatePoint.svg \
+		icons/Sketcher_CreatePolyline.png \
+		icons/Sketcher_CreateRectangle.png \
+		icons/Sketcher_CreateText.png \
+		icons/Sketcher_DraftLine.png \
+		icons/Sketcher_LeavSketch.svg \
+		icons/Sketcher_NewSketch.svg \
+		translations/Sketcher_de.qm \
+		translations/Sketcher_de.ts \
+		Sketcher.qrc
 
 
 # rule for Qt MetaObject Compiler:
@@ -41,7 +39,7 @@ qrc_%.cpp: %.qrc
 
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(all_includes) $(QT_CXXFLAGS)
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC)
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCGui
