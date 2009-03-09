@@ -87,10 +87,6 @@ public:
      */
     //@{
     virtual QIcon getIcon(void) const;
-
-    /// Is called by the tree if the user double click on the object
-    virtual bool doubleClicked(void){return false;}
-
     //@}
 
     /** update the content of the ViewProvider
@@ -132,14 +128,17 @@ public:
     /// is called when you loose the edit mode
     virtual void unsetEdit(void);
     //@}
-    /// is called when the provider is in edit and the mouse is moved
-    virtual bool mouseMove(const Base::Vector3f &pos, const Base::Vector3f &norm, SoPickedPoint* Point)
-    { return false; }
+
     /// is called when the provider is in edit and a key event occurs. Only ESC ends edit.
     virtual bool keyPressed(int key){return false;}
+    /// Is called by the tree if the user double click on the object
+    virtual bool doubleClicked(void){return false;}
+    /// is called when the provider is in edit and the mouse is moved
+    virtual bool mouseMove(const SbVec3f &pos, const SbVec3f &norm, const SoPickedPoint* pp)
+    { return false; }
     /// is called when the Provider is in edit and the mouse is clicked 
-    virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pos,
-                                    const Base::Vector3f &norm, SoPickedPoint* Point)
+    virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &pos,
+                                    const SbVec3f &norm, const SoPickedPoint* pp)
     { return false; }
 
     //virtual const char* getEditModeName(void){return 0;}

@@ -281,6 +281,101 @@ const char* gce_ErrorStatusText(gce_ErrorType et)
     }
 }
 
+namespace Sketcher {
+struct HashEdge {
+    gp_Pnt v1, v2;
+    TopoDS_Edge edge;
+};
+
+static std::list<TopoDS_Edge> sort_Edges(const std::list<TopoDS_Edge>& edges)
+{
+    Standard_Real maxTol = Precision::Confusion();
+
+    std::list<HashEdge>  hash_edge;
+    TopExp_Explorer xp;
+    for (std::list<TopoDS_Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
+        HashEdge he;
+        xp.Init(*it,TopAbs_VERTEX);
+        TopoDS_Vertex v = TopoDS::Vertex(xp.Current());
+        he.v1 = BRep_Tool::Pnt (v);
+        if (maxTol < BRep_Tool::Tolerance(v))
+            maxTol = BRep_Tool::Tolerance(v);
+
+        xp.Next();
+        v = TopoDS::Vertex(xp.Current());
+        he.v2 = BRep_Tool::Pnt (v);
+        if (maxTol < BRep_Tool::Tolerance(v))
+            maxTol = BRep_Tool::Tolerance(v);
+
+        he.edge = *it;
+        hash_edge.push_back(he);
+    }
+
+    // use squared distance
+    maxTol = maxTol * maxTol;
+
+    if (hash_edge.empty())
+        return std::list<TopoDS_Edge>();
+
+    std::list<TopoDS_Edge> sorted;
+    gp_Pnt first, last;
+    first = hash_edge.front().v1;
+    last  = hash_edge.front().v2;
+
+    sorted.push_back(hash_edge.front().edge);
+    hash_edge.erase(hash_edge.begin());
+
+    while (!hash_edge.empty()) {
+        // search for adjacent edge
+        std::list<HashEdge>::iterator pEI;
+        for (pEI = hash_edge.begin(); pEI != hash_edge.end(); ++pEI) {
+            if (pEI->v1.SquareDistance(last) <= maxTol) {
+                last = pEI->v2;
+                sorted.push_back(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+            else if (pEI->v2.SquareDistance(first) <= maxTol) {
+                first = pEI->v1;
+                sorted.push_front(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+            else if (pEI->v2.SquareDistance(last) <= maxTol) {
+                last = pEI->v1;
+                sorted.push_back(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+            else if (pEI->v1.SquareDistance(first) <= maxTol) {
+                first = pEI->v2;
+                sorted.push_front(pEI->edge);
+                hash_edge.erase(pEI);
+                break;
+            }
+        }
+
+        if ((pEI == hash_edge.end()) || (last.SquareDistance(first) <= maxTol)) {
+            // no adjacent edge found or polyline is closed
+            return sorted;
+            /*
+            rclBorders.push_back(std::vector<TopoDS_Edge>(sorted.begin(), sorted.end()));
+            sorted.clear();
+
+            if (!hash_edge.empty()) {
+                // new wire
+                first = hash_edge.front()->v1;
+                last  = hash_edge.front()->v2;
+                sorted.push_back(hash_edge.front().edge);
+                hash_edge.erase(hash_edge.begin());
+            }*/
+        }
+    }
+
+    return sorted;
+}
+}
+
 Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 {
 	int point=-1;
@@ -302,6 +397,7 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 	//std::vector<points2D> points;
 
 	Part::TopoShape result;
+    std::list<TopoDS_Edge> mkEdges;
 	BRepBuilderAPI_MakeWire mkWire;
 
 	for(int i = 0; i<SK->entities; ++i)
@@ -385,7 +481,8 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 		}
 		if(!curve.IsNull()){
             BRepBuilderAPI_MakeEdge mkEdge(curve, curve->FirstParameter(), curve->LastParameter());
-			mkWire.Add(mkEdge);
+            mkEdges.push_back(mkEdge.Edge());
+			//mkWire.Add(mkEdge);
 			//if(bFirst){
 			//	result._Shape = mkEdge.Edge();
 			//	bFirst=false;
@@ -398,6 +495,11 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 		}
 
 	}
+
+    mkEdges = sort_Edges(mkEdges);
+    for (std::list<TopoDS_Edge>::iterator it = mkEdges.begin(); it != mkEdges.end(); ++it) {
+        mkWire.Add(*it);
+    }
 	if(mkWire.IsDone())
 		result._Shape = mkWire.Wire();
 	else
