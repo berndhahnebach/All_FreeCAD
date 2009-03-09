@@ -24,13 +24,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#include <Mod/Part/App/OpenCascadeAll.h>
 #endif
 
 #include <Base/Console.h>
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "SketchFlatInterface.h"
-#include "SketchFlat/sketchflat.h"
+#include "sketchflat/sketchflat.h"
 
 
 using namespace Sketcher;

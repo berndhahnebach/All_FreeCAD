@@ -32,6 +32,51 @@ typedef struct {
     int     y;
 } IntPoint;
 
+// typedefs for gcc
+#if defined(__GNUC__)
+typedef unsigned long    DWORD;
+typedef int              BOOL;
+typedef unsigned char    BYTE;
+typedef unsigned short   WORD;
+
+#ifndef TRUE
+#define TRUE             1
+#endif
+
+#ifndef FALSE
+#define FALSE            0
+#endif
+
+#ifndef MAX_PATH
+#define MAX_PATH         PATH_MAX
+#endif
+
+#include <sys/sysinfo.h>
+
+inline DWORD GetTickCount()
+{
+    //FIXME: Must be tested
+    struct sysinfo si;
+    if (sysinfo(&si) == 0) return (si.uptime * 1000);
+    else return 1000;
+}
+
+inline int _vsnprintf(char* buffer, size_t count, const char* format, va_list argptr)
+{
+    return vsnprintf(buffer, count, format, argptr);
+}
+
+inline int _stricmp(const char* string1, const char* string2)
+{
+    return strcasecmp(string1, string2);
+}
+
+inline void OutputDebugString(const char* s)
+{
+}
+
+#endif
+
 
 //----------------------------
 // Definitions for the geometry of the sketch.

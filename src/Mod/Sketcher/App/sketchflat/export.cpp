@@ -227,6 +227,7 @@ static int ExportAsGCode(char *file)
 
 void MenuExport(int id)
 {
+#if 0
     char *filter;
     char *defExt;
 #define FILTER_ENDING "\0All Files\0*\0\0"
@@ -268,5 +269,6 @@ void MenuExport(int id)
     if(res == RESULT_FAILED) {
         uiError("Export failed.");
     }
+#endif
 }
 

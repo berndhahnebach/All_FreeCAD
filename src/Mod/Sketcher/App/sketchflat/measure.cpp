@@ -117,7 +117,7 @@ static void DescribeConstraint(char *desc, SketchConstraint *c)
 
         case CONSTRAINT_SCALE_MM:
         case CONSTRAINT_SCALE_INCH: {
-            char *unit = (c->type == CONSTRAINT_SCALE_MM) ? " mm" : "\"";
+            const char *unit = (c->type == CONSTRAINT_SCALE_MM) ? " mm" : "\"";
             sprintf(desc, "scale imported file\r\n"
                           "  by factor\r\n"
                           "    %.4g%s : 1 unit\r\n"
