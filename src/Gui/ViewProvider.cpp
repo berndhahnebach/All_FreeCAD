@@ -95,44 +95,18 @@ void ViewProvider::unsetEdit(void)
 
 void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
 {
-    SbVec3f point, norm;
     const SoEvent * ev = node->getEvent();
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(node->getUserData());
     ViewProvider *self = reinterpret_cast<ViewProvider*>(ud);
     assert(self);
 
-    // Calculate the line of the mouse position in 3D:
-    const SbViewportRegion &vp = view->getViewportRegion();
-    const SbViewVolume vol = view->getCamera()->getViewVolume();
-    const SbVec2s& sz = vp.getWindowSize(); 
-    SbVec3f ptNear, ptFar;
-    short w,h; sz.getValue(w,h);
+    // Calculate 3d point to the mouse position
+    SbVec3f point, norm;
+    point = view->getPointOnScreen(ev->getPosition());
+    norm = view->getViewDirection();
 
-    float fRatio = vp.getViewportAspectRatio();
-    SbVec2f pos = ev->getNormalizedPosition(vp);
-    float pX,pY; pos.getValue(pX,pY);
-
-    SbVec2f org = vp.getViewportOrigin();
-    float Ox, Oy; org.getValue(Ox, Oy);
-
-    SbVec2f siz = vp.getViewportSize();
-    float dX, dY; siz.getValue(dX, dY);
-
-    // now calculate the real points respecting aspect ratio information
-    //
-    if (fRatio > 1.0f) {
-        pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
-        pos.setValue(pX,pY);
-    }
-    else if (fRatio < 1.0f) {
-        pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
-        pos.setValue(pX,pY);
-    }
-
-    // get the line in 3D
-    vol.projectPointToLine(pos, ptNear, ptFar);
     // for convenience make a pick ray action to get the (potentially) picked entity in the provider
-    //SoPickedPoint* Point = self->getPointOnRay(ptNear,ptFar-ptNear,*view);
+    //SoPickedPoint* Point = self->getPointOnRay(point,norm,*view);
     SoSeparator* root = new SoSeparator;
     root->ref();
     root->addChild(view->getCamera());
@@ -143,8 +117,7 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
     rp.apply(root);
     root->unref();
 
-    SoPickedPoint* Point = rp.getPickedPoint();
-    Base::Vector3f pNear(ptNear[0],ptNear[1],ptNear[2]),pFar(ptFar[0],ptFar[1],ptFar[2]);
+    SoPickedPoint* pp = rp.getPickedPoint();
 
     // Keyboard events
     if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
@@ -168,12 +141,12 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
         const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
 
         // call the virtual method
-        if (self->mouseButtonPressed(button,press,pNear,pFar,Point))
+        if (self->mouseButtonPressed(button,press,point,norm,pp))
             node->setHandled();
     }
     // Mouse Movement handling
     else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
-        if (self->mouseMove(pNear,pFar,Point))
+        if (self->mouseMove(point,norm,pp))
             node->setHandled();
     }
 

@@ -42,13 +42,8 @@
 #include "ViewProviderSketch.h"
 
 
-//#include "Tree.h"
-
-
-
 using namespace SketcherGui;
 using namespace Sketcher;
-using namespace std;
 
 const float fCurveColor[] =     {1.0f,1.0f,1.0f}; 
 const float fCurveConstructionColor[] = {0.2f,1.0f,0.2f}; 
@@ -112,7 +107,7 @@ bool ViewProviderSketch::keyPressed(int key)
 
 
 
-void ViewProviderSketch::CoordsOnSketchPlane(double &u, double &v,const Base::Vector3f &pNear, const Base::Vector3f &pFar)
+void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)
 {
 	// Plane form
 	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
@@ -125,8 +120,7 @@ void ViewProviderSketch::CoordsOnSketchPlane(double &u, double &v,const Base::Ve
     Plz._rot.multVec(RY,RY);
 
 	// line 
-	Base::Vector3f r2 = pNear - pFar;
-	Base::Vector3d R1(pNear .x,pNear .y,pNear .z),RA(r2.x,r2.y,r2.z);
+	Base::Vector3d R1(point[0],point[1],point[2]),RA(normal[0],normal[1],normal[2]);
 	// intersection point on plane
 	Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
 
@@ -137,10 +131,18 @@ void ViewProviderSketch::CoordsOnSketchPlane(double &u, double &v,const Base::Ve
 	v = S.y;
 }
 
-bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point)
+bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
 {
-	double x,y;
-	CoordsOnSketchPlane(x,y,pNear,pFar);
+    double x,y;
+    SbVec3f pos = point;
+    if (pp) {
+        const SoDetail* detail = pp->getDetail();
+        if (detail && detail->getTypeId() == SoPointDetail::getClassTypeId()) {
+            pos = pp->getPoint();
+        }
+    }
+
+	getCoordsOnSketchPlane(x,y,pos,normal);
 
 	// Left Mouse button ****************************************************
 	if(Button == 1){
@@ -199,15 +201,16 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const Base
 
 
 	}
+
 	return false;
 }
 
-bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point)
+bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
 {
 	double x,y;
-	CoordsOnSketchPlane(x,y,pNear,pFar);
+	getCoordsOnSketchPlane(x,y,point,normal);
 
-    HandlePreselection(Point);
+    handlePreselection(pp);
 
 	switch(Mode){
 		case STATUS_NONE:
@@ -231,14 +234,14 @@ bool ViewProviderSketch::mouseMove(const Base::Vector3f &pNear, const Base::Vect
 	return false;
 }
 
-bool ViewProviderSketch::HandlePreselection(SoPickedPoint* Point)
+bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
 {
     if(Point){
         Base::Console().Log("Point pick\n");
         const SoDetail* detail = Point->getDetail();
         if ( detail && detail->getTypeId() == SoPointDetail::getClassTypeId() ) {
             // get the index
-            unsigned long idx = ((SoPointDetail*)detail)->getCoordinateIndex();
+            int idx = ((SoPointDetail*)detail)->getCoordinateIndex();
             if(PreselectPoint != idx){
                 PointsMaterials->diffuseColor.set1Value(idx,fPreselectColor);
                 if(PreselectPoint >= 0)
@@ -253,7 +256,7 @@ bool ViewProviderSketch::HandlePreselection(SoPickedPoint* Point)
         }
 		if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
                 // get the index
-                unsigned long idx = ((SoLineDetail*)detail)->getPartIndex();
+                int idx = ((SoLineDetail*)detail)->getPartIndex();
                 if(PreselectCurve != idx){
                     CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
                     if(PreselectCurve >= 0)

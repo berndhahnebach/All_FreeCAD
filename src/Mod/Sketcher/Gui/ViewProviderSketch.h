@@ -70,18 +70,19 @@ public:
 	virtual bool doubleClicked(void);
 
 	/// is called when the Provider is in edit and the mouse is moved
-	virtual bool mouseMove(const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point);
+	virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint* pp);
 	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
 	virtual bool keyPressed(int key);
 	/// is called when the Provider is in edit and the mouse is clicked 
-	virtual bool mouseButtonPressed(int Button, bool pressed, const Base::Vector3f &pNear, const Base::Vector3f &pFar, SoPickedPoint* Point);
+	virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
+        const SbVec3f &normal, const SoPickedPoint* pp);
 	/// draw the sketch in the inventor nodes
 	void draw(void);
 
 	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
-	void CoordsOnSketchPlane(double &u, double &v,const Base::Vector3f &pNear, const Base::Vector3f &pFar);
+	void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
     /// helper to detect preselection
-    bool HandlePreselection(SoPickedPoint* Point);
+    bool handlePreselection(const SoPickedPoint* pp);
 	/// set constrain table
 	enum {
 		CONSTRAIN_LOCK,
