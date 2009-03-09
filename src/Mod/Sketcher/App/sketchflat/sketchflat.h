@@ -116,7 +116,7 @@ typedef struct {
     hLine       line;
     hConstraint constraint;
 } SelState;
-extern SelState Hover;
+//extern SelState Hover;
 #define MAX_SELECTED_ITEMS  8
 extern SelState Selected[MAX_SELECTED_ITEMS];
 extern BOOL EmphasizeSelected;
@@ -461,7 +461,7 @@ void PltMoveTo(int x, int y);
 void PltLineTo(int x, int y);
 void PltCircle(int x, int y, int r);
 void PltRect(int x0, int y0, int x1, int y1);
-void PltText(int x, int y, BOOL boldFont, char *s, ...);
+void PltText(int x, int y, BOOL boldFont, const char *s, ...);
 #define MAX_COLORS 25
 #define LAYER_COLOR(x)          (x)
 #define HOVER_COLOR             16

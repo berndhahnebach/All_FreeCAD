@@ -116,7 +116,7 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
         }
         // otherwise copy from origin location 
         else {
-            bool done = file.copyTo(_cValue.c_str());
+            /*bool done = */file.copyTo(_cValue.c_str());
             //assert(done);
         }
 

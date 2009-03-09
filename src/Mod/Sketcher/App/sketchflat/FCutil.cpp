@@ -228,6 +228,7 @@ void uiError(char *str, ...)
 //-----------------------------------------------------------------------------
 // Create a window with a given client area.
 //-----------------------------------------------------------------------------
+#if 0
 HWND CreateWindowClient(DWORD exStyle, char *className, char *windowName,
     DWORD style, int x, int y, int width, int height, HWND parent,
     HMENU menu, HINSTANCE instance, void *param)
@@ -245,12 +246,13 @@ HWND CreateWindowClient(DWORD exStyle, char *className, char *windowName,
 //    return h;
 	return 0;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Memory allocation functions. We'll use a Windows heap, which makes it
 // easy to free everything when we're asked to.
 //-----------------------------------------------------------------------------
-static HANDLE Heap;
+//static HANDLE Heap;
 void *Alloc(int bytes)
 {
  /*   void *v = HeapAlloc(Heap, HEAP_NO_SERIALIZE | HEAP_ZERO_MEMORY, bytes);

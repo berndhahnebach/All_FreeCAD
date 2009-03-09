@@ -880,7 +880,7 @@ void PltCircle(int x, int y, int r)
     //SelectObject(BackDc, GetStockObject(HOLLOW_BRUSH));
     //Ellipse(BackDc, x-r+1, y-r, x+r, y+r-1);
 }
-void PltText(int x, int y, BOOL boldFont, char *s, ...)
+void PltText(int x, int y, BOOL boldFont, const char *s, ...)
 {
     //x = UnmapX(x);
     //y = UnmapY(y);
