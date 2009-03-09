@@ -1656,10 +1656,16 @@ SbVec3f View3DInventorViewer::getPointOnScreen(const SbVec2s& pnt) const
     }
 
     SoCamera* pCam = this->getCamera();
-    SbViewVolume  vol = pCam->getViewVolume(); 
+    SbViewVolume  vol = pCam->getViewVolume();
+
+    float nearDist = pCam->nearDistance.getValue();
+    float farDist = pCam->farDistance.getValue();
+    float focalDist = pCam->focalDistance.getValue();
+    if (focalDist < nearDist || focalDist > farDist)
+        focalDist = 0.5f*(nearDist + farDist);
 
     SbLine line; SbVec3f pt;
-    SbPlane focalPlane = vol.getPlane(pCam->focalDistance.getValue());
+    SbPlane focalPlane = vol.getPlane(focalDist);
     vol.projectPointToLine(SbVec2f(pX,pY), line);
     focalPlane.intersect(line, pt);
     
