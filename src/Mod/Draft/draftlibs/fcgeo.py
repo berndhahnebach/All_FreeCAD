@@ -483,7 +483,7 @@ def angleBisection(edge1, edge2):
 	The two lines are always considered to be infinite.
 	'''
 
-	if isinstance(edge1, Part.Line) and isinstance(edge2, Part.Line):
+	if isinstance(edge1.Curve, Part.Line) and isinstance(edge2.Curve, Part.Line):
 		p1 = edge1.Vertexes[0].Point
 		p2 = edge1.Vertexes[-1].Point
 		p3 = edge2.Vertexes[0].Point
@@ -883,13 +883,13 @@ def circleFrom2LinesRadius (edge1, edge2, radius):
 		# along all four bisector directions (depends on the radius)
 		circles = []
 		cen = Vector.add(int, fcvec.scale(vec(bis12), dist12))
-		circles.append(Part.Circle(cen, norm, radius))
+		circles.append(Part.Circle(cen, NORM, radius))
 		cen = Vector.add(int, fcvec.scale(vec(bis12), -dist12))
-		circles.append(Part.Circle(cen, norm, radius))
+		circles.append(Part.Circle(cen, NORM, radius))
 		cen = Vector.add(int, fcvec.scale(vec(bis21), dist21))
-		circles.append(Part.Circle(cen, norm, radius))
+		circles.append(Part.Circle(cen, NORM, radius))
 		cen = Vector.add(int, fcvec.scale(vec(bis21), -dist21))
-		circles.append(Part.Circle(cen, norm, radius))
+		circles.append(Part.Circle(cen, NORM, radius))
 		return circles
 
 	else:
