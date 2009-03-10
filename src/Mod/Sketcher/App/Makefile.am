@@ -4,6 +4,9 @@ lib_LTLIBRARIES=libSketcher.la Sketcher.la
 BUILT_SOURCES=\
 		SketchObjectPy.cpp
 
+libSketcher_la_BUILT=\
+		SketchObjectPy.h
+
 libSketcher_la_SOURCES = \
 		sketchflat/assume.cpp \
 		sketchflat/constraint.cpp \
@@ -101,6 +104,8 @@ INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 
 libdir = $(prefix)/Mod/Sketcher
+
+CLEANFILES = $(BUILT_SOURCES) $(libSketcher_la_BUILT)
 
 EXTRA_DIST = \
 		AppSketcher.vcproj \
