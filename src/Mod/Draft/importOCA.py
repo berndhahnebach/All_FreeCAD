@@ -32,44 +32,121 @@ except ValueError: gui = False
 else: gui = True
 
 pythonopen = open
+params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 
 def getpoint(data):
     "turns an OCA point definition into a FreeCAD Vector"
-    if (data[0:2] == "P("):
-        n = data.replace(")","")
-        n = n[2:].split()
-        return Vector(float(n[0]),float(n[1]),float(n[2]))
-    elif (data[0] == "P") and (data[1] != "("):
-        return objects[data]
+    print "found point ",data
+    if (len(data) == 3):
+        return Vector(float(data[0]),float(data[1]),float(data[2]))
+    elif (data[0] == "P") and (len(data) == 4):
+        return Vector(float(data[1]),float(data[2]),float(data[3]))
+    elif (data[0][0] == "P") and (len(data[0]) > 1):
+        if (len(data) == 1):
+            return objects[data[0]]
+        else:
+            if (data[1][0] == "R"):
+                return objects[data[0]].add(objects[data[1]])
+            elif (data[1][0] == "C"):
+                return fcgeo.findProjection(objects[data[0]],objects[data[1]])
+    elif (data[0][0] == "C"):
+        if objects[data[0]]:
+            p1 = objects[data[0]].Curve.Position
+            if (len(data) == 1):
+                return p1
+            else:
+                if (data[1][0] == "L"):
+                    l = objects[data[1]]
+                    return p1.add(Vector.New(l.StartPoint,l.EndPoint))
               
 def getarea(data):
-    "turns an OCA area definition into a FreeCAD Part Face"
-    if (data[0:2] == "S("):
-        n = data.replace(")","")
-        n = n[2:].split()
-        if (n[0] == "POL"):
-            pts = n[1:]
+    "turns an OCA area definition into a FreeCAD Part Wire"
+    print "found area ",data
+    if (data[0] == "S"):
+        if (data[1] == "POL"):
+            pts = data[2:]
             verts = []
             for p in pts:
                 if (p[0] == "P"):
-                    verts.append(getpoint(p))
-            verts.append(objects[pts[0]])
+                    verts.append(getpoint([p]))
             w = Part.makePolygon(verts)
-            return Part.Face(w)
+            return w
 
 def getarc(data):
-    "turns an OCA arc definition into a FreeCAD Part Arc"
-    n = data.split()
-    if (n[0] == "ARC"):
-        pts = n[1:]
+    "turns an OCA arc definition into a FreeCAD Part Edge"
+    print "found arc ", data
+    c = None
+    if (data[0] == "ARC"):
+        # 3-points arc
+        pts = data[1:]
         verts = []
-        for p in pts:
-            if (p[0] == "P"):
-                verts.append(getpoint(p))
-        w = Part.Arc(verts[0],verts[1],verts[2])
-        print w
-        return w.toShape()
-        
+        for p in range(len(pts)):
+            if (pts[p] == "P"):
+                verts.append(getpoint(pts[p:p+3]))
+            elif (pts[p][0] == "P"):
+                verts.append(getpoint([pts[p]]))
+        if verts[0] and verts[1] and verts[2]:
+            c = Part.Arc(verts[0],verts[1],verts[2])
+    elif (data[0][0] == "P"):
+        # 2-point circle
+        verts = []
+        rad = None
+        for p in range(len(data)):
+            if (data[p] == "P"):
+                verts.append(getpoint(data[p:p+4]))
+            elif (data[p][0] == "P"):
+                verts.append(getpoint([data[p]]))
+            elif (data[p] == "VAL"):
+                rad = float(data[p+1])
+            elif (data[p][0] == "L"):
+                lines.append(objects[data[p]])
+        c = Part.Circle()
+        c.Center = verts[0]
+        if rad: c.Radius = rad
+        else: c.Radius = fcvec.new(verts[0],verts[1]).Length
+    elif (data[0][0] == "L"):
+        # 2-lines circle
+        lines = []
+        rad = None
+        for p in range(len(data)):
+            if (data[p] == "VAL"):
+                rad = float(data[p+1])
+            elif (data[p][0] == "L"):
+                lines.append(objects[data[p]])
+        circles = fcgeo.circleFrom2LinesRadius(lines[0],lines[1],rad)
+        if circles: c = circles[0]
+    if c: return c.toShape()
+
+def getline(data):
+    print "found line ", data
+    "turns an OCA line definition into a FreeCAD Part Edge"
+    verts = []
+    for p in range(len(data)):
+        if (data[p] == "P"):
+            verts.append(getpoint(data[p:p+4]))
+        elif (data[p][0] == "P"):
+            verts.append(getpoint([data[p]]))
+    l = Part.Line(verts[0],verts[1])
+    return l.toShape()
+
+def gettranslation(data):
+    "retrieves a transformation vector"
+    print "found translation ",data
+    if (data[0] == "Z"):
+        return Vector(0,0,float(data[1]))
+    elif (data[0] == "Y"):
+        return Vector(0,float(data[1]),0)
+    elif (data[0] == "X"):
+        return Vector(float(data[1]),0,0)    
+    return Vector(0,0,0)
+    
+def createobject(id,doc):
+    "creates an object in the current document"
+    if isinstance(objects[id],Part.Shape):
+        ob = doc.addObject("Part::Feature",id)
+        ob.Shape = objects[id]
+        if gui: ob.ViewObject.ShapeColor = color
+
 def parse(filename,doc):
     "inports an opened OCA file into the given doc"
     filebuffer = pythonopen(filename)
@@ -78,31 +155,41 @@ def parse(filename,doc):
     global color
     color = (0,0,0)
     for l in filebuffer:
-        rline = l.replace(","," ").upper()
-        print rline
-        if ("=" in rline):
-
+        readline = l.replace(","," ").upper()
+        if ("=" in readline):
             # entity definitions
-            pair = rline.split("=")
+            pair = readline.split("=")
             id = pair[0]
+            data = pair[1]
+            data = data.replace(","," ")
+            data = data.replace("("," ")
+            data = data.replace(")"," ")
+            data = data.split()
             if id[0] == "P":
-                data = getpoint(pair[1])
-                objects[id] = data
-            elif id[0] == "A":
-                data = getarea(pair[1])
-                objects[id] = data
-                ob = doc.addObject("Part::Feature",id)
-                ob.Shape = data
-                if gui: ob.ViewObject.ShapeColor = color
-            elif id[0] == "C":
-                data = getarc(pair[1])
-                objects[id] = data
-                ob = doc.addObject("Part::Feature",id)
-                ob.Shape = data
-                if gui: ob.ViewObject.ShapeColor = color
+                # point
+                objects[id] = getpoint(data)
+            elif ((id[0] == "A") and params.GetBool("ocaareas")):
+                # area
+                objects[id] = getarea(data)
+                createobject(id,doc)
 
-        elif (rline[0:6] == "DEFCOL"):
-            c = rline.split()
+            elif id[0] == "C":
+                # arc or circle
+                objects[id] = getarc(data)
+                createobject(id,doc)
+
+            elif id[0] == "L":
+                # line
+                objects[id] = getline(data)
+                createobject(id,doc)
+                
+            elif id[0] == "R":
+                # translation
+                objects[id] = gettranslation(data)
+
+        elif (readline[0:6] == "DEFCOL"):
+            # color
+            c = readline.split()
             color = (float(c[1])/255,float(c[2])/255,float(c[3])/255)
 
     del color
@@ -122,7 +209,8 @@ def decodeName(name):
 def open(filename):
     docname=os.path.split(filename)[1]
     doc=FreeCAD.newDocument(docname)
-    doc.Label = decodeName(docname[:-4])    
+    if (docname[-4:] == "gcad"): doc.Label = decodeName(docname[:-5])
+    else: doc.Label = decodeName(docname[:-4])
     parse(filename,doc)
     doc.recompute()
 
