@@ -29,7 +29,6 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
-#include <Base/Sequencer.h>
 #include "FeaturePartImportBrep.h"
 
 
@@ -58,10 +57,6 @@ App::DocumentObjectExecReturn *ImportBrep::execute(void)
         std::string error = std::string("Cannot open file ") + FileName.getValue();
         return new App::DocumentObjectExecReturn(error);
     }
-
-    // just do show the wait cursor when the Gui is up
-    Base::SequencerLauncher seq("Load BREP", 1);
-    seq.next();
 
     TopoShape aShape;
     aShape.importBrep((const Standard_CString)FileName.getValue());
