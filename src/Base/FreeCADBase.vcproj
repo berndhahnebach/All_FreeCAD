@@ -911,6 +911,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\swigpyrun_1.3.38.cpp"
+				>
+			</File>
+			<File
 				RelativePath="TimeInfo.cpp"
 				>
 				<FileConfiguration

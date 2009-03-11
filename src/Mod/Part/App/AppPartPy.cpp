@@ -64,6 +64,7 @@
 
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
+#include <Base/Interpreter.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/GeometryPyCXX.h>
@@ -586,6 +587,45 @@ static PyObject * makePolygon(PyObject *self, PyObject *args)
     } PY_CATCH;
 }
 
+static PyObject * toPythonOCC(PyObject *self, PyObject *args)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))
+        return NULL;
+
+    try {
+        TopoDS_Shape* shape = new TopoDS_Shape();
+        (*shape) = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+        PyObject* proxy = 0;
+        proxy = Base::Interpreter().createSWIGPointerObj("TopoDS_Shape *", (void*)shape, 1);
+        return proxy;
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
+}
+
+static PyObject * fromPythonOCC(PyObject *self, PyObject *args)
+{
+    PyObject *proxy;
+    if (!PyArg_ParseTuple(args, "O", &proxy))
+        return NULL;
+
+    void* ptr;
+    try {
+        TopoShape* shape = new TopoShape();
+        Base::Interpreter().convertSWIGPointerObj("TopoDS_Shape *", proxy, &ptr, 0);
+        TopoDS_Shape* s = reinterpret_cast<TopoDS_Shape*>(ptr);
+        shape->_Shape = (*s);
+        return new TopoShapePy(shape);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
+}
+
 namespace Part {
 struct HashEdge {
     int v1, v2;
@@ -738,5 +778,9 @@ struct PyMethodDef Part_methods[] = {
     {"__sortEdges__" ,sortEdges,METH_VARARGS,
      "__sortEdges__(list of edges) -- Helper method to sort an unsorted list of edges so that afterwards\n"
      "two adjacent edges share a common vertex"},
+    {"__toPythonOCC__" ,toPythonOCC,METH_VARARGS,
+     "__toPythonOCC__(shape) -- Helper method to convert an internal shape to pythonocc shape"},
+    {"__fromPythonOCC__" ,fromPythonOCC,METH_VARARGS,
+     "__fromPythonOCC__(occ) -- Helper method to convert a pythonocc shape to an internal shape"},
     {NULL, NULL}        /* end of table marker */
 };
