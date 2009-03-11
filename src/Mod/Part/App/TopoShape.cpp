@@ -343,7 +343,7 @@ void TopoShape::importStep(const char *FileName)
 
         Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
         aReader.WS()->MapReader()->SetProgress(pi);
-        pi->NewScope(100, "Loading STEP file...");
+        pi->NewScope(100, "Reading STEP file...");
         pi->Show();
 
         // Root transfers
@@ -445,11 +445,17 @@ void TopoShape::exportStep(const char *filename) const
         // write step file
         STEPControl_Writer aWriter;
 
+        Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
+        aWriter.WS()->MapReader()->SetProgress(pi);
+        pi->NewScope(100, "Writing STEP file...");
+        pi->Show();
+
         if (aWriter.Transfer(this->_Shape, STEPControl_AsIs) != IFSelect_RetDone)
             throw Base::Exception("Error in transferring STEP");
 
         if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone)
             throw Base::Exception("Writing of STEP failed");
+        pi->EndScope();
     }
     catch (Standard_Failure) {
         Handle(Standard_Failure) aFail = Standard_Failure::Caught();
