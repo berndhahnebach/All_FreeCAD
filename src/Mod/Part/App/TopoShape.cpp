@@ -311,7 +311,7 @@ void TopoShape::importIges(const char *FileName)
             throw Base::Exception("Error in reading IGES");
 
         Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
-        pi->NewScope(100, "Reading IGES...");
+        pi->NewScope(100, "Reading IGES file...");
         pi->Show();
         aReader.WS()->MapReader()->SetProgress(pi);
 
@@ -341,6 +341,11 @@ void TopoShape::importStep(const char *FileName)
         if (aReader.ReadFile((const Standard_CString)FileName) != IFSelect_RetDone)
             throw Base::Exception("Error in reading STEP");
 
+        Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
+        aReader.WS()->MapReader()->SetProgress(pi);
+        pi->NewScope(100, "Loading STEP file...");
+        pi->Show();
+
         // Root transfers
         Standard_Integer nbr = aReader.NbRootsForTransfer();
         for (Standard_Integer n=1; n <= nbr; n++) {
@@ -366,6 +371,7 @@ void TopoShape::importStep(const char *FileName)
                 aResShape = aCompound;
         }
 
+        pi->EndScope();
         this->_Shape = aResShape;
     }
     catch (Standard_Failure) {
@@ -379,7 +385,15 @@ void TopoShape::importBrep(const char *FileName)
     // read brep-file
     BRep_Builder aBuilder;
     TopoDS_Shape aShape;
+#if OCC_HEX_VERSION >= 0x060300
+    Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
+    pi->NewScope(100, "Reading BREP file...");
+    pi->Show();
+    BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder,pi);
+    pi->EndScope();
+#else
     BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder);
+#endif
     this->_Shape = aShape;
 }
 
