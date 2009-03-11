@@ -10,6 +10,7 @@ Version:
   * Support of Qt 4.1.4 in Draft module
   * Porting sources to Mac OS X Leopard
   * Implement a progress indicator to run with OCC algorithm classes
+  * Binding for SWIG-generated pythonocc added 
 
 Version: 0.7.1779 Date: Sun 14 Dec 2008 +++++++++++++++++++++++++++++
   * Implementation of uuid

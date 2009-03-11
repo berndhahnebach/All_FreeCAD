@@ -288,8 +288,10 @@ QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
             res.append(page);
         }
         else {
+            // get information about the error
+            Base::PyException e;
+            Base::Console().Warning("PythonOnlineHelp::loadResource: %s\n", e.what());
             // load the error page
-            PyErr_Clear();
             res = fileNotFound();
         }
 
