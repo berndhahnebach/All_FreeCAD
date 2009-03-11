@@ -318,7 +318,7 @@ PyObject*  MeshPy::translate(PyObject *args)
     PY_TRY {
         Base::Matrix4D m;
         m.move(x,y,z);
-        getMeshObjectPtr()->applyTransform(m);
+        getMeshObjectPtr()->getKernel().Transform(m);
     } PY_CATCH;
 
     Py_Return;
@@ -335,7 +335,7 @@ PyObject*  MeshPy::rotate(PyObject *args)
         m.rotX(x);
         m.rotY(y);
         m.rotZ(z);
-        getMeshObjectPtr()->applyTransform(m);
+        getMeshObjectPtr()->getKernel().Transform(m);
     } PY_CATCH;
 
     Py_Return;
@@ -348,7 +348,7 @@ PyObject*  MeshPy::transform(PyObject *args)
         return NULL;
 
     PY_TRY {
-        getMeshObjectPtr()->applyTransform(static_cast<Base::MatrixPy*>(mat)->value());
+        getMeshObjectPtr()->getKernel().Transform(static_cast<Base::MatrixPy*>(mat)->value());
     } PY_CATCH;
 
     Py_Return;

@@ -260,6 +260,16 @@ bool ViewProvider::isShow(void) const
     return pcModeSwitch->whichChild.getValue() != -1;
 }
 
+void ViewProvider::setVisible(bool s)
+{
+    s ? show() : hide();
+}
+
+bool ViewProvider::isVisible() const
+{
+    return isShow();
+}
+
 void ViewProvider::setDefaultMode(int val)
 {
     _iActualMode = val;

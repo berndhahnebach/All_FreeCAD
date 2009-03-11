@@ -112,9 +112,11 @@ public:
     /// returns a list of all possible display modes
     virtual std::vector<std::string> getDisplayModes(void) const=0;
     /// is called when the view provider should be edited, returns false if no edit possible.
-     virtual void hide(void);
+    virtual void hide(void);
     virtual void show(void);
     virtual bool isShow(void) const;
+    void setVisible(bool);
+    bool isVisible() const;
     //@}
 
     /** @name Edit methods
