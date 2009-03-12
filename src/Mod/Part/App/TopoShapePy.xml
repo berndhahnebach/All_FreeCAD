@@ -105,6 +105,11 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Make a pipe by sweeping along a wire.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="makePipeShell">
+      <Documentation>
+        <UserDocu>Make a loft defined by profiles along a wire.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="makeThickness">
       <Documentation>
         <UserDocu>A hollowed solid is built from an initial solid and a set of faces on this solid,

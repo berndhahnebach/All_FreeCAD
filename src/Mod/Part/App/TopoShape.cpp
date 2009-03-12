@@ -38,6 +38,7 @@
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakeThickSolid.hxx>
 # include <BRepOffsetAPI_MakePipe.hxx>
+# include <BRepOffsetAPI_MakePipeShell.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepPrimAPI_MakeRevol.hxx>
 # include <BRepCheck_Analyzer.hxx>
@@ -694,6 +695,25 @@ TopoDS_Shape TopoShape::makePipe(const TopoDS_Wire& spine) const
     if (spine.IsNull()) Standard_Failure::Raise("cannot sweep along empty spine");
     BRepOffsetAPI_MakePipe mkPipe(spine,this->_Shape);
     return mkPipe.Shape();
+}
+ 
+TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles, const Standard_Boolean make_solid) const
+{
+	if (this->_Shape.ShapeType() != TopAbs_WIRE)
+        Standard_Failure::Raise("spine shape is not a wire");
+
+	BRepOffsetAPI_MakePipeShell mkPipeShell(TopoDS::Wire(this->_Shape));
+	TopTools_ListIteratorOfListOfShape it;
+	for (it.Initialize(profiles); it.More(); it.Next()) {
+        mkPipeShell.Add(TopoDS_Shape(it.Value()));
+	}
+
+	if (!mkPipeShell.IsReady()) Standard_Failure::Raise("shape is not ready to build");
+    else mkPipeShell.Build();
+
+	if (make_solid)	mkPipeShell.MakeSolid();
+
+    return mkPipeShell.Shape();
 }
 
 TopoDS_Shape TopoShape::makePrism(const gp_Vec& vec) const

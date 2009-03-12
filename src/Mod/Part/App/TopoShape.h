@@ -121,6 +121,7 @@ public:
     /** Sweeping */
     //@{
     TopoDS_Shape makePipe(const TopoDS_Wire&) const;
+    TopoDS_Shape makePipeShell(const TopTools_ListOfShape& profiles, const Standard_Boolean make_solid) const;
     TopoDS_Shape makePrism(const gp_Vec&) const;
     TopoDS_Shape revolve(const gp_Ax1&, double d) const;
     TopoDS_Shape makeThickSolid(const TopTools_ListOfShape& remFace,
