@@ -30,6 +30,7 @@
 # include <BRepCheck_Result.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakePipe.hxx>
+# include <BRepOffsetAPI_MakePipeShell.hxx>
 # include <BRepTools.hxx>
 # include <gp_Ax1.hxx>
 # include <gp_Trsf.hxx>
@@ -628,6 +629,34 @@ PyObject* TopoShapePy::makePipe(PyObject *args)
             Handle_Standard_Failure e = Standard_Failure::Caught();
             PyErr_SetString(PyExc_Exception, e->GetMessageString());
             return 0;
+        }
+    }
+
+    return 0;
+}
+
+PyObject* TopoShapePy::makePipeShell(PyObject *args)
+{
+    PyObject *obj;
+    int make_solid = 0;
+
+    if (PyArg_ParseTuple(args, "O!|i", &(PyList_Type), &obj, &make_solid)) {
+        try {
+            TopTools_ListOfShape sections;
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& shape = static_cast<TopoShapePy*>((*it).ptr())->getTopoShapePtr()->_Shape;
+                    sections.Append(shape);
+                }
+            }
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePipeShell(sections, make_solid);
+            return new TopoShapePy(new TopoShape(shape));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return NULL;
         }
     }
 
