@@ -245,11 +245,13 @@ def findMidpoint(edge):
 	if isinstance(edge.Curve,Part.Circle):
 		center = edge.Curve.Center
 		radius = edge.Curve.Radius
+		axis = edge.Curve.Axis
 		chord = fcvec.new(first,last)
-		perp = fcvec.crossproduct(chord)
+		perp = fcvec.crossproduct(chord,axis)
+		perp = fcvec.normalized(perp)
 		ray = fcvec.new(center,first)
-		apothem = fcvec.project(ray,perp)
-		sagitta = radius - apothem.Length
+		apothem = fcvec.dotproduct(ray,perp)
+		sagitta = radius - apothem
 		startpoint = Vector.add(first, fcvec.scale(chord,0.5))
 		endpoint = fcvec.scale(fcvec.normalized(perp),sagitta)
 		return Vector.add(startpoint,endpoint)

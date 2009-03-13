@@ -57,7 +57,7 @@ def getpoint(data):
             else:
                 if (data[1][0] == "L"):
                     l = objects[data[1]]
-                    return p1.add(Vector.New(l.StartPoint,l.EndPoint))
+                    return p1.add(fcgeo.vec(l))
               
 def getarea(data):
     "turns an OCA area definition into a FreeCAD Part Wire"
@@ -139,7 +139,11 @@ def gettranslation(data):
     elif (data[0] == "X"):
         return Vector(float(data[1]),0,0)    
     return Vector(0,0,0)
-    
+
+def writepoint(vector):
+    "writes a FreeCAD vector in OCA format"
+    return "P("+str(vector.x)+" "+str(vector.y)+" "+str(vector.z)+")"
+
 def createobject(id,doc):
     "creates an object in the current document"
     if isinstance(objects[id],Part.Shape):
@@ -195,16 +199,16 @@ def parse(filename,doc):
     del color
 
 def decodeName(name):
-	"decodes encoded strings"
-	try:
-		decodedName = (name.decode("utf8"))
-	except UnicodeDecodeError:
-		try:
-			decodedName = (name.decode("latin1"))
-		except UnicodeDecodeError:
-			print "oca: error: couldn't determine character encoding"
-			decodedName = name
-	return decodedName
+    "decodes encoded strings"
+    try:
+        decodedName = (name.decode("utf8"))
+    except UnicodeDecodeError:
+        try:
+            decodedName = (name.decode("latin1"))
+        except UnicodeDecodeError:
+            print "oca: error: couldn't determine character encoding"
+            decodedName = name
+    return decodedName
     
 def open(filename):
     docname=os.path.split(filename)[1]
@@ -219,6 +223,70 @@ def insert(filename):
     parse(filename,doc)
     doc.recompute()
             
+def export(exportList,filename):
+    "called when freecad exports a file"
+    faces = []
+    edges = []
+    
+    # getting faces and edges
+    for ob in exportList:
+        if ob.Shape.Faces:
+            for f in ob.Shape.Faces:
+                faces.append(f)
+        else:
+            for e in ob.Shape.Edges:
+                edges.append(e)
+    if not (edges or faces):
+        print "oca: found no data to export"
+        return
+    
+    # writing file
+    oca = pythonopen(filename,'wb')
+    oca.write("#oca file generated from FreeCAD\r\n")
+    oca.write("# edges\r\n")
+    count = 1
+    for e in edges:
+        if isinstance(e.Curve,Part.Line):
+            oca.write("L"+str(count)+"=")
+            oca.write(writepoint(e.Vertexes[0].Point))
+            oca.write(" ")
+            oca.write(writepoint(e.Vertexes[-1].Point))
+            oca.write("\r\n")
+        elif isinstance(e.Curve,Part.Circle):
+            if (len(e.Vertexes) > 1):
+                oca.write("C"+str(count)+"=ARC ")
+                oca.write(writepoint(e.Vertexes[0].Point))
+                oca.write(" ")
+                oca.write(writepoint(fcgeo.findMidpoint(e)))
+                oca.write(" ")
+                oca.write(writepoint(e.Vertexes[-1].Point))
+            else:
+                oca.write("C"+str(count)+"= ")
+                oca.write(writepoint(e.Curve.Center))
+                oca.write(" ")
+                oca.write(str(e.Curve.Radius))
+            oca.write("\r\n")
+        count += 1
+    oca.write("# faces\r\n")
+    for f in faces:
+        oca.write("A"+str(count)+"=S(POL")
+        for v in f.Vertexes:
+            oca.write(" ")
+            oca.write(writepoint(v.Point))
+        oca.write(" ")
+        oca.write(writepoint(f.Vertexes[0].Point))
+        oca.write(")\r\n")
+        count += 1
+
+    # closing
+    oca.close()
+    FreeCAD.Console.PrintMessage("successfully exported "+filename)
+    
+        
+            
+            
+        
+    
             
                 
                 
