@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,12 +21,11 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderSketcher_H__
-#define __ViewProviderSketcher_H__
+#ifndef SKETCHERGUI_VIEWPROVIDERSKETCH_H
+#define SKETCHERGUI_VIEWPROVIDERSKETCH_H
 
 #include <Mod/Part/Gui/ViewProvider2DObject.h>
 
- 
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -35,21 +34,21 @@ class SbVec3f;
 class SoTransform;
 
 namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
+    class View3DInventorViewer;
+    class SoFCSelection;
 }
 
 namespace Sketcher {
-	class SketchFlatInterface;
-	class SketchObject;
+    class SketchFlatInterface;
+    class SketchObject;
 }
 
 namespace SketcherGui {
 
 
-class SketcherGuiExport ViewProviderSketch:public PartGui::ViewProvider2DObject
+class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject
 {
-  PROPERTY_HEADER(PartGui::ViewProviderSketch);
+    PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
 public:
 	/// constructor
@@ -57,11 +56,8 @@ public:
 	/// destructor
 	virtual ~ViewProviderSketch();
 
-	//App::PropertyBool ShowGrid;
-
 	virtual void attach(App::DocumentObject *);
 	virtual void updateData(const App::Property*);
-
 
 	virtual bool setEdit(int ModNum);
 	virtual void unsetEdit(void);
@@ -101,7 +97,7 @@ public:
 		STATUS_SKETCH_CreatePolyline,
 		STATUS_SKETCH_CreateRectangle,
 		STATUS_SKETCH_CreateText,
-		STATUS_SKETCH_DraggPoint,
+		STATUS_SKETCH_DragPoint,
 		STATUS_SKETCH_DoLine
 	};
 	/// is called by GuiCommands to set the drawing mode
@@ -113,39 +109,39 @@ public:
     Sketcher::SketchObject* getSketchObject(void);
 
 protected:
+    /// helper to detect whether the picked point lies on the sketch
+    bool isPointOnSketch(const SoPickedPoint* pp) const;
+    /// get called by the container whenever a property has been changed
+    virtual void onChanged(const App::Property* prop);
 
+    // helper
+    void createEditInventorNodes(void);
 
-  /// get called by the container whenever a property has been changed
-  virtual void onChanged(const App::Property* prop);
+    // modes while sketching
+    int Mode;
+    // dragged point
+    int DragPoint;
 
-  // helper
-  void createEditInventorNodes(void);
+    int PreselectCurve;
+    int PreselectPoint;
+    // pointer to the Solver
+    Sketcher::SketchFlatInterface *SketchFlat;
 
-  // modes while sketching
-  int Mode;
-  // dragged point
-  int DraggPoint;
-
-  int PreselectCurve;
-  int PreselectPoint;
-  // pointer to the Solver
-  Sketcher::SketchFlatInterface *SketchFlat;
-
-  // nodes for the visuals 
-  SoMaterial * PointsMaterials;
-  SoMaterial * CurvesMaterials;
-  SoMaterial * LinesMaterials;
-  SoCoordinate3 *PointsCoordinate;
-  SoCoordinate3 *CurvesCoordinate;
-  SoCoordinate3 *LinesCoordinate;
-  SoLineSet* CurveSet;
-  SoLineSet* LineSet;
-  SoPointSet* PointSet;
-  SoSeparator  *EditRoot;
+    // nodes for the visuals 
+    SoMaterial    *PointsMaterials;
+    SoMaterial    *CurvesMaterials;
+    SoMaterial    *LinesMaterials;
+    SoCoordinate3 *PointsCoordinate;
+    SoCoordinate3 *CurvesCoordinate;
+    SoCoordinate3 *LinesCoordinate;
+    SoLineSet     *CurveSet;
+    SoLineSet     *LineSet;
+    SoPointSet    *PointSet;
+    SoSeparator   *EditRoot;
 };
 
 } // namespace PartGui
 
 
-#endif // __ViewProviderSketcher_H__
+#endif // SKETCHERGUI_VIEWPROVIDERSKETCH_H
 

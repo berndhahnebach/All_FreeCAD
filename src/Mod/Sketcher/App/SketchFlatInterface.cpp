@@ -54,7 +54,6 @@ SketchFlatInterface::SketchFlatInterface()
 	// The SketchFlat solver is not build ot have 2 instances!
 	assert(!bAlive);
 	bAlive=true;
-
 }
 
 /**
@@ -64,6 +63,15 @@ SketchFlatInterface::SketchFlatInterface()
 SketchFlatInterface::~SketchFlatInterface()
 {
 	bAlive=false;
+}
+
+/**
+ * Static method to check whether there is already an existing instance
+ * of this class.
+ */
+bool SketchFlatInterface::isAlive()
+{
+    return bAlive;
 }
 
 //**************************************************************************

@@ -46,6 +46,7 @@ public:
     SketchFlatInterface();
     /// Destruction
     virtual ~SketchFlatInterface();
+    static bool isAlive();
 
     bool save(const char* FileName);
     bool load(const char* FileName);
@@ -72,8 +73,7 @@ public:
 
 private:
 	static bool bAlive;
-
- };
+};
 
 } //namespace Base
 
