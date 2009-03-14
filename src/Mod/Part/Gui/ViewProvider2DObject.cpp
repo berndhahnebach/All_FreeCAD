@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoLineSet.h>
+# include <Inventor/nodes/SoPickStyle.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoVertexProperty.h>
 #endif
@@ -109,7 +110,11 @@ SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
   SoDrawStyle* DrawStyle = new SoDrawStyle;
   DrawStyle->lineWidth = 1;
   DrawStyle->linePattern = 0x0f0f;
-  parent->addChild( DrawStyle );
+  parent->addChild(DrawStyle);
+
+  SoPickStyle* PickStyle = new SoPickStyle;
+  PickStyle->style = SoPickStyle::UNPICKABLE;
+  parent->addChild(PickStyle);
 
   SoLineSet *grid = new SoLineSet;
   vts = new SoVertexProperty;

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,10 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/SoPath.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoVertexProperty.h>
+# include <QMessageBox>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -35,6 +37,7 @@
 #include <Base/Console.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
+#include <Gui/MainWindow.h>
 
 #include <Mod/Sketcher/App/SketchFlatInterface.h>
 #include <Mod/Sketcher/App/SketchObject.h>
@@ -57,9 +60,9 @@ const float fDatumLineColor[] = {0.0f,0.8f,0.0f};
 
 PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
-       
+
 ViewProviderSketch::ViewProviderSketch()
-:Mode(STATUS_NONE),EditRoot(0),DraggPoint(-1)
+  : Mode(STATUS_NONE),DragPoint(-1),EditRoot(0)
 {
 	PointsMaterials = 0;
 	LinesMaterials = 0;
@@ -74,9 +77,6 @@ ViewProviderSketch::ViewProviderSketch()
     PreselectCurve = -1;
     PreselectPoint = -1;
 
- /*   ADD_PROPERTY(ShowGrid,(true));
-*/
- 
     sPixmap = "Sketcher_NewSketch";
 }
 
@@ -86,12 +86,10 @@ ViewProviderSketch::~ViewProviderSketch()
 }
 
 
-
 // **********************************************************************************
 
 void ViewProviderSketch::setSketchMode(int mode)
 {
-	//ShowGrid.setValue(false);
 	Mode = mode;
 }
 
@@ -104,8 +102,6 @@ bool ViewProviderSketch::keyPressed(int key)
 {
 	return true;
 }
-
-
 
 void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)
 {
@@ -131,7 +127,8 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 	v = S.y;
 }
 
-bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
+bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
+                                            const SbVec3f &normal, const SoPickedPoint* pp)
 {
     double x,y;
     SbVec3f pos = point;
@@ -145,18 +142,18 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 	getCoordsOnSketchPlane(x,y,pos,normal);
 
 	// Left Mouse button ****************************************************
-	if(Button == 1){
-		if(pressed){
-			// Do things depending on the mode of the user interaktion
+	if (Button == 1) {
+		if (pressed) {
+			// Do things depending on the mode of the user interaction
 			switch(Mode){
 				case STATUS_NONE:
-                    if(PreselectPoint >=0){
-                        DraggPoint = SketchFlat->getPoint(PreselectPoint);
-						Base::Console().Log("start dragging, point:%d\n",DraggPoint);
-					    SketchFlat->forcePoint(DraggPoint,x,y);
-					    Mode = STATUS_SKETCH_DraggPoint;
+                    if (PreselectPoint >=0) {
+                        this->DragPoint = SketchFlat->getPoint(PreselectPoint);
+						Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
+					    SketchFlat->forcePoint(this->DragPoint,x,y);
+					    Mode = STATUS_SKETCH_DragPoint;
                         return true;
-                    }else
+                    } else
                         return false;
 
 				case STATUS_SKETCH_CreateArc:
@@ -166,40 +163,38 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 				case STATUS_SKETCH_CreateText:
 					return true;
 				case STATUS_SKETCH_CreateLine:
-					DraggPoint = SketchFlat->addLine(x,y);
-					SketchFlat->forcePoint(DraggPoint,x,y);
+					this->DragPoint = SketchFlat->addLine(x,y);
+					SketchFlat->forcePoint(this->DragPoint,x,y);
 					Mode = STATUS_SKETCH_DoLine;
 					draw();
 					return true;
 				case STATUS_SKETCH_DoLine:
-					SketchFlat->forcePoint(DraggPoint,x,y);
+					SketchFlat->forcePoint(this->DragPoint,x,y);
 					SketchFlat->solve();
 					draw();
-					Base::Console().Log("Finish line, point:%d\n",DraggPoint);
-                    DraggPoint = -1;
+					Base::Console().Log("Finish line, point:%d\n",this->DragPoint);
+                    this->DragPoint = -1;
 					Mode = STATUS_NONE;
 					return true;
                 default:
                     return false;
 					
 			}
-        }else{
-			// Do things depending on the mode of the user interaktion
-			switch(Mode){
-				case STATUS_SKETCH_DraggPoint:
-					SketchFlat->forcePoint(DraggPoint,x,y);
+        }
+        else {
+			// Do things depending on the mode of the user interaction
+			switch (Mode) {
+				case STATUS_SKETCH_DragPoint:
+					SketchFlat->forcePoint(this->DragPoint,x,y);
 					SketchFlat->solve();
 					draw();
-                    DraggPoint = -1;
+                    this->DragPoint = -1;
 					Mode = STATUS_NONE;
 					return true;
                 default:
                     return false;
             }
-
         }
-
-
 	}
 
 	return false;
@@ -212,7 +207,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
     handlePreselection(pp);
 
-	switch(Mode){
+	switch (Mode) {
 		case STATUS_NONE:
 			return false;
 		case STATUS_SKETCH_CreateArc:
@@ -223,12 +218,11 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 		case STATUS_SKETCH_CreateLine:
 			return true;
 		case STATUS_SKETCH_DoLine:
-		case STATUS_SKETCH_DraggPoint:
-			SketchFlat->forcePoint(DraggPoint,x,y);
+		case STATUS_SKETCH_DragPoint:
+			SketchFlat->forcePoint(this->DragPoint,x,y);
 			SketchFlat->solve();
 			draw();
 			return true;
-			
 	}
 
 	return false;
@@ -236,57 +230,68 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
 bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
 {
-    if(Point){
+    if (Point) {
         Base::Console().Log("Point pick\n");
-        const SoDetail* detail = Point->getDetail();
-        if ( detail && detail->getTypeId() == SoPointDetail::getClassTypeId() ) {
+        const SoDetail* point_detail = Point->getDetail(this->PointSet);
+        if (point_detail && point_detail->getTypeId() == SoPointDetail::getClassTypeId()) {
             // get the index
-            int idx = ((SoPointDetail*)detail)->getCoordinateIndex();
-            if(PreselectPoint != idx){
+            int idx = static_cast<const SoPointDetail*>(point_detail)->getCoordinateIndex();
+            if (PreselectPoint != idx) {
                 PointsMaterials->diffuseColor.set1Value(idx,fPreselectColor);
-                if(PreselectPoint >= 0)
+                if (PreselectPoint >= 0)
                     PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
                 PreselectPoint = idx;
-                if(PreselectCurve >= 0)
+                if (PreselectCurve >= 0)
                     CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
                 PreselectCurve = -1;
             }
+
             Base::Console().Log("Point pick%d\n",idx);
             return true;
         }
-		if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
-                // get the index
-                int idx = ((SoLineDetail*)detail)->getPartIndex();
-                if(PreselectCurve != idx){
-                    CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
-                    if(PreselectCurve >= 0)
-                        CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
-                    PreselectCurve = idx;
-                    if(PreselectPoint >= 0)
-                        PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
-                    PreselectPoint = -1;
-                }
-                
-                Base::Console().Log("Curve pick%d\n",idx);
-                return true;
+
+        const SoDetail* curve_detail = Point->getDetail(this->CurveSet);
+        if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
+            // get the index
+            int idx = static_cast<const SoLineDetail*>(curve_detail)->getPartIndex();
+            if (PreselectCurve != idx) {
+                CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
+                if (PreselectCurve >= 0)
+                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+                PreselectCurve = idx;
+                if (PreselectPoint >= 0)
+                    PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
+                PreselectPoint = -1;
             }
-		if ( detail && detail->getTypeId() == SoLineDetail::getClassTypeId() ) {
-                    // get the index
-                    unsigned long idx = ((SoLineDetail*)detail)->getPartIndex();
-                    Base::Console().Log("Datum pick%d\n",idx);
-                    return true;
-                
             
+            Base::Console().Log("Curve pick%d\n",idx);
+            return true;
+        }
+
+        const SoDetail* datum_detail = Point->getDetail(this->LineSet);
+        if (datum_detail && datum_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
+            // get the index
+            unsigned long idx = static_cast<const SoLineDetail*>(datum_detail)->getPartIndex();
+            Base::Console().Log("Datum pick%d\n",idx);
+            return true;
         }
     }
-    if(PreselectCurve >= 0)
-       CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+
+    if (PreselectCurve >= 0)
+        CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
     PreselectCurve = -1;
-    if(PreselectPoint >= 0)
-       PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
+    if (PreselectPoint >= 0)
+        PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
     PreselectPoint = -1;
 
     return false;
+}
+
+bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint* pp) const
+{
+    // checks if we picked a point on the sketch or any other nodes like the grid
+    SoPath* path = pp->getPath();
+    return path->containsNode(EditRoot);
 }
 
 bool ViewProviderSketch::doubleClicked(void)
@@ -297,78 +302,109 @@ bool ViewProviderSketch::doubleClicked(void)
 
 void ViewProviderSketch::draw(void)
 {
-	std::vector<Base::Vector3d> coords;
-	double x,y;
-	double x0, y0, dx, dy;
+    double x,y;
+    double x0, y0, dx, dy;
     int i=0,l=0,r=0;
-	bool Construction;
-	// sketchflat generate curves out of enteties:
-	SketchFlat->setUpRendering();
+    bool Construction;
+    // sketchflat generate curves out of entities:
+    SketchFlat->setUpRendering();
 
-	// go throug the curves and collect the points
-	int Nbr = SketchFlat->nbrOfCurves();
+    // go through the curves and collect the points
+    int NbrCrv = SketchFlat->nbrOfCurves();
+    int totalPts=0;
+    std::vector<std::vector<Base::Vector3d> > coords(NbrCrv);
+    for (i=0 ; i<NbrCrv;++i) {
+        SketchFlat->getCurvePoints(coords[i],Construction,i);
+        totalPts += coords[i].size();
+    }
 
-	for( i=0 ; i<Nbr;++i){
-		SketchFlat->getCurvePoints(coords,Construction,i);
-        std::vector<Base::Vector3d>::const_iterator it=coords.begin();
-	    while(it!=coords.end()){
-		    CurvesCoordinate->point.set1Value(r,SbVec3f(it->x,it->y,0.0f));
-		    ++it;r++;
-		    CurvesCoordinate->point.set1Value(r,SbVec3f(it->x,it->y,0.0f));
-            ++it;r++;
-	    }
-		CurveSet->numVertices.set1Value(i,coords.size());
-		CurvesMaterials->diffuseColor.set1Value(i,Construction?fCurveConstructionColor:fCurveColor);
-        coords.clear();
-	}
+    CurveSet->numVertices.setNum(NbrCrv);
+    CurvesCoordinate->point.setNum(totalPts);
+    CurvesMaterials->diffuseColor.setNum(NbrCrv);
+
+    if (NbrCrv > 0) {
+        // use the start/finish editing facility for optimization
+        SbVec3f* verts = CurvesCoordinate->point.startEditing();
+        int32_t* index = CurveSet->numVertices.startEditing();
+        SbColor* color = CurvesMaterials->diffuseColor.startEditing();
+
+        for (i=0 ; i<NbrCrv;++i) {
+            const std::vector<Base::Vector3d>& c = coords[i];
+            for (std::vector<Base::Vector3d>::const_iterator it = c.begin(); it != c.end(); ++it)
+                verts[r++].setValue(it->x,it->y,0.0f);
+            index[i] = c.size();
+            color[i].setValue((Construction?fCurveConstructionColor:fCurveColor));
+        }
+        CurvesCoordinate->point.finishEditing();
+        CurveSet->numVertices.finishEditing();
+        CurvesMaterials->diffuseColor.finishEditing();
+    }
 
     // set up datum lines
-	for(i=0 ; i<SketchFlat->nbrOfLines();++i){
-		LinesMaterials->diffuseColor.set1Value(i,fDatumLineColor);
-		SketchFlat->getLine(i, x0, y0, dx, dy);
-		LinesCoordinate->point.set1Value(i*2  ,SbVec3f(x0-dx*50,y0-dy*50,0.0f));
-		LinesCoordinate->point.set1Value(i*2+1,SbVec3f(x0+dx*50,y0+dy*50,0.0f));
-		LineSet->numVertices.set1Value(i,2);
-	}
+    int NbrLns = SketchFlat->nbrOfLines();
+    LinesCoordinate->point.setNum(2*NbrLns);
+    LinesMaterials->diffuseColor.setNum(NbrLns);
+    LineSet->numVertices.setNum(NbrLns);
+    if (NbrLns > 0) {
+        // use the start/finish editing facility for optimization
+        SbVec3f* verts = LinesCoordinate->point.startEditing();
+        int32_t* index = LineSet->numVertices.startEditing();
+        SbColor* color = LinesMaterials->diffuseColor.startEditing();
+        for (i=0; i<NbrLns; ++i) {
+            SketchFlat->getLine(i, x0, y0, dx, dy);
+            verts[i*2  ].setValue(x0-dx*50,y0-dy*50,0.0f);
+            verts[i*2+1].setValue(x0+dx*50,y0+dy*50,0.0f);
+            index[i] = 2;
+            color[i].setValue(fDatumLineColor);
+        }
+        LinesCoordinate->point.finishEditing();
+        LineSet->numVertices.finishEditing();
+        LinesMaterials->diffuseColor.finishEditing();
+    }
 
-
-	// set up the points
-	for(i=0 ; i<SketchFlat->nbrOfPoints();++i){
-		PointsMaterials->diffuseColor.set1Value(i,fPointColor);
-		SketchFlat->getPoint(i,x,y);
-		PointsCoordinate->point.set1Value(i  ,SbVec3f(x,y,0.0f));
-	}
+    // set up the points
+    int NbrPts = SketchFlat->nbrOfPoints();
+    PointsCoordinate->point.setNum(NbrPts);
+    PointsMaterials->diffuseColor.setNum(NbrPts);
+    if (NbrPts > 0) {
+        // use the start/finish editing facility for optimization
+        SbVec3f* verts = PointsCoordinate->point.startEditing();
+        SbColor* color = PointsMaterials->diffuseColor.startEditing();
+        for (i=0; i<NbrPts; ++i) {
+            SketchFlat->getPoint(i,x,y);
+            verts[i].setValue(x,y,0.0f);
+            color[i].setValue(fPointColor);
+        }
+        PointsCoordinate->point.finishEditing();
+        PointsMaterials->diffuseColor.finishEditing();
+    }
 }
+
 void ViewProviderSketch::updateData(const App::Property* prop)
 {
     ViewProviderPart::updateData(prop);
-
- 
 }
 
 void ViewProviderSketch::onChanged(const App::Property* prop)
 {
     // call father
     PartGui::ViewProvider2DObject::onChanged(prop);
-
- /*   if (prop == &ShowGrid) {
-        if(ShowGrid.getValue())
-            createGrid();
-        else
-            GridRoot->removeAllChildren();
-    }*/
 }
 
 void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderPart::attach(pcFeat);
-
-
-
-} 
+}
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
+    if (SketchFlatInterface::isAlive()) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Cannot edit sketch"),
+            QObject::tr("Sketch cannot be edited because there is already another sketch in edit mode.\n"
+            "Please leave the edit mode for the other sketch to enter edit mode for this sketch."));
+        return false;
+    }
+
     // interface to the solver
 	SketchFlat = new SketchFlatInterface();
 
@@ -376,6 +412,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
     SketchFlat->load(getSketchObject()->SketchFlatFile.getValue());
 
     createEditInventorNodes();
+    this->hide(); // avoid that the wires interfere with the edit lines
 
 	ShowGrid.setValue(true);
 
@@ -387,7 +424,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
 
 void ViewProviderSketch::createEditInventorNodes(void)
 {
-	if(!EditRoot){
+	if (!EditRoot) {
 		EditRoot = new SoSeparator;
 		pcRoot->addChild(EditRoot);
 	}
@@ -423,11 +460,11 @@ void ViewProviderSketch::createEditInventorNodes(void)
 	DrawStyle = new SoDrawStyle;
 	DrawStyle->lineWidth = 3;
 	DrawStyle->linePattern = 0x0fff;
-	EditRoot->addChild( DrawStyle );
+	EditRoot->addChild(DrawStyle);
 
 	LineSet = new SoLineSet;
 
-	EditRoot->addChild( LineSet );
+	EditRoot->addChild(LineSet);
 
 	// stuff for the Curves +++++++++++++++++++++++++++++++++++++++
     CurvesMaterials = new SoMaterial;
@@ -447,7 +484,6 @@ void ViewProviderSketch::createEditInventorNodes(void)
 	CurveSet = new SoLineSet;
 
 	EditRoot->addChild( CurveSet );
-
 }
 
 void ViewProviderSketch::unsetEdit(void)
@@ -457,15 +493,18 @@ void ViewProviderSketch::unsetEdit(void)
     std::string file;
 
     // save the result of editing
-    if(std::string(getSketchObject()->SketchFlatFile.getValue())==""){
+    if (std::string(getSketchObject()->SketchFlatFile.getValue())=="") {
         // make a meaningfull name
-        Base::FileInfo temp(getSketchObject()->SketchFlatFile.getDocTransientPath() + "/" + getSketchObject()->getNameInDocument() + ".skf");
-        if(temp.exists())
+        Base::FileInfo temp(getSketchObject()->SketchFlatFile.getDocTransientPath()
+                            + "/" + getSketchObject()->getNameInDocument() + ".skf");
+        if (temp.exists())
             // save under save name
-            file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObject()->SketchFlatFile.getDocTransientPath().c_str());
+            file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObject()
+                            ->SketchFlatFile.getDocTransientPath().c_str());
         else
             file = temp.filePath();
-    }else{
+    }
+    else {
         // save under old name
         file = getSketchObject()->SketchFlatFile.getExchangeTempFile();
     }
@@ -479,7 +518,6 @@ void ViewProviderSketch::unsetEdit(void)
 
     // recompute the part
     getSketchObject()->getDocument()->recompute();
-
 
 	// empty the nodes
 	EditRoot->removeAllChildren();
@@ -495,7 +533,7 @@ void ViewProviderSketch::unsetEdit(void)
 
     PreselectCurve = -1;
     PreselectPoint = -1;
-
+    this->show();
 }
 
 Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void)
