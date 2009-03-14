@@ -1,22 +1,22 @@
 
-How to build and run FreeCAD under Cygwin
-=========================================
+How to build and run FreeCAD under Windows
+==========================================
 
 Prerequisits
 ------------
 
 What you need is mainly the compiler. On Windows we use the M$ VisualStudio 8
 Compiler with the highest service pack. Although it's probably possible to 
-use Cygwin or MingW gcc it's not tested or ported so far. If you use VC8 
+use Cygwin or MinGW gcc it's not tested or ported so far. If you use VC8 
 Express Edition you need to download the Windows Platform SDK to get e.g. 
-the Windows.h. Also you need all the ThirdPartyLibraries to succsefully 
+the Windows.h. Also you need all the 3rd party libraries to succsefully 
 compile FreeCAD.
 
 Using LibPack
 -------------
 
 To make it easier to get FreeCAD compiled, we provide a collection of all 
-needed Libraries. Its called the LibPack. You can find it on the download 
+needed libraries. It's called the LibPack. You can find it on the download 
 page on sourceforge.
 
 You need to set the following environment variables:
@@ -27,15 +27,8 @@ QTDIR
     "%FREECADLIB%" 
 
 Add "%FREECADLIB%\bin" and "%FREECADLIB%\dll" to the system PATH variable. 
-Mind that you have to replace "%FREECADLIB%" with the path name, since windows
+Mind that you have to replace "%FREECADLIB%" with the path name, since Windows
 does not recursively replace environment variables.
-
-Compiler Setup
---------------
-
-The first thing is to put STLport on the top of the include list! That's 
-important. Otherwise VC6 will use its own STL libraries which are terribly bad! 
-With VC7.1 and VC8 you don't need STLport.
 
 Directory setup in Visual Studio
 --------------------------------
@@ -76,15 +69,6 @@ has to function on the OS. Use a command box to check it. If the Python library 
 not properly installed you will get an error message like Cannot find python.exe. 
 If you use the LibPack you can also use the python.exe in the bin directory.
 
-Special for VC8
----------------
-
-When building the project with VC8, you have to change the link information 
-for the WildMagic library, since you need a different version for VC6 and VC8. 
-Both versions are supplied in LIBPACK/dll. In the project properties for AppMesh 
-change the library name for the wm.dll to the VC8 version. Take care to change it 
-in Debug and Release configuration.
-
 Compile
 -------
 
@@ -108,5 +92,5 @@ after a successfull build:
 Additional stuff
 ----------------
 
-If you whant to build the source code documentation you need DoxyGen.
+If you want to build the source code documentation you need DoxyGen.
 To create an intstaller package you need WIX. 

@@ -7,7 +7,6 @@ EXTRA_DIST = \
 		ChangeLog.txt \
 		copying.lib \
 		package.sh \
-		README.Cygwin \
 		README.Linux \
 		README.Win32
 
