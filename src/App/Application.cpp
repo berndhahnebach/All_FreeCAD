@@ -838,6 +838,11 @@ void segmentation_fault_handler(int sig)
             std::cerr << "Unknown error occurred..." << std::endl;
             break;
     }
+
+#if defined(__GNUC__)
+    // According to the documentation to C signals we should exit.
+    exit(3);
+#endif
 }
 
 void unhandled_exception_handler()

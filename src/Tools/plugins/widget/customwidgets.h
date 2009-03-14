@@ -62,6 +62,11 @@ private:
     QString _url;
 };
 
+/**
+ * There is a bug in QtDesigner of Qt version 4.0, 4.1 and 4.2. If a class declaration
+ * is inside a namespace and it uses the Q_ENUMS macro then QtDesigner doesn't handle
+ * the enum(s) correctly in its property editor. This bug is fixed since Qt 4.3.0.
+ */
 class FileChooser : public QWidget
 {
     Q_OBJECT
