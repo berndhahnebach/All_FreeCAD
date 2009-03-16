@@ -129,13 +129,13 @@ void CmdSketcherCreateArc::activated(int iMsg)
 
 bool CmdSketcherCreateArc::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
-			return true;
+	//Gui::Document *doc = getActiveGuiDocument();
+	//if(doc)
+	//	// checks if a Sketch Viewprovider is in Edit and is in no special mode
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//		if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
+	//			->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+	//		return true;
 	return false;
 }
 
