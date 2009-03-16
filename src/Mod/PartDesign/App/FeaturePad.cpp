@@ -111,7 +111,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 	aB.MakeFace (aFace, aSurf, Precision::Confusion());
 	aB.Add (aFace, theWire);
 	//aB.Add (aFace, anIntW.Reversed()); //material should lie on the right of the inner wire
-
+	
 	this->Shape.setValue(aFace);
 
     return App::DocumentObject::StdReturn;
