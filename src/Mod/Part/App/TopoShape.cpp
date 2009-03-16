@@ -67,6 +67,7 @@
 # include <TopoDS_Iterator.hxx>
 # include <TopExp.hxx>
 # include <TopExp_Explorer.hxx>
+# include <TopTools_ListIteratorOfListOfShape.hxx>
 # include <Geom_BezierCurve.hxx>
 # include <Geom_BezierSurface.hxx>
 # include <Geom_BSplineCurve.hxx>
