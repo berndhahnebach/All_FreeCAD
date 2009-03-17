@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,20 +23,21 @@
 
 #include "PreCompiled.h"
 
-#include "DlgReportViewImp.h"
-#include "PrefWidgets.h"
+#include "DlgSettingsMeshView.h"
+#include "ViewProvider.h"
+#include <Gui/PrefWidgets.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
+#include <App/Application.h>
+#include <App/Document.h>
+#include <Base/Console.h>
 
-
-using namespace Gui::Dialog;
+using namespace MeshGui;
 
 /**
- *  Constructs a DlgReportViewImp which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
+ *  Constructs a DlgSettingsMeshView which is a child of 'parent'.
  */
-DlgReportViewImp::DlgReportViewImp( QWidget* parent )
+DlgSettingsMeshView::DlgSettingsMeshView(QWidget* parent)
   : PreferencePage(parent)
 {
     this->setupUi(this);
@@ -45,36 +46,37 @@ DlgReportViewImp::DlgReportViewImp( QWidget* parent )
 /** 
  *  Destroys the object and frees any allocated resources
  */
-DlgReportViewImp::~DlgReportViewImp()
+DlgSettingsMeshView::~DlgSettingsMeshView()
 {
+    // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgReportViewImp::saveSettings()
+void DlgSettingsMeshView::saveSettings()
 {
-    checkLogging->onSave();
-    checkWarning->onSave();
-    checkError->onSave();
-    colorText->onSave();
-    colorLogging->onSave();
-    colorWarning->onSave();
-    colorError->onSave();
+    checkboxNormal->onSave();
+    spinboxAngle->onSave();
+
+    //// search for Part view providers and apply the new settings
+    //std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    //for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
+    //    Gui::Document* doc = Gui::Application::Instance->getDocument(*it);
+    //    std::vector<Gui::ViewProvider*> views = doc->getViewProvidersOfType(ViewProviderPart::getClassTypeId());
+    //    for (std::vector<Gui::ViewProvider*>::iterator jt = views.begin(); jt != views.end(); ++jt) {
+    //        static_cast<ViewProviderPart*>(*jt)->reload();
+    //    }
+    //}
 }
 
-void DlgReportViewImp::loadSettings()
+void DlgSettingsMeshView::loadSettings()
 {
-    checkLogging->onRestore();
-    checkWarning->onRestore();
-    checkError->onRestore();
-    colorText->onRestore();
-    colorLogging->onRestore();
-    colorWarning->onRestore();
-    colorError->onRestore();
+    checkboxNormal->onRestore();
+    spinboxAngle->onRestore();
 }
 
 /**
  * Sets the strings of the subwidgets using the current language.
  */
-void DlgReportViewImp::changeEvent(QEvent *e)
+void DlgSettingsMeshView::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
         retranslateUi(this);
@@ -84,4 +86,4 @@ void DlgReportViewImp::changeEvent(QEvent *e)
     }
 }
 
-#include "moc_DlgReportViewImp.cpp"
+#include "moc_DlgSettingsMeshView.cpp"

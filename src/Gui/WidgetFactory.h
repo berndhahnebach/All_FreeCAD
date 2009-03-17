@@ -141,8 +141,15 @@ public:
     PrefPageProducer (const char* group)
     {
         const char* cname = CLASS::staticMetaObject.className();
-        WidgetFactoryInst::instance().AddProducer(cname, this);
-        Gui::Dialog::DlgPreferencesImp::addPage(cname, group);
+        if (strcmp(cname, Gui::Dialog::PreferencePage::staticMetaObject.className()) == 0)
+            qWarning("The class '%s' lacks of Q_OBJECT macro", typeid(CLASS).name());
+        if (WidgetFactoryInst::instance().CanProduce(cname)) {
+            qWarning("The preference page class '%s' is already registered", cname);
+        }
+        else {
+            WidgetFactoryInst::instance().AddProducer(cname, this);
+            Gui::Dialog::DlgPreferencesImp::addPage(cname, group);
+        }
     }
 
     virtual ~PrefPageProducer (){}
@@ -195,8 +202,15 @@ public:
     CustomPageProducer ()
     {
         const char* cname = CLASS::staticMetaObject.className();
-        WidgetFactoryInst::instance().AddProducer(cname, this);
-        Gui::Dialog::DlgCustomizeImp::addPage(cname);
+        if (strcmp(cname, Gui::Dialog::CustomizeActionPage::staticMetaObject.className()) == 0)
+            qWarning("The class '%s' lacks of Q_OBJECT macro", typeid(CLASS).name());
+        if (WidgetFactoryInst::instance().CanProduce(cname)) {
+            qWarning("The preference page class '%s' is already registered", cname);
+        }
+        else {
+            WidgetFactoryInst::instance().AddProducer(cname, this);
+            Gui::Dialog::DlgCustomizeImp::addPage(cname);
+        }
     }
 
     virtual ~CustomPageProducer (){}

@@ -36,6 +36,8 @@ namespace Dialog {
  */
 class DlgReportViewImp : public PreferencePage, public Ui_DlgReportView
 {
+    Q_OBJECT
+
 public:
     DlgReportViewImp( QWidget* parent = 0 );
     ~DlgReportViewImp();

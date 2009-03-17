@@ -20,6 +20,7 @@ BUILT_SOURCES=\
 		moc_DlgOnlineHelpImp.cpp \
 		moc_DlgParameterImp.cpp \
 		moc_DlgPreferencesImp.cpp \
+		moc_DlgReportViewImp.cpp \
 		moc_DlgSettings3DViewImp.cpp \
 		moc_DlgSettingsColorGradientImp.cpp \
 		moc_DlgSettingsDocumentImp.cpp \
