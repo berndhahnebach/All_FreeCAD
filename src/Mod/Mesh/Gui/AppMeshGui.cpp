@@ -30,11 +30,13 @@
 
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/WidgetFactory.h>
 #include <Gui/Language/Translator.h>
 
 #include "images.h"
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
+#include "DlgSettingsMeshView.h"
 #include "SoFCMeshNode.h"
 #include "SoFCMeshObject.h"
 #include "SoFCMeshVertex.h"
@@ -96,7 +98,10 @@ void MeshGuiExport initMeshGui()
 
     // instanciating the commands
     CreateMeshCommands();
-    new MeshGui::CleanupHandler;
+    (void)new MeshGui::CleanupHandler;
+
+    // register preferences pages
+    (void)new Gui::PrefPageProducer<MeshGui::DlgSettingsMeshView> ("Display");
 
     MeshGui::SoFCMeshNode                       ::initClass();
     MeshGui::SoFCMeshOpenEdge                   ::initClass();
@@ -114,9 +119,6 @@ void MeshGuiExport initMeshGui()
     MeshGui::SoFCMeshObjectShape                ::initClass();
     MeshGui::SoFCMeshSegmentShape               ::initClass();
     MeshGui::SoFCMeshObjectBoundary             ::initClass();
-#if 0
-    MeshGui::PropertyEditorMesh                 ::init();
-#endif
     MeshGui::PropertyMeshKernelItem             ::init();
     MeshGui::ViewProviderMesh                   ::init();
     MeshGui::ViewProviderMeshNode               ::init();

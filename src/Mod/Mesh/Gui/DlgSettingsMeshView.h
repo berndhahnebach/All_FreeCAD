@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,67 +21,33 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef MESHGUI_DLGSETTINGSMESHVIEW_H
+#define MESHGUI_DLGSETTINGSMESHVIEW_H
 
-#include "DlgReportViewImp.h"
-#include "PrefWidgets.h"
+#include "ui_DlgSettingsMeshView.h"
+#include <Gui/PropertyPage.h>
 
-
-using namespace Gui::Dialog;
-
-/**
- *  Constructs a DlgReportViewImp which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
- */
-DlgReportViewImp::DlgReportViewImp( QWidget* parent )
-  : PreferencePage(parent)
-{
-    this->setupUi(this);
-}
-
-/** 
- *  Destroys the object and frees any allocated resources
- */
-DlgReportViewImp::~DlgReportViewImp()
-{
-}
-
-void DlgReportViewImp::saveSettings()
-{
-    checkLogging->onSave();
-    checkWarning->onSave();
-    checkError->onSave();
-    colorText->onSave();
-    colorLogging->onSave();
-    colorWarning->onSave();
-    colorError->onSave();
-}
-
-void DlgReportViewImp::loadSettings()
-{
-    checkLogging->onRestore();
-    checkWarning->onRestore();
-    checkError->onRestore();
-    colorText->onRestore();
-    colorLogging->onRestore();
-    colorWarning->onRestore();
-    colorError->onRestore();
-}
+namespace MeshGui {
 
 /**
- * Sets the strings of the subwidgets using the current language.
+ * The DlgSettingsMeshView class implements a preference page to change settings
+ * for display of meshes.
+ * @author Werner Mayer
  */
-void DlgReportViewImp::changeEvent(QEvent *e)
-{
-    if (e->type() == QEvent::LanguageChange) {
-        retranslateUi(this);
-    }
-    else {
-        QWidget::changeEvent(e);
-    }
-}
+class DlgSettingsMeshView : public Gui::Dialog::PreferencePage, public Ui_DlgSettingsMeshView
+{ 
+    Q_OBJECT
 
-#include "moc_DlgReportViewImp.cpp"
+public:
+    DlgSettingsMeshView(QWidget* parent = 0);
+    ~DlgSettingsMeshView();
+
+protected:
+    void saveSettings();
+    void loadSettings();
+    void changeEvent(QEvent *e);
+};
+
+} // namespace Gui
+
+#endif // MESHGUI_DLGSETTINGSMESHVIEW_H

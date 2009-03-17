@@ -4,8 +4,10 @@ lib_LTLIBRARIES=libMeshGui.la MeshGui.la
 BUILT_SOURCES=\
 		ui_DlgEvaluateMesh.h \
 		ui_DlgRegularSolid.h \
+		ui_DlgSettingsMeshView.h \
 		moc_DlgEvaluateMeshImp.cpp \
 		moc_DlgRegularSolidImp.cpp \
+		moc_DlgSettingsMeshView.cpp \
 		moc_PropertyEditorMesh.cpp \
 		qrc_Mesh.cpp 
 
@@ -15,6 +17,8 @@ libMeshGui_la_SOURCES=\
 		DlgEvaluateMeshImp.h \
 		DlgRegularSolidImp.cpp \
 		DlgRegularSolidImp.h \
+		DlgSettingsMeshView.cpp \
+		DlgSettingsMeshView.h \
 		Doxygen.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
@@ -110,6 +114,7 @@ EXTRA_DIST = \
 		AppMeshGui.vcproj \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
+		DlgSettingsMeshView.ui \
 		Mesh.qrc \
 		Mesh_de.qm \
 		Mesh_de.ts \
