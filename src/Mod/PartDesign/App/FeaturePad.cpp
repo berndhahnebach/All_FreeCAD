@@ -63,6 +63,8 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
     TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
+    if (shape.IsNull())
+        return new App::DocumentObjectExecReturn("Linked shape object is empty");
     if (shape.ShapeType() != TopAbs_WIRE)
         return new App::DocumentObjectExecReturn("Linked shape object is not a wire");
 
