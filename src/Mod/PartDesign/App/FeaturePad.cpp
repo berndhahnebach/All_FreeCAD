@@ -62,7 +62,9 @@ App::DocumentObjectExecReturn *Pad::execute(void)
         return new App::DocumentObjectExecReturn("No object linked");
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
-    //Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
+    TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
+    if (shape.ShapeType() != TopAbs_WIRE)
+        return new App::DocumentObjectExecReturn("Linked shape object is not a wire");
 
 	/* Version from the blog
 	Handle(Geom_Surface) aSurf = new Geom_Plane (gp::XOY());
@@ -104,7 +106,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 	Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
 	//anti-clockwise circles if too look from surface normal
 
-	TopoDS_Wire theWire = TopoDS::Wire(Shape.getShape()._Shape);
+	TopoDS_Wire theWire = TopoDS::Wire(shape);
 
 	BRep_Builder aB;
 	TopoDS_Face aFace;
