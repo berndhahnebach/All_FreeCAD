@@ -467,13 +467,29 @@ bool Document::saveAs(void)
 {
     getMainWindow()->statusBar()->showMessage(QObject::tr("Save document under new filename..."));
 
-    QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), 
-                 QDir::currentPath(), QObject::tr("FreeCAD document (*.FCStd)"));
+    QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+    QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save %1 Document").arg(exe), 
+                 QDir::currentPath(), QObject::tr("%1 document (*.FCStd)").arg(exe));
     if (!fn.isEmpty()) {
         QString file = fn.toLower();
-        if (!file.endsWith(QLatin1String(".fcstd")))
+        if (!file.endsWith(QLatin1String(".fcstd"))) {
             fn += QLatin1String(".fcstd");
+            QFileInfo fi;
+            fi.setFile(fn);
+            if (fi.exists()) {
+                // if we auto-append the extension make sure that we don't override an existing file
+                int ret = QMessageBox::question(getMainWindow(), QObject::tr("Save As"), 
+                    QObject::tr("%1 already exists.\n"
+                                "Do you want to replace it?").arg(fn),
+                                QMessageBox::Yes|QMessageBox::Default,
+                                QMessageBox::No|QMessageBox::Escape); 
+                if (ret != QMessageBox::Yes)
+                    fn = QString();
+            }
+        }
+    }
 
+    if (!fn.isEmpty()) {
         QFileInfo fi;
         fi.setFile(fn);
         QString bn = fi.baseName();
