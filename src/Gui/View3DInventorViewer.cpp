@@ -2190,29 +2190,18 @@ SbBool View3DInventorViewer::isAnimating(void) const
 /*!
  * Starts programmatically the viewer in animation mode. The given axis direction
  * is always in screen coordinates, not in world coordinates.
- * todo: Set rotation venter
  */
 void View3DInventorViewer::startAnimating(const SbVec3f& axis, float velocity)
 {
-    if (isAnimating() || !isAnimationEnabled()) return;
+    if (!isAnimationEnabled()) return;
 
-    //this->spin(SbVec2f(0.5f, 0.5f));
     this->spinincrement = SbRotation::identity();
-    //SbVec3f from(0,0,1), to(0,1,0);
-    //SbRotation rot = this->spinprojector->getRotation(from, to);
     SbRotation rot;
     rot.setValue(axis, velocity);
-    //rot.invert();
-    //rot.scaleAngle(velocity);
 
-    //SbVec3f axis;
-    //float radians;
-    //rot.getValue(axis, radians);
-    //if ((radians > 0.01f) && (deltatime < 0.300)) {
     this->setViewing(true);
     this->setMode(View3DInventorViewer::SPINNING);
     this->spinRotation = rot;
-    //}
 }
 
 void View3DInventorViewer::stopAnimating(void)

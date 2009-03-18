@@ -519,7 +519,7 @@ void Application::addImportType(const char* Type, const char* ModuleName)
     }
 
     // Due to branding stuff replace FreeCAD through the application name
-    if ( strncmp(Type, "FreeCAD", 7) == 0 ) {
+    if (strncmp(Type, "FreeCAD", 7) == 0) {
         std::string AppName = Config()["ExeName"];
         AppName += item.filter.substr(7);
         item.filter = AppName;
@@ -632,7 +632,7 @@ void Application::addExportType(const char* Type, const char* ModuleName)
     }
 
     // Due to branding stuff replace FreeCAD through the application name
-    if ( strncmp(Type, "FreeCAD", 7) == 0 ) {
+    if (strncmp(Type, "FreeCAD", 7) == 0) {
         std::string AppName = Config()["ExeName"];
         AppName += item.filter.substr(7);
         item.filter = AppName;

@@ -1515,7 +1515,7 @@ Datei wurde nicht gefunden.
         <source>%1 already exists.
 Do you want to replace it?</source>
         <translation>Die Datei %1 existiert bereits.
-Soll sie überschreiben werden?</translation>
+Soll sie überschrieben werden?</translation>
     </message>
     <message>
         <source>%1

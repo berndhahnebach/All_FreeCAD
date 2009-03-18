@@ -70,18 +70,20 @@ App::DocumentObjectExecReturn *Curvature::execute(void)
     // get all points
     const MeshKernel& rMesh = pcFeat->Mesh.getValue().getKernel();
     std::vector< Wm4::Vector3<float> > aPnts;
+    aPnts.reserve(rMesh.CountPoints());
     MeshPointIterator cPIt( rMesh );
-    for ( cPIt.Init(); cPIt.More(); cPIt.Next() ) {
-        Wm4::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
-        aPnts.push_back( cP );
+    for (cPIt.Init(); cPIt.More(); cPIt.Next()) {
+        Wm4::Vector3<float> cP(cPIt->x, cPIt->y, cPIt->z);
+        aPnts.push_back(cP);
     }
 
     // get all point connections
     std::vector<int> aIdx;
+    aIdx.reserve(3*rMesh.CountFacets());
     const std::vector<MeshFacet>& raFts = rMesh.GetFacets();
-    for ( std::vector<MeshFacet>::const_iterator jt = raFts.begin(); jt != raFts.end(); ++jt ) {
+    for (std::vector<MeshFacet>::const_iterator jt = raFts.begin(); jt != raFts.end(); ++jt) {
         for (int i=0; i<3; i++) {
-            aIdx.push_back( (int)jt->_aulPoints[i] );
+            aIdx.push_back((int)jt->_aulPoints[i]);
         }
     }
 
@@ -95,10 +97,10 @@ App::DocumentObjectExecReturn *Curvature::execute(void)
     const float* aMinCurv = meshCurv.GetMinCurvatures();
 
     std::vector<CurvatureInfo> values(rMesh.CountPoints());
-    for ( unsigned long i=0; i<rMesh.CountPoints(); i++ ) {
+    for (unsigned long i=0; i<rMesh.CountPoints(); i++) {
         CurvatureInfo ci;
-        ci.cMaxCurvDir = Base::Vector3f( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() );
-        ci.cMinCurvDir = Base::Vector3f( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() );
+        ci.cMaxCurvDir = Base::Vector3f(aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z());
+        ci.cMinCurvDir = Base::Vector3f(aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z());
         ci.fMaxCurvature = aMaxCurv[i];
         ci.fMinCurvature = aMinCurv[i];
         values[i] = ci;
