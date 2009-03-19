@@ -42,7 +42,7 @@ public:
     App::PropertyDistance Length,Height,Width;
 
 
-    /** @name methods overide Feature */
+    /** @name methods override feature */
     //@{
     /// recalculate the Feature
     App::DocumentObjectExecReturn *execute(void);
@@ -51,6 +51,8 @@ public:
     const char* getViewProviderName(void) const {
         return "PartGui::ViewProviderBox";
     }
+protected:
+    void Restore(Base::XMLReader &reader);
     //@}
 };
 
