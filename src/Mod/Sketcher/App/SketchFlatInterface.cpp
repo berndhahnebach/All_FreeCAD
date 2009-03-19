@@ -428,7 +428,9 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 				EvalPoint(pt1, &x, &y);
 				gp_Pnt V2(x/1000.0,y/1000.0,0);
 				//points.push_back(points2D(x,y));
-				//if (V1 == V2) Standard_Failure::Raise("Both points are equal");
+                if (V1.SquareDistance(V2) < 0.0001)
+                    continue;
+                    //throw Base::Exception("SketchFlatInterface::getGeoAsShape(): Both points are equal");
 				GC_MakeSegment ms(V1, V2);
 				if (!ms.IsDone()) 
 					throw Base::Exception(gce_ErrorStatusText(ms.Status()));
