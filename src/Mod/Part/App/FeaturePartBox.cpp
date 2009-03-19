@@ -29,6 +29,7 @@
 
 
 #include <Base/Console.h>
+#include <Base/Reader.h>
 #include "FeaturePartBox.h"
 
 
@@ -87,4 +88,59 @@ App::DocumentObjectExecReturn *Box::execute(void)
     }
 
     return App::DocumentObject::StdReturn;
+}
+
+/**
+ * This method was added for backward-compatibility. In former versions
+ * of Box we had the properties x,y,z and l,h,w which have changed to
+ * Location -- as replacement for x,y and z and Length, Height and Width.
+ */
+void Box::Restore(Base::XMLReader &reader)
+{
+    reader.readElement("Properties");
+    int Cnt = reader.getAttributeAsInteger("Count");
+
+    bool location_xyz = false;
+    App::PropertyDistance x,y,z;
+    for (int i=0 ;i<Cnt;i++) {
+        reader.readElement("Property");
+        const char* PropName = reader.getAttribute("name");
+        const char* TypeName = reader.getAttribute("type");
+        App::Property* prop = getPropertyByName(PropName);
+        if (!prop) {
+            // in case this comes from an old document we must use the new properties
+            if (strcmp(PropName, "l") == 0)
+                prop = getPropertyByName("Length");
+            else if (strcmp(PropName, "w") == 0)
+                prop = getPropertyByName("Height"); // by mistake w was considered as height
+            else if (strcmp(PropName, "h") == 0)
+                prop = getPropertyByName("Width"); // by mistake h was considered as width
+            else if (strcmp(PropName, "x") == 0) {
+                location_xyz = true;
+                prop = &x;
+            }
+            else if (strcmp(PropName, "y") == 0) {
+                location_xyz = true;
+                prop = &y;
+            }
+            else if (strcmp(PropName, "z") == 0) {
+                location_xyz = true;
+                prop = &z;
+            }
+        }
+        // NOTE: We must also check the type of the current property because a subclass
+        // of PropertyContainer might change the type of a property but not its name.
+        // In this case we would force to read-in a wrong property type and the behaviour
+        // would be undefined.
+        if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
+            prop->Restore(reader);
+
+        reader.readEndElement("Property");
+    }
+
+    if (location_xyz) {
+        this->Location.setValue(x.getValue(),y.getValue(),z.getValue());
+    }
+
+    reader.readEndElement("Properties");
 }
