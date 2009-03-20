@@ -57,6 +57,7 @@ protected:
                     const int32_t *normalindices,
                     SoMaterialBundle *materials,
                     const int32_t *matindices,
+                    const SbBool overall,
                     const SoTextureCoordinateBundle * const texcoords,
                     const int32_t *texindices);
 

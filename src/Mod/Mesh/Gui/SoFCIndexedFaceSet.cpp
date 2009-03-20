@@ -30,8 +30,10 @@
 # include <GL/gl.h>
 # endif
 # include <Inventor/actions/SoGLRenderAction.h>
+# include <Inventor/bundles/SoMaterialBundle.h>
 # include <Inventor/elements/SoCoordinateElement.h>
 # include <Inventor/elements/SoGLCoordinateElement.h>
+# include <Inventor/elements/SoMaterialBindingElement.h>
 #endif
 
 #include <Gui/SoFCInteractiveElement.h>
@@ -71,6 +73,10 @@ void SoFCIndexedFaceSet::GLRender(SoGLRenderAction *action)
         inherited::GLRender(action);
     }
     else {
+        SoMaterialBindingElement::Binding matbind =
+            SoMaterialBindingElement::get(state);
+        SbBool overall = (matbind == SoMaterialBindingElement::OVERALL);
+
         const SoCoordinateElement * coords;
         const SbVec3f * normals;
         const int32_t * cindices;
@@ -91,12 +97,8 @@ void SoFCIndexedFaceSet::GLRender(SoGLRenderAction *action)
 
         mb.sendFirst(); // make sure we have the correct material
 
-        SbBool ccw = TRUE;
-        if (SoShapeHintsElement::getVertexOrdering(state) == SoShapeHintsElement::CLOCKWISE) 
-            ccw = FALSE;
-  
         drawCoords(static_cast<const SoGLCoordinateElement*>(coords), cindices, numindices,
-                   normals, nindices, &mb, mindices, &tb, tindices);
+                   normals, nindices, &mb, mindices, overall, &tb, tindices);
     }
 }
 
@@ -107,6 +109,7 @@ void SoFCIndexedFaceSet::drawCoords(const SoGLCoordinateElement * const vertexli
                                     const int32_t *normalindices,
                                     SoMaterialBundle *materials,
                                     const int32_t *matindices,
+                                    const SbBool overall,
                                     const SoTextureCoordinateBundle * const texcoords,
                                     const int32_t *texindices)
 {
@@ -128,19 +131,22 @@ void SoFCIndexedFaceSet::drawCoords(const SoGLCoordinateElement * const vertexli
     for (int index=0; index<numindices; ct++) {
         if (ct%mod==0) {
             v1 = *viptr++; index++;
-            materials->send(v1, TRUE);
+            if (!overall)
+                materials->send(v1, TRUE);
             currnormal = &normals[*normalindices++];
             glNormal3fv((const GLfloat*)currnormal);
             glVertex3fv((const GLfloat*)(coords3d + v1));
 
             v2 = *viptr++; index++;
-            materials->send(v2, TRUE);
+            if (!overall)
+                materials->send(v2, TRUE);
             currnormal = &normals[*normalindices++];
             glNormal3fv((const GLfloat*)currnormal);
             glVertex3fv((const GLfloat*)(coords3d + v2));
 
             v3 = *viptr++; index++;
-            materials->send(v3, TRUE);
+            if (!overall)
+                materials->send(v3, TRUE);
             currnormal = &normals[*normalindices++];
             glNormal3fv((const GLfloat*)currnormal);
             glVertex3fv((const GLfloat*)(coords3d + v3));
