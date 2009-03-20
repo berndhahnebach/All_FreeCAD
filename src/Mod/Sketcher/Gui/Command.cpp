@@ -69,28 +69,27 @@ bool CmdSketcherNewSketch::isActive(void)
 }
 
 
-DEF_STD_CMD_A(CmdSketcherLeavSketch);
+DEF_STD_CMD_A(CmdSketcherLeaveSketch);
 
-CmdSketcherLeavSketch::CmdSketcherLeavSketch()
-	:Command("Sketcher_LeavSketch")
+CmdSketcherLeaveSketch::CmdSketcherLeaveSketch()
+	:Command("Sketcher_LeaveSketch")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Leav sketch");
+    sMenuText       = QT_TR_NOOP("Leave sketch");
     sToolTipText    = QT_TR_NOOP("Close the edition for the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_LeavSketch";
 }
 
-
-void CmdSketcherLeavSketch::activated(int iMsg)
+void CmdSketcherLeaveSketch::activated(int iMsg)
 {
-   	Gui::Document *doc = getActiveGuiDocument();
+    Gui::Document *doc = getActiveGuiDocument();
     doc->resetEdit();      
 }
 
-bool CmdSketcherLeavSketch::isActive(void)
+bool CmdSketcherLeaveSketch::isActive(void)
 {
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
@@ -214,12 +213,11 @@ CmdSketcherCreateLine::CmdSketcherCreateLine()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create line");
-    sToolTipText    = QT_TR_NOOP("Create arc a line in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create a line in the scetch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateLine";
 }
-
 
 void CmdSketcherCreateLine::activated(int iMsg)
 {
@@ -258,22 +256,30 @@ CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
     sPixmap         = "Sketcher_CreatePolyline";
 }
 
-
 void CmdSketcherCreatePolyline::activated(int iMsg)
 {
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
-    //commitCommand();
-      
+    Gui::Document *doc = getActiveGuiDocument();
+    if (doc) {
+        Gui::ViewProvider* vp = doc->getInEdit();
+        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+            static_cast<SketcherGui::ViewProviderSketch*>(vp)->setSketchMode
+            (ViewProviderSketch::STATUS_SKETCH_CreatePolyline);
+    }
 }
 
 bool CmdSketcherCreatePolyline::isActive(void)
 {
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-	//		return true;
-	return false;
+    Gui::Document *doc = getActiveGuiDocument();
+    if (doc) {
+        // checks if a sketch is in edit mode and is in no special mode
+        Gui::ViewProvider* vp = doc->getInEdit();
+        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+            if (static_cast<SketcherGui::ViewProviderSketch*>(vp)->getSketchMode() ==
+                ViewProviderSketch::STATUS_NONE)
+                return true;
+    }
+
+    return false;
 }
 
 
@@ -492,7 +498,7 @@ void CreateSketcherCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdSketcherNewSketch());
-    rcCmdMgr.addCommand(new CmdSketcherLeavSketch());
+    rcCmdMgr.addCommand(new CmdSketcherLeaveSketch());
 
 	rcCmdMgr.addCommand(new CmdSketcherCreatePoint());
 	rcCmdMgr.addCommand(new CmdSketcherCreateArc());

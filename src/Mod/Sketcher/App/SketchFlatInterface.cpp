@@ -89,7 +89,7 @@ bool SketchFlatInterface::load(const char* FileName)
 
 
 //**************************************************************************
-// Methodes to add stuff
+// Methods to add stuff
 
 /**
  */

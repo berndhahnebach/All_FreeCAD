@@ -98,7 +98,8 @@ public:
 		STATUS_SKETCH_CreateRectangle,
 		STATUS_SKETCH_CreateText,
 		STATUS_SKETCH_DragPoint,
-		STATUS_SKETCH_DoLine
+		STATUS_SKETCH_DoLine,
+		STATUS_SKETCH_DoPolyline
 	};
 	/// is called by GuiCommands to set the drawing mode
 	void setSketchMode(int mode);
