@@ -74,9 +74,6 @@
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/MeshProperties.h>
-#include <Mod/Mesh/Gui/SoFCMeshNode.h>
-#include <Mod/Mesh/Gui/SoFCMeshVertex.h>
-#include <Mod/Mesh/Gui/SoFCMeshFaceSet.h>
 
 #include "ViewProvider.h"
 #include "ViewProviderMeshFaceSet.h"
