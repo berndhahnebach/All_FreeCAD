@@ -37,13 +37,9 @@
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
 #include "DlgSettingsMeshView.h"
-#include "SoFCMeshNode.h"
 #include "SoFCMeshObject.h"
-#include "SoFCMeshVertex.h"
-#include "SoFCMeshFaceSet.h"
 #include "SoFCIndexedFaceSet.h"
 #include "ViewProvider.h"
-#include "ViewProviderMeshNode.h"
 #include "ViewProviderMeshFaceSet.h"
 #include "ViewProviderCurvature.h"
 #include "ViewProviderTransform.h"
@@ -104,26 +100,15 @@ void MeshGuiExport initMeshGui()
     // register preferences pages
     (void)new Gui::PrefPageProducer<MeshGui::DlgSettingsMeshView> ("Display");
 
-    MeshGui::SoFCMeshNode                       ::initClass();
-    MeshGui::SoFCMeshOpenEdge                   ::initClass();
-    MeshGui::SoFCMeshVertexElement              ::initClass();
-    MeshGui::SoFCMeshFacetElement               ::initClass();
     MeshGui::SoFCMeshObjectElement              ::initClass();
-    MeshGui::SoSFMeshPointArray                 ::initClass();
     MeshGui::SoSFMeshObject                     ::initClass();
-    MeshGui::SoFCMeshVertex                     ::initClass();
     MeshGui::SoFCMeshObjectNode                 ::initClass();
-    MeshGui::SoFCMeshFacet                      ::initClass();
-    MeshGui::SoSFMeshFacetArray                 ::initClass();
-    MeshGui::SoFCMeshFaceSet                    ::initClass();
-    MeshGui::SoFCMeshOpenEdgeSet                ::initClass();
     MeshGui::SoFCMeshObjectShape                ::initClass();
     MeshGui::SoFCMeshSegmentShape               ::initClass();
     MeshGui::SoFCMeshObjectBoundary             ::initClass();
     MeshGui::SoFCIndexedFaceSet                 ::initClass();
     MeshGui::PropertyMeshKernelItem             ::init();
     MeshGui::ViewProviderMesh                   ::init();
-    MeshGui::ViewProviderMeshNode               ::init();
     MeshGui::ViewProviderMeshFaceSet            ::init();
     MeshGui::ViewProviderExport                 ::init();
     MeshGui::ViewProviderMeshCurvature          ::init();
