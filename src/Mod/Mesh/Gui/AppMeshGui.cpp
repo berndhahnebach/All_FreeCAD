@@ -41,6 +41,7 @@
 #include "SoFCMeshObject.h"
 #include "SoFCMeshVertex.h"
 #include "SoFCMeshFaceSet.h"
+#include "SoFCIndexedFaceSet.h"
 #include "ViewProvider.h"
 #include "ViewProviderMeshNode.h"
 #include "ViewProviderMeshFaceSet.h"
@@ -119,6 +120,7 @@ void MeshGuiExport initMeshGui()
     MeshGui::SoFCMeshObjectShape                ::initClass();
     MeshGui::SoFCMeshSegmentShape               ::initClass();
     MeshGui::SoFCMeshObjectBoundary             ::initClass();
+    MeshGui::SoFCIndexedFaceSet                 ::initClass();
     MeshGui::PropertyMeshKernelItem             ::init();
     MeshGui::ViewProviderMesh                   ::init();
     MeshGui::ViewProviderMeshNode               ::init();
