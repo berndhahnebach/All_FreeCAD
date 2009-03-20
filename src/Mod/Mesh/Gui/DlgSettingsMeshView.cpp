@@ -53,6 +53,7 @@ DlgSettingsMeshView::~DlgSettingsMeshView()
 
 void DlgSettingsMeshView::saveSettings()
 {
+    checkboxRendering->onSave();
     checkboxNormal->onSave();
     spinboxAngle->onSave();
 
@@ -69,6 +70,7 @@ void DlgSettingsMeshView::saveSettings()
 
 void DlgSettingsMeshView::loadSettings()
 {
+    checkboxRendering->onRestore();
     checkboxNormal->onRestore();
     spinboxAngle->onRestore();
 }

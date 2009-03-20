@@ -429,6 +429,7 @@ void SoFCMeshObjectShape::initClass()
 SoFCMeshObjectShape::SoFCMeshObjectShape() : MaximumTriangles(100000), meshChanged(true)
 {
     SO_NODE_CONSTRUCTOR(SoFCMeshObjectShape);
+    setName(SoFCMeshObjectShape::getClassTypeId().getName());
 }
 
 void SoFCMeshObjectShape::notify(SoNotList * node)
@@ -453,15 +454,27 @@ void SoFCMeshObjectShape::GLRender(SoGLRenderAction *action)
         Binding mbind = this->findMaterialBinding(state);
         Binding nbind = this->findNormalBinding(state);
 
-        const SbVec3f * normals;
-        const int32_t * nindices;
-        SbBool normalCacheUsed;
+        const SbVec3f * normals=0;
+        const int32_t * nindices=0;
+        SbBool normalCacheUsed=FALSE;
 
         SoMaterialBundle mb(action);
         //SoTextureCoordinateBundle tb(action, true, false);
 
-        SbBool needNormals = !mb.isColorOnly()/* || tb.isFunction()*/;
-        this->getVertexData(state, normals, nindices, needNormals, normalCacheUsed);
+        SbBool sendNormals = !mb.isColorOnly()/* || tb.isFunction()*/;
+        this->getVertexData(state, normals, nindices, sendNormals, normalCacheUsed);
+
+        if (!sendNormals) nbind = OVERALL;
+        else if (nbind == OVERALL) {
+            if (normals) glNormal3fv(normals[0].getValue());
+            else glNormal3f(0.0f, 0.0f, 1.0f);
+        }
+        else if (normalCacheUsed && nbind == PER_VERTEX) {
+            nbind = PER_VERTEX_INDEXED;
+        }
+        else if (normalCacheUsed && nbind == PER_FACE_INDEXED) {
+            nbind = PER_FACE;
+        }
 
         mb.sendFirst();  // make sure we have the correct material
     
@@ -471,12 +484,16 @@ void SoFCMeshObjectShape::GLRender(SoGLRenderAction *action)
 
         if (mode == false || mesh->countFacets() <= this->MaximumTriangles) {
             if (mbind != OVERALL)
-                drawFaces(mesh, &mb, mbind, normals, needNormals, ccw);
+                drawFaces(mesh, &mb, mbind, normals, sendNormals, ccw);
             else
-                drawFaces(mesh, 0, mbind, normals, needNormals, ccw);
+                drawFaces(mesh, 0, mbind, normals, sendNormals, ccw);
         }
         else {
-            drawPoints(mesh, needNormals, ccw);
+            drawPoints(mesh, sendNormals, ccw);
+        }
+
+        if (normalCacheUsed) {
+            this->readUnlockNormalCache();
         }
 
         // Disable caching for this node
@@ -598,6 +615,39 @@ SbBool SoFCMeshObjectShape::generateDefaultNormals(SoState * state, SoNormalCach
     return TRUE;
 }
 
+namespace MeshGui {
+
+template<typename T>
+T clamp(T value, T min, T max)
+{
+    return std::max<T>(min, std::min<T>(max, value));
+}
+
+static void
+calc_normal_vec(const MeshCore::MeshKernel& mesh, unsigned long facenum, 
+                std::vector<unsigned long> & faceArray, 
+                float threshold, Base::Vector3f & vertnormal)
+{
+    // start with face normal vector
+    Base::Vector3f facenormal = mesh.GetFacet(facenum).GetNormal();
+    vertnormal = facenormal;
+
+    unsigned long n = faceArray.size();
+    unsigned long currface;
+
+    for (unsigned long i = 0; i < n; i++) {
+        currface = faceArray[i];
+        if (currface != facenum) { // check all but this face
+            Base::Vector3f normal = mesh.GetFacet(currface).GetNormal();  // everything is ok
+            if ((normal * facenormal) > threshold) {
+                // smooth towards this face
+                vertnormal += normal;
+            }
+        }
+    }
+}
+}
+
 SbVec3f* SoFCMeshObjectShape::generatePerVertexNormals(const Mesh::MeshObject * mesh,
                                                        const float crease_angle,
                                                        const SbBool ccw) const
@@ -605,34 +655,45 @@ SbVec3f* SoFCMeshObjectShape::generatePerVertexNormals(const Mesh::MeshObject * 
     std::vector<std::vector<unsigned long> > vertexFaceArray(mesh->countPoints());
     const MeshCore::MeshPointArray& p = mesh->getKernel().GetPoints();
     const MeshCore::MeshFacetArray& f = mesh->getKernel().GetFacets();
-    unsigned long index = 0;
+    unsigned long facenum = 0;
     for (MeshCore::MeshFacetArray::_TConstIterator it = f.begin(); it != f.end(); ++it) {
-        vertexFaceArray[it->_aulPoints[0]].push_back(index);
-        vertexFaceArray[it->_aulPoints[1]].push_back(index);
-        vertexFaceArray[it->_aulPoints[2]].push_back(index);
-        index++;
+        vertexFaceArray[it->_aulPoints[0]].push_back(facenum);
+        vertexFaceArray[it->_aulPoints[1]].push_back(facenum);
+        vertexFaceArray[it->_aulPoints[2]].push_back(facenum);
+        facenum++;
     }
 
-    float threshold = (float)cos(crease_angle);
+    float threshold = (float)cos(MeshGui::clamp<float>(crease_angle, 0.0f, (float)M_PI));
     SbVec3f* normals = new SbVec3f[mesh->countPoints()];
-    index = 0;
+    facenum = 0;
+    Base::Vector3f normal;
+    for (MeshCore::MeshFacetArray::_TConstIterator it = f.begin(); it != f.end(); ++it) {
+        for (int i=0; i<3; i++) {
+            calc_normal_vec(mesh->getKernel(), facenum, vertexFaceArray[it->_aulPoints[i]],
+                            threshold, normal);
+        }
+    }
+
+#if 0
     for (std::vector<std::vector<unsigned long> >::iterator it = 
         vertexFaceArray.begin(); it != vertexFaceArray.end(); ++it) {
-        SbVec3f normal;
-        Base::Vector3f facenormal;
-        for (std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt) {
-            Base::Vector3f n = mesh->getKernel().GetFacet(f[*jt]).GetNormal();
-            if (jt == it->begin()) {
-                facenormal = n;
-                normal = SbVec3f(n.x,n.y,n.z);
-            }
-            else if (facenormal * n > threshold) {
-                normal += SbVec3f(n.x,n.y,n.z);
-            }
-        }
-        normal.normalize();
-        normals[index++] = normal;
+        Base::Vector3f normal;
+        calc_normal_vec(mesh->getKernel(), facenum, *it, threshold, normal);
+        //Base::Vector3f facenormal;
+        //for (std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt) {
+        //    Base::Vector3f n = mesh->getKernel().GetFacet(f[*jt]).GetNormal();
+        //    if (jt == it->begin()) {
+        //        facenormal = n;
+        //        normal = SbVec3f(n.x,n.y,n.z);
+        //    }
+        //    else if (facenormal * n > threshold) {
+        //        normal += SbVec3f(n.x,n.y,n.z);
+        //    }
+        //}
+        normal.Normalize();
+        normals[facenum++].setValue(normal.x,normal.y,normal.z);
     }
+#endif
 
     return normals;
 }
@@ -647,7 +708,7 @@ SbBool SoFCMeshObjectShape::getVertexData(SoState * state,
                                           const SbBool needNormals,
                                           SbBool & normalCacheUsed)
 {
-#if 0
+#if 1
     normals = 0;
     if (needNormals) {
         normals = SoNormalElement::getInstance(state)->getArrayPtr();

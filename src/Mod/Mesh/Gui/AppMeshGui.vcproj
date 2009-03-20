@@ -421,6 +421,14 @@
 			Name="Inventor"
 			>
 			<File
+				RelativePath=".\SoFCIndexedFaceSet.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoFCIndexedFaceSet.h"
+				>
+			</File>
+			<File
 				RelativePath="SoFCMeshFaceSet.cpp"
 				>
 				<FileConfiguration
