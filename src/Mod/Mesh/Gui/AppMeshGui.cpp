@@ -110,6 +110,7 @@ void MeshGuiExport initMeshGui()
     MeshGui::PropertyMeshKernelItem             ::init();
     MeshGui::ViewProviderMesh                   ::init();
     MeshGui::ViewProviderMeshFaceSet            ::init();
+    MeshGui::ViewProviderIndexedFaceSet         ::init();
     MeshGui::ViewProviderExport                 ::init();
     MeshGui::ViewProviderMeshCurvature          ::init();
     MeshGui::ViewProviderMeshTransform          ::init();
