@@ -20,11 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MESHGUI_VIEWPROVIDERMESHFACESET_H
-#define MESHGUI_VIEWPROVIDERMESHFACESET_H
+#ifndef MESHGUI_VIEWPROVIDERMESHOBJECT_H
+#define MESHGUI_VIEWPROVIDERMESHOBJECT_H
 
-#include <Gui/ViewProviderGeometryObject.h>
 #include <Mod/Mesh/App/Core/Elements.h>
+#include <Mod/Mesh/Gui/ViewProvider.h>
 
 #include <vector>
 #include <Inventor/fields/SoSFVec2f.h>
@@ -53,7 +53,7 @@ class SoFCMeshObjectShape;
  * SoFCMeshNode and SoFCMeshFaceSet.
  * @author Werner Mayer
  */
-class MeshGuiExport ViewProviderMeshFaceSet : public Gui::ViewProviderGeometryObject
+class MeshGuiExport ViewProviderMeshFaceSet : public ViewProviderMesh
 {
     PROPERTY_HEADER(MeshGui::ViewProviderMeshFaceSet);
 
@@ -61,75 +61,20 @@ public:
     ViewProviderMeshFaceSet();
     virtual ~ViewProviderMeshFaceSet();
 
-    // Display properties
-    App::PropertyFloatConstraint LineWidth;
-    App::PropertyFloatConstraint PointSize;
-    App::PropertyBool OpenEdges;
-    App::PropertyEnumeration Lighting;
-
     void attach(App::DocumentObject *pcFeat);
     virtual void updateData(const App::Property*);
-    virtual QIcon getIcon() const;
-    virtual void setDisplayMode(const char* ModeName);
-    virtual std::vector<std::string> getDisplayModes() const;
-
-    /** @name Polygon picking */
-    //@{
-    bool doubleClicked(void){return false;}
-    /// Sets the edit mnode
-    bool setEdit(int ModNum=0);
-    /// Unsets the edit mode
-    void unsetEdit(void);
-    /// Returns the edit mode
-    const char* getEditModeName(void);
-    void markPart(unsigned long facet);
-    bool isMarked(unsigned long facet) const;
-    void unmarkParts();
-    void removePart();
-    unsigned long countMarkedFacets() const;
-    void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
-        Gui::View3DInventorViewer &Viewer, SbBool inner,
-        std::vector<unsigned long>& indices) const;
-    //@}
 
 protected:
-    /// get called by the container whenever a property has been changed
-    void onChanged(const App::Property* prop);
-    void showOpenEdges( bool );
-    void setOpenEdgeColorFrom(const App::Color& col);
-    virtual void cutMesh(const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer, SbBool inner);
-    virtual void splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
-    virtual void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
-    virtual void faceInfo(unsigned long facet);
-    virtual void fillHole(unsigned long facet);
+    SoShape* getShapeNode() const;
+    void showOpenEdges(bool);
 
+protected:
     SoFCMeshObjectNode  * pcMeshNode;
     SoFCMeshObjectShape * pcMeshShape;
-    SoDrawStyle         * pcLineStyle;
-    SoDrawStyle         * pcPointStyle;
-    SoSeparator         * pcOpenEdge;
-    SoBaseColor         * pOpenColor;
-    SoShapeHints        * pShapeHints;
-    SoMaterialBinding   * pcMatBinding;
-
-public:
-    static void faceInfoCallback(void * ud, SoEventCallback * n);
-    static void fillHoleCallback(void * ud, SoEventCallback * n);
-    static void markPartCallback(void * ud, SoEventCallback * n);
-    static void clipMeshCallback(void * ud, SoEventCallback * n);
-    static void partMeshCallback(void * ud, SoEventCallback * n);
-    static void segmMeshCallback(void * ud, SoEventCallback * n);
-
-private:
-    std::vector<unsigned long> _markedFacets;
-    bool m_bEdit;
-
-    static App::PropertyFloatConstraint::Constraints floatRange;
-    static const char* LightingEnums[];
 };
 
 } // namespace MeshGui
 
 
-#endif // MESHGUI_VIEWPROVIDERMESHFACESET_H
+#endif // MESHGUI_VIEWPROVIDERMESHOBJECT_H
 

@@ -35,33 +35,28 @@ namespace Mesh
 {
 
 /**
- * The FeatureMeshImport class reads the any supported mesh format
- * into the FreeCAD workspace.
- * @author Werner Mayer
+ * The TransformDemolding class.
  */
 class TransformDemolding : public Transform
 {
-  
-  PROPERTY_HEADER(Mesh::TransformDemolding);
+    PROPERTY_HEADER(Mesh::TransformDemolding);
 
 public:
-  TransformDemolding();
+    TransformDemolding();
 
+    App::PropertyLink Source;
+    App::PropertyFloat Rotation;
+    App::PropertyVector Axis;
 
-  App::PropertyLink Source;
-  App::PropertyFloat Rotation;
-  App::PropertyVector Axis;
-
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "MeshGui::ViewProviderMeshTransformDemolding";
-  }
-  //@}
-
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "MeshGui::ViewProviderMeshTransformDemolding";
+    }
+    //@}
 };
 
 }

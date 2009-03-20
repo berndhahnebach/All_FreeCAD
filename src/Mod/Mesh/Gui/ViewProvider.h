@@ -20,29 +20,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __VIEWPROVIDERMESH_H__
-#define __VIEWPROVIDERMESH_H__
+#ifndef MESHGUI_VIEWPROVIDERMESH_H
+#define MESHGUI_VIEWPROVIDERMESH_H
 
 #include <vector>
 #include <Inventor/fields/SoSFVec2f.h>
 
-#include "../App/Core/Elements.h"
+#include <Mod/Mesh/App/Core/Elements.h>
 #include <Gui/ViewProviderGeometryObject.h>
 #include <App/PropertyStandard.h>
 
 
 class SoSeparator;
-class SbVec3f;
-class SoSwitch;
-class SoCoordinate3;
-class SoNormal;
-class SoIndexedFaceSet;
-class SoFaceSet;
-class SoPath;
-class SoLocateHighlight;
 class SoEventCallback;
 class SbViewVolume;
 class SoBaseColor;
+class SoShape;
+class SoCoordinate3;
+class SoIndexedFaceSet;
 
 namespace App {
   class Color;
@@ -68,16 +63,16 @@ namespace MeshGui {
  */
 class MeshGuiExport ViewProviderExport : public Gui::ViewProviderDocumentObject
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderExport);
+    PROPERTY_HEADER(MeshGui::ViewProviderExport);
 
 public:
-  ViewProviderExport();
-  virtual ~ViewProviderExport();
+    ViewProviderExport();
+    virtual ~ViewProviderExport();
 
-  virtual QIcon getIcon() const;
-  SoSeparator* getRoot(void){return 0;}
-  std::vector<std::string> getDisplayModes(void) const;
-  const char* getDefaultDisplayMode() const;
+    virtual QIcon getIcon() const;
+    SoSeparator* getRoot(void){return 0;}
+    std::vector<std::string> getDisplayModes(void) const;
+    const char* getDefaultDisplayMode() const;
 };
 
 /**
@@ -87,69 +82,114 @@ public:
  */
 class MeshGuiExport ViewProviderMesh : public Gui::ViewProviderGeometryObject
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMesh);
+    PROPERTY_HEADER(MeshGui::ViewProviderMesh);
 
 public:
-  ViewProviderMesh();
-  virtual ~ViewProviderMesh();
+    ViewProviderMesh();
+    virtual ~ViewProviderMesh();
 
-  // Display properties
-  App::PropertyFloatConstraint LineWidth;
-  App::PropertyFloatConstraint PointSize;
-  App::PropertyBool OpenEdges;
+    // Display properties
+    App::PropertyFloatConstraint LineWidth;
+    App::PropertyFloatConstraint PointSize;
+    App::PropertyBool OpenEdges;
+    App::PropertyEnumeration Lighting;
 
-  /** 
-   * Extracts the mesh data from the feature \a pcFeature and creates
-   * an Inventor node \a SoNode with these data. 
-   */
-  virtual void attach(App::DocumentObject *);
-  /// Sets the correct display mode
-  virtual void setDisplayMode(const char* ModeName);
-  /// returns a list of all possible modes
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  /// Update the Mesh representation
-  virtual void updateData(const App::Property*);
-  virtual QIcon getIcon() const;
+    virtual void attach(App::DocumentObject *);
+    virtual QIcon getIcon() const;
+    /// Sets the correct display mode
+    virtual void setDisplayMode(const char* ModeName);
+    /// returns a list of all possible modes
+    virtual std::vector<std::string> getDisplayModes(void) const;
 
-  /** @name Polygon picking */
-	//@{
-  // Draws the picked polygon
-  bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
-  /// Sets the edit mnode
-  void setEdit(void);
-  /// Unsets the edit mode
-  void unsetEdit(void);
-  /// Returns the edit mode
-  const char* getEditModeName(void);
-	//@}
-
-  /// Creates a tool mesh from the previous picked polygon on the viewer
-  static bool createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& );
-
-protected:
-  /// get called by the container whenever a property has been changed
-  void onChanged(const App::Property* prop);
-  /// helper method to build up the FaceSet
-  void createMesh( const MeshCore::MeshKernel& pcMesh );
-  void showOpenEdges( bool );
-  void setOpenEdgeColorFrom( const App::Color& col );
+    /** @name Polygon picking */
+    //@{
+    bool doubleClicked(void){return false;}
+    /// Sets the edit mode
+    bool setEdit(int ModNum=0);
+    /// Unsets the edit mode
+    void unsetEdit(void);
+    /// Returns the edit mode
+    const char* getEditModeName(void);
+    void markPart(unsigned long facet);
+    bool isMarked(unsigned long facet) const;
+    void unmarkParts();
+    void removePart();
+    unsigned long countMarkedFacets() const;
+    void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
+                              Gui::View3DInventorViewer &Viewer, SbBool inner,
+                              std::vector<unsigned long>& indices) const;
+    //@}
 
 protected:
-  SoCoordinate3     *pcMeshCoord;
-  SoIndexedFaceSet  *pcMeshFaces;
-  //SoFaceSet         *pcMeshFaces;
-  SoBaseColor       *pOpenEdges;
-  SoDrawStyle       *pcLineStyle;
-  SoDrawStyle       *pcPointStyle;
+    /// get called by the container whenever a property has been changed
+    void onChanged(const App::Property* prop);
+    virtual void showOpenEdges(bool);
+    void setOpenEdgeColorFrom(const App::Color& col);
+    virtual void cutMesh(const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer, SbBool inner);
+    virtual void splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
+    virtual void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
+    virtual void faceInfo(unsigned long facet);
+    virtual void fillHole(unsigned long facet);
+
+    virtual SoShape* getShapeNode() const;
+
+protected:
+    SoDrawStyle         * pcLineStyle;
+    SoDrawStyle         * pcPointStyle;
+    SoSeparator         * pcOpenEdge;
+    SoBaseColor         * pOpenColor;
+    SoShapeHints        * pShapeHints;
+    SoMaterialBinding   * pcMatBinding;
+
+public:
+    static void faceInfoCallback(void * ud, SoEventCallback * n);
+    static void fillHoleCallback(void * ud, SoEventCallback * n);
+    static void markPartCallback(void * ud, SoEventCallback * n);
+    static void clipMeshCallback(void * ud, SoEventCallback * n);
+    static void partMeshCallback(void * ud, SoEventCallback * n);
+    static void segmMeshCallback(void * ud, SoEventCallback * n);
+    /// Creates a tool mesh from the previous picked polygon on the viewer
+    static bool createToolMesh(const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol,
+            const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>&);
 
 private:
-  bool m_bEdit;
+    std::vector<unsigned long> _markedFacets;
+    bool m_bEdit;
 
-  static App::PropertyFloatConstraint::Constraints floatRange;
+    static App::PropertyFloatConstraint::Constraints floatRange;
+    static const char* LightingEnums[];
+};
+
+/**
+ * The ViewProviderIndexedFaceSet class creates
+ * a node representing the mesh data structure.
+ * @author Werner Mayer
+ */
+class MeshGuiExport ViewProviderIndexedFaceSet : public ViewProviderMesh
+{
+    PROPERTY_HEADER(MeshGui::ViewProviderIndexedFaceSet);
+
+public:
+    ViewProviderIndexedFaceSet();
+    virtual ~ViewProviderIndexedFaceSet();
+
+    virtual void attach(App::DocumentObject *);
+    /// Update the Mesh representation
+    virtual void updateData(const App::Property*);
+
+protected:
+    void showOpenEdges(bool);
+    SoShape* getShapeNode() const;
+    /// helper method to build up the FaceSet
+    void createMesh(const MeshCore::MeshKernel& pcMesh);
+
+private:
+    SoCoordinate3       * pcMeshCoord;
+    SoIndexedFaceSet    * pcMeshFaces;
 };
 
 } // namespace MeshGui
 
 
-#endif // __VIEWPROVIDERMESH_H__
+#endif // MESHGUI_VIEWPROVIDERMESH_H
 

@@ -155,11 +155,11 @@ void ViewProviderMeshTransformDemolding::calcMaterialIndex(const SbRotation &rot
     float Angle = acos( (result.dot(Up)) / (result.length() * Up.length()) ) * (180/3.1415926535);
 
     if(Angle < 87.0){
-      pcMeshFaces->materialIndex .set1Value(i, 2);
+//      pcMeshFaces->materialIndex .set1Value(i, 2);
     }else if(Angle > 90.0){
-      pcMeshFaces->materialIndex .set1Value(i, 1 );
+//      pcMeshFaces->materialIndex .set1Value(i, 1 );
     }else{
-      pcMeshFaces->materialIndex .set1Value(i, 0 );
+//      pcMeshFaces->materialIndex .set1Value(i, 0 );
     }
 
   }

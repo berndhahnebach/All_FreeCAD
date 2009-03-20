@@ -44,9 +44,9 @@ PROPERTY_SOURCE(Mesh::TransformDemolding, Mesh::Transform)
 
 TransformDemolding::TransformDemolding(void)
 {
-  ADD_PROPERTY(Source,(0));
-  ADD_PROPERTY(Rotation,(0.0));
-  ADD_PROPERTY(Axis,(0.0,0.0,1.0));
+    ADD_PROPERTY(Source,(0));
+    ADD_PROPERTY(Rotation,(0.0));
+    ADD_PROPERTY(Axis,(0.0,0.0,1.0));
 }
 
 App::DocumentObjectExecReturn *TransformDemolding::execute(void)
@@ -62,6 +62,6 @@ App::DocumentObjectExecReturn *TransformDemolding::execute(void)
   pcKernel->Transform(trans);
   Mesh.setValue(pcKernel);
  */
-  return App::DocumentObject::StdReturn;
+    return App::DocumentObject::StdReturn;
 }
 
