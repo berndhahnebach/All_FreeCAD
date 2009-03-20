@@ -48,7 +48,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Sketcher"));
-    *part << "Sketcher_NewSketch"<< "Sketcher_LeavSketch";
+    *part << "Sketcher_NewSketch"<< "Sketcher_LeaveSketch";
 
     part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Sketcher geoms"));

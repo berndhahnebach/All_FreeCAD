@@ -158,7 +158,6 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 
 				case STATUS_SKETCH_CreateArc:
 				case STATUS_SKETCH_CreateCircle:
-				case STATUS_SKETCH_CreatePolyline:
 				case STATUS_SKETCH_CreateRectangle:
 				case STATUS_SKETCH_CreateText:
 					return true;
@@ -175,6 +174,19 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 					Base::Console().Log("Finish line, point:%d\n",this->DragPoint);
                     this->DragPoint = -1;
 					Mode = STATUS_NONE;
+					return true;
+				case STATUS_SKETCH_CreatePolyline:
+					this->DragPoint = SketchFlat->addLine(x,y);
+					SketchFlat->forcePoint(this->DragPoint,x,y);
+					Mode = STATUS_SKETCH_DoPolyline;
+					draw();
+					return true;
+				case STATUS_SKETCH_DoPolyline:
+					SketchFlat->forcePoint(this->DragPoint,x,y);
+					SketchFlat->solve();
+					this->DragPoint = SketchFlat->addLine(x,y);
+					SketchFlat->forcePoint(this->DragPoint,x,y);
+					draw();
 					return true;
                 default:
                     return false;
@@ -196,6 +208,23 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
             }
         }
 	}
+    // Right mouse button ****************************************************
+    else if (Button == 2) {
+        if (pressed) {
+            switch(Mode){
+                case STATUS_SKETCH_DoPolyline:
+                    SketchFlat->forcePoint(this->DragPoint,x,y);
+                    SketchFlat->solve();
+                    draw();
+                    Base::Console().Log("Finish polyline, point:%d\n",this->DragPoint);
+                    this->DragPoint = -1;
+                    Mode = STATUS_NONE;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
 
 	return false;
 }
@@ -218,6 +247,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 		case STATUS_SKETCH_CreateLine:
 			return true;
 		case STATUS_SKETCH_DoLine:
+		case STATUS_SKETCH_DoPolyline:
 		case STATUS_SKETCH_DragPoint:
 			SketchFlat->forcePoint(this->DragPoint,x,y);
 			SketchFlat->solve();
@@ -375,6 +405,8 @@ void ViewProviderSketch::draw(void)
             verts[i].setValue(x,y,0.0f);
             color[i].setValue(fPointColor);
         }
+        if (PreselectPoint >= 0 && PreselectPoint < NbrPts)
+            color[PreselectPoint].setValue(fPreselectColor);
         PointsCoordinate->point.finishEditing();
         PointsMaterials->diffuseColor.finishEditing();
     }
