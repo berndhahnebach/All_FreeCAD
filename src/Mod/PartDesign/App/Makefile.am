@@ -26,7 +26,15 @@ libPartDesign_la_LIBADD   = \
 		-lTKMath \
 		-lTKXSBase \
 		-lTKBRep \
-		-lTKGeomBase 
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKOffset \
+		-lTKPrim \
+		-lTKFillet \
+		-lTKShHealing \
+		-lTKBool \
+		-lTKBO \
+		-lTKTopAlgo 
 
 #--------------------------------------------------------------------------------------
 # Loader of libPartDesign
