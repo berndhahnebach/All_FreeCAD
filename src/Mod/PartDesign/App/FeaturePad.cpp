@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <gp_Pln.hxx>
 # include <BRep_Builder.hxx>
+# include <BRepPrimAPI_MakePrism.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Surface.hxx>
 # include <TopoDS.hxx>
@@ -119,7 +120,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     // extrude the face to a solid
     Base::Vector3f v = Dir.getValue();
     gp_Vec vec(v.x,v.y,v.z);
-	BRepPrimAPI_MakePrism PrismMaker = BRepPrimAPI_MakePrism(aFace , vec,0,1);
+	BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
 	if(PrismMaker.IsDone()){
 		this->Shape.setValue(PrismMaker.Shape());
 	}else

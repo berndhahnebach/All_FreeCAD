@@ -1660,7 +1660,6 @@ void MeshRefPointToFacets::Rebuild (void)
 
 Base::Vector3f MeshRefPointToFacets::GetNormal(unsigned long pos) const
 {
-    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
     const std::set<unsigned long>& n = _map[pos];
     Base::Vector3f normal;
     MeshGeomFacet f;

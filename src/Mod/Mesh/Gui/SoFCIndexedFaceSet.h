@@ -27,6 +27,7 @@
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 
 class SoGLCoordinateElement;
+class SoTextureCoordinateBundle;
 
 namespace MeshGui {
 
