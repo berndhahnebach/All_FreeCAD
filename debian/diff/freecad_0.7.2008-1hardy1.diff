@@ -249,7 +249,7 @@
 +This manual page was written by Werner Mayer.
 --- freecad-0.7.2008.orig/debian/rules
 +++ freecad-0.7.2008/debian/rules
-@@ -0,0 +1,173 @@
+@@ -0,0 +1,174 @@
 +#!/usr/bin/make -f
 +# -*- makefile -*-
 +# Sample debian/rules that uses debhelper.
@@ -374,6 +374,7 @@
 +# special treating of Draft module
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.py usr/lib/freecad/Mod/Draft
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.svg usr/lib/freecad/Mod/Draft
++	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.ui usr/lib/freecad/Mod/Draft
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/draftlibs/*.py usr/lib/freecad/Mod/Draft/draftlibs
 +
 +# special treating of Test module
