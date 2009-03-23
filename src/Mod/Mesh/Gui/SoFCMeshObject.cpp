@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *

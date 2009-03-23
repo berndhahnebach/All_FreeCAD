@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2004 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -109,8 +109,9 @@ void MeshGuiExport initMeshGui()
     MeshGui::SoFCIndexedFaceSet                 ::initClass();
     MeshGui::PropertyMeshKernelItem             ::init();
     MeshGui::ViewProviderMesh                   ::init();
-    MeshGui::ViewProviderMeshFaceSet            ::init();
+    MeshGui::ViewProviderMeshObject             ::init();
     MeshGui::ViewProviderIndexedFaceSet         ::init();
+    MeshGui::ViewProviderMeshFaceSet            ::init();
     MeshGui::ViewProviderExport                 ::init();
     MeshGui::ViewProviderMeshCurvature          ::init();
     MeshGui::ViewProviderMeshTransform          ::init();

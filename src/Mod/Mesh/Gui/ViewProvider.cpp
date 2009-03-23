@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2004 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qmessagebox.h>
+# include <QMessageBox>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
@@ -71,6 +71,7 @@
 
 #include "ViewProvider.h"
 #include "SoFCIndexedFaceSet.h"
+#include "SoFCMeshObject.h"
 
 
 using namespace MeshGui;
@@ -94,14 +95,14 @@ ViewProviderExport::~ViewProviderExport()
 
 std::vector<std::string> ViewProviderExport::getDisplayModes(void) const
 {
-  std::vector<std::string> mode;
-  mode.push_back("");
-  return mode;
+    std::vector<std::string> mode;
+    mode.push_back("");
+    return mode;
 }
 
 const char* ViewProviderExport::getDefaultDisplayMode() const
 {
-  return "";
+    return "";
 }
 
 QIcon ViewProviderExport::getIcon() const
@@ -140,9 +141,10 @@ QIcon ViewProviderExport::getIcon() const
     return px;
 }
 
-// ======================================================================
+// ------------------------------------------------------
 
 App::PropertyFloatConstraint::Constraints ViewProviderMesh::floatRange = {1.0f,64.0f,1.0f};
+App::PropertyFloatConstraint::Constraints ViewProviderMesh::angleRange = {0.0f,180.0f,1.0f};
 const char* ViewProviderMesh::LightingEnums[]= {"One side","Two side",NULL};
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderGeometryObject)
@@ -153,6 +155,8 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     LineWidth.setConstraints(&floatRange);
     ADD_PROPERTY(PointSize,(2.0f));
     PointSize.setConstraints(&floatRange);
+    ADD_PROPERTY(CreaseAngle,(0.0f));
+    CreaseAngle.setConstraints(&angleRange);
     ADD_PROPERTY(OpenEdges,(false));
     ADD_PROPERTY(Lighting,(1));
     Lighting.setEnums(LightingEnums);
@@ -179,8 +183,6 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     pcMatBinding->value = SoMaterialBinding::OVERALL;
     pcMatBinding->ref();
 
-    Lighting.touch();
-
     // read the correct shape color from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
     App::Color color = ShapeColor.getValue();
@@ -189,6 +191,16 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     if (current != setting) {
         color.setPackedValue((uint32_t)setting);
         ShapeColor.setValue(color);
+    }
+
+    bool twoside = hGrp->GetBool("TwoSideRendering", true);
+    if (twoside) Lighting.setValue(1);
+    else Lighting.setValue((long)0);
+
+    bool normal_per_vertex = hGrp->GetBool("VertexPerNormals", false);
+    if (normal_per_vertex) {
+        double angle = hGrp->GetFloat("CreaseAngle", 0.0);
+        CreaseAngle.setValue(angle);
     }
 }
 
@@ -203,27 +215,30 @@ ViewProviderMesh::~ViewProviderMesh()
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
 {
-    if ( prop == &LineWidth ) {
+    if (prop == &LineWidth) {
         pcLineStyle->lineWidth = LineWidth.getValue();
     }
-    else if ( prop == &PointSize ) {
+    else if (prop == &PointSize) {
         pcPointStyle->pointSize = PointSize.getValue();
     }
-    else if ( prop == &OpenEdges ) {
-        showOpenEdges( OpenEdges.getValue() );
+    else if (prop == &CreaseAngle) {
+        pShapeHints->creaseAngle = (F_PI*CreaseAngle.getValue())/180.0;
     }
-    else if ( prop == &Lighting ) {
-        if ( Lighting.getValue() == 0 )
+    else if (prop == &OpenEdges) {
+        showOpenEdges(OpenEdges.getValue());
+    }
+    else if (prop == &Lighting) {
+        if (Lighting.getValue() == 0)
             pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
         else
             pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
     }
     else {
         // Set the inverse color for open edges
-        if ( prop == &ShapeColor ) {
+        if (prop == &ShapeColor) {
             setOpenEdgeColorFrom(ShapeColor.getValue());
         }
-        else if ( prop == &ShapeMaterial ) {
+        else if (prop == &ShapeMaterial) {
             setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
         }
         ViewProviderGeometryObject::onChanged(prop);
@@ -251,20 +266,8 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderGeometryObject::attach(pcFeat);
 
-//    pcMeshCoord = new SoCoordinate3;
-//    pcHighlight->addChild(pcMeshCoord);
-
-//    pcMeshFaces = new SoFCIndexedFaceSet;
-//    pcHighlight->addChild(pcMeshFaces);
-
-    // read the threshold from the preferences
-    Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
-    int size = hGrp->GetInt("RenderTriangleLimit", -1);
-//    if (size > 0) static_cast<SoFCIndexedFaceSet*>(pcMeshFaces)->MaximumTriangles = (unsigned int)(pow(10.0f,size));
-
     // faces
     SoGroup* pcFlatRoot = new SoGroup();
-    //pShapeHints->creaseAngle = F_PI;
     pcFlatRoot->addChild(pShapeHints);
     pcFlatRoot->addChild(pcShapeMaterial);
     pcFlatRoot->addChild(pcMatBinding);
@@ -299,6 +302,16 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
     pcFlatWireRoot->addChild(offset);
     pcFlatWireRoot->addChild(pcWireRoot);
     addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
+
+    // Turns on backface culling
+    //SoShapeHints * wirehints = new SoShapeHints;
+    //wirehints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+    //wirehints->shapeType = SoShapeHints::SOLID;
+    //wirehints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
+    //SoGroup* pcHiddenLineRoot = new SoGroup();
+    //pcHiddenLineRoot->addChild(wirehints);
+    //pcHiddenLineRoot->addChild(pcWireRoot);
+    //addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
 }
 
 QIcon ViewProviderMesh::getIcon() const
@@ -331,16 +344,16 @@ QIcon ViewProviderMesh::getIcon() const
 
 void ViewProviderMesh::setDisplayMode(const char* ModeName)
 {
-    if ( strcmp("Shaded",ModeName)==0 )
+    if (strcmp("Shaded",ModeName)==0)
         setDisplayMaskMode("Flat");
-    else if ( strcmp("Points",ModeName)==0 )
+    else if (strcmp("Points",ModeName)==0)
         setDisplayMaskMode("Point");
-    else if ( strcmp("Flat Lines",ModeName)==0 )
+    else if (strcmp("Flat Lines",ModeName)==0)
         setDisplayMaskMode("FlatWireframe");
-    else if ( strcmp("Wireframe",ModeName)==0 )
+    else if (strcmp("Wireframe",ModeName)==0)
         setDisplayMaskMode("Wireframe");
 
-    ViewProviderGeometryObject::setDisplayMode( ModeName );
+    ViewProviderGeometryObject::setDisplayMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderMesh::getDisplayModes(void) const
@@ -376,143 +389,87 @@ const char* ViewProviderMesh::getEditModeName(void)
 bool ViewProviderMesh::createToolMesh(const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol,
                                       const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces)
 {
-  float fX, fY, fZ;
-  SbVec3f pt1, pt2, pt3, pt4;
-  MeshGeomFacet face;
-  std::vector<Base::Vector3f> top, bottom, polygon;
+    float fX, fY, fZ;
+    SbVec3f pt1, pt2, pt3, pt4;
+    MeshGeomFacet face;
+    std::vector<Base::Vector3f> top, bottom, polygon;
 
-  for ( std::vector<SbVec2f>::const_iterator it = rclPoly.begin(); it != rclPoly.end(); ++it )
-  {
-    // the following element
-    std::vector<SbVec2f>::const_iterator nt = it + 1;
-    if ( nt == rclPoly.end() )
-      nt = rclPoly.begin();
-    else if ( *it == *nt )
-      continue; // two adjacent vertices are equal
+    for (std::vector<SbVec2f>::const_iterator it = rclPoly.begin(); it != rclPoly.end(); ++it) {
+        // the following element
+        std::vector<SbVec2f>::const_iterator nt = it + 1;
+        if (nt == rclPoly.end())
+            nt = rclPoly.begin();
+        else if (*it == *nt)
+            continue; // two adjacent vertices are equal
 
-    vol.projectPointToLine( *it, pt1, pt2 );
-    vol.projectPointToLine( *nt, pt3, pt4 );
+        vol.projectPointToLine(*it, pt1, pt2);
+        vol.projectPointToLine(*nt, pt3, pt4);
 
-    // 1st facet
-    pt1.getValue(fX, fY, fZ);
-    face._aclPoints[0].Set(fX, fY, fZ);
-    pt4.getValue(fX, fY, fZ);
-    face._aclPoints[1].Set(fX, fY, fZ);
-    pt3.getValue(fX, fY, fZ);
-    face._aclPoints[2].Set(fX, fY, fZ);
-    if ( face.Area() > 0 )
-      aFaces.push_back( face );
+        // 1st facet
+        pt1.getValue(fX, fY, fZ);
+        face._aclPoints[0].Set(fX, fY, fZ);
+        pt4.getValue(fX, fY, fZ);
+        face._aclPoints[1].Set(fX, fY, fZ);
+        pt3.getValue(fX, fY, fZ);
+        face._aclPoints[2].Set(fX, fY, fZ);
+        if (face.Area() > 0)
+            aFaces.push_back(face);
 
-    // 2nd facet
-    pt1.getValue(fX, fY, fZ);
-    face._aclPoints[0].Set(fX, fY, fZ);
-    pt2.getValue(fX, fY, fZ);
-    face._aclPoints[1].Set(fX, fY, fZ);
-    pt4.getValue(fX, fY, fZ);
-    face._aclPoints[2].Set(fX, fY, fZ);
-    if ( face.Area() > 0 )
-      aFaces.push_back( face );
+        // 2nd facet
+        pt1.getValue(fX, fY, fZ);
+        face._aclPoints[0].Set(fX, fY, fZ);
+        pt2.getValue(fX, fY, fZ);
+        face._aclPoints[1].Set(fX, fY, fZ);
+        pt4.getValue(fX, fY, fZ);
+        face._aclPoints[2].Set(fX, fY, fZ);
+        if (face.Area() > 0)
+            aFaces.push_back(face);
 
-    if ( it+1 < rclPoly.end() )
-    {
-      pt1.getValue(fX, fY, fZ);
-      top.push_back( Base::Vector3f(fX, fY, fZ) );
-      pt2.getValue(fX, fY, fZ);
-      bottom.push_back( Base::Vector3f(fX, fY, fZ) );
-      // polygon we need to triangulate (in x,y-plane)
-      it->getValue(fX, fY);
-      polygon.push_back( Base::Vector3f(fX, fY, 0.0f) );
-    }
-  }
-
-  // now create the lids
-  std::vector<MeshGeomFacet> aLid;
-  MeshCore::EarClippingTriangulator cTria;
-  cTria.SetPolygon(polygon);
-  bool ok = cTria.TriangulatePolygon();
-  
-  std::vector<MeshFacet> faces = cTria.GetFacets();
-  for ( std::vector<MeshFacet>::iterator itF = faces.begin(); itF != faces.end(); ++itF )
-  {
-    MeshGeomFacet topFacet;
-    topFacet._aclPoints[0] = top[itF->_aulPoints[0]];
-    topFacet._aclPoints[1] = top[itF->_aulPoints[1]];
-    topFacet._aclPoints[2] = top[itF->_aulPoints[2]];
-    if ( topFacet.GetNormal() * rcNormal < 0 )
-    {
-      std::swap( topFacet._aclPoints[1], topFacet._aclPoints[2]);
-      topFacet.CalcNormal();
-    }
-    aFaces.push_back( topFacet );
-
-    MeshGeomFacet botFacet;
-    botFacet._aclPoints[0] = bottom[itF->_aulPoints[0]];
-    botFacet._aclPoints[1] = bottom[itF->_aulPoints[1]];
-    botFacet._aclPoints[2] = bottom[itF->_aulPoints[2]];
-    if ( botFacet.GetNormal() * rcNormal > 0 )
-    {
-      std::swap( botFacet._aclPoints[1], botFacet._aclPoints[2]);
-      botFacet.CalcNormal();
-    }
-    aFaces.push_back( botFacet );
-  }
-
-  return ok;
-}
-#if 0
-void ViewProviderMesh::showOpenEdges(bool show)
-{
-  if ( show ) {
-    SoGroup* pcLineRoot = new SoGroup();
-    SoDrawStyle* lineStyle = new SoDrawStyle();
-    lineStyle->lineWidth = 3;
-    pcLineRoot->addChild(lineStyle);
-
-    // Draw lines
-    SoSeparator* linesep = new SoSeparator;
-    linesep->addChild(pOpenColor);
-    linesep->addChild(pcMeshCoord);
-    SoIndexedLineSet* lines = new SoIndexedLineSet;
-    linesep->addChild(lines);
-    pcLineRoot->addChild(linesep);
-    // add to the top of the node
-    pcHighlight->addChild(pcLineRoot/*,0*/);
-
-    // Build up the lines with indices to the list of vertices 'pcMeshCoord'
-    int index=0;
-    const MeshCore::MeshKernel& rMesh = meshFeature->Mesh.getValue().getKernel();
-    const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
-    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
-      for ( int i=0; i<3; i++ ) {
-        if ( it->_aulNeighbours[i] == ULONG_MAX ) {
-          lines->coordIndex.set1Value(index++,it->_aulPoints[i]);
-          lines->coordIndex.set1Value(index++,it->_aulPoints[(i+1)%3]);
-          lines->coordIndex.set1Value(index++,SO_END_LINE_INDEX);
+        if (it+1 < rclPoly.end()) {
+            pt1.getValue(fX, fY, fZ);
+            top.push_back( Base::Vector3f(fX, fY, fZ) );
+            pt2.getValue(fX, fY, fZ);
+            bottom.push_back( Base::Vector3f(fX, fY, fZ) );
+            // polygon we need to triangulate (in x,y-plane)
+            it->getValue(fX, fY);
+            polygon.push_back( Base::Vector3f(fX, fY, 0.0f) );
         }
-      }
     }
-  }
+
+    // now create the lids
+    std::vector<MeshGeomFacet> aLid;
+    MeshCore::EarClippingTriangulator cTria;
+    cTria.SetPolygon(polygon);
+    bool ok = cTria.TriangulatePolygon();
+  
+    std::vector<MeshFacet> faces = cTria.GetFacets();
+    for (std::vector<MeshFacet>::iterator itF = faces.begin(); itF != faces.end(); ++itF) {
+        MeshGeomFacet topFacet;
+        topFacet._aclPoints[0] = top[itF->_aulPoints[0]];
+        topFacet._aclPoints[1] = top[itF->_aulPoints[1]];
+        topFacet._aclPoints[2] = top[itF->_aulPoints[2]];
+        if (topFacet.GetNormal() * rcNormal < 0) {
+            std::swap(topFacet._aclPoints[1], topFacet._aclPoints[2]);
+            topFacet.CalcNormal();
+        }
+        aFaces.push_back(topFacet);
+
+        MeshGeomFacet botFacet;
+        botFacet._aclPoints[0] = bottom[itF->_aulPoints[0]];
+        botFacet._aclPoints[1] = bottom[itF->_aulPoints[1]];
+        botFacet._aclPoints[2] = bottom[itF->_aulPoints[2]];
+        if (botFacet.GetNormal() * rcNormal > 0) {
+            std::swap(botFacet._aclPoints[1], botFacet._aclPoints[2]);
+            botFacet.CalcNormal();
+        }
+        aFaces.push_back(botFacet);
+    }
+
+    return ok;
 }
-#endif
+
 void ViewProviderMesh::showOpenEdges(bool show)
 {
-    if (pcOpenEdge) {
-        // remove the node and destroy the data
-        pcRoot->removeChild(pcOpenEdge);
-        pcOpenEdge = 0;
-    }
-
-    if (show) {
-        pcOpenEdge = new SoSeparator();
-        pcOpenEdge->addChild(pcLineStyle);
-        pcOpenEdge->addChild(pOpenColor);
-
-//        pcOpenEdge->addChild(pcMeshCoord);
-//        pcOpenEdge->addChild(new SoFCMeshObjectBoundary);
-
-        // add to the highlight node
-        pcRoot->addChild(pcOpenEdge);
-    }
 }
 
 void ViewProviderMesh::clipMeshCallback(void * ud, SoEventCallback * n)
@@ -672,9 +629,9 @@ private:
 }
 
 void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
-                                                   Gui::View3DInventorViewer &Viewer,
-                                                   SbBool inner, 
-                                                   std::vector<unsigned long>& indices) const
+                                            Gui::View3DInventorViewer &Viewer,
+                                            SbBool inner,
+                                            std::vector<unsigned long>& indices) const
 {
     // get the normal of the front clipping plane
     SbVec3f b,n;
@@ -1097,41 +1054,6 @@ unsigned long ViewProviderMesh::countMarkedFacets() const
     return _markedFacets.size();
 }
 
-
-
-
-
-
-#if 0
-
-void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
-{
-  // read the correct shape color from the preferences
-  Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
-  bool twoSide = hGrp->GetBool("TwoSideRendering", true);
-  if ( twoSide )
-  {
-    // enable two-side rendering
-    SoShapeHints * flathints = new SoShapeHints;
-    flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-    flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-    flathints->creaseAngle = F_PI/3.0f;
-    pcFlatRoot->addChild(flathints);
-  }
-
-  // Turns on backface culling
-  SoShapeHints * wirehints = new SoShapeHints;
-  wirehints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
-  wirehints->shapeType = SoShapeHints::SOLID;
-  wirehints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
-  SoGroup* pcHiddenLineRoot = new SoGroup();
-  pcHiddenLineRoot->addChild(wirehints);
-  pcHiddenLineRoot->addChild(pcWireRoot);
-  addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
-}
-
-#endif
-
 // ------------------------------------------------------
 
 PROPERTY_SOURCE(MeshGui::ViewProviderIndexedFaceSet, MeshGui::ViewProviderMesh)
@@ -1144,94 +1066,30 @@ ViewProviderIndexedFaceSet::~ViewProviderIndexedFaceSet()
 {
 }
 
-void ViewProviderIndexedFaceSet::createMesh( const MeshCore::MeshKernel& rcMesh )
+void ViewProviderIndexedFaceSet::createMesh(const MeshCore::MeshKernel& rcMesh)
 {
-#if 0
-  SbVec3f* vertices = 0;
-  int* faces = 0;
+    // set the point coordinates
+    const MeshCore::MeshPointArray& cP = rcMesh.GetPoints();
+    pcMeshCoord->point.setNum(rcMesh.CountPoints());
+    SbVec3f* verts = pcMeshCoord->point.startEditing();
+    unsigned long i=0;
+    for (MeshCore::MeshPointArray::_TConstIterator it = cP.begin(); it != cP.end(); ++it, i++) {
+        verts[i].setValue(it->x, it->y, it->z);
+    }
+    pcMeshCoord->point.finishEditing();
 
-  try {
-    pcMeshCoord->point.deleteValues(0);
-    pcMeshFaces->coordIndex.deleteValues(0);
-    vertices = new SbVec3f[rcMesh.CountPoints()];
-    faces = new int [4*rcMesh.CountFacets()];
-
-    Base::SequencerLauncher seq( "Building View node...", rcMesh.CountFacets() );
-
+    // set the face indices
     unsigned long j=0;
-    MeshFacetIterator cFIt(rcMesh);
-    for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
-    {
-      const MeshGeomFacet& rFace = *cFIt;
-      MeshFacet aFace = cFIt.GetIndices();
-
-      for ( int i=0; i<3; i++ )
-      {
-        vertices[aFace._aulPoints[i]].setValue(rFace._aclPoints[i].x,
-                                               rFace._aclPoints[i].y,
-                                               rFace._aclPoints[i].z);
-        faces[4*j+i] = aFace._aulPoints[i];
-      }
-
-      faces[4*j+3] = SO_END_FACE_INDEX;
-      Base::Sequencer().next( false ); // don't allow to cancel
+    const MeshCore::MeshFacetArray& cF = rcMesh.GetFacets();
+    pcMeshFaces->coordIndex.setNum(4*rcMesh.CountFacets());
+    int32_t* indices = pcMeshFaces->coordIndex.startEditing();
+    for (MeshCore::MeshFacetArray::_TConstIterator it = cF.begin(); it != cF.end(); ++it, j++) {
+        for (int i=0; i<3; i++) {
+            indices[4*j+i] = it->_aulPoints[i];
+        }
+        indices[4*j+3] = SO_END_FACE_INDEX;
     }
-
-    pcMeshCoord->point.setValues(0,rcMesh.CountPoints(), vertices);
-    delete [] vertices;
-    pcMeshFaces->coordIndex.setValues(0,4*rcMesh.CountFacets(),(const int32_t*) faces);
-    delete [] faces;
-  } catch (const Base::MemoryException& e) {
-    pcMeshCoord->point.deleteValues(0);
-    pcMeshFaces->coordIndex.deleteValues(0);
-    delete [] vertices;
-    delete [] faces;
-    throw e;
-  }
-
-#else
-  // This is a faster way to build up the mesh structure and needs less temporary memory.
-  // Therefore we must disable the notification of SoIndexedFaceSet whenn filling up the SoCoordinate3 and 
-  // coordIndex fields. Once this has finished we enable it again.
-
-  Base::SequencerLauncher seq( "Building display data...", rcMesh.CountFacets() );
-
-  // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
-  pcMeshCoord->enableNotify(false);
-  pcMeshCoord->point.setNum( rcMesh.CountPoints() );
-  // set the point coordinates
-  MeshCore::MeshPointIterator cPIt(rcMesh);
-  for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
-  {
-    pcMeshCoord->point.set1Value( cPIt.Position(), cPIt->x, cPIt->y, cPIt->z );
-  }
-  // enable notification again
-  pcMeshCoord->enableNotify(true);
-
-  // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
-  pcMeshFaces->coordIndex.enableNotify(false);
-  pcMeshFaces->coordIndex.setNum( 4*rcMesh.CountFacets() );
-  // set the facets indices
-  unsigned long j=0;
-  MeshCore::MeshFacetIterator cFIt(rcMesh);
-  for ( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
-  {
-      const MeshCore::MeshFacet& aFace = cFIt.GetReference();
-
-    for ( int i=0; i<3; i++ )
-    {
-      pcMeshFaces->coordIndex.set1Value(4*j+i, aFace._aulPoints[i]);
-    }
-
-    pcMeshFaces->coordIndex.set1Value(4*j+3, SO_END_FACE_INDEX);
-    seq.next(false); // don't allow to cancel
-  }
-  // enable notification again
-  pcMeshFaces->coordIndex.enableNotify(true);
-
-  pcMeshCoord->touch();
-  pcMeshFaces->coordIndex.touch();
-#endif
+    pcMeshFaces->coordIndex.finishEditing();
 }
 
 /** 
@@ -1240,7 +1098,7 @@ void ViewProviderIndexedFaceSet::createMesh( const MeshCore::MeshKernel& rcMesh 
  */
 void ViewProviderIndexedFaceSet::attach(App::DocumentObject *pcFeat)
 {
-    ViewProviderGeometryObject::attach(pcFeat);
+    ViewProviderMesh::attach(pcFeat);
 
     pcMeshCoord = new SoCoordinate3;
     pcHighlight->addChild(pcMeshCoord);
@@ -1252,75 +1110,7 @@ void ViewProviderIndexedFaceSet::attach(App::DocumentObject *pcFeat)
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
     int size = hGrp->GetInt("RenderTriangleLimit", -1);
     if (size > 0) static_cast<SoFCIndexedFaceSet*>(pcMeshFaces)->MaximumTriangles = (unsigned int)(pow(10.0f,size));
-
-    // faces
-    SoGroup* pcFlatRoot = new SoGroup();
-    //pShapeHints->creaseAngle = F_PI;
-    pcFlatRoot->addChild(pShapeHints);
-    pcFlatRoot->addChild(pcShapeMaterial);
-    pcFlatRoot->addChild(pcMatBinding);
-    pcFlatRoot->addChild(pcHighlight);
-    addDisplayMaskMode(pcFlatRoot, "Flat");
-
-    // points
-    SoGroup* pcPointRoot = new SoGroup();
-    pcPointRoot->addChild(pcPointStyle);
-    pcPointRoot->addChild(pcFlatRoot);
-    addDisplayMaskMode(pcPointRoot, "Point");
-
-    // wires
-    SoLightModel* pcLightModel = new SoLightModel();
-    pcLightModel->model = SoLightModel::BASE_COLOR;
-    SoGroup* pcWireRoot = new SoGroup();
-    pcWireRoot->addChild(pcLineStyle);
-    pcWireRoot->addChild(pcLightModel);
-    pcWireRoot->addChild(pcShapeMaterial);
-    pcWireRoot->addChild(pcHighlight);
-    addDisplayMaskMode(pcWireRoot, "Wireframe");
-
-    // faces+wires
-    // Avoid any Z-buffer artefacts, so that the lines always
-    // appear on top of the faces
-    SoPolygonOffset* offset = new SoPolygonOffset();
-    offset->styles = SoPolygonOffset::LINES;
-    offset->factor = -2.0f;
-    offset->units = 1.0f;
-    SoGroup* pcFlatWireRoot = new SoGroup();
-    pcFlatWireRoot->addChild(pcFlatRoot);
-    pcFlatWireRoot->addChild(offset);
-    pcFlatWireRoot->addChild(pcWireRoot);
-    addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
 }
-
-#if 0
-
-void ViewProviderIndexedFaceSet::attach(App::DocumentObject *pcFeat)
-{
-  // read the correct shape color from the preferences
-  Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
-  bool twoSide = hGrp->GetBool("TwoSideRendering", true);
-  if ( twoSide )
-  {
-    // enable two-side rendering
-    SoShapeHints * flathints = new SoShapeHints;
-    flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-    flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-    flathints->creaseAngle = F_PI/3.0f;
-    pcFlatRoot->addChild(flathints);
-  }
-
-  // Turns on backface culling
-  SoShapeHints * wirehints = new SoShapeHints;
-  wirehints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
-  wirehints->shapeType = SoShapeHints::SOLID;
-  wirehints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
-  SoGroup* pcHiddenLineRoot = new SoGroup();
-  pcHiddenLineRoot->addChild(wirehints);
-  pcHiddenLineRoot->addChild(pcWireRoot);
-  addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
-}
-
-#endif
 
 void ViewProviderIndexedFaceSet::updateData(const App::Property* prop)
 {
@@ -1328,47 +1118,12 @@ void ViewProviderIndexedFaceSet::updateData(const App::Property* prop)
     if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
         const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
         createMesh(mesh->getValue().getKernel());
+        showOpenEdges(OpenEdges.getValue());
     }
 }
 
-#if 0
 void ViewProviderIndexedFaceSet::showOpenEdges(bool show)
 {
-  if ( show ) {
-    SoGroup* pcLineRoot = new SoGroup();
-    SoDrawStyle* lineStyle = new SoDrawStyle();
-    lineStyle->lineWidth = 3;
-    pcLineRoot->addChild(lineStyle);
-
-    // Draw lines
-    SoSeparator* linesep = new SoSeparator;
-    linesep->addChild(pOpenColor);
-    linesep->addChild(pcMeshCoord);
-    SoIndexedLineSet* lines = new SoIndexedLineSet;
-    linesep->addChild(lines);
-    pcLineRoot->addChild(linesep);
-    // add to the top of the node
-    pcHighlight->addChild(pcLineRoot/*,0*/);
-
-    // Build up the lines with indices to the list of vertices 'pcMeshCoord'
-    int index=0;
-    const MeshCore::MeshKernel& rMesh = meshFeature->Mesh.getValue().getKernel();
-    const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
-    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
-      for ( int i=0; i<3; i++ ) {
-        if ( it->_aulNeighbours[i] == ULONG_MAX ) {
-          lines->coordIndex.set1Value(index++,it->_aulPoints[i]);
-          lines->coordIndex.set1Value(index++,it->_aulPoints[(i+1)%3]);
-          lines->coordIndex.set1Value(index++,SO_END_LINE_INDEX);
-        }
-      }
-    }
-  }
-}
-#endif
-void ViewProviderIndexedFaceSet::showOpenEdges(bool show)
-{
-#if 0
     if (pcOpenEdge) {
         // remove the node and destroy the data
         pcRoot->removeChild(pcOpenEdge);
@@ -1381,15 +1136,94 @@ void ViewProviderIndexedFaceSet::showOpenEdges(bool show)
         pcOpenEdge->addChild(pOpenColor);
 
         pcOpenEdge->addChild(pcMeshCoord);
-//        pcOpenEdge->addChild(new SoFCMeshObjectBoundary);
+        SoIndexedLineSet* lines = new SoIndexedLineSet;
+        pcOpenEdge->addChild(lines);
 
         // add to the highlight node
         pcRoot->addChild(pcOpenEdge);
+
+        // Build up the lines with indices to the list of vertices 'pcMeshCoord'
+        int index=0;
+        const MeshCore::MeshKernel& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
+        const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
+        for (MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it) {
+            for (int i=0; i<3; i++) {
+                if (it->_aulNeighbours[i] == ULONG_MAX) {
+                    lines->coordIndex.set1Value(index++,it->_aulPoints[i]);
+                    lines->coordIndex.set1Value(index++,it->_aulPoints[(i+1)%3]);
+                    lines->coordIndex.set1Value(index++,SO_END_LINE_INDEX);
+                }
+            }
+        }
     }
-#endif
 }
 
 SoShape* ViewProviderIndexedFaceSet::getShapeNode() const
 {
     return this->pcMeshFaces;
+}
+
+// ------------------------------------------------------
+
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshObject, MeshGui::ViewProviderMesh)
+
+ViewProviderMeshObject::ViewProviderMeshObject()
+{
+}
+
+ViewProviderMeshObject::~ViewProviderMeshObject()
+{
+}
+
+void ViewProviderMeshObject::attach(App::DocumentObject *pcFeat)
+{
+    ViewProviderMesh::attach(pcFeat);
+
+    pcMeshNode = new SoFCMeshObjectNode;
+    pcHighlight->addChild(pcMeshNode);
+
+    pcMeshShape = new SoFCMeshObjectShape;
+    pcHighlight->addChild(pcMeshShape);
+
+    // read the threshold from the preferences
+    Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+    int size = hGrp->GetInt("RenderTriangleLimit", -1);
+    if (size > 0) pcMeshShape->MaximumTriangles = (unsigned int)(pow(10.0f,size));
+}
+
+void ViewProviderMeshObject::updateData(const App::Property* prop)
+{
+    Gui::ViewProviderGeometryObject::updateData(prop);
+    if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
+        const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
+        this->pcMeshNode->mesh.setValue(mesh->getValuePtr());
+        // Needs to update internal bounding box caches
+        this->pcMeshShape->touch();
+    }
+}
+
+void ViewProviderMeshObject::showOpenEdges(bool show)
+{
+    if (pcOpenEdge) {
+        // remove the node and destroy the data
+        pcRoot->removeChild(pcOpenEdge);
+        pcOpenEdge = 0;
+    }
+
+    if (show) {
+        pcOpenEdge = new SoSeparator();
+        pcOpenEdge->addChild(pcLineStyle);
+        pcOpenEdge->addChild(pOpenColor);
+
+        pcOpenEdge->addChild(pcMeshNode);
+        pcOpenEdge->addChild(new SoFCMeshObjectBoundary);
+
+        // add to the highlight node
+        pcRoot->addChild(pcOpenEdge);
+    }
+}
+
+SoShape* ViewProviderMeshObject::getShapeNode() const
+{
+    return this->pcMeshShape;
 }

@@ -125,6 +125,9 @@
         <property name="suffix" >
          <string> °</string>
         </property>
+        <property name="maximum" >
+         <double>180</double>
+        </property>
         <property name="prefEntry" stdset="0" >
          <cstring>CreaseAngle</cstring>
         </property>
@@ -163,6 +166,11 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>checkboxRendering</tabstop>
+  <tabstop>checkboxNormal</tabstop>
+  <tabstop>spinboxAngle</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
