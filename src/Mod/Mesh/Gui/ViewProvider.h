@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2004 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -38,6 +38,8 @@ class SoBaseColor;
 class SoShape;
 class SoCoordinate3;
 class SoIndexedFaceSet;
+class SoShapeHints;
+class SoMaterialBinding;
 
 namespace App {
   class Color;
@@ -56,6 +58,8 @@ namespace MeshCore {
 
 
 namespace MeshGui {
+class SoFCMeshObjectNode;
+class SoFCMeshObjectShape;
 
 /**
  * The ViewProviderExport class creates an empty node.
@@ -76,8 +80,8 @@ public:
 };
 
 /**
- * The ViewProviderMesh class creates
- * a node representing the mesh data structure.
+ * The ViewProviderMesh class offers the visualization of the mesh data structure
+ * and many algorithms to work on or edit the mesh.
  * @author Werner Mayer
  */
 class MeshGuiExport ViewProviderMesh : public Gui::ViewProviderGeometryObject
@@ -91,6 +95,7 @@ public:
     // Display properties
     App::PropertyFloatConstraint LineWidth;
     App::PropertyFloatConstraint PointSize;
+    App::PropertyFloatConstraint CreaseAngle;
     App::PropertyBool OpenEdges;
     App::PropertyEnumeration Lighting;
 
@@ -101,7 +106,7 @@ public:
     /// returns a list of all possible modes
     virtual std::vector<std::string> getDisplayModes(void) const;
 
-    /** @name Polygon picking */
+    /** @name Editing */
     //@{
     bool doubleClicked(void){return false;}
     /// Sets the edit mode
@@ -133,14 +138,6 @@ protected:
 
     virtual SoShape* getShapeNode() const;
 
-protected:
-    SoDrawStyle         * pcLineStyle;
-    SoDrawStyle         * pcPointStyle;
-    SoSeparator         * pcOpenEdge;
-    SoBaseColor         * pOpenColor;
-    SoShapeHints        * pShapeHints;
-    SoMaterialBinding   * pcMatBinding;
-
 public:
     static void faceInfoCallback(void * ud, SoEventCallback * n);
     static void fillHoleCallback(void * ud, SoEventCallback * n);
@@ -152,17 +149,26 @@ public:
     static bool createToolMesh(const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol,
             const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>&);
 
+protected:
+    SoDrawStyle         * pcLineStyle;
+    SoDrawStyle         * pcPointStyle;
+    SoSeparator         * pcOpenEdge;
+    SoBaseColor         * pOpenColor;
+    SoShapeHints        * pShapeHints;
+    SoMaterialBinding   * pcMatBinding;
+
 private:
     std::vector<unsigned long> _markedFacets;
     bool m_bEdit;
 
     static App::PropertyFloatConstraint::Constraints floatRange;
+    static App::PropertyFloatConstraint::Constraints angleRange;
     static const char* LightingEnums[];
 };
 
 /**
- * The ViewProviderIndexedFaceSet class creates
- * a node representing the mesh data structure.
+ * The ViewProviderIndexedFaceSet class creates an indexed faceset node in order
+ * to render the mesh data structure.
  * @author Werner Mayer
  */
 class MeshGuiExport ViewProviderIndexedFaceSet : public ViewProviderMesh
@@ -186,6 +192,31 @@ protected:
 private:
     SoCoordinate3       * pcMeshCoord;
     SoIndexedFaceSet    * pcMeshFaces;
+};
+
+/**
+ * The ViewProviderIndexedFaceSet class creates an own node in order
+ * to directly render the mesh data structure.
+ * @author Werner Mayer
+ */
+class MeshGuiExport ViewProviderMeshObject : public ViewProviderMesh
+{
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshObject);
+
+public:
+    ViewProviderMeshObject();
+    virtual ~ViewProviderMeshObject();
+
+    void attach(App::DocumentObject *pcFeat);
+    virtual void updateData(const App::Property*);
+
+protected:
+    SoShape* getShapeNode() const;
+    void showOpenEdges(bool);
+
+private:
+    SoFCMeshObjectNode  * pcMeshNode;
+    SoFCMeshObjectShape * pcMeshShape;
 };
 
 } // namespace MeshGui

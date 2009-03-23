@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -75,9 +75,9 @@
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/MeshProperties.h>
 
-#include "ViewProvider.h"
 #include "ViewProviderMeshFaceSet.h"
 #include "SoFCMeshObject.h"
+#include "SoFCIndexedFaceSet.h"
 
 
 using namespace MeshGui;
@@ -87,75 +87,103 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, MeshGui::ViewProviderMesh)
 
 ViewProviderMeshFaceSet::ViewProviderMeshFaceSet()
 {
+    directRendering = false;
+    triangleCount = 500000;
+
+    pcMeshNode = new SoFCMeshObjectNode;
+    pcMeshNode->ref();
+    pcMeshShape = new SoFCMeshObjectShape;
+    pcMeshShape->ref();
+    pcMeshCoord = new SoCoordinate3;
+    pcMeshCoord->ref();
+    pcMeshFaces = new SoFCIndexedFaceSet;
+    pcMeshFaces->ref();
 }
 
 ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
 {
+    pcMeshNode->unref();
+    pcMeshShape->unref();
+    pcMeshCoord->unref();
+    pcMeshFaces->unref();
 }
 
 void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 {
-    ViewProviderGeometryObject::attach(pcFeat);
+    ViewProviderMesh::attach(pcFeat);
 
-    pcMeshNode = new SoFCMeshObjectNode;
-    pcHighlight->addChild(pcMeshNode);
-
-    pcMeshShape = new SoFCMeshObjectShape;
-    pcHighlight->addChild(pcMeshShape);
+    pcHighlight->addChild(pcMeshCoord);
+    pcHighlight->addChild(pcMeshFaces);
 
     // read the threshold from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
     int size = hGrp->GetInt("RenderTriangleLimit", -1);
-    if (size > 0) pcMeshShape->MaximumTriangles = (unsigned int)(pow(10.0f,size));
-
-    // faces
-    SoGroup* pcFlatRoot = new SoGroup();
-    //pShapeHints->creaseAngle = F_PI;
-    pcFlatRoot->addChild(pShapeHints);
-    pcFlatRoot->addChild(pcShapeMaterial);
-    pcFlatRoot->addChild(pcMatBinding);
-    pcFlatRoot->addChild(pcHighlight);
-    addDisplayMaskMode(pcFlatRoot, "Flat");
-
-    // points
-    SoGroup* pcPointRoot = new SoGroup();
-    pcPointRoot->addChild(pcPointStyle);
-    pcPointRoot->addChild(pcFlatRoot);
-    addDisplayMaskMode(pcPointRoot, "Point");
-
-    // wires
-    SoLightModel* pcLightModel = new SoLightModel();
-    pcLightModel->model = SoLightModel::BASE_COLOR;
-    SoGroup* pcWireRoot = new SoGroup();
-    pcWireRoot->addChild(pcLineStyle);
-    pcWireRoot->addChild(pcLightModel);
-    pcWireRoot->addChild(pcShapeMaterial);
-    pcWireRoot->addChild(pcHighlight);
-    addDisplayMaskMode(pcWireRoot, "Wireframe");
-
-    // faces+wires
-    // Avoid any Z-buffer artefacts, so that the lines always
-    // appear on top of the faces
-    SoPolygonOffset* offset = new SoPolygonOffset();
-    offset->styles = SoPolygonOffset::LINES;
-    offset->factor = -2.0f;
-    offset->units = 1.0f;
-    SoGroup* pcFlatWireRoot = new SoGroup();
-    pcFlatWireRoot->addChild(pcFlatRoot);
-    pcFlatWireRoot->addChild(offset);
-    pcFlatWireRoot->addChild(pcWireRoot);
-    addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
+    if (size > 0) {
+        pcMeshShape->MaximumTriangles = (unsigned int)(pow(10.0f,size));
+        static_cast<SoFCIndexedFaceSet*>(pcMeshFaces)->MaximumTriangles = (unsigned int)(pow(10.0f,size));
+    }
 }
 
 void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
 {
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
-        const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
-        this->pcMeshNode->mesh.setValue(mesh->getValuePtr());
-        // Needs to update internal bounding box caches
-        this->pcMeshShape->touch();
+        const Mesh::MeshObject* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop)->getValuePtr();
+
+        bool direct = (mesh->countFacets() > this->triangleCount);
+        if (direct) {
+            this->pcMeshNode->mesh.setValue(mesh);
+            // Needs to update internal bounding box caches
+            this->pcMeshShape->touch();
+            pcMeshCoord->point.setNum(0);
+            pcMeshFaces->coordIndex.setNum(0);
+        }
+        else {
+            createMesh(mesh->getKernel());
+        }
+
+        if (direct != directRendering) {
+            directRendering = direct;
+            pcHighlight->removeAllChildren();
+
+            if (directRendering) {
+                pcHighlight->addChild(pcMeshNode);
+                pcHighlight->addChild(pcMeshShape);
+            }
+            else {
+                pcHighlight->addChild(pcMeshCoord);
+                pcHighlight->addChild(pcMeshFaces);
+            }
+        }
+
+        showOpenEdges(OpenEdges.getValue());
     }
+}
+
+void ViewProviderMeshFaceSet::createMesh(const MeshCore::MeshKernel& rcMesh)
+{
+    // set the point coordinates
+    const MeshCore::MeshPointArray& cP = rcMesh.GetPoints();
+    pcMeshCoord->point.setNum(rcMesh.CountPoints());
+    SbVec3f* verts = pcMeshCoord->point.startEditing();
+    unsigned long i=0;
+    for (MeshCore::MeshPointArray::_TConstIterator it = cP.begin(); it != cP.end(); ++it, i++) {
+        verts[i].setValue(it->x, it->y, it->z);
+    }
+    pcMeshCoord->point.finishEditing();
+
+    // set the face indices
+    unsigned long j=0;
+    const MeshCore::MeshFacetArray& cF = rcMesh.GetFacets();
+    pcMeshFaces->coordIndex.setNum(4*rcMesh.CountFacets());
+    int32_t* indices = pcMeshFaces->coordIndex.startEditing();
+    for (MeshCore::MeshFacetArray::_TConstIterator it = cF.begin(); it != cF.end(); ++it, j++) {
+        for (int i=0; i<3; i++) {
+            indices[4*j+i] = it->_aulPoints[i];
+        }
+        indices[4*j+3] = SO_END_FACE_INDEX;
+    }
+    pcMeshFaces->coordIndex.finishEditing();
 }
 
 void ViewProviderMeshFaceSet::showOpenEdges(bool show)
@@ -171,8 +199,29 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
         pcOpenEdge->addChild(pcLineStyle);
         pcOpenEdge->addChild(pOpenColor);
 
-        pcOpenEdge->addChild(pcMeshNode);
-        pcOpenEdge->addChild(new SoFCMeshObjectBoundary);
+        if (directRendering) {
+            pcOpenEdge->addChild(pcMeshNode);
+            pcOpenEdge->addChild(new SoFCMeshObjectBoundary);
+        }
+        else {
+            pcOpenEdge->addChild(pcMeshCoord);
+            SoIndexedLineSet* lines = new SoIndexedLineSet;
+            pcOpenEdge->addChild(lines);
+
+            // Build up the lines with indices to the list of vertices 'pcMeshCoord'
+            int index=0;
+            const MeshCore::MeshKernel& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
+            const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
+            for (MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it) {
+                for (int i=0; i<3; i++) {
+                    if (it->_aulNeighbours[i] == ULONG_MAX) {
+                        lines->coordIndex.set1Value(index++,it->_aulPoints[i]);
+                        lines->coordIndex.set1Value(index++,it->_aulPoints[(i+1)%3]);
+                        lines->coordIndex.set1Value(index++,SO_END_LINE_INDEX);
+                    }
+                }
+            }
+        }
 
         // add to the highlight node
         pcRoot->addChild(pcOpenEdge);
@@ -181,5 +230,7 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
 
 SoShape* ViewProviderMeshFaceSet::getShapeNode() const
 {
-    return this->pcMeshShape;
+    if (directRendering)
+        return this->pcMeshShape;
+    return this->pcMeshFaces;
 }

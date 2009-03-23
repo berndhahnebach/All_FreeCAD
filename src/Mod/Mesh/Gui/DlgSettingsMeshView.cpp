@@ -57,15 +57,24 @@ void DlgSettingsMeshView::saveSettings()
     checkboxNormal->onSave();
     spinboxAngle->onSave();
 
-    //// search for Part view providers and apply the new settings
-    //std::vector<App::Document*> docs = App::GetApplication().getDocuments();
-    //for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
-    //    Gui::Document* doc = Gui::Application::Instance->getDocument(*it);
-    //    std::vector<Gui::ViewProvider*> views = doc->getViewProvidersOfType(ViewProviderPart::getClassTypeId());
-    //    for (std::vector<Gui::ViewProvider*>::iterator jt = views.begin(); jt != views.end(); ++jt) {
-    //        static_cast<ViewProviderPart*>(*jt)->reload();
-    //    }
-    //}
+    bool twoside = checkboxRendering->isChecked();
+    double angle = 0.0;
+    if (checkboxNormal->isChecked()) {
+        angle = spinboxAngle->value();
+    }
+
+    // search for Mesh view providers and apply the new settings
+    std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
+        Gui::Document* doc = Gui::Application::Instance->getDocument(*it);
+        std::vector<Gui::ViewProvider*> views = doc->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
+        for (std::vector<Gui::ViewProvider*>::iterator jt = views.begin(); jt != views.end(); ++jt) {
+            ViewProviderMesh* meshview = static_cast<ViewProviderMesh*>(*jt);
+            if (twoside) meshview->Lighting.setValue(1);
+            else meshview->Lighting.setValue((long)0);
+            meshview->CreaseAngle.setValue(angle);
+        }
+    }
 }
 
 void DlgSettingsMeshView::loadSettings()

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,37 +20,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MESHGUI_VIEWPROVIDERMESHOBJECT_H
-#define MESHGUI_VIEWPROVIDERMESHOBJECT_H
+#ifndef MESHGUI_VIEWPROVIDERMESHFACESET_H
+#define MESHGUI_VIEWPROVIDERMESHFACESET_H
 
-#include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/Gui/ViewProvider.h>
 
-#include <vector>
-#include <Inventor/fields/SoSFVec2f.h>
-
-class SbViewVolume;
-class SoBaseColor;
-class SoShapeHints;
-class SoEventCallback;
-class SoMaterialBinding;
-
-namespace Gui {
-    class SoFCSelection;
-    class AbstractMouseModel;
-}
-namespace MeshCore {
-class MeshKernel;
-}
 namespace MeshGui {
-class SoFCMeshObjectNode;
-class SoFCMeshObjectShape;
 
 /**
- * The ViewProviderMeshFaceSet class creates a node representing the mesh data structure.
- * It does basically the same ViewProviderMeshNode by rendering directly the FreeCAD mesh
- * structure whereas this class follows the Inventor way. For more details @see 
- * SoFCMeshNode and SoFCMeshFaceSet.
+ * The ViewProviderMeshFaceSet class creates nodes for representing the mesh
+ * data structure. Depending on the size of the mesh it uses two ways to render it:
+ * \item For huge meshes it renders directly the data structure. Rendering directly
+ * the data structure has the advantage to save memory by not creating the according
+ * OpenInventor nodes which would more or less duplicate the memory for a mesh.
+ * Especially for huge with several hundred thousands or even millions of triangles 
+ * the amount of saved memory is considerable.
+ * \item For all other meshes it uses the appropriate OpenInventor nodes. Although this
+ * needs more memory its usage is much more flexible. It offers several nice features like
+ * a smooth-shaded appearance of a mesh whereas the OpenInventor nodes are already capable
+ * to do everything automatically. or the usage with textures.
+ *
+ * For more details @see SoFCMeshNode and SoFCMeshFaceSet.
  * @author Werner Mayer
  */
 class MeshGuiExport ViewProviderMeshFaceSet : public ViewProviderMesh
@@ -65,10 +55,16 @@ public:
     virtual void updateData(const App::Property*);
 
 protected:
-    SoShape* getShapeNode() const;
     void showOpenEdges(bool);
+    SoShape* getShapeNode() const;
+    /// helper method to build up the FaceSet
+    void createMesh(const MeshCore::MeshKernel& pcMesh);
 
-protected:
+private:
+    bool directRendering;
+    unsigned long triangleCount;
+    SoCoordinate3       * pcMeshCoord;
+    SoIndexedFaceSet    * pcMeshFaces;
     SoFCMeshObjectNode  * pcMeshNode;
     SoFCMeshObjectShape * pcMeshShape;
 };
@@ -76,5 +72,5 @@ protected:
 } // namespace MeshGui
 
 
-#endif // MESHGUI_VIEWPROVIDERMESHOBJECT_H
+#endif // MESHGUI_VIEWPROVIDERMESHFACESET_H
 
