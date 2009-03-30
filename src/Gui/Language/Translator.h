@@ -70,6 +70,8 @@ private:
     Translator();
     ~Translator();
     void removeTranslators();
+    QStringList directories() const;
+    void installQMFiles(const QDir& dir, const char* locale);
 
     static Translator* _pcSingleton;
     std::string activatedLanguage; /**< Active language */

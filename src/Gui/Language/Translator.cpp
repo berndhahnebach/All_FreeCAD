@@ -148,21 +148,7 @@ void Translator::activateLanguage (const char* lang)
     this->activatedLanguage = lang;
     TStringList languages = supportedLanguages();
     if (std::find(languages.begin(), languages.end(), lang) != languages.end()) {
-        std::map<std::string, std::string>::iterator tld = mapLanguageTopLevelDomain.find(lang);
-        QString filter = QString::fromAscii("*_%1.qm").arg(QLatin1String(tld->second.c_str()));
-        QDir dir(QLatin1String(":/translations"));
-        QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
-        for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
-            QTranslator* translator = new QTranslator;
-            translator->setObjectName(*it);
-            if (translator->load(dir.filePath(*it))) {
-                qApp->installTranslator(translator);
-                translators.push_back(translator);
-            }
-            else {
-                delete translator;
-            }
-        }
+        refresh();
     }
 }
 
@@ -171,18 +157,21 @@ std::string Translator::activeLanguage() const
     return this->activatedLanguage;
 }
 
-/**
- * This method checks for newly added (internal) .qm files which might be added at runtime. This e.g. happens if a plugin
- * gets loaded at runtime. For each newly added files that supports the currently set language a new translator object is created 
- * to load the file.
- */
-void Translator::refresh()
+QStringList Translator::directories() const
 {
-    std::map<std::string, std::string>::iterator tld = mapLanguageTopLevelDomain.find(this->activatedLanguage);
-    if (tld == mapLanguageTopLevelDomain.end())
-        return; // no language activated
-    QString filter = QString::fromAscii("*_%1.qm").arg(QLatin1String(tld->second.c_str()));
-    QDir dir(QLatin1String(":/translations"));
+    std::string mods = App::Application::Config()["AppHomePath"]+"Mod";
+    QStringList dirs, list;
+    QDir dir(QLatin1String(mods.c_str()));
+    dirs = dir.entryList(QDir::Dirs|QDir::NoDotAndDotDot, QDir::Name);
+    for (QStringList::Iterator it = dirs.begin(); it != dirs.end(); ++it)
+        list.push_back(dir.filePath(*it));
+    list.push_back(QLatin1String(":/translations"));
+    return list;
+}
+
+void Translator::installQMFiles(const QDir& dir, const char* locale)
+{
+    QString filter = QString::fromAscii("*_%1.qm").arg(QLatin1String(locale));
     QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
     for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
         bool ok=false;
@@ -206,6 +195,23 @@ void Translator::refresh()
                 delete translator;
             }
         }
+    }
+}
+
+/**
+ * This method checks for newly added (internal) .qm files which might be added at runtime. This e.g. happens if a plugin
+ * gets loaded at runtime. For each newly added files that supports the currently set language a new translator object is created 
+ * to load the file.
+ */
+void Translator::refresh()
+{
+    std::map<std::string, std::string>::iterator tld = mapLanguageTopLevelDomain.find(this->activatedLanguage);
+    if (tld == mapLanguageTopLevelDomain.end())
+        return; // no language activated
+    QStringList dirs = directories();
+    for (QStringList::iterator it = dirs.begin(); it != dirs.end(); ++it) {
+        QDir dir(*it);
+        installQMFiles(dir, tld->second.c_str());
     }
 }
 

@@ -39,6 +39,7 @@
 #include "WidgetFactory.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
+#include "Language/Translator.h"
 #include <App/DocumentObjectPy.h>
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
@@ -75,6 +76,9 @@ PyMethodDef Application::Methods[] = {
   {"updateGui",               (PyCFunction) Application::sUpdateGui,        1,
    "updateGui() -> None\n\n"
    "Update the main window and all its windows"},
+  {"updateLocale",            (PyCFunction) Application::sUpdateLocale,     1,
+   "updateLocale() -> None\n\n"
+   "Update the localization"},
   {"createDialog",            (PyCFunction) Application::sCreateDialog,     1,
    "createDialog(string) -- Open a UI file"},
   {"addPreferencePage",       (PyCFunction) Application::sAddPreferencePage,1,
@@ -311,6 +315,17 @@ PyObject* Application::sUpdateGui(PyObject * /*self*/, PyObject *args,PyObject *
         return NULL;                                      // NULL triggers exception 
 
     qApp->processEvents();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+} 
+
+PyObject* Application::sUpdateLocale(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
+
+    Translator::instance()->refresh();
 
     Py_INCREF(Py_None);
     return Py_None;
