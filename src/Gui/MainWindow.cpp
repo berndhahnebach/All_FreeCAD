@@ -344,26 +344,25 @@ void MainWindow::whatsThis()
 void MainWindow::showDocumentation(const char* Article)
 {
 #ifdef FC_OS_WIN32
-	std::wstring wstr = L"mk:@MSITStore:" ;
+    std::wstring wstr = L"mk:@MSITStore:" ;
     wstr += Base::FileInfo(App::Application::Config()["AppHomePath"] + "doc/FreeCAD.chm").toStdWString();
-	if(Article){
-		wstr += L"::/index.php@title="; 
-		std::string s = Article;
-		std::wstring ws( s.begin(), s.end() );
-		wstr += ws;
-	}
+    if (Article) {
+        wstr += L"::/index.php@title="; 
+        std::string s = Article;
+        std::wstring ws( s.begin(), s.end() );
+        wstr += ws;
+    }
 
     bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, L"open", L"hh.exe",wstr.c_str(), NULL, SW_SHOWNORMAL)) > 32);
 
 #else
     // Use Qt Assistant...
-	bool ok = false;
+    bool ok = false;
 #endif
    if (!ok) {
         QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
             QObject::tr("Cannot open help file"));
    }
-
 }
 
 bool MainWindow::event(QEvent *e)
