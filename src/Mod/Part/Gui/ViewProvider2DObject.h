@@ -63,7 +63,7 @@ public:
   virtual void unsetEdit(void);
 
   /// creats the grid
-  SoSeparator* createGrid(float size=0.0, int density=0); 
+  SoSeparator* createGrid(void); 
 
 
 protected:
@@ -71,6 +71,11 @@ protected:
   virtual void onChanged(const App::Property* prop);
 
   SoSeparator  *GridRoot;
+
+  float MinX;
+  float MaxX;
+  float MinY;
+  float MaxY;
 };
 
 } // namespace PartGui

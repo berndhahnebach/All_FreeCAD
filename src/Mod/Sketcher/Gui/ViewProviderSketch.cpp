@@ -361,7 +361,7 @@ void ViewProviderSketch::draw(void)
         for (i=0 ; i<NbrCrv;++i) {
             const std::vector<Base::Vector3d>& c = coords[i];
             for (std::vector<Base::Vector3d>::const_iterator it = c.begin(); it != c.end(); ++it)
-                verts[r++].setValue(it->x,it->y,0.0f);
+                verts[r++].setValue(it->x,it->y,0.1f);
             index[i] = c.size();
             color[i].setValue((Construction?fCurveConstructionColor:fCurveColor));
         }
@@ -382,8 +382,8 @@ void ViewProviderSketch::draw(void)
         SbColor* color = LinesMaterials->diffuseColor.startEditing();
         for (i=0; i<NbrLns; ++i) {
             SketchFlat->getLine(i, x0, y0, dx, dy);
-            verts[i*2  ].setValue(x0-dx*50,y0-dy*50,0.0f);
-            verts[i*2+1].setValue(x0+dx*50,y0+dy*50,0.0f);
+            verts[i*2  ].setValue(x0-dx*50,y0-dy*50,0.1f);
+            verts[i*2+1].setValue(x0+dx*50,y0+dy*50,0.1f);
             index[i] = 2;
             color[i].setValue(fDatumLineColor);
         }
@@ -402,7 +402,7 @@ void ViewProviderSketch::draw(void)
         SbColor* color = PointsMaterials->diffuseColor.startEditing();
         for (i=0; i<NbrPts; ++i) {
             SketchFlat->getPoint(i,x,y);
-            verts[i].setValue(x,y,0.0f);
+            verts[i].setValue(x,y,0.2f);
             color[i].setValue(fPointColor);
         }
         if (PreselectPoint >= 0 && PreselectPoint < NbrPts)
@@ -414,7 +414,7 @@ void ViewProviderSketch::draw(void)
 
 void ViewProviderSketch::updateData(const App::Property* prop)
 {
-    ViewProviderPart::updateData(prop);
+    ViewProvider2DObject::updateData(prop);
 }
 
 void ViewProviderSketch::onChanged(const App::Property* prop)

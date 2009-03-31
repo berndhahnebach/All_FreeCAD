@@ -35,6 +35,7 @@
 #include <Base/Parameter.h>
 
 #include "ViewProvider2DObject.h"
+#include <Mod/Part/App/PartFeature.h>
 
 
 //#include "Tree.h"
@@ -53,11 +54,13 @@ PROPERTY_SOURCE(PartGui::ViewProvider2DObject, PartGui::ViewProviderPart)
        
 ViewProvider2DObject::ViewProvider2DObject()
 {
-    ADD_PROPERTY_TYPE(ShowGrid,(true),"Grid",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
+    ADD_PROPERTY_TYPE(ShowGrid,(false),"Grid",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
     ADD_PROPERTY_TYPE(GridSize,(10),"Grid",(App::PropertyType)(App::Prop_None),"Gap size of the grid");
 
     GridRoot = new SoSeparator();
     GridRoot->ref();
+	MinX = MinY = -100;
+	MaxX = MaxY = 100;
 
     pcRoot->addChild(GridRoot);
  
@@ -73,9 +76,16 @@ ViewProvider2DObject::~ViewProvider2DObject()
 
 // **********************************************************************************
 
-SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
-  double dx = 10 * GridSize.getValue();                       // carpet size
-  double dy = 10 * GridSize.getValue();
+SoSeparator* ViewProvider2DObject::createGrid(void) {
+  //double dx = 10 * GridSize.getValue();                       // carpet size
+  //double dy = 10 * GridSize.getValue();
+	float Size = (MaxX-MinX > MaxY-MinY)?MaxX-MinX: MaxY-MinY;
+	float Step = pow(10,floor(log10(Size/5.0)));
+	float MiX = MinX - (MaxX-MinX)*0.5;
+	float MaX = MaxX + (MaxX-MinX)*0.5;
+	float MiY = MinY - (MaxY-MinY)*0.5;
+	float MaY = MaxY + (MaxY-MinY)*0.5;
+	//float Step = 10.0;
   double dz = 0.0;                     // carpet-grid separation
   int gridsize = 20;                    // grid size
 
@@ -123,19 +133,19 @@ SoSeparator* ViewProvider2DObject::createGrid(float size, int density) {
   int vi=0, l=0;
 
   // vertical lines
-  int i;
-  for (i=1; i<gridsize; i++) {
-    float h=-0.5*dx + float(i) / gridsize * dx;
-    vts->vertex.set1Value(vi++, h, -0.5*dy, dz);
-    vts->vertex.set1Value(vi++, h,  0.5*dy, dz);
+  float i;
+  for (i=MiX; i<MaX; i+=Step) {
+    /*float h=-0.5*dx + float(i) / gridsize * dx;*/
+    vts->vertex.set1Value(vi++, i, MiY, dz);
+    vts->vertex.set1Value(vi++, i,  MaY, dz);
     grid->numVertices.set1Value(l++, 2);
   }
 
   // horizontal lines
-  for (i=1; i<gridsize; i++) {
-    float v=-0.5*dy + float(i) / gridsize * dy;
-    vts->vertex.set1Value(vi++, -0.5*dx, v, dz );
-    vts->vertex.set1Value(vi++,  0.5*dx, v, dz );
+  for (i=MiY; i<MaY; i+=Step) {
+    //float v=-0.5*dy + float(i) / gridsize * dy;
+    vts->vertex.set1Value(vi++, MiX, i, dz );
+    vts->vertex.set1Value(vi++,  MaX, i, dz );
     grid->numVertices.set1Value(l++, 2);
   }
   parent->addChild(vts);
@@ -150,6 +160,18 @@ void ViewProvider2DObject::updateData(const App::Property* prop)
 {
     ViewProviderPart::updateData(prop);
 
+    if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
+        Base::BoundBox3d Bnd = static_cast<const Part::PropertyPartShape*>(prop)->getBoundingBox();
+		GridRoot->removeAllChildren();
+		MinX = Bnd.MinX;
+		MaxX = Bnd.MaxX;
+		MinY = Bnd.MinY;
+		MaxY = Bnd.MaxY;
+		if(ShowGrid.getValue()){
+			GridRoot->removeAllChildren();
+			createGrid();
+		}
+	}
  
 }
 

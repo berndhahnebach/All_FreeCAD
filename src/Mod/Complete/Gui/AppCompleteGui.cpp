@@ -65,8 +65,8 @@ void CompleteGuiExport initCompleteGui()
         //Base::Interpreter().loadModule("AssemblyGui");
         Base::Interpreter().loadModule("DrawingGui");
         Base::Interpreter().loadModule("RaytracingGui");
-        //Base::Interpreter().loadModule("SketcherGui");
-        //Base::Interpreter().loadModule("PartDesignGui");
+        Base::Interpreter().loadModule("SketcherGui");
+        Base::Interpreter().loadModule("PartDesignGui");
         Base::Interpreter().loadModule("ImageGui");
         //Base::Interpreter().loadModule("CamGui");
         Base::Interpreter().loadModule("TestGui");

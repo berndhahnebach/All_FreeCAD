@@ -184,19 +184,30 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     Gui::MenuItem* part = new Gui::MenuItem(menuBar);
 
-	part->setCommand(QT_TR_NOOP("&Part"));
-    *part << "Part_Import" 
-          << "Separator" 
-          << "Part_Cylinder"  
+    // submenu boolean
+    Gui::MenuItem* simple = new Gui::MenuItem();
+    simple->setCommand(QT_TR_NOOP("Simple"));
+    *simple  << "Part_Cylinder"  
           << "Part_Box" 
-          << "Part_Box2" 
-          << "Part_Box3" 
           << "Part_Primitives" 
           << "Separator" 
           << "Part_Boolean" 
           << "Part_Extrude"
           << "Part_FilletEdges" 
+;
+
+	part->setCommand(QT_TR_NOOP("&Part"));
+    *part << "Part_Import" 
           << "Separator" 
+		  << "Sketcher_NewSketch"
+		  << "Sketcher_LeaveSketch"
+		  << "Sketcher_CreateLine"
+		  << "Sketcher_CreatePolyline"
+          << "Separator" 
+		  << "PartDesign_Pad" 
+		  << "PartDesign_Fillet"
+          << "Separator" 
+		  << simple
           << "Part_ShapeInfo";
 
 	// Drawing ****************************************************************************************************
@@ -257,9 +268,22 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     // File
     Gui::ToolBarItem* file = new Gui::ToolBarItem( root );
     file->setCommand(QT_TR_NOOP("File"));
-    *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
-          << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
-          << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
+    *file << "Std_New" 
+		  << "Std_Open" 
+		  << "Std_Save" 
+		  << "Std_Print" 
+		  << "Separator" 
+		  << "Std_Cut"
+          << "Std_Copy" 
+		  << "Std_Paste" 
+		  << "Separator" 
+		  << "Std_Undo" 
+		  << "Std_Redo" 
+		  << "Separator"
+          << "Std_Refresh" 
+		  << "Separator" 
+		  //<< "Std_Workbench" 
+		  << "Std_WhatsThis";
 
     // Macro
     Gui::ToolBarItem* macro = new Gui::ToolBarItem( root );
@@ -273,6 +297,25 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *view << "Std_ViewFitAll" << "Separator" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" 
           << "Std_ViewRight" << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" 
           << "Std_ViewBottom";
+    
+	// Part Design
+    Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
+    part_design->setCommand(QT_TR_NOOP("View"));
+    *part_design  << "Sketcher_NewSketch"
+		          << "Sketcher_LeaveSketch"
+  				  << "Separator" 
+				  << "Sketcher_CreatePoint" 
+				  << "Sketcher_CreateArc"
+				  << "Sketcher_CreateCircle"
+				  << "Sketcher_CreateLine"
+				  << "Sketcher_CreatePolyline"
+				  << "Sketcher_CreateRectangle"
+				  << "Sketcher_CreateText"
+				  << "Sketcher_CreateDraftLine"	  
+				  << "Separator" 
+				  << "PartDesign_Pad" 
+				  << "PartDesign_Fillet"
+	;
 
     return root;
 }
