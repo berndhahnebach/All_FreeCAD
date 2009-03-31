@@ -43,42 +43,43 @@ namespace PartGui {
 
 class AppPartGuiExport ViewProviderCurveNet:public ViewProviderPart
 {
-  PROPERTY_HEADER(PartGui::ViewProviderPart);
+    PROPERTY_HEADER(PartGui::ViewProviderPart);
 
 public:
-  /// constructor
-  ViewProviderCurveNet();
-  /// destructor
-  virtual ~ViewProviderCurveNet();
+    /// constructor
+    ViewProviderCurveNet();
+    /// destructor
+    virtual ~ViewProviderCurveNet();
 
+    virtual void attach(App::DocumentObject *);
+    virtual void setDisplayMode(const char* ModeName);
+    /// returns a list of all possible modes
+    virtual std::vector<std::string> getDisplayModes(void) const;
 
-  virtual void attach(App::DocumentObject *);
+    /// Update the Part representation
+    virtual void updateData(const App::Property*);
 
-  /// Update the Part representation
-  virtual void updateData(const App::Property*){}
+    virtual void setEdit(void);
+    virtual void unsetEdit(void);
 
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-
-  virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
+    virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
 
 protected:
-  struct Node {
-    Gui::SoFCSelection  *pcHighlight;
-    SoTransform    *pcTransform;
-  };
+    struct Node {
+        Gui::SoFCSelection  *pcHighlight;
+        SoTransform    *pcTransform;
+    };
 
-  std::list<Node> NodeList;
+    std::list<Node> NodeList;
 
-  bool bInEdit;
-  bool bMovePointMode;
-  Node PointToMove;
-  /// root of the edge and vertex points
-  SoSeparator *EdgeRoot, *VertexRoot;
+    bool bInEdit;
+    bool bMovePointMode;
+    Node PointToMove;
+    /// root of the edge and vertex points
+    SoSeparator *EdgeRoot, *VertexRoot;
 
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
-
+    Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
+    Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 };
 
 } // namespace PartGui
