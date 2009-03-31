@@ -49,29 +49,16 @@ short CurveNet::mustExecute() const
 
 App::DocumentObjectExecReturn *CurveNet::execute(void)
 {
-  /*
-  try{
+    Base::FileInfo fi(FileName.getValue());
+    if (!fi.isReadable()) {
+        Base::Console().Log("CurveNet::execute() not able to open %s!\n",FileName.getValue());
+        std::string error = std::string("Cannot open file ") + FileName.getValue();
+        return new App::DocumentObjectExecReturn(error);
+    }
 
-    std::string FileName = getPropertyString("FileName");
-
-    int i=_open(FileName.c_str(),O_RDONLY);
-	  if( i != -1)
-	  {
-		  _close(i);
-	  }else{
-      Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
-		  return 1;
-	  }
-
-	  setShape(PartAlgos::Load(FileName.c_str()));
-  }
-  catch(...){
-    Base::Console().Error("FeaturePartImportIges::Execute() failed!");
-    return 1;
-  }
-*/
-//  setShape(TopoDS_Shape());
+    TopoShape aShape;
+    aShape.read((const Standard_CString)FileName.getValue());
+    this->Shape.setValue(aShape);
 
     return App::DocumentObject::StdReturn;
 }
-
