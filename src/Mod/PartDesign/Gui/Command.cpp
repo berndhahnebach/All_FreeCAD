@@ -69,7 +69,7 @@ void CmdPartDesignPad::activated(int iMsg)
     openCommand("Make Pad");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pad\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Dir = (0.0,0.0,100.0)",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Dir = (0.0,0.0,-100.0)",FeatName.c_str());
     doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
     updateActive();
     commitCommand();
