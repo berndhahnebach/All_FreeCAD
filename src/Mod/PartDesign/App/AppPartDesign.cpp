@@ -30,6 +30,7 @@
 #include <Base/Interpreter.h>
  
 #include "FeaturePad.h"
+#include "FeatureFillet.h"
 
 extern struct PyMethodDef PartDesign_methods[];
 
@@ -59,6 +60,7 @@ void AppPartDesignExport initPartDesign()
     // This function is responsible for adding inherited slots from a type's base class.
  
     PartDesign::Pad        ::init();
+    PartDesign::Fillet     ::init();
 }
 
 } // extern "C"

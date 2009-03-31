@@ -104,6 +104,9 @@ using namespace zipios;
 # define new DEBUG_CLIENTBLOCK
 #endif
 
+#if FC_DEBUG
+//#  define FC_LOGFEATUREUPDATE
+#endif 
 
 namespace App {
 
@@ -884,7 +887,7 @@ void Document::recompute()
         // ask the object if it should be recomputed
         if (Cur->mustExecute() == 1)
             NeedUpdate = true;
-        else if (Cur->mustExecute() == -1)
+        else {// if (Cur->mustExecute() == -1)
             // update if one of the dependencies is touched
             for (boost::tie(j, jend) = out_edges(*i, DepList); j != jend; ++j) {
                 DocumentObject* Test = VertexMap[target(*j, DepList)];
@@ -899,6 +902,7 @@ void Document::recompute()
 #ifdef FC_LOGFEATUREUPDATE
             std::clog << std::endl;
 #endif
+        }
         // if one touched recompute
         if (NeedUpdate) {
 #ifdef FC_LOGFEATUREUPDATE

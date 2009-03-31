@@ -544,6 +544,7 @@ void ViewProviderSketch::unsetEdit(void)
     // save the sketch and set the property
     SketchFlat->save(file.c_str());
     getSketchObject()->SketchFlatFile.setValue(file.c_str());
+    getSketchObject()->touch();
 
 	// close the solver
 	delete(SketchFlat);

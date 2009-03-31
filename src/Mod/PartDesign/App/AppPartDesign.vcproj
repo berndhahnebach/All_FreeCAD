@@ -226,6 +226,14 @@
 			Name="Features"
 			>
 			<File
+				RelativePath=".\FeatureFillet.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeatureFillet.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FeaturePad.cpp"
 				>
 			</File>

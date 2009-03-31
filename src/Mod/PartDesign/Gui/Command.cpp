@@ -80,9 +80,54 @@ bool CmdPartDesignPad::isActive(void)
     return hasActiveDocument();
 }
 
+//===========================================================================
+// Part_Pad
+//===========================================================================
+DEF_STD_CMD_A(CmdPartDesignFillet);
+
+CmdPartDesignFillet::CmdPartDesignFillet()
+  :Command("PartDesign_Fillet")
+{
+    sAppModule    = "PartDesign";
+    sGroup        = QT_TR_NOOP("PartDesign");
+    sMenuText     = QT_TR_NOOP("Fillet");
+    sToolTipText  = QT_TR_NOOP("Make a fillet on a edge, face or body");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    iAccel        = 0;
+}
+
+void CmdPartDesignFillet::activated(int iMsg)
+{
+    unsigned int n = getSelection().countObjectsOfType(Part::Part2DObject::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select a edge, face or body."));
+        return;
+    }
+
+    std::string FeatName = getUniqueObjectName("Fillet");
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    openCommand("Make Pad");
+    doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Fillet\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+    updateActive();
+    commitCommand();
+}
+
+bool CmdPartDesignFillet::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+
 void CreatePartDesignCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdPartDesignPad());
+    rcCmdMgr.addCommand(new CmdPartDesignFillet());
  }

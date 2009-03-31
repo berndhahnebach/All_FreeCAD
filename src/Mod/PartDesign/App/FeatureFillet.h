@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2008 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,40 +21,38 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef PART_FEATUREFILLET_H
+#define PART_FEATUREFILLET_H
 
-#ifndef _PreComp_
-# include <qobject.h>
-#endif
+#include <App/PropertyStandard.h>
+#include <Mod/Part/App/PartFeature.h>
 
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
-
-using namespace PartDesignGui;
-
-TYPESYSTEM_SOURCE(PartDesignGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
+namespace PartDesign
 {
-}
 
-Workbench::~Workbench()
+class Fillet : public Part::Feature
 {
-}
+    PROPERTY_HEADER(PartDesign::Fillet);
 
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("PartDesign"));
-    *part << "PartDesign_Pad" << "PartDesign_Fillet" ;
-     return root;
-}
+public:
+    Fillet();
 
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    return root;
-}
+    App::PropertyLink Base;
+    Part::PropertyFilletContour Contour;
 
+    /** @name methods override feature */
+    //@{
+    /// recalculate the feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    /// returns the type name of the view provider
+    //const char* getViewProviderName(void) const {
+    //    return "PartGui::ViewProviderFillet";
+    //}
+    //@}
+};
+
+} //namespace Part
+
+
+#endif // PART_FEATUREFILLET_H
