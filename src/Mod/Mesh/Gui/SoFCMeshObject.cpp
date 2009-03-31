@@ -470,7 +470,7 @@ void SoFCMeshObjectShape::GLRender(SoGLRenderAction *action)
         }
 
         // Disable caching for this node
-        SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+        //SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
     }
 }
 
@@ -889,7 +889,7 @@ void SoFCMeshSegmentShape::GLRender(SoGLRenderAction *action)
         }
 
         // Disable caching for this node
-        SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+        //SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
     }
 }
 
@@ -1274,7 +1274,7 @@ void SoFCMeshObjectBoundary::GLRender(SoGLRenderAction *action)
         drawLines(mesh);
 
         // Disable caching for this node
-        SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+        //SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
     }
 }
 

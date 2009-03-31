@@ -90,9 +90,6 @@ void SoFCControlPoints::GLRender(SoGLRenderAction *action)
 
         int32_t len = coords->getNum();
         drawControlPoints(points, len);
-
-        // Disable caching for this node
-        SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
     }
 }
 
