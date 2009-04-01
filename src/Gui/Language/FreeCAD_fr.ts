@@ -141,7 +141,7 @@
     </message>
     <message>
         <source>Setup Custom Macros</source>
-        <translation type="unfinished"></translation>
+        <translation>Mettre des macros particulières</translation>
     </message>
     <message>
         <source>Macro:</source>
@@ -153,7 +153,7 @@
     </message>
     <message>
         <source>Pixmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixmap</translation>
     </message>
     <message>
         <source>Accelerator:</source>
@@ -165,15 +165,15 @@
     </message>
     <message>
         <source>Status text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte d&apos;état</translation>
     </message>
     <message>
         <source>Tool tip:</source>
-        <translation type="unfinished"></translation>
+        <translation>Astuce outil</translation>
     </message>
     <message>
         <source>Menu text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte menu:</translation>
     </message>
     <message>
         <source>Add</source>
@@ -212,15 +212,15 @@
     </message>
     <message>
         <source>Sorry, couldn&apos;t find macro file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Désolé,On ne peut pas trouvé le fichier macro &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Empty macro</source>
-        <translation type="unfinished"></translation>
+        <translation>Macro vide</translation>
     </message>
     <message>
         <source>Please specify the macro first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spécifier la première macro svp.</translation>
     </message>
     <message>
         <source>Empty text</source>
@@ -228,15 +228,15 @@
     </message>
     <message>
         <source>Please specify the menu text first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spécifier le premièr menu texte svp.</translation>
     </message>
     <message>
         <source>No item selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas d&apos;item sélectionné</translation>
     </message>
     <message>
         <source>Please select a macro item first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner la première macro svp.</translation>
     </message>
 </context>
 <context>
@@ -285,19 +285,19 @@
     </message>
     <message>
         <source>Current shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourci courant</translation>
     </message>
     <message>
         <source>Press &amp;new shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Appuyez sur le nouveau raccourci</translation>
     </message>
     <message>
         <source>Currently assigned to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couramment assigné à:</translation>
     </message>
     <message>
         <source>&amp;Assign</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Assigner</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -305,7 +305,7 @@
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Remise à zero</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -313,7 +313,7 @@
     </message>
     <message>
         <source>Re&amp;set All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Remise à zero de tout</translation>
     </message>
     <message>
         <source>Alt+S</source>
@@ -368,11 +368,11 @@ Please define another shortcut.</source>
     <name>Gui::Dialog::DlgCustomToolbars</name>
     <message>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;outils</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Les changements deviendront actifs au prochain démarrage de l&apos;établi approprié&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Move right</source>
@@ -380,7 +380,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Descendre l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;Cela changera aussi le niveau de l&apos;item parent.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Move left</source>
@@ -388,7 +388,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Monter l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;Cela changera aussi le niveau de l&apos;item parent.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Move down</source>
@@ -396,7 +396,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Descendre l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;L&apos;item sera déplacé sans changer le niveau de la hiérarchie.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -404,11 +404,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Monter  l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;L&apos;item sera déplacé sans changer le niveau de la hiérarchie.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau...</translation>
     </message>
     <message>
         <source>Rename...</source>
@@ -416,11 +416,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <source>Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Icône</translation>
     </message>
     <message>
         <source>Command</source>
@@ -436,23 +436,23 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Toolbar name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de barre d&apos;outils:</translation>
     </message>
     <message>
         <source>Duplicated name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom dupliqué</translation>
     </message>
     <message>
         <source>The toolbar name &apos;%1&apos; is already used</source>
-        <translation type="unfinished"></translation>
+        <translation>Le nom de barres d&apos;outils &apos;%1&apos; est déjà utilisé</translation>
     </message>
     <message>
         <source>Rename toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer la barre d&apos;outils</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -486,50 +486,50 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de ligne:</translation>
     </message>
     <message>
         <source>Point size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille du point:</translation>
     </message>
     <message>
         <source>Material</source>
-        <translation type="unfinished"></translation>
+        <translation>Matériau</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <source>Viewing mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode vue</translation>
     </message>
     <message>
         <source>Display mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode affichage</translation>
     </message>
     <message>
         <source>Plot mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode dessin:</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgEditorSettings</name>
     <message>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options</translation>
     </message>
     <message>
         <source>Enable line numbers</source>
@@ -541,43 +541,43 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Indentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Indentation</translation>
     </message>
     <message>
         <source>Insert spaces</source>
-        <translation type="unfinished"></translation>
+        <translation>insérer des espaces</translation>
     </message>
     <message>
         <source>Tab size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille des tabulations</translation>
     </message>
     <message>
         <source>Indent size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de l&apos;indentation</translation>
     </message>
     <message>
         <source>Keep tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Garderl les tabulations</translation>
     </message>
     <message>
         <source>Display Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les items</translation>
     </message>
     <message>
         <source>Family:</source>
-        <translation type="unfinished"></translation>
+        <translation>Famille:</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="unfinished">Taille</translation>
+        <translation>Taille:</translation>
     </message>
     <message>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prévisualisé:</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -778,15 +778,15 @@ This file already exists.</source>
     </message>
     <message>
         <source>Diffuse color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur diffuse:</translation>
     </message>
     <message>
         <source>Specular color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur spéculaire:</translation>
     </message>
     <message>
         <source>Shininess:</source>
-        <translation type="unfinished"></translation>
+        <translation>Brillance</translation>
     </message>
     <message>
         <source>%</source>
@@ -813,7 +813,7 @@ This file already exists.</source>
     </message>
     <message>
         <source>Enable user authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Autorisation utilisateur possible</translation>
     </message>
     <message>
         <source>Download online help from:</source>
@@ -965,55 +965,55 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::DlgProjectInformation</name>
     <message>
         <source>Project information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information Projet</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information</translation>
     </message>
     <message>
         <source>&amp;Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nom</translation>
     </message>
     <message>
         <source>Commen&amp;t:</source>
-        <translation type="unfinished"></translation>
+        <translation>Commen&amp;taire</translation>
     </message>
     <message>
         <source>Path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin macro</translation>
     </message>
     <message>
         <source>&amp;Last modified by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifié dernièrement par:</translation>
     </message>
     <message>
         <source>Created &amp;by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Crée par:</translation>
     </message>
     <message>
         <source>Com&amp;pany:</source>
-        <translation type="unfinished"></translation>
+        <translation>Société</translation>
     </message>
     <message>
         <source>Last &amp;modification date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Date de dernère modification:</translation>
     </message>
     <message>
         <source>Creation &amp;date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Date de création:</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1044,7 +1044,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Normal messages:</source>
-        <translation type="unfinished"></translation>
+        <translation>Les messages normaux</translation>
     </message>
     <message>
         <source>Log messages:</source>
@@ -1067,19 +1067,19 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::DlgSettings3DView</name>
     <message>
         <source>3D View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue 3D</translation>
     </message>
     <message>
         <source>3DView settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Réglages Vue 3D</translation>
     </message>
     <message>
         <source>Show coordinate system in the corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Voir les coordonnées système dans le coin</translation>
     </message>
     <message>
         <source>Show counter of frames per second</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrer le compteur de frames par secondes</translation>
     </message>
     <message>
         <source>Use spin rotation</source>
@@ -1087,19 +1087,19 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>3D Mouse Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle souris 3D</translation>
     </message>
     <message>
         <source>Simple model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle simple</translation>
     </message>
     <message>
         <source>Full model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle complet</translation>
     </message>
     <message>
         <source>Enable antialiasing (slower)</source>
-        <translation type="unfinished"></translation>
+        <translation>Antialias activé(ralenti)</translation>
     </message>
     <message>
         <source>Eye to eye distance for stereo modes:</source>
@@ -1107,7 +1107,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection</translation>
     </message>
     <message>
         <source>Disable preselection highlighting</source>
@@ -1115,7 +1115,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Selection color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner la couleur</translation>
     </message>
     <message>
         <source>Highlight color:</source>
@@ -1127,7 +1127,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Camera type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de caméra</translation>
     </message>
     <message>
         <source>Orthographic rendering</source>
@@ -1135,58 +1135,58 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Perspective rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendu pour la perspective</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur d&apos;arrière plan</translation>
     </message>
     <message>
         <source>Color gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradient de couleur</translation>
     </message>
     <message>
         <source>Simple color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur simple</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
         <source>Colorgradient settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Réglages du gradient de couleur</translation>
     </message>
     <message>
         <source>Color model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle de couleur</translation>
     </message>
     <message>
         <source>&amp;Gradient:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gradient:</translation>
     </message>
     <message>
         <source>red-yellow-green-cyan-blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Rouge-Jaune-Vert-Cyan-Bleu</translation>
     </message>
     <message>
         <source>blue-cyan-green-yellow-red</source>
-        <translation type="unfinished"></translation>
+        <translation>Bleu-cyan-vert-jaune-rouge</translation>
     </message>
     <message>
         <source>white-black</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanc-noir</translation>
     </message>
     <message>
         <source>black-white</source>
-        <translation type="unfinished"></translation>
+        <translation>Noir-blanc</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Visibilité</translation>
     </message>
     <message>
         <source>Out g&amp;rayed</source>
@@ -1194,67 +1194,67 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Alt+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+R</translation>
     </message>
     <message>
         <source>Out &amp;invisible</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie &amp;invisible</translation>
     </message>
     <message>
         <source>Alt+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+I</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style</translation>
     </message>
     <message>
         <source>&amp;Zero</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zero</translation>
     </message>
     <message>
         <source>Alt+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+Z</translation>
     </message>
     <message>
         <source>&amp;Flow</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Flux</translation>
     </message>
     <message>
         <source>Alt+F</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+F</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <source>Parameter range</source>
-        <translation type="unfinished"></translation>
+        <translation>Limites des paramètre</translation>
     </message>
     <message>
         <source>Mi&amp;nimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mi&amp;nimum</translation>
     </message>
     <message>
         <source>Ma&amp;ximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ma&amp;ximum</translation>
     </message>
     <message>
         <source>&amp;Labels:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Etiquettes</translation>
     </message>
     <message>
         <source>&amp;Decimals:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Decimales:</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1324,7 +1324,7 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::DlgSettingsEditorImp</name>
     <message>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte</translation>
     </message>
     <message>
         <source>Bookmark</source>
@@ -1332,62 +1332,62 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Point d&apos;arr^et</translation>
     </message>
     <message>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Mot clef</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commentaire</translation>
     </message>
     <message>
         <source>Block comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commentaire de bloc</translation>
     </message>
     <message>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaine</translation>
     </message>
     <message>
         <source>Character</source>
-        <translation type="unfinished"></translation>
+        <translation>Carctère</translation>
     </message>
     <message>
         <source>Class name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de classe</translation>
     </message>
     <message>
         <source>Define name</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir le nom</translation>
     </message>
     <message>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Opérateur</translation>
     </message>
     <message>
         <source>Python output</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie Python</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur Python</translation>
     </message>
     <message>
         <source>Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Items</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsImage</name>
     <message>
         <source>Image settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Réglages image</translation>
     </message>
     <message>
         <source>Image properties</source>
@@ -1403,7 +1403,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>White</source>
-        <translation type="unfinished">Blanc</translation>
+        <translation>Blanc</translation>
     </message>
     <message>
         <source>Black</source>
@@ -1411,167 +1411,167 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Transperent</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparent</translation>
     </message>
     <message>
         <source>Image dimensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensions de l&apos;image</translation>
     </message>
     <message>
         <source>Pixel</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixel</translation>
     </message>
     <message>
         <source>&amp;Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Taille:</translation>
     </message>
     <message>
         <source>Current screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ecran courant</translation>
     </message>
     <message>
         <source>Icon       32  x 32</source>
-        <translation type="unfinished"></translation>
+        <translation>Icon       32  x 32</translation>
     </message>
     <message>
         <source>Icon       64 x 64</source>
-        <translation type="unfinished"></translation>
+        <translation>Icon       64  x 64</translation>
     </message>
     <message>
         <source>Icon       128 x 128</source>
-        <translation type="unfinished"></translation>
+        <translation>Icon       128 x 128</translation>
     </message>
     <message>
         <source>CGA       320 x 200</source>
-        <translation type="unfinished"></translation>
+        <translation>CGA       320 x 200</translation>
     </message>
     <message>
         <source>QVGA     320 x 240</source>
-        <translation type="unfinished"></translation>
+        <translation>QVGA     320 x 240</translation>
     </message>
     <message>
         <source>VGA       640 x 480</source>
-        <translation type="unfinished"></translation>
+        <translation>VGA       640 x 480</translation>
     </message>
     <message>
         <source>NTSC     720 x 480</source>
-        <translation type="unfinished"></translation>
+        <translation>NTSC     720 x 480</translation>
     </message>
     <message>
         <source>PAL        768 x 578</source>
-        <translation type="unfinished"></translation>
+        <translation>PAL        768 x 578</translation>
     </message>
     <message>
         <source>SVGA     800 x 600</source>
-        <translation type="unfinished"></translation>
+        <translation>SVGA     800 x 600</translation>
     </message>
     <message>
         <source>XGA       1024 x 768</source>
-        <translation type="unfinished"></translation>
+        <translation>XGA       1024 x 768</translation>
     </message>
     <message>
         <source>HD720   1280 x 720</source>
-        <translation type="unfinished"></translation>
+        <translation>HD720   1280 x 720</translation>
     </message>
     <message>
         <source>SXGA     1280 x 1024</source>
-        <translation type="unfinished"></translation>
+        <translation>SXGA     1280 x 1024</translation>
     </message>
     <message>
         <source>SXGA+   1400 x 1050</source>
-        <translation type="unfinished"></translation>
+        <translation>SXGA+   1400 x 1050</translation>
     </message>
     <message>
         <source>UXGA     1600 x 1200</source>
-        <translation type="unfinished"></translation>
+        <translation>UXGA     1600 x 1200</translation>
     </message>
     <message>
         <source>HD1080 1920 x 1080</source>
-        <translation type="unfinished"></translation>
+        <translation>HD1080 1920 x 1080</translation>
     </message>
     <message>
         <source>WUXGA  1920 x 1200</source>
-        <translation type="unfinished"></translation>
+        <translation>WUXGA  1920 x 1200</translation>
     </message>
     <message>
         <source>QXGA     2048 x 1538</source>
-        <translation type="unfinished"></translation>
+        <translation>QXGA     2048 x 1538</translation>
     </message>
     <message>
         <source>WQXGA  2560 x 1600</source>
-        <translation type="unfinished"></translation>
+        <translation>WQXGA  2560 x 1600</translation>
     </message>
     <message>
         <source>QSXGA   2560 x 2048</source>
-        <translation type="unfinished"></translation>
+        <translation>QSXGA   2560 x 2048</translation>
     </message>
     <message encoding="UTF-8">
         <source>QUXGA   3200 × 2400</source>
-        <translation type="unfinished"></translation>
+        <translation>QUXGA   3200 × 2400</translation>
     </message>
     <message encoding="UTF-8">
         <source>HUXGA   6400 × 4800</source>
-        <translation type="unfinished"></translation>
+        <translation>HUXGA   6400 × 4800</translation>
     </message>
     <message>
         <source>!!!          10000 x 10000</source>
-        <translation type="unfinished"></translation>
+        <translation>!!!          10000 x 10000</translation>
     </message>
     <message>
         <source>Standard sizes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tailles standards</translation>
     </message>
     <message>
         <source>&amp;Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hauteur:</translation>
     </message>
     <message>
         <source>Aspect ratio:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ratio d&apos;aspect:</translation>
     </message>
     <message>
         <source>&amp;Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ecran</translation>
     </message>
     <message>
         <source>Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+S</translation>
     </message>
     <message>
         <source>&amp;4:3</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;4:3</translation>
     </message>
     <message>
         <source>Alt+4</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+4</translation>
     </message>
     <message>
         <source>1&amp;6:9</source>
-        <translation type="unfinished"></translation>
+        <translation>1&amp;6:9</translation>
     </message>
     <message>
         <source>Alt+6</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+6</translation>
     </message>
     <message>
         <source>&amp;1:1</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;1:1</translation>
     </message>
     <message>
         <source>Alt+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+1</translation>
     </message>
     <message>
         <source>Image comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commentaire image</translation>
     </message>
     <message>
         <source>Insert MIBA</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer MIBA</translation>
     </message>
     <message>
         <source>Insert comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer commentaire</translation>
     </message>
 </context>
 <context>
@@ -1598,7 +1598,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>FullScript.FCScript</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Gui commands</source>
@@ -1703,59 +1703,59 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Add sub-group</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter sous-groupe</translation>
     </message>
     <message>
         <source>Remove group</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever le groupe</translation>
     </message>
     <message>
         <source>Rename group</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer le groupe</translation>
     </message>
     <message>
         <source>Export parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportertparamètres</translation>
     </message>
     <message>
         <source>Import parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Importert paramètres</translation>
     </message>
     <message>
         <source>Collapse</source>
-        <translation type="unfinished"></translation>
+        <translation>Rassembler</translation>
     </message>
     <message>
         <source>Do really want to remove this parameter group?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez vous réellement enlever le paramètre du groupe?</translation>
     </message>
     <message>
         <source>Existing sub-group</source>
-        <translation type="unfinished"></translation>
+        <translation>Sous-groupe  existant</translation>
     </message>
     <message>
         <source>The sub-group &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le sous-groupe &apos;%1&apos; existe déjà.</translation>
     </message>
     <message>
         <source>Export parameter to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportert paramètres vers fichier</translation>
     </message>
     <message>
         <source>XML (*.FCParam)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML (*.FCParam)</translation>
     </message>
     <message>
         <source>Import parameter from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer paramètres du fichier</translation>
     </message>
     <message>
         <source>Import Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;importation</translation>
     </message>
     <message>
         <source>Reading from &apos;%1&apos; failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lecture de &apos;%1&apos; abandonnée.</translation>
     </message>
 </context>
 <context>
@@ -1766,7 +1766,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Remove key</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever la clé</translation>
     </message>
     <message>
         <source>Rename key</source>
@@ -1778,23 +1778,23 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>New string item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item nouvelle chaine</translation>
     </message>
     <message>
         <source>New float item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item nouveau flottant</translation>
     </message>
     <message>
         <source>New integer item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item nouvel entier</translation>
     </message>
     <message>
         <source>New unsigned item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item nouveau non signé</translation>
     </message>
     <message>
         <source>New boolean item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item nouvel booleen</translation>
     </message>
     <message>
         <source>Existing item</source>
@@ -1802,66 +1802,66 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>The item &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;item &apos;%1&apos; existe déjà.</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::Placement</name>
     <message>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Placement</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>Translation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Translation:</translation>
     </message>
     <message>
         <source>Z:</source>
-        <translation type="unfinished"></translation>
+        <translation>Z:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <source>Rotation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotation:</translation>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Angle:</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisateur défini...</translation>
     </message>
     <message>
         <source>Axis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Axes:</translation>
     </message>
 </context>
 <context>
@@ -2020,7 +2020,7 @@ Specify another directory, please.</source>
     <name>Gui::DockWnd::TextBrowser</name>
     <message>
         <source>Could not open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas ouvrir le fichier.</translation>
     </message>
     <message>
         <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
@@ -2028,7 +2028,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Connecting to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection vers %1</translation>
     </message>
     <message>
         <source>Sending to %1</source>
@@ -2036,93 +2036,93 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Reading from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lecture de %1</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Téléchargement échoué: %1.</translation>
     </message>
     <message>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Précédent</translation>
     </message>
     <message>
         <source>Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Retour</translation>
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Principal</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Rafraichir</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner tout</translation>
     </message>
     <message>
         <source>No description for</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de description pour</translation>
     </message>
 </context>
 <context>
     <name>Gui::EditorView</name>
     <message>
         <source>Modified file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier modifié</translation>
     </message>
     <message>
         <source>%1.
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1.a été modifié à l&apos;extérieur de l&apos;éditeur de source.Voulez vous le recharger?</translation>
     </message>
     <message>
         <source>Unsaved document</source>
-        <translation type="unfinished"></translation>
+        <translation>Document non sauvegardé</translation>
     </message>
     <message>
         <source>The document has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le document a été modifié.Voulez sauvez les modifications?</translation>
     </message>
     <message>
         <source>FreeCAD macro (*.FCMacro);;Python (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Macro FreeCAD (*.FCMacro);;Python (*.py)</translation>
     </message>
     <message>
         <source>Export PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter PDF</translation>
     </message>
     <message>
         <source>PDF file (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier PDF (*.pdf)</translation>
     </message>
     <message>
         <source>untitled[*]</source>
-        <translation type="unfinished"></translation>
+        <translation>innommable</translation>
     </message>
     <message>
         <source> - Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur</translation>
     </message>
     <message>
         <source>%1 chars removed</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 caractères enlevés</translation>
     </message>
     <message>
         <source>%1 chars added</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 caractères ajoutés</translation>
     </message>
     <message>
         <source>Formatted</source>
-        <translation type="unfinished"></translation>
+        <translation>Formaté</translation>
     </message>
 </context>
 <context>
@@ -2226,7 +2226,7 @@ Do you want to save your changes?</source>
     <name>Gui::ProgressBar</name>
     <message>
         <source>Remaining: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Effectué: %1</translation>
     </message>
     <message>
         <source>Aborting</source>
@@ -2252,16 +2252,16 @@ Do you want to save your changes?</source>
     <name>Gui::PythonConsole</name>
     <message>
         <source>System exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie système</translation>
     </message>
     <message>
         <source>The application is still running.
 Do you want to exit without saving your data?</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;application est en fonctionnement.Voulez vous quitter sans sauvegarder vos données?</translation>
     </message>
     <message>
         <source>Python console</source>
-        <translation type="unfinished"></translation>
+        <translation>Console Python</translation>
     </message>
     <message>
         <source>Unhandled PyCXX exception.</source>
@@ -2277,39 +2277,39 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>&amp;Copy command</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Commande Copier</translation>
     </message>
     <message>
         <source>&amp;Copy history</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Copier l&apos;historique</translation>
     </message>
     <message>
         <source>Save history as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver l&apos;historique comme...</translation>
     </message>
     <message>
         <source>Insert file name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérez un nom de fichier...</translation>
     </message>
     <message>
         <source>Save History</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver l&apos;historique</translation>
     </message>
     <message>
         <source>Macro Files (*.FCMacro *.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Macro(*.FCMacro *.py)</translation>
     </message>
     <message>
         <source>Insert file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérez un nom de fichier</translation>
     </message>
     <message>
         <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous fichiers (*.*)</translation>
     </message>
     <message>
         <source>Python Input Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogue Entrée Python</translation>
     </message>
     <message>
         <source>Input for Python:</source>
@@ -2391,19 +2391,19 @@ Do you want to exit without saving your data?</source>
     <name>Gui::StdWorkbench</name>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fichier</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editer</translation>
     </message>
     <message>
         <source>Standard views</source>
-        <translation type="unfinished"></translation>
+        <translation>Vues standards</translation>
     </message>
     <message>
         <source>&amp;3D View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vue 3D</translation>
     </message>
     <message>
         <source>&amp;Zoom</source>
@@ -2447,7 +2447,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Special Ops</source>
-        <translation type="unfinished"></translation>
+        <translation>Opération spéciale</translation>
     </message>
 </context>
 <context>
@@ -2541,30 +2541,30 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Report view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue rapport</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>Unknown filetype</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de fichier inconnu</translation>
     </message>
     <message>
         <source>Cannot open unknown filetype: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas ouvrir ce type de fichier inconnu: %1</translation>
     </message>
     <message>
         <source>Cannot save to unknown filetype: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas sauvegarder ce type de fichier inconnu: %1</translation>
     </message>
     <message>
         <source>Workbench failure</source>
-        <translation type="unfinished"></translation>
+        <translation>Etabli défaillant</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <source>FreeCAD Help</source>
@@ -2572,11 +2572,11 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Unable to launch Qt Assistant (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger l&apos;assistant Qt (%1)</translation>
     </message>
     <message>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Exception</translation>
     </message>
     <message>
         <source>Open document</source>
@@ -2608,7 +2608,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Cannot open file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas ouvrir le fichier %1</translation>
     </message>
     <message>
         <source>Save views...</source>
@@ -2645,7 +2645,7 @@ Do you want to exit without saving your data?</source>
     <message>
         <source>Importing the restored views would clear the already stored views.
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer des vues sauvegardées effacera les vues déjà stockées.Voulez vous continuer?</translation>
     </message>
     <message>
         <source>Restore frozen views</source>
@@ -2657,11 +2657,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Docked</source>
-        <translation type="unfinished"></translation>
+        <translation>Dockée</translation>
     </message>
     <message>
         <source>Undocked</source>
-        <translation type="unfinished"></translation>
+        <translation>non dockée</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -2685,7 +2685,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>New text item</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvel item texte</translation>
     </message>
     <message>
         <source>Enter your text:</source>
@@ -2693,7 +2693,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>New integer item</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvel item entier</translation>
     </message>
     <message>
         <source>Enter your number:</source>
@@ -2701,133 +2701,135 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>New unsigned item</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvel Item non signé</translation>
     </message>
     <message>
         <source>New float item</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvel item flottant</translation>
     </message>
     <message>
         <source>New boolean item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item nouvel booléen</translation>
     </message>
     <message>
         <source>Choose an item:</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir l&apos;item:</translation>
     </message>
     <message>
         <source>Rename group</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer le groupe</translation>
     </message>
     <message>
         <source>The group &apos;%1&apos; cannot be renamed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le groupe &apos;%1&apos; ne peut pas etre renommé</translation>
     </message>
     <message>
         <source>Existing group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groupe  existant</translation>
     </message>
     <message>
         <source>The group &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le groupe &apos;%1&apos; existe déjà.</translation>
     </message>
     <message>
         <source>Change value</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la valeur</translation>
     </message>
     <message>
         <source>Save document under new filename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver le document sous un un nouveau nom de fichier...</translation>
     </message>
     <message>
         <source>Save FreeCAD Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver le document FreeCAD</translation>
     </message>
     <message>
         <source>FreeCAD document (*.FCStd)</source>
-        <translation type="unfinished"></translation>
+        <translation>Document FreeCAD (*.FCStd)</translation>
     </message>
     <message>
         <source>Saving aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarde abandonnée</translation>
     </message>
     <message>
         <source>Unsaved document</source>
-        <translation type="unfinished"></translation>
+        <translation>Document non sauvé</translation>
     </message>
     <message>
         <source>Save document before close?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver le document avant la fermeture</translation>
     </message>
     <message>
         <source>Save Macro</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver macro</translation>
     </message>
     <message>
         <source>Cannot open help file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas ouvrir le fichier d&apos;aide</translation>
     </message>
     <message>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fini</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>Inner</source>
-        <translation type="unfinished"></translation>
+        <translation>intérieur</translation>
     </message>
     <message>
         <source>Outer</source>
-        <translation type="unfinished"></translation>
+        <translation>extérieur</translation>
     </message>
     <message>
         <source>No Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de navigateur</translation>
     </message>
     <message>
         <source>Unable to open your browser.
 
 Please open a browser window and type in: http://localhost:%1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir votre navigateur.
+
+Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>No Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de serveur</translation>
     </message>
     <message>
         <source>Unable to start the server to port %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de démarrer le serveur sur les portst %1: %2.</translation>
     </message>
     <message>
         <source>Unable to open your system browser.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le navigateur système</translation>
     </message>
     <message>
         <source>Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Options...</translation>
     </message>
     <message>
         <source>Out of memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas assez de mémoire</translation>
     </message>
     <message>
         <source>Not enough memory available to display the data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas assez de mémoire disponible pour afficher les données.</translation>
     </message>
     <message>
         <source>Cannot find file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas trouver le fichier %1</translation>
     </message>
     <message>
         <source>Cannot find file %1 neither in %2 nor in %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas trouver le fichier %1 ni dans  %2 ni dans %3 </translation>
     </message>
 </context>
 <context>
@@ -3695,11 +3697,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Clipping plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Clipping plan</translation>
     </message>
     <message>
         <source>Toggles clipping plane for active view</source>
-        <translation type="unfinished"></translation>
+        <translation>Basculer plan clippé pour la vue active</translation>
     </message>
 </context>
 <context>
@@ -3781,7 +3783,7 @@ Do you want to specify another directory?</source>
     <name>StdCmdUserInterface</name>
     <message>
         <source>View</source>
-        <translation type="unfinished">Vue</translation>
+        <translation>Vue</translation>
     </message>
     <message>
         <source>Dock views</source>
@@ -3796,7 +3798,7 @@ Do you want to specify another directory?</source>
     <name>StdCmdViewAxo</name>
     <message>
         <source>Standard-View</source>
-        <translation type="unfinished">Vue standard</translation>
+        <translation>Vue standard</translation>
     </message>
     <message>
         <source>Axometric</source>
@@ -3864,7 +3866,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Shows spheres an dragglights</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrez les sphères </translation>
     </message>
 </context>
 <context>
@@ -3935,11 +3937,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Issue camera position</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro position caméra</translation>
     </message>
     <message>
         <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro position caméra à la console et vers une macro, pour recalculer facilement la position</translation>
     </message>
 </context>
 <context>
@@ -3950,11 +3952,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo Interleaved Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Colonne entrelacées stereo</translation>
     </message>
     <message>
         <source>Switch stereo viewing to Interleaved Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Basculer la vision stereo vers les colonnes entrelacées</translation>
     </message>
 </context>
 <context>
@@ -3965,11 +3967,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo Interleaved Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Lignes entrelacées stereo</translation>
     </message>
     <message>
         <source>Switch stereo viewing to Interleaved Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Basculer la vision stereao vers les lignes entrelacées</translation>
     </message>
 </context>
 <context>
@@ -3995,11 +3997,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo quad buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Quadri tampon stéreo</translation>
     </message>
     <message>
         <source>Switch stereo viewing to quad buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Basculer la vision stéreo vers le quadri tampon</translation>
     </message>
 </context>
 <context>
