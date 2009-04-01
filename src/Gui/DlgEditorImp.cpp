@@ -231,6 +231,7 @@ void DlgSettingsEditorImp::changeEvent(QEvent *e)
         int index = 0;
         for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
             this->displayItems->topLevelItem(index++)->setText(0, tr((*it).first.toAscii()));
+        this->retranslateUi(this);
     } else {
         QWidget::changeEvent(e);
     }
