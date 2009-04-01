@@ -175,6 +175,7 @@ Application::~Application()
     WidgetFactorySupplier::destruct();
     BitmapFactoryInst::destruct();
 
+#if 0
     // we must run the garbage collector before shutting down the SoDB or SoQt 
     // subsystem because we may reference some class objects of them in Python
     Base::Interpreter().cleanupSWIG("SoBase *");
@@ -182,10 +183,6 @@ Application::~Application()
     SoFCDB::finish();
     SoQt::done();
 
-    {
-    Base::PyGILStateLocker lock;
-    Py_DECREF(_pcWorkbenchDictionary);
-    }
 #if (COIN_MAJOR_VERSION >= 2) && (COIN_MINOR_VERSION >= 4)
     SoDB::finish();
 #elif (COIN_MAJOR_VERSION >= 3)
@@ -193,6 +190,11 @@ Application::~Application()
 #else
     SoDB::cleanup();
 #endif
+#endif
+    {
+    Base::PyGILStateLocker lock;
+    Py_DECREF(_pcWorkbenchDictionary);
+    }
 
     // save macros
     MacroCommand::save();
