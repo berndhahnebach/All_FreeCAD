@@ -124,6 +124,7 @@ protected:
     int DragPoint;
 
     int PreselectCurve;
+	SbColor PreselectOldColor;
     int PreselectPoint;
     // pointer to the Solver
     Sketcher::SketchFlatInterface *SketchFlat;
