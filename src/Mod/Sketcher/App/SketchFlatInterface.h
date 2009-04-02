@@ -68,6 +68,7 @@ public:
 	std::string getGeo(void);
 
 	Part::TopoShape getGeoAsShape(void);
+    void getLineSet(std::vector<Base::Vector3d> &coords,std::vector<unsigned int> &index,std::vector<unsigned int> &color);
 
 	void solve(void);
 
