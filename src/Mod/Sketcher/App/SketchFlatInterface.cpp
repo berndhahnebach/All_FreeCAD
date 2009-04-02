@@ -558,13 +558,13 @@ void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::ve
                 y = y/1000.0;
 
 				R = EvalParam(prm0)/1000.0;
-
-                for(double f=0.0;f<2*M_PI;f+= M_PI/20.0){
+				int i=0;
+                for(double f=0.0;f<2*M_PI;f+= M_PI/10.0,i++){
                     coords.push_back(Base::Vector3d(x+R*cos(f),y+R*sin(f),0));
                 }
                 coords.push_back(Base::Vector3d(x+R*cos(2*M_PI),y+R*sin(2*M_PI),0));
 
-                index.push_back(41);
+                index.push_back(i+1);
                 color.push_back(SK->entity[i].construction ? 1:0);
 
 	            break;
@@ -575,12 +575,12 @@ void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::ve
 				pt2 = POINT_FOR_ENTITY(SK->entity[i].id, 2);
 					
 				EvalPoint(pt0, &x, &y);
-                double x1 = x/1000.0,y1 = x/1000.0;
+                double x1 = x/1000.0,y1 = y/1000.0;
 				gp_Pnt V1(x/1000.0,y/1000.0,0);
 
 
 				EvalPoint(pt1, &x, &y);
-                double x2 = x/1000.0,y2 = x/1000.0;
+                double x2 = x/1000.0,y2 = y/1000.0;
 				gp_Pnt V2(x/1000.0,y/1000.0,0);
 
 				EvalPoint(pt2, &x, &y);
@@ -590,24 +590,25 @@ void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::ve
 				double R = V3.Distance(V2);
                 double Phi1,Phi2;
 
-                //if(x1-xm < 0.0)
-                //    Phi1 = M_PI - asin((y1-ym)/R);
-                //else
-                    Phi1 = asin((y1-ym)/R);
+                if(y1-ym < 0.0)
+					Phi1 =  acos((x1-xm)/R);
+                else
+					Phi1 = - acos((x1-xm)/R);
 
- /*               if(x2-xm < 0.0)
-                    Phi2 = M_PI - asin((y2-ym)/R);
-                else*/
-                    Phi2 = asin((y2-ym)/R);
+                if(y2-ym < 0.0)
+					Phi2 = + acos((x2-xm)/R);
+                else
+                    Phi2 = - acos((x2-xm)/R);
                 
-                Base::Console().Log("Phi1:%f Phi2:%f \n",Phi1,Phi2);
+				Base::Console().Log("Phi1:%f Phi2:%f x1:%f y1:%f x2:%f y2:%f xm:%f ym:%f acos(x1-xm):%f\n",Phi1,Phi2,x1,y1,x2,y2,xm,ym,acos((x1-xm)/R));
                 int i=0;
-                for(double f=Phi1; f<Phi2; f+= M_PI/20.0,i++){
-                    coords.push_back(Base::Vector3d(xm+R*cos(f),ym+R*sin(f),0));
-                }
-                coords.push_back(Base::Vector3d(xm+R*cos(Phi2),ym+R*sin(Phi2),0));
+				if(Phi1 > Phi2) Phi2+=2*M_PI;
+				for(double f=Phi1; f<Phi2; f+= M_PI/10.0,i++){
+					coords.push_back(Base::Vector3d(xm+R*cos(f),ym-R*sin(f),0));
+				}
+				coords.push_back(Base::Vector3d(xm+R*cos(Phi2),ym-R*sin(Phi2),0));
 
-                index.push_back(i+1);
+				index.push_back(i+1);
                 color.push_back(SK->entity[i].construction ? 1:0);
 
                 break;

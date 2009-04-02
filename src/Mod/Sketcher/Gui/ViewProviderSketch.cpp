@@ -272,7 +272,7 @@ bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
                     PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
                 PreselectPoint = idx;
                 if (PreselectCurve >= 0)
-                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,PreselectOldColor);
                 PreselectCurve = -1;
             }
 
@@ -285,9 +285,10 @@ bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
             // get the index
             int idx = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
             if (PreselectCurve != idx) {
-                CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
                 if (PreselectCurve >= 0)
-                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,PreselectOldColor);
+				PreselectOldColor = CurvesMaterials->diffuseColor[idx];
+                CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
                 PreselectCurve = idx;
                 if (PreselectPoint >= 0)
                     PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
@@ -308,7 +309,7 @@ bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
     }
 
     if (PreselectCurve >= 0)
-        CurvesMaterials->diffuseColor.set1Value(PreselectCurve,fCurveColor);
+        CurvesMaterials->diffuseColor.set1Value(PreselectCurve,PreselectOldColor);
     PreselectCurve = -1;
     if (PreselectPoint >= 0)
         PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
@@ -531,7 +532,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
 	EditRoot->addChild(CurvesMaterials);
 
 	MtlBind = new SoMaterialBinding;
-	MtlBind->value = SoMaterialBinding::PER_PART;
+	MtlBind->value = SoMaterialBinding::PER_FACE;
 	EditRoot->addChild(MtlBind);
 
 	CurvesCoordinate = new SoCoordinate3;
