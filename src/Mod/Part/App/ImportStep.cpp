@@ -35,6 +35,11 @@
 # include <TopExp_Explorer.hxx>
 #endif
 
+#include <Handle_XSControl_WorkSession.hxx>
+#include <Handle_XSControl_TransferReader.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <XSControl_TransferReader.hxx>
+
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
 #include <App/Document.h>
@@ -63,45 +68,59 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
     if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
         throw Base::Exception("Cannot open file Step file");
     }
-    Handle(StepData_StepModel) Model = aReader.StepModel();
 
     // Root transfers
     Standard_Integer nbr = aReader.NbRootsForTransfer();
     //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
-    for ( Standard_Integer n = 1; n<= nbr; n++) {
+    for (Standard_Integer n = 1; n<= nbr; n++) {
         Base::Console().Log("STEP: Transfering Root %d\n",n);
-        /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
-        // Collecting resulting entities
-        Standard_Integer nbs = aReader.NbShapes();
-        if (nbs == 0) {
-            throw Base::Exception("No shapes found in file ");
-        }
-        else {
-            //
-            assert(nbs==1);
-            for (Standard_Integer i =1; i<=nbs; i++) {
-                Base::Console().Log("STEP:   Transfering Shape %d\n",n);
-                aShape=aReader.Shape(i);
-                //Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
+        aReader.TransferRoot(n);
+    }
+    // Collecting resulting entities
+    Standard_Integer nbs = aReader.NbShapes();
+    if (nbs == 0) {
+        throw Base::Exception("No shapes found in file ");
+    }
+    else {
+        //Handle(StepData_StepModel) Model = aReader.StepModel();
+        //Handle_XSControl_WorkSession ws = aReader.WS();
+        //Handle_XSControl_TransferReader tr = ws->TransferReader();
 
-                TopExp_Explorer ex;
+        for (Standard_Integer i=1; i<=nbs; i++) {
+            Base::Console().Log("STEP:   Transfering Shape %d\n",i);
+            aShape = aReader.Shape(i);
 
-                for (ex.Init(aShape, TopAbs_SOLID); ex.More(); ex.Next())
-                {
-                    // get the shape 
-                    const TopoDS_Solid& aSolid = TopoDS::Solid(ex.Current());
-                    Part::Feature *pcFeature = (Part::Feature*) pcDoc->addObject("Part::Feature",fi.fileNamePure().c_str());
-                    pcFeature->Shape.setValue(aSolid);
+            TopExp_Explorer ex;
 
-                }
-                for (ex.Init(aShape, TopAbs_SHELL); ex.More(); ex.Next())
-                {
-                    // get the shape 
-                    const TopoDS_Shell& aShell = TopoDS::Shell(ex.Current());
-                    Part::Feature *pcFeature = (Part::Feature*) pcDoc->addObject("Part::Feature",fi.fileNamePure().c_str());
-                    pcFeature->Shape.setValue(aShell);
+            // load each solid as an own object
+            for (ex.Init(aShape, TopAbs_SOLID); ex.More(); ex.Next())
+            {
+                // get the shape 
+                const TopoDS_Solid& aSolid = TopoDS::Solid(ex.Current());
 
-                }
+                std::string name = fi.fileNamePure();
+                //Handle_Standard_Transient ent = tr->EntityFromShapeResult(aSolid, 3);
+                //if (!ent.IsNull()) {
+                //    name += ws->Model()->StringLabel(ent)->ToCString();
+                //}
+
+                Part::Feature *pcFeature = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", name.c_str()));
+                pcFeature->Shape.setValue(aSolid);
+            }
+            // load all non-solids now
+            for (ex.Init(aShape, TopAbs_SHELL, TopAbs_SOLID); ex.More(); ex.Next())
+            {
+                // get the shape 
+                const TopoDS_Shell& aShell = TopoDS::Shell(ex.Current());
+
+                std::string name = fi.fileNamePure();
+                //Handle_Standard_Transient ent = tr->EntityFromShapeResult(aShell, 3);
+                //if (!ent.IsNull()) {
+                //    name += ws->Model()->StringLabel(ent)->ToCString();
+                //}
+
+                Part::Feature *pcFeature = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", name.c_str()));
+                pcFeature->Shape.setValue(aShell);
             }
         }
     }

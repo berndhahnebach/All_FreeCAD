@@ -320,7 +320,7 @@ void TopoShape::importIges(const char *FileName)
         // make brep
         aReader.ClearShapes();
         aReader.TransferRoots();
-        // one shape, who contain's all subshapes
+        // one shape that contains all subshapes
         this->_Shape = aReader.OneShape();
         pi->EndScope();
     }
@@ -333,13 +333,7 @@ void TopoShape::importIges(const char *FileName)
 void TopoShape::importStep(const char *FileName)
 {
     try {
-        TopoDS_Shape aResShape;
         STEPControl_Reader aReader;
-
-        TopoDS_Compound aCompound;
-        BRep_Builder aBuilder;
-        aBuilder.MakeCompound(aCompound);
-
         if (aReader.ReadFile((const Standard_CString)FileName) != IFSelect_RetDone)
             throw Base::Exception("Error in reading STEP");
 
@@ -349,32 +343,10 @@ void TopoShape::importStep(const char *FileName)
         pi->Show();
 
         // Root transfers
-        Standard_Integer nbr = aReader.NbRootsForTransfer();
-        for (Standard_Integer n=1; n <= nbr; n++) {
-            Standard_Boolean ok = aReader.TransferRoot(n);
-            // Collecting resulting entities
-            Standard_Integer nbs = aReader.NbShapes();
-            if (!ok || nbs == 0) {
-                continue; // skip empty root
-            }
-            // For a single entity
-            else if (nbr == 1 && nbs == 1) {
-                aResShape = aReader.Shape(1);
-                break;
-            }
-
-            for (Standard_Integer i=1; i<=nbs; i++) {
-                TopoDS_Shape aShape = aReader.Shape(i);
-                if (!aShape.IsNull())
-                    aBuilder.Add(aCompound, aShape);
-            }
-
-            if (aResShape.IsNull())
-                aResShape = aCompound;
-        }
-
+        aReader.TransferRoots();
+        // one shape that contains all subshapes
+        this->_Shape = aReader.OneShape();
         pi->EndScope();
-        this->_Shape = aResShape;
     }
     catch (Standard_Failure) {
         Handle(Standard_Failure) aFail = Standard_Failure::Caught();
