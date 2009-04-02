@@ -386,6 +386,10 @@ void ViewProviderPart::updateData(const App::Property* prop)
             // creating the mesh on the data structure
             BRepMesh::Mesh(cShape,this->meshDeviation);
             //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
+            // We must reset the location here because the transformation data
+            // are set in the placement property
+            TopLoc_Location aLoc;
+            cShape.Location(aLoc);
             computeFaces   (FaceRoot,cShape);
             computeEdges   (EdgeRoot,cShape);
             computeVertices(VertexRoot,cShape);
@@ -433,7 +437,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
 
         // triangulation succeeded?
         if (!aPoly.IsNull()) {
-            if (!aLoc.IsIdentity())  {
+            if (!aLoc.IsIdentity()) {
                 identity = false;
                 myTransf = aLoc.Transformation();
             }
@@ -461,7 +465,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
 
             // take the face's triangulation instead
             Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
-            if (!aLoc.IsIdentity())  {
+            if (!aLoc.IsIdentity()) {
                 identity = false;
                 myTransf = aLoc.Transformation();
             }
@@ -652,7 +656,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     // getting the transformation of the shape/face
     gp_Trsf myTransf;
     Standard_Boolean identity = true;
-    if (!aLoc.IsIdentity())  {
+    if (!aLoc.IsIdentity()) {
         identity = false;
         myTransf = aLoc.Transformation();
     }
