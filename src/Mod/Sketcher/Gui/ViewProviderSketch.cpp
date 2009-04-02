@@ -283,7 +283,7 @@ bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
         const SoDetail* curve_detail = Point->getDetail(this->CurveSet);
         if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
             // get the index
-            int idx = static_cast<const SoLineDetail*>(curve_detail)->getPartIndex();
+            int idx = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
             if (PreselectCurve != idx) {
                 CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
                 if (PreselectCurve >= 0)
@@ -333,64 +333,91 @@ bool ViewProviderSketch::doubleClicked(void)
 void ViewProviderSketch::draw(void)
 {
     double x,y;
-    double x0, y0, dx, dy;
+    //double x0, y0, dx, dy;
     int i=0,l=0,r=0;
-    bool Construction;
+    //bool Construction;
     // sketchflat generate curves out of entities:
-    SketchFlat->setUpRendering();
+    //SketchFlat->setUpRendering();
 
     // go through the curves and collect the points
-    int NbrCrv = SketchFlat->nbrOfCurves();
-    int totalPts=0;
-    std::vector<std::vector<Base::Vector3d> > coords(NbrCrv);
-    for (i=0 ; i<NbrCrv;++i) {
-        SketchFlat->getCurvePoints(coords[i],Construction,i);
-        totalPts += coords[i].size();
+    //int NbrCrv = SketchFlat->nbrOfCurves();
+    //int totalPts=0;
+    //std::vector<std::vector<Base::Vector3d> > coords(NbrCrv);
+    //for (i=0 ; i<NbrCrv;++i) {
+    //    SketchFlat->getCurvePoints(coords[i],Construction,i);
+    //    totalPts += coords[i].size();
+    //}
+
+    std::vector<Base::Vector3d> Coords;
+    std::vector<unsigned int> Index;
+    std::vector<unsigned int> Color;
+
+    SketchFlat->getLineSet(Coords,Index,Color);
+
+    CurveSet->numVertices.setNum(Index.size());
+    CurvesCoordinate->point.setNum(Coords.size());
+    CurvesMaterials->diffuseColor.setNum(Color.size());
+
+    SbVec3f* verts = CurvesCoordinate->point.startEditing();
+    int32_t* index = CurveSet->numVertices.startEditing();
+    SbColor* color = CurvesMaterials->diffuseColor.startEditing();
+
+    i=0;
+    for(std::vector<Base::Vector3d>::const_iterator it=Coords.begin();it!=Coords.end();++it,i++){
+        verts[i].setValue(it->x,it->y,0.1f);
+    }
+    i=0;
+    for(std::vector<unsigned int>::const_iterator it=Index.begin();it!=Index.end();++it,i++){
+        index[i]=*it;
+    }
+    i=0;
+    for(std::vector<unsigned int>::const_iterator it=Color.begin();it!=Color.end();++it,i++){
+        color[i].setValue((*it==1?fCurveConstructionColor:fCurveColor));
     }
 
-    CurveSet->numVertices.setNum(NbrCrv);
-    CurvesCoordinate->point.setNum(totalPts);
-    CurvesMaterials->diffuseColor.setNum(NbrCrv);
+    CurvesCoordinate->point.finishEditing();
+    CurveSet->numVertices.finishEditing();
+    CurvesMaterials->diffuseColor.finishEditing();
 
-    if (NbrCrv > 0) {
-        // use the start/finish editing facility for optimization
-        SbVec3f* verts = CurvesCoordinate->point.startEditing();
-        int32_t* index = CurveSet->numVertices.startEditing();
-        SbColor* color = CurvesMaterials->diffuseColor.startEditing();
+    //if (NbrCrv > 0) {
+    //    // use the start/finish editing facility for optimization
+    //    SbVec3f* verts = CurvesCoordinate->point.startEditing();
+    //    int32_t* index = CurveSet->numVertices.startEditing();
+    //    SbColor* color = CurvesMaterials->diffuseColor.startEditing();
 
-        for (i=0 ; i<NbrCrv;++i) {
-            const std::vector<Base::Vector3d>& c = coords[i];
-            for (std::vector<Base::Vector3d>::const_iterator it = c.begin(); it != c.end(); ++it)
-                verts[r++].setValue(it->x,it->y,0.1f);
-            index[i] = c.size();
-            color[i].setValue((Construction?fCurveConstructionColor:fCurveColor));
-        }
-        CurvesCoordinate->point.finishEditing();
-        CurveSet->numVertices.finishEditing();
-        CurvesMaterials->diffuseColor.finishEditing();
-    }
+    //    for (i=0 ; i<NbrCrv;++i) {
+    //        const std::vector<Base::Vector3d>& c = coords[i];
+    //        for (std::vector<Base::Vector3d>::const_iterator it = c.begin(); it != c.end(); ++it)
+    //            verts[r++].setValue(it->x,it->y,0.1f);
+    //        index[i] = c.size();
+    //        color[i].setValue((Construction?fCurveConstructionColor:fCurveColor));
+    //    }
+    //    CurvesCoordinate->point.finishEditing();
+    //    CurveSet->numVertices.finishEditing();
+    //    CurvesMaterials->diffuseColor.finishEditing();
+    //}
 
-    // set up datum lines
-    int NbrLns = SketchFlat->nbrOfLines();
-    LinesCoordinate->point.setNum(2*NbrLns);
-    LinesMaterials->diffuseColor.setNum(NbrLns);
-    LineSet->numVertices.setNum(NbrLns);
-    if (NbrLns > 0) {
-        // use the start/finish editing facility for optimization
-        SbVec3f* verts = LinesCoordinate->point.startEditing();
-        int32_t* index = LineSet->numVertices.startEditing();
-        SbColor* color = LinesMaterials->diffuseColor.startEditing();
-        for (i=0; i<NbrLns; ++i) {
-            SketchFlat->getLine(i, x0, y0, dx, dy);
-            verts[i*2  ].setValue(x0-dx*50,y0-dy*50,0.1f);
-            verts[i*2+1].setValue(x0+dx*50,y0+dy*50,0.1f);
-            index[i] = 2;
-            color[i].setValue(fDatumLineColor);
-        }
-        LinesCoordinate->point.finishEditing();
-        LineSet->numVertices.finishEditing();
-        LinesMaterials->diffuseColor.finishEditing();
-    }
+    //// set up datum lines
+    //int NbrLns = SketchFlat->nbrOfLines();
+    //LinesCoordinate->point.setNum(2*NbrLns);
+    //LinesMaterials->diffuseColor.setNum(NbrLns);
+    //LineSet->numVertices.setNum(NbrLns);
+    //if (NbrLns > 0) {
+    //    // use the start/finish editing facility for optimization
+    //    SbVec3f* verts = LinesCoordinate->point.startEditing();
+    //    int32_t* index = LineSet->numVertices.startEditing();
+    //    SbColor* color = LinesMaterials->diffuseColor.startEditing();
+    //    for (i=0; i<NbrLns; ++i) {
+    //        SketchFlat->getLine(i, x0, y0, dx, dy);
+    //        verts[i*2  ].setValue(x0-dx*50,y0-dy*50,0.1f);
+    //        verts[i*2+1].setValue(x0+dx*50,y0+dy*50,0.1f);
+    //        index[i] = 2;
+    //        color[i].setValue(fDatumLineColor);
+    //    }
+    //    LinesCoordinate->point.finishEditing();
+    //    LineSet->numVertices.finishEditing();
+    //    LinesMaterials->diffuseColor.finishEditing();
+    //}
 
     // set up the points
     int NbrPts = SketchFlat->nbrOfPoints();
@@ -459,6 +486,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
 	if (!EditRoot) {
 		EditRoot = new SoSeparator;
 		pcRoot->addChild(EditRoot);
+        EditRoot->renderCaching = SoSeparator::OFF ;
 	}
 
 	// stuff for the points ++++++++++++++++++++++++++++++++++++++

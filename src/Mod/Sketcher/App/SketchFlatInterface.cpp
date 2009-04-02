@@ -33,6 +33,7 @@
 #include "SketchFlatInterface.h"
 #include "sketchflat/sketchflat.h"
 
+#define M_PI 3.14159265358979323846f
 
 using namespace Sketcher;
 
@@ -461,17 +462,16 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 				pt2 = POINT_FOR_ENTITY(SK->entity[i].id, 2);
 					
 				EvalPoint(pt0, &x, &y);
-				gp_Pnt V1(x/1000.0,y/1000.0,0);
-
-				//points.push_back(points2D(x,y));
+                gp_Pnt V1(x/1000.0,y/1000.0,0);
+				
 				EvalPoint(pt1, &x, &y);
 				gp_Pnt V2(x/1000.0,y/1000.0,0);
-				//points.push_back(points2D(x,y));
+
 				EvalPoint(pt2, &x, &y);
 				gp_Pnt V3(x/1000.0,y/1000.0,0);
-				//points.push_back(points2D(x,y));
-				double rad = V3.Distance(V2);
-				gp_Circ circ(gp_Ax2(V3,gp_Dir(0,0,1),gp_Dir(1,0,0)),rad);
+
+				double R = V3.Distance(V2);
+				gp_Circ circ(gp_Ax2(V3,gp_Dir(0,0,1),gp_Dir(1,0,0)),R);
             
 				//GC_MakeCircle circ(V1,gp_Dir(0,0,1),V1.Distance(V2));
 				//GC_MakeArcOfCircle arc(circ,0.0,3.1415,true);
@@ -516,6 +516,110 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 		Base::Console().Warning("Sketch not created, possibly inner Wires!");
 
 	return result;
+}
+
+
+void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::vector<unsigned int> &index,std::vector<unsigned int> &color)
+{
+	int point=-1;
+    hPoint pt0=0, pt1=0, pt2=0;
+    hParam prm0=0;
+	bool bFirst=true;
+	double x,y,R;
+
+	for(int i = 0; i<SK->entities; ++i)
+	{
+
+		switch(SK->entity[i].type){
+			case ENTITY_DATUM_POINT  :      
+			case ENTITY_DATUM_LINE   :  
+				break;
+			case ENTITY_LINE_SEGMENT :{  
+				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
+				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
+					
+				EvalPoint(pt0, &x, &y);
+                coords.push_back(Base::Vector3d(x/1000.0,y/1000.0,0));
+				EvalPoint(pt1, &x, &y);
+                coords.push_back(Base::Vector3d(x/1000.0,y/1000.0,0));
+
+                index.push_back(2);
+                color.push_back(SK->entity[i].construction ? 1:0);
+
+				break;
+									  }
+			case ENTITY_CIRCLE       :   
+			{
+				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
+				prm0 = PARAM_FOR_ENTITY(SK->entity[i].id, 0);
+
+				EvalPoint(pt0, &x, &y);
+				x = x/1000.0;
+                y = y/1000.0;
+
+				R = EvalParam(prm0)/1000.0;
+
+                for(double f=0.0;f<2*M_PI;f+= M_PI/20.0){
+                    coords.push_back(Base::Vector3d(x+R*cos(f),y+R*sin(f),0));
+                }
+                coords.push_back(Base::Vector3d(x+R*cos(2*M_PI),y+R*sin(2*M_PI),0));
+
+                index.push_back(41);
+                color.push_back(SK->entity[i].construction ? 1:0);
+
+	            break;
+			}
+			case ENTITY_CIRCULAR_ARC :{  
+				pt0 = POINT_FOR_ENTITY(SK->entity[i].id, 0);
+				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
+				pt2 = POINT_FOR_ENTITY(SK->entity[i].id, 2);
+					
+				EvalPoint(pt0, &x, &y);
+                double x1 = x/1000.0,y1 = x/1000.0;
+				gp_Pnt V1(x/1000.0,y/1000.0,0);
+
+
+				EvalPoint(pt1, &x, &y);
+                double x2 = x/1000.0,y2 = x/1000.0;
+				gp_Pnt V2(x/1000.0,y/1000.0,0);
+
+				EvalPoint(pt2, &x, &y);
+                double xm = x/1000.0,ym = y/1000.0;
+				gp_Pnt V3(x/1000.0,y/1000.0,0);
+
+				double R = V3.Distance(V2);
+                double Phi1,Phi2;
+
+                //if(x1-xm < 0.0)
+                //    Phi1 = M_PI - asin((y1-ym)/R);
+                //else
+                    Phi1 = asin((y1-ym)/R);
+
+ /*               if(x2-xm < 0.0)
+                    Phi2 = M_PI - asin((y2-ym)/R);
+                else*/
+                    Phi2 = asin((y2-ym)/R);
+                
+                Base::Console().Log("Phi1:%f Phi2:%f \n",Phi1,Phi2);
+                int i=0;
+                for(double f=Phi1; f<Phi2; f+= M_PI/20.0,i++){
+                    coords.push_back(Base::Vector3d(xm+R*cos(f),ym+R*sin(f),0));
+                }
+                coords.push_back(Base::Vector3d(xm+R*cos(Phi2),ym+R*sin(Phi2),0));
+
+                index.push_back(i+1);
+                color.push_back(SK->entity[i].construction ? 1:0);
+
+                break;
+									  }
+			case ENTITY_CUBIC_SPLINE : 
+			case ENTITY_TTF_TEXT     :   
+			case ENTITY_IMPORTED     :
+				break;
+		}
+
+	}
+
 }
 
 
