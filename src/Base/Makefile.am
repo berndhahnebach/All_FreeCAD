@@ -125,6 +125,8 @@ libFreeCADBase_la_SOURCES=\
 		swigpyrun_1.3.25.h \
 		swigpyrun_1.3.33.cpp \
 		swigpyrun_1.3.33.h \
+		swigpyrun_1.3.36.cpp \
+		swigpyrun_1.3.36.h \
 		swigpyrun_1.3.38.cpp \
 		swigpyrun_1.3.38.h \
 		TimeInfo.cpp \
