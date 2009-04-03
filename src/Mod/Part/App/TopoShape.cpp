@@ -304,6 +304,43 @@ void TopoShape::read(const char *FileName)
     }
 }
 
+/*!
+ Example code to get the labels for each face in an IGES file.
+ \code
+#include <Handle_XSControl_WorkSession.hxx>
+#include <Handle_XSControl_TransferReader.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <Handle_IGESData_IGESModel.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_IGESEntity.hxx>
+
+IGESControl_Reader aReader;
+...
+// Gets the labels of all face items if defined in the IGES file
+Handle_XSControl_WorkSession ws = aReader.WS();
+Handle_XSControl_TransferReader tr = ws->TransferReader();
+
+std::string name;
+Handle(IGESData_IGESModel) aModel = aReader.IGESModel();
+Standard_Integer all = aModel->NbEntities();
+
+TopExp_Explorer ex;
+for (ex.Init(this->_Shape, TopAbs_FACE); ex.More(); ex.Next())
+{
+    const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
+    Handle_Standard_Transient ent = tr->EntityFromShapeResult(aFace, 1);
+    if (!ent.IsNull()) {
+        int i = aModel->Number(ent);
+        if (i > 0) {
+            Handle_IGESData_IGESEntity ie = aModel->Entity(i);
+            if (ie->HasShortLabel())
+                name = ie->ShortLabel()->ToCString();
+        }
+    }
+}
+\endcode
+*/
 void TopoShape::importIges(const char *FileName)
 {
     try {
