@@ -539,9 +539,9 @@ void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::ve
 				pt1 = POINT_FOR_ENTITY(SK->entity[i].id, 1);
 					
 				EvalPoint(pt0, &x, &y);
-                coords.push_back(Base::Vector3d(x/1000.0,y/1000.0,0));
+                coords.push_back(Base::Vector3d(x/1000.0,y/1000.0,0.1));
 				EvalPoint(pt1, &x, &y);
-                coords.push_back(Base::Vector3d(x/1000.0,y/1000.0,0));
+                coords.push_back(Base::Vector3d(x/1000.0,y/1000.0,0.1));
 
                 index.push_back(2);
                 color.push_back(SK->entity[i].construction ? 1:0);
@@ -559,10 +559,10 @@ void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::ve
 
 				R = EvalParam(prm0)/1000.0;
 				int i=0;
-                for(double f=0.0;f<2*M_PI;f+= M_PI/10.0,i++){
-                    coords.push_back(Base::Vector3d(x+R*cos(f),y+R*sin(f),0));
+                for(double f=0.0;f<2*M_PI;f+= M_PI/30.0,i++){
+                    coords.push_back(Base::Vector3d(x+R*cos(f),y+R*sin(f),0.1));
                 }
-                coords.push_back(Base::Vector3d(x+R*cos(2*M_PI),y+R*sin(2*M_PI),0));
+                coords.push_back(Base::Vector3d(x+R*cos(2*M_PI),y+R*sin(2*M_PI),0.1));
 
                 index.push_back(i+1);
                 color.push_back(SK->entity[i].construction ? 1:0);
@@ -603,10 +603,10 @@ void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::ve
 				Base::Console().Log("Phi1:%f Phi2:%f x1:%f y1:%f x2:%f y2:%f xm:%f ym:%f acos(x1-xm):%f\n",Phi1,Phi2,x1,y1,x2,y2,xm,ym,acos((x1-xm)/R));
                 int i=0;
 				if(Phi1 > Phi2) Phi2+=2*M_PI;
-				for(double f=Phi1; f<Phi2; f+= M_PI/10.0,i++){
-					coords.push_back(Base::Vector3d(xm+R*cos(f),ym-R*sin(f),0));
+				for(double f=Phi1; f<Phi2; f+= M_PI/30.0,i++){
+					coords.push_back(Base::Vector3d(xm+R*cos(f),ym-R*sin(f),0.1));
 				}
-				coords.push_back(Base::Vector3d(xm+R*cos(Phi2),ym-R*sin(Phi2),0));
+				coords.push_back(Base::Vector3d(xm+R*cos(Phi2),ym-R*sin(Phi2),0.1));
 
 				index.push_back(i+1);
                 color.push_back(SK->entity[i].construction ? 1:0);
