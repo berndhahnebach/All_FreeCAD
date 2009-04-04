@@ -390,6 +390,8 @@ class toolBar:
 					self.zValue.setEnabled(not checked)
 
 
+				
+
 #---------------------------------------------------------------------------
 # Processing functions
 #---------------------------------------------------------------------------
@@ -527,6 +529,12 @@ class toolBar:
 				else: print "error: couldn't get a color for ",type," type."
 				return (r,g,b)
 
+			def cross(self,on=True):
+				if on:
+					self.app.setOverrideCursor(QtCore.Qt.CrossCursor)
+				else:
+					self.app.restoreOverrideCursor()
+
 #---------------------------------------------------------------------------
 # Initialization
 #---------------------------------------------------------------------------
@@ -556,10 +564,11 @@ class toolBar:
 			icon.save(bu,'XPM')
 			FreeCADGui.addIcon(name,str(ba))
 			
-		self.app = QtGui.qApp
+
 		self.mw = getMainWindow()
 		self.draftWidget = DraftDockWidget()
 		self.ui = Ui_draftToolbar()
+		self.ui.app = QtGui.qApp
 		self.ui.setupUi(self.draftWidget)
 		self.draftWidget.setObjectName("draftToolbar")
 		self.draftWidget.setWindowTitle("draftCommand")
