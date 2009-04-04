@@ -121,6 +121,7 @@ libFreeCADBase_la_SOURCES=\
 		Sequencer.cpp \
 		Stream.cpp \
 		Swap.cpp \
+		swigpyrun.inl \
 		swigpyrun_1.3.25.cpp \
 		swigpyrun_1.3.25.h \
 		swigpyrun_1.3.33.cpp \
