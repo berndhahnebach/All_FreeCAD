@@ -209,34 +209,49 @@ def getBoundary(shape):
 		if lut[e.hashCode()] == 1: bound.append(e)
 	return bound
 
-def sortEdges(edgeslist):
-	"this function sorts edges so they are all in following order and in the right direction"
-	edgeslist = __sortEdges__(edgeslist)
-	if (len(edgeslist) < 2): return edgeslist
-	edges = []
-	for e in range(len(edgeslist)-1):
-		edge = edgeslist[e]
-		next = edgeslist[e+1]
-		first = edge.Vertexes[0].Point
-		last = edge.Vertexes[-1].Point
-		if (fcvec.equals(last,next.Vertexes[0].Point)) or (fcvec.equals(last,next.Vertexes[-1].Point)):
-			edges.append(edge)
-		else:
-			if (isinstance(edge.Curve,Part.Line)):
-				edges.append(Part.Line(last,first).toShape())
-			else:
-				edges.append(Part.Arc(last,findMidpoint(edge),first).toShape())
-	edge = edgeslist[-1]
-	first = edge.Vertexes[0].Point
-	last = edge.Vertexes[-1].Point
-	if (fcvec.equals(first,edgeslist[-2].Vertexes[-1].Point)):
-		edges.append(edge)
-	else:
-		if (isinstance(edge.Curve,Part.Line)):
-			edges.append(Part.Line(last,first).toShape())
-		else:
-			edges.append(Part.Arc(last,findMidpoint(edge),first).toShape())
-	return edges
+	
+def sortEdges(lEdges, aVertex=None):
+	"an alternative, more accurate version of Part.__sortEdges__"
+	
+	def isSameVertex(V1, V2):
+		''' Test if vertexes have same coordinates with precision 10E(-PREC)'''
+		if round(V1.X-V2.X,1)==0 and round(V1.Y-V2.Y,1)==0 and round(V1.Z-V2.Z,1)==0 :
+			return True
+		else :
+			return False
+	
+	def lookfor(aVertex, inEdges):
+		''' Look for (aVertex, inEdges) returns count, the position of the instance
+			the position in the instance and the instance of the Edge'''
+		count = 0
+		linstances = [] #lists the instances of aVertex
+		for i in range(len(inEdges)) :
+			for j in range(2) :
+				if isSameVertex(aVertex,inEdges[i].Vertexes[j-1]):
+					instance = inEdges[i]
+					count += 1
+					linstances += [i,j-1,instance]
+		return [count]+linstances
+	
+	if (len(lEdges) < 2): return lEdges
+	olEdges = [] 			# ol stands for ordered list 
+	if aVertex == None:
+		for i in range(len(lEdges)*2) :
+			result = lookfor(lEdges[i/2].Vertexes[i%2],lEdges)
+			if result[0] == 1 :  # Have we found an end ?
+				olEdges = sortEdges(lEdges, result[3].Vertexes[result[2]])
+				return olEdges
+		# if the wire is closed there is no end so choose 1st Vertex
+		return sortEdges(lEdges, lEdges[0].Vertexes[0]) 
+	else :
+		result = lookfor(aVertex,lEdges)
+		if result[0] != 0 :
+			del lEdges[result[1]]
+			next = sortEdges(lEdges, result[3].Vertexes[-((-result[2])^1)])
+			olEdges += [result[3]] + next
+			return olEdges
+		else :
+			return []
 
 def findMidpoint(edge):
 	"calculates the midpoint of an edge"
@@ -1513,47 +1528,3 @@ def circleNeededParameters (parameters):
 		return None
 
 
-	
-def __sortEdges__(lEdges, aVertex=None):
-	"an alternative, more accurate version of Part.__sortEdges__"
-	
-	def isSameVertex(V1, V2):
-		''' Test if vertexes have same coordinates with precision 10E(-PREC)'''
-		if round(V1.X-V2.X,1)==0 and round(V1.Y-V2.Y,1)==0 and round(V1.Z-V2.Z,1)==0 :
-			return True
-		else :
-			return False
-	
-	def lookfor(aVertex, inEdges):
-		''' Look for (aVertex, inEdges) returns count, the position of the instance
-			the position in the instance and the instance of the Edge'''
-		count = 0
-		linstances = [] #lists the instances of aVertex
-		for i in range(len(inEdges)) :
-			for j in range(2) :
-				if isSameVertex(aVertex,inEdges[i].Vertexes[j-1]):
-					print "YES"
-					instance = inEdges[i]
-					count += 1
-					linstances += [i,j-1,instance]
-		return [count]+linstances       
-		
-	olEdges = [] 			# ol stands for ordered list 
-	if aVertex == None:
-		for i in range(len(lEdges)*2) :
-			result = lookfor(lEdges[i/2].Vertexes[i%2],lEdges)
-			if result[0] == 1 :  # Have we found an end ?
-				olEdges = __sortEdges__(lEdges, result[3].Vertexes[result[2]])
-				return olEdges
-		# if the wire is closed there is no end so choose 1st Vertex
-		return __sortEdges__(lEdges, lEdges[0].Vertexes[0]) 
-	else :
-		result = lookfor(aVertex,lEdges)
-		if result[0] != 0 :
-			FreeCAD.Console.PrintMessage("Found one \n")
-			del lEdges[result[1]]
-			next = __sortEdges__(lEdges, result[3].Vertexes[-((-result[2])^1)])
-			olEdges += [result[3]] + next
-			return olEdges
-		else :
-			return []

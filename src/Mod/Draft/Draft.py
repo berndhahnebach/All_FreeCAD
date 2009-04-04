@@ -559,6 +559,7 @@ class line:
 			self.linetrack = lineTracker()
 			self.constraintrack = lineTracker(dotted=True)
 			FreeCAD.Console.PrintMessage("Pick first point:\n")
+			self.ui.cross(True)
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -576,6 +577,7 @@ class line:
 		self.node=[]
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.offUi()
+		self.ui.cross(False)
 		self.ui.sourceCmd=None
 		del self.linetrack
 		del self.constraintrack
@@ -760,6 +762,7 @@ class rectangle:
 			self.snap = snapTracker()
 			self.rect = rectangleTracker()
 			FreeCAD.Console.PrintMessage("Pick first point:\n")
+			self.ui.cross(True)
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -767,6 +770,7 @@ class rectangle:
 		self.rect.off()
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.offUi()
+		self.ui.cross(False)
 		self.ui.sourceCmd=None
 		del self.rect
 		del self.snap
@@ -890,12 +894,14 @@ class arc:
 			self.arctrack = arcTracker()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			FreeCAD.Console.PrintMessage("Pick center point:\n")
+			self.ui.cross(True)
 
 	def finish(self,closed=False):
 		"finishes the arc"
 		if (self.rad == None): self.doc.undo()
 		elif not(self.closedCircle) and (self.step < 4): self.doc.undo()
 		self.ui.offUi()
+		self.ui.cross(False)
 		self.view.removeEventCallback("SoEvent",self.call)
 		del self.snap
 		del self.linetrack
@@ -1127,6 +1133,7 @@ class annotation:
 			self.ui.xValue.selectAll()
 			self.snap = snapTracker()
 			FreeCAD.Console.PrintMessage("Pick location point:\n")
+			self.ui.cross(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
@@ -1165,6 +1172,7 @@ class annotation:
 				self.node.append(point)
 				self.ui.textUi()
 				self.ui.textValue.setFocus()
+				self.ui.cross(False)
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1172,6 +1180,7 @@ class annotation:
 		self.node.append(point)
 		self.ui.textUi()
 		self.ui.textValue.setFocus()
+		self.ui.cross(False)
 
 
 
@@ -1234,12 +1243,14 @@ class move:
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick start point:\n")
+		self.ui.cross(True)
 
 	def finish(self,closed=False):
 		self.node=[]
 		FreeCAD.Console.PrintMessage("")
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.offUi()
+		self.ui.cross(False)
 		self.ui.sourceCmd=None
 		FreeCADGui.activeWorkbench().activeDraftCommand = None
 		del self.ghost
@@ -1422,10 +1433,12 @@ class rotate:
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick rotation center:\n")
+		self.ui.cross(True)
 				
 	def finish(self,closed=False):
 		"finishes the arc"
 		self.ui.offUi()
+		self.ui.cross(False)
 		self.view.removeEventCallback("SoEvent",self.call)
 		FreeCAD.Console.PrintMessage("")
 		del self.snap
@@ -1685,11 +1698,13 @@ class offset:
 			else: self.ghost.append(arcTracker())
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		self.ui.cross(True)
 
 	def finish(self,closed=False):
 		self.node=[]
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.offUi()
+		self.ui.cross(False)
 		self.ui.sourceCmd=None
 		del self.snap
 		del self.linetrack
@@ -2080,6 +2095,7 @@ class trimex:
 		self.force = None
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		self.ui.cross(True)
 
 				
 	def action(self,arg):
@@ -2234,6 +2250,7 @@ class trimex:
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.labelRadius.setText("Distance")
 		self.ui.offUi()
+		self.ui.cross(False)
 		self.ui.sourceCmd=None
 		del self.snap
 		del self.linetrack
