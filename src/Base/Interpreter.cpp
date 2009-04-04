@@ -448,61 +448,61 @@ const std::string InterpreterSingleton::strToPython(const char* Str)
 
 // --------------------------------------------------------------------
 
-extern int createSWIGPointerObj_1_3_25(const char* TypeName, void* obj, PyObject** ptr, int own);
-extern int createSWIGPointerObj_1_3_33(const char* TypeName, void* obj, PyObject** ptr, int own);
-extern int createSWIGPointerObj_1_3_36(const char* TypeName, void* obj, PyObject** ptr, int own);
-extern int createSWIGPointerObj_1_3_38(const char* TypeName, void* obj, PyObject** ptr, int own);
+namespace Swig_1_3_25 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
+namespace Swig_1_3_33 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
+namespace Swig_1_3_36 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
+namespace Swig_1_3_38 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 
 PyObject* InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void* Pointer, int own)
 {
     int result = 0;
     PyObject* proxy=0;
     PyGILStateLocker locker;
-    result = createSWIGPointerObj_1_3_25(TypeName, Pointer, &proxy, own);
+    result = Swig_1_3_25::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
     if (result == 0) return proxy;
-    result = createSWIGPointerObj_1_3_33(TypeName, Pointer, &proxy, own);
+    result = Swig_1_3_33::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
     if (result == 0) return proxy;
-    result = createSWIGPointerObj_1_3_36(TypeName, Pointer, &proxy, own);
+    result = Swig_1_3_36::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
     if (result == 0) return proxy;
-    result = createSWIGPointerObj_1_3_38(TypeName, Pointer, &proxy, own);
+    result = Swig_1_3_38::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
     if (result == 0) return proxy;
 
     // none of the SWIG's succeeded
     throw Base::Exception("No SWIG wrapped library loaded");
 }
 
-extern int convertSWIGPointerObj_1_3_25(const char* TypeName, PyObject* obj, void** ptr, int flags);
-extern int convertSWIGPointerObj_1_3_33(const char* TypeName, PyObject* obj, void** ptr, int flags);
-extern int convertSWIGPointerObj_1_3_36(const char* TypeName, PyObject* obj, void** ptr, int flags);
-extern int convertSWIGPointerObj_1_3_38(const char* TypeName, PyObject* obj, void** ptr, int flags);
+namespace Swig_1_3_25 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
+namespace Swig_1_3_33 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
+namespace Swig_1_3_36 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
+namespace Swig_1_3_38 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 
 bool InterpreterSingleton::convertSWIGPointerObj(const char* TypeName, PyObject* obj, void** ptr, int flags)
 {
     int result = 0;
     PyGILStateLocker locker;
-    result = convertSWIGPointerObj_1_3_25(TypeName, obj, ptr, flags);
+    result = Swig_1_3_25::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
     if (result == 0) return true;
-    result = convertSWIGPointerObj_1_3_33(TypeName, obj, ptr, flags);
+    result = Swig_1_3_33::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
     if (result == 0) return true;
-    result = convertSWIGPointerObj_1_3_36(TypeName, obj, ptr, flags);
+    result = Swig_1_3_36::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
     if (result == 0) return true;
-    result = convertSWIGPointerObj_1_3_38(TypeName, obj, ptr, flags);
+    result = Swig_1_3_38::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
     if (result == 0) return true;
 
     // none of the SWIG's succeeded
     throw Base::Exception("No SWIG wrapped library loaded");
 }
 
-extern void cleanupSWIG_1_3_25(const char* TypeName);
-extern void cleanupSWIG_1_3_33(const char* TypeName);
-extern void cleanupSWIG_1_3_36(const char* TypeName);
-extern void cleanupSWIG_1_3_38(const char* TypeName);
+namespace Swig_1_3_25 { extern void cleanupSWIG_T(const char* TypeName); }
+namespace Swig_1_3_33 { extern void cleanupSWIG_T(const char* TypeName); }
+namespace Swig_1_3_36 { extern void cleanupSWIG_T(const char* TypeName); }
+namespace Swig_1_3_38 { extern void cleanupSWIG_T(const char* TypeName); }
 
 void InterpreterSingleton::cleanupSWIG(const char* TypeName)
 {
     PyGILStateLocker locker;
-    cleanupSWIG_1_3_25(TypeName);
-    cleanupSWIG_1_3_33(TypeName);
-    cleanupSWIG_1_3_36(TypeName);
-    cleanupSWIG_1_3_38(TypeName);
+    Swig_1_3_25::cleanupSWIG_T(TypeName);
+    Swig_1_3_33::cleanupSWIG_T(TypeName);
+    Swig_1_3_36::cleanupSWIG_T(TypeName);
+    Swig_1_3_38::cleanupSWIG_T(TypeName);
 }
