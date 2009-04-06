@@ -36,13 +36,20 @@ import FreeCAD
 
 def InitApplications():
 	try:
-		import sys,os,dircache
+		import sys,os
 	except:
 		FreeCAD.PrintError("\n\nSeems the python standard libs are not installed, bailing out!\n\n")
 		raise
-	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
+	# Checking on FreeCAD module path ++++++++++++++++++++++++++++++++++++++++++
 	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
 	ModDir = os.path.realpath(ModDir)
+	BinDir = FreeCAD.ConfigGet("AppHomePath")+'bin'
+	BinDir = os.path.realpath(BinDir)
+	AddPath = FreeCAD.ConfigGet("AdditionalModulePaths").split(";")
+	HomeMod = FreeCAD.ConfigGet("UserAppData")+"Mod"
+	HomeMod = os.path.realpath(HomeMod)
+	ModPar = FreeCAD.ParamGet("System parameter:Modules")
+
 	#print FreeCAD.ConfigGet("AppHomePath")
 	if not os.path.isdir(ModDir):
 		Log ("No modules found in " + ModDir + "\n")
@@ -50,35 +57,34 @@ def InitApplications():
 	# These both paths are not needed
 	# sys.path.append( '..\\bin' )
 	# sys.path.append( '..\\bin\\Lib' )
-	sys.path.append( ModDir )
-	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):
-		sys.path.append( FreeCAD.ConfigGet("AppHomePath")+'src\\Tools' )
+	sys.path.append(ModDir)
 	Log("Using "+ModDir+" as module path!\n")
-	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
-	ModDirs = dircache.listdir(ModDir)
-	AddPath = App.ConfigGet("AdditionalModulePaths").split(";")
-	for i in AddPath: ModDirs.append(i)
-	# Search for additional modules in the home directecory
-	HomeMod = App.ConfigGet("UserAppData")+"Mod"
+	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):
+		sys.path.append(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools')
+	# Searching for module dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
+	# Use dict to handle duplicated module names
+	ModDict = {}
+	ModDirs = os.listdir(ModDir)
+	for i in ModDirs: ModDict[i.lower()] = os.path.join(ModDir,i)
+	for i in AddPath:
+		if os.path.isdir(i): ModDict[i] = i
+	# Search for additional modules in the home directory
 	if (os.path.exists(HomeMod)):
-		HomeMods = dircache.listdir(HomeMod)
-		for i in HomeMods: ModDirs.append(os.path.join(HomeMod,i))
+		HomeMods = os.listdir(HomeMod)
+		for i in HomeMods: ModDict[i.lower()] = os.path.join(HomeMod,i)
 	#AddModPaths = App.ParamGet("System parameter:AdditionalModulePaths")
 	#Err( AddModPaths)
 	# add also this path so that all modules search for libraries
 	# they depend on first here
-	BinDir = FreeCAD.ConfigGet("AppHomePath")+'bin'
-	BinDir = os.path.realpath(BinDir)
 	PathExtension = BinDir + os.pathsep
-	#print ModDirs
-	Log('Init:   Searching modules...\n')
-	ModPar = App.ParamGet("System parameter:Modules")
-	for Dir in ModDirs:
+	Log('Init:   Searching for modules...\n')
+	FreeCAD.__path__ = ModDict.values()
+	for Dir in ModDict.values():
 		if ((Dir != '') & (Dir != 'CVS') & (Dir != '__init__.py')):
 			ModGrp = ModPar.GetGroup(Dir)
-			sys.path.append(os.path.join(ModDir,Dir))
-			PathExtension += os.path.join(ModDir,Dir) + os.pathsep
-			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
+			sys.path.append(Dir)
+			PathExtension += Dir + os.pathsep
+			InstallFile = os.path.join(Dir,"Init.py")
 			if (os.path.exists(InstallFile)):
 				try:
 					execfile(InstallFile)
@@ -95,15 +101,6 @@ def InitApplications():
 	Log("System path after init:\n")
 	for i in path:
 		Log("   " + i + "\n")
-	#Log("path extension: " + PathExtension + "\n")
-
-#			else:
-#				FreeCAD.PrintMessage('new! install it...\n')
-#				InstallFile = os.path.join(os.path.join(ModDir,Dir),"Install.py")
-#				if ( os.path.exists(InstallFile) ):
-#					execfile(InstallFile)
-#				else:
-#					Wrn("         Install.py not found! "+Dir+" not installed!\n")
 
 
 # some often used shortcuts (for lazy people like me ;-)
