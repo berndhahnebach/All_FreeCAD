@@ -123,23 +123,16 @@ class NoneWorkbench ( Workbench ):
 		return "Gui::NoneWorkbench"
 
 def InitApplications():
-	import sys,os,dircache
-	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
-	ModDir = os.path.realpath(ModDir)
-	#print FreeCAD.ConfigGet("AppHomePath")
-	if not os.path.isdir(ModDir):
-		print "No modules found in " + ModDir
-		return
+	import sys,os
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	# (additional module paths are already cached)
-	ModDirs = dircache.listdir(ModDir)
+	ModDirs = FreeCAD.__path__
 	#print ModDirs
 	Log('Init:   Searching modules...\n')
-	ModPar = App.ParamGet("System parameter:Modules")
+	ModPar = FreeCAD.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ((Dir != '') & (Dir != 'CVS') & (Dir != '__init__.py')):
-			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
+			InstallFile = os.path.join(Dir,"InitGui.py")
 			if (os.path.exists(InstallFile)):
 				try:
 					execfile(InstallFile)
