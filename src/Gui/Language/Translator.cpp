@@ -95,6 +95,17 @@ using namespace Gui;
 
 Translator* Translator::_pcSingleton = 0;
 
+namespace Gui {
+class TranslatorP
+{
+public:
+    std::string activatedLanguage; /**< Active language */
+    std::map<std::string, std::string> mapLanguageTopLevelDomain;
+    std::list<QTranslator*> translators; /**< A list of all created translators */
+    QStringList paths;
+};
+}
+
 Translator* Translator::instance(void)
 {
     if (!_pcSingleton)
@@ -112,18 +123,22 @@ void Translator::destruct (void)
 Translator::Translator()
 {
     // This is needed for Qt's lupdate
-    mapLanguageTopLevelDomain[QT_TR_NOOP("English" )] = "en";
-    mapLanguageTopLevelDomain[QT_TR_NOOP("German"  )] = "de";
-    mapLanguageTopLevelDomain[QT_TR_NOOP("French"  )] = "fr";
-    mapLanguageTopLevelDomain[QT_TR_NOOP("Italian" )] = "it";
-    mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese")] = "jp";
-    mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese" )] = "cn";
-    activatedLanguage = "English";
+    d = new TranslatorP;
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("English" )] = "en";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("German"  )] = "de";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("French"  )] = "fr";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Italian" )] = "it";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese")] = "jp";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese" )] = "cn";
+    d->activatedLanguage = "English";
+
+    d->paths = directories();
 }
 
 Translator::~Translator()
 {
     removeTranslators();
+    delete d;
 }
 
 TStringList Translator::supportedLanguages() const
@@ -131,8 +146,8 @@ TStringList Translator::supportedLanguages() const
     // List all .qm files
     TStringList languages;
     QDir dir(QLatin1String(":/translations"));
-    for (std::map<std::string,std::string>::const_iterator it = mapLanguageTopLevelDomain.begin();
-        it != mapLanguageTopLevelDomain.end(); ++it) {
+    for (std::map<std::string,std::string>::const_iterator it = d->mapLanguageTopLevelDomain.begin();
+        it != d->mapLanguageTopLevelDomain.end(); ++it) {
         QString filter = QString::fromAscii("*_%1.qm").arg(QLatin1String(it->second.c_str()));
         QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
         if (!fileNames.isEmpty())
@@ -145,7 +160,7 @@ TStringList Translator::supportedLanguages() const
 void Translator::activateLanguage (const char* lang)
 {
     removeTranslators(); // remove the currently installed translators
-    this->activatedLanguage = lang;
+    d->activatedLanguage = lang;
     TStringList languages = supportedLanguages();
     if (std::find(languages.begin(), languages.end(), lang) != languages.end()) {
         refresh();
@@ -154,19 +169,25 @@ void Translator::activateLanguage (const char* lang)
 
 std::string Translator::activeLanguage() const
 {
-    return this->activatedLanguage;
+    return d->activatedLanguage;
 }
 
 QStringList Translator::directories() const
 {
-    std::string mods = App::Application::Config()["AppHomePath"]+"Mod";
-    QStringList dirs, list;
-    QDir dir(QLatin1String(mods.c_str()));
-    dirs = dir.entryList(QDir::Dirs|QDir::NoDotAndDotDot, QDir::Name);
-    for (QStringList::Iterator it = dirs.begin(); it != dirs.end(); ++it)
-        list.push_back(dir.filePath(*it));
+    //std::string mods = App::Application::Config()["AppHomePath"]+"Mod";
+    QStringList list;
+    //QStringList dirs;
+    //QDir dir(QLatin1String(mods.c_str()));
+    //dirs = dir.entryList(QDir::Dirs|QDir::NoDotAndDotDot, QDir::Name);
+    //for (QStringList::Iterator it = dirs.begin(); it != dirs.end(); ++it)
+    //    list.push_back(dir.filePath(*it));
     list.push_back(QLatin1String(":/translations"));
     return list;
+}
+
+void Translator::addPath(const QString& path)
+{
+    d->paths.push_back(path);
 }
 
 void Translator::installQMFiles(const QDir& dir, const char* locale)
@@ -175,8 +196,8 @@ void Translator::installQMFiles(const QDir& dir, const char* locale)
     QStringList fileNames = dir.entryList(QStringList(filter), QDir::Files, QDir::Name);
     for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
         bool ok=false;
-        for (std::list<QTranslator*>::const_iterator tt = translators.begin();
-            tt != translators.end(); ++tt) {
+        for (std::list<QTranslator*>::const_iterator tt = d->translators.begin();
+            tt != d->translators.end(); ++tt) {
             if ((*tt)->objectName() == *it) {
                 ok = true; // this file is already installed
                 break;
@@ -189,7 +210,7 @@ void Translator::installQMFiles(const QDir& dir, const char* locale)
             translator->setObjectName(*it);
             if (translator->load(dir.filePath(*it))) {
                 qApp->installTranslator(translator);
-                translators.push_back(translator);
+                d->translators.push_back(translator);
             }
             else {
                 delete translator;
@@ -205,11 +226,10 @@ void Translator::installQMFiles(const QDir& dir, const char* locale)
  */
 void Translator::refresh()
 {
-    std::map<std::string, std::string>::iterator tld = mapLanguageTopLevelDomain.find(this->activatedLanguage);
-    if (tld == mapLanguageTopLevelDomain.end())
+    std::map<std::string, std::string>::iterator tld = d->mapLanguageTopLevelDomain.find(d->activatedLanguage);
+    if (tld == d->mapLanguageTopLevelDomain.end())
         return; // no language activated
-    QStringList dirs = directories();
-    for (QStringList::iterator it = dirs.begin(); it != dirs.end(); ++it) {
+    for (QStringList::iterator it = d->paths.begin(); it != d->paths.end(); ++it) {
         QDir dir(*it);
         installQMFiles(dir, tld->second.c_str());
     }
@@ -220,12 +240,12 @@ void Translator::refresh()
  */
 void Translator::removeTranslators()
 {
-    for (std::list<QTranslator*>::iterator it = translators.begin(); it != translators.end(); ++it) {
+    for (std::list<QTranslator*>::iterator it = d->translators.begin(); it != d->translators.end(); ++it) {
         qApp->removeTranslator(*it);
         delete *it;
     }
 
-    translators.clear();
+    d->translators.clear();
 }
 
 #include "moc_Translator.cpp"
