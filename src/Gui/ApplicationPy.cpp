@@ -67,6 +67,10 @@ PyMethodDef Application::Methods[] = {
   {"activeWorkbench", (PyCFunction) Application::sActiveWorkbenchHandler,   1,
    "activeWorkbench() -> object\n\n"
    "Return the active workbench object"},
+  {"addResourcePath",             (PyCFunction) Application::sAddIconPath,      1,
+   "addResourcePath(string) -> None\n\n"
+   "Add a new path to the system where to find resource files\n"
+   "like icons or localization files"},
   {"addIconPath",             (PyCFunction) Application::sAddIconPath,      1,
    "addIconPath(string) -> None\n\n"
    "Add a new path to the system where to find icon files"},
@@ -525,7 +529,8 @@ PyObject* Application::sAddIconPath(PyObject * /*self*/, PyObject *args,PyObject
         path = home + path;
     }
 
-    BitmapFactory().addPath(path);  
+    BitmapFactory().addPath(path);
+    Translator::instance()->addPath(path);
     Py_INCREF(Py_None);
     return Py_None;
 }

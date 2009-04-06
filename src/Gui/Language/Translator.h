@@ -44,6 +44,7 @@ typedef std::list<std::string> TStringList;
  *
  * \author Werner Mayer
  */
+class TranslatorP;
 class GuiExport Translator : public QObject
 {
     Q_OBJECT
@@ -65,6 +66,8 @@ public:
     std::string activeLanguage() const;
     /** Returns a list of supported languages. */
     TStringList supportedLanguages() const;
+    /** Adds a path where localization files can be found */
+    void addPath(const QString& path);
 
 private:
     Translator();
@@ -73,10 +76,9 @@ private:
     QStringList directories() const;
     void installQMFiles(const QDir& dir, const char* locale);
 
+private:
     static Translator* _pcSingleton;
-    std::string activatedLanguage; /**< Active language */
-    std::map<std::string, std::string> mapLanguageTopLevelDomain;
-    std::list<QTranslator*> translators; /**< A list of all created translators */
+    TranslatorP* d;
 };
 
 } // namespace Gui
