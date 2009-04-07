@@ -69,10 +69,8 @@
 #include <Standard_Byte.hxx>
 #include <Standard_Character.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_Container.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ctype.hxx>
-#include <Standard_DBHandle.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_DimensionMismatch.hxx>

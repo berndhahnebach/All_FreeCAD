@@ -95,7 +95,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
         if (found)
         {
             //If we find a new Keyword description
-            if (line.size() > 3 && line.at(0) == '$' && (line.find("nid") == string::npos))
+            if (line.size() > 3 && line.at(0) == '$' && (line.find("nid") == std::string::npos))
             {
                 found = false;
                 output << line << endl;
@@ -126,7 +126,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                         ReformatStream(astream2,subline1);
                         output << line.substr(0,66) << subline1 << line.substr(75,5) << endl;
                     }
-                    catch (out_of_range)
+                    catch (std::out_of_range)
                     {
                         output << line << endl;
                         return false;
@@ -143,7 +143,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                         ReformatStream(astream2,subline1);
                         output << line.substr(0,31) << subline1 << endl;
                     }
-                    catch (out_of_range)
+                    catch (std::out_of_range)
                     {
                         output << line << endl;
                         return false;
@@ -156,7 +156,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
         else
         {
             std::string search("Velocity/Acceleration/");
-            if (line.find(search)!=string::npos)
+            if (line.find(search)!=std::string::npos)
                 found = true;
             output << line << endl;
             continue;
