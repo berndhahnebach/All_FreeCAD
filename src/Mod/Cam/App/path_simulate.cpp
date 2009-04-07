@@ -30,6 +30,7 @@
 #include <Base/Exception.h>
 #include <Base/Builder3D.h>
 #include <GCPnts_AbscissaPoint.hxx>
+#include <sstream>
 
 #define curvTOL  30.0
 #define boundTOL 20.0
@@ -3134,7 +3135,7 @@ bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
 
     ofstream anOutputFile[2];
 
-    stringstream master_file, slave_file;
+    std::stringstream master_file, slave_file;
 
     m_it1 = m_BSplineTop.begin();
     m_it2 = m_BSplineBottom.begin();

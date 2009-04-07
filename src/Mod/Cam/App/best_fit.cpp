@@ -1364,7 +1364,7 @@ double best_fit::CompTotalError()
 
     Base::Vector3f projPoint, distVec, projPoint2;
     unsigned long  facetIndex;
-    stringstream text;
+    std::stringstream text;
     m_error.resize(m_CadMesh.CountPoints());
 
     unsigned int c=0;
@@ -1526,7 +1526,7 @@ double best_fit::CompTotalError(MeshCore::MeshKernel &mesh)
 
     Base::Vector3f projPoint, distVec, projPoint2;
     unsigned long  facetIndex;
-    stringstream text;
+    std::stringstream text;
     m_error.resize(m_CadMesh.CountPoints());
 
     unsigned int c=0;
