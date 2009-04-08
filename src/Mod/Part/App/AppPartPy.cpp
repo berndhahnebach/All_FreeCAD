@@ -23,6 +23,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepPrimAPI_MakeBox.hxx>
+# include <BRepPrimAPI_MakeCone.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRep_Builder.hxx>
@@ -472,6 +473,37 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makeCone(PyObject *self, PyObject *args)
+{
+    double radius1, radius2,  height, angle=2.0*Standard_PI;
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "ddd|O!O!d", &radius1, &radius2, &height,
+                                             &(Base::VectorPy::Type), &pPnt,
+                                             &(Base::VectorPy::Type), &pDir,
+                                             &angle))
+        return NULL;
+
+    try {
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        BRepPrimAPI_MakeCone mkCone(gp_Ax2(p,d),radius1, radius2, height, angle);
+        TopoDS_Shape shape = mkCone.Shape();
+        return new TopoShapeSolidPy(new TopoShape(shape));
+    }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of cone failed");
+        return NULL;
+    }
+}
+
 static PyObject * makeLine(PyObject *self, PyObject *args)
 {
     PyObject *obj1, *obj2;
@@ -755,26 +787,32 @@ struct PyMethodDef Part_methods[] = {
     {"read"       ,read      ,METH_VARARGS,
      "read(string) -- Load the file and return the shape."},
     {"show"       ,show      ,METH_VARARGS,
-     "show(shape) -- Add the shape to the active document or create one if it does not exist."},
+     "show(shape) -- Add the shape to the active document or create one if no document exists."},
     {"makeCompound"  ,makeCompound ,METH_VARARGS,
      "makeCompound(list) -- Create a compound out of a list of geometries."},
     {"makePlane"  ,makePlane ,METH_VARARGS,
-     "makePlane(lenght,width) -- Make a plane"},
+     "makePlane(length,width,[pnt,dir]) -- Make a plane\n"
+     "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
     {"makeBox"    ,makeBox ,METH_VARARGS,
-     "makeBox(x,y,z,l,w,h) -- Make a box located in (x,y,z) with the dimensions (l,w,h)"},
+     "makeBox(length,width,height,[pnt,dir]) -- Make a box located\n"
+     "in pnt with the dimensions (length,width,height)\n"
+     "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
     {"makeLine"   ,makeLine  ,METH_VARARGS,
      "makeLine((x1,y1,z1),(x2,y2,z2)) -- Make a line of two points"},
     {"makePolygon"   ,makePolygon  ,METH_VARARGS,
      "makePolygon(list) -- Make a polygon of a list of points"},
     {"makeCircle" ,makeCircle,METH_VARARGS,
-     "makeCircle(radius,[angle1,angle2]) -- Make a circle with a given radius\n"
-     "By default angle1=0 and angle2=2*PI"},
+     "makeCircle(radius,[pnt,dir,angle1,angle2]) -- Make a circle with a given radius\n"
+     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0 and angle2=2*PI"},
     {"makeSphere" ,makeSphere,METH_VARARGS,
-     "makeSphere(radius,[Point, Normal, angle1,angle2,angle3]) -- Make a sphere with a given radius\n"
-     "By default angle1=0, angle2=0.5*PI and angle3=2*PI"},
+     "makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius\n"
+     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0, angle2=0.5*PI and angle3=2*PI"},
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
-     "makeCylinder(radius,height,[angle]) -- Make a cylinder with a given radius and height\n"
-     "By default angle=2*PI"},
+     "makeCylinder(radius,height,[pnt,dir,angle]) -- Make a cylinder with a given radius and height\n"
+     "By default pnt=Vector(0,0,0),dir=Vector(0,0,1) and angle=2*PI"},
+    {"makeCone" ,makeCone,METH_VARARGS,
+     "makeCone(radius1,radius2,height,[pnt,dir,angle]) -- Make a cone with given radii and height\n"
+     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1) and angle=2*PI"},
     {"__sortEdges__" ,sortEdges,METH_VARARGS,
      "__sortEdges__(list of edges) -- Helper method to sort an unsorted list of edges so that afterwards\n"
      "two adjacent edges share a common vertex"},

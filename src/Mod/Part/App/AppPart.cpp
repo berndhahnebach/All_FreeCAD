@@ -109,10 +109,6 @@ void AppPartExport initPart()
     Base::Interpreter().addType(&Part::SurfaceOfRevolutionPy::Type,partModule,"SurfaceOfRevolution");
 
     Base::Interpreter().addType(&Part::PartFeaturePy        ::Type,partModule,"Feature");
-#if 1
-    Py::Module mod(partModule);
-    mod.setAttr(std::string("circle"),mod.getAttr("Circle"));
-#endif
 
     Part::TopoShape             ::init();
     Part::PropertyPartShape     ::init();
