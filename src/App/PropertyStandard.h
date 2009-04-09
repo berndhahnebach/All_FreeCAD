@@ -374,8 +374,9 @@ public:
     const Constraints*  getConstraints(void) const;
     //@}
 
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatConstraintItem"; }
-    
+    virtual const char* getEditorName(void) const
+    { return "Gui::PropertyEditor::PropertyFloatConstraintItem"; }
+
     virtual void setPyObject(PyObject *);
 
 protected:
@@ -383,7 +384,7 @@ protected:
 };
 
 /** Distance property
- * This is a property for representing distances. It basicly a float
+ * This is a property for representing distances. It is basically a float
  * property. On the Gui it has a quantity like m or mm.
  */
 class AppExport PropertyDistance: public PropertyFloat
@@ -392,7 +393,24 @@ class AppExport PropertyDistance: public PropertyFloat
 public:
     PropertyDistance(void){}
     virtual ~PropertyDistance(){}
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
+    virtual const char* getEditorName(void) const
+    { return "Gui::PropertyEditor::PropertyFloatItem"; }
+};
+
+/** Length property
+ * This is a property for representing lengths. It is basically a float
+ * property which must not be negative. On the Gui it has a quantity like m or mm.
+ */
+class AppExport PropertyLength : public PropertyFloat
+{
+    TYPESYSTEM_HEADER();
+public:
+    PropertyLength(void){}
+    virtual ~PropertyLength(){}
+    virtual const char* getEditorName(void) const
+    { return "Gui::PropertyEditor::PropertyFloatItem"; }
+
+    virtual void setPyObject(PyObject *);
 };
 
 /** Angle property

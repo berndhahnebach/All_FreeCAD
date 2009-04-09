@@ -765,6 +765,33 @@ TYPESYSTEM_SOURCE(PropertyDistance, App::PropertyFloat);
 
 //**************************************************************************
 //**************************************************************************
+// PropertyLength
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(PropertyLength, App::PropertyFloat);
+
+void PropertyLength::setPyObject(PyObject *value)
+{
+    float val=0.0f;
+    if (PyFloat_Check(value)) {
+        val = (float) PyFloat_AsDouble(value);
+    }
+    else if(PyInt_Check(value)) {
+        val = (float) PyInt_AsLong(value);
+    }
+    else {
+        std::string error = std::string("type must be float or int, not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+
+    if (val < 0.0f)
+        throw Py::ValueError("value must be nonnegative");
+    setValue(val);
+}
+
+//**************************************************************************
+//**************************************************************************
 // PropertyAngle
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
