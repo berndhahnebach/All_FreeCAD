@@ -910,6 +910,7 @@ void Application::initTypes(void)
     App ::PropertyFloatConstraint   ::init();
     App ::PropertyAngle             ::init();
     App ::PropertyDistance          ::init();
+    App ::PropertyLength            ::init();
     App ::PropertyInteger           ::init();
     App ::PropertyIntegerConstraint ::init();
     App ::PropertyPercent           ::init();

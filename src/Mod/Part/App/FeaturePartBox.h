@@ -39,7 +39,7 @@ class Box :public Part::Primitive
 public:
     Box();
 
-    App::PropertyDistance Length,Height,Width;
+    App::PropertyLength Length,Height,Width;
 
 
     /** @name methods override feature */

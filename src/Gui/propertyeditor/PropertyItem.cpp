@@ -479,6 +479,8 @@ QVariant PropertyFloatItem::toString(const QVariant& prop) const
             data += QString::fromUtf8(" \xc2\xb0");
         else if (props.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
             data += QLatin1String(" mm");
+        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId()))
+            data += QLatin1String(" mm");
     }
 
     return QVariant(data);
@@ -521,6 +523,10 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
         sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
         sb->setSuffix(QLatin1String(" mm"));
+    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId())) {
+        sb->setMinimum(0.0);
+        sb->setSuffix(QLatin1String(" mm"));
+    }
 }
 
 QVariant PropertyFloatItem::editorData(QWidget *editor) const
@@ -548,7 +554,7 @@ QVariant PropertyFloatConstraintItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloatConstraint::getClassTypeId()));
 
-    double value = ((App::PropertyFloatConstraint*)prop)->getValue();
+    double value = static_cast<const App::PropertyFloatConstraint*>(prop)->getValue();
     return QVariant(value);
 }
 

@@ -57,8 +57,8 @@ class Plane : public Primitive
 public:
     Plane();
 
-    App::PropertyDistance Length;
-    App::PropertyDistance Width;
+    App::PropertyLength Length;
+    App::PropertyLength Width;
 
     /** @name methods override feature */
     //@{
@@ -116,8 +116,8 @@ class Cylinder : public Primitive
 public:
     Cylinder();
 
-    App::PropertyDistance Radius;
-    App::PropertyDistance Height;
+    App::PropertyLength Radius;
+    App::PropertyLength Height;
     App::PropertyFloatConstraint Angle;
 
     /** @name methods override feature */
@@ -135,9 +135,9 @@ class Cone : public Primitive
 public:
     Cone();
 
-    App::PropertyDistance Radius1;
-    App::PropertyDistance Radius2;
-    App::PropertyDistance Height;
+    App::PropertyLength Radius1;
+    App::PropertyLength Radius2;
+    App::PropertyLength Height;
     App::PropertyFloatConstraint Angle;
 
     /** @name methods override feature */
