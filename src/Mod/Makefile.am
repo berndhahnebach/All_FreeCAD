@@ -1,16 +1,20 @@
 #SUBDIRS=Part Mesh Points Raytracing Image Drawing Complete Draft Test TemplatePyMod
-SUBDIRS=Points Image Complete Draft Test TemplatePyMod
+SUBDIRS=Points Complete Draft Test TemplatePyMod
 
-if GTS_LIBRARY_FILES
+if HAVE_OPENCV
+SUBDIRS += Image
+endif
+
+if HAVE_GTS
 SUBDIRS += Mesh
 endif
 
-if OCC_LIBRARY_FILES
+if HAVE_OPENCASCADE
 SUBDIRS += Part PartDesign Raytracing Drawing Sketcher
 endif
 
-if GTS_LIBRARY_FILES
-if OCC_LIBRARY_FILES
+if HAVE_GTS
+if HAVE_OPENCASCADE
 SUBDIRS += ReverseEngineering MeshPart
 endif
 endif

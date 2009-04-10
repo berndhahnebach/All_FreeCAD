@@ -18,11 +18,9 @@ libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-i
 libImage_la_CPPFLAGS = -DImageAppExport=
 
 libImage_la_LIBADD   = \
+		$(opencv_LIBS) \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
-		-lcv \
-		-lcxcore \
-		-lhighgui \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -45,7 +43,7 @@ Image_la_DEPENDENCIES = libImage.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I/usr/include/opencv
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(opencv_CFLAGS)
 
 libdir = $(prefix)/Mod/Image
 

@@ -360,7 +360,7 @@ else
   ])
 fi
 
-AM_CONDITIONAL(OCC_LIBRARY_FILES, test x"$fc_cv_lib_occ_avail" = xyes)
+AM_CONDITIONAL(HAVE_OPENCASCADE, test x"$fc_cv_lib_occ_avail" = xyes)
 AM_CONDITIONAL(OCC_VERSION6, test x"$fc_cv_lib_occ_ver_6" = xyes)
 
 dnl checking for WildMagic3
@@ -438,7 +438,21 @@ else
   ])
 fi
 
-AM_CONDITIONAL(GTS_LIBRARY_FILES, test x"$GTSCONFIG" != xfalse)
+AM_CONDITIONAL(HAVE_GTS, test x"$GTSCONFIG" != xfalse)
+
+dnl checking for OpenCV
+dnl **************************************************************************
+
+HAVE_OPENCV=false
+PKG_CHECK_MODULES(opencv, opencv, [HAVE_OPENCV=true], [true])
+if test x$HAVE_OPENCV = xfalse; then
+	AC_MSG_WARN([
+	**** Cannot find OpenCV library files.
+	Modules that depend on this library cannot be built. ****
+  ])
+fi
+
+AM_CONDITIONAL([HAVE_OPENCV], [test x$HAVE_OPENCV = xtrue])
 
 dnl **************************************************************************
 
