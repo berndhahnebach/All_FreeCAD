@@ -78,7 +78,7 @@ from draftlibs import fcgeo
 # Constants
 
 normal = Vector(0,0,1) # temporary normal for all objects (always horiontal)
-snapStack = [] # storing two last snapped objects, so we can check for intersection
+lastObj = [0,0] # last snapped objects, for quick intersection
 
 #---------------------------------------------------------------------------
 # General common functions used by the constructors
@@ -120,12 +120,6 @@ def snapPoint (target,point,cursor,ctrl=False):
 		# circle), 3=open square (intersection)
 		snapArray=[] 
 
-		if (len(snapStack)==0): snapStack.append(ob)
-		elif (len(snapStack)==1) and (snapStack[0]!=ob): snapStack.append(ob)
-		elif (len(snapStack)==2) and (snapStack[0]!=ob) and (snapStack[1]!=ob):
-			snapStack[0] = snapStack[1]
-			snapStack[1] = ob
-
 		if (ctrl) and (ob.Type == "Part::Feature"):
 			for i in ob.Shape.Vertexes:
 				snapArray.append([i.Point,0,i.Point])
@@ -145,14 +139,6 @@ def snapPoint (target,point,cursor,ctrl=False):
 								pc = (last.x-p1.x)/(p2.x-p1.x)
 								constrainpoint = (Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
 								snapArray.append([constrainpoint,1,constrainpoint]) # constrainpoint
-					if (len(snapStack) == 2):
-						last = snapStack[1]
-						if (last.Type == "Part::Feature"):
-							for k in last.Shape.Edges:
-								pt = fcgeo.findIntersection(j,k)
-								if pt:
-									for p in pt:
-										snapArray.append([p,3,p])
 
 				elif isinstance (j.Curve,Part.Circle):
 					rad = j.Curve.Radius
@@ -166,9 +152,24 @@ def snapPoint (target,point,cursor,ctrl=False):
 						cur = Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
 						snapArray.append([cur,0,pos])
 
+				if lastObj[0]:
+					if (lastObj[0].Type == "Part::Feature"):
+						for k in lastObj[0].Shape.Edges:
+							pt = fcgeo.findIntersection(j,k)
+							if pt:
+								for p in pt:
+									snapArray.append([p,3,p])
+
 		else:
 			cur = Vector(snapped['x'],snapped['y'],snapped['z'])
 			snapArray = [[cur,2,cur]]
+
+		if not lastObj[0]:
+			lastObj[0] = ob
+			lastObj[1] = ob
+		if (lastObj[1] != ob):
+			lastObj[0] = lastObj[1]
+			lastObj[1] = ob
 
 		# calculating shortest distance
 		shortest = 1000000000000000000

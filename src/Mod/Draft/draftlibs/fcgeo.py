@@ -46,9 +46,8 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 	algorithm from http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
 	'''
 
-	if (isinstance(edge1.Curve,Part.Line)) and (isinstance(edge2.Curve,Part.Line)):
+	if (isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Line)):
 		# intersection of two lines
-		print "debug: 2 lines"
 		p1 = edge1.Vertexes[0].Point
 		p2 = edge1.Vertexes[1].Point
 		p3 = edge2.Vertexes[0].Point
@@ -59,9 +58,8 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 		else:
 			return None
 
-	elif (isinstance(edge1.Curve,Part.Circle)) and (isinstance(edge2.Curve,Part.Circle)):
+	elif (isinstance(edge1.Curve,Part.Circle) and isinstance(edge2.Curve,Part.Circle)):
 		# intersection of two curves
-		print "debug: 2 curves"
 		c1 = edge1.Curve.Center
 		c2 = edge2.Curve.Center
 		r1 = edge1.Curve.Radius
@@ -96,7 +94,6 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 	elif ((isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Circle))
 	or (isinstance(edge1.Curve,Part.Circle) and isinstance(edge2.Curve,Part.Line))):
 		# intersection of one curve and one line
-		print "debug: 1 line & 1 curve"
 		if (isinstance(edge1.Curve,Part.Circle)):
 			c = edge1.Curve.Center
 			r = edge1.Curve.Radius
