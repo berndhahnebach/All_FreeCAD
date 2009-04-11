@@ -448,6 +448,9 @@ const std::string InterpreterSingleton::strToPython(const char* Str)
 
 // --------------------------------------------------------------------
 
+#if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
+namespace Swig_python { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
+#endif
 namespace Swig_1_3_25 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 namespace Swig_1_3_33 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 namespace Swig_1_3_36 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
@@ -458,6 +461,10 @@ PyObject* InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void*
     int result = 0;
     PyObject* proxy=0;
     PyGILStateLocker locker;
+#if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
+    result = Swig_python::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+    if (result == 0) return proxy;
+#endif
     result = Swig_1_3_25::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
     if (result == 0) return proxy;
     result = Swig_1_3_33::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
@@ -471,6 +478,9 @@ PyObject* InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void*
     throw Base::Exception("No SWIG wrapped library loaded");
 }
 
+#if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
+namespace Swig_python { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
+#endif
 namespace Swig_1_3_25 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 namespace Swig_1_3_33 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 namespace Swig_1_3_36 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
@@ -480,6 +490,10 @@ bool InterpreterSingleton::convertSWIGPointerObj(const char* TypeName, PyObject*
 {
     int result = 0;
     PyGILStateLocker locker;
+#if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
+    result = Swig_python::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
+    if (result == 0) return true;
+#endif
     result = Swig_1_3_25::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
     if (result == 0) return true;
     result = Swig_1_3_33::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
@@ -493,6 +507,9 @@ bool InterpreterSingleton::convertSWIGPointerObj(const char* TypeName, PyObject*
     throw Base::Exception("No SWIG wrapped library loaded");
 }
 
+#if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
+namespace Swig_python { extern void cleanupSWIG_T(const char* TypeName); }
+#endif
 namespace Swig_1_3_25 { extern void cleanupSWIG_T(const char* TypeName); }
 namespace Swig_1_3_33 { extern void cleanupSWIG_T(const char* TypeName); }
 namespace Swig_1_3_36 { extern void cleanupSWIG_T(const char* TypeName); }
@@ -501,6 +518,9 @@ namespace Swig_1_3_38 { extern void cleanupSWIG_T(const char* TypeName); }
 void InterpreterSingleton::cleanupSWIG(const char* TypeName)
 {
     PyGILStateLocker locker;
+#if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
+    Swig_python::cleanupSWIG_T(TypeName);
+#endif
     Swig_1_3_25::cleanupSWIG_T(TypeName);
     Swig_1_3_33::cleanupSWIG_T(TypeName);
     Swig_1_3_36::cleanupSWIG_T(TypeName);

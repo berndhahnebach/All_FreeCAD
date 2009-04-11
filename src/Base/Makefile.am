@@ -8,7 +8,8 @@ BUILT_SOURCES=\
 		PersistencePy.cpp \
 		PlacementPy.cpp \
 		RotationPy.cpp \
-		VectorPy.cpp
+		VectorPy.cpp \
+		swigpyrun.h
 
 
 libFreeCADBase_la_BUILT=\
@@ -122,6 +123,7 @@ libFreeCADBase_la_SOURCES=\
 		Stream.cpp \
 		Swap.cpp \
 		swigpyrun.inl \
+		swigpyrun.cpp \
 		swigpyrun_1.3.25.cpp \
 		swigpyrun_1.3.25.h \
 		swigpyrun_1.3.33.cpp \
@@ -217,6 +219,9 @@ nobase_include_HEADERS = \
 		../CXX/Version.hxx \
 		../CXX/WrapPython.h
 
+swigpyrun.h:
+	$(SWIG) -python -external-runtime
+
 %.cpp: %.xml
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
@@ -236,6 +241,8 @@ CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 
 # the library version number
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADBase_la_CPPFLAGS = -DHAVE_SWIG=$(HAVE_SWIG)
+
 
 EXTRA_DIST = \
 		../CXX/COPYRIGHT \
