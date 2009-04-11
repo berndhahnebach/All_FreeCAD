@@ -63,6 +63,15 @@ AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 AC_PROG_LN_S
 
+AC_PATH_PROG(SWIG, swig, false)
+if test "$SWIG" = false ; then
+   AC_MSG_WARN([Can't find SWIG installation])
+   HAVE_SWIG=0
+else
+   HAVE_SWIG=1
+fi
+AC_SUBST(HAVE_SWIG)
+
 dnl Defines in config.h
 dnl **************************************************************************
 AC_DEFINE_UNQUOTED(HAVE_GETENVIRONMENTVARIABLE, 1, [Define to use GetEnvironmentVariable() instead of getenv()])
