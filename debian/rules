@@ -81,17 +81,23 @@ install: build
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/bin usr/lib/freecad
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/lib/FreeCAD.so usr/lib/freecad/lib
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/lib/lib*.so.* usr/lib/freecad/lib
-
+ 
 # install the modules
 	$(foreach MODULE,$(MODULES), \
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/$(MODULE)*.so usr/lib/freecad/Mod/$(MODULE); \
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.so.* usr/lib/freecad/Mod/$(MODULE); \
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/*.py usr/lib/freecad/Mod/$(MODULE);)
 
+# special treating of Draft module
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.py usr/lib/freecad/Mod/Draft
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.svg usr/lib/freecad/Mod/Draft
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.ui usr/lib/freecad/Mod/Draft
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/draftlibs/*.py usr/lib/freecad/Mod/Draft/draftlibs
+
 # special treating of Test module
-	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/Test/lib*.so.* usr/lib/freecad/Mod/Test
-	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/Test/*.py usr/lib/freecad/Mod/Test
-	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/Test/QtUnitGui.so usr/lib/freecad/Mod/Test
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/lib*.so.* usr/lib/freecad/Mod/Test
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/*.py usr/lib/freecad/Mod/Test
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/QtUnitGui.so usr/lib/freecad/Mod/Test
 
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/include/* usr/include
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/lib/lib*.la usr/lib/freecad/lib
