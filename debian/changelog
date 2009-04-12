@@ -1,3 +1,15 @@
+freecad (0.7.2008-1hardy1) hardy; urgency=low
+
+  * New release for Ubuntu 8.04 (Hardy Heron)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 21 Mar 2009 15:21:43 +0100
+
+freecad (0.7.1779-1hardy1) hardy; urgency=low
+
+  * New release for Ubuntu 8.04 (Hardy Heron)
+
+ -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 14 Dec 2008 15:20:20 +0200
+
 freecad (0.7.1658-1feisty1) feisty; urgency=low
 
   * New release for Ubuntu 7.04 (Feisty Fawn)
