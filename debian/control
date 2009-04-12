@@ -18,7 +18,7 @@ XS-Python-Version: current
 Package: freecad
 Architecture: any
 Section: science
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python
 XB-Python-Version: ${python:Versions}
 Conflicts: freecad (<= 0.6.472-1)
 Suggests: gnochm | kchmviewer | kchmviewer-nokde | xchm, python-opencv
@@ -35,7 +35,7 @@ Description: An extensible Open Source CAx program (alpha)
 Package: freecad-dev
 Architecture: any
 Section: libdevel
-Depends: freecad (>= ${source:Version}), ${misc:Depends}
+Depends: freecad (>= ${source:Version})
 XB-Python-Version: ${python:Versions}
 Description: FreeCAD development files
  FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
