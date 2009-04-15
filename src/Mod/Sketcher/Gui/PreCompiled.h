@@ -41,9 +41,6 @@
 #endif
 
 
-// Python
-#include <Python.h>
-
 // standard
 #include <iostream>
 #include <cassert>
@@ -77,6 +74,9 @@
 #endif 
 
 #include <xercesc/util/XercesDefs.hpp>
+
+// Python
+#include <Python.h>
 
 
 #endif // __PRECOMPILED_GUI__

@@ -52,10 +52,6 @@
 #include <set>
 #include <bitset>
 
-#include <Python.h>
-#include <xercesc/util/XercesDefs.hpp>
-
-
 // OpenCasCade =====================================================================================
 // Base
 #include <Standard_Failure.hxx>
@@ -230,6 +226,9 @@
 #include <UnitsAPI.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
+
+#include <Python.h>
+#include <xercesc/util/XercesDefs.hpp>
 
 
 #endif

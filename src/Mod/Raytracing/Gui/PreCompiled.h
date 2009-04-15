@@ -38,9 +38,6 @@
 #endif
 
 
-// Python
-#include <Python.h>
-
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 
@@ -119,6 +116,9 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 
+
+// Python
+#include <Python.h>
 
 // Qt Toolkit
 #ifndef __Qt4All__
