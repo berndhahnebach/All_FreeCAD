@@ -811,6 +811,7 @@ QString Application::workbenchMenuText(const QString& wb) const
     // test if the workbench exists
     if (pcWorkbench) {
         // get its ToolTip member if possible
+        Base::PyGILStateLocker locker;
         try {
             Py::Object handler(pcWorkbench);
             Py::Object member = handler.getAttr(std::string("MenuText"));

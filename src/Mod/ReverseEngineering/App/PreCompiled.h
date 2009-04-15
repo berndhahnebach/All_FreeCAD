@@ -52,10 +52,6 @@
 #include <set>
 #include <bitset>
 
-#include <Python.h>
-#include <xercesc/util/XercesDefs.hpp>
-
-
 // OpenCasCade
 #include <math_Gauss.hxx>
 #include <math_Householder.hxx>
@@ -69,6 +65,9 @@
 #include <Handle_Geom_BSplineSurface.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <TopoDS_Face.hxx>
+
+#include <Python.h>
+#include <xercesc/util/XercesDefs.hpp>
 
 
 #endif

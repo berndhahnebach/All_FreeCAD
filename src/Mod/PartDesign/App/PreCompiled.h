@@ -52,12 +52,11 @@
 #include <set>
 #include <bitset>
 
-#include <Python.h>
-#include <xercesc/util/XercesDefs.hpp>
-
-
 // OpenCasCade =====================================================================================
 #include <Mod/Part/App/OpenCascadeAll.h>
+
+#include <Python.h>
+#include <xercesc/util/XercesDefs.hpp>
 
 #endif
 #endif // _PreComp_

@@ -66,8 +66,6 @@
 #include <queue>
 #include <bitset>
 
-#include <Python.h>
-
 #ifdef FC_OS_WIN32
 # include <windows.h>
 #endif
@@ -115,6 +113,8 @@
 #include <Bnd_Box.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+
+#include <Python.h>
 
 // Qt Toolkit
 #ifndef __Qt4All__
