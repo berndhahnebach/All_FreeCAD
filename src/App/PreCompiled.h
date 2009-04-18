@@ -82,11 +82,5 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 
-// xerces
-#include <xercesc/util/XercesDefs.hpp>
-#include <xercesc/sax2/Attributes.hpp>
-#include <xercesc/sax2/DefaultHandler.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-
 
 #endif
