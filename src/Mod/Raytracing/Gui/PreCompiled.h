@@ -38,9 +38,6 @@
 #endif
 
 
-// Xerces
-#include <xercesc/util/XercesDefs.hpp>
-
 // standard
 #include <stdio.h>
 #include <assert.h>

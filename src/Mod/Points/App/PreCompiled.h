@@ -66,9 +66,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-// Xerces
-#include <xercesc/util/XercesDefs.hpp>
-
 #endif //_PreComp_
 
 #endif

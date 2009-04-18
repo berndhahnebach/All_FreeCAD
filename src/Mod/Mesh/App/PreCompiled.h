@@ -78,8 +78,6 @@
 #include <vector>
 
 //#include <gts.h>
-// Xerces
-#include <xercesc/util/XercesDefs.hpp>
 
 // Python
 #include <Python.h>

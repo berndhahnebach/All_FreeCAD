@@ -61,9 +61,6 @@
 #include <set>
 #include <map>
 
-// Xerces
-#include <xercesc/util/XercesDefs.hpp>
-
 // Boost
 #include <boost/signals.hpp>
 #include <boost/bind.hpp>

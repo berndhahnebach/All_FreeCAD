@@ -53,7 +53,6 @@
 #include <bitset>
 
 #include <Python.h>
-#include <xercesc/util/XercesDefs.hpp>
 
 
 #endif
