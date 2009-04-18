@@ -29,6 +29,7 @@
 #include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XercesVersion.hpp>
 #include <xercesc/sax/InputSource.hpp>
 
 
@@ -49,8 +50,14 @@ public :
   // -----------------------------------------------------------------------
   //  Implementation of the input stream interface
   // -----------------------------------------------------------------------
+#if (XERCES_VERSION_MAJOR == 2)
   virtual unsigned int curPos() const;
   virtual unsigned int readBytes( XMLByte* const toFill, const unsigned int maxToRead );
+#else
+  virtual XMLFilePos curPos() const;
+  virtual XMLSize_t readBytes( XMLByte* const toFill, const XMLSize_t maxToRead );
+  virtual const XMLCh* getContentType() const {return 0;}
+#endif
 
 private :
   // -----------------------------------------------------------------------

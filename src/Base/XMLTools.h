@@ -33,12 +33,12 @@
 #include <memory>
 #include <iostream>
 #include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/util/XercesVersion.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 
 #include <Base/Exception.h>
-
 
 XERCES_CPP_NAMESPACE_BEGIN
     class DOMNode;
@@ -137,10 +137,17 @@ inline StrXUTF8::StrXUTF8(const XMLCh* const toTranscode)
 
     //char outBuff[128];
     static XMLByte outBuff[128];
+#if (XERCES_VERSION_MAJOR == 2)
     unsigned int outputLength;
     unsigned int eaten = 0;
     unsigned int offset = 0;
     unsigned int inputLength = XMLString::stringLen(toTranscode);
+#else
+    XMLSize_t outputLength;
+    XMLSize_t eaten = 0;
+    XMLSize_t offset = 0;
+    XMLSize_t inputLength = XMLString::stringLen(toTranscode);
+#endif
 
     while (inputLength)
     {

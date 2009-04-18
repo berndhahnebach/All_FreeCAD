@@ -68,6 +68,7 @@ StdInputStream::~StdInputStream()
 // ---------------------------------------------------------------------------
 //  StdInputStream: Implementation of the input stream interface
 // ---------------------------------------------------------------------------
+#if (XERCES_VERSION_MAJOR == 2)
 unsigned int StdInputStream::curPos() const
 {
   return stream.tellg();
@@ -83,7 +84,23 @@ unsigned int StdInputStream::readBytes( XMLByte* const  toFill, const unsigned i
   stream.read((char *)toFill,maxToRead);
   return stream.gcount();
 }
+#else
+XMLFilePos StdInputStream::curPos() const
+{
+  return stream.tellg();
+}
 
+XMLSize_t StdInputStream::readBytes( XMLByte* const  toFill, const XMLSize_t maxToRead )
+{
+  //
+  //  Read up to the maximum bytes requested. We return the number
+  //  actually read.
+  //
+  
+  stream.read((char *)toFill,maxToRead);
+  return stream.gcount();
+}
+#endif
 
 
 // ---------------------------------------------------------------------------
