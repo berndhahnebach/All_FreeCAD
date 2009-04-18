@@ -71,7 +71,5 @@
 # include <Gui/Qt4All.h>
 #endif
 
-#include <xercesc/util/XercesDefs.hpp>
-
 
 #endif // __PRECOMPILED_GUI__

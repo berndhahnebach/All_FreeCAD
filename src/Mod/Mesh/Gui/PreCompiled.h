@@ -66,9 +66,6 @@
 #include <string>
 #include <vector>
 
-// Xerces
-#include <xercesc/util/XercesDefs.hpp>
-
 #include <Python.h>
 #ifdef FC_OS_WIN32
 # include <windows.h>

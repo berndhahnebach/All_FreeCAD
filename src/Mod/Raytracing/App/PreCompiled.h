@@ -56,8 +56,6 @@
 #include <string>
 #include <vector>
 #include <bitset>
-// Xerces
-#include <xercesc/util/XercesDefs.hpp>
 
 // OpenCascade View
 #include <BRep_Builder.hxx>
