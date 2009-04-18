@@ -28,10 +28,13 @@
 #ifndef _PreComp_
 #   include <assert.h>
 #   include <xercesc/util/PlatformUtils.hpp>
+#   include <xercesc/util/XercesVersion.hpp>
 #   include <xercesc/dom/DOM.hpp>
 #   include <xercesc/dom/DOMImplementation.hpp>
 #   include <xercesc/dom/DOMImplementationLS.hpp>
+#   if (XERCES_VERSION_MAJOR == 2)
 #   include <xercesc/dom/DOMWriter.hpp>
+#   endif
 #   include <xercesc/framework/StdOutFormatTarget.hpp>
 #   include <xercesc/framework/LocalFileFormatTarget.hpp>
 #   include <xercesc/parsers/XercesDOMParser.hpp>
@@ -121,7 +124,7 @@ public:
 };
 
 
-
+#if (XERCES_VERSION_MAJOR == 2)
 class DOMPrintFilter : public DOMWriterFilter
 {
 public:
@@ -154,7 +157,7 @@ private:
     unsigned long fWhatToShow;
 
 };
-
+#endif
 class DOMPrintErrorHandler : public DOMErrorHandler
 {
 public:
@@ -1154,6 +1157,7 @@ int  ParameterManager::LoadDocument(const char* sFileName)
 
 void  ParameterManager::SaveDocument(const char* sFileName) const
 {
+#if (XERCES_VERSION_MAJOR == 2)
     DOMPrintFilter   *myFilter = 0;
     Base::FileInfo file(sFileName);
 
@@ -1235,7 +1239,7 @@ void  ParameterManager::SaveDocument(const char* sFileName) const
         << std::endl
         << StrX(e.getMessage()) << std::endl;
     }
-
+#endif
 }
 
 void  ParameterManager::CreateDocument(void)
@@ -1303,7 +1307,7 @@ void DOMTreeErrorReporter::resetErrors()
 //**************************************************************************
 // DOMPrintFilter
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+#if (XERCES_VERSION_MAJOR == 2)
 DOMPrintFilter::DOMPrintFilter(unsigned long whatToShow)
         :fWhatToShow(whatToShow)
 {
@@ -1377,7 +1381,7 @@ short DOMPrintFilter::acceptNode(const DOMNode* node) const
 
     return DOMNodeFilter::FILTER_ACCEPT;
 }
-
+#endif
 
 //**************************************************************************
 //**************************************************************************
