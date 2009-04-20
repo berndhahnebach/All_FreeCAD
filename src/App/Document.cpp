@@ -704,27 +704,46 @@ unsigned int Document::getMemSize (void) const
 // Save the document under the name its been opened
 bool Document::save (void)
 {
-    int compression = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Document")->GetInt("CompressionLevel",3);
+    int compression = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/Document")->GetInt("CompressionLevel",3);
 
     if (*(FileName.getValue()) != '\0') {
         LastModifiedDate.setValue(Base::TimeInfo::currentDateTimeString());
+        // make a tmp. file where to save the project data first and then rename to
+        // the actual file name. This may be useful if overwriting an existing file
+        // fails so that the data of the work up to now isn't lost.
+        std::string uuid = Base::Uuid::CreateUuid();
+        std::string fn = FileName.getValue();
+        fn += "."; fn += uuid;
+        Base::FileInfo tmp(fn);
+
+        // open extra scope to close ZipWriter properly
+        {
+            Base::ofstream file(tmp, std::ios::out | std::ios::binary);
+            Base::ZipWriter writer(file);
+
+            writer.setComment("FreeCAD Document");
+            writer.setLevel(compression);
+            writer.putNextEntry("Document.xml");
+
+            Document::Save(writer);
+
+            // Special handling for Gui document.
+            signalSaveDocument(writer);
+
+            // write additional files
+            writer.writeFiles();
+
+            GetApplication().signalSaveDocument(*this);
+        }
+
+        // if saving the project data succeeded rename to the actual file name
         Base::FileInfo fi(FileName.getValue());
-        Base::ofstream file(fi, std::ios::out | std::ios::binary);
-        Base::ZipWriter writer(file);
-
-        writer.setComment("FreeCAD Document");
-        writer.setLevel( compression );
-        writer.putNextEntry("Document.xml");
-
-        Document::Save(writer);
-
-        // Special handling for Gui document.
-        signalSaveDocument(writer);
-
-        // write additional files
-        writer.writeFiles();
-
-        GetApplication().signalSaveDocument(*this);
+        if (fi.exists())
+            fi.deleteFile();
+        if (tmp.renameFile(FileName.getValue()) == false)
+            Base::Console().Warning("Cannot rename file from '%s' to '%s'\n",
+            fn.c_str(), FileName.getValue());
 
         return true;
     }
