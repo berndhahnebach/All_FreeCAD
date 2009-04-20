@@ -1084,8 +1084,10 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       if (!press && ev->wasAltDown()) {
         SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
         this->panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
-        if (!seekToPoint(pos))
+        if (!seekToPoint(pos)) {
           panToCenter(panningplane, posn);
+          this->interactiveCountDec();
+        }
         processed = TRUE;
       }
       else if (press && (this->currentmode == View3DInventorViewer::SEEK_WAIT_MODE)) {
@@ -1126,8 +1128,10 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
         float dci = (float)QApplication::doubleClickInterval()/1000.0f;
         // is it just a middle click?
         if (tmp.getValue() < dci) {
-          if (!seekToPoint(pos))
+          if (!seekToPoint(pos)) {
             panToCenter(panningplane, posn);
+            this->interactiveCountDec();
+          }
           processed = TRUE;
         }
       }
@@ -1449,8 +1453,10 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           // is it just a middle click?
           if (tmp.getValue() < dci/*0.300*/ && !MoveModeMoved){
 
-              if(!seekToPoint(pos))
+              if(!seekToPoint(pos)) {
                 panToCenter(panningplane, posn);
+                this->interactiveCountDec();
+              }
           }
 
         MoveMode = false;
