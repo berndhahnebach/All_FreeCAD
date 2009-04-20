@@ -30,6 +30,8 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Reader.h>
 #include <Base/Writer.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
 
 #include "Property.h"
 #include "PropertyContainer.h"
@@ -132,7 +134,26 @@ void PropertyContainer::Save (Writer &writer) const
             writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" 
                             << it->second->getTypeId().getName() << "\">" << endl;;
             writer.incInd(); // indention for the actual property
-            it->second->Save(writer);
+            try {
+                // We must make sure to handle all exceptions accordingly so that
+                // the project file doesn't get invalidated. In the error case this
+                // means to proceed instead of aborting the write operation.
+                it->second->Save(writer);
+            }
+            catch (const Base::Exception &e) {
+                Base::Console().Error("%s\n", e.what());
+            }
+            catch (const std::exception &e) {
+                Base::Console().Error("%s\n", e.what());
+            }
+            catch (const char* e) {
+                Base::Console().Error("%s\n", e);
+            }
+#ifndef FC_DEBUG
+            catch (...) {
+                Base::Console().Error("PropertyContainer::Save: Unknown C++ exception thrown. Try to continue...\n");
+            }
+#endif
             writer.decInd(); // indention for the actual property
             writer.Stream() << writer.ind() << "</Property>" << endl;    
             writer.decInd(); // indention for 'Property name'
@@ -144,26 +165,41 @@ void PropertyContainer::Save (Writer &writer) const
 
 void PropertyContainer::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("Properties");
-  int Cnt = reader.getAttributeAsInteger("Count");
+    reader.readElement("Properties");
+    int Cnt = reader.getAttributeAsInteger("Count");
 
-  for(int i=0 ;i<Cnt ;i++)
-  {
-    reader.readElement("Property");
-    const char* PropName = reader.getAttribute("name");
-    const char* TypeName = reader.getAttribute("type");
-    Property* prop = getPropertyByName(PropName);
-    //NOTE: We must also check the type of the current property because a subclass of PropertyContainer might 
-    //change the type of a property but not its name. In this case we would force to read-in a wrong property type
-    //and the behaviour would be undefined.
-    if( prop && strcmp(prop->getTypeId().getName(), TypeName) == 0 )
-      prop->Restore(reader);
+    for (int i=0 ;i<Cnt ;i++) {
+        reader.readElement("Property");
+        const char* PropName = reader.getAttribute("name");
+        const char* TypeName = reader.getAttribute("type");
+        Property* prop = getPropertyByName(PropName);
+        // NOTE: We must also check the type of the current property because a
+        // subclass of PropertyContainer might change the type of a property but
+        // not its name. In this case we would force to read-in a wrong property
+        // type and the behaviour would be undefined.
+        try {
+            if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
+                prop->Restore(reader);
+        }
+        catch (const Base::Exception &e) {
+            Base::Console().Error("%s\n", e.what());
+        }
+        catch (const std::exception &e) {
+            Base::Console().Error("%s\n", e.what());
+        }
+        catch (const char* e) {
+            Base::Console().Error("%s\n", e);
+        }
+#ifndef FC_DEBUG
+        catch (...) {
+            Base::Console().Error("PropertyContainer::Restore: Unknown C++ exception thrown");
+        }
+#endif
 
-    reader.readEndElement("Property");
-  }
-  reader.readEndElement("Properties");
+        reader.readEndElement("Property");
+    }
+    reader.readEndElement("Properties");
 }
-
 
 void PropertyData::addProperty(const PropertyContainer *container,const char* PropName, Property *Prop, const char* PropertyGroup , PropertyType Type, const char* PropertyDocu)
 {
