@@ -96,12 +96,11 @@ int main( int argc, char ** argv )
 
         // Inits the Application 
         App::Application::init(argc,argv);
-
         Gui::BitmapFactory().addXPM("FreeCADSplasher", ( const char** ) splash_screen);
- 
         Gui::Application::initApplication();
 
-    } catch(const Base::Exception& e) {
+    }
+    catch (const Base::Exception& e) {
         // Popup an own dialog box instead of that one of Windows
         QApplication app(argc,argv);
         QString appName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
@@ -123,7 +122,8 @@ int main( int argc, char ** argv )
 
         QMessageBox::critical(0, QObject::tr("Initialization of %1 failed").arg(appName), msg);
         exit(100);
-    } catch(...) {
+    }
+    catch (...) {
         // Popup an own dialog box instead of that one of Windows
         QApplication app(argc,argv);
         QString appName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
@@ -134,7 +134,6 @@ int main( int argc, char ** argv )
     }
 
     // Run phase ===========================================================
-
     if (App::Application::Config()["RunMode"] == "Gui") {
         // run GUI
         Base::RedirectStdOutput stdcout;

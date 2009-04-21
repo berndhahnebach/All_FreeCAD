@@ -1109,7 +1109,13 @@ void Application::runApplication(void)
     mw.startSplasher();
 
     // running the GUI init script
-    Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+    try {
+        Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Error("Error in FreeCADGuiInit.py: %s\n", e.what());
+        throw;
+    }
 
     // stop splash screen and set immediately the active window that may be of interest
     // for scripts using Python binding for Qt
