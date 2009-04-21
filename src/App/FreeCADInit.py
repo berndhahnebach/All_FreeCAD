@@ -51,9 +51,6 @@ def InitApplications():
 	ModPar = FreeCAD.ParamGet("System parameter:Modules")
 
 	#print FreeCAD.ConfigGet("AppHomePath")
-	if not os.path.isdir(ModDir):
-		Log ("No modules found in " + ModDir + "\n")
-		return
 	# These both paths are not needed
 	# sys.path.append( '..\\bin' )
 	# sys.path.append( '..\\bin\\Lib' )
@@ -64,14 +61,18 @@ def InitApplications():
 	# Searching for module dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	# Use dict to handle duplicated module names
 	ModDict = {}
-	ModDirs = os.listdir(ModDir)
-	for i in ModDirs: ModDict[i.lower()] = os.path.join(ModDir,i)
-	for i in AddPath:
-		if os.path.isdir(i): ModDict[i] = i
+	if os.path.isdir(ModDir):
+		ModDirs = os.listdir(ModDir)
+		for i in ModDirs: ModDict[i.lower()] = os.path.join(ModDir,i)
+	else:
+		Wrn ("No modules found in " + ModDir + "\n")
 	# Search for additional modules in the home directory
-	if (os.path.exists(HomeMod)):
+	if os.path.isdir(HomeMod):
 		HomeMods = os.listdir(HomeMod)
 		for i in HomeMods: ModDict[i.lower()] = os.path.join(HomeMod,i)
+	# Search for additional modules in command line
+	for i in AddPath:
+		if os.path.isdir(i): ModDict[i] = i
 	#AddModPaths = App.ParamGet("System parameter:AdditionalModulePaths")
 	#Err( AddModPaths)
 	# add also this path so that all modules search for libraries
