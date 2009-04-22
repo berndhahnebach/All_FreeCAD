@@ -60,10 +60,16 @@ App::DocumentObjectExecReturn *Extrusion::execute(void)
     Base::Vector3f v = Dir.getValue();
     gp_Vec vec(v.x,v.y,v.z);
 
-    // Now, let's get the TopoDS_Shape
-    TopoDS_Shape swept = base->Shape.getShape().makePrism(vec);
-    if (swept.IsNull())
-        return new App::DocumentObjectExecReturn("Resulting shape is null");
-    this->Shape.setValue(swept);
-    return App::DocumentObject::StdReturn;
+    try {
+        // Now, let's get the TopoDS_Shape
+        TopoDS_Shape swept = base->Shape.getShape().makePrism(vec);
+        if (swept.IsNull())
+            return new App::DocumentObjectExecReturn("Resulting shape is null");
+        this->Shape.setValue(swept);
+        return App::DocumentObject::StdReturn;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
 }

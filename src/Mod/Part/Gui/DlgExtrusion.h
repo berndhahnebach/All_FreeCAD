@@ -40,7 +40,7 @@ protected:
     void findShapes();
 
 private Q_SLOTS:
-    void on_comboBox_activated(int);
+    void on_treeWidget_itemSelectionChanged();
     void on_checkNormal_toggled(bool);
 
 private:

@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>273</height>
+    <width>517</width>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,7 +22,20 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="0" >
+   <item row="1" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>131</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1" >
     <widget class="QGroupBox" name="groupBox_2" >
      <property name="title" >
       <string>Direction</string>
@@ -34,163 +47,138 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="0" column="0" >
+      <item row="1" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>91</width>
+          <height>61</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1" >
        <widget class="QCheckBox" name="checkNormal" >
         <property name="text" >
          <string>Along normal</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QGroupBox" name="groupBoxDir" >
-        <property name="title" >
-         <string/>
+      <item rowspan="2" row="0" column="0" >
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>0</number>
         </property>
-        <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>9</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <item>
-          <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>0</number>
-           </property>
-           <property name="spacing" >
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_2" >
-             <property name="text" >
-              <string>x</string>
-             </property>
-             <property name="alignment" >
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDoubleSpinBox" name="dirX" />
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>0</number>
-           </property>
-           <property name="spacing" >
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_3" >
-             <property name="text" >
-              <string>y</string>
-             </property>
-             <property name="alignment" >
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDoubleSpinBox" name="dirY" />
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>0</number>
-           </property>
-           <property name="spacing" >
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_4" >
-             <property name="text" >
-              <string>z</string>
-             </property>
-             <property name="alignment" >
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDoubleSpinBox" name="dirZ" >
-             <property name="value" >
-              <double>1</double>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_5" >
-        <property name="text" >
-         <string>Length:</string>
+        <property name="spacing" >
+         <number>6</number>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QDoubleSpinBox" name="dirLen" >
-        <property name="value" >
-         <double>10</double>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
-      <string>Shape</string>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label" >
-        <property name="text" >
-         <string>Sketch:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="comboBox" >
-        <item>
-         <property name="text" >
-          <string>No selection</string>
-         </property>
+        <item row="3" column="1" >
+         <widget class="QDoubleSpinBox" name="dirLen" >
+          <property name="maximum" >
+           <double>2.14748e+09</double>
+          </property>
+          <property name="value" >
+           <double>10</double>
+          </property>
+         </widget>
         </item>
-       </widget>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="label_4" >
+          <property name="text" >
+           <string>Z:</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="label_2" >
+          <property name="text" >
+           <string>X:</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <widget class="QDoubleSpinBox" name="dirY" >
+          <property name="maximum" >
+           <double>100</double>
+          </property>
+          <property name="minimum" >
+           <double>-100</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <widget class="QDoubleSpinBox" name="dirZ" >
+          <property name="maximum" >
+           <double>100</double>
+          </property>
+          <property name="minimum" >
+           <double>-100</double>
+          </property>
+          <property name="value" >
+           <double>1</double>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" >
+         <widget class="QLabel" name="label_5" >
+          <property name="text" >
+           <string>Length:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" >
+         <widget class="QDoubleSpinBox" name="dirX" >
+          <property name="maximum" >
+           <double>100</double>
+          </property>
+          <property name="minimum" >
+           <double>-100</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="label_3" >
+          <property name="text" >
+           <string>Y:</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" >
+   <item rowspan="3" row="0" column="0" >
+    <widget class="QTreeWidget" name="treeWidget" >
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="indentation" >
+      <number>20</number>
+     </property>
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+     <column>
+      <property name="text" >
+       <string>Shape</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="2" column="1" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -230,6 +218,16 @@
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>treeWidget</tabstop>
+  <tabstop>dirX</tabstop>
+  <tabstop>dirY</tabstop>
+  <tabstop>dirZ</tabstop>
+  <tabstop>dirLen</tabstop>
+  <tabstop>checkNormal</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
