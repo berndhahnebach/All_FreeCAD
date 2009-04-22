@@ -31,6 +31,8 @@
 #include <App/DocumentObject.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+#include <Gui/Document.h>
+#include <Gui/ViewProvider.h>
 
 using namespace PartGui;
 
@@ -54,52 +56,67 @@ void DlgExtrusion::findShapes()
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     if (!activeDoc) return;
+    Gui::Document* activeGui = Gui::Application::Instance->getDocument(activeDoc);
 
     std::vector<App::DocumentObject*> objs = activeDoc->getObjectsOfType
         (Part::Feature::getClassTypeId());
-    int index = 1;
-    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it, ++index) {
-        ui.comboBox->addItem(QString::fromUtf8((*it)->Label.getValue()));
-        ui.comboBox->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
+    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it) {
+        TopoDS_Shape shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
+        TopAbs_ShapeEnum type = shape.ShapeType();
+        if (type == TopAbs_VERTEX || type == TopAbs_EDGE ||
+            type == TopAbs_WIRE || type == TopAbs_FACE ||
+            type == TopAbs_SHELL) {
+            QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
+            item->setText(0, QString::fromUtf8((*it)->Label.getValue()));
+            item->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
+            Gui::ViewProvider* vp = activeGui->getViewProvider(*it);
+            if (vp)
+                item->setIcon(0, vp->getIcon());
+        }
     }
 }
 
 void DlgExtrusion::accept()
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
+    activeDoc->openTransaction("Extrude");
 
     QString shape, type, name;
-    int index = ui.comboBox->currentIndex();
-    shape = ui.comboBox->itemData(index).toString();
-    type = QString::fromAscii("Part::Extrusion");
-    name = QString::fromAscii(activeDoc->getUniqueObjectName("Extrude").c_str());
-    double len = ui.dirLen->value();
+    QList<QTreeWidgetItem *> items = ui.treeWidget->selectedItems();
+    for (QList<QTreeWidgetItem *>::iterator it = items.begin(); it != items.end(); ++it) {
+        shape = (*it)->data(0, Qt::UserRole).toString();
+        type = QString::fromAscii("Part::Extrusion");
+        name = QString::fromAscii(activeDoc->getUniqueObjectName("Extrude").c_str());
+        double len = ui.dirLen->value();
 
-    activeDoc->openTransaction("Extrude");
-    QString code = QString::fromAscii(
-        "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
-        "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
-        "FreeCAD.ActiveDocument.%2.Dir = (%4,%5,%6)\n"
-        "FreeCADGui.ActiveDocument.%3.Visibility = False\n")
-        .arg(type).arg(name).arg(shape)
-        .arg(ui.dirX->value()*len)
-        .arg(ui.dirY->value()*len)
-        .arg(ui.dirZ->value()*len);
-    Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
+        QString code = QString::fromAscii(
+            "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
+            "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
+            "FreeCAD.ActiveDocument.%2.Dir = (%4,%5,%6)\n"
+            "FreeCADGui.ActiveDocument.%3.Visibility = False\n")
+            .arg(type).arg(name).arg(shape)
+            .arg(ui.dirX->value()*len)
+            .arg(ui.dirY->value()*len)
+            .arg(ui.dirZ->value()*len);
+        Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
+    }
+
     activeDoc->commitTransaction();
     activeDoc->recompute();
-    
+
     QDialog::accept();
 }
 
-void DlgExtrusion::on_comboBox_activated(int index)
+void DlgExtrusion::on_treeWidget_itemSelectionChanged()
 {
-    ui.okButton->setEnabled(index > 0);
+    ui.okButton->setEnabled(!ui.treeWidget->selectedItems().isEmpty());
 }
 
 void DlgExtrusion::on_checkNormal_toggled(bool b)
 {
-    ui.groupBoxDir->setDisabled(b);
+    ui.dirX->setDisabled(b);
+    ui.dirY->setDisabled(b);
+    ui.dirZ->setDisabled(b);
 }
 
 #include "moc_DlgExtrusion.cpp"

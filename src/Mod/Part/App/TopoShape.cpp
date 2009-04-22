@@ -709,19 +709,19 @@ TopoDS_Shape TopoShape::makePipe(const TopoDS_Wire& spine) const
  
 TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles, const Standard_Boolean make_solid) const
 {
-	if (this->_Shape.ShapeType() != TopAbs_WIRE)
+    if (this->_Shape.ShapeType() != TopAbs_WIRE)
         Standard_Failure::Raise("spine shape is not a wire");
 
-	BRepOffsetAPI_MakePipeShell mkPipeShell(TopoDS::Wire(this->_Shape));
-	TopTools_ListIteratorOfListOfShape it;
-	for (it.Initialize(profiles); it.More(); it.Next()) {
+    BRepOffsetAPI_MakePipeShell mkPipeShell(TopoDS::Wire(this->_Shape));
+    TopTools_ListIteratorOfListOfShape it;
+    for (it.Initialize(profiles); it.More(); it.Next()) {
         mkPipeShell.Add(TopoDS_Shape(it.Value()));
-	}
+    }
 
-	if (!mkPipeShell.IsReady()) Standard_Failure::Raise("shape is not ready to build");
+    if (!mkPipeShell.IsReady()) Standard_Failure::Raise("shape is not ready to build");
     else mkPipeShell.Build();
 
-	if (make_solid)	mkPipeShell.MakeSolid();
+    if (make_solid)	mkPipeShell.MakeSolid();
 
     return mkPipeShell.Shape();
 }
