@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderImport_H__
-#define __ViewProviderImport_H__
+#ifndef PARTGUI_VIEVPROVIDERIMPORT_H
+#define PARTGUI_VIEVPROVIDERIMPORT_H
 
 #include "ViewProvider.h"
 
@@ -41,20 +41,18 @@ namespace Gui {
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderImport:public ViewProviderPart
+class AppPartGuiExport ViewProviderImport : public ViewProviderPart
 {
-  PROPERTY_HEADER(PartGui::ViewProviderImport);
+    PROPERTY_HEADER(PartGui::ViewProviderImport);
 
 public:
-  /// constructor
-  ViewProviderImport();
-  /// destructor
-  virtual ~ViewProviderImport();
+    /// constructor
+    ViewProviderImport();
+    /// destructor
+    virtual ~ViewProviderImport();
 
-
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-
+    virtual bool setEdit(int ModNum);
+    virtual void unsetEdit(void);
 
 protected:
 
@@ -63,5 +61,5 @@ protected:
 } // namespace PartGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+#endif // PARTGUI_VIEVPROVIDERIMPORT_H
 

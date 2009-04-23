@@ -37,14 +37,7 @@
 #include <Gui/SoFCSelection.h>
 #include <App/Application.h>
 
-
-
 #include "ViewProviderImport.h"
-
-
-
-//#include "Tree.h"
-
 
 
 using namespace PartGui;
@@ -55,10 +48,9 @@ using namespace PartGui;
 
 PROPERTY_SOURCE(PartGui::ViewProviderImport,PartGui::ViewProviderPart)
 
-       
 ViewProviderImport::ViewProviderImport()
 {
-  sPixmap = "PartFeatureImport";
+    sPixmap = "PartFeatureImport";
 }
 
 ViewProviderImport::~ViewProviderImport()
@@ -66,18 +58,14 @@ ViewProviderImport::~ViewProviderImport()
 
 }
 
-
-
 // **********************************************************************************
 
-
-void ViewProviderImport::setEdit(void)
+bool ViewProviderImport::setEdit(int ModNum)
 {
-
+    return ViewProviderPart::setEdit(ModNum);
 }
 
 void ViewProviderImport::unsetEdit(void)
 {
-
+    ViewProviderPart::unsetEdit();
 }
-
