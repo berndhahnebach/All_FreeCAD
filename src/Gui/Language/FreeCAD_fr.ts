@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="fr_FR">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>Gui::AccelLineEdit</name>
@@ -95,15 +94,15 @@
     <name>Gui::Dialog::DlgAuthorization</name>
     <message>
         <source>Authorization</source>
-        <translation></translation>
+        <translation>Autorisation</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation></translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation></translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -289,7 +288,7 @@
     </message>
     <message>
         <source>Press &amp;new shortcut:</source>
-        <translation>Appuyez sur le nouveau raccourci</translation>
+        <translation>Appuyez &amp;sur le nouveau raccourci</translation>
     </message>
     <message>
         <source>Currently assigned to:</source>
@@ -428,7 +427,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>&lt;Separator&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Séparateur&gt;</translation>
     </message>
     <message>
         <source>New toolbar</source>
@@ -533,11 +532,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Enable line numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Numérotation de ligne possible</translation>
     </message>
     <message>
         <source>Enable folding</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Indentation</source>
@@ -549,7 +548,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Tab size:</source>
-        <translation>Taille des tabulations</translation>
+        <translation>Taille des tabulations:</translation>
     </message>
     <message>
         <source>Indent size:</source>
@@ -596,7 +595,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Switch to tab of report window:</source>
-        <translation>Basculer vers le tableau une fenetre de rapport:</translation>
+        <translation>Basculer vers le tableau une fenêtre de rapport:</translation>
     </message>
     <message>
         <source>Auto load module after startup:</source>
@@ -620,7 +619,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Window style:</source>
-        <translation>Style de fenetre:</translation>
+        <translation>Style de fenêtre:</translation>
     </message>
 </context>
 <context>
@@ -973,11 +972,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Name:</source>
-        <translation>&amp;Nom</translation>
+        <translation>&amp;Nom:</translation>
     </message>
     <message>
         <source>Commen&amp;t:</source>
-        <translation>Commen&amp;taire</translation>
+        <translation>Commen&amp;taire:</translation>
     </message>
     <message>
         <source>Path:</source>
@@ -985,23 +984,23 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Last modified by:</source>
-        <translation>Modifié dernièrement par:</translation>
+        <translation>&amp;Modifié dernièrement par:</translation>
     </message>
     <message>
         <source>Created &amp;by:</source>
-        <translation>Crée par:</translation>
+        <translation>Crée &amp;par:</translation>
     </message>
     <message>
         <source>Com&amp;pany:</source>
-        <translation>Société</translation>
+        <translation>So&amp;ciété:</translation>
     </message>
     <message>
         <source>Last &amp;modification date:</source>
-        <translation>Date de dernère modification:</translation>
+        <translation>Date &amp;de dernère modification:</translation>
     </message>
     <message>
         <source>Creation &amp;date:</source>
-        <translation>Date de création:</translation>
+        <translation>&amp;Date de création:</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -1020,7 +1019,7 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::DlgReportView</name>
     <message>
         <source>Output window</source>
-        <translation>Fenetre de sortie</translation>
+        <translation>Fenêtre de sortie</translation>
     </message>
     <message>
         <source>Output</source>
@@ -1083,7 +1082,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Use spin rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisez la rotation spin</translation>
     </message>
     <message>
         <source>3D Mouse Model</source>
@@ -1103,7 +1102,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Eye to eye distance for stereo modes:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Selection</source>
@@ -1111,7 +1110,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Disable preselection highlighting</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler les surlignement de présélection</translation>
     </message>
     <message>
         <source>Selection color:</source>
@@ -1119,11 +1118,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Highlight color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur surlignée:</translation>
     </message>
     <message>
         <source>Disable selection highlighting</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler la sélection surlignée</translation>
     </message>
     <message>
         <source>Camera type</source>
@@ -1131,7 +1130,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Orthographic rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendu orthographique</translation>
     </message>
     <message>
         <source>Perspective rendering</source>
@@ -1190,7 +1189,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Out g&amp;rayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Out g&amp;rayed</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -1226,7 +1225,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation></translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -1238,7 +1237,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Mi&amp;nimum:</source>
-        <translation>Mi&amp;nimum</translation>
+        <translation>Mi&amp;nimum:</translation>
     </message>
     <message>
         <source>Ma&amp;ximum:</source>
@@ -1246,11 +1245,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Labels:</source>
-        <translation>&amp;Etiquettes</translation>
+        <translation>&amp;Etiquettes:</translation>
     </message>
     <message>
         <source>&amp;Decimals:</source>
-        <translation>&amp;Decimales:</translation>
+        <translation>&amp;Décimales:</translation>
     </message>
     <message>
         <source></source>
@@ -1328,7 +1327,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Marque-pages</translation>
     </message>
     <message>
         <source>Breakpoint</source>
@@ -1395,7 +1394,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Back&amp;ground:</source>
-        <translation>Arrière plan</translation>
+        <translation>Arr&amp;ière plan</translation>
     </message>
     <message>
         <source>Current</source>
@@ -1699,7 +1698,7 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::ParameterGroup</name>
     <message>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation>Développer</translation>
     </message>
     <message>
         <source>Add sub-group</source>
@@ -1723,7 +1722,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Collapse</source>
-        <translation>Rassembler</translation>
+        <translation>Réduire</translation>
     </message>
     <message>
         <source>Do really want to remove this parameter group?</source>
@@ -2024,7 +2023,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous essayez d&apos;accéder à l&apos;adresse %1 indisponible. Assurez vous que l&apos;URL existe et recharger la page</translation>
     </message>
     <message>
         <source>Connecting to %1</source>
@@ -2032,7 +2031,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Sending to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Envoyé vers %1</translation>
     </message>
     <message>
         <source>Reading from %1</source>
@@ -2211,7 +2210,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Toogles this dockable window</source>
-        <translation>Basculez cette fenetre dockable</translation>
+        <translation>Basculez cette fenêtre dockable</translation>
     </message>
 </context>
 <context>
@@ -2265,15 +2264,15 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Unhandled PyCXX exception.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exception PyCXX non gérée</translation>
     </message>
     <message>
         <source>Unhandled FreeCAD exception.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exception FreeCad non gérée</translation>
     </message>
     <message>
         <source>Unhandled unknown C++ exception.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exception C++  non gérée inconnue</translation>
     </message>
     <message>
         <source>&amp;Copy command</source>
@@ -2423,11 +2422,11 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>&amp;Windows</source>
-        <translation>&amp;Fen^etre</translation>
+        <translation>&amp;Fenêtre</translation>
     </message>
     <message>
         <source>&amp;Online-help</source>
-        <translation>&amp;Aide-en ligne</translation>
+        <translation>&amp;Aide-en-ligne</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -2624,7 +2623,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Clear views</source>
-        <translation>Effacer les vues...</translation>
+        <translation>Effacer les vues</translation>
     </message>
     <message>
         <source>Restore view &amp;%1</source>
@@ -2797,7 +2796,7 @@ Do you want to continue?</source>
 Please open a browser window and type in: http://localhost:%1.</source>
         <translation>Impossible d&apos;ouvrir votre navigateur.
 
-Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
+Ouvrer une fenêtre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>No Server</source>
@@ -2855,7 +2854,7 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>&amp;About %1</source>
-        <translation>&amp;A propos %1</translation>
+        <translation>&amp;A propos de %1</translation>
     </message>
     <message>
         <source>About %1</source>
@@ -2870,7 +2869,7 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>About &amp;Qt</source>
-        <translation>A propos &amp;Qt</translation>
+        <translation>A propos de &amp;Qt</translation>
     </message>
     <message>
         <source>About Qt</source>
@@ -2881,37 +2880,37 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     <name>StdCmdActivateNextWindow</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>Ne&amp;xt</source>
-        <translation>Suivant</translation>
+        <translation>Su&amp;ivant</translation>
     </message>
     <message>
         <source>Activate next window</source>
-        <translation>Activez fenetre suivante</translation>
+        <translation>Activez fenêtre suivante</translation>
     </message>
 </context>
 <context>
     <name>StdCmdActivatePrevWindow</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>Pre&amp;vious</source>
-        <translation>Précédent</translation>
+        <translation>Pré&amp;cédent</translation>
     </message>
     <message>
         <source>Activate previous window</source>
-        <translation>Activez fenetre précédante</translation>
+        <translation>Activez fenêtre précédente</translation>
     </message>
 </context>
 <context>
     <name>StdCmdArrangeIcons</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>Arrange &amp;Icons</source>
@@ -2926,11 +2925,11 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     <name>StdCmdCascadeWindows</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>&amp;Cascade</source>
-        <translation>&amp;Cascade de fen^etre(empilement)</translation>
+        <translation>&amp;Cascade de fenêtre(empilement)</translation>
     </message>
     <message>
         <source>Tile pragmatic</source>
@@ -2941,11 +2940,11 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     <name>StdCmdCloseActiveWindow</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>Cl&amp;ose</source>
-        <translation>Fermer</translation>
+        <translation>Fe&amp;rmer</translation>
     </message>
     <message>
         <source>Close active window</source>
@@ -2956,15 +2955,15 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     <name>StdCmdCloseAllWindows</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>Close Al&amp;l</source>
-        <translation>Fermer tout</translation>
+        <translation>Fermer &amp;tout</translation>
     </message>
     <message>
         <source>Close all windows</source>
-        <translation>Fermer toutes les fenetres</translation>
+        <translation>Fermer toutes les fenêtres</translation>
     </message>
 </context>
 <context>
@@ -2975,7 +2974,7 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>Start command &amp;line...</source>
-        <translation>Démarrer la ligne de commande</translation>
+        <translation>Démarrer la &amp;ligne de commande</translation>
     </message>
     <message>
         <source>Opens the command line in the console</source>
@@ -2990,7 +2989,7 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>C&amp;opy</source>
-        <translation>Copier</translation>
+        <translation>C&amp;opier</translation>
     </message>
     <message>
         <source>Copy operation</source>
@@ -3035,7 +3034,7 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>Cu&amp;stomize...</source>
-        <translation>Personaliser</translation>
+        <translation>Pe&amp;rsonaliser</translation>
     </message>
     <message>
         <source>Customize toolbars and commandbars</source>
@@ -3125,11 +3124,11 @@ Ouvrer une fenetre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>Vie&amp;ws</source>
-        <translation>Vu&amp;e</translation>
+        <translation>Vu&amp;es</translation>
     </message>
     <message>
         <source>Toggles this window</source>
-        <translation>Basculez cette fenetre</translation>
+        <translation>Basculez cette fenêtre</translation>
     </message>
 </context>
 <context>
@@ -3296,7 +3295,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>S&amp;top macro recording</source>
-        <translation>Arr^e&amp;ter l&apos;enregistrement macro</translation>
+        <translation>Arrê&amp;ter l&apos;enregistrement macro</translation>
     </message>
     <message>
         <source>Stop the a running macro recording sassion</source>
@@ -3416,7 +3415,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>&amp;Print...</source>
-        <translation>&amp;Imprimer</translation>
+        <translation>&amp;Imprimer...</translation>
     </message>
     <message>
         <source>Print the document</source>
@@ -3663,7 +3662,7 @@ Do you want to specify another directory?</source>
     <name>StdCmdTileWindows</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>&amp;Tile</source>
@@ -3671,7 +3670,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Tile the windows</source>
-        <translation>Scinder les fenetres</translation>
+        <translation>Scinder les fenêtres</translation>
     </message>
 </context>
 <context>
@@ -3742,11 +3741,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Tool&amp;bars</source>
-        <translation>Barre d&apos;outils</translation>
+        <translation>Barre&amp; d&apos;outils</translation>
     </message>
     <message>
         <source>Toggles this window</source>
-        <translation>Basculez cette fenetre</translation>
+        <translation>Basculez cette fenêtre</translation>
     </message>
 </context>
 <context>
@@ -4098,26 +4097,26 @@ Do you want to specify another directory?</source>
     <name>StdCmdWindows</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>&amp;Windows...</source>
-        <translation>&amp;Fen^etre...</translation>
+        <translation>&amp;Fenêtre...</translation>
     </message>
     <message>
         <source>Windows list</source>
-        <translation>Liste des fenetres</translation>
+        <translation>Liste des fenêtres</translation>
     </message>
 </context>
 <context>
     <name>StdCmdWindowsMenu</name>
     <message>
         <source>Window</source>
-        <translation>Fenetre</translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <source>Activates this window</source>
-        <translation>Activez cette fenetre</translation>
+        <translation>Activez cette fenêtre</translation>
     </message>
 </context>
 <context>
@@ -4229,5 +4228,3 @@ Do you want to specify another directory?</source>
     </message>
 </context>
 </TS>
-
- 	  	 
