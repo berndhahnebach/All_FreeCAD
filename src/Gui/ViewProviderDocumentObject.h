@@ -63,6 +63,8 @@ public:
     virtual std::vector<std::string> getDisplayModes(void) const;
     /// Sets the active mode, i.e. the first item of the 'Display' property.
     void setActiveMode();
+    virtual void hide(void);
+    virtual void show(void);
 
     void updateView();
     virtual void updateData(const App::Property*){};
