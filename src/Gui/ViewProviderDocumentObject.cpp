@@ -68,8 +68,18 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
         setActiveMode();
     }
     else if (prop == &Visibility) {
-        Visibility.getValue() ? show() : hide();
+        Visibility.getValue() ? ViewProvider::show() : ViewProvider::hide();
     }
+}
+
+void ViewProviderDocumentObject::hide(void)
+{
+    Visibility.setValue(false);
+}
+
+void ViewProviderDocumentObject::show(void)
+{
+    Visibility.setValue(true);
 }
 
 void ViewProviderDocumentObject::updateView()

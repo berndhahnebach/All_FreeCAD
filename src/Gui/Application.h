@@ -133,6 +133,10 @@ public:
     * If no such document exists 0 is returned.
     */
     Gui::Document* getDocument(App::Document* pDoc) const;
+    /// Shows the associated view provider of the given object
+    void showViewProvider(App::DocumentObject*);
+    /// Hides the associated view provider of the given object
+    void hideViewProvider(App::DocumentObject*);
     //@}
 
     /// true when the application shuting down
@@ -196,8 +200,10 @@ public:
     PYFUNCDEF_S(sRunCommand);
     PYFUNCDEF_S(sAddCommand);
 
-    PYFUNCDEF_S(sHide);
-    PYFUNCDEF_S(sShow);
+    PYFUNCDEF_S(sHide);                     // deprecated
+    PYFUNCDEF_S(sShow);                     // deprecated
+    PYFUNCDEF_S(sHideObject);               // hide view provider object
+    PYFUNCDEF_S(sShowObject);               // show view provider object
 
     PYFUNCDEF_S(sOpen);                     // open Python scripts
     PYFUNCDEF_S(sInsert);                   // open Python scripts

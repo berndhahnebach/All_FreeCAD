@@ -101,6 +101,12 @@ PyMethodDef Application::Methods[] = {
    "deprecated"},
   {"show",                    (PyCFunction) Application::sShow,             1,
    "deprecated"},
+  {"hideObject",              (PyCFunction) Application::sHideObject,       1,
+   "hideObject(object) -> None\n\n"
+   "Hide the view provider to the given object"},
+  {"showObject",              (PyCFunction) Application::sShowObject,       1,
+   "showObject(object) -> None\n\n"
+   "Show the view provider to the given object"},
   {"open",                    (PyCFunction) Application::sOpen,             1,
    "Open a macro, Inventor or VRML file"},
   {"insert",                  (PyCFunction) Application::sInsert,           1,
@@ -122,13 +128,13 @@ PyObject* Application::sActiveDocument(PyObject * /*self*/, PyObject *args,PyObj
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 
 
-    Document *pcDoc =  Instance->activeDocument();
+    Document *pcDoc = Instance->activeDocument();
     if (pcDoc) {
         return pcDoc->getPyObject();
     } else {
         Py_Return;
     }
-} 
+}
 
 PyObject* Application::sGetDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
@@ -136,42 +142,66 @@ PyObject* Application::sGetDocument(PyObject * /*self*/, PyObject *args,PyObject
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception
 
-    Document *pcDoc =  Instance->getDocument(pstr);
+    Document *pcDoc = Instance->getDocument(pstr);
     if (!pcDoc) {
         PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
-        return 0L;
+        return 0;
     }
 
     return pcDoc->getPyObject();
-} 
+}
 
 PyObject* Application::sHide(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *psFeatStr;
-    if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
+    if (!PyArg_ParseTuple(args, "s;Name of the object to hide has to be given!",&psFeatStr))     // convert args: Python->C 
         return NULL;                                      // NULL triggers exception 
 
-    Document *pcDoc =  Instance->activeDocument();
+    Document *pcDoc = Instance->activeDocument();
 
     if (pcDoc)
-        pcDoc->setHide(psFeatStr);  
+        pcDoc->setHide(psFeatStr);
 
     Py_Return;
-} 
+}
 
 PyObject* Application::sShow(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *psFeatStr;
-    if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
+    if (!PyArg_ParseTuple(args, "s;Name of the object to show has to be given!",&psFeatStr))     // convert args: Python->C 
         return NULL;                                      // NULL triggers exception 
 
-    Document *pcDoc =  Instance->activeDocument();
+    Document *pcDoc = Instance->activeDocument();
 
     if (pcDoc)
-        pcDoc->setShow(psFeatStr);  
+        pcDoc->setShow(psFeatStr);
 
     Py_Return;
-} 
+}
+
+PyObject* Application::sHideObject(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    PyObject *object;
+    if (!PyArg_ParseTuple(args, "O!",&(App::DocumentObjectPy::Type),&object))
+        return 0;
+
+    App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(object)->getDocumentObjectPtr();
+    Instance->hideViewProvider(obj);
+
+    Py_Return;
+}
+
+PyObject* Application::sShowObject(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    PyObject *object;
+    if (!PyArg_ParseTuple(args, "O!",&(App::DocumentObjectPy::Type),&object))
+        return 0;
+
+    App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(object)->getDocumentObjectPtr();
+    Instance->showViewProvider(obj);
+
+    Py_Return;
+}
 
 PyObject* Application::sOpen(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {

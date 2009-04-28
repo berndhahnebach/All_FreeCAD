@@ -111,9 +111,11 @@ public:
     virtual const char* getDefaultDisplayMode() const=0;
     /// returns a list of all possible display modes
     virtual std::vector<std::string> getDisplayModes(void) const=0;
-    /// is called when the view provider should be edited, returns false if no edit possible.
+    /// Hides the view provider
     virtual void hide(void);
+    /// Shows the view provider
     virtual void show(void);
+    /// checks whether the view provider is visible or not
     virtual bool isShow(void) const;
     void setVisible(bool);
     bool isVisible() const;

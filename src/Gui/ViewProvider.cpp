@@ -80,7 +80,7 @@ ViewProvider::~ViewProvider()
     pcRoot->unref();
     pcTransform->unref();
     pcModeSwitch->unref();
-    if(pcAnnotation)
+    if (pcAnnotation)
         pcAnnotation->unref();
 }
 
@@ -169,9 +169,9 @@ void ViewProvider::update(const App::Property* prop)
 {
     // Hide the object temporarily to speed up the update
     bool vis = this->isShow();
-    if (vis) hide();
+    if (vis) ViewProvider::hide();
     updateData(prop);
-    if (vis) show();
+    if (vis) ViewProvider::show();
 }
 
 QIcon ViewProvider::getIcon(void) const
@@ -214,7 +214,7 @@ void ViewProvider::addDisplayMaskMode( SoNode *node, const char* type )
 void ViewProvider::setDisplayMaskMode( const char* type )
 {
     std::map<std::string, int>::const_iterator it = _sDisplayMaskModes.find( type );
-    if ( it != _sDisplayMaskModes.end() )
+    if (it != _sDisplayMaskModes.end())
         pcModeSwitch->whichChild = it->second;
     else
         pcModeSwitch->whichChild = -1;
