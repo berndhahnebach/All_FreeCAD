@@ -218,7 +218,33 @@ PyObject* TopoShapePy::extrude(PyObject *args)
         try {
             Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
             TopoDS_Shape shape = this->getTopoShapePtr()->makePrism(gp_Vec(vec.x,vec.y,vec.z));
-            return new TopoShapePy(new TopoShape(shape));
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            switch (type)
+            {
+            case TopAbs_COMPOUND:
+                break;
+            case TopAbs_COMPSOLID:
+                return new TopoShapeCompSolidPy(new TopoShape(shape));
+            case TopAbs_SOLID:
+                return new TopoShapeSolidPy(new TopoShape(shape));
+            case TopAbs_SHELL:
+                return new TopoShapeShellPy(new TopoShape(shape));
+            case TopAbs_FACE:
+                return new TopoShapeFacePy(new TopoShape(shape));
+            case TopAbs_WIRE:
+                break;
+            case TopAbs_EDGE:
+                return new TopoShapeEdgePy(new TopoShape(shape));
+            case TopAbs_VERTEX:
+                break;
+            case TopAbs_SHAPE:
+                break;
+            default:
+                break;
+            }
+
+            PyErr_SetString(PyExc_Exception, "extrusion for this shape type not supported");
+            return 0;
         }
         catch (Standard_Failure) {
             Handle_Standard_Failure e = Standard_Failure::Caught();
