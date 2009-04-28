@@ -126,25 +126,6 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
-PyObject* TopoShapeEdgePy::extrude(PyObject *args)
-{
-    PyObject *pVec;
-    if (PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &pVec)) {
-        try {
-            Base::Vector3d vec = static_cast<Base::VectorPy*>(pVec)->value();
-            TopoDS_Shape shape = this->getTopoShapePtr()->makePrism(gp_Vec(vec.x,vec.y,vec.z));
-            return new TopoShapeFacePy(new TopoShape(shape));
-        }
-        catch (Standard_Failure) {
-            Handle_Standard_Failure e = Standard_Failure::Caught();
-            PyErr_SetString(PyExc_Exception, e->GetMessageString());
-            return 0;
-        }
-    }
-
-    return 0;
-}
-
 PyObject* TopoShapeEdgePy::revolve(PyObject *args)
 {
     PyObject *pPos,*pDir;
