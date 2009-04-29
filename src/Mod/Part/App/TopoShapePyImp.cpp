@@ -256,6 +256,54 @@ PyObject* TopoShapePy::extrude(PyObject *args)
     return 0;
 }
 
+PyObject* TopoShapePy::revolve(PyObject *args)
+{
+    PyObject *pPos,*pDir;
+    double d=2.0*Standard_PI;
+    if (PyArg_ParseTuple(args, "O!O!|d", &(Base::VectorPy::Type), &pPos, &(Base::VectorPy::Type), &pDir,&d)) {
+        try {
+            Base::Vector3d pos = static_cast<Base::VectorPy*>(pPos)->value();
+            Base::Vector3d dir = static_cast<Base::VectorPy*>(pDir)->value();
+            TopoDS_Shape shape = this->getTopoShapePtr()->revolve(
+                gp_Ax1(gp_Pnt(pos.x,pos.y,pos.z), gp_Dir(dir.x,dir.y,dir.z)),d);
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            switch (type)
+            {
+            case TopAbs_COMPOUND:
+                break;
+            case TopAbs_COMPSOLID:
+                return new TopoShapeCompSolidPy(new TopoShape(shape));
+            case TopAbs_SOLID:
+                return new TopoShapeSolidPy(new TopoShape(shape));
+            case TopAbs_SHELL:
+                return new TopoShapeShellPy(new TopoShape(shape));
+            case TopAbs_FACE:
+                return new TopoShapeFacePy(new TopoShape(shape));
+            case TopAbs_WIRE:
+                break;
+            case TopAbs_EDGE:
+                return new TopoShapeEdgePy(new TopoShape(shape));
+            case TopAbs_VERTEX:
+                break;
+            case TopAbs_SHAPE:
+                break;
+            default:
+                break;
+            }
+
+            PyErr_SetString(PyExc_Exception, "revolution for this shape type not supported");
+            return 0;
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
 PyObject*  TopoShapePy::check(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))

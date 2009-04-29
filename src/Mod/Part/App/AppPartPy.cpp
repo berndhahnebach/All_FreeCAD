@@ -80,7 +80,10 @@
 #include "TopoShapeWirePy.h"
 #include "TopoShapeFacePy.h"
 #include "TopoShapeCompoundPy.h"
+#include "TopoShapeCompSolidPy.h"
 #include "TopoShapeSolidPy.h"
+#include "TopoShapeShellPy.h"
+#include "TopoShapeVertexPy.h"
 #include "GeometryPy.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
@@ -776,6 +779,46 @@ static PyObject * sortEdges(PyObject *self, PyObject *args)
     return Py::new_reference_to(sorted_list);
 }
 
+static PyObject * cast_to_shape(PyObject *self, PyObject *args)
+{
+    PyObject *object;
+    if (PyArg_ParseTuple(args,"O!",&(Part::TopoShapePy::Type), &object)) {
+        TopoShape* ptr = static_cast<TopoShapePy*>(object)->getTopoShapePtr();
+        TopoDS_Shape shape = ptr->_Shape;
+        if (!shape.IsNull()) {
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            switch (type)
+            {
+            case TopAbs_COMPOUND:
+                return new TopoShapeCompoundPy(new TopoShape(shape));
+            case TopAbs_COMPSOLID:
+                return new TopoShapeCompSolidPy(new TopoShape(shape));
+            case TopAbs_SOLID:
+                return new TopoShapeSolidPy(new TopoShape(shape));
+            case TopAbs_SHELL:
+                return new TopoShapeShellPy(new TopoShape(shape));
+            case TopAbs_FACE:
+                return new TopoShapeFacePy(new TopoShape(shape));
+            case TopAbs_WIRE:
+                return new TopoShapeWirePy(new TopoShape(shape));
+            case TopAbs_EDGE:
+                return new TopoShapeEdgePy(new TopoShape(shape));
+            case TopAbs_VERTEX:
+                return new TopoShapeVertexPy(new TopoShape(shape));
+            case TopAbs_SHAPE:
+                return new TopoShapePy(new TopoShape(shape));
+            default:
+                break;
+            }
+        }
+        else {
+            PyErr_SetString(PyExc_Exception, "empty shape");
+        }
+    }
+
+    return 0;
+}
+
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
     {"open"       ,open      ,METH_VARARGS,
@@ -813,6 +856,8 @@ struct PyMethodDef Part_methods[] = {
     {"makeCone" ,makeCone,METH_VARARGS,
      "makeCone(radius1,radius2,height,[pnt,dir,angle]) -- Make a cone with given radii and height\n"
      "By default pnt=Vector(0,0,0), dir=Vector(0,0,1) and angle=2*PI"},
+    {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
+     "cast_to_shape(shape) -- Cast to the actual shape type"},
     {"__sortEdges__" ,sortEdges,METH_VARARGS,
      "__sortEdges__(list of edges) -- Helper method to sort an unsorted list of edges so that afterwards\n"
      "two adjacent edges share a common vertex"},

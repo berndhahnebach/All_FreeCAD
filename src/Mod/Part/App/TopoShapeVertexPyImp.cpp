@@ -70,31 +70,51 @@ int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
     double x=0.0,y=0.0,z=0.0;
     PyObject *object;
+    bool success = false;
     if (PyArg_ParseTuple(args, "|ddd", &x,&y,&z)) {
         // do nothing here
+        success = true;
     }
-    else if (PyArg_ParseTuple(args,"O!",&(Base::VectorPy::Type), &object)) {
+    if (!success) {
         PyErr_Clear(); // set by PyArg_ParseTuple()
-        // Note: must be static_cast, not reinterpret_cast
-        Base::Vector3d* ptr = static_cast<Base::VectorPy*>(object)->getVectorPtr();
-        x = ptr->x;
-        y = ptr->y;
-        z = ptr->z;
-    }
-    else if (PyArg_ParseTuple(args,"O!",&(PyTuple_Type), &object)) {
-        PyErr_Clear(); // set by PyArg_ParseTuple()
-        try {
-            Py::Tuple tuple(object);
-            x = (float)Py::Float(tuple.getItem(0));
-            y = (float)Py::Float(tuple.getItem(1));
-            z = (float)Py::Float(tuple.getItem(2));
-        }
-        catch (const Py::Exception&) {
-            return -1;
+        if (PyArg_ParseTuple(args,"O!",&(Base::VectorPy::Type), &object)) {
+            // Note: must be static_cast, not reinterpret_cast
+            Base::Vector3d* ptr = static_cast<Base::VectorPy*>(object)->getVectorPtr();
+            x = ptr->x;
+            y = ptr->y;
+            z = ptr->z;
+            success = true;
         }
     }
-    else {
-        PyErr_SetString(PyExc_TypeError, "Either three floats, tuple or vector expected");
+    if (!success) {
+        PyErr_Clear(); // set by PyArg_ParseTuple()
+        if (PyArg_ParseTuple(args,"O!",&(PyTuple_Type), &object)) {
+            try {
+                Py::Tuple tuple(object);
+                x = (float)Py::Float(tuple.getItem(0));
+                y = (float)Py::Float(tuple.getItem(1));
+                z = (float)Py::Float(tuple.getItem(2));
+                success = true;
+            }
+            catch (const Py::Exception&) {
+                return -1;
+            }
+        }
+    }
+    if (!success) {
+        PyErr_Clear(); // set by PyArg_ParseTuple()
+        if (PyArg_ParseTuple(args,"O!",&(Part::TopoShapePy::Type), &object)) {
+            TopoShape* ptr = static_cast<TopoShapePy*>(object)->getTopoShapePtr();
+            TopoDS_Shape shape = ptr->_Shape;
+            if (!shape.IsNull() && shape.ShapeType() == TopAbs_VERTEX) {
+                TopoShapeVertexPy::PointerType vert = reinterpret_cast<TopoShapeVertexPy::PointerType>(_pcTwinPointer);
+                vert->_Shape = ptr->_Shape;
+                return 0;
+            }
+        }
+    }
+    if (!success) {
+        PyErr_SetString(PyExc_TypeError, "Either three floats, tuple, vector or vertex expected");
         return -1;
     }
 
@@ -102,28 +122,6 @@ int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     BRepBuilderAPI_MakeVertex aBuilder(gp_Pnt(x,y,z));
     TopoDS_Shape s = aBuilder.Vertex();
     ptr->_Shape = s;
-
-    return 0;
-}
-
-PyObject* TopoShapeVertexPy::revolve(PyObject *args)
-{
-    PyObject *pPos,*pDir;
-    double d=2.0*Standard_PI;
-    if (PyArg_ParseTuple(args, "O!O!|d", &(Base::VectorPy::Type), &pPos, &(Base::VectorPy::Type), &pDir,&d)) {
-        try {
-            Base::Vector3d pos = static_cast<Base::VectorPy*>(pPos)->value();
-            Base::Vector3d dir = static_cast<Base::VectorPy*>(pDir)->value();
-            TopoDS_Shape shape = this->getTopoShapePtr()->revolve(
-                gp_Ax1(gp_Pnt(pos.x,pos.y,pos.z), gp_Dir(dir.x,dir.y,dir.z)),d);
-            return new TopoShapeEdgePy(new TopoShape(shape));
-        }
-        catch (Standard_Failure) {
-            Handle_Standard_Failure e = Standard_Failure::Caught();
-            PyErr_SetString(PyExc_Exception, e->GetMessageString());
-            return 0;
-        }
-    }
 
     return 0;
 }
