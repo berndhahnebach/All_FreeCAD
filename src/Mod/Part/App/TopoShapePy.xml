@@ -44,6 +44,11 @@
         <UserDocu>Extrude the shape along a direction.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="revolve">
+      <Documentation>
+        <UserDocu>Make a revolved object.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="check">
       <Documentation>
         <UserDocu>Checks the shape and report errors in the shape structure.
