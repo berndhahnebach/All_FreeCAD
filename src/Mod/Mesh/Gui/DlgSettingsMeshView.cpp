@@ -54,6 +54,8 @@ DlgSettingsMeshView::~DlgSettingsMeshView()
 void DlgSettingsMeshView::saveSettings()
 {
     checkboxRendering->onSave();
+    buttonMeshColor->onSave();
+    buttonBackfaceColor->onSave();
     checkboxNormal->onSave();
     spinboxAngle->onSave();
 
@@ -80,6 +82,8 @@ void DlgSettingsMeshView::saveSettings()
 void DlgSettingsMeshView::loadSettings()
 {
     checkboxRendering->onRestore();
+    buttonMeshColor->onRestore();
+    buttonBackfaceColor->onRestore();
     checkboxNormal->onRestore();
     spinboxAngle->onRestore();
 }
