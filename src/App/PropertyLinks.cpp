@@ -74,9 +74,11 @@ PropertyLink::~PropertyLink()
 
 void PropertyLink::setValue(App::DocumentObject * lValue)
 {
-    aboutToSetValue();
-    _pcLink=lValue;
-    hasSetValue();
+    if (_pcLink != lValue) {
+        aboutToSetValue();
+        _pcLink = lValue;
+        hasSetValue();
+    }
 }
 
 App::DocumentObject * PropertyLink::getValue(void) const
@@ -147,11 +149,8 @@ Property *PropertyLink::Copy(void) const
 
 void PropertyLink::Paste(const Property &from)
 {
-    aboutToSetValue();
-    _pcLink = dynamic_cast<const PropertyLink&>(from)._pcLink;
-    hasSetValue();
+    setValue(dynamic_cast<const PropertyLink&>(from)._pcLink);
 }
-
 
 TYPESYSTEM_SOURCE(App::PropertyLinkList , App::PropertyLists);
 
