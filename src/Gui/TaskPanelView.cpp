@@ -27,7 +27,7 @@
 
 #include "TaskPanelView.h"
 #include "BitmapFactory.h"
-#include <3rdParty/iisTaskPanel/include/iisTaskPanel>
+#include "iisTaskPanel/include/iisTaskPanel"
 
 using namespace Gui;
 using namespace Gui::DockWnd;
