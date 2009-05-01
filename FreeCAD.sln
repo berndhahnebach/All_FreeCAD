@@ -139,7 +139,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeCADGui", "src\Gui\FreeCADGui.vcproj", "{FEEF8FBE-392E-48EA-B727-203A340E66D0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D} = {CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D}
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46} = {DA4405E4-2505-410D-B4E1-6AE0957F0E46}
 		{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9} = {E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}
 	EndProjectSection
 EndProject
@@ -346,8 +345,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppCompleteGui", "src\Mod\C
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppDraft", "src\Mod\Draft\AppDraft.vcproj", "{4B86E1B4-FD07-43FD-B7EC-72BE1EE2842A}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TaskPanel", "src\3rdParty\iisTaskPanel\TaskPanel.vcproj", "{DA4405E4-2505-410D-B4E1-6AE0957F0E46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -693,14 +690,6 @@ Global
 		{4B86E1B4-FD07-43FD-B7EC-72BE1EE2842A}.Release|Win32.Build.0 = Release|Win32
 		{4B86E1B4-FD07-43FD-B7EC-72BE1EE2842A}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
 		{4B86E1B4-FD07-43FD-B7EC-72BE1EE2842A}.RelWithDebInfo|Win32.Build.0 = Release|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.Debug|Win32.Build.0 = Debug|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.MinSizeRel|Win32.ActiveCfg = Release|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.MinSizeRel|Win32.Build.0 = Release|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.Release|Win32.ActiveCfg = Release|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.Release|Win32.Build.0 = Release|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
-		{DA4405E4-2505-410D-B4E1-6AE0957F0E46}.RelWithDebInfo|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
