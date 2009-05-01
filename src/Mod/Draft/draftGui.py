@@ -103,6 +103,7 @@ class toolBar:
 				icons = findicons()
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
+				self.state = None
 				self.draftToolbar = draftToolbar
 
 				self.cmdlabel = QtGui.QLabel(draftToolbar)
@@ -324,6 +325,7 @@ class toolBar:
 			def pointUi(self):
 				self.xValue.setEnabled(True)
 				self.yValue.setEnabled(True)
+				self.labelx.setText("X")
 				self.labelx.show()
 				self.labely.show()
 				self.labelz.show()
@@ -378,6 +380,38 @@ class toolBar:
 				self.textValue.show()
 				self.textValue.setText('')
 				self.textValue.setFocus()
+
+			def switchUi(self,store=True):
+				if store:
+					self.state = []
+					self.state.append(self.labelx.isVisible())
+					self.state.append(self.labely.isVisible())
+					self.state.append(self.labelz.isVisible())
+					self.state.append(self.xValue.isVisible())
+					self.state.append(self.yValue.isVisible())
+					self.state.append(self.zValue.isVisible())
+					self.state.append(self.lockButton.isVisible())
+					self.labelx.hide()
+					self.labely.hide()
+					self.labelz.hide()
+					self.xValue.hide()
+					self.yValue.hide()
+					self.zValue.hide()
+					self.lockButton.hide()
+				else:
+					if self.state:
+						if self.state[0]:self.labelx.show()
+						if self.state[1]:self.labely.show()
+						if self.state[2]:self.labelz.show()
+						if self.state[3]:self.xValue.show()
+						if self.state[4]:self.yValue.show()
+						if self.state[5]:self.zValue.show()
+						if self.state[6]:self.lockButton.show()
+						self.state = None
+
+			def selectUi(self):
+				self.labelx.setText("pick Object")
+				self.labelx.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"

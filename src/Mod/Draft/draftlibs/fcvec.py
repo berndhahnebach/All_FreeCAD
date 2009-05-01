@@ -128,32 +128,9 @@ def rotate(first,angle):
 	if isinstance(first,Vector):
 		return Vector(math.cos(angle)*first.x-math.sin(angle)*first.y,math.sin(angle)*first.x+math.cos(angle)*first.y,first.z)
 
-def intersect(p1,p2,p3,p4,infinite1=True,infinite2=True):
-	'''
-	intersect(Vector,Vector,Vector,Vector,[infinite1],[infinite2])
-	finds the intersection point between 2 lines (p1,p2) and (p3,p4)
-	if infinite1 is True, edge p1-p2 will be considered infinite
-	if infinite2 is True, edge p3-p4 will be considered infinite
-	'''
-
-	if isinstance(p1, Vector) and isinstance(p2, Vector) and isinstance(p3, Vector) and isinstance(p4, Vector):
-		numa = (p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)
-		numb = (p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)
-		denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y)
-		if (denom == 0):
-			return None
-
-		ua = numa / denom
-		ub = numb / denom
-		if not infinite1:
-			if (ua > 1) or (ua < 0):
-				return None
-		if not infinite2:
-			if (ub > 1) or (ub < 0):
-				return None
-		x = p1.x + ua * (p2.x - p1.x)
-		y = p1.y + ua * (p2.y - p1.y)
-		return Vector(x,y,p1.z)
-	else:
-		return None
-
+def isNull(vector):
+	'''isNull(vector): Tests if a vector is nul vector'''
+	if round(vector.x,PREC)==0 and round(vector.y,PREC)==0 and round(vector.z,PREC)==0 :
+		return True
+	else :
+		return False
