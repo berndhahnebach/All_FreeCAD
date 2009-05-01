@@ -160,7 +160,7 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     ADD_PROPERTY(OpenEdges,(false));
     ADD_PROPERTY(Lighting,(1));
     Lighting.setEnums(LightingEnums);
-    ADD_PROPERTY(BacksideColor,(0.8f,0.8f,0.8f));
+    //ADD_PROPERTY(BacksideColor,(0.8f,0.8f,0.8f));
 
     pOpenColor = new SoBaseColor();
     setOpenEdgeColorFrom(ShapeColor.getValue());
@@ -180,17 +180,17 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
     pShapeHints->ref();
 
-    pBackHints = new SoShapeHints;
-    pBackHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-    pBackHints->ref();
+    //pBackHints = new SoShapeHints;
+    //pBackHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+    //pBackHints->ref();
 
     pcMatBinding = new SoMaterialBinding;
     pcMatBinding->value = SoMaterialBinding::OVERALL;
     pcMatBinding->ref();
 
-    pcBacksideMaterial = new SoMaterial;
-    pcBacksideMaterial->ref();
-    BacksideColor.touch();
+    //pcBacksideMaterial = new SoMaterial;
+    //pcBacksideMaterial->ref();
+    //BacksideColor.touch();
 
     // read the correct shape color from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
@@ -206,13 +206,13 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     if (twoside) Lighting.setValue(1);
     else Lighting.setValue((long)0);
 
-    color = BacksideColor.getValue();
-    current = color.getPackedValue();
-    setting = hGrp->GetUnsigned("BackfaceColor", current);
-    if (current != setting) {
-        color.setPackedValue((uint32_t)setting);
-        BacksideColor.setValue(color);
-    }
+    //color = BacksideColor.getValue();
+    //current = color.getPackedValue();
+    //setting = hGrp->GetUnsigned("BackfaceColor", current);
+    //if (current != setting) {
+    //    color.setPackedValue((uint32_t)setting);
+    //    BacksideColor.setValue(color);
+    //}
 
     bool normal_per_vertex = hGrp->GetBool("VertexPerNormals", false);
     if (normal_per_vertex) {
@@ -227,9 +227,9 @@ ViewProviderMesh::~ViewProviderMesh()
     pcLineStyle->unref();
     pcPointStyle->unref();
     pShapeHints->unref();
-    pBackHints->unref();
+    //pBackHints->unref();
     pcMatBinding->unref();
-    pcBacksideMaterial->unref();
+    //pcBacksideMaterial->unref();
 }
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
@@ -242,27 +242,27 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
     }
     else if (prop == &CreaseAngle) {
         pShapeHints->creaseAngle = (F_PI*CreaseAngle.getValue())/180.0;
-        pBackHints->creaseAngle = (F_PI*CreaseAngle.getValue())/180.0;
+        //pBackHints->creaseAngle = (F_PI*CreaseAngle.getValue())/180.0;
     }
     else if (prop == &OpenEdges) {
         showOpenEdges(OpenEdges.getValue());
     }
     else if (prop == &Lighting) {
         if (Lighting.getValue() == 0) {
-            //pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
-            pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-            pcBacksideMaterial->diffuseColor = pcShapeMaterial->diffuseColor;
+            pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
+            //pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+            //pcBacksideMaterial->diffuseColor = pcShapeMaterial->diffuseColor;
         }
         else {
             pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-            const App::Color& c = BacksideColor.getValue();
-            pcBacksideMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+        //    const App::Color& c = BacksideColor.getValue();
+        //    pcBacksideMaterial->diffuseColor.setValue(c.r,c.g,c.b);
         }
     }
-    else if (prop == &BacksideColor && Lighting.getValue() != 0) {
+    /*else if (prop == &BacksideColor && Lighting.getValue() != 0) {
         const App::Color& c = BacksideColor.getValue();
         pcBacksideMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-    }
+    }*/
     else {
         // Set the inverse color for open edges
         if (prop == &ShapeColor) {
@@ -298,6 +298,7 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 
     // faces
     SoGroup* pcFlatRoot = new SoGroup();
+    /*
     {
         // front face
         SoSeparator* sep = new SoSeparator();
@@ -319,10 +320,11 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
         sep->addChild(pcHighlight);
         pcFlatRoot->addChild(sep);
     }
-    //pcFlatRoot->addChild(pShapeHints);
-    //pcFlatRoot->addChild(pcShapeMaterial);
-    //pcFlatRoot->addChild(pcMatBinding);
-    //pcFlatRoot->addChild(pcHighlight);
+    */
+    pcFlatRoot->addChild(pShapeHints);
+    pcFlatRoot->addChild(pcShapeMaterial);
+    pcFlatRoot->addChild(pcMatBinding);
+    pcFlatRoot->addChild(pcHighlight);
     addDisplayMaskMode(pcFlatRoot, "Flat");
 
     // points

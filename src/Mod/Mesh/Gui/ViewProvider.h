@@ -98,7 +98,7 @@ public:
     App::PropertyFloatConstraint CreaseAngle;
     App::PropertyBool OpenEdges;
     App::PropertyEnumeration Lighting;
-    App::PropertyColor BacksideColor;
+    //App::PropertyColor BacksideColor;
 
     virtual void attach(App::DocumentObject *);
     virtual QIcon getIcon() const;
@@ -156,9 +156,9 @@ protected:
     SoSeparator         * pcOpenEdge;
     SoBaseColor         * pOpenColor;
     SoShapeHints        * pShapeHints;
-    SoShapeHints        * pBackHints;
+    //SoShapeHints        * pBackHints;
     SoMaterialBinding   * pcMatBinding;
-    SoMaterial          * pcBacksideMaterial;
+    //SoMaterial          * pcBacksideMaterial;
 
 private:
     std::vector<unsigned long> _markedFacets;

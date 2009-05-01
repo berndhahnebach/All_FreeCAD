@@ -68,6 +68,7 @@
 #include "ViewProviderDocumentObjectGroup.h"
 #include "ViewProviderGeometryObject.h"
 #include "ViewProviderInventorObject.h"
+#include "ViewProviderVRMLObject.h"
 #include "ViewProviderAnnotation.h"
 #include "ViewProviderMeasureDistance.h"
 
@@ -1047,6 +1048,7 @@ void Application::initTypes(void)
     Gui::ViewProviderDocumentObjectGroup        ::init();
     Gui::ViewProviderGeometryObject             ::init();
     Gui::ViewProviderInventorObject             ::init();
+    Gui::ViewProviderVRMLObject                 ::init();
     Gui::ViewProviderAnnotation                 ::init();
     Gui::ViewProviderMeasureDistance            ::init();
 

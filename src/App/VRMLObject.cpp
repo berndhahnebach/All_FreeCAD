@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -36,7 +36,7 @@ PROPERTY_SOURCE(App::VRMLObject, App::DocumentObject)
 
 VRMLObject::VRMLObject() 
 {
-    ADD_PROPERTY_TYPE(VRML,(""),"",Prop_None,"Included file with the VRML definition");
+    ADD_PROPERTY_TYPE(VrmlFile,(0),"",Prop_None,"Included file with the VRML definition");
 }
 
 VRMLObject::~VRMLObject()
