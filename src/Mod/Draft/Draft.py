@@ -124,7 +124,9 @@ def snapPoint (target,point,cursor,ctrl=False):
 			for i in ob.Shape.Vertexes:
 				snapArray.append([i.Point,0,i.Point])
 			for j in ob.Shape.Edges:
-				if (isinstance (j.Curve,Part.Line)):					
+				if (isinstance (j.Curve,Part.Line)):
+					p1 = j.Vertexes[0].Point
+					p2 = j.Vertexes[1].Point
 					midpoint = fcgeo.findMidpoint(j)
 					snapArray.append([midpoint,1,midpoint])
 					if (len(target.node) > 0):
@@ -263,8 +265,9 @@ def selectObject(arg):
 			cursor = arg["Position"]
 			snapped = FreeCADGui.ActiveDocument.ActiveView.getObjectInfo((cursor[0],cursor[1]))
 			if snapped:
-				snapped = FreeCAD.ActiveDocument.getObject(snapped['Object'])
-				FreeCADGui.Selection.addSelection(snapped)
+				obj = FreeCAD.ActiveDocument.getObject(snapped['Object'])
+				FreeCADGui.Selection.addSelection(obj)
+				FreeCADGui.activeWorkbench().activeDraftCommand.component=snapped['Component']
 				FreeCADGui.activeWorkbench().activeDraftCommand.proceed()	
 				
 class snapTracker:
@@ -887,7 +890,11 @@ class arc:
 			self.rad = None
 			self.node = []
 			self.constrain = None
-			self.ui.arcUi()
+			self.tangents = []
+			self.tpoints = []
+			if (self.featureName == "Arc"): self.ui.arcUi()
+			else: self.ui.circleUi()
+			self.altdown = False
 			self.ui.sourceCmd = self
 			self.snap = snapTracker()
 			self.linetrack = lineTracker(dotted=True)
@@ -924,11 +931,45 @@ class arc:
 				self.constrain = None
 			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 			if (self.step == 0):
+				if arg["AltDown"]:
+					if not self.altdown:
+						self.ui.cross(False)
+						self.altdown = True
+						self.ui.switchUi(True)
+				else:
+					if self.altdown:
+						self.ui.cross(True)
+						self.altdown = False
+						self.ui.switchUi(False)
 				self.ui.displayPoint(point)
 			elif (self.step == 1):
-				rad = fcvec.dist(point,self.center)
-				self.ui.radiusValue.setText("%.2f" % rad)
-				self.arctrack.trans.scaleFactor.setValue([rad,rad,rad])
+				if len(self.tangents) == 2:
+					self.center = fcgeo.circleFrom2tan1pt(self.tangents[0], self.tangents[1], point)[-1].Center
+					self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
+				if arg["AltDown"]:
+					if not self.altdown:
+						self.ui.cross(False)
+						self.altdown = True
+					snapped = self.view.getObjectInfo((cursor[0],cursor[1]))
+					if snapped:
+						ob = self.doc.getObject(snapped['Object'])
+						num = int(snapped['Component'].lstrip('Edge'))-1
+						ed = ob.Shape.Edges[num]
+						if len(self.tangents) == 2:
+							cir = fcgeo.circleFrom3tan(self.tangents[0], self.tangents[1], ed)[0]
+							self.center = cir.Center
+							self.rad = cir.Radius
+						else:
+							self.rad = fcgeo.findProjection(self.center,ed).sub(self.center).Length
+					else:
+						self.rad = fcvec.dist(point,self.center)
+				else:
+					if self.altdown:
+						self.ui.cross(True)
+						self.altdown = False
+					self.rad = fcvec.dist(point,self.center)
+				self.ui.radiusValue.setText("%.2f" % self.rad)
+				self.arctrack.trans.scaleFactor.setValue([self.rad,self.rad,self.rad])
 				self.ui.radiusValue.setFocus()
 				self.ui.radiusValue.selectAll()
 				# Draw constraint tracker line.
@@ -1006,19 +1047,35 @@ class arc:
 					self.constrain = None
 				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 				if (self.step == 0):
-					self.center = point
-					self.node = [point]
-					self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
-					self.arctrack.on()
-					self.ui.radiusUi()
-					self.step = 1
-					self.linetrack.p1(self.center)
-					self.linetrack.p2(self.view.getPoint(pos[0],pos[1]))
-					self.linetrack.on()
-					FreeCAD.Console.PrintMessage("Pick radius:\n")
+					if arg["AltDown"]:
+						snapped=self.view.getObjectInfo((pos[0],pos[1]))
+						if snapped:
+							ob = self.doc.getObject(snapped['Object'])
+							num = int(snapped['Component'].lstrip('Edge'))-1
+							ed = ob.Shape.Edges[num]
+							self.tangents.append(ed)
+							if len(self.tangents) == 2:
+								self.step = 1
+								self.arctrack.on()
+								self.ui.radiusUi()
+								self.linetrack.on()
+								FreeCAD.Console.PrintMessage("Pick radius:\n")
+						
+					else:
+						self.center = point
+						self.node = [point]
+						self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
+						self.arctrack.on()
+						self.ui.radiusUi()
+						self.step = 1
+						self.linetrack.p1(self.center)
+						self.linetrack.p2(self.view.getPoint(pos[0],pos[1]))
+						self.linetrack.on()
+						FreeCAD.Console.PrintMessage("Pick radius:\n")
 				elif (self.step == 1):
-					self.rad = fcvec.dist(point,self.center)
-					if self.closedCircle: self.drawArc()
+					if self.closedCircle:
+						self.ui.cross(False)
+						self.drawArc()
 					else: 
 						self.ui.labelRadius.setText("Start angle")
 						self.linetrack.p1(self.center)
@@ -1035,6 +1092,7 @@ class arc:
 					self.drawArc()
 
 	def drawArc(self):
+		"actually draws the FreeCAD object"
 		if self.closedCircle:
 			arc = Part.Circle(self.center,normal,self.rad).toShape()
 		else:
@@ -1068,13 +1126,17 @@ class arc:
 		"this function gets called by the toolbar when valid radius have been entered there"
 		if (self.step == 1):
 			self.rad = rad
-			if self.closedCircle: self.drawArc()
-			self.step = 2
-			self.arctrack.trans.scaleFactor.setValue([rad,rad,rad])
-			self.ui.labelRadius.setText("Start angle")
-			self.linetrack.p1(self.center)
-			self.linetrack.on()
-			FreeCAD.Console.PrintMessage("Pick start angle:\n")
+			if len(self.tangents) == 2:
+				self.center = fcgeo.circleFrom2tan1rad(self.tangents[0], self.tangents[1], rad)[-1].Center
+			if self.closedCircle:
+				self.drawArc()
+			else:
+				self.step = 2
+				self.arctrack.trans.scaleFactor.setValue([rad,rad,rad])
+				self.ui.labelRadius.setText("Start angle")
+				self.linetrack.p1(self.center)
+				self.linetrack.on()
+				FreeCAD.Console.PrintMessage("Pick start angle:\n")
 		elif (self.step == 2):
 			self.ui.labelRadius.setText("End angle")
 			self.firstangle = math.radians(rad)
@@ -1099,7 +1161,7 @@ class circle(arc):
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_circle',
 			'MenuText': 'Circle',
-			'ToolTip': 'Creates a circle. CTRL to snap'}
+			'ToolTip': 'Creates a circle. CTRL to snap, ALT to select tangent objects'}
 
 	
 class annotation:
@@ -1223,6 +1285,7 @@ class move:
 				self.snap = None
 				self.linetrack = None
 				self.constraintrack = None
+				self.ui.selectUi()
 				FreeCAD.Console.PrintMessage("Select an object to move\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
@@ -1411,6 +1474,7 @@ class rotate:
 				self.linetrack = None
 				self.arctrack = None
 				self.constraintrack = None
+				self.ui.selectUi()
 				FreeCAD.Console.PrintMessage("Select an object to rotate\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
@@ -1656,6 +1720,7 @@ class offset:
 				self.linetrack = None
 				self.arctrack = None
 				self.constraintrack = None
+				self.ui.selectUi()
 				FreeCAD.Console.PrintMessage("Select an object to offset\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			elif len(FreeCADGui.Selection.getSelection()) > 1:
@@ -1902,6 +1967,7 @@ class upgrade:
 			self.featureName = "Upgrade"
 			self.call = None
 			if not FreeCADGui.Selection.getSelection():
+				self.ui.selectUi()
 				FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
@@ -1979,6 +2045,7 @@ class downgrade:
 			self.featureName = "Downgrade"
 			self.call = None
 			if not FreeCADGui.Selection.getSelection():
+				self.ui.selectUi()
 				FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
@@ -2051,6 +2118,7 @@ class trimex:
 				self.snap = None
 				self.linetrack = None
 				self.constraintrack = None
+				self.ui.selectUi()
 				FreeCAD.Console.PrintMessage("Select an object to trim/extend\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:

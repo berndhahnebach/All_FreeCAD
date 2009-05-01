@@ -28,137 +28,228 @@ from FreeCAD import Vector
 NORM = Vector(0,0,1) # provisory normal direction for all geometry ops.
 PREC = 4 # Precision of comparisions (decimal places/digits).
 
+
+# Generic functions *********************************************************
+
+
 def vec(edge):
 	"vec(edge) or vec(line) -- returns a vector from an edge or a Part.line"
+	# if edge is not straight, you'll get strange results!
 	if isinstance(edge,Part.Shape):
-		return fcvec.new(edge.Vertexes[0].Point,edge.Vertexes[-1].Point)
+		return edge.Vertexes[-1].Point.sub(edge.Vertexes[0].Point)
 	elif isinstance(edge,Part.Line):
-		return fcvec.new(edge.StartPoint,edge.EndPoint)
+		return edge.EndPoint.sub(edge.StartPoint)
 	else:
 		return None
 
-def findIntersection(edge1,edge2,infinite1=False,infinite2=False):
-	'''
-	findIntersection(edge,edge,[infinite1],[infinite2])
-	finds intersection point between 2 edges, if any. Currently only works in 2D
-	if infinite1 is True, edge1 will be considered infinite.
-	if infinite2 is True, edge2 will be considered infinite.
-	algorithm from http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
-	'''
+def edg(p1,p2):
+	"edge(Vector,Vector) -- returns an edge from 2 vectors"
+	if isinstance(p1,FreeCAD.Vector) and isinstance(p2,FreeCAD.Vector):
+		return Part.Line(p1,p2).toShape()
 
-	if (isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Line)):
-		# intersection of two lines
-		p1 = edge1.Vertexes[0].Point
-		p2 = edge1.Vertexes[1].Point
-		p3 = edge2.Vertexes[0].Point
-		p4 = edge2.Vertexes[1].Point
-		int = fcvec.intersect(p1, p2, p3, p4, infinite1, infinite2)
-		if int:
-			return [int]
-		else:
-			return None
+def v1(edge):
+	"v1(edge) -- returns the first point of an edge"
+	return edge.Vertexes[0].Point
 
-	elif (isinstance(edge1.Curve,Part.Circle) and isinstance(edge2.Curve,Part.Circle)):
-		# intersection of two curves
-		c1 = edge1.Curve.Center
-		c2 = edge2.Curve.Center
-		r1 = edge1.Curve.Radius
-		r2 = edge2.Curve.Radius
-		d = fcvec.new(c1, c2)
-		dist = d.Length
-		if (round(dist, PREC) > round(r1 + r2, PREC)):
-			print "debug: no intersection"
-			#print "debug: distance: " + str(dist) + " r1: " + str(r1) + " r2: " + str(r2) + "\n"
-			return None # No intersection
-		elif (round(dist, PREC) == 0):
-			print "debug: circles in the same place"
-			return None # Circles are in the same place.
-		elif (round(dist, PREC) < round(abs(r1 - r2), PREC)):
-			print "debug: one circle inside the other"
-			return None # one circle is inside the other
-		elif (round(dist, PREC) == round(r1 + r2, PREC)):
-			print "debug: one int point"
-			return [fcvec.scale(fcvec.normalized(d),r1)]
-		else:
-			print "debug: 2 int points"
-			a = (r1**2 - r2**2 + dist**2) / (2.0 * dist)
-			p2 = Vector(c1.x + (d.x * a / dist), c1.y + (d.y * a / dist), c1.z)
-			h = math.sqrt(r1**2 - a**2)
-			rx = -d.y * (h / dist)
-			ry = d.x* (h / dist)
-			intpnts = []
-			intpnts.append(Vector(p2.x+rx, p2.y+ry, c1.z))
-			intpnts.append(Vector(p2.x-rx, p2.y-ry, c1.z))
-			return intpnts
+def isPtOnEdge(pt,edge) :
+	''' Tests if a point is on an edge'''
+	if isinstance(edge.Curve,Part.Line) :
+		orig = edge.Vertexes[0].Point
+		if fcvec.isNull(pt.sub(orig).cross(vec(edge))) :
+			return pt.sub(orig).Length <= vec(edge).Length and pt.sub(orig).dot(vec(edge)) >= 0
+		else : 
+			return False
+		
+	elif isinstance(edge.Curve,Part.Circle) :
+		center = edge.Curve.Center
+		axis   = edge.Curve.Axis ; axis.normalize()
+		radius = edge.Curve.Radius
+		if  round(pt.sub(center).dot(axis),PREC) == 0 \
+		and round(pt.sub(center).Length - radius,PREC) == 0 :
+			if len(edge.Vertexes) == 1 :
+				return True # edge is a complete circle
+			else :
+				begin = edge.Vertexes[0].Point
+				end   = edge.Vertexes[-1].Point
+				if fcvec.isNull(pt.sub(begin)) or fcvec.isNull(pt.sub(end)) :
+					return True
+				else :
+					newArc = Part.Arc(begin,pt,end)
+					return fcvec.isNull(newArc.Center.sub(center)) and fcvec.isNull(newArc.Axis-axis) \
+							and round(newArc.Radius-radius,PREC) == 0
+		else :
+			return False
 
-	elif ((isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Circle))
-	or (isinstance(edge1.Curve,Part.Circle) and isinstance(edge2.Curve,Part.Line))):
-		# intersection of one curve and one line
-		if (isinstance(edge1.Curve,Part.Circle)):
-			c = edge1.Curve.Center
-			r = edge1.Curve.Radius
-			p1 = edge2.Vertexes[0].Point
-			p2 = edge2.Vertexes[1].Point
-		else:
-			c = edge2.Curve.Center
-			r = edge2.Curve.Radius
-			p1 = edge1.Vertexes[0].Point
-			p2 = edge1.Vertexes[1].Point
+	
+# edge functions *****************************************************************
+	
 
-		intpnts = []
-		num = (c.x - p1.x) * (p2.x - p1.x) + (c.y - p1.y) * (p2.y - p1.y)
-		denom = (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y)
-		if denom == 0:
-			return
+def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
+	'''findIntersection(edge1,edge2,infinite1=False,infinite2=False):
+	returns a list containing the intersection point(s) of 2 edges'''
+	
+	if isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Line) :
+		
+		# deals with 2 lines
+		
+		pt1, pt2, pt3, pt4 = [edge1.Vertexes[0].Point,edge1.Vertexes[1].Point,
+							  edge2.Vertexes[0].Point,edge2.Vertexes[1].Point]
+							  
+		if fcvec.isNull(pt2.sub(pt1).cross(pt3.sub(pt1)).cross(pt2.sub(pt4).cross(pt3.sub(pt4)))) :
+			vec1 = vec(edge1) ; vec2 = vec(edge2)
+			vec1.normalize()  ; vec2.normalize()
+			cross = vec1.cross(vec2)
+			if not fcvec.isNull(cross) :
+				k = ((pt3.z-pt1.z)*(vec2.x-vec2.y)+(pt3.y-pt1.y)*(vec2.z-vec2.x)+ \
+					 (pt3.x-pt1.x)*(vec2.y-vec2.z))/(cross.x+cross.y+cross.z)
+				vec1.scale(k,k,k)
+				int = pt1.add(vec1)
+				
+				if  infinite1 == False and not isPtOnEdge(int,edge1) :
+					return []
+					
+				if  infinite2 == False and not isPtOnEdge(int,edge2) :
+					return []
+					
+				return [int]
+			else :
+				return [] # Lines have same direction
+		else :
+			return [] # Lines aren't on same plane
+			
+	elif isinstance(edge1.Curve,Part.Circle) and isinstance(edge2.Curve,Part.Line) \
+	  or isinstance(edge1.Curve,Part.Line)   and isinstance(edge2.Curve,Part.Circle) :
+	  	
+	  	# deals with an arc or circle and a line
+	  	
+		edges = [edge1,edge2]
+		for edge in edges :
+			if isinstance(edge.Curve,Part.Line) :
+				line = edge
+			else :
+				arc  = edge
+				
+		dirVec = vec(line) ; dirVec.normalize()
+		pt1    = line.Vertexes[0].Point
+		pt2    = line.Vertexes[1].Point
+		center = arc.Curve.Center
+		
+		if fcvec.isNull(pt1.sub(center).cross(pt2.sub(center)).cross(arc.Curve.Axis)) :
+			# Line and Arc are on same plane
+			
+			dOnLine = center.sub(pt1).dot(dirVec)
+			onLine  = Vector(dirVec) ; onLine.scale(dOnLine,dOnLine,dOnLine)
+			toLine  = pt1.sub(center).add(onLine)
+			
+			if toLine.Length < arc.Curve.Radius :
+				dOnLine = (arc.Curve.Radius**2 - toLine.Length**2)**(0.5)
+				onLine  = Vector(dirVec) ; onLine.scale(dOnLine,dOnLine,dOnLine)
+				int = [center.add(toLine).add(onLine)]
+				onLine  = Vector(dirVec) ; onLine.scale(-dOnLine,-dOnLine,-dOnLine)
+				int += [center.add(toLine).add(onLine)]
+			elif round(toLine.Length-arc.Curve.Radius,PREC) == 0 :
+				int = [center.add(toLine)]
+			else :
+				return []
+				
+		else : # Line isn't on Arc's plane
+			if dirVec.dot(arc.Curve.Axis) != 0 :
+				toPlane  = Vector(arc.Curve.Axis) ; toPlane.normalize()
+				d = vec1.dot(toPlane)
+				dToPlane = center.sub(pt1).dot(toPlane)
+				toPlane = Vector(vec1)
+				toPlane.scale(dToPlane/d,dToPlane/d,dToPlane/d)
+				ptOnPlane = toPlane.add(pt1)
+				if round(ptOnPlane.sub(center).Length - arc.Curve.Radius,PREC) == 0 :
+					int = [ptOnPlane]
+				else :
+					return []
+			else :
+				return []
+				
+		if infinite1 == False :
+			for i in range(len(int)-1,-1,-1) :
+				if not isPtOnEdge(int[i],edge1) :
+					del int[i]
+		if infinite2 == False :
+			for i in range(len(int)-1,-1,-1) :
+				if not isPtOnEdge(int[i],edge2) :
+					del int[i]
+		return int
+		
+	elif isinstance(edge1.Curve,Part.Circle) and isinstance(edge2.Curve,Part.Circle) :
+		
+		# deals with 2 arcs or circles
 
-		u = num / denom
-		xp = p1.x + u * (p2.x - p1.x)
-		yp = p1.y + u * (p2.y - p1.y)
-		a = (p2.x - p1.x)**2 + (p2.y - p1.y)**2
-		b = 2 * ((p2.x - p1.x) * (p1.x - c.x) + (p2.y - p1.y) * (p1.y - c.y))
-		c = c.x**2 + c.y**2 + p1.x**2 + p1.y**2 - 2 * (c.x * p1.x + c.y * p1.y) - r**2
-		q = b**2 - 4 * a * c
-		if q == 0:
-			intpnts.append(Vector(xp,yp,p1.z))
-		elif q:
-			u1 = (-b + math.sqrt(abs(q))) / (2 * a)
-			u2 = (-b - math.sqrt(abs(q))) / (2 * a)
-			intpnts.append(Vector((p1.x + u1 * (p2.x - p1.x)), (p1.y + u1 * (p2.y - p1.y)), p1.z))
-			intpnts.append(Vector((p1.x + u2 * (p2.x - p1.x)), (p1.y + u2 * (p2.y - p1.y)), p1.z))
-		return intpnts
+		cent1, cent2 = edge1.Curve.Center, edge2.Curve.Center
+		rad1 , rad2  = edge1.Curve.Radius, edge2.Curve.Radius
+		axis1, axis2 = edge1.Curve.Axis  , edge2.Curve.Axis
+		c2c          = cent2.sub(cent1)
+		
+		if fcvec.isNull(axis1.cross(axis2)) :
+			if round(c2c.dot(axis1),PREC) == 0 :
+				# circles are on same plane
+				dc2c = c2c.Length ;
+				if not fcvec.isNull(c2c): c2c.normalize()
+				if round(rad1+rad2-dc2c,PREC) < 0 \
+				or round(rad1-dc2c-rad2,PREC) > 0 or round(rad2-dc2c-rad1,PREC) > 0 :
+					return []
+				else :
+					norm = c2c.cross(axis1)
+					if not fcvec.isNull(norm): norm.normalize()
+					if fcvec.isNull(norm): x = 0
+					else: x = (dc2c**2 + rad1**2 - rad2**2)/(2*dc2c)
+					y = abs(rad1**2 - x**2)**(0.5)
+					c2c.scale(x,x,x)
+					if round(y,PREC) != 0 :
+						norm.scale(y,y,y)
+						int =  [cent1.add(c2c).add(norm)]
+						int += [cent1.add(c2c).sub(norm)]
+					else :
+						int = [cent1.add(c2c)]
+			else :
+				return [] # circles are on parallel planes
+		else :
+			# circles aren't on same plane
+			axis1.normalize() ; axis2.normalize()
+			U = axis1.cross(axis2)
+			V = axis1.cross(U)
+			dToPlane = c2c.dot(axis2)
+			d        = V.add(cent1).dot(axis2)
+			V.scale(dToPlane/d,dToPlane/d,dToPlane/d)
+			PtOn2Planes = V.add(cent1)
+			planeIntersectionVector = U.add(PtOn2Planes)
+			intTemp = findIntersection(planeIntersectionVector,edge1,True,True)
+			int = []
+			for pt in intTemp :
+				if round(pt.sub(cent2).Length-rad2,PREC) == 0 :
+					int += [pt]
+					
+		if infinite1 == False :
+			for i in range(len(int)-1,-1,-1) :
+				if not isPtOnEdge(int[i],edge1) :
+					del int[i]
+		if infinite2 == False :
+			for i in range(len(int)-1,-1,-1) :
+				if not isPtOnEdge(int[i],edge2) :
+					del int[i]
+		
+		return int
+	else :
+		print "fcgeo: Unsupported curve type"
 
+
+def mirror (point, edge):
+	"finds mirror point relative to an edge"
+	normPoint = findProjection(point, edge, False)
+	if normPoint:
+		normPoint_point = Vector.sub(point, normPoint)
+		normPoint_refl = fcvec.neg(normPoint_point)
+		refl = Vector.add(normPoint, normPoint_refl)
+		return refl
 	else:
-		print "debug: findIntersection bad parameters!\n"
 		return None
 
-
-def findReflection (edge, point):
-	'''
-	Returns the reflection (reflexion / mirrored point) of a given point.
-	The given edge is used as the axis of reflection.
-	See also: http://en.wikipedia.org/wiki/Reflection_(mathematics)
-
-	@todo Support different reflection types (e.g. reflect through a point -> http://en.wikipedia.org/wiki/Point_reflection)
-	'''
-
-	if isinstance(edge.Curve, Part.Line) and isinstance(point, FreeCAD.Vector):
-		# Project the given point onto the edge:
-		normPoint = findProjection(point, edge, False)
-
-		if normPoint:
-			normPoint_point = Vector.sub(point, normPoint)
-
-			# Calculate the vector from the projected normal point to the new reflected point
-			# i.e. the inverted vector from the projected normal point to the original point.
-			normPoint_refl = fcvec.neg(normPoint_point)
-			refl = Vector.add(normPoint, normPoint_refl)
-			return refl
-		else:
-			return None
-	else:
-		print "debug: findReflection bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: findReflection bad parameters!\n")
-		return None
 
 
 def findClosest(basepoint,pointslist):
@@ -184,7 +275,7 @@ def concatenate(shape):
 		wire=Part.Wire(edges)
 		face=Part.Face(wire)
 	except:
-		print "error: Couldn't join faces into one"
+		print "fcgeo: Couldn't join faces into one"
 		return(shape)
 	else:
 		if not wire.isClosed():	return(wire)
@@ -231,7 +322,7 @@ def sortEdges(lEdges, aVertex=None):
 		return [count]+linstances
 	
 	if (len(lEdges) < 2): return lEdges
-	olEdges = [] 			# ol stands for ordered list 
+	olEdges = [] # ol stands for ordered list 
 	if aVertex == None:
 		for i in range(len(lEdges)*2) :
 			result = lookfor(lEdges[i/2].Vertexes[i%2],lEdges)
@@ -347,40 +438,11 @@ def offset(edge,vector):
 		return Part.Circle(edge.Curve.Center,NORM,newrad).toShape()
 		
 
-def determinant (mat,n):
-	'''
-	determinant(matrix,int)
-	Determinat function. Calculates the determinant of a n-matrix.
-	It recursively expands the minors.
-	@todo Use existing library function instead
-	'''
-	matTemp = [[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]]
-	if (n > 1):
-		if n == 2:
-			d = mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1]
-		else:
-			d = 0.0
-			for j1 in range(n):
-				# Create minor
-				for i in range(1, n):
-					j2 = 0
-					for j in range(n):
-						if j == j1:
-							continue
-						matTemp[i-1][j2] = mat[i][j]
-						j2 += 1
-				d += (-1.0)**(1.0 + j1 + 1.0) * mat[0][j1] * determinant(matTemp, n-1)
-		return d
-	else:
-		return 0
-
 def findProjection(point, edge, strict=False):
 	'''
-	findProjection(vector, edge, [strict])
-	Returns a point that is the nearest point on the edge (i.e. intersection of the edge and the perpendicular vector from the point).
-	If strict is True, the point will be returned only if its endpoint lies on the edge.
-
-	@sa findDistance
+	findProjection(vector, edge, [strict]) - Returns a point that is the nearest
+	point on the edge (i.e. intersection of the edge and the perpendicular vector from the point).
+	If strict is True, the point will be returned only if it really lies on the edge.
 	'''
 	if isinstance(point,FreeCAD.Vector):
 		if isinstance(edge.Curve,Part.Line):
@@ -423,22 +485,18 @@ def findProjection(point, edge, strict=False):
 			else:
 				return newpoint
 		else:
-			# instance not supported
-			print "debug: findProjection bad parameters!\n"
-			FreeCAD.Console.PrintMessage("debug: findProjection bad parameters!\n")
+			print "fcgeo: Couldn't project point on edge"
 			return None
 	else:
-		print "debug: findProjection bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: findProjection bad parameters!\n")
+		print "fcgeo: Couldn't project point on edge"
 		return None
 
 
 def findDistance(point,edge,strict=False):
 	'''
-	findDistance(vector,edge,[strict])
-	Returns a vector from the point to its closest point on the edge.
-	If strict is True, the vector will be returned only if its endpoint lies on the edge.
-	@sa findProjection
+	findDistance(vector,edge,[strict]) - Returns a vector from the point to its
+	closest point on the edge. If strict is True, the vector will be returned
+	only if its endpoint lies on the edge.
 	'''
 	if isinstance(point, FreeCAD.Vector):
 		if isinstance(edge.Curve, Part.Line):
@@ -481,279 +539,207 @@ def findDistance(point,edge,strict=False):
 			else:
 				return dist
 		else:
-			# instance not supported
-			print "debug: findDistance bad parameters!\n"
+			print "fcgeo: Couldn't project point"
 			return None
 	else:
-		print "debug: findDistance bad parameters!\n"
+		print "fcgeo: Couldn't project point"
 		return None
 
 
 def angleBisection(edge1, edge2):
-	'''
-	angleBisection(edge,edge)
-	Returns a Part.Line that bisects the angle between the two given edges. Also called bisector.
-	If the 2 lines are parallel a thrid parallel line in the middle will be returned.
-	The two lines are always considered to be infinite.
-	'''
-
+	"angleBisection(edge,edge) - Returns an edge that bisects the angle between the 2 edges."
 	if isinstance(edge1.Curve, Part.Line) and isinstance(edge2.Curve, Part.Line):
 		p1 = edge1.Vertexes[0].Point
 		p2 = edge1.Vertexes[-1].Point
 		p3 = edge2.Vertexes[0].Point
 		p4 = edge2.Vertexes[-1].Point
-		int = fcvec.intersect(p1, p2, p3, p4, True, True)
-		if int == None:
-			# Parallel lines - Return a third parallel line that is exactly in the middle.
-
-			# Calculate median point.
-			diff = Vector.sub(p3, p1)	# vector between origin points
-			origin = Vector.add(p1, fcvec.scale(diff, 0.5))
-			
-			# Copy direction vector from first line (and normalize it).
-			dir = fcvec.normalized(Vector.sub(p2, p1))
-			return Part.Line(origin,Vector.add(origin+dir))
-
-		# Calculate the bisector angle.
-		line1Dir = Vector.sub(p2, p1)
-		angleDiff = fcvec.angle(line1Dir, Vector.sub(p4, p3))
-		ang = angleDiff * 0.5
-		# FreeCAD.Console.PrintMessage("debug: diff:"+str(angleDiff*180/math.pi)+"\n")
-
-		# Use intersection point as origin for the bisector.
-		origin = int
-		# Copy direction vector from first line (and normalize it).
-		dir = fcvec.normalized(line1Dir)
-		dir = fcvec.rotate(dir, ang)
-		return Part.Line(origin,Vector.add(origin,dir))
-	else:
-		print "debug: angleBisection bad parameters!\n"
-		return None
-
-
-def findHomotheticCenterOfCircles(circle1, circle2):
-	'''
-	findHomotheticCenterOfCircles(circle1, circle2)
-	Calculates the homothetic center(s) of two circles.
-
-	http://en.wikipedia.org/wiki/Homothetic_center
-	http://mathworld.wolfram.com/HomotheticCenter.html
-	'''
-
-	if isinstance(circle1.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
-		if fcvec.equals(circle1.Curve.Center, circle2.Curve.Center):
-			return None
-
-		cen1_cen2 = Part.Line(circle1.Curve.Center, circle2.Curve.Center).toShape()
-		cenDir = fcvec.normalized(vec(cen1_cen2))
-
-		# Get the perpedicular vector.
-		perpCenDir = fcvec.normalized(fcvec.crossproduct(cenDir))
-
-		# Get point on first circle
-		p1 = Vector.add(circle1.Curve.Center, fcvec.scale(perpCenDir, circle1.Curve.Radius))
-
-		centers = []
-		# Calculate inner homothetic center
-		# Get point on second circle
-		p2_inner = Vector.add(circle1.Curve.Center, fcvec.scale(perpCenDir, -circle1.Curve.Radius))
-		hCenterInner = fcvec.intersect(circle1.Curve.Center, circle2.Curve.Center, p1, p2_inner, True, True)
-		if hCenterInner:
-			centers.append(hCenterInner)
-
-		# Calculate outer homothetic center (only exists of the circles have different radii)
-		if circle1.Curve.Radius != circle2.Curve.Radius:
-			# Get point on second circle
-			p2_outer = Vector.add(circle1.Curve.Center, fcvec.scale(perpCenDir, circle1.Curve.Radius))
-			hCenterOuter = fcvec.intersect(circle1.Curve.Center, circle2.Curve.Center, p1, p2_outer, True, True)
-			if hCenterOuter:
-				centers.append(hCenterOuter)
-
-		if len(centers):
-			return centers
-		else:
-			return None
-
-	else:
-		print "debug: findHomotheticCenterOfCircles bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: findHomotheticCenterOfCirclescleFrom3tan bad parameters!\n")
-		return None
-
-
-def findRadicalAxis(circle1, circle2):
-	'''
-	Calculates the radical axis of two circles.
-	On the radical axis (also called power line) of two circles any
-	tangents drawn from a point on the axis to both circles have the same length.
-
-	http://en.wikipedia.org/wiki/Radical_axis
-	http://mathworld.wolfram.com/RadicalLine.html
-
-	@sa findRadicalCenter
-	'''
-
-	if isinstance(circle1.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
-		if fcvec.equals(circle1.Curve.Center, circle2.Curve.Center):
-			return None
-		r1 = circle1.Curve.Radius
-		r2 = circle1.Curve.Radius
-		cen1 = circle1.Curve.Center
-		# dist .. the distance from cen1 to cen2.
-		dist = fcvec.dist(cen1, circle2.Curve.Center)
-		cenDir = fcvec.normalized(Vector.sub(cen1, circle2.Curve.Center))
-
-		# Get the perpedicular vector.
-		perpCenDir = fcvec.normalized(fcvec.crossproduct(cenDir))
-
-		# J ... The radical center.
-		# K ... The point where the cadical axis crosses the line of cen1->cen2.
-		# k1 ... Distance from cen1 to K.
-		# k2 ... Distance from cen2 to K.
-		# dist = k1 + k2
-
-		k1 = (dist + (r1^2 - r2^2) / dist) / 2.0
-		#k2 = dist - k1
-
-		K = Vector.add(cen1, fcvec.scale(cenDir, k1))
-
-		# K_ .. A point somewhere between K and J (actually with a distance of 1 unit from K).
-		K_ = Vector,add(K, perpCenDir)
-
-		radicalAxis = Part.Line(K, Vector.add(origin, dir))
-
-		if radicalAxis:
-			return radicalAxis
-		else:
-			return None
-	else:
-		print "debug: findRadicalAxis bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: findRadicalAxis bad parameters!\n")
-		return None
-
-
-def findRadicalCenter(circle1, circle2, circle3):
-	'''
-	findRadicalCenter(circle1, circle2, circle3):
-	Calculates the radical center (also called the power center) of three circles.
-	It is the intersection point of the three radical axes of the pairs of circles.
-
-	http://en.wikipedia.org/wiki/Power_center_(geometry)
-	http://mathworld.wolfram.com/RadicalCenter.html
-
-	@sa findRadicalAxis
-	'''
-
-	if isinstance(circle1.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
-		radicalAxis12 = findRadicalAxis(circle1, circle2)
-		radicalAxis23 = findRadicalAxis(circle1, circle2)
-
-		if not radicalAxis12 or not radicalAxis23:
-			# No radical center could be calculated.
-			return None
-
-		int = findIntersection(radicalAxis12, radicalAxis23, True, True)
-
+		int = findIntersection(edge1, edge2, True, True)
 		if int:
-			return int
+			line1Dir = p2.sub(p1)
+			angleDiff = fcvec.angle(line1Dir, p4.sub(p3))
+			ang = angleDiff * 0.5
+			origin = int[0]
+			dir = fcvec.normalized(line1Dir)
+			dir = fcvec.rotate(dir, ang)
+			return Part.Line(origin,origin.add(dir)).toShape()
 		else:
-			# No radical center could be calculated.
-			return None
+			diff = p3.sub(p1)
+			origin = p1.add(fcvec.scale(diff, 0.5))
+			dir = fcvec.normalized(p2.sub(p1))
+			return Part.Line(origin,origin.add(dir)).toShape()
 	else:
-		print "debug: findRadicalCenter bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: findRadicalCenter bad parameters!\n")
 		return None
 
-#------------------------------------------------------------
-# INVERSION FUNCTIONS
+	
+# circle functions *********************************************************
 
-def pointInversion(circle, point):
-	'''
-	pointInversion(Circle, Vector)
 
-	Circle inversion of a point.
-	Will calculate the inversed point an return it.
-	If the given point is equal to the center of the circle "None" will be returned.
+def circleFrom2tan1pt(tan1, tan2, point):
+	"circleFrom2tan1pt(edge, edge, Vector)"
+	if isinstance(tan1.Curve, Part.Line) and isinstance(tan2.Curve, Part.Line) and isinstance(point, FreeCAD.Vector):
+		return circlefrom2Lines1Point(tan1, tan2, point)
+	elif isinstance(tan1.Curve, Part.Circle) and isinstance(tan2.Curve, Part.Line) and isinstance(point, FreeCAD.Vector):
+		return circlefromCircleLinePoint(tan1, tan2, point)
+	elif isinstance(tan2.Curve, Part.Circle) and isinstance(tan1.Curve, Part.Line) and isinstance(point, FreeCAD.Vector):
+		return circlefromCircleLinePoint(tan2, tan1, point)
+	elif isinstance(tan2.Curve, Part.Circle) and isinstance(tan1.Curve, Part.Circle) and isinstance(point, FreeCAD.Vector):
+		return circlefrom2Circles1Point(tan2, tan1, point)
 
-	See also:
-	http://en.wikipedia.org/wiki/Inversive_geometry
-	'''
+def circleFrom2tan1rad(tan1, tan2, rad):
+	"circleFrom2tan1rad(edge, edge, float)"
+	if isinstance(tan1.Curve, Part.Line) and isinstance(tan2.Curve, Part.Line):
+		return circleFrom2LinesRadius(tan1, tan2, rad)
+	elif isinstance(tan1.Curve, Part.Circle) and isinstance(tan2.Curve, Part.Line):
+		return circleFromCircleLineRadius(tan1, tan2, rad)
+	elif isinstance(tan1.Curve, Part.Line) and isinstance(tan2.Curve, Part.Circle):
+		return circleFromCircleLineRadius(tan2, tan1, rad)
+	elif isinstance(tan1.Curve, Part.Circle) and isinstance(tan2.Curve, Part.Circle):
+		return circleFrom2CirclesRadius(tan1, tan2, rad)
 
-	if isinstance(circle.Curve, Part.Circle) and isinstance(point, FreeCAD.Vector):
-		cen = circle.Curve.Center
-		rad = circle.Curve.Radius
+def circleFrom1tan2pt(tan1, p1, p2):
+	if isinstance(tan1.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector):
+		return circlefrom1Line2Points(tan1, p1, p2)
+	if isinstance(tan1.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector):
+		return circlefrom1Circle2Points(tan1, p1, p2)
 
-		if fcvec.equals(cen, point):
-			return None
+def circleFrom3tan(tan1, tan2, tan3):
+	tan1IsLine = isinstance(tan1.Curve, Part.Line)
+	tan2IsLine = isinstance(tan2.Curve, Part.Line)
+	tan3IsLine = isinstance(tan3.Curve, Part.Line)
+	tan1IsCircle = isinstance(tan1.Curve, Part.Circle)
+	tan2IsCircle = isinstance(tan2.Curve, Part.Circle)
+	tan3IsCircle = isinstance(tan3.Curve, Part.Circle)
+	if tan1IsLine and tan2IsLine and tan3IsLine:
+		return circleFrom3LineTangents(tan1, tan2, tan3)
+	elif tan1IsCircle and tan2IsCircle and tan3IsCircle:
+		return circleFrom3CircleTangents(tan1, tan2, tan3)
+	elif (tan1IsCircle and tan2IsLine and tan3IsLine):
+		return circleFrom1Circle2Lines(tan1, tan2, tan3)
+	elif (tan1IsLine and tan2IsCircle and tan3IsLine):
+		return circleFrom1Circle2Lines(tan2, tan1, tan3)
+	elif (tan1IsLine and tan2IsLine and tan3IsCircle):
+		return circleFrom1Circle2Lines(tan3, tan1, tan2)
+	elif (tan1IsLine and tan2IsCircle and tan3IsCircle):
+		return circleFrom2Circle1Lines(tan2, tan3, tan1)
+	elif (tan1IsCircle and tan2IsLine and tan3IsCircle):
+		return circleFrom2Circle1Lines(tan1, tan3, tan2)
+	elif (tan1IsCircle and tan2IsCircle and tan3IsLine):
+		return circleFrom2Circle1Lines(tan1, tan2, tan3)
 
-		# Inverse the distance of the point
-		# dist(cen -> P) = r^2 / dist(cen -> invP)
+def circlefrom2Lines1Point(edge1, edge2, point):
+	"circlefrom2Lines1Point(edge, edge, Vector)"
+	bis = angleBisection(edge1, edge2)
+	if not bis: return None
+	mirrPoint = mirror(point, bis)
+	return circlefrom1Line2Points(edge1, point, mirrPoint)
 
-		dist = fcvec.dist(point, cen)
-		invDist = rad**2 / d
+def circlefrom1Line2Points(edge, p1, p2):
+	"circlefrom1Line2Points(edge, Vector, Vector)"
+	p1_p2 = edg(p1, p2)
+	s = findIntersection(edge, p1_p2, True, True)
+	if not s: return None
+	s = s[0]
+	v1 = p1.sub(s)
+	v2 = p2.sub(s)
+	projectedDist = math.sqrt(abs(fcvec.dotproduct(v1, v2)))
+	edgeDir = fcvec.normalized(vec(edge))
+	projectedCen1 = Vector.add(s, fcvec.scale(edgeDir, projectedDist))
+	projectedCen2 = Vector.add(s, fcvec.scale(edgeDir, -projectedDist))
+	perpEdgeDir = fcvec.crossproduct(edgeDir)
+	perpCen1 = Vector.add(projectedCen1, perpEdgeDir)
+	perpCen2 = Vector.add(projectedCen2, perpEdgeDir)
+	mid = findMidpoint(p1_p2)
+	perp_mid = Vector.add(mid, fcvec.normalized(fcvec.crossproduct(vec(p1_p2))))
+	cen1 = findIntersection(edg(projectedCen1, perpCen1), edg(mid, perp_mid), True, True)
+	cen2 = findIntersection(edg(projectedCen2, perpCen2), edg(mid, perp_mid), True, True)
+	circles = []
+	if cen1:
+		radius = fcvec.dist(projectedCen1, cen1[0])
+		circles.append(Part.Circle(cen1[0], NORM, radius))
+	if cen2:
+		radius = fcvec.dist(projectedCen2, cen2[0])
+		circles.append(Part.Circle(cen2[0], NORM, radius))
 
-		invPoint = Vector(0, 0, point.z)
-		invPoint.x = cen.x + (point.x - cen.x) * invDist / dist;
-		invPoint.y = cen.y + (point.y - cen.y) * invDist / dist;
+	if circles: return circles
+	else: return None
 
-		return invPoint
+def circleFrom2LinesRadius (edge1, edge2, radius):
+	"circleFrom2LinesRadius(edge,edge,radius)"
+	int = findIntersection(edge1, edge2, True, True)
+	if not int: return None
+	int = int[0]
+	bis12 = angleBisection(edge1,edge2)
+	bis21 = Part.Line(bis12.Vertexes[0].Point,fcvec.rotate(vec(bis12), math.pi/2.0))
+	ang12 = abs(fcvec.angle(vec(edge1),vec(edge2)))
+	ang21 = math.pi - ang12
+	dist12 = radius / math.sin(ang12 * 0.5)
+	dist21 = radius / math.sin(ang21 * 0.5)
+	circles = []
+	cen = Vector.add(int, fcvec.scale(vec(bis12), dist12))
+	circles.append(Part.Circle(cen, NORM, radius))
+	cen = Vector.add(int, fcvec.scale(vec(bis12), -dist12))
+	circles.append(Part.Circle(cen, NORM, radius))
+	cen = Vector.add(int, fcvec.scale(vec(bis21), dist21))
+	circles.append(Part.Circle(cen, NORM, radius))
+	cen = Vector.add(int, fcvec.scale(vec(bis21), -dist21))
+	circles.append(Part.Circle(cen, NORM, radius))
+	return circles
 
+def circleFrom3LineTangents (edge1, edge2, edge3):
+	"circleFrom3LineTangents(edge,edge,edge)"
+	def rot(ed):
+		return Part.Line(v1(ed),v1(ed).add(fcvec.rotate(vec(ed),math.pi/2))).toShape()
+	bis12 = angleBisection(edge1,edge2)
+	bis23 = angleBisection(edge2,edge3)
+	bis31 = angleBisection(edge3,edge1)
+	intersections = []
+	int = findIntersection(bis12, bis23, True, True)	
+	if int:
+		radius = findDistance(int[0],edge1)
+		intersections.append(Part.Circle(int[0],NORM,radius))
+	int = findIntersection(bis23, bis31, True, True)
+	if int:
+		radius = findDistance(int[0],edge1)
+		intersections.append(Part.Circle(int[0],NORM,radius))
+	int = findIntersection(bis31, bis12, True, True)
+	if int:
+		radius = findDistance(int[0],edge1)
+		intersections.append(Part.Circle(int[0],NORM,radius))
+	int = findIntersection(rot(bis12), rot(bis23), True, True)
+	if int:
+		radius = findDistance(int[0],edge1)
+		intersections.append(Part.Circle(int[0],NORM,radius))
+	int = findIntersection(rot(bis23), rot(bis31), True, True)
+	if int:
+		radius = findDistance(int[0],edge1)
+		intersections.append(Part.Circle(int[0],NORM,radius))
+	int = findIntersection(rot(bis31), rot(bis12), True, True)
+	if int:
+		radius = findDistance(int[0],edge1)
+		intersections.append(Part.Circle(int[0],NORM,radius))
+	circles = []
+	for int in intersections:
+		exists = False
+		for cir in circles:
+			if fcvec.equals(cir.Center, int.Center):
+				exists = True
+				break
+		if not exists:
+			circles.append(int)
+	if circles:
+		return circles
 	else:
-		print "debug: pointInversion bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: pointInversion bad parameters!\n")
 		return None
 
-def polarInversion(circle, edge):
-	'''
-	polarInversion(circle, edge):
-	Returns the inversion pole of a line.
-	edge ... The polar.
-	i.e. The nearest point on the line is inversed.
 
-	http://mathworld.wolfram.com/InversionPole.html
-	'''
 
-	if isinstance(circle.Curve, Part.Circle) and isinstance(edge.Curve, Part.Line):
-		nearest = findProjection(circle.Curve.Center, edge, False)
-		if nearest:
-			inversionPole = pointInversion(circle, nearest)
-			if inversionPole:
-				return inversionPole
 
-	else:
-		print "debug: circleInversionPole bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: circleInversionPole bad parameters!\n")
-		return None
 
-def circleInversion(circle, circle2):
-	'''
-	pointInversion(Circle, Circle)
 
-	Circle inversion of a circle.
-	'''
-	if isinstance(circle.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
-		cen1 = circle.Curve.Center
-		rad1 = circle.Curve.Radius
 
-		if fcvec.equals(cen1, point):
-			return None
+#############################33 to include
 
-		invCen2 = Inversion(circle, circle2.Curve.Center)
 
-		pointOnCircle2 = Vector.add(circle2.Curve.Center, Vector(circle2.Curve.Radius, 0, 0))
-		invPointOnCircle2 = Inversion(circle, pointOnCircle2)
-
-		return Part.Circle(invCen2, norm, fcvec.dist(invCen2, invPointOnCircle2))
-
-	else:
-		print "debug: circleInversion bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: circleInversion bad parameters!\n")
-		return None
-
-# END OF INVERSION FUNCTIONS
-#------------------------------------------------------------
-
-#------------------------------------------------------------
-# CIRCLE CREATION FUNCTIONS
 
 def circleFrom3Points (p1, p2, p3):
 	'''
@@ -859,218 +845,8 @@ def circleFrom2PointsRadius(p1, p2, radius):
 		return None
 
 	
-def circleFrom2LinesRadius (edge1, edge2, radius):
-	'''
-	circleFrom2LinesRadius(edge,edge,radius)
-	Calculate a Part.Circle from 2 line tangents and a radius.
-	Calculates all possible locations (centers) of a circle defined by
-	2 line tangents and a radius.
-	If multiple locations are possible (max. 4) they are all returned.	
-	'''
-
-	if isinstance(edge1.Curve, Part.Line) and isinstance(edge2.Curve, Part.Line):
-		int = findIntersection(edge1, edge2, True, True)
-
-		if not int:
-			# Lines are parallel
-			return None
-		else:
-			int = int[0]
-			if not int:
-				# Sanity check, this should NEVER happen.
-				print "debug circleFrom2LinesRadius: array with None entry found!"
-				return None
-
-		# Calculate bisectors
-		bis12 = angleBisection(edge1,edge2)
-		bis21 = Part.Line(bis12.StartPoint,fcvec.rotate(vec(bis12), math.pi/2.0))
-
-		ang12 = abs(fcvec.angle(vec(edge1),vec(edge2)))
-		ang21 = math.pi - ang12
-
-		# Calculate distances from center of the circle(s) to the intersection point of the lines
-		# sin(angle / 2.0) = radius / dist
-		dist12 = radius / math.sin(ang12 * 0.5)
-		dist21 = radius / math.sin(ang21 * 0.5)
-
-		# Extend a vector from the center (the intersection point)
-		# along all four bisector directions (depends on the radius)
-		circles = []
-		cen = Vector.add(int, fcvec.scale(vec(bis12), dist12))
-		circles.append(Part.Circle(cen, NORM, radius))
-		cen = Vector.add(int, fcvec.scale(vec(bis12), -dist12))
-		circles.append(Part.Circle(cen, NORM, radius))
-		cen = Vector.add(int, fcvec.scale(vec(bis21), dist21))
-		circles.append(Part.Circle(cen, NORM, radius))
-		cen = Vector.add(int, fcvec.scale(vec(bis21), -dist21))
-		circles.append(Part.Circle(cen, NORM, radius))
-		return circles
-
-	else:
-		print "debug: circleFrom2LinesRadius bad parameters!\n"
-		# FreeCAD.Console.PrintMessage("debug: circleFrom2LinesRadius bad parameters!\n")
-		return None
-
-def circlefrom1Line2Points(edge, p1, p2):
-	'''
-	circlefrom1Line2Points(edge, Vector, Vector):
-	Calculate a Part.Circle from 1 line tangent and 2 points.
-	Calculates all possible locations (centers) of a circle defined by
-	one line tangent and two points on its circumference.
-	If multiple locations are possible (max. 2) they are all returned.
-	'''
-
-	if isinstance(edge.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector):
-		p1_p2 = Part.Line(p1, p2).toShape()
-
-		# Get the intersection point of the edge and the line p1->p2
-		s = findIntersection(edge, p1_p2, True, True)
-		if s:
-			s = s[0]
-		else:
-			return None
-
-		# Calculate the distance from s to the projected circle centers on the edge.
-		# "projecte circle center" == if you project the two centers of the circle onto the edge.
-		v1 = Vector.sub(p1, s)
-		v2 = Vector.sub(p2, s)
-		projectedDist = math.sqrt(fcvec.dotproduct(v1, v2))
-
-		# Get the normalized vector of the edge
-		edgeDir = fcvec.normalized(vec(edge))
-
-		# Calculate the prjoected circle centers
-		projectedCen1 = Vector.add(s, fcvec.scale(edgeDir, projectedDist))
-		projectedCen2 = Vector.add(s, fcvec.scale(edgeDir, -projectedDist))
-
-		# Calculate the intersection points of the two lines through projectedCen1&2 (perpenticular to the edge)
-		# with the symmetry line (perpendicular to the midpoint between p1 and p2)
-		# to get the original center locations.
-		perpEdgeDir = fcvec.crossproduct(edgeDir)
-		perpCen1 = Vector.add(projectedCen1, perpEdgeDir)
-		perpCen2 = Vector.add(projectedCen2, perpEdgeDir)
-
-		# Calc midpoint between p1 and p2
-		mid = findMidpoint(p1_p2)
-
-		# Calc point along the perp line (trough the midp.)
-		perp_mid = Vector.add(mid, fcvec.normalized(fcvec.crossproduct(vec(p1_p2))))
-
-		cen1 = fcvec.intersect(projectedCen1, perpCen1, mid, perp_mid, True, True)
-		cen2 = fcvec.intersect(projectedCen2, perpCen2, mid, perp_mid, True, True)
-
-		circles = []
-		if cen1:
-			radius = fcvec.dist(projectedCen1, cen1)
-			circles.append(Part.Circle(cen1, norm, radius))
-		if cen2:
-			radius = fcvec.dist(projectedCen2, cen2)
-			circles.append(Part.Circle(cen2, norm, radius))
-
-		if circles:
-			return circles
-		else:
-			return None
-
-	else:
-		print "debug: circlefrom1Line2Points bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: circlefrom1Line2Points bad parameters!\n")
-		return None
-
-def circlefrom2Lines1Points(edge1, edge2, point):
-	'''
-	circlefrom2Lines1Points(edge, edge, Vector):
-	Calculate a Part.Circle from 2 line tangents and 1 point.
-	Calculates all possible locations (centers) of a circle defined by
-	two line tangents and a point on its circumference.
-	If multiple locations are possible (max. 2) they are all returned.
-	'''
-
-	# @note The solution is the same as for LPP/circlefrom1Line2Points here.
-	# We just need to calculate the mirrored (on the bisector of edge1&2) point and feed it to circlefrom1Line2Points.
-
-	if isinstance(edge1.Curve, Part.Line) and isinstance(edge2.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector):
-		bis = angleBisection(edge1, edge2)
-		if not bis:
-			# @todo Parallel lines - check the distance
-			return None
-
-		# Mirror the given point by the bisection line.
-		mirrPoint = findReflection(bis, point)
-		return circlefrom1Line2Points(edge1, point, mirrPoint)
-
-	else:
-		print "debug: circlefrom2Lines1Points bad parameters!\n"
-		# FreeCAD.Console.PrintMessage("debug: circlefrom2Lines1Points bad parameters!\n")
-		return None
 
 
-def circleFrom3LineTangents (edge1, edge2, edge3):
-	'''
-	circleFrom3LineTangents(edge,edge,edge)
-	Calculate a Part.Circle from 3 line tangents.
-	Calculates all possible locations of a circle defined by 3 line tangents.
-	If multiple locations are possible (max. 4) they are all returned.
-	'''
-
-	if isinstance(edge1.Curve, Part.Line) and isinstance(edge2.Curve, Part.Line) and isinstance(edge3.Curve, Part.Line):
-		# Calculate new lines by bisecting the angles and use the intersection point of the new lines as center.
-		# Calculate all 3 angle bisection lines. (check for parallels?)
-		# We actually need 6 bisection lines, bht the other are simply perpendicular to the calculated ones.
-		bis12 = angleBisection(edge1,edge2)
-		bis23 = angleBisection(edge2,edge3)
-		bis31 = angleBisection(edge3,edge1)
-		# Calculate the 4 intersection points (there are some duplicate intersections in some cases)
-		# @todo Store radius and/or relationship to tangents (if it's needed).
-		intersections = []
-		int = fcvec.intersect(bis12.StartPoint, Vector.add(bis12.StartPoint, vec(bis12)), bis23.StartPoint, Vector.add(bis23.StartPoint, vec(bis23)), True, True)	
-		if int != None:
-			radius = findDistance(int,edge1)
-			intersections.append(Part.Circle(int,norm,radius))
-		int = fcvec.intersect(bis12.StartPoint, Vector.add(bis12.StartPoint, vec(bis12)), bis23.StartPoint, Vector.add(bis23.StartPoint, vec(bis23)), True, True)
-		if int != None:
-			radius = findDistance(int,edge1)
-			intersections.append(Part.Circle(int,norm,radius))
-		int = fcvec.intersect(bis23.StartPoint, Vector.add(bis23.StartPoint, vec(bis23)), bis31.StartPoint, Vector.add(bis31.StartPoint, vec(bis31)), True, True)
-		if int != None:
-			radius = findDistance(int,edge1)
-			intersections.append(Part.Circle(int,norm,radius))
-		int = fcvec.intersect(bis31.StartPoint, Vector.add(bis31.StartPoint, vec(bis31)), bis12.StartPoint, Vector.add(bis12.StartPoint, vec(bis12)), True, True)
-		if int != None:
-			radius = findDistance(int,edge1)
-			intersections.append(Part.Circle(int,norm,radius))
-		int = fcvec.intersect(bis12.StartPoint, Vector.add(bis12.StartPoint, fcvec.rotate(vec(bis12), math.pi/2.0)), bis23.StartPoint, Vector.add(bis23.StartPoint, fcvec.rotate(vec(bis23),math.pi/2.0)), True, True)
-		if int != None:
-			radius = findDistance(int,edge1)
-			intersections.append(Part.Circle(int,norm,radius))
-		int = fcvec.intersect(bis23.StartPoint, Vector.add(bis23.StartPoint, fcvec.rotate(vec(bis23), math.pi/2.0)), bis31.StartPoint, Vector.add(bis31.StartPoint, fcvec.rotate(vec(bis31),math.pi/2.0)), True, True)
-		if int != None:
-			radius = findDistance(int,edge1)
-			intersections.append(Part.Circle(int,norm,radius))
-		int = fcvec.intersect(bis31.StartPoint, Vector.add(bis31.StartPoint, fcvec.rotate(vec(bis31), math.pi/2.0)), bis12.StartPoint, Vector.add(bis12.StartPoint, fcvec.rotate(vec(bis12),math.pi/2.0)), True, True)
-		if int != None:
-			radius = findDistance(int,edge1)
-			intersections.append(Part.Circle(int,norm,radius))
- 
-		# Check for duplicates
-		circles = []
-		for int in intersections:
-			exists = False
-			for cir in circles:
-				if fcvec.equals(cir.Center, int.Center):
-					exists = True
-					break
-			if not exists:
-				circles.append(int)
-
-		if circles:
-			return circles
-		else:
-			return None
-	else:
-		print "debug: circleFrom3LineTangents bad parameters!\n"
-		# FreeCAD.Console.PrintMessage("debug: circleFrom3LineTangents bad parameters!\n")
-		return None
 
 
 def circleFromPointLineRadius (point, edge, radius):
@@ -1319,103 +1095,6 @@ def circleFrom3CircleTangents(circle1, circle2, circle3):
 		# FreeCAD.Console.PrintMessage("debug: circleFrom3CircleTangents bad parameters!\n")
 		return None
 
-# Circle meta functions ...
-
-def circleFrom3tan(tan1, tan2, tan3):
-	tan1IsLine = isinstance(tan1.Curve, Part.Line)
-	tan2IsLine = isinstance(tan2.Curve, Part.Line)
-	tan3IsLine = isinstance(tan3.Curve, Part.Line)
-	tan1IsCircle = isinstance(tan1.Curve, Part.Circle)
-	tan2IsCircle = isinstance(tan2.Curve, Part.Circle)
-	tan3IsCircle = isinstance(tan3.Curve, Part.Circle)
-
-	# LLL
-	if tan1IsLine and tan2IsLine and tan3IsLine:
-		return circleFrom3LineTangents(tan1, tan2, tan3)
-
-#@todo
-#	# CCC
-#	elif tan1IsCircle and tan2IsCircle and tan3IsCircle:
-#		return circleFrom3CircleTangents(tan1, tan2, tan3)
-
-#@todo
-#	# CLL
-#	elif (tan1IsCircle and tan2IsLine and tan3IsLine):
-#		return circleFrom1Circle2Lines(tan1, tan2, tan3)
-#	elif (tan1IsLine and tan2IsCircle and tan3IsLine):
-#		return circleFrom1Circle2Lines(tan2, tan1, tan3)
-#	elif (tan1IsLine and tan2IsLine and tan3IsCircle):
-#		return circleFrom1Circle2Lines(tan3, tan1, tan2)
-
-#@todo
-#	# CCL
-#	elif (tan1IsLine and tan2IsCircle and tan3IsCircle):
-#		return circleFrom2Circle1Lines(tan2, tan3, tan1)
-#	elif (tan1IsCircle and tan2IsLine and tan3IsCircle):
-#		return circleFrom2Circle1Lines(tan1, tan3, tan2)
-#	elif (tan1IsCircle and tan2IsCircle and tan3IsLine):
-#		return circleFrom2Circle1Lines(tan1, tan2, tan3)
-
-	else:
-		print "debug: circleFrom3tan bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: circleFrom3tan bad parameters!\n")
-		return None
-
-def circleFrom2tan1pt(tan1, tan2, point):
-	if isinstance(tan1.Curve, Part.Line) and isinstance(tan2.Curve, Part.Line) and isinstance(point, FreeCAD.Vector):
-		# LLP
-		return circlefrom2Lines1Points(tan1, tan2, point)
-#@todo
-#	# CLP
-#	elif isinstance(tan1.Curve, Part.Circle) and isinstance(tan2.Curve, Part.Line) and isinstance(point, FreeCAD.Vector):
-#		return circlefromCircleLinePoint(tan1, tan2, point)
-#	elif isinstance(tan2.Curve, Part.Circle) and isinstance(tan1.Curve, Part.Line) and isinstance(point, FreeCAD.Vector):
-#		return circlefromCircleLinePoint(tan2, tan1, point)
-
-#@todo
-#	#CCP
-#	elif isinstance(tan2.Curve, Part.Circle) and isinstance(tan1.Curve, Part.Circle) and isinstance(point, FreeCAD.Vector):
-#		return circlefrom2Circles1Point(tan2, tan1, point)
-	else:
-		print "debug: circleFrom2tan1pt bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: circleFrom2tan1pt bad parameters!\n")
-		return None
-
-def circleFrom2tan1rad(tan1, tan2, rad):
-	# LLR
-	if isinstance(tan1.Curve, Part.Line) and isinstance(tan2.Curve, Part.Line):
-		return circleFrom2LinesRadius(tan1, tan2, rad)
-#@todo
-#	# CLR
-#	elif isinstance(tan1.Curve, Part.Circle) and isinstance(tan2.Curve, Part.Line):
-#		return circleFromCircleLineRadius(tan1, tan2, rad)
-#	elif isinstance(tan1.Curve, Part.Line) and isinstance(tan2.Curve, Part.Circle):
-#		return circleFromCircleLineRadius(tan2, tan1, rad)
-
-#@todo
-#	# CCR
-#	elif isinstance(tan1.Curve, Part.Circle) and isinstance(tan2.Curve, Part.Circle):
-#		return circleFrom2CirclesRadius(tan1, tan2, rad)
-
-	else:
-		print "debug: circleFrom2tan1rad bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: circleFrom2tan1rad bad parameters!\n")
-		return None
-
-def circleFrom1tan2pt(tan1, p1, p2):
-	# LPP
-	if isinstance(tan1.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector):
-		return circlefrom1Line2Points(tan1, p1, p2)
-
-#@todo
-#	# CPP
-#	if isinstance(tan1.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector):
-#		return circlefrom1Circle2Points(tan1, p1, p2)
-
-	else:
-		print "debug: circleFrom1tan2pt bad parameters!\n"
-		FreeCAD.Console.PrintMessage("debug: circleFrom1tan2pt bad parameters!\n")
-		return None
 
 def linearFromPoints (p1, p2):
 	'''
@@ -1439,89 +1118,246 @@ def linearFromPoints (p1, p2):
 	else:
 		return None
 
-def circleNeededParameters (parameters):
+
+def determinant (mat,n):
 	'''
-	Search for needed parameters for circle construction.
-	
-	Takes a list of parameters that can defined a circle and returns a list of possible parameters that are still missing.
-	If the given parameters are enough for the circle construction nothing is returned.
-	Most of these are special cases of Apollonius' problem:
-	http://en.wikipedia.org/wiki/Problem_of_Apollonius#Ten_combinations_of_points.2C_circles.2C_and_lines
-	http://en.wikipedia.org/wiki/Special_cases_of_Apollonius%27_problem
-	http://whistleralley.com/tangents/tangents.htm
-	http://mathworld.wolfram.com/ApolloniusProblem.html
-	@todo Add callback functions here. They should know about hte subcases
-	(i.e. tan3 will call the callback function and the fucntion will decide if LLL, CLL or CCL is choosen)
+	determinant(matrix,int) - Determinat function. Returns the determinant
+	of a n-matrix. It recursively expands the minors.
 	'''
+	matTemp = [[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]]
+	if (n > 1):
+		if n == 2:
+			d = mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1]
+		else:
+			d = 0.0
+			for j1 in range(n):
+				# Create minor
+				for i in range(1, n):
+					j2 = 0
+					for j in range(n):
+						if j == j1:
+							continue
+						matTemp[i-1][j2] = mat[i][j]
+						j2 += 1
+				d += (-1.0)**(1.0 + j1 + 1.0) * mat[0][j1] * determinant(matTemp, n-1)
+		return d
+	else:
+		return 0
+
 	
-	# circleParTypes = { 'pt': True, 'cen': True, 'tan': True, 'rad': True }
+def findHomotheticCenterOfCircles(circle1, circle2):
+	'''
+	findHomotheticCenterOfCircles(circle1, circle2)
+	Calculates the homothetic center(s) of two circles.
 
-	# A list of definitions that can be used to construct a circle.
-	# @todo Make this a global list if needed.
-	circleDefinitions = {
-		# Tangent Tangent Tangent
-		'tan3': { 'tan': 3 },
-		# Tangent Tangent Point
-#		'tan2_pt': { 'pt': 1, 'tan': 2 },
-		# Tangent Tangent Radius
-		'tan2_rad': { 'tan': 2, 'rad': 1 },
-		# Tangent Point Point
-#		'pt2_tan': { 'pt': 2, 'tan': 1 },
-		# Tangent Point Radius
-#		'tan_pt_rad': { 'tan': 1, 'pt': 1, 'rad': 1 },
-		# Point Point Point
-		'pt3': { 'pt': 3 },
-		# Point Point Radius
-#		'pt2_rad': { 'pt': 2, 'rad': 1 },
-		# Centerpoint Point
-		'cen_pt': { 'cen': 1, 'pt': 1 },
-		# Centerpoint Radius
-		'cen_rad': { 'cen': 1, 'rad': 1 }
-		# (Centerpoint Tangent?)<-- should be covered by cen+pt+constraint
-	}
+	http://en.wikipedia.org/wiki/Homothetic_center
+	http://mathworld.wolfram.com/HomotheticCenter.html
+	'''
 
-	#if 'pt' in parameters:
-	
-	possibleParameters = {}
-
-	# Check all circle definitions if they match the one we already have
-	# and collect misisng ones for all the matching defs.
-	for cDefName, cDef in circleDefinitions.iteritems():
-		defMatch = True			# True if we could apply the definition if we just had a few more parameters.
-		defMatchPerfectly = True	# True if the definition matches exactly.
-		for parType, parNum in parameters.iteritems():
-			# Check if all requested parameters match this definition (i.e. there are <= entries of each)
-			if not parType in cDef:
-				# Check if given parameter is even in the definition.
-				defMatch = False
-				defMatchPerfectly = False
-				break
-			elif parNum <= 0:
-				# Sanity check for zero (or even negative) values.
-				defMatch = False
-				defMatchPerfectly = False
-				break
-			elif parNum > cDef[parType]:
-				# Check if more parameter where given than needed by this definition.
-				defMatch = False
-				defMatchPerfectly = False
-				break
-			elif parNum != cDef[parType]:
-				defMatchPerfectly = False
-		
-		if defMatchPerfectly:
+	if isinstance(circle1.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
+		if fcvec.equals(circle1.Curve.Center, circle2.Curve.Center):
 			return None
 
-		if defMatch:
-			# Get & store remaining possible parameters.
-			for parType, parNum in cDef.iteritems():
-				#if not (parType in possibleParameters) and ... # use this if we want to set it only once
-				if (parType not in parameters) or (parameters[parType] < parNum):
-					possibleParameters[parType] = True
+		cen1_cen2 = Part.Line(circle1.Curve.Center, circle2.Curve.Center).toShape()
+		cenDir = fcvec.normalized(vec(cen1_cen2))
 
-	if len(possibleParameters):
-		return possibleParameters
+		# Get the perpedicular vector.
+		perpCenDir = fcvec.normalized(fcvec.crossproduct(cenDir))
+
+		# Get point on first circle
+		p1 = Vector.add(circle1.Curve.Center, fcvec.scale(perpCenDir, circle1.Curve.Radius))
+
+		centers = []
+		# Calculate inner homothetic center
+		# Get point on second circle
+		p2_inner = Vector.add(circle1.Curve.Center, fcvec.scale(perpCenDir, -circle1.Curve.Radius))
+		hCenterInner = fcvec.intersect(circle1.Curve.Center, circle2.Curve.Center, p1, p2_inner, True, True)
+		if hCenterInner:
+			centers.append(hCenterInner)
+
+		# Calculate outer homothetic center (only exists of the circles have different radii)
+		if circle1.Curve.Radius != circle2.Curve.Radius:
+			# Get point on second circle
+			p2_outer = Vector.add(circle1.Curve.Center, fcvec.scale(perpCenDir, circle1.Curve.Radius))
+			hCenterOuter = fcvec.intersect(circle1.Curve.Center, circle2.Curve.Center, p1, p2_outer, True, True)
+			if hCenterOuter:
+				centers.append(hCenterOuter)
+
+		if len(centers):
+			return centers
+		else:
+			return None
+
 	else:
+		print "debug: findHomotheticCenterOfCircles bad parameters!\n"
+		FreeCAD.Console.PrintMessage("debug: findHomotheticCenterOfCirclescleFrom3tan bad parameters!\n")
 		return None
 
+
+def findRadicalAxis(circle1, circle2):
+	'''
+	Calculates the radical axis of two circles.
+	On the radical axis (also called power line) of two circles any
+	tangents drawn from a point on the axis to both circles have the same length.
+
+	http://en.wikipedia.org/wiki/Radical_axis
+	http://mathworld.wolfram.com/RadicalLine.html
+
+	@sa findRadicalCenter
+	'''
+
+	if isinstance(circle1.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
+		if fcvec.equals(circle1.Curve.Center, circle2.Curve.Center):
+			return None
+		r1 = circle1.Curve.Radius
+		r2 = circle1.Curve.Radius
+		cen1 = circle1.Curve.Center
+		# dist .. the distance from cen1 to cen2.
+		dist = fcvec.dist(cen1, circle2.Curve.Center)
+		cenDir = fcvec.normalized(Vector.sub(cen1, circle2.Curve.Center))
+
+		# Get the perpedicular vector.
+		perpCenDir = fcvec.normalized(fcvec.crossproduct(cenDir))
+
+		# J ... The radical center.
+		# K ... The point where the cadical axis crosses the line of cen1->cen2.
+		# k1 ... Distance from cen1 to K.
+		# k2 ... Distance from cen2 to K.
+		# dist = k1 + k2
+
+		k1 = (dist + (r1^2 - r2^2) / dist) / 2.0
+		#k2 = dist - k1
+
+		K = Vector.add(cen1, fcvec.scale(cenDir, k1))
+
+		# K_ .. A point somewhere between K and J (actually with a distance of 1 unit from K).
+		K_ = Vector,add(K, perpCenDir)
+
+		radicalAxis = Part.Line(K, Vector.add(origin, dir))
+
+		if radicalAxis:
+			return radicalAxis
+		else:
+			return None
+	else:
+		print "debug: findRadicalAxis bad parameters!\n"
+		FreeCAD.Console.PrintMessage("debug: findRadicalAxis bad parameters!\n")
+		return None
+
+
+
+def findRadicalCenter(circle1, circle2, circle3):
+	'''
+	findRadicalCenter(circle1, circle2, circle3):
+	Calculates the radical center (also called the power center) of three circles.
+	It is the intersection point of the three radical axes of the pairs of circles.
+
+	http://en.wikipedia.org/wiki/Power_center_(geometry)
+	http://mathworld.wolfram.com/RadicalCenter.html
+
+	@sa findRadicalAxis
+	'''
+
+	if isinstance(circle1.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
+		radicalAxis12 = findRadicalAxis(circle1, circle2)
+		radicalAxis23 = findRadicalAxis(circle1, circle2)
+
+		if not radicalAxis12 or not radicalAxis23:
+			# No radical center could be calculated.
+			return None
+
+		int = findIntersection(radicalAxis12, radicalAxis23, True, True)
+
+		if int:
+			return int
+		else:
+			# No radical center could be calculated.
+			return None
+	else:
+		print "debug: findRadicalCenter bad parameters!\n"
+		FreeCAD.Console.PrintMessage("debug: findRadicalCenter bad parameters!\n")
+		return None
+
+def pointInversion(circle, point):
+	'''
+	pointInversion(Circle, Vector)
+
+	Circle inversion of a point.
+	Will calculate the inversed point an return it.
+	If the given point is equal to the center of the circle "None" will be returned.
+
+	See also:
+	http://en.wikipedia.org/wiki/Inversive_geometry
+	'''
+
+	if isinstance(circle.Curve, Part.Circle) and isinstance(point, FreeCAD.Vector):
+		cen = circle.Curve.Center
+		rad = circle.Curve.Radius
+
+		if fcvec.equals(cen, point):
+			return None
+
+		# Inverse the distance of the point
+		# dist(cen -> P) = r^2 / dist(cen -> invP)
+
+		dist = fcvec.dist(point, cen)
+		invDist = rad**2 / d
+
+		invPoint = Vector(0, 0, point.z)
+		invPoint.x = cen.x + (point.x - cen.x) * invDist / dist;
+		invPoint.y = cen.y + (point.y - cen.y) * invDist / dist;
+
+		return invPoint
+
+	else:
+		print "debug: pointInversion bad parameters!\n"
+		FreeCAD.Console.PrintMessage("debug: pointInversion bad parameters!\n")
+		return None
+
+def polarInversion(circle, edge):
+	'''
+	polarInversion(circle, edge):
+	Returns the inversion pole of a line.
+	edge ... The polar.
+	i.e. The nearest point on the line is inversed.
+
+	http://mathworld.wolfram.com/InversionPole.html
+	'''
+
+	if isinstance(circle.Curve, Part.Circle) and isinstance(edge.Curve, Part.Line):
+		nearest = findProjection(circle.Curve.Center, edge, False)
+		if nearest:
+			inversionPole = pointInversion(circle, nearest)
+			if inversionPole:
+				return inversionPole
+
+	else:
+		print "debug: circleInversionPole bad parameters!\n"
+		FreeCAD.Console.PrintMessage("debug: circleInversionPole bad parameters!\n")
+		return None
+
+def circleInversion(circle, circle2):
+	'''
+	pointInversion(Circle, Circle)
+
+	Circle inversion of a circle.
+	'''
+	if isinstance(circle.Curve, Part.Circle) and isinstance(circle2.Curve, Part.Circle):
+		cen1 = circle.Curve.Center
+		rad1 = circle.Curve.Radius
+
+		if fcvec.equals(cen1, point):
+			return None
+
+		invCen2 = Inversion(circle, circle2.Curve.Center)
+
+		pointOnCircle2 = Vector.add(circle2.Curve.Center, Vector(circle2.Curve.Radius, 0, 0))
+		invPointOnCircle2 = Inversion(circle, pointOnCircle2)
+
+		return Part.Circle(invCen2, norm, fcvec.dist(invCen2, invPointOnCircle2))
+
+	else:
+		print "debug: circleInversion bad parameters!\n"
+		FreeCAD.Console.PrintMessage("debug: circleInversion bad parameters!\n")
+		return None
 
