@@ -29,6 +29,7 @@
 #include "ViewProviderExtrusion.h"
 #include "ViewProvider2DObject.h"
 
+#include "DlgSettingsGeneral.h"
 #include "DlgSettings3DViewPartImp.h"
 #include "Workbench.h"
 
@@ -91,6 +92,7 @@ void AppPartGuiExport initPartGui()
     CreateParamPartCommands();
 
     // register preferences pages
+    new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral> ("Part design");
     new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ("Part design");
 
     // add resources and reloads the translators

@@ -11,6 +11,7 @@ BUILT_SOURCES=\
 		ui_DlgPartImportStep.h \
 		ui_DlgPrimitives.h \
 		ui_DlgSettings3DViewPart.h \
+		ui_DlgSettingsGeneral.h \
 		moc_DlgBooleanOperation.cpp \
 		moc_DlgExtrusion.cpp \
 		moc_DlgFilletEdges.cpp \
@@ -44,6 +45,8 @@ libPartGui_la_SOURCES=\
 		DlgPrimitives.h \
 		DlgSettings3DViewPartImp.cpp \
 		DlgSettings3DViewPartImp.h \
+		DlgSettingsGeneral.cpp \
+		DlgSettingsGeneral.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		SoFCShapeObject.cpp \
@@ -155,6 +158,7 @@ EXTRA_DIST = \
 		DlgPartImportStep.ui \
 		DlgPrimitives.ui \
 		DlgSettings3DViewPart.ui \
+		DlgSettingsGeneral.ui \
 		Part.qrc \
 		Part_de.qm \
 		Part_de.ts \

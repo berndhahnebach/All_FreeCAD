@@ -434,6 +434,7 @@ void TopoShape::write(const char *FileName) const
 
 void TopoShape::exportIges(const char *filename) const
 {
+    Interface_Static::SetCVal("write.iges.unit","IN");
     try {
         // write iges file
         IGESControl_Controller::Init();

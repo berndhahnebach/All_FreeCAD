@@ -12,10 +12,14 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Python.h>
+# include <Interface_Static.hxx>
 #endif
 
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
+#include <Base/Parameter.h>
+
+#include <App/Application.h>
 
 #include "TopoShape.h"
 #include "FeaturePartBox.h"
@@ -140,6 +144,25 @@ void AppPartExport initPart()
     Part::Cone                  ::init();
     Part::Torus                 ::init();
     Part::Part2DObject          ::init();
+
+    // set the user-defined units
+    Base::Reference<ParameterGrp> hGrp = App::GetApplication().GetUserParameter()
+        .GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("Mod/Part");
+    int unit = hGrp->GetInt("Unit", 0);
+    switch (unit) {
+        case 1:
+            Interface_Static::SetCVal("write.iges.unit","M");
+            Interface_Static::SetCVal("write.step.unit","M");
+            break;
+        case 2:
+            Interface_Static::SetCVal("write.iges.unit","IN");
+            Interface_Static::SetCVal("write.step.unit","IN");
+            break;
+        default:
+            Interface_Static::SetCVal("write.iges.unit","MM");
+            Interface_Static::SetCVal("write.step.unit","MM");
+            break;
+    }
 }
 
 } // extern "C"
