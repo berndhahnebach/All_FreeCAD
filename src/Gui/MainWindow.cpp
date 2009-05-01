@@ -54,7 +54,7 @@
 #include "Tree.h"
 #include "PropertyView.h"
 #include "SelectionView.h"
-//#include "TaskPanelView.h"
+#include "TaskPanelView.h"
 #include "MenuManager.h"
 //#include "ToolBox.h"
 #include "HelpView.h"
@@ -248,11 +248,11 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pDockMgr->registerDockWindow("Std_SelectionView", pcSelectionView);
 
     // TaskPanel view
-    //TaskPanelView* pcTaskPanelView = new TaskPanelView(0, this);
-    //pcTaskPanelView->setObjectName
-    //    (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Task View")));
-    //pcTaskPanelView->setMinimumWidth(210);
-    //pDockMgr->registerDockWindow("Std_TaskPanelView", pcTaskPanelView);
+    TaskPanelView* pcTaskPanelView = new TaskPanelView(0, this);
+    pcTaskPanelView->setObjectName
+        (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Task View")));
+    pcTaskPanelView->setMinimumWidth(210);
+    pDockMgr->registerDockWindow("Std_TaskPanelView", pcTaskPanelView);
 
     // Report view
     Gui::DockWnd::ReportView* pcReport = new Gui::DockWnd::ReportView(this);
