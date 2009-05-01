@@ -81,6 +81,7 @@
 #include "DocumentObjectGroup.h"
 #include "DocumentObjectFileIncluded.h"
 #include "InventorObject.h"
+#include "VRMLObject.h"
 #include "Annotation.h"
 #include "MeasureDistance.h"
 
@@ -943,6 +944,7 @@ void Application::initTypes(void)
     App ::DocumentObjectGroup       ::init();
     App ::DocumentObjectFileIncluded::init();
     App ::InventorObject            ::init();
+    App ::VRMLObject                ::init();
     App ::Annotation                ::init();
     App ::MeasureDistance           ::init();
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -50,7 +50,7 @@ public:
     virtual short mustExecute(void) const;
     virtual PyObject *getPyObject(void);
 
-    PropertyFileIncluded VRML;
+    PropertyFileIncluded VrmlFile;
 
 };
 

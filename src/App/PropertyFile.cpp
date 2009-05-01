@@ -238,8 +238,10 @@ void PropertyFileIncluded::Restore(Base::XMLReader &reader)
         // initate a file read
         reader.addFile(file.c_str(),this);
         // is in the document transient path
+        aboutToSetValue();
         _cValue = getDocTransientPath() + "/" + file;
         _BaseFileName = file;
+        hasSetValue();
     }
 }
 
@@ -266,10 +268,13 @@ void PropertyFileIncluded::RestoreDocFile(Base::Reader &reader)
         "File in document transient dir deleted");
 
     // copy plain data
+    aboutToSetValue();
     unsigned char c;
     while (reader.get((char&)c)) {
         to.put((const char)c);
     }
+    to.close();
+    hasSetValue();
 }
 
 Property *PropertyFileIncluded::Copy(void) const

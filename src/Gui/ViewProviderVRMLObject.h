@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -30,6 +30,7 @@
 namespace Gui
 {
 
+class SoFCSelection;
 class GuiExport ViewProviderVRMLObject : public ViewProviderDocumentObject
 {
     PROPERTY_HEADER(Gui::ViewProviderVRMLObject);
@@ -47,8 +48,7 @@ public:
     void updateData(const App::Property*);
 
 protected:
-    SoSeparator  *pcBuffer;
-    SoSeparator  *pcFile;
+    SoFCSelection    * pcVRML;
 };
 
 } //namespace Gui

@@ -222,14 +222,27 @@ PyObject* Application::sOpen(PyObject * /*self*/, PyObject *args,PyObject * /*kw
             }
         }
 
-        if (ext == QLatin1String("iv") || ext == QLatin1String("wrl") ||
-            ext == QLatin1String("vrml") || ext == QLatin1String("wrz")) {
+        if (ext == QLatin1String("iv")) {
             if (!Application::Instance->activeDocument())
                 App::GetApplication().newDocument();
             //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
             QString cmd = QString::fromLatin1(
                 "App.ActiveDocument.addObject(\"App::InventorObject\",\"%1\")."
                 "FileName=\"%2\"\n"
+                "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
+                "App.ActiveDocument.recompute()")
+                .arg(fi.baseName()).arg(fi.absoluteFilePath());
+            Base::Interpreter().runString(cmd.toUtf8());
+        }
+        else if (ext == QLatin1String("wrl") ||
+                 ext == QLatin1String("vrml") ||
+                 ext == QLatin1String("wrz")) {
+            if (!Application::Instance->activeDocument())
+                App::GetApplication().newDocument();
+            //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+            QString cmd = QString::fromLatin1(
+                "App.ActiveDocument.addObject(\"App::VRMLObject\",\"%1\")."
+                "VrmlFile=\"%2\"\n"
                 "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
                 "App.ActiveDocument.recompute()")
                 .arg(fi.baseName()).arg(fi.absoluteFilePath());
@@ -261,12 +274,23 @@ PyObject* Application::sInsert(PyObject * /*self*/, PyObject *args,PyObject * /*
         QFileInfo fi;
         fi.setFile(fileName);
         QString ext = fi.completeSuffix().toLower();
-        if (ext == QLatin1String("iv") || ext == QLatin1String("wrl") ||
-            ext == QLatin1String("vrml") || ext == QLatin1String("wrz")) {
+        if (ext == QLatin1String("iv")) {
             //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
             QString cmd = QString::fromLatin1(
                 "App.ActiveDocument.addObject(\"App::InventorObject\",\"%1\")."
                 "FileName=\"%2\"\n"
+                "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
+                "App.ActiveDocument.recompute()")
+                .arg(fi.baseName()).arg(fi.absoluteFilePath());
+            Base::Interpreter().runString(cmd.toUtf8());
+        }
+        else if (ext == QLatin1String("wrl") ||
+                 ext == QLatin1String("vrml") ||
+                 ext == QLatin1String("wrz")) {
+            //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
+            QString cmd = QString::fromLatin1(
+                "App.ActiveDocument.addObject(\"App::VRMLObject\",\"%1\")."
+                "VrmlFile=\"%2\"\n"
                 "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
                 "App.ActiveDocument.recompute()")
                 .arg(fi.baseName()).arg(fi.absoluteFilePath());
