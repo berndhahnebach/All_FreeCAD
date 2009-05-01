@@ -45,6 +45,7 @@ libFreeCADApp_la_SOURCES=\
 		FeatureTest.cpp \
 		GeoFeature.cpp \
 		InventorObject.cpp \
+		VRMLObject.cpp \
 		Material.cpp \
 		MaterialPy.cpp \
 		MeasureDistance.cpp \
@@ -79,6 +80,7 @@ include_HEADERS=\
 		FeatureTest.h \
 		GeoFeature.h \
 		InventorObject.h \
+		VRMLObject.h \
 		Material.h \
 		MaterialPy.h \
 		MeasureDistance.h \

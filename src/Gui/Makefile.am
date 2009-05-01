@@ -5,6 +5,7 @@ lib_LTLIBRARIES=libFreeCADGui.la
 BUILT_SOURCES=\
 		moc_Action.cpp \
 		moc_CallTips.cpp \
+		moc_CombiView.cpp \
 		moc_DlgActionsImp.cpp \
 		moc_DlgActivateWindowImp.cpp \
 		moc_DlgCommandsImp.cpp \
@@ -142,6 +143,7 @@ libFreeCADGui_la_SOURCES=\
 		Assistant.h \
 		BitmapFactory.cpp \
 		CallTips.cpp \
+		CombiView.cpp \
 		Command.cpp \
 		CommandDoc.cpp  \
 		CommandFeat.cpp  \
@@ -278,6 +280,7 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderFeature.cpp \
 		ViewProviderGeometryObject.cpp \
 		ViewProviderInventorObject.cpp \
+		ViewProviderVRMLObject.cpp \
 		ViewProviderPyImp.cpp \
 		ViewProviderDocumentObjectPyImp.cpp \
 		ViewProviderMeasureDistance.cpp \
@@ -303,6 +306,7 @@ include_HEADERS=\
 		Application.h \
 		BitmapFactory.h \
 		CallTips.h \
+		CombiView.h \
 		Command.h \
 		DockWindow.h \
 		DockWindowManager.h \
@@ -362,6 +366,7 @@ include_HEADERS=\
 		ViewProviderFeature.h \
 		ViewProviderGeometryObject.h \
 		ViewProviderInventorObject.h \
+		ViewProviderVRMLObject.h \
 		ViewProviderPythonFeature.h \
 		WaitCursor.h \
 		WhatsThis.h \
