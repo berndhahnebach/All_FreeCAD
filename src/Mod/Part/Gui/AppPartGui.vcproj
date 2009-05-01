@@ -927,6 +927,38 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\DlgSettingsGeneral.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgSettingsGeneral.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgSettingsGeneral.ui"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+						Outputs="$(InputDir)ui_$(InputName).h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+						Outputs="$(InputDir)ui_$(InputName).h"
+					/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 		<File
 			RelativePath="AppPartGui.cpp"
