@@ -71,6 +71,7 @@ else
    HAVE_SWIG=1
 fi
 AC_SUBST(HAVE_SWIG)
+AM_CONDITIONAL(HAVE_SWIG_FOUND, test x"$SWIG" = xyes)
 
 dnl Defines in config.h
 dnl **************************************************************************
@@ -604,6 +605,7 @@ src/Gui/Makefile
 src/Gui/Icons/Makefile 
 src/Gui/Language/Makefile 
 src/Gui/propertyeditor/Makefile 
+src/Gui/iisTaskPanel/Makefile 
 src/Main/Makefile
 src/Mod/Makefile
 src/Mod/Part/Makefile

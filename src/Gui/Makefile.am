@@ -1,4 +1,4 @@
-SUBDIRS=Icons Language propertyeditor
+SUBDIRS=Icons Language propertyeditor iisTaskPanel
 
 lib_LTLIBRARIES=libFreeCADGui.la
 
@@ -52,6 +52,7 @@ BUILT_SOURCES=\
 		moc_SelectionView.cpp \
 		moc_SpinBox.cpp \
 		moc_Splashscreen.cpp \
+		moc_TaskPanelView.cpp \
 		moc_TextEdit.cpp \
 		moc_ToolBox.cpp \
 		moc_Tree.cpp \
@@ -260,6 +261,7 @@ libFreeCADGui_la_SOURCES=\
 		Splashscreen.cpp \
 		SplitView3DInventor.cpp \
 		SyntaxHighlighter.cpp \
+		TaskPanelView.cpp \
 		TextEdit.cpp \
 		Thumbnail.cpp \
 		ToolBarManager.cpp \
@@ -347,6 +349,7 @@ include_HEADERS=\
 		Splashscreen.h \
 		SplitView3DInventor.h \
 		SyntaxHighlighter.h \
+		TaskPanelView.h \
 		TextEdit.h \
 		Thumbnail.h \
 		ToolBarManager.h \
@@ -394,6 +397,7 @@ libFreeCADGui_la_LIBADD   =\
 		Icons/libIcons.la \
 		Language/libLanguage.la \
 		propertyeditor/libpropertyeditor.la \
+		iisTaskPanel/libTaskPanel.la \
 		@BOOST_FILESYSTEM_LIB@ @BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lQtUiTools \
