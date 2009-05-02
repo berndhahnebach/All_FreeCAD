@@ -8,8 +8,11 @@ BUILT_SOURCES=\
 		PersistencePy.cpp \
 		PlacementPy.cpp \
 		RotationPy.cpp \
-		VectorPy.cpp \
-		swigpyrun.h
+		VectorPy.cpp
+
+if HAVE_SWIG_FOUND
+BUILT_SOURCES+=swigpyrun.h
+endif
 
 
 libFreeCADBase_la_BUILT=\
@@ -219,8 +222,10 @@ nobase_include_HEADERS = \
 		../CXX/Version.hxx \
 		../CXX/WrapPython.h
 
+if HAVE_SWIG_FOUND
 swigpyrun.h:
 	$(SWIG) -python -external-runtime
+endif
 
 %.cpp: %.xml
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
