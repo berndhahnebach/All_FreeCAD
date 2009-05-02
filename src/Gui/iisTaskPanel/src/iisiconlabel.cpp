@@ -12,11 +12,11 @@ iisIconLabel::iisIconLabel(const QIcon &icon, const QString &title, QWidget *par
 	: QWidget(parent),
 	myPixmap(icon),
 	myText(title),
+	mySchemePointer(0),
 	m_over(false),
 	m_pressed(false),
 	m_changeCursorOver(true),
-	m_underlineOver(true),
-	mySchemePointer(0)
+	m_underlineOver(true)
 {
 	setFocusPolicy(Qt::StrongFocus);
 

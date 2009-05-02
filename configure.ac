@@ -67,11 +67,12 @@ AC_PATH_PROG(SWIG, swig, false)
 if test "$SWIG" = false ; then
    AC_MSG_WARN([Can't find SWIG installation])
    HAVE_SWIG=0
+   AM_CONDITIONAL(HAVE_SWIG_FOUND, false)
 else
    HAVE_SWIG=1
+   AM_CONDITIONAL(HAVE_SWIG_FOUND, true)
 fi
 AC_SUBST(HAVE_SWIG)
-AM_CONDITIONAL(HAVE_SWIG_FOUND, test x"$SWIG" = xyes)
 
 dnl Defines in config.h
 dnl **************************************************************************

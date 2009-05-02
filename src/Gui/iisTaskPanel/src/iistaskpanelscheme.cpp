@@ -80,3 +80,4 @@ iisTaskPanelScheme* iisTaskPanelScheme::defaultScheme()
 
 	return myDefaultScheme; 
 }
+

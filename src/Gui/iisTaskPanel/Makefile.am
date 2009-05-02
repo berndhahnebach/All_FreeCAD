@@ -1,11 +1,11 @@
 noinst_LTLIBRARIES=libTaskPanel.la
 
 BUILT_SOURCES=\
-		src/moc_iisiconlabel.cpp \
-		src/moc_iistaskbox.cpp \
-		src/moc_iistaskgroup.cpp \
-		src/moc_iistaskheader.cpp \
-		src/qrc_iisTaskPanel.cpp
+		moc_iisiconlabel.cpp \
+		moc_iistaskbox.cpp \
+		moc_iistaskgroup.cpp \
+		moc_iistaskheader.cpp \
+		qrc_iisTaskPanel.cpp
 
 libTaskPanel_la_SOURCES=\
 		src/iisiconlabel.cpp \
@@ -30,7 +30,8 @@ include_HEADERS=\
 		src/iistaskpanel.h \
 		src/iistaskpanel_global.h \
 		src/iistaskpanelscheme.h \
-		src/iiswinxptaskpanelscheme.h 
+		src/iiswinxptaskpanelscheme.h
+
 EXTRA_DIST = \
 		src/Resources/headerButtonFold.png \
 		src/Resources/headerButtonFold.xpm \
@@ -49,12 +50,12 @@ EXTRA_DIST = \
 		src/iisTaskPanel.qrc
 
 # rule for Qt MetaObject Compiler:
-moc_%.cpp: %.h
-	$(QT_MOC) $< -o $(@D)/$(@F)
+moc_%.cpp: src/%.h
+	$(QT_MOC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-qrc_%.cpp: %.qrc
-	$(QT_RCC) -name $(*F) $< -o $(@D)/$(@F)
+qrc_%.cpp: src/%.qrc
+	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 
 # set the include path found by configure
