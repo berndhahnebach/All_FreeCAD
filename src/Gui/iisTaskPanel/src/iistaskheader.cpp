@@ -12,11 +12,11 @@
 iisTaskHeader::iisTaskHeader(const QIcon &icon, const QString &title, bool expandable, QWidget *parent)
 	: QFrame(parent),
 	myExpandable(expandable),
-	myButton(0),
 	m_over(false),
-	m_fold(true),
 	m_buttonOver(false),
-	m_opacity(0.1)
+	m_fold(true),
+	m_opacity(0.1),
+	myButton(0)
 {
 	myTitle = new iisIconLabel(icon, title, this);
 	myTitle->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
