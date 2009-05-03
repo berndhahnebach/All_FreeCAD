@@ -891,8 +891,8 @@ class arc:
 			self.node = []
 			self.constrain = None
 			self.tangents = []
-			self.tpoints = []
-			if (self.featureName == "Arc"): self.ui.arcUi()
+			self.tanpoints = []
+			if self.featureName == "Arc": self.ui.arcUi()
 			else: self.ui.circleUi()
 			self.altdown = False
 			self.ui.sourceCmd = self
@@ -944,7 +944,12 @@ class arc:
 				self.ui.displayPoint(point)
 			elif (self.step == 1):
 				if len(self.tangents) == 2:
-					self.center = fcgeo.circleFrom2tan1pt(self.tangents[0], self.tangents[1], point)[-1].Center
+					cir = fcgeo.circleFrom2tan1pt(self.tangents[0], self.tangents[1], point)
+					self.center = fcgeo.findClosestCircle(point,cir).Center
+					self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
+				elif self.tangents and self.tanpoints:
+					cir = fcgeo.circleFrom1tan2pt(self.tangents[0], self.tanpoints[0], point)
+					self.center = fcgeo.findClosestCircle(point,cir).Center
 					self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
 				if arg["AltDown"]:
 					if not self.altdown:
@@ -956,9 +961,11 @@ class arc:
 						num = int(snapped['Component'].lstrip('Edge'))-1
 						ed = ob.Shape.Edges[num]
 						if len(self.tangents) == 2:
-							cir = fcgeo.circleFrom3tan(self.tangents[0], self.tangents[1], ed)[0]
-							self.center = cir.Center
-							self.rad = cir.Radius
+							cir = fcgeo.circleFrom3tan(self.tangents[0], self.tangents[1], ed)
+							cl = fcgeo.findClosestCircle(point,cir)
+							self.center = cl.Center
+							self.rad = cl.Radius
+							self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
 						else:
 							self.rad = fcgeo.findProjection(self.center,ed).sub(self.center).Length
 					else:
@@ -1055,21 +1062,23 @@ class arc:
 							ed = ob.Shape.Edges[num]
 							self.tangents.append(ed)
 							if len(self.tangents) == 2:
-								self.step = 1
 								self.arctrack.on()
 								self.ui.radiusUi()
+								self.step = 1
 								self.linetrack.on()
 								FreeCAD.Console.PrintMessage("Pick radius:\n")
-						
 					else:
-						self.center = point
-						self.node = [point]
-						self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
+						if len(self.tangents) ==1:
+							self.tanpoints.append(point)
+						else:
+							self.center = point
+							self.node = [point]
+							self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
+							self.linetrack.p1(self.center)
+							self.linetrack.p2(self.view.getPoint(pos[0],pos[1]))
 						self.arctrack.on()
 						self.ui.radiusUi()
 						self.step = 1
-						self.linetrack.p1(self.center)
-						self.linetrack.p2(self.view.getPoint(pos[0],pos[1]))
 						self.linetrack.on()
 						FreeCAD.Console.PrintMessage("Pick radius:\n")
 				elif (self.step == 1):
@@ -1127,7 +1136,17 @@ class arc:
 		if (self.step == 1):
 			self.rad = rad
 			if len(self.tangents) == 2:
-				self.center = fcgeo.circleFrom2tan1rad(self.tangents[0], self.tangents[1], rad)[-1].Center
+				cir = fcgeo.circleFrom2tan1rad(self.tangents[0], self.tangents[1], rad)
+				if self.center:
+					self.center = fcgeo.findClosestCircle(self.center,cir).Center
+				else:
+					self.center = cir[-1].Center
+			elif self.tangents and self.tanpoints:
+				cir = fcgeo.circleFrom1tan1pt1rad(self.tangents[0],self.tanpoints[0],rad)
+				if self.center:
+					self.center = fcgeo.findClosestCircle(self.center,cir).Center
+				else:
+					self.center = cir[-1].Center
 			if self.closedCircle:
 				self.drawArc()
 			else:

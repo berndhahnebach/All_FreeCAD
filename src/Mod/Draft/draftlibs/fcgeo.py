@@ -45,7 +45,8 @@ def vec(edge):
 def edg(p1,p2):
 	"edge(Vector,Vector) -- returns an edge from 2 vectors"
 	if isinstance(p1,FreeCAD.Vector) and isinstance(p2,FreeCAD.Vector):
-		return Part.Line(p1,p2).toShape()
+		if fcvec.equals(p1,p2): return None
+		else: return Part.Line(p1,p2).toShape()
 
 def v1(edge):
 	"v1(edge) -- returns the first point of an edge"
@@ -570,6 +571,15 @@ def angleBisection(edge1, edge2):
 	else:
 		return None
 
+def findClosestCircle(point,circles):
+	"findClosestCircle(Vector, list of circles) -- returns the circle with closest center"
+	dist = 1000000
+	closest = None
+	for c in circles:
+		if c.Center.sub(point).Length < dist:
+			dist = c.Center.sub(point).Length
+			closest = c
+	return closest
 	
 # circle functions *********************************************************
 
@@ -601,6 +611,12 @@ def circleFrom1tan2pt(tan1, p1, p2):
 		return circlefrom1Line2Points(tan1, p1, p2)
 	if isinstance(tan1.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector) and isinstance(p2, FreeCAD.Vector):
 		return circlefrom1Circle2Points(tan1, p1, p2)
+
+def circleFrom1tan1pt1rad(tan1, p1, rad):
+	if isinstance(tan1.Curve, Part.Line) and isinstance(p1, FreeCAD.Vector):
+		return circleFromPointLineRadius(p1, tan1, rad)
+	if isinstance(tan1.Curve, Part.Circle) and isinstance(p1, FreeCAD.Vector):
+		return circleFromPointCircleRadius(p1, tan1, rad)
 
 def circleFrom3tan(tan1, tan2, tan3):
 	tan1IsLine = isinstance(tan1.Curve, Part.Line)
@@ -695,27 +711,27 @@ def circleFrom3LineTangents (edge1, edge2, edge3):
 	intersections = []
 	int = findIntersection(bis12, bis23, True, True)	
 	if int:
-		radius = findDistance(int[0],edge1)
+		radius = findDistance(int[0],edge1).Length
 		intersections.append(Part.Circle(int[0],NORM,radius))
 	int = findIntersection(bis23, bis31, True, True)
 	if int:
-		radius = findDistance(int[0],edge1)
+		radius = findDistance(int[0],edge1).Length
 		intersections.append(Part.Circle(int[0],NORM,radius))
 	int = findIntersection(bis31, bis12, True, True)
 	if int:
-		radius = findDistance(int[0],edge1)
+		radius = findDistance(int[0],edge1).Length
 		intersections.append(Part.Circle(int[0],NORM,radius))
 	int = findIntersection(rot(bis12), rot(bis23), True, True)
 	if int:
-		radius = findDistance(int[0],edge1)
+		radius = findDistance(int[0],edge1).Length
 		intersections.append(Part.Circle(int[0],NORM,radius))
 	int = findIntersection(rot(bis23), rot(bis31), True, True)
 	if int:
-		radius = findDistance(int[0],edge1)
+		radius = findDistance(int[0],edge1).Length
 		intersections.append(Part.Circle(int[0],NORM,radius))
 	int = findIntersection(rot(bis31), rot(bis12), True, True)
 	if int:
-		radius = findDistance(int[0],edge1)
+		radius = findDistance(int[0],edge1).Length
 		intersections.append(Part.Circle(int[0],NORM,radius))
 	circles = []
 	for int in intersections:
@@ -731,6 +747,51 @@ def circleFrom3LineTangents (edge1, edge2, edge3):
 	else:
 		return None
 
+def circleFromPointLineRadius (point, edge, radius):
+ 	"circleFromPointLineRadius (point, edge, radius)"
+	dist = findDistance(point, edge, False)
+	center1 = None
+	center2 = None
+	if dist.Length == 0:
+		segment = vec(edge)
+		perpVec = fcvec.normalized(fcvec.crossproduct(segment))
+		normPoint_c1 = fcvec.scale(perpVec, radius)
+		normPoint_c2 = fcvec.scale(perpVec, -radius)
+		center1 = point.add(normPoint_c1)
+		center2 = point.add(normPoint_c2)
+	elif dist.Length > 2 * radius:
+		return None
+	elif dist.Length == 2 * radius:
+		normPoint = findProjection(point, edge, False)
+		dummy = fcvec.scale(normPoint.sub(point), 0.5)
+		cen = point.add(dummy)
+		circ = Part.Circle(cen, NORM, radius)
+		if circ:
+			return [circ]
+		else:
+			return None
+	else:
+		normPoint = findProjection(point, edge, False)
+		normDist = fcvec.dist(normPoint, point)
+		dist = math.sqrt(radius**2 - (radius - normDist)**2)
+		centerNormVec = fcvec.scale(fcvec.normalized(point.sub(normPoint)), radius)
+		edgeDir = fcvec.normalized(edge.Vertexes[0].Point.sub(normPoint))
+		center1 = centerNormVec.add(normPoint.add(fcvec.scale(edgeDir, dist)))
+		center2 = centerNormVec.add(normPoint.add(fcvec.scale(edgeDir, -dist)))
+	circles = []
+	if center1:
+		circ = Part.Circle(center1, NORM, radius)
+		if circ:
+			circles.append(circ)
+	if center2:
+		circ = Part.Circle(center2, NORM, radius)
+		if circ:
+			circles.append(circ)
+
+	if len(circles):
+		return circles
+	else:
+		return None
 
 
 
@@ -849,95 +910,6 @@ def circleFrom2PointsRadius(p1, p2, radius):
 
 
 
-def circleFromPointLineRadius (point, edge, radius):
- 	'''
-	circleFromPointLineRadius (point, edge, radius):
-	Calculate a circle from a line tangent, a point on the circumference and a radius.
-	If multiple locations are possible (max. 2) they are all returned.
- 	'''
-
-	# =========================
-	# Example:
-	# import Draft
-	# import Part
-	# e1 = Vector(1, 1, 0)
-	# e2 = Vector(4, 5, 0)
-	# edge = Part.Line(e1, e2).toShape()
-	# p = Vector(5, 3, 0)
-	# radius = 5.0
-	# print str(Draft.fcgeo.circleFromPointLineRadius(p, edge, radius)) + "\n"
-	## Results for the circle centers should be:
-	## 5, -2
-	## 9.8, 4,4
-	# =========================
-
-	if isinstance(point, FreeCAD.Vector) and isinstance(edge.Curve, Part.Line):
-		# Get distance of point from line.
-		dist = findDistance(point, edge, False)
-
-		center1 = None
-		center2 = None
-
-		if dist.Length == 0:
-			# There are TWO solutions here. One on each side of the edge.
-			segment = vec(edge)
-			perpVec = fcvec.normalized(fcvec.crossproduct(segment))
-
-			normPoint_c1 = fcvec.scale(perpVec, radius)
-			normPoint_c2 = fcvec.scale(perpVec, -radius)
-
-			center1 = Vector.add(point, normPoint_c1)
-			center2 = Vector.add(point, normPoint_c2)
-		elif dist.Length > 2 * radius:
-			return None
-		elif dist.Length == 2 * radius:
-			# Only one solution possible.
-			# Get point exactly in the middle of the line and the point.
-			normPoint = findProjection(point, edge, False)
-			dummy = fcvec.scale(Vector.sub(normPoint, point), 0.5)
-			cen = Vector.add(point, dummy)
-
-			circ = Part.Circle(cen, norm, radius)
-			if circ:
-				return [circ]
-			else:
-				return None
-
-		else:
-			# Get projected point on line and the distance from the point to the line.
-			normPoint = findProjection(point, edge, False)
-			normDist = fcvec.dist(normPoint, point)
-
-			# Calculate distance from given point to circle centers. (direction only along the given edge!)
-			dist = math.sqrt(radius**2 - (radius - normDist)**2)
-
-			# Calculate distance vector (perp. to the edge; length = radius) to the circle centers.
-			centerNormVec = fcvec.scale(fcvec.normalized(Vector.sub(point, normPoint)), radius)
-
-			# Calculate the two centers for the possible circles.
-			edgeDir = fcvec.normalized(Vector.sub(edge.Vertexes[0].Point, normPoint))
-			center1 = Vector.add(centerNormVec ,Vector.add(normPoint, fcvec.scale(edgeDir, dist)))
-			center2 = Vector.add(centerNormVec ,Vector.add(normPoint, fcvec.scale(edgeDir, -dist)))
-
-		# Return the calculated circles.
-		circles = []
-		if center1:
-			circ = Part.Circle(center1, norm, radius)
-			if circ:
-				circles.append(circ)
-		if center2:
-			circ = Part.Circle(center2, norm, radius)
-			if circ:
-				circles.append(circ)
-
-		if len(circles):
-			return circles
-		else:
-			return None
-	else:
-		print "debug: circleFromPointLineRadius bad parameters!\n"
-		# FreeCAD.Console.PrintMessage("debug: circleFromPointLineRadius bad parameters!\n")
-		return None
 
 
 def outerSoddyCircle(circle1, circle2, circle3):
