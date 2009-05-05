@@ -59,6 +59,7 @@
 //#include "ToolBox.h"
 #include "HelpView.h"
 #include "ReportView.h"
+#include "CombiView.h"
 #include "PythonConsole.h"
 
 #include "DlgTipOfTheDayImp.h"
@@ -253,6 +254,12 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
         (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Task View")));
     pcTaskPanelView->setMinimumWidth(210);
     pDockMgr->registerDockWindow("Std_TaskPanelView", pcTaskPanelView);
+
+    // Combi view
+    CombiView* pcCombiView = new CombiView(0, this);
+    pcCombiView->setObjectName(QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Combi View")));
+    pcCombiView->setMinimumWidth(150);
+    pDockMgr->registerDockWindow("Std_CombiView", pcCombiView);
 
     // Report view
     Gui::DockWnd::ReportView* pcReport = new Gui::DockWnd::ReportView(this);

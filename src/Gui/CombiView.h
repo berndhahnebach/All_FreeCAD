@@ -33,11 +33,31 @@
 
 #include "DockWindow.h"
 #include "Selection.h"
+#include "iisTaskPanel/include/iisTaskPanel"
+
+namespace App {
+  class PropertyContainer;
+}
+
+namespace Gui {
+    class TreeWidget;
+
+namespace PropertyEditor {
+
+class EditableListView;
+class EditableItem;
+class PropertyEditor;
+
+} // namespace PropertyEditor
+} // namespace Gui
+
 
 namespace Gui {
 namespace DockWnd {
 
-/** A test class. A more elaborate class description.
+/** Combi View
+  * is a combination of a tree, property and TaskPanel for 
+  * integrated user action.
  */
 class CombiView : public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
 {
@@ -67,6 +87,14 @@ public:
 
     /// get called when the document is changed or updated
     virtual void onUpdate(void);
+
+private:
+    QTabWidget                         * tabs,*proptertyTabs;
+    Gui::TreeWidget                    * tree;
+    iisTaskPanel                       * taskPanel;
+    Gui::PropertyEditor::PropertyEditor* propertyEditorView;
+    Gui::PropertyEditor::PropertyEditor* propertyEditorData;
+
 };
 
 } // namespace DockWnd
