@@ -211,6 +211,8 @@ void DockWindowManager::retranslate()
  * \li Std_PropertyView
  * \li Std_ReportView
  * \li Std_ToolBox
+ * \li Std_CombiView
+ * \li Std_SelectionView
  *
  * To avoid name clashes the caller should use names of the form \a module_widgettype, i. e. if a analyse dialog for
  * the mesh module is added the name must then be Mesh_AnalyzeDialog. 
