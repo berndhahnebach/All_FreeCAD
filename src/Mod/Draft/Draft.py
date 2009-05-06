@@ -197,18 +197,17 @@ def snapPoint (target,point,cursor,ctrl=False):
 			target.snap.isSnapping = True
 		return newpoint[2]
 
-def constrainPoint (target,point):
+def constrainPoint (target,point,mobile=False):
 	'''
 	Constrain function
-
 	On commands that need to enter several points (currently only line/polyline), you can constrain
 	the next point to be picked to the last drawn point by pressing SHIFT. The vertical or horizontal
 	constraining depends on the position of your mouse in relation to last point 
-	at the moment you press SHIFT.
+	at the moment you press SHIFT. if mobile=True, mobile behaviour applies.
 	'''
 	if len(target.node) > 0:
 		last = target.node[len(target.node)-1]
-		if (target.constrain == None):
+		if ((target.constrain == None) or mobile):
 			if (abs(point.x-last.x) > abs(point.y-last.y)):
 				point.y = last.y
 				target.constrain = 0 #horizontal
@@ -751,7 +750,7 @@ class rectangle:
 	def Activated(self):
 		self.doc = FreeCAD.ActiveDocument		
 		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			self.constrain = None
+			self.constrain = False
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 			self.featureName = "Rectangle"
@@ -759,6 +758,7 @@ class rectangle:
 			self.node = []
 			self.obj = None
 			self.pos = []
+			self.refpoint = None
 			self.ui.sourceCmd = self
 			self.ui.lineUi()
 			self.ui.cmdlabel.setText("Rectangle")
@@ -788,15 +788,15 @@ class rectangle:
 		z = self.node[0].z
 		if self.node[0].x < self.node[1].x:
 			minx = self.node[0].x
-			maxx = self.node[1].x
+			maxx = self.node[-1].x
 		else:
-			minx = self.node[1].x
+			minx = self.node[-1].x
 			maxx = self.node[0].x
-		if self.node[0].y < self.node[1].y:
+		if self.node[0].y < self.node[-1].y:
 			miny = self.node[0].y
-			maxy = self.node[1].y
+			maxy = self.node[-1].y
 		else:
-			miny = self.node[1].y
+			miny = self.node[-1].y
 			maxy = self.node[0].y
 
 		edges.append(Part.Line(Vector(minx,maxy,z),Vector(maxx,maxy,z)).toShape())
@@ -819,8 +819,17 @@ class rectangle:
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
+			if len(self.node):
+				if (arg["ShiftDown"]): # constraining
+					if self.constrain == None:
+						self.node.append(point)
+					point = constrainPoint(self,point,mobile=True)
+				else:
+					self.constrain = None
+					self.ui.xValue.setEnabled(True)
+					self.ui.yValue.setEnabled(True)
 			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-			if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
+			if (len(self.node)>0): self.ui.displayPoint(point, self.node[0])
 			else: self.ui.displayPoint(point)
 			self.rect.update(point)
 
@@ -832,6 +841,7 @@ class rectangle:
 					self.pos = arg["Position"]
 					point = self.view.getPoint(self.pos[0],self.pos[1])
 					point = snapPoint(self,point,self.pos,arg["CtrlDown"])
+					if (arg["ShiftDown"]): point = constrainPoint(self,point,mobile=True)
 					if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 					self.appendPoint(point)
 
@@ -967,7 +977,7 @@ class arc:
 							self.rad = cl.Radius
 							self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
 						else:
-							self.rad = fcgeo.findProjection(self.center,ed).sub(self.center).Length
+							self.rad = self.center.add(fcgeo.findDistance(self.center,ed).sub(self.center)).Length
 					else:
 						self.rad = fcvec.dist(point,self.center)
 				else:
