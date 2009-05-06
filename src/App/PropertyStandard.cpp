@@ -71,11 +71,9 @@ PropertyInteger::~PropertyInteger()
 
 void PropertyInteger::setValue(long lValue)
 {
-    if (_lValue != lValue) {
-        aboutToSetValue();
-        _lValue = lValue;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _lValue=lValue;
+    hasSetValue();
 }
 
 long PropertyInteger::getValue(void) const
@@ -91,8 +89,9 @@ PyObject *PropertyInteger::getPyObject(void)
 void PropertyInteger::setPyObject(PyObject *value)
 { 
     if (PyInt_Check(value)) {
-        long val = PyInt_AsLong(value);
-        setValue(val);
+        aboutToSetValue();
+        _lValue = PyInt_AsLong(value);
+        hasSetValue();
     } 
     else {
         std::string error = std::string("type must be int, not ");
@@ -123,7 +122,9 @@ Property *PropertyInteger::Copy(void) const
 
 void PropertyInteger::Paste(const Property &from)
 {
-    setValue(dynamic_cast<const PropertyInteger&>(from)._lValue);
+    aboutToSetValue();
+    _lValue = dynamic_cast<const PropertyInteger&>(from)._lValue;
+    hasSetValue();
 }
 
 
@@ -157,18 +158,18 @@ PropertyPath::~PropertyPath()
 
 void PropertyPath::setValue(const boost::filesystem::path &Path)
 {
-    if (_cValue != Path) {
-        aboutToSetValue();
-        _cValue = Path;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cValue = Path;
+    hasSetValue();
 }
 
 void PropertyPath::setValue(const char * Path)
 {
-    setValue(boost::filesystem::path(Path,boost::filesystem::no_check));
-    //setValue(boost::filesystem::path(Path,boost::filesystem::native));
-    //setValue(boost::filesystem::path(Path,boost::filesystem::windows_name));
+    aboutToSetValue();
+    _cValue = boost::filesystem::path(Path,boost::filesystem::no_check );
+    //_cValue = boost::filesystem::path(Path,boost::filesystem::native );
+    //_cValue = boost::filesystem::path(Path,boost::filesystem::windows_name );
+    hasSetValue();
 }
 
 boost::filesystem::path PropertyPath::getValue(void) const
@@ -238,7 +239,9 @@ Property *PropertyPath::Copy(void) const
 
 void PropertyPath::Paste(const Property &from)
 {
-    setValue(dynamic_cast<const PropertyPath&>(from)._cValue);
+    aboutToSetValue();
+    _cValue = dynamic_cast<const PropertyPath&>(from)._cValue;
+    hasSetValue();
 }
 
 
@@ -454,12 +457,14 @@ void PropertyIntegerConstraint::setPyObject(PyObject *value)
         long temp = PyInt_AsLong(value);
         if (_ConstStruct)
         {
-            if (temp > _ConstStruct->UpperBound)
+            if(temp > _ConstStruct->UpperBound)
                 temp = _ConstStruct->UpperBound;
             else if(temp < _ConstStruct->LowerBound)
                 temp = _ConstStruct->LowerBound;
         }
-        setValue(temp);
+        aboutToSetValue();
+        _lValue = temp;
+        hasSetValue();
     } 
     else {
         std::string error = std::string("type must be int, not ");
@@ -604,7 +609,9 @@ Property *PropertyIntegerList::Copy(void) const
 
 void PropertyIntegerList::Paste(const Property &from)
 {
-    setValues(dynamic_cast<const PropertyIntegerList&>(from)._lValueList);
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyIntegerList&>(from)._lValueList;
+    hasSetValue();
 }
 
 
@@ -634,11 +641,9 @@ PropertyFloat::~PropertyFloat()
 
 void PropertyFloat::setValue(float lValue)
 {
-    if (_dValue != lValue) {
-        aboutToSetValue();
-        _dValue=lValue;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _dValue=lValue;
+    hasSetValue();
 }
 
 float PropertyFloat::getValue(void) const
@@ -654,10 +659,14 @@ PyObject *PropertyFloat::getPyObject(void)
 void PropertyFloat::setPyObject(PyObject *value)
 {
     if (PyFloat_Check(value)) {
-        setValue((float) PyFloat_AsDouble(value));
+        aboutToSetValue();
+        _dValue = (float) PyFloat_AsDouble(value);
+        hasSetValue();
     }
     else if(PyInt_Check(value)) {
-        setValue((float) PyInt_AsLong(value));
+        aboutToSetValue();
+        _dValue = (float) PyInt_AsLong(value);
+        hasSetValue();
     }
     else {
         std::string error = std::string("type must be float or int, not ");
@@ -688,7 +697,9 @@ Property *PropertyFloat::Copy(void) const
 
 void PropertyFloat::Paste(const Property &from)
 {
-    setValue(dynamic_cast<const PropertyFloat&>(from)._dValue);
+    aboutToSetValue();
+    _dValue = dynamic_cast<const PropertyFloat&>(from)._dValue;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -734,7 +745,9 @@ void PropertyFloatConstraint::setPyObject(PyObject *value)
                 temp = _ConstStruct->LowerBound;
         }
     
-        setValue(temp);
+        aboutToSetValue();
+        _dValue = temp;
+        hasSetValue();
     } 
     else {
         std::string error = std::string("type must be float, not ");
@@ -944,7 +957,7 @@ PropertyString::~PropertyString()
 
 void PropertyString::setValue(const char* sString)
 {
-    if (sString && _cValue != sString) {
+    if (sString) {
         aboutToSetValue();
         _cValue = sString;
         hasSetValue();
@@ -953,11 +966,9 @@ void PropertyString::setValue(const char* sString)
 
 void PropertyString::setValue(const std::string &sString)
 {
-    if (_cValue != sString) {
-        aboutToSetValue();
-        _cValue = sString;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cValue = sString;
+    hasSetValue();
 }
 
 const char* PropertyString::getValue(void) const
@@ -1016,7 +1027,9 @@ Property *PropertyString::Copy(void) const
 
 void PropertyString::Paste(const Property &from)
 {
-    setValue(dynamic_cast<const PropertyString&>(from)._cValue);
+    aboutToSetValue();
+    _cValue = dynamic_cast<const PropertyString&>(from)._cValue;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -1181,11 +1194,9 @@ PropertyBool::~PropertyBool()
 
 void PropertyBool::setValue(bool lValue)
 {
-    if (_lValue != lValue) {
-        aboutToSetValue();
-        _lValue=lValue;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _lValue=lValue;
+    hasSetValue();
 }
 
 bool PropertyBool::getValue(void) const
@@ -1244,7 +1255,9 @@ Property *PropertyBool::Copy(void) const
 
 void PropertyBool::Paste(const Property &from)
 {
-    setValue(dynamic_cast<const PropertyBool&>(from)._lValue);
+    aboutToSetValue();
+    _lValue = dynamic_cast<const PropertyBool&>(from)._lValue;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -1272,26 +1285,23 @@ PropertyColor::~PropertyColor()
 
 void PropertyColor::setValue(const Color &col)
 {
-    if (_cCol != col) {
-        aboutToSetValue();
-        _cCol=col;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cCol=col;
+    hasSetValue();
 }
 
 void PropertyColor::setValue(uint32_t rgba)
 {
-    if (_cCol.getPackedValue() != rgba) {
-        aboutToSetValue();
-        _cCol.setPackedValue(rgba);
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cCol.setPackedValue(rgba);
+    hasSetValue();
 }
 
 void PropertyColor::setValue(float r, float g, float b, float a)
 {
-    Color c(r,g,b,a);
-    setValue(c);
+    aboutToSetValue();
+    _cCol.set(r,g,b,a);
+    hasSetValue();
 }
 
 const Color& PropertyColor::getValue(void) const 
@@ -1395,7 +1405,9 @@ Property *PropertyColor::Copy(void) const
 
 void PropertyColor::Paste(const Property &from)
 {
-    setValue(dynamic_cast<const PropertyColor&>(from)._cCol);
+    aboutToSetValue();
+    _cCol = dynamic_cast<const PropertyColor&>(from)._cCol;
+    hasSetValue();
 }
 
 //**************************************************************************
@@ -1566,7 +1578,7 @@ PropertyMaterial::~PropertyMaterial()
 void PropertyMaterial::setValue(const Material &mat)
 {
     aboutToSetValue();
-    _cMat = mat;
+    _cMat=mat;
     hasSetValue();
 }
 
@@ -1577,56 +1589,44 @@ const Material& PropertyMaterial::getValue(void) const
 
 void PropertyMaterial::setAmbientColor(const Color& col)
 {
-    if (_cMat.ambientColor != col) {
-        aboutToSetValue();
-        _cMat.ambientColor = col;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cMat.ambientColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setDiffuseColor(const Color& col)
 {
-    if (_cMat.diffuseColor != col) {
-        aboutToSetValue();
-        _cMat.diffuseColor = col;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cMat.diffuseColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setSpecularColor(const Color& col)
 {
-    if (_cMat.specularColor != col) {
-        aboutToSetValue();
-        _cMat.specularColor = col;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cMat.specularColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setEmmisiveColor(const Color& col)
 {
-    if (_cMat.emissiveColor != col) {
-        aboutToSetValue();
-        _cMat.emissiveColor = col;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cMat.emissiveColor = col;
+    hasSetValue();
 }
 
 void PropertyMaterial::setShininess(float val)
 {
-    if (_cMat.shininess != val) {
-        aboutToSetValue();
-        _cMat.shininess = val;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cMat.shininess = val;
+    hasSetValue();
 }
 
 void PropertyMaterial::setTransparency(float val)
 {
-    if (_cMat.transparency != val) {
-        aboutToSetValue();
-        _cMat.transparency = val;
-        hasSetValue();
-    }
+    aboutToSetValue();
+    _cMat.transparency = val;
+    hasSetValue();
 }
 
 PyObject *PropertyMaterial::getPyObject(void)
@@ -1682,7 +1682,9 @@ Property *PropertyMaterial::Copy(void) const
 
 void PropertyMaterial::Paste(const Property &from)
 {
-    setValue(dynamic_cast<const PropertyMaterial&>(from)._cMat);
+    aboutToSetValue();
+    _cMat = dynamic_cast<const PropertyMaterial&>(from)._cMat;
+    hasSetValue();
 }
 
 
