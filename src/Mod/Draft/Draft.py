@@ -2007,6 +2007,7 @@ class upgrade:
 		self.sel = FreeCADGui.Selection.getSelection()
 		edges = []
 		wires = []
+		openwires = []
 		faces = []
 		# determining which level we will have
 		for ob in self.sel:
@@ -2015,6 +2016,8 @@ class upgrade:
 			for w in ob.Shape.Wires:
 				if w.isClosed():
 					wires.append(w)
+				else:
+					openwires.append(w)
 			lastob = ob
 		# applying transformation
 		self.doc.openTransaction("Upgrade")
@@ -2034,6 +2037,15 @@ class upgrade:
 				newob = self.doc.addObject("Part::Feature","Face")
 				newob.Shape = f
 				formatObject(newob,lastob)
+		elif (len(openwires) == 1):
+			p0 = openwires[0].Vertexes[0].Point
+			p1 = openwires[0].Vertexes[-1].Point
+			edges = openwires[0].Edges
+			edges.append(Part.Line(p1,p0).toShape())
+			w = Part.Wire(fcgeo.sortEdges(edges))
+			newob = self.doc.addObject("Part::Feature","Wire")
+			newob.Shape = w
+			formatObject(newob,lastob)
 		else:
 			for ob in self.sel:
 				for e in ob.Shape.Edges:
