@@ -220,7 +220,8 @@ public:
   //@}
 
   void setGradientBackgroud(bool b);
-  void setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor );
+  void setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor);
+  void setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor);
   void setEnabledFPSCounter(bool b);
 
   void seekToCamera(const SbVec3f & scenepos);

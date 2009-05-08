@@ -344,9 +344,14 @@ void View3DInventorViewer::setGradientBackgroud(bool b)
     backgroundroot->removeChild( pcBackGround );
 }
 
-void View3DInventorViewer::setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor )
+void View3DInventorViewer::setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor)
 {
-  pcBackGround->setColorGradient( fromColor, toColor );
+    pcBackGround->setColorGradient(fromColor, toColor);
+}
+
+void View3DInventorViewer::setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor)
+{
+    pcBackGround->setColorGradient(fromColor, toColor, midColor);
 }
 
 void View3DInventorViewer::setEnabledFPSCounter(bool b)
