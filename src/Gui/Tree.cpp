@@ -66,6 +66,12 @@ TreeWidget::TreeWidget(QWidget* parent)
     this->createGroupAction->setStatusTip(tr("Create a group"));
     connect(this->createGroupAction, SIGNAL(triggered()),
             this, SLOT(onCreateGroup()));
+    this->relabelObjectAction = new QAction(this);
+    this->relabelObjectAction->setText(tr("Rename"));
+    this->relabelObjectAction->setStatusTip(tr("Rename object"));
+    this->relabelObjectAction->setShortcut(Qt::Key_F2);
+    connect(this->relabelObjectAction, SIGNAL(triggered()),
+            this, SLOT(onRelabelObject()));
 }
 
 TreeWidget::~TreeWidget()
@@ -100,6 +106,8 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
             else
                 contextMenu.addAction(this->createGroupAction);
         }
+        contextMenu.addSeparator();
+        contextMenu.addAction(this->relabelObjectAction);
     }
     delete view;
     if (contextMenu.actions().count() > 0)
@@ -135,6 +143,13 @@ void TreeWidget::onCreateGroup()
         Gui::Application::Instance->runPythonCode(cmd.toUtf8());
         gui->commitCommand();
     }
+}
+
+void TreeWidget::onRelabelObject()
+{
+    QTreeWidgetItem* item = currentItem();
+    if (item)
+        editItem(item);
 }
 
 bool TreeWidget::dropMimeData(QTreeWidgetItem *parent, int index,

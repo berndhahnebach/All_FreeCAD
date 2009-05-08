@@ -67,9 +67,11 @@ protected:
 
 protected Q_SLOTS:
     void onCreateGroup();
+    void onRelabelObject();
 
 private:
     QAction* createGroupAction;
+    QAction* relabelObjectAction;
     QTreeWidgetItem* contextItem;
 };
 
