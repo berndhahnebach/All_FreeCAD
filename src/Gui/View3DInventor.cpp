@@ -149,10 +149,15 @@ void View3DInventor::setViewerDefaults(void)
 
     unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (lila)
     unsigned long col3 = hGrp->GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
-    float r2,g2,b2,r3,g3,b3;
+    unsigned long col4 = hGrp->GetUnsigned("BackgroundColor4",ULONG_MAX); // default color (white)
+    float r2,g2,b2,r3,g3,b3,r4,g4,b4;
     r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
     r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
-    _viewer->setGradientBackgroudColor( SbColor(r2, g2, b2), SbColor(r3, g3, b3) );
+    r4 = ((col4 >> 24) & 0xff) / 255.0; g4 = ((col4 >> 16) & 0xff) / 255.0; b4 = ((col4 >> 8) & 0xff) / 255.0;
+    if (hGrp->GetBool("UseBackgroundColorMid",false) == false)
+        _viewer->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3));
+    else
+        _viewer->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3), SbColor(r4, g4, b4));
 
     if (hGrp->GetBool("UseAntialiasing"  ,false))
         _viewer->getGLRenderAction()->setSmoothing(true);

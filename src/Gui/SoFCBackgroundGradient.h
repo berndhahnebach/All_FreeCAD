@@ -37,24 +37,25 @@ class SoGLRenderAction;
 namespace Gui {
 
 class GuiExport SoFCBackgroundGradient : public SoSeparator {
-  typedef SoSeparator inherited;
+    typedef SoSeparator inherited;
 
-  SO_NODE_HEADER(Gui::SoFCBackgroundGradient);
+    SO_NODE_HEADER(Gui::SoFCBackgroundGradient);
 
 public:
-  static void initClass(void);
-  static void finish(void);
-  SoFCBackgroundGradient(void);
+    static void initClass(void);
+    static void finish(void);
+    SoFCBackgroundGradient(void);
 
-  void GLRenderBelowPath ( SoGLRenderAction *action );
-  void setColorGradient( const SbColor& fromColor, const SbColor& toColor );
+    void GLRenderBelowPath (SoGLRenderAction *action);
+    void setColorGradient(const SbColor& fromColor, const SbColor& toColor);
+    void setColorGradient(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor);
 
 protected:
-  void setViewportSize( const SbVec2s& size );
-  virtual ~SoFCBackgroundGradient();
+    void setViewportSize(const SbVec2s& size);
+    virtual ~SoFCBackgroundGradient();
 
-  SoCoordinate3* coords;
-  SbVec2s viewsize;
+    SoCoordinate3* coords;
+    SbVec2s viewsize;
 };
 
 } // namespace Gui
