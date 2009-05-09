@@ -29,10 +29,10 @@ public:
 Q_SIGNALS:
 	void activated();
 
-public slots:
+public Q_SLOTS:
 	void fold();
 
-protected slots:
+protected Q_SLOTS:
 	void animate();
 
 protected:

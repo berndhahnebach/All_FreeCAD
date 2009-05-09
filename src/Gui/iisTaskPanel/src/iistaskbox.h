@@ -32,10 +32,10 @@ public:
 
 	void addIconLabel(iisIconLabel *label, bool addToLayout = true);
 
-public slots:
+public Q_SLOTS:
 	void showHide();
 
-protected slots:
+protected Q_SLOTS:
 	void processHide();
 	void processShow();
 
