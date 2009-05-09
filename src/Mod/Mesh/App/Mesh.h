@@ -38,6 +38,7 @@
 #include <App/ComplexGeoData.h>
 
 #include "Core/MeshKernel.h"
+#include "Core/MeshIO.h"
 #include "Core/Iterator.h"
 #include "MeshPoint.h"
 #include "Facet.h"
@@ -129,7 +130,7 @@ public:
     void SaveDocFile (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
     void RestoreDocFile(Base::Reader &reader);
-    void save(const char* file) const;
+    void save(const char* file,MeshCore::MeshOutput::Format f=MeshCore::MeshOutput::Undefined) const;
     void save(std::ostream&) const;
     bool load(const char* file);
     void load(std::istream&);

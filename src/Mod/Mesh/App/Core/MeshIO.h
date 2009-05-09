@@ -81,10 +81,23 @@ protected:
 class MeshExport MeshOutput
 {
 public:
+    enum Format {
+        Undefined,
+        BMS,
+        ASTL,
+        BSTL,
+        OBJ,
+        IV,
+        VRML,
+        WRZ,
+        NAS,
+        PY
+    };
+
     MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
     virtual ~MeshOutput (void) { }
-    /// Loads the file, decided by extension
-    bool SaveAny(const char* FileName) const;
+    /// Saves the file, decided by extension if not explicitly given
+    bool SaveAny(const char* FileName, Format f=Undefined) const;
 
     /** Saves the mesh object into an ASCII STL file. */
     bool SaveAsciiSTL (std::ostream &rstrOut) const;

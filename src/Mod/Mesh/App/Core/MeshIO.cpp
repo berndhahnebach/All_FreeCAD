@@ -935,8 +935,8 @@ bool MeshInput::LoadCadmouldFE (std::ifstream &rstrIn)
 
 // --------------------------------------------------------------
 
-/// Save in a file, format is decided by the extension
-bool MeshOutput::SaveAny(const char* FileName) const
+/// Save in a file, format is decided by the extension if not explicitly given
+bool MeshOutput::SaveAny(const char* FileName,MeshOutput::Format format) const
 {
     // ask for write permission
     Base::FileInfo fi(FileName);
@@ -944,47 +944,84 @@ bool MeshOutput::SaveAny(const char* FileName) const
     if ((fi.exists() && !fi.isWritable()) || !di.exists() || !di.isWritable())
         throw Base::FileException("No write permission for file",FileName);
 
+    MeshOutput::Format fileformat = format;
+    if (fileformat == MeshOutput::Undefined) {
+        if (fi.hasExtension("bms")) {
+            fileformat = MeshOutput::BMS;
+        }
+        else if (fi.hasExtension("stl")) {
+            fileformat = MeshOutput::BSTL;
+        }
+        else if (fi.hasExtension("ast")) {
+            fileformat = MeshOutput::ASTL;
+        }
+        else if (fi.hasExtension("obj")) {
+            fileformat = MeshOutput::OBJ;
+        }
+        else if (fi.hasExtension("iv")) {
+            fileformat = MeshOutput::IV;
+        }
+        else if (fi.hasExtension("py")) {
+            fileformat = MeshOutput::PY;
+        }
+        else if (fi.hasExtension("wrl") || fi.hasExtension("vrml")) {
+            fileformat = MeshOutput::VRML;
+        }
+        else if (fi.hasExtension("wrz")) {
+            fileformat = MeshOutput::WRZ;
+        }
+        else if (fi.hasExtension("nas") || fi.hasExtension("bdf")) {
+            fileformat = MeshOutput::NAS;
+        }
+    }
+
     Base::ofstream str(fi, std::ios::out | std::ios::binary);
 
-    if (fi.hasExtension("bms")) {
-        _rclMesh.Write( str );
+    if (fileformat == MeshOutput::BMS) {
+        _rclMesh.Write(str);
     }
-    else if (fi.hasExtension("stl") || fi.hasExtension("ast")) {
+    else if (fileformat == MeshOutput::BSTL) {
         MeshOutput aWriter(_rclMesh);
 
         // write file
         bool ok = false;
-        if (fi.hasExtension("stl"))
-            ok = aWriter.SaveBinarySTL( str );
-        else // "ast"
-            ok = aWriter.SaveAsciiSTL( str );
-
+        ok = aWriter.SaveBinarySTL( str );
         if (!ok)
             throw Base::FileException("Export of STL mesh failed",FileName);
           
     }
-    else if (fi.hasExtension("obj")) {
+    else if (fileformat == MeshOutput::ASTL) {
+        MeshOutput aWriter(_rclMesh);
+
+        // write file
+        bool ok = false;
+        ok = aWriter.SaveAsciiSTL( str );
+        if (!ok)
+            throw Base::FileException("Export of STL mesh failed",FileName);
+          
+    }
+    else if (fileformat == MeshOutput::OBJ) {
         // write file
         if (!SaveOBJ(str)) 
             throw Base::FileException("Export of OBJ mesh failed",FileName);
     }
-    else if (fi.hasExtension("iv")) {
+    else if (fileformat == MeshOutput::IV) {
         // write file
         if (!SaveInventor(str))
             throw Base::FileException("Export of Inventor mesh failed",FileName);
     }
-    else if (fi.hasExtension("py")) {
+    else if (fileformat == MeshOutput::PY) {
         // write file
         if (!SavePython(str))
             throw Base::FileException("Export of Python mesh failed",FileName);
     }
-    else if (fi.hasExtension("wrl") || fi.hasExtension("vrml")) {
+    else if (fileformat == MeshOutput::VRML) {
         // write file
         App::Material clMat;
         if (!SaveVRML(str, clMat))
             throw Base::FileException("Export of VRML mesh failed",FileName);
     }
-    else if (fi.hasExtension("wrz")) {
+    else if (fileformat == MeshOutput::WRZ) {
         // Compressed VRML is nothing else than a GZIP'ped VRML ascii file
         // str.close();
         //Base::ogzstream gzip(FileName, std::ios::out | std::ios::binary);
@@ -997,7 +1034,7 @@ bool MeshOutput::SaveAny(const char* FileName) const
         if (!SaveVRML(gzip, clMat))
             throw Base::FileException("Export of compressed VRML mesh failed",FileName);
     }
-    else if (fi.hasExtension("nas") || fi.hasExtension("bdf")) {
+    else if (fileformat == MeshOutput::NAS) {
         // write file
         if (!SaveNastran(str))
             throw Base::FileException("Export of NASTRAN mesh failed",FileName);
