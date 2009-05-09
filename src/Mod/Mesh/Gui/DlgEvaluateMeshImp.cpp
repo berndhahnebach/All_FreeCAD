@@ -29,11 +29,13 @@
 #include <boost/bind.hpp>
 
 #include <Base/Interpreter.h>
+#include <Base/Sequencer.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/DockWindowManager.h>
 #include <Gui/MainWindow.h>
+#include <Gui/WaitCursor.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 
@@ -48,10 +50,10 @@ using namespace Mesh;
 using namespace MeshGui;
 
 CleanupHandler::CleanupHandler()
- : QObject(qApp)
+  : QObject(qApp)
 {
     // connect to lstWindowClosed signal
-    connect( qApp, SIGNAL(lastWindowClosed()), this, SLOT(cleanup()) );
+    connect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(cleanup()));
 }
 
 // The lastWindowClosed signal will be emitted recursively and before the cleanup slot is finished
@@ -221,10 +223,10 @@ void DlgEvaluateMeshImp::addViewProvider(const char* name)
 
 void DlgEvaluateMeshImp::removeViewProvider(const char* name)
 {
-    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find( name );
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find(name);
     if (it != _vp.end()) {
         if (_view)
-            _view->getViewer()->removeViewProvider( it->second );
+            _view->getViewer()->removeViewProvider(it->second);
         delete it->second;
         _vp.erase(it);
     }
@@ -234,7 +236,7 @@ void DlgEvaluateMeshImp::removeViewProviders()
 {
     for (std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it) {
         if (_view)
-            _view->getViewer()->removeViewProvider( it->second );
+            _view->getViewer()->removeViewProvider(it->second);
         delete it->second;
     }
     _vp.clear();
@@ -433,17 +435,17 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
         MeshEvalTopology eval(rMesh);
     
         if (eval.Evaluate()) {
-          checkNonmanifoldsButton->setText( tr("No non-manifolds") );
+          checkNonmanifoldsButton->setText(tr("No non-manifolds"));
           checkNonmanifoldsButton->setChecked(false);
           repairNonmanifoldsButton->setEnabled(false);
-          removeViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
+          removeViewProvider("MeshGui::ViewProviderMeshNonManifolds");
         }
         else {
-          checkNonmanifoldsButton->setText( tr("%1 non-manifolds").arg(eval.CountManifolds()) );
+          checkNonmanifoldsButton->setText(tr("%1 non-manifolds").arg(eval.CountManifolds()));
           checkNonmanifoldsButton->setChecked(true);
           repairNonmanifoldsButton->setEnabled(true);
           repairAllTogether->setEnabled(true);
-          addViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
+          addViewProvider("MeshGui::ViewProviderMeshNonManifolds");
         }
 
         qApp->restoreOverrideCursor();
@@ -475,7 +477,7 @@ void DlgEvaluateMeshImp::on_repairNonmanifoldsButton_clicked()
     
         repairNonmanifoldsButton->setEnabled(false);
         checkNonmanifoldsButton->setChecked(false);
-        removeViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
+        removeViewProvider("MeshGui::ViewProviderMeshNonManifolds");
     }
 }
 
@@ -504,38 +506,38 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
         MeshEvalNeighbourhood nb(rMesh);
         
         if (!rf.Evaluate()) {
-            checkIndicesButton->setText( tr("Invalid face indices") );
+            checkIndicesButton->setText(tr("Invalid face indices"));
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-           addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+           addViewProvider("MeshGui::ViewProviderMeshIndices");
         }
         else if (!rp.Evaluate()) {
-            checkIndicesButton->setText( tr("Invalid point indices") );
+            checkIndicesButton->setText(tr("Invalid point indices"));
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+            addViewProvider("MeshGui::ViewProviderMeshIndices");
         }
         else if (!cf.Evaluate()) {
-            checkIndicesButton->setText( tr("Multiple point indices") );
+            checkIndicesButton->setText(tr("Multiple point indices"));
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+            addViewProvider("MeshGui::ViewProviderMeshIndices");
         }
         else if (!nb.Evaluate()) {
-            checkIndicesButton->setText( tr("Invalid neighbour indices") );
+            checkIndicesButton->setText(tr("Invalid neighbour indices"));
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshIndices" );
+            addViewProvider("MeshGui::ViewProviderMeshIndices");
         }
         else {
-            checkIndicesButton->setText( tr("No invalid indices") );
+            checkIndicesButton->setText(tr("No invalid indices"));
             checkIndicesButton->setChecked(false);
             repairIndicesButton->setEnabled(false);
-            removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
+            removeViewProvider("MeshGui::ViewProviderMeshIndices");
         }
 
         qApp->restoreOverrideCursor();
@@ -564,7 +566,7 @@ void DlgEvaluateMeshImp::on_repairIndicesButton_clicked()
     
         repairIndicesButton->setEnabled(false);
         checkIndicesButton->setChecked(false);
-        removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
+        removeViewProvider("MeshGui::ViewProviderMeshIndices");
     }
 }
 
@@ -591,17 +593,17 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
         std::vector<unsigned long> degen = eval.GetIndices();
         
         if (degen.empty()) {
-            checkDegenerationButton->setText( tr("No degenerations") );
+            checkDegenerationButton->setText(tr("No degenerations"));
             checkDegenerationButton->setChecked(false);
             repairDegeneratedButton->setEnabled(false);
-            removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
+            removeViewProvider("MeshGui::ViewProviderMeshDegenerations");
         }
         else {
-            checkDegenerationButton->setText( tr("%1 degenerated faces").arg(degen.size()) );
+            checkDegenerationButton->setText(tr("%1 degenerated faces").arg(degen.size()));
             checkDegenerationButton->setChecked(true);
             repairDegeneratedButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
+            addViewProvider("MeshGui::ViewProviderMeshDegenerations");
         }
 
         qApp->restoreOverrideCursor();
@@ -627,10 +629,10 @@ void DlgEvaluateMeshImp::on_repairDegeneratedButton_clicked()
 
         doc->commitCommand();
         doc->getDocument()->recompute();
-    
+
         repairDegeneratedButton->setEnabled(false);
         checkDegenerationButton->setChecked(false);
-        removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
+        removeViewProvider("MeshGui::ViewProviderMeshDegenerations");
     }
 }
 
@@ -657,18 +659,18 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
         std::vector<unsigned long> dupl = eval.GetIndices();
     
         if (dupl.empty()) {
-            checkDuplicatedFacesButton->setText( tr("No duplicated faces") );
+            checkDuplicatedFacesButton->setText(tr("No duplicated faces"));
             checkDuplicatedFacesButton->setChecked(false);
             repairDuplicatedFacesButton->setEnabled(false);
-            removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
+            removeViewProvider("MeshGui::ViewProviderMeshDuplicatedFaces");
         }
         else {
-            checkDuplicatedFacesButton->setText( tr("%1 duplicated faces").arg(dupl.size()) );
+            checkDuplicatedFacesButton->setText(tr("%1 duplicated faces").arg(dupl.size()));
             checkDuplicatedFacesButton->setChecked(true);
             repairDuplicatedFacesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
 
-            addViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
+            addViewProvider("MeshGui::ViewProviderMeshDuplicatedFaces");
         }
 
         qApp->restoreOverrideCursor();
@@ -697,7 +699,7 @@ void DlgEvaluateMeshImp::on_repairDuplicatedFacesButton_clicked()
     
         repairDuplicatedFacesButton->setEnabled(false);
         checkDuplicatedFacesButton->setChecked(false);
-        removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
+        removeViewProvider("MeshGui::ViewProviderMeshDuplicatedFaces");
     }
 }
 
@@ -723,17 +725,17 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
         MeshEvalDuplicatePoints eval(rMesh);
     
         if (eval.Evaluate()) {
-            checkDuplicatedPointsButton->setText( tr("No duplicated points") );
+            checkDuplicatedPointsButton->setText(tr("No duplicated points"));
             checkDuplicatedPointsButton->setChecked(false);
             repairDuplicatedPointsButton->setEnabled(false);
-            removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
+            removeViewProvider("MeshGui::ViewProviderMeshDuplicatedPoints");
         }
         else {
-            checkDuplicatedPointsButton->setText( tr("Duplicated points") );
+            checkDuplicatedPointsButton->setText(tr("Duplicated points"));
             checkDuplicatedPointsButton->setChecked(true);
             repairDuplicatedPointsButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
+            addViewProvider("MeshGui::ViewProviderMeshDuplicatedPoints");
         }
 
         qApp->restoreOverrideCursor();
@@ -762,7 +764,7 @@ void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
     
         repairDuplicatedPointsButton->setEnabled(false);
         checkDuplicatedPointsButton->setChecked(false);
-        removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
+        removeViewProvider("MeshGui::ViewProviderMeshDuplicatedPoints");
     }
 }
 
@@ -788,17 +790,17 @@ void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
         MeshEvalSelfIntersection eval(rMesh);
     
         if (eval.Evaluate()) {
-            checkSelfIntersectionButton->setText( tr("No self-intersections") );
+            checkSelfIntersectionButton->setText(tr("No self-intersections"));
             checkSelfIntersectionButton->setChecked(false);
             repairSelfIntersectionButton->setEnabled(false);
-            removeViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
+            removeViewProvider("MeshGui::ViewProviderMeshSelfIntersections");
         }
         else {
-            checkSelfIntersectionButton->setText( tr("Self-intersections") );
+            checkSelfIntersectionButton->setText(tr("Self-intersections"));
             checkSelfIntersectionButton->setChecked(true);
             repairSelfIntersectionButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
+            addViewProvider("MeshGui::ViewProviderMeshSelfIntersections");
         }
 
         qApp->restoreOverrideCursor();
@@ -827,7 +829,7 @@ void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
     
         repairSelfIntersectionButton->setEnabled(false);
         checkSelfIntersectionButton->setChecked(false);
-        removeViewProvider( "MeshGui::ViewProviderMeshSelfIntersections" );
+        removeViewProvider("MeshGui::ViewProviderMeshSelfIntersections");
     }
 }
 
@@ -844,20 +846,127 @@ void DlgEvaluateMeshImp::on_analyzeAllTogether_clicked()
 
 void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
 {
-    if (repairSelfIntersectionButton->isEnabled())
-        on_repairSelfIntersectionButton_clicked();
-    if (repairDuplicatedPointsButton->isEnabled())
-        on_repairDuplicatedPointsButton_clicked();
-    if (repairDuplicatedFacesButton->isEnabled())
-        on_repairDuplicatedFacesButton_clicked();
-    if (repairDegeneratedButton->isEnabled())
-        on_repairDegeneratedButton_clicked();
-    if (repairIndicesButton->isEnabled())
-        on_repairIndicesButton_clicked();
-    if (repairNonmanifoldsButton->isEnabled())
-        on_repairNonmanifoldsButton_clicked();
-    if (repairOrientationButton->isEnabled())
-        on_repairOrientationButton_clicked();
+    if (_meshFeature) {
+        Gui::WaitCursor wc;
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
+        const char* objName = _meshFeature->getNameInDocument();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        doc->openCommand("Repair mesh");
+        //bool state = Base::Sequencer().setLocked(true);
+
+        // containers with indices of invalid elements
+        std::vector<unsigned long> orientation;
+        std::vector<unsigned long> manifolds;
+        std::vector<unsigned long> degenerated;
+        std::vector<unsigned long> duplicatedf;
+        std::vector<unsigned long> duplicatedp;
+        std::vector<std::pair<unsigned long, unsigned long> > intersection;
+
+        bool run = false;
+        int max_iter=10;
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
+        try {
+            do {
+                run = false;
+                {
+                    MeshEvalOrientation eval(rMesh);
+                    std::vector<unsigned long> inds = eval.GetIndices();
+                    if (!inds.empty() && inds != orientation) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").harmonizeNormals()\n",
+                            docName, objName);
+                        run = true;
+                    }
+                    orientation = inds;
+                    qApp->processEvents();
+                }
+                {
+                    MeshEvalTopology eval(rMesh);
+                    std::vector<unsigned long> inds;
+                    eval.GetFacetManifolds(inds);
+                    if (!inds.empty() && inds != manifolds) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").removeNonManifolds()\n",
+                            docName, objName);
+                        run = true;
+                    }
+                    manifolds = inds;
+                    qApp->processEvents();
+                }
+                {
+                    MeshEvalRangeFacet rf(rMesh);
+                    MeshEvalRangePoint rp(rMesh);
+                    MeshEvalCorruptedFacets cf(rMesh);
+                    MeshEvalNeighbourhood nb(rMesh);
+                    if (!rf.Evaluate() || !rp.Evaluate() || !cf.Evaluate() || !nb.Evaluate()) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").fixIndices()\n",
+                            docName, objName);
+                        run = true;
+                    }
+                }
+                {
+                    MeshEvalDegeneratedFacets eval(rMesh);
+                    std::vector<unsigned long> inds = eval.GetIndices();
+                    if (!inds.empty() && inds != degenerated) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").fixDegenerations()\n",
+                            docName, objName);
+                        run = true;
+                    }
+                    degenerated = inds;
+                    qApp->processEvents();
+                }
+                {
+                    MeshEvalDuplicateFacets eval(rMesh);
+                    std::vector<unsigned long> inds = eval.GetIndices();
+                    if (!inds.empty() && duplicatedf != inds) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedFacets()\n",
+                            docName, objName);
+                        run = true;
+                    }
+                    duplicatedf = inds;
+                    qApp->processEvents();
+                }
+                {
+                    MeshEvalDuplicatePoints eval(rMesh);
+                    std::vector<unsigned long> inds = eval.GetIndices();
+                    if (!inds.empty() && inds != duplicatedp) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedPoints()\n",
+                            docName, objName);
+                        run = true;
+                    }
+                    duplicatedp = inds;
+                    qApp->processEvents();
+                }
+                {
+                    MeshEvalSelfIntersection eval(rMesh);
+                    std::vector<std::pair<unsigned long, unsigned long> > inds;
+                    eval.GetIntersections(inds);
+                    if (!inds.empty() && inds != intersection) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").fixSelfIntersections()\n",
+                            docName, objName);
+                        run = true;
+                    }
+                    intersection = inds;
+                    qApp->processEvents();
+                }
+            } while(checkRepeatButton->isChecked() && run && (--max_iter > 0));
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Mesh repair"), QString::fromLatin1(e.what()));
+        }
+        catch (...) {
+            QMessageBox::warning(this, tr("Mesh repair"), QString::fromLatin1("Unknown error occurred."));
+        }
+
+        //Base::Sequencer().setLocked(state);
+        doc->commitCommand();
+        doc->getDocument()->recompute();
+    }
 }
 
 // -------------------------------------------------------------
