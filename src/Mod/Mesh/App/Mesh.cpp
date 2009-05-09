@@ -37,7 +37,6 @@
 
 #include "Core/Builder.h"
 #include "Core/MeshKernel.h"
-#include "Core/MeshIO.h"
 #include "Core/Grid.h"
 #include "Core/Iterator.h"
 #include "Core/Info.h"
@@ -250,10 +249,10 @@ void MeshObject::RestoreDocFile(Base::Reader &reader)
     load(reader);
 }
 
-void MeshObject::save(const char* file) const
+void MeshObject::save(const char* file, MeshCore::MeshOutput::Format f) const
 {
     MeshCore::MeshOutput aWriter(_kernel);
-    aWriter.SaveAny(file);
+    aWriter.SaveAny(file, f);
 }
 
 void MeshObject::save(std::ostream& out) const

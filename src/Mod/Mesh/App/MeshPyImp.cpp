@@ -120,11 +120,30 @@ PyObject*  MeshPy::read(PyObject *args)
 PyObject*  MeshPy::write(PyObject *args)
 {
     const char* Name;
-    if (!PyArg_ParseTuple(args, "s",&Name))
-        return NULL;                         
+    char* Ext=0;
+    if (!PyArg_ParseTuple(args, "s|s",&Name,&Ext))
+        return NULL;
+
+    MeshCore::MeshOutput::Format format = MeshCore::MeshOutput::Undefined;
+    if (Ext) {
+        std::map<std::string, MeshCore::MeshOutput::Format> ext;
+        ext["BMS" ] = MeshCore::MeshOutput::BMS;
+        ext["STL" ] = MeshCore::MeshOutput::BSTL;
+        ext["AST" ] = MeshCore::MeshOutput::ASTL;
+        ext["OBJ" ] = MeshCore::MeshOutput::OBJ;
+        ext["IV"  ] = MeshCore::MeshOutput::IV;
+        ext["VRML"] = MeshCore::MeshOutput::VRML;
+        ext["WRL" ] = MeshCore::MeshOutput::VRML;
+        ext["WRZ" ] = MeshCore::MeshOutput::WRZ;
+        ext["NAS" ] = MeshCore::MeshOutput::NAS;
+        ext["BDF" ] = MeshCore::MeshOutput::NAS;
+        ext["PY"  ] = MeshCore::MeshOutput::PY;
+        if (ext.find(Ext) != ext.end())
+            format = ext[Ext];
+    };
 
     PY_TRY {
-        getMeshObjectPtr()->save(Name);
+        getMeshObjectPtr()->save(Name, format);
     } PY_CATCH;
     
     Py_Return; 

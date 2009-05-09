@@ -490,33 +490,41 @@ void CmdMeshExport::activated(int iMsg)
     App::DocumentObject* docObj = docObjs.front();
 
     QString dir = QString::fromUtf8(docObj->Label.getValue());
+    QList<QPair<QString, QByteArray> > ext;
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Binary STL (*.stl)"), "STL");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("ASCII STL (*.stl)"), "AST");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("ASCII STL (*.ast)"), "AST");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Binary Mesh (*.bms)"), "BMS");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Alias Mesh (*.obj)"), "OBJ");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Inventor V2.1 ascii (*.iv)"), "IV");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("VRML V2.0 (*.wrl *.vrml)"), "VRML");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Compressed VRML 2.0 (*.wrz)"), "WRZ");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Nastran (*.nas *.bdf)"), "NAS");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Python module def (*.py)"), "PY");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("All Files (*.*)"), ""); // Undefined
     QStringList filter;
-    filter << QObject::tr("Binary STL (*.stl)");
-    filter << QObject::tr("ASCII STL (*.stl)");
-    filter << QObject::tr("ASCII STL (*.ast)");
-    filter << QObject::tr("Binary Mesh (*.bms)");
-    filter << QObject::tr("Alias Mesh (*.obj)");
-    filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
-    filter << QObject::tr("VRML V2.0 (*.wrl *.vrml)");
-    filter << QObject::tr("Compressed VRML 2.0 (*.wrz)");
-    filter << QObject::tr("Nastran (*.nas *.bdf)");
-    filter << QObject::tr("Python module def (*.py)");
-    filter << QObject::tr("All Files (*.*)");
+    for (QList<QPair<QString, QByteArray> >::iterator it = ext.begin(); it != ext.end(); ++it)
+        filter << it->first;
 
     QString format;
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
         QObject::tr("Export mesh"), dir, filter.join(QLatin1String(";;")), &format);
     if (!fn.isEmpty()) {
         QFileInfo fi(fn);
-        if (format == QObject::tr("ASCII STL (*.stl)"))
-            format = QString::fromAscii(("ast"));
-        else
-            format = fi.suffix();
-        openCommand("Export Mesh");
-        doCommand(Doc,"FreeCAD.ActiveDocument.getObject(\"%s\").Mesh.write(\"%s\")",
+        QByteArray extension = fi.suffix().toAscii();
+        for (QList<QPair<QString, QByteArray> >::iterator it = ext.begin(); it != ext.end(); ++it) {
+            if (it->first == format) {
+                extension = it->second;
+                break;
+            }
+        }
+
+        //openCommand("Export Mesh");
+        doCommand(Doc,"FreeCAD.ActiveDocument.getObject(\"%s\").Mesh.write(\"%s\",\"%s\")",
                  docObj->getNameInDocument(),
-                 (const char*)fn.toUtf8());
-        commitCommand();
+                 (const char*)fn.toUtf8(),
+                 (const char*)extension);
+        //commitCommand();
     }
 }
 
