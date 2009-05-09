@@ -53,8 +53,6 @@ Workbench::~Workbench()
 {
 }
 
-
-
 void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
 {
     if (strcmp(recipient,"View") == 0)
@@ -337,5 +335,13 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
     //       << "Std_DlgMacroExecute" << "Std_DlgCustomize" << "Std_CommandLine";
 
 
+    return root;
+}
+
+Gui::DockWindowItems* Workbench::setupDockWindows() const
+{
+    Gui::DockWindowItems* root = new Gui::DockWindowItems();
+    root->addDockWidget("Std_CombiView", Qt::LeftDockWidgetArea);
+    root->addDockWidget("Std_ReportView", Qt::BottomDockWidgetArea);
     return root;
 }
