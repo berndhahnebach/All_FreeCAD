@@ -8,6 +8,7 @@ BUILT_SOURCES=\
 		qrc_iisTaskPanel.cpp
 
 libTaskPanel_la_SOURCES=\
+		src/iisfreecadscheme.cpp \
 		src/iisiconlabel.cpp \
 		src/iistaskbox.cpp \
 		src/iistaskgroup.cpp \
@@ -23,6 +24,7 @@ nodist_libTaskPanel_la_SOURCES=\
 includedir = @includedir@/Gui/iisTaskPanel/src
 
 include_HEADERS=\
+		src/iisfreecadscheme.h \
 		src/iisiconlabel.h \
 		src/iistaskbox.h \
 		src/iistaskgroup.h \
