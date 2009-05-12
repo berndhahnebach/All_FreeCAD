@@ -961,12 +961,8 @@ void Application::initConfig(int argc, char ** argv)
         App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
         App::Application::Config()["BuildVersionMinor"]  = FCVersionMinor;
         App::Application::Config()["BuildRevision"]      = FCRevision;
-        App::Application::Config()["BuildRevisionRange"] = FCRevisionRange;
         App::Application::Config()["BuildRepositoryURL"] = FCRepositoryURL;
-        App::Application::Config()["BuildRevisionDate"]  = FCRevisionDate;
         App::Application::Config()["BuildCurrentDate"]   = FCCurrentDateT;
-        App::Application::Config()["BuildScrClean"]      = FCScrClean;
-        App::Application::Config()["BuildScrMixed"]      = FCScrMixed;
     }
 
     _argc = argc;

@@ -46,6 +46,7 @@ from zipfile import ZipFile,ZIP_DEFLATED
 import tarfile
 from string import find
 import ConfigParser
+import time
 
 
 # global information 
@@ -102,11 +103,7 @@ def CheckOut():
 	Version.write('#define FCVersionName "' + Alias + '"\n')
 	Version.write('#define FCRevision "' + `Release` + '"\n')
 	Version.write('#define FCRepositoryURL "' + "https://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk/src" + '"\n')
-	Version.write('#define FCRevisionDate  "undef"  \n')
-	Version.write('#define FCCurrentDateT  "undef"  \n')
-	Version.write('#define FCRevisionRange  "undef"   \n')
-	Version.write('#define FCScrClean  "undef"   \n')
-	Version.write('#define FCScrMixed  "undef"   \n')
+	Version.write('#define FCCurrentDateT  "'+time.asctime()+'"  \n')
 	Version.close()
 	
 	Version = open("installer/Version.wxi","w")
@@ -199,13 +196,13 @@ def HelpFile():
 				'-R', '*printable=yes*',
 				'--domains=juergen-riegel.net',
 				'--append-output=doc/tmp/wget.log',
-				'http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc'],
+				'http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Online_Help_Toc'],
 				 "8) Download docu")
 
 	sys.stdout.write("9) Fix up CSS: ")
 	open('doc/tmp/chm.css','w').write(open('src/Tools/chm.css').read())
 	
-	wiki2chm.WikiBaseUrl ='http://juergen-riegel.net/FreeCAD/Docu/'
+	wiki2chm.WikiBaseUrl ='http://apps.sourceforge.net/mediawiki/free-cad/'
 	wiki2chm.TocPageName ='Online_Help_Toc'
 	wiki2chm.BasePath ='doc/tmp/'
 	wiki2chm.Output = Log

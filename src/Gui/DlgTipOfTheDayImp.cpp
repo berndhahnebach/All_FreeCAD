@@ -90,13 +90,13 @@ void DlgTipOfTheDayImp::on_buttonNextTip_clicked()
 void DlgTipOfTheDayImp::reload()
 {
     // set the host and start the download
-    _http->setHost(QLatin1String("juergen-riegel.net"));
-    _http->get(QLatin1String("/FreeCAD/Docu/index.php?title=Tip_of_the_day"), 0);
+    _http->setHost(QLatin1String("apps.sourceforge.net"));
+    _http->get(QLatin1String("/mediawiki/free-cad/index.php?title=Tip_of_the_day"), 0);
 
     _iCurrentTip = 0;
     _lTips << tr("If you want to learn more about FreeCAD you must go to "
-                 "<a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
-                 "http://freecad.juergen-riegel.net/Docu/</a> or press the Help item in the Help menu.");
+                 "<a href=\"http://apps.sourceforge.net/mediawiki/free-cad/\">"
+                 "http://apps.sourceforge.net/mediawiki/free-cad/</a> or press the Help item in the Help menu.");
 }
 
 void DlgTipOfTheDayImp::onResponseHeaderReceived(const QHttpResponseHeader & responseHeader)

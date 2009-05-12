@@ -78,7 +78,7 @@ int main( int argc, char ** argv )
     App::Application::Config()["ExeVendor"] = "FreeCAD";
     App::Application::Config()["AppDataSkipVendor"] = "true";
     App::Application::Config()["ExeVersion"] = "0.7";
-    App::Application::Config()["MaintainerUrl"] = "http://www.juergen-riegel.net/FreeCAD/Docu/index.php/Main_Page";
+    App::Application::Config()["MaintainerUrl"] = "http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page";
 
     // set the banner (for logging and console)
     App::Application::Config()["ConsoleBanner"] = sBanner;

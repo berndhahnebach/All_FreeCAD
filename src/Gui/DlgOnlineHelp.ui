@@ -105,7 +105,7 @@
          </size>
         </property>
         <property name="text" >
-         <string>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</string>
+         <string>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</string>
         </property>
         <property name="prefEntry" stdset="0" >
          <cstring>DownloadURL</cstring>

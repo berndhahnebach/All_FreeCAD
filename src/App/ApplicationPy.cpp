@@ -317,7 +317,7 @@ PyObject* Application::sGetVersion(PyObject * /*self*/, PyObject *args,PyObject 
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
         return NULL; // NULL triggers exception
 
-    PyObject* pList = PyList_New(9);
+    PyObject* pList = PyList_New(5);
     PyObject *pItem;
     pItem = PyString_FromString(Application::Config()["BuildVersionMajor"].c_str());
     PyList_SetItem(pList, 0, pItem);
@@ -325,18 +325,10 @@ PyObject* Application::sGetVersion(PyObject * /*self*/, PyObject *args,PyObject 
     PyList_SetItem(pList, 1, pItem);
     pItem = PyString_FromString(Application::Config()["BuildRevision"].c_str());
     PyList_SetItem(pList, 2, pItem);
-    pItem = PyString_FromString(Application::Config()["BuildRevisionRange"].c_str());
-    PyList_SetItem(pList, 3, pItem);
     pItem = PyString_FromString(Application::Config()["BuildRepositoryURL"].c_str());
     PyList_SetItem(pList, 4, pItem);
-    pItem = PyString_FromString(Application::Config()["BuildRevisionDate"].c_str());
-    PyList_SetItem(pList, 5, pItem);
     pItem = PyString_FromString(Application::Config()["BuildCurrentDate"].c_str());
     PyList_SetItem(pList, 6, pItem);
-    pItem = PyString_FromString(Application::Config()["BuildScrClean"].c_str());
-    PyList_SetItem(pList, 7, pItem);
-    pItem = PyString_FromString(Application::Config()["BuildScrMixed"].c_str());
-    PyList_SetItem(pList, 8, pItem);
 
     return pList;
 }
