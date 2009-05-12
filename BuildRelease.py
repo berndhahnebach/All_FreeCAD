@@ -194,7 +194,7 @@ def HelpFile():
 				'-R', '*title=Talk*',
 				'-R', '*oldid=*',
 				'-R', '*printable=yes*',
-				'--domains=juergen-riegel.net',
+				'--domains=apps.sourceforge.net',
 				'--append-output=doc/tmp/wget.log',
 				'http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Online_Help_Toc'],
 				 "8) Download docu")
