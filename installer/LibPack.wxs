@@ -100,7 +100,6 @@
 				<File Id="LibPack85" Name="TKXSBase.dll"   />
 				<File Id="LibPack87" Name="xerces-c_2_8.dll"   />
 				<File Id="LibPack88" Name="zlib1.dll"   />
-				<File Id="LibPack89" Name="TaskBar.dll"   />
 			</Component>
 			<Directory Id="ImageFormDir" Name="imageformats" FileSource="../bin/imageformats" >
 				<Component Id="ImageForm"  Guid="2139da00-a109-11dd-ad8b-0800200c9a66">
