@@ -186,7 +186,7 @@ void AboutDialog::setupLabels()
     QString major  = QString::fromAscii(App::Application::Config()["BuildVersionMajor"].c_str());
     QString minor  = QString::fromAscii(App::Application::Config()["BuildVersionMinor"].c_str());
     QString build  = QString::fromAscii(App::Application::Config()["BuildRevision"].c_str());
-    QString disda  = QString::fromAscii(App::Application::Config()["BuildRevisionDate"].c_str());
+    QString disda  = QString::fromAscii(App::Application::Config()["BuildCurrentDate"].c_str());
     QString mturl  = QString::fromAscii(App::Application::Config()["MaintainerUrl"].c_str());
 
     QString author = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"

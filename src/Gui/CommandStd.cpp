@@ -594,7 +594,7 @@ StdCmdOnlineHelpWebsite::StdCmdOnlineHelpWebsite()
 void StdCmdOnlineHelpWebsite::activated(int iMsg)
 {
     ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
-    std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Online_Help_Toc");
+    std::string url = hURLGrp->GetASCII("DownloadURL", "http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Online_Help_Toc");
     OpenURLInBrowser(url.c_str());
 }
 
@@ -616,7 +616,7 @@ StdCmdFreeCADWebsite::StdCmdFreeCADWebsite()
 
 void StdCmdFreeCADWebsite::activated(int iMsg)
 {
-    OpenURLInBrowser("http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
+    OpenURLInBrowser("http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page");
 }
 
 //===========================================================================
