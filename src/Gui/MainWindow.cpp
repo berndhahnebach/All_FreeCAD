@@ -235,7 +235,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pDockMgr->registerDockWindow("Std_TreeView", tree);
 
     // Property view
-    PropertyView* pcPropView = new PropertyView(0, this);
+    PropertyDockView* pcPropView = new PropertyDockView(0, this);
     pcPropView->setObjectName
         (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Property view")));
     pcPropView->setMinimumWidth(210);

@@ -52,20 +52,18 @@ QPixmap* PropertyView::pcAttribute=0;
 
 /* TRANSLATOR Gui::DockWnd::PropertyView */
 
-PropertyView::PropertyView(Gui::Document* pcDocument, QWidget *parent)
-  : DockWindow(pcDocument,parent)
+PropertyView::PropertyView(QWidget *parent)
+  : QWidget(parent)
 {
-    setWindowTitle( tr( "Property View" ) );
-
     QGridLayout* pLayout = new QGridLayout( this ); 
-    pLayout->setSpacing( 0 );
-    pLayout->setMargin ( 0 );
+    pLayout->setSpacing(0);
+    pLayout->setMargin (0);
 
     tabs = new QTabWidget (this);
     tabs->setObjectName(QString::fromUtf8("propertyTab"));
     tabs->setTabPosition(QTabWidget::South);
     tabs->setTabShape(QTabWidget::Triangular);
-    pLayout->addWidget( tabs, 0, 0 );
+    pLayout->addWidget(tabs, 0, 0);
 
     propertyEditorView = new Gui::PropertyEditor::PropertyEditor();
     tabs->addTab(propertyEditorView, trUtf8("View"));
@@ -78,11 +76,7 @@ PropertyView::PropertyView(Gui::Document* pcDocument, QWidget *parent)
     pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
     pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
 
-    //_pcListView->setSize(200,400);
-    resize( 200, 400 );
-
     onUpdate();
-
     Gui::Selection().Attach(this);
 }
 
@@ -181,7 +175,27 @@ void PropertyView::changeEvent(QEvent *e)
         tabs->setTabText(1, trUtf8("Data"));
     }
 
-    DockWindow::changeEvent(e);
+    QWidget::changeEvent(e);
+}
+
+/* TRANSLATOR Gui::DockWnd::PropertyDockView */
+
+PropertyDockView::PropertyDockView(Gui::Document* pcDocument, QWidget *parent)
+  : DockWindow(pcDocument,parent)
+{
+    setWindowTitle(tr("Property View"));
+
+    PropertyView* view = new PropertyView(this);
+    QGridLayout* pLayout = new QGridLayout(this);
+    pLayout->setSpacing(0);
+    pLayout->setMargin (0);
+    pLayout->addWidget(view, 0, 0);
+
+    resize( 200, 400 );
+}
+
+PropertyDockView::~PropertyDockView()
+{
 }
 
 #include "moc_PropertyView.cpp"

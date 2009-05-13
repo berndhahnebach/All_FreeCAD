@@ -51,25 +51,16 @@ class PropertyEditor;
 } // namespace Gui
 
 namespace Gui {
-namespace DockWnd {
 
-/** A test class. A more elaborate class description.
+
+/** The property view class.
  */
-class PropertyView :public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+class PropertyView : public QWidget, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    /**
-     * A constructor.
-     * A more elaborate description of the constructor.
-     */
-    PropertyView(Gui::Document*  pcDocument, QWidget *parent=0);
-
-    /**
-     * A destructor.
-     * A more elaborate description of the destructor.
-    */
+    PropertyView(QWidget *parent=0);
     virtual ~PropertyView();
 
     /// Observer message from the Selection
@@ -94,6 +85,19 @@ protected:
 
 private:
     QTabWidget* tabs;
+};
+
+namespace DockWnd {
+
+/** A dock window with the embedded property view.
+ */
+class PropertyDockView : public Gui::DockWindow
+{
+    Q_OBJECT
+
+public:
+    PropertyDockView(Gui::Document*  pcDocument, QWidget *parent=0);
+    virtual ~PropertyDockView();
 };
 
 } // namespace DockWnd
