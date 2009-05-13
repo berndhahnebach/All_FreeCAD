@@ -42,7 +42,7 @@ using namespace Gui::DockWnd;
 CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
   : DockWindow(pcDocument,parent)
 {
-    setWindowTitle(tr( "CombiView"));
+    setWindowTitle(tr("CombiView"));
 
     QGridLayout* pLayout = new QGridLayout( this ); 
     pLayout->setSpacing( 0 );
@@ -57,22 +57,15 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
 
     QSplitter *splitter = new QSplitter();
     splitter->setOrientation(Qt::Vertical);
-    tree =  new TreeWidget();
-    tree->setRootIsDecorated(false);
-    
-    splitter->addWidget(tree);
-    
-    proptertyTabs = new QTabWidget ();
-    proptertyTabs->setObjectName(QString::fromUtf8("propertyTabs"));
-    proptertyTabs->setTabPosition(QTabWidget::South);
-    //proptertyTabs->setTabShape(QTabWidget::Triangular);
-    pLayout->addWidget( proptertyTabs, 0, 0 );
-    propertyEditorView = new Gui::PropertyEditor::PropertyEditor();
-    proptertyTabs->addTab(propertyEditorView, trUtf8("View"));
-    propertyEditorData = new Gui::PropertyEditor::PropertyEditor();
-    proptertyTabs->addTab(propertyEditorData, trUtf8("Data"));
 
-    splitter->addWidget(proptertyTabs);
+    // tree widget
+    tree =  new TreeWidget(this);
+    tree->setRootIsDecorated(false);
+    splitter->addWidget(tree);
+
+    // property view
+    prop = new PropertyView(this);
+    splitter->addWidget(prop);
 
     tabs->addTab(splitter,trUtf8("Project"));
 
@@ -84,43 +77,10 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
     tb1      ->setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
     taskPanel->addWidget(tb1);
     tabs->addTab(taskPanel, trUtf8("Tasks"));
-
- 
-
-    onUpdate();
-
-    //Gui::Selection().Attach(this);
 }
 
 CombiView::~CombiView()
 {
-    Gui::Selection().Detach(this);
-}
-
-void CombiView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                            Gui::SelectionSingleton::MessageType Reason)
-{
-    std::string temp;
-
-    if (Reason.Type == SelectionChanges::AddSelection )
-    {
-    }
-    else if (Reason.Type == SelectionChanges::ClrSelection)
-    {
-    }
-    else if (Reason.Type == SelectionChanges::RmvSelection ) 
-    {
-    }
-}
-
-void CombiView::onUpdate(void)
-{
-}
-
-bool CombiView::onMsg(const char* pMsg)
-{
-    // no messages yet
-    return false;
 }
 
 #include "moc_CombiView.cpp"

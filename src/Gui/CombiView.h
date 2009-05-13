@@ -41,6 +41,7 @@ namespace App {
 
 namespace Gui {
     class TreeWidget;
+    class PropertyView;
 
 namespace PropertyEditor {
 
@@ -59,7 +60,7 @@ namespace DockWnd {
   * is a combination of a tree, property and TaskPanel for 
   * integrated user action.
  */
-class CombiView : public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+class CombiView : public Gui::DockWindow
 {
     Q_OBJECT
 
@@ -76,25 +77,11 @@ public:
     */
     virtual ~CombiView();
 
-    /// Observer message from the Selection
-    virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                          Gui::SelectionSingleton::MessageType Reason);
-
-
-    bool onMsg(const char* pMsg);
-
-    virtual const char *getName(void) const {return "CombiView";}
-
-    /// get called when the document is changed or updated
-    virtual void onUpdate(void);
-
 private:
-    QTabWidget                         * tabs,*proptertyTabs;
+    QTabWidget                         * tabs;
+    Gui::PropertyView                  * prop;
     Gui::TreeWidget                    * tree;
     iisTaskPanel                       * taskPanel;
-    Gui::PropertyEditor::PropertyEditor* propertyEditorView;
-    Gui::PropertyEditor::PropertyEditor* propertyEditorData;
-
 };
 
 } // namespace DockWnd
