@@ -49,13 +49,13 @@
 
 using namespace Gui;
 
-QPixmap* TreeDockWidget::documentPixmap = 0;
+QPixmap*  TreeWidget::documentPixmap = 0;
 const int TreeWidget::DocumentType = 1000;
 const int TreeWidget::ObjectType = 1001;
 
 /* TRANSLATOR Gui::TreeWidget */
 TreeWidget::TreeWidget(QWidget* parent)
-    : QTreeWidget(parent)
+    : QTreeWidget(parent), fromOutside(false)
 {
     this->setDragEnabled(true);
     this->setAcceptDrops(true);
@@ -72,10 +72,48 @@ TreeWidget::TreeWidget(QWidget* parent)
     this->relabelObjectAction->setShortcut(Qt::Key_F2);
     connect(this->relabelObjectAction, SIGNAL(triggered()),
             this, SLOT(onRelabelObject()));
+
+
+    Gui::Selection().Attach(this);
+    // Setup connections
+    Application::Instance->signalNewDocument.connect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
+    Application::Instance->signalDeleteDocument.connect(boost::bind(&TreeWidget::slotDeleteDocument, this, _1));
+    Application::Instance->signalRenameDocument.connect(boost::bind(&TreeWidget::slotRenameDocument, this, _1));
+    Application::Instance->signalActiveDocument.connect(boost::bind(&TreeWidget::slotActiveDocument, this, _1));
+    Application::Instance->signalRelabelDocument.connect(boost::bind(&TreeWidget::slotRelabelDocument, this, _1));
+
+    QStringList labels;
+    labels << tr("Labels & Attributes");
+    this->setHeaderLabels(labels);
+
+    // Add the first main label
+    this->rootItem = new QTreeWidgetItem(this);
+    this->rootItem->setText(0, tr("Application"));
+    this->rootItem->setFlags(Qt::ItemIsEnabled);
+    this->expandItem(this->rootItem);
+    this->setSelectionMode(QAbstractItemView::ExtendedSelection);
+#if QT_VERSION >= 0x040200
+    // causes unexpected drop events (possibly only with Qt4.1.x)
+    this->setMouseTracking(true); // needed for itemEntered() to work
+#endif
+
+    this->statusTimer = new QTimer(this);
+
+    connect(this->statusTimer, SIGNAL(timeout()), 
+            this, SLOT(onTestStatus()));
+    connect(this, SIGNAL(itemEntered(QTreeWidgetItem*, int)),
+            this, SLOT(onItemEntered(QTreeWidgetItem*)));
+    connect(this, SIGNAL(itemSelectionChanged()),
+            this, SLOT(onItemSelectionChanged()));
+
+    this->statusTimer->setSingleShot(true);
+    this->statusTimer->start(300);
+    documentPixmap = new QPixmap(Gui::BitmapFactory().pixmap("Document"));
 }
 
 TreeWidget::~TreeWidget()
 {
+    Gui::Selection().Detach(this);
 }
 
 void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
@@ -106,7 +144,8 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
             else
                 contextMenu.addAction(this->createGroupAction);
         }
-        contextMenu.addSeparator();
+        if (!contextMenu.actions().isEmpty())
+            contextMenu.addSeparator();
         contextMenu.addAction(this->relabelObjectAction);
     }
     delete view;
@@ -359,73 +398,16 @@ void TreeWidget::drawRow(QPainter *painter, const QStyleOptionViewItem &options,
     //}
 }
 
-// ----------------------------------------------------------------------------
-
-/* TRANSLATOR Gui::TreeDockWidget */
-TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
-  : DockWindow(pcDocument,parent), fromOutside(false)
-{
-    setWindowTitle( tr("Tree view" ) );
-    this->treeWidget = new TreeWidget(this);
-    this->treeWidget->setRootIsDecorated(false);
-
-    Gui::Selection().Attach(this);
-    // Setup connections
-    Application::Instance->signalNewDocument.connect(boost::bind(&TreeDockWidget::slotNewDocument, this, _1));
-    Application::Instance->signalDeleteDocument.connect(boost::bind(&TreeDockWidget::slotDeleteDocument, this, _1));
-    Application::Instance->signalRenameDocument.connect(boost::bind(&TreeDockWidget::slotRenameDocument, this, _1));
-    Application::Instance->signalActiveDocument.connect(boost::bind(&TreeDockWidget::slotActiveDocument, this, _1));
-    Application::Instance->signalRelabelDocument.connect(boost::bind(&TreeDockWidget::slotRelabelDocument, this, _1));
-
-    QGridLayout* pLayout = new QGridLayout(this); 
-    pLayout->setSpacing(0);
-    pLayout->setMargin (0);
-    pLayout->addWidget( this->treeWidget, 0, 0 );
-
-    QStringList labels;
-    labels << tr("Labels & Attributes");
-    this->treeWidget->setHeaderLabels(labels);
-
-    // Add the first main label
-    this->rootItem = new QTreeWidgetItem(this->treeWidget);
-    this->rootItem->setText(0, tr("Application"));
-    this->rootItem->setFlags(Qt::ItemIsEnabled);
-    this->treeWidget->expandItem(this->rootItem);
-    this->treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
-#if QT_VERSION >= 0x040200
-    // causes unexpected drop events (possibly only with Qt4.1.x)
-    this->treeWidget->setMouseTracking(true); // needed for itemEntered() to work
-#endif
-
-    this->statusTimer = new QTimer(this);
-
-    connect(this->statusTimer, SIGNAL(timeout()), 
-            this, SLOT(onTestStatus()));
-    connect(this->treeWidget, SIGNAL(itemEntered(QTreeWidgetItem*, int)),
-            this, SLOT(onItemEntered(QTreeWidgetItem*)));
-    connect(this->treeWidget, SIGNAL(itemSelectionChanged()),
-            this, SLOT(onItemSelectionChanged()));
-
-    this->statusTimer->setSingleShot(true);
-    this->statusTimer->start(300);
-    documentPixmap = new QPixmap(Gui::BitmapFactory().pixmap("Document"));
-}
-
-TreeDockWidget::~TreeDockWidget()
-{
-    Gui::Selection().Detach(this);
-}
-
-void TreeDockWidget::slotNewDocument(Gui::Document& Doc)
+void TreeWidget::slotNewDocument(Gui::Document& Doc)
 {
     DocumentItem* item = new DocumentItem(&Doc, this->rootItem);
-    this->treeWidget->expandItem(item);
+    this->expandItem(item);
     item->setIcon(0, *documentPixmap);
     item->setText(0, QString::fromUtf8(Doc.getDocument()->Label.getValue()));
     DocumentMap[ &Doc ] = item;
 }
 
-void TreeDockWidget::slotDeleteDocument(Gui::Document& Doc)
+void TreeWidget::slotDeleteDocument(Gui::Document& Doc)
 {
     std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
     if (it != DocumentMap.end()) {
@@ -435,12 +417,12 @@ void TreeDockWidget::slotDeleteDocument(Gui::Document& Doc)
     }
 }
 
-void TreeDockWidget::slotRenameDocument(Gui::Document& Doc)
+void TreeWidget::slotRenameDocument(Gui::Document& Doc)
 {
     // do nothing here
 }
 
-void TreeDockWidget::slotRelabelDocument(Gui::Document& Doc)
+void TreeWidget::slotRelabelDocument(Gui::Document& Doc)
 {
     std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
     if (it != DocumentMap.end()) {
@@ -448,7 +430,7 @@ void TreeDockWidget::slotRelabelDocument(Gui::Document& Doc)
     }
 }
 
-void TreeDockWidget::slotActiveDocument(Gui::Document& Doc)
+void TreeWidget::slotActiveDocument(Gui::Document& Doc)
 {
     std::map<Gui::Document*, DocumentItem*>::iterator jt = DocumentMap.find(&Doc);
     if (jt == DocumentMap.end())
@@ -462,7 +444,7 @@ void TreeDockWidget::slotActiveDocument(Gui::Document& Doc)
     }
 }
 
-void TreeDockWidget::onTestStatus(void)
+void TreeWidget::onTestStatus(void)
 {
     if (isVisible()) {
         for (std::map<Gui::Document*,DocumentItem*>::iterator pos = DocumentMap.begin();pos!=DocumentMap.end();++pos) {
@@ -474,7 +456,7 @@ void TreeDockWidget::onTestStatus(void)
     this->statusTimer->start(300);	
 }
 
-void TreeDockWidget::onItemEntered(QTreeWidgetItem * item)
+void TreeWidget::onItemEntered(QTreeWidgetItem * item)
 {
     // object item selected
     if ( item && item->type() == TreeWidget::ObjectType ) {
@@ -483,7 +465,7 @@ void TreeDockWidget::onItemEntered(QTreeWidgetItem * item)
     }
 }
 
-void TreeDockWidget::onItemSelectionChanged ()
+void TreeWidget::onItemSelectionChanged ()
 {
     if (fromOutside)
         return;
@@ -493,7 +475,7 @@ void TreeDockWidget::onItemSelectionChanged ()
     }
 }
 
-void TreeDockWidget::scrollItemToTop(Gui::Document* doc)
+void TreeWidget::scrollItemToTop(Gui::Document* doc)
 {
     std::map<Gui::Document*,DocumentItem*>::iterator it = DocumentMap.find(doc);
     if (it != DocumentMap.end()) {
@@ -501,23 +483,23 @@ void TreeDockWidget::scrollItemToTop(Gui::Document* doc)
         QTreeWidgetItemIterator it(root, QTreeWidgetItemIterator::Selected);
         for (; *it; ++it) {
             if ((*it)->type() == TreeWidget::ObjectType) {
-                this->treeWidget->scrollToItem(*it, QAbstractItemView::PositionAtTop);
+                this->scrollToItem(*it, QAbstractItemView::PositionAtTop);
                 break;
             }
         }
     }
 }
 
-void TreeDockWidget::changeEvent(QEvent *e)
+void TreeWidget::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
-        this->treeWidget->headerItem()->setText( 0, tr( "Labels & Attributes" ) );
+        this->headerItem()->setText( 0, tr( "Labels & Attributes" ) );
     }
 
-    DockWindow::changeEvent(e);
+    QTreeWidget::changeEvent(e);
 }
 
-void TreeDockWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
+void TreeWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
 {
     fromOutside = true;
     if (Reason.Type != SelectionChanges::ClrSelection) {
@@ -541,7 +523,7 @@ void TreeDockWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui:
                 pos->second->clearSelection();
             }
 
-            this->treeWidget->clearSelection ();
+            this->clearSelection ();
         } else {
             // clears the selection of the given document
             Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
@@ -551,10 +533,30 @@ void TreeDockWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui:
             }
         }
 
-        this->treeWidget->update();
+        this->update();
     }
 
     fromOutside = false;
+}
+
+// ----------------------------------------------------------------------------
+
+/* TRANSLATOR Gui::TreeDockWidget */
+TreeDockWidget::TreeDockWidget(Gui::Document* pcDocument,QWidget *parent)
+  : DockWindow(pcDocument,parent)
+{
+    setWindowTitle(tr("Tree view"));
+    this->treeWidget = new TreeWidget(this);
+    this->treeWidget->setRootIsDecorated(false);
+
+    QGridLayout* pLayout = new QGridLayout(this); 
+    pLayout->setSpacing(0);
+    pLayout->setMargin (0);
+    pLayout->addWidget(this->treeWidget, 0, 0 );
+}
+
+TreeDockWidget::~TreeDockWidget()
+{
 }
 
 // ----------------------------------------------------------------------------
