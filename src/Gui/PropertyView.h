@@ -75,8 +75,6 @@ public:
     /// get called when the document is changed or updated
     virtual void onUpdate(void);
 
-    static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
-
     Gui::PropertyEditor::PropertyEditor* propertyEditorView;
     Gui::PropertyEditor::PropertyEditor* propertyEditorData;
 
