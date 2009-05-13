@@ -46,10 +46,6 @@ using namespace Gui::DockWnd;
 using namespace Gui::PropertyEditor;
 
 
-QPixmap* PropertyView::pcLabelOpen=0;
-QPixmap* PropertyView::pcLabelClosed=0;
-QPixmap* PropertyView::pcAttribute=0;
-
 /* TRANSLATOR Gui::DockWnd::PropertyView */
 
 PropertyView::PropertyView(QWidget *parent)
@@ -70,12 +66,6 @@ PropertyView::PropertyView(QWidget *parent)
     propertyEditorData = new Gui::PropertyEditor::PropertyEditor();
     tabs->addTab(propertyEditorData, trUtf8("Data"));
 
-
-    // retrieve the Pixmaps
-    pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
-    pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
-    pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
-
     onUpdate();
     Gui::Selection().Attach(this);
 }
@@ -83,9 +73,6 @@ PropertyView::PropertyView(QWidget *parent)
 PropertyView::~PropertyView()
 {
     Gui::Selection().Detach(this);
-    delete pcLabelOpen;
-    delete pcLabelClosed;
-    delete pcAttribute;
 }
 
 void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
