@@ -37,9 +37,40 @@ DockWindowItems::~DockWindowItems()
 {
 }
 
-void DockWindowItems::addDockWidget(const char* name, Qt::DockWidgetArea pos)
+void DockWindowItems::addDockWidget(const char* name, Qt::DockWidgetArea pos, bool visibility)
 {
-    _items.push_back(qMakePair<QString, Qt::DockWidgetArea>(QString::fromAscii(name), pos));
+    DockWindowItem item;
+    item.name = QString::fromAscii(name);
+    item.pos = pos;
+    item.visibility = visibility;
+    _items << item;
+}
+
+void DockWindowItems::setDockingArea(const char* name, Qt::DockWidgetArea pos)
+{
+    for (QList<DockWindowItem>::iterator it = _items.begin(); it != _items.end(); ++it) {
+        if (it->name == QLatin1String(name)) {
+            it->pos = pos;
+            break;
+        }
+    }
+}
+
+void DockWindowItems::setVisibility(const char* name, bool v)
+{
+    for (QList<DockWindowItem>::iterator it = _items.begin(); it != _items.end(); ++it) {
+        if (it->name == QLatin1String(name)) {
+            it->visibility = v;
+            break;
+        }
+    }
+}
+
+void DockWindowItems::setVisibility(bool v)
+{
+    for (QList<DockWindowItem>::iterator it = _items.begin(); it != _items.end(); ++it) {
+        it->visibility = v;
+    }
 }
 
 const QList<DockWindowItem>& DockWindowItems::dockWidgets() const
@@ -242,16 +273,16 @@ void DockWindowManager::setup(DockWindowItems* items)
     QList<QDockWidget*> docked = d->_dockedWindows;
     const QList<DockWindowItem>& dws = items->dockWidgets();
     for (QList<DockWindowItem>::ConstIterator it = dws.begin(); it != dws.end(); ++it) {
-        QDockWidget* dw = findDockWidget(docked, it->first);
-        QByteArray dockName = it->first.toAscii();
-        bool visible = hPref->GetBool(dockName.constData(), true);
+        QDockWidget* dw = findDockWidget(docked, it->name);
+        QByteArray dockName = it->name.toAscii();
+        bool visible = hPref->GetBool(dockName.constData(), it->visibility);
 
         if (!dw) {
-            QMap<QString, QPointer<QWidget> >::ConstIterator jt = d->_dockWindows.find(it->first);
+            QMap<QString, QPointer<QWidget> >::ConstIterator jt = d->_dockWindows.find(it->name);
             if (jt != d->_dockWindows.end()) {
-                dw = addDockWindow(jt.value()->objectName().toUtf8(), jt.value(), (*it).second);
+                dw = addDockWindow(jt.value()->objectName().toUtf8(), jt.value(), it->pos);
                 jt.value()->show();
-                dw->toggleViewAction()->setData(it->first);
+                dw->toggleViewAction()->setData(it->name);
                 dw->setVisible(visible);
             }
         } else {
@@ -280,7 +311,7 @@ void DockWindowManager::saveState()
 
     const QList<DockWindowItem>& dockItems = d->_dockWindowItems.dockWidgets();
     for (QList<DockWindowItem>::ConstIterator it = dockItems.begin(); it != dockItems.end(); ++it) {
-        QDockWidget* dw = findDockWidget(d->_dockedWindows, it->first);
+        QDockWidget* dw = findDockWidget(d->_dockedWindows, it->name);
         if (dw) {
             QByteArray dockName = dw->toggleViewAction()->data().toByteArray();
             hPref->SetBool(dockName.constData(), dw->isVisible());

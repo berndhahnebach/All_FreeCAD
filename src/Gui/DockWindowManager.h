@@ -30,7 +30,11 @@
 
 namespace Gui {
 
-typedef QPair<QString, Qt::DockWidgetArea> DockWindowItem;
+struct DockWindowItem {
+    QString name;
+    Qt::DockWidgetArea pos;
+    bool visibility;
+};
 
 class GuiExport DockWindowItems
 {
@@ -38,7 +42,10 @@ public:
     DockWindowItems();
     ~DockWindowItems();
 
-    void addDockWidget(const char* name, Qt::DockWidgetArea pos);
+    void addDockWidget(const char* name, Qt::DockWidgetArea pos, bool visibility);
+    void setDockingArea(const char* name, Qt::DockWidgetArea pos);
+    void setVisibility(const char* name, bool v);
+    void setVisibility(bool v);
     const QList<DockWindowItem>& dockWidgets() const;
 
 private:

@@ -340,8 +340,8 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
 
 Gui::DockWindowItems* Workbench::setupDockWindows() const
 {
-    Gui::DockWindowItems* root = new Gui::DockWindowItems();
-    root->addDockWidget("Std_CombiView", Qt::LeftDockWidgetArea);
-    root->addDockWidget("Std_ReportView", Qt::BottomDockWidgetArea);
+    Gui::DockWindowItems* root = Gui::StdWorkbench::setupDockWindows();
+    root->setVisibility(false); // hide all dock windows by default
+    root->setVisibility("Std_CombiView",true); // except of the combi view
     return root;
 }
