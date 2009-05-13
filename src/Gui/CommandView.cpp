@@ -1559,10 +1559,10 @@ StdCmdTreeSelection::StdCmdTreeSelection()
 
 void StdCmdTreeSelection::activated(int iMsg)
 {
-    TreeDockWidget* tree = Gui::getMainWindow()->findChild<TreeDockWidget*>();
-    if (tree) {
+    QList<TreeWidget*> tree = Gui::getMainWindow()->findChildren<TreeWidget*>();
+    for (QList<TreeWidget*>::iterator it = tree.begin(); it != tree.end(); ++it) {
         Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        tree->scrollItemToTop(doc);
+        (*it)->scrollItemToTop(doc);
     }
 }
 

@@ -39,17 +39,24 @@ namespace Gui {
 
 class ViewProviderDocumentObject;
 class DocumentObjectItem;
+class DocumentItem;
 
 /** Tree view that allows drag & drop of document objects.
  * @author Werner Mayer
  */
-class TreeWidget : public QTreeWidget
+class TreeWidget : public QTreeWidget, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
     TreeWidget(QWidget* parent=0);
     ~TreeWidget();
+
+    const char *getName(void) const {return "TreeWidget";}
+
+    /// Observer message from the Selection
+    void OnChange(Gui::SelectionSingleton::SubjectType &,Gui::SelectionSingleton::MessageType);
+    void scrollItemToTop(Gui::Document*);
 
     static const int DocumentType;
     static const int ObjectType;
@@ -69,10 +76,30 @@ protected Q_SLOTS:
     void onCreateGroup();
     void onRelabelObject();
 
+private Q_SLOTS:
+    void onItemSelectionChanged(void);
+    void onItemEntered(QTreeWidgetItem * item);
+    void onTestStatus(void);
+
+private:
+    void slotNewDocument(Gui::Document&);
+    void slotDeleteDocument(Gui::Document&);
+    void slotRenameDocument(Gui::Document&);
+    void slotActiveDocument(Gui::Document&);
+    void slotRelabelDocument(Gui::Document&);
+
+    void changeEvent(QEvent *e);
+
 private:
     QAction* createGroupAction;
     QAction* relabelObjectAction;
     QTreeWidgetItem* contextItem;
+
+    QTreeWidgetItem* rootItem;
+    QTimer* statusTimer;
+    static QPixmap* documentPixmap;
+    std::map<Gui::Document*,DocumentItem*> DocumentMap;
+    bool fromOutside;
 };
 
 /** The link between the tree and a document.
@@ -141,7 +168,7 @@ private:
  * The dock window containing the tree view.
  * @author Werner Mayer
  */
-class TreeDockWidget : public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+class TreeDockWidget : public Gui::DockWindow
 {
     Q_OBJECT
 
@@ -149,33 +176,8 @@ public:
     TreeDockWidget(Gui::Document*  pcDocument,QWidget *parent=0);
     ~TreeDockWidget();
 
-    const char *getName(void) const {return "TreeView";}
-
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &,Gui::SelectionSingleton::MessageType);
-    void scrollItemToTop(Gui::Document*);
-
-private Q_SLOTS:
-    void onItemSelectionChanged(void);
-    void onItemEntered(QTreeWidgetItem * item);
-    void onTestStatus(void);
-
 private:
-    void slotNewDocument(Gui::Document&);
-    void slotDeleteDocument(Gui::Document&);
-    void slotRenameDocument(Gui::Document&);
-    void slotActiveDocument(Gui::Document&);
-    void slotRelabelDocument(Gui::Document&);
-
-    void changeEvent(QEvent *e);
-
-private:
-    QTreeWidgetItem* rootItem;
     QTreeWidget* treeWidget;
-    QTimer* statusTimer;
-    static QPixmap* documentPixmap;
-    std::map<Gui::Document*,DocumentItem*> DocumentMap;
-    bool fromOutside;
 };
 
 }
