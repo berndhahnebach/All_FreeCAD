@@ -71,7 +71,7 @@ int ConePy::PyInit(PyObject* args, PyObject* kwds)
     }
 
     PyObject *pV1, *pV2;
-    float radius1, radius2;
+    double radius1, radius2;
     static char* keywords_pprr[] = {"Point1","Point2","Radius1","Radius2",NULL};
     PyErr_Clear();
     if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O!dd", keywords_pprr,
