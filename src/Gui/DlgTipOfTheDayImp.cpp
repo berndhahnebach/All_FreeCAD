@@ -115,11 +115,11 @@ void DlgTipOfTheDayImp::onDone(bool err)
 
     // get the page and search for the tips section
     QString text = QString::fromAscii(_http->readAll());
-    QRegExp rx(QLatin1String("<div class=\"editsection\".+<div class=\"printfooter\">"));
+    QRegExp rx(QLatin1String("<p>You find the latest information.+<div class=\"printfooter\">"));
     if (rx.indexIn(text) > -1) {
         // the text of interest
         text = rx.cap();
-        rx.setPattern(QLatin1String("<div class=\"editsection\".+</h3>"));
+        rx.setPattern(QLatin1String("<ul><li>.+</li></ul>\n"));
         rx.setMinimal(true);
         _lTips += text.split(rx, QString::SkipEmptyParts);
     }
