@@ -515,15 +515,15 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
 DockWindowItems* StdWorkbench::setupDockWindows() const
 {
     DockWindowItems* root = new DockWindowItems();
-    root->addDockWidget("Std_ToolBox", Qt::RightDockWidgetArea);
-    //root->addDockWidget("Std_HelpView", Qt::RightDockWidgetArea);
-    root->addDockWidget("Std_TreeView", Qt::LeftDockWidgetArea);
-    root->addDockWidget("Std_PropertyView", Qt::LeftDockWidgetArea);
-    root->addDockWidget("Std_SelectionView", Qt::LeftDockWidgetArea);
-    root->addDockWidget("Std_CombiView", Qt::LeftDockWidgetArea);
-    root->addDockWidget("Std_ReportView", Qt::BottomDockWidgetArea);
-    root->addDockWidget("Std_TaskPanelView", Qt::RightDockWidgetArea);
-    //root->addDockWidget("Std_PythonView", Qt::BottomDockWidgetArea);
+    root->addDockWidget("Std_ToolBox", Qt::RightDockWidgetArea, false);
+    //root->addDockWidget("Std_HelpView", Qt::RightDockWidgetArea, true);
+    root->addDockWidget("Std_TreeView", Qt::LeftDockWidgetArea, true);
+    root->addDockWidget("Std_PropertyView", Qt::LeftDockWidgetArea, true);
+    root->addDockWidget("Std_SelectionView", Qt::LeftDockWidgetArea, false);
+    root->addDockWidget("Std_CombiView", Qt::LeftDockWidgetArea, false);
+    root->addDockWidget("Std_ReportView", Qt::BottomDockWidgetArea, true);
+    root->addDockWidget("Std_TaskPanelView", Qt::RightDockWidgetArea, false);
+    //root->addDockWidget("Std_PythonView", Qt::BottomDockWidgetArea, true);
     return root;
 }
 
