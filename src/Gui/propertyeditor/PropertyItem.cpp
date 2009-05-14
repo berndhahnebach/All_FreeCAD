@@ -205,10 +205,14 @@ void PropertyItem::setPropertyName(const QString& name)
 {
     setObjectName(name);
     QString display;
+    bool upper = false;
     for (int i=0; i<name.length(); i++) {
         if (name[i].isUpper() && !display.isEmpty()) {
-            display += QLatin1String(" ");
+            // if there is a sequence of capital letters do not insert spaces
+            if (!upper)
+                display += QLatin1String(" ");
         }
+        upper = name[i].isUpper();
         display += name[i];
     }
 
