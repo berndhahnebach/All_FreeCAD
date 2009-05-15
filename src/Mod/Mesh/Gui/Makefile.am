@@ -111,5 +111,5 @@ EXTRA_DIST = \
 		DlgSettingsMeshView.ui \
 		Mesh.qrc \
 		Mesh_de.qm \
-		Mesh_de.ts \
+		Mesh_it.qm \
 		images.h

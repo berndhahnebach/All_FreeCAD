@@ -161,6 +161,5 @@ EXTRA_DIST = \
 		DlgSettingsGeneral.ui \
 		Part.qrc \
 		Part_de.qm \
-		Part_de.ts \
-		Part.qrc \
+		Part_it.qm \
 		AppPartGui.vcproj

@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/translations" >
         <file>Mesh_de.qm</file>
+        <file>Mesh_it.qm</file>
     </qresource>
     <qresource>
         <file>Icons/mesh_cut.svg</file>
