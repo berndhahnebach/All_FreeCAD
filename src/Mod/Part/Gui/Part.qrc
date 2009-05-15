@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/translations" >
         <file>Part_de.qm</file>
+        <file>Part_it.qm</file>
     </qresource>
     <qresource>
 		<file>Icons/preferences-part_design.svg</file>

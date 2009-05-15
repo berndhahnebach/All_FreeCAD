@@ -8,7 +8,7 @@ nodist_libResources_la_SOURCES=\
 
 EXTRA_DIST = \
 		translations/Complete_de.qm \
-		translations/Complete_de.ts \
+		translations/Complete_it.qm \
 		Complete.qrc \
 		UpdateResources.bat
 
