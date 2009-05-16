@@ -750,11 +750,22 @@ TopoDS_Shape TopoShape::makeThickSolid(const TopTools_ListOfShape& remFace,
 
 TopoDS_Shape TopoShape::transform(const Base::Matrix4D& rclTrf) const
 {
+    // There is a strange behaviour of the gp_Trsf class if rclTrf has
+    // a negative determinant.
     gp_Trsf mat;
-    mat.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
-                  rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
-                  rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
-                  0.00001,0.00001);
+    if (rclTrf.determinant() < 0.0) {
+        mat.SetValues(-rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+                      -rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
+                      -rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
+                      0.00001,0.00001);
+    }
+    else {
+        mat.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+                      rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
+                      rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
+                      0.00001,0.00001);
+    }
+
     mat.SetScaleFactor(rclTrf[3][3]);
     // geometric transformation
     BRepBuilderAPI_GTransform mkTrf(this->_Shape, gp_GTrsf(mat));
