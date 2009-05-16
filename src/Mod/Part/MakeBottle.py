@@ -22,7 +22,7 @@
 #***************************************************************************
 
 
-import Part
+import Part, math
 import FreeCAD, FreeCADGui
 App=FreeCAD
 Gui=FreeCADGui
@@ -45,7 +45,7 @@ def makeBottle(myWidth=50.0, myHeight=70.0, myThickness=30.0):
 	aWire=Part.Wire([aEdge1,aEdge2,aEdge3])
 	
 	aTrsf=Base.Matrix()
-	aTrsf.A11=-1.0 # mirror on the x axis
+	aTrsf.rotateZ(math.pi) # rotate around the z-axis
 
 	aMirroredWire=aWire.transform(aTrsf)
 	myWireProfile=Part.Wire([aWire,aMirroredWire])
