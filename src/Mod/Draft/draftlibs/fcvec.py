@@ -134,3 +134,13 @@ def isNull(vector):
 		return True
 	else :
 		return False
+
+def find(vector,vlist):
+	'''find(vector,vlist): finds a vector in a list of vectors. returns
+	the index of the matching vector, or None if none is found.
+	'''
+	if isinstance(vector,Vector) and isinstance(vlist,list):
+		for i,v in enumerate(vlist):
+			if equals(vector,v):
+				return i
+	return None
