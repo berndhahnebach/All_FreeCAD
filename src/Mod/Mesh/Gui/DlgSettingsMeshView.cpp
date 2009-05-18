@@ -41,6 +41,8 @@ DlgSettingsMeshView::DlgSettingsMeshView(QWidget* parent)
   : PreferencePage(parent)
 {
     this->setupUi(this);
+    labelBackfaceColor->hide();
+    buttonBackfaceColor->hide();
 }
 
 /** 
