@@ -28,6 +28,7 @@
 #include "TaskPanelView.h"
 #include "BitmapFactory.h"
 #include "iisTaskPanel/include/iisTaskPanel"
+#include <Base/Console.h>
 
 using namespace Gui;
 using namespace Gui::DockWnd;
@@ -36,6 +37,13 @@ using namespace Gui::DockWnd;
 TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
   : DockWindow(pcDocument,parent)
 {
+#if QT_VERSION <= 0x040104
+    // tmp. disable the file logging to suppress some bothering warnings related
+    // to Qt 4.1 because it will really pollute the log file with useless stuff
+    Base::Console().SetEnabledMsgType("File", ConsoleMsgType::MsgType_Wrn, false);
+    Base::Console().SetEnabledMsgType("File", ConsoleMsgType::MsgType_Log, false);
+#endif
+
     setWindowTitle(tr( "Task View"));
 
     QGridLayout* gridLayout = new QGridLayout(this);
@@ -127,6 +135,11 @@ TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
     onUpdate();
 
     Gui::Selection().Attach(this);
+
+#if QT_VERSION <= 0x040104
+    Base::Console().SetEnabledMsgType("File", ConsoleMsgType::MsgType_Wrn, true);
+    Base::Console().SetEnabledMsgType("File", ConsoleMsgType::MsgType_Log, true);
+#endif
 }
 
 TaskPanelView::~TaskPanelView()

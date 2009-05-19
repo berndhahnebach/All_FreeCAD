@@ -1066,18 +1066,18 @@ void messageHandler(QtMsgType type, const char *msg)
     switch (type)
     {
     case QtDebugMsg:
-        Base::Console().Message( msg );
+        Base::Console().Message("%s\n", msg);
         break;
     case QtWarningMsg:
-        Base::Console().Warning( msg );
+        Base::Console().Warning("%s\n", msg);
         break;
     case QtFatalMsg:
-        Base::Console().Error( msg );
+        Base::Console().Error("%s\n", msg);
         abort();                    // deliberately core dump
     }
 #else
     // do not stress user with Qt internals but write to log file if enabled
-    Base::Console().Log( "%s\n", msg );
+    Base::Console().Log("%s\n", msg);
 #endif
 }
 
