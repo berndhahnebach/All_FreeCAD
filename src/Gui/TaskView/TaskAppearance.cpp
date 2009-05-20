@@ -31,11 +31,12 @@
 
 #include "TaskAppearance.h"
 #include "TaskView.h"
+#include "BitmapFactory.h"
 
 using namespace Gui::TaskView;
 
 TaskAppearance::TaskAppearance(QWidget *parent)
-    : TaskBox(parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),QLatin1String("Apperance"),true, parent)
 {
 	this->setupUi(this);
    //ui = new Ui_TaskAppearance(this);

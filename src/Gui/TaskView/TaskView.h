@@ -46,7 +46,7 @@ class TaskBox:public iisTaskBox
     Q_OBJECT
 
 public:
-    TaskBox(QWidget *parent = 0);
+    TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent);
     ~TaskBox();
 
 };
