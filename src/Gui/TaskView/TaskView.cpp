@@ -27,13 +27,15 @@
 #endif
 
 #include "TaskView.h"
+#include "TaskAppearance.h"
 #include "BitmapFactory.h"
 
 using namespace Gui::TaskView;
 
-TaskBox::TaskBox(QWidget *parent)
-    : iisTaskBox(Gui::BitmapFactory().pixmap("document-new"),QLatin1String("Appearance"),true, this)
+TaskBox::TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent)
+    : iisTaskBox(icon, title, expandable, parent)
 {
+   setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
 
 }
 
@@ -46,6 +48,10 @@ TaskBox::~TaskBox()
 TaskView::TaskView(QWidget *parent)
     : iisTaskPanel(parent)
 {
+
+   iisTaskBox *tb1 = new TaskAppearance(this);
+   addWidget(tb1);
+   setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
 
 }
 
