@@ -32,7 +32,7 @@
 
 #include "TaskView.h"
 
-#include "Ui_TaskAppearance.h"
+#include "ui_TaskAppearance.h"
 
 class Ui_TaskAppearance;
 
