@@ -1,4 +1,4 @@
-SUBDIRS=Icons Language propertyeditor iisTaskPanel
+SUBDIRS=Icons Language propertyeditor iisTaskPanel TaskView
 
 lib_LTLIBRARIES=libFreeCADGui.la
 
@@ -398,6 +398,7 @@ libFreeCADGui_la_LIBADD   =\
 		Language/libLanguage.la \
 		propertyeditor/libpropertyeditor.la \
 		iisTaskPanel/libTaskPanel.la \
+		TaskView/libTaskView.la \
 		@BOOST_FILESYSTEM_LIB@ @BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lQtUiTools \

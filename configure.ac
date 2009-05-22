@@ -607,6 +607,7 @@ src/Gui/Icons/Makefile
 src/Gui/Language/Makefile 
 src/Gui/propertyeditor/Makefile 
 src/Gui/iisTaskPanel/Makefile 
+src/Gui/TaskView/Makefile 
 src/Main/Makefile
 src/Mod/Makefile
 src/Mod/Part/Makefile
