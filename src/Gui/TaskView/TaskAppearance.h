@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef TASKAPPERANCE_H
-#define TASKAPPERANCE_H
+#ifndef GUI_TASKVIEW_TASKAPPERANCE_H
+#define GUI_TASKVIEW_TASKAPPERANCE_H
 
 
 
@@ -32,7 +32,6 @@
 
 #include "TaskView.h"
 
-#include "ui_TaskAppearance.h"
 
 class Ui_TaskAppearance;
 
@@ -45,7 +44,7 @@ namespace TaskView {
 
 
 
-class TaskAppearance : public TaskBox , protected Ui_TaskAppearance
+class TaskAppearance : public TaskBox
 {
     Q_OBJECT
 
@@ -53,14 +52,15 @@ public:
     TaskAppearance(QWidget *parent = 0);
     ~TaskAppearance();
 
-
+protected:
+    void changeEvent(QEvent *e);
 
 private:
-	Ui_TaskAppearance* ui;
-  
+    QWidget* widget;
+    Ui_TaskAppearance* ui;
 };
 
 } //namespace TaskView
 } //namespace Gui
 
-#endif // TASKAPPERANCE_H
+#endif // GUI_TASKVIEW_TASKAPPERANCE_H

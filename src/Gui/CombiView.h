@@ -33,7 +33,6 @@
 
 #include "DockWindow.h"
 #include "Selection.h"
-#include "iisTaskPanel/include/iisTaskPanel"
 
 namespace App {
   class PropertyContainer;
@@ -44,12 +43,14 @@ namespace Gui {
     class PropertyView;
 
 namespace PropertyEditor {
-
 class EditableListView;
 class EditableItem;
 class PropertyEditor;
-
 } // namespace PropertyEditor
+
+namespace TaskView {
+class TaskView;
+} // namespace TaskView
 } // namespace Gui
 
 
@@ -81,7 +82,7 @@ private:
     QTabWidget                         * tabs;
     Gui::PropertyView                  * prop;
     Gui::TreeWidget                    * tree;
-    iisTaskPanel                       * taskPanel;
+    Gui::TaskView::TaskView            * taskPanel;
 };
 
 } // namespace DockWnd

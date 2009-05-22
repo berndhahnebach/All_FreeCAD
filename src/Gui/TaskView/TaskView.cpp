@@ -35,24 +35,18 @@ using namespace Gui::TaskView;
 TaskBox::TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent)
     : iisTaskBox(icon, title, expandable, parent)
 {
-   setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
-
+    setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
 }
 
 TaskBox::~TaskBox()
 {
 }
 
-
-
 TaskView::TaskView(QWidget *parent)
     : iisTaskPanel(parent)
 {
-
-   iisTaskBox *tb1 = new TaskAppearance(this);
-   addWidget(tb1);
-   setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
-
+    addWidget(new TaskAppearance(this));
+    setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
 }
 
 TaskView::~TaskView()

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef TASKVIEW_H
-#define TASKVIEW_H
+#ifndef GUI_TASKVIEW_TASKVIEW_H
+#define GUI_TASKVIEW_TASKVIEW_H
 
 #include <map>
 #include <string>
@@ -41,14 +41,13 @@ class Property;
 namespace Gui {
 namespace TaskView {
 
-class TaskBox:public iisTaskBox
+class TaskBox : public iisTaskBox
 {
     Q_OBJECT
 
 public:
     TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent);
     ~TaskBox();
-
 };
 
 class TaskView : public iisTaskPanel
@@ -68,4 +67,4 @@ private:
 } //namespace TaskView
 } //namespace Gui
 
-#endif // TASKVIEW_H
+#endif // GUI_TASKVIEW_TASKVIEW_H

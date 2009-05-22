@@ -24,27 +24,36 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qpainter.h>
-# include <qstyle.h>
-# include <QResizeEvent>
 #endif
 
+#include "ui_TaskAppearance.h"
 #include "TaskAppearance.h"
-#include "TaskView.h"
 #include "BitmapFactory.h"
 
 using namespace Gui::TaskView;
 
 TaskAppearance::TaskAppearance(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),QLatin1String("Apperance"),true, parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Appearance"),true, parent)
 {
-	this->setupUi(this);
-   //ui = new Ui_TaskAppearance(this);
+    // we need a separate container widget to add all controls to
+    widget = new QWidget(this);
+    ui = new Ui_TaskAppearance();
+    ui->setupUi(widget);
+
+    this->groupLayout()->addWidget(widget);
 }
 
 TaskAppearance::~TaskAppearance()
 {
-	//delete ui;
+    delete ui;
+}
+
+void TaskAppearance::changeEvent(QEvent *e)
+{
+    TaskBox::changeEvent(e);
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(widget);
+    }
 }
 
 
