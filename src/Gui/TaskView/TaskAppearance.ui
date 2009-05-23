@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>242</width>
-    <height>274</height>
+    <height>283</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -253,5 +253,38 @@
  </widget>
  <pixmapfunction></pixmapfunction>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinTransparency</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>99</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>204</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinTransparency</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>192</x>
+     <y>233</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>132</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
