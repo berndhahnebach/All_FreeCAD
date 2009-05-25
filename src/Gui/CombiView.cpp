@@ -49,19 +49,20 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
     pLayout->setSpacing( 0 );
     pLayout->setMargin ( 0 );
 
+    // tabs to switch between Tree/Propteries and TaskPanel
     tabs = new QTabWidget ();
     tabs->setObjectName(QString::fromUtf8("combiTab"));
     tabs->setTabPosition(QTabWidget::North);
     //tabs->setTabShape(QTabWidget::Triangular);
     pLayout->addWidget( tabs, 0, 0 );
 
-
+    // splitter between tree and proertieview
     QSplitter *splitter = new QSplitter();
     splitter->setOrientation(Qt::Vertical);
 
     // tree widget
     tree =  new TreeWidget(this);
-    tree->setRootIsDecorated(false);
+    //tree->setRootIsDecorated(false);
     splitter->addWidget(tree);
 
     // property view
@@ -70,8 +71,8 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
 
     tabs->addTab(splitter,trUtf8("Project"));
 
+    // Task panel
     taskPanel = new Gui::TaskView::TaskView(this);
-    taskPanel->addStretch();
     tabs->addTab(taskPanel, trUtf8("Tasks"));
 }
 
