@@ -71,12 +71,7 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
     tabs->addTab(splitter,trUtf8("Project"));
 
     taskPanel = new Gui::TaskView::TaskView(this);
-    //iisTaskBox *tb1 = new iisTaskBox(Gui::BitmapFactory().pixmap("document-new"),
-    //                                 QLatin1String("Group of Tasks"),
-    //                                 true, this);
-    //taskPanel->setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
-    //tb1      ->setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
-    //taskPanel->addWidget(tb1);
+    taskPanel->addStretch();
     tabs->addTab(taskPanel, trUtf8("Tasks"));
 }
 
