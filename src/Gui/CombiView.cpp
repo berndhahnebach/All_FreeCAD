@@ -45,18 +45,18 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
 {
     setWindowTitle(tr("CombiView"));
 
-    QGridLayout* pLayout = new QGridLayout( this ); 
+    QGridLayout* pLayout = new QGridLayout(this); 
     pLayout->setSpacing( 0 );
     pLayout->setMargin ( 0 );
 
-    // tabs to switch between Tree/Propteries and TaskPanel
+    // tabs to switch between Tree/Properties and TaskPanel
     tabs = new QTabWidget ();
     tabs->setObjectName(QString::fromUtf8("combiTab"));
     tabs->setTabPosition(QTabWidget::North);
     //tabs->setTabShape(QTabWidget::Triangular);
     pLayout->addWidget( tabs, 0, 0 );
 
-    // splitter between tree and proertieview
+    // splitter between tree and property view
     QSplitter *splitter = new QSplitter();
     splitter->setOrientation(Qt::Vertical);
 
@@ -71,7 +71,7 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
 
     tabs->addTab(splitter,trUtf8("Project"));
 
-    // Task panel
+    // task panel
     taskPanel = new Gui::TaskView::TaskView(this);
     tabs->addTab(taskPanel, trUtf8("Tasks"));
 }
