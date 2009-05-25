@@ -60,6 +60,7 @@ TreeWidget::TreeWidget(QWidget* parent)
     this->setDragEnabled(true);
     this->setAcceptDrops(true);
     this->setDropIndicatorShown(false);
+    this->setRootIsDecorated(false);
 
     this->createGroupAction = new QAction(this);
     this->createGroupAction->setText(tr("Create group..."));

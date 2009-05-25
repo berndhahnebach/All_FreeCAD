@@ -46,6 +46,7 @@ TaskView::TaskView(QWidget *parent)
     : iisTaskPanel(parent)
 {
     addWidget(new TaskAppearance(this));
+    addStretch();
     setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
 }
 
