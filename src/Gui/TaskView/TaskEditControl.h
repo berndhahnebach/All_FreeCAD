@@ -21,40 +21,56 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef GUI_TASKVIEW_TASKEDITCONTROL_H
+#define GUI_TASKVIEW_TASKEDITCONTROL_H
 
-#ifndef _PreComp_
+
+
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
 
 #include "TaskView.h"
-#include "TaskAppearance.h"
-#include "TaskEditControl.h"
-#include "BitmapFactory.h"
+#include <Gui/Selection.h>
 
-using namespace Gui::TaskView;
 
-TaskBox::TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent)
-    : iisTaskBox(icon, title, expandable, parent)
-{
-    setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
+class Ui_TaskEditControl;
+
+namespace App {
+class Property;
 }
 
-TaskBox::~TaskBox()
+namespace Gui {
+class ViewProvider;
+namespace TaskView {
+
+
+
+class TaskEditControl : public TaskBox, public Gui::SelectionSingleton::ObserverType
 {
-}
+    Q_OBJECT
 
-TaskView::TaskView(QWidget *parent)
-    : iisTaskPanel(parent)
-{
-    addWidget(new TaskEditControl(this));
-    addWidget(new TaskAppearance(this));
-    addStretch();
-    setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
-}
+public:
+    TaskEditControl(QWidget *parent = 0);
+    ~TaskEditControl();
+    /// Observer message from the Selection
+    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                  Gui::SelectionSingleton::MessageType Reason);
 
-TaskView::~TaskView()
-{
-}
+private Q_SLOTS:
 
+protected:
+    void changeEvent(QEvent *e);
 
-#include "moc_TaskView.cpp"
+private:
+    std::vector<Gui::ViewProvider*> getSelection() const;
+
+private:
+    QWidget* proxy;
+    Ui_TaskEditControl* ui;
+};
+
+} //namespace TaskView
+} //namespace Gui
+
+#endif // GUI_TASKVIEW_TASKAPPERANCE_H

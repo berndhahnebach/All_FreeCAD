@@ -26,35 +26,55 @@
 #ifndef _PreComp_
 #endif
 
-#include "TaskView.h"
-#include "TaskAppearance.h"
+#include "ui_TaskEditControl.h"
 #include "TaskEditControl.h"
-#include "BitmapFactory.h"
+#include <Gui/Application.h>
+#include <Gui/Document.h>
+#include <Gui/BitmapFactory.h>
+#include <Gui/ViewProvider.h>
+#include <Gui/WaitCursor.h>
+#include <Base/Console.h>
 
 using namespace Gui::TaskView;
 
-TaskBox::TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent)
-    : iisTaskBox(icon, title, expandable, parent)
+TaskEditControl::TaskEditControl(QWidget *parent)
+    : TaskBox(QPixmap(),tr("Edit control"),false, parent)
 {
-    setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
+    // we need a separate container widget to add all controls to
+    proxy = new QWidget(this);
+    ui = new Ui_TaskEditControl();
+    ui->setupUi(proxy);
+    QMetaObject::connectSlotsByName(this);
+
+    this->groupLayout()->addWidget(proxy);
+
+    Gui::Selection().Attach(this);
 }
 
-TaskBox::~TaskBox()
+TaskEditControl::~TaskEditControl()
 {
+    delete ui;
+    Gui::Selection().Detach(this);
 }
 
-TaskView::TaskView(QWidget *parent)
-    : iisTaskPanel(parent)
+void TaskEditControl::changeEvent(QEvent *e)
 {
-    addWidget(new TaskEditControl(this));
-    addWidget(new TaskAppearance(this));
-    addStretch();
-    setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
+    TaskBox::changeEvent(e);
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(proxy);
+    }
 }
 
-TaskView::~TaskView()
+void TaskEditControl::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                              Gui::SelectionSingleton::MessageType Reason)
 {
+    if (Reason.Type == SelectionChanges::AddSelection ||
+        Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::ClrSelection) {
+        //std::vector<Gui::ViewProvider*> views = getSelection();
+    }
 }
 
 
-#include "moc_TaskView.cpp"
+
+#include "moc_TaskEditControl.cpp"

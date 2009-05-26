@@ -27,8 +27,10 @@
         <file>document-print.svg</file>
         <file>document-properties.svg</file>
         <file>system-log-out.svg</file>
-        <file>edit-copy.svg</file>
-        <file>edit-cut.svg</file>
+      <file>edit_Ok.svg</file>
+      <file>edit_Cancel.svg</file>
+      <file>edit-copy.svg</file>
+      <file>edit-cut.svg</file>
         <file>edit-delete.svg</file>
         <file>edit-paste.svg</file>
         <file>edit-select-all.svg</file>
