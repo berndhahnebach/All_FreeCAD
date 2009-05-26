@@ -33,6 +33,9 @@
 #include "SketchFlatInterface.h"
 #include "sketchflat/sketchflat.h"
 
+#include <ShapeAnalysis_FreeBounds.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+
 #define M_PI 3.14159265358979323846f
 
 using namespace Sketcher;
@@ -407,7 +410,7 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 
 	Part::TopoShape result;
     std::list<TopoDS_Edge> mkEdges;
-	BRepBuilderAPI_MakeWire mkWire;
+	Handle(TopTools_HSequenceOfShape) hEdges = new TopTools_HSequenceOfShape(); 
 
 	for(int i = 0; i<SK->entities; ++i)
 	{
@@ -492,6 +495,9 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 		if(!curve.IsNull()){
             BRepBuilderAPI_MakeEdge mkEdge(curve, curve->FirstParameter(), curve->LastParameter());
             mkEdges.push_back(mkEdge.Edge());
+			hEdges->Append(mkEdge.Edge());
+
+
 			//mkWire.Add(mkEdge);
 			//if(bFirst){
 			//	result._Shape = mkEdge.Edge();
@@ -506,15 +512,32 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 
 	}
 
-    mkEdges = sort_Edges(mkEdges);
-    for (std::list<TopoDS_Edge>::iterator it = mkEdges.begin(); it != mkEdges.end(); ++it) {
-        mkWire.Add(*it);
-    }
-	if(mkWire.IsDone())
-		result._Shape = mkWire.Wire();
-	else
-		Base::Console().Warning("Sketch not created, possibly inner Wires!");
 
+	if(false){
+		BRepBuilderAPI_MakeWire mkWire;
+		mkEdges = sort_Edges(mkEdges);
+		for (std::list<TopoDS_Edge>::iterator it = mkEdges.begin(); it != mkEdges.end(); ++it) {
+			mkWire.Add(*it);
+		}
+		if(mkWire.IsDone())
+			result._Shape = mkWire.Wire();
+		else
+			Base::Console().Warning("Sketch not created, possibly inner Wires!");
+	}else{
+		Handle(TopTools_HSequenceOfShape) wires = new TopTools_HSequenceOfShape();
+		ShapeAnalysis_FreeBounds::ConnectEdgesToWires(
+			 hEdges,
+			 0.01,  // tolerance
+			false, // use only edges which share a vertex
+			wires);
+		if(wires->Length() > 1)  Base::Console().Warning("Multible wires not supported jet! %d",wires->Length());
+		if(wires->Length() == 0)  {
+			Base::Console().Warning("No wire found");
+			return result;
+		}
+		result = wires->Value(1);
+
+	}
 	return result;
 }
 
