@@ -257,6 +257,7 @@ libFreeCADGui_la_SOURCES=\
 		SoFCSelection.cpp \
 		SoFCSelectionAction.cpp \
 		SoFCVectorizeSVGAction.cpp \
+		SoTextLabel.cpp \
 		SpinBox.cpp \
 		Splashscreen.cpp \
 		SplitView3DInventor.cpp \
@@ -345,6 +346,7 @@ include_HEADERS=\
 		SoFCSelection.h \
 		SoFCSelectionAction.h \
 		SoFCVectorizeSVGAction.h \
+		SoTextLabel.h \
 		SpinBox.h \
 		Splashscreen.h \
 		SplitView3DInventor.h \

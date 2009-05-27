@@ -3036,6 +3036,14 @@
 				RelativePath=".\SoNavigationDragger.h"
 				>
 			</File>
+			<File
+				RelativePath=".\SoTextLabel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoTextLabel.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Language"
@@ -5301,7 +5309,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -5311,7 +5319,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -5325,7 +5333,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
 						Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
 					/>
 				</FileConfiguration>
@@ -5335,7 +5343,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
 						Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
 					/>
 				</FileConfiguration>
