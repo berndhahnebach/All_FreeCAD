@@ -41,6 +41,8 @@ EXTRA_DIST = \
 		document-print.svg \
 		document-properties.svg \
 		system-log-out.svg \
+		edit_Cancel.svg \
+		edit_OK.svg \
 		edit-copy.svg \
 		edit-cut.svg \
 		edit-delete.svg \
