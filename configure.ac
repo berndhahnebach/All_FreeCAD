@@ -599,7 +599,6 @@ CXXFLAGS="$CXXFLAGS -Wno-deprecated -frtti"
 AC_CONFIG_FILES([Makefile 
 src/Makefile 
 src/3rdParty/Makefile 
-src/3rdParty/Pivy/Makefile 
 src/Base/Makefile 
 src/App/Makefile 
 src/Gui/Makefile 
@@ -659,6 +658,7 @@ src/Tools/_TEMPLATE_/Makefile
 src/Tools/_TEMPLATE_/App/Makefile
 src/Tools/_TEMPLATE_/Gui/Makefile
 ])
+#src/3rdParty/Pivy/Makefile 
 #src/Mod/Sandbox/Makefile
 #src/Mod/Sandbox/App/Makefile
 #src/Mod/Sandbox/Gui/Makefile
