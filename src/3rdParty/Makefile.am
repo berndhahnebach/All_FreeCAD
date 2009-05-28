@@ -1,4 +1,4 @@
-SUBDIRS=Pivy
+#SUBDIRS=Pivy
 
 EXTRA_DIST = \
 		boost/numeric/bindings/LICENSE_1_0.txt \
