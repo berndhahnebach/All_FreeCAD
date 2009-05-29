@@ -160,6 +160,7 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     ADD_PROPERTY(OpenEdges,(false));
     ADD_PROPERTY(Lighting,(1));
     Lighting.setEnums(LightingEnums);
+    ADD_PROPERTY(LineColor,(ShapeColor.getValue()));
     //ADD_PROPERTY(BacksideColor,(0.8f,0.8f,0.8f));
 
     pOpenColor = new SoBaseColor();
@@ -187,6 +188,10 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     pcMatBinding = new SoMaterialBinding;
     pcMatBinding->value = SoMaterialBinding::OVERALL;
     pcMatBinding->ref();
+
+    pLineColor = new SoBaseColor;
+    pLineColor->ref();
+    LineColor.touch();
 
     //pcBacksideMaterial = new SoMaterial;
     //pcBacksideMaterial->ref();
@@ -229,6 +234,7 @@ ViewProviderMesh::~ViewProviderMesh()
     pShapeHints->unref();
     //pBackHints->unref();
     pcMatBinding->unref();
+    pLineColor->unref();
     //pcBacksideMaterial->unref();
 }
 
@@ -258,6 +264,10 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
         //    const App::Color& c = BacksideColor.getValue();
         //    pcBacksideMaterial->diffuseColor.setValue(c.r,c.g,c.b);
         }
+    }
+    else if (prop == &LineColor) {
+        const App::Color& c = LineColor.getValue();
+        pLineColor->rgb.setValue(c.r,c.g,c.b);
     }
     /*else if (prop == &BacksideColor && Lighting.getValue() != 0) {
         const App::Color& c = BacksideColor.getValue();
@@ -339,7 +349,8 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
     SoGroup* pcWireRoot = new SoGroup();
     pcWireRoot->addChild(pcLineStyle);
     pcWireRoot->addChild(pcLightModel);
-    pcWireRoot->addChild(pcShapeMaterial);
+    //pcWireRoot->addChild(pcShapeMaterial);
+    pcWireRoot->addChild(pLineColor);
     pcWireRoot->addChild(pcHighlight);
     addDisplayMaskMode(pcWireRoot, "Wireframe");
 

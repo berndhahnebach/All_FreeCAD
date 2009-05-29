@@ -98,6 +98,7 @@ public:
     App::PropertyFloatConstraint CreaseAngle;
     App::PropertyBool OpenEdges;
     App::PropertyEnumeration Lighting;
+    App::PropertyColor LineColor;
     //App::PropertyColor BacksideColor;
 
     virtual void attach(App::DocumentObject *);
@@ -155,6 +156,7 @@ protected:
     SoDrawStyle         * pcPointStyle;
     SoSeparator         * pcOpenEdge;
     SoBaseColor         * pOpenColor;
+    SoBaseColor         * pLineColor;
     SoShapeHints        * pShapeHints;
     //SoShapeHints        * pBackHints;
     SoMaterialBinding   * pcMatBinding;
