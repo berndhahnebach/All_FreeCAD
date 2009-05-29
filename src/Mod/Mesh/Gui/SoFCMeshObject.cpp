@@ -422,7 +422,7 @@ void SoFCMeshObjectShape::initClass()
     SO_NODE_INIT_CLASS(SoFCMeshObjectShape, SoShape, "Shape");
 }
 
-SoFCMeshObjectShape::SoFCMeshObjectShape() : MaximumTriangles(100000), meshChanged(true)
+SoFCMeshObjectShape::SoFCMeshObjectShape() : renderTriangleLimit(100000), meshChanged(true)
 {
     SO_NODE_CONSTRUCTOR(SoFCMeshObjectShape);
     setName(SoFCMeshObjectShape::getClassTypeId().getName());
@@ -459,7 +459,7 @@ void SoFCMeshObjectShape::GLRender(SoGLRenderAction *action)
         if (SoShapeHintsElement::getVertexOrdering(state) == SoShapeHintsElement::CLOCKWISE) 
             ccw = FALSE;
 
-        if (mode == false || mesh->countFacets() <= this->MaximumTriangles) {
+        if (mode == false || mesh->countFacets() <= this->renderTriangleLimit) {
             if (mbind != OVERALL)
                 drawFaces(mesh, &mb, mbind, needNormals, ccw);
             else
@@ -591,7 +591,7 @@ void SoFCMeshObjectShape::drawPoints(const Mesh::MeshObject * mesh, SbBool needN
 {
     const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
     const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();
-    int mod = rFacets.size()/MaximumTriangles+1;
+    int mod = rFacets.size()/renderTriangleLimit+1;
 
     float size = std::min<float>((float)mod,3.0f);
     glPointSize(size);
@@ -698,7 +698,7 @@ SoFCMeshObjectShape::rayPick(SoRayPickAction * action)
 }
 
 /** Sets the point indices, the geometric points and the normal for each triangle.
- * If the number of triangles exceeds \a MaximumTriangles then only a triangulation of
+ * If the number of triangles exceeds \a renderTriangleLimit then only a triangulation of
  * a rough model is filled in instead. This is due to performance issues.
  * \see createTriangleDetail().
  */
@@ -782,9 +782,12 @@ void SoFCMeshObjectShape::generatePrimitives(SoAction* action)
 }
 
 /**
- * If the number of triangles exceeds \a MaximumTriangles 0 is returned. This means that the client programmer needs to implement itself to get the
- * index of the picked triangle. If the number of triangles doesn't exceed \a MaximumTriangles SoShape::createTriangleDetail() gets called.
- * Against the default OpenInventor implementation which returns 0 as well Coin3d fills in the point and face indices.
+ * If the number of triangles exceeds \a renderTriangleLimit 0 is returned.
+ * This means that the client programmer needs to implement itself to get the
+ * index of the picked triangle. If the number of triangles doesn't exceed
+ * \a renderTriangleLimit SoShape::createTriangleDetail() gets called.
+ * Against the default OpenInventor implementation which returns 0 as well
+ * Coin3d fills in the point and face indices.
  */
 SoDetail * SoFCMeshObjectShape::createTriangleDetail(SoRayPickAction * action,
                                               const SoPrimitiveVertex * v1,
@@ -847,7 +850,7 @@ void SoFCMeshSegmentShape::initClass()
     SO_NODE_INIT_CLASS(SoFCMeshSegmentShape, SoShape, "Shape");
 }
 
-SoFCMeshSegmentShape::SoFCMeshSegmentShape() : MaximumTriangles(100000)
+SoFCMeshSegmentShape::SoFCMeshSegmentShape() : renderTriangleLimit(100000)
 {
     SO_NODE_CONSTRUCTOR(SoFCMeshSegmentShape);
     SO_NODE_ADD_FIELD(index, (0));
@@ -878,7 +881,7 @@ void SoFCMeshSegmentShape::GLRender(SoGLRenderAction *action)
         if (SoShapeHintsElement::getVertexOrdering(state) == SoShapeHintsElement::CLOCKWISE) 
             ccw = FALSE;
 
-        if (mode == false || mesh->countFacets() <= this->MaximumTriangles) {
+        if (mode == false || mesh->countFacets() <= this->renderTriangleLimit) {
             if (mbind != OVERALL)
                 drawFaces(mesh, &mb, mbind, needNormals, ccw);
             else
@@ -1021,7 +1024,7 @@ void SoFCMeshSegmentShape::drawPoints(const Mesh::MeshObject * mesh, SbBool need
         return;
     const std::vector<unsigned long> rSegm = mesh->getSegment
         (this->index.getValue()).getIndices();
-    int mod = rSegm.size()/MaximumTriangles+1;
+    int mod = rSegm.size()/renderTriangleLimit+1;
 
     float size = std::min<float>((float)mod,3.0f);
     glPointSize(size);
@@ -1105,8 +1108,8 @@ void SoFCMeshSegmentShape::drawPoints(const Mesh::MeshObject * mesh, SbBool need
 }
 
 /** Sets the point indices, the geometric points and the normal for each triangle.
- * If the number of triangles exceeds \a MaximumTriangles then only a triangulation of
- * a rough model is filled in instead. This is due to performance issues.
+ * If the number of triangles exceeds \a renderTriangleLimit then only a triangulation
+ * of a rough model is filled in instead. This is due to performance issues.
  * \see createTriangleDetail().
  */
 void SoFCMeshSegmentShape::generatePrimitives(SoAction* action)

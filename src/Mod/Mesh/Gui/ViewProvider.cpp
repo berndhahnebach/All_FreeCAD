@@ -1173,7 +1173,7 @@ void ViewProviderIndexedFaceSet::attach(App::DocumentObject *pcFeat)
     // read the threshold from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
     int size = hGrp->GetInt("RenderTriangleLimit", -1);
-    if (size > 0) static_cast<SoFCIndexedFaceSet*>(pcMeshFaces)->MaximumTriangles = (unsigned int)(pow(10.0f,size));
+    if (size > 0) static_cast<SoFCIndexedFaceSet*>(pcMeshFaces)->renderTriangleLimit = (unsigned int)(pow(10.0f,size));
 }
 
 void ViewProviderIndexedFaceSet::updateData(const App::Property* prop)
@@ -1252,7 +1252,7 @@ void ViewProviderMeshObject::attach(App::DocumentObject *pcFeat)
     // read the threshold from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
     int size = hGrp->GetInt("RenderTriangleLimit", -1);
-    if (size > 0) pcMeshShape->MaximumTriangles = (unsigned int)(pow(10.0f,size));
+    if (size > 0) pcMeshShape->renderTriangleLimit = (unsigned int)(pow(10.0f,size));
 }
 
 void ViewProviderMeshObject::updateData(const App::Property* prop)
