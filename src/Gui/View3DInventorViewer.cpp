@@ -1887,7 +1887,7 @@ void View3DInventorViewer::viewAll()
   float cam_height = (pt3-pt1).length();
 
   // add a small border
-  cam_height = 1.02f * std::max<float>((cam_width*(float)size[1])/(float)size[0],cam_height);
+  cam_height = 1.08f * std::max<float>((cam_width*(float)size[1])/(float)size[0],cam_height);
 
   float aspect = cam->aspectRatio.getValue();
 

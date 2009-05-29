@@ -97,8 +97,8 @@ protected:
  * (e.g. moving, rotating, zooming, spinning, etc.) with the mesh then the GLRender() method
  * renders only the gravity points of a subset of the triangles.
  * If there is no user interaction with the mesh then all triangles are rendered.
- * The limit of maximum allowed triangles can be specified in \a MaximumTriangles, the default
- * value is set to 100.000.
+ * The limit of maximum allowed triangles can be specified in \a renderTriangleLimit, the
+ * default value is set to 100.000.
  *
  * The GLRender() method checks the status of the SoFCInteractiveElement to decide to be in
  * interactive mode or not.
@@ -117,7 +117,7 @@ public:
     static void initClass();
     SoFCMeshObjectShape();
 
-    unsigned int MaximumTriangles;
+    unsigned int renderTriangleLimit;
 
 protected:
     virtual void GLRender(SoGLRenderAction *action);
@@ -164,7 +164,7 @@ public:
     SoFCMeshSegmentShape();
 
     SoSFUInt32 index;
-    unsigned int MaximumTriangles;
+    unsigned int renderTriangleLimit;
 
 protected:
     virtual void GLRender(SoGLRenderAction *action);

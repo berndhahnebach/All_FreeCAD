@@ -47,7 +47,7 @@ public:
     static void initClass();
     SoFCIndexedFaceSet();
 
-    int MaximumTriangles;
+    unsigned int renderTriangleLimit;
 
 protected:
     virtual void GLRender(SoGLRenderAction *action);

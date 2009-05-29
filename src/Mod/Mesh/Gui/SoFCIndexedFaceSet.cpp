@@ -49,7 +49,7 @@ void SoFCIndexedFaceSet::initClass()
     SO_NODE_INIT_CLASS(SoFCIndexedFaceSet, SoIndexedFaceSet, "IndexedFaceSet");
 }
 
-SoFCIndexedFaceSet::SoFCIndexedFaceSet() : MaximumTriangles(100000)
+SoFCIndexedFaceSet::SoFCIndexedFaceSet() : renderTriangleLimit(100000)
 {
     SO_NODE_CONSTRUCTOR(SoFCIndexedFaceSet);
     setName(SoFCIndexedFaceSet::getClassTypeId().getName());
@@ -69,7 +69,8 @@ void SoFCIndexedFaceSet::GLRender(SoGLRenderAction *action)
     SoState * state = action->getState();
     SbBool mode = Gui::SoFCInteractiveElement::get(state);
 
-    if (mode == false || this->coordIndex.getNum() <= this->MaximumTriangles*4) {
+    unsigned int num = this->coordIndex.getNum()/4;
+    if (mode == false || num <= this->renderTriangleLimit) {
         inherited::GLRender(action);
     }
     else {
@@ -99,6 +100,8 @@ void SoFCIndexedFaceSet::GLRender(SoGLRenderAction *action)
 
         drawCoords(static_cast<const SoGLCoordinateElement*>(coords), cindices, numindices,
                    normals, nindices, &mb, mindices, overall, &tb, tindices);
+        // Disable caching for this node
+        SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
     }
 }
 
@@ -116,7 +119,7 @@ void SoFCIndexedFaceSet::drawCoords(const SoGLCoordinateElement * const vertexli
     const SbVec3f * coords3d = 0;
     coords3d = vertexlist->getArrayPtr3();
 
-    int mod = numindices/(4*this->MaximumTriangles)+1;
+    int mod = numindices/(4*this->renderTriangleLimit)+1;
     float size = std::min<float>((float)mod,3.0f);
     glPointSize(size);
 
