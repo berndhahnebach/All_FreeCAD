@@ -152,6 +152,38 @@ class TemplatePyMod_Cmd4:
 		return {'Pixmap'  : 'python', 'MenuText': 'Create spheres...', 'ToolTip': 'Click on the screen to create a sphere'}
 
 
+myRenderArea = None
+class TemplatePyMod_Cmd5:
+	"Example command class"
+	def Activated(self):
+		from pivy.sogui import *
+		from pivy.coin import *
+
+		global myRenderArea
+		if myRenderArea == None:
+			root = SoSeparator()
+			myCamera = SoPerspectiveCamera()
+			myMaterial = SoMaterial()
+			root.addChild(myCamera)
+			root.addChild(SoDirectionalLight())
+			#myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
+			root.addChild(myMaterial)
+			root.addChild(SoCone())
+
+			# Create a renderArea in which to see our scene graph.
+			# The render area will appear within the main window.
+			myRenderArea = SoGuiRenderArea()
+
+			# Make myCamera see everything.
+			myCamera.viewAll(root, myRenderArea.getViewportRegion())
+
+			# Put our scene in myRenderArea, change the title
+			myRenderArea.setSceneGraph(root)
+			myRenderArea.setTitle("Hello Cone")
+		myRenderArea.show()
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Render area', 'ToolTip': 'Show render area'}
 
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
@@ -160,4 +192,5 @@ addCommand('TemplatePyMod_Cmd1',TemplatePyMod_Cmd1())
 addCommand('TemplatePyMod_Cmd2',TemplatePyMod_Cmd2())
 addCommand('TemplatePyMod_Cmd3',TemplatePyMod_Cmd3())
 FreeCADGui.addCommand('TemplatePyMod_Cmd4',TemplatePyMod_Cmd4())
+FreeCADGui.addCommand('TemplatePyMod_Cmd5',TemplatePyMod_Cmd5())
 
