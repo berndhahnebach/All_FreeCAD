@@ -58,6 +58,7 @@ libFreeCADApp_la_SOURCES=\
 		PropertyContainer.cpp \
 		PropertyContainerPyImp.cpp \
 		PropertyLinks.cpp \
+		PropertyPythonObject.cpp \
 		PropertyStandard.cpp \
 		Transactions.cpp
 
@@ -90,6 +91,7 @@ include_HEADERS=\
 		PropertyGeo.h \
 		PropertyContainer.h \
 		PropertyLinks.h \
+		PropertyPythonObject.h \
 		PropertyStandard.h \
 		Transactions.h
 

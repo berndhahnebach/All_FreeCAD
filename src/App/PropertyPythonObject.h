@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2006     *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,63 +21,53 @@
  ***************************************************************************/
 
 
+#ifndef APP_PROPERTYPYTHONOBJECT_H
+#define APP_PROPERTYPYTHONOBJECT_H
 
-#ifndef APP_FEATUREPYTHON_H
-#define APP_FEATUREPYTHON_H
+#include <string>
+#include <list>
+#include <vector>
+#include <CXX/Objects.hxx>
+
+#include "Property.h"
 
 
-#include "DocumentObject.h"
-#include "PropertyPythonObject.h"
+namespace Base {
+class Writer;
+class XMLReader;
+}
 
 namespace App
 {
 
-class Property;
-class FeaturePythonPy;
-
-class FeaturePython : public DocumentObject
+class AppExport PropertyPythonObject : public Property
 {
-    PROPERTY_HEADER(App::FeaturePython);
+    TYPESYSTEM_HEADER();
 
 public:
-    FeaturePython();  
+    PropertyPythonObject(void);
+    virtual ~PropertyPythonObject();
 
-    /** @name methods overide Feature */
-    //@{
-    short mustExecute() const;
-    /// recalculate the Feature
-    virtual DocumentObjectExecReturn *execute(void);
-    /// returns the type name of the ViewProvider
-    virtual const char* getViewProviderName(void) const {
-        return "Gui::ViewProviderPythonFeature";
-    }
-    /// get all properties of the class (including parent)
-    virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
-    /// find a property by its name
-    virtual Property *getPropertyByName(const char* name) const;
-    /// get the name of a property
-    virtual const char* getName(const Property* prop) const;
-    //@}
+    void setValue(Py::Object);
+    Py::Object getValue() const;
 
-    Property* addDynamicProperty(const char* type, const char* name=0);
-    void Save (Base::Writer &writer) const;
-    void Restore(Base::XMLReader &reader);
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
 
-    PyObject *getPyObject(void);
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
+    virtual void SaveDocFile (Base::Writer &writer) const;
+    virtual void RestoreDocFile(Base::Reader &reader);
 
-    friend class FeaturePythonPy;
-
-protected:
-    virtual void onChanged(const Property* prop);
+    virtual unsigned int getMemSize (void) const;
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
 
 private:
-    std::string getUniquePropertyName(const char *Name) const;
-
-private:
-    std::map<std::string,Property*> objectProperties;
-    PropertyPythonObject Proxy;
+    Py::Object object;
 };
 
-} //namespace App
 
-#endif // APP_FEATUREPYTHON_H
+} // namespace App
+
+#endif // APP_PROPERTYPYTHONOBJECT_H

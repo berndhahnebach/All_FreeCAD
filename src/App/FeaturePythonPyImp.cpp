@@ -72,66 +72,6 @@ PyObject*  FeaturePythonPy::supportedProperties(PyObject *args)
     return Py::new_reference_to(res);
 }
 
-/** Invokes the registered callback function.
- * To register a callback function in Python do it as follows:
- * \code
- *  # Create a document and add a FeaturePython object
- *  d=FreeCAD.newDocument()
- *  f=d.addObject("App::FeaturePython")
- *
- *  def myCallback(arg):
- *      FreeCAD.PrintMessage("Hello, World!")
- *
- *  # Save the callback function
- *  f.Execute = myCallback
- *
- *  # Performing a recomputation of the document invokes the callback function
- *  d.recompute()
- * \endcode
- *
- * \note You must not pass any parameters to the callback function, its argument list must be empty.
- */
-PyObject*  FeaturePythonPy::execute(PyObject * /*args*/)
-{
-    Py::Object executeCallback = getFeaturePythonPtr()->executeMethod;
-    if ( executeCallback.isCallable() ) {
-        try {
-            Py::Callable method(executeCallback);
-            Py::Tuple args(1);
-            args.setItem(0, Py::Object(this));
-            method.apply(args);
-        }
-        catch (const Py::Exception&) {
-            return NULL;
-        }
-
-        Py_Return;
-    } else {
-        PyErr_SetString(PyExc_NotImplementedError , "FeaturePython.execute not implemented");
-        return NULL;
-    }
-}
-
-Py::Object FeaturePythonPy::getExecute(void) const
-{
-    return getFeaturePythonPtr()->executeMethod;
-}
-
-void FeaturePythonPy::setExecute(Py::Object value)
-{
-    if ( value == Py::None()) {
-        getFeaturePythonPtr()->executeMethod = value;
-    } else {
-        // Here we can check whether 'value' is a method or function but we cannot check the argument list
-        // This will do Python for us in the execute method (and throws an exception if not empty).
-        if (!value.isCallable()) {
-            throw Py::TypeError("Value must be callable");
-        }
-
-        getFeaturePythonPtr()->executeMethod = value;
-    }
-}
-
 PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
 {
     PY_TRY{

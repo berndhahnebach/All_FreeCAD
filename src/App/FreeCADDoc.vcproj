@@ -367,6 +367,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PropertyPythonObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PropertyPythonObject.h"
+				>
+			</File>
+			<File
 				RelativePath="PropertyStandard.cpp"
 				>
 				<FileConfiguration
