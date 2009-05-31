@@ -77,6 +77,7 @@
 #include "PropertyStandard.h"
 #include "PropertyFile.h"
 #include "PropertyLinks.h"
+#include "PropertyPythonObject.h"
 #include "Document.h"
 #include "DocumentObjectGroup.h"
 #include "DocumentObjectFileIncluded.h"
@@ -933,6 +934,7 @@ void Application::initTypes(void)
     App ::PropertyPath              ::init();
     App ::PropertyFile              ::init();
     App ::PropertyFileIncluded      ::init();
+    App ::PropertyPythonObject      ::init();
     // Document classes
     App ::DocumentObject            ::init();
     App ::AbstractFeature           ::init();

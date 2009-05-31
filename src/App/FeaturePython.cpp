@@ -34,16 +34,14 @@
 #include "FeaturePython.h"
 #include "FeaturePythonPy.h"
 
-#define new DEBUG_CLIENTBLOCK
 using namespace App;
-using namespace std;
-
 
 PROPERTY_SOURCE(App::FeaturePython, App::DocumentObject)
 
 
 FeaturePython::FeaturePython()
 {
+    ADD_PROPERTY(Proxy,(Py::Object()));
 }
 
 short FeaturePython::mustExecute() const
@@ -53,11 +51,51 @@ short FeaturePython::mustExecute() const
     return 0;
 }
 
+
+/** Invokes the execute method of the registered proxy object.
+ * To register a proxy object in Python do it as follows:
+ * \code
+ *  # Create a document and add a FeaturePython object
+ *  d=FreeCAD.newDocument()
+ *  f=d.addObject("App::FeaturePython")
+ *
+ * class Feature:
+ *      def execute(arg,obj):
+ *          FreeCAD.PrintMessage("Hello, World!")
+ *
+ *  # Save the callback function
+ *  f.Proxy = Feature()
+ *
+ *  # Performing a recomputation of the document invokes the proxy's execute method
+ *  d.recompute()
+ * \endcode
+ *
+ * \note You must always define two parameters, self and e.g. obj for the FreeCAD
+ * document object.
+ */
 DocumentObjectExecReturn *FeaturePython::execute(void)
 {
-    // Run the callback function of the Python object. There is no need to handle any exceptions here as the calling
-    // instance does this for us.
-    Base::Interpreter().runMethodVoid(PythonObject.ptr(), "execute");
+    // Run the execute method of the proxy object.
+    Py::Object feature = this->Proxy.getValue();
+    try {
+        Py::Callable method(feature.getAttr(std::string("execute")));
+        Py::Tuple args(1);
+        args.setItem(0, this->PythonObject);
+        method.apply(args);
+    }
+    catch (const Py::Exception& e) {
+        std::string err;
+        Py::Object o = Py::type(e);
+        if (o.isString()) {
+            Py::String s(o);
+            err = s.as_std_string();
+        }
+        else {
+            Py::String s(o.repr());
+            err = s.as_std_string();
+        }
+        return new App::DocumentObjectExecReturn(err);
+    }
 
     return DocumentObject::StdReturn;
 }
@@ -155,6 +193,23 @@ std::string FeaturePython::getUniquePropertyName(const char *Name) const
         str << CleanName << ++nSuff;
         return str.str();
     }
+}
+
+void FeaturePython::onChanged(const Property* prop)
+{
+    //if (prop == &Proxy) {
+    //    if (value == Py::None()) {
+    //    }
+    //    else {
+    //        // Here we can check whether 'value' is a method or function but we cannot check the argument list
+    //        // This will do Python for us in the execute method (and throws an exception if not empty).
+    //        if (!value.isCallable()) {
+    //            throw Py::TypeError("Value must be callable");
+    //        }
+    //    }
+    //}
+
+    DocumentObject::onChanged(prop);
 }
 
 void FeaturePython::Save (Base::Writer &writer) const 
