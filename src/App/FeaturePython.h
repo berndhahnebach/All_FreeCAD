@@ -41,6 +41,7 @@ class FeaturePython : public DocumentObject
 
 public:
     FeaturePython();  
+    virtual ~FeaturePython();  
 
     /** @name methods overide Feature */
     //@{
