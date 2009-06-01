@@ -30,6 +30,7 @@
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 
 using namespace App;
 
@@ -81,6 +82,7 @@ void PropertyPythonObject::Restore(Base::XMLReader &reader)
 
 void PropertyPythonObject::SaveDocFile (Base::Writer &writer) const
 {
+    Base::PyGILStateLocker lock;
     try {
         Py::Module pickle(PyImport_ImportModule("pickle"),true);
         Py::Callable method(pickle.getAttr(std::string("dumps")));
@@ -93,6 +95,17 @@ void PropertyPythonObject::SaveDocFile (Base::Writer &writer) const
             writer.Stream().put(*it);
     }
     catch (Py::Exception& e) {
+        std::string err;
+        Py::Object o = Py::type(e);
+        if (o.isString()) {
+            Py::String s(o);
+            err = s.as_std_string();
+        }
+        else {
+            Py::String s(o.repr());
+            err = s.as_std_string();
+        }
+        Base::Console().Warning("PropertyPythonObject::SaveDocFile: %s\n", err.c_str());
         e.clear();
     }
 }
@@ -100,6 +113,7 @@ void PropertyPythonObject::SaveDocFile (Base::Writer &writer) const
 void PropertyPythonObject::RestoreDocFile(Base::Reader &reader)
 {
     aboutToSetValue();
+    Base::PyGILStateLocker lock;
     try {
         std::string buffer;
         char c;
@@ -125,7 +139,7 @@ void PropertyPythonObject::RestoreDocFile(Base::Reader &reader)
             Py::String s(o.repr());
             err = s.as_std_string();
         }
-        Base::Console().Warning("%\n", err.c_str());
+        Base::Console().Warning("PropertyPythonObject::RestoreDocFile: %s\n", err.c_str());
         e.clear();
     }
     hasSetValue();

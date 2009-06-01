@@ -76,14 +76,15 @@ short FeaturePython::mustExecute() const
 DocumentObjectExecReturn *FeaturePython::execute(void)
 {
     // Run the execute method of the proxy object.
-    Py::Object feature = this->Proxy.getValue();
+    Base::PyGILStateLocker lock;
     try {
+        Py::Object feature = this->Proxy.getValue();
         Py::Callable method(feature.getAttr(std::string("execute")));
         Py::Tuple args(1);
         args.setItem(0, this->PythonObject);
         method.apply(args);
     }
-    catch (const Py::Exception& e) {
+    catch (Py::Exception& e) {
         std::string err;
         Py::Object o = Py::type(e);
         if (o.isString()) {
@@ -94,6 +95,7 @@ DocumentObjectExecReturn *FeaturePython::execute(void)
             Py::String s(o.repr());
             err = s.as_std_string();
         }
+        e.clear();
         return new App::DocumentObjectExecReturn(err);
     }
 
