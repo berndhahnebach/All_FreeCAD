@@ -43,6 +43,10 @@ PropertyPythonObject::PropertyPythonObject()
 
 PropertyPythonObject::~PropertyPythonObject()
 {
+    // this is needed because the release of the pickled object may need the
+    // GIL. Thus, we grab the GIL and replace the pickled with an empty object
+    Base::PyGILStateLocker lock;
+    this->object = Py::Object();
 }
 
 void PropertyPythonObject::setValue(Py::Object o)

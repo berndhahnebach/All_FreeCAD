@@ -44,6 +44,10 @@ FeaturePython::FeaturePython()
     ADD_PROPERTY(Proxy,(Py::Object()));
 }
 
+FeaturePython::~FeaturePython()
+{
+}
+
 short FeaturePython::mustExecute() const
 {
     if (this->isTouched())
