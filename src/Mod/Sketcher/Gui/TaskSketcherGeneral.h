@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TASKEDITCONTROL_H
-#define GUI_TASKVIEW_TASKEDITCONTROL_H
+#ifndef GUI_TASKVIEW_TaskSketcherGerneral_H
+#define GUI_TASKVIEW_TaskSketcherGerneral_H
 
 
 
@@ -30,11 +30,11 @@
 # include "Qt4All.h"
 #endif
 
-#include "TaskView.h"
+#include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 
 
-class Ui_TaskEditControl;
+class Ui_TaskSketcherGeneral;
 
 namespace App {
 class Property;
@@ -46,13 +46,13 @@ namespace TaskView {
 
 
 
-class TaskEditControl : public TaskWidget, public Gui::SelectionSingleton::ObserverType
+class TaskSketcherGeneral : public TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    TaskEditControl(QWidget *parent = 0);
-    ~TaskEditControl();
+    TaskSketcherGeneral(QWidget *parent = 0);
+    ~TaskSketcherGeneral();
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
@@ -63,11 +63,10 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    std::vector<Gui::ViewProvider*> getSelection() const;
 
 private:
     QWidget* proxy;
-    Ui_TaskEditControl* ui;
+    Ui_TaskSketcherGeneral* ui;
 };
 
 } //namespace TaskView

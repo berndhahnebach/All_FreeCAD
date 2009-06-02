@@ -67,4 +67,9 @@
 # include <Gui/Qt4All.h>
 #endif
 
+// Inventor
+#ifndef __InventorAll__
+# include <Gui/InventorAll.h>
+#endif
+
 #endif // __PRECOMPILED_GUI__

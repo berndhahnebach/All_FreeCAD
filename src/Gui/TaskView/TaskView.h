@@ -32,7 +32,7 @@
 # include "Qt4All.h"
 #endif
 
-#include "iisTaskPanel/include/iisTaskPanel"
+#include <Gui/iisTaskPanel/include/iisTaskPanel>
 
 namespace App {
 class Property;
@@ -41,7 +41,17 @@ class Property;
 namespace Gui {
 namespace TaskView {
 
-class TaskBox : public iisTaskBox
+/// Father class of all content in TaskView
+class GuiExport TaskContent 
+{
+
+public:
+    //TaskContent();
+    //~TaskContent();
+};
+
+/// Father class of content with header and Icon
+class GuiExport TaskBox : public iisTaskBox, public TaskContent
 {
     Q_OBJECT
 
@@ -50,7 +60,22 @@ public:
     ~TaskBox();
 };
 
-class TaskView : public iisTaskPanel
+/// Father class of content of a Free widget (without header and Icon), shut be a exception!
+class GuiExport TaskWidget : public QWidget, public TaskContent
+{
+    Q_OBJECT
+
+public:
+    TaskWidget(QWidget *parent=0);
+    ~TaskWidget();
+};
+
+/** TaskView class
+  * handles the FreeCAD task view panel. Keeps track of the inserted content elements.
+  * This elements get injected mostly by the ViewProvider classes of the selected
+  * DocumentObjects. 
+  */
+class GuiExport TaskView : public iisTaskPanel
 {
     Q_OBJECT
 

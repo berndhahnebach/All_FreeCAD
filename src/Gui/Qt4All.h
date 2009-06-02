@@ -129,6 +129,7 @@
 #include <QWhatsThis>
 #include <QWhatsThisClickedEvent>
 #include <qwidget.h>
+#include <qobject.h>
 #include <qworkspace.h>
 // QtNetwork
 #include <QFtp>
