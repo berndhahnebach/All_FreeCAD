@@ -88,19 +88,9 @@ DocumentObjectExecReturn *FeaturePython::execute(void)
         args.setItem(0, this->PythonObject);
         method.apply(args);
     }
-    catch (Py::Exception& e) {
-        std::string err;
-        Py::Object o = Py::type(e);
-        if (o.isString()) {
-            Py::String s(o);
-            err = s.as_std_string();
-        }
-        else {
-            Py::String s(o.repr());
-            err = s.as_std_string();
-        }
-        e.clear();
-        return new App::DocumentObjectExecReturn(err);
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        return new App::DocumentObjectExecReturn(e.what());
     }
 
     return DocumentObject::StdReturn;

@@ -98,19 +98,9 @@ void PropertyPythonObject::SaveDocFile (Base::Writer &writer) const
         for (std::string::iterator it = buffer.begin(); it != buffer.end(); ++it)
             writer.Stream().put(*it);
     }
-    catch (Py::Exception& e) {
-        std::string err;
-        Py::Object o = Py::type(e);
-        if (o.isString()) {
-            Py::String s(o);
-            err = s.as_std_string();
-        }
-        else {
-            Py::String s(o.repr());
-            err = s.as_std_string();
-        }
-        Base::Console().Warning("PropertyPythonObject::SaveDocFile: %s\n", err.c_str());
-        e.clear();
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Warning("PropertyPythonObject::SaveDocFile: %s\n", e.what());
     }
 }
 
@@ -132,19 +122,9 @@ void PropertyPythonObject::RestoreDocFile(Base::Reader &reader)
         Py::Object res = method.apply(args);
         this->object = res;
     }
-    catch (Py::Exception& e) {
-        std::string err;
-        Py::Object o = Py::type(e);
-        if (o.isString()) {
-            Py::String s(o);
-            err = s.as_std_string();
-        }
-        else {
-            Py::String s(o.repr());
-            err = s.as_std_string();
-        }
-        Base::Console().Warning("PropertyPythonObject::RestoreDocFile: %s\n", err.c_str());
-        e.clear();
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Warning("PropertyPythonObject::RestoreDocFile: %s\n", e.what());
     }
     hasSetValue();
 }
