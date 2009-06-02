@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\qt;..\..\..\..\include\qt\Qt;..\..\..\..\include\qt\QtCore;..\..\..\..\include\qt\QtDesigner;..\..\..\..\include\qt\QtSvg;..\..\..\..\include\qt\QtNetwork;..\..\..\..\include\qt\QtGui;..\..\..\..\include\qt\QtSql;..\..\..\..\include\qt\QtTest;..\..\..\..\include\qt\QtUiTools;..\..\..\..\include\qt\QtXml;..\..\..\..\include\qt\QtOpenGl;..\..\..\..\include\OpenCascade;..\..\..\..\include\coin;..\..\..\..\include\opencv"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\qt;..\..\..\..\include\qt\Qt;..\..\..\..\include\qt\QtCore;..\..\..\..\include\qt\QtDesigner;..\..\..\..\include\qt\QtSvg;..\..\..\..\include\qt\QtNetwork;..\..\..\..\include\qt\QtGui;..\..\..\..\include\qt\QtSql;..\..\..\..\include\qt\QtTest;..\..\..\..\include\qt\QtUiTools;..\..\..\..\include\qt\QtXml;..\..\..\..\include\qt\QtOpenGl;..\..\..\..\include\OpenCascade;..\..\..\..\include\coin;..\..\..\..\include\opencv;..\..\..\..\include\SoQt"
 				PreprocessorDefinitions="_USRDLL;FCAppPartDesignGui;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\qt;..\..\..\..\include\qt\Qt;..\..\..\..\include\qt\QtCore;..\..\..\..\include\qt\QtDesigner;..\..\..\..\include\qt\QtSvg;..\..\..\..\include\qt\QtNetwork;..\..\..\..\include\qt\QtGui;..\..\..\..\include\qt\QtSql;..\..\..\..\include\qt\QtTest;..\..\..\..\include\qt\QtUiTools;..\..\..\..\include\qt\QtXml;..\..\..\..\include\qt\QtOpenGl;..\..\..\..\include\OpenCascade;..\..\..\..\include\coin;..\..\..\..\include\opencv"
+				AdditionalIncludeDirectories="..\..\..;..\..\..\..\include\python;..\..\..\..\include;..\..\..\..\include\zlib;..\..\..\..\include\qt;..\..\..\..\include\qt\Qt;..\..\..\..\include\qt\QtCore;..\..\..\..\include\qt\QtDesigner;..\..\..\..\include\qt\QtSvg;..\..\..\..\include\qt\QtNetwork;..\..\..\..\include\qt\QtGui;..\..\..\..\include\qt\QtSql;..\..\..\..\include\qt\QtTest;..\..\..\..\include\qt\QtUiTools;..\..\..\..\include\qt\QtXml;..\..\..\..\include\qt\QtOpenGl;..\..\..\..\include\OpenCascade;..\..\..\..\include\coin;..\..\..\..\include\opencv;..\..\..\..\include\SoQt"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPartDesignGui"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -356,6 +356,58 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\TaskPadParameters.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TaskPadParameters.h"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\TaskPadParameters.ui"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
+					Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
+					Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
 				/>
 			</FileConfiguration>
 		</File>

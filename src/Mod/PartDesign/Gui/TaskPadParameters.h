@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TASKEDITCONTROL_H
-#define GUI_TASKVIEW_TASKEDITCONTROL_H
+#ifndef GUI_TASKVIEW_TaskPadParameters_H
+#define GUI_TASKVIEW_TaskPadParameters_H
 
 
 
@@ -30,11 +30,11 @@
 # include "Qt4All.h"
 #endif
 
-#include "TaskView.h"
+#include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 
 
-class Ui_TaskEditControl;
+class Ui_TaskPadParameters;
 
 namespace App {
 class Property;
@@ -42,17 +42,19 @@ class Property;
 
 namespace Gui {
 class ViewProvider;
-namespace TaskView {
+}
+
+namespace PartDesignGui { 
 
 
 
-class TaskEditControl : public TaskWidget, public Gui::SelectionSingleton::ObserverType
+class TaskPadParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    TaskEditControl(QWidget *parent = 0);
-    ~TaskEditControl();
+    TaskPadParameters(QWidget *parent = 0);
+    ~TaskPadParameters();
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
@@ -63,14 +65,12 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    std::vector<Gui::ViewProvider*> getSelection() const;
 
 private:
     QWidget* proxy;
-    Ui_TaskEditControl* ui;
+    Ui_TaskPadParameters* ui;
 };
 
-} //namespace TaskView
-} //namespace Gui
+} //namespace PartDesignGui
 
 #endif // GUI_TASKVIEW_TASKAPPERANCE_H

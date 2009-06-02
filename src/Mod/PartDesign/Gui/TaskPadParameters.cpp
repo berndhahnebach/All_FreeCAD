@@ -26,59 +26,70 @@
 #ifndef _PreComp_
 #endif
 
-#include "ui_TaskEditControl.h"
-#include "TaskEditControl.h"
+#include "ui_TaskPadParameters.h"
+#include "TaskPadParameters.h"
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Base/Console.h>
+#include <Gui/Selection.h>
 
-using namespace Gui::TaskView;
 
-TaskEditControl::TaskEditControl(QWidget *parent)
-    : TaskWidget(parent)
+using namespace PartDesignGui;
+using namespace Gui;
+
+TaskPadParameters::TaskPadParameters(QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskPadParameters"),true, parent)
 {
     // we need a separate container widget to add all controls to
-    //proxy = new QWidget(this);
-    //ui = new Ui_TaskEditControl();
-    //ui->setupUi(proxy);
-    //QMetaObject::connectSlotsByName(this);
-    //proxy = new QWidget(this);
-    ui = new Ui_TaskEditControl();
-    ui->setupUi(this);
+    proxy = new QWidget(this);
+    ui = new Ui_TaskPadParameters();
+    ui->setupUi(proxy);
+    ui->textLabel1_3->hide();
+    ui->changePlot->hide();
     QMetaObject::connectSlotsByName(this);
 
-    //this->groupLayout()->addWidget(proxy);
+    this->groupLayout()->addWidget(proxy);
 
+    std::vector<Gui::ViewProvider*> views;
+ /*   setDisplayModes(views);
+    setPointSize(views);
+    setLineWidth(views);
+    setTransparency(views);*/
     Gui::Selection().Attach(this);
 }
 
-TaskEditControl::~TaskEditControl()
+TaskPadParameters::~TaskPadParameters()
 {
     delete ui;
     Gui::Selection().Detach(this);
 }
 
-void TaskEditControl::changeEvent(QEvent *e)
+void TaskPadParameters::changeEvent(QEvent *e)
 {
-    TaskWidget::changeEvent(e);
+    TaskBox::changeEvent(e);
     if (e->type() == QEvent::LanguageChange) {
         ui->retranslateUi(proxy);
     }
 }
 
-void TaskEditControl::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
         Reason.Type == SelectionChanges::RmvSelection ||
         Reason.Type == SelectionChanges::ClrSelection) {
         //std::vector<Gui::ViewProvider*> views = getSelection();
+        //setDisplayModes(views);
+        //setPointSize(views);
+        //setLineWidth(views);
+        //setTransparency(views);
     }
 }
 
 
 
-#include "moc_TaskEditControl.cpp"
+
+#include "moc_TaskPadParameters.cpp"

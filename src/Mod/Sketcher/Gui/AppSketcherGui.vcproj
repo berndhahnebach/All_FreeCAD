@@ -364,6 +364,138 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\TaskSketcherConstrains.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TaskSketcherConstrains.h"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\TaskSketcherConstrains.ui"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\TaskSketcherCreateCommands.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TaskSketcherCreateCommands.h"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\TaskSketcherGeneral.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TaskSketcherGeneral.h"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+					Outputs="$(InputDir)moc_$(InputName).cpp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\TaskSketcherGeneral.ui"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;"
+					Outputs="&quot;$(InputDir)ui_$(InputName).h&quot;"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\ViewProviderSketch.cpp"
 			>
 		</File>

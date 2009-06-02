@@ -21,56 +21,65 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TASKEDITCONTROL_H
-#define GUI_TASKVIEW_TASKEDITCONTROL_H
+#include "PreCompiled.h"
 
-
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
+#ifndef _PreComp_
 #endif
 
-#include "TaskView.h"
-#include <Gui/Selection.h>
+#include "ui_TaskSketcherGeneral.h"
+#include "TaskSketcherGeneral.h"
+#include <Gui/Application.h>
+#include <Gui/Document.h>
+#include <Gui/BitmapFactory.h>
+#include <Gui/ViewProvider.h>
+#include <Gui/WaitCursor.h>
+#include <Base/Console.h>
 
+using namespace Gui::TaskView;
 
-class Ui_TaskEditControl;
+TaskSketcherGeneral::TaskSketcherGeneral(QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Appearance"),true, parent)
+{
+    // we need a separate container widget to add all controls to
+    proxy = new QWidget(this);
+    ui = new Ui_TaskSketcherGeneral();
+    ui->setupUi(proxy);
+    QMetaObject::connectSlotsByName(this);
 
-namespace App {
-class Property;
+    this->groupLayout()->addWidget(proxy);
+
+    Gui::Selection().Attach(this);
 }
 
-namespace Gui {
-class ViewProvider;
-namespace TaskView {
-
-
-
-class TaskEditControl : public TaskWidget, public Gui::SelectionSingleton::ObserverType
+TaskSketcherGeneral::~TaskSketcherGeneral()
 {
-    Q_OBJECT
+    delete ui;
+    Gui::Selection().Detach(this);
+}
 
-public:
-    TaskEditControl(QWidget *parent = 0);
-    ~TaskEditControl();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
+void TaskSketcherGeneral::changeEvent(QEvent *e)
+{
+    TaskBox::changeEvent(e);
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(proxy);
+    }
+}
 
-private Q_SLOTS:
+void TaskSketcherGeneral::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                              Gui::SelectionSingleton::MessageType Reason)
+{
+    if (Reason.Type == SelectionChanges::AddSelection ||
+        Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::ClrSelection) {
+        //std::vector<Gui::ViewProvider*> views = getSelection();
+        //setDisplayModes(views);
+        //setPointSize(views);
+        //setLineWidth(views);
+        //setTransparency(views);
+    }
+}
 
-protected:
-    void changeEvent(QEvent *e);
 
-private:
-    std::vector<Gui::ViewProvider*> getSelection() const;
 
-private:
-    QWidget* proxy;
-    Ui_TaskEditControl* ui;
-};
 
-} //namespace TaskView
-} //namespace Gui
-
-#endif // GUI_TASKVIEW_TASKAPPERANCE_H
+#include "moc_TaskSketcherGeneral.cpp"
