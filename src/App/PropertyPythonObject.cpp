@@ -73,15 +73,21 @@ void PropertyPythonObject::setPyObject(PyObject * obj)
 
 void PropertyPythonObject::Save (Base::Writer &writer) const
 {
-    writer.Stream() << writer.ind() << "<Python file=\"" << 
-    writer.addFile("Callable.pyc", this) << "\"/>" << std::endl;
+    if (writer.isForceXML()) {
+    }
+    else {
+        writer.Stream() << writer.ind() << "<Python file=\"" << 
+        writer.addFile("Callable.pyc", this) << "\"/>" << std::endl;
+    }
 }
 
 void PropertyPythonObject::Restore(Base::XMLReader &reader)
 {
     reader.readElement("Python");
     std::string file(reader.getAttribute("file"));
-    reader.addFile(file.c_str(),this);
+    if (!file.empty()) {
+        reader.addFile(file.c_str(),this);
+    }
 }
 
 void PropertyPythonObject::SaveDocFile (Base::Writer &writer) const

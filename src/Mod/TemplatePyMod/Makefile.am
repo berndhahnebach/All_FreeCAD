@@ -4,6 +4,7 @@ data_DATA = \
 		Init.py \
 		InitGui.py \
 		Commands.py \
+		FeaturePython.py \
 		PythonQt.py \
 		Tests.py
 
