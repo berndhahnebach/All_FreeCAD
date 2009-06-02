@@ -1151,8 +1151,8 @@ void Application::runApplication(void)
     mainApp.setActiveWindow(&mw);
 
     // Activate the correct workbench
-    Base::Console().Log("Init: Activating default workbench\n");
     std::string start = App::Application::Config()["StartWorkbench"];
+    Base::Console().Log("Init: Activating default workbench %s\n", start.c_str());
     start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
                            GetASCII("AutoloadModule", start.c_str());
     // if the auto workbench is not visible then force to use the default workbech
