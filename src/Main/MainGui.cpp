@@ -134,21 +134,29 @@ int main( int argc, char ** argv )
     }
 
     // Run phase ===========================================================
-    if (App::Application::Config()["RunMode"] == "Gui") {
-        // run GUI
-        Base::RedirectStdOutput stdcout;
-        Base::RedirectStdLog    stdclog;
-        Base::RedirectStdError  stdcerr;
-        std::streambuf* oldcout = std::cout.rdbuf(&stdcout);
-        std::streambuf* oldclog = std::clog.rdbuf(&stdclog);
-        std::streambuf* oldcerr = std::cerr.rdbuf(&stdcerr);
-        Gui::Application::runApplication();
-        std::cout.rdbuf(oldcout);
-        std::clog.rdbuf(oldclog);
-        std::cerr.rdbuf(oldcerr);
-    } else {
-        App::Application::runApplication();
+    Base::RedirectStdOutput stdcout;
+    Base::RedirectStdLog    stdclog;
+    Base::RedirectStdError  stdcerr;
+    std::streambuf* oldcout = std::cout.rdbuf(&stdcout);
+    std::streambuf* oldclog = std::clog.rdbuf(&stdclog);
+    std::streambuf* oldcerr = std::cerr.rdbuf(&stdcerr);
+
+    try {
+        if (App::Application::Config()["RunMode"] == "Gui")
+            Gui::Application::runApplication();
+        else
+            App::Application::runApplication();
     }
+    catch (const Base::Exception& e) {
+        Base::Console().Error("%s\n", e.what());
+    }
+    catch (...) {
+        Base::Console().Error("Application unexpectedly terminated\n");
+    }
+
+    std::cout.rdbuf(oldcout);
+    std::clog.rdbuf(oldclog);
+    std::cerr.rdbuf(oldcerr);
 
     // Destruction phase ===========================================================
     Base::Console().Log("%s terminating...\n",App::Application::Config()["ExeName"].c_str());

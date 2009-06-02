@@ -1197,8 +1197,9 @@ void Application::runApplication(void)
     catch(...) {
         // catching nasty stuff coming out of the event loop
         App::Application::destructObserver();
+        Base::Console().Error("Event loop left through unhandled exception\n");
         throw;
     }
 
-    Base::Console().Log("Init: event loop left\n");
+    Base::Console().Log("Finish: Event loop left\n");
 }
