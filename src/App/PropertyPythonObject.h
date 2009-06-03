@@ -40,6 +40,10 @@ class XMLReader;
 namespace App
 {
 
+/**
+ * PropertyPythonObject is used to manage Py::Object instances as properties.
+ * @author Werner Mayer
+ */
 class AppExport PropertyPythonObject : public Property
 {
     TYPESYSTEM_HEADER();
@@ -54,7 +58,9 @@ public:
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);
 
+    /** Use Python's pickle module to save the object */
     virtual void Save (Base::Writer &writer) const;
+    /** Use Python's pickle module to restore the object */
     virtual void Restore(Base::XMLReader &reader);
     virtual void SaveDocFile (Base::Writer &writer) const;
     virtual void RestoreDocFile(Base::Reader &reader);
@@ -63,7 +69,12 @@ public:
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
 
+    std::string toString() const;
+    void fromString(const std::string&);
+
 private:
+    std::string encodeValue(const std::string& str) const;
+    std::string decodeValue(const std::string& str) const;
     Py::Object object;
 };
 
