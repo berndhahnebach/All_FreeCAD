@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>Gui::TaskView::TaskSketcherConstrains</class>
  <widget class="QWidget" name="Gui::TaskView::TaskSketcherConstrains" >
   <property name="geometry" >
@@ -13,20 +16,11 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
    <property name="spacing" >
     <number>6</number>
-   </property>
-   <property name="leftMargin" >
-    <number>9</number>
-   </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>9</number>
    </property>
    <item>
     <widget class="QListWidget" name="listWidgetConstraints" >
@@ -37,6 +31,7 @@
    </item>
   </layout>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
