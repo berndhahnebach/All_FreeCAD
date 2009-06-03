@@ -2,11 +2,28 @@ SUBDIRS=Resources
 
 lib_LTLIBRARIES=libSketcherGui.la SketcherGui.la
 
+BUILT_SOURCES=\
+		moc_TaskSketcherConstrains.cpp \
+		moc_TaskSketcherCreateCommands.cpp \
+		moc_TaskSketcherGeneral.cpp \
+		ui_TaskSketcherConstrains.h \
+		ui_TaskSketcherGeneral.h
+
+libSketcherGui_la_UI=\
+		TaskSketcherConstrains.ui \
+		TaskSketcherGeneral.ui
+
 libSketcherGui_la_SOURCES=\
 		AppSketcherGuiPy.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		TaskSketcherConstrains.cpp \
+		TaskSketcherConstrains.h \
+		TaskSketcherCreateCommands.cpp \
+		TaskSketcherCreateCommands.h \
+		TaskSketcherGeneral.cpp \
+		TaskSketcherGeneral.h \
 		ViewProviderSketch.cpp \
 		ViewProviderSketch.h \
 		Workbench.cpp \
@@ -76,5 +93,6 @@ libdir = $(prefix)/Mod/Sketcher
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		$(libSketcherGui_la_UI) \
 		AppSketcherGui.vcproj 
 

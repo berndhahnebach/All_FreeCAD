@@ -1,13 +1,21 @@
 SUBDIRS=Resources
 
-
 lib_LTLIBRARIES=libPartDesignGui.la PartDesignGui.la
+
+BUILT_SOURCES=\
+		moc_TaskPadParameters.cpp \
+		ui_TaskPadParameters.h
+
+libPartDesignGui_la_UI=\
+		TaskPadParameters.ui
 
 libPartDesignGui_la_SOURCES=\
 		AppPartDesignGuiPy.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		TaskPadParameters.cpp \
+		TaskPadParameters.h \
 		Workbench.cpp \
 		Workbench.h
 
@@ -71,5 +79,6 @@ libdir = $(prefix)/Mod/PartDesign
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		$(libPartDesignGui_la_UI) \
 		AppPartDesignGui.vcproj 
 
