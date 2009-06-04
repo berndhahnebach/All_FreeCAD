@@ -66,7 +66,6 @@ private:
     std::vector<Gui::ViewProvider*> getSelection() const;
 
 private:
-    QWidget* proxy;
     Ui_TaskEditControl* ui;
 };
 
