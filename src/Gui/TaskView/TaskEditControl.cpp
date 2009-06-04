@@ -40,17 +40,9 @@ using namespace Gui::TaskView;
 TaskEditControl::TaskEditControl(QWidget *parent)
     : TaskWidget(parent)
 {
-    // we need a separate container widget to add all controls to
-    //proxy = new QWidget(this);
-    //ui = new Ui_TaskEditControl();
-    //ui->setupUi(proxy);
-    //QMetaObject::connectSlotsByName(this);
-    //proxy = new QWidget(this);
     ui = new Ui_TaskEditControl();
     ui->setupUi(this);
     QMetaObject::connectSlotsByName(this);
-
-    //this->groupLayout()->addWidget(proxy);
 
     Gui::Selection().Attach(this);
 }
@@ -65,12 +57,12 @@ void TaskEditControl::changeEvent(QEvent *e)
 {
     TaskWidget::changeEvent(e);
     if (e->type() == QEvent::LanguageChange) {
-        ui->retranslateUi(proxy);
+        ui->retranslateUi(this);
     }
 }
 
 void TaskEditControl::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                              Gui::SelectionSingleton::MessageType Reason)
+                               Gui::SelectionSingleton::MessageType Reason)
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
         Reason.Type == SelectionChanges::RmvSelection ||
