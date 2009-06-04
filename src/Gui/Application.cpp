@@ -1112,6 +1112,53 @@ void messageHandlerSoQt(const SbString errmsg, SoQt::FatalErrors errcode, void *
 }
 #endif
 
+namespace Gui {
+class GUIApplication : public QApplication
+{
+public:
+    GUIApplication(int & argc, char ** argv)
+        : QApplication(argc, argv)
+    {
+    }
+
+    bool notify (QObject * receiver, QEvent * event)
+    {
+        try {
+            return QApplication::notify(receiver, event);
+        }
+        catch (const Base::Exception& e) {
+            Base::Console().Error("Unhandled exception caught in GUIApplication::notify.\n"
+                                  "The error message is: %s\n", e.what());
+        }
+        catch (...) {
+            Base::Console().Error("Unhandled exception caught in GUIApplication::notify.\n");
+        }
+
+        // Print some more information to the log file (if active) to ease bug fixing
+        std::stringstream dump;
+        dump << "The event type " << (int)event->type() << " was sent to "
+             << receiver->metaObject()->className() << "\n";
+        dump << "Object tree:\n";
+        if (receiver->isWidgetType()) {
+            QWidget* w = qobject_cast<QWidget*>(receiver);
+            while (w) {
+                dump << "\t";
+                dump << w->metaObject()->className();
+                QString name = w->objectName();
+                if (!name.isEmpty())
+                    dump << " (" << (const char*)name.toUtf8() << ")";
+                w = w->parentWidget();
+                if (w)
+                    dump << " is child of\n";
+            }
+            std::string str = dump.str();
+            Base::Console().Log("%s",str.c_str());
+        }
+        return true;
+    }
+};
+}
+
 void Application::runApplication(void)
 {
     // add resources
@@ -1123,7 +1170,7 @@ void Application::runApplication(void)
     // if application not yet created by the splasher
     int argc = App::Application::GetARGC();
     qInstallMsgHandler( messageHandler );
-    QApplication mainApp(argc, App::Application::GetARGV());
+    GUIApplication mainApp(argc, App::Application::GetARGV());
 
     Application app;
     MainWindow mw;
