@@ -28,6 +28,7 @@
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
 # include <sstream>
+# include <stdexcept>
 #endif
 
 // FreeCAD Base header
@@ -1113,6 +1114,9 @@ void messageHandlerSoQt(const SbString errmsg, SoQt::FatalErrors errcode, void *
 #endif
 
 namespace Gui {
+/** Override QCoreApplication::notify() to fetch exceptions in Qt widgets
+ * properly that are not handled in the event handler or slot.
+ */
 class GUIApplication : public QApplication
 {
 public:
@@ -1121,39 +1125,50 @@ public:
     {
     }
 
+    /**
+     * Make forwarding events exception-safe and get more detailed information
+     * where an unhandled exception comes from.
+     */
     bool notify (QObject * receiver, QEvent * event)
     {
         try {
             return QApplication::notify(receiver, event);
         }
         catch (const Base::Exception& e) {
-            Base::Console().Error("Unhandled exception caught in GUIApplication::notify.\n"
+            Base::Console().Error("Unhandled Base::Exception caught in GUIApplication::notify.\n"
+                                  "The error message is: %s\n", e.what());
+        }
+        catch (const std::exception& e) {
+            Base::Console().Error("Unhandled std::exception caught in GUIApplication::notify.\n"
                                   "The error message is: %s\n", e.what());
         }
         catch (...) {
-            Base::Console().Error("Unhandled exception caught in GUIApplication::notify.\n");
+            Base::Console().Error("Unhandled unknown exception caught in GUIApplication::notify.\n");
         }
 
         // Print some more information to the log file (if active) to ease bug fixing
-        std::stringstream dump;
-        dump << "The event type " << (int)event->type() << " was sent to "
-             << receiver->metaObject()->className() << "\n";
-        dump << "Object tree:\n";
-        if (receiver->isWidgetType()) {
-            QWidget* w = qobject_cast<QWidget*>(receiver);
-            while (w) {
-                dump << "\t";
-                dump << w->metaObject()->className();
-                QString name = w->objectName();
-                if (!name.isEmpty())
-                    dump << " (" << (const char*)name.toUtf8() << ")";
-                w = w->parentWidget();
-                if (w)
-                    dump << " is child of\n";
+        if (receiver && event) {
+            std::stringstream dump;
+            dump << "The event type " << (int)event->type() << " was sent to "
+                 << receiver->metaObject()->className() << "\n";
+            dump << "Object tree:\n";
+            if (receiver->isWidgetType()) {
+                QWidget* w = qobject_cast<QWidget*>(receiver);
+                while (w) {
+                    dump << "\t";
+                    dump << w->metaObject()->className();
+                    QString name = w->objectName();
+                    if (!name.isEmpty())
+                        dump << " (" << (const char*)name.toUtf8() << ")";
+                    w = w->parentWidget();
+                    if (w)
+                        dump << " is child of\n";
+                }
+                std::string str = dump.str();
+                Base::Console().Log("%s",str.c_str());
             }
-            std::string str = dump.str();
-            Base::Console().Log("%s",str.c_str());
         }
+
         return true;
     }
 };
