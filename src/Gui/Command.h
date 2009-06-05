@@ -103,6 +103,16 @@ public:
   virtual int         getAccel      () const { return iAccel;       }
   //@}
 
+  /** @name Methods to set the properties of the command */
+  //@{
+  void setWhatsThis  ( const char* );
+  void setMenuText   ( const char* );
+  void setToolTipText( const char* );
+  void setStatusTip  ( const char* );
+  void setPixmap     ( const char* );
+  void setAccel      ( int         );
+  //@}
+
 protected:
   /** @name Attributes 
    *  Set by the inherited constructor to set up the most important properties 
@@ -353,12 +363,6 @@ public:
   //@{
   /// Sets the script name
   void setScriptName ( const char* );
-  void setWhatsThis  ( const char* );
-  void setMenuText   ( const char* );
-  void setToolTipText( const char* );
-  void setStatusTip  ( const char* );
-  void setPixmap     ( const char* );
-  void setAccel      ( int         );
   //@}
 
   /** @name Methods to load and save macro commands. */

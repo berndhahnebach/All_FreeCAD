@@ -152,6 +152,56 @@ void CommandBase::languageChange()
     }
 }
 
+void CommandBase::setMenuText(const char* s)
+{
+#if defined (_MSC_VER)
+    this->sMenuText = _strdup(s);
+#else
+    this->sMenuText = strdup(s);
+#endif
+}
+
+void CommandBase::setToolTipText(const char* s)
+{
+#if defined (_MSC_VER)
+    this->sToolTipText = _strdup(s);
+#else
+    this->sToolTipText = strdup(s);
+#endif
+}
+
+void CommandBase::setStatusTip(const char* s)
+{
+#if defined (_MSC_VER)
+    this->sStatusTip = _strdup(s);
+#else
+    this->sStatusTip = strdup(s);
+#endif
+}
+
+void CommandBase::setWhatsThis(const char* s)
+{
+#if defined (_MSC_VER)
+    this->sWhatsThis = _strdup(s);
+#else
+    this->sWhatsThis = strdup(s);
+#endif
+}
+
+void CommandBase::setPixmap(const char* s)
+{
+#if defined (_MSC_VER)
+    this->sPixmap = _strdup(s);
+#else
+    this->sPixmap = strdup(s);
+#endif
+}
+
+void CommandBase::setAccel(int i)
+{
+    iAccel = i;
+}
+
 //===========================================================================
 // Command
 //===========================================================================
@@ -495,51 +545,6 @@ Action * MacroCommand::createAction(void)
     return pcAction;
 }
 
-void MacroCommand::setMenuText( const char* s )
-{
-#if defined (_MSC_VER)
-    this->sMenuText = _strdup( s );
-#else
-    this->sMenuText = strdup( s );
-#endif
-}
-
-void MacroCommand::setToolTipText( const char* s )
-{
-#if defined (_MSC_VER)
-    this->sToolTipText = _strdup( s );
-#else
-    this->sToolTipText = strdup( s );
-#endif
-}
-
-void MacroCommand::setStatusTip( const char* s )
-{
-#if defined (_MSC_VER)
-    this->sStatusTip = _strdup( s );
-#else
-    this->sStatusTip = strdup( s );
-#endif
-}
-
-void MacroCommand::setWhatsThis( const char* s )
-{
-#if defined (_MSC_VER)
-    this->sWhatsThis = _strdup( s );
-#else
-    this->sWhatsThis = strdup( s );
-#endif
-}
-
-void MacroCommand::setPixmap( const char* s )
-{
-#if defined (_MSC_VER)
-    this->sPixmap = _strdup( s );
-#else
-    this->sPixmap = strdup( s );
-#endif
-}
-
 void MacroCommand::setScriptName( const char* s )
 {
 #if defined (_MSC_VER)
@@ -547,11 +552,6 @@ void MacroCommand::setScriptName( const char* s )
 #else
     this->sScriptName = strdup( s );
 #endif
-}
-
-void MacroCommand::setAccel(int i)
-{
-    iAccel = i;
 }
 
 void MacroCommand::load()
