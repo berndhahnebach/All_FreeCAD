@@ -67,4 +67,4 @@ def makeBox():
 	FreeCAD.newDocument()
 	a=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Box")
 	Box(a)
-	ViewProviderFeaturePython(a.ViewObject)
+	ViewProviderBox(a.ViewObject)
