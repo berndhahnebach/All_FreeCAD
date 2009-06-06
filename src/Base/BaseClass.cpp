@@ -73,8 +73,8 @@ void BaseClass::init(void)
   /* Set up entry in the type system. */ 
   BaseClass::classTypeId = 
     Type::createType(Type::badType(), 
-                     "Base::BaseClass" 
-                       ); 
+                     "Base::BaseClass", 
+                     BaseClass::create); 
 }
 
 Type BaseClass::getClassTypeId(void) 

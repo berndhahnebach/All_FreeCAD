@@ -40,7 +40,7 @@ using namespace Gui;
 PROPERTY_SOURCE(Gui::ViewProviderPythonFeature, Gui::ViewProviderDocumentObject)
 
 
-ViewProviderPythonFeature::ViewProviderPythonFeature()
+ViewProviderPythonFeature::ViewProviderPythonFeature() : docObject(0)
 {
     ADD_PROPERTY(Proxy,(Py::Object()));
 }
@@ -82,6 +82,10 @@ QIcon ViewProviderPythonFeature::getIcon() const
 void ViewProviderPythonFeature::onChanged(const App::Property* prop)
 {
     if (prop == &Proxy) {
+        if (docObject) {
+            attach(docObject);
+            docObject = 0;
+        }
     }
     else {
         ViewProviderDocumentObject::onChanged(prop);
@@ -90,7 +94,27 @@ void ViewProviderPythonFeature::onChanged(const App::Property* prop)
 
 void ViewProviderPythonFeature::attach(App::DocumentObject *obj)
 {
-    ViewProviderDocumentObject::attach(obj);
+    if (docObject) {
+        // Run the getDisplayModes method of the proxy object.
+        Base::PyGILStateLocker lock;
+        try {
+            Py::Object vp = this->Proxy.getValue();
+            Py::Callable method(vp.getAttr(std::string("attach")));
+            Py::Tuple args(1);
+            args.setItem(0, Py::Object(obj->getPyObject(), true));
+            method.apply(args);
+        }
+        catch (Py::Exception&) {
+            Base::PyException e; // extract the Python error text
+            Base::Console().Error("ViewProviderPythonFeature::attach: %s\n", e.what());
+        }
+
+        ViewProviderDocumentObject::attach(obj);
+    }
+    else {
+        docObject = obj;
+        pcObject = obj;
+    }
 }
 
 void ViewProviderPythonFeature::updateData(const App::Property* prop)
@@ -116,8 +140,28 @@ void ViewProviderPythonFeature::updateData(const App::Property* prop)
     ViewProviderDocumentObject::updateData(prop);
 }
 
-void ViewProviderPythonFeature::setDisplayMode(char const *)
+void ViewProviderPythonFeature::setDisplayMode(char const * ModeName)
 {
+    // Run the getDisplayModes method of the proxy object.
+    Base::PyGILStateLocker lock;
+    try {
+        Py::Object vp = this->Proxy.getValue();
+        if (vp.hasAttr(std::string("setDisplayMode"))) {
+            Py::Callable method(vp.getAttr(std::string("setDisplayMode")));
+            Py::Tuple args(1);
+            args.setItem(0, Py::String(ModeName));
+            Py::String str(method.apply(args));
+            setDisplayMaskMode(str.as_std_string().c_str());
+        }
+        else
+            setDisplayMaskMode(ModeName);
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("ViewProviderPythonFeature::setDisplayMode: %s\n", e.what());
+    }
+
+    ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
 char const * ViewProviderPythonFeature::getDefaultDisplayMode(void) const
@@ -127,7 +171,29 @@ char const * ViewProviderPythonFeature::getDefaultDisplayMode(void) const
 
 std::vector<std::string> ViewProviderPythonFeature::getDisplayModes(void)const
 {
-    return std::vector<std::string>();
+    // Run the getDisplayModes method of the proxy object.
+    Base::PyGILStateLocker lock;
+    std::vector<std::string> modes;
+    try {
+        Py::Object vp = this->Proxy.getValue();
+        if (vp.hasAttr(std::string("getDisplayModes"))) {
+            Py::Callable method(vp.getAttr(std::string("getDisplayModes")));
+            Py::Tuple args(1);
+            ViewProviderPythonFeature* that = const_cast<ViewProviderPythonFeature*>(this);
+            args.setItem(0, Py::Object(that->getPyObject(), true));
+            Py::List list(method.apply(args));
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                Py::String str(*it);
+                modes.push_back(str.as_std_string());
+            }
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("ViewProviderPythonFeature::getDisplayModes: %s\n", e.what());
+    }
+
+    return modes;
 }
 
 bool ViewProviderPythonFeature::setEdit(int)
@@ -212,17 +278,18 @@ const char* ViewProviderPythonFeature::getName(const App::Property* prop) const
 
 App::Property* ViewProviderPythonFeature::addDynamicProperty(const char* type, const char* name)
 {
-    App::Property* pcProperty = (App::Property*) Base::Type::createInstanceByName(type,true);
-    if (!pcProperty)
+    Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(type,true));
+    if (!base)
         return 0;
-    if (!pcProperty->getTypeId().isDerivedFrom(App::Property::getClassTypeId())) {
-        delete pcProperty;
+    if (!base->getTypeId().isDerivedFrom(App::Property::getClassTypeId())) {
+        delete base;
         std::stringstream str;
         str << "'" << type << "' is not a property type";
         throw Base::Exception(str.str());
     }
 
     // get unique name
+    App::Property* pcProperty = static_cast<App::Property*>(base);
     std::string ObjectName;
     if (name && *name != '\0')
         ObjectName = getUniquePropertyName(name);

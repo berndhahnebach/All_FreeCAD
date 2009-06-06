@@ -76,17 +76,19 @@ Workbench* WorkbenchManager::createWorkbench (const std::string& name, const std
 
     if (!wb) {
         // try to create an instance now
-        wb = (Workbench*) Base::Type::createInstanceByName(className.c_str(),false);
-        if (wb) {
-            if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId())) {
-                delete wb;
+        Base::BaseClass* base = static_cast<Base::BaseClass*>
+            (Base::Type::createInstanceByName(className.c_str(),false));
+        if (base) {
+            if (!base->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId())) {
+                delete base;
                 std::stringstream str;
                 str << "'" << className << "' not a workbench type" << std::ends;
                 throw Base::Exception(str.str());
             }
 
-            wb->setName( name );
-            _workbenches[ name ] = wb;
+            wb = static_cast<Workbench*>(base);
+            wb->setName(name);
+            _workbenches[name] = wb;
         }
         else
             Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create "

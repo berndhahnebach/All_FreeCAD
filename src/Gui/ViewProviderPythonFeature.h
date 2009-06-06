@@ -110,6 +110,7 @@ private:
 private:
     std::map<std::string,App::Property*> objectProperties;
     App::PropertyPythonObject Proxy;
+    App::DocumentObject* docObject;
 };
 
 

@@ -28,18 +28,43 @@ Examples for a feature class and its view provider.
 __author__ = "Werner Mayer <werner.wm.mayer@gmx.de>"
 
 import FreeCAD, FreeCADGui
+from pivy import coin
 
-class FeaturePython:
+class Box:
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyLength","Length","Box","Length of the box").Length=2.0
+		obj.addProperty("App::PropertyLength","Width","Box","Width of the box").Width=2.0
+		obj.addProperty("App::PropertyLength","Height","Box", "Height of the box").Height=2.0
+		obj.Proxy = self
+	
+	def onChanged(self, fp, prop):
+		FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
+		
 	def execute(self, fp):
 		FreeCAD.Console.PrintMessage("Hello, World!\n")
 
-class ViewProviderFeaturePython:
+class ViewProviderBox:
+	def __init__(self, obj):
+		obj.Proxy = self
+
+	def attach(self, obj):
+		pass
+
 	def updateData(self, vp, prop):
-		FreeCAD.Console.PrintMessage(str(prop))
+		pass
+	
+	def getDisplayModes(self,vp):
+		modes=[]
+		modes.append("Shaded")
+		modes.append("Wireframe")
+		return modes
+		
+	def setDisplayMode(self,mode):
+		return mode
 
 
-def test():
+def makeBox():
 	FreeCAD.newDocument()
-	a=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Feature")
-	a.Proxy=FeaturePython()
-	a.ViewObject.Proxy=ViewProviderFeaturePython()
+	a=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Box")
+	Box(a)
+	ViewProviderFeaturePython(a.ViewObject)

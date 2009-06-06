@@ -1017,18 +1017,19 @@ void Document::recomputeFeature(DocumentObject* Feat)
 
 DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 {
-    App::DocumentObject* pcObject = (App::DocumentObject*) Base::Type::createInstanceByName(sType,true);
+    Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(sType,true));
 
     string ObjectName;
-    if (!pcObject)
+    if (!base)
         return 0;
-    if (!pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId())) {
-        delete pcObject;
+    if (!base->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId())) {
+        delete base;
         std::stringstream str;
         str << "'" << sType << "' is not a document object type";
         throw Base::Exception(str.str());
     }
 
+    App::DocumentObject* pcObject = static_cast<App::DocumentObject*>(base);
     pcObject->setDocument(this);
 
     // Transaction stuff
