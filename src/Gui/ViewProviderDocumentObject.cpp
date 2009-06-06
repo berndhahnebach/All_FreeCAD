@@ -146,9 +146,11 @@ SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type
 
 void ViewProviderDocumentObject::setActiveMode()
 {
-    const char* mode = DisplayMode.getValueAsString();
-    if (mode)
-        setDisplayMode(mode);
+    if (DisplayMode.getEnums()) {
+        const char* mode = DisplayMode.getValueAsString();
+        if (mode)
+            setDisplayMode(mode);
+    }
     if (!Visibility.getValue())
         ViewProvider::hide();
 }

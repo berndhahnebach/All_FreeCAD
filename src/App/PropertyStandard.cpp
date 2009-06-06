@@ -628,7 +628,7 @@ TYPESYSTEM_SOURCE(App::PropertyFloat , App::Property);
 
 PropertyFloat::PropertyFloat()
 {
-
+    _dValue = 0.0;
 }
 
 PropertyFloat::~PropertyFloat()
@@ -768,7 +768,7 @@ TYPESYSTEM_SOURCE(PropertyDistance, App::PropertyFloat);
 // PropertyLength
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(PropertyLength, App::PropertyFloat);
+TYPESYSTEM_SOURCE(App::PropertyLength, App::PropertyFloat);
 
 void PropertyLength::setPyObject(PyObject *value)
 {

@@ -60,11 +60,13 @@ public:
     virtual const char* getName(const Property* prop) const;
     //@}
 
-    Property* addDynamicProperty(const char* type, const char* name=0);
+    Property* addDynamicProperty(const char* type, const char* name=0, const char* group=0,
+                                 const char* doc=0, short attr=0);
     void Save (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
 
     PyObject *getPyObject(void);
+    void setPyObject(PyObject *);
 
     friend class FeaturePythonPy;
 
@@ -75,7 +77,14 @@ private:
     std::string getUniquePropertyName(const char *Name) const;
 
 private:
-    std::map<std::string,Property*> objectProperties;
+    struct PropData {
+        Property* property;
+        std::string group;
+        std::string doc;
+        short attr;
+    };
+
+    std::map<std::string,PropData> objectProperties;
     PropertyPythonObject Proxy;
 };
 

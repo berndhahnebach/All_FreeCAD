@@ -38,17 +38,18 @@ using namespace App;
 // returns a string which represent the object e.g. when printed in python
 const char *FeaturePythonPy::representation(void) const
 {
-    return "Python feature object>";
+    return "<Python feature object>";
 }
 
 PyObject*  FeaturePythonPy::addProperty(PyObject *args)
 {
-    char *sType,*sName=0;
-    if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
+    char *sType,*sName=0,*sGroup=0,*sDoc=0;
+    short attr=0;
+    if (!PyArg_ParseTuple(args, "s|sssh", &sType,&sName,&sGroup,&sDoc,&attr))     // convert args: Python->C
         return NULL;                             // NULL triggers exception 
 
     Property* prop=0;
-    prop = getFeaturePythonPtr()->addDynamicProperty(sType,sName);
+    prop = getFeaturePythonPtr()->addDynamicProperty(sType,sName,sGroup,sDoc,attr);
     
     if (!prop) {
         std::stringstream str;
@@ -56,7 +57,7 @@ PyObject*  FeaturePythonPy::addProperty(PyObject *args)
         throw Py::Exception(PyExc_Exception,str.str());
     }
 
-    Py_Return;
+    return Py::new_reference_to(this);
 }
 
 PyObject*  FeaturePythonPy::supportedProperties(PyObject *args)
@@ -78,17 +79,16 @@ PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
         if (Base::streq(attr, "__dict__")){
             PyObject* dict = FeaturePy::getCustomAttributes(attr);
             if (dict){
-                const std::map<std::string,Property*>& Map = getFeaturePythonPtr()->objectProperties;
-                for ( std::map<std::string,App::Property*>::const_iterator it = Map.begin(); it != Map.end(); ++it )
+                const std::map<std::string,FeaturePython::PropData>& Map = getFeaturePythonPtr()->objectProperties;
+                for (std::map<std::string,FeaturePython::PropData>::const_iterator it = Map.begin(); it != Map.end(); ++it)
                     PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
             }
             return dict;
         }
         // search in object PropertyList
-        std::map<std::string,Property*>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
-
+        std::map<std::string,FeaturePython::PropData>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
         if (pos != getFeaturePythonPtr()->objectProperties.end()) {
-            Property *prop = getFeaturePythonPtr()->objectProperties[attr];
+            Property *prop = pos->second.property;
             return prop->getPyObject();
         }
 
@@ -100,12 +100,12 @@ PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
 int FeaturePythonPy::setCustomAttributes(const char* attr, PyObject *value)
 {
     // search in object PropertyList
-    std::map<std::string,Property*>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
+    std::map<std::string,FeaturePython::PropData>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
 
     if (pos == getFeaturePythonPtr()->objectProperties.end())
         return FeaturePy::setCustomAttributes(attr, value);
     else {
-        Property *prop = getFeaturePythonPtr()->objectProperties[attr];
+        Property *prop = pos->second.property;
 
         try {
             prop->setPyObject(value);
@@ -117,6 +117,6 @@ int FeaturePythonPy::setCustomAttributes(const char* attr, PyObject *value)
             return -1;
         }
 
-        return 0;
+        return 1;
     }
 }

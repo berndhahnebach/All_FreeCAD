@@ -317,10 +317,11 @@ void Document::slotNewObject(App::DocumentObject& Obj)
     }
   
     setModified(true);
-    ViewProviderDocumentObject *pcProvider = (ViewProviderDocumentObject*) Base::Type::createInstanceByName(cName.c_str(),true);
-    if (pcProvider) {
+    Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(cName.c_str(),true));
+    if (base) {
         // type not derived from ViewProviderDocumentObject!!!
-        assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
+        assert(base->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
+        ViewProviderDocumentObject *pcProvider = static_cast<ViewProviderDocumentObject*>(base);
         d->_ViewProviderMap[&Obj] = pcProvider;
 
         try {
