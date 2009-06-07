@@ -45,20 +45,25 @@ class Box:
 
 class ViewProviderBox:
 	def __init__(self, obj):
+		self.node = coin.SoGroup()
 		obj.Proxy = self
 
 	def attach(self, obj):
-		pass
+		obj.addDisplayMode(self.node,"Shaded");
+		obj.addDisplayMode(self.node,"Wireframe");
 
-	def updateData(self, vp, prop):
+	def updateData(self, obj, prop):
 		pass
 	
-	def getDisplayModes(self,vp):
+	def getDisplayModes(self,obj):
 		modes=[]
 		modes.append("Shaded")
 		modes.append("Wireframe")
 		return modes
-		
+
+	def getDefaultDisplayMode(self):
+		return "Shaded"
+
 	def setDisplayMode(self,mode):
 		return mode
 

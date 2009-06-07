@@ -56,6 +56,7 @@ public:
 
     /** @name Display methods */
     //@{
+    void addDisplayMode(SoNode *node, const char* type);
     /// get the default display mode
     virtual const char* getDefaultDisplayMode() const;
     /// returns a list of all possible modes

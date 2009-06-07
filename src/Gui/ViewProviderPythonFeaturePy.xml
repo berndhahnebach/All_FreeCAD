@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+	<PythonExport 
+		Father="ViewProviderDocumentObjectPy" 
+		FatherInclude="Gui/ViewProviderDocumentObjectPy.h"
+		Name="ViewProviderPythonFeaturePy" 
+		Twin="ViewProviderPythonFeature" 
+		TwinPointer="ViewProviderPythonFeature" 
+		Include="Gui/ViewProviderPythonFeature.h" 
+		Namespace="Gui" 
+		FatherNamespace="Gui">
+		<Documentation>
+			<Author Licence="LGPL" Name="Werner Mayer" EMail="wmayer@users.sourceforge.net" />
+			<UserDocu>This is the view provider class for Python features</UserDocu>
+		</Documentation>
+		<Methode Name="addDisplayMode">
+			<Documentation>
+				<UserDocu>Add a new display mode to the view provider</UserDocu>
+			</Documentation>
+		</Methode>
+	</PythonExport>
+</GenerateModel>

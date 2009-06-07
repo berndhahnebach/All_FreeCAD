@@ -95,6 +95,7 @@ BUILT_SOURCES=\
 		WorkbenchPy.cpp \
 		ViewProviderPy.cpp \
 		ViewProviderDocumentObjectPy.cpp \
+		ViewProviderPythonFeaturePy.cpp \
 		GuiInitScript.h
 
 libFreeCADGui_la_UI=\
@@ -134,6 +135,7 @@ libFreeCADGui_la_BUILT=\
 		PythonWorkbenchPy.h \
 		ViewProviderPy.h \
 		ViewProviderDocumentObjectPy.h \
+		ViewProviderPythonFeaturePy.h \
 		WorkbenchPy.h 
 
 libFreeCADGui_la_SOURCES=\
@@ -288,6 +290,7 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderDocumentObjectPyImp.cpp \
 		ViewProviderMeasureDistance.cpp \
 		ViewProviderPythonFeature.cpp \
+		ViewProviderPythonFeaturePyImp.cpp \
 		WaitCursor.cpp \
 		WhatsThis.cpp \
 		WidgetFactory.cpp \
@@ -390,6 +393,7 @@ EXTRA_DIST = \
 		WorkbenchPy.xml \
 		ViewProviderPy.xml \
 		ViewProviderDocumentObjectPy.xml \
+		ViewProviderPythonFeaturePy.xml \
 		FreeCADGui.vcproj
 
 # the library search path.
