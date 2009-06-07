@@ -28,6 +28,7 @@
 #endif
 
 #include "ViewProviderPythonFeature.h"
+#include "ViewProviderPythonFeaturePy.h"
 #include "Tree.h"
 #include <Base/Console.h>
 #include <Base/Reader.h>
@@ -101,7 +102,7 @@ void ViewProviderPythonFeature::attach(App::DocumentObject *obj)
             Py::Object vp = this->Proxy.getValue();
             Py::Callable method(vp.getAttr(std::string("attach")));
             Py::Tuple args(1);
-            args.setItem(0, Py::Object(obj->getPyObject(), true));
+            args.setItem(0, Py::Object(this->getPyObject(), true));
             method.apply(args);
         }
         catch (Py::Exception&) {
@@ -164,8 +165,32 @@ void ViewProviderPythonFeature::setDisplayMode(char const * ModeName)
     ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
+void ViewProviderPythonFeature::addDisplayMode(SoNode *node, const char* type)
+{
+    // call from the view provider base class
+    addDisplayMaskMode(node, type);
+}
+
 char const * ViewProviderPythonFeature::getDefaultDisplayMode(void) const
 {
+    // Run the getDisplayModes method of the proxy object.
+    Base::PyGILStateLocker lock;
+    static std::string mode;
+    try {
+        Py::Object vp = this->Proxy.getValue();
+        if (vp.hasAttr(std::string("getDefaultDisplayMode"))) {
+            Py::Callable method(vp.getAttr(std::string("getDefaultDisplayMode")));
+            Py::Tuple args(0);
+            Py::String str(method.apply(args));
+            mode = str.as_std_string();
+            return mode.c_str();
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("ViewProviderPythonFeature::getDefaultDisplayMode: %s\n", e.what());
+    }
+
     return 0;
 }
 
@@ -248,7 +273,10 @@ void ViewProviderPythonFeature::Restore(Base::XMLReader &reader)
 
 PyObject* ViewProviderPythonFeature::getPyObject()
 {
-    return ViewProviderDocumentObject::getPyObject();
+    if (!pyViewObject)
+        pyViewObject = new ViewProviderPythonFeaturePy(this);
+    pyViewObject->IncRef();
+    return pyViewObject;
 }
 
 void ViewProviderPythonFeature::getPropertyMap(std::map<std::string,App::Property*> &Map) const

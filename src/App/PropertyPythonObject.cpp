@@ -69,7 +69,9 @@ PyObject *PropertyPythonObject::getPyObject(void)
 
 void PropertyPythonObject::setPyObject(PyObject * obj)
 {
+    aboutToSetValue();
     this->object = obj;
+    hasSetValue();
 }
 
 std::string PropertyPythonObject::toString() const
