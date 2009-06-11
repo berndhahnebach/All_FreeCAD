@@ -185,6 +185,15 @@ class TemplatePyMod_Cmd5:
 	def GetResources(self):
 		return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Render area', 'ToolTip': 'Show render area'}
 
+
+class TemplatePyMod_Cmd6:
+	def Activated(self):
+		import FeaturePython
+		FeaturePython.makeBox()
+
+	def GetResources(self):
+		return {'Pixmap'  : 'python', 'MenuText': 'Create a box', 'ToolTip': 'Use Box feature class which is completely written in Python'}
+
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
@@ -193,4 +202,5 @@ addCommand('TemplatePyMod_Cmd2',TemplatePyMod_Cmd2())
 addCommand('TemplatePyMod_Cmd3',TemplatePyMod_Cmd3())
 FreeCADGui.addCommand('TemplatePyMod_Cmd4',TemplatePyMod_Cmd4())
 FreeCADGui.addCommand('TemplatePyMod_Cmd5',TemplatePyMod_Cmd5())
+FreeCADGui.addCommand('TemplatePyMod_Cmd6',TemplatePyMod_Cmd6())
 
