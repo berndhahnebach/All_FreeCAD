@@ -52,7 +52,8 @@ ViewProviderPythonFeature::~ViewProviderPythonFeature()
 
 QIcon ViewProviderPythonFeature::getIcon() const
 {
-    const char * Python_Feature_xpm[] = {
+    // default icon
+    static const char * Python_Feature_xpm[] = {
         "14 15 7 1",
         "# c #000000",
         "b c #0000ff",
@@ -77,18 +78,66 @@ QIcon ViewProviderPythonFeature::getIcon() const
         "..#ddaaaaaad#.",
         "...#ddddddd#.."};
     QPixmap px(Python_Feature_xpm);
+
+    // Run the getDisplayModes method of the proxy object.
+    Base::PyGILStateLocker lock;
+    try {
+        Py::Object vp = this->Proxy.getValue();
+        if (vp.hasAttr(std::string("getIcon"))) {
+            Py::Callable method(vp.getAttr(std::string("getIcon")));
+            Py::Tuple args(0);
+            Py::String str(method.apply(args));
+            std::string content = str.as_std_string();
+
+            // test if in XPM format
+            QByteArray ary;
+            QPixmap icon;
+            int strlen = (int)content.size();
+            ary.resize(strlen);
+            for (int j=0; j<strlen; j++)
+                ary[j]=content[j];
+            icon.loadFromData(ary, "XPM");
+            if (!icon.isNull()) {
+                px = icon;
+            }
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("ViewProviderPythonFeature::getIcon: %s\n", e.what());
+    }
+
     return px;
 }
 
 void ViewProviderPythonFeature::onChanged(const App::Property* prop)
 {
     if (prop == &Proxy) {
-        if (docObject) {
+        if (docObject && !Proxy.getValue().is(Py::_None())) {
             attach(docObject);
+            updateView();
             docObject = 0;
         }
     }
     else {
+        // Run the execute method of the proxy object.
+        Base::PyGILStateLocker lock;
+        try {
+            Py::Object vp = this->Proxy.getValue();
+            if (vp.hasAttr(std::string("onChanged"))) {
+                Py::Callable method(vp.getAttr(std::string("onChanged")));
+                Py::Tuple args(2);
+                args.setItem(0, Py::Object(this->getPyObject(), true));
+                std::string prop_name = this->getName(prop);
+                args.setItem(1, Py::String(prop_name));
+                method.apply(args);
+            }
+        }
+        catch (Py::Exception&) {
+            Base::PyException e; // extract the Python error text
+            Base::Console().Error("FeaturePython::onChanged: %s\n", e.what());
+        }
+
         ViewProviderDocumentObject::onChanged(prop);
     }
 }
@@ -127,9 +176,9 @@ void ViewProviderPythonFeature::updateData(const App::Property* prop)
         if (vp.hasAttr(std::string("updateData"))) {
             Py::Callable method(vp.getAttr(std::string("updateData")));
             Py::Tuple args(2);
-            args.setItem(0, Py::Object(this->getPyObject(), true));
-            App::Property* that = const_cast<App::Property*>(prop);
-            args.setItem(1, Py::Object(that->getPyObject(), true));
+            args.setItem(0, Py::Object(pcObject->getPyObject(), true));
+            std::string prop_name = pcObject->getName(prop);
+            args.setItem(1, Py::String(prop_name));
             method.apply(args);
         }
     }

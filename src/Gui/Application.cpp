@@ -1131,6 +1131,10 @@ public:
      */
     bool notify (QObject * receiver, QEvent * event)
     {
+        if (!receiver && event) {
+            Base::Console().Log("GUIApplication::notify: Unexpected null receiver, event type: %d\n",
+                (int)event->type());
+        }
         try {
             return QApplication::notify(receiver, event);
         }

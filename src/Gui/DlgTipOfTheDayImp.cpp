@@ -142,7 +142,7 @@ void DlgTipOfTheDayImp::onStateChanged (int state)
             break;
         case QHttp::Closing:
         case QHttp::Unconnected:
-            Base::Console().Log(_http->errorString().toAscii());
+            Base::Console().Log("%s\n",(const char*)_http->errorString().toAscii());
             break;
         default:
             break;

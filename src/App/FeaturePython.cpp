@@ -105,8 +105,8 @@ void FeaturePython::onChanged(const Property* prop)
             Py::Callable method(vp.getAttr(std::string("onChanged")));
             Py::Tuple args(2);
             args.setItem(0, Py::Object(this->getPyObject(), true));
-            App::Property* that = const_cast<App::Property*>(prop);
-            args.setItem(1, Py::Object(that->getPyObject(), true));
+            std::string prop_name = this->getName(prop);
+            args.setItem(1, Py::String(prop_name));
             method.apply(args);
         }
     }
