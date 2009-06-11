@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -22,128 +22,59 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <sstream>
-#endif
 
-
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
+#include "DynamicProperty.h"
+#include "Property.h"
 #include <Base/Reader.h>
+#include <Base/Writer.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
 
-#include "FeaturePython.h"
-#include "FeaturePythonPy.h"
 
 using namespace App;
 
-PROPERTY_SOURCE(App::FeaturePython, App::DocumentObject)
+PROPERTY_SOURCE(App::DynamicProperty, App::PropertyContainer)
 
 
-FeaturePython::FeaturePython()
-{
-    ADD_PROPERTY(Proxy,(Py::Object()));
-}
-
-FeaturePython::~FeaturePython()
+DynamicProperty::DynamicProperty()
 {
 }
 
-short FeaturePython::mustExecute() const
+DynamicProperty::~DynamicProperty()
 {
-    if (this->isTouched())
-        return 1;
-    return 0;
 }
 
-/** Invokes the execute method of the registered proxy object.
- * To register a proxy object in Python do it as follows:
- * \code
- *  # Create a document and add a FeaturePython object
- *  d=FreeCAD.newDocument()
- *  f=d.addObject("App::FeaturePython")
- *
- * class Feature:
- *      def execute(arg,obj):
- *          FreeCAD.PrintMessage("Hello, World!")
- *
- *  # Save the callback function
- *  f.Proxy = Feature()
- *
- *  # Performing a recomputation of the document invokes the proxy's execute method
- *  d.recompute()
- * \endcode
- *
- * \note You must always define two parameters, self and e.g. obj for the FreeCAD
- * document object.
- */
-DocumentObjectExecReturn *FeaturePython::execute(void)
-{
-    // Run the execute method of the proxy object.
-    Base::PyGILStateLocker lock;
-    try {
-        Py::Object feature = this->Proxy.getValue();
-        Py::Callable method(feature.getAttr(std::string("execute")));
-        Py::Tuple args(1);
-        args.setItem(0, this->PythonObject);
-        method.apply(args);
-    }
-    catch (Py::Exception&) {
-        Base::PyException e; // extract the Python error text
-        return new App::DocumentObjectExecReturn(e.what());
-    }
-
-    return DocumentObject::StdReturn;
-}
-
-void FeaturePython::onChanged(const Property* prop)
-{
-    // Run the execute method of the proxy object.
-    Base::PyGILStateLocker lock;
-    try {
-        Py::Object vp = this->Proxy.getValue();
-        if (vp.hasAttr(std::string("onChanged"))) {
-            Py::Callable method(vp.getAttr(std::string("onChanged")));
-            Py::Tuple args(2);
-            args.setItem(0, Py::Object(this->getPyObject(), true));
-            std::string prop_name = this->getName(prop);
-            args.setItem(1, Py::String(prop_name));
-            method.apply(args);
-        }
-    }
-    catch (Py::Exception&) {
-        Base::PyException e; // extract the Python error text
-        Base::Console().Error("FeaturePython::onChanged: %s\n", e.what());
-    }
-
-    DocumentObject::onChanged(prop);
-}
-
-void FeaturePython::getPropertyMap(std::map<std::string,Property*> &Map) const
+void DynamicProperty::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
     // get the properties of the base class first and insert the dynamic properties afterwards
-    DocumentObject::getPropertyMap(Map);
+    PropertyContainer::getPropertyMap(Map);
     for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it)
         Map[it->first] = it->second.property;
 }
 
-Property *FeaturePython::getPropertyByName(const char* name) const
+Property *DynamicProperty::getPropertyByName(const char* name) const
 {
     std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
     if (it != objectProperties.end())
         return it->second.property;
-    return DocumentObject::getPropertyByName(name);
+    return PropertyContainer::getPropertyByName(name);
 }
 
-const char* FeaturePython::getName(const Property* prop) const
+const char* DynamicProperty::getName(const Property* prop) const
 {
     for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
         if (it->second.property == prop)
             return it->first.c_str();
     }
-    return DocumentObject::getName(prop);
+    return PropertyContainer::getName(prop);
 }
 
-short FeaturePython::getPropertyType(const Property* prop) const
+unsigned int DynamicProperty::getMemSize (void) const
+{
+    return 0;
+}
+
+short DynamicProperty::getPropertyType(const Property* prop) const
 {
     for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
         if (it->second.property == prop)
@@ -152,7 +83,7 @@ short FeaturePython::getPropertyType(const Property* prop) const
     return PropertyContainer::getPropertyType(prop);
 }
 
-short FeaturePython::getPropertyType(const char *name) const
+short DynamicProperty::getPropertyType(const char *name) const
 {
     std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
     if (it != objectProperties.end())
@@ -160,7 +91,7 @@ short FeaturePython::getPropertyType(const char *name) const
     return PropertyContainer::getPropertyType(name);
 }
 
-const char* FeaturePython::getPropertyGroup(const Property* prop) const
+const char* DynamicProperty::getPropertyGroup(const Property* prop) const
 {
     for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
         if (it->second.property == prop)
@@ -169,7 +100,7 @@ const char* FeaturePython::getPropertyGroup(const Property* prop) const
     return PropertyContainer::getPropertyGroup(prop);
 }
 
-const char* FeaturePython::getPropertyGroup(const char *name) const
+const char* DynamicProperty::getPropertyGroup(const char *name) const
 {
     std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
     if (it != objectProperties.end())
@@ -177,7 +108,7 @@ const char* FeaturePython::getPropertyGroup(const char *name) const
     return PropertyContainer::getPropertyGroup(name);
 }
 
-const char* FeaturePython::getPropertyDocumentation(const Property* prop) const
+const char* DynamicProperty::getPropertyDocumentation(const Property* prop) const
 {
     for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
         if (it->second.property == prop)
@@ -186,7 +117,7 @@ const char* FeaturePython::getPropertyDocumentation(const Property* prop) const
     return PropertyContainer::getPropertyDocumentation(prop);
 }
 
-const char* FeaturePython::getPropertyDocumentation(const char *name) const
+const char* DynamicProperty::getPropertyDocumentation(const char *name) const
 {
     std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
     if (it != objectProperties.end())
@@ -194,7 +125,7 @@ const char* FeaturePython::getPropertyDocumentation(const char *name) const
     return PropertyContainer::getPropertyDocumentation(name);
 }
 
-bool FeaturePython::isReadOnly(const Property* prop) const
+bool DynamicProperty::isReadOnly(const Property* prop) const
 {
     for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
         if (it->second.property == prop)
@@ -203,7 +134,7 @@ bool FeaturePython::isReadOnly(const Property* prop) const
     return PropertyContainer::isReadOnly(prop);
 }
 
-bool FeaturePython::isReadOnly(const char *name) const
+bool DynamicProperty::isReadOnly(const char *name) const
 {
     std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
     if (it != objectProperties.end())
@@ -211,7 +142,7 @@ bool FeaturePython::isReadOnly(const char *name) const
     return PropertyContainer::isReadOnly(name);
 }
 
-bool FeaturePython::isHidden(const Property* prop) const
+bool DynamicProperty::isHidden(const Property* prop) const
 {
     for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
         if (it->second.property == prop)
@@ -220,7 +151,7 @@ bool FeaturePython::isHidden(const Property* prop) const
     return PropertyContainer::isHidden(prop);
 }
 
-bool FeaturePython::isHidden(const char *name) const
+bool DynamicProperty::isHidden(const char *name) const
 {
     std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
     if (it != objectProperties.end())
@@ -228,8 +159,8 @@ bool FeaturePython::isHidden(const char *name) const
     return PropertyContainer::isHidden(name);
 }
 
-Property* FeaturePython::addDynamicProperty(const char* type, const char* name, const char* group,
-                                            const char* doc, short attr)
+Property* DynamicProperty::addDynamicProperty(const char* type, const char* name, const char* group,
+                                              const char* doc, short attr)
 {
     Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(type,true));
     if (!base)
@@ -260,7 +191,7 @@ Property* FeaturePython::addDynamicProperty(const char* type, const char* name, 
     return pcProperty;
 }
 
-std::string FeaturePython::getUniquePropertyName(const char *Name) const
+std::string DynamicProperty::getUniquePropertyName(const char *Name) const
 {
     // check for first character whether it's a digit
     std::string CleanName = Name;
@@ -305,9 +236,9 @@ std::string FeaturePython::getUniquePropertyName(const char *Name) const
     }
 }
 
-void FeaturePython::Save (Base::Writer &writer) const 
+void DynamicProperty::Save (Base::Writer &writer) const 
 {
-    writer.Name = this->getNameInDocument();
+//    writer.Name = this->getNameInDocument();
     std::map<std::string,Property*> Map;
     getPropertyMap(Map);
 
@@ -351,7 +282,7 @@ void FeaturePython::Save (Base::Writer &writer) const
             }
 #ifndef FC_DEBUG
             catch (...) {
-                Base::Console().Error("PropertyContainer::Save: Unknown C++ exception thrown. Try to continue...\n");
+                Base::Console().Error("DynamicProperty::Save: Unknown C++ exception thrown. Try to continue...\n");
             }
 #endif
             writer.decInd(); // indention for the actual property
@@ -363,7 +294,7 @@ void FeaturePython::Save (Base::Writer &writer) const
     writer.decInd(); // indention for 'Properties Count'
 }
 
-void FeaturePython::Restore(Base::XMLReader &reader)
+void DynamicProperty::Restore(Base::XMLReader &reader)
 {
     reader.readElement("Properties");
     int Cnt = reader.getAttributeAsInteger("Count");
@@ -400,31 +331,12 @@ void FeaturePython::Restore(Base::XMLReader &reader)
         if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
             prop->Restore(reader);
         else if (prop)
-            Base::Console().Warning("%s: Overread data for property %s of type %s,"
-            " expected type is %s\n", this->getNameInDocument(), prop->getName(),
-                                    prop->getTypeId().getName(), TypeName);
+            Base::Console().Warning("Overread data for property %s of type %s,"
+            " expected type is %s\n", prop->getName(), prop->getTypeId().getName(), TypeName);
         else
-            Base::Console().Warning("%s: No property found with name %s and type %s\n",
-                                    this->getNameInDocument(), PropName, TypeName);
+            Base::Console().Warning("No property found with name %s and type %s\n", PropName, TypeName);
         reader.readEndElement("Property");
     }
 
     reader.readEndElement("Properties");
-}
-
-PyObject *FeaturePython::getPyObject(void)
-{
-    if (PythonObject.is(Py::_None())) {
-        // ref counter is set to 1
-        PythonObject = Py::Object(new FeaturePythonPy(this),true);
-    }
-    return Py::new_reference_to(PythonObject);
-}
-
-void FeaturePython::setPyObject(PyObject *obj)
-{
-    if (obj)
-        PythonObject = obj;
-    else
-        PythonObject = Py::None();
 }

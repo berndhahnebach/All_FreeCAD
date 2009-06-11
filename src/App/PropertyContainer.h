@@ -113,38 +113,28 @@ public:
   void setPropertyStatus(unsigned char bit,bool value);
 
   /// get the Type of a Property
-  short getPropertyType(const Property* prop) const 
-  {return getPropertyData().getType(this,prop);}
+  virtual short getPropertyType(const Property* prop) const;
   /// get the Type of a named Property
-  short getPropertyType(const char *name) const 
-  {return getPropertyData().getType(this,name);}
+  virtual short getPropertyType(const char *name) const;
   /// get the Group of a Property
-  const char* getPropertyGroup(const Property* prop) const
-  {return getPropertyData().getGroup(this,prop);}
+  virtual const char* getPropertyGroup(const Property* prop) const;
   /// get the Group of a named Property
-  const char* getPropertyGroup(const char *name) const
-  {return getPropertyData().getGroup(this,name);}
+  virtual const char* getPropertyGroup(const char *name) const;
   /// get the Group of a Property
-  const char* getPropertyDocumentation(const Property* prop) const
-  {return getPropertyData().getDocumentation(this,prop);}
+  virtual const char* getPropertyDocumentation(const Property* prop) const;
   /// get the Group of a named Property
-  const char* getPropertyDocumentation(const char *name) const
-  {return getPropertyData().getDocumentation(this,name);}
+  virtual const char* getPropertyDocumentation(const char *name) const;
   /// check if the property is read-only
-  bool isReadOnly(const Property* prop) const
-  {return (getPropertyData().getType(this,prop) & Prop_ReadOnly) == Prop_ReadOnly;}
+  virtual bool isReadOnly(const Property* prop) const;
   /// check if the nameed property is read-only
-  bool isReadOnly(const char *name) const
-  {return (getPropertyData().getType(this,name) & Prop_ReadOnly) == Prop_ReadOnly;}
+  virtual bool isReadOnly(const char *name) const;
   /// check if the property is hidden
-  bool isHidden(const Property* prop) const
-  {return (getPropertyData().getType(this,prop) & Prop_Hidden) == Prop_Hidden;}
+  virtual bool isHidden(const Property* prop) const;
   /// check if the named property is hidden
-  bool isHidden(const char *name) const
-  {return (getPropertyData().getType(this,name) & Prop_Hidden) == Prop_Hidden;}
+  virtual bool isHidden(const char *name) const;
 
   /// returns a list of objects this object is pointing to by Links
-  std::vector<DocumentObject*> getOutList(void);
+  std::vector<DocumentObject*> getOutList(void) const;
 
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);

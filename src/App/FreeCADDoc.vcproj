@@ -229,6 +229,14 @@
 			Name="Properties"
 			>
 			<File
+				RelativePath=".\DynamicProperty.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DynamicProperty.h"
+				>
+			</File>
+			<File
 				RelativePath="Property.cpp"
 				>
 				<FileConfiguration

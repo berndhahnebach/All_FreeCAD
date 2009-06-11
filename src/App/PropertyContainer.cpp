@@ -50,7 +50,7 @@ TYPESYSTEM_SOURCE(App::PropertyContainer,Base::Persistence);
 // here the implemataion! description should take place in the header file!
 PropertyContainer::PropertyContainer()
 {
-  propertyData.parentPropertyData = 0;
+    propertyData.parentPropertyData = 0;
 }
 
 PropertyContainer::~PropertyContainer()
@@ -60,27 +60,28 @@ PropertyContainer::~PropertyContainer()
 
 unsigned int PropertyContainer::getMemSize (void) const
 {
-  std::map<std::string,Property*> Map;
-  getPropertyMap(Map);
-  std::map<std::string,Property*>::const_iterator It;
-  unsigned int size = 0;
-  for(It = Map.begin(); It != Map.end();++It)
-    size += It->second->getMemSize();
-  return size;
+    std::map<std::string,Property*> Map;
+    getPropertyMap(Map);
+    std::map<std::string,Property*>::const_iterator It;
+    unsigned int size = 0;
+    for (It = Map.begin(); It != Map.end();++It)
+        size += It->second->getMemSize();
+    return size;
 }
+
 Property *PropertyContainer::getPropertyByName(const char* name) const
 {
-  return getPropertyData().getPropertyByName(this,name);
+    return getPropertyData().getPropertyByName(this,name);
 }
 
 void PropertyContainer::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
-  getPropertyData().getPropertyMap(this,Map);
+    getPropertyData().getPropertyMap(this,Map);
 }
 
 void PropertyContainer::getPropertyList(std::vector<Property*> &List) const
 {
-  getPropertyData().getPropertyList(this,List);
+    getPropertyData().getPropertyList(this,List);
 }
 
 void PropertyContainer::setPropertyStatus(unsigned char bit,bool value)
@@ -91,25 +92,74 @@ void PropertyContainer::setPropertyStatus(unsigned char bit,bool value)
         (**it).StatusBits.set(bit,value);
 }
 
+short PropertyContainer::getPropertyType(const Property* prop) const 
+{
+    return getPropertyData().getType(this,prop);
+}
+
+short PropertyContainer::getPropertyType(const char *name) const 
+{
+    return getPropertyData().getType(this,name);
+}
+
+const char* PropertyContainer::getPropertyGroup(const Property* prop) const
+{
+    return getPropertyData().getGroup(this,prop);
+}
+
+const char* PropertyContainer::getPropertyGroup(const char *name) const
+{
+    return getPropertyData().getGroup(this,name);
+}
+
+const char* PropertyContainer::getPropertyDocumentation(const Property* prop) const
+{
+    return getPropertyData().getDocumentation(this,prop);
+}
+
+const char* PropertyContainer::getPropertyDocumentation(const char *name) const
+{
+    return getPropertyData().getDocumentation(this,name);
+}
+
+bool PropertyContainer::isReadOnly(const Property* prop) const
+{
+    return (getPropertyData().getType(this,prop) & Prop_ReadOnly) == Prop_ReadOnly;
+}
+
+bool PropertyContainer::isReadOnly(const char *name) const
+{
+    return (getPropertyData().getType(this,name) & Prop_ReadOnly) == Prop_ReadOnly;
+}
+
+bool PropertyContainer::isHidden(const Property* prop) const
+{
+    return (getPropertyData().getType(this,prop) & Prop_Hidden) == Prop_Hidden;
+}
+
+bool PropertyContainer::isHidden(const char *name) const
+{
+    return (getPropertyData().getType(this,name) & Prop_Hidden) == Prop_Hidden;
+}
 
 const char* PropertyContainer::getName(const Property* prop)const
 {
-  return getPropertyData().getName(this,prop);
+    return getPropertyData().getName(this,prop);
 }
 
-std::vector<DocumentObject*> PropertyContainer::getOutList(void)
+std::vector<DocumentObject*> PropertyContainer::getOutList(void) const
 {
-  std::vector<Property*> List;
-  std::vector<DocumentObject*> ret;
-  getPropertyList(List);
-  for(std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It)
-  {
-    if((*It)->isDerivedFrom(PropertyLink::getClassTypeId()))
+    std::vector<Property*> List;
+    std::vector<DocumentObject*> ret;
+    getPropertyList(List);
+    for(std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It)
     {
-      ret.push_back(dynamic_cast<PropertyLink*>(*It)->getValue() );
+        if ((*It)->isDerivedFrom(PropertyLink::getClassTypeId()))
+        {
+            ret.push_back(dynamic_cast<PropertyLink*>(*It)->getValue() );
+        }
     }
-  }
-  return ret;
+    return ret;
 }
 
 const PropertyData * PropertyContainer::getPropertyDataPtr(void){return &propertyData;} 
@@ -245,8 +295,6 @@ const PropertyData::PropertySpec *PropertyData::findProperty(const PropertyConta
 
   return 0;
 }
-
-
 
 const char* PropertyData::getName(const PropertyContainer *container,const Property* prop) const
 {
