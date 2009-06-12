@@ -151,7 +151,7 @@ void DocumentObject::touch(void)
 
 void DocumentObject::Save (Base::Writer &writer) const
 {
-    writer.Name = this->getNameInDocument();
+    writer.ObjectName = this->getNameInDocument();
     App::PropertyContainer::Save(writer);
 }
 

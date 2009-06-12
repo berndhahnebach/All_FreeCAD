@@ -44,10 +44,12 @@ PROPERTY_SOURCE(Gui::ViewProviderPythonFeature, Gui::ViewProviderDocumentObject)
 ViewProviderPythonFeature::ViewProviderPythonFeature() : docObject(0)
 {
     ADD_PROPERTY(Proxy,(Py::Object()));
+    props = new App::DynamicProperty(this);
 }
 
 ViewProviderPythonFeature::~ViewProviderPythonFeature()
 {
+    delete props;
 }
 
 QIcon ViewProviderPythonFeature::getIcon() const
@@ -135,7 +137,7 @@ void ViewProviderPythonFeature::onChanged(const App::Property* prop)
         }
         catch (Py::Exception&) {
             Base::PyException e; // extract the Python error text
-            Base::Console().Error("FeaturePython::onChanged: %s\n", e.what());
+            Base::Console().Error("ViewProviderPythonFeature::onChanged: %s\n", e.what());
         }
 
         ViewProviderDocumentObject::onChanged(prop);
@@ -279,47 +281,6 @@ void ViewProviderPythonFeature::unsetEdit(void)
 {
 }
 
-void ViewProviderPythonFeature::Save (Base::Writer &writer) const 
-{
-    ViewProviderDocumentObject::Save(writer);
-}
-
-void ViewProviderPythonFeature::Restore(Base::XMLReader &reader)
-{
-    reader.readElement("Properties");
-    int Cnt = reader.getAttributeAsInteger("Count");
-
-    for (int i=0 ;i<Cnt ;i++) {
-        reader.readElement("Property");
-        const char* PropName = reader.getAttribute("name");
-        const char* TypeName = reader.getAttribute("type");
-        App::Property* prop = getPropertyByName(PropName);
-        try {
-            if (!prop) prop = addDynamicProperty(TypeName, PropName);
-        }
-        catch(const Base::Exception& e) {
-            // only handle this exception type
-            Base::Console().Warning(e.what());
-        }
-
-        //NOTE: We must also check the type of the current property because a subclass of
-        //PropertyContainer might change the type of a property but not its name. In this
-        //case we would force to read-in a wrong property type and the behaviour would be
-        //undefined.
-        if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
-            prop->Restore(reader);
-        else if (prop)
-            Base::Console().Warning("ViewProviderPythonFeature: Overread data for property %s of type %s,"
-            " expected type is %s\n", prop->getName(), prop->getTypeId().getName(), TypeName);
-        else
-            Base::Console().Warning("ViewProviderPythonFeature: No property found with name %s and type %s\n",
-                                    PropName, TypeName);
-        reader.readEndElement("Property");
-    }
-
-    reader.readEndElement("Properties");
-}
-
 PyObject* ViewProviderPythonFeature::getPyObject()
 {
     if (!pyViewObject)
@@ -330,96 +291,75 @@ PyObject* ViewProviderPythonFeature::getPyObject()
 
 void ViewProviderPythonFeature::getPropertyMap(std::map<std::string,App::Property*> &Map) const
 {
-    // get the properties of the base class first and insert the dynamic properties afterwards
-    ViewProviderDocumentObject::getPropertyMap(Map);
-    for (std::map<std::string,App::Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it)
-        Map[it->first] = it->second;
+    props->getPropertyMap(Map);
 }
 
 App::Property *ViewProviderPythonFeature::getPropertyByName(const char* name) const
 {
-    std::map<std::string,App::Property*>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
-        return it->second;
-    return ViewProviderDocumentObject::getPropertyByName(name);
+    return props->getPropertyByName(name);
 }
 
 const char* ViewProviderPythonFeature::getName(const App::Property* prop) const
 {
-    for ( std::map<std::string,App::Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it ) {
-        if (it->second == prop)
-            return it->first.c_str();
-    }
-    return ViewProviderDocumentObject::getName(prop);
+    return props->getName(prop);
 }
 
-App::Property* ViewProviderPythonFeature::addDynamicProperty(const char* type, const char* name)
+short ViewProviderPythonFeature::getPropertyType(const App::Property* prop) const
 {
-    Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(type,true));
-    if (!base)
-        return 0;
-    if (!base->getTypeId().isDerivedFrom(App::Property::getClassTypeId())) {
-        delete base;
-        std::stringstream str;
-        str << "'" << type << "' is not a property type";
-        throw Base::Exception(str.str());
-    }
-
-    // get unique name
-    App::Property* pcProperty = static_cast<App::Property*>(base);
-    std::string ObjectName;
-    if (name && *name != '\0')
-        ObjectName = getUniquePropertyName(name);
-    else
-        ObjectName = getUniquePropertyName(type);
-
-    pcProperty->setContainer(this);
-    objectProperties[ObjectName] = pcProperty;
-
-    return pcProperty;
+    return props->getPropertyType(prop);
 }
 
-std::string ViewProviderPythonFeature::getUniquePropertyName(const char *Name) const
+short ViewProviderPythonFeature::getPropertyType(const char *name) const
 {
-    // check for first character whether it's a digit
-    std::string CleanName = Name;
-    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
-        CleanName[0] = '_';
-    // strip illegal chars
-    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
-        if (!((*it>=48 && *it<=57) ||  // number
-             (*it>=65 && *it<=90)  ||  // uppercase letter
-             (*it>=97 && *it<=122)))   // lowercase letter
-             *it = '_'; // it's neither number nor letter
-    }
+    return props->getPropertyType(name);
+}
 
-    // name in use?
-    std::map<std::string,App::Property*> objectProps;
-    getPropertyMap(objectProps);
-    std::map<std::string,App::Property*>::const_iterator pos;
-    pos = objectProps.find(CleanName);
+const char* ViewProviderPythonFeature::getPropertyGroup(const App::Property* prop) const
+{
+    return props->getPropertyGroup(prop);
+}
 
-    if (pos == objectProps.end()) {
-        // if not, name is OK
-        return CleanName;
-    }
-    else {
-        // find highest suffix
-        int nSuff = 0;
-        for (pos = objectProps.begin();pos != objectProps.end();++pos) {
-            const std::string &PropName = pos->first;
-            if (PropName.substr(0, CleanName.length()) == CleanName) { // same prefix
-                std::string clSuffix(PropName.substr(CleanName.size()));
-                if (clSuffix.size() > 0) {
-                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
-                    if (nPos==std::string::npos)
-                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
-                }
-            }
-        }
+const char* ViewProviderPythonFeature::getPropertyGroup(const char *name) const
+{
+    return props->getPropertyGroup(name);
+}
 
-        std::stringstream str;
-        str << CleanName << ++nSuff;
-        return str.str();
-    }
+const char* ViewProviderPythonFeature::getPropertyDocumentation(const App::Property* prop) const
+{
+    return props->getPropertyDocumentation(prop);
+}
+
+const char* ViewProviderPythonFeature::getPropertyDocumentation(const char *name) const
+{
+    return props->getPropertyDocumentation(name);
+}
+
+bool ViewProviderPythonFeature::isReadOnly(const App::Property* prop) const
+{
+    return props->isReadOnly(prop);
+}
+
+bool ViewProviderPythonFeature::isReadOnly(const char *name) const
+{
+    return props->isReadOnly(name);
+}
+
+bool ViewProviderPythonFeature::isHidden(const App::Property* prop) const
+{
+    return props->isHidden(prop);
+}
+
+bool ViewProviderPythonFeature::isHidden(const char *name) const
+{
+    return props->isHidden(name);
+}
+
+void ViewProviderPythonFeature::Save (Base::Writer &writer) const 
+{
+    props->Save(writer);
+}
+
+void ViewProviderPythonFeature::Restore(Base::XMLReader &reader)
+{
+    props->Restore(reader);
 }

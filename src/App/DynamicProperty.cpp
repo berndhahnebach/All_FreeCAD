@@ -25,6 +25,7 @@
 
 #include "DynamicProperty.h"
 #include "Property.h"
+#include "PropertyContainer.h"
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 #include <Base/Console.h>
@@ -33,10 +34,8 @@
 
 using namespace App;
 
-PROPERTY_SOURCE(App::DynamicProperty, App::PropertyContainer)
 
-
-DynamicProperty::DynamicProperty()
+DynamicProperty::DynamicProperty(PropertyContainer* p) : pc(p)
 {
 }
 
@@ -47,120 +46,143 @@ DynamicProperty::~DynamicProperty()
 void DynamicProperty::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
     // get the properties of the base class first and insert the dynamic properties afterwards
-    PropertyContainer::getPropertyMap(Map);
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it)
+    this->pc->PropertyContainer::getPropertyMap(Map);
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it)
         Map[it->first] = it->second.property;
 }
 
 Property *DynamicProperty::getPropertyByName(const char* name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
+    std::map<std::string,PropData>::const_iterator it = props.find(name);
+    if (it != props.end())
         return it->second.property;
-    return PropertyContainer::getPropertyByName(name);
+    return this->pc->PropertyContainer::getPropertyByName(name);
+}
+
+Property *DynamicProperty::getDynamicPropertyByName(const char* name) const
+{
+    std::map<std::string,PropData>::const_iterator it = props.find(name);
+    if (it != props.end())
+        return it->second.property;
+    return 0;
+}
+
+std::vector<std::string> DynamicProperty::getDynamicPropertyNames() const
+{
+    std::vector<std::string> names;
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {
+        names.push_back(it->first);
+    }
+    return names;
 }
 
 const char* DynamicProperty::getName(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {
         if (it->second.property == prop)
             return it->first.c_str();
     }
-    return PropertyContainer::getName(prop);
+    return this->pc->PropertyContainer::getName(prop);
 }
 
 unsigned int DynamicProperty::getMemSize (void) const
 {
-    return 0;
+    std::map<std::string,Property*> Map;
+    getPropertyMap(Map);
+    std::map<std::string,Property*>::const_iterator It;
+    unsigned int size = 0;
+    for (It = Map.begin(); It != Map.end();++It)
+        size += It->second->getMemSize();
+    return size;
 }
 
 short DynamicProperty::getPropertyType(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {
         if (it->second.property == prop)
             return it->second.attr;
     }
-    return PropertyContainer::getPropertyType(prop);
+    return this->pc->PropertyContainer::getPropertyType(prop);
 }
 
 short DynamicProperty::getPropertyType(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
+    std::map<std::string,PropData>::const_iterator it = props.find(name);
+    if (it != props.end())
         return it->second.attr;
-    return PropertyContainer::getPropertyType(name);
+    return this->pc->PropertyContainer::getPropertyType(name);
 }
 
 const char* DynamicProperty::getPropertyGroup(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {
         if (it->second.property == prop)
             return it->second.group.c_str();
     }
-    return PropertyContainer::getPropertyGroup(prop);
+    return this->pc->PropertyContainer::getPropertyGroup(prop);
 }
 
 const char* DynamicProperty::getPropertyGroup(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
+    std::map<std::string,PropData>::const_iterator it = props.find(name);
+    if (it != props.end())
         return it->second.group.c_str();
-    return PropertyContainer::getPropertyGroup(name);
+    return this->pc->PropertyContainer::getPropertyGroup(name);
 }
 
 const char* DynamicProperty::getPropertyDocumentation(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {
         if (it->second.property == prop)
             return it->second.doc.c_str();
     }
-    return PropertyContainer::getPropertyDocumentation(prop);
+    return this->pc->PropertyContainer::getPropertyDocumentation(prop);
 }
 
 const char* DynamicProperty::getPropertyDocumentation(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
+    std::map<std::string,PropData>::const_iterator it = props.find(name);
+    if (it != props.end())
         return it->second.doc.c_str();
-    return PropertyContainer::getPropertyDocumentation(name);
+    return this->pc->PropertyContainer::getPropertyDocumentation(name);
 }
 
 bool DynamicProperty::isReadOnly(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {
         if (it->second.property == prop)
             return it->second.readonly;
     }
-    return PropertyContainer::isReadOnly(prop);
+    return this->pc->PropertyContainer::isReadOnly(prop);
 }
 
 bool DynamicProperty::isReadOnly(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
+    std::map<std::string,PropData>::const_iterator it = props.find(name);
+    if (it != props.end())
         return it->second.readonly;
-    return PropertyContainer::isReadOnly(name);
+    return this->pc->PropertyContainer::isReadOnly(name);
 }
 
 bool DynamicProperty::isHidden(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {
         if (it->second.property == prop)
             return it->second.hidden;
     }
-    return PropertyContainer::isHidden(prop);
+    return this->pc->PropertyContainer::isHidden(prop);
 }
 
 bool DynamicProperty::isHidden(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
+    std::map<std::string,PropData>::const_iterator it = props.find(name);
+    if (it != props.end())
         return it->second.hidden;
-    return PropertyContainer::isHidden(name);
+    return this->pc->PropertyContainer::isHidden(name);
 }
 
 Property* DynamicProperty::addDynamicProperty(const char* type, const char* name, const char* group,
-                                              const char* doc, short attr)
+                                              const char* doc, short attr, bool ro, bool hidden)
 {
     Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(type,true));
     if (!base)
@@ -180,13 +202,15 @@ Property* DynamicProperty::addDynamicProperty(const char* type, const char* name
     else
         ObjectName = getUniquePropertyName(type);
 
-    pcProperty->setContainer(this);
+    pcProperty->setContainer(this->pc);
     PropData data;
     data.property = pcProperty;
     data.group = (group ? group : "");
     data.doc = (doc ? doc : "");
     data.attr = attr;
-    objectProperties[ObjectName] = data;
+    data.readonly = ro;
+    data.hidden = hidden;
+    props[ObjectName] = data;
 
     return pcProperty;
 }
@@ -238,7 +262,6 @@ std::string DynamicProperty::getUniquePropertyName(const char *Name) const
 
 void DynamicProperty::Save (Base::Writer &writer) const 
 {
-//    writer.Name = this->getNameInDocument();
     std::map<std::string,Property*> Map;
     getPropertyMap(Map);
 
@@ -247,48 +270,49 @@ void DynamicProperty::Save (Base::Writer &writer) const
     std::map<std::string,Property*>::iterator it;
     for (it = Map.begin(); it != Map.end(); ++it)
     {
-        // Don't write transient properties 
-        if (!(it->second->StatusBits.test(Prop_Transient)))
-        {
-            writer.incInd(); // indention for 'Property name'
-            // check whether a static or dynamic property
-            std::map<std::string,PropData>::const_iterator pt = objectProperties.find(it->first);
-            if (pt == objectProperties.end()) {
+        writer.incInd(); // indention for 'Property name'
+        // check whether a static or dynamic property
+        std::map<std::string,PropData>::const_iterator pt = props.find(it->first);
+        if (pt == props.end()) {
+            // Don't write transient properties 
+            if (!(pc->PropertyContainer::getPropertyType(it->second) & Prop_Transient))
+            {
                 writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" 
                                 << it->second->getTypeId().getName() << "\">" << std::endl;
             }
-            else {
-                writer.Stream() << writer.ind() << "<Property name=\"" << it->first
-                                << "\" type=\"" << it->second->getTypeId().getName()
-                                << "\" group=\"" << pt->second.group << "\" doc=\"" << pt->second.doc
-                                << "\" attr=\"" << pt->second.attr << "\">" << std::endl;
-            }
-
-            writer.incInd(); // indention for the actual property
-            try {
-                // We must make sure to handle all exceptions accordingly so that
-                // the project file doesn't get invalidated. In the error case this
-                // means to proceed instead of aborting the write operation.
-                it->second->Save(writer);
-            }
-            catch (const Base::Exception &e) {
-                Base::Console().Error("%s\n", e.what());
-            }
-            catch (const std::exception &e) {
-                Base::Console().Error("%s\n", e.what());
-            }
-            catch (const char* e) {
-                Base::Console().Error("%s\n", e);
-            }
-#ifndef FC_DEBUG
-            catch (...) {
-                Base::Console().Error("DynamicProperty::Save: Unknown C++ exception thrown. Try to continue...\n");
-            }
-#endif
-            writer.decInd(); // indention for the actual property
-            writer.Stream() << writer.ind() << "</Property>" << std::endl;
-            writer.decInd(); // indention for 'Property name'
         }
+        else {
+            writer.Stream() << writer.ind() << "<Property name=\"" << it->first
+                            << "\" type=\"" << it->second->getTypeId().getName()
+                            << "\" group=\"" << pt->second.group << "\" doc=\"" << pt->second.doc
+                            << "\" attr=\"" << pt->second.attr << "\" ro=\"" << pt->second.readonly
+                            << "\" hide=\"" << pt->second.hidden << "\">" << std::endl;
+        }
+
+        writer.incInd(); // indention for the actual property
+        try {
+            // We must make sure to handle all exceptions accordingly so that
+            // the project file doesn't get invalidated. In the error case this
+            // means to proceed instead of aborting the write operation.
+            it->second->Save(writer);
+        }
+        catch (const Base::Exception &e) {
+            Base::Console().Error("%s\n", e.what());
+        }
+        catch (const std::exception &e) {
+            Base::Console().Error("%s\n", e.what());
+        }
+        catch (const char* e) {
+            Base::Console().Error("%s\n", e);
+        }
+#ifndef FC_DEBUG
+        catch (...) {
+            Base::Console().Error("DynamicProperty::Save: Unknown C++ exception thrown. Try to continue...\n");
+        }
+#endif
+        writer.decInd(); // indention for the actual property
+        writer.Stream() << writer.ind() << "</Property>" << std::endl;
+        writer.decInd(); // indention for 'Property name'
     }
     writer.Stream() << writer.ind() << "</Properties>" << std::endl;
     writer.decInd(); // indention for 'Properties Count'
@@ -307,7 +331,8 @@ void DynamicProperty::Restore(Base::XMLReader &reader)
         try {
             if (!prop) {
                 short attribute = 0;
-                const char *group=0, *doc=0, *attr=0;
+                bool readonly = false, hidden = false;
+                const char *group=0, *doc=0, *attr=0, *ro=0, *hide=0;
                 if (reader.hasAttribute("group"))
                     group = reader.getAttribute("group");
                 if (reader.hasAttribute("doc"))
@@ -316,7 +341,15 @@ void DynamicProperty::Restore(Base::XMLReader &reader)
                     attr = reader.getAttribute("attr");
                     if (attr) attribute = attr[0]-48;
                 }
-                prop = addDynamicProperty(TypeName, PropName, group, doc, attribute);
+                if (reader.hasAttribute("ro")) {
+                    ro = reader.getAttribute("ro");
+                    if (ro) readonly = (ro[0]-48) != 0;
+                }
+                if (reader.hasAttribute("hide")) {
+                    hide = reader.getAttribute("hide");
+                    if (hide) hidden = (hide[0]-48) != 0;
+                }
+                prop = addDynamicProperty(TypeName, PropName, group, doc, attribute, readonly, hidden);
             }
         }
         catch(const Base::Exception& e) {
@@ -331,10 +364,11 @@ void DynamicProperty::Restore(Base::XMLReader &reader)
         if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
             prop->Restore(reader);
         else if (prop)
-            Base::Console().Warning("Overread data for property %s of type %s,"
-            " expected type is %s\n", prop->getName(), prop->getTypeId().getName(), TypeName);
+            Base::Console().Warning("%s: Overread data for property %s of type %s, expected type is %s\n",
+                pc->getTypeId().getName(), prop->getName(), prop->getTypeId().getName(), TypeName);
         else
-            Base::Console().Warning("No property found with name %s and type %s\n", PropName, TypeName);
+            Base::Console().Warning("%s: No property found with name %s and type %s\n",
+                pc->getTypeId().getName(), PropName, TypeName);
         reader.readEndElement("Property");
     }
 

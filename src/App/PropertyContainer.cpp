@@ -178,7 +178,7 @@ void PropertyContainer::Save (Writer &writer) const
     for (it = Map.begin(); it != Map.end(); ++it)
     {
         // Don't write transient properties 
-        if (!(it->second->StatusBits.test(Prop_Transient)))
+        if (!(getPropertyType(it->second) & Prop_Transient))
         {
             writer.incInd(); // indention for 'Property name'
             writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" 

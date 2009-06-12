@@ -79,7 +79,7 @@ struct AppExport PropertyData
 };
 
 
-/** Base class of all classes with propteries
+/** Base class of all classes with properties
  */
 class AppExport PropertyContainer: public Base::Persistence
 {
@@ -158,9 +158,8 @@ private:
   PropertyContainer(const PropertyContainer&);
   PropertyContainer& operator = (const PropertyContainer&);
 
- private: 
+private: 
   static PropertyData propertyData; 
-
 };
 
 /// Property define 

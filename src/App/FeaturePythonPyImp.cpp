@@ -45,11 +45,13 @@ PyObject*  FeaturePythonPy::addProperty(PyObject *args)
 {
     char *sType,*sName=0,*sGroup=0,*sDoc=0;
     short attr=0;
-    if (!PyArg_ParseTuple(args, "s|sssh", &sType,&sName,&sGroup,&sDoc,&attr))     // convert args: Python->C
+    PyObject *ro = Py_False, *hd = Py_False;
+    if (!PyArg_ParseTuple(args, "s|ssshO!O!", &sType,&sName,&sGroup,&sDoc,&attr,
+        &PyBool_Type, &ro, &PyBool_Type, &hd))     // convert args: Python->C
         return NULL;                             // NULL triggers exception 
 
     Property* prop=0;
-    prop = getFeaturePythonPtr()->addDynamicProperty(sType,sName,sGroup,sDoc,attr);
+    prop = getFeaturePythonPtr()->props->addDynamicProperty(sType,sName,sGroup,sDoc,attr,ro==Py_True,hd==Py_True);
     
     if (!prop) {
         std::stringstream str;
@@ -79,19 +81,16 @@ PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
         if (Base::streq(attr, "__dict__")){
             PyObject* dict = FeaturePy::getCustomAttributes(attr);
             if (dict){
-                const std::map<std::string,FeaturePython::PropData>& Map = getFeaturePythonPtr()->objectProperties;
-                for (std::map<std::string,FeaturePython::PropData>::const_iterator it = Map.begin(); it != Map.end(); ++it)
-                    PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
+                std::vector<std::string> Props = getFeaturePythonPtr()->props->getDynamicPropertyNames();
+                for (std::vector<std::string>::const_iterator it = Props.begin(); it != Props.end(); ++it)
+                    PyDict_SetItem(dict, PyString_FromString(it->c_str()), PyString_FromString(""));
             }
             return dict;
         }
-        // search in object PropertyList
-        std::map<std::string,FeaturePython::PropData>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
-        if (pos != getFeaturePythonPtr()->objectProperties.end()) {
-            Property *prop = pos->second.property;
-            return prop->getPyObject();
-        }
 
+        // search for dynamic property
+        Property* prop = getFeaturePythonPtr()->props->getDynamicPropertyByName(attr);
+        if (prop) return prop->getPyObject();
     } PY_CATCH;
 
     return 0;
@@ -99,14 +98,12 @@ PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
 
 int FeaturePythonPy::setCustomAttributes(const char* attr, PyObject *value)
 {
-    // search in object PropertyList
-    std::map<std::string,FeaturePython::PropData>::const_iterator pos = getFeaturePythonPtr()->objectProperties.find(attr);
+    // search for dynamic property
+    Property* prop = getFeaturePythonPtr()->props->getDynamicPropertyByName(attr);
 
-    if (pos == getFeaturePythonPtr()->objectProperties.end())
+    if (!prop)
         return FeaturePy::setCustomAttributes(attr, value);
     else {
-        Property *prop = pos->second.property;
-
         try {
             prop->setPyObject(value);
         } catch (Base::Exception &exc) {
