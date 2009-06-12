@@ -274,12 +274,8 @@ void DynamicProperty::Save (Base::Writer &writer) const
         // check whether a static or dynamic property
         std::map<std::string,PropData>::const_iterator pt = props.find(it->first);
         if (pt == props.end()) {
-            // Don't write transient properties 
-            if (!(pc->PropertyContainer::getPropertyType(it->second) & Prop_Transient))
-            {
-                writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" 
-                                << it->second->getTypeId().getName() << "\">" << std::endl;
-            }
+            writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" 
+                            << it->second->getTypeId().getName() << "\">" << std::endl;
         }
         else {
             writer.Stream() << writer.ind() << "<Property name=\"" << it->first
