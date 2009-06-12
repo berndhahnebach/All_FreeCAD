@@ -167,13 +167,32 @@ const PropertyData & PropertyContainer::getPropertyData(void) const{return prope
 
 PropertyData PropertyContainer::propertyData;
 
+/**
+ * Binary function to query the flags for use with generic STL functions..
+ */
+template <class TCLASS>
+class PropertyAttribute : public std::binary_function<TCLASS, typename App::PropertyType, bool>
+{
+public:
+    PropertyAttribute(const PropertyContainer* c) : cont(c) {}
+    bool operator () (const TCLASS& prop, typename App::PropertyType attr) const
+    { return (cont->getPropertyType(prop.second) & attr) == attr; }
+private:
+    const PropertyContainer* cont;
+};
+
 void PropertyContainer::Save (Writer &writer) const 
 {
     std::map<std::string,Property*> Map;
     getPropertyMap(Map);
+  
+    // ignore the properties we won't store
+    size_t ct = std::count_if(Map.begin(), Map.end(), std::bind2nd(PropertyAttribute
+        <std::pair<std::string,Property*> >(this), Prop_Transient));
+    size_t size = Map.size() - ct;
 
     writer.incInd(); // indention for 'Properties Count'
-    writer.Stream() << writer.ind() << "<Properties Count=\"" << Map.size() << "\">" << endl;
+    writer.Stream() << writer.ind() << "<Properties Count=\"" << size << "\">" << endl;
     std::map<std::string,Property*>::iterator it;
     for (it = Map.begin(); it != Map.end(); ++it)
     {
