@@ -172,11 +172,15 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     # saving and restoring
     SaveName = self.TempPath + os.sep + "SaveRestoreTests.FCStd"
     self.Doc.FileName = SaveName
+    self.failUnless(self.Doc.Label_1.TypeTransient == 4711)
+    self.Doc.Label_1.TypeTransient = 4712
     self.Doc.save()
     FreeCAD.closeDocument("SaveRestoreTests")
     self.Doc = FreeCAD.open(SaveName)
     self.failUnless(self.Doc.Label_1.Integer == 4711)
     self.failUnless(self.Doc.Label_2.Integer == 4711)
+	# do  NOT save transient properties 
+    self.failUnless(self.Doc.Label_1.TypeTransient == 4711)
     self.failUnless(self.Doc == FreeCAD.getDocument(self.Doc.Name))
     
   def testRestore(self):
