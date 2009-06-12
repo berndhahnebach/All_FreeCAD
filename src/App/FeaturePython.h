@@ -26,8 +26,9 @@
 #define APP_FEATUREPYTHON_H
 
 
-#include "DocumentObject.h"
-#include "PropertyPythonObject.h"
+#include <App/DocumentObject.h>
+#include <App/DynamicProperty.h>
+#include <App/PropertyPythonObject.h>
 
 namespace App
 {
@@ -52,12 +53,19 @@ public:
     virtual const char* getViewProviderName(void) const {
         return "Gui::ViewProviderPythonFeature";
     }
+
+    /** @name Access properties */
+    //@{
     /// get all properties of the class (including parent)
     virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
     /// find a property by its name
     virtual Property *getPropertyByName(const char* name) const;
     /// get the name of a property
     virtual const char* getName(const Property* prop) const;
+    //@}
+
+    /** @name Property attributes */
+    //@{
     /// get the Type of a Property
     short getPropertyType(const Property* prop) const;
     /// get the Type of a named Property
@@ -80,10 +88,11 @@ public:
     bool isHidden(const char *name) const;
     //@}
 
-    Property* addDynamicProperty(const char* type, const char* name=0, const char* group=0,
-                                 const char* doc=0, short attr=0);
+    /** @name Property serialization */
+    //@{
     void Save (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
+    //@}
 
     PyObject *getPyObject(void);
     void setPyObject(PyObject *);
@@ -94,19 +103,7 @@ protected:
     virtual void onChanged(const Property* prop);
 
 private:
-    std::string getUniquePropertyName(const char *Name) const;
-
-private:
-    struct PropData {
-        Property* property;
-        std::string group;
-        std::string doc;
-        short attr;
-        bool hidden;
-        bool readonly;
-    };
-
-    std::map<std::string,PropData> objectProperties;
+    DynamicProperty *props;
     PropertyPythonObject Proxy;
 };
 

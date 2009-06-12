@@ -49,6 +49,7 @@ class Box:
 class ViewProviderBox:
 	def __init__(self, obj):
 		''' Set this object to the proxy object of the actual view provider '''
+		obj.addProperty("App::PropertyColor","Color","Box","Color of the box").Color=(1.0,0.0,0.0)
 		obj.Proxy = self
 
 	def attach(self, obj):
@@ -56,17 +57,21 @@ class ViewProviderBox:
 		self.shaded = coin.SoGroup()
 		self.wireframe = coin.SoGroup()
 		self.scale = coin.SoScale()
+		self.color = coin.SoBaseColor()
 		
 		data=coin.SoCube()
 		self.shaded.addChild(self.scale)
+		self.shaded.addChild(self.color)
 		self.shaded.addChild(data)
 		obj.addDisplayMode(self.shaded,"Shaded");
 		style=coin.SoDrawStyle()
 		style.style = coin.SoDrawStyle.LINES
 		self.wireframe.addChild(style)
 		self.wireframe.addChild(self.scale)
+		self.wireframe.addChild(self.color)
 		self.wireframe.addChild(data)
 		obj.addDisplayMode(self.wireframe,"Wireframe");
+		self.onChanged(obj,"Color")
 
 	def updateData(self, fp, prop):
 		''' If a property of the handled feature has changed we have the chance to handle this here '''
@@ -97,6 +102,9 @@ class ViewProviderBox:
 	def onChanged(self, vp, prop):
 		''' Print the name of the property that has changed '''
 		FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
+		if prop == "Color":
+			c = vp.getPropertyByName("Color")
+			self.color.rgb.setValue(c[0],c[1],c[2])
 
 	def getIcon(self):
 		''' Return the icon in XMP format which will appear in the tree view. This method is optional

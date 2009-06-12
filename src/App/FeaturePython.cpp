@@ -42,10 +42,12 @@ PROPERTY_SOURCE(App::FeaturePython, App::DocumentObject)
 FeaturePython::FeaturePython()
 {
     ADD_PROPERTY(Proxy,(Py::Object()));
+    props = new DynamicProperty(this);
 }
 
 FeaturePython::~FeaturePython()
 {
+    delete props;
 }
 
 short FeaturePython::mustExecute() const
@@ -120,296 +122,78 @@ void FeaturePython::onChanged(const Property* prop)
 
 void FeaturePython::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
-    // get the properties of the base class first and insert the dynamic properties afterwards
-    DocumentObject::getPropertyMap(Map);
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it)
-        Map[it->first] = it->second.property;
+    props->getPropertyMap(Map);
 }
 
 Property *FeaturePython::getPropertyByName(const char* name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
-        return it->second.property;
-    return DocumentObject::getPropertyByName(name);
+    return props->getPropertyByName(name);
 }
 
 const char* FeaturePython::getName(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
-        if (it->second.property == prop)
-            return it->first.c_str();
-    }
-    return DocumentObject::getName(prop);
+    return props->getName(prop);
 }
 
 short FeaturePython::getPropertyType(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
-        if (it->second.property == prop)
-            return it->second.attr;
-    }
-    return PropertyContainer::getPropertyType(prop);
+    return props->getPropertyType(prop);
 }
 
 short FeaturePython::getPropertyType(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
-        return it->second.attr;
-    return PropertyContainer::getPropertyType(name);
+    return props->getPropertyType(name);
 }
 
 const char* FeaturePython::getPropertyGroup(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
-        if (it->second.property == prop)
-            return it->second.group.c_str();
-    }
-    return PropertyContainer::getPropertyGroup(prop);
+    return props->getPropertyGroup(prop);
 }
 
 const char* FeaturePython::getPropertyGroup(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
-        return it->second.group.c_str();
-    return PropertyContainer::getPropertyGroup(name);
+    return props->getPropertyGroup(name);
 }
 
 const char* FeaturePython::getPropertyDocumentation(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
-        if (it->second.property == prop)
-            return it->second.doc.c_str();
-    }
-    return PropertyContainer::getPropertyDocumentation(prop);
+    return props->getPropertyDocumentation(prop);
 }
 
 const char* FeaturePython::getPropertyDocumentation(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
-        return it->second.doc.c_str();
-    return PropertyContainer::getPropertyDocumentation(name);
+    return props->getPropertyDocumentation(name);
 }
 
 bool FeaturePython::isReadOnly(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
-        if (it->second.property == prop)
-            return it->second.readonly;
-    }
-    return PropertyContainer::isReadOnly(prop);
+    return props->isReadOnly(prop);
 }
 
 bool FeaturePython::isReadOnly(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
-        return it->second.readonly;
-    return PropertyContainer::isReadOnly(name);
+    return props->isReadOnly(name);
 }
 
 bool FeaturePython::isHidden(const Property* prop) const
 {
-    for (std::map<std::string,PropData>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it) {
-        if (it->second.property == prop)
-            return it->second.hidden;
-    }
-    return PropertyContainer::isHidden(prop);
+    return props->isHidden(prop);
 }
 
 bool FeaturePython::isHidden(const char *name) const
 {
-    std::map<std::string,PropData>::const_iterator it = objectProperties.find(name);
-    if (it != objectProperties.end())
-        return it->second.hidden;
-    return PropertyContainer::isHidden(name);
-}
-
-Property* FeaturePython::addDynamicProperty(const char* type, const char* name, const char* group,
-                                            const char* doc, short attr)
-{
-    Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(type,true));
-    if (!base)
-        return 0;
-    if (!base->getTypeId().isDerivedFrom(Property::getClassTypeId())) {
-        delete base;
-        std::stringstream str;
-        str << "'" << type << "' is not a property type";
-        throw Base::Exception(str.str());
-    }
-
-    // get unique name
-    Property* pcProperty = static_cast<Property*>(base);
-    std::string ObjectName;
-    if (name && *name != '\0')
-        ObjectName = getUniquePropertyName(name);
-    else
-        ObjectName = getUniquePropertyName(type);
-
-    pcProperty->setContainer(this);
-    PropData data;
-    data.property = pcProperty;
-    data.group = (group ? group : "");
-    data.doc = (doc ? doc : "");
-    data.attr = attr;
-    objectProperties[ObjectName] = data;
-
-    return pcProperty;
-}
-
-std::string FeaturePython::getUniquePropertyName(const char *Name) const
-{
-    // check for first character whether it's a digit
-    std::string CleanName = Name;
-    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
-        CleanName[0] = '_';
-    // strip illegal chars
-    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
-        if (!((*it>=48 && *it<=57) ||  // number
-             (*it>=65 && *it<=90)  ||  // uppercase letter
-             (*it>=97 && *it<=122)))   // lowercase letter
-             *it = '_'; // it's neither number nor letter
-    }
-
-    // name in use?
-    std::map<std::string,Property*> objectProps;
-    getPropertyMap(objectProps);
-    std::map<std::string,Property*>::const_iterator pos;
-    pos = objectProps.find(CleanName);
-
-    if (pos == objectProps.end()) {
-        // if not, name is OK
-        return CleanName;
-    }
-    else {
-        // find highest suffix
-        int nSuff = 0;
-        for (pos = objectProps.begin();pos != objectProps.end();++pos) {
-            const std::string &PropName = pos->first;
-            if (PropName.substr(0, CleanName.length()) == CleanName) { // same prefix
-                std::string clSuffix(PropName.substr(CleanName.size()));
-                if (clSuffix.size() > 0) {
-                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
-                    if (nPos==std::string::npos)
-                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
-                }
-            }
-        }
-
-        std::stringstream str;
-        str << CleanName << ++nSuff;
-        return str.str();
-    }
+    return props->isHidden(name);
 }
 
 void FeaturePython::Save (Base::Writer &writer) const 
 {
-    writer.Name = this->getNameInDocument();
-    std::map<std::string,Property*> Map;
-    getPropertyMap(Map);
-
-    writer.incInd(); // indention for 'Properties Count'
-    writer.Stream() << writer.ind() << "<Properties Count=\"" << Map.size() << "\">" << std::endl;
-    std::map<std::string,Property*>::iterator it;
-    for (it = Map.begin(); it != Map.end(); ++it)
-    {
-        // Don't write transient properties 
-        if (!(it->second->StatusBits.test(Prop_Transient)))
-        {
-            writer.incInd(); // indention for 'Property name'
-            // check whether a static or dynamic property
-            std::map<std::string,PropData>::const_iterator pt = objectProperties.find(it->first);
-            if (pt == objectProperties.end()) {
-                writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" 
-                                << it->second->getTypeId().getName() << "\">" << std::endl;
-            }
-            else {
-                writer.Stream() << writer.ind() << "<Property name=\"" << it->first
-                                << "\" type=\"" << it->second->getTypeId().getName()
-                                << "\" group=\"" << pt->second.group << "\" doc=\"" << pt->second.doc
-                                << "\" attr=\"" << pt->second.attr << "\">" << std::endl;
-            }
-
-            writer.incInd(); // indention for the actual property
-            try {
-                // We must make sure to handle all exceptions accordingly so that
-                // the project file doesn't get invalidated. In the error case this
-                // means to proceed instead of aborting the write operation.
-                it->second->Save(writer);
-            }
-            catch (const Base::Exception &e) {
-                Base::Console().Error("%s\n", e.what());
-            }
-            catch (const std::exception &e) {
-                Base::Console().Error("%s\n", e.what());
-            }
-            catch (const char* e) {
-                Base::Console().Error("%s\n", e);
-            }
-#ifndef FC_DEBUG
-            catch (...) {
-                Base::Console().Error("PropertyContainer::Save: Unknown C++ exception thrown. Try to continue...\n");
-            }
-#endif
-            writer.decInd(); // indention for the actual property
-            writer.Stream() << writer.ind() << "</Property>" << std::endl;
-            writer.decInd(); // indention for 'Property name'
-        }
-    }
-    writer.Stream() << writer.ind() << "</Properties>" << std::endl;
-    writer.decInd(); // indention for 'Properties Count'
+    writer.ObjectName = this->getNameInDocument();
+    props->Save(writer);
 }
 
 void FeaturePython::Restore(Base::XMLReader &reader)
 {
-    reader.readElement("Properties");
-    int Cnt = reader.getAttributeAsInteger("Count");
-
-    for (int i=0 ;i<Cnt ;i++) {
-        reader.readElement("Property");
-        const char* PropName = reader.getAttribute("name");
-        const char* TypeName = reader.getAttribute("type");
-        Property* prop = getPropertyByName(PropName);
-        try {
-            if (!prop) {
-                short attribute = 0;
-                const char *group=0, *doc=0, *attr=0;
-                if (reader.hasAttribute("group"))
-                    group = reader.getAttribute("group");
-                if (reader.hasAttribute("doc"))
-                    doc = reader.getAttribute("doc");
-                if (reader.hasAttribute("attr")) {
-                    attr = reader.getAttribute("attr");
-                    if (attr) attribute = attr[0]-48;
-                }
-                prop = addDynamicProperty(TypeName, PropName, group, doc, attribute);
-            }
-        }
-        catch(const Base::Exception& e) {
-            // only handle this exception type
-            Base::Console().Warning(e.what());
-        }
-
-        //NOTE: We must also check the type of the current property because a subclass of
-        //PropertyContainer might change the type of a property but not its name. In this
-        //case we would force to read-in a wrong property type and the behaviour would be
-        //undefined.
-        if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
-            prop->Restore(reader);
-        else if (prop)
-            Base::Console().Warning("%s: Overread data for property %s of type %s,"
-            " expected type is %s\n", this->getNameInDocument(), prop->getName(),
-                                    prop->getTypeId().getName(), TypeName);
-        else
-            Base::Console().Warning("%s: No property found with name %s and type %s\n",
-                                    this->getNameInDocument(), PropName, TypeName);
-        reader.readEndElement("Property");
-    }
-
-    reader.readEndElement("Properties");
+    props->Restore(reader);
 }
 
 PyObject *FeaturePython::getPyObject(void)

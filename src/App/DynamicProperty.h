@@ -24,7 +24,10 @@
 #ifndef APP_DYNAMICPROPERTY_H
 #define APP_DYNAMICPROPERTY_H
 
-#include <App/PropertyContainer.h>
+#include <Base/Persistence.h>
+#include <map>
+#include <vector>
+#include <string>
 
 namespace Base {
 class Writer;
@@ -33,32 +36,45 @@ class XMLWriter;
 
 namespace App
 {
+class Property;
+class PropertyContainer;
 
-class AppExport DynamicProperty : public PropertyContainer
+/** This class implements an interface to add properties at run-time to an object
+ * derived from PropertyContainer. The additional properties are made persistent.
+ * @author Werner Mayer
+ */
+class AppExport DynamicProperty : public Base::Persistence
 {
-    PROPERTY_HEADER(App::DynamicProperty);
-
 public:
     struct PropData {
         Property* property;
         std::string group;
         std::string doc;
         short attr;
-        bool hidden;
         bool readonly;
+        bool hidden;
     };
 
-    DynamicProperty();
+    DynamicProperty(PropertyContainer* pc);
     virtual ~DynamicProperty();
 
+    /** @name Access properties */
+    //@{
     /// get all properties of the class (including parent)
     void getPropertyMap(std::map<std::string,Property*> &Map) const;
     /// find a property by its name
     Property *getPropertyByName(const char* name) const;
+    /// find a property by its name
+    Property *getDynamicPropertyByName(const char* name) const;
+    Property* addDynamicProperty(const char* type, const char* name=0, const char* group=0,
+                                 const char* doc=0, short attr=0, bool ro=false, bool hidden=false);
+    std::vector<std::string> getDynamicPropertyNames() const;
     /// get the name of a property
     const char* getName(const Property* prop) const;
     //@}
 
+    /** @name Property attributes */
+    //@{
     /// get the Type of a Property
     short getPropertyType(const Property* prop) const;
     /// get the Type of a named Property
@@ -79,18 +95,21 @@ public:
     bool isHidden(const Property* prop) const;
     /// check if the named property is hidden
     bool isHidden(const char *name) const;
+    //@}
 
-    Property* addDynamicProperty(const char* type, const char* name=0, const char* group=0,
-                                 const char* doc=0, short attr=0);
+    /** @name Property serialization */
+    //@{
     void Save (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
     unsigned int getMemSize (void) const;
+    //@}
 
 private:
     std::string getUniquePropertyName(const char *Name) const;
 
 private:
-    std::map<std::string,PropData> objectProperties;
+    PropertyContainer* pc;
+    std::map<std::string,PropData> props;
 };
 
 } // namespace App

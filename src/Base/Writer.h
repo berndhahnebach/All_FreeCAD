@@ -55,58 +55,58 @@ class BaseExport Writer
 {
 
 public:
-  /// opens the file and write the first file
-  Writer(void);
-  virtual ~Writer();
+    /// opens the file and write the first file
+    Writer(void);
+    virtual ~Writer();
 
-  /// switch the writer in XML only mode (no files allowed)
-  void setForceXML(bool on);
-  /// check on state
-  bool isForceXML(void);
+    /// switch the writer in XML only mode (no files allowed)
+    void setForceXML(bool on);
+    /// check on state
+    bool isForceXML(void);
 
-  /// insert a file as CDATA section in the XML file
-  void insertAsciiFile(const char* FileName);
-  /// insert a binary file BASE64 coded as CDATA section in the XML file
-  void insertBinFile(const char* FileName);
+    /// insert a file as CDATA section in the XML file
+    void insertAsciiFile(const char* FileName);
+    /// insert a binary file BASE64 coded as CDATA section in the XML file
+    void insertBinFile(const char* FileName);
 
-  /** @name additional file writing */
-  //@{
-  /// add a write request of a Persitant object
-  std::string addFile(const char* Name, const Base::Persistence *Object);
-  /// process the requested file writes
-  virtual void writeFiles(void)=0;
-  /// get all registered file names
-  const std::vector<std::string>& getFilenames() const;
-  //@{
+    /** @name additional file writing */
+    //@{
+    /// add a write request of a Persitant object
+    std::string addFile(const char* Name, const Base::Persistence *Object);
+    /// process the requested file writes
+    virtual void writeFiles(void)=0;
+    /// get all registered file names
+    const std::vector<std::string>& getFilenames() const;
+    //@}
 
-  /** @name prety formating for XML */
-  //@{
-  /// get the actual indetion
-  const char* ind(void) const {return indBuf;}
-  /// increase indetion by one tab
-  void incInd(void);
-  /// decreas indetion by one tab
-  void decInd(void);
-  //@{
+    /** @name prety formating for XML */
+    //@{
+    /// get the actual indetion
+    const char* ind(void) const {return indBuf;}
+    /// increase indetion by one tab
+    void incInd(void);
+    /// decreas indetion by one tab
+    void decInd(void);
+    //@}
 
-  virtual std::ostream &Stream(void)=0;
+    virtual std::ostream &Stream(void)=0;
 
-  /// name for underlying file saves
-  std::string Name;
+    /// name for underlying file saves
+    std::string ObjectName;
 
 protected:
-  std::string getUniqueFileName(const char *Name);
-  struct FileEntry {
-    std::string FileName;
-    const Base::Persistence *Object;
-  };
-  std::vector<FileEntry> FileList;
-  std::vector<std::string> FileNames;
+    std::string getUniqueFileName(const char *Name);
+    struct FileEntry {
+        std::string FileName;
+        const Base::Persistence *Object;
+    };
+    std::vector<FileEntry> FileList;
+    std::vector<std::string> FileNames;
 
-  short indent;
-  char indBuf[256];
+    short indent;
+    char indBuf[256];
 
-  bool forceXML;
+    bool forceXML;
 };
 
 
@@ -116,27 +116,25 @@ protected:
  * \see Base::Persistence
  * \author Juergen Riegel
  */
-class BaseExport ZipWriter: public Writer
+class BaseExport ZipWriter : public Writer
 {
 
 public:
-  /// opens the file and write the first file
-  ZipWriter(const char* FileName);
-  ZipWriter(std::ostream&);
-  ~ZipWriter();
+    /// opens the file and write the first file
+    ZipWriter(const char* FileName);
+    ZipWriter(std::ostream&);
+    ~ZipWriter();
 
-  virtual void writeFiles(void);
+    virtual void writeFiles(void);
 
-  virtual std::ostream &Stream(void){return ZipStream;}
+    virtual std::ostream &Stream(void){return ZipStream;}
 
-  void setComment(const char* str){ZipStream.setComment(str);}
-  void setLevel(int level){ZipStream.setLevel( level );}
-  void putNextEntry(const char* str){ZipStream.putNextEntry(str);}
+    void setComment(const char* str){ZipStream.setComment(str);}
+    void setLevel(int level){ZipStream.setLevel( level );}
+    void putNextEntry(const char* str){ZipStream.putNextEntry(str);}
 
 private:
-  zipios::ZipOutputStream ZipStream;
-
-
+    zipios::ZipOutputStream ZipStream;
 };
 
 /** The StringWriter class 
@@ -145,22 +143,17 @@ private:
  * \see Base::Persistence
  * \author Juergen Riegel
  */
-class BaseExport StringWriter: public Writer
+class BaseExport StringWriter : public Writer
 {
 
 public:
 
-  virtual std::ostream &Stream(void){return StrStream;}
-
-  std::string getString(void){return StrStream.str();}
-
-  virtual void writeFiles(void){assert(0);}
+    virtual std::ostream &Stream(void){return StrStream;}
+    std::string getString(void){return StrStream.str();}
+    virtual void writeFiles(void){assert(0);}
 
 private:
-
-  std::stringstream StrStream;
-
-
+    std::stringstream StrStream;
 };
 
 

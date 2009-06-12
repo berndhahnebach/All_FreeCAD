@@ -31,6 +31,7 @@
 
 #include "ViewProviderDocumentObject.h"
 #include <App/PropertyPythonObject.h>
+#include <App/DynamicProperty.h>
 
 
 namespace Gui {
@@ -89,8 +90,7 @@ public:
     virtual void select(SoPath*) {}
     virtual void deselect(SoPath*) {}
     //@}
-
-    /** @name Property methods */
+    /** @name Access properties */
     //@{
     /// get all properties of the class (including parent)
     virtual void getPropertyMap(std::map<std::string,App::Property*> &Map) const;
@@ -98,20 +98,50 @@ public:
     virtual App::Property *getPropertyByName(const char* name) const;
     /// get the name of a property
     virtual const char* getName(const App::Property* prop) const;
-    App::Property* addDynamicProperty(const char* type, const char* name=0);
+    //@}
+
+    /** @name Property attributes */
+    //@{
+    /// get the Type of a Property
+    short getPropertyType(const App::Property* prop) const;
+    /// get the Type of a named Property
+    short getPropertyType(const char *name) const;
+    /// get the Group of a Property
+    const char* getPropertyGroup(const App::Property* prop) const;
+    /// get the Group of a named Property
+    const char* getPropertyGroup(const char *name) const;
+    /// get the Group of a Property
+    const char* getPropertyDocumentation(const App::Property* prop) const;
+    /// get the Group of a named Property
+    const char* getPropertyDocumentation(const char *name) const;
+    /// check if the property is read-only
+    bool isReadOnly(const App::Property* prop) const;
+    /// check if the nameed property is read-only
+    bool isReadOnly(const char *name) const;
+    /// check if the property is hidden
+    bool isHidden(const App::Property* prop) const;
+    /// check if the named property is hidden
+    bool isHidden(const char *name) const;
+    //@}
+
+    /** @name Property serialization */
+    //@{
     void Save (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
-    PyObject* getPyObject();
     //@}
+
+    PyObject* getPyObject();
 
 private:
     virtual void onChanged(const App::Property* prop);
     std::string getUniquePropertyName(const char *Name) const;
 
 private:
-    std::map<std::string,App::Property*> objectProperties;
+    App::DynamicProperty *props;
     App::PropertyPythonObject Proxy;
     App::DocumentObject* docObject;
+
+    friend class ViewProviderPythonFeaturePy;
 };
 
 

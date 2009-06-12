@@ -42,12 +42,79 @@ PyObject* ViewProviderPythonFeaturePy::addDisplayMode(PyObject * args)
     } PY_CATCH;
 }
 
-PyObject *ViewProviderPythonFeaturePy::getCustomAttributes(const char* /*attr*/) const
+PyObject*  ViewProviderPythonFeaturePy::addProperty(PyObject *args)
 {
+    char *sType,*sName=0,*sGroup=0,*sDoc=0;
+    short attr=0;
+    PyObject *ro = Py_False, *hd = Py_False;
+    if (!PyArg_ParseTuple(args, "s|ssshO!O!", &sType,&sName,&sGroup,&sDoc,&attr,
+        &PyBool_Type, &ro, &PyBool_Type, &hd))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception 
+
+    App::Property* prop=0;
+    prop = getViewProviderPythonFeaturePtr()->props->addDynamicProperty(sType,sName,sGroup,sDoc,attr,ro==Py_True,hd==Py_True);
+    
+    if (!prop) {
+        std::stringstream str;
+        str << "No property found of type '" << sType << "'" << std::ends;
+        throw Py::Exception(PyExc_Exception,str.str());
+    }
+
+    return Py::new_reference_to(this);
+}
+
+PyObject*  ViewProviderPythonFeaturePy::supportedProperties(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                    // NULL triggers exception
+    
+    std::vector<Base::Type> ary;
+    Base::Type::getAllDerivedFrom(App::Property::getClassTypeId(), ary);
+    Py::List res;
+    for (std::vector<Base::Type>::iterator it = ary.begin(); it != ary.end(); ++it)
+        res.append(Py::String(it->getName()));
+    return Py::new_reference_to(res);
+}
+
+PyObject *ViewProviderPythonFeaturePy::getCustomAttributes(const char* attr) const
+{
+    PY_TRY{
+        if (Base::streq(attr, "__dict__")){
+            PyObject* dict = ViewProviderDocumentObjectPy::getCustomAttributes(attr);
+            if (dict){
+                std::vector<std::string> Props = getViewProviderPythonFeaturePtr()->props->getDynamicPropertyNames();
+                for (std::vector<std::string>::const_iterator it = Props.begin(); it != Props.end(); ++it)
+                    PyDict_SetItem(dict, PyString_FromString(it->c_str()), PyString_FromString(""));
+            }
+            return dict;
+        }
+
+        // search for dynamic property
+        App::Property* prop = getViewProviderPythonFeaturePtr()->props->getDynamicPropertyByName(attr);
+        if (prop) return prop->getPyObject();
+    } PY_CATCH;
+
     return 0;
 }
 
-int ViewProviderPythonFeaturePy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
+int ViewProviderPythonFeaturePy::setCustomAttributes(const char* attr, PyObject *value)
 {
-    return 0; 
+    // search for dynamic property
+    App::Property* prop = getViewProviderPythonFeaturePtr()->props->getDynamicPropertyByName(attr);
+
+    if (!prop)
+        return ViewProviderDocumentObjectPy::setCustomAttributes(attr, value);
+    else {
+        try {
+            prop->setPyObject(value);
+        } catch (Base::Exception &exc) {
+            PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
+            return -1;
+        } catch (...) {
+            PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
+            return -1;
+        }
+
+        return 1;
+    }
 }

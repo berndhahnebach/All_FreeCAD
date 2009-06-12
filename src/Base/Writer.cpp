@@ -37,7 +37,7 @@
 
 using namespace Base;
 using namespace std;
-using namespace zipios ;
+using namespace zipios;
 
 
 
@@ -45,11 +45,10 @@ using namespace zipios ;
 //  Writer: Constructors and Destructor
 // ---------------------------------------------------------------------------
 
-Writer::Writer(void) 
-: indent(0),forceXML(false)
+Writer::Writer(void)
+  : indent(0),forceXML(false)
 {
-  indBuf[0] = '\0';
-
+    indBuf[0] = '\0';
 }
 
 Writer::~Writer()
@@ -58,63 +57,60 @@ Writer::~Writer()
 
 void Writer::insertAsciiFile(const char* FileName)
 {
-	std::ifstream from(FileName);
-	if (!from) throw Base::Exception("Writer::insertAsciiFile() Could not open file!");
-	
-	Stream() << "<![CDATA[" << endl;
-	char ch;
-	while (from.get(ch)) Stream().put(ch);
-	Stream() << endl << "]]>" << endl;
+    std::ifstream from(FileName);
+    if (!from) throw Base::Exception("Writer::insertAsciiFile() Could not open file!");
+
+    Stream() << "<![CDATA[" << endl;
+    char ch;
+    while (from.get(ch)) Stream().put(ch);
+    Stream() << endl << "]]>" << endl;
 }
 
 void Writer::insertBinFile(const char* FileName)
 {
-	std::ifstream from(FileName);
-	if (!from) throw Base::Exception("Writer::insertAsciiFile() Could not open file!");
-	
-	Stream() << "<![CDATA[" << endl;
+    std::ifstream from(FileName);
+    if (!from) throw Base::Exception("Writer::insertAsciiFile() Could not open file!");
 
-	unsigned char buf[60];
-	std::string encoded;
-	unsigned int i;
+    Stream() << "<![CDATA[" << endl;
 
-	while (from){
-		for(i=0 ; i<60 && from;i++)
-			buf[i] = from.get();
-		Stream() << Base::base64_encode(buf,i) << endl;
-	}
+    unsigned char buf[60];
+    std::string encoded;
+    unsigned int i;
 
-	Stream() << "]]>" << endl;
+    while (from){
+        for(i=0 ; i<60 && from;i++)
+            buf[i] = from.get();
+        Stream() << Base::base64_encode(buf,i) << endl;
+    }
 
+    Stream() << "]]>" << endl;
 }
 
 void Writer::setForceXML(bool on)
 {
-  forceXML = on;
+    forceXML = on;
 }
 
 bool Writer::isForceXML(void)
 {
-  return forceXML;
+    return forceXML;
 }
-
-
 
 std::string Writer::addFile(const char* Name,const Base::Persistence *Object)
 {
-  // always check isForceXML() before requesting a file!
-  assert(isForceXML()==false);
+    // always check isForceXML() before requesting a file!
+    assert(isForceXML()==false);
 
-  FileEntry temp;
-  temp.FileName = getUniqueFileName(Name);
-  temp.Object = Object;
+    FileEntry temp;
+    temp.FileName = getUniqueFileName(Name);
+    temp.Object = Object;
   
-  FileList.push_back(temp);
+    FileList.push_back(temp);
 
-  FileNames.push_back( temp.FileName );
+    FileNames.push_back( temp.FileName );
 
-  // return the unique file name
-  return temp.FileName;
+    // return the unique file name
+    return temp.FileName;
 }
 
 std::string Writer::getUniqueFileName(const char *Name)
@@ -151,9 +147,8 @@ std::string Writer::getUniqueFileName(const char *Name)
 
 const std::vector<std::string>& Writer::getFilenames() const
 {
-  return FileNames;
+    return FileNames;
 }
-
 
 void Writer::incInd(void)
 {
@@ -176,10 +171,10 @@ ZipWriter::ZipWriter(const char* FileName)
   : ZipStream(FileName)
 {
 #ifdef _MSC_VER
-  ZipStream.imbue(std::locale::empty());
+    ZipStream.imbue(std::locale::empty());
 #else
-  //FIXME: Check whether this is correct
-  ZipStream.imbue(std::locale::classic());
+    //FIXME: Check whether this is correct
+    ZipStream.imbue(std::locale::classic());
 #endif
 }
 
@@ -187,23 +182,23 @@ ZipWriter::ZipWriter(std::ostream& os)
   : ZipStream(os)
 {
 #ifdef _MSC_VER
-  ZipStream.imbue(std::locale::empty());
+    ZipStream.imbue(std::locale::empty());
 #else
-  //FIXME: Check whether this is correct
-  ZipStream.imbue(std::locale::classic());
+    //FIXME: Check whether this is correct
+    ZipStream.imbue(std::locale::classic());
 #endif
 }
 
 void ZipWriter::writeFiles(void)
 {
-  for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
-  {
-    ZipStream.putNextEntry(it->FileName);
-    it->Object->SaveDocFile( *this );
-  }
+    for (std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it)
+    {
+        ZipStream.putNextEntry(it->FileName);
+        it->Object->SaveDocFile( *this );
+    }
 }
 
 ZipWriter::~ZipWriter()
 {
-  ZipStream.close();
+    ZipStream.close();
 }
