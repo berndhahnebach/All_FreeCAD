@@ -43,7 +43,7 @@
 #include <assert.h>
 
 #else // gcc and others
-//#include <stdint.h>
+#include <stdint.h>
 # if HAVE_CONFIG_H
 #	  include <config.h>
 # endif // HAVE_CONFIG_H

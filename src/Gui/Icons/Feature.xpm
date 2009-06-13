@@ -1,5 +1,5 @@
 /* XPM */
-static char * Feature_xpm[] = {
+static const char * Feature_xpm[] = {
 "16 16 7 1",
 " 	c None",
 ".	c #000200",
