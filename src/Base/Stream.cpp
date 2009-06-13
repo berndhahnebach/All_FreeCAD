@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <stdlib.h>
 # include <string>
+# include <stdint.h>
 # include <stdio.h>
 #endif
 
