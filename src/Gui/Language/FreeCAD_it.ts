@@ -51,10 +51,6 @@
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Applicazione sconosciuta (c) Autore sconosciuto&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Revision date</source>
-        <translation type="obsolete">Data revisione</translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Sconosciuto&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -76,7 +72,7 @@
     </message>
     <message>
         <source>Release date</source>
-        <translation type="unfinished"></translation>
+        <translation>Data revisione</translation>
     </message>
 </context>
 <context>
@@ -843,10 +839,6 @@ Il file esiste già.</translation>
     <message>
         <source>To:</source>
         <translation>A:</translation>
-    </message>
-    <message>
-        <source>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</source>
-        <translation type="obsolete">http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</translation>
     </message>
     <message>
         <source>Proxy server:</source>
@@ -1691,10 +1683,6 @@ Specificare un&apos;altra cartella.</translation>
 <context>
     <name>Gui::Dialog::DlgTipOfTheDayImp</name>
     <message>
-        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation type="obsolete">Se ne vuoi sapere di più su FreeCAD vai a &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; o premi Aiuto nel menu Aiuto.</translation>
-    </message>
-    <message>
         <source>Download failed: %1
 </source>
         <translation>Download fallito: %1
@@ -1994,10 +1982,6 @@ Specificare un&apos;altra cartella.</translation>
 </context>
 <context>
     <name>Gui::DockWnd::PropertyView</name>
-    <message>
-        <source>Property View</source>
-        <translation type="obsolete">Proprietà</translation>
-    </message>
     <message>
         <source>View</source>
         <translation>Visualizzazione</translation>
@@ -2589,14 +2573,6 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
         <source>Tree view</source>
         <translation>Albero</translation>
     </message>
-    <message>
-        <source>Labels &amp; Attributes</source>
-        <translation type="obsolete">Etichette &amp; Attributi</translation>
-    </message>
-    <message>
-        <source>Application</source>
-        <translation type="obsolete">Applicazione</translation>
-    </message>
 </context>
 <context>
     <name>Gui::TreeWidget</name>
@@ -2871,14 +2847,6 @@ Vuoi continuare?</translation>
         <translation>Salva il documento con nome...</translation>
     </message>
     <message>
-        <source>Save FreeCAD Document</source>
-        <translation type="obsolete">Salva il documento FreeCAD</translation>
-    </message>
-    <message>
-        <source>FreeCAD document (*.FCStd)</source>
-        <translation type="obsolete">Documento FreeCAD (*.FCStd)</translation>
-    </message>
-    <message>
         <source>Saving aborted</source>
         <translation>Salvataggio annullato</translation>
     </message>
@@ -2964,11 +2932,11 @@ Aprire una finestra browser e scrivere http://localhost:%1.</translation>
     </message>
     <message>
         <source>Save %1 Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva il documento %1</translation>
     </message>
     <message>
         <source>%1 document (*.FCStd)</source>
-        <translation type="unfinished"></translation>
+        <translation>Documento %1 (*.FCStd)</translation>
     </message>
     <message>
         <source>Save As</source>

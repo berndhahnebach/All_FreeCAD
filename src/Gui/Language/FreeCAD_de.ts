@@ -51,10 +51,6 @@
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Revision date</source>
-        <translation type="obsolete">Erstelldatum</translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -822,10 +818,6 @@ Diese Datei ist bereits vorhanden.</translation>
     <message>
         <source>Enable user authorization</source>
         <translation>Benutzerauthentifizierung aktivieren</translation>
-    </message>
-    <message>
-        <source>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</source>
-        <translation type="obsolete">http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</translation>
     </message>
     <message>
         <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
@@ -1626,10 +1618,6 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::Dialog::DlgTipOfTheDayImp</name>
     <message>
-        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation type="obsolete">Wenn Sie mehr über FreeCAD erfahren möchten, besuchen Sie &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; oder drücken Sie auf Hilfe im Hilfe-Menü.</translation>
-    </message>
-    <message>
         <source>Download failed: %1
 </source>
         <translation>Download fehlgeschlagen: %1
@@ -1925,10 +1913,6 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 </context>
 <context>
     <name>Gui::DockWnd::PropertyView</name>
-    <message>
-        <source>Property View</source>
-        <translation type="obsolete">Eigenschaften-Ansicht</translation>
-    </message>
     <message>
         <source>View</source>
         <translation>Ansicht</translation>
@@ -2448,10 +2432,6 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 <context>
     <name>Gui::TaskView::TaskAppearance</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Form</translation>
-    </message>
-    <message>
         <source>Display mode:</source>
         <translation>Anzeigemodus:</translation>
     </message>
@@ -2478,10 +2458,6 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 </context>
 <context>
     <name>Gui::TaskView::TaskEditControl</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">Form</translation>
-    </message>
     <message>
         <source>OK</source>
         <translation>OK</translation>
@@ -2527,14 +2503,6 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     <message>
         <source>Tree view</source>
         <translation>Baumansicht</translation>
-    </message>
-    <message>
-        <source>Labels &amp; Attributes</source>
-        <translation type="obsolete">Bezeichnungen &amp; Eigenschaften</translation>
-    </message>
-    <message>
-        <source>Application</source>
-        <translation type="obsolete">Applikation</translation>
     </message>
 </context>
 <context>
@@ -2832,14 +2800,6 @@ Wollen Sie fortfahren?</translation>
     <message>
         <source>The group &apos;%1&apos; cannot be renamed.</source>
         <translation>Die Gruppe &apos;%1&apos; kann nicht umbenannt werden.</translation>
-    </message>
-    <message>
-        <source>Save FreeCAD Document</source>
-        <translation type="obsolete">FreeCAD-Dokument speichern</translation>
-    </message>
-    <message>
-        <source>FreeCAD document (*.FCStd)</source>
-        <translation type="obsolete">FreeCAD-Dokument (*.FCStd)</translation>
     </message>
     <message>
         <source>Cannot open help file</source>
