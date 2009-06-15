@@ -870,7 +870,7 @@ Il file esiste già.</translation>
     </message>
     <message>
         <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
-        <translation type="unfinished"></translation>
+        <translation>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</translation>
     </message>
 </context>
 <context>
@@ -1702,7 +1702,7 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ne vuoi sapere di più su FreeCAD vai a &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; o premi Aiuto nel menu Aiuto.</translation>
     </message>
 </context>
 <context>
@@ -1989,7 +1989,7 @@ Specificare un&apos;altra cartella.</translation>
     <name>Gui::DockWnd::PropertyDockView</name>
     <message>
         <source>Property View</source>
-        <translation type="unfinished">Proprietà</translation>
+        <translation>Proprietà</translation>
     </message>
 </context>
 <context>
@@ -2289,15 +2289,15 @@ Vuoi salvare le modifiche?</translation>
     <name>Gui::ProgressDialog</name>
     <message>
         <source>Remaining: %1</source>
-        <translation type="unfinished">Rimanente: %1</translation>
+        <translation>Rimanente: %1</translation>
     </message>
     <message>
         <source>Aborting</source>
-        <translation type="unfinished">Interrompere</translation>
+        <translation>Interrompere</translation>
     </message>
     <message>
         <source>Do you really want to abort the operation?</source>
-        <translation type="unfinished">Vuoi veramente interrompere l&apos;operazione?</translation>
+        <translation>Vuoi veramente interrompere l&apos;operazione?</translation>
     </message>
 </context>
 <context>
@@ -2517,43 +2517,43 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
 <context>
     <name>Gui::TaskView::TaskAppearance</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Display mode:</source>
-        <translation type="unfinished">Modo di visualizzazione:</translation>
+        <translation>Modo di visualizzazione:</translation>
     </message>
     <message>
         <source>Plot mode:</source>
-        <translation type="unfinished">Modo di stampa:</translation>
+        <translation>Modo di stampa:</translation>
     </message>
     <message>
         <source>Point size:</source>
-        <translation type="unfinished">Dimensione punto:</translation>
+        <translation>Dimensione punto:</translation>
     </message>
     <message>
         <source>Line width:</source>
-        <translation type="unfinished">Spessore linea:</translation>
+        <translation>Spessore linea:</translation>
     </message>
     <message>
         <source>Transparency:</source>
-        <translation type="unfinished">Trasparenza</translation>
+        <translation>Trasparenza:</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Gui::TaskView::TaskEditControl</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annulla</translation>
+        <translation>Annulla</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2606,7 +2606,7 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Create a group</source>
-        <translation>Crea un gruppo...</translation>
+        <translation>Crea un gruppo</translation>
     </message>
     <message>
         <source>Group</source>
@@ -2622,11 +2622,11 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Labels &amp; Attributes</source>
-        <translation type="unfinished">Etichette &amp; Attributi</translation>
+        <translation>Etichette &amp; Attributi</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished">Applicazione</translation>
+        <translation>Applicazione</translation>
     </message>
 </context>
 <context>
@@ -2750,7 +2750,7 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Freeze view</source>
-        <translation>Congela la vista...</translation>
+        <translation>Congela la vista</translation>
     </message>
     <message>
         <source>Clear views</source>

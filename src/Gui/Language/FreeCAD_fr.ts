@@ -76,7 +76,7 @@
     </message>
     <message>
         <source>Release date</source>
-        <translation type="unfinished"></translation>
+        <translation>Date de mise à jour</translation>
     </message>
 </context>
 <context>
@@ -867,7 +867,7 @@ This file already exists.</source>
     </message>
     <message>
         <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
-        <translation type="unfinished"></translation>
+        <translation>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</translation>
     </message>
 </context>
 <context>
@@ -1137,7 +1137,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Selection color:</source>
-        <translation>Sélectionner la couleur</translation>
+        <translation>Sélectionner la couleur:</translation>
     </message>
     <message>
         <source>Highlight color:</source>
@@ -1695,7 +1695,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si vous voulez en apprendre plus à propos de FreeCAD Vous devez allerr sur&lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; ou pressez le choix Aide dans le menu Aide.</translation>
     </message>
 </context>
 <context>
@@ -1982,7 +1982,7 @@ Specify another directory, please.</source>
     <name>Gui::DockWnd::PropertyDockView</name>
     <message>
         <source>Property View</source>
-        <translation type="unfinished">Propriété de vue</translation>
+        <translation>Propriété de vue</translation>
     </message>
 </context>
 <context>
@@ -2278,15 +2278,15 @@ Do you want to save your changes?</source>
     <name>Gui::ProgressDialog</name>
     <message>
         <source>Remaining: %1</source>
-        <translation type="unfinished">Effectué: %1</translation>
+        <translation>Effectué: %1</translation>
     </message>
     <message>
         <source>Aborting</source>
-        <translation type="unfinished">Abandon</translation>
+        <translation>Abandon</translation>
     </message>
     <message>
         <source>Do you really want to abort the operation?</source>
-        <translation type="unfinished">Voulez-vous réellement abandonner l&apos;opération?</translation>
+        <translation>Voulez-vous réellement abandonner l&apos;opération?</translation>
     </message>
 </context>
 <context>
@@ -2505,43 +2505,43 @@ Do you want to exit without saving your data?</source>
 <context>
     <name>Gui::TaskView::TaskAppearance</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Display mode:</source>
-        <translation type="unfinished">Mode affichage</translation>
+        <translation>Mode affichage:</translation>
     </message>
     <message>
         <source>Plot mode:</source>
-        <translation type="unfinished">Mode dessin:</translation>
+        <translation>Mode dessin:</translation>
     </message>
     <message>
         <source>Point size:</source>
-        <translation type="unfinished">Taille du point:</translation>
+        <translation>Taille du point:</translation>
     </message>
     <message>
         <source>Line width:</source>
-        <translation type="unfinished">Taille de ligne:</translation>
+        <translation>Taille de ligne:</translation>
     </message>
     <message>
         <source>Transparency:</source>
-        <translation type="unfinished">Transparence</translation>
+        <translation>Transparence:</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Gui::TaskView::TaskEditControl</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Editer</translation>
     </message>
 </context>
 <context>
@@ -2594,7 +2594,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Create a group</source>
-        <translation>Créer un groupe...</translation>
+        <translation>Créer un groupe</translation>
     </message>
     <message>
         <source>Group</source>
@@ -2610,11 +2610,11 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Labels &amp; Attributes</source>
-        <translation type="unfinished">Labels &amp; Attributs</translation>
+        <translation>Labels &amp; Attributs</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished">Application</translation>
+        <translation>Application</translation>
     </message>
 </context>
 <context>
@@ -2738,7 +2738,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Freeze view</source>
-        <translation>Bloquer les vues...</translation>
+        <translation>Bloquer les vues</translation>
     </message>
     <message>
         <source>Clear views</source>
@@ -2750,7 +2750,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Save frozen views</source>
-        <translation>Sauver les vues capturées...</translation>
+        <translation>Sauver les vues capturées</translation>
     </message>
     <message>
         <source>Frozen views (*.cam)</source>
@@ -2927,7 +2927,7 @@ Ouvrer une fenêtre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>Unable to open your system browser.</source>
-        <translation>Impossible d&apos;ouvrir le navigateur système</translation>
+        <translation>Impossible d&apos;ouvrir le navigateur système.</translation>
     </message>
     <message>
         <source>Options...</source>
@@ -4389,7 +4389,7 @@ Do you want to specify another directory?</source>
     <name>testClass</name>
     <message>
         <source>test</source>
-        <translation type="unfinished"></translation>
+        <translation>test</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4400,7 +4400,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Choose the style of the Task Panel</source>
@@ -4412,7 +4419,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Windows XP</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows XP</translation>
     </message>
 </context>
 </TS>
