@@ -4,15 +4,15 @@
     <name>CombiView</name>
     <message>
         <source>CombiView</source>
-        <translation type="unfinished"></translation>
+        <translation>Combi-Ansicht</translation>
     </message>
     <message>
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt</translation>
     </message>
     <message>
         <source>Tasks</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufgaben</translation>
     </message>
 </context>
 <context>
@@ -72,7 +72,7 @@
     </message>
     <message>
         <source>Release date</source>
-        <translation type="unfinished"></translation>
+        <translation>Erscheinungsdatum</translation>
     </message>
 </context>
 <context>
@@ -829,7 +829,7 @@ Diese Datei ist bereits vorhanden.</translation>
     </message>
     <message>
         <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
-        <translation type="unfinished"></translation>
+        <translation>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</translation>
     </message>
 </context>
 <context>
@@ -1125,7 +1125,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <source>Middle color</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittlere Farbe</translation>
     </message>
 </context>
 <context>
@@ -1637,7 +1637,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn Sie mehr über FreeCAD erfahren möchten, besuchen Sie &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; oder drücken Sie auf Hilfe im Hilfe-Menü.</translation>
     </message>
 </context>
 <context>
@@ -1920,7 +1920,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     <name>Gui::DockWnd::PropertyDockView</name>
     <message>
         <source>Property View</source>
-        <translation type="unfinished">Eigenschaften-Ansicht</translation>
+        <translation>Eigenschaften</translation>
     </message>
 </context>
 <context>
@@ -2220,15 +2220,15 @@ Sollen die Änderungen gespeichert werden?</translation>
     <name>Gui::ProgressDialog</name>
     <message>
         <source>Remaining: %1</source>
-        <translation type="unfinished">Verbleibend: %1</translation>
+        <translation>Verbleibend: %1</translation>
     </message>
     <message>
         <source>Aborting</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <source>Do you really want to abort the operation?</source>
-        <translation type="unfinished">Möchten Sie die Operation wirklich abbrechen?</translation>
+        <translation>Möchten Sie die Operation wirklich abbrechen?</translation>
     </message>
 </context>
 <context>
@@ -2449,42 +2449,50 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     <name>Gui::TaskView::TaskAppearance</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Form</translation>
     </message>
     <message>
         <source>Display mode:</source>
-        <translation type="unfinished">Anzeigemodus:</translation>
+        <translation>Anzeigemodus:</translation>
     </message>
     <message>
         <source>Plot mode:</source>
-        <translation type="unfinished">Plotmodus:</translation>
+        <translation>Plotmodus:</translation>
     </message>
     <message>
         <source>Point size:</source>
-        <translation type="unfinished">Punktgröße:</translation>
+        <translation>Punktgröße:</translation>
     </message>
     <message>
         <source>Line width:</source>
-        <translation type="unfinished">Linienstärke:</translation>
+        <translation>Linienstärke:</translation>
     </message>
     <message>
         <source>Transparency:</source>
-        <translation type="unfinished">Transparenz:</translation>
+        <translation>Transparenz:</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation>Erscheinungsbild</translation>
     </message>
 </context>
 <context>
     <name>Gui::TaskView::TaskEditControl</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Form</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -2545,19 +2553,19 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Umbenennen</translation>
     </message>
     <message>
         <source>Rename object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt umbenennen</translation>
     </message>
     <message>
         <source>Labels &amp; Attributes</source>
-        <translation type="unfinished">Bezeichnungen &amp; Eigenschaften</translation>
+        <translation>Bezeichnungen &amp; Eigenschaften</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished">Applikation</translation>
+        <translation>Applikation</translation>
     </message>
 </context>
 <context>
@@ -2598,11 +2606,11 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     </message>
     <message>
         <source>Task View</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufgaben</translation>
     </message>
     <message>
         <source>Combi View</source>
-        <translation type="unfinished"></translation>
+        <translation>Combi-Ansicht</translation>
     </message>
 </context>
 <context>
@@ -2899,28 +2907,29 @@ Bitte starten Sie einen Browser und geben darin ein: http://localhost:%1.</trans
     </message>
     <message>
         <source>Save %1 Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokument %1 speichern</translation>
     </message>
     <message>
         <source>%1 document (*.FCStd)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1-Dokument (*.FCStd)</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern unter</translation>
     </message>
     <message>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 besteht bereits.
+Möchten Sie sie ersetzen?</translation>
     </message>
     <message>
         <source>Document not closable</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokument kann nicht geschlossen werden</translation>
     </message>
     <message>
         <source>The document is not closable for the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Dokument kann im Moment nicht geschloseen werden.</translation>
     </message>
 </context>
 <context>
@@ -4327,21 +4336,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <name>TaskAppearance</name>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Erscheinungsbild</translation>
     </message>
 </context>
 <context>
     <name>TaskPanelView</name>
     <message>
         <source>Task View</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufgaben</translation>
     </message>
 </context>
 <context>
     <name>testClass</name>
     <message>
         <source>test</source>
-        <translation type="unfinished"></translation>
+        <translation>test</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4352,19 +4361,26 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Choose the style of the Task Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Stil des Aufgabenfeldes</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <source>Windows XP</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows XP</translation>
     </message>
 </context>
 </TS>

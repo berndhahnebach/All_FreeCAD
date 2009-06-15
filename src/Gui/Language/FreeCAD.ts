@@ -2488,10 +2488,6 @@ Do you want to exit without saving your data?</source>
 <context>
     <name>Gui::TaskView::TaskAppearance</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Display mode:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2511,19 +2507,23 @@ Do you want to exit without saving your data?</source>
         <source>Transparency:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::TaskView::TaskEditControl</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
