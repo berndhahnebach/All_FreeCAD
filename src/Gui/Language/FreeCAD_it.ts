@@ -1,6 +1,21 @@
 <!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
+    <name>CombiView</name>
+    <message>
+        <source>CombiView</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tasks</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::AccelLineEdit</name>
     <message>
         <source>none</source>
@@ -37,7 +52,7 @@
     </message>
     <message>
         <source>Revision date</source>
-        <translation>Data revisione</translation>
+        <translation type="obsolete">Data revisione</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -58,6 +73,10 @@
     <message>
         <source></source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Release date</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -354,7 +373,7 @@
 
 Please define another shortcut.</source>
         <translation>La scorciatoia &apos;%1&apos; è già stata assegnata a &apos;%2&apos;. 
-		
+<byte value="x9"/><byte value="x9"/>
 Definire un&apos;altra scorciatoia.</translation>
     </message>
 </context>
@@ -827,7 +846,7 @@ Il file esiste già.</translation>
     </message>
     <message>
         <source>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</source>
-        <translation>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</translation>
+        <translation type="obsolete">http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</translation>
     </message>
     <message>
         <source>Proxy server:</source>
@@ -849,6 +868,10 @@ Il file esiste già.</translation>
         <source>Location of start page</source>
         <translation>Posizione della pagina iniziale</translation>
     </message>
+    <message>
+        <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
@@ -865,7 +888,7 @@ Il file esiste già.</translation>
 
 Specify another directory, please.</source>
         <translation>Accesso negato a &apos;%1&apos;
-		
+<byte value="x9"/><byte value="x9"/>
 Specificare un&apos;altra cartella.</translation>
     </message>
 </context>
@@ -1156,6 +1179,10 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source></source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Middle color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1607,11 +1634,11 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>Gui commands</source>
-        <translation>Comandi d'interfaccia utente</translation>
+        <translation>Comandi d&apos;interfaccia utente</translation>
     </message>
     <message>
         <source>Recording gui commands</source>
-        <translation>Registra i comandi d'interfaccia utente</translation>
+        <translation>Registra i comandi d&apos;interfaccia utente</translation>
     </message>
     <message>
         <source>Record as comment</source>
@@ -1665,13 +1692,17 @@ Specificare un&apos;altra cartella.</translation>
     <name>Gui::Dialog::DlgTipOfTheDayImp</name>
     <message>
         <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation>Se ne vuoi sapere di più su FreeCAD vai a &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; o premi Aiuto nel menu Aiuto.</translation>
+        <translation type="obsolete">Se ne vuoi sapere di più su FreeCAD vai a &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; o premi Aiuto nel menu Aiuto.</translation>
     </message>
     <message>
         <source>Download failed: %1
 </source>
         <translation>Download fallito: %1
 </translation>
+    </message>
+    <message>
+        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1955,10 +1986,17 @@ Specificare un&apos;altra cartella.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::DockWnd::PropertyDockView</name>
+    <message>
+        <source>Property View</source>
+        <translation type="unfinished">Proprietà</translation>
+    </message>
+</context>
+<context>
     <name>Gui::DockWnd::PropertyView</name>
     <message>
         <source>Property View</source>
-        <translation>Proprietà</translation>
+        <translation type="obsolete">Proprietà</translation>
     </message>
     <message>
         <source>View</source>
@@ -2088,7 +2126,7 @@ Specificare un&apos;altra cartella.</translation>
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
         <translation>%1.
-		
+<byte value="x9"/><byte value="x9"/>
 Questo è stato modificato al di fuori dell&apos;editor sorgente. Vuoi ricaricarlo?</translation>
     </message>
     <message>
@@ -2245,6 +2283,21 @@ Vuoi salvare le modifiche?</translation>
     <message>
         <source>Do you really want to abort the operation?</source>
         <translation>Vuoi veramente interrompere l&apos;operazione?</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::ProgressDialog</name>
+    <message>
+        <source>Remaining: %1</source>
+        <translation type="unfinished">Rimanente: %1</translation>
+    </message>
+    <message>
+        <source>Aborting</source>
+        <translation type="unfinished">Interrompere</translation>
+    </message>
+    <message>
+        <source>Do you really want to abort the operation?</source>
+        <translation type="unfinished">Vuoi veramente interrompere l&apos;operazione?</translation>
     </message>
 </context>
 <context>
@@ -2462,6 +2515,48 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
 </context>
 <context>
+    <name>Gui::TaskView::TaskAppearance</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display mode:</source>
+        <translation type="unfinished">Modo di visualizzazione:</translation>
+    </message>
+    <message>
+        <source>Plot mode:</source>
+        <translation type="unfinished">Modo di stampa:</translation>
+    </message>
+    <message>
+        <source>Point size:</source>
+        <translation type="unfinished">Dimensione punto:</translation>
+    </message>
+    <message>
+        <source>Line width:</source>
+        <translation type="unfinished">Spessore linea:</translation>
+    </message>
+    <message>
+        <source>Transparency:</source>
+        <translation type="unfinished">Trasparenza</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::TaskView::TaskEditControl</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Annulla</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Translator</name>
     <message>
         <source>English</source>
@@ -2496,11 +2591,11 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Labels &amp; Attributes</source>
-        <translation>Etichette &amp; Attributi</translation>
+        <translation type="obsolete">Etichette &amp; Attributi</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation>Applicazione</translation>
+        <translation type="obsolete">Applicazione</translation>
     </message>
 </context>
 <context>
@@ -2516,6 +2611,22 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     <message>
         <source>Group</source>
         <translation>Gruppo</translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labels &amp; Attributes</source>
+        <translation type="unfinished">Etichette &amp; Attributi</translation>
+    </message>
+    <message>
+        <source>Application</source>
+        <translation type="unfinished">Applicazione</translation>
     </message>
 </context>
 <context>
@@ -2553,6 +2664,14 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     <message>
         <source>Report view</source>
         <translation>Pannello report</translation>
+    </message>
+    <message>
+        <source>Task View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Combi View</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2753,11 +2872,11 @@ Vuoi continuare?</translation>
     </message>
     <message>
         <source>Save FreeCAD Document</source>
-        <translation>Salva il documento FreeCAD</translation>
+        <translation type="obsolete">Salva il documento FreeCAD</translation>
     </message>
     <message>
         <source>FreeCAD document (*.FCStd)</source>
-        <translation>Documento FreeCAD (*.FCStd)</translation>
+        <translation type="obsolete">Documento FreeCAD (*.FCStd)</translation>
     </message>
     <message>
         <source>Saving aborted</source>
@@ -2842,6 +2961,31 @@ Aprire una finestra browser e scrivere http://localhost:%1.</translation>
     <message>
         <source>Cannot find file %1 neither in %2 nor in %3</source>
         <translation>Impossibile trovare il file %1 nè in %2 nè in %3</translation>
+    </message>
+    <message>
+        <source>Save %1 Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 document (*.FCStd)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already exists.
+Do you want to replace it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document not closable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The document is not closable for the moment.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3167,7 +3311,7 @@ Aprire una finestra browser e scrivere http://localhost:%1.</translation>
 
 Do you want to specify an existing directory?</source>
         <translation>La cartella &apos;%1&apos; non esiste.
-		
+<byte value="x9"/><byte value="x9"/>
 Vuoi specificare una cartella esistente?</translation>
     </message>
     <message>
@@ -3179,7 +3323,7 @@ Vuoi specificare una cartella esistente?</translation>
 
 Do you want to specify another directory?</source>
         <translation>Non hai il permesso di scrittura in &apos;%1&apos;
-		
+<byte value="x9"/><byte value="x9"/>
 Vuoi specificare un&apos;altra cartella?</translation>
     </message>
     <message>
@@ -4242,6 +4386,50 @@ Vuoi specificare un&apos;altra cartella?</translation>
     <message>
         <source>Zoom Out</source>
         <translation>Zoom out</translation>
+    </message>
+</context>
+<context>
+    <name>TaskAppearance</name>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TaskPanelView</name>
+    <message>
+        <source>Task View</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>testClass</name>
+    <message>
+        <source>test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the style of the Task Panel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Windows XP</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -1,5 +1,20 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>CombiView</name>
+    <message>
+        <source>CombiView</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tasks</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::AccelLineEdit</name>
     <message>
         <source>none</source>
@@ -35,10 +50,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Revision date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -56,6 +67,10 @@
     </message>
     <message>
         <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Release date</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -822,10 +837,6 @@ This file already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Proxy server:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -843,6 +854,10 @@ This file already exists.</source>
     </message>
     <message>
         <source>Location of start page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1149,6 +1164,10 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Middle color</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1657,12 +1676,12 @@ Specify another directory, please.</source>
 <context>
     <name>Gui::Dialog::DlgTipOfTheDayImp</name>
     <message>
-        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page&quot;&gt;http://freecad.juergen-riegel.net/Docu/&lt;/a&gt; or press the Help item in the Help menu.</source>
+        <source>Download failed: %1
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Download failed: %1
-</source>
+        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1947,11 +1966,14 @@ Specify another directory, please.</source>
     </message>
 </context>
 <context>
-    <name>Gui::DockWnd::PropertyView</name>
+    <name>Gui::DockWnd::PropertyDockView</name>
     <message>
         <source>Property View</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>Gui::DockWnd::PropertyView</name>
     <message>
         <source>View</source>
         <translation type="unfinished"></translation>
@@ -2236,6 +2258,21 @@ Do you want to save your changes?</source>
     </message>
 </context>
 <context>
+    <name>Gui::ProgressDialog</name>
+    <message>
+        <source>Remaining: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aborting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to abort the operation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::PropertyEditor::PropertyModel</name>
     <message>
         <source>Property</source>
@@ -2449,6 +2486,48 @@ Do you want to exit without saving your data?</source>
     </message>
 </context>
 <context>
+    <name>Gui::TaskView::TaskAppearance</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plot mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::TaskView::TaskEditControl</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::Translator</name>
     <message>
         <source>English</source>
@@ -2481,14 +2560,6 @@ Do you want to exit without saving your data?</source>
         <source>Tree view</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Labels &amp; Attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Application</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::TreeWidget</name>
@@ -2502,6 +2573,22 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labels &amp; Attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2539,6 +2626,14 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Report view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Task View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Combi View</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2738,14 +2833,6 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save FreeCAD Document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FreeCAD document (*.FCStd)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Saving aborted</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2825,6 +2912,31 @@ Please open a browser window and type in: http://localhost:%1.</source>
     </message>
     <message>
         <source>Cannot find file %1 neither in %2 nor in %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save %1 Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 document (*.FCStd)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already exists.
+Do you want to replace it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document not closable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The document is not closable for the moment.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4221,6 +4333,50 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Zoom Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TaskAppearance</name>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TaskPanelView</name>
+    <message>
+        <source>Task View</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>testClass</name>
+    <message>
+        <source>test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the style of the Task Panel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Windows XP</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
