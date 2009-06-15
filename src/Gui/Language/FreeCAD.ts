@@ -856,10 +856,6 @@ This file already exists.</source>
         <source>Location of start page</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
@@ -1681,7 +1677,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
+        <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -819,10 +819,6 @@ Diese Datei ist bereits vorhanden.</translation>
         <source>Enable user authorization</source>
         <translation>Benutzerauthentifizierung aktivieren</translation>
     </message>
-    <message>
-        <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
-        <translation>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
@@ -1624,8 +1620,8 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 </translation>
     </message>
     <message>
-        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation>Wenn Sie mehr über FreeCAD erfahren möchten, besuchen Sie &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; oder drücken Sie auf Hilfe im Hilfe-Menü.</translation>
+        <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
+        <translation>Wenn Sie mehr über FreeCAD erfahren möchten, besuchen Sie %1 oder drücken Sie auf Hilfe im Hilfe-Menü.</translation>
     </message>
 </context>
 <context>

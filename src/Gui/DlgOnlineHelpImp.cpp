@@ -47,21 +47,22 @@ using namespace Gui::Dialog;
 DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent )
   : PreferencePage(parent)
 {
-  this->setupUi(this);
-  prefStartPage->setFilter( tr("Html files (*.html *.htm)") );
-  if ( prefStartPage->fileName().isEmpty() )
-  {
-    prefStartPage->setFileName( getStartpage() );
-  }
+    this->setupUi(this);
+    this->DownloadURL->setText(QLatin1String
+      ("http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page"));
 
-  if ( lineEditDownload->fileName().isEmpty() )
-  {
-    // set output directory
-    QString path = QString::fromUtf8(App::GetApplication().GetHomePath());
-    path += QLatin1String("/doc/");
-    QDir dir(path);
-    lineEditDownload->setFileName( dir.absolutePath() );
-  }
+    prefStartPage->setFilter( tr("Html files (*.html *.htm)") );
+    if (prefStartPage->fileName().isEmpty()) {
+        prefStartPage->setFileName(getStartpage());
+    }
+
+    if (lineEditDownload->fileName().isEmpty()) {
+        // set output directory
+        QString path = QString::fromUtf8(App::GetApplication().GetHomePath());
+        path += QLatin1String("/doc/");
+        QDir dir(path);
+        lineEditDownload->setFileName( dir.absolutePath() );
+    }
 }
 
 /** 
@@ -79,48 +80,47 @@ DlgOnlineHelpImp::~DlgOnlineHelpImp()
  */
 QString DlgOnlineHelpImp::getStartpage()
 {
-  ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
-  QString home = QString::fromUtf8(hURLGrp->GetASCII( "Startpage", "" ).c_str());
+    ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/OnlineHelp");
+    QString home = QString::fromUtf8(hURLGrp->GetASCII( "Startpage", "" ).c_str());
 
-  // help start in in config?
-  if ( home.isEmpty() && App::Application::Config()["HelpStart"] != "")
-  {
-    home = QString::fromUtf8(App::GetApplication().GetHomePath());
-    home += QString::fromUtf8(App::Application::Config()["HelpStart"].c_str());
-  }
+    // help start in in config?
+    if (home.isEmpty() && App::Application::Config()["HelpStart"] != "") {
+        home = QString::fromUtf8(App::GetApplication().GetHomePath());
+        home += QString::fromUtf8(App::Application::Config()["HelpStart"].c_str());
+    }
 
-  if ( home.isEmpty() )
-  {
-      QString hm = QString::fromUtf8(App::GetApplication().GetHomePath());
-    hm += QLatin1String("/doc/free-cad.sourceforge.net/wiki");
-    QDir d(hm);
-    home = d.path();
-    home += QLatin1String("/index.php.html");
-  }
+    if (home.isEmpty()) {
+        QString hm = QString::fromUtf8(App::GetApplication().GetHomePath());
+        hm += QLatin1String("/doc/free-cad.sourceforge.net/wiki");
+        QDir d(hm);
+        home = d.path();
+        home += QLatin1String("/index.php.html");
+    }
 
-  return home;
+    return home;
 }
 
 void DlgOnlineHelpImp::saveSettings()
 {
-  PrefLineEdit2->onSave();
-  UseProxy->onSave();
-  DownloadURL->onSave();
-  prefExtBrowser->onSave();
-  prefStartPage->onSave();
-  prefAuthorize->onSave();
-  lineEditDownload->onSave();
+    PrefLineEdit2->onSave();
+    UseProxy->onSave();
+    DownloadURL->onSave();
+    prefExtBrowser->onSave();
+    prefStartPage->onSave();
+    prefAuthorize->onSave();
+    lineEditDownload->onSave();
 }
 
 void DlgOnlineHelpImp::loadSettings()
 {
-  PrefLineEdit2->onRestore();
-  UseProxy->onRestore();
-  DownloadURL->onRestore();
-  prefExtBrowser->onRestore();
-  prefStartPage->onRestore();
-  prefAuthorize->onRestore();
-  lineEditDownload->onRestore();
+    PrefLineEdit2->onRestore();
+    UseProxy->onRestore();
+    DownloadURL->onRestore();
+    prefExtBrowser->onRestore();
+    prefStartPage->onRestore();
+    prefAuthorize->onRestore();
+    lineEditDownload->onRestore();
 }
 
 /**
@@ -128,21 +128,21 @@ void DlgOnlineHelpImp::loadSettings()
  */
 void DlgOnlineHelpImp::changeEvent(QEvent *e)
 {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi(this);
-  } else {
-    QWidget::changeEvent(e);
-  }
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+    }
+    else {
+        QWidget::changeEvent(e);
+    }
 }
 
 void DlgOnlineHelpImp::on_lineEditDownload_fileNameSelected( const QString& url )
 {
-  QDir dir( url );
-  if ( dir.exists() && dir.count() == 0 )
-  {
-    QMessageBox::critical(this, tr("Access denied"), tr("Access denied to '%1'\n\n"
-      "Specify another directory, please.").arg(url));
-  }
+    QDir dir(url);
+    if (dir.exists() && dir.count() == 0) {
+        QMessageBox::critical(this, tr("Access denied"), tr("Access denied to '%1'\n\n"
+            "Specify another directory, please.").arg(url));
+    }
 }
 
 #include "moc_DlgOnlineHelpImp.cpp"
