@@ -67,10 +67,6 @@
         <translation>OK</translation>
     </message>
     <message>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Release date</source>
         <translation>Data revisione</translation>
     </message>
@@ -92,10 +88,6 @@
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Annulla</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -126,10 +118,6 @@
     <message>
         <source>Username:</source>
         <translation>Nome utente:</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -259,10 +247,6 @@
         <source>Commands</source>
         <translation>Comandi</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgCustomCommandsImp</name>
@@ -332,10 +316,6 @@
     <message>
         <source>Alt+S</source>
         <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -466,10 +446,6 @@ Definire un&apos;altra scorciatoia.</translation>
         <source>Rename toolbar</source>
         <translation>Rinomina la barra degli strumenti</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgCustomizeImp</name>
@@ -532,10 +508,6 @@ Definire un&apos;altra scorciatoia.</translation>
         <source>Plot mode:</source>
         <translation>Modo di stampa:</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgEditorSettings</name>
@@ -590,10 +562,6 @@ Definire un&apos;altra scorciatoia.</translation>
     <message>
         <source>Preview:</source>
         <translation>Anteprima:</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -652,10 +620,6 @@ Definire un&apos;altra scorciatoia.</translation>
     <message>
         <source>Cancel</source>
         <translation>Annulla</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -813,10 +777,6 @@ Il file esiste già.</translation>
         <source>Ambient color:</source>
         <translation>Colore ambiente:</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelp</name>
@@ -964,10 +924,6 @@ Specificare un&apos;altra cartella.</translation>
         <source>&amp;Cancel</source>
         <translation>&amp;Annulla</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgPreferencesImp</name>
@@ -1026,10 +982,6 @@ Specificare un&apos;altra cartella.</translation>
         <source>&amp;Cancel</source>
         <translation>&amp;Annulla</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgReportView</name>
@@ -1072,10 +1024,6 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>Errors:</source>
         <translation>Errori:</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -1163,10 +1111,6 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>Simple color</source>
         <translation>Colore semplice</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
     <message>
         <source>Middle color</source>
@@ -1270,10 +1214,6 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>&amp;Decimals:</source>
         <translation>&amp;Decimali:</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -1671,10 +1611,6 @@ Specificare un&apos;altra cartella.</translation>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgTipOfTheDayImp</name>
@@ -1924,10 +1860,6 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>Cancel</source>
         <translation>Annulla</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>
