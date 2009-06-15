@@ -48,7 +48,7 @@
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Differenz</translation>
     </message>
 </context>
 <context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>Face info</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreiecksinformation</translation>
     </message>
     <message>
         <source>Information about face</source>
@@ -257,11 +257,11 @@
     </message>
     <message>
         <source>Create mesh from geometry...</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Netz aus Geometrie...</translation>
     </message>
     <message>
         <source>Create mesh from the selected geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Netz aus selektierter Geometrie</translation>
     </message>
 </context>
 <context>
@@ -302,7 +302,7 @@
     </message>
     <message>
         <source>Intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnitt</translation>
     </message>
 </context>
 <context>
@@ -328,11 +328,11 @@
     </message>
     <message>
         <source>Make segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Segment erzeugen</translation>
     </message>
     <message>
         <source>Creates a mesh segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Netz-Segment</translation>
     </message>
 </context>
 <context>
@@ -358,11 +358,11 @@
     </message>
     <message>
         <source>Remove components by hand...</source>
-        <translation type="unfinished"></translation>
+        <translation>Komponente von Hand entfernen...</translation>
     </message>
     <message>
         <source>Mark a component to remove it from the mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Markiere Komponente um von Hand zu entfernen</translation>
     </message>
 </context>
 <context>
@@ -378,6 +378,21 @@
     <message>
         <source>Remove topologic independant components from the mesh</source>
         <translation>Entfernt topologisch unabhängige Komponenten aus dem Netz</translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshSmoothing</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Smooth</source>
+        <translation>Glätten</translation>
+    </message>
+    <message>
+        <source>Smooth the selected meshes</source>
+        <translation>Selektierte Netze glätten</translation>
     </message>
 </context>
 <context>
@@ -418,7 +433,7 @@
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Vereinigung</translation>
     </message>
 </context>
 <context>
@@ -444,11 +459,11 @@
     </message>
     <message>
         <source>Curvature info</source>
-        <translation type="unfinished"></translation>
+        <translation>Krümmungsinformation</translation>
     </message>
     <message>
         <source>Information about curvature</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationen über Krümmung</translation>
     </message>
 </context>
 <context>
@@ -526,7 +541,7 @@
     </message>
     <message>
         <source>Duplicated faces</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelte Dreiecke</translation>
     </message>
     <message>
         <source>Duplicated points</source>
@@ -538,11 +553,15 @@
     </message>
     <message>
         <source>Self-intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Selbstdurchdringungen</translation>
     </message>
     <message>
         <source>All above tests together</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Tests zusammen</translation>
+    </message>
+    <message>
+        <source>Repetitive repair</source>
+        <translation>Reparatur wiederholen</translation>
     </message>
 </context>
 <context>
@@ -629,23 +648,27 @@
     </message>
     <message>
         <source>Indices</source>
-        <translation type="unfinished"></translation>
+        <translation>Indexe</translation>
     </message>
     <message>
         <source>Degenerations</source>
-        <translation type="unfinished"></translation>
+        <translation>Degenerierungen</translation>
     </message>
     <message>
         <source>Duplicated faces</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelte Dreiecke</translation>
     </message>
     <message>
         <source>No self-intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Selbstdurchdringungen</translation>
     </message>
     <message>
         <source>Self-intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Selbstdurchdringungen</translation>
+    </message>
+    <message>
+        <source>Mesh repair</source>
+        <translation>Netz reparieren</translation>
     </message>
 </context>
 <context>
@@ -746,6 +769,57 @@
         <translation>Kein aktives Dokument</translation>
     </message>
 </context>
+<context encoding="UTF-8">
+    <name>MeshGui::DlgSettingsMeshView</name>
+    <message>
+        <source>Mesh view</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation>Erscheinungsbild</translation>
+    </message>
+    <message>
+        <source>Face color</source>
+        <translation>Dreiecksfarbe</translation>
+    </message>
+    <message>
+        <source>Two-side rendering</source>
+        <translation>Two-side rendering</translation>
+    </message>
+    <message>
+        <source>Backface color</source>
+        <translation>Untergrundfarbe</translation>
+    </message>
+    <message>
+        <source>Smoothing</source>
+        <translation>Glättung</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Crease angle</source>
+        <translation>Knitterwinkel</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Define normal per vertex</source>
+        <translation>Definiere Normal pro Vertex</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source> °</source>
+        <translation> °</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
 <context>
     <name>QObject</name>
     <message>
@@ -830,70 +904,62 @@
     </message>
     <message>
         <source>Meshing Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Toleranz</translation>
     </message>
     <message>
         <source>Enter tolerance for meshing geometry:</source>
-        <translation type="unfinished"></translation>
+        <translation>Toleranz zum Erzeugen von Dreiecksnetz eingeben:</translation>
     </message>
     <message>
         <source>The mesh &apos;%1&apos; is </source>
-        <translation type="unfinished"></translation>
+        <translation> Das Netz &apos;%1&apos; ist</translation>
     </message>
     <message>
         <source>not a solid.</source>
-        <translation type="unfinished"></translation>
+        <translation>kein Solid.</translation>
     </message>
     <message>
         <source>a solid.</source>
-        <translation type="unfinished"></translation>
+        <translation>ein Solid.</translation>
     </message>
     <message>
         <source>Min=&lt;%1,%2,%3&gt;
 
 Max=&lt;%4,%5,%6&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Min=&lt;%1,%2,%3&gt;
+
+Max=&lt;%4,%5,%6&gt;</translation>
     </message>
     <message>
         <source>[Points: %1, Edges: %2 Faces: %3]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The picked polygon seems to have self-overlappings.
-
-This could lead to strange rersults.</source>
-        <translation type="unfinished"></translation>
+        <translation>[Punkte: %1, Kanten: %2 Dreiecke: %3]</translation>
     </message>
     <message>
         <source>Leave info mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Info-Modus verlassen</translation>
     </message>
     <message>
         <source>Index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Index: %1</translation>
     </message>
     <message>
         <source>Leave hole-filling mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Löcher-Schließen-Modus verlassen</translation>
     </message>
     <message>
         <source>Leave removal mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen-Modus verlassen</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="unfinished"></translation>
+        <translation>Analysieren</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished"></translation>
+        <translation>Bool&apos;sche Operationen</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
