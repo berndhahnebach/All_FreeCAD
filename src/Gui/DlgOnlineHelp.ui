@@ -105,7 +105,7 @@
          </size>
         </property>
         <property name="text" >
-         <string>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</string>
+         <string/>
         </property>
         <property name="prefEntry" stdset="0" >
          <cstring>DownloadURL</cstring>
@@ -209,15 +209,15 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::PrefLineEdit</class>
-   <extends>QLineEdit</extends>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Gui::PrefCheckBox</class>
-   <extends>QCheckBox</extends>
+   <class>Gui::PrefLineEdit</class>
+   <extends>QLineEdit</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>

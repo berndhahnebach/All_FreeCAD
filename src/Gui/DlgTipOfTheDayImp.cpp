@@ -94,9 +94,9 @@ void DlgTipOfTheDayImp::reload()
     _http->get(QLatin1String("/mediawiki/free-cad/index.php?title=Tip_of_the_day"), 0);
 
     _iCurrentTip = 0;
-    _lTips << tr("If you want to learn more about FreeCAD you must go to "
-                 "<a href=\"http://apps.sourceforge.net/mediawiki/free-cad/\">"
-                 "http://apps.sourceforge.net/mediawiki/free-cad/</a> or press the Help item in the Help menu.");
+    _lTips << tr("If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.")
+        .arg(QLatin1String("<a href=\"http://apps.sourceforge.net/mediawiki/free-cad/\">"
+                           "http://apps.sourceforge.net/mediawiki/free-cad/</a>"));
 }
 
 void DlgTipOfTheDayImp::onResponseHeaderReceived(const QHttpResponseHeader & responseHeader)

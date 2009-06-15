@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>Gui::TaskView::TaskEditControl</class>
  <widget class="QWidget" name="Gui::TaskView::TaskEditControl" >
   <property name="geometry" >
@@ -10,9 +13,15 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Form</string>
+   <string>Edit</string>
   </property>
   <layout class="QHBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
    <item>
     <widget class="QPushButton" name="pushButtonOK" >
      <property name="enabled" >
@@ -21,44 +30,276 @@
      <property name="palette" >
       <palette>
        <active>
-        <colorrole role="ButtonText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>0</red>
-           <green>170</green>
-           <blue>0</blue>
-          </color>
-         </brush>
-        </colorrole>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>241</red>
+         <green>239</green>
+         <blue>226</blue>
+        </color>
+        <color>
+         <red>172</red>
+         <green>168</green>
+         <blue>153</blue>
+        </color>
+        <color>
+         <red>157</red>
+         <green>155</green>
+         <blue>144</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>113</red>
+         <green>111</green>
+         <blue>100</blue>
+        </color>
+        <color>
+         <red>49</red>
+         <green>106</green>
+         <blue>197</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>232</red>
+         <green>232</green>
+         <blue>232</blue>
+        </color>
        </active>
        <inactive>
-        <colorrole role="ButtonText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>0</red>
-           <green>170</green>
-           <blue>0</blue>
-          </color>
-         </brush>
-        </colorrole>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>241</red>
+         <green>239</green>
+         <blue>226</blue>
+        </color>
+        <color>
+         <red>172</red>
+         <green>168</green>
+         <blue>153</blue>
+        </color>
+        <color>
+         <red>157</red>
+         <green>155</green>
+         <blue>144</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>113</red>
+         <green>111</green>
+         <blue>100</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>232</red>
+         <green>232</green>
+         <blue>232</blue>
+        </color>
        </inactive>
        <disabled>
-        <colorrole role="ButtonText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>106</red>
-           <green>104</green>
-           <blue>100</blue>
-          </color>
-         </brush>
-        </colorrole>
+        <color>
+         <red>118</red>
+         <green>116</green>
+         <blue>108</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>245</red>
+         <green>244</green>
+         <blue>235</blue>
+        </color>
+        <color>
+         <red>172</red>
+         <green>168</green>
+         <blue>153</blue>
+        </color>
+        <color>
+         <red>157</red>
+         <green>155</green>
+         <blue>144</blue>
+        </color>
+        <color>
+         <red>118</red>
+         <green>116</green>
+         <blue>108</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>118</red>
+         <green>116</green>
+         <blue>108</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>49</red>
+         <green>106</green>
+         <blue>197</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>232</red>
+         <green>232</green>
+         <blue>232</blue>
+        </color>
        </disabled>
       </palette>
      </property>
      <property name="font" >
       <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>8</pointsize>
        <weight>75</weight>
+       <italic>false</italic>
        <bold>true</bold>
+       <underline>false</underline>
        <strikeout>false</strikeout>
       </font>
      </property>
@@ -75,44 +316,277 @@
      <property name="palette" >
       <palette>
        <active>
-        <colorrole role="ButtonText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>170</red>
-           <green>0</green>
-           <blue>0</blue>
-          </color>
-         </brush>
-        </colorrole>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>241</red>
+         <green>239</green>
+         <blue>226</blue>
+        </color>
+        <color>
+         <red>172</red>
+         <green>168</green>
+         <blue>153</blue>
+        </color>
+        <color>
+         <red>157</red>
+         <green>155</green>
+         <blue>144</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>113</red>
+         <green>111</green>
+         <blue>100</blue>
+        </color>
+        <color>
+         <red>49</red>
+         <green>106</green>
+         <blue>197</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>232</red>
+         <green>232</green>
+         <blue>232</blue>
+        </color>
        </active>
        <inactive>
-        <colorrole role="ButtonText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>170</red>
-           <green>0</green>
-           <blue>0</blue>
-          </color>
-         </brush>
-        </colorrole>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>241</red>
+         <green>239</green>
+         <blue>226</blue>
+        </color>
+        <color>
+         <red>172</red>
+         <green>168</green>
+         <blue>153</blue>
+        </color>
+        <color>
+         <red>157</red>
+         <green>155</green>
+         <blue>144</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>113</red>
+         <green>111</green>
+         <blue>100</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>232</red>
+         <green>232</green>
+         <blue>232</blue>
+        </color>
        </inactive>
        <disabled>
-        <colorrole role="ButtonText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>106</red>
-           <green>104</green>
-           <blue>100</blue>
-          </color>
-         </brush>
-        </colorrole>
+        <color>
+         <red>118</red>
+         <green>116</green>
+         <blue>108</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>245</red>
+         <green>244</green>
+         <blue>235</blue>
+        </color>
+        <color>
+         <red>172</red>
+         <green>168</green>
+         <blue>153</blue>
+        </color>
+        <color>
+         <red>157</red>
+         <green>155</green>
+         <blue>144</blue>
+        </color>
+        <color>
+         <red>118</red>
+         <green>116</green>
+         <blue>108</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>118</red>
+         <green>116</green>
+         <blue>108</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>236</red>
+         <green>233</green>
+         <blue>216</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+        <color>
+         <red>49</red>
+         <green>106</green>
+         <blue>197</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>0</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>255</blue>
+        </color>
+        <color>
+         <red>232</red>
+         <green>232</green>
+         <blue>232</blue>
+        </color>
        </disabled>
       </palette>
      </property>
      <property name="font" >
       <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>8</pointsize>
        <weight>75</weight>
+       <italic>false</italic>
        <bold>true</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
       </font>
      </property>
      <property name="text" >
@@ -122,6 +596,7 @@
    </item>
   </layout>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>

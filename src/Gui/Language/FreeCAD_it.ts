@@ -860,10 +860,6 @@ Il file esiste già.</translation>
         <source>Location of start page</source>
         <translation>Posizione della pagina iniziale</translation>
     </message>
-    <message>
-        <source>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</source>
-        <translation>http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page</translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
@@ -1689,8 +1685,8 @@ Specificare un&apos;altra cartella.</translation>
 </translation>
     </message>
     <message>
-        <source>If you want to learn more about FreeCAD you must go to &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; or press the Help item in the Help menu.</source>
-        <translation>Se ne vuoi sapere di più su FreeCAD vai a &lt;a href=&quot;http://apps.sourceforge.net/mediawiki/free-cad/&quot;&gt;http://apps.sourceforge.net/mediawiki/free-cad/&lt;/a&gt; o premi Aiuto nel menu Aiuto.</translation>
+        <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
+        <translation>Se ne vuoi sapere di più su FreeCAD vai a %1 o premi Aiuto nel menu Aiuto.</translation>
     </message>
 </context>
 <context>
