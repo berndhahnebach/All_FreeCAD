@@ -78,21 +78,18 @@ View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::W
     // accept drops on the window, get handled in dropEvent, dragEnterEvent   
     setAcceptDrops(true);
   
-    // attache Parameter Observer
+    // attach parameter Observer
     hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
     hGrp->Attach(this);
 
     // create the inventor widget and set the defaults
     _viewer = new View3DInventorViewer(this);
     setViewerDefaults();
-    // check whether a perspective or orthogrphic camera should be set
-    if ( hGrp->GetBool("Orthographic", false) )
-        _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
-    else
-        _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
- 
-    // check whether the simple or the Full Mouse model is used
-    _viewer->setMouseModel(hGrp->GetInt("MouseModel",1));
+    // apply the user settings
+    hGrp->Notify("EnableBacklight");
+    hGrp->Notify("BacklightColor");
+    hGrp->Notify("BacklightIntensity");
+    hGrp->Notify("MouseModel");
 
     stopSpinTimer = new QTimer(this);
     connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopAnimating()));
@@ -138,22 +135,20 @@ PyObject *View3DInventor::getPyObject(void)
 
 void View3DInventor::setViewerDefaults(void)
 {
-    _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
+    _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance",65.0));
     _viewer->setFeedbackVisibility(hGrp->GetBool("CornerCoordSystem",true));
-    _viewer->setAnimationEnabled(hGrp->GetBool("UseAutoRotation" ,true));
-    _viewer->setGradientBackgroud( (hGrp->GetBool("Gradient",true)) );
-    unsigned long col = hGrp->GetUnsigned("BackgroundColor",0);
-    float r,g,b;
-    r = ((col >> 24) & 0xff) / 255.0; g = ((col >> 16) & 0xff) / 255.0; b = ((col >> 8) & 0xff) / 255.0;
-    _viewer->setBackgroundColor(SbColor(r, g, b));
-
-    unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (lila)
+    _viewer->setAnimationEnabled(hGrp->GetBool("UseAutoRotation",true));
+    _viewer->setGradientBackgroud((hGrp->GetBool("Gradient",true)));
+    unsigned long col1 = hGrp->GetUnsigned("BackgroundColor",0);
+    unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (purple)
     unsigned long col3 = hGrp->GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
     unsigned long col4 = hGrp->GetUnsigned("BackgroundColor4",ULONG_MAX); // default color (white)
-    float r2,g2,b2,r3,g3,b3,r4,g4,b4;
+    float r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4;
+    r1 = ((col1 >> 24) & 0xff) / 255.0; g1 = ((col1 >> 16) & 0xff) / 255.0; b1 = ((col1 >> 8) & 0xff) / 255.0;
     r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
     r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
     r4 = ((col4 >> 24) & 0xff) / 255.0; g4 = ((col4 >> 16) & 0xff) / 255.0; b4 = ((col4 >> 8) & 0xff) / 255.0;
+    _viewer->setBackgroundColor(SbColor(r1, g1, b1));
     if (hGrp->GetBool("UseBackgroundColorMid",false) == false)
         _viewer->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3));
     else
@@ -164,46 +159,68 @@ void View3DInventor::setViewerDefaults(void)
     else
         _viewer->getGLRenderAction()->setSmoothing(false);
     _viewer->setEnabledFPSCounter(hGrp->GetBool("ShowFPS",false));
+
+    // check whether a perspective or orthogrphic camera should be set
+    if (hGrp->GetBool("Orthographic", false))
+        _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+    else
+        _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
 }
 
 void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
 {
-    if ( strcmp(Reason,"DisablePreselection") == 0 ) {
+    if (strcmp(Reason,"EnableBacklight") == 0) {
         const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        SoFCEnableHighlightAction cAct( !rclGrp.GetBool("DisablePreselection", false) );
-        cAct.apply(_viewer->getSceneGraph());
-    } else if ( strcmp(Reason,"DisableSelection") == 0) {
+        _viewer->setBacklight(rclGrp.GetBool("EnableBacklight", false));
+    }
+    else if (strcmp(Reason,"BacklightColor") == 0) {
+        unsigned long backlight = hGrp->GetUnsigned("BacklightColor",ULONG_MAX); // default color (white)
+        float transparency;
+        SbColor backlightColor;
+        backlightColor.setPackedValue((uint32_t)backlight, transparency);
+        _viewer->getBacklight()->color.setValue(backlightColor);
+    }
+    else if (strcmp(Reason,"BacklightIntensity") == 0) {
+        long value = hGrp->GetInt("BacklightIntensity", 100);
+        _viewer->getBacklight()->intensity.setValue((float)value/100.0f);
+    }
+    else if (strcmp(Reason,"EnablePreselection") == 0) {
         const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        SoFCEnableSelectionAction cAct( !rclGrp.GetBool("DisableSelection", false) );
+        SoFCEnableHighlightAction cAct(rclGrp.GetBool("EnablePreselection", false));
         cAct.apply(_viewer->getSceneGraph());
-    } else if ( strcmp(Reason,"HighlightColor") == 0) {
+    }
+    else if (strcmp(Reason,"EnableSelection") == 0) {
+        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+        SoFCEnableSelectionAction cAct(rclGrp.GetBool("EnableSelection", false));
+        cAct.apply(_viewer->getSceneGraph());
+    }
+    else if (strcmp(Reason,"HighlightColor") == 0) {
         float transparency;
         SbColor highlightColor(0.1f, 0.1f, 0.8f);
         unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-        int a = (highlight)&0xff;
         highlight = hGrp->GetUnsigned("HighlightColor", highlight);
-        highlight += a;
         highlightColor.setPackedValue((uint32_t)highlight, transparency);
         SoSFColor col; col.setValue(highlightColor);
-        SoFCHighlightColorAction cAct( col );
+        SoFCHighlightColorAction cAct(col);
         cAct.apply(_viewer->getSceneGraph());
-    } else if ( strcmp(Reason,"SelectionColor") == 0) {
+    }
+    else if (strcmp(Reason,"SelectionColor") == 0) {
         float transparency;
         SbColor selectionColor(0.1f, 0.5f, 0.1f);
         unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-        int a = (selection)&0xff;
         selection = hGrp->GetUnsigned("SelectionColor", selection);
-        selection += a;
         selectionColor.setPackedValue((uint32_t)selection, transparency);
         SoSFColor col; col.setValue(selectionColor);
-        SoFCSelectionColorAction cAct( col );
+        SoFCSelectionColorAction cAct(col);
         cAct.apply(_viewer->getSceneGraph());
-    } else if ( strcmp(Reason,"MouseModel") == 0 ) {
-        // check whether the simple or the Full Mouse model is used
+    }
+    else if (strcmp(Reason,"MouseModel") == 0) {
+        // check whether the simple or the full mouse model is used
         const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
         int model = rclGrp.GetInt("MouseModel",1);
         _viewer->setMouseModel(model);
-    } else {
+    }
+    else {
         setViewerDefaults();
     }
 }

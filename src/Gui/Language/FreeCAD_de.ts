@@ -1028,7 +1028,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::Dialog::DlgSettings3DView</name>
     <message>
-        <source>3DView settings</source>
+        <source>3D View settings</source>
         <translation>Einstellungen 3D-Viewer</translation>
     </message>
     <message>
@@ -1068,12 +1068,12 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Auswahl</translation>
     </message>
     <message>
-        <source>Disable preselection highlighting</source>
-        <translation>Hervorhebung von Vorauswahl deaktivieren</translation>
+        <source>Enable preselection highlighting</source>
+        <translation>Hervorhebung von Vorauswahl aktivieren</translation>
     </message>
     <message>
-        <source>Disable selection highlighting</source>
-        <translation>Hervorhebung von Auswahl deaktivieren</translation>
+        <source>Enable selection highlighting</source>
+        <translation>Hervorhebung von Auswahl aktivieren</translation>
     </message>
     <message>
         <source>Background color</source>

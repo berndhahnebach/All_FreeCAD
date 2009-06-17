@@ -438,11 +438,6 @@ bool Document::isModified() const
     return d->_isModified;
 }
 
-Application* Document::getAppWnd() const 
-{
-    return d->_pcAppWnd;
-}
-
 App::Document* Document::getDocument(void) const
 {
     return d->_pcDocument;

@@ -1079,7 +1079,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>3DView settings</source>
+        <source>3D View settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1119,7 +1119,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Disable preselection highlighting</source>
+        <source>Enable preselection highlighting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1131,7 +1131,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Disable selection highlighting</source>
+        <source>Enable selection highlighting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -79,22 +79,20 @@ ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("View");
 
     // switch off preselection
-    bool disablePre = hGrp->GetBool("DisablePreselection", false);
-    bool disableSel = hGrp->GetBool("DisableSelection", false);
-    if (disablePre) {
+    bool enablePre = hGrp->GetBool("EnablePreselection", false);
+    bool enableSel = hGrp->GetBool("EnableSelection", false);
+    if (!enablePre) {
         pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
     }
     else {
         // Search for a user defined value with the current color as default
         SbColor highlightColor = pcHighlight->colorHighlight.getValue();
         unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-        int a = (highlight)&0xff;
         highlight = hGrp->GetUnsigned("HighlightColor", highlight);
-        highlight += a;
         highlightColor.setPackedValue((uint32_t)highlight, transparency);
         pcHighlight->colorHighlight.setValue(highlightColor);
     }
-    if (disableSel) {
+    if (!enableSel) {
         pcHighlight->selectionMode = Gui::SoFCSelection::SEL_OFF;
         pcHighlight->style = Gui::SoFCSelection::BOX;
     }
@@ -102,9 +100,7 @@ ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
         // Do the same with the selection color
         SbColor selectionColor = pcHighlight->colorSelection.getValue();
         unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-        int a = (selection)&0xff;
         selection = hGrp->GetUnsigned("SelectionColor", selection);
-        selection += a;
         selectionColor.setPackedValue((uint32_t)selection, transparency);
         pcHighlight->colorSelection.setValue(selectionColor);
     }

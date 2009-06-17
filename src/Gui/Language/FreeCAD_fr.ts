@@ -1080,7 +1080,7 @@ Specify another directory, please.</source>
         <translation>Vue 3D</translation>
     </message>
     <message>
-        <source>3DView settings</source>
+        <source>3D View settings</source>
         <translation>Réglages Vue 3D</translation>
     </message>
     <message>
@@ -1120,8 +1120,8 @@ Specify another directory, please.</source>
         <translation>Sélection</translation>
     </message>
     <message>
-        <source>Disable preselection highlighting</source>
-        <translation>Annuler les surlignement de présélection</translation>
+        <source>Enable preselection highlighting</source>
+        <translation>Activé les surlignement de présélection</translation>
     </message>
     <message>
         <source>Selection color:</source>
@@ -1132,8 +1132,8 @@ Specify another directory, please.</source>
         <translation>Couleur surlignée:</translation>
     </message>
     <message>
-        <source>Disable selection highlighting</source>
-        <translation>Annuler la sélection surlignée</translation>
+        <source>Enable selection highlighting</source>
+        <translation>Activé la sélection surlignée</translation>
     </message>
     <message>
         <source>Camera type</source>

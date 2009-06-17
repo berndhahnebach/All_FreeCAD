@@ -124,8 +124,6 @@ public:
     void setModified(bool);
     bool isModified() const;
 
-    /// Getter for the Application
-    Application* getAppWnd() const;
     /// Getter for the App Document 
     App::Document*  getDocument(void) const;
 
