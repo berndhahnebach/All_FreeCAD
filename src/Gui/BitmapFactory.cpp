@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #include <string>
+#include <Inventor/fields/SoSFImage.h>
+
 #include <Base/Console.h>
 #include <App/Application.h>
 

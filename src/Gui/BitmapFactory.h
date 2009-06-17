@@ -25,11 +25,13 @@
 #define GUI_BITMAPFACTORY_H
 
 #include <Base/Factory.h>
-#include <Inventor/fields/SoSFImage.h>
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
 #endif
+
+// forward declaration
+class SoSFImage;
 
 namespace Gui {
 
