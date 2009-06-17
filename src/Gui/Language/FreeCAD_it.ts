@@ -1033,7 +1033,7 @@ Specificare un&apos;altra cartella.</translation>
         <translation>Vista 3D</translation>
     </message>
     <message>
-        <source>3DView settings</source>
+        <source>3D View settings</source>
         <translation>Impostazioni Vista 3D</translation>
     </message>
     <message>
@@ -1073,8 +1073,8 @@ Specificare un&apos;altra cartella.</translation>
         <translation>Selezione</translation>
     </message>
     <message>
-        <source>Disable preselection highlighting</source>
-        <translation>Disabilita l&apos;evidenziamento di preselezione</translation>
+        <source>Enable preselection highlighting</source>
+        <translation>Attiva l&apos;evidenziamento di preselezione</translation>
     </message>
     <message>
         <source>Selection color:</source>
@@ -1085,8 +1085,8 @@ Specificare un&apos;altra cartella.</translation>
         <translation>Evidenzia colore:</translation>
     </message>
     <message>
-        <source>Disable selection highlighting</source>
-        <translation>Disabilita l&apos;evidenziamento di selezione</translation>
+        <source>Enable selection highlighting</source>
+        <translation>Attiva l&apos;evidenziamento di selezione</translation>
     </message>
     <message>
         <source>Camera type</source>

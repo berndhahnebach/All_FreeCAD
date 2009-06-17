@@ -261,6 +261,14 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     cam->nearDistance = 0.5;
     cam->farDistance = 1.5;
 
+    // setup light sources
+    SoDirectionalLight *hl = this->getHeadlight();
+    backlight = new SoDirectionalLight();
+    backlight->ref();
+    backlight->setName("soqt->backlight");
+    backlight->direction.setValue(-hl->direction.getValue());
+    backlight->on.setValue(FALSE); // by default off
+
     // Set up background scenegraph with image in it.
     backgroundroot = new SoSeparator;
     backgroundroot->ref();
@@ -336,33 +344,6 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     addFinishCallback(interactionFinishCB);
 }
 
-void View3DInventorViewer::setGradientBackgroud(bool b)
-{
-  if(b && backgroundroot->findChild(pcBackGround) == -1)
-    backgroundroot->addChild( pcBackGround );
-  else if(!b && backgroundroot->findChild(pcBackGround) != -1)
-    backgroundroot->removeChild( pcBackGround );
-}
-
-void View3DInventorViewer::setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor)
-{
-    pcBackGround->setColorGradient(fromColor, toColor);
-}
-
-void View3DInventorViewer::setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor)
-{
-    pcBackGround->setColorGradient(fromColor, toColor, midColor);
-}
-
-void View3DInventorViewer::setEnabledFPSCounter(bool b)
-{
-#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
-  setenv("COIN_SHOW_FPS_COUNTER", (b?"1":"0"), 1);
-#else
-  b ? _putenv ("COIN_SHOW_FPS_COUNTER=1") : _putenv ("COIN_SHOW_FPS_COUNTER=0");
-#endif
-}
-
 View3DInventorViewer::~View3DInventorViewer()
 {
   // cleanup
@@ -378,6 +359,8 @@ View3DInventorViewer::~View3DInventorViewer()
   this->pEventCallback = 0;
   this->pcViewProviderRoot->unref();
   this->pcViewProviderRoot = 0;
+  this->backlight->unref();
+  this->backlight = 0;
 
   finalize();
 
@@ -432,6 +415,62 @@ void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)
     if (action->isOfType(SoGLRenderAction::getClassTypeId())) {
         // do stuff specific for GL rendering here.
         glClear(GL_DEPTH_BUFFER_BIT);
+    }
+}
+
+void View3DInventorViewer::setGradientBackgroud(bool b)
+{
+  if(b && backgroundroot->findChild(pcBackGround) == -1)
+    backgroundroot->addChild( pcBackGround );
+  else if(!b && backgroundroot->findChild(pcBackGround) != -1)
+    backgroundroot->removeChild( pcBackGround );
+}
+
+void View3DInventorViewer::setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor)
+{
+    pcBackGround->setColorGradient(fromColor, toColor);
+}
+
+void View3DInventorViewer::setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor)
+{
+    pcBackGround->setColorGradient(fromColor, toColor, midColor);
+}
+
+void View3DInventorViewer::setEnabledFPSCounter(bool b)
+{
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
+  setenv("COIN_SHOW_FPS_COUNTER", (b?"1":"0"), 1);
+#else
+  b ? _putenv ("COIN_SHOW_FPS_COUNTER=1") : _putenv ("COIN_SHOW_FPS_COUNTER=0");
+#endif
+}
+
+SoDirectionalLight* View3DInventorViewer::getBacklight(void) const
+{
+    return this->backlight;
+}
+
+void View3DInventorViewer::setBacklight(SbBool on)
+{
+    this->backlight->on = on;
+}
+
+SbBool View3DInventorViewer::isBacklight(void) const
+{
+    return this->backlight->on.getValue();
+}
+
+void View3DInventorViewer::setSceneGraph (SoNode *root)
+{
+    inherited::setSceneGraph(root);
+
+    SoSearchAction sa;
+    sa.setNode(this->backlight);
+    SoNode* scene = this->getSceneManager()->getSceneGraph();
+    if (scene && scene->getTypeId().isDerivedFrom(SoSeparator::getClassTypeId())) {
+        sa.apply(scene);
+        if (!sa.getPath())
+            static_cast<SoSeparator*>(scene)->insertChild(this->backlight, 1);
     }
 }
 

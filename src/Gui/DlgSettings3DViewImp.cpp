@@ -49,11 +49,14 @@ DlgSettings3DViewImp::~DlgSettings3DViewImp()
 
 void DlgSettings3DViewImp::saveSettings()
 {
-    prefCheckBox8->onSave();
+    checkBoxAntiAliasing->onSave();
     CheckBox_CornerCoordSystem->onSave();
     CheckBox_ShowFPS->onSave();
     CheckBox_UseAutoRotation->onSave();
     FloatSpinBox_EyeDistance->onSave();
+    checkBoxBacklight->onSave();
+    backlightColor->onSave();
+    sliderIntensity->onSave();
     SelectionColor_Background->onSave();
     backgroundColorFrom->onSave();
     backgroundColorTo->onSave();
@@ -72,11 +75,14 @@ void DlgSettings3DViewImp::saveSettings()
 
 void DlgSettings3DViewImp::loadSettings()
 {
-    prefCheckBox8->onRestore();
+    checkBoxAntiAliasing->onRestore();
     CheckBox_CornerCoordSystem->onRestore();
     CheckBox_ShowFPS->onRestore();
     CheckBox_UseAutoRotation->onRestore();
     FloatSpinBox_EyeDistance->onRestore();
+    checkBoxBacklight->onRestore();
+    backlightColor->onRestore();
+    sliderIntensity->onRestore();
     SelectionColor_Background->onRestore();
     backgroundColorFrom->onRestore();
     backgroundColorTo->onRestore();

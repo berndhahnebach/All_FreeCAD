@@ -70,6 +70,11 @@ public:
   /// Observer message from the Selection
   virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
 
+  SoDirectionalLight* getBacklight(void) const;
+  void setBacklight(SbBool on);
+  SbBool isBacklight(void) const;
+  void setSceneGraph (SoNode *root);
+
   void setAnimationEnabled(const SbBool enable);
   SbBool isAnimationEnabled(void) const;
 
@@ -270,6 +275,7 @@ private:
   SoSeparator * backgroundroot;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;
+  SoDirectionalLight* backlight;
 
   SoSeparator * pcViewProviderRoot;
   SoEventCallback* pEventCallback;
