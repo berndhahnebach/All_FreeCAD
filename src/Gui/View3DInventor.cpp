@@ -32,6 +32,7 @@
 # include <QDragEnterEvent>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
+# include <Inventor/nodes/SoDirectionalLight.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
