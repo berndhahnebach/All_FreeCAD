@@ -119,6 +119,12 @@ PyGetSetDef MaterialPy::GetterSetter[] = {
         "Diffuse color",
         NULL
     },
+    {"EmissiveColor",
+        (getter) staticCallback_getEmissiveColor,
+        (setter) staticCallback_setEmissiveColor, 
+        "Emissive color",
+        NULL
+    },
     {"SpecularColor",
         (getter) staticCallback_getSpecularColor,
         (setter) staticCallback_setSpecularColor, 
@@ -243,6 +249,33 @@ int MaterialPy::staticCallback_setDiffuseColor (PyObject *self, PyObject *value,
         return -1;
     } catch (...) {
         PyErr_SetString(PyExc_Exception, "Unknown exception while writing attribute 'DiffuseColor' of object 'Material'");
+        return -1;
+    }
+}
+
+PyObject * MaterialPy::staticCallback_getEmissiveColor (PyObject *self, void * /*closure*/)
+{
+    try {
+        return Py::new_reference_to(((MaterialPy*)self)->getEmissiveColor());
+    } catch (const Py::Exception&) {
+        // The exception text is already set
+        return NULL;
+    } catch (...) {
+        PyErr_SetString(PyExc_Exception, "Unknown exception while reading attribute 'EmissiveColor' of object 'Material'");
+        return NULL;
+    }
+}
+
+int MaterialPy::staticCallback_setEmissiveColor (PyObject *self, PyObject *value, void * /*closure*/)
+{
+    try {
+        ((MaterialPy*)self)->setEmissiveColor(Py::Tuple(value,false));
+        return 0;
+    } catch (const Py::Exception&) {
+        // The exception text is already set
+        return -1;
+    } catch (...) {
+        PyErr_SetString(PyExc_Exception, "Unknown exception while writing attribute 'EmissiveColor' of object 'Material'");
         return -1;
     }
 }
@@ -418,6 +451,27 @@ void  MaterialPy::setDiffuseColor(Py::Tuple arg)
     if (arg.size() == 4)
     c.a = (float)Py::Float(arg.getItem(3));
     _pcMaterial->diffuseColor = c;
+}
+
+Py::Tuple MaterialPy::getEmissiveColor(void) const
+{
+    Py::Tuple tuple(4);
+    tuple.setItem(0, Py::Float(_pcMaterial->emissiveColor.r));
+    tuple.setItem(1, Py::Float(_pcMaterial->emissiveColor.g));
+    tuple.setItem(2, Py::Float(_pcMaterial->emissiveColor.b));
+    tuple.setItem(3, Py::Float(_pcMaterial->emissiveColor.a));
+    return tuple;
+}
+
+void  MaterialPy::setEmissiveColor(Py::Tuple arg)
+{
+    Color c;
+    c.r = (float)Py::Float(arg.getItem(0));
+    c.g = (float)Py::Float(arg.getItem(1));
+    c.b = (float)Py::Float(arg.getItem(2));
+    if (arg.size() == 4)
+    c.a = (float)Py::Float(arg.getItem(3));
+    _pcMaterial->emissiveColor = c;
 }
 
 Py::Tuple MaterialPy::getSpecularColor(void) const

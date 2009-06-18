@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>202</height>
+    <width>292</width>
+    <height>247</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -23,50 +23,11 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCancel" >
-       <property name="text" >
-        <string>&amp;Close</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="0" column="0" >
     <widget class="QGroupBox" name="groupBox4" >
      <property name="title" >
@@ -74,15 +35,29 @@
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>11</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="0" column="1" >
-       <widget class="Gui::ColorButton" name="ambientColor" >
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label" >
         <property name="text" >
-         <string/>
+         <string>Emissive color:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="textLabel3" >
+        <property name="text" >
+         <string>Specular color:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel2" >
+        <property name="text" >
+         <string>Ambient color:</string>
         </property>
        </widget>
       </item>
@@ -93,28 +68,21 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="Gui::ColorButton" name="diffuseColor" >
+      <item row="2" column="1" >
+       <widget class="Gui::ColorButton" name="emissiveColor" >
         <property name="text" >
          <string/>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="textLabel3" >
-        <property name="text" >
-         <string>Specular color:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
+      <item row="3" column="1" >
        <widget class="Gui::ColorButton" name="specularColor" >
         <property name="text" >
          <string/>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2" >
+      <item row="4" column="0" colspan="2" >
        <layout class="QHBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -154,15 +122,61 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="textLabel2" >
+      <item row="1" column="1" >
+       <widget class="Gui::ColorButton" name="diffuseColor" >
         <property name="text" >
-         <string>Ambient color:</string>
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="Gui::ColorButton" name="ambientColor" >
+        <property name="text" >
+         <string/>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
+   </item>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel" >
+       <property name="text" >
+        <string>&amp;Close</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+C</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -177,6 +191,14 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>ambientColor</tabstop>
+  <tabstop>diffuseColor</tabstop>
+  <tabstop>emissiveColor</tabstop>
+  <tabstop>specularColor</tabstop>
+  <tabstop>shininess</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -186,12 +208,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
+     <x>257</x>
+     <y>271</y>
     </hint>
     <hint type="destinationlabel" >
      <x>20</x>
-     <y>20</y>
+     <y>36</y>
     </hint>
    </hints>
   </connection>
