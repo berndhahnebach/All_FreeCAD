@@ -404,6 +404,15 @@ void ViewProviderPart::updateData(const App::Property* prop)
         catch (...){
             Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n", 
                                   pcObject->getNameInDocument());
+            // For many 64-bit Linux systems this error is due to a missing compiler switch
+            // Note: echo "" | g++ -E -dM -x c - | sort | less prints a list of gcc-internals.
+#if defined(__GNUC__) && defined(__LP64__) && !defined(_OCC64)
+            std::string exe = App::Application::Config()["ExeName"];
+            Base::Console().Error("IMPORTANT: Apparently, %s isn't built with the OpenCASCADE-internal "
+                                  "define '_OCC64'.\nReconfigure the build system with the missing define "
+                                  "(e.g. ./configure CXXFLAGS=\"-D_OCC64\") and run a complete rebuild.\n",
+                                  exe.c_str());
+#endif
         }
     }
 }
