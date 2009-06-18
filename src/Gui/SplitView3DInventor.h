@@ -27,7 +27,6 @@
 #include "MDIView.h"
 
 #include <Base/Parameter.h>
-#include <Inventor/Qt/viewers/SoQtViewer.h>
 #include <vector>
 
 namespace Gui {
@@ -40,29 +39,29 @@ class View3DInventorViewer;
 class GuiExport SplitView3DInventor : public MDIView,public ParameterGrp::ObserverType
 {
 public:
-  SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0 );
-  ~SplitView3DInventor();
+    SplitView3DInventor(int views, Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags=0);
+    ~SplitView3DInventor();
 
-  virtual const char *getName(void) const;
+    virtual const char *getName(void) const;
 
-  /// Mesage handler
-  virtual bool onMsg(const char* pMsg, const char** ppReturn);
-  virtual bool onHasMsg(const char* pMsg) const;
-  virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
-  virtual void onUpdate(void);
-  void updatePrefs(void);
-  void setViewerDefaults(void);
+    /// Mesage handler
+    virtual bool onMsg(const char* pMsg, const char** ppReturn);
+    virtual bool onHasMsg(const char* pMsg) const;
+    virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
+    virtual void onUpdate(void);
+    void updatePrefs(void);
+    void setViewerDefaults(void);
 
-  View3DInventorViewer *getViewer(unsigned int) const;
+    View3DInventorViewer *getViewer(unsigned int) const;
 
-  void setCursor(const QCursor&);
+    void setCursor(const QCursor&);
 
 protected:
-  /// handle to the viewer parameter group
-  ParameterGrp::handle hGrp;
+    /// handle to the viewer parameter group
+    ParameterGrp::handle hGrp;
 
 private:
-  std::vector<View3DInventorViewer*> _viewer;
+    std::vector<View3DInventorViewer*> _viewer;
 };
 
 } // namespace Gui

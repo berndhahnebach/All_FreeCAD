@@ -83,6 +83,14 @@ public:
     static int staticCallback_setDiffuseColor (PyObject *self, PyObject *value, void *closure);
     /// setter for the DiffuseColor attribute
     void setDiffuseColor(Py::Tuple arg);
+    ///getter callback for the EmissiveColor attribute
+    static PyObject * staticCallback_getEmissiveColor (PyObject *self, void *closure);
+    /// getter for the EmissiveColor attribute
+    Py::Tuple getEmissiveColor(void) const;
+    /// setter callback for the EmissiveColor attribute
+    static int staticCallback_setEmissiveColor (PyObject *self, PyObject *value, void *closure);
+    /// setter for the EmissiveColor attribute
+    void setEmissiveColor(Py::Tuple arg);
     ///getter callback for the SpecularColor attribute
     static PyObject * staticCallback_getSpecularColor (PyObject *self, void *closure);
     /// getter for the SpecularColor attribute

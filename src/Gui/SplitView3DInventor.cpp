@@ -192,11 +192,12 @@ void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterG
             cAct.apply((*it)->getSceneGraph());
     }
     else if (strcmp(Reason,"MouseModel") == 0) {
+        // tmp. disabled will be activated after redesign of 3d viewer
         // check whether the simple or the Full Mouse model is used
-        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        int model = rclGrp.GetInt("MouseModel",1);
-        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
-            (*it)->setMouseModel(model);
+        //const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+        //int model = rclGrp.GetInt("MouseModel",1);
+        //for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+        //    (*it)->setMouseModel(model);
     }
     else {
         setViewerDefaults();

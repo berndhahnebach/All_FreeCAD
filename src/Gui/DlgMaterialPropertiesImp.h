@@ -34,21 +34,22 @@ namespace Dialog {
 
 class DlgMaterialPropertiesImp : public QDialog, public Ui_DlgMaterialProperties
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgMaterialPropertiesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgMaterialPropertiesImp();
-  void setViewProviders( const std::vector<Gui::ViewProvider*>&);
+    DlgMaterialPropertiesImp(QWidget* parent = 0, Qt::WFlags fl = 0);
+    ~DlgMaterialPropertiesImp();
+    void setViewProviders(const std::vector<Gui::ViewProvider*>&);
 
 public Q_SLOTS:
-  void on_ambientColor_changed();
-  void on_diffuseColor_changed();
-  void on_specularColor_changed();
-  void on_shininess_valueChanged(int);
+    void on_ambientColor_changed();
+    void on_diffuseColor_changed();
+    void on_emissiveColor_changed();
+    void on_specularColor_changed();
+    void on_shininess_valueChanged(int);
 
 private:
-  std::vector<Gui::ViewProvider*> Objects;
+    std::vector<Gui::ViewProvider*> Objects;
 };
 
 } // namespace Dialog
