@@ -76,8 +76,12 @@ SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, 
 
     setViewerDefaults();
     // apply the user settings
+    hGrp->Notify("HeadlightColor");
+    hGrp->Notify("HeadlightDirection");
+    hGrp->Notify("HeadlightIntensity");
     hGrp->Notify("EnableBacklight");
     hGrp->Notify("BacklightColor");
+    hGrp->Notify("BacklightDirection");
     hGrp->Notify("BacklightIntensity");
     hGrp->Notify("MouseModel");
 }
@@ -139,33 +143,68 @@ void SplitView3DInventor::setViewerDefaults(void)
 /// Observer message from the ParameterGrp
 void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
 {
-    if (strcmp(Reason,"EnableBacklight") == 0) {
-        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+    const ParameterGrp& rGrp = static_cast<ParameterGrp&>(rCaller);
+    if (strcmp(Reason,"HeadlightColor") == 0) {
+        unsigned long headlight = rGrp.GetUnsigned("HeadlightColor",ULONG_MAX); // default color (white)
+        float transparency;
+        SbColor headlightColor;
+        headlightColor.setPackedValue((uint32_t)headlight, transparency);
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
-            (*it)->setBacklight(rclGrp.GetBool("EnableBacklight", false));
+            (*it)->getHeadlight()->color.setValue(headlightColor);
+    }
+    else if (strcmp(Reason,"HeadlightDirection") == 0) {
+        std::string pos = rGrp.GetASCII("HeadlightDirection");
+        QString flt = QString::fromAscii("([-+]?[0-9]+\\.?[0-9]+)");
+        QRegExp rx(QString::fromAscii("^\\(%1,%1,%1\\)$").arg(flt));
+        if (rx.indexIn(QLatin1String(pos.c_str())) > -1) {
+            float x = rx.cap(1).toFloat();
+            float y = rx.cap(2).toFloat();
+            float z = rx.cap(3).toFloat();
+            for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+                (*it)->getHeadlight()->direction.setValue(x,y,z);
+        }
+    }
+    else if (strcmp(Reason,"HeadlightIntensity") == 0) {
+        long value = rGrp.GetInt("HeadlightIntensity", 100);
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->getHeadlight()->intensity.setValue((float)value/100.0f);
+    }
+    else if (strcmp(Reason,"EnableBacklight") == 0) {
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->setBacklight(rGrp.GetBool("EnableBacklight", false));
     }
     else if (strcmp(Reason,"BacklightColor") == 0) {
-        unsigned long backlight = hGrp->GetUnsigned("BacklightColor",ULONG_MAX); // default color (white)
+        unsigned long backlight = rGrp.GetUnsigned("BacklightColor",ULONG_MAX); // default color (white)
         float transparency;
         SbColor backlightColor;
         backlightColor.setPackedValue((uint32_t)backlight, transparency);
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
             (*it)->getBacklight()->color.setValue(backlightColor);
     }
+    else if (strcmp(Reason,"BacklightDirection") == 0) {
+        std::string pos = rGrp.GetASCII("BacklightDirection");
+        QString flt = QString::fromAscii("([-+]?[0-9]+\\.?[0-9]+)");
+        QRegExp rx(QString::fromAscii("^\\(%1,%1,%1\\)$").arg(flt));
+        if (rx.indexIn(QLatin1String(pos.c_str())) > -1) {
+            float x = rx.cap(1).toFloat();
+            float y = rx.cap(2).toFloat();
+            float z = rx.cap(3).toFloat();
+            for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+                (*it)->getBacklight()->direction.setValue(x,y,z);
+        }
+    }
     else if (strcmp(Reason,"BacklightIntensity") == 0) {
-        long value = hGrp->GetInt("BacklightIntensity", 100);
+        long value = rGrp.GetInt("BacklightIntensity", 100);
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
             (*it)->getBacklight()->intensity.setValue((float)value/100.0f);
     }
     else if (strcmp(Reason,"EnablePreselection") == 0) {
-        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        SoFCEnableHighlightAction cAct(rclGrp.GetBool("EnablePreselection", false));
+        SoFCEnableHighlightAction cAct(rGrp.GetBool("EnablePreselection", false));
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
             cAct.apply((*it)->getSceneGraph());
     }
     else if (strcmp(Reason,"EnableSelection") == 0) {
-        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        SoFCEnableSelectionAction cAct(rclGrp.GetBool("EnableSelection", false));
+        SoFCEnableSelectionAction cAct(rGrp.GetBool("EnableSelection", false));
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
             cAct.apply((*it)->getSceneGraph());
     }
@@ -173,7 +212,7 @@ void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterG
         float transparency;
         SbColor highlightColor(0.1f, 0.1f, 0.8f);
         unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-        highlight = hGrp->GetUnsigned("HighlightColor", highlight);
+        highlight = rGrp.GetUnsigned("HighlightColor", highlight);
         highlightColor.setPackedValue((uint32_t)highlight, transparency);
         SoSFColor col; col.setValue(highlightColor);
         SoFCHighlightColorAction cAct(col);
@@ -184,7 +223,7 @@ void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterG
         float transparency;
         SbColor selectionColor(0.1f, 0.5f, 0.1f);
         unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-        selection = hGrp->GetUnsigned("SelectionColor", selection);
+        selection = rGrp.GetUnsigned("SelectionColor", selection);
         selectionColor.setPackedValue((uint32_t)selection, transparency);
         SoSFColor col; col.setValue(selectionColor);
         SoFCSelectionColorAction cAct(col);
