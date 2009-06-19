@@ -44,7 +44,7 @@
 # include <Inventor/misc/SoState.h>
 #endif
 
-#include <Inventor/elements/SoFontSizeElement.h>
+#include <Inventor/elements/SoCullElement.h>
 #include <Inventor/elements/SoModelMatrixElement.h>
 #include <Inventor/elements/SoProjectionMatrixElement.h>
 #include <Inventor/elements/SoViewingMatrixElement.h>
@@ -56,7 +56,6 @@
 #include "SoTextLabel.h"
 
 using namespace Gui;
-
 
 SO_NODE_SOURCE(SoTextLabel);
 
@@ -82,83 +81,82 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
     state->push();
     SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
 
-    SoMaterialBundle mb(action);
-    mb.sendFirst();
-    SbVec3f nilpoint(0.0f, 0.0f, 0.0f);
-    const SbMatrix & mat = SoModelMatrixElement::get(state);
-    const SbViewVolume & vv = SoViewVolumeElement::get(state);
-    const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
-                                   SoProjectionMatrixElement::get(state));
-    const SbViewportRegion & vp = SoViewportRegionElement::get(state);
-    SbVec2s vpsize = vp.getViewportSizePixels();
+    SbBox3f box;
+    SbVec3f center;
+    //this->computeBBox(action, box, center);
 
-    projmatrix.multVecMatrix(nilpoint, nilpoint);
-    nilpoint[0] = (nilpoint[0] + 1.0f) * 0.5f * vpsize[0];
-    nilpoint[1] = (nilpoint[1] + 1.0f) * 0.5f * vpsize[1];      
+    float xmin,ymin,zmin,xmax,ymax,zmax;
+    myBox.getBounds(xmin,ymin,zmin,xmax,ymax,zmax);
+    if (!SoCullElement::cullTest(state, box, TRUE)) {
+        SoMaterialBundle mb(action);
+        mb.sendFirst();
+        SbVec3f nilpoint(0.0f, 0.0f, 0.0f);
+        SbVec3f toppoint(xmax-xmin, ymax-ymin, zmax-zmin);
+        const SbMatrix & mat = SoModelMatrixElement::get(state);
+        const SbViewVolume & vv = SoViewVolumeElement::get(state);
+        const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
+                                       SoProjectionMatrixElement::get(state));
+        const SbViewportRegion & vp = SoViewportRegionElement::get(state);
+        SbVec2s vpsize = vp.getViewportSizePixels();
+
+        projmatrix.multVecMatrix(nilpoint, nilpoint);
+        nilpoint[0] = (nilpoint[0] + 1.0f) * 0.5f * vpsize[0];
+        nilpoint[1] = (nilpoint[1] + 1.0f) * 0.5f * vpsize[1];
+
+        projmatrix.multVecMatrix(toppoint, toppoint);
+        toppoint[0] = (toppoint[0] + 1.0f) * 0.5f * vpsize[0];
+        toppoint[1] = (toppoint[1] + 1.0f) * 0.5f * vpsize[1];
  
-    // Set new state.
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0, vpsize[0], 0, vpsize[1], -1.0f, 1.0f);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+        // Set new state.
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, vpsize[0], 0, vpsize[1], -1.0f, 1.0f);
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-    float fontsize = SoFontSizeElement::get(state);
-    float xpos = nilpoint[0];      // to get rid of compiler warning..
-    float ypos = nilpoint[1];
-    int ix=0, iy=0;
+        state->push();
 
-    // get the current glColor
-    float ftglColor[4];
-    glGetFloatv(GL_CURRENT_COLOR, ftglColor);
+        // disable textures for all units
+        SoGLTextureEnabledElement::set(state, this, FALSE);
+        SoGLTexture3EnabledElement::set(state, this, FALSE);
 
-    unsigned char red   = (unsigned char) (ftglColor[0] * 255.0f);
-    unsigned char green = (unsigned char) (ftglColor[1] * 255.0f);
-    unsigned char blue  = (unsigned char) (ftglColor[2] * 255.0f);
+        glPushAttrib(GL_ENABLE_BIT | GL_PIXEL_MODE_BIT | GL_COLOR_BUFFER_BIT);
+        glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 
-    state->push();
+        //glColor3f(1.0f, 0.447059f, 0.337255f);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBegin(GL_QUADS);
+        //glVertex3f(nilpoint[0]-10,nilpoint[1]-10,0.0f);
+        //glVertex3f(toppoint[0]+10,nilpoint[1]-10,0.0f);
+        //glVertex3f(toppoint[0]+10,toppoint[1]+10,0.0f);
+        //glVertex3f(nilpoint[0]-10,toppoint[1]+10,0.0f);
+        //glVertex3f(nilpoint[0]-10,nilpoint[1]-10,0.0f);
+        //glVertex3f(nilpoint[0]+124,nilpoint[1]-10,0.0f);
+        //glVertex3f(nilpoint[0]+124,nilpoint[1]+28,0.0f);
+        //glVertex3f(nilpoint[0]-10,nilpoint[1]+28,0.0f);
+        glVertex3f(nilpoint[0]-5,nilpoint[1]-5,0.0f);
+        glVertex3f(nilpoint[0]+28,nilpoint[1]-5,0.0f);
+        glVertex3f(nilpoint[0]+28,nilpoint[1]+23,0.0f);
+        glVertex3f(nilpoint[0]-5,nilpoint[1]+23,0.0f);
+        glEnd();
+
+        // pop old state
+        glPopClientAttrib();
+        glPopAttrib();
+        state->pop();
+          
+        glPixelStorei(GL_UNPACK_ALIGNMENT,4);
+        // Pop old GL matrix state.
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+    }
     
-    // disable textures for all units
-    SoGLTextureEnabledElement::set(state, this, FALSE);
-    SoGLTexture3EnabledElement::set(state, this, FALSE);
-
-    glPushAttrib(GL_ENABLE_BIT | GL_PIXEL_MODE_BIT | GL_COLOR_BUFFER_BIT);
-    glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
-    
-    SbBool didenableblend = FALSE;
-
-    glColor3f(1.0f, 0.447059f, 0.337255f);
-    glBegin(GL_QUADS);
-    glVertex2i(0,0);
-    glVertex2i(100,0);
-    glVertex2i(100,100);
-    glVertex2i(0,100);
-    glEnd();
-
-
-
-    // pop old state
-    glPopClientAttrib();
-    glPopAttrib();
     state->pop();
-      
-    glPixelStorei(GL_UNPACK_ALIGNMENT,4);
-    // Pop old GL matrix state.
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-  
-  state->pop();
-
-
-
-
-
-    //if (!this->shouldGLRender(action)) return;
 
     inherited::GLRender(action);
 }
@@ -173,3 +171,28 @@ void SoTextLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
     myBox = box;
     myCenter = center;
 }
+
+
+#if 0
+
+s="""
+  #Inventor V2.1 ascii
+
+  Annotation {
+    Translation { translation 4 0 0 }
+    FontStyle {
+        size 20
+        style BOLD
+    }
+    BaseColor {
+        rgb 0.0 0.0 0.0
+    }
+
+
+    SoTextLabel { string "42"}
+  }
+"""
+
+App.newDocument().addObject("App::InventorObject","iv").Buffer=s
+
+#endif

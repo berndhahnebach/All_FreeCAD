@@ -50,6 +50,5 @@ private:
 
 } // namespace Gui
 
-
 #endif // GUI_SOTEXTLABEL_H
 
