@@ -37,6 +37,7 @@
 # include <QFontMetrics>
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
+# include <Inventor/elements/SoLazyElement.h>
 # include <Inventor/misc/SoState.h>
 #endif
 
@@ -122,7 +123,7 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         SoMaterialBundle mb(action);
         mb.sendFirst();
         const SbMatrix & mat = SoModelMatrixElement::get(state);
-        const SbViewVolume & vv = SoViewVolumeElement::get(state);
+        //const SbViewVolume & vv = SoViewVolumeElement::get(state);
         const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
                                        SoProjectionMatrixElement::get(state));
         const SbViewportRegion & vp = SoViewportRegionElement::get(state);
