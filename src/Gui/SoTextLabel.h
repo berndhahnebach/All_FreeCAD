@@ -26,9 +26,16 @@
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoText2.h>
+#include <Inventor/fields/SoSFColor.h>
+#include <Inventor/fields/SoSFFloat.h>
+#include <Inventor/fields/SoSFBool.h>
 
 namespace Gui {
 
+/**
+ * A text label with a background color.
+ * @author Werner Mayer
+ */
 class GuiExport SoTextLabel : public SoText2 {
     typedef SoText2 inherited;
 
@@ -38,14 +45,13 @@ public:
     static void initClass();
     SoTextLabel();
 
+    SoSFColor backgroundColor;
+    SoSFBool background;
+    SoSFFloat frameSize;
+
 protected:
     virtual ~SoTextLabel() {};
     virtual void GLRender(SoGLRenderAction *action);
-    virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
-
-private:
-    SbBox3f myBox;
-    SbVec3f myCenter;
 };
 
 } // namespace Gui

@@ -256,8 +256,10 @@ void ViewProviderGeometryObject::unsetEdit(void)
     SoTransform* transform = this->pcTransform;
     manip->replaceManip(path, transform);
 
-    App::GeoFeature* geometry = static_cast<App::GeoFeature*>(this->pcObject);
-    this->updateData(&geometry->Placement);
+    if (this->pcObject->getTypeId().isDerivedFrom(App::GeoFeature::getClassTypeId())) {
+        App::GeoFeature* geometry = static_cast<App::GeoFeature*>(this->pcObject);
+        this->updateData(&geometry->Placement);
+    }
 }
 
 void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
@@ -275,24 +277,26 @@ void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
     
         // get the placement
         ViewProviderGeometryObject* view = reinterpret_cast<ViewProviderGeometryObject*>(data);
-        App::GeoFeature* geometry = static_cast<App::GeoFeature*>(view->pcObject);
-        // Note: If R is the rotation, c the rotation center and t the translation
-        // vector then Inventor applies the following transformation: R*(x-c)+c+t
-        // In FreeCAD a placement only has a rotation and a translation part but
-        // no rotation center. This means that we must divide the transformation
-        // in a rotation and translation part.
-        // R * (x-c) + c + t = R * x - R * c + c + t
-        // The rotation part is R, the translation part t', however, is:
-        // t' = t + c - R * c
-        Base::Placement p;
-        p._rot.setValue(q0,q1,q2,q3);
-        Base::Vector3d t(move[0],move[1],move[2]);
-        Base::Vector3d c(center[0],center[1],center[2]);
-        t += c;
-        p._rot.multVec(c,c);
-        t -= c;
-        p._pos = t;
-        geometry->Placement.setValue(p);
+        if (view && view->pcObject && view->pcObject->getTypeId().isDerivedFrom(App::GeoFeature::getClassTypeId())) {
+            App::GeoFeature* geometry = static_cast<App::GeoFeature*>(view->pcObject);
+            // Note: If R is the rotation, c the rotation center and t the translation
+            // vector then Inventor applies the following transformation: R*(x-c)+c+t
+            // In FreeCAD a placement only has a rotation and a translation part but
+            // no rotation center. This means that we must divide the transformation
+            // in a rotation and translation part.
+            // R * (x-c) + c + t = R * x - R * c + c + t
+            // The rotation part is R, the translation part t', however, is:
+            // t' = t + c - R * c
+            Base::Placement p;
+            p._rot.setValue(q0,q1,q2,q3);
+            Base::Vector3d t(move[0],move[1],move[2]);
+            Base::Vector3d c(center[0],center[1],center[2]);
+            t += c;
+            p._rot.multVec(c,c);
+            t -= c;
+            p._pos = t;
+            geometry->Placement.setValue(p);
+        }
     }
 }
 

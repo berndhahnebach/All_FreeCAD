@@ -34,16 +34,14 @@
 # endif
 # include <cfloat>
 # include <algorithm>
-# include <Inventor/actions/SoCallbackAction.h>
-# include <Inventor/actions/SoGetBoundingBoxAction.h>
+# include <QFontMetrics>
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
-# include <Inventor/bundles/SoTextureCoordinateBundle.h>
-# include <Inventor/elements/SoCoordinateElement.h>
-# include <Inventor/elements/SoGLCacheContextElement.h>
 # include <Inventor/misc/SoState.h>
 #endif
 
+#include <Inventor/elements/SoFontNameElement.h>
+#include <Inventor/elements/SoFontSizeElement.h>
 #include <Inventor/elements/SoCullElement.h>
 #include <Inventor/elements/SoModelMatrixElement.h>
 #include <Inventor/elements/SoProjectionMatrixElement.h>
@@ -57,6 +55,32 @@
 
 using namespace Gui;
 
+/*!
+\code
+
+s="""
+  #Inventor V2.1 ascii
+
+  Annotation {
+    Translation { translation 4 0 0 }
+    FontStyle {
+        size 20
+        style BOLD
+    }
+    BaseColor {
+        rgb 0.0 0.0 0.0
+    }
+
+
+    SoTextLabel { string ["Text label", "Second line"] backgroundColor 1.0 0.447059 0.337255}
+  }
+"""
+
+App.ActiveDocument.addObject("App::InventorObject","iv").Buffer=s
+
+\encode
+*/
+
 SO_NODE_SOURCE(SoTextLabel);
 
 void SoTextLabel::initClass()
@@ -67,6 +91,9 @@ void SoTextLabel::initClass()
 SoTextLabel::SoTextLabel()
 {
     SO_NODE_CONSTRUCTOR(SoTextLabel);
+    SO_NODE_ADD_FIELD(backgroundColor, (SbVec3f(1.0f,1.0f,1.0f)));
+    SO_NODE_ADD_FIELD(background, (TRUE));
+    SO_NODE_ADD_FIELD(frameSize, (10.0f));
 }
 
 /**
@@ -76,6 +103,12 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
 {
     if (!this->shouldGLRender(action)) return;
 
+    // only draw text without background
+    if (!this->background.getValue()) {
+        inherited::GLRender(action);
+        return;
+    }
+
     SoState * state = action->getState();
 
     state->push();
@@ -83,15 +116,11 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
 
     SbBox3f box;
     SbVec3f center;
-    //this->computeBBox(action, box, center);
+    this->computeBBox(action, box, center);
 
-    float xmin,ymin,zmin,xmax,ymax,zmax;
-    myBox.getBounds(xmin,ymin,zmin,xmax,ymax,zmax);
     if (!SoCullElement::cullTest(state, box, TRUE)) {
         SoMaterialBundle mb(action);
         mb.sendFirst();
-        SbVec3f nilpoint(0.0f, 0.0f, 0.0f);
-        SbVec3f toppoint(xmax-xmin, ymax-ymin, zmax-zmin);
         const SbMatrix & mat = SoModelMatrixElement::get(state);
         const SbViewVolume & vv = SoViewVolumeElement::get(state);
         const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
@@ -99,14 +128,55 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         const SbViewportRegion & vp = SoViewportRegionElement::get(state);
         SbVec2s vpsize = vp.getViewportSizePixels();
 
+        // font stuff
+        float space = this->spacing.getValue();
+        float fontsize = SoFontSizeElement::get(state);
+        SbName fontname = SoFontNameElement::get(state);
+
+        // get left bottom corner of the label
+        SbVec3f nilpoint(0.0f, 0.0f, 0.0f);
         projmatrix.multVecMatrix(nilpoint, nilpoint);
         nilpoint[0] = (nilpoint[0] + 1.0f) * 0.5f * vpsize[0];
         nilpoint[1] = (nilpoint[1] + 1.0f) * 0.5f * vpsize[1];
 
-        projmatrix.multVecMatrix(toppoint, toppoint);
-        toppoint[0] = (toppoint[0] + 1.0f) * 0.5f * vpsize[0];
-        toppoint[1] = (toppoint[1] + 1.0f) * 0.5f * vpsize[1];
- 
+        // Unfortunately, the required size (in pixels) is stored in a non-accessible way
+        // in the subclass SoText2. Thus, we try to get a satisfactory solution with Qt 
+        // methods.
+        // The font name is of the form "family:style". If 'style' is given it can be
+        // 'Bold', 'Italic' or 'Bold Italic'.
+        QFont font;
+        QString fn = QString::fromAscii(fontname.getString());
+        int pos = fn.indexOf(QLatin1Char(':'));
+        if (pos > -1) {
+            if (fn.indexOf(QLatin1String("Bold"),pos,Qt::CaseInsensitive) > pos)
+                font.setBold(true);
+            if (fn.indexOf(QLatin1String("Italic"),pos,Qt::CaseInsensitive) > pos)
+                font.setItalic(true);
+            fn = fn.left(pos);
+        }
+        font.setFamily(fn);
+        font.setPixelSize((int)fontsize);
+        QFontMetrics fm(font);
+
+        int lines = this->string.getNum();
+        float width = 0.0f;
+        float height = 0.75f*fontsize*lines + (lines-1)*space;//fm.height();
+        float hh=0;
+        for (int i = 0; i < lines; i++) {
+            SbString str = this->string[i];
+            float w = fm.width(QLatin1String(this->string[i].getString()));
+            width = std::max<float>(width, w);
+            hh = fm.height();
+        }
+
+        if (lines > 1) {
+            nilpoint[1] -= ((lines-1)*fontsize*0.75f+space);
+        }
+
+        SbVec3f toppoint = nilpoint;
+        toppoint[0] += width;
+        toppoint[1] += height;
+
         // Set new state.
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
@@ -126,21 +196,17 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         glPushAttrib(GL_ENABLE_BIT | GL_PIXEL_MODE_BIT | GL_COLOR_BUFFER_BIT);
         glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 
-        //glColor3f(1.0f, 0.447059f, 0.337255f);
-        glColor3f(1.0f, 1.0f, 1.0f);
+        // color and frame size
+        SbColor color = this->backgroundColor.getValue();
+        float fs = this->frameSize.getValue();
+
+        // draw background
+        glColor3f(color[0], color[1], color[2]);
         glBegin(GL_QUADS);
-        //glVertex3f(nilpoint[0]-10,nilpoint[1]-10,0.0f);
-        //glVertex3f(toppoint[0]+10,nilpoint[1]-10,0.0f);
-        //glVertex3f(toppoint[0]+10,toppoint[1]+10,0.0f);
-        //glVertex3f(nilpoint[0]-10,toppoint[1]+10,0.0f);
-        //glVertex3f(nilpoint[0]-10,nilpoint[1]-10,0.0f);
-        //glVertex3f(nilpoint[0]+124,nilpoint[1]-10,0.0f);
-        //glVertex3f(nilpoint[0]+124,nilpoint[1]+28,0.0f);
-        //glVertex3f(nilpoint[0]-10,nilpoint[1]+28,0.0f);
-        glVertex3f(nilpoint[0]-5,nilpoint[1]-5,0.0f);
-        glVertex3f(nilpoint[0]+28,nilpoint[1]-5,0.0f);
-        glVertex3f(nilpoint[0]+28,nilpoint[1]+23,0.0f);
-        glVertex3f(nilpoint[0]-5,nilpoint[1]+23,0.0f);
+        glVertex3f(nilpoint[0]-fs,nilpoint[1]-fs,0.0f);
+        glVertex3f(toppoint[0]+fs,nilpoint[1]-fs,0.0f);
+        glVertex3f(toppoint[0]+fs,toppoint[1]+fs,0.0f);
+        glVertex3f(nilpoint[0]-fs,toppoint[1]+fs,0.0f);
         glEnd();
 
         // pop old state
@@ -155,44 +221,8 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
     }
-    
+
     state->pop();
 
     inherited::GLRender(action);
 }
-
-/**
- * Sets the bounding box of the mesh to \a box and its center to \a center.
- */
-void SoTextLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
-{
-    inherited::computeBBox(action, box, center);
-
-    myBox = box;
-    myCenter = center;
-}
-
-
-#if 0
-
-s="""
-  #Inventor V2.1 ascii
-
-  Annotation {
-    Translation { translation 4 0 0 }
-    FontStyle {
-        size 20
-        style BOLD
-    }
-    BaseColor {
-        rgb 0.0 0.0 0.0
-    }
-
-
-    SoTextLabel { string "42"}
-  }
-"""
-
-App.newDocument().addObject("App::InventorObject","iv").Buffer=s
-
-#endif
