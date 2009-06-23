@@ -133,6 +133,7 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         float space = this->spacing.getValue();
         float fontsize = SoFontSizeElement::get(state);
         SbName fontname = SoFontNameElement::get(state);
+        int lines = this->string.getNum();
 
         // get left bottom corner of the label
         SbVec3f nilpoint(0.0f, 0.0f, 0.0f);
@@ -140,6 +141,56 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         nilpoint[0] = (nilpoint[0] + 1.0f) * 0.5f * vpsize[0];
         nilpoint[1] = (nilpoint[1] + 1.0f) * 0.5f * vpsize[1];
 
+#if 1
+        // Unfortunately, the size of the label is stored in the pimpl class of
+        // SoText2 which cannot be accessed directly. However, there is a trick
+        // to get the required information: set model, viewing and projection
+        // matrix to the identity matrix and also view volume to some default
+        // values. SoText2::computeBBox() then calls SoText2P::getQuad which
+        // returns the sizes in form of the bounding box. These values can be
+        // reverse-engineered to get width and height.
+        state->push();
+        SoModelMatrixElement::set(state,this,SbMatrix::identity());
+        SoViewingMatrixElement::set(state,this,SbMatrix::identity());
+        SoProjectionMatrixElement::set(state,this,SbMatrix::identity());
+        SbViewVolume vv;
+        vv.ortho(-1,1,-1,1,-1,1);
+        SoViewVolumeElement::set(state,this,vv);
+
+        SbBox3f box;
+        SbVec3f center;
+        this->computeBBox(action, box, center);
+        state->pop();
+
+        float xmin,ymin,zmin,xmax,ymax,zmax;
+        box.getBounds(xmin,ymin,zmin,xmax,ymax,zmax);
+        SbVec3f v0(xmin,ymax,zmax);
+        SbVec3f v1(xmax,ymax,zmax);
+        SbVec3f v2(xmax,ymin,zmax);
+        SbVec3f v3(xmin,ymin,zmax);
+        vv.projectToScreen(v0,v0);
+        vv.projectToScreen(v1,v1);
+        vv.projectToScreen(v2,v2);
+        vv.projectToScreen(v3,v3);
+
+        float width,height;
+        width  = (v1[0]-v0[0])*vpsize[0];
+        height = (v1[1]-v3[1])*vpsize[1];
+        switch (this->justification.getValue()) {
+        case SoText2::RIGHT:
+            nilpoint[0] -= width;
+            break;
+        case SoText2::CENTER:
+            nilpoint[0] -= 0.5f*width;
+            break;
+        default:
+            break;
+        }
+
+        if (lines > 1) {
+            nilpoint[1] -= (float(lines-1)/(float)lines*height);
+        }
+#else
         // Unfortunately, the required size (in pixels) is stored in a non-accessible way
         // in the subclass SoText2. Thus, we try to get a satisfactory solution with Qt 
         // methods.
@@ -159,7 +210,6 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         font.setPixelSize((int)fontsize);
         QFontMetrics fm(font);
 
-        int lines = this->string.getNum();
         float width = 0.0f;
         float height = 0.75f*fontsize*lines + (lines-1)*space;//fm.height();
         float hh=0;
@@ -173,6 +223,7 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         if (lines > 1) {
             nilpoint[1] -= ((lines-1)*fontsize*0.75f+space);
         }
+#endif
 
         SbVec3f toppoint = nilpoint;
         toppoint[0] += width;
