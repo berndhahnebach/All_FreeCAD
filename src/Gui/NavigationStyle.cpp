@@ -22,7 +22,6 @@
 
 
 #include "PreCompiled.h"
-#if 0
 #ifndef _PreComp_
 # include "InventorAll.h"
 #endif
@@ -32,22 +31,372 @@
 
 using namespace Gui;
 
-AbstractStyle::AbstractStyle()
+NavigationStyle::NavigationStyle()
 {
+    this->currentmode = NavigationStyle::IDLE;
+    this->prevRedrawTime = SbTime::getTimeOfDay();
+    this->spinanimatingallowed = TRUE;
+    this->spinsamplecounter = 0;
+    this->spinincrement = SbRotation::identity();
+    this->spinRotation.setValue(SbVec3f(0, 0, -1), 0);
+    // FIXME: use a smaller sphere than the default one to have a larger
+    // area close to the borders that gives us "z-axis rotation"?
+    // 19990425 mortene.
+    this->spinprojector = new SbSphereSheetProjector(SbSphere(SbVec3f(0, 0, 0), 0.8f));
+    SbViewVolume volume;
+    volume.ortho(-1, 1, -1, 1, -1, 1);
+    this->spinprojector->setViewVolume(volume);
+
+    this->log.size = 16;
+    this->log.position = new SbVec2s [ 16 ];
+    this->log.time = new SbTime [ 16 ];
+    this->log.historysize = 0;
 }
 
-AbstractStyle::~AbstractStyle()
+NavigationStyle::~NavigationStyle()
 {
+    delete this->spinprojector;
+    delete[] this->log.position;
+    delete[] this->log.time;
 }
 
-SbBool AbstractStyle::processSoEvent(const SoEvent * const ev, View3DInventorViewer* view)
+/** Rotate the camera by the given amount, then reposition it so we're
+ * still pointing at the same focal point.
+ */
+void NavigationStyle::reorientCamera(SoCamera * cam, const SbRotation & rot)
 {
-    return FALSE;
+    if (cam == NULL) return;
+
+    // Find global coordinates of focal point.
+    SbVec3f direction;
+    cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+    SbVec3f focalpoint = cam->position.getValue() +
+                         cam->focalDistance.getValue() * direction;
+
+    // Set new orientation value by accumulating the new rotation.
+    cam->orientation = rot * cam->orientation.getValue();
+
+    // Reposition camera so we are still pointing at the same old focal point.
+    cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+    cam->position = focalpoint - cam->focalDistance.getValue() * direction;
+}
+
+void NavigationStyle::panCamera(SoCamera * cam, float aspectratio, const SbPlane & panplane,
+                                const SbVec2f & prevpos, const SbVec2f & currpos)
+{
+    if (cam == NULL) return; // can happen for empty scenegraph
+    if (currpos == prevpos) return; // useless invocation
+
+
+    // Find projection points for the last and current mouse coordinates.
+    SbViewVolume vv = cam->getViewVolume(aspectratio);
+    SbLine line;
+    vv.projectPointToLine(currpos, line);
+    SbVec3f current_planept;
+    panplane.intersect(line, current_planept);
+    vv.projectPointToLine(prevpos, line);
+    SbVec3f old_planept;
+    panplane.intersect(line, old_planept);
+
+    // Reposition camera according to the vector difference between the
+    // projected points.
+    cam->position = cam->position.getValue() - (current_planept - old_planept);
+}
+
+void NavigationStyle::pan(SoCamera* camera)
+{
+    // The plane we're projecting the mouse coordinates to get 3D
+    // coordinates should stay the same during the whole pan
+    // operation, so we should calculate this value here.
+    if (camera == NULL) { // can happen for empty scenegraph
+        this->panningplane = SbPlane(SbVec3f(0, 0, 1), 0);
+    }
+    else {
+        const SbViewportRegion & vp = viewer->getViewportRegion();
+        SbViewVolume vv = camera->getViewVolume(vp.getViewportAspectRatio());
+        this->panningplane = vv.getPlane(camera->focalDistance.getValue());
+    }
+}
+
+void NavigationStyle::panToCenter(const SbPlane & pplane, const SbVec2f & currpos)
+{
+    const SbViewportRegion & vp = viewer->getViewportRegion();
+    float ratio = vp.getViewportAspectRatio();
+    panCamera(viewer->getCamera(), ratio, pplane, SbVec2f(0.5,0.5), currpos);
+}
+
+/** Dependent on the camera type this will either shrink or expand the
+ * height of the viewport (orthogonal camera) or move the camera
+ * closer or further away from the focal point in the scene.
+ *
+ * Used from both SoGuiPlaneViewer and SoGuiExaminerViewer.
+ * Implemented in the SoGuiFullViewer private class to collect common
+ * code.
+ */
+void NavigationStyle::zoom(SoCamera * cam, float diffvalue)
+{
+    if (cam == NULL) return; // can happen for empty scenegraph
+    SoType t = cam->getTypeId();
+    SbName tname = t.getName();
+
+    // This will be in the range of <0, ->>.
+    float multiplicator = float(exp(diffvalue));
+
+    if (t.isDerivedFrom(SoOrthographicCamera::getClassTypeId())) {
+
+        // Since there's no perspective, "zooming" in the original sense
+        // of the word won't have any visible effect. So we just increase
+        // or decrease the field-of-view values of the camera instead, to
+        // "shrink" the projection size of the model / scene.
+        SoOrthographicCamera * oc = (SoOrthographicCamera *)cam;
+        oc->height = oc->height.getValue() * multiplicator;
+
+    }
+    else {
+        // FrustumCamera can be found in the SmallChange CVS module (it's
+        // a camera that lets you specify (for instance) an off-center
+        // frustum (similar to glFrustum())
+        if (!t.isDerivedFrom(SoPerspectiveCamera::getClassTypeId()) &&
+            tname != "FrustumCamera") {
+ /*         static SbBool first = TRUE;
+            if (first) {
+                SoDebugError::postWarning("SoGuiFullViewerP::zoom",
+                                          "Unknown camera type, "
+                                          "will zoom by moving position, but this might not be correct.");
+                first = FALSE;
+            }*/
+        }
+
+        const float oldfocaldist = cam->focalDistance.getValue();
+        const float newfocaldist = oldfocaldist * multiplicator;
+
+        SbVec3f direction;
+        cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+
+        const SbVec3f oldpos = cam->position.getValue();
+        const SbVec3f newpos = oldpos + (newfocaldist - oldfocaldist) * -direction;
+
+        // This catches a rather common user interface "buglet": if the
+        // user zooms the camera out to a distance from origo larger than
+        // what we still can safely do floating point calculations on
+        // (i.e. without getting NaN or Inf values), the faulty floating
+        // point values will propagate until we start to get debug error
+        // messages and eventually an assert failure from core Coin code.
+        //
+        // With the below bounds check, this problem is avoided.
+        //
+        // (But note that we depend on the input argument ''diffvalue'' to
+        // be small enough that zooming happens gradually. Ideally, we
+        // should also check distorigo with isinf() and isnan() (or
+        // inversely; isinfite()), but those only became standardized with
+        // C99.)
+        const float distorigo = newpos.length();
+        // sqrt(FLT_MAX) == ~ 1e+19, which should be both safe for further
+        // calculations and ok for the end-user and app-programmer.
+        if (distorigo > float(sqrt(FLT_MAX))) {
+        }
+        else {
+            cam->position = newpos;
+            cam->focalDistance = newfocaldist;
+        }
+    }
+}
+
+// Calculate a zoom/dolly factor from the difference of the current
+// cursor position and the last.
+void NavigationStyle::zoomByCursor(const SbVec2f & thispos, const SbVec2f & prevpos)
+{
+    // There is no "geometrically correct" value, 20 just seems to give
+    // about the right "feel".
+    zoom(viewer->getCamera(), (thispos[1] - prevpos[1]) * 10.0f/*20.0f*/);
+}
+
+/** Uses the sphere sheet projector to map the mouseposition onto
+ * a 3D point and find a rotation from this and the last calculated point.
+ */
+void NavigationStyle::spin(const SbVec2f & pointerpos)
+{
+    if (this->log.historysize < 2) return;
+    assert(this->spinprojector != NULL);
+
+    const SbViewportRegion & vp = viewer->getViewportRegion();
+    SbVec2s glsize(vp.getViewportSizePixels());
+    SbVec2f lastpos;
+    lastpos[0] = float(this->log.position[1][0]) / float(SoQtMax((int)(glsize[0]-1), 1));
+    lastpos[1] = float(this->log.position[1][1]) / float(SoQtMax((int)(glsize[1]-1), 1));
+
+    this->spinprojector->project(lastpos);
+    SbRotation r;
+    this->spinprojector->projectAndGetRotation(pointerpos, r);
+    r.invert();
+    this->reorientCamera(viewer->getCamera(), r);
+
+    // Calculate an average angle magnitude value to make the transition
+    // to a possible spin animation mode appear smooth.
+
+    SbVec3f dummy_axis, newaxis;
+    float acc_angle, newangle;
+    this->spinincrement.getValue(dummy_axis, acc_angle);
+    acc_angle *= this->spinsamplecounter; // weight
+    r.getValue(newaxis, newangle);
+    acc_angle += newangle;
+
+    this->spinsamplecounter++;
+    acc_angle /= this->spinsamplecounter;
+    // FIXME: accumulate and average axis vectors aswell? 19990501 mortene.
+    this->spinincrement.setValue(newaxis, acc_angle);
+
+    // Don't carry too much baggage, as that'll give unwanted results
+    // when the user quickly trigger (as in "click-drag-release") a spin
+    // animation.
+    if (this->spinsamplecounter > 3) this->spinsamplecounter = 3;
+}
+
+NavigationStyle::ViewerMode NavigationStyle::doSpin()
+{
+    if (this->log.historysize >= 3) {
+        SbTime stoptime = (SbTime::getTimeOfDay() - this->log.time[0]);
+        if (this->spinanimatingallowed && stoptime.getValue() < 0.100) {
+            const SbViewportRegion & vp = viewer->getViewportRegion();
+            const SbVec2s glsize(vp.getViewportSizePixels());
+            SbVec3f from = this->spinprojector->project(SbVec2f(float(this->log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
+                                                                float(this->log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+            SbVec3f to = this->spinprojector->project(this->lastmouseposition);
+            SbRotation rot = this->spinprojector->getRotation(from, to);
+
+            SbTime delta = (this->log.time[0] - this->log.time[2]);
+            double deltatime = delta.getValue();
+            rot.invert();
+            rot.scaleAngle(float(0.200 / deltatime));
+
+            SbVec3f axis;
+            float radians;
+            rot.getValue(axis, radians);
+            if ((radians > 0.01f) && (deltatime < 0.300)) {
+                this->spinRotation = rot;
+                return NavigationStyle::SPINNING;
+            }
+        }
+    }
+
+    return NavigationStyle::IDLE;
+}
+
+void NavigationStyle::updateSpin()
+{
+    SbTime now = SbTime::getTimeOfDay();
+    double secs = now.getValue() -  prevRedrawTime.getValue();
+    this->prevRedrawTime = now;
+
+    if (this->isAnimating()) {
+        SbRotation deltaRotation = this->spinRotation;
+        deltaRotation.scaleAngle(secs * 5.0);
+        this->reorientCamera(viewer->getCamera(), deltaRotation);
+    }
+}
+
+/*!
+  Decide if it should be possible to start a spin animation of the
+  model in the viewer by releasing the mouse button while dragging.
+
+  If the \a enable flag is \c FALSE and we're currently animating, the
+  spin will be stopped.
+*/
+void
+NavigationStyle::setAnimationEnabled(const SbBool enable)
+{
+    this->spinanimatingallowed = enable;
+    if (!enable && this->isAnimating()) { this->stopAnimating(); }
+}
+
+/*!
+  Query whether or not it is possible to start a spinning animation by
+  releasing the left mouse button while dragging the mouse.
+*/
+
+SbBool
+NavigationStyle::isAnimationEnabled(void) const
+{
+    return this->spinanimatingallowed;
+}
+
+/*!
+  Query if the model in the viewer is currently in spinning mode after
+  a user drag.
+*/
+SbBool NavigationStyle::isAnimating(void) const
+{
+    return this->currentmode == NavigationStyle::SPINNING;
+}
+
+/*!
+ * Starts programmatically the viewer in animation mode. The given axis direction
+ * is always in screen coordinates, not in world coordinates.
+ */
+void NavigationStyle::startAnimating(const SbVec3f& axis, float velocity)
+{
+    if (!isAnimationEnabled()) return;
+
+    this->spinincrement = SbRotation::identity();
+    SbRotation rot;
+    rot.setValue(axis, velocity);
+
+    viewer->setViewing(true);
+    this->setViewerMode(NavigationStyle::SPINNING);
+    this->spinRotation = rot;
+}
+
+void NavigationStyle::stopAnimating(void)
+{
+  if (this->currentmode != NavigationStyle::SPINNING) {
+    return;
+  }
+  this->setViewerMode(viewer->isViewing() ? 
+      NavigationStyle::IDLE : NavigationStyle::INTERACT);
+}
+
+// This method adds another point to the mouse location log, used for spin
+// animation calculations.
+void NavigationStyle::addToLog(const SbVec2s pos, const SbTime time)
+{
+    // In case someone changes the const size setting at the top of this
+    // file too small.
+    assert (this->log.size > 2 && "mouse log too small!");
+
+    if (this->log.historysize > 0 && pos == this->log.position[0]) {
+#if SOQt_DEBUG && 0 // debug
+        // This can at least happen under SoQt.
+        SoDebugError::postInfo("NavigationStyle::addToLog", "got position already!");
+#endif // debug
+        return;
+    }
+
+    int lastidx = this->log.historysize;
+    // If we've filled up the log, we should throw away the last item:
+    if (lastidx == this->log.size) { lastidx--; }
+
+    assert(lastidx < this->log.size);
+    for (int i = lastidx; i > 0; i--) {
+        this->log.position[i] = this->log.position[i-1];
+        this->log.time[i] = this->log.time[i-1];
+    }
+
+    this->log.position[0] = pos;
+    this->log.time[0] = time;
+    if (this->log.historysize < this->log.size)
+        this->log.historysize += 1;
+}
+
+// This method "clears" the mouse location log, used for spin
+// animation calculations.
+void NavigationStyle::clearLog(void)
+{
+    this->log.historysize = 0;
 }
 
 // The viewer is a state machine, and all changes to the current state
 // are made through this call.
-void AbstractStyle::setMode(const ViewerMode newmode)
+void NavigationStyle::setViewerMode(const ViewerMode newmode)
 {
     const ViewerMode oldmode = this->currentmode;
     if (newmode == oldmode) { return; }
@@ -56,36 +405,20 @@ void AbstractStyle::setMode(const ViewerMode newmode)
     case DRAGGING:
         // Set up initial projection point for the projector object when
         // first starting a drag operation.
-#if 0
         this->spinprojector->project(this->lastmouseposition);
-        this->interactiveCountInc();
+        //this->interactiveCountInc();
         this->clearLog();
-#endif
         break;
 
     case SPINNING:
 #if 0
         this->interactiveCountInc();
-        this->scheduleRedraw();
 #endif
+        viewer->scheduleRedraw();
         break;
 
     case PANNING:
-        {
-            // The plane we're projecting the mouse coordinates to get 3D
-            // coordinates should stay the same during the whole pan
-            // operation, so we should calculate this value here.
-#if 0
-            SoCamera * cam = this->getCamera();
-            if (cam == NULL) { // can happen for empty scenegraph
-                this->panningplane = SbPlane(SbVec3f(0, 0, 1), 0);
-            }
-            else {
-                SbViewVolume vv = cam->getViewVolume(this->getGLAspectRatio());
-                this->panningplane = vv.getPlane(cam->focalDistance.getValue());
-            }
-#endif
-        }
+        pan(viewer->getCamera());
 #if 0
         this->interactiveCountInc();
 #endif
@@ -121,13 +454,17 @@ void AbstractStyle::setMode(const ViewerMode newmode)
     this->currentmode = newmode;
 }
 
-ExaminerStyle::ExaminerStyle()
+NavigationStyle::ViewerMode NavigationStyle::getViewMode() const
 {
+    return this->currentmode;
 }
 
-ExaminerStyle::~ExaminerStyle()
+SbBool NavigationStyle::processSoEvent(SoQtViewer* viewer, const SoEvent * const ev)
 {
+    return FALSE;
 }
+
+#if 0
 
 SbBool ExaminerStyle::processSoEvent(const SoEvent * const ev, View3DInventorViewer* view)
 {
@@ -476,14 +813,6 @@ SbBool ExaminerStyle::processSoEvent(const SoEvent * const ev, View3DInventorVie
     }
 
     return FALSE;
-}
-
-CADStyle::CADStyle()
-{
-}
-
-CADStyle::~CADStyle()
-{
 }
 
 SbBool CADStyle::processSoEvent(const SoEvent * const ev, View3DInventorViewer* view)
