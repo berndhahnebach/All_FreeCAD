@@ -229,8 +229,6 @@ public:
   void setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor);
   void setEnabledFPSCounter(bool b);
 
-  void seekToCamera(const SbVec3f & scenepos);
-
   void setMouseModel(int i){_iMouseModel = i;}
 
   void openPopupMenu(const SbVec2s& position);

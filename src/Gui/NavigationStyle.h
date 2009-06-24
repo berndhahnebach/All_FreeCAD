@@ -23,8 +23,91 @@
 
 #ifndef GUI_NAVIGATIONSTYLE_H
 #define GUI_NAVIGATIONSTYLE_H
-#if 0
+
 // forward declarations
+class SoEvent;
+class SoQtViewer;
+
+namespace Gui {
+class GuiExport NavigationStyle
+{
+protected:
+    enum ViewerMode {
+        IDLE,
+        INTERACT,
+        ZOOMING,
+        PANNING,
+        DRAGGING,
+        SPINNING,
+        SEEK_WAIT_MODE,
+        SEEK_MODE,
+        SELECTION
+    };
+
+public:
+    NavigationStyle();
+    virtual ~NavigationStyle();
+
+    void setAnimationEnabled(const SbBool enable);
+    SbBool isAnimationEnabled(void) const;
+
+    void startAnimating(const SbVec3f& axis, float velocity);
+    void stopAnimating(void);
+    SbBool isAnimating(void) const;
+
+    void setViewerMode(const ViewerMode newmode);
+    ViewerMode getViewMode() const;
+    virtual SbBool processSoEvent(SoQtViewer* viewer, const SoEvent * const ev);
+
+protected:
+    void reorientCamera(SoCamera * camera, const SbRotation & rot);
+    void panCamera(SoCamera * camera,
+                   float vpaspect,
+                   const SbPlane & panplane,
+                   const SbVec2f & previous,
+                   const SbVec2f & current);
+    void pan(SoCamera* camera);
+    void panToCenter(const SbPlane & pplane, const SbVec2f & currpos);
+    void zoom(SoCamera * camera, float diffvalue);
+    void zoomByCursor(const SbVec2f & thispos, const SbVec2f & prevpos);
+    void spin(const SbVec2f & pointerpos);
+    ViewerMode doSpin();
+    void updateSpin();
+
+private:
+    void clearLog(void);
+    void addToLog(const SbVec2s pos, const SbTime time);
+
+private:
+    struct { // tracking mouse movement in a log
+        short size;
+        short historysize;
+        SbVec2s * position;
+        SbTime * time;
+    } log;
+
+    SoQtViewer* viewer;
+    ViewerMode currentmode;
+    SbVec2f lastmouseposition;
+    SbTime prevRedrawTime;
+
+    /** @name camera data */
+    //@{
+    SbPlane panningplane;
+    //@}
+
+    /** @name Spinning data */
+    //@{
+    SbBool spinanimatingallowed;
+    int spinsamplecounter;
+    SbRotation spinincrement;
+    SbRotation spinRotation;
+    SbSphereSheetProjector * spinprojector;
+    //@}
+};
+
+} // namespace Gui
+#if 0
 class SoEvent;
 
 namespace Gui {
@@ -38,42 +121,11 @@ class View3DInventorViewer;
 class GuiExport AbstractStyle
 {
 public:
-    AbstractStyle();
-    virtual ~AbstractStyle();
-
-    virtual SbBool processSoEvent(const SoEvent * const ev, View3DInventorViewer*);
 
 protected:
-    SbVec2f lastmouseposition;
-    SbPlane panningplane;
     SbBool ctrldown, shiftdown;
     SbBool button1down, button3down;
-    SbBool editing, allowSpining;;
-    SbTime CenterTime;
-
-    enum ViewerMode {
-        IDLE,
-        INTERACT,
-        ZOOMING,
-        PANNING,
-        DRAGGING,
-        SPINNING,
-        SEEK_WAIT_MODE,
-        SEEK_MODE,
-        SELECTION
-    };
-
-    ViewerMode currentmode;
-    void setMode(const ViewerMode mode);
-};
-
-class GuiExport ExaminerStyle : public AbstractStyle
-{
-public:
-    ExaminerStyle();
-    ~ExaminerStyle();
-
-    SbBool processSoEvent(const SoEvent * const ev, View3DInventorViewer*);
+    SbTime centerTime;
 };
 
 class GuiExport CADStyle : public AbstractStyle
@@ -82,7 +134,6 @@ public:
     CADStyle();
     ~CADStyle();
 
-    SbBool processSoEvent(const SoEvent * const ev, View3DInventorViewer*);
     bool _bRejectSelection;
     bool _bSpining;
     SbTime MoveTime;
