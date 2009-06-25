@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __VIEW3DINVENTORVIEWER__
-#define __VIEW3DINVENTORVIEWER__
+#ifndef GUI_VIEW3DINVENTORVIEWER_H
+#define GUI_VIEW3DINVENTORVIEWER_H
 
 
 #ifndef __Qt4All__
@@ -149,7 +149,7 @@ public:
     // calls a PickAction on the scene graph
     bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm) const;
     SoPickedPoint* pickPoint(const SbVec2s& pos) const;
-    void pubSeekToPoint(const SbVec2s& pos);
+    SbBool pubSeekToPoint(const SbVec2s& pos);
     void pubSeekToPoint(const SbVec3f& pos);
     /**
      * Set up a callback function \a cb which will be invoked for the given eventtype. 
@@ -247,6 +247,7 @@ protected:
     virtual void setSeekMode(SbBool enable);
     virtual void afterRealizeHook(void);
     virtual void processEvent(QEvent * event);
+    SbBool processSoEventBase(const SoEvent * const ev);
     virtual SbBool processSoEvent(const SoEvent * const ev);
     SbBool processSoEvent1(const SoEvent * const ev);
     SbBool processSoEvent2(const SoEvent * const ev);
@@ -361,9 +362,12 @@ public:
 
 private:
     FlagLayout* _flaglayout;
+
+
+    friend class NavigationStyle;
 };
 
 } // namespace Gui
 
-#endif  //__VIEW3DINVENTORVIEWER__
+#endif  // GUI_VIEW3DINVENTORVIEWER_H
 

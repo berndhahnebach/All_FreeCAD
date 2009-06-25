@@ -40,6 +40,7 @@
 #include "SoTextLabel.h"
 
 #include "propertyeditor/PropertyItem.h"
+#include "NavigationStyle.h"
 
 using namespace Gui;
 using namespace Gui::PropertyEditor;
@@ -81,6 +82,10 @@ void Gui::SoFCDB::init()
     PropertyColorItem               ::init();
     PropertyFileItem                ::init();
     PropertyPathItem                ::init();
+
+    NavigationStyle                 ::init();
+    InventorNavigationStyle         ::init();
+    CADNavigationStyle              ::init();
 
     qRegisterMetaType<Base::Vector3f>("Base::Vector3f");
 }
