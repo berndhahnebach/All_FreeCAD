@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <cfloat>
 # include "InventorAll.h"
+# include <QCursor>
 #endif
 
 #include "NavigationStyle.h"
