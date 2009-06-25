@@ -24,14 +24,27 @@
 #ifndef GUI_NAVIGATIONSTYLE_H
 #define GUI_NAVIGATIONSTYLE_H
 
+#include <Base/BaseClass.h>
+
 // forward declarations
 class SoEvent;
 class SoQtViewer;
+class SoCamera;
 
 namespace Gui {
-class GuiExport NavigationStyle
+
+class View3DInventorViewer;
+class AbstractMouseModel;
+
+/**
+ * The navigation style base class
+ * @author Werner Mayer
+ */
+class GuiExport NavigationStyle : public Base::BaseClass
 {
-protected:
+    TYPESYSTEM_HEADER();
+
+public:
     enum ViewerMode {
         IDLE,
         INTERACT,
@@ -44,9 +57,18 @@ protected:
         SELECTION
     };
 
+    enum ePickMode {
+        Lasso       = 0,  /**< Select objects using a lasso. */
+        Rectangle   = 1,  /**< Select objects using a rectangle. */
+        BoxZoom     = 2,  /**< Perform a box zoom. */
+        Clip        = 3,  /**< Clip objects using a lasso. */
+    };
+
 public:
     NavigationStyle();
     virtual ~NavigationStyle();
+
+    void setViewer(View3DInventorViewer*);
 
     void setAnimationEnabled(const SbBool enable);
     SbBool isAnimationEnabled(void) const;
@@ -57,9 +79,25 @@ public:
 
     void setViewerMode(const ViewerMode newmode);
     ViewerMode getViewMode() const;
-    virtual SbBool processSoEvent(SoQtViewer* viewer, const SoEvent * const ev);
+    virtual SbBool processSoEvent(const SoEvent * const ev);
+
+    void startPicking(ePickMode = Lasso);
+    void stopPicking();
+    SbBool isPicking() const;
+    const std::vector<SbVec2f>& getPickedPolygon(SbBool* clip_inner=0) const;
 
 protected:
+    void initialize();
+    void finalize();
+    void interactiveCountInc(void);
+    void interactiveCountDec(void);
+    int getInteractiveCount(void) const;
+    SbBool isViewing(void) const;
+    void setViewing(SbBool);
+    SbBool isSeekMode(void) const;
+    void setSeekMode(SbBool enable);
+    SbBool seekToPoint(const SbVec2s screenpos);
+    void seekToPoint(const SbVec3f& scenepos);
     void reorientCamera(SoCamera * camera, const SbRotation & rot);
     void panCamera(SoCamera * camera,
                    float vpaspect,
@@ -73,12 +111,12 @@ protected:
     void spin(const SbVec2f & pointerpos);
     ViewerMode doSpin();
     void updateSpin();
+    SbBool handleEventInForeground(const SoEvent* const e);
 
-private:
     void clearLog(void);
     void addToLog(const SbVec2s pos, const SbTime time);
 
-private:
+protected:
     struct { // tracking mouse movement in a log
         short size;
         short historysize;
@@ -86,14 +124,20 @@ private:
         SbTime * time;
     } log;
 
-    SoQtViewer* viewer;
+    View3DInventorViewer* viewer;
     ViewerMode currentmode;
     SbVec2f lastmouseposition;
-    SbTime prevRedrawTime;
-
-    /** @name camera data */
-    //@{
     SbPlane panningplane;
+    SbTime prevRedrawTime;
+    SbTime centerTime;
+    SbBool ctrldown, shiftdown;
+    SbBool button1down, button3down;
+
+    /** @name Mouse model */
+    //@{
+    AbstractMouseModel* pcMouseModel;
+    std::vector<SbVec2f> pcPolygon;
+    SbBool clipInner;
     //@}
 
     /** @name Spinning data */
@@ -106,33 +150,28 @@ private:
     //@}
 };
 
-} // namespace Gui
-#if 0
-class SoEvent;
+class GuiExport InventorNavigationStyle : public NavigationStyle {
+    typedef NavigationStyle inherited;
 
-namespace Gui {
+    TYPESYSTEM_HEADER();
 
-class View3DInventorViewer;
-
-/**
- * The navigation style base class
- * @author Werner Mayer
- */
-class GuiExport AbstractStyle
-{
 public:
+    InventorNavigationStyle();
+    ~InventorNavigationStyle();
 
-protected:
-    SbBool ctrldown, shiftdown;
-    SbBool button1down, button3down;
-    SbTime centerTime;
+    SbBool processSoEvent(const SoEvent * const ev);
 };
 
-class GuiExport CADStyle : public AbstractStyle
-{
+class GuiExport CADNavigationStyle : public NavigationStyle {
+    typedef NavigationStyle inherited;
+
+    TYPESYSTEM_HEADER();
+
 public:
-    CADStyle();
-    ~CADStyle();
+    CADNavigationStyle();
+    ~CADNavigationStyle();
+
+    SbBool processSoEvent(const SoEvent * const ev);
 
     bool _bRejectSelection;
     bool _bSpining;
@@ -141,5 +180,5 @@ public:
 };
 
 } // namespace Gui
-#endif
+
 #endif // GUI_NAVIGATIONSTYLE_H 

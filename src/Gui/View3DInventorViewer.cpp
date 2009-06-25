@@ -958,12 +958,29 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
     if (isRedirectedToSceneGraph())
         return SoQtRenderArea::processSoEvent(ev);
+    if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
+        // filter out 'Q' and 'ESC' keys
+        const SoKeyboardEvent * const ke = static_cast<const SoKeyboardEvent *>(ev);
+        switch (ke->getKey()) {
+        case SoKeyboardEvent::ESCAPE:
+        case SoKeyboardEvent::Q: // ignore 'Q' keys (to prevent app from being closed)
+            return SoQtRenderArea::processSoEvent(ev);
+        default:
+            break;
+        }
+    }
+
     switch(_iMouseModel)
     {
         case 0:return processSoEvent2(ev);break;
         case 1:return processSoEvent1(ev);break;
         default:return processSoEvent1(ev);
     }
+}
+
+SbBool View3DInventorViewer::processSoEventBase(const SoEvent * const ev)
+{
+    return inherited::processSoEvent(ev);
 }
 
 SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
@@ -1019,6 +1036,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
   }
 
   // give the nodes in the foreground root the chance to handle events (e.g color bar)
+  // Note: this must be done _before_ ceding to the viewer
   if (!processed && !this->editing)
   {
     SoHandleEventAction action(getViewportRegion());
@@ -1537,8 +1555,8 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
   }
 
   // give the nodes in the foreground root the chance to handle events (e.g color bar)
-  // Note: this must be done _before_ ceding to the viewer  
-  if ( !processed )
+  // Note: this must be done _before_ ceding to the viewer
+  if (!processed/* && !this->editing*/)
   {
     SoHandleEventAction action(getViewportRegion());
     action.setEvent(ev);
@@ -1791,9 +1809,9 @@ SoPickedPoint* View3DInventorViewer::pickPoint(const SbVec2s& pos) const
     return (pick ? new SoPickedPoint(*pick) : 0);
 }
 
-void View3DInventorViewer::pubSeekToPoint(const SbVec2s& pos)
+SbBool View3DInventorViewer::pubSeekToPoint(const SbVec2s& pos)
 {
-    this->seekToPoint(pos);
+    return this->seekToPoint(pos);
 }
 
 void View3DInventorViewer::pubSeekToPoint(const SbVec3f& pos)
