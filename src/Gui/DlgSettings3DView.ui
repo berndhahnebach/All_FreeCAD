@@ -207,15 +207,9 @@
          </widget>
         </item>
         <item>
-         <widget class="Gui::PrefComboBox" name="comboNavigationStyle" >
+         <widget class="QComboBox" name="comboNavigationStyle" >
           <property name="currentIndex" >
            <number>1</number>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>MouseModel</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>View</cstring>
           </property>
           <item>
            <property name="text" >
@@ -601,13 +595,6 @@
   <customwidget>
    <class>Gui::PrefDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
-   <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Gui::PrefComboBox</class>
-   <extends>QComboBox</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>

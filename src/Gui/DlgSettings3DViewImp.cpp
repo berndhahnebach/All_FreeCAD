@@ -23,9 +23,16 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <QRegExp>
+#endif
+
 #include "DlgSettings3DViewImp.h"
+#include "NavigationStyle.h"
 #include "PrefWidgets.h"
+#include <App/Application.h>
 #include <Base/Console.h>
+#include <Base/Parameter.h>
 
 using namespace Gui::Dialog;
 
@@ -37,6 +44,22 @@ DlgSettings3DViewImp::DlgSettings3DViewImp(QWidget* parent)
     : PreferencePage( parent )
 {
     this->setupUi(this);
+
+    std::vector<Base::Type> types;
+    Base::Type::getAllDerivedFrom(NavigationStyle::getClassTypeId(), types);
+    comboNavigationStyle->clear();
+
+    QRegExp rx(QString::fromAscii("^\\w+::(\\w+)Navigation\\w+$"));
+    for (std::vector<Base::Type>::iterator it = types.begin(); it != types.end(); ++it) {
+        if (*it != NavigationStyle::getClassTypeId()) {
+            QString data = QString::fromAscii(it->getName());
+            QString name = data.mid(data.indexOf(QLatin1String("::"))+2);
+            if (rx.indexIn(data) > -1) {
+                name = tr("%1 navigation").arg(rx.cap(1));
+            }
+            comboNavigationStyle->addItem(name, data);
+        }
+    }
 }
 
 /** 
@@ -70,7 +93,11 @@ void DlgSettings3DViewImp::saveSettings()
     checkBoxSelection->onSave();
     HighlightColor->onSave();
     SelectionColor->onSave();
-    comboNavigationStyle->onSave();
+
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/View");
+    QVariant data = comboNavigationStyle->itemData(comboNavigationStyle->currentIndex(), Qt::UserRole);
+    hGrp->SetASCII("NavigationStyle", (const char*)data.toByteArray());
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -96,7 +123,12 @@ void DlgSettings3DViewImp::loadSettings()
     checkBoxSelection->onRestore();
     HighlightColor->onRestore();
     SelectionColor->onRestore();
-    comboNavigationStyle->onRestore();
+
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/View");
+    std::string model = hGrp->GetASCII("NavigationStyle",CADNavigationStyle::getClassTypeId().getName());
+    int index = comboNavigationStyle->findData(QByteArray(model.c_str()));
+    if (index > -1) comboNavigationStyle->setCurrentIndex(index);
 }
 
 /**

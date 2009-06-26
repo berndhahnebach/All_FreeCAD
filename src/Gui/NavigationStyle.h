@@ -76,9 +76,11 @@ public:
     void startAnimating(const SbVec3f& axis, float velocity);
     void stopAnimating(void);
     SbBool isAnimating(void) const;
+    void updateAnimation();
+    void boxZoom(const SbBox2s& box);
 
-    void setViewerMode(const ViewerMode newmode);
-    ViewerMode getViewMode() const;
+    void setViewingMode(const ViewerMode newmode);
+    int getViewingMode() const;
     virtual SbBool processSoEvent(const SoEvent * const ev);
 
     void startPicking(ePickMode = Lasso);
@@ -109,8 +111,7 @@ protected:
     void zoom(SoCamera * camera, float diffvalue);
     void zoomByCursor(const SbVec2f & thispos, const SbVec2f & prevpos);
     void spin(const SbVec2f & pointerpos);
-    ViewerMode doSpin();
-    void updateSpin();
+    SbBool doSpin();
     SbBool handleEventInForeground(const SoEvent* const e);
 
     void clearLog(void);

@@ -36,6 +36,7 @@
 #include "SoFCSelectionAction.h"
 #include "Document.h"
 #include "Application.h"
+#include "NavigationStyle.h"
 
 
 using namespace Gui;
@@ -83,7 +84,7 @@ SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, 
     hGrp->Notify("BacklightColor");
     hGrp->Notify("BacklightDirection");
     hGrp->Notify("BacklightIntensity");
-    hGrp->Notify("MouseModel");
+    hGrp->Notify("NavigationStyle");
 }
 
 SplitView3DInventor::~SplitView3DInventor()
@@ -230,13 +231,13 @@ void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterG
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
             cAct.apply((*it)->getSceneGraph());
     }
-    else if (strcmp(Reason,"MouseModel") == 0) {
+    else if (strcmp(Reason,"NavigationStyle") == 0) {
         // tmp. disabled will be activated after redesign of 3d viewer
         // check whether the simple or the Full Mouse model is used
-        //const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        //int model = rclGrp.GetInt("MouseModel",1);
+        //std::string model = rGrp.GetASCII("NavigationStyle",CADNavigationStyle::getClassTypeId().getName());
+        //Base::Type type = Base::Type::fromName(model.c_str());
         //for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
-        //    (*it)->setMouseModel(model);
+        //    (*it)->setNavigationType(type);
     }
     else {
         setViewerDefaults();

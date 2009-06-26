@@ -36,7 +36,7 @@ using namespace Gui;
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::NavigationStyle,Base::BaseClass);
 
-NavigationStyle::NavigationStyle() : viewer(0)
+NavigationStyle::NavigationStyle() : viewer(0), pcMouseModel(0)
 {
     initialize();
 }
@@ -59,6 +59,7 @@ void NavigationStyle::initialize()
     this->spinsamplecounter = 0;
     this->spinincrement = SbRotation::identity();
     this->spinRotation.setValue(SbVec3f(0, 0, -1), 0);
+
     // FIXME: use a smaller sphere than the default one to have a larger
     // area close to the borders that gives us "z-axis rotation"?
     // 19990425 mortene.
@@ -105,9 +106,9 @@ SbBool NavigationStyle::isViewing(void) const
     return viewer->isViewing();
 }
 
-void NavigationStyle::setViewing(SbBool on)
+void NavigationStyle::setViewing(SbBool enable)
 {
-    viewer->setViewing(on);
+    viewer->setViewing(enable);
 }
 
 SbBool NavigationStyle::isSeekMode(void) const
@@ -128,6 +129,46 @@ SbBool NavigationStyle::seekToPoint(const SbVec2s screenpos)
 void NavigationStyle::seekToPoint(const SbVec3f& scenepos)
 {
     viewer->seekToPoint(scenepos);
+}
+
+void NavigationStyle::boxZoom(const SbBox2s& box)
+{
+    SoCamera* cam = viewer->getCamera();
+    if (!cam) return; // no camera 
+    const SbViewportRegion & vp = viewer->getViewportRegion();
+    SbViewVolume vv = cam->getViewVolume(vp.getViewportAspectRatio());
+
+    short sizeX,sizeY;
+    box.getSize(sizeX, sizeY);
+    SbVec2s size = vp.getViewportSizePixels();
+
+    // The bbox must not be empty i.e. width and length is zero, but it is possible that
+    // either width or length is zero
+    if (sizeX == 0 && sizeY == 0) 
+        return;
+
+    // Get the new center in normalized pixel coordinates
+    short xmin,xmax,ymin,ymax;
+    box.getBounds(xmin,ymin,xmax,ymax);
+    const SbVec2f center((float) ((xmin+xmax)/2) / (float) SoQtMax((int)(size[0] - 1), 1),
+                         (float) (size[1]-(ymin+ymax)/2) / (float) SoQtMax((int)(size[1] - 1), 1));
+
+    SbPlane plane = vv.getPlane(cam->focalDistance.getValue());
+    panCamera(cam,vp.getViewportAspectRatio(),plane, SbVec2f(0.5,0.5), center);
+
+    // Set height or height angle of the camera
+    float scaleX = (float)sizeX/(float)size[0];
+    float scaleY = (float)sizeY/(float)size[1];
+    float scale = std::max<float>(scaleX, scaleY);
+    if (cam && cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+        float height = static_cast<SoOrthographicCamera*>(cam)->height.getValue() * scale;
+        static_cast<SoOrthographicCamera*>(cam)->height = height;
+    }
+    else if (cam && cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+        float height = static_cast<SoPerspectiveCamera*>(cam)->heightAngle.getValue() / 2.0f;
+        height = 2.0f * atan(tan(height) * scale);
+        static_cast<SoPerspectiveCamera*>(cam)->heightAngle = height;
+    }
 }
 
 /** Rotate the camera by the given amount, then reposition it so we're
@@ -318,7 +359,7 @@ void NavigationStyle::spin(const SbVec2f & pointerpos)
     if (this->spinsamplecounter > 3) this->spinsamplecounter = 3;
 }
 
-NavigationStyle::ViewerMode NavigationStyle::doSpin()
+SbBool NavigationStyle::doSpin()
 {
     if (this->log.historysize >= 3) {
         SbTime stoptime = (SbTime::getTimeOfDay() - this->log.time[0]);
@@ -340,15 +381,15 @@ NavigationStyle::ViewerMode NavigationStyle::doSpin()
             rot.getValue(axis, radians);
             if ((radians > 0.01f) && (deltatime < 0.300)) {
                 this->spinRotation = rot;
-                return NavigationStyle::SPINNING;
+                return TRUE;
             }
         }
     }
 
-    return NavigationStyle::IDLE;
+    return FALSE;
 }
 
-void NavigationStyle::updateSpin()
+void NavigationStyle::updateAnimation()
 {
     SbTime now = SbTime::getTimeOfDay();
     double secs = now.getValue() -  prevRedrawTime.getValue();
@@ -416,7 +457,7 @@ void NavigationStyle::startAnimating(const SbVec3f& axis, float velocity)
     rot.setValue(axis, velocity);
 
     this->setViewing(true);
-    this->setViewerMode(NavigationStyle::SPINNING);
+    this->setViewingMode(NavigationStyle::SPINNING);
     this->spinRotation = rot;
 }
 
@@ -425,7 +466,7 @@ void NavigationStyle::stopAnimating(void)
     if (this->currentmode != NavigationStyle::SPINNING) {
         return;
     }
-    this->setViewerMode(this->isViewing() ? 
+    this->setViewingMode(this->isViewing() ? 
         NavigationStyle::IDLE : NavigationStyle::INTERACT);
 }
 
@@ -516,7 +557,7 @@ void NavigationStyle::clearLog(void)
 
 // The viewer is a state machine, and all changes to the current state
 // are made through this call.
-void NavigationStyle::setViewerMode(const ViewerMode newmode)
+void NavigationStyle::setViewingMode(const ViewerMode newmode)
 {
     const ViewerMode oldmode = this->currentmode;
     if (newmode == oldmode) { return; }
@@ -526,7 +567,7 @@ void NavigationStyle::setViewerMode(const ViewerMode newmode)
         // Set up initial projection point for the projector object when
         // first starting a drag operation.
         this->spinprojector->project(this->lastmouseposition);
-        //this->interactiveCountInc();
+        this->interactiveCountInc();
         this->clearLog();
         break;
 
@@ -564,9 +605,9 @@ void NavigationStyle::setViewerMode(const ViewerMode newmode)
     this->currentmode = newmode;
 }
 
-NavigationStyle::ViewerMode NavigationStyle::getViewMode() const
+int NavigationStyle::getViewingMode() const
 {
-    return this->currentmode;
+    return (int)this->currentmode;
 }
 
 SbBool NavigationStyle::processSoEvent(const SoEvent * const ev)
@@ -576,7 +617,7 @@ SbBool NavigationStyle::processSoEvent(const SoEvent * const ev)
 
 // ----------------------------------------------------------------------------------
 
-TYPESYSTEM_SOURCE_ABSTRACT(Gui::InventorNavigationStyle, Gui::NavigationStyle);
+TYPESYSTEM_SOURCE(Gui::InventorNavigationStyle, Gui::NavigationStyle);
 
 InventorNavigationStyle::InventorNavigationStyle()
 {
@@ -814,29 +855,9 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
         if (currentmode == NavigationStyle::SPINNING) { break; }
         newmode = NavigationStyle::IDLE;
 
-
-        if ((currentmode == NavigationStyle::DRAGGING) && (this->log.historysize >= 3)) {
-            SbTime stoptime = (ev->getTime() - this->log.time[0]);
-            if (this->spinanimatingallowed && stoptime.getValue() < 0.100) {
-                const SbVec2s glsize(vp.getViewportSizePixels());
-                SbVec3f from = this->spinprojector->project(SbVec2f(float(this->log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                                    float(this->log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
-                SbVec3f to = this->spinprojector->project(posn);
-                SbRotation rot = this->spinprojector->getRotation(from, to);
-
-                SbTime delta = (this->log.time[0] - this->log.time[2]);
-                double deltatime = delta.getValue();
-                rot.invert();
-                rot.scaleAngle(float(0.200 / deltatime));
-
-                SbVec3f axis;
-                float radians;
-                rot.getValue(axis, radians);
-                if ((radians > 0.01f) && (deltatime < 0.300)) {
-                    newmode = NavigationStyle::SPINNING;
-                    this->spinRotation = rot;
-                }
-            }
+        if (currentmode == NavigationStyle::DRAGGING) {
+            if (doSpin())
+                newmode = NavigationStyle::SPINNING;
         }
         break;
     case BUTTON1DOWN:
@@ -875,7 +896,7 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
     }
 
     if (newmode != currentmode) {
-        this->setViewerMode(newmode);
+        this->setViewingMode(newmode);
     }
 
     // If not handled in this class, pass on upwards in the inheritance
@@ -900,9 +921,9 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 
 // ----------------------------------------------------------------------------------
 
-TYPESYSTEM_SOURCE_ABSTRACT(Gui::CADNavigationStyle, Gui::NavigationStyle);
+TYPESYSTEM_SOURCE(Gui::CADNavigationStyle, Gui::NavigationStyle);
 
-CADNavigationStyle::CADNavigationStyle()
+CADNavigationStyle::CADNavigationStyle() : _bRejectSelection(false), _bSpining(false)
 {
 }
 

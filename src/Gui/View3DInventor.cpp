@@ -64,6 +64,7 @@
 #include "SoFCSelectionAction.h"
 #include "View3DPy.h"
 #include "SoFCDB.h"
+#include "NavigationStyle.h"
 
 #include <locale>
 
@@ -94,7 +95,7 @@ View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::W
     hGrp->Notify("BacklightColor");
     hGrp->Notify("BacklightDirection");
     hGrp->Notify("BacklightIntensity");
-    hGrp->Notify("MouseModel");
+    hGrp->Notify("NavigationStyle");
 
     stopSpinTimer = new QTimer(this);
     connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopAnimating()));
@@ -252,11 +253,11 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
         SoFCSelectionColorAction cAct(col);
         cAct.apply(_viewer->getSceneGraph());
     }
-    else if (strcmp(Reason,"MouseModel") == 0) {
+    else if (strcmp(Reason,"NavigationStyle") == 0) {
         // check whether the simple or the full mouse model is used
-        const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        int model = rclGrp.GetInt("MouseModel",1);
-        _viewer->setMouseModel(model);
+        std::string model = rGrp.GetASCII("NavigationStyle",CADNavigationStyle::getClassTypeId().getName());
+        Base::Type type = Base::Type::fromName(model.c_str());
+        _viewer->setNavigationType(type);
     }
     else {
         setViewerDefaults();

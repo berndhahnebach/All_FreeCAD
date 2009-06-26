@@ -53,6 +53,7 @@ namespace Gui {
 class ViewProvider;
 class SoFCBackgroundGradient;
 class AbstractMouseModel;
+class NavigationStyle;
 
 
 /** The Inventor viewer
@@ -245,8 +246,7 @@ public:
     void setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor);
     void setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor);
     void setEnabledFPSCounter(bool b);
-
-    void setMouseModel(int i){_iMouseModel = i;}
+    void setNavigationType(Base::Type);
 
     void openPopupMenu(const SbVec2s& position);
     void setPopupMenuEnabled(const SbBool on);
@@ -259,10 +259,6 @@ protected:
     virtual void processEvent(QEvent * event);
     SbBool processSoEventBase(const SoEvent * const ev);
     virtual SbBool processSoEvent(const SoEvent * const ev);
-    SbBool processSoEvent1(const SoEvent * const ev);
-    SbBool processSoEvent2(const SoEvent * const ev);
-
-    void panToCenter(const SbPlane & panningplane, const SbVec2f & currpos);
     void printDimension();
 
     static void clearBuffer(void * userdata, SoAction * action);
@@ -286,75 +282,19 @@ private:
 
     SoSeparator * pcViewProviderRoot;
     SoEventCallback* pEventCallback;
-#if 1
-    bool _bRejectSelection;
-    SbTime MoveTime;
-    AbstractMouseModel* pcMouseModel;
-    std::vector<SbVec2f> pcPolygon;
-    SbBool clipInner;
-    bool _bSpining;
-    int _iMouseModel;
-    QCursor _oldCursor;
-#endif
-    // Seek functionality
-    SoTimerSensor * seeksensor;
-    float seekperiod;
-    SbBool inseekmode;
-    SbBool seektopoint;
-    SbVec3f camerastartposition, cameraendposition;
-    SbRotation camerastartorient, cameraendorient;
-    float seekdistance;
-    SbBool seekdistanceabs;
+    NavigationStyle* navigation;
 
     void initialize();
-    void finalize();
-    void reorientCamera(const SbRotation & rotation);
-    void pan(SoCamera* camera);
-    void panCamera(SoCamera * camera,
-                   float vpaspect,
-                   const SbPlane & panplane,
-                   const SbVec2f & previous,
-                   const SbVec2f & current);
-    void spin(const SbVec2f & pointerpos);
-    SbBool doSpin();
-    void zoom(SoCamera * cam, const float diffvalue);
-    void zoomByCursor(const SbVec2f & mousepos, const SbVec2f & prevpos);
-
-    SbVec2f lastmouseposition;
-    SbPlane panningplane;
-
-    SbBool spinanimatingallowed;
-    int spinsamplecounter;
-    SbRotation spinincrement;
-    SbSphereSheetProjector * spinprojector;
-    SbRotation spinRotation;
-
     SbBool axiscrossEnabled;
     int axiscrossSize;
 
     void drawAxisCross(void);
     static void drawArrow(void);
 
-    struct { // tracking mouse movement in a log
-        short size;
-        short historysize;
-        SbVec2s * position;
-        SbTime * time;
-    } log;
-
-    SbBool button1down;
-    SbBool button3down;
-    SbBool ctrldown, shiftdown;
     SbBool editing;
     QCursor editCursor;
     SbBool redirected;
     SbBool menuenabled;
-
-    void clearLog(void);
-    void addToLog(const SbVec2s pos, const SbTime time);
-
-    SbTime prevRedrawTime;
-    SbTime centerTime;
 
     enum ViewerMode {
         IDLE,
@@ -368,9 +308,6 @@ private:
         SELECTION
     };
 
-    ViewerMode currentmode;
-    void setMode(const ViewerMode mode);
-
     void setCursorRepresentation(int mode);
 
 public:
@@ -379,7 +316,7 @@ public:
 private:
     FlagLayout* _flaglayout;
 
-
+    // friends
     friend class NavigationStyle;
 };
 
