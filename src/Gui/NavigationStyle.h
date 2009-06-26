@@ -87,6 +87,9 @@ public:
     int getViewingMode() const;
     virtual SbBool processSoEvent(const SoEvent * const ev);
 
+    void setPopupMenuEnabled(const SbBool on);
+    SbBool isPopupMenuEnabled(void) const;
+
     void startPicking(ePickMode = Lasso);
     void stopPicking();
     SbBool isPicking() const;
@@ -95,15 +98,18 @@ public:
 protected:
     void initialize();
     void finalize();
+
     void interactiveCountInc(void);
     void interactiveCountDec(void);
     int getInteractiveCount(void) const;
+
     SbBool isViewing(void) const;
     void setViewing(SbBool);
     SbBool isSeekMode(void) const;
     void setSeekMode(SbBool enable);
     SbBool seekToPoint(const SbVec2s screenpos);
     void seekToPoint(const SbVec3f& scenepos);
+
     void reorientCamera(SoCamera * camera, const SbRotation & rot);
     void panCamera(SoCamera * camera,
                    float vpaspect,
@@ -116,7 +122,9 @@ protected:
     void zoomByCursor(const SbVec2f & thispos, const SbVec2f & prevpos);
     void spin(const SbVec2f & pointerpos);
     SbBool doSpin();
+
     SbBool handleEventInForeground(const SoEvent* const e);
+    virtual void openPopupMenu(const SbVec2s& position);
 
     void clearLog(void);
     void addToLog(const SbVec2s pos, const SbTime time);
@@ -135,6 +143,7 @@ protected:
     SbPlane panningplane;
     SbTime prevRedrawTime;
     SbTime centerTime;
+    SbBool menuenabled;
     SbBool ctrldown, shiftdown;
     SbBool button1down, button3down;
 
