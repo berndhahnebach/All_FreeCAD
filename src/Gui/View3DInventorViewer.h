@@ -296,18 +296,6 @@ private:
     SbBool redirected;
     SbBool menuenabled;
 
-    enum ViewerMode {
-        IDLE,
-        INTERACT,
-        ZOOMING,
-        PANNING,
-        DRAGGING,
-        SPINNING,
-        SEEK_WAIT_MODE,
-        SEEK_MODE,
-        SELECTION
-    };
-
     void setCursorRepresentation(int mode);
 
 public:

@@ -171,6 +171,71 @@ void NavigationStyle::boxZoom(const SbBox2s& box)
     }
 }
 
+void NavigationStyle::viewAll()
+{
+    // Get the bounding box of the scene
+    SoGetBoundingBoxAction action(viewer->getViewportRegion());
+    action.apply(viewer->getSceneGraph());
+    SbBox3f box = action.getBoundingBox();
+    if (box.isEmpty()) return;
+
+#if 0
+    // check whether the box is very wide or tall, if not do nothing
+    float box_width, box_height, box_depth;
+    box.getSize( box_width, box_height, box_depth );
+    if (box_width < 5.0f*box_height && box_width < 5.0f*box_depth && 
+        box_height < 5.0f*box_width && box_height < 5.0f*box_depth && 
+        box_depth < 5.0f*box_width && box_depth < 5.0f*box_height )
+        return;
+#endif
+
+    SoCamera* cam = viewer->getCamera();
+    if (!cam) return;
+
+    SbViewVolume  vol = cam->getViewVolume();
+    if (vol.ulf == vol.llf)
+        return; // empty frustum (no view up vector defined)
+    SbVec2f s = vol.projectBox(box);
+    SbVec2s size = viewer->getSize();
+
+    SbVec3f pt1, pt2, pt3, tmp;
+    vol.projectPointToLine( SbVec2f(0.0f,0.0f), pt1, tmp );
+    vol.projectPointToLine( SbVec2f(s[0],0.0f), pt2, tmp );
+    vol.projectPointToLine( SbVec2f(0.0f,s[1]), pt3, tmp );
+
+    float cam_width = (pt2-pt1).length();
+    float cam_height = (pt3-pt1).length();
+
+    // add a small border
+    cam_height = 1.08f * std::max<float>((cam_width*(float)size[1])/(float)size[0],cam_height);
+
+    float aspect = cam->aspectRatio.getValue();
+
+    if (cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+        // set the new camera position dependent on the occupied space of projected bounding box
+        //SbVec3f direction = cam->position.getValue() - box.getCenter();
+        //float movelength = direction.length();
+        //direction.normalize();
+        //float fRatio = getViewportRegion().getViewportAspectRatio();
+        //if ( fRatio > 1.0f ) {
+        //  float factor = std::max<float>(s[0]/fRatio,s[1]);
+        //  movelength = factor * movelength;
+        //}
+        //else {
+        //    float factor = std::max<float>(s[0],s[1]/fRatio);
+        //    movelength = factor * movelength;
+        //}
+        //cam->position.setValue(box.getCenter() + direction * movelength);
+    }
+    else if (cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+        SoOrthographicCamera* ocam = (SoOrthographicCamera *)cam;  // safe downward cast, knows the type
+        if (aspect < 1.0f)
+            ocam->height = cam_height / aspect;
+        else
+            ocam->height = cam_height;
+    }
+}
+
 /** Rotate the camera by the given amount, then reposition it so we're
  * still pointing at the same focal point.
  */
@@ -400,6 +465,12 @@ void NavigationStyle::updateAnimation()
         deltaRotation.scaleAngle(secs * 5.0);
         this->reorientCamera(viewer->getCamera(), deltaRotation);
     }
+}
+
+void NavigationStyle::redraw()
+{
+    if (pcMouseModel)
+        pcMouseModel->redraw();
 }
 
 SbBool NavigationStyle::handleEventInForeground(const SoEvent* const e)

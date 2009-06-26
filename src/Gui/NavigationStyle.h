@@ -76,8 +76,12 @@ public:
     void startAnimating(const SbVec3f& axis, float velocity);
     void stopAnimating(void);
     SbBool isAnimating(void) const;
+
     void updateAnimation();
+    void redraw();
+
     void boxZoom(const SbBox2s& box);
+    virtual void viewAll();
 
     void setViewingMode(const ViewerMode newmode);
     int getViewingMode() const;
