@@ -41,7 +41,8 @@ endif(CMAKE_COMPILER_IS_GNUCC)
 
 
 # ================================================================================
-
+# == Win32 is default behaivour use the LibPack copied in Source tree ============
+if(WIN32)
 
 # --------------------------------------------------------------------------------
 # General includes when LibPack is copied in source tree
@@ -49,71 +50,82 @@ endif(CMAKE_COMPILER_IS_GNUCC)
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
+else(WIN32)
+
+# ================================================================================
+# == for other oses search the packages ==========================================
+
 # -------------------------------- Python --------------------------------
 
 
-find_package(PythonLibs REQUIRED)
-find_package(PythonInterp REQUIRED)
+	find_package(PythonLibs REQUIRED)
+	find_package(PythonInterp REQUIRED)
 
-IF(NOT PYTHONLIBS_FOUND)
-	MESSAGE("Python not found, install python!")
-ENDIF(NOT PYTHONLIBS_FOUND)
+	IF(NOT PYTHONLIBS_FOUND)
+		MESSAGE("Python not found, install python!")
+	ENDIF(NOT PYTHONLIBS_FOUND)
 
 
 # -------------------------------- Qt --------------------------------
 
 # sets ${QT_LIBRARIES}
 
-SET(QT_MIN_VERSION 4.1.4)
-set(QT_USE_QTNETWORK TRUE)
-set(QT_USE_QTOPENGL TRUE)
-set(QT_USE_QTSVG TRUE)
-set(QT_USE_QTUITOOLS TRUE)
-set(QT_USE_QTXML TRUE)
-set(QT_USE_QTWEBKIT TRUE)
-find_package(Qt4)
+	SET(QT_MIN_VERSION 4.1.4)
+	set(QT_USE_QTNETWORK TRUE)
+	set(QT_USE_QTOPENGL TRUE)
+	set(QT_USE_QTSVG TRUE)
+	set(QT_USE_QTUITOOLS TRUE)
+	set(QT_USE_QTXML TRUE)
+	set(QT_USE_QTWEBKIT TRUE)
+	find_package(Qt4)
 
-include(${QT_USE_FILE})
+	include(${QT_USE_FILE})
 
-IF(NOT QT4_FOUND)
-	MESSAGE("Library qt-4.3 or above is not available, install QT or FreeCAD Gui version will not be built")
-ENDIF(NOT QT4_FOUND)
+	IF(NOT QT4_FOUND)
+		MESSAGE("Library qt-4.3 or above is not available, install QT or FreeCAD Gui version will not be built")
+	ENDIF(NOT QT4_FOUND)
 
-IF(NOT QT_QTWEBKIT_FOUND)
-	MESSAGE("QT Webkid not found, will not build browser integration!")
-ENDIF(NOT QT_QTWEBKIT_FOUND)
+	IF(NOT QT_QTWEBKIT_FOUND)
+		MESSAGE("QT Webkid not found, will not build browser integration!")
+	ENDIF(NOT QT_QTWEBKIT_FOUND)
 
 # -------------------------------- Coin3D --------------------------------
 
-find_package(Coin3D REQUIRED)
-find_package(SoQt REQUIRED)
+	find_package(Coin3D REQUIRED)
+	find_package(SoQt REQUIRED)
 
 # -------------------------------- Boost --------------------------------
 
-SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.38.0" "1.37.0"
-    "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
-    "1.33.1" "1.33.0" "1.33" )
+	SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.38.0" "1.37.0"
+	    "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
+	    "1.33.1" "1.33.0" "1.33" )
 
-find_package(Boost COMPONENTS filesystem program_options signals)
+	find_package(Boost COMPONENTS filesystem program_options signals)
 
 # -------------------------------- XercesC --------------------------------
 
-find_package(XercesC REQUIRED)
+	find_package(XercesC REQUIRED)
 
 # -------------------------------- ZLIB --------------------------------
 
-find_package(ZLIB REQUIRED)
+	find_package(ZLIB REQUIRED)
 
 # -------------------------------- OpenCasCade --------------------------------
 
-find_package(OpenCasCade)
+	find_package(OpenCasCade)
 
-IF(NOT OCC_FOUND)
-	MESSAGE("OpenCasCade was not found, build no CAD modules!")
-ENDIF(NOT OCC_FOUND)
+	IF(NOT OCC_FOUND)
+		MESSAGE("OpenCasCade was not found, build no CAD modules!")
+	ENDIF(NOT OCC_FOUND)
 
 
-# -------------------------------- Macros --------------------------------
+
+endif(WIN32)
+
+
+
+# ================================================================================
+# == Macros, mostly for special targets ==========================================
 
 
 macro(copy_to_local_output_paths SOURCE_PATHS)
