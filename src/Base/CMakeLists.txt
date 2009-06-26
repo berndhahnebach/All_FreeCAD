@@ -12,11 +12,14 @@ include_directories(
 
 if(WIN32)
 	set(FreeCADBase_LIBS
-# 		${Boost_LIBRARIES}
+ 		debug ${Boost_DEBUG_LIBRARIES}
+ 		optimized ${Boost_LIBRARIES}
 		debug ${PYTHON_DEBUG_LIBRARIES}
 		optimized ${PYTHON_LIBRARIES}
-		${XERCES_LIBRARIES}
-		${ZLIB_LIBRARIES})
+		debug ${XERCESC_DEBUG_LIBRARIES}
+		optimized ${XERCESC_LIBRARIES}
+		${ZLIB_LIBRARIES}
+		)
 else(WIN32)
 	set(FreeCADBase_LIBS
 		${PYTHON_LIBRARY}
