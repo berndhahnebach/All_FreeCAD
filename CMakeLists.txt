@@ -1,6 +1,10 @@
 project(FreeCAD_trunk)
+set(FREECAD_VERSION "0.7")
 
 cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
+
+# include local  modules
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if(COMMAND cmake_policy)
 		 cmake_policy(SET CMP0003 NEW)
@@ -27,50 +31,87 @@ endif(WIN32)
 # ================================================================================
 
 
+if(CMAKE_COMPILER_IS_GNUCC)
+	include(cmake/ConfigureChecks.cmake)
+	configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+	add_definitions(-DHAVE_CONFIG_H)
+	add_definitions(-Wno-write-strings)
+	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+endif(CMAKE_COMPILER_IS_GNUCC)
+
+
+# ================================================================================
+
+
 # --------------------------------------------------------------------------------
 # General includes when LibPack is copied in source tree
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-set(PYTHON_DEBUG_LIBRARIES python25)
-set(PYTHON_LIBRARIES python25_d)
-set(PYTHON_FOUND TRUE)
+# -------------------------------- Python --------------------------------
 
-set(COIN_DEBUG_LIBRARIES coin2d)
-set(COIN_LIBRARIES coin2)
-set(COIN_FOUND TRUE)
 
-set(Boost_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include)
-set(Boost_LIBRARIES boost_program_options boost_regex boost_signals boost_system)
-set(Boost_FOUND TRUE)
+find_package(PythonLibs REQUIRED)
+find_package(PythonInterp REQUIRED)
 
-set(ATLAS_LIBRARIES importlib_atlas)
-set(ATLAS_FOUND TRUE)
+IF(NOT PYTHONLIBS_FOUND)
+	MESSAGE("Python not found, install python!")
+ENDIF(NOT PYTHONLIBS_FOUND)
 
-set(OCC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/OpenCascade)
-set(OCC_FOUND TRUE)
 
-set(OPENCV_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include/OpenCV)
-set(OPENCV_LIBRARIES cv cxcore cvhaartraining)
-set(OPENCV_FOUND TRUE)
+# -------------------------------- Qt --------------------------------
 
-set(SO_QT_DEBUG_LIBRARIES soqt1d)
-set(SO_QT_LIBRARIES soqt1)
-set(SO_QT_FOUND TRUE)
+# sets ${QT_LIBRARIES}
 
-set(XERCES_LIBRARIES xerces-c_2)
-set(XERCES_FOUND TRUE)
+SET(QT_MIN_VERSION 4.1.4)
+set(QT_USE_QTNETWORK TRUE)
+set(QT_USE_QTOPENGL TRUE)
+set(QT_USE_QTSVG TRUE)
+set(QT_USE_QTUITOOLS TRUE)
+set(QT_USE_QTXML TRUE)
+set(QT_USE_QTWEBKIT TRUE)
+find_package(Qt4)
 
-set(ZLIB_INCLUDE_DIR ${ZLIB_SRC_DIR})
-set(ZLIB_LIBRARIES z)
-set(ZLIB_FOUND TRUE)
+include(${QT_USE_FILE})
 
-set(ATLAS_LIBRARIES importlib_atlas)
-set(ATLAS_FOUND TRUE)
+IF(NOT QT4_FOUND)
+	MESSAGE("Library qt-4.3 or above is not available, install QT or FreeCAD Gui version will not be built")
+ENDIF(NOT QT4_FOUND)
 
-set(XERCES_LIBRARIES xerces-c_2)
-set(XERCES_FOUND TRUE)
+IF(NOT QT_QTWEBKIT_FOUND)
+	MESSAGE("QT Webkid not found, will not build browser integration!")
+ENDIF(NOT QT_QTWEBKIT_FOUND)
+
+# -------------------------------- Coin3D --------------------------------
+
+find_package(Coin3D REQUIRED)
+find_package(SoQt REQUIRED)
+
+# -------------------------------- Boost --------------------------------
+
+SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.38.0" "1.37.0"
+    "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
+    "1.33.1" "1.33.0" "1.33" )
+
+find_package(Boost COMPONENTS filesystem program_options signals)
+
+# -------------------------------- XercesC --------------------------------
+
+find_package(XercesC REQUIRED)
+
+# -------------------------------- ZLIB --------------------------------
+
+find_package(ZLIB REQUIRED)
+
+# -------------------------------- OpenCasCade --------------------------------
+
+find_package(OpenCasCade)
+
+IF(NOT OCC_FOUND)
+	MESSAGE("OpenCasCade was not found, build no CAD modules!")
+ENDIF(NOT OCC_FOUND)
+
 
 # -------------------------------- Macros --------------------------------
 
@@ -149,16 +190,16 @@ include(AddFileDependencies)
 
 macro(fc_wrap_cpp outfiles )
 		 # get include dirs
-#		 QT4_GET_MOC_INC_DIRS(moc_includes)
-#		 QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
-#
-#		 foreach(it ${moc_files})
-#		 		 get_filename_component(it ${it} ABSOLUTE)
-#		 		 QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-#		 		 QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
-#		 		 set(${outfiles} ${${outfiles}} ${outfile})
-#		 		 add_file_dependencies(${it} ${outfile})
-#		 endforeach(it)
+		 QT4_GET_MOC_FLAGS(moc_includes)
+		 QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+
+		 foreach(it ${moc_files})
+		 		 get_filename_component(it ${it} ABSOLUTE)
+		 		 QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+		 		 QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
+		 		 set(${outfiles} ${${outfiles}} ${outfile})
+		 		 add_file_dependencies(${it} ${outfile})
+		 endforeach(it)
 endmacro(fc_wrap_cpp)
 
 # generates the ui -> cpp h files

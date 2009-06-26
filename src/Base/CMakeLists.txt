@@ -1,21 +1,28 @@
 add_definitions(-DFCBase)
+add_definitions(-DPYCXX_DLL)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/..
+	${CMAKE_CURRENT_SOURCE_DIR}/zipios
 	${Boost_INCLUDE_DIRS}
 	${PYTHON_INCLUDE_PATH}
-	${XERCES_INCLUDE_DIR})
+	${XERCESC_INCLUDE_DIR}
+	${ZLIB_INCLUDE_DIR})
 
 if(WIN32)
 	set(FreeCADBase_LIBS
-		${Boost_LIBRARIES}
+# 		${Boost_LIBRARIES}
 		debug ${PYTHON_DEBUG_LIBRARIES}
 		optimized ${PYTHON_LIBRARIES}
 		${XERCES_LIBRARIES}
 		${ZLIB_LIBRARIES})
 else(WIN32)
 	set(FreeCADBase_LIBS
+		${PYTHON_LIBRARY}
+		${XERCESC_LIBRARIES}
+		${Boost_LIBRARIES}
+		${ZLIB_LIBRARIES}
 #libFreeCADBase_la_LIBADD   = \
 #		-l@PYTHON_LIB@ \
 #		-lboost_filesystem \
@@ -26,21 +33,13 @@ endif(WIN32)
 
 generate_from_xml(BaseClassPy)
 generate_from_xml(BoundBoxPy)
-generate_from_xml(PersistancePy)
+generate_from_xml(PersistencePy)
 generate_from_xml(VectorPy)
+generate_from_xml(MatrixPy)
+generate_from_xml(RotationPy)
+generate_from_xml(PlacementPy)
 
-SET(PyCXX_SRCS
-	PyCXX/Config.hxx
-	PyCXX/cxx_extensions.cxx
-	PyCXX/cxxextensions.c
-	PyCXX/cxxsupport.cxx
-	PyCXX/Exception.hxx
-	PyCXX/Extensions.hxx
-	PyCXX/IndirectPythonInterface.cxx
-	PyCXX/IndirectPythonInterface.hxx
-	PyCXX/Objects.hxx
-)
-SOURCE_GROUP("PyCXX" FILES ${PyCXX_SRCS})
+
 
 SET(zipios_SRCS
 	zipios/backbuffer.h
@@ -96,9 +95,27 @@ SET(zipios_SRCS
 )
 SOURCE_GROUP("zipios" FILES ${zipios_SRCS})
 
+SET(pycxx_SRCS
+	../CXX/Config.hxx
+	../CXX/cxxextensions.c
+	../CXX/cxx_extensions.cxx
+	../CXX/cxxsupport.cxx
+	../CXX/Exception.hxx
+	../CXX/Extensions.hxx
+	../CXX/IndirectPythonInterface.cxx
+	../CXX/IndirectPythonInterface.hxx
+	../CXX/Objects.hxx
+	../CXX/Version.hxx
+	../CXX/WrapPython.h
+)
+SOURCE_GROUP("pycxx" FILES ${pycxx_SRCS})
+
+
 SET(FreeCADBase_SRCS
-	${PyCXX_SRCS}
 	${zipios_SRCS}
+	${pycxx_SRCS}
+	Base64.cpp
+	Base64.h
 	BaseClass.cpp
 	BaseClass.h
 	BaseClassPy.xml
@@ -119,8 +136,11 @@ SET(FreeCADBase_SRCS
 	FileInfo.h
 	FileTemplate.cpp
 	FileTemplate.h
+	fdstream.hpp
 	gzstream.cpp
 	gzstream.h
+	GeometryPyCXX.cpp
+	GeometryPyCXX.h
 	Handle.cpp
 	Handle.h
 	InputSource.cpp
@@ -129,18 +149,22 @@ SET(FreeCADBase_SRCS
 	Interpreter.h
 	Matrix.cpp
 	Matrix.h
+	MatrixPy.xml
+	MatrixPyImp.cpp
 	MemDebug.cpp
 	MemDebug.h
 	Observer.h
 	Parameter.cpp
 	Parameter.h
 	ParameterPy.cpp
-	Persistance.cpp
-	Persistance.h
-	PersistancePy.xml
-	PersistancePyImp.cpp
+	Persistence.cpp
+	Persistence.h
+	PersistencePy.xml
+	PersistencePyImp.cpp
 	Placement.cpp
 	Placement.h
+	PlacementPy.xml
+	PlacementPyImp.cpp
 	PreCompiled.cpp
 	PreCompiled.h
 	PyExport.cpp
@@ -153,6 +177,8 @@ SET(FreeCADBase_SRCS
 	Reader.h
 	Rotation.cpp
 	Rotation.h
+	RotationPy.xml
+	RotationPyImp.cpp
 	Sequencer.cpp
 	Sequencer.h
 	Stream.cpp
@@ -169,6 +195,8 @@ SET(FreeCADBase_SRCS
 	Tools2D.h
 	Type.cpp
 	Type.h
+	Uuid.cpp
+	Uuid.h
 	Vector3D.cpp
 	Vector3D.h
 	VectorPy.xml
