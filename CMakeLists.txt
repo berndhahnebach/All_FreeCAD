@@ -45,11 +45,42 @@ endif(CMAKE_COMPILER_IS_GNUCC)
 if(WIN32)
 
 # --------------------------------------------------------------------------------
-# General includes when LibPack is copied in source tree
+# General includes 
 
-link_directories(${CMAKE_SOURCE_DIR}/lib)
-include_directories(${CMAKE_SOURCE_DIR}/include)
+	link_directories(${CMAKE_SOURCE_DIR}/lib)
+	include_directories(${CMAKE_SOURCE_DIR}/include)
 
+# Python
+	set(PYTHON_DEBUG_LIBRARIES python_d25.lib)
+	set(PYTHON_LIBRARIES python25.lib)
+	set(PYTHON_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/include/python)
+	set(PYTHONLIBS_FOUND TRUE) 
+	
+# XercesC
+	set(XERCESC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/xercesc)
+	set(XERCESC_LIBRARIES       xerces-c_2.lib
+	set(XERCESC_DEBUG_LIBRARIES xerces-c_2D.lib
+	set(XERCESC_FOUND TRUE) 
+	
+# Boost
+	set(Boost_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/boost)
+	set(Boost_LIBRARIES 
+		boost_filesystem-vc80-mt.lib 
+		boost_graph-vc80-mt.lib 
+		boost_program_options-vc80-mt.lib
+		)
+	set(Boost_DEBUG_LIBRARIES 
+		boost_filesystem-vc80-mt-gd.lib 
+		boost_graph-vc80-mt-gd.lib 
+		boost_program_options-vc80-mt-gd.lib
+		)
+	set(Boost_FOUND TRUE) 
+
+# Zlib
+	set(ZLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/zlib)
+	set(ZLIB_LIBRARIES  zlib1.lib
+	set(ZLIB_FOUND TRUE) 
+	
 else(WIN32)
 
 # ================================================================================
