@@ -36,8 +36,9 @@
 #include <Inventor/Qt/viewers/SoQtViewer.h>
 #include <Inventor/nodes/SoEventCallback.h>
 #include <Inventor/Qt/SoQtCursor.h>
-#include "Selection.h"
-#include "Flag.h"
+
+#include <Gui/Selection.h>
+#include <Gui/Flag.h>
 
 
 class SoSeparator;
@@ -243,14 +244,13 @@ public:
     //@}
 
     void setGradientBackgroud(bool b);
-    void setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor);
-    void setGradientBackgroudColor(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor);
+    void setGradientBackgroudColor(const SbColor& fromColor,
+                                   const SbColor& toColor);
+    void setGradientBackgroudColor(const SbColor& fromColor,
+                                   const SbColor& toColor,
+                                   const SbColor& midColor);
     void setEnabledFPSCounter(bool b);
     void setNavigationType(Base::Type);
-
-    void openPopupMenu(const SbVec2s& position);
-    void setPopupMenuEnabled(const SbBool on);
-    SbBool isPopupMenuEnabled(void) const;
 
 protected:
     virtual void actualRedraw(void);
@@ -294,7 +294,6 @@ private:
     SbBool editing;
     QCursor editCursor;
     SbBool redirected;
-    SbBool menuenabled;
 
     void setCursorRepresentation(int mode);
 

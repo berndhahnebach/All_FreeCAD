@@ -30,6 +30,8 @@
 
 #include "NavigationStyle.h"
 #include "View3DInventorViewer.h"
+#include "Application.h"
+#include "MenuManager.h"
 #include "MouseModel.h"
 
 using namespace Gui;
@@ -73,6 +75,7 @@ void NavigationStyle::initialize()
     this->log.time = new SbTime [ 16 ];
     this->log.historysize = 0;
 
+    this->menuenabled = TRUE;
     this->button1down = FALSE;
     this->button3down = FALSE;
     this->ctrldown = FALSE;
@@ -686,6 +689,28 @@ SbBool NavigationStyle::processSoEvent(const SoEvent * const ev)
     return viewer->processSoEventBase(ev);
 }
 
+void NavigationStyle::setPopupMenuEnabled(const SbBool on)
+{
+    this->menuenabled = on;
+}
+
+SbBool NavigationStyle::isPopupMenuEnabled(void) const
+{
+    return this->menuenabled;
+}
+
+void NavigationStyle::openPopupMenu(const SbVec2s& position)
+{
+    // ask workbenches and view provider, ...
+    MenuItem* view = new MenuItem;
+    Gui::Application::Instance->setupContextMenu("View", view);
+
+    QMenu ContextMenu(viewer->getGLWidget());
+    MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
+    delete view;
+    ContextMenu.exec(QCursor::pos());
+}
+
 // ----------------------------------------------------------------------------------
 
 TYPESYSTEM_SOURCE(Gui::InventorNavigationStyle, Gui::NavigationStyle);
@@ -834,9 +859,9 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
                 // the canvas doesn't get any release events 
                 if (this->currentmode != NavigationStyle::ZOOMING && 
                     this->currentmode != NavigationStyle::PANNING) {
-                    if (viewer->isPopupMenuEnabled()) {
+                    if (this->isPopupMenuEnabled()) {
                         if (!press) { // release right mouse button
-                            viewer->openPopupMenu(event->getPosition());
+                            this->openPopupMenu(event->getPosition());
                         }
                     }
                 }
@@ -1271,9 +1296,9 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
         if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
             SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
             if ((e->getButton() == SoMouseButtonEvent::BUTTON2) && e->getState() == SoButtonEvent::UP) {
-                if (viewer->isPopupMenuEnabled()) {
+                if (this->isPopupMenuEnabled()) {
                     if (e->getState() == SoButtonEvent::UP) {
-                        viewer->openPopupMenu(e->getPosition());
+                        this->openPopupMenu(e->getPosition());
                     }
 
                     // Steal all RMB-events if the viewer uses the popup-menu.

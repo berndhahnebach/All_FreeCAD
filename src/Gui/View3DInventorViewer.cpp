@@ -98,10 +98,6 @@
 #include "SoFCVectorizeSVGAction.h"
 #include "SoFCDB.h"
 #include "MainWindow.h"
-#include "MenuManager.h"
-#include "Application.h"
-#include "Document.h"
-#include "MouseModel.h"
 #include "NavigationStyle.h"
 #include "ViewProvider.h"
 
@@ -125,9 +121,10 @@ SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 
 // *************************************************************************
 
-View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
+View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, 
+                                            SbBool embed, Type type, SbBool build) 
   : inherited (parent, name, embed, type, build), inEdit(0),navigation(0),
-    editing(FALSE), redirected(FALSE), menuenabled(TRUE)
+    editing(FALSE), redirected(FALSE)
 {
     // set the layout for the flags
     _flaglayout = new FlagLayout(3);
@@ -210,7 +207,6 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     pcViewProviderRoot->addChild(cb);
 #endif
 
-
     // set the transperency and antialiasing settings
 //  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
     getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
@@ -266,7 +262,8 @@ void View3DInventorViewer::initialize()
     this->axiscrossSize = 10;
 }
 
-void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
+void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                                    Gui::SelectionSingleton::MessageType Reason)
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
         Reason.Type == SelectionChanges::RmvSelection ||
@@ -928,28 +925,6 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 SbBool View3DInventorViewer::processSoEventBase(const SoEvent * const ev)
 {
     return inherited::processSoEvent(ev);
-}
-
-void View3DInventorViewer::setPopupMenuEnabled(const SbBool on)
-{
-    this->menuenabled = on;
-}
-
-SbBool View3DInventorViewer::isPopupMenuEnabled(void) const
-{
-    return this->menuenabled;
-}
-
-void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
-{
-    // ask workbenches and view provider, ...
-    MenuItem* view = new MenuItem;
-    Gui::Application::Instance->setupContextMenu("View", view);
-
-    QMenu ContextMenu(this->getGLWidget());
-    MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
-    delete view;
-    ContextMenu.exec( QCursor::pos() );
 }
 
 SbVec3f View3DInventorViewer::getViewDirection() const
