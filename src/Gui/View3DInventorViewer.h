@@ -32,7 +32,6 @@
 #include <set>
 #include <stack>
 
-#include <Base/Vector3D.h>
 #include <Base/Type.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
 #include <Inventor/nodes/SoEventCallback.h>
@@ -59,11 +58,40 @@ class AbstractMouseModel;
 /** The Inventor viewer
  *
  */
-class GuiExport View3DInventorViewer: public SoQtViewer, public Gui::SelectionSingleton::ObserverType
+class GuiExport View3DInventorViewer : public SoQtViewer, public Gui::SelectionSingleton::ObserverType
 {
     SOQT_OBJECT_ABSTRACT_HEADER(View3DInventorViewer, SoQtViewer);
 
 public:
+    /// Background modes for the savePicture() method
+    enum eBackgroundType { 
+        Current     = 0,  /**< Use the current viewer Background */
+        Black       = 1,  /**< Black background */
+        White       = 2,  /**< White background  */ 
+        Transparent = 3,  /**< Transparent background  */
+    };
+    /// Pick modes for picking points in the scene
+    enum ePickMode {
+        Lasso       = 0,  /**< Select objects using a lasso. */
+        Rectangle   = 1,  /**< Select objects using a rectangle. */
+        BoxZoom     = 2,  /**< Perform a box zoom. */
+        Clip        = 3,  /**< Clip objects using a lasso. */
+    };
+    /** @name Modus handling of the viewer
+      * Here the you can switch on/off several features
+      * and modies of the Viewer
+      */
+    //@{
+    enum ViewerMod {
+        ShowCoord=1,       /**< Enables the Coordinate system in the corner. */
+        ShowFPS  =2,       /**< Enables the Frams per Second counter. */
+        SimpleBackground=4,/**< switch to a simple background. */
+        DisallowRotation=8,/**< switch of the rotation. */
+        DisallowPanning=16,/**< switch of the panning. */
+        DisallowZooming=32,/**< switch of the zooming. */
+    };
+    //@}
+
     View3DInventorViewer (QWidget *parent, const char *name=NULL, SbBool embed=true, 
                           Type type= SoQtViewer::BROWSER, SbBool build=true);
     ~View3DInventorViewer();
@@ -93,22 +121,24 @@ public:
     virtual void setViewing(SbBool enable);
     virtual void setCursorEnabled(SbBool enable);
 
+    /** @name Handling of view providers */
+    //@{
     /// adds an ViewProvider to the view, e.g. from a feature
     void addViewProvider(ViewProvider*);
     /// remove a ViewProvider
     void removeViewProvider(ViewProvider*);
+    /// get view provider by path
+    ViewProvider* getViewProviderByPath(SoPath*) const;
+    /// get all view providers of given type
+    std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
     /// set the ViewProvider in special edit mode
     bool setEdit(Gui::ViewProvider* p, int ModNum=0);
     /// reset from edit mode
     void resetEdit(void);
+    //@}
 
-    /// Background modes for the savePicture() method
-    enum eBackgroundType { 
-        Current     = 0,  /**< Use the current viewer Background */
-        Black       = 1,  /**< Black background */
-        White       = 2,  /**< White background  */ 
-        Transparent = 3,  /**< Transparent background  */
-    };
+    /** @name Making pictures */
+    //@{
     /**
      * Creates an image with width \a w and height \a h of the current scene graph
      * and exports the rendered scenegraph directly to file \a filename.
@@ -121,36 +151,40 @@ public:
                      const char* comment) const;
     void savePicture(int w, int h, int eBackgroundType, QImage&) const;
     void saveGraphic(const char* filename, int pagesize, int eBackgroundType) const;
-    /// Pick modes for picking points in the scene
-    enum ePickMode {
-        Lasso       = 0,  /**< Select objects using a lasso. */
-        Rectangle   = 1,  /**< Select objects using a rectangle. */
-        BoxZoom     = 2,  /**< Perform a box zoom. */
-        Clip        = 3,  /**< Clip objects using a lasso. */
-    };
+    //@}
+    /**
+     * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
+     */
+    bool dumpToFile(const char* filename, bool binary) const;
+
+    /** @name Picking methods */
+    //@{
     void startPicking( ePickMode = Lasso );
     void stopPicking();
     bool isPicking() const;
     const std::vector<SbVec2f>& getPickedPolygon(SbBool* clip_inner=0) const;
     std::vector<int> tessellate(const std::vector<SbVec2f>&) const;
+    //@}
 
+    /** @name Edit methods */
+    //@{
     void setEditing(SbBool edit);
     SbBool isEditing() const { return this->editing; }
     void setEditingCursor (const SoQtCursor& cursor);
     void setEditingCursor (const QCursor& cursor);
     void setRedirectToSceneGraph(SbBool redirect) { this->redirected = redirect; }
     SbBool isRedirectedToSceneGraph() const { return this->redirected; }
+    //@}
 
-    /**
-     * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
-     */
-    bool dumpToFile( const char* filename, bool binary ) const;
-
+    /** @name Pick actions */
+    //@{
     // calls a PickAction on the scene graph
     bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm) const;
     SoPickedPoint* pickPoint(const SbVec2s& pos) const;
     SbBool pubSeekToPoint(const SbVec2s& pos);
     void pubSeekToPoint(const SbVec3f& pos);
+    //@}
+
     /**
      * Set up a callback function \a cb which will be invoked for the given eventtype. 
      * \a userdata will be given as the first argument to the callback function. 
@@ -160,11 +194,8 @@ public:
      * Unregister the given callback function \a cb.
      */
     void removeEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata = 0);
-    ViewProvider* getViewProviderByPath(SoPath*) const;
-    std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
 
-    /** @name Clipping plane
-     */
+    /** @name Clipping plane, near and far plane */
     //@{
     /** Returns the view direction from the user's eye point in direction to the
      * viewport which is actually the negative normal of the near plane.
@@ -204,21 +235,6 @@ public:
      */
     void viewSelection();
 
-    /** @name Modus handling of the viewer
-      * Here the you can switch on/off several features
-      * and modies of the Viewer
-      */
-    //@{
-    enum ViewerMod {
-        ShowCoord=1,       /**< Enables the Coordinate system in the corner. */
-        ShowFPS  =2,       /**< Enables the Frams per Second counter. */
-        SimpleBackground=4,/**< switch to a simple background. */
-        DisallowRotation=8,/**< switch of the rotation. */
-        DisallowPanning=16,/**< switch of the panning. */
-        DisallowZooming=32,/**< switch of the zooming. */
-    };
-    //@}
-
     /** @name Draw routines */
     //@{
     void drawRect (int x, int y, int w, int h);
@@ -237,12 +253,6 @@ public:
     SbBool isPopupMenuEnabled(void) const;
 
 protected:
-    unsigned long             currMod;
-    std::stack<unsigned long> ModStack;
-
-    std::set<ViewProvider*> _ViewProviderSet;
-    ViewProvider* inEdit;
-
     virtual void actualRedraw(void);
     virtual void setSeekMode(SbBool enable);
     virtual void afterRealizeHook(void);
@@ -260,18 +270,15 @@ protected:
     static void interactionFinishCB(void * data, SoQtViewer * viewer);
     static void interactionLoggerCB(void * ud, SoAction* action);
 
-    bool _bRejectSelection;
-    SbTime MoveTime;
-    SbTime CenterTime;
-
-    SoFCBackgroundGradient *pcBackGround;
-
 private:
     static void selectCB(void * closure, SoPath * p);
     static void deselectCB(void * closure, SoPath * p);
     static void tessCB(void * v0, void * v1, void * v2, void * cbdata);
 
 private:
+    std::set<ViewProvider*> _ViewProviderSet;
+    ViewProvider* inEdit;
+    SoFCBackgroundGradient *pcBackGround;
     SoSeparator * backgroundroot;
     SoSeparator * foregroundroot;
     SoRotationXYZ * arrowrotation;
@@ -279,10 +286,16 @@ private:
 
     SoSeparator * pcViewProviderRoot;
     SoEventCallback* pEventCallback;
+#if 1
+    bool _bRejectSelection;
+    SbTime MoveTime;
     AbstractMouseModel* pcMouseModel;
     std::vector<SbVec2f> pcPolygon;
     SbBool clipInner;
-
+    bool _bSpining;
+    int _iMouseModel;
+    QCursor _oldCursor;
+#endif
     // Seek functionality
     SoTimerSensor * seeksensor;
     float seekperiod;
@@ -296,8 +309,14 @@ private:
     void initialize();
     void finalize();
     void reorientCamera(const SbRotation & rotation);
+    void pan(SoCamera* camera);
+    void panCamera(SoCamera * camera,
+                   float vpaspect,
+                   const SbPlane & panplane,
+                   const SbVec2f & previous,
+                   const SbVec2f & current);
     void spin(const SbVec2f & pointerpos);
-    void pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
+    SbBool doSpin();
     void zoom(SoCamera * cam, const float diffvalue);
     void zoomByCursor(const SbVec2f & mousepos, const SbVec2f & prevpos);
 
@@ -305,15 +324,11 @@ private:
     SbPlane panningplane;
 
     SbBool spinanimatingallowed;
-    SbVec2f lastspinposition;
     int spinsamplecounter;
     SbRotation spinincrement;
     SbSphereSheetProjector * spinprojector;
-
     SbRotation spinRotation;
-    bool _bSpining;
-    int _iMouseModel;
-    QCursor _oldCursor;
+
     SbBool axiscrossEnabled;
     int axiscrossSize;
 
@@ -339,6 +354,7 @@ private:
     void addToLog(const SbVec2s pos, const SbTime time);
 
     SbTime prevRedrawTime;
+    SbTime centerTime;
 
     enum ViewerMode {
         IDLE,
