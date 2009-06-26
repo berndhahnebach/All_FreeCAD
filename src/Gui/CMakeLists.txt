@@ -1,4 +1,4 @@
-add_subdirectory(Icons)
+#add_subdirectory(Icons)
 
 add_definitions(-DFCGui)
 
@@ -12,22 +12,30 @@ include_directories(
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${SO_QT_INCLUDE_DIR}
+		 ${SOQT_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
 		 set(FreeCADGui_LIBS
 		 		 FreeCADApp
-		 		 debug ${COIN_DEBUG_LIBRARIES}
-		 		 optimized ${COIN_LIBRARIES}
-		 		 debug ${PYTHON_DEBUG_LIBRARIES}
-		 		 optimized ${PYTHON_LIBRARIES}
-		 		 debug ${SO_QT_DEBUG_LIBRARIES}
-		 		 optimized ${SO_QT_LIBRARIES}
+		 		 debug ${COIN3D_LIBRARY_DEBUG}
+		 		 optimized ${COIN3D_LIBRARY_RELEASE}
+		 		 debug ${PYTHON_DEBUG_LIBRARY}
+		 		 optimized ${PYTHON_LIBRARY}
+		 		 debug ${SOQT_LIBRARY_DEBUG}
+		 		 optimized ${SOQT_LIBRARY_RELEASE}
 		 		 ${QT_LIBRARIES}
 		 		 ${XERCES_LIBRARIES})
 else(WIN32)
 		 set(FreeCADGui_LIBS
+		 		 FreeCADBase
+		 		 FreeCADApp
+		 		 ${COIN3D_LIBRARY}
+		 		 ${PYTHON_LIBRARY}
+		 		 ${SOQT_LIBRARIES}
+		 		 ${QT_LIBRARIES}
+		 		 ${XERCESC_LIBRARIES}
+		 		 ${Boost_LIBRARIES}
 #libFreeCADGui_la_LIBADD		 =\
 #		 		 Icons/libIcons.la \
 #		 		 Language/libLanguage.la \
@@ -54,6 +62,7 @@ set(Gui_MOC_HDRS
 		 Action.h
 		 CallTips.h
 		 DlgActionsImp.h
+		 DlgActivateWindowImp.h
 		 DlgCommandsImp.h
 		 DlgCustomizeImp.h
 		 DlgDisplayPropertiesImp.h
@@ -77,10 +86,13 @@ set(Gui_MOC_HDRS
 		 DlgUndoRedo.h
 		 DockWindow.h
 		 DockWindowManager.h
+		 EditorView.h
 		 FileDialog.h
 		 Flag.h
 		 HelpView.h
+		 InputVector.h
 		 MainWindow.h
+		 MDIView.h
 		 NetworkRetriever.h
 		 OnlineDocumentation.h
 		 PrefWidgets.h
@@ -89,25 +101,28 @@ set(Gui_MOC_HDRS
 		 PropertyView.h
 		 PythonConsole.h
 		 PythonEditor.h
-		 PythonView.h
 		 ReportView.h
+		 SceneInspector.h
+		 SelectionView.h
 		 SpinBox.h
 		 Splashscreen.h
 		 TextEdit.h
 		 ToolBox.h
 		 Tree.h
-		 MDIView.h
 		 View3DInventor.h
 		 WidgetFactory.h
 		 Widgets.h
 		 Language/Translator.h
-		 propertyeditor/propertyeditor.h
-		 propertyeditor/propertyeditoritem.h
+		 propertyeditor/PropertyEditor.h
+		 propertyeditor/PropertyItem.h
+		 propertyeditor/PropertyItemDelegate.h
+		 propertyeditor/PropertyModel.h
 )
+#qt4_wrap_cpp(Gui_MOC_SRCS ${Gui_MOC_HDRS})
 fc_wrap_cpp(Gui_MOC_SRCS ${Gui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${Gui_MOC_SRCS})
 
-set(Gui_UIC_SRCS
+SET(Gui_UIC_SRCS
 		 AboutApplication.ui
 		 DlgActions.ui
 		 DlgActivateWindow.ui
@@ -116,9 +131,9 @@ set(Gui_UIC_SRCS
 		 DlgCommands.ui
 		 DlgDisplayProperties.ui
 		 DlgEditor.ui
+		 DlgGeneral.ui
 		 DlgInputDialog.ui
 		 DlgKeyboard.ui
-		 DlgGeneral.ui
 		 DlgMacroExecute.ui
 		 DlgMacroRecord.ui
 		 DlgMaterialProperties.ui
@@ -135,8 +150,18 @@ set(Gui_UIC_SRCS
 		 DlgTipOfTheDay.ui
 		 DlgToolbars.ui
 		 DlgTreeWidget.ui
+		 SceneInspector.ui
+		 InputVector.ui
+		 Placement.ui
 )
-qt4_wrap_ui(Gui_UIC_HDRS ${Gui_UIC_SRCS})
+
+SET(Gui_RES_SRCS
+		 Icons/resource.qrc
+		 Language/translation.qrc
+)
+QT4_ADD_RESOURCES(Gui_QRC_SRCS ${Gui_RES_SRCS})
+
+QT4_WRAP_UI(Gui_UIC_HDRS ${Gui_UIC_SRCS})
 SOURCE_GROUP("Uic" FILES ${Gui_UIC_HDRS})
 
 SET(Command_SRCS
@@ -186,8 +211,17 @@ SET(Dialog_SRCS
 		 DlgTreeWidget.ui
 		 DlgUndoRedo.cpp
 		 DlgUndoRedo.h
+		 InputVector.ui
+		 InputVector.cpp
+		 InputVector.h
+		 Placement.ui
+		 Placement.cpp
+		 Placement.h
 		 PropertyPage.cpp
 		 PropertyPage.h
+		 SceneInspector.ui
+		 SceneInspector.cpp
+		 SceneInspector.h
 )
 SOURCE_GROUP("Dialog" FILES ${Dialog_SRCS})
 
@@ -253,6 +287,8 @@ SET(Dock_Windows_SRCS
 		 PropertyView.h
 		 ReportView.cpp
 		 ReportView.h
+		 SelectionView.cpp
+		 SelectionView.h
 		 ToolBox.cpp
 		 ToolBox.h
 		 Tree.cpp
@@ -263,20 +299,24 @@ SOURCE_GROUP("Dock Windows" FILES ${Dock_Windows_SRCS})
 SET(Editor_SRCS
 		 CallTips.cpp
 		 CallTips.h
+		 EditorView.cpp
+		 EditorView.h
 		 PythonConsole.cpp
 		 PythonConsole.h
 		 PythonConsolePy.cpp
 		 PythonConsolePy.h
 		 PythonEditor.cpp
 		 PythonEditor.h
-		 PythonView.cpp
-		 PythonView.h
+		 SyntaxHighlighter.cpp
+		 SyntaxHighlighter.h
 		 TextEdit.cpp
 		 TextEdit.h
 )
 SOURCE_GROUP("Editor" FILES ${Editor_SRCS})
 
 SET(Help_SRCS
+		 Assistant.cpp
+		 Assistant.h
 		 NetworkRetriever.cpp
 		 NetworkRetriever.h
 		 OnlineDocumentation.cpp
@@ -321,33 +361,28 @@ SET(Language_SRCS
 SOURCE_GROUP("Language" FILES ${Language_SRCS})
 
 SET(Propertyeditor_SRCS
-		 propertyeditor/propertyeditor.cpp
-		 propertyeditor/propertyeditor.h
-		 propertyeditor/propertyeditordate.cpp
-		 propertyeditor/propertyeditordate.h
-		 propertyeditor/propertyeditorfile.cpp
-		 propertyeditor/propertyeditorfile.h
-		 propertyeditor/propertyeditorfont.cpp
-		 propertyeditor/propertyeditorfont.h
-		 propertyeditor/propertyeditorinput.cpp
-		 propertyeditor/propertyeditorinput.h
-		 propertyeditor/propertyeditoritem.cpp
-		 propertyeditor/propertyeditoritem.h
-		 propertyeditor/propertyeditorlist.cpp
-		 propertyeditor/propertyeditorlist.h
+		 propertyeditor/PropertyEditor.cpp
+		 propertyeditor/PropertyEditor.h
+		 propertyeditor/PropertyItem.cpp
+		 propertyeditor/PropertyItem.h
+ 		 propertyeditor/PropertyItemDelegate.cpp
+		 propertyeditor/PropertyItemDelegate.h
+		 propertyeditor/PropertyModel.cpp
+		 propertyeditor/PropertyModel.h
+
 )
 SOURCE_GROUP("Propertyeditor" FILES ${Propertyeditor_SRCS})
 
-SET(Resource_RCS
-		 Icons/resource.qrc
-		 Language/translation.qrc)
-fc_add_resources(Resource_SRCS ${Resource_RCS})
-SET(Resource_SRCS
-		 ${Resource_SRCS}
-		 Icons/resource.qrc
-		 Language/translation.qrc
-)
-SOURCE_GROUP("Resource" FILES ${Resource_SRCS})
+#SET(Resource_RCS
+#		 Icons/resource.qrc
+#		 Language/translation.qrc)
+#fc_add_resources(Resource_SRCS ${Resource_RCS})
+#SET(Resource_SRCS
+#		 ${Resource_SRCS}
+#		 Icons/resource.qrc
+#		 Language/translation.qrc
+#)
+#SOURCE_GROUP("Resource" FILES ${Resource_SRCS})
 
 SET(View3D_SRCS
 		 Flag.cpp
@@ -374,6 +409,8 @@ SOURCE_GROUP("View3D" FILES ${View3D_SRCS})
 SET(Viewprovider_SRCS
 		 ViewProvider.cpp
 		 ViewProvider.h
+		 ViewProviderAnnotation.cpp
+		 ViewProviderAnnotation.h
 		 ViewProviderDocumentObject.cpp
 		 ViewProviderDocumentObject.h
 		 ViewProviderDocumentObjectGroup.cpp
@@ -388,6 +425,8 @@ SET(Viewprovider_SRCS
 		 ViewProviderGeometryObject.h
 		 ViewProviderInventorObject.cpp
 		 ViewProviderInventorObject.h
+		 ViewProviderMeasureDistance.cpp
+		 ViewProviderMeasureDistance.h
 		 ViewProviderPy.xml
 		 ViewProviderPyImp.cpp
 		 ViewProviderPythonFeature.cpp
@@ -420,8 +459,6 @@ SET(Widget_SRCS
 SOURCE_GROUP("Widget" FILES ${Widget_SRCS})
 
 SET(Workbench_SRCS
-		 CommandBarManager.cpp
-		 CommandBarManager.h
 		 DockWindowManager.cpp
 		 DockWindowManager.h
 		 MenuManager.cpp
@@ -430,6 +467,8 @@ SET(Workbench_SRCS
 		 PythonWorkbenchPyImp.cpp
 		 ToolBarManager.cpp
 		 ToolBarManager.h
+		 ToolBoxManager.cpp
+		 ToolBoxManager.h
 		 Workbench.cpp
 		 Workbench.h
 		 WorkbenchFactory.cpp
@@ -464,12 +503,16 @@ SET(FreeCADGui_SRCS
 		 resource.cpp
 		 Selection.cpp
 		 Selection.h
+		 Thumbnail.cpp
+		 Thumbnail.h
 		 WaitCursor.cpp
 		 WaitCursor.h
 )
 #SOURCE_GROUP("" FILES ${FreeCADGui_SRCS})
 
 SET(FreeCADGui_SRCS
+		 #${Gui_MOC_SRCS}
+		 ${Gui_QRC_SRCS}
 		 ${Gui_UIC_HDRS}
 		 ${Command_SRCS}
 		 ${Dialog_SRCS}

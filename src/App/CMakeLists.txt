@@ -5,7 +5,8 @@ include_directories(
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR})
+	     ${XERCESC_INCLUDE_DIR}
+	     ${ZLIB_INCLUDE_DIR})
 
 if(WIN32)
 		 set(FreeCADApp_LIBS
@@ -13,6 +14,10 @@ if(WIN32)
 		 		 ${XERCES_LIBRARIES})
 else(WIN32)
 		 set(FreeCADApp_LIBS
+		 		 FreeCADBase
+		 		 ${PYTHON_LIBRARY}
+		 		 ${XERCESC_LIBRARIES}
+		 		 ${Boost_LIBRARIES}
 #libFreeCADApp_la_LIBADD		 = \
 #		 		 -lFreeCADBase \
 #		 		 -l@PYTHON_LIB@ \
@@ -35,16 +40,22 @@ generate_from_py(FreeCADInit InitScript.h)
 generate_from_py(FreeCADTest TestScript.h)
 
 SET(Document_SRCS
+		 Annotation.cpp
+		 Annotation.h
 		 Document.cpp
 		 Document.h
 		 DocumentObject.cpp
 		 DocumentObject.h
+		 DocumentObjectFileIncluded.cpp
+		 DocumentObjectFileIncluded.h
 		 DocumentObjectGroup.cpp
 		 DocumentObjectGroup.h
 		 DocumentObjectGroupPy.xml
 		 DocumentObjectGroupPyImp.cpp
 		 DocumentObjectPy.xml
 		 DocumentObjectPyImp.cpp
+		 DocumentObserver.cpp
+		 DocumentObserver.h
 		 DocumentPy.xml
 		 DocumentPyImp.cpp
 		 Feature.cpp
@@ -61,6 +72,8 @@ SET(Document_SRCS
 		 GeoFeature.h
 		 InventorObject.cpp
 		 InventorObject.h
+		 MeasureDistance.cpp
+		 MeasureDistance.h
 		 Placement.cpp
 		 Placement.h
 		 Transactions.cpp
@@ -75,6 +88,8 @@ SET(Properties_SRCS
 		 PropertyContainer.h
 		 PropertyContainerPy.xml
 		 PropertyContainerPyImp.cpp
+		 PropertyFile.cpp
+		 PropertyFile.h
 		 PropertyGeo.cpp
 		 PropertyGeo.h
 		 PropertyLinks.cpp
@@ -103,8 +118,6 @@ SET(FreeCADApp_SRCS
 		 Material.h
 		 MaterialPy.cpp
 		 MaterialPy.h
-		 MatrixPy.cpp
-		 MatrixPy.h
 		 PreCompiled.cpp
 		 PreCompiled.h
 )
