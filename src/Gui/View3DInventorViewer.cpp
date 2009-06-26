@@ -1134,12 +1134,12 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       } break;
     case SoMouseButtonEvent::BUTTON3:
       if (press) {
-        this->CenterTime = ev->getTime();
+        this->centerTime = ev->getTime();
         SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
         this->panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
       }
       else {
-        SbTime tmp = (ev->getTime() - this->CenterTime);
+        SbTime tmp = (ev->getTime() - this->centerTime);
         float dci = (float)QApplication::doubleClickInterval()/1000.0f;
         // is it just a middle click?
         if (tmp.getValue() < dci) {
@@ -1172,7 +1172,7 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
       this->zoomByCursor(posn, prevnormalized);
       processed = TRUE;
     } else if (this->currentmode == View3DInventorViewer::PANNING) {
-      pan(this->getCamera(), this->getGLAspectRatio(), this->panningplane, posn, prevnormalized);
+      panCamera(this->getCamera(), this->getGLAspectRatio(), this->panningplane, posn, prevnormalized);
       processed = TRUE;
     } else if (this->currentmode == View3DInventorViewer::DRAGGING) {
       this->addToLog(event->getPosition(), event->getTime());
@@ -1212,29 +1212,9 @@ SbBool View3DInventorViewer::processSoEvent2(const SoEvent * const ev)
     if (currentmode == View3DInventorViewer::SPINNING) { break; }
     newmode = View3DInventorViewer::IDLE;
 
-
-    if ((currentmode == View3DInventorViewer::DRAGGING) && (this->log.historysize >= 3)) {
-      SbTime stoptime = (ev->getTime() - this->log.time[0]);
-      if (this->spinanimatingallowed && stoptime.getValue() < 0.100) {
-        const SbVec2s glsize(this->getGLSize());
-        SbVec3f from = this->spinprojector->project(SbVec2f(float(this->log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                            float(this->log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
-        SbVec3f to = this->spinprojector->project(posn);
-        SbRotation rot = this->spinprojector->getRotation(from, to);
-
-        SbTime delta = (this->log.time[0] - this->log.time[2]);
-        double deltatime = delta.getValue();
-        rot.invert();
-        rot.scaleAngle(float(0.200 / deltatime));
-
-        SbVec3f axis;
-        float radians;
-        rot.getValue(axis, radians);
-        if ((radians > 0.01f) && (deltatime < 0.300)) {
+    if (currentmode == View3DInventorViewer::DRAGGING) {
+        if (doSpin())
           newmode = View3DInventorViewer::SPINNING;
-          this->spinRotation = rot;
-        }
-      }
     }
     break;
   case BUTTON1DOWN:
@@ -1450,7 +1430,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
       //    break;
       if(press)
       {
-          CenterTime = ev->getTime();
+          centerTime = ev->getTime();
           MoveMode = true;
 		  MoveModeMoved=false;
           _bSpining = false;
@@ -1463,7 +1443,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
           //getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
         //}
       }else{
-          SbTime tmp = (ev->getTime() - CenterTime);
+          SbTime tmp = (ev->getTime() - centerTime);
           float dci = (float)QApplication::doubleClickInterval()/1000.0f;
           // is it just a middle click?
           if (tmp.getValue() < dci/*0.300*/ && !MoveModeMoved){
@@ -1513,7 +1493,7 @@ SbBool View3DInventorViewer::processSoEvent1(const SoEvent * const ev)
 
       processed = true;
     }else if(MoveMode) {
-      pan(getCamera(),getGLAspectRatio(),panningplane, posn, prevnormalized);
+      panCamera(getCamera(),getGLAspectRatio(),panningplane, posn, prevnormalized);
 	  MoveModeMoved=true;
       processed = true;
 
@@ -1841,7 +1821,7 @@ void View3DInventorViewer::boxZoom(const SbBox2s& box)
                          (float) (size[1]-(ymin+ymax)/2) / (float) SoQtMax((int)(size[1] - 1), 1));
 
     SbPlane plane = vv.getPlane(cam->focalDistance.getValue());
-    pan(cam,getGLAspectRatio(),plane, SbVec2f(0.5,0.5), center);
+    panCamera(cam,getGLAspectRatio(),plane, SbVec2f(0.5,0.5), center);
 
     // Set height or height angle of the camera
     float scaleX = (float)sizeX/(float)size[0];
@@ -1961,10 +1941,10 @@ void View3DInventorViewer::viewSelection()
 
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)
 {
-    pan(getCamera(),getGLAspectRatio(),panningplane, SbVec2f(0.5,0.5), currpos);
+    panCamera(getCamera(),getGLAspectRatio(),panningplane, SbVec2f(0.5,0.5), currpos);
 }
 
-void View3DInventorViewer::pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos)
+void View3DInventorViewer::panCamera(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos)
 {
   if (cam == NULL) return; // can happen for empty scenegraph
   if (currpos == prevpos) return; // useless invocation
@@ -1983,6 +1963,20 @@ void View3DInventorViewer::pan(SoCamera * cam,float aspectratio, const SbPlane &
   // Reposition camera according to the vector difference between the
   // projected points.
   cam->position = cam->position.getValue() - (current_planept - old_planept);
+}
+
+void View3DInventorViewer::pan(SoCamera* camera)
+{
+    // The plane we're projecting the mouse coordinates to get 3D
+    // coordinates should stay the same during the whole pan
+    // operation, so we should calculate this value here.
+    if (camera == NULL) { // can happen for empty scenegraph
+        this->panningplane = SbPlane(SbVec3f(0, 0, 1), 0);
+    }
+    else {
+        SbViewVolume vv = camera->getViewVolume(getGLAspectRatio());
+        this->panningplane = vv.getPlane(camera->focalDistance.getValue());
+    }
 }
 
 // Dependent on the camera type this will either shrink or expand the
@@ -2626,6 +2620,35 @@ void View3DInventorViewer::spin(const SbVec2f & pointerpos)
   // when the user quickly trigger (as in "click-drag-release") a spin
   // animation.
   if (this->spinsamplecounter > 3) this->spinsamplecounter = 3;
+}
+
+SbBool View3DInventorViewer::doSpin()
+{
+    if (this->log.historysize >= 3) {
+        SbTime stoptime = (SbTime::getTimeOfDay() - this->log.time[0]);
+        if (this->spinanimatingallowed && stoptime.getValue() < 0.100) {
+            const SbVec2s glsize(this->getGLSize());
+            SbVec3f from = this->spinprojector->project(SbVec2f(float(this->log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
+                                                                float(this->log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+            SbVec3f to = this->spinprojector->project(this->lastmouseposition);
+            SbRotation rot = this->spinprojector->getRotation(from, to);
+
+            SbTime delta = (this->log.time[0] - this->log.time[2]);
+            double deltatime = delta.getValue();
+            rot.invert();
+            rot.scaleAngle(float(0.200 / deltatime));
+
+            SbVec3f axis;
+            float radians;
+            rot.getValue(axis, radians);
+            if ((radians > 0.01f) && (deltatime < 0.300)) {
+                this->spinRotation = rot;
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
 }
 
 // ************************************************************************
