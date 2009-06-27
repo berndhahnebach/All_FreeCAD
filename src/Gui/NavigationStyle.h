@@ -24,12 +24,21 @@
 #ifndef GUI_NAVIGATIONSTYLE_H
 #define GUI_NAVIGATIONSTYLE_H
 
+#include <Inventor/C/basic.h>
+#include <Inventor/SbBox2s.h>
+#include <Inventor/SbVec2f.h>
+#include <Inventor/SbVec2s.h>
+#include <Inventor/SbVec3f.h>
+#include <Inventor/SbPlane.h>
+#include <Inventor/SbRotation.h>
+#include <Inventor/SbTime.h>
 #include <Base/BaseClass.h>
 
 // forward declarations
 class SoEvent;
 class SoQtViewer;
 class SoCamera;
+class SbSphereSheetProjector;
 
 namespace Gui {
 
