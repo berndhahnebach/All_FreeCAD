@@ -85,10 +85,14 @@ SET(Document_SRCS
 		 Placement.h
 		 Transactions.cpp
 		 Transactions.h
+		 VRMLObject.cpp
+		 VRMLObject.h
 )
 SOURCE_GROUP("Document" FILES ${Document_SRCS})
 
 SET(Properties_SRCS
+		 DynamicProperty.cpp
+		 DynamicProperty.h
 		 Property.cpp
 		 Property.h
 		 PropertyContainer.cpp
@@ -101,6 +105,8 @@ SET(Properties_SRCS
 		 PropertyGeo.h
 		 PropertyLinks.cpp
 		 PropertyLinks.h
+		 PropertyPythonObject.cpp
+		 PropertyPythonObject.h
 		 PropertyStandard.cpp
 		 PropertyStandard.h
 )
