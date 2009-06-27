@@ -9,6 +9,7 @@ include_directories(
 		 ${CMAKE_CURRENT_BINARY_DIR}/..
 		 ${CMAKE_CURRENT_BINARY_DIR}/Language
 		 ${CMAKE_CURRENT_BINARY_DIR}/propertyeditor
+		 ${CMAKE_CURRENT_BINARY_DIR}/TaskView
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
@@ -54,6 +55,7 @@ generate_from_xml(DocumentPy)
 generate_from_xml(PythonWorkbenchPy)
 generate_from_xml(ViewProviderPy)
 generate_from_xml(ViewProviderDocumentObjectPy)
+generate_from_xml(ViewProviderPythonFeaturePy)
 generate_from_xml(WorkbenchPy)
 
 generate_from_py(FreeCADGuiInit GuiInitScript.h)
@@ -61,6 +63,7 @@ generate_from_py(FreeCADGuiInit GuiInitScript.h)
 set(Gui_MOC_HDRS
 		 Action.h
 		 CallTips.h
+		 CombiView.h
 		 DlgActionsImp.h
 		 DlgActivateWindowImp.h
 		 DlgCommandsImp.h
@@ -76,6 +79,7 @@ set(Gui_MOC_HDRS
 		 DlgOnlineHelpImp.h
 		 DlgParameterImp.h
 		 DlgPreferencesImp.h
+		 DlgReportViewImp.h
 		 DlgSettings3DViewImp.h
 		 DlgSettingsColorGradientImp.h
 		 DlgSettingsDocumentImp.h
@@ -106,6 +110,7 @@ set(Gui_MOC_HDRS
 		 SelectionView.h
 		 SpinBox.h
 		 Splashscreen.h
+		 TaskPanelView.h
 		 TextEdit.h
 		 ToolBox.h
 		 Tree.h
@@ -117,10 +122,22 @@ set(Gui_MOC_HDRS
 		 propertyeditor/PropertyItem.h
 		 propertyeditor/PropertyItemDelegate.h
 		 propertyeditor/PropertyModel.h
+		 TaskView/TaskAppearance.h
+		 TaskView/TaskEditControl.h
+		 TaskView/TaskView.h
 )
 #qt4_wrap_cpp(Gui_MOC_SRCS ${Gui_MOC_HDRS})
 fc_wrap_cpp(Gui_MOC_SRCS ${Gui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${Gui_MOC_SRCS})
+
+set(iis_MOC_HDRS
+		 iisTaskPanel/src/iisiconlabel.h
+		 iisTaskPanel/src/iistaskbox.h
+		 iisTaskPanel/src/iistaskgroup.h
+		 iisTaskPanel/src/iistaskheader.h
+)
+qt4_wrap_cpp(iis_MOC_SRCS ${iis_MOC_HDRS})
+#SOURCE_GROUP("Moc" FILES ${iis_MOC_SRCS})
 
 SET(Gui_UIC_SRCS
 		 AboutApplication.ui
@@ -153,11 +170,14 @@ SET(Gui_UIC_SRCS
 		 SceneInspector.ui
 		 InputVector.ui
 		 Placement.ui
+		 TaskView/TaskAppearance.ui
+		 TaskView/TaskEditControl.ui
 )
 
 SET(Gui_RES_SRCS
 		 Icons/resource.qrc
 		 Language/translation.qrc
+		 iisTaskPanel/src/iisTaskPanel.qrc
 )
 QT4_ADD_RESOURCES(Gui_QRC_SRCS ${Gui_RES_SRCS})
 
@@ -279,6 +299,8 @@ SET(Dialog_Settings_SRCS
 SOURCE_GROUP("Dialog\\Settings" FILES ${Dialog_Settings_SRCS})
 
 SET(Dock_Windows_SRCS
+		 CombiView.cpp
+		 CombiView.h
 		 DockWindow.cpp
 		 DockWindow.h
 		 HelpView.cpp
@@ -289,6 +311,8 @@ SET(Dock_Windows_SRCS
 		 ReportView.h
 		 SelectionView.cpp
 		 SelectionView.h
+		 TaskPanelView.cpp
+		 TaskPanelView.h
 		 ToolBox.cpp
 		 ToolBox.h
 		 Tree.cpp
@@ -351,6 +375,8 @@ SET(Inventor_SRCS
 		 SoFCVectorizeSVGAction.h
 		 SoNavigationDragger.cpp
 		 SoNavigationDragger.h
+		 SoTextLabel.cpp
+		 SoTextLabel.h
 )
 SOURCE_GROUP("Inventor" FILES ${Inventor_SRCS})
 
@@ -372,6 +398,39 @@ SET(Propertyeditor_SRCS
 
 )
 SOURCE_GROUP("Propertyeditor" FILES ${Propertyeditor_SRCS})
+
+SET(Task_View_SRCS
+		 TaskView/TaskAppearance.cpp
+		 TaskView/TaskAppearance.h
+		 TaskView/TaskAppearance.ui
+		 TaskView/TaskEditControl.cpp
+		 TaskView/TaskEditControl.h
+		 TaskView/TaskEditControl.ui
+		 TaskView/TaskView.cpp
+		 TaskView/TaskView.h
+)
+SOURCE_GROUP("Task View" FILES ${Task_View_SRCS})
+
+SET(iisTaskPanel_SRCS
+		 iisTaskPanel/src/iisfreecadscheme.cpp
+		 iisTaskPanel/src/iisfreecadscheme.h
+		 iisTaskPanel/src/iisiconlabel.cpp
+		 iisTaskPanel/src/iisiconlabel.h
+		 iisTaskPanel/src/iistaskbox.cpp
+		 iisTaskPanel/src/iistaskbox.h
+		 iisTaskPanel/src/iistaskgroup.cpp
+		 iisTaskPanel/src/iistaskgroup.h
+		 iisTaskPanel/src/iistaskheader.cpp
+		 iisTaskPanel/src/iistaskheader.h
+		 iisTaskPanel/src/iistaskpanel.cpp
+		 iisTaskPanel/src/iistaskpanel.h
+		 iisTaskPanel/src/iistaskpanelscheme.cpp
+		 iisTaskPanel/src/iistaskpanelscheme.h
+		 iisTaskPanel/src/iiswinxptaskpanelscheme.cpp
+		 iisTaskPanel/src/iiswinxptaskpanelscheme.h
+		 iisTaskPanel/src/iistaskpanel_global.h
+)
+SOURCE_GROUP("iisTaskPanel" FILES ${iisTaskPanel_SRCS})
 
 #SET(Resource_RCS
 #		 Icons/resource.qrc
@@ -417,6 +476,8 @@ SET(Viewprovider_SRCS
 		 ViewProviderDocumentObjectGroup.h
 		 ViewProviderDocumentObjectPy.xml
 		 ViewProviderDocumentObjectPyImp.cpp
+		 ViewProviderPythonFeaturePy.xml
+		 ViewProviderPythonFeaturePyImp.cpp
 		 ViewProviderExtern.cpp
 		 ViewProviderExtern.h
 		 ViewProviderFeature.cpp
@@ -431,6 +492,8 @@ SET(Viewprovider_SRCS
 		 ViewProviderPyImp.cpp
 		 ViewProviderPythonFeature.cpp
 		 ViewProviderPythonFeature.h
+		 ViewProviderVRMLObject.cpp
+		 ViewProviderVRMLObject.h
 )
 SOURCE_GROUP("Viewprovider" FILES ${Viewprovider_SRCS})
 
@@ -512,6 +575,7 @@ SET(FreeCADGui_SRCS
 
 SET(FreeCADGui_SRCS
 		 #${Gui_MOC_SRCS}
+		 ${iis_MOC_SRCS}
 		 ${Gui_QRC_SRCS}
 		 ${Gui_UIC_HDRS}
 		 ${Command_SRCS}
@@ -524,6 +588,8 @@ SET(FreeCADGui_SRCS
 		 ${Inventor_SRCS}
 		 ${Language_SRCS}
 		 ${Propertyeditor_SRCS}
+		 ${Task_View_SRCS}
+		 ${iisTaskPanel_SRCS}
 		 ${Resource_SRCS}
 		 ${View3D_SRCS}
 		 ${Viewprovider_SRCS}

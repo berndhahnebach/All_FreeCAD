@@ -247,9 +247,9 @@ macro(fc_wrap_cpp outfiles )
 endmacro(fc_wrap_cpp)
 
 # generates the ui -> cpp h files
-macro(qt4_wrap_ui infiles )
-
-endmacro(qt4_wrap_ui)
+#macro(qt4_wrap_ui infiles )
+#
+#endmacro(qt4_wrap_ui)
 
 
 # This is a special version of the built in macro qt4_add_resources that generates .cpp files
