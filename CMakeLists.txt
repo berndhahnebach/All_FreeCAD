@@ -46,7 +46,7 @@ if(WIN32)
 
 # --------------------------------------------------------------------------------
 # General includes 
-
+ 
 	link_directories(${CMAKE_SOURCE_DIR}/lib)
 	include_directories(${CMAKE_SOURCE_DIR}/include)
 

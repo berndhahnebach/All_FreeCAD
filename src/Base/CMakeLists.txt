@@ -11,14 +11,20 @@ include_directories(
 	${ZLIB_INCLUDE_DIR})
 
 if(WIN32)
+	# no default libraries
+	add_definitions(/ZI)
 	set(FreeCADBase_LIBS
- 		debug ${Boost_DEBUG_LIBRARIES}
- 		optimized ${Boost_LIBRARIES}
+ 		#debug ${Boost_DEBUG_LIBRARIES}
+ 		#optimized ${Boost_LIBRARIES}
 		debug ${PYTHON_DEBUG_LIBRARIES}
 		optimized ${PYTHON_LIBRARIES}
 		debug ${XERCESC_DEBUG_LIBRARIES}
 		optimized ${XERCESC_LIBRARIES}
 		${ZLIB_LIBRARIES}
+		debug MSVCRTD.LIB
+        debug MSVCPRTD.LIB
+		optimized MSVCRT.LIB
+        optimized MSVCPRT.LIB
 		)
 else(WIN32)
 	set(FreeCADBase_LIBS
@@ -192,6 +198,10 @@ SET(FreeCADBase_SRCS
 	swigpyrun_1.3.25.h
 	swigpyrun_1.3.33.cpp
 	swigpyrun_1.3.33.h
+	swigpyrun_1.3.36.cpp
+	swigpyrun_1.3.36.h
+	swigpyrun_1.3.38.cpp
+	swigpyrun_1.3.38.h
 	TimeInfo.cpp
 	TimeInfo.h
 	Tools2D.cpp
