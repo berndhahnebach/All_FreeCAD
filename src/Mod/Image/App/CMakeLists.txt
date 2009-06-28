@@ -36,6 +36,10 @@ add_library(Image SHARED ${Image_SRCS})
 
 target_link_libraries(Image ${Image_LIBS})
 
-set_target_properties(Image PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Image PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Image PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Image DESTINATION lib)

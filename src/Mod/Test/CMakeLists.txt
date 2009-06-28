@@ -1,4 +1,4 @@
-add_subdirectory(Gui .)
+add_subdirectory(Gui)
 
 copy_to_local_output_paths(Base.py)
 copy_to_local_output_paths(Document.py)
