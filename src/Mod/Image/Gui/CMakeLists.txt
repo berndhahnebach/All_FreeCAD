@@ -33,10 +33,15 @@ set(ImageGui_MOC_HDRS
 fc_wrap_cpp(ImageGui_MOC_SRCS ${ImageGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${ImageGui_MOC_SRCS})
 
-fc_add_resources(ImageGui_SRCS Image.qrc)
+SET(ImageGui_RES_SRCS
+		 Image.qrc
+)
+fc_add_resources(ImageGui_QRC_SRCS ${ImageGui_RES_SRCS})
+#QT4_ADD_RESOURCES(ImageGui_QRC_SRCS ${ImageGui_RES_SRCS})
 
 SET(ImageGui_SRCS
-#		 ${ImageGui_SRCS}
+#		 ${ImageGui_MOC_SRCS}
+#		 ${ImageGui_QRC_SRCS}
 		 AppImageGui.cpp
 		 AppImageGuiPy.cpp
 		 Command.cpp
@@ -49,6 +54,7 @@ SET(ImageGui_SRCS
 		 PreCompiled.h
 		 Workbench.cpp
 		 Workbench.h
+		 XpmImages.h
 )
 
 add_library(ImageGui SHARED ${ImageGui_SRCS})

@@ -8,11 +8,11 @@ IF(NOT QT4_FOUND)
 	#add_subdirectory(Sketcher)
 	#add_subdirectory(Import)
 ENDIF(NOT QT4_FOUND)
-add_subdirectory(Mesh)
-add_subdirectory(Points)
+#add_subdirectory(Mesh)
+#add_subdirectory(Points)
 #add_subdirectory(TemplatePyMod)
-add_subdirectory(Test)
-#add_subdirectory(Image)
+#add_subdirectory(Test)
+add_subdirectory(Image)
 
 
 
