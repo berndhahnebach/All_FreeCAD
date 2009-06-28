@@ -58,6 +58,10 @@ add_library(QtUnitGui SHARED ${TestGui_SRCS})
 
 target_link_libraries(QtUnitGui ${TestGui_LIBS})
 
-set_target_properties(QtUnitGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(QtUnitGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(QtUnitGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS QtUnitGui DESTINATION lib)

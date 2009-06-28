@@ -10,20 +10,11 @@ include_directories(
 if(WIN32)
 		 set(ImageGui_LIBS
 		 		 Image
-		 		 FreeCADGui)
+		 		 ${OpenCV_LIBRARIES})
 else(WIN32)
 		 set(ImageGui_LIBS
-#libImageGui_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lcv \
-#		 		 -lcxcore \
-#		 		 -lhighgui \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lImage
-)
+		 		 Image
+		 		 ${OpenCV_LIBRARIES})
 endif(WIN32)
 
 set(ImageGui_MOC_HDRS
@@ -61,6 +52,10 @@ add_library(ImageGui SHARED ${ImageGui_SRCS})
 
 target_link_libraries(ImageGui ${ImageGui_LIBS})
 
-set_target_properties(ImageGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(ImageGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(ImageGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS ImageGui DESTINATION lib)
