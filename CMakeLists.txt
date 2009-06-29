@@ -118,7 +118,7 @@ else(WIN32)
 	ENDIF(NOT QT4_FOUND)
 
 	IF(NOT QT_QTWEBKIT_FOUND)
-		MESSAGE("QT Webkid not found, will not build browser integration!")
+		MESSAGE("QT Webkit not found, will not build browser integration!")
 	ENDIF(NOT QT_QTWEBKIT_FOUND)
 
 # -------------------------------- Coin3D --------------------------------
