@@ -57,6 +57,10 @@ target_link_libraries(FreeCADMainPy FreeCADApp)
 #		 -lFreeCADBase \
 #		 -lFreeCADApp
 
-set_target_properties(FreeCADMainPy PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(FreeCADMainPy PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(FreeCADMainPy PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS FreeCADMainPy DESTINATION lib)

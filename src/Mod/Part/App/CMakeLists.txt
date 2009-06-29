@@ -85,10 +85,6 @@ SET(Features_SRCS
 		 FeaturePartImportIges.h
 		 FeaturePartImportStep.cpp
 		 FeaturePartImportStep.h
-		 FeaturePartLine.cpp
-		 FeaturePartLine.h
-		 FeaturePartLineSet.cpp
-		 FeaturePartLineSet.h
 		 FeaturePartPolygon.cpp
 		 FeaturePartPolygon.h
 		 FeaturePartSection.cpp
@@ -101,10 +97,6 @@ SET(Features_SRCS
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 
 SET(Properties_SRCS
-		 PropertyCircle.cpp
-		 PropertyCircle.h
-		 PropertyLine.cpp
-		 PropertyLine.h
 		 PropertyTopoShape.cpp
 		 PropertyTopoShape.h
 )
