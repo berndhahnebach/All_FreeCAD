@@ -5,7 +5,7 @@ add_subdirectory(Test)
 
 add_subdirectory(Image)
 
-#add_subdirectory(Mesh)
+add_subdirectory(Mesh)
 
 #add_subdirectory(Part)
 #add_subdirectory(PartDesign)

@@ -32,7 +32,7 @@
 # include <qinputdialog.h>
 # include <qmessagebox.h>
 # include <qstringlist.h>
-# include <gts.h>
+//# include <gts.h>
 # include <map>
 #endif
 

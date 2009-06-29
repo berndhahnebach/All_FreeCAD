@@ -36,6 +36,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
 	configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 	add_definitions(-DHAVE_CONFIG_H)
 	add_definitions(-Wno-write-strings)
+	add_definitions(-Wno-deprecated)
 	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 endif(CMAKE_COMPILER_IS_GNUCC)
 
@@ -132,7 +133,7 @@ else(WIN32)
 	    "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
 	    "1.33.1" "1.33.0" "1.33" )
 
-	find_package(Boost COMPONENTS filesystem program_options signals)
+	find_package(Boost COMPONENTS filesystem program_options regex signals)
 
 # -------------------------------- XercesC --------------------------------
 

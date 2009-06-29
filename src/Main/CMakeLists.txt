@@ -16,31 +16,22 @@ SET(FreeCAD_SRCS
 		 MainGui.cpp
 )
 
-add_executable(FreeCADMain ${FreeCAD_SRCS})
+add_executable(FreeCAD ${FreeCAD_SRCS})
 
-target_link_libraries(FreeCADMain FreeCADGui)
-#FreeCAD_LDADD=\
-#		 -l@PYTHON_LIB@ \
-#		 -lFreeCADBase \
-#		 -lFreeCADApp \
-#		 -lFreeCADGui
+target_link_libraries(FreeCAD FreeCADGui)
 
-install(TARGETS FreeCADMain DESTINATION bin)
+install(TARGETS FreeCAD DESTINATION bin)
 
 ######################## FreeCADMainCmd ########################
 
 SET(FreeCADMainCmd_SRCS
 		 MainCmd.cpp
 )
-add_executable(FreeCADMainCmd ${FreeCADMainCmd_SRCS})
+add_executable(FreeCADCmd ${FreeCADMainCmd_SRCS})
 
-target_link_libraries(FreeCADMainCmd FreeCADApp)
-#FreeCADCmd_LDADD=\
-#		 -l@PYTHON_LIB@ \
-#		 -lFreeCADBase \
-#		 -lFreeCADApp
+target_link_libraries(FreeCADCmd FreeCADApp)
 
-install(TARGETS FreeCADMainCmd DESTINATION bin)
+install(TARGETS FreeCADCmd DESTINATION bin)
 
 ######################## FreeCADMainPy ########################
 
@@ -48,19 +39,16 @@ SET(FreeCADMainPy_SRCS
 		 MainPy.cpp
 )
 
-add_library(FreeCADMainPy SHARED ${FreeCADMainPy_SRCS})
+add_library(FreeCADPy SHARED ${FreeCADMainPy_SRCS})
 
-target_link_libraries(FreeCADMainPy FreeCADApp)
-#FreeCAD_la_LIBADD=\
-#		 -ldl \
-#		 -l@PYTHON_LIB@ \
-#		 -lFreeCADBase \
-#		 -lFreeCADApp
+target_link_libraries(FreeCADPy FreeCADApp)
 
 if(WIN32)
-		 set_target_properties(FreeCADMainPy PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(FreeCADPy PROPERTIES OUTPUT_NAME "FreeCAD")
+		 set_target_properties(FreeCADPy PROPERTIES SUFFIX ".pyd")
 else(WIN32)
-		 set_target_properties(FreeCADMainPy PROPERTIES PREFIX "")
+		 set_target_properties(FreeCADPy PROPERTIES OUTPUT_NAME "FreeCAD")
+		 set_target_properties(FreeCADPy PROPERTIES PREFIX "")
 endif(WIN32)
 
-install(TARGETS FreeCADMainPy DESTINATION lib)
+install(TARGETS FreeCADPy DESTINATION lib)

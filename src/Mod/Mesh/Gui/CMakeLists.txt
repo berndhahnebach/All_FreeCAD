@@ -4,29 +4,21 @@ include_directories(
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
-		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${SO_QT_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
-if(WIN32)
-		 set(MeshGui_LIBS
-		 		 Mesh
-		 		 FreeCADGui)
-else(WIN32)
-		 set(MeshGui_LIBS
-#libMeshGui_la_LIBADD		 = \
-#		 		 -lboost_signals \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lMesh
-)
-endif(WIN32)
+set(MeshGui_LIBS
+		 ${PYTHON_LIBRARY}
+ 		 ${Boost_LIBRARIES}
+		 Mesh
+		 FreeCADGui)
 
 set(Mesh_MOC_HDRS
 		 DlgEvaluateMeshImp.h
 		 DlgRegularSolidImp.h
+		 DlgSettingsMeshView.h
+		 PropertyEditorMesh.h
 )
 fc_wrap_cpp(Mesh_MOC_SRCS ${Mesh_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${Mesh_MOC_SRCS})
@@ -34,7 +26,7 @@ SOURCE_GROUP("Moc" FILES ${Mesh_MOC_SRCS})
 set(Dialogs_UIC_SRCS
 		 DlgEvaluateMesh.ui
 		 DlgRegularSolid.ui
-		 ../../../Gui/DlgTreeWidget.ui
+		 DlgSettingsMeshView.ui
 )
 qt4_wrap_ui(Dialogs_UIC_HDRS ${Dialogs_UIC_SRCS})
 SET(Dialogs_SRCS
@@ -45,16 +37,17 @@ SET(Dialogs_SRCS
 		 DlgRegularSolid.ui
 		 DlgRegularSolidImp.cpp
 		 DlgRegularSolidImp.h
+		 DlgSettingsMeshView.ui
+		 DlgSettingsMeshView.cpp
+		 DlgSettingsMeshView.h
 )
 SOURCE_GROUP("Dialogs" FILES ${Dialogs_SRCS})
 
 SET(Inventor_SRCS
-		 SoFCMeshFaceSet.cpp
-		 SoFCMeshFaceSet.h
-		 SoFCMeshNode.cpp
-		 SoFCMeshNode.h
-		 SoFCMeshVertex.cpp
-		 SoFCMeshVertex.h
+		 SoFCIndexedFaceSet.cpp
+		 SoFCIndexedFaceSet.h
+		 SoFCMeshObject.cpp
+		 SoFCMeshObject.h
 )
 SOURCE_GROUP("Inventor" FILES ${Inventor_SRCS})
 
@@ -74,8 +67,6 @@ SET(ViewProvider_SRCS
 		 ViewProviderDefects.h
 		 ViewProviderMeshFaceSet.cpp
 		 ViewProviderMeshFaceSet.h
-		 ViewProviderMeshNode.cpp
-		 ViewProviderMeshNode.h
 		 ViewProviderTransform.cpp
 		 ViewProviderTransform.h
 		 ViewProviderTransformDemolding.cpp
@@ -103,6 +94,10 @@ add_library(MeshGui SHARED ${MeshGui_SRCS})
 
 target_link_libraries(MeshGui ${MeshGui_LIBS})
 
-set_target_properties(MeshGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(MeshGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(MeshGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS MeshGui DESTINATION lib)

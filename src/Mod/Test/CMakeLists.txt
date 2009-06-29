@@ -23,5 +23,6 @@ install(
 		 		 TestGui.py
 		 		 UnicodeTests.py
 		 		 Workbench.py
+		 		 Gui/qtunittest.py
 		 DESTINATION
 		 		 Mod/Test)
