@@ -1,36 +1,19 @@
-add_definitions(-DFCAppMesh -DFC_DEBUG -DWM4_FOUNDATION_DLL_EXPORT)
+if(WIN32)
+		 add_definitions(-DFCAppMesh -DFC_DEBUG -DWM4_FOUNDATION_DLL_EXPORT)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_CURRENT_SOURCE_DIR}
 		 ${Boost_INCLUDE_DIRS}
-		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCES_INCLUDE_DIR})
 
-if(WIN32)
-		 set(Mesh_LIBS
-		 		 OCCAdaptMesh
-		 		 FreeCADApp)
-else(WIN32)
-		 set(Mesh_LIBS
-#libMesh_la_LIBADD   = \
-#		 -lxerces-c \
-#		 -l@PYTHON_LIB@ \
-#		 -lboost_filesystem \
-#		 -lboost_regex \
-#		 -lFreeCADBase \
-#		 -lFreeCADApp \
-#		 -lTKernel \
-#		 -lTKG2d \
-#		 -lTKG3d \
-#		 -lTKMath \
-#		 -lTKGeomAlgo \
-#		 -lTKGeomBase \
-#		 -lTKBRep \
-#		 -lTKTopAlgo
-)
-endif(WIN32)
+set(Mesh_LIBS
+		 ${PYTHON_LIBRARY}
+ 		 ${Boost_LIBRARIES}
+		 FreeCADBase
+		 FreeCADApp)
 
 generate_from_xml(FacetPy)
 generate_from_xml(MeshFeaturePy)
@@ -70,8 +53,6 @@ SET(Core_SRCS
 		 Core/Tools.h
 		 Core/TopoAlgorithm.cpp
 		 Core/TopoAlgorithm.h
-		 Core/triangle.cpp
-		 Core/triangle.h
 		 Core/Triangulation.cpp
 		 Core/Triangulation.h
 		 Core/tritritest.h
@@ -286,8 +267,6 @@ SET(Mesh_SRCS
 		 ${WildMagic4_SRCS}
 		 AppMesh.cpp
 		 AppMeshPy.cpp
-		 CurveProjector.cpp
-		 CurveProjector.h
 		 Doxygen.cpp
 		 Facet.cpp
 		 Facet.h
@@ -315,10 +294,6 @@ SET(Mesh_SRCS
 #		 GTSAlgos.h
 		 Mesh.cpp
 		 Mesh.h
-		 MeshAlgos.cpp
-		 MeshAlgos.h
-		 MeshCurvature.cpp
-		 MeshCurvature.h
 		 MeshFeature.cpp
 		 MeshFeature.h
 		 MeshFeaturePy.xml
@@ -341,6 +316,10 @@ add_library(Mesh SHARED ${Mesh_SRCS})
 
 target_link_libraries(Mesh ${Mesh_LIBS})
 
-set_target_properties(Mesh PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Mesh PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Mesh PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Mesh DESTINATION lib)
