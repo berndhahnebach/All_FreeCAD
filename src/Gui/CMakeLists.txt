@@ -25,7 +25,8 @@ if(WIN32)
 		 		 optimized ${PYTHON_LIBRARY}
 		 		 debug ${SOQT_LIBRARY_DEBUG}
 		 		 optimized ${SOQT_LIBRARY_RELEASE}
-		 		 ${QT_LIBRARIES}
+		 		 debug ${QT_DEBUG_LIBRARIES}
+		 		 optimized ${QT_LIBRARIES}
 		 		 ${XERCES_LIBRARIES})
 else(WIN32)
 		 set(FreeCADGui_LIBS

@@ -83,6 +83,34 @@ if(WIN32)
 	set(ZLIB_LIBRARIES  zlib1.lib)
 	set(ZLIB_FOUND TRUE) 
 	
+# Coin3D
+	set(COIN_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/coin)
+	set(COIN3D_LIBRARY_DEBUG  coin2d.lib)
+	set(COIN3D_LIBRARY_RELEASE  coin2.lib)
+	set(COIN3D_FOUND TRUE) 
+
+
+# QT
+	set(QT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/QT)
+	set(QT_LIBRARIES 
+		QT_filesystem-vc80-mt.lib 
+		QT_graph-vc80-mt.lib 
+		QT_program_options-vc80-mt.lib
+	)
+	set(QT_DEBUG_LIBRARIES 
+		QT_filesystem-vc80-mt-gd.lib 
+		QT_graph-vc80-mt-gd.lib 
+		QT_program_options-vc80-mt-gd.lib
+	)
+	set(QT4_FOUND TRUE) 
+
+# SoQt
+	set(SOQT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/soqt)
+	set(SOQT_LIBRARIES  soqt1.lib)
+	set(SOQT_SEBUG_LIBRARIES  soqt1d.lib)
+	set(SOQT_FOUND TRUE) 
+
+	
 else(WIN32)
 
 # ================================================================================
