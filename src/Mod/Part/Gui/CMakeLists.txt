@@ -1,3 +1,8 @@
+if(WIN32)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
+
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_BINARY_DIR}/src
@@ -31,62 +36,35 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(PartGui_LIBS
-#if OCC_VERSION6
-#libPartGui_la_LIBADD		 = \
-#		 		 -lxerces-c \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKPrim \
-#		 		 -lTKMesh \
-#		 		 -lPart 
-#else
-#libPartGui_la_LIBADD		 = \
-#		 		 -lxerces-c \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKPrim \
-#		 		 -lPart 
-#endif
-)
+		 		 Part
+		 		 TKernel
+		 		 TKG2d
+		 		 TKG3d
+		 		 TKMath
+		 		 TKSTEP
+		 		 TKIGES
+		 		 TKShHealing
+		 		 TKXSBase
+		 		 TKBool
+		 		 TKBO
+		 		 TKBRep
+		 		 TKTopAlgo
+		 		 TKGeomAlgo
+		 		 TKGeomBase
+		 		 TKPrim
+		 		 TKMesh
+		 		 FreeCADGui)
 endif(WIN32)
 
 set(PartGui_MOC_HDRS
 		 DlgBooleanOperation.h
+		 DlgExtrusion.h
+		 DlgFilletEdges.h
 		 DlgPartBoxImp.h
+		 DlgPartCylinderImp.h
 		 DlgPartImportIgesImp.h
 		 DlgPartImportStepImp.h
+		 DlgPrimitives.h
 		 DlgSettings3DViewPartImp.h
 )
 fc_wrap_cpp(PartGui_MOC_SRCS ${PartGui_MOC_HDRS})
@@ -96,11 +74,15 @@ fc_add_resources(PartGui_QRC_SRCS Part.qrc)
 
 set(PartGui_UIC_SRCS
 		 DlgBooleanOperation.ui
+		 DlgExtrusion.ui
+		 DlgFilletEdges.ui
 		 DlgPartBox.ui
+		 DlgPartCylinder.ui
 		 DlgPartImportIges.ui
 		 DlgPartImportStep.ui
 		 DlgPrimitives.ui
 		 DlgSettings3DViewPart.ui
+		 DlgSettingsGeneral.ui
 )
 qt4_wrap_ui(PartGui_UIC_HDRS ${PartGui_UIC_SRCS})
 
@@ -109,12 +91,23 @@ SET(PartGui_SRCS
 		 ${PartGui_UIC_HDRS}
 		 AppPartGui.cpp
 		 Command.cpp
+		 CommandSimple.cpp
+		 CommandParametric.cpp
 		 DlgBooleanOperation.cpp
 		 DlgBooleanOperation.h
 		 DlgBooleanOperation.ui
+		 DlgExtrusion.cpp
+		 DlgExtrusion.h
+		 DlgExtrusion.ui
+		 DlgFilletEdges.cpp
+		 DlgFilletEdges.h
+		 DlgFilletEdges.ui
 		 DlgPartBox.ui
 		 DlgPartBoxImp.cpp
 		 DlgPartBoxImp.h
+		 DlgPartCylinderImp.cpp
+		 DlgPartCylinderImp.h
+		 DlgPartCylinder.ui
 		 DlgPartImportIges.ui
 		 DlgPartImportIgesImp.cpp
 		 DlgPartImportIgesImp.h
@@ -127,9 +120,14 @@ SET(PartGui_SRCS
 		 DlgSettings3DViewPart.ui
 		 DlgSettings3DViewPartImp.cpp
 		 DlgSettings3DViewPartImp.h
+		 DlgSettingsGeneral.cpp
+		 DlgSettingsGeneral.h
+		 DlgSettingsGeneral.ui
 		 Part.qrc
 		 PreCompiled.cpp
 		 PreCompiled.h
+		 SoFCShapeObject.cpp
+		 SoFCShapeObject.h
 		 ViewProvider.cpp
 		 ViewProvider.h
 		 ViewProviderBox.cpp
@@ -138,6 +136,10 @@ SET(PartGui_SRCS
 		 ViewProviderCurveNet.h
 		 ViewProviderImport.cpp
 		 ViewProviderImport.h
+		 ViewProviderExtrusion.cpp
+		 ViewProviderExtrusion.h
+		 ViewProvider2DObject.cpp
+		 ViewProvider2DObject.h
 		 Workbench.cpp
 		 Workbench.h
 )
@@ -146,6 +148,10 @@ add_library(PartGui SHARED ${PartGui_SRCS})
 
 target_link_libraries(PartGui ${PartGui_LIBS})
 
-set_target_properties(PartGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(PartGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(PartGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS PartGui DESTINATION lib)

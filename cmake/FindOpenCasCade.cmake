@@ -69,12 +69,12 @@ ELSE (WIN32)
     SET(OCC_LIBRARY "-framework OCC" CACHE STRING "OCC library for OSX")
    ELSE(APPLE)
 
-  FIND_PATH(OCC_INCLUDE_DIR Inventor/So.h
-    /usr/include
-    /usr/local/include
+  FIND_PATH(OCC_INCLUDE_DIR Standard_Version.hxx
+    /usr/include/opencascade
+    /usr/local/include/opencascade
   )
 
-  FIND_LIBRARY(OCC_LIBRARY Coin
+  FIND_LIBRARY(OCC_LIBRARY TKernel
     /usr/lib
     /usr/local/lib
   )   

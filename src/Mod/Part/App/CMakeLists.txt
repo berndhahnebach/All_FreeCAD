@@ -1,4 +1,8 @@
-add_definitions(-DFCAppPart -DFC_DEBUG)
+if(WIN32)
+		 add_definitions(-DFCAppPart -DFC_DEBUG)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -9,6 +13,8 @@ include_directories(
 
 if(WIN32)
 		 set(Part_LIBS
+				 TKFillet
+				 TKMesh
 		 		 TKernel
 		 		 TKG2d
 		 		 TKG3d
@@ -28,32 +34,53 @@ if(WIN32)
 		 		 TKPrim
 		 		 FreeCADApp)
 else(WIN32)
-#libPart_la_LIBADD		 = \
-#		 		 -lxerces-c \
-#		 		 -lboost_filesystem \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim
+		 set(Part_LIBS
+				 TKFillet
+				 TKMesh
+		 		 TKernel
+		 		 TKG2d
+		 		 TKG3d
+		 		 TKMath
+		 		 TKSTEP
+		 		 TKIGES
+		 		 TKSTL
+		 		 TKShHealing
+		 		 TKXSBase
+		 		 TKBool
+		 		 TKBO
+		 		 TKBRep
+		 		 TKTopAlgo
+		 		 TKGeomAlgo
+		 		 TKGeomBase
+		 		 TKOffset
+		 		 TKPrim
+		 		 FreeCADApp)
 endif(WIN32)
 
+generate_from_xml(ArcPy)
+generate_from_xml(CirclePy)
+generate_from_xml(EllipsePy)
+generate_from_xml(HyperbolaPy)
+generate_from_xml(ParabolaPy)
+generate_from_xml(OffsetCurvePy)
+generate_from_xml(GeometryPy)
+generate_from_xml(LinePy)
+generate_from_xml(BezierCurvePy)
+generate_from_xml(BSplineCurvePy)
+generate_from_xml(PlanePy)
+generate_from_xml(ConePy)
+generate_from_xml(CylinderPy)
+generate_from_xml(SpherePy)
+generate_from_xml(ToroidPy)
+generate_from_xml(BezierSurfacePy)
+generate_from_xml(BSplineSurfacePy)
+generate_from_xml(OffsetSurfacePy)
+generate_from_xml(SurfaceOfExtrusionPy)
+generate_from_xml(SurfaceOfRevolutionPy)
 generate_from_xml(PartFeaturePy)
+generate_from_xml(Part2DObjectPy)
+generate_from_xml(OffsetSurfacePy)
+generate_from_xml(OffsetSurfacePy)
 generate_from_xml(TopoShapePy)
 generate_from_xml(TopoShapeCompoundPy)
 generate_from_xml(TopoShapeCompSolidPy)
@@ -89,8 +116,14 @@ SET(Features_SRCS
 		 FeaturePartPolygon.h
 		 FeaturePartSection.cpp
 		 FeaturePartSection.h
+		 FeatureExtrusion.cpp
+		 FeatureExtrusion.h
+		 FeatureFillet.cpp
+		 FeatureFillet.h
 		 PartFeature.cpp
 		 PartFeature.h
+		 Part2DObject.cpp
+		 Part2DObject.h
 		 PrimitiveFeature.cpp
 		 PrimitiveFeature.h
 )
@@ -103,31 +136,50 @@ SET(Properties_SRCS
 SOURCE_GROUP("Properties" FILES ${Properties_SRCS})
 
 SET(Python_SRCS
-		 CirclePy.cpp
-		 CirclePy.h
-		 LinePy.cpp
-		 LinePy.h
+		 ArcPy.xml
+		 ArcPyImp.cpp
+		 CirclePy.xml
+		 CirclePyImp.cpp
+		 EllipsePy.xml
+		 EllipsePyImp.cpp
+		 HyperbolaPy.xml
+		 HyperbolaPyImp.cpp
+		 ParabolaPy.xml
+		 ParabolaPyImp.cpp
+		 OffsetCurvePy.xml
+		 OffsetCurvePyImp.cpp
+		 GeometryPy.xml
+		 GeometryPyImp.cpp
+		 LinePy.xml
+		 LinePyImp.cpp
+		 BezierCurvePy.xml
+		 BezierCurvePyImp.cpp
+		 BSplineCurvePy.xml
+		 BSplineCurvePyImp.cpp
+		 PlanePy.xml
+		 PlanePyImp.cpp
+		 ConePy.xml
+		 ConePyImp.cpp
+		 CylinderPy.xml
+		 CylinderPyImp.cpp
+		 SpherePy.xml
+		 SpherePyImp.cpp
+		 ToroidPy.xml
+		 ToroidPyImp.cpp
+		 BezierSurfacePy.xml
+		 BezierSurfacePyImp.cpp
+		 BSplineSurfacePy.xml
+		 BSplineSurfacePyImp.cpp
+		 OffsetSurfacePy.xml
+		 OffsetSurfacePyImp.cpp
+		 SurfaceOfExtrusionPy.xml
+		 SurfaceOfExtrusionPyImp.cpp
+		 SurfaceOfRevolutionPy.xml
+		 SurfaceOfRevolutionPyImp.cpp
 		 PartFeaturePy.xml
 		 PartFeaturePyImp.cpp
-		 TopologyPy.cpp
-		 TopologyPy.h
-)
-SOURCE_GROUP("Python" FILES ${Python_SRCS})
-
-SET(Part_SRCS
-		 ${Features_SRCS}
-		 ${Properties_SRCS}
-		 ${Python_SRCS}
-		 AppPart.cpp
-		 AppPartPy.cpp
-		 ImportStep.cpp
-		 ImportStep.h
-		 PreCompiled.cpp
-		 PreCompiled.h
-		 TopoShape.cpp
-		 TopoShape.h
-		 TopoShapeFacePy.xml
-		 TopoShapeFacePyImp.cpp
+		 Part2DObjectPy.xml
+		 Part2DObjectPyImp.cpp
 		 TopoShapePy.xml
 		 TopoShapePyImp.cpp
 		 TopoShapeCompSolidPy.xml
@@ -136,6 +188,8 @@ SET(Part_SRCS
 		 TopoShapeCompoundPyImp.cpp
 		 TopoShapeEdgePy.xml
 		 TopoShapeEdgePyImp.cpp
+		 TopoShapeFacePy.xml
+		 TopoShapeFacePyImp.cpp
 		 TopoShapeShellPy.xml
 		 TopoShapeShellPyImp.cpp
 		 TopoShapeSolidPy.xml
@@ -145,11 +199,34 @@ SET(Part_SRCS
 		 TopoShapeWirePy.xml
 		 TopoShapeWirePyImp.cpp
 )
+SOURCE_GROUP("Python" FILES ${Python_SRCS})
+
+SET(Part_SRCS
+		 ${Features_SRCS}
+		 ${Properties_SRCS}
+		 ${Python_SRCS}
+		 AppPart.cpp
+		 AppPartPy.cpp
+		 Geometry.cpp
+		 Geometry.h
+		 ImportStep.cpp
+		 ImportStep.h
+		 PreCompiled.cpp
+		 PreCompiled.h
+		 ProgressIndicator.cpp
+		 ProgressIndicator.h
+		 TopoShape.cpp
+		 TopoShape.h
+)
 
 add_library(Part SHARED ${Part_SRCS})
 
 target_link_libraries(Part ${Part_LIBS})
 
-set_target_properties(Part PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Part PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Part PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Part DESTINATION lib)
