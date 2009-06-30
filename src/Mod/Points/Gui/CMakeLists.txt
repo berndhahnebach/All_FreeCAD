@@ -1,7 +1,7 @@
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
-		 ${CMAKE_CURRENT_BINARY_DIR}/../Part
+		 ${CMAKE_CURRENT_BINARY_DIR}/../Points
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
@@ -14,13 +14,8 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(PointsGui_LIBS
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lPoints
-)
+		 		 Points
+		 		 FreeCADGui)
 endif(WIN32)
 
 set(PointsGui_MOC_HDRS
@@ -65,6 +60,10 @@ add_library(PointsGui SHARED ${PointsGui_SRCS})
 
 target_link_libraries(PointsGui ${PointsGui_LIBS})
 
-set_target_properties(PointsGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(PointsGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(PointsGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS PointsGui DESTINATION lib)

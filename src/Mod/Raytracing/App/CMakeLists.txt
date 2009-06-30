@@ -1,4 +1,8 @@
-add_definitions(-DFCAppRaytracing -DFC_DEBUG)
+if(WIN32)
+		 add_definitions(-DFCAppRaytracing -DFC_DEBUG)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -23,39 +27,17 @@ if(WIN32)
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Raytracing_LIBS
-#if OCC_VERSION6
-#libRaytracing_la_LIBADD   = \
-#		 		 -lxerces-c \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKBool \
-#		 		 -lTKBRep \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKMesh \
-#		 		 -lPart
-#else
-#libRaytracing_la_LIBADD   = \
-#		 		 -lxerces-c \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKBool \
-#		 		 -lTKBRep \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lPart
-#endif
-)
+		 		 Part
+		 		 TKernel
+		 		 TKG2d
+		 		 TKG3d
+		 		 TKMath
+		 		 TKBool
+		 		 TKBRep
+		 		 TKGeomAlgo
+		 		 TKGeomBase
+		 		 TKMesh
+		 		 FreeCADApp)
 endif(WIN32)
 
 macro(generate_from_py2 BASE_NAME OUTPUT_FILE)
@@ -81,12 +63,18 @@ SET(Raytracing_SRCS
 		 PreCompiled.h
 		 RayFeature.cpp
 		 RayFeature.h
+		 RayProject.cpp
+		 RayProject.h
 )
 
 add_library(Raytracing SHARED ${Raytracing_SRCS})
 
 target_link_libraries(Raytracing ${Raytracing_LIBS})
 
-set_target_properties(Raytracing PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Raytracing PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Raytracing PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Raytracing DESTINATION lib)

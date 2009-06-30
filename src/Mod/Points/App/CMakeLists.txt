@@ -1,4 +1,6 @@
-add_definitions(-DFCAppPoints -DFC_DEBUG)
+if(WIN32)
+		 add_definitions(-DFCAppPoints -DFC_DEBUG)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_CURRENT_SOURCE_DIR}
@@ -11,13 +13,11 @@ if(WIN32)
 		 set(Points_LIBS
 		 		 FreeCADApp)
 else(WIN32)
-#libPoints_la_LIBADD   = \
-#		 -l@PYTHON_LIB@ \
-#		 -lxerces-c \
-#		 -lboost_regex \
-#		 -lFreeCADBase \
-#		 -lFreeCADApp
+		 set(Points_LIBS
+		 		 FreeCADApp)
 endif(WIN32)
+
+generate_from_xml(PointsPy)
 
 SET(Points_SRCS
 		 AppPoints.cpp
@@ -26,18 +26,18 @@ SET(Points_SRCS
 		 FeaturePointsImportAscii.h
 		 Points.cpp
 		 Points.h
+		 PointsPy.xml
+		 PointsPyImp.cpp
 		 PointsAlgos.cpp
 		 PointsAlgos.h
 		 PointsFeature.cpp
 		 PointsFeature.h
-		 PointsFeaturePy.cpp
-		 PointsFeaturePy.h
 		 PointsGrid.cpp
 		 PointsGrid.h
-		 PointsPy.cpp
-		 PointsPy.h
 		 PreCompiled.cpp
 		 PreCompiled.h
+		 Properties.cpp
+		 Properties.h
 		 PropertyPointKernel.cpp
 		 PropertyPointKernel.h
 )
@@ -46,6 +46,10 @@ add_library(Points SHARED ${Points_SRCS})
 
 target_link_libraries(Points ${Points_LIBS})
 
-set_target_properties(Points PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Points PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Points PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Points DESTINATION lib)

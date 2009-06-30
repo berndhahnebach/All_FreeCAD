@@ -12,30 +12,17 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(CompleteGui_LIBS
-#libCompleteGui_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lComplete
-)
+		 		 Complete
+		 		 FreeCADGui)
 endif(WIN32)
 
-set(CompleteGui_MOC_HDRS
-		 CompleteView.h
-)
-fc_wrap_cpp(CompleteGui_MOC_SRCS ${CompleteGui_MOC_HDRS})
-SOURCE_GROUP("Moc" FILES ${CompleteGui_MOC_SRCS})
-
-fc_add_resources(CompleteGui_SRCS Resources/Complete.qrc)
+qt4_add_resources(Complete_QRC_SRCS Resources/Complete.qrc)
 
 SET(CompleteGui_SRCS
-		 ${CompleteGui_SRCS}
+		 ${Complete_QRC_SRCS}
 		 AppCompleteGui.cpp
 		 AppCompleteGuiPy.cpp
 		 Command.cpp
-		 Resources/Complete.qrc
 		 PreCompiled.cpp
 		 PreCompiled.h
 		 Workbench.cpp
@@ -46,6 +33,10 @@ add_library(CompleteGui SHARED ${CompleteGui_SRCS})
 
 target_link_libraries(CompleteGui ${CompleteGui_LIBS})
 
-set_target_properties(CompleteGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(CompleteGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(CompleteGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS CompleteGui DESTINATION lib)
