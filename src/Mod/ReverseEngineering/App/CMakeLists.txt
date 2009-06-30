@@ -1,4 +1,7 @@
-add_definitions(-DFCAppDrawing -DFC_DEBUG)
+if(WIN32)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -8,62 +11,34 @@ include_directories(
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
-		 set(Drawing_LIBS
+		 set(Reen_LIBS
 		 		 Part
-		 		 TKHLR
+				 Mesh
 		 		 FreeCADApp)
 else(WIN32)
-#libDrawing_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lboost_regex \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lPart \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim \
-#		 		 -lTKHLR
+		 set(Reen_LIBS
+		 		 Part
+				 Mesh
+		 		 FreeCADApp)
 endif(WIN32)
 
-SET(Features_SRCS
-		 FeaturePage.cpp
-		 FeaturePage.h
-		 FeatureView.cpp
-		 FeatureView.h
-		 FeatureViewPart.cpp
-		 FeatureViewPart.h
-		 PageGroup.cpp
-		 PageGroup.h
-)
-SOURCE_GROUP("Features" FILES ${Features_SRCS})
-
-SET(Drawing_SRCS
-		 ${Features_SRCS}
-		 AppDrawing.cpp
-		 AppDrawingPy.cpp
+SET(Reen_SRCS
+		 AppReverseEngineering.cpp
+		 AppReverseEngineeringPy.cpp
+		 ApproxSurface.cpp
+		 ApproxSurface.h
 		 PreCompiled.cpp
 		 PreCompiled.h
 )
 
-add_library(Drawing SHARED ${Drawing_SRCS})
+add_library(ReverseEngineering SHARED ${Reen_SRCS})
 
-target_link_libraries(Drawing ${Drawing_LIBS})
+target_link_libraries(ReverseEngineering ${Reen_LIBS})
 
-set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(ReverseEngineering PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(ReverseEngineering PROPERTIES PREFIX "")
+endif(WIN32)
 
-install(TARGETS Drawing DESTINATION lib)
+install(TARGETS ReverseEngineering DESTINATION lib)

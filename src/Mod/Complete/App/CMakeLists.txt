@@ -1,4 +1,6 @@
-add_definitions(-DFCAppComplete -DFC_DEBUG)
+if(WIN32)
+		 add_definitions(-DFCAppComplete -DFC_DEBUG)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -9,51 +11,14 @@ include_directories(
 
 if(WIN32)
 		 set(Complete_LIBS
-		 		 Part
-		 		 TKHLR
 		 		 FreeCADApp)
 else(WIN32)
-#libComplete_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lboost_regex \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lPart \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim \
-#		 		 -lTKHLR
+		 set(Complete_LIBS
+		 		 FreeCADApp)
 endif(WIN32)
 
-SET(Features_SRCS
-		 FeaturePage.cpp
-		 FeaturePage.h
-		 FeatureView.cpp
-		 FeatureView.h
-		 FeatureViewPart.cpp
-		 FeatureViewPart.h
-		 PageGroup.cpp
-		 PageGroup.h
-)
-SOURCE_GROUP("Features" FILES ${Features_SRCS})
 
 SET(Complete_SRCS
-		 ${Features_SRCS}
 		 AppComplete.cpp
 		 AppCompletePy.cpp
 		 PreCompiled.cpp
@@ -64,6 +29,10 @@ add_library(Complete SHARED ${Complete_SRCS})
 
 target_link_libraries(Complete ${Complete_LIBS})
 
-set_target_properties(Complete PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Complete PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Complete PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Complete DESTINATION lib)
