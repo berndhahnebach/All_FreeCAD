@@ -42,6 +42,16 @@ endif(CMAKE_COMPILER_IS_GNUCC)
 
 
 # ================================================================================
+
+
+if(WIN32)
+		 SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
+else(WIN32)
+		 SET(CMAKE_INSTALL_PREFIX "/usr/lib/freecad")
+endif(WIN32)
+
+
+# ================================================================================
 # == Win32 is default behaviour use the LibPack copied in Source tree ============
 if(WIN32)
 
