@@ -8,27 +8,17 @@ include_directories(
 
 if(WIN32)
 		 set(AssemblyGui_LIBS
+				 ode
 		 		 Assembly
 		 		 FreeCADGui)
 else(WIN32)
 		 set(AssemblyGui_LIBS
-#libAssemblyGui_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lAssembly
-)
+				 ode
+		 		 Assembly
+		 		 FreeCADGui)
 endif(WIN32)
 
-set(AssemblyGui_MOC_HDRS
-		 AssemblyView.h
-)
-fc_wrap_cpp(AssemblyGui_MOC_SRCS ${AssemblyGui_MOC_HDRS})
-SOURCE_GROUP("Moc" FILES ${AssemblyGui_MOC_SRCS})
-
-fc_add_resources(AssemblyGui_SRCS Resources/Assembly.qrc)
+qt4_add_resources(AssemblyGui_SRCS Resources/Assembly.qrc)
 
 SET(AssemblyGui_SRCS
 		 ${AssemblyGui_SRCS}
@@ -46,6 +36,10 @@ add_library(AssemblyGui SHARED ${AssemblyGui_SRCS})
 
 target_link_libraries(AssemblyGui ${AssemblyGui_LIBS})
 
-set_target_properties(AssemblyGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(AssemblyGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(AssemblyGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS AssemblyGui DESTINATION lib)

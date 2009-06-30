@@ -1,4 +1,3 @@
-add_definitions(-DFCAppDrawing -DFC_DEBUG)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -8,62 +7,30 @@ include_directories(
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
-		 set(Drawing_LIBS
-		 		 Part
-		 		 TKHLR
+		 set(Assembly_LIBS
+				 ode
 		 		 FreeCADApp)
 else(WIN32)
-#libDrawing_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lboost_regex \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lPart \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim \
-#		 		 -lTKHLR
+		 set(Assembly_LIBS
+				 ode
+		 		 FreeCADApp)
 endif(WIN32)
 
-SET(Features_SRCS
-		 FeaturePage.cpp
-		 FeaturePage.h
-		 FeatureView.cpp
-		 FeatureView.h
-		 FeatureViewPart.cpp
-		 FeatureViewPart.h
-		 PageGroup.cpp
-		 PageGroup.h
-)
-SOURCE_GROUP("Features" FILES ${Features_SRCS})
-
-SET(Drawing_SRCS
-		 ${Features_SRCS}
-		 AppDrawing.cpp
-		 AppDrawingPy.cpp
+SET(Assembly_SRCS
+		 AppAssembly.cpp
+		 AppAssemblyPy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
 )
 
-add_library(Drawing SHARED ${Drawing_SRCS})
+add_library(Assembly SHARED ${Assembly_SRCS})
 
-target_link_libraries(Drawing ${Drawing_LIBS})
+target_link_libraries(Assembly ${Assembly_LIBS})
 
-set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Assembly PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Assembly PROPERTIES PREFIX "")
+endif(WIN32)
 
-install(TARGETS Drawing DESTINATION lib)
+install(TARGETS Assembly DESTINATION lib)
