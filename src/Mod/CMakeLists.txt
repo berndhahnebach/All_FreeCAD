@@ -7,7 +7,7 @@ add_subdirectory(Image)
 
 add_subdirectory(Mesh)
 
-#add_subdirectory(Part)
+add_subdirectory(Part)
 #add_subdirectory(PartDesign)
 #add_subdirectory(Raytracing)
 #add_subdirectory(Drawing)
