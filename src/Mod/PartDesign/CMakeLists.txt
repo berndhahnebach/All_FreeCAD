@@ -1,12 +1,12 @@
-# Make sure the compiler can find include files from our Hello library.
-INCLUDE_DIRECTORIES(${HELLO_SOURCE_DIR}/Hello)
+add_subdirectory(App)
+add_subdirectory(Gui)
 
-# Make sure the linker can find the Hello library once it is built.
-LINK_DIRECTORIES(${HELLO_BINARY_DIR}/Hello)
+copy_to_local_output_paths(Init.py)
+copy_to_local_output_paths(InitGui.py)
 
-# Add executable called "helloDemo" that is built from the source files
-# "demo.cxx" and "demo_b.cxx".  The extensions are automatically found.
-ADD_EXECUTABLE(helloDemo demo demo_b)
-
-# Link the executable to the Hello library.
-TARGET_LINK_LIBRARIES(helloDemo Hello)
+install(
+		 FILES
+		 		 Init.py
+		 		 InitGui.py
+		 DESTINATION
+		 		 Mod/PartDesign)

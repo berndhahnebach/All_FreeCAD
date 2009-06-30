@@ -1,4 +1,7 @@
-add_definitions(-DFCAppDrawing -DFC_DEBUG)
+if(WIN32)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -8,62 +11,41 @@ include_directories(
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
-		 set(Drawing_LIBS
+		 set(PartDesign_LIBS
 		 		 Part
 		 		 TKHLR
 		 		 FreeCADApp)
 else(WIN32)
-#libDrawing_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lboost_regex \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lPart \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim \
-#		 		 -lTKHLR
+		 set(PartDesign_LIBS
+		 		 Part
+		 		 TKHLR
+		 		 FreeCADApp)
 endif(WIN32)
 
 SET(Features_SRCS
-		 FeaturePage.cpp
-		 FeaturePage.h
-		 FeatureView.cpp
-		 FeatureView.h
-		 FeatureViewPart.cpp
-		 FeatureViewPart.h
-		 PageGroup.cpp
-		 PageGroup.h
+		 FeatureFillet.cpp
+		 FeatureFillet.h
+		 FeaturePad.cpp
+		 FeaturePad.h
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 
-SET(Drawing_SRCS
+SET(PartDesign_SRCS
 		 ${Features_SRCS}
-		 AppDrawing.cpp
-		 AppDrawingPy.cpp
+		 AppPartDesign.cpp
+		 AppPartDesignPy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
 )
 
-add_library(Drawing SHARED ${Drawing_SRCS})
+add_library(PartDesign SHARED ${PartDesign_SRCS})
 
-target_link_libraries(Drawing ${Drawing_LIBS})
+target_link_libraries(PartDesign ${PartDesign_LIBS})
 
-set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(PartDesign PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(PartDesign PROPERTIES PREFIX "")
+endif(WIN32)
 
-install(TARGETS Drawing DESTINATION lib)
+install(TARGETS PartDesign DESTINATION lib)

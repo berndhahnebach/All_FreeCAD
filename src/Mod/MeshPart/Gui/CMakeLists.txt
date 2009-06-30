@@ -12,26 +12,14 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(MeshPartGui_LIBS
-#libMeshPartGui_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lMeshPart
-)
+		 		 MeshPart
+		 		 FreeCADGui)
 endif(WIN32)
 
-set(MeshPartGui_MOC_HDRS
-		 MeshPartView.h
-)
-fc_wrap_cpp(MeshPartGui_MOC_SRCS ${MeshPartGui_MOC_HDRS})
-SOURCE_GROUP("Moc" FILES ${MeshPartGui_MOC_SRCS})
-
-fc_add_resources(MeshPartGui_SRCS Resources/MeshPart.qrc)
+qt4_add_resources(MeshPartGui_QRC_SRCS Resources/MeshPart.qrc)
 
 SET(MeshPartGui_SRCS
-		 ${MeshPartGui_SRCS}
+		 ${MeshPartGui_QRC_SRCS}
 		 AppMeshPartGui.cpp
 		 AppMeshPartGuiPy.cpp
 		 Command.cpp
@@ -46,6 +34,10 @@ add_library(MeshPartGui SHARED ${MeshPartGui_SRCS})
 
 target_link_libraries(MeshPartGui ${MeshPartGui_LIBS})
 
-set_target_properties(MeshPartGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(MeshPartGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(MeshPartGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS MeshPartGui DESTINATION lib)
