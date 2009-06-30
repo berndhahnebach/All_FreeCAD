@@ -44,7 +44,7 @@ CmdAssemblyConstraintAxle::CmdAssemblyConstraintAxle()
     sToolTipText    = QT_TR_NOOP("set a axle constraint between two objects");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "actions/document-new";
+    sPixmap         = "actions/Axle_constraint";
 }
 
 
