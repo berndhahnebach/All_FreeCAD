@@ -10,13 +10,7 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(TestGui_LIBS
-#libQtUnitGui_la_LIBADD		 = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui
-)
+		 		 FreeCADGui)
 endif(WIN32)
 
 set(Test_MOC_HDRS

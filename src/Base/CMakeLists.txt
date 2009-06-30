@@ -1,5 +1,8 @@
-add_definitions(-DFCBase)
-add_definitions(-DPYCXX_DLL)
+if(WIN32)
+		 add_definitions(-DFCBase)
+		 add_definitions(-DPYCXX_DLL)
+		 add_definitions(-DBOOST_DYN_LINK)
+endif(WIN32)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -25,6 +28,7 @@ if(WIN32)
         debug MSVCPRTD.LIB
 		optimized MSVCRT.LIB
         optimized MSVCPRT.LIB
+		Rpcrt4.lib
 		)
 else(WIN32)
 	set(FreeCADBase_LIBS
@@ -32,11 +36,6 @@ else(WIN32)
 		${XERCESC_LIBRARIES}
 		${Boost_LIBRARIES}
 		${ZLIB_LIBRARIES}
-#libFreeCADBase_la_LIBADD   = \
-#		-l@PYTHON_LIB@ \
-#		-lboost_filesystem \
-#		-lxerces-c \
-#		-lz
 )
 endif(WIN32)
 
