@@ -13,8 +13,8 @@ if(WIN32)
 		 		FreeCADBase
 		 		debug ${Boost_DEBUG_LIBRARIES}
 		 		optimized ${Boost_LIBRARIES}
-				debug ${PYTHON_DEBUG_LIBRARIES}
-				optimized ${PYTHON_LIBRARIES}
+				debug ${PYTHON_DEBUG_LIBRARY}
+				optimized ${PYTHON_LIBRARY}
 				debug ${XERCESC_DEBUG_LIBRARIES}
 				optimized ${XERCESC_LIBRARIES}
 				${ZLIB_LIBRARIES}

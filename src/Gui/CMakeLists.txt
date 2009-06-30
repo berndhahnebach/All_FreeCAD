@@ -1,6 +1,7 @@
 #add_subdirectory(Icons)
 
 add_definitions(-DFCGui)
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
 
 include_directories(
 		 ${CMAKE_CURRENT_SOURCE_DIR}
