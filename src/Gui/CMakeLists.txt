@@ -1,7 +1,9 @@
 #add_subdirectory(Icons)
 
-add_definitions(-DFCGui)
+if(WIN32)
+add_definitions(-DFCGui -DQIIS_MAKEDLL)
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_CURRENT_SOURCE_DIR}
@@ -28,7 +30,8 @@ if(WIN32)
 		 		 optimized ${SOQT_LIBRARY_RELEASE}
 		 		 debug ${QT_DEBUG_LIBRARIES}
 		 		 optimized ${QT_LIBRARIES}
-		 		 ${XERCES_LIBRARIES})
+		 		 ${XERCES_LIBRARIES}
+				 opengl32.lib)
 else(WIN32)
 		 set(FreeCADGui_LIBS
 		 		 FreeCADBase
@@ -38,19 +41,7 @@ else(WIN32)
 		 		 ${SOQT_LIBRARIES}
 		 		 ${QT_LIBRARIES}
 		 		 ${XERCESC_LIBRARIES}
-		 		 ${Boost_LIBRARIES}
-#libFreeCADGui_la_LIBADD		 =\
-#		 		 Icons/libIcons.la \
-#		 		 Language/libLanguage.la \
-#		 		 propertyeditor/libpropertyeditor.la \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lQtUiTools \
-#		 		 -lxerces-c \
-#		 		 -lboost_filesystem \
-#		 		 -lboost_signals \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp
-)
+		 		 ${Boost_LIBRARIES})
 endif(WIN32)
 
 generate_from_xml(DocumentPy)

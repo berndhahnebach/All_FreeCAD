@@ -1,4 +1,7 @@
-add_definitions(-DFCApp)
+if(WIN32)
+		 add_definitions(-DFCApp)
+		 add_definitions(-DBOOST_DYN_LINK)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_CURRENT_SOURCE_DIR}/..
@@ -24,15 +27,7 @@ else(WIN32)
 		 		 FreeCADBase
 		 		 ${PYTHON_LIBRARY}
 		 		 ${XERCESC_LIBRARIES}
-		 		 ${Boost_LIBRARIES}
-#libFreeCADApp_la_LIBADD		 = \
-#		 		 -lFreeCADBase \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lboost_filesystem \
-#		 		 -lboost_program_options \
-#		 		 -lboost_signals
-)
+		 		 ${Boost_LIBRARIES})
 endif(WIN32)
 
 generate_from_xml(DocumentPy)

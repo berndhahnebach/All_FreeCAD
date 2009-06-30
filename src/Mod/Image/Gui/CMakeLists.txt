@@ -10,10 +10,12 @@ include_directories(
 if(WIN32)
 		 set(ImageGui_LIBS
 		 		 Image
+				 FreeCADGui
 		 		 ${OpenCV_LIBRARIES})
 else(WIN32)
 		 set(ImageGui_LIBS
 		 		 Image
+				 FreeCADGui
 		 		 ${OpenCV_LIBRARIES})
 endif(WIN32)
 

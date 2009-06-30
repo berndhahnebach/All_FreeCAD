@@ -16,15 +16,9 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(CamGui_LIBS
-#libCamGui_la_LIBADD   = \
-#		 		 -lxerces-c \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lTKernel \
-#		 		 -lCam
-)
+		 		 Cam
+		 		 PartGui
+		 		 FreeCADGui)
 endif(WIN32)
 
 set(CamGui_MOC_HDRS

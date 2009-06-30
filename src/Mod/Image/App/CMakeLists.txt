@@ -1,4 +1,6 @@
-add_definitions(-DFCAppImage -DFC_DEBUG)
+if(WIN32)
+		 add_definitions(-DFCAppImage -DFC_DEBUG)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -12,14 +14,8 @@ if(WIN32)
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Image_LIBS
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lcv \
-#		 		 -lcxcore \
-#		 		 -lhighgui \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp
-)
+		 		 ${OPENCV_LIBRARIES}
+		 		 FreeCADApp)
 endif(WIN32)
 
 set(Image_SRCS
