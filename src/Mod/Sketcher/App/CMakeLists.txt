@@ -1,7 +1,14 @@
-add_definitions(-DFCAppSketcher -DFC_DEBUG)
+if(WIN32)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
+		 ${CMAKE_CURRENT_SOURCE_DIR}
+		 ${CMAKE_CURRENT_BINARY_DIR}
+		 ${CMAKE_CURRENT_SOURCE_DIR}/..
+		 ${CMAKE_CURRENT_BINARY_DIR}/..
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
@@ -13,57 +20,76 @@ if(WIN32)
 		 		 TKHLR
 		 		 FreeCADApp)
 else(WIN32)
-#libSketcher_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lboost_regex \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lPart \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim \
-#		 		 -lTKHLR
+		 set(Sketcher_LIBS
+		 		 Part
+		 		 TKHLR
+		 		 FreeCADApp)
 endif(WIN32)
 
+generate_from_xml(SketchObjectPy)
+
 SET(Features_SRCS
-		 FeaturePage.cpp
-		 FeaturePage.h
-		 FeatureView.cpp
-		 FeatureView.h
-		 FeatureViewPart.cpp
-		 FeatureViewPart.h
-		 PageGroup.cpp
-		 PageGroup.h
+		 SketchObject.cpp
+		 SketchObject.h
+		 SketchObjectPy.xml
+		 SketchObjectPyImp.cpp
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 
+SET(Sketchflat_SRCS
+		 sketchflat/assume.cpp
+		 sketchflat/constraint.cpp
+		 sketchflat/curve.cpp
+		 sketchflat/derive.cpp
+		 sketchflat/derived.h
+		 sketchflat/draw.cpp
+		 sketchflat/draw_constraint.cpp
+		 sketchflat/draw_sketch.cpp
+		 sketchflat/export.cpp
+		 sketchflat/expr.cpp
+		 sketchflat/expr.h
+		 sketchflat/FCsimple.cpp
+		 sketchflat/FCtext.cpp
+		 sketchflat/FCutil.cpp
+		 sketchflat/FCwindow.cpp
+		 sketchflat/layer.cpp
+		 sketchflat/loadsave.cpp
+		 sketchflat/measure.cpp
+		 sketchflat/newton.cpp
+		 sketchflat/polygon.cpp
+		 sketchflat/sketch.cpp
+		 sketchflat/sketch.h
+		 sketchflat/sketchflat.cpp
+		 sketchflat/sketchflat.h
+		 sketchflat/solve.cpp
+		 sketchflat/ttf.cpp
+		 sketchflat/ui.h
+		 sketchflat/undoredo.cpp
+		 sketchflat/util.cpp
+		 sketchflat/COPYING.txt
+		 sketchflat/README.txt
+)
+SOURCE_GROUP("Sketchflat" FILES ${Sketchflat_SRCS})
+
 SET(Sketcher_SRCS
 		 ${Features_SRCS}
+		 ${Sketchflat_SRCS}
 		 AppSketcher.cpp
 		 AppSketcherPy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
+		 SketchFlatInterface.cpp
+		 SketchFlatInterface.h
 )
 
 add_library(Sketcher SHARED ${Sketcher_SRCS})
 
 target_link_libraries(Sketcher ${Sketcher_LIBS})
 
-set_target_properties(Sketcher PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Sketcher PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Sketcher PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Sketcher DESTINATION lib)

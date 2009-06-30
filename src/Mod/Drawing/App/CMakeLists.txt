@@ -1,4 +1,7 @@
-add_definitions(-DFCAppDrawing -DFC_DEBUG)
+if(WIN32)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
@@ -13,31 +16,10 @@ if(WIN32)
 		 		 TKHLR
 		 		 FreeCADApp)
 else(WIN32)
-#libDrawing_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lboost_regex \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lPart \
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim \
-#		 		 -lTKHLR
+		 set(Drawing_LIBS
+		 		 Part
+		 		 TKHLR
+		 		 FreeCADApp)
 endif(WIN32)
 
 SET(Features_SRCS
@@ -64,6 +46,10 @@ add_library(Drawing SHARED ${Drawing_SRCS})
 
 target_link_libraries(Drawing ${Drawing_LIBS})
 
-set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(Drawing PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Drawing DESTINATION lib)

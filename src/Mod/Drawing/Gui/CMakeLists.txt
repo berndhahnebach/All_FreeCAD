@@ -1,3 +1,8 @@
+if(WIN32)
+else(WIN32)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(WIN32)
+
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
@@ -12,14 +17,8 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(DrawingGui_LIBS
-#libDrawingGui_la_LIBADD   = \
-#		 		 -l@PYTHON_LIB@ \
-#		 		 -lxerces-c \
-#		 		 -lFreeCADBase \
-#		 		 -lFreeCADApp \
-#		 		 -lFreeCADGui \
-#		 		 -lDrawing
-)
+		 		 Drawing
+		 		 FreeCADGui)
 endif(WIN32)
 
 set(DrawingGui_MOC_HDRS
@@ -28,7 +27,7 @@ set(DrawingGui_MOC_HDRS
 fc_wrap_cpp(DrawingGui_MOC_SRCS ${DrawingGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${DrawingGui_MOC_SRCS})
 
-fc_add_resources(DrawingGui_SRCS Resources/Drawing.qrc)
+qt4_add_resources(DrawingGui_SRCS Resources/Drawing.qrc)
 
 SET(DrawingGui_SRCS
 		 ${DrawingGui_SRCS}
@@ -40,8 +39,10 @@ SET(DrawingGui_SRCS
 		 DrawingView.h
 		 PreCompiled.cpp
 		 PreCompiled.h
-		 ViewProvider.cpp
-		 ViewProvider.h
+		 ViewProviderPage.cpp
+		 ViewProviderPage.h
+		 ViewProviderView.cpp
+		 ViewProviderView.h
 		 Workbench.cpp
 		 Workbench.h
 )
@@ -50,6 +51,10 @@ add_library(DrawingGui SHARED ${DrawingGui_SRCS})
 
 target_link_libraries(DrawingGui ${DrawingGui_LIBS})
 
-set_target_properties(DrawingGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(DrawingGui PROPERTIES SUFFIX ".pyd")
+else(WIN32)
+		 set_target_properties(DrawingGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS DrawingGui DESTINATION lib)

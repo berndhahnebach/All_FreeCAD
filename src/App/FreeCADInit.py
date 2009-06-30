@@ -45,6 +45,8 @@ def InitApplications():
 	ModDir = os.path.realpath(ModDir)
 	BinDir = FreeCAD.ConfigGet("AppHomePath")+'bin'
 	BinDir = os.path.realpath(BinDir)
+	LibDir = FreeCAD.ConfigGet("AppHomePath")+'lib'
+	LibDir = os.path.realpath(LibDir)
 	AddPath = FreeCAD.ConfigGet("AdditionalModulePaths").split(";")
 	HomeMod = FreeCAD.ConfigGet("UserAppData")+"Mod"
 	HomeMod = os.path.realpath(HomeMod)
@@ -54,6 +56,7 @@ def InitApplications():
 	# These both paths are not needed
 	# sys.path.append( '..\\bin' )
 	# sys.path.append( '..\\bin\\Lib' )
+	sys.path.append(LibDir)
 	sys.path.append(ModDir)
 	Log("Using "+ModDir+" as module path!\n")
 	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):
