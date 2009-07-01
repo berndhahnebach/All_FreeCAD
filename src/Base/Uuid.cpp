@@ -24,6 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# ifdef FC_OS_WIN32
+#  include <Rpc.h>
+# endif
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
