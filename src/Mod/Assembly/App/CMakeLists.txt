@@ -29,6 +29,7 @@ target_link_libraries(Assembly ${Assembly_LIBS})
 
 if(WIN32)
 		 set_target_properties(Assembly PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(Assembly PROPERTIES DEBUG_OUTPUT_NAME "Assembly_d")
 else(WIN32)
 		 set_target_properties(Assembly PROPERTIES PREFIX "")
 endif(WIN32)

@@ -42,6 +42,7 @@ target_link_libraries(ReverseEngineeringGui ${ReenGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(ReverseEngineeringGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(ReverseEngineeringGui PROPERTIES DEBUG_OUTPUT_NAME "ReverseEngineeringGui_d")
 else(WIN32)
 		 set_target_properties(ReverseEngineeringGui PROPERTIES PREFIX "")
 endif(WIN32)

@@ -73,6 +73,7 @@ target_link_libraries(Raytracing ${Raytracing_LIBS})
 
 if(WIN32)
 		 set_target_properties(Raytracing PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(Raytracing PROPERTIES DEBUG_OUTPUT_NAME "Raytracing_d")
 else(WIN32)
 		 set_target_properties(Raytracing PROPERTIES PREFIX "")
 endif(WIN32)

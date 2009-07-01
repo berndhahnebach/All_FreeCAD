@@ -48,6 +48,7 @@ target_link_libraries(Drawing ${Drawing_LIBS})
 
 if(WIN32)
 		 set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(Drawing PROPERTIES DEBUG_OUTPUT_NAME "Drawing_d")
 else(WIN32)
 		 set_target_properties(Drawing PROPERTIES PREFIX "")
 endif(WIN32)

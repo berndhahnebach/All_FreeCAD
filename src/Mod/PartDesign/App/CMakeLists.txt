@@ -44,6 +44,7 @@ target_link_libraries(PartDesign ${PartDesign_LIBS})
 
 if(WIN32)
 		 set_target_properties(PartDesign PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(PartDesign PROPERTIES DEBUG_OUTPUT_NAME "PartDesign_d")
 else(WIN32)
 		 set_target_properties(PartDesign PROPERTIES PREFIX "")
 endif(WIN32)

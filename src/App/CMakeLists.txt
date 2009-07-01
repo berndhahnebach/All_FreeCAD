@@ -14,19 +14,11 @@ include_directories(
 if(WIN32)
 		 set(FreeCADApp_LIBS
 		 		FreeCADBase
-		 		debug ${Boost_DEBUG_LIBRARIES}
-		 		optimized ${Boost_LIBRARIES}
-				debug ${PYTHON_DEBUG_LIBRARY}
-				optimized ${PYTHON_LIBRARY}
-				debug ${XERCESC_DEBUG_LIBRARIES}
-				optimized ${XERCESC_LIBRARIES}
-				${ZLIB_LIBRARIES}
-             )
+		 		${Boost_DEBUG_LIBRARIES}
+		 		${Boost_LIBRARIES})
 else(WIN32)
 		 set(FreeCADApp_LIBS
 		 		 FreeCADBase
-		 		 ${PYTHON_LIBRARY}
-		 		 ${XERCESC_LIBRARIES}
 		 		 ${Boost_LIBRARIES})
 endif(WIN32)
 
@@ -135,5 +127,13 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
 add_library(FreeCADApp SHARED ${FreeCADApp_SRCS})
 
 target_link_libraries(FreeCADApp ${FreeCADApp_LIBS})
+
+if(MSVC)
+		set_target_properties(FreeCADApp PROPERTIES DEBUG_OUTPUT_NAME "FreeCADAppD")
+endif(MSVC)
+# This doesn't work!? 
+#IF(MSVC)
+#	SET_TARGET_PROPERTIES(FreeCADApp PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")
+#ENDIF(MSVC)
 
 install(TARGETS FreeCADApp DESTINATION lib)

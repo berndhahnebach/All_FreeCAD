@@ -24,24 +24,21 @@ if(WIN32)
 		 		 FreeCADApp
 		 		 debug ${COIN3D_LIBRARY_DEBUG}
 		 		 optimized ${COIN3D_LIBRARY_RELEASE}
-		 		 debug ${PYTHON_DEBUG_LIBRARY}
-		 		 optimized ${PYTHON_LIBRARY}
 		 		 debug ${SOQT_LIBRARY_DEBUG}
 		 		 optimized ${SOQT_LIBRARY_RELEASE}
 		 		 ${QT_DEBUG_LIBRARIES}
 		 		 ${QT_LIBRARIES}
-		 		 ${XERCES_LIBRARIES}
-				 opengl32.lib)
+				 QtUiTools.lib
+				 ${OPENGL_gl_LIBRARY})
 else(WIN32)
 		 set(FreeCADGui_LIBS
 		 		 FreeCADBase
 		 		 FreeCADApp
 		 		 ${COIN3D_LIBRARY}
-		 		 ${PYTHON_LIBRARY}
 		 		 ${SOQT_LIBRARIES}
 		 		 ${QT_LIBRARIES}
-		 		 ${XERCESC_LIBRARIES}
-		 		 ${Boost_LIBRARIES})
+		 		 ${Boost_LIBRARIES}
+				 ${OPENGL_gl_LIBRARY})
 endif(WIN32)
 
 generate_from_xml(DocumentPy)
@@ -596,5 +593,9 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
 add_library(FreeCADGui SHARED ${FreeCADGui_SRCS})
 
 target_link_libraries(FreeCADGui ${FreeCADGui_LIBS})
+
+if(MSVC)
+		set_target_properties(FreeCADGui PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGuiD")
+endif(MSVC)
 
 install(TARGETS FreeCADGui DESTINATION lib)

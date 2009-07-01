@@ -38,6 +38,7 @@ target_link_libraries(AssemblyGui ${AssemblyGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(AssemblyGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(AssemblyGui PROPERTIES DEBUG_OUTPUT_NAME "AssemblyGui_d")
 else(WIN32)
 		 set_target_properties(AssemblyGui PROPERTIES PREFIX "")
 endif(WIN32)

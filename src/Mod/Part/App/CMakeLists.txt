@@ -225,6 +225,7 @@ target_link_libraries(Part ${Part_LIBS})
 
 if(WIN32)
 		 set_target_properties(Part PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(Part PROPERTIES DEBUG_OUTPUT_NAME "Part_d")
 else(WIN32)
 		 set_target_properties(Part PROPERTIES PREFIX "")
 endif(WIN32)

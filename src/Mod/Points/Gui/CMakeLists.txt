@@ -62,6 +62,7 @@ target_link_libraries(PointsGui ${PointsGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(PointsGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(PointsGui PROPERTIES DEBUG_OUTPUT_NAME "PointsGui_d")
 else(WIN32)
 		 set_target_properties(PointsGui PROPERTIES PREFIX "")
 endif(WIN32)

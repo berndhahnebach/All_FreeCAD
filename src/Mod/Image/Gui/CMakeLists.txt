@@ -11,12 +11,14 @@ if(WIN32)
 		 set(ImageGui_LIBS
 		 		 Image
 				 FreeCADGui
-		 		 ${OpenCV_LIBRARIES})
+		 		 ${OpenCV_LIBRARIES}
+				 ${OPENGL_glu_LIBRARY})
 else(WIN32)
 		 set(ImageGui_LIBS
 		 		 Image
 				 FreeCADGui
-		 		 ${OpenCV_LIBRARIES})
+		 		 ${OpenCV_LIBRARIES}
+				 ${OPENGL_glu_LIBRARY})
 endif(WIN32)
 
 set(ImageGui_MOC_HDRS
@@ -56,6 +58,7 @@ target_link_libraries(ImageGui ${ImageGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(ImageGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(ImageGui PROPERTIES DEBUG_OUTPUT_NAME "ImageGui_d")
 else(WIN32)
 		 set_target_properties(ImageGui PROPERTIES PREFIX "")
 endif(WIN32)
