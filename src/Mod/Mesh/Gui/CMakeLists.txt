@@ -9,7 +9,6 @@ include_directories(
 		 ${XERCES_INCLUDE_DIR})
 
 set(MeshGui_LIBS
-		 ${PYTHON_LIBRARY}
  		 ${Boost_LIBRARIES}
 		 Mesh
 		 FreeCADGui)
@@ -95,9 +94,10 @@ add_library(MeshGui SHARED ${MeshGui_SRCS})
 target_link_libraries(MeshGui ${MeshGui_LIBS})
 
 if(WIN32)
-		 set_target_properties(MeshGui PROPERTIES SUFFIX ".pyd")
+		set_target_properties(MeshGui PROPERTIES SUFFIX ".pyd")
+		set_target_properties(MeshGui PROPERTIES DEBUG_OUTPUT_NAME "MeshGui_d")
 else(WIN32)
-		 set_target_properties(MeshGui PROPERTIES PREFIX "")
+		set_target_properties(MeshGui PROPERTIES PREFIX "")
 endif(WIN32)
 
 install(TARGETS MeshGui DESTINATION lib)

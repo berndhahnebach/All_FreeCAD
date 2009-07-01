@@ -54,6 +54,7 @@ target_link_libraries(QtUnitGui ${TestGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(QtUnitGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(QtUnitGui PROPERTIES DEBUG_OUTPUT_NAME "QtUnitGui_d")
 else(WIN32)
 		 set_target_properties(QtUnitGui PROPERTIES PREFIX "")
 endif(WIN32)

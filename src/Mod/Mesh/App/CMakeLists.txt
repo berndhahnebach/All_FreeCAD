@@ -10,7 +10,6 @@ include_directories(
 		 ${XERCES_INCLUDE_DIR})
 
 set(Mesh_LIBS
-		 ${PYTHON_LIBRARY}
  		 ${Boost_LIBRARIES}
 		 FreeCADBase
 		 FreeCADApp)
@@ -317,9 +316,10 @@ add_library(Mesh SHARED ${Mesh_SRCS})
 target_link_libraries(Mesh ${Mesh_LIBS})
 
 if(WIN32)
-		 set_target_properties(Mesh PROPERTIES SUFFIX ".pyd")
+		set_target_properties(Mesh PROPERTIES SUFFIX ".pyd")
+		set_target_properties(Mesh PROPERTIES DEBUG_OUTPUT_NAME "Mesh_d")
 else(WIN32)
-		 set_target_properties(Mesh PROPERTIES PREFIX "")
+		set_target_properties(Mesh PROPERTIES PREFIX "")
 endif(WIN32)
 
 install(TARGETS Mesh DESTINATION lib)

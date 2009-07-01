@@ -14,8 +14,6 @@ include_directories(
 	${ZLIB_INCLUDE_DIR})
 
 if(WIN32)
-	# no default libraries
-	add_definitions(/ZI)
 	set(FreeCADBase_LIBS
  		#debug ${Boost_DEBUG_LIBRARIES}
  		#optimized ${Boost_LIBRARIES}
@@ -227,6 +225,10 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
 add_library(FreeCADBase SHARED ${FreeCADBase_SRCS})
 
 target_link_libraries(FreeCADBase ${FreeCADBase_LIBS})
+
+if(MSVC)
+		set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
+endif(MSVC)
 
 install(TARGETS FreeCADBase DESTINATION lib)
 

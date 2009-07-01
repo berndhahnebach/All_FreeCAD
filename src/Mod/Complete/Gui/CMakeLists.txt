@@ -35,6 +35,7 @@ target_link_libraries(CompleteGui ${CompleteGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(CompleteGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(CompleteGui PROPERTIES DEBUG_OUTPUT_NAME "CompleteGui_d")
 else(WIN32)
 		 set_target_properties(CompleteGui PROPERTIES PREFIX "")
 endif(WIN32)

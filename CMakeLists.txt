@@ -61,6 +61,9 @@ if(WIN32)
 	link_directories(${CMAKE_SOURCE_DIR}/lib)
 	include_directories(${CMAKE_SOURCE_DIR}/include)
 
+# OpenGL
+	find_package(OpenGL)
+
 # Python
 	set(PYTHON_DEBUG_LIBRARY python25_d.lib)
 	set(PYTHON_LIBRARY python25.lib)
@@ -77,14 +80,18 @@ if(WIN32)
 # Boost
 	set(Boost_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/boost)
 	set(Boost_LIBRARIES 
-		boost_filesystem-vc80-mt.lib 
-		boost_graph-vc80-mt.lib 
-		boost_program_options-vc80-mt.lib
+		optimized boost_filesystem-vc80-mt.lib 
+		#optimized boost_graph-vc80-mt.lib 
+		optimized boost_program_options-vc80-mt.lib
+		optimized boost_regex-vc80-mt.lib
+		optimized boost_signals-vc80-mt.lib
 	)
 	set(Boost_DEBUG_LIBRARIES 
-		boost_filesystem-vc80-mt-gd.lib 
-		boost_graph-vc80-mt-gd.lib 
-		boost_program_options-vc80-mt-gd.lib
+		debug boost_filesystem-vc80-mt-gd.lib 
+		#debug boost_graph-vc80-mt-gd.lib 
+		debug boost_program_options-vc80-mt-gd.lib
+		debug boost_regex-vc80-mt-gd.lib
+		debug boost_signals-vc80-mt-gd.lib
 	)
 	set(Boost_FOUND TRUE) 
 
@@ -123,7 +130,6 @@ if(WIN32)
 	    optimized QtNetwork4.lib
 	    optimized QtSql4.lib
 	    optimized QtTest4.lib
-	    optimized QtUiTools.lib
 	    optimized QtXml4.lib
 	    optimized QtOpenGl4.lib
 	)
@@ -135,7 +141,6 @@ if(WIN32)
 	    debug QtNetworkd4.lib
 	    debug QtSqld4.lib
 	    debug QtTestd4.lib
-	    debug QtUiToolsd.lib
 	    debug QtXmld4.lib
 	    debug QtOpenGld4.lib
 	)
@@ -241,11 +246,21 @@ if(WIN32)
 	set(SOQT_LIBRARY_DEBUG  soqt1d.lib)
 	set(SOQT_FOUND TRUE) 
 
+# OpenCV
+	set(OPENCV_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/opencv)
+	set(OPENCV_LIBRARIES  cv.lib cvaux.lib cxcore.lib cxts.lib highgui.lib)
+	set(OPENCV_FOUND TRUE) 
+
 	
 else(WIN32)
 
 # ================================================================================
 # == for other OSes search the packages ==========================================
+
+
+# -------------------------------- OpenGL --------------------------------
+
+	find_package(OpenGL)
 
 # -------------------------------- Python --------------------------------
 
@@ -477,6 +492,24 @@ endmacro(generate_from_py)
     ENDFOREACH (it)
 
   ENDMACRO (fc_add_resources)
+
+# ================================================================================
+# == Global Compiler and Linker Settings ==============================================
+
+IF(MSVC)
+	# set default compiler settings
+	#SET (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GF /GY")
+	# set default libs
+	SET (CMAKE_C_STANDARD_LIBRARIES "kernel32.lib user32.lib gdi32.lib winspool.lib SHFolder.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ")
+	set (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES}")
+	# set linker flag /nodefaultlib
+	#NOTE: Setting /LARGEADDRESSAWARE doesn't have any effects. It's probably not implemented in cmake
+	set (CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /NODEFAULTLIB")
+	set (CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /NODEFAULTLIB")
+	set (CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO} /NODEFAULTLIB")
+	set (CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "${CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL} /NODEFAULTLIB")
+	SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB")
+ENDIF(MSVC)
 
 add_subdirectory(src)
 

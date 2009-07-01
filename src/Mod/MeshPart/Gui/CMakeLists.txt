@@ -36,6 +36,7 @@ target_link_libraries(MeshPartGui ${MeshPartGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(MeshPartGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(MeshPartGui PROPERTIES DEBUG_OUTPUT_NAME "MeshPartGui_d")
 else(WIN32)
 		 set_target_properties(MeshPartGui PROPERTIES PREFIX "")
 endif(WIN32)

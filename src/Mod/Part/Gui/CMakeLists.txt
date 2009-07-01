@@ -150,6 +150,7 @@ target_link_libraries(PartGui ${PartGui_LIBS})
 
 if(WIN32)
 		 set_target_properties(PartGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(PartGui PROPERTIES DEBUG_OUTPUT_NAME "PartGui_d")
 else(WIN32)
 		 set_target_properties(PartGui PROPERTIES PREFIX "")
 endif(WIN32)
