@@ -116,28 +116,28 @@ if(WIN32)
 		)
 		
 	set(QT_LIBRARIES 
-	    QtCore4.lib
-	    QtGui4.lib
-	    QtDesigner4.lib
-	    QtSvg4.lib
-	    QtNetwork4.lib
-	    QtSql4.lib
-	    QtTest4.lib
-	    QtUiTools4.lib
-	    QtXml4.lib
-	    QtOpenGl4.lib
+	    optimized QtCore4.lib
+	    optimized QtGui4.lib
+	    optimized QtDesigner4.lib
+	    optimized QtSvg4.lib
+	    optimized QtNetwork4.lib
+	    optimized QtSql4.lib
+	    optimized QtTest4.lib
+	    optimized QtUiTools.lib
+	    optimized QtXml4.lib
+	    optimized QtOpenGl4.lib
 	)
 	set(QT_DEBUG_LIBRARIES 
-	    QtCored4.lib
-	    QtGuid4.lib
-	    QtDesignerd4.lib
-	    QtSvgd4.lib
-	    QtNetworkd4.lib
-	    QtSqld4.lib
-	    QtTestd4.lib
-	    QtUiToolsd4.lib
-	    QtXmld4.lib
-	    QtOpenGld4.lib
+	    debug QtCored4.lib
+	    debug QtGuid4.lib
+	    debug QtDesignerd4.lib
+	    debug QtSvgd4.lib
+	    debug QtNetworkd4.lib
+	    debug QtSqld4.lib
+	    debug QtTestd4.lib
+	    debug QtUiToolsd.lib
+	    debug QtXmld4.lib
+	    debug QtOpenGld4.lib
 	)
 	MACRO (QT4_EXTRACT_OPTIONS _qt4_files _qt4_options)
 		SET(${_qt4_files})

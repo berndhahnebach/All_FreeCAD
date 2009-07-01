@@ -28,8 +28,8 @@ if(WIN32)
 		 		 optimized ${PYTHON_LIBRARY}
 		 		 debug ${SOQT_LIBRARY_DEBUG}
 		 		 optimized ${SOQT_LIBRARY_RELEASE}
-		 		 debug ${QT_DEBUG_LIBRARIES}
-		 		 optimized ${QT_LIBRARIES}
+		 		 ${QT_DEBUG_LIBRARIES}
+		 		 ${QT_LIBRARIES}
 		 		 ${XERCES_LIBRARIES}
 				 opengl32.lib)
 else(WIN32)
