@@ -123,5 +123,8 @@
 # include <Gui/InventorAll.h>
 #endif
 
+#elif defined(FC_OS_WIN32)
+#include <windows.h>
+#endif  //_PreComp_
+
 #endif
-#endif 

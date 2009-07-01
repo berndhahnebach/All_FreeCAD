@@ -133,7 +133,7 @@ SoFCBoundingBox::~SoFCBoundingBox ()
 void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
 {
     SbVec3f corner[2], ctr, *vptr;
-    bool coord, dimension;
+    SbBool coord, dimension;
 
     // grab the current state
     //SoState *state = action->getState();

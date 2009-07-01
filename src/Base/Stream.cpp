@@ -26,8 +26,10 @@
 #ifndef _PreComp_
 # include <stdlib.h>
 # include <string>
-# include <stdint.h>
 # include <stdio.h>
+#ifdef __GNUC__
+# include <stdint.h>
+#endif
 #endif
 
 #include "Stream.h"
