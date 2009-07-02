@@ -4,15 +4,15 @@
     <name>CombiView</name>
     <message>
         <source>CombiView</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista combinata</translation>
     </message>
     <message>
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Progetto</translation>
     </message>
     <message>
         <source>Tasks</source>
-        <translation type="unfinished"></translation>
+        <translation>Azioni</translation>
     </message>
 </context>
 <context>
@@ -1114,7 +1114,7 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>Middle color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore centrale</translation>
     </message>
 </context>
 <context>
@@ -1622,7 +1622,7 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
-        <translation>Se ne vuoi sapere di più su FreeCAD vai a %1 o premi Aiuto nel menu Aiuto.</translation>
+        <translation>Se ne vuoi saperne di più su FreeCAD vai a %1 o premi Aiuto nel menu Aiuto.</translation>
     </message>
 </context>
 <context>
@@ -2450,7 +2450,7 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aspetto</translation>
     </message>
 </context>
 <context>
@@ -2465,7 +2465,7 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica</translation>
     </message>
 </context>
 <context>
@@ -2518,11 +2518,11 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Rinomina</translation>
     </message>
     <message>
         <source>Rename object</source>
-        <translation type="unfinished"></translation>
+        <translation>Rinomina l&apos;oggetto</translation>
     </message>
     <message>
         <source>Labels &amp; Attributes</source>
@@ -2571,11 +2571,11 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Task View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista azioni</translation>
     </message>
     <message>
         <source>Combi View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista combinata</translation>
     </message>
 </context>
 <context>
@@ -2868,20 +2868,21 @@ Aprire una finestra browser e scrivere http://localhost:%1.</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva come</translation>
     </message>
     <message>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>% esiste già.
+Vuoi sostituirlo?</translation>
     </message>
     <message>
         <source>Document not closable</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile chiudere il documento</translation>
     </message>
     <message>
         <source>The document is not closable for the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile chiudere il documento al momento.</translation>
     </message>
 </context>
 <context>
@@ -4288,21 +4289,21 @@ Vuoi specificare un&apos;altra cartella?</translation>
     <name>TaskAppearance</name>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aspetto</translation>
     </message>
 </context>
 <context>
     <name>TaskPanelView</name>
     <message>
         <source>Task View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista azioni</translation>
     </message>
 </context>
 <context>
     <name>testClass</name>
     <message>
         <source>test</source>
-        <translation type="unfinished"></translation>
+        <translation>test</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4313,19 +4314,26 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Creato per Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Choose the style of the Task Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona lo stile del Pannello Azioni</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Normale</translation>
     </message>
     <message>
         <source>Windows XP</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows XP</translation>
     </message>
 </context>
 </TS>
