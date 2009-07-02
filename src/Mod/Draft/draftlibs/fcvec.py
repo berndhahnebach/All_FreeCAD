@@ -26,10 +26,13 @@ from FreeCAD import Vector
 
 PREC = 4	# Precision of comparisions
 
-def tup(first):
-	"returns a tuple (x,y,z) with the vector coords"
+def tup(first,array=False):
+	"returns a tuple (x,y,z) with the vector coords, or an array if array=true"
 	if isinstance(first,Vector):
-		return (first.x,first.y,first.z)
+		if array:
+			return [first.x,first.y,first.z]
+		else:
+			return (first.x,first.y,first.z)
 
 def new(first, other):
 	"new(Vector,Vector) - creates a new vector from first one to second one"

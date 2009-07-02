@@ -452,7 +452,7 @@ def findDistance(point,edge,strict=False):
 			dist = fcvec.project(chord,perp)
 			newpoint = Vector.add(point, dist)
 			if (dist.Length == 0):
-				return None
+				return 0
 			if strict:
 				s1 = fcvec.new(edge.Vertexes[0].Point,newpoint)
 				s2 = fcvec.new(edge.Vertexes[-1].Point,newpoint)

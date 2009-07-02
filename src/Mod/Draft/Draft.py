@@ -77,11 +77,11 @@ from draftlibs import fcgeo
 
 # Constants
 
-normal = Vector(0,0,1) # temporary normal for all objects (always horiontal)
-lastObj = [0,0] # last snapped objects, for quick intersection
+NORM = Vector(0,0,1) # temporary normal for all objects (always horiontal)
+lastObj = [0,0] # last snapped objects, for quick intersection calculation
 
 #---------------------------------------------------------------------------
-# General common functions used by the constructors
+# General functions
 #---------------------------------------------------------------------------
 
 def snapPoint (target,point,cursor,ctrl=False):
@@ -268,6 +268,11 @@ def selectObject(arg):
 				FreeCADGui.Selection.addSelection(obj)
 				FreeCADGui.activeWorkbench().activeDraftCommand.component=snapped['Component']
 				FreeCADGui.activeWorkbench().activeDraftCommand.proceed()	
+
+				
+#---------------------------------------------------------------------------
+# Trackers
+#---------------------------------------------------------------------------
 				
 class snapTracker:
 	"a class to create a snap marker symbol, used by the functions that support snapping"
@@ -339,7 +344,7 @@ class lineTracker:
 		self.switch.whichChild = -1
 
 class rectangleTracker:
-	"a class to create a tracking line used by the functions that need it"
+	"a tracking rectangle"
 	def __init__(self):
 		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 		color = coin.SoBaseColor()
@@ -378,6 +383,56 @@ class rectangleTracker:
 	def off(self):
 		self.switch.whichChild = -1
 
+class dimTracker:
+	"a tracking bridge for drawing dimensions"
+	def __init__(self):
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+		color = coin.SoBaseColor()
+		color.rgb = self.ui.getDefaultColor("ui")
+		self.line = coin.SoLineSet()
+		self.line.numVertices.setValue(4)
+		self.coords = coin.SoCoordinate3() # this is the coordinate
+		self.coords.point.setValues(0,4,[[0,0,0],[0,0,0],[0,0,0],[0,0,0]])
+		node = coin.SoSeparator()
+		node.addChild(color)
+		node.addChild(self.coords)
+		node.addChild(self.line)
+		self.switch = coin.SoSwitch() # this is the on/off switch
+		self.switch.addChild(node)
+		self.switch.whichChild = -1
+		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+		sg.addChild(self.switch)
+		self.origin = Vector(0,0,0)
+
+	def __del__(self):
+		self.switch.whichChild = -1
+
+	def update(self,pts):
+		if len(pts) == 2:
+			points = [fcvec.tup(pts[0],True),fcvec.tup(pts[0],True),\
+				  fcvec.tup(pts[1],True),fcvec.tup(pts[1],True)]
+			self.coords.point.setValues(0,4,points)
+		elif len(pts) == 3:
+			p1 = pts[0]
+			p4 = pts[1]
+			base = Part.Line(p1,p4).toShape()
+			proj = fcgeo.findDistance(pts[2],base)
+			if not proj:
+				p2 = p1
+				p3 = p4
+			else:
+				p2 = p1.add(fcvec.neg(proj))
+				p3 = p4.add(fcvec.neg(proj))
+			points = [fcvec.tup(p1),fcvec.tup(p2),fcvec.tup(p3),fcvec.tup(p4)]
+			self.coords.point.setValues(0,4,points)
+
+	def on(self):
+		self.switch.whichChild = 0
+
+	def off(self):
+		self.switch.whichChild = -1
+
+		
 class arcTracker:
 	"a class to create a tracking arc/circle, used by the functions that need it"
 	def __init__(self,scolor=None,swidth=None):
@@ -512,6 +567,162 @@ class ghostTracker:
 
 	def off(self):
 		self.switch.whichChild = -1
+
+#---------------------------------------------------------------------------
+# Python Features definitions
+#---------------------------------------------------------------------------
+		
+class Dimension:
+	"this class defines Dimension objects"
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyVector","Start","Dimension",\
+					"Startpoint of dimension").Start = FreeCAD.Vector(0,0,0)
+		obj.addProperty("App::PropertyVector","End","Dimension",\
+					"Endpoint of dimension").End = FreeCAD.Vector(1,0,0)
+		obj.addProperty("App::PropertyVector","Dimline","Dimension",\
+					"Point through which the dimension line passes").Dimline = FreeCAD.Vector(0,1,0)
+		obj.Proxy = self
+
+	def onChanged(self, fp, prop):
+		pass
+
+	def execute(self, fp):
+		pass
+
+class DimensionViewProvider:
+	"this class defines a view provider for Dimension objects"
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyLength","TextHeight","Dimension","Text height").TextHeight=0.2
+		obj.addProperty("App::PropertyLength","LineWidth","Dimension","Line width")
+		obj.addProperty("App::PropertyColor","LineColor","Dimension","Line color")
+		obj.Proxy = self
+
+	def calcGeom(self,obj):
+		p1 = obj.Start
+		p4 = obj.End
+		base = Part.Line(p1,p4).toShape()
+		proj = fcgeo.findDistance(obj.Dimline,base)
+		if not proj:
+			p2 = p1
+			p3 = p4
+		else:
+			p2 = p1.add(fcvec.neg(proj))
+			p3 = p4.add(fcvec.neg(proj))
+		midpoint = p2.add(fcvec.scale(p3.sub(p2),0.5))
+		if not proj:
+			ed = fcgeo.vec(base)
+			proj = fcvec.crossproduct(ed)
+		offset = fcvec.scale(fcvec.normalized(fcvec.neg(proj)),0.1)
+		tbase = midpoint.add(offset)
+		angle = fcvec.angle(p3.sub(p2))
+		if angle < -math.pi/2: angle = -angle-math.pi
+		elif  angle > math.pi/2: angle = math.pi-angle
+		norm = p3.sub(p2).cross(proj)
+		return p1,p2,p3,p4,tbase,angle,norm
+
+	def attach(self, obj):
+		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj.Object)
+		color = coin.SoBaseColor()
+		color.rgb = (0,0,0)
+		self.font = coin.SoFont()
+		self.text = coin.SoAsciiText()
+		self.text.justification = coin.SoAsciiText.CENTER
+		self.text.string = ("%.2f" % p3.sub(p2).Length)
+		self.textpos = coin.SoTransform()
+		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
+		self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
+		label = coin.SoSeparator()
+		label.addChild(self.textpos)
+		label.addChild(color)
+		label.addChild(self.font)
+		label.addChild(self.text)
+		marker = coin.SoMarkerSet()
+		marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_5_5
+		self.coord1 = coin.SoCoordinate3()
+		self.coord1.point.setValue((p2.x,p2.y,p2.z))
+		self.coord2 = coin.SoCoordinate3()
+		self.coord2.point.setValue((p3.x,p3.y,p3.z))
+		marks = coin.SoAnnotation()
+		marks.addChild(color)
+		marks.addChild(self.coord1)
+		marks.addChild(marker)
+		marks.addChild(self.coord2)
+		marks.addChild(marker)       
+		drawstyle = coin.SoDrawStyle()
+		drawstyle.lineWidth = 1       
+		line = coin.SoLineSet()
+		line.numVertices.setValue(4)
+		self.coords = coin.SoCoordinate3()
+		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],[p2.x,p2.y,p2.z],[p3.x,p3.y,p3.z],[p4.x,p4.y,p4.z]])
+		self.node = coin.SoGroup()
+		self.node.addChild(color)
+		self.node.addChild(drawstyle)
+		self.node.addChild(self.coords)
+		self.node.addChild(line)
+		self.node.addChild(label)
+		self.node.addChild(marks)
+		obj.addDisplayMode(self.node,"Wireframe")
+		self.onChanged(obj,"TextHeight")
+        
+	def updateData(self, obj, prop):
+		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
+		self.text.string = ("%.2f" % p3.sub(p2).Length)
+		self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
+		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],[p2.x,p2.y,p2.z],[p3.x,p3.y,p3.z],[p4.x,p4.y,p4.z]])
+		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
+		self.coord1.point.setValue((p2.x,p2.y,p2.z))
+		self.coord2.point.setValue((p3.x,p3.y,p3.z))
+
+	def onChanged(self, vp, prop):
+		if prop == "TextHeight":
+			self.font.size = vp.TextHeight
+
+	def getDisplayModes(self,obj):
+		modes=[]
+		modes.append("Wireframe")
+		return modes
+
+	def getDefaultDisplayMode(self):
+		return "Wireframe"
+    
+	def getIcon(self):
+		return """
+                    /* XPM */
+                    static char * cota_xpm[] = {
+                    "16 16 9 1",
+                    " 	c None",
+                    ".	c #080903",
+                    "+	c #3A2700",
+                    "@	c #4A4C48",
+                    "#	c #724C00",
+                    "$	c #BC7D00",
+                    "%	c #878885",
+                    "&	c #F8AC24",
+                    "*	c #C0BBAD",
+                    "   %   %% %%@   ",
+                    "  %*. @*%@%%%   ",
+                    "  @*. %%%@*@%.  ",
+                    "   *.%@%%@*@%   ",
+                    "   %.%.%%.%%.   ",
+                    "      #$#   ..  ",
+                    "...%%%&&&%%%... ",
+                    "...@@@&&&@@@... ",
+                    " %@.  ##+.  @%. ",
+                    " %@         @%. ",
+                    " %@         @%. ",
+                    " %@         @%. ",
+                    "#$$+        #$# ",
+                    "$&&#       #&*&.",
+                    "$&&+        $&$.",
+                    " #+.         #. "};
+                """
+
+	def __getstate__(self):
+		return None
+
+	def __setstate__(self,state):
+		return None
+
 
 
 
@@ -1113,7 +1324,7 @@ class arc:
 	def drawArc(self):
 		"actually draws the FreeCAD object"
 		if self.closedCircle:
-			arc = Part.Circle(self.center,normal,self.rad).toShape()
+			arc = Part.Circle(self.center,NORM,self.rad).toShape()
 		else:
 			radvec = Vector(self.rad,0,0)
 			p1 = Vector.add(self.center,fcvec.rotate(radvec,self.firstangle))
@@ -1274,6 +1485,119 @@ class annotation:
 		self.ui.textValue.setFocus()
 		self.ui.cross(False)
 
+class dim:
+	'''
+	This class creates a dimension feature.
+	'''
+	def __init__(self):
+		self.max=2
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_dimension',
+			'MenuText': 'Dimension',
+			'ToolTip': 'Creates a dimension. CTRL to snap, SHIFT to constrain'}
+
+	def Activated(self):
+		self.doc = FreeCAD.ActiveDocument
+		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
+			self.constrain = None
+			self.featureName = "Dimension"
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			FreeCADGui.activeWorkbench().activeDraftCommand = self
+			self.node = []
+			self.obj = None
+			self.pos = []
+			self.ui.sourceCmd = self
+			self.ui.lineUi()
+			self.call = self.view.addEventCallback("SoEvent",self.action)
+			self.snap = snapTracker()
+			self.dimtrack = dimTracker()
+			self.constraintrack = lineTracker(dotted=True)
+			FreeCAD.Console.PrintMessage("Pick first point:\n")
+			self.ui.cross(True)
+
+	def finish(self,closed=False):
+		"terminates the operation"
+		self.node=[]
+		self.view.removeEventCallback("SoEvent",self.call)
+		self.ui.offUi()
+		self.ui.cross(False)
+		self.ui.sourceCmd=None
+		del self.dimtrack
+		del self.constraintrack
+		del self.snap
+		FreeCADGui.activeWorkbench().activeDraftCommand = None
+
+	def createObject(self):
+		"creates an object in the current doc"
+		self.doc.openTransaction("Create "+self.featureName) 
+		obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
+		Dimension(obj)
+		DimensionViewProvider(obj.ViewObject)
+		obj.Start = self.node[0]
+		obj.End = self.node[1]
+		obj.Dimline = self.node[2]
+		self.doc.commitTransaction()
+		formatObject(obj)
+		select(obj)
+
+	def action(self,arg):
+		"scene event handler"
+		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+			cursor = arg["Position"]
+			point = self.view.getPoint(cursor[0],cursor[1])
+			point = snapPoint(self,point,cursor,arg["CtrlDown"])
+			ctrlPoint = Vector(point.x,point.y,point.z)
+			if (arg["ShiftDown"]): # constraining
+				point = constrainPoint(self,point)
+			else:
+				self.constrain = None
+				self.ui.xValue.setEnabled(True)
+				self.ui.yValue.setEnabled(True)
+			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+			self.dimtrack.update(self.node+[point])
+			# Draw constraint tracker line.
+			if (arg["ShiftDown"]):
+				self.constraintrack.p1(point)
+				self.constraintrack.p2(ctrlPoint)
+				self.constraintrack.on()
+			else: self.constraintrack.off()
+			if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
+			else: self.ui.displayPoint(point)
+
+		elif (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+				self.pos = arg["Position"]
+				point = self.view.getPoint(self.pos[0],self.pos[1])
+				point = snapPoint(self,point,self.pos,arg["CtrlDown"])
+				if (arg["ShiftDown"]): 
+					point = constrainPoint(self,point)
+				else:
+					self.constrain = None
+				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+				self.node.append(point)
+				self.dimtrack.update(self.node)
+				if (len(self.node) == 1):
+					self.dimtrack.on()
+				elif (len(self.node) == 3):
+					self.createObject()
+					self.finish()
+
+	def numericInput(self,numx,numy,numz):
+		"this function gets called by the toolbar when valid x, y, and z have been entered there"
+		point = Vector(numx,numy,numz)
+		self.node.append(point)
+		self.linetrack.p1(point)
+		self.drawSegment(point)
+		if (len(self.node) == self.max):
+			self.finish(False)
+		if self.ui.xValue.isEnabled():
+			self.ui.xValue.setFocus()
+			self.ui.xValue.selectAll()
+		else:
+			self.ui.yValue.setFocus()
+			self.ui.yValue.selectAll()
 
 
 #---------------------------------------------------------------------------
@@ -2391,6 +2715,7 @@ FreeCADGui.addCommand('Draft_Circle',circle())
 FreeCADGui.addCommand('Draft_Arc',arc())
 FreeCADGui.addCommand('Draft_Text',annotation())
 FreeCADGui.addCommand('Draft_Rectangle',rectangle())
+FreeCADGui.addCommand('Draft_Dimension',dim())
 
 # context commands
 FreeCADGui.addCommand('Draft_FinishLine',finishLine())

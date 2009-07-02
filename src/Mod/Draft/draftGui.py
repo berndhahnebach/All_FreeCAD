@@ -33,8 +33,8 @@ def findicons():
 	"checks if Draft is installed system-wide or user-wide, and loads icon file"
 	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft/"
 	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft/"
-	if os.path.exists(path1): filepath = path1+"icons.svg"
-	else: filepath = path2+"icons.svg"
+	if os.path.exists(path2): filepath = path2+"icons.svg"
+	else: filepath = path1+"icons.svg"
 	iconmap = QtGui.QPixmap()
 	if not iconmap.load(filepath):
 		# If loading by plug-in fails do it the conventional way
@@ -50,9 +50,7 @@ def findicons():
 	return iconmap
 	
 def getMainWindow():
-	"""
-	returns the main window 
-	"""
+	"returns the main window"
 	# using QtGui.qApp.activeWindow() isn't very reliable because if another
 	# widget than the mainwindow is active (e.g. a dialog) the wrong widget is
 	# returned
@@ -582,6 +580,7 @@ class toolBar:
 		icons['Draft_circle']=iconfile.copy(QtCore.QRect(196,0,64,64))
 		icons['Draft_arc']=iconfile.copy(QtCore.QRect(256,0,64,64))
 		icons['Draft_text']=iconfile.copy(QtCore.QRect(320,0,64,64))
+		icons['Draft_dimension']=iconfile.copy(QtCore.QRect(448,0,64,64))
 		icons['Draft_move']=iconfile.copy(QtCore.QRect(0,64,64,64))
 		icons['Draft_rotate']=iconfile.copy(QtCore.QRect(64,64,64,64))
 		icons['Draft_offset']=iconfile.copy(QtCore.QRect(128,64,64,64))
