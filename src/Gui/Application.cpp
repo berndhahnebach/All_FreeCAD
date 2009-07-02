@@ -31,6 +31,8 @@
 # include <stdexcept>
 #endif
 
+#include <QSessionManager>
+
 // FreeCAD Base header
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
@@ -1174,6 +1176,23 @@ public:
         }
 
         return true;
+    }
+    void commitData(QSessionManager &manager)
+    {
+        if (manager.allowsInteraction()) {
+            if (!Gui::getMainWindow()->close()) {
+                // cancel the shutdown
+                manager.release();
+                manager.cancel();
+            }
+        }
+        else {
+            // no user interaction allowed, thus close all documents and
+            // the main window
+            App::GetApplication().closeAllDocuments();
+            Gui::getMainWindow()->close();
+        }
+
     }
 };
 }
