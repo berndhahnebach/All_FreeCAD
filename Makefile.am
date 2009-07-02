@@ -1,6 +1,13 @@
 SUBDIRS=src
 
 EXTRA_DIST = \
+		cmake/ConfigureChecks.cmake \
+		cmake/FindCoin3D.cmake \
+		cmake/FindOpenCasCade.cmake \
+		cmake/FindOpenCV.cmake \
+		cmake/FindSoQt.cmake \
+		cmake/FindXercesC.cmake \
+		config.h.cmake \
 		CMakeLists.txt \
 		autogen.sh \
 		build.sh \
