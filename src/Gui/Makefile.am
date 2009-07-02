@@ -394,7 +394,7 @@ EXTRA_DIST = \
 		ViewProviderPy.xml \
 		ViewProviderDocumentObjectPy.xml \
 		ViewProviderPythonFeaturePy.xml \
-		FreeCADGui.vcproj
+		CMakeLists.txt
 
 # the library search path.
 libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

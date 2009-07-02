@@ -73,5 +73,5 @@ EXTRA_DIST = \
 		resources/FCAnimation.ini \
 		resources/FCAnimation.pov \
 		resources/FCSimple.pov \
-		AppRaytracing.vcproj \
+		CMakeLists.txt \
 		FreeCADpov

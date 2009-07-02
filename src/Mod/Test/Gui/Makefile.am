@@ -73,7 +73,7 @@ data_DATA = \
 
 EXTRA_DIST = \
 		$(data_DATA) \
-		AppTestGui.vcproj \
+		CMakeLists.txt \
 		UnitTest.ui \
 		Test.qrc \
 		Test_de.qm \

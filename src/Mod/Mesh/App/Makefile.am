@@ -360,7 +360,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libMesh_la_BUILT)
 
 EXTRA_DIST = \
 		$(data_DATA) \
-		AppMesh.vcproj \
+		CMakeLists.txt \
 		FacetPy.xml \
 		MeshFeaturePy.xml \
 		MeshPointPy.xml \

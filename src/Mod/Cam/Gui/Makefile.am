@@ -68,5 +68,5 @@ libdir = $(prefix)/Mod/Cam
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppCamGui.vcproj \
+		CMakeLists.txt \
 		Cutting.ui

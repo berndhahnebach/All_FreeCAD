@@ -6,7 +6,6 @@ include_HEADERS=\
 EXTRA_DIST = \
 		Build/BuildVersion.bat \
 		Build/Version.h.in \
-		All.vcproj \
-		AllCmdFiles.vcproj \
+		CMakeLists.txt \
 		fc.sh
 

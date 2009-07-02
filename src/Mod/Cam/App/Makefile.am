@@ -95,4 +95,4 @@ libdir = $(prefix)/Mod/Cam
 CLEANFILES = $(BUILT_SOURCES) $(libCam_la_BUILT)
 
 EXTRA_DIST = \
-		AppCam.vcproj
+		CMakeLists.txt

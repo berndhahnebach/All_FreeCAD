@@ -95,4 +95,4 @@ EXTRA_DIST = \
 		Raytracing.qrc \
 		Raytracing_de.qm \
 		Raytracing_de.ts \
-		AppRaytracingGui.vcproj
+		CMakeLists.txt

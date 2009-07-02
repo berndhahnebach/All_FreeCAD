@@ -41,4 +41,4 @@ INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 libdir = $(prefix)/Mod/_TEMPLATE_
 
 EXTRA_DIST = \
-		App_TEMPLATE_.vcproj
+		CMakeLists.txt

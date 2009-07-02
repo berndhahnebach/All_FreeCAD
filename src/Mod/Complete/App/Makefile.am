@@ -41,4 +41,4 @@ INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 libdir = $(prefix)/Mod/Complete
 
 EXTRA_DIST = \
-		AppComplete.vcproj
+		CMakeLists.txt

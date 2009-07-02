@@ -1,5 +1,4 @@
 if(WIN32)
-		 add_definitions(-DFCAppComplete -DFC_DEBUG)
 endif(WIN32)
 
 include_directories(

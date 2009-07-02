@@ -60,4 +60,4 @@ INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 libdir = $(prefix)/Mod/Assembly
 
 EXTRA_DIST = \
-		AppAssembly.vcproj
+		CMakeLists.txt

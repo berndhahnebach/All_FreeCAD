@@ -106,7 +106,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		Icons/mesh_cut.svg \
 		Icons/mesh_boundary.svg \
-		AppMeshGui.vcproj \
+		CMakeLists.txt \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
 		DlgSettingsMeshView.ui \

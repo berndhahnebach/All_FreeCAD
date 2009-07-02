@@ -71,5 +71,5 @@ libdir = $(prefix)/Mod/MeshPart
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppMeshPartGui.vcproj 
+		CMakeLists.txt
 

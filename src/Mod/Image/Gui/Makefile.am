@@ -78,7 +78,7 @@ libdir = $(prefix)/Mod/Image
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppImageGui.vcproj \
+		CMakeLists.txt \
 		Image.qrc \
 		Image_de.qm \
 		Image_de.ts \

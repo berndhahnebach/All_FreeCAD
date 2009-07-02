@@ -6,4 +6,5 @@ datadir = $(prefix)/Mod/Raytracing
 data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
-		$(data_DATA) 
+		$(data_DATA) \
+		CMakeLists.txt

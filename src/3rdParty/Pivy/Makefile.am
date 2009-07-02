@@ -69,6 +69,5 @@ EXTRA_DIST = \
 		AUTHORS \
 		LICENSE \
 		README \
-		CoinBinding.sln \
-		CoinPy.vcproj \
-		SoQtPy.vcproj
+		CMakeLists.txt
+

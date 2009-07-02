@@ -77,5 +77,5 @@ libdir = $(prefix)/Mod/Drawing
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppDrawingGui.vcproj 
+		CMakeLists.txt
 

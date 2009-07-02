@@ -70,4 +70,4 @@ INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 libdir = $(prefix)/Mod/Drawing
 
 EXTRA_DIST = \
-		AppDrawing.vcproj
+		CMakeLists.txt
