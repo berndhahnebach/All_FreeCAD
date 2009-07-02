@@ -494,7 +494,16 @@ endmacro(generate_from_py)
   ENDMACRO (fc_add_resources)
 
 # ================================================================================
-# == Global Compiler and Linker Settings ==============================================
+# == Global Compiler and Linker Settings =========================================
+
+# check for 64-bit platform
+IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	MESSAGE(STATUS "Platform is 64-bit, set -D_OCC64")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_OCC64")
+ELSE(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	MESSAGE(STATUS "Platform is 32-bit")
+ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 
 IF(MSVC)
 	# set default compiler settings
