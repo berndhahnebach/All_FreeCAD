@@ -2,7 +2,6 @@
 
 if(WIN32)
 add_definitions(-DFCGui -DQIIS_MAKEDLL)
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
 endif(WIN32)
 
 include_directories(
