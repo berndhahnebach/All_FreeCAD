@@ -374,6 +374,21 @@ fi
 AM_CONDITIONAL(HAVE_OPENCASCADE, test x"$fc_cv_lib_occ_avail" = xyes)
 AM_CONDITIONAL(OCC_VERSION6, test x"$fc_cv_lib_occ_ver_6" = xyes)
 
+#---------------------------------------------------------------------
+#
+# Check if 64-bit platform
+#  
+#---------------------------------------------------------------------
+AC_MSG_CHECKING([if platform is 64-bit (-D_OCC64)])
+AC_TRY_COMPILE( [], 
+ [int array[((int)sizeof(void*))-6];],
+ [AC_MSG_RESULT([yes]); CPPFLAGS="$CPPFLAGS -D_OCC64"; case $platform in Linux*) CPPFLAGS="$CPPFLAGS -m64";; esac],
+ [AC_MSG_RESULT([no])] )
+
+#AC_MSG_CHECKING([if platform is 64-bit (-D_OCC64)]) 
+#AC_TRY_COMPILE([],[int array[6-(int)sizeof(void*)];],[AC_MSG_RESULT(no)], 
+#               [AC_MSG_RESULT(yes); OCC_INC_FLAG="$OCC_INC_FLAG -D_OCC64"])
+
 dnl checking for WildMagic3
 dnl **************************************************************************
 dnl AC_CHECKING([WildMagic3])
