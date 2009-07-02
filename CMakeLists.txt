@@ -109,7 +109,8 @@ if(WIN32)
 
 # QT
 	set(QT_INCLUDE_DIR 
-	    ${CMAKE_SOURCE_DIR}/include/QT
+	    ${CMAKE_SOURCE_DIR}/include/QT/
+	    ${CMAKE_SOURCE_DIR}/include/QT/Qt
 	    ${CMAKE_SOURCE_DIR}/include/QT/QtCore
 	    ${CMAKE_SOURCE_DIR}/include/QT/QtGui
 	    ${CMAKE_SOURCE_DIR}/include/QT/QtDesigner
