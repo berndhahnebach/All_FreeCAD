@@ -25,5 +25,5 @@ nobase_data_DATA = \
 
 EXTRA_DIST = \
 		$(data_DATA) $(nobase_data_DATA) \
-		AppDraft.vcproj
+		CMakeLists.txt
 

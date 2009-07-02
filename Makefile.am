@@ -1,7 +1,7 @@
 SUBDIRS=src
 
 EXTRA_DIST = \
-		FreeCAD.sln \
+		CMakeLists.txt \
 		autogen.sh \
 		build.sh \
 		ChangeLog.txt \

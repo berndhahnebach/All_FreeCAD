@@ -22,5 +22,6 @@ endif
 #SUBDIRS += Sandbox
 
 EXTRA_DIST = \
-		__init__.py
+		__init__.py \
+		CMakeLists.txt
 

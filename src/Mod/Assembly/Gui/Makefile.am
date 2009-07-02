@@ -70,5 +70,5 @@ libdir = $(prefix)/Mod/Assembly
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppAssemblyGui.vcproj 
+		CMakeLists.txt
 

@@ -78,7 +78,7 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		DlgPointsRead.ui \
-		AppPointsGui.vcproj \
+		CMakeLists.txt \
 		Points.qrc \
 		Points_de.qm \
 		Points_de.ts

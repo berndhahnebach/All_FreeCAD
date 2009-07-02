@@ -75,4 +75,4 @@ CLEANFILES = $(BUILT_SOURCES) $(libPoints_la_BUILT)
 
 EXTRA_DIST = \
 		PointsPy.xml \
-		AppPoints.vcproj
+		CMakeLists.txt

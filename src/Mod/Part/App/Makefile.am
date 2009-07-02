@@ -246,4 +246,4 @@ EXTRA_DIST = \
 		TopoShapeSolidPy.xml \
 		TopoShapeVertexPy.xml \
 		TopoShapeWirePy.xml \
-		AppPart.vcproj
+		CMakeLists.txt

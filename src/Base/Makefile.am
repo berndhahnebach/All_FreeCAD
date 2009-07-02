@@ -251,7 +251,7 @@ libFreeCADBase_la_CPPFLAGS = -DHAVE_SWIG=$(HAVE_SWIG)
 
 EXTRA_DIST = \
 		../CXX/COPYRIGHT \
-		FreeCADBase.vcproj \
+		CMakeLists.txt \
 		BaseClassPy.xml \
 		BoundBoxPy.xml \
 		MatrixPy.xml \

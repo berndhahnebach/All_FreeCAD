@@ -66,5 +66,5 @@ libdir = $(prefix)/Mod/Complete
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppCompleteGui.vcproj 
+		CMakeLists.txt
 

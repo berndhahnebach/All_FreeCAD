@@ -95,5 +95,5 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		$(libSketcherGui_la_UI) \
-		AppSketcherGui.vcproj 
+		CMakeLists.txt
 

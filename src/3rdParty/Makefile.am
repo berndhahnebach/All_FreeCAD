@@ -1,6 +1,7 @@
 #SUBDIRS=Pivy
 
 EXTRA_DIST = \
+		CMakeLists.txt \
 		boost/numeric/bindings/LICENSE_1_0.txt \
 		boost/numeric/bindings/amos/amos.h \
 		boost/numeric/bindings/amos/amos.hpp \

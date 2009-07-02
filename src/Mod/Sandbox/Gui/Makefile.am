@@ -65,4 +65,4 @@ libdir = $(prefix)/Mod/Sandbox
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppSandboxGui.vcproj
+		CMakeLists.txt

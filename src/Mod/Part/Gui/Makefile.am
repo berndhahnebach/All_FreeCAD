@@ -163,4 +163,4 @@ EXTRA_DIST = \
 		Part.qrc \
 		Part_de.qm \
 		Part_it.qm \
-		AppPartGui.vcproj
+		CMakeLists.txt

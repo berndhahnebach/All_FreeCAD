@@ -61,4 +61,4 @@ INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 libdir = $(prefix)/Mod/PartDesign
 
 EXTRA_DIST = \
-		AppPartDesign.vcproj
+		CMakeLists.txt

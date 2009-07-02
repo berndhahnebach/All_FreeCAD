@@ -71,5 +71,5 @@ libdir = $(prefix)/Mod/ReverseEngineering
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppReverseEngineeringGui.vcproj 
+		CMakeLists.txt
 

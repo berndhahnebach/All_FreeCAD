@@ -48,7 +48,5 @@ EXTRA_DIST = \
 		res/FreeCAD.exe.manifest \
 		res/FreeCADD.exe.manifest \
 		freecad.rc \
-		FreeCADMain.vcproj \
-		FreeCADMainCmd.vcproj \
-		FreeCADMainPy.vcproj \
+		CMakeLists.txt \
 		icon.ico

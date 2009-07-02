@@ -108,5 +108,5 @@ libdir = $(prefix)/Mod/Sketcher
 CLEANFILES = $(BUILT_SOURCES) $(libSketcher_la_BUILT)
 
 EXTRA_DIST = \
-		AppSketcher.vcproj \
+		CMakeLists.txt \
 		SketchObjectPy.xml

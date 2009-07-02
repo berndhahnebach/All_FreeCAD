@@ -81,5 +81,5 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		$(libPartDesignGui_la_UI) \
-		AppPartDesignGui.vcproj 
+		CMakeLists.txt
 

@@ -6,4 +6,5 @@ datadir = $(prefix)/Mod/Part
 data_DATA = Init.py InitGui.py MakeBottle.py
 
 EXTRA_DIST = \
-		$(data_DATA) 
+		$(data_DATA) \
+		CMakeLists.txt

@@ -10,4 +10,4 @@ data_DATA = \
 
 EXTRA_DIST = \
 		$(data_DATA) \
-		AppTemplatePyMod.vcproj
+		CMakeLists.txt
