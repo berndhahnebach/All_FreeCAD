@@ -232,9 +232,7 @@ Py::Object View3DInventorPy::viewBottom(const Py::Tuple& args)
         throw Py::Exception();
 
     try {
-        SoCamera* cam = _view->getViewer()->getCamera();
-        cam->orientation.setValue(-1, 0, 0, 0);
-        _view->getViewer()->viewAll();
+        _view->getViewer()->setCameraOrientation(SbRotation(-1, 0, 0, 0));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -256,9 +254,7 @@ Py::Object View3DInventorPy::viewFront(const Py::Tuple& args)
 
     try {
         float root = (float)(sqrt(2.0)/2.0);
-        SoCamera* cam = _view->getViewer()->getCamera();
-        cam->orientation.setValue(-root, 0, 0, -root);
-        _view->getViewer()->viewAll();
+        _view->getViewer()->setCameraOrientation(SbRotation(-root, 0, 0, -root));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -279,9 +275,7 @@ Py::Object View3DInventorPy::viewLeft(const Py::Tuple& args)
         throw Py::Exception();
 
     try {
-        SoCamera* cam = _view->getViewer()->getCamera();
-        cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
-        _view->getViewer()->viewAll();
+        _view->getViewer()->setCameraOrientation(SbRotation(0.5, 0.5, 0.5, 0.5));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -303,9 +297,7 @@ Py::Object View3DInventorPy::viewRear(const Py::Tuple& args)
 
     try {
         float root = (float)(sqrt(2.0)/2.0);
-        SoCamera* cam = _view->getViewer()->getCamera();
-        cam->orientation.setValue(0, root, root, 0);
-        _view->getViewer()->viewAll();
+        _view->getViewer()->setCameraOrientation(SbRotation(0, root, root, 0));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -326,9 +318,7 @@ Py::Object View3DInventorPy::viewRight(const Py::Tuple& args)
         throw Py::Exception();
 
     try {
-        SoCamera* cam = _view->getViewer()->getCamera();
-        cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
-        _view->getViewer()->viewAll();
+        _view->getViewer()->setCameraOrientation(SbRotation(-0.5, 0.5, 0.5, -0.5));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -349,9 +339,7 @@ Py::Object View3DInventorPy::viewTop(const Py::Tuple& args)
         throw Py::Exception();
 
     try {
-        SoCamera* cam = _view->getViewer()->getCamera();
-        cam->orientation.setValue(0, 0, 0, 1);
-        _view->getViewer()->viewAll();
+        _view->getViewer()->setCameraOrientation(SbRotation(0, 0, 0, 1));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -372,9 +360,8 @@ Py::Object View3DInventorPy::viewAxometric(const Py::Tuple& args)
         throw Py::Exception();
 
     try {
-        SoCamera* cam = _view->getViewer()->getCamera();
-        cam->orientation.setValue(-0.353553f, -0.146447f, -0.353553f, -0.853553f);
-        _view->getViewer()->viewAll();
+        _view->getViewer()->setCameraOrientation(SbRotation
+            (-0.353553f, -0.146447f, -0.353553f, -0.853553f));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());

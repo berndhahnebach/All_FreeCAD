@@ -1111,6 +1111,11 @@ void View3DInventorViewer::pubSeekToPoint(const SbVec3f& pos)
     this->seekToPoint(pos);
 }
 
+void View3DInventorViewer::setCameraOrientation(const SbRotation& rot)
+{
+    navigation->setCameraOrientation(rot);
+}
+
 void View3DInventorViewer::boxZoom(const SbBox2s& box)
 {
     navigation->boxZoom(box);
