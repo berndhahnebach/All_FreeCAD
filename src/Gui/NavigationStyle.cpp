@@ -261,7 +261,7 @@ void NavigationStyle::reorientCamera(SoCamera * cam, const SbRotation & rot)
 }
 
 void NavigationStyle::panCamera(SoCamera * cam, float aspectratio, const SbPlane & panplane,
-                                const SbVec2f & prevpos, const SbVec2f & currpos)
+                                const SbVec2f & currpos, const SbVec2f & prevpos)
 {
     if (cam == NULL) return; // can happen for empty scenegraph
     if (currpos == prevpos) return; // useless invocation
