@@ -72,6 +72,13 @@ DlgSettings3DViewImp::~DlgSettings3DViewImp()
 
 void DlgSettings3DViewImp::saveSettings()
 {
+    // must be done as very first because we create a new instance of NavigatorStyle
+    // where we set some attributes afterwards
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/View");
+    QVariant data = comboNavigationStyle->itemData(comboNavigationStyle->currentIndex(), Qt::UserRole);
+    hGrp->SetASCII("NavigationStyle", (const char*)data.toByteArray());
+
     checkBoxAntiAliasing->onSave();
     CheckBox_CornerCoordSystem->onSave();
     CheckBox_ShowFPS->onSave();
@@ -93,11 +100,6 @@ void DlgSettings3DViewImp::saveSettings()
     checkBoxSelection->onSave();
     HighlightColor->onSave();
     SelectionColor->onSave();
-
-    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
-        ("User parameter:BaseApp/Preferences/View");
-    QVariant data = comboNavigationStyle->itemData(comboNavigationStyle->currentIndex(), Qt::UserRole);
-    hGrp->SetASCII("NavigationStyle", (const char*)data.toByteArray());
 }
 
 void DlgSettings3DViewImp::loadSettings()

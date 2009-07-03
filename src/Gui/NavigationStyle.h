@@ -89,6 +89,7 @@ public:
     void updateAnimation();
     void redraw();
 
+    void setCameraOrientation(const SbRotation& rot);
     void boxZoom(const SbBox2s& box);
     virtual void viewAll();
 
@@ -167,8 +168,11 @@ protected:
     //@{
     SbBool spinanimatingallowed;
     int spinsamplecounter;
+    int animationsteps;
+    int animationdelta;
     SbRotation spinincrement;
     SbRotation spinRotation;
+    SbRotation endRotation;
     SbSphereSheetProjector * spinprojector;
     //@}
 };

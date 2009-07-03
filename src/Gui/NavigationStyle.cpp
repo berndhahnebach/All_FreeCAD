@@ -59,6 +59,7 @@ void NavigationStyle::initialize()
     this->prevRedrawTime = SbTime::getTimeOfDay();
     this->spinanimatingallowed = TRUE;
     this->spinsamplecounter = 0;
+    this->animationsteps = 0;
     this->spinincrement = SbRotation::identity();
     this->spinRotation.setValue(SbVec3f(0, 0, -1), 0);
 
@@ -132,6 +133,42 @@ SbBool NavigationStyle::seekToPoint(const SbVec2s screenpos)
 void NavigationStyle::seekToPoint(const SbVec3f& scenepos)
 {
     viewer->seekToPoint(scenepos);
+}
+
+void NavigationStyle::setCameraOrientation(const SbRotation& rot)
+{
+    SoCamera* cam = viewer->getCamera();
+    if (cam == 0) return;
+
+    if (isAnimationEnabled()) {
+        // get the amount of movement
+        SbVec3f dir1, dir2;
+        SbRotation cam_rot = cam->orientation.getValue();
+        cam_rot.multVec(SbVec3f(0, 0, -1), dir1);
+        rot.multVec(SbVec3f(0, 0, -1), dir2);
+        float val = 0.5f*(1.0f + dir1.dot(dir2)); // value in range [0,1]
+        int div = (int)(val * 20.0f);
+        int steps = 20-div; // do it with max. 20 steps
+
+        // check whether a movement is required
+        if (steps > 0) {
+            this->endRotation = rot; // this is the final camera orientation
+            this->spinRotation = cam_rot;
+            this->animationsteps = 5;
+            this->animationdelta = std::max<int>(100/steps, 5);
+            this->currentmode = NavigationStyle::SPINNING;
+            viewer->scheduleRedraw();
+        }
+        else {
+            // due to possible round-off errors make sure that the
+            // exact orientation is set
+            cam->orientation.setValue(rot);
+        }
+    }
+    else {
+        SbRotation deltaRotation = rot * cam->orientation.getValue().inverse();
+        this->reorientCamera(cam, deltaRotation);
+    }
 }
 
 void NavigationStyle::boxZoom(const SbBox2s& box)
@@ -464,9 +501,31 @@ void NavigationStyle::updateAnimation()
     this->prevRedrawTime = now;
 
     if (this->isAnimating()) {
-        SbRotation deltaRotation = this->spinRotation;
-        deltaRotation.scaleAngle(secs * 5.0);
-        this->reorientCamera(viewer->getCamera(), deltaRotation);
+        if (this->animationsteps > 0) {
+            // here the camera rotates from the current rotation to a given
+            // rotation (e.g. the standard views). To get this movement animated
+            // we calculate an interpolated rotation and update the view after
+            // each step
+            float step = std::min<float>((float)this->animationsteps/100.0f, 1.0f);
+            SbRotation deltaRotation = SbRotation::slerp(this->spinRotation, this->endRotation, step);
+            SoCamera* cam = viewer->getCamera();
+            // out of the interpolated rotation get the delta from the current camera
+            // orientation
+            deltaRotation = deltaRotation * cam->orientation.getValue().inverse();
+            this->reorientCamera(cam, deltaRotation);
+            this->animationsteps += this->animationdelta;
+            if (this->animationsteps > 100) {
+                // now we have reached the end of the movement
+                this->currentmode = NavigationStyle::IDLE;
+                this->animationsteps=0;
+            }
+        }
+        else {
+            // here the camera rotates around a fix axis
+            SbRotation deltaRotation = this->spinRotation;
+            deltaRotation.scaleAngle(secs * 5.0);
+            this->reorientCamera(viewer->getCamera(), deltaRotation);
+        }
     }
 }
 

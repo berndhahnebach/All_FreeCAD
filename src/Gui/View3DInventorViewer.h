@@ -222,6 +222,12 @@ public:
     SbVec3f projectOnFarPlane(const SbVec2f&) const;
     //@}
 
+    /**
+     * Set the camera's orientation. If isAnimationEnabled() returns
+     * \a TRUE the reorientation is animated, otherwise its directly
+     * set.
+     */
+    void setCameraOrientation(const SbRotation& rot);
     /** 
      * Zooms the viewport to the size of the bounding box. 
      */

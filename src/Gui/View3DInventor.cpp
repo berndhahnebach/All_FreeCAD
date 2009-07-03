@@ -295,128 +295,152 @@ const char *View3DInventor::getName(void) const
 
 bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 {
-  if(strcmp("ViewFit",pMsg) == 0 ){
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("ViewSelection",pMsg) == 0) {
-    _viewer->viewSelection();
-    return true;
-// comment out on older Inventor
+    if (strcmp("ViewFit",pMsg) == 0 ) {
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("ViewSelection",pMsg) == 0) {
+        _viewer->viewSelection();
+        return true;
+    // comment out on older Inventor
 #if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
-  }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
-    _viewer->setStereoType(SoQtViewer::STEREO_ANAGLYPH);
-    return true;
-  }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
-    _viewer->setStereoType(SoQtViewer::STEREO_QUADBUFFER );
-    return true;
-  }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
-    _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_ROWS );
-    return true;
-  }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
-    _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_COLUMNS  );
-    return true;
-  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
-    _viewer->setStereoType(SoQtViewer::STEREO_NONE );
-    return true;
+    }
+    else if(strcmp("SetStereoRedGreen",pMsg) == 0 ) {
+        _viewer->setStereoType(SoQtViewer::STEREO_ANAGLYPH);
+        return true;
+    }
+    else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ) {
+        _viewer->setStereoType(SoQtViewer::STEREO_QUADBUFFER );
+        return true;
+    }
+    else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ) {
+        _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_ROWS );
+        return true;
+    }
+    else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ) {
+        _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_COLUMNS  );
+        return true;
+    }
+    else if(strcmp("SetStereoOff",pMsg) == 0 ) {
+        _viewer->setStereoType(SoQtViewer::STEREO_NONE );
+        return true;
 #else
-  }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
-    Base::Console().Warning("Use SoQt 1.2.x or later!\n");
-    return true;
-  }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
-    Base::Console().Warning("Use SoQt 1.2.x or later!\n");
-    return true;
-  }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
-    Base::Console().Warning("Use SoQt 1.2.x or later!\n");
-    return true;
-  }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
-    Base::Console().Warning("Use SoQt 1.2.x or later!\n");
-    return true;
-  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
-    Base::Console().Warning("Use SoQt 1.2.x or later!\n");
-    return true;
+    }
+    else if(strcmp("SetStereoRedGreen",pMsg) == 0 ) {
+        Base::Console().Warning("Use SoQt 1.2.x or later!\n");
+        return true;
+    }
+    else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ) {
+        Base::Console().Warning("Use SoQt 1.2.x or later!\n");
+        return true;
+    }
+    else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ) {
+        Base::Console().Warning("Use SoQt 1.2.x or later!\n");
+        return true;
+    }
+    else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ) {
+        Base::Console().Warning("Use SoQt 1.2.x or later!\n");
+        return true;
+    }
+    else if(strcmp("SetStereoOff",pMsg) == 0 ) {
+        Base::Console().Warning("Use SoQt 1.2.x or later!\n");
+        return true;
 #endif
-  }else if(strcmp("Example1",pMsg) == 0 ){
-    SoSeparator * root = new SoSeparator;
-    Texture3D(root);
-    _viewer->setSceneGraph(root);
-    return true;
-  }else if(strcmp("Example2",pMsg) == 0 ){
-    SoSeparator * root = new SoSeparator;
-    LightManip(root);
-    _viewer->setSceneGraph(root);
-    return true;
-  }else if(strcmp("Example3",pMsg) == 0 ){
-    SoSeparator * root = new SoSeparator;
-    AnimationTexture(root);
-    _viewer->setSceneGraph(root);
-    return true;
-  }else if(strcmp("GetCamera",pMsg) == 0 ){
-    SoCamera * Cam = _viewer->getCamera();
-    *ppReturn = SoFCDB::writeNodesToString(Cam).c_str();
-    return true;
-  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
-    return setCamera(pMsg+10);
-  }else if(strncmp("Dump",pMsg,4) == 0 ){
-    dump(pMsg+5);
-    return true;
-  }else if(strcmp("ViewBottom",pMsg) == 0 ){
-    SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(-1, 0, 0, 0);
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("ViewFront",pMsg) == 0 ){
-    float root = (float)(sqrt(2.0)/2.0);
-    SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(-root, 0, 0, -root);
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("ViewLeft",pMsg) == 0 ){
-    SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("ViewRear",pMsg) == 0 ){
-    float root = (float)(sqrt(2.0)/2.0);
-    SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(0, root, root, 0);
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("ViewRight",pMsg) == 0 ){
-    SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("ViewTop",pMsg) == 0 ){
-    SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(0, 0, 0, 1);
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("ViewAxo",pMsg) == 0 ){
-    SoCamera* cam = _viewer->getCamera();
-    cam->orientation.setValue(-0.353553f, -0.146447f, -0.353553f, 0.853553f);
-    _viewer->viewAll();
-    return true;
-  }else if(strcmp("OrthographicCamera",pMsg) == 0 ){
-    _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
-    return true;
-  }else if(strcmp("PerspectiveCamera",pMsg) == 0 ){
-    _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
-    return true;
-  }else  if(strcmp("Undo",pMsg) == 0 ){
-    getGuiDocument()->undo(1);
-    return true;
-  }else  if(strcmp("Redo",pMsg) == 0 ){
-    getGuiDocument()->redo(1);
-    return true;
-  }else if (strcmp("Save",pMsg) == 0){
-    getGuiDocument()->save();
-    return true;
-  }else if (strcmp("SaveAs",pMsg) == 0){
-    getGuiDocument()->saveAs();
-    return true;
-  }else 
-
-  return false;
+    }
+    else if(strcmp("Example1",pMsg) == 0 ) {
+        SoSeparator * root = new SoSeparator;
+        Texture3D(root);
+        _viewer->setSceneGraph(root);
+        return true;
+    }
+    else if(strcmp("Example2",pMsg) == 0 ) {
+        SoSeparator * root = new SoSeparator;
+        LightManip(root);
+        _viewer->setSceneGraph(root);
+        return true;
+    }
+    else if(strcmp("Example3",pMsg) == 0 ) {
+        SoSeparator * root = new SoSeparator;
+        AnimationTexture(root);
+        _viewer->setSceneGraph(root);
+        return true;
+    }
+    else if(strcmp("GetCamera",pMsg) == 0 ) {
+        SoCamera * Cam = _viewer->getCamera();
+        *ppReturn = SoFCDB::writeNodesToString(Cam).c_str();
+        return true;
+    }
+    else if(strncmp("SetCamera",pMsg,9) == 0 ) {
+        return setCamera(pMsg+10);
+    }
+    else if(strncmp("Dump",pMsg,4) == 0 ) {
+        dump(pMsg+5);
+        return true;
+    }
+    else if(strcmp("ViewBottom",pMsg) == 0 ) {
+        _viewer->setCameraOrientation(SbRotation(-1, 0, 0, 0));
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("ViewFront",pMsg) == 0 ) {
+        float root = (float)(sqrt(2.0)/2.0);
+        _viewer->setCameraOrientation(SbRotation(-root, 0, 0, -root));
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("ViewLeft",pMsg) == 0 ) {
+        _viewer->setCameraOrientation(SbRotation(0.5, 0.5, 0.5, 0.5));
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("ViewRear",pMsg) == 0 ) {
+        float root = (float)(sqrt(2.0)/2.0);
+        _viewer->setCameraOrientation(SbRotation(0, root, root, 0));
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("ViewRight",pMsg) == 0 ) {
+        _viewer->setCameraOrientation(SbRotation(-0.5, 0.5, 0.5, -0.5));
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("ViewTop",pMsg) == 0 ) {
+        _viewer->setCameraOrientation(SbRotation(0, 0, 0, 1));
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("ViewAxo",pMsg) == 0 ) {
+        _viewer->setCameraOrientation(SbRotation
+            (-0.353553f, -0.146447f, -0.353553f, 0.853553f));
+        _viewer->viewAll();
+        return true;
+    }
+    else if(strcmp("OrthographicCamera",pMsg) == 0 ) {
+        _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+        return true;
+    }
+    else if(strcmp("PerspectiveCamera",pMsg) == 0 ) {
+        _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
+        return true;
+    }
+    else  if(strcmp("Undo",pMsg) == 0 ) {
+        getGuiDocument()->undo(1);
+        return true;
+    }
+    else  if(strcmp("Redo",pMsg) == 0 ) {
+        getGuiDocument()->redo(1);
+        return true;
+    }
+    else if (strcmp("Save",pMsg) == 0) {
+        getGuiDocument()->save();
+        return true;
+    }
+    else if (strcmp("SaveAs",pMsg) == 0) {
+        getGuiDocument()->saveAs();
+        return true;
+    }
+    else
+        return false;
 }
 
 
