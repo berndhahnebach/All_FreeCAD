@@ -518,6 +518,8 @@ void NavigationStyle::updateAnimation()
                 // now we have reached the end of the movement
                 this->currentmode = NavigationStyle::IDLE;
                 this->animationsteps=0;
+                // set to the actual set rotation
+                cam->orientation.setValue(this->endRotation);
             }
         }
         else {
