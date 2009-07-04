@@ -47,7 +47,7 @@ public:
     // Display properties
     App::PropertyColor          TextColor;
     App::PropertyEnumeration    Justification;
-    App::PropertyInteger        FontSize;
+    App::PropertyFloat        FontSize;
 
     void attach(App::DocumentObject *);
     void updateData(const App::Property*);
