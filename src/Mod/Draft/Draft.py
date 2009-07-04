@@ -234,8 +234,11 @@ def formatObject(target,origin=None):
 	b = float(ui.color.blue()/255.0)
 	lw = float(ui.widthButton.value())
 	col = (r,g,b,0.0)
+	params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+	fontheight = params.GetFloat("textheight")
 	if (target.Type == "App::Annotation"):
-		obrep.FontSize=int(lw*9)
+		obrep.DisplayMode="World"
+		obrep.FontSize=fontheight
 		obrep.TextColor=col
 	else:
 		if not origin:
@@ -246,6 +249,9 @@ def formatObject(target,origin=None):
 			obrep.LineWidth = matchrep.LineWidth
 			obrep.LineColor = matchrep.LineColor
 			obrep.ShapeColor = matchrep.ShapeColor
+	if (target.Type == "App::FeaturePython"):
+		if (target.Proxy.Type == "Dimension"):
+			target.ViewObject.FontSize=fontheight
 
 def select(object):
 	"deselects everything and selects only the passed object"
@@ -581,7 +587,9 @@ class Dimension:
 					"Endpoint of dimension").End = FreeCAD.Vector(1,0,0)
 		obj.addProperty("App::PropertyVector","Dimline","Dimension",\
 					"Point through which the dimension line passes").Dimline = FreeCAD.Vector(0,1,0)
+		self.Type = "Dimension"
 		obj.Proxy = self
+		
 
 	def onChanged(self, fp, prop):
 		pass
@@ -592,9 +600,10 @@ class Dimension:
 class DimensionViewProvider:
 	"this class defines a view provider for Dimension objects"
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyLength","TextHeight","Dimension","Text height").TextHeight=0.2
+		obj.addProperty("App::PropertyLength","FontSize","Dimension","Font size").FontSize=0.2
 		obj.addProperty("App::PropertyLength","LineWidth","Dimension","Line width")
 		obj.addProperty("App::PropertyColor","LineColor","Dimension","Line color")
+		obj.addProperty("App::PropertyLength","ExtLines","Dimension","Ext lines ").ExtLines=0.3
 		obj.Proxy = self
 
 	def calcGeom(self,obj):
@@ -612,7 +621,7 @@ class DimensionViewProvider:
 		if not proj:
 			ed = fcgeo.vec(base)
 			proj = fcvec.crossproduct(ed)
-		offset = fcvec.scale(fcvec.normalized(fcvec.neg(proj)),0.1)
+		offset = fcvec.scale(fcvec.normalized(fcvec.neg(proj)),0.05)
 		tbase = midpoint.add(offset)
 		angle = fcvec.angle(p3.sub(p2))
 		if angle < -math.pi/2: angle = -angle-math.pi
@@ -622,8 +631,8 @@ class DimensionViewProvider:
 
 	def attach(self, obj):
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj.Object)
-		color = coin.SoBaseColor()
-		color.rgb = (0,0,0)
+		self.color = coin.SoBaseColor()
+		self.color.rgb = (0,0,0)
 		self.font = coin.SoFont()
 		self.text = coin.SoAsciiText()
 		self.text.justification = coin.SoAsciiText.CENTER
@@ -633,7 +642,7 @@ class DimensionViewProvider:
 		self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
 		label = coin.SoSeparator()
 		label.addChild(self.textpos)
-		label.addChild(color)
+		label.addChild(self.color)
 		label.addChild(self.font)
 		label.addChild(self.text)
 		marker = coin.SoMarkerSet()
@@ -643,26 +652,26 @@ class DimensionViewProvider:
 		self.coord2 = coin.SoCoordinate3()
 		self.coord2.point.setValue((p3.x,p3.y,p3.z))
 		marks = coin.SoAnnotation()
-		marks.addChild(color)
+		marks.addChild(self.color)
 		marks.addChild(self.coord1)
 		marks.addChild(marker)
 		marks.addChild(self.coord2)
 		marks.addChild(marker)       
-		drawstyle = coin.SoDrawStyle()
-		drawstyle.lineWidth = 1       
+		self.drawstyle = coin.SoDrawStyle()
+		self.drawstyle.lineWidth = 1       
 		line = coin.SoLineSet()
 		line.numVertices.setValue(4)
 		self.coords = coin.SoCoordinate3()
 		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],[p2.x,p2.y,p2.z],[p3.x,p3.y,p3.z],[p4.x,p4.y,p4.z]])
 		self.node = coin.SoGroup()
-		self.node.addChild(color)
-		self.node.addChild(drawstyle)
+		self.node.addChild(self.color)
+		self.node.addChild(self.drawstyle)
 		self.node.addChild(self.coords)
 		self.node.addChild(line)
 		self.node.addChild(label)
 		self.node.addChild(marks)
 		obj.addDisplayMode(self.node,"Wireframe")
-		self.onChanged(obj,"TextHeight")
+		self.onChanged(obj,"FontSize")
         
 	def updateData(self, obj, prop):
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
@@ -674,8 +683,13 @@ class DimensionViewProvider:
 		self.coord2.point.setValue((p3.x,p3.y,p3.z))
 
 	def onChanged(self, vp, prop):
-		if prop == "TextHeight":
-			self.font.size = vp.TextHeight
+		if prop == "FontSize":
+			self.font.size = vp.FontSize
+		elif prop == "LineColor":
+			c = vp.LineColor
+			self.color.rgb.setValue(c[0],c[1],c[2])
+		elif prop == "LineWidth":
+			self.drawstyle.lineWidth = vp.LineWidth
 
 	def getDisplayModes(self,obj):
 		modes=[]
@@ -734,18 +748,6 @@ class line:
 	'''
 	This class creates a line or group of lines feature. 
 	Takes 1 optional argument, the max number of points.
-
-	USAGE:
-
-	It asks the user for points, until the max. number of points is reached. For each point, the user can: 
-	-pick a point somewhere on screen with the mouse
-	-pick a point on an existing object, 2d or 3d
-	-double-click the last point to finish, or press F
-	-on numeric input, pressing Enter passes from x to y, from y to z, and from z it adds the point (if valid)
-	-press C to finish, closing the line (if more than 2 points)
-	-press Z to undo last point (provisory, conflicts using CTRL+Z...)
-	-press CTRL to snap
-	-press SHIFT to constrain vertically or horizontally
 	'''
 	def __init__(self):
 		self.max=2
@@ -1076,16 +1078,6 @@ class rectangle:
 class arc:
 	'''
 	This class creates an arc (circle feature). 
-
-	USAGE:
-
-	It asks the user for 4 points: the center point, another point to specify the radius, then the start and end positions
-	-pick a point somewhere on screen with the mouse
-	-pick a point on an existing object, 2d or 3d
-	-on numeric input, pressing Enter passes from x to y, from y to z, and from z it adds the point (if valid)
-	-press CTRL to snap
-	-press SHIFT to constrain
-	-when picking the end angle, press ALT to go counter-clockwise.
 	'''
 	def __init__(self):
 		self.closedCircle=False
@@ -1406,9 +1398,7 @@ class circle(arc):
 	
 class annotation:
 	'''
-	This class creates an annotation feature. Takes 1 parameter: the name o the object.
-	User is asked for a location point, then a dialog is displayed where text can be entered.
-	CTRL snaps, ESC cancels.
+	This class creates an annotation feature.
 	'''
 
 	def GetResources(self):
@@ -1607,16 +1597,6 @@ class dim:
 class move:
 	'''
 	This class translates the selected objects from a point to another point.
-
-	USAGE:
-
-	It asks the user for 2 points: the origin and the end of the translation vector.
-	-pick a point somewhere on screen with the mouse
-	-pick a point on an existing object, 2d or 3d
-	-on numeric input, pressing Enter passes from x to y, from y to z, and from z it adds the point (if valid)
-	-press CTRL to snap
-	-press SHIFT to constrain
-	-press ALT to create a copy
 	'''
 
 	def GetResources(self):
@@ -1794,16 +1774,6 @@ class applyStyle:
 class rotate:
 	'''
 	This class rotates the selected objects.
-
-	USAGE:
-
-	It asks the user for 3 points: the rotation center, the start angle and the rotation.
-	-pick a point somewhere on screen with the mouse
-	-pick a point on an existing object, 2d or 3d
-	-on numeric input, pressing Enter passes from x to y, from y to z, and from z it adds the point (if valid)
-	-press CTRL to snap
-	-press SHIFT to constrain
-	-press ALT to create a copy
 	'''
 
 
@@ -2040,17 +2010,6 @@ class rotate:
 class offset:
 	'''
 	This class offsets the selected objects.
-
-	USAGE:
-
-	The user must provide a point indicating the distance to offset. The distance
-	is calculated from the closest segment.
-	-pick a point somewhere on screen with the mouse
-	-pick a point on an existing object, 2d or 3d
-	-on numeric input, the position of the mouse cursor gives the direction
-	-press CTRL to snap
-	-press SHIFT to constrain to the currently used segment
-	-press ALT to create a copy
 	'''
 
 	def GetResources(self):
