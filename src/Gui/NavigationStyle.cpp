@@ -140,6 +140,24 @@ void NavigationStyle::setCameraOrientation(const SbRotation& rot)
     SoCamera* cam = viewer->getCamera();
     if (cam == 0) return;
 
+    // Find global coordinates of focal point.
+    SbVec3f direction;
+    cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+    this->focal1 = cam->position.getValue() +
+                   cam->focalDistance.getValue() * direction;
+    this->focal2 = this->focal1;
+    SoGetBoundingBoxAction action(viewer->getViewportRegion());
+    action.apply(viewer->getSceneGraph());
+    SbBox3f box = action.getBoundingBox();
+    if (!box.isEmpty()) {
+        rot.multVec(SbVec3f(0, 0, -1), direction);
+        //float s = (this->focal1 - box.getCenter()).dot(direction);
+        //this->focal2 = box.getCenter() + s * direction;
+        // setting the center of the overall bounding box as the future focal point
+        // seems to be a satisfactory solution
+        this->focal2 = box.getCenter();
+    }
+
     if (isAnimationEnabled()) {
         // get the amount of movement
         SbVec3f dir1, dir2;
@@ -166,8 +184,10 @@ void NavigationStyle::setCameraOrientation(const SbRotation& rot)
         }
     }
     else {
-        SbRotation deltaRotation = rot * cam->orientation.getValue().inverse();
-        this->reorientCamera(cam, deltaRotation);
+        // set to the given rotation
+        cam->orientation.setValue(rot);
+        cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+        cam->position = this->focal2 - cam->focalDistance.getValue() * direction;
     }
 }
 
@@ -507,19 +527,23 @@ void NavigationStyle::updateAnimation()
             // we calculate an interpolated rotation and update the view after
             // each step
             float step = std::min<float>((float)this->animationsteps/100.0f, 1.0f);
-            SbRotation deltaRotation = SbRotation::slerp(this->spinRotation, this->endRotation, step);
+            SbRotation slerp = SbRotation::slerp(this->spinRotation, this->endRotation, step);
+            SbVec3f focalpoint = (1.0f-step)*this->focal1 + step*this->focal2;
             SoCamera* cam = viewer->getCamera();
-            // out of the interpolated rotation get the delta from the current camera
-            // orientation
-            deltaRotation = deltaRotation * cam->orientation.getValue().inverse();
-            this->reorientCamera(cam, deltaRotation);
+            SbVec3f direction;
+            cam->orientation.setValue(slerp);
+            cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+            cam->position = focalpoint - cam->focalDistance.getValue() * direction;
+
             this->animationsteps += this->animationdelta;
             if (this->animationsteps > 100) {
                 // now we have reached the end of the movement
                 this->currentmode = NavigationStyle::IDLE;
                 this->animationsteps=0;
-                // set to the actual set rotation
+                // set to the actual given rotation
                 cam->orientation.setValue(this->endRotation);
+                cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+                cam->position = this->focal2 - cam->focalDistance.getValue() * direction;
             }
         }
         else {
