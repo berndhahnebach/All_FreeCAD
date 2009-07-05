@@ -170,6 +170,7 @@ protected:
     int spinsamplecounter;
     int animationsteps;
     int animationdelta;
+    SbVec3f focal1, focal2;
     SbRotation spinincrement;
     SbRotation spinRotation;
     SbRotation endRotation;
