@@ -38,6 +38,7 @@
 class SoEvent;
 class SoQtViewer;
 class SoCamera;
+class SoSensor;
 class SbSphereSheetProjector;
 
 namespace Gui {
@@ -168,14 +169,14 @@ protected:
     //@{
     SbBool spinanimatingallowed;
     int spinsamplecounter;
-    int animationsteps;
-    int animationdelta;
-    SbVec3f focal1, focal2;
     SbRotation spinincrement;
     SbRotation spinRotation;
-    SbRotation endRotation;
     SbSphereSheetProjector * spinprojector;
     //@}
+
+private:
+    struct NavigationStyleP* pimpl;
+    friend struct NavigationStyleP;
 };
 
 class GuiExport InventorNavigationStyle : public NavigationStyle {

@@ -27,6 +27,7 @@
 # include "InventorAll.h"
 # include <QCursor>
 #endif
+#include <Inventor/sensors/SoTimerSensor.h>
 
 #include "NavigationStyle.h"
 #include "View3DInventorViewer.h"
@@ -36,16 +37,39 @@
 
 using namespace Gui;
 
+namespace Gui {
+struct NavigationStyleP {
+    int animationsteps;
+    int animationdelta;
+    SbVec3f focal1, focal2;
+    SbRotation endRotation;
+    SoTimerSensor * animsensor;
+
+    NavigationStyleP()
+    {
+        this->animationsteps = 0;
+    }
+    static void viewAnimationCB(void * data, SoSensor * sensor);
+};
+}
+
+#define PRIVATE(ptr) (ptr->pimpl)
+#define PUBLIC(ptr) (ptr->pub)
+
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::NavigationStyle,Base::BaseClass);
 
 NavigationStyle::NavigationStyle() : viewer(0), pcMouseModel(0)
 {
+    PRIVATE(this) = new NavigationStyleP();
+    PRIVATE(this)->animsensor = new SoTimerSensor(NavigationStyleP::viewAnimationCB, this);
     initialize();
 }
 
 NavigationStyle::~NavigationStyle()
 {
     finalize();
+    delete PRIVATE(this)->animsensor;
+    delete PRIVATE(this);
 }
 
 void NavigationStyle::setViewer(View3DInventorViewer* view)
@@ -59,7 +83,6 @@ void NavigationStyle::initialize()
     this->prevRedrawTime = SbTime::getTimeOfDay();
     this->spinanimatingallowed = TRUE;
     this->spinsamplecounter = 0;
-    this->animationsteps = 0;
     this->spinincrement = SbRotation::identity();
     this->spinRotation.setValue(SbVec3f(0, 0, -1), 0);
 
@@ -143,9 +166,9 @@ void NavigationStyle::setCameraOrientation(const SbRotation& rot)
     // Find global coordinates of focal point.
     SbVec3f direction;
     cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
-    this->focal1 = cam->position.getValue() +
-                   cam->focalDistance.getValue() * direction;
-    this->focal2 = this->focal1;
+    PRIVATE(this)->focal1 = cam->position.getValue() +
+                            cam->focalDistance.getValue() * direction;
+    PRIVATE(this)->focal2 = PRIVATE(this)->focal1;
     SoGetBoundingBoxAction action(viewer->getViewportRegion());
     action.apply(viewer->getSceneGraph());
     SbBox3f box = action.getBoundingBox();
@@ -155,7 +178,11 @@ void NavigationStyle::setCameraOrientation(const SbRotation& rot)
         //this->focal2 = box.getCenter() + s * direction;
         // setting the center of the overall bounding box as the future focal point
         // seems to be a satisfactory solution
-        this->focal2 = box.getCenter();
+        PRIVATE(this)->focal2 = box.getCenter();
+    }
+
+    if (PRIVATE(this)->animsensor->isScheduled()) {
+        PRIVATE(this)->animsensor->unschedule();
     }
 
     if (isAnimationEnabled()) {
@@ -170,12 +197,12 @@ void NavigationStyle::setCameraOrientation(const SbRotation& rot)
 
         // check whether a movement is required
         if (steps > 0) {
-            this->endRotation = rot; // this is the final camera orientation
+            PRIVATE(this)->endRotation = rot; // this is the final camera orientation
             this->spinRotation = cam_rot;
-            this->animationsteps = 5;
-            this->animationdelta = std::max<int>(100/steps, 5);
-            this->currentmode = NavigationStyle::SPINNING;
-            viewer->scheduleRedraw();
+            PRIVATE(this)->animationsteps = 5;
+            PRIVATE(this)->animationdelta = std::max<int>(100/steps, 5);
+            PRIVATE(this)->animsensor->setBaseTime(SbTime::getTimeOfDay());
+            PRIVATE(this)->animsensor->schedule();
         }
         else {
             // due to possible round-off errors make sure that the
@@ -187,7 +214,37 @@ void NavigationStyle::setCameraOrientation(const SbRotation& rot)
         // set to the given rotation
         cam->orientation.setValue(rot);
         cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
-        cam->position = this->focal2 - cam->focalDistance.getValue() * direction;
+        cam->position = PRIVATE(this)->focal2 - cam->focalDistance.getValue() * direction;
+    }
+}
+
+void NavigationStyleP::viewAnimationCB(void * data, SoSensor * sensor)
+{
+    NavigationStyle* that = reinterpret_cast<NavigationStyle*>(data);
+    if (PRIVATE(that)->animationsteps > 0) {
+        // here the camera rotates from the current rotation to a given
+        // rotation (e.g. the standard views). To get this movement animated
+        // we calculate an interpolated rotation and update the view after
+        // each step
+        float step = std::min<float>((float)PRIVATE(that)->animationsteps/100.0f, 1.0f);
+        SbRotation slerp = SbRotation::slerp(that->spinRotation, PRIVATE(that)->endRotation, step);
+        SbVec3f focalpoint = (1.0f-step)*PRIVATE(that)->focal1 + step*PRIVATE(that)->focal2;
+        SoCamera* cam = that->viewer->getCamera();
+        SbVec3f direction;
+        cam->orientation.setValue(slerp);
+        cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+        cam->position = focalpoint - cam->focalDistance.getValue() * direction;
+
+        PRIVATE(that)->animationsteps += PRIVATE(that)->animationdelta;
+        if (PRIVATE(that)->animationsteps > 100) {
+            // now we have reached the end of the movement
+            PRIVATE(that)->animationsteps=0;
+            PRIVATE(that)->animsensor->unschedule();
+            // set to the actual given rotation
+            cam->orientation.setValue(PRIVATE(that)->endRotation);
+            cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+            cam->position = PRIVATE(that)->focal2 - cam->focalDistance.getValue() * direction;
+        }
     }
 }
 
@@ -521,37 +578,10 @@ void NavigationStyle::updateAnimation()
     this->prevRedrawTime = now;
 
     if (this->isAnimating()) {
-        if (this->animationsteps > 0) {
-            // here the camera rotates from the current rotation to a given
-            // rotation (e.g. the standard views). To get this movement animated
-            // we calculate an interpolated rotation and update the view after
-            // each step
-            float step = std::min<float>((float)this->animationsteps/100.0f, 1.0f);
-            SbRotation slerp = SbRotation::slerp(this->spinRotation, this->endRotation, step);
-            SbVec3f focalpoint = (1.0f-step)*this->focal1 + step*this->focal2;
-            SoCamera* cam = viewer->getCamera();
-            SbVec3f direction;
-            cam->orientation.setValue(slerp);
-            cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
-            cam->position = focalpoint - cam->focalDistance.getValue() * direction;
-
-            this->animationsteps += this->animationdelta;
-            if (this->animationsteps > 100) {
-                // now we have reached the end of the movement
-                this->currentmode = NavigationStyle::IDLE;
-                this->animationsteps=0;
-                // set to the actual given rotation
-                cam->orientation.setValue(this->endRotation);
-                cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
-                cam->position = this->focal2 - cam->focalDistance.getValue() * direction;
-            }
-        }
-        else {
-            // here the camera rotates around a fix axis
-            SbRotation deltaRotation = this->spinRotation;
-            deltaRotation.scaleAngle(secs * 5.0);
-            this->reorientCamera(viewer->getCamera(), deltaRotation);
-        }
+        // here the camera rotates around a fix axis
+        SbRotation deltaRotation = this->spinRotation;
+        deltaRotation.scaleAngle(secs * 5.0);
+        this->reorientCamera(viewer->getCamera(), deltaRotation);
     }
 }
 
@@ -1406,3 +1436,6 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
 
     return FALSE;
 }
+
+#undef PRIVATE
+#undef PUBLIC
