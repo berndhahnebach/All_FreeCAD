@@ -24,6 +24,7 @@
 #ifndef _PreComp_
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <BRepPrimAPI_MakeCone.hxx>
+# include <BRepPrimAPI_MakeTorus.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRep_Builder.hxx>
@@ -507,6 +508,39 @@ static PyObject * makeCone(PyObject *self, PyObject *args)
     }
 }
 
+
+static PyObject * makeTorus(PyObject *self, PyObject *args)
+{
+    double radius1, radius2, angle1=0.0, angle2=2.0*Standard_PI, angle=2.0*Standard_PI;
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "dd|O!O!ddd", &radius1, &radius2,
+                                              &(Base::VectorPy::Type), &pPnt,
+                                              &(Base::VectorPy::Type), &pDir,
+                                              &angle1, &angle2, &angle))
+        return NULL;
+
+    try {
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        BRepPrimAPI_MakeTorus mkTorus(gp_Ax2(p,d), radius1, radius2, angle1, angle2, angle);
+        TopoDS_Shape shape = mkTorus.Shape();
+        return new TopoShapeSolidPy(new TopoShape(shape));
+    }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of torus failed");
+        return NULL;
+    }
+}
+
+
 static PyObject * makeLine(PyObject *self, PyObject *args)
 {
     PyObject *obj1, *obj2;
@@ -856,6 +890,9 @@ struct PyMethodDef Part_methods[] = {
     {"makeCone" ,makeCone,METH_VARARGS,
      "makeCone(radius1,radius2,height,[pnt,dir,angle]) -- Make a cone with given radii and height\n"
      "By default pnt=Vector(0,0,0), dir=Vector(0,0,1) and angle=2*PI"},
+    {"makeTorus" ,makeTorus,METH_VARARGS,
+     "makeTorus(radius1,radius2,[pnt,dir,angle1,angle2,angle]) -- Make a torus with a given radii and angles\n"
+     "By default pnt=Vector(0,0,0),dir=Vector(0,0,1),angle1=0,angle1=2*PI and angle=2*PI"},
     {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
      "cast_to_shape(shape) -- Cast to the actual shape type"},
     {"__sortEdges__" ,sortEdges,METH_VARARGS,
