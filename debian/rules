@@ -128,6 +128,7 @@ binary-arch: build install
 #	dh_installinfo
 #	dh_installman debian/freecad.1
 	dh_installman debian/freecad.1 debian/mime/freecad-thumbnailer.1
+	dh_install debian/fcstd-thumbnailer.desktop /usr/share/thumbnailers
 	dh_link
 	dh_strip
 	dh_compress
