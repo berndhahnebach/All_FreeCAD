@@ -145,21 +145,27 @@ if(WIN32)
 	    debug QtXmld4.lib
 	    debug QtOpenGld4.lib
 	)
+	set(QT_UIC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/uic.exe)
+	set(QT_MMOC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/moc.exe)
+	set(QT_RCC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/rcc.exe)
+	
+	
+	
 	MACRO (QT4_EXTRACT_OPTIONS _qt4_files _qt4_options)
 		SET(${_qt4_files})
 		SET(${_qt4_options})
 		#SET(_QT4_DOING_OPTIONS FALSE)
-		#FOREACH(_currentArg ${ARGN})
+		FOREACH(_currentArg ${ARGN})
 		#  IF ("${_currentArg}" STREQUAL "OPTIONS")
 		#	SET(_QT4_DOING_OPTIONS TRUE)
 		#  ELSE ("${_currentArg}" STREQUAL "OPTIONS")
 		#	IF(_QT4_DOING_OPTIONS) 
 		#	  LIST(APPEND ${_qt4_options} "${_currentArg}")
 		#	ELSE(_QT4_DOING_OPTIONS)
-		#	  LIST(APPEND ${_qt4_files} "${_currentArg}")
+			  LIST(APPEND ${_qt4_files} "${_currentArg}")
 		#	ENDIF(_QT4_DOING_OPTIONS)
 		#  ENDIF ("${_currentArg}" STREQUAL "OPTIONS")
-		#ENDFOREACH(_currentArg)  
+		ENDFOREACH(_currentArg)  
 	ENDMACRO (QT4_EXTRACT_OPTIONS)
 
 	MACRO (QT4_WRAP_CPP outfiles )
@@ -223,16 +229,16 @@ if(WIN32)
 		ENDFOREACH (it)
 	ENDMACRO (QT4_ADD_RESOURCES)
 
-	MACRO (QT4_WRAP_UI outfiles )
-		QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
-		SET(ARGN)
-		FOREACH (it ${ui_files})
+	MACRO (QT4_WRAP_UI outfiles  )
+    QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
+
+    FOREACH (it ${ui_files})
 		  GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
 		  GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
 		  SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/ui_${outfile}.h)
 		  ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
 			COMMAND ${QT_UIC_EXECUTABLE}
-			ARGS ${ui_options} -o ${outfile} ${infile}
+			ARGS -o ${outfile} ${infile}
 			MAIN_DEPENDENCY ${infile})
 		  SET(${outfiles} ${${outfiles}} ${outfile})
 		ENDFOREACH (it)
@@ -252,6 +258,11 @@ if(WIN32)
 	set(OPENCV_LIBRARIES  cv.lib cvaux.lib cxcore.lib cxts.lib highgui.lib)
 	set(OPENCV_FOUND TRUE) 
 
+# OCC
+	set(OCC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/OpenCascade)
+	#set(OCC_LIBRARIES  cv.lib cvaux.lib cxcore.lib cxts.lib highgui.lib)
+	set(OCC_FOUND TRUE) 
+	
 	
 else(WIN32)
 
