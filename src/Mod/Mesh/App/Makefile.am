@@ -319,7 +319,7 @@ nobase_include_HEADERS = \
 
 
 # the library search path.
-libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -L$(OCC_LIB) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libMesh_la_CPPFLAGS = -DMeshExport= 
 
 libMesh_la_LIBADD   = \
