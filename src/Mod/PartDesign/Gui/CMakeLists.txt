@@ -9,6 +9,9 @@ include_directories(
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
 		 ${COIN_INCLUDE_DIR}
+		 ${QT_INCLUDE_DIR}
+ 		 ${ZLIB_INCLUDE_DIR}
+		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCES_INCLUDE_DIR})
 

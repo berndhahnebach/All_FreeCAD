@@ -4,6 +4,7 @@ include_directories(
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
+ 		 ${ZLIB_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)

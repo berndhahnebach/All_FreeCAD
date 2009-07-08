@@ -5,7 +5,9 @@ include_directories(
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${SO_QT_INCLUDE_DIR}
+		 ${SOQT_INCLUDE_DIR}
+ 		 ${ZLIB_INCLUDE_DIR}
+		 ${QT_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
