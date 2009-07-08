@@ -146,7 +146,7 @@ if(WIN32)
 	    debug QtOpenGld4.lib
 	)
 	set(QT_UIC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/uic.exe)
-	set(QT_MMOC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/moc.exe)
+	set(QT_MOC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/moc.exe)
 	set(QT_RCC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/rcc.exe)
 	
 	
@@ -169,13 +169,19 @@ if(WIN32)
 	ENDMACRO (QT4_EXTRACT_OPTIONS)
 
 	MACRO (QT4_WRAP_CPP outfiles )
-
-		FOREACH (it ${moc_files})
-		  GET_FILENAME_COMPONENT(it ${it} ABSOLUTE)
-		  #QT4_MAKE_OUTPUT_FILE(${it} moc_ cxx outfile)
-		  #QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${moc_options}")
-		  SET(${outfiles} ${${outfiles}} ${outfile})
-		ENDFOREACH(it)
+		QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+		SET(ARGN)
+		foreach(it ${moc_files})
+			set (outfile moc_${it}.cpp)
+			string( REPLACE ".h" "" outfile ${outfile})
+			get_filename_component(it ${it} ABSOLUTE)
+			ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+				COMMAND ${QT_MOC_EXECUTABLE}
+				ARGS ${moc_options} ${it} -o ${outfile}
+				MAIN_DEPENDENCY ${it}
+			)
+			SET(${outfiles} ${${outfiles}} ${outfile})
+		endforeach(it)
 	ENDMACRO (QT4_WRAP_CPP)
 	
 	
@@ -188,14 +194,20 @@ if(WIN32)
 	include(AddFileDependencies)
 
 	macro(fc_wrap_cpp outfiles )
-
-			 foreach(it ${moc_files})
-					 get_filename_component(it ${it} ABSOLUTE)
-					 #QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-					 #QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
-					 set(${outfiles} ${${outfiles}} ${outfile})
-					 add_file_dependencies(${it} ${outfile})
-			 endforeach(it)
+		QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+		SET(ARGN)
+		foreach(it ${moc_files})
+			set (outfile moc_${it}.cpp)
+			string( REPLACE ".h" "" outfile ${outfile})
+			get_filename_component(it ${it} ABSOLUTE)
+			ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+				COMMAND ${QT_MOC_EXECUTABLE}
+				ARGS ${moc_options} ${it} -o ${outfile}
+				MAIN_DEPENDENCY ${it}
+			)
+			SET(${outfiles} ${${outfiles}} ${outfile})
+			add_file_dependencies(${it} ${outfile})
+		endforeach(it)
 	endmacro(fc_wrap_cpp)
 	
 	

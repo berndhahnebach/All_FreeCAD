@@ -118,16 +118,7 @@ set(Gui_MOC_HDRS
 )
 #qt4_wrap_cpp(Gui_MOC_SRCS ${Gui_MOC_HDRS})
 fc_wrap_cpp(Gui_MOC_SRCS ${Gui_MOC_HDRS})
-SOURCE_GROUP("Moc" FILES ${Gui_MOC_SRCS})
-
-set(iis_MOC_HDRS
-		 iisTaskPanel/src/iisiconlabel.h
-		 iisTaskPanel/src/iistaskbox.h
-		 iisTaskPanel/src/iistaskgroup.h
-		 iisTaskPanel/src/iistaskheader.h
-)
-qt4_wrap_cpp(iis_MOC_SRCS ${iis_MOC_HDRS})
-#SOURCE_GROUP("Moc" FILES ${iis_MOC_SRCS})
+#SOURCE_GROUP("Moc" FILES ${Gui_MOC_SRCS})
 
 SET(Gui_UIC_SRCS
 		 AboutApplication.ui
@@ -420,7 +411,16 @@ SET(iisTaskPanel_SRCS
 		 iisTaskPanel/src/iiswinxptaskpanelscheme.h
 		 iisTaskPanel/src/iistaskpanel_global.h
 )
-SOURCE_GROUP("iisTaskPanel" FILES ${iisTaskPanel_SRCS})
+SOURCE_GROUP("Widget\\iisTaskPanel" FILES ${iisTaskPanel_SRCS})
+set(iis_MOC_HDRS
+		 iisTaskPanel/src/iisiconlabel.h
+		 iisTaskPanel/src/iistaskbox.h
+		 iisTaskPanel/src/iistaskgroup.h
+		 iisTaskPanel/src/iistaskheader.h
+)
+qt4_wrap_cpp(iis_MOC_SRCS ${iis_MOC_HDRS})
+SOURCE_GROUP("Widget\\iisTaskPanel\\Mocs" FILES ${iis_MOC_SRCS})
+
 
 #SET(Resource_RCS
 #		 Icons/resource.qrc
