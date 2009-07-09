@@ -2,7 +2,6 @@ SUBDIRS=_TEMPLATE_
 
 
 EXTRA_DIST = \
-		encode/lencode.cpp \
 		fcbt/__init__.py \
 		fcbt/BuildDoc.py \
 		fcbt/BuildDocDoxy.cfg \
@@ -33,25 +32,12 @@ EXTRA_DIST = \
 		generateTemplates/templateModuleGui.py \
 		generateTemplates/templateModuleAppFeature.py \
 		generateTemplates/templateModuleAppMain.py \
-		ImageTools/ImageConv/CmdLine.cpp \
-		ImageTools/ImageConv/CmdLine.h \
-		ImageTools/ImageConv/cmdline.htm \
-		ImageTools/ImageConv/imageconv.cpp \
-		ImageTools/ImageConv/imageconv.h \
-		ImageTools/ImageConv/ImageConv.pro \
-		ImageTools/ImageConv/main.cpp \
 		plugins/widget/customwidgets.cpp \
 		plugins/widget/customwidgets.h \
 		plugins/widget/plugin.cpp \
 		plugins/widget/plugin.h \
 		plugins/widget/plugin.pro \
-		RegExp/main.cpp \
-		RegExp/RegExp.pro \
-		RegExp/regexpdialog.cpp \
-		RegExp/regexpdialog.h \
-		RegExp/regexpdialogbase.ui \
 		chm.css \
-		ConvertUi.py \
 		dir2qrc.py \
 		DistTools.py \
 		fcbt.py \
@@ -60,12 +46,9 @@ EXTRA_DIST = \
 		MakeApp.py \
 		MakeAppTools.py \
 		MakeNewBuildNbr.py \
-		post_moc.py \
 		MemoryLeaks.py \
 		PythonToCPP.py \
 		pythondoc.py \
-		tstocpp.py \
-		qembed.py \
 		SubWCRev.py \
 		wiki2chm.py \
 		WixFileTool.py
