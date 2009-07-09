@@ -6,6 +6,5 @@ include_HEADERS=\
 EXTRA_DIST = \
 		Build/BuildVersion.bat \
 		Build/Version.h.in \
-		CMakeLists.txt \
-		fc.sh
+		CMakeLists.txt
 
