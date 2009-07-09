@@ -39,7 +39,16 @@ if(MSVC)
 set_target_properties(FreeCADMain PROPERTIES DEBUG_OUTPUT_NAME "FreeCADD")
 endif(MSVC)
 
-install(TARGETS FreeCADMain DESTINATION bin)
+if(WIN32)
+	INSTALL(TARGETS FreeCADMain
+	  RUNTIME DESTINATION bin
+	  LIBRARY DESTINATION lib
+	)
+else(WIN32)
+	INSTALL(TARGETS FreeCADMain 
+	  RUNTIME DESTINATION bin
+	)
+endif(WIN32)
 
 ######################## FreeCADMainCmd ########################
 
@@ -54,7 +63,16 @@ if(MSVC)
 set_target_properties(FreeCADMainCmd PROPERTIES DEBUG_OUTPUT_NAME "FreeCADCmdD")
 endif(MSVC)
 
-install(TARGETS FreeCADMainCmd DESTINATION bin)
+if(WIN32)
+	INSTALL(TARGETS FreeCADMainCmd
+	  RUNTIME DESTINATION bin
+	  LIBRARY DESTINATION lib
+	)
+else(WIN32)
+	INSTALL(TARGETS FreeCADMainCmd 
+	  RUNTIME DESTINATION bin
+	)
+endif(WIN32)
 
 ######################## FreeCADMainPy ########################
 
@@ -75,4 +93,13 @@ else(WIN32)
 		 set_target_properties(FreeCADMainPy PROPERTIES PREFIX "")
 endif(WIN32)
 
-install(TARGETS FreeCADMainPy DESTINATION lib)
+if(WIN32)
+	INSTALL(TARGETS FreeCADMainPy
+	  RUNTIME DESTINATION bin
+	  LIBRARY DESTINATION lib
+	)
+else(WIN32)
+	INSTALL(TARGETS FreeCADMainPy
+	  LIBRARY DESTINATION lib
+	)
+endif(WIN32)
