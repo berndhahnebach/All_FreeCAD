@@ -595,8 +595,14 @@ add_library(FreeCADGui SHARED ${FreeCADGui_SRCS})
 
 target_link_libraries(FreeCADGui ${FreeCADGui_LIBS})
 
-if(MSVC)
-		set_target_properties(FreeCADGui PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGuiD")
-endif(MSVC)
-
-install(TARGETS FreeCADGui DESTINATION lib)
+if(WIN32)
+	INSTALL(TARGETS FreeCADGui
+	  RUNTIME DESTINATION bin
+	  LIBRARY DESTINATION lib
+	)
+	set_target_properties(FreeCADGui PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGuiD")
+else(WIN32)
+	INSTALL(TARGETS FreeCADGui
+	  LIBRARY DESTINATION lib
+	)
+endif(WIN32)
