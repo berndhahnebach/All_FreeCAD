@@ -227,8 +227,6 @@ add_library(FreeCADBase SHARED ${FreeCADBase_SRCS})
 target_link_libraries(FreeCADBase ${FreeCADBase_LIBS})
 
 if(MSVC)
-		set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
-		set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../bin)
 endif(MSVC)
 
 if(WIN32)
@@ -236,6 +234,8 @@ if(WIN32)
 	  RUNTIME DESTINATION bin
 	  LIBRARY DESTINATION lib
 	)
+	set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
+	set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 else(WIN32)
 	INSTALL(TARGETS FreeCADBase
 	  LIBRARY DESTINATION lib

@@ -1,10 +1,10 @@
 project(FreeCAD_trunk)
-set(FREECAD_VERSION "0.7")
+set(FREECAD_VERSION "0.9")
 
 cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 # include local  modules
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+#set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if(COMMAND cmake_policy)
 		 cmake_policy(SET CMP0003 NEW)
@@ -12,14 +12,14 @@ endif(COMMAND cmake_policy)
 
 set(COMPILE_DEFINITIONS_DEBUG "-DFC_DEBUG=1")
 
-if(CMAKE_CFG_INTDIR STREQUAL .)
+#if(CMAKE_CFG_INTDIR STREQUAL .)
 		 # No Debug/Release output paths
-		 set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main)
-		 set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main)
-else(CMAKE_CFG_INTDIR STREQUAL .)
-		 set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Debug)
-		 set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Release)
-endif(CMAKE_CFG_INTDIR STREQUAL .)
+		 set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+		 set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+#else(CMAKE_CFG_INTDIR STREQUAL .)
+#		 set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Debug)
+#		 set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Release)
+#endif(CMAKE_CFG_INTDIR STREQUAL .)
 
 if(WIN32)
 		 set(PLATFORM_CP xcopy /Y /S)
