@@ -554,6 +554,11 @@ MenuItem* NoneWorkbench::setupMenuBar() const
     file->setCommand("&File");
     *file << "Std_Quit";
 
+    // Edit
+    MenuItem* edit = new MenuItem( menuBar );
+    edit->setCommand(QT_TR_NOOP("&Edit"));
+    *edit << "Std_DlgPreferences";
+
     // View
     MenuItem* view = new MenuItem( menuBar );
     view->setCommand("&View");
@@ -585,7 +590,9 @@ ToolBarItem* NoneWorkbench::setupCommandBars() const
 
 DockWindowItems* NoneWorkbench::setupDockWindows() const
 {
-    return new DockWindowItems();
+    DockWindowItems* root = new DockWindowItems();
+    root->addDockWidget("Std_ReportView", Qt::BottomDockWidgetArea, true);
+    return root;
 }
 
 // --------------------------------------------------------------------
