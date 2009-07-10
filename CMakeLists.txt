@@ -4,7 +4,9 @@ set(FREECAD_VERSION "0.9")
 cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 # include local  modules
-#set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+if (NOT WIN32)
+		 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cMakeFiles")
+endif(NOT WIN32)
 
 if(COMMAND cmake_policy)
 		 cmake_policy(SET CMP0003 NEW)
@@ -32,7 +34,7 @@ endif(WIN32)
 
 
 if(CMAKE_COMPILER_IS_GNUCC)
-	include(cmake/ConfigureChecks.cmake)
+	include(cMakeFiles/ConfigureChecks.cmake)
 	configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 	add_definitions(-DHAVE_CONFIG_H)
 	add_definitions(-Wno-write-strings)
