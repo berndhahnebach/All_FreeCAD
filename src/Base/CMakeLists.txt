@@ -220,7 +220,7 @@ SET(FreeCADBase_SRCS
 	XMLTools.h
 )
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
+#set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
 
 add_library(FreeCADBase SHARED ${FreeCADBase_SRCS})
 
@@ -228,6 +228,7 @@ target_link_libraries(FreeCADBase ${FreeCADBase_LIBS})
 
 if(MSVC)
 		set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
+		set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../bin)
 endif(MSVC)
 
 if(WIN32)
