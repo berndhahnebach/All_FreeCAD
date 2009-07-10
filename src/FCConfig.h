@@ -312,12 +312,12 @@ typedef unsigned __int64    uint64_t;
 //**************************************************************************
 // here get the warnings of too long specifiers disabled (needed for VC6)
 #ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#	pragma warning( disable : 4503 )
-#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
-#	pragma warning( disable : 4290 )  // not implemented throw specification
-#	pragma warning( disable : 4996 )  // supress depricated warning for e.g. open()...
-#	define _PreComp_                  // use precompiled header
+//#	pragma warning( disable : 4251 )
+//#	pragma warning( disable : 4503 )
+//#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+//#	pragma warning( disable : 4290 )  // not implemented throw specification
+//#	pragma warning( disable : 4996 )  // supress depricated warning for e.g. open()...
+//#	define _PreComp_                  // use precompiled header
 #endif
 
 
