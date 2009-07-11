@@ -34,6 +34,29 @@ Version:
   0.1
 """
 
+"""
+* apt-get update
+* apt-get upgrade
+* edit configure.ac: revision number
+* chmod u+x autogen.sh
+* ./autogen.sh
+* ./configure
+* make dist
+
+* tar -xzf FreeCAD-X.Y.xyz.tar.gz
+* rename folder to freecad-X.Y.xyz
+* rename tarball to freecad_X.Y.xyz.orig.tar.gz
+
+* cd freecad-X.Y.xyz
+* patch -p1 < .../debian/diff/freecad_X.Y.xyz-1hardy1.diff
+* dch -v X.Y.xyz-1hardy1 "New release for Ubuntu 8.04 (Hardy Heron)"
+* edit changelog
+* edit rules to add further modules
+* chmod u+x autogen.sh
+* debuild
+* add freecad_X.Y.xyz-1hardy1.diff to svn
+* upload to sftp://wmayer@frs.sourceforge.net/incoming/w/wm/wmayer/uploads
+"""
 
 from subprocess import call,Popen,PIPE
 from time import sleep
@@ -50,33 +73,59 @@ Major = 0
 Minor = 7
 Alias = ""
 FileName = ""
-BuildPath = "/tmp/build"
-Log = None
-ErrLog = None
+BuildPath = None
+LogFile = None
 Config = None
 Url = "https://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk"
 
+
+ERROR_STR= """Error removing %(path)s, %(error)s """
+
+def rmgeneric(path, __func__):
+
+    try:
+        __func__(path)
+        print 'Removed ', path
+    except OSError, (errno, strerror):
+        print ERROR_STR % {'path' : path, 'error': strerror }
+            
+def removeall(path):
+
+    if not os.path.isdir(path):
+        return
+    
+    files=os.listdir(path)
+
+    for x in files:
+        fullpath=os.path.join(path, x)
+        if os.path.isfile(fullpath):
+            f=os.remove
+            rmgeneric(fullpath, f)
+        elif os.path.isdir(fullpath):
+            removeall(fullpath)
+            f=os.rmdir
+            rmgeneric(fullpath, f)
 
 def CallProcess(args,Msg,ret=True):
 	Anim = ['-','\\','|','/']
 	
 	sys.stdout.write(Msg+':  ')
-	Log.write("====== Call: " + args[0] + '\n')
-	SVN = Popen(args, stdout=PIPE, stderr=ErrLog)
+	LogFile.write("====== Call: " + args[0] + '\n')
+	LogFile.flush()
+	cmd = Popen(args, stdout=LogFile, stderr=LogFile)
 	
 	i = 0
-	while(SVN.poll() == None):
-		line = SVN.stdout.readline()
-		if(line):
-			Log.write(line.replace('\n',''))
+	while(cmd.poll() == None):
+		#line = cmd.stdout.readline()
+		#if(line):
+		#	LogFile.write(line)
 		sys.stdout.write(chr(8) + Anim[i%4])
 		i+=1
 		sleep(0.2)
 	
-	#ErrLog.write(SVN.stdout.read())
 	sys.stdout.write(chr(8) + "done\n")
-	if(not SVN.returncode == 0 and ret):
-		print "Process returns: ",SVN.returncode
+	if(not cmd.returncode == 0 and ret):
+		print args[0],"returns:",cmd.returncode
 		raise
 
 # Step 2 & 3
@@ -96,30 +145,44 @@ def CheckOut():
 	Version.write('#define FCCurrentDateT  "'+time.asctime()+'"  \n')
 	Version.close()
 	
+	Config = open("configure.ac","r")
+	lines = Config.readlines()
+	Config.close()
+	for i in range(len(lines)):
+		if (lines[i].startswith("m4_define([FREECAD_MAJOR], ")):
+			lines[i] = "m4_define([FREECAD_MAJOR], [" + `Major` + "])\n"
+		elif (lines[i].startswith("m4_define([FREECAD_MINOR], ")):
+			lines[i] = "m4_define([FREECAD_MINOR], [" + `Minor` + "])\n"
+		elif (lines[i].startswith("m4_define([FREECAD_MICRO], ")):
+			lines[i] = "m4_define([FREECAD_MICRO], [" + `Release` + "])\n"
+	Config = open("configure.ac","w")
+	Config.writelines(lines)
+	Config.close()
+	
 	sys.stdout.write('done\n')
 
 # Step 4
 def MakeDist():
 	
 	CallProcess(["./autogen.sh"], "4) Make source package")
-	CallProcess(["./configure"],"")
-	CallProcess(["make", "dist"],"")
-	
-	sys.stdout.write('done\n')
+	CallProcess(["./configure"],"   Run configure")
+	CallProcess(["make", "dist"],"   make dist")
 
 # Step 5
-def BuildAll():
+#def BuildAll():
 	
-	CallProcess(["tar","-xzf","FreeCAD-0.7.2008.tar.gz"],"")
-	os.chdir("FreeCAD-0.7.2008")
-	CallProcess(["debuild"],"")
-	
-	sys.stdout.write('done\n')
+	#removeall("FreeCAD-0.7.2008")
+	#os.rmdir("FreeCAD-0.7.2008")
+	#CallProcess(["tar","-xzf","FreeCAD-0.7.2008.tar.gz"],"")
+	#os.chdir("FreeCAD-0.7.2008")
+	#CallProcess(["debuild"],"")
 
 def main():
-	global Release, Major, Minor, Alias, FileName, BuildPath, Log, ErrLog, Config
+	global Release, Major, Minor, Alias, FileName, BuildPath, LogFile, Config
 	IniFile = "../BuildRelease.ini"
 	try:
+		#default build path
+		BuildPath = "/home/" + os.getlogin() + "/tmp"
 		opts, args = getopt.getopt(sys.argv[1:], "hb:", ["help","buildPath="])
 	except getopt.GetoptError:
 		# print help information and exit:
@@ -160,28 +223,24 @@ def main():
 	if not os.path.isdir(BuildPath):
 		os.mkdir(BuildPath)
 	os.chdir(BuildPath)
-	Log = open("BuildRelease.log","w")
-	ErrLog = open("BuildReleaseErrors.log","w")
+	LogFile = open("BuildRelease.log","w")
 	
 	try:
-		#CheckOut()
-		#MakeDist()
-		BuildAll()
+		CheckOut()
+		MakeDist()
+		#BuildAll()
 		#SendFTP()
 	except:
-		Log.close()
-		ErrLog.close()
-		Err = open("BuildReleaseErrors.log","r")
-		sys.stderr.write("Error raised:\n")
-		sys.stderr.write(Err.read())
+		LogFile.close()
+		sys.stderr.write("Error raised!\n")
+		#raise Exception("Build script aborted")
 		raise
 	
 	os.chdir(OldCwd)
-	Log.close()
-	ErrLog.close()
+	LogFile.close()
 
-	print "Press any key"
-	sys.stdin.readline()
+	#print "Press any key"
+	#sys.stdin.readline()
 
 if __name__ == "__main__":
 	main()
