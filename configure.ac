@@ -1,12 +1,11 @@
 dnl                                               -*- Autoconf -*-
 dnl Process this file with autoconf to produce a configure script.
+AC_PREREQ(2.50)
 
 dnl Init stuff
 dnl **************************************************************************
 dnl release version number info
-m4_define([FREECAD_MAJOR], [0])
-m4_define([FREECAD_MINOR], [7])
-m4_define([FREECAD_MICRO], [2008])
+m4_include([revision.m4])
 
 AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[wmayer@users.sourceforge.net], FreeCAD)
 AM_INIT_AUTOMAKE([tar-ustar foreign])
