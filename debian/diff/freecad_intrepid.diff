@@ -1,24 +1,17 @@
---- freecad-0.7.2008.orig/config.h.in
-+++ freecad-0.7.2008/config.h.in
-@@ -111,6 +111,10 @@
- /* Define to 1 if you have the <values.h> header file. */
- #undef HAVE_VALUES_H
- 
-+/* Define to the sub-directory in which libtool stores uninstalled libraries.
-+   */
-+#undef LT_OBJDIR
+--- freecad-0.8.2237.orig/debian/changelog
++++ freecad-0.8.2237/debian/changelog
+@@ -0,0 +1,155 @@
++freecad (0.8.2237-1intrepid1) intrepid; urgency=low
 +
- /* Name of package */
- #undef PACKAGE
- 
---- freecad-0.7.2008.orig/debian/changelog
-+++ freecad-0.7.2008/debian/changelog
-@@ -0,0 +1,149 @@
++  * New release for Ubuntu 8.10 (Intrepid Ibex)
++
++ -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 11 Jul 2009 20:36:40 +0200
++
 +freecad (0.7.2008-1intrepid1) intrepid; urgency=low
 +
 +  * New release for Ubuntu 8.10 (Intrepid Ibex)
 +
-+ -- Werner Mayer <werner@Zerberus>  Sat, 21 Mar 2009 19:23:57 +0100
++ -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 21 Mar 2009 19:23:57 +0100
 +
 +freecad (0.7.1779-1intrepid1) intrepid; urgency=low
 +
@@ -163,8 +156,8 @@
 +
 + -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 26 Sep 2006 16:55:15 +0200
 +
---- freecad-0.7.2008.orig/debian/menu
-+++ freecad-0.7.2008/debian/menu
+--- freecad-0.8.2237.orig/debian/menu
++++ freecad-0.8.2237/debian/menu
 @@ -0,0 +1,6 @@
 +?package(freecad):needs="X11"\
 +  section="Applications/Science/Engineering"\
@@ -172,8 +165,8 @@
 +  command="/usr/bin/freecad"\
 +  icon="/usr/share/freecad/FCIcon.xpm"
 +
---- freecad-0.7.2008.orig/debian/freecad.doc-base
-+++ freecad-0.7.2008/debian/freecad.doc-base
+--- freecad-0.8.2237.orig/debian/freecad.doc-base
++++ freecad-0.8.2237/debian/freecad.doc-base
 @@ -0,0 +1,14 @@
 +Document: freecad
 +Title: FreeCAD Manual
@@ -189,18 +182,18 @@
 +Format: text
 +Files: /usr/share/doc/freecad/README.Linux.gz
 +
---- freecad-0.7.2008.orig/debian/compat
-+++ freecad-0.7.2008/debian/compat
+--- freecad-0.8.2237.orig/debian/compat
++++ freecad-0.8.2237/debian/compat
 @@ -0,0 +1 @@
 +5
---- freecad-0.7.2008.orig/debian/freecad.links
-+++ freecad-0.7.2008/debian/freecad.links
+--- freecad-0.8.2237.orig/debian/freecad.links
++++ freecad-0.8.2237/debian/freecad.links
 @@ -0,0 +1,3 @@
 +usr/lib/freecad/bin/FreeCAD usr/bin/freecad
 +usr/lib/freecad/bin/FreeCADCmd usr/bin/freecadcmd
 +usr/share/man/man1/freecad.1.gz usr/share/man/man1/freecadcmd.1.gz
---- freecad-0.7.2008.orig/debian/copyright
-+++ freecad-0.7.2008/debian/copyright
+--- freecad-0.8.2237.orig/debian/copyright
++++ freecad-0.8.2237/debian/copyright
 @@ -0,0 +1,393 @@
 +Format-Specification: http://wiki.debian.org/Proposals/CopyrightFormat
 +Upstream-Maintainer: Werner Mayer <wmayer@users.sourceforge.net> 
@@ -595,8 +588,8 @@
 + src/Mod/Test/Gui/PreCompiled.cpp
 +Copyright: Not marked
 +License: ???
---- freecad-0.7.2008.orig/debian/freecad.desktop
-+++ freecad-0.7.2008/debian/freecad.desktop
+--- freecad-0.8.2237.orig/debian/freecad.desktop
++++ freecad-0.8.2237/debian/freecad.desktop
 @@ -0,0 +1,19 @@
 +[Desktop Entry]
 +Version=1.0
@@ -617,8 +610,8 @@
 +GenericName[de_DE]=Feature-basierter parametrischer Modellierer
 +Comment[de_DE]=Feature-basierter parametrischer Modellierer
 +MimeType=application/x-extension-fcstd
---- freecad-0.7.2008.orig/debian/control
-+++ freecad-0.7.2008/debian/control
+--- freecad-0.8.2237.orig/debian/control
++++ freecad-0.8.2237/debian/control
 @@ -0,0 +1,50 @@
 +Source: freecad
 +Section: x11
@@ -640,7 +633,7 @@
 +Package: freecad
 +Architecture: any
 +Section: science
-+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python
++Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 +XB-Python-Version: ${python:Versions}
 +Conflicts: freecad (<= 0.6.472-1)
 +Suggests: gnochm | kchmviewer | kchmviewer-nokde | xchm, python-opencv
@@ -670,8 +663,8 @@
 + develop modules for FreeCAD.
 +
 +
---- freecad-0.7.2008.orig/debian/freecad.sharedmimeinfo
-+++ freecad-0.7.2008/debian/freecad.sharedmimeinfo
+--- freecad-0.8.2237.orig/debian/freecad.sharedmimeinfo
++++ freecad-0.8.2237/debian/freecad.sharedmimeinfo
 @@ -0,0 +1,8 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
@@ -681,13 +674,13 @@
 +		<glob pattern="*.fcstd"/>
 +	</mime-type>
 +</mime-info>
---- freecad-0.7.2008.orig/debian/docs
-+++ freecad-0.7.2008/debian/docs
+--- freecad-0.8.2237.orig/debian/docs
++++ freecad-0.8.2237/debian/docs
 @@ -0,0 +1,2 @@
 +ChangeLog.txt
 +README.Linux
---- freecad-0.7.2008.orig/debian/README.Debian
-+++ freecad-0.7.2008/debian/README.Debian
+--- freecad-0.8.2237.orig/debian/README.Debian
++++ freecad-0.8.2237/debian/README.Debian
 @@ -0,0 +1,6 @@
 +freecad for Debian
 +------------------
@@ -695,8 +688,8 @@
 +- First Debian package for FreeCAD.
 +
 + -- Werner Mayer <wmayer@users.sourceforge.net>, Tue, 26 Sep 2006 16:55:15 +0200
---- freecad-0.7.2008.orig/debian/freecad.1
-+++ freecad-0.7.2008/debian/freecad.1
+--- freecad-0.8.2237.orig/debian/freecad.1
++++ freecad-0.8.2237/debian/freecad.1
 @@ -0,0 +1,73 @@
 +.\"                                      Hey, EMACS: -*- nroff -*-
 +.\" First parameter, NAME, should be all caps
@@ -771,8 +764,8 @@
 +To report a bug, please visit \fIhttp://free-cad.sf.net/\fR
 +.SH AUTHOR
 +This manual page was written by Werner Mayer.
---- freecad-0.7.2008.orig/debian/rules
-+++ freecad-0.7.2008/debian/rules
+--- freecad-0.8.2237.orig/debian/rules
++++ freecad-0.8.2237/debian/rules
 @@ -0,0 +1,143 @@
 +#!/usr/bin/make -f
 +# -*- makefile -*-
@@ -865,10 +858,10 @@
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/*.py usr/lib/freecad/Mod/$(MODULE);)
 +
 +# special treating of Draft module
-+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.py usr/lib/freecad/Mod/Draft
-+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.svg usr/lib/freecad/Mod/Draft
-+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.ui usr/lib/freecad/Mod/Draft
-+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/draftlibs/*.py usr/lib/freecad/Mod/Draft/draftlibs
++#	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.py usr/lib/freecad/Mod/Draft
++#	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.svg usr/lib/freecad/Mod/Draft
++#	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.ui usr/lib/freecad/Mod/Draft
++#	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/draftlibs/*.py usr/lib/freecad/Mod/Draft/draftlibs
 +
 +# special treating of Test module
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/lib*.so.* usr/lib/freecad/Mod/Test
@@ -917,8 +910,8 @@
 +
 +binary: binary-indep binary-arch
 +.PHONY: build clean binary-indep binary-arch binary install 
---- freecad-0.7.2008.orig/debian/mime/freecad-thumbnailer.1
-+++ freecad-0.7.2008/debian/mime/freecad-thumbnailer.1
+--- freecad-0.8.2237.orig/debian/mime/freecad-thumbnailer.1
++++ freecad-0.8.2237/debian/mime/freecad-thumbnailer.1
 @@ -0,0 +1,20 @@
 +.TH FREECAD 1 "August  04, 2008" freecad "Linux User's Manual"
 +.SH NAME
@@ -940,8 +933,8 @@
 +freecad(1), freecadcmd(1)
 +.SH AUTHOR
 +This manual page was written by Werner Mayer.
---- freecad-0.7.2008.orig/debian/mime/freecad.schemas
-+++ freecad-0.7.2008/debian/mime/freecad.schemas
+--- freecad-0.8.2237.orig/debian/mime/freecad.schemas
++++ freecad-0.8.2237/debian/mime/freecad.schemas
 @@ -0,0 +1,30 @@
 +<gconfschemafile>
 +    <schemalist>
@@ -973,8 +966,8 @@
 +
 +    </schemalist>
 +</gconfschemafile>
---- freecad-0.7.2008.orig/debian/mime/freecad-thumbnailer
-+++ freecad-0.7.2008/debian/mime/freecad-thumbnailer
+--- freecad-0.8.2237.orig/debian/mime/freecad-thumbnailer
++++ freecad-0.8.2237/debian/mime/freecad-thumbnailer
 @@ -0,0 +1,26 @@
 +#!/usr/bin/python
 +
