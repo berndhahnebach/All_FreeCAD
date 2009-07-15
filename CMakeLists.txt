@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 # include local  modules
 if (NOT WIN32)
-		 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cMakeFiles")
+		 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cMake")
 endif(NOT WIN32)
 
 if(COMMAND cmake_policy)
@@ -34,7 +34,7 @@ endif(WIN32)
 
 
 if(CMAKE_COMPILER_IS_GNUCC)
-	include(cMakeFiles/ConfigureChecks.cmake)
+	include(cMake/ConfigureChecks.cmake)
 	configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 	add_definitions(-DHAVE_CONFIG_H)
 	add_definitions(-Wno-write-strings)
@@ -64,7 +64,7 @@ SET(FREECAD_FORCE_LIBPACK false CACHE BOOL "important Variable")
 # == Win32 is default behaviour use the LibPack copied in Source tree ============
 if(WIN32)
 
-	include(cMakeFiles/UseLibPack6x.cmake)	
+	include(cMake/UseLibPack6x.cmake)	
 	
 else(WIN32)
 
@@ -168,7 +168,7 @@ else(WIN32)
 endif(WIN32)
 
 
-include(cMakeFiles/FreeCadMacros.cmake)
+include(cMake/FreeCadMacros.cmake)
 
 # ================================================================================
 # == Global Compiler and Linker Settings =========================================
