@@ -1,12 +1,15 @@
 SUBDIRS=src
 
 EXTRA_DIST = \
-		cMakeFiles/ConfigureChecks.cmake \
-		cMakeFiles/FindCoin3D.cmake \
-		cMakeFiles/FindOpenCasCade.cmake \
-		cMakeFiles/FindOpenCV.cmake \
-		cMakeFiles/FindSoQt.cmake \
-		cMakeFiles/FindXercesC.cmake \
+		cMake/ConfigureChecks.cmake \
+		cMake/FindCoin3D.cmake \
+		cMake/FindOpenCasCade.cmake \
+		cMake/FindOpenCV.cmake \
+		cMake/FindSoQt.cmake \
+		cMake/FindXercesC.cmake \
+		cMake/FreeCadMacros.cmake \
+		cMake/UseLibPack6x.cmake \
+		cMake/UseLibPack7x.cmake \
 		config.h.cmake \
 		CMakeLists.txt \
 		autogen.sh \
