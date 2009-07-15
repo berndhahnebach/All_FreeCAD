@@ -1,5 +1,7 @@
 add_subdirectory(App)
-add_subdirectory(Gui)
+if(FREECAD_BUILD_GUI)
+	add_subdirectory(Gui)
+endif(FREECAD_BUILD_GUI)
 
 copy_to_local_output_paths(Init.py)
 copy_to_local_output_paths(InitGui.py)

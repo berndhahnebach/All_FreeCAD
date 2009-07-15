@@ -54,27 +54,28 @@ endif(WIN32)
 
 # ================================================================================
 
+if(WIN32)
+		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack." ON)
+else(WIN32)
+		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack." OFF)
+endif(WIN32)
 
-SET(FREECAD_USE_LIBPACK false CACHE BOOL "important Variable")
-SET(FREECAD_FORCE_LIBPACK false CACHE BOOL "important Variable")
+OPTION(FREECAD_BUILD_GUI "Build the FreeCAD Gui." ON)
+OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs." OFF)
 
 
 
 # ================================================================================
 # == Win32 is default behaviour use the LibPack copied in Source tree ============
-if(WIN32)
+if(FREECAD_USE_LIBPACK)
 
 	include(cMake/UseLibPack6x.cmake)	
 	
-else(WIN32)
+else(FREECAD_USE_LIBPACK)
 
 # ================================================================================
 # == for other OSes search the packages ==========================================
 
-
-# -------------------------------- OpenGL --------------------------------
-
-	find_package(OpenGL)
 
 # -------------------------------- Python --------------------------------
 
@@ -87,54 +88,6 @@ else(WIN32)
 	ENDIF(NOT PYTHONLIBS_FOUND)
 
 
-# -------------------------------- Qt --------------------------------
-
-# sets ${QT_LIBRARIES}
-
-	SET(QT_MIN_VERSION 4.1.4)
-	set(QT_USE_QTNETWORK TRUE)
-	set(QT_USE_QTOPENGL TRUE)
-	set(QT_USE_QTSVG TRUE)
-	set(QT_USE_QTUITOOLS TRUE)
-	set(QT_USE_QTXML TRUE)
-	set(QT_USE_QTWEBKIT TRUE)
-	find_package(Qt4)
-
-	include(${QT_USE_FILE})
-
-	IF(NOT QT4_FOUND)
-		MESSAGE("Library qt-4.3 or above is not available, install QT or FreeCAD Gui version will not be built")
-	ENDIF(NOT QT4_FOUND)
-
-	IF(NOT QT_QTWEBKIT_FOUND)
-		MESSAGE("QT Webkit not found, will not build browser integration!")
-	ENDIF(NOT QT_QTWEBKIT_FOUND)
-
-
-	# This is a special version of the built in macro qt4_wrap_cpp
-	# It is required since moc'ed files are now included instead of being added to projects directly
-	# It adds a reverse dependency to solve this
-	# This has the unfortunate side effect that some files are always rebuilt
-	# There is probably a cleaner solution than this
-	include(AddFileDependencies)
-	macro(fc_wrap_cpp outfiles )
-			 # get include dirs
-			 QT4_GET_MOC_FLAGS(moc_includes)
-			 QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
-
-			 foreach(it ${moc_files})
-					 get_filename_component(it ${it} ABSOLUTE)
-					 QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-					 QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
-					 set(${outfiles} ${${outfiles}} ${outfile})
-					 add_file_dependencies(${it} ${outfile})
-			 endforeach(it)
-	endmacro(fc_wrap_cpp)
-
-# -------------------------------- Coin3D --------------------------------
-
-	find_package(Coin3D REQUIRED)
-	find_package(SoQt REQUIRED)
 
 # -------------------------------- Boost --------------------------------
 
@@ -164,8 +117,64 @@ else(WIN32)
 
 	find_package(OpenCV REQUIRED)
 
+	
+	if(FREECAD_BUILD_GUI)	
+# -------------------------------- OpenGL --------------------------------
 
-endif(WIN32)
+		find_package(OpenGL)
+
+# -------------------------------- Qt --------------------------------
+
+# sets ${QT_LIBRARIES}
+
+		SET(QT_MIN_VERSION 4.1.4)
+		set(QT_USE_QTNETWORK TRUE)
+		set(QT_USE_QTOPENGL TRUE)
+		set(QT_USE_QTSVG TRUE)
+		set(QT_USE_QTUITOOLS TRUE)
+		set(QT_USE_QTXML TRUE)
+		set(QT_USE_QTWEBKIT TRUE)
+		find_package(Qt4)
+
+		include(${QT_USE_FILE})
+
+		IF(NOT QT4_FOUND)
+			MESSAGE("Library qt-4.3 or above is not available, install QT or FreeCAD Gui version will not be built")
+		ENDIF(NOT QT4_FOUND)
+
+		IF(NOT QT_QTWEBKIT_FOUND)
+			MESSAGE("QT Webkit not found, will not build browser integration!")
+		ENDIF(NOT QT_QTWEBKIT_FOUND)
+
+
+		# This is a special version of the built in macro qt4_wrap_cpp
+		# It is required since moc'ed files are now included instead of being added to projects directly
+		# It adds a reverse dependency to solve this
+		# This has the unfortunate side effect that some files are always rebuilt
+		# There is probably a cleaner solution than this
+		include(AddFileDependencies)
+		macro(fc_wrap_cpp outfiles )
+				 # get include dirs
+				 QT4_GET_MOC_FLAGS(moc_includes)
+				 QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+
+				 foreach(it ${moc_files})
+						 get_filename_component(it ${it} ABSOLUTE)
+						 QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+						 QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
+						 set(${outfiles} ${${outfiles}} ${outfile})
+						 add_file_dependencies(${it} ${outfile})
+				 endforeach(it)
+		endmacro(fc_wrap_cpp)
+
+# -------------------------------- Coin3D --------------------------------
+
+		find_package(Coin3D REQUIRED)
+		find_package(SoQt REQUIRED)
+		
+	endif(FREECAD_BUILD_GUI)
+
+endif(FREECAD_USE_LIBPACK)
 
 
 include(cMake/FreeCadMacros.cmake)
