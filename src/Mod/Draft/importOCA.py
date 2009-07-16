@@ -1,6 +1,8 @@
 
 #***************************************************************************
 #*                                                                         *
+#*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     * 
+#*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
 #*   as published by the Free Software Foundation; either version 2 of     *
@@ -18,6 +20,10 @@
 #*   USA                                                                   *
 #*                                                                         *
 #***************************************************************************
+
+__title__="FreeCAD Draft Workbench - OCA importer/exporter"
+__author__ = "Yorik van Havre <yorik@gmx.fr>"
+__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 
 '''
 This script imports OCA/gcad files into FreeCAD.

@@ -1,6 +1,7 @@
 
-
 #***************************************************************************
+#*                                                                         *
+#*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     * 
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -19,6 +20,10 @@
 #*   USA                                                                   *
 #*                                                                         *
 #***************************************************************************
+
+__title__="FreeCAD Draft Workbench - Init file"
+__author__ = "Yorik van Havre <yorik@gmx.fr>"
+__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 
 class DraftWorkbench (Workbench):
 	"the Draft Workbench"

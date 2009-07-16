@@ -1,6 +1,8 @@
 
 #***************************************************************************
 #*                                                                         *
+#*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     *  
+#*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
 #*   as published by the Free Software Foundation; either version 2 of     *
@@ -18,6 +20,10 @@
 #*   USA                                                                   *
 #*                                                                         *
 #***************************************************************************
+
+__title__="FreeCAD Draft Workbench - Vector library"
+__author__ = "Yorik van Havre <yorik@gmx.fr>, Werner Mayer, Martin Burbaum"
+__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 
 "a vector math library for FreeCAD"
 
