@@ -1,6 +1,8 @@
 
 #***************************************************************************
 #*                                                                         *
+#*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     *  
+#*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
 #*   as published by the Free Software Foundation; either version 2 of     *
@@ -20,9 +22,8 @@
 #***************************************************************************
 
 __title__="FreeCAD Draft Workbench"
-__author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum"
+__author__ = "Yorik van Havre <yorik@gmx.fr>, Werner Mayer, Martin Burbaum"
 __url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
-__version__ = "0.1.7"
 
 '''
 General description:
@@ -775,6 +776,7 @@ class line:
 			self.linetrack = lineTracker()
 			self.constraintrack = lineTracker(dotted=True)
 			FreeCAD.Console.PrintMessage("Pick first point:\n")
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 			self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -979,6 +981,7 @@ class rectangle:
 			self.snap = snapTracker()
 			self.rect = rectangleTracker()
 			FreeCAD.Console.PrintMessage("Pick first point:\n")
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 			self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1115,6 +1118,7 @@ class arc:
 			self.arctrack = arcTracker()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			FreeCAD.Console.PrintMessage("Pick center point:\n")
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 			self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1426,6 +1430,7 @@ class annotation:
 			self.ui.xValue.selectAll()
 			self.snap = snapTracker()
 			FreeCAD.Console.PrintMessage("Pick location point:\n")
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 			self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1500,11 +1505,13 @@ class dim:
 			self.pos = []
 			self.ui.sourceCmd = self
 			self.ui.lineUi()
+			self.altdown = False
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.snap = snapTracker()
 			self.dimtrack = dimTracker()
 			self.constraintrack = lineTracker(dotted=True)
 			FreeCAD.Console.PrintMessage("Pick first point:\n")
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 			self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1538,7 +1545,7 @@ class dim:
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = Vector(point.x,point.y,point.z)
+			ctrlPoint = Vector(point.x,point.y,point.z)			
 			if (arg["ShiftDown"]): # constraining
 				point = constrainPoint(self,point)
 			else:
@@ -1546,15 +1553,33 @@ class dim:
 				self.ui.xValue.setEnabled(True)
 				self.ui.yValue.setEnabled(True)
 			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-			self.dimtrack.update(self.node+[point])
-			# Draw constraint tracker line.
-			if (arg["ShiftDown"]):
-				self.constraintrack.p1(point)
-				self.constraintrack.p2(ctrlPoint)
-				self.constraintrack.on()
-			else: self.constraintrack.off()
-			if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
-			else: self.ui.displayPoint(point)
+			if arg["AltDown"] and (len(self.node)<3):
+				if not self.altdown:
+					self.ui.cross(False)
+					self.altdown = True
+					self.ui.switchUi(True)
+				snapped = self.view.getObjectInfo((cursor[0],cursor[1]))
+				if snapped:
+					ob = self.doc.getObject(snapped['Object'])
+					num = int(snapped['Component'].lstrip('Edge'))-1
+					ed = ob.Shape.Edges[num]
+					v1 = ed.Vertexes[0].Point
+					v2 = ed.Vertexes[-1].Point
+					self.dimtrack.update([v1,v2])
+			else:
+				if self.altdown:
+					self.ui.cross(True)
+					self.altdown = False
+					self.ui.switchUi(False)
+				self.dimtrack.update(self.node+[point])
+				# Draw constraint tracker line.
+				if (arg["ShiftDown"]):
+					self.constraintrack.p1(point)
+					self.constraintrack.p2(ctrlPoint)
+					self.constraintrack.on()
+				else: self.constraintrack.off()
+				if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
+				else: self.ui.displayPoint(point)
 
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
@@ -1566,7 +1591,18 @@ class dim:
 				else:
 					self.constrain = None
 				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-				self.node.append(point)
+				if arg["AltDown"] and (len(self.node)<3):
+					snapped = self.view.getObjectInfo((self.pos[0],self.pos[1]))
+					if snapped:
+						ob = self.doc.getObject(snapped['Object'])
+						num = int(snapped['Component'].lstrip('Edge'))-1
+						ed = ob.Shape.Edges[num]
+						v1 = ed.Vertexes[0].Point
+						v2 = ed.Vertexes[-1].Point
+						self.node = [v1,v2]
+						self.dimtrack.on()
+				else:
+					self.node.append(point)
 				self.dimtrack.update(self.node)
 				if (len(self.node) == 1):
 					self.dimtrack.on()
@@ -1578,16 +1614,13 @@ class dim:
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
 		point = Vector(numx,numy,numz)
 		self.node.append(point)
-		self.linetrack.p1(point)
-		self.drawSegment(point)
-		if (len(self.node) == self.max):
-			self.finish(False)
-		if self.ui.xValue.isEnabled():
-			self.ui.xValue.setFocus()
-			self.ui.xValue.selectAll()
-		else:
-			self.ui.yValue.setFocus()
-			self.ui.yValue.selectAll()
+		self.dimtrack.update(self.node)
+		if (len(self.node) == 1):
+			self.dimtrack.on()
+		elif (len(self.node) == 3):
+			self.createObject()
+			self.finish()
+
 
 
 #---------------------------------------------------------------------------
@@ -1640,6 +1673,7 @@ class move:
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick start point:\n")
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1821,6 +1855,7 @@ class rotate:
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick rotation center:\n")
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 				
 	def finish(self,closed=False):
@@ -2076,6 +2111,7 @@ class offset:
 			else: self.ghost.append(arcTracker())
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2488,6 +2524,7 @@ class trimex:
 		self.force = None
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 
 				

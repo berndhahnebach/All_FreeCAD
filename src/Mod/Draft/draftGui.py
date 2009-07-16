@@ -1,7 +1,7 @@
 
 #***************************************************************************
-#*   FreeCAD Draft Workbench                                               *
-#*   Author: Yorik van Havre - http://yorik.orgfree.com                    *
+#*                                                                         *
+#*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     *  
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -20,6 +20,10 @@
 #*   USA                                                                   *
 #*                                                                         *
 #***************************************************************************
+
+__title__="FreeCAD Draft Workbench - GUI part"
+__author__ = "Yorik van Havre <yorik@gmx.fr>"
+__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 
 '''
 This is the GUI part of the Draft module.
