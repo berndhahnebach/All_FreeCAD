@@ -38,6 +38,8 @@
 #endif
 
 
+#ifdef _PreComp_
+
 // standard
 #include <stdio.h>
 #include <assert.h>
@@ -127,5 +129,7 @@
 # include <Gui/InventorAll.h>
 #endif
 
+
+#endif //_PreComp_
 
 #endif // __PRECOMPILED_GUI__ 

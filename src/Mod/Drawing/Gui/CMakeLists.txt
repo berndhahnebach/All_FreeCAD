@@ -4,7 +4,6 @@ else(WIN32)
 endif(WIN32)
 
 include_directories(
-		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}

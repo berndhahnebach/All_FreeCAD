@@ -70,4 +70,4 @@
 
 #endif  //_PreComp_
 
-#endif // __PRECOMPILED_GUI__ 
+#endif // GUI_PRECOMPILED_H 

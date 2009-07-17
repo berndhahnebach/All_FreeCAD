@@ -41,6 +41,8 @@
 #endif
 
 
+#ifdef _PreComp_
+
 // standard
 #include <iostream>
 #include <cassert>
@@ -76,5 +78,7 @@
 // Python
 #include <Python.h>
 
+
+#endif //_PreComp_
 
 #endif // __PRECOMPILED_GUI__

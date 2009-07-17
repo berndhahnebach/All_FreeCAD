@@ -5,7 +5,9 @@ else(WIN32)
 endif(WIN32)
 
 include_directories(
+		 ${CMAKE_BINARY_DIR}/src
 		 ${CMAKE_SOURCE_DIR}/src
+		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}

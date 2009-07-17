@@ -54,6 +54,6 @@
 
 #include <Python.h>
 
-#endif
 #endif // _PreComp_
+#endif
 

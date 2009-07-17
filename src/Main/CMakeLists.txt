@@ -2,7 +2,6 @@
 #add_defintions(-DFREECADMAINPY)
 
 include_directories(
-		 ${CMAKE_CURRENT_SOURCE_DIR}/..
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}

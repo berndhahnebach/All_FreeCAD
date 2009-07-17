@@ -43,6 +43,8 @@
 # pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+#ifdef _PreComp_
+
 // Python
 #include <Python.h>
 
@@ -71,5 +73,7 @@
 # include <Gui/Qt4All.h>
 #endif
 
+
+#endif //_PreComp_
 
 #endif // __PRECOMPILED_GUI__

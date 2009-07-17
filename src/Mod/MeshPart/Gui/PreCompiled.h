@@ -36,6 +36,8 @@
 #endif
 
 
+#ifdef _PreComp_
+
 // Python
 #include <Python.h>
 
@@ -65,5 +67,6 @@
 # include <Gui/Qt4All.h>
 #endif
 
+#endif //_PreComp_
 
 #endif // __PRECOMPILED_GUI__
