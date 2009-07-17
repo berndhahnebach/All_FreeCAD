@@ -24,9 +24,10 @@
 #ifndef __VIEWPROVIDERPART_H__
 #define __VIEWPROVIDERPART_H__
 
-#include <Gui/ViewProviderGeometryObject.h>
+#include <Standard_math.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
+#include <Gui/ViewProviderGeometryObject.h>
 #include <map>
 
 class TopoDS_Shape;

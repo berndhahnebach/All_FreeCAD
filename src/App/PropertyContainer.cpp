@@ -24,7 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
+# include <cassert>
+# include <algorithm>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

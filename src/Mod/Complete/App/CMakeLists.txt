@@ -2,7 +2,6 @@ if(WIN32)
 endif(WIN32)
 
 include_directories(
-		 ${CMAKE_SOURCE_DIR}/src
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}

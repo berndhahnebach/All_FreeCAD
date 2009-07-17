@@ -24,8 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <math.h>
+# include <cmath>
 # include <iostream>
+# include <algorithm>
 #endif
 
 #include <Base/Exception.h>

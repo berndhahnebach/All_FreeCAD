@@ -92,6 +92,8 @@
 
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
+#include <boost/signals.hpp>
+#include <boost/bind.hpp>
 
 using namespace App;
 using namespace std;

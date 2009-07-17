@@ -21,13 +21,12 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef APP_PRECOMPILED_H
+#define APP_PRECOMPILED_H
 
 #include <FCConfig.h>
 
-
-// here get the warnings of too long specifiers disabled (needed for VC6)
+// here get the warnings of too long specifiers disabled
 #ifdef _MSC_VER
 #pragma warning( disable : 4251 )
 #pragma warning( disable : 4273 )
@@ -36,6 +35,8 @@
 #pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+
+#ifdef _PreComp_
 
 // standard
 #include <cstdio>
@@ -83,4 +84,6 @@
 #include <boost/filesystem/exception.hpp>
 
 
-#endif
+#endif //_PreComp_
+
+#endif // APP_PRECOMPILED_H

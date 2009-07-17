@@ -28,6 +28,10 @@
 # include <GeomLProp_SLProps.hxx>
 # include <Poly_Triangulation.hxx>
 # include <TopoDS_Face.hxx>
+# include <Inventor/SoInput.h>
+# include <Inventor/nodes/SoNode.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
 #endif
 
 #include <Base/Console.h>

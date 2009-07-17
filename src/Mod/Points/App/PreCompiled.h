@@ -24,7 +24,7 @@
 #ifndef __PRECOMPILED__
 #define __PRECOMPILED__
 
-#include "../../../FCConfig.h"
+#include <FCConfig.h>
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32

@@ -38,6 +38,8 @@
 #endif
 
 
+#ifdef _PreComp_
+
 // Python
 #include <Python.h>
 
@@ -45,6 +47,9 @@
 #include <iostream>
 #include <assert.h>
 #include <math.h>
+
+// OCC
+#include <Standard_math.hxx>
 
 // STL
 #include <vector>
@@ -72,4 +77,5 @@
 # include <Gui/InventorAll.h>
 #endif
 
+#endif // _PreComp_
 #endif // __PRECOMPILED_GUI__

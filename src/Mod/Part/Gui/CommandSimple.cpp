@@ -26,6 +26,7 @@
 # include <QDir>
 # include <QFileInfo>
 # include <QLineEdit>
+# include <Standard_math.hxx>
 # include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 

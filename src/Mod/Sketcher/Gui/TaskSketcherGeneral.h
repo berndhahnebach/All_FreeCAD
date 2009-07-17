@@ -27,7 +27,7 @@
 
 
 #ifndef __Qt4All__
-# include "Qt4All.h"
+# include <Gui/Qt4All.h>
 #endif
 
 #include <Gui/TaskView/TaskView.h>

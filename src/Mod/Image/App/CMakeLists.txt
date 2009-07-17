@@ -3,7 +3,6 @@ if(WIN32)
 endif(WIN32)
 
 include_directories(
-		 ${CMAKE_SOURCE_DIR}/src
 		 ${OPENCV_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}

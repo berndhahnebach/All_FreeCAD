@@ -26,6 +26,7 @@
 # include <qdir.h>
 # include <qfileinfo.h>
 # include <qlineedit.h>
+# include <Standard_math.hxx>
 # include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 

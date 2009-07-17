@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Standard_math.hxx>
 # include <Inventor/SoPath.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoLineSet.h>

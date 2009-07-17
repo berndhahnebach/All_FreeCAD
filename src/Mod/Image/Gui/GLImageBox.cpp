@@ -17,6 +17,9 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <cmath>
+#endif
 
 #include "GLImageBox.h"
 

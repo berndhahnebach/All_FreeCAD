@@ -182,6 +182,9 @@ include(cMake/FreeCadMacros.cmake)
 # ================================================================================
 # == Global Compiler and Linker Settings =========================================
 
+include_directories(${CMAKE_BINARY_DIR}/src
+					${CMAKE_SOURCE_DIR}/src)
+
 # check for 64-bit platform
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	MESSAGE(STATUS "Platform is 64-bit, set -D_OCC64")

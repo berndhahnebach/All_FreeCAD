@@ -32,6 +32,10 @@
 #include <Base/Exception.h>
 #include <CXX/Objects.hxx>
 
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/exception.hpp>
+
 #include "Material.h"
 #include "MaterialPy.h"
 
