@@ -24,10 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qpainter.h>
-# include <qstyle.h>
-# include <QResizeEvent>
 # include <QApplication>
+# include <QPainter>
 #endif
 
 #include "PropertyEditor.h"

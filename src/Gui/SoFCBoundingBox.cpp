@@ -30,8 +30,6 @@
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/actions/SoGLRenderAction.h>
 #include <Inventor/bundles/SoMaterialBundle.h>
-#include <Inventor/elements/SoGLTextureCoordinateElement.h>
-#include <Inventor/elements/SoGLTextureEnabledElement.h>
 #include <Inventor/elements/SoLightModelElement.h>
 #include <Inventor/elements/SoMaterialBindingElement.h>
 #include <Inventor/elements/SoModelMatrixElement.h>

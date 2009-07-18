@@ -26,9 +26,6 @@
 #ifndef _PreComp_
 #endif
 
-#include <App/PropertyStandard.h>
-#include <Gui/Application.h>
-
 #include "PropertyModel.h"
 #include "PropertyItem.h"
 

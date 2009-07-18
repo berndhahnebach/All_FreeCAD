@@ -29,7 +29,6 @@
 #include "TaskView.h"
 #include "TaskAppearance.h"
 #include "TaskEditControl.h"
-#include "BitmapFactory.h"
 
 using namespace Gui::TaskView;
 

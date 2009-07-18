@@ -24,19 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <cmath>
-# include <climits>
 # include <QApplication>
-# include <QLineEdit>
-# include <QValidator>
-# include <QInputDialog>
-# include <QCursor>
 # include <QModelIndex>
 # include <QPainter>
 #endif
-
-#include <App/PropertyStandard.h>
-#include <Gui/SpinBox.h>
 
 #include "PropertyItemDelegate.h"
 #include "PropertyItem.h"
