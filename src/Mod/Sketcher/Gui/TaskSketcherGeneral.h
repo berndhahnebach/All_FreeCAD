@@ -24,12 +24,6 @@
 #ifndef GUI_TASKVIEW_TaskSketcherGerneral_H
 #define GUI_TASKVIEW_TaskSketcherGerneral_H
 
-
-
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 

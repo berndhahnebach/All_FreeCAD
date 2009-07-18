@@ -27,6 +27,7 @@
 # include <Inventor/SoDB.h>
 # include <Inventor/SoInput.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <QFile>
 #endif
 
 #include "ViewProviderInventorObject.h"

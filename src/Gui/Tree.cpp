@@ -26,11 +26,15 @@
 #ifndef _PreComp_
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
+# include <QAction>
+# include <QApplication>
 # include <qcursor.h>
 # include <qlayout.h>
 # include <qstatusbar.h>
 # include <QContextMenuEvent>
+# include <QMenu>
 # include <QPixmap>
+# include <QTimer>
 #endif
 
 #include <Base/Console.h>

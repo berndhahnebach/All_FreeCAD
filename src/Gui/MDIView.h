@@ -25,10 +25,7 @@
 #define GUI_MDIVIEW_H
 
 #include "View.h"
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QMainWindow>
 
 namespace Gui 
 {

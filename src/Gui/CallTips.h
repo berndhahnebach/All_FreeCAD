@@ -24,9 +24,9 @@
 #ifndef GUI_CALLTIPS_H
 #define GUI_CALLTIPS_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QListWidget>
+
+class QTextEdit;
 
 namespace Py {
 class Object;

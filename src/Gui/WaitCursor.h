@@ -24,11 +24,6 @@
 #ifndef GUI_WAIT_CURSOR_H
 #define GUI_WAIT_CURSOR_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
 namespace Gui {
 
 /**

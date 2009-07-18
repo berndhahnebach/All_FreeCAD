@@ -22,6 +22,14 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QContextMenuEvent>
+# include <QHeaderView>
+# include <QInputDialog>
+# include <QMessageBox>
+# include <QMenu>
+# include <QTreeWidget>
+#endif
 
 #include "DlgParameterImp.h"
 #include "DlgInputDialogImp.h"

@@ -25,14 +25,10 @@
 #ifndef GUI_DOCKWND_COMBIVIEW_H
 #define GUI_DOCKWND_COMBIVIEW_H
 
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
 #include "DockWindow.h"
 #include "Selection.h"
+
+class QTabWidget;
 
 namespace App {
   class PropertyContainer;

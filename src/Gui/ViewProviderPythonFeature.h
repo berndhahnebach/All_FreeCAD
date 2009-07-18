@@ -24,11 +24,6 @@
 #ifndef GUI_VIEWPROVIDERPYTHONFEATURE_H
 #define GUI_VIEWPROVIDERPYTHONFEATURE_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
 #include "ViewProviderDocumentObject.h"
 #include <App/PropertyPythonObject.h>
 #include <App/DynamicProperty.h>

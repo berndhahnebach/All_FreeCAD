@@ -25,13 +25,17 @@
 #define SKETCHERGUI_VIEWPROVIDERSKETCH_H
 
 #include <Mod/Part/Gui/ViewProvider2DObject.h>
+#include <Inventor/SbColor.h>
 
 
 class TopoDS_Shape;
 class TopoDS_Face;
 class SoSeparator;
 class SbVec3f;
+class SoCoordinate3;
+class SoPointSet;
 class SoTransform;
+class SoLineSet;
 
 namespace Gui {
     class View3DInventorViewer;
@@ -124,7 +128,7 @@ protected:
     int DragPoint;
 
     int PreselectCurve;
-	SbColor PreselectOldColor;
+    SbColor PreselectOldColor;
     int PreselectPoint;
     // pointer to the Solver
     Sketcher::SketchFlatInterface *SketchFlat;

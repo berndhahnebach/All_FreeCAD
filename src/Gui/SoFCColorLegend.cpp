@@ -25,6 +25,13 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <Inventor/fields/SoMFString.h>
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoIndexedFaceSet.h>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoText2.h>
+# include <Inventor/nodes/SoTransform.h>
 #endif
 
 #include "SoFCColorLegend.h"

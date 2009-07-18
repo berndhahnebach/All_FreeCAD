@@ -24,10 +24,6 @@
 #ifndef GUI_VIEWPROVIDER_DOCUMENTOBJECTGROUP_H
 #define GUI_VIEWPROVIDER_DOCUMENTOBJECTGROUP_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 
 #include "ViewProviderDocumentObject.h"
 

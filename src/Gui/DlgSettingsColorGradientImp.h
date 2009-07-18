@@ -27,10 +27,6 @@
 #include "ui_DlgSettingsColorGradient.h"
 #include <App/ColorModel.h>
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 namespace Gui {
 namespace Dialog {
 /**

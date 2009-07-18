@@ -24,10 +24,6 @@
 #ifndef GUI_PYTHONCONSOLE_H
 #define GUI_PYTHONCONSOLE_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include "PythonEditor.h"
 
 #include <Base/PyObjectBase.h>

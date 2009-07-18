@@ -24,10 +24,6 @@
 #ifndef GUI_DIALOG_DLGEDITORSETTINGSIMP_H
 #define GUI_DIALOG_DLGEDITORSETTINGSIMP_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include "ui_DlgEditor.h"
 #include "PropertyPage.h"
 

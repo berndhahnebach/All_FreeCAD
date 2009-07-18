@@ -22,6 +22,20 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QCloseEvent>
+# include <QContextMenuEvent>
+# include <QDesktopWidget>
+# include <QDockWidget>
+# include <QLabel>
+# include <QMessageBox>
+# include <QSettings>
+# include <QSignalMapper>
+# include <QStatusBar>
+# include <QTimer>
+# include <QToolBar>
+# include <QWhatsThis>
+#endif
 
 // FreeCAD Base header
 #include <Base/Parameter.h>

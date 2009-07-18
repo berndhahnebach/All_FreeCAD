@@ -24,10 +24,6 @@
 #ifndef GUI_COMMAND_H
 #define GUI_COMMAND_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 
 #include <list>
 #include <map>

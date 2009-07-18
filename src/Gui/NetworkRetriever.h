@@ -24,9 +24,7 @@
 #ifndef GUI_NETWORKRETRIEVER_H
 #define GUI_NETWORKRETRIEVER_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QProcess>
 
 #include "Command.h"
 

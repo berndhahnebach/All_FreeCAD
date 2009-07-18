@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QHeaderView>
+#endif
 
 #include "DlgCommandsImp.h"
 #include "Application.h"

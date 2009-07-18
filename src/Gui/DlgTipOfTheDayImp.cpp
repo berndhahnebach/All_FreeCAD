@@ -29,6 +29,7 @@
 # include <qlabel.h>
 # include <qlayout.h>
 # include <qtextstream.h>
+# include <QHttp>
 #endif
 
 #include "DlgTipOfTheDayImp.h"

@@ -24,12 +24,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QAction>
 # include <QApplication>
 # include <QFileInfo>
 # include <QKeyEvent>
 # include <QEvent>
 # include <QDropEvent>
 # include <QDragEnterEvent>
+# include <QTimer>
+# include <QUrl>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
 # include <Inventor/nodes/SoDirectionalLight.h>

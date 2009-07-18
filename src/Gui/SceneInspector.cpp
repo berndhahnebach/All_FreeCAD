@@ -24,9 +24,8 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Inventor/nodes/SoGroup.h>
+# include <QHeaderView>
 #endif
-
-#include <Gui/Qt4All.h>
 
 #include "SceneInspector.h"
 

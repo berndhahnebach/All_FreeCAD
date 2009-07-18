@@ -29,6 +29,8 @@
 # include <boost/bind.hpp>
 # include <sstream>
 # include <stdexcept>
+# include <QCloseEvent>
+# include <QMessageBox>
 #endif
 
 #include <QSessionManager>

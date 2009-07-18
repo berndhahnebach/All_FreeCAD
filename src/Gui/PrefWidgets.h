@@ -24,10 +24,9 @@
 #ifndef GUI_PREFWIDGETS_H
 #define GUI_PREFWIDGETS_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
+#include <QCheckBox>
+#include <QComboBox>
+#include <QRadioButton>
 #include <Base/Parameter.h>
 #include "Widgets.h"
 #include "Window.h"

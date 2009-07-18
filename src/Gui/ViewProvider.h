@@ -27,14 +27,9 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <QIcon>
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-#ifndef __InventorAll__
-# include "InventorAll.h"
-#endif 
-
+class SbVec3f;
 class SoNode;
 class SoPath;
 class SoSeparator;
@@ -42,6 +37,8 @@ class SoEvent;
 class SoSwitch;
 class SoTransform;
 class SbMatrix;
+class SoEventCallback;
+class SoPickedPoint;
 
 
 namespace Base {

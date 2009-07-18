@@ -24,9 +24,7 @@
 #ifndef GUI_DIALOG_DLGUNDOREDO_H
 #define GUI_DIALOG_DLGUNDOREDO_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QMenu>
 
 namespace Gui {
 namespace Dialog {

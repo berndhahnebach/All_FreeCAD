@@ -33,6 +33,7 @@
 # include <QPixmap>
 # include <QColorDialog>
 # include <QFontDialog>
+# include <QSpinBox>
 #endif
 
 #include <App/Application.h>

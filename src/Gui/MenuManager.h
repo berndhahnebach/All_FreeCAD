@@ -24,11 +24,11 @@
 #ifndef GUI_MENUMANAGER_H
 #define GUI_MENUMANAGER_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include <string>
+#include <QStringList>
+
+class QAction;
+class QMenu;
 
 namespace Gui {
 

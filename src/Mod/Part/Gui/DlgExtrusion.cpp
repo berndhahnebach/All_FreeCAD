@@ -22,7 +22,6 @@
 
 
 #include "PreCompiled.h"
-#include <Gui/Qt4All.h>
 
 #include "DlgExtrusion.h"
 #include "../App/PartFeature.h"

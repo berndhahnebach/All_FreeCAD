@@ -27,10 +27,6 @@
 #include "ui_DlgCommands.h"
 #include "PropertyPage.h"
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 namespace Gui {
 class Command;
 namespace Dialog {

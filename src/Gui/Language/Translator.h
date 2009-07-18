@@ -24,13 +24,12 @@
 #ifndef GUI_TRANSLATOR_H
 #define GUI_TRANSLATOR_H
 
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-
+#include <QObject>
 #include <string>
 #include <map>
 #include <list>
+
+class QDir;
 
 namespace Gui {
 

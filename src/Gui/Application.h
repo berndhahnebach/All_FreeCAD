@@ -24,13 +24,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-
+#include <QPixmap>
 #include <string>
 #include <vector>
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
 
 #define  putpix()
 

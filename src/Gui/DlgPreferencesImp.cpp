@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <cstring>
 # include <algorithm>
+# include <QMessageBox>
 #endif
 
 #include <Base/Exception.h>

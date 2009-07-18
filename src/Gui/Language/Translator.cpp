@@ -22,6 +22,12 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QTranslator>
+# include <QStringList>
+# include <QDir>
+# include <QApplication>
+#endif
 
 #include "Translator.h"
 

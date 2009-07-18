@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qfileinfo.h>
+# include <qdir.h>
 #endif
 
 

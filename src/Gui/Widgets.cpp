@@ -22,6 +22,15 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QColorDialog>
+# include <QDrag>
+# include <QKeyEvent>
+# include <QMimeData>
+# include <QPainter>
+# include <QStylePainter>
+# include <QToolTip>
+#endif
 
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>

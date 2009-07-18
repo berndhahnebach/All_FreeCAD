@@ -24,9 +24,9 @@
 #ifndef GUI_ACTION_H
 #define GUI_ACTION_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QAction>
+#include <QComboBox>
+#include <QKeySequence>
 
 namespace Gui 
 {

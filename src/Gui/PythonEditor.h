@@ -24,10 +24,6 @@
 #ifndef GUI_PYTHONEDITOR_H
 #define GUI_PYTHONEDITOR_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include "Window.h"
 #include "TextEdit.h"
 #include "SyntaxHighlighter.h"

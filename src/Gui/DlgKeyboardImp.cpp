@@ -22,6 +22,10 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QHeaderView>
+# include <QMessageBox>
+#endif
 
 #include <Base/Parameter.h>
 

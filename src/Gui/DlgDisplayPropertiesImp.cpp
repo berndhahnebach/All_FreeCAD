@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QDockWidget>
+#endif
 
 #include "DlgDisplayPropertiesImp.h"
 #include "DlgMaterialPropertiesImp.h"

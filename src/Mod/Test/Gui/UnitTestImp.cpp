@@ -22,6 +22,10 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QMessageBox>
+# include <QStyleFactory>
+#endif
 
 #include <Base/PyObjectBase.h>
 #include <Base/Interpreter.h>

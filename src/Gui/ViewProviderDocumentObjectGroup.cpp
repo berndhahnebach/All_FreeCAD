@@ -24,7 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qpixmap.h>
+# include <QApplication>
+# include <QPixmap>
 #endif
 
 #include <App/DocumentObjectGroup.h>

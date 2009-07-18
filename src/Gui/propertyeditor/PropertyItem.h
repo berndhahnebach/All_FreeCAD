@@ -24,10 +24,8 @@
 #ifndef PROPERTYEDITORITEM_H
 #define PROPERTYEDITORITEM_H
 
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-
+#include <QObject>
+#include <QItemEditorFactory>
 #include <vector>
 
 #include <Base/Type.h>

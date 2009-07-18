@@ -24,9 +24,9 @@
 #ifndef GUI_DOCKWINDOWMANAGER_H
 #define GUI_DOCKWINDOWMANAGER_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QStringList>
+
+class QDockWidget;
 
 namespace Gui {
 

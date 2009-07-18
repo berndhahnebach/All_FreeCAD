@@ -32,6 +32,7 @@
 #include <Inventor/SbPlane.h>
 #include <Inventor/SbRotation.h>
 #include <Inventor/SbTime.h>
+#include <QCursor>
 #include <Base/BaseClass.h>
 
 // forward declarations

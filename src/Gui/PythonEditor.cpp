@@ -22,6 +22,11 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QContextMenuEvent>
+# include <QMenu>
+# include <QShortcut>
+#endif
 
 #include "PythonEditor.h"
 #include "Application.h"

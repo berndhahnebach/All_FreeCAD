@@ -22,6 +22,18 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QApplication>
+# include <QBitmap>
+# include <QDir>
+# include <QFile>
+# include <QMap>
+# include <QImageReader>
+# include <QPainter>
+# include <QPalette>
+# include <QSvgRenderer>
+# include <QStyleOption>
+#endif
 
 #include <string>
 #include <Inventor/fields/SoSFImage.h>

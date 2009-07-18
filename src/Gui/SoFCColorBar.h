@@ -24,14 +24,9 @@
 #ifndef GUI_SOFCCOLORBAR_H
 #define GUI_SOFCCOLORBAR_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-#ifndef __InventorAll__
-# include "InventorAll.h"
-#endif
-
+#include <Inventor/SbVec2s.h>
+#include <Inventor/nodes/SoSeparator.h>
+#include <QTime>
 #include <Base/Observer.h>
 #include <App/ColorModel.h>
 #include <vector>

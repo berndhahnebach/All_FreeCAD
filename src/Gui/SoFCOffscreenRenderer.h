@@ -24,15 +24,11 @@
 #ifndef GUI_SOFCOFFSCREENRENDERER_H
 #define GUI_SOFCOFFSCREENRENDERER_H
 
+#include <Inventor/SoOffscreenRenderer.h>
+#include <Inventor/SbMatrix.h>
+#include <QStringList>
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-#ifndef __InventorAll__
-# include "InventorAll.h"
-#endif
-
+class QImage;
 
 namespace Gui {
 

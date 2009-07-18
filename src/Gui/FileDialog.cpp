@@ -22,6 +22,15 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QButtonGroup>
+# include <QComboBox>
+# include <QGridLayout>
+# include <QGroupBox>
+# include <QLineEdit>
+# include <QPushButton>
+# include <QRadioButton>
+#endif
 
 #include <Base/Parameter.h>
 #include <App/Application.h>

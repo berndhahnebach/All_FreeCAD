@@ -24,11 +24,8 @@
 #ifndef GUI_WIDGETFACTORY_H
 #define GUI_WIDGETFACTORY_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include <vector>
+#include <QUiLoader>
 
 #include <Base/Factory.h>
 #include <Base/PyObjectBase.h>

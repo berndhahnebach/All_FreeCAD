@@ -26,14 +26,11 @@
 
 
 #include <Base/Parameter.h>
-#include "MDIView.h"
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <Gui/View.h>
+#include <QWidget>
 
 namespace Gui {
-
+class MDIView;
 class Application;
 
 /** Base class of all dockable windows belonging to a document

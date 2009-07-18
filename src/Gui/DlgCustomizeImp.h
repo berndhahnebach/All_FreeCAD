@@ -24,10 +24,11 @@
 #ifndef GUI_DIALOG_DLGCUSTOMIZE_IMP_H
 #define GUI_DIALOG_DLGCUSTOMIZE_IMP_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QDialog>
 
+class QTabWidget;
+class QGridLayout;
+class QHBoxLayout;
 
 namespace Gui {
 namespace Dialog {

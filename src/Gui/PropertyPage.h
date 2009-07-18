@@ -24,9 +24,7 @@
 #ifndef GUI_DIALOG_PROPERTYPAGE_H
 #define GUI_DIALOG_PROPERTYPAGE_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QWidget>
 
 namespace Gui {
 namespace Dialog {

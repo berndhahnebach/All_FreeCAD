@@ -24,12 +24,13 @@
 #ifndef GUI_DOCKWND_HELP_VIEW_H
 #define GUI_DOCKWND_HELP_VIEW_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
+#include <QTextBrowser>
 #include "DockWindow.h"
 #include "Window.h"
+
+class QUrl;
+class QLabel;
+class QHttpResponseHeader;
 
 namespace Gui {
 namespace DockWnd {

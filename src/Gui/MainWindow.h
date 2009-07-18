@@ -29,9 +29,8 @@
 #include <string>
 #include <vector>
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QMainWindow>
+#include <QWorkspace>
 
 
 namespace Gui {

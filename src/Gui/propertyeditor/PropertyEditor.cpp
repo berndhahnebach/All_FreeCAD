@@ -27,6 +27,7 @@
 # include <qpainter.h>
 # include <qstyle.h>
 # include <QResizeEvent>
+# include <QApplication>
 #endif
 
 #include "PropertyEditor.h"

@@ -22,7 +22,10 @@
 
 
 #include "PreCompiled.h"
-#include <Gui/Qt4All.h>
+#ifndef _PreComp_
+# include <QMenu>
+# include <QMouseEvent>
+#endif
 #include <Inventor/SbVec2s.h>
 
 #include "Flag.h"

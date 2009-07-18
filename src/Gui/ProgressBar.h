@@ -24,9 +24,7 @@
 #ifndef GUI_PROGRESSBAR_H
 #define GUI_PROGRESSBAR_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QProgressBar>
 
 #include <Base/Sequencer.h>
 

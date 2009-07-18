@@ -26,10 +26,13 @@
 #ifndef _PreComp_
 # include <cmath>
 # include <climits>
-# include <qlineedit.h>
-# include <qvalidator.h>
-# include <qinputdialog.h>
-# include <qcursor.h>
+# include <QApplication>
+# include <QLineEdit>
+# include <QValidator>
+# include <QInputDialog>
+# include <QCursor>
+# include <QModelIndex>
+# include <QPainter>
 #endif
 
 #include <App/PropertyStandard.h>

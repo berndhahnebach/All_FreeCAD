@@ -28,9 +28,10 @@
 # include <TopExp.hxx>
 # include <TopTools_ListOfShape.hxx>
 # include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+# include <QItemDelegate>
+# include <QHeaderView>
+# include <QMessageBox>
 #endif
-
-#include <Gui/Qt4All.h>
 
 #include "DlgFilletEdges.h"
 #include "../App/PartFeature.h"

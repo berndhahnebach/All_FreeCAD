@@ -24,9 +24,15 @@
 #ifndef GUI_FILEDIALOG_H
 #define GUI_FILEDIALOG_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QFileDialog>
+#include <QFileIconProvider>
+
+class QButtonGroup;
+class QGridLayout;
+class QGroupBox;
+class QHBoxLayout;
+class QLineEdit;
+class QSpacerItem;
 
 namespace Gui {
 

@@ -27,9 +27,8 @@
 #include "ui_DlgTipOfTheDay.h"
 #include "Window.h"
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+class QHttpResponseHeader;
+class QHttp;
 
 namespace Gui {
 namespace Dialog {

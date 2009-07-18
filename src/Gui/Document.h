@@ -24,10 +24,6 @@
 #ifndef GUI_DOCUMENT_H
 #define GUI_DOCUMENT_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include "MDIView.h"
 
 #include <list>

@@ -24,10 +24,6 @@
 #ifndef GUI_WORKBENCH_H
 #define GUI_WORKBENCH_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include <list>
 #include <string>
 #include <Base/BaseClass.h>

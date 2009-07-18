@@ -22,6 +22,23 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QAbstractTextDocumentLayout>
+# include <QApplication>
+# include <QClipboard>
+# include <QDateTime>
+# include <QHBoxLayout>
+# include <QMessageBox>
+# include <QPainter>
+# include <QPrinter>
+# include <QPrintDialog>
+# include <QScrollBar>
+# include <QTextEdit>
+# include <QTextBlock>
+# include <QTextCodec>
+# include <QTextStream>
+# include <QTimer>
+#endif
 
 #include "EditorView.h"
 #include "Application.h"
