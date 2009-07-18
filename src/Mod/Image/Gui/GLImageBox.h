@@ -19,11 +19,8 @@
 #ifndef GLIMAGEBOX_H
 #define GLIMAGEBOX_H
 
-#include "../App/ImageBase.h"
-
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
+#include <Mod/Image/App/ImageBase.h>
+#include <QGLWidget>
 
 namespace ImageGui
 {

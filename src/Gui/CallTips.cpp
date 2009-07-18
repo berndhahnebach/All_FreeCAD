@@ -24,6 +24,11 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QApplication>
+# include <QKeyEvent>
+# include <QLabel>
+# include <QTextEdit>
+# include <QToolTip>
 #endif
 
 #include <CXX/Objects.hxx>

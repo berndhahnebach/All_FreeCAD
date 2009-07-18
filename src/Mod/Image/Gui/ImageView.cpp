@@ -16,6 +16,15 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QAction>
+# include <QApplication>
+# include <QMenu>
+# include <QMouseEvent>
+# include <QSlider>
+# include <QStatusBar>
+# include <QToolBar>
+#endif
 
 #include "ImageView.h"
 #include "GLImageBox.h"

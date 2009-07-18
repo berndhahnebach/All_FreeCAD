@@ -26,15 +26,12 @@
 #define GUI_DOCKWND_SELECTIONVIEW_H
 
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
 #include "DockWindow.h"
 #include "Selection.h"
 
 class QPixmap;
+class QTabWidget;
+class QListWidget;
 
 namespace App {
   class PropertyContainer;

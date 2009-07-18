@@ -24,6 +24,8 @@
 #ifndef PROPERTYMODEL_H
 #define PROPERTYMODEL_H
 
+#include <QAbstractItemModel>
+
 namespace Gui {
 namespace PropertyEditor {
 

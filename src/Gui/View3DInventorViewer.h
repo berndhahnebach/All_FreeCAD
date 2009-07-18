@@ -24,11 +24,6 @@
 #ifndef GUI_VIEW3DINVENTORVIEWER_H
 #define GUI_VIEW3DINVENTORVIEWER_H
 
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include <set>
 #include <stack>
 

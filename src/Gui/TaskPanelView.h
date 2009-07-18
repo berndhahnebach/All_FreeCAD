@@ -25,12 +25,6 @@
 #ifndef GUI_DOCKWND_TASKPANELVIEW_H
 #define GUI_DOCKWND_TASKPANELVIEW_H
 
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
 #include "DockWindow.h"
 #include "Selection.h"
 

@@ -22,7 +22,6 @@
 
 
 #include "PreCompiled.h"
-#include <Gui/Qt4All.h>
 
 #include <Base/Interpreter.h>
 #include <App/Application.h>

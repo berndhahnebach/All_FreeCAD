@@ -24,7 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <QMessageBox>
+# include <QMenu>
+# include <Inventor/SoPickedPoint.h>
+# include <Inventor/details/SoFaceDetail.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
@@ -34,6 +37,7 @@
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPolygonOffset.h>
 # include <Inventor/nodes/SoShapeHints.h>
 #endif
 

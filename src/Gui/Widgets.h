@@ -24,11 +24,13 @@
 #ifndef GUI_WIDGETS_H
 #define GUI_WIDGETS_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include <Gui/ui_DlgTreeWidget.h>
+#include <QListWidget>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPointer>
+#include <QBasicTimer>
+#include <QTime>
 
 namespace Gui {
 class PrefCheckBox;

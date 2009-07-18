@@ -31,6 +31,8 @@ class QAction;
 class QActionGroup;
 class QPopupMenu;
 class QToolBar;
+class QSvgWidget;
+class QScrollArea;
 
 namespace DrawingGui
 {

@@ -25,7 +25,9 @@
 #ifndef _PreComp_
 # include <cfloat>
 # include "InventorAll.h"
+# include <QApplication>
 # include <QCursor>
+# include <QMenu>
 #endif
 #include <Inventor/sensors/SoTimerSensor.h>
 

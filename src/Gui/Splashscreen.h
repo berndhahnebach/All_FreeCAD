@@ -24,9 +24,7 @@
 #ifndef GUI_SPLASHSCREEN_H
 #define GUI_SPLASHSCREEN_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QSplashScreen>
 
 #include "ui_AboutApplication.h"
 

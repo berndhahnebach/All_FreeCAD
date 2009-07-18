@@ -24,11 +24,8 @@
 #ifndef GUI_DOCKWND_REPORTVIEW_H
 #define GUI_DOCKWND_REPORTVIEW_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-
+#include <QTextEdit>
+#include <QSyntaxHighlighter>
 #include <Base/Console.h>
 #include "DockWindow.h"
 #include "Window.h"

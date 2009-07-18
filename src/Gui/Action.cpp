@@ -26,6 +26,12 @@
 #ifndef _PreComp_
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
+# include <QActionEvent>
+# include <QApplication>
+# include <QEvent>
+# include <QMessageBox>
+# include <QToolBar>
+# include <QToolButton>
 #endif
 
 #include "Action.h"

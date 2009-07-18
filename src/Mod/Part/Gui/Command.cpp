@@ -23,9 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qdir.h>
-# include <qfileinfo.h>
-# include <qlineedit.h>
+# include <QDir>
+# include <QFileInfo>
+# include <QLineEdit>
+# include <QPointer>
 # include <Standard_math.hxx>
 # include <Inventor/events/SoMouseButtonEvent.h>
 #endif

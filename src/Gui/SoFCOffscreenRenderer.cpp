@@ -21,6 +21,13 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <Inventor/fields/SoSFImage.h>
+# include <QBuffer>
+# include <QDateTime>
+# include <QFile>
+# include <QImageWriter>
+#endif
 
 //gcc
 # include <iomanip>

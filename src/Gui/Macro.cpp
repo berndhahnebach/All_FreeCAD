@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <assert.h>
 # include <stdio.h>
+# include <QFile>
+# include <QTextStream>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

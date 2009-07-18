@@ -25,6 +25,7 @@
 
 #include "ui_DlgFilletEdges.h"
 #include <QStandardItemModel>
+#include <QItemDelegate>
 
 namespace PartGui {
 

@@ -23,7 +23,15 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QAction>
+# include <QApplication>
 # include <QFileInfo>
+# include <QScrollArea>
+# include <QSlider>
+# include <QStatusBar>
+# include <QSvgRenderer>
+# include <QSvgWidget>
+# include <QWheelEvent>
 # include <strstream>
 #endif
 

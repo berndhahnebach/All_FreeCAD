@@ -26,10 +26,6 @@
 
 #include "ui_DlgProjectInformation.h"
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 namespace App {
 class Document;
 }

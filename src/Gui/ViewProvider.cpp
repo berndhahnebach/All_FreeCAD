@@ -25,9 +25,13 @@
 
 #ifndef _PreComp_
 # include <QPixmap>
+# include <Inventor/SoPickedPoint.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoSwitch.h>
 # include <Inventor/nodes/SoTransform.h>
+# include <Inventor/nodes/SoCamera.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
+# include <Inventor/events/SoLocation2Event.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

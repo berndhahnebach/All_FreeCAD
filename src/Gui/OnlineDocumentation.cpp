@@ -22,6 +22,11 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QHttpResponseHeader>
+# include <QMessageBox>
+# include <QTcpSocket>
+#endif
 
 #include <sstream>
 #include <CXX/Objects.hxx>

@@ -24,9 +24,8 @@
 #ifndef GUI_SPINBOX_H
 #define GUI_SPINBOX_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QValidator>
+#include <QSpinBox>
 
 namespace Gui {
 

@@ -22,6 +22,15 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QClipboard>
+# include <QKeyEvent>
+# include <QMenu>
+# include <QMessageBox>
+# include <QTextDocumentFragment>
+# include <QTextStream>
+# include <QUrl>
+#endif
 
 #include "PythonConsole.h"
 #include "PythonConsolePy.h"

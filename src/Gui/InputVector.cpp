@@ -22,7 +22,6 @@
 
 
 #include "PreCompiled.h"
-#include <Gui/Qt4All.h>
 
 #include "InputVector.h"
 #include "ui_InputVector.h"

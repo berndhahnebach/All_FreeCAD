@@ -28,6 +28,7 @@
 # include <qevent.h>
 # include <qpainter.h>
 # include <qpixmap.h>
+# include <QMenu>
 # include <Inventor/SbBox.h>
 # include <Inventor/events/SoEvent.h>
 # include <Inventor/events/SoKeyboardEvent.h>

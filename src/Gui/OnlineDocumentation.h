@@ -24,10 +24,8 @@
 #ifndef GUI_ONLINEDOCUMENTATION_H
 #define GUI_ONLINEDOCUMENTATION_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
+#include <QObject>
+#include <QTcpServer>
 #include "Command.h"
 
 

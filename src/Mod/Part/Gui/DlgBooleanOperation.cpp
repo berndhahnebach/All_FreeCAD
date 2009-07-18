@@ -22,7 +22,9 @@
 
 
 #include "PreCompiled.h"
-#include <Gui/Qt4All.h>
+#ifndef _PreComp_
+# include <QMessageBox>
+#endif
 
 #include "DlgBooleanOperation.h"
 #include "../App/PartFeature.h"

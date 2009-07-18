@@ -22,6 +22,14 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QMessageBox>
+# include <QWhatsThis>
+#if QT_VERSION >= 0x040200
+# include <QDesktopServices>
+# include <QUrl>
+#endif
+#endif
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>

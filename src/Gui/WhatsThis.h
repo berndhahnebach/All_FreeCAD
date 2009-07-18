@@ -24,10 +24,7 @@
 #ifndef GUI_WHATSTHIS_H
 #define GUI_WHATSTHIS_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
+#include <QString>
 #include "Command.h"
 
 namespace Gui {

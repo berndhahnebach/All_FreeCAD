@@ -25,11 +25,7 @@
 #define GUI_MACRO_H
 
 // Std. configurations
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
+#include <QString>
 #include <Base/Observer.h>
 #include <Base/Parameter.h>
 

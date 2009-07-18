@@ -22,6 +22,10 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QMenu>
+# include <QMenuBar>
+#endif
 
 #include "MenuManager.h"
 #include "Application.h"

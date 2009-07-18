@@ -24,9 +24,7 @@
 #ifndef GUI_TREE_H
 #define GUI_TREE_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <QTreeWidget>
 
 #include <Base/PyExport.h>
 #include <App/Document.h>

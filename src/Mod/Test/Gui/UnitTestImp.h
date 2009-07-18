@@ -28,11 +28,6 @@
 
 #include <Base/PyObjectBase.h>
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-
 namespace TestGui {
 
 class UnitTestDialog : public QDialog, public Ui_UnitTest

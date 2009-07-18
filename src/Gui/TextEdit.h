@@ -24,12 +24,10 @@
 #ifndef GUI_TEXTEDIT_H
 #define GUI_TEXTEDIT_H
 
+#include <QListWidget>
+#include <QTextEdit>
 #include "View.h"
 #include "Window.h"
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
 
 namespace Gui {
 class CompletionBox;

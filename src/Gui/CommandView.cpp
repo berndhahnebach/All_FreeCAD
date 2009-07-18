@@ -25,6 +25,12 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <Inventor/events/SoMouseButtonEvent.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
+# include <QFile>
+# include <QMessageBox>
+# include <QTextStream>
 #endif
 
 #include "Command.h"

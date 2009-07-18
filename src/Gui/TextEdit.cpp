@@ -24,6 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QKeyEvent>
+# include <QPainter>
+# include <QShortcut>
 #endif
 
 #include "TextEdit.h"

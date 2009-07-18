@@ -24,10 +24,6 @@
 #ifndef GUI_TOOLBOXMANAGER_H
 #define GUI_TOOLBOXMANAGER_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 namespace Gui {
 
 class ToolBarItem;

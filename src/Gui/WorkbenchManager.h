@@ -24,9 +24,7 @@
 #ifndef GUI_WORKBENCHMANAGER_H
 #define GUI_WORKBENCHMANAGER_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <list>
 
 namespace Gui {
 

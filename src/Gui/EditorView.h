@@ -24,12 +24,10 @@
 #ifndef GUI_EDITORVIEW_H
 #define GUI_EDITORVIEW_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include "MDIView.h"
 #include "Window.h"
+
+class QTextEdit;
 
 namespace Gui {
 

@@ -26,15 +26,6 @@
 
 #include <vector>
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-#ifndef __InventorAll__
-# include "InventorAll.h"
-#endif
-
-
 #include "ui_DlgDisplayProperties.h"
 #include "Selection.h"
 #include <App/Material.h>

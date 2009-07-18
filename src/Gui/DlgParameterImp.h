@@ -27,10 +27,8 @@
 #include "ui_DlgParameter.h"
 #include <Base/Parameter.h>
 
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+class QTreeWidgetItem;
+class QTreeWidget;
 
 namespace Gui {
 namespace Dialog {

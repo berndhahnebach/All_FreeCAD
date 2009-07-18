@@ -22,6 +22,10 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QAction>
+# include <QToolBar>
+#endif
 
 #include "ToolBarManager.h"
 #include "MainWindow.h"

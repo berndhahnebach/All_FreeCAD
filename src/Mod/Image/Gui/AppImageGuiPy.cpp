@@ -22,7 +22,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qimage.h>
+# include <QIcon>
+# include <QImage>
 #endif
 
 #include "ImageView.h"

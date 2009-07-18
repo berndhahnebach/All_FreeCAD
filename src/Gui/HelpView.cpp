@@ -22,6 +22,23 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QApplication>
+# include <QContextMenuEvent>
+# include <QDropEvent>
+# include <QGroupBox>
+# include <QHBoxLayout>
+# include <QHttp>
+# include <QLabel>
+# include <QMenu>
+# include <QMessageBox>
+# include <QMimeData>
+# include <QProcess>
+# include <QTimerEvent>
+# include <QToolButton>
+# include <QToolTip>
+# include <QWhatsThis>
+#endif
 
 #include "HelpView.h"
 #include "Application.h"

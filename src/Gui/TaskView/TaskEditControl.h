@@ -24,12 +24,6 @@
 #ifndef GUI_TASKVIEW_TASKEDITCONTROL_H
 #define GUI_TASKVIEW_TASKEDITCONTROL_H
 
-
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
 #include "TaskView.h"
 #include <Gui/Selection.h>
 

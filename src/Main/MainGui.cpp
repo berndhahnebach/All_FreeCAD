@@ -21,7 +21,7 @@
  *                                                                         *
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
-#include "../FCConfig.h"
+#include <FCConfig.h>
 
 #ifdef _PreComp_
 #   undef _PreComp_
@@ -35,11 +35,9 @@
 #   include <config.h>
 #endif // HAVE_CONFIG_H
 
-#include <stdio.h>
-
-#ifndef __Qt4All__
-#   include <Gui/Qt4All.h>
-#endif
+#include <cstdio>
+#include <QApplication>
+#include <QMessageBox>
 
 // FreeCAD header
 #include <Base/Console.h>

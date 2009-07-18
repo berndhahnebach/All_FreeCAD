@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QStatusBar>
+#endif
 #include <algorithm>
 
 #include <Base/Exception.h>

@@ -24,9 +24,7 @@
 #ifndef PROPERTYITEMDELEGATE_H
 #define PROPERTYITEMDELEGATE_H
 
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
+#include <QItemDelegate>
 
 namespace Gui {
 namespace PropertyEditor {

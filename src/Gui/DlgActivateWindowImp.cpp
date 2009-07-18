@@ -22,9 +22,8 @@
 
 
 #include "PreCompiled.h"
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
+#ifndef _PreComp_
+# include <QHeaderView>
 #endif
 
 #include "DlgActivateWindowImp.h"
