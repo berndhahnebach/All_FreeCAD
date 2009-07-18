@@ -33,7 +33,6 @@
 #include "View.h"
 #include "Document.h"
 #include "DlgActivateWindowImp.h"
-#include "Macro.h"
 #include "DockWindowManager.h"
 
 #include <Base/Exception.h>

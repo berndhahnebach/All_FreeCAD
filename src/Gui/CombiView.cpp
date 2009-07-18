@@ -31,7 +31,6 @@
 #include "PropertyView.h"
 #include "Application.h"
 #include "Document.h"
-#include "ViewProvider.h"
 #include "Tree.h"
 #include "TaskView/TaskView.h"
 #include "propertyeditor/PropertyEditor.h"

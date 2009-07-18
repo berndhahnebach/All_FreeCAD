@@ -38,7 +38,6 @@
 #include <Base/Exception.h>
 #include <App/Application.h>
 
-#include "DockWindowManager.h"
 #include "MainWindow.h"
 #include "PythonConsole.h"
 

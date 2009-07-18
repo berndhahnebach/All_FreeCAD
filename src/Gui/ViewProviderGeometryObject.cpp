@@ -24,8 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlistview.h>
-# include <qpixmap.h>
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/draggers/SoDragger.h>
 # include <Inventor/manips/SoCenterballManip.h>

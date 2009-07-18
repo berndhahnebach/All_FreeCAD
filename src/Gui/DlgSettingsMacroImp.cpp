@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #include "DlgSettingsMacroImp.h"
-#include "PrefWidgets.h"
 #include "Application.h"
 
 using namespace Gui::Dialog;

@@ -31,10 +31,7 @@
 
 #include "Translator.h"
 
-#include <Base/Console.h>
-#include <Base/Console.h>
-#include <Base/Parameter.h>
-#include <App/Application.h>
+//#include <App/Application.h>
 
 using namespace Gui;
 

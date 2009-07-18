@@ -25,14 +25,9 @@
 
 #ifndef _PreComp_
 # include <algorithm>
-# include <QPushButton>
 # include <QComboBox>
-# include <QPainter>
-# include <QCheckBox>
 # include <QLayout>
 # include <QPixmap>
-# include <QColorDialog>
-# include <QFontDialog>
 # include <QSpinBox>
 #endif
 
@@ -45,7 +40,6 @@
 #include <Gui/Document.h>
 #include <Gui/ViewProviderDocumentObject.h>
 #include <Gui/Widgets.h>
-#include <Gui/FileDialog.h>
 #include <Gui/Placement.h>
 
 #include "PropertyItem.h"

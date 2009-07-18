@@ -31,7 +31,6 @@
 #include "MainWindow.h"
 #include "Application.h"
 #include "Command.h"
-#include "BitmapFactory.h"
 
 using namespace Gui;
 

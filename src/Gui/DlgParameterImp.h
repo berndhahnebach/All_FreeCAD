@@ -27,8 +27,8 @@
 #include "ui_DlgParameter.h"
 #include <Base/Parameter.h>
 
-class QTreeWidgetItem;
-class QTreeWidget;
+#include <QTreeWidgetItem>
+#include <QTreeWidget>
 
 namespace Gui {
 namespace Dialog {
