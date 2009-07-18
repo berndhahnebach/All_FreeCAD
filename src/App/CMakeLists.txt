@@ -123,7 +123,7 @@ SET(FreeCADApp_SRCS
 		 PreCompiled.h
 )
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/lib)
 
 add_library(FreeCADApp SHARED ${FreeCADApp_SRCS})
 

@@ -1,3 +1,5 @@
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
+
 add_subdirectory(Gui)
 
 copy_to_local_output_paths(Base.py)

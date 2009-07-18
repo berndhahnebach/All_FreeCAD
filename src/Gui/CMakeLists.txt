@@ -589,7 +589,7 @@ SET(FreeCADGui_SRCS
 		 ${FreeCADGui_SRCS}
 )
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/lib)
 
 add_library(FreeCADGui SHARED ${FreeCADGui_SRCS})
 

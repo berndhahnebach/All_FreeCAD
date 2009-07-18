@@ -10,6 +10,9 @@ include_directories(
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCES_INCLUDE_DIR})
 
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/lib)
+
 ######################## FreeCADMain ########################
 
 SET(FreeCAD_SRCS
