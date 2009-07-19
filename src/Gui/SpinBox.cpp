@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <climits>
 #endif
 
 #include "SpinBox.h"
