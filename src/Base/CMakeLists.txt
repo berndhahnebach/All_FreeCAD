@@ -222,14 +222,18 @@ SET(FreeCADBase_SRCS
 	XMLTools.h
 )
 
-#set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../Main)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/lib)
-
 add_library(FreeCADBase SHARED ${FreeCADBase_SRCS})
 
 target_link_libraries(FreeCADBase ${FreeCADBase_LIBS})
 
+# Note this is IDE specific, not necessarily platform specific
 if(MSVC)
+	set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
+	set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+	# dirty hack to avoid Debug/Release subdirectory
+	set_target_properties(FreeCADBase PROPERTIES PREFIX "../")
+else(MSVC)
+	set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
 endif(MSVC)
 
 if(WIN32)
@@ -237,8 +241,6 @@ if(WIN32)
 	  RUNTIME DESTINATION bin
 	  LIBRARY DESTINATION lib
 	)
-	set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
-	set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 else(WIN32)
 	INSTALL(TARGETS FreeCADBase
 	  LIBRARY DESTINATION lib

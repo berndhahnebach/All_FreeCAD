@@ -10,9 +10,6 @@ include_directories(
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCES_INCLUDE_DIR})
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/bin)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/lib)
-
 ######################## FreeCADMain ########################
 
 SET(FreeCAD_SRCS
@@ -36,9 +33,17 @@ endif(MSVC)
 add_executable(FreeCADMain WIN32 ${FreeCAD_SRCS})
 
 target_link_libraries(FreeCADMain ${FreeCAD_LIBS})
-set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
+
+# Note this is IDE specific, not necessarily platform specific
 if(MSVC)
-set_target_properties(FreeCADMain PROPERTIES DEBUG_OUTPUT_NAME "FreeCADD")
+	set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
+	set_target_properties(FreeCADMain PROPERTIES DEBUG_OUTPUT_NAME "FreeCADD")
+	# dirty hack to avoid Debug/Release subdirectory
+	set_target_properties(FreeCADMain PROPERTIES PREFIX "../")
+	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+else(MSVC)
+	set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
+	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
 endif(MSVC)
 
 if(WIN32)
@@ -60,9 +65,17 @@ SET(FreeCADMainCmd_SRCS
 add_executable(FreeCADMainCmd ${FreeCADMainCmd_SRCS})
 
 target_link_libraries(FreeCADMainCmd FreeCADApp)
-set_target_properties(FreeCADMainCmd PROPERTIES OUTPUT_NAME "FreeCADCmd")
+
+# Note this is IDE specific, not necessarily platform specific
 if(MSVC)
-set_target_properties(FreeCADMainCmd PROPERTIES DEBUG_OUTPUT_NAME "FreeCADCmdD")
+	set_target_properties(FreeCADMainCmd PROPERTIES OUTPUT_NAME "FreeCADCmd")
+	set_target_properties(FreeCADMainCmd PROPERTIES DEBUG_OUTPUT_NAME "FreeCADCmdD")
+	# dirty hack to avoid Debug/Release subdirectory
+	set_target_properties(FreeCADMainCmd PROPERTIES PREFIX "../")
+	set_target_properties(FreeCADMainCmd PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+else(MSVC)
+	set_target_properties(FreeCADMainCmd PROPERTIES OUTPUT_NAME "FreeCADCmd")
+	set_target_properties(FreeCADMainCmd PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
 endif(MSVC)
 
 if(WIN32)
@@ -86,14 +99,19 @@ add_library(FreeCADMainPy SHARED ${FreeCADMainPy_SRCS})
 
 target_link_libraries(FreeCADMainPy FreeCADApp)
 
-if(WIN32)
-		 set_target_properties(FreeCADMainPy PROPERTIES OUTPUT_NAME "FreeCAD")
-		 set_target_properties(FreeCADMainPy PROPERTIES DEBUG_OUTPUT_NAME "FreeCAD_d")
-		 set_target_properties(FreeCADMainPy PROPERTIES SUFFIX ".pyd")
-else(WIN32)
-		 set_target_properties(FreeCADMainPy PROPERTIES OUTPUT_NAME "FreeCAD")
-		 set_target_properties(FreeCADMainPy PROPERTIES PREFIX "")
-endif(WIN32)
+# Note this is IDE specific, not necessarily platform specific
+if(MSVC)
+	set_target_properties(FreeCADMainPy PROPERTIES OUTPUT_NAME "FreeCAD")
+	set_target_properties(FreeCADMainPy PROPERTIES DEBUG_OUTPUT_NAME "FreeCAD_d")
+	set_target_properties(FreeCADMainPy PROPERTIES SUFFIX ".pyd")
+	# dirty hack to avoid Debug/Release subdirectory
+	set_target_properties(FreeCADMainPy PROPERTIES PREFIX "../")
+	set_target_properties(FreeCADMainPy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+else(MSVC)
+	set_target_properties(FreeCADMainPy PROPERTIES OUTPUT_NAME "FreeCAD")
+	set_target_properties(FreeCADMainPy PROPERTIES PREFIX "")
+	set_target_properties(FreeCADMainPy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
+endif(MSVC)
 
 if(WIN32)
 	INSTALL(TARGETS FreeCADMainPy

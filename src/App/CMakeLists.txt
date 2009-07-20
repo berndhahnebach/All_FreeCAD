@@ -123,19 +123,19 @@ SET(FreeCADApp_SRCS
 		 PreCompiled.h
 )
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/lib)
-
 add_library(FreeCADApp SHARED ${FreeCADApp_SRCS})
 
 target_link_libraries(FreeCADApp ${FreeCADApp_LIBS})
 
+# Note this is IDE specific, not necessarily platform specific
 if(MSVC)
-		set_target_properties(FreeCADApp PROPERTIES DEBUG_OUTPUT_NAME "FreeCADAppD")
+	set_target_properties(FreeCADApp PROPERTIES DEBUG_OUTPUT_NAME "FreeCADAppD")
+	set_target_properties(FreeCADApp PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+	# dirty hack to avoid Debug/Release subdirectory
+	set_target_properties(FreeCADApp PROPERTIES PREFIX "../")
+else(MSVC)
+	set_target_properties(FreeCADApp PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
 endif(MSVC)
-# This doesn't work!? 
-#IF(MSVC)
-#	SET_TARGET_PROPERTIES(FreeCADApp PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")
-#ENDIF(MSVC)
 
 if(WIN32)
 	INSTALL(TARGETS FreeCADApp
