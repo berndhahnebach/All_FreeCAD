@@ -110,7 +110,7 @@ if(MSVC)
 else(MSVC)
 	set_target_properties(FreeCADMainPy PROPERTIES OUTPUT_NAME "FreeCAD")
 	set_target_properties(FreeCADMainPy PROPERTIES PREFIX "")
-	set_target_properties(FreeCADMainPy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
+	set_target_properties(FreeCADMainPy PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
 endif(MSVC)
 
 if(WIN32)
