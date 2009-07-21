@@ -229,7 +229,7 @@ target_link_libraries(FreeCADBase ${FreeCADBase_LIBS})
 # Note this is IDE specific, not necessarily platform specific
 if(MSVC)
 	set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
-	set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+	set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 	# dirty hack to avoid Debug/Release subdirectory
 	set_target_properties(FreeCADBase PROPERTIES PREFIX "../")
 else(MSVC)
