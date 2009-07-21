@@ -1,3 +1,14 @@
+--- pivy-0.3.0.orig/interfaces/soqt.i
++++ pivy-0.3.0/interfaces/soqt.i
+@@ -78,7 +78,7 @@
+ %include pivy_common_typemaps.i
+ 
+ /* import the pivy main interface file */
+-%import coin.i
++%import(module="pivy") coin.i
+ 
+ /* typemaps to bridge against PyQt */
+ %typemap(out) QEvent * {
 --- pivy-0.3.0.orig/debian/changelog
 +++ pivy-0.3.0/debian/changelog
 @@ -0,0 +1,5 @@
