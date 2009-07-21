@@ -40,10 +40,10 @@ if(MSVC)
 	set_target_properties(FreeCADMain PROPERTIES DEBUG_OUTPUT_NAME "FreeCADD")
 	# dirty hack to avoid Debug/Release subdirectory
 	set_target_properties(FreeCADMain PROPERTIES PREFIX "../")
-	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 else(MSVC)
 	set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
-	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif(MSVC)
 
 if(WIN32)

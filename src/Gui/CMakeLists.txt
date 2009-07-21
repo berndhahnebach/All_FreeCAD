@@ -596,7 +596,7 @@ target_link_libraries(FreeCADGui ${FreeCADGui_LIBS})
 # Note this is IDE specific, not necessarily platform specific
 if(MSVC)
 	set_target_properties(FreeCADGui PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGuiD")
-	set_target_properties(FreeCADGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/bin)
+	set_target_properties(FreeCADGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 	# dirty hack to avoid Debug/Release subdirectory
 	set_target_properties(FreeCADGui PROPERTIES PREFIX "../")
 else(MSVC)
