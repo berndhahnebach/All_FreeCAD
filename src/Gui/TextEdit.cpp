@@ -27,6 +27,7 @@
 # include <QKeyEvent>
 # include <QPainter>
 # include <QShortcut>
+# include <QTextCursor>
 #endif
 
 #include "TextEdit.h"

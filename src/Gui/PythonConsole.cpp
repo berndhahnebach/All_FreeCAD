@@ -27,6 +27,7 @@
 # include <QKeyEvent>
 # include <QMenu>
 # include <QMessageBox>
+# include <QTextCursor>
 # include <QTextDocumentFragment>
 # include <QTextStream>
 # include <QUrl>

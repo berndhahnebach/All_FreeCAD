@@ -27,6 +27,7 @@
 # include <QApplication>
 # include <QMenu>
 # include <QContextMenuEvent>
+# include <QTextCursor>
 # include <QTextStream>
 #endif
 
