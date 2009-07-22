@@ -27,6 +27,7 @@
 # include <QApplication>
 # include <QKeyEvent>
 # include <QLabel>
+# include <QTextCursor>
 # include <QTextEdit>
 # include <QToolTip>
 #endif

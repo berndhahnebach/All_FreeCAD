@@ -26,6 +26,7 @@
 # include <QContextMenuEvent>
 # include <QMenu>
 # include <QShortcut>
+# include <QTextCursor>
 #endif
 
 #include "PythonEditor.h"
