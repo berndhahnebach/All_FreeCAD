@@ -1,8 +1,12 @@
-copy_to_local_output_paths(Init.py)
-copy_to_local_output_paths(InitGui.py)
-copy_to_local_output_paths(Commands.py)
-copy_to_local_output_paths(PythonQt.py)
-copy_to_local_output_paths(Tests.py)
+
+
+fc_copy_to_mod_path("TemplatePyMod" 
+	InitGui.py
+	Init.py
+	Commands.py
+	PythonQt.py
+	Tests.py
+)
 
 install(
 		 FILES

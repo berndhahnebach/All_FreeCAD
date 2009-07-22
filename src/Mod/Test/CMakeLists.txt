@@ -1,25 +1,24 @@
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
+
+fc_copy_to_mod_path("Test" 
+	Init.py
+	Base.py
+	Document.py
+	Menu.py
+	TestApp.py
+	TestGui.py
+	UnicodeTests.py
+	Workbench.py
+	unittestgui.py
+	Gui/qtunittest.py
+	)
+
 if(FREECAD_BUILD_GUI)
 	add_subdirectory(Gui)
-	file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/InitGui.py" NATIVE_SOURCE)
-	file(TO_NATIVE_PATH "../../../Mod/Test/" NATIVE_DEST)
-	execute_process( COMMAND ${PLATFORM_CP} ${NATIVE_SOURCE} ${NATIVE_DEST} )
+	fc_copy_to_mod_path("Test" InitGui.py)
 endif(FREECAD_BUILD_GUI)
 
-file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Init.py" NATIVE_SOURCE)
-file(TO_NATIVE_PATH "../../../Mod/Test/" NATIVE_DEST)
-execute_process( COMMAND ${PLATFORM_CP} ${NATIVE_SOURCE} ${NATIVE_DEST} )
-
-copy_to_local_output_paths(Base.py)
-copy_to_local_output_paths(Document.py)
-copy_to_local_output_paths(Menu.py)
-copy_to_local_output_paths(TestApp.py)
-copy_to_local_output_paths(TestGui.py)
-copy_to_local_output_paths(UnicodeTests.py)
-copy_to_local_output_paths(Workbench.py)
-copy_to_local_output_paths(unittestgui.py)
-copy_to_local_output_paths(Gui/qtunittest.py)
 
 install(
 		 FILES
