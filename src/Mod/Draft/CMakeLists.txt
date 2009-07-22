@@ -1,20 +1,25 @@
-copy_to_local_output_paths(draftlibs/dxfColorMap.py)
-copy_to_local_output_paths(draftlibs/dxfImportObjects.py)
-copy_to_local_output_paths(draftlibs/dxfLibrary.py)
-copy_to_local_output_paths(draftlibs/dxfReader.py)
-copy_to_local_output_paths(draftlibs/fcgeo.py)
-copy_to_local_output_paths(draftlibs/fcvec.py)
-copy_to_local_output_paths(draftlibs/__init__.py)
-copy_to_local_output_paths(Init.py)
-copy_to_local_output_paths(InitGui.py)
-copy_to_local_output_paths(Draft.py)
-copy_to_local_output_paths(draftGui.py)
-copy_to_local_output_paths(importDXF.py)
-copy_to_local_output_paths(importOCA.py)
-copy_to_local_output_paths(importSVG.py)
-copy_to_local_output_paths(icons.svg)
-copy_to_local_output_paths(preferences-draft.svg)
-copy_to_local_output_paths(userprefs.ui)
+
+
+fc_copy_to_mod_path("Draft" 
+	draftlibs/dxfColorMap.py
+	draftlibs/dxfImportObjects.py
+	draftlibs/dxfLibrary.py
+	draftlibs/dxfReader.py
+	draftlibs/fcgeo.py
+	draftlibs/fcvec.py
+	draftlibs/__init__.py
+	Init.py
+	InitGui.py
+	Draft.py
+	draftGui.py
+	importDXF.py
+	importOCA.py
+	importSVG.py
+	icons.svg
+	preferences-draft.svg
+	userprefs.ui
+)
+
 
 install(
 		 FILES
