@@ -4,9 +4,9 @@ set(FREECAD_VERSION "0.9")
 cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 # include local  modules
-if (NOT WIN32)
-		 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cMake")
-endif(NOT WIN32)
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cMake")
+
 
 if(COMMAND cmake_policy)
 		 cmake_policy(SET CMP0003 NEW)
@@ -55,13 +55,13 @@ endif(WIN32)
 # ================================================================================
 
 if(WIN32)
-		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack." ON)
+		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack to Build FreeCAD (only Win32 so far)." ON)
 else(WIN32)
-		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack." OFF)
+		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack to Build FreeCAD (only Win32 so far)." OFF)
 endif(WIN32)
 
-OPTION(FREECAD_BUILD_GUI "Build the FreeCAD Gui." ON)
-OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs." OFF)
+OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command line and the Python import module." ON)
+OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
 
 
 
