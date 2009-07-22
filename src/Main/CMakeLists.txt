@@ -11,52 +11,53 @@ include_directories(
 		 ${XERCES_INCLUDE_DIR})
 
 ######################## FreeCADMain ########################
+if(FREECAD_BUILD_GUI)
 
-SET(FreeCAD_SRCS
-		 freecad.rc
-		 icon.ico
-		 MainGui.cpp
-)
-
-if(MSVC)
-	SET(FreeCAD_LIBS
-		FreeCADGui
-		 debug qtmaind.lib
-		 optimized qtmain.lib
+	SET(FreeCAD_SRCS
+			 freecad.rc
+			 icon.ico
+			 MainGui.cpp
 	)
-else(MSVC)
-	SET(FreeCAD_LIBS
-		FreeCADGui
-	)
-endif(MSVC)
 
-add_executable(FreeCADMain WIN32 ${FreeCAD_SRCS})
+	if(MSVC)
+		SET(FreeCAD_LIBS
+			FreeCADGui
+			 debug qtmaind.lib
+			 optimized qtmain.lib
+		)
+	else(MSVC)
+		SET(FreeCAD_LIBS
+			FreeCADGui
+		)
+	endif(MSVC)
 
-target_link_libraries(FreeCADMain ${FreeCAD_LIBS})
+	add_executable(FreeCADMain WIN32 ${FreeCAD_SRCS})
 
-# Note this is IDE specific, not necessarily platform specific
-if(MSVC)
-	set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
-	set_target_properties(FreeCADMain PROPERTIES DEBUG_OUTPUT_NAME "FreeCADD")
-	# dirty hack to avoid Debug/Release subdirectory
-	set_target_properties(FreeCADMain PROPERTIES PREFIX "../")
-	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-else(MSVC)
-	set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
-	set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-endif(MSVC)
+	target_link_libraries(FreeCADMain ${FreeCAD_LIBS})
 
-if(WIN32)
-	INSTALL(TARGETS FreeCADMain
-	  RUNTIME DESTINATION bin
-	  LIBRARY DESTINATION lib
-	)
-else(WIN32)
-	INSTALL(TARGETS FreeCADMain 
-	  RUNTIME DESTINATION bin
-	)
-endif(WIN32)
+	# Note this is IDE specific, not necessarily platform specific
+	if(MSVC)
+		set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
+		set_target_properties(FreeCADMain PROPERTIES DEBUG_OUTPUT_NAME "FreeCADD")
+		# dirty hack to avoid Debug/Release subdirectory
+		set_target_properties(FreeCADMain PROPERTIES PREFIX "../")
+		set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+	else(MSVC)
+		set_target_properties(FreeCADMain PROPERTIES OUTPUT_NAME "FreeCAD")
+		set_target_properties(FreeCADMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+	endif(MSVC)
 
+	if(WIN32)
+		INSTALL(TARGETS FreeCADMain
+		  RUNTIME DESTINATION bin
+		  LIBRARY DESTINATION lib
+		)
+	else(WIN32)
+		INSTALL(TARGETS FreeCADMain 
+		  RUNTIME DESTINATION bin
+		)
+	endif(WIN32)
+endif(FREECAD_BUILD_GUI)
 ######################## FreeCADMainCmd ########################
 
 SET(FreeCADMainCmd_SRCS
