@@ -1,5 +1,5 @@
 
-#add_subdirectory(3rdParty)
+add_subdirectory(3rdParty)
 add_subdirectory(Base)
 add_subdirectory(App)
 add_subdirectory(Main)
