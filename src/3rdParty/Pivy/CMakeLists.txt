@@ -4,8 +4,10 @@ include_directories(
 		 ../include
 		 ${COIN_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${SO_QT_INCLUDE_DIR})
-
+		 ${SOQT_INCLUDE_DIR}
+		 ${QT_INCLUDE_DIR}
+		 )
+ 
 ########################### CoinPy ###########################
 
 if(MSVC)
