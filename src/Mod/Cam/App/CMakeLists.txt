@@ -13,10 +13,14 @@ include_directories(
 
 if(WIN32)
 		 set(Cam_LIBS
+				OCCAdaptMesh
 		 		 Mesh
 		 		 Part
 		 		 ANN
-		 		 ${ATLAS_LIBRARIES})
+		 		 ${ATLAS_LIBRARIES}
+				 importlib_atlas.lib 
+				 importlib_umfpackamd.lib
+				 )
 else(WIN32)
 		 set(Cam_LIBS
 #libCam_la_LIBADD		 = \
@@ -54,8 +58,8 @@ endif(WIN32)
 
 SET(Cam_SRCS
 		 AppCamPy.cpp
-#		 Approx.cpp
-#		 Approx.h
+		 Approx.cpp
+		 Approx.h
 		 best_fit.cpp
 		 best_fit.h
 		 BRepAdaptor_CompCurve2.cxx

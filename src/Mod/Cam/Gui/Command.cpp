@@ -27,6 +27,7 @@
 #include <Gui/Command.h>
 #include <Gui/Application.h>
 #include <Gui/MainWindow.h>
+#include <QPointer>
 
 
 

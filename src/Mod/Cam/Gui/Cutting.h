@@ -30,6 +30,8 @@
 #include <QProcess>
 #include <Mod/Mesh/App/Core/Grid.h>
 #include <Mod/Cam/App/cutting_tools.h>
+#include <Inventor/nodes/SoEventCallback.h>
+#include <zlib.h>
 
 class best_fit;
 class cutting_tools;

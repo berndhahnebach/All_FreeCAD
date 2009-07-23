@@ -69,7 +69,15 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Mod/Mesh/App/Core/Grid.h>
+#include <TopoDS_Face.hxx>
+#include <TopoDS.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 
+#include <Inventor/events/SoMouseButtonEvent.h>
+#include <Inventor/SoPickedPoint.h>
+
+#include <QMessageBox>
+#include <QFileDialog>
 
 using namespace CamGui;
 
