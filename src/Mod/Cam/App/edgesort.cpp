@@ -31,8 +31,10 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Compound.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
+#include <BRep_Builder.hxx>
 
 
 Edgesort::Edgesort(const TopoDS_Shape& aShape)

@@ -34,10 +34,22 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <Base/Builder3D.h>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <BRep_Builder.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Face.hxx>
+#include <Poly_Triangulation.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TopExp.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <Geom_Surface.hxx>
 
 
 

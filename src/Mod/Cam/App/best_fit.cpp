@@ -45,9 +45,11 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 
 #include <BRepMeshAdapt.hxx>
+#include <BRepTools.hxx>
 
 #include <BRepGProp.hxx>
-
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <GProp_PrincipalProps.hxx>
 

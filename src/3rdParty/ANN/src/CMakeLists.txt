@@ -11,6 +11,15 @@ set(ANN_SRCS
 		 ../include/ANN/ANN.h ../include/ANN/ANNperf.h ../include/ANN/ANNx.h
 )
 
+set(ANN_LIBS
+		debug MSVCRTD.LIB
+        debug MSVCPRTD.LIB
+		optimized MSVCRT.LIB
+        optimized MSVCPRT.LIB
+		Rpcrt4.lib
+)
+
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main)
 
 add_library(ANN SHARED ${ANN_SRCS})
+target_link_libraries(ANN ${ANN_LIBS})

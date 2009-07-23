@@ -31,6 +31,8 @@
 #include <Base/Builder3D.h>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <sstream>
+#include <Geom_BSplineCurve.hxx>
+#include <algorithm>
 
 #define curvTOL  30.0
 #define boundTOL 20.0
@@ -1742,7 +1744,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 
 
 
-		tetha  = min(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
+		tetha  = min<double>(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
 		tetha  = tetha*3/4;
 		velo   = tetha*(sqrt(m_amax/cur));
 		m_a    = m_amax*(1 - tetha*tetha);
@@ -1839,7 +1841,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 
     
 
-		tetha  = min(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
+		tetha  = min<double>(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
 		tetha  = tetha*3/4;
 		velo   = tetha*(sqrt(m_amax/cur));
 		m_a    = m_amax*(1 - tetha*tetha);

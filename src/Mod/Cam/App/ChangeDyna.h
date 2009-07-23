@@ -26,6 +26,8 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+
 class AppCamExport ChangeDyna
 {
 public:

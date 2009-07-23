@@ -27,6 +27,8 @@
 
 #include "routine.h"
 #include <boost/numeric/ublas/matrix.hpp>
+#include <GeomAdaptor_Surface.hxx>
+#include <TopoDS_Face.hxx>
 
 using namespace boost::numeric;
 
