@@ -319,8 +319,17 @@ ${OCCAdaptMesh_BREPUTILS_HDRS}
 
 
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib/)
 
 add_library(OCCAdaptMesh SHARED ${OCCAdaptMesh_SRCS} ${OCCAdaptMesh_HDRS})
 
 target_link_libraries(OCCAdaptMesh ${OCC_Libs})
+
+if(WIN32)
+		 set_target_properties(OCCAdaptMesh PROPERTIES DEBUG_OUTPUT_NAME "OCCAdaptMeshD")
+		 set_target_properties(OCCAdaptMesh PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+		 set_target_properties(OCCAdaptMesh PROPERTIES PREFIX "../")
+else(WIN32)
+		 set_target_properties(OCCAdaptMesh PROPERTIES PREFIX "")
+endif(WIN32)
+
