@@ -13,16 +13,30 @@ endif(WIN32)
 
 
 set(OCC_Libs
-TKBRep
-TKernel
-TKG2d
-TKG3d
-TKGeomAlgo
-TKGeomBase
-TKMath
-TKMesh
-TKTopAlgo
-
+				 TKFillet
+				 TKMesh
+		 		 TKernel
+		 		 TKG2d
+		 		 TKG3d
+		 		 TKMath
+		 		 TKSTEP
+		 		 TKIGES
+		 		 TKSTL
+		 		 TKShHealing
+		 		 TKXSBase
+		 		 TKBool
+		 		 TKBO
+		 		 TKBRep
+		 		 TKTopAlgo
+		 		 TKGeomAlgo
+		 		 TKGeomBase
+		 		 TKOffset
+		 		 TKPrim
+		debug MSVCRTD.LIB
+        debug MSVCPRTD.LIB
+		optimized MSVCRT.LIB
+        optimized MSVCPRT.LIB
+		Rpcrt4.lib
 )
 
 

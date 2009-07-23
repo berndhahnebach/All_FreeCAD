@@ -27,7 +27,11 @@
 
 
 #include <Mod/Mesh/App/Core/Evaluation.h>
+#include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Base/Exception.h>
+#include <gp_Vec.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Face.hxx>
 
 
 #define SMALL_NUM  1e-6

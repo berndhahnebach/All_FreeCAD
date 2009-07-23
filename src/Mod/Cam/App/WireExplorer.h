@@ -30,6 +30,7 @@
 #include <TopTools_MapOfShape.hxx>
 #include <map>
 #include <list>
+#include <vector>
 
 struct WireExplorer_gp_PntLess
 {

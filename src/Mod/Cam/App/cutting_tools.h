@@ -34,6 +34,7 @@ This is the place where all the prototypes are declared and the members are defi
 #include <Handle_TColgp_HArray1OfPnt.hxx>
 #include <Base/BoundBox.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
+#include <map>
 
 #include "stuff.h"
 

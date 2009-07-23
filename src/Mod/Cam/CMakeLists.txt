@@ -1,6 +1,6 @@
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
-aadd_subdirectory(App)
+add_subdirectory(App)
 fc_copy_to_mod_path("Cam" Init.py)
 
 if(FREECAD_BUILD_GUI)

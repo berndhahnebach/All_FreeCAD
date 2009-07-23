@@ -30,6 +30,7 @@
 #include <Base/Vector3D.h>
 #include "cutting_tools.h"
 #include <sstream>
+#include <GeomAdaptor_Curve.hxx>
 
 //#include <Base/Builder3D.h>
 

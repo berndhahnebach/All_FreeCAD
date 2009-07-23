@@ -25,6 +25,8 @@
 #include "PreCompiled.h"
 #include "ChangeDyna.h"
 #include <sstream>
+#include <vector>
+#include <fstream>
 
 ChangeDyna::ChangeDyna()
 {
@@ -98,12 +100,12 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
             if (line.size() > 3 && line.at(0) == '$' && (line.find("nid") == std::string::npos))
             {
                 found = false;
-                output << line << endl;
+                output << line << std::endl;
                 continue; //go directly to the next line
             }
             else if (line.at(0) == '$')
             {
-                output << line << endl;
+                output << line << std::endl;
                 continue;
             }
             else // Now we change the Birth and Death-Times
@@ -124,11 +126,11 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                     try
                     {
                         ReformatStream(astream2,subline1);
-                        output << line.substr(0,66) << subline1 << line.substr(75,5) << endl;
+                        output << line.substr(0,66) << subline1 << line.substr(75,5) << std::endl;
                     }
                     catch (std::out_of_range)
                     {
-                        output << line << endl;
+                        output << line << std::endl;
                         return false;
                     }
 
@@ -141,11 +143,11 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                     try
                     {
                         ReformatStream(astream2,subline1);
-                        output << line.substr(0,31) << subline1 << endl;
+                        output << line.substr(0,31) << subline1 << std::endl;
                     }
                     catch (std::out_of_range)
                     {
-                        output << line << endl;
+                        output << line << std::endl;
                         return false;
                     }
 
@@ -158,7 +160,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
             std::string search("Velocity/Acceleration/");
             if (line.find(search)!=std::string::npos)
                 found = true;
-            output << line << endl;
+            output << line << std::endl;
             continue;
         }
     }

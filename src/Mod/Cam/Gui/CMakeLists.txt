@@ -7,6 +7,7 @@ include_directories(
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${SO_QT_INCLUDE_DIR}
+ 		 ${QT_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
@@ -49,6 +50,13 @@ add_library(CamGui SHARED ${CamGui_SRCS})
 
 target_link_libraries(CamGui ${CamGui_LIBS})
 
-set_target_properties(CamGui PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(CamGui PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(CamGui PROPERTIES DEBUG_OUTPUT_NAME "CamGui_d")
+		 set_target_properties(CamGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Part)
+		 set_target_properties(CamGui PROPERTIES PREFIX "../")
+else(WIN32)
+		 set_target_properties(CamGui PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS CamGui DESTINATION lib)

@@ -82,6 +82,8 @@
 #include <Handle_Geom_Plane.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2d_Curve.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Dir.hxx>
 
 //Own Stuff
 #include "Approx.h"

@@ -27,6 +27,10 @@
 #ifndef STUFF_H
 #define STUFF_H
 
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+
 /**\brief Functor to sort a pair of type pair<float,TopoDS_Wire> 
 
 Mostly used in the cutting class as a sorting of the different resulting wires is necessary if there is

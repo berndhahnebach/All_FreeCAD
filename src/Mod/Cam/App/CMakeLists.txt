@@ -88,6 +88,13 @@ add_library(Cam SHARED ${Cam_SRCS})
 
 target_link_libraries(Cam ${Cam_LIBS})
 
-set_target_properties(Cam PROPERTIES SUFFIX ".pyd")
+if(WIN32)
+		 set_target_properties(Cam PROPERTIES SUFFIX ".pyd")
+		 set_target_properties(Cam PROPERTIES DEBUG_OUTPUT_NAME "Cam_d")
+		 set_target_properties(Cam PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Cam)
+		 set_target_properties(Cam PROPERTIES PREFIX "../")
+else(WIN32)
+		 set_target_properties(Cam PROPERTIES PREFIX "")
+endif(WIN32)
 
 install(TARGETS Cam DESTINATION lib)

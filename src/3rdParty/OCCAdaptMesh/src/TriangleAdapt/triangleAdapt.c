@@ -1348,7 +1348,7 @@ int triunsuitable(vertex triorg, vertex tridest, vertex triapex, REAL area);
 
 /* Open CASCADE Support : Use Open CASCADE exceptions */
 #if (defined(_MSC_VER) && (_MSC_VER < 1600))
-extern "C" void occinternalerrorAdapt ();
+//extern "C" void occinternalerrorAdapt ();
 #else
 extern void occinternalerrorAdapt ();
 #endif
