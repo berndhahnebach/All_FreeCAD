@@ -6,15 +6,21 @@ include_directories(
 		 ${COIN_INCLUDE_DIR}
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${SO_QT_INCLUDE_DIR}
+		 ${SOQT_INCLUDE_DIR}
  		 ${QT_INCLUDE_DIR}
+		 ${ZLIB_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
 		 set(CamGui_LIBS
-		 		 Cam
-		 		 PartGui
-		 		 FreeCADGui)
+		 		Cam
+				Mesh
+		 		PartGui
+		 		FreeCADGui
+ 				importlib_atlas.lib 
+				importlib_umfpackamd.lib
+				OCCAdaptMesh
+			)
 else(WIN32)
 		 set(CamGui_LIBS
 		 		 Cam

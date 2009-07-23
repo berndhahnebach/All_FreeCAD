@@ -37,6 +37,8 @@
 /*******MAIN INCLUDE*********/
 #include "routine.h"
 
+#include <GeomAdaptor_Surface.hxx>
+
 /*******BOOST********/
 #include <boost/numeric/ublas/matrix.hpp>
 
