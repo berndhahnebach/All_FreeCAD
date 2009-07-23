@@ -63,6 +63,7 @@ endif(WIN32)
 OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command line and the Python import module." ON)
 OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
 OPTION(FREECAD_BUILD_CAM "Build the FreeCAD CAM module and the needed libs, be Aware, unfinished code!" OFF)
+OPTION(FREECAD_BUILD_INSTALLER "Build the FreeCAD Installer from the Release version. Additional tools needed (WIX)." OFF)
 
 
 
@@ -122,7 +123,7 @@ else(FREECAD_USE_LIBPACK)
 	if(FREECAD_BUILD_GUI)	
 # -------------------------------- OpenGL --------------------------------
 
-		find_package(OpenGL)
+	find_package(OpenGL)
 
 # -------------------------------- Qt --------------------------------
 
@@ -174,8 +175,14 @@ else(FREECAD_USE_LIBPACK)
 		find_package(SoQt REQUIRED)
 		
 	endif(FREECAD_BUILD_GUI)
+	
 
 endif(FREECAD_USE_LIBPACK)
+
+
+if(FREECAD_BUILD_INSTALLER AND WIN32 )
+	find_package(Wix REQUIRED)
+endif(FREECAD_BUILD_INSTALLER AND WIN32 )
 
 
 include(cMake/FreeCadMacros.cmake)
