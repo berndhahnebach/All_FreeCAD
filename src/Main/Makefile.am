@@ -1,5 +1,5 @@
 bin_PROGRAMS=FreeCAD FreeCADCmd
-lib_LTLIBRARIES=FreeCAD.la
+lib_LTLIBRARIES=FreeCAD.la FreeCADGui.la
 
 #--------------------------------------------------------------------------------------
 FreeCAD_SOURCES= \
@@ -38,6 +38,19 @@ FreeCAD_la_LIBADD=\
 	-l@PYTHON_LIB@ \
 	-lFreeCADBase \
 	-lFreeCADApp
+#--------------------------------------------------------------------------------------
+FreeCADGui_la_SOURCES= \
+	FreeCADGuiPy.cpp
+
+# the library search path.
+FreeCADGui_la_LDFLAGS = -L../Base -L../App -L../Gui $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ -module -avoid-version
+
+FreeCAD_la_LIBADD=\
+	-ldl \
+	-l@PYTHON_LIB@ \
+	-lFreeCADBase \
+	-lFreeCADApp \
+	-lFreeCADGui
 
 #--------------------------------------------------------------------------------------
 
