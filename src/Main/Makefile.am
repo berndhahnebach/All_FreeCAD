@@ -43,9 +43,12 @@ FreeCADGui_la_SOURCES= \
 	FreeCADGuiPy.cpp
 
 # the library search path.
-FreeCADGui_la_LDFLAGS = -L../Base -L../App -L../Gui $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ -module -avoid-version
+FreeCADGui_la_LDFLAGS = -L../Base -L../App -L../Gui $(QT_LIBS) \
+		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) \
+		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
+		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ -module -avoid-version
 
-FreeCAD_la_LIBADD=\
+FreeCADGui_la_LIBADD=\
 	-ldl \
 	-l@PYTHON_LIB@ \
 	-lFreeCADBase \
