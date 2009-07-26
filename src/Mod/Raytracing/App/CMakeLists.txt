@@ -79,6 +79,7 @@ if(WIN32)
 		 set_target_properties(Raytracing PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Raytracing)
 		 set_target_properties(Raytracing PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(Raytracing PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Raytracing)
 		 set_target_properties(Raytracing PROPERTIES PREFIX "")
 endif(WIN32)
 

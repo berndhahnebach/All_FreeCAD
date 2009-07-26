@@ -600,7 +600,7 @@ if(MSVC)
 	# dirty hack to avoid Debug/Release subdirectory
 	set_target_properties(FreeCADGui PROPERTIES PREFIX "../")
 else(MSVC)
-	set_target_properties(FreeCADGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib)
+	set_target_properties(FreeCADGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif(MSVC)
 
 if(WIN32)

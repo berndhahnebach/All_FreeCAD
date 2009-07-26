@@ -1,4 +1,3 @@
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory(App)
 fc_copy_to_mod_path("Raytracing" Init.py)

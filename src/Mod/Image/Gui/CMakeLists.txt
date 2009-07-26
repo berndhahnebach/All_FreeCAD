@@ -64,6 +64,7 @@ if(WIN32)
 		 set_target_properties(ImageGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
 		 set_target_properties(ImageGui PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(ImageGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
 		 set_target_properties(ImageGui PROPERTIES PREFIX "")
 endif(WIN32)
 

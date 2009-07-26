@@ -323,6 +323,7 @@ if(WIN32)
 		set_target_properties(Mesh PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Mesh)
 		set_target_properties(Mesh PROPERTIES PREFIX "../")
 else(WIN32)
+		set_target_properties(Mesh PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Mesh)
 		set_target_properties(Mesh PROPERTIES PREFIX "")
 endif(WIN32)
 

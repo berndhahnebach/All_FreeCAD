@@ -38,6 +38,7 @@ if(WIN32)
 		 set_target_properties(Image PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
 		 set_target_properties(Image PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(Image PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
 		 set_target_properties(Image PROPERTIES PREFIX "")
 endif(WIN32)
 

@@ -42,6 +42,7 @@ if(WIN32)
 		 set_target_properties(MeshPart PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/MeshPart)
 		 set_target_properties(MeshPart PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(MeshPart PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/MeshPart)
 		 set_target_properties(MeshPart PROPERTIES PREFIX "")
 endif(WIN32)
 

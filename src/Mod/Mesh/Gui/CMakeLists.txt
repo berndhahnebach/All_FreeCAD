@@ -99,6 +99,7 @@ if(WIN32)
 		set_target_properties(MeshGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Mesh)
 		set_target_properties(MeshGui PROPERTIES PREFIX "../")
 else(WIN32)
+		set_target_properties(MeshGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Mesh)
 		set_target_properties(MeshGui PROPERTIES PREFIX "")
 endif(WIN32)
 
