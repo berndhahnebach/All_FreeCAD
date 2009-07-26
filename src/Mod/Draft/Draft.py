@@ -32,10 +32,8 @@ General description:
 	The aim is to give FreeCAD basic 2D-CAD capabilities (similar
 	to Autocad and other similar software). This modules is made to be run
 	inside FreeCAD and needs the PyQt4 and pivy modules available.
-	A complete development plan of this module can be found at
-	http://yorik.orgfree.com/scripts/FreeCAD-Draft.html
-	and a user manual is at
-	http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Draft_Module
+	The user manual is at
+	http://sourceforge.net/apps/mediawiki/free-cad/index.php?title=2d_Drafting_Module
 
 How it works / how to extend:
 
@@ -59,12 +57,6 @@ How it works / how to extend:
 	user input and do the necessary cad operations. They also send commands to the
 	command bar, which will display the appropriate controls. While the scene event
 	callback watches mouse events, the keyboard is being watched by the command bar.
-
-
-Todo list:
-	- SVG export
-	- OCA import/export
-	- dimensions
 '''
 
 # import FreeCAD modules
@@ -201,22 +193,25 @@ def snapPoint (target,point,cursor,ctrl=False):
 def constrainPoint (target,point,mobile=False):
 	'''
 	Constrain function
-	On commands that need to enter several points (currently only line/polyline), you can constrain
-	the next point to be picked to the last drawn point by pressing SHIFT. The vertical or horizontal
-	constraining depends on the position of your mouse in relation to last point 
-	at the moment you press SHIFT. if mobile=True, mobile behaviour applies.
+	On commands that need to enter several points (currently only line/polyline),
+	you can constrain the next point to be picked to the last drawn point by
+	pressing SHIFT. The vertical or horizontal constraining depends on the
+	position of your mouse in relation to last point at the moment you press
+	SHIFT. if mobile=True, mobile behaviour applies.
 	'''
 	if len(target.node) > 0:
-		last = target.node[len(target.node)-1]
+		last = target.node[-1]
 		if ((target.constrain == None) or mobile):
 			if (abs(point.x-last.x) > abs(point.y-last.y)):
 				point.y = last.y
 				target.constrain = 0 #horizontal
+				target.ui.xValue.setEnabled(True)
 				target.ui.yValue.setEnabled(False)
 			else:
 				point.x = last.x
 				target.constrain = 1 #vertical
 				target.ui.xValue.setEnabled(False)
+				target.ui.yValue.setEnabled(True)
 		elif (target.constrain == 0):
 			point.y = last.y
 		else:
@@ -274,12 +269,71 @@ def selectObject(arg):
 				obj = FreeCAD.ActiveDocument.getObject(snapped['Object'])
 				FreeCADGui.Selection.addSelection(obj)
 				FreeCADGui.activeWorkbench().activeDraftCommand.component=snapped['Component']
-				FreeCADGui.activeWorkbench().activeDraftCommand.proceed()	
+				FreeCADGui.activeWorkbench().activeDraftCommand.proceed()
+
+def getPoint(target,args,mobile=False):
+	"returns a constrained 3d point and its original point"
+	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+	view = FreeCADGui.ActiveDocument.ActiveView
+	point = view.getPoint(args["Position"][0],args["Position"][1])
+	point = snapPoint(target,point,args["Position"],args["CtrlDown"])
+	ctrlPoint = Vector(point.x,point.y,point.z)
+	if (args["ShiftDown"]): # constraining
+		if mobile and (target.constrain == None):
+			target.node.append(point)
+		point = constrainPoint(target,point,mobile)
+	else:
+		target.constrain = None
+		ui.xValue.setEnabled(True)
+		ui.yValue.setEnabled(True)
+	if not ui.zValue.isEnabled(): point.z = float(ui.zValue.text())
+	if target.node:
+		if target.featureName == "Rectangle":
+			ui.displayPoint(point, target.node[0])
+		else:
+			ui.displayPoint(point, target.node[-1])
+	else: ui.displayPoint(point)
+	return point,ctrlPoint
 
 				
 #---------------------------------------------------------------------------
 # Trackers
 #---------------------------------------------------------------------------
+
+class Tracker:
+	"common settings for all trackers"
+	def __init__(self,dotted=False,scolor=None,swidth=None):
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+		self.color = coin.SoBaseColor()
+		if scolor:
+			self.color.rgb = scolor
+		else:
+			self.color.rgb = self.ui.getDefaultColor("ui")
+		self.drawstyle = coin.SoDrawStyle()
+		if swidth:
+			self.drawstyle.lineWidth = swidth
+		if dotted:
+			self.drawstyle.style = coin.SoDrawStyle.LINES
+			self.drawstyle.lineWeight = 3
+			self.drawstyle.linePattern = 0xaa
+			# drawstyle.linePatternScaleFactor = 10
+		self.node = coin.SoSeparator()
+		self.node.addChild(self.drawstyle)
+		self.node.addChild(self.color)
+		self.switch = coin.SoSwitch() # this is the on/off switch
+		self.switch.addChild(self.node)
+		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+		sg.addChild(self.switch)
+		self.switch.whichChild = -1
+		
+	def __del__(self):
+		self.switch.whichChild = -1
+
+	def on(self):
+		self.switch.whichChild = 0
+
+	def off(self):
+		self.switch.whichChild = -1
 				
 class snapTracker:
 	"a class to create a snap marker symbol, used by the functions that support snapping"
@@ -305,38 +359,16 @@ class snapTracker:
 	def __del__(self):
 		self.switch.whichChild = -1
 
-class lineTracker:
+class lineTracker(Tracker):
 	"a class to create a tracking line used by the functions that need it"
 	def __init__(self,dotted=False,scolor=None,swidth=None):
-		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		color = coin.SoBaseColor()
-		if scolor: color.rgb = scolor
-		else: color.rgb = self.ui.getDefaultColor("ui")
+		Tracker.__init__(self,dotted,scolor,swidth)
 		line = coin.SoLineSet()
 		line.numVertices.setValue(2)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
 		self.coords.point.setValues(0,2,[[0,0,0],[1,0,0]])
-		node = coin.SoSeparator()
-		drawstyle = coin.SoDrawStyle()
-		if swidth:
-			drawstyle.lineWidth = swidth
-		if dotted:
-			drawstyle.style = coin.SoDrawStyle.LINES
-			drawstyle.lineWeight = 3
-			drawstyle.linePattern = 0xaa
-			# drawstyle.linePatternScaleFactor = 10
-		node.addChild(drawstyle)
-		node.addChild(color)
-		node.addChild(self.coords)
-		node.addChild(line)
-		self.switch = coin.SoSwitch() # this is the on/off switch
-		self.switch.addChild(node)
-		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-		sg.addChild(self.switch)
-		self.switch.whichChild = -1
-
-	def __del__(self):
-		self.switch.whichChild = -1
+		self.node.addChild(self.coords)
+		self.node.addChild(line)
 
 	def p1(self,point):
 		self.coords.point.set1Value(0,point.x,point.y,point.z)
@@ -344,35 +376,17 @@ class lineTracker:
 	def p2(self,point):
 		self.coords.point.set1Value(1,point.x,point.y,point.z)
 
-	def on(self):
-		self.switch.whichChild = 0
-
-	def off(self):
-		self.switch.whichChild = -1
-
-class rectangleTracker:
+class rectangleTracker(Tracker):
 	"a tracking rectangle"
-	def __init__(self):
-		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		color = coin.SoBaseColor()
-		color.rgb = self.ui.getDefaultColor("ui")
+	def __init__(self,dotted=False,scolor=None,swidth=None):
+		Tracker.__init__(self,dotted,scolor,swidth)
 		line = coin.SoLineSet()
 		line.numVertices.setValue(5)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
 		self.coords.point.setValues(0,5,[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,0]])
-		node = coin.SoSeparator()
-		node.addChild(color)
-		node.addChild(self.coords)
-		node.addChild(line)
-		self.switch = coin.SoSwitch() # this is the on/off switch
-		self.switch.addChild(node)
-		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-		sg.addChild(self.switch)
+		self.node.addChild(self.coords)
+		self.node.addChild(line)
 		self.origin = Vector(0,0,0)
-		self.switch.whichChild = -1
-
-	def __del__(self):
-		self.switch.whichChild = -1
 
 	def setorigin(self,point):
 		self.coords.point.set1Value(0,point.x,point.y,point.z)
@@ -384,35 +398,16 @@ class rectangleTracker:
 		self.coords.point.set1Value(2,point.x,point.y,self.origin.z)
 		self.coords.point.set1Value(3,self.origin.x,point.y,self.origin.z)
 
-	def on(self):
-		self.switch.whichChild = 0
-
-	def off(self):
-		self.switch.whichChild = -1
-
-class dimTracker:
+class dimTracker(Tracker):
 	"a tracking bridge for drawing dimensions"
-	def __init__(self):
-		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		color = coin.SoBaseColor()
-		color.rgb = self.ui.getDefaultColor("ui")
+	def __init__(self,dotted=False,scolor=None,swidth=None):
+		Tracker.__init__(self,dotted,scolor,swidth)
 		self.line = coin.SoLineSet()
 		self.line.numVertices.setValue(4)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
 		self.coords.point.setValues(0,4,[[0,0,0],[0,0,0],[0,0,0],[0,0,0]])
-		node = coin.SoSeparator()
-		node.addChild(color)
-		node.addChild(self.coords)
-		node.addChild(self.line)
-		self.switch = coin.SoSwitch() # this is the on/off switch
-		self.switch.addChild(node)
-		self.switch.whichChild = -1
-		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-		sg.addChild(self.switch)
-		self.origin = Vector(0,0,0)
-
-	def __del__(self):
-		self.switch.whichChild = -1
+		self.node.addChild(self.coords)
+		self.node.addChild(self.line)
 
 	def update(self,pts):
 		if len(pts) == 2:
@@ -432,24 +427,11 @@ class dimTracker:
 				p3 = p4.add(fcvec.neg(proj))
 			points = [fcvec.tup(p1),fcvec.tup(p2),fcvec.tup(p3),fcvec.tup(p4)]
 			self.coords.point.setValues(0,4,points)
-
-	def on(self):
-		self.switch.whichChild = 0
-
-	def off(self):
-		self.switch.whichChild = -1
-
 		
-class arcTracker:
+class arcTracker(Tracker):
 	"a class to create a tracking arc/circle, used by the functions that need it"
-	def __init__(self,scolor=None,swidth=None):
-		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		color = coin.SoBaseColor()
-		if scolor: color.rgb = scolor
-		else: color.rgb = self.ui.getDefaultColor("ui")
-		drawstyle = coin.SoDrawStyle()
-		if swidth:
-			drawstyle.lineWidth = swidth
+	def __init__(self,dotted=False,scolor=None,swidth=None):
+		Tracker.__init__(self,dotted,scolor,swidth)
 		self.coords = coin.SoCoordinate4()
 		trackpts = [[1,0,0,1],[0.707107,0.707107,0,0.707107],[0,1,0,1],
 			[-0.707107,0.707107,0,0.707107],[-1,0,0,1],[-0.707107,-0.707107,0,0.707107],
@@ -462,26 +444,9 @@ class arcTracker:
 		self.trans.translation.setValue([0,0,0])
 		self.trans.scaleFactor.setValue([0,0,0])
 		self.trans.rotation.setValue(coin.SbVec3f(0,0,1),0)
-		node = coin.SoSeparator()
-		node.addChild(color)
-		node.addChild(drawstyle)
-		node.addChild(self.coords)
-		node.addChild(self.trans)
-		node.addChild(self.circle)
-		self.switch = coin.SoSwitch()
-		self.switch.addChild(node)
-		self.switch.whichChild = -1
-		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-		sg.addChild(self.switch)
-
-	def __del__(self):
-		self.switch.whichChild = -1
-
-	def on(self):
-		self.switch.whichChild = 0
-
-	def off(self):
-		self.switch.whichChild = -1
+		self.node.addChild(self.coords)
+		self.node.addChild(self.trans)
+		self.node.addChild(self.circle)
 
 	def startangle(self,angle):
 		self.trans.rotation.setValue(coin.SbVec3f(0,0,1),-angle)
@@ -542,39 +507,26 @@ class arcTracker:
 		self.circle.knotVector.setValues(knots)
 		self.circle.knotVector.setNum(len(knots))
 
-class ghostTracker:
-	"this class creates a copy of the coin representation of passed objects, to be used as ghost"
+class ghostTracker(Tracker):
+	"this class creates a copy of the coin representation of all passed objects, to be used as ghost"
 	def __init__(self,sel):
-		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-		node = coin.SoSeparator()
-		self.switch = coin.SoSwitch()
+		Tracker.__init__(self)
 		self.trans = coin.SoTransform()
 		self.trans.translation.setValue([0,0,0])
-		node.addChild(self.trans)
+		self.node.addChild(self.trans)
 		ivsep = coin.SoSeparator()
 		try:
-			for i in sel:
+			for ob in sel:
 				ivin = coin.SoInput()
-				ivin.setBuffer(FreeCADGui.ActiveDocument.getObject(i.Name).toString())
+				ivin.setBuffer(ob.ViewObject.toString())
 				ivob = coin.SoDB.readAll(ivin)
 				ivsep.addChild(ivob.getChildren()[1])
 		except:
 			print "draft: Couldn't create ghost"
 		else:
-			self.switch.addChild(ivsep)
-			self.switch.whichChild = -1
-			node.addChild(self.switch)
-			sg.addChild(node)
+			self.node.addChild(ivsep)
+
 				
-	def __del__(self):
-		self.switch.whichChild = -1
-
-	def on(self):
-		self.switch.whichChild = 0
-
-	def off(self):
-		self.switch.whichChild = -1
-
 #---------------------------------------------------------------------------
 # Python Features definitions
 #---------------------------------------------------------------------------
@@ -591,7 +543,6 @@ class Dimension:
 		self.Type = "Dimension"
 		obj.Proxy = self
 		
-
 	def onChanged(self, fp, prop):
 		pass
 
@@ -618,13 +569,18 @@ class DimensionViewProvider:
 		else:
 			p2 = p1.add(fcvec.neg(proj))
 			p3 = p4.add(fcvec.neg(proj))
+			dmax = obj.ViewObject.ExtLines
+			if dmax and (proj.Length > dmax):
+				p1 = p2.add(fcvec.scale(fcvec.normalized(proj),dmax))
+				p4 = p3.add(fcvec.scale(fcvec.normalized(proj),dmax))
 		midpoint = p2.add(fcvec.scale(p3.sub(p2),0.5))
 		if not proj:
 			ed = fcgeo.vec(base)
 			proj = fcvec.crossproduct(ed)
-		offset = fcvec.scale(fcvec.normalized(fcvec.neg(proj)),0.05)
+		offset = fcvec.scale(fcvec.normalized(fcvec.neg(proj)),obj.ViewObject.FontSize*.2)
 		tbase = midpoint.add(offset)
 		angle = fcvec.angle(p3.sub(p2))
+		print "dimline angle: ",math.degrees(angle)
 		if angle < -math.pi/2: angle = -angle-math.pi
 		elif  angle > math.pi/2: angle = math.pi-angle
 		norm = p3.sub(p2).cross(proj)
@@ -691,6 +647,8 @@ class DimensionViewProvider:
 			self.color.rgb.setValue(c[0],c[1],c[2])
 		elif prop == "LineWidth":
 			self.drawstyle.lineWidth = vp.LineWidth
+		elif prop == "ExtLines":
+			self.updateData(vp.Object, None)
 
 	def getDisplayModes(self,obj):
 		modes=[]
@@ -703,34 +661,49 @@ class DimensionViewProvider:
 	def getIcon(self):
 		return """
                     /* XPM */
-                    static char * cota_xpm[] = {
-                    "16 16 9 1",
+                    static char * path2644_xpm[] = {
+                    "16 16 24 1",
                     " 	c None",
-                    ".	c #080903",
-                    "+	c #3A2700",
-                    "@	c #4A4C48",
-                    "#	c #724C00",
-                    "$	c #BC7D00",
-                    "%	c #878885",
-                    "&	c #F8AC24",
-                    "*	c #C0BBAD",
-                    "   %   %% %%@   ",
-                    "  %*. @*%@%%%   ",
-                    "  @*. %%%@*@%.  ",
-                    "   *.%@%%@*@%   ",
-                    "   %.%.%%.%%.   ",
-                    "      #$#   ..  ",
-                    "...%%%&&&%%%... ",
-                    "...@@@&&&@@@... ",
-                    " %@.  ##+.  @%. ",
-                    " %@         @%. ",
-                    " %@         @%. ",
-                    " %@         @%. ",
-                    "#$$+        #$# ",
-                    "$&&#       #&*&.",
-                    "$&&+        $&$.",
-                    " #+.         #. "};
-                """
+                    ".	c #040300",
+                    "+	c #000000",
+                    "@	c #060500",
+                    "#	c #433A00",
+                    "$	c #030200",
+                    "%	c #D5BA00",
+                    "&	c #040400",
+                    "*	c #6E6000",
+                    "=	c #FFDF00",
+                    "-	c #010100",
+                    ";	c #0F0D00",
+                    ">	c #EED000",
+                    ",	c #968300",
+                    "'	c #2A2500",
+                    ")	c #FCDC00",
+                    "!	c #BFA700",
+                    "~	c #050500",
+                    "{	c #514700",
+                    "]	c #DFC300",
+                    "^	c #030300",
+                    "/	c #7C6C00",
+                    "(	c #9C8800",
+                    "_	c #A79200",
+                    "                ",
+                    "       ..       ",
+                    "       ++       ",
+                    "      @##@      ",
+                    "      $%%$      ",
+                    "     &*==*&     ",
+                    "    -;>==>;-    ",
+                    "    -,====,-    ",
+                    "   &')====)'&   ",
+                    "   +!======!+   ",
+                    "  ~{========{~  ",
+                    "  ~]========]~  ",
+                    " ^/==========/^ ",
+                    "-&(__________(&-",
+                    "++++++++++++++++",
+                    "                "};
+                    """
 
 	def __getstate__(self):
 		return None
@@ -745,7 +718,33 @@ class DimensionViewProvider:
 # Geometry constructors
 #---------------------------------------------------------------------------
 
-class line:
+class Creator:
+	" General settings for all geometry creation tools"
+	def Activated(self):
+		self.doc = FreeCAD.ActiveDocument
+		if not self.doc: self.finish()
+		if FreeCADGui.activeWorkbench().activeDraftCommand: self.finish()
+		self.view = FreeCADGui.ActiveDocument.ActiveView
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+		FreeCADGui.activeWorkbench().activeDraftCommand = self
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+		self.ui.cross(True)
+		self.node = []
+		self.pos = []
+		self.ui.sourceCmd = self
+		self.constrain = None
+		self.obj = None
+		
+	def finish(self):
+		self.node=[]
+		self.ui.offUi()
+		self.ui.cross(False)
+		self.ui.sourceCmd=None
+		FreeCADGui.activeWorkbench().activeDraftCommand = None
+		FreeCAD.Console.PrintMessage("")
+		
+	
+class Line(Creator):
 	'''
 	This class creates a line or group of lines feature. 
 	Takes 1 optional argument, the max number of points.
@@ -759,48 +758,31 @@ class line:
 			'ToolTip': 'Creates a 2-point line. CTRL to snap, SHIFT to constrain'}
 
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			self.constrain = None
-			self.featureName = "Line"
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.node = []
-			self.obj = None
-			self.pos = []
-			self.ui.sourceCmd = self
-			self.ui.lineUi()
-			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.snap = snapTracker()
-			self.linetrack = lineTracker()
-			self.constraintrack = lineTracker(dotted=True)
-			FreeCAD.Console.PrintMessage("Pick first point:\n")
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			self.ui.cross(True)
+		Creator.Activated(self)
+		self.featureName = "Line"
+		self.ui.lineUi()
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		self.snap = snapTracker()
+		self.linetrack = lineTracker()
+		self.constraintrack = lineTracker(dotted=True)
+		FreeCAD.Console.PrintMessage("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
-		if len(self.node) > 1:
-			if len(self.node) > 2:
-				if (closed):
-					currentshape = self.obj.Shape
-					first = self.node[0]
-					last = self.node[len(self.node)-1]
-					newseg = Part.Line(last,first).toShape()
-					e=currentshape.Edges
-					e.append(newseg)
-					newshape=Part.Wire(e)
-					self.obj.Shape = newshape
-		self.node=[]
+		if closed and (len(self.node) > 2):
+			currentshape = self.obj.Shape
+			first = self.node[0]
+			last = self.node[len(self.node)-1]
+			newseg = Part.Line(last,first).toShape()
+			e=currentshape.Edges
+			e.append(newseg)
+			newshape=Part.Wire(e)
+			self.obj.Shape = newshape
+		Creator.finish(self)
 		self.view.removeEventCallback("SoEvent",self.call)
-		self.ui.offUi()
-		self.ui.cross(False)
-		self.ui.sourceCmd=None
 		del self.linetrack
 		del self.constraintrack
 		del self.snap
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def createObject(self):
 		"creates an object in the current doc"
@@ -813,17 +795,7 @@ class line:
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = Vector(point.x,point.y,point.z)
-			if (arg["ShiftDown"]): # constraining
-				point = constrainPoint(self,point)
-			else:
-				self.constrain = None
-				self.ui.xValue.setEnabled(True)
-				self.ui.yValue.setEnabled(True)
-			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+			point,ctrlPoint = getPoint(self,arg)
 			self.linetrack.p2(point)
 			# Draw constraint tracker line.
 			if (arg["ShiftDown"]):
@@ -831,22 +803,13 @@ class line:
 				self.constraintrack.p2(ctrlPoint)
 				self.constraintrack.on()
 			else: self.constraintrack.off()
-			if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
-			else: self.ui.displayPoint(point)
-
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				if (arg["Position"] == self.pos):
 					self.finish(False)
 				else:
+					point,ctrlPoint = getPoint(self,arg)
 					self.pos = arg["Position"]
-					point = self.view.getPoint(self.pos[0],self.pos[1])
-					point = snapPoint(self,point,self.pos,arg["CtrlDown"])
-					if (arg["ShiftDown"]): 
-						point = constrainPoint(self,point)
-					else:
-						self.constrain = None
-					if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
 					self.node.append(point)
 					self.linetrack.p1(point)
 					self.drawSegment(point)
@@ -866,8 +829,7 @@ class line:
 			if (len(self.node) > 2):
 				edges = self.obj.Shape.Edges
 				edges.pop()
-				newshape = edges[0]
-				for i in range(1,len(edges)): newshape = newshape.fuse(edges[i])
+				newshape = Part.Wire(edges)
 				self.obj.Shape = newshape
 
 	def drawSegment(self,point):
@@ -906,16 +868,16 @@ class line:
 
 
 
-class polyline(line):
+class Polyline(Line):
 	def __init__(self):
-		self.max=128
+		self.max=256
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_polyline',
 			'MenuText': 'Polyline',
 			'ToolTip': 'Creates a 2-point line. CTRL to snap, SHIFT to constrain'}
 
 
-class finishLine:
+class FinishLine:
 	"a FreeCAD command to finish any running Line drawing operation"
 	def Activated(self):
 		activeCommand = FreeCADGui.activeWorkbench().activeDraftCommand
@@ -928,7 +890,7 @@ class finishLine:
 			'ToolTip': 'Finishes a line without closing it'}
 
 	
-class closeLine:
+class CloseLine:
 	"a FreeCAD command to close any running Line drawing operation"
 	def Activated(self):
 		activeCommand = FreeCADGui.activeWorkbench().activeDraftCommand
@@ -941,7 +903,7 @@ class closeLine:
 			'ToolTip': 'Closes the line being drawn'}
 
 
-class undoLine:
+class UndoLine:
 	"a FreeCAD command to undo last drawn segment of a line"
 	def Activated(self):
 		activeCommand = FreeCADGui.activeWorkbench().activeDraftCommand
@@ -954,8 +916,8 @@ class undoLine:
 			'ToolTip': 'Undoes the last drawn segment of the line being drawn'}
 
 	
-class rectangle:
-	"This class creates a rectangle."
+class Rectangle(Creator):
+	"This tool creates a rectangle."
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rectangle',
@@ -963,44 +925,28 @@ class rectangle:
 			'ToolTip': 'Creates a 2-point rectangle. CTRL to snap'}
 
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument		
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			self.constrain = False
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.featureName = "Rectangle"
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.node = []
-			self.obj = None
-			self.pos = []
-			self.refpoint = None
-			self.ui.sourceCmd = self
-			self.ui.lineUi()
-			self.ui.cmdlabel.setText("Rectangle")
-			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.snap = snapTracker()
-			self.rect = rectangleTracker()
-			FreeCAD.Console.PrintMessage("Pick first point:\n")
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			self.ui.cross(True)
+		Creator.Activated(self)
+		self.featureName = "Rectangle"
+		self.refpoint = None
+		self.ui.lineUi()
+		self.ui.cmdlabel.setText("Rectangle")
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		self.snap = snapTracker()
+		self.rect = rectangleTracker()
+		FreeCAD.Console.PrintMessage("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
-		self.node=[]
+		Creator.finish(self)
 		self.rect.off()
 		self.view.removeEventCallback("SoEvent",self.call)
-		self.ui.offUi()
-		self.ui.cross(False)
-		self.ui.sourceCmd=None
 		del self.rect
 		del self.snap
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def createObject(self):
 		"creates the final object in the current doc"
 		ve = []
 		edges = []
-
 		z = self.node[0].z
 		if self.node[0].x < self.node[1].x:
 			minx = self.node[0].x
@@ -1014,12 +960,10 @@ class rectangle:
 		else:
 			miny = self.node[-1].y
 			maxy = self.node[0].y
-
 		edges.append(Part.Line(Vector(minx,maxy,z),Vector(maxx,maxy,z)).toShape())
 		edges.append(Part.Line(Vector(maxx,maxy,z),Vector(maxx,miny,z)).toShape())
 		edges.append(Part.Line(Vector(maxx,miny,z),Vector(minx,miny,z)).toShape())
-		edges.append(Part.Line(Vector(minx,miny,z),Vector(minx,maxy,z)).toShape())
-			
+		edges.append(Part.Line(Vector(minx,miny,z),Vector(minx,maxy,z)).toShape())	
 		shape=Part.Wire(edges)
 		self.doc.openTransaction("Create "+self.featureName) 
 		self.obj=self.doc.addObject("Part::Feature",self.featureName)
@@ -1032,33 +976,14 @@ class rectangle:
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			if len(self.node):
-				if (arg["ShiftDown"]): # constraining
-					if self.constrain == None:
-						self.node.append(point)
-					point = constrainPoint(self,point,mobile=True)
-				else:
-					self.constrain = None
-					self.ui.xValue.setEnabled(True)
-					self.ui.yValue.setEnabled(True)
-			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-			if (len(self.node)>0): self.ui.displayPoint(point, self.node[0])
-			else: self.ui.displayPoint(point)
+			point,ctrlPoint = getPoint(self,arg,mobile=True)
 			self.rect.update(point)
-
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				if (arg["Position"] == self.pos):
 					self.finish()
 				else:
-					self.pos = arg["Position"]
-					point = self.view.getPoint(self.pos[0],self.pos[1])
-					point = snapPoint(self,point,self.pos,arg["CtrlDown"])
-					if (arg["ShiftDown"]): point = constrainPoint(self,point,mobile=True)
-					if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+					point,ctrlPoint = getPoint(self,arg)
 					self.appendPoint(point)
 
 	def numericInput(self,numx,numy,numz):
@@ -1077,8 +1002,7 @@ class rectangle:
 			self.rect.on()
 
 
-
-class arc:
+class Arc(Creator):
 	'''
 	This class creates an arc (circle feature). 
 	'''
@@ -1092,61 +1016,43 @@ class arc:
 			'ToolTip': 'Creates an arc. CTRL to snap, SHIFT to constrain, ALT to go counter-clockwise'}
 
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.step = 0
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.doc.openTransaction("Create "+self.featureName)
-			self.obj = self.doc.addObject("Part::Feature",self.featureName)
-			self.doc.commitTransaction()
-			formatObject(self.obj)
-			self.center = None
-			self.rad = None
-			self.node = []
-			self.constrain = None
-			self.tangents = []
-			self.tanpoints = []
-			if self.featureName == "Arc": self.ui.arcUi()
-			else: self.ui.circleUi()
-			self.altdown = False
-			self.ui.sourceCmd = self
-			self.snap = snapTracker()
-			self.linetrack = lineTracker(dotted=True)
-			self.constraintrack = lineTracker(dotted=True)
-			self.arctrack = arcTracker()
-			self.call = self.view.addEventCallback("SoEvent",self.action)
-			FreeCAD.Console.PrintMessage("Pick center point:\n")
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			self.ui.cross(True)
+		Creator.Activated(self)
+		self.step = 0
+		self.doc.openTransaction("Create "+self.featureName)
+		self.obj = self.doc.addObject("Part::Feature",self.featureName)
+		self.doc.commitTransaction()
+		formatObject(self.obj)
+		self.center = None
+		self.rad = None
+		self.tangents = []
+		self.tanpoints = []
+		if self.featureName == "Arc": self.ui.arcUi()
+		else: self.ui.circleUi()
+		self.altdown = False
+		self.ui.sourceCmd = self
+		self.snap = snapTracker()
+		self.linetrack = lineTracker(dotted=True)
+		self.constraintrack = lineTracker(dotted=True)
+		self.arctrack = arcTracker()
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		FreeCAD.Console.PrintMessage("Pick center point:\n")
 
 	def finish(self,closed=False):
 		"finishes the arc"
+		Creator.finish(self)
 		if (self.rad == None): self.doc.undo()
 		elif not(self.closedCircle) and (self.step < 4): self.doc.undo()
-		self.ui.offUi()
-		self.ui.cross(False)
 		self.view.removeEventCallback("SoEvent",self.call)
 		del self.snap
 		del self.linetrack
 		del self.constraintrack
 		del self.arctrack
 		self.doc.recompute()
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = Vector(point.x,point.y,point.z)
-			if (arg["ShiftDown"]): # constraining
-				point = constrainPoint(self,point)
-			else:
-				self.constrain = None
-			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+			point,ctrlPoint = getPoint(self,arg)
 			if (self.step == 0):
 				if arg["AltDown"]:
 					if not self.altdown:
@@ -1158,7 +1064,6 @@ class arc:
 						self.ui.cross(True)
 						self.altdown = False
 						self.ui.switchUi(False)
-				self.ui.displayPoint(point)
 			elif (self.step == 1):
 				if len(self.tangents) == 2:
 					cir = fcgeo.circleFrom2tan1pt(self.tangents[0], self.tangents[1], point)
@@ -1172,7 +1077,7 @@ class arc:
 					if not self.altdown:
 						self.ui.cross(False)
 						self.altdown = True
-					snapped = self.view.getObjectInfo((cursor[0],cursor[1]))
+					snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 					if snapped:
 						ob = self.doc.getObject(snapped['Object'])
 						num = int(snapped['Component'].lstrip('Edge'))-1
@@ -1262,17 +1167,10 @@ class arc:
 
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				pos = arg["Position"]
-				point = self.view.getPoint(pos[0],pos[1])
-				point = snapPoint(self,point,pos,arg["CtrlDown"])
-				if (arg["ShiftDown"]): # constraining
-					point = constrainPoint(self,point)
-				else:
-					self.constrain = None
-				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+				point,ctrlPoint = getPoint(self,arg)
 				if (self.step == 0):
 					if arg["AltDown"]:
-						snapped=self.view.getObjectInfo((pos[0],pos[1]))
+						snapped=self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 						if snapped:
 							ob = self.doc.getObject(snapped['Object'])
 							num = int(snapped['Component'].lstrip('Edge'))-1
@@ -1292,7 +1190,7 @@ class arc:
 							self.node = [point]
 							self.arctrack.trans.translation.setValue([self.center.x,self.center.y,self.center.z])
 							self.linetrack.p1(self.center)
-							self.linetrack.p2(self.view.getPoint(pos[0],pos[1]))
+							self.linetrack.p2(self.view.getPoint(arg["Position"][0],arg["Position"][1]))
 						self.arctrack.on()
 						self.ui.radiusUi()
 						self.step = 1
@@ -1388,7 +1286,7 @@ class arc:
 
 
 
-class circle(arc):
+class Circle(Arc):
 	"a modified version of the arc tool, to produce a closed circle"
 	def __init__(self):
 		self.closedCircle=True
@@ -1400,7 +1298,7 @@ class circle(arc):
 			'ToolTip': 'Creates a circle. CTRL to snap, ALT to select tangent objects'}
 
 	
-class annotation:
+class Text(Creator):
 	'''
 	This class creates an annotation feature.
 	'''
@@ -1411,37 +1309,26 @@ class annotation:
 			'ToolTip': 'Creates an annotation. CTRL to snap'}
 
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.featureName = "Text"
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.node = []
-			self.obj = None
-			self.pos = []
-			self.dialog = None
-			self.text = ''
-			self.ui.sourceCmd = self
-			self.ui.pointUi()
-			self.ui.cmdlabel.setText("Text")
-			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.ui.xValue.setFocus()
-			self.ui.xValue.selectAll()
-			self.snap = snapTracker()
-			FreeCAD.Console.PrintMessage("Pick location point:\n")
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			self.ui.cross(True)
+		Creator.Activated(self)
+		self.featureName = "Text"
+		self.dialog = None
+		self.text = ''
+		self.ui.sourceCmd = self
+		self.ui.pointUi()
+		self.ui.cmdlabel.setText("Text")
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		self.ui.xValue.setFocus()
+		self.ui.xValue.selectAll()
+		self.snap = snapTracker()
+		FreeCAD.Console.PrintMessage("Pick location point:\n")
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
-		self.node=[]
+		Creator.finish(self)
 		self.view.removeEventCallback("SoEvent",self.call)
-		self.ui.offUi()
-		self.ui.sourceCmd=None
 		del self.snap
 		del self.dialog
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def createObject(self):
 		"creates an object in the current doc"
@@ -1457,16 +1344,11 @@ class annotation:
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			self.ui.displayPoint(point)
+			point,ctrlPoint = getPoint(self,arg)
 
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				self.pos = arg["Position"]
-				point = self.view.getPoint(self.pos[0],self.pos[1])
-				point = snapPoint(self,point,self.pos,arg["CtrlDown"])
+				point,dtrlPoint = getPoint(self,arg)
 				self.node.append(point)
 				self.ui.textUi()
 				self.ui.textValue.setFocus()
@@ -1480,7 +1362,7 @@ class annotation:
 		self.ui.textValue.setFocus()
 		self.ui.cross(False)
 
-class dim:
+class Dim(Creator):
 	'''
 	This class creates a dimension feature.
 	'''
@@ -1490,41 +1372,27 @@ class dim:
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_dimension',
 			'MenuText': 'Dimension',
-			'ToolTip': 'Creates a dimension. CTRL to snap, SHIFT to constrain'}
+			'ToolTip': 'Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment'}
 
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			self.constrain = None
-			self.featureName = "Dimension"
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.node = []
-			self.obj = None
-			self.pos = []
-			self.ui.sourceCmd = self
-			self.ui.lineUi()
-			self.altdown = False
-			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.snap = snapTracker()
-			self.dimtrack = dimTracker()
-			self.constraintrack = lineTracker(dotted=True)
-			FreeCAD.Console.PrintMessage("Pick first point:\n")
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			self.ui.cross(True)
+		Creator.Activated(self)
+		self.featureName = "Dimension"
+		self.ui.lineUi()
+		self.altdown = False
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		self.snap = snapTracker()
+		self.dimtrack = dimTracker()
+		self.constraintrack = lineTracker(dotted=True)
+		FreeCAD.Console.PrintMessage("Pick first point:\n")
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
-		self.node=[]
+		Creator.finish(self)
 		self.view.removeEventCallback("SoEvent",self.call)
-		self.ui.offUi()
-		self.ui.cross(False)
-		self.ui.sourceCmd=None
 		del self.dimtrack
 		del self.constraintrack
 		del self.snap
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def createObject(self):
 		"creates an object in the current doc"
@@ -1538,27 +1406,18 @@ class dim:
 		self.doc.commitTransaction()
 		formatObject(obj)
 		select(obj)
+		self.doc.recompute()
 
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = Vector(point.x,point.y,point.z)			
-			if (arg["ShiftDown"]): # constraining
-				point = constrainPoint(self,point)
-			else:
-				self.constrain = None
-				self.ui.xValue.setEnabled(True)
-				self.ui.yValue.setEnabled(True)
-			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+			point,ctrlPoint = getPoint(self,arg)
 			if arg["AltDown"] and (len(self.node)<3):
 				if not self.altdown:
 					self.ui.cross(False)
 					self.altdown = True
 					self.ui.switchUi(True)
-				snapped = self.view.getObjectInfo((cursor[0],cursor[1]))
+				snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 				if snapped:
 					ob = self.doc.getObject(snapped['Object'])
 					num = int(snapped['Component'].lstrip('Edge'))-1
@@ -1578,21 +1437,11 @@ class dim:
 					self.constraintrack.p2(ctrlPoint)
 					self.constraintrack.on()
 				else: self.constraintrack.off()
-				if (len(self.node)>0): self.ui.displayPoint(point, self.node[-1])
-				else: self.ui.displayPoint(point)
-
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				self.pos = arg["Position"]
-				point = self.view.getPoint(self.pos[0],self.pos[1])
-				point = snapPoint(self,point,self.pos,arg["CtrlDown"])
-				if (arg["ShiftDown"]): 
-					point = constrainPoint(self,point)
-				else:
-					self.constrain = None
-				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+				point,ctrlPoint = getPoint(self,arg)
 				if arg["AltDown"] and (len(self.node)<3):
-					snapped = self.view.getObjectInfo((self.pos[0],self.pos[1]))
+					snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 					if snapped:
 						ob = self.doc.getObject(snapped['Object'])
 						num = int(snapped['Component'].lstrip('Edge'))-1
@@ -1627,10 +1476,32 @@ class dim:
 # Modifier functions
 #---------------------------------------------------------------------------
 
-class move:
-	'''
-	This class translates the selected objects from a point to another point.
-	'''
+class Modifier:
+	"This stores general stuff for all modifier tools"
+
+	def Activated(self):
+		self.doc = FreeCAD.ActiveDocument
+		if not self.doc: self.finish()
+		if FreeCADGui.activeWorkbench().activeDraftCommand: self.finish()
+		self.view = FreeCADGui.ActiveDocument.ActiveView
+		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+		FreeCADGui.activeWorkbench().activeDraftCommand = self
+		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+		self.node = []
+		self.ui.sourceCmd = self
+		self.constrain = None
+		self.obj = None
+		
+	def finish(self):
+		self.node = []
+		self.ui.offUi()
+		self.ui.sourceCmd=None
+		FreeCADGui.activeWorkbench().activeDraftCommand = None
+		FreeCAD.Console.PrintMessage("")
+		self.ui.cross(False)
+			
+class Move(Modifier):
+	"This class translates the selected objects from a point to another point."
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_move',
@@ -1638,52 +1509,38 @@ class move:
 			'ToolTip': 'Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy'}
 
 	def Activated(self):
-		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.ui.sourceCmd = self
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.ui.cmdlabel.setText("Move")
-			self.featureName = "Move"
-			self.call = None
-			if not FreeCADGui.Selection.getSelection():
-				self.ghost = None
-				self.snap = None
-				self.linetrack = None
-				self.constraintrack = None
-				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage("Select an object to move\n")
-				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			else:
-				self.proceed()
+		Modifier.Activated(self)
+		self.ui.cmdlabel.setText("Move")
+		self.featureName = "Move"
+		self.call = None
+		if not FreeCADGui.Selection.getSelection():
+			self.ghost = None
+			self.snap = None
+			self.linetrack = None
+			self.constraintrack = None
+			self.ui.selectUi()
+			FreeCAD.Console.PrintMessage("Select an object to move\n")
+			self.call = self.view.addEventCallback("SoEvent",selectObject)
+		else:
+			self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.doc = FreeCAD.ActiveDocument 
 		self.sel = FreeCADGui.Selection.getSelection()
-		self.constrain = None
-		self.pos = []
 		self.ui.pointUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
-		self.node = []
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick start point:\n")
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
-		self.node=[]
-		FreeCAD.Console.PrintMessage("")
+		Modifier.finish(self)
 		self.view.removeEventCallback("SoEvent",self.call)
-		self.ui.offUi()
-		self.ui.cross(False)
-		self.ui.sourceCmd=None
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 		del self.ghost
 		del self.snap
 		del self.linetrack
@@ -1706,15 +1563,7 @@ class move:
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = Vector(point.x,point.y,point.z)
-			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-			if (arg["ShiftDown"]): # constraining
-				point = constrainPoint(self,point)
-			else:
-				self.constrain = None
+			point,ctrlPoint = getPoint(self,arg)
 			self.linetrack.p2(point)
 			# Draw constraint tracker line.
 			if (arg["ShiftDown"]):
@@ -1724,21 +1573,11 @@ class move:
 			else: self.constraintrack.off()
 			if (len(self.node) > 0):
 				last = self.node[len(self.node)-1]
-				delta = fcvec.sub(point,last)
+				delta = point.sub(last)
 				self.ghost.trans.translation.setValue([delta.x,delta.y,delta.z])
-				self.ui.displayPoint(point, self.node[-1])
-			else: self.ui.displayPoint(point)
-
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				self.pos = arg["Position"]
-				point = self.view.getPoint(self.pos[0],self.pos[1])
-				point = snapPoint(self,point,self.pos,arg["CtrlDown"])
-				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-				if (arg["ShiftDown"]): 
-					point = constrainPoint(self,point)
-				else:
-					self.constrain = None
+				point,ctrlPoint = getPoint(self,arg)
 				if (self.node == []):
 					self.node.append(point)
 					self.ui.isRelative.show()
@@ -1748,17 +1587,17 @@ class move:
 					self.linetrack.p1(point)
 					FreeCAD.Console.PrintMessage("Pick end point:\n")
 				else:
-					last = self.node[len(self.node)-1]
+					last = self.node[-1]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
-						self.move(fcvec.sub(point,last),True)
+						self.move(point.sub(last),True)
 					else:
-						self.move(fcvec.sub(point,last))
+						self.move(point.sub(last))
 					self.finish()
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
 		point = Vector(numx,numy,numz)
-		if (self.node == []):
+		if not self.node:
 			self.node.append(point)
 			self.ui.isRelative.show()
 			self.ui.isCopy.show()
@@ -1767,18 +1606,15 @@ class move:
 			self.ghost.on()
 			FreeCAD.Console.PrintMessage("Pick end point point:\n")
 		else:
-			last = self.node[len(self.node)-1]
+			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
-				self.move(fcvec.sub(point,last),True)
+				self.move(point.sub(last),True)
 			else:
-				self.move(fcvec.sub(point,last))
+				self.move(point.sub(last))
 			self.finish()
 
-
-
-	
 			
-class applyStyle:
+class ApplyStyle(Modifier):
 	"this class applies the current line width and line color to selected objects"
 
 	def GetResources(self):
@@ -1787,15 +1623,14 @@ class applyStyle:
 			'ToolTip': 'Applies current line width and color to selected objects'}
 
 	def Activated(self):
-		self.doc = FreeCAD.ActiveDocument
+		Modifier.Activated(self)
 		self.sel = FreeCADGui.Selection.getSelection()
-		if (self.doc != None) and (FreeCADGui.activeWorkbench().activeDraftCommand == None):
-			if (len(self.sel)>0):
-				self.doc.openTransaction("Change style")
-				for ob in self.sel:
-					if (ob.Type == "App::DocumentObjectGroup"): self.formatGroup(ob)
-					else: formatObject(ob)
-				self.doc.commitTransaction()
+		if (len(self.sel)>0):
+			self.doc.openTransaction("Change style")
+			for ob in self.sel:
+				if (ob.Type == "App::DocumentObjectGroup"): self.formatGroup(ob)
+				else: formatObject(ob)
+			self.doc.commitTransaction()
 
 	def formatGroup(self,grpob):
 		for ob in grpob.Group:
@@ -1805,7 +1640,7 @@ class applyStyle:
 
 	
 			
-class rotate:
+class Rotate(Modifier):
 	'''
 	This class rotates the selected objects.
 	'''
@@ -1817,34 +1652,26 @@ class rotate:
 			'ToolTip': 'Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy'}
 
 	def Activated(self):
-		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.ui.sourceCmd = self
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.ui.cmdlabel.setText("Rotate")
-			self.featureName = "Rotate"
-			self.call = None
-			if not FreeCADGui.Selection.getSelection():
-				self.ghost = None
-				self.snap = None
-				self.linetrack = None
-				self.arctrack = None
-				self.constraintrack = None
-				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage("Select an object to rotate\n")
-				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			else:
-				self.proceed()
+		Modifier.Activated(self)
+		self.ui.cmdlabel.setText("Rotate")
+		self.featureName = "Rotate"
+		self.call = None
+		if not FreeCADGui.Selection.getSelection():
+			self.ghost = None
+			self.snap = None
+			self.linetrack = None
+			self.arctrack = None
+			self.constraintrack = None
+			self.ui.selectUi()
+			FreeCAD.Console.PrintMessage("Select an object to rotate\n")
+			self.call = self.view.addEventCallback("SoEvent",selectObject)
+		else:
+			self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.doc = FreeCAD.ActiveDocument 
 		self.sel = FreeCADGui.Selection.getSelection()
 		self.step = 0
-		self.constrain = None
-		self.pos = []
-		self.node = []
 		self.center = None
 		self.ui.arcUi()
 		self.ui.cmdlabel.setText("Rotate")
@@ -1855,22 +1682,18 @@ class rotate:
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick rotation center:\n")
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 				
 	def finish(self,closed=False):
 		"finishes the arc"
-		self.ui.offUi()
-		self.ui.cross(False)
+		Modifier.finish(self)
 		self.view.removeEventCallback("SoEvent",self.call)
-		FreeCAD.Console.PrintMessage("")
 		del self.snap
 		del self.linetrack
 		del self.constraintrack
 		del self.arctrack
 		del self.ghost
 		self.doc.recompute()
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def rot (self,angle,copy=False):
 		"rotating the real shapes"
@@ -1902,16 +1725,9 @@ class rotate:
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			ctrlPoint = Vector(point.x,point.y,point.z)
-			if (arg["ShiftDown"]): # constraining
-				point = constrainPoint(self,point)
-			else:
-				self.constrain = None
+			point,ctrlPoint = getPoint(self,arg)
 			if (self.step == 0):
-				self.ui.displayPoint(point)
+				pass
 			elif (self.step == 1):
 				currentrad = fcvec.dist(point,self.center)
 				if (currentrad != 0): angle = math.asin((point.y-self.center.y)/currentrad)
@@ -1962,13 +1778,7 @@ class rotate:
 
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				pos = arg["Position"]
-				point = self.view.getPoint(pos[0],pos[1])
-				point = snapPoint(self,point,pos,arg["CtrlDown"])
-				if (arg["ShiftDown"]): # constraining
-					point = constrainPoint(self,point)
-				else:
-					self.constrain = None
+				point,ctrlPoint = getPoint(self,arg)
 				if (self.step == 0):
 					self.center = point
 					self.node = [point]
@@ -2042,10 +1852,8 @@ class rotate:
 
 
 
-class offset:
-	'''
-	This class offsets the selected objects.
-	'''
+class Offset(Modifier):
+	"This class offsets the selected objects."
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_offset',
@@ -2053,37 +1861,29 @@ class offset:
 			'ToolTip': 'Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy'}
 
 	def Activated(self):
-		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.ui.sourceCmd = self
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.ui.cmdlabel.setText("Offset")
-			self.featureName = "Offset"
-			self.call = None
-			if not FreeCADGui.Selection.getSelection():
-				self.ghost = None
-				self.snap = None
-				self.linetrack = None
-				self.arctrack = None
-				self.constraintrack = None
-				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage("Select an object to offset\n")
-				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			elif len(FreeCADGui.Selection.getSelection()) > 1:
-				FreeCAD.Console.PrintWarning("Offset only works on one object at a time\n")
-			else:
-				self.proceed()
+		Modifier.Activated(self)
+		self.ui.cmdlabel.setText("Offset")
+		self.featureName = "Offset"
+		self.call = None
+		if not FreeCADGui.Selection.getSelection():
+			self.ghost = None
+			self.snap = None
+			self.linetrack = None
+			self.arctrack = None
+			self.constraintrack = None
+			self.ui.selectUi()
+			FreeCAD.Console.PrintMessage("Select an object to offset\n")
+			self.call = self.view.addEventCallback("SoEvent",selectObject)
+		elif len(FreeCADGui.Selection.getSelection()) > 1:
+			FreeCAD.Console.PrintWarning("Offset only works on one object at a time\n")
+		else:
+			self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.doc = FreeCAD.ActiveDocument
 		self.sel = FreeCADGui.Selection.getSelection()[0]
 		self.step = 0
-		self.constrain = None
 		self.constrainSeg = None
-		self.pos = []
-		self.node = []
 		self.ui.radiusUi()
 		self.ui.isCopy.show()
 		self.ui.labelRadius.setText("Distance")
@@ -2093,7 +1893,6 @@ class offset:
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
-
 		self.faces = False
 		self.edges = []
 		c = fcgeo.complexity(self.sel)	
@@ -2111,20 +1910,15 @@ class offset:
 			else: self.ghost.append(arcTracker())
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick distance:\n")
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
-		self.node=[]
+		Modifier.finish(self)
 		self.view.removeEventCallback("SoEvent",self.call)
-		self.ui.offUi()
-		self.ui.cross(False)
-		self.ui.sourceCmd=None
 		del self.snap
 		del self.linetrack
 		del self.constraintrack
 		del self.ghost
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def action(self,arg):
 		"scene event handler"
@@ -2291,7 +2085,7 @@ class offset:
 		self.finish()
 			
 
-class upgrade:
+class Upgrade(Modifier):
 	'''
 	This class upgrades selected objects in different ways, following this list (in order):
 	- if there are more than one faces, the faces are merged (union)
@@ -2306,20 +2100,16 @@ class upgrade:
 			'ToolTip': 'Joins the selected objects into one, or converts closed wires to filled faces, or unite faces'}
 
 	def Activated(self):
-		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
-			self.doc = FreeCAD.ActiveDocument
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.ui.cmdlabel.setText("Upgrade")			
-			self.featureName = "Upgrade"
-			self.call = None
-			if not FreeCADGui.Selection.getSelection():
-				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
-				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			else:
-				self.proceed()
+		Modifier.Activated(self)
+		self.ui.cmdlabel.setText("Upgrade")			
+		self.featureName = "Upgrade"
+		self.call = None
+		if not FreeCADGui.Selection.getSelection():
+			self.ui.selectUi()
+			FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
+			self.call = self.view.addEventCallback("SoEvent",selectObject)
+		else:
+			self.proceed()
 		
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
@@ -2375,14 +2165,13 @@ class upgrade:
 			formatObject(newob,lastob)
 		for ob in self.sel:
 			self.doc.removeObject(ob.Name)
-			self.doc.commitTransaction()
-			select(newob)
-			self.ui.offUi()
-			FreeCADGui.activeWorkbench().activeDraftCommand = None
+		self.doc.commitTransaction()
+		select(newob)
+		Modifier.finish(self)
 				
 
 		
-class downgrade:
+class Downgrade(Modifier):
 	'''
 	This class downgrades selected objects in different ways, following this list (in order):
 	- if there are more than one faces, the subsequent faces are subtracted from the first one
@@ -2396,20 +2185,16 @@ class downgrade:
 			'ToolTip': 'Explodes the selected objects into simpler objects, or subtract faces'}
 
 	def Activated(self):
-		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
-			self.doc = FreeCAD.ActiveDocument
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.ui.cmdlabel.setText("Downgrade")		
-			self.featureName = "Downgrade"
-			self.call = None
-			if not FreeCADGui.Selection.getSelection():
-				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
-				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			else:
-				self.proceed()
+		Modifier.Activated(self)
+		self.ui.cmdlabel.setText("Downgrade")		
+		self.featureName = "Downgrade"
+		self.call = None
+		if not FreeCADGui.Selection.getSelection():
+			self.ui.selectUi()
+			FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
+			self.call = self.view.addEventCallback("SoEvent",selectObject)
+		else:
+			self.proceed()
 
 
 	def proceed(self):
@@ -2449,14 +2234,13 @@ class downgrade:
 				self.doc.removeObject(ob.Name)
 		self.doc.commitTransaction()
 		select(newob)
-		self.ui.offUi()
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
+		Modifier.finish(self)
 		
 
 
 
 
-class trimex:
+class Trimex(Modifier):
 	"this tool trims or extends lines, polylines and arcs. SHIFT constrains to the last point."
 
 	def GetResources(self):
@@ -2465,36 +2249,29 @@ class trimex:
 			'ToolTip' : 'Trims or Extends the selected object. SHIFT constrains to current segment, ALT inverts'}
 
 	def Activated(self):
-		if FreeCAD.ActiveDocument and not FreeCADGui.activeWorkbench().activeDraftCommand:
-			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			self.ui.sourceCmd = self
-			FreeCADGui.activeWorkbench().activeDraftCommand = self
-			self.ui.cmdlabel.setText("Trimex")
-			self.featureName = "Trimex"
-			self.call = None
-			if not FreeCADGui.Selection.getSelection():
-				self.ghost = None
-				self.snap = None
-				self.linetrack = None
-				self.constraintrack = None
-				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage("Select an object to trim/extend\n")
-				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			else:
-				self.proceed()
+		Modifier.Activated(self)
+		self.ui.cmdlabel.setText("Trimex")
+		self.featureName = "Trimex"
+		self.call = None
+		if not FreeCADGui.Selection.getSelection():
+			self.ghost = None
+			self.snap = None
+			self.linetrack = None
+			self.constraintrack = None
+			self.ui.selectUi()
+			FreeCAD.Console.PrintMessage("Select an object to trim/extend\n")
+			self.call = self.view.addEventCallback("SoEvent",selectObject)
+		else:
+			self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.doc = FreeCAD.ActiveDocument
 		self.sel = FreeCADGui.Selection.getSelection()[0]
 		if self.sel.Shape.isClosed(): self.finish()
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Distance")
-		FreeCADGui.activeWorkbench().activeDraftCommand = self
 		self.ui.radiusValue.setFocus()
 		self.ui.radiusValue.selectAll()
-		self.node = []
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
@@ -2524,7 +2301,6 @@ class trimex:
 		self.force = None
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick distance:\n")
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.ui.cross(True)
 
 				
@@ -2676,19 +2452,15 @@ class trimex:
 		for g in self.ghost: g.off()
 
 	def finish(self,closed=False):		
-		self.nodes = []
+		Modifier.finish(self)
 		self.view.removeEventCallback("SoEvent",self.call)
 		self.ui.labelRadius.setText("Distance")
-		self.ui.offUi()
-		self.ui.cross(False)
-		self.ui.sourceCmd=None
 		del self.snap
 		del self.linetrack
 		del self.constraintrack
 		del self.ghost
 		self.sel.ViewObject.Visibility = True
 		select(self.sel)
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
 
 	def numericRadius(self,dist):
 		"this function gets called by the toolbar when valid distance have been entered there"
@@ -2705,24 +2477,24 @@ class trimex:
 
 		
 # drawing commands
-FreeCADGui.addCommand('Draft_Line',line())
-FreeCADGui.addCommand('Draft_Polyline',polyline())
-FreeCADGui.addCommand('Draft_Circle',circle())
-FreeCADGui.addCommand('Draft_Arc',arc())
-FreeCADGui.addCommand('Draft_Text',annotation())
-FreeCADGui.addCommand('Draft_Rectangle',rectangle())
-FreeCADGui.addCommand('Draft_Dimension',dim())
+FreeCADGui.addCommand('Draft_Line',Line())
+FreeCADGui.addCommand('Draft_Polyline',Polyline())
+FreeCADGui.addCommand('Draft_Circle',Circle())
+FreeCADGui.addCommand('Draft_Arc',Arc())
+FreeCADGui.addCommand('Draft_Text',Text())
+FreeCADGui.addCommand('Draft_Rectangle',Rectangle())
+FreeCADGui.addCommand('Draft_Dimension',Dim())
 
 # context commands
-FreeCADGui.addCommand('Draft_FinishLine',finishLine())
-FreeCADGui.addCommand('Draft_CloseLine',closeLine())
-FreeCADGui.addCommand('Draft_UndoLine',undoLine())
+FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
+FreeCADGui.addCommand('Draft_CloseLine',CloseLine())
+FreeCADGui.addCommand('Draft_UndoLine',UndoLine())
 
 # modification commands
-FreeCADGui.addCommand('Draft_Move',move())
-FreeCADGui.addCommand('Draft_ApplyStyle',applyStyle())
-FreeCADGui.addCommand('Draft_Rotate',rotate())
-FreeCADGui.addCommand('Draft_Offset',offset())
-FreeCADGui.addCommand('Draft_Upgrade',upgrade())
-FreeCADGui.addCommand('Draft_Downgrade',downgrade())
-FreeCADGui.addCommand('Draft_Trimex',trimex())
+FreeCADGui.addCommand('Draft_Move',Move())
+FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
+FreeCADGui.addCommand('Draft_Rotate',Rotate())
+FreeCADGui.addCommand('Draft_Offset',Offset())
+FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
+FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
+FreeCADGui.addCommand('Draft_Trimex',Trimex())

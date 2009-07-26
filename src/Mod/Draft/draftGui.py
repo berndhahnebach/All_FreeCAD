@@ -495,8 +495,11 @@ class toolBar:
 							pass
 						else:
 							if self.isRelative.isVisible() and self.isRelative.isChecked():
-								if len(self.sourceCmd.node) > 0:
-									last = self.sourceCmd.node[len(self.sourceCmd.node)-1]
+								if self.sourceCmd.node:
+									if self.sourceCmd.featureName == "Rectangle":
+										last = self.sourceCmd.node[0]
+									else:
+										last = self.sourceCmd.node[-1]
 									numx = last.x + numx
 									numy = last.y + numy
 									numz = last.z + numz
