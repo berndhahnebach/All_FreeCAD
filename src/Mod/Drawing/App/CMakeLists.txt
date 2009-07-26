@@ -52,6 +52,7 @@ if(WIN32)
 		 set_target_properties(Drawing PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Drawing)
 		 set_target_properties(Drawing PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(Drawing PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Drawing)
 		 set_target_properties(Drawing PROPERTIES PREFIX "")
 endif(WIN32)
 

@@ -1,10 +1,9 @@
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory(App)
 fc_copy_to_mod_path("Mesh" 
 	Init.py
 	BuildRegularGeoms.py
-	MeshTestsApp.py
+	App/MeshTestsApp.py
 )
 if(FREECAD_BUILD_GUI)
 	add_subdirectory(Gui)

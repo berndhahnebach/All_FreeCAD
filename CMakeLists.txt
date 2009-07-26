@@ -27,6 +27,7 @@ if(WIN32)
 		 set(PLATFORM_CP xcopy /Y /S)
 else(WIN32)
 		 set(PLATFORM_CP cp)
+		 set(PLATFORM_MK mkdir -p)
 endif(WIN32)
 
 

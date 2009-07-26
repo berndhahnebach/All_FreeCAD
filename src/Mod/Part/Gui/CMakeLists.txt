@@ -156,6 +156,7 @@ if(WIN32)
 		 set_target_properties(PartGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Part)
 		 set_target_properties(PartGui PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(PartGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Part)
 		 set_target_properties(PartGui PROPERTIES PREFIX "")
 endif(WIN32)
 

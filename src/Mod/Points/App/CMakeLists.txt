@@ -54,6 +54,7 @@ if(WIN32)
 		 set_target_properties(Points PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Points)
 		 set_target_properties(Points PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(Points PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Points)
 		 set_target_properties(Points PROPERTIES PREFIX "")
 endif(WIN32)
 

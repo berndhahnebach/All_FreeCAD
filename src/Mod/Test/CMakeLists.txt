@@ -1,5 +1,3 @@
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
-
 
 fc_copy_to_mod_path("Test" 
 	Init.py

@@ -49,6 +49,7 @@ if(WIN32)
 		 set_target_properties(ReverseEngineeringGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/ReverseEngineering)
 		 set_target_properties(ReverseEngineeringGui PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(ReverseEngineeringGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/ReverseEngineering)
 		 set_target_properties(ReverseEngineeringGui PROPERTIES PREFIX "")
 endif(WIN32)
 

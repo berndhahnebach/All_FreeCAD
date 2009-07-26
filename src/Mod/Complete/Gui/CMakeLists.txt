@@ -41,6 +41,7 @@ if(WIN32)
 		 set_target_properties(CompleteGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Complete)
 		 set_target_properties(CompleteGui PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(CompleteGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Complete)
 		 set_target_properties(CompleteGui PROPERTIES PREFIX "")
 endif(WIN32)
 

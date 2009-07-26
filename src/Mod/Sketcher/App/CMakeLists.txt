@@ -93,6 +93,7 @@ if(WIN32)
 		 set_target_properties(Sketcher PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Sketcher)
 		 set_target_properties(Sketcher PROPERTIES PREFIX "../")
 else(WIN32)
+		 set_target_properties(Sketcher PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Sketcher)
 		 set_target_properties(Sketcher PROPERTIES PREFIX "")
 endif(WIN32)
 
