@@ -1025,46 +1025,6 @@ bool Application::runPythonCode(const char* cmd, bool gui)
 //**************************************************************************
 // Init, Destruct and ingleton
 
-void Application::initApplication(void)
-{
-    try {
-        initTypes();
-        new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-    }
-    catch (...) {
-        // force to flush the log
-        App::Application::destructObserver();
-        throw;
-    }
-}
-
-void Application::initTypes(void)
-{
-    // views
-    Gui::BaseView                               ::init();
-    Gui::MDIView                                ::init();
-    Gui::View3DInventor                         ::init();
-    // View Provider
-    Gui::ViewProvider                           ::init();
-    Gui::ViewProviderExtern                     ::init();
-    Gui::ViewProviderDocumentObject             ::init();
-    Gui::ViewProviderFeature                    ::init();
-    Gui::ViewProviderPythonFeature              ::init();
-    Gui::ViewProviderDocumentObjectGroup        ::init();
-    Gui::ViewProviderGeometryObject             ::init();
-    Gui::ViewProviderInventorObject             ::init();
-    Gui::ViewProviderVRMLObject                 ::init();
-    Gui::ViewProviderAnnotation                 ::init();
-    Gui::ViewProviderMeasureDistance            ::init();
-
-    // Workbench
-    Gui::Workbench                              ::init();
-    Gui::StdWorkbench                           ::init();
-    Gui::NoneWorkbench                          ::init();
-    Gui::TestWorkbench                          ::init();
-    Gui::PythonWorkbench                        ::init();
-}
-
 void messageHandler(QtMsgType type, const char *msg)
 {
 #ifdef FC_DEBUG
@@ -1116,6 +1076,50 @@ void messageHandlerSoQt(const SbString errmsg, SoQt::FatalErrors errcode, void *
     Base::Console().Error( errmsg.getString() );
 }
 #endif
+
+void Application::initApplication(void)
+{
+    try {
+        initTypes();
+        new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+        // add resources
+        Q_INIT_RESOURCE(resource);
+        Q_INIT_RESOURCE(translation);
+        qInstallMsgHandler(messageHandler);
+    }
+    catch (...) {
+        // force to flush the log
+        App::Application::destructObserver();
+        throw;
+    }
+}
+
+void Application::initTypes(void)
+{
+    // views
+    Gui::BaseView                               ::init();
+    Gui::MDIView                                ::init();
+    Gui::View3DInventor                         ::init();
+    // View Provider
+    Gui::ViewProvider                           ::init();
+    Gui::ViewProviderExtern                     ::init();
+    Gui::ViewProviderDocumentObject             ::init();
+    Gui::ViewProviderFeature                    ::init();
+    Gui::ViewProviderPythonFeature              ::init();
+    Gui::ViewProviderDocumentObjectGroup        ::init();
+    Gui::ViewProviderGeometryObject             ::init();
+    Gui::ViewProviderInventorObject             ::init();
+    Gui::ViewProviderVRMLObject                 ::init();
+    Gui::ViewProviderAnnotation                 ::init();
+    Gui::ViewProviderMeasureDistance            ::init();
+
+    // Workbench
+    Gui::Workbench                              ::init();
+    Gui::StdWorkbench                           ::init();
+    Gui::NoneWorkbench                          ::init();
+    Gui::TestWorkbench                          ::init();
+    Gui::PythonWorkbench                        ::init();
+}
 
 namespace Gui {
 /** Override QCoreApplication::notify() to fetch exceptions in Qt widgets
@@ -1201,19 +1205,18 @@ public:
 
 void Application::runApplication(void)
 {
-    // add resources
-    Q_INIT_RESOURCE(resource);
-    Q_INIT_RESOURCE(translation);
-
     // A new QApplication
     Base::Console().Log("Init: Creating Gui::Application and QApplication\n");
     // if application not yet created by the splasher
     int argc = App::Application::GetARGC();
-    qInstallMsgHandler( messageHandler );
     GUIApplication mainApp(argc, App::Application::GetARGV());
+    // set application icon and window title
+    mainApp.setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
+    mainApp.setApplicationName(QString::fromAscii(App::Application::Config()["ExeName"].c_str()));
 
     Application app;
     MainWindow mw;
+    mw.setWindowTitle(mainApp.applicationName());
 
     // init the Inventor subsystem
     SoDB::init();

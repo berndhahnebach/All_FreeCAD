@@ -192,6 +192,7 @@ public:
     PYFUNCDEF_S(sUpdateLocale);
     PYFUNCDEF_S(sCreateDialog);
     PYFUNCDEF_S(sAddPreferencePage);
+    PYFUNCDEF_S(sShowMainWindow);
 
     PYFUNCDEF_S(sRunCommand);
     PYFUNCDEF_S(sAddCommand);

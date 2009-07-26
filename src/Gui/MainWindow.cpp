@@ -188,10 +188,6 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     layout->addWidget(d->tabs);
     setCentralWidget( vbox );
 
-    // window title and icon of the main window
-    setWindowTitle(QString::fromAscii(App::Application::Config()["ExeName"].c_str()));
-    setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
-
     // labels and progressbar
     d->status = new StatusBarObserver();
     d->actionLabel = new QLabel(statusBar());
