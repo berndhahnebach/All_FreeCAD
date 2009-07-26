@@ -27,6 +27,7 @@
 # include <qapplication.h>
 # include <qfileinfo.h>
 # include <qdir.h>
+# include <Inventor/Qt/SoQt.h>
 #endif
 
 
@@ -41,6 +42,7 @@
 #include "Workbench.h"
 #include "WorkbenchManager.h"
 #include "Language/Translator.h"
+#include <Gui/SoFCDB.h>
 #include <App/DocumentObjectPy.h>
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
@@ -442,20 +444,33 @@ PyObject* Application::sShowMainWindow(PyObject * /*self*/, PyObject *args,PyObj
         return NULL;
     }
 
-    printf("%p:%s\n",qApp,qApp->metaObject()->className());
-
     if (!MainWindow::getInstance()) {
         Gui::MainWindow *mw = new Gui::MainWindow();
         QIcon icon = qApp->windowIcon();
         if (icon.isNull())
             mw->setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
         QString appName = qApp->applicationName();
-        if (appName.isEmpty())
+        if (!appName.isEmpty())
+            mw->setWindowTitle(appName);
+        else
             mw->setWindowTitle(QString::fromAscii(App::Application::Config()["ExeName"].c_str()));
+
+        if (!SoDB::isInitialized()) {
+            // init the Inventor subsystem
+            SoDB::init();
+            SoQt::init(mw);
+            Gui::SoFCDB::init();
+        }
 
         static bool init = false;
         if (!init) {
-            Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+            try {
+                Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+            }
+            catch (const Base::Exception& e) {
+                PyErr_Format(PyExc_Exception, "Error in FreeCADGuiInit.py: %s\n", e.what());
+                return NULL;
+            }
             init = true;
         }
 
@@ -477,6 +492,9 @@ PyObject* Application::sShowMainWindow(PyObject * /*self*/, PyObject *args,PyObj
 
         Application::Instance->activateWorkbench(start.c_str());
         mw->loadWindowSettings();
+    }
+    else {
+        getMainWindow()->show();
     }
 
     Py_INCREF(Py_None);
