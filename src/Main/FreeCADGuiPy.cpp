@@ -55,19 +55,10 @@ extern "C"
             static Gui::Application *app = new Gui::Application();
         }
         catch (const Base::Exception& e) {
-            std::string appName = App::Application::Config()["ExeName"];
-            std::stringstream msg;
-            msg << "While initializing " << appName << " the  following exception occurred: '"
-                << e.what() << "'\n\n";
-            msg << "\nPlease contact the application's support team for more information.\n\n";
-            std::cout << "Initialization of " << appName << " failed:\n" << msg.str();
+            PyErr_Format(PyExc_ImportError, "%s\n", e.what());
         }
         catch (...) {
-            std::string appName = App::Application::Config()["ExeName"];
-            std::stringstream msg;
-            msg << "Unknown runtime error occurred while initializing " << appName << ".\n\n";
-            msg << "\nPlease contact the application's support team for more information.\n\n";
-            std::cout << "Initialization of " << appName << " failed:\n" << msg.str();
+            PyErr_SetString(PyExc_ImportError, "Unknown runtime error occurred");
         }
     }
 } // extern "C"
