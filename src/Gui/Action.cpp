@@ -681,17 +681,20 @@ UndoAction::~UndoAction()
 
 void UndoAction::addTo ( QWidget * w )
 {
-  if (w->inherits("QToolBar")) {
-    _toolAction->setText(_action->text());
-    _toolAction->setToolTip(_action->toolTip());
-    _toolAction->setStatusTip(_action->statusTip());
-    _toolAction->setWhatsThis(_action->whatsThis());
-    _toolAction->setShortcut(_action->shortcut());
-    _toolAction->setIcon(_action->icon());
-    w->addAction(_toolAction);
-  } else {
-    w->addAction(_action);
-  }
+    if (w->inherits("QToolBar")) {
+        // Do NOT set the shortcut again for _toolAction since this is already
+        // reserved for _action. Otherwise we get an ambiguity of it with the
+        // result that it doesn't work anymore.
+        _toolAction->setText(_action->text());
+        _toolAction->setToolTip(_action->toolTip());
+        _toolAction->setStatusTip(_action->statusTip());
+        _toolAction->setWhatsThis(_action->whatsThis());
+        _toolAction->setIcon(_action->icon());
+        w->addAction(_toolAction);
+    }
+    else {
+        w->addAction(_action);
+    }
 }
 
 void UndoAction::setEnabled  ( bool b )
@@ -725,17 +728,20 @@ RedoAction::~RedoAction()
 
 void RedoAction::addTo ( QWidget * w )
 {
-  if (w->inherits("QToolBar")) {
-    _toolAction->setText(_action->text());
-    _toolAction->setToolTip(_action->toolTip());
-    _toolAction->setStatusTip(_action->statusTip());
-    _toolAction->setWhatsThis(_action->whatsThis());
-    _toolAction->setShortcut(_action->shortcut());
-    _toolAction->setIcon(_action->icon());
-    w->addAction(_toolAction);
-  } else {
-    w->addAction(_action);
-  }
+    if (w->inherits("QToolBar")) {
+        // Do NOT set the shortcut again for _toolAction since this is already
+        // reserved for _action. Otherwise we get an ambiguity of it with the
+        // result that it doesn't work anymore.
+        _toolAction->setText(_action->text());
+        _toolAction->setToolTip(_action->toolTip());
+        _toolAction->setStatusTip(_action->statusTip());
+        _toolAction->setWhatsThis(_action->whatsThis());
+        _toolAction->setIcon(_action->icon());
+        w->addAction(_toolAction);
+    }
+    else {
+        w->addAction(_action);
+    }
 }
 
 void RedoAction::setEnabled  ( bool b )
