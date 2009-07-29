@@ -72,6 +72,7 @@ set(Gui_MOC_HDRS
 		 DlgPreferencesImp.h
 		 DlgReportViewImp.h
 		 DlgSettings3DViewImp.h
+		 DlgSettingsViewColor.h
 		 DlgSettingsColorGradientImp.h
 		 DlgSettingsDocumentImp.h
 		 DlgSettingsImageImp.h
@@ -142,6 +143,7 @@ SET(Gui_UIC_SRCS
 		 DlgProjectInformation.ui
 		 DlgReportView.ui
 		 DlgSettings3DView.ui
+		 DlgSettingsViewColor.ui
 		 DlgSettingsColorGradient.ui
 		 DlgSettingsDocument.ui
 		 DlgSettingsImage.ui
@@ -265,6 +267,9 @@ SET(Dialog_Settings_SRCS
 		 DlgSettings3DView.ui
 		 DlgSettings3DViewImp.cpp
 		 DlgSettings3DViewImp.h
+		 DlgSettingsViewColor.ui
+		 DlgSettingsViewColor.cpp
+		 DlgSettingsViewColor.h
 		 DlgSettingsColorGradient.ui
 		 DlgSettingsColorGradientImp.cpp
 		 DlgSettingsColorGradientImp.h

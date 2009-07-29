@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007 Werner Mayer <wmayer@users.sourceforge.net>        *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,31 +21,36 @@
  ***************************************************************************/
 
 
-#ifndef PARTGUI_DLGSETTINGSGENERAL_H
-#define PARTGUI_DLGSETTINGSGENERAL_H
+#ifndef GUI_DIALOG_DLGSETTINGSVIEWCOLOR_H
+#define GUI_DIALOG_DLGSETTINGSVIEWCOLOR_H
 
-#include <Gui/PropertyPage.h>
+#include "ui_DlgSettingsViewColor.h"
+#include "PropertyPage.h"
 
-namespace PartGui {
+namespace Gui {
+namespace Dialog {
 
-class Ui_DlgSettingsGeneral;
-class DlgSettingsGeneral : public Gui::Dialog::PreferencePage
-{
-    Q_OBJECT
+/**
+ * The DlgSettingsViewColor class implements a preference page to change color settings
+ * for the Inventor viewer like background and selection.
+ * @author Werner Mayer
+ */
+class DlgSettingsViewColor : public PreferencePage, public Ui_DlgSettingsViewColor
+{ 
+  Q_OBJECT
 
 public:
-    DlgSettingsGeneral(QWidget* parent = 0);
-    ~DlgSettingsGeneral();
+  DlgSettingsViewColor(QWidget* parent = 0);
+  ~DlgSettingsViewColor();
+
+  void saveSettings();
+  void loadSettings();
 
 protected:
-    void saveSettings();
-    void loadSettings();
-    void changeEvent(QEvent *e);
-
-private:
-    Ui_DlgSettingsGeneral* ui;
+  void changeEvent(QEvent *e);
 };
 
+} // namespace Dialog
 } // namespace Gui
 
-#endif // PARTGUI_DLGSETTINGSGENERAL_H
+#endif // GUI_DIALOG_DLGSETTINGSVIEWCOLOR_H
