@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>Gui::Dialog::DlgSettings3DView</class>
  <widget class="QWidget" name="Gui::Dialog::DlgSettings3DView" >
   <property name="geometry" >
@@ -9,37 +6,55 @@
     <x>0</x>
     <y>0</y>
     <width>473</width>
-    <height>661</height>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>3D View</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QGroupBox" name="GroupBox12" >
      <property name="title" >
       <string>3D View settings</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>9</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>9</number>
+      </property>
+      <property name="rightMargin" >
+       <number>9</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>9</number>
+      </property>
+      <property name="horizontalSpacing" >
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing" >
        <number>6</number>
       </property>
       <item row="7" column="0" >
        <layout class="QGridLayout" >
-        <property name="margin" >
+        <property name="leftMargin" >
          <number>0</number>
         </property>
-        <property name="spacing" >
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing" >
+         <number>6</number>
+        </property>
+        <property name="verticalSpacing" >
          <number>6</number>
         </property>
         <item row="1" column="1" >
@@ -48,9 +63,7 @@
            <bool>false</bool>
           </property>
           <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>0</vsizetype>
+           <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -125,11 +138,20 @@
       </item>
       <item row="6" column="0" >
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1" >
@@ -143,17 +165,17 @@
           <property name="decimals" >
            <number>1</number>
           </property>
-          <property name="maximum" >
-           <double>1000</double>
-          </property>
           <property name="minimum" >
-           <double>0.1</double>
+           <double>0.100000000000000</double>
+          </property>
+          <property name="maximum" >
+           <double>1000.000000000000000</double>
           </property>
           <property name="singleStep" >
-           <double>2</double>
+           <double>2.000000000000000</double>
           </property>
           <property name="value" >
-           <double>65</double>
+           <double>65.000000000000000</double>
           </property>
           <property name="prefEntry" stdset="0" >
            <cstring>EyeDistance</cstring>
@@ -193,11 +215,20 @@
       </item>
       <item row="3" column="0" >
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1_3" >
@@ -276,165 +307,28 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="3" column="0" >
-    <widget class="QGroupBox" name="groupBoxColor" >
-     <property name="title" >
-      <string>Background color</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
-       <widget class="Gui::PrefRadioButton" name="radioButtonSimple" >
-        <property name="text" >
-         <string>Simple color</string>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>Simple</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
-       <widget class="Gui::PrefCheckBox" name="checkMidColor" >
-        <property name="text" >
-         <string>Middle color</string>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>UseBackgroundColorMid</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="Gui::PrefRadioButton" name="radioButtonGradient" >
-        <property name="text" >
-         <string>Color gradient</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>Gradient</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <widget class="Gui::PrefColorButton" name="backgroundColorMid" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="color" >
-         <color>
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
-         </color>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>BackgroundColor4</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="Gui::PrefColorButton" name="backgroundColorTo" >
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="color" >
-         <color>
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
-         </color>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>BackgroundColor3</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="Gui::PrefColorButton" name="backgroundColorFrom" >
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="color" >
-         <color>
-          <red>127</red>
-          <green>127</green>
-          <blue>205</blue>
-         </color>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>BackgroundColor2</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="Gui::PrefColorButton" name="SelectionColor_Background" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>BackgroundColor</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>View</cstring>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" >
+   <item row="1" column="0" >
     <widget class="QGroupBox" name="groupBoxCamera" >
      <property name="title" >
       <string>Camera type</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>9</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>9</number>
+      </property>
+      <property name="rightMargin" >
+       <number>9</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>9</number>
+      </property>
+      <property name="horizontalSpacing" >
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing" >
        <number>6</number>
       </property>
       <item row="0" column="1" >
@@ -469,102 +363,18 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="groupBoxSelection" >
-     <property name="title" >
-      <string>Selection</string>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
-       <layout class="QGridLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item row="0" column="0" >
-         <widget class="Gui::PrefCheckBox" name="checkBoxPreselection" >
-          <property name="text" >
-           <string>Enable preselection highlighting</string>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>EnablePreselection</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>View</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
-         <widget class="Gui::PrefCheckBox" name="checkBoxSelection" >
-          <property name="text" >
-           <string>Enable selection highlighting</string>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>EnableSelection</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>View</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" >
-         <widget class="Gui::PrefColorButton" name="HighlightColor" >
-          <property name="enabled" >
-           <bool>false</bool>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="color" >
-           <color>
-            <red>26</red>
-            <green>26</green>
-            <blue>204</blue>
-           </color>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>HighlightColor</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>View</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" >
-         <widget class="Gui::PrefColorButton" name="SelectionColor" >
-          <property name="enabled" >
-           <bool>false</bool>
-          </property>
-          <property name="text" >
-           <string/>
-          </property>
-          <property name="color" >
-           <color>
-            <red>26</red>
-            <green>128</green>
-            <blue>26</blue>
-           </color>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>SelectionColor</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>View</cstring>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
+     <property name="sizeHint" >
+      <size>
+       <width>455</width>
+       <height>16</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -572,39 +382,29 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::PrefCheckBox</class>
-   <extends>QCheckBox</extends>
+   <class>Gui::PrefColorButton</class>
+   <extends>Gui::ColorButton</extends>
    <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Gui::PrefRadioButton</class>
-   <extends>QRadioButton</extends>
-   <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefSlider</class>
    <extends>QSlider</extends>
    <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefRadioButton</class>
+   <extends>QRadioButton</extends>
+   <header>Gui/PrefWidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
   </customwidget>
   <customwidget>
    <class>Gui::PrefDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Gui::PrefColorButton</class>
-   <extends>Gui::ColorButton</extends>
-   <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -617,166 +417,11 @@
   <tabstop>checkBoxBacklight</tabstop>
   <tabstop>backlightColor</tabstop>
   <tabstop>sliderIntensity</tabstop>
-  <tabstop>checkBoxPreselection</tabstop>
-  <tabstop>HighlightColor</tabstop>
-  <tabstop>checkBoxSelection</tabstop>
-  <tabstop>SelectionColor</tabstop>
   <tabstop>radioPerspective</tabstop>
   <tabstop>radioOrthographic</tabstop>
-  <tabstop>radioButtonSimple</tabstop>
-  <tabstop>radioButtonGradient</tabstop>
-  <tabstop>SelectionColor_Background</tabstop>
-  <tabstop>backgroundColorFrom</tabstop>
-  <tabstop>backgroundColorTo</tabstop>
-  <tabstop>checkMidColor</tabstop>
-  <tabstop>backgroundColorMid</tabstop>
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>radioButtonSimple</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>SelectionColor_Background</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>50</x>
-     <y>501</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>443</x>
-     <y>502</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioButtonGradient</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>backgroundColorFrom</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>50</x>
-     <y>531</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>443</x>
-     <y>532</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioButtonGradient</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>backgroundColorTo</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>50</x>
-     <y>531</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>443</x>
-     <y>562</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioButtonGradient</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>SelectionColor_Background</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>50</x>
-     <y>531</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>443</x>
-     <y>502</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBoxSelection</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>SelectionColor</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>51</x>
-     <y>368</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>442</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBoxPreselection</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>HighlightColor</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>51</x>
-     <y>338</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>442</x>
-     <y>338</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkMidColor</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>backgroundColorMid</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>94</x>
-     <y>591</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>443</x>
-     <y>592</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioButtonSimple</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>backgroundColorMid</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>98</x>
-     <y>501</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>443</x>
-     <y>592</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioButtonSimple</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>checkMidColor</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>140</x>
-     <y>501</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>131</x>
-     <y>591</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>checkBoxBacklight</sender>
    <signal>toggled(bool)</signal>

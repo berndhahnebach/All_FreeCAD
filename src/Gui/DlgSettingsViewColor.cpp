@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007 Werner Mayer <wmayer@users.sourceforge.net>        *
+ *   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,73 +23,73 @@
 
 #include "PreCompiled.h"
 
-#include <Interface_Static.hxx>
+#ifndef _PreComp_
+#endif
 
-#include <Base/Parameter.h>
-#include <App/Application.h>
+#include "DlgSettingsViewColor.h"
+#include "PrefWidgets.h"
 
-#include "DlgSettingsGeneral.h"
-#include "ui_DlgSettingsGeneral.h"
+using namespace Gui::Dialog;
 
-using namespace PartGui;
-
-DlgSettingsGeneral::DlgSettingsGeneral(QWidget* parent)
-  : PreferencePage(parent)
+/**
+ *  Constructs a DlgSettingsViewColor which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ */
+DlgSettingsViewColor::DlgSettingsViewColor(QWidget* parent)
+    : PreferencePage(parent)
 {
-    ui = new Ui_DlgSettingsGeneral();
-    ui->setupUi(this);
+    this->setupUi(this);
 }
 
 /** 
  *  Destroys the object and frees any allocated resources
  */
-DlgSettingsGeneral::~DlgSettingsGeneral()
+DlgSettingsViewColor::~DlgSettingsViewColor()
 {
     // no need to delete child widgets, Qt does it all for us
-    delete ui;
 }
 
-void DlgSettingsGeneral::saveSettings()
+void DlgSettingsViewColor::saveSettings()
 {
-    int unit = ui->comboBoxUnits->currentIndex();
-    Base::Reference<ParameterGrp> hGrp = App::GetApplication().GetUserParameter()
-        .GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("Mod/Part");
-    hGrp->SetInt("Unit", unit);
-    switch (unit) {
-        case 1:
-            Interface_Static::SetCVal("write.iges.unit","M");
-            Interface_Static::SetCVal("write.step.unit","M");
-            break;
-        case 2:
-            Interface_Static::SetCVal("write.iges.unit","IN");
-            Interface_Static::SetCVal("write.step.unit","IN");
-            break;
-        default:
-            Interface_Static::SetCVal("write.iges.unit","MM");
-            Interface_Static::SetCVal("write.step.unit","MM");
-            break;
-    }
+    SelectionColor_Background->onSave();
+    backgroundColorFrom->onSave();
+    backgroundColorTo->onSave();
+    backgroundColorMid->onSave();
+    radioButtonSimple->onSave();
+    radioButtonGradient->onSave();
+    checkMidColor->onSave();
+    checkBoxPreselection->onSave();
+    checkBoxSelection->onSave();
+    HighlightColor->onSave();
+    SelectionColor->onSave();
 }
 
-void DlgSettingsGeneral::loadSettings()
+void DlgSettingsViewColor::loadSettings()
 {
-    Base::Reference<ParameterGrp> hGrp = App::GetApplication().GetUserParameter()
-        .GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("Mod/Part");
-    int unit = hGrp->GetInt("Unit", 0);
-    ui->comboBoxUnits->setCurrentIndex(unit);
+    SelectionColor_Background->onRestore();
+    backgroundColorFrom->onRestore();
+    backgroundColorTo->onRestore();
+    backgroundColorMid->onRestore();
+    radioButtonSimple->onRestore();
+    radioButtonGradient->onRestore();
+    checkMidColor->onRestore();
+    checkBoxPreselection->onRestore();
+    checkBoxSelection->onRestore();
+    HighlightColor->onRestore();
+    SelectionColor->onRestore();
 }
 
 /**
  * Sets the strings of the subwidgets using the current language.
  */
-void DlgSettingsGeneral::changeEvent(QEvent *e)
+void DlgSettingsViewColor::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
-        ui->retranslateUi(this);
+        retranslateUi(this);
     }
     else {
         QWidget::changeEvent(e);
     }
 }
-#include "moc_DlgSettingsGeneral.cpp"
 
+#include "moc_DlgSettingsViewColor.cpp"

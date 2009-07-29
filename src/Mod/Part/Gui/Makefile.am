@@ -21,6 +21,7 @@ BUILT_SOURCES=\
 		moc_DlgPartImportStepImp.cpp \
 		moc_DlgPrimitives.cpp \
 		moc_DlgSettings3DViewPartImp.cpp \
+		moc_DlgSettingsGeneral.cpp \
 		qrc_Part.cpp 
 
 libPartGui_la_SOURCES=\

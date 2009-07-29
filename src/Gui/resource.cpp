@@ -31,6 +31,7 @@
 //
 #include "DlgPreferencesImp.h"
 #include "DlgSettings3DViewImp.h"
+#include "DlgSettingsViewColor.h"
 #include "DlgGeneralImp.h"
 #include "DlgEditorImp.h"
 #include "DlgSettingsMacroImp.h"
@@ -62,6 +63,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
   //new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Display") );
+    new PrefPageProducer<DlgSettingsViewColor>  ( QT_TR_NOOP("Display") );
 
     // ADD YOUR CUSTOMIZE PAGES HERE
     //

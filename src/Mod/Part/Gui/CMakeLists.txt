@@ -68,6 +68,7 @@ set(PartGui_MOC_HDRS
 		 DlgPartImportStepImp.h
 		 DlgPrimitives.h
 		 DlgSettings3DViewPartImp.h
+		 DlgSettingsGeneral.h
 )
 fc_wrap_cpp(PartGui_MOC_SRCS ${PartGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${PartGui_MOC_SRCS})

@@ -87,19 +87,8 @@ void DlgSettings3DViewImp::saveSettings()
     checkBoxBacklight->onSave();
     backlightColor->onSave();
     sliderIntensity->onSave();
-    SelectionColor_Background->onSave();
-    backgroundColorFrom->onSave();
-    backgroundColorTo->onSave();
-    backgroundColorMid->onSave();
-    radioButtonSimple->onSave();
-    radioButtonGradient->onSave();
-    checkMidColor->onSave();
     radioPerspective->onSave();
     radioOrthographic->onSave();
-    checkBoxPreselection->onSave();
-    checkBoxSelection->onSave();
-    HighlightColor->onSave();
-    SelectionColor->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -112,19 +101,8 @@ void DlgSettings3DViewImp::loadSettings()
     checkBoxBacklight->onRestore();
     backlightColor->onRestore();
     sliderIntensity->onRestore();
-    SelectionColor_Background->onRestore();
-    backgroundColorFrom->onRestore();
-    backgroundColorTo->onRestore();
-    backgroundColorMid->onRestore();
-    radioButtonSimple->onRestore();
-    radioButtonGradient->onRestore();
-    checkMidColor->onRestore();
     radioPerspective->onRestore();
     radioOrthographic->onRestore();
-    checkBoxPreselection->onRestore();
-    checkBoxSelection->onRestore();
-    HighlightColor->onRestore();
-    SelectionColor->onRestore();
 
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/View");
