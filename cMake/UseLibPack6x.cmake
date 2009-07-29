@@ -8,7 +8,7 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # OpenGL
-set(OPENGL_gl_LIBRARY opengl32)
+set(OPENGL_gl_LIBRARY opengl32 glu32)
 
 # Python
 set(PYTHON_DEBUG_LIBRARY python25_d.lib)
