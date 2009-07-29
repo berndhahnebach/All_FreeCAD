@@ -13,48 +13,30 @@
    <string>3D View</string>
   </property>
   <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>11</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
    <item row="0" column="0" >
     <widget class="QGroupBox" name="GroupBox12" >
      <property name="title" >
       <string>3D View settings</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="leftMargin" >
-       <number>9</number>
+      <property name="margin" >
+       <number>11</number>
       </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>6</number>
-      </property>
-      <property name="verticalSpacing" >
+      <property name="spacing" >
        <number>6</number>
       </property>
       <item row="7" column="0" >
        <layout class="QGridLayout" >
-        <property name="leftMargin" >
-         <number>0</number>
+        <property name="margin" >
+         <number>11</number>
         </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
-        </property>
-        <property name="horizontalSpacing" >
-         <number>6</number>
-        </property>
-        <property name="verticalSpacing" >
+        <property name="spacing" >
          <number>6</number>
         </property>
         <item row="1" column="1" >
@@ -63,7 +45,9 @@
            <bool>false</bool>
           </property>
           <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -138,20 +122,11 @@
       </item>
       <item row="6" column="0" >
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>11</number>
+        </property>
         <property name="spacing" >
          <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1" >
@@ -165,11 +140,11 @@
           <property name="decimals" >
            <number>1</number>
           </property>
-          <property name="minimum" >
-           <double>0.100000000000000</double>
-          </property>
           <property name="maximum" >
            <double>1000.000000000000000</double>
+          </property>
+          <property name="minimum" >
+           <double>0.100000000000000</double>
           </property>
           <property name="singleStep" >
            <double>2.000000000000000</double>
@@ -215,20 +190,11 @@
       </item>
       <item row="3" column="0" >
        <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>11</number>
+        </property>
         <property name="spacing" >
          <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="textLabel1_3" >
@@ -313,22 +279,10 @@
       <string>Camera type</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="leftMargin" >
-       <number>9</number>
+      <property name="margin" >
+       <number>11</number>
       </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>6</number>
-      </property>
-      <property name="verticalSpacing" >
+      <property name="spacing" >
        <number>6</number>
       </property>
       <item row="0" column="1" >
@@ -382,18 +336,18 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::PrefColorButton</class>
-   <extends>Gui::ColorButton</extends>
-   <header>Gui/PrefWidgets.h</header>
-  </customwidget>
-  <customwidget>
    <class>Gui::PrefSlider</class>
    <extends>QSlider</extends>
    <header>Gui/PrefWidgets.h</header>
   </customwidget>
   <customwidget>
-   <class>Gui::PrefRadioButton</class>
-   <extends>QRadioButton</extends>
+   <class>Gui::PrefColorButton</class>
+   <extends>Gui::ColorButton</extends>
+   <header>Gui/PrefWidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
    <header>Gui/PrefWidgets.h</header>
   </customwidget>
   <customwidget>
@@ -402,8 +356,8 @@
    <header>Gui/PrefWidgets.h</header>
   </customwidget>
   <customwidget>
-   <class>Gui::PrefDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
+   <class>Gui::PrefRadioButton</class>
+   <extends>QRadioButton</extends>
    <header>Gui/PrefWidgets.h</header>
   </customwidget>
  </customwidgets>
