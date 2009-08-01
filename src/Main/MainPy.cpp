@@ -99,7 +99,6 @@ extern "C"
         App::Application::Config()["ExeName"] = "FreeCAD";
         App::Application::Config()["ExeVendor"] = "FreeCAD";
         App::Application::Config()["AppDataSkipVendor"] = "true";
-        App::Application::Config()["ExeVersion"] = "0.7";
 
 
         int    argc=1;
