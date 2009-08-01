@@ -53,12 +53,6 @@ def InitApplications():
 	ModPar = FreeCAD.ParamGet("System parameter:Modules")
 
 	#print FreeCAD.ConfigGet("AppHomePath")
-	# These both paths are not needed
-	# sys.path.append( '..\\bin' )
-	# sys.path.append( '..\\bin\\Lib' )
-	sys.path.append(LibDir)
-	sys.path.append(ModDir)
-	Log("Using "+ModDir+" as module path!\n")
 	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):
 		sys.path.append(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools')
 	# Searching for module dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -81,12 +75,13 @@ def InitApplications():
 	# add also this path so that all modules search for libraries
 	# they depend on first here
 	PathExtension = BinDir + os.pathsep
+	# prepend all module paths to Python search path
 	Log('Init:   Searching for modules...\n')
 	FreeCAD.__path__ = ModDict.values()
 	for Dir in ModDict.values():
 		if ((Dir != '') & (Dir != 'CVS') & (Dir != '__init__.py')):
 			ModGrp = ModPar.GetGroup(Dir)
-			sys.path.append(Dir)
+			sys.path.insert(0,Dir)
 			PathExtension += Dir + os.pathsep
 			InstallFile = os.path.join(Dir,"Init.py")
 			if (os.path.exists(InstallFile)):
@@ -99,6 +94,9 @@ def InitApplications():
 					Log('Init:      Initializing ' + Dir + '... done\n')
 			else:
 				Log('Init:      Initializing ' + Dir + '(Init.py not found)... ignore\n')
+	sys.path.insert(0,LibDir)
+	sys.path.insert(0,ModDir)
+	Log("Using "+ModDir+" as module path!\n")
 	# new paths must be prepended to avoid to load a wrong version of a library
 	os.environ["PATH"] = PathExtension + os.environ["PATH"]
 	path = os.environ["PATH"].split(os.pathsep)
