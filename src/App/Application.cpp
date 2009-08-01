@@ -962,11 +962,13 @@ void Application::initConfig(int argc, char ** argv)
     // We only set these keys if not yet defined. Therefore it suffices to search
     // only for 'BuildVersionMajor'.
     if (App::Application::Config().find("BuildVersionMajor") == App::Application::Config().end()) {
+        std::stringstream str; str << FCVersionMajor << "." << FCVersionMinor;
+        App::Application::Config()["ExeVersion"]         = str.str();
         App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
         App::Application::Config()["BuildVersionMinor"]  = FCVersionMinor;
         App::Application::Config()["BuildRevision"]      = FCRevision;
         App::Application::Config()["BuildRepositoryURL"] = FCRepositoryURL;
-        App::Application::Config()["BuildCurrentDate"]   = FCCurrentDateT;
+        App::Application::Config()["BuildRevisionDate"]  = FCCurrentDateT;
     }
 
     _argc = argc;
@@ -1201,7 +1203,6 @@ void Application::LoadParameters(void)
 }
 
 
-#if 1
 #if (defined(_MSC_VER) && (_MSC_VER < 1600))
 // fix weird error while linking boost (all versions of VC)
 namespace boost { namespace program_options { std::string arg="arg"; } }
@@ -1443,181 +1444,6 @@ void Application::ParseOptions(int ac, char ** av)
     }
 
 }
-#else
-void Application::ParseOptions(int argc, char ** argv)
-{
-    static const char Usage[] = \
-                                " [Options] files..."\
-                                "Options:\n"\
-                                "  -h               Display this information\n"\
-                                "  -c               Runs FreeCAD in console mode (no windows)\n"\
-                                "  -cf file-name    Runs FreeCAD in server mode with script filename\n"\
-                                "  -cc file-name    Runs first the script and then console mode\n"\
-                                "  -cm module-name  Loads the Python module and exits when done\n"\
-                                "  -t0              Runs FreeCAD self test function\n"\
-                                "  -l               Enables logging in file FreeCAD.log\n"\
-                                "  -lf file-ame     Enables logging in file with the given filename\n"\
-                                "  -v               Runs FreeCAD in verbose mode\n"\
-                                "\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
-                                "";
-
-    int OpenFileCount = 0;
-
-    // logging in debug is on
-#ifdef FC_DEBUG
-    mConfig["LoggingFile"] = "1";
-//	mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
-    mConfig["LoggingFileName"]= mConfig["UserAppData"] + "FreeCAD.log";
-#endif
-
-    // scan command line arguments for user input.
-    for (int i = 1; i < argc; i++) {
-        if (*argv[i] == '-' ) {
-            switch (argv[i][1]) {
-                // Console modes
-            case 'c':
-            case 'C':
-                switch (argv[i][2]) {
-                    // Console with file
-                case 'f':
-                case 'F':
-                    mConfig["RunMode"] = "Script";
-                    if (argc <= i+1) {
-                        std::cerr << "Expecting a file" << std::endl;
-                        std::cerr << "\nUsage: " << argv[0] << Usage;
-                        throw;
-                    }
-                    mConfig["FileName"]= argv[i+1];
-                    i++;
-                    break;
-                case 'c':
-                case 'C':
-                    mConfig["RunMode"] = "ScriptCmd";
-                    if (argc <= i+1) {
-                        std::cerr << "Expecting a file" << std::endl;
-                        std::cerr << "\nUsage: " << argv[0] << Usage;
-                        throw;
-                    }
-                    mConfig["FileName"]= argv[i+1];
-                    i++;
-                    break;
-                case 'm':
-                case 'M':
-                    mConfig["RunMode"] = "Module";
-                    if (argc <= i+1) {
-                        std::cerr << "Expecting a module name" << std::endl;
-                        std::cerr << "\nUsage: " << argv[0] << Usage;
-                        throw;
-                    }
-                    mConfig["FileName"]= argv[i+1];
-                    i++;
-                    break;
-                case '\0':
-                    mConfig["RunMode"] = "Cmd";
-                    break;
-                default:
-                    std::cerr << "Invalid Input " << argv[i] << std::endl;
-                    std::cerr << "\nUsage: " << argv[0] << Usage;
-                    throw Base::Exception("Comandline error(s)");
-                };
-                break;
-            case 'l':
-            case 'L':
-                mConfig["LoggingFile"] = "1";
-                //mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
-                mConfig["LoggingFileName"]= mConfig["UserAppData"] + "FreeCAD.log";
-                switch (argv[i][2]) {
-                    // Console with file
-                case 'f':
-                case 'F':
-                    if (argc <= i+1) {
-                        std::cerr << "Expecting a file" << std::endl;
-                        std::cerr << "\nUsage: " << argv[0] << Usage;
-                        throw;
-                    }
-                    mConfig["LoggingFileName"]= argv[i+1];
-                    i++;
-                    break;
-                case '\0':
-                    break;
-                default:
-                    std::cerr << "Invalid Input " << argv[i] << std::endl;
-                    std::cerr << "\nUsage: " << argv[0] << Usage;
-                    throw Base::Exception("Comandline error(s)");
-                };
-                break;
-            case 't':
-            case 'T':
-                switch (argv[i][2]) {
-                case '0':
-                    // test script level 0
-                    mConfig["RunMode"] = "Internal";
-                    mConfig["ScriptFileName"] = "FreeCADTest";
-                    //sScriptName = FreeCADTest;
-                    break;
-                default:
-                    //default testing level 0
-                    mConfig["RunMode"] = "Internal";
-                    mConfig["ScriptFileName"] = "FreeCADTest";
-                    //sScriptName = FreeCADTest;
-                    break;
-                };
-                break;
-            case 'v':
-            case 'V':
-                switch (argv[i][2]) {
-                    // run the test environment script
-                case '1':
-                    mConfig["Verbose"] = "Loose";
-                    //sScriptName = GetScriptFactory().ProduceScript("FreeCADTestEnv");
-                    break;
-                case '\0':
-                case '0':
-                    // test script level 0
-                    mConfig["Verbose"] = "Strict";
-                    break;
-                default:
-                    //default testing level 0
-                    mConfig["Verbose"] = "Strict";
-                    //Console().Error("Invalid Verbose Option: %s\n",argv[i]);
-                    //Console().Error("\nUsage: %s %s",argv[0],Usage);
-                    //throw FCException("Comandline error(s)");
-                };
-                break;
-            case '?':
-            case 'h':
-            case 'H':
-                std::cerr << "\nUsage: " << argv[0] << Usage;
-                exit(0);
-                //throw FCException("Comandline break");
-                break;
-            default:
-                std::cerr << "Invalid option: " << argv[i] << std::endl;
-                std::cerr << "\nUsage: " << argv[0] << Usage;
-                throw Base::Exception("Comandline error(s)");
-            }
-        }
-        else {
-            // store all file (URLS) names to open
-            if (OpenFileCount < 56534) {
-
-                std::ostringstream temp;
-                temp << "OpenFile" << OpenFileCount;
-                mConfig[temp.str()] = argv[i];
-                OpenFileCount++;
-            }
-            else {
-                std::cerr << "\nToo many arguments! All arguments above 56534 will be ignored!!";
-            }
-
-        }
-    }
-    std::ostringstream buffer;
-    buffer << OpenFileCount;
-    mConfig["OpenFileCount"] = buffer.str();
-
-}
-#endif
 
 void Application::ExtractUserPath()
 {
