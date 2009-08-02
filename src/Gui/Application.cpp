@@ -1086,6 +1086,10 @@ void Application::initApplication(void)
         Q_INIT_RESOURCE(resource);
         Q_INIT_RESOURCE(translation);
         qInstallMsgHandler(messageHandler);
+        QString plugin;
+        plugin = QString::fromUtf8(App::GetApplication().GetHomePath());
+        plugin += QLatin1String("/plugins");
+        QCoreApplication::addLibraryPath(plugin);
     }
     catch (...) {
         // force to flush the log
