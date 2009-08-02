@@ -16,6 +16,20 @@ MACRO (fc_copy_to_mod_path mod_name )
 	ENDFOREACH(it)
 ENDMACRO(fc_copy_to_mod_path)
 
+MACRO (fc_copy_to_path path_name)
+
+	FOREACH (it ${ARGN})
+		file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${it}" NATIVE_SOURCE)
+		file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${path_name}/" NATIVE_DEST)
+		message(STATUS "${PLATFORM_CP} ${NATIVE_SOURCE} ${NATIVE_DEST}")
+		if (WIN32)
+		else (WIN32)
+			execute_process( COMMAND ${PLATFORM_MK} ${NATIVE_DEST} )
+		endif (WIN32)
+		execute_process( COMMAND ${PLATFORM_CP} ${NATIVE_SOURCE} ${NATIVE_DEST} )
+	ENDFOREACH(it)
+ENDMACRO(fc_copy_to_path)
+
 macro(copy_to_local_output_paths SOURCE_PATHS)
 		 if(CMAKE_CFG_INTDIR STREQUAL .)
 		 		 # No Debug/Release output paths

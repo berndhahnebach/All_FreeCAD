@@ -1086,10 +1086,6 @@ void Application::initApplication(void)
         Q_INIT_RESOURCE(resource);
         Q_INIT_RESOURCE(translation);
         qInstallMsgHandler(messageHandler);
-        QString plugin;
-        plugin = QString::fromUtf8(App::GetApplication().GetHomePath());
-        plugin += QLatin1String("/plugins");
-        QCoreApplication::addLibraryPath(plugin);
     }
     catch (...) {
         // force to flush the log
@@ -1217,6 +1213,10 @@ void Application::runApplication(void)
     // set application icon and window title
     mainApp.setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
     mainApp.setApplicationName(QString::fromAscii(App::Application::Config()["ExeName"].c_str()));
+    QString plugin;
+    plugin = QString::fromUtf8(App::GetApplication().GetHomePath());
+    plugin += QLatin1String("/plugins");
+    QCoreApplication::addLibraryPath(plugin);
 
     Application app;
     MainWindow mw;
