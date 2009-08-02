@@ -33,6 +33,25 @@
 using namespace Gui;
 
 #if 0 // Test functions with transparency
+
+class GDIWidget : public QWidget
+{
+public:
+    GDIWidget(QWidget* parent) : QWidget(parent)
+    {setAttribute(Qt::WA_PaintOnScreen); }
+    QPaintEngine *paintEngine() const { return 0; }
+protected:
+    void paintEvent(QPaintEvent *event) {
+        HDC hdc = getDC();
+        SelectObject(hdc, GetSysColorBrush(COLOR_WINDOW));
+        Rectangle(hdc, 0, 0, width(), height());
+        RECT rect = {0, 0, width(), height() };
+        DrawText(hdc, "Hello World!", 12, &rect,
+        DT_SINGLELINE | DT_VCENTER | DT_CENTER);
+        releaseDC(hdc);
+    }
+};
+
 #if 1
     QDialog* dlg = Gui::getMainWindow()->findChild<QDialog*>();
     QImage image;
