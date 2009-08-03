@@ -157,7 +157,7 @@ FreeCADGui_showMainWindow(PyObject * /*self*/, PyObject *args)
         (void)new QApplication(argc, argv);
         // When QApplication is constructed
         hhook = SetWindowsHookEx(WH_GETMESSAGE,
-        FilterProc, 0, GetCurrentThreadId());
+            FilterProc, 0, GetCurrentThreadId());
 #else
         PyErr_SetString(PyExc_RuntimeError, "Must construct a QApplication before a QPaintDevice\n");
         return NULL;
@@ -184,36 +184,33 @@ struct PyMethodDef FreeCADGui_methods[] = {
     {NULL, NULL}  /* sentinel */
 };
 
-extern "C"
+PyMODINIT_FUNC initFreeCADGui()
 {
-    void MainExport initFreeCADGui()
-    {
-        try {
-            Base::Interpreter().loadModule("FreeCAD");
-            App::Application::Config()["AppIcon"] = "FCIcon";
-            App::Application::Config()["ConsoleBanner"] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n";
-            Gui::Application::initApplication();
-            static Gui::Application *app = new Gui::Application();
+    try {
+        Base::Interpreter().loadModule("FreeCAD");
+        App::Application::Config()["AppIcon"] = "FCIcon";
+        App::Application::Config()["ConsoleBanner"] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n";
+        Gui::Application::initApplication();
+        static Gui::Application *app = new Gui::Application();
 
-            PyObject *module = PyImport_AddModule("FreeCADGui");
-            PyMethodDef *meth = FreeCADGui_methods;
-            PyObject *dict = PyModule_GetDict(module);
-            for (; meth->ml_name != NULL; meth++) {
-                PyObject *descr;
-                descr = PyCFunction_NewEx(meth,0,0);
-                if (descr == NULL)
-                    break;
-                if (PyDict_SetItemString(dict, meth->ml_name, descr) != 0)
-                    break;
-                Py_DECREF(descr);
-            }
-        }
-        catch (const Base::Exception& e) {
-            PyErr_Format(PyExc_ImportError, "%s\n", e.what());
-        }
-        catch (...) {
-            PyErr_SetString(PyExc_ImportError, "Unknown runtime error occurred");
+        PyObject *module = PyImport_AddModule("FreeCADGui");
+        PyMethodDef *meth = FreeCADGui_methods;
+        PyObject *dict = PyModule_GetDict(module);
+        for (; meth->ml_name != NULL; meth++) {
+            PyObject *descr;
+            descr = PyCFunction_NewEx(meth,0,0);
+            if (descr == NULL)
+                break;
+            if (PyDict_SetItemString(dict, meth->ml_name, descr) != 0)
+                break;
+            Py_DECREF(descr);
         }
     }
-} // extern "C"
+    catch (const Base::Exception& e) {
+        PyErr_Format(PyExc_ImportError, "%s\n", e.what());
+    }
+    catch (...) {
+        PyErr_SetString(PyExc_ImportError, "Unknown runtime error occurred");
+    }
+}
 
