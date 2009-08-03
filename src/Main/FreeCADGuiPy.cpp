@@ -32,7 +32,9 @@
 #include <QIcon>
 #include <QThread>
 #include <Inventor/Qt/SoQt.h>
-
+#if defined(Q_OS_WIN)
+#include <windows.h>
+#endif
 // FreeCAD Base header
 #include <Base/Exception.h>
 #include <Base/Factory.h>
@@ -50,28 +52,6 @@
 #   define MainExport
 #endif
 
-
-#if 0
-HHOOK hhook;
-
-LRESULT CALLBACK
-FilterProc(int nCode, WPARAM wParam, LPARAM lParam) {
-    if (qApp)
-        qApp->sendPostedEvents(0, -1); // special DeferredDelete
-    return CallNextHookEx(hhook, nCode, wParam, lParam);
-}
-
-
-    if (!qApp) {
-        int argc = 0;
-        char **argv = {0};
-        (void)new QApplication(argc, argv);
-        // When QApplication is constructed
-        hhook = SetWindowsHookEx(WH_GETMESSAGE,
-        FilterProc, 0, GetCurrentThreadId());
-    }
-}
-#endif
 
 static
 QWidget* setupMainWindow()
@@ -149,6 +129,17 @@ public:
     }
 };
 
+#if defined(Q_OS_WIN)
+HHOOK hhook;
+
+LRESULT CALLBACK
+FilterProc(int nCode, WPARAM wParam, LPARAM lParam) {
+    if (qApp)
+        qApp->sendPostedEvents(0, -1); // special DeferredDelete
+    return CallNextHookEx(hhook, nCode, wParam, lParam);
+}
+#endif
+
 static PyObject *
 FreeCADGui_showMainWindow(PyObject * /*self*/, PyObject *args)
 {
@@ -157,9 +148,16 @@ FreeCADGui_showMainWindow(PyObject * /*self*/, PyObject *args)
 
     static GUIThread* thr = 0;
     if (!qApp) {
-#if 1
+#if 0
         if (!thr) thr = new GUIThread();
         thr->start();
+#elif defined(Q_OS_WIN)
+        int argc = 0;
+        char **argv = {0};
+        (void)new QApplication(argc, argv);
+        // When QApplication is constructed
+        hhook = SetWindowsHookEx(WH_GETMESSAGE,
+        FilterProc, 0, GetCurrentThreadId());
 #else
         PyErr_SetString(PyExc_RuntimeError, "Must construct a QApplication before a QPaintDevice\n");
         return NULL;
