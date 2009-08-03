@@ -24,10 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qapplication.h>
 # include <qfileinfo.h>
 # include <qdir.h>
-# include <Inventor/Qt/SoQt.h>
 #endif
 
 
@@ -42,11 +40,9 @@
 #include "Workbench.h"
 #include "WorkbenchManager.h"
 #include "Language/Translator.h"
-#include <Gui/SoFCDB.h>
 #include <App/DocumentObjectPy.h>
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
-#include <Base/Factory.h>
 #include <CXX/Objects.hxx>
 
 using namespace Gui;
@@ -93,9 +89,6 @@ PyMethodDef Application::Methods[] = {
    "addPreferencePage(string,string) -- Add a UI form to the\n"
    "preferences dialog. The first argument specifies the file name"
    "and the second specifies the group name"},
-  {"showMainWindow",          (PyCFunction) Application::sShowMainWindow,1,
-   "showMainWindow() -- Show the main window\n"
-   "If no main window does exist one gets created"},
   {"addCommand",              (PyCFunction) Application::sAddCommand,       1,
    "addCommand(string, object) -> None\n\n"
    "Add a command object"},
@@ -433,73 +426,6 @@ PyObject* Application::sAddPreferencePage(PyObject * /*self*/, PyObject *args,Py
     Py_INCREF(Py_None);
     return Py_None;
 } 
-
-PyObject* Application::sShowMainWindow(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
-{
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
-        return NULL;                     // NULL triggers exception
-
-    if (!qApp) {
-        PyErr_SetString(PyExc_RuntimeError, "Must construct a QApplication before a QPaintDevice\n");
-        return NULL;
-    }
-
-    if (!MainWindow::getInstance()) {
-        Gui::MainWindow *mw = new Gui::MainWindow();
-        QIcon icon = qApp->windowIcon();
-        if (icon.isNull())
-            mw->setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
-        QString appName = qApp->applicationName();
-        if (!appName.isEmpty())
-            mw->setWindowTitle(appName);
-        else
-            mw->setWindowTitle(QString::fromAscii(App::Application::Config()["ExeName"].c_str()));
-
-        if (!SoDB::isInitialized()) {
-            // init the Inventor subsystem
-            SoDB::init();
-            SoQt::init(mw);
-            Gui::SoFCDB::init();
-        }
-
-        static bool init = false;
-        if (!init) {
-            try {
-                Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
-            }
-            catch (const Base::Exception& e) {
-                PyErr_Format(PyExc_Exception, "Error in FreeCADGuiInit.py: %s\n", e.what());
-                return NULL;
-            }
-            init = true;
-        }
-
-        qApp->setActiveWindow(mw);
-
-        // Activate the correct workbench
-        std::string start = App::Application::Config()["StartWorkbench"];
-        Base::Console().Log("Init: Activating default workbench %s\n", start.c_str());
-        start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
-                               GetASCII("AutoloadModule", start.c_str());
-        // if the auto workbench is not visible then force to use the default workbech
-        // and replace the wrong entry in the parameters
-        QStringList wb = Application::Instance->workbenches();
-        if (!wb.contains(QString::fromAscii(start.c_str()))) {
-            start = App::Application::Config()["StartWorkbench"];
-            App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
-                                  SetASCII("AutoloadModule", start.c_str());
-        }
-
-        Application::Instance->activateWorkbench(start.c_str());
-        mw->loadWindowSettings();
-    }
-    else {
-        getMainWindow()->show();
-    }
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
 
 PyObject* Application::sActivateWorkbenchHandler(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
