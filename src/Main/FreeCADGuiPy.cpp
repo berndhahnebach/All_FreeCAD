@@ -28,13 +28,20 @@
 #endif // HAVE_CONFIG_H
 
 #include <Python.h>
+#include <QApplication>
+#include <QIcon>
+#include <QThread>
+#include <Inventor/Qt/SoQt.h>
 
 // FreeCAD Base header
 #include <Base/Exception.h>
+#include <Base/Factory.h>
 #include <Base/Interpreter.h>
 #include <App/Application.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/MainWindow.h>
+#include <Gui/SoFCDB.h>
 
 
 #ifdef FC_OS_WIN32
@@ -42,6 +49,142 @@
 #else
 #   define MainExport
 #endif
+
+
+#if 0
+HHOOK hhook;
+
+LRESULT CALLBACK
+FilterProc(int nCode, WPARAM wParam, LPARAM lParam) {
+    if (qApp)
+        qApp->sendPostedEvents(0, -1); // special DeferredDelete
+    return CallNextHookEx(hhook, nCode, wParam, lParam);
+}
+
+
+    if (!qApp) {
+        int argc = 0;
+        char **argv = {0};
+        (void)new QApplication(argc, argv);
+        // When QApplication is constructed
+        hhook = SetWindowsHookEx(WH_GETMESSAGE,
+        FilterProc, 0, GetCurrentThreadId());
+    }
+}
+#endif
+
+static
+QWidget* setupMainWindow()
+{
+    if (!Gui::MainWindow::getInstance()) {
+        Gui::MainWindow *mw = new Gui::MainWindow();
+        QIcon icon = qApp->windowIcon();
+        if (icon.isNull())
+            mw->setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
+        QString appName = qApp->applicationName();
+        if (!appName.isEmpty())
+            mw->setWindowTitle(appName);
+        else
+            mw->setWindowTitle(QString::fromAscii(App::Application::Config()["ExeName"].c_str()));
+
+        if (!SoDB::isInitialized()) {
+            // init the Inventor subsystem
+            SoDB::init();
+            SoQt::init(mw);
+            Gui::SoFCDB::init();
+        }
+
+        static bool init = false;
+        if (!init) {
+            try {
+                Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+            }
+            catch (const Base::Exception& e) {
+                PyErr_Format(PyExc_Exception, "Error in FreeCADGuiInit.py: %s\n", e.what());
+                return 0;
+            }
+            init = true;
+        }
+
+        qApp->setActiveWindow(mw);
+
+        // Activate the correct workbench
+        std::string start = App::Application::Config()["StartWorkbench"];
+        Base::Console().Log("Init: Activating default workbench %s\n", start.c_str());
+        start = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                               GetASCII("AutoloadModule", start.c_str());
+        // if the auto workbench is not visible then force to use the default workbech
+        // and replace the wrong entry in the parameters
+        QStringList wb = Gui::Application::Instance->workbenches();
+        if (!wb.contains(QString::fromAscii(start.c_str()))) {
+            start = App::Application::Config()["StartWorkbench"];
+            App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")->
+                                  SetASCII("AutoloadModule", start.c_str());
+        }
+
+        Gui::Application::Instance->activateWorkbench(start.c_str());
+        mw->loadWindowSettings();
+    }
+    else {
+        Gui::getMainWindow()->show();
+    }
+
+    return Gui::getMainWindow();
+}
+
+class GUIThread : public QThread
+{
+public:
+    GUIThread()
+    {
+    }
+    void run()
+    {
+        int argc = 0;
+        char **argv = {0};
+        QApplication app(argc, argv);
+        if (setupMainWindow()) {
+            app.exec();
+        }
+    }
+};
+
+static PyObject *
+FreeCADGui_showMainWindow(PyObject * /*self*/, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    static GUIThread* thr = 0;
+    if (!qApp) {
+#if 1
+        if (!thr) thr = new GUIThread();
+        thr->start();
+#else
+        PyErr_SetString(PyExc_RuntimeError, "Must construct a QApplication before a QPaintDevice\n");
+        return NULL;
+#endif
+    }
+    else if (!qobject_cast<QApplication*>(qApp)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot create widget when no GUI is being used\n");
+        return NULL;
+    }
+
+    if (!thr) {
+        if (!setupMainWindow())
+            return NULL;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+struct PyMethodDef FreeCADGui_methods[] = { 
+    {"showMainWindow",FreeCADGui_showMainWindow,METH_VARARGS,
+     "showMainWindow() -- Show the main window\n"
+     "If no main window does exist one gets created"},
+    {NULL, NULL}  /* sentinel */
+};
 
 extern "C"
 {
@@ -53,6 +196,19 @@ extern "C"
             App::Application::Config()["ConsoleBanner"] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n";
             Gui::Application::initApplication();
             static Gui::Application *app = new Gui::Application();
+
+            PyObject *module = PyImport_AddModule("FreeCADGui");
+            PyMethodDef *meth = FreeCADGui_methods;
+            PyObject *dict = PyModule_GetDict(module);
+            for (; meth->ml_name != NULL; meth++) {
+                PyObject *descr;
+                descr = PyCFunction_NewEx(meth,0,0);
+                if (descr == NULL)
+                    break;
+                if (PyDict_SetItemString(dict, meth->ml_name, descr) != 0)
+                    break;
+                Py_DECREF(descr);
+            }
         }
         catch (const Base::Exception& e) {
             PyErr_Format(PyExc_ImportError, "%s\n", e.what());

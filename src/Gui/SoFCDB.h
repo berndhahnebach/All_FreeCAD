@@ -32,7 +32,7 @@ namespace Gui {
  * The FreeCAD database class to initialioze all onw Inventor nodes.
  * @author Werner Mayer
  */
-class SoFCDB
+class GuiExport SoFCDB
 {
 public:
     static void init();
