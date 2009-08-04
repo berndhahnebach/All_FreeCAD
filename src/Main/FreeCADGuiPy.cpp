@@ -46,13 +46,6 @@
 #include <Gui/SoFCDB.h>
 
 
-#ifdef FC_OS_WIN32
-#   define MainExport __declspec(dllexport)
-#else
-#   define MainExport
-#endif
-
-
 static
 QWidget* setupMainWindow()
 {
@@ -158,6 +151,10 @@ FreeCADGui_showMainWindow(PyObject * /*self*/, PyObject *args)
         // When QApplication is constructed
         hhook = SetWindowsHookEx(WH_GETMESSAGE,
             FilterProc, 0, GetCurrentThreadId());
+#elif !defined(QT_NO_GLIB)
+        int argc = 0;
+        char **argv = {0};
+        (void)new QApplication(argc, argv);
 #else
         PyErr_SetString(PyExc_RuntimeError, "Must construct a QApplication before a QPaintDevice\n");
         return NULL;
