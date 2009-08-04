@@ -35,14 +35,33 @@
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_ShapeBounds.hxx>
 #include <HLRBRep_HLRToShape.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Dir.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <BRep_Tool.hxx>
 
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Mod/Part/App/PartFeature.h>
 
 #include "FeatureViewPart.h"
 
 using namespace Drawing;
+using namespace std;
 
 
 //===========================================================================
@@ -65,88 +84,80 @@ FeatureViewPart::~FeatureViewPart()
 
 App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 {
-    /*  Exemples d'utilisation :
+    std::stringstream result;
 
-       1- avec deux TopoDS_Shape*/
+    App::DocumentObject* link = Source.getValue();
+    if (!link)
+        return new App::DocumentObjectExecReturn("No object linked");
+    if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+        return new App::DocumentObjectExecReturn("Linked object is not a Part object");
+    TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
+    if (shape.IsNull())
+        return new App::DocumentObjectExecReturn("Linked shape object is empty");
 
-  Handle(HLRBRep_Algo) Hider = new HLRBRep_Algo();
-  TopoDS_Shape S1,S2;
-  // initialiser les TopoDS_Shape.
-  HLRAlgo_Projector Prj;
-  // initialiser le HLRAlgo_Projector
-  Standard_Integer nbIso = 0;
-  Hider->Add(S1,nbIso);
-  Hider->Add(S2,nbIso);
-  Hider->Projector(Prj);
-  Hider->Update();
-  Hider->Hide();
-  // retirer le TopoDS_Shape S1
-  Hider->Remove(Hider->Index(S1));
+    Handle( HLRBRep_Algo ) brep_hlr = new HLRBRep_Algo;
+    brep_hlr->Add( shape );
 
-  // This does not work with gcc. Isn't it the correct way to nullify the handle which decrements the ref counter
-  // and destroy the data if it reaches zero? (Werner)
-  //Hider.Nullify();
-  //delete Hider;
-       //2- avec un HLRTopoBRep_OutLiner
+    gp_Ax2 transform(gp_Pnt(0,0,0),gp_Dir(0,0,1));
+    HLRAlgo_Projector projector( transform );
+    brep_hlr->Projector( projector );
+    brep_hlr->Update();
+    brep_hlr->Hide();
 
-  //Hider = new HLRBRep_Algo();
-  //TopoDS_Shape S;
-  //// initialiser le TopoDS_Shape.
-  //HLRTopoBRep_OutLiner OS;
-  //BRepAPI_MakeOutLine OutL;
-  //HLRAlgo_Projector Prj;
-  //// initialiser le HLRAlgo_Projector
-  //Standard_Integer nbIso = 0;
-  //OS.OriginalShape(S);
-  //OS.Fill(Prj,nbIso,OutL);
-  //TopoDS_Shape result = OS.OutLinedShape();
-  //// ce resultat contient les IsoLines et les contours apparents.
-  //Hider->Load(OS,nbIso);
-  //Hider->Projector(Prj);
-  //Hider->Update();
-  //Hider->Hide();
+    // extracting the result sets:
+    HLRBRep_HLRToShape shapes( brep_hlr );
 
-     //Lien entre les nouveaux Shapes et les anciens.
+    TopoDS_Shape VisiblyEdges;
+    VisiblyEdges = shapes.VCompound();
 
-  TopoDS_Shape Sh,SOld,SNew;
-  Standard_Integer index = Hider->Index(Sh);
-  SOld = Hider->ShapeBounds(index).Shape()
-      ->DataStructure().NewSOldS(SNew);
+    TopoDS_Shape HiddenEdges;
+    HiddenEdges = shapes.HCompound();
 
-     //Lecture des rsultats :
+    //HLRBRep_HLRToShape Tool(Hider);
+    //TopoDS_Shape V  = Tool.VCompound       ();// artes vives       vues
+    //TopoDS_Shape V1 = Tool.Rg1LineVCompound();// artes rgulires  vues
+    //TopoDS_Shape VN = Tool.RgNLineVCompound();// artes de couture  vues
+    //TopoDS_Shape VO = Tool.OutLineVCompound();// contours apparents vus
+    //TopoDS_Shape VI = Tool.IsoLineVCompound();// isoparamtriques   vues
+    //TopoDS_Shape H  = Tool.HCompound       ();// artes vives       caches
+    //TopoDS_Shape H1 = Tool.Rg1LineHCompound();// artes rgulires  caches
+    //TopoDS_Shape HN = Tool.RgNLineHCompound();// artes de couture  caches
+    //TopoDS_Shape HO = Tool.OutLineHCompound();// contours apparents cachs
+    //TopoDS_Shape HI = Tool.IsoLineHCompound();// isoparamtriques   caches
 
-     //  1- gnrale
+    result << "<g" << endl
+           //<< "  id=\"" << ViweName << "\"" << endl
+           << "  fill=\"none\"" << endl
+           //<< "  transform=\"" << ViweName << "\"" << endl
+           << "  >" << endl;
 
-  {
-  HLRBRep_HLRToShape Tool(Hider);
-  TopoDS_Shape V  = Tool.VCompound       ();// artes vives       vues
-  TopoDS_Shape V1 = Tool.Rg1LineVCompound();// artes rgulires  vues
-  TopoDS_Shape VN = Tool.RgNLineVCompound();// artes de couture  vues
-  TopoDS_Shape VO = Tool.OutLineVCompound();// contours apparents vus
-  TopoDS_Shape VI = Tool.IsoLineVCompound();// isoparamtriques   vues
-  TopoDS_Shape H  = Tool.HCompound       ();// artes vives       caches
-  TopoDS_Shape H1 = Tool.Rg1LineHCompound();// artes rgulires  caches
-  TopoDS_Shape HN = Tool.RgNLineHCompound();// artes de couture  caches
-  TopoDS_Shape HO = Tool.OutLineHCompound();// contours apparents cachs
-  TopoDS_Shape HI = Tool.IsoLineHCompound();// isoparamtriques   caches
-  }
-       ///2- sur tous les edges d'un TopoDS_Shape
-  {
-  TopoDS_Shape S;
-  HLRBRep_HLRToShape Tool(Hider);
-  TopoDS_Shape V  = Tool.VCompound       (S);// artes vives       vues
-  TopoDS_Shape V1 = Tool.Rg1LineVCompound(S);// artes rgulires  vues
-  TopoDS_Shape VN = Tool.RgNLineVCompound(S);// artes de couture  vues
-  TopoDS_Shape VO = Tool.OutLineVCompound(S);// contours apparents vus
-  TopoDS_Shape VI = Tool.IsoLineVCompound(S);// isoparamtriques   vues
-  TopoDS_Shape H  = Tool.HCompound       (S);// artes vives       caches
-  TopoDS_Shape H1 = Tool.Rg1LineHCompound(S);// artes rgulires  caches
-  TopoDS_Shape HN = Tool.RgNLineHCompound(S);// artes de couture  caches
-  TopoDS_Shape HO = Tool.OutLineHCompound(S);// contours apparents cachs
-  TopoDS_Shape HI = Tool.IsoLineHCompound(S);// isoparamtriques   caches
-  }
+    TopExp_Explorer edges( VisiblyEdges, TopAbs_EDGE );
 
-  return App::DocumentObject::StdReturn;
+    for ( ; edges.More(); edges.Next() ) {
+      TopoDS_Edge edge = TopoDS::Edge( edges.Current() );
+      TopLoc_Location location;
+      Handle( Poly_Polygon3D ) polygon = BRep_Tool::Polygon3D( edge, location );
+      if ( !polygon.IsNull() ) {
+        const TColgp_Array1OfPnt& nodes = polygon->Nodes();
+        //glBegin( GL_LINE_STRIP );
+        char c = 'M';
+        result << "<path d=\" "; 
+        for ( int i = nodes.Lower(); i<= nodes.Upper(); i++ ){
+            result << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
+            c = 'L';
+          //glVertex3f( nodes(i).X(), nodes(i).Y(), nodes(i).Z() );
+        }
+        result << "\" />" << endl;
+        //glEnd();
+      }
+    }
+
+    result << "</g>" << endl;
+
+    // Apply the resulting fragment
+    ViewResult.setValue(result.str().c_str());
+
+    return App::DocumentObject::StdReturn;
 }
 
 

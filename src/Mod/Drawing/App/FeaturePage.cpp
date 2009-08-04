@@ -30,6 +30,7 @@
 
 
 #include <Base/Exception.h>
+#include <Base/Console.h>
 #include <boost/regex.hpp>
 #include <iostream>
 
@@ -43,7 +44,7 @@ using namespace std;
 // FeatureView
 //===========================================================================
 
-PROPERTY_SOURCE(Drawing::FeaturePage, App::AbstractFeature)
+PROPERTY_SOURCE(Drawing::FeaturePage, App::DocumentObjectGroup)
 
 const char *group = "Drawing view";
 
@@ -51,9 +52,7 @@ FeaturePage::FeaturePage(void)
 {
   static const char *group = "Drawing view";
 
-  ADD_PROPERTY_TYPE(Views ,(0),group,App::Prop_None,"List of views in this page");
-
-  ADD_PROPERTY_TYPE(PageResult ,(""),group,App::Prop_Output,"Resulting SVG document of that page");
+  ADD_PROPERTY_TYPE(PageResult ,(0),group,App::Prop_Output,"Resulting SVG document of that page");
   ADD_PROPERTY_TYPE(Template   ,(""),group,App::Prop_None  ,"Template for the page");
 }
 
@@ -63,6 +62,13 @@ FeaturePage::~FeaturePage()
 
 App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
+    Base::FileInfo fi(Template.getValue());
+    if (!fi.isReadable()) {
+        Base::Console().Log("ImportIges::execute() not able to open %s!\n",Template.getValue());
+        std::string error = std::string("Cannot open file ") + Template.getValue();
+        return new App::DocumentObjectExecReturn(error);
+    }
+
   const char* text = "lskdfjlsd";
   const char* regex = "lskdflds";
   boost::regex e(regex);
@@ -72,16 +78,5 @@ App::DocumentObjectExecReturn *FeaturePage::execute(void)
   }
   return App::DocumentObject::StdReturn;
 }
-
-
-//
-//PyObject *Feature::getPyObject(void)
-//{
-// if(PythonObject.is(Py::_None())){
-//    // ref counter is set to 1
-//    PythonObject.set(new PartFeaturePy(this),true);
-//  }
-//  return Py::new_reference_to(PythonObject); 
-//}
 
 

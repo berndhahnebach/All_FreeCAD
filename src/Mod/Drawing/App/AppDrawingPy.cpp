@@ -65,20 +65,20 @@ project(PyObject *self, PyObject *args)
         TopoDS_Shape OuterEdges;
         OuterEdges = shapes.OutLineVCompound();
 
-        //TopoDS_Shape InnerEdges;
-        //InnerEdges = shapes.VCompound();
+        TopoDS_Shape InnerEdges;
+        InnerEdges = shapes.VCompound();
 
-        //TopoDS_Shape HiddenOuterEdges;
-        //HiddenOuterEdges = shapes.OutLineHCompound();
+        TopoDS_Shape HiddenOuterEdges;
+        HiddenOuterEdges = shapes.OutLineHCompound();
 
-        //TopoDS_Shape HiddenInnerEdges;
-        //HiddenInnerEdges = shapes.OutLineHCompound();
+        TopoDS_Shape HiddenInnerEdges;
+        HiddenInnerEdges = shapes.HCompound();
 
         Py::List list;
-        list.append(Py::Object(new TopoShapePy(new TopoShape(OuterEdges))));
- /*       list.append(Py::Object(new TopoShapePy(new TopoShape(InnerEdges))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(HiddenOuterEdges))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(HiddenInnerEdges))));*/
+        //list.append(Py::Object(new TopoShapePy(new TopoShape(OuterEdges))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(InnerEdges))));
+        //list.append(Py::Object(new TopoShapePy(new TopoShape(HiddenOuterEdges))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(HiddenInnerEdges))));
 
         return Py::new_reference_to(list);
 

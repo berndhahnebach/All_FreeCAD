@@ -29,6 +29,7 @@
 
 #include <App/Feature.h>
 #include <App/PropertyStandard.h>
+#include <App/PropertyGeo.h>
 
 
 class PyObjectBase;
@@ -53,7 +54,8 @@ public:
 	FeatureView(void);
   virtual ~FeatureView();
 
-  App::PropertyFloat X,Y;
+  App::PropertyFloat X,Y,Scale;
+  App::PropertyVector Direction;
   App::PropertyString ViewResult;
 
 
