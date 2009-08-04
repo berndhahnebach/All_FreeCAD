@@ -48,6 +48,7 @@ generate_from_xml(ViewProviderPy)
 generate_from_xml(ViewProviderDocumentObjectPy)
 generate_from_xml(ViewProviderPythonFeaturePy)
 generate_from_xml(WorkbenchPy)
+generate_from_xml(SelectionObjectPy) 
 
 generate_from_py(FreeCADGuiInit GuiInitScript.h)
 
@@ -543,6 +544,10 @@ SET(FreeCADGui_SRCS
 		 Application.cpp
 		 Application.h
 		 ApplicationPy.cpp
+		 SelectionObjectPy.xml
+		 SelectionObjectPyImp.cpp
+		 SelectionObject.cpp
+		 SelectionObject.h
 		 BitmapFactory.cpp
 		 BitmapFactory.h
 		 Document.cpp

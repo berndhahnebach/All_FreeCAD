@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport 
+    Father="BaseClassPy" 
+    Name="SelectionObjectPy" 
+    Twin="SelectionObject" 
+    TwinPointer="SelectionObject" 
+    Include="Gui/SelectionObject.h" 
+    Namespace="Gui" 
+    FatherInclude="Base/BaseClassPy.h" 
+    FatherNamespace="Base">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <UserDocu>This class represent selections made by the user. It holds information about the object, document and sub type of the seleciot.</UserDocu>
+    </Documentation>
+    <Methode Name="remove">
+      <Documentation>
+        <UserDocu>Remove this selection item from the selection. This object becomes invalid.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="isA">
+      <Documentation>
+        <UserDocu>Test for a certain father class.</UserDocu>
+      </Documentation>
+    </Methode>
+	<Attribute Name="ObjectName" ReadOnly="true">
+	  <Documentation>
+	    <UserDocu>Name of the selected object</UserDocu>
+	  </Documentation>
+	  <Parameter Name="ObjectName" Type="String" />
+	</Attribute>
+	<Attribute Name="SubElementName" ReadOnly="true">
+	  <Documentation>
+	    <UserDocu>Name of the selected sub element if any</UserDocu>
+	  </Documentation>
+	  <Parameter Name="SubElementName" Type="String" />
+	</Attribute>
+	<Attribute Name="FullName" ReadOnly="true">
+	  <Documentation>
+	    <UserDocu>Name of the selected object</UserDocu>
+	  </Documentation>
+	  <Parameter Name="FullName" Type="String" />
+	</Attribute>
+    <CustomAttributes />
+  </PythonExport>
+</GenerateModel>
