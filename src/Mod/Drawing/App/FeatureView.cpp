@@ -52,7 +52,10 @@ FeatureView::FeatureView(void)
 {
   static const char *group = "Drawing view";
   ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"X position of the view on the drawing in modeing units (mm)");
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
+  ADD_PROPERTY_TYPE(Y ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
+  ADD_PROPERTY_TYPE(Scale ,(0),group,App::Prop_None,"Scale factor of the view");
+
+  ADD_PROPERTY_TYPE(Direction ,(0,0,1.0),group,App::Prop_None,"Projection direction");
 
   ADD_PROPERTY_TYPE(ViewResult ,(0),group,App::Prop_Output,"Resulting SVG fragment of that view");
 }

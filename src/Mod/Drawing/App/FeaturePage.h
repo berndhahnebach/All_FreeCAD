@@ -27,9 +27,9 @@
 #define _FeaturePage_h_
 
 
-#include <App/Feature.h>
+#include <App/DocumentObjectGroup.h>
 #include <App/PropertyStandard.h>
-#include <App/PropertyLinks.h>
+#include <App/PropertyFile.h>
 
 
 class PyObjectBase;
@@ -44,7 +44,7 @@ namespace Drawing
 
 /** Base class of all View Features in the drawing module
  */
-class AppDrawingExport FeaturePage: public App::AbstractFeature
+class AppDrawingExport FeaturePage: public App::DocumentObjectGroup
 {
   PROPERTY_HEADER(Drawing::FeaturePage);
 
@@ -53,9 +53,7 @@ public:
 	FeaturePage(void);
   virtual ~FeaturePage();
 
-  App::PropertyLinkList Views;
-
-  App::PropertyString PageResult;
+  App::PropertyFileIncluded PageResult;
   App::PropertyString Template;
 
 
