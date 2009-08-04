@@ -145,15 +145,15 @@ FreeCADGui_showMainWindow(PyObject * /*self*/, PyObject *args)
         if (!thr) thr = new GUIThread();
         thr->start();
 #elif defined(Q_OS_WIN)
-        int argc = 0;
-        char **argv = {0};
+        static int argc = 0;
+        static char **argv = {0};
         (void)new QApplication(argc, argv);
         // When QApplication is constructed
         hhook = SetWindowsHookEx(WH_GETMESSAGE,
             FilterProc, 0, GetCurrentThreadId());
 #elif !defined(QT_NO_GLIB)
-        int argc = 0;
-        char **argv = {0};
+        static int argc = 0;
+        static char **argv = {0};
         (void)new QApplication(argc, argv);
 #else
         PyErr_SetString(PyExc_RuntimeError, "Must construct a QApplication before a QPaintDevice\n");
