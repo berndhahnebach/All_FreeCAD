@@ -94,6 +94,7 @@ BUILT_SOURCES=\
 		ui_Placement.h \
 		DocumentPy.cpp \
 		PythonWorkbenchPy.cpp \
+		SelectionObjectPy.cpp \
 		WorkbenchPy.cpp \
 		ViewProviderPy.cpp \
 		ViewProviderDocumentObjectPy.cpp \
@@ -250,6 +251,8 @@ libFreeCADGui_la_SOURCES=\
 		SceneInspector.cpp \
 		SceneInspector.h \
 		Selection.cpp \
+		SelectionObject.cpp \
+		SelectionObjectPyImp.cpp \
 		SelectionView.cpp \
 		SoFCBackgroundGradient.cpp \
 		SoFCBoundingBox.cpp \
@@ -342,6 +345,7 @@ include_HEADERS=\
 		EditorView.h \
 		ReportView.h \
 		Selection.h \
+		SelectionObject.h \
 		SelectionView.h \
 		SoFCBackgroundGradient.h \
 		SoFCBoundingBox.h \
@@ -395,6 +399,7 @@ EXTRA_DIST = \
 		FreeCADGuiInit.py \
 		DocumentPy.xml \
 		PythonWorkbenchPy.xml \
+		SelectionObjectPy.xml \
 		WorkbenchPy.xml \
 		ViewProviderPy.xml \
 		ViewProviderDocumentObjectPy.xml \

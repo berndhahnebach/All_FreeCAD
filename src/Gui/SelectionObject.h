@@ -24,13 +24,7 @@
 #ifndef GUI_SelectionObject_H
 #define GUI_SelectionObject_H
 
-#include <list>
-#include <string>
 #include <Base/BaseClass.h>
-
-namespace Base {
-class PyObjectBase;
-}
 
 namespace Gui {
 
@@ -47,7 +41,6 @@ public:
     SelectionObject();
     virtual ~SelectionObject();
     /**
-       /**
      * The default implementation returns an instance of @ref SelectionObjectPy.
      */
     PyObject* getPyObject();
