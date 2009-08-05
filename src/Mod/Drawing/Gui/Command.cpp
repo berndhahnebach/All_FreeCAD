@@ -11,12 +11,19 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QMessageBox>
 #endif
+
+#include <vector>
 
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+#include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
+
+#include <Mod/Part/App/PartFeature.h>
+
 
 #include "DrawingView.h"
 
@@ -95,8 +102,8 @@ CmdDrawingNewView::CmdDrawingNewView()
 {
     sAppModule      = "Drawing";
     sGroup          = QT_TR_NOOP("Drawing");
-    sMenuText       = QT_TR_NOOP("Insert a new View in the active drawing");
-    sToolTipText    = QT_TR_NOOP("Insert a new View in the active drawing");
+    sMenuText       = QT_TR_NOOP("Insert a new View of a Part in the active drawing");
+    sToolTipText    = QT_TR_NOOP("Insert a new View of a Part in the active drawing");
     sWhatsThis      = "Drawing_NewView";
     sStatusTip      = sToolTipText;
     sPixmap         = "actions/drawing-view";
@@ -105,15 +112,28 @@ CmdDrawingNewView::CmdDrawingNewView()
 
 void CmdDrawingNewView::activated(int iMsg)
 {
-    // Reading an image
-    QString filename = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an SVG file to open"), QString::null, 
-                                           QObject::tr("Scalable Vector Graphics (*.svg *.svgz)"));
-    if (!filename.isEmpty())
-    {
-        // load the file with the module
-        Command::doCommand(Command::Gui, "import Drawing, DrawingGui");
-        Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)filename.toUtf8());
+
+   unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select a Part object."));
+        return;
     }
+
+    std::string FeatName = getUniqueObjectName("View");
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    openCommand("Make Pad");
+    doCommand(Doc,"App.activeDocument().addObject(\"Drawing::FeatureViewPart\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Direction = (0.0,0.0,1.0)",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.X = 0.0",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Y = 0.0",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Scale = 1.0",FeatName.c_str());
+    updateActive();
+    commitCommand();
+
 }
 
 void CreateDrawingCommands(void)

@@ -26,6 +26,11 @@
 
 #include <Gui/ViewProviderFeature.h>
 
+#include "DrawingView.h"
+
+namespace Drawing{
+    class FeaturePage;
+}
 
 namespace DrawingGui {
 
@@ -48,9 +53,18 @@ public:
   /// Update the Drawing representation
   //virtual void update(const ChangeType&);
 
+    virtual bool setEdit(int ModNum);
+	virtual void unsetEdit(void);
+
+
   virtual void updateData(const App::Property*);
 
+  Drawing::FeaturePage* getPageObject(void);
+
+
 protected:
+
+    DrawingView* view;
 
 };
 
