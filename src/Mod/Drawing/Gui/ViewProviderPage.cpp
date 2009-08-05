@@ -40,9 +40,12 @@
 #include <App/Feature.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/Selection.h>
+#include <Gui/MainWindow.h>
+#include <Gui/BitmapFactory.h>
 
 
 #include "ViewProviderPage.h"
+#include <Mod/Drawing/App/FeaturePage.h>
 
 //#include <Mod/Drawing/App/DrawingFeature.h>
 
@@ -101,5 +104,31 @@ void ViewProviderDrawingPage::updateData(const App::Property*)
 
 
 }
+
+bool ViewProviderDrawingPage::setEdit(int ModNum)
+{
+    view = new DrawingView(Gui::getMainWindow());
+    //view->load(this->fileName);
+    view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
+    view->setWindowTitle(QObject::tr("Drawing viewer"));
+    view->resize( 400, 300 );
+    Gui::getMainWindow()->addWindow(view);
+
+    return true;
+}
+
+void ViewProviderDrawingPage::unsetEdit(void)
+{   
+    // remove the Drawing view
+
+
+}
+
+Drawing::FeaturePage* ViewProviderDrawingPage::getPageObject(void)
+{
+    return dynamic_cast<Drawing::FeaturePage*>(pcObject);
+}
+
+
 
 

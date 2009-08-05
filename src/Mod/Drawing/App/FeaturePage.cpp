@@ -64,18 +64,41 @@ App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
     Base::FileInfo fi(Template.getValue());
     if (!fi.isReadable()) {
-        Base::Console().Log("ImportIges::execute() not able to open %s!\n",Template.getValue());
+        Base::Console().Log("FeaturePage::execute() not able to open %s!\n",Template.getValue());
         std::string error = std::string("Cannot open file ") + Template.getValue();
         return new App::DocumentObjectExecReturn(error);
     }
+    // open Template file
+    string line;
+    ifstream file ( fi.filePath().c_str() );
 
-  const char* text = "lskdfjlsd";
-  const char* regex = "lskdflds";
-  boost::regex e(regex);
-  boost::smatch what;
-  if(boost::regex_match(string(text), what, e))
-  {
-  }
+    // make a temp file for FileIncluded Property
+    string tempName = PageResult.getExchangeTempFile();
+    ofstream ofile(tempName.c_str());
+
+    while (! file.eof() )
+    {
+      getline (file,line);
+      if(line != "<!- DrawingContent -->")
+        ofile << line << endl;
+      else
+      {
+        // get through the children and collect all the views
+      }
+    }
+
+    PageResult.setValue(tempName.c_str());
+
+    file.close();
+    ofile.close();
+
+  //const char* text = "lskdfjlsd";
+  //const char* regex = "lskdflds";
+  //boost::regex e(regex);
+  //boost::smatch what;
+  //if(boost::regex_match(string(text), what, e))
+  //{
+  //}
   return App::DocumentObject::StdReturn;
 }
 

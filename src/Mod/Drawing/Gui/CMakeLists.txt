@@ -9,6 +9,7 @@ include_directories(
 		 ${COIN_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${QT_INCLUDE_DIR}
+		 ${OCC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
