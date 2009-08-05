@@ -20,7 +20,8 @@ libDrawingGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libDrawingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libDrawingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Part/App -L../App \
+		$(QT_LIBS) $(GL_LIBS) -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libDrawingGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DDrawingAppExport= -DDrawingGuiExport=
 
 libDrawingGui_la_LIBADD   = \
@@ -30,6 +31,7 @@ libDrawingGui_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
+		-lPart \
 		-lDrawing
 
 #--------------------------------------------------------------------------------------
@@ -69,7 +71,7 @@ qrc_%.cpp: %.qrc
 
 # set the include path found by configure
 INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) \
-		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir) -I$(OCC_INC)
 
 
 libdir = $(prefix)/Mod/Drawing
