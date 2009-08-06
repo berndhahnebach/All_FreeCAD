@@ -670,10 +670,7 @@ void StdCmdSelectAll::activated(int iMsg)
     SelectionSingleton& rSel = Selection();
     App::Document* doc = App::GetApplication().getActiveDocument();
     std::vector<App::DocumentObject*> objs = doc->getObjectsOfType(App::DocumentObject::getClassTypeId());
-    for(std::vector<App::DocumentObject*>::const_iterator it=objs.begin();it!=objs.end();++it) {
-        if (!rSel.isSelected(doc->getName(), (*it)->getNameInDocument()))
-            rSel.addSelection(doc->getName(), (*it)->getNameInDocument());
-    }
+    rSel.setSelection(doc->getName(), objs);
 }
 
 bool StdCmdSelectAll::isActive(void)

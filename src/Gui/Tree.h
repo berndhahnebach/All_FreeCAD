@@ -30,8 +30,8 @@
 #include <App/Document.h>
 #include <App/Application.h>
 
-#include "Selection.h"
-#include "DockWindow.h"
+#include <Gui/DockWindow.h>
+#include <Gui/Selection.h>
 
 namespace Gui {
 
@@ -42,7 +42,7 @@ class DocumentItem;
 /** Tree view that allows drag & drop of document objects.
  * @author Werner Mayer
  */
-class TreeWidget : public QTreeWidget, public Gui::SelectionSingleton::ObserverType
+class TreeWidget : public QTreeWidget, public SelectionObserver
 {
     Q_OBJECT
 
@@ -50,16 +50,14 @@ public:
     TreeWidget(QWidget* parent=0);
     ~TreeWidget();
 
-    const char *getName(void) const {return "TreeWidget";}
-
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &,Gui::SelectionSingleton::MessageType);
     void scrollItemToTop(Gui::Document*);
 
     static const int DocumentType;
     static const int ObjectType;
 
 protected:
+    /// Observer message from the Selection
+    void onSelectionChanged(std::string& doc);
     void contextMenuEvent (QContextMenuEvent * e);
     void drawRow(QPainter *, const QStyleOptionViewItem &, const QModelIndex &) const;
     bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data,
@@ -116,6 +114,7 @@ public:
     void setObjectSelected(const char*, bool);
     void clearSelection(void);
     void updateSelection(void);
+    void selectItems(void);
     void testStatus(void);
     void setData(int column, int role, const QVariant & value);
 
