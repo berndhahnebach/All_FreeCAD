@@ -70,94 +70,69 @@ PropertyView::PropertyView(QWidget *parent)
     tabs->addTab(propertyEditorView, trUtf8("View"));
     propertyEditorData = new Gui::PropertyEditor::PropertyEditor();
     tabs->addTab(propertyEditorData, trUtf8("Data"));
-
-    onUpdate();
-    Gui::Selection().Attach(this);
 }
 
 PropertyView::~PropertyView()
 {
-    Gui::Selection().Detach(this);
 }
 
-void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                            Gui::SelectionSingleton::MessageType Reason)
+void PropertyView::onSelectionChanged(std::string&)
 {
-    //FIXME: We get notified for each object that has changed its selection status. It is sufficient to be called only once.
-    //
+    // group the properties by <name,id>
+    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propDataMap;
+    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propViewMap;
+    std::vector<SelectionSingleton::SelObj> array = Gui::Selection().getCompleteSelection();
+    for (std::vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it) {
+        std::map<std::string,App::Property*> dataMap;
+        std::map<std::string,App::Property*> viewMap;
+        if ((*it).pObject) {
+            (*it).pObject->getPropertyMap(dataMap);
 
-    if (Reason.Type == SelectionChanges::AddSelection ||
-        Reason.Type == SelectionChanges::RmvSelection ||
-        Reason.Type == SelectionChanges::ClrSelection) {
-        // We must not listen neither to the given rCaller nor to the Reason object only, because there can be selected items from
-        // documents other than the currently active one.
-
-        // group the properties by <name,id>
-        std::map<std::pair<std::string, int>, std::vector<App::Property*> > propDataMap;
-        std::map<std::pair<std::string, int>, std::vector<App::Property*> > propViewMap;
-        std::vector<SelectionSingleton::SelObj> array = Gui::Selection().getCompleteSelection();
-        for (std::vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it) {
-            std::map<std::string,App::Property*> dataMap;
-            std::map<std::string,App::Property*> viewMap;
-            if ((*it).pObject) {
-                (*it).pObject->getPropertyMap(dataMap);
-
-                // get also the properties of the associated view provider
-                Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
-                ViewProvider* vp = doc->getViewProvider((*it).pObject);
-                if(!vp) continue;
-                vp->getPropertyMap(viewMap);
-            }
-            else if ((*it).pDoc) {
-                (*it).pDoc->getPropertyMap(dataMap);
-            }
-
-            // store the properties with <name,id> as key in a map
-            std::map<std::string,App::Property*>::iterator pt;
-            for (pt = dataMap.begin(); pt != dataMap.end(); ++pt) {
-                std::pair<std::string, int> nameType = std::make_pair
-                    <std::string, int>(pt->first, pt->second->getTypeId().getKey());
-                propDataMap[nameType].push_back(pt->second);
-            }
-            // the same for the view properties
-            for(pt = viewMap.begin(); pt != viewMap.end(); ++pt) {
-                std::pair<std::string, int> nameType = std::make_pair
-                    <std::string, int>( pt->first, pt->second->getTypeId().getKey());
-                propViewMap[nameType].push_back(pt->second);
-            }
+            // get also the properties of the associated view provider
+            Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
+            ViewProvider* vp = doc->getViewProvider((*it).pObject);
+            if(!vp) continue;
+            vp->getPropertyMap(viewMap);
+        }
+        else if ((*it).pDoc) {
+            (*it).pDoc->getPropertyMap(dataMap);
         }
 
-        // the property must be part of each selected object, i.e. the number
-        // of selected objects is equal to the number of properties with same
-        // name and id
-        std::map<std::pair<std::string, int>, std::vector<App::Property*> >
-            ::const_iterator it;
-        std::map<std::string, std::vector<App::Property*> > dataProps;
-        for (it = propDataMap.begin(); it != propDataMap.end(); ++it) {
-            if (it->second.size() == array.size()) {
-                dataProps[it->first.first] = it->second;
-            }
+        // store the properties with <name,id> as key in a map
+        std::map<std::string,App::Property*>::iterator pt;
+        for (pt = dataMap.begin(); pt != dataMap.end(); ++pt) {
+            std::pair<std::string, int> nameType = std::make_pair
+                <std::string, int>(pt->first, pt->second->getTypeId().getKey());
+            propDataMap[nameType].push_back(pt->second);
         }
-        propertyEditorData->buildUp(dataProps);
-
-        std::map<std::string, std::vector<App::Property*> > viewProps;
-        for (it = propViewMap.begin(); it != propViewMap.end(); ++it) {
-            if (it->second.size() == array.size()) {
-                viewProps[it->first.first] = it->second;
-            }
+        // the same for the view properties
+        for(pt = viewMap.begin(); pt != viewMap.end(); ++pt) {
+            std::pair<std::string, int> nameType = std::make_pair
+                <std::string, int>( pt->first, pt->second->getTypeId().getKey());
+            propViewMap[nameType].push_back(pt->second);
         }
-        propertyEditorView->buildUp(viewProps);
     }
-}
 
-void PropertyView::onUpdate(void)
-{
-}
+    // the property must be part of each selected object, i.e. the number
+    // of selected objects is equal to the number of properties with same
+    // name and id
+    std::map<std::pair<std::string, int>, std::vector<App::Property*> >
+        ::const_iterator it;
+    std::map<std::string, std::vector<App::Property*> > dataProps;
+    for (it = propDataMap.begin(); it != propDataMap.end(); ++it) {
+        if (it->second.size() == array.size()) {
+            dataProps[it->first.first] = it->second;
+        }
+    }
+    propertyEditorData->buildUp(dataProps);
 
-bool PropertyView::onMsg(const char* pMsg)
-{
-    // no messages yet
-    return false;
+    std::map<std::string, std::vector<App::Property*> > viewProps;
+    for (it = propViewMap.begin(); it != propViewMap.end(); ++it) {
+        if (it->second.size() == array.size()) {
+            viewProps[it->first.first] = it->second;
+        }
+    }
+    propertyEditorView->buildUp(viewProps);
 }
 
 void PropertyView::changeEvent(QEvent *e)

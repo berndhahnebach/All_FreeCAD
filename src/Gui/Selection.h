@@ -96,6 +96,35 @@ template class GuiExport Base::Subject<const Gui::SelectionChanges&>;
 namespace Gui
 {
 
+/**
+ * The SelectionObserver class simplfies the step to write classes that listen
+ * to what happens to the selection.
+ *
+ * @author Werner Mayer
+ */
+class GuiExport SelectionObserver
+{
+
+public:
+    /// Constructor
+    SelectionObserver();
+    virtual ~SelectionObserver();
+    bool blockConnection(bool block);
+    bool isConnectionBlocked() const;
+
+    /** Attaches to the selection. */
+    void attachSelection();
+    /** Detaches from the selection. */
+    void detachSelection();
+
+private:
+    virtual void onSelectionChanged(std::string& doc) = 0;
+
+private:
+    typedef boost::signals::connection Connection;
+    Connection connectSelection;
+};
+
 /** The Selection singleton class
  */
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>//, public App::Document::ObserverType
@@ -105,6 +134,8 @@ public:
     bool addSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
     /// Remove from selection (for internal use)
     void rmvSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0);
+    /// Set the selection for a document
+    void setSelection(const char* pDocName, const std::vector<App::DocumentObject*>&);
     /// Clear the selection of document \a pDocName. If the document name is not given the selection of the active document is cleared.
     void clearSelection(const char* pDocName=0);
     /// Clear the selection of all documents
@@ -152,6 +183,9 @@ public:
         App::Document* pDoc;
         App::DocumentObject*  pObject;
     };
+
+    /// signal on new Object
+    boost::signal<void (std::string& doc)> signalSelectionChanged;
 
     /** returns a vector of selection objects
      * if no document name is given the objects of the active are returned.

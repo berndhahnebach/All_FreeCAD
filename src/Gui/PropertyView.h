@@ -51,7 +51,7 @@ namespace Gui {
 
 /** The property view class.
  */
-class PropertyView : public QWidget, public Gui::SelectionSingleton::ObserverType
+class PropertyView : public QWidget, public Gui::SelectionObserver
 {
     Q_OBJECT
 
@@ -59,23 +59,14 @@ public:
     PropertyView(QWidget *parent=0);
     virtual ~PropertyView();
 
-    /// Observer message from the Selection
-    virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                          Gui::SelectionSingleton::MessageType Reason);
-
-
-    bool onMsg(const char* pMsg);
-
-    virtual const char *getName(void) const {return "PropertyView";}
-
-    /// get called when the document is changed or updated
-    virtual void onUpdate(void);
-
     Gui::PropertyEditor::PropertyEditor* propertyEditorView;
     Gui::PropertyEditor::PropertyEditor* propertyEditorData;
 
 protected:
     void changeEvent(QEvent *e);
+
+private:
+    void onSelectionChanged(std::string& doc);
 
 private:
     QTabWidget* tabs;

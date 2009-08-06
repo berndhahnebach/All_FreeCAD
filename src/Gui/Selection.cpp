@@ -43,6 +43,48 @@
 using namespace Gui;
 using namespace std;
 
+SelectionObserver::SelectionObserver()
+{
+    attachSelection();
+}
+
+SelectionObserver::~SelectionObserver()
+{
+    detachSelection();
+}
+
+bool SelectionObserver::blockConnection(bool block)
+{
+    bool ok = connectSelection.blocked();
+    if (block)
+        connectSelection.block();
+    else
+        connectSelection.unblock();
+    return ok;
+}
+
+bool SelectionObserver::isConnectionBlocked() const
+{
+    return connectSelection.blocked();
+}
+
+void SelectionObserver::attachSelection()
+{
+    if (!connectSelection.connected()) {
+        connectSelection = Selection().signalSelectionChanged.connect(boost::bind
+            (&SelectionObserver::onSelectionChanged, this, _1));
+    }
+}
+
+void SelectionObserver::detachSelection()
+{
+    if (!connectSelection.connected()) {
+        connectSelection.disconnect();
+    }
+}
+
+// -------------------------------------------
+
 std::vector<SelectionSingleton::SelObj> SelectionSingleton::getCompleteSelection() const
 {
     std::vector<SelObj> temp;
@@ -300,6 +342,38 @@ void SelectionSingleton::rmvSelection(const char* pDocName, const char* pObjectN
             ++It;
         }
     }
+}
+
+void SelectionSingleton::setSelection(const char* pDocName, const std::vector<App::DocumentObject*>& sel)
+{
+    App::Document *pcDoc;
+    pcDoc = getDocument(pDocName);
+    if (!pcDoc)
+        return;
+
+    std::list<_SelObj> temp;
+    for (std::list<_SelObj>::const_iterator it = _SelList.begin(); it != _SelList.end(); ++it) {
+        if (it->pDoc != pcDoc)
+            temp.push_back(*it);
+    }
+
+    _SelObj obj;
+    for (std::vector<App::DocumentObject*>::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+        obj.pDoc = pcDoc;
+        obj.pObject = *it;
+        obj.DocName = pDocName;
+        obj.FeatName = (*it)->getNameInDocument();
+        obj.SubName = "";
+        obj.TypeName = (*it)->getTypeId().getName();
+        obj.x = 0.0f;
+        obj.y = 0.0f;
+        obj.z = 0.0f;
+        temp.push_back(obj);
+    }
+
+    _SelList = temp;
+
+    signalSelectionChanged(std::string(pDocName));
 }
 
 void SelectionSingleton::clearSelection(const char* pDocName)
