@@ -66,7 +66,7 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    void onSelectionChanged(std::string& doc);
+    void onSelectionChanged(const std::string& doc);
 
 private:
     QTabWidget* tabs;

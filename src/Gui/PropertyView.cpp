@@ -76,7 +76,7 @@ PropertyView::~PropertyView()
 {
 }
 
-void PropertyView::onSelectionChanged(std::string&)
+void PropertyView::onSelectionChanged(const std::string&)
 {
     // group the properties by <name,id>
     std::map<std::pair<std::string, int>, std::vector<App::Property*> > propDataMap;
