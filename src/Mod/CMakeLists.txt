@@ -20,3 +20,5 @@ add_subdirectory(Draft)
 if(FREECAD_BUILD_CAM)
 	add_subdirectory(Cam)
 endif(FREECAD_BUILD_CAM)
+
+#add_subdirectory(Robot)
