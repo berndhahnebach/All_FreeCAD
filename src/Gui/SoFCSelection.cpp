@@ -204,6 +204,13 @@ void SoFCSelection::doAction(SoAction *action)
                 strcmp(selaction->SelChange.pDocName,"") == 0)
                 selected = NOTSELECTED;
         }
+        else if (selaction->SelChange.Type == SelectionChanges::SetSelection) {
+            bool sel = Selection().isSelected(
+                    documentName.getValue().getString(),
+                    objectName.getValue().getString()/*,
+                    subElementName.getValue().getString()*/);
+            selected = (sel ? SELECTED : NOTSELECTED);
+        }
     }
 
     inherited::doAction( action );
