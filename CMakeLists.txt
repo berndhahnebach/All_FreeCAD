@@ -54,27 +54,35 @@ else(WIN32)
 endif(WIN32)
 
 # ================================================================================
-
+# == Win32 is default behaviour use the LibPack copied in Source tree ============
 if(WIN32)
-		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack to Build FreeCAD (only Win32 so far)." ON)
+		 OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." ON)
+		 set(FREECAD_LIBPACK_DIR ${CMAKE_SOURCE_DIR} CACHE PATH  "Directory of the FreeCAD LibPack")
 else(WIN32)
-		 OPTION(FREECAD_USE_LIBPACK "Use the LibPack to Build FreeCAD (only Win32 so far)." OFF)
+		 OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." OFF)
+		 set(FREECAD_LIBPACK_DIR ""  CACHE PATH  "Directory of the FreeCAD LibPack")
 endif(WIN32)
 
 OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command line and the Python import module." ON)
 OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
 OPTION(FREECAD_BUILD_CAM "Build the FreeCAD CAM module and the needed libs, be Aware, unfinished code!" OFF)
 OPTION(FREECAD_BUILD_INSTALLER "Build the FreeCAD Installer from the Release version. Additional tools needed (WIX)." OFF)
+OPTION(FREECAD_BUILD_DOXYGEN_DOCU "Build the Source documentation with Doxygen." OFF)
 
 
 
 # ================================================================================
-# == Win32 is default behaviour use the LibPack copied in Source tree ============
-if(FREECAD_USE_LIBPACK)
 
-	include(cMake/UseLibPack6x.cmake)	
+if(FREECAD_LIBPACK_USE)
+	# checking for a unique file in LibPack location to make shure the right version LibPack is there
+	find_file(FREECAD_LIBPACK_CHECKFILE6X boost_program_options-vc80-mt-gd.lib ${FREECAD_LIBPACK_DIR}/lib )
+	IF(FREECAD_LIBPACK_CHECKFILE6X)
+		include(cMake/UseLibPack6x.cmake)	
+	ELSE(FREECAD_LIBPACK_CHECKFILE6X)
+		message(SEND_ERROR  "Could not found LibPack in specified location:" ${FREECAD_LIBPACK_DIR})
+	ENDIF(FREECAD_LIBPACK_CHECKFILE6X)
 	
-else(FREECAD_USE_LIBPACK)
+else(FREECAD_LIBPACK_USE)
 
 # ================================================================================
 # == for other OSes search the packages ==========================================
@@ -178,7 +186,7 @@ else(FREECAD_USE_LIBPACK)
 	endif(FREECAD_BUILD_GUI)
 	
 
-endif(FREECAD_USE_LIBPACK)
+endif(FREECAD_LIBPACK_USE)
 
 
 if(FREECAD_BUILD_INSTALLER AND WIN32 )
