@@ -61,6 +61,7 @@ public:
     enum MsgType {
         AddSelection,
         RmvSelection,
+        SetSelection,
         ClrSelection,
         SetPreselect,
         RmvPreselect
@@ -118,7 +119,7 @@ public:
     void detachSelection();
 
 private:
-    virtual void onSelectionChanged(const std::string& doc) = 0;
+    virtual void onSelectionChanged(const SelectionChanges& msg) = 0;
 
 private:
     typedef boost::signals::connection Connection;
@@ -127,7 +128,7 @@ private:
 
 /** The Selection singleton class
  */
-class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>//, public App::Document::ObserverType
+class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>
 {
 public:
     /// Add to selection 
@@ -185,7 +186,7 @@ public:
     };
 
     /// signal on new Object
-    boost::signal<void (std::string& doc)> signalSelectionChanged;
+    boost::signal<void (const SelectionChanges& msg)> signalSelectionChanged;
 
     /** returns a vector of selection objects
      * if no document name is given the objects of the active are returned.

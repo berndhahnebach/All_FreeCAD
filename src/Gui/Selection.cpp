@@ -218,6 +218,7 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
 
 
     Notify(Chng);
+    signalSelectionChanged(Chng);
 
     //Base::Console().Log("Sel : Add preselect %s \n",pObjectName);
 
@@ -237,6 +238,7 @@ void SelectionSingleton::rmvPreselect()
     Chng.Type = SelectionChanges::RmvPreselect;
 
     Notify(Chng);
+    signalSelectionChanged(Chng);
 
     DocName = "";
     FeatName= "";
@@ -296,6 +298,7 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
 
 
         Notify(Chng);
+        signalSelectionChanged(Chng);
 
         Base::Console().Log("Sel : Add Selection \"%s.%s.%s(%f,%f,%f)\"\n",pDocName,pObjectName,pSubName,x,y,z);
 
@@ -334,6 +337,7 @@ void SelectionSingleton::rmvSelection(const char* pDocName, const char* pObjectN
             Chng.Type      = SelectionChanges::RmvSelection;
 
             Notify(Chng);
+            signalSelectionChanged(Chng);
       
             rmvList.push_back(Chng);
             Base::Console().Log("Sel : Rmv Selection \"%s.%s.%s\"\n",pDocName,pObjectName,pSubName);
@@ -373,7 +377,12 @@ void SelectionSingleton::setSelection(const char* pDocName, const std::vector<Ap
 
     _SelList = temp;
 
-    signalSelectionChanged(std::string(pDocName));
+    SelectionChanges Chng;
+    Chng.Type = SelectionChanges::SetSelection;
+    Chng.pDocName = pDocName;
+
+    Notify(Chng);
+    signalSelectionChanged(Chng);
 }
 
 void SelectionSingleton::clearSelection(const char* pDocName)
@@ -404,6 +413,7 @@ void SelectionSingleton::clearSelection(const char* pDocName)
         Chng.pDocName = docName.c_str();
 
         Notify(Chng);
+        signalSelectionChanged(Chng);
 
         Base::Console().Log("Sel : Clear selection\n");
     }
@@ -419,6 +429,7 @@ void SelectionSingleton::clearCompleteSelection()
 
 
     Notify(Chng);
+    signalSelectionChanged(Chng);
 
     Base::Console().Log("Sel : Clear selection\n");
 }
@@ -445,6 +456,7 @@ bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
 
     return false;
 }
+
 void SelectionSingleton::slotDeletedObject(App::DocumentObject& Obj)
 {
     // remove also from the selection, if selected

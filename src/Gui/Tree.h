@@ -57,7 +57,7 @@ public:
 
 protected:
     /// Observer message from the Selection
-    void onSelectionChanged(const std::string& doc);
+    void onSelectionChanged(const SelectionChanges& msg);
     void contextMenuEvent (QContextMenuEvent * e);
     void drawRow(QPainter *, const QStyleOptionViewItem &, const QModelIndex &) const;
     bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data,

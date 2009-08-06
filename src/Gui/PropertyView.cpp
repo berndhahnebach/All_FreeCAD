@@ -76,8 +76,13 @@ PropertyView::~PropertyView()
 {
 }
 
-void PropertyView::onSelectionChanged(const std::string&)
+void PropertyView::onSelectionChanged(const SelectionChanges& msg)
 {
+    if (msg.Type != SelectionChanges::AddSelection &&
+        msg.Type != SelectionChanges::RmvSelection &&
+        msg.Type != SelectionChanges::SetSelection &&
+        msg.Type != SelectionChanges::ClrSelection)
+        return;
     // group the properties by <name,id>
     std::map<std::pair<std::string, int>, std::vector<App::Property*> > propDataMap;
     std::map<std::pair<std::string, int>, std::vector<App::Property*> > propViewMap;

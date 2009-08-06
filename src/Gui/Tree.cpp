@@ -506,15 +506,67 @@ void TreeWidget::onItemSelectionChanged ()
     this->blockConnection(lock);
 }
 
-void TreeWidget::onSelectionChanged(const std::string& doc)
+void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
 {
-    Gui::Document* pDoc = Application::Instance->getDocument(doc.c_str());
-    std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
-    // we get notified from the selection and must only update the selection on the tree,
-    // thus no need to notify again the selection. See also onItemSelectionChanged().
-    bool lock = this->blockConnection(true);
-    it->second->selectItems();
-    this->blockConnection(lock);
+    switch (msg.Type)
+    {
+    case SelectionChanges::AddSelection:
+        {
+            Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
+            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            if (it!= DocumentMap.end())
+                it->second->setObjectSelected(msg.pObjectName,true);
+        }   break;
+    case SelectionChanges::RmvSelection:
+        {
+            Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
+            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            if (it!= DocumentMap.end())
+                it->second->setObjectHighlighted(msg.pObjectName,false);
+        }   break;
+    case SelectionChanges::SetSelection:
+        {
+            Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
+            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            // we get notified from the selection and must only update the selection on the tree,
+            // thus no need to notify again the selection. See also onItemSelectionChanged().
+            bool lock = this->blockConnection(true);
+            it->second->selectItems();
+            this->blockConnection(lock);
+        }   break;
+    case SelectionChanges::ClrSelection:
+        {
+            // clears the complete selection
+            if (strcmp(msg.pDocName,"") == 0) {
+                this->clearSelection ();
+            }
+            else {
+                // clears the selection of the given document
+                Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
+                std::map<Gui::Document*, DocumentItem*>::iterator pos = DocumentMap.find(pDoc);
+                if (pos != DocumentMap.end()) {
+                    pos->second->clearSelection();
+                }
+            }
+            this->update();
+        }   break;
+    case SelectionChanges::SetPreselect:
+        {
+            Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
+            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            if (it!= DocumentMap.end())
+                it->second->setObjectHighlighted(msg.pObjectName,true);
+        }   break;
+    case SelectionChanges::RmvPreselect:
+        {
+            Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
+            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            if (it!= DocumentMap.end())
+                it->second->setObjectHighlighted(msg.pObjectName,false);
+        }   break;
+    default:
+        break;
+    }
 }
 #if 0
 void TreeWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
@@ -552,53 +604,6 @@ void TreeWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::Sel
         }
 
         this->update();
-    }
-
-    fromOutside = false;
-}
-
-void TreeWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
-{
-    fromOutside = true;
-    if (Reason.Type == SelectionChanges::ClrSelection) {
-        // clears the complete selection
-        if (strcmp(Reason.pDocName,"") == 0) {
-            for (std::map<Gui::Document*,DocumentItem*>::iterator pos = DocumentMap.begin();pos!=DocumentMap.end();++pos) {
-                pos->second->clearSelection();
-            }
-
-            this->treeWidget->clearSelection ();
-        }
-        else {
-            // clears the selection of the given document
-            Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
-            std::map<Gui::Document*, DocumentItem*>::iterator pos = DocumentMap.find(pDoc);
-            if (pos != DocumentMap.end()) {
-                pos->second->clearSelection();
-            }
-        }
-
-        this->treeWidget->update();
-    }
-    else if (Reason.Type == SelectionChanges::SetSelection && fromInside == false) {
-        Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
-        std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
-        it->second->setSelection();
-    }
-    else {
-        Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
-        std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
-
-        if (it!= DocumentMap.end()) {
-            if (Reason.Type == SelectionChanges::SetPreselect)
-                it->second->setObjectHighlighted(Reason.pObjectName,true);
-            else if (Reason.Type == SelectionChanges::RmvPreselect)
-                it->second->setObjectHighlighted(Reason.pObjectName,false);
-            else if (Reason.Type == SelectionChanges::AddSelection)
-                it->second->setObjectSelected(Reason.pObjectName,true);
-            else  if (Reason.Type == SelectionChanges::RmvSelection)
-                it->second->setObjectSelected(Reason.pObjectName,false);
-        }
     }
 
     fromOutside = false;
@@ -831,19 +836,6 @@ void DocumentItem::clearSelection(void)
 
 void DocumentItem::updateSelection(void)
 {
-#if 0
-    for (std::map<std::string,DocumentObjectItem*>::iterator pos = ObjectMap.begin();pos!=ObjectMap.end();++pos)
-    {
-        bool selectedItem = treeWidget()->isItemSelected(pos->second);
-        bool selectedObject = Gui::Selection().isSelected(pos->second->object()->getObject());
-        if (selectedItem != selectedObject) {
-            if (selectedItem)
-                Gui::Selection().addSelection(pDocument->getDocument()->getName(), pos->first.c_str());
-            else
-                Gui::Selection().rmvSelection(pDocument->getDocument()->getName(), pos->first.c_str());
-        }
-    }
-#endif
     std::vector<App::DocumentObject*> sel;
     for (std::map<std::string,DocumentObjectItem*>::iterator pos = ObjectMap.begin();pos!=ObjectMap.end();++pos) {
         if (treeWidget()->isItemSelected(pos->second)) {
