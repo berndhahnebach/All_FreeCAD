@@ -268,6 +268,7 @@ void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCalle
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
         Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::SetSelection ||
         Reason.Type == SelectionChanges::ClrSelection) {
         SoFCSelectionAction cAct(Reason);
         cAct.apply(pcViewProviderRoot);
