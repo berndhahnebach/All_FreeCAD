@@ -118,7 +118,7 @@ public:
     void detachSelection();
 
 private:
-    virtual void onSelectionChanged(std::string& doc) = 0;
+    virtual void onSelectionChanged(const std::string& doc) = 0;
 
 private:
     typedef boost::signals::connection Connection;

@@ -506,7 +506,7 @@ void TreeWidget::onItemSelectionChanged ()
     this->blockConnection(lock);
 }
 
-void TreeWidget::onSelectionChanged(std::string& doc)
+void TreeWidget::onSelectionChanged(const std::string& doc)
 {
     Gui::Document* pDoc = Application::Instance->getDocument(doc.c_str());
     std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
