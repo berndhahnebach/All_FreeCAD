@@ -486,7 +486,7 @@ void TreeWidget::scrollItemToTop(Gui::Document* doc)
 void TreeWidget::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
-        this->headerItem()->setText( 0, tr( "Labels & Attributes" ) );
+        this->headerItem()->setText(0, tr("Labels & Attributes"));
     }
 
     QTreeWidget::changeEvent(e);
@@ -514,15 +514,19 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
         {
             Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
             std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            bool lock = this->blockConnection(true);
             if (it!= DocumentMap.end())
                 it->second->setObjectSelected(msg.pObjectName,true);
+            this->blockConnection(lock);
         }   break;
     case SelectionChanges::RmvSelection:
         {
             Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
             std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            bool lock = this->blockConnection(true);
             if (it!= DocumentMap.end())
                 it->second->setObjectHighlighted(msg.pObjectName,false);
+            this->blockConnection(lock);
         }   break;
     case SelectionChanges::SetSelection:
         {
@@ -568,48 +572,7 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
         break;
     }
 }
-#if 0
-void TreeWidget::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
-{
-    fromOutside = true;
-    if (Reason.Type != SelectionChanges::ClrSelection) {
-        Gui::Document* pDoc = Application::Instance->getDocument( Reason.pDocName );
-        std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find( pDoc );
 
-        if (it!= DocumentMap.end()) {
-            if (Reason.Type == SelectionChanges::SetPreselect)
-                it->second->setObjectHighlighted(Reason.pObjectName,true);
-            else if (Reason.Type == SelectionChanges::RmvPreselect)
-                it->second->setObjectHighlighted(Reason.pObjectName,false);
-            else if (Reason.Type == SelectionChanges::AddSelection)
-                it->second->setObjectSelected(Reason.pObjectName,true);
-            else  if (Reason.Type == SelectionChanges::RmvSelection)
-                it->second->setObjectSelected(Reason.pObjectName,false);
-        }
-    } else {
-        // clears the complete selection
-        if (strcmp(Reason.pDocName,"") == 0) {
-            for (std::map<Gui::Document*,DocumentItem*>::iterator pos = DocumentMap.begin();pos!=DocumentMap.end();++pos) {
-                pos->second->clearSelection();
-            }
-
-            this->clearSelection ();
-        } else {
-            // clears the selection of the given document
-            Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
-            std::map<Gui::Document*, DocumentItem*>::iterator pos = DocumentMap.find(pDoc);
-            if (pos != DocumentMap.end()) {
-                pos->second->clearSelection();
-            }
-        }
-
-        this->update();
-    }
-
-    fromOutside = false;
-}
-
-#endif
 // ----------------------------------------------------------------------------
 
 /* TRANSLATOR Gui::TreeDockWidget */

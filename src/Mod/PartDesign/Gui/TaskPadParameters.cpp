@@ -53,11 +53,6 @@ TaskPadParameters::TaskPadParameters(QWidget *parent)
 
     this->groupLayout()->addWidget(proxy);
 
-    std::vector<Gui::ViewProvider*> views;
- /*   setDisplayModes(views);
-    setPointSize(views);
-    setLineWidth(views);
-    setTransparency(views);*/
     Gui::Selection().Attach(this);
 }
 
@@ -80,12 +75,8 @@ void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
         Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::SetSelection ||
         Reason.Type == SelectionChanges::ClrSelection) {
-        //std::vector<Gui::ViewProvider*> views = getSelection();
-        //setDisplayModes(views);
-        //setPointSize(views);
-        //setLineWidth(views);
-        //setTransparency(views);
     }
 }
 
