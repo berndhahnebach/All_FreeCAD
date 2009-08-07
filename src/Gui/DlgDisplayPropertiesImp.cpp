@@ -99,6 +99,7 @@ void DlgDisplayPropertiesImp::OnChange(Gui::SelectionSingleton::SubjectType &rCa
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
         Reason.Type == SelectionChanges::RmvSelection ||
+        Reason.Type == SelectionChanges::SetSelection ||
         Reason.Type == SelectionChanges::ClrSelection) {
         std::vector<Gui::ViewProvider*> views = getSelection();
         setDisplayModes(views);

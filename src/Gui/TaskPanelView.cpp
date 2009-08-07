@@ -152,14 +152,13 @@ void TaskPanelView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
 {
     std::string temp;
 
-    if (Reason.Type == SelectionChanges::AddSelection )
-    {
+    if (Reason.Type == SelectionChanges::AddSelection) {
     }
-    else if (Reason.Type == SelectionChanges::ClrSelection)
-    {
+    else if (Reason.Type == SelectionChanges::ClrSelection) {
     }
-    else if (Reason.Type == SelectionChanges::RmvSelection ) 
-    {
+    else if (Reason.Type == SelectionChanges::RmvSelection) {
+    }
+    else if (Reason.Type == SelectionChanges::RmvSelection) {
     }
 }
 

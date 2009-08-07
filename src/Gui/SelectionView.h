@@ -52,7 +52,8 @@ namespace DockWnd {
 
 /** A test class. A more elaborate class description.
  */
-class SelectionView :public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
+class SelectionView : public Gui::DockWindow, 
+                      public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
@@ -81,15 +82,7 @@ public:
     /// get called when the document is changed or updated
     virtual void onUpdate(void);
 
-    //static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
-
     QListWidget* selectionView;
-
-protected:
-    void changeEvent(QEvent *e);
-
-private:
-    QTabWidget* tabs;
 };
 
 } // namespace DockWnd
