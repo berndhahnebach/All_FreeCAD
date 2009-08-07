@@ -21,52 +21,42 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef ROBOT_ROBOTOBJECT_H
+#define ROBOT_ROBOTOBJECT_H
 
-#include <FCConfig.h>
-
-// Importing of App classes
-#ifdef FC_OS_WIN32
-# define AppRobotExport __declspec(dllimport)
-# define RobotGuiExport __declspec(dllexport)
-#else // for Linux
-# define AppRobotExport
-# define RobotGuiExport
-#endif
+#include <App/DocumentObject.h>
+#include <App/PropertyFile.h>
 
 
-#ifdef _PreComp_
+namespace Robot
+{
 
-// Python
-#include <Python.h>
+class AppRobotExport RobotObject : public App::DocumentObject
+{
+    PROPERTY_HEADER(Robot::RobotObject);
 
-// standard
-#include <iostream>
-#include <assert.h>
-#include <math.h>
+public:
+    /// Constructor
+    RobotObject(void);
+    virtual ~RobotObject();
 
-// STL
-#include <vector>
-#include <map>
-#include <string>
-#include <list>
-#include <set>
-#include <algorithm>
-#include <stack>
-#include <queue>
-#include <bitset>
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "RobotGui::ViewProviderRobotObject";
+    }
+    virtual App::DocumentObjectExecReturn *execute(void) {
+        return App::DocumentObject::StdReturn;
+    }
+    virtual short mustExecute(void) const;
+    virtual PyObject *getPyObject(void);
 
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
+    App::PropertyFileIncluded RobotVrmlFile;
+
+    App::PropertyFloat Axis1,Axis2,Axis3,Axis4,Axis5,Axis6;
+
+};
+
+} //namespace Robot
 
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-
-#endif //_PreComp_
-
-#endif // __PRECOMPILED_GUI__
+#endif // ROBOT_ROBOTOBJECT_H

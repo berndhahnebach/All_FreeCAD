@@ -21,52 +21,37 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef ROBOT_VIEWPROVIDERROBOTOBJECT_H
+#define ROBOT_VIEWPROVIDERROBOTOBJECT_H
 
-#include <FCConfig.h>
-
-// Importing of App classes
-#ifdef FC_OS_WIN32
-# define AppRobotExport __declspec(dllimport)
-# define RobotGuiExport __declspec(dllexport)
-#else // for Linux
-# define AppRobotExport
-# define RobotGuiExport
-#endif
+#include <Gui/ViewProviderDocumentObject.h>
 
 
-#ifdef _PreComp_
+namespace RobotGui
+{
 
-// Python
-#include <Python.h>
+class SoFCSelection;
+class RobotGuiExport ViewProviderRobotObject : public Gui::ViewProviderDocumentObject
+{
+    PROPERTY_HEADER(RobotGui::ViewProviderRobotObject);
 
-// standard
-#include <iostream>
-#include <assert.h>
-#include <math.h>
+public:
+    /// constructor.
+    ViewProviderRobotObject();
 
-// STL
-#include <vector>
-#include <map>
-#include <string>
-#include <list>
-#include <set>
-#include <algorithm>
-#include <stack>
-#include <queue>
-#include <bitset>
+    /// destructor.
+    ~ViewProviderRobotObject();
 
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
+    void attach(App::DocumentObject *pcObject);
+    void setDisplayMode(const char* ModeName);
+    std::vector<std::string> getDisplayModes() const;
+    void updateData(const App::Property*);
+
+protected:
+    SoFCSelection    * pcRobotVRML;
+};
+
+} //namespace RobotGui
 
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-
-#endif //_PreComp_
-
-#endif // __PRECOMPILED_GUI__
+#endif // ROBOT_VIEWPROVIDERROBOTOBJECT_H

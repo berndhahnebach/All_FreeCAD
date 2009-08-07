@@ -21,52 +21,47 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#include "PreCompiled.h"
 
-#include <FCConfig.h>
-
-// Importing of App classes
-#ifdef FC_OS_WIN32
-# define AppRobotExport __declspec(dllimport)
-# define RobotGuiExport __declspec(dllexport)
-#else // for Linux
-# define AppRobotExport
-# define RobotGuiExport
+#ifndef _PreComp_
 #endif
 
+#include "RobotObject.h"
+#include <App/DocumentObjectPy.h>
 
-#ifdef _PreComp_
+using namespace Robot;
+using namespace App;
 
-// Python
-#include <Python.h>
-
-// standard
-#include <iostream>
-#include <assert.h>
-#include <math.h>
-
-// STL
-#include <vector>
-#include <map>
-#include <string>
-#include <list>
-#include <set>
-#include <algorithm>
-#include <stack>
-#include <queue>
-#include <bitset>
-
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
+PROPERTY_SOURCE(Robot::RobotObject, App::DocumentObject)
 
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
+RobotObject::RobotObject() 
+{
+    ADD_PROPERTY_TYPE(RobotVrmlFile,(0),"",Prop_None,"Included file with the VRML representation of the robot");
 
-#endif //_PreComp_
+    ADD_PROPERTY_TYPE(Axis1,(0.0),"",Prop_None,"Axis 1 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis2,(0.0),"",Prop_None,"Axis 2 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis3,(0.0),"",Prop_None,"Axis 3 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis4,(0.0),"",Prop_None,"Axis 4 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis5,(0.0),"",Prop_None,"Axis 5 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis6,(0.0),"",Prop_None,"Axis 6 angle of the robot in degre");
 
-#endif // __PRECOMPILED_GUI__
+}
+
+RobotObject::~RobotObject()
+{
+}
+
+short RobotObject::mustExecute(void) const
+{
+    return 0;
+}
+
+PyObject *RobotObject::getPyObject()
+{
+    if (PythonObject.is(Py::_None())){
+        // ref counter is set to 1
+        PythonObject = Py::Object(new DocumentObjectPy(this),true);
+    }
+    return Py::new_reference_to(PythonObject); 
+}

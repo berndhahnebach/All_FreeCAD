@@ -14936,6 +14936,7 @@ Transform
             maxAngle  0.349066
             offset    0.000000
          }
+		 DEF FREECAD_AXIS2 Transform { rotation 0 1 0 1 children [
       DEF AXIS_27_OBJ Transform
       {
          children
@@ -28813,14 +28814,15 @@ coordIndex [
    ] }
    ] }
    ] }
+   ] }
    ]
 }
-#ROUTE SENS_04_OBJ.rotation_changed TO AXIS_04_OBJ.rotation
-#ROUTE SENS_27_OBJ.rotation_changed TO AXIS_27_OBJ.rotation
-#ROUTE SENS_32_OBJ.rotation_changed TO AXIS_32_OBJ.rotation
-#ROUTE SENS_44_OBJ.rotation_changed TO AXIS_44_OBJ.rotation
-#ROUTE SENS_46_OBJ.rotation_changed TO AXIS_46_OBJ.rotation
-#ROUTE SENS_49_OBJ.rotation_changed TO AXIS_49_OBJ.rotation
+ROUTE SENS_04_OBJ.rotation_changed TO AXIS_04_OBJ.rotation
+ROUTE SENS_27_OBJ.rotation_changed TO AXIS_27_OBJ.rotation
+ROUTE SENS_32_OBJ.rotation_changed TO AXIS_32_OBJ.rotation
+ROUTE SENS_44_OBJ.rotation_changed TO AXIS_44_OBJ.rotation
+ROUTE SENS_46_OBJ.rotation_changed TO AXIS_46_OBJ.rotation
+ROUTE SENS_49_OBJ.rotation_changed TO AXIS_49_OBJ.rotation
 DEF AnySIMTimer TimeSensor
 {
    cycleInterval 1.000000

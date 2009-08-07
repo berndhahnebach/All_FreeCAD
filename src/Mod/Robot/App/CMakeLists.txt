@@ -22,6 +22,8 @@ SET(Robot_SRCS
 		 AppRobotPy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
+		 RobotObject.cpp
+		 RobotObject.h
 )
 
 add_library(Robot SHARED ${Robot_SRCS})
