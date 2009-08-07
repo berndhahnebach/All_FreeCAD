@@ -33,6 +33,8 @@ SET(RobotGui_SRCS
 		 PreCompiled.h
 		 Workbench.cpp
 		 Workbench.h
+		 ViewProviderRobotObject.cpp
+		 ViewProviderRobotObject.h
 )
 
 add_library(RobotGui SHARED ${RobotGui_SRCS})

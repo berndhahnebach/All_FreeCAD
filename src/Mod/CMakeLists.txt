@@ -21,4 +21,6 @@ if(FREECAD_BUILD_CAM)
 	add_subdirectory(Cam)
 endif(FREECAD_BUILD_CAM)
 
-#add_subdirectory(Robot)
+if(FREECAD_BUILD_ROBOT)
+	add_subdirectory(Robot)
+endif(FREECAD_BUILD_ROBOT)
