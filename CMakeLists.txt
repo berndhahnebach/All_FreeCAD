@@ -1,6 +1,13 @@
 project(FreeCAD_trunk)
 set(FREECAD_VERSION "0.9")
 
+set(PACKAGE_NAME "FreeCAD")
+set(PACKAGE_VERSION_MAJOR "0")
+set(PACKAGE_VERSION_MINOR "9")
+set(PACKAGE_VERSION_PATCH "2237")
+set(PACKAGE_VERSION "${PACKAGE_VERSION_MAJOR}.${PACKAGE_VERSION_MINOR}.${PACKAGE_VERSION_PATCH}")
+set(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
+
 cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 # include local  modules
@@ -234,4 +241,60 @@ ELSE(MSVC)
 ENDIF(MSVC)
 
 add_subdirectory(src)
+
+# ================================================================================
+# == Packaging ===================================================================
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An extensible Open Source CAx program")
+set(CPACK_PACKAGE_VENDOR "FreeCAD development team")
+if(WIN32)
+	set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.Win32")
+else(WIN32)
+	set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.Linux")
+endif(WIN32)
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/copying.lib")
+set(CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
+set(CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
+set(CPACK_GENERATOR "TGZ")
+set(CPACK_SOURCE_GENERATOR "TGZ")
+file(GLOB DOT ".*")
+file(GLOB TILD "*~")
+set(CPACK_SOURCE_IGNORE_FILES
+  "${DOT}"
+  "${TILD}"
+  ".a$"
+  ".cmake$"
+  ".o$"
+  ".so$"
+  "/.deps/"
+  "/.svn/"
+  "/CMakeFiles/"
+  "/CVS/"
+  "/autom4te.cache/"
+  "/debian/"
+  "/debug/"
+  "/docs/"
+  "/qt-build/"
+  "AdditionalInfo.txt$"
+  "CMakeCache.txt$"
+  "Makefile$"
+  "\\\\.sh$"
+  "_CPack_"
+  "config.h$"
+  "config.log$"
+  "config.status$"
+  "Doxyfile"
+  "html$"
+  "stamp-h1$"
+  ".swp$"
+  "tar.bz2"
+  "tar.gz"
+  "~$"
+)
+set(CPACK_SOURCE_STRIP_FILES "")
+include(CPack)
+
+ADD_CUSTOM_TARGET(dist make package_source)
 
