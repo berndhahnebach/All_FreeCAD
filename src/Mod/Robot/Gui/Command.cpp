@@ -36,12 +36,12 @@ using namespace std;
 DEF_STD_CMD(CmdRobotConstraintAxle);
 
 CmdRobotConstraintAxle::CmdRobotConstraintAxle()
-	:Command("Robot_ConstraintAxle")
+	:Command("Robot_Create")
 {
     sAppModule      = "Robot";
     sGroup          = QT_TR_NOOP("Robot");
     sMenuText       = QT_TR_NOOP("Place robot...");
-    sToolTipText    = QT_TR_NOOP("Place a robot choosen on a palce...");
+    sToolTipText    = QT_TR_NOOP("Place a robot (experimental!)");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = 0;
@@ -50,8 +50,15 @@ CmdRobotConstraintAxle::CmdRobotConstraintAxle()
 
 void CmdRobotConstraintAxle::activated(int iMsg)
 {
-    // load the file with the module
-    //Command::doCommand(Command::Gui, "import Robot, RobotGui");
+    std::string FeatName = getUniqueObjectName("Robot");
+
+    openCommand("Place robot");
+    doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = \"C:/_Projekte/FreeCAD0.9_build/mod/Robot/Lib/Kuka/kr500_1.wrl\"",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
+    updateActive();
+    commitCommand();
       
 }
 

@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
+#include "ViewProviderRobotObject.h"
 #include "Workbench.h"
 //#include "resources/qrc_Robot.cpp"
 
@@ -48,7 +49,7 @@ extern struct PyMethodDef RobotGui_Import_methods[];
 
 /* Python entry */
 extern "C" {
-void RobotGuiExport initRobotGui()
+void RobotGuiExport initRobotGui()  
 {
     if (!Gui::Application::Instance) {
         PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
@@ -61,6 +62,7 @@ void RobotGuiExport initRobotGui()
     // instanciating the commands
     CreateRobotCommands();
     RobotGui::Workbench::init();
+	RobotGui::ViewProviderRobotObject::init();
 
      // add resources and reloads the translators
     loadRobotResource();

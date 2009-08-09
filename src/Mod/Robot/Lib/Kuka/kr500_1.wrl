@@ -1440,6 +1440,8 @@ Transform
             maxAngle  3.228859
             offset    0.000000
          }
+		 DEF FREECAD_AXIS1 Transform { rotation 0 1 0 0 children [
+
       DEF AXIS_04_OBJ Transform
       {
          children
@@ -14936,7 +14938,7 @@ Transform
             maxAngle  0.349066
             offset    0.000000
          }
-		 DEF FREECAD_AXIS2 Transform { rotation 0 1 0 1 children [
+		 DEF FREECAD_AXIS2 Transform { rotation 0 1 0 -1.57079632675 children [
       DEF AXIS_27_OBJ Transform
       {
          children
@@ -18210,7 +18212,8 @@ Transform
             maxAngle  2.617994
             offset    0.000000
          }
-      DEF AXIS_32_OBJ Transform
+      DEF FREECAD_AXIS3 Transform { rotation 0 1 0 1.57079632675 children [
+		DEF AXIS_32_OBJ Transform
       {
          children
          [
@@ -21902,6 +21905,8 @@ Transform
             maxAngle  6.108652
             offset    0.000000
          }
+		 DEF FREECAD_AXIS4 Transform { rotation 0 1 0 0 children [
+
       DEF AXIS_44_OBJ Transform
       {
          children
@@ -25222,6 +25227,8 @@ Transform
             maxAngle  2.094395
             offset    0.000000
          }
+		 DEF FREECAD_AXIS5 Transform { rotation 0 1 0 0 children [
+
       DEF AXIS_46_OBJ Transform
       {
          children
@@ -28461,6 +28468,8 @@ Transform
             maxAngle  6.108652
             offset    0.000000
          }
+		 DEF FREECAD_AXIS6 Transform { rotation 0 1 0 0 children [
+
       DEF AXIS_49_OBJ Transform
       {
          children
@@ -28815,14 +28824,19 @@ coordIndex [
    ] }
    ] }
    ] }
+   ] }
+   ] }
+   ] }
+   ] }
+   ] }
    ]
 }
-ROUTE SENS_04_OBJ.rotation_changed TO AXIS_04_OBJ.rotation
-ROUTE SENS_27_OBJ.rotation_changed TO AXIS_27_OBJ.rotation
-ROUTE SENS_32_OBJ.rotation_changed TO AXIS_32_OBJ.rotation
-ROUTE SENS_44_OBJ.rotation_changed TO AXIS_44_OBJ.rotation
-ROUTE SENS_46_OBJ.rotation_changed TO AXIS_46_OBJ.rotation
-ROUTE SENS_49_OBJ.rotation_changed TO AXIS_49_OBJ.rotation
+#ROUTE SENS_04_OBJ.rotation_changed TO AXIS_04_OBJ.rotation
+#ROUTE SENS_27_OBJ.rotation_changed TO AXIS_27_OBJ.rotation
+#ROUTE SENS_32_OBJ.rotation_changed TO AXIS_32_OBJ.rotation
+#ROUTE SENS_44_OBJ.rotation_changed TO AXIS_44_OBJ.rotation
+#ROUTE SENS_46_OBJ.rotation_changed TO AXIS_46_OBJ.rotation
+#ROUTE SENS_49_OBJ.rotation_changed TO AXIS_49_OBJ.rotation
 DEF AnySIMTimer TimeSensor
 {
    cycleInterval 1.000000

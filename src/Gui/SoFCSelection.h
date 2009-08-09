@@ -26,7 +26,10 @@
 # ifdef FC_OS_MACOSX
 # include <OpenGL/gl.h>
 # else
-# include <GL/gl.h>
+#   ifdef FC_OS_WIN32
+#     include <windows.h>
+#   endif
+#   include <GL/gl.h>
 # endif
 
 #include <Inventor/nodes/SoSubNode.h>

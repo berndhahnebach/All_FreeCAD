@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 
+#include "RobotObject.h"
 
 extern struct PyMethodDef Robot_methods[];
 
@@ -58,7 +59,7 @@ void AppRobotExport initRobot()
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
  
-    //Robot::FeatureViewPart        ::init();
+    Robot::RobotObject       ::init();
 }
 
 } // extern "C"
