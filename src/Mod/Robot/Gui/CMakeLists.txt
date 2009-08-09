@@ -11,12 +11,10 @@ include_directories(
 
 if(WIN32)
 		 set(RobotGui_LIBS
-				 #ode
 		 		 Robot
 		 		 FreeCADGui)
 else(WIN32)
 		 set(RobotGui_LIBS
-				 #ode
 		 		 Robot
 		 		 FreeCADGui)
 endif(WIN32)
