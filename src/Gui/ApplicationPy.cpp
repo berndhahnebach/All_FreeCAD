@@ -633,7 +633,7 @@ PyObject* Application::sAddCommand(PyObject * /*self*/, PyObject *args,PyObject 
     PyObject*   pcCmdObj;
     if (!PyArg_ParseTuple(args, "sO|s", &pName,&pcCmdObj,&pSource))     // convert args: Python->C 
         return NULL;                    // NULL triggers exception 
-
+#if 0
     std::string source = (pSource ? pSource : "");
 
     if (source.empty()) {
@@ -661,7 +661,9 @@ PyObject* Application::sAddCommand(PyObject * /*self*/, PyObject *args,PyObject 
     }
 
     Application::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj,source.c_str()));
-
+#else
+    Application::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj,pSource));
+#endif
     Py_INCREF(Py_None);
     return Py_None;
 }
