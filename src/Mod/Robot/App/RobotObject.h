@@ -26,6 +26,7 @@
 
 #include <App/DocumentObject.h>
 #include <App/PropertyFile.h>
+#include <App/PropertyGeo.h>
 
 
 namespace Robot
@@ -53,6 +54,10 @@ public:
     App::PropertyFileIncluded RobotVrmlFile;
 
     App::PropertyFloat Axis1,Axis2,Axis3,Axis4,Axis5,Axis6;
+
+	App::PropertyPlacement Base;
+	App::PropertyPlacement Tcp;
+
 
 };
 

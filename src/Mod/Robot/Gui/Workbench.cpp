@@ -47,7 +47,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Robot"));
-    *part << "Robot_ConstraintAxle";
+    *part << "Robot_Create";
      return root;
 }
 

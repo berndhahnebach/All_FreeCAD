@@ -24,6 +24,7 @@
 #ifndef ROBOT_VIEWPROVIDERROBOTOBJECT_H
 #define ROBOT_VIEWPROVIDERROBOTOBJECT_H
 
+#include <Inventor/VRMLnodes/SoVRMLTransform.h>
 #include <Gui/ViewProviderDocumentObject.h>
 #include <Gui/SoFCSelection.h>
 
@@ -49,6 +50,14 @@ public:
 
 protected:
     Gui::SoFCSelection    * pcRobotRoot;
+
+	// Pointers to the robot axis nodes in the VRML model
+	SoVRMLTransform *Axis1Node;
+	SoVRMLTransform *Axis2Node;
+	SoVRMLTransform *Axis3Node;
+	SoVRMLTransform *Axis4Node;
+	SoVRMLTransform *Axis5Node;
+	SoVRMLTransform *Axis6Node;
 };
 
 } //namespace RobotGui
