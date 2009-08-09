@@ -1,13 +1,6 @@
 
 
-fc_copy_to_mod_path("Draft" 
-	draftlibs/dxfColorMap.py
-	draftlibs/dxfImportObjects.py
-	draftlibs/dxfLibrary.py
-	draftlibs/dxfReader.py
-	draftlibs/fcgeo.py
-	draftlibs/fcvec.py
-	draftlibs/__init__.py
+fc_copy_to_path("Mod/Draft" 
 	Init.py
 	InitGui.py
 	Draft.py
@@ -18,6 +11,16 @@ fc_copy_to_mod_path("Draft"
 	icons.svg
 	preferences-draft.svg
 	userprefs.ui
+)
+
+fc_copy_to_path("Mod/Draft/draftlibs" 
+	draftlibs/dxfColorMap.py
+	draftlibs/dxfImportObjects.py
+	draftlibs/dxfLibrary.py
+	draftlibs/dxfReader.py
+	draftlibs/fcgeo.py
+	draftlibs/fcvec.py
+	draftlibs/__init__.py
 )
 
 

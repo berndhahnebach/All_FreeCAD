@@ -26,6 +26,7 @@
 #include "PropertyPage.h"
 #include "PrefWidgets.h"
 #include "WidgetFactory.h"
+#include <Base/Console.h>
 
 using namespace Gui::Dialog;
 
@@ -119,6 +120,10 @@ PreferenceUiForm::PreferenceUiForm(const QString& fn, QWidget* parent)
         QVBoxLayout *layout = new QVBoxLayout;
         layout->addWidget(form);
         setLayout(layout);
+    }
+    else {
+        Base::Console().Error("Failed to load UI file from '%s'\n",
+            (const char*)fn.toUtf8());
     }
 }
 
