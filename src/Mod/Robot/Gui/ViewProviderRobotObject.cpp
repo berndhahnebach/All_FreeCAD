@@ -28,41 +28,46 @@
 # include <Inventor/SoInput.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <QFile>
+#ifdef FC_OS_WIN32
+# include <windows.h>
+#endif
+
 #endif
 
 #include "ViewProviderRobotObject.h"
+
 #include <Mod/Robot/App/RobotObject.h>
-#include <Gui/SoFCSelection.h>
+#include <Gui/ViewProviderDocumentObject.h>
 #include <App/Document.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
 #include <sstream>
-
 using namespace Gui;
+using namespace RobotGui;
 
-PROPERTY_SOURCE(Gui::ViewProviderRobotObject, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(RobotGui::ViewProviderRobotObject, Gui::ViewProviderDocumentObject)
 
 ViewProviderRobotObject::ViewProviderRobotObject()
 {
-    pcVRML = new SoFCSelection();
-    pcVRML->highlightMode = Gui::SoFCSelection::OFF;
-    pcVRML->selectionMode = Gui::SoFCSelection::SEL_OFF;
-    //pcVRML->style = Gui::SoFCSelection::BOX;
-    pcVRML->ref();
+	pcRobotRoot = new Gui::SoFCSelection();
+    pcRobotRoot->highlightMode = Gui::SoFCSelection::OFF;
+    pcRobotRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
+    //pcRobotRoot->style = Gui::SoFCSelection::BOX;
+    pcRobotRoot->ref();
 }
 
 ViewProviderRobotObject::~ViewProviderRobotObject()
 {
-    pcVRML->unref();
+    pcRobotRoot->unref();
 }
 
 void ViewProviderRobotObject::attach(App::DocumentObject *pcObj)
 {
     ViewProviderDocumentObject::attach(pcObj);
-    addDisplayMaskMode(pcVRML, "VRML");
-    pcVRML->objectName = pcObj->getNameInDocument();
-    pcVRML->documentName = pcObj->getDocument()->getName();
-    pcVRML->subElementName = "Main";
+    addDisplayMaskMode(pcRobotRoot, "VRML");
+    pcRobotRoot->objectName = pcObj->getNameInDocument();
+    pcRobotRoot->documentName = pcObj->getDocument()->getName();
+    pcRobotRoot->subElementName = "Main";
 }
 
 void ViewProviderRobotObject::setDisplayMode(const char* ModeName)
@@ -72,7 +77,7 @@ void ViewProviderRobotObject::setDisplayMode(const char* ModeName)
     ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
-std::vector<std::string> ViewProviderRobot::getDisplayModes(void) const
+std::vector<std::string> ViewProviderRobotObject::getDisplayModes(void) const
 {
     std::vector<std::string> StrList;
     StrList.push_back("VRML");
@@ -81,18 +86,18 @@ std::vector<std::string> ViewProviderRobot::getDisplayModes(void) const
 
 void ViewProviderRobotObject::updateData(const App::Property* prop)
 {
-    App::VRMLObject* ivObj = static_cast<App::VRMLObject*>(pcObject);
-    if (prop == &ivObj->VrmlFile) {
+    Robot::RobotObject* ivObj = static_cast<Robot::RobotObject*>(pcObject);
+    if (prop == &ivObj->RobotVrmlFile) {
         // read also from file
-        const char* filename = ivObj->VrmlFile.getValue();
+        const char* filename = ivObj->RobotVrmlFile.getValue();
         QFile file(QString::fromUtf8(filename));
         SoInput in;
-        pcVRML->removeAllChildren();
+        pcRobotRoot->removeAllChildren();
         if (file.open(QFile::ReadOnly)) {
             QByteArray buffer = file.readAll();
             in.setBuffer((void *)buffer.constData(), buffer.length());
             SoSeparator * node = SoDB::readAll(&in);
-            if (node) pcVRML->addChild(node);
+            if (node) pcRobotRoot->addChild(node);
         }
     }
 }
