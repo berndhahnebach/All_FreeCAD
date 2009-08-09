@@ -25,12 +25,12 @@
 #define ROBOT_VIEWPROVIDERROBOTOBJECT_H
 
 #include <Gui/ViewProviderDocumentObject.h>
+#include <Gui/SoFCSelection.h>
 
 
 namespace RobotGui
 {
 
-class SoFCSelection;
 class RobotGuiExport ViewProviderRobotObject : public Gui::ViewProviderDocumentObject
 {
     PROPERTY_HEADER(RobotGui::ViewProviderRobotObject);
@@ -48,7 +48,7 @@ public:
     void updateData(const App::Property*);
 
 protected:
-    SoFCSelection    * pcRobotVRML;
+    Gui::SoFCSelection    * pcRobotRoot;
 };
 
 } //namespace RobotGui
