@@ -1,4 +1,5 @@
 if(WIN32)
+		add_definitions(-DHAVE_ATANH -DHAVE_ASINH -DHAVE_ACOSH)
 else(WIN32)
 		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
 endif(WIN32)

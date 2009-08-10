@@ -3,7 +3,7 @@ add_subdirectory(Complete)
 add_subdirectory(Test)
 #add_subdirectory(TemplatePyMod)
 
-add_subdirectory(Image)
+#add_subdirectory(Image)
 
 add_subdirectory(Mesh)
 
