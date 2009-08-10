@@ -1,6 +1,7 @@
 if(WIN32)
+		add_definitions(-DHAVE_ACOSH -DHAVE_ATANH -DHAVE_ASINH)
 else(WIN32)
-		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H -DHAVE_ACOSH -DHAVE_ATANH -DHAVE_ASINH)
 endif(WIN32)
 
 include_directories(
