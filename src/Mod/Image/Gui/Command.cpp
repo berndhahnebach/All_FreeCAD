@@ -91,7 +91,7 @@ CmdImageCapturerTest::CmdImageCapturerTest()
 
 void CmdImageCapturerTest::activated(int iMsg)
 {
-
+/*
 #if 0
 
 	    // Reading an image
@@ -157,7 +157,7 @@ void CmdImageCapturerTest::activated(int iMsg)
     if(cap.getOneCapture(buff)==27)
           break;
   }
-#endif
+#endif*/
 }
 
 void CreateImageCommands(void)

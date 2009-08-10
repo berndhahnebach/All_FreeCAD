@@ -1,5 +1,5 @@
 if(WIN32)
-		 add_definitions(-DFCAppImage -DFC_DEBUG)
+		 add_definitions(-DFCAppImage)
 endif(WIN32)
 
 include_directories(
