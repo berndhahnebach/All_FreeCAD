@@ -11,12 +11,12 @@ include_directories(
 
 if(WIN32)
 		 set(AssemblyGui_LIBS
-				 ode
+				 ode_double
 		 		 Assembly
 		 		 FreeCADGui)
 else(WIN32)
 		 set(AssemblyGui_LIBS
-				 ode
+				 ode_double
 		 		 Assembly
 		 		 FreeCADGui)
 endif(WIN32)

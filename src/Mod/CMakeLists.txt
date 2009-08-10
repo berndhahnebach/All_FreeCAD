@@ -3,7 +3,7 @@ add_subdirectory(Complete)
 add_subdirectory(Test)
 #add_subdirectory(TemplatePyMod)
 
-#add_subdirectory(Image)
+add_subdirectory(Image)
 
 add_subdirectory(Mesh)
 
@@ -16,7 +16,7 @@ add_subdirectory(Sketcher)
 add_subdirectory(ReverseEngineering)
 add_subdirectory(MeshPart)
 add_subdirectory(Draft)
-#add_subdirectory(Assembly)
+add_subdirectory(Assembly)
 if(FREECAD_BUILD_CAM)
 	add_subdirectory(Cam)
 endif(FREECAD_BUILD_CAM)

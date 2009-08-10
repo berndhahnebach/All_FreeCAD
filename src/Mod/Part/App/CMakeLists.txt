@@ -15,51 +15,10 @@ include_directories(
  		 ${ZLIB_INCLUDE_DIR})
 
 
-if(WIN32)
-		 set(Part_LIBS
-				 TKFillet
-				 TKMesh
-		 		 TKernel
-		 		 TKG2d
-		 		 TKG3d
-		 		 TKMath
-		 		 TKSTEP
-		 		 TKIGES
-		 		 TKSTL
-		 		 TKShHealing
-		 		 TKXSBase
-		 		 TKBool
-		 		 TKBO
-		 		 TKBRep
-		 		 TKTopAlgo
-		 		 TKGeomAlgo
-		 		 TKGeomBase
-		 		 TKOffset
-		 		 TKPrim
-		 		 FreeCADApp)
-else(WIN32)
-		 set(Part_LIBS
-				 TKFillet
-				 TKMesh
-		 		 TKernel
-		 		 TKG2d
-		 		 TKG3d
-		 		 TKMath
-		 		 TKSTEP
-		 		 TKIGES
-		 		 TKSTL
-		 		 TKShHealing
-		 		 TKXSBase
-		 		 TKBool
-		 		 TKBO
-		 		 TKBRep
-		 		 TKTopAlgo
-		 		 TKGeomAlgo
-		 		 TKGeomBase
-		 		 TKOffset
-		 		 TKPrim
-		 		 FreeCADApp)
-endif(WIN32)
+set(Part_LIBS 
+	 ${OCC_LIBRARIES}
+	 FreeCADApp
+ )
 
 generate_from_xml(ArcPy)
 generate_from_xml(CirclePy)

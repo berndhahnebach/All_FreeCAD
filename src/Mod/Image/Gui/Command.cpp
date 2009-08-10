@@ -28,10 +28,10 @@
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
 
-#include <Mod/Image/App/CaptureClass.h>
+//#include <Mod/Image/App/CaptureClass.h>
 
-#include <cv.h>
-#include <highgui.h>
+//#include <cv.h>
+//#include <highgui.h>
 
 
 #include "ImageView.h"
