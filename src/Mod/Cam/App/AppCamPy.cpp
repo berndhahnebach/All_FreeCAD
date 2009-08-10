@@ -149,7 +149,6 @@ static PyObject * read(PyObject *self, PyObject *args)
     Py_Return;
 }
 
-#include <BRepMeshAdapt.hxx>
 
 static PyObject * tesselateShape(PyObject *self, PyObject *args)
 {

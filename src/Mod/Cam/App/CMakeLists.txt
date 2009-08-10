@@ -1,10 +1,14 @@
-add_definitions(-DFCAppCam)
-
+if(WIN32)
+	add_definitions(-DWNT -DFCAppCam -DHAVE_ACOSH -DHAVE_ATANH -DHAVE_ASINH)
+else(WIN32)
+	add_definitions(-DFCAppCam)
+endif(WIN32)
+	
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_SOURCE_DIR}/src/3rdParty
 		 ${CMAKE_SOURCE_DIR}/src/3rdParty/ANN/include
-		 ${CMAKE_SOURCE_DIR}/src/3rdParty/OCCAdaptMesh/Include
+		 #${CMAKE_SOURCE_DIR}/src/3rdParty/OCCAdaptMesh/Include
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
@@ -13,11 +17,11 @@ include_directories(
 
 if(WIN32)
 		 set(Cam_LIBS
-				OCCAdaptMesh
+				#OCCAdaptMesh
 		 		 Mesh
 		 		 Part
 		 		 ANN
-		 		 ${ATLAS_LIBRARIES}
+		 		 #${ATLAS_LIBRARIES}
 				 importlib_atlas.lib 
 				 importlib_umfpackamd.lib
 				 )
@@ -64,6 +68,8 @@ SET(Cam_SRCS
 		 best_fit.h
 		 BRepAdaptor_CompCurve2.cxx
 		 BRepAdaptor_CompCurve2.h
+		 BRepUtils.h
+		 BRepUtils.cpp
 		 ChangeDyna.cpp
 		 ChangeDyna.h
 		 ConvertDyna.cpp

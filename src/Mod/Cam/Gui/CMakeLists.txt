@@ -1,3 +1,8 @@
+if(WIN32)
+	add_definitions(-DHAVE_ACOSH -DHAVE_ATANH -DHAVE_ASINH)
+else(WIN32)
+endif(WIN32)
+
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_BINARY_DIR}/src
@@ -19,7 +24,7 @@ if(WIN32)
 		 		FreeCADGui
  				importlib_atlas.lib 
 				importlib_umfpackamd.lib
-				OCCAdaptMesh
+				#OCCAdaptMesh
 			)
 else(WIN32)
 		 set(CamGui_LIBS

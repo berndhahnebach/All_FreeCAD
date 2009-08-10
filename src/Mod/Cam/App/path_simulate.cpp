@@ -1744,7 +1744,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 
 
 
-		tetha  = min<double>(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
+		tetha  = std::min<double>(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
 		tetha  = tetha*3/4;
 		velo   = tetha*(sqrt(m_amax/cur));
 		m_a    = m_amax*(1 - tetha*tetha);
@@ -1841,7 +1841,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 
     
 
-		tetha  = min<double>(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
+		tetha  = std::min<double>(1,((m_vmax)*(sqrt(cur)/sqrt(m_amax))));
 		tetha  = tetha*3/4;
 		velo   = tetha*(sqrt(m_amax/cur));
 		m_a    = m_amax*(1 - tetha*tetha);
