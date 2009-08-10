@@ -30,7 +30,7 @@
 #include <Mod/Mesh/App/Core/Builder.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
 
-#include <BRepMeshAdapt.hxx>
+#include <BRepMesh.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <Base/Builder3D.h>
 #include <GeomAPI_ProjectPointOnSurf.hxx>

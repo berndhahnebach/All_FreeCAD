@@ -41,11 +41,13 @@
 #include <Base/Builder3D.h>
 
 #include <BRep_Tool.hxx>
-#include <BRepUtils.h>
+#include "BRepUtils.h"
 #include <BRepBuilderAPI_Sewing.hxx>
 
-#include <BRepMeshAdapt.hxx>
+//#include <BRepMeshAdapt.hxx>
 #include <BRepTools.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepMesh.hxx>
 
 #include <BRepGProp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -983,10 +985,12 @@ bool best_fit::Tesselate_Face(const TopoDS_Face &aface, MeshCore::MeshKernel &me
 
         // adds a triangulation of the shape aShape with the deflection aDeflection:
         //BRepMesh_IncrementalMesh Mesh(pcShape->getShape(),aDeflection);
-        TriangleAdapt_Parameters MeshingParams;
 
-
-        BRepMeshAdapt::Mesh(aface,deflection,MeshingParams);
+/*The next two lines have been from the occ6.2 adapt mesh library. They do not work within OCC6.3
+      TriangleAdapt_Parameters MeshingParams;
+       BRepMeshAdapt::Mesh(aface,deflection,MeshingParams);
+																*/
+	   BRepMesh_IncrementalMesh Mesh(aface,deflection);
     }
     TopLoc_Location aLocation;
     // takes the triangulation of the face aFace:
@@ -1033,8 +1037,7 @@ bool best_fit::Tesselate_Face(const TopoDS_Face &aface, MeshCore::MeshKernel &me
     return true;
 }
 
-#include <BRepMeshAdapt_IncrementalMesh.hxx>
-#include <BRepMesh.hxx>
+
 bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &mesh, float deflection)
 {
     Base::Builder3D aBuild;
@@ -1064,7 +1067,7 @@ bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &
     //int test2 = aSewer.NbDegeneratedShapes();
 
     // adds a triangulation of the shape aShape with the deflection deflection:
-
+/*
     TriangleAdapt_Parameters MeshParams;
     MeshParams._minAngle = 30.0;
     //MeshParams._minNbPntsPerEdgeLine = 3;
@@ -1072,7 +1075,8 @@ bool best_fit::Tesselate_Shape(const TopoDS_Shape &shape, MeshCore::MeshKernel &
     //MeshParams._minEdgeSplit = 3;
 	MeshParams._maxTriangleSideSize = 10; //10
 	MeshParams._maxArea = 10; //50
-    BRepMeshAdapt::Mesh(shape,deflection,MeshParams);
+	*/
+    BRepMesh_IncrementalMesh Mesh(shape,deflection);
     //BRepMesh::Mesh(shape,deflection);
     TopExp_Explorer aExpFace;
 
