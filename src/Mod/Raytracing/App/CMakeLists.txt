@@ -17,28 +17,12 @@ include_directories(
 if(WIN32)
 		 set(Raytracing_LIBS
 		 		 Part
-		 		 TKernel
-		 		 TKG2d
-		 		 TKG3d
-		 		 TKMath
-		 		 TKBool
-		 		 TKBRep
-		 		 TKGeomAlgo
-		 		 TKGeomBase
-		 		 TKMesh
+		 		 ${OCC_LIBRARIES}
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Raytracing_LIBS
 		 		 Part
-		 		 TKernel
-		 		 TKG2d
-		 		 TKG3d
-		 		 TKMath
-		 		 TKBool
-		 		 TKBRep
-		 		 TKGeomAlgo
-		 		 TKGeomBase
-		 		 TKMesh
+		 		 ${OCC_LIBRARIES}
 		 		 FreeCADApp)
 endif(WIN32)
 

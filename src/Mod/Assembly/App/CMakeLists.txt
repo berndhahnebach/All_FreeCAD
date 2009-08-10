@@ -9,11 +9,11 @@ include_directories(
 
 if(WIN32)
 		 set(Assembly_LIBS
-				 ode
+				 ode_double
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Assembly_LIBS
-				 ode
+				 ode_double
 		 		 FreeCADApp)
 endif(WIN32)
 

@@ -247,5 +247,26 @@ set(OPENCV_FOUND TRUE)
 
 # OCC
 set(OCC_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/OpenCascade)
-#set(OCC_LIBRARIES  cv.lib cvaux.lib cxcore.lib cxts.lib highgui.lib)
+set(OCC_LIBRARIES
+		 TKFillet
+		 TKMesh
+ 		 TKernel
+ 		 TKG2d
+ 		 TKG3d
+ 		 TKMath
+ 		 TKSTEP
+ 		 TKIGES
+ 		 TKSTL
+ 		 TKShHealing
+ 		 TKXSBase
+ 		 TKBool
+ 		 TKBO
+ 		 TKBRep
+ 		 TKTopAlgo
+ 		 TKGeomAlgo
+ 		 TKGeomBase
+ 		 TKOffset
+ 		 TKPrim
+)
+
 set(OCC_FOUND TRUE) 
