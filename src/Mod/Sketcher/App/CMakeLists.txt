@@ -1,4 +1,5 @@
 if(WIN32)
+		 add_definitions(-DFCAppSketcher -DFC_DEBUG -DHAVE_ACOSH -DHAVE_ASINH -DHAVE_ATANH)
 else(WIN32)
 		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
 endif(WIN32)
