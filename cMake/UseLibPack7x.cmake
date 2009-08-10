@@ -19,8 +19,8 @@ set(PYTHONLIBS_FOUND TRUE)
 	
 # XercesC
 set(XERCESC_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/xercesc)
-set(XERCESC_LIBRARIES       xerces-c_2.lib)
-set(XERCESC_DEBUG_LIBRARIES xerces-c_2D.lib)
+set(XERCESC_LIBRARIES       xerces-c_3.lib)
+set(XERCESC_DEBUG_LIBRARIES xerces-c_3D.lib)
 set(XERCESC_FOUND TRUE) 
 	
 # Boost
@@ -51,7 +51,7 @@ set(Boost_FOUND TRUE)
 
 # Zlib
 set(ZLIB_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/zlib)
-set(ZLIB_LIBRARIES  zdll.lib)
+set(ZLIB_LIBRARIES  zlib1.lib)
 set(ZLIB_FOUND TRUE) 
 	
 # Coin3D
