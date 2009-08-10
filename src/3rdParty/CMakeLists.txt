@@ -5,5 +5,5 @@ if(FREECAD_BUILD_CAM)
 endif(FREECAD_BUILD_CAM)
 
 if(FREECAD_BUILD_GUI AND WIN32)
-	add_subdirectory(Pivy)
+	#add_subdirectory(Pivy)
 endif(FREECAD_BUILD_GUI AND WIN32)
