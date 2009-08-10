@@ -3,24 +3,24 @@ if(WIN32)
 endif(WIN32)
 
 include_directories(
-		 ${OPENCV_INCLUDE_DIR}
+		 #${OPENCV_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
 		 set(Image_LIBS
-		 		 ${OPENCV_LIBRARIES}
+		 		 #${OPENCV_LIBRARIES}
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Image_LIBS
-		 		 ${OPENCV_LIBRARIES}
+		 		 #${OPENCV_LIBRARIES}
 		 		 FreeCADApp)
 endif(WIN32)
 
 set(Image_SRCS
-		 CaptureClass.cpp
-		 CaptureClass.h
+		 #CaptureClass.cpp
+		 #CaptureClass.h
 		 ImageBase.cpp
 		 ImageBase.h
 		 PreCompiled.cpp

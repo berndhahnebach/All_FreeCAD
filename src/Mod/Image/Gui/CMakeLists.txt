@@ -13,13 +13,13 @@ if(WIN32)
 		 set(ImageGui_LIBS
 		 		 Image
 				 FreeCADGui
-		 		 ${OpenCV_LIBRARIES}
+		 		 #${OpenCV_LIBRARIES}
 				 ${OPENGL_glu_LIBRARY})
 else(WIN32)
 		 set(ImageGui_LIBS
 		 		 Image
 				 FreeCADGui
-		 		 ${OpenCV_LIBRARIES}
+		 		 #${OpenCV_LIBRARIES}
 				 ${OPENGL_glu_LIBRARY})
 endif(WIN32)
 
