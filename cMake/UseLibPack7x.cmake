@@ -4,69 +4,77 @@
 # --------------------------------------------------------------------------------
 # General includes 
 
-link_directories(${CMAKE_SOURCE_DIR}/lib)
-include_directories(${CMAKE_SOURCE_DIR}/include)
+link_directories(${FREECAD_LIBPACK_DIR}/lib)
+include_directories(${FREECAD_LIBPACK_DIR}/include)
 
 # OpenGL
 find_package(OpenGL)
 
 # Python
-set(PYTHON_DEBUG_LIBRARY python25_d.lib)
-set(PYTHON_LIBRARY python25.lib)
-set(PYTHON_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/include/python)
-set(PYTHON_EXECUTABLE   ${CMAKE_SOURCE_DIR}/bin/python.exe)
+set(PYTHON_DEBUG_LIBRARY python26_d.lib)
+set(PYTHON_LIBRARY python26.lib)
+set(PYTHON_INCLUDE_PATH ${FREECAD_LIBPACK_DIR}/include/python)
+set(PYTHON_EXECUTABLE   ${FREECAD_LIBPACK_DIR}/bin/python.exe)
 set(PYTHONLIBS_FOUND TRUE) 
 	
 # XercesC
-set(XERCESC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/xercesc)
-set(XERCESC_LIBRARIES       xerces-c_2.lib)
-set(XERCESC_DEBUG_LIBRARIES xerces-c_2D.lib)
+set(XERCESC_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/xercesc)
+set(XERCESC_LIBRARIES       xerces-c_3.lib)
+set(XERCESC_DEBUG_LIBRARIES xerces-c_3D.lib)
 set(XERCESC_FOUND TRUE) 
 	
 # Boost
-set(Boost_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/boost)
+set(Boost_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/boost)
 set(Boost_LIBRARIES 
-	optimized boost_filesystem-vc80-mt.lib 
-	#optimized boost_graph-vc80-mt.lib 
-	optimized boost_program_options-vc80-mt.lib
-	optimized boost_regex-vc80-mt.lib
-	optimized boost_signals-vc80-mt.lib
+	optimized boost_filesystem-vc90-mt.lib
+    optimized boost_system-vc90-mt.lib 
+	#optimized boost_graph-vc90-mt.lib 
+	optimized boost_program_options-vc90-mt.lib
+	optimized boost_regex-vc90-mt.lib
+	optimized boost_signals-vc90-mt.lib
 )
 set(Boost_DEBUG_LIBRARIES 
-	debug boost_filesystem-vc80-mt-gd.lib 
-	#debug boost_graph-vc80-mt-gd.lib 
-	debug boost_program_options-vc80-mt-gd.lib
-	debug boost_regex-vc80-mt-gd.lib
-	debug boost_signals-vc80-mt-gd.lib
+	debug boost_filesystem-vc90-mt-gd.lib 
+	debug boost_date_time-vc90-mt-gd.lib
+	debug boost_filesystem-vc90-mt-gd.lib
+	debug boost_iostreams-vc90-mt-gd.lib
+	debug boost_math_c99f-vc90-mt-gd.lib
+	debug boost_math_tr1f-vc90-mt-gd.lib
+	debug boost_thread-vc90-mt-gd.lib
+	debug boost_system-vc90-mt-gd.lib
+	debug boost_graph-vc90-mt-gd.lib 
+	debug boost_program_options-vc90-mt-gd.lib
+	debug boost_regex-vc90-mt-gd.lib
+	debug boost_signals-vc90-mt-gd.lib
 )
 set(Boost_FOUND TRUE) 
 
 # Zlib
-set(ZLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/zlib)
+set(ZLIB_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/zlib)
 set(ZLIB_LIBRARIES  zlib1.lib)
 set(ZLIB_FOUND TRUE) 
 	
 # Coin3D
-set(COIN_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/coin)
-set(COIN3D_LIBRARY_DEBUG  coin2d.lib)
-set(COIN3D_LIBRARY_RELEASE  coin2.lib)
+set(COIN_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/coin)
+set(COIN3D_LIBRARY_DEBUG  coin3d.lib)
+set(COIN3D_LIBRARY_RELEASE  coin3.lib)
 set(COIN3D_FOUND TRUE) 
 
 
 # QT
 set(QT_INCLUDE_DIR 
-    ${CMAKE_SOURCE_DIR}/include/QT/
-    ${CMAKE_SOURCE_DIR}/include/QT/Qt
-    ${CMAKE_SOURCE_DIR}/include/QT/QtCore
-    ${CMAKE_SOURCE_DIR}/include/QT/QtGui
-    ${CMAKE_SOURCE_DIR}/include/QT/QtDesigner
-    ${CMAKE_SOURCE_DIR}/include/QT/QtSvg
-    ${CMAKE_SOURCE_DIR}/include/QT/QtNetwork
-    ${CMAKE_SOURCE_DIR}/include/QT/QtSql
-    ${CMAKE_SOURCE_DIR}/include/QT/QtTest
-    ${CMAKE_SOURCE_DIR}/include/QT/QtUiTools
-    ${CMAKE_SOURCE_DIR}/include/QT/QtXml
-    ${CMAKE_SOURCE_DIR}/include/QT/QtOpenGl
+    ${FREECAD_LIBPACK_DIR}/include/QT/
+    ${FREECAD_LIBPACK_DIR}/include/QT/Qt
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtCore
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtGui
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtDesigner
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtSvg
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtNetwork
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtSql
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtTest
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtUiTools
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtXml
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtOpenGl
 	)
 	
 set(QT_LIBRARIES 
@@ -91,9 +99,9 @@ set(QT_DEBUG_LIBRARIES
     debug QtXmld4.lib
     debug QtOpenGld4.lib
 )
-set(QT_UIC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/uic.exe)
-set(QT_MOC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/moc.exe)
-set(QT_RCC_EXECUTABLE ${CMAKE_SOURCE_DIR}/bin/rcc.exe)
+set(QT_UIC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/uic.exe)
+set(QT_MOC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/moc.exe)
+set(QT_RCC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/rcc.exe)
 
 
 
@@ -227,17 +235,17 @@ ENDMACRO (QT4_WRAP_UI)
 set(QT4_FOUND TRUE) 
 
 # SoQt
-set(SOQT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/soqt)
+set(SOQT_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/soqt)
 set(SOQT_LIBRARY_RELEASE  soqt1.lib)
 set(SOQT_LIBRARY_DEBUG  soqt1d.lib)
 set(SOQT_FOUND TRUE) 
 
 # OpenCV
-set(OPENCV_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/opencv)
+set(OPENCV_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/opencv)
 set(OPENCV_LIBRARIES  cv.lib cvaux.lib cxcore.lib cxts.lib highgui.lib)
 set(OPENCV_FOUND TRUE) 
 
 # OCC
-set(OCC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include/OpenCascade)
+set(OCC_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/OpenCascade)
 #set(OCC_LIBRARIES  cv.lib cvaux.lib cxcore.lib cxts.lib highgui.lib)
 set(OCC_FOUND TRUE) 
