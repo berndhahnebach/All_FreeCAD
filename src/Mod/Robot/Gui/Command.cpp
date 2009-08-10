@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 #endif
 
+#include <App/Application.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
@@ -33,7 +34,7 @@
 
 using namespace std;
 
-DEF_STD_CMD(CmdRobotConstraintAxle);
+DEF_STD_CMD_A(CmdRobotConstraintAxle);
 
 CmdRobotConstraintAxle::CmdRobotConstraintAxle()
 	:Command("Robot_Create")
@@ -51,15 +52,20 @@ CmdRobotConstraintAxle::CmdRobotConstraintAxle()
 void CmdRobotConstraintAxle::activated(int iMsg)
 {
     std::string FeatName = getUniqueObjectName("Robot");
+	string RobotPath = App::Application::Config()["AppHomePath"] + "mod/Robot/Lib/Kuka/kr500_1.wrl";
 
     openCommand("Place robot");
     doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = \"C:/_Projekte/FreeCAD0.9_build/mod/Robot/Lib/Kuka/kr500_1.wrl\"",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = \"%s\"",FeatName.c_str(),RobotPath.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
     updateActive();
     commitCommand();
       
+}
+bool CmdRobotConstraintAxle::isActive(void)
+{
+    return hasActiveDocument();
 }
 
 
