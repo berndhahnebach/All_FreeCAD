@@ -83,12 +83,17 @@ OPTION(FREECAD_BUILD_DOXYGEN_DOCU "Build the Source documentation with Doxygen."
 
 if(FREECAD_LIBPACK_USE)
 	# checking for a unique file in LibPack location to make shure the right version LibPack is there
-	find_file(FREECAD_LIBPACK_CHECKFILE7X boost_program_options-vc90-mt-gd.lib ${FREECAD_LIBPACK_DIR}/lib )
-	IF(FREECAD_LIBPACK_CHECKFILE7X)
-		include(cMake/UseLibPack7x.cmake)	
-	ELSE(FREECAD_LIBPACK_CHECKFILE7X)
-		message(SEND_ERROR  "Could not found LibPack in specified location:" ${FREECAD_LIBPACK_DIR})
-	ENDIF(FREECAD_LIBPACK_CHECKFILE7X)
+	find_file(FREECAD_LIBPACK_CHECKFILE6X boost_program_options-vc80-mt-gd.lib ${FREECAD_LIBPACK_DIR}/lib )
+	IF(FREECAD_LIBPACK_CHECKFILE6X)
+		include(cMake/UseLibPack6x.cmake)	
+	ELSE(FREECAD_LIBPACK_CHECKFILE6X)
+		find_file(FREECAD_LIBPACK_CHECKFILE7X boost_program_options-vc90-mt-gd.lib ${FREECAD_LIBPACK_DIR}/lib )
+		IF(FREECAD_LIBPACK_CHECKFILE7X)
+			include(cMake/UseLibPack7x.cmake)	
+		ELSE(FREECAD_LIBPACK_CHECKFILE7X)
+			message(SEND_ERROR  "Could not found either LibPack 7.x or 6.x in specified location:" ${FREECAD_LIBPACK_DIR})
+		ENDIF(FREECAD_LIBPACK_CHECKFILE7X)
+	ENDIF(FREECAD_LIBPACK_CHECKFILE6X)
 	
 else(FREECAD_LIBPACK_USE)
 
