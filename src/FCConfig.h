@@ -109,7 +109,7 @@
 
 #if defined (FC_OS_WIN64)
 #error "The standard types must be defined for the Windows 64 bit platform"
-#elif defined (FC_OS_WIN32)
+#elif defined (FC_OS_WIN32) && defined(_MSC_VER)
 
 #ifndef HAVE_INT8_T
 #define HAVE_INT8_T
