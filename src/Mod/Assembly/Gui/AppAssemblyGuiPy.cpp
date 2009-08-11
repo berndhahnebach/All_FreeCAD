@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <python.h>
+# include <Python.h>
 #endif
 
 
