@@ -573,6 +573,18 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
     }
 }
 
+void TreeWidget::setItemsSelected (const QList<QTreeWidgetItem *> items, bool select)
+{
+    if (items.isEmpty())
+        return;
+    QItemSelection range;
+    for (QList<QTreeWidgetItem*>::const_iterator it = items.begin(); it != items.end(); ++it)
+        range.select(this->indexFromItem(*it),this->indexFromItem(*it));
+    selectionModel()->select(range, select ? 
+        QItemSelectionModel::Select :
+        QItemSelectionModel::Deselect);
+}
+
 // ----------------------------------------------------------------------------
 
 /* TRANSLATOR Gui::TreeDockWidget */
@@ -865,12 +877,17 @@ void DocumentItem::selectItems(void)
     std::vector<DocumentObjectItem*> diff;
     std::back_insert_iterator<std::vector<DocumentObjectItem*> > biit(diff);
     std::set_difference(items.begin(), items.end(), common.begin(), common.end(), biit);
+
     // select the appropriate items
+    QList<QTreeWidgetItem *> selitems;
     for (std::vector<DocumentObjectItem*>::iterator it = common.begin(); it != common.end(); ++it)
-        treeWidget()->setItemSelected(*it, true);
+        selitems.append(*it);
+    static_cast<TreeWidget*>(treeWidget())->setItemsSelected(selitems, true);
     // deselect the appropriate items
+    QList<QTreeWidgetItem *> deselitems;
     for (std::vector<DocumentObjectItem*>::iterator it = diff.begin(); it != diff.end(); ++it)
-        treeWidget()->setItemSelected(*it, false);
+        deselitems.append(*it);
+    static_cast<TreeWidget*>(treeWidget())->setItemsSelected(deselitems, false);
 }
 
 // ----------------------------------------------------------------------------

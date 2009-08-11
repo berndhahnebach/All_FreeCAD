@@ -51,6 +51,7 @@ public:
     ~TreeWidget();
 
     void scrollItemToTop(Gui::Document*);
+    void setItemsSelected (const QList<QTreeWidgetItem *> items, bool select);
 
     static const int DocumentType;
     static const int ObjectType;
