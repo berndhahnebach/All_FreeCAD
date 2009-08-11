@@ -39,7 +39,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# ifdef FC_OS_WIN32
+# ifdef _MSC_VER
 #  include <cstdio>
 #  include <time.h>
 #  include <windows.h>
