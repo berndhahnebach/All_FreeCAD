@@ -242,7 +242,7 @@ private:
     struct MainWindowP* d;
 };
 
-inline GuiExport MainWindow* getMainWindow()
+inline MainWindow* getMainWindow()
 {
     return MainWindow::getInstance();
 }

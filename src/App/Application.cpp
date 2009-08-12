@@ -42,7 +42,9 @@
 
 #ifdef FC_OS_WIN32
 # include <Shlobj.h>
+# ifdef _MSC_VER
 # include <Shfolder.h>
+# endif
 #endif
 
 
@@ -1509,8 +1511,7 @@ void Application::ExtractUserPath()
     // Get the default path where we can save our documents. It seems that
     // 'CSIDL_MYDOCUMENTS' doesn't work on all machines, so we use 'CSIDL_PERSONAL'
     // which does the same.
-    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_MYDOCUMENTS, NULL, 0, szPath)) ||
-        SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, 0, szPath))) {
+    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, 0, szPath))) {
         WideCharToMultiByte(CP_UTF8, 0, szPath, -1,dest, 256, NULL, NULL);
         mConfig["UserHomePath"] = dest;
     }

@@ -1,8 +1,8 @@
-if(WIN32)
+if(MSVC)
 		 add_definitions(-DFCAppRaytracing -DHAVE_ACOSH -DHAVE_ASINH -DHAVE_ATANH)
-else(WIN32)
+else(MSVC)
 		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
-endif(WIN32)
+endif(MSVC)
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src

@@ -247,7 +247,7 @@ protected:
 };
 
 /// Get the global instance
-inline GuiExport SelectionSingleton& Selection(void)
+inline SelectionSingleton& Selection(void)
 {
     return SelectionSingleton::instance();
 }
