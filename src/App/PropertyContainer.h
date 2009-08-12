@@ -38,7 +38,7 @@ class Property;
 class PropertyContainer;
 class DocumentObject;
 
-enum AppExport PropertyType 
+enum PropertyType 
 {
   Prop_None     = 0,
   Prop_ReadOnly = 1,
