@@ -27,6 +27,7 @@
 # include <xercesc/sax/SAXParseException.hpp>
 # include <xercesc/sax/SAXException.hpp>
 # include <xercesc/sax2/XMLReaderFactory.hpp>
+# include <xercesc/sax2/SAX2XMLReader.hpp>
 #endif
 
 #include <locale>

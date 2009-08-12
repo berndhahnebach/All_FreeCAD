@@ -27,8 +27,8 @@
 #include <string>
 #include <map>
 
+#include <xercesc/framework/XMLPScanToken.hpp>
 #include <xercesc/sax2/Attributes.hpp>
-#include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
 
 #include "FileInfo.h"
@@ -40,6 +40,7 @@ class ZipInputStream;
 
 XERCES_CPP_NAMESPACE_BEGIN
     class DefaultHandler;
+    class SAX2XMLReader;
 XERCES_CPP_NAMESPACE_END
 
 namespace Base
