@@ -16,7 +16,7 @@ if(WIN32)
 		 		 FreeCADGui)
 else(WIN32)
 		 set(AssemblyGui_LIBS
-				 ode_double
+				 ode
 		 		 Assembly
 		 		 FreeCADGui)
 endif(WIN32)

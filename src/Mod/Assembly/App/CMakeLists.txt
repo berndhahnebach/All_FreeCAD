@@ -13,7 +13,7 @@ if(WIN32)
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Assembly_LIBS
-				 ode_double
+				 ode
 		 		 FreeCADApp)
 endif(WIN32)
 
