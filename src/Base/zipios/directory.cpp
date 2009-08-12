@@ -296,6 +296,7 @@ namespace boost
 {
 	namespace filesystem
 	{
+#if !defined(__MINGW32__)
 		get<size>::operator size::value_type() const
 		{
 			return m_it.rep->get_data().size;
@@ -330,6 +331,7 @@ namespace boost
 			std::string ext(name.substr(name.find_last_of('.')));
 			return ext == ".exe" || ext == ".bat";
 		}
+#endif // __MINGW32__
 	}
 }
 #endif

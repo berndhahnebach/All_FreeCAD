@@ -41,6 +41,9 @@
 #	define FC_OS_WIN32
 #	endif
 #	if defined(__MINGW32__)
+#	if HAVE_CONFIG_H
+#	include <config.h>
+#	endif // HAVE_CONFIG_H
 #	define HAVE_INT8_T
 #	define HAVE_UINT8_T
 #	define HAVE_INT16_T
@@ -49,8 +52,8 @@
 #	define HAVE_UINT32_T
 #	define HAVE_INT64_T
 #	define HAVE_UINT64_T
-#	define HAVE_INTPTR_T
-#	define HAVE_UINTPTR_T
+//#	define HAVE_INTPTR_T
+//#	define HAVE_UINTPTR_T
 #	endif
 #elif defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
 #	ifndef FC_OS_WIN32
@@ -189,7 +192,7 @@ typedef unsigned __int64    uint64_t;
 //**************************************************************************
 // Open CasCade
 
-#ifdef FC_OS_WIN32
+#ifdef _MSC_VER
 #	ifndef WNT
 #	define WNT
 #	endif

@@ -61,7 +61,7 @@ private:
     ~WidgetFactoryInst(){}
 };
 
-inline GuiExport WidgetFactoryInst& WidgetFactory()
+inline WidgetFactoryInst& WidgetFactory()
 {
     return WidgetFactoryInst::instance();
 }

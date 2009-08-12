@@ -139,6 +139,7 @@ namespace boost
 		template <> void set<user_write>(dir_it const &, bool);
 		template <> bool get<user_execute>(dir_it const &);
 		template <> void set<user_execute>(dir_it const &, bool);
+#elif defined(__MINGW32__)
 #else
 		template <> class BOOST_DECL get<size>
 		{

@@ -223,7 +223,7 @@ InputStream& InputStream::operator >> (double& d)
 // ---------------------------------------------------------
 
 Base::ofstream::ofstream(const FileInfo& fi, ios_base::openmode mode)
-#ifdef FC_OS_WIN32
+#ifdef _MSC_VER
 : std::ofstream(fi.toStdWString().c_str(), mode)
 #else
 : std::ofstream(fi.filePath().c_str(), mode)
@@ -236,7 +236,7 @@ Base::ofstream::~ofstream()
 }
 
 Base::ifstream::ifstream(const FileInfo& fi, ios_base::openmode mode)
-#ifdef FC_OS_WIN32
+#ifdef _MSC_VER
 : std::ifstream(fi.toStdWString().c_str(), mode)
 #else
 : std::ifstream(fi.filePath().c_str(), mode)

@@ -128,7 +128,7 @@ private:
 };
 
 /// Get the global instance
-inline GuiExport BitmapFactoryInst& BitmapFactory(void)
+inline BitmapFactoryInst& BitmapFactory(void)
 {
     return BitmapFactoryInst::instance();
 }

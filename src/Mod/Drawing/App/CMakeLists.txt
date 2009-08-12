@@ -1,9 +1,8 @@
-if(WIN32)
-
+if(MSVC)
 		 add_definitions(-DFCAppDrawing -DHAVE_ACOSH -DHAVE_ASINH -DHAVE_ATANH)
-else(WIN32)
+else(MSVC)
 		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H -DHAVE_ACOSH -DHAVE_ATANH -DHAVE_ASINH)
-endif(WIN32)
+endif(MSVC)
 
 include_directories(
 		 ${Boost_INCLUDE_DIRS}

@@ -43,6 +43,9 @@
 #include <assert.h>
 
 #else // gcc and others
+#ifndef S_ISSOCK
+#define S_ISSOCK(mode)	0
+#endif
 #include <stdint.h>
 # if HAVE_CONFIG_H
 #	  include <config.h>

@@ -32,29 +32,27 @@
 #include "FeaturePartPolygon.h"
 #include <Base/Exception.h>
 
-using namespace Part;
-
 PROPERTY_SOURCE(Part::Polygon, Part::Feature)
 
 
-Polygon::Polygon()
+Part::Polygon::Polygon()
 {
     ADD_PROPERTY(Nodes,(Base::Vector3f()));
     ADD_PROPERTY(Close,(false));
 }
 
-Polygon::~Polygon()
+Part::Polygon::~Polygon()
 {
 }
 
-short Polygon::mustExecute() const
+short Part::Polygon::mustExecute() const
 {
     if (Nodes.isTouched() || Close.isTouched())
         return 1;
     return 0;
 }
 
-App::DocumentObjectExecReturn *Polygon::execute(void)
+App::DocumentObjectExecReturn *Part::Polygon::execute(void)
 {
     BRepBuilderAPI_MakePolygon poly;
     const std::vector<Base::Vector3f> nodes = Nodes.getValues();
