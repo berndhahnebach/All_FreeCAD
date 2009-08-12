@@ -32,8 +32,10 @@ typedef struct {
     int     y;
 } IntPoint;
 
+// typedefs for mingw32
+#if defined(__MINGW32__)
 // typedefs for gcc
-#if defined(__GNUC__)
+#elif defined(__GNUC__)
 typedef unsigned long    DWORD;
 typedef int              BOOL;
 typedef unsigned char    BYTE;

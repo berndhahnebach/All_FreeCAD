@@ -24,7 +24,23 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#include <Mod/Part/App/OpenCascadeAll.h>
+# include <BRepBuilderAPI_MakeEdge.hxx>
+# include <BRepBuilderAPI_MakeWire.hxx>
+# include <BRep_Tool.hxx>
+# include <gce_ErrorType.hxx>
+# include <GC_MakeArcOfCircle.hxx>
+# include <GC_MakeCircle.hxx>
+# include <GC_MakeSegment.hxx>
+# include <Geom_Curve.hxx>
+# include <gp_Ax2.hxx>
+# include <gp_Circ.hxx>
+# include <Precision.hxx>
+# include <TopExp_Explorer.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Edge.hxx>
+# include <TopoDS_Face.hxx>
+# include <TopoDS_Wire.hxx>
+# include <TopoDS_Vertex.hxx>
 #endif
 
 #include <Base/Console.h>

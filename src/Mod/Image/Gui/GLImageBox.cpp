@@ -22,6 +22,11 @@
 # include <QMessageBox>
 #endif
 
+#if defined(__MINGW32__)
+# include <GL/gl.h>
+# include <GL/glext.h>
+#endif
+
 #include "GLImageBox.h"
 
 using namespace ImageGui;
