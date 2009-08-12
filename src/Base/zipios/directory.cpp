@@ -296,7 +296,42 @@ namespace boost
 {
 	namespace filesystem
 	{
-#if !defined(__MINGW32__)
+#if defined(__MINGW32__)
+		template <> size_t get<size>(dir_it const &it)
+		{
+			return it.rep->get_data().size;
+		}
+		template <> mtime::value_type get<mtime>(dir_it const &it)
+		{
+			return &it.rep->get_data().time_write;
+		}
+		template <> bool get<is_directory>(dir_it const &it)
+		{
+			return (it.rep->get_data().attrib & _A_SUBDIR) != 0;
+		}
+		template <> bool get<is_regular>(dir_it const &it)
+		{
+			return (it.rep->get_data().attrib & _A_SUBDIR) == 0;
+		}
+		template <> bool get<is_hidden>(dir_it const &it)
+		{
+			return (it.rep->get_data().attrib & _A_HIDDEN) != 0;
+		}
+		template <> bool get<user_read>(dir_it const &it)
+		{
+			return true;
+		}
+		template <> bool get<user_write>(dir_it const &it)
+		{
+			return (it.rep->get_data().attrib & _A_RDONLY) == 0;
+		}
+		template <> bool get<user_execute>(dir_it const &it)
+		{
+			std::string name(*it);
+			std::string ext(name.substr(name.find_last_of('.')));
+			return ext == ".exe" || ext == ".bat";
+		}
+#else
 		get<size>::operator size::value_type() const
 		{
 			return m_it.rep->get_data().size;
