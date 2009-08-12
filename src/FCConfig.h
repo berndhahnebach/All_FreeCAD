@@ -40,6 +40,18 @@
 #	ifndef FC_OS_WIN32
 #	define FC_OS_WIN32
 #	endif
+#	if defined(__MINGW32__)
+#	define HAVE_INT8_T
+#	define HAVE_UINT8_T
+#	define HAVE_INT16_T
+#	define HAVE_UINT16_T
+#	define HAVE_INT32_T
+#	define HAVE_UINT32_T
+#	define HAVE_INT64_T
+#	define HAVE_UINT64_T
+#	define HAVE_INTPTR_T
+#	define HAVE_UINTPTR_T
+#	endif
 #elif defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
 #	ifndef FC_OS_WIN32
 #	define FC_OS_WIN32
@@ -69,7 +81,7 @@
 #	define HAVE_UINT64_T
 #	define HAVE_INTPTR_T
 #	define HAVE_UINTPTR_T
-#	endif
+#endif
 //#elif defined(sun) || defined(__sun) || defined(__sun__)
 //#	if defined(__SVR4)
 //#		define _FC_OS_SOLARIS
@@ -109,7 +121,7 @@
 
 #if defined (FC_OS_WIN64)
 #error "The standard types must be defined for the Windows 64 bit platform"
-#elif defined (FC_OS_WIN32) && defined(_MSC_VER)
+#elif defined (FC_OS_WIN32)
 
 #ifndef HAVE_INT8_T
 #define HAVE_INT8_T
