@@ -93,7 +93,7 @@ private:
     ~ScriptFactorySingleton(){}
 };
 
-inline BaseExport ScriptFactorySingleton& ScriptFactory(void)
+inline ScriptFactorySingleton& ScriptFactory(void)
 {
     return ScriptFactorySingleton::Instance();
 }
