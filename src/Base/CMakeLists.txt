@@ -15,7 +15,7 @@ include_directories(
 	${XERCESC_INCLUDE_DIR}
 	${ZLIB_INCLUDE_DIR})
 
-if(WIN32)
+if(MSVC)
 	set(FreeCADBase_LIBS
  		${Boost_LIBRARIES}
 		${Boost_DEBUG_LIBRARIES}
@@ -30,14 +30,14 @@ if(WIN32)
         optimized MSVCPRT.LIB
 		Rpcrt4.lib
 		)
-else(WIN32)
+else(MSVC)
 	set(FreeCADBase_LIBS
 		${PYTHON_LIBRARY}
 		${XERCESC_LIBRARIES}
 		${Boost_LIBRARIES}
 		${ZLIB_LIBRARIES}
 )
-endif(WIN32)
+endif(MSVC)
 
 generate_from_xml(BaseClassPy)
 generate_from_xml(BoundBoxPy)

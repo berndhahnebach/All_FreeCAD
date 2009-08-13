@@ -534,9 +534,11 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
             std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
             // we get notified from the selection and must only update the selection on the tree,
             // thus no need to notify again the selection. See also onItemSelectionChanged().
-            bool lock = this->blockConnection(true);
-            it->second->selectItems();
-            this->blockConnection(lock);
+            if (it != DocumentMap.end()) {
+                bool lock = this->blockConnection(true);
+                it->second->selectItems();
+                this->blockConnection(lock);
+            }
         }   break;
     case SelectionChanges::ClrSelection:
         {
