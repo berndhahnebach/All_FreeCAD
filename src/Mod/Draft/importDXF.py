@@ -44,8 +44,10 @@ from draftlibs.dxfReader import readDXF
 from PyQt4 import QtGui
 
 try: import FreeCADGui
-except ValueError: gui = False
+except: gui = False
 else: gui = True
+try: draftui = FreeCADGui.activeWorkbench().draftToolBar.ui
+except: draftui = None
 
 pythonopen = open # to distinguish python built-in open function from the one declared here
 
@@ -145,12 +147,11 @@ class fcformat:
 			else:
 				self.brightbg = True
 	
-		if gui:
-			ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			r = float(ui.color.red()/255.0)
-			g = float(ui.color.green()/255.0)
-			b = float(ui.color.blue()/255.0)
-			self.lw = float(ui.widthButton.value())
+		if gui and draftui:
+			r = float(draftui.color.red()/255.0)
+			g = float(draftui.color.green()/255.0)
+			b = float(draftui.color.blue()/255.0)
+			self.lw = float(draftui.widthButton.value())
 		else:
 			self.lw = float(params.GetInt("linewidth"))
 			c = params.GetUnsigned("color")
@@ -371,7 +372,7 @@ def processdxf(doc,filename):
 
 	doc.recompute()
 	del fmt
-	print "dxf: successfully finished DXF import."
+	FreeCAD.Console.PrintMessage("successfully imported "+filename+"\n")
 
 def open(filename):
 	"called when freecad opens a file"
