@@ -83,6 +83,7 @@ public:
 private:
     static void eventCallback(void * ud, SoEventCallback * n);
     static void eventCallbackPivy(void * ud, SoEventCallback * n);
+    static void eventCallbackPivyEx(void * ud, SoEventCallback * n);
 
 private:
     typedef PyObject* (*method_varargs_handler)(PyObject *_self, PyObject *_args);
@@ -92,66 +93,6 @@ private:
 private:
     View3DInventor* _view;
     friend class View3DInventor;
-};
-
-/** The View3D python class 
- */
-class GuiExport View3DPy :public Base::PyObjectBase
-{
-    /// always start with Py_Header
-    Py_Header;
-
-protected:
-    ~View3DPy();
-
-public:
-    View3DPy(View3DInventor *pcView, PyTypeObject *T = &Type);
-    static PyObject *PyMake(PyObject *, PyObject *);
-
-    //---------------------------------------------------------------------
-    // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-    //---------------------------------------------------------------------
-
-    virtual PyObject *_repr(void);  				// the representation
-    PyObject *_getattr(char *attr);					// __getattr__ function
-    int _setattr(char *attr, PyObject *value);		// __setattr__ function
-    PYFUNCDEF_D(View3DPy,message)
-    PYFUNCDEF_D(View3DPy,fitAll)
-    PYFUNCDEF_D(View3DPy,viewBottom)
-    PYFUNCDEF_D(View3DPy,viewFront)
-    PYFUNCDEF_D(View3DPy,viewLeft)
-    PYFUNCDEF_D(View3DPy,viewRear)
-    PYFUNCDEF_D(View3DPy,viewRight)
-    PYFUNCDEF_D(View3DPy,viewTop)
-    PYFUNCDEF_D(View3DPy,viewAxometric)
-    PYFUNCDEF_D(View3DPy,dump)
-    PYFUNCDEF_D(View3DPy,setStereoType)
-    PYFUNCDEF_D(View3DPy,getStereoType)
-    PYFUNCDEF_D(View3DPy,listStereoTypes)
-    PYFUNCDEF_D(View3DPy,saveImage)
-    PYFUNCDEF_D(View3DPy,saveVectorGraphic)
-    PYFUNCDEF_D(View3DPy,getCamera)
-    PYFUNCDEF_D(View3DPy,setCamera)
-    PYFUNCDEF_D(View3DPy,getCameraType)
-    PYFUNCDEF_D(View3DPy,setCameraType)
-    PYFUNCDEF_D(View3DPy,listCameraTypes)
-    PYFUNCDEF_D(View3DPy,getCursorPos)
-    PYFUNCDEF_D(View3DPy,getObjectInfo)
-    PYFUNCDEF_D(View3DPy,getSize)
-    PYFUNCDEF_D(View3DPy,getPoint)
-    PYFUNCDEF_D(View3DPy,addEventCallback)
-    PYFUNCDEF_D(View3DPy,removeEventCallback)
-    PYFUNCDEF_D(View3DPy,setAnnotation)
-    PYFUNCDEF_D(View3DPy,removeAnnotation)
-    PYFUNCDEF_D(View3DPy,getSceneGraph)
-    PYFUNCDEF_D(View3DPy,getViewer)
-    PYFUNCDEF_D(View3DPy,addEventCallbackSWIG)
-    PYFUNCDEF_D(View3DPy,removeEventCallbackSWIG)
-
-private:
-    static void eventCallback(void * ud, SoEventCallback * n);
-    static void eventCallbackSWIG(void * ud, SoEventCallback * n);
-    Gui::View3DInventor *_pcView;
 };
 
 } // namespace Gui
