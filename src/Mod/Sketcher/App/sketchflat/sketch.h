@@ -34,6 +34,8 @@ typedef struct {
 
 // typedefs for mingw32
 #if defined(__MINGW32__)
+// nothing needs to be done here
+
 // typedefs for gcc
 #elif defined(__GNUC__)
 typedef unsigned long    DWORD;
@@ -53,6 +55,7 @@ typedef unsigned short   WORD;
 #define MAX_PATH         PATH_MAX
 #endif
 
+#if defined(FC_OS_LINUX)
 #include <sys/sysinfo.h>
 
 inline DWORD GetTickCount()
@@ -62,6 +65,20 @@ inline DWORD GetTickCount()
     if (sysinfo(&si) == 0) return (si.uptime * 1000);
     else return 1000;
 }
+
+#elif defined(FC_OS_MACOSX)
+#include <Events.h>
+
+inline DWORD GetTickCount()
+{
+    //FIXME: Must be tested
+    // http://www.experts-exchange.com/Programming/System/Linux/Q_20897989.html
+    return ((((DWORD)TickCount() & 0x003FFFFF) * 1000L) / 60);
+}
+
+#else
+# error "Implement GetTickCount() for your platform."
+#endif
 
 inline int _vsnprintf(char* buffer, size_t count, const char* format, va_list argptr)
 {
