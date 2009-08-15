@@ -115,10 +115,8 @@ public:
     //void open (void);
     /// Is the document already saved to a file
     bool isSaved() const;
-    /// Get the document name of a saved document 
+    /// Get the document name
     const char* getName() const;
-    /// Get the path of a saved document 
-    //const char* getPath() const;
     //@}
 
     virtual void Save (Base::Writer &writer) const;

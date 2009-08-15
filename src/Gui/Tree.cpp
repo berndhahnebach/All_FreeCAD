@@ -27,6 +27,7 @@
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
 # include <QAction>
+# include <QActionGroup>
 # include <QApplication>
 # include <qcursor.h>
 # include <qlayout.h>
@@ -78,7 +79,6 @@ TreeWidget::TreeWidget(QWidget* parent)
     connect(this->relabelObjectAction, SIGNAL(triggered()),
             this, SLOT(onRelabelObject()));
 
-
     // Setup connections
     Application::Instance->signalNewDocument.connect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
     Application::Instance->signalDeleteDocument.connect(boost::bind(&TreeWidget::slotDeleteDocument, this, _1));
@@ -126,6 +126,11 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
     Gui::Application::Instance->setupContextMenu("Tree", view);
 
     QMenu contextMenu;
+    QMenu subMenu;
+    QActionGroup subMenuGroup(&subMenu);
+    subMenuGroup.setExclusive(true);
+    connect(&subMenuGroup, SIGNAL(triggered(QAction*)),
+            this, SLOT(onActivateDocument(QAction*)));
     MenuManager::getInstance()->setupContextMenu(view, contextMenu);
 
     // get the current item
@@ -150,6 +155,26 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
         if (!contextMenu.actions().isEmpty())
             contextMenu.addSeparator();
         contextMenu.addAction(this->relabelObjectAction);
+    }
+
+    // add a submenu to active a document if two or more exist
+    std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    if (docs.size() >= 2) {
+        App::Document* activeDoc = App::GetApplication().getActiveDocument();
+        subMenu.setTitle(tr("Activate document"));
+        contextMenu.addMenu(&subMenu);
+        QAction* active = 0;
+        for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
+            QString label = QString::fromUtf8((*it)->Label.getValue());
+            QAction* action = subMenuGroup.addAction(label);
+            action->setCheckable(true);
+            action->setStatusTip(tr("Activate document %1").arg(label));
+            action->setData(QByteArray((*it)->getName()));
+            if (*it == activeDoc) active = action;
+        }
+        if (active) active->setChecked(true);
+        active = subMenuGroup.checkedAction();
+        subMenu.addActions(subMenuGroup.actions());
     }
     delete view;
     if (contextMenu.actions().count() > 0)
@@ -194,6 +219,17 @@ void TreeWidget::onRelabelObject()
         editItem(item);
 }
 
+void TreeWidget::onActivateDocument(QAction* active)
+{
+    // activate the specified document
+    QByteArray docname = active->data().toByteArray();
+    Gui::Document* doc = Application::Instance->getDocument((const char*)docname);
+    if (!doc) return;
+    MDIView *view = doc->getActiveView();
+    if (!view) return;
+    getMainWindow()->setActiveWindow(view);
+}
+
 bool TreeWidget::dropMimeData(QTreeWidgetItem *parent, int index,
                               const QMimeData *data, Qt::DropAction action)
 {
@@ -211,6 +247,11 @@ void TreeWidget::mouseDoubleClickEvent (QMouseEvent * event)
     if (!Item) return;
     if (Item->type() == TreeWidget::DocumentType) {
         QTreeWidget::mouseDoubleClickEvent(event);
+        Gui::Document* doc = static_cast<DocumentItem*>(Item)->document();
+        if (!doc) return;
+        MDIView *view = doc->getActiveView();
+        if (!view) return;
+        getMainWindow()->setActiveWindow(view);
     }
     else if (Item->type() == TreeWidget::ObjectType) {
         if (!(static_cast<DocumentObjectItem*>(Item)->object())->doubleClicked())
@@ -525,7 +566,7 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
             std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
             bool lock = this->blockConnection(true);
             if (it!= DocumentMap.end())
-                it->second->setObjectHighlighted(msg.pObjectName,false);
+                it->second->setObjectSelected(msg.pObjectName,false);
             this->blockConnection(lock);
         }   break;
     case SelectionChanges::SetSelection:

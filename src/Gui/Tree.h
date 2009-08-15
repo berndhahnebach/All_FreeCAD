@@ -72,6 +72,7 @@ protected:
 protected Q_SLOTS:
     void onCreateGroup();
     void onRelabelObject();
+    void onActivateDocument(QAction*);
 
 private Q_SLOTS:
     void onItemSelectionChanged(void);
