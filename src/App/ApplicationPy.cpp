@@ -33,6 +33,8 @@
 
 #include "Application.h"
 #include "Document.h"
+#include "DocumentPy.h"
+#include "DocumentObserverPython.h"
 
 // FreeCAD Base header
 #include <Base/Interpreter.h>
@@ -110,6 +112,12 @@ PyMethodDef Application::Methods[] = {
     {"listDocuments",  (PyCFunction) Application::sListDocuments  ,1,
      "listDocuments() -> list\n\n"
      "Return a list of names of all documents."},
+    {"addDocumentObserver",  (PyCFunction) Application::sAddDocObserver  ,1,
+     "addDocumentObserver() -> None\n\n"
+     "Add an observer to get notified about changes on documents."},
+    {"removeDocumentObserver",  (PyCFunction) Application::sRemoveDocObserver  ,1,
+     "removeDocumentObserver() -> None\n\n"
+     "Remove an added document observer."},
 
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
@@ -458,5 +466,27 @@ PyObject* Application::sListDocuments(PyObject * /*self*/, PyObject *args,PyObje
         }
 
         return pDict;
+    } PY_CATCH;
+}
+
+PyObject* Application::sAddDocObserver(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    PyObject* o;
+    if (!PyArg_ParseTuple(args, "O",&o))
+        return NULL;
+    PY_TRY {
+        DocumentObserverPython::addObserver(Py::Object(o));
+        Py_Return;
+    } PY_CATCH;
+}
+
+PyObject* Application::sRemoveDocObserver(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    PyObject* o;
+    if (!PyArg_ParseTuple(args, "O",&o))
+        return NULL;
+    PY_TRY {
+        DocumentObserverPython::removeObserver(Py::Object(o));
+        Py_Return;
     } PY_CATCH;
 }

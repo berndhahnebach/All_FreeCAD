@@ -51,6 +51,8 @@ SET(Document_SRCS
 		 DocumentObjectPyImp.cpp
 		 DocumentObserver.cpp
 		 DocumentObserver.h
+		 DocumentObserverPython.cpp
+		 DocumentObserverPython.h
 		 DocumentPy.xml
 		 DocumentPyImp.cpp
 		 Feature.cpp
