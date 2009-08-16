@@ -86,5 +86,26 @@ ENDIF (WIN32)
 SET( OCC_FOUND "NO" )
 IF(OCC_LIBRARY)
   SET( OCC_FOUND "YES" )
+  set(OCC_LIBRARIES
+		 TKFillet
+		 TKMesh
+ 		 TKernel
+ 		 TKG2d
+ 		 TKG3d
+ 		 TKMath
+ 		 TKSTEP
+ 		 TKIGES
+ 		 TKSTL
+ 		 TKShHealing
+ 		 TKXSBase
+ 		 TKBool
+ 		 TKBO
+ 		 TKBRep
+ 		 TKTopAlgo
+ 		 TKGeomAlgo
+ 		 TKGeomBase
+ 		 TKOffset
+ 		 TKPrim
+  )
 ENDIF(OCC_LIBRARY)
 
