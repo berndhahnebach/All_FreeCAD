@@ -279,9 +279,9 @@ makeCompound(PyObject *self, PyObject *args)
         try {
             Py::List list(pcObj);
             for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-                if (PyObject_TypeCheck((*it).ptr(), &(Part::GeometryPy::Type))) {
-                    TopoDS_Shape sh = static_cast<GeometryPy*>((*it).ptr())->
-                        getGeometryPtr()->toShape();
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
+                        getTopoShapePtr()->_Shape;
                     builder.Add(Comp, sh);
                 }
             }

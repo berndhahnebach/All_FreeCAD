@@ -36,6 +36,7 @@ libFreeCADApp_la_SOURCES=\
 		DocumentObjectGroupPyImp.cpp \
 		DocumentObjectPyImp.cpp \
 		DocumentObserver.cpp \
+		DocumentObserverPython.cpp \
 		DocumentPyImp.cpp \
 		Doxygen.cpp \
 		DynamicProperty.cpp \
@@ -77,6 +78,7 @@ include_HEADERS=\
 		DocumentObjectFileIncluded.h \
 		DocumentObjectGroup.h \
 		DocumentObserver.h \
+		DocumentObserverPython.h \
 		DynamicProperty.h \
 		Feature.h \
 		FeaturePython.h \
