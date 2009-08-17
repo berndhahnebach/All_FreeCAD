@@ -34,6 +34,7 @@
 #include "Selection.h"
 #include <Base/Exception.h>
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -78,8 +79,182 @@ void SelectionObserver::attachSelection()
 
 void SelectionObserver::detachSelection()
 {
-    if (!connectSelection.connected()) {
+    if (connectSelection.connected()) {
         connectSelection.disconnect();
+    }
+}
+
+// -------------------------------------------
+
+std::vector<SelectionObserverPython*> SelectionObserverPython::_instances;
+
+SelectionObserverPython::SelectionObserverPython(const Py::Object& obj) : inst(obj)
+{
+}
+
+SelectionObserverPython::~SelectionObserverPython()
+{
+}
+
+void SelectionObserverPython::addObserver(const Py::Object& obj)
+{
+    _instances.push_back(new SelectionObserverPython(obj));
+}
+
+void SelectionObserverPython::removeObserver(const Py::Object& obj)
+{
+    SelectionObserverPython* obs=0;
+    for (std::vector<SelectionObserverPython*>::iterator it =
+        _instances.begin(); it != _instances.end(); ++it) {
+        if ((*it)->inst == obj) {
+            obs = *it;
+            _instances.erase(it);
+            break;
+        }
+    }
+
+    delete obs;
+}
+
+void SelectionObserverPython::onSelectionChanged(const SelectionChanges& msg)
+{
+    switch (msg.Type)
+    {
+    case SelectionChanges::AddSelection:
+        addSelection(msg);
+        break;
+    case SelectionChanges::RmvSelection:
+        removeSelection(msg);
+        break;
+    case SelectionChanges::SetSelection:
+        setSelection(msg);
+        break;
+    case SelectionChanges::ClrSelection:
+        clearSelection(msg);
+        break;
+    case SelectionChanges::SetPreselect:
+        setPreselection(msg);
+        break;
+    case SelectionChanges::RmvPreselect:
+        removePreselection(msg);
+        break;
+    default:
+        break;
+    }
+}
+
+void SelectionObserverPython::addSelection(const SelectionChanges& msg)
+{
+    Base::PyGILStateLocker lock;
+    try {
+        if (this->inst.hasAttr(std::string("addSelection"))) {
+            Py::Callable method(this->inst.getAttr(std::string("addSelection")));
+            Py::Tuple args(4);
+            args.setItem(0, Py::String(msg.pDocName ? msg.pDocName : ""));
+            args.setItem(1, Py::String(msg.pObjectName ? msg.pObjectName : ""));
+            args.setItem(2, Py::String(msg.pSubName ? msg.pSubName : ""));
+            Py::Tuple tuple(3);
+            tuple[0] = Py::Float(msg.x);
+            tuple[1] = Py::Float(msg.y);
+            tuple[2] = Py::Float(msg.z);
+            args.setItem(3, tuple);
+            method.apply(args);
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("%s\n", e.what());
+    }
+}
+
+void SelectionObserverPython::removeSelection(const SelectionChanges& msg)
+{
+    Base::PyGILStateLocker lock;
+    try {
+        if (this->inst.hasAttr(std::string("removeSelection"))) {
+            Py::Callable method(this->inst.getAttr(std::string("removeSelection")));
+            Py::Tuple args(3);
+            args.setItem(0, Py::String(msg.pDocName ? msg.pDocName : ""));
+            args.setItem(1, Py::String(msg.pObjectName ? msg.pObjectName : ""));
+            args.setItem(2, Py::String(msg.pSubName ? msg.pSubName : ""));
+            method.apply(args);
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("%s\n", e.what());
+    }
+}
+
+void SelectionObserverPython::setSelection(const SelectionChanges& msg)
+{
+    Base::PyGILStateLocker lock;
+    try {
+        if (this->inst.hasAttr(std::string("setSelection"))) {
+            Py::Callable method(this->inst.getAttr(std::string("setSelection")));
+            Py::Tuple args(1);
+            args.setItem(0, Py::String(msg.pDocName ? msg.pDocName : ""));
+            method.apply(args);
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("%s\n", e.what());
+    }
+}
+
+void SelectionObserverPython::clearSelection(const SelectionChanges& msg)
+{
+    Base::PyGILStateLocker lock;
+    try {
+        if (this->inst.hasAttr(std::string("clearSelection"))) {
+            Py::Callable method(this->inst.getAttr(std::string("clearSelection")));
+            Py::Tuple args(1);
+            args.setItem(0, Py::String(msg.pDocName ? msg.pDocName : ""));
+            method.apply(args);
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("%s\n", e.what());
+    }
+}
+
+void SelectionObserverPython::setPreselection(const SelectionChanges& msg)
+{
+    Base::PyGILStateLocker lock;
+    try {
+        if (this->inst.hasAttr(std::string("setPreselection"))) {
+            Py::Callable method(this->inst.getAttr(std::string("setPreselection")));
+            Py::Tuple args(3);
+            args.setItem(0, Py::String(msg.pDocName ? msg.pDocName : ""));
+            args.setItem(1, Py::String(msg.pObjectName ? msg.pObjectName : ""));
+            args.setItem(2, Py::String(msg.pSubName ? msg.pSubName : ""));
+            method.apply(args);
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("%s\n", e.what());
+    }
+}
+
+void SelectionObserverPython::removePreselection(const SelectionChanges& msg)
+{
+    Base::PyGILStateLocker lock;
+    try {
+        if (this->inst.hasAttr(std::string("removePreselection"))) {
+            Py::Callable method(this->inst.getAttr(std::string("removePreselection")));
+            Py::Tuple args(3);
+            args.setItem(0, Py::String(msg.pDocName ? msg.pDocName : ""));
+            args.setItem(1, Py::String(msg.pObjectName ? msg.pObjectName : ""));
+            args.setItem(2, Py::String(msg.pSubName ? msg.pSubName : ""));
+            method.apply(args);
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("%s\n", e.what());
     }
 }
 
@@ -90,7 +265,7 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getCompleteSelection
     std::vector<SelObj> temp;
     SelObj tempSelObj;
 
-    for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
+    for(std::list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
         tempSelObj.DocName  = It->DocName.c_str();
         tempSelObj.FeatName = It->FeatName.c_str();
         tempSelObj.SubName  = It->SubName.c_str();
@@ -547,6 +722,10 @@ PyMethodDef SelectionSingleton::Methods[] = {
      "getSelection([string]) -- Return a list of selected objets\n"
      "Return a list of selected objects for a given document name. If no\n"
      "document is given the complete selection is returned."},
+    {"addObserver",         (PyCFunction) SelectionSingleton::sAddSelObserver, 1,
+     "addObserver(Object) -- Install an observer\n"},
+    {"removeObserver",      (PyCFunction) SelectionSingleton::sRemSelObserver, 1,
+     "removeObserver(Object) -- Uninstall an observer\n"},
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
@@ -628,4 +807,26 @@ PyObject *SelectionSingleton::sGetSelection(PyObject * /*self*/, PyObject *args,
     catch (Py::Exception&) {
         return 0;
     }
+}
+
+PyObject *SelectionSingleton::sAddSelObserver(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
+{
+    PyObject* o;
+    if (!PyArg_ParseTuple(args, "O",&o))
+        return NULL;
+    PY_TRY {
+        SelectionObserverPython::addObserver(Py::Object(o));
+        Py_Return;
+    } PY_CATCH;
+}
+
+PyObject *SelectionSingleton::sRemSelObserver(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
+{
+    PyObject* o;
+    if (!PyArg_ParseTuple(args, "O",&o))
+        return NULL;
+    PY_TRY {
+        SelectionObserverPython::removeObserver(Py::Object(o));
+        Py_Return;
+    } PY_CATCH;
 }

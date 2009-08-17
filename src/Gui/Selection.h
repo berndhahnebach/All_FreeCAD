@@ -30,6 +30,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <CXX/Objects.hxx>
 
 #include <Base/Observer.h>
 #include <Base/PyExport.h>
@@ -126,6 +127,38 @@ private:
     Connection connectSelection;
 };
 
+/**
+ * The SelectionObserverPython class implements a mechanism to register
+ * a Python class instance implementing the required interface in order
+ * to be notified on selection changes.
+ *
+ * @author Werner Mayer
+ */
+class GuiExport SelectionObserverPython : public SelectionObserver
+{
+
+public:
+    /// Constructor
+    SelectionObserverPython(const Py::Object& obj);
+    virtual ~SelectionObserverPython();
+
+    static void addObserver(const Py::Object& obj);
+    static void removeObserver(const Py::Object& obj);
+
+private:
+    void onSelectionChanged(const SelectionChanges& msg);
+    void addSelection(const SelectionChanges&);
+    void removeSelection(const SelectionChanges&);
+    void setSelection(const SelectionChanges&);
+    void clearSelection(const SelectionChanges&);
+    void setPreselection(const SelectionChanges&);
+    void removePreselection(const SelectionChanges&);
+
+private:
+    Py::Object inst;
+    static std::vector<SelectionObserverPython*> _instances;
+};
+
 /** The Selection singleton class
  */
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>
@@ -213,6 +246,8 @@ protected:
     static PyObject *sClearSelection (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sIsSelected     (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sGetSelection   (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sAddSelObserver (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sRemSelObserver (PyObject *self,PyObject *args,PyObject *kwd);
 
 protected:
     /// Construction
