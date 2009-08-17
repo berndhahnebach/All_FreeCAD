@@ -531,9 +531,12 @@ void SelectionSingleton::setSelection(const char* pDocName, const std::vector<Ap
         return;
 
     std::list<_SelObj> temp;
+    std::vector<App::DocumentObject*> prev_sel;
     for (std::list<_SelObj>::const_iterator it = _SelList.begin(); it != _SelList.end(); ++it) {
         if (it->pDoc != pcDoc)
             temp.push_back(*it);
+        else
+            prev_sel.push_back(it->pObject);
     }
 
     _SelObj obj;
@@ -549,6 +552,12 @@ void SelectionSingleton::setSelection(const char* pDocName, const std::vector<Ap
         obj.z = 0.0f;
         temp.push_back(obj);
     }
+
+    std::vector<App::DocumentObject*> curr_sel = sel;
+    std::sort(curr_sel.begin(), curr_sel.end());
+    std::sort(prev_sel.begin(), prev_sel.end());
+    if (curr_sel == prev_sel) // nothing has changed
+        return;
 
     _SelList = temp;
 
