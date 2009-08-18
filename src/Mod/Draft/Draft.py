@@ -154,6 +154,22 @@ def snapPoint (target,point,cursor,ctrl=False):
 							if pt:
 								for p in pt:
 									snapArray.append([p,3,p])
+			if ob.Shape.ShapeType == 'Compound':
+				tempsnaps = []
+				for e1 in ob.Shape.Edges:
+					for e2 in ob.Shape.Edges:
+						pt = fcgeo.findIntersection(e1,e2)
+						if pt:
+							for p in pt:
+								tempsnaps.append(p)
+				for i in range(len(tempsnaps)):
+					p = tempsnaps.pop()
+					alone = True
+					for p2 in tempsnaps:
+						if fcvec.equals(p,p2): alone = False
+					if alone == True:
+						snapArray.append([p,3,p])
+					
 
 		else:
 			cur = Vector(snapped['x'],snapped['y'],snapped['z'])
@@ -2092,6 +2108,7 @@ class Upgrade(Modifier):
 	- if there is only one face, nothing is done
 	- if there are closed wires, they are transformed in a face
 	- otherwise join all edges into a wire (closed if applicable)
+	- if nothing of the above is possible, a Compound is created
 	'''
 
 	def GetResources(self):
@@ -2110,16 +2127,27 @@ class Upgrade(Modifier):
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
+
+	def compound(self):
+		shapeslist = []
+		for ob in self.sel: shapeslist.append(ob.Shape)
+		newob = self.doc.addObject("Part::Feature","Compound")
+		newob.Shape = Part.makeCompound(shapeslist)
+		return newob
 		
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = FreeCADGui.Selection.getSelection()
+		loneEdges = False
+		loneFaces = False
 		edges = []
 		wires = []
 		openwires = []
 		faces = []
 		# determining which level we will have
 		for ob in self.sel:
+			if ob.Shape.ShapeType == 'Edge': loneEdges = True
+			if ob.Shape.ShapeType == 'Face': loneFaces = True
 			for f in ob.Shape.Faces:
 				faces.append(f)
 			for w in ob.Shape.Wires:
@@ -2130,38 +2158,56 @@ class Upgrade(Modifier):
 			lastob = ob
 		# applying transformation
 		self.doc.openTransaction("Upgrade")
-		if (len(faces) > 0):
-			u = faces.pop(0)
-			for f in faces:
-				u = u.fuse(f)
-				u = fcgeo.concatenate(u)
-			newob = self.doc.addObject("Part::Feature","Union")
-			newob.Shape = u
-			formatObject(newob,lastob)
-		elif (len(wires) > 0):
-			for w in wires:
-				f = Part.Face(w)
-				faces.append(f)
-			for f in faces:
-				newob = self.doc.addObject("Part::Feature","Face")
-				newob.Shape = f
+		if faces:
+			if loneEdges:
+				newob = self.compound()
 				formatObject(newob,lastob)
+			else:
+				u = faces.pop(0)
+				for f in faces:
+					u = u.fuse(f)
+					u = fcgeo.concatenate(u)
+				newob = self.doc.addObject("Part::Feature","Union")
+				newob.Shape = u
+				formatObject(newob,lastob)
+		elif wires:
+			if loneEdges or loneFaces or openwires:
+				newob = self.compound()
+				formatObject(newob,lastob)
+			else:
+				for w in wires:
+					f = Part.Face(w)
+					faces.append(f)
+				for f in faces:
+					newob = self.doc.addObject("Part::Feature","Face")
+					newob.Shape = f
+					formatObject(newob,lastob)
 		elif (len(openwires) == 1):
-			p0 = openwires[0].Vertexes[0].Point
-			p1 = openwires[0].Vertexes[-1].Point
-			edges = openwires[0].Edges
-			edges.append(Part.Line(p1,p0).toShape())
-			w = Part.Wire(fcgeo.sortEdges(edges))
-			newob = self.doc.addObject("Part::Feature","Wire")
-			newob.Shape = w
-			formatObject(newob,lastob)
+			if loneEdges or loneFaces:
+				newob = self.compound()
+				formatObject(newob,lastob)
+			else:
+				p0 = openwires[0].Vertexes[0].Point
+				p1 = openwires[0].Vertexes[-1].Point
+				edges = openwires[0].Edges
+				edges.append(Part.Line(p1,p0).toShape())
+				w = Part.Wire(fcgeo.sortEdges(edges))
+				newob = self.doc.addObject("Part::Feature","Wire")
+				newob.Shape = w
+				formatObject(newob,lastob)
 		else:
 			for ob in self.sel:
 				for e in ob.Shape.Edges:
 					edges.append(e)
-			w = Part.Wire(fcgeo.sortEdges(edges))
-			newob = self.doc.addObject("Part::Feature","Wire")
-			newob.Shape = w
+			newob = None
+			try:
+				w = Part.Wire(fcgeo.sortEdges(edges))
+				if len(w.Edges) == len(ob.Shape.Edges):
+					newob = self.doc.addObject("Part::Feature","Wire")
+					newob.Shape = w
+			except:
+				pass
+			if not newob: newob = self.compound()
 			formatObject(newob,lastob)
 		for ob in self.sel:
 			self.doc.removeObject(ob.Name)
@@ -2169,8 +2215,6 @@ class Upgrade(Modifier):
 		select(newob)
 		Modifier.finish(self)
 				
-
-		
 class Downgrade(Modifier):
 	'''
 	This class downgrades selected objects in different ways, following this list (in order):
