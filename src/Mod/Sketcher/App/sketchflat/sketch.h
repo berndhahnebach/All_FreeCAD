@@ -67,13 +67,25 @@ inline DWORD GetTickCount()
 }
 
 #elif defined(FC_OS_MACOSX)
-#include <Events.h>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
 
 inline DWORD GetTickCount()
 {
+    uint64_t tick;
+    uint64_t tickNano;
+    static mach_timebase_info_data_t sTimebaseInfo;
+
     //FIXME: Must be tested
-    // http://www.experts-exchange.com/Programming/System/Linux/Q_20897989.html
-    return ((((DWORD)TickCount() & 0x003FFFFF) * 1000L) / 60);
+    // http://developer.apple.com/qa/qa2004/qa1398.html
+    if ( sTimebaseInfo.denom == 0 ) {
+        (void) mach_timebase_info(&sTimebaseInfo);
+    }
+
+    tick = mach_absolute_time();
+    tickNano = tick * sTimebaseInfo.numer / sTimebaseInfo.denom;
+
+    return * (int *) &tickNano/1000000;
 }
 
 #else
