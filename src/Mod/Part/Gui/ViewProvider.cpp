@@ -512,16 +512,19 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
         EdgeRoot->addChild(coords);
 
         // define the indexed face set
-        Gui::SoFCSelection* h = new Gui::SoFCSelection();
+        Gui::SoFCSelection* sel = createFromSettings();
         SbString name("Edge");
         name += SbString(i);
-        h->objectName = pcObject->getNameInDocument();
-        h->documentName = pcObject->getDocument()->getName();
-        h->subElementName = name;
+        sel->objectName = pcObject->getNameInDocument();
+        sel->documentName = pcObject->getDocument()->getName();
+        sel->subElementName = name;
+        sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
+        sel->highlightMode = Gui::SoFCSelection::AUTO;
+        sel->selectionMode = Gui::SoFCSelection::SEL_ON;
 
         SoLineSet * lineset = new SoLineSet;
-        h->addChild(lineset);
-        EdgeRoot->addChild(h);
+        sel->addChild(lineset);
+        EdgeRoot->addChild(sel);
         vertexShapeMap[lineset] = aEdge;
     }
 
@@ -554,16 +557,19 @@ Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, cons
     }
 
     // use only one selection node otherwise the Inventor tree becomes too slow
-    Gui::SoFCSelection* h = new Gui::SoFCSelection();
+    Gui::SoFCSelection* sel = createFromSettings();
     SbString name("Point");
     name += SbString(i);
-    h->objectName = pcObject->getNameInDocument();
-    h->documentName = pcObject->getDocument()->getName();
-    h->subElementName = name;
+    sel->objectName = pcObject->getNameInDocument();
+    sel->documentName = pcObject->getDocument()->getName();
+    sel->subElementName = name;
+    sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
+    sel->highlightMode = Gui::SoFCSelection::AUTO;
+    sel->selectionMode = Gui::SoFCSelection::SEL_ON;
 
     SoPointSet * pointset = new SoPointSet;
-    h->addChild(pointset);
-    VertexRoot->addChild(h);
+    sel->addChild(pointset);
+    VertexRoot->addChild(sel);
 
     return true;
 }
@@ -627,17 +633,20 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
         //root->addChild(PtSet);
 
         // define the indexed face set
-        Gui::SoFCSelection* h = new Gui::SoFCSelection();
+        Gui::SoFCSelection* sel = createFromSettings();
         SbString name("Face");
         name += SbString(i);
-        h->objectName = pcObject->getNameInDocument();
-        h->documentName = pcObject->getDocument()->getName();
-        h->subElementName = name;
+        sel->objectName = pcObject->getNameInDocument();
+        sel->documentName = pcObject->getDocument()->getName();
+        sel->subElementName = name;
+        sel->style = Gui::SoFCSelection::EMISSIVE;
+        sel->highlightMode = Gui::SoFCSelection::AUTO;
+        sel->selectionMode = Gui::SoFCSelection::SEL_ON;
 
         SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
         faceset->coordIndex.setValues(0,4*nbTriInFace,(const int32_t*) cons);
-        h->addChild(faceset);
-        FaceRoot->addChild(h);
+        sel->addChild(faceset);
+        FaceRoot->addChild(sel);
         vertexShapeMap[faceset] = aFace;
 
 

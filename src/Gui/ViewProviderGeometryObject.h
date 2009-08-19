@@ -90,6 +90,7 @@ protected:
     void showBoundingBox(bool);
     /// get called by the container whenever a property has been changed
     void onChanged(const App::Property* prop);
+    static SoFCSelection* createFromSettings();
 
 private:
     static void sensorCallback(void * data, SoSensor * sensor);
