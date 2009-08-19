@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>Gui::Dialog::DlgSettingsViewColor</class>
  <widget class="QWidget" name="Gui::Dialog::DlgSettingsViewColor" >
   <property name="geometry" >
@@ -267,21 +270,28 @@
    </item>
   </layout>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Gui::PrefColorButton</class>
    <extends>Gui::ColorButton</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefCheckBox</class>
    <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefRadioButton</class>
    <extends>QRadioButton</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -298,5 +308,118 @@
   <tabstop>backgroundColorMid</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>checkBoxPreselection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>HighlightColor</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>70</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>311</x>
+     <y>46</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxSelection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SelectionColor</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>158</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>291</x>
+     <y>75</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkMidColor</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>backgroundColorMid</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>93</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>296</x>
+     <y>226</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonSimple</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SelectionColor_Background</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>82</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>311</x>
+     <y>138</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonGradient</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>backgroundColorFrom</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>89</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>291</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonGradient</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>backgroundColorTo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>56</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>319</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonSimple</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkMidColor</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>78</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>72</x>
+     <y>226</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
