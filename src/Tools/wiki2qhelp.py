@@ -41,6 +41,8 @@ DEFAULTURL = "http://sourceforge.net/apps/mediawiki/free-cad" #default URL if no
 INDEX = "Online_Help_Toc" # the start page from where to crawl the wiki
 TMPFOLDER = "./tmp" # where the temporary stuff will be downloaded
 NORETRIEVE = ['Manual','Developer_hub','Power_users_hub','Users_hub','Source_documentation', 'User_hub','Main_Page','About_this_site'] # pages that won't be fetched (kept online)
+MAXFAIL = 3 # max number of retries if download fails
+VERBOSE = True
 
 #    END CONFIGURATION      ##############################################
 
@@ -110,7 +112,7 @@ a:hover {
 def crawl(site=DEFAULTURL):
     "downloads an entire wiki site"
     URL = site
-    print "crawling ", URL, ", saving in ", TMPFOLDER
+    if VERBOSE: print "crawling ", URL, ", saving in ", TMPFOLDER
     if not os.path.isdir(TMPFOLDER): os.mkdir(TMPFOLDER)
     file = open(TMPFOLDER + os.sep + "wiki.css",'wb')
     file.write(css)
@@ -122,14 +124,93 @@ def crawl(site=DEFAULTURL):
     while todolist:
         targetpage = todolist.pop()
         if not targetpage in NORETRIEVE:
-            print count, ": Fetching ", targetpage
+            if VERBOSE: print count, ": Fetching ", targetpage
             pages = get(targetpage)
             count += 1
             processed.append(targetpage)
             for p in pages:
                 if (not (p in todolist)) and (not (p in processed)):
                     todolist.append(p)
-    print "Done. Fetched ", count, " pages"
+    if VERBOSE: print "Fetched ", count, " pages"
+    buildtoc()
+
+def buildtoc(page=INDEX):
+    "gets the table of contents page and parses its contents into a clean lists structure"
+    
+    qhelpfile = '''<?xml version="1.0" encoding="UTF-8"?>
+    <QtHelpProject version="1.0">
+        <namespace>FreeCAD.0_9</namespace>
+        <virtualFolder>doc</virtualFolder>
+        <customFilter name="FreeCAD 0.9">
+            <filterAttribute>FreeCAD</filterAttribute>
+            <filterAttribute>0.9</filterAttribute>
+        </customFilter>
+        <filterSection>
+            <filterAttribute>FreeCAD</filterAttribute>
+            <filterAttribute>0.9</filterAttribute>
+            <toc>
+                <inserttoc>
+            </toc>
+            <keywords>
+                <keyword name="FreeCAD" ref="Online_Help_Toc.html"/>
+            </keywords>
+            <insertfiles>
+        </filterSection>
+    </QtHelpProject>
+    '''
+    
+    def getname(line):
+        line = re.compile('<li>').sub('',line)
+        line = re.compile('</li>').sub('',line)
+        title = line.strip()
+        link = ''
+        if "<a" in line:
+            title = re.findall('<a[^>]*>(.*?)</a>',line)[0].strip()
+            link = re.findall('href="(.*?)"',line)[0].strip()
+        return title,link
+
+    if VERBOSE: print "Building table of contents..."
+    f = open(local(page))
+    html = ''
+    for line in f: html += line
+    f.close()
+    html = html.replace("\n"," ")
+    html = html.replace("> <","><")
+    html = re.findall("<ul.*/ul>",html)[0]
+    items = re.findall('<li[^>]*>.*?</li>|</ul></li>',html)
+    inserttoc = '<section> title="Table of Contents"\n'
+    for item in items:
+        if not ("<ul>" in item):
+            if ("</ul>" in item):
+                inserttoc += '</section>\n'
+            else:
+                link = ''
+                title,link=getname(item)
+                if link: link='" ref="'+link
+                inserttoc += ('<section> title="'+title+link+'"</section>\n')
+        else:
+            subitems = item.split("<ul>")
+            for i in range(len(subitems)):
+                link = ''
+                title,link=getname(subitems[i])
+                if link: link='" ref="'+link
+                trail = ''
+                if i == len(subitems)-1: trail = '</section>'
+                inserttoc += ('<section> title="'+title+link+'"'+trail+'\n')
+    inserttoc += '</section>\n'
+
+    insertfiles = "<files>\n"
+    for fil in os.listdir(TMPFOLDER):
+        insertfiles += ("<file>"+fil+"</file>\n")
+    insertfiles += "</files>\n"
+    
+    qhelpfile = re.compile('<inserttoc>').sub(inserttoc,qhelpfile)
+    qhelpfile = re.compile('<insertfiles>').sub(insertfiles,qhelpfile)
+    qfilename = TMPFOLDER + os.sep + "freecad.qhp"
+    f = open(qfilename,'wb')
+    f.write(qhelpfile)
+    f.close()
+    if VERBOSE: print "Done writing qch file."
 
 def get(page):
     "downloads a single page, returns the other pages it links to"
@@ -143,7 +224,7 @@ def get(page):
 
 def cleanhtml(html):
     "cleans given html code from dirty script stuff"
-    html = html.replace('\n','Wlinebreak') # removing linebreaks
+    html = html.replace('\n','Wlinebreak') # removing linebreaks for regex processing
     html = re.compile('(.*)<div[^>]+column-content+[^>]+>').sub('',html) # stripping before content
     html = re.compile('<div[^>]+column-one+[^>]+>.*').sub('',html) # stripping after content
     html = re.compile('<!--[^>]+-->').sub('',html) # removing comment tags
@@ -206,26 +287,32 @@ def cleanimagelinks(html,links=None):
 
 def fetchpage(page):
     "retrieves given page from the wiki"
-    try:
-        html = (urlopen(URL + wikiindex + page).read())
-        return html
-    except HTTPError:
-        print 'Error: unable to fetch page ' + page
+    failcount = 0
+    while failcount < MAXFAIL:
+        try:
+            html = (urlopen(URL + wikiindex + page).read())
+            return html
+        except HTTPError:
+            failcount += 1
+    print 'Error: unable to fetch page ' + page
 
 def fetchimage(imagelink):
     "retrieves given image from the wiki and saves it"
     filename = re.findall('.*/(.*)',imagelink)[0]
     if not (filename in processed):
-        try:
-            print "Fetching " + filename
-            data = (urlopen(webroot(URL) + imagelink).read())
-            path = local(filename,image=True)
-            file = open(path,'wb')
-            file.write(data)
-            file.close()
-            processed.append(filename)
-        except HTTPError:
-            print 'Error: unable to fetch file ' + filename
+        failcount = 0
+        while failcount < MAXFAIL:
+            try:
+                if VERBOSE: print "Fetching " + filename
+                data = (urlopen(webroot(URL) + imagelink).read())
+                path = local(filename,image=True)
+                file = open(path,'wb')
+                file.write(data)
+                file.close()
+                processed.append(filename)
+            except HTTPError:
+                failcount += 1
+        print 'Error: unable to fetch file ' + filename
 
 def local(page,image=False):
     "returns a local path for a given page/image"
