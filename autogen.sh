@@ -24,11 +24,22 @@ else
 	echo "$REV_FILE created"
 fi
 
-echo "calling libtoolize"
-libtoolize --force --copy
+if which glibtoolize > /dev/null 2>&1; then
+	echo "calling glibtoolize"
+	glibtoolize --force --copy
+else
+	echo "calling libtoolize"
+	libtoolize --force --copy
+fi
 
-echo "calling aclocal"
-aclocal
+# http://www.gnu.org/software/hello/manual/automake/Macro-Search-Path.html
+if [ -d /usr/local/share/aclocal ]; then
+	echo "calling aclocal -I /usr/local/share/aclocal"
+	aclocal -I /usr/local/share/aclocal
+else
+	echo "calling aclocal"
+	aclocal
+fi
 
 echo "calling autoheader"
 autoheader
