@@ -564,6 +564,8 @@ void SelectionSingleton::setSelection(const char* pDocName, const std::vector<Ap
     SelectionChanges Chng;
     Chng.Type = SelectionChanges::SetSelection;
     Chng.pDocName = pDocName;
+    Chng.pObjectName = "";
+    Chng.pSubName = "";
 
     Notify(Chng);
     signalSelectionChanged(Chng);
@@ -595,6 +597,8 @@ void SelectionSingleton::clearSelection(const char* pDocName)
         SelectionChanges Chng;
         Chng.Type = SelectionChanges::ClrSelection;
         Chng.pDocName = docName.c_str();
+        Chng.pObjectName = "";
+        Chng.pSubName = "";
 
         Notify(Chng);
         signalSelectionChanged(Chng);
@@ -610,6 +614,8 @@ void SelectionSingleton::clearCompleteSelection()
     SelectionChanges Chng;
     Chng.Type = SelectionChanges::ClrSelection;
     Chng.pDocName = "";
+    Chng.pObjectName = "";
+    Chng.pSubName = "";
 
 
     Notify(Chng);

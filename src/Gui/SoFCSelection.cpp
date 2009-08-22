@@ -163,11 +163,12 @@ void SoFCSelection::doAction(SoAction *action)
         SoFCEnableSelectionAction *selaction = (SoFCEnableSelectionAction*)action;
         if (selaction->selection) {
             this->selectionMode = SoFCSelection::SEL_ON;
-            this->style = SoFCSelection::EMISSIVE;
+            // Could also be EMISSIVE_DIFFUSE
+            //this->style = SoFCSelection::EMISSIVE;
         }
         else {
             this->selectionMode = SoFCSelection::SEL_OFF;
-            this->style = SoFCSelection::BOX;
+            //this->style = SoFCSelection::BOX;
             this->selected = NOTSELECTED;
         }
     }

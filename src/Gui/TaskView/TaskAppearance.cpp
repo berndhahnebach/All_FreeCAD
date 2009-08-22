@@ -250,7 +250,7 @@ std::vector<Gui::ViewProvider*> TaskAppearance::getSelection() const
     std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
     for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
         Gui::ViewProvider* view = Application::Instance->getDocument(it->pDoc)->getViewProvider(it->pObject);
-        views.push_back(view);
+        if (view) views.push_back(view);
     }
 
     return views;

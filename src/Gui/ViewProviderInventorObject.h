@@ -46,6 +46,9 @@ public:
     std::vector<std::string> getDisplayModes() const;
     void updateData(const App::Property*);
 
+private:
+    void adjustSelectionNodes(SoNode* child, const char* docname, const char* objname);
+
 protected:
     SoSeparator  *pcBuffer;
     SoSeparator  *pcFile;
