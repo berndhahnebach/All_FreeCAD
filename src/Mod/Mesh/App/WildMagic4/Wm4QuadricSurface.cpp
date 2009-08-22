@@ -185,42 +185,42 @@ void QuadricSurface<Real>::GetRootSigns (RReps& rkReps,
     // use Sturm sequences to determine the signs of the roots
     int iSignChangeMI, iSignChange0, iSignChangePI, iDistinctNonzeroRoots;
     Rational akValue[4];
-    if (rkReps.C0 != 0)
+    if (rkReps.c0 != 0)
     {
-        rkReps.C3 = Rational(2,9)*rkReps.C2*rkReps.C2 -
-            Rational(2,3)*rkReps.C1;
-        rkReps.C4 = rkReps.C0 - Rational(1,9)*rkReps.C1*rkReps.C2;
+        rkReps.c3 = Rational(2,9)*rkReps.c2*rkReps.c2 -
+            Rational(2,3)*rkReps.c1;
+        rkReps.c4 = rkReps.c0 - Rational(1,9)*rkReps.c1*rkReps.c2;
 
-        if (rkReps.C3 != 0)
+        if (rkReps.c3 != 0)
         {
-            rkReps.C5 = -(rkReps.C1 + ((Rational(2)*rkReps.C2*rkReps.C3 +
-                Rational(3)*rkReps.C4)*rkReps.C4)/(rkReps.C3*rkReps.C3));
+            rkReps.c5 = -(rkReps.c1 + ((Rational(2)*rkReps.c2*rkReps.c3 +
+                Rational(3)*rkReps.c4)*rkReps.c4)/(rkReps.c3*rkReps.c3));
 
             akValue[0] = 1;
-            akValue[1] = -rkReps.C3;
-            akValue[2] = rkReps.C5;
+            akValue[1] = -rkReps.c3;
+            akValue[2] = rkReps.c5;
             iSignChangeMI = 1 + GetSignChanges(3,akValue);
 
-            akValue[0] = -rkReps.C0;
-            akValue[1] = rkReps.C1;
-            akValue[2] = rkReps.C4;
-            akValue[3] = rkReps.C5;
+            akValue[0] = -rkReps.c0;
+            akValue[1] = rkReps.c1;
+            akValue[2] = rkReps.c4;
+            akValue[3] = rkReps.c5;
             iSignChange0 = GetSignChanges(4,akValue);
 
             akValue[0] = 1;
-            akValue[1] = rkReps.C3;
-            akValue[2] = rkReps.C5;
+            akValue[1] = rkReps.c3;
+            akValue[2] = rkReps.c5;
             iSignChangePI = GetSignChanges(3,akValue);
         }
         else
         {
-            akValue[0] = -rkReps.C0;
-            akValue[1] = rkReps.C1;
-            akValue[2] = rkReps.C4;
+            akValue[0] = -rkReps.c0;
+            akValue[1] = rkReps.c1;
+            akValue[2] = rkReps.c4;
             iSignChange0 = GetSignChanges(3,akValue);
 
             akValue[0] = 1;
-            akValue[1] = rkReps.C4;
+            akValue[1] = rkReps.c4;
             iSignChangePI = GetSignChanges(2,akValue);
             iSignChangeMI = 1 + iSignChangePI;
         }
@@ -248,8 +248,8 @@ void QuadricSurface<Real>::GetRootSigns (RReps& rkReps,
                 // multiplicity 2, the other of multiplicity 1.  Distinguish
                 // between the two cases by computing the sign of the
                 // polynomial at the inflection point L = c2/3.
-                Rational kX = Rational(1,3)*rkReps.C2;
-                Rational kPoly = kX*(kX*(kX-rkReps.C2)+rkReps.C1)-rkReps.C0;
+                Rational kX = Rational(1,3)*rkReps.c2;
+                Rational kPoly = kX*(kX*(kX-rkReps.c2)+rkReps.c1)-rkReps.c0;
                 if (kPoly > 0)
                 {
                     riPositiveRoots = 2;
@@ -276,21 +276,21 @@ void QuadricSurface<Real>::GetRootSigns (RReps& rkReps,
         return;
     }
 
-    if (rkReps.C1 != 0)
+    if (rkReps.c1 != 0)
     {
-        rkReps.C3 = Rational(1,4)*rkReps.C2*rkReps.C2 - rkReps.C1;
+        rkReps.c3 = Rational(1,4)*rkReps.c2*rkReps.c2 - rkReps.c1;
 
         akValue[0] = -1;
-        akValue[1] = rkReps.C3;
+        akValue[1] = rkReps.c3;
         iSignChangeMI = 1 + GetSignChanges(2,akValue);
 
-        akValue[0] = rkReps.C1;
-        akValue[1] = -rkReps.C2;
-        akValue[2] = rkReps.C3;
+        akValue[0] = rkReps.c1;
+        akValue[1] = -rkReps.c2;
+        akValue[2] = rkReps.c3;
         iSignChange0 = GetSignChanges(3,akValue);
 
         akValue[0] = 1;
-        akValue[1] = rkReps.C3;
+        akValue[1] = rkReps.c3;
         iSignChangePI = GetSignChanges(2,akValue);
 
         riPositiveRoots = iSignChange0 - iSignChangePI;
@@ -308,10 +308,10 @@ void QuadricSurface<Real>::GetRootSigns (RReps& rkReps,
         return;
     }
 
-    if (rkReps.C2 != 0)
+    if (rkReps.c2 != 0)
     {
         riZeroRoots = 2;
-        if (rkReps.C2 > 0)
+        if (rkReps.c2 > 0)
         {
             riPositiveRoots = 1;
             riNegativeRoots = 0;
@@ -364,15 +364,15 @@ int QuadricSurface<Real>::ClassifyZeroRoots0 (const RReps& rkReps,
     // | -Sub01   Sub11  -Sub12 | * (1/det)
     // |  Sub02  -Sub12   Sub22 |
     // +-                      -+
-    Rational kFourDet = Rational(4)*rkReps.C0;
+    Rational kFourDet = Rational(4)*rkReps.c0;
 
-    Rational kQForm = rkReps.B0*(rkReps.Sub00*rkReps.B0 -
-        rkReps.Sub01*rkReps.B1 + rkReps.Sub02*rkReps.B2) -
-        rkReps.B1*(rkReps.Sub01*rkReps.B0 - rkReps.Sub11*rkReps.B1 +
-        rkReps.Sub12*rkReps.B2) + rkReps.B2*(rkReps.Sub02*rkReps.B0 -
-        rkReps.Sub12*rkReps.B1 + rkReps.Sub22*rkReps.B2);
+    Rational kQForm = rkReps.b0*(rkReps.Sub00*rkReps.b0 -
+        rkReps.Sub01*rkReps.b1 + rkReps.Sub02*rkReps.b2) -
+        rkReps.b1*(rkReps.Sub01*rkReps.b0 - rkReps.Sub11*rkReps.b1 +
+        rkReps.Sub12*rkReps.b2) + rkReps.b2*(rkReps.Sub02*rkReps.b0 -
+        rkReps.Sub12*rkReps.b1 + rkReps.Sub22*rkReps.b2);
 
-    Rational kR = Rational(1,4)*kQForm/kFourDet - rkReps.C;
+    Rational kR = Rational(1,4)*kQForm/kFourDet - rkReps.c;
     if (kR > 0)
     {
         if (iPositiveRoots == 3)
@@ -433,7 +433,7 @@ int QuadricSurface<Real>::ClassifyZeroRoots1 (const RReps& rkReps,
     {
         // rows 1 and 2 are linearly independent
         kP0 = QSVector(rkReps.Sub00,-rkReps.Sub01,rkReps.Sub02);
-        kP1 = QSVector(rkReps.A01,rkReps.A11,rkReps.A12);
+        kP1 = QSVector(rkReps.a01,rkReps.a11,rkReps.a12);
         kP2 = kP0.Cross(kP1);
         return ClassifyZeroRoots1(rkReps,iPositiveRoots,kP0,kP1,kP2);
     }
@@ -442,14 +442,14 @@ int QuadricSurface<Real>::ClassifyZeroRoots1 (const RReps& rkReps,
     {
         // rows 2 and 0 are linearly independent
         kP0 = QSVector(-rkReps.Sub01,rkReps.Sub11,-rkReps.Sub12);
-        kP1 = QSVector(rkReps.A02,rkReps.A12,rkReps.A22);
+        kP1 = QSVector(rkReps.a02,rkReps.a12,rkReps.a22);
         kP2 = kP0.Cross(kP1);
         return ClassifyZeroRoots1(rkReps,iPositiveRoots,kP0,kP1,kP2);
     }
 
     // rows 0 and 1 are linearly independent
     kP0 = QSVector(rkReps.Sub02,-rkReps.Sub12,rkReps.Sub22);
-    kP1 = QSVector(rkReps.A00,rkReps.A01,rkReps.A02);
+    kP1 = QSVector(rkReps.a00,rkReps.a01,rkReps.a02);
     kP2 = kP0.Cross(kP1);
     return ClassifyZeroRoots1(rkReps,iPositiveRoots,kP0,kP1,kP2);
 }
@@ -459,8 +459,8 @@ int QuadricSurface<Real>::ClassifyZeroRoots1 (const RReps& rkReps,
     int iPositiveRoots, const QSVector& rkP0, const QSVector& rkP1,
     const QSVector& rkP2)
 {
-    Rational kE0 = rkP0.X()*rkReps.B0 + rkP0.Y()*rkReps.B1 +
-        rkP0.Z()*rkReps.B2;
+    Rational kE0 = rkP0.X()*rkReps.b0 + rkP0.Y()*rkReps.b1 +
+        rkP0.Z()*rkReps.b2;
 
     if (kE0 != 0)
     {
@@ -475,31 +475,31 @@ int QuadricSurface<Real>::ClassifyZeroRoots1 (const RReps& rkReps,
     }
 
     // matrix F
-    Rational kF11 = rkP1.X()*(rkReps.A00*rkP1.X() + rkReps.A01*rkP1.Y() +
-        rkReps.A02*rkP1.Z()) + rkP1.Y()*(rkReps.A01*rkP1.X() +
-        rkReps.A11*rkP1.Y() + rkReps.A12*rkP1.Z()) + rkP1.Z()*(
-        rkReps.A02*rkP1.X() + rkReps.A12*rkP1.Y() + rkReps.A22*rkP1.Z());
+    Rational kF11 = rkP1.X()*(rkReps.a00*rkP1.X() + rkReps.a01*rkP1.Y() +
+        rkReps.a02*rkP1.Z()) + rkP1.Y()*(rkReps.a01*rkP1.X() +
+        rkReps.a11*rkP1.Y() + rkReps.a12*rkP1.Z()) + rkP1.Z()*(
+        rkReps.a02*rkP1.X() + rkReps.a12*rkP1.Y() + rkReps.a22*rkP1.Z());
 
-    Rational kF12 = rkP2.X()*(rkReps.A00*rkP1.X() + rkReps.A01*rkP1.Y() +
-        rkReps.A02*rkP1.Z()) + rkP2.Y()*(rkReps.A01*rkP1.X() +
-        rkReps.A11*rkP1.Y() + rkReps.A12*rkP1.Z()) + rkP2.Z()*(
-        rkReps.A02*rkP1.X() + rkReps.A12*rkP1.Y() + rkReps.A22*rkP1.Z());
+    Rational kF12 = rkP2.X()*(rkReps.a00*rkP1.X() + rkReps.a01*rkP1.Y() +
+        rkReps.a02*rkP1.Z()) + rkP2.Y()*(rkReps.a01*rkP1.X() +
+        rkReps.a11*rkP1.Y() + rkReps.a12*rkP1.Z()) + rkP2.Z()*(
+        rkReps.a02*rkP1.X() + rkReps.a12*rkP1.Y() + rkReps.a22*rkP1.Z());
 
-    Rational kF22 = rkP2.X()*(rkReps.A00*rkP2.X() + rkReps.A01*rkP2.Y() +
-        rkReps.A02*rkP2.Z()) + rkP2.Y()*(rkReps.A01*rkP2.X() +
-        rkReps.A11*rkP2.Y() + rkReps.A12*rkP2.Z()) + rkP2.Z()*(
-        rkReps.A02*rkP2.X() + rkReps.A12*rkP2.Y() + rkReps.A22*rkP2.Z());
+    Rational kF22 = rkP2.X()*(rkReps.a00*rkP2.X() + rkReps.a01*rkP2.Y() +
+        rkReps.a02*rkP2.Z()) + rkP2.Y()*(rkReps.a01*rkP2.X() +
+        rkReps.a11*rkP2.Y() + rkReps.a12*rkP2.Z()) + rkP2.Z()*(
+        rkReps.a02*rkP2.X() + rkReps.a12*rkP2.Y() + rkReps.a22*rkP2.Z());
 
     // vector g
-    Rational kG1 = rkP1.X()*rkReps.B0 + rkP1.Y()*rkReps.B1 +
-        rkP1.Z()*rkReps.B2;
-    Rational kG2 = rkP2.X()*rkReps.B0 + rkP2.Y()*rkReps.B1 +
-        rkP2.Z()*rkReps.B2;
+    Rational kG1 = rkP1.X()*rkReps.b0 + rkP1.Y()*rkReps.b1 +
+        rkP1.Z()*rkReps.b2;
+    Rational kG2 = rkP2.X()*rkReps.b0 + rkP2.Y()*rkReps.b1 +
+        rkP2.Z()*rkReps.b2;
 
     // compute g^T*F^{-1}*g/4 - c
     Rational kFourDet = Rational(4)*(kF11*kF22 - kF12*kF12);
     Rational kR = (kG1*(kF22*kG1-kF12*kG2)+kG2*(kF11*kG2-kF12*kG1))/kFourDet
-        - rkReps.C;
+        - rkReps.c;
 
     if (kR > 0)
     {
@@ -545,20 +545,20 @@ int QuadricSurface<Real>::ClassifyZeroRoots2 (const RReps& rkReps,
     // an eigenvector of A corresponding to eigenvalue c2.
     QSVector kP0, kP1, kP2;
 
-    if (rkReps.A00 != 0 || rkReps.A01 != 0 || rkReps.A02 != 0)
+    if (rkReps.a00 != 0 || rkReps.a01 != 0 || rkReps.a02 != 0)
     {
         // row 0 is not zero
-        kP2 = QSVector(rkReps.A00,rkReps.A01,rkReps.A02);
+        kP2 = QSVector(rkReps.a00,rkReps.a01,rkReps.a02);
     }
-    else if (rkReps.A01 != 0 || rkReps.A11 != 0 || rkReps.A12 != 0)
+    else if (rkReps.a01 != 0 || rkReps.a11 != 0 || rkReps.a12 != 0)
     {
         // row 1 is not zero
-        kP2 = QSVector(rkReps.A01,rkReps.A11,rkReps.A12);
+        kP2 = QSVector(rkReps.a01,rkReps.a11,rkReps.a12);
     }
     else
     {
         // row 2 is not zero
-        kP2 = QSVector(rkReps.A02,rkReps.A12,rkReps.A22);
+        kP2 = QSVector(rkReps.a02,rkReps.a12,rkReps.a22);
     }
 
     if (kP2.X() != 0)
@@ -583,27 +583,27 @@ int QuadricSurface<Real>::ClassifyZeroRoots2 (const RReps& rkReps,
     int iPositiveRoots, const QSVector& rkP0, const QSVector& rkP1,
     const QSVector& rkP2)
 {
-    Rational kE0 = rkP0.X()*rkReps.B0 + rkP0.Y()*rkReps.B1 +
-        rkP0.Z()*rkReps.B1;
+    Rational kE0 = rkP0.X()*rkReps.b0 + rkP0.Y()*rkReps.b1 +
+        rkP0.Z()*rkReps.b1;
 
     if (kE0 != 0)
     {
         return QT_PARABOLIC_CYLINDER;
     }
 
-    Rational kE1 = rkP1.X()*rkReps.B0 + rkP1.Y()*rkReps.B1 +
-        rkP1.Z()*rkReps.B1;
+    Rational kE1 = rkP1.X()*rkReps.b0 + rkP1.Y()*rkReps.b1 +
+        rkP1.Z()*rkReps.b1;
 
     if (kE1 != 0)
     {
         return QT_PARABOLIC_CYLINDER;
     }
 
-    Rational kF2 = rkReps.C2*(rkP2.Dot(rkP2));
-    Rational kE2 = rkP2.X()*rkReps.B0 + rkP2.Y()*rkReps.B1 +
-        rkP2.Z()*rkReps.B1;
+    Rational kF2 = rkReps.c2*(rkP2.Dot(rkP2));
+    Rational kE2 = rkP2.X()*rkReps.b0 + rkP2.Y()*rkReps.b1 +
+        rkP2.Z()*rkReps.b1;
 
-    Rational kR = kE2*kE2/(Rational(4)*kF2) - rkReps.C;
+    Rational kR = kE2*kE2/(Rational(4)*kF2) - rkReps.c;
     if (kR > 0)
     {
         if (iPositiveRoots == 1)
@@ -634,7 +634,7 @@ int QuadricSurface<Real>::ClassifyZeroRoots2 (const RReps& rkReps,
 template <class Real>
 int QuadricSurface<Real>::ClassifyZeroRoots3 (const RReps& rkReps)
 {
-    if (rkReps.B0 != 0 || rkReps.B1 != 0 || rkReps.B2 != 0)
+    if (rkReps.b0 != 0 || rkReps.b1 != 0 || rkReps.b2 != 0)
     {
         return QT_PLANE;
     }

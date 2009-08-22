@@ -8,7 +8,7 @@
 #ifndef IISTASKPANEL_GLOBAL_H
 #define IISTASKPANEL_GLOBAL_H
 
-#include <Qt/qglobal.h>
+#include <qglobal.h>
 
 #ifdef QIIS_STATICLIB
 #  undef QIIS_SHAREDLIB
