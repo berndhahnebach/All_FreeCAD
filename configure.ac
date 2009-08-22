@@ -8,8 +8,10 @@ dnl release version number info
 m4_include([revision.m4])
 
 AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[wmayer@users.sourceforge.net], FreeCAD)
+AC_CONFIG_AUX_DIR([m4])
 AM_INIT_AUTOMAKE([tar-ustar foreign])
 AM_CONFIG_HEADER([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 AC_LANG_CPLUSPLUS
 
 dnl Default install directory is your home directory
