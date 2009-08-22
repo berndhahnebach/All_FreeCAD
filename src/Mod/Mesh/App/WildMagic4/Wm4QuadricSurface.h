@@ -103,39 +103,39 @@ private:
         {
             Rational kOneHalf(1,2);
 
-            C = Rational(afCoeff[0]);
-            B0 = Rational(afCoeff[1]);
-            B1 = Rational(afCoeff[2]);
-            B2 = Rational(afCoeff[3]);
-            A00 = Rational(afCoeff[4]);
-            A01 = kOneHalf*Rational(afCoeff[5]);
-            A02 = kOneHalf*Rational(afCoeff[6]);
-            A11 = Rational(afCoeff[7]);
-            A12 = kOneHalf*Rational(afCoeff[8]);
-            A22 = Rational(afCoeff[9]);
+            c = Rational(afCoeff[0]);
+            b0 = Rational(afCoeff[1]);
+            b1 = Rational(afCoeff[2]);
+            b2 = Rational(afCoeff[3]);
+            a00 = Rational(afCoeff[4]);
+            a01 = kOneHalf*Rational(afCoeff[5]);
+            a02 = kOneHalf*Rational(afCoeff[6]);
+            a11 = Rational(afCoeff[7]);
+            a12 = kOneHalf*Rational(afCoeff[8]);
+            a22 = Rational(afCoeff[9]);
 
-            Sub00 = A11*A22 - A12*A12;
-            Sub01 = A01*A22 - A12*A02;
-            Sub02 = A01*A12 - A02*A11;
-            Sub11 = A00*A22 - A02*A02;
-            Sub12 = A00*A12 - A02*A01;
-            Sub22 = A00*A11 - A01*A01;
-            C0 = A00*Sub00 - A01*Sub01 + A02*Sub02;
-            C1 = Sub00 + Sub11 + Sub22;
-            C2 = A00 + A11 + A22;
+            Sub00 = a11*a22 - a12*a12;
+            Sub01 = a01*a22 - a12*a02;
+            Sub02 = a01*a12 - a02*a11;
+            Sub11 = a00*a22 - a02*a02;
+            Sub12 = a00*a12 - a02*a01;
+            Sub22 = a00*a11 - a01*a01;
+            c0 = a00*Sub00 - a01*Sub01 + a02*Sub02;
+            c1 = Sub00 + Sub11 + Sub22;
+            c2 = a00 + a11 + a22;
         }
 
         // quadratic coefficients
-        Rational A00, A01, A02, A11, A12, A22, B0, B1, B2, C;
+        Rational a00, a01, a02, a11, a12, a22, b0, b1, b2, c;
 
         // 2-by-2 determinants
         Rational Sub00, Sub01, Sub02, Sub11, Sub12, Sub22;
 
         // characteristic polynomial L^3 - C2*L^2 + C1*L - C0
-        Rational C0, C1, C2;
+        Rational c0, c1, c2;
 
         // for Sturm sequences
-        Rational C3, C4, C5;
+        Rational c3, c4, c5;
     };
 
     static void GetRootSigns (RReps& rkReps, int& riPositiveRoots,
