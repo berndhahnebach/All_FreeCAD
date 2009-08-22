@@ -1453,7 +1453,7 @@ void Application::ExtractUserPath()
     mConfig["BinPath"] = mConfig["AppHomePath"] + "bin" + PATHSEP;
     mConfig["DocPath"] = mConfig["AppHomePath"] + "doc" + PATHSEP;
 
-#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
+#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
     // Default paths for the user depending stuff on the platform
     struct passwd *pwd = getpwuid(getuid());
     if (pwd == NULL)
@@ -1473,6 +1473,61 @@ void Application::ExtractUserPath()
     // the path.
     appData += PATHSEP;
     appData += ".";
+    if (mConfig.find("AppDataSkipVendor") == mConfig.end()) {
+        appData += mConfig["ExeVendor"];
+        fi.setFile(appData.c_str());
+        if (!fi.exists()) {
+            if (!fi.createDirectory()) {
+                std::string error = "Cannot create directory ";
+                error += appData;
+                // Want more details on console
+                std::cerr << error << std::endl;
+                throw Base::Exception(error);
+            }
+        }
+        appData += PATHSEP;
+    }
+    
+    appData += mConfig["ExeName"];
+    fi.setFile(appData.c_str());
+    if (!fi.exists()) {
+        if (!fi.createDirectory()) {
+            std::string error = "Cannot create directory ";
+            error += appData;
+            // Want more details on console
+            std::cerr << error << std::endl;
+            throw Base::Exception(error);
+        }
+    }
+
+    // Actually the name of the directory where the parameters are stored should be the name of
+    // the application due to branding reasons.
+    appData += PATHSEP;
+    mConfig["UserAppData"] = appData;
+
+#elif defined(FC_OS_MACOSX)
+    // Default paths for the user depending stuff on the platform
+    struct passwd *pwd = getpwuid(getuid());
+    if (pwd == NULL)
+        throw Base::Exception("Getting HOME path from system failed!");
+    mConfig["UserHomePath"] = pwd->pw_dir;
+    std::string appData = pwd->pw_dir;
+    appData += PATHSEP;
+    appData + = "Library";
+    appData += PATHSEP;
+    appData += "Preferences";
+    Base::FileInfo fi(appData.c_str());
+    if (!fi.exists()) {
+        // This should never ever happen
+        std::stringstream str;
+        str << "Application data directory " << appData << " does not exist!";
+        throw Base::Exception(str.str());
+    }
+
+    // Try to write into our data path, therefore we must create some directories, first.
+    // If 'AppDataSkipVendor' is defined the value of 'ExeVendor' must not be part of
+    // the path.
+    appData += PATHSEP;
     if (mConfig.find("AppDataSkipVendor") == mConfig.end()) {
         appData += mConfig["ExeVendor"];
         fi.setFile(appData.c_str());
