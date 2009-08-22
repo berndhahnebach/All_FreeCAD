@@ -27,32 +27,48 @@ __author__ = "Yorik van Havre <yorik@gmx.fr>"
 __url__ = "http://yorik.orgfree.com"
 
 """
-Caution: work in progress!
-
 This script retrieves the contents of a wiki site and saves it locally,
 then calls qt help compiler to produce a qhelp-assistant help file.
 The script can be called without arguments, it will then use the default
 url below, or by passing it an url and optionally a TOC name.
 """
 
+import sys, os, re, tempfile
+from urllib2 import urlopen, HTTPError
+
 #    CONFIGURATION       #################################################
 
 DEFAULTURL = "http://sourceforge.net/apps/mediawiki/free-cad" #default URL if no URL is passed
 INDEX = "Online_Help_Toc" # the start page from where to crawl the wiki
-TMPFOLDER = "./tmp" # where the temporary stuff will be downloaded
 NORETRIEVE = ['Manual','Developer_hub','Power_users_hub','Users_hub','Source_documentation', 'User_hub','Main_Page','About_this_site'] # pages that won't be fetched (kept online)
 MAXFAIL = 3 # max number of retries if download fails
-VERBOSE = True
+VERBOSE = True # to display what's going on. Otherwise, runs totally silent.
+COMPILE = True # Wether qt assistant will be used to compile the final help file
+OUTPUTPATH = os.path.expanduser("~")+os.sep+'.FreeCAD' # Where to store the qch file
 
 #    END CONFIGURATION      ##############################################
 
-
-import sys, os, re
-from urllib2 import urlopen, HTTPError
-
 URL = DEFAULTURL
+TMPFOLDER = tempfile.mkdtemp()
 wikiindex = "/index.php?title="
 processed = []
+usage='''
+    wiki2qhelp [options] [url] [index page] [output path]
+
+    fetches wiki pages from the specified url, starting from specified
+    index page, and outputs a .qch file in the specified output path.
+    You must have qassistant installed.
+
+    If no url, index page or output path is specified, the following
+    default values will be used:
+    url: '''+DEFAULTURL+'''
+    index page: '''+INDEX+'''
+    output path: '''+OUTPUTPATH+'''
+
+    Options:
+
+    -h or --help: Displays this help message
+    '''
 css = """/* Basic CSS for offline wiki rendering */
 
 body {
@@ -98,11 +114,6 @@ a:hover {
   font-size: 0.8em;
   }
 
-.external {
-  color: black !important;
-  font-weight: normal !important;
-  }
-
 #toc {
   display: none;
   }
@@ -111,6 +122,9 @@ a:hover {
 
 def crawl(site=DEFAULTURL):
     "downloads an entire wiki site"
+    if COMPILE and os.system('qhelpgenerator -v'):
+        print "Error: Qassistant not fully installed, exiting."
+        return 1
     URL = site
     if VERBOSE: print "crawling ", URL, ", saving in ", TMPFOLDER
     if not os.path.isdir(TMPFOLDER): os.mkdir(TMPFOLDER)
@@ -132,14 +146,30 @@ def crawl(site=DEFAULTURL):
                 if (not (p in todolist)) and (not (p in processed)):
                     todolist.append(p)
     if VERBOSE: print "Fetched ", count, " pages"
-    buildtoc()
+    qhp = buildtoc()
+    if COMPILE:
+        if compile(qhp):
+            print "Temp Folder ",TMPFOLDER," has not been deleted."
+            return 1
+        else:
+            if VERBOSE: print "Deleting temp files..."
+            os.rmdir(TMPFOLDER)
+    if VERBOSE: print "All done!"
+    return 0
 
-def buildtoc(page=INDEX):
+def compile(qhpfile):
+    "compiles the whole html doc with qassistant"
+    qchfile = OUTPUTPATH + os.sep + "freecad.qch"
+    if not os.system('qhelpgenerator '+qhpfile+' -o '+qchfile):
+        if VERBOSE: print "Successfully created ",qchfile
+        return 0
+
+def buildtoc(folder=TMPFOLDER,page=INDEX):
     "gets the table of contents page and parses its contents into a clean lists structure"
     
     qhelpfile = '''<?xml version="1.0" encoding="UTF-8"?>
     <QtHelpProject version="1.0">
-        <namespace>FreeCAD.0_9</namespace>
+        <namespace>FreeCAD</namespace>
         <virtualFolder>doc</virtualFolder>
         <customFilter name="FreeCAD 0.9">
             <filterAttribute>FreeCAD</filterAttribute>
@@ -152,7 +182,7 @@ def buildtoc(page=INDEX):
                 <inserttoc>
             </toc>
             <keywords>
-                <keyword name="FreeCAD" ref="Online_Help_Toc.html"/>
+                <insertkeywords>
             </keywords>
             <insertfiles>
         </filterSection>
@@ -170,7 +200,7 @@ def buildtoc(page=INDEX):
         return title,link
 
     if VERBOSE: print "Building table of contents..."
-    f = open(local(page))
+    f = open(folder+os.sep+page+'.html')
     html = ''
     for line in f: html += line
     f.close()
@@ -179,6 +209,7 @@ def buildtoc(page=INDEX):
     html = re.findall("<ul.*/ul>",html)[0]
     items = re.findall('<li[^>]*>.*?</li>|</ul></li>',html)
     inserttoc = '<section> title="Table of Contents"\n'
+    insertkeywords = ''
     for item in items:
         if not ("<ul>" in item):
             if ("</ul>" in item):
@@ -186,31 +217,37 @@ def buildtoc(page=INDEX):
             else:
                 link = ''
                 title,link=getname(item)
-                if link: link='" ref="'+link
+                if link:
+                    link='" ref="'+link
+                    insertkeywords += ('<keyword name="'+title+link+'"/>\n')
                 inserttoc += ('<section> title="'+title+link+'"</section>\n')
         else:
             subitems = item.split("<ul>")
             for i in range(len(subitems)):
                 link = ''
                 title,link=getname(subitems[i])
-                if link: link='" ref="'+link
+                if link:
+                    link='" ref="'+link
+                    insertkeywords += ('<keyword name="'+title+link+'"/>\n')
                 trail = ''
                 if i == len(subitems)-1: trail = '</section>'
                 inserttoc += ('<section> title="'+title+link+'"'+trail+'\n')
     inserttoc += '</section>\n'
 
     insertfiles = "<files>\n"
-    for fil in os.listdir(TMPFOLDER):
+    for fil in os.listdir(folder):
         insertfiles += ("<file>"+fil+"</file>\n")
     insertfiles += "</files>\n"
-    
+
+    qhelpfile = re.compile('<insertkeywords>').sub(insertkeywords,qhelpfile)
     qhelpfile = re.compile('<inserttoc>').sub(inserttoc,qhelpfile)
     qhelpfile = re.compile('<insertfiles>').sub(insertfiles,qhelpfile)
-    qfilename = TMPFOLDER + os.sep + "freecad.qhp"
+    qfilename = folder + os.sep + "freecad.qhp"
     f = open(qfilename,'wb')
     f.write(qhelpfile)
     f.close()
     if VERBOSE: print "Done writing qch file."
+    return qfilename
 
 def get(page):
     "downloads a single page, returns the other pages it links to"
@@ -345,10 +382,17 @@ def output(html,page):
     file.write(html)
     file.close()
 
-def main(arg):	
-    if arg: URL = arg[0]
-    if len(arg) > 1: INDEX = arg[1]
-    crawl()
+def main(arg):
+    if arg:
+        if (arg[0] == '-h') or (arg[0] == '--help'):
+            print usage
+        else:
+            URL = arg[0]
+            if len(arg) > 1: INDEX = arg[1]
+            if len(arg) > 2: OUTPUTPATH = arg[2]
+            crawl()
+    else:
+        crawl()
     
 if __name__ == "__main__":
 	main(sys.argv[1:])
