@@ -186,18 +186,18 @@ case $host_os in
       LDFLAGS="$LDFLAGS -F$fc_qt4_frm -framework QtCore"
       AC_CACHE_CHECK(
         [whether Qt is installed as framework],
-        ac_have_qt_framework,
+        ac_cv_have_qt_framework,
         [AC_TRY_LINK([#include <QtCore/qglobal.h>
                       #include <stdio.h>],
                  [printf("%s\n", qVersion());],
-                 [ac_have_qt_framework=yes],
-                 [ac_have_qt_framework=no])
+                 [ac_cv_have_qt_framework=yes],
+                 [ac_cv_have_qt_framework=no])
         ])
       LDFLAGS=$ac_save_ldflags_fw
     else
-      ac_have_qt_framework=no
+      ac_cv_have_qt_framework=no
     fi
-    if test "$ac_have_qt_framework" = yes; then
+    if test "$ac_cv_have_qt_framework" = yes; then
     # Qt as framework installed 
     QT_LIBS="-Wl,-F$fc_qt4_frm"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtGui"
