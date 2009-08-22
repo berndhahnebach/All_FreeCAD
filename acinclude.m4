@@ -176,6 +176,7 @@ AC_MSG_CHECKING(for host)
 AC_MSG_RESULT($host_os)
 case $host_os in
   mingw32*)
+    fc_qt4_lib_core="-L$fc_qt4_lib -lQtCore"
     QT_LIBS="-L$fc_qt4_lib -lopengl32 -lglu32 -lgdi32 -luser32 -lmingw32 -mthreads -Wl,-enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc -Wl,-s -Wl,-s -Wl,-subsystem,windows"
     QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtSvg -DUNICODE -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DQT_NEEDS_QMAIN -frtti -fexceptions"
     ;;
@@ -199,11 +200,12 @@ case $host_os in
     fi
     if test "$ac_cv_have_qt_framework" = yes; then
     # Qt as framework installed 
+    fc_qt4_lib_core="-Wl,-F$fc_qt4_frm -Wl,-framework,QtCore"
     QT_LIBS="-Wl,-F$fc_qt4_frm"
+    #QT_LIBS="$QT_LIBS -Wl,-framework,Qt3Support"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtGui"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtOpenGL"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtCore"
-    QT_LIBS="$QT_LIBS -Wl,-framework,Qt3Support"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtNetwork"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtXml"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtSql"
@@ -216,9 +218,11 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtNetwork.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtSvg.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtXml.framework/Headers"
-    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtUiTools.framework/Headers"
+    # QtUiTools doesn't seem to be available as framework
+    QT_CXXFLAGS="$QT_CXXFLAGS -I/usr/include/QtUiTools"
     else
     # Qt not as framework installed 
+    fc_qt4_lib_core="-L$fc_qt4_lib -lQtCore"
     QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg -lQtXml"
     QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtGui"
@@ -232,6 +236,7 @@ case $host_os in
     ;;
   *)  # UNIX/Linux based
     AC_PATH_XTRA
+    fc_qt4_lib_core="-L$fc_qt4_lib -lQtCore"
     QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL -lQtSvg -lQtXml $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
     QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtGui"
@@ -327,9 +332,8 @@ if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to compile Qt test app, bye...])
 fi
 
-# Make sure not link against X11 libs so that configure succeeds whithout xserver started
-#bnv_try_4="$CXX $QT_LIBS $LIBS -o myqt myqt.o moc_myqt.o"
-bnv_try_4="$CXX -L$fc_qt4_lib -lQtCore $LIBS -o myqt myqt.o moc_myqt.o"
+# Make sure not to link against X11 libs so that configure succeeds whithout xserver started
+bnv_try_4="$CXX $fc_qt4_lib_core $LIBS -o myqt myqt.o moc_myqt.o"
 AC_TRY_EVAL(bnv_try_4)
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to link with Qt, bye...])
@@ -405,7 +409,7 @@ int main(int argc, char **argv)
 EOF
 
 # Depending on boost version decide if boost_system is required
-boost_try="$CXX boost.cpp -o boost"
+boost_try="$CXX boost.cpp $CPPFLAGS -o boost"
 AC_TRY_EVAL(boost_try)
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to get version of boost, bye...])
