@@ -31,7 +31,9 @@
 #endif
 
 #include "ViewProviderInventorObject.h"
+#include <Gui/SoFCSelection.h>
 #include <App/InventorObject.h>
+#include <App/Document.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
 #include <sstream>
@@ -67,22 +69,22 @@ void ViewProviderInventorObject::attach(App::DocumentObject *pcObj)
 
 void ViewProviderInventorObject::setDisplayMode(const char* ModeName)
 {
-  if ( strcmp("File+Buffer",ModeName)==0 )
-    setDisplayMaskMode("FileBuffer");
-  else if ( strcmp("Buffer",ModeName)==0 )
-    setDisplayMaskMode("Buffer");
-  else if ( strcmp("File",ModeName)==0 )
-    setDisplayMaskMode("File");
-  ViewProviderDocumentObject::setDisplayMode( ModeName );
+    if (strcmp("File+Buffer",ModeName)==0)
+        setDisplayMaskMode("FileBuffer");
+    else if (strcmp("Buffer",ModeName)==0)
+        setDisplayMaskMode("Buffer");
+    else if (strcmp("File",ModeName)==0)
+        setDisplayMaskMode("File");
+    ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderInventorObject::getDisplayModes(void) const
 {
-  std::vector<std::string> StrList;
-  StrList.push_back("File+Buffer");
-  StrList.push_back("Buffer");
-  StrList.push_back("File");
-  return StrList;
+    std::vector<std::string> StrList;
+    StrList.push_back("File+Buffer");
+    StrList.push_back("Buffer");
+    StrList.push_back("File");
+    return StrList;
 }
 
 void ViewProviderInventorObject::updateData(const App::Property* prop)
@@ -96,7 +98,12 @@ void ViewProviderInventorObject::updateData(const App::Property* prop)
         if (buffer.empty()) return;
         in.setBuffer((void *)buffer.c_str(), buffer.size());
         SoSeparator * node = SoDB::readAll(&in);
-        if (node) pcBuffer->addChild(node);
+        if (node) {
+            const char* doc = this->pcObject->getDocument()->getName();
+            const char* obj = this->pcObject->getNameInDocument();
+            adjustSelectionNodes(node, doc, obj);
+            pcBuffer->addChild(node);
+        }
     }
     if (prop == &ivObj->FileName) {
         // read also from file
@@ -108,7 +115,28 @@ void ViewProviderInventorObject::updateData(const App::Property* prop)
             QByteArray buffer = file.readAll();
             in.setBuffer((void *)buffer.constData(), buffer.length());
             SoSeparator * node = SoDB::readAll(&in);
-            if (node) pcFile->addChild(node);
+            if (node) {
+                const char* doc = this->pcObject->getDocument()->getName();
+                const char* obj = this->pcObject->getNameInDocument();
+                adjustSelectionNodes(node, doc, obj);
+                pcFile->addChild(node);
+            }
+        }
+    }
+}
+
+void ViewProviderInventorObject::adjustSelectionNodes(SoNode* child, const char* docname,
+                                                      const char* objname)
+{
+    if (child->getTypeId().isDerivedFrom(SoFCSelection::getClassTypeId())) {
+        static_cast<SoFCSelection*>(child)->documentName = docname;
+        static_cast<SoFCSelection*>(child)->objectName = objname;
+    }
+    else if (child->getTypeId().isDerivedFrom(SoGroup::getClassTypeId())) {
+        SoGroup* group = static_cast<SoGroup*>(child);
+        for (int i=0; i<group->getNumChildren(); i++) {
+            SoNode* subchild = group->getChild(i);
+            adjustSelectionNodes(subchild, docname, objname);
         }
     }
 }

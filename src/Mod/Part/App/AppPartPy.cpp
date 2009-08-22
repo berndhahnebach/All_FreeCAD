@@ -28,10 +28,14 @@
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRep_Builder.hxx>
+# include <BRep_Tool.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <BRepBuilderAPI_MakeWire.hxx>
 # include <BRepBuilderAPI_MakePolygon.hxx>
+# include <BRepBuilderAPI_MakeShell.hxx>
+# include <BRepBuilderAPI_MakeSolid.hxx>
+# include <BRepOffsetAPI_Sewing.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Pnt.hxx>
 # include <gp_Lin.hxx>
@@ -49,6 +53,8 @@
 # include <TopoDS_Edge.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
+# include <TopoDS_Shell.hxx>
+# include <TopoDS_Solid.hxx>
 # include <TopoDS_Compound.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TColgp_HArray2OfPnt.hxx>
@@ -146,7 +152,6 @@ static PyObject * open(PyObject *self, PyObject *args)
 
     Py_Return;
 }
-
 
 /* module functions */
 static PyObject * insert(PyObject *self, PyObject *args)
@@ -294,6 +299,67 @@ makeCompound(PyObject *self, PyObject *args)
 
         return new TopoShapeCompoundPy(new TopoShape(Comp));
     } PY_CATCH;
+}
+
+static PyObject * makeShell(PyObject *self, PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &obj))
+        return NULL;
+
+    PY_TRY {
+        BRep_Builder builder;
+        TopoDS_Shell shell;
+        //BRepOffsetAPI_Sewing mkShell;
+        builder.MakeShell(shell);
+        
+        try {
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapeFacePy::Type))) {
+                    const TopoDS_Shape& sh = static_cast<TopoShapeFacePy*>((*it).ptr())->
+                        getTopoShapePtr()->_Shape;
+                    builder.Add(shell, sh);
+                }
+            }
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
+
+        return new TopoShapeShellPy(new TopoShape(shell));
+    } PY_CATCH;
+}
+
+static PyObject * makeSolid(PyObject *self, PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &obj))
+        return NULL;
+
+    try {
+        BRepBuilderAPI_MakeSolid mkSolid;
+        const TopoDS_Shape& shape = static_cast<TopoShapePy*>(obj)
+            ->getTopoShapePtr()->_Shape;
+        TopExp_Explorer anExp (shape, TopAbs_SHELL);
+        int count=0;
+        for (; anExp.More(); anExp.Next()) {
+            ++count;
+            mkSolid.Add(TopoDS::Shell(anExp.Current()));
+        }
+
+        if (count == 0)
+            Standard_Failure::Raise("No shells found in shape");
+
+        const TopoDS_Solid& solid = mkSolid.Solid();
+        return new TopoShapeSolidPy(new TopoShape(solid));
+    }
+    catch (Standard_Failure) {
+        PyErr_SetString(PyExc_Exception, "creation of solid failed");
+        return NULL;
+    }
 }
 
 static PyObject * makePlane(PyObject *self, PyObject *args)
@@ -508,7 +574,6 @@ static PyObject * makeCone(PyObject *self, PyObject *args)
     }
 }
 
-
 static PyObject * makeTorus(PyObject *self, PyObject *args)
 {
     double radius1, radius2, angle1=0.0, angle2=2.0*Standard_PI, angle=2.0*Standard_PI;
@@ -531,7 +596,7 @@ static PyObject * makeTorus(PyObject *self, PyObject *args)
             d.SetCoord(vec.x, vec.y, vec.z);
         }
         BRepPrimAPI_MakeTorus mkTorus(gp_Ax2(p,d), radius1, radius2, angle1, angle2, angle);
-        TopoDS_Shape shape = mkTorus.Shape();
+        const TopoDS_Shape& shape = mkTorus.Shape();
         return new TopoShapeSolidPy(new TopoShape(shape));
     }
     catch (Standard_DomainError) {
@@ -539,7 +604,6 @@ static PyObject * makeTorus(PyObject *self, PyObject *args)
         return NULL;
     }
 }
-
 
 static PyObject * makeLine(PyObject *self, PyObject *args)
 {
@@ -867,6 +931,10 @@ struct PyMethodDef Part_methods[] = {
      "show(shape) -- Add the shape to the active document or create one if no document exists."},
     {"makeCompound"  ,makeCompound ,METH_VARARGS,
      "makeCompound(list) -- Create a compound out of a list of geometries."},
+    {"makeShell"  ,makeShell ,METH_VARARGS,
+     "makeShell(list) -- Create a shell out of a list of faces."},
+    {"makeSolid"  ,makeSolid ,METH_VARARGS,
+     "makeSolid(shape) -- Create a solid out of the shells inside a shape."},
     {"makePlane"  ,makePlane ,METH_VARARGS,
      "makePlane(length,width,[pnt,dir]) -- Make a plane\n"
      "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},

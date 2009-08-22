@@ -34,6 +34,7 @@
 # include <Handle_Geom_Plane.hxx>
 # include <Precision.hxx>
 # include <Standard_Real.hxx>
+# include <TopoDS_Solid.hxx>
 #endif
 
 
@@ -415,7 +416,7 @@ App::DocumentObjectExecReturn *Torus::execute(void)
                                       Angle1.getValue()/180.0f*Standard_PI,
                                       Angle2.getValue()/180.0f*Standard_PI,
                                       Angle3.getValue()/180.0f*Standard_PI);
-        TopoDS_Shape ResultShape = mkTorus.Shell();
+        const TopoDS_Solid& ResultShape = mkTorus.Solid();
         this->Shape.setValue(ResultShape);
     }
     catch (Standard_Failure) {
