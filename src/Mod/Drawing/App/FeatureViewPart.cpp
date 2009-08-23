@@ -52,6 +52,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepMesh.hxx>
 
 
 #include <Base/Exception.h>
@@ -85,6 +86,7 @@ FeatureViewPart::~FeatureViewPart()
 App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 {
     std::stringstream result;
+	std::string ViewName = Label.getValue();
 
     App::DocumentObject* link = Source.getValue();
     if (!link)
@@ -113,6 +115,7 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
     TopoDS_Shape HiddenEdges;
     HiddenEdges = shapes.HCompound();
 
+	BRepMesh::Mesh(VisiblyEdges,0.1);
     //HLRBRep_HLRToShape Tool(Hider);
     //TopoDS_Shape V  = Tool.VCompound       ();// artes vives       vues
     //TopoDS_Shape V1 = Tool.Rg1LineVCompound();// artes rgulires  vues
@@ -125,33 +128,38 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
     //TopoDS_Shape HO = Tool.OutLineHCompound();// contours apparents cachs
     //TopoDS_Shape HI = Tool.IsoLineHCompound();// isoparamtriques   caches
 
-    result << "<g" << endl
-           //<< "  id=\"" << ViweName << "\"" << endl
-           << "  fill=\"none\"" << endl
-           //<< "  transform=\"" << ViweName << "\"" << endl
-           << "  >" << endl;
+    result  << "<g" 
+            << " id=\"" << ViewName << "\"" << endl
+		    << "   stroke=\"rgb(0, 0, 0)\"" << endl 
+			<< "   stroke-width=\"0.35\"" << endl
+			<< "   stroke-linecap=\"butt\"" << endl
+			<< "   stroke-linejoin=\"miter\"" << endl
+			<< "   transform=\"translate("<< X.getValue()<<","<<Y.getValue()<<")\"" << endl
+            << "   fill=\"none\"" << endl
+            << "  >" << endl
+			<< "<g" 
+            << " id=\"" << ViewName << "Scale\"" << endl
+			<< "   transform=\"scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
+            << "  >" << endl;
 
     TopExp_Explorer edges( VisiblyEdges, TopAbs_EDGE );
-
-    for ( ; edges.More(); edges.Next() ) {
+    for (int i = 1 ; edges.More(); edges.Next(),i++ ) {
       TopoDS_Edge edge = TopoDS::Edge( edges.Current() );
       TopLoc_Location location;
       Handle( Poly_Polygon3D ) polygon = BRep_Tool::Polygon3D( edge, location );
       if ( !polygon.IsNull() ) {
         const TColgp_Array1OfPnt& nodes = polygon->Nodes();
-        //glBegin( GL_LINE_STRIP );
-        char c = 'M';
-        result << "<path d=\" "; 
+         char c = 'M';
+        result << "<path id= \"" << ViewName << i << "\" d=\" "; 
         for ( int i = nodes.Lower(); i<= nodes.Upper(); i++ ){
             result << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
             c = 'L';
-          //glVertex3f( nodes(i).X(), nodes(i).Y(), nodes(i).Z() );
         }
         result << "\" />" << endl;
-        //glEnd();
       }
     }
 
+    result << "</g>" << endl;
     result << "</g>" << endl;
 
     // Apply the resulting fragment

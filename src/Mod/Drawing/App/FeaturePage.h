@@ -54,7 +54,7 @@ public:
   virtual ~FeaturePage();
 
   App::PropertyFileIncluded PageResult;
-  App::PropertyString Template;
+  App::PropertyFile Template;
 
 
   /** @name methods overide Feature */
