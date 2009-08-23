@@ -32,6 +32,8 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Selection.h"
+#include "SelectionObject.h"
+#include "SelectionObjectPy.h"
 #include <Base/Exception.h>
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
@@ -302,6 +304,9 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
             tempSelObj.TypeName = It->TypeName.c_str();
             tempSelObj.pObject    = It->pObject;
             tempSelObj.pDoc     = It->pDoc;
+			tempSelObj.x        = It->x;
+			tempSelObj.y        = It->y;
+			tempSelObj.z        = It->z;
             temp.push_back(tempSelObj);
         }
     }
@@ -737,6 +742,11 @@ PyMethodDef SelectionSingleton::Methods[] = {
      "getSelection([string]) -- Return a list of selected objets\n"
      "Return a list of selected objects for a given document name. If no\n"
      "document is given the complete selection is returned."},
+    {"getSelectionEx",         (PyCFunction) SelectionSingleton::sGetSelectionEx, 1,
+     "getSelection([string]) -- Return a list of SelectinObjects\n"
+     "Return a list of SelectionObjects for a given document name. If no\n"
+     "document is given the complete selection is returned. The Selection-\n"
+     "Objects contain a veriaty of information about the selction, e.g. Subelement."},
     {"addObserver",         (PyCFunction) SelectionSingleton::sAddSelObserver, 1,
      "addObserver(Object) -- Install an observer\n"},
     {"removeObserver",      (PyCFunction) SelectionSingleton::sRemSelObserver, 1,
@@ -822,6 +832,30 @@ PyObject *SelectionSingleton::sGetSelection(PyObject * /*self*/, PyObject *args,
     catch (Py::Exception&) {
         return 0;
     }
+}
+
+PyObject *SelectionSingleton::sGetSelectionEx(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
+{
+    char *documentName=0;
+    if (!PyArg_ParseTuple(args, "|s", &documentName))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception
+
+    std::vector<SelectionSingleton::SelObj> sel;
+    if (documentName)
+        sel = Selection().getSelection(documentName);
+    else
+        sel = Selection().getCompleteSelection();
+
+    try {
+        Py::List list;
+        for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
+            list.append(Py::Object(new SelectionObjectPy(new SelectionObject(*it))));
+        }
+        return Py::new_reference_to(list);
+    }
+    catch (Py::Exception&) {
+        return 0;
+	}
 }
 
 PyObject *SelectionSingleton::sAddSelObserver(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)

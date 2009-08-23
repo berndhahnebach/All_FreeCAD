@@ -25,6 +25,7 @@
 #define GUI_SelectionObject_H
 
 #include <Base/BaseClass.h>
+#include "Selection.h"
 
 namespace Gui {
 
@@ -39,11 +40,32 @@ class GuiExport SelectionObject : public Base::BaseClass
 public:
     /** Constructs a SelectionObject object. */
     SelectionObject();
+	SelectionObject( const Gui::SelectionSingleton::SelObj & );
     virtual ~SelectionObject();
     /**
      * The default implementation returns an instance of @ref SelectionObjectPy.
      */
     PyObject* getPyObject();
+
+	/// get the SubElement name of this SelectionObject
+	inline const char* getSubName(void){return SubName.c_str();}
+	/// get the name of the Document of this SelctionObject
+	inline const char* getDocName(void){return DocName.c_str();}
+	/// get the name of the Document Object of this SelectionObject
+	inline const char* getFeatName(void){return FeatName.c_str();}
+	/// get the Type of the selcted Object
+	inline const char* getTypeName(void){return TypeName.c_str();}
+
+	/// returns the selected DocumentObject or NULL if the object is already deleted
+	App::DocumentObject *getObject(void);
+
+protected:
+    std::string SubName;
+    std::string DocName;
+    std::string FeatName;
+    std::string TypeName;
+    float x,y,z;
+
 };
 
 

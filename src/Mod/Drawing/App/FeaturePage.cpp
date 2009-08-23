@@ -35,6 +35,7 @@
 #include <iostream>
 
 #include "FeaturePage.h"
+#include "FeatureView.h"
 
 using namespace Drawing;
 using namespace std;
@@ -62,6 +63,10 @@ FeaturePage::~FeaturePage()
 
 App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
+	const char* t = PageResult.getValue();
+	if(std::string(PageResult.getValue()) == "")
+		PageResult.setValue(Template.getValue());
+
     Base::FileInfo fi(Template.getValue());
     if (!fi.isReadable()) {
         Base::Console().Log("FeaturePage::execute() not able to open %s!\n",Template.getValue());
@@ -84,14 +89,24 @@ App::DocumentObjectExecReturn *FeaturePage::execute(void)
       else
       {
         // get through the children and collect all the views
+		  const std::vector<App::DocumentObject*> &Grp = Group.getValues();
+		  for(std::vector<App::DocumentObject*>::const_iterator It= Grp.begin();It!=Grp.end();++It){
+			  if((*It)->getTypeId().isDerivedFrom(Drawing::FeatureView::getClassTypeId())){
+				  Drawing::FeatureView *View = dynamic_cast<Drawing::FeatureView *>(*It);
+				  ofile << View->ViewResult.getValue();
+				  ofile << endl << endl << endl;
+			  }
+
+		  }
       }
     }
-
-    PageResult.setValue(tempName.c_str());
 
     file.close();
     ofile.close();
 
+    PageResult.setValue(tempName.c_str());
+
+ 
   //const char* text = "lskdfjlsd";
   //const char* regex = "lskdflds";
   //boost::regex e(regex);

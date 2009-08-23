@@ -42,6 +42,7 @@
 #include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/ViewProviderDocumentObjectGroup.h>
 
 
 #include "ViewProviderPage.h"
@@ -56,7 +57,7 @@
 
 using namespace DrawingGui;
 
-PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingPage, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingPage, Gui::ViewProviderDocumentObjectGroup)
 
 
 //**************************************************************************
@@ -64,6 +65,7 @@ PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingPage, Gui::ViewProviderDocumentOb
 
        
 ViewProviderDrawingPage::ViewProviderDrawingPage()
+:view(0)
 {
 
 
@@ -99,30 +101,44 @@ std::vector<std::string> ViewProviderDrawingPage::getDisplayModes(void) const
   return StrList;
 }
 
-void ViewProviderDrawingPage::updateData(const App::Property*)
+void ViewProviderDrawingPage::updateData(const App::Property* prop)
 {
+	Gui::ViewProviderDocumentObjectGroup::updateData(prop);
+    if (prop->getTypeId() == App::PropertyFileIncluded::getClassTypeId()) {
+
+		if(std::string(getPageObject()->PageResult.getValue()) != ""){
+			if(!view){
+				view = new DrawingView(Gui::getMainWindow());
+				view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+				view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
+				view->setWindowTitle(QObject::tr("Drawing viewer"));
+				view->resize( 400, 300 );
+				Gui::getMainWindow()->addWindow(view);
+			}else{
+				try{
+				view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+				}catch(...){}// dirty hack for the moment....
+			}
+		}
+	}
 
 
 }
 
-bool ViewProviderDrawingPage::setEdit(int ModNum)
+bool ViewProviderDrawingPage::doubleClicked(void)
 {
-    view = new DrawingView(Gui::getMainWindow());
-    //view->load(this->fileName);
+ /*   view = new DrawingView(Gui::getMainWindow());
+    view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
     view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
     view->setWindowTitle(QObject::tr("Drawing viewer"));
     view->resize( 400, 300 );
     Gui::getMainWindow()->addWindow(view);
 
-    return true;
+    return true;*/
+	return false;
 }
 
-void ViewProviderDrawingPage::unsetEdit(void)
-{   
-    // remove the Drawing view
 
-
-}
 
 Drawing::FeaturePage* ViewProviderDrawingPage::getPageObject(void)
 {

@@ -82,7 +82,7 @@ public:
 
 
 
-// Export an instance of the base class (to avoid warnning C4275, see also 
+// Export an instance of the base class (to avoid warning C4275, see also 
 // C++ Language Reference/General Rules and Limitations on MSDN for more details.)
 //
 // For compiler gcc4.1 we need to define the template class outside namespace 'Gui' otherwise we get the compiler error: 
@@ -99,7 +99,7 @@ namespace Gui
 {
 
 /**
- * The SelectionObserver class simplfies the step to write classes that listen
+ * The SelectionObserver class simplyfies the step to write classes that listen
  * to what happens to the selection.
  *
  * @author Werner Mayer
@@ -179,8 +179,12 @@ public:
     /// Check if selected
     bool isSelected(App::DocumentObject*) const;
 
+	/// set the preselected object (mostly by the 3D View)
     bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
+	/// remove the present preselection
     void rmvPreselect();
+	/// returns the present preselection 
+
 
     /** Returns the number of selected objects with an special Object type
      * Its the convenient way to check if the right Objects are selected to 
@@ -192,7 +196,7 @@ public:
 
     /**
      * Does basically the same as the method above unless that it accepts a string literal as first argument.
-     * \a typeName must be a registered type otherwise 0 is returned.
+     * \a typeName must be a registered type, otherwise 0 is returned.
      */
     unsigned int countObjectsOfType(const char* typeName, const char* pDocName=0) const;
 
@@ -216,6 +220,7 @@ public:
         const char* TypeName;
         App::Document* pDoc;
         App::DocumentObject*  pObject;
+		float x,y,z;
     };
 
     /// signal on new Object
@@ -246,6 +251,7 @@ protected:
     static PyObject *sClearSelection (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sIsSelected     (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sGetSelection   (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sGetSelectionEx (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sAddSelObserver (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sRemSelObserver (PyObject *self,PyObject *args,PyObject *kwd);
 

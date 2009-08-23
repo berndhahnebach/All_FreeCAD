@@ -23,13 +23,12 @@
 
 #include "PreCompiled.h"
 
+#include <App/Application.h>
+#include <Base/Interpreter.h>
+
 #include "SelectionObject.h"
 #include "SelectionObjectPy.h"
 #include "Application.h"
-#include "Selection.h"
-
-#include <App/Application.h>
-#include <Base/Interpreter.h>
 
 using namespace Gui;
 
@@ -40,8 +39,33 @@ SelectionObject::SelectionObject()
 {
 }
 
+SelectionObject::SelectionObject( const Gui::SelectionSingleton::SelObj &Obj )
+{
+	// moving the information over
+	// no pointer is copied, cause is to dangerous to keep pointers to 
+	// the document outside....
+	DocName  = Obj.DocName;
+	FeatName = Obj.FeatName;
+	SubName  = Obj.SubName;
+	TypeName = Obj.TypeName;
+	x = Obj.x;
+	y = Obj.y;
+	z = Obj.z;
+
+}
+
 SelectionObject::~SelectionObject()
 {
+}
+
+App::DocumentObject * SelectionObject::getObject(void)
+{
+	if(DocName != ""){
+		App::Document *doc = App::GetApplication().getDocument(DocName.c_str());
+		if(doc && FeatName != "")
+			return doc->getObject(FeatName.c_str());
+	}
+	return 0;
 }
 
 PyObject* SelectionObject::getPyObject()

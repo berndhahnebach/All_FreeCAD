@@ -25,6 +25,7 @@
 #define __VIEWPROVIDERDrawingPAGE_H__
 
 #include <Gui/ViewProviderFeature.h>
+#include <Gui/ViewProviderDocumentObjectGroup.h>
 
 #include "DrawingView.h"
 
@@ -35,7 +36,7 @@ namespace Drawing{
 namespace DrawingGui {
 
 
-class DrawingGuiExport ViewProviderDrawingPage:public Gui::ViewProviderDocumentObject
+class DrawingGuiExport ViewProviderDrawingPage:public Gui::ViewProviderDocumentObjectGroup
 {
   PROPERTY_HEADER(DrawingGui::ViewProviderDrawingPage);
 
@@ -53,8 +54,8 @@ public:
   /// Update the Drawing representation
   //virtual void update(const ChangeType&);
 
-    virtual bool setEdit(int ModNum);
-	virtual void unsetEdit(void);
+  /// Is called by the tree if the user double click on the object
+  virtual bool doubleClicked(void);
 
 
   virtual void updateData(const App::Property*);
