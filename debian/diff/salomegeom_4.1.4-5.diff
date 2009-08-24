@@ -98,11 +98,11 @@
 +
 +  * Initial release
 +
-+ -- Werner Mayer <wmayer@sourceforge.net>  Sun, 23 Aug 2009 17:12:19 +0200
++ -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 23 Aug 2009 17:12:19 +0200
 +
 --- salomegeom-4.1.4.orig/debian/rules
 +++ salomegeom-4.1.4/debian/rules
-@@ -0,0 +1,117 @@
+@@ -0,0 +1,129 @@
 +#!/usr/bin/make -f
 +# -*- makefile -*-
 +# Sample debian/rules that uses debhelper.
@@ -143,9 +143,9 @@
 +	cd $(BUILD_DIR) && \
 +	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
 +	--prefix=/usr --includedir=/usr/include/salomegeom \
-+	--libdir=/usr/lib/salomegeom --datadir=/usr/share/salomegeom \
-+	LDFLAGS="-Wl,-z,defs" \
-+	CXXFLAGS="$(CXXFLAGS) -I /usr/include/opencascade" 
++	--libdir=/usr/lib --datadir=/usr/share/salomegeom \
++	LDFLAGS="-Wl,-z,defs -L/usr/lib" \
++	CXXFLAGS="$(CXXFLAGS) -I/usr/include/opencascade" 
 +
 +build: build-links build-stamp
 +
@@ -168,6 +168,10 @@
 +	dh_testdir
 +	dh_testroot
 +	dh_clean
++# We always get some strange symlinks in these directories which we must remove first
++	rm -f inc/inc
++	rm -f src/src
++	rm -f resources/resources
 +	rm -f build-stamp
 +	cd $(BUILD_DIR) && \
 +	rm -f configure && \
@@ -191,7 +195,15 @@
 +	dh_installdirs
 +
 +# Add here commands to install the package into debian/salomegeom.
-+	cd $(BUILD_DIR) && $(MAKE) install DESTDIR=$(CURDIR)/debian/salomegeom
++	cd $(BUILD_DIR) && $(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/salomegeom
++
++# install the core system
++	dh_install -psalomegeom debian/tmp/salomegeom/usr/share/* usr/share/
++	dh_install -psalomegeom debian/tmp/salomegeom/usr/lib/lib*.so.* usr/lib
++	dh_install -psalomegeom-dev debian/tmp/salomegeom/usr/lib/lib*.so usr/lib
++	dh_install -psalomegeom-dev debian/tmp/salomegeom/usr/lib/lib*.la usr/lib
++	dh_install -psalomegeom-dev debian/tmp/salomegeom/usr/lib/lib*.a  usr/lib
++	dh_install -psalomegeom-dev debian/tmp/salomegeom/usr/include/* usr/include
 +
 +# Build architecture-independent files here.
 +binary-indep: build install
@@ -222,7 +234,7 @@
 +
 --- salomegeom-4.1.4.orig/debian/control
 +++ salomegeom-4.1.4/debian/control
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,26 @@
 +Source: salomegeom
 +Section: libs
 +Priority: extra
@@ -234,6 +246,16 @@
 +Architecture: any
 +Depends: ${shlibs:Depends}, ${misc:Depends}
 +Description: SALOME Geometry Module
++ A complete OpenCascade - OCAF based CAD framework.Note that this is not
++ the original SALOME GEOM project but an effort to create a standalone
++ framework based on the existing one from SALOME project, with the
++ addition of extra functionality.
++
++Package: salomegeom-dev
++Architecture: any
++Section: libdevel
++Depends: salomegeom (>= ${source:Version})
++Description: SALOME Geometry Module development files
 + A complete OpenCascade - OCAF based CAD framework.Note that this is not
 + the original SALOME GEOM project but an effort to create a standalone
 + framework based on the existing one from SALOME project, with the
