@@ -1513,7 +1513,7 @@ void Application::ExtractUserPath()
     mConfig["UserHomePath"] = pwd->pw_dir;
     std::string appData = pwd->pw_dir;
     appData += PATHSEP;
-    appData + = "Library";
+    appData += "Library";
     appData += PATHSEP;
     appData += "Preferences";
     Base::FileInfo fi(appData.c_str());
