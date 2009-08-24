@@ -43,7 +43,8 @@ libDrawing_la_LIBADD   = \
 		-lTKGeomBase \
 		-lTKOffset \
 		-lTKPrim \
-		-lTKHLR
+		-lTKHLR \
+		-lTKMesh
 
 #--------------------------------------------------------------------------------------
 # Loader of libDrawing
