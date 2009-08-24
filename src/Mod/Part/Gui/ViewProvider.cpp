@@ -51,6 +51,7 @@
 # include <TopoDS_Iterator.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopExp.hxx>
+# include <TopTools_IndexedMapOfShape.hxx>
 # include <Poly_PolygonOnTriangulation.hxx>
 # include <TColStd_Array1OfInteger.hxx>
 # include <TopTools_ListOfShape.hxx>
@@ -385,7 +386,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
         try {
             // creating the mesh on the data structure
             BRepMesh::Mesh(cShape,this->meshDeviation);
-            //BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
+            //BRepMesh_IncrementalMesh MESH(cShape,meshDeviation);
             // We must reset the location here because the transformation data
             // are set in the placement property
             TopLoc_Location aLoc;
@@ -419,19 +420,28 @@ void ViewProviderPart::updateData(const App::Property* prop)
 
 Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
 {
-    TopExp_Explorer ex;
+    //TopExp_Explorer ex;
 
     EdgeRoot->addChild(pcLineMaterial);  
     EdgeRoot->addChild(pcLineStyle);
+
+    // get a indexed map of edges
+    TopTools_IndexedMapOfShape M;
+    TopExp::MapShapes(myShape, TopAbs_EDGE, M);
 
     // build up map edge->face
     TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
     TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
 
-    int i=1;
-    for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next(),i++) {
+    //int i=1;
+    //for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next(),i++) {
+    for (int i=0; i<M.Extent(); i++)
+    {
+
+        //if(i>12)continue;
         // get the shape and mesh it
-        const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
+        //const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
+        const TopoDS_Edge& aEdge = TopoDS::Edge(M(i+1));
 
         // getting the transformation of the shape/face
         gp_Trsf myTransf;
@@ -514,7 +524,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
         // define the indexed face set
         Gui::SoFCSelection* sel = createFromSettings();
         SbString name("Edge");
-        name += SbString(i);
+        name += SbString(i+1);
         sel->objectName = pcObject->getNameInDocument();
         sel->documentName = pcObject->getDocument()->getName();
         sel->subElementName = name;
