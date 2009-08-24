@@ -64,7 +64,7 @@
  
  # set ARCHIMDE sources
  libArchimede_la_SOURCES =  $(srcdir)/$(geomdir)src/Archimede/Archimede_VolumeSection.cpp
-@@ -581,6 +581,26 @@
+@@ -582,6 +582,26 @@
  # libShHealOper_la_LDFLAGS        = -version-info 0:0:0
  # libSketcher_la_LDFLAGS          = -version-info 0:0:0
  
@@ -91,6 +91,14 @@
  # include files to be copied to installdir/inc
  include_HEADERS =  $(srcdir)/$(geomdir)inc/Archimede_VolumeSection.hxx \
  $(srcdir)/$(geomdir)inc/BlockFix_BlockFixAPI.hxx \
+@@ -921,7 +941,6 @@
+ $(srcdir)/$(geomdir)inc/ShHealOper_RemoveInternalWires.hxx \
+ $(srcdir)/$(geomdir)inc/ShHealOper_Sewing.hxx \
+ $(srcdir)/$(geomdir)inc/ShHealOper_ShapeProcess.hxx \
+-$(srcdir)/$(geomdir)inc/ShHealOper_SpiltCurve2d.hxx \
+ $(srcdir)/$(geomdir)inc/ShHealOper_SplitCurve2d.hxx \
+ $(srcdir)/$(geomdir)inc/ShHealOper_SplitCurve3d.hxx \
+ $(srcdir)/$(geomdir)inc/ShHealOper_Tool.hxx \
 --- salomegeom-5.1.1.orig/debian/changelog
 +++ salomegeom-5.1.1/debian/changelog
 @@ -0,0 +1,6 @@
