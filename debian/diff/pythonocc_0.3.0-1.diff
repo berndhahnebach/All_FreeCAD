@@ -134,7 +134,7 @@
 +.PHONY: build clean binary-indep binary-arch binary install
 --- pythonocc-0.3.0.orig/debian/control
 +++ pythonocc-0.3.0/debian/control
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,20 @@
 +Source: pythonocc
 +Section: python
 +Priority: extra
@@ -149,8 +149,11 @@
 +Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 +XB-Python-Version: ${python:Versions}
 +Provides: ${python:Provides}
-+Description: Python binding for OpenCASCADE
-+ pythonOCC is Python binding for OpenCASCADE.
++Description: A framework for agile CAD development
++ PythonOCC is a Python wrapper module for the
++ OpenCascade library. It contains python functions and classes
++ that will allow you to fully utilitize the OpenCascade library.
++ This version is built against OpenCascade 6.3.0.
 +
 --- pythonocc-0.3.0.orig/debian/compat
 +++ pythonocc-0.3.0/debian/compat
