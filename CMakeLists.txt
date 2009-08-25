@@ -32,6 +32,7 @@ set(COMPILE_DEFINITIONS_DEBUG "-DFC_DEBUG=1")
 
 if(WIN32)
 		 set(PLATFORM_CP xcopy /Y /S)
+		 set(PLATFORM_MK mkdir)
 else(WIN32)
 		 set(PLATFORM_CP cp)
 		 set(PLATFORM_MK mkdir -p)
