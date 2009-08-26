@@ -134,12 +134,8 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 			<< "   stroke-width=\"0.35\"" << endl
 			<< "   stroke-linecap=\"butt\"" << endl
 			<< "   stroke-linejoin=\"miter\"" << endl
-			<< "   transform=\"translate("<< X.getValue()<<","<<Y.getValue()<<")\"" << endl
+			<< "   transform=\"translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
             << "   fill=\"none\"" << endl
-            << "  >" << endl
-			<< "<g" 
-            << " id=\"" << ViewName << "Scale\"" << endl
-			<< "   transform=\"scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
             << "  >" << endl;
 
     TopExp_Explorer edges( VisiblyEdges, TopAbs_EDGE );
@@ -159,7 +155,6 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
       }
     }
 
-    result << "</g>" << endl;
     result << "</g>" << endl;
 
     // Apply the resulting fragment
