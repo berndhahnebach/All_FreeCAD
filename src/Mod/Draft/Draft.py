@@ -1570,9 +1570,11 @@ class Move(Modifier):
 			if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
 			else: newob=ob
 			if (ob.Type == "Part::Feature"):
-				sh = ob.Shape
-				sh.translate(delta)
-				newob.Shape = sh
+				m = FreeCAD.Matrix()
+				m.A14 = delta.x
+				m.A24 = delta.y
+				m.A34 = delta.z
+				newob.Shape = ob.Shape.transform(m)
 		if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
 

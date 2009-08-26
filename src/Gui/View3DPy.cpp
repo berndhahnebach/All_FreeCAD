@@ -752,7 +752,7 @@ Py::Object View3DInventorPy::getObjectInfo(const Py::Tuple& args)
         Py::Object ret = Py::None();
         if (Point) {
             Py::Dict dict;
-            SbVec3f pt = Point->getObjectPoint();
+            SbVec3f pt = Point->getPoint();
             dict.setItem("x", Py::Float(pt[0]));
             dict.setItem("y", Py::Float(pt[1]));
             dict.setItem("z", Py::Float(pt[2]));
