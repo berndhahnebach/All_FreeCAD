@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <sstream>
-
 #endif
 
 
@@ -50,14 +49,14 @@ PROPERTY_SOURCE(Drawing::FeatureView, App::AbstractFeature)
 
 FeatureView::FeatureView(void) 
 {
-  static const char *group = "Drawing view";
-  ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"X position of the view on the drawing in modeing units (mm)");
-  ADD_PROPERTY_TYPE(Y ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
-  ADD_PROPERTY_TYPE(Scale ,(0),group,App::Prop_None,"Scale factor of the view");
+    static const char *group = "Drawing view";
+    ADD_PROPERTY_TYPE(X ,(0),group,App::Prop_None,"X position of the view on the drawing in modeing units (mm)");
+    ADD_PROPERTY_TYPE(Y ,(0),group,App::Prop_None,"Y position of the view on the drawing in modeing units (mm)");
+    ADD_PROPERTY_TYPE(Scale ,(0),group,App::Prop_None,"Scale factor of the view");
 
-  ADD_PROPERTY_TYPE(Direction ,(0,0,1.0),group,App::Prop_None,"Projection direction");
-
-  ADD_PROPERTY_TYPE(ViewResult ,(0),group,App::Prop_Output,"Resulting SVG fragment of that view");
+    ADD_PROPERTY_TYPE(Direction ,(0,0,1.0),group,App::Prop_None,"Projection direction");
+    App::PropertyType type = (App::PropertyType)(App::Prop_Output|App::Prop_Hidden);
+    ADD_PROPERTY_TYPE(ViewResult ,(0),group,type,"Resulting SVG fragment of that view");
 }
 
 FeatureView::~FeatureView()
@@ -68,16 +67,3 @@ App::DocumentObjectExecReturn *FeatureView::execute(void)
 {
     return App::DocumentObject::StdReturn;
 }
-
-
-//
-//PyObject *Feature::getPyObject(void)
-//{
-// if(PythonObject.is(Py::_None())){
-//    // ref counter is set to 1
-//    PythonObject.set(new PartFeaturePy(this),true);
-//  }
-//  return Py::new_reference_to(PythonObject); 
-//}
-
-
