@@ -58,7 +58,7 @@ public:
     /** @name Modification */
     //@{
     /// Transform the real shape data
-    void transform(const Base::Matrix4D &rclMat);
+    void transformGeometry(const Base::Matrix4D &rclMat);
     //@}
 
     /** @name Getting basic geometric entities */

@@ -361,7 +361,7 @@ unsigned int PropertyMeshKernel::getMemSize (void) const
     return size;
 }
 
-void PropertyMeshKernel::transform(const Base::Matrix4D &rclMat)
+void PropertyMeshKernel::transformGeometry(const Base::Matrix4D &rclMat)
 {
     aboutToSetValue();
     MeshCore::MeshKernel kernel;

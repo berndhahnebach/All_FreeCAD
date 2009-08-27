@@ -530,7 +530,7 @@ PyObject*  TopoShapePy::sewShape(PyObject *args)
     }
 }
 
-PyObject*  TopoShapePy::transform(PyObject *args)
+PyObject*  TopoShapePy::transformGeometry(PyObject *args)
 {
     PyObject *obj;
     if (!PyArg_ParseTuple(args, "O!", &(Base::MatrixPy::Type),&obj))
@@ -538,7 +538,7 @@ PyObject*  TopoShapePy::transform(PyObject *args)
 
     Base::Matrix4D mat = static_cast<Base::MatrixPy*>(obj)->value();
     try {
-        TopoDS_Shape shape = this->getTopoShapePtr()->transform(mat);
+        TopoDS_Shape shape = this->getTopoShapePtr()->transformGeometry(mat);
         return new TopoShapePy(new TopoShape(shape));
     }
     catch (Standard_Failure) {

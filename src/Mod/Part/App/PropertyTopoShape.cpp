@@ -124,17 +124,9 @@ void PropertyPartShape::getFaces(std::vector<Base::Vector3d> &aPoints,
     _Shape.getFaces(aPoints, aTopo, accuracy, flags);
 }
 
-void PropertyPartShape::transform(const Base::Matrix4D &rclTrf)
+void PropertyPartShape::transformGeometry(const Base::Matrix4D &rclTrf)
 {
-    gp_Trsf mat;
-    mat.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
-                  rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
-                  rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
-                  0.00001,0.00001);
-    mat.SetScaleFactor(rclTrf[3][3]);
-    // geometric transformation
-    BRepBuilderAPI_GTransform mkTrsf(this->_Shape._Shape, gp_GTrsf(mat));
-    setValue(mkTrsf.Shape());
+    setValue(_Shape.transformGeometry(rclTrf));
 }
 
 PyObject *PropertyPartShape::getPyObject(void)

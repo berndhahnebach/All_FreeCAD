@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QMessageBox>
+#endif
 
 #include "DlgReportViewImp.h"
 #include "PrefWidgets.h"
@@ -58,6 +61,7 @@ void DlgReportViewImp::saveSettings()
     colorLogging->onSave();
     colorWarning->onSave();
     colorError->onSave();
+    pythonError->onSave();
 }
 
 void DlgReportViewImp::loadSettings()
@@ -69,6 +73,19 @@ void DlgReportViewImp::loadSettings()
     colorLogging->onRestore();
     colorWarning->onRestore();
     colorError->onRestore();
+    pythonError->blockSignals(true);
+    pythonError->onRestore();
+    pythonError->blockSignals(false);
+}
+
+void DlgReportViewImp::on_pythonError_toggled(bool)
+{
+    static bool checked = false;
+    if (!checked) {
+        checked = true;
+        QMessageBox::warning(this, tr("Redirect Python errors"),
+            tr("In order to take effect this change you must restart the application."));
+    }
 }
 
 /**

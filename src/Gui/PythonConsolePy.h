@@ -78,6 +78,27 @@ public:
 };
 
 /**
+ * Python class for redirection of stderr to FreeCAD's output
+ * console window. This allows to report all Python errors to 
+ * the output window which simplifies error tracking.
+ * @see PythonStdout
+ * @see PythonStderr
+ * @author Werner Mayer
+ */
+class OutputStderr : public Py::PythonExtension<OutputStderr> 
+{
+public:
+    static void init_type(void);    // announce properties and methods
+
+    OutputStderr();
+    ~OutputStderr();
+
+    Py::Object repr();
+    Py::Object write(const Py::Tuple&);
+    Py::Object flush(const Py::Tuple&);
+};
+
+/**
  * Python class for redirection of stdin to an input dialog of Qt.
  * @author Werner Mayer
  */

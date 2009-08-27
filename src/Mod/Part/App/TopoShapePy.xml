@@ -80,7 +80,7 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Sew the shape if there is a gap.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="transform">
+    <Methode Name="transformGeometry">
       <Documentation>
         <UserDocu>Apply geometric transformation on a copy of the shape.
 The transformation to be applied is defined as a 4x4 matrix.

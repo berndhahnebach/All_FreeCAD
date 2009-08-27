@@ -93,7 +93,7 @@ namespace Gui {
 // Pimpl class
 struct ApplicationP
 {
-    ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true)
+    ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true), _stderr(0)
     {
         // create the macro manager
         _pcMacroMngr = new MacroManager();
@@ -115,6 +115,7 @@ struct ApplicationP
     bool _bStartingUp;
     /// Handles all commands 
     CommandManager _cCommandManager;
+    PyObject *_stderr;
 };
 
 } // namespace Gui
@@ -157,10 +158,17 @@ Application::Application()
     // Python console binding
     PythonStdout    ::init_type();
     PythonStderr    ::init_type();
+    OutputStderr    ::init_type();
     PythonStdin     ::init_type();
     View3DInventorPy::init_type();
 
     d = new ApplicationP;
+    bool redir = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OutputWindow")->
+                              GetBool("RedirectPythonErrors", false);
+    if (redir) {
+        d->_stderr = new OutputStderr();
+        PySys_SetObject("stderr", d->_stderr);
+    }
 
     // global access 
     Instance = this;
@@ -200,6 +208,7 @@ Application::~Application()
     {
     Base::PyGILStateLocker lock;
     Py_DECREF(_pcWorkbenchDictionary);
+    Py_XDECREF(d->_stderr);
     }
 
     // save macros
