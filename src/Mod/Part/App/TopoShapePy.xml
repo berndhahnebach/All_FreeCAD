@@ -82,7 +82,23 @@ This is a more detailed check as done in isValid().</UserDocu>
     </Methode>
     <Methode Name="transform">
       <Documentation>
-        <UserDocu>Apply the transformation to a copy of the shape.</UserDocu>
+        <UserDocu>Apply geometric transformation on a copy of the shape.
+The transformation to be applied is defined as a 4x4 matrix.
+The underlying geometry of the following shapes may change:
+- a curve which supports an edge of the shape, or
+- a surface which supports a face of the shape;
+
+For example, a circle may be transformed into an ellipse when
+applying an affinity transformation. It may also happen that
+the circle then is represented as a b-spline curve.
+
+The transformation is applied to:
+- all the curves which support edges of the shape, and
+- all the surfaces which support faces of the shape.
+
+Note: If you want to transform a shape without changing the
+underlying geometry then use the methods translate or rotate.
+</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="translate">
