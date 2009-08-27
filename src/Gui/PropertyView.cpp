@@ -88,33 +88,40 @@ void PropertyView::onSelectionChanged(const SelectionChanges& msg)
     std::map<std::pair<std::string, int>, std::vector<App::Property*> > propViewMap;
     std::vector<SelectionSingleton::SelObj> array = Gui::Selection().getCompleteSelection();
     for (std::vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it) {
+        App::DocumentObject *ob=0;
+        ViewProvider *vp=0;
+
         std::map<std::string,App::Property*> dataMap;
         std::map<std::string,App::Property*> viewMap;
         if ((*it).pObject) {
             (*it).pObject->getPropertyMap(dataMap);
+            ob = (*it).pObject;
 
             // get also the properties of the associated view provider
             Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
-            ViewProvider* vp = doc->getViewProvider((*it).pObject);
+            vp = doc->getViewProvider((*it).pObject);
             if(!vp) continue;
             vp->getPropertyMap(viewMap);
-        }
-        else if ((*it).pDoc) {
-            (*it).pDoc->getPropertyMap(dataMap);
         }
 
         // store the properties with <name,id> as key in a map
         std::map<std::string,App::Property*>::iterator pt;
-        for (pt = dataMap.begin(); pt != dataMap.end(); ++pt) {
-            std::pair<std::string, int> nameType = std::make_pair
-                <std::string, int>(pt->first, pt->second->getTypeId().getKey());
-            propDataMap[nameType].push_back(pt->second);
+        if (ob) {
+            for (pt = dataMap.begin(); pt != dataMap.end(); ++pt) {
+                std::pair<std::string, int> nameType = std::make_pair
+                    <std::string, int>(pt->first, pt->second->getTypeId().getKey());
+                if (!ob->isHidden(pt->second))
+                    propDataMap[nameType].push_back(pt->second);
+            }
         }
         // the same for the view properties
-        for(pt = viewMap.begin(); pt != viewMap.end(); ++pt) {
-            std::pair<std::string, int> nameType = std::make_pair
-                <std::string, int>( pt->first, pt->second->getTypeId().getKey());
-            propViewMap[nameType].push_back(pt->second);
+        if (vp) {
+            for(pt = viewMap.begin(); pt != viewMap.end(); ++pt) {
+                std::pair<std::string, int> nameType = std::make_pair
+                    <std::string, int>( pt->first, pt->second->getTypeId().getKey());
+                if (!vp->isHidden(pt->second))
+                    propViewMap[nameType].push_back(pt->second);
+            }
         }
     }
 
