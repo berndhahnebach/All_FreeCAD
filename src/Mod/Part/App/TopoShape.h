@@ -130,7 +130,7 @@ public:
 
     /** @name Manipulation*/
     //@{
-    TopoDS_Shape transform(const Base::Matrix4D&) const;
+    TopoDS_Shape transformGeometry(const Base::Matrix4D&) const;
     TopoDS_Shape toNurbs() const;
     void sewShape();
     //@}

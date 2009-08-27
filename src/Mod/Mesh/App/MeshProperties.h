@@ -173,7 +173,7 @@ public:
     /** @name Modification */
     //@{
     /// Transform the real mesh data
-    void transform(const Base::Matrix4D &rclMat);
+    void transformGeometry(const Base::Matrix4D &rclMat);
     void deletePointIndices ( const std::vector<unsigned long>& );
     void deleteFacetIndices ( const std::vector<unsigned long>& );
     void setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& );

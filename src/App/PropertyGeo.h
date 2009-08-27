@@ -295,7 +295,7 @@ public:
     /** @name Modification */
     //@{
     /// Applies a transformation on the real geometric data type
-    virtual void transform(const Base::Matrix4D &rclMat) = 0;
+    virtual void transformGeometry(const Base::Matrix4D &rclMat) = 0;
     //@}
 
     /** @name Getting basic geometric entities */

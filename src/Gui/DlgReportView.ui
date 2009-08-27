@@ -15,14 +15,27 @@
   <property name="windowTitle" >
    <string>Output window</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
+   <item row="3" column="0" >
+    <widget class="Gui::PrefCheckBox" name="pythonError" >
+     <property name="text" >
+      <string>Redirect internal Python errors to output window</string>
+     </property>
+     <property name="prefEntry" stdset="0" >
+      <cstring>RedirectPythonErrors</cstring>
+     </property>
+     <property name="prefPath" stdset="0" >
+      <cstring>OutputWindow</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" >
     <widget class="QGroupBox" name="groupBox1" >
      <property name="title" >
       <string>Output</string>
@@ -82,7 +95,23 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>410</width>
+       <height>71</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" >
     <widget class="QGroupBox" name="groupBox2" >
      <property name="title" >
       <string>Colors</string>
@@ -308,22 +337,6 @@
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>21</width>
-       <height>111</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

@@ -487,8 +487,7 @@ const Base::Placement & PropertyPlacement::getValue(void)const
 
 PyObject *PropertyPlacement::getPyObject(void)
 {
-    Base::Matrix4D mat = _cPos.toMatrix();
-    return new Base::MatrixPy(mat);
+    return new Base::PlacementPy(new Base::Placement(_cPos));
 }
 
 void PropertyPlacement::setPyObject(PyObject *value)

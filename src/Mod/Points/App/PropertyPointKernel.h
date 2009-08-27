@@ -83,7 +83,7 @@ public:
     /** @name Modification */
     //@{
     /// Transform the real 3d point kernel
-    void transform(const Base::Matrix4D &rclMat);
+    void transformGeometry(const Base::Matrix4D &rclMat);
     void removeIndices( const std::vector<unsigned long>& );
     //@}
 

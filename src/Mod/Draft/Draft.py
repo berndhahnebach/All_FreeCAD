@@ -1574,7 +1574,7 @@ class Move(Modifier):
 				m.A14 = delta.x
 				m.A24 = delta.y
 				m.A34 = delta.z
-				newob.Shape = ob.Shape.transform(m)
+				newob.Shape = ob.Shape.transformGeometry(m)
 		if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
 
