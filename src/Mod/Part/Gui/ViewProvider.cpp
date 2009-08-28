@@ -802,6 +802,8 @@ void ViewProviderPart::showControlPoints(bool show)
     App::Property* prop = obj->getPropertyByName("Shape");
     if (prop && prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
         TopoDS_Shape shape = static_cast<Part::PropertyPartShape*>(prop)->getValue();
+        if (shape.IsNull())
+            return; // empty shape
         switch (shape.ShapeType())
         {
         case TopAbs_EDGE:

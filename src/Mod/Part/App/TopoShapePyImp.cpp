@@ -548,6 +548,24 @@ PyObject*  TopoShapePy::transformGeometry(PyObject *args)
     }
 }
 
+PyObject*  TopoShapePy::transformShape(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(Base::MatrixPy::Type),&obj))
+        return NULL;
+
+    Base::Matrix4D mat = static_cast<Base::MatrixPy*>(obj)->value();
+    try {
+        this->getTopoShapePtr()->transformShape(mat);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
 PyObject*  TopoShapePy::translate(PyObject *args)
 {
     PyObject *obj;
@@ -605,9 +623,17 @@ PyObject*  TopoShapePy::rotate(PyObject *args)
 PyObject*  TopoShapePy::scale(PyObject *args)
 {
     double factor;
-    if (!PyArg_ParseTuple(args, "d", &factor))
+    PyObject* p=0;
+    if (!PyArg_ParseTuple(args, "d|O!", &factor, &(Base::VectorPy::Type), &p))
         return NULL;
 
+    gp_Pnt pos(0,0,0);
+    if (p) {
+        Base::Vector3d pnt = static_cast<Base::VectorPy*>(p)->value();
+        pos.SetX(pnt.x);
+        pos.SetY(pnt.y);
+        pos.SetZ(pnt.z);
+    }
     if (fabs(factor) < Precision::Confusion()) {
         PyErr_SetString(PyExc_Exception, "scale factor too small");
         return NULL;
@@ -615,7 +641,7 @@ PyObject*  TopoShapePy::scale(PyObject *args)
 
     try {
         gp_Trsf scl;
-        scl.SetScaleFactor(factor);
+        scl.SetScale(pos, factor);
         TopLoc_Location loc(scl);
         getTopoShapePtr()->_Shape.Move(loc);
         Py_Return;

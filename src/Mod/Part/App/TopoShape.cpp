@@ -239,8 +239,6 @@ void TopoShape::setTransform(const Base::Matrix4D& rclTrf)
                   rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
                   rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
                   0.00001,0.00001);
-    mov.SetScaleFactor(rclTrf[3][3]);
-
     TopLoc_Location loc(mov);
     _Shape.Location(loc);
 }
@@ -252,30 +250,25 @@ Base::Matrix4D TopoShape::getTransform(void) const
 
     gp_Mat m = Trf._CSFDB_Getgp_Trsfmatrix();
     gp_XYZ p = Trf._CSFDB_Getgp_Trsfloc();
+    Standard_Real scale = Trf._CSFDB_Getgp_Trsfscale();
 
     // set Rotation matrix
-    mtrx[0][0] = m._CSFDB_Getgp_Matmatrix(0,0);
-    mtrx[0][1] = m._CSFDB_Getgp_Matmatrix(0,1);
-    mtrx[0][2] = m._CSFDB_Getgp_Matmatrix(0,2);
+    mtrx[0][0] = scale * m._CSFDB_Getgp_Matmatrix(0,0);
+    mtrx[0][1] = scale * m._CSFDB_Getgp_Matmatrix(0,1);
+    mtrx[0][2] = scale * m._CSFDB_Getgp_Matmatrix(0,2);
 
-    mtrx[1][0] = m._CSFDB_Getgp_Matmatrix(1,0);
-    mtrx[1][1] = m._CSFDB_Getgp_Matmatrix(1,1);
-    mtrx[1][2] = m._CSFDB_Getgp_Matmatrix(1,2);
+    mtrx[1][0] = scale * m._CSFDB_Getgp_Matmatrix(1,0);
+    mtrx[1][1] = scale * m._CSFDB_Getgp_Matmatrix(1,1);
+    mtrx[1][2] = scale * m._CSFDB_Getgp_Matmatrix(1,2);
 
-    mtrx[2][0] = m._CSFDB_Getgp_Matmatrix(2,0);
-    mtrx[2][1] = m._CSFDB_Getgp_Matmatrix(2,1);
-    mtrx[2][2] = m._CSFDB_Getgp_Matmatrix(2,2);
+    mtrx[2][0] = scale * m._CSFDB_Getgp_Matmatrix(2,0);
+    mtrx[2][1] = scale * m._CSFDB_Getgp_Matmatrix(2,1);
+    mtrx[2][2] = scale * m._CSFDB_Getgp_Matmatrix(2,2);
 
     // set pos vector
     mtrx[0][3] = p._CSFDB_Getgp_XYZx();
     mtrx[1][3] = p._CSFDB_Getgp_XYZy();
     mtrx[2][3] = p._CSFDB_Getgp_XYZz();
-
-    // and the rest
-    mtrx[3][0] = 0.0;
-    mtrx[3][1] = 0.0;
-    mtrx[3][2] = 0.0;
-    mtrx[3][3] = Trf._CSFDB_Getgp_Trsfscale();
 
     return mtrx;
 }
@@ -752,6 +745,53 @@ TopoDS_Shape TopoShape::transformGeometry(const Base::Matrix4D& rclTrf) const
 {
     // There is a strange behaviour of the gp_Trsf class if rclTrf has
     // a negative determinant.
+    gp_GTrsf mat;
+    if (rclTrf.determinant() < 0.0) {
+        //mat.SetValues(-rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+        //              -rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
+        //              -rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
+        //              0.00001,0.00001);
+        mat.SetValue(1,1,-rclTrf[0][0]);
+        mat.SetValue(2,1,-rclTrf[1][0]);
+        mat.SetValue(3,1,-rclTrf[2][0]);
+        mat.SetValue(1,2,rclTrf[0][1]);
+        mat.SetValue(2,2,rclTrf[1][1]);
+        mat.SetValue(3,2,rclTrf[2][1]);
+        mat.SetValue(1,3,rclTrf[0][2]);
+        mat.SetValue(2,3,rclTrf[1][2]);
+        mat.SetValue(3,3,rclTrf[2][2]);
+        mat.SetValue(1,4,rclTrf[0][3]);
+        mat.SetValue(2,4,rclTrf[1][3]);
+        mat.SetValue(3,4,rclTrf[2][3]);
+    }
+    else {
+        //mat.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
+        //              rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
+        //              rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
+        //              0.00001,0.00001);
+        mat.SetValue(1,1,rclTrf[0][0]);
+        mat.SetValue(2,1,rclTrf[1][0]);
+        mat.SetValue(3,1,rclTrf[2][0]);
+        mat.SetValue(1,2,rclTrf[0][1]);
+        mat.SetValue(2,2,rclTrf[1][1]);
+        mat.SetValue(3,2,rclTrf[2][1]);
+        mat.SetValue(1,3,rclTrf[0][2]);
+        mat.SetValue(2,3,rclTrf[1][2]);
+        mat.SetValue(3,3,rclTrf[2][2]);
+        mat.SetValue(1,4,rclTrf[0][3]);
+        mat.SetValue(2,4,rclTrf[1][3]);
+        mat.SetValue(3,4,rclTrf[2][3]);
+    }
+
+    // geometric transformation
+    BRepBuilderAPI_GTransform mkTrf(this->_Shape, mat);
+    return mkTrf.Shape();
+}
+
+void TopoShape::transformShape(const Base::Matrix4D& rclTrf)
+{
+    // There is a strange behaviour of the gp_Trsf class if rclTrf has
+    // a negative determinant.
     gp_Trsf mat;
     if (rclTrf.determinant() < 0.0) {
         mat.SetValues(-rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
@@ -766,10 +806,9 @@ TopoDS_Shape TopoShape::transformGeometry(const Base::Matrix4D& rclTrf) const
                       0.00001,0.00001);
     }
 
-    mat.SetScaleFactor(rclTrf[3][3]);
-    // geometric transformation
-    BRepBuilderAPI_GTransform mkTrf(this->_Shape, gp_GTrsf(mat));
-    return mkTrf.Shape();
+    // location transformation
+    BRepBuilderAPI_Transform mkTrf(this->_Shape, mat);
+    this->_Shape = mkTrf.Shape();
 }
 
 TopoDS_Shape TopoShape::toNurbs() const

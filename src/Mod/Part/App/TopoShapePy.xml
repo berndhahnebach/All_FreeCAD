@@ -101,6 +101,12 @@ underlying geometry then use the methods translate or rotate.
 </UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="transformShape">
+      <Documentation>
+        <UserDocu>Apply transformation on a shape without changing
+the underlying geometry.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="translate">
       <Documentation>
         <UserDocu>Apply the translation to the current location of this shape.</UserDocu>
