@@ -155,7 +155,6 @@ PyObject* GeometryPy::transform(PyObject *args)
                   mat[1][0],mat[1][1],mat[1][2],mat[1][3],
                   mat[2][0],mat[2][1],mat[2][2],mat[2][3],
                   0.00001,0.00001);
-    trf.SetScaleFactor(mat[3][3]);
     getGeometryPtr()->handle()->Transform(trf);
     Py_Return;
 }

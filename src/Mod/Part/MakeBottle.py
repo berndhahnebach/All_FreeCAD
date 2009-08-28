@@ -47,7 +47,7 @@ def makeBottle(myWidth=50.0, myHeight=70.0, myThickness=30.0):
 	aTrsf=Base.Matrix()
 	aTrsf.rotateZ(math.pi) # rotate around the z-axis
 
-	aMirroredWire=aWire.transform(aTrsf)
+	aMirroredWire=aWire.transformGeometry(aTrsf)
 	myWireProfile=Part.Wire([aWire,aMirroredWire])
 	
 	myFaceProfile=Part.Face(myWireProfile)
