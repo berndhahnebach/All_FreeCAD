@@ -39,19 +39,27 @@ SET(DrawingGui_SRCS
 		 AppDrawingGuiPy.cpp
 		 Command.cpp
 		 Resources/Drawing.qrc
-		 DrawingView.cpp
-		 DrawingView.h
 		 PreCompiled.cpp
 		 PreCompiled.h
+		 Workbench.cpp
+		 Workbench.h
+)
+SET(DrawingGuiView_SRCS
+		 DrawingView.cpp
+		 DrawingView.h
+)
+SET(DrawingGuiViewProvider_SRCS
 		 ViewProviderPage.cpp
 		 ViewProviderPage.h
 		 ViewProviderView.cpp
 		 ViewProviderView.h
-		 Workbench.cpp
-		 Workbench.h
 )
 
-add_library(DrawingGui SHARED ${DrawingGui_SRCS})
+SOURCE_GROUP("Mod" FILES ${DrawingGui_SRCS})
+SOURCE_GROUP("SVG-View" FILES ${DrawingGuiView_SRCS})
+SOURCE_GROUP("ViewProvider" FILES ${DrawingGuiViewProvider_SRCS})
+
+add_library(DrawingGui SHARED ${DrawingGui_SRCS} ${DrawingGuiView_SRCS} ${DrawingGuiViewProvider_SRCS})
 
 target_link_libraries(DrawingGui ${DrawingGui_LIBS})
 

@@ -31,6 +31,11 @@
 using namespace DrawingGui;
 using namespace std;
 
+
+//===========================================================================
+// CmdDrawingOpen
+//===========================================================================
+
 DEF_STD_CMD(CmdDrawingOpen);
 
 CmdDrawingOpen::CmdDrawingOpen()
@@ -58,6 +63,10 @@ void CmdDrawingOpen::activated(int iMsg)
         Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)filename.toUtf8());
     }
 }
+
+//===========================================================================
+// Drawing_NewA3Landscape
+//===========================================================================
 
 DEF_STD_CMD_A(CmdDrawingNewA3Landscape);
 
@@ -96,6 +105,11 @@ bool CmdDrawingNewA3Landscape::isActive(void)
   else
     return false;
 }
+
+
+//===========================================================================
+// Drawing_NewView
+//===========================================================================
 
 DEF_STD_CMD(CmdDrawingNewView);
 
@@ -146,6 +160,55 @@ void CmdDrawingNewView::activated(int iMsg)
 
 }
 
+//===========================================================================
+// Drawing_ExportPage
+//===========================================================================
+
+DEF_STD_CMD_A(CmdDrawingExportPage);
+
+CmdDrawingExportPage::CmdDrawingExportPage()
+  : Command("Drawing_ExportPage")
+{
+    // seting the
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Export page...");
+    sToolTipText  = QT_TR_NOOP("Export a page to a SVG file");
+    sWhatsThis    = "Drawing_ExportPage";
+    sStatusTip    = QT_TR_NOOP("Export a page to a SVG file");
+    sPixmap       = "Save";
+    iAccel        = 0;
+}
+
+void CmdDrawingExportPage::activated(int iMsg)
+{
+	unsigned int n = getSelection().countObjectsOfType(Drawing::FeaturePage::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Page object."));
+        return;
+    }
+
+    QStringList filter;
+    filter << QObject::tr("SVG(*.svg)");
+    filter << QObject::tr("All Files (*.*)");
+
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
+    if (!fn.isEmpty()) {
+  	   std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+        openCommand("Drawing export page");
+		doCommand(Doc,"file = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
+
+        commitCommand();
+    }
+}
+
+bool CmdDrawingExportPage::isActive(void)
+{
+    return (getActiveGuiDocument() ? true : false);
+}
+
+
+
 void CreateDrawingCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -153,4 +216,5 @@ void CreateDrawingCommands(void)
     rcCmdMgr.addCommand(new CmdDrawingOpen());
     rcCmdMgr.addCommand(new CmdDrawingNewA3Landscape());
     rcCmdMgr.addCommand(new CmdDrawingNewView());
+    rcCmdMgr.addCommand(new CmdDrawingExportPage());
 }

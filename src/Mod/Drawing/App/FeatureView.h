@@ -55,7 +55,6 @@ public:
   virtual ~FeatureView();
 
   App::PropertyFloat X,Y,Scale;
-  App::PropertyVector Direction;
   App::PropertyString ViewResult;
 
 

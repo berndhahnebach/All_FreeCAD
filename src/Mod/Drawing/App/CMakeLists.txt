@@ -33,17 +33,23 @@ SET(Features_SRCS
 		 PageGroup.cpp
 		 PageGroup.h
 )
-SOURCE_GROUP("Features" FILES ${Features_SRCS})
 
 SET(Drawing_SRCS
-		 ${Features_SRCS}
 		 AppDrawing.cpp
 		 AppDrawingPy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
 )
+SET(DrawingAlgos_SRCS
+		 ProjectionAlgos.cpp
+		 ProjectionAlgos.h
+)
 
-add_library(Drawing SHARED ${Drawing_SRCS})
+SOURCE_GROUP("Mod" FILES ${Drawing_SRCS})
+SOURCE_GROUP("Features" FILES ${Features_SRCS})
+SOURCE_GROUP("Algorithems" FILES ${DrawingAlgos_SRCS})
+
+add_library(Drawing SHARED ${Drawing_SRCS} ${Features_SRCS} ${DrawingAlgos_SRCS})
 
 target_link_libraries(Drawing ${Drawing_LIBS})
 

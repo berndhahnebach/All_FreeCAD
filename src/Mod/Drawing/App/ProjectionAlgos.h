@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2009     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,53 +20,62 @@
  *                                                                         *
  ***************************************************************************/
 
+ 
 
-#include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qobject.h>
+#ifndef _ProjectionAlgos_h_
+#define _ProjectionAlgos_h_
+
+#include <TopoDS_Shape.hxx>
+#include <Base/Vector3D.h>
+#include <string>
+
+namespace Drawing
+{
+
+
+/** Algo class for projecting shapes and creat SVG out of it
+ */
+class AppDrawingExport ProjectionAlgos
+{
+
+public:
+	/// Constructor
+	ProjectionAlgos(const TopoDS_Shape &Input,const Base::Vector3f &Dir);
+	virtual ~ProjectionAlgos();
+
+	void ProjectionAlgos::execute(void);
+
+	static std::string Edges2SVG(const TopoDS_Shape &);
+
+	enum SvgExtractioType { 
+		Plain,
+		WithHidden
+    };
+
+	std::string getSVG(SvgExtractioType type);
+
+	const TopoDS_Shape &Input;
+	const Base::Vector3f &Direction;
+
+    TopoDS_Shape V ;// hard edge visibly
+    TopoDS_Shape V1;// Smoth edges visibly
+    TopoDS_Shape VN;// contour edges visibly
+    TopoDS_Shape VO;// contours apparents visibly
+    TopoDS_Shape VI;// isoparamtriques   visibly
+    TopoDS_Shape H ;// hard edge       invisibly
+    TopoDS_Shape H1;// Smoth edges  invisibly
+    TopoDS_Shape HN;// contour edges invisibly
+    TopoDS_Shape HO;// contours apparents invisibly
+    TopoDS_Shape HI;// isoparamtriques   invisibly
+
+
+
+};
+
+
+} //namespace Drawing
+
+
+
 #endif
-
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
-
-using namespace DrawingGui;
-
-TYPESYSTEM_SOURCE(DrawingGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
-{
-}
-
-Workbench::~Workbench()
-{
-}
-
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Drawing"));
-    *part << "Drawing_Open";
-    *part << "Drawing_NewA3Landscape";
-    *part << "Drawing_NewView";
-    *part << "Drawing_ExportPage";
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("I/O"));
-    *img << "Drawing_Open";
-    img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("Drawing types"));
-    *img << "Drawing_NewA3Landscape";
-    img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("Views"));
-    *img << "Drawing_NewView";
-    return root;
-}
-
