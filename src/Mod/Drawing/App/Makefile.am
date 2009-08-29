@@ -11,6 +11,8 @@ libDrawing_la_SOURCES=\
 		FeatureViewPart.h \
 		PageGroup.cpp \
 		PageGroup.h \
+		ProjectionAlgos.cpp \
+		ProjectionAlgos.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
