@@ -60,6 +60,7 @@ public:
         IDLE,
         INTERACT,
         ZOOMING,
+        BOXZOOM,
         PANNING,
         DRAGGING,
         SPINNING,
@@ -156,8 +157,8 @@ protected:
     SbTime prevRedrawTime;
     SbTime centerTime;
     SbBool menuenabled;
-    SbBool ctrldown, shiftdown;
-    SbBool button1down, button3down;
+    SbBool ctrldown, shiftdown, altdown;
+    SbBool button1down, button2down, button3down;
 
     /** @name Mouse model */
     //@{
