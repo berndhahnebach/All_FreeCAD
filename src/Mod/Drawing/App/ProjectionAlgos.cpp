@@ -109,7 +109,7 @@ void ProjectionAlgos::execute(void)
 
 }
 
-std::string  ProjectionAlgos::getSVG(SvgExtractioType type)
+std::string  ProjectionAlgos::getSVG(SvgExtractionType type)
 {
 	std::stringstream result;
 

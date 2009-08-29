@@ -34,7 +34,7 @@ namespace Drawing
 {
 
 
-/** Algo class for projecting shapes and creat SVG out of it
+/** Algo class for projecting shapes and creating SVG output of it
  */
 class AppDrawingExport ProjectionAlgos
 {
@@ -44,16 +44,16 @@ public:
 	ProjectionAlgos(const TopoDS_Shape &Input,const Base::Vector3f &Dir);
 	virtual ~ProjectionAlgos();
 
-	void ProjectionAlgos::execute(void);
+	void execute(void);
 
 	static std::string Edges2SVG(const TopoDS_Shape &);
 
-	enum SvgExtractioType { 
+	enum SvgExtractionType { 
 		Plain,
 		WithHidden
     };
 
-	std::string getSVG(SvgExtractioType type);
+	std::string getSVG(SvgExtractionType type);
 
 	const TopoDS_Shape &Input;
 	const Base::Vector3f &Direction;
