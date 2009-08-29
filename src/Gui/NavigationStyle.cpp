@@ -103,9 +103,11 @@ void NavigationStyle::initialize()
 
     this->menuenabled = TRUE;
     this->button1down = FALSE;
+    this->button2down = FALSE;
     this->button3down = FALSE;
     this->ctrldown = FALSE;
     this->shiftdown = FALSE;
+    this->altdown = FALSE;
 }
 
 void NavigationStyle::finalize()
@@ -776,6 +778,10 @@ void NavigationStyle::setViewingMode(const ViewerMode newmode)
         this->interactiveCountInc();
         break;
 
+    case BOXZOOM:
+        this->interactiveCountInc();
+        break;
+
     default: // include default to avoid compiler warnings.
         break;
     }
@@ -785,6 +791,7 @@ void NavigationStyle::setViewingMode(const ViewerMode newmode)
     case DRAGGING:
     case PANNING:
     case ZOOMING:
+    case BOXZOOM:
         this->interactiveCountDec();
         break;
 
@@ -895,6 +902,9 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
     if (this->shiftdown != ev->wasShiftDown()) {
         this->shiftdown = ev->wasShiftDown();
     }
+    if (this->altdown != ev->wasAltDown()) {
+        this->altdown = ev->wasAltDown();
+    }
 
     // give the nodes in the foreground root the chance to handle events (e.g color bar)
     if (!processed && !viewer->isEditing()) {
@@ -915,6 +925,10 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
         case SoKeyboardEvent::LEFT_SHIFT:
         case SoKeyboardEvent::RIGHT_SHIFT:
             this->shiftdown = press;
+            break;
+        case SoKeyboardEvent::LEFT_ALT:
+        case SoKeyboardEvent::RIGHT_ALT:
+            this->altdown = press;
             break;
         case SoKeyboardEvent::H:
             processed = TRUE;
