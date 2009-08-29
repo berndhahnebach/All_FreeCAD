@@ -93,6 +93,6 @@ project(PyObject *self, PyObject *args)
 /* registration table  */
 struct PyMethodDef Drawing_methods[] = {
    {"project"       ,project      ,METH_VARARGS,
-     "(Outer,Inner,HOuter,HInner) = project(TopoShape) -- Project a shape and return the visible/invisible parts of it."},
+     "(Visibly,Hidden) = project(TopoShape) -- Project a shape and return the visible/invisible parts of it."},
     {NULL, NULL}        /* end of table marker */
 };

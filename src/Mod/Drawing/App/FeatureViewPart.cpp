@@ -60,6 +60,7 @@
 #include <Mod/Part/App/PartFeature.h>
 
 #include "FeatureViewPart.h"
+#include "ProjectionAlgos.h"
 
 using namespace Drawing;
 using namespace std;
@@ -76,12 +77,15 @@ FeatureViewPart::FeatureViewPart(void)
 {
   static const char *group = "Shape view";
 
+  ADD_PROPERTY_TYPE(Direction ,(0,0,1.0),group,App::Prop_None,"Projection direction");
   ADD_PROPERTY_TYPE(Source ,(0),group,App::Prop_None,"Shape to view");
 }
 
 FeatureViewPart::~FeatureViewPart()
 {
 }
+
+#if 0 
 
 App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 {
@@ -162,7 +166,40 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
+#else 
+App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
+{
+    std::stringstream result;
+	std::string ViewName = Label.getValue();
 
+    App::DocumentObject* link = Source.getValue();
+    if (!link)
+        return new App::DocumentObjectExecReturn("No object linked");
+    if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+        return new App::DocumentObjectExecReturn("Linked object is not a Part object");
+    TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
+    if (shape.IsNull())
+        return new App::DocumentObjectExecReturn("Linked shape object is empty");
+	Base::Vector3f Dir = Direction.getValue();
+
+	ProjectionAlgos Alg(shape,Dir);
+
+    result  << "<g" 
+            << " id=\"" << ViewName << "\"" << endl
+			<< "   transform=\"translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
+            << "  >" << endl;
+			
+	result << Alg.getSVG(ProjectionAlgos::Plain);
+ 
+    result << "</g>" << endl;
+
+    // Apply the resulting fragment
+    ViewResult.setValue(result.str().c_str());
+
+    return App::DocumentObject::StdReturn;
+}
+
+#endif 
 
 //
 //PyObject *Feature::getPyObject(void)

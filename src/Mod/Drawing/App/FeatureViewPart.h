@@ -53,7 +53,8 @@ public:
 	FeatureViewPart(void);
   virtual ~FeatureViewPart();
 
-  App::PropertyLink Source;
+  App::PropertyLink   Source;
+  App::PropertyVector Direction;
  
 
   /** @name methods overide Feature */
