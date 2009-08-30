@@ -114,29 +114,32 @@ std::string  ProjectionAlgos::getSVG(SvgExtractionType type)
 	std::stringstream result;
 
 
-	BRepMesh::Mesh(V1,0.1);
-    result  << "<g" 
-            //<< " id=\"" << ViewName << "\"" << endl
-		    << "   stroke=\"rgb(0, 0, 0)\"" << endl 
-			<< "   stroke-width=\"0.15\"" << endl
-			<< "   stroke-linecap=\"butt\"" << endl
-			<< "   stroke-linejoin=\"miter\"" << endl
-            << "   fill=\"none\"" << endl
-            << "  >" << endl
-			<< Edges2SVG(V1)
-			<< "</g>" << endl;
-	BRepMesh::Mesh(V,0.1);
-    result  << "<g" 
-            //<< " id=\"" << ViewName << "\"" << endl
-		    << "   stroke=\"rgb(0, 0, 0)\"" << endl 
-			<< "   stroke-width=\"0.35\"" << endl
-			<< "   stroke-linecap=\"butt\"" << endl
-			<< "   stroke-linejoin=\"miter\"" << endl
-            << "   fill=\"none\"" << endl
-            << "  >" << endl
-			<< Edges2SVG(V)
-			<< "</g>" << endl;
-
+	if(!V1.IsNull()){
+			BRepMesh::Mesh(V1,0.1);
+			result  << "<g" 
+					//<< " id=\"" << ViewName << "\"" << endl
+					<< "   stroke=\"rgb(0, 0, 0)\"" << endl 
+					<< "   stroke-width=\"0.15\"" << endl
+					<< "   stroke-linecap=\"butt\"" << endl
+					<< "   stroke-linejoin=\"miter\"" << endl
+					<< "   fill=\"none\"" << endl
+					<< "  >" << endl
+					<< Edges2SVG(V1)
+					<< "</g>" << endl;
+	}
+	if(!V.IsNull()){
+			BRepMesh::Mesh(V,0.1);
+			result  << "<g" 
+					//<< " id=\"" << ViewName << "\"" << endl
+					<< "   stroke=\"rgb(0, 0, 0)\"" << endl 
+					<< "   stroke-width=\"0.35\"" << endl
+					<< "   stroke-linecap=\"butt\"" << endl
+					<< "   stroke-linejoin=\"miter\"" << endl
+					<< "   fill=\"none\"" << endl
+					<< "  >" << endl
+					<< Edges2SVG(V)
+					<< "</g>" << endl;
+	}
 	return result.str();
 }
 

@@ -216,7 +216,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *drawing << "Drawing_Open" 
              << "Separator" 
              << "Drawing_NewA3Landscape"  
-             << "Drawing_NewView" ;
+             << "Drawing_NewView" 
+             << "Drawing_ExportPage" ;
 
  
 	// xxx ****************************************************************************************************

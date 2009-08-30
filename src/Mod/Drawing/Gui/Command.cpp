@@ -85,17 +85,20 @@ CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
 
 void CmdDrawingNewA3Landscape::activated(int iMsg)
 {
+
+  std::string FeatName = getUniqueObjectName("Page");
+  
+  openCommand("Drawing create page");
+  doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
   // Note: On Linux it is bad behaviour to mix up data files with binary files in the same directory.
 # ifdef TEMPLATEDIR
   std::string Path = TEMPLATEDIR; Path += "/A3_Landscape.svg";
-# else
-  std::string Path(App::Application::Config()["AppHomePath"] + "Mod/Drawing/Templates/A3_Landscape.svg");
-#endif
-  std::string FeatName = getUniqueObjectName("Page");
-  
-  doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
-  //doCommand(Doc,"App.activeDocument().%s.Template = App.ConfigGet('AppHomePath')+'Mod/Drawing/Templates/A4_Simple.svg'",FeatName.c_str());
   doCommand(Doc,"App.activeDocument().%s.Template = '%s'",FeatName.c_str(), Path.c_str());    
+# else
+  doCommand(Doc,"App.activeDocument().%s.Template = App.ConfigGet('AppHomePath')+'Mod/Drawing/Templates/A3_Landscape.svg'",FeatName.c_str());
+# endif
+  commitCommand();
+
 }
 
 bool CmdDrawingNewA3Landscape::isActive(void)
@@ -175,7 +178,7 @@ CmdDrawingExportPage::CmdDrawingExportPage()
     sToolTipText  = QT_TR_NOOP("Export a page to a SVG file");
     sWhatsThis    = "Drawing_ExportPage";
     sStatusTip    = QT_TR_NOOP("Export a page to a SVG file");
-    sPixmap       = "Save";
+    sPixmap       = "document-save";
     iAccel        = 0;
 }
 
@@ -196,7 +199,12 @@ void CmdDrawingExportPage::activated(int iMsg)
     if (!fn.isEmpty()) {
   	   std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
         openCommand("Drawing export page");
-		doCommand(Doc,"file = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
+
+		doCommand(Doc,"PageFile = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
+		std::string fname = fn.toAscii();
+		doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
+		doCommand(Doc,"OutFile.write(PageFile.read())");
+		doCommand(Doc,"del OutFile,PageFile");
 
         commitCommand();
     }
