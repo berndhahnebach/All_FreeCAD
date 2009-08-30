@@ -1,3 +1,6 @@
+# exampel how to use the scripting API of the drawing module
+# 
+# first of all you need the Part and the Drawing module:
 import Part, Drawing
 
 # create a small sample part
@@ -12,8 +15,8 @@ print "hidden edges:", len(hidden.Edges)
 print "Bnd Box shape: X=",Shape.BoundBox.XLength," Y=",Shape.BoundBox.YLength," Z=",Shape.BoundBox.ZLength
 print "Bnd Box project: X=",visibly.BoundBox.XLength," Y=",visibly.BoundBox.YLength," Z=",visibly.BoundBox.ZLength
 
-# And now the parametric way:
-
+# And now the parametric way
+# 
 # insert a Page object and assign a template
 App.activeDocument().addObject('Drawing::FeaturePage','Page')
 App.activeDocument().Page.Template = App.ConfigGet('AppHomePath')+'Mod/Drawing/Templates/A3_Landscape.svg'
