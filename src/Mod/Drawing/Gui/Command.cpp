@@ -201,7 +201,7 @@ void CmdDrawingExportPage::activated(int iMsg)
         openCommand("Drawing export page");
 
 		doCommand(Doc,"PageFile = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
-		std::string fname = fn.toAscii();
+		std::string fname = (const char*)fn.toAscii();
 		doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
 		doCommand(Doc,"OutFile.write(PageFile.read())");
 		doCommand(Doc,"del OutFile,PageFile");
