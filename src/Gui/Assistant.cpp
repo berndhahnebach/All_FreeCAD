@@ -52,23 +52,29 @@ Assistant::~Assistant()
 
 void Assistant::showDocumentation(const QString &page)
 {
-    //Base::Console().Message("Open page %s\n", (const char*)page.toUtf8());
-    //return;
     if (!startAssistant())
         return;
-    QTextStream str(proc);
-    str << QLatin1String("SetSource qthelp://com.freecad/doc/")
-        << page << QLatin1Char('\0') << endl;
+    if (!page.isEmpty()) {
+        QTextStream str(proc);
+        str << QLatin1String("SetSource qthelp://org.freecad.usermanual/doc/")
+            << page << QLatin1Char('\0') << endl;
+    }
 }
 
 bool Assistant::startAssistant()
 {
+#if QT_VERSION < 0x040400
+    QMessageBox::critical(0, QObject::tr("FreeCAD Help"),
+    QObject::tr("Unable to load documentation.\n"
+    "In order to load it Qt 4.4 or higher is required."));
+    return false;
+#endif
+
     if (!proc)
         proc = new QProcess();
 
     if (proc->state() != QProcess::Running) {
         QString app = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
-        //QString app = QLatin1String("C:/Temp/qt/");
 #if !defined(Q_OS_MAC)
         app += QLatin1String("assistant");
 #else
@@ -83,11 +89,6 @@ bool Assistant::startAssistant()
         args << QLatin1String("-collectionFile")
              << QString(QLatin1String("%1%2.qhc")).arg(doc).arg(exe.toLower())
              << QLatin1String("-enableRemoteControl");
-#if 0
-        args.append(QLatin1String("-server"));
-        args.append(QLatin1String("-profile"));
-        args.append(QLatin1String("test.adp"));
-#endif
 
         proc->start(app, args);
 

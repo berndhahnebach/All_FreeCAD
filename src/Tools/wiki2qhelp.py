@@ -123,7 +123,10 @@ a:hover {
 def crawl(site=DEFAULTURL):
     "downloads an entire wiki site"
     if COMPILE and os.system('qhelpgenerator -v'):
-        print "Error: Qassistant not fully installed, exiting."
+        print "Error: QAssistant not fully installed, exiting."
+        return 1
+    if COMPILE and os.system('qcollectiongenerator -v'):
+        print "Error: QAssistant not fully installed, exiting."
         return 1
     URL = site
     if VERBOSE: print "crawling ", URL, ", saving in ", TMPFOLDER
@@ -147,8 +150,9 @@ def crawl(site=DEFAULTURL):
                     todolist.append(p)
     if VERBOSE: print "Fetched ", count, " pages"
     qhp = buildtoc()
+    qhcp = createCollProjectFile()
     if COMPILE:
-        if compile(qhp):
+        if generate(qhcp) or compile(qhp):
             print "Temp Folder ",TMPFOLDER," has not been deleted."
             return 1
         else:
@@ -164,12 +168,59 @@ def compile(qhpfile):
         if VERBOSE: print "Successfully created ",qchfile
         return 0
 
+def generate(qhcpfile):
+    "generates qassistant-specific settings like icon, title, ..."
+    qhcfile = OUTPUTPATH + os.sep + "freecad.qhc"
+    if not os.system('qcollectiongenerator '+qhcpfile+' -o '+qhcfile):
+        if VERBOSE: print "Successfully created ",qhcfile
+        return 0
+
+def createCollProjectFile(folder=TMPFOLDER):
+    qprojectfile = '''<?xml version="1.0" encoding="UTF-8"?>
+<QHelpCollectionProject version="1.0">
+    <assistant>
+        <title>FreeCAD User Manual</title>
+        <applicationIcon>images/handbook.png</applicationIcon>
+        <cacheDirectory>Trolltech/SimpleTextViewer</cacheDirectory>
+        <startPage>qthelp://org.freecad.usermanual/doc/Online_Help_Startpage.html</startPage>
+        <aboutMenuText>
+            <text>About FreeCAD</text>
+        </aboutMenuText>
+        <aboutDialog>
+            <file>about.txt</file>
+            <icon>images/icon.png</icon>
+        </aboutDialog>
+        <enableDocumentationManager>false</enableDocumentationManager>
+        <enableAddressBar>false</enableAddressBar>
+        <enableFilterFunctionality>false</enableFilterFunctionality>
+    </assistant>
+    <docFiles>
+        <generate>
+            <file>
+                <input>freecad.qhp</input>
+                <output>freecad.qch</output>
+                </file>
+            </generate>
+        <register>
+            <file>freecad.qch</file>
+            </register>
+        </docFiles>
+    </QHelpCollectionProject>
+	'''
+    if VERBOSE: print "Building project file..."
+    qfilename = folder + os.sep + "freecad.qhcp"
+    f = open(qfilename,'w')
+    f.write(qprojectfile)
+    f.close()
+    if VERBOSE: print "Done writing qhcp file."
+    return qfilename
+
 def buildtoc(folder=TMPFOLDER,page=INDEX):
     "gets the table of contents page and parses its contents into a clean lists structure"
     
     qhelpfile = '''<?xml version="1.0" encoding="UTF-8"?>
     <QtHelpProject version="1.0">
-        <namespace>FreeCAD</namespace>
+        <namespace>org.freecad.usermanual</namespace>
         <virtualFolder>doc</virtualFolder>
         <customFilter name="FreeCAD 0.9">
             <filterAttribute>FreeCAD</filterAttribute>
@@ -208,7 +259,7 @@ def buildtoc(folder=TMPFOLDER,page=INDEX):
     html = html.replace("> <","><")
     html = re.findall("<ul.*/ul>",html)[0]
     items = re.findall('<li[^>]*>.*?</li>|</ul></li>',html)
-    inserttoc = '<section> title="Table of Contents"\n'
+    inserttoc = '<section title="Table of Contents">\n'
     insertkeywords = ''
     for item in items:
         if not ("<ul>" in item):
@@ -220,7 +271,7 @@ def buildtoc(folder=TMPFOLDER,page=INDEX):
                 if link:
                     link='" ref="'+link
                     insertkeywords += ('<keyword name="'+title+link+'"/>\n')
-                inserttoc += ('<section> title="'+title+link+'"</section>\n')
+                inserttoc += ('<section title="'+title+link+'"></section>\n')
         else:
             subitems = item.split("<ul>")
             for i in range(len(subitems)):
@@ -231,7 +282,7 @@ def buildtoc(folder=TMPFOLDER,page=INDEX):
                     insertkeywords += ('<keyword name="'+title+link+'"/>\n')
                 trail = ''
                 if i == len(subitems)-1: trail = '</section>'
-                inserttoc += ('<section> title="'+title+link+'"'+trail+'\n')
+                inserttoc += ('<section title="'+title+link+'">'+trail+'\n')
     inserttoc += '</section>\n'
 
     insertfiles = "<files>\n"
@@ -246,7 +297,7 @@ def buildtoc(folder=TMPFOLDER,page=INDEX):
     f = open(qfilename,'wb')
     f.write(qhelpfile)
     f.close()
-    if VERBOSE: print "Done writing qch file."
+    if VERBOSE: print "Done writing qhp file."
     return qfilename
 
 def get(page):

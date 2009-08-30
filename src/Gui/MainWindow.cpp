@@ -360,26 +360,10 @@ void MainWindow::whatsThis()
 
 void MainWindow::showDocumentation(const char* Article)
 {
-#ifdef FC_OS_WIN32
-    std::wstring wstr = L"mk:@MSITStore:" ;
-    wstr += Base::FileInfo(App::Application::Config()["AppHomePath"] + "doc/FreeCAD.chm").toStdWString();
-    if (Article) {
-        wstr += L"::/index.php@title="; 
-        std::string s = Article;
-        std::wstring ws( s.begin(), s.end() );
-        wstr += ws;
-    }
-
-    bool ok = (reinterpret_cast<int>(ShellExecuteW(NULL, L"open", L"hh.exe",wstr.c_str(), NULL, SW_SHOWNORMAL)) > 32);
-
-#else
-    // Use Qt Assistant...
-    bool ok = false;
-#endif
-   if (!ok) {
-        QMessageBox::critical(getMainWindow(), QObject::tr("File not found"),
-            QObject::tr("Cannot open help file"));
-   }
+    QString help;
+    if (Article && Article[0] != '\0')
+        help = QString::fromUtf8("%1.html").arg(QLatin1String(Article));
+    d->assistant->showDocumentation(help);
 }
 
 bool MainWindow::event(QEvent *e)
@@ -403,8 +387,6 @@ bool MainWindow::event(QEvent *e)
 
     if (e->type() == QEvent::WhatsThisClicked) {
         QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
-        // use assistant class later on
-        //d->assistant->showDocumentation(wt->href());
         showDocumentation((const char*)wt->href().toUtf8());
     }
     return QMainWindow::event(e);
