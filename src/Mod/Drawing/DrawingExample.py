@@ -1,19 +1,26 @@
 # exampel how to use the scripting API of the drawing module
 # 
 # first of all you need the Part and the Drawing module:
-import Part, Drawing
+import FreeCAD, Part, Drawing
 
 # create a small sample part
 Part.show(Part.makeBox(100,100,100).cut(Part.makeCylinder(80,100)).cut(Part.makeBox(90,40,100)).cut(Part.makeBox(20,85,100)))
 
-# direct projection
+# direct projection. The G0 means hard edge, the G1 is tangend continues.
 Shape = App.ActiveDocument.Shape.Shape
-[visibly,hidden] = Drawing.project(Shape)
-print "visible edges:", len(visibly.Edges)
-print "hidden edges:", len(hidden.Edges)
+[visiblyG0,visiblyG1,hiddenG0,hiddenG1] = Drawing.project(Shape)
+print "visible edges:", len(visiblyG0.Edges)
+print "hidden edges:", len(hiddenG0.Edges)
 # all was projected on the Z-plane:
 print "Bnd Box shape: X=",Shape.BoundBox.XLength," Y=",Shape.BoundBox.YLength," Z=",Shape.BoundBox.ZLength
-print "Bnd Box project: X=",visibly.BoundBox.XLength," Y=",visibly.BoundBox.YLength," Z=",visibly.BoundBox.ZLength
+print "Bnd Box project: X=",visiblyG0.BoundBox.XLength," Y=",visiblyG0.BoundBox.YLength," Z=",visiblyG0.BoundBox.ZLength
+
+# different projection vector
+[visiblyG0,visiblyG1,hiddenG0,hiddenG1] = Drawing.project(Shape,Base.Vector(1,1,1))
+
+# project to SVG
+resultSVG = Drawing.projectToSVG(Shape,App.Vector(1,1,1))
+print resultSVG
 
 # And now the parametric way
 # 
@@ -88,5 +95,5 @@ App.activeDocument().Page.addObject(App.activeDocument().ViewSelf)
 
 App.activeDocument().recompute()
 
-del Shape,ViewSVG
+del Shape,ViewSVG, resultSVG
 
