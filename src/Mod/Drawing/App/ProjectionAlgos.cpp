@@ -114,6 +114,20 @@ std::string  ProjectionAlgos::getSVG(SvgExtractionType type)
 	std::stringstream result;
 
 
+	if(!H.IsNull() && type==WithHidden){
+			BRepMesh::Mesh(H,0.1);
+			result  << "<g" 
+					//<< " id=\"" << ViewName << "\"" << endl
+					<< "   stroke=\"rgb(0, 0, 0)\"" << endl 
+					<< "   stroke-width=\"0.15\"" << endl
+					<< "   stroke-linecap=\"butt\"" << endl
+					<< "   stroke-linejoin=\"miter\"" << endl
+					<< "   stroke-dasharray=\"5 3\"" << endl
+					<< "   fill=\"none\"" << endl
+					<< "  >" << endl
+					<< Edges2SVG(H)
+					<< "</g>" << endl;
+	}
 	if(!V1.IsNull()){
 			BRepMesh::Mesh(V1,0.1);
 			result  << "<g" 

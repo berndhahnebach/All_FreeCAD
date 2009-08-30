@@ -79,6 +79,7 @@ FeatureViewPart::FeatureViewPart(void)
 
   ADD_PROPERTY_TYPE(Direction ,(0,0,1.0),group,App::Prop_None,"Projection direction");
   ADD_PROPERTY_TYPE(Source ,(0),group,App::Prop_None,"Shape to view");
+  ADD_PROPERTY_TYPE(ShowHiddenLines ,(false),group,App::Prop_None,"Control the aperance of the dashed hiden lines");
 }
 
 FeatureViewPart::~FeatureViewPart()
@@ -181,15 +182,16 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
     if (shape.IsNull())
         return new App::DocumentObjectExecReturn("Linked shape object is empty");
 	Base::Vector3f Dir = Direction.getValue();
+	bool hidden = ShowHiddenLines.getValue();
 
 	ProjectionAlgos Alg(shape,Dir);
 
     result  << "<g" 
             << " id=\"" << ViewName << "\"" << endl
-			<< "   transform=\"translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
+			<< "   transform=\"rotate("<< Rotation.getValue() << ","<< X.getValue()<<","<<Y.getValue()<<") translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
             << "  >" << endl;
 			
-	result << Alg.getSVG(ProjectionAlgos::Plain);
+	result << Alg.getSVG(hidden?ProjectionAlgos::WithHidden:ProjectionAlgos::Plain);
  
     result << "</g>" << endl;
 
