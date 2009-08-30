@@ -347,6 +347,7 @@ def fetchimage(imagelink):
                 file.write(data)
                 file.close()
                 processed.append(filename)
+                return
             except HTTPError:
                 failcount += 1
         print 'Error: unable to fetch file ' + filename
