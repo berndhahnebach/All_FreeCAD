@@ -24,63 +24,74 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Python.h>
-# include <HLRBRep_HLRToShape.hxx>
-# include <gp_Ax2.hxx>
-# include <gp_Pnt.hxx>
-# include <gp_Dir.hxx>
-# include <HLRBRep_Algo.hxx>
-
-
 #endif
 
 #include <Mod/Part/App/TopoShapePy.h>
+#include "ProjectionAlgos.h"
 #include <Base/Console.h>
+#include <Base/VectorPy.h>
 
 
+using namespace Drawing;
 using namespace Part;
 
 static PyObject * 
 project(PyObject *self, PyObject *args)
 {
-    PyObject *pcObj;
-    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C
+    PyObject *pcObjShape;
+    PyObject *pcObjDir=0;
+
+	if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY {
-        TopoShapePy* pShape = static_cast<TopoShapePy*>(pcObj);
-        //TopoShape* shape = new MeshObject(*pShape->getTopoShapeObjectPtr());
+        TopoShapePy* pShape = static_cast<TopoShapePy*>(pcObjShape);
+		
+		Base::Vector3d Vector(0,0,1);
+		if(pcObjDir)
+			Vector = *static_cast<Base::VectorPy*>(pcObjDir)->getVectorPtr();
 
-        Handle( HLRBRep_Algo ) brep_hlr = new HLRBRep_Algo;
-        brep_hlr->Add( pShape->getTopoShapePtr()->_Shape );
+		ProjectionAlgos Alg(pShape->getTopoShapePtr()->_Shape,Base::Vector3f((float)Vector.x,(float)Vector.y,(float)Vector.z));
 
-        gp_Ax2 transform(gp_Pnt(0,0,0),gp_Dir(0,0,1));
-        HLRAlgo_Projector projector( transform );
-        brep_hlr->Projector( projector );
-        brep_hlr->Update();
-        brep_hlr->Hide();
-
-        // extracting the result sets:
-        HLRBRep_HLRToShape shapes( brep_hlr );
-
-        TopoDS_Shape OuterEdges;
-        OuterEdges = shapes.OutLineVCompound();
-
-        TopoDS_Shape InnerEdges;
-        InnerEdges = shapes.VCompound();
-
-        TopoDS_Shape HiddenOuterEdges;
-        HiddenOuterEdges = shapes.OutLineHCompound();
-
-        TopoDS_Shape HiddenInnerEdges;
-        HiddenInnerEdges = shapes.HCompound();
 
         Py::List list;
-        //list.append(Py::Object(new TopoShapePy(new TopoShape(OuterEdges))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(InnerEdges))));
-        //list.append(Py::Object(new TopoShapePy(new TopoShape(HiddenOuterEdges))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(HiddenInnerEdges))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V1))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H1))));
 
         return Py::new_reference_to(list);
+
+    } PY_CATCH;
+
+}
+
+static PyObject * 
+projectToSVG(PyObject *self, PyObject *args)
+{
+    PyObject *pcObjShape;
+    PyObject *pcObjDir=0;
+	const char *type=0;
+
+	if (!PyArg_ParseTuple(args, "O!|O!s", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    PY_TRY {
+        TopoShapePy* pShape = static_cast<TopoShapePy*>(pcObjShape);
+		
+		Base::Vector3d Vector(0,0,1);
+		if(pcObjDir)
+			Vector = *static_cast<Base::VectorPy*>(pcObjDir)->getVectorPtr();
+
+		ProjectionAlgos Alg(pShape->getTopoShapePtr()->_Shape,Base::Vector3f((float)Vector.x,(float)Vector.y,(float)Vector.z));
+		
+		bool hidden = false;
+		if(type && std::string(type)=="ShowHiddenLines")
+			hidden = true;
+
+        Py::String result(Alg.getSVG(hidden?ProjectionAlgos::WithHidden:ProjectionAlgos::Plain));
+
+        return Py::new_reference_to(result);
 
     } PY_CATCH;
 
@@ -93,6 +104,8 @@ project(PyObject *self, PyObject *args)
 /* registration table  */
 struct PyMethodDef Drawing_methods[] = {
    {"project"       ,project      ,METH_VARARGS,
-     "(Visibly,Hidden) = project(TopoShape) -- Project a shape and return the visible/invisible parts of it."},
+     "[visiblyG0,visiblyG1,hiddenG0,hiddenG1] = project(TopoShape[,App.Vector Direction, string type]) -- Project a shape and return the visible/invisible parts of it."},
+   {"projectToSVG"       ,projectToSVG      ,METH_VARARGS,
+     "string = projectToSVG(TopoShape[,App.Vector Direction, string type]) -- Project a shape and return the SVG representation as string."},
     {NULL, NULL}        /* end of table marker */
 };
