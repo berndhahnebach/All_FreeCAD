@@ -55,6 +55,7 @@ public:
 
   App::PropertyLink   Source;
   App::PropertyVector Direction;
+  App::PropertyBool   ShowHiddenLines;
  
 
   /** @name methods overide Feature */

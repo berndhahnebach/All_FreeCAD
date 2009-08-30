@@ -24,25 +24,35 @@ App.activeDocument().View.Source = App.activeDocument().Shape
 App.activeDocument().View.Direction = (0.0,0.0,1.0)
 App.activeDocument().View.X = 10.0
 App.activeDocument().View.Y = 10.0
-App.activeDocument().View.Scale = 1.0
 App.activeDocument().Page.addObject(App.activeDocument().View)
 
-# create a second view on the same object:
-App.activeDocument().addObject('Drawing::FeatureViewPart','View1')
-App.activeDocument().View1.Source = App.activeDocument().Shape
-App.activeDocument().View1.Direction = (0.0,0.0,1.0)
-App.activeDocument().View1.X = 190.0
-App.activeDocument().View1.Y = 30.0
-App.activeDocument().View1.Scale = 1.0
-App.activeDocument().Page.addObject(App.activeDocument().View1) 
+# create a second view on the same object but the view is 
+# rotatet 90 degrees.
+App.activeDocument().addObject('Drawing::FeatureViewPart','ViewRot')
+App.activeDocument().ViewRot.Source = App.activeDocument().Shape
+App.activeDocument().ViewRot.Direction = (0.0,0.0,1.0)
+App.activeDocument().ViewRot.X = 290.0
+App.activeDocument().ViewRot.Y = 30.0
+App.activeDocument().ViewRot.Scale = 1.0
+App.activeDocument().ViewRot.Rotation = 90.0
+App.activeDocument().Page.addObject(App.activeDocument().ViewRot) 
 
-App.activeDocument().recompute()
+# create a third view on the same object but with an isometric
+# view direction. Also the hidden lines are activated.
 
-# change something and update:
+App.activeDocument().addObject('Drawing::FeatureViewPart','ViewIso')
+App.activeDocument().ViewIso.Source = App.activeDocument().Shape
+App.activeDocument().ViewIso.Direction = (1.0,1.0,1.0)
+App.activeDocument().ViewIso.X = 335.0
+App.activeDocument().ViewIso.Y = 140.0
+App.activeDocument().ViewIso.ShowHiddenLines = True
+App.activeDocument().Page.addObject(App.activeDocument().ViewIso) 
+
+# change something and update.
+# The update process change the view and the page
 App.activeDocument().View.X = 30.0
 App.activeDocument().View.Y = 30.0
 App.activeDocument().View.Scale = 1.5
-
 App.activeDocument().recompute()
 
 # Accessing the bits and peaces:
@@ -58,8 +68,8 @@ print "Result page is ",len(file.readlines())," lines long"
 del file
 
 # insert a view with your own content:
-App.activeDocument().addObject('Drawing::FeatureView','View2')
-App.activeDocument().View2.ViewResult = """<g id="View2"
+App.activeDocument().addObject('Drawing::FeatureView','ViewSelf')
+App.activeDocument().ViewSelf.ViewResult = """<g id="ViewSelf"
   stroke="rgb(0, 0, 0)"
   stroke-width="0.35"
   stroke-linecap="butt"
@@ -71,8 +81,9 @@ App.activeDocument().View2.ViewResult = """<g id="View2"
 <ellipse cx="40" cy="40" rx="30" ry="15"/>
 </g>
 """
-App.activeDocument().Page.addObject(App.activeDocument().View2)
+App.activeDocument().Page.addObject(App.activeDocument().ViewSelf)
 
 App.activeDocument().recompute()
 
-del Shape
+del Shape,ViewSVG
+

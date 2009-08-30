@@ -54,7 +54,7 @@ public:
 	FeatureView(void);
   virtual ~FeatureView();
 
-  App::PropertyFloat X,Y,Scale;
+  App::PropertyFloat X,Y,Scale,Rotation;
   App::PropertyString ViewResult;
 
 
