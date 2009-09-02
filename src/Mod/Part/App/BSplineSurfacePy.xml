@@ -249,22 +249,22 @@
 		</Methode>
 		<Methode Name="insertUKnot">
 			<Documentation>
-				<UserDocu>Inserts knot.</UserDocu>
+				<UserDocu>insertUKnote(float U, int Index, float Tolerance) - Insert or overide a knot</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="insertUKnots">
 			<Documentation>
-				<UserDocu>Inserts knots.</UserDocu>
+				<UserDocu>insertUKnote(List of float U, List of float Mult, float Tolerance) - Inserts knots.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="insertVKnot">
 			<Documentation>
-				<UserDocu>Inserts knot.</UserDocu>
+				<UserDocu>insertUKnote(float V, int Index, float Tolerance) - Insert or overide a knot.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="insertVKnots">
 			<Documentation>
-				<UserDocu>Inserts knots.</UserDocu>
+				<UserDocu>insertUKnote(List of float V, List of float Mult, float Tolerance) - Inserts knots.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="removeUKnot">
