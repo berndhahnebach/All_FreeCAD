@@ -84,6 +84,7 @@ set(Gui_MOC_HDRS
 		 DockWindow.h
 		 DockWindowManager.h
 		 EditorView.h
+		 BrowserView.h
 		 FileDialog.h
 		 Flag.h
 		 HelpView.h
@@ -571,6 +572,8 @@ SET(FreeCADGui_SRCS
 		 Thumbnail.h
 		 WaitCursor.cpp
 		 WaitCursor.h
+		 BrowserView.cpp
+		 BrowserView.h
 )
 #SOURCE_GROUP("" FILES ${FreeCADGui_SRCS})
 

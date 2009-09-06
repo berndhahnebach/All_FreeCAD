@@ -64,6 +64,7 @@
 #include "SoFCDB.h"
 #include "PythonConsolePy.h"
 #include "View3DPy.h"
+#include "BrowserView.h"
 
 #include "View3DInventor.h"
 #include "ViewProvider.h"
@@ -93,7 +94,7 @@ namespace Gui {
 // Pimpl class
 struct ApplicationP
 {
-    ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true), _stderr(0)
+    ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true), _stderr(0),pcStartPage(0)
     {
         // create the macro manager
         _pcMacroMngr = new MacroManager();
@@ -116,6 +117,7 @@ struct ApplicationP
     /// Handles all commands 
     CommandManager _cCommandManager;
     PyObject *_stderr;
+	BrowserView *pcStartPage;
 };
 
 } // namespace Gui
@@ -218,6 +220,22 @@ Application::~Application()
     delete d;
     Instance = 0;
 }
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Start page
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void Application::createStartPage(const char* URL)
+{
+#if 0 // couses FreeCAD to crash at the moment?
+   d->pcStartPage = new Gui::BrowserView(getMainWindow());   
+   d->pcStartPage->setWindowTitle(QString::fromLatin1("Start page"));
+   //d->pcStartPage->setWindowIcon(FCIcon);
+   d->pcStartPage->resize( 400, 300 );
+   getMainWindow()->addWindow(d->pcStartPage);
+#endif
+}
+
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // creating std commands
@@ -1289,7 +1307,9 @@ void Application::runApplication(void)
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
     if (hGrp->GetBool("CreateNewDoc", false)) {
         App::GetApplication().newDocument();
-    }
+	} else { // show Startup page
+		app.createStartPage("Start.html");
+	}
 
     // run the Application event loop
     Base::Console().Log("Init: Entering event loop\n");
