@@ -27,6 +27,8 @@
 #include "ui_DlgSettingsColorGradient.h"
 #include <App/ColorModel.h>
 
+class QDoubleValidator;
+
 namespace Gui {
 namespace Dialog {
 /**
@@ -36,45 +38,44 @@ namespace Dialog {
  */
 class DlgSettingsColorGradientImp : public QDialog, public Ui_DlgSettingsColorGradient
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgSettingsColorGradientImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
-  ~DlgSettingsColorGradientImp();
+    DlgSettingsColorGradientImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~DlgSettingsColorGradientImp();
 
-  void accept();
+    void accept();
 
-  /** @name Color model */
-  //@{
-  void setColorModel( App::ColorGradient::TColorModel tModel);
-  App::ColorGradient::TColorModel colorModel() const;
-  //@}
-  /** @name Color style */
-  //@{
-  void setColorStyle( App::ColorGradient::TStyle tStyle );
-  App::ColorGradient::TStyle colorStyle() const;
-  //@}
-  /** @name Display mode */
-  //@{
-  void setOutGrayed( bool grayed );
-  bool isOutGrayed() const;
-  void setOutInvisible( bool invisible );
-  bool isOutInvisible() const;
-  //@}
-  /** @name Parameter range and scale */
-  //@{
-  void setRange( float fMin, float fMax );
-  void getRange( float& fMin, float& fMax) const;
-  void setNumberOfLabels(int);
-  int numberOfLabels() const;
-  void setNumberOfDecimals(int);
-  int numberOfDecimals() const;
-  //@}
+    /** @name Color model */
+    //@{
+    void setColorModel( App::ColorGradient::TColorModel tModel);
+    App::ColorGradient::TColorModel colorModel() const;
+    //@}
+    /** @name Color style */
+    //@{
+    void setColorStyle( App::ColorGradient::TStyle tStyle );
+    App::ColorGradient::TStyle colorStyle() const;
+    //@}
+    /** @name Display mode */
+    //@{
+    void setOutGrayed( bool grayed );
+    bool isOutGrayed() const;
+    void setOutInvisible( bool invisible );
+    bool isOutInvisible() const;
+    //@}
+    /** @name Parameter range and scale */
+    //@{
+    void setRange( float fMin, float fMax );
+    void getRange( float& fMin, float& fMax) const;
+    void setNumberOfLabels(int);
+    int numberOfLabels() const;
+    void setNumberOfDecimals(int);
+    int numberOfDecimals() const;
+    //@}
 
-protected Q_SLOTS:
-  void onValidateMaximum();
-  void onValidateMinimum();
-  void onSetDecimals(int);
+private:
+    QDoubleValidator* fMaxVal;
+    QDoubleValidator* fMinVal;
 };
 
 } // namespace Dialog

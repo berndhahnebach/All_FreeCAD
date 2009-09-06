@@ -136,21 +136,24 @@ void SoFCIndexedFaceSet::drawCoords(const SoGLCoordinateElement * const vertexli
             v1 = *viptr++; index++;
             if (!overall)
                 materials->send(v1, TRUE);
-            currnormal = &normals[*normalindices++];
+            if (normals)
+                currnormal = &normals[*normalindices++];
             glNormal3fv((const GLfloat*)currnormal);
             glVertex3fv((const GLfloat*)(coords3d + v1));
 
             v2 = *viptr++; index++;
             if (!overall)
                 materials->send(v2, TRUE);
-            currnormal = &normals[*normalindices++];
+            if (normals)
+                currnormal = &normals[*normalindices++];
             glNormal3fv((const GLfloat*)currnormal);
             glVertex3fv((const GLfloat*)(coords3d + v2));
 
             v3 = *viptr++; index++;
             if (!overall)
                 materials->send(v3, TRUE);
-            currnormal = &normals[*normalindices++];
+            if (normals)
+                currnormal = &normals[*normalindices++];
             glNormal3fv((const GLfloat*)currnormal);
             glVertex3fv((const GLfloat*)(coords3d + v3));
         }

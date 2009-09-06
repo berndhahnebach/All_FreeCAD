@@ -229,7 +229,7 @@ private:
  *  name 'name' and widget flags set to 'f' 
  */
 ReportOutput::ReportOutput(QWidget* parent)
-  : QTextEdit(parent), WindowParameter("OutputWindow")
+  : QTextEdit(parent), WindowParameter("OutputWindow"), gotoEnd(false)
 {
     bLog = false;
     reportHl = new ReportHighlighter(this);
@@ -313,6 +313,9 @@ void ReportOutput::customEvent ( QEvent* ev )
         cursor.movePosition(QTextCursor::End);
         cursor.insertText(ce->message());
         cursor.endEditBlock();
+        if (gotoEnd) {
+            setTextCursor(cursor);
+        }
         ensureCursorVisible();
     }
 }
@@ -334,6 +337,11 @@ void ReportOutput::contextMenuEvent ( QContextMenuEvent * e )
     QAction* errAct = submenu->addAction(tr("Error"), this, SLOT(onToggleError()));
     errAct->setCheckable(true);
     errAct->setChecked(bErr);
+
+    submenu->addSeparator();
+    QAction* botAct = submenu->addAction(tr("Go to end"), this, SLOT(onToggleGoToEnd()));
+    botAct->setCheckable(true);
+    botAct->setChecked(gotoEnd);
 
     submenu->setTitle(tr("Options"));
     menu->insertMenu(first, submenu);
@@ -396,6 +404,12 @@ void ReportOutput::onToggleLogging()
     getWindowParameter()->SetBool( "checkLogging", bLog );
 }
 
+void ReportOutput::onToggleGoToEnd()
+{
+    gotoEnd = gotoEnd ? false : true;
+    getWindowParameter()->SetBool( "checkGoToEnd", gotoEnd );
+}
+
 void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
     ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
@@ -423,6 +437,9 @@ void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sR
     else if (strcmp(sReason, "colorError") == 0) {
         unsigned long col = rclGrp.GetUnsigned( sReason );
         reportHl->setErrorColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+    }
+    else if (strcmp(sReason, "checkGoToEnd") == 0) {
+        gotoEnd = rclGrp.GetBool(sReason, gotoEnd);
     }
 }
 

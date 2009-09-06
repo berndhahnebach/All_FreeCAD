@@ -363,15 +363,16 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
         *item << "Std_ViewFitAll" << "Std_ViewFitSelection" << StdViews
               << "Separator" << "Std_ViewDockUndockFullscreen";
 
-        if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
+        if (Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
             *item << "Separator" << "Std_SetAppearance" << "Std_ToggleVisibility" << "Std_TreeSelection" 
                   << "Std_RandomColor" << "Separator" << "Std_Delete";
     }
     else if (strcmp(recipient,"Tree") == 0)
     {
-        if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
-            *item << "Std_SetAppearance" << "Std_ToggleVisibility" 
-                  << "Std_RandomColor" << "Separator" << "Std_Delete";
+        if (Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
+            *item << "Std_ToggleVisibility" << "Std_ShowSelection" << "Std_HideSelection"
+                  << "Separator" << "Std_SetAppearance" << "Std_RandomColor"
+                  << "Separator" << "Std_Delete";
     }
 }
 
@@ -383,7 +384,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
     // File
     MenuItem* file = new MenuItem( menuBar );
     file->setCommand(QT_TR_NOOP("&File"));
-    *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs"
+    *file << "Std_New" << "Std_Open" << "Separator" << "Std_CloseActiveWindow"
+          << "Std_CloseAllWindows" << "Separator" << "Std_Save" << "Std_SaveAs"
           << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
           << "Separator" << "Std_Print" << "Std_PrintPdf"
           << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
@@ -443,8 +445,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
     // Windows
     MenuItem* wnd = new MenuItem( menuBar );
     wnd->setCommand(QT_TR_NOOP("&Windows"));
-    *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow"
-         << "Std_ActivatePrevWindow" << "Separator" << "Std_TileWindows" << "Std_CascadeWindows"
+    *wnd << "Std_ActivateNextWindow" << "Std_ActivatePrevWindow" << "Separator"
+         << "Std_TileWindows" << "Std_CascadeWindows"
          << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
 
     // Separator
