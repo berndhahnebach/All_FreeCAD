@@ -115,6 +115,9 @@ protected:
     void slotActiveDocument(App::Document&);
 
 public:
+	/// create the Browser view with the start page
+	void createStartPage(const char* URL);
+
     /// message when a GuiDocument is about to vanish
     void onLastWindowClosed(Gui::Document* pcDoc);
     /// Getter for the active document

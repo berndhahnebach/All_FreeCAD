@@ -1055,7 +1055,7 @@ void View3DInventorViewer::toggleClippingPlane()
 
 bool View3DInventorViewer::hasClippingPlane() const
 {
-    if (pcViewProviderRoot->getNumChildren() > 0) {
+    if (pcViewProviderRoot && pcViewProviderRoot->getNumChildren() > 0) {
         return (pcViewProviderRoot->getChild(0)->getTypeId()
             == SoClipPlaneManip::getClassTypeId());
     }

@@ -87,6 +87,7 @@ set(QT_LIBRARIES
     optimized QtTest4.lib
     optimized QtXml4.lib
     optimized QtOpenGl4.lib
+    optimized QtWebKit4.lib
 )
 set(QT_DEBUG_LIBRARIES 
     debug QtCored4.lib
@@ -98,6 +99,7 @@ set(QT_DEBUG_LIBRARIES
     debug QtTestd4.lib
     debug QtXmld4.lib
     debug QtOpenGld4.lib
+    debug QtWebKit4.lib
 )
 set(QT_UIC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/uic.exe)
 set(QT_MOC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/moc.exe)
