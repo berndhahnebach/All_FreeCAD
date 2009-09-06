@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMessageBox>
+# include <QDoubleValidator>
 #endif
 
 #ifndef _PreComp_
@@ -44,10 +45,11 @@ using namespace Gui::Dialog;
 DlgSettingsColorGradientImp::DlgSettingsColorGradientImp( QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl )
 {
-  this->setupUi(this);
-  //connect(floatSpinBoxMin, SIGNAL(valueChanged(double)), this, SLOT(onValidateMinimum()));
-  //connect(floatSpinBoxMax, SIGNAL(valueChanged(double)), this, SLOT(onValidateMaximum()));
-  connect(spinBoxDecimals, SIGNAL(valueChanged(int)), this, SLOT(onSetDecimals(int)));
+    this->setupUi(this);
+    fMaxVal = new QDoubleValidator(-1000,1000,0,this);
+    floatSpinBoxMax->setValidator(fMaxVal);
+    fMinVal = new QDoubleValidator(-1000,1000,0,this);
+    floatSpinBoxMin->setValidator(fMinVal);
 }
 
 /**
@@ -60,157 +62,122 @@ DlgSettingsColorGradientImp::~DlgSettingsColorGradientImp()
 
 void DlgSettingsColorGradientImp::setColorModel( App::ColorGradient::TColorModel tModel)
 {
-  switch (tModel)
-  {
-  case App::ColorGradient::TRIA:
-    comboBoxModel->setCurrentIndex(0);
-    break;
-  case App::ColorGradient::INVERSE_TRIA:
-    comboBoxModel->setCurrentIndex(1);
-    break;
-  case App::ColorGradient::GRAY:
-    comboBoxModel->setCurrentIndex(2);
-    break;
-  case App::ColorGradient::INVERSE_GRAY:
-    comboBoxModel->setCurrentIndex(3);
-    break;
-  }
+    switch (tModel)
+    {
+    case App::ColorGradient::TRIA:
+        comboBoxModel->setCurrentIndex(0);
+        break;
+    case App::ColorGradient::INVERSE_TRIA:
+        comboBoxModel->setCurrentIndex(1);
+        break;
+    case App::ColorGradient::GRAY:
+        comboBoxModel->setCurrentIndex(2);
+        break;
+    case App::ColorGradient::INVERSE_GRAY:
+        comboBoxModel->setCurrentIndex(3);
+        break;
+    }
 }
 
 App::ColorGradient::TColorModel DlgSettingsColorGradientImp::colorModel() const
 {
-  int item = comboBoxModel->currentIndex();
-  if ( item == 0 )
-    return App::ColorGradient::TRIA;
-  else if ( item == 1 )
-    return App::ColorGradient::INVERSE_TRIA;
-  else if ( item == 2 )
-    return App::ColorGradient::GRAY;
-  else
-    return App::ColorGradient::INVERSE_GRAY;
+    int item = comboBoxModel->currentIndex();
+    if ( item == 0 )
+        return App::ColorGradient::TRIA;
+    else if ( item == 1 )
+        return App::ColorGradient::INVERSE_TRIA;
+    else if ( item == 2 )
+        return App::ColorGradient::GRAY;
+    else
+        return App::ColorGradient::INVERSE_GRAY;
 }
 
 void DlgSettingsColorGradientImp::setColorStyle( App::ColorGradient::TStyle tStyle )
 {
-  switch ( tStyle )
-  {
-  case App::ColorGradient::FLOW:
-    radioButtonFlow->setChecked(true);
-    break;
-  case App::ColorGradient::ZERO_BASED:
-    radioButtonZero->setChecked(true);
-    break;
-  }
+    switch ( tStyle )
+    {
+    case App::ColorGradient::FLOW:
+        radioButtonFlow->setChecked(true);
+        break;
+    case App::ColorGradient::ZERO_BASED:
+        radioButtonZero->setChecked(true);
+        break;
+    }
 }
 
 App::ColorGradient::TStyle DlgSettingsColorGradientImp::colorStyle() const
 {
-  return radioButtonZero->isChecked() ? App::ColorGradient::ZERO_BASED : App::ColorGradient::FLOW;
+    return radioButtonZero->isChecked() ? App::ColorGradient::ZERO_BASED : App::ColorGradient::FLOW;
 }
 
 void DlgSettingsColorGradientImp::setOutGrayed( bool grayed )
 {
-  checkBoxGrayed->setChecked( grayed );
+    checkBoxGrayed->setChecked( grayed );
 }
 
 bool DlgSettingsColorGradientImp::isOutGrayed() const
 {
-  return checkBoxGrayed->isChecked();
+    return checkBoxGrayed->isChecked();
 }
 
 void DlgSettingsColorGradientImp::setOutInvisible( bool invisible )
 {
-  checkBoxInvisible->setChecked( invisible );
+    checkBoxInvisible->setChecked( invisible );
 }
 
 bool DlgSettingsColorGradientImp::isOutInvisible() const
 {
-  return checkBoxInvisible->isChecked();
+    return checkBoxInvisible->isChecked();
 }
 
 void DlgSettingsColorGradientImp::setRange( float fMin, float fMax )
 {
-  floatSpinBoxMax->blockSignals(true);
-  floatSpinBoxMax->setValue( fMax );
-  floatSpinBoxMax->blockSignals(false);
-  floatSpinBoxMin->blockSignals(true);
-  floatSpinBoxMin->setValue( fMin );
-  floatSpinBoxMin->blockSignals(false);
+    floatSpinBoxMax->blockSignals(true);
+    floatSpinBoxMax->setText(QString::number(fMax));
+    floatSpinBoxMax->blockSignals(false);
+    floatSpinBoxMin->blockSignals(true);
+    floatSpinBoxMin->setText(QString::number(fMin));
+    floatSpinBoxMin->blockSignals(false);
 }
 
 void DlgSettingsColorGradientImp::getRange( float& fMin, float& fMax) const
 {
-  fMax = floatSpinBoxMax->value();
-  fMin = floatSpinBoxMin->value();
+    fMax = floatSpinBoxMax->text().toFloat();
+    fMin = floatSpinBoxMin->text().toFloat();
 }
 
 void DlgSettingsColorGradientImp::setNumberOfLabels(int val)
 {
-  spinBoxLabel->setValue( val );
+    spinBoxLabel->setValue( val );
 }
 
 int DlgSettingsColorGradientImp::numberOfLabels() const
 {
-  return spinBoxLabel->value();
+    return spinBoxLabel->value();
 }
 
 void DlgSettingsColorGradientImp::setNumberOfDecimals(int val)
 {
-  spinBoxDecimals->setValue(val);
-  onSetDecimals(val);
+    spinBoxDecimals->setValue(val);
 }
 
 int DlgSettingsColorGradientImp::numberOfDecimals() const
 {
-  return spinBoxDecimals->value();
+    return spinBoxDecimals->value();
 }
 
 void DlgSettingsColorGradientImp::accept()
 {
-  double fMax = floatSpinBoxMax->value();
-  double fMin = floatSpinBoxMin->value();
+    double fMax = floatSpinBoxMax->text().toDouble();
+    double fMin = floatSpinBoxMin->text().toDouble();
 
-  if (fMax <= fMin) {
-    QMessageBox::warning(this, tr("Wrong parameter"), tr("The maximum value must be higher than the minimum value."));
-  }
-  else {
-    QDialog::accept();
-  }
-}
-
-void DlgSettingsColorGradientImp::onValidateMaximum()
-{
-  double fMax = floatSpinBoxMax->value();
-  double fMin = floatSpinBoxMin->value();
-  if ( fMax <= fMin )
-  {
-    QMessageBox::warning(this, tr("Wrong parameter"), tr("The maximum value must be higher than '%1'.").arg(fMin));
-    floatSpinBoxMax->blockSignals(true);
-    floatSpinBoxMax->setValue(fMin+0.01);
-    floatSpinBoxMax->blockSignals(false);
-  }
-}
-
-void DlgSettingsColorGradientImp::onValidateMinimum()
-{
-  double fMax = floatSpinBoxMax->value();
-  double fMin = floatSpinBoxMin->value();
-  if ( fMax <= fMin )
-  {
-    QMessageBox::warning(this, tr("Wrong parameter"), tr("The minimum value must be lower than '%1'.").arg(fMax));
-    floatSpinBoxMin->blockSignals(true);
-    floatSpinBoxMin->setValue(fMax-0.01);
-    floatSpinBoxMin->blockSignals(false);
-  }
-}
-
-void DlgSettingsColorGradientImp::onSetDecimals(int dec)
-{
-  floatSpinBoxMax->setDecimals(dec);
-  floatSpinBoxMin->setDecimals(dec);
-  double step = pow(0.1,dec);
-  floatSpinBoxMax->setSingleStep(step);
-  floatSpinBoxMin->setSingleStep(step);
+    if (fMax <= fMin) {
+        QMessageBox::warning(this, tr("Wrong parameter"),
+            tr("The maximum value must be higher than the minimum value."));
+    }
+    else {
+        QDialog::accept();
+    }
 }
 
 #include "moc_DlgSettingsColorGradientImp.cpp"

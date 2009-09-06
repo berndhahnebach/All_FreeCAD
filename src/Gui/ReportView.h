@@ -169,8 +169,11 @@ public Q_SLOTS:
     void onToggleWarning();
     /** Toggles the report of log messages. */
     void onToggleLogging();
+    /** Toggles the report to go to the end if new messages appear. */
+    void onToggleGoToEnd();
 
 private:
+    bool gotoEnd;
     ReportHighlighter* reportHl; /**< Syntax highlighter */
 };
 

@@ -268,30 +268,10 @@
          <number>6</number>
         </property>
         <item row="0" column="1" >
-         <widget class="QDoubleSpinBox" name="floatSpinBoxMax" >
-          <property name="maximum" >
-           <double>1000</double>
-          </property>
-          <property name="minimum" >
-           <double>-1000</double>
-          </property>
-          <property name="singleStep" >
-           <double>0.01</double>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="floatSpinBoxMax" />
         </item>
         <item row="1" column="1" >
-         <widget class="QDoubleSpinBox" name="floatSpinBoxMin" >
-          <property name="maximum" >
-           <double>1000</double>
-          </property>
-          <property name="minimum" >
-           <double>-1000</double>
-          </property>
-          <property name="singleStep" >
-           <double>0.01</double>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="floatSpinBoxMin" />
         </item>
         <item row="1" column="0" >
          <widget class="QLabel" name="textLabelMin" >
