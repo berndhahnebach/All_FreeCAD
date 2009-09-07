@@ -21,8 +21,9 @@ App.activeDocument().Page.addObject(App.activeDocument().View1)
 App.activeDocument().addObject('Drawing::FeatureViewPart','View2')
 App.activeDocument().View2.Source = App.activeDocument().Schenkel
 App.activeDocument().View2.Direction = (1.0,0.0,0.0)
-App.activeDocument().View2.X = 240.0
-App.activeDocument().View2.Y = 165.0
+App.activeDocument().View2.X = 70.0
+App.activeDocument().View2.Y = 200.0
+App.activeDocument().View2.Rotation = 90.0
 App.activeDocument().View2.Scale = 1.0
 App.activeDocument().Page.addObject(App.activeDocument().View2)
 

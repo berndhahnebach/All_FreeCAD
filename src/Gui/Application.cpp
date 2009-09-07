@@ -99,7 +99,7 @@ _pcActiveDocument(0L),
 _bIsClosing(false), 
 _bStartingUp(true), 
 _stderr(0)
-#if QT_VERSION >= 0x040400
+#if QT_VERSION >= QT_VERSION_CHECK(4, 4, 0)
 ,pcStartPage(0)
 #endif 
     {
@@ -244,6 +244,7 @@ void Application::createStartPage(const char* URL)
    //d->pcStartPage->setWindowIcon(FCIcon);
    d->pcStartPage->resize( 400, 300 );
    getMainWindow()->addWindow(d->pcStartPage);
+   d->pcStartPage->Load("file:///D:/temp/StartPage.html");
 #endif
 }
 
