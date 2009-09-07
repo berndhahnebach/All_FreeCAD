@@ -111,6 +111,7 @@ set(Gui_MOC_HDRS
 		 View3DInventor.h
 		 WidgetFactory.h
 		 Widgets.h
+		 BrowserView.h 
 		 Language/Translator.h
 		 propertyeditor/PropertyEditor.h
 		 propertyeditor/PropertyItem.h
