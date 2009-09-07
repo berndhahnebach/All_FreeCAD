@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+
+#if QT_VERSION >= 0x040400
+
 #ifndef _PreComp_
 # include <QAbstractTextDocumentLayout>
 # include <QApplication>
@@ -180,3 +183,5 @@ bool BrowserView::canClose(void)
 
 
 #include "moc_BrowserView.cpp"
+
+#endif // QT_VERSION >= 0x040400

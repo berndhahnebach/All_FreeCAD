@@ -24,6 +24,10 @@
 #ifndef GUI_BROWSERVIEW_H
 #define GUI_BROWSERVIEW_H
 
+// build only if QT higer  5.4.0
+#if QT_VERSION >= 0x040400
+
+
 #include "MDIView.h"
 #include "Window.h"
 
@@ -79,5 +83,7 @@ private:
 };
 
 } // namespace Gui
+
+#endif // #if QT_VERSION >= 0x040400
 
 #endif // GUI_EDITORVIEW_H

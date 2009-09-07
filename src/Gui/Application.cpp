@@ -94,7 +94,14 @@ namespace Gui {
 // Pimpl class
 struct ApplicationP
 {
-    ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true), _stderr(0),pcStartPage(0)
+    ApplicationP() : 
+_pcActiveDocument(0L), 
+_bIsClosing(false), 
+_bStartingUp(true), 
+_stderr(0)
+#if QT_VERSION >= 0x040400
+,pcStartPage(0)
+#endif 
     {
         // create the macro manager
         _pcMacroMngr = new MacroManager();
@@ -117,7 +124,9 @@ struct ApplicationP
     /// Handles all commands 
     CommandManager _cCommandManager;
     PyObject *_stderr;
+#if QT_VERSION >= 0x040400
 	BrowserView *pcStartPage;
+#endif 
 };
 
 } // namespace Gui
@@ -227,7 +236,9 @@ Application::~Application()
 
 void Application::createStartPage(const char* URL)
 {
-#if 0 // couses FreeCAD to crash at the moment?
+#if QT_VERSION < 0x040400
+
+#else
    d->pcStartPage = new Gui::BrowserView(getMainWindow());   
    d->pcStartPage->setWindowTitle(QString::fromLatin1("Start page"));
    //d->pcStartPage->setWindowIcon(FCIcon);
