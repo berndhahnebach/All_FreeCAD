@@ -95,12 +95,12 @@ namespace Gui {
 struct ApplicationP
 {
     ApplicationP() : 
-_pcActiveDocument(0L), 
-_bIsClosing(false), 
-_bStartingUp(true), 
-_stderr(0)
-#if QT_VERSION >= QT_VERSION_CHECK(4, 4, 0)
-,pcStartPage(0)
+    _pcActiveDocument(0L), 
+    _bIsClosing(false), 
+    _bStartingUp(true), 
+    _stderr(0)
+#if QT_VERSION >= 0x040400
+    ,pcStartPage(0)
 #endif 
     {
         // create the macro manager
@@ -125,7 +125,7 @@ _stderr(0)
     CommandManager _cCommandManager;
     PyObject *_stderr;
 #if QT_VERSION >= 0x040400
-	BrowserView *pcStartPage;
+    BrowserView *pcStartPage;
 #endif 
 };
 
@@ -240,11 +240,11 @@ void Application::createStartPage(const char* URL)
 
 #else
    d->pcStartPage = new Gui::BrowserView(getMainWindow());   
-   d->pcStartPage->setWindowTitle(QString::fromLatin1("Start page"));
+   d->pcStartPage->setWindowTitle(QObject::tr("Start page"));
    //d->pcStartPage->setWindowIcon(FCIcon);
-   d->pcStartPage->resize( 400, 300 );
+   d->pcStartPage->resize(400, 300);
    getMainWindow()->addWindow(d->pcStartPage);
-   d->pcStartPage->Load("file:///D:/temp/StartPage.html");
+   d->pcStartPage->Load(URL);
 #endif
 }
 
@@ -1319,9 +1319,10 @@ void Application::runApplication(void)
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
     if (hGrp->GetBool("CreateNewDoc", false)) {
         App::GetApplication().newDocument();
-	} else { // show Startup page
-		app.createStartPage("Start.html");
-	}
+    }
+    else { // show Startup page
+        app.createStartPage("file:///D:/temp/StartPage.html");
+    }
 
     // run the Application event loop
     Base::Console().Log("Init: Entering event loop\n");
