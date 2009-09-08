@@ -42,6 +42,7 @@ import FreeCAD, os, Part, math, re, string
 from draftlibs import fcvec, dxfColorMap, dxfLibrary, fcgeo
 from draftlibs.dxfReader import readDXF
 from PyQt4 import QtGui
+from Draft import Dimension, DimensionViewProvider
 
 try: import FreeCADGui
 except: gui = False
@@ -109,6 +110,14 @@ def getACI(ob,text=False):
 			dist=((ref[0]-col[0])**2 + (ref[1]-col[1])**2 + (ref[2]-col[2])**2)
 			if (dist <= aci[1]): aci=[i,dist]
 		return aci[0]
+
+def rawValue(entity,code):
+	"returns the  value of a DXF code in an entity section"
+	value = None
+	for pair in entity.data:
+		if pair[0] == code:
+			value = pair[1]
+	return value
 
 class fcformat:
 	"this contains everything related to color/lineweight formatting"
@@ -370,6 +379,51 @@ def processdxf(doc,filename):
 					
 	else: FreeCAD.Console.PrintMessage("skipping texts...\n")
 
+	# drawing dims
+
+	if fmt.paramtext:
+		dims = drawing.entities.get_type("dimension")
+		if (len(dims) > 0):
+			FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" dimensions...\n")
+		for dim in dims:
+			try:
+				layer = rawValue(dim,8)
+				x1 = float(rawValue(dim,10))
+				y1 = float(rawValue(dim,20))
+				z1 = float(rawValue(dim,30))
+				x2 = float(rawValue(dim,13))
+				y2 = float(rawValue(dim,23))
+				z2 = float(rawValue(dim,33))
+				x3 = float(rawValue(dim,14))
+				y3 = float(rawValue(dim,24))
+				z3 = float(rawValue(dim,34))
+				align = int(rawValue(dim,70))
+				angle = float(rawValue(dim,50))
+			except:
+				print "debug: dim data not processed: ",dim.data
+			else:
+				lay=locateLayer(layer,doc,layers)
+				pt = FreeCAD.Vector(x1,y1,z1)
+				p1 = FreeCAD.Vector(x2,y2,z2)
+				p2 = FreeCAD.Vector(x3,y3,z3)
+				if align == 0:
+					if angle == 0:
+						p2 = FreeCAD.Vector(x3,y2,z2)
+					else:
+						p2 = FreeCAD.Vector(x2,y3,z2)
+
+				newob = doc.addObject("App::FeaturePython","Dimension")
+				lay.addObject(newob)
+				Dimension(newob)
+				DimensionViewProvider(newob.ViewObject)
+				newob.Start = p1
+				newob.End = p2
+				newob.Dimline = pt
+				if gui: fmt.formatObject (newob,dim)
+						
+	else: FreeCAD.Console.PrintMessage("skipping dimensions...\n")
+	
+
 	doc.recompute()
 	del fmt
 	FreeCAD.Console.PrintMessage("successfully imported "+filename+"\n")
@@ -459,9 +513,21 @@ def export(exportList,filename):
 			# well, anyway, at the moment, Draft only writes single-line texts, so...
 			for text in i.LabelText:
 				point = fcvec.tup(FreeCAD.Vector(i.Position.x,i.Position.y-i.LabelText.index(text),i.Position.z))
-				if gui: height = float(i.ViewObject.FontSize)/100
+				if gui: height = float(i.ViewObject.FontSize)
 				else: height = 1
 				dxf.append(dxfLibrary.Text(text,point,height=height, color=getACI(i,text=True), layer=getGroup(i,exportList)))
+
+		elif (i.Type == "App::FeaturePython"):
+			if 'Dimline' in i.PropertiesList:
+				p1 = fcvec.tup(i.Start)
+				p2 = fcvec.tup(i.End)
+				base = Part.Line(i.Start,i.End).toShape()
+				proj = fcgeo.findDistance(i.Dimline,base)
+				if not proj:
+					pbase = fcvec.tup(i.End)
+				else:
+					pbase = fcvec.tup(i.End.add(fcvec.neg(proj)))
+				dxf.append(dxfLibrary.Dimension(pbase,p1,p2,color=getACI(i), layer=getGroup(i,exportList)))
 					
 	dxf.saveas(filename)
 	FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
