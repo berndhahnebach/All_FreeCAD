@@ -262,7 +262,7 @@ def formatObject(target,origin=None):
 			obrep.LineColor = matchrep.LineColor
 			obrep.ShapeColor = matchrep.ShapeColor
 	if (target.Type == "App::FeaturePython"):
-		if (target.Proxy.Type == "Dimension"):
+		if 'Dimline' in target.PropertiesList:
 			target.ViewObject.FontSize=fontheight
 
 def select(object):
@@ -550,11 +550,11 @@ class ghostTracker(Tracker):
 class Dimension:
 	"this class defines Dimension objects"
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyVector","Start","Dimension",\
+		obj.addProperty("App::PropertyVector","Start","Base",\
 					"Startpoint of dimension").Start = FreeCAD.Vector(0,0,0)
-		obj.addProperty("App::PropertyVector","End","Dimension",\
+		obj.addProperty("App::PropertyVector","End","Base",\
 					"Endpoint of dimension").End = FreeCAD.Vector(1,0,0)
-		obj.addProperty("App::PropertyVector","Dimline","Dimension",\
+		obj.addProperty("App::PropertyVector","Dimline","Base",\
 					"Point through which the dimension line passes").Dimline = FreeCAD.Vector(0,1,0)
 		self.Type = "Dimension"
 		obj.Proxy = self
@@ -568,10 +568,10 @@ class Dimension:
 class DimensionViewProvider:
 	"this class defines a view provider for Dimension objects"
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyLength","FontSize","Dimension","Font size").FontSize=0.2
-		obj.addProperty("App::PropertyLength","LineWidth","Dimension","Line width")
-		obj.addProperty("App::PropertyColor","LineColor","Dimension","Line color")
-		obj.addProperty("App::PropertyLength","ExtLines","Dimension","Ext lines ").ExtLines=0.3
+		obj.addProperty("App::PropertyLength","FontSize","Base","Font size").FontSize=0.2
+		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
+		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
+		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines ").ExtLines=0.3
 		obj.Proxy = self
 
 	def calcGeom(self,obj):
@@ -1570,11 +1570,15 @@ class Move(Modifier):
 			if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
 			else: newob=ob
 			if (ob.Type == "Part::Feature"):
-				m = FreeCAD.Matrix()
-				m.A14 = delta.x
-				m.A24 = delta.y
-				m.A34 = delta.z
-				newob.Shape = ob.Shape.transformGeometry(m)
+				sh = ob.Shape
+				# temporary fix
+				# m = FreeCAD.Matrix()
+				# m.A14 = delta.x
+				# m.A24 = delta.y
+				# m.A34 = delta.z
+				# newob.Shape = sh.transform(m)
+				sh.translate(delta)
+				newob.Shape = sh
 		if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
 
