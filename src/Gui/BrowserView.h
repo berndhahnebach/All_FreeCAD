@@ -24,8 +24,8 @@
 #ifndef GUI_BROWSERVIEW_H
 #define GUI_BROWSERVIEW_H
 
-// build only if QT higer  5.4.0
-#if QT_VERSION >= QT_VERSION_CHECK(4, 4, 0)
+// build only if Qt equal or higher than 4.4.0
+#if QT_VERSION >= 0x040400
 
 
 #include "MDIView.h"
@@ -46,11 +46,11 @@ class GuiExport BrowserView : public MDIView, public WindowParameter
     Q_OBJECT
 
 public:
-    BrowserView( QWidget* parent);
+    BrowserView(QWidget* parent);
     ~BrowserView();
 
 
-	void Load(const char* URL);
+    void Load(const char* URL);
 
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 

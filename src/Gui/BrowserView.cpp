@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(4, 4, 0) 
+#if QT_VERSION >= 0x040400
 
 #ifndef _PreComp_
 # include <QAbstractTextDocumentLayout>
@@ -74,7 +74,7 @@ BrowserView::~BrowserView()
 
 void BrowserView::Load(const char* URL)
 {
-	WebView->load(QUrl(QString::fromUtf8(URL)));
+    WebView->load(QUrl(QString::fromUtf8(URL)));
 }
 
 void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
@@ -183,7 +183,7 @@ bool BrowserView::canClose(void)
     //    default:
     //        return false;
     //}
-	return true;
+    return true;
 }
 
 
