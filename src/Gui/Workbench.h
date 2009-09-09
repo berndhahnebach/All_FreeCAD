@@ -71,6 +71,10 @@ public:
      * The default implementation does nothing.
      */
     virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+    /** Sets up the contextmenu for the main window for this workbench. 
+     * The default implementation does nothing.
+     */
+    virtual void createMainWindowPopupMenu(MenuItem*) const;
     /** 
      * Activates the workbench and adds/removes GUI elements.
      */
@@ -123,6 +127,7 @@ public:
 public:
     /** Defines the standard context menu. */
     virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+    virtual void createMainWindowPopupMenu(MenuItem*) const;
 
 protected:
     /** Defines the standard menus. */

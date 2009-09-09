@@ -289,6 +289,10 @@ void Workbench::setupContextMenu(const char* recipient,MenuItem* item) const
 {
 }
 
+void Workbench::createMainWindowPopupMenu(MenuItem*) const
+{
+}
+
 void Workbench::activated()
 {
 }
@@ -374,6 +378,11 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
                   << "Separator" << "Std_SetAppearance" << "Std_RandomColor"
                   << "Separator" << "Std_Delete";
     }
+}
+
+void StdWorkbench::createMainWindowPopupMenu(MenuItem* item) const
+{
+    *item << "Std_DlgCustomize";
 }
 
 MenuItem* StdWorkbench::setupMenuBar() const
