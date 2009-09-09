@@ -302,11 +302,24 @@ MainWindow* MainWindow::getInstance()
 
 QMenu* MainWindow::createPopupMenu ()
 {
-    Command* cmd = Application::Instance->commandManager().getCommandByName("Std_DlgCustomize");
     QMenu* menu = QMainWindow::createPopupMenu();
-    if (cmd) { 
-        menu->addSeparator();
-        cmd->addTo(menu);
+    Workbench* wb = WorkbenchManager::instance()->active();
+    if (wb) {
+        MenuItem item;
+        wb->createMainWindowPopupMenu(&item);
+        if (item.hasItems()) {
+            menu->addSeparator();
+            QList<MenuItem*> items = item.getItems();
+            for (QList<MenuItem*>::iterator it = items.begin(); it != items.end(); ++it) {
+                if ((*it)->command() == "Separator") {
+                    menu->addSeparator();
+                }
+                else {
+                    Command* cmd = Application::Instance->commandManager().getCommandByName((*it)->command().c_str());
+                    if (cmd) cmd->addTo(menu);
+                }
+            }
+        }
     }
 
     return menu;
