@@ -593,13 +593,12 @@ class DimensionViewProvider:
 		if not proj:
 			ed = fcgeo.vec(base)
 			proj = fcvec.crossproduct(ed)
-		offset = fcvec.scale(fcvec.normalized(fcvec.neg(proj)),obj.ViewObject.FontSize*.2)
+		angle = -fcvec.angle(p3.sub(p2))
+		if (angle > math.pi/2) or (angle <= -math.pi/2): angle = math.pi+angle
+		# norm = p3.sub(p2).cross(proj)
+		offset = fcvec.rotate(FreeCAD.Vector(obj.ViewObject.FontSize*.2,0,0),angle+math.pi/2)
 		tbase = midpoint.add(offset)
-		angle = fcvec.angle(p3.sub(p2))
-		print "dimline angle: ",math.degrees(angle)
-		if angle < -math.pi/2: angle = -angle-math.pi
-		elif  angle > math.pi/2: angle = math.pi-angle
-		norm = p3.sub(p2).cross(proj)
+		norm = Vector(0,0,1)
 		return p1,p2,p3,p4,tbase,angle,norm
 
 	def attach(self, obj):

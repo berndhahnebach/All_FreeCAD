@@ -588,19 +588,26 @@ def export(exportList,filename):
 				if v.Point.x > maxx: maxx = v.Point.x
 				if v.Point.y < miny: miny = v.Point.y
 				if v.Point.y > maxy: maxy = v.Point.y
+	margin = (maxx-minx)*.01
+	minx -= margin 
+	maxx += margin
+	miny -= margin
+	maxy += margin
 	sizex = maxx-minx
 	sizey = maxy-miny
+	miny += margin
+	boty = sizey+miny
 
 	# writing header
 	svg = pythonopen(filename,'wb')	
-	svg.write('<?xml version="1.0"?>\r\n')
+	svg.write('<?xml version="1.0"?>\n')
 	svg.write('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"')
-	svg.write(' "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\r\n')
+	svg.write(' "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n')
 	svg.write('<svg')
 	svg.write(' width="' + str(sizex) + '" height="' + str(sizey) + '"')
 	svg.write(' viewBox="0 0 ' + str(sizex) + ' ' + str(sizey) + '"')
 	svg.write(' xmlns="http://www.w3.org/2000/svg" version="1.1"')
-	svg.write('>\r\n')
+	svg.write('>\n')
 
 	# writing paths
 	for ob in exportList:
@@ -614,34 +621,111 @@ def export(exportList,filename):
 				else: fill = '#000000'
 			if gui:
 				stroke = getrgb(ob.ViewObject.LineColor)
-				width = ob.ViewObject.LineWidth
-			svg.write('<path id="' + name + '" fill="'+ fill +'" stroke="'+ stroke +'" stroke-width="'+ str(width) +'" ')
-
-			edges = fcgeo.sortEdges(ob.Shape.Edges)
-			v = edges[0].Vertexes[0].Point
-			svg.write('d="M '+ str(v.x-minx) +' '+ str(sizey-v.y) + ' ')
-			for e in ob.Shape.Edges:
-				if isinstance(e.Curve,Part.Line):
-					v = e.Vertexes[-1].Point
-					svg.write('L '+ str(v.x-minx) +' '+ str(sizey-v.y) + ' ')
-				else:
-					r = e.Curve.Radius
-					v = e.Vertexes[-1].Point
-					svg.write('A '+ str(r) + ' '+ str(r) +' 0 0 0 '+ str(v.x-minx) +' '+ str(sizey-v.y) + ' ')
-			if fill != "none":
-				svg.write('Z ')
-			svg.write('"/>\r\n')
+				width = ob.ViewObject.LineWidth/100
+			if len(ob.Shape.Vertexes) > 1:
+				svg.write('<path id="' + name + '" ')
+				edges = fcgeo.sortEdges(ob.Shape.Edges)
+				v = edges[0].Vertexes[0].Point
+				svg.write('d="M '+ str(v.x-minx) +' '+ str(-v.y+boty) + ' ')
+				for e in edges:
+					if isinstance(e.Curve,Part.Line):
+						v = e.Vertexes[-1].Point
+						svg.write('L '+ str(v.x-minx) +' '+ str(-v.y+boty) + ' ')
+					elif isinstance(e.Curve,Part.Circle):
+						r = e.Curve.Radius
+						v = e.Vertexes[-1].Point
+						svg.write('A '+ str(r) + ' '+ str(r) +' 0 0 0 '+ str(v.x-minx) +' ')
+						svg.write(str(-v.y+boty) + ' ')
+				if fill != "none":
+					svg.write('Z')
+				svg.write('" ')
+			else:
+				cen = ob.Shape.Edges[0].Curve.Center
+				rad = ob.Shape.Edges[0].Curve.Radius
+				svg.write('<circle cx="'+str(cen.x-minx))
+				svg.write('" cy="'+str(-cen.y+boty))
+				svg.write('" r="'+str(rad)+'" ')
+			svg.write('fill="' + fill + '" stroke="' + stroke + '" ')
+			svg.write('stroke-width="' + str(width) + ' px" ')
+			svg.write('style="stroke-width:'+ str(width))
+			svg.write(';stroke-miterlimit:4;stroke-dasharray:none"')
+			svg.write('/>\n')
+					
 		elif (ob.Type == "App::Annotation"):
 			fill = getrgb(ob.ViewObject.TextColor)
 			height = str(ob.ViewObject.FontSize)
 			x = str(ob.Position.x-minx)
-			y = str(sizey-ob.Position.y)
+			y = str(-ob.Position.y+boty)
 			name = ob.Name
 			svg.write('<text id="' + name + '" fill="'+ fill +'" font-size="'+ height)
-			svg.write('" x="' + x + '" y="' + y + '">\r\n')
+			svg.write('" x="' + x + '" y="' + y + '">\n')
 			for line in ob.LabelText:
 				svg.write(line)
-			svg.write('</text>\r\n')
+			svg.write('</text>\n')
+
+		elif (ob.Type == "App::FeaturePython"):
+			if 'Dimline' in ob.PropertiesList:
+				stroke = 'none'
+				width = 'none'
+				name = ob.Name
+				height = 0.2
+				dmax = 0
+				if gui:
+					stroke = getrgb(ob.ViewObject.LineColor)
+					width = ob.ViewObject.LineWidth/100
+					height = ob.ViewObject.FontSize
+					dmax = ob.ViewObject.ExtLines
+				p1 = ob.Start
+				p4 = ob.End
+				base = Part.Line(p1,p4).toShape()
+				proj = fcgeo.findDistance(ob.Dimline,base)
+				if not proj:
+					p2 = p1
+					p3 = p4
+				else:
+					p2 = p1.add(fcvec.neg(proj))
+					p3 = p4.add(fcvec.neg(proj))
+					if dmax and (proj.Length > dmax):
+						p1 = p2.add(fcvec.scale(fcvec.normalized(proj),dmax))
+						p4 = p3.add(fcvec.scale(fcvec.normalized(proj),dmax))
+				midpoint = p2.add(fcvec.scale(p3.sub(p2),0.5))
+				if not proj:
+					ed = fcgeo.vec(base)
+					proj = fcvec.crossproduct(ed)
+				angle = fcvec.angle(p3.sub(p2))
+				if (angle > math.pi/2) or (angle < -math.pi/2): angle = angle+math.pi
+				offset = fcvec.rotate(FreeCAD.Vector(height*.2,0,0),-angle+math.pi/2)
+				tbase = midpoint.add(offset)
+				svg.write('<g id="'+name+'"> ')
+				svg.write('<path ')
+				svg.write('d="M '+str(p1.x-minx)+' '+str(-p1.y+boty)+' ')
+				svg.write('L '+str(p2.x-minx)+' '+str(-p2.y+boty)+' ')
+				svg.write('L '+str(p3.x-minx)+' '+str(-p3.y+boty)+' ')
+				svg.write('L '+str(p4.x-minx)+' '+str(-p4.y+boty)+'" ')
+				svg.write('fill="none" stroke="' + stroke + '" ')
+				svg.write('stroke-width="' + str(width) + ' px" ')
+				svg.write('style="stroke-width:'+ str(width))
+				svg.write(';stroke-miterlimit:4;stroke-dasharray:none"')
+				svg.write('/>\n')
+				svg.write('<circle cx="'+str(p2.x-minx))
+				svg.write('" cy="'+str(-p2.y+boty))
+				svg.write('" r="'+str(height/10)+'" ')
+				svg.write('fill="'+ stroke +'" stroke="none" ')
+				svg.write('style="stroke-miterlimit:4;stroke-dasharray:none"/>\n')
+				svg.write('<circle cx="'+str(p3.x-minx))
+				svg.write('" cy="'+str(-p3.y+boty))
+				svg.write('" r="'+str(height/10)+'" ')
+				svg.write('fill="#000000" stroke="none" ')
+				svg.write('style="stroke-miterlimit:4;stroke-dasharray:none"/>\n')
+				svg.write('<text id="' + name + '" fill="'+ stroke +'" font-size="'+ str(height)+'" ')
+				svg.write('style="text-anchor:middle;text-align:center" ')
+				svg.write('transform="rotate('+str(math.degrees(angle)))
+				svg.write(' '+str(tbase.x-minx)+' '+str(-tbase.y+boty)+')" ')
+				svg.write('x="' + str(tbase.x-minx) + '" y="' + str(-tbase.y+boty) + '">\n')
+				svg.write("%.2f" % p3.sub(p2).Length)
+				svg.write('</text>\n')
+				svg.write('</g>\n')
+
 
 	# closing
 	svg.write('</svg>')
