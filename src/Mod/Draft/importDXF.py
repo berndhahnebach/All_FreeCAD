@@ -64,7 +64,7 @@ def decodeName(name):
 			decodedName = name
 	return decodedName
 
-def locateLayer(wantedLayer,doc,layers):
+def locateLayer(wantedLayer):
 	"returns layer group and creates it if needed"
 	wantedLayerName = decodeName(wantedLayer)
 	for l in layers:
@@ -248,13 +248,81 @@ class fcformat:
 							if (l.color == 7) and self.brightbg: return [0.0,0.0,0.0]
 							else: return dxfColorMap.color_map[l.color]
 
-def processdxf(doc,filename):
+def drawLine(line):
+	"returns a Part shape from a dxf line"
+	if (len(line.points) > 1):
+		v1=FreeCAD.Vector(line.points[0][0],line.points[0][1],line.points[0][2])
+		v2=FreeCAD.Vector(line.points[1][0],line.points[1][1],line.points[1][2])
+		if not fcvec.equals(v1,v2):
+			return Part.Line(v1,v2).toShape()
+	return None
+
+def drawPolyline(polyline):
+	"returns a Part shape from a dxf polyline"
+	if (len(polyline.points) > 1):
+		if len(polyline.points) == 2: print "debug: 2-point polyline!"
+		edges = []
+		for p in range(len(polyline.points)-1):
+			p1 = polyline.points[p]
+			p2 = polyline.points[p+1]
+			v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
+			v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
+			if not fcvec.equals(v1,v2):
+				if polyline.points[p].bulge:
+					cv = calcBulge(v1,polyline.points[p].bulge,v2)
+					edges.append(Part.Arc(v1,cv,v2).toShape())
+				else:
+					edges.append(Part.Line(v1,v2).toShape())
+		if polyline.closed:
+			p1 = polyline.points[len(polyline.points)-1]
+			p2 = polyline.points[0]
+			v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
+			v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
+			if not fcvec.equals(v1,v2):
+				edges.append(Part.Line(v1,v2).toShape())
+		if edges: return Part.Wire(edges)
+	return None
+
+def drawArc(arc):
+	"returns a Part shape from a dxf arc"
+	v=FreeCAD.Vector(arc.loc[0],arc.loc[1],arc.loc[2])
+	firstangle=(arc.start_angle/180)*math.pi
+	lastangle=(arc.end_angle/180)*math.pi
+	rayvec=FreeCAD.Vector(arc.radius,0,0)
+	v1 = fcvec.add(v,fcvec.rotate(rayvec,firstangle))
+	v3 = fcvec.add(v,fcvec.rotate(rayvec,lastangle))
+	if lastangle > firstangle:
+		v2 = fcvec.add(v,fcvec.rotate(rayvec,(lastangle-firstangle)/2+firstangle))
+	else:
+		v2 = fcvec.add(v,fcvec.rotate(rayvec,(lastangle-(math.pi*2-firstangle))/2))
+	return Part.Arc(v1,v2,v3).toShape()
+
+def drawCircle(circle):
+	"returns a Part shape from a dxf circle"
+	v = FreeCAD.Vector(circle.loc[0],circle.loc[1],circle.loc[2])
+	curve = Part.Circle()
+	curve.Radius = circle.radius
+	curve.Center = v
+	return curve.toShape()
+
+def addObject(shape,name,layer):
+	"adds a new object to the document with passed arguments"
+	newob=doc.addObject("Part::Feature",name)
+	lay=locateLayer(layer)
+	lay.addObject(newob)
+	newob.Shape = shape
+	return newob
+
+def processdxf(document,filename):
 	"this does the translation of the dxf contents into FreeCAD Part objects"
 
 	global drawing # for debugging - so drawing is still accessible to python after the script
 	drawing = readDXF(filename)
+	global layers
+	layers = []
+	global doc
+	doc = document
 	print "dxf: parsing file ",filename
-	layers=[]
 
 	# getting config parameters
 
@@ -263,116 +331,66 @@ def processdxf(doc,filename):
 	# drawing lines
 
 	lines = drawing.entities.get_type("line")
-	if (len(lines) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(lines))+" lines...\n")
+	if lines: FreeCAD.Console.PrintMessage("drawing "+str(len(lines))+" lines...\n")
 	for line in lines:
-		if (len(line.points) > 1):
-			v1=FreeCAD.Vector(line.points[0][0],line.points[0][1],line.points[0][2])
-			v2=FreeCAD.Vector(line.points[1][0],line.points[1][1],line.points[1][2])
-			lay=locateLayer(line.layer,doc,layers)
-			newob=doc.addObject("Part::Feature","Line")
-			lay.addObject(newob)
-			if not fcvec.equals(v1,v2):
-				newseg = Part.Line(v1,v2)
-				newob.Shape = newseg.toShape()
-				if gui: fmt.formatObject(newob,line)
+		shape = drawLine(line)
+		if shape:
+			newob = addObject(shape,"Line",line.layer)
+			if gui: fmt.formatObject(newob,line)
 						
 	# drawing polylines - at the moment arc segments get straightened...
 
 	polylines = drawing.entities.get_type("lwpolyline")
 	polylines.extend(drawing.entities.get_type("polyline"))
-	if (len(polylines) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(polylines))+" polylines...\n")
+	if polylines: FreeCAD.Console.PrintMessage("drawing "+str(len(polylines))+" polylines...\n")
 	for polyline in polylines:
-		lay=locateLayer(polyline.layer,doc,layers)
-		if (len(polyline.points) > 1):
-			if len(polyline.points) == 2: print "debug: 2-point polyline!"
-			newob = doc.addObject("Part::Feature","Polyline")
-			lay.addObject(newob)
-			edges = []
-			for p in range(len(polyline.points)-1):
-				p1 = polyline.points[p]
-				p2 = polyline.points[p+1]
-				v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
-				v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
-				if not fcvec.equals(v1,v2):
-					if polyline.points[p].bulge:
-						cv = calcBulge(v1,polyline.points[p].bulge,v2)
-						edges.append(Part.Arc(v1,cv,v2).toShape())
-					else:
-						edges.append(Part.Line(v1,v2).toShape())
-
-			if polyline.closed:
-				p1 = polyline.points[len(polyline.points)-1]
-				p2 = polyline.points[0]
-				v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
-				v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
-				if not fcvec.equals(v1,v2):
-					edges.append(Part.Line(v1,v2).toShape())
-
-			sh = Part.Wire(edges)
-			newob.Shape = sh
-			if gui:
-				fmt.formatObject(newob,polyline)
-
+		shape = drawPolyline(polyline)
+		if shape:
+			newob = addObject(shape,"Polyline",polyline.layer)
+			if gui: fmt.formatObject(newob,polyline)
 				
 	# drawing arcs
 
 	arcs = drawing.entities.get_type("arc")
-	if (len(arcs) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(arcs))+" arcs...\n")
+	if arcs: FreeCAD.Console.PrintMessage("drawing "+str(len(arcs))+" arcs...\n")
 	for arc in arcs:
-		lay=locateLayer(arc.layer,doc,layers)
-		newob=doc.addObject("Part::Feature","Arc")
-		lay.addObject(newob)
-		v=FreeCAD.Vector(arc.loc[0],arc.loc[1],arc.loc[2])
-		firstangle=(arc.start_angle/180)*math.pi
-		lastangle=(arc.end_angle/180)*math.pi
-		rayvec=FreeCAD.Vector(arc.radius,0,0)
-		v1 = fcvec.add(v,fcvec.rotate(rayvec,firstangle))
-		v3 = fcvec.add(v,fcvec.rotate(rayvec,lastangle))
-		if lastangle > firstangle:
-			v2 = fcvec.add(v,fcvec.rotate(rayvec,(lastangle-firstangle)/2+firstangle))
-		else:
-			v2 = fcvec.add(v,fcvec.rotate(rayvec,(lastangle-(math.pi*2-firstangle))/2))
-		curve = Part.Arc(v1,v2,v3)
-		newob.Shape = curve.toShape()
-		if gui: fmt.formatObject (newob,arc)
+		shape = drawArc(arc)
+		if shape:
+			newob = addObject(shape,"Arc",arc.layer)
+			if gui: fmt.formatObject(newob,arc)
 
 	# drawing circles
 
 	circles = drawing.entities.get_type("circle")
-	if (len(circles) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(circles))+" circles...\n")
+	if circles: FreeCAD.Console.PrintMessage("drawing "+str(len(circles))+" circles...\n")
 	for circle in circles:
-		lay = locateLayer(circle.layer,doc,layers)
-		newob=doc.addObject("Part::Feature","Circle")
-		lay.addObject(newob)
-		v = FreeCAD.Vector(circle.loc[0],circle.loc[1],circle.loc[2])
-		curve = Part.Circle()
-		curve.Radius = circle.radius
-		curve.Center = v
-		newob.Shape = curve.toShape()
-		if gui: fmt.formatObject (newob,circle)
+		shape = drawCircle(circle)
+		if shape:
+			newob = addObject(shape,"Circle",circle.layer)
+			if gui: fmt.formatObject(newob,circle)
 
 	# drawing texts
 
 	if fmt.paramtext:
 		texts = drawing.entities.get_type("mtext")
 		texts.extend(drawing.entities.get_type("text"))
-		if (len(texts) > 0): FreeCAD.Console.PrintMessage("drawing "+str(len(texts))+" texts...\n")
+		if texts: FreeCAD.Console.PrintMessage("drawing "+str(len(texts))+" texts...\n")
 		for text in texts:
-			if (len(line.points) > 1):
-				lay=locateLayer(text.layer,doc,layers)
+				lay=locateLayer(text.layer)
 				newob=doc.addObject("App::Annotation","Text")
 				lay.addObject(newob)
-				newob.LabelText = re.sub('{([^!}]([^}]|\n)*)}', '', text.value) #removing tags
+				newob.LabelText = re.sub('{([^!}]([^}]|\n)*)}', '', text.value) 
 				newob.Position=FreeCAD.Vector(text.loc[0],text.loc[1],text.loc[2])
 				if gui:
-					newob.ViewObject.FontSize=int(text.height)*12
-					if paramstyle == 0: newob.ViewObject.TextColor = (r,g,b)
-					elif paramstyle == 1: newob.ViewObject.TextColor = (0.0,0.0,0.0)
-					elif paramstyle == 2:
+					newob.ViewObject.FontSize=float(text.height)
+					newob.ViewObject.DisplayMode = "World"
+					if fmt.paramstyle == 0: newob.ViewObject.TextColor = (r,g,b)
+					elif fmt.paramstyle == 1: newob.ViewObject.TextColor = (0.0,0.0,0.0)
+					elif fmt.paramstyle == 2:
 						if text.color_index > 255: cm = [0.0,0.0,0.0]
 						else: cm = dxfColorMap.color_map[text.color_index]
 						newob.ViewObject.TextColor = (cm[0],cm[1],cm[2])
-					elif paramstyle == 3:
+					elif fmt.paramstyle == 3:
 						cm = table[text.color_index][0]
 						wm = table[text.color_index][1]
 						newob.ViewObject.TextColor = (cm[0],cm[1],cm[2])
@@ -381,10 +399,9 @@ def processdxf(doc,filename):
 
 	# drawing dims
 
-	if fmt.paramtext:
-		dims = drawing.entities.get_type("dimension")
-		if (len(dims) > 0):
-			FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" dimensions...\n")
+	dims = drawing.entities.get_type("dimension")
+	if dims and fmt.paramtext:
+		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" dimensions...\n")
 		for dim in dims:
 			try:
 				layer = rawValue(dim,8)
@@ -397,12 +414,16 @@ def processdxf(doc,filename):
 				x3 = float(rawValue(dim,14))
 				y3 = float(rawValue(dim,24))
 				z3 = float(rawValue(dim,34))
-				align = int(rawValue(dim,70))
-				angle = float(rawValue(dim,50))
+				d = rawValue(dim,70)
+				if d: align = int(d)
+				else: align = 0
+				d = rawValue(dim,50)
+				if d: angle = float(d)
+				else: angle = 0
 			except:
 				print "debug: dim data not processed: ",dim.data
 			else:
-				lay=locateLayer(layer,doc,layers)
+				lay=locateLayer(layer)
 				pt = FreeCAD.Vector(x1,y1,z1)
 				p1 = FreeCAD.Vector(x2,y2,z2)
 				p2 = FreeCAD.Vector(x3,y3,z3)
@@ -422,7 +443,41 @@ def processdxf(doc,filename):
 				if gui: fmt.formatObject (newob,dim)
 						
 	else: FreeCAD.Console.PrintMessage("skipping dimensions...\n")
-	
+
+	# drawing blocks
+
+	inserts = drawing.entities.get_type("insert")
+	if inserts:
+		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" blocks...\n")
+		blockrefs = drawing.blocks.data
+		blockshapes = {}
+		for ref in blockrefs:
+			shapes = []
+			for line in ref.entities.get_type('line'):
+				s = drawLine(line)
+				if s: shapes.append(s)
+			for polyline in ref.entities.get_type('polyline'):
+				s = drawPolyline(polyline)
+				if s: shapes.append(s)
+			for polyline in ref.entities.get_type('lwpolyline'):
+				s = drawPolyline(polyline)
+				if s: shapes.append(s)
+			for arc in ref.entities.get_type('arc'):
+				s = drawArc(arc)
+				if s: shapes.append(s)
+			for circle in ref.entities.get_type('circle'):
+				s = drawCircle(circle)
+				if s: shapes.append(s)
+			blockshapes[ref.name]=Part.makeCompound(shapes)
+		for insert in inserts:
+			shape = blockshapes[insert.block]
+			if shape:
+				pos = FreeCAD.Vector(insert.loc[0],insert.loc[1],insert.loc[2])
+				rot = insert.rotation
+				shape.translate(pos)
+				newob = addObject(shape,"Block",insert.layer)
+				if gui: fmt.formatObject(newob,insert)
+			
 
 	doc.recompute()
 	del fmt
