@@ -473,7 +473,12 @@ def processdxf(document,filename):
 			shape = blockshapes[insert.block]
 			if shape:
 				pos = FreeCAD.Vector(insert.loc[0],insert.loc[1],insert.loc[2])
-				rot = insert.rotation
+				rot = math.radians(insert.rotation)
+				scale = insert.scale
+				tsf = FreeCAD.Matrix()
+				tsf.scale(FreeCAD.Vector(scale[0],scale[1],scale[2]))
+				tsf.rotateZ(rot)
+				shape = shape.transform(tsf)
 				shape.translate(pos)
 				newob = addObject(shape,"Block",insert.layer)
 				if gui: fmt.formatObject(newob,insert)
