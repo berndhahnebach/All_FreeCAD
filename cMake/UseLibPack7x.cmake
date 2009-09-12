@@ -75,6 +75,7 @@ set(QT_INCLUDE_DIR
     ${FREECAD_LIBPACK_DIR}/include/QT/QtUiTools
     ${FREECAD_LIBPACK_DIR}/include/QT/QtXml
     ${FREECAD_LIBPACK_DIR}/include/QT/QtOpenGl
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtWebKit
 	)
 	
 set(QT_LIBRARIES 
