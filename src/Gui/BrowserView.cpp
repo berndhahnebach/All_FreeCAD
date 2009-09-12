@@ -34,7 +34,7 @@
 # include <QPrinter>
 # include <QPrintDialog>
 # include <QScrollBar>
-# include <QtWebKit/QWebView>
+# include <QWebView>
 # include <QTextBlock>
 # include <QTextCodec>
 # include <QTextStream>

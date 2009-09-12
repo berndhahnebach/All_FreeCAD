@@ -220,6 +220,17 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtXml.framework/Headers"
     # QtUiTools doesn't seem to be available as framework
     QT_CXXFLAGS="$QT_CXXFLAGS -I/usr/include/QtUiTools"
+    # QtWebKit check
+    fc_ac_save_cppflags=$CPPFLAGS
+    CPPFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtWebKit"
+    AC_MSG_CHECKING([whether QtWebKit is available])
+    AC_TRY_LINK([#include <QWebView>], [],
+        [
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtWebKit.framework/Headers"
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtWebKit"
+        AC_MSG_RESULT(yes)],
+        AC_MSG_RESULT(no))
+    CPPFLAGS=$fc_ac_save_cppflags
     else
     # Qt not as framework installed 
     fc_qt4_lib_core="-L$fc_qt4_lib -lQtCore"
@@ -232,6 +243,17 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtSvg"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtXml"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtUiTools"
+    # QtWebKit check
+    fc_ac_save_cppflags=$CPPFLAGS
+    CPPFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtWebKit"
+    AC_MSG_CHECKING([whether QtWebKit is available])
+    AC_TRY_LINK([#include <QWebView>], [],
+        [
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtWebKit"
+    QT_LIBS="$QT_LIBS -lQtWebKit"
+        AC_MSG_RESULT(yes)],
+        AC_MSG_RESULT(no))
+    CPPFLAGS=$fc_ac_save_cppflags
     fi
     ;;
   *)  # UNIX/Linux based
@@ -246,6 +268,17 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtSvg"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtXml"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtUiTools $X_CFLAGS"
+    # QtWebKit check
+    fc_ac_save_cppflags=$CPPFLAGS
+    CPPFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtWebKit"
+    AC_MSG_CHECKING([whether QtWebKit is available])
+    AC_TRY_LINK([#include <QWebView>], [],
+        [
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtWebKit"
+    QT_LIBS="$QT_LIBS -lQtWebKit"
+        AC_MSG_RESULT(yes)],
+        AC_MSG_RESULT(no))
+    CPPFLAGS=$fc_ac_save_cppflags
     #QT4_CFLAGS="-I$fc_qt4_include"
     #QT4_LIBS="-L$fc_qt4_lib $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
     #QT4_CORE_CFLAGS="-I$fc_qt4_include/QtCore"
