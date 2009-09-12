@@ -23,8 +23,6 @@
 
 #include "PreCompiled.h"
 
-#if QT_VERSION >= 0x040400
-
 #ifndef _PreComp_
 # include <QAbstractTextDocumentLayout>
 # include <QApplication>
@@ -62,19 +60,25 @@ using namespace Gui;
 BrowserView::BrowserView(QWidget* parent)
     : MDIView(0,parent,0), WindowParameter( "Browser" )
 {
+#if QT_VERSION >= 0x040400
     WebView = new QWebView(parent);
+#endif
 }
 
 /** Destroys the object and frees any allocated resources */
 BrowserView::~BrowserView()
 {
+#if QT_VERSION >= 0x040400
     delete WebView;
+#endif
 }
 
 
 void BrowserView::Load(const char* URL)
 {
+#if QT_VERSION >= 0x040400
     WebView->load(QUrl(QString::fromUtf8(URL)));
+#endif
 }
 
 void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
@@ -189,5 +193,3 @@ bool BrowserView::canClose(void)
 
 
 #include "moc_BrowserView.cpp"
-
-#endif // QT_VERSION >= 0x040400

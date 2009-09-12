@@ -24,14 +24,13 @@
 #ifndef GUI_BROWSERVIEW_H
 #define GUI_BROWSERVIEW_H
 
-// build only if Qt equal or higher than 4.4.0
-#if QT_VERSION >= 0x040400
-
 
 #include "MDIView.h"
 #include "Window.h"
 
+#if QT_VERSION >= 0x040400
 class QWebView;
+#endif
 
 namespace Gui {
 
@@ -82,11 +81,11 @@ protected:
 
 
 private:
+#if QT_VERSION >= 0x040400
     QWebView* WebView;
+#endif
 };
 
 } // namespace Gui
-
-#endif // #if QT_VERSION >= 0x040400
 
 #endif // GUI_EDITORVIEW_H
