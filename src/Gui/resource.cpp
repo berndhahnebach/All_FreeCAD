@@ -57,11 +57,11 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     //
     //
     new PrefPageProducer<DlgGeneralImp>         ( QT_TR_NOOP("General") );
+    new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettingsDocumentImp>( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
-  //new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Display") );
     new PrefPageProducer<DlgSettingsViewColor>  ( QT_TR_NOOP("Display") );
 

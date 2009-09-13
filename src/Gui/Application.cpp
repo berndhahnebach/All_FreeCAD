@@ -31,6 +31,7 @@
 # include <stdexcept>
 # include <QCloseEvent>
 # include <QMessageBox>
+# include <QPointer>
 #endif
 
 #include <QSessionManager>
@@ -65,6 +66,7 @@
 #include "PythonConsolePy.h"
 #include "View3DPy.h"
 #include "BrowserView.h"
+#include "DlgOnlineHelpImp.h"
 
 #include "View3DInventor.h"
 #include "ViewProvider.h"
@@ -125,7 +127,7 @@ struct ApplicationP
     CommandManager _cCommandManager;
     PyObject *_stderr;
 #if QT_VERSION >= 0x040400
-    BrowserView *pcStartPage;
+    QPointer<BrowserView> pcStartPage;
 #endif 
 };
 
@@ -239,12 +241,14 @@ void Application::createStartPage(const char* URL)
 #if QT_VERSION < 0x040400
 
 #else
-   d->pcStartPage = new Gui::BrowserView(getMainWindow());   
-   d->pcStartPage->setWindowTitle(QObject::tr("Start page"));
-   //d->pcStartPage->setWindowIcon(FCIcon);
-   d->pcStartPage->resize(400, 300);
-   getMainWindow()->addWindow(d->pcStartPage);
-   d->pcStartPage->Load(URL);
+    if (d->pcStartPage.isNull()) {
+        d->pcStartPage = new Gui::BrowserView(getMainWindow());   
+        d->pcStartPage->setWindowTitle(QObject::tr("Start page"));
+        //d->pcStartPage->setWindowIcon(FCIcon);
+        d->pcStartPage->resize(400, 300);
+        getMainWindow()->addWindow(d->pcStartPage);
+        d->pcStartPage->load(URL);
+    }
 #endif
 }
 
@@ -1320,8 +1324,12 @@ void Application::runApplication(void)
     if (hGrp->GetBool("CreateNewDoc", false)) {
         App::GetApplication().newDocument();
     }
-    else { // show Startup page
-        app.createStartPage("file:///D:/temp/StartPage.html");
+    
+    // show Startup page
+    hGrp = WindowParameter::getDefaultParameter()->GetGroup("OnlineHelp");
+    if (hGrp->GetBool("ShowStartPage",true)) {
+        QString page = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
+        app.createStartPage(page.toAscii());
     }
 
     // run the Application event loop

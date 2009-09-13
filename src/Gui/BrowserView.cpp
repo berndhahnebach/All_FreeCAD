@@ -61,7 +61,8 @@ BrowserView::BrowserView(QWidget* parent)
     : MDIView(0,parent,0), WindowParameter( "Browser" )
 {
 #if QT_VERSION >= 0x040400
-    WebView = new QWebView(parent);
+    WebView = new QWebView(this);
+    setCentralWidget(WebView);
 #endif
 }
 
@@ -74,7 +75,7 @@ BrowserView::~BrowserView()
 }
 
 
-void BrowserView::Load(const char* URL)
+void BrowserView::load(const char* URL)
 {
 #if QT_VERSION >= 0x040400
     WebView->load(QUrl(QString::fromUtf8(URL)));
