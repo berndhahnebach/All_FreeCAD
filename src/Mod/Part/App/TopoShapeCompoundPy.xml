@@ -14,5 +14,10 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>Create a compound out of a list of shapes</UserDocu>
     </Documentation>
+    <Methode Name="add">
+      <Documentation>
+        <UserDocu>Add a shape to the compound.</UserDocu>
+      </Documentation>
+    </Methode>
   </PythonExport>
 </GenerateModel>

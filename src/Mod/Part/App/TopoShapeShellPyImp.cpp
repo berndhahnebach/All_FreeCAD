@@ -93,9 +93,27 @@ int TopoShapeShellPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return 0;
 }
 
-Py::Object TopoShapeShellPy::getWire(void) const
+PyObject*  TopoShapeShellPy::add(PyObject *args)
 {
-    return Py::Object();
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapeFacePy::Type), &obj))
+        return NULL;
+
+    BRep_Builder builder;
+    TopoDS_Shape& shell = getTopoShapePtr()->_Shape;
+    
+    try {
+        const TopoDS_Shape& sh = static_cast<TopoShapeFacePy*>(obj)->
+            getTopoShapePtr()->_Shape;
+        builder.Add(shell, sh);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    Py_Return;
 }
 
 PyObject *TopoShapeShellPy::getCustomAttributes(const char* /*attr*/) const

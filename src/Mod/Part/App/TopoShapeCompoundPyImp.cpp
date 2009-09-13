@@ -86,6 +86,29 @@ int TopoShapeCompoundPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return 0;
 }
 
+PyObject*  TopoShapeCompoundPy::add(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &obj))
+        return NULL;
+
+    BRep_Builder builder;
+    TopoDS_Shape& comp = getTopoShapePtr()->_Shape;
+    
+    try {
+        const TopoDS_Shape& sh = static_cast<TopoShapePy*>(obj)->
+            getTopoShapePtr()->_Shape;
+        builder.Add(comp, sh);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    Py_Return;
+}
+
 PyObject *TopoShapeCompoundPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

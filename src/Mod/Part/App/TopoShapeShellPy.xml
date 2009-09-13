@@ -10,15 +10,14 @@
       FatherInclude="Mod/Part/App/TopoShapePy.h"
       FatherNamespace="Part"
       Constructor="true">
-	  <Documentation>
+      <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>Create a shell out of a list of faces</UserDocu>
-    </Documentation>
-    <Attribute Name="Wire" ReadOnly="true">
-      <Documentation>
-        <UserDocu>The Wire of this face</UserDocu>
       </Documentation>
-      <Parameter Name="Wire" Type="Object"/>
-    </Attribute>
+    <Methode Name="add">
+      <Documentation>
+        <UserDocu>Add a face to the shell.</UserDocu>
+      </Documentation>
+    </Methode>
   </PythonExport>
 </GenerateModel>

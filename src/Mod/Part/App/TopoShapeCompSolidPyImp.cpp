@@ -22,10 +22,13 @@
 
 
 #include "PreCompiled.h"
+#include <BRep_Builder.hxx>
+#include <TopoDS_CompSolid.hxx>
 
 #include "Mod/Part/App/TopoShape.h"
 
 // inclusion of the generated files (generated out of TopoShapeCompSolidPy.xml)
+#include "TopoShapeSolidPy.h"
 #include "TopoShapeCompSolidPy.h"
 #include "TopoShapeCompSolidPy.cpp"
 
@@ -46,6 +49,64 @@ const char *TopoShapeCompSolidPy::representation(void) const
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+PyObject *TopoShapeCompSolidPy::PyMake(struct _typeobject *, PyObject *, PyObject *)
+{
+    return new TopoShapeCompSolidPy(new TopoShape);
+}
+
+int TopoShapeCompSolidPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))
+        return -1;
+
+    BRep_Builder builder;
+    TopoDS_CompSolid Comp;
+    builder.MakeCompSolid(Comp);
+
+    try {
+        Py::List list(pcObj);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapeSolidPy::Type))) {
+                const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
+                    getTopoShapePtr()->_Shape;
+                builder.Add(Comp, sh);
+            }
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return -1;
+    }
+
+    getTopoShapePtr()->_Shape = Comp;
+    return 0;
+}
+
+PyObject*  TopoShapeCompSolidPy::add(PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapeSolidPy::Type), &obj))
+        return NULL;
+
+    BRep_Builder builder;
+    TopoDS_Shape& comp = getTopoShapePtr()->_Shape;
+    
+    try {
+        const TopoDS_Shape& sh = static_cast<TopoShapePy*>(obj)->
+            getTopoShapePtr()->_Shape;
+        builder.Add(comp, sh);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    Py_Return;
 }
 
 PyObject *TopoShapeCompSolidPy::getCustomAttributes(const char* /*attr*/) const
