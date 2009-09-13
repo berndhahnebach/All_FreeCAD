@@ -34,7 +34,10 @@
 # include <QPrinter>
 # include <QPrintDialog>
 # include <QScrollBar>
+# include <QWebFrame>
 # include <QWebView>
+# include <QWebSettings>
+# include <QStatusBar>
 # include <QTextBlock>
 # include <QTextCodec>
 # include <QTextStream>
@@ -43,8 +46,8 @@
 
 #include "BrowserView.h"
 #include "Application.h"
-#include "FileDialog.h"
-#include "Macro.h"
+#include "MainWindow.h"
+#include "ProgressBar.h"
 
 #include <Base/Parameter.h>
 
@@ -63,6 +66,13 @@ BrowserView::BrowserView(QWidget* parent)
 #if QT_VERSION >= 0x040400
     WebView = new QWebView(this);
     setCentralWidget(WebView);
+
+    connect(WebView, SIGNAL(loadStarted()),
+            this, SLOT(onLoadStarted()));
+    connect(WebView, SIGNAL(loadProgress(int)),
+            this, SLOT(onLoadProgress(int)));
+    connect(WebView, SIGNAL(loadFinished(bool)),
+            this, SLOT(onLoadFinished()));
 #endif
 }
 
@@ -74,12 +84,36 @@ BrowserView::~BrowserView()
 #endif
 }
 
-
 void BrowserView::load(const char* URL)
 {
 #if QT_VERSION >= 0x040400
-    WebView->load(QUrl(QString::fromUtf8(URL)));
+    QUrl url = QUrl(QString::fromUtf8(URL));
+    WebView->load(url);
+    WebView->setUrl(url);
+    setWindowIcon(QWebSettings::iconForUrl(url));
 #endif
+}
+
+void BrowserView::onLoadStarted()
+{
+    QProgressBar* bar = Sequencer::instance()->getProgressBar();
+    bar->setRange(0, 100);
+    bar->show();
+    getMainWindow()->statusBar()->showMessage(tr("Loading %1...").arg(WebView->url().toString()));
+}
+
+void BrowserView::onLoadProgress(int step)
+{
+    QProgressBar* bar = Sequencer::instance()->getProgressBar();
+    bar->setValue(step);
+}
+
+void BrowserView::onLoadFinished()
+{
+    QProgressBar* bar = Sequencer::instance()->getProgressBar();
+    bar->setValue(100);
+    bar->hide();
+    getMainWindow()->statusBar()->showMessage(QString());
 }
 
 void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
@@ -93,7 +127,6 @@ void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcRea
     //        d->lineMarker->hide();
     //}
 }
-
 
 /**
  * Runs the action specified by \a pMsg.

@@ -246,8 +246,8 @@ void Application::createStartPage(const char* URL)
         d->pcStartPage->setWindowTitle(QObject::tr("Start page"));
         //d->pcStartPage->setWindowIcon(FCIcon);
         d->pcStartPage->resize(400, 300);
-        getMainWindow()->addWindow(d->pcStartPage);
         d->pcStartPage->load(URL);
+        getMainWindow()->addWindow(d->pcStartPage);
     }
 #endif
 }

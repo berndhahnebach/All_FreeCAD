@@ -48,7 +48,6 @@ public:
     BrowserView(QWidget* parent);
     ~BrowserView();
 
-
     void load(const char* URL);
 
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
@@ -76,9 +75,10 @@ public:
     //@}
 
 
-protected:
-
-
+protected Q_SLOTS:
+    void onLoadStarted();
+    void onLoadProgress(int);
+    void onLoadFinished();
 
 private:
 #if QT_VERSION >= 0x040400
