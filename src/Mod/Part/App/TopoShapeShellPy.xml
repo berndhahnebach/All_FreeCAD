@@ -7,11 +7,12 @@
       TwinPointer="TopoShape" 
       Include="Mod/Part/App/TopoShape.h" 
       Namespace="Part" 
-      FatherInclude="Mod/Part/App/TopoShapePy.h" 
-      FatherNamespace="Part">
-    <Documentation>
+      FatherInclude="Mod/Part/App/TopoShapePy.h"
+      FatherNamespace="Part"
+      Constructor="true">
+	  <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
-      <UserDocu>TopoShapeFace is the OpenCasCade topological face wrapper</UserDocu>
+      <UserDocu>Create a shell out of a list of faces</UserDocu>
     </Documentation>
     <Attribute Name="Wire" ReadOnly="true">
       <Documentation>

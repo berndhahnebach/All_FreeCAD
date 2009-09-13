@@ -25,6 +25,10 @@
 
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
+#include <BRepBuilderAPI_MakeSolid.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Solid.hxx>
 
 #include <Base/VectorPy.h>
 #include <Base/GeometryPyCXX.h>
@@ -52,6 +56,44 @@ const char *TopoShapeSolidPy::representation(void) const
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+PyObject *TopoShapeSolidPy::PyMake(struct _typeobject *, PyObject *, PyObject *)
+{
+    // create a new instance of TopoShapeSolidPy and the Twin object 
+    return new TopoShapeSolidPy(new TopoShape);
+}
+
+// constructor method
+int TopoShapeSolidPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &obj))
+        return -1;
+
+    try {
+        BRepBuilderAPI_MakeSolid mkSolid;
+        const TopoDS_Shape& shape = static_cast<TopoShapePy*>(obj)
+            ->getTopoShapePtr()->_Shape;
+        TopExp_Explorer anExp (shape, TopAbs_SHELL);
+        int count=0;
+        for (; anExp.More(); anExp.Next()) {
+            ++count;
+            mkSolid.Add(TopoDS::Shell(anExp.Current()));
+        }
+
+        if (count == 0)
+            Standard_Failure::Raise("No shells found in shape");
+
+        const TopoDS_Solid& solid = mkSolid.Solid();
+        getTopoShapePtr()->_Shape = solid;
+    }
+    catch (Standard_Failure) {
+        PyErr_SetString(PyExc_Exception, "creation of solid failed");
+        return -1;
+    }
+
+    return 0;
 }
 
 Py::Object TopoShapeSolidPy::getCenterOfMass(void) const

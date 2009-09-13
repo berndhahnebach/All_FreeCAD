@@ -24,12 +24,15 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <gp_Ax1.hxx>
+# include <BRep_Builder.hxx>
+# include <TopoDS_Shell.hxx>
 #endif
 
 #include <Base/VectorPy.h>
 
 #include "TopoShape.h"
 #include "TopoShapeCompSolidPy.h"
+#include "TopoShapeFacePy.h"
 #include "TopoShapeShellPy.h"
 #include "TopoShapeShellPy.cpp"
 
@@ -50,6 +53,44 @@ const char *TopoShapeShellPy::representation(void) const
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+PyObject *TopoShapeShellPy::PyMake(struct _typeobject *, PyObject *, PyObject *)
+{
+    // create a new instance of TopoShapeSolidPy and the Twin object 
+    return new TopoShapeShellPy(new TopoShape);
+}
+
+// constructor method
+int TopoShapeShellPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &obj))
+        return -1;
+
+    BRep_Builder builder;
+    TopoDS_Shell shell;
+    //BRepOffsetAPI_Sewing mkShell;
+    builder.MakeShell(shell);
+    
+    try {
+        Py::List list(obj);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapeFacePy::Type))) {
+                const TopoDS_Shape& sh = static_cast<TopoShapeFacePy*>((*it).ptr())->
+                    getTopoShapePtr()->_Shape;
+                builder.Add(shell, sh);
+            }
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return -1;
+    }
+
+    getTopoShapePtr()->_Shape = shell;
+    return 0;
 }
 
 Py::Object TopoShapeShellPy::getWire(void) const
