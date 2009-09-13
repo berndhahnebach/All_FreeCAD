@@ -34,9 +34,11 @@
 # include <QPrinter>
 # include <QPrintDialog>
 # include <QScrollBar>
+# if QT_VERSION >= 0x040400
 # include <QWebFrame>
 # include <QWebView>
 # include <QWebSettings>
+# endif
 # include <QStatusBar>
 # include <QTextBlock>
 # include <QTextCodec>
@@ -96,24 +98,30 @@ void BrowserView::load(const char* URL)
 
 void BrowserView::onLoadStarted()
 {
+#if QT_VERSION >= 0x040400
     QProgressBar* bar = Sequencer::instance()->getProgressBar();
     bar->setRange(0, 100);
     bar->show();
     getMainWindow()->statusBar()->showMessage(tr("Loading %1...").arg(WebView->url().toString()));
+#endif
 }
 
 void BrowserView::onLoadProgress(int step)
 {
+#if QT_VERSION >= 0x040400
     QProgressBar* bar = Sequencer::instance()->getProgressBar();
     bar->setValue(step);
+#endif
 }
 
 void BrowserView::onLoadFinished()
 {
+#if QT_VERSION >= 0x040400
     QProgressBar* bar = Sequencer::instance()->getProgressBar();
     bar->setValue(100);
     bar->hide();
     getMainWindow()->statusBar()->showMessage(QString());
+#endif
 }
 
 void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
