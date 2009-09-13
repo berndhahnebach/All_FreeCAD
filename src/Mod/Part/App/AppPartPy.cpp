@@ -930,7 +930,7 @@ struct PyMethodDef Part_methods[] = {
     {"show"       ,show      ,METH_VARARGS,
      "show(shape) -- Add the shape to the active document or create one if no document exists."},
     {"makeCompound"  ,makeCompound ,METH_VARARGS,
-     "makeCompound(list) -- Create a compound out of a list of geometries."},
+     "makeCompound(list) -- Create a compound out of a list of shapes."},
     {"makeShell"  ,makeShell ,METH_VARARGS,
      "makeShell(list) -- Create a shell out of a list of faces."},
     {"makeSolid"  ,makeSolid ,METH_VARARGS,

@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #include "Mod/Part/App/TopoShape.h"
+#include <BRep_Builder.hxx>
+#include <TopoDS_Compound.hxx>
 
 // inclusion of the generated files (generated out of TopoShapeCompoundPy.xml)
 #include "TopoShapeCompoundPy.h"
@@ -46,6 +48,42 @@ const char *TopoShapeCompoundPy::representation(void) const
     static std::string buf;
     buf = str.str();
     return buf.c_str();
+}
+
+PyObject *TopoShapeCompoundPy::PyMake(struct _typeobject *, PyObject *, PyObject *)
+{
+    return new TopoShapeCompoundPy(new TopoShape);
+}
+
+// constructor method
+int TopoShapeCompoundPy::PyInit(PyObject* args, PyObject* /*kwd*/)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))
+        return -1;
+
+    BRep_Builder builder;
+    TopoDS_Compound Comp;
+    builder.MakeCompound(Comp);
+    
+    try {
+        Py::List list(pcObj);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
+                    getTopoShapePtr()->_Shape;
+                builder.Add(Comp, sh);
+            }
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return -1;
+    }
+
+    getTopoShapePtr()->_Shape = Comp;
+    return 0;
 }
 
 PyObject *TopoShapeCompoundPy::getCustomAttributes(const char* /*attr*/) const
