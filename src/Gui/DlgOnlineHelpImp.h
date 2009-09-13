@@ -37,22 +37,22 @@ namespace Dialog {
  */
 class DlgOnlineHelpImp : public PreferencePage, public Ui_DlgOnlineHelp
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-  DlgOnlineHelpImp( QWidget* parent = 0 );
-  ~DlgOnlineHelpImp();
+    DlgOnlineHelpImp( QWidget* parent = 0 );
+    ~DlgOnlineHelpImp();
 
-  static QString getStartpage();
+    static QString getStartpage();
 
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
 
 protected Q_SLOTS:
-  void on_lineEditDownload_fileNameSelected(const QString&);
+    void on_lineEditDownload_fileNameSelected(const QString&);
 };
 
 } // namespace Dialog

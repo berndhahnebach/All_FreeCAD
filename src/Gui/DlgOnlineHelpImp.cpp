@@ -47,21 +47,14 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent )
   : PreferencePage(parent)
 {
     this->setupUi(this);
-    this->DownloadURL->setText(QLatin1String
-      ("http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page"));
 
     prefStartPage->setFilter( tr("Html files (*.html *.htm)") );
     if (prefStartPage->fileName().isEmpty()) {
         prefStartPage->setFileName(getStartpage());
     }
-
-    if (lineEditDownload->fileName().isEmpty()) {
-        // set output directory
-        QString path = QString::fromUtf8(App::GetApplication().GetHomePath());
-        path += QLatin1String("/doc/");
-        QDir dir(path);
-        lineEditDownload->setFileName( dir.absolutePath() );
-    }
+#if QT_VERSION < 0x040400
+    this->setDisabled(true);
+#endif
 }
 
 /** 
@@ -79,11 +72,15 @@ DlgOnlineHelpImp::~DlgOnlineHelpImp()
  */
 QString DlgOnlineHelpImp::getStartpage()
 {
+#if 1
+    //return QString::fromAscii("http://sourceforge.net/apps/phpbb/free-cad/");
+    return QString::fromAscii("http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page");
+#else
     ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/OnlineHelp");
-    QString home = QString::fromUtf8(hURLGrp->GetASCII( "Startpage", "" ).c_str());
+    QString home = QString::fromUtf8(hURLGrp->GetASCII("Startpage", "").c_str());
 
-    // help start in in config?
+    // help start in config?
     if (home.isEmpty() && App::Application::Config()["HelpStart"] != "") {
         home = QString::fromUtf8(App::GetApplication().GetHomePath());
         home += QString::fromUtf8(App::Application::Config()["HelpStart"].c_str());
@@ -98,28 +95,19 @@ QString DlgOnlineHelpImp::getStartpage()
     }
 
     return home;
+#endif
 }
 
 void DlgOnlineHelpImp::saveSettings()
 {
-    PrefLineEdit2->onSave();
-    UseProxy->onSave();
-    DownloadURL->onSave();
-    prefExtBrowser->onSave();
     prefStartPage->onSave();
-    prefAuthorize->onSave();
-    lineEditDownload->onSave();
+    showStartPage->onSave();
 }
 
 void DlgOnlineHelpImp::loadSettings()
 {
-    PrefLineEdit2->onRestore();
-    UseProxy->onRestore();
-    DownloadURL->onRestore();
-    prefExtBrowser->onRestore();
     prefStartPage->onRestore();
-    prefAuthorize->onRestore();
-    lineEditDownload->onRestore();
+    showStartPage->onRestore();
 }
 
 /**
