@@ -53,6 +53,7 @@
 
 #include "TopoShape.h"
 #include "TopoShapeSolidPy.h"
+#include "TopoShapeWirePy.h"
 #include "TopoShapeFacePy.h"
 #include "TopoShapeFacePy.cpp"
 
@@ -259,7 +260,7 @@ Py::Object TopoShapeFacePy::getWire(void) const
     if (clSh.ShapeType() == TopAbs_FACE) {
         TopoDS_Face clFace = (TopoDS_Face&)clSh;
         TopoDS_Wire clWire = ShapeAnalysis::OuterWire(clFace);
-        return Py::Object(new TopoShapePy(new TopoShape(clWire)),true);
+        return Py::Object(new TopoShapeWirePy(new TopoShape(clWire)),true);
     }
     else
         throw "Internal error, TopoDS_Shape is not a face!";
