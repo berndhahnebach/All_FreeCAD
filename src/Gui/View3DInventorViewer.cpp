@@ -368,6 +368,10 @@ void View3DInventorViewer::setEnabledFPSCounter(bool on)
 
 void View3DInventorViewer::setNavigationType(Base::Type t)
 {
+    if (t.isBad())
+        return;
+    if (this->navigation && this->navigation->getTypeId() == t)
+        return; // nothing to do
     Base::BaseClass* base = static_cast<Base::BaseClass*>(t.createInstance());
     if (!base)
         return;
@@ -380,8 +384,10 @@ void View3DInventorViewer::setNavigationType(Base::Type t)
         return;
     }
 
+    NavigationStyle* ns = static_cast<NavigationStyle*>(base);
+    ns->operator = (*this->navigation);
     delete this->navigation;
-    this->navigation = static_cast<NavigationStyle*>(base);
+    this->navigation = ns;
     this->navigation->setViewer(this);
 }
 

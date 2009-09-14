@@ -83,7 +83,7 @@ DlgMacroExecuteImp::~DlgMacroExecuteImp()
 void DlgMacroExecuteImp::fillUpList(void)
 {
     // lists all files in macro path
-    QDir dir(this->macroPath, QLatin1String("*.FCMacro"));
+    QDir dir(this->macroPath, QLatin1String("*.FCMacro *.py"));
   
     // fill up with the directory
     macroListBox->clear();
@@ -117,7 +117,7 @@ void DlgMacroExecuteImp::accept()
     QFileInfo fi(dir, item->text(0));
     Application::Instance->macroManager()->run(Gui::MacroManager::File, fi.filePath().toUtf8());
     // after macro run recalculate the document
-    if ( Application::Instance->activeDocument() )
+    if (Application::Instance->activeDocument())
         Application::Instance->activeDocument()->getDocument()->recompute();
 }
 
@@ -159,25 +159,32 @@ void DlgMacroExecuteImp::on_createButton_clicked()
         QLineEdit::Normal, QString::null, 0);
     if (!fn.isEmpty())
     {
-        if (!fn.endsWith(QLatin1String(".FCMacro")))
+        QString suffix = QFileInfo(fn).suffix().toLower();
+        if (suffix != QLatin1String("fcmacro") && suffix != QLatin1String("py"))
             fn += QLatin1String(".FCMacro");
         QDir dir(this->macroPath);
-        QFileInfo fi( dir, fn );
-        if ( fi.exists() && fi.isFile() )
+        QFileInfo fi(dir, fn);
+        if (fi.exists() && fi.isFile())
         {
-            QMessageBox::warning( this, tr("Existing file"),
+            QMessageBox::warning(this, tr("Existing file"),
                 tr("'%1'.\nThis file already exists.").arg(fi.fileName()));
         }
         else
         {
-            QString file = QString::fromAscii("%1/%2").arg(dir.absolutePath()).arg( fn );
+            QFile file(fi.absoluteFilePath());
+            if (!file.open(QFile::WriteOnly)) {
+                QMessageBox::warning(this, tr("Cannot create file"),
+                    tr("Creation of file '%1' failed.").arg(fi.absoluteFilePath()));
+                return;
+            }
+            file.close();
             PythonEditor* editor = new PythonEditor();
             editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
             EditorView* edit = new EditorView(editor, getMainWindow());
-            edit->open(file);
-            edit->setWindowTitle( fn );
-            edit->resize( 400, 300 );
-            getMainWindow()->addWindow( edit );
+            edit->open(fi.absoluteFilePath());
+            edit->setWindowTitle(fn);
+            edit->resize(400, 300);
+            getMainWindow()->addWindow(edit);
             close();
         }
     }
@@ -190,12 +197,13 @@ void DlgMacroExecuteImp::on_deleteButton_clicked()
     if (!item) return;
 
     QString fn = item->text(0);
-    int ret = QMessageBox::question(this, tr("Delete macro"), tr("Do you really want to delete the macro '%1'?").arg( fn ), 
-                                    QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
-    if ( ret == QMessageBox::Yes )
+    int ret = QMessageBox::question(this, tr("Delete macro"),
+        tr("Do you really want to delete the macro '%1'?").arg( fn ),
+        QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape);
+    if (ret == QMessageBox::Yes)
     {
         QDir dir(this->macroPath);
-        dir.remove( fn );
+        dir.remove(fn);
         int index = macroListBox->indexOfTopLevelItem(item);
         macroListBox->takeTopLevelItem(index);
         delete item;

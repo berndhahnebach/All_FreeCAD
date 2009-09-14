@@ -80,6 +80,7 @@ public:
     NavigationStyle();
     virtual ~NavigationStyle();
 
+    NavigationStyle& operator = (const NavigationStyle& ns);
     void setViewer(View3DInventorViewer*);
 
     void setAnimationEnabled(const SbBool enable);

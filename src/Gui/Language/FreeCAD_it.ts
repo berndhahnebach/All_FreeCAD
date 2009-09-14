@@ -1045,7 +1045,7 @@ Specificare un&apos;altra cartella.</translation>
         <translation>Mostra contatore frame per secondo</translation>
     </message>
     <message>
-        <source>Use spin rotation</source>
+        <source>Enable animation</source>
         <translation>Usa la rotazione di spin</translation>
     </message>
     <message>

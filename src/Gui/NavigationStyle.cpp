@@ -74,6 +74,14 @@ NavigationStyle::~NavigationStyle()
     delete PRIVATE(this);
 }
 
+NavigationStyle& NavigationStyle::operator = (const NavigationStyle& ns)
+{
+    this->panningplane = ns.panningplane;
+    this->menuenabled = ns.menuenabled;
+    this->spinanimatingallowed = ns.spinanimatingallowed;
+    return *this;
+}
+
 void NavigationStyle::setViewer(View3DInventorViewer* view)
 {
     this->viewer = view;

@@ -1044,8 +1044,8 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Anti-Aliasing aktivieren (langsam)</translation>
     </message>
     <message>
-        <source>Use spin rotation</source>
-        <translation>Selbstständige Drehbewegung verwenden</translation>
+        <source>Enable animation</source>
+        <translation>Animation zulassen</translation>
     </message>
     <message>
         <source>Selection color:</source>

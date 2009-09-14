@@ -71,6 +71,8 @@ void View3DInventorPy::init_type()
     add_varargs_method("viewAxometric",&View3DInventorPy::viewAxometric,"viewAxometric()");
     add_varargs_method("startAnimating",&View3DInventorPy::startAnimating,"startAnimating()");
     add_varargs_method("stopAnimating",&View3DInventorPy::stopAnimating,"stopAnimating()");
+    add_varargs_method("setAnimationEnabled",&View3DInventorPy::setAnimationEnabled,"setAnimationEnabled()");
+    add_varargs_method("isAnimationEnabled",&View3DInventorPy::isAnimationEnabled,"isAnimationEnabled()");
     add_varargs_method("dump",&View3DInventorPy::dump,"dump()");
     add_varargs_method("setStereoType",&View3DInventorPy::setStereoType,"setStereoType()");
     add_varargs_method("getStereoType",&View3DInventorPy::getStereoType,"getStereoType()");
@@ -392,6 +394,23 @@ Py::Object View3DInventorPy::stopAnimating(const Py::Tuple& args)
         throw Py::Exception();
     _view->getViewer()->stopAnimating();
     return Py::None();
+}
+
+Py::Object View3DInventorPy::setAnimationEnabled(const Py::Tuple& args)
+{
+    int ok;
+    if (!PyArg_ParseTuple(args.ptr(), "i", &ok))
+        throw Py::Exception();
+    _view->getViewer()->setAnimationEnabled(ok!=0);
+    return Py::None();
+}
+
+Py::Object View3DInventorPy::isAnimationEnabled(const Py::Tuple& args)
+{
+    if (!PyArg_ParseTuple(args.ptr(), ""))
+        throw Py::Exception();
+    SbBool ok = _view->getViewer()->isAnimationEnabled();
+    return Py::Boolean(ok ? true : false);
 }
 
 Py::Object View3DInventorPy::saveImage(const Py::Tuple& args)

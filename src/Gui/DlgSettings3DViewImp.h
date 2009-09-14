@@ -36,18 +36,19 @@ namespace Dialog {
  * \author Jürgen Riegel
  */
 class DlgSettings3DViewImp : public PreferencePage, public Ui_DlgSettings3DView
-{ 
-  Q_OBJECT
+{
+    Q_OBJECT
 
 public:
-  DlgSettings3DViewImp( QWidget* parent = 0 );
-  ~DlgSettings3DViewImp();
+    DlgSettings3DViewImp(QWidget* parent = 0);
+    ~DlgSettings3DViewImp();
 
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
 
 protected:
-  void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);
+    void retranslate();
 };
 
 } // namespace Dialog
