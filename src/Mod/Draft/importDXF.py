@@ -213,28 +213,42 @@ class fcformat:
 		print table
 		return table
 		
-	def formatObject(self,obj,dxfobj):
+	def formatObject(self,obj,dxfobj,textmode=False):
 		"applies color and linetype to objects"
 		if self.paramstyle == 1:
-			obj.ViewObject.LineColor = self.col
-			obj.ViewObject.LineWidth = self.lw
-		elif self.paramstyle == 2:
-			if dxfobj.color_index == 256: cm = self.getGroupColor(dxfobj)
-			elif (dxfobj.color_index == 7) and self.brightbg: cm = [0.0,0.0,0.0]
-			else: cm = dxfColorMap.color_map[dxfobj.color_index]
-			obj.ViewObject.LineColor = (cm[0],cm[1],cm[2],0.0)
-			obj.ViewObject.LineWidth = self.lw
-		elif self.paramstyle == 3:
-			if dxfobj.color_index == 256:
-				cm = self.table[self.getGroupColor(dxfobj,index=True)][0]
-				wm = self.table[self.getGroupColor(dxfobj,index=True)][1]
+			if textmode:
+				obj.ViewObject.TextColor = (0.0,0.0,0.0)
 			else:
-				cm = self.table[dxfobj.color_index][0]
-				wm = self.table[dxfobj.color_index][1]
-			if cm == "object": cm = self.getGroupColor(dxfobj)
-			else: obj.ViewObject.LineColor = (cm[0],cm[1],cm[2],0.0)
-			if wm == "object": wm = self.lw
-			else: obj.ViewObject.LineWidth = wm
+				obj.ViewObject.LineColor = self.col
+				obj.ViewObject.LineWidth = self.lw
+			
+		elif self.paramstyle == 2:
+			if textmode:
+				if dxfobj.color_index == 256: cm = self.getGroupColor(dxfobj)[:3]
+				else: cm = dxfColorMap.color_map[dxfobj.color_index]
+				obj.ViewObject.TextColor = (cm[0],cm[1],cm[2])
+			else:
+				if dxfobj.color_index == 256: cm = self.getGroupColor(dxfobj)
+				elif (dxfobj.color_index == 7) and self.brightbg: cm = [0.0,0.0,0.0]
+				else: cm = dxfColorMap.color_map[dxfobj.color_index]
+				obj.ViewObject.LineColor = (cm[0],cm[1],cm[2],0.0)
+				obj.ViewObject.LineWidth = self.lw
+		elif self.paramstyle == 3:
+			if textmode:
+				cm = table[dxfobj.color_index][0]
+				wm = table[dxfobj.color_index][1]
+				obj.ViewObject.TextColor = (cm[0],cm[1],cm[2])
+			else:
+				if dxfobj.color_index == 256:
+					cm = self.table[self.getGroupColor(dxfobj,index=True)][0]
+					wm = self.table[self.getGroupColor(dxfobj,index=True)][1]
+				else:
+					cm = self.table[dxfobj.color_index][0]
+					wm = self.table[dxfobj.color_index][1]
+				if cm == "object": cm = self.getGroupColor(dxfobj)
+				else: obj.ViewObject.LineColor = (cm[0],cm[1],cm[2],0.0)
+				if wm == "object": wm = self.lw
+				else: obj.ViewObject.LineWidth = wm
 
 	def getGroupColor(self,dxfobj,index=False):
 		"get color of bylayer stuff"
@@ -305,6 +319,53 @@ def drawCircle(circle):
 	curve.Center = v
 	return curve.toShape()
 
+def drawBlock(blockref):
+	"returns a shape from a dxf block reference"
+	shapes = []
+	for line in blockref.entities.get_type('line'):
+		s = drawLine(line)
+		if s: shapes.append(s)
+	for polyline in blockref.entities.get_type('polyline'):
+		s = drawPolyline(polyline)
+		if s: shapes.append(s)
+	for polyline in blockref.entities.get_type('lwpolyline'):
+		s = drawPolyline(polyline)
+		if s: shapes.append(s)
+	for arc in blockref.entities.get_type('arc'):
+		s = drawArc(arc)
+		if s: shapes.append(s)
+	for circle in blockref.entities.get_type('circle'):
+		s = drawCircle(circle)
+		if s: shapes.append(s)
+	for insert in blockref.entities.get_type('insert'):
+		s = drawInsert(insert)
+		if s: shapes.append(s)
+	shape = Part.makeCompound(shapes)
+	if shape:
+		blockshapes[blockref.name]=shape
+		return shape
+	return None
+
+def drawInsert(insert):
+	if blockshapes.has_key(insert):
+		shape = blockshapes[insert.block]
+	else:
+		shape = None
+		for b in drawing.blocks.data:
+			if b.name == insert.block:
+				shape = drawBlock(b)
+	if shape:
+		pos = FreeCAD.Vector(insert.loc[0],insert.loc[1],insert.loc[2])
+		rot = math.radians(insert.rotation)
+		scale = insert.scale
+		tsf = FreeCAD.Matrix()
+		tsf.scale(FreeCAD.Vector(scale[0],scale[1],scale[2]))
+		tsf.rotateZ(rot)
+		shape = shape.transformGeometry(tsf)
+		shape.translate(pos)
+		return shape
+	return None
+
 def addObject(shape,name,layer):
 	"adds a new object to the document with passed arguments"
 	newob=doc.addObject("Part::Feature",name)
@@ -322,6 +383,8 @@ def processdxf(document,filename):
 	layers = []
 	global doc
 	doc = document
+	global blockshapes
+	blockshapes = {}
 	print "dxf: parsing file ",filename
 
 	# getting config parameters
@@ -384,16 +447,7 @@ def processdxf(document,filename):
 				if gui:
 					newob.ViewObject.FontSize=float(text.height)
 					newob.ViewObject.DisplayMode = "World"
-					if fmt.paramstyle == 0: newob.ViewObject.TextColor = (r,g,b)
-					elif fmt.paramstyle == 1: newob.ViewObject.TextColor = (0.0,0.0,0.0)
-					elif fmt.paramstyle == 2:
-						if text.color_index > 255: cm = [0.0,0.0,0.0]
-						else: cm = dxfColorMap.color_map[text.color_index]
-						newob.ViewObject.TextColor = (cm[0],cm[1],cm[2])
-					elif fmt.paramstyle == 3:
-						cm = table[text.color_index][0]
-						wm = table[text.color_index][1]
-						newob.ViewObject.TextColor = (cm[0],cm[1],cm[2])
+					fmt.formatObject(newob,text,textmode=True)
 					
 	else: FreeCAD.Console.PrintMessage("skipping texts...\n")
 
@@ -440,7 +494,10 @@ def processdxf(document,filename):
 				newob.Start = p1
 				newob.End = p2
 				newob.Dimline = pt
-				if gui: fmt.formatObject (newob,dim)
+				if gui:
+					dim.layer = layer
+					dim.color_index = 256
+					fmt.formatObject (newob,dim)
 						
 	else: FreeCAD.Console.PrintMessage("skipping dimensions...\n")
 
@@ -450,39 +507,13 @@ def processdxf(document,filename):
 	if inserts:
 		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" blocks...\n")
 		blockrefs = drawing.blocks.data
-		blockshapes = {}
 		for ref in blockrefs:
-			shapes = []
-			for line in ref.entities.get_type('line'):
-				s = drawLine(line)
-				if s: shapes.append(s)
-			for polyline in ref.entities.get_type('polyline'):
-				s = drawPolyline(polyline)
-				if s: shapes.append(s)
-			for polyline in ref.entities.get_type('lwpolyline'):
-				s = drawPolyline(polyline)
-				if s: shapes.append(s)
-			for arc in ref.entities.get_type('arc'):
-				s = drawArc(arc)
-				if s: shapes.append(s)
-			for circle in ref.entities.get_type('circle'):
-				s = drawCircle(circle)
-				if s: shapes.append(s)
-			blockshapes[ref.name]=Part.makeCompound(shapes)
+			drawBlock(ref)
 		for insert in inserts:
-			shape = blockshapes[insert.block]
+			shape = drawInsert(insert)
 			if shape:
-				pos = FreeCAD.Vector(insert.loc[0],insert.loc[1],insert.loc[2])
-				rot = math.radians(insert.rotation)
-				scale = insert.scale
-				tsf = FreeCAD.Matrix()
-				tsf.scale(FreeCAD.Vector(scale[0],scale[1],scale[2]))
-				tsf.rotateZ(rot)
-				shape = shape.transform(tsf)
-				shape.translate(pos)
 				newob = addObject(shape,"Block",insert.layer)
 				if gui: fmt.formatObject(newob,insert)
-			
 
 	doc.recompute()
 	del fmt
