@@ -56,6 +56,8 @@ public:
     Py::Object viewAxometric(const Py::Tuple&);
     Py::Object startAnimating(const Py::Tuple&);
     Py::Object stopAnimating(const Py::Tuple&);
+    Py::Object setAnimationEnabled(const Py::Tuple&);
+    Py::Object isAnimationEnabled(const Py::Tuple&);
     Py::Object dump(const Py::Tuple&);
     Py::Object setStereoType(const Py::Tuple&);
     Py::Object getStereoType(const Py::Tuple&);

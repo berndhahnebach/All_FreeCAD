@@ -1092,7 +1092,7 @@ Specify another directory, please.</source>
         <translation>Montrer le compteur de frames par secondes</translation>
     </message>
     <message>
-        <source>Use spin rotation</source>
+        <source>Enable animation</source>
         <translation>Utilisez la rotation spin</translation>
     </message>
     <message>

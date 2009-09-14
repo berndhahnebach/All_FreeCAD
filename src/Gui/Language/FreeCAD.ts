@@ -1091,7 +1091,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use spin rotation</source>
+        <source>Enable animation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

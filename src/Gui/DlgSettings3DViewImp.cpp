@@ -44,22 +44,7 @@ DlgSettings3DViewImp::DlgSettings3DViewImp(QWidget* parent)
     : PreferencePage( parent )
 {
     this->setupUi(this);
-
-    std::vector<Base::Type> types;
-    Base::Type::getAllDerivedFrom(NavigationStyle::getClassTypeId(), types);
-    comboNavigationStyle->clear();
-
-    QRegExp rx(QString::fromAscii("^\\w+::(\\w+)Navigation\\w+$"));
-    for (std::vector<Base::Type>::iterator it = types.begin(); it != types.end(); ++it) {
-        if (*it != NavigationStyle::getClassTypeId()) {
-            QString data = QString::fromAscii(it->getName());
-            QString name = data.mid(data.indexOf(QLatin1String("::"))+2);
-            if (rx.indexIn(data) > -1) {
-                name = tr("%1 navigation").arg(rx.cap(1));
-            }
-            comboNavigationStyle->addItem(name, data);
-        }
-    }
+    retranslate();
 }
 
 /** 
@@ -118,9 +103,29 @@ void DlgSettings3DViewImp::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
         retranslateUi(this);
+        retranslate();
     }
     else {
         QWidget::changeEvent(e);
+    }
+}
+
+void DlgSettings3DViewImp::retranslate()
+{
+    std::vector<Base::Type> types;
+    Base::Type::getAllDerivedFrom(NavigationStyle::getClassTypeId(), types);
+    comboNavigationStyle->clear();
+
+    QRegExp rx(QString::fromAscii("^\\w+::(\\w+)Navigation\\w+$"));
+    for (std::vector<Base::Type>::iterator it = types.begin(); it != types.end(); ++it) {
+        if (*it != NavigationStyle::getClassTypeId()) {
+            QString data = QString::fromAscii(it->getName());
+            QString name = data.mid(data.indexOf(QLatin1String("::"))+2);
+            if (rx.indexIn(data) > -1) {
+                name = tr("%1 navigation").arg(rx.cap(1));
+            }
+            comboNavigationStyle->addItem(name, data);
+        }
     }
 }
 

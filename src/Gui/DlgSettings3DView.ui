@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>Gui::Dialog::DlgSettings3DView</class>
  <widget class="QWidget" name="Gui::Dialog::DlgSettings3DView" >
   <property name="geometry" >
@@ -141,16 +144,16 @@
            <number>1</number>
           </property>
           <property name="maximum" >
-           <double>1000.000000000000000</double>
+           <double>1000</double>
           </property>
           <property name="minimum" >
-           <double>0.100000000000000</double>
+           <double>0.1</double>
           </property>
           <property name="singleStep" >
-           <double>2.000000000000000</double>
+           <double>2</double>
           </property>
           <property name="value" >
-           <double>65.000000000000000</double>
+           <double>65</double>
           </property>
           <property name="prefEntry" stdset="0" >
            <cstring>EyeDistance</cstring>
@@ -199,25 +202,15 @@
         <item>
          <widget class="QLabel" name="textLabel1_3" >
           <property name="text" >
-           <string>3D Mouse Model</string>
+           <string>3D Navigation</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="comboNavigationStyle" >
           <property name="currentIndex" >
-           <number>1</number>
+           <number>-1</number>
           </property>
-          <item>
-           <property name="text" >
-            <string>Simple model</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Full model</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
@@ -228,7 +221,7 @@
          <bool>true</bool>
         </property>
         <property name="text" >
-         <string>Use spin rotation</string>
+         <string>Enable animation</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
@@ -336,29 +329,39 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>Gui::PrefRadioButton</class>
+   <extends>QRadioButton</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
    <class>Gui::PrefSlider</class>
    <extends>QSlider</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefColorButton</class>
    <extends>Gui::ColorButton</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Gui::PrefCheckBox</class>
    <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Gui::PrefRadioButton</class>
-   <extends>QRadioButton</extends>
-   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
