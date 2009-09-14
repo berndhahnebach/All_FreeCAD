@@ -68,18 +68,35 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
         setActiveMode();
     }
     else if (prop == &Visibility) {
-        Visibility.getValue() ? ViewProvider::show() : ViewProvider::hide();
+        // use this bit to check whether show() or hide() must be called
+        if (Visibility.StatusBits.test(8) == false) {
+            Visibility.StatusBits.set(8);
+            Visibility.getValue() ? show() : hide();
+            Visibility.StatusBits.reset(8);
+        }
     }
 }
 
 void ViewProviderDocumentObject::hide(void)
 {
-    Visibility.setValue(false);
+    // use this bit to check whether 'Visibility' must be adjusted
+    if (Visibility.StatusBits.test(8) == false) {
+        Visibility.StatusBits.set(8);
+        Visibility.setValue(false);
+        Visibility.StatusBits.reset(8);
+    }
+    ViewProvider::hide();
 }
 
 void ViewProviderDocumentObject::show(void)
 {
-    Visibility.setValue(true);
+    // use this bit to check whether 'Visibility' must be adjusted
+    if (Visibility.StatusBits.test(8) == false) {
+        Visibility.StatusBits.set(8);
+        Visibility.setValue(true);
+        Visibility.StatusBits.reset(8);
+    }
+    ViewProvider::show();
 }
 
 void ViewProviderDocumentObject::updateView()
