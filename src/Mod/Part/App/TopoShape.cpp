@@ -669,6 +669,11 @@ bool TopoShape::isValid() const
     return aChecker.IsValid() ? true : false;
 }
 
+bool TopoShape::isClosed() const
+{
+    return BRep_Tool::IsClosed(this->_Shape) ? true : false;
+}
+
 TopoDS_Shape TopoShape::cut(TopoDS_Shape shape) const
 {
     BRepAlgoAPI_Cut mkCut(this->_Shape, shape);
