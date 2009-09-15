@@ -108,6 +108,7 @@ public:
     //@{
     bool isNull() const;
     bool isValid() const;
+    bool isClosed() const;
     //@}
 
     /** @name Boolean operation*/

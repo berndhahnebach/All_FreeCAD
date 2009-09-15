@@ -25,7 +25,9 @@
 #ifndef _PreComp_
 # include <gp_Ax1.hxx>
 # include <BRep_Builder.hxx>
+# include <BRepCheck_Analyzer.hxx>
 # include <TopoDS_Shell.hxx>
+# include <ShapeUpgrade_ShellSewing.hxx>
 #endif
 
 #include <Base/VectorPy.h>
@@ -69,6 +71,7 @@ int TopoShapeShellPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return -1;
 
     BRep_Builder builder;
+    TopoDS_Shape shape;
     TopoDS_Shell shell;
     //BRepOffsetAPI_Sewing mkShell;
     builder.MakeShell(shell);
@@ -82,6 +85,13 @@ int TopoShapeShellPy::PyInit(PyObject* args, PyObject* /*kwd*/)
                 builder.Add(shell, sh);
             }
         }
+
+        shape = shell;
+        BRepCheck_Analyzer check(shell);
+        if (!check.IsValid()) {
+            ShapeUpgrade_ShellSewing sewShell;
+            shape = sewShell.ApplySewing(shell);
+        }
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -89,7 +99,7 @@ int TopoShapeShellPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return -1;
     }
 
-    getTopoShapePtr()->_Shape = shell;
+    getTopoShapePtr()->_Shape = shape;
     return 0;
 }
 
@@ -106,6 +116,11 @@ PyObject*  TopoShapeShellPy::add(PyObject *args)
         const TopoDS_Shape& sh = static_cast<TopoShapeFacePy*>(obj)->
             getTopoShapePtr()->_Shape;
         builder.Add(shell, sh);
+        BRepCheck_Analyzer check(shell);
+        if (!check.IsValid()) {
+            ShapeUpgrade_ShellSewing sewShell;
+            getTopoShapePtr()->_Shape = sewShell.ApplySewing(shell);
+        }
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

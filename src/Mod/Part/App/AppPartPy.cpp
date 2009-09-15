@@ -22,6 +22,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepCheck_Analyzer.hxx>
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <BRepPrimAPI_MakeCone.hxx>
 # include <BRepPrimAPI_MakeTorus.hxx>
@@ -47,6 +48,7 @@
 # include <GeomAPI_PointsToBSplineSurface.hxx>
 # include <Handle_Geom_Circle.hxx>
 # include <Handle_Geom_Plane.hxx>
+# include <ShapeUpgrade_ShellSewing.hxx>
 # include <Standard_ConstructionError.hxx>
 # include <Standard_DomainError.hxx>
 # include <TopoDS.hxx>
@@ -309,6 +311,7 @@ static PyObject * makeShell(PyObject *self, PyObject *args)
 
     PY_TRY {
         BRep_Builder builder;
+        TopoDS_Shape shape;
         TopoDS_Shell shell;
         //BRepOffsetAPI_Sewing mkShell;
         builder.MakeShell(shell);
@@ -322,6 +325,13 @@ static PyObject * makeShell(PyObject *self, PyObject *args)
                     builder.Add(shell, sh);
                 }
             }
+
+            shape = shell;
+            BRepCheck_Analyzer check(shell);
+            if (!check.IsValid()) {
+                ShapeUpgrade_ShellSewing sewShell;
+                shape = sewShell.ApplySewing(shell);
+            }
         }
         catch (Standard_Failure) {
             Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -329,7 +339,7 @@ static PyObject * makeShell(PyObject *self, PyObject *args)
             return 0;
         }
 
-        return new TopoShapeShellPy(new TopoShape(shell));
+        return new TopoShapeShellPy(new TopoShape(shape));
     } PY_CATCH;
 }
 

@@ -829,14 +829,13 @@ PyObject*  TopoShapePy::isClosed(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
-    TopoDS_Shape shape = getTopoShapePtr()->_Shape;
-    if (shape.IsNull()) {
-        PyErr_SetString(PyExc_Exception, "shape is empty");
+    try {
+        return Py_BuildValue("O", (getTopoShapePtr()->isClosed() ? Py_True : Py_False));
+    }
+    catch (...) {
+        PyErr_SetString(PyExc_RuntimeError, "check failed, shape may be empty");
         return NULL;
     }
-
-    Standard_Boolean test = shape.Closed();
-    return Py_BuildValue("O", (test ? Py_True : Py_False));
 }
 
 PyObject*  TopoShapePy::isEqual(PyObject *args)
@@ -1008,6 +1007,32 @@ Py::String TopoShapePy::getShapeType(void) const
         break;
     case TopAbs_SHAPE:
         name = "Shape";
+        break;
+    }
+
+    return Py::String(name);
+}
+
+Py::String TopoShapePy::getOrientation(void) const
+{
+    TopoDS_Shape sh = getTopoShapePtr()->_Shape;
+    if (sh.IsNull())
+        throw Py::Exception(PyExc_Exception, "cannot determine orientation of null shape");
+    TopAbs_Orientation type = sh.Orientation();
+    std::string name;
+    switch (type)
+    {
+    case TopAbs_FORWARD:
+        name = "Forward";
+        break;
+    case TopAbs_REVERSED:
+        name = "Reversed";
+        break;
+    case TopAbs_INTERNAL:
+        name = "Internal";
+        break;
+    case TopAbs_EXTERNAL:
+        name = "External";
         break;
     }
 
