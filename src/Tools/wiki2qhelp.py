@@ -33,7 +33,7 @@ The script can be called without arguments, it will then use the default
 url below, or by passing it an url and optionally a TOC name.
 """
 
-import sys, os, re, tempfile
+import sys, os, re, tempfile, getopt
 from urllib2 import urlopen, HTTPError
 
 #    CONFIGURATION       #################################################
@@ -45,6 +45,8 @@ MAXFAIL = 3 # max number of retries if download fails
 VERBOSE = True # to display what's going on. Otherwise, runs totally silent.
 COMPILE = True # Wether qt assistant will be used to compile the final help file
 OUTPUTPATH = os.path.expanduser("~")+os.sep+'.FreeCAD' # Where to store the qch file
+QHELPCOMPILER = 'qhelpgenerator'
+QCOLLECTIOMGENERATOR = 'qcollectiongenerator'
 
 #    END CONFIGURATION      ##############################################
 
@@ -119,13 +121,27 @@ a:hover {
   }
 
 """
+fcount = dcount = 0
+
+def rmall(dirPath):                             # delete dirPath and below
+    global fcount, dcount
+    namesHere = os.listdir(dirPath)
+    for name in namesHere:                      # remove all contents first
+        path = os.path.join(dirPath, name)
+        if not os.path.isdir(path):             # remove simple files
+            os.remove(path)
+            fcount = fcount + 1
+        else:                                   # recur to remove subdirs
+            rmall(path)
+    os.rmdir(dirPath)                           # remove now-empty dirPath
+    dcount = dcount + 1
 
 def crawl(site=DEFAULTURL):
     "downloads an entire wiki site"
-    if COMPILE and os.system('qhelpgenerator -v'):
+    if COMPILE and os.system(QHELPCOMPILER +' -v'):
         print "Error: QAssistant not fully installed, exiting."
         return 1
-    if COMPILE and os.system('qcollectiongenerator -v'):
+    if COMPILE and os.system(QCOLLECTIOMGENERATOR +' -v'):
         print "Error: QAssistant not fully installed, exiting."
         return 1
     URL = site
@@ -157,14 +173,14 @@ def crawl(site=DEFAULTURL):
             return 1
         else:
             if VERBOSE: print "Deleting temp files..."
-            os.rmdir(TMPFOLDER)
+            rmall(TMPFOLDER)
     if VERBOSE: print "All done!"
     return 0
 
 def compile(qhpfile):
     "compiles the whole html doc with qassistant"
     qchfile = OUTPUTPATH + os.sep + "freecad.qch"
-    if not os.system('qhelpgenerator '+qhpfile+' -o '+qchfile):
+    if not os.system(QHELPCOMPILER + ' '+qhpfile+' -o '+qchfile):
         if VERBOSE: print "Successfully created ",qchfile
         return 0
 
@@ -435,15 +451,39 @@ def output(html,page):
     file.close()
 
 def main(arg):
-    if arg:
-        if (arg[0] == '-h') or (arg[0] == '--help'):
-            print usage
-        else:
-            URL = arg[0]
-            if len(arg) > 1: INDEX = arg[1]
-            if len(arg) > 2: OUTPUTPATH = arg[2]
-            crawl()
-    else:
+	global QHELPCOMPILER,QCOLLECTIOMGENERATOR,OUTPUTPATH
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "hc:g:o:", ["help", "helpcompiler-exe=", "out-path=", "--helpgenerator-exe="])
+	except getopt.GetoptError:
+		# print help information and exit:
+		sys.stderr.write(Usage)
+		sys.exit(2)
+
+	# checking on the options
+	for o, a in opts:
+		if o == "-v":
+			verbose = True
+		if o in ("-h", "--help"):
+			sys.stderr.write(Usage)
+			sys.exit()
+		if o in ("-c", "--helpcompiler-exe"):
+			QHELPCOMPILER = a
+			print 'Using: ',QHELPCOMPILER
+			
+		if o in ("-g", "--helpgenerator-exe"):
+			QCOLLECTIOMGENERATOR = a
+		if o in ("-o", "--out-path"):
+			print "Using output path: " + a +"\n"
+			OUTPUTPATH = a
+#    if arg:
+#        if (arg[0] == '-h') or (arg[0] == '--help'):
+#            print usage
+#        else:
+#            URL = arg[0]
+#            if len(arg) > 1: INDEX = arg[1]
+#            if len(arg) > 2: OUTPUTPATH = arg[2]
+#            crawl()
+#    else:
         crawl()
     
 if __name__ == "__main__":

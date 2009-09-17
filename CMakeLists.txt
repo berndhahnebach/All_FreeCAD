@@ -71,6 +71,9 @@ else(WIN32)
 		 set(FREECAD_LIBPACK_DIR ""  CACHE PATH  "Directory of the FreeCAD LibPack")
 endif(WIN32)
 
+# ================================================================================
+# == All th Options for the build process    ============
+
 OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command line and the Python import module." ON)
 OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
 OPTION(FREECAD_BUILD_CAM "Build the FreeCAD CAM module and the needed libs, be Aware, unfinished code!" OFF)
@@ -127,7 +130,7 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 # -------------------------------- Boost --------------------------------
 
-	SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.38.0" "1.37.0"
+	SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.39.0" "1.38.0" "1.37.0"
 	    "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
 	    "1.33.1" "1.33.0" "1.33" )
 
@@ -261,7 +264,7 @@ add_subdirectory(src)
 
 # ================================================================================
 # == Packaging ===================================================================
-if(FREECAD_MAINTAINERS_BUILD)
+if(FREECAD_MAINTAINERS_BUILD AND NOT WIN32)
 	set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An extensible Open Source CAx program")
 	set(CPACK_PACKAGE_VENDOR "FreeCAD development team")
 	if(WIN32)
@@ -274,8 +277,13 @@ if(FREECAD_MAINTAINERS_BUILD)
 	set(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR})
 	set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
 	set(CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
-	set(CPACK_GENERATOR "TGZ")
-	set(CPACK_SOURCE_GENERATOR "TGZ")
+	if(WIN32)
+		set(CPACK_GENERATOR "ZIP")
+		set(CPACK_SOURCE_GENERATOR "ZIP")
+	else(WIN32)
+		set(CPACK_GENERATOR "TGZ")
+		set(CPACK_SOURCE_GENERATOR "TGZ")
+	endif(WIN32)
 	file(GLOB DOT ".*")
 	file(GLOB TILD "*~")
 	set(CPACK_SOURCE_IGNORE_FILES
@@ -313,6 +321,6 @@ if(FREECAD_MAINTAINERS_BUILD)
 	set(CPACK_SOURCE_STRIP_FILES "")
 	include(CPack)
 
-	ADD_CUSTOM_TARGET(dist make package_source)
+	#ADD_CUSTOM_TARGET(DIST make package_source)
 
-endif(FREECAD_MAINTAINERS_BUILD)
+endif(FREECAD_MAINTAINERS_BUILD AND NOT WIN32)
