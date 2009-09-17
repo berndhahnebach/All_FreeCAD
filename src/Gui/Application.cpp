@@ -792,6 +792,7 @@ bool Application::activateWorkbench(const char* name)
         }
 
         Base::Console().Error("%s\n", (const char*)msg.toAscii());
+        Base::Console().Log("%s\n", e.getStackTrace().c_str());
         if (!d->_bStartingUp) {
             wc.restoreCursor();
             QMessageBox::critical(getMainWindow(), QObject::tr("Workbench failure"), 
