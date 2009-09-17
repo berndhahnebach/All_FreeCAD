@@ -32,6 +32,7 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <Gui/Command.h>
+#include <Gui/WaitCursor.h>
 
 using namespace PartGui;
 
@@ -100,6 +101,7 @@ void DlgBooleanOperation::accept()
     shapeOne = (const char*)firstShape->itemData(firstShape->currentIndex()).toByteArray();
     shapeTwo = (const char*)secondShape->itemData(secondShape->currentIndex()).toByteArray();
 
+    Gui::WaitCursor wc;
     activeDoc->openTransaction("Boolean operation");
     Gui::Command::doCommand(Gui::Command::Doc,
         "App.activeDocument().addObject(\"%s\",\"%s\")",
