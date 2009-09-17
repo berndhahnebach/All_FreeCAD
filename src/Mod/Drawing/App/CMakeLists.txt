@@ -49,6 +49,13 @@ SOURCE_GROUP("Mod" FILES ${Drawing_SRCS})
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 SOURCE_GROUP("Algorithems" FILES ${DrawingAlgos_SRCS})
 
+
+SET(Drawing_Scripts
+		../DrawingAlgos.py
+		)
+		
+COPY_IF_DIFFERENT( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/Mod/Drawing ${Drawing_Scripts} Drawing "DrawingScripts")
+
 add_library(Drawing SHARED ${Drawing_SRCS} ${Features_SRCS} ${DrawingAlgos_SRCS})
 
 target_link_libraries(Drawing ${Drawing_LIBS})
