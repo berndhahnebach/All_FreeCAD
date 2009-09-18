@@ -4,8 +4,8 @@
 
 Transform
 {
-rotation 1 0 0 -1.5707963
-   scale .001 .001 .001
+   #rotation 1 0 0 -1.5707963
+   #scale .001 .001 .001
    children
    [
             DEF AOBJ_000_TRAFO Transform

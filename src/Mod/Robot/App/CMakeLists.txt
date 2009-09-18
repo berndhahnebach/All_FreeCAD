@@ -1,6 +1,8 @@
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
+		 ${CMAKE_BINARY_DIR}/src
+		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${Eigen_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
@@ -23,25 +25,40 @@ FILE( GLOB KDL_HPPS KDL/[^.]*.hpp KDL/[^.]*.inl)
 FILE( GLOB UTIL_SRCS KDL/utilities/[^.]*.cpp KDL/utilities/[^.]*.cxx)
 FILE( GLOB UTIL_HPPS KDL/utilities/[^.]*.h KDL/utilities/[^.]*.hpp)
 
+generate_from_xml(Robot6AxisPy)
 
+SET(Python_SRCS
+		 Robot6AxisPy.xml
+		 Robot6AxisPyImp.cpp
+)
 
-SET(Robot_SRCS
+SET(Mod_SRCS
 		 AppRobot.cpp
 		 AppRobotPy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
+)
+
+SET(Robot_SRCS
 		 RobotObject.cpp
 		 RobotObject.h
 		 RobotAlgos.cpp
 		 RobotAlgos.h
+		 Robot6Axis.cpp
+		 Robot6Axis.h
 		 ${KDL_SRCS}
 		 ${KDL_HPPS}
 		 ${UTIL_SRCS}
 		 ${UTIL_HPPS}
+		 ${Mod_SRCS}
+		 ${Python_SRCS}
 )
 
 
 SOURCE_GROUP("KDL" FILES ${KDL_SRCS} ${KDL_HPPS} ${UTIL_SRCS} ${UTIL_HPPS} )
+
+SOURCE_GROUP("Python" FILES ${Python_SRCS})
+SOURCE_GROUP("Module" FILES ${Mod_SRCS})
 
 add_library(Robot SHARED ${Robot_SRCS})
 
