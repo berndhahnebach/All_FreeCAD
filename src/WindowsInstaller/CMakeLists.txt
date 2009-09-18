@@ -1,15 +1,1 @@
-# Building Installeradd_custom_target(i18n-win32-installer ALL DEPENDS ${FreeCAD_NSH})
-
-add_custom_target(win32-installer
-  COMMAND ${WIX_CANDLE_EXECUTABLE} 
-      ${CMAKE_CURRENT_SOURCE_DIR}/FreeCAD.wxs 
-      -o ${CMAKE_CURRENT_BINARY_DIR}/FreeCAD.wixobj
-  
-  COMMAND ${WIX_LIGHT_EXECUTABLE}
-      ${CMAKE_CURRENT_BINARY_DIR}/FreeCAD.wixobj
-      -o ${CMAKE_CURRENT_BINARY_DIR}/FreeCAD-${VERSION}.msi
-      -ext ${WIX_BINARY_DIR}/WixUIExtension.dll
-  
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/FreeCAD.wxs
-  COMMENT "Building FreeCAD-${VERSION}.msi"
-)
+# Building Installeradd_custom_target(i18n-win32-installer ALL DEPENDS ${FreeCAD_NSH})add_custom_command(TARGET win32-installer PRE_BUILD	  COMMAND ${WIX_CANDLE_EXECUTABLE}      -out ${CMAKE_CURRENT_BINARY_DIR}/FreeCAD.wxobj      ${CMAKE_CURRENT_SOURCE_DIR}/FreeCAD.wxs	  COMMENT "Building FreeCAD.wxobj")add_custom_target(win32-installer  COMMAND ${WIX_LIGHT_EXECUTABLE}      -out ${CMAKE_CURRENT_BINARY_DIR}/FreeCAD-${VERSION}.msi      -ext ${WIX_BINARY_DIR}/WixUIExtension.dll      ${CMAKE_CURRENT_BINARY_DIR}/FreeCAD.wixobj  SOURCES FreeCAD.wxs     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/FreeCAD.wxs  COMMENT "Building FreeCAD-${VERSION}.msi")

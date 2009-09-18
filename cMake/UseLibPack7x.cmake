@@ -275,3 +275,12 @@ set(OCC_LIBRARIES
 )
 
 set(OCC_FOUND TRUE) 
+
+if(FREECAD_BUILD_ROBOT)
+  SET(Eigen_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/eigen2)
+  set(Eigen_FOUND TRUE)
+endif(FREECAD_BUILD_ROBOT)
+
+
+
+
