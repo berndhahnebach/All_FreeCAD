@@ -42,6 +42,12 @@ Placement::Placement(const Placement& that)
     this->_rot = that._rot;
 }
 
+Placement::Placement(const Vector3d& Pos, const Rotation &Rot)
+{
+    this->_pos = Pos;
+    this->_rot = Rot;
+}
+
 Base::Matrix4D Placement::toMatrix(void) const
 {
     Base::Matrix4D matrix;
@@ -74,6 +80,11 @@ Placement Placement::inverse() const
     return p;
 }
 
+void Placement::move(const Vector3d& MovVec)
+{
+	_pos += MovVec;
+}
+
 bool Placement::operator == (const Placement& that) const
 {
     return (this->_pos == that._pos) && (this->_rot == that._rot);
@@ -98,6 +109,13 @@ Placement Placement::operator*(const Placement & p) const
     Placement plm(*this);
     plm *= p;
     return plm;
+}
+
+Placement& Placement::operator = (const Placement& New)
+{
+    this->_pos = New._pos;
+    this->_rot = New._rot;
+	return *this;
 }
 
 void Placement::multVec(const Vector3d & src, Vector3d & dst) const

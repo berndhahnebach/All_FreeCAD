@@ -57,14 +57,14 @@ Base::Vector3f Placement::getDirection() const
 
 void Placement::setPlacement(const Base::Placement& p)
 {
-    ui->xPos->setValue(p._pos.x);
-    ui->yPos->setValue(p._pos.y);
-    ui->zPos->setValue(p._pos.z);
+    ui->xPos->setValue(p.getPosition().x);
+    ui->yPos->setValue(p.getPosition().y);
+    ui->zPos->setValue(p.getPosition().z);
 
     // check if the user-defined direction is already there
     double angle;
     Base::Vector3d axis;
-    p._rot.getValue(axis, angle);
+    p.getRotation().getValue(axis, angle);
     ui->angle->setValue(angle*180.0/D_PI);
     Base::Vector3f dir((float)axis.x,(float)axis.y,(float)axis.z);
     for (int i=0; i<ui->direction->count()-1; i++) {
@@ -91,8 +91,8 @@ void Placement::setPlacement(const Base::Placement& p)
 Base::Placement Placement::getPlacement() const
 {
     Base::Placement p;
-    p._pos.Set(ui->xPos->value(),ui->yPos->value(),ui->zPos->value());
+	p.setPosition(Base::Vector3d(ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
     Base::Vector3f dir = getDirection();
-    p._rot.setValue(Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0);
+	p.setRotation(Base::Rotation(Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0));
     return p;
 }

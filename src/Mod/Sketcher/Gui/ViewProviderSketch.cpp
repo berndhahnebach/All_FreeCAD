@@ -117,11 +117,13 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
 
     // move to position of Sketch
-    const Base::Placement Plz = getSketchObject()->Placement.getValue();
-    R0 = Plz._pos ; 
-    Plz._rot.multVec(RN,RN);
-    Plz._rot.multVec(RX,RX);
-    Plz._rot.multVec(RY,RY);
+    Base::Placement Plz = getSketchObject()->Placement.getValue();
+    R0 = Plz.getPosition() ; 
+	Base::Rotation tmp(Plz.getRotation());
+    tmp.multVec(RN,RN);
+    tmp.multVec(RX,RX);
+    tmp.multVec(RY,RY);
+	Plz.setRotation(tmp);
 
 	// line 
 	Base::Vector3d R1(point[0],point[1],point[2]),RA(normal[0],normal[1],normal[2]);

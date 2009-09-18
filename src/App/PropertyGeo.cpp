@@ -512,8 +512,8 @@ void PropertyPlacement::setPyObject(PyObject *value)
 void PropertyPlacement::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<PropertyPlacement";
-    writer.Stream() << " Px=\"" <<  _cPos._pos.x << "\" Py=\"" <<  _cPos._pos.y << "\" Pz=\"" <<  _cPos._pos.z << "\"";
-    writer.Stream() << " Q0=\"" <<  _cPos._rot.getValue()[0] << "\" Q1=\"" <<  _cPos._rot.getValue()[1] << "\" Q2=\"" <<  _cPos._rot.getValue()[2] << "\" Q3=\"" <<  _cPos._rot.getValue()[3] << "\"";
+    writer.Stream() << " Px=\"" <<  _cPos.getPosition().x << "\" Py=\"" <<  _cPos.getPosition().y << "\" Pz=\"" <<  _cPos.getPosition().z << "\"";
+    writer.Stream() << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
     writer.Stream() <<"/>" << endl;
 }
 
@@ -523,14 +523,16 @@ void PropertyPlacement::Restore(Base::XMLReader &reader)
     reader.readElement("PropertyPlacement");
     // get the value of my Attribute
     aboutToSetValue();
-    _cPos._pos.x = reader.getAttributeAsFloat("Px");
-    _cPos._pos.y = reader.getAttributeAsFloat("Py");
-    _cPos._pos.z = reader.getAttributeAsFloat("Pz");
-
-    _cPos._rot.setValue(reader.getAttributeAsFloat("Q0"),
-                        reader.getAttributeAsFloat("Q1"),
-                        reader.getAttributeAsFloat("Q2"),
-                        reader.getAttributeAsFloat("Q3"));
+	_cPos = Base::Placement(Vector3d( reader.getAttributeAsFloat("Px"),
+								reader.getAttributeAsFloat("Py"),
+								reader.getAttributeAsFloat("Pz")
+								),
+					  Rotation( reader.getAttributeAsFloat("Q0"),
+                                reader.getAttributeAsFloat("Q1"),
+                                reader.getAttributeAsFloat("Q2"),
+                                reader.getAttributeAsFloat("Q3")
+							   )
+					  );
     hasSetValue();
 }
 

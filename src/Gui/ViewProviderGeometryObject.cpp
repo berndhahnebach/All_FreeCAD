@@ -187,13 +187,13 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
         //    <==> (I-R) * c = 0 ==> c = 0
         // This means that the center point must be the origin!
         Base::Placement p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
-        float q0 = (float)p._rot.getValue()[0];
-        float q1 = (float)p._rot.getValue()[1];
-        float q2 = (float)p._rot.getValue()[2];
-        float q3 = (float)p._rot.getValue()[3];
-        float px = (float)p._pos.x;
-        float py = (float)p._pos.y;
-        float pz = (float)p._pos.z;
+        float q0 = (float)p.getRotation().getValue()[0];
+        float q1 = (float)p.getRotation().getValue()[1];
+        float q2 = (float)p.getRotation().getValue()[2];
+        float q3 = (float)p.getRotation().getValue()[3];
+        float px = (float)p.getPosition().x;
+        float py = (float)p.getPosition().y;
+        float pz = (float)p.getPosition().z;
         pcTransform->rotation.setValue(q0,q1,q2,q3);
         pcTransform->translation.setValue(px,py,pz);
         pcTransform->center.setValue(0.0f,0.0f,0.0f);
@@ -286,13 +286,15 @@ void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
             // The rotation part is R, the translation part t', however, is:
             // t' = t + c - R * c
             Base::Placement p;
-            p._rot.setValue(q0,q1,q2,q3);
+			p.setRotation(Base::Rotation(q0,q1,q2,q3));
             Base::Vector3d t(move[0],move[1],move[2]);
             Base::Vector3d c(center[0],center[1],center[2]);
             t += c;
-            p._rot.multVec(c,c);
+			Base::Rotation tmp = p.getRotation();
+			tmp.multVec(c,c);
+            p.setRotation(tmp);
             t -= c;
-            p._pos = t;
+            p.setPosition(t);
             geometry->Placement.setValue(p);
         }
     }

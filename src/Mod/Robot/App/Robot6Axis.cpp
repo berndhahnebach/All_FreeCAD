@@ -28,17 +28,68 @@
 
 #include <Base/Writer.h>
 
+#include "kdl/chain.hpp"
+#include "kdl/chainfksolver.hpp"
+#include "kdl/chainfksolverpos_recursive.hpp"
+#include "kdl/frames_io.hpp"
+#include "kdl/chainiksolver.hpp"
+#include "kdl/chainiksolvervel_pinv.hpp"
+#include "kdl/chainjnttojacsolver.hpp"
+#include "kdl/ChainIkSolverPos_NR.hpp"
 
 #include "Robot6Axis.h"
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+    #define M_PI    3.14159265358979323846 /* pi */
+#endif
+
+#ifndef M_PI_2
+    #define M_PI_2  1.57079632679489661923 /* pi/2 */
+#endif
+
 using namespace Robot;
 using namespace Base;
+using namespace KDL;
 
 
 TYPESYSTEM_SOURCE(Robot::Robot6Axis , Base::Persistence);
 
 Robot6Axis::Robot6Axis()
 {
+	Chain KukaIR500;
+    KukaIR500.addSegment(Segment());
+    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+                               Frame::DH(0.0,M_PI_2,0.0,0.0),
+                               RigidBodyInertia(0,Vector::Zero(),RotationalInertia(0,0.35,0,0,0,0))));
+    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+                               Frame::DH(0.4318,0.0,0.0,0.0),
+                               RigidBodyInertia(17.4,Vector(-.3638,.006,.2275),RotationalInertia(0.13,0.524,0.539,0,0,0))));
+    KukaIR500.addSegment(Segment());
+    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+                               Frame::DH(0.0203,-M_PI_2,0.15005,0.0),
+                               RigidBodyInertia(4.8,Vector(-.0203,-.0141,.070),RotationalInertia(0.066,0.086,0.0125,0,0,0))));
+    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+                               Frame::DH(0.0,M_PI_2,0.4318,0.0),
+                               RigidBodyInertia(0.82,Vector(0,.019,0),RotationalInertia(1.8e-3,1.3e-3,1.8e-3,0,0,0))));
+    KukaIR500.addSegment(Segment());
+    KukaIR500.addSegment(Segment());
+    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+                               Frame::DH(0.0,-M_PI_2,0.0,0.0),
+                               RigidBodyInertia(0.34,Vector::Zero(),RotationalInertia(.3e-3,.4e-3,.3e-3,0,0,0))));
+    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+                               Frame::DH(0.0,0.0,0.0,0.0),
+                               RigidBodyInertia(0.09,Vector(0,0,.032),RotationalInertia(.15e-3,0.15e-3,.04e-3,0,0,0))));
+    KukaIR500.addSegment(Segment());
+
+	// for now and testing
+    Kinematic = KukaIR500;
+
+	// Create joint array
+    unsigned int nj = KukaIR500.getNrOfJoints();
+    Actuall = JntArray(nj);
+
+
 }
 
 Robot6Axis::~Robot6Axis()
@@ -58,3 +109,57 @@ void Robot6Axis::Restore(XMLReader &/*reader*/)
 {
 }
 
+
+
+bool Robot6Axis::setTo(const Placement &To)
+{
+	//Creation of the solvers:
+	ChainFkSolverPos_recursive fksolver1(Kinematic);//Forward position solver
+	ChainIkSolverVel_pinv iksolver1v(Kinematic);//Inverse velocity solver
+	ChainIkSolverPos_NR iksolver1(Kinematic,fksolver1,iksolver1v,100,1e-6);//Maximum 100 iterations, stop at accuracy 1e-6
+	 
+	//Creation of jntarrays:
+	JntArray result(Kinematic.getNrOfJoints());
+	 
+	//Set destination frame
+	Frame F_dest = Frame(KDL::Rotation::Quaternion(To.getRotation()[0],To.getRotation()[1],To.getRotation()[2],To.getRotation()[3]),KDL::Vector(To.getPosition()[0],To.getPosition()[1],To.getPosition()[2]));
+	 
+	// solve
+	if(iksolver1.CartToJnt(Actuall,F_dest,result) < 0)
+		return false;
+	else{
+		Actuall = result;
+		return true;
+	}
+}
+
+bool Robot6Axis::calcTcp(void)
+{
+    // Create solver based on kinematic chain
+    ChainFkSolverPos_recursive fksolver = ChainFkSolverPos_recursive(Kinematic);
+ 
+     // Create the frame that will contain the results
+    KDL::Frame cartpos;    
+ 
+    // Calculate forward position kinematics
+    int kinematics_status;
+    kinematics_status = fksolver.JntToCart(Actuall,cartpos);
+    if(kinematics_status>=0){
+        Tcp = cartpos;
+		return true;
+    }else{
+        return false;
+    }
+}
+
+bool Robot6Axis::setAxis(int Axis,float Value)
+{
+	Actuall(Axis) = Value;
+
+	return calcTcp();
+}
+
+float Robot6Axis::getAxis(int Axis)
+{
+	return Actuall(Axis);
+}

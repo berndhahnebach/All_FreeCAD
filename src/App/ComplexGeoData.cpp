@@ -86,12 +86,12 @@ void ComplexGeoData::setPlacement(const Base::Placement& rclPlacement)
 
 Base::Placement ComplexGeoData::getPlacement() const
 {
-    Base::Placement trf;
     Base::Matrix4D mat = getTransform();
-    Base::Rotation rot(mat);
-    trf._rot = rot;
-    trf._pos.x = mat[0][3];
-    trf._pos.y = mat[1][3];
-    trf._pos.z = mat[2][3];
-    return trf;
+
+	return Base::Placement( Base::Vector3d( mat[0][3],
+							           mat[1][3],
+							           mat[2][3]
+							         ),
+					         Base::Rotation(mat)
+					       );
 }

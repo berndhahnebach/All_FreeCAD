@@ -780,8 +780,8 @@ protected:
         const Base::Placement& p = d.value<Base::Placement>();
         double angle;
         Base::Vector3d dir, pos;
-        p._rot.getValue(dir, angle);
-        pos = p._pos;
+        p.getRotation().getValue(dir, angle);
+        pos = p.getPosition();
         QString data = QString::fromAscii("[(%1,%2,%3);%4;(%5,%6,%7)]")
                         .arg(dir.x,0,'f',2)
                         .arg(dir.y,0,'f',2)
@@ -825,7 +825,7 @@ QString PropertyPlacementItem::getAxis() const
     const Base::Placement& val = value.value<Base::Placement>();
     double angle;
     Base::Vector3d dir;
-    val._rot.getValue(dir, angle);
+    val.getRotation().getValue(dir, angle);
 
     QString text = QString::fromAscii("[%1, %2, %3]")
         .arg(dir.x,0,'f',2)
@@ -842,7 +842,7 @@ QString PropertyPlacementItem::getAngle() const
     const Base::Placement& val = value.value<Base::Placement>();
     double angle;
     Base::Vector3d dir;
-    val._rot.getValue(dir, angle);
+    val.getRotation().getValue(dir, angle);
     angle = angle*180.0/D_PI;
 
     QString text = QString::fromUtf8("%1 \xc2\xb0").arg(angle,0,'f',2);
@@ -857,9 +857,9 @@ QString PropertyPlacementItem::getPosition() const
     const Base::Placement& val = value.value<Base::Placement>();
 
     QString text = QString::fromAscii("[%1, %2, %3]")
-        .arg(val._pos.x,0,'f',2)
-        .arg(val._pos.y,0,'f',2)
-        .arg(val._pos.z,0,'f',2);
+        .arg(val.getPosition().x,0,'f',2)
+        .arg(val.getPosition().y,0,'f',2)
+        .arg(val.getPosition().z,0,'f',2);
     return text;
 }
 
@@ -878,8 +878,8 @@ QVariant PropertyPlacementItem::toolTip(const App::Property* prop) const
     const Base::Placement& p = static_cast<const App::PropertyPlacement*>(prop)->getValue();
     double angle;
     Base::Vector3d dir, pos;
-    p._rot.getValue(dir, angle);
-    pos = p._pos;
+    p.getRotation().getValue(dir, angle);
+    pos = p.getPosition();
     QString data = QString::fromAscii("Axis: (%1,%2,%3)\n"
                                       "Angle: %4\n"
                                       "Move: (%5,%6,%7)")
@@ -898,8 +898,8 @@ QVariant PropertyPlacementItem::toString(const QVariant& prop) const
     const Base::Placement& p = prop.value<Base::Placement>();
     double angle;
     Base::Vector3d dir, pos;
-    p._rot.getValue(dir, angle);
-    pos = p._pos;
+    p.getRotation().getValue(dir, angle);
+    pos = p.getPosition();
     QString data = QString::fromAscii("[(%1,%2,%3);%4;(%5,%6,%7)]")
                     .arg(dir.x,0,'f',2)
                     .arg(dir.y,0,'f',2)
@@ -918,8 +918,8 @@ void PropertyPlacementItem::setValue(const QVariant& value)
     const Base::Placement& val = value.value<Base::Placement>();
     double angle;
     Base::Vector3d dir, pos;
-    val._rot.getValue(dir, angle);
-    pos = val._pos;
+    val.getRotation().getValue(dir, angle);
+    pos = val.getPosition();
     QString data = QString::fromAscii("App.Base.Placement("
                                       "App.Vector(%1,%2,%3),%4,"
                                       "App.Vector(%5,%6,%7))")

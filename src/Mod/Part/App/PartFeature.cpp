@@ -97,12 +97,12 @@ void Feature::onChanged(const App::Property* prop)
 TopLoc_Location Feature::getLocation() const
 {
     Base::Placement pl = this->Placement.getValue();
-    Base::Rotation rot(pl._rot);
+    Base::Rotation rot(pl.getRotation());
     Base::Vector3d axis;
     double angle;
     rot.getValue(axis, angle);
     gp_Trsf trf;
     trf.SetRotation(gp_Ax1(gp_Pnt(), gp_Dir(axis.x, axis.y, axis.z)), angle);
-    trf.SetTranslationPart(gp_Vec(pl._pos.x,pl._pos.y,pl._pos.z));
+    trf.SetTranslationPart(gp_Vec(pl.getPosition().x,pl.getPosition().y,pl.getPosition().z));
     return TopLoc_Location(trf);
 }

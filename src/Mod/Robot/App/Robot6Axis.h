@@ -24,7 +24,11 @@
 #ifndef ROBOT_ROBOT6AXLE_H
 #define ROBOT_ROBOT6AXLE_H
 
+#include "kdl/chain.hpp"
+#include "kdl/jntarray.hpp"
+
 #include <Base/Persistence.h>
+#include <Base/Placement.h>
 
 namespace Robot
 {
@@ -39,9 +43,26 @@ class AppRobotExport Robot6Axis : public Base::Persistence
 public:
     Robot6Axis();
     ~Robot6Axis();
+
+	// from base class
     virtual unsigned int getMemSize (void) const;
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+
+	// interface
+	bool setTo(const Base::Placement &To);
+	bool setAxis(int Axis,float Value);
+	float getAxis(int Axis);
+	bool calcTcp(void);
+
+
+protected:
+	KDL::Chain Kinematic;
+	KDL::JntArray Actuall;
+	KDL::Frame Tcp;
+
+	float MaxAngle[6];
+	float MinAngle[6];
 
 };
 

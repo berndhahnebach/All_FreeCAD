@@ -76,6 +76,8 @@ public:
     Rotation operator *(const Rotation & q) const;
     bool operator==(const Rotation & q) const;
     bool operator!=(const Rotation & q) const;
+	double & operator [] (unsigned short usIndex){return quat[usIndex];}
+    const double & operator [] (unsigned short usIndex) const{return quat[usIndex];}
 
     void multVec(const Vector3d & src, Vector3d & dst) const;
     void scaleAngle(const double scaleFactor);
