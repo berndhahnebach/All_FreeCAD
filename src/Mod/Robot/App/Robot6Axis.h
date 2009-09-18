@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,50 +21,31 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-# include <Python.h>
-#endif
+#ifndef ROBOT_ROBOT6AXLE_H
+#define ROBOT_ROBOT6AXLE_H
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
+#include <Base/Persistence.h>
 
-
-#include "Robot6AxisPy.h"
-#include "Robot6Axis.h"
-
-extern struct PyMethodDef Robot_methods[];
-
-PyDoc_STRVAR(module_Robot_doc,
-"This module is the Robot module.");
-
-
-/* Python entry */
-extern "C" {
-void AppRobotExport initRobot()
+namespace Robot
 {
-    // load dependend module
-    try {
-        //Base::Interpreter().loadModule("Part");
-        //Base::Interpreter().loadModule("Mesh");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        return;
-    }
-    PyObject* robotModule = Py_InitModule3("Robot", Robot_methods, module_Robot_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading Robot module... done\n");
 
 
-    // Add Types to module
-    Base::Interpreter().addType(&Robot::Robot6AxisPy          ::Type,robotModule,"Robot6Axis");
+/** The representation for a CAD Shape
+ */
+class AppRobotExport Robot6Axis : public Base::Persistence
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    Robot6Axis();
+    ~Robot6Axis();
+    virtual unsigned int getMemSize (void) const;
+	virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
+
+};
+
+} //namespace Part
 
 
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
- 
-    Robot::Robot6Axis       ::init();
-}
-
-} // extern "C"
+#endif // PART_TOPOSHAPE_H
