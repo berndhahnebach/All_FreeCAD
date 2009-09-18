@@ -42,9 +42,9 @@ const char *PlacementPy::representation(void) const
     PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
     std::stringstream str;
     str << "Placement ((";
-    str << ptr->_rot.getValue()[0] << ","<< ptr->_rot.getValue()[1] << "," << ptr->_rot.getValue()[2] << "," << ptr->_rot.getValue()[3];
+    str << ptr->getRotation()[0] << ","<< ptr->getRotation()[1] << "," << ptr->getRotation()[2] << "," << ptr->getRotation()[3];
     str << "),(";
-    str << ptr->_pos.x << ","<< ptr->_pos.y << "," << ptr->_pos.z;
+    str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
     str << "))";
 
     static std::string buf;
@@ -76,8 +76,9 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
     if (PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &o)) {
         Base::Placement *plm = static_cast<Base::PlacementPy*>(o)->getPlacementPtr();
-        getPlacementPtr()->_pos = plm->_pos;
-        getPlacementPtr()->_rot = plm->_rot;
+
+		*(getPlacementPtr()) = *plm;
+
         return 0;
     }
 
@@ -87,8 +88,8 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
                                         &(Base::VectorPy::Type), &o)) {
         Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
-        getPlacementPtr()->_pos = static_cast<Base::VectorPy*>(o)->value();
-        getPlacementPtr()->_rot = rot;
+		*getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
+        
         return 0;
     }
 
@@ -101,7 +102,7 @@ PyObject* PlacementPy::move(PyObject * args)
     PyObject *vec;
     if (!PyArg_ParseTuple(args, "O!", &(VectorPy::Type), &vec))
         return NULL;
-    getPlacementPtr()->_pos += static_cast<VectorPy*>(vec)->value();
+    getPlacementPtr()->move(static_cast<VectorPy*>(vec)->value());
     Py_Return;
 }
 
@@ -142,34 +143,34 @@ PyObject* PlacementPy::inverse(PyObject * args)
 
 Py::Object PlacementPy::getBase(void) const
 {
-    return Py::Vector(getPlacementPtr()->_pos);
+    return Py::Vector(getPlacementPtr()->getPosition());
 }
 
 void PlacementPy::setBase(Py::Object arg)
 {
-    getPlacementPtr()->_pos = Py::Vector(arg).toVector();
+    getPlacementPtr()->setPosition(Py::Vector(arg).toVector());
 }
 
 Py::Object PlacementPy::getRotation(void) const
 {
-    return Py::Rotation(getPlacementPtr()->_rot);
+    return Py::Rotation(getPlacementPtr()->getRotation());
 }
 
 void PlacementPy::setRotation(Py::Object arg)
 {
     Py::Rotation rot;
     if (rot.accepts(arg.ptr())) {
-        getPlacementPtr()->_rot = (Base::Rotation)Py::Rotation(arg);
+        getPlacementPtr()->setRotation((Base::Rotation)Py::Rotation(arg));
         return;
     }
     Py::Tuple tuple;
     if (tuple.accepts(arg.ptr())) {
         tuple = arg;
-        getPlacementPtr()->_rot.setValue((double)Py::Float(tuple[0]),
-                                         (double)Py::Float(tuple[1]),
-                                         (double)Py::Float(tuple[2]),
-                                         (double)Py::Float(tuple[3])
-                                         );
+		getPlacementPtr()->setRotation(Base::Rotation((double)Py::Float(tuple[0]),
+                                                      (double)Py::Float(tuple[1]),
+                                                      (double)Py::Float(tuple[2]),
+                                                      (double)Py::Float(tuple[3])
+                                                     ));
         return;
     }
 

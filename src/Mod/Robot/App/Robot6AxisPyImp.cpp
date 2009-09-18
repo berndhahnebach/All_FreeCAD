@@ -38,12 +38,12 @@ PyObject* Robot6AxisPy::check(PyObject * /*args*/)
 
 Py::Float Robot6AxisPy::getAxis1(void) const
 {
-    return Py::Float();
+    return Py::Float(getRobot6AxisPtr()->getAxis(0));
 }
 
-void Robot6AxisPy::setAxis1(Py::Float /*arg*/)
+void Robot6AxisPy::setAxis1(Py::Float arg)
 {
-
+	getRobot6AxisPtr()->setAxis(0,arg.operator double());
 }
 
 Py::Float Robot6AxisPy::getAxis2(void) const
