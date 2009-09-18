@@ -78,8 +78,6 @@ OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command
 OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
 OPTION(FREECAD_BUILD_CAM "Build the FreeCAD CAM module and the needed libs, be Aware, unfinished code!" OFF)
 OPTION(FREECAD_BUILD_ROBOT "Build the FreeCAD Robot module and the needed libs, be Aware, unfinished code!" OFF)
-OPTION(FREECAD_BUILD_INSTALLER "Build the FreeCAD Installer from the Release version. Additional tools needed (WIX)." OFF)
-OPTION(FREECAD_BUILD_DOXYGEN_DOCU "Build the Source documentation with Doxygen." OFF)
 
 
 
@@ -216,13 +214,13 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 endif(FREECAD_LIBPACK_USE)
 
-
-if(FREECAD_BUILD_INSTALLER AND WIN32 )
+if(FREECAD_MAINTAINERS_BUILD AND WIN32)
 	find_package(Wix REQUIRED)
-endif(FREECAD_BUILD_INSTALLER AND WIN32 )
+endif(FREECAD_MAINTAINERS_BUILD AND WIN32)
 
 
 include(cMake/FreeCadMacros.cmake)
+
 
 # ================================================================================
 # == Global Compiler and Linker Settings =========================================

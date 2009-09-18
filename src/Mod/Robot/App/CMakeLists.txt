@@ -2,7 +2,7 @@
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${Boost_INCLUDE_DIRS}
-		 #${OCC_INCLUDE_DIR}
+		 ${Eigen_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
@@ -17,6 +17,14 @@ else(WIN32)
 		 		 FreeCADApp)
 endif(WIN32)
 
+FILE( GLOB KDL_SRCS KDL/[^.]*.cpp )
+FILE( GLOB KDL_HPPS KDL/[^.]*.hpp KDL/[^.]*.inl)
+
+FILE( GLOB UTIL_SRCS KDL/utilities/[^.]*.cpp KDL/utilities/[^.]*.cxx)
+FILE( GLOB UTIL_HPPS KDL/utilities/[^.]*.h KDL/utilities/[^.]*.hpp)
+
+
+
 SET(Robot_SRCS
 		 AppRobot.cpp
 		 AppRobotPy.cpp
@@ -24,7 +32,16 @@ SET(Robot_SRCS
 		 PreCompiled.h
 		 RobotObject.cpp
 		 RobotObject.h
+		 RobotAlgos.cpp
+		 RobotAlgos.h
+		 ${KDL_SRCS}
+		 ${KDL_HPPS}
+		 ${UTIL_SRCS}
+		 ${UTIL_HPPS}
 )
+
+
+SOURCE_GROUP("KDL" FILES ${KDL_SRCS} ${KDL_HPPS} ${UTIL_SRCS} ${UTIL_HPPS} )
 
 add_library(Robot SHARED ${Robot_SRCS})
 

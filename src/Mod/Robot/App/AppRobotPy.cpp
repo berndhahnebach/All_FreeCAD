@@ -26,7 +26,37 @@
 # include <Python.h>
 #endif
 
+#include <Base/Console.h>
+#include <Base/VectorPy.h>
+
+#include "RobotAlgos.h"
+
+using namespace Robot;
+
+static PyObject * 
+test(PyObject *self, PyObject *args)
+{
+ //   PyObject *pcObjShape;
+ //   PyObject *pcObjDir=0;
+
+	//if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
+ //       return NULL;                             // NULL triggers exception
+
+    PY_TRY {
+		RobotAlgos Alg;
+
+		Alg.Test();
+
+    } PY_CATCH;
+
+	return Py::new_reference_to(Py::Float(0.0));
+
+}
+
+
 /* registration table  */
 struct PyMethodDef Robot_methods[] = {
+   {"test"       ,test      ,METH_VARARGS,
+     "void test(void) - runs test code for development."},
     {NULL, NULL}        /* end of table marker */
 };
