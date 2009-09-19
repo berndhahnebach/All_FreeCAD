@@ -34,7 +34,7 @@ namespace Robot
 {
 
 
-/** The representation for a CAD Shape
+/** The representation for a 6-Axis industry grade robot
  */
 class AppRobotExport Robot6Axis : public Base::Persistence
 {
@@ -50,10 +50,13 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
 
 	// interface
+	/// set the robot to that position, calculates the Axis
 	bool setTo(const Base::Placement &To);
 	bool setAxis(int Axis,float Value);
 	float getAxis(int Axis);
+	/// calculate the new Tcp out of the Axis
 	bool calcTcp(void);
+	Base::Placement getTcp(void);
 
 
 protected:

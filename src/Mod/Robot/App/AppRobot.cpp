@@ -32,6 +32,7 @@
 
 #include "Robot6AxisPy.h"
 #include "Robot6Axis.h"
+#include "RobotObject.h"
 
 extern struct PyMethodDef Robot_methods[];
 
@@ -65,6 +66,7 @@ void AppRobotExport initRobot()
     // This function is responsible for adding inherited slots from a type's base class.
  
     Robot::Robot6Axis       ::init();
+    Robot::RobotObject      ::init();
 }
 
 } // extern "C"
