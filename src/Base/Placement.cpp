@@ -82,7 +82,7 @@ Placement Placement::inverse() const
 
 void Placement::move(const Vector3d& MovVec)
 {
-	_pos += MovVec;
+    _pos += MovVec;
 }
 
 bool Placement::operator == (const Placement& that) const
@@ -115,7 +115,7 @@ Placement& Placement::operator = (const Placement& New)
 {
     this->_pos = New._pos;
     this->_rot = New._rot;
-	return *this;
+    return *this;
 }
 
 void Placement::multVec(const Vector3d & src, Vector3d & dst) const

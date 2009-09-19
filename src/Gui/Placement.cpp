@@ -91,8 +91,8 @@ void Placement::setPlacement(const Base::Placement& p)
 Base::Placement Placement::getPlacement() const
 {
     Base::Placement p;
-	p.setPosition(Base::Vector3d(ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
+    p.setPosition(Base::Vector3d(ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
     Base::Vector3f dir = getDirection();
-	p.setRotation(Base::Rotation(Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0));
+    p.setRotation(Base::Rotation(Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0));
     return p;
 }
