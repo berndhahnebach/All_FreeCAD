@@ -42,20 +42,20 @@ public:
     /// default constructor
     Placement(void);
     Placement(const Placement&);
-	Placement(const Vector3d& Pos, const Rotation &Rot);
+    Placement(const Vector3d& Pos, const Rotation &Rot);
     /// Destruction
     ~Placement () {};
 
     Matrix4D toMatrix(void) const;
     void fromMatrix(const Matrix4D& m);
-	const Vector3d& getPosition(void) const {return _pos;}
-	const Rotation& getRotation(void) const {return _rot;}
-	void setPosition(const Vector3d& Pos){_pos=Pos;}
-	void setRotation(const Rotation& Rot) {_rot = Rot;}
+    const Vector3d& getPosition(void) const {return _pos;}
+    const Rotation& getRotation(void) const {return _rot;}
+    void setPosition(const Vector3d& Pos){_pos=Pos;}
+    void setRotation(const Rotation& Rot) {_rot = Rot;}
 
     void invert();
     Placement inverse() const;
-	void move(const Vector3d& MovVec);
+    void move(const Vector3d& MovVec);
 
     /** Operators. */
     //@{

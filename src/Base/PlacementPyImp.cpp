@@ -76,9 +76,7 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
     if (PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &o)) {
         Base::Placement *plm = static_cast<Base::PlacementPy*>(o)->getPlacementPtr();
-
-		*(getPlacementPtr()) = *plm;
-
+        *(getPlacementPtr()) = *plm;
         return 0;
     }
 

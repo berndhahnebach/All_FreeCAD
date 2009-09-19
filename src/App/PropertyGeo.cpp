@@ -512,8 +512,13 @@ void PropertyPlacement::setPyObject(PyObject *value)
 void PropertyPlacement::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<PropertyPlacement";
-    writer.Stream() << " Px=\"" <<  _cPos.getPosition().x << "\" Py=\"" <<  _cPos.getPosition().y << "\" Pz=\"" <<  _cPos.getPosition().z << "\"";
-    writer.Stream() << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
+    writer.Stream() << " Px=\"" <<  _cPos.getPosition().x 
+                    << "\" Py=\"" <<  _cPos.getPosition().y
+                    << "\" Pz=\"" <<  _cPos.getPosition().z << "\"";
+    writer.Stream() << " Q0=\"" <<  _cPos.getRotation()[0]
+                    << "\" Q1=\"" <<  _cPos.getRotation()[1]
+                    << "\" Q2=\"" <<  _cPos.getRotation()[2]
+                    << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
     writer.Stream() <<"/>" << endl;
 }
 
@@ -523,16 +528,13 @@ void PropertyPlacement::Restore(Base::XMLReader &reader)
     reader.readElement("PropertyPlacement");
     // get the value of my Attribute
     aboutToSetValue();
-	_cPos = Base::Placement(Vector3d( reader.getAttributeAsFloat("Px"),
-								reader.getAttributeAsFloat("Py"),
-								reader.getAttributeAsFloat("Pz")
-								),
-					  Rotation( reader.getAttributeAsFloat("Q0"),
-                                reader.getAttributeAsFloat("Q1"),
-                                reader.getAttributeAsFloat("Q2"),
-                                reader.getAttributeAsFloat("Q3")
-							   )
-					  );
+    _cPos = Base::Placement(Vector3d(reader.getAttributeAsFloat("Px"),
+                                     reader.getAttributeAsFloat("Py"),
+                                     reader.getAttributeAsFloat("Pz")),
+                            Rotation(reader.getAttributeAsFloat("Q0"),
+                                     reader.getAttributeAsFloat("Q1"),
+                                     reader.getAttributeAsFloat("Q2"),
+                                     reader.getAttributeAsFloat("Q3")));
     hasSetValue();
 }
 

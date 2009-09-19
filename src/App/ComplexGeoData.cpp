@@ -88,10 +88,8 @@ Base::Placement ComplexGeoData::getPlacement() const
 {
     Base::Matrix4D mat = getTransform();
 
-	return Base::Placement( Base::Vector3d( mat[0][3],
-							           mat[1][3],
-							           mat[2][3]
-							         ),
-					         Base::Rotation(mat)
-					       );
+    return Base::Placement(Base::Vector3d(mat[0][3],
+                                          mat[1][3],
+                                          mat[2][3]),
+                           Base::Rotation(mat));
 }

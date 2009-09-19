@@ -286,13 +286,11 @@ void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
             // The rotation part is R, the translation part t', however, is:
             // t' = t + c - R * c
             Base::Placement p;
-			p.setRotation(Base::Rotation(q0,q1,q2,q3));
+            p.setRotation(Base::Rotation(q0,q1,q2,q3));
             Base::Vector3d t(move[0],move[1],move[2]);
             Base::Vector3d c(center[0],center[1],center[2]);
             t += c;
-			Base::Rotation tmp = p.getRotation();
-			tmp.multVec(c,c);
-            p.setRotation(tmp);
+            p.getRotation().multVec(c,c);
             t -= c;
             p.setPosition(t);
             geometry->Placement.setValue(p);
