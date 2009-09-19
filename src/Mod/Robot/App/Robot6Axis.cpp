@@ -61,16 +61,16 @@ Robot6Axis::Robot6Axis()
     KukaIR500.addSegment(Segment());
     KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
                                Frame::DH(0.0,M_PI_2,0.0,0.0),
-                               RigidBodyInertia(0,Vector::Zero(),RotationalInertia(0,0.35,0,0,0,0))));
+                               RigidBodyInertia(0,Vector::Zero(),RotationalInertia(0,350,0,0,0,0))));
     KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(0.4318,0.0,0.0,0.0),
+                               Frame::DH(431.8,0.0,0.0,0.0),
                                RigidBodyInertia(17.4,Vector(-.3638,.006,.2275),RotationalInertia(0.13,0.524,0.539,0,0,0))));
     KukaIR500.addSegment(Segment());
     KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(0.0203,-M_PI_2,0.15005,0.0),
+                               Frame::DH(20.3,-M_PI_2,150,0.0),
                                RigidBodyInertia(4.8,Vector(-.0203,-.0141,.070),RotationalInertia(0.066,0.086,0.0125,0,0,0))));
     KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(0.0,M_PI_2,0.4318,0.0),
+                               Frame::DH(0.0,M_PI_2,431.8,0.0),
                                RigidBodyInertia(0.82,Vector(0,.019,0),RotationalInertia(1.8e-3,1.3e-3,1.8e-3,0,0,0))));
     KukaIR500.addSegment(Segment());
     KukaIR500.addSegment(Segment());
@@ -89,7 +89,8 @@ Robot6Axis::Robot6Axis()
     unsigned int nj = KukaIR500.getNrOfJoints();
     Actuall = JntArray(nj);
 
-
+	// get the actuall TCP out of tha axis
+	calcTcp();
 }
 
 Robot6Axis::~Robot6Axis()
@@ -129,8 +130,16 @@ bool Robot6Axis::setTo(const Placement &To)
 		return false;
 	else{
 		Actuall = result;
+		Tcp = F_dest;
 		return true;
 	}
+}
+
+Base::Placement Robot6Axis::getTcp(void)
+{
+	double x,y,z,w;
+	Tcp.M.GetQuaternion(x,y,z,w);
+	return Base::Placement(Base::Vector3d(Tcp.p[0],Tcp.p[1],Tcp.p[2]),Base::Rotation(x,y,z,w));
 }
 
 bool Robot6Axis::calcTcp(void)
@@ -154,12 +163,12 @@ bool Robot6Axis::calcTcp(void)
 
 bool Robot6Axis::setAxis(int Axis,float Value)
 {
-	Actuall(Axis) = Value;
+	Actuall(Axis) = Value*(M_PI/180); // degree to radiants
 
 	return calcTcp();
 }
 
 float Robot6Axis::getAxis(int Axis)
 {
-	return Actuall(Axis);
+	return (float) (Actuall(Axis)/(M_PI/180)); // radian to degree
 }
