@@ -172,3 +172,14 @@ float Robot6Axis::getAxis(int Axis)
 {
 	return (float) (Actuall(Axis)/(M_PI/180)); // radian to degree
 }
+
+void Robot6Axis::exportChain(const char* FileName)
+{
+
+}
+
+void Robot6Axis::importChain(const char* FileName)
+{
+
+}
+ 
