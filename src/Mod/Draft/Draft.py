@@ -536,7 +536,7 @@ class ghostTracker(Tracker):
 				ivin = coin.SoInput()
 				ivin.setBuffer(ob.ViewObject.toString())
 				ivob = coin.SoDB.readAll(ivin)
-				ivsep.addChild(ivob.getChildren()[1])
+				ivsep.addChild(ivob)
 		except:
 			print "draft: Couldn't create ghost"
 		else:
@@ -2259,14 +2259,21 @@ class Downgrade(Modifier):
 		# applying transformation
 		self.doc.openTransaction("Downgrade")
 		if (len(faces) > 1):
-			u = faces.pop(0)
-			for f in faces:
-				u = u.cut(f)
-			newob = self.doc.addObject("Part::Feature","Subtraction")
-			newob.Shape = u
-			for ob in self.sel:
-				formatObject(newob,ob)
+			if len(self.sel) == 1:
+				for f in faces:
+					newob = self.doc.addObject("Part::Feature","Face")
+					newob.Shape = f
+					formatObject(newob,self.sel[0])
 				self.doc.removeObject(ob.Name)
+			else:
+				u = faces.pop(0)
+				for f in faces:
+					u = u.cut(f)
+				newob = self.doc.addObject("Part::Feature","Subtraction")
+				newob.Shape = u
+				for ob in self.sel:
+					formatObject(newob,ob)
+					self.doc.removeObject(ob.Name)
 		elif (len(faces) > 0):
 			w=faces[0].Wires[0]
 			for ob in self.sel:
