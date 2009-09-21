@@ -58,6 +58,10 @@ public:
 	bool calcTcp(void);
 	Base::Placement getTcp(void);
 
+    void exportChain(const char* FileName);
+    void importChain(const char* FileName);
+    
+
 
 protected:
 	KDL::Chain Kinematic;

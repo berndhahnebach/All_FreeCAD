@@ -28837,8 +28837,8 @@ coordIndex [
 #ROUTE SENS_44_OBJ.rotation_changed TO AXIS_44_OBJ.rotation
 #ROUTE SENS_46_OBJ.rotation_changed TO AXIS_46_OBJ.rotation
 #ROUTE SENS_49_OBJ.rotation_changed TO AXIS_49_OBJ.rotation
-DEF AnySIMTimer TimeSensor
-{
-   cycleInterval 1.000000
-   loop          TRUE
-}
+#DEF AnySIMTimer TimeSensor
+#{
+#   cycleInterval 1.000000
+#   loop          TRUE
+#}

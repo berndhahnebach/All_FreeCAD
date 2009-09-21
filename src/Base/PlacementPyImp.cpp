@@ -39,13 +39,15 @@ using namespace Base;
 // returns a string which represents the object e.g. when printed in python
 const char *PlacementPy::representation(void) const
 {
+    double A,B,C;
     PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
     std::stringstream str;
-    str << "Placement ((";
-    str << ptr->getRotation()[0] << ","<< ptr->getRotation()[1] << "," << ptr->getRotation()[2] << "," << ptr->getRotation()[3];
-    str << "),(";
+    ptr->getRotation().getEuler(A,B,C);
+
+    str << "Placement ( pos:(";
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
-    str << "))";
+    str << "),A:" << A << " B:" << B << " C:" << C;
+    str << ")";
 
     static std::string buf;
     buf = str.str();
