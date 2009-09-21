@@ -80,11 +80,16 @@ def isPtOnEdge(pt,edge) :
 				if fcvec.isNull(pt.sub(begin)) or fcvec.isNull(pt.sub(end)) :
 					return True
 				else :
-					newArc = Part.Arc(begin,pt,end)
-					return fcvec.isNull(newArc.Center.sub(center)) and fcvec.isNull(newArc.Axis-axis) \
-							and round(newArc.Radius-radius,PREC) == 0
-		else :
-			return False
+					# newArc = Part.Arc(begin,pt,end)
+					# return fcvec.isNull(newArc.Center.sub(center)) \
+					#    and fcvec.isNull(newArc.Axis-axis) \
+					#    and round(newArc.Radius-radius,PREC) == 0
+					angle1 = fcvec.angle(begin.sub(center))
+					angle2 = fcvec.angle(end.sub(center))
+					anglept = fcvec.angle(pt.sub(center))
+					if (angle1 < anglept) and (anglept < angle2):
+						return True
+	return False
 
 	
 # edge functions *****************************************************************
