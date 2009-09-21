@@ -533,10 +533,7 @@ class ghostTracker(Tracker):
 		ivsep = coin.SoSeparator()
 		try:
 			for ob in sel:
-				ivin = coin.SoInput()
-				ivin.setBuffer(ob.ViewObject.toString())
-				ivob = coin.SoDB.readAll(ivin)
-				ivsep.addChild(ivob)
+				ivsep.addChild(ob.ViewObject.RootNode.copy())
 		except:
 			print "draft: Couldn't create ghost"
 		else:
