@@ -52,7 +52,7 @@ CmdRobotConstraintAxle::CmdRobotConstraintAxle()
 void CmdRobotConstraintAxle::activated(int iMsg)
 {
     std::string FeatName = getUniqueObjectName("Robot");
-	string RobotPath = App::Application::Config()["AppHomePath"] + "mod/Robot/Lib/Kuka/kr500_1.wrl";
+	string RobotPath = App::Application::Config()["AppHomePath"] + "mod/Robot/Lib/Kuka/kr210.wrl";
 
     openCommand("Place robot");
     doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());

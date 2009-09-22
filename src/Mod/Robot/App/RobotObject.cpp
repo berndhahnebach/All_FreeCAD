@@ -28,6 +28,7 @@
 
 #include "RobotObject.h"
 #include <App/DocumentObjectPy.h>
+#include <Base/Placement.h>
 
 using namespace Robot;
 using namespace App;
@@ -35,16 +36,22 @@ using namespace App;
 PROPERTY_SOURCE(Robot::RobotObject, App::DocumentObject)
 
 
-RobotObject::RobotObject() 
+RobotObject::RobotObject()
+:block(false)
 {
-    ADD_PROPERTY_TYPE(RobotVrmlFile,(0),"",Prop_None,"Included file with the VRML representation of the robot");
+    ADD_PROPERTY_TYPE(RobotVrmlFile,(0),"Robot definition",Prop_None,"Included file with the VRML representation of the robot");
 
-    ADD_PROPERTY_TYPE(Axis1,(0.0),"",Prop_None,"Axis 1 angle of the robot in degre");
-    ADD_PROPERTY_TYPE(Axis2,(0.0),"",Prop_None,"Axis 2 angle of the robot in degre");
-    ADD_PROPERTY_TYPE(Axis3,(0.0),"",Prop_None,"Axis 3 angle of the robot in degre");
-    ADD_PROPERTY_TYPE(Axis4,(0.0),"",Prop_None,"Axis 4 angle of the robot in degre");
-    ADD_PROPERTY_TYPE(Axis5,(0.0),"",Prop_None,"Axis 5 angle of the robot in degre");
-    ADD_PROPERTY_TYPE(Axis6,(0.0),"",Prop_None,"Axis 6 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis1,(0.0),"Robot kinematic",Prop_None,"Axis 1 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis2,(0.0),"Robot kinematic",Prop_None,"Axis 2 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis3,(0.0),"Robot kinematic",Prop_None,"Axis 3 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis4,(0.0),"Robot kinematic",Prop_None,"Axis 4 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis5,(0.0),"Robot kinematic",Prop_None,"Axis 5 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Axis6,(0.0),"Robot kinematic",Prop_None,"Axis 6 angle of the robot in degre");
+    ADD_PROPERTY_TYPE(Error,("") ,"Robot kinematic",Prop_None,"Robot error while moving");
+
+    ADD_PROPERTY_TYPE(Tcp,(Base::Placement()),"Robot kinematic",Prop_None,"Tcp of the robot");
+    ADD_PROPERTY_TYPE(Base,(Base::Placement()),"Robot kinematic",Prop_None,"Actuall base frame of the robot");
+    ADD_PROPERTY_TYPE(Base,(Base::Placement()),"Robot definition",Prop_None,"Position of the robot in the simulation");
 
 }
 
@@ -64,4 +71,57 @@ PyObject *RobotObject::getPyObject()
         PythonObject = Py::Object(new DocumentObjectPy(this),true);
     }
     return Py::new_reference_to(PythonObject); 
+}
+
+void RobotObject::onChanged(const Property* prop)
+{
+    static bool block = false;
+    if(prop == &Axis1 && !block){
+        robot.setAxis(0,Axis1.getValue());
+        block = true;
+        Tcp.setValue(robot.getTcp());
+        block = false;
+    }
+    if(prop == &Axis2 && !block){
+        robot.setAxis(0,Axis2.getValue());
+        block = true;
+        Tcp.setValue(robot.getTcp());
+        block = false;
+    }
+    if(prop == &Axis3 && !block){
+        robot.setAxis(0,Axis3.getValue());
+        block = true;
+        Tcp.setValue(robot.getTcp());
+        block = false;
+    }
+    if(prop == &Axis4 && !block){
+        robot.setAxis(0,Axis4.getValue());
+        block = true;
+        Tcp.setValue(robot.getTcp());
+        block = false;
+    }
+    if(prop == &Axis5 && !block){
+        robot.setAxis(0,Axis5.getValue());
+        block = true;
+        Tcp.setValue(robot.getTcp());
+        block = false;
+    }
+    if(prop == &Axis6 && !block){
+        robot.setAxis(0,Axis6.getValue());
+        block = true;
+        Tcp.setValue(robot.getTcp());
+        block = false;
+    }
+    if(prop == &Tcp && !block){
+        robot.setTo(Tcp.getValue());
+        block = true;
+        Axis1.setValue(robot.getAxis(0));
+        Axis2.setValue(robot.getAxis(1));
+        Axis3.setValue(robot.getAxis(2));
+        Axis4.setValue(robot.getAxis(3));
+        Axis5.setValue(robot.getAxis(4));
+        Axis6.setValue(robot.getAxis(5));
+        block = false;
+    }
+    App::DocumentObject::onChanged(prop);
 }

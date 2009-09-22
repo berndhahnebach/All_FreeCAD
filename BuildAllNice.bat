@@ -2,4 +2,4 @@
 
 START /LOW BuildAll.bat
 
-@pause
+rem @pause

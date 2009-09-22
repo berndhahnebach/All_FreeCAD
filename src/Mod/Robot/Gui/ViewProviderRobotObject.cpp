@@ -47,17 +47,27 @@ PROPERTY_SOURCE(RobotGui::ViewProviderRobotObject, Gui::ViewProviderDocumentObje
 
 ViewProviderRobotObject::ViewProviderRobotObject()
 {
+    
 	pcRobotRoot = new Gui::SoFCSelection();
     pcRobotRoot->highlightMode = Gui::SoFCSelection::OFF;
     pcRobotRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
     //pcRobotRoot->style = Gui::SoFCSelection::BOX;
     pcRobotRoot->ref();
-	Axis1Node = Axis2Node = Axis3Node = Axis4Node = Axis5Node = Axis6Node = 0;
+
+	pcSimpleRoot = new SoSeparator();
+    pcSimpleRoot->ref();
+
+    pcOffRoot = new SoSeparator();
+    pcOffRoot->ref();
+
+    Axis1Node = Axis2Node = Axis3Node = Axis4Node = Axis5Node = Axis6Node = 0;
 }
 
 ViewProviderRobotObject::~ViewProviderRobotObject()
 {
     pcRobotRoot->unref();
+    pcSimpleRoot->unref();
+    pcOffRoot->unref();
 }
 
 void ViewProviderRobotObject::attach(App::DocumentObject *pcObj)
@@ -73,6 +83,10 @@ void ViewProviderRobotObject::setDisplayMode(const char* ModeName)
 {
     if ( strcmp("VRML",ModeName)==0 )
         setDisplayMaskMode("VRML");
+    if ( strcmp("Simple",ModeName)==0 )
+        setDisplayMaskMode("Simple");
+    if ( strcmp("Off",ModeName)==0 )
+        setDisplayMaskMode("Off");
     ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
@@ -80,6 +94,8 @@ std::vector<std::string> ViewProviderRobotObject::getDisplayModes(void) const
 {
     std::vector<std::string> StrList;
     StrList.push_back("VRML");
+    StrList.push_back("Simple");
+    StrList.push_back("Off");
     return StrList;
 }
 
@@ -202,3 +218,4 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 	}
 
 }
+

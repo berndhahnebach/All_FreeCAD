@@ -9,6 +9,11 @@ endif(FREECAD_BUILD_GUI)
 
 fc_copy_to_path("Mod/Robot/Lib/Kuka" 
 	Lib/Kuka/kr500_1.wrl
+	Lib/Kuka/kr210.WRL
+	Lib/Kuka/kr16.wrl
+	Lib/Kuka/kr_16.pdf
+	Lib/Kuka/kr_210_2.pdf
+	Lib/Kuka/kr_500_2.pdf
 )
 
 
