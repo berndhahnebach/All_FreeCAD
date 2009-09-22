@@ -29,3 +29,7 @@ rob.Tcp = Start
 print rob.Axis2
 
 del rob,Start
+
+pos = FreeCAD.getDocument("Unnamed").getObject("Robot").Tcp
+pos.move(App.Vector(-10,0,0))
+FreeCAD.getDocument("Unnamed").getObject("Robot").Tcp = pos
