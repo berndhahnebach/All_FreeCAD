@@ -30,7 +30,7 @@
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoTransform.h>
 # include <Inventor/nodes/SoSphere.h>
-# include <Inventor/nodes/SoCone.h>
+# include <Inventor/nodes/SoRotation.h>
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/draggers/SoJackDragger.h>
 # include <Inventor/VRMLnodes/SoVRMLTransform.h>
@@ -44,6 +44,7 @@
 #include <App/Document.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
+#include <Base/Console.h>
 #include <sstream>
 using namespace Gui;
 using namespace RobotGui;
@@ -68,19 +69,21 @@ ViewProviderRobotObject::ViewProviderRobotObject()
     pcOffRoot->ref();
 
     pcTcpRoot = new SoSeparator();
-    pcTcpTransform = new SoTransform();
-    pcTcpRoot->addChild(pcTcpTransform);
-    SoSphere *sphere = new SoSphere();
-    sphere->radius = 20;
-    SoCone *cone = new SoCone();
-    cone->bottomRadius = 20;
-    cone->height =160;
-    SoJackDragger *dragger = new SoJackDragger();
-    pcTcpRoot->addChild(sphere);
-    pcTcpRoot->addChild(cone);
-    pcTcpRoot->addChild(dragger);
+    //pcTcpTransform = new SoTransform();
+    //pcTcpTransform->scaleFactor = SbVec3f(150,150,150);
+    //pcTcpRoot->addChild(pcTcpTransform);
+    //SoSphere *sphere = new SoSphere();
+    //sphere->radius = 0.1f;
+    //SoRotation *rot = new SoRotation();
+    //rot->rotation.setValue(SbVec3f(0, 0, 1), 1.5707963f);
+
+    pcDragger = new SoJackDragger();
+    pcDragger->addMotionCallback(sDraggerMotionCallback,this);
+    //pcTcpRoot->addChild(sphere);
+    //pcTcpRoot->addChild(rot);
+    pcTcpRoot->addChild(pcDragger);
     pcTcpRoot->ref();
-    pcTcpTransform->ref();
+    //pcTcpTransform->ref();
 
 
     Axis1Node = Axis2Node = Axis3Node = Axis4Node = Axis5Node = Axis6Node = 0;
@@ -254,9 +257,30 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 			Axis6Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis6.getValue()*(M_PI/180));
 	}else if (prop == &robObj->Tcp) {
         Base::Placement loc = *(&robObj->Tcp.getValue());
-		pcTcpTransform->translation = SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z);
-		pcTcpTransform->rotation = SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]);
+        SbMatrix  M;
+        M.setTransform(SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z),
+                       SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]),
+                       SbVec3f(150,150,150)
+                       );
+        pcDragger->setMotionMatrix(M);
+		//pcTcpTransform->translation = SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z);
+		//pcTcpTransform->rotation = SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]);
 	}
 
 }
 
+void ViewProviderRobotObject::sDraggerMotionCallback(void *data, SoDragger *dragger)
+{
+    static_cast<ViewProviderRobotObject*>(data)->DraggerMotionCallback(dragger);
+}
+
+void ViewProviderRobotObject::DraggerMotionCallback(SoDragger *dragger)
+{
+    Robot::RobotObject* robObj = static_cast<Robot::RobotObject*>(pcObject);
+    const SbMatrix & M = dragger->getMotionMatrix ();
+    Base::Console().Message("M %f %f %f\n", M[3][0], M[3][1], M[3][2]);
+    Base::Placement loc = robObj->Tcp.getValue();
+    Base::Rotation rot = loc.getRotation();
+    Base::Vector3d pos(M[3][0], M[3][1], M[3][2]);
+    robObj->Tcp.setValue(Base::Placement(pos,rot));
+}
