@@ -28,6 +28,8 @@
 #include <Gui/ViewProviderDocumentObject.h>
 #include <Gui/SoFCSelection.h>
 
+class SoDragger;
+class SoJackDragger;
 
 namespace RobotGui
 {
@@ -49,12 +51,17 @@ public:
     void updateData(const App::Property*);
 
 protected:
+    static void sDraggerMotionCallback(void *data, SoDragger *dragger);
+    void DraggerMotionCallback(SoDragger *dragger);
+
     Gui::SoFCSelection    * pcRobotRoot;
     Gui::SoFCSelection    * pcSimpleRoot;
     SoSeparator           * pcOffRoot;
 
     SoSeparator           * pcTcpRoot;
     SoTransform           * pcTcpTransform;
+
+    SoJackDragger         * pcDragger;
 
 	// Pointers to the robot axis nodes in the VRML model
 	SoVRMLTransform *Axis1Node;
