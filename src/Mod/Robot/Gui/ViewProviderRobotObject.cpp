@@ -26,7 +26,10 @@
 #ifndef _PreComp_
 # include <Inventor/SoDB.h>
 # include <Inventor/SoInput.h>
+# include <Inventor/SbVec3f.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoTransform.h>
+# include <Inventor/nodes/SoSphere.h>
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/VRMLnodes/SoVRMLTransform.h>
 # include <QFile>
@@ -54,11 +57,23 @@ ViewProviderRobotObject::ViewProviderRobotObject()
     //pcRobotRoot->style = Gui::SoFCSelection::BOX;
     pcRobotRoot->ref();
 
-	pcSimpleRoot = new SoSeparator();
+	pcSimpleRoot = new Gui::SoFCSelection();
+    pcSimpleRoot->highlightMode = Gui::SoFCSelection::OFF;
+    pcSimpleRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
     pcSimpleRoot->ref();
 
     pcOffRoot = new SoSeparator();
     pcOffRoot->ref();
+
+    pcTcpRoot = new SoSeparator();
+    pcTcpTransform = new SoTransform();
+    pcTcpRoot->addChild(pcTcpTransform);
+    SoSphere *sphere = new SoSphere();
+    sphere->radius = 200;
+    pcTcpRoot->addChild(sphere);
+    pcTcpRoot->ref();
+    pcTcpTransform->ref();
+
 
     Axis1Node = Axis2Node = Axis3Node = Axis4Node = Axis5Node = Axis6Node = 0;
 }
@@ -73,10 +88,23 @@ ViewProviderRobotObject::~ViewProviderRobotObject()
 void ViewProviderRobotObject::attach(App::DocumentObject *pcObj)
 {
     ViewProviderDocumentObject::attach(pcObj);
+
     addDisplayMaskMode(pcRobotRoot, "VRML");
     pcRobotRoot->objectName = pcObj->getNameInDocument();
     pcRobotRoot->documentName = pcObj->getDocument()->getName();
     pcRobotRoot->subElementName = "Main";
+    pcRobotRoot->addChild(pcTcpRoot);
+
+    addDisplayMaskMode(pcSimpleRoot, "Simple");
+    pcSimpleRoot->objectName = pcObj->getNameInDocument();
+    pcSimpleRoot->documentName = pcObj->getDocument()->getName();
+    pcSimpleRoot->subElementName = "Main";
+    pcSimpleRoot->addChild(pcTcpRoot);
+
+    addDisplayMaskMode(pcOffRoot, "Off");
+    pcOffRoot->addChild(pcTcpRoot);
+
+
 }
 
 void ViewProviderRobotObject::setDisplayMode(const char* ModeName)
@@ -113,6 +141,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
             in.setBuffer((void *)buffer.constData(), buffer.length());
             SoSeparator * node = SoDB::readAll(&in);
             if (node) pcRobotRoot->addChild(node);
+            pcRobotRoot->addChild(pcTcpRoot);
         }
 		// search for the conection points +++++++++++++++++++++++++++++++++++++++++++++++++
 		Axis1Node = Axis2Node = Axis3Node = Axis4Node = Axis5Node = Axis6Node = 0;
@@ -215,6 +244,9 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
     }else if (prop == &robObj->Axis6) {
 		if(Axis6Node)
 			Axis6Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis6.getValue()*(M_PI/180));
+	}else if (prop == &robObj->Tcp) {
+        Base::Placement loc = *(&robObj->Tcp.getValue());
+		pcTcpTransform->translation = SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z);
 	}
 
 }

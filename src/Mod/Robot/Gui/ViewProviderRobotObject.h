@@ -50,10 +50,11 @@ public:
 
 protected:
     Gui::SoFCSelection    * pcRobotRoot;
-    SoSeparator           * pcSimpleRoot;
+    Gui::SoFCSelection    * pcSimpleRoot;
     SoSeparator           * pcOffRoot;
 
     SoSeparator           * pcTcpRoot;
+    SoTransform           * pcTcpTransform;
 
 	// Pointers to the robot axis nodes in the VRML model
 	SoVRMLTransform *Axis1Node;
