@@ -85,18 +85,18 @@ Robot6Axis::Robot6Axis()
                                RigidBodyInertia(0.09,Vector(0,0,.032),RotationalInertia(.15e-3,0.15e-3,.04e-3,0,0,0))));
     KukaIR16.addSegment(Segment());
 #endif
-#if 1
+#if 0
 	// Kuka IR16
     //KukaIR16.addSegment(Segment());
- 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(260  ,-M_PI_2  ,576  ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(680  ,0        ,0    ,0       )));
+ 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(260  ,-M_PI_2  ,576  ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(680  ,0        ,0    ,0       )));
     //KukaIR16.addSegment(Segment());
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,M_PI_2   ,0    ,-M_PI_2 )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,-M_PI_2  ,-670 ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,/*-M_PI_2*/0 )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,-M_PI_2  ,-670 ,0       )));
     //KukaIR16.addSegment(Segment());
     //KukaIR16.addSegment(Segment());
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,M_PI_2   ,0    ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,M_PI     ,-158 ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI     ,-158 ,0       )));
     //KukaIR16.addSegment(Segment());
 #endif
 	// Kuka IR210
@@ -112,6 +112,16 @@ Robot6Axis::Robot6Axis()
 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,0       )));
 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI     ,-250 ,0       )));
     KukaIR16.addSegment(Segment());
+#endif
+
+	// Kuka IR500
+#if 1
+ 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(500  ,-M_PI_2  ,1045 ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(1300 ,0        ,0    ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(55   ,M_PI_2   ,0    ,-M_PI_2 )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,-M_PI_2  ,-1025,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI     ,-300 ,0       )));
 #endif
 
 	// for now and testing

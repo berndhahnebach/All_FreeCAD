@@ -83,31 +83,31 @@ void RobotObject::onChanged(const Property* prop)
         block = false;
     }
     if(prop == &Axis2 && !block){
-        robot.setAxis(0,Axis2.getValue());
+        robot.setAxis(1,Axis2.getValue());
         block = true;
         Tcp.setValue(robot.getTcp());
         block = false;
     }
     if(prop == &Axis3 && !block){
-        robot.setAxis(0,Axis3.getValue());
+        robot.setAxis(2,Axis3.getValue());
         block = true;
         Tcp.setValue(robot.getTcp());
         block = false;
     }
     if(prop == &Axis4 && !block){
-        robot.setAxis(0,Axis4.getValue());
+        robot.setAxis(3,Axis4.getValue());
         block = true;
         Tcp.setValue(robot.getTcp());
         block = false;
     }
     if(prop == &Axis5 && !block){
-        robot.setAxis(0,Axis5.getValue());
+        robot.setAxis(4,Axis5.getValue());
         block = true;
         Tcp.setValue(robot.getTcp());
         block = false;
     }
     if(prop == &Axis6 && !block){
-        robot.setAxis(0,Axis6.getValue());
+        robot.setAxis(5,Axis6.getValue());
         block = true;
         Tcp.setValue(robot.getTcp());
         block = false;

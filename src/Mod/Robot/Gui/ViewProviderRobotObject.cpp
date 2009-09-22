@@ -30,7 +30,9 @@
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoTransform.h>
 # include <Inventor/nodes/SoSphere.h>
+# include <Inventor/nodes/SoCone.h>
 # include <Inventor/actions/SoSearchAction.h>
+# include <Inventor/draggers/SoJackDragger.h>
 # include <Inventor/VRMLnodes/SoVRMLTransform.h>
 # include <QFile>
 #endif
@@ -69,8 +71,14 @@ ViewProviderRobotObject::ViewProviderRobotObject()
     pcTcpTransform = new SoTransform();
     pcTcpRoot->addChild(pcTcpTransform);
     SoSphere *sphere = new SoSphere();
-    sphere->radius = 200;
+    sphere->radius = 20;
+    SoCone *cone = new SoCone();
+    cone->bottomRadius = 20;
+    cone->height =160;
+    SoJackDragger *dragger = new SoJackDragger();
     pcTcpRoot->addChild(sphere);
+    pcTcpRoot->addChild(cone);
+    pcTcpRoot->addChild(dragger);
     pcTcpRoot->ref();
     pcTcpTransform->ref();
 
@@ -228,7 +236,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		}
     }else if (prop == &robObj->Axis1) {
 		if(Axis1Node)
-			Axis1Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis1.getValue()*(M_PI/180));
+			Axis1Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis1.getValue()*-(M_PI/180));
     }else if (prop == &robObj->Axis2) {
 		if(Axis2Node)
 			Axis2Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis2.getValue()*(M_PI/180));
@@ -247,6 +255,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 	}else if (prop == &robObj->Tcp) {
         Base::Placement loc = *(&robObj->Tcp.getValue());
 		pcTcpTransform->translation = SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z);
+		pcTcpTransform->rotation = SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]);
 	}
 
 }
