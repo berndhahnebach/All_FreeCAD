@@ -249,6 +249,8 @@ public:
         return sizeof(Base::Placement);
     }
 
+    static const Placement Null;
+
 private:
     Base::Placement _cPos;
 };

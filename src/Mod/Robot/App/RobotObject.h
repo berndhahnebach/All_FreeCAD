@@ -28,6 +28,7 @@
 #include <App/PropertyFile.h>
 #include <App/PropertyGeo.h>
 
+#include "Robot6Axis.h"
 
 namespace Robot
 {
@@ -57,7 +58,17 @@ public:
 
 	App::PropertyPlacement Base;
 	App::PropertyPlacement Tcp;
+	App::PropertyPlacement Position;
 
+    App::PropertyString    Error;
+
+protected:
+    /// get called by the container when a property has changed
+    virtual void onChanged (const App::Property* prop);
+
+    Robot6Axis robot;
+
+    bool block;
 
 };
 

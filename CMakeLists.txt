@@ -218,6 +218,10 @@ if(FREECAD_MAINTAINERS_BUILD AND WIN32)
 	find_package(Wix REQUIRED)
 endif(FREECAD_MAINTAINERS_BUILD AND WIN32)
 
+# copy build convinient files for M$
+configure_file(BuildAll.bat ${CMAKE_BINARY_DIR}/BuildAll.bat COPYONLY)
+configure_file(BuildAllNice.bat ${CMAKE_BINARY_DIR}/BuildAllNice.bat COPYONLY)
+
 
 include(cMake/FreeCadMacros.cmake)
 

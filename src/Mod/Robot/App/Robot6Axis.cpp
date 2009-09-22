@@ -57,36 +57,68 @@ TYPESYSTEM_SOURCE(Robot::Robot6Axis , Base::Persistence);
 
 Robot6Axis::Robot6Axis()
 {
-	Chain KukaIR500;
-    KukaIR500.addSegment(Segment());
-    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+	Chain KukaIR16;
+
+	// Puma 560
+#if 0
+    KukaIR16.addSegment(Segment());
+    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
                                Frame::DH(0.0,M_PI_2,0.0,0.0),
                                RigidBodyInertia(0,Vector::Zero(),RotationalInertia(0,350,0,0,0,0))));
-    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
                                Frame::DH(431.8,0.0,0.0,0.0),
                                RigidBodyInertia(17.4,Vector(-.3638,.006,.2275),RotationalInertia(0.13,0.524,0.539,0,0,0))));
-    KukaIR500.addSegment(Segment());
-    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+    KukaIR16.addSegment(Segment());
+    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
                                Frame::DH(20.3,-M_PI_2,150,0.0),
                                RigidBodyInertia(4.8,Vector(-.0203,-.0141,.070),RotationalInertia(0.066,0.086,0.0125,0,0,0))));
-    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
                                Frame::DH(0.0,M_PI_2,431.8,0.0),
                                RigidBodyInertia(0.82,Vector(0,.019,0),RotationalInertia(1.8e-3,1.3e-3,1.8e-3,0,0,0))));
-    KukaIR500.addSegment(Segment());
-    KukaIR500.addSegment(Segment());
-    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+    KukaIR16.addSegment(Segment());
+    KukaIR16.addSegment(Segment());
+    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
                                Frame::DH(0.0,-M_PI_2,0.0,0.0),
                                RigidBodyInertia(0.34,Vector::Zero(),RotationalInertia(.3e-3,.4e-3,.3e-3,0,0,0))));
-    KukaIR500.addSegment(Segment(Joint(Joint::RotZ),
+    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
                                Frame::DH(0.0,0.0,0.0,0.0),
                                RigidBodyInertia(0.09,Vector(0,0,.032),RotationalInertia(.15e-3,0.15e-3,.04e-3,0,0,0))));
-    KukaIR500.addSegment(Segment());
+    KukaIR16.addSegment(Segment());
+#endif
+#if 1
+	// Kuka IR16
+    //KukaIR16.addSegment(Segment());
+ 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(260  ,-M_PI_2  ,576  ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(680  ,0        ,0    ,0       )));
+    //KukaIR16.addSegment(Segment());
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,M_PI_2   ,0    ,-M_PI_2 )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,-M_PI_2  ,-670 ,0       )));
+    //KukaIR16.addSegment(Segment());
+    //KukaIR16.addSegment(Segment());
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,M_PI_2   ,0    ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH_Craig1989(0    ,M_PI     ,-158 ,0       )));
+    //KukaIR16.addSegment(Segment());
+#endif
+	// Kuka IR210
+#if 0
+    KukaIR16.addSegment(Segment());
+ 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(350  ,-M_PI_2  ,750  ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(1250 ,0        ,0    ,0       )));
+    KukaIR16.addSegment(Segment());
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,-M_PI_2 )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,-M_PI_2  ,-1025,0       )));
+    KukaIR16.addSegment(Segment());
+    KukaIR16.addSegment(Segment());
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,0       )));
+	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI     ,-250 ,0       )));
+    KukaIR16.addSegment(Segment());
+#endif
 
 	// for now and testing
-    Kinematic = KukaIR500;
+    Kinematic = KukaIR16;
 
 	// Create joint array
-    unsigned int nj = KukaIR500.getNrOfJoints();
+    unsigned int nj = KukaIR16.getNrOfJoints();
     Actuall = JntArray(nj);
 
 	// get the actuall TCP out of tha axis
