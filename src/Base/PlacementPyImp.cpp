@@ -44,10 +44,9 @@ const char *PlacementPy::representation(void) const
     std::stringstream str;
     ptr->getRotation().getEuler(A,B,C);
 
-    str << "Placement ( pos:(";
+    str << "Placement [Pos=(";
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
-    str << "),A:" << A << " B:" << B << " C:" << C;
-    str << ")";
+    str << "), Euler=(" << A << "," << B << "," << C << ")]";
 
     static std::string buf;
     buf = str.str();
