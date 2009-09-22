@@ -40,6 +40,14 @@
 				</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="toEuler">
+			<Documentation>
+				<UserDocu>
+					toEuler(Vector) -> list
+					Get the Euler angles of this rotation
+				</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="Q" ReadOnly="false">
 			<Documentation>
 				<UserDocu>The rotation elements (as quaternion)</UserDocu>

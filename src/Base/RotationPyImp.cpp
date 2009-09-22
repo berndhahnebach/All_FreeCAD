@@ -112,6 +112,20 @@ PyObject* RotationPy::multVec(PyObject * args)
     return new VectorPy(new Vector3d(vec));
 }
 
+PyObject* RotationPy::toEuler(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    double A,B,C;
+    this->getRotationPtr()->getEuler(A,B,C);
+
+    Py::Tuple tuple(3);
+    tuple.setItem(0, Py::Float(A));
+    tuple.setItem(1, Py::Float(B));
+    tuple.setItem(2, Py::Float(C));
+    return Py::new_reference_to(tuple);
+}
+
 Py::Tuple RotationPy::getQ(void) const
 {
     double q0, q1, q2, q3;
