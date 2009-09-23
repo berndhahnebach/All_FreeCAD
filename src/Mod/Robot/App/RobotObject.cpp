@@ -51,7 +51,7 @@ RobotObject::RobotObject()
 
     ADD_PROPERTY_TYPE(Tcp,(Base::Placement()),"Robot kinematic",Prop_None,"Tcp of the robot");
     ADD_PROPERTY_TYPE(Base,(Base::Placement()),"Robot kinematic",Prop_None,"Actuall base frame of the robot");
-    ADD_PROPERTY_TYPE(Base,(Base::Placement()),"Robot definition",Prop_None,"Position of the robot in the simulation");
+    ADD_PROPERTY_TYPE(Position,(Base::Placement()),"Robot definition",Prop_None,"Position of the robot in the simulation");
 
 }
 
