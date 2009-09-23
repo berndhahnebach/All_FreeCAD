@@ -79,6 +79,10 @@ PyMethodDef Application::Methods[] = {
      "Register filetype for export"},
     {"getExportType",  (PyCFunction) Application::sGetExportType  ,1,
      "Get the name of the module that can export the filetype"},
+    {"getResourceDir", (PyCFunction) Application::sGetResourceDir  ,1,
+     "Get the root directory of all resources"},
+    {"getHomePath",    (PyCFunction) Application::sGetHomePath  ,1,
+     "Get the home path, i.e. the parent directory of the executable"},
 
     {"open",   (PyCFunction) Application::sOpenDocument,   1,
      "See openDocument(string)"},
@@ -444,6 +448,24 @@ PyObject* Application::sGetExportType(PyObject * /*self*/, PyObject *args,PyObje
 
         return Py::new_reference_to(dict);
     }
+}
+
+PyObject* Application::sGetResourceDir(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
+        return NULL;                       // NULL triggers exception
+
+    Py::String datadir(Application::getResourceDir());
+    return Py::new_reference_to(datadir);
+}
+
+PyObject* Application::sGetHomePath(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
+        return NULL;                       // NULL triggers exception
+
+    Py::String homedir(GetApplication().GetHomePath());
+    return Py::new_reference_to(homedir);
 }
 
 PyObject* Application::sListDocuments(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)

@@ -41,20 +41,20 @@ def InitApplications():
 		FreeCAD.PrintError("\n\nSeems the python standard libs are not installed, bailing out!\n\n")
 		raise
 	# Checking on FreeCAD module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
+	ModDir = FreeCAD.getHomePath()+'Mod'
 	ModDir = os.path.realpath(ModDir)
-	BinDir = FreeCAD.ConfigGet("AppHomePath")+'bin'
+	BinDir = FreeCAD.getHomePath()+'bin'
 	BinDir = os.path.realpath(BinDir)
-	LibDir = FreeCAD.ConfigGet("AppHomePath")+'lib'
+	LibDir = FreeCAD.getHomePath()+'lib'
 	LibDir = os.path.realpath(LibDir)
 	AddPath = FreeCAD.ConfigGet("AdditionalModulePaths").split(";")
 	HomeMod = FreeCAD.ConfigGet("UserAppData")+"Mod"
 	HomeMod = os.path.realpath(HomeMod)
 	ModPar = FreeCAD.ParamGet("System parameter:Modules")
 
-	#print FreeCAD.ConfigGet("AppHomePath")
-	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):
-		sys.path.append(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools')
+	#print FreeCAD.getHomePath()
+	if os.path.isdir(FreeCAD.getHomePath()+'src\\Tools'):
+		sys.path.append(FreeCAD.getHomePath()+'src\\Tools')
 	# Searching for module dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	# Use dict to handle duplicated module names
 	ModDict = {}
