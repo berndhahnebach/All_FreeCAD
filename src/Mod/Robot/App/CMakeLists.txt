@@ -26,12 +26,16 @@ FILE( GLOB UTIL_SRCS KDL/utilities/[^.]*.cpp KDL/utilities/[^.]*.cxx)
 FILE( GLOB UTIL_HPPS KDL/utilities/[^.]*.h KDL/utilities/[^.]*.hpp)
 
 generate_from_xml(Robot6AxisPy)
+generate_from_xml(TrajectoryPy)
+generate_from_xml(WaypointPy)
 
 SET(Python_SRCS
 		 Robot6AxisPy.xml
 		 Robot6AxisPyImp.cpp
 		 TrajectoryPy.xml
+		 TrajectoryPyImp.cpp
 		 WaypointPy.xml
+		 WaypointPyImp.cpp
 )
 
 SET(Mod_SRCS

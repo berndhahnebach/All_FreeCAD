@@ -34,14 +34,30 @@ namespace Robot
 {
 
 
-/** The representation for a 6-Axis industry grade robot
+/** The representation of a waypoint in a trajectory
  */
 class AppRobotExport Waypoint : public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 
 public:
+   enum WaypointType {
+        UNDEF,
+        PTP,
+        LIN,
+        CIRC,
+        WAIT };
+
     Waypoint();
+    /// full constructor 
+    Waypoint(const char* name, 
+             WaypointType type=Waypoint::PTP, 
+             const Base::Placement &endPos=Base::Placement(), 
+             float velocity=100.0, 
+             bool cont=false,
+             unsigned int tool=0, 
+             unsigned int base = 0);
+
     ~Waypoint();
 
 	// from base class
@@ -49,10 +65,13 @@ public:
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
-    
-
-
-protected:
+     
+    std::string Name;
+    WaypointType Type;
+    float Velocity;
+    bool Cont;
+    unsigned int Tool,Base;
+    Base::Placement EndPos;
 
 };
 

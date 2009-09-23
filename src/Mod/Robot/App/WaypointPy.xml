@@ -14,5 +14,41 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>Waypoint class</UserDocu>
     </Documentation>
+	  <Attribute Name="Name" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>Name of the waypoint</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Name" Type="String"/>
+	  </Attribute>
+	  <Attribute Name="Type" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>Type of the waypoint[PTP|LIN|CIRC|WAIT]</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Type" Type="String"/>
+	  </Attribute>
+	  <Attribute Name="Pos" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>End position (destination) of the the waypoint</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Pos" Type="Object"/>
+	  </Attribute>
+	  <Attribute Name="Cont" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>Control the continuity to the next waypoint in the trajectory</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Cont" Type="Boolean"/>
+	  </Attribute>
+	  <Attribute Name="Tool" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>descripe which tool frame to use for that point</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Tool" Type="Int"/>
+	  </Attribute>
+	  <Attribute Name="Base" ReadOnly="false">
+		  <Documentation>
+			  <UserDocu>descripe which Base frame to use for that point</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Base" Type="Int"/>
+	  </Attribute>
   </PythonExport>
 </GenerateModel>

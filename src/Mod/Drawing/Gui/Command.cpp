@@ -88,13 +88,7 @@ void CmdDrawingNewA3Landscape::activated(int iMsg)
 
     openCommand("Drawing create page");
     doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
-    // Note: On Linux it is bad behaviour to mix up data files with binary files in the same directory.
-# ifdef TEMPLATEDIR
-    std::string Path = TEMPLATEDIR; Path += "/A3_Landscape.svg";
-    doCommand(Doc,"App.activeDocument().%s.Template = '%s'",FeatName.c_str(), Path.c_str());    
-# else
     doCommand(Doc,"App.activeDocument().%s.Template = App.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'",FeatName.c_str());
-# endif
     commitCommand();
 }
 

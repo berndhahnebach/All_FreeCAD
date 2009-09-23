@@ -29,13 +29,9 @@
 #include <Base/Writer.h>
 
 #include "kdl/chain.hpp"
-#include "kdl/chainfksolver.hpp"
-#include "kdl/chainfksolverpos_recursive.hpp"
-#include "kdl/frames_io.hpp"
-#include "kdl/chainiksolver.hpp"
-#include "kdl/chainiksolvervel_pinv.hpp"
-#include "kdl/chainjnttojacsolver.hpp"
-#include "kdl/ChainIkSolverPos_NR.hpp"
+#include "kdl/path_line.hpp"
+#include "kdl/path_roundedcomposite.hpp"
+#include "kdl/trajectory_composite.hpp"
 
 #include "Trajectory.h"
 
@@ -50,19 +46,39 @@
 
 using namespace Robot;
 using namespace Base;
-using namespace KDL;
+//using namespace KDL;
 
 
 TYPESYSTEM_SOURCE(Robot::Trajectory , Base::Persistence);
 
 Trajectory::Trajectory()
+:pcTrajectory(0)
 {
 
 }
 
 Trajectory::~Trajectory()
 {
+    for(std::vector<Waypoint*>::iterator it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it)
+        delete ( *it );
 }
+
+void Trajectory::generateTrajectory(void)
+{
+    if(pcTrajectory) delete (pcTrajectory);
+
+    pcTrajectory = new KDL::Trajectory_Composite();
+
+}
+
+void Trajectory::addWaypoint(const Waypoint &WPnt)
+{
+    Waypoint *tmp = new Waypoint(WPnt);
+    vpcWaypoints.push_back(tmp);
+}
+
+
+
 
 unsigned int Trajectory::getMemSize (void) const
 {
