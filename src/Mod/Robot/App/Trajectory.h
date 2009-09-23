@@ -24,17 +24,20 @@
 #ifndef ROBOT_Trajectory_H
 #define ROBOT_Trajectory_H
 
-#include "kdl/chain.hpp"
-#include "kdl/jntarray.hpp"
+#include "kdl/trajectory.hpp"
+
+#include "Waypoint.h"
 
 #include <Base/Persistence.h>
 #include <Base/Placement.h>
+
+#include <vector>
 
 namespace Robot
 {
 
 
-/** The representation for a 6-Axis industry grade robot
+/** The representation of a Trajectory
  */
 class AppRobotExport Trajectory : public Base::Persistence
 {
@@ -50,11 +53,15 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
 
 	// interface
-    
+    void generateTrajectory(void);
+    void addWaypoint(const Waypoint &WPnt);
 
 
 protected:
 
+    std::vector<Waypoint*> vpcWaypoints;
+
+    KDL::Trajectory *pcTrajectory;
 };
 
 } //namespace Part
