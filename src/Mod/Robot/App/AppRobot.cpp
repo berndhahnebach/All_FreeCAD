@@ -32,7 +32,12 @@
 
 #include "Robot6AxisPy.h"
 #include "Robot6Axis.h"
+#include "TrajectoryPy.h"
+#include "Trajectory.h"
+#include "WaypointPy.h"
+#include "Waypoint.h"
 #include "RobotObject.h"
+#include "TrajectoryObject.h"
 
 extern struct PyMethodDef Robot_methods[];
 
@@ -59,6 +64,8 @@ void AppRobotExport initRobot()
 
     // Add Types to module
     Base::Interpreter().addType(&Robot::Robot6AxisPy          ::Type,robotModule,"Robot6Axis");
+    Base::Interpreter().addType(&Robot::WaypointPy            ::Type,robotModule,"Waypoint");
+    Base::Interpreter().addType(&Robot::TrajectoryPy          ::Type,robotModule,"Trajectory");
 
 
     // NOTE: To finish the initialization of our own type objects we must
@@ -67,6 +74,9 @@ void AppRobotExport initRobot()
  
     Robot::Robot6Axis       ::init();
     Robot::RobotObject      ::init();
+    Robot::TrajectoryObject ::init();
+    Robot::Waypoint         ::init();
+    Robot::Trajectory       ::init();
 }
 
 } // extern "C"
