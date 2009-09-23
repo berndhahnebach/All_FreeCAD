@@ -22,8 +22,25 @@ endif(WIN32)
 
 qt4_add_resources(RobotGui_SRCS Resources/Robot.qrc)
 
+set(RobotGui_UIC_SRCS
+		 TaskTrajectory.ui
+		 TaskRobot6Axis.ui
+		 
+)
+qt4_wrap_ui(RobotGui_UIC_HDRS ${RobotGui_UIC_SRCS})
+
+set(RobotGui_MOC_HDRS
+ 		 TaskTrajectory.h
+		 TaskRobot6Axis.h
+)
+fc_wrap_cpp(RobotGui_MOC_SRCS ${RobotGui_MOC_HDRS})
+SOURCE_GROUP("Qt" FILES ${PartDesignGui_MOC_SRCS})
+
+
+
 SET(RobotGui_SRCS
 		 ${RobotGui_SRCS}
+		 ${RobotGui_UIC_HDRS}
 		 AppRobotGui.cpp
 		 AppRobotGuiPy.cpp
 		 Command.cpp
@@ -34,6 +51,15 @@ SET(RobotGui_SRCS
 		 Workbench.h
 		 ViewProviderRobotObject.cpp
 		 ViewProviderRobotObject.h
+		 ViewProviderTrajectory.cpp
+		 ViewProviderTrajectory.h
+ 		 TaskRobot6Axis.ui
+		 TaskRobot6Axis.cpp
+		 TaskRobot6Axis.h
+ 		 TaskTrajectory.ui
+		 TaskTrajectory.cpp
+		 TaskTrajectory.h
+
 )
 
 add_library(RobotGui SHARED ${RobotGui_SRCS})

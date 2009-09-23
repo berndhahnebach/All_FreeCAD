@@ -30,6 +30,8 @@ generate_from_xml(Robot6AxisPy)
 SET(Python_SRCS
 		 Robot6AxisPy.xml
 		 Robot6AxisPyImp.cpp
+		 TrajectoryPy.xml
+		 WaypointPy.xml
 )
 
 SET(Mod_SRCS
@@ -42,10 +44,16 @@ SET(Mod_SRCS
 SET(Robot_SRCS
 		 RobotObject.cpp
 		 RobotObject.h
+		 TrajectoryObject.cpp
+		 TrajectoryObject.h
 		 RobotAlgos.cpp
 		 RobotAlgos.h
 		 Robot6Axis.cpp
 		 Robot6Axis.h
+		 Trajectory.cpp
+		 Trajectory.h
+		 Waypoint.cpp
+		 Waypoint.h
 		 ${KDL_SRCS}
 		 ${KDL_HPPS}
 		 ${UTIL_SRCS}
