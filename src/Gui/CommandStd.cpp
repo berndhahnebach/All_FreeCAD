@@ -567,7 +567,7 @@ StdCmdOnlineHelpPython::StdCmdOnlineHelpPython()
 
 void StdCmdOnlineHelpPython::activated(int iMsg)
 {
-    std::string url = App::Application::Config()["AppHomePath"]+ "doc/Python25.chm";
+    std::string url = App::Application::getHelpDir() + "Python25.chm";
 #if QT_VERSION >= 0x040200
     bool ok = QDesktopServices::openUrl(QString::fromUtf8(url.c_str()));
 #elif defined(Q_WS_WIN)

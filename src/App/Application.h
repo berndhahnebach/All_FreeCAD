@@ -215,7 +215,9 @@ public:
     static char** GetARGV(void){return _argv;}
     //@}
 
-    const char* GetHomePath(void);
+    const char* GetHomePath(void) const;
+    static std::string getResourceDir();
+    static std::string getHelpDir();
 
     friend class App::Document;
 
@@ -264,6 +266,8 @@ private:
     static PyObject* sGetImportType     (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sAddExportType     (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sGetExportType     (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sGetResourceDir    (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sGetHomePath       (PyObject *self,PyObject *args,PyObject *kwd);
 
     static PyObject* sOpenDocument      (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sSaveDocument      (PyObject *self,PyObject *args,PyObject *kwd);

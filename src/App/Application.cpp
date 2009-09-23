@@ -439,9 +439,19 @@ void Application::setActiveDocument(const char *Name)
     }
 }
 
-const char* Application::GetHomePath(void)
+const char* Application::GetHomePath(void) const
 {
     return _mConfig["AppHomePath"].c_str();
+}
+
+std::string Application::getResourceDir()
+{
+    return mConfig["AppHomePath"];
+}
+
+std::string Application::getHelpDir()
+{
+    return mConfig["DocPath"];
 }
 
 ParameterManager & Application::GetSystemParameter(void)

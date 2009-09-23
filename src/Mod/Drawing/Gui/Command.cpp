@@ -71,7 +71,7 @@ void CmdDrawingOpen::activated(int iMsg)
 DEF_STD_CMD_A(CmdDrawingNewA3Landscape);
 
 CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
-	:Command("Drawing_NewA3Landscape")
+  : Command("Drawing_NewA3Landscape")
 {
     sAppModule      = "Drawing";
     sGroup          = QT_TR_NOOP("Drawing");
@@ -82,31 +82,28 @@ CmdDrawingNewA3Landscape::CmdDrawingNewA3Landscape()
     sPixmap         = "actions/drawing-landscape-A3";
 }
 
-
 void CmdDrawingNewA3Landscape::activated(int iMsg)
 {
+    std::string FeatName = getUniqueObjectName("Page");
 
-  std::string FeatName = getUniqueObjectName("Page");
-  
-  openCommand("Drawing create page");
-  doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
-  // Note: On Linux it is bad behaviour to mix up data files with binary files in the same directory.
+    openCommand("Drawing create page");
+    doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
+    // Note: On Linux it is bad behaviour to mix up data files with binary files in the same directory.
 # ifdef TEMPLATEDIR
-  std::string Path = TEMPLATEDIR; Path += "/A3_Landscape.svg";
-  doCommand(Doc,"App.activeDocument().%s.Template = '%s'",FeatName.c_str(), Path.c_str());    
+    std::string Path = TEMPLATEDIR; Path += "/A3_Landscape.svg";
+    doCommand(Doc,"App.activeDocument().%s.Template = '%s'",FeatName.c_str(), Path.c_str());    
 # else
-  doCommand(Doc,"App.activeDocument().%s.Template = App.ConfigGet('AppHomePath')+'Mod/Drawing/Templates/A3_Landscape.svg'",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Template = App.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'",FeatName.c_str());
 # endif
-  commitCommand();
-
+    commitCommand();
 }
 
 bool CmdDrawingNewA3Landscape::isActive(void)
 {
-  if( getActiveGuiDocument() )
-    return true;
-  else
-    return false;
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
 
 
