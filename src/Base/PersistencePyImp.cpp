@@ -32,9 +32,9 @@
 using namespace Base;
 
 // returns a string which represent the object e.g. when printed in python
-const char *PersistencePy::representation(void) const
+std::string PersistencePy::representation(void) const
 {
-    return "<persistence object>";
+    return std::string("<persistence object>");
 }
 
 

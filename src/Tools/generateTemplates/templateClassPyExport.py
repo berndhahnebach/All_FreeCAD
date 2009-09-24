@@ -30,6 +30,7 @@ class TemplateClassPyExport (template.ModelTemplate):
 
 #include <@self.export.FatherInclude@>
 #include <@self.export.Include@>
+#include <string>
 
 namespace @self.export.Namespace@
 {
@@ -62,7 +63,7 @@ public:
     typedef @self.export.TwinPointer@* PointerType ;
 
     virtual PyObject *_repr(void);        // the representation
-    const char *representation(void) const;
+    std::string representation(void) const;
 
     /** @name callbacks and implementers for the python object methods */
     //@{
@@ -431,7 +432,7 @@ int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 //--------------------------------------------------------------------------
 PyObject *@self.export.Name@::_repr(void)
 {
-    return Py_BuildValue("s", representation());
+    return Py_BuildValue("s", representation().c_str());
 }
 
 + if(self.export.CustomAttributes != None):
@@ -582,9 +583,9 @@ int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 -
 
 // returns a string which represents the object e.g. when printed in python
-const char *@self.export.Name@::representation(void) const
+std::string @self.export.Name@::representation(void) const
 {
-    return "<@self.export.Twin@ object>";
+    return std::string("<@self.export.Twin@ object>");
 }
 + for i in self.export.Methode:
 
@@ -659,9 +660,9 @@ int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
 using namespace @self.export.Namespace@;
 
 // returns a string which represents the object e.g. when printed in python
-const char *@self.export.Name@::representation(void) const
+std::string @self.export.Name@::representation(void) const
 {
-    return "<@self.export.Twin@ object>";
+    return std::string("<@self.export.Twin@ object>");
 }
 
 + if (self.export.Constructor):

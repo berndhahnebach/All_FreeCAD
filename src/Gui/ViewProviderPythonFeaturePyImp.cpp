@@ -35,7 +35,7 @@
 using namespace Gui;
 
 // returns a string which represents the object e.g. when printed in python
-const char *ViewProviderPythonFeaturePy::representation(void) const
+std::string ViewProviderPythonFeaturePy::representation(void) const
 {
     return "<ViewProviderPythonFeature object>";
 }

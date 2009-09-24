@@ -48,7 +48,7 @@ using namespace Part;
 extern const char* gce_ErrorStatusText(gce_ErrorType et);
 
 // returns a string which represents the object e.g. when printed in python
-const char *PlanePy::representation(void) const
+std::string PlanePy::representation(void) const
 {
     return "<Plane object>";
 }

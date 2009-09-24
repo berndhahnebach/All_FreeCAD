@@ -37,7 +37,7 @@
 using namespace Base;
 
 // returns a string which represents the object e.g. when printed in python
-const char *PlacementPy::representation(void) const
+std::string PlacementPy::representation(void) const
 {
     double A,B,C;
     PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
@@ -48,9 +48,7 @@ const char *PlacementPy::representation(void) const
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
     str << "), Euler=(" << A << "," << B << "," << C << ")]";
 
-    static std::string buf;
-    buf = str.str();
-    return buf.c_str();
+    return str.str();
 }
 
 PyObject *PlacementPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

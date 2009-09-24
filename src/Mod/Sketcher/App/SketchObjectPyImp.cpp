@@ -10,7 +10,7 @@
 using namespace Sketcher;
 
 // returns a string which represents the object e.g. when printed in python
-const char *SketchObjectPy::representation(void) const
+std::string SketchObjectPy::representation(void) const
 {
     return "<SketchObject object>";
 }

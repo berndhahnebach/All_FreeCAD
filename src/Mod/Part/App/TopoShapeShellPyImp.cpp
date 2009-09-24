@@ -41,7 +41,7 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *TopoShapeShellPy::representation(void) const
+std::string TopoShapeShellPy::representation(void) const
 {
     // Note: As the return type is 'const char*' we cannot create a temporary
     // char array neither on the stack because the array would be freed when
@@ -52,9 +52,8 @@ const char *TopoShapeShellPy::representation(void) const
 
     std::stringstream str;
     str << "<Shell object at " << getTopoShapePtr() << ">";
-    static std::string buf;
-    buf = str.str();
-    return buf.c_str();
+
+    return str.str();
 }
 
 PyObject *TopoShapeShellPy::PyMake(struct _typeobject *, PyObject *, PyObject *)

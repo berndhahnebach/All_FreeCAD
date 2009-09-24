@@ -40,7 +40,7 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *BSplineCurvePy::representation(void) const
+std::string BSplineCurvePy::representation(void) const
 {
     return "<BSplineCurve object>";
 }

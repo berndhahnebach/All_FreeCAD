@@ -35,7 +35,7 @@
 using namespace Base;
 
 // returns a string which represents the object e.g. when printed in python
-const char *MatrixPy::representation(void) const
+std::string MatrixPy::representation(void) const
 {
     const Base::Matrix4D& m = *(this->getMatrixPtr());
     std::stringstream str;
@@ -46,9 +46,7 @@ const char *MatrixPy::representation(void) const
     str << "(" << m[3][0] << ","<< m[3][1] << ","<< m[3][2] << ","<< m[3][3] << ")";
     str << ")";
 
-    static std::string buf;
-    buf = str.str();
-    return buf.c_str();
+    return str.str();
 }
 
 PyObject *MatrixPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

@@ -40,7 +40,7 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *ToroidPy::representation(void) const
+std::string ToroidPy::representation(void) const
 {
     return "<Toroid object>";
 }

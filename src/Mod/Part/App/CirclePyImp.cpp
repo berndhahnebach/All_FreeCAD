@@ -40,7 +40,7 @@ using namespace Part;
 extern const char* gce_ErrorStatusText(gce_ErrorType et);
 
 // returns a string which represents the object e.g. when printed in python
-const char *CirclePy::representation(void) const
+std::string CirclePy::representation(void) const
 {
     Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
     gp_Ax1 axis = circle->Axis();
@@ -55,9 +55,7 @@ const char *CirclePy::representation(void) const
     str << "Direction : (" << dir.X() << ", "<< dir.Y() << ", "<< dir.Z() << ")"; 
     str << ")";
 
-    static std::string buf;
-    buf = str.str();
-    return buf.c_str();
+    return str.str();
 }
 
 PyObject *CirclePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

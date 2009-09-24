@@ -36,7 +36,7 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *ParabolaPy::representation(void) const
+std::string ParabolaPy::representation(void) const
 {
     return "<Parabola object>";
 }

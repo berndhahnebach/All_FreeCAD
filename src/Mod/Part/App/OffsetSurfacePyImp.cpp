@@ -36,7 +36,7 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *OffsetSurfacePy::representation(void) const
+std::string OffsetSurfacePy::representation(void) const
 {
     return "<OffsetSurface object>";
 }

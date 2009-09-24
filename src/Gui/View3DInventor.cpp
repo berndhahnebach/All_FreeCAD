@@ -130,7 +130,8 @@ View3DInventor::~View3DInventor()
         Py_DECREF(_viewerPy);
     }
 
-    delete _viewer;
+    // get apparently already deleted by QT
+    //delete _viewer;
 }
 
 PyObject *View3DInventor::getPyObject(void)
