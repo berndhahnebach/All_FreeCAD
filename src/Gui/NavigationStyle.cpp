@@ -70,6 +70,7 @@ NavigationStyle::NavigationStyle() : viewer(0), pcMouseModel(0)
 NavigationStyle::~NavigationStyle()
 {
     finalize();
+    PRIVATE(this)->animsensor->unschedule  	();
     delete PRIVATE(this)->animsensor;
     delete PRIVATE(this);
 }
