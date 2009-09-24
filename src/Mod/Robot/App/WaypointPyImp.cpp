@@ -27,7 +27,7 @@ std::string WaypointPy::representation(void) const
     str << "Waypoint [";
     if(getWaypointPtr()->Type == Waypoint::PTP)
         str << "PTP ";
-    else if(getWaypointPtr()->Type == Waypoint::LIN)
+    else if(getWaypointPtr()->Type == Waypoint::LINE)
         str << "LIN ";
     else if(getWaypointPtr()->Type == Waypoint::CIRC)
         str << "CIRC ";
@@ -68,7 +68,7 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     int tool=0;
     int base=0;
 
-    static char *kwlist[] = {"type","name", "vel", "cont", "tool", "base",  NULL};
+    static char *kwlist[] = {"Pos", "type","name", "vel", "cont", "tool", "base",  NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwd, "O!|ssfiii", kwlist,
                                       &(Base::PlacementPy::Type), &pos, // the placement object
@@ -81,7 +81,7 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     if(typeStr=="PTP")
         getWaypointPtr()->Type = Waypoint::PTP;
     else if(typeStr=="LIN")
-        getWaypointPtr()->Type = Waypoint::LIN;
+        getWaypointPtr()->Type = Waypoint::LINE;
     else if(typeStr=="CIRC")
         getWaypointPtr()->Type = Waypoint::CIRC;
     else if(typeStr=="WAIT")
@@ -113,7 +113,7 @@ Py::String WaypointPy::getType(void) const
 {
     if(getWaypointPtr()->Type == Waypoint::PTP)
         return Py::String("PTP");
-    else if(getWaypointPtr()->Type == Waypoint::LIN)
+    else if(getWaypointPtr()->Type == Waypoint::LINE)
         return Py::String("LIN");
     else if(getWaypointPtr()->Type == Waypoint::CIRC)
         return Py::String("CIRC");
@@ -130,7 +130,7 @@ void WaypointPy::setType(Py::String arg)
     if(typeStr=="PTP")
         getWaypointPtr()->Type = Waypoint::PTP;
     else if(typeStr=="LIN")
-        getWaypointPtr()->Type = Waypoint::LIN;
+        getWaypointPtr()->Type = Waypoint::LINE;
     else if(typeStr=="CIRC")
         getWaypointPtr()->Type = Waypoint::CIRC;
     else if(typeStr=="WAIT")
