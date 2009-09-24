@@ -3,15 +3,28 @@ SUBDIRS=Resources
 lib_LTLIBRARIES=libRobotGui.la RobotGui.la
 
 BUILT_SOURCES=\
-		moc_RobotView.cpp
+		moc_TaskRobot6Axis.cpp \
+		moc_TaskTrajectory.cpp \
+		ui_TaskRobot6Axis.h \
+		ui_TaskTrajectory.h
+
+libRobotGui_la_UI=\
+		TaskRobot6Axis.ui \
+		TaskTrajectory.ui
 
 libRobotGui_la_SOURCES=\
 		AppRobotGuiPy.cpp \
 		Command.cpp \
-		RobotView.cpp \
-		RobotView.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		TaskRobot6Axis.cpp \
+		TaskRobot6Axis.h \
+		TaskTrajectory.cpp \
+		TaskTrajectory.h \
+		ViewProviderRobotObject.cpp \
+		ViewProviderRobotObject.h \
+		ViewProviderTrajectory.cpp \
+		ViewProviderTrajectory.h \
 		Workbench.cpp \
 		Workbench.h
 
@@ -62,7 +75,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) $(all_includes)
+INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) $(all_includes) -I/usr/include/eigen2
 
 
 libdir = $(prefix)/Mod/Robot
@@ -70,5 +83,6 @@ libdir = $(prefix)/Mod/Robot
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		$(libRobotGui_la_UI) \
 		CMakeLists.txt
 

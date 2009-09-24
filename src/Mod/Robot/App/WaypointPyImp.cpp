@@ -17,7 +17,7 @@ using namespace Robot;
 using namespace Base;
 
 // returns a string which represents the object e.g. when printed in python
-std::string WaypointPy::representation(void) const
+const char* WaypointPy::representation(void) const
 {
     double A,B,C;
     PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
@@ -28,7 +28,8 @@ std::string WaypointPy::representation(void) const
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
     str << "), Euler=(" << A << "," << B << "," << C << ")]";
 
-    return str.str();
+    static std::string rep = str.str();
+    return rep.c_str();
 }
 
 PyObject *WaypointPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
@@ -61,7 +62,7 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     if(typeStr=="PTP")
         getWaypointPtr()->Type = Waypoint::PTP;
     else if(typeStr=="LIN")
-        getWaypointPtr()->Type = Waypoint::LIN;
+        getWaypointPtr()->Type = Waypoint::LINE;
     else if(typeStr=="CIRC")
         getWaypointPtr()->Type = Waypoint::CIRC;
     else if(typeStr=="WAIT")
@@ -93,7 +94,7 @@ Py::String WaypointPy::getType(void) const
 {
     if(getWaypointPtr()->Type == Waypoint::PTP)
         return Py::String("PTP");
-    else if(getWaypointPtr()->Type == Waypoint::LIN)
+    else if(getWaypointPtr()->Type == Waypoint::LINE)
         return Py::String("LIN");
     else if(getWaypointPtr()->Type == Waypoint::CIRC)
         return Py::String("CIRC");
@@ -110,7 +111,7 @@ void WaypointPy::setType(Py::String arg)
     if(typeStr=="PTP")
         getWaypointPtr()->Type = Waypoint::PTP;
     else if(typeStr=="LIN")
-        getWaypointPtr()->Type = Waypoint::LIN;
+        getWaypointPtr()->Type = Waypoint::LINE;
     else if(typeStr=="CIRC")
         getWaypointPtr()->Type = Waypoint::CIRC;
     else if(typeStr=="WAIT")

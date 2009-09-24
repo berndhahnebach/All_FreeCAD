@@ -167,7 +167,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		path = searchAction.getPath();
 		if(path){
 			SoNode* node = path->getTail();
-			std::string typeName = node->getTypeId().getName();
+			std::string typeName = (const char*)node->getTypeId().getName();
 			if (!node || node->getTypeId() != SoVRMLTransform::getClassTypeId())
 				throw; // should not happen
 			Axis1Node = static_cast<SoVRMLTransform *>(node);
@@ -180,7 +180,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		path = searchAction.getPath();
 		if(path){
 			SoNode* node = path->getTail();
-			std::string typeName = node->getTypeId().getName();
+			std::string typeName = (const char*)node->getTypeId().getName();
 			if (!node || node->getTypeId() != SoVRMLTransform::getClassTypeId())
 				throw; // should not happen
 			Axis2Node = static_cast<SoVRMLTransform *>(node);
@@ -193,7 +193,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		path = searchAction.getPath();
 		if(path){
 			SoNode* node = path->getTail();
-			std::string typeName = node->getTypeId().getName();
+			std::string typeName = (const char*)node->getTypeId().getName();
 			if (!node || node->getTypeId() != SoVRMLTransform::getClassTypeId())
 				throw; // should not happen
 			Axis3Node = static_cast<SoVRMLTransform *>(node);
@@ -206,7 +206,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		path = searchAction.getPath();
 		if(path){
 			SoNode* node = path->getTail();
-			std::string typeName = node->getTypeId().getName();
+			std::string typeName = (const char*)node->getTypeId().getName();
 			if (!node || node->getTypeId() != SoVRMLTransform::getClassTypeId())
 				throw; // should not happen
 			Axis4Node = static_cast<SoVRMLTransform *>(node);
@@ -219,7 +219,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		path = searchAction.getPath();
 		if(path){
 			SoNode* node = path->getTail();
-			std::string typeName = node->getTypeId().getName();
+			std::string typeName = (const char*)node->getTypeId().getName();
 			if (!node || node->getTypeId() != SoVRMLTransform::getClassTypeId())
 				throw; // should not happen
 			Axis5Node = static_cast<SoVRMLTransform *>(node);
@@ -232,7 +232,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		path = searchAction.getPath();
 		if(path){
 			SoNode* node = path->getTail();
-			std::string typeName = node->getTypeId().getName();
+			std::string typeName = (const char*)node->getTypeId().getName();
 			if (!node || node->getTypeId() != SoVRMLTransform::getClassTypeId())
 				throw; // should not happen
 			Axis6Node = static_cast<SoVRMLTransform *>(node);

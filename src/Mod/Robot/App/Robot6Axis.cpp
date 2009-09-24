@@ -35,7 +35,7 @@
 #include "kdl/chainiksolver.hpp"
 #include "kdl/chainiksolvervel_pinv.hpp"
 #include "kdl/chainjnttojacsolver.hpp"
-#include "kdl/ChainIkSolverPos_NR.hpp"
+#include "kdl/chainiksolverpos_nr.hpp"
 
 #include "Robot6Axis.h"
 
@@ -224,4 +224,4 @@ void Robot6Axis::importChain(const char* FileName)
 {
 
 }
- 
+

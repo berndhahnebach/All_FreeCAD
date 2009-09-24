@@ -5,7 +5,7 @@
 #include <Base/PlacementPy.h>
 #include <Base/MatrixPy.h>
 #include <Base/Exception.h>
-# include <sstream>
+#include <sstream>
 
 // inclusion of the generated files (generated out of Robot6AxisPy.xml)
 #include "Robot6AxisPy.h"
@@ -14,7 +14,7 @@
 using namespace Robot;
 
 // returns a string which represents the object e.g. when printed in python
-std::string Robot6AxisPy::representation(void) const
+const char* Robot6AxisPy::representation(void) const
 {
 	std::stringstream str;
 
@@ -31,7 +31,8 @@ std::string Robot6AxisPy::representation(void) const
 		  << "5:" << getRobot6AxisPtr()->getAxis(4) << " "
 		  << "6:" << getRobot6AxisPtr()->getAxis(5) << ")";
 
-	return str.str();
+	static std::string rep = str.str();
+	return rep.c_str();
 }
 
 PyObject *Robot6AxisPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
