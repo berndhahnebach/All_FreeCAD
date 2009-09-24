@@ -55,6 +55,7 @@ public:
 	// interface
     void generateTrajectory(void);
     void addWaypoint(const Waypoint &WPnt);
+    unsigned int getSize(void){return vpcWaypoints.size();}
 
 
 protected:

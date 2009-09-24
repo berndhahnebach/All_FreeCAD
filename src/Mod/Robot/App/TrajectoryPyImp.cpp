@@ -12,7 +12,13 @@ using namespace Robot;
 // returns a string which represents the object e.g. when printed in python
 std::string TrajectoryPy::representation(void) const
 {
-    return std::string("<Trajectory object>");
+    std::stringstream str;
+
+    str << "Trajectory [";
+    str << "size:" << getTrajectoryPtr()->getSize() << " ";
+    str << "]";
+
+    return str.str();
 }
 
 PyObject *TrajectoryPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
