@@ -127,9 +127,10 @@ Document::~Document()
 {
     // e.g. if document gets closed from within a Python command
     d->_isClosing = true;
-    // Calls Document::detachView()
-    while (d->_LpcViews.size() > 0)
-        delete d->_LpcViews.front();
+    // because Calls Document::detachView() and alter the View List
+    std::list<Gui::BaseView*> temp = d->_LpcViews;
+    for(std::list<Gui::BaseView*>::iterator it=temp.begin();it!=temp.end();++it)
+        delete *it;
 
     std::map<App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
     for (it = d->_ViewProviderMap.begin();it != d->_ViewProviderMap.end(); ++it)

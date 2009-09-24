@@ -36,7 +36,7 @@
 using namespace Mesh;
 
 // returns a string which represent the object e.g. when printed in python
-const char *MeshPointPy::representation(void) const
+std::string MeshPointPy::representation(void) const
 {
     MeshPointPy::PointerType ptr = getMeshPointPtr();
     std::stringstream str;
@@ -47,13 +47,7 @@ const char *MeshPointPy::representation(void) const
         str << ptr->x << ", "<< ptr->y << ", "<< ptr->z ;
     str << ")";
  
-    // Note: As the return type is 'const char*' we cannot create a temporary char array neither on the stack because the array would be freed
-    // when leaving the scope nor on the heap because we would have a memory leak.
-    // So we use a static array that is used by all instances of this class. This, however, is not a problem as long as we only
-    // use this method in _repr().
-    static std::string buf;
-    buf = str.str();
-    return buf.c_str();
+    return str.str();
 }
 
 PyObject *MeshPointPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

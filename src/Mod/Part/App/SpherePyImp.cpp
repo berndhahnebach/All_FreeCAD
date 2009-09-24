@@ -41,7 +41,7 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *SpherePy::representation(void) const
+std::string SpherePy::representation(void) const
 {
     Handle_Geom_SphericalSurface sphere = Handle_Geom_SphericalSurface::DownCast
         (getGeomSpherePtr()->handle());
@@ -57,9 +57,7 @@ const char *SpherePy::representation(void) const
     str << "Direction : (" << dir.X() << ", "<< dir.Y() << ", "<< dir.Z() << ")"; 
     str << ")";
 
-    static std::string buf;
-    buf = str.str();
-    return buf.c_str();
+    return str.str();
 }
 
 PyObject *SpherePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

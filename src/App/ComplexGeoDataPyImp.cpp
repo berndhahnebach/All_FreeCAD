@@ -37,9 +37,9 @@ using namespace Data;
 using namespace Base;
 
 // returns a string which represent the object e.g. when printed in python
-const char *ComplexGeoDataPy::representation(void) const
+std::string ComplexGeoDataPy::representation(void) const
 {
-    return "<ComplexGeoData object>";
+    return std::string("<ComplexGeoData object>");
 }
 
 Py::Object ComplexGeoDataPy::getBoundBox(void) const

@@ -40,7 +40,7 @@ using namespace Part;
 extern const char* gce_ErrorStatusText(gce_ErrorType et);
 
 // returns a string which represents the object e.g. when printed in python
-const char *HyperbolaPy::representation(void) const
+std::string HyperbolaPy::representation(void) const
 {
     return "<Hyperbola object>";
 }

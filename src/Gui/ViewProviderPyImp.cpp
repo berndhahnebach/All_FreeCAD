@@ -36,7 +36,7 @@
 using namespace Gui;
 
 // returns a string which represent the object e.g. when printed in python
-const char *ViewProviderPy::representation(void) const
+std::string ViewProviderPy::representation(void) const
 {
     return "<View provider object>";
 }

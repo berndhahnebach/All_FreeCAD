@@ -32,9 +32,9 @@
 using namespace Base;
 
 // returns a string which represent the object e.g. when printed in python
-const char *BaseClassPy::representation(void) const
+std::string BaseClassPy::representation(void) const
 {
-    return "<binding object>";
+    return std::string("<binding object>");
 }
 
 

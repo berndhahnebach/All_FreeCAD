@@ -33,7 +33,7 @@
 using namespace Base;
 
 // returns a string which represents the object e.g. when printed in python
-const char *RotationPy::representation(void) const
+std::string RotationPy::representation(void) const
 {
     RotationPy::PointerType ptr = reinterpret_cast<RotationPy::PointerType>(_pcTwinPointer);
     std::stringstream str;
@@ -41,9 +41,7 @@ const char *RotationPy::representation(void) const
     str << ptr->getValue()[0] << ","<< ptr->getValue()[1] << "," << ptr->getValue()[2] << "," << ptr->getValue()[3];
     str << ")";
 
-    static std::string buf;
-    buf = str.str();
-    return buf.c_str();
+    return str.str();
 }
 
 PyObject *RotationPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

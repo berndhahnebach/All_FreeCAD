@@ -86,16 +86,15 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
 }
 
 // returns a string which represent the object e.g. when printed in python
-const char *MeshPy::representation(void) const
+std::string MeshPy::representation(void) const
 {
     // Note: As the return type is 'const char*' we cannot create a temporary char array neither on the stack because the array would be freed
     // when leaving the scope nor on the heap because we would have a memory leak.
     // So we use a static array that is used by all instances of this class. This, however, is not a problem as long as we only
     // use this method in _repr().
     MeshPy::PointerType ptr = reinterpret_cast<MeshPy::PointerType>(_pcTwinPointer);
-    static std::string buf;
-    buf = ptr->representation();
-    return buf.c_str();
+
+    return  ptr->representation();
 }
 
 PyObject *MeshPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

@@ -10,9 +10,9 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *Part2DObjectPy::representation(void) const
+std::string Part2DObjectPy::representation(void) const
 {
-    return "<Part2DObject object>";
+    return std::string("<Part2DObject object>");
 }
 
 

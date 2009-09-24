@@ -44,7 +44,7 @@ using namespace Part;
 extern const char* gce_ErrorStatusText(gce_ErrorType et);
 
 // returns a string which represents the object e.g. when printed in python
-const char *LinePy::representation(void) const
+std::string LinePy::representation(void) const
 {
     return "<Line object>";
 }

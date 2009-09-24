@@ -39,7 +39,7 @@
 using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
-const char *BezierCurvePy::representation(void) const
+std::string BezierCurvePy::representation(void) const
 {
     return "<BezierCurve object>";
 }
