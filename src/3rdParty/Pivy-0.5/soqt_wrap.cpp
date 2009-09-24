@@ -3298,7 +3298,7 @@ namespace swig {
 #include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
 #include <Inventor/Qt/widgets/SoQtPopupMenu.h>
-#include <Inventor/Qt/widgets/SoQtThumbWheel.h>
+//#include <Inventor/Qt/widgets/SoQtThumbWheel.h>
 
 #include "coin_header_includes.h"
 
