@@ -121,7 +121,8 @@ Py::String WaypointPy::getType(void) const
         return Py::String("WAIT");
     else if(getWaypointPtr()->Type == Waypoint::UNDEF)
         return Py::String("UNDEF");
-
+    else
+        throw Base::Exception("Unknown waypoint type! Only: PTP,LIN,CIRC,WAIT are supported.");
 }
 
 void WaypointPy::setType(Py::String arg)
@@ -137,7 +138,6 @@ void WaypointPy::setType(Py::String arg)
         getWaypointPtr()->Type = Waypoint::WAIT;
     else
         throw Base::Exception("Unknown waypoint type! Only: PTP,LIN,CIRC,WAIT are allowed.");
-
 }
 
 
@@ -161,7 +161,7 @@ Py::Boolean WaypointPy::getCont(void) const
 
 void WaypointPy::setCont(Py::Boolean arg)
 {
-    getWaypointPtr()->Cont = *arg;
+    getWaypointPtr()->Cont = (bool)arg;
 }
 
 Py::Int WaypointPy::getTool(void) const
