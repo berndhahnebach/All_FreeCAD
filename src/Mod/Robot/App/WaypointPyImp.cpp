@@ -24,9 +24,29 @@ std::string WaypointPy::representation(void) const
     std::stringstream str;
     ptr->getRotation().getEuler(A,B,C);
 
-    str << "Waypoint [Pos=(";
+    str << "Waypoint [";
+    if(getWaypointPtr()->Type == Waypoint::PTP)
+        str << "PTP ";
+    else if(getWaypointPtr()->Type == Waypoint::LIN)
+        str << "LIN ";
+    else if(getWaypointPtr()->Type == Waypoint::CIRC)
+        str << "CIRC ";
+    else if(getWaypointPtr()->Type == Waypoint::WAIT)
+        str << "WAIT ";
+    else if(getWaypointPtr()->Type == Waypoint::UNDEF)
+        str << "UNDEF ";
+
+    str << "(";
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
-    str << "), Euler=(" << A << "," << B << "," << C << ")]";
+    str << ";" << A << "," << B << "," << C << ")";
+    str << "v=" << getWaypointPtr()->Velocity << " ";
+    if(getWaypointPtr()->Cont)
+        str << "Cont ";
+    if(getWaypointPtr()->Tool != 0)
+        str << "Tool" << getWaypointPtr()->Tool << " ";
+    if(getWaypointPtr()->Base != 0)
+        str << "Tool" << getWaypointPtr()->Base << " ";
+    str << "]";
 
     return str.str();
 }
@@ -128,38 +148,46 @@ Py::Object WaypointPy::getPos(void) const
 
 void WaypointPy::setPos(Py::Object arg)
 {
-
-
+    union PyType_Object pyType = {&(Base::PlacementPy::Type)};
+    Py::Type PlacementType(pyType.o);
+    if(arg.isType(PlacementType))
+        getWaypointPtr()->EndPos = *static_cast<Base::PlacementPy*>((*arg))->getPlacementPtr();
 }
 
 Py::Boolean WaypointPy::getCont(void) const
 {
-    return Py::Boolean();
+    return Py::Boolean(getWaypointPtr()->Cont);
 }
 
-void WaypointPy::setCont(Py::Boolean /*arg*/)
+void WaypointPy::setCont(Py::Boolean arg)
 {
-
+    getWaypointPtr()->Cont = *arg;
 }
 
 Py::Int WaypointPy::getTool(void) const
 {
-    return Py::Int();
+    return Py::Int((int)getWaypointPtr()->Tool);
 }
 
-void WaypointPy::setTool(Py::Int /*arg*/)
+void WaypointPy::setTool(Py::Int arg)
 {
-
+    if((int)arg.operator long() > 0)
+        getWaypointPtr()->Tool = (int)arg.operator long();
+    else 
+        Base::Exception("negativ tool not allowed!");
 }
 
 Py::Int WaypointPy::getBase(void) const
 {
-    return Py::Int();
+    return Py::Int((int)getWaypointPtr()->Base);
 }
 
-void WaypointPy::setBase(Py::Int /*arg*/)
+void WaypointPy::setBase(Py::Int arg)
 {
-
+   if((int)arg.operator long() > 0)
+        getWaypointPtr()->Base = (int)arg.operator long();
+    else 
+        Base::Exception("negativ base not allowed!");
 }
 
 PyObject *WaypointPy::getCustomAttributes(const char* /*attr*/) const
