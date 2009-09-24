@@ -34,7 +34,7 @@
 #include "kdl/chainiksolver.hpp"
 #include "kdl/chainiksolvervel_pinv.hpp"
 #include "kdl/chainjnttojacsolver.hpp"
-#include "kdl/ChainIkSolverPos_NR.hpp"
+#include "kdl/chainiksolverpos_nr.hpp"
 
 #include <stdio.h>
 #include <iostream>
