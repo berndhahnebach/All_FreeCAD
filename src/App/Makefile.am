@@ -108,6 +108,8 @@ include_HEADERS=\
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
+libFreeCADApp_la_CPPFLAGS = -DRESOURCEDIR=\"$(datadir)\" -DDOCDIR=\"$(docdir)\"
+
 libFreeCADApp_la_LIBADD   = \
 		@BOOST_FILESYSTEM_LIB@ @BOOST_PROGOPTIONS_LIB@ \
 		@BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \

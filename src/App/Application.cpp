@@ -446,12 +446,20 @@ const char* Application::GetHomePath(void) const
 
 std::string Application::getResourceDir()
 {
+# ifdef RESOURCEDIR
+    return std::string(RESOURCEDIR);
+#else
     return mConfig["AppHomePath"];
+#endif
 }
 
 std::string Application::getHelpDir()
 {
+# ifdef DOCDIR
+    return std::string(DOCDIR);
+#else
     return mConfig["DocPath"];
+#endif
 }
 
 ParameterManager & Application::GetSystemParameter(void)
