@@ -17,7 +17,7 @@ using namespace Robot;
 using namespace Base;
 
 // returns a string which represents the object e.g. when printed in python
-const char* WaypointPy::representation(void) const
+std::string WaypointPy::representation(void) const
 {
     double A,B,C;
     PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
@@ -28,8 +28,7 @@ const char* WaypointPy::representation(void) const
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
     str << "), Euler=(" << A << "," << B << "," << C << ")]";
 
-    static std::string rep = str.str();
-    return rep.c_str();
+    return str.str();
 }
 
 PyObject *WaypointPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

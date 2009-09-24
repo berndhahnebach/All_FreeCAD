@@ -14,7 +14,7 @@
 using namespace Robot;
 
 // returns a string which represents the object e.g. when printed in python
-const char* Robot6AxisPy::representation(void) const
+std::string Robot6AxisPy::representation(void) const
 {
 	std::stringstream str;
 
@@ -31,8 +31,7 @@ const char* Robot6AxisPy::representation(void) const
 		  << "5:" << getRobot6AxisPtr()->getAxis(4) << " "
 		  << "6:" << getRobot6AxisPtr()->getAxis(5) << ")";
 
-	static std::string rep = str.str();
-	return rep.c_str();
+	return str.str();
 }
 
 PyObject *Robot6AxisPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
