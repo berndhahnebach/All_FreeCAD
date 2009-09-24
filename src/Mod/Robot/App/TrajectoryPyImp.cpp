@@ -10,10 +10,9 @@
 using namespace Robot;
 
 // returns a string which represents the object e.g. when printed in python
-const char* TrajectoryPy::representation(void) const
+std::string TrajectoryPy::representation(void) const
 {
-    static std::string rep("<Trajectory object>");
-    return rep.c_str();
+    return std::string("<Trajectory object>");
 }
 
 PyObject *TrajectoryPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
