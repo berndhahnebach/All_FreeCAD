@@ -1567,14 +1567,16 @@ class Move(Modifier):
 			else: newob=ob
 			if (ob.Type == "Part::Feature"):
 				sh = ob.Shape
-				# temporary fix
-				# m = FreeCAD.Matrix()
-				# m.A14 = delta.x
-				# m.A24 = delta.y
-				# m.A34 = delta.z
-				# newob.Shape = sh.transform(m)
 				sh.translate(delta)
 				newob.Shape = sh
+			elif (ob.Type == "App::Annotation"):
+				ob.Position = ob.Position.add(delta)
+			elif (ob.Type == "App::FeaturePython"):
+				if 'Dimline' in ob.PropertiesList:
+					ob.Start = ob.Start.add(delta)
+					ob.End = ob.End.add(delta)
+					ob.Dimline = ob.Dimline.add(delta)
+
 		if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
 
