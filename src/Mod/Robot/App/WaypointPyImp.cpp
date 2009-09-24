@@ -81,7 +81,7 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     if(typeStr=="PTP")
         getWaypointPtr()->Type = Waypoint::PTP;
     else if(typeStr=="LIN")
-        getWaypointPtr()->Type = Waypoint::LINE;
+        getWaypointPtr()->Type = Waypoint::LIN;
     else if(typeStr=="CIRC")
         getWaypointPtr()->Type = Waypoint::CIRC;
     else if(typeStr=="WAIT")
@@ -113,7 +113,7 @@ Py::String WaypointPy::getType(void) const
 {
     if(getWaypointPtr()->Type == Waypoint::PTP)
         return Py::String("PTP");
-    else if(getWaypointPtr()->Type == Waypoint::LINE)
+    else if(getWaypointPtr()->Type == Waypoint::LIN)
         return Py::String("LIN");
     else if(getWaypointPtr()->Type == Waypoint::CIRC)
         return Py::String("CIRC");
@@ -130,7 +130,7 @@ void WaypointPy::setType(Py::String arg)
     if(typeStr=="PTP")
         getWaypointPtr()->Type = Waypoint::PTP;
     else if(typeStr=="LIN")
-        getWaypointPtr()->Type = Waypoint::LINE;
+        getWaypointPtr()->Type = Waypoint::LIN;
     else if(typeStr=="CIRC")
         getWaypointPtr()->Type = Waypoint::CIRC;
     else if(typeStr=="WAIT")

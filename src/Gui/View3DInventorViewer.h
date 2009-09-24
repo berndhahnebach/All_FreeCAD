@@ -91,7 +91,7 @@ public:
 
     View3DInventorViewer (QWidget *parent, const char *name=NULL, SbBool embed=true, 
                           Type type= SoQtViewer::BROWSER, SbBool build=true);
-    ~View3DInventorViewer();
+    virtual ~View3DInventorViewer();
 
     /// Observer message from the Selection
     virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,

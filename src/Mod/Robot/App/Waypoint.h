@@ -44,7 +44,7 @@ public:
    enum WaypointType {
         UNDEF,
         PTP,
-        LINE,
+        LIN,
         CIRC,
         WAIT };
 
