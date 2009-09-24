@@ -1003,26 +1003,26 @@ void MeshTopoAlgorithm::SplitNeighbourFacet(unsigned long ulFacetPos, unsigned s
 
 void MeshTopoAlgorithm::RemoveDegeneratedFacet(unsigned long index)
 {
-  if (index >= _rclMesh._aclFacetArray.size() ) return;
+  if (index >= _rclMesh._aclFacetArray.size()) return;
   MeshFacet& rFace = _rclMesh._aclFacetArray[index];
 
   // coincident corners (either topological or geometrical)
-  for ( int i=0; i<3; i++ ) {
-    const MeshPoint& rE0 = _rclMesh._aclPointArray[rFace._aulPoints[i]]; 
-    const MeshPoint& rE1 = _rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]; 
-    if ( rE0 == rE1 ) {
+  for (int i=0; i<3; i++) {
+    const MeshPoint& rE0 = _rclMesh._aclPointArray[rFace._aulPoints[i]];
+    const MeshPoint& rE1 = _rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]];
+    if (rE0 == rE1) {
       unsigned long uN1 = rFace._aulNeighbours[(i+1)%3];
       unsigned long uN2 = rFace._aulNeighbours[(i+2)%3];
-      if ( uN2 != ULONG_MAX )
+      if (uN2 != ULONG_MAX)
         _rclMesh._aclFacetArray[uN2].ReplaceNeighbour(index, uN1);
-      if ( uN1 != ULONG_MAX )
+      if (uN1 != ULONG_MAX)
         _rclMesh._aclFacetArray[uN1].ReplaceNeighbour(index, uN2);
 
       // isolate the face and remove it
       rFace._aulNeighbours[0] = ULONG_MAX;
       rFace._aulNeighbours[1] = ULONG_MAX;
       rFace._aulNeighbours[2] = ULONG_MAX;
-      _rclMesh.DeleteFacet( index );
+      _rclMesh.DeleteFacet(index);
       return;
     }
   }
@@ -1030,14 +1030,14 @@ void MeshTopoAlgorithm::RemoveDegeneratedFacet(unsigned long index)
   // We have a facet of the form
   // P0 +----+------+P2
   //         P1
-  for ( int j=0; j<3; j++ ) {
+  for (int j=0; j<3; j++) {
     Base::Vector3f cVec1 = _rclMesh._aclPointArray[rFace._aulPoints[(j+1)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
     Base::Vector3f cVec2 = _rclMesh._aclPointArray[rFace._aulPoints[(j+2)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
 
     // adjust the neighbourhoods and point indices
-    if ( cVec1 * cVec2 < 0.0f ) {
+    if (cVec1 * cVec2 < 0.0f) {
       unsigned long uN1 = rFace._aulNeighbours[(j+1)%3];
-      if ( uN1 != ULONG_MAX ) {
+      if (uN1 != ULONG_MAX) {
         // get the neighbour and common edge side
         MeshFacet& rNb = _rclMesh._aclFacetArray[uN1];
         unsigned short side = rNb.Side(index);
@@ -1049,12 +1049,12 @@ void MeshTopoAlgorithm::RemoveDegeneratedFacet(unsigned long index)
         // set correct neighbourhood
         unsigned long uN2 = rFace._aulNeighbours[(j+2)%3];
         rNb._aulNeighbours[side] = uN2;
-        if ( uN2 != ULONG_MAX ) {
+        if (uN2 != ULONG_MAX) {
           _rclMesh._aclFacetArray[uN2].ReplaceNeighbour(index, uN1);
         }
         unsigned long uN3 = rNb._aulNeighbours[(side+1)%3];
         rFace._aulNeighbours[(j+1)%3] = uN3;
-        if ( uN3 != ULONG_MAX ) {
+        if (uN3 != ULONG_MAX) {
           _rclMesh._aclFacetArray[uN3].ReplaceNeighbour(uN1, index);
         }
         rNb._aulNeighbours[(side+1)%3] = index;
