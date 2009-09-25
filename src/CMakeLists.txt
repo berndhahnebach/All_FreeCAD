@@ -6,6 +6,7 @@ add_subdirectory(Main)
 add_subdirectory(Mod)
 if(FREECAD_BUILD_GUI)
 	add_subdirectory(Gui)
+	configure_file(doc/Start_Page.html ${CMAKE_BINARY_DIR}/Doc/Start_Page.html COPYONLY)
 endif(FREECAD_BUILD_GUI)
 
 if(FREECAD_MAINTAINERS_BUILD)
