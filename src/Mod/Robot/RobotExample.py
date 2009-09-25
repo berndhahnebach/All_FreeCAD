@@ -28,8 +28,21 @@ print rob.Tcp
 rob.Tcp = Start
 print rob.Axis2
 
+# Waypoints:
+w = Robot.Waypoint()
+
 del rob,Start
 
+# Working with the robot document objects:
+# first creat a robot in the active document
+App.activeDocument().addObject("Robot::RobotObject","Robot")
+App.activeDocument().Robot.RobotVrmlFile = App.getResourceDir()+"Mod/Robot/Lib/Kuka/kr500_1.wrl"
+App.activeDocument().Robot.Axis2 = -90
+App.activeDocument().Robot.Axis3 = 90
+
+# retrive the Tcp position 
 pos = FreeCAD.getDocument("Unnamed").getObject("Robot").Tcp
+# move the robot
 pos.move(App.Vector(-10,0,0))
 FreeCAD.getDocument("Unnamed").getObject("Robot").Tcp = pos
+
