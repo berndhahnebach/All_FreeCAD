@@ -1,4 +1,4 @@
-SUBDIRS=3rdParty Base App Gui Main Mod Tools
+SUBDIRS=3rdParty Base App Gui Main Doc Mod Tools
 
 include_HEADERS=\
 		Build/Version.h \
