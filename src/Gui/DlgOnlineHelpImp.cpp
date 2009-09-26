@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMessageBox>
+# include <QDir>
 #endif
 
 #include "DlgOnlineHelpImp.h"
@@ -72,30 +73,8 @@ DlgOnlineHelpImp::~DlgOnlineHelpImp()
  */
 QString DlgOnlineHelpImp::getStartpage()
 {
-#if 1
-    //return QString::fromAscii("http://sourceforge.net/apps/phpbb/free-cad/");
-    return QString::fromAscii("http://apps.sourceforge.net/mediawiki/free-cad/index.php?title=Main_Page");
-#else
-    ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath
-        ("User parameter:BaseApp/Preferences/OnlineHelp");
-    QString home = QString::fromUtf8(hURLGrp->GetASCII("Startpage", "").c_str());
-
-    // help start in config?
-    if (home.isEmpty() && App::Application::Config()["HelpStart"] != "") {
-        home = QString::fromUtf8(App::GetApplication().GetHomePath());
-        home += QString::fromUtf8(App::Application::Config()["HelpStart"].c_str());
-    }
-
-    if (home.isEmpty()) {
-        QString hm = QString::fromUtf8(App::GetApplication().GetHomePath());
-        hm += QLatin1String("/doc/free-cad.sourceforge.net/wiki");
-        QDir d(hm);
-        home = d.path();
-        home += QLatin1String("/index.php.html");
-    }
-
-    return home;
-#endif
+    QDir docdir = QDir(QString::fromUtf8(App::Application::getHelpDir().c_str()));
+    return docdir.absoluteFilePath(QString::fromUtf8("Start_Page.html"));
 }
 
 void DlgOnlineHelpImp::saveSettings()

@@ -624,6 +624,7 @@ src/Gui/propertyeditor/Makefile
 src/Gui/iisTaskPanel/Makefile 
 src/Gui/TaskView/Makefile 
 src/Main/Makefile
+src/Doc/Makefile
 src/Mod/Makefile
 src/Mod/Part/Makefile
 src/Mod/Part/App/Makefile

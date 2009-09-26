@@ -1329,7 +1329,8 @@ void Application::runApplication(void)
     // show Startup page
     hGrp = WindowParameter::getDefaultParameter()->GetGroup("OnlineHelp");
     if (hGrp->GetBool("ShowStartPage",true)) {
-        app.createStartPage((App::Application::getResourceDir() + "Doc/Start_Page.html").c_str());
+        QString page = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
+        app.createStartPage(page.toUtf8());
     }
 
     // run the Application event loop
