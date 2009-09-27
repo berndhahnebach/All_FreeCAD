@@ -37,8 +37,7 @@ libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \
 		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
-libSketcherGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" \
-		-DSketcherAppExport= -DSketcherGuiExport=
+libSketcherGui_la_CPPFLAGS = -DSketcherAppExport= -DSketcherGuiExport=
 
 libSketcherGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \

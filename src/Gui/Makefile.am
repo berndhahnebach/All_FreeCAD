@@ -138,6 +138,7 @@ libFreeCADGui_la_UI=\
 libFreeCADGui_la_BUILT=\
 		DocumentPy.h \
 		PythonWorkbenchPy.h \
+		SelectionObjectPy.h \
 		ViewProviderPy.h \
 		ViewProviderDocumentObjectPy.h \
 		ViewProviderPythonFeaturePy.h \
