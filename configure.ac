@@ -203,6 +203,29 @@ else
 fi
 
 
+#dnl checking for PyCXX
+#dnl **************************************************************************
+#fc_local_pycxx=yes
+#AC_ARG_ENABLE(pycxx,
+#	AC_HELP_STRING([--enable-pycxx], [Use local copy of PyCXX package [[default=yes]]]),
+#	[fc_local_pycxx=$enableval],[fc_local_pycxx=yes])
+#AM_CONDITIONAL(ENABLE_LOCAL_PYCXX, test x"$fc_local_pycxx" = xyes)
+#AC_MSG_RESULT(Use local copy of PyCXX... $fc_local_pycxx)
+
+
+#dnl checking for zipios++
+#dnl **************************************************************************
+#fc_local_zipios=yes
+#AC_ARG_ENABLE(zipios,
+#	AC_HELP_STRING([--enable-zipios], [Use local copy of zipios++ package [[default=yes]]]),
+#	[fc_local_zipios=$enableval],[fc_local_zipios=yes])
+#AM_CONDITIONAL(ENABLE_LOCAL_ZIPIOS, test x"$fc_local_zipios" = xyes)
+#AC_MSG_RESULT(Use local copy of zipios... $fc_local_zipios)
+#ZIPIOS_LIB="-lzipios"
+ZIPIOS_LIB=""
+AC_SUBST(ZIPIOS_LIB)
+
+
 dnl checking for xerces-c
 dnl **************************************************************************
 AC_MSG_CHECKING([for xerces-c])

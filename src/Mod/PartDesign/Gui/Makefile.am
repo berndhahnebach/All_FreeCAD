@@ -24,7 +24,7 @@ libPartDesignGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \
 	-L../../Part/App -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
 	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
-libPartDesignGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DPartDesignAppExport= -DPartDesignGuiExport=
+libPartDesignGui_la_CPPFLAGS = -DPartDesignAppExport= -DPartDesignGuiExport=
 
 libPartDesignGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \

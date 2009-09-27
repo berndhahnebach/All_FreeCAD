@@ -324,8 +324,8 @@ libMesh_la_CPPFLAGS = -DMeshExport=
 
 libMesh_la_LIBADD   = \
 		@BOOST_FILESYSTEM_LIB@ @BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
+		-l@PYTHON_LIB@ @ZIPIOS_LIB@ \
 		-lxerces-c \
-		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp
 

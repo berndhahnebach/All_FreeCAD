@@ -25,67 +25,6 @@ libFreeCADBase_la_BUILT=\
 		VectorPy.h
 
 libFreeCADBase_la_SOURCES=\
-		zipios/backbuffer.h \
-		zipios/basicentry.cpp \
-		zipios/basicentry.h \
-		zipios/collcoll.cpp \
-		zipios/collcoll.h \
-		zipios/deflateoutputstreambuf.cpp \
-		zipios/deflateoutputstreambuf.h \
-		zipios/dircoll.cpp \
-		zipios/dircoll.h \
-		zipios/directory.cpp \
-		zipios/directory.h \
-		zipios/fcoll.cpp \
-		zipios/fcoll.h \
-		zipios/fcollexceptions.cpp \
-		zipios/fcollexceptions.h \
-		zipios/fileentry.cpp \
-		zipios/fileentry.h \
-		zipios/filepath.cpp \
-		zipios/filepath.h \
-		zipios/filterinputstreambuf.cpp \
-		zipios/filterinputstreambuf.h \
-		zipios/filteroutputstreambuf.cpp \
-		zipios/filteroutputstreambuf.h \
-		zipios/gzipoutputstream.cpp \
-		zipios/gzipoutputstream.h \
-		zipios/gzipoutputstreambuf.cpp \
-		zipios/gzipoutputstreambuf.h \
-		zipios/inflateinputstreambuf.cpp \
-		zipios/inflateinputstreambuf.h \
-		zipios/meta-iostreams.h \
-		zipios/outputstringstream.h \
-		zipios/simplesmartptr.h \
-		zipios/virtualseeker.h \
-		zipios/zipfile.cpp \
-		zipios/zipfile.h \
-		zipios/ziphead.cpp \
-		zipios/ziphead.h \
-		zipios/zipheadio.cpp \
-		zipios/zipheadio.h \
-		zipios/zipinputstream.cpp \
-		zipios/zipinputstream.h \
-		zipios/zipinputstreambuf.cpp \
-		zipios/zipinputstreambuf.h \
-		zipios/zipios_common.h \
-		zipios/zipios-config.h \
-		zipios/zipios_defs.h \
-		zipios/zipoutputstreambuf.cpp \
-		zipios/zipoutputstreambuf.h \
-		zipios/zipoutputstream.cpp \
-		zipios/zipoutputstream.h \
-		../CXX/Config.hxx \
-		../CXX/cxxextensions.c \
-		../CXX/cxx_extensions.cxx \
-		../CXX/cxxsupport.cxx \
-		../CXX/Exception.hxx \
-		../CXX/Extensions.hxx \
-		../CXX/IndirectPythonInterface.cxx \
-		../CXX/IndirectPythonInterface.hxx \
-		../CXX/Objects.hxx \
-		../CXX/Version.hxx \
-		../CXX/WrapPython.h \
 		Base64.cpp \
 		BaseClass.cpp \
 		BaseClassPyImp.cpp \
@@ -184,44 +123,6 @@ include_HEADERS=\
 		Writer.h \
 		XMLTools.h
 
-nobase_include_HEADERS = \
-		zipios/backbuffer.h \
-		zipios/basicentry.h \
-		zipios/collcoll.h \
-		zipios/deflateoutputstreambuf.h \
-		zipios/dircoll.h \
-		zipios/directory.h \
-		zipios/fcoll.h \
-		zipios/fcollexceptions.h \
-		zipios/fileentry.h \
-		zipios/filepath.h \
-		zipios/filterinputstreambuf.h \
-		zipios/filteroutputstreambuf.h \
-		zipios/gzipoutputstream.h \
-		zipios/gzipoutputstreambuf.h \
-		zipios/inflateinputstreambuf.h \
-		zipios/meta-iostreams.h \
-		zipios/outputstringstream.h \
-		zipios/simplesmartptr.h \
-		zipios/virtualseeker.h \
-		zipios/zipfile.h \
-		zipios/ziphead.h \
-		zipios/zipheadio.h \
-		zipios/zipinputstream.h \
-		zipios/zipinputstreambuf.h \
-		zipios/zipios_common.h \
-		zipios/zipios-config.h \
-		zipios/zipios_defs.h \
-		zipios/zipoutputstreambuf.h \
-		zipios/zipoutputstream.h \
-		../CXX/Config.hxx \
-		../CXX/Exception.hxx \
-		../CXX/Extensions.hxx \
-		../CXX/IndirectPythonInterface.hxx \
-		../CXX/Objects.hxx \
-		../CXX/Version.hxx \
-		../CXX/WrapPython.h
-
 if HAVE_SWIG_FOUND
 swigpyrun.h:
 	$(SWIG) -python -external-runtime
@@ -231,7 +132,7 @@ endif
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 libFreeCADBase_la_LIBADD   = \
-		@BOOST_FILESYSTEM_LIB@ @BOOST_SYSTEM_LIB@ \
+		@BOOST_FILESYSTEM_LIB@ @BOOST_SYSTEM_LIB@ @ZIPIOS_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lz
@@ -250,7 +151,6 @@ libFreeCADBase_la_CPPFLAGS = -DHAVE_SWIG=$(HAVE_SWIG)
 
 
 EXTRA_DIST = \
-		../CXX/COPYRIGHT \
 		CMakeLists.txt \
 		BaseClassPy.xml \
 		BoundBoxPy.xml \
@@ -259,4 +159,122 @@ EXTRA_DIST = \
 		PlacementPy.xml \
 		RotationPy.xml \
 		VectorPy.xml
+
+# PyCXX stuff
+#PYCXXSRC=/usr/share/@PYTHON_LIB@/CXX
+#nodist_libFreeCADBase_la_SOURCES=\
+#		$(PYCXXSRC)/cxxextensions.c \
+#		$(PYCXXSRC)/cxx_extensions.cxx \
+#		$(PYCXXSRC)/cxxsupport.cxx \
+#		$(PYCXXSRC)/IndirectPythonInterface.cxx
+
+PYCXXSRC=../CXX
+libFreeCADBase_la_SOURCES += \
+		$(PYCXXSRC)/Config.hxx \
+		$(PYCXXSRC)/cxxextensions.c \
+		$(PYCXXSRC)/cxx_extensions.cxx \
+		$(PYCXXSRC)/cxxsupport.cxx \
+		$(PYCXXSRC)/Exception.hxx \
+		$(PYCXXSRC)/Extensions.hxx \
+		$(PYCXXSRC)/IndirectPythonInterface.cxx \
+		$(PYCXXSRC)/IndirectPythonInterface.hxx \
+		$(PYCXXSRC)/Objects.hxx \
+		$(PYCXXSRC)/Version.hxx \
+		$(PYCXXSRC)/WrapPython.h
+
+nobase_include_HEADERS = \
+		$(PYCXXSRC)/Config.hxx \
+		$(PYCXXSRC)/Exception.hxx \
+		$(PYCXXSRC)/Extensions.hxx \
+		$(PYCXXSRC)/IndirectPythonInterface.hxx \
+		$(PYCXXSRC)/Objects.hxx \
+		$(PYCXXSRC)/Version.hxx \
+		$(PYCXXSRC)/WrapPython.h
+EXTRA_DIST += \
+		$(PYCXXSRC)/COPYRIGHT
+
+# zipios++ stuff
+ZIPIOS_SRC=../zipios++
+libFreeCADBase_la_SOURCES += \
+		$(ZIPIOS_SRC)/backbuffer.h \
+		$(ZIPIOS_SRC)/basicentry.cpp \
+		$(ZIPIOS_SRC)/basicentry.h \
+		$(ZIPIOS_SRC)/collcoll.cpp \
+		$(ZIPIOS_SRC)/collcoll.h \
+		$(ZIPIOS_SRC)/deflateoutputstreambuf.cpp \
+		$(ZIPIOS_SRC)/deflateoutputstreambuf.h \
+		$(ZIPIOS_SRC)/dircoll.cpp \
+		$(ZIPIOS_SRC)/dircoll.h \
+		$(ZIPIOS_SRC)/directory.cpp \
+		$(ZIPIOS_SRC)/directory.h \
+		$(ZIPIOS_SRC)/fcoll.cpp \
+		$(ZIPIOS_SRC)/fcoll.h \
+		$(ZIPIOS_SRC)/fcollexceptions.cpp \
+		$(ZIPIOS_SRC)/fcollexceptions.h \
+		$(ZIPIOS_SRC)/fileentry.cpp \
+		$(ZIPIOS_SRC)/fileentry.h \
+		$(ZIPIOS_SRC)/filepath.cpp \
+		$(ZIPIOS_SRC)/filepath.h \
+		$(ZIPIOS_SRC)/filterinputstreambuf.cpp \
+		$(ZIPIOS_SRC)/filterinputstreambuf.h \
+		$(ZIPIOS_SRC)/filteroutputstreambuf.cpp \
+		$(ZIPIOS_SRC)/filteroutputstreambuf.h \
+		$(ZIPIOS_SRC)/gzipoutputstream.cpp \
+		$(ZIPIOS_SRC)/gzipoutputstream.h \
+		$(ZIPIOS_SRC)/gzipoutputstreambuf.cpp \
+		$(ZIPIOS_SRC)/gzipoutputstreambuf.h \
+		$(ZIPIOS_SRC)/inflateinputstreambuf.cpp \
+		$(ZIPIOS_SRC)/inflateinputstreambuf.h \
+		$(ZIPIOS_SRC)/meta-iostreams.h \
+		$(ZIPIOS_SRC)/outputstringstream.h \
+		$(ZIPIOS_SRC)/simplesmartptr.h \
+		$(ZIPIOS_SRC)/virtualseeker.h \
+		$(ZIPIOS_SRC)/zipfile.cpp \
+		$(ZIPIOS_SRC)/zipfile.h \
+		$(ZIPIOS_SRC)/ziphead.cpp \
+		$(ZIPIOS_SRC)/ziphead.h \
+		$(ZIPIOS_SRC)/zipheadio.cpp \
+		$(ZIPIOS_SRC)/zipheadio.h \
+		$(ZIPIOS_SRC)/zipinputstream.cpp \
+		$(ZIPIOS_SRC)/zipinputstream.h \
+		$(ZIPIOS_SRC)/zipinputstreambuf.cpp \
+		$(ZIPIOS_SRC)/zipinputstreambuf.h \
+		$(ZIPIOS_SRC)/zipios_common.h \
+		$(ZIPIOS_SRC)/zipios-config.h \
+		$(ZIPIOS_SRC)/zipios_defs.h \
+		$(ZIPIOS_SRC)/zipoutputstreambuf.cpp \
+		$(ZIPIOS_SRC)/zipoutputstreambuf.h \
+		$(ZIPIOS_SRC)/zipoutputstream.cpp \
+		$(ZIPIOS_SRC)/zipoutputstream.h
+
+nobase_include_HEADERS += \
+		$(ZIPIOS_SRC)/backbuffer.h \
+		$(ZIPIOS_SRC)/basicentry.h \
+		$(ZIPIOS_SRC)/collcoll.h \
+		$(ZIPIOS_SRC)/deflateoutputstreambuf.h \
+		$(ZIPIOS_SRC)/dircoll.h \
+		$(ZIPIOS_SRC)/directory.h \
+		$(ZIPIOS_SRC)/fcoll.h \
+		$(ZIPIOS_SRC)/fcollexceptions.h \
+		$(ZIPIOS_SRC)/fileentry.h \
+		$(ZIPIOS_SRC)/filepath.h \
+		$(ZIPIOS_SRC)/filterinputstreambuf.h \
+		$(ZIPIOS_SRC)/filteroutputstreambuf.h \
+		$(ZIPIOS_SRC)/gzipoutputstream.h \
+		$(ZIPIOS_SRC)/gzipoutputstreambuf.h \
+		$(ZIPIOS_SRC)/inflateinputstreambuf.h \
+		$(ZIPIOS_SRC)/meta-iostreams.h \
+		$(ZIPIOS_SRC)/outputstringstream.h \
+		$(ZIPIOS_SRC)/simplesmartptr.h \
+		$(ZIPIOS_SRC)/virtualseeker.h \
+		$(ZIPIOS_SRC)/zipfile.h \
+		$(ZIPIOS_SRC)/ziphead.h \
+		$(ZIPIOS_SRC)/zipheadio.h \
+		$(ZIPIOS_SRC)/zipinputstream.h \
+		$(ZIPIOS_SRC)/zipinputstreambuf.h \
+		$(ZIPIOS_SRC)/zipios_common.h \
+		$(ZIPIOS_SRC)/zipios-config.h \
+		$(ZIPIOS_SRC)/zipios_defs.h \
+		$(ZIPIOS_SRC)/zipoutputstreambuf.h \
+		$(ZIPIOS_SRC)/zipoutputstream.h
 
