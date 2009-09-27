@@ -112,7 +112,7 @@ libFreeCADApp_la_CPPFLAGS = -DRESOURCEDIR=\"$(datadir)\" -DDOCDIR=\"$(docdir)\"
 
 libFreeCADApp_la_LIBADD   = \
 		@BOOST_FILESYSTEM_LIB@ @BOOST_PROGOPTIONS_LIB@ \
-		@BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \
+		@BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ @ZIPIOS_LIB@ \
 		-lFreeCADBase \
 		-l@PYTHON_LIB@ \
 		-lxerces-c
