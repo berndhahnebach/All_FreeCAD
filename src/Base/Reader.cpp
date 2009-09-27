@@ -41,11 +41,11 @@
 #include "Console.h"
 #include "Sequencer.h"
 
-#include "zipios/zipios-config.h"
-#include "zipios/zipfile.h"
-#include "zipios/zipinputstream.h"
-#include "zipios/zipoutputstream.h"
-#include "zipios/meta-iostreams.h"
+#include <zipios++/zipios-config.h>
+#include <zipios++/zipfile.h>
+#include <zipios++/zipinputstream.h>
+#include <zipios++/zipoutputstream.h>
+#include <zipios++/meta-iostreams.h>
 
 #include "XMLTools.h"
 

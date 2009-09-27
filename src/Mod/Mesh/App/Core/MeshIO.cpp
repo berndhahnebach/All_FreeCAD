@@ -37,7 +37,7 @@
 #include <Base/gzstream.h>
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
-#include <Base/zipios/gzipoutputstream.h>
+#include <zipios++/gzipoutputstream.h>
 
 #include <math.h>
 #include <sstream>

@@ -82,11 +82,11 @@ recompute path. Also enabels more complicated dependencies beond trees.
 #include <Base/FileInfo.h>
 #include <Base/Uuid.h>
 
-#include <Base/zipios/zipios-config.h>
-#include <Base/zipios/zipfile.h>
-#include <Base/zipios/zipinputstream.h>
-#include <Base/zipios/zipoutputstream.h>
-#include <Base/zipios/meta-iostreams.h>
+#include <zipios++/zipios-config.h>
+#include <zipios++/zipfile.h>
+#include <zipios++/zipinputstream.h>
+#include <zipios++/zipoutputstream.h>
+#include <zipios++/meta-iostreams.h>
 
 #include "Application.h"
 #include "Transactions.h"

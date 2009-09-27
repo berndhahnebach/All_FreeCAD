@@ -84,7 +84,7 @@
 #include <Base/Stream.h>
 #include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
-#include <Base/zipios/gzipoutputstream.h>
+#include <zipios++/gzipoutputstream.h>
 
 #include "View3DInventorViewer.h"
 #include "SoFCBackgroundGradient.h"

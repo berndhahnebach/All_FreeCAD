@@ -30,7 +30,7 @@
 
 #include <sstream>
 #include <CXX/Objects.hxx>
-#include <Base/zipios/zipfile.h>
+#include <zipios++/zipfile.h>
 #include <Base/Interpreter.h>
 #include <App/Application.h>
 
