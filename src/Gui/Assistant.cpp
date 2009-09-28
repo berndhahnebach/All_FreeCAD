@@ -74,7 +74,12 @@ bool Assistant::startAssistant()
         proc = new QProcess();
 
     if (proc->state() != QProcess::Running) {
+#ifdef FC_OS_WIN32
+        QString app;
+        app.fromAscii((App::Application::Config()["AppHomePath"] + "\\bin\\").c_str());
+#else
         QString app = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
+#endif 
 #if !defined(Q_OS_MAC)
         app += QLatin1String("assistant");
 #else
