@@ -25,7 +25,7 @@
 #define ROBOT_VIEWPROVIDERROBOTOBJECT_H
 
 #include <Inventor/VRMLnodes/SoVRMLTransform.h>
-#include <Gui/ViewProviderDocumentObject.h>
+#include <Gui/ViewProviderGeometryObject.h>
 #include <Gui/SoFCSelection.h>
 
 class SoDragger;
@@ -34,7 +34,7 @@ class SoJackDragger;
 namespace RobotGui
 {
 
-class RobotGuiExport ViewProviderRobotObject : public Gui::ViewProviderDocumentObject
+class RobotGuiExport ViewProviderRobotObject : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER(RobotGui::ViewProviderRobotObject);
 

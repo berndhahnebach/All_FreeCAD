@@ -24,7 +24,7 @@
 #ifndef ROBOT_ROBOTOBJECT_H
 #define ROBOT_ROBOTOBJECT_H
 
-#include <App/DocumentObject.h>
+#include <App/GeoFeature.h>
 #include <App/PropertyFile.h>
 #include <App/PropertyGeo.h>
 
@@ -33,7 +33,7 @@
 namespace Robot
 {
 
-class AppRobotExport RobotObject : public App::DocumentObject
+class AppRobotExport RobotObject : public App::GeoFeature
 {
     PROPERTY_HEADER(Robot::RobotObject);
 

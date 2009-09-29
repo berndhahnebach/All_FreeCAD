@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/" >
-        <file>translations/Robot_de.qm</file>
-    </qresource>
+		<file>translations/Robot_de.qm</file>
+	</qresource>
+	<qresource>
+		<file>Icons/Robot_CreateRobot.svg</file>
+		<file>Icons/Robot_CreateTrajectory.svg</file>
+		<file>Icons/Robot_InsertWaypoint.svg</file>
+	</qresource>
 </RCC>

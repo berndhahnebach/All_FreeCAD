@@ -40,7 +40,6 @@
 #include "ViewProviderRobotObject.h"
 
 #include <Mod/Robot/App/RobotObject.h>
-#include <Gui/ViewProviderDocumentObject.h>
 #include <App/Document.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
@@ -49,7 +48,7 @@
 using namespace Gui;
 using namespace RobotGui;
 
-PROPERTY_SOURCE(RobotGui::ViewProviderRobotObject, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(RobotGui::ViewProviderRobotObject, Gui::ViewProviderGeometryObject)
 
 ViewProviderRobotObject::ViewProviderRobotObject()
 {
@@ -98,7 +97,7 @@ ViewProviderRobotObject::~ViewProviderRobotObject()
 
 void ViewProviderRobotObject::attach(App::DocumentObject *pcObj)
 {
-    ViewProviderDocumentObject::attach(pcObj);
+    ViewProviderGeometryObject::attach(pcObj);
 
     addDisplayMaskMode(pcRobotRoot, "VRML");
     pcRobotRoot->objectName = pcObj->getNameInDocument();
@@ -126,7 +125,7 @@ void ViewProviderRobotObject::setDisplayMode(const char* ModeName)
         setDisplayMaskMode("Simple");
     if ( strcmp("Off",ModeName)==0 )
         setDisplayMaskMode("Off");
-    ViewProviderDocumentObject::setDisplayMode( ModeName );
+    ViewProviderGeometryObject::setDisplayMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderRobotObject::getDisplayModes(void) const

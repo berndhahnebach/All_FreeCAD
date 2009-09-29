@@ -45,7 +45,7 @@ CmdRobotConstraintAxle::CmdRobotConstraintAxle()
     sToolTipText    = QT_TR_NOOP("Place a robot (experimental!)");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = 0;
+    sPixmap         = "Robot_CreateRobot";
 }
 
 

@@ -34,6 +34,7 @@
 #include "Robot6Axis.h"
 #include "TrajectoryPy.h"
 #include "Trajectory.h"
+#include "PropertyTrajectory.h"
 #include "WaypointPy.h"
 #include "Waypoint.h"
 #include "RobotObject.h"
@@ -72,11 +73,12 @@ void AppRobotExport initRobot()
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
  
-    Robot::Robot6Axis       ::init();
-    Robot::RobotObject      ::init();
-    Robot::TrajectoryObject ::init();
-    Robot::Waypoint         ::init();
-    Robot::Trajectory       ::init();
+    Robot::Robot6Axis         ::init();
+    Robot::RobotObject        ::init();
+    Robot::TrajectoryObject   ::init();
+    Robot::Waypoint           ::init();
+    Robot::Trajectory         ::init();
+    Robot::PropertyTrajectory ::init();
 }
 
 } // extern "C"

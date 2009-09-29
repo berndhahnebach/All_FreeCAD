@@ -24,16 +24,17 @@
 #ifndef ROBOT_TrajectoryObject_H
 #define ROBOT_TrajectoryObject_H
 
-#include <App/DocumentObject.h>
+#include <App/GeoFeature.h>
 #include <App/PropertyFile.h>
 #include <App/PropertyGeo.h>
 
 #include "Trajectory.h"
+#include "PropertyTrajectory.h"
 
 namespace Robot
 {
 
-class AppRobotExport TrajectoryObject : public App::DocumentObject
+class AppRobotExport TrajectoryObject : public App::GeoFeature
 {
     PROPERTY_HEADER(Robot::TrajectoryObject);
 
@@ -53,14 +54,12 @@ public:
     virtual PyObject *getPyObject(void);
 
 	App::PropertyPlacement Base;
-	App::PropertyPlacement Position;
+	PropertyTrajectory     Trajectory;
 
 
 protected:
     /// get called by the container when a property has changed
     virtual void onChanged (const App::Property* prop);
-
-    Trajectory Trak;
 
 };
 
