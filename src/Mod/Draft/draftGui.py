@@ -30,8 +30,12 @@ This is the GUI part of the Draft module.
 Report to Draft.py for info
 '''
 
-from PyQt4 import QtCore,QtGui,QtSvg
 import FreeCAD, FreeCADGui, os
+
+try:
+	from PyQt4 import QtCore,QtGui,QtSvg	
+except:
+	FreeCAD.Console.PrintMessage("Error: Python-qt4 package must be installed on your system to use the Draft module.")
 
 def findicons():
 	"checks if Draft is installed system-wide or user-wide, and loads icon file"
@@ -597,6 +601,7 @@ class toolBar:
 		icons['Draft_apply']=iconfile.copy(QtCore.QRect(384,64,64,64))
 		icons['Draft_finish']=iconfile.copy(QtCore.QRect(448,64,64,64))
 		icons['Draft_lock']=iconfile.copy(QtCore.QRect(512,64,64,64))
+		icons['Draft_scale']=iconfile.copy(QtCore.QRect(576,64,64,64))
 		icons['preferences-draft']=iconfile.copy(QtCore.QRect(384,0,64,64))
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()

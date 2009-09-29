@@ -63,10 +63,13 @@ How it works / how to extend:
 import FreeCAD, FreeCADGui, Part, math, sys
 sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
 from FreeCAD import Base, Vector
-from pivy import coin
 from draftlibs import fcvec
 from draftlibs import fcgeo
 
+try:
+	from pivy import coin
+except:
+	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
 
 # Constants
 
@@ -206,32 +209,36 @@ def snapPoint (target,point,cursor,ctrl=False):
 			target.snap.isSnapping = True
 		return newpoint[2]
 
-def constrainPoint (target,point,mobile=False):
+def constrainPoint (target,point,mobile=False,sym=False):
 	'''
 	Constrain function
 	On commands that need to enter several points (currently only line/polyline),
 	you can constrain the next point to be picked to the last drawn point by
 	pressing SHIFT. The vertical or horizontal constraining depends on the
 	position of your mouse in relation to last point at the moment you press
-	SHIFT. if mobile=True, mobile behaviour applies.
+	SHIFT. if mobile=True, mobile behaviour applies.If sym=True, x alway = y
 	'''
 	if len(target.node) > 0:
 		last = target.node[-1]
 		if ((target.constrain == None) or mobile):
 			if (abs(point.x-last.x) > abs(point.y-last.y)):
 				point.y = last.y
+				if sym: point.y = last.y+(point.x-last.x)
 				target.constrain = 0 #horizontal
 				target.ui.xValue.setEnabled(True)
 				target.ui.yValue.setEnabled(False)
 			else:
 				point.x = last.x
+				if sym: point.x = last.x+(point.y-last.y)
 				target.constrain = 1 #vertical
 				target.ui.xValue.setEnabled(False)
 				target.ui.yValue.setEnabled(True)
 		elif (target.constrain == 0):
 			point.y = last.y
+			if sym: point.y = last.y+(point.x-last.x)
 		else:
 			point.x = last.x
+			if sym: point.x = last.x+(point.y-last.y)
 	return point
 
 def formatObject(target,origin=None):
@@ -287,8 +294,13 @@ def selectObject(arg):
 				FreeCADGui.activeWorkbench().activeDraftCommand.component=snapped['Component']
 				FreeCADGui.activeWorkbench().activeDraftCommand.proceed()
 
-def getPoint(target,args,mobile=False):
-	"returns a constrained 3d point and its original point"
+def getPoint(target,args,mobile=False,sym=False):
+	'''
+	returns a constrained 3d point and its original point.
+	if mobile=True, the constraining occurs from the location of
+	mouse cursor when Shift is pressed, otherwise from last entered
+	point. If sym=True, x and y values stay always equal
+	'''
 	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 	view = FreeCADGui.ActiveDocument.ActiveView
 	point = view.getPoint(args["Position"][0],args["Position"][1])
@@ -297,7 +309,7 @@ def getPoint(target,args,mobile=False):
 	if (args["ShiftDown"]): # constraining
 		if mobile and (target.constrain == None):
 			target.node.append(point)
-		point = constrainPoint(target,point,mobile)
+		point = constrainPoint(target,point,mobile=mobile,sym=sym)
 	else:
 		target.constrain = None
 		ui.xValue.setEnabled(True)
@@ -2522,7 +2534,134 @@ class Trimex(Modifier):
 		self.force = dist
 		self.trimObject()
 		self.finish()
-		
+
+class Scale(Modifier):
+	"This class scales the selected objects from a base point."
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_scale',
+			'MenuText': 'Scale',
+			'ToolTip': 'Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy'}
+
+	def Activated(self):
+		Modifier.Activated(self)
+		self.ui.cmdlabel.setText("Scale")
+		self.featureName = "Scale"
+		self.call = None
+		if not FreeCADGui.Selection.getSelection():
+			self.ghost = None
+			self.snap = None
+			self.linetrack = None
+			self.constraintrack = None
+			self.ui.selectUi()
+			FreeCAD.Console.PrintMessage("Select an object to scale\n")
+			self.call = self.view.addEventCallback("SoEvent",selectObject)
+		else:
+			self.proceed()
+
+	def proceed(self):
+		if self.call: self.view.removeEventCallback("SoEvent",self.call)
+		self.sel = FreeCADGui.Selection.getSelection()
+		self.ui.pointUi()
+		self.ui.xValue.setFocus()
+		self.ui.xValue.selectAll()
+		self.snap = snapTracker()
+		self.linetrack = lineTracker()
+		self.constraintrack = lineTracker(dotted=True)
+		self.ghost = ghostTracker(self.sel)
+		self.call = self.view.addEventCallback("SoEvent",self.action)
+		FreeCAD.Console.PrintMessage("Pick base point:\n")
+		self.ui.cross(True)
+
+	def finish(self,closed=False):
+		Modifier.finish(self)
+		self.view.removeEventCallback("SoEvent",self.call)
+		del self.ghost
+		del self.snap
+		del self.linetrack
+		del self.constraintrack
+
+	def scale(self,delta,copy=False):
+		"moving the real shapes"
+		if copy: self.doc.openTransaction("Copy")
+		else: self.doc.openTransaction("Move")
+		for ob in self.sel:
+			if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
+			else: newob=ob
+			if (ob.Type == "Part::Feature"):
+				sh = ob.Shape
+				m = FreeCAD.Matrix()
+				m.scale(delta)
+				sh = sh.transformGeometry(m)
+				corr = Vector(self.node[0].x,self.node[0].y,self.node[0].z)
+				corr.scale(delta.x,delta.y,delta.z)
+				corr = fcvec.neg(corr.sub(self.node[0]))
+				sh.translate(corr)
+				newob.Shape = sh
+			elif (ob.Type == "App::Annotation"):
+				factor = delta.x * delta.y * delta.z * ob.ViewObject.FontSize
+				ob.ViewObject.Fontsize = factor
+
+		if copy: formatObject(newob,ob)
+		self.doc.commitTransaction()
+
+	def action(self,arg):
+		"scene event handler"
+		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+			point,ctrlPoint = getPoint(self,arg,sym=True)
+			self.linetrack.p2(point)
+			# Draw constraint tracker line.
+			if (arg["ShiftDown"]):
+				self.constraintrack.p1(point)
+				self.constraintrack.p2(ctrlPoint)
+				self.constraintrack.on()
+			else: self.constraintrack.off()
+			if (len(self.node) > 0):
+				last = self.node[len(self.node)-1]
+				delta = point.sub(last)
+				self.ghost.trans.scaleFactor.setValue([delta.x,delta.y,delta.z])
+				corr = Vector(self.node[0].x,self.node[0].y,self.node[0].z)
+				corr.scale(delta.x,delta.y,delta.z)
+				corr = fcvec.neg(corr.sub(self.node[0]))
+				self.ghost.trans.translation.setValue([corr.x,corr.y,corr.z])
+		if (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+				point,ctrlPoint = getPoint(self,arg,sym=True)
+				if (self.node == []):
+					self.node.append(point)
+					self.ui.isRelative.show()
+					self.ui.isCopy.show()
+					self.linetrack.on()
+					self.ghost.on()
+					self.linetrack.p1(point)
+					FreeCAD.Console.PrintMessage("Pick scale factor:\n")
+				else:
+					last = self.node[-1]
+					if self.ui.isCopy.isChecked() or arg["AltDown"]:
+						self.scale(point.sub(last),True)
+					else:
+						self.scale(point.sub(last))
+					self.finish()
+
+	def numericInput(self,numx,numy,numz):
+		"this function gets called by the toolbar when valid x, y, and z have been entered there"
+		point = Vector(numx,numy,numz)
+		if not self.node:
+			self.node.append(point)
+			self.ui.isRelative.show()
+			self.ui.isCopy.show()
+			self.linetrack.p1(point)
+			self.linetrack.on()
+			self.ghost.on()
+			FreeCAD.Console.PrintMessage("Pick scale factor:\n")
+		else:
+			last = self.node[-1]
+			if self.ui.isCopy.isChecked():
+				self.scale(point.sub(last),True)
+			else:
+				self.scale(point.sub(last))
+			self.finish()
+
 
 
 #---------------------------------------------------------------------------
@@ -2553,3 +2692,4 @@ FreeCADGui.addCommand('Draft_Offset',Offset())
 FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
 FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
+FreeCADGui.addCommand('Draft_Scale',Scale())
