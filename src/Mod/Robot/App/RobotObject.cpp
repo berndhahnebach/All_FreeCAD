@@ -33,7 +33,7 @@
 using namespace Robot;
 using namespace App;
 
-PROPERTY_SOURCE(Robot::RobotObject, App::DocumentObject)
+PROPERTY_SOURCE(Robot::RobotObject, App::GeoFeature)
 
 
 RobotObject::RobotObject()
@@ -123,5 +123,5 @@ void RobotObject::onChanged(const Property* prop)
         Axis6.setValue(robot.getAxis(5));
         block = false;
     }
-    App::DocumentObject::onChanged(prop);
+    App::GeoFeature::onChanged(prop);
 }

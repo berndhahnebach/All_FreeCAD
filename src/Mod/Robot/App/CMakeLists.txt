@@ -50,6 +50,8 @@ SET(Robot_SRCS
 		 RobotObject.h
 		 TrajectoryObject.cpp
 		 TrajectoryObject.h
+		 PropertyTrajectory.cpp
+		 PropertyTrajectory.h
 		 RobotAlgos.cpp
 		 RobotAlgos.h
 		 Robot6Axis.cpp
