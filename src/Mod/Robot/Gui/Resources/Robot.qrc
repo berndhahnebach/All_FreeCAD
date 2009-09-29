@@ -6,5 +6,6 @@
 		<file>Icons/Robot_CreateRobot.svg</file>
 		<file>Icons/Robot_CreateTrajectory.svg</file>
 		<file>Icons/Robot_InsertWaypoint.svg</file>
+		<file>Icons/Robot_Simulate.svg</file>
 	</qresource>
 </RCC>

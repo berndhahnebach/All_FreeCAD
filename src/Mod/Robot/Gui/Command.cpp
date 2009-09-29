@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QMessageBox>
 #endif
 
 #include <App/Application.h>
@@ -30,6 +31,10 @@
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
+#include <Gui/Selection.h>
+
+#include <Mod/Robot/App/RobotObject.h>
+#include <Mod/Robot/App/TrajectoryObject.h>
 
 
 using namespace std;
@@ -69,6 +74,131 @@ bool CmdRobotConstraintAxle::isActive(void)
     return hasActiveDocument();
 }
 
+// #####################################################################################################
+
+DEF_STD_CMD_A(CmdRobotCreateTrajectory);
+
+CmdRobotCreateTrajectory::CmdRobotCreateTrajectory()
+	:Command("Robot_CreateTrajectory")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Creat trajectory");
+    sToolTipText    = QT_TR_NOOP("Creat a new empty trajecotry ");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_CreateTrajectory";
+}
+
+
+void CmdRobotCreateTrajectory::activated(int iMsg)
+{
+    std::string FeatName = getUniqueObjectName("Trajectory");
+ 
+    openCommand("Create trajectory");
+    doCommand(Doc,"App.activeDocument().addObject(\"Robot::TrajectoryObject\",\"%s\")",FeatName.c_str());
+    updateActive();
+    commitCommand();
+      
+}
+
+bool CmdRobotCreateTrajectory::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+// #####################################################################################################
+
+DEF_STD_CMD_A(CmdRobotInsertWaypoint);
+
+CmdRobotInsertWaypoint::CmdRobotInsertWaypoint()
+	:Command("Robot_InsertWaypoint")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Creat trajectory");
+    sToolTipText    = QT_TR_NOOP("Creat a new empty trajecotry ");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_InsertWaypoint";
+}
+
+
+void CmdRobotInsertWaypoint::activated(int iMsg)
+{
+    unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
+    unsigned int n2 = getSelection().countObjectsOfType(Robot::TrajectoryObject::getClassTypeId());
+ 
+    if (n1 != 1 || n2 != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Robot and one Trajectory object."));
+        return;
+    }
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    Robot::RobotObject *pcRobotObject;
+    if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[1].pObject);
+    std::string RoboName = pcRobotObject->getNameInDocument();
+
+    Robot::TrajectoryObject *pcTrajectoryObject;
+    if(Sel[0].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[1].pObject);
+    std::string TrakName = pcTrajectoryObject->getNameInDocument();
+
+    openCommand("Insert waypoint");
+    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoint(App.activeDocument().%s.Tcp)",TrakName.c_str(),TrakName.c_str(),RoboName.c_str());
+    updateActive();
+    commitCommand();
+      
+}
+
+bool CmdRobotInsertWaypoint::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+// #####################################################################################################
+
+DEF_STD_CMD_A(CmdRobotSimulate);
+
+CmdRobotSimulate::CmdRobotSimulate()
+	:Command("Robot_Simulate")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Simulate a trajectory");
+    sToolTipText    = QT_TR_NOOP("Run a simulation on a trajectory");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_Simulate";
+}
+
+
+void CmdRobotSimulate::activated(int iMsg)
+{
+ 
+ /*   openCommand("Place robot");
+    doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
+    updateActive();
+    commitCommand();*/
+      
+}
+
+bool CmdRobotSimulate::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+
 
 
 void CreateRobotCommands(void)
@@ -76,4 +206,7 @@ void CreateRobotCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdRobotConstraintAxle());
+    rcCmdMgr.addCommand(new CmdRobotCreateTrajectory());
+    rcCmdMgr.addCommand(new CmdRobotInsertWaypoint());
+    rcCmdMgr.addCommand(new CmdRobotSimulate());
  }
