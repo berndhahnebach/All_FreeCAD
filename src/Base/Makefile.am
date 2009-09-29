@@ -160,94 +160,62 @@ EXTRA_DIST = \
 		RotationPy.xml \
 		VectorPy.xml
 
-# PyCXX stuff
-#PYCXXSRC=/usr/share/@PYTHON_LIB@/CXX
-#nodist_libFreeCADBase_la_SOURCES=\
-#		$(PYCXXSRC)/cxxextensions.c \
-#		$(PYCXXSRC)/cxx_extensions.cxx \
-#		$(PYCXXSRC)/cxxsupport.cxx \
-#		$(PYCXXSRC)/IndirectPythonInterface.cxx
+# -------------------------------------------------------------------------------
+# Debian based systems offer packages for PyCXX and zipios++ but other Linux
+# distributions possibly not. Thus, we must prepare a switch for this Makefile
+# to use the local or system-wide packages which will also affect the 'make dist'
+# target to create source tarballs without the local PyCXX & zipios++ sources. 
+# -------------------------------------------------------------------------------
 
+# PyCXX stuff
+if ENABLE_PYCXX_ZIPIOS
 PYCXXSRC=../CXX
-libFreeCADBase_la_SOURCES += \
+EXTRA_DIST += \
 		$(PYCXXSRC)/Config.hxx \
+		$(PYCXXSRC)/Exception.hxx \
+		$(PYCXXSRC)/Extensions.hxx \
+		$(PYCXXSRC)/IndirectPythonInterface.hxx \
+		$(PYCXXSRC)/Objects.hxx \
+		$(PYCXXSRC)/Version.hxx \
+		$(PYCXXSRC)/WrapPython.h \
+		$(PYCXXSRC)/COPYRIGHT
+else
+PYCXXSRC=/usr/share/@PYTHON_LIB@/CXX
+endif
+
+nodist_libFreeCADBase_la_SOURCES=\
 		$(PYCXXSRC)/cxxextensions.c \
 		$(PYCXXSRC)/cxx_extensions.cxx \
 		$(PYCXXSRC)/cxxsupport.cxx \
-		$(PYCXXSRC)/Exception.hxx \
-		$(PYCXXSRC)/Extensions.hxx \
-		$(PYCXXSRC)/IndirectPythonInterface.cxx \
-		$(PYCXXSRC)/IndirectPythonInterface.hxx \
-		$(PYCXXSRC)/Objects.hxx \
-		$(PYCXXSRC)/Version.hxx \
-		$(PYCXXSRC)/WrapPython.h
-
-nobase_include_HEADERS = \
-		$(PYCXXSRC)/Config.hxx \
-		$(PYCXXSRC)/Exception.hxx \
-		$(PYCXXSRC)/Extensions.hxx \
-		$(PYCXXSRC)/IndirectPythonInterface.hxx \
-		$(PYCXXSRC)/Objects.hxx \
-		$(PYCXXSRC)/Version.hxx \
-		$(PYCXXSRC)/WrapPython.h
-EXTRA_DIST += \
-		$(PYCXXSRC)/COPYRIGHT
+		$(PYCXXSRC)/IndirectPythonInterface.cxx
 
 # zipios++ stuff
+if ENABLE_PYCXX_ZIPIOS
 ZIPIOS_SRC=../zipios++
-libFreeCADBase_la_SOURCES += \
-		$(ZIPIOS_SRC)/backbuffer.h \
+nodist_libFreeCADBase_la_SOURCES += \
 		$(ZIPIOS_SRC)/basicentry.cpp \
-		$(ZIPIOS_SRC)/basicentry.h \
 		$(ZIPIOS_SRC)/collcoll.cpp \
-		$(ZIPIOS_SRC)/collcoll.h \
 		$(ZIPIOS_SRC)/deflateoutputstreambuf.cpp \
-		$(ZIPIOS_SRC)/deflateoutputstreambuf.h \
 		$(ZIPIOS_SRC)/dircoll.cpp \
-		$(ZIPIOS_SRC)/dircoll.h \
 		$(ZIPIOS_SRC)/directory.cpp \
-		$(ZIPIOS_SRC)/directory.h \
 		$(ZIPIOS_SRC)/fcoll.cpp \
-		$(ZIPIOS_SRC)/fcoll.h \
 		$(ZIPIOS_SRC)/fcollexceptions.cpp \
-		$(ZIPIOS_SRC)/fcollexceptions.h \
 		$(ZIPIOS_SRC)/fileentry.cpp \
-		$(ZIPIOS_SRC)/fileentry.h \
 		$(ZIPIOS_SRC)/filepath.cpp \
-		$(ZIPIOS_SRC)/filepath.h \
 		$(ZIPIOS_SRC)/filterinputstreambuf.cpp \
-		$(ZIPIOS_SRC)/filterinputstreambuf.h \
 		$(ZIPIOS_SRC)/filteroutputstreambuf.cpp \
-		$(ZIPIOS_SRC)/filteroutputstreambuf.h \
 		$(ZIPIOS_SRC)/gzipoutputstream.cpp \
-		$(ZIPIOS_SRC)/gzipoutputstream.h \
 		$(ZIPIOS_SRC)/gzipoutputstreambuf.cpp \
-		$(ZIPIOS_SRC)/gzipoutputstreambuf.h \
 		$(ZIPIOS_SRC)/inflateinputstreambuf.cpp \
-		$(ZIPIOS_SRC)/inflateinputstreambuf.h \
-		$(ZIPIOS_SRC)/meta-iostreams.h \
-		$(ZIPIOS_SRC)/outputstringstream.h \
-		$(ZIPIOS_SRC)/simplesmartptr.h \
-		$(ZIPIOS_SRC)/virtualseeker.h \
 		$(ZIPIOS_SRC)/zipfile.cpp \
-		$(ZIPIOS_SRC)/zipfile.h \
 		$(ZIPIOS_SRC)/ziphead.cpp \
-		$(ZIPIOS_SRC)/ziphead.h \
 		$(ZIPIOS_SRC)/zipheadio.cpp \
-		$(ZIPIOS_SRC)/zipheadio.h \
 		$(ZIPIOS_SRC)/zipinputstream.cpp \
-		$(ZIPIOS_SRC)/zipinputstream.h \
 		$(ZIPIOS_SRC)/zipinputstreambuf.cpp \
-		$(ZIPIOS_SRC)/zipinputstreambuf.h \
-		$(ZIPIOS_SRC)/zipios_common.h \
-		$(ZIPIOS_SRC)/zipios-config.h \
-		$(ZIPIOS_SRC)/zipios_defs.h \
 		$(ZIPIOS_SRC)/zipoutputstreambuf.cpp \
-		$(ZIPIOS_SRC)/zipoutputstreambuf.h \
-		$(ZIPIOS_SRC)/zipoutputstream.cpp \
-		$(ZIPIOS_SRC)/zipoutputstream.h
+		$(ZIPIOS_SRC)/zipoutputstream.cpp
 
-nobase_include_HEADERS += \
+EXTRA_DIST += \
 		$(ZIPIOS_SRC)/backbuffer.h \
 		$(ZIPIOS_SRC)/basicentry.h \
 		$(ZIPIOS_SRC)/collcoll.h \
@@ -277,4 +245,5 @@ nobase_include_HEADERS += \
 		$(ZIPIOS_SRC)/zipios_defs.h \
 		$(ZIPIOS_SRC)/zipoutputstreambuf.h \
 		$(ZIPIOS_SRC)/zipoutputstream.h
+endif
 
