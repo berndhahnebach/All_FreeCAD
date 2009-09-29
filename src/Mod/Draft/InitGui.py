@@ -152,7 +152,7 @@ class DraftWorkbench (Workbench):
 		Log ('Loading Draft GUI...\n')
 		import Draft
 		self.cmdList = ["Draft_Line","Draft_Polyline","Draft_Circle","Draft_Arc", "Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
-		self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset","Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade"]
+		self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset","Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale"]
 		self.treecmdList = ["Draft_ApplyStyle"]
 		self.appendToolbar("Draft tools",self.cmdList+self.modList)
 		self.appendMenu("Draft",self.cmdList+self.modList)
