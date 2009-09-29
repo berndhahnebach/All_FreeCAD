@@ -48,6 +48,9 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Robot"));
     *part << "Robot_Create";
+    *part << "Robot_CreateTrajectory";
+    *part << "Robot_InsertWaypoint";
+    *part << "Robot_Simulate";
      return root;
 }
 

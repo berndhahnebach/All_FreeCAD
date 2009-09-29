@@ -21,9 +21,10 @@ else(WIN32)
 endif(WIN32)
 
 qt4_add_resources(RobotGui_SRCS Resources/Robot.qrc)
-qt4_add_resources(RobotGui_SRCS Icons/Robot_CreateRobot.svg)
-qt4_add_resources(RobotGui_SRCS Icons/Robot_CreateTrajectory.svg)
-qt4_add_resources(RobotGui_SRCS Icons/Robot_InsertWaypoint.svg)
+qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_CreateRobot.svg)
+qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_CreateTrajectory.svg)
+qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_InsertWaypoint.svg)
+qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_Simulate.svg)
 
 set(RobotGui_UIC_SRCS
 		 TaskTrajectory.ui
