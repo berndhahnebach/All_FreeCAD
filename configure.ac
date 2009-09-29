@@ -203,26 +203,38 @@ else
 fi
 
 
-#dnl checking for PyCXX
-#dnl **************************************************************************
-#fc_local_pycxx=yes
-#AC_ARG_ENABLE(pycxx,
-#	AC_HELP_STRING([--enable-pycxx], [Use local copy of PyCXX package [[default=yes]]]),
-#	[fc_local_pycxx=$enableval],[fc_local_pycxx=yes])
-#AM_CONDITIONAL(ENABLE_LOCAL_PYCXX, test x"$fc_local_pycxx" = xyes)
-#AC_MSG_RESULT(Use local copy of PyCXX... $fc_local_pycxx)
+dnl checking for PyCXX & zipios++
+dnl **************************************************************************
+fc_local_pycxx_zipios=yes
+AC_ARG_ENABLE(pycxx-zipios,
+	AC_HELP_STRING([--enable-pycxx-zipios], [Use local sources of PyCXX & zipios++ packages [[default=yes]]]),
+	[fc_local_pycxx_zipios=$enableval],[fc_local_pycxx_zipios=yes])
+# check if local versions of PyCXX & zipios++ are part of these sources
+if test x"$fc_local_pycxx_zipios" = xyes; then
+    AC_TRY_COMPILE([#include "src/CXX/Objects.hxx"], [#include "src/zipios++/zipfile.h"],
+        [], [fc_local_pycxx_zipios=no])
+fi
+AM_CONDITIONAL(ENABLE_PYCXX_ZIPIOS, test x"$fc_local_pycxx_zipios" = xyes)
+AC_MSG_RESULT(Use local sources of PyCXX & zipios++... $fc_local_pycxx_zipios)
 
 
-#dnl checking for zipios++
-#dnl **************************************************************************
-#fc_local_zipios=yes
-#AC_ARG_ENABLE(zipios,
-#	AC_HELP_STRING([--enable-zipios], [Use local copy of zipios++ package [[default=yes]]]),
-#	[fc_local_zipios=$enableval],[fc_local_zipios=yes])
-#AM_CONDITIONAL(ENABLE_LOCAL_ZIPIOS, test x"$fc_local_zipios" = xyes)
-#AC_MSG_RESULT(Use local copy of zipios... $fc_local_zipios)
-#ZIPIOS_LIB="-lzipios"
+dnl checking for existence of (system-wide) PyCXX & zipios++ headers
+dnl **************************************************************************
 ZIPIOS_LIB=""
+if test x"$fc_local_pycxx_zipios" != xyes; then
+    fc_py_ac_save_cppflags=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS -I$fc_py_incs"
+    ZIPIOS_LIB="-lzipios"
+    AC_MSG_CHECKING(for PyCXX headers)
+    AC_TRY_COMPILE([#include <CXX/Objects.hxx>], [],
+        [AC_MSG_RESULT(yes)],
+        [AC_MSG_RESULT(no);AC_MSG_ERROR(Cannot find the PyCXX headers)])
+    AC_MSG_CHECKING(for zipios++ headers)
+    AC_TRY_COMPILE([#include <zipios++/zipfile.h>], [],
+        [AC_MSG_RESULT(yes)],
+        [AC_MSG_RESULT(no);AC_MSG_ERROR(Cannot find the zipios++ headers)])
+    CPPFLAGS=$fc_py_ac_save_cppflags
+fi
 AC_SUBST(ZIPIOS_LIB)
 
 
