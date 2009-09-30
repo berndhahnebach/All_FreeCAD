@@ -1,6 +1,8 @@
 
 #include "PreCompiled.h"
 
+#include <Base/VectorPy.h>
+#include <Base/PlacementPy.h>
 #include "Mod/Robot/App/Trajectory.h"
 
 // inclusion of the generated files (generated out of TrajectoryPy.xml)
@@ -34,16 +36,48 @@ int TrajectoryPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 }
 
 
-PyObject* TrajectoryPy::insertWaypoint(PyObject * /*args*/)
+PyObject* TrajectoryPy::insertWaypoint(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+/*  
+    if (PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &o)) {
+        Base::Placement *plm = static_cast<Base::PlacementPy*>(o)->getPlacementPtr();
+        *(getPlacementPtr()) = *plm;
+        return 0;
+    }
+
+    PyErr_Clear();
+    PyObject* d;
+    double angle;
+    if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
+                                        &(Base::VectorPy::Type), &o)) {
+        Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
+		*getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
+        
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "empty parameter list, matrix or placement expected");
+    return -1;
+*/
+
+    PyObject *plm;
+    if (!PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &plm))
+        return NULL;
+    Base::Placement pos = (*static_cast<Base::PlacementPy*>(plm)->getPlacementPtr());
+
+    getTrajectoryPtr()->addWaypoint(Robot::Waypoint("Pt",pos));
+
     return 0;
 }
 
-PyObject* TrajectoryPy::position(PyObject * /*args*/)
+PyObject* TrajectoryPy::position(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double pos;
+    if (!PyArg_ParseTuple(args, "d", &pos))
+        return NULL;
+
+    return (new Base::PlacementPy(new Base::Placement(getTrajectoryPtr()->getPosition(pos))));
+
 }
 
 PyObject* TrajectoryPy::velocity(PyObject * /*args*/)

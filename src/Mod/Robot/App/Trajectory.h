@@ -57,6 +57,9 @@ public:
     void addWaypoint(const Waypoint &WPnt);
     unsigned int getSize(void){return vpcWaypoints.size();}
 
+    double getLength(void);
+    Base::Placement getPosition(double time);
+
 
 protected:
 

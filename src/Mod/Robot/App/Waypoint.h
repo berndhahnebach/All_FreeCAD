@@ -51,8 +51,8 @@ public:
     Waypoint();
     /// full constructor 
     Waypoint(const char* name, 
+             const Base::Placement &endPos, 
              WaypointType type=Waypoint::PTP, 
-             const Base::Placement &endPos=Base::Placement(), 
              float velocity=100.0, 
              bool cont=false,
              unsigned int tool=0, 
