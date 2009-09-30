@@ -63,6 +63,18 @@ Trajectory::~Trajectory()
         delete ( *it );
 }
 
+
+double Trajectory::getLength(void)
+{
+    return 0;
+}
+
+Placement Trajectory::getPosition(double time)
+{
+    return Placement();
+}
+
+
 void Trajectory::generateTrajectory(void)
 {
     if(pcTrajectory) delete (pcTrajectory);

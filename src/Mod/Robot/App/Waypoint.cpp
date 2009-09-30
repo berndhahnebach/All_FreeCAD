@@ -56,8 +56,8 @@ using namespace KDL;
 TYPESYSTEM_SOURCE(Robot::Waypoint , Base::Persistence);
 
 Waypoint::Waypoint(  const char* name, 
-                     WaypointType type, 
                      const Base::Placement &endPos, 
+                     WaypointType type, 
                      float velocity, 
                      bool cont,
                      unsigned int tool, 
