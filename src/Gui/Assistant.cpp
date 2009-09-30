@@ -74,9 +74,10 @@ bool Assistant::startAssistant()
         proc = new QProcess();
 
     if (proc->state() != QProcess::Running) {
-#ifdef FC_OS_WIN32
+#ifdef Q_OS_WIN
         QString app;
-        app.fromAscii((App::Application::Config()["AppHomePath"] + "\\bin\\").c_str());
+        app = QDir::convertSeparators(QString::fromUtf8
+            (App::GetApplication().GetHomePath()) + QLatin1String("bin/"));
 #else
         QString app = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
 #endif 
@@ -88,11 +89,17 @@ bool Assistant::startAssistant()
 
         // get the name of the executable and the doc path
         QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
-        QString doc = QString::fromUtf8(App::Application::Config()["DocPath"].c_str());
+        QString doc = QString::fromUtf8(App::Application::getHelpDir().c_str());
+        doc = doc + exe.toLower() + QLatin1String(".qhc");
+
+        static bool first = true;
+        if (first) {
+            Base::Console().Log("Help file at %s\n", (const char*)doc.toUtf8());
+            first = false;
+        }
 
         QStringList args;
-        args << QLatin1String("-collectionFile")
-             << QString(QLatin1String("%1%2.qhc")).arg(doc).arg(exe.toLower())
+        args << QLatin1String("-collectionFile") << doc
              << QLatin1String("-enableRemoteControl");
 
         proc->start(app, args);
@@ -103,6 +110,6 @@ bool Assistant::startAssistant()
             return false;
         }
     }
-    
+
     return true;
 }
