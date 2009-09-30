@@ -1285,16 +1285,16 @@ void Application::ParseOptions(int ac, char ** av)
     // allowed only on command line
     options_description generic("Generic options");
     generic.add_options()
-    ("version,v", "print version string")
-    ("help,h", "print help message")
-    ("console,c", "start in console mode")
-    ("response-file", value<string>(),"can be specified with '@name', too")
+    ("version,v", "Prints version string")
+    ("help,h", "Prints help message")
+    ("console,c", "Starts in console mode")
+    ("response-file", value<string>(),"Can be specified with '@name', too")
     ;
 
     // Declare a group of options that will be
     // allowed both on command line and in
     // config file
-    std::string descr("write a log file to:\n");
+    std::string descr("Writes a log file to:\n");
     descr += mConfig["UserAppData"];
     descr += mConfig["ExeName"];
     descr += ".log";
@@ -1302,9 +1302,9 @@ void Application::ParseOptions(int ac, char ** av)
     config.add_options()
     //("write-log,l", value<string>(), "write a log file")
     ("write-log,l", descr.c_str())
-    ("run-test,t",   value<int>()   ,"test level")
-    ("module-path,M", value< vector<string> >()->composing(),"additional module paths")
-    ("python-path,P", value< vector<string> >()->composing(),"additional python paths")
+    ("run-test,t",   value<int>()   ,"Test level")
+    ("module-path,M", value< vector<string> >()->composing(),"Additional module paths")
+    ("python-path,P", value< vector<string> >()->composing(),"Additional python paths")
     ;
 
 
@@ -1360,20 +1360,20 @@ void Application::ParseOptions(int ac, char ** av)
         notify(vm);
     }
     catch (const std::exception& e) {
-        cout << e.what() << endl << endl << visible << endl;
+        cerr << e.what() << endl << endl << visible << endl;
         exit(1);
     }
     catch (...) {
-        cout << "Wrong or unknown option, bailing out!" << endl << endl << visible << endl;
+        cerr << "Wrong or unknown option, bailing out!" << endl << endl << visible << endl;
         exit(1);
     }
 
     if (vm.count("help")) {
-        cout << "FreeCAD" << endl<<endl;
+        cout << mConfig["ExeName"] << endl << endl;
         cout << "For detailed descripton see http://free-cad.sf.net" << endl<<endl;
-        cout << "Usage:" << endl << "FreeCAD [options] File1 File2 ....." << endl;
-        cout << visible << "\n";
-        exit( 0);
+        cout << "Usage: " << mConfig["ExeName"] << " [options] File1 File2 ..." << endl << endl;
+        cout << visible << endl;
+        exit(0);
     }
 
     if (vm.count("response-file")) {
@@ -1381,7 +1381,9 @@ void Application::ParseOptions(int ac, char ** av)
         ifstream ifs(vm["response-file"].as<string>().c_str());
         if (!ifs) {
             Base::Console().Error("Could no open the response file\n");
-            exit(1);;
+            cerr << "Could no open the response file: '"
+                 << vm["response-file"].as<string>() << "'" << endl;
+            exit(1);
         }
         // Read the whole file into a string
         stringstream ss;
@@ -1399,7 +1401,7 @@ void Application::ParseOptions(int ac, char ** av)
     if (vm.count("version")) {
         std::cout << mConfig["ExeName"] << " " << mConfig["ExeVersion"]
                   << " Revision: " << mConfig["BuildRevision"] << std::endl;
-        exit( 0);
+        exit(0);
     }
 
     if (vm.count("console")) {
