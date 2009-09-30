@@ -456,7 +456,7 @@ std::string Application::getResourceDir()
 std::string Application::getHelpDir()
 {
 # ifdef DOCDIR
-    return std::string(DOCDIR);
+    return std::string(DOCDIR) + "/";
 #else
     return mConfig["DocPath"];
 #endif
