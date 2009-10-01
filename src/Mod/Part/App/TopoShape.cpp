@@ -705,7 +705,8 @@ TopoDS_Shape TopoShape::makePipe(const TopoDS_Wire& spine) const
     BRepOffsetAPI_MakePipe mkPipe(spine,this->_Shape);
     return mkPipe.Shape();
 }
- 
+
+
 TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles, const Standard_Boolean make_solid) const
 {
     if (this->_Shape.ShapeType() != TopAbs_WIRE)

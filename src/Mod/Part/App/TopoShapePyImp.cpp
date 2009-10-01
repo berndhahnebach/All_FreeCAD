@@ -121,6 +121,7 @@ int TopoShapePy::PyInit(PyObject* args, PyObject*)
     return 0;
 }
 
+
 PyObject*  TopoShapePy::read(PyObject *args)
 {
     char* filename;

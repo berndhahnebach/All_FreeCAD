@@ -27,6 +27,7 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <BRepOffsetAPI_MakeOffset.hxx>
 # include <Geom_BezierSurface.hxx>
 # include <Geom_BSplineSurface.hxx>
 # include <Geom_Plane.hxx>
@@ -155,6 +156,22 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_SetString(PyExc_Exception, "wire or list of wires expected");
     return -1;
 }
+
+
+PyObject* TopoShapeFacePy::makeOffset(PyObject *args)
+{
+    float dist;
+    if (!PyArg_ParseTuple(args, "f",&dist))
+        return 0;
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+
+    BRepOffsetAPI_MakeOffset mkOffset(f);
+    mkOffset.Perform(dist);
+    
+    return new TopoShapePy(new TopoShape(mkOffset.Shape()));
+}
+
+
 
 Py::Object TopoShapeFacePy::getSurface() const
 {
