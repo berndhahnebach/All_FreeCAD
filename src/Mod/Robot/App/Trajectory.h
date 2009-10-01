@@ -59,6 +59,7 @@ public:
 
     double getLength(void);
     Base::Placement getPosition(double time);
+    double getVelocity(double time);
 
 
 protected:

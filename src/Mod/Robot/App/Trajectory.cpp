@@ -74,6 +74,11 @@ Placement Trajectory::getPosition(double time)
     return Placement();
 }
 
+double Trajectory::getVelocity(double time)
+{
+    return 0.0;
+}
+
 
 void Trajectory::generateTrajectory(void)
 {

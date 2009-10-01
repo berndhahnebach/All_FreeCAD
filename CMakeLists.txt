@@ -152,7 +152,8 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 # -------------------------------- OpenCV --------------------------------
 
-	find_package(OpenCV REQUIRED)
+	# not needed at the moment
+	#find_package(OpenCV REQUIRED)
 
 	
 	if(FREECAD_BUILD_GUI)	
