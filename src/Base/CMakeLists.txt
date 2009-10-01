@@ -35,6 +35,8 @@ else(MSVC)
 		${XERCESC_LIBRARIES}
 		${Boost_LIBRARIES}
 		${ZLIB_LIBRARIES}
+		-lutil
+		-ldl
 )
 endif(MSVC)
 
