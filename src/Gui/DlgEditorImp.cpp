@@ -208,12 +208,7 @@ void DlgSettingsEditorImp::loadSettings()
 
     // fill up font styles
     //
-#ifdef FC_OS_LINUX
-    fontSize->setValue(15);
-#else
     fontSize->setValue(10);
-#endif
-
     fontSize->setValue( hGrp->GetInt("FontSize", fontSize->value()) );
 
     QFontDatabase fdb;

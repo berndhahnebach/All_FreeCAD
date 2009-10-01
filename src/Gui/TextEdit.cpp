@@ -206,11 +206,7 @@ TextEditor::TextEditor(QWidget* parent)
 {
     d = new TextEditorP();
 
-#ifdef FC_OS_LINUX
-    QFont serifFont(QLatin1String("Courier"), 15, QFont::Normal );
-#else
-    QFont serifFont(QLatin1String("Courier"), 10, QFont::Normal );
-#endif
+    QFont serifFont(QLatin1String("Courier"), 10, QFont::Normal);
     setFont(serifFont);
 
     ParameterGrp::handle hPrefGrp = getWindowParameter();
