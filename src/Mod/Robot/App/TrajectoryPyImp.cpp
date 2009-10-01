@@ -32,6 +32,7 @@ PyObject *TrajectoryPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  //
 // constructor method
 int TrajectoryPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 {
+    touched = false;
     return 0;
 }
 
@@ -66,6 +67,7 @@ PyObject* TrajectoryPy::insertWaypoint(PyObject * args)
     Base::Placement pos = (*static_cast<Base::PlacementPy*>(plm)->getPlacementPtr());
 
     getTrajectoryPtr()->addWaypoint(Robot::Waypoint("Pt",pos));
+    touched = true;
 
     return 0;
 }
@@ -76,25 +78,51 @@ PyObject* TrajectoryPy::position(PyObject * args)
     if (!PyArg_ParseTuple(args, "d", &pos))
         return NULL;
 
+    // check if trajectory touched! if yes, recompute.
+    if(touched == true){
+        getTrajectoryPtr()->generateTrajectory();
+        touched = false;
+    }
+
+
     return (new Base::PlacementPy(new Base::Placement(getTrajectoryPtr()->getPosition(pos))));
 
 }
 
-PyObject* TrajectoryPy::velocity(PyObject * /*args*/)
+PyObject* TrajectoryPy::velocity(PyObject * args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    double pos;
+    if (!PyArg_ParseTuple(args, "d", &pos))
+        return NULL;
+
+    // check if trajectory touched! if yes, recompute.
+    if(touched == true){
+        getTrajectoryPtr()->generateTrajectory();
+        touched = false;
+    }
+    // return velocity as float
+    return Py::new_reference_to(Py::Float(getTrajectoryPtr()->getVelocity(pos)));
 }
 
 
 
 Py::Float TrajectoryPy::getDuration(void) const
 {
-    return Py::Float();
+    if(touched == true){
+        getTrajectoryPtr()->generateTrajectory();
+        //touched = false;
+    }
+
+    return Py::Float(getTrajectoryPtr()->getLength());
 }
 
 Py::List TrajectoryPy::getWaypoints(void) const
 {
+    // check if trajectory touched! if yes, recompute.
+    if(touched == true){
+        getTrajectoryPtr()->generateTrajectory();
+        //touched = false;
+    }
     return Py::List();
 }
 
