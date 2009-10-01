@@ -352,7 +352,7 @@ PythonConsole::PythonConsole(QWidget *parent)
     d->callTipsList->setSelectionMode( QAbstractItemView::SingleSelection );
     d->callTipsList->hide();
 
-    QFont serifFont(QLatin1String("Courier"), 10, QFont::Normal );
+    QFont serifFont(QLatin1String("Courier"), 10, QFont::Normal);
     setFont(serifFont);
     
     // set colors and font from settings
