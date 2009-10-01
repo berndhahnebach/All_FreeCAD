@@ -67,7 +67,8 @@ PyObject* TrajectoryPy::insertWaypoint(PyObject * args)
     Base::Placement pos = (*static_cast<Base::PlacementPy*>(plm)->getPlacementPtr());
 
     getTrajectoryPtr()->addWaypoint(Robot::Waypoint("Pt",pos));
-    touched = true;
+    getTrajectoryPtr()->generateTrajectory();
+    //touched = true;
 
     return 0;
 }
@@ -79,10 +80,10 @@ PyObject* TrajectoryPy::position(PyObject * args)
         return NULL;
 
     // check if trajectory touched! if yes, recompute.
-    if(touched == true){
-        getTrajectoryPtr()->generateTrajectory();
-        touched = false;
-    }
+    //if(touched == true){
+    //    getTrajectoryPtr()->generateTrajectory();
+    //    touched = false;
+    //}
 
 
     return (new Base::PlacementPy(new Base::Placement(getTrajectoryPtr()->getPosition(pos))));
@@ -96,10 +97,10 @@ PyObject* TrajectoryPy::velocity(PyObject * args)
         return NULL;
 
     // check if trajectory touched! if yes, recompute.
-    if(touched == true){
-        getTrajectoryPtr()->generateTrajectory();
-        touched = false;
-    }
+    //if(touched == true){
+    //    getTrajectoryPtr()->generateTrajectory();
+    //    touched = false;
+    //}
     // return velocity as float
     return Py::new_reference_to(Py::Float(getTrajectoryPtr()->getVelocity(pos)));
 }
@@ -108,10 +109,10 @@ PyObject* TrajectoryPy::velocity(PyObject * args)
 
 Py::Float TrajectoryPy::getDuration(void) const
 {
-    if(touched == true){
-        getTrajectoryPtr()->generateTrajectory();
-        //touched = false;
-    }
+    //if(touched == true){
+    //    getTrajectoryPtr()->generateTrajectory();
+    //    //touched = false;
+    //}
 
     return Py::Float(getTrajectoryPtr()->getLength());
 }
@@ -119,10 +120,10 @@ Py::Float TrajectoryPy::getDuration(void) const
 Py::List TrajectoryPy::getWaypoints(void) const
 {
     // check if trajectory touched! if yes, recompute.
-    if(touched == true){
-        getTrajectoryPtr()->generateTrajectory();
-        //touched = false;
-    }
+    //if(touched == true){
+    //    getTrajectoryPtr()->generateTrajectory();
+    //    //touched = false;
+    //}
     return Py::List();
 }
 

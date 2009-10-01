@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeWire.hxx>
+# include <BRepOffsetAPI_MakeOffset.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Wire.hxx>
 # include <gp_Ax1.hxx>
@@ -121,6 +122,20 @@ int TopoShapeWirePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_SetString(PyExc_Exception, "edge or wire or list of edges and wires expected");
     return -1;
 }
+
+PyObject* TopoShapeWirePy::makeOffset(PyObject *args)
+{
+    float dist;
+    if (!PyArg_ParseTuple(args, "f",&dist))
+        return 0;
+    TopoDS_Wire f = TopoDS::Wire(getTopoShapePtr()->_Shape);
+
+    BRepOffsetAPI_MakeOffset mkOffset(f);
+    mkOffset.Perform(dist);
+    
+    return new TopoShapePy(new TopoShape(mkOffset.Shape()));
+}
+
 
 Py::Object TopoShapeWirePy::getCenterOfMass(void) const
 {
