@@ -80,10 +80,13 @@ void Feature::onChanged(const App::Property* prop)
     }
     // if the point data has changed check and adjust the transformation as well
     else if (prop == &this->Points) {
-        Base::Placement p;
-        p.fromMatrix(this->Points.getValue().getTransform());
-        if (p != this->Placement.getValue())
-            this->Placement.setValue(p);
+        //TODO: Is this the desired behaviour?
+        PointKernel& pts = const_cast<PointKernel&>(this->Points.getValue());
+        pts.setTransform(this->Placement.getValue().toMatrix());
+        //Base::Placement p;
+        //p.fromMatrix(this->Points.getValue().getTransform());
+        //if (p != this->Placement.getValue())
+        //    this->Placement.setValue(p);
     }
     
     GeoFeature::onChanged(prop);
