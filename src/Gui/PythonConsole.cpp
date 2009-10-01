@@ -401,11 +401,7 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
     ParameterGrp::handle hPrefGrp = getWindowParameter();
 
     if (strcmp(sReason, "FontSize") == 0 || strcmp(sReason, "Font") == 0) {
-#ifdef FC_OS_LINUX
-        int fontSize = hPrefGrp->GetInt("FontSize", 15);
-#else
         int fontSize = hPrefGrp->GetInt("FontSize", 10);
-#endif
         QString fontFamily = QString::fromAscii(hPrefGrp->GetASCII("Font", "Courier").c_str());
         
         QFont font(fontFamily, fontSize);
