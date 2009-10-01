@@ -282,9 +282,16 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
             it = jt + 1;
         }
 
-        // In either case we must go to the next entry
-        entry = zipstream.getNextEntry();
         seq.next();
+
+        // In either case we must go to the next entry
+        try {
+            entry = zipstream.getNextEntry();
+        }
+        catch (const std::exception&) {
+            // there is no further entry
+            break;
+        }
     }
 }
 

@@ -35,9 +35,9 @@
 # include <QPrintDialog>
 # include <QScrollBar>
 # if QT_VERSION >= 0x040400
-# include <QtWebKit/QWebFrame>
-# include <QtWebKit/QWebView>
-# include <QtWebKit/QWebSettings>
+# include <QWebFrame>
+# include <QWebView>
+# include <QWebSettings>
 # endif
 # include <QStatusBar>
 # include <QTextBlock>
