@@ -41,7 +41,6 @@ endif(WIN32)
 
 # ================================================================================
 
-
 if(CMAKE_COMPILER_IS_GNUCC)
 	include(cMake/ConfigureChecks.cmake)
 	configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
@@ -161,6 +160,9 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 	find_package(OpenGL)
 
+# -------------------------------- Eigen --------------------------------
+	find_package(Eigen2)
+
 # -------------------------------- Qt --------------------------------
 
 # sets ${QT_LIBRARIES}
@@ -237,9 +239,11 @@ include_directories(${CMAKE_BINARY_DIR}/src
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	MESSAGE(STATUS "Platform is 64-bit, set -D_OCC64")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_OCC64")
+	add_definitions(-D_OCC64 )
 ELSE(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	MESSAGE(STATUS "Platform is 32-bit")
 ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 
 
 IF(MSVC)

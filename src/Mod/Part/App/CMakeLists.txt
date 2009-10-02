@@ -4,6 +4,7 @@ else(MSVC)
 		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
 endif(MSVC)
 
+
 include_directories(
 		 ${CMAKE_BINARY_DIR}/src
 		 ${CMAKE_SOURCE_DIR}/src
