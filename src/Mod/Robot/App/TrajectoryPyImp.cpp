@@ -9,15 +9,19 @@
 #include "TrajectoryPy.h"
 #include "TrajectoryPy.cpp"
 
+#include "WaypointPy.h"
+
 using namespace Robot;
 
 // returns a string which represents the object e.g. when printed in python
 std::string TrajectoryPy::representation(void) const
 {
     std::stringstream str;
-
+    str.precision(5);
     str << "Trajectory [";
     str << "size:" << getTrajectoryPtr()->getSize() << " ";
+    str << "length:" << getTrajectoryPtr()->getLength() << " ";
+    str << "time:" << getTrajectoryPtr()->getDuration() << " ";
     str << "]";
 
     return str.str();
@@ -30,47 +34,65 @@ PyObject *TrajectoryPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  //
 }
 
 // constructor method
-int TrajectoryPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+int TrajectoryPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    touched = false;
+    PyObject *pcObj=0;
+    if (!PyArg_ParseTuple(args, "|O!", &(PyList_Type), &pcObj))
+        return -1;
+
+    if (pcObj) {
+        Py::List list(pcObj);
+        bool first = true;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Robot::WaypointPy::Type))) {
+                Robot::Waypoint &wp = *static_cast<Robot::WaypointPy*>((*it).ptr())->getWaypointPtr();
+                getTrajectoryPtr()->addWaypoint(wp);
+            }
+        }
+    }
+    getTrajectoryPtr()->generateTrajectory();
     return 0;
 }
 
 
-PyObject* TrajectoryPy::insertWaypoint(PyObject * args)
+PyObject* TrajectoryPy::insertWaypoints(PyObject * args)
 {
-/*  
+
+    PyObject* o;
     if (PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &o)) {
         Base::Placement *plm = static_cast<Base::PlacementPy*>(o)->getPlacementPtr();
-        *(getPlacementPtr()) = *plm;
-        return 0;
+        getTrajectoryPtr()->addWaypoint(Robot::Waypoint("Pt",*plm));
+        getTrajectoryPtr()->generateTrajectory();
+
+        Py_Return;
     }
 
     PyErr_Clear();
-    PyObject* d;
-    double angle;
-    if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
-                                        &(Base::VectorPy::Type), &o)) {
-        Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
-		*getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
-        
-        return 0;
+    if (PyArg_ParseTuple(args, "O!", &(Robot::WaypointPy::Type), &o)) {
+        Robot::Waypoint &wp = *static_cast<Robot::WaypointPy*>(o)->getWaypointPtr();
+        getTrajectoryPtr()->addWaypoint(wp);
+        getTrajectoryPtr()->generateTrajectory();
+       
+        Py_Return;
     }
 
-    PyErr_SetString(PyExc_Exception, "empty parameter list, matrix or placement expected");
-    return -1;
-*/
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(PyList_Type), &o)) {
+        Py::List list(o);
+        bool first = true;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Robot::WaypointPy::Type))) {
+                Robot::Waypoint &wp = *static_cast<Robot::WaypointPy*>((*it).ptr())->getWaypointPtr();
+                getTrajectoryPtr()->addWaypoint(wp);
+            }
+        }
+        getTrajectoryPtr()->generateTrajectory();
+       
+        Py_Return;
+    }
 
-    PyObject *plm;
-    if (!PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &plm))
-        return NULL;
-    Base::Placement pos = (*static_cast<Base::PlacementPy*>(plm)->getPlacementPtr());
+    Py_Error(PyExc_Exception, "Wrong parameters - waypoint or placement expected");
 
-    getTrajectoryPtr()->addWaypoint(Robot::Waypoint("Pt",pos));
-    getTrajectoryPtr()->generateTrajectory();
-    //touched = true;
-
-    return 0;
 }
 
 PyObject* TrajectoryPy::position(PyObject * args)
@@ -79,15 +101,7 @@ PyObject* TrajectoryPy::position(PyObject * args)
     if (!PyArg_ParseTuple(args, "d", &pos))
         return NULL;
 
-    // check if trajectory touched! if yes, recompute.
-    //if(touched == true){
-    //    getTrajectoryPtr()->generateTrajectory();
-    //    touched = false;
-    //}
-
-
     return (new Base::PlacementPy(new Base::Placement(getTrajectoryPtr()->getPosition(pos))));
-
 }
 
 PyObject* TrajectoryPy::velocity(PyObject * args)
@@ -96,12 +110,7 @@ PyObject* TrajectoryPy::velocity(PyObject * args)
     if (!PyArg_ParseTuple(args, "d", &pos))
         return NULL;
 
-    // check if trajectory touched! if yes, recompute.
-    //if(touched == true){
-    //    getTrajectoryPtr()->generateTrajectory();
-    //    touched = false;
-    //}
-    // return velocity as float
+     // return velocity as float
     return Py::new_reference_to(Py::Float(getTrajectoryPtr()->getVelocity(pos)));
 }
 
@@ -109,22 +118,24 @@ PyObject* TrajectoryPy::velocity(PyObject * args)
 
 Py::Float TrajectoryPy::getDuration(void) const
 {
-    //if(touched == true){
-    //    getTrajectoryPtr()->generateTrajectory();
-    //    //touched = false;
-    //}
-
     return Py::Float(getTrajectoryPtr()->getLength());
 }
 
 Py::List TrajectoryPy::getWaypoints(void) const
 {
-    // check if trajectory touched! if yes, recompute.
-    //if(touched == true){
-    //    getTrajectoryPtr()->generateTrajectory();
-    //    //touched = false;
-    //}
-    return Py::List();
+     return Py::List();
+}
+
+Py::Float TrajectoryPy::getLength(void) const
+{
+    return Py::Float(getTrajectoryPtr()->getLength());
+}
+
+
+
+void TrajectoryPy::setWaypoints(Py::List)
+{
+ 
 }
 
 PyObject *TrajectoryPy::getCustomAttributes(const char* /*attr*/) const

@@ -18,6 +18,7 @@ std::string Robot6AxisPy::representation(void) const
 {
 	std::stringstream str;
 
+    str.precision(5);
 	str << "<Robot6Axis "
 		<< "Tcp:(" 
 		  << getRobot6AxisPtr()->getTcp().getPosition().x << ","
