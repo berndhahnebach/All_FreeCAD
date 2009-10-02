@@ -145,6 +145,13 @@ std::string ProgramOptions::err;
 
 int main( int argc, char ** argv )
 {
+    // Make sure that we use '.' as decimal point
+#if defined(FC_OS_LINUX)
+    putenv("LANG=C");
+#else
+    setlocale(LC_NUMERIC, "C");
+#endif
+
     // Name and Version of the Application
     App::Application::Config()["ExeName"] = "FreeCAD";
     App::Application::Config()["ExeVendor"] = "FreeCAD";
