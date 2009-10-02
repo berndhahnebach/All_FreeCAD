@@ -235,26 +235,30 @@ def buildtoc(folder=TMPFOLDER,page=INDEX):
     "gets the table of contents page and parses its contents into a clean lists structure"
     
     qhelpfile = '''<?xml version="1.0" encoding="UTF-8"?>
-    <QtHelpProject version="1.0">
-        <namespace>org.freecad.usermanual</namespace>
-        <virtualFolder>doc</virtualFolder>
-        <customFilter name="FreeCAD 0.9">
-            <filterAttribute>FreeCAD</filterAttribute>
-            <filterAttribute>0.9</filterAttribute>
-        </customFilter>
-        <filterSection>
-            <filterAttribute>FreeCAD</filterAttribute>
-            <filterAttribute>0.9</filterAttribute>
-            <toc>
-                <inserttoc>
-            </toc>
-            <keywords>
-                <insertkeywords>
-            </keywords>
-            <insertfiles>
-        </filterSection>
-    </QtHelpProject>
-    '''
+<QtHelpProject version="1.0">
+    <namespace>org.freecad.usermanual</namespace>
+    <virtualFolder>doc</virtualFolder>
+    <!--
+    <customFilter name="FreeCAD 0.9">
+        <filterAttribute>FreeCAD</filterAttribute>
+        <filterAttribute>0.9</filterAttribute>
+    </customFilter>
+    -->
+    <filterSection>
+        <!--
+        <filterAttribute>FreeCAD</filterAttribute>
+        <filterAttribute>0.9</filterAttribute>
+        -->
+        <toc>
+            <inserttoc>
+        </toc>
+        <keywords>
+            <insertkeywords>
+        </keywords>
+        <insertfiles>
+    </filterSection>
+</QtHelpProject>
+'''
     
     def getname(line):
         line = re.compile('<li>').sub('',line)
