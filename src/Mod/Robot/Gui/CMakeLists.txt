@@ -5,7 +5,7 @@ include_directories(
 		 ${COIN_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
-		 ${Eigen_INCLUDE_DIR}
+		 ${EIGEN2_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCES_INCLUDE_DIR})
@@ -20,11 +20,9 @@ else(WIN32)
 		 		 FreeCADGui)
 endif(WIN32)
 
-qt4_add_resources(RobotGui_SRCS Resources/Robot.qrc)
-qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_CreateRobot.svg)
-qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_CreateTrajectory.svg)
-qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_InsertWaypoint.svg)
-qt4_add_resources(RobotGui_SRCS Resources/icons/Robot_Simulate.svg)
+qt4_add_resources(RobotResource_SRCS Resources/Robot.qrc)
+
+SOURCE_GROUP("Resources" FILES ${RobotResource_SRCS})
 
 set(RobotGui_UIC_SRCS
 		 TaskTrajectory.ui
@@ -43,8 +41,8 @@ SOURCE_GROUP("Qt" FILES ${PartDesignGui_MOC_SRCS})
 
 
 SET(RobotGui_SRCS
-		 ${RobotGui_SRCS}
 		 ${RobotGui_UIC_HDRS}
+	         ${RobotResource_SRCS}
 		 AppRobotGui.cpp
 		 AppRobotGuiPy.cpp
 		 Command.cpp
@@ -63,7 +61,6 @@ SET(RobotGui_SRCS
  		 TaskTrajectory.ui
 		 TaskTrajectory.cpp
 		 TaskTrajectory.h
-
 )
 
 add_library(RobotGui SHARED ${RobotGui_SRCS})

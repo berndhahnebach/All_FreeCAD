@@ -4,7 +4,7 @@ include_directories(
 		 ${CMAKE_BINARY_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
-		 ${Eigen_INCLUDE_DIR}
+		 ${EIGEN2_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
