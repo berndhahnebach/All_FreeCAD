@@ -20,10 +20,10 @@ using namespace Base;
 std::string WaypointPy::representation(void) const
 {
     double A,B,C;
-    PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
+    //PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
     std::stringstream str;
-    ptr->getRotation().getEuler(A,B,C);
-
+    getWaypointPtr()->EndPos.getRotation().getEuler(A,B,C);
+    str.precision(5);
     str << "Waypoint [";
     if(getWaypointPtr()->Type == Waypoint::PTP)
         str << "PTP ";
@@ -37,7 +37,7 @@ std::string WaypointPy::representation(void) const
         str << "UNDEF ";
 
     str << "(";
-    str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
+    str << getWaypointPtr()->EndPos.getPosition().x << ","<< getWaypointPtr()->EndPos.getPosition().y << "," << getWaypointPtr()->EndPos.getPosition().z;
     str << ";" << A << "," << B << "," << C << ")";
     str << "v=" << getWaypointPtr()->Velocity << " ";
     if(getWaypointPtr()->Cont)
@@ -97,6 +97,15 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
 }
 
 
+Py::Float WaypointPy::getVelocity(void) const
+{
+    return Py::Float(getWaypointPtr()->Velocity);
+}
+
+void  WaypointPy::setVelocity(Py::Float arg)
+{
+    getWaypointPtr()->Velocity = (float) arg.operator double();
+}
 
 
 Py::String WaypointPy::getName(void) const
@@ -143,7 +152,7 @@ void WaypointPy::setType(Py::String arg)
 
 Py::Object WaypointPy::getPos(void) const
 {
-    return Py::Object(new PlacementPy(new Placement(getWaypointPtr()->EndPos)));
+    return Py::Object(new PlacementPy(new Placement(getWaypointPtr()->EndPos)),true);
 }
 
 void WaypointPy::setPos(Py::Object arg)

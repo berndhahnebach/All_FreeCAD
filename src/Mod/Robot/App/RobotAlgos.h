@@ -29,6 +29,9 @@
 #include <Base/Vector3D.h>
 #include <string>
 
+#include "kdl/frames_io.hpp"
+#include <Base/Placement.h>
+
 namespace Robot
 {
 
@@ -43,11 +46,17 @@ public:
 	RobotAlgos(void);
 	virtual ~RobotAlgos();
 
-	void Test(void);
-
-
+    void Test(void);
 };
 
+inline  KDL::Frame toFrame(const Base::Placement &To){
+    return KDL::Frame(KDL::Rotation::Quaternion(To.getRotation()[0],To.getRotation()[1],To.getRotation()[2],To.getRotation()[3]),KDL::Vector(To.getPosition()[0],To.getPosition()[1],To.getPosition()[2]));
+}
+inline  Base::Placement toPlacement(KDL::Frame &To){
+	double x,y,z,w;
+	To.M.GetQuaternion(x,y,z,w);
+	return Base::Placement(Base::Vector3d(To.p[0],To.p[1],To.p[2]),Base::Rotation(x,y,z,w));
+}
 
 } //namespace Robot
 

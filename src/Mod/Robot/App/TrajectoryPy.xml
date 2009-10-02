@@ -14,10 +14,10 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>Trajectory class</UserDocu>
     </Documentation>
-	  <Methode Name="insertWaypoint">
+	  <Methode Name="insertWaypoints">
 		  <Documentation>
 			  <UserDocu>
-				  adds a waypoint to the trajectory
+				  adds one or a list of waypoint to the end of the trajectory
 			  </UserDocu>
 		  </Documentation>
 	  </Methode>
@@ -41,7 +41,13 @@
 		  </Documentation>
 		  <Parameter Name="Duration" Type="Float"/>
 	  </Attribute>
-	  <Attribute Name="Waypoints" ReadOnly="true">
+	  <Attribute Name="Length" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>length of the trajectory</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Length" Type="Float"/>
+	  </Attribute>
+	  <Attribute Name="Waypoints" ReadOnly="false">
 		  <Documentation>
 			  <UserDocu>waypoints of this trajectory</UserDocu>
 		  </Documentation>

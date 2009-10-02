@@ -33,6 +33,8 @@
 
 #include <vector>
 
+namespace KDL {class Trajectory_Composite;}
+
 namespace Robot
 {
 
@@ -58,6 +60,7 @@ public:
     unsigned int getSize(void){return vpcWaypoints.size();}
 
     double getLength(void);
+    double getDuration(void);
     Base::Placement getPosition(double time);
     double getVelocity(double time);
 
@@ -66,7 +69,7 @@ protected:
 
     std::vector<Waypoint*> vpcWaypoints;
 
-    KDL::Trajectory *pcTrajectory;
+    KDL::Trajectory_Composite *pcTrajectory;
 };
 
 } //namespace Part

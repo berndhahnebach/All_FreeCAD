@@ -2,10 +2,11 @@
 # industrial robot. The Robot Module is not dependend on Part or an other Module.
 # It works only with the basic types Placement, Vector and Matrix. So we need 
 # only:
-import FreeCAD, Robot
+from Robot import *
+from FreeCAD import *
 
 # create the robot. If you not specify a other kinematic it becomes a Puma 560
-rob = Robot.Robot6Axis()
+rob = Robot6Axis()
 print rob
 
 # accessing the axis and the Tcp. Axis go from 1-6 and are in degrees:
@@ -29,7 +30,18 @@ rob.Tcp = Start
 print rob.Axis2
 
 # Waypoints:
-w = Robot.Waypoint()
+w = Waypoint(Placement(),name="Pt",type="LIN")
+print w.Name,w.Type,w.Pos,w.Cont,w.Velocity,w.Base,w.Tool
+
+# generate more
+l = [w]
+for i in range(5):
+  l.append(Waypoint(Placement(Vector(0,0,i*100),0,Vector(1,0,0)),"LIN","Pt"))
+
+# create a trajectory  
+t = Trajectory(l)
+print t
+
 
 del rob,Start
 

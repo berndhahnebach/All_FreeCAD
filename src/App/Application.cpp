@@ -189,6 +189,14 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
     union PyType_Object pyBoundBoxType = {&Base::BoundBoxPy::Type};
     PyModule_AddObject(pAppModule, "BoundBox", pyBoundBoxType.o);
 
+    if (PyType_Ready(&Base::PlacementPy::Type) < 0) return;
+    union PyType_Object pyPlacementPyType = {&Base::PlacementPy::Type};
+    PyModule_AddObject(pAppModule, "Placement", pyPlacementPyType.o);
+
+    if (PyType_Ready(&Base::RotationPy::Type) < 0) return;
+    union PyType_Object pyRotationPyType = {&Base::RotationPy::Type};
+    PyModule_AddObject(pAppModule, "Rotation", pyRotationPyType.o);
+
     // Note: Create an own module 'Base' which should provide the python
     // binding classes from the base module. At a later stage we should 
     // remove these types from the FreeCAD module.
