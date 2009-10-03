@@ -128,7 +128,7 @@ swigpyrun.h:
 	$(SWIG) -python -external-runtime
 endif
 
-%.cpp: %.xml $(top_srcdir)/src/Tools/generate.py
+%.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 libFreeCADBase_la_LIBADD   = \

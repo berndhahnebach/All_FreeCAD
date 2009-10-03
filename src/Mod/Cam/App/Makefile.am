@@ -66,7 +66,7 @@ libCam_la_LIBADD   = \
 		-lumfpack \
 		-lamd
 
-%.cpp: %.xml $(top_srcdir)/src/Tools/generate.py
+%.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 #--------------------------------------------------------------------------------------
