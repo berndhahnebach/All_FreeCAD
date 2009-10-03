@@ -186,6 +186,12 @@ def compile(qhpfile):
 
 def generate(qhcpfile):
     "generates qassistant-specific settings like icon, title, ..."
+    txt="""
+The help files for FreeCAD.
+    """
+    about=open("about.txt","w")
+    about.write(txt)
+    about.close()
     qhcfile = OUTPUTPATH + os.sep + "freecad.qhc"
     if not os.system('qcollectiongenerator '+qhcpfile+' -o '+qhcfile):
         if VERBOSE: print "Successfully created ",qhcfile
@@ -196,7 +202,7 @@ def createCollProjectFile(folder=TMPFOLDER):
 <QHelpCollectionProject version="1.0">
     <assistant>
         <title>FreeCAD User Manual</title>
-        <applicationIcon>images/handbook.png</applicationIcon>
+        <applicationIcon>Crystal_Clear_app_tutorials.png</applicationIcon>
         <cacheDirectory>Trolltech/SimpleTextViewer</cacheDirectory>
         <startPage>qthelp://org.freecad.usermanual/doc/Online_Help_Startpage.html</startPage>
         <aboutMenuText>
@@ -204,7 +210,10 @@ def createCollProjectFile(folder=TMPFOLDER):
         </aboutMenuText>
         <aboutDialog>
             <file>about.txt</file>
+            <!--
             <icon>images/icon.png</icon>
+            -->
+            <icon>Crystal_Clear_app_tutorials.png</icon>
         </aboutDialog>
         <enableDocumentationManager>false</enableDocumentationManager>
         <enableAddressBar>false</enableAddressBar>
