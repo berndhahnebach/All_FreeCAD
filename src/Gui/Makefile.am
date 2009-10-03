@@ -446,7 +446,7 @@ qrc_%.cpp: %.qrc
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $< $@
 
-%.cpp: %.xml
+%.cpp: %.xml $(top_srcdir)/src/Tools/generate.py
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 

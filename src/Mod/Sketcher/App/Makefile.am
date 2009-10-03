@@ -80,7 +80,7 @@ libSketcher_la_LIBADD = \
 		-lTKPrim \
 		-lTKHLR
 
-%.cpp: %.xml
+%.cpp: %.xml $(top_srcdir)/src/Tools/generate.py
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 #--------------------------------------------------------------------------------------
