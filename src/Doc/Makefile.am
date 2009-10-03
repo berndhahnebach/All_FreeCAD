@@ -1,4 +1,6 @@
 doc_DATA = \
+		freecad.qch \
+		freecad.qhc \
 		Start_Page.html \
 		TiddlySaver.jar
 
