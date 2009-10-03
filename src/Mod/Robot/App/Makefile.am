@@ -152,7 +152,7 @@ libRobot_la_SOURCES=\
 		Waypoint.h \
 		WaypointPyImp.cpp 
 
-%.cpp: %.xml $(top_srcdir)/src/Tools/generate.py
+%.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 # the library search path.
