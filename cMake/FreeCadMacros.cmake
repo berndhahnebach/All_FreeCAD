@@ -117,6 +117,7 @@ macro(generate_from_xml BASE_NAME)
 		 		 OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${BASE_NAME}.h ${CMAKE_CURRENT_BINARY_DIR}/${BASE_NAME}.cpp
 		 		 COMMAND ${PYTHON_EXECUTABLE} ${TOOL_PATH} --outputPath ${CMAKE_CURRENT_BINARY_DIR} ${BASE_NAME}.xml
 		 		 MAIN_DEPENDENCY ${BASE_NAME}.xml
+				 DEPENDS ${CMAKE_SOURCE_DIR}/src/Tools/generateTemplates/templateClassPyExport.py
 		 		 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		 		 COMMENT Building ${BASE_NAME}.h/.cpp out of ${BASE_NAME}.xml)
 endmacro(generate_from_xml)
