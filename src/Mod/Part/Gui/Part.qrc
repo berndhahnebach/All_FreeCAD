@@ -7,5 +7,10 @@
 		<file>Icons/preferences-part_design.svg</file>
 		<file>Icons/Part_Cylinder.svg</file>
 		<file>Icons/Part_Box.svg</file>
+		<file>Icons/Part_Cut.svg</file>
+		<file>Icons/Part_Common.svg</file>
+		<file>Icons/Part_Fuse.svg</file>
+		<file>Icons/Part_Extrude.svg</file>
+		<file>Icons/Part_Revolve.svg</file>
 	</qresource>
 </RCC>

@@ -115,7 +115,7 @@ CmdPartBox2::CmdPartBox2()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Box fix 1");
-    sToolTipText  = QT_TR_NOOP("Create a Box feature without dialog");
+    sToolTipText  = QT_TR_NOOP("Create a box feature without dialog");
     sWhatsThis    = "Part_Box2";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
@@ -233,7 +233,7 @@ CmdPartCut::CmdPartCut()
     sToolTipText  = QT_TR_NOOP("Create a Cut feature");
     sWhatsThis    = "Part_Cut";
     sStatusTip    = sToolTipText;
-    sPixmap       = "Part_Box";
+    sPixmap       = "Part_Cut";
     iAccel        = 0;
 }
 
@@ -280,7 +280,7 @@ CmdPartCommon::CmdPartCommon()
     sToolTipText  = QT_TR_NOOP("Intersection of two shapes");
     sWhatsThis    = "Part_Common";
     sStatusTip    = sToolTipText;
-    sPixmap       = "Part_Box";
+    sPixmap       = "Part_Common";
     iAccel        = 0;
 }
 
@@ -326,7 +326,7 @@ CmdPartFuse::CmdPartFuse()
     sToolTipText  = QT_TR_NOOP("Make union of two shapes");
     sWhatsThis    = "Part_Fuse";
     sStatusTip    = sToolTipText;
-    sPixmap       = "Part_Box";
+    sPixmap       = "Part_Fuse";
     iAccel        = 0;
 }
 
@@ -373,7 +373,7 @@ CmdPartSection::CmdPartSection()
     sToolTipText  = QT_TR_NOOP("Make section of two shapes");
     sWhatsThis    = "Part_Section";
     sStatusTip    = sToolTipText;
-    sPixmap       = "Part_Box";
+    sPixmap       = "Part_Section";
     iAccel        = 0;
 }
 
@@ -542,6 +542,7 @@ CmdPartExtrude::CmdPartExtrude()
     sToolTipText  = QT_TR_NOOP("Extrude a selected sketch");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Extrude";
     iAccel        = 0;
 }
 
@@ -552,6 +553,34 @@ void CmdPartExtrude::activated(int iMsg)
 }
 
 bool CmdPartExtrude::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+//===========================================================================
+// Part_Revolve
+//===========================================================================
+DEF_STD_CMD_A(CmdPartRevolve);
+
+CmdPartRevolve::CmdPartRevolve()
+  :Command("Part_Revolve")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Revolve...");
+    sToolTipText  = QT_TR_NOOP("Revolve a selected shape");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Revolve";
+    iAccel        = 0;
+}
+
+void CmdPartRevolve::activated(int iMsg)
+{
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No yet implemented"), QObject::tr("No yet implemented"));
+}
+
+bool CmdPartRevolve::isActive(void)
 {
     return hasActiveDocument();
 }
@@ -685,6 +714,7 @@ void CreatePartCommands(void)
 
     rcCmdMgr.addCommand(new CmdPartBoolean());
     rcCmdMgr.addCommand(new CmdPartExtrude());
+    rcCmdMgr.addCommand(new CmdPartRevolve());
     rcCmdMgr.addCommand(new CmdPartFilletEdges());
     rcCmdMgr.addCommand(new CmdPartCommon());
     rcCmdMgr.addCommand(new CmdPartCut());
