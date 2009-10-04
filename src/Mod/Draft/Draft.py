@@ -267,7 +267,8 @@ def formatObject(target,origin=None):
 			matchrep = origin.ViewObject
 			obrep.LineWidth = matchrep.LineWidth
 			obrep.LineColor = matchrep.LineColor
-			obrep.ShapeColor = matchrep.ShapeColor
+			if (target.Type == "Part::Feature"):
+				obrep.ShapeColor = matchrep.ShapeColor
 	if (target.Type == "App::FeaturePython"):
 		if 'Dimline' in target.PropertiesList:
 			target.ViewObject.FontSize=fontheight
@@ -1575,20 +1576,28 @@ class Move(Modifier):
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Move")
 		for ob in self.sel:
-			if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
-			else: newob=ob
 			if (ob.Type == "Part::Feature"):
+				if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
+				else: newob = ob
 				sh = ob.Shape
 				sh.translate(delta)
 				newob.Shape = sh
 			elif (ob.Type == "App::Annotation"):
-				ob.Position = ob.Position.add(delta)
+				if copy:
+					newob = self.doc.addObject("App::Annotation",ob.Name)
+					newob.LabelText = ob.LabelText
+				else: newob = ob
+				newob.Position = ob.Position.add(delta)
 			elif (ob.Type == "App::FeaturePython"):
 				if 'Dimline' in ob.PropertiesList:
-					ob.Start = ob.Start.add(delta)
-					ob.End = ob.End.add(delta)
-					ob.Dimline = ob.Dimline.add(delta)
-
+					if copy:
+						newob = self.doc.addObject("App::FeaturePython",ob.Name)
+						Dimension(newob)
+						DimensionViewProvider(newob.ViewObject)
+					else: newob = ob
+					newob.Start = ob.Start.add(delta)
+					newob.End = ob.End.add(delta)
+					newob.Dimline = ob.Dimline.add(delta)
 		if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
 
