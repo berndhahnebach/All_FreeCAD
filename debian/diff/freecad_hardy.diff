@@ -238,7 +238,7 @@
 +This manual page was written by Werner Mayer.
 --- freecad-0.8.2237.orig/debian/rules
 +++ freecad-0.8.2237/debian/rules
-@@ -0,0 +1,150 @@
+@@ -0,0 +1,153 @@
 +#!/usr/bin/make -f
 +# -*- makefile -*-
 +# Sample debian/rules that uses debhelper.
@@ -280,7 +280,7 @@
 +--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
 +--prefix=/usr/lib/freecad --mandir=/usr/share/man \
 +--infodir=/usr/share/info --datadir=/usr/share/freecad \
-+--includedir=/usr/include/freecad \
++--includedir=/usr/include/freecad --docdir=/usr/share/doc/freecad \
 +CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 +
 +build: build-stamp
@@ -321,8 +321,8 @@
 +	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/freecad
 +
 +# install the core system
-+	dh_install -pfreecad debian/tmp/freecad/usr/share/* usr/share/
-+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/share usr/lib/freecad
++	dh_install -pfreecad debian/tmp/freecad/usr/share/freecad/* usr/share/freecad/
++	#dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/share usr/lib/freecad
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/bin usr/lib/freecad
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/lib/FreeCAD.so usr/lib/freecad/lib
 +	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/lib/lib*.so.* usr/lib/freecad/lib
@@ -353,6 +353,9 @@
 +	$(foreach MODULE,$(MODULES), \
 +	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.la usr/lib/freecad/Mod/$(MODULE); \
 +	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.so usr/lib/freecad/Mod/$(MODULE);)
++
++# install the help system
++	dh_install -pfreecad-doc debian/tmp/freecad/usr/share/doc/* usr/share/doc/
 +
 +# Build architecture-independent files here.
 +binary-indep: build install
@@ -400,7 +403,7 @@
 +
 --- freecad-0.8.2237.orig/debian/control
 +++ freecad-0.8.2237/debian/control
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,66 @@
 +Source: freecad
 +Section: x11
 +Priority: optional
@@ -424,7 +427,7 @@
 +Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python
 +XB-Python-Version: ${python:Versions}
 +Conflicts: freecad (<= 0.6.472-1)
-+Suggests: gnochm | kchmviewer | kchmviewer-nokde | xchm, python-opencv
++Suggests: freecad-doc, python-opencv
 +Description: An extensible Open Source CAx program (alpha)
 + FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
 + It features some key concepts like macro recording, workbenches, ability
@@ -450,6 +453,22 @@
 + This package contains the libtool .la files, headers and symlinks necessary to
 + develop modules for FreeCAD.
 +
++Package: freecad-doc
++Architecture: all
++Section: doc
++Depends: ${misc:Depends}, qt4-dev-tools
++Description: FreeCAD documentation
++ FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
++ It features some key concepts like macro recording, workbenches, ability
++ to run as a server and dynamically loadable application extensions and
++ it is designed to be platform independent.
++ For more details see http://sourceforge.net/projects/free-cad
++ .
++ This package contains the FreeCAD documentation.
++ .
++ The documentation is provided in Qt's new help format;
++ the new help format version can be viewed in conjunction with the Qt Assistant
++ found in the qt4-dev-tools package.
 +
 --- freecad-0.8.2237.orig/debian/freecad.sharedmimeinfo
 +++ freecad-0.8.2237/debian/freecad.sharedmimeinfo
