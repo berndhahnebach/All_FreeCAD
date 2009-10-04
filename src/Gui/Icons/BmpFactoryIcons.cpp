@@ -36,7 +36,6 @@ void RegisterIcons()
     rclBmpFactory.addXPM("Param_UInt", Param_UInt);
     rclBmpFactory.addXPM("Param_Text", Param_Text);
     rclBmpFactory.addXPM("Param_XML", Param_XML);
-    rclBmpFactory.addXPM("Part_Box", Part_Box);
     rclBmpFactory.addXPM("PrefTree_GroupClosed", PrefTree_GroupClosed);
     rclBmpFactory.addXPM("PrefTree_GroupOpen", PrefTree_GroupOpen);
     rclBmpFactory.addXPM("RawTree_Attr", RawTree_Attr);

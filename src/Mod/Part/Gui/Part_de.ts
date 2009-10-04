@@ -135,7 +135,7 @@
         <translation>Quader fix 1</translation>
     </message>
     <message>
-        <source>Create a Box feature without dialog</source>
+        <source>Create a box feature without dialog</source>
         <translation>Erstellt oder ändert ein Box-Feature ohne Dialog</translation>
     </message>
 </context>

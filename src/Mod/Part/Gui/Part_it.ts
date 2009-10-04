@@ -135,7 +135,7 @@
         <translation>Fissa prisma 1</translation>
     </message>
     <message>
-        <source>Create a Box feature without dialog</source>
+        <source>Create a box feature without dialog</source>
         <translation>Crea una feature prisma senza la finestra di dialogo</translation>
     </message>
 </context>
