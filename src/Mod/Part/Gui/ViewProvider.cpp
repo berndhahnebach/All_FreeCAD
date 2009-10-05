@@ -150,7 +150,7 @@ ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
     pShapeHints->ref();
     Lighting.touch();
 
-    sPixmap = "PartFeature";
+    sPixmap = "Tree_Part";
     loadParameter();
 }
 

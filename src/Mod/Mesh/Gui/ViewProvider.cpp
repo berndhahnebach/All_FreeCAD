@@ -52,6 +52,7 @@
 #include <App/PropertyLinks.h>
 
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/SoFCSelection.h>
@@ -384,6 +385,10 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 
 QIcon ViewProviderMesh::getIcon() const
 {
+#if 1
+    static QIcon icon = Gui::BitmapFactory().pixmap("Tree_Mesh");
+    return icon;
+#else
     static const char * const Mesh_Feature_xpm[] = {
         "16 16 4 1",
         ".	c None",
@@ -408,6 +413,7 @@ QIcon ViewProviderMesh::getIcon() const
         "................"};
     QPixmap px(Mesh_Feature_xpm);
     return px;
+#endif
 }
 
 void ViewProviderMesh::setDisplayMode(const char* ModeName)

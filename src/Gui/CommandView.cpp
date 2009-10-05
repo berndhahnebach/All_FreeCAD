@@ -80,6 +80,7 @@ StdOrthographicCamera::StdOrthographicCamera()
   sToolTipText  = QT_TR_NOOP("Switches to orthographic view mode");
   sWhatsThis    = "Std_OrthographicCamera";
   sStatusTip    = QT_TR_NOOP("Switches to orthographic view mode");
+  sPixmap       = "view-isometric";
   iAccel        = Qt::Key_O;
 }
 
@@ -126,6 +127,7 @@ StdPerspectiveCamera::StdPerspectiveCamera()
   sToolTipText  = QT_TR_NOOP("Switches to perspective view mode");
   sWhatsThis    = "Std_PerspectiveCamera";
   sStatusTip    = QT_TR_NOOP("Switches to perspective view mode");
+  sPixmap       = "view-perspective";
   iAccel        = Qt::Key_P;
 }
 

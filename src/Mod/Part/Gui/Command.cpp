@@ -513,7 +513,7 @@ CmdPartBoolean::CmdPartBoolean()
     sToolTipText  = QT_TR_NOOP("Run a boolean operation with two shapes selected");
     sWhatsThis    = "Part_Boolean";
     sStatusTip    = sToolTipText;
-    //sPixmap       = "Part_Box";
+    sPixmap       = "Part_Booleans";
     iAccel        = 0;
 }
 
@@ -591,7 +591,7 @@ bool CmdPartRevolve::isActive(void)
 DEF_STD_CMD_A(CmdPartFilletEdges);
 
 CmdPartFilletEdges::CmdPartFilletEdges()
-  :Command("Part_FilletEdges")
+  :Command("Part_Fillet")
 {
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
@@ -599,6 +599,7 @@ CmdPartFilletEdges::CmdPartFilletEdges()
     sToolTipText  = QT_TR_NOOP("Fillet the selected edges of a shape");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Fillet";
     iAccel        = 0;
 }
 

@@ -24,12 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qpixmap.h>
+# include <QPixmap>
 #endif
 
 #include "ViewProviderPythonFeature.h"
 #include "ViewProviderPythonFeaturePy.h"
 #include "Tree.h"
+#include "BitmapFactory.h"
 #include <Base/Console.h>
 #include <Base/Reader.h>
 #include <Base/Interpreter.h>
@@ -55,31 +56,7 @@ ViewProviderPythonFeature::~ViewProviderPythonFeature()
 QIcon ViewProviderPythonFeature::getIcon() const
 {
     // default icon
-    static const char * Python_Feature_xpm[] = {
-        "14 15 7 1",
-        "# c #000000",
-        "b c #0000ff",
-        "d c #00ff00",
-        "a c #808000",
-        ". c None",
-        "e c #ff0000",
-        "c c #ffff00",
-        "...###........",
-        "..#aaa#.......",
-        "..#b#ba##.....",
-        ".##c#c#aa#....",
-        "#aa#a#aaaa#...",
-        "#aaaaaadaa#...",
-        "#dddddd#aa#...",
-        "##de#d##da#...",
-        ".#ee###da#..##",
-        ".#e##ddaa#.#a#",
-        "..##ddaa#..#a#",
-        "..#ddaa####aa#",
-        "..#ddaa#aaaa#.",
-        "..#ddaaaaaad#.",
-        "...#ddddddd#.."};
-    QPixmap px(Python_Feature_xpm);
+    static QPixmap px = BitmapFactory().pixmap("Tree_Python");
 
     // Run the getDisplayModes method of the proxy object.
     Base::PyGILStateLocker lock;
@@ -100,7 +77,7 @@ QIcon ViewProviderPythonFeature::getIcon() const
                 ary[j]=content[j];
             icon.loadFromData(ary, "XPM");
             if (!icon.isNull()) {
-                px = icon;
+                return icon;
             }
         }
     }
