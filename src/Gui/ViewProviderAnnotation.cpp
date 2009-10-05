@@ -63,6 +63,8 @@ ViewProviderAnnotation::ViewProviderAnnotation()
 
     TextColor.touch();
     FontSize.touch();
+
+    sPixmap = "Tree_Annotation";
 }
 
 ViewProviderAnnotation::~ViewProviderAnnotation()

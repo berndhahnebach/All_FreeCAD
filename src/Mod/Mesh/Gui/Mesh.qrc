@@ -6,5 +6,6 @@
     <qresource>
         <file>Icons/mesh_cut.svg</file>
         <file>Icons/mesh_boundary.svg</file>
+        <file>Icons/Tree_Mesh.svg</file>
     </qresource>
 </RCC>

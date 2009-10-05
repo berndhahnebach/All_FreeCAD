@@ -53,7 +53,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     part->setCommand(QT_TR_NOOP("&Part"));
     *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" 
           << "Part_Primitives" << "Separator" << "Part_Boolean" << "Part_Extrude"
-          << "Part_Revolve" << "Part_FilletEdges" << "Separator" << "Part_ShapeInfo";
+          << "Part_Revolve" << "Part_Fillet" << "Separator" << "Part_ShapeInfo";
 
     Gui::MenuItem* partSimple = new Gui::MenuItem;
     root->insertItem(item, partSimple);
@@ -71,10 +71,12 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
-    part->setCommand(QT_TR_NOOP("Part tools"));
-    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Separator" 
-          << "Part_Cut" << "Part_Fuse" << "Part_Common" << "Part_Section";
+    Gui::ToolBarItem* tool = new Gui::ToolBarItem(root);
+    tool->setCommand(QT_TR_NOOP("Part tools"));
+    *tool << "Part_Import" << "Separator" << "Part_Extrude" << "Part_Revolve" << "Part_Fillet";
+    Gui::ToolBarItem* boolop = new Gui::ToolBarItem(root);
+    boolop->setCommand(QT_TR_NOOP("Boolean"));
+    *boolop << "Part_Boolean" << "Part_Cut" << "Part_Fuse" << "Part_Common" << "Part_Section";
     return root;
 }
 

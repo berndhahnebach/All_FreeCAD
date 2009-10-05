@@ -964,9 +964,15 @@ QVariant PropertyEnumItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()));
 
-    const std::vector<std::string>& value = ((App::PropertyEnumeration*)prop)->getEnumVector();
-    long currentItem = ((App::PropertyEnumeration*)prop)->getValue();
-    return QVariant(QString::fromUtf8(value[currentItem].c_str()));
+    const App::PropertyEnumeration* prop_enum = static_cast<const App::PropertyEnumeration*>(prop);
+    if (prop_enum->getEnums() == 0) {
+        return QVariant(QString());
+    }
+    else {
+        const std::vector<std::string>& value = prop_enum->getEnumVector();
+        long currentItem = prop_enum->getValue();
+        return QVariant(QString::fromUtf8(value[currentItem].c_str()));
+    }
 }
 
 void PropertyEnumItem::setValue(const QVariant& value)
@@ -997,6 +1003,10 @@ void PropertyEnumItem::setEditorData(QWidget *editor, const QVariant& data) cons
     for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
         if ((*it)->getTypeId() == App::PropertyEnumeration::getClassTypeId()) {
             App::PropertyEnumeration* prop = static_cast<App::PropertyEnumeration*>(*it);
+            if (prop->getEnums() == 0) {
+                commonModes.clear();
+                break;
+            }
             const std::vector<std::string>& value = prop->getEnumVector();
             if (it == items.begin()) {
                 for (std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt)
@@ -1015,8 +1025,10 @@ void PropertyEnumItem::setEditorData(QWidget *editor, const QVariant& data) cons
     }
 
     QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    cb->addItems(commonModes);
-    cb->setCurrentIndex(cb->findText(data.toString()));
+    if (!commonModes.isEmpty()) {
+        cb->addItems(commonModes);
+        cb->setCurrentIndex(cb->findText(data.toString()));
+    }
 }
 
 QVariant PropertyEnumItem::editorData(QWidget *editor) const
