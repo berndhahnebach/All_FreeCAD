@@ -63,6 +63,7 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
 {
     std::auto_ptr<MeshObject> mesh(MeshObject::createSphere(Radius.getValue(),Sampling.getValue()));
     if (mesh.get()) {
+        mesh->setPlacement(this->Placement.getValue());
         Mesh.setValue(mesh->getKernel());
         return App::DocumentObject::StdReturn;
     }
@@ -98,6 +99,7 @@ App::DocumentObjectExecReturn *Ellipsoid::execute(void)
 {
     std::auto_ptr<MeshObject> mesh(MeshObject::createEllipsoid(Radius1.getValue(),Radius2.getValue(),Sampling.getValue()));
     if (mesh.get()) {
+        mesh->setPlacement(this->Placement.getValue());
         Mesh.setValue(mesh->getKernel());
         return App::DocumentObject::StdReturn;
     }
@@ -139,6 +141,7 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
     std::auto_ptr<MeshObject> mesh(MeshObject::createCylinder(Radius.getValue(),Length.getValue(),
                                    Closed.getValue(),EdgeLength.getValue(),Sampling.getValue()));
     if (mesh.get()) {
+        mesh->setPlacement(this->Placement.getValue());
         Mesh.setValue(mesh->getKernel());
         return App::DocumentObject::StdReturn;
     }
@@ -183,6 +186,7 @@ App::DocumentObjectExecReturn *Cone::execute(void)
     std::auto_ptr<MeshObject> mesh(MeshObject::createCone(Radius1.getValue(),Radius2.getValue(),Length.getValue(),
                                    Closed.getValue(),EdgeLength.getValue(),Sampling.getValue()));
     if (mesh.get()) {
+        mesh->setPlacement(this->Placement.getValue());
         Mesh.setValue(mesh->getKernel());
         return App::DocumentObject::StdReturn;
     }
@@ -218,6 +222,7 @@ App::DocumentObjectExecReturn *Torus::execute(void)
 {
     std::auto_ptr<MeshObject> mesh(MeshObject::createTorus(Radius1.getValue(),Radius2.getValue(),Sampling.getValue()));
     if (mesh.get()) {
+        mesh->setPlacement(this->Placement.getValue());
         Mesh.setValue(mesh->getKernel());
         return App::DocumentObject::StdReturn;
     }
@@ -253,6 +258,7 @@ App::DocumentObjectExecReturn *Cube::execute(void)
 {
     std::auto_ptr<MeshObject> mesh(MeshObject::createCube(Length.getValue(),Width.getValue(),Height.getValue()));
     if (mesh.get()) {
+        mesh->setPlacement(this->Placement.getValue());
         Mesh.setValue(mesh->getKernel());
         return App::DocumentObject::StdReturn;
     }

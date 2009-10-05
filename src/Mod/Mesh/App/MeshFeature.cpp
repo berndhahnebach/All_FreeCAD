@@ -79,13 +79,10 @@ void Feature::onChanged(const App::Property* prop)
     }
     // if the mesh data has changed check and adjust the transformation as well
     else if (prop == &this->Mesh) {
-        //TODO: Is this the desired behaviour?
-        MeshObject& mesh = const_cast<MeshObject&>(this->Mesh.getValue());
-        mesh.setTransform(this->Placement.getValue().toMatrix());
-        //Base::Placement p;
-        //p.fromMatrix(this->Mesh.getValue().getTransform());
-        //if (p != this->Placement.getValue())
-        //    this->Placement.setValue(p);
+        Base::Placement p;
+        p.fromMatrix(this->Mesh.getValue().getTransform());
+        if (p != this->Placement.getValue())
+            this->Placement.setValue(p);
     }
 
     // Note: If the Mesh property has changed the property and this object are marked as 'touched'

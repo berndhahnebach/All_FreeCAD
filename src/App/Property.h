@@ -101,6 +101,13 @@ public:
 
     friend class PropertyContainer;
 
+    /** Status bits of the property
+     * The first 8 bits are used for the base system the rest can be used in
+     * descendent classes to to mark special stati on the objects.
+     * The bits and their meaning are listed below:
+     * 0 - object is marked as 'touched'
+     * 1 - object is marked as 'immutable'
+     */
     std::bitset<32> StatusBits;
 
 

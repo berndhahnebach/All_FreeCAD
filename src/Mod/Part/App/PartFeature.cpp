@@ -85,13 +85,16 @@ void Feature::onChanged(const App::Property* prop)
     }
     // if the point data has changed check and adjust the transformation as well
     else if (prop == &this->Shape) {
-        //TODO: Is this the desired behaviour?
-        TopoShape& shape = const_cast<TopoShape&>(this->Shape.getShape());
-        shape.setTransform(this->Placement.getValue().toMatrix());
-        //Base::Placement p;
-        //p.fromMatrix(this->Shape.getShape().getTransform());
-        //if (p != this->Placement.getValue())
-        //    this->Placement.setValue(p);
+        if (this->isRecomputing()) {
+            TopoShape& shape = const_cast<TopoShape&>(this->Shape.getShape());
+            shape.setTransform(this->Placement.getValue().toMatrix());
+        }
+        else {
+            Base::Placement p;
+            p.fromMatrix(this->Shape.getShape().getTransform());
+            if (p != this->Placement.getValue())
+                this->Placement.setValue(p);
+        }
     }
     
     GeoFeature::onChanged(prop);

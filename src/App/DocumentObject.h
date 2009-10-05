@@ -100,6 +100,7 @@ public:
     bool isValid(void) const {return !StatusBits.test(1);}
     /// remove the error from the object
     void purgeError(void){StatusBits.reset(1);}
+    bool isRecomputing() const {return StatusBits.test(3);}
     //@}
 
     /** get called by the document to recompute this feature
@@ -138,6 +139,7 @@ public:
 
     friend class Document;
     friend class Transaction;
+    friend class ObjectExecution;
 
     static DocumentObjectExecReturn *StdReturn;
 
@@ -146,10 +148,14 @@ public:
 
 protected:
 
-    /** status bits of the document object
-     * the first 8 bits are used for the base system
-     * the rest can be used in descendend classes to 
-     * to mark special stati on the objects
+    /** Status bits of the document object
+     * The first 8 bits are used for the base system the rest can be used in
+     * descendent classes to to mark special stati on the objects.
+     * The bits and their meaning are listed below:
+     * 0 - object is marked as 'touched'
+     * 1 - object is marked as 'erroneous'
+     * 2 - object is marked as 'new'
+     * 3 - object is marked as 'recompute', i.e. the object gets recomputed now
      */
     std::bitset<32> StatusBits;
 
