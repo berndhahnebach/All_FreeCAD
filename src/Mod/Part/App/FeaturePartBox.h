@@ -53,6 +53,9 @@ public:
     }
 protected:
     void Restore(Base::XMLReader &reader);
+    /// get called by the container when a property has changed
+    virtual void onChanged (const App::Property* prop);
+
     //@}
 };
 

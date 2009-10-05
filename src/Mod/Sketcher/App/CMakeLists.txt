@@ -73,9 +73,19 @@ SET(Sketchflat_SRCS
 )
 SOURCE_GROUP("Sketchflat" FILES ${Sketchflat_SRCS})
 
+SET(SketchSolver_SRCS
+		 sketchsolver/Derivatives.cpp
+		 sketchsolver/solve.cpp
+		 sketchsolver/solve.h
+		 sketchsolver/SolverPointers.cpp
+		 sketchsolver/timer.h
+)
+SOURCE_GROUP("Sketchsolver" FILES ${SketchSolver_SRCS})
+
 SET(Sketcher_SRCS
 		 ${Features_SRCS}
 		 ${Sketchflat_SRCS}
+		 ${SketchSolver_SRCS}
 		 AppSketcher.cpp
 		 AppSketcherPy.cpp
 		 PreCompiled.cpp

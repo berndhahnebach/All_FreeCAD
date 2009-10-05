@@ -144,3 +144,13 @@ void Box::Restore(Base::XMLReader &reader)
 
     reader.readEndElement("Properties");
 }
+
+void Box::onChanged(const App::Property* prop)
+{
+    if(prop == &Length ||prop == &Width ||prop == &Height ||prop == &Location ||prop == &Axis ){
+        App::DocumentObjectExecReturn *ret = execute();
+        if (ret != App::DocumentObject::StdReturn)
+            delete ret;
+    }
+    Part::Primitive::onChanged(prop);
+}
