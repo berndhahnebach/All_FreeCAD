@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <cfloat>
 #endif
 
 #include "PropertyModel.h"
@@ -79,7 +80,15 @@ bool PropertyModel::setData(const QModelIndex& index, const QVariant & value, in
     if (role == Qt::EditRole) {
         PropertyItem *item = static_cast<PropertyItem*>(index.internalPointer());
         QVariant data = item->data(index.column(), role);
-        if (data != value)
+        if (data.type() == QVariant::Double && value.type() == QVariant::Double) {
+            // since we store some properties as floats we get some round-off
+            // errors here. Thus, we use an epsilon here.
+            double d = data.toDouble();
+            double v = value.toDouble();
+            if (fabs(d-v) > FLT_EPSILON)
+                return item->setData(value);
+        }
+        else if (data != value)
             return item->setData(value);
     }
 

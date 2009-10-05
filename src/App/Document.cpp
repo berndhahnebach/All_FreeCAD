@@ -946,6 +946,19 @@ const char *Document::getErrorDescription(const App::DocumentObject*Obj) const
     return 0;
 }
 
+namespace App {
+class ObjectExecution
+{
+public:
+    ObjectExecution(DocumentObject* o) : obj(o)
+    { obj->StatusBits.set(3); }
+    ~ObjectExecution()
+    { obj->StatusBits.reset(3); }
+private:
+    DocumentObject* obj;
+};
+}
+
 // call the recompute of the Feature and handle the exceptions and errors.
 bool Document::_recomputeFeature(DocumentObject* Feat)
 {
@@ -953,9 +966,10 @@ bool Document::_recomputeFeature(DocumentObject* Feat)
     std::clog << "Solv: Executing Feature: " << Feat->getNameInDocument() << std::endl;;
 #endif
 
-    //Feat->status.setValue(AbstractFeature::Recompute);
     DocumentObjectExecReturn  *returnCode = 0;
     try {
+        // set/unset the execution bit
+        ObjectExecution exe(Feat);
         returnCode = Feat->execute();
     }
     catch(Base::AbortException &e){
