@@ -145,12 +145,23 @@ libdir = $(prefix)/Mod/Part
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		Icons/Part_Box.svg \
 		Icons/Part_Cylinder.svg \
+		Icons/Part_Box.svg \
+		Icons/Part_Torus.svg \
+		Icons/Part_Cone.svg \
+		Icons/Part_Sphere.svg \
+		Icons/Part_Booleans.svg \
+		Icons/Part_Cut.svg \
+		Icons/Part_Common.svg \
+		Icons/Part_Fuse.svg \
+		Icons/Part_Section.svg \
 		Icons/Part_Extrude.svg \
+		Icons/Part_Fillet.svg \
+		Icons/Part_Revolve.svg \
+		Icons/Tree_Part.svg \
+		Icons/preferences-part_design.svg \
 		Icons/PartFeature.xpm \
 		Icons/PartFeatureImport.xpm \
-		Icons/preferences-part_design.svg \
 		DlgBooleanOperation.ui \
 		DlgExtrusion.ui \
 		DlgFilletEdges.ui \
