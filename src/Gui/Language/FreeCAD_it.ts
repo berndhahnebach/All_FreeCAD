@@ -2378,8 +2378,8 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
         <translation>Viste standard</translation>
     </message>
     <message>
-        <source>&amp;3D View</source>
-        <translation>&amp;Vista 3D</translation>
+        <source>&amp;Stereo</source>
+        <translation>&amp;Stereo</translation>
     </message>
     <message>
         <source>&amp;Zoom</source>

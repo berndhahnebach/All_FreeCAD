@@ -2433,7 +2433,7 @@ Do you want to exit without saving your data?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;3D View</source>
+        <source>&amp;Stereo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

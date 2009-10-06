@@ -47,10 +47,11 @@ CmdPartDesignPad::CmdPartDesignPad()
 {
     sAppModule    = "PartDesign";
     sGroup        = QT_TR_NOOP("PartDesign");
-    sMenuText     = QT_TR_NOOP("Pad...");
+    sMenuText     = QT_TR_NOOP("Pad");
     sToolTipText  = QT_TR_NOOP("Pad a selected sketch");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
+    sPixmap       = "PartDesign_Pad";
     iAccel        = 0;
 }
 
@@ -59,7 +60,7 @@ void CmdPartDesignPad::activated(int iMsg)
     unsigned int n = getSelection().countObjectsOfType(Part::Part2DObject::getClassTypeId());
     if (n != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select a Sketch or 2D object."));
+            QObject::tr("Select a sketch or 2D object."));
         return;
     }
 
@@ -70,7 +71,7 @@ void CmdPartDesignPad::activated(int iMsg)
     openCommand("Make Pad");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pad\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Dir = (0.0,0.0,-100.0)",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Dir = (0.0,0.0,-5.0)",FeatName.c_str());
     doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
     updateActive();
     commitCommand();
@@ -95,12 +96,13 @@ CmdPartDesignFillet::CmdPartDesignFillet()
     sToolTipText  = QT_TR_NOOP("Make a fillet on a edge, face or body");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Fillet";
     iAccel        = 0;
 }
 
 void CmdPartDesignFillet::activated(int iMsg)
 {
-    unsigned int n = getSelection().countObjectsOfType(Part::Part2DObject::getClassTypeId());
+    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
     if (n != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select a edge, face or body."));
@@ -111,7 +113,7 @@ void CmdPartDesignFillet::activated(int iMsg)
 
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
-    openCommand("Make Pad");
+    openCommand("Make Fillet");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Fillet\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
     doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);

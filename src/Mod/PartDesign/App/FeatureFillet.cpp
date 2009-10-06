@@ -38,16 +38,18 @@ using namespace PartDesign;
 
 PROPERTY_SOURCE(PartDesign::Fillet, Part::Feature)
 
+const App::PropertyFloatConstraint::Constraints floatRadius = {0.0f,FLT_MAX,0.1f};
+
 Fillet::Fillet()
 {
     ADD_PROPERTY(Base,(0));
-    ADD_PROPERTY(Contour,(0,0,0));
-    Contour.setSize(0);
+    ADD_PROPERTY(Radius,(0.2f));
+    Radius.setConstraints(&floatRadius);
 }
 
 short Fillet::mustExecute() const
 {
-    if (Base.isTouched() || Contour.isTouched())
+    if (Base.isTouched() || Radius.isTouched())
         return 1;
     return 0;
 }
@@ -61,28 +63,16 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
     Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
 
-    float radius = 5;
+    float radius = Radius.getValue();
 
     BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
     TopExp_Explorer xp(base->Shape.getValue(), TopAbs_EDGE);
 
-    //std::map<int, TopoDS_Edge> edgeMap;
     for (;xp.More();xp.Next()) {
         TopoDS_Edge edge = TopoDS::Edge(xp.Current());
         mkFillet.Add(radius, radius, edge);
-        //edgeMap[edge.HashCode(IntegerLast())] = edge;
     }
-/*
-    std::vector<FilletElement> values = Contour.getValues();
-    for (std::vector<FilletElement>::iterator it = values.begin(); it != values.end(); ++it) {
-        int id = it->hashval;
-        double radius1 = it->radius1;
-        double radius2 = it->radius2;
-        std::map<int, TopoDS_Edge>::iterator ed = edgeMap.find(id);
-        if (ed != edgeMap.end())
-            mkFillet.Add(radius1, radius2, ed->second);
-    }
-*/
+
     try {
         TopoDS_Shape shape = mkFillet.Shape();
         if (shape.IsNull())

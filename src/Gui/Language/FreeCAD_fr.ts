@@ -2434,8 +2434,8 @@ Do you want to exit without saving your data?</source>
         <translation>Vues standards</translation>
     </message>
     <message>
-        <source>&amp;3D View</source>
-        <translation>&amp;Vue 3D</translation>
+        <source>&amp;Stereo</source>
+        <translation>&amp;Stereo</translation>
     </message>
     <message>
         <source>&amp;Zoom</source>

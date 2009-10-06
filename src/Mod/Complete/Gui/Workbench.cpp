@@ -86,9 +86,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     // File
     Gui::MenuItem* file = new Gui::MenuItem( menuBar );
     file->setCommand(QT_TR_NOOP("&File"));
-    *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs"
+    *file << "Std_New" << "Std_Open" << "Separator" << "Std_CloseActiveWindow"
+          << "Std_CloseAllWindows" << "Separator" << "Std_Save" << "Std_SaveAs"
           << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
-          //<< "Separator" << "Std_Print" << "Std_PrintPdf"
+        //<< "Separator" << "Std_Print" << "Std_PrintPdf"
           << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
 
     // Edit
@@ -108,7 +109,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     // stereo
     Gui::MenuItem* view3d = new Gui::MenuItem;
-    view3d->setCommand(QT_TR_NOOP("&3D View"));
+    view3d->setCommand(QT_TR_NOOP("&Stereo"));
     *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" 
             << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" 
             << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewIvIssueCamPos";
@@ -118,12 +119,18 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     zoom->setCommand(QT_TR_NOOP("&Zoom"));
     *zoom << "Std_ViewZoomIn" << "Std_ViewZoomOut" << "Separator" << "Std_ViewBoxZoom";
 
+    // Visibility
+    Gui::MenuItem* visu = new Gui::MenuItem;
+    visu->setCommand(QT_TR_NOOP("Visibility"));
+    *visu << "Std_ToggleVisibility" << "Std_ShowSelection" << "Std_HideSelection"
+          << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects";
+
     // View
     Gui::MenuItem* view = new Gui::MenuItem( menuBar );
     view->setCommand(QT_TR_NOOP("&View"));
     *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
-          << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
+          << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator" << visu
           << "Std_SetAppearance" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
           //<< "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
@@ -136,10 +143,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
           << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
 
-	// Mesh ****************************************************************************************************
-	Gui::MenuItem* mesh = new Gui::MenuItem( menuBar );
- 
-	// submenu analyze
+    // Mesh ****************************************************************************************************
+    Gui::MenuItem* mesh = new Gui::MenuItem( menuBar );
+
+    // submenu analyze
     Gui::MenuItem* analyze = new Gui::MenuItem();
     analyze->setCommand(QT_TR_NOOP("Analyze"));
     *analyze << "Mesh_Evaluation" 
@@ -178,56 +185,58 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Mesh_ToolMesh" 
           << "Mesh_VertexCurvature";
 
-	// Part ****************************************************************************************************
+    // Part ****************************************************************************************************
 
     Gui::MenuItem* part = new Gui::MenuItem(menuBar);
+    part->setCommand(QT_TR_NOOP("&Part"));
 
     // submenu boolean
-    Gui::MenuItem* simple = new Gui::MenuItem();
-    simple->setCommand(QT_TR_NOOP("Simple"));
-    *simple  << "Part_Cylinder"  
-          << "Part_Box" 
-          << "Part_Primitives" 
-          << "Separator" 
-          << "Part_Boolean" 
+    Gui::MenuItem* para = new Gui::MenuItem();
+    para->setCommand(QT_TR_NOOP("Parametric"));
+    *para << "Part_Box"
+          << "Part_Cylinder"
+          << "Part_Sphere"
+          << "Part_Cone"
+          << "Part_Torus"
+          << "Part_Primitives";
+    *part << para
+          << "Part_Boolean"
           << "Part_Extrude"
-          << "Part_FilletEdges" 
-;
-
-	part->setCommand(QT_TR_NOOP("&Part"));
-    *part << "Part_Import" 
-          << "Separator" 
-		  << "Sketcher_NewSketch"
-		  << "Sketcher_LeaveSketch"
-		  << "Sketcher_CreateLine"
-		  << "Sketcher_CreatePolyline"
-          << "Separator" 
-		  << "PartDesign_Pad" 
-		  << "PartDesign_Fillet"
-          << "Separator" 
-		  << simple
+          << "Part_Revolve"
+          << "Part_Fillet"
+          << "Separator"
           << "Part_ShapeInfo";
 
-	// Drawing ****************************************************************************************************
+    Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
+    sketch->setCommand(QT_TR_NOOP("Ske&tch"));
+    *sketch << "Sketcher_NewSketch"
+            << "Sketcher_LeaveSketch"
+            << "Sketcher_CreateLine"
+            << "Sketcher_CreatePolyline"
+            << "Separator" 
+            << "PartDesign_Pad" 
+            << "PartDesign_Fillet";
+
+    // Drawing ****************************************************************************************************
 
     Gui::MenuItem* drawing = new Gui::MenuItem(menuBar);
 
-	drawing->setCommand(QT_TR_NOOP("&Drawing"));
+    drawing->setCommand(QT_TR_NOOP("&Drawing"));
     *drawing << "Drawing_Open" 
              << "Separator" 
              << "Drawing_NewA3Landscape"  
              << "Drawing_NewView" 
              << "Drawing_ExportPage" ;
 
- 
-	// xxx ****************************************************************************************************
+
+    // xxx ****************************************************************************************************
 
 
     // Windows
     Gui::MenuItem* wnd = new Gui::MenuItem( menuBar );
     wnd->setCommand(QT_TR_NOOP("&Windows"));
-    *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow"
-         << "Std_ActivatePrevWindow" << "Separator" << "Std_TileWindows" << "Std_CascadeWindows"
+    *wnd << "Std_ActivateNextWindow" << "Std_ActivatePrevWindow" << "Separator"
+         << "Std_TileWindows" << "Std_CascadeWindows"
          << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
     
     // help ****************************************************************************************************
@@ -268,21 +277,21 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* file = new Gui::ToolBarItem( root );
     file->setCommand(QT_TR_NOOP("File"));
     *file << "Std_New" 
-		  << "Std_Open" 
-		  << "Std_Save" 
-		  << "Std_Print" 
-		  << "Separator" 
-		  << "Std_Cut"
+          << "Std_Open" 
+          << "Std_Save" 
+          << "Std_Print" 
+          << "Separator" 
+          << "Std_Cut"
           << "Std_Copy" 
-		  << "Std_Paste" 
-		  << "Separator" 
-		  << "Std_Undo" 
-		  << "Std_Redo" 
-		  << "Separator"
+          << "Std_Paste" 
+          << "Separator" 
+          << "Std_Undo" 
+          << "Std_Redo" 
+          << "Separator"
           << "Std_Refresh" 
-		  << "Separator" 
-		  //<< "Std_Workbench" 
-		  << "Std_WhatsThis";
+          << "Separator" 
+          //<< "Std_Workbench" 
+          << "Std_WhatsThis";
 
     // Macro
     Gui::ToolBarItem* macro = new Gui::ToolBarItem( root );
@@ -296,25 +305,24 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *view << "Std_ViewFitAll" << "Separator" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" 
           << "Std_ViewRight" << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" 
           << "Std_ViewBottom";
-    
-	// Part Design
+
+    // Part Design
     Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
     part_design->setCommand(QT_TR_NOOP("View"));
     *part_design  << "Sketcher_NewSketch"
-		          << "Sketcher_LeaveSketch"
-  				  << "Separator" 
-				  << "Sketcher_CreatePoint" 
-				  << "Sketcher_CreateArc"
-				  << "Sketcher_CreateCircle"
-				  << "Sketcher_CreateLine"
-				  << "Sketcher_CreatePolyline"
-				  << "Sketcher_CreateRectangle"
-				  << "Sketcher_CreateText"
-				  << "Sketcher_CreateDraftLine"	  
-				  << "Separator" 
-				  << "PartDesign_Pad" 
-				  << "PartDesign_Fillet"
-	;
+                  << "Sketcher_LeaveSketch"
+                  << "Separator" 
+                  << "Sketcher_CreatePoint" 
+                  << "Sketcher_CreateArc"
+                  << "Sketcher_CreateCircle"
+                  << "Sketcher_CreateLine"
+                  << "Sketcher_CreatePolyline"
+                  << "Sketcher_CreateRectangle"
+                  << "Sketcher_CreateText"
+                  << "Sketcher_CreateDraftLine"	  
+                  << "Separator" 
+                  << "PartDesign_Pad" 
+                  << "PartDesign_Fillet";
 
     return root;
 }
@@ -322,20 +330,6 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
-
-    //// View
-    //ToolBarItem* view = new ToolBarItem( root );
-    //view->setCommand(QT_TR_NOOP("Standard views"));
-    //*view << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_ViewAxo" << "Separator"
-    //      << "Std_ViewFront" << "Std_ViewRight" << "Std_ViewTop" << "Separator"
-    //      << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
-    //// Special Ops
-    //ToolBarItem* macro = new ToolBarItem( root );
-    //macro->setCommand(QT_TR_NOOP("Special Ops"));
-    //*macro << "Std_DlgParameter" << "Std_DlgPreferences" << "Std_DlgMacroRecord" << "Std_DlgMacroStop" 
-    //       << "Std_DlgMacroExecute" << "Std_DlgCustomize" << "Std_CommandLine";
-
-
     return root;
 }
 
