@@ -244,6 +244,7 @@ EXTRA_DIST += \
 		$(ZIPIOS_SRC)/zipios-config.h \
 		$(ZIPIOS_SRC)/zipios_defs.h \
 		$(ZIPIOS_SRC)/zipoutputstreambuf.h \
-		$(ZIPIOS_SRC)/zipoutputstream.h
+		$(ZIPIOS_SRC)/zipoutputstream.h \
+		$(nodist_libFreeCADBase_la_SOURCES)
 endif
 
