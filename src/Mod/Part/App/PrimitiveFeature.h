@@ -38,16 +38,15 @@ public:
     Primitive();
     virtual ~Primitive();
 
-    // Note: Location and Axis is different to Placement
-    App::PropertyVector Location;
-    App::PropertyVector Axis;
-
     /** @name methods override feature */
     //@{
     /// recalculate the feature
     App::DocumentObjectExecReturn *execute(void) = 0;
     short mustExecute() const;
     //@}
+
+protected:
+    void onChanged (const App::Property* prop);
 };
 
 class Plane : public Primitive

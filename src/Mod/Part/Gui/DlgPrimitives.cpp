@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #include <Base/Interpreter.h>
+#include <Base/Rotation.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
@@ -51,6 +52,21 @@ DlgPrimitives::~DlgPrimitives()
     // no need to delete child widgets, Qt does it all for us
 }
 
+QString DlgPrimitives::toPlacement() const
+{
+    Base::Vector3f d = ui.getDirection();
+    Base::Rotation rot(Base::Vector3d(0.0,0.0,1.0),
+                       Base::Vector3d(d.x,d.y,d.z));
+    return QString::fromAscii("Base.Placement(Base.Rotation(%1,%2,%3,%4),Base.Vector(%5,%6,%7))")
+        .arg(rot[0],0,'f',2)
+        .arg(rot[1],0,'f',2)
+        .arg(rot[2],0,'f',2)
+        .arg(rot[3],0,'f',2)
+        .arg(ui.xPos->value(),0,'f',2)
+        .arg(ui.yPos->value(),0,'f',2)
+        .arg(ui.xPos->value(),0,'f',2);
+}
+
 void DlgPrimitives::accept()
 {
     try {
@@ -68,17 +84,11 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.addObject(\"Part::Plane\",\"%1\")\n"
                 "App.ActiveDocument.%1.Length=%2\n"
                 "App.ActiveDocument.%1.Width=%3\n"
-                "App.ActiveDocument.%1.Location=Base.Vector(%4,%5,%6)\n"
-                "App.ActiveDocument.%1.Axis=Base.Vector(%7,%8,%9)\n")
+                "App.ActiveDocument.%1.Placement=%4\n")
                 .arg(name)
                 .arg(ui.planeLength->value(),0,'f',2)
                 .arg(ui.planeWidth->value(),0,'f',2)
-                .arg(ui.xPos->value(),0,'f',2)
-                .arg(ui.yPos->value(),0,'f',2)
-                .arg(ui.zPos->value(),0,'f',2)
-                .arg(dir.x,0,'f',2)
-                .arg(dir.y,0,'f',2)
-                .arg(dir.z,0,'f',2);
+                .arg(this->toPlacement());
         }
         else if (ui.comboBox1->currentIndex() == 1) {         // box
             name = QString::fromAscii(doc->getUniqueObjectName("Box").c_str());
@@ -87,18 +97,12 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Length=%2\n"
                 "App.ActiveDocument.%1.Width=%3\n"
                 "App.ActiveDocument.%1.Height=%4\n"
-                "App.ActiveDocument.%1.Location=Base.Vector(%5,%6,%7)\n"
-                "App.ActiveDocument.%1.Axis=Base.Vector(%8,%9,%10)\n")
+                "App.ActiveDocument.%1.Placement=%5\n")
                 .arg(name)
                 .arg(ui.boxLength->value(),0,'f',2)
                 .arg(ui.boxWidth->value(),0,'f',2)
                 .arg(ui.boxHeight->value(),0,'f',2)
-                .arg(ui.xPos->value(),0,'f',2)
-                .arg(ui.yPos->value(),0,'f',2)
-                .arg(ui.zPos->value(),0,'f',2)
-                .arg(dir.x,0,'f',2)
-                .arg(dir.y,0,'f',2)
-                .arg(dir.z,0,'f',2);
+                .arg(this->toPlacement());
         }
         else if (ui.comboBox1->currentIndex() == 2) {  // cylinder
             name = QString::fromAscii(doc->getUniqueObjectName("Cylinder").c_str());
@@ -107,18 +111,12 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Radius=%2\n"
                 "App.ActiveDocument.%1.Height=%3\n"
                 "App.ActiveDocument.%1.Angle=%4\n"
-                "App.ActiveDocument.%1.Location=Base.Vector(%5,%6,%7)\n"
-                "App.ActiveDocument.%1.Axis=Base.Vector(%8,%9,%10)\n")
+                "App.ActiveDocument.%1.Placement=%5\n")
                 .arg(name)
                 .arg(ui.cylinderRadius->value(),0,'f',2)
                 .arg(ui.cylinderHeight->value(),0,'f',2)
                 .arg(ui.cylinderAngle->value(),0,'f',2)
-                .arg(ui.xPos->value(),0,'f',2)
-                .arg(ui.yPos->value(),0,'f',2)
-                .arg(ui.zPos->value(),0,'f',2)
-                .arg(dir.x,0,'f',2)
-                .arg(dir.y,0,'f',2)
-                .arg(dir.z,0,'f',2);
+                .arg(this->toPlacement());
         }
         else if (ui.comboBox1->currentIndex() == 3) {  // cone
             name = QString::fromAscii(doc->getUniqueObjectName("Cone").c_str());
@@ -128,19 +126,13 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Radius2=%3\n"
                 "App.ActiveDocument.%1.Height=%4\n"
                 "App.ActiveDocument.%1.Angle=%5\n"
-                "App.ActiveDocument.%1.Location=Base.Vector(%6,%7,%8)\n"
-                "App.ActiveDocument.%1.Axis=Base.Vector(%9,%10,%11)\n")
+                "App.ActiveDocument.%1.Placement=%6\n")
                 .arg(name)
                 .arg(ui.coneRadius1->value(),0,'f',2)
                 .arg(ui.coneRadius2->value(),0,'f',2)
                 .arg(ui.coneHeight->value(),0,'f',2)
                 .arg(ui.coneAngle->value(),0,'f',2)
-                .arg(ui.xPos->value(),0,'f',2)
-                .arg(ui.yPos->value(),0,'f',2)
-                .arg(ui.zPos->value(),0,'f',2)
-                .arg(dir.x,0,'f',2)
-                .arg(dir.y,0,'f',2)
-                .arg(dir.z,0,'f',2);
+                .arg(this->toPlacement());
         }
         else if (ui.comboBox1->currentIndex() == 4) {  // sphere
             name = QString::fromAscii(doc->getUniqueObjectName("Sphere").c_str());
@@ -150,19 +142,13 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Angle1=%3\n"
                 "App.ActiveDocument.%1.Angle2=%4\n"
                 "App.ActiveDocument.%1.Angle3=%5\n"
-                "App.ActiveDocument.%1.Location=Base.Vector(%6,%7,%8)\n"
-                "App.ActiveDocument.%1.Axis=Base.Vector(%9,%10,%11)\n")
+                "App.ActiveDocument.%1.Placement=%6\n")
                 .arg(name)
                 .arg(ui.sphereRadius->value(),0,'f',2)
                 .arg(ui.sphereAngle1->value(),0,'f',2)
                 .arg(ui.sphereAngle2->value(),0,'f',2)
                 .arg(ui.sphereAngle3->value(),0,'f',2)
-                .arg(ui.xPos->value(),0,'f',2)
-                .arg(ui.yPos->value(),0,'f',2)
-                .arg(ui.zPos->value(),0,'f',2)
-                .arg(dir.x,0,'f',2)
-                .arg(dir.y,0,'f',2)
-                .arg(dir.z,0,'f',2);
+                .arg(this->toPlacement());
         }
         else if (ui.comboBox1->currentIndex() == 5) {  // ellipsoid
             name = QString::fromAscii(doc->getUniqueObjectName("Ellipsoid").c_str());
@@ -173,20 +159,14 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Angle1=%4\n"
                 "App.ActiveDocument.%1.Angle2=%5\n"
                 "App.ActiveDocument.%1.Angle3=%6\n"
-                "App.ActiveDocument.%1.Location=Base.Vector(%7,%8,%9)\n"
-                "App.ActiveDocument.%1.Axis=Base.Vector(%10,%11,%12)\n")
+                "App.ActiveDocument.%1.Placement=%7\n")
                 .arg(name)
                 .arg(ui.ellipsoidRadius1->value(),0,'f',2)
                 .arg(ui.ellipsoidRadius2->value(),0,'f',2)
                 .arg(ui.ellipsoidAngle1->value(),0,'f',2)
                 .arg(ui.ellipsoidAngle2->value(),0,'f',2)
                 .arg(ui.ellipsoidAngle3->value(),0,'f',2)
-                .arg(ui.xPos->value(),0,'f',2)
-                .arg(ui.yPos->value(),0,'f',2)
-                .arg(ui.zPos->value(),0,'f',2)
-                .arg(dir.x,0,'f',2)
-                .arg(dir.y,0,'f',2)
-                .arg(dir.z,0,'f',2);
+                .arg(this->toPlacement());
         }
         else if (ui.comboBox1->currentIndex() == 6) {  // torus
             name = QString::fromAscii(doc->getUniqueObjectName("Torus").c_str());
@@ -197,20 +177,14 @@ void DlgPrimitives::accept()
                 "App.ActiveDocument.%1.Angle1=%4\n"
                 "App.ActiveDocument.%1.Angle2=%5\n"
                 "App.ActiveDocument.%1.Angle3=%6\n"
-                "App.ActiveDocument.%1.Location=Base.Vector(%7,%8,%9)\n"
-                "App.ActiveDocument.%1.Axis=Base.Vector(%10,%11,%12)\n")
+                "App.ActiveDocument.%1.Placement=%7\n")
                 .arg(name)
                 .arg(ui.torusRadius1->value(),0,'f',2)
                 .arg(ui.torusRadius2->value(),0,'f',2)
                 .arg(ui.torusAngle1->value(),0,'f',2)
                 .arg(ui.torusAngle2->value(),0,'f',2)
                 .arg(ui.torusAngle3->value(),0,'f',2)
-                .arg(ui.xPos->value(),0,'f',2)
-                .arg(ui.yPos->value(),0,'f',2)
-                .arg(ui.zPos->value(),0,'f',2)
-                .arg(dir.x,0,'f',2)
-                .arg(dir.y,0,'f',2)
-                .arg(dir.z,0,'f',2);
+                .arg(this->toPlacement());
         }
 
         // Execute the Python block

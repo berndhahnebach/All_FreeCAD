@@ -85,8 +85,17 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
                                         &(Base::VectorPy::Type), &o)) {
         Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
-		*getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
-        
+        *getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
+        return 0;
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!O!", &(Base::RotationPy::Type), &d,
+                                       &(Base::VectorPy::Type), &o)) {
+        Base::Rotation *rot = static_cast<Base::RotationPy*>(d)->getRotationPtr();
+        getPlacementPtr()->setRotation(*rot);
+        Base::Vector3d *pos = static_cast<Base::VectorPy*>(o)->getVectorPtr();
+        getPlacementPtr()->setPosition(*pos);
         return 0;
     }
 
