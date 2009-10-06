@@ -7,6 +7,9 @@
 		<file>Icons/preferences-part_design.svg</file>
 		<file>Icons/Part_Cylinder.svg</file>
 		<file>Icons/Part_Box.svg</file>
+		<file>Icons/Part_Torus.svg</file>
+		<file>Icons/Part_Cone.svg</file>
+		<file>Icons/Part_Sphere.svg</file>
 		<file>Icons/Part_Booleans.svg</file>
 		<file>Icons/Part_Cut.svg</file>
 		<file>Icons/Part_Common.svg</file>
