@@ -51,8 +51,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
     part->setCommand(QT_TR_NOOP("&Part"));
-    *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" 
-          << "Part_Primitives" << "Separator" << "Part_Boolean" << "Part_Extrude"
+    *part << "Part_Primitives" << "Part_Boolean" << "Part_Extrude"
           << "Part_Revolve" << "Part_Fillet" << "Separator" << "Part_ShapeInfo";
 
     Gui::MenuItem* partSimple = new Gui::MenuItem;
@@ -60,10 +59,11 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     partSimple->setCommand(QT_TR_NOOP("&Simple"));
     *partSimple << "Part_SimpleCylinder";
 
-    Gui::MenuItem* partPara = new Gui::MenuItem;
-    root->insertItem(item, partPara);
-    partPara->setCommand(QT_TR_NOOP("&Parametric"));
-    *partPara << "Part_Box" << "Part_Cylinder";
+    Gui::MenuItem* solids = new Gui::MenuItem;
+    root->insertItem(item, solids);
+    solids->setCommand(QT_TR_NOOP("&Parametric"));
+    *solids << "Part_Box" << "Part_Cylinder" << "Part_Sphere" << "Part_Cone"
+            << "Part_Torus" << "Separator" << "Part_Primitives";
 
     return root;
 }
@@ -71,12 +71,19 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+
+    Gui::ToolBarItem* solids = new Gui::ToolBarItem(root);
+    solids->setCommand(QT_TR_NOOP("Solids"));
+    *solids << "Part_Box" << "Part_Cylinder" << "Part_Sphere" << "Part_Cone" << "Part_Torus";
+
     Gui::ToolBarItem* tool = new Gui::ToolBarItem(root);
     tool->setCommand(QT_TR_NOOP("Part tools"));
-    *tool << "Part_Import" << "Separator" << "Part_Extrude" << "Part_Revolve" << "Part_Fillet";
+    *tool << "Part_Extrude" << "Part_Revolve" << "Part_Fillet";
+
     Gui::ToolBarItem* boolop = new Gui::ToolBarItem(root);
     boolop->setCommand(QT_TR_NOOP("Boolean"));
     *boolop << "Part_Boolean" << "Part_Cut" << "Part_Fuse" << "Part_Common" << "Part_Section";
+
     return root;
 }
 
@@ -84,15 +91,6 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
     // Part tools
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
-
-    Gui::ToolBarItem* imp = new Gui::ToolBarItem( root );
-    imp->setCommand(QT_TR_NOOP("Import"));
-    *imp << "Part_Import" << "Part_ImportCurveNet";
-
-    Gui::ToolBarItem* bol = new Gui::ToolBarItem( root );
-    bol->setCommand(QT_TR_NOOP("Boolean Operators"));
-    *bol << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
-  
     return root;
 }
 

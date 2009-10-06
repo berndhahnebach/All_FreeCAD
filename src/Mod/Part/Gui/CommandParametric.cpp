@@ -32,8 +32,6 @@
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
-#include "DlgPartCylinderImp.h"
-#include "DlgPartBoxImp.h"
 
 //===========================================================================
 // Part_Cylinder
@@ -45,7 +43,7 @@ CmdPartCylinder::CmdPartCylinder()
 {
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
-    sMenuText     = QT_TR_NOOP("Create Cylinder...");
+    sMenuText     = QT_TR_NOOP("Cylinder");
     sToolTipText  = QT_TR_NOOP("Create a Cylinder");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
@@ -55,25 +53,10 @@ CmdPartCylinder::CmdPartCylinder()
 
 void CmdPartCylinder::activated(int iMsg)
 {
-    PartGui::DlgPartCylinderImp dlg(Gui::getMainWindow());
-    if (dlg.exec()== QDialog::Accepted) {
-        Base::Vector3f dir = dlg.getDirection();
-        openCommand("Create Part Cylinder");
-        doCommand(Doc,"from FreeCAD import Base");
-        doCommand(Doc,"import Part");
-        doCommand(Doc,"__cf__ = App.ActiveDocument.addObject(\"Part::Cylinder\",\"Cylinder\")");
-        doCommand(Doc,"__cf__.Location = Base.Vector(%f,%f,%f)",
-                        dlg.xPos->value(),
-                        dlg.yPos->value(),
-                        dlg.zPos->value());
-        doCommand(Doc,"__cf__.Axis = Base.Vector(%f,%f,%f)",
-                        dir.x, dir.y, dir.z);
-        doCommand(Doc,"__cf__.Radius = %f", dlg.radius->value());
-        doCommand(Doc,"__cf__.Height = %f", dlg.length->value());
-        doCommand(Doc,"del __cf__");
-        commitCommand();
-        updateActive();
-    }
+    openCommand("Create cylinder");
+    doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Cylinder\",\"Cylinder\")");
+    commitCommand();
+    updateActive();
 }
 
 bool CmdPartCylinder::isActive(void)
@@ -90,11 +73,11 @@ bool CmdPartCylinder::isActive(void)
 DEF_STD_CMD_A(CmdPartBox);
 
 CmdPartBox::CmdPartBox()
-  :Command("Part_Box")
+  : Command("Part_Box")
 {
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
-    sMenuText     = QT_TR_NOOP("Create box...");
+    sMenuText     = QT_TR_NOOP("Box");
     sToolTipText  = QT_TR_NOOP("Create a Box feature");
     sWhatsThis    = "Part_Box";
     sStatusTip    = sToolTipText;
@@ -104,29 +87,115 @@ CmdPartBox::CmdPartBox()
 
 void CmdPartBox::activated(int iMsg)
 {
-    PartGui::DlgPartBoxImp dlg(Gui::getMainWindow());
-    if (dlg.exec()== QDialog::Accepted) {
-        Base::Vector3f dir = dlg.getDirection();
-        openCommand("Part Box Create");
-        doCommand(Doc,"from FreeCAD import Base");
-        doCommand(Doc,"import Part");
-        doCommand(Doc,"__fb__ = App.ActiveDocument.addObject(\"Part::Box\",\"PartBox\")");
-        doCommand(Doc,"__fb__.Location = Base.Vector(%f,%f,%f)",
-                                 dlg.xPos->value(),
-                                 dlg.yPos->value(),
-                                 dlg.zPos->value());
-        doCommand(Doc,"__fb__.Axis = Base.Vector(%f,%f,%f)",
-                        dir.x, dir.y, dir.z);
-        doCommand(Doc,"__fb__.Length = %f",dlg.uLength->value());
-        doCommand(Doc,"__fb__.Width = %f" ,dlg.vLength->value());
-        doCommand(Doc,"__fb__.Height = %f",dlg.wLength->value());
-        doCommand(Doc,"del __fb__");
-        commitCommand();
-        updateActive();
-    }
+    openCommand("Create box");
+    doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Box\",\"Box\")");
+    commitCommand();
+    updateActive();
 }
 
 bool CmdPartBox::isActive(void)
+{
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
+}
+
+//===========================================================================
+// Part_Sphere
+//===========================================================================
+DEF_STD_CMD_A(CmdPartSphere);
+
+CmdPartSphere::CmdPartSphere()
+  : Command("Part_Sphere")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Sphere");
+    sToolTipText  = QT_TR_NOOP("Create a sphere feature");
+    sWhatsThis    = "Part_Sphere";
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Sphere";
+    iAccel        = 0;
+}
+
+void CmdPartSphere::activated(int iMsg)
+{
+    openCommand("Create box");
+    doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Sphere\",\"Sphere\")");
+    commitCommand();
+    updateActive();
+}
+
+bool CmdPartSphere::isActive(void)
+{
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
+}
+
+//===========================================================================
+// Part_Cone
+//===========================================================================
+DEF_STD_CMD_A(CmdPartCone);
+
+CmdPartCone::CmdPartCone()
+  : Command("Part_Cone")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Cone");
+    sToolTipText  = QT_TR_NOOP("Create a cone feature");
+    sWhatsThis    = "Part_Cone";
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Cone";
+    iAccel        = 0;
+}
+
+void CmdPartCone::activated(int iMsg)
+{
+    openCommand("Create cone");
+    doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Cone\",\"Cone\")");
+    commitCommand();
+    updateActive();
+}
+
+bool CmdPartCone::isActive(void)
+{
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
+}
+
+//===========================================================================
+// Part_Torus
+//===========================================================================
+DEF_STD_CMD_A(CmdPartTorus);
+
+CmdPartTorus::CmdPartTorus()
+  : Command("Part_Torus")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Torus");
+    sToolTipText  = QT_TR_NOOP("Create a torus feature");
+    sWhatsThis    = "Part_Torus";
+    sStatusTip    = sToolTipText;
+    sPixmap       = "Part_Torus";
+    iAccel        = 0;
+}
+
+void CmdPartTorus::activated(int iMsg)
+{
+    openCommand("Create cone");
+    doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Torus\",\"Torus\")");
+    commitCommand();
+    updateActive();
+}
+
+bool CmdPartTorus::isActive(void)
 {
     if (getActiveGuiDocument())
         return true;
@@ -142,4 +211,7 @@ void CreateParamPartCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
     rcCmdMgr.addCommand(new CmdPartCylinder());
     rcCmdMgr.addCommand(new CmdPartBox());
+    rcCmdMgr.addCommand(new CmdPartSphere());
+    rcCmdMgr.addCommand(new CmdPartCone());
+    rcCmdMgr.addCommand(new CmdPartTorus());
 }

@@ -43,9 +43,6 @@
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <TopoDS_Shape.hxx>
-
 #include "../App/PartFeature.h"
 #include "DlgPartImportStepImp.h"
 #include "DlgBooleanOperation.h"
@@ -721,8 +718,8 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartCut());
     rcCmdMgr.addCommand(new CmdPartFuse());
     rcCmdMgr.addCommand(new CmdPartSection());
-    rcCmdMgr.addCommand(new CmdPartBox2());
-    rcCmdMgr.addCommand(new CmdPartBox3());
+    //rcCmdMgr.addCommand(new CmdPartBox2());
+    //rcCmdMgr.addCommand(new CmdPartBox3());
     rcCmdMgr.addCommand(new CmdPartPrimitives());
 
     rcCmdMgr.addCommand(new CmdPartImport());
