@@ -701,7 +701,7 @@ unsigned int Document::getMemSize (void) const
     return size;
 }
 
-// Save the document under the name its been opened
+// Save the document under the name it has been opened
 bool Document::save (void)
 {
     int compression = App::GetApplication().GetParameterGroupByPath
@@ -739,8 +739,51 @@ bool Document::save (void)
 
         // if saving the project data succeeded rename to the actual file name
         Base::FileInfo fi(FileName.getValue());
-        if (fi.exists())
-            fi.deleteFile();
+        if (fi.exists()) {
+            bool backup = App::GetApplication().GetParameterGroupByPath
+                ("User parameter:BaseApp/Preferences/Document")->GetBool("CreateBackupFiles",true);
+            int count_bak = App::GetApplication().GetParameterGroupByPath
+                ("User parameter:BaseApp/Preferences/Document")->GetInt("CountBackupFiles",1);
+            if (backup) {
+                int nSuff = 0;
+                std::string fn = fi.fileName();
+                Base::FileInfo di(fi.dirPath());
+                std::vector<Base::FileInfo> backup;
+                std::vector<Base::FileInfo> files = di.getDirectoryContent();
+                for (std::vector<Base::FileInfo>::iterator it = files.begin(); it != files.end(); ++it) {
+                    std::string file = it->fileName();
+                    if (file.substr(0,fn.length()) == fn) {
+                        // starts with the same file name
+                        std::string suf(file.substr(fn.length()));
+                        if (suf.size() > 0) {
+                            std::string::size_type nPos = suf.find_first_not_of("0123456789");
+                            if (nPos==std::string::npos) {
+                                // store all backup files
+                                backup.push_back(*it);
+                                nSuff = std::max<int>(nSuff, std::atol(suf.c_str()));
+                            }
+                        }
+                    }
+                }
+
+                if (!backup.empty() && (int)backup.size() >= count_bak) {
+                    // delete the first backup file we found
+                    backup.front().deleteFile();
+                    fn = backup.front().filePath();
+                }
+                else {
+                    // create a new backup file
+                    std::stringstream str;
+                    str << fi.filePath() << (nSuff + 1);
+                    fn = str.str();
+                }
+
+                fi.renameFile(fn.c_str());
+            }
+            else {
+                fi.deleteFile();
+            }
+        }
         if (tmp.renameFile(FileName.getValue()) == false)
             Base::Console().Warning("Cannot rename file from '%s' to '%s'\n",
             fn.c_str(), FileName.getValue());
