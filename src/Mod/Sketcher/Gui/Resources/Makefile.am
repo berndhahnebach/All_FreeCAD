@@ -18,7 +18,7 @@ EXTRA_DIST = \
 		icons/Sketcher_CreateRectangle.png \
 		icons/Sketcher_CreateText.png \
 		icons/Sketcher_DraftLine.svg \
-		icons/Sketcher_LeavSketch.svg \
+		icons/Sketcher_LeaveSketch.svg \
 		icons/Sketcher_NewSketch.svg \
 		translations/Sketcher_de.qm \
 		translations/Sketcher_de.ts \

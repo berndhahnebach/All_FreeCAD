@@ -59,6 +59,8 @@ EXTRA_DIST = \
 		view-refresh.svg \
 		view-fullscreen.svg \
 		view-axometric.svg \
+		view-isometric.svg \
+		view-perspective.svg \
 		view-bottom.svg \
 		view-front.svg \
 		view-left.svg \
@@ -71,6 +73,9 @@ EXTRA_DIST = \
 		view-zoom-in.svg \
 		view-zoom-out.svg \
 		view-zoom-selection.svg \
+		Tree_Annotation.svg \
+		Tree_Dimension.svg \
+		Tree_Python.svg \
 		resource.qrc
 
 data_DATA = FCIcon.xpm
