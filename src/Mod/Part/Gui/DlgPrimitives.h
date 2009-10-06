@@ -36,6 +36,7 @@ public:
     DlgPrimitives(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgPrimitives();
     void accept();
+    QString toPlacement() const;
 };
 
 } // namespace PartGui

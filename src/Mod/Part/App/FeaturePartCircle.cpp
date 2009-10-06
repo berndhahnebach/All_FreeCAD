@@ -62,14 +62,7 @@ short Circle::mustExecute() const
 
 App::DocumentObjectExecReturn *Circle::execute(void)
 {
-    Base::Vector3f loc = this->Location.getValue();
-    Base::Vector3f dir = this->Axis.getValue();
-
-    gp_Ax1 axis;
-    axis.SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
-    axis.SetDirection(gp_Dir(dir.x, dir.y, dir.z));
     gp_Circ circle;
-    circle.SetAxis(axis);
     circle.SetRadius(this->Radius.getValue());
     
     BRepBuilderAPI_MakeEdge clMakeEdge(circle, this->Angle0.getValue(), this->Angle1.getValue());
@@ -81,15 +74,6 @@ App::DocumentObjectExecReturn *Circle::execute(void)
 
 void Circle::onChanged(const App::Property* prop)
 {
-    if (prop == &Circ) {
-        this->Radius.setValue((float)Circ.getValue().Radius());
-        gp_Pnt loc = Circ.getValue().Location();
-        this->Location.setValue((float)loc.X(),(float)loc.Y(),(float)loc.Z());
-        gp_Ax1 axis = Circ.getValue().Axis();
-        gp_Dir dir = axis.Direction();
-        this->Axis.setValue((float)dir.X(),(float)dir.Y(),(float)dir.Z());
-    }
-
     Part::Feature::onChanged(prop);
 }
 

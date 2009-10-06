@@ -71,14 +71,8 @@ App::DocumentObjectExecReturn *Box::execute(void)
         return new App::DocumentObjectExecReturn("Height of box too small");
 
     try {
-        // Build a box using the dimension and position attributes
-        gp_Pnt pnt(Location.getValue().x,
-                   Location.getValue().y,
-                   Location.getValue().z);
-        gp_Dir dir(Axis.getValue().x,
-                   Axis.getValue().y,
-                   Axis.getValue().z);
-        BRepPrimAPI_MakeBox mkBox(gp_Ax2(pnt,dir), L, W, H);
+        // Build a box using the dimension attributes
+        BRepPrimAPI_MakeBox mkBox(L, W, H);
         TopoDS_Shape ResultShape = mkBox.Shape();
         this->Shape.setValue(ResultShape);
     }
@@ -101,6 +95,7 @@ void Box::Restore(Base::XMLReader &reader)
     int Cnt = reader.getAttributeAsInteger("Count");
 
     bool location_xyz = false;
+    Base::Placement plm = this->Placement.getValue();
     App::PropertyDistance x,y,z;
     for (int i=0 ;i<Cnt;i++) {
         reader.readElement("Property");
@@ -139,7 +134,8 @@ void Box::Restore(Base::XMLReader &reader)
     }
 
     if (location_xyz) {
-        this->Location.setValue(x.getValue(),y.getValue(),z.getValue());
+        plm.setPosition(Base::Vector3d(x.getValue(),y.getValue(),z.getValue()));
+        this->Placement.setValue(plm);
     }
 
     reader.readEndElement("Properties");
@@ -147,7 +143,7 @@ void Box::Restore(Base::XMLReader &reader)
 
 void Box::onChanged(const App::Property* prop)
 {
-    if(prop == &Length ||prop == &Width ||prop == &Height ||prop == &Location ||prop == &Axis ){
+    if (prop == &Length || prop == &Width || prop == &Height){
         App::DocumentObjectExecReturn *ret = execute();
         if (ret != App::DocumentObject::StdReturn)
             delete ret;

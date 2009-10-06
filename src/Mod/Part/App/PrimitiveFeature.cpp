@@ -55,8 +55,6 @@ PROPERTY_SOURCE_ABSTRACT(Part::Primitive, Part::Feature)
 
 Primitive::Primitive(void) 
 {
-    ADD_PROPERTY(Location,(Base::Vector3f(0.0f,0.0f,0.0f)));
-    ADD_PROPERTY(Axis,(Base::Vector3f(0.0f,0.0f,1.0f)));
 }
 
 Primitive::~Primitive()
@@ -65,10 +63,23 @@ Primitive::~Primitive()
 
 short Primitive::mustExecute(void) const
 {
-    if (Location.isTouched() ||
-        Axis.isTouched())
-        return 1;
     return 0;
+}
+
+void Primitive::onChanged(const App::Property* prop)
+{
+    // Do not support sphere, ellipsoid and torus because the creation
+    // takes too long and thus is not feasible
+    std::string grp = (prop->getGroup() ? prop->getGroup() : "");
+    if (grp == "Plane" || grp == "Cylinder" || grp == "Cone"){
+        try {
+            App::DocumentObjectExecReturn *ret = execute();
+            delete ret;
+        }
+        catch (...) {
+        }
+    }
+    Part::Feature::onChanged(prop);
 }
 
 PROPERTY_SOURCE(Part::Plane, Part::Primitive)
@@ -97,12 +108,8 @@ App::DocumentObjectExecReturn *Plane::execute(void)
     if (W < Precision::Confusion())
       return new App::DocumentObjectExecReturn("Width of plane too small");
 
-    gp_Pnt pnt(Location.getValue().x,
-               Location.getValue().y,
-               Location.getValue().z);
-    gp_Dir dir(Axis.getValue().x,
-               Axis.getValue().y,
-               Axis.getValue().z);
+    gp_Pnt pnt(0.0,0.0,0.0);
+    gp_Dir dir(0.0,0.0,1.0);
     Handle_Geom_Plane aPlane = new Geom_Plane(pnt, dir);
     BRepBuilderAPI_MakeFace mkFace(aPlane, 0.0, L, 0.0, W);
 
@@ -171,14 +178,7 @@ App::DocumentObjectExecReturn *Sphere::execute(void)
 {
     // Build a sphere
     try {
-        gp_Pnt pnt(Location.getValue().x,
-                   Location.getValue().y,
-                   Location.getValue().z);
-        gp_Dir dir(Axis.getValue().x,
-                   Axis.getValue().y,
-                   Axis.getValue().z);
-        BRepPrimAPI_MakeSphere mkSphere(gp_Ax2(pnt,dir),
-                                        Radius.getValue(), 
+        BRepPrimAPI_MakeSphere mkSphere(Radius.getValue(),
                                         Angle1.getValue()/180.0f*Standard_PI,
                                         Angle2.getValue()/180.0f*Standard_PI,
                                         Angle3.getValue()/180.0f*Standard_PI);
@@ -228,12 +228,8 @@ App::DocumentObjectExecReturn *Ellipsoid::execute(void)
 {
     // Build a sphere
     try {
-        gp_Pnt pnt(Location.getValue().x,
-                   Location.getValue().y,
-                   Location.getValue().z);
-        gp_Dir dir(Axis.getValue().x,
-                   Axis.getValue().y,
-                   Axis.getValue().z);
+        gp_Pnt pnt(0.0,0.0,0.0);
+        gp_Dir dir(0.0,0.0,1.0);
         gp_Ax2 ax2(pnt,dir);
         BRepPrimAPI_MakeSphere mkSphere(ax2,
                                         Radius2.getValue(), 
@@ -277,10 +273,6 @@ Cylinder::Cylinder(void)
 
 short Cylinder::mustExecute() const
 {
-    if (Location.isTouched())
-        return 1;
-    if (Axis.isTouched())
-        return 1;
     if (Radius.isTouched())
         return 1;
     if (Height.isTouched())
@@ -294,14 +286,7 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
 {
     // Build a cylinder
     try {
-        gp_Pnt pnt(Location.getValue().x,
-                   Location.getValue().y,
-                   Location.getValue().z);
-        gp_Dir dir(Axis.getValue().x,
-                   Axis.getValue().y,
-                   Axis.getValue().z);
-        BRepPrimAPI_MakeCylinder mkCylr(gp_Ax2(pnt,dir),
-                                        Radius.getValue(),
+        BRepPrimAPI_MakeCylinder mkCylr(Radius.getValue(),
                                         Height.getValue(),
                                         Angle.getValue()/180.0f*Standard_PI);
         TopoDS_Shape ResultShape = mkCylr.Shape();
@@ -328,10 +313,6 @@ Cone::Cone(void)
 
 short Cone::mustExecute() const
 {
-    if (Location.isTouched())
-        return 1;
-    if (Axis.isTouched())
-        return 1;
     if (Radius1.isTouched())
         return 1;
     if (Radius2.isTouched())
@@ -347,14 +328,7 @@ App::DocumentObjectExecReturn *Cone::execute(void)
 {
     try {
         // Build a cone
-        gp_Pnt pnt(Location.getValue().x,
-                   Location.getValue().y,
-                   Location.getValue().z);
-        gp_Dir dir(Axis.getValue().x,
-                   Axis.getValue().y,
-                   Axis.getValue().z);
-        BRepPrimAPI_MakeCone mkCone(gp_Ax2(pnt,dir),
-                                    Radius1.getValue(),
+        BRepPrimAPI_MakeCone mkCone(Radius1.getValue(),
                                     Radius2.getValue(),
                                     Height.getValue(),
                                     Angle.getValue()/180.0f*Standard_PI);
@@ -404,14 +378,7 @@ App::DocumentObjectExecReturn *Torus::execute(void)
 {
     try {
         // Build a torus
-        gp_Pnt pnt(Location.getValue().x,
-                   Location.getValue().y,
-                   Location.getValue().z);
-        gp_Dir dir(Axis.getValue().x,
-                   Axis.getValue().y,
-                   Axis.getValue().z);
-        BRepPrimAPI_MakeTorus mkTorus(gp_Ax2(pnt,dir),
-                                      Radius1.getValue(),
+        BRepPrimAPI_MakeTorus mkTorus(Radius1.getValue(),
                                       Radius2.getValue(),
                                       Angle1.getValue()/180.0f*Standard_PI,
                                       Angle2.getValue()/180.0f*Standard_PI,
