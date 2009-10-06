@@ -178,7 +178,7 @@ QPixmap BitmapFactoryInst::pixmap(const char* name) const
         return icon;
     }
 
-    Base::Console().Warning("Can't find Pixmap:%s\n", name);
+    Base::Console().Warning("Cannot find icon: %s\n", name);
     return QPixmap(px);
 }
 

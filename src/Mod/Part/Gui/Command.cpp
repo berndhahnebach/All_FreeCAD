@@ -583,11 +583,11 @@ bool CmdPartRevolve::isActive(void)
 }
 
 //===========================================================================
-// Part_FilletEdges
+// Part_Fillet
 //===========================================================================
-DEF_STD_CMD_A(CmdPartFilletEdges);
+DEF_STD_CMD_A(CmdPartFillet);
 
-CmdPartFilletEdges::CmdPartFilletEdges()
+CmdPartFillet::CmdPartFillet()
   :Command("Part_Fillet")
 {
     sAppModule    = "Part";
@@ -600,13 +600,13 @@ CmdPartFilletEdges::CmdPartFilletEdges()
     iAccel        = 0;
 }
 
-void CmdPartFilletEdges::activated(int iMsg)
+void CmdPartFillet::activated(int iMsg)
 {
     PartGui::DlgFilletEdges dlg(Gui::getMainWindow());
     dlg.exec();
 }
 
-bool CmdPartFilletEdges::isActive(void)
+bool CmdPartFillet::isActive(void)
 {
     return hasActiveDocument();
 }
@@ -713,7 +713,7 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartBoolean());
     rcCmdMgr.addCommand(new CmdPartExtrude());
     rcCmdMgr.addCommand(new CmdPartRevolve());
-    rcCmdMgr.addCommand(new CmdPartFilletEdges());
+    rcCmdMgr.addCommand(new CmdPartFillet());
     rcCmdMgr.addCommand(new CmdPartCommon());
     rcCmdMgr.addCommand(new CmdPartCut());
     rcCmdMgr.addCommand(new CmdPartFuse());

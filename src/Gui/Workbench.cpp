@@ -416,7 +416,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // stereo
     MenuItem* view3d = new MenuItem;
-    view3d->setCommand(QT_TR_NOOP("&3D View"));
+    view3d->setCommand(QT_TR_NOOP("&Stereo"));
     *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" 
             << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" 
             << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewIvIssueCamPos";

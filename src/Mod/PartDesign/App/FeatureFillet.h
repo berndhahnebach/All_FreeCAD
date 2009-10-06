@@ -38,7 +38,7 @@ public:
     Fillet();
 
     App::PropertyLink Base;
-    Part::PropertyFilletContour Contour;
+    App::PropertyFloatConstraint Radius;
 
     /** @name methods override feature */
     //@{

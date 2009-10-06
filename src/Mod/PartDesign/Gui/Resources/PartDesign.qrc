@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource> 
         <file>translations/PartDesign_de.qm</file>
+        <file>icons/PartDesign_Pad.svg</file>
     </qresource>
 </RCC> 

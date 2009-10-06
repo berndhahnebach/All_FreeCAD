@@ -2377,8 +2377,8 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Standardansichten</translation>
     </message>
     <message>
-        <source>&amp;3D View</source>
-        <translation>&amp;3D Ansicht</translation>
+        <source>&amp;Stereo</source>
+        <translation>&amp;Stereo</translation>
     </message>
     <message>
         <source>&amp;Zoom</source>

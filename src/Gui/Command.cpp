@@ -784,10 +784,10 @@ bool CommandManager::addTo(const char* Name,QWidget *pcWidget)
 {
     if (_sCommands.find(Name) == _sCommands.end()) {
         // Print in release mode only a log message instead of an error message to avoid to annoy the user
-#ifdef FC_DEBUG
+#ifdef _DEBUG
         Base::Console().Error("CommandManager::addTo() try to add an unknown command (%s) to a widget!\n",Name);
 #else
-        Base::Console().Log("CommandManager::addTo() try to add an unknown command (%s) to a widget!\n",Name);
+        Base::Console().Warning("Unknown command '%s'\n",Name);
 #endif
         return false;
     }
