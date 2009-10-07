@@ -101,17 +101,10 @@ public:
     /// remove the error from the object
     void purgeError(void){StatusBits.reset(1);}
     bool isRecomputing() const {return StatusBits.test(3);}
+    App::DocumentObjectExecReturn *recompute(void);
     //@}
 
-    /** get called by the document to recompute this feature
-      * Normaly this methode get called in the processing of 
-      * Document::recompute(). 
-      * In execute() the outpupt properties get recomputed
-      * with the data from linked objects and objects own 
-      * properties.
-      */
-    virtual App::DocumentObjectExecReturn *execute(void);
-
+public:
     /** mustExecute
      *  We call this method to check if the object was modified to
      *  be invoked. If the object label or an argument is modified.
@@ -128,7 +121,7 @@ public:
 
 
 
-    /** Called in case of losing a link
+    /** Called in case of loosing a link
      * Get called by the document when a object got deleted a link property of this 
      * object ist pointing to. The standard behaivour of the DocumentObject implementation 
      * is to reset the links to nothing. You may overide this methode to implement 
@@ -147,6 +140,15 @@ public:
 
 
 protected:
+
+    /** get called by the document to recompute this feature
+      * Normaly this methode get called in the processing of 
+      * Document::recompute(). 
+      * In execute() the outpupt properties get recomputed
+      * with the data from linked objects and objects own 
+      * properties.
+      */
+    virtual App::DocumentObjectExecReturn *execute(void);
 
     /** Status bits of the document object
      * The first 8 bits are used for the base system the rest can be used in

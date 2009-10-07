@@ -250,7 +250,7 @@ void PropertyPath::Paste(const Property &from)
 // PropertyEnumeration
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(PropertyEnumeration, App::PropertyInteger);
+TYPESYSTEM_SOURCE(App::PropertyEnumeration, App::PropertyInteger);
 
 //**************************************************************************
 // Construction/Destruction
@@ -707,7 +707,7 @@ void PropertyFloat::Paste(const Property &from)
 // PropertyFloatConstraint
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(PropertyFloatConstraint, App::PropertyFloat);
+TYPESYSTEM_SOURCE(App::PropertyFloatConstraint, App::PropertyFloat);
 
 //**************************************************************************
 // Construction/Destruction
@@ -761,7 +761,7 @@ void PropertyFloatConstraint::setPyObject(PyObject *value)
 // PropertyDistance
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(PropertyDistance, App::PropertyFloat);
+TYPESYSTEM_SOURCE(App::PropertyDistance, App::PropertyFloat);
 
 //**************************************************************************
 //**************************************************************************
@@ -795,7 +795,7 @@ void PropertyLength::setPyObject(PyObject *value)
 // PropertyAngle
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(PropertyAngle, App::PropertyFloat);
+TYPESYSTEM_SOURCE(App::PropertyAngle, App::PropertyFloat);
 
 
 //**************************************************************************
