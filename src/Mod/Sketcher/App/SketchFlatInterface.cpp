@@ -548,7 +548,7 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 			 0.01,  // tolerance
 			false, // use only edges which share a vertex
 			wires);
-		if(wires->Length() > 1)  Base::Console().Warning("Multible wires not supported jet! %d",wires->Length());
+		if(wires->Length() > 1)  Base::Console().Warning("Multible wires not supported yet! %d",wires->Length());
 		if(wires->Length() == 0)  {
 			Base::Console().Warning("No wire found");
 			return result;

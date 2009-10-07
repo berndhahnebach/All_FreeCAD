@@ -166,9 +166,9 @@ CmdDrawingExportPage::CmdDrawingExportPage()
     // seting the
     sGroup        = QT_TR_NOOP("File");
     sMenuText     = QT_TR_NOOP("&Export page...");
-    sToolTipText  = QT_TR_NOOP("Export a page to a SVG file");
+    sToolTipText  = QT_TR_NOOP("Export a page to an SVG file");
     sWhatsThis    = "Drawing_ExportPage";
-    sStatusTip    = QT_TR_NOOP("Export a page to a SVG file");
+    sStatusTip    = QT_TR_NOOP("Export a page to an SVG file");
     sPixmap       = "document-save";
     iAccel        = 0;
 }
