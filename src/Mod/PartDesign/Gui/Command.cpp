@@ -93,7 +93,7 @@ CmdPartDesignFillet::CmdPartDesignFillet()
     sAppModule    = "PartDesign";
     sGroup        = QT_TR_NOOP("PartDesign");
     sMenuText     = QT_TR_NOOP("Fillet");
-    sToolTipText  = QT_TR_NOOP("Make a fillet on a edge, face or body");
+    sToolTipText  = QT_TR_NOOP("Make a fillet on an edge, face or body");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Fillet";
@@ -105,7 +105,7 @@ void CmdPartDesignFillet::activated(int iMsg)
     unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
     if (n != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select a edge, face or body."));
+            QObject::tr("Select an edge, face or body."));
         return;
     }
 
