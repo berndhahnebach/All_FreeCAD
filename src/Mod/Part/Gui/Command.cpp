@@ -417,7 +417,7 @@ CmdPartImport::CmdPartImport()
     sToolTipText  = QT_TR_NOOP("Imports a CAD file");
     sWhatsThis    = "Part_Import";
     sStatusTip    = sToolTipText;
-    sPixmap       = "Part_Box";
+    sPixmap       = "Part_Import";
     iAccel        = 0;
 }
 

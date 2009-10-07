@@ -18,6 +18,7 @@
 		<file>Icons/Part_Extrude.svg</file>
 		<file>Icons/Part_Fillet.svg</file>
 		<file>Icons/Part_Revolve.svg</file>
+		<file>Icons/Part_Import.svg</file>
 		<file>Icons/Tree_Part.svg</file>
 	</qresource>
 </RCC>

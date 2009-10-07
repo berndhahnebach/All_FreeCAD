@@ -60,7 +60,7 @@ using namespace std;
 // ---------------------------------------------------------------------------
 
 Base::XMLReader::XMLReader(const char* FileName, std::istream& str) 
-  : DocumentSchema(0), _File(FileName)
+  : DocumentSchema(0), Level(0), _File(FileName)
 {
 #ifdef _MSC_VER
     str.imbue(std::locale::empty());
@@ -228,17 +228,28 @@ bool Base::XMLReader::read(void)
 void Base::XMLReader::readElement(const char* ElementName)
 {
     bool ok;
+    int currentLevel = Level;
+    std::string currentName = LocalName;
     do {
         ok = read(); if (!ok) break;
-    } while( (ReadType != StartElement && ReadType != StartEndElement) || (ElementName && LocalName != ElementName));
+        if (ReadType == EndElement && currentName == LocalName && currentLevel >= Level) {
+            // we have reached the end of the element when calling this method
+            // thus we must stop reading on.
+            break;
+        }
+    } while ((ReadType != StartElement && ReadType != StartEndElement) ||
+             (ElementName && LocalName != ElementName));
 }
 
 void Base::XMLReader::readEndElement(const char* ElementName)
 {
+    // if we are already at the end of the current element
+    if (ReadType == EndElement && LocalName == ElementName)
+        return;
     bool ok;
     do {
         ok = read(); if (!ok) break;
-    } while(ReadType != EndElement || (ElementName && LocalName != ElementName));
+    } while (ReadType != EndElement || (ElementName && LocalName != ElementName));
 }
 
 void Base::XMLReader::readCharacters(void)
@@ -329,6 +340,7 @@ bool Base::XMLReader::isRegistered(Base::Persistence *Object) const
 // ---------------------------------------------------------------------------
 void Base::XMLReader::startElement(const XMLCh* const /*uri*/, const XMLCh* const localname, const XMLCh* const /*qname*/, const Attributes& attrs)
 {
+    Level++; // new scope
     LocalName = StrX(localname).c_str();
 
     // saving attributes
@@ -341,6 +353,7 @@ void Base::XMLReader::startElement(const XMLCh* const /*uri*/, const XMLCh* cons
 
 void Base::XMLReader::endElement  (const XMLCh* const /*uri*/, const XMLCh *const localname, const XMLCh *const /*qname*/)
 {
+    Level--; // end of scope
     LocalName = StrX(localname).c_str();
 
     if (ReadType == StartElement)

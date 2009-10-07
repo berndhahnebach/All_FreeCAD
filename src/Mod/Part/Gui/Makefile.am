@@ -158,6 +158,7 @@ EXTRA_DIST = \
 		Icons/Part_Extrude.svg \
 		Icons/Part_Fillet.svg \
 		Icons/Part_Revolve.svg \
+		Icons/Part_Import.svg \
 		Icons/Tree_Part.svg \
 		Icons/preferences-part_design.svg \
 		Icons/PartFeature.xpm \
