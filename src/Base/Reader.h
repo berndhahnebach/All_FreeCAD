@@ -184,6 +184,7 @@ private:
     void resetErrors();
 
 
+    int Level;
     std::string LocalName;
     std::string Characters;
     unsigned int CharacterCount;
