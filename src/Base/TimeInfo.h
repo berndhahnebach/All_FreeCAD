@@ -38,30 +38,33 @@ class BaseExport TimeInfo
 {
 
 public:
-  /// Construction
-  TimeInfo();
-  /// Destruction
-  virtual ~TimeInfo();
+    /// Construction
+    TimeInfo();
+    /// Destruction
+    virtual ~TimeInfo();
 
-  /// sets the object to the actual system time
-  void setToActual(void);
+    /// sets the object to the actual system time
+    void setCurrent(void);
+    void setTime_t (uint64_t seconds);
 
-  void operator =  (const TimeInfo &time); 
-  bool operator == (const TimeInfo &time) const;
-  bool operator != (const TimeInfo &time) const;
+    void operator =  (const TimeInfo &time); 
+    bool operator == (const TimeInfo &time) const;
+    bool operator != (const TimeInfo &time) const;
 
-  bool operator <  (const TimeInfo &time) const;
-  bool operator <= (const TimeInfo &time) const;
-  bool operator >= (const TimeInfo &time) const;
-  bool operator >  (const TimeInfo &time) const;
+    bool operator <  (const TimeInfo &time) const;
+    bool operator <= (const TimeInfo &time) const;
+    bool operator >= (const TimeInfo &time) const;
+    bool operator >  (const TimeInfo &time) const;
 
-  static const char* currentDateTimeString();
+    static const char* currentDateTimeString();
+    bool isNull() const;
+    static TimeInfo null();
 
 protected:
 #if defined (_MSC_VER)
-  struct _timeb timebuffer;
+    struct _timeb timebuffer;
 #elif defined(__GNUC__)
-  struct timeb timebuffer;
+    struct timeb timebuffer;
 #endif
 };
 
@@ -69,55 +72,55 @@ protected:
 inline bool
 TimeInfo::operator != (const TimeInfo &time) const
 {
-  return (timebuffer.time != time.timebuffer.time || timebuffer.millitm != time.timebuffer.millitm);
+    return (timebuffer.time != time.timebuffer.time || timebuffer.millitm != time.timebuffer.millitm);
 }
 
 inline void
 TimeInfo::operator = (const TimeInfo &time) 
 {
-  timebuffer = time.timebuffer;
+    timebuffer = time.timebuffer;
 }
 
 inline bool
 TimeInfo::operator == (const TimeInfo &time) const
 {
-  return (timebuffer.time == time.timebuffer.time && timebuffer.millitm == time.timebuffer.millitm);
+    return (timebuffer.time == time.timebuffer.time && timebuffer.millitm == time.timebuffer.millitm);
 }
 
 inline bool
 TimeInfo::operator <  (const TimeInfo &time) const
 {
-  if ( timebuffer.time == time.timebuffer.time )
-    return timebuffer.millitm < time.timebuffer.millitm;
-  else
-    return timebuffer.time < time.timebuffer.time;
+    if (timebuffer.time == time.timebuffer.time)
+        return timebuffer.millitm < time.timebuffer.millitm;
+    else
+        return timebuffer.time < time.timebuffer.time;
 }
 
 inline bool
 TimeInfo::operator <= (const TimeInfo &time) const
 {
-  if ( timebuffer.time == time.timebuffer.time )
-    return timebuffer.millitm <= time.timebuffer.millitm;
-  else
-    return timebuffer.time <= time.timebuffer.time;
+    if (timebuffer.time == time.timebuffer.time)
+        return timebuffer.millitm <= time.timebuffer.millitm;
+    else
+        return timebuffer.time <= time.timebuffer.time;
 }
 
 inline bool
 TimeInfo::operator >= (const TimeInfo &time) const
 {
-  if ( timebuffer.time == time.timebuffer.time )
-    return timebuffer.millitm >= time.timebuffer.millitm;
-  else
-    return timebuffer.time >= time.timebuffer.time;
+    if (timebuffer.time == time.timebuffer.time)
+        return timebuffer.millitm >= time.timebuffer.millitm;
+    else
+        return timebuffer.time >= time.timebuffer.time;
 }
 
 inline bool
 TimeInfo::operator >  (const TimeInfo &time) const
 {
-  if ( timebuffer.time == time.timebuffer.time )
-    return timebuffer.millitm > time.timebuffer.millitm;
-  else
-    return timebuffer.time > time.timebuffer.time;
+    if (timebuffer.time == time.timebuffer.time)
+        return timebuffer.millitm > time.timebuffer.millitm;
+    else
+        return timebuffer.time > time.timebuffer.time;
 }
 
 } //namespace Base

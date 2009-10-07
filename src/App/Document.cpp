@@ -767,9 +767,15 @@ bool Document::save (void)
                 }
 
                 if (!backup.empty() && (int)backup.size() >= count_bak) {
-                    // delete the first backup file we found
-                    backup.front().deleteFile();
-                    fn = backup.front().filePath();
+                    // delete the oldest backup file we found
+                    Base::FileInfo del = backup.front();
+                    for (std::vector<Base::FileInfo>::iterator it = backup.begin(); it != backup.end(); ++it) {
+                        if (it->lastModified() < del.lastModified())
+                            del = *it;
+                    }
+
+                    del.deleteFile();
+                    fn = del.filePath();
                 }
                 else {
                     // create a new backup file

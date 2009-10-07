@@ -341,6 +341,52 @@ unsigned int FileInfo::size () const
     return 0;
 }
 
+TimeInfo FileInfo::lastModified() const
+{
+    TimeInfo ti = TimeInfo::null();
+    if (exists()) {
+
+#if defined (FC_OS_WIN32)
+        std::wstring wstr = toStdWString();
+        struct _stat st;
+        if (_wstat(wstr.c_str(), &st) == 0) {
+            ti.setTime_t(st.st_mtime);
+        }
+
+#elif defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
+        struct stat st;
+        if (stat(FileName.c_str(), &st) == 0) {
+            ti.setTime_t(st.st_mtime);
+        }
+#endif
+
+    }
+    return ti;
+}
+
+TimeInfo FileInfo::lastRead() const
+{
+    TimeInfo ti = TimeInfo::null();
+    if (exists()) {
+
+#if defined (FC_OS_WIN32)
+        std::wstring wstr = toStdWString();
+        struct _stat st;
+        if (_wstat(wstr.c_str(), &st) == 0) {
+            ti.setTime_t(st.st_atime);
+        }
+
+#elif defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
+        struct stat st;
+        if (stat(FileName.c_str(), &st) == 0) {
+            ti.setTime_t(st.st_atime);
+        }
+#endif
+
+    }
+    return ti;
+}
+
 bool FileInfo::deleteFile(void) const
 {
 #if defined (FC_OS_WIN32)
