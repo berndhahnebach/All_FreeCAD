@@ -73,7 +73,7 @@ void Primitive::onChanged(const App::Property* prop)
     std::string grp = (prop->getGroup() ? prop->getGroup() : "");
     if (grp == "Plane" || grp == "Cylinder" || grp == "Cone"){
         try {
-            App::DocumentObjectExecReturn *ret = execute();
+            App::DocumentObjectExecReturn *ret = recompute();
             delete ret;
         }
         catch (...) {

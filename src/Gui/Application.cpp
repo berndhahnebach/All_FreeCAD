@@ -308,14 +308,6 @@ void Application::importFrom(const char* FileName, const char* DocName, const ch
     if (Module != 0) {
         // issue module loading
         Command::doCommand(Command::App, "import %s", Module);
-/*
-        // issue gui module loading
-        try {
-            Command::doCommand(Command::Gui, "import %sGui", Module);
-        }
-        catch (const Base::PyException&) {
-            // ignore this type of exception (e.g. if Mod is already a Gui module)
-        }*/
 
         try {
             // load the file with the module

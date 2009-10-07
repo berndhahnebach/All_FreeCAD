@@ -814,7 +814,7 @@ void Document::restore (void)
     std::streamoff size = buf->pubseekoff(0, std::ios::end, std::ios::in);
     buf->pubseekoff(0, std::ios::beg, std::ios::in);
     if (size < 22) // an empty zip archive has 22 bytes
-        throw Base::FileException("Invalid compression file",FileName.getValue());
+        throw Base::FileException("Invalid project file",FileName.getValue());
 
     zipios::ZipInputStream zipstream(file);
     Base::XMLReader reader(FileName.getValue(), zipstream);
@@ -989,19 +989,6 @@ const char *Document::getErrorDescription(const App::DocumentObject*Obj) const
     return 0;
 }
 
-namespace App {
-class ObjectExecution
-{
-public:
-    ObjectExecution(DocumentObject* o) : obj(o)
-    { obj->StatusBits.set(3); }
-    ~ObjectExecution()
-    { obj->StatusBits.reset(3); }
-private:
-    DocumentObject* obj;
-};
-}
-
 // call the recompute of the Feature and handle the exceptions and errors.
 bool Document::_recomputeFeature(DocumentObject* Feat)
 {
@@ -1011,9 +998,7 @@ bool Document::_recomputeFeature(DocumentObject* Feat)
 
     DocumentObjectExecReturn  *returnCode = 0;
     try {
-        // set/unset the execution bit
-        ObjectExecution exe(Feat);
-        returnCode = Feat->execute();
+        returnCode = Feat->recompute();
     }
     catch(Base::AbortException &e){
         e.ReportException();
