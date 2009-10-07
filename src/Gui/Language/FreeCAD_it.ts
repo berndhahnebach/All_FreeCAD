@@ -75,7 +75,7 @@
     <name>Gui::Dialog::DlgActivateWindow</name>
     <message>
         <source>Choose Window</source>
-        <translation>Scegli la finestra</translation>
+        <translation>Scegli Finestra</translation>
     </message>
     <message>
         <source>&amp;Activate</source>
@@ -124,7 +124,7 @@
     <name>Gui::Dialog::DlgChooseIcon</name>
     <message>
         <source>Choose Icon</source>
-        <translation>Scegli l&apos;icona</translation>
+        <translation>Scegli Icona</translation>
     </message>
     <message>
         <source>OK</source>
@@ -557,7 +557,7 @@ Definire un&apos;altra scorciatoia.</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation>Dimesione:</translation>
+        <translation>Dimensione:</translation>
     </message>
     <message>
         <source>Preview:</source>
@@ -661,7 +661,7 @@ Definire un&apos;altra scorciatoia.</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>modifica</translation>
+        <translation>Modifica</translation>
     </message>
 </context>
 <context>
@@ -1046,7 +1046,7 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>Enable animation</source>
-        <translation>Usa la rotazione di spin</translation>
+        <translation>Attivare animazione</translation>
     </message>
     <message>
         <source>3D Mouse Model</source>
