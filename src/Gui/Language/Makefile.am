@@ -18,7 +18,8 @@ EXTRA_DIST = \
 		FreeCAD_fr.qm \
 		FreeCAD_it.qm \
 		qt_de.qm \
-		qt_fr.qm
+		qt_fr.qm \
+		qt_it.qm
 
 
 # rule for Qt MetaObject Compiler:
