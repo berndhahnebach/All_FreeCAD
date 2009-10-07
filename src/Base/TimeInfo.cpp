@@ -26,7 +26,6 @@
 #ifndef _PreComp_
 #endif
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "TimeInfo.h"
 
 
@@ -39,7 +38,7 @@ using namespace Base;
  */
 TimeInfo::TimeInfo()
 {
-  setToActual();
+    setCurrent();
 }
 
 /**
@@ -54,23 +53,41 @@ TimeInfo::~TimeInfo()
 //**************************************************************************
 // separator for other implemetation aspects
 
-void TimeInfo::setToActual(void)
+void TimeInfo::setCurrent(void)
 {
 #if defined (_MSC_VER)
-  _ftime( &timebuffer );
+    _ftime( &timebuffer );
 #elif defined(__GNUC__)
-  ftime( &timebuffer );
+    ftime( &timebuffer );
 #endif
+}
+
+void TimeInfo::setTime_t (uint64_t seconds)
+{
+    timebuffer.time = seconds;
 }
 
 const char* TimeInfo::currentDateTimeString()
 {
-  struct tm* systime;
-  time_t sec;
+    struct tm* systime;
+    time_t sec;
 
-  time(&sec);
-  systime = localtime(&sec);
+    time(&sec);
+    systime = localtime(&sec);
 
-  const char* dt = asctime(systime);
-  return dt;
+    const char* dt = asctime(systime);
+    return dt;
+}
+
+TimeInfo TimeInfo::null()
+{
+    TimeInfo ti;
+    ti.timebuffer.time = 0;
+    ti.timebuffer.millitm = 0;
+    return ti;
+}
+
+bool TimeInfo::isNull() const
+{
+    return (*this) == TimeInfo::null();
 }

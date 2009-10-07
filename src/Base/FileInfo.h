@@ -28,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include <Base/TimeInfo.h>
 
 
 namespace Base
@@ -94,6 +95,10 @@ public:
     bool isDir () const;
     /// The size of the file 
     unsigned int size () const;
+    /// Returns the time when the file was last modified.
+    TimeInfo lastModified() const;
+    /// Returns the time when the file was last read (accessed).
+    TimeInfo lastRead() const;
     //@}
 
     /** @name Directory management*/
