@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <sys/timeb.h>
 #include <time.h>
+#include <stdint.h>
 
 namespace Base
 {
