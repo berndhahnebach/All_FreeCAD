@@ -149,39 +149,52 @@ class DraftWorkbench (Workbench):
 	ToolTip = "The Draft module is used for basic 2D CAD Drafting"
 
 	def Initialize(self):
-		Log ('Loading Draft GUI...\n')
-		import Draft
-		self.cmdList = ["Draft_Line","Draft_Polyline","Draft_Circle","Draft_Arc", "Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
-		self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset","Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale"]
-		self.treecmdList = ["Draft_ApplyStyle"]
-		self.appendToolbar("Draft tools",self.cmdList+self.modList)
-		self.appendMenu("Draft",self.cmdList+self.modList)
-		import draftGui
-		self.draftToolBar=draftGui.toolBar()
-		self.activeDraftCommand = None # a place to look for active draft Command
+		self.initialized = False
+		try:
+			import pivy, PyQt4
+		except:
+			FreeCAD.Console.PrintWarning("Pivy and PyQt4 python modules must be installed on your system to use the 2D Drafting module.")
+		else:
+			Log ('Loading Draft GUI...\n')
+			import Draft
+			self.cmdList = ["Draft_Line","Draft_Polyline","Draft_Circle",
+					"Draft_Arc", "Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
+			self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
+					"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale"]
+			self.treecmdList = ["Draft_ApplyStyle"]
+			self.appendToolbar("Draft tools",self.cmdList+self.modList)
+			self.appendMenu("Draft",self.cmdList+self.modList)
+			import draftGui
+			self.draftToolBar=draftGui.toolBar()
+			self.activeDraftCommand = None # a place to look for active draft Command
+			self.intitialized = True
  
 	def Activated(self):
-		self.draftToolBar.draftWidget.setVisible(True)
-		self.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
+		if self.initialized:
+			self.draftToolBar.draftWidget.setVisible(True)
+			self.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
 
 	def Deactivated(self):
-		if (self.activeDraftCommand != None): self.activeDraftCommand.finish()
-		self.draftToolBar.draftWidget.setVisible(False)
-		self.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
+		if self.initialized:
+			if (self.activeDraftCommand != None): self.activeDraftCommand.finish()
+			self.draftToolBar.draftWidget.setVisible(False)
+			self.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
 
 	def ContextMenu(self, recipient):
-		if (recipient == "View"):
-			if (self.activeDraftCommand == None):
-				if (FreeCADGui.Selection.getSelection() != []):
-					self.appendContextMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+		if self.initialized:
+			if (recipient == "View"):
+				if (self.activeDraftCommand == None):
+					if (FreeCADGui.Selection.getSelection() != []):
+						self.appendContextMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+					else:
+						self.appendContextMenu("Draft",self.cmdList)
 				else:
-					self.appendContextMenu("Draft",self.cmdList)
+					if (self.activeDraftCommand.featureName == "Line"):
+						lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
+						self.appendContextMenu("",lineList)
 			else:
-				if (self.activeDraftCommand.featureName == "Line"):
-					lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
-					self.appendContextMenu("",lineList)
-		else:
-			if (FreeCADGui.Selection.getSelection() != []): self.appendContextMenu("",self.treecmdList)
+				if (FreeCADGui.Selection.getSelection() != []):
+					self.appendContextMenu("",self.treecmdList)
 
 	def GetClassName(self): 
 		return "Gui::PythonWorkbench"
