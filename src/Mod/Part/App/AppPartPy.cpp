@@ -28,6 +28,7 @@
 # include <BRepPrimAPI_MakeTorus.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
+# include <BRepPrimAPI_MakeRevolution.hxx>
 # include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
@@ -730,6 +731,54 @@ static PyObject * makePolygon(PyObject *self, PyObject *args)
     } PY_CATCH;
 }
 
+static PyObject * makeRevolution(PyObject *self, PyObject *args)
+{
+    double vmin = DBL_MAX, vmax=-DBL_MAX;
+    double angle=2.0*Standard_PI;
+    PyObject *pPnt=0, *pDir=0, *pCrv;
+    if (!PyArg_ParseTuple(args, "O!|dddO!O!", &(GeometryPy::Type), &pCrv,
+                                              &vmin, &vmax, &angle,
+                                              &(Base::VectorPy::Type), &pPnt,
+                                              &(Base::VectorPy::Type), &pDir))
+        return 0;
+
+    GeometryPy* pcGeo = static_cast<GeometryPy*>(pCrv);
+    Handle_Geom_Curve curve = Handle_Geom_Curve::DownCast
+        (pcGeo->getGeometryPtr()->handle());
+    if (curve.IsNull()) {
+        PyErr_SetString(PyExc_TypeError, "geometry is not a curve");
+        return 0;
+    }
+
+    if (vmin == DBL_MAX) {
+        vmin = curve->FirstParameter();
+    }
+
+    if (vmax == -DBL_MAX) {
+        vmax = curve->LastParameter();
+    }
+
+    try {
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        BRepPrimAPI_MakeRevolution mkRev(gp_Ax2(p,d),curve, vmin, vmax, angle);
+        TopoDS_Shape shape = mkRev.Solid();
+        return new TopoShapeSolidPy(new TopoShape(shape));
+    }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of revolved shape failed");
+        return NULL;
+    }
+}
+
 static PyObject * toPythonOCC(PyObject *self, PyObject *args)
 {
     PyObject *pcObj;
@@ -931,53 +980,79 @@ static PyObject * cast_to_shape(PyObject *self, PyObject *args)
 struct PyMethodDef Part_methods[] = {
     {"open"       ,open      ,METH_VARARGS,
      "open(string) -- Create a new document and load the file into the document."},
+
     {"insert"     ,insert    ,METH_VARARGS,
      "insert(string,string) -- Insert the file into the given document."},
+
     {"export"     ,exporter  ,METH_VARARGS,
      "export(list,string) -- Export a list of objects into a single file."},
+
     {"read"       ,read      ,METH_VARARGS,
      "read(string) -- Load the file and return the shape."},
+
     {"show"       ,show      ,METH_VARARGS,
      "show(shape) -- Add the shape to the active document or create one if no document exists."},
+
     {"makeCompound"  ,makeCompound ,METH_VARARGS,
      "makeCompound(list) -- Create a compound out of a list of shapes."},
+
     {"makeShell"  ,makeShell ,METH_VARARGS,
      "makeShell(list) -- Create a shell out of a list of faces."},
+
     {"makeSolid"  ,makeSolid ,METH_VARARGS,
      "makeSolid(shape) -- Create a solid out of the shells inside a shape."},
+
     {"makePlane"  ,makePlane ,METH_VARARGS,
      "makePlane(length,width,[pnt,dir]) -- Make a plane\n"
      "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
+
     {"makeBox"    ,makeBox ,METH_VARARGS,
      "makeBox(length,width,height,[pnt,dir]) -- Make a box located\n"
      "in pnt with the dimensions (length,width,height)\n"
      "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
+
     {"makeLine"   ,makeLine  ,METH_VARARGS,
      "makeLine((x1,y1,z1),(x2,y2,z2)) -- Make a line of two points"},
+
     {"makePolygon"   ,makePolygon  ,METH_VARARGS,
      "makePolygon(list) -- Make a polygon of a list of points"},
+
     {"makeCircle" ,makeCircle,METH_VARARGS,
      "makeCircle(radius,[pnt,dir,angle1,angle2]) -- Make a circle with a given radius\n"
      "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0 and angle2=2*PI"},
+
     {"makeSphere" ,makeSphere,METH_VARARGS,
      "makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius\n"
      "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0, angle2=0.5*PI and angle3=2*PI"},
+
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
      "makeCylinder(radius,height,[pnt,dir,angle]) -- Make a cylinder with a given radius and height\n"
      "By default pnt=Vector(0,0,0),dir=Vector(0,0,1) and angle=2*PI"},
+
     {"makeCone" ,makeCone,METH_VARARGS,
      "makeCone(radius1,radius2,height,[pnt,dir,angle]) -- Make a cone with given radii and height\n"
      "By default pnt=Vector(0,0,0), dir=Vector(0,0,1) and angle=2*PI"},
+
     {"makeTorus" ,makeTorus,METH_VARARGS,
      "makeTorus(radius1,radius2,[pnt,dir,angle1,angle2,angle]) -- Make a torus with a given radii and angles\n"
      "By default pnt=Vector(0,0,0),dir=Vector(0,0,1),angle1=0,angle1=2*PI and angle=2*PI"},
+
+    {"makeRevolution" ,makeRevolution,METH_VARARGS,
+     "makeRevolution(Curve,[vmin,vmax,angle,pnt,dir]) -- Make a revolved shape\n"
+     "by rotating the curve or a portion of it around an axis given by (pnt,dir).\n"
+     "By default vmin/vmax=bounds of the curve,angle=2*PI,pnt=Vector(0,0,0) and\n"
+     "dir=Vector(0,0,1)"},
+
     {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
      "cast_to_shape(shape) -- Cast to the actual shape type"},
+
     {"__sortEdges__" ,sortEdges,METH_VARARGS,
      "__sortEdges__(list of edges) -- Helper method to sort an unsorted list of edges so that afterwards\n"
      "two adjacent edges share a common vertex"},
+
     {"__toPythonOCC__" ,toPythonOCC,METH_VARARGS,
      "__toPythonOCC__(shape) -- Helper method to convert an internal shape to pythonocc shape"},
+
     {"__fromPythonOCC__" ,fromPythonOCC,METH_VARARGS,
      "__fromPythonOCC__(occ) -- Helper method to convert a pythonocc shape to an internal shape"},
     {NULL, NULL}        /* end of table marker */
