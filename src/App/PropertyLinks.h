@@ -28,6 +28,7 @@
 
 
 #include <vector>
+#include <string>
 #include "Property.h"
 
 namespace Base {
@@ -93,6 +94,71 @@ public:
 
 protected:
     App::DocumentObject *_pcLink;
+
+};
+
+
+/** the Link Poperty with sub elements
+ *  This property links a object and a defined sequence of
+ *  sub elements. This subelemts (like Edges of a Shape)
+ *  are stored as names, which can be resolved by the 
+ *  ComplexGeoDataType interface to concrete sub objects.
+ */
+class AppExport PropertyLinkSub: public Property
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyLinkSub();
+
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyLinkSub();
+
+    /** Sets the property
+     */
+    void setValue(App::DocumentObject *,const std::vector<std::string> &SubList=std::vector<std::string>());
+
+    /** This method returns the linked DocumentObject
+     */
+    App::DocumentObject * getValue(void) const;
+
+    /// return the list of sub elements 
+    const std::vector<std::string>& PropertyLinkSub::getSubValues(void) const;
+
+    /** Returns the link type checked
+     */
+    App::DocumentObject * getValue(Base::Type t) const;
+
+   /** Returns the link type checked
+     */
+    template <typename _type>
+    inline _type getValue(void) const {
+        return _pcLink ? dynamic_cast<_type>(_pcLink) : 0;
+    }
+
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
+
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
+
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const{
+        return sizeof(App::DocumentObject *);
+    }
+
+protected:
+    App::DocumentObject *_pcLink;
+    std::vector<std::string> _cSubList;
 
 };
 
