@@ -152,6 +152,155 @@ void PropertyLink::Paste(const Property &from)
     hasSetValue();
 }
 
+//**************************************************************************
+// PropertyLinkSub
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyLinkSub , App::Property);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyLinkSub::PropertyLinkSub()
+:_pcLink(0)
+{
+
+}
+
+
+PropertyLinkSub::~PropertyLinkSub()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+void PropertyLinkSub::setValue(App::DocumentObject * lValue, const std::vector<std::string> &SubList)
+{
+    aboutToSetValue();
+    _pcLink=lValue;
+    _cSubList = SubList;
+    hasSetValue();
+}
+
+App::DocumentObject * PropertyLinkSub::getValue(void) const
+{
+    return _pcLink;
+}
+
+const std::vector<std::string>& PropertyLinkSub::getSubValues(void) const
+{
+    return _cSubList;
+}
+
+App::DocumentObject * PropertyLinkSub::getValue(Base::Type t) const
+{
+    return (_pcLink && _pcLink->getTypeId().isDerivedFrom(t)) ? _pcLink : 0;
+}
+
+PyObject *PropertyLinkSub::getPyObject(void)
+{
+    Py::Tuple tup(2);
+    Py::List  list(_cSubList.size());
+    if(_pcLink){
+        tup[0] = Py::Object(_pcLink->getPyObject());
+        for(unsigned int i = 0;i<_cSubList.size(); i++)
+            list[i] = Py::String(_cSubList[i]);
+        tup[1] = list;
+        return Py::new_reference_to(tup);
+    }else
+        Py_Return;
+}
+
+void PropertyLinkSub::setPyObject(PyObject *value)
+{
+    if (PyObject_TypeCheck(value, &(DocumentObjectPy::Type))) {
+        DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
+        setValue(pcObject->getDocumentObjectPtr());
+    }
+    else if (Py::Object(value).isTuple()) {
+        Py::Tuple tup(value);
+        if (PyObject_TypeCheck(tup[0].ptr(), &(DocumentObjectPy::Type))){
+            DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
+            Py::List list(tup[1]);
+            std::vector<std::string> vals(list.size());
+            for(Py::List::iterator it = list.begin();it!=list.end();++it)
+                vals.push_back(Py::String(*it));
+
+            setValue(pcObject->getDocumentObjectPtr(),vals);
+        }
+    }
+    else if(Py_None == value) {
+        setValue(0);
+    }
+    else {
+        std::string error = std::string("type must be 'DocumentObject', 'NoneType' of ('DocumentObject',['String',]) not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+}
+
+void PropertyLinkSub::Save (Writer &writer) const
+{
+    writer.Stream() << writer.ind() << "<LinkSub value=\"" <<  (_pcLink?_pcLink->getNameInDocument():"") <<"\" count=\"" <<  _cSubList.size() <<"\"" << std::endl;
+    writer.incInd();
+    for(unsigned int i = 0;i<_cSubList.size(); i++)
+        writer.Stream() << writer.ind() << "<Sub value=\"" <<  _cSubList[i]<<"\"/>" << endl; ;
+    writer.decInd();
+    writer.Stream() << writer.ind() << "</LinkSub>" << endl ;
+}
+
+void PropertyLinkSub::Restore(Base::XMLReader &reader)
+{
+    // read my Element
+    reader.readElement("LinkSub");
+    // get the values of my Attributes
+    std::string name = reader.getAttribute("value");
+    int count = reader.getAttributeAsInteger("count");
+
+    // Property not in a Feature!
+    assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+
+    std::vector<std::string> values(count);
+    for (int i = 0; i < count; i++) {
+        reader.readElement("Sub");
+        values[i] = reader.getAttribute("value");
+    }
+
+    reader.readEndElement("LinkSub");
+
+    DocumentObject *pcObject;
+    if (name != ""){
+        pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
+        assert(pcObject);
+        setValue(pcObject,values);
+    }
+    else {
+       setValue(0);
+    }
+}
+
+Property *PropertyLinkSub::Copy(void) const
+{
+    PropertyLinkSub *p= new PropertyLinkSub();
+    p->_pcLink = _pcLink;
+    p->_cSubList = _cSubList;
+    return p;
+}
+
+void PropertyLinkSub::Paste(const Property &from)
+{
+    aboutToSetValue();
+    _pcLink = dynamic_cast<const PropertyLinkSub&>(from)._pcLink;
+    _cSubList = dynamic_cast<const PropertyLinkSub&>(from)._cSubList;
+    hasSetValue();
+}
+
+//**************************************************************************
+// PropertyLinkList
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TYPESYSTEM_SOURCE(App::PropertyLinkList , App::PropertyLists);
 

@@ -30,7 +30,9 @@
 #include <stdio.h>
 #include <sys/timeb.h>
 #include <time.h>
-#include <stdint.h>
+#ifndef _MSC_VER
+  #include <stdint.h>
+#endif 
 
 namespace Base
 {
