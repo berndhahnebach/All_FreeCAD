@@ -68,7 +68,7 @@ Trajectory::~Trajectory()
 }
 
 
-double Trajectory::getLength(void)
+double Trajectory::getLength(void) const
 {
     if(pcTrajectory)
         return pcTrajectory->GetPath()->PathLength();
@@ -76,7 +76,7 @@ double Trajectory::getLength(void)
         return 0;
 }
 
-double Trajectory::getDuration(void)
+double Trajectory::getDuration(void) const
 {
     if(pcTrajectory)
         return pcTrajectory->Duration();
@@ -125,15 +125,18 @@ void Trajectory::generateTrajectory(void)
         }else{
             switch((*it)->Type){
                 case Waypoint::LINE:
-                case Waypoint::PTP:
+                case Waypoint::PTP:{
+                    KDL::Frame Next = toFrame((*it)->EndPos);
                     pcPath = new KDL::Path_Line(Last,
-                                                toFrame((*it)->EndPos),
+                                                Next,
                                                 new KDL::RotationalInterpolation_SingleAxis,
                                                 1.0
                                                 );
                     pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
+                    pcVelPrf->SetProfile(0,pcPath->PathLength());
                     pcTrak = new KDL::Trajectory_Segment(pcPath,pcVelPrf);
-                    break;
+                    Last = Next;
+                    break;}
                 case Waypoint::WAIT:
                     break;
                     

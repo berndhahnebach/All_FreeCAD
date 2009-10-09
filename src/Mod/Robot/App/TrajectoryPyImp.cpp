@@ -21,7 +21,7 @@ std::string TrajectoryPy::representation(void) const
     str << "Trajectory [";
     str << "size:" << getTrajectoryPtr()->getSize() << " ";
     str << "length:" << getTrajectoryPtr()->getLength() << " ";
-    str << "time:" << getTrajectoryPtr()->getDuration() << " ";
+    str << "duration:" << getTrajectoryPtr()->getDuration() << " ";
     str << "]";
 
     return str.str();
@@ -118,7 +118,7 @@ PyObject* TrajectoryPy::velocity(PyObject * args)
 
 Py::Float TrajectoryPy::getDuration(void) const
 {
-    return Py::Float(getTrajectoryPtr()->getLength());
+    return Py::Float(getTrajectoryPtr()->getDuration());
 }
 
 Py::List TrajectoryPy::getWaypoints(void) const

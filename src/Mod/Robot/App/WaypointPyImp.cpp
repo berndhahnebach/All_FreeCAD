@@ -63,7 +63,7 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     PyObject *pos;
     char *name="P";
     char *type = "PTP";
-    float vel = 100;
+    float vel = -1.0;
     int cont = 0;
     int tool=0;
     int base=0;
@@ -88,7 +88,23 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
         getWaypointPtr()->Type = Waypoint::WAIT;
     else 
         getWaypointPtr()->Type = Waypoint::UNDEF;
-    getWaypointPtr()->Velocity = vel;
+
+    if(vel == -1)
+        switch (getWaypointPtr()->Type){
+            case Waypoint::PTP:
+                getWaypointPtr()->Velocity = 100;
+                break;
+            case Waypoint::LINE:
+                getWaypointPtr()->Velocity = 2;
+                break;
+            case Waypoint::CIRC:
+                getWaypointPtr()->Velocity = 2;
+                break;
+            default:
+                getWaypointPtr()->Velocity = 0;
+        }
+    else
+        getWaypointPtr()->Velocity = vel;
     getWaypointPtr()->Cont = cont?true:false;
     getWaypointPtr()->Tool = tool;
     getWaypointPtr()->Base = base;

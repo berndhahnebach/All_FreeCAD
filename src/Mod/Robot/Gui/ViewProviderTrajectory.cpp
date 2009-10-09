@@ -34,12 +34,20 @@
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/draggers/SoJackDragger.h>
 # include <Inventor/VRMLnodes/SoVRMLTransform.h>
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoFaceSet.h>
+# include <Inventor/nodes/SoLineSet.h>
+# include <Inventor/nodes/SoMarkerSet.h>
+# include <Inventor/nodes/SoShapeHints.h>
 # include <QFile>
 #endif
 
 #include "ViewProviderTrajectory.h"
 
 #include <Mod/Robot/App/TrajectoryObject.h>
+#include <Mod/Robot/App/Trajectory.h>
 #include <App/Document.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
@@ -47,6 +55,7 @@
 #include <sstream>
 using namespace Gui;
 using namespace RobotGui;
+using namespace Robot;
 
 PROPERTY_SOURCE(RobotGui::ViewProviderTrajectory, Gui::ViewProviderGeometryObject)
 
@@ -58,16 +67,50 @@ ViewProviderTrajectory::ViewProviderTrajectory()
     pcTrajectoryRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
     //pcRobotRoot->style = Gui::SoFCSelection::BOX;
     pcTrajectoryRoot->ref();
+
+    pcCoords = new SoCoordinate3();
+    pcCoords->ref();
+    pcDrawStyle = new SoDrawStyle();
+    pcDrawStyle->ref();
+    pcDrawStyle->style = SoDrawStyle::LINES;
+    pcDrawStyle->lineWidth = 2;
+
+    pcLines = new SoLineSet;
+    pcLines->ref();
+
+
 }
 
 ViewProviderTrajectory::~ViewProviderTrajectory()
 {
     pcTrajectoryRoot->unref();
+    pcCoords->unref();
+    pcDrawStyle->unref();
+    pcLines->unref();
+
 }
 
 void ViewProviderTrajectory::attach(App::DocumentObject *pcObj)
 {
     ViewProviderDocumentObject::attach(pcObj);
+
+    // Draw trajectory lines
+    SoSeparator* linesep = new SoSeparator;
+    SoBaseColor * basecol = new SoBaseColor;
+    basecol->rgb.setValue( 1.0f, 0.5f, 0.0f );
+    linesep->addChild(basecol);
+    linesep->addChild(pcCoords);
+    linesep->addChild(pcLines);
+
+    // Draw markers
+    SoBaseColor * markcol = new SoBaseColor;
+    markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+    SoMarkerSet* marker = new SoMarkerSet;
+    marker->markerIndex=SoMarkerSet::CROSS_5_5;
+    linesep->addChild(markcol);
+    linesep->addChild(marker);
+
+    pcTrajectoryRoot->addChild(linesep);
 
     addDisplayMaskMode(pcTrajectoryRoot, "Waypoints");
     pcTrajectoryRoot->objectName = pcObj->getNameInDocument();
@@ -94,7 +137,17 @@ void ViewProviderTrajectory::updateData(const App::Property* prop)
 {
     Robot::TrajectoryObject* pcTracObj = static_cast<Robot::TrajectoryObject*>(pcObject);
     if (prop == &pcTracObj->Trajectory) {
+        const Trajectory &trak = pcTracObj->Trajectory.getValue();
 
+        pcCoords->point.deleteValues(0);
+        pcCoords->point.setNum(trak.getSize());
+
+        for(unsigned int i=0;i<trak.getSize();++i){
+            Base::Vector3d pos = trak.getWaypoint(i).EndPos.getPosition();
+            pcCoords->point.set1Value(i,pos.x,pos.y,pos.z);
+
+        }
+        pcLines->numVertices.set1Value(0, trak.getSize());
 	}else if (prop == &pcTracObj->Base) {
         Base::Placement loc = *(&pcTracObj->Base.getValue());
     }
