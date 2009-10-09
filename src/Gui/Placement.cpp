@@ -33,6 +33,7 @@ Placement::Placement(QWidget* parent, Qt::WFlags fl)
 {
     ui = new Ui_PlacementComp(this);
     ui->angle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+    ui->applyButton->setEnabled(false);
 }
 
 Placement::~Placement()
@@ -60,6 +61,15 @@ void Placement::setPlacement(const Base::Placement& p)
     ui->xPos->setValue(p.getPosition().x);
     ui->yPos->setValue(p.getPosition().y);
     ui->zPos->setValue(p.getPosition().z);
+
+    double A,B,C;
+    p.getRotation().getEuler(A,B,C);
+    ui->RotA->setValue(A*180.0/D_PI);
+    ui->RotB->setValue(B*180.0/D_PI);
+    ui->RotC->setValue(C*180.0/D_PI);
+    ui->RotA->setEnabled(false);
+    ui->RotB->setEnabled(false);
+    ui->RotC->setEnabled(false);
 
     // check if the user-defined direction is already there
     double angle;
