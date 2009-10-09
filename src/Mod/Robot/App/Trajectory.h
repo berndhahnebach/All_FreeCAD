@@ -57,10 +57,11 @@ public:
 	// interface
     void generateTrajectory(void);
     void addWaypoint(const Waypoint &WPnt);
-    unsigned int getSize(void){return vpcWaypoints.size();}
+    unsigned int getSize(void) const{return vpcWaypoints.size();}
+    const Waypoint &getWaypoint(unsigned int pos)const {return *vpcWaypoints[pos];}
 
-    double getLength(void);
-    double getDuration(void);
+    double getLength(void) const;
+    double getDuration (void) const;
     Base::Placement getPosition(double time);
     double getVelocity(double time);
 

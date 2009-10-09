@@ -30,6 +30,9 @@
 
 class SoDragger;
 class SoJackDragger;
+class SoCoordinate3;
+class SoDrawStyle;  
+class SoLineSet; 
 
 namespace RobotGui
 {
@@ -53,6 +56,10 @@ public:
 protected:
  
     Gui::SoFCSelection    * pcTrajectoryRoot;
+    SoCoordinate3         * pcCoords;
+    SoDrawStyle           * pcDrawStyle;
+    SoLineSet             * pcLines;
+
  };
 
 } //namespace RobotGui
