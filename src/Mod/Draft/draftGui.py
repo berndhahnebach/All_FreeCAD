@@ -166,6 +166,7 @@ class toolBar:
 				self.lockButton.setCheckable(True)
 				self.lockButton.setChecked(True)
 				self.lockButton.hide()
+				self.lockedz = True
 
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
 				self.isRelative.setGeometry(QtCore.QRect(530,6,91,18))
@@ -428,6 +429,7 @@ class toolBar:
 
 			def lockz(self,checked):
 					self.zValue.setEnabled(not checked)
+					self.lockedz = checked
 
 
 				
