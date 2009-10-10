@@ -116,7 +116,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 		# circle), 3=open square (intersection)
 		snapArray=[] 
 
-		if (ctrl) and (ob.Type == "Part::Feature"):
+		if (ctrl) and (ob.Type[:4] == "Part"):
 			for i in ob.Shape.Vertexes:
 				snapArray.append([i.Point,0,i.Point])
 			for j in ob.Shape.Edges:
@@ -151,7 +151,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 						snapArray.append([cur,0,pos])
 
 				if lastObj[0]:
-					if (lastObj[0].Type == "Part::Feature"):
+					if (lastObj[0].Type[:4] == "Part"):
 						for k in lastObj[0].Shape.Edges:
 							pt = fcgeo.findIntersection(j,k)
 							if pt:
@@ -220,25 +220,62 @@ def constrainPoint (target,point,mobile=False,sym=False):
 	'''
 	if len(target.node) > 0:
 		last = target.node[-1]
+		maxx = abs(point.x - last.x)
+		maxy = abs(point.y - last.y)
+		if target.ui.zValue.isEnabled():
+			maxz = abs(point.z - last.z)
+		else:
+			maxz = 0
 		if ((target.constrain == None) or mobile):
-			if (abs(point.x-last.x) > abs(point.y-last.y)):
+			if ((maxx > maxy) and (maxx > maxz)):
 				point.y = last.y
-				if sym: point.y = last.y+(point.x-last.x)
-				target.constrain = 0 #horizontal
+				point.z = last.z
+				if sym:
+					point.y = last.y+(point.x-last.x)
+					point.z = last.z+(point.x-last.x)
+				target.constrain = 0 #x direction
 				target.ui.xValue.setEnabled(True)
 				target.ui.yValue.setEnabled(False)
-			else:
+				target.ui.zValue.setEnabled(False)
+			elif ((maxy > maxx) and (maxy > maxz)):
 				point.x = last.x
-				if sym: point.x = last.x+(point.y-last.y)
-				target.constrain = 1 #vertical
+				point.z = last.z
+				if sym:
+					point.x = last.x+(point.y-last.y)
+					point.z = last.z+(point.y-last.y)
+				target.constrain = 1 #y direction
 				target.ui.xValue.setEnabled(False)
 				target.ui.yValue.setEnabled(True)
+				target.ui.zValue.setEnabled(False)
+			elif ((maxz > maxx) and (maxz > maxy)):
+				point.x = last.x
+				point.y = last.y
+				if sym:
+					point.x = last.x+(point.z-last.z)
+					point.y = last.y+(point.z-last.z)
+				target.constrain = 2 #z direction
+				target.ui.xValue.setEnabled(False)
+				target.ui.yValue.setEnabled(False)
+				target.ui.zValue.setEnabled(True)
 		elif (target.constrain == 0):
 			point.y = last.y
-			if sym: point.y = last.y+(point.x-last.x)
-		else:
+			point.z = last.z
+			if sym:
+				point.y = last.y+(point.x-last.x)
+				point.z = last.z+(point.x-last.x)
+		elif (target.constrain == 1):
 			point.x = last.x
-			if sym: point.x = last.x+(point.y-last.y)
+			point.z = last.z
+			if sym:
+				point.x = last.x+(point.y-last.y)
+				point.z = last.z+(point.y-last.y)
+		elif (target.constrain == 2):
+			point.x = last.x
+			point.y = last.y
+			if sym:
+				point.x = last.x+(point.z-last.z)
+				point.y = last.y+(point.z-last.z)
+			
 	return point
 
 def formatObject(target,origin=None):
@@ -267,7 +304,7 @@ def formatObject(target,origin=None):
 			matchrep = origin.ViewObject
 			obrep.LineWidth = matchrep.LineWidth
 			obrep.LineColor = matchrep.LineColor
-			if (target.Type == "Part::Feature"):
+			if (target.Type[:4] == "Part"):
 				obrep.ShapeColor = matchrep.ShapeColor
 	if (target.Type == "App::FeaturePython"):
 		if 'Dimline' in target.PropertiesList:
@@ -315,7 +352,8 @@ def getPoint(target,args,mobile=False,sym=False):
 		target.constrain = None
 		ui.xValue.setEnabled(True)
 		ui.yValue.setEnabled(True)
-	if not ui.zValue.isEnabled(): point.z = float(ui.zValue.text())
+		if not ui.lockedz: ui.zValue.setEnabled(True)
+	if ui.lockedz: point.z = float(ui.zValue.text())
 	if target.node:
 		if target.featureName == "Rectangle":
 			ui.displayPoint(point, target.node[0])
@@ -323,7 +361,6 @@ def getPoint(target,args,mobile=False,sym=False):
 			ui.displayPoint(point, target.node[-1])
 	else: ui.displayPoint(point)
 	return point,ctrlPoint
-
 				
 #---------------------------------------------------------------------------
 # Trackers
@@ -1576,7 +1613,7 @@ class Move(Modifier):
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Move")
 		for ob in self.sel:
-			if (ob.Type == "Part::Feature"):
+			if (ob.Type[:4] == "Part"):
 				if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
 				else: newob = ob
 				sh = ob.Shape
