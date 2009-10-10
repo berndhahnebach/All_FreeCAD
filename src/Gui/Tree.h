@@ -156,6 +156,11 @@ public:
     void displayStatusInfo();
     void setData(int column, int role, const QVariant & value);
 
+protected:
+    void slotChangeIcon();
+    void slotChangeToolTip(const QString&);
+    void slotChangeStatusTip(const QString&);
+
 private:
     int previousStatus;
     Gui::ViewProviderDocumentObject* viewObject;
