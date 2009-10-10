@@ -114,12 +114,6 @@ const char *DocumentObject::getNameInDocument(void) const
     //assert(pcNameInDocument);
     if (!pcNameInDocument) return 0;
     return pcNameInDocument->c_str();
- /* 
-    std::map<std::string,DocumentObject*>::const_iterator It = _pDoc->ObjectMap.begin();
-    while(It != _pDoc->ObjectMap.end() && It->second!= this) ++It;
-    assert(It != _pDoc->ObjectMap.end());
-    return It->first.c_str();
-   */ 
 }
 
 void DocumentObject::onLoseLinkToObject(DocumentObject*)
@@ -165,7 +159,6 @@ PyObject *DocumentObject::getPyObject(void)
 
 void DocumentObject::touch(void)
 {
-    //touchTime.setToActual();
     StatusBits.set(0);
 }
 
@@ -174,10 +167,3 @@ void DocumentObject::Save (Base::Writer &writer) const
     writer.ObjectName = this->getNameInDocument();
     App::PropertyContainer::Save(writer);
 }
-
-/*
-void DocumentObject::TouchView(void)
-{
-    touchViewTime.setToActual();
-}
-*/

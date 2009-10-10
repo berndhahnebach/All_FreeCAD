@@ -21,8 +21,6 @@
  ***************************************************************************/
 
 
-
-
 #ifndef APP_DOCUMENTOBJECT_H
 #define APP_DOCUMENTOBJECT_H
 
@@ -80,8 +78,7 @@ public:
     DocumentObject(void);
     virtual ~DocumentObject();
 
-
-    /// returns the name which is set in the document for this object (not the Name propertie!)
+    /// returns the name which is set in the document for this object (not the name property!)
     const char *getNameInDocument(void) const;
     /// gets the document in which this Object is handled
     App::Document *getDocument(void) const;
@@ -102,6 +99,7 @@ public:
     void purgeError(void){StatusBits.reset(1);}
     bool isRecomputing() const {return StatusBits.test(3);}
     App::DocumentObjectExecReturn *recompute(void);
+    unsigned long getStatus() const {return StatusBits.to_ulong();}
     //@}
 
 public:
@@ -115,11 +113,8 @@ public:
      */ 
     virtual short mustExecute(void) const;
 
-
     /// get the status Message
-    const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
-
-
+    const char *getStatusString(void) const;
 
     /** Called in case of loosing a link
      * Get called by the document when a object got deleted a link property of this 
@@ -138,9 +133,7 @@ public:
 
     virtual void Save (Base::Writer &writer) const;
 
-
 protected:
-
     /** get called by the document to recompute this feature
       * Normaly this methode get called in the processing of 
       * Document::recompute(). 
@@ -158,6 +151,10 @@ protected:
      * 1 - object is marked as 'erroneous'
      * 2 - object is marked as 'new'
      * 3 - object is marked as 'recompute', i.e. the object gets recomputed now
+     * 4 - reserved
+     * 5 - reserved
+     * 6 - reserved
+     * 7 - reserved
      */
     std::bitset<32> StatusBits;
 

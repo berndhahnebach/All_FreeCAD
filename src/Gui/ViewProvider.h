@@ -28,6 +28,7 @@
 #include <vector>
 #include <string>
 #include <QIcon>
+#include <boost/signals.hpp>
 
 class SbVec3f;
 class SoNode;
@@ -39,6 +40,7 @@ class SoTransform;
 class SbMatrix;
 class SoEventCallback;
 class SoPickedPoint;
+class QString;
 
 
 namespace Base {
@@ -84,6 +86,16 @@ public:
      */
     //@{
     virtual QIcon getIcon(void) const;
+    //@}
+
+    /** @name Signals of the view provider */
+    //@{
+    /// signal on icon change
+    boost::signal<void ()> signalChangeIcon;
+    /// signal on tooltip change
+    boost::signal<void (const QString&)> signalChangeToolTip;
+    /// signal on status tip change
+    boost::signal<void (const QString&)> signalChangeStatusTip;
     //@}
 
     /** update the content of the ViewProvider

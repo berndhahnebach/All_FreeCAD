@@ -939,6 +939,10 @@ DocumentObjectItem::DocumentObjectItem(Gui::ViewProviderDocumentObject* pcViewPr
     : QTreeWidgetItem(parent, TreeWidget::ObjectType), previousStatus(-1), viewObject(pcViewProvider)
 {
     setFlags(flags()|Qt::ItemIsEditable);
+    // Setup connections
+    pcViewProvider->signalChangeIcon.connect(boost::bind(&DocumentObjectItem::slotChangeIcon, this));
+    pcViewProvider->signalChangeToolTip.connect(boost::bind(&DocumentObjectItem::slotChangeToolTip, this, _1));
+    pcViewProvider->signalChangeStatusTip.connect(boost::bind(&DocumentObjectItem::slotChangeStatusTip, this, _1));
 }
 
 DocumentObjectItem::~DocumentObjectItem()
@@ -1067,6 +1071,22 @@ void DocumentObjectItem::setData (int column, int role, const QVariant & value)
     }
 
     QTreeWidgetItem::setData(column, role, value);
+}
+
+void DocumentObjectItem::slotChangeIcon()
+{
+    previousStatus = -1;
+    testStatus();
+}
+
+void DocumentObjectItem::slotChangeToolTip(const QString& tip)
+{
+    this->setToolTip(0, tip);
+}
+
+void DocumentObjectItem::slotChangeStatusTip(const QString& tip)
+{
+    this->setStatusTip(0, tip);
 }
 
 #include "moc_Tree.cpp"

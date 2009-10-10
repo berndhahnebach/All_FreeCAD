@@ -62,9 +62,6 @@ public:
     virtual ~AbstractFeature();
 
     virtual void onChanged(const Property* prop);
-    //void setModified(bool);
-    //bool isModified() const;
-
 
     /** @name status methods of the feature */
     //@{
@@ -76,27 +73,6 @@ public:
         Recompute=3,/**< enum Fetature is in recomputation*/
         Error=4     /**< enum Feture is in error state */
     };
-
-    /// gets the status
-    int getStatus(void) const {
-        return /*_eStatus;*/status.getValue();
-    }
-    /// set the status, e.g. after recoputation in Execute()
-// void setStatus(const Status &s){_eStatus = s;}
-    /// get the status Message
-    //const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
-    /// get the error Message (if any)
-    //const char *getErrorString(void) const {
-    //    return _cErrorMessage.c_str();
-    //}
-    /// set an error on recoputation
-    //void setError(const char* pMsg,...);
-    /// checks if valid
-    bool isValid(void) {
-        return /*_eStatus == Valid;*/ status.getValue() == Valid;
-    }
-    /// Recompute only this feature and makes it valid again
-    //void recompute(void);
     /** MustExecute
      *  We call this method to check if the object was modified to
      *  be invoked. If the object label or an argument is modified.
@@ -105,27 +81,11 @@ public:
     virtual short mustExecute(void) const;
     //@}
 
-
-
-
     virtual PyObject *getPyObject(void);
 
     friend class FeaturePy;
-    friend class Document;
-
-
-protected:
-
-    //std::string _cErrorMessage;
-    bool _execute;
-
 };
 
-
-
-
 } //namespace App
-
-
 
 #endif
