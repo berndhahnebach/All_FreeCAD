@@ -103,7 +103,7 @@ void RobotAlgos::Test(void)
     KDL::Frame cartpos;    
  
     // Calculate forward position kinematics
-    bool kinematics_status;
+    int kinematics_status;
     kinematics_status = fksolver.JntToCart(jointpositions,cartpos);
     if(kinematics_status>=0){
         std::cout << cartpos <<std::endl;

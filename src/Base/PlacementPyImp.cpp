@@ -42,7 +42,7 @@ std::string PlacementPy::representation(void) const
     double A,B,C;
     PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
     std::stringstream str;
-    ptr->getRotation().getEuler(A,B,C);
+    ptr->getRotation().getYawPitchRoll(A,B,C);
 
     str << "Placement [Pos=(";
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
