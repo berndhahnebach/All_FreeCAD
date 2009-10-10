@@ -130,7 +130,7 @@ public:
     App::DocumentObject * getValue(void) const;
 
     /// return the list of sub elements 
-    const std::vector<std::string>& PropertyLinkSub::getSubValues(void) const;
+    const std::vector<std::string>& getSubValues(void) const;
 
     /** Returns the link type checked
      */
