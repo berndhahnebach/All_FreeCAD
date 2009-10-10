@@ -115,7 +115,7 @@ PyObject* RotationPy::toEuler(PyObject * args)
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
     double A,B,C;
-    this->getRotationPtr()->getEuler(A,B,C);
+    this->getRotationPtr()->getYawPitchRoll(A,B,C);
 
     Py::Tuple tuple(3);
     tuple.setItem(0, Py::Float(A));

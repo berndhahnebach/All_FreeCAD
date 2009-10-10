@@ -37,14 +37,10 @@ Rotation::Rotation()
     quat[0]=quat[1]=quat[2]=0.0f;quat[3]=1.0f;
 }
 
+/** Construct a rotation by rotation axis and angle */
 Rotation::Rotation(const Vector3d& axis, const double fAngle)
 {
     this->setValue(axis, fAngle);
-}
-
-Rotation::Rotation(double A,double B,double C)
-{
-    setEuler(A,B,C);
 }
 
 Rotation::Rotation(const Matrix4D& matrix)
@@ -52,11 +48,19 @@ Rotation::Rotation(const Matrix4D& matrix)
     this->setValue(matrix);
 }
 
+/** Construct a rotation initialized with the given quaternion components:
+ * q[0] = x, q[1] = y, q[2] = z and q[3] = w,
+ * where the quaternion is specified by q=w+xi+yj+zk.
+ */
 Rotation::Rotation(const double q[4])
 {
     this->setValue(q);
 }
 
+/** Construct a rotation initialized with the given quaternion components:
+ * q0 = x, q1 = y, q2 = z and q3 = w,
+ * where the quaternion is specified by q=w+xi+yj+zk.
+ */
 Rotation::Rotation(const double q0, const double q1, const double q2, const double q3)
 {
     this->setValue(q0, q1, q2, q3);
@@ -369,47 +373,40 @@ Rotation Rotation::identity(void)
     return Rotation(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void Rotation::setEuler(double A,double B,double C)
+void Rotation::setYawPitchRoll(double y, double p, double r)
 {
-    // from http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
-    // Assuming the angles are in radians.
-    double c1 = cos(A/2);
-    double s1 = sin(A/2);
-    double c2 = cos(B/2);
-    double s2 = sin(B/2);
-    double c3 = cos(C/2);
-    double s3 = sin(C/2);
-    double c1c2 = c1*c2;
-    double s1s2 = s1*s2;
-    quat[3] =c1c2*c3 - s1s2*s3;
-    quat[0] =c1c2*s3 + s1s2*c3;
-    quat[1] =s1*c2*c3 + c1*s2*s3;
-    quat[2] =c1*s2*c3 - s1*c2*s3;
+    // taken from http://www.resonancepub.com/quaterni.htm
+    // The Euler angles (yaw,pitch,roll) are in ZY'X''-notation
+    double c1 = cos(y/2.0);
+    double s1 = sin(y/2.0);
+    double c2 = cos(p/2.0);
+    double s2 = sin(p/2.0);
+    double c3 = cos(r/2.0);
+    double s3 = sin(r/2.0);
+
+    quat[0] = c1*c2*s3 - s1*s2*c3;
+    quat[1] = c1*s2*c3 + s1*c2*s3;
+    quat[2] = s1*c2*c3 - c1*s2*s3;
+    quat[3] = c1*c2*c3 + s1*s2*s3;
 }
 
-void Rotation::getEuler(double &A,double &B,double &C) const
+void Rotation::getYawPitchRoll(double& y, double& p, double& r) const
 {
-    // from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
-    double sqw = quat[3]*quat[3];
-    double sqx = quat[0]*quat[0];
-    double sqy = quat[1]*quat[1];
-    double sqz = quat[2]*quat[2];
-    double unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
-    double test = quat[0]*quat[1] + quat[2]*quat[3];
-    if (test > 0.499*unit) { // singularity at north pole
-        A = 2 * atan2(quat[0],quat[3]);
-        B = D_PI/2;
-        C = 0;
-        return;
-    }
-    if (test < -0.499*unit) { // singularity at south pole
-        A = -2 * atan2(quat[0],quat[3]);
-        B = -D_PI/2;
-        C = 0;
-        return;
-    }
+    // taken from http://www.resonancepub.com/quaterni.htm
+    // see also http://willperone.net/Code/quaternion.php
+    double q00 = quat[0]*quat[0];
+    double q11 = quat[1]*quat[1];
+    double q22 = quat[2]*quat[2];
+    double q33 = quat[3]*quat[3];
+    double q01 = quat[0]*quat[1];
+    double q02 = quat[0]*quat[2];
+    double q03 = quat[0]*quat[3];
+    double q12 = quat[1]*quat[2];
+    double q13 = quat[1]*quat[3];
+    double q23 = quat[2]*quat[3];
+    double qd2 = 2.0*(q13-q02);
 
-    A = atan2(2*quat[1]*quat[3]-2*quat[0]*quat[2] , sqx - sqy - sqz + sqw);
-    B = asin(2*test/unit);
-    C = atan2(2*quat[0]*quat[3]-2*quat[1]*quat[2] , -sqx + sqy - sqz + sqw);
+    y = atan2(2.0*(q01+q23),(q00+q33)-(q11+q22));
+    p = qd2 > 1.0 ? D_PI/2.0 : (qd2 < -1.0 ? -D_PI/2.0 : asin (qd2));
+    r = atan2(2.0*(q12+q03),(q22+q33)-(q00+q11));
 }

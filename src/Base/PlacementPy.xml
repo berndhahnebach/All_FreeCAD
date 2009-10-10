@@ -14,9 +14,15 @@
 	<Documentation>
 		<Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
 		<DeveloperDocu>Placement
-A Placement defines a Position (Base) and an
-Orientation (Rotation) in 3D Space. Its used when no 
-scaling or other distortion is needed.
+A placement defines an orientation (rotation) and a position (base) in 3D space.
+It is used when no scaling or other distortion is needed.
+
+The following constructors are supported:
+Placement() -- empty constructor
+Placement(Placement) -- copy constructor
+Placement(Matrix) -- 4D matrix consisting of rotation and translation
+Placement(Rotation, Base) -- define rotation and position
+Placement(Axis, Angle, Base) -- Axis/Angle define the rotation axis
 		</DeveloperDocu>
 		<UserDocu>Placement</UserDocu>
 	</Documentation>

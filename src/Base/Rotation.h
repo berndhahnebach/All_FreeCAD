@@ -38,8 +38,6 @@ public:
     //@{
     Rotation();
     Rotation(const Vector3d& axis, const double fAngle);
-    /// set the rotation in Euler form (radians)
-    Rotation(double A,double B,double C);
     Rotation(const Matrix4D& matrix);
     Rotation(const double q[4]);
     Rotation(const double q0, const double q1, const double q2, const double q3);
@@ -58,10 +56,10 @@ public:
     void setValue(const Matrix4D& matrix);
     void setValue(const Vector3d & axis, const double fAngle);
     void setValue(const Vector3d & rotateFrom, const Vector3d & rotateTo);
-    /// set the rotation in Euler form (radians)
-    void setEuler(double A,double B,double C);
-    /// get the rotation in Euler form (radians)
-    void getEuler(double &A,double &B,double &C) const;
+    /// Euler angles in yaw,pitch,roll notation
+    void setYawPitchRoll(double y, double p, double r);
+    /// Euler angles in yaw,pitch,roll notation
+    void getYawPitchRoll(double& y, double& p, double& r) const;
     //@}
 
     /** Invert rotations. */

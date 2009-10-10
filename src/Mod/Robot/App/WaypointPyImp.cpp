@@ -22,7 +22,7 @@ std::string WaypointPy::representation(void) const
     double A,B,C;
     //PlacementPy::PointerType ptr = reinterpret_cast<PlacementPy::PointerType>(_pcTwinPointer);
     std::stringstream str;
-    getWaypointPtr()->EndPos.getRotation().getEuler(A,B,C);
+    getWaypointPtr()->EndPos.getRotation().getYawPitchRoll(A,B,C);
     str.precision(5);
     str << "Waypoint [";
     if(getWaypointPtr()->Type == Waypoint::PTP)

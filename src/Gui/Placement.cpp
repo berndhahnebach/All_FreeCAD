@@ -62,11 +62,11 @@ void Placement::setPlacement(const Base::Placement& p)
     ui->yPos->setValue(p.getPosition().y);
     ui->zPos->setValue(p.getPosition().z);
 
-    double A,B,C;
-    p.getRotation().getEuler(A,B,C);
-    ui->RotA->setValue(A*180.0/D_PI);
-    ui->RotB->setValue(B*180.0/D_PI);
-    ui->RotC->setValue(C*180.0/D_PI);
+    double Y,P,R;
+    p.getRotation().getYawPitchRoll(Y,P,R);
+    ui->RotA->setValue(Y*180.0/D_PI);
+    ui->RotB->setValue(P*180.0/D_PI);
+    ui->RotC->setValue(R*180.0/D_PI);
     ui->RotA->setEnabled(false);
     ui->RotB->setEnabled(false);
     ui->RotC->setEnabled(false);
