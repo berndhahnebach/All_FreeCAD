@@ -43,6 +43,9 @@ public:
     void setPlacement(const Base::Placement&);
     Base::Placement getPlacement() const;
 
+protected:
+    void changeEvent(QEvent *e);
+
 private Q_SLOTS:
     void on_applyButton_clicked();
 
