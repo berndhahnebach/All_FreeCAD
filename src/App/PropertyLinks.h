@@ -140,7 +140,7 @@ public:
      */
     template <typename _type>
     inline _type getValue(void) const {
-        return _pcLink ? dynamic_cast<_type>(_pcLink) : 0;
+        return _pcLinkSub ? dynamic_cast<_type>(_pcLinkSub) : 0;
     }
 
     virtual PyObject *getPyObject(void);

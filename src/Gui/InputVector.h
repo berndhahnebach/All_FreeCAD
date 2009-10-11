@@ -26,6 +26,7 @@
 #include <cfloat>
 #include <QDialog>
 #include <QMessageBox>
+#include <QApplication> 
 
 #include <Gui/propertyeditor/PropertyItem.h>
 

@@ -80,6 +80,7 @@ void View3DInventorPy::init_type()
     add_varargs_method("saveImage",&View3DInventorPy::saveImage,"saveImage()");
     add_varargs_method("saveVectorGraphic",&View3DInventorPy::saveVectorGraphic,"saveVectorGraphic()");
     add_varargs_method("getCamera",&View3DInventorPy::getCamera,"getCamera()");
+    add_varargs_method("getViewDirection",&View3DInventorPy::getViewDirection,"getViewDirection()");
     add_varargs_method("setCamera",&View3DInventorPy::setCamera,"setCamera()");
     add_varargs_method("getCameraType",&View3DInventorPy::getCameraType,"getCameraType()");
     add_varargs_method("setCameraType",&View3DInventorPy::setCameraType,"setCameraType()");
@@ -509,6 +510,26 @@ Py::Object View3DInventorPy::getCamera(const Py::Tuple& args)
         throw Py::Exception("Unknown C++ exception");
     }
 }
+
+Py::Object View3DInventorPy::getViewDirection(const Py::Tuple& args)
+{
+    if (!PyArg_ParseTuple(args.ptr(), ""))
+        throw Py::Exception();
+    try {
+	SbVec3f dvec = _view->getViewer()->getViewDirection();
+	return Py::Vector(Base::Vector3f(dvec[0], dvec[1], dvec[2]));
+    }
+    catch (const Base::Exception& e) {
+        throw Py::Exception(e.what());
+    }
+    catch (const std::exception& e) {
+        throw Py::Exception(e.what());
+    }
+    catch(...) {
+        throw Py::Exception("Unknown C++ exception");
+    }
+}
+
 
 Py::Object View3DInventorPy::setCamera(const Py::Tuple& args)
 {
