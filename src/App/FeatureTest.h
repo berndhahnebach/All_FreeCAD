@@ -42,6 +42,8 @@ class FeatureTest : public DocumentObject
 public:
   FeatureTest();
 
+  ~FeatureTest();
+
   // Standard Properties (PorpertyStandard.h)
   App::PropertyInteger      Integer;
   App::PropertyFloat        Float;
@@ -68,6 +70,7 @@ public:
 
   // Standard Properties (PropertyLinks.h)
   App::PropertyLink     Link;
+  App::PropertyLinkSub  LinkSub;
   App::PropertyLinkList LinkList;
 
   // Standard Properties (PropertyGeo.h)
@@ -79,7 +82,6 @@ public:
   // Properties to test the Document::recompute()
   App::PropertyLink     Source1;
   App::PropertyLink     Source2;
-  App::PropertyLinkSub  SourceSub;
   App::PropertyLinkList SourceN;
   App::PropertyString   ExecResult;
   App::PropertyInteger  ExceptionType;

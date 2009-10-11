@@ -174,12 +174,23 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.Doc.FileName = SaveName
     self.failUnless(self.Doc.Label_1.TypeTransient == 4711)
     self.Doc.Label_1.TypeTransient = 4712
+    # setup Linking
+    self.Doc.Label_1.Link = self.Doc.Label_2
+    self.Doc.Label_2.Link = self.Doc.Label_1
+    self.Doc.Label_1.LinkSub = (self.Doc.Label_2,["Sub1","Sub2"])
+    self.Doc.Label_2.LinkSub = (self.Doc.Label_1,["Sub3","Sub4"])
+    # save the document
     self.Doc.save()
     FreeCAD.closeDocument("SaveRestoreTests")
     self.Doc = FreeCAD.open(SaveName)
     self.failUnless(self.Doc.Label_1.Integer == 4711)
     self.failUnless(self.Doc.Label_2.Integer == 4711)
-	# do  NOT save transient properties 
+    # test Linkage
+    self.failUnless(self.Doc.Label_1.Link == self.Doc.Label_2)
+    self.failUnless(self.Doc.Label_2.Link == self.Doc.Label_1)
+    self.failUnless(self.Doc.Label_1.LinkSub == (self.Doc.Label_2,["Sub1","Sub2"]))
+    self.failUnless(self.Doc.Label_2.LinkSub == (self.Doc.Label_1,["Sub3","Sub4"]))
+    # do  NOT save transient properties 
     self.failUnless(self.Doc.Label_1.TypeTransient == 4711)
     self.failUnless(self.Doc == FreeCAD.getDocument(self.Doc.Name))
     
