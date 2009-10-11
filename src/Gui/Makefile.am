@@ -41,6 +41,7 @@ BUILT_SOURCES=\
 		moc_MainWindow.cpp \
 		moc_NetworkRetriever.cpp \
 		moc_OnlineDocumentation.cpp \
+		moc_Placement.cpp \
 		moc_PrefWidgets.cpp \
 		moc_ProgressBar.cpp \
 		moc_ProgressDialog.cpp \

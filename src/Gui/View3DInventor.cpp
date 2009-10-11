@@ -171,7 +171,7 @@ void View3DInventor::setViewerDefaults(void)
     _viewer->setEnabledFPSCounter(hGrp->GetBool("ShowFPS",false));
 
     // check whether a perspective or orthogrphic camera should be set
-    if (hGrp->GetBool("Orthographic", false))
+    if (hGrp->GetBool("Orthographic", true))
         _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
     else
         _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
