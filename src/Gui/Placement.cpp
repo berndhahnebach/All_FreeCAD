@@ -22,6 +22,7 @@
 
 
 #include "PreCompiled.h"
+#include <QSignalMapper>
 
 #include "Placement.h"
 #include "ui_Placement.h"
@@ -37,6 +38,21 @@ Placement::Placement(QWidget* parent, Qt::WFlags fl)
     ui->yawAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
     ui->pitchAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
     ui->rollAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+
+    // create a signal mapper in order to have one slot to perform the change
+    QSignalMapper* signalMapper = new QSignalMapper(this);
+    connect(this, SIGNAL(directionChanged()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(this, 0);
+
+    int id = 1;
+    QList<QDoubleSpinBox*> sb = this->findChildren<QDoubleSpinBox*>();
+    for (QList<QDoubleSpinBox*>::iterator it = sb.begin(); it != sb.end(); ++it) {
+        connect(*it, SIGNAL(valueChanged(double)), signalMapper, SLOT(map()));
+        signalMapper->setMapping(*it, id++);
+    }
+
+    connect(signalMapper, SIGNAL(mapped(int)),
+            this, SLOT(onPlacementChanged(int)));
 }
 
 Placement::~Placement()
@@ -44,9 +60,25 @@ Placement::~Placement()
     delete ui;
 }
 
+void Placement::onPlacementChanged(int)
+{
+    if (ui->applyPlacement->isChecked()) {
+        Base::Placement plm = this->getPlacement();
+        QVariant data = QVariant::fromValue<Base::Placement>(plm);
+        placementChanged(data);
+    }
+}
+
+void Placement::on_applyPlacement_toggled(bool on)
+{
+    ui->applyButton->setDisabled(on);
+    if (on) onPlacementChanged(0);
+}
+
 void Placement::accept()
 {
-    on_applyButton_clicked();
+    if (!ui->applyPlacement->isChecked())
+        on_applyButton_clicked();
     QDialog::accept();
 }
 
@@ -59,7 +91,9 @@ void Placement::on_applyButton_clicked()
 
 void Placement::directionActivated(int index)
 {
-    ui->directionActivated(this, index);
+    if (ui->directionActivated(this, index)) {
+        /*emit*/ directionChanged();
+    }
 }
 
 Base::Vector3f Placement::getDirection() const
