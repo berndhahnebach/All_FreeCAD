@@ -157,7 +157,7 @@ public:
     }
 
 protected:
-    App::DocumentObject *_pcLink;
+    App::DocumentObject *_pcLinkSub;
     std::vector<std::string> _cSubList;
 
 };

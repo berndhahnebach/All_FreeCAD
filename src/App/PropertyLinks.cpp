@@ -163,7 +163,7 @@ TYPESYSTEM_SOURCE(App::PropertyLinkSub , App::Property);
 
 
 PropertyLinkSub::PropertyLinkSub()
-:_pcLink(0)
+:_pcLinkSub(0)
 {
 
 }
@@ -180,14 +180,14 @@ PropertyLinkSub::~PropertyLinkSub()
 void PropertyLinkSub::setValue(App::DocumentObject * lValue, const std::vector<std::string> &SubList)
 {
     aboutToSetValue();
-    _pcLink=lValue;
+    _pcLinkSub=lValue;
     _cSubList = SubList;
     hasSetValue();
 }
 
 App::DocumentObject * PropertyLinkSub::getValue(void) const
 {
-    return _pcLink;
+    return _pcLinkSub;
 }
 
 const std::vector<std::string>& PropertyLinkSub::getSubValues(void) const
@@ -197,15 +197,16 @@ const std::vector<std::string>& PropertyLinkSub::getSubValues(void) const
 
 App::DocumentObject * PropertyLinkSub::getValue(Base::Type t) const
 {
-    return (_pcLink && _pcLink->getTypeId().isDerivedFrom(t)) ? _pcLink : 0;
+    return (_pcLinkSub && _pcLinkSub->getTypeId().isDerivedFrom(t)) ? _pcLinkSub : 0;
 }
 
 PyObject *PropertyLinkSub::getPyObject(void)
 {
     Py::Tuple tup(2);
     Py::List  list(_cSubList.size());
-    if(_pcLink){
-        tup[0] = Py::Object(_pcLink->getPyObject());
+    if(_pcLinkSub){
+        _pcLinkSub->getPyObject();
+        tup[0] = Py::Object(_pcLinkSub->getPyObject());
         for(unsigned int i = 0;i<_cSubList.size(); i++)
             list[i] = Py::String(_cSubList[i]);
         tup[1] = list;
@@ -223,13 +224,14 @@ void PropertyLinkSub::setPyObject(PyObject *value)
     else if (Py::Object(value).isTuple()) {
         Py::Tuple tup(value);
         if (PyObject_TypeCheck(tup[0].ptr(), &(DocumentObjectPy::Type))){
-            DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
+            DocumentObjectPy  *pcObj = (DocumentObjectPy*)tup[0].ptr();
             Py::List list(tup[1]);
             std::vector<std::string> vals(list.size());
-            for(Py::List::iterator it = list.begin();it!=list.end();++it)
-                vals.push_back(Py::String(*it));
+            unsigned int i=0;
+            for(Py::List::iterator it = list.begin();it!=list.end();++it,++i)
+                vals[i] = Py::String(*it);
 
-            setValue(pcObject->getDocumentObjectPtr(),vals);
+            setValue(pcObj->getDocumentObjectPtr(),vals);
         }
     }
     else if(Py_None == value) {
@@ -244,7 +246,7 @@ void PropertyLinkSub::setPyObject(PyObject *value)
 
 void PropertyLinkSub::Save (Writer &writer) const
 {
-    writer.Stream() << writer.ind() << "<LinkSub value=\"" <<  (_pcLink?_pcLink->getNameInDocument():"") <<"\" count=\"" <<  _cSubList.size() <<"\"" << std::endl;
+    writer.Stream() << writer.ind() << "<LinkSub value=\"" <<  (_pcLinkSub?_pcLinkSub->getNameInDocument():"") <<"\" count=\"" <<  _cSubList.size() <<"\">" << std::endl;
     writer.incInd();
     for(unsigned int i = 0;i<_cSubList.size(); i++)
         writer.Stream() << writer.ind() << "<Sub value=\"" <<  _cSubList[i]<<"\"/>" << endl; ;
@@ -285,7 +287,7 @@ void PropertyLinkSub::Restore(Base::XMLReader &reader)
 Property *PropertyLinkSub::Copy(void) const
 {
     PropertyLinkSub *p= new PropertyLinkSub();
-    p->_pcLink = _pcLink;
+    p->_pcLinkSub = _pcLinkSub;
     p->_cSubList = _cSubList;
     return p;
 }
@@ -293,7 +295,7 @@ Property *PropertyLinkSub::Copy(void) const
 void PropertyLinkSub::Paste(const Property &from)
 {
     aboutToSetValue();
-    _pcLink = dynamic_cast<const PropertyLinkSub&>(from)._pcLink;
+    _pcLinkSub = dynamic_cast<const PropertyLinkSub&>(from)._pcLinkSub;
     _cSubList = dynamic_cast<const PropertyLinkSub&>(from)._cSubList;
     hasSetValue();
 }

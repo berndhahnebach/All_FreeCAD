@@ -69,7 +69,7 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(FloatList  ,(47.11f) );
   
   ADD_PROPERTY(Link     ,(0));
-  ADD_PROPERTY(SourceSub,(0));
+  ADD_PROPERTY(LinkSub,  (0));
   ADD_PROPERTY(LinkList ,(0));
 
   ADD_PROPERTY(Vector    ,(1.0,2.0,3.0));
@@ -96,7 +96,10 @@ FeatureTest::FeatureTest()
  
 }
 
+FeatureTest::~FeatureTest()
+{
 
+}
 DocumentObjectExecReturn *FeatureTest::execute(void)
 {
 
