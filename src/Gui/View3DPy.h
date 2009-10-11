@@ -65,6 +65,7 @@ public:
     Py::Object saveImage(const Py::Tuple&);
     Py::Object saveVectorGraphic(const Py::Tuple&);
     Py::Object getCamera(const Py::Tuple&);
+    Py::Object getViewDirection(const Py::Tuple&);
     Py::Object setCamera(const Py::Tuple&);
     Py::Object getCameraType(const Py::Tuple&);
     Py::Object setCameraType(const Py::Tuple&);
