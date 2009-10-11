@@ -43,6 +43,9 @@ protected:
     LocationDialog(QWidget* parent = 0, Qt::WFlags fl = 0);
     virtual ~LocationDialog();
 
+protected:
+    virtual void changeEvent(QEvent *e) = 0;
+
 private Q_SLOTS:
     void on_direction_activated(int);
 
@@ -73,12 +76,40 @@ public:
     LocationInterface(QWidget* parent = 0, Qt::WFlags fl = 0)  : LocationDialog(parent, fl)
     {
         this->setupUi(this);
-        // Vector3f declared to use with QVariant see Gui/propertyeditor/PropertyItem.h
-        this->direction->setItemData(0, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(1,0,0)));
-        this->direction->setItemData(1, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,1,0)));
-        this->direction->setItemData(2, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,0,1)));
+        this->retranslate();
     }
     virtual ~LocationInterface(){}
+
+    void retranslate()
+    {
+        Ui::retranslateUi(this);
+
+        if (this->direction->count() == 0) {
+            this->direction->insertItems(0, QStringList()
+             << QApplication::translate("Gui::LocationDialog", "X", 0, QApplication::UnicodeUTF8)
+             << QApplication::translate("Gui::LocationDialog", "Y", 0, QApplication::UnicodeUTF8)
+             << QApplication::translate("Gui::LocationDialog", "Z", 0, QApplication::UnicodeUTF8)
+             << QApplication::translate("Gui::LocationDialog", "User defined...", 0, 
+                QApplication::UnicodeUTF8)
+            );
+
+            // Vector3f declared to use with QVariant see Gui/propertyeditor/PropertyItem.h
+            this->direction->setItemData(0, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(1,0,0)));
+            this->direction->setItemData(1, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,1,0)));
+            this->direction->setItemData(2, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,0,1)));
+        }
+        else {
+            this->direction->setItemText(0, QApplication::translate("Gui::LocationDialog", "X", 0,
+                QApplication::UnicodeUTF8));
+            this->direction->setItemText(1, QApplication::translate("Gui::LocationDialog", "Y", 0,
+                QApplication::UnicodeUTF8));
+            this->direction->setItemText(2, QApplication::translate("Gui::LocationDialog", "Z", 0,
+                QApplication::UnicodeUTF8));
+            this->direction->setItemText(this->direction->count()-1,
+                QApplication::translate("Gui::LocationDialog", "User defined...", 0,
+                QApplication::UnicodeUTF8));
+        }
+    }
 
     Base::Vector3f getPosition() const
     {
@@ -95,6 +126,17 @@ public:
         }
         else {
             return Base::Vector3f(0,0,1);
+        }
+    }
+
+protected:
+    void changeEvent(QEvent *e)
+    {
+        if (e->type() == QEvent::LanguageChange) {
+            this->retranslate();
+        }
+        else {
+            QDialog::changeEvent(e);
         }
     }
 
@@ -139,6 +181,10 @@ private:
 
 /** This template class does basically the same as LocationInterface unless
  * that the Ui class is used as composition not as further base class.
+ * This class acts as a small wrapper class around the UI_-generated classes
+ * by Qt for which the location interface is needed. This class can be used
+ * as composition in dialog-based classes without including the ui_-generated
+ * header file. The Ui_-class can simply be forward declared.
  * @author Werner Mayer
  */
 template <class Ui>
@@ -148,13 +194,41 @@ public:
     LocationInterfaceComp(QDialog *dlg)
     {
         this->setupUi(dlg);
-        // Vector3f declared to use with QVariant see Gui/propertyeditor/PropertyItem.h
-        this->direction->setItemData(0, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(1,0,0)));
-        this->direction->setItemData(1, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,1,0)));
-        this->direction->setItemData(2, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,0,1)));
+        this->retranslate(dlg);
     }
     ~LocationInterfaceComp()
     {
+    }
+
+    void retranslate(QDialog *dlg)
+    {
+        Ui::retranslateUi(dlg);
+
+        if (this->direction->count() == 0) {
+            this->direction->insertItems(0, QStringList()
+             << QApplication::translate("Gui::LocationDialog", "X", 0, QApplication::UnicodeUTF8)
+             << QApplication::translate("Gui::LocationDialog", "Y", 0, QApplication::UnicodeUTF8)
+             << QApplication::translate("Gui::LocationDialog", "Z", 0, QApplication::UnicodeUTF8)
+             << QApplication::translate("Gui::LocationDialog", "User defined...", 0, 
+                QApplication::UnicodeUTF8)
+            );
+
+            // Vector3f declared to use with QVariant see Gui/propertyeditor/PropertyItem.h
+            this->direction->setItemData(0, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(1,0,0)));
+            this->direction->setItemData(1, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,1,0)));
+            this->direction->setItemData(2, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,0,1)));
+        }
+        else {
+            this->direction->setItemText(0, QApplication::translate("Gui::LocationDialog", "X", 0,
+                QApplication::UnicodeUTF8));
+            this->direction->setItemText(1, QApplication::translate("Gui::LocationDialog", "Y", 0,
+                QApplication::UnicodeUTF8));
+            this->direction->setItemText(2, QApplication::translate("Gui::LocationDialog", "Z", 0,
+                QApplication::UnicodeUTF8));
+            this->direction->setItemText(this->direction->count()-1,
+                QApplication::translate("Gui::LocationDialog", "User defined...", 0,
+                QApplication::UnicodeUTF8));
+        }
     }
 
     Base::Vector3f getPosition() const
@@ -214,8 +288,12 @@ public:
     }
 };
 
-/** This template class is the parent dialog using LocationInterfaceComp and
- * implements the pure virtual method directionActivated().
+/** This template class is a subclass of LocationDialog using LocationInterfaceComp
+ * which implements the pure virtual method directionActivated().
+ * Other dialog-based classes can directly inherit from this class if the
+ * location-interface is required. But note, in this case the ui_-header file
+ * needs to be included. If this should be avoided the class LocationInterfaceComp
+ * must be used instead of whereas the Ui_-class can be forward declared.
  * @author Werner Mayer
  */
 template <class Ui>
@@ -234,6 +312,17 @@ public:
     Base::Vector3f getDirection() const
     {
         return ui.getDirection();
+    }
+
+protected:
+    void changeEvent(QEvent *e)
+    {
+        if (e->type() == QEvent::LanguageChange) {
+            ui.retranslate(this);
+        }
+        else {
+            QDialog::changeEvent(e);
+        }
     }
 
 private:

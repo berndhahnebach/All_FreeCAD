@@ -130,4 +130,14 @@ Base::Placement Placement::getPlacement() const
     return p;
 }
 
+void Placement::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslate(this);
+    }
+    else {
+        QDialog::changeEvent(e);
+    }
+}
+
 #include "moc_Placement.cpp"
