@@ -93,6 +93,7 @@ set(Gui_MOC_HDRS
 		 MDIView.h
 		 NetworkRetriever.h
 		 OnlineDocumentation.h
+		 Placement.h
 		 PrefWidgets.h
 		 ProgressBar.h
 		 PropertyPage.h

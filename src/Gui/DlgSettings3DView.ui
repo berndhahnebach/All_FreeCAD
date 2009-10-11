@@ -283,6 +283,9 @@
         <property name="text" >
          <string>Orthographic rendering</string>
         </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
         <property name="prefEntry" stdset="0" >
          <cstring>Orthographic</cstring>
         </property>
@@ -295,9 +298,6 @@
        <widget class="Gui::PrefRadioButton" name="radioPerspective" >
         <property name="text" >
          <string>Perspective rendering</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
         </property>
         <property name="prefEntry" stdset="0" >
          <cstring>Perspective</cstring>
@@ -329,6 +329,13 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
    <class>Gui::PrefRadioButton</class>
    <extends>QRadioButton</extends>
    <header>Gui/PrefWidgets.h</header>
@@ -352,13 +359,6 @@
   <customwidget>
    <class>Gui::PrefDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
-   <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Gui::PrefCheckBox</class>
-   <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>

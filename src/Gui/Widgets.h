@@ -201,10 +201,12 @@ public:
     virtual ~LabelButton();
 
     QVariant value() const;
-    void setValue(const QVariant&);
 
     QLabel *getLabel() const;
     QPushButton *getButton() const;
+
+public Q_SLOTS:
+    void setValue(const QVariant&);
 
 protected:
     virtual void showValue(const QVariant&) = 0;

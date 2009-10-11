@@ -25,6 +25,7 @@
 
 #include "Placement.h"
 #include "ui_Placement.h"
+#include <App/PropertyGeo.h>
 
 using namespace Gui::Dialog;
 
@@ -33,7 +34,9 @@ Placement::Placement(QWidget* parent, Qt::WFlags fl)
 {
     ui = new Ui_PlacementComp(this);
     ui->angle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
-    ui->applyButton->setEnabled(false);
+    ui->yawAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+    ui->pitchAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+    ui->rollAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
 }
 
 Placement::~Placement()
@@ -43,7 +46,15 @@ Placement::~Placement()
 
 void Placement::accept()
 {
+    on_applyButton_clicked();
     QDialog::accept();
+}
+
+void Placement::on_applyButton_clicked()
+{
+    Base::Placement plm = this->getPlacement();
+    QVariant data = QVariant::fromValue<Base::Placement>(plm);
+    placementChanged(data);
 }
 
 void Placement::directionActivated(int index)
@@ -64,12 +75,9 @@ void Placement::setPlacement(const Base::Placement& p)
 
     double Y,P,R;
     p.getRotation().getYawPitchRoll(Y,P,R);
-    ui->RotA->setValue(Y*180.0/D_PI);
-    ui->RotB->setValue(P*180.0/D_PI);
-    ui->RotC->setValue(R*180.0/D_PI);
-    ui->RotA->setEnabled(false);
-    ui->RotB->setEnabled(false);
-    ui->RotC->setEnabled(false);
+    ui->yawAngle->setValue(Y*180.0/D_PI);
+    ui->pitchAngle->setValue(P*180.0/D_PI);
+    ui->rollAngle->setValue(R*180.0/D_PI);
 
     // check if the user-defined direction is already there
     double angle;
@@ -100,9 +108,26 @@ void Placement::setPlacement(const Base::Placement& p)
 
 Base::Placement Placement::getPlacement() const
 {
+    int index = ui->rotationInput->currentIndex();
     Base::Placement p;
-    p.setPosition(Base::Vector3d(ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
-    Base::Vector3f dir = getDirection();
-    p.setRotation(Base::Rotation(Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0));
+    if (index == 0) {
+        p.setPosition(Base::Vector3d
+            (ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
+        Base::Vector3f dir = getDirection();
+        p.setRotation(Base::Rotation
+            (Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0));
+    }
+    else if (index == 1) {
+        p.setPosition(Base::Vector3d
+            (ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
+        Base::Rotation rot;
+        rot.setYawPitchRoll(
+            ui->yawAngle->value()*D_PI/180.0,
+            ui->pitchAngle->value()*D_PI/180.0,
+            ui->rollAngle->value()*D_PI/180.0);
+        p.setRotation(rot);
+    }
     return p;
 }
+
+#include "moc_Placement.cpp"

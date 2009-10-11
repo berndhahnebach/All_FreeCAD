@@ -769,11 +769,9 @@ protected:
     {
         Gui::Dialog::Placement dlg(this);
         dlg.setPlacement(value().value<Base::Placement>());
-        if (dlg.exec()) {
-            QVariant data = QVariant::fromValue<Base::Placement>
-                (dlg.getPlacement());
-            setValue(data);
-        }
+        connect(&dlg, SIGNAL(placementChanged(const QVariant &)),
+                this, SLOT(setValue(const QVariant&)));
+        dlg.exec();
     }
     void showValue(const QVariant& d)
     {

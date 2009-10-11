@@ -23,7 +23,7 @@
 #ifndef GUI_PLACEMENT_H
 #define GUI_PLACEMENT_H
 
-#include "InputVector.h"
+#include <Gui/InputVector.h>
 #include <Base/Placement.h>
 
 namespace Gui {
@@ -32,6 +32,8 @@ namespace Dialog {
 class Ui_Placement;
 class GuiExport Placement : public Gui::LocationDialog
 {
+    Q_OBJECT
+
 public:
     Placement(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~Placement();
@@ -41,8 +43,14 @@ public:
     void setPlacement(const Base::Placement&);
     Base::Placement getPlacement() const;
 
+private Q_SLOTS:
+    void on_applyButton_clicked();
+
 private:
     void directionActivated(int);
+
+Q_SIGNALS:
+    void placementChanged(const QVariant &);
 
 private:
     typedef Gui::LocationInterfaceComp<Ui_Placement> Ui_PlacementComp;
