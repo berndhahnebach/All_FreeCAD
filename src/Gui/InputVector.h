@@ -93,6 +93,8 @@ public:
                 QApplication::UnicodeUTF8)
             );
 
+            this->direction->setCurrentIndex(2);
+
             // Vector3f declared to use with QVariant see Gui/propertyeditor/PropertyItem.h
             this->direction->setItemData(0, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(1,0,0)));
             this->direction->setItemData(1, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,1,0)));
@@ -213,6 +215,8 @@ public:
                 QApplication::UnicodeUTF8)
             );
 
+            this->direction->setCurrentIndex(2);
+
             // Vector3f declared to use with QVariant see Gui/propertyeditor/PropertyItem.h
             this->direction->setItemData(0, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(1,0,0)));
             this->direction->setItemData(1, QVariant::fromValue<Base::Vector3f>(Base::Vector3f(0,1,0)));
@@ -250,7 +254,7 @@ public:
     }
 
 public:
-    void directionActivated(LocationDialog* dlg, int index)
+    bool directionActivated(LocationDialog* dlg, int index)
     {
         // last item is selected to define direction by user
         if (index+1 == this->direction->count()) {
@@ -260,7 +264,7 @@ public:
                 if (dir.Length() < FLT_EPSILON) {
                     QMessageBox::critical(dlg, LocationDialog::tr("Wrong direction"),
                         LocationDialog::tr("Direction must not be the null vector"));
-                    return;
+                    return false;
                 }
 
                 // check if the user-defined direction is already there
@@ -270,7 +274,7 @@ public:
                         const Base::Vector3f val = data.value<Base::Vector3f>();
                         if (val == dir) {
                             this->direction->setCurrentIndex(i);
-                            return;
+                            return true;
                         }
                     }
                 }
@@ -285,6 +289,7 @@ public:
                 this->direction->setCurrentIndex(this->direction->count()-2);
             }
         }
+        return true;
     }
 };
 

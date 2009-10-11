@@ -48,12 +48,15 @@ protected:
 
 private Q_SLOTS:
     void on_applyButton_clicked();
+    void on_applyPlacement_toggled(bool);
+    void onPlacementChanged(int);
 
 private:
     void directionActivated(int);
 
 Q_SIGNALS:
     void placementChanged(const QVariant &);
+    void directionChanged();
 
 private:
     typedef Gui::LocationInterfaceComp<Ui_Placement> Ui_PlacementComp;
