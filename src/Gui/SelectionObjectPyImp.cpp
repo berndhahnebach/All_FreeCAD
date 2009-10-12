@@ -41,19 +41,19 @@ Py::String SelectionObjectPy::getObjectName(void) const
 
 Py::String SelectionObjectPy::getSubElementName(void) const
 {
-    return Py::String(getSelectionObjectPtr()->getSubName());
+    return Py::String(/*getSelectionObjectPtr()->getSubName()*/);
 }
 
 Py::String SelectionObjectPy::getFullName(void) const
 {
 	std::string buf;
-	buf = getSelectionObjectPtr()->getDocName();
-	buf += ".";
-	buf += getSelectionObjectPtr()->getFeatName();
-	if(getSelectionObjectPtr()->getSubName()){
-		buf += ".";
-		buf += getSelectionObjectPtr()->getSubName();
-	}
+	//buf = getSelectionObjectPtr()->getDocName();
+	//buf += ".";
+	//buf += getSelectionObjectPtr()->getFeatName();
+	//if(getSelectionObjectPtr()->getSubName()){
+	//	buf += ".";
+	//	buf += getSelectionObjectPtr()->getSubName();
+	//}
     return Py::String(buf.c_str());
 }
 

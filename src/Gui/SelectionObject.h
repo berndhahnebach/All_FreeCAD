@@ -25,10 +25,13 @@
 #define GUI_SelectionObject_H
 
 #include <Base/BaseClass.h>
-#include "Selection.h"
-
+#include <Base/Vector3D.h>
+//#include "Selection.h"
+namespace App {
+    class DocumentObject;
+}
 namespace Gui {
-
+class SelectionSingelton;
 
 /**
  * The Selection object class
@@ -40,7 +43,6 @@ class GuiExport SelectionObject : public Base::BaseClass
 public:
     /** Constructs a SelectionObject object. */
     SelectionObject();
-	SelectionObject( const Gui::SelectionSingleton::SelObj & );
     virtual ~SelectionObject();
     /**
      * The default implementation returns an instance of @ref SelectionObjectPy.
@@ -48,7 +50,7 @@ public:
     PyObject* getPyObject();
 
 	/// get the SubElement name of this SelectionObject
-	inline const char* getSubName(void){return SubName.c_str();}
+    inline const std::vector<std::string> &getSubNames(void) const{return SubNames;}
 	/// get the name of the Document of this SelctionObject
 	inline const char* getDocName(void){return DocName.c_str();}
 	/// get the name of the Document Object of this SelectionObject
@@ -59,12 +61,14 @@ public:
 	/// returns the selected DocumentObject or NULL if the object is already deleted
 	App::DocumentObject *getObject(void);
 
+    friend class SelectionSingleton;
+
 protected:
-    std::string SubName;
-    std::string DocName;
-    std::string FeatName;
-    std::string TypeName;
-    float x,y,z;
+    std::vector<std::string>    SubNames;
+    std::string                 DocName;
+    std::string                 FeatName;
+    std::string                 TypeName;
+    std::vector<Base::Vector3d> SelPoses;
 
 };
 

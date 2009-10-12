@@ -32,7 +32,6 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Selection.h"
-#include "SelectionObject.h"
 #include "SelectionObjectPy.h"
 #include <Base/Exception.h>
 #include <Base/Console.h>
@@ -308,6 +307,46 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
 			tempSelObj.y        = It->y;
 			tempSelObj.z        = It->z;
             temp.push_back(tempSelObj);
+        }
+    }
+
+    return temp;
+}
+
+std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName) const
+{
+    std::vector<SelectionObject> temp;
+    
+    std::map<App::DocumentObject*,SelectionObject> SortMap;
+
+    App::Document *pcDoc;
+    string DocName;
+
+    pcDoc = getDocument(pDocName);
+
+    //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
+    //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
+    //be an active document but not for internal stuff. (Werner 20060517)
+    if(!pcDoc)
+        return temp;
+
+    for(std::list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
+        if (It->pDoc == pcDoc) {
+            // if the object has already an entry
+            if(SortMap.find(It->pObject) != SortMap.end()){
+                // only add sub-element
+                SortMap[It->pObject].SubNames.push_back(It->SubName);
+                SortMap[It->pObject].SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
+            }else{
+                // create a new entry
+                SelectionObject tempSelObj;
+                tempSelObj.DocName  = It->DocName;
+                tempSelObj.FeatName = It->FeatName;
+                tempSelObj.SubNames.push_back(It->SubName);
+                tempSelObj.TypeName = It->TypeName.c_str();
+                tempSelObj.SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
+                SortMap.insert(std::pair<App::DocumentObject*,SelectionObject>(It->pObject,tempSelObj));
+            }
         }
     }
 
@@ -840,15 +879,15 @@ PyObject *SelectionSingleton::sGetSelectionEx(PyObject * /*self*/, PyObject *arg
     if (!PyArg_ParseTuple(args, "|s", &documentName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception
 
-    std::vector<SelectionSingleton::SelObj> sel;
+    std::vector<SelectionObject> sel;
     if (documentName)
-        sel = Selection().getSelection(documentName);
+        sel = Selection().getSelectionEx(documentName);
     else
-        sel = Selection().getCompleteSelection();
+        sel = Selection().getSelectionEx();
 
     try {
         Py::List list;
-        for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
+        for (std::vector<SelectionObject>::iterator it = sel.begin(); it != sel.end(); ++it) {
             list.append(Py::Object(new SelectionObjectPy(new SelectionObject(*it))));
         }
         return Py::new_reference_to(list);
