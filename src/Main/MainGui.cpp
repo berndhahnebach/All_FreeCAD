@@ -161,11 +161,11 @@ int main( int argc, char ** argv )
     // set the banner (for logging and console)
     App::Application::Config()["ConsoleBanner"] = sBanner;
     App::Application::Config()["AppIcon"] = "FCIcon";
-    App::Application::Config()["SplashPicture"] = "FreeCADSplasher";
+    App::Application::Config()["SplashPicture"] = "freecadsplash";
     App::Application::Config()["StartWorkbench"] = "CompleteWorkbench";
     //App::Application::Config()["HiddenDockWindow"] = "Property editor";
     App::Application::Config()["SplashAlignment" ] = "Bottom|Left";
-    App::Application::Config()["SplashTextColor" ] = "#000000"; // black
+    App::Application::Config()["SplashTextColor" ] = "#ffffff"; // white
 
     try {
         // Init phase ===========================================================

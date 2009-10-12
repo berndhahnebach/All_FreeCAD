@@ -25,6 +25,7 @@ EXTRA_DIST = \
 		FCIcon.xpm \
 		Feature.xpm \
 		SplashScreen.xpm \
+		freecadsplash.png \
 		images.cpp \
 		ParamDlgImgs.h \
 		macro-execute.svg \
