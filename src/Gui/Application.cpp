@@ -1063,7 +1063,7 @@ bool Application::runPythonCode(const char* cmd, bool gui)
 
 void messageHandler(QtMsgType type, const char *msg)
 {
-#ifdef _DEBUG
+#ifdef FC_DEBUG
     switch (type)
     {
     case QtDebugMsg:
