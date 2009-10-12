@@ -289,10 +289,7 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
 
     pcDoc = getDocument(pDocName);
 
-    //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
-    //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
-    //be an active document but not for internal stuff. (Werner 20060517)
-    if(!pcDoc)
+    if (!pcDoc)
         return temp;
 
     for(std::list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
@@ -301,11 +298,11 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
             tempSelObj.FeatName = It->FeatName.c_str();
             tempSelObj.SubName  = It->SubName.c_str();
             tempSelObj.TypeName = It->TypeName.c_str();
-            tempSelObj.pObject    = It->pObject;
+            tempSelObj.pObject  = It->pObject;
             tempSelObj.pDoc     = It->pDoc;
-			tempSelObj.x        = It->x;
-			tempSelObj.y        = It->y;
-			tempSelObj.z        = It->z;
+            tempSelObj.x        = It->x;
+            tempSelObj.y        = It->y;
+            tempSelObj.z        = It->z;
             temp.push_back(tempSelObj);
         }
     }
@@ -324,20 +321,18 @@ std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDoc
 
     pcDoc = getDocument(pDocName);
 
-    //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
-    //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
-    //be an active document but not for internal stuff. (Werner 20060517)
-    if(!pcDoc)
+    if (!pcDoc)
         return temp;
 
-    for(std::list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
+    for (std::list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
         if (It->pDoc == pcDoc) {
             // if the object has already an entry
-            if(SortMap.find(It->pObject) != SortMap.end()){
+            if (SortMap.find(It->pObject) != SortMap.end()){
                 // only add sub-element
                 SortMap[It->pObject].SubNames.push_back(It->SubName);
                 SortMap[It->pObject].SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
-            }else{
+            }
+            else{
                 // create a new entry
                 SelectionObject tempSelObj;
                 tempSelObj.DocName  = It->DocName;
@@ -345,6 +340,7 @@ std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDoc
                 tempSelObj.SubNames.push_back(It->SubName);
                 tempSelObj.TypeName = It->TypeName.c_str();
                 tempSelObj.SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
+                temp.push_back(tempSelObj);
                 SortMap.insert(std::pair<App::DocumentObject*,SelectionObject>(It->pObject,tempSelObj));
             }
         }
@@ -360,9 +356,6 @@ vector<App::DocumentObject*> SelectionSingleton::getObjectsOfType(const Base::Ty
 
     pcDoc = getDocument(pDocName);
 
-    //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
-    //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
-    //be an active document but not for internal stuff. (Werner 20060517)
     if (!pcDoc)
         return temp;
 
@@ -390,9 +383,6 @@ unsigned int SelectionSingleton::countObjectsOfType(const Base::Type& typeId, co
 
     pcDoc = getDocument(pDocName);
 
-    //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
-    //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
-    //be an active document but not for internal stuff. (Werner 20060517)
     if (!pcDoc)
         return 0;
 
@@ -782,10 +772,11 @@ PyMethodDef SelectionSingleton::Methods[] = {
      "Return a list of selected objects for a given document name. If no\n"
      "document is given the complete selection is returned."},
     {"getSelectionEx",         (PyCFunction) SelectionSingleton::sGetSelectionEx, 1,
-     "getSelection([string]) -- Return a list of SelectinObjects\n"
+     "getSelectionEx([string]) -- Return a list of SelectionObjects\n"
      "Return a list of SelectionObjects for a given document name. If no\n"
-     "document is given the complete selection is returned. The Selection-\n"
-     "Objects contain a veriaty of information about the selction, e.g. Subelement."},
+     "document is given the selection of the active document is returned.\n"
+     "The SelectionObjects contain a variety of information about the selection,\n"
+     "e.g. sub-element names."},
     {"addObserver",         (PyCFunction) SelectionSingleton::sAddSelObserver, 1,
      "addObserver(Object) -- Install an observer\n"},
     {"removeObserver",      (PyCFunction) SelectionSingleton::sRemSelObserver, 1,
@@ -880,21 +871,18 @@ PyObject *SelectionSingleton::sGetSelectionEx(PyObject * /*self*/, PyObject *arg
         return NULL;                             // NULL triggers exception
 
     std::vector<SelectionObject> sel;
-    if (documentName)
-        sel = Selection().getSelectionEx(documentName);
-    else
-        sel = Selection().getSelectionEx();
+    sel = Selection().getSelectionEx(documentName);
 
     try {
         Py::List list;
         for (std::vector<SelectionObject>::iterator it = sel.begin(); it != sel.end(); ++it) {
-            list.append(Py::Object(new SelectionObjectPy(new SelectionObject(*it))));
+            list.append(Py::Object(new SelectionObjectPy(new SelectionObject(*it)), true));
         }
         return Py::new_reference_to(list);
     }
     catch (Py::Exception&) {
         return 0;
-	}
+    }
 }
 
 PyObject *SelectionSingleton::sAddSelObserver(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)

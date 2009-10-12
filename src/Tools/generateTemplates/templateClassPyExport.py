@@ -619,14 +619,15 @@ PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *
 
 Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 {
-    return Py::@i.Parameter.Type@();
+    //return Py::@i.Parameter.Type@();
+    throw Py::AttributeError("Not yet implemented");
 }
 + if (i.ReadOnly):
 = else:
 
 void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
 {
-
+    throw Py::AttributeError("Not yet implemented");
 }
 -
 -
@@ -712,14 +713,15 @@ PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *
 
 Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 {
-    return Py::@i.Parameter.Type@();
+    //return Py::@i.Parameter.Type@();
+    throw Py::AttributeError("Not yet implemented");
 }
 + if (i.ReadOnly):
 = else:
 
 void @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ /*arg*/)
 {
-
+    throw Py::AttributeError("Not yet implemented");
 }
 -
 -
