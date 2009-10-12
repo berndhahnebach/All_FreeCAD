@@ -38,6 +38,7 @@
 # include <BRepBuilderAPI_MakeShell.hxx>
 # include <BRepBuilderAPI_MakeSolid.hxx>
 # include <BRepOffsetAPI_Sewing.hxx>
+# include <BRepFill.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Pnt.hxx>
 # include <gp_Lin.hxx>
@@ -779,6 +780,36 @@ static PyObject * makeRevolution(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makeRuledSurface(PyObject *self, PyObject *args)
+{
+    PyObject *sh1, *sh2;
+    if (!PyArg_ParseTuple(args, "O!O!", &(TopoShapePy::Type), &sh1,
+                                        &(TopoShapePy::Type), &sh2))
+        return 0;
+
+    const TopoDS_Shape& shape1 = static_cast<TopoShapePy*>(sh1)->getTopoShapePtr()->_Shape;
+    const TopoDS_Shape& shape2 = static_cast<TopoShapePy*>(sh2)->getTopoShapePtr()->_Shape;
+
+    try {
+        if (shape1.ShapeType() == TopAbs_EDGE && shape2.ShapeType() == TopAbs_EDGE) {
+            TopoDS_Face face = BRepFill::Face(TopoDS::Edge(shape1), TopoDS::Edge(shape2));
+            return new TopoShapeFacePy(new TopoShape(face));
+        }
+        else if (shape1.ShapeType() == TopAbs_WIRE && shape2.ShapeType() == TopAbs_WIRE) {
+            TopoDS_Shell shell = BRepFill::Shell(TopoDS::Wire(shape1), TopoDS::Wire(shape2));
+            return new TopoShapeShellPy(new TopoShape(shell));
+        }
+        else {
+            PyErr_SetString(PyExc_Exception, "curves must either be edges or wires");
+            return 0;
+        }
+    }
+    catch (Standard_Failure) {
+        PyErr_SetString(PyExc_Exception, "creation of ruled surface failed");
+        return 0;
+    }
+}
+
 static PyObject * toPythonOCC(PyObject *self, PyObject *args)
 {
     PyObject *pcObj;
@@ -1042,6 +1073,11 @@ struct PyMethodDef Part_methods[] = {
      "by rotating the curve or a portion of it around an axis given by (pnt,dir).\n"
      "By default vmin/vmax=bounds of the curve,angle=2*PI,pnt=Vector(0,0,0) and\n"
      "dir=Vector(0,0,1)"},
+
+    {"makeRuledSurface" ,makeRuledSurface,METH_VARARGS,
+     "makeRuledSurface(Edge|Wire,Edge|Wire) -- Make a ruled surface\n"
+     "Create a ruled surface out of two edges or wires. If wires are used then"
+     "these must have the same number of edges."},
 
     {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
      "cast_to_shape(shape) -- Cast to the actual shape type"},
