@@ -56,7 +56,7 @@ namespace Gui
  * and update everything (e.g 3D view). This is not a very good idea if, e.g. only
  * a small parameter has changed. Therefore one can use this class and make the
  * update of the document much faster!
- * @see FCObserver
+ * @see Base::Observer
  */
 class GuiExport SelectionChanges
 {
@@ -101,7 +101,7 @@ namespace Gui
 {
 
 /**
- * The SelectionObserver class simplyfies the step to write classes that listen
+ * The SelectionObserver class simplifies the step to write classes that listen
  * to what happens to the selection.
  *
  * @author Werner Mayer
@@ -181,16 +181,16 @@ public:
     /// Check if selected
     bool isSelected(App::DocumentObject*) const;
 
-	/// set the preselected object (mostly by the 3D View)
+    /// set the preselected object (mostly by the 3D view)
     bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
-	/// remove the present preselection
+    /// remove the present preselection
     void rmvPreselect();
-	/// returns the present preselection 
+    /// returns the present preselection 
 
 
-    /** Returns the number of selected objects with an special Object type
-     * Its the convenient way to check if the right Objects are selected to 
-     * perform an operation (GuiCommand). The checking also detect base type. 
+    /** Returns the number of selected objects with a special object type
+     * It's the convenient way to check if the right objects are selected to 
+     * perform an operation (GuiCommand). The check also detects base types. 
      * E.g. "Part" also fits on "PartImport" or "PartTransform types.
      * If no document name is given the active document is assumed.
      */
@@ -202,8 +202,8 @@ public:
      */
     unsigned int countObjectsOfType(const char* typeName, const char* pDocName=0) const;
 
-    /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
-     * If no document name is specified the Objects from the active document are regarded.
+    /** Returns a vector of objects of type \a TypeName selected for the given document name \a pDocName.
+     * If no document name is specified the objects from the active document are regarded.
      * If no objects of this document are selected an empty vector is returned.
      * @note The vector reflects the sequence of selection.
      */
@@ -222,29 +222,29 @@ public:
         const char* TypeName;
         App::Document* pDoc;
         App::DocumentObject*  pObject;
-		float x,y,z;
+        float x,y,z;
     };
 
-    /// signal on new Object
+    /// signal on new object
     boost::signal<void (const SelectionChanges& msg)> signalSelectionChanged;
 
-    /** returns a vector of selection objects
-     * if no document name is given the objects of the active are returned.
-     * If nothing for this Document is selected a empty vector is returnd.
-     * The vector reflects the sequence of selection!
+    /** Returns a vector of selection objects
+     * If no document name is given the objects of the active are returned.
+     * If nothing for this Document is selected an empty vector is returned.
+     * The vector reflects the sequence of selection.
      */
     std::vector<SelObj> getSelection(const char* pDocName=0) const;
-    /** returns a vector of selection objects
-     * if no document name is given the objects of the active are returned.
-     * If nothing for this Document is selected a empty vector is returnd.
-     * The vector reflects the sequence of selection!
+    /** Returns a vector of selection objects
+     * If no document name is given the objects of the active are returned.
+     * If nothing for this document is selected an empty vector is returned.
+     * The vector reflects the sequence of selection.
      */
     std::vector<Gui::SelectionObject> getSelectionEx(const char* pDocName=0) const;
 
     /** Returns a vector of all selection objects of all documents. */
     std::vector<SelObj> getCompleteSelection() const;
 
-    /// size of selcted entities for all docuements
+    /// Size of selcted entities for all documents
     unsigned int size(void) const {return _SelList.size();}
 
     static SelectionSingleton& instance(void);

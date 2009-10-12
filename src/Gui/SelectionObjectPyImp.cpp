@@ -64,13 +64,12 @@ Py::String SelectionObjectPy::getDocumentName(void) const
 
 Py::Object SelectionObjectPy::getDocument(void) const
 {
-	//App::GetApplication()->getDocument
-    return Py::Object();
+    return Py::Object(getSelectionObjectPtr()->getObject()->getDocument()->getPyObject(), true);
 }
 
 Py::Object SelectionObjectPy::getObject(void) const
 {
-    return Py::Object(getSelectionObjectPtr()->getObject()->getPyObject());
+    return Py::Object(getSelectionObjectPtr()->getObject()->getPyObject(), true);
 }
 
 Py::Object SelectionObjectPy::getSubObject(void) const
