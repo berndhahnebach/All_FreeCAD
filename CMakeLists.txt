@@ -19,8 +19,6 @@ if(COMMAND cmake_policy)
 		 cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-set(COMPILE_DEFINITIONS_DEBUG "-DFC_DEBUG=1")
-
 #if(CMAKE_CFG_INTDIR STREQUAL .)
 		 # No Debug/Release output paths
 		 set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
@@ -249,6 +247,7 @@ ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 IF(MSVC)
 	# set default compiler settings
 	#SET (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GF /GY")
+	SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DFC_DEBUG")
 	# set default libs
 	SET (CMAKE_C_STANDARD_LIBRARIES "kernel32.lib user32.lib gdi32.lib winspool.lib SHFolder.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ")
 	set (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES}")
