@@ -37,6 +37,8 @@
 #include <Base/Type.h>
 #include <App/Document.h>
 
+#include <Gui/SelectionObject.h>
+
 namespace App
 {
   class DocumentObject;
@@ -232,6 +234,12 @@ public:
      * The vector reflects the sequence of selection!
      */
     std::vector<SelObj> getSelection(const char* pDocName=0) const;
+    /** returns a vector of selection objects
+     * if no document name is given the objects of the active are returned.
+     * If nothing for this Document is selected a empty vector is returnd.
+     * The vector reflects the sequence of selection!
+     */
+    std::vector<Gui::SelectionObject> getSelectionEx(const char* pDocName=0) const;
 
     /** Returns a vector of all selection objects of all documents. */
     std::vector<SelObj> getCompleteSelection() const;

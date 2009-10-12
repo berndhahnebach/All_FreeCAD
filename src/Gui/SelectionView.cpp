@@ -106,9 +106,8 @@ void SelectionView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
     else if (Reason.Type == SelectionChanges::SetSelection) {
         // remove all items
         selectionView->clear();
-        typedef SelectionSingleton::SelObj SelectionObject;
-        std::vector<SelectionObject> objs = Gui::Selection().getSelection(Reason.pDocName);
-        for (std::vector<SelectionObject>::iterator it = objs.begin(); it != objs.end(); ++it) {
+        std::vector<SelectionSingleton::SelObj> objs = Gui::Selection().getSelection(Reason.pDocName);
+        for (std::vector<SelectionSingleton::SelObj>::iterator it = objs.begin(); it != objs.end(); ++it) {
             // build name
             temp = it->DocName;
             temp += ".";
