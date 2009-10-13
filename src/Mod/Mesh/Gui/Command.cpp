@@ -1097,10 +1097,10 @@ CmdMeshHarmonizeNormals::CmdMeshHarmonizeNormals()
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Harmoinze normals");
-  sToolTipText  = QT_TR_NOOP("Hormonizes the normals of the mesh");
+  sMenuText     = QT_TR_NOOP("Harmonize normals");
+  sToolTipText  = QT_TR_NOOP("Harmonizes the normals of the mesh");
   sWhatsThis    = "Mesh_HarmonizeNormals";
-  sStatusTip    = QT_TR_NOOP("Hormonizes the normals of the mesh");
+  sStatusTip    = QT_TR_NOOP("Harmonizes the normals of the mesh");
 //  sPixmap       = "curv_info";
 }
 

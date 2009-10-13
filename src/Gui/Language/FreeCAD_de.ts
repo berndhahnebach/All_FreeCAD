@@ -3139,8 +3139,8 @@ Möchten Sie sie ersetzen?</translation>
         <translation>&amp;Makro aufzeichnen...</translation>
     </message>
     <message>
-        <source>Opens a Dialog to record a macro</source>
-        <translation>Öffnet Dialog zur Makroaufzeichnung</translation>
+        <source>Opens a dialog to record a macro</source>
+        <translation>Öffnet einen Dialog zur Makroaufzeichnung</translation>
     </message>
 </context>
 <context>
@@ -3359,7 +3359,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Ma&amp;kroaufzeichnung beenden</translation>
     </message>
     <message>
-        <source>Stop the a running macro recording sassion</source>
+        <source>Stop the macro recording session</source>
         <translation>Makroaufzeichnung beenden</translation>
     </message>
 </context>
@@ -3385,7 +3385,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>&amp;Neu</translation>
     </message>
     <message>
-        <source>Create a new empty Document</source>
+        <source>Create a new empty document</source>
         <translation>Neues Dokument erstellen</translation>
     </message>
 </context>

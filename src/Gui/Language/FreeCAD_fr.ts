@@ -3190,7 +3190,7 @@ Do you want to replace it?</source>
         <translation>&amp;Enregistrement macro ...</translation>
     </message>
     <message>
-        <source>Opens a Dialog to record a macro</source>
+        <source>Opens a dialog to record a macro</source>
         <translation>Ouvrez une boite de dialogue pour enregistrer une macro</translation>
     </message>
 </context>
@@ -3406,7 +3406,7 @@ Do you want to specify another directory?</source>
         <translation>Arrê&amp;ter l&apos;enregistrement macro</translation>
     </message>
     <message>
-        <source>Stop the a running macro recording sassion</source>
+        <source>Stop the macro recording session</source>
         <translation>Arr^eter le fonctionnement de la session d&apos;enregistrement macro</translation>
     </message>
 </context>
@@ -3432,7 +3432,7 @@ Do you want to specify another directory?</source>
         <translation>&amp;Nouveau</translation>
     </message>
     <message>
-        <source>Create a new empty Document</source>
+        <source>Create a new empty document</source>
         <translation>Créer un nouveau document vide</translation>
     </message>
 </context>

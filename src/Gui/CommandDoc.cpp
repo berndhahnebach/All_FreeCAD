@@ -268,9 +268,9 @@ StdCmdNew::StdCmdNew()
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&New");
-  sToolTipText  = QT_TR_NOOP("Create a new empty Document");
+  sToolTipText  = QT_TR_NOOP("Create a new empty document");
   sWhatsThis    = "Std_New";
-  sStatusTip    = QT_TR_NOOP("Create a new empty Document");
+  sStatusTip    = QT_TR_NOOP("Create a new empty document");
   sPixmap       = "document-new";
   iAccel        = Qt::CTRL+Qt::Key_N;
 }

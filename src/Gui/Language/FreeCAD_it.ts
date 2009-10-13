@@ -3136,7 +3136,7 @@ Vuoi sostituirlo?</translation>
         <translation>&amp;Registra macro ...</translation>
     </message>
     <message>
-        <source>Opens a Dialog to record a macro</source>
+        <source>Opens a dialog to record a macro</source>
         <translation>Apre una finestra di dialogo per registrare una macro</translation>
     </message>
 </context>
@@ -3356,7 +3356,7 @@ Vuoi specificare un&apos;altra cartella?</translation>
         <translation>I&amp;nterrompi la registrazione macro</translation>
     </message>
     <message>
-        <source>Stop the a running macro recording sassion</source>
+        <source>Stop the macro recording session</source>
         <translation>Interrompi la sessione di registrazione macro in corso</translation>
     </message>
 </context>
@@ -3382,7 +3382,7 @@ Vuoi specificare un&apos;altra cartella?</translation>
         <translation>&amp;Nuovo</translation>
     </message>
     <message>
-        <source>Create a new empty Document</source>
+        <source>Create a new empty document</source>
         <translation>Crea un documento vuoto</translation>
     </message>
 </context>

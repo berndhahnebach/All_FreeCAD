@@ -271,11 +271,11 @@
         <translation>Netz</translation>
     </message>
     <message>
-        <source>Harmoinze normals</source>
+        <source>Harmonize normals</source>
         <translation>Normalen ausrichten</translation>
     </message>
     <message>
-        <source>Hormonizes the normals of the mesh</source>
+        <source>Harmonizes the normals of the mesh</source>
         <translation>Richtet die Normalen des Netzes aus</translation>
     </message>
 </context>

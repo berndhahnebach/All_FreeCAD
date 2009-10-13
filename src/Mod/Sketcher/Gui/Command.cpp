@@ -77,7 +77,7 @@ CmdSketcherLeaveSketch::CmdSketcherLeaveSketch()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Leave sketch");
-    sToolTipText    = QT_TR_NOOP("Close the edition for the sketch");
+    sToolTipText    = QT_TR_NOOP("Close the editing of the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_LeaveSketch";
@@ -110,7 +110,7 @@ CmdSketcherCreateArc::CmdSketcherCreateArc()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create arc");
-    sToolTipText    = QT_TR_NOOP("Create an arc in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create an arc in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateArc";
@@ -147,7 +147,7 @@ CmdSketcherCreateCircle::CmdSketcherCreateCircle()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create circle");
-    sToolTipText    = QT_TR_NOOP("Create a circle in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create a circle in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateCircle";
@@ -180,7 +180,7 @@ CmdSketcherCreatePoint::CmdSketcherCreatePoint()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create point");
-    sToolTipText    = QT_TR_NOOP("Create a point in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create a point in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreatePoint";
@@ -213,7 +213,7 @@ CmdSketcherCreateLine::CmdSketcherCreateLine()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create line");
-    sToolTipText    = QT_TR_NOOP("Create a line in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create a line in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateLine";
@@ -250,7 +250,7 @@ CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create polyline");
-    sToolTipText    = QT_TR_NOOP("Create a polyline in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create a polyline in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreatePolyline";
@@ -290,8 +290,8 @@ CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create rectagle");
-    sToolTipText    = QT_TR_NOOP("Create a rectagle in the scetch");
+    sMenuText       = QT_TR_NOOP("Create rectangle");
+    sToolTipText    = QT_TR_NOOP("Create a rectangle in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateRectangle";
@@ -324,7 +324,7 @@ CmdSketcherCreateText::CmdSketcherCreateText()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create text");
-    sToolTipText    = QT_TR_NOOP("Create text in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create text in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateText";
@@ -357,7 +357,7 @@ CmdSketcherCreateDraftLine::CmdSketcherCreateDraftLine()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Create draft line");
-    sToolTipText    = QT_TR_NOOP("Create draft line in the scetch");
+    sToolTipText    = QT_TR_NOOP("Create a draft line in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_DraftLine";
@@ -390,7 +390,7 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Constrain orizontal");
-    sToolTipText    = QT_TR_NOOP("Create a horizontal constrain on the selcted item");
+    sToolTipText    = QT_TR_NOOP("Create a horizontal constrain on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainHorizontal";
@@ -426,7 +426,7 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Constrain vertical");
-    sToolTipText    = QT_TR_NOOP("Create a vertical constrain on the selcted item");
+    sToolTipText    = QT_TR_NOOP("Create a vertical constrain on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainVertical";
@@ -463,7 +463,7 @@ CmdSketcherConstrainLock::CmdSketcherConstrainLock()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Constrain Lock");
-    sToolTipText    = QT_TR_NOOP("Create a Lock constrain on the selcted item");
+    sToolTipText    = QT_TR_NOOP("Create a lock constrain on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainLock";
