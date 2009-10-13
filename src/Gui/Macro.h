@@ -60,12 +60,12 @@ public:
         Gui,   /**< The line effects the Gui (FreeCADGui) */
     }; 
 
-    /** Opens a new Macro recording sassion
-     * Starts a sassion with the Type and the Name of the Macro.
-     * All user interactions will be recorded as long as the commit() or cancel() is called. 
-     * There is only one recording sassion possible. To open a second one cause a exception:
+    /** Opens a new Macro recording session
+     * Starts a session with the type and the name of the macro.
+     * All user interactions will be recorded as long as the commit() or cancel() isn't called. 
+     * There is only one recording session possible. Trying to open a second one causes an exception:
      * @param eType Type of the macro
-     * @param sName Name or Path of the Macro
+     * @param sName Name or path of the macro
      * @see commit()
      * @see cancel()
      */

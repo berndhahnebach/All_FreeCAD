@@ -354,9 +354,9 @@ StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("&Macro recording ...");
-  sToolTipText  = QT_TR_NOOP("Opens a Dialog to record a macro");
+  sToolTipText  = QT_TR_NOOP("Opens a dialog to record a macro");
   sWhatsThis    = "Std_DlgMacroRecord";
-  sStatusTip    = QT_TR_NOOP("Opens a Dialog to record a macro");
+  sStatusTip    = QT_TR_NOOP("Opens a dialog to record a macro");
   sPixmap       = "macro-record";
   iAccel        = 0;
 }
@@ -437,9 +437,9 @@ StdCmdMacroStop::StdCmdMacroStop()
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("S&top macro recording");
-  sToolTipText  = QT_TR_NOOP("Stop the a running macro recording sassion");
+  sToolTipText  = QT_TR_NOOP("Stop the macro recording session");
   sWhatsThis    = "Std_DlgMacroStop";
-  sStatusTip    = QT_TR_NOOP("Stop the a running macro recording sassion");
+  sStatusTip    = QT_TR_NOOP("Stop the macro recording session");
   sPixmap       = "macro-stop";
   iAccel        = 0;
 }

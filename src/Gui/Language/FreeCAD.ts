@@ -3187,7 +3187,7 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Opens a Dialog to record a macro</source>
+        <source>Opens a dialog to record a macro</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3403,7 +3403,7 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stop the a running macro recording sassion</source>
+        <source>Stop the macro recording session</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3429,7 +3429,7 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create a new empty Document</source>
+        <source>Create a new empty document</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
