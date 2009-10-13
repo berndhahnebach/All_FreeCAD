@@ -67,7 +67,7 @@ from draftlibs import fcvec
 from draftlibs import fcgeo
 
 try:
-	from pivy import coin
+	from pivy import coin, sogui
 except:
 	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
 
@@ -444,7 +444,7 @@ class lineTracker(Tracker):
 
 class rectangleTracker(Tracker):
 	"a tracking rectangle"
-	def __init__(self,dotted=False,scolor=None,swidth=None):
+	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1)):
 		Tracker.__init__(self,dotted,scolor,swidth)
 		line = coin.SoLineSet()
 		line.numVertices.setValue(5)
@@ -461,7 +461,7 @@ class rectangleTracker(Tracker):
 
 	def update(self,point):
 		self.coords.point.set1Value(1,point.x,self.origin.y,self.origin.z)
-		self.coords.point.set1Value(2,point.x,point.y,self.origin.z)
+		self.coords.point.set1Value(2,point.x,point.y,point.z)
 		self.coords.point.set1Value(3,self.origin.x,point.y,self.origin.z)
 
 class dimTracker(Tracker):
@@ -496,8 +496,10 @@ class dimTracker(Tracker):
 		
 class arcTracker(Tracker):
 	"a class to create a tracking arc/circle, used by the functions that need it"
-	def __init__(self,dotted=False,scolor=None,swidth=None):
+	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1)):
 		Tracker.__init__(self,dotted,scolor,swidth)
+		self.axis = axis
+		initrot = FreeCADGui.ActiveDocument.ActiveView.getViewer().getCamera().orientation
 		self.coords = coin.SoCoordinate4()
 		trackpts = [[1,0,0,1],[0.707107,0.707107,0,0.707107],[0,1,0,1],
 			[-0.707107,0.707107,0,0.707107],[-1,0,0,1],[-0.707107,-0.707107,0,0.707107],
@@ -509,13 +511,17 @@ class arcTracker(Tracker):
 		self.trans = coin.SoTransform()
 		self.trans.translation.setValue([0,0,0])
 		self.trans.scaleFactor.setValue([0,0,0])
-		self.trans.rotation.setValue(coin.SbVec3f(0,0,1),0)
+		if FreeCADGui.activeWorkbench().draftToolBar.ui.lockedz:
+			self.trans.rotation.setValue(coin.SbVec3f(0,0,1),0)
+		else:
+			# self.trans.rotation.setValue(float(cam[12]),float(cam[13]),float(cam[14]),float(cam[15]))
+			self.trans.rotation = initrot
 		self.node.addChild(self.coords)
 		self.node.addChild(self.trans)
 		self.node.addChild(self.circle)
 
 	def startangle(self,angle):
-		self.trans.rotation.setValue(coin.SbVec3f(0,0,1),-angle)
+		self.trans.rotation.setValue(coin.SbVec3f(self.axis.x,self.axis.y,self.axis.z),-angle)
 
 	def center(self,center):
 		self.trans.translation.setValue([center.x,center.y,center.z])
@@ -993,8 +999,9 @@ class Rectangle(Creator):
 		self.ui.lineUi()
 		self.ui.cmdlabel.setText("Rectangle")
 		self.call = self.view.addEventCallback("SoEvent",self.action)
+		self.axis = self.view.getViewDirection()
 		self.snap = snapTracker()
-		self.rect = rectangleTracker()
+		self.rect = rectangleTracker(axis=self.axis)
 		FreeCAD.Console.PrintMessage("Pick first point:\n")
 
 	def finish(self,closed=False):
@@ -1093,9 +1100,10 @@ class Arc(Creator):
 		self.altdown = False
 		self.ui.sourceCmd = self
 		self.snap = snapTracker()
+		self.axis = self.view.getViewDirection()
 		self.linetrack = lineTracker(dotted=True)
 		self.constraintrack = lineTracker(dotted=True)
-		self.arctrack = arcTracker()
+		self.arctrack = arcTracker(axis=self.axis)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick center point:\n")
 
@@ -1280,7 +1288,10 @@ class Arc(Creator):
 	def drawArc(self):
 		"actually draws the FreeCAD object"
 		if self.closedCircle:
-			arc = Part.Circle(self.center,NORM,self.rad).toShape()
+			if self.ui.lockedz:
+				arc = Part.Circle(self.center,NORM,self.rad).toShape()
+			else:
+				arc = Part.Circle(self.center,self.axis,self.rad).toShape()
 		else:
 			radvec = Vector(self.rad,0,0)
 			p1 = Vector.add(self.center,fcvec.rotate(radvec,self.firstangle))
@@ -1756,7 +1767,11 @@ class Rotate(Modifier):
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		self.arctrack = arcTracker()
+		if self.ui.lockedz:
+			self.axis = Vector(0,0,1)
+		else:
+			self.axis = fcvec.neg(self.view.getViewDirection())
+		self.arctrack = arcTracker(axis=self.axis)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		FreeCAD.Console.PrintMessage("Pick rotation center:\n")
@@ -1782,7 +1797,7 @@ class Rotate(Modifier):
 			else: newob = ob
 			if (ob.Type == "Part::Feature"):
 				shape = ob.Shape
-				shape.rotate((self.center.x,self.center.y,self.center.z),(0,0,1),angle)
+				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),angle)
 				newob.Shape=shape
 			if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
@@ -1793,7 +1808,7 @@ class Rotate(Modifier):
 		for ob in self.sel:
 			if (ob.Type == "Part::Feature"):
 				shape = ob.Shape
-				shape.rotate((self.center.x,self.center.y,self.center.z),(0,0,1),angle)
+				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),angle)
 				newob = self.doc.addObject("Part::Feature",ob.Name)
 				newob.Shape=shape
 			formatObject(newob,ob)
@@ -1841,7 +1856,7 @@ class Rotate(Modifier):
 				else:
 					sweep = angle - self.firstangle
 				self.arctrack.update(sweep)
-				self.ghost.trans.rotation.setValue(coin.SbVec3f(0,0,1),sweep)
+				self.ghost.trans.rotation.setValue(coin.SbVec3f(fcvec.tup(self.axis)),sweep)
 				self.linetrack.p2(point)
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
