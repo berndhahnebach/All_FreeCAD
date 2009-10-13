@@ -678,7 +678,7 @@ Py::Object View3DInventorPy::setStereoType(const Py::Tuple& args)
     }
 
     try {
-#if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
+#if SOQT_MAJOR_VERSION > 1 || (SOQT_MAJOR_VERSION == 1 && SOQT_MINOR_VERSION >= 2)
         if (stereomode < 0 || stereomode > 4)
             throw Py::Exception("Out of range");
         SoQtViewer::StereoType mode = SoQtViewer::StereoType(stereomode);
@@ -705,7 +705,7 @@ Py::Object View3DInventorPy::getStereoType(const Py::Tuple& args)
         throw Py::Exception();
 
     try {
-#if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
+#if SOQT_MAJOR_VERSION > 1 || (SOQT_MAJOR_VERSION == 1 && SOQT_MINOR_VERSION >= 2)
         int mode = (int)(_view->getViewer()->getStereoType()); 
         return Py::String(StereoTypeEnums[mode]);
 #else

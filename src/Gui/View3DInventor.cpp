@@ -307,7 +307,7 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
         _viewer->viewSelection();
         return true;
     // comment out on older Inventor
-#if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
+#if SOQT_MAJOR_VERSION > 1 || (SOQT_MAJOR_VERSION == 1 && SOQT_MINOR_VERSION >= 2)
     }
     else if(strcmp("SetStereoRedGreen",pMsg) == 0 ) {
         _viewer->setStereoType(SoQtViewer::STEREO_ANAGLYPH);
