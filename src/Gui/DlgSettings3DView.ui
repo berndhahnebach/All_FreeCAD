@@ -181,7 +181,7 @@
       <item row="4" column="0" >
        <widget class="Gui::PrefCheckBox" name="checkBoxAntiAliasing" >
         <property name="text" >
-         <string>Enable antialiasing (slower)</string>
+         <string>Enable anti-aliasing (slower)</string>
         </property>
         <property name="prefEntry" stdset="0" >
          <cstring>UseAntialiasing</cstring>

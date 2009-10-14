@@ -644,7 +644,7 @@ void HelpView::setFileSource( const QString& src )
  */
 void HelpView::openHelpFile()
 {
-  QString fn = QFileDialog::getOpenFileName(this, tr("Open file"), QString(), tr("All Html files (*.html *.htm)"));
+  QString fn = QFileDialog::getOpenFileName(this, tr("Open file"), QString(), tr("All HTML files (*.html *.htm)"));
   if ( !fn.isEmpty() )
     setSource( QUrl::fromLocalFile(fn) );
 }

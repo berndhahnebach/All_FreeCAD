@@ -464,9 +464,9 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
 {
     sGroup        = QT_TR_NOOP("Tools");
     sMenuText     = QT_TR_NOOP("Cu&stomize...");
-    sToolTipText  = QT_TR_NOOP("Customize toolbars and commandbars");
+    sToolTipText  = QT_TR_NOOP("Customize toolbars and command bars");
     sWhatsThis    = "Std_DlgCustomize";
-    sStatusTip    = QT_TR_NOOP("Customize toolbars and commandbars");
+    sStatusTip    = QT_TR_NOOP("Customize toolbars and command bars");
     sPixmap       = "applications-accessories";
     iAccel        = 0;
 }

@@ -150,7 +150,7 @@
          <bool>false</bool>
         </property>
         <property name="text" >
-         <string>Saving transactions (Autosave)</string>
+         <string>Saving transactions (Auto-save)</string>
         </property>
         <property name="prefEntry" stdset="0" >
          <cstring>SaveTransactions</cstring>
@@ -239,7 +239,7 @@
       <item row="0" column="0" >
        <widget class="Gui::PrefCheckBox" name="prefCheckNewDoc" >
         <property name="text" >
-         <string>Create new document at startup</string>
+         <string>Create new document at start up</string>
         </property>
         <property name="prefEntry" stdset="0" >
          <cstring>CreateNewDoc</cstring>

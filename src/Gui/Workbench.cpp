@@ -464,7 +464,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // Help
     MenuItem* helpWebsites = new MenuItem;
-    helpWebsites->setCommand(QT_TR_NOOP("&Online-help"));
+    helpWebsites->setCommand(QT_TR_NOOP("&On-line help"));
     *helpWebsites << "Std_OnlineHelpWebsite" << "Std_FreeCADWebsite" << "Std_PythonWebsite";
     
     MenuItem* help = new MenuItem( menuBar );

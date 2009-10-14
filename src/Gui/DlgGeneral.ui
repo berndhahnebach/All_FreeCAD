@@ -50,7 +50,7 @@
       <item row="2" column="0" >
        <widget class="QGroupBox" name="GroupBox10" >
         <property name="title" >
-         <string>Startup</string>
+         <string>Start up</string>
         </property>
         <layout class="QGridLayout" >
          <property name="margin" >
@@ -62,7 +62,7 @@
          <item row="1" column="0" >
           <widget class="Gui::PrefCheckBox" name="SplashScreen" >
            <property name="text" >
-            <string>Enable splashscreen at startup</string>
+            <string>Enable splash screen at start up</string>
            </property>
            <property name="checked" >
             <bool>true</bool>
@@ -106,7 +106,7 @@
            <item row="0" column="0" >
             <widget class="QLabel" name="autoModuleLabel" >
              <property name="text" >
-              <string>Auto load module after startup:</string>
+              <string>Auto load module after start up:</string>
              </property>
             </widget>
            </item>

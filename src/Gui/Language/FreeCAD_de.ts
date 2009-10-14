@@ -116,7 +116,7 @@
         <translation>Passwort:</translation>
     </message>
     <message>
-        <source>Username:</source>
+        <source>User name:</source>
         <translation>Benutzerame:</translation>
     </message>
 </context>
@@ -570,7 +570,7 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <source>Enable splashscreen at startup</source>
+        <source>Enable splash screen at start up</source>
         <translation>Splashscreen beim Starten anzeigen</translation>
     </message>
     <message>
@@ -594,7 +594,7 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>Sprache auswählen:</translation>
     </message>
     <message>
-        <source>Auto load module after startup:</source>
+        <source>Auto load module after start up:</source>
         <translation>Lade Modul automatisch nach Startvorgang:</translation>
     </message>
     <message>
@@ -602,7 +602,7 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>Wechsle zu Reiter des Ausgabefensters:</translation>
     </message>
     <message>
-        <source>Startup</source>
+        <source>Start up</source>
         <translation>Start</translation>
     </message>
 </context>
@@ -784,7 +784,7 @@ Diese Datei ist bereits vorhanden.</translation>
         <translation>Proxy verwenden</translation>
     </message>
     <message>
-        <source>Online help</source>
+        <source>On-line help</source>
         <translation>Online-Hilfe</translation>
     </message>
     <message>
@@ -835,8 +835,8 @@ Specify another directory, please.</source>
 Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
-        <source>Html files (*.html *.htm)</source>
-        <translation>Html-Dateien (*.html *.htm)</translation>
+        <source>HTML files (*.html *.htm)</source>
+        <translation>HTML-Dateien (*.html *.htm)</translation>
     </message>
 </context>
 <context>
@@ -1040,7 +1040,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>3D-Viewer</translation>
     </message>
     <message>
-        <source>Enable antialiasing (slower)</source>
+        <source>Enable anti-aliasing (slower)</source>
         <translation>Anti-Aliasing aktivieren (langsam)</translation>
     </message>
     <message>
@@ -1068,7 +1068,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Auswahl</translation>
     </message>
     <message>
-        <source>Enable preselection highlighting</source>
+        <source>Enable pre-selection highlighting</source>
         <translation>Hervorhebung von Vorauswahl aktivieren</translation>
     </message>
     <message>
@@ -1119,7 +1119,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
-        <source>Colorgradient settings</source>
+        <source>Color gradient settings</source>
         <translation>Einstellungen für Farbverlauf</translation>
     </message>
     <message>
@@ -1245,7 +1245,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <source>Create new document at startup</source>
+        <source>Create new document at start up</source>
         <translation>Neues Dokument beim Start erzeugen</translation>
     </message>
     <message>
@@ -1257,7 +1257,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Maximaler Speicherverbrauch (in Megabyte)</translation>
     </message>
     <message>
-        <source>Saving transactions (Autosave)</source>
+        <source>Saving transactions (Auto-save)</source>
         <translation>Transaktionen speichern (Automatisches Speichern)</translation>
     </message>
     <message>
@@ -1417,7 +1417,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Schwarz</translation>
     </message>
     <message>
-        <source>Transperent</source>
+        <source>Transparent</source>
         <translation>Transparent</translation>
     </message>
     <message>
@@ -1548,8 +1548,8 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Gui-Befehle</translation>
     </message>
     <message>
-        <source>Recording gui commands</source>
-        <translation>Gui-Befehle aufzeichnen</translation>
+        <source>Recording GUI commands</source>
+        <translation>GUI-Befehle aufzeichnen</translation>
     </message>
     <message>
         <source>Record as comment</source>
@@ -1583,7 +1583,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Tipp des Tages</translation>
     </message>
     <message>
-        <source>&amp;Show tips at startup</source>
+        <source>&amp;Show tips at start up</source>
         <translation>Tipps beim &amp;Start anzeigen</translation>
     </message>
     <message>
@@ -1737,7 +1737,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Neue Ganzzahl</translation>
     </message>
     <message>
-        <source>New boolean item</source>
+        <source>New Boolean item</source>
         <translation>Neuer Bool&apos;scher Wert</translation>
     </message>
     <message>
@@ -1896,8 +1896,8 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Start von %1 fehlgeschlagen</translation>
     </message>
     <message>
-        <source>All Html files (*.html *.htm)</source>
-        <translation>Alle Html-Dateien (*.html *.htm)</translation>
+        <source>All HTML files (*.html *.htm)</source>
+        <translation>Alle HTML-Dateien (*.html *.htm)</translation>
     </message>
 </context>
 <context>
@@ -2164,11 +2164,11 @@ Sollen die Änderungen gespeichert werden?</translation>
         <translation>Abmessung</translation>
     </message>
     <message>
-        <source>Toogles this toolbar</source>
+        <source>Toggles this toolbar</source>
         <translation>Symbolleiste ein-/ausschalten</translation>
     </message>
     <message>
-        <source>Toogles this dockable window</source>
+        <source>Toggles this dockable window</source>
         <translation>Andockbares Fenster ein-/ausschalten</translation>
     </message>
 </context>
@@ -2401,7 +2401,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>&amp;Fenster</translation>
     </message>
     <message>
-        <source>&amp;Online-help</source>
+        <source>&amp;On-line help</source>
         <translation>&amp;Online-Hilfe</translation>
     </message>
     <message>
@@ -2573,8 +2573,8 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Aufgaben</translation>
     </message>
     <message>
-        <source>Combi View</source>
-        <translation>Combi-Ansicht</translation>
+        <source>Combo View</source>
+        <translation>Combo-Ansicht</translation>
     </message>
 </context>
 <context>
@@ -2612,7 +2612,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Neuer Gleitkommawert</translation>
     </message>
     <message>
-        <source>New boolean item</source>
+        <source>New Boolean item</source>
         <translation>Neuer Bool&apos;scher Wert</translation>
     </message>
     <message>
@@ -3094,7 +3094,7 @@ Möchten Sie sie ersetzen?</translation>
         <translation>&amp;Benutzerdefiniert...</translation>
     </message>
     <message>
-        <source>Customize toolbars and commandbars</source>
+        <source>Customize toolbars and command bars</source>
         <translation>Benutzerdefinierte Einstellungen für Symbolleisten und Befehlsleisten</translation>
     </message>
 </context>
@@ -3925,7 +3925,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Inventor Beispiel #2</translation>
     </message>
     <message>
-        <source>Shows spheres an dragglights</source>
+        <source>Shows spheres and drag-lights</source>
         <translation>Kugeln mit verschiebbarer Lichtquelle</translation>
     </message>
 </context>

@@ -1211,9 +1211,9 @@ StdCmdViewExample2::StdCmdViewExample2()
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Inventor example #2");
-  sToolTipText  = QT_TR_NOOP("Shows spheres an dragglights");
+  sToolTipText  = QT_TR_NOOP("Shows spheres and drag-lights");
   sWhatsThis    = "Std_ViewExamples";
-  sStatusTip    = QT_TR_NOOP("Shows spheres an dragglights");
+  sStatusTip    = QT_TR_NOOP("Shows spheres and drag-lights");
   sPixmap       = "Std_Tool2";
   iAccel        = 0;
 }

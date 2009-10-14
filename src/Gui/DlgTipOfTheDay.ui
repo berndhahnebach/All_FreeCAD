@@ -1201,7 +1201,7 @@
      <item>
       <widget class="QCheckBox" name="checkShowTips" >
        <property name="text" >
-        <string>&amp;Show tips at startup</string>
+        <string>&amp;Show tips at start up</string>
        </property>
        <property name="shortcut" >
         <string>Alt+S</string>

@@ -13,7 +13,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Colorgradient settings</string>
+   <string>Color-gradient settings</string>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
