@@ -48,7 +48,7 @@ _soqt_DATA = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+AM_CXXFLAGS = $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 libdir = $(prefix)/bin/pivy
 install-exec-hook:

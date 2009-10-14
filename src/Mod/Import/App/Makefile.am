@@ -25,7 +25,7 @@ libImport_la_LIBADD   = \
 		-lPart
 
 # set the include path found by configure
-AM_CPPFLAGS = $(all_includes) -I../../../
+AM_CXXFLAGS = $(all_includes) -I../../../
 
 libdir = $(prefix)/Mod/Import
 

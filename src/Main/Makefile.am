@@ -58,7 +58,7 @@ FreeCADGui_la_LIBADD=\
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src $(QT_CXXFLAGS) $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src $(QT_CXXFLAGS) $(all_includes)
 
 EXTRA_DIST = \
 		res/FreeCAD.exe.manifest \

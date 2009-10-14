@@ -349,7 +349,7 @@ Mesh_la_DEPENDENCIES = libMesh.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src -I$(top_builddir)/src $(GTS_CFLAGS) $(all_includes) 
+AM_CXXFLAGS = -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src -I$(top_builddir)/src $(GTS_CFLAGS) $(all_includes) 
 
 includedir = @includedir@/Mod/Mesh/App
 libdir = $(prefix)/Mod/Mesh
