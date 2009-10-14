@@ -497,7 +497,7 @@ ParameterValue::ParameterValue( QWidget * parent )
     newFltAct = menuNew->addAction(tr("New float item"), this, SLOT(onCreateFloatItem()));
     newIntAct = menuNew->addAction(tr("New integer item"), this, SLOT(onCreateIntItem()));
     newUlgAct = menuNew->addAction(tr("New unsigned item"), this, SLOT(onCreateUIntItem()));
-    newBlnAct = menuNew->addAction(tr("New boolean item"), this, SLOT(onCreateBoolItem()));
+    newBlnAct = menuNew->addAction(tr("New Boolean item"), this, SLOT(onCreateBoolItem()));
 
     connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), 
             this, SLOT(onChangeSelectedItem(QTreeWidgetItem*, int)));
@@ -701,7 +701,7 @@ void ParameterValue::onCreateFloatItem()
 void ParameterValue::onCreateBoolItem()
 {
     bool ok;
-    QString name = QInputDialog::getText(this, QObject::tr("New boolean item"), QObject::tr("Enter the name:"), 
+    QString name = QInputDialog::getText(this, QObject::tr("New Boolean item"), QObject::tr("Enter the name:"), 
                                          QLineEdit::Normal, QString::null, &ok);
 
     if (!ok || !Gui::validateInput(this, name))

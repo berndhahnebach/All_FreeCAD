@@ -67,6 +67,7 @@ ReverseEngineering_la_DEPENDENCIES = libReverseEngineering.la
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
 
+includedir = @includedir@/Mod/ReverseEngineering/App
 libdir = $(prefix)/Mod/ReverseEngineering
 
 EXTRA_DIST = \

@@ -123,7 +123,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Username:</source>
+        <source>User name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -600,11 +600,11 @@ Please define another shortcut.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Startup</source>
+        <source>Start up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enable splashscreen at startup</source>
+        <source>Enable splash screen at start up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -612,7 +612,7 @@ Please define another shortcut.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Auto load module after startup:</source>
+        <source>Auto load module after start up:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -817,7 +817,7 @@ This file already exists.</source>
 <context>
     <name>Gui::Dialog::DlgOnlineHelp</name>
     <message>
-        <source>Online help</source>
+        <source>On-line help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -860,7 +860,7 @@ This file already exists.</source>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
     <message>
-        <source>Html files (*.html *.htm)</source>
+        <source>HTML files (*.html *.htm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1107,7 +1107,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enable antialiasing (slower)</source>
+        <source>Enable anti-aliasing (slower)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1119,7 +1119,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enable preselection highlighting</source>
+        <source>Enable pre-selection highlighting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1170,7 +1170,7 @@ Specify another directory, please.</source>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
-        <source>Colorgradient settings</source>
+        <source>Color gradient settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1309,7 +1309,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create new document at startup</source>
+        <source>Create new document at start up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1321,7 +1321,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Saving transactions (Autosave)</source>
+        <source>Saving transactions (Auto-save)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1423,7 +1423,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Transperent</source>
+        <source>Transparent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1618,7 +1618,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Recording gui commands</source>
+        <source>Recording GUI commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1641,7 +1641,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Show tips at startup</source>
+        <source>&amp;Show tips at start up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1806,7 +1806,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>New boolean item</source>
+        <source>New Boolean item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1945,7 +1945,7 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>All Html files (*.html *.htm)</source>
+        <source>All HTML files (*.html *.htm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2222,11 +2222,11 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Toogles this toolbar</source>
+        <source>Toggles this toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Toogles this dockable window</source>
+        <source>Toggles this dockable window</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2457,7 +2457,7 @@ Do you want to exit without saving your data?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Online-help</source>
+        <source>&amp;On-line help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2629,7 +2629,7 @@ Do you want to exit without saving your data?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Combi View</source>
+        <source>Combo View</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2797,7 +2797,7 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>New boolean item</source>
+        <source>New Boolean item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3142,7 +3142,7 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Customize toolbars and commandbars</source>
+        <source>Customize toolbars and command bars</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3969,7 +3969,7 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Shows spheres an dragglights</source>
+        <source>Shows spheres and drag-lights</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

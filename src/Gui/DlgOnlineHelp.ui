@@ -13,7 +13,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Online help</string>
+   <string>On-line help</string>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >

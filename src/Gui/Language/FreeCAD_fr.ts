@@ -124,7 +124,7 @@
         <translation></translation>
     </message>
     <message>
-        <source>Username:</source>
+        <source>User name:</source>
         <translation></translation>
     </message>
     <message>
@@ -601,11 +601,11 @@ Please define another shortcut.</source>
         <translation>Général</translation>
     </message>
     <message>
-        <source>Startup</source>
+        <source>Start up</source>
         <translation>Démarrage</translation>
     </message>
     <message>
-        <source>Enable splashscreen at startup</source>
+        <source>Enable splash screen at start up</source>
         <translation>Rendre possible l&apos;écran de bienvenue au démarrage</translation>
     </message>
     <message>
@@ -613,7 +613,7 @@ Please define another shortcut.</source>
         <translation>Basculer vers le tableau une fenêtre de rapport:</translation>
     </message>
     <message>
-        <source>Auto load module after startup:</source>
+        <source>Auto load module after start up:</source>
         <translation>Autochargment du module après le démarrage</translation>
     </message>
     <message>
@@ -818,7 +818,7 @@ This file already exists.</source>
 <context>
     <name>Gui::Dialog::DlgOnlineHelp</name>
     <message>
-        <source>Online help</source>
+        <source>On-line help</source>
         <translation>Aide en ligne</translation>
     </message>
     <message>
@@ -830,7 +830,7 @@ This file already exists.</source>
         <translation>Autorisation utilisateur possible</translation>
     </message>
     <message>
-        <source>Download online help from:</source>
+        <source>Download on-line help from:</source>
         <translation>Télécharger l&apos;aide en ligne de:</translation>
     </message>
     <message>
@@ -861,8 +861,8 @@ This file already exists.</source>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
     <message>
-        <source>Html files (*.html *.htm)</source>
-        <translation>Fichiers html (*.html *.htm)</translation>
+        <source>HTML files (*.html *.htm)</source>
+        <translation>Fichiers HTML (*.html *.htm)</translation>
     </message>
     <message>
         <source>Access denied</source>
@@ -1108,8 +1108,8 @@ Specify another directory, please.</source>
         <translation>Modèle complet</translation>
     </message>
     <message>
-        <source>Enable antialiasing (slower)</source>
-        <translation>Antialias activé(ralenti)</translation>
+        <source>Enable anti-aliasing (slower)</source>
+        <translation>Anti-alias activé(ralenti)</translation>
     </message>
     <message>
         <source>Eye to eye distance for stereo modes:</source>
@@ -1120,7 +1120,7 @@ Specify another directory, please.</source>
         <translation>Sélection</translation>
     </message>
     <message>
-        <source>Enable preselection highlighting</source>
+        <source>Enable pre-selection highlighting</source>
         <translation>Activé les surlignement de présélection</translation>
     </message>
     <message>
@@ -1171,7 +1171,7 @@ Specify another directory, please.</source>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
-        <source>Colorgradient settings</source>
+        <source>Color gradient settings</source>
         <translation>Réglages du gradient de couleur</translation>
     </message>
     <message>
@@ -1310,7 +1310,7 @@ Specify another directory, please.</source>
         <translation>Taille de l&apos;annulation/rétablissement [des commandes] (en Mo)</translation>
     </message>
     <message>
-        <source>Create new document at startup</source>
+        <source>Create new document at start up</source>
         <translation>Créer un nouveau document au démarrage</translation>
     </message>
     <message>
@@ -1322,7 +1322,7 @@ Specify another directory, please.</source>
         <translation>Stockage</translation>
     </message>
     <message>
-        <source>Saving transactions (Autosave)</source>
+        <source>Saving transactions (Auto-save)</source>
         <translation>Sauvegardes des transactions (Autosauvegarde)</translation>
     </message>
     <message>
@@ -1424,7 +1424,7 @@ Specify another directory, please.</source>
         <translation>Noir</translation>
     </message>
     <message>
-        <source>Transperent</source>
+        <source>Transparent</source>
         <translation>Transparent</translation>
     </message>
     <message>
@@ -1619,7 +1619,7 @@ Specify another directory, please.</source>
         <translation>Commandes interface graphique Gui</translation>
     </message>
     <message>
-        <source>Recording gui commands</source>
+        <source>Recording GUI commands</source>
         <translation>Enregistrement des commandes de l&apos;interface graphique</translation>
     </message>
     <message>
@@ -1642,7 +1642,7 @@ Specify another directory, please.</source>
         <translation>&lt;b&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;font size=&quot;+3&quot;&gt;Connaissez vous...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&amp;Show tips at startup</source>
+        <source>&amp;Show tips at start up</source>
         <translation>&amp;Montrer les astuces au démarrage</translation>
     </message>
     <message>
@@ -1807,7 +1807,7 @@ Specify another directory, please.</source>
         <translation>Item nouveau non signé</translation>
     </message>
     <message>
-        <source>New boolean item</source>
+        <source>New Boolean item</source>
         <translation>Item nouvel booleen</translation>
     </message>
     <message>
@@ -1946,8 +1946,8 @@ Specify another directory, please.</source>
         <translation>Ouvrir un fichier</translation>
     </message>
     <message>
-        <source>All Html files (*.html *.htm)</source>
-        <translation>Tous les fichiers html  (*.html *.htm)</translation>
+        <source>All HTML files (*.html *.htm)</source>
+        <translation>Tous les fichiers HTML  (*.html *.htm)</translation>
     </message>
     <message>
         <source>External browser</source>
@@ -2223,11 +2223,11 @@ Do you want to save your changes?</source>
         <translation>Pr^et</translation>
     </message>
     <message>
-        <source>Toogles this toolbar</source>
+        <source>Toggles this toolbar</source>
         <translation>Basculez cette barre d&apos;outils</translation>
     </message>
     <message>
-        <source>Toogles this dockable window</source>
+        <source>Toggles this dockable window</source>
         <translation>Basculez cette fenêtre dockable</translation>
     </message>
 </context>
@@ -2458,7 +2458,7 @@ Do you want to exit without saving your data?</source>
         <translation>&amp;Fenêtre</translation>
     </message>
     <message>
-        <source>&amp;Online-help</source>
+        <source>&amp;On-line help</source>
         <translation>&amp;Aide-en-ligne</translation>
     </message>
     <message>
@@ -2630,7 +2630,7 @@ Do you want to exit without saving your data?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Combi View</source>
+        <source>Combo View</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2798,7 +2798,7 @@ Do you want to continue?</source>
         <translation>Nouvel item flottant</translation>
     </message>
     <message>
-        <source>New boolean item</source>
+        <source>New Boolean item</source>
         <translation>Item nouvel booléen</translation>
     </message>
     <message>
@@ -3145,7 +3145,7 @@ Do you want to replace it?</source>
         <translation>Pe&amp;rsonaliser</translation>
     </message>
     <message>
-        <source>Customize toolbars and commandbars</source>
+        <source>Customize toolbars and command bars</source>
         <translation>Personaliser les barres d&apos;outils et barres de commandes</translation>
     </message>
 </context>
@@ -3972,7 +3972,7 @@ Do you want to specify another directory?</source>
         <translation>Inventor exemple #2</translation>
     </message>
     <message>
-        <source>Shows spheres an dragglights</source>
+        <source>Shows spheres and drag-lights</source>
         <translation>Montrez les sphères </translation>
     </message>
 </context>

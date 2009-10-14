@@ -265,9 +265,9 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pcTaskPanelView->setMinimumWidth(210);
     pDockMgr->registerDockWindow("Std_TaskPanelView", pcTaskPanelView);
 
-    // Combi view
+    // Combo view
     CombiView* pcCombiView = new CombiView(0, this);
-    pcCombiView->setObjectName(QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Combi View")));
+    pcCombiView->setObjectName(QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Combo View")));
     pcCombiView->setMinimumWidth(150);
     pDockMgr->registerDockWindow("Std_CombiView", pcCombiView);
 
@@ -699,9 +699,9 @@ void MainWindow::onToolBarMenuAboutToShow()
     for (QList<QToolBar*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
         if ((*it)->parentWidget() == this) {
             QAction* action = (*it)->toggleViewAction();
-            action->setToolTip(tr("Toogles this toolbar"));
-            action->setStatusTip(tr("Toogles this toolbar"));
-            action->setWhatsThis(tr("Toogles this toolbar"));
+            action->setToolTip(tr("Toggles this toolbar"));
+            action->setStatusTip(tr("Toggles this toolbar"));
+            action->setWhatsThis(tr("Toggles this toolbar"));
             menu->addAction(action);
         }
     }
