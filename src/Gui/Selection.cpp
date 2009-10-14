@@ -340,11 +340,12 @@ std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDoc
                 tempSelObj.SubNames.push_back(It->SubName);
                 tempSelObj.TypeName = It->TypeName.c_str();
                 tempSelObj.SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
-                temp.push_back(tempSelObj);
                 SortMap.insert(std::pair<App::DocumentObject*,SelectionObject>(It->pObject,tempSelObj));
             }
         }
     }
+    for (std::map<App::DocumentObject*,SelectionObject>::const_iterator It = SortMap.begin();It != SortMap.end();++It) 
+        temp.push_back(It->second);
 
     return temp;
 }
