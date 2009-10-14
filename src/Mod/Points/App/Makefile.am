@@ -37,7 +37,8 @@ include_HEADERS=\
 
 
 # the library search path.
-libPoints_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPoints_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPoints_la_CPPFLAGS = -DPointsAppExport=
 
 libPoints_la_LIBADD   = \
@@ -66,7 +67,7 @@ Points_la_DEPENDENCIES = libPoints.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 includedir = @includedir@/Mod/Points/App
 libdir = $(prefix)/Mod/Points

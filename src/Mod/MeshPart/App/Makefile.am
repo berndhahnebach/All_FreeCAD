@@ -13,8 +13,8 @@ libMeshPart_la_SOURCES=\
 
 # the library search path.
 libMeshPart_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
-	-L../../../Mod/Mesh/App $(all_libraries) -L$(OCC_LIB) \
-	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		-L../../../Mod/Mesh/App $(all_libraries) -L$(OCC_LIB) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libMeshPart_la_CPPFLAGS = -DMeshPartAppExport=
 
@@ -53,7 +53,7 @@ MeshPart_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 
 
 libdir = $(prefix)/Mod/MeshPart

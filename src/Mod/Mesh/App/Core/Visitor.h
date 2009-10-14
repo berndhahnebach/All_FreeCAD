@@ -38,23 +38,28 @@ class MeshFacetVisitor;
 class MeshExport MeshFacetVisitor
 {
 public:
-  /// Construction 
-  MeshFacetVisitor(void) { }
-  /// Denstruction 
-  virtual ~MeshFacetVisitor(void) { }
-  /** Needs to be implemented in sub-classes.
-   * \a rclFacet is the currently visited facet with the index \a ulFInd, \a rclFrom is the last visited facet
-   * and \a ulLevel indicates the ring number around the start facet. 
-   * If \a true is returned the next iteration is done if there are still facets to visit. If \a false is 
-   * returned the calling method stops immediately visiting further facets.
-   */
-  virtual bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel) = 0;
+    /// Construction 
+    MeshFacetVisitor(void) { }
+    /// Denstruction 
+    virtual ~MeshFacetVisitor(void) { }
+    /** Needs to be implemented in sub-classes.
+     * \a rclFacet is the currently visited facet with the index \a ulFInd, \a rclFrom
+     * is the last visited facet and \a ulLevel indicates the ring number around the start facet. 
+     * If \a true is returned the next iteration is done if there are still facets to visit.
+     * If \a false is returned the calling method stops immediately visiting further facets.
+     */
+    virtual bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd,
+                        unsigned long ulLevel) = 0;
 
-  /** Test before a facet will be flagged as VISIT, return false means: go on with visiting the facets but not this one and set not the VISIT flag */
-  virtual bool AllowVisit (const MeshFacet& rclFacet, const MeshFacet& rclFrom, unsigned long ulFInd, unsigned long ulLevel, unsigned short neighbourIndex)
-  {
-    return true;
-  }
+    /** Test before a facet will be flagged as VISIT, return false means: go on with
+     * visiting the facets but not this one and set not the VISIT flag 
+     */
+    virtual bool AllowVisit (const MeshFacet& rclFacet, const MeshFacet& rclFrom, 
+                             unsigned long ulFInd, unsigned long ulLevel,
+                             unsigned short neighbourIndex)
+    {
+        return true;
+    }
 };
 
 /**
@@ -63,43 +68,41 @@ public:
 class MeshExport MeshSearchNeighbourFacetsVisitor : public MeshFacetVisitor
 {
 public:
-  MeshSearchNeighbourFacetsVisitor (const MeshKernel &rclMesh, float fRadius, unsigned long ulStartFacetIdx);
-  virtual ~MeshSearchNeighbourFacetsVisitor () {}
-  /** Checks the facet if it lies inside the search radius. */
-  inline bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
-  /** Resets the VISIT flag of already visited facets. */
-  inline std::vector<unsigned long> GetAndReset (void);
+    MeshSearchNeighbourFacetsVisitor (const MeshKernel &rclMesh, float fRadius, unsigned long ulStartFacetIdx);
+    virtual ~MeshSearchNeighbourFacetsVisitor () {}
+    /** Checks the facet if it lies inside the search radius. */
+    inline bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
+    /** Resets the VISIT flag of already visited facets. */
+    inline std::vector<unsigned long> GetAndReset (void);
 
 protected:
-  const MeshKernel& _rclMeshBase; /**< The mesh kernel. */
-  Base::Vector3f    _clCenter; /**< Center. */
-  float  _fRadius; /**< Search radius. */
-  unsigned long _ulCurrentLevel;
-  bool _bFacetsFoundInCurrentLevel;
-  std::vector<unsigned long>  _vecFacets; /**< Found facets. */
+    const MeshKernel& _rclMeshBase; /**< The mesh kernel. */
+    Base::Vector3f    _clCenter; /**< Center. */
+    float  _fRadius; /**< Search radius. */
+    unsigned long _ulCurrentLevel;
+    bool _bFacetsFoundInCurrentLevel;
+    std::vector<unsigned long>  _vecFacets; /**< Found facets. */
 };
 
-inline bool MeshSearchNeighbourFacetsVisitor::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
+inline bool MeshSearchNeighbourFacetsVisitor::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom,
+                                                     unsigned long ulFInd, unsigned long ulLevel)
 {
-  if (ulLevel > _ulCurrentLevel)
-  {
-    if (_bFacetsFoundInCurrentLevel == false)
-      return false;
-    _ulCurrentLevel = ulLevel;
-    _bFacetsFoundInCurrentLevel = false;
-  }
-
-  for (int i = 0; i < 3; i++)
-  {
-    if ( Base::Distance(_clCenter, _rclMeshBase.GetPoint(rclFacet._aulPoints[i])) < _fRadius)
-    {
-      _vecFacets.push_back(ulFInd);
-      _bFacetsFoundInCurrentLevel = true;
-      return true;
+    if (ulLevel > _ulCurrentLevel) {
+        if (_bFacetsFoundInCurrentLevel == false)
+            return false;
+        _ulCurrentLevel = ulLevel;
+        _bFacetsFoundInCurrentLevel = false;
     }
-  }
 
-  return true;
+    for (int i = 0; i < 3; i++) {
+        if (Base::Distance(_clCenter, _rclMeshBase.GetPoint(rclFacet._aulPoints[i])) < _fRadius) {
+            _vecFacets.push_back(ulFInd);
+            _bFacetsFoundInCurrentLevel = true;
+            return true;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -108,17 +111,18 @@ inline bool MeshSearchNeighbourFacetsVisitor::Visit (const MeshFacet &rclFacet, 
 class MeshExport MeshTopFacetVisitor : public MeshFacetVisitor
 {
 public:
-  MeshTopFacetVisitor (std::vector<unsigned long> &raulNB) : _raulNeighbours(raulNB) {}
-  virtual ~MeshTopFacetVisitor () {}
-  /** Collects the facet indices. */
-  virtual bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long)
-  {
-    _raulNeighbours.push_back(ulFInd);
-    return true;
-  }
+    MeshTopFacetVisitor (std::vector<unsigned long> &raulNB) : _raulNeighbours(raulNB) {}
+    virtual ~MeshTopFacetVisitor () {}
+    /** Collects the facet indices. */
+    virtual bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom,
+                        unsigned long ulFInd, unsigned long)
+    {
+        _raulNeighbours.push_back(ulFInd);
+        return true;
+    }
 
 protected:
-  std::vector<unsigned long>  &_raulNeighbours; /**< Indices of all visited facets. */
+    std::vector<unsigned long>  &_raulNeighbours; /**< Indices of all visited facets. */
 };
 
 // -------------------------------------------------------------------------
@@ -129,17 +133,18 @@ protected:
 class MeshExport MeshPointVisitor
 {
 public:
-  /// Construction 
-  MeshPointVisitor(void) { }
-  /// Denstruction 
-  virtual ~MeshPointVisitor(void) { }
-  /** Needs to be implemented in sub-classes.
-   * \a rclPoint is the currently visited point with the index \a ulPInd, \a rclFrom is the last visited point
-   * and \a ulLevel indicates the ring number around the start point. 
-   * If \a true is returned the next iteration is done if there are still point to visit. If \a false is 
-   * returned the calling method stops immediately visiting further points.
-   */
-  virtual bool Visit (const MeshPoint &rclPoint, const MeshPoint &rclFrom, unsigned long ulPInd, unsigned long ulLevel) = 0;
+    /// Construction 
+    MeshPointVisitor(void) { }
+    /// Denstruction 
+    virtual ~MeshPointVisitor(void) { }
+    /** Needs to be implemented in sub-classes.
+     * \a rclPoint is the currently visited point with the index \a ulPInd, \a rclFrom
+     * is the last visited point  and \a ulLevel indicates the ring number around the start point.
+     * If \a true is returned the next iteration is done if there are still point to visit. If
+     * \a false is returned the calling method stops immediately visiting further points.
+     */
+    virtual bool Visit (const MeshPoint &rclPoint, const MeshPoint &rclFrom,
+                        unsigned long ulPInd, unsigned long ulLevel) = 0;
 };
 
 } // namespace MeshCore

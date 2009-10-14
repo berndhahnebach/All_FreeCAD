@@ -9,7 +9,8 @@ libSandboxGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libSandboxGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Mesh/App -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libSandboxGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Mesh/App -L../App \
+		$(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libSandboxGui_la_CPPFLAGS = -DSandboxAppExport= -DSandboxGuiExport=
 
@@ -58,7 +59,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 libdir = $(prefix)/Mod/Sandbox
 

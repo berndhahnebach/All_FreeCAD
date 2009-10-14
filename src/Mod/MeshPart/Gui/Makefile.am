@@ -12,11 +12,10 @@ libMeshPartGui_la_SOURCES=\
 
 # the library search path.
 libMeshPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
-	-L../../Mesh/App -L../../Part/App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
-	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		-L../../Mesh/App -L../../Part/App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
-libMeshPartGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" \
-	-DMeshPartAppExport= -DMeshPartGuiExport=
+libMeshPartGui_la_CPPFLAGS = -DMeshPartAppExport= -DMeshPartGuiExport=
 
 libMeshPartGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
@@ -63,7 +62,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 
 libdir = $(prefix)/Mod/MeshPart

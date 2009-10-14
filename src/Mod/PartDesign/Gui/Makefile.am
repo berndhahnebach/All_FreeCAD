@@ -21,8 +21,8 @@ libPartDesignGui_la_SOURCES=\
 
 # the library search path.
 libPartDesignGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \
-	-L../../Part/App -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
-	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		-L../../Part/App -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libPartDesignGui_la_CPPFLAGS = -DPartDesignAppExport= -DPartDesignGuiExport=
 
@@ -70,7 +70,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES=-I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. \
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. \
 		$(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) \
 		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 

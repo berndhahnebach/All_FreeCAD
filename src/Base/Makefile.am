@@ -138,15 +138,12 @@ libFreeCADBase_la_LIBADD   = \
 		-lz
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
-
-# set additional defines (for cygwin only)
-AM_CPPFLAGS=-DFCBase
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 
 # the library version number
-libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADBase_la_LDFLAGS = $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libFreeCADBase_la_CPPFLAGS = -DHAVE_SWIG=$(HAVE_SWIG)
 
 
