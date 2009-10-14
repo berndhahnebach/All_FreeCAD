@@ -26,12 +26,15 @@
 
 #include <Base/BaseClass.h>
 #include <Base/Vector3D.h>
-//#include "Selection.h"
+#include <string>
+
 namespace App {
     class DocumentObject;
 }
+
 namespace Gui {
-class SelectionSingelton;
+
+	class SelectionSingelton;
 
 /**
  * The Selection object class
@@ -59,7 +62,15 @@ public:
 	inline const char* getTypeName(void){return TypeName.c_str();}
 
 	/// returns the selected DocumentObject or NULL if the object is already deleted
+	const App::DocumentObject *getObject(void)const;
+	/// returns the selected DocumentObject or NULL if the object is already deleted
 	App::DocumentObject *getObject(void);
+
+	/// check the selected object is a special type or derived of
+	bool isObjectTypeOf(const Base::Type& typeId)const;
+
+	/// returns python expreasion sutably for assigning to a LinkSub property
+	std::string getAsPropertyLinkSubString(void)const;
 
     friend class SelectionSingleton;
 

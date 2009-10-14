@@ -102,21 +102,28 @@ CmdPartDesignFillet::CmdPartDesignFillet()
 
 void CmdPartDesignFillet::activated(int iMsg)
 {
-    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-    if (n != 1) {
+    //unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+
+	std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    if (selection.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select an edge, face or body."));
+            QObject::tr("Select an edge, face or body. Only one body is allowed."));
         return;
     }
 
+	if ( ! selection[0].isObjectTypeOf(Part::Feature::getClassTypeId())){
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong object type"),
+            QObject::tr("Fillet works only on parts"));
+        return;
+    }
+	std::string SelString = selection[0].getAsPropertyLinkSubString();
     std::string FeatName = getUniqueObjectName("Fillet");
-
-    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Make Fillet");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Fillet\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Base = %s",FeatName.c_str(),SelString.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",selection[0].getFeatName());
     updateActive();
     commitCommand();
 }

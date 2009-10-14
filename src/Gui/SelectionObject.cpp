@@ -23,8 +23,11 @@
 
 #include "PreCompiled.h"
 
+#include <strstream>
+
 #include <App/Application.h>
 #include <App/Document.h>
+#include <App/DocumentObject.h>
 #include <Base/Interpreter.h>
 
 #include "SelectionObject.h"
@@ -59,7 +62,7 @@ SelectionObject::~SelectionObject()
 {
 }
 
-App::DocumentObject * SelectionObject::getObject(void)
+const App::DocumentObject * SelectionObject::getObject(void) const
 {
 	if(DocName != ""){
 		App::Document *doc = App::GetApplication().getDocument(DocName.c_str());
@@ -68,6 +71,35 @@ App::DocumentObject * SelectionObject::getObject(void)
 	}
 	return 0;
 }
+
+App::DocumentObject * SelectionObject::getObject(void) 
+{
+	if(DocName != ""){
+		App::Document *doc = App::GetApplication().getDocument(DocName.c_str());
+		if(doc && FeatName != "")
+			return doc->getObject(FeatName.c_str());
+	}
+	return 0;
+}
+
+bool SelectionObject::isObjectTypeOf(const Base::Type& typeId)const
+{
+  return getObject()->getTypeId().isDerivedFrom(typeId);
+}
+
+std::string SelectionObject::getAsPropertyLinkSubString(void)const
+{
+	std::strstream buf;
+	buf << "(App."
+		<< getObject()->getDocument()->getName() << "."
+		<< getObject()->getNameInDocument() << ",[";
+		for(std::vector<std::string>::const_iterator it = SubNames.begin();it!=SubNames.end();++it)
+			buf << *it << ",";
+	buf << "])";
+
+	return buf.str();
+}
+
 
 PyObject* SelectionObject::getPyObject()
 {
