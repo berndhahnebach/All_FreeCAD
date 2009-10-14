@@ -37,7 +37,7 @@ class Fillet : public Part::Feature
 public:
     Fillet();
 
-    App::PropertyLink Base;
+    App::PropertyLinkSub Base;
     App::PropertyFloatConstraint Radius;
 
     /** @name methods override feature */
