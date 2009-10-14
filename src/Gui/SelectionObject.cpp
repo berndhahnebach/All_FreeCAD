@@ -89,15 +89,22 @@ bool SelectionObject::isObjectTypeOf(const Base::Type& typeId)const
 
 std::string SelectionObject::getAsPropertyLinkSubString(void)const
 {
-	std::strstream buf;
-	buf << "(App."
-		<< getObject()->getDocument()->getName() << "."
-		<< getObject()->getNameInDocument() << ",[";
-		for(std::vector<std::string>::const_iterator it = SubNames.begin();it!=SubNames.end();++it)
-			buf << *it << ",";
-	buf << "])";
-
-	return buf.str();
+    std::string buf;
+	buf += "(App.";
+    buf += "ActiveDocument";//getObject()->getDocument()->getName(); 
+    buf += ".";
+	buf += getObject()->getNameInDocument(); 
+    buf += ",[";
+    for(std::vector<std::string>::const_iterator it = SubNames.begin();it!=SubNames.end();++it){
+		buf += "\""; 
+        buf += *it; 
+        buf += "\"";
+        if(it != --SubNames.end())
+            buf += ",";
+    }
+	buf += "])";
+   
+	return buf;
 }
 
 
