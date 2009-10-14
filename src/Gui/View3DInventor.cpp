@@ -642,7 +642,6 @@ void View3DInventor::dropEvent (QDropEvent * e)
                 }
             }
 
-            QApplication::beep();
             const char *docName = pDoc->getName();
             SelectModule::Dict dict = SelectModule::importHandler(files);
             // load the files with the associated modules
