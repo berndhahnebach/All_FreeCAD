@@ -112,7 +112,6 @@ void StdCmdOpen::activated(int iMsg)
     QStringList fileList = FileDialog::getOpenFileNames(getMainWindow(),
         QObject::tr("Open document"), QString(), formatList, &selectedFilter);
     // load the files with the associated modules
-    QApplication::beep();
     SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
     for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
         getGuiApplication()->open(it.key().toUtf8(), it.value().toAscii());
@@ -173,7 +172,6 @@ void StdCmdImport::activated(int iMsg)
     QString selectedFilter;
     QStringList fileList = FileDialog::getOpenFileNames(getMainWindow(),
         QObject::tr("Import file"), QString(), formatList, &selectedFilter);
-    QApplication::beep();
     SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
     // load the files with the associated modules
     for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {

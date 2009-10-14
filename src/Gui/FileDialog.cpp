@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QApplication>
 # include <QButtonGroup>
 # include <QComboBox>
 # include <QGridLayout>
@@ -627,6 +628,7 @@ SelectModule::Dict SelectModule::importHandler(const QStringList& fileNames, con
         it != filetypeHandler.end(); ++it) {
         if (it.value().size() > 1) {
             SelectModule dlg(it.key(),it.value(), getMainWindow());
+            QApplication::beep();
             if (dlg.exec()) {
                 QString mod = dlg.getModule();
                 const QStringList& files = fileExtension[it.key()];

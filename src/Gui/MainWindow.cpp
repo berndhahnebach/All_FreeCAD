@@ -999,7 +999,6 @@ void MainWindow::dropEvent (QDropEvent* e)
             }
         }
 
-        QApplication::beep();
         const char *docName = pDoc ? pDoc->getName() : "";
         SelectModule::Dict dict = SelectModule::importHandler(files);
         // load the files with the associated modules
