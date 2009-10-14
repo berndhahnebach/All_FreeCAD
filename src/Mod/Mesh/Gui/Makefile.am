@@ -94,7 +94,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) \
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) $(GTS_CFLAGS) \
 		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 

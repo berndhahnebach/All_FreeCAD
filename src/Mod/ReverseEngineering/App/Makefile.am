@@ -12,8 +12,11 @@ include_HEADERS=\
 		ApproxSurface.h
 
 # the library search path.
-libReverseEngineering_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App -L../../../Mod/Mesh/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libReverseEngineering_la_CPPFLAGS = -DReverseEngineeringAppExport=
+libReverseEngineering_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
+		-L../../../Mod/Mesh/App $(all_libraries) -L$(OCC_LIB) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		
+libReverseEngineering_la_CPPFLAGS = -DReenExport=
 
 libReverseEngineering_la_LIBADD   = \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
@@ -61,7 +64,7 @@ ReverseEngineering_la_DEPENDENCIES = libReverseEngineering.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
 
 libdir = $(prefix)/Mod/ReverseEngineering

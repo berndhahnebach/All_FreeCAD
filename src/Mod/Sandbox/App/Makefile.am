@@ -13,7 +13,8 @@ libSandbox_la_SOURCES=\
 
 
 # the library search path.
-libSandbox_la_LDFLAGS = -L../../../Base -L../../../App -L../../Mesh/App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libSandbox_la_LDFLAGS = -L../../../Base -L../../../App -L../../Mesh/App \
+		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libSandbox_la_CPPFLAGS = -DSandboxAppExport=
 
 libSandbox_la_LIBADD   = \
@@ -43,7 +44,7 @@ Sandbox_la_DEPENDENCIES = libSandbox.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 libdir = $(prefix)/Mod/Sandbox
 

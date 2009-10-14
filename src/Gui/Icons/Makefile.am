@@ -87,6 +87,6 @@ qrc_%.cpp: %.qrc
 
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS)
+AM_CPPFLAGS = $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES)

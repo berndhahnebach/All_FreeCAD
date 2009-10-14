@@ -23,7 +23,8 @@ include_HEADERS=\
 
 # the library search path.
 libPointsGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) \
-		$(sim_ac_coin_libs) $(sim_ac_soqt_libs) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		$(sim_ac_coin_libs) $(sim_ac_soqt_libs) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPointsGui_la_CPPFLAGS = -DPointsAppExport= -DPointsGuiExport=
 
 libPointsGui_la_LIBADD   = \
@@ -70,7 +71,8 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) \
+		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 libdir = $(prefix)/Mod/Points
 

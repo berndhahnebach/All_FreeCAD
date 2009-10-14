@@ -12,7 +12,8 @@ libPartDesign_la_SOURCES=\
 
 
 # the library search path.
-libPartDesign_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartDesign_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
+		$(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPartDesign_la_CPPFLAGS = -DPartDesignAppExport=
 
 libPartDesign_la_LIBADD   = \
@@ -55,7 +56,7 @@ PartDesign_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
+AM_CPPFLAGS = $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 
 libdir = $(prefix)/Mod/PartDesign

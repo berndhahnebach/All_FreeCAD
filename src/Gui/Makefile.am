@@ -452,11 +452,8 @@ qrc_%.cpp: %.qrc
 
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) \
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) \
 	  -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
-
-# set additional defines (for cygwin only)
-AM_CPPFLAGS=-DFCGui
 
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADGui_la_BUILT)
 

@@ -319,7 +319,8 @@ nobase_include_HEADERS = \
 
 
 # the library search path.
-libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) $(GTS_LIBS) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libMesh_la_CPPFLAGS = -DMeshExport= 
 
 libMesh_la_LIBADD   = \
@@ -348,8 +349,7 @@ Mesh_la_DEPENDENCIES = libMesh.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src -I$(top_builddir)/src $(GTS_CFLAGS) $(all_includes) 
-
+AM_CPPFLAGS = -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src -I$(top_builddir)/src $(GTS_CFLAGS) $(all_includes) 
 
 includedir = @includedir@/Mod/Mesh/App
 libdir = $(prefix)/Mod/Mesh
