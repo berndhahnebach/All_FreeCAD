@@ -31,7 +31,7 @@ libRobotGui_la_SOURCES=\
 # the library search path.
 libRobotGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
 		$(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libRobotGui_la_CPPFLAGS = -DTEMPLATEDIR=\"$(datarootdir)/Templates\" -DRobotAppExport= -DRobotGuiExport=
+libRobotGui_la_CPPFLAGS = -DRobotAppExport= -DRobotGuiExport=
 
 libRobotGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \

@@ -8,7 +8,8 @@ libAssembly_la_SOURCES=\
 
 
 # the library search path.
-libAssembly_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libAssembly_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libAssembly_la_CPPFLAGS = -DAssemblyAppExport=
 
 libAssembly_la_LIBADD   = \
@@ -54,7 +55,7 @@ Assembly_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
 
 libdir = $(prefix)/Mod/Assembly

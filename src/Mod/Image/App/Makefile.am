@@ -14,7 +14,8 @@ include_HEADERS=\
 		ImageBase.h
 
 # the library search path.
-libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImage_la_CPPFLAGS = -DImageAppExport=
 
 libImage_la_LIBADD   = \
@@ -43,7 +44,7 @@ Image_la_DEPENDENCIES = libImage.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(opencv_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(opencv_CFLAGS)
 
 libdir = $(prefix)/Mod/Image
 

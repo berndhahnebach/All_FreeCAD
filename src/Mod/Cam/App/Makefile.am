@@ -31,8 +31,9 @@ libCam_la_SOURCES=\
 		WireExplorer.h
 
 # the library search path.
-libCam_la_LDFLAGS = -L../../../3rdParty/OCCAdaptMesh -L../../../Base -L../../../App -L../../../Mod/Part/App -L../../../Mod/Mesh/App \
-                    -L/usr/X11R6/lib -L$(OCC_LIB) $(GTS_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libCam_la_LDFLAGS = -L../../../3rdParty/OCCAdaptMesh -L../../../Base -L../../../App \
+		-L../../../Mod/Part/App -L../../../Mod/Mesh/App -L/usr/X11R6/lib -L$(OCC_LIB) \
+		$(GTS_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libCam_la_CPPFLAGS = -DAppCamExport=
 
 libCam_la_LIBADD   = \
@@ -86,7 +87,7 @@ Cam_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) \
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) \
 		  -I$(top_srcdir)/src/3rdParty -I$(top_srcdir)/src/3rdParty/OCCAdaptMesh/Include
 
 

@@ -46,7 +46,7 @@ moc_%.cpp: %.h
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+AM_CPPFLAGS = $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
 libdir = $(prefix)/Mod/Import
 

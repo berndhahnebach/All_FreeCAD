@@ -21,7 +21,8 @@ libDrawingGui_la_SOURCES=\
 
 # the library search path.
 libDrawingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Part/App -L../App \
-		$(QT_LIBS) $(GL_LIBS) -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		$(QT_LIBS) $(GL_LIBS) -L$(OCC_LIB) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libDrawingGui_la_CPPFLAGS = -DDrawingAppExport= -DDrawingGuiExport=
 
 libDrawingGui_la_LIBADD   = \
@@ -70,7 +71,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) \
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) \
 		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir) -I$(OCC_INC)
 
 
