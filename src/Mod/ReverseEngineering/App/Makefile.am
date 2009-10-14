@@ -64,7 +64,7 @@ ReverseEngineering_la_DEPENDENCIES = libReverseEngineering.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
 
 libdir = $(prefix)/Mod/ReverseEngineering

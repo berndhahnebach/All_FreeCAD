@@ -118,7 +118,7 @@ libFreeCADApp_la_LIBADD   = \
 		-lxerces-c
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADApp_la_BUILT)
 

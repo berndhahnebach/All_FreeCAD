@@ -13,7 +13,8 @@ libImageGui_la_SOURCES=\
 		ImageView.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
-		Workbench.cpp
+		Workbench.cpp \
+		XpmImages.h
 
 includedir = @includedir@/Mod/Image/Gui
 
@@ -27,8 +28,8 @@ libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App 
 		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 
+#		$(opencv_LIBS) \
 libImageGui_la_LIBADD   = \
-		$(opencv_LIBS) \
 		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
@@ -72,7 +73,8 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) $(opencv_CFLAGS)
+# $(opencv_CFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 libdir = $(prefix)/Mod/Image
 
@@ -83,5 +85,5 @@ EXTRA_DIST = \
 		Image.qrc \
 		Image_de.qm \
 		Image_de.ts \
-		image-import.svg \
-		XpmImages.h
+		image-import.svg
+

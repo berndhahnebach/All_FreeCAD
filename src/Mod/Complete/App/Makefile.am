@@ -37,7 +37,7 @@ Complete_la_DEPENDENCIES = libComplete.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 libdir = $(prefix)/Mod/Complete
 

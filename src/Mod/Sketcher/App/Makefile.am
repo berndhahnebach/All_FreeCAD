@@ -101,7 +101,7 @@ Sketcher_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CXXFLAGS = -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 
 libdir = $(prefix)/Mod/Sketcher

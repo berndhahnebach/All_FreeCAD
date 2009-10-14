@@ -44,7 +44,7 @@ Sandbox_la_DEPENDENCIES = libSandbox.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 libdir = $(prefix)/Mod/Sandbox
 

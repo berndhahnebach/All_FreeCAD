@@ -2,7 +2,6 @@
 lib_LTLIBRARIES=libImage.la Image.la
 
 libImage_la_SOURCES=\
-		CaptureClass.cpp \
 		ImageBase.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
@@ -10,7 +9,6 @@ libImage_la_SOURCES=\
 includedir = @includedir@/Mod/Image/App
 
 include_HEADERS=\
-		CaptureClass.h \
 		ImageBase.h
 
 # the library search path.
@@ -18,8 +16,8 @@ libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImage_la_CPPFLAGS = -DImageAppExport=
 
+#		$(opencv_LIBS) \
 libImage_la_LIBADD   = \
-		$(opencv_LIBS) \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \
@@ -43,8 +41,9 @@ Image_la_DEPENDENCIES = libImage.la
 
 #--------------------------------------------------------------------------------------
 
-# set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(opencv_CFLAGS)
+# set the include path found by configure 
+# $(opencv_CFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 libdir = $(prefix)/Mod/Image
 

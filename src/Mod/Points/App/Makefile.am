@@ -67,7 +67,7 @@ Points_la_DEPENDENCIES = libPoints.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 includedir = @includedir@/Mod/Points/App
 libdir = $(prefix)/Mod/Points

@@ -31,7 +31,7 @@ moc_%.cpp: %.h
 
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(QT_CXXFLAGS) $(all_includes) \
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(QT_CXXFLAGS) $(all_includes) \
 		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 CLEANFILES = $(BUILT_SOURCES)

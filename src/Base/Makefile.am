@@ -138,7 +138,7 @@ libFreeCADBase_la_LIBADD   = \
 		-lz
 
 # set the include path found by configure
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 
