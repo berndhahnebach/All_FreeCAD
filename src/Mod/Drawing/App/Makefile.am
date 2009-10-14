@@ -18,7 +18,8 @@ libDrawing_la_SOURCES=\
 
 
 # the library search path.
-libDrawing_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libDrawing_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libDrawing_la_CPPFLAGS = -DDrawingAppExport=
 
 libDrawing_la_LIBADD   = \
@@ -67,7 +68,7 @@ Drawing_la_DEPENDENCIES = libDrawing.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(OCC_INC) $(all_includes)
 
 
 libdir = $(prefix)/Mod/Drawing

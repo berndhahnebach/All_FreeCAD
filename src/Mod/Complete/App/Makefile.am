@@ -7,7 +7,8 @@ libComplete_la_SOURCES=\
 
 
 # the library search path.
-libComplete_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libComplete_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info \
+		@LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libComplete_la_CPPFLAGS = -DCompleteAppExport=
 
 libComplete_la_LIBADD   = \
@@ -36,7 +37,7 @@ Complete_la_DEPENDENCIES = libComplete.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 libdir = $(prefix)/Mod/Complete
 

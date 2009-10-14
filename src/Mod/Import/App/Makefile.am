@@ -13,7 +13,8 @@ libImport_la_SOURCES=\
 
 
 # the library search path.
-libImport_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImport_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImport_la_CPPFLAGS = -DAppPartExport=
 
 libImport_la_LIBADD   = \
@@ -24,7 +25,7 @@ libImport_la_LIBADD   = \
 		-lPart
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I../../../
+AM_CPPFLAGS = $(all_includes) -I../../../
 
 libdir = $(prefix)/Mod/Import
 

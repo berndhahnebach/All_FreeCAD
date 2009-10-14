@@ -15,7 +15,9 @@ libCamGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libCamGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libCamGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) \
+		$(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) -L$(OCC_LIB) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libCamGui_la_CPPFLAGS = -DAppCamExport= -DAppCamGuiExport=
 
 libCamGui_la_LIBADD   = \
@@ -60,7 +62,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) -I$(OCC_INC) $(all_includes)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) -I$(OCC_INC) $(all_includes)
 
 
 libdir = $(prefix)/Mod/Cam

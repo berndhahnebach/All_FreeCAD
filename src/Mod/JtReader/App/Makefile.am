@@ -14,7 +14,8 @@ FreeCADpov.h: FreeCADpov
 
 
 # the library search path.
-libJtReader_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App -L/usr/X11R6/lib -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libJtReader_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App -L/usr/X11R6/lib -L$(OCC_LIB) \
+		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libJtReader_la_CPPFLAGS = -DAppPartExport= -DAppJtReaderExport= -DFeatureRayExportPov=
 
 libJtReader_la_LIBADD   = \
@@ -40,7 +41,7 @@ JtReader_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 
 libdir = $(prefix)/Mod/JtReader
@@ -48,4 +49,4 @@ libdir = $(prefix)/Mod/JtReader
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppJtReader.vcproj 
+		CMakeLists.txt 

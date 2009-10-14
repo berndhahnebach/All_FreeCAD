@@ -51,7 +51,8 @@ libSketcher_la_SOURCES = \
 
 
 # the library search path.
-libSketcher_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libSketcher_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libSketcher_la_CPPFLAGS = -DSketcherAppExport=
 
 libSketcher_la_LIBADD = \
@@ -100,7 +101,7 @@ Sketcher_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CPPFLAGS = $(all_includes) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
+AM_CPPFLAGS = -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 
 libdir = $(prefix)/Mod/Sketcher

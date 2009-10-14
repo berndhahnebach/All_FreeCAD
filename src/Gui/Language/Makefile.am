@@ -36,9 +36,7 @@ qrc_%.cpp: %.qrc
 
 
 # set the include path found by configure
-AM_CPPFLAGS = $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(QT_CXXFLAGS)
-
-# set additional defines (for cygwin only)
-AM_CPPFLAGS=-DFCGui
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(QT_CXXFLAGS) $(all_includes)
 
 CLEANFILES = $(BUILT_SOURCES)
+
