@@ -1145,7 +1145,8 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length, int level,
     _rclMesh._aclPointArray.insert(_rclMesh._aclPointArray.end(), newPoints.begin(), newPoints.end());
     for (MeshPointArray::_TIterator it = newPoints.begin(); it != newPoints.end(); ++it)
         _rclMesh._clBoundBox &= *it;
-    _rclMesh.AddFacets(newFacets);
+    if (!newFacets.empty())
+        _rclMesh.AddFacets(newFacets);
 }
 
 void MeshTopoAlgorithm::FillupHoles(int level, AbstractPolygonTriangulator& cTria,
@@ -1192,7 +1193,8 @@ void MeshTopoAlgorithm::FillupHoles(int level, AbstractPolygonTriangulator& cTri
     _rclMesh._aclPointArray.insert(_rclMesh._aclPointArray.end(), newPoints.begin(), newPoints.end());
     for (MeshPointArray::_TIterator it = newPoints.begin(); it != newPoints.end(); ++it)
         _rclMesh._clBoundBox &= *it;
-    _rclMesh.AddFacets(newFacets);
+    if (!newFacets.empty())
+        _rclMesh.AddFacets(newFacets);
 }
 
 void MeshTopoAlgorithm::FindHoles(unsigned long length,

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2009 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,61 +23,58 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <BRepFilletAPI_MakeFillet.hxx>
-# include <TopExp_Explorer.hxx>
-# include <TopoDS.hxx>
-# include <TopoDS_Edge.hxx>
+# include <gp_Ax1.hxx>
 #endif
 
 
-#include "FeatureFillet.h"
+#include "FeatureRevolution.h"
 
 
-using namespace PartDesign;
+using namespace Part;
 
+App::PropertyFloatConstraint::Constraints Revolution::angleRangeU = {0.0f,360.0f,1.0f};
 
-PROPERTY_SOURCE(PartDesign::Fillet, Part::Feature)
+PROPERTY_SOURCE(Part::Revolution, Part::Feature)
 
-const App::PropertyFloatConstraint::Constraints floatRadius = {0.0f,FLT_MAX,0.1f};
-
-Fillet::Fillet()
+Revolution::Revolution()
 {
-    ADD_PROPERTY(Base,(0));
-    ADD_PROPERTY(Radius,(0.2f));
-    Radius.setConstraints(&floatRadius);
+    ADD_PROPERTY(Source,(0));
+    ADD_PROPERTY(Base,(Base::Vector3f(0.0f,0.0f,0.0f)));
+    ADD_PROPERTY(Axis,(Base::Vector3f(0.0f,0.0f,1.0f)));
+    ADD_PROPERTY(Angle,(360.0f));
+    Angle.setConstraints(&angleRangeU);
 }
 
-short Fillet::mustExecute() const
+short Revolution::mustExecute() const
 {
-    if (Base.isTouched() || Radius.isTouched())
+    if (Base.isTouched() ||
+        Axis.isTouched() ||
+        Source.isTouched())
         return 1;
     return 0;
 }
 
-App::DocumentObjectExecReturn *Fillet::execute(void)
+App::DocumentObjectExecReturn *Revolution::execute(void)
 {
-    App::DocumentObject* link = Base.getValue();
+    App::DocumentObject* link = Source.getValue();
     if (!link)
         return new App::DocumentObjectExecReturn("No object linked");
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
-    Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
+    Part::Feature *base = static_cast<Part::Feature*>(Source.getValue());
 
-    float radius = Radius.getValue();
+    Base::Vector3f b = Base.getValue();
+    Base::Vector3f v = Axis.getValue();
+    gp_Pnt pnt(b.x,b.y,b.z);
+    gp_Dir dir(v.x,v.y,v.z);
 
     try {
-        BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
-        TopExp_Explorer xp(base->Shape.getValue(), TopAbs_EDGE);
-
-        for (;xp.More();xp.Next()) {
-            TopoDS_Edge edge = TopoDS::Edge(xp.Current());
-            mkFillet.Add(radius, radius, edge);
-        }
-
-        TopoDS_Shape shape = mkFillet.Shape();
-        if (shape.IsNull())
+        // Now, let's get the TopoDS_Shape
+        TopoDS_Shape revolve = base->Shape.getShape().revolve(gp_Ax1(pnt, dir),
+            Angle.getValue()/180.0f*Standard_PI);
+        if (revolve.IsNull())
             return new App::DocumentObjectExecReturn("Resulting shape is null");
-        this->Shape.setValue(shape);
+        this->Shape.setValue(revolve);
         return App::DocumentObject::StdReturn;
     }
     catch (Standard_Failure) {

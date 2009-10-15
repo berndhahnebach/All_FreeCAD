@@ -68,6 +68,7 @@ set(PartGui_MOC_HDRS
 		 DlgPartImportIgesImp.h
 		 DlgPartImportStepImp.h
 		 DlgPrimitives.h
+		 DlgRevolution.h
 		 DlgSettings3DViewPartImp.h
 		 DlgSettingsGeneral.h
 )
@@ -85,6 +86,7 @@ set(PartGui_UIC_SRCS
 		 DlgPartImportIges.ui
 		 DlgPartImportStep.ui
 		 DlgPrimitives.ui
+		 DlgRevolution.ui
 		 DlgSettings3DViewPart.ui
 		 DlgSettingsGeneral.ui
 )
@@ -121,6 +123,9 @@ SET(PartGui_SRCS
 		 DlgPrimitives.cpp
 		 DlgPrimitives.h
 		 DlgPrimitives.ui
+		 DlgRevolution.cpp
+		 DlgRevolution.h
+		 DlgRevolution.ui
 		 DlgSettings3DViewPart.ui
 		 DlgSettings3DViewPartImp.cpp
 		 DlgSettings3DViewPartImp.h

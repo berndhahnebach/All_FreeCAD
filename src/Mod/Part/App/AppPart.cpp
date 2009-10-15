@@ -36,6 +36,7 @@
 #include "FeaturePartPolygon.h"
 #include "FeatureExtrusion.h"
 #include "FeatureFillet.h"
+#include "FeatureRevolution.h"
 #include "PrimitiveFeature.h"
 #include "Part2DObject.h"
 #include "TopoShapePy.h"
@@ -131,6 +132,7 @@ void AppPartExport initPart()
     Part::Section               ::init();
     Part::Extrusion             ::init();
     Part::Fillet                ::init();
+    Part::Revolution            ::init();
     Part::ImportStep            ::init();
     Part::ImportIges            ::init();
     Part::ImportBrep            ::init();

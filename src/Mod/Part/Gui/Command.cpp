@@ -47,6 +47,7 @@
 #include "DlgPartImportStepImp.h"
 #include "DlgBooleanOperation.h"
 #include "DlgExtrusion.h"
+#include "DlgRevolution.h"
 #include "DlgFilletEdges.h"
 #include "DlgPrimitives.h"
 #include "ViewProvider.h"
@@ -574,7 +575,8 @@ CmdPartRevolve::CmdPartRevolve()
 
 void CmdPartRevolve::activated(int iMsg)
 {
-    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No yet implemented"), QObject::tr("No yet implemented"));
+    PartGui::DlgRevolution dlg(Gui::getMainWindow());
+    dlg.exec();
 }
 
 bool CmdPartRevolve::isActive(void)

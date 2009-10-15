@@ -5,6 +5,7 @@ BUILT_SOURCES=\
 		ui_DlgBooleanOperation.h \
 		ui_DlgExtrusion.h \
 		ui_DlgFilletEdges.h \
+		ui_DlgRevolution.h \
 		ui_DlgPartBox.h \
 		ui_DlgPartCylinder.h \
 		ui_DlgPartImportIges.h \
@@ -15,6 +16,7 @@ BUILT_SOURCES=\
 		moc_DlgBooleanOperation.cpp \
 		moc_DlgExtrusion.cpp \
 		moc_DlgFilletEdges.cpp \
+		moc_DlgRevolution.cpp \
 		moc_DlgPartBoxImp.cpp \
 		moc_DlgPartCylinderImp.cpp \
 		moc_DlgPartImportIgesImp.cpp \
@@ -34,6 +36,8 @@ libPartGui_la_SOURCES=\
 		DlgExtrusion.h \
 		DlgFilletEdges.cpp \
 		DlgFilletEdges.h \
+		DlgRevolution.cpp \
+		DlgRevolution.h \
 		DlgPartBoxImp.cpp \
 		DlgPartBoxImp.h \
 		DlgPartCylinderImp.cpp \
@@ -166,6 +170,7 @@ EXTRA_DIST = \
 		DlgBooleanOperation.ui \
 		DlgExtrusion.ui \
 		DlgFilletEdges.ui \
+		DlgRevolution.ui \
 		DlgPartBox.ui \
 		DlgPartCylinder.ui \
 		DlgPartImportIges.ui \
