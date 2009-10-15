@@ -84,6 +84,8 @@ SET(Features_SRCS
 		 FeatureExtrusion.h
 		 FeatureFillet.cpp
 		 FeatureFillet.h
+		 FeatureRevolution.cpp
+		 FeatureRevolution.h
 		 PartFeature.cpp
 		 PartFeature.h
 		 Part2DObject.cpp

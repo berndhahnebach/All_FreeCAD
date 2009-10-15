@@ -61,26 +61,26 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
     Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
 
-    BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
-    TopExp_Explorer xp(base->Shape.getValue(), TopAbs_EDGE);
-
-    std::map<int, TopoDS_Edge> edgeMap;
-    for (;xp.More();xp.Next()) {
-        TopoDS_Edge edge = TopoDS::Edge(xp.Current());
-        edgeMap[edge.HashCode(IntegerLast())] = edge;
-    }
-
-    std::vector<FilletElement> values = Contour.getValues();
-    for (std::vector<FilletElement>::iterator it = values.begin(); it != values.end(); ++it) {
-        int id = it->hashval;
-        double radius1 = it->radius1;
-        double radius2 = it->radius2;
-        std::map<int, TopoDS_Edge>::iterator ed = edgeMap.find(id);
-        if (ed != edgeMap.end())
-            mkFillet.Add(radius1, radius2, ed->second);
-    }
-
     try {
+        BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
+        TopExp_Explorer xp(base->Shape.getValue(), TopAbs_EDGE);
+
+        std::map<int, TopoDS_Edge> edgeMap;
+        for (;xp.More();xp.Next()) {
+            TopoDS_Edge edge = TopoDS::Edge(xp.Current());
+            edgeMap[edge.HashCode(IntegerLast())] = edge;
+        }
+
+        std::vector<FilletElement> values = Contour.getValues();
+        for (std::vector<FilletElement>::iterator it = values.begin(); it != values.end(); ++it) {
+            int id = it->hashval;
+            double radius1 = it->radius1;
+            double radius2 = it->radius2;
+            std::map<int, TopoDS_Edge>::iterator ed = edgeMap.find(id);
+            if (ed != edgeMap.end())
+                mkFillet.Add(radius1, radius2, ed->second);
+        }
+
         TopoDS_Shape shape = mkFillet.Shape();
         if (shape.IsNull())
             return new App::DocumentObjectExecReturn("Resulting shape is null");
