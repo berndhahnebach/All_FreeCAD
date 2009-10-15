@@ -69,9 +69,12 @@ Up(cUp)
 };
 
 
-class PovTools
+class AppRaytracingExport PovTools
 {
 public:
+  /// returns the given camera position as povray defines in a file
+  static std::string getCamera(const CamDef& Cam);
+
   /// writes the given camera position as povray defines in a file
   static void writeCamera(const char*   FileName, 
                           const CamDef& Cam);
@@ -83,6 +86,12 @@ public:
 
   /// write a given shape as povray file to disk
   static void writeShape(const char *FileName,
+                         const char *PartName,
+                         const TopoDS_Shape& Shape,
+                         float fMeshDeviation=0.1);
+
+  /// write a given shape as povray in a stream
+  static void writeShape(std::ostream &out,
                          const char *PartName,
                          const TopoDS_Shape& Shape,
                          float fMeshDeviation=0.1);

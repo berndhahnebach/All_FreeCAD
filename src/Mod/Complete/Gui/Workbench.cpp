@@ -228,6 +228,17 @@ Gui::MenuItem* Workbench::setupMenuBar() const
              << "Drawing_NewView" 
              << "Drawing_ExportPage" ;
 
+    // Raytracing ****************************************************************************************************
+
+    Gui::MenuItem* raytracing = new Gui::MenuItem(menuBar);
+
+    raytracing->setCommand(QT_TR_NOOP("&Raytracing"));
+    *raytracing 
+		<< "Raytracing_WriteView" 
+		<< "Raytracing_WriteCamera" 
+		<< "Raytracing_WritePart"; 
+;
+
 
     // xxx ****************************************************************************************************
 
