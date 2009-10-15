@@ -27,13 +27,17 @@
 # include <Standard.hxx>
 #endif
 
+#include <Base/Exception.h>
+#include <Base/FileInfo.h>
+#include <Mod/Part/App/PartFeature.h>
 
 #include "RayFeature.h"
+#include "PovTools.h"
 
 
 using namespace Raytracing;
 
-PROPERTY_SOURCE(Raytracing::RayFeature, App::AbstractFeature)
+PROPERTY_SOURCE(Raytracing::RayFeature, Raytracing::RaySegment)
 
 //===========================================================================
 // Feature
@@ -41,19 +45,31 @@ PROPERTY_SOURCE(Raytracing::RayFeature, App::AbstractFeature)
 
 RayFeature::RayFeature(void)
 {
-	ADD_PROPERTY(ShapeFile,(""));
 	ADD_PROPERTY(Source,(0));
 }
 	
 
 App::DocumentObjectExecReturn *RayFeature::execute(void)
 {
-	return StdReturn;
-}
+    std::stringstream result;
+	std::string ViewName = Label.getValue();
 
-short RayFeature::mustExecute() const
-{
-	return 0;
+    App::DocumentObject* link = Source.getValue();
+    if (!link)
+        return new App::DocumentObjectExecReturn("No object linked");
+    if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+        return new App::DocumentObjectExecReturn("Linked object is not a Part object");
+    TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
+	std::string Name(std::string("Pov_")+static_cast<Part::Feature*>(link)->Label.getValue());
+    if (shape.IsNull())
+        return new App::DocumentObjectExecReturn("Linked shape object is empty");
+
+	PovTools::writeShape(result,Name.c_str(),shape);
+
+    // Apply the resulting fragment
+    Result.setValue(result.str().c_str());
+
+    return App::DocumentObject::StdReturn;
 }
 
 

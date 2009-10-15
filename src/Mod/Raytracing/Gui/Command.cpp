@@ -1,4 +1,4 @@
-/***************************************************************************
+ /***************************************************************************
  *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
@@ -31,7 +31,9 @@
 # include <Inventor/SoInput.h>
 # include <Inventor/nodes/SoNode.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
+# include <vector>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
+# include <QMessageBox>
 #endif
 
 #include <Base/Console.h>
@@ -42,7 +44,13 @@
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
 #include <Gui/View.h>
+#include <Gui/Selection.h>
+#include <Gui/FileDialog.h>
+#include <Gui/MainWindow.h>
 
+#include <Mod/Raytracing/App/RayFeature.h>
+#include <Mod/Raytracing/App/RaySegment.h>
+#include <Mod/Raytracing/App/RayProject.h>
 #include <Mod/Part/App/PartFeature.h>
   
 #include "FreeCADpov.h"
@@ -61,11 +69,11 @@ CmdRaytracingWriteCamera::CmdRaytracingWriteCamera()
 {
     sAppModule    = "Raytracing";
     sGroup        = QT_TR_NOOP("Raytracing");
-    sMenuText     = QT_TR_NOOP("Write camera position");
-    sToolTipText  = QT_TR_NOOP("Write the camera positon of the active 3D view in PovRay format to a file");
+    sMenuText     = QT_TR_NOOP("Export camera to povray");
+    sToolTipText  = QT_TR_NOOP("Export the camera positon of the active 3D view in PovRay format to a file");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    sPixmap       = "Test1";
+    sPixmap       = 0;
     iAccel        = 0;
 }
 
@@ -106,14 +114,13 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
     SbVec3f pos = Cam->position.getValue();
     float Dist = Cam->focalDistance.getValue();
 
-    // getting standard parameter
-    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
-    std::string cDir             = hGrp->GetASCII("ProjectPath", "");
-    std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
-
-    if (cDir!="" && cDir[cDir.size()-1] != PATHSEP)
-        cDir += PATHSEP;
-    std::string cFullName = cDir+cCameraName;
+    QStringList filter;
+    filter << QObject::tr("Povray(*.pov)");
+    filter << QObject::tr("All Files (*.*)");
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
+    if (fn.isEmpty()) 
+		return;
+    std::string cFullName = (const char*)fn.toAscii();
 
     // building up the python string
     std::stringstream out;
@@ -149,30 +156,26 @@ CmdRaytracingWritePart::CmdRaytracingWritePart()
 {
     sAppModule    = "Raytracing";
     sGroup        = QT_TR_NOOP("Raytracing");
-    sMenuText     = QT_TR_NOOP("Write the part");
-    sToolTipText  = QT_TR_NOOP("Write the Part (object) of the active 3D view in PovRay format to a file");
+    sMenuText     = QT_TR_NOOP("Export part to povray...");
+    sToolTipText  = QT_TR_NOOP("Write the selected Part (object) as a povray file");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    sPixmap       = "Test1";
+    sPixmap       = 0;
     iAccel        = 0;
 }
 
 void CmdRaytracingWritePart::activated(int iMsg)
 {
-    // get the preferences
-    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
-    std::string cDir             = hGrp->GetASCII("ProjectPath", "");
-    std::string cPartName        = hGrp->GetASCII("PartName", "TempPart.inc");
-    //bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
-    //float fMeshDeviation         = hGrp->GetFloat("MeshDeviation",0.1);
+    QStringList filter;
+    filter << QObject::tr("Povray(*.pov)");
+    filter << QObject::tr("All Files (*.*)");
+	QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
+    if (fn.isEmpty()) 
+		return;
+    std::string cFullName = (const char*)fn.toAscii();
 
     // name of the objects in the pov file
     std::string Name = "Part";
-
-    if (cDir!="" && cDir[cDir.size()-1] != PATHSEP)
-        cDir += PATHSEP;
-
-    std::string cFullName = cDir+cPartName;
 
     std::stringstream out;
     //Raytracing.writePartFile(App.document().GetActiveFeature().getShape())
@@ -193,101 +196,289 @@ bool CmdRaytracingWritePart::isActive(void)
     return false;
 }
 
-
 //===========================================================================
-// CmdRaytracingNewProject
+// CmdRaytracingWriteView
 //===========================================================================
-DEF_STD_CMD_A(CmdRaytracingNewProject);
+DEF_STD_CMD_A(CmdRaytracingWriteView);
 
-CmdRaytracingNewProject::CmdRaytracingNewProject()
-  :Command("Raytracing_NewProject")
+CmdRaytracingWriteView::CmdRaytracingWriteView()
+  :Command("Raytracing_WriteView")
 {
     sAppModule    = "Raytracing";
     sGroup        = QT_TR_NOOP("Raytracing");
-    sMenuText     = QT_TR_NOOP("New project");
-    sToolTipText  = QT_TR_NOOP("Write the initial povray file to render a part");
+    sMenuText     = QT_TR_NOOP("Export view to povray...");
+    sToolTipText  = QT_TR_NOOP("Write the active 3D view with camera and all its content to a povray file");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    sPixmap       = "Test1";
+    sPixmap       = 0;
     iAccel        = 0;
 }
 
-void CmdRaytracingNewProject::activated(int iMsg)
+void CmdRaytracingWriteView::activated(int iMsg)
 {
-    // getting standard parameter
-    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
-    std::string cDir             = hGrp->GetASCII("ProjectPath", "");
-    // xorx: The following has to be implemented as a setting
-    std::string cPovRayName      = hGrp->GetASCII("SceneFilename", "PovrayScene.pov");
-    // HACK: This is the workaround
-    //std::string cPovRayName="PovrayScene.pov";
+    QStringList filter;
+    filter << QObject::tr("Povray(*.pov)");
+    filter << QObject::tr("All Files (*.*)");
+	QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
+    if (fn.isEmpty()) 
+		return;
+    std::string cFullName = (const char*)fn.toAscii();
 
-    if (cDir!="" && cDir[cDir.size()-1] != PATHSEP)
-        cDir += PATHSEP;
-    std::string cFullName = cDir+cPovRayName;
+    // name of the objects in the pov file
+    std::string Name = "Part";
 
-    // Open RayTracing module
+    std::stringstream out;
+    //Raytracing.writePartFile(App.document().GetActiveFeature().getShape())
+    out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.ActiveDocument.ActiveObject.Shape)";
+
     doCommand(Doc,"import Raytracing");
-    // Get the default scene file and write it to the Project directory
-    doCommand(Doc,"Raytracing.copyResource(\"FCSimple.pov\",\"%s\")",strToPython(cFullName).c_str());
+    doCommand(Doc,out.str().c_str());
 }
 
-bool CmdRaytracingNewProject::isActive(void)
+bool CmdRaytracingWriteView::isActive(void)
 {
-    //if( getActiveDocument() )
-        return true;
-    //else
-    //  return false;
+    if (getActiveGuiDocument()) {
+        App::DocumentObject* obj = getActiveGuiDocument()->getDocument()->getActiveObject();
+        if (obj && obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+            return true;
+    }
+
+    return false;
 }
 
-//===========================================================================
-// CmdRaytracingQuickRender
-//===========================================================================
-DEF_STD_CMD_A(CmdRaytracingQuickRender);
 
-CmdRaytracingQuickRender::CmdRaytracingQuickRender()
-  :Command("Raytracing_QuickRender")
-{
-    sAppModule    = "Raytracing";
-    sGroup        = QT_TR_NOOP("Raytracing");
-    sMenuText     = QT_TR_NOOP("Render");
-    sToolTipText  = QT_TR_NOOP("Renders the actual view");
-    sWhatsThis    = sToolTipText;
-    sStatusTip    = sToolTipText;
-    sPixmap       = "Test1";
-    iAccel        = 0;
-}
-
-void CmdRaytracingQuickRender::activated(int iMsg)
-{
-    // get the preferences
-    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
-    std::string cDir             = hGrp->GetASCII("ProjectPath", "");
-
-    //cDir = Gui::FileDialog::getExistingDirectory(cDir.c_str()).latin1();
-
-    if (cDir!="" && cDir[cDir.size()-1] != PATHSEP)
-        cDir += PATHSEP;
-
-    std::string cFullName = cDir+"FreeCAD.pov";
-    Base::Console().Log("Using file name:%s",cFullName.c_str());
-
-    // open the file and write
-    std::ofstream fout(cFullName.c_str());
-    fout << FreeCAD ;
-    fout.close();
-}
-
-bool CmdRaytracingQuickRender::isActive(void)
-{
-    //if( getActiveDocument() )
-        return true;
-    //else
-    //  return false;
-}
-
+////===========================================================================
+//// CmdRaytracingNewProject
+////===========================================================================
+//DEF_STD_CMD_A(CmdRaytracingNewProject);
+//
+//CmdRaytracingNewProject::CmdRaytracingNewProject()
+//  :Command("Raytracing_NewProject")
+//{
+//    sAppModule    = "Raytracing";
+//    sGroup        = QT_TR_NOOP("Raytracing");
+//    sMenuText     = QT_TR_NOOP("New project");
+//    sToolTipText  = QT_TR_NOOP("Write the initial povray file to render a part");
+//    sWhatsThis    = sToolTipText;
+//    sStatusTip    = sToolTipText;
+//    sPixmap       = "Test1";
+//    iAccel        = 0;
+//}
+//
+//void CmdRaytracingNewProject::activated(int iMsg)
+//{
+//    // getting standard parameter
+//    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+//    std::string cDir             = hGrp->GetASCII("ProjectPath", "");
+//    // xorx: The following has to be implemented as a setting
+//    std::string cPovRayName      = hGrp->GetASCII("SceneFilename", "PovrayScene.pov");
+//    // HACK: This is the workaround
+//    //std::string cPovRayName="PovrayScene.pov";
+//
+//    if (cDir!="" && cDir[cDir.size()-1] != PATHSEP)
+//        cDir += PATHSEP;
+//    std::string cFullName = cDir+cPovRayName;
+//
+//    // Open RayTracing module
+//    doCommand(Doc,"import Raytracing");
+//    // Get the default scene file and write it to the Project directory
+//    doCommand(Doc,"Raytracing.copyResource(\"FCSimple.pov\",\"%s\")",strToPython(cFullName).c_str());
+//}
+//
+//bool CmdRaytracingNewProject::isActive(void)
+//{
+//    //if( getActiveDocument() )
+//        return true;
+//    //else
+//    //  return false;
+//}
+//
+////===========================================================================
+//// CmdRaytracingQuickRender
+////===========================================================================
+//DEF_STD_CMD_A(CmdRaytracingQuickRender);
+//
+//CmdRaytracingQuickRender::CmdRaytracingQuickRender()
+//  :Command("Raytracing_QuickRender")
+//{
+//    sAppModule    = "Raytracing";
+//    sGroup        = QT_TR_NOOP("Raytracing");
+//    sMenuText     = QT_TR_NOOP("Render");
+//    sToolTipText  = QT_TR_NOOP("Renders the actual view");
+//    sWhatsThis    = sToolTipText;
+//    sStatusTip    = sToolTipText;
+//    sPixmap       = "Test1";
+//    iAccel        = 0;
+//}
+//
+//void CmdRaytracingQuickRender::activated(int iMsg)
+//{
+//    // get the preferences
+//    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+//    std::string cDir             = hGrp->GetASCII("ProjectPath", "");
+//
+//    //cDir = Gui::FileDialog::getExistingDirectory(cDir.c_str()).latin1();
+//
+//    if (cDir!="" && cDir[cDir.size()-1] != PATHSEP)
+//        cDir += PATHSEP;
+//
+//    std::string cFullName = cDir+"FreeCAD.pov";
+//    Base::Console().Log("Using file name:%s",cFullName.c_str());
+//
+//    // open the file and write
+//    std::ofstream fout(cFullName.c_str());
+//    fout << FreeCAD ;
+//    fout.close();
+//}
+//
+//bool CmdRaytracingQuickRender::isActive(void)
+//{
+//    //if( getActiveDocument() )
+//        return true;
+//    //else
+//    //  return false;
+//}
+//
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//===========================================================================
+// Raytracing_NewPovrayProject
+//===========================================================================
+
+DEF_STD_CMD_A(CmdRaytracingNewPovrayProject);
+
+CmdRaytracingNewPovrayProject::CmdRaytracingNewPovrayProject()
+  : Command("Raytracing_NewPovrayProject")
+{
+    sAppModule      = "Raytracing";
+    sGroup          = QT_TR_NOOP("Raytracing");
+    sMenuText       = QT_TR_NOOP("New Povray project");
+    sToolTipText    = QT_TR_NOOP("Insert new Povray project into the document");
+    sWhatsThis      = "Raytracing_NewPovrayProject";
+    sStatusTip      = sToolTipText;
+    sPixmap         = 0;
+}
+
+void CmdRaytracingNewPovrayProject::activated(int iMsg)
+{
+    std::string FeatName = getUniqueObjectName("PovProject");
+
+    openCommand("Raytracing create project");
+    doCommand(Doc,"App.activeDocument().addObject('Raytracing::RayProject','%s')",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Template = App.getResourceDir()+'Mod/Raytracing/Templates/ProjectStd.pov'",FeatName.c_str());
+    commitCommand();
+}
+
+bool CmdRaytracingNewPovrayProject::isActive(void)
+{
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
+}
+
+
+//===========================================================================
+// Raytracing_NewPartView
+//===========================================================================
+
+DEF_STD_CMD(CmdRaytracingNewPartSegment);
+
+CmdRaytracingNewPartSegment::CmdRaytracingNewPartSegment()
+	:Command("Raytracing_NewPartSegment")
+{
+    sAppModule      = "Raytracing";
+    sGroup          = QT_TR_NOOP("Raytracing");
+    sMenuText       = QT_TR_NOOP("Insert part");
+    sToolTipText    = QT_TR_NOOP("Insert a new part object into a Povray project");
+    sWhatsThis      = "Raytracing_NewPartSegment";
+    sStatusTip      = sToolTipText;
+    sPixmap         = 0;
+}
+
+
+void CmdRaytracingNewPartSegment::activated(int iMsg)
+{
+
+   unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select a Part object."));
+        return;
+    }
+
+	App::DocumentObject *page = this->getDocument()->getObject("PovProject");
+	if ( !page /*|| !page->getClassTypeId().isDerivedFrom(Raytracing::FeaturePage::getClassTypeId()) */){
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No Povray project to insert"),
+            QObject::tr("Create a Povray project to insert a view."));
+        return;
+    }
+
+    std::string FeatName = getUniqueObjectName("View");
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    openCommand("Create view");
+    doCommand(Doc,"App.activeDocument().addObject('Raytracing::FeatureViewPart','%s')",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().PovProject.addObject(App.activeDocument().%s)",FeatName.c_str());
+    updateActive();
+    commitCommand();
+
+}
+
+//===========================================================================
+// Raytracing_ExportProject
+//===========================================================================
+
+DEF_STD_CMD_A(CmdRaytracingExportProject);
+
+CmdRaytracingExportProject::CmdRaytracingExportProject()
+  : Command("Raytracing_ExportProject")
+{
+    // seting the
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Export project...");
+    sToolTipText  = QT_TR_NOOP("Export the Povray project file");
+    sWhatsThis    = "Raytracing_ExportProject";
+    sStatusTip    = sToolTipText;
+    sPixmap       = 0;
+    iAccel        = 0;
+}
+
+void CmdRaytracingExportProject::activated(int iMsg)
+{
+	unsigned int n = getSelection().countObjectsOfType(Raytracing::RayProject::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Povray project object."));
+        return;
+    }
+
+    QStringList filter;
+    filter << QObject::tr("Povray(*.pov)");
+    filter << QObject::tr("All Files (*.*)");
+
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
+    if (!fn.isEmpty()) {
+  	   std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+        openCommand("Raytracing export project");
+
+		doCommand(Doc,"PageFile = open(App.activeDocument().%s.Result,'r')",Sel[0].FeatName);
+		std::string fname = (const char*)fn.toAscii();
+		doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
+		doCommand(Doc,"OutFile.write(PageFile.read())");
+		doCommand(Doc,"del OutFile,PageFile");
+
+        commitCommand();
+    }
+}
+
+bool CmdRaytracingExportProject::isActive(void)
+{
+    return (getActiveGuiDocument() ? true : false);
+}
+
 
 
 void CreateRaytracingCommands(void)
@@ -295,5 +486,8 @@ void CreateRaytracingCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
     rcCmdMgr.addCommand(new CmdRaytracingWriteCamera());
     rcCmdMgr.addCommand(new CmdRaytracingWritePart());
-    rcCmdMgr.addCommand(new CmdRaytracingNewProject());
+    rcCmdMgr.addCommand(new CmdRaytracingWriteView());
+    rcCmdMgr.addCommand(new CmdRaytracingNewPovrayProject());
+    rcCmdMgr.addCommand(new CmdRaytracingExportProject());
+    rcCmdMgr.addCommand(new CmdRaytracingNewPartSegment());
 }

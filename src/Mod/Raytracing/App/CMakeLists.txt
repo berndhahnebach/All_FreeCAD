@@ -51,7 +51,15 @@ SET(Raytracing_SRCS
 		 RayFeature.h
 		 RayProject.cpp
 		 RayProject.h
+		 RaySegment.cpp
+		 RaySegment.h
 )
+
+SET(Raytracing_Scripts
+		../DrawingAlgos.py
+		)
+		
+COPY_IF_DIFFERENT( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/Mod/Raytracing ${Raytracing_Scripts} Raytracing "RaytracingScripts")
 
 add_library(Raytracing SHARED ${Raytracing_SRCS})
 

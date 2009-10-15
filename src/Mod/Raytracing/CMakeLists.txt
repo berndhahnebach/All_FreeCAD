@@ -7,6 +7,8 @@ if(FREECAD_BUILD_GUI)
 	fc_copy_to_mod_path("Raytracing" InitGui.py)
 endif(FREECAD_BUILD_GUI)
 
+configure_file(Templates/ProjectStd.pov ${CMAKE_BINARY_DIR}/Mod/Raytracing/Templates/ProjectStd.pov COPYONLY)
+
 install(
 		 FILES
 		 		 Init.py

@@ -29,6 +29,7 @@
 
 #include "Workbench.h"
 #include <Gui/ToolBarManager.h>
+#include <Gui/MenuManager.h>
 
 using namespace RaytracingGui;
 
@@ -42,22 +43,43 @@ Workbench::~Workbench()
 {
 }
 
-Gui::ToolBarItem* Workbench::setupToolBars() const
+Gui::MenuItem* Workbench::setupMenuBar() const
 {
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* ray = new Gui::ToolBarItem(root);
-    ray->setCommand(QT_TR_NOOP("Raytracing tools"));
-    *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+
+    Gui::MenuItem* ray = new Gui::MenuItem;
+    root->insertItem(item, ray);
+    ray->setCommand(QT_TR_NOOP("&Raytracing"));
+    *ray	
+			<< "Raytracing_WriteView" 
+			<< "Raytracing_WriteCamera" 
+			<< "Raytracing_WritePart" 
+			<< "Separator"
+			<< "Raytracing_NewPovrayProject" 
+			<< "Raytracing_NewPartSegment" 
+			<< "Raytracing_ExportProject"; 
+ 
     return root;
 }
 
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* ray = new Gui::ToolBarItem( root );
-    ray->setCommand(QT_TR_NOOP("Raytracing tools"));
-    *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
-    return root;
-}
+
+//Gui::ToolBarItem* Workbench::setupToolBars() const
+//{
+//    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+//    Gui::ToolBarItem* ray = new Gui::ToolBarItem(root);
+//    ray->setCommand(QT_TR_NOOP("Raytracing tools"));
+//    *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
+//    return root;
+//}
+//
+//Gui::ToolBarItem* Workbench::setupCommandBars() const
+//{
+//    // Part tools
+//    Gui::ToolBarItem* root = new Gui::ToolBarItem;
+//    Gui::ToolBarItem* ray = new Gui::ToolBarItem( root );
+//    ray->setCommand(QT_TR_NOOP("Raytracing tools"));
+//    *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
+//    return root;
+//}
 

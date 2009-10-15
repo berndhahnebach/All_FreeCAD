@@ -40,8 +40,9 @@ public:
   virtual ~Workbench();
 
 protected:
-  Gui::ToolBarItem* setupToolBars() const;
-  Gui::ToolBarItem* setupCommandBars() const;
+  Gui::MenuItem* setupMenuBar() const;
+  //Gui::ToolBarItem* setupToolBars() const;
+  //Gui::ToolBarItem* setupCommandBars() const;
 };
 
 } // namespace RaytracingGui

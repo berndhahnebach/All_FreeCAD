@@ -30,6 +30,8 @@
 //#include <Base/PyExport.h>
 
 #include <App/DocumentObjectGroup.h>
+#include <App/PropertyStandard.h>
+#include <App/PropertyFile.h>
 
 class PyObjectBase;
 class FeaturePy;
@@ -42,7 +44,7 @@ class Property;
 /** Base class of all Feature classes in FreeCAD
  */
 //class RayFeature: public Part::PartFeature
-class RayProject: public App::DocumentObjectGroup
+class AppRaytracingExport RayProject: public App::DocumentObjectGroup
 {
     PROPERTY_HEADER(Raytracing::RayProject);
 
@@ -50,6 +52,8 @@ public:
 	/// Constructor
 	RayProject(void);
 
+    App::PropertyFileIncluded PageResult;
+    App::PropertyFile Template;
 
 
    /** @name methods overide Feature */
@@ -58,9 +62,9 @@ public:
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const { 
+ /*   const char* getViewProviderName(void) const { 
         return "RaytracingGui::ViewProviderRayProject"; 
-    }
+    }*/
   //@}
 
 

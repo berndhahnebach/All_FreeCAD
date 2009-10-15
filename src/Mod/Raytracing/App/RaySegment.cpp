@@ -20,59 +20,45 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
+# include <sstream>
+#endif
 
 
-#ifndef _RayFeature_h_
-#define _RayFeature_h_
-
-//#include <Base/Factory.h>
-//#include <Base/PyExport.h>
-
-#include <App/Feature.h>
-#include <App/PropertyLinks.h>
-#include <App/PropertyFile.h>
+#include <strstream>
+#include <Base/Writer.h>
+#include <Base/Reader.h>
+#include <Base/Exception.h>
+#include <Base/FileInfo.h>
 
 #include "RaySegment.h"
 
+using namespace Raytracing;
 
-class PyObjectBase;
-class FeaturePy;
 
-namespace Raytracing
+//===========================================================================
+// RaySegment
+//===========================================================================
+
+PROPERTY_SOURCE(Raytracing::RaySegment, App::AbstractFeature)
+
+
+
+RaySegment::RaySegment(void) 
 {
+ 
+    App::PropertyType type = (App::PropertyType)(App::Prop_Output|App::Prop_Hidden);
+    ADD_PROPERTY_TYPE(Result ,(0),0,type,"Resulting SVG fragment of that view");
+}
 
-class Property;
-
-/** Base class of all Feature classes in FreeCAD
- */
-//class RayFeature: public Part::PartFeature
-class AppRaytracingExport RayFeature: public Raytracing::RaySegment
+RaySegment::~RaySegment()
 {
-    PROPERTY_HEADER(Raytracing::RayFeature);
-public:
-	/// Constructor
-	RayFeature(void);
+}
 
-	App::PropertyLink         Source;
-
-
-   /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-
-	/// returns the type name of the ViewProvider
-    //const char* getViewProviderName(void) const { 
-    //    return "RaytracingGui::ViewProviderRayFeature"; 
-    //}
-  //@}
-
-};
-
-
-} //namespace Raytracing
-
-
-
-#endif //_RayFeature_h_
+App::DocumentObjectExecReturn *RaySegment::execute(void)
+{
+    return App::DocumentObject::StdReturn;
+}

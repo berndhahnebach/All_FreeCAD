@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2007     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,50 +23,54 @@
  
 
 
-#ifndef _RayFeature_h_
-#define _RayFeature_h_
+#ifndef _RaySegment_h_
+#define _RaySegment_h_
 
-//#include <Base/Factory.h>
-//#include <Base/PyExport.h>
 
 #include <App/Feature.h>
-#include <App/PropertyLinks.h>
-#include <App/PropertyFile.h>
-
-#include "RaySegment.h"
+#include <App/PropertyStandard.h>
+#include <App/PropertyGeo.h>
 
 
 class PyObjectBase;
 class FeaturePy;
 
+namespace Base{
+  class PyObjectBase;
+}
+
 namespace Raytracing
 {
 
-class Property;
 
-/** Base class of all Feature classes in FreeCAD
+/** Base class of all View Features in the drawing module
  */
-//class RayFeature: public Part::PartFeature
-class AppRaytracingExport RayFeature: public Raytracing::RaySegment
+class AppRaytracingExport RaySegment: public App::AbstractFeature
 {
-    PROPERTY_HEADER(Raytracing::RayFeature);
+  PROPERTY_HEADER(Raytracing::RaySegment);
+
 public:
 	/// Constructor
-	RayFeature(void);
+	RaySegment(void);
+  virtual ~RaySegment();
 
-	App::PropertyLink         Source;
+  App::PropertyString Result;
 
 
-   /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-
-	/// returns the type name of the ViewProvider
-    //const char* getViewProviderName(void) const { 
-    //    return "RaytracingGui::ViewProviderRayFeature"; 
-    //}
+  /** @name methods overide Feature */
+  //@{
+  /// recalculate the Feature
+  virtual App::DocumentObjectExecReturn *execute(void);
   //@}
+
+  /// returns the type name of the ViewProvider
+  //virtual const char* getViewProviderName(void) const {
+  //  return "RaytracingGui::ViewProviderRaytracingView";
+  //}
+
+
+	
+ // virtual PyObject* getPyObject(void);
 
 };
 
@@ -75,4 +79,4 @@ public:
 
 
 
-#endif //_RayFeature_h_
+#endif
