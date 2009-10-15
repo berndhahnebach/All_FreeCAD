@@ -491,8 +491,9 @@ void MeshObject::removeComponents(unsigned long count)
 void MeshObject::fillupHoles(unsigned long length, int level,
                              MeshCore::AbstractPolygonTriangulator& cTria)
 {
+    std::list<std::vector<unsigned long> > aFailed;
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
-    topalg.FillupHoles(length, level, cTria);
+    topalg.FillupHoles(length, level, cTria, aFailed);
 }
 
 void MeshObject::offset(float fSize)
