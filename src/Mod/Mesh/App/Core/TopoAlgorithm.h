@@ -209,24 +209,25 @@ public:
      */
     void RemoveCorruptedFacet(unsigned long index);
     /**
-     * Fills up holes with maximum \a length vertices. In contrast to the first
-     * algorithm this method uses an algorithm to create a constrained Delaunay
-     * triangulation (CDT) where high quality triangles with a maximum area of
-     * \a fMaxArea are created. This may introduce new vertices into the mesh.
-     *
-     * To get a z value for the newly inserted vertices a polynomial fit is
-     * computed which uses the boundary points and the points of \a level 
-     * rings around the boundary.
-     * If the polynomial fit fails, poosibly due to too less points the average
-     * plane is used, instead.
+     * Closes holes in the mesh that consists of up to \a length edges. In case a fit 
+     * needs to be done then the points of the neighbours of \a level rings will be used.
+     * Holes for which the triangulation failed are returned in \a aFailed.
      */
-    void FillupHoles(unsigned long length, int level, AbstractPolygonTriangulator&);
+    void FillupHoles(unsigned long length, int level,
+        AbstractPolygonTriangulator&,
+        std::list<std::vector<unsigned long> >& aFailed);
     /**
      * This is an overloaded method provided for convenience. It takes as first argument
      * the boundaries which must be filled up.
      */
-    void FillupHoles(const std::list<std::vector<unsigned long> >& aBorders,
-        int level, AbstractPolygonTriangulator&);
+    void FillupHoles(int level, AbstractPolygonTriangulator&,
+        const std::list<std::vector<unsigned long> >& aBorders,
+        std::list<std::vector<unsigned long> >& aFailed);
+    /**
+     * Find holes which consists of up to \a length edges.
+     */
+    void FindHoles(unsigned long length,
+        std::list<std::vector<unsigned long> >& aBorders) const;
     /**
      * Find topologic independent components with maximum \a count facets
      * and returns an array of the indices.
