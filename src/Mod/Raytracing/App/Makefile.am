@@ -13,7 +13,9 @@ libRaytracing_la_SOURCES=\
 		RayFeature.cpp \
 		RayFeature.h \
 		RayProject.cpp \
-		RayProject.h
+		RayProject.h \
+		RaySegment.cpp \
+		RaySegment.h
 
 
 FreeCADpov.h: FreeCADpov
