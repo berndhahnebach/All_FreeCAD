@@ -902,6 +902,41 @@ PyObject* TopoShapePy::tessellate(PyObject *args)
     return Py::new_reference_to(tuple);
 }
 
+PyObject* TopoShapePy::makeShapeFromMesh(PyObject *args)
+{
+    PyObject *tup;
+    float tolerance;
+    if (!PyArg_ParseTuple(args, "O!f",&PyTuple_Type, &tup, &tolerance))
+        return 0;
+
+    try {
+        Py::Tuple tuple(tup);
+        Py::List vertex(tuple[0]);
+        Py::List facets(tuple[1]);
+
+        std::vector<Base::Vector3d> Points;
+        for (Py::List::iterator it = vertex.begin(); it != vertex.end(); ++it) {
+            Py::Vector vec(*it);
+            Points.push_back(vec.toVector());
+        }
+        std::vector<Data::ComplexGeoData::FacetTopo> Facets;
+        for (Py::List::iterator it = facets.begin(); it != facets.end(); ++it) {
+            Data::ComplexGeoData::FacetTopo face;
+            Py::Tuple f(*it);
+            face.I1 = (int)Py::Int(f[0]);
+            face.I2 = (int)Py::Int(f[1]);
+            face.I3 = (int)Py::Int(f[2]);
+            Facets.push_back(face);
+        }
+
+        getTopoShapePtr()->setFaces(Points, Facets,tolerance);
+        Py_Return;
+    }
+    catch (const Py::Exception&) {
+        return 0;
+    }
+}
+
 PyObject* TopoShapePy::toNurbs(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))

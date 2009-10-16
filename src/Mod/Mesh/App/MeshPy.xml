@@ -12,7 +12,7 @@
 		Constructor="true">
 		<Documentation>
 			<Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
-			<UserDocu>mesh() -- Create an empty mesh object.
+			<UserDocu>Mesh() -- Create an empty mesh object.
 
 This class allows to manipulate the mesh object by adding new facets, deleting facets, importing from an STL file,
 transforming the mesh and much more.
@@ -20,7 +20,7 @@ For a complete overview of what can be done see also the documentation of mesh.
 A mesh object cannot be added to an existing document directly. Therefore the document must create an object
 with a property class that supports meshes.
 Example:
-  m = Mesh.mesh()
+  m = Mesh.Mesh()
   ... # Manipulate the mesh
   d = FreeCAD.activeDocument() # Get a reference to the actie document
   f = d.addObject(\"Mesh::Feature\", \"Mesh\") # Create a mesh feature
@@ -349,13 +349,19 @@ for p in mesh.Facets:
 
 				</UserDocu>
 			</Documentation>
-			<Parameter Name="Points" Type="List" />
+			<Parameter Name="Facets" Type="List" />
 		</Attribute>
 		<Attribute Name="CountFacets" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Return the number of facets of the mesh object.</UserDocu>
 			</Documentation>
 			<Parameter Name="CountFacets" Type="Int" />
+		</Attribute>
+		<Attribute Name="Topology" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Return the points and face indices as tuple.</UserDocu>
+			</Documentation>
+			<Parameter Name="Topology" Type="Tuple" />
 		</Attribute>
 		<Attribute Name="Area" ReadOnly="true">
 			<Documentation>

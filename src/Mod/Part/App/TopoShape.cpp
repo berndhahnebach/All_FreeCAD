@@ -34,6 +34,9 @@
 # include <BRepAlgoAPI_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
 # include <BRepBuilderAPI_GTransform.hxx>
+# include <BRepBuilderAPI_MakeFace.hxx>
+# include <BRepBuilderAPI_MakePolygon.hxx>
+# include <BRepBuilderAPI_MakeVertex.hxx>
 # include <BRepBuilderAPI_NurbsConvert.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakeThickSolid.hxx>
@@ -65,6 +68,7 @@
 # include <TopoDS.hxx>
 # include <TopoDS_Compound.hxx>
 # include <TopoDS_Iterator.hxx>
+# include <TopoDS_Vertex.hxx>
 # include <TopExp.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -1050,4 +1054,55 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
     for (std::map<Standard_Integer,gp_Pnt>::iterator it = points.begin(); it != points.end(); ++it)
         aPoints.push_back(Base::Vector3d(it->second.X(),it->second.Y(),it->second.Z()));
 #endif
+}
+
+void TopoShape::setFaces(const std::vector<Base::Vector3d> &Points,
+                         const std::vector<FacetTopo> &Topo, float Accuracy)
+{
+    gp_XYZ p1, p2, p3;
+    TopoDS_Vertex Vertex1, Vertex2, Vertex3;
+    TopoDS_Face newFace;
+    TopoDS_Wire newWire;
+    BRepBuilderAPI_Sewing aSewingTool;
+    Standard_Real x1, y1, z1;
+    Standard_Real x2, y2, z2;
+    Standard_Real x3, y3, z3;
+
+    aSewingTool.Init(Accuracy,Standard_True);
+
+    TopoDS_Compound aComp;
+    BRep_Builder BuildTool;
+    BuildTool.MakeCompound(aComp);
+
+    unsigned int ctPoints = Points.size();
+    for (std::vector<FacetTopo>::const_iterator it = Topo.begin(); it != Topo.end(); ++it) {
+        if (it->I1 >= ctPoints || it->I2 >= ctPoints || it->I3 >= ctPoints)
+            continue;
+        x1 = Points[it->I1].x; y1 = Points[it->I1].y; z1 = Points[it->I1].z;
+        x2 = Points[it->I2].x; y2 = Points[it->I2].y; z2 = Points[it->I2].z;
+        x3 = Points[it->I3].x; y3 = Points[it->I3].y; z3 = Points[it->I3].z;
+
+        p1.SetCoord(x1,y1,z1);
+        p2.SetCoord(x2,y2,z2);
+        p3.SetCoord(x3,y3,z3);
+
+        if ((!(p1.IsEqual(p2,0.0))) && (!(p1.IsEqual(p3,0.0)))) {
+            Vertex1 = BRepBuilderAPI_MakeVertex(p1);
+            Vertex2 = BRepBuilderAPI_MakeVertex(p2);
+            Vertex3 = BRepBuilderAPI_MakeVertex(p3);
+
+            newWire = BRepBuilderAPI_MakePolygon(Vertex1, Vertex2, Vertex3, Standard_True);
+            if (!newWire.IsNull()) {
+                newFace = BRepBuilderAPI_MakeFace(newWire);
+                if (!newFace.IsNull())
+                    BuildTool.Add(aComp, newFace);
+            }
+        }
+    }
+
+    aSewingTool.Load(aComp);
+    aSewingTool.Perform();
+    _Shape = aSewingTool.SewedShape();
+    if (_Shape.IsNull())
+        _Shape = aComp;
 }
