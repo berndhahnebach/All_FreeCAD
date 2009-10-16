@@ -586,13 +586,17 @@ void Document::RestoreDocFile(Base::Reader &reader)
             {
                 pObj->Restore(xmlReader);
 
-                // As the view providers don't get notified when their proprties
+#if 0 // FIXME: Is this still true? When reading in a property from file it calls its
+      // setValue method
+
+                // As the view providers don't get notified when their properties
                 // change while reading we must force this here
                 std::map<std::string,App::Property*> Map;
                 pObj->getPropertyMap(Map);
                 for (std::map<std::string,App::Property*>::iterator it = Map.begin();
                      it != Map.end(); ++it)
                     it->second->touch();
+#endif
             }
             xmlReader.readEndElement("ViewProvider");
         }

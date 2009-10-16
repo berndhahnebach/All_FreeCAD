@@ -41,6 +41,7 @@ public:
 
     void attach(App::DocumentObject *pcObject);
     void updateData(const App::Property*);
+    void Restore(Base::XMLReader &reader);
     QIcon getIcon(void) const;
     /// returns a list of all possible modes
     std::vector<std::string> getDisplayModes(void) const;
@@ -54,6 +55,7 @@ protected:
     void getViewProviders(std::vector<ViewProviderDocumentObject*>&) const;
 
 private:
+    bool visible; // helper variable
     std::vector<ViewProvider*> nodes;
 };
 

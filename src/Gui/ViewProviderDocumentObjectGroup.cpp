@@ -50,7 +50,7 @@ PROPERTY_SOURCE(Gui::ViewProviderDocumentObjectGroup, Gui::ViewProviderDocumentO
 /**
  * Creates the view provider for an object group.
  */
-ViewProviderDocumentObjectGroup::ViewProviderDocumentObjectGroup()
+ViewProviderDocumentObjectGroup::ViewProviderDocumentObjectGroup() : visible(false)
 {
 #if 0
     setDefaultMode(SO_SWITCH_ALL);
@@ -62,8 +62,8 @@ ViewProviderDocumentObjectGroup::~ViewProviderDocumentObjectGroup()
 }
 
 /**
- * Whenever a property of the group gets changed then the same property of all associated view providers of
- * the objects of the object group get changed as well.
+ * Whenever a property of the group gets changed then the same property of all
+ * associated view providers of the objects of the object group get changed as well.
  */
 void ViewProviderDocumentObjectGroup::onChanged(const App::Property* prop)
 {
@@ -126,39 +126,56 @@ std::vector<std::string> ViewProviderDocumentObjectGroup::getDisplayModes(void) 
 
 void ViewProviderDocumentObjectGroup::hide(void)
 {
-    App::DocumentObject * group = getObject();
-    if (group && group->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
-        const std::vector<App::DocumentObject*> & links = static_cast<App::DocumentObjectGroup*>
-            (group)->Group.getValues();
-        Gui::Document* doc = Application::Instance->getDocument(group->getDocument());
-        for (std::vector<App::DocumentObject*>::const_iterator it = links.begin(); it != links.end(); ++it) {
-            ViewProvider* view = doc->getViewProvider(*it);
-            if (view) view->hide();
+    // when reading the Visibility property from file then do not hide the
+    // objects of this group because they have stored their visibility status, too
+    if (!Visibility.StatusBits.test(9) && this->visible) {
+        App::DocumentObject * group = getObject();
+        if (group && group->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
+            const std::vector<App::DocumentObject*> & links = static_cast<App::DocumentObjectGroup*>
+                (group)->Group.getValues();
+            Gui::Document* doc = Application::Instance->getDocument(group->getDocument());
+            for (std::vector<App::DocumentObject*>::const_iterator it = links.begin(); it != links.end(); ++it) {
+                ViewProvider* view = doc->getViewProvider(*it);
+                if (view) view->hide();
+            }
         }
     }
 
     ViewProviderDocumentObject::hide();
+    this->visible = false;
 }
 
 void ViewProviderDocumentObjectGroup::show(void)
 {
-    App::DocumentObject * group = getObject();
-    if (group && group->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
-        const std::vector<App::DocumentObject*> & links = static_cast<App::DocumentObjectGroup*>
-            (group)->Group.getValues();
-        Gui::Document* doc = Application::Instance->getDocument(group->getDocument());
-        for (std::vector<App::DocumentObject*>::const_iterator it = links.begin(); it != links.end(); ++it) {
-            ViewProvider* view = doc->getViewProvider(*it);
-            if (view) view->show();
+    // when reading the Visibility property from file then do not hide the
+    // objects of this group because they have stored their visibility status, too
+    if (!Visibility.StatusBits.test(9) && !this->visible) {
+        App::DocumentObject * group = getObject();
+        if (group && group->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
+            const std::vector<App::DocumentObject*> & links = static_cast<App::DocumentObjectGroup*>
+                (group)->Group.getValues();
+            Gui::Document* doc = Application::Instance->getDocument(group->getDocument());
+            for (std::vector<App::DocumentObject*>::const_iterator it = links.begin(); it != links.end(); ++it) {
+                ViewProvider* view = doc->getViewProvider(*it);
+                if (view) view->show();
+            }
         }
     }
 
     ViewProviderDocumentObject::show();
+    this->visible = true;
 }
 
 bool ViewProviderDocumentObjectGroup::isShow(void) const
 {
     return Visibility.getValue();
+}
+
+void ViewProviderDocumentObjectGroup::Restore(Base::XMLReader &reader)
+{
+    Visibility.StatusBits.set(9); // tmp. set
+    ViewProviderDocumentObject::Restore(reader);
+    Visibility.StatusBits.reset(9); // unset
 }
 
 /**
