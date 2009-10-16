@@ -172,7 +172,7 @@ SoSeparator* ViewProvider::getAnnotation(void)
 void ViewProvider::update(const App::Property* prop)
 {
     // Hide the object temporarily to speed up the update
-    bool vis = this->isShow();
+    bool vis = ViewProvider::isShow();
     if (vis) ViewProvider::hide();
     updateData(prop);
     if (vis) ViewProvider::show();

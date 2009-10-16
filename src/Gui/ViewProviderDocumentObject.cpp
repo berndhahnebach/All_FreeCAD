@@ -105,12 +105,12 @@ void ViewProviderDocumentObject::updateView()
     pcObject->getPropertyMap(Map);
 
     // Hide the object temporarily to speed up the update
-    bool vis = this->isShow();
-    if (vis) hide();
+    bool vis = ViewProvider::isShow();
+    if (vis) ViewProvider::hide();
     for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
         updateData(it->second);
     }
-    if (vis) show();
+    if (vis) ViewProvider::show();
 }
 
 void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
