@@ -112,6 +112,8 @@ public:
     Facet getFacet(unsigned long) const;
     double getSurface() const;
     double getVolume() const;
+    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const;
     //@}
 
     void setKernel(const MeshCore::MeshKernel& m);

@@ -141,6 +141,8 @@ public:
     //@{
     void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
         float Accuracy, uint16_t flags=0) const;
+    void setFaces(const std::vector<Base::Vector3d> &Points,
+                  const std::vector<FacetTopo> &Topo, float Accuracy=1.0e-06);
     //@}
 
     TopoDS_Shape _Shape;

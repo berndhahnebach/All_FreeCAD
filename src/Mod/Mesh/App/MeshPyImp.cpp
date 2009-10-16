@@ -1225,3 +1225,27 @@ Py::List MeshPy::getFacets(void) const
     }
     return FacetList;
 }
+
+Py::Tuple MeshPy::getTopology(void) const
+{
+    std::vector<Base::Vector3d> Points;
+    std::vector<Data::ComplexGeoData::FacetTopo> Facets;
+    getMeshObjectPtr()->getFaces(Points, Facets, 0.0f);
+    Py::Tuple tuple(2);
+    Py::List vertex;
+    for (std::vector<Base::Vector3d>::const_iterator it = Points.begin();
+        it != Points.end(); ++it)
+        vertex.append(Py::Object(new Base::VectorPy(*it)));
+    tuple.setItem(0, vertex);
+    Py::List facet;
+    for (std::vector<Data::ComplexGeoData::FacetTopo>::const_iterator
+        it = Facets.begin(); it != Facets.end(); ++it) {
+        Py::Tuple f(3);
+        f.setItem(0,Py::Int((int)it->I1));
+        f.setItem(1,Py::Int((int)it->I2));
+        f.setItem(2,Py::Int((int)it->I3));
+        facet.append(f);
+    }
+    tuple.setItem(1, facet);
+    return tuple;
+}

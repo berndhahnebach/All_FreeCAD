@@ -224,6 +224,27 @@ Facet MeshObject::getFacet(unsigned long index) const
     return face;
 }
 
+void MeshObject::getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+                          float Accuracy, uint16_t flags) const
+{
+    unsigned long ctpoints = _kernel.CountPoints();
+    Points.reserve(ctpoints);
+    for (unsigned long i=0; i<ctpoints; i++) {
+        Points.push_back(this->getPoint(i));
+    }
+
+    unsigned long ctfacets = _kernel.CountFacets();
+    const MeshCore::MeshFacetArray& ary = _kernel.GetFacets();
+    Topo.reserve(ctfacets);
+    for (unsigned long i=0; i<ctfacets; i++) {
+        FacetTopo face;
+        face.I1 = (unsigned int)ary[i]._aulPoints[0];
+        face.I2 = (unsigned int)ary[i]._aulPoints[1];
+        face.I3 = (unsigned int)ary[i]._aulPoints[2];
+        Topo.push_back(face);
+    }
+}
+
 unsigned int MeshObject::getMemSize (void) const
 {
     return _kernel.GetMemSize();

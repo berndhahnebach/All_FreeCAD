@@ -197,6 +197,12 @@ Orientation is not taken into account.</UserDocu>
         <UserDocu>Tessellate the the shape and return a list of vertices and face indices</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="makeShapeFromMesh">
+      <Documentation>
+        <UserDocu>Make a compund shape out of mesh data.
+Note: This should be used for rather small meshes only.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="toNurbs">
       <Documentation>
         <UserDocu>Conversion of the complete geometry of a shape into NURBS geometry.
