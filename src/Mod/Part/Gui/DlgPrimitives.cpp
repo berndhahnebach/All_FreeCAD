@@ -186,6 +186,20 @@ void DlgPrimitives::accept()
                 .arg(ui.torusAngle3->value(),0,'f',2)
                 .arg(this->toPlacement());
         }
+        else if (ui.comboBox1->currentIndex() == 7) {  // helix
+            name = QString::fromAscii(doc->getUniqueObjectName("Helix").c_str());
+            cmd = QString::fromAscii(
+                "App.ActiveDocument.addObject(\"Part::Helix\",\"%1\")\n"
+                "App.ActiveDocument.%1.Pitch=%2\n"
+                "App.ActiveDocument.%1.Height=%3\n"
+                "App.ActiveDocument.%1.Radius=%4\n"
+                "App.ActiveDocument.%1.Placement=%5\n")
+                .arg(name)
+                .arg(ui.helixPitch->value(),0,'f',2)
+                .arg(ui.helixHeight->value(),0,'f',2)
+                .arg(ui.helixRadius->value(),0,'f',2)
+                .arg(this->toPlacement());
+        }
 
         // Execute the Python block
         QString prim = tr("Create %1").arg(ui.comboBox1->currentText());
