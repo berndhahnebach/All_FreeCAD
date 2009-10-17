@@ -145,6 +145,7 @@ void AppPartExport initPart()
     Part::Cylinder              ::init();
     Part::Cone                  ::init();
     Part::Torus                 ::init();
+    Part::Helix                 ::init();
     Part::Part2DObject          ::init();
 
     // set the user-defined units

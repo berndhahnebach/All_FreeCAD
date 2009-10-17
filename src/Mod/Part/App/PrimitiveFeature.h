@@ -168,6 +168,25 @@ public:
     //@}
 };
 
+class Helix : public Primitive
+{
+    PROPERTY_HEADER(Part::Helix);
+
+public:
+    Helix();
+
+    App::PropertyFloatConstraint Pitch;
+    App::PropertyFloatConstraint Height;
+    App::PropertyFloatConstraint Radius;
+
+    /** @name methods override feature */
+    //@{
+    /// recalculate the feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
+};
+
 } //namespace Part
 
 

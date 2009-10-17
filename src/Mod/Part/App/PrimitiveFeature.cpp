@@ -23,15 +23,25 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <BRepBuilderAPI_MakeFace.hxx>
+# include <BRepLib.hxx>
 # include <BRepPrimAPI_MakeCone.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRepPrimAPI_MakeTorus.hxx>
+# include <BRepBuilderAPI_MakeEdge.hxx>
+# include <BRepBuilderAPI_MakeFace.hxx>
+# include <BRepBuilderAPI_MakeWire.hxx>
 # include <BRepBuilderAPI_GTransform.hxx>
 # include <gp_GTrsf.hxx>
+# include <GCE2d_MakeSegment.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom_CylindricalSurface.hxx>
+# include <Geom2d_Ellipse.hxx>
+# include <Geom2d_TrimmedCurve.hxx>
 # include <Handle_Geom_Plane.hxx>
+# include <Handle_Geom_CylindricalSurface.hxx>
+# include <Handle_Geom2d_Ellipse.hxx>
+# include <Handle_Geom2d_TrimmedCurve.hxx>
 # include <Precision.hxx>
 # include <Standard_Real.hxx>
 # include <TopoDS_Solid.hxx>
@@ -385,6 +395,73 @@ App::DocumentObjectExecReturn *Torus::execute(void)
                                       Angle3.getValue()/180.0f*Standard_PI);
         const TopoDS_Solid& ResultShape = mkTorus.Solid();
         this->Shape.setValue(ResultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
+
+    return App::DocumentObject::StdReturn;
+}
+
+PROPERTY_SOURCE(Part::Helix, Part::Primitive)
+
+Helix::Helix(void)
+{
+    ADD_PROPERTY_TYPE(Pitch, (1.0),"Helix",App::Prop_None,"The pitch of the helix");
+    Pitch.setConstraints(&floatRange);
+    ADD_PROPERTY_TYPE(Height,(2.0),"Helix",App::Prop_None,"The height of the helix");
+    Height.setConstraints(&floatRange);
+    ADD_PROPERTY_TYPE(Radius,(1.0),"Helix",App::Prop_None,"The radius of the helix");
+    Radius.setConstraints(&floatRange);
+}
+
+short Helix::mustExecute() const
+{
+    if (Pitch.isTouched())
+        return 1;
+    if (Height.isTouched())
+        return 1;
+    if (Radius.isTouched())
+        return 1;
+    return Primitive::mustExecute();
+}
+
+App::DocumentObjectExecReturn *Helix::execute(void)
+{
+    try {
+        Standard_Real myPitch  = Pitch.getValue();
+        Standard_Real myHeight = Height.getValue();
+        Standard_Real myRadius = Radius.getValue();
+
+        if (myPitch < Precision::Confusion())
+            return new App::DocumentObjectExecReturn("Pitch of helix too small");
+
+        if (myHeight < Precision::Confusion())
+            return new App::DocumentObjectExecReturn("Height of helix too small");
+
+        if (myHeight < Precision::Confusion())
+            return new App::DocumentObjectExecReturn("Radius of helix too small");
+
+        gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
+        Handle(Geom_CylindricalSurface) cyl = new Geom_CylindricalSurface(cylAx2 , myRadius);
+
+        gp_Pnt2d aPnt(0, 0);
+        gp_Dir2d aDir(2. * PI, myPitch);
+        gp_Ax2d aAx2d(aPnt, aDir);
+
+        Standard_Real aMajor = PI*(myHeight/myPitch);
+        Standard_Real aMinor = 0.0;
+
+        Handle(Geom2d_Ellipse) ellipse = new Geom2d_Ellipse(aAx2d , aMajor , aMinor);
+        gp_Pnt2d beg = ellipse->Value(0);
+        gp_Pnt2d end = ellipse->Value(PI);
+        Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
+
+        TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , cyl);
+        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edgeOnSurf);
+        BRepLib::BuildCurves3d(wire);
+        this->Shape.setValue(wire);
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
