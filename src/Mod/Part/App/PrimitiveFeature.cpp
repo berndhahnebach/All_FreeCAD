@@ -36,11 +36,11 @@
 # include <GCE2d_MakeSegment.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_CylindricalSurface.hxx>
-# include <Geom2d_Ellipse.hxx>
+# include <Geom2d_Line.hxx>
 # include <Geom2d_TrimmedCurve.hxx>
 # include <Handle_Geom_Plane.hxx>
 # include <Handle_Geom_CylindricalSurface.hxx>
-# include <Handle_Geom2d_Ellipse.hxx>
+# include <Handle_Geom2d_Line.hxx>
 # include <Handle_Geom2d_TrimmedCurve.hxx>
 # include <Precision.hxx>
 # include <Standard_Real.hxx>
@@ -450,12 +450,9 @@ App::DocumentObjectExecReturn *Helix::execute(void)
         gp_Dir2d aDir(2. * PI, myPitch);
         gp_Ax2d aAx2d(aPnt, aDir);
 
-        Standard_Real aMajor = PI*(myHeight/myPitch);
-        Standard_Real aMinor = 0.0;
-
-        Handle(Geom2d_Ellipse) ellipse = new Geom2d_Ellipse(aAx2d , aMajor , aMinor);
-        gp_Pnt2d beg = ellipse->Value(0);
-        gp_Pnt2d end = ellipse->Value(PI);
+        Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
+        gp_Pnt2d beg = line->Value(0);
+        gp_Pnt2d end = line->Value(2.0*PI*(myHeight/myPitch));
         Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
 
         TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , cyl);
