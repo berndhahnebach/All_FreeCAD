@@ -319,7 +319,7 @@ def selectObject(arg):
 	"this is a scene even handler, to be called from the tools when they need to select an object"
 	if (arg["Type"] == "SoKeyboardEvent"):
 		if (arg["Key"] == "ESCAPE"):
-			FreeCADGui.activeWorkbench().activeDraftCommand.finish()
+			FreeCAD.activeDraftCommand.finish()
 			#TODO : this part raises a coin3D warning about scene traversal, to be fixed.
 	if (arg["Type"] == "SoMouseButtonEvent"):
 		if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
@@ -329,8 +329,8 @@ def selectObject(arg):
 			if snapped:
 				obj = FreeCAD.ActiveDocument.getObject(snapped['Object'])
 				FreeCADGui.Selection.addSelection(obj)
-				FreeCADGui.activeWorkbench().activeDraftCommand.component=snapped['Component']
-				FreeCADGui.activeWorkbench().activeDraftCommand.proceed()
+				FreeCAD.activeDraftCommand.component=snapped['Component']
+				FreeCAD.activeDraftCommand.proceed()
 
 def getPoint(target,args,mobile=False,sym=False):
 	'''
@@ -499,7 +499,9 @@ class arcTracker(Tracker):
 	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1)):
 		Tracker.__init__(self,dotted,scolor,swidth)
 		self.axis = axis
-		initrot = FreeCADGui.ActiveDocument.ActiveView.getViewer().getCamera().orientation
+		self.initrot = FreeCADGui.ActiveDocument.ActiveView.getViewer().getCamera().orientation
+		container = coin.SoSeparator()
+		self.startrot = coin.SoRotation()
 		self.coords = coin.SoCoordinate4()
 		trackpts = [[1,0,0,1],[0.707107,0.707107,0,0.707107],[0,1,0,1],
 			[-0.707107,0.707107,0,0.707107],[-1,0,0,1],[-0.707107,-0.707107,0,0.707107],
@@ -515,13 +517,15 @@ class arcTracker(Tracker):
 			self.trans.rotation.setValue(coin.SbVec3f(0,0,1),0)
 		else:
 			# self.trans.rotation.setValue(float(cam[12]),float(cam[13]),float(cam[14]),float(cam[15]))
-			self.trans.rotation = initrot
-		self.node.addChild(self.coords)
+			self.trans.rotation = self.initrot
 		self.node.addChild(self.trans)
-		self.node.addChild(self.circle)
+		container.addChild(self.startrot)
+		container.addChild(self.coords)
+		container.addChild(self.circle)
+		self.node.addChild(container)
 
 	def startangle(self,angle):
-		self.trans.rotation.setValue(coin.SbVec3f(self.axis.x,self.axis.y,self.axis.z),-angle)
+		self.startrot.rotation.setValue(coin.SbVec3f(0,0,1),-angle)
 
 	def center(self,center):
 		self.trans.translation.setValue([center.x,center.y,center.z])
@@ -578,6 +582,7 @@ class arcTracker(Tracker):
 		self.circle.numControlPoints.setValue(pts)
 		self.circle.knotVector.setValues(knots)
 		self.circle.knotVector.setNum(len(knots))
+		# self.trans.rotation = self.initrot
 
 class ghostTracker(Tracker):
 	"this class creates a copy of the coin representation of all passed objects, to be used as ghost"
@@ -791,11 +796,20 @@ class Creator:
 	def Activated(self):
 		self.doc = FreeCAD.ActiveDocument
 		if not self.doc: self.finish()
-		if FreeCADGui.activeWorkbench().activeDraftCommand: self.finish()
+		if FreeCAD.activeDraftCommand: self.finish()
 		self.view = FreeCADGui.ActiveDocument.ActiveView
 		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		FreeCADGui.activeWorkbench().activeDraftCommand = self
+		FreeCAD.activeDraftCommand = self
 		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+		if self.ui.lockedz:
+			self.axis = Vector(0,0,1)
+			self.xVec = Vector(1,0,0)
+			self.upVec = Vector(0,1,0)
+		else:
+			self.axis = fcvec.neg(self.view.getViewDirection())
+			rot = self.view.getViewer().getCamera().orientation.getValue()
+			self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
+			self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 		self.ui.cross(True)
 		self.node = []
 		self.pos = []
@@ -808,7 +822,7 @@ class Creator:
 		self.ui.offUi()
 		self.ui.cross(False)
 		self.ui.sourceCmd=None
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
+		FreeCAD.activeDraftCommand = None
 		FreeCAD.Console.PrintMessage("")
 		
 	
@@ -948,10 +962,9 @@ class Polyline(Line):
 class FinishLine:
 	"a FreeCAD command to finish any running Line drawing operation"
 	def Activated(self):
-		activeCommand = FreeCADGui.activeWorkbench().activeDraftCommand
-		if (activeCommand != None):
-			if (activeCommand.featureName == "Line"):
-				activeCommand.finish(False)
+		if (FreeCAD.activeDraftCommand != None):
+			if (FreeCAD.activeDraftCommand.featureName == "Line"):
+				FreeCAD.activeDraftCommand.finish(False)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_finish',
 			'MenuText': 'Finish Line',
@@ -961,10 +974,9 @@ class FinishLine:
 class CloseLine:
 	"a FreeCAD command to close any running Line drawing operation"
 	def Activated(self):
-		activeCommand = FreeCADGui.activeWorkbench().activeDraftCommand
-		if (activeCommand != None):
-			if (activeCommand.featureName == "Line"):
-				activeCommand.finish(True)
+		if (FreeCAD.activeDraftCommand != None):
+			if (FreeCAD.activeDraftCommand.featureName == "Line"):
+				FreeCAD.activeDraftCommand.finish(True)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_lock',
 			'MenuText': 'Close Line',
@@ -974,10 +986,9 @@ class CloseLine:
 class UndoLine:
 	"a FreeCAD command to undo last drawn segment of a line"
 	def Activated(self):
-		activeCommand = FreeCADGui.activeWorkbench().activeDraftCommand
-		if (activeCommand != None):
-			if (activeCommand.featureName == "Line"):
-				activeCommand.undolast()
+		if (FreeCAD.activeDraftCommand != None):
+			if (FreeCAD.activeDraftCommand.featureName == "Line"):
+				FreeCAD.activeDraftCommand.undolast()
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rotate',
 			'MenuText': 'Undo last segment',
@@ -1100,7 +1111,6 @@ class Arc(Creator):
 		self.altdown = False
 		self.ui.sourceCmd = self
 		self.snap = snapTracker()
-		self.axis = self.view.getViewDirection()
 		self.linetrack = lineTracker(dotted=True)
 		self.constraintrack = lineTracker(dotted=True)
 		self.arctrack = arcTracker(axis=self.axis)
@@ -1123,6 +1133,11 @@ class Arc(Creator):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
 			point,ctrlPoint = getPoint(self,arg)
+			# this is to make sure radius is what you see on screen
+			if fcvec.dist(point,self.center):
+				viewdelta = fcvec.project(point.sub(self.center),self.axis)
+				if not fcvec.isNull(viewdelta):
+					point = point.add(fcvec.neg(viewdelta))
 			if (self.step == 0):
 				if arg["AltDown"]:
 					if not self.altdown:
@@ -1182,15 +1197,12 @@ class Arc(Creator):
 				self.linetrack.on()
 			elif (self.step == 2):
 				currentrad = fcvec.dist(point,self.center)
-				angle = math.asin((point.y-self.center.y)/currentrad)
-				if (point.x > self.center.x):
-					pc = [math.cos(angle)*self.rad,math.sin(angle)*self.rad]
-					if (point.y < self.center.y):
-						angle = (math.pi*2)+angle
-				else:
-					pc = [-math.cos(angle)*self.rad,math.sin(angle)*self.rad]
-					angle = math.pi-angle
-				self.linetrack.p2(Vector(self.center.x+pc[0],self.center.y+pc[1],point.z))
+				if currentrad != 0:
+					angle = point.sub(self.center).getAngle(self.xVec)
+					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
+						angle = -angle
+				else: angle = 0
+				self.linetrack.p2(fcvec.scale(fcvec.normalized(point.sub(self.center)),self.rad).add(self.center))
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -1203,14 +1215,11 @@ class Arc(Creator):
 				self.ui.radiusValue.selectAll()
 			else:
 				currentrad = fcvec.dist(point,self.center)
-				angle = math.asin((point.y-self.center.y)/currentrad)
-				if (point.x > self.center.x):
-					pc = [math.cos(angle)*self.rad,math.sin(angle)*self.rad]
-					if (point.y < self.center.y):
-						angle = (math.pi*2)+angle
-				else:
-					pc = [-math.cos(angle)*self.rad,math.sin(angle)*self.rad]
-					angle = math.pi-angle
+				if currentrad != 0:
+					angle = point.sub(self.center).getAngle(self.xVec)
+					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
+						angle = -angle
+				else: angle = 0
 				if (angle < self.firstangle): 
 					sweep = (2*math.pi-self.firstangle)+angle
 				else:
@@ -1223,7 +1232,7 @@ class Arc(Creator):
 					else:
 						sweep = -(self.firstangle+(2*math.pi-angle))
 				self.arctrack.update(sweep)
-				self.linetrack.p2(Vector(self.center.x+pc[0],self.center.y+pc[1],point.z))
+				self.linetrack.p2(fcvec.scale(fcvec.normalized(point.sub(self.center)),self.rad).add(self.center))
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -1238,6 +1247,11 @@ class Arc(Creator):
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				point,ctrlPoint = getPoint(self,arg)
+				# this is to make sure radius is what you see on screen
+				if fcvec.dist(point,self.center):
+					viewdelta = fcvec.project(point.sub(self.center),self.axis)
+					if not fcvec.isNull(viewdelta):
+						point = point.add(fcvec.neg(viewdelta))
 				if (self.step == 0):
 					if arg["AltDown"]:
 						snapped=self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
@@ -1253,7 +1267,7 @@ class Arc(Creator):
 								self.linetrack.on()
 								FreeCAD.Console.PrintMessage("Pick radius:\n")
 					else:
-						if len(self.tangents) ==1:
+						if len(self.tangents) == 1:
 							self.tanpoints.append(point)
 						else:
 							self.center = point
@@ -1279,7 +1293,7 @@ class Arc(Creator):
 				elif (self.step == 2):
 					self.ui.labelRadius.setText("End angle")
 					self.step = 3
-					self.arctrack.trans.rotation.setValue(coin.SbVec3f(0,0,1),self.firstangle)
+					self.arctrack.startangle(-self.firstangle)
 					FreeCAD.Console.PrintMessage("Pick end angle:\n")
 				else:
 					self.step = 4
@@ -1293,16 +1307,17 @@ class Arc(Creator):
 			else:
 				arc = Part.Circle(self.center,self.axis,self.rad).toShape()
 		else:
-			radvec = Vector(self.rad,0,0)
-			p1 = Vector.add(self.center,fcvec.rotate(radvec,self.firstangle))
-			p3 = Vector.add(self.center,fcvec.rotate(radvec,self.lastangle))
+			if self.ui.lockedz: self.axis = fcvec.neg(self.axis)
+			radvec = fcvec.scale(fcvec.normalized(self.xVec),self.rad)
+			p1 = Vector.add(self.center,fcvec.rotate(radvec,self.firstangle,self.axis))
+			p3 = Vector.add(self.center,fcvec.rotate(radvec,self.lastangle,self.axis))
 			if self.firstangle < self.lastangle:
 				mid = self.firstangle+(self.lastangle-self.firstangle)/2
 			else:
 				half = (self.lastangle-(math.pi*2-self.firstangle))/2
 				mid = self.lastangle-half
 			if not self.clockwise: mid = mid + math.pi
-			p2 = Vector.add(self.center,fcvec.rotate(radvec,mid))			       
+			p2 = Vector.add(self.center,fcvec.rotate(radvec,mid,self.axis))			       
 			arc = Part.Arc(p1,p2,p3).toShape()
 		self.obj.Shape = arc
 		formatObject(self.obj)
@@ -1347,7 +1362,6 @@ class Arc(Creator):
 		elif (self.step == 2):
 			self.ui.labelRadius.setText("End angle")
 			self.firstangle = math.radians(rad)
-			print "firstangle: ",self.firstangle
 			self.arctrack.trans.rotation.setValue(coin.SbVec3f(0,0,1),self.firstangle)
 			self.step = 3
 			FreeCAD.Console.PrintMessage("Pick end angle:\n")
@@ -1555,10 +1569,10 @@ class Modifier:
 	def Activated(self):
 		self.doc = FreeCAD.ActiveDocument
 		if not self.doc: self.finish()
-		if FreeCADGui.activeWorkbench().activeDraftCommand: self.finish()
+		if FreeCAD.activeDraftCommand: self.finish()
 		self.view = FreeCADGui.ActiveDocument.ActiveView
 		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		FreeCADGui.activeWorkbench().activeDraftCommand = self
+		FreeCAD.activeDraftCommand = self
 		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 		self.node = []
 		self.ui.sourceCmd = self
@@ -1569,7 +1583,7 @@ class Modifier:
 		self.node = []
 		self.ui.offUi()
 		self.ui.sourceCmd=None
-		FreeCADGui.activeWorkbench().activeDraftCommand = None
+		FreeCAD.activeDraftCommand = None
 		FreeCAD.Console.PrintMessage("")
 		self.ui.cross(False)
 			
@@ -1734,7 +1748,6 @@ class Rotate(Modifier):
 	This class rotates the selected objects.
 	'''
 
-
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rotate',
 			'MenuText': 'Rotate',
@@ -1769,8 +1782,13 @@ class Rotate(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		if self.ui.lockedz:
 			self.axis = Vector(0,0,1)
+			self.xVec = Vector(1,0,0)
+			self.upVec = Vector(0,1,0)
 		else:
 			self.axis = fcvec.neg(self.view.getViewDirection())
+			rot = self.view.getViewer().getCamera().orientation.getValue()
+			self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
+			self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 		self.arctrack = arcTracker(axis=self.axis)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
@@ -1802,34 +1820,24 @@ class Rotate(Modifier):
 			if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
 
-	def rotateCopy (self,angle):
-		"the real rotate/copy operation"
-		self.doc.openTransaction("Copy")
-		for ob in self.sel:
-			if (ob.Type == "Part::Feature"):
-				shape = ob.Shape
-				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),angle)
-				newob = self.doc.addObject("Part::Feature",ob.Name)
-				newob.Shape=shape
-			formatObject(newob,ob)
-		self.doc.commitTransaction()
-		self.doc.recompute()
-
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
 			point,ctrlPoint = getPoint(self,arg)
+			# this is to make sure radius is what you see on screen
+			if fcvec.dist(point,self.center):
+				viewdelta = fcvec.project(point.sub(self.center),self.axis)
+				if not fcvec.isNull(viewdelta):
+					point = point.add(fcvec.neg(viewdelta))
 			if (self.step == 0):
 				pass
 			elif (self.step == 1):
 				currentrad = fcvec.dist(point,self.center)
-				if (currentrad != 0): angle = math.asin((point.y-self.center.y)/currentrad)
+				if (currentrad != 0):
+					angle = point.sub(self.center).getAngle(self.xVec)
+					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
+						angle = -angle
 				else: angle = 0
-				if (point.x > self.center.x):
-					if (point.y < self.center.y):
-						angle = (math.pi*2)+angle
-				else:
-					angle = math.pi-angle
 				self.linetrack.p2(point)
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
@@ -1844,13 +1852,11 @@ class Rotate(Modifier):
 			else:
 				currentrad = fcvec.dist(point,self.center)
 				self.arctrack.trans.scaleFactor.setValue([currentrad,currentrad,currentrad])
-				if (currentrad != 0): angle = math.asin((point.y-self.center.y)/currentrad)
+				if (currentrad != 0):
+					angle = point.sub(self.center).getAngle(self.xVec)
+					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
+						angle = -angle
 				else: angle = 0
-				if (point.x > self.center.x):
-					if (point.y < self.center.y):
-						angle = (math.pi*2)+angle
-				else:
-					angle = math.pi-angle
 				if (angle < self.firstangle): 
 					sweep = (2*math.pi-self.firstangle)+angle
 				else:
@@ -1872,6 +1878,9 @@ class Rotate(Modifier):
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				point,ctrlPoint = getPoint(self,arg)
+				if fcvec.dist(point,self.center):
+					viewdelta = fcvec.project(point.sub(self.center),self.axis)
+					if not fcvec.isNull(viewdelta): point = point.add(fcvec.neg(viewdelta))
 				if (self.step == 0):
 					self.center = point
 					self.node = [point]
@@ -1885,7 +1894,7 @@ class Rotate(Modifier):
 					FreeCAD.Console.PrintMessage("Pick base angle:\n")
 				elif (self.step == 1):
 					self.ui.labelRadius.setText("Rotation")
-					self.arctrack.trans.rotation.setValue(coin.SbVec3f(0,0,1),self.firstangle)
+					self.arctrack.startangle(self.firstangle)
 					self.rad = fcvec.dist(point,self.center)
 					self.arctrack.on()
 					self.ghost.on()
@@ -1895,12 +1904,9 @@ class Rotate(Modifier):
 					FreeCAD.Console.PrintMessage("Pick rotation angle:\n")
 				else:
 					currentrad = fcvec.dist(point,self.center)
-					angle = math.asin((point.y-self.center.y)/currentrad)
-					if (point.x > self.center.x):
-						if (point.y < self.center.y):
-							angle = (math.pi*2)+angle
-					else:
-						angle = math.pi-angle
+					angle = point.sub(self.center).getAngle(self.xVec)
+					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
+						angle = -angle
 					if (angle < self.firstangle): 
 						sweep = (2*math.pi-self.firstangle)+angle
 					else:
@@ -1937,10 +1943,7 @@ class Rotate(Modifier):
 			self.step = 2
 			FreeCAD.Console.PrintMessage("Pick rotation angle:\n")
 		else:
-			if self.ui.isCopy.isChecked():
-				self.rot(math.radians(rad),True)
-			else:
-				self.rot(math.radians(rad))
+			self.rot(math.radians(rad),self.ui.isCopy.isChecked())
 			self.finish()
 
 

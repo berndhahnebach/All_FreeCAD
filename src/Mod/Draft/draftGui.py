@@ -292,7 +292,7 @@ class toolBar:
 				self.radiusValue.setToolTip(QtGui.QApplication.translate("draftToolbar", "Radius of Circle", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelText.setText(QtGui.QApplication.translate("draftToolbar", "Text", None, QtGui.QApplication.UnicodeUTF8))
 				self.isRelative.setText(QtGui.QApplication.translate("draftToolbar", "Relative", None, QtGui.QApplication.UnicodeUTF8))
-				self.lockButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "locks the Z coordinate", None, QtGui.QApplication.UnicodeUTF8))
+				self.lockButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "locks the Z coordinate (L)", None, QtGui.QApplication.UnicodeUTF8))
 				self.isRelative.setToolTip(QtGui.QApplication.translate("draftToolbar", "Coordinates relative to last point or absolute (SPACE)", None, QtGui.QApplication.UnicodeUTF8))
 				self.finishButton.setText(QtGui.QApplication.translate("draftToolbar", "Finish", None, QtGui.QApplication.UnicodeUTF8))
 				self.finishButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Finishes the current line without closing (F)", None, QtGui.QApplication.UnicodeUTF8))
@@ -538,6 +538,8 @@ class toolBar:
 					if self.closeButton.isVisible(): self.closeLine()
 					elif self.isCopy.isVisible():
 						self.isCopy.setChecked(not self.isCopy.isChecked())
+				if txt.endsWith("l"):
+					self.lockz(not self.lockedz)
 
 			def sendText(self):
 				"this function sends the entered text to the active draft command"

@@ -166,7 +166,7 @@ class DraftWorkbench (Workbench):
 			self.appendMenu("Draft",self.cmdList+self.modList)
 			import draftGui
 			self.draftToolBar=draftGui.toolBar()
-			self.activeDraftCommand = None # a place to look for active draft Command
+			FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
 			self.intitialized = True
  
 	def Activated(self):
@@ -176,20 +176,20 @@ class DraftWorkbench (Workbench):
 
 	def Deactivated(self):
 		if self.initialized:
-			if (self.activeDraftCommand != None): self.activeDraftCommand.finish()
+			if (FreeCAD.activeDraftCommand != None): FreeCAD.activeDraftCommand.finish()
 			self.draftToolBar.draftWidget.setVisible(False)
 			self.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
 
 	def ContextMenu(self, recipient):
 		if self.initialized:
 			if (recipient == "View"):
-				if (self.activeDraftCommand == None):
+				if (self.FreeCAD.activeDraftCommand == None):
 					if (FreeCADGui.Selection.getSelection() != []):
 						self.appendContextMenu("Draft",self.cmdList+self.modList+self.treecmdList)
 					else:
 						self.appendContextMenu("Draft",self.cmdList)
 				else:
-					if (self.activeDraftCommand.featureName == "Line"):
+					if (FreeCAD.activeDraftCommand.featureName == "Line"):
 						lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
 						self.appendContextMenu("",lineList)
 			else:

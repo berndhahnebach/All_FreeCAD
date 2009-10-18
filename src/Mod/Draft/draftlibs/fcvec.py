@@ -119,23 +119,42 @@ def angle(first, other=Vector(1,0,0)):
 	if isinstance(first,Vector) and isinstance(other,Vector):
 		dp=dotproduct(normalized(first),normalized(other))
 		if (dp >= -1) and (dp <= 1):
-			angle = math.acos(dotproduct(normalized(first),normalized(other)))
-			#angle =  math.atan2(normalized(crossproduct(first,other)),dotproduct(first,other));
-			# next line works only for 2D at the moment
-			if ((first.x * other.y - first.y * other.x) < 0): angle = -angle
-			return angle
+			#angle =  math.atan2(normalized(crossproduct(first,other)),dotproduct(first,other))
+			ang = math.acos(dotproduct(normalized(first),normalized(other)))
+			# next line works only for 2D at the moment. Only used by DXF importer...
+			if ((first.x * other.y - first.y * other.x) < 0): ang = -ang			
+			return ang
 		else:
 			return 0
 
 def project(first, other):
 	"project(Vector,Vector): projects the first vector onto the second one"
 	if isinstance(first,Vector) and isinstance(other,Vector):
-		return scale(other, dotproduct(first,other)/dotproduct(other,other))
+		dp = dotproduct(other,other)
+		if dp:
+			return scale(other, dotproduct(first,other)/dotproduct(other,other))
+	return None
 
-def rotate(first,angle):
-	"rotate(Vector,Float): rotates the first Vector around the origin Z axis, at the given angle."
-	if isinstance(first,Vector):
-		return Vector(math.cos(angle)*first.x-math.sin(angle)*first.y,math.sin(angle)*first.x+math.cos(angle)*first.y,first.z)
+def rotate(first,rotangle,axis=Vector(0,0,1)):
+	'''rotate(Vector,Float,axis=Vector): rotates the first Vector
+	around the given axis, at the given angle.
+	If axis is omitted, the rotation is made on the xy plane.'''
+	if isinstance(first,Vector) and isinstance(axis,Vector):
+		axisxy = rounded(Vector(axis.x,axis.y,0))
+		mat1 = FreeCAD.Matrix()
+		if not isNull(axisxy):
+			mat1.rotateZ(angle(axisxy))
+		axisrot1 = mat1.multiply(axis)
+		axisxz = rounded(Vector(axisrot1.x,axisrot1.z,0))
+		mat2 = FreeCAD.Matrix()
+		if not isNull(axisxz):
+			mat2.rotateY(angle(axisxz)-math.pi/2)
+		axisrot2 = mat2.multiply(axisrot1)
+		vec = mat1.multiply(first)
+		vec = mat2.multiply(vec)
+		vec = Vector(math.cos(rotangle)*vec.x-math.sin(rotangle)*vec.y,math.sin(rotangle)*vec.x+math.cos(rotangle)*vec.y,vec.z)
+		vec = mat2.inverse().multiply(vec)
+		vec = mat1.inverse().multiply(vec)
 
 def isNull(vector):
 	'''isNull(vector): Tests if a vector is nul vector'''
@@ -153,3 +172,9 @@ def find(vector,vlist):
 			if equals(vector,v):
 				return i
 	return None
+
+def rounded(vector,pr=PREC):
+	'''rounded(vector,int) - returns a rounded vector to given precision, or is
+	precision is not specified, built-in precision is used.'''
+	if isinstance(vector,Vector) and isinstance(pr,int):
+		return Vector(round(vector.x,pr),round(vector.y,pr),round(vector.z,pr))
