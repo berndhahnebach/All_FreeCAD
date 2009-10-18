@@ -33,6 +33,9 @@
 # include <Geom_Geometry.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Surface.hxx>
+# include <GeomLProp_CLProps.hxx>
+# include <GeomLProp_SLProps.hxx>
+# include <Precision.hxx>
 # include <Standard_Failure.hxx>
 #endif
 
@@ -237,6 +240,55 @@ PyObject* GeometryPy::value(PyObject *args)
                 return 0;
             gp_Pnt p = s->Value(u,v);
             return new Base::VectorPy(Base::Vector3d(p.X(),p.Y(),p.Z()));
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "Geometry is neither curve nor surface");
+    return 0;
+}
+
+PyObject* GeometryPy::tangent(PyObject *args)
+{
+    Handle_Geom_Geometry g = getGeometryPtr()->handle();
+    Handle_Geom_Curve c = Handle_Geom_Curve::DownCast(g);
+    Handle_Geom_Surface s = Handle_Geom_Surface::DownCast(g);
+    try {
+        if (!c.IsNull()) {
+            double u;
+            if (!PyArg_ParseTuple(args, "d", &u))
+                return 0;
+            gp_Dir dir;
+            Py::Tuple tuple(1);
+            GeomLProp_CLProps prop(c,u,1,Precision::Confusion());
+            if (prop.IsTangentDefined()) {
+                prop.Tangent(dir);
+                tuple.setItem(0, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+            }
+
+            return Py::new_reference_to(tuple);
+        }
+        if (!s.IsNull()) {
+            double u,v;
+            if (!PyArg_ParseTuple(args, "dd", &u,&v))
+                return 0;
+            gp_Dir dir;
+            Py::Tuple tuple(2);
+            GeomLProp_SLProps prop(s,u,v,1,Precision::Confusion());
+            if (prop.IsTangentUDefined()) {
+                prop.TangentU(dir);
+                tuple.setItem(0, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+            }
+            if (prop.IsTangentVDefined()) {
+                prop.TangentV(dir);
+                tuple.setItem(1, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+            }
+
+            return Py::new_reference_to(tuple);
         }
     }
     catch (Standard_Failure) {

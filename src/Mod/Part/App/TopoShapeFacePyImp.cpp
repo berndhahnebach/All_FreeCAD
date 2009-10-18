@@ -27,6 +27,7 @@
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <BRepLProp_SLProps.hxx>
 # include <BRepOffsetAPI_MakeOffset.hxx>
 # include <Geom_BezierSurface.hxx>
 # include <Geom_BSplineSurface.hxx>
@@ -157,7 +158,6 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
-
 PyObject* TopoShapeFacePy::makeOffset(PyObject *args)
 {
     float dist;
@@ -171,7 +171,28 @@ PyObject* TopoShapeFacePy::makeOffset(PyObject *args)
     return new TopoShapePy(new TopoShape(mkOffset.Shape()));
 }
 
+PyObject* TopoShapeFacePy::tangent(PyObject *args)
+{
+    double u,v;
+    if (!PyArg_ParseTuple(args, "dd",&u,&v))
+        return 0;
 
+    gp_Dir dir;
+    Py::Tuple tuple(2);
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+    BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
+    if (prop.IsTangentUDefined()) {
+        prop.TangentU(dir);
+        tuple.setItem(0, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+    }
+    if (prop.IsTangentVDefined()) {
+        prop.TangentV(dir);
+        tuple.setItem(1, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+    }
+
+    return Py::new_reference_to(tuple);
+}
 
 Py::Object TopoShapeFacePy::getSurface() const
 {
