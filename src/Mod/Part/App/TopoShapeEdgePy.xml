@@ -14,6 +14,11 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>TopoShapeFace is the OpenCasCade topological face wrapper</UserDocu>
     </Documentation>
+    <Methode Name="tangent">
+        <Documentation>
+            <UserDocu>Get the tangent at the given point if defined</UserDocu>
+        </Documentation>
+    </Methode>
     <Attribute Name="Curve" ReadOnly="true">
       <Documentation>
         <UserDocu>Returns the 3D curve of the edge</UserDocu>

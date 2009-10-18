@@ -26,6 +26,7 @@
 # include <BRep_Tool.hxx>
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
+# include <BRepLProp_CLProps.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Ellipse.hxx>
@@ -116,6 +117,25 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_SetString(PyExc_Exception, "a curve expected");
     return -1;
+}
+
+PyObject* TopoShapeEdgePy::tangent(PyObject *args)
+{
+    double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    gp_Dir dir;
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+    BRepLProp_CLProps prop(adapt,u,1,Precision::Confusion());
+    if (prop.IsTangentDefined()) {
+        prop.Tangent(dir);
+        tuple.setItem(0, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+    }
+
+    return Py::new_reference_to(tuple);
 }
 
 Py::Object TopoShapeEdgePy::getCurve() const

@@ -53,5 +53,10 @@ It describes the common behavior of these objects when:
         <UserDocu>Computes the point of parameter on this geometry</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="tangent">
+      <Documentation>
+        <UserDocu>Computes the tangent of parameter on this geometry</UserDocu>
+      </Documentation>
+    </Methode>
   </PythonExport>
 </GenerateModel>
