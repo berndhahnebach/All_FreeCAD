@@ -711,11 +711,8 @@ PyObject* TopoShapePy::makePipe(PyObject *args)
     PyObject *pShape;
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pShape)) {
         try {
-            TopoDS_Shape wire = static_cast<TopoShapePy*>(pShape)->getTopoShapePtr()->_Shape;
-            if (wire.IsNull()) Standard_Failure::Raise("cannot sweep along empty wire");
-            if (wire.ShapeType() != TopAbs_WIRE)
-                Standard_Failure::Raise("spine shape is not a wire");
-            TopoDS_Shape shape = this->getTopoShapePtr()->makePipe(TopoDS::Wire(wire));
+            TopoDS_Shape profile = static_cast<TopoShapePy*>(pShape)->getTopoShapePtr()->_Shape;
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePipe(profile);
             return new TopoShapePy(new TopoShape(shape));
         }
         catch (Standard_Failure) {
