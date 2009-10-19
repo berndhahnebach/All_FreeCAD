@@ -39,6 +39,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <App/Document.h>
+#include <App/DocumentObject.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/Command.h>
@@ -224,15 +225,24 @@ void CmdRaytracingWriteView::activated(int iMsg)
 		return;
     std::string cFullName = (const char*)fn.toAscii();
 
-    // name of the objects in the pov file
-    std::string Name = "Part";
 
-    std::stringstream out;
-    //Raytracing.writePartFile(App.document().GetActiveFeature().getShape())
-    out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.ActiveDocument.ActiveObject.Shape)";
+	// get all objects of the active document
+	std::vector<App::DocumentObject*> DocObjects = getActiveGuiDocument()->getDocument()->getObjects();
+	
+    openCommand("Write view");
+	doCommand(Doc,"import Raytracing,RaytracingGui");
+    doCommand(Doc,"OutFile = open('%s','w')",cFullName.c_str());
+    doCommand(Doc,"OutFile.write(open(App.getResourceDir()+'Mod/Raytracing/Templates/ProjectStd.pov').read())");
+    doCommand(Doc,"OutFile.write(RaytracingGui.povViewCamera())");
+	// go through all document objects
+	for(std::vector<App::DocumentObject*>::const_iterator it=DocObjects.begin();it!=DocObjects.end();++it)
+		if((*it)->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+			doCommand(Doc,"OutFile.write(Raytracing.getPartAsPovray('%s',App.activeDocument().%s.Shape))",(*it)->getNameInDocument(),(*it)->getNameInDocument());
+    doCommand(Doc,"OutFile.close()");
+    doCommand(Doc,"del OutFile");
 
-    doCommand(Doc,"import Raytracing");
-    doCommand(Doc,out.str().c_str());
+    updateActive();
+    commitCommand();
 }
 
 bool CmdRaytracingWriteView::isActive(void)

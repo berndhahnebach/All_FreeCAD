@@ -207,7 +207,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Separator"
           << "Part_ShapeInfo";
 
-    Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
+  /*  Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
     sketch->setCommand(QT_TR_NOOP("Ske&tch"));
     *sketch << "Sketcher_NewSketch"
             << "Sketcher_LeaveSketch"
@@ -215,7 +215,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
             << "Sketcher_CreatePolyline"
             << "Separator" 
             << "PartDesign_Pad" 
-            << "PartDesign_Fillet";
+            << "PartDesign_Fillet";*/
 
     // Drawing ****************************************************************************************************
 
