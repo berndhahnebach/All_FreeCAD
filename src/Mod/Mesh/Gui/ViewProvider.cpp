@@ -150,12 +150,15 @@ QIcon ViewProviderExport::getIcon() const
 
 App::PropertyFloatConstraint::Constraints ViewProviderMesh::floatRange = {1.0f,64.0f,1.0f};
 App::PropertyFloatConstraint::Constraints ViewProviderMesh::angleRange = {0.0f,180.0f,1.0f};
+App::PropertyIntegerConstraint::Constraints ViewProviderMesh::intPercent = {0,100,1};
 const char* ViewProviderMesh::LightingEnums[]= {"One side","Two side",NULL};
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderGeometryObject)
 
 ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
 {
+    ADD_PROPERTY(LineTransparency,(0));
+    LineTransparency.setConstraints(&intPercent);
     ADD_PROPERTY(LineWidth,(1.0f));
     LineWidth.setConstraints(&floatRange);
     ADD_PROPERTY(PointSize,(2.0f));
@@ -194,7 +197,7 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     pcMatBinding->value = SoMaterialBinding::OVERALL;
     pcMatBinding->ref();
 
-    pLineColor = new SoBaseColor;
+    pLineColor = new SoMaterial;
     pLineColor->ref();
     LineColor.touch();
 
@@ -245,7 +248,11 @@ ViewProviderMesh::~ViewProviderMesh()
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
 {
-    if (prop == &LineWidth) {
+    if (prop == &LineTransparency) {
+        float trans = LineTransparency.getValue()/100.0f;
+        pLineColor->transparency = trans;
+    }
+    else if (prop == &LineWidth) {
         pcLineStyle->lineWidth = LineWidth.getValue();
     }
     else if (prop == &PointSize) {
@@ -272,7 +279,7 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
     }
     else if (prop == &LineColor) {
         const App::Color& c = LineColor.getValue();
-        pLineColor->rgb.setValue(c.r,c.g,c.b);
+        pLineColor->diffuseColor.setValue(c.r,c.g,c.b);
     }
     /*else if (prop == &BacksideColor && Lighting.getValue() != 0) {
         const App::Color& c = BacksideColor.getValue();

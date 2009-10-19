@@ -45,7 +45,7 @@
         <item row="1" column="0" >
          <widget class="QLabel" name="labelFaceColor" >
           <property name="text" >
-           <string>Face color</string>
+           <string>Default face color for newly created meshes</string>
           </property>
          </widget>
         </item>
@@ -239,8 +239,8 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::PrefCheckBox</class>
-   <extends>QCheckBox</extends>
+   <class>Gui::PrefColorButton</class>
+   <extends>Gui::ColorButton</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>
@@ -253,8 +253,8 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Gui::PrefColorButton</class>
-   <extends>Gui::ColorButton</extends>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>

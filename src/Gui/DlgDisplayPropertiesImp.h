@@ -65,7 +65,9 @@ private Q_SLOTS:
     void on_buttonColor_changed();
     void on_spinTransparency_valueChanged(int);
     void on_spinPointSize_valueChanged(int);
+    void on_buttonLineColor_changed();
     void on_spinLineWidth_valueChanged(int);
+    void on_spinLineTransparency_valueChanged(int);
     void on_buttonUserDefinedMaterial_clicked();
 
 private:
@@ -74,9 +76,11 @@ private:
     void setMaterial(const std::vector<ViewProvider*>&);
     void fillupMaterials();
     void setShapeColor(const std::vector<ViewProvider*>&);
+    void setLineColor(const std::vector<ViewProvider*>&);
     void setPointSize(const std::vector<ViewProvider*>&);
     void setLineWidth(const std::vector<ViewProvider*>&);
     void setTransparency(const std::vector<ViewProvider*>&);
+    void setLineTransparency(const std::vector<ViewProvider*>&);
     std::vector<ViewProvider*> getSelection() const;
     QMap<QString, App::Material::MaterialType> Materials;
 };

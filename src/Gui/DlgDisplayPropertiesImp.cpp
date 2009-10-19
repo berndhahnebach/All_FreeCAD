@@ -70,9 +70,11 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
     fillupMaterials();
     setMaterial(views);
     setShapeColor(views);
+    setLineColor(views);
     setPointSize(views);
     setLineWidth(views);
     setTransparency(views);
+    setLineTransparency(views);
 
     // embed this dialog into a dockable widget container
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
@@ -105,9 +107,11 @@ void DlgDisplayPropertiesImp::OnChange(Gui::SelectionSingleton::SubjectType &rCa
         setDisplayModes(views);
         setMaterial(views);
         setShapeColor(views);
+        setLineColor(views);
         setPointSize(views);
         setLineWidth(views);
         setTransparency(views);
+        setLineTransparency(views);
     }
 }
 
@@ -237,6 +241,32 @@ void DlgDisplayPropertiesImp::on_spinLineWidth_valueChanged(int linewidth)
     }
 }
 
+void DlgDisplayPropertiesImp::on_buttonLineColor_changed()
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    QColor s = buttonLineColor->color();
+    App::Color c(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("LineColor");
+        if (prop && prop->getTypeId() == App::PropertyColor::getClassTypeId()) {
+            App::PropertyColor* ShapeColor = (App::PropertyColor*)prop;
+            ShapeColor->setValue(c);
+        }
+    }
+}
+
+void DlgDisplayPropertiesImp::on_spinLineTransparency_valueChanged(int transparency)
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    for (std::vector<Gui::ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++) {
+        App::Property* prop = (*It)->getPropertyByName("LineTransparency");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+            App::PropertyInteger* Transparency = (App::PropertyInteger*)prop;
+            Transparency->setValue(transparency);
+        }
+    }
+}
+
 void DlgDisplayPropertiesImp::setDisplayModes(const std::vector<Gui::ViewProvider*>& views)
 {
     QStringList commonModes, modes;
@@ -344,6 +374,24 @@ void DlgDisplayPropertiesImp::setShapeColor(const std::vector<Gui::ViewProvider*
     buttonColor->setEnabled(shapeColor);
 }
 
+void DlgDisplayPropertiesImp::setLineColor(const std::vector<Gui::ViewProvider*>& views)
+{
+    bool shapeColor = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("LineColor");
+        if (prop && prop->getTypeId() == App::PropertyColor::getClassTypeId()) {
+            App::Color c = static_cast<App::PropertyColor*>(prop)->getValue();
+            QColor shape;
+            shape.setRgb((int)(c.r*255.0f), (int)(c.g*255.0f),(int)(c.b*255.0f));
+            buttonLineColor->setColor(shape);
+            shapeColor = true;
+            break;
+        }
+    }
+
+    buttonLineColor->setEnabled(shapeColor);
+}
+
 void DlgDisplayPropertiesImp::setPointSize(const std::vector<Gui::ViewProvider*>& views)
 {
     bool pointSize = false;
@@ -388,6 +436,22 @@ void DlgDisplayPropertiesImp::setTransparency(const std::vector<Gui::ViewProvide
 
     spinTransparency->setEnabled(transparency);
     horizontalSlider->setEnabled(transparency);
+}
+
+void DlgDisplayPropertiesImp::setLineTransparency(const std::vector<Gui::ViewProvider*>& views)
+{
+    bool transparency = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("LineTransparency");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+            spinLineTransparency->setValue(static_cast<App::PropertyInteger*>(prop)->getValue());
+            transparency = true;
+            break;
+        }
+    }
+
+    spinLineTransparency->setEnabled(transparency);
+    sliderLineTransparency->setEnabled(transparency);
 }
 
 std::vector<Gui::ViewProvider*> DlgDisplayPropertiesImp::getSelection() const

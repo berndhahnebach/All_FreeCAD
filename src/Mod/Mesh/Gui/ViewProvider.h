@@ -93,6 +93,7 @@ public:
     virtual ~ViewProviderMesh();
 
     // Display properties
+    App::PropertyPercent LineTransparency;
     App::PropertyFloatConstraint LineWidth;
     App::PropertyFloatConstraint PointSize;
     App::PropertyFloatConstraint CreaseAngle;
@@ -156,7 +157,7 @@ protected:
     SoDrawStyle         * pcPointStyle;
     SoSeparator         * pcOpenEdge;
     SoBaseColor         * pOpenColor;
-    SoBaseColor         * pLineColor;
+    SoMaterial          * pLineColor;
     SoShapeHints        * pShapeHints;
     //SoShapeHints        * pBackHints;
     SoMaterialBinding   * pcMatBinding;
@@ -168,6 +169,7 @@ private:
 
     static App::PropertyFloatConstraint::Constraints floatRange;
     static App::PropertyFloatConstraint::Constraints angleRange;
+    static App::PropertyIntegerConstraint::Constraints intPercent;
     static const char* LightingEnums[];
 };
 
