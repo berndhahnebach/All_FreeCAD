@@ -88,13 +88,21 @@ public:
   static void writeShape(const char *FileName,
                          const char *PartName,
                          const TopoDS_Shape& Shape,
-                         float fMeshDeviation=0.1);
+                         float fMeshDeviation=0.1,
+						 float r=0.5,
+						 float g=0.5,
+						 float b=0.5
+						 );
 
   /// write a given shape as povray in a stream
   static void writeShape(std::ostream &out,
                          const char *PartName,
                          const TopoDS_Shape& Shape,
-                         float fMeshDeviation=0.1);
+                         float fMeshDeviation=0.1,
+						 float r=0.5,
+						 float g=0.5,
+						 float b=0.5
+						 );
 
   /// write a given shape as points and normal Vectors in a coma separeted format
   static void writeShapeCSV(const char *FileName,

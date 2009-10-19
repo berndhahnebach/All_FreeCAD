@@ -99,6 +99,7 @@ povViewCamera(PyObject *self, PyObject *args)
 		SoNode* rootNode;
 		SoInput in;
 		in.setBuffer((void*)ppReturn,std::strlen(ppReturn));
+	    SoDB::read(&in,rootNode);
 
 		if (!rootNode || !rootNode->getTypeId().isDerivedFrom(SoCamera::getClassTypeId()))
 			throw Base::Exception("CmdRaytracingWriteCamera::activated(): Could not read "
@@ -132,7 +133,7 @@ povViewCamera(PyObject *self, PyObject *args)
 		// call the write method of PovTools....
 		out = PovTools::getCamera(CamDef(gpPos,gpDir,gpLookAt,gpUp));
 
-		return Py::new_reference_to(Py::String(out,true));
+		return Py::new_reference_to(Py::String(out));
     } PY_CATCH;
 }
 

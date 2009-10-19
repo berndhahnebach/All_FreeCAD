@@ -66,7 +66,25 @@ getProjectFile(PyObject *self, PyObject *args)
     return Py_BuildValue("s", FreeCAD);
 }
 
-/// write project file
+/// get part file as string
+static PyObject *
+getPartAsPovray(PyObject *self, PyObject *args)
+{
+    PyObject *ShapeObject;
+    const char *PartName;
+    if (! PyArg_ParseTuple(args, "sO!",&PartName,
+        &(Part::TopoShapePy::Type), &ShapeObject)) 
+        return NULL;
+
+	std::stringstream out;
+    TopoDS_Shape &aShape = static_cast<Part::TopoShapePy *>(ShapeObject)->getTopoShapePtr()->_Shape;
+    
+    PovTools::writeShape(out,PartName,aShape,(float)0.1);
+
+	return Py::new_reference_to(Py::String(out.str()));
+}
+
+/// write part file
 static PyObject *
 writePartFile(PyObject *self, PyObject *args)
 {
@@ -83,7 +101,7 @@ writePartFile(PyObject *self, PyObject *args)
     Py_Return;
 }
 
-/// write project file
+/// write part file as CSV
 static PyObject *
 writePartFileCSV(PyObject *self, PyObject *args)
 {
@@ -173,6 +191,7 @@ struct PyMethodDef Raytracing_methods[] = {
     {"getProjectFile",   getProjectFile  , 1},
     {"writePartFile",    writePartFile   , 1},
     {"writePartFileCSV", writePartFileCSV, 1},
+    {"getPartAsPovray",  getPartAsPovray , 1},
     {"writeCameraFile",  writeCameraFile , 1},
     {"copyResource",     copyResource    , 1},
     {NULL, NULL}
