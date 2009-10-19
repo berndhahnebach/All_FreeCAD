@@ -268,8 +268,6 @@ libMesh_la_SOURCES=\
 		MeshPointPyImp.cpp \
 		MeshProperties.cpp \
 		MeshPyImp.cpp \
-		GTSAlgos.cpp \
-		GTSAlgos.h \
 		Segment.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h

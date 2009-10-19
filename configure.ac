@@ -488,36 +488,36 @@ dnl AM_CONDITIONAL(WM3_LIBRARY_FILES, test x"$fc_cv_lib_wm3_avail" = xyes)
 
 dnl checking for GTS
 dnl **************************************************************************
-
-AC_PATH_PROG(GTSCONFIG, gts-config, false, $PATH)
-if test x"$GTSCONFIG" != xfalse; then
-	fc_gts_incs=`gts-config --cflags`
-	fc_gts_libs=`gts-config --libs`
-
-	AC_SUBST([GTS_CFLAGS], [$fc_gts_incs])
-	AC_SUBST([GTS_LIBS], [$fc_gts_libs])
-else
-	AC_MSG_WARN([
-	**** Cannot find GTS library files.
-	Modules that depend on this library cannot be built. ****
-  ])
-fi
-
-AM_CONDITIONAL(HAVE_GTS, test x"$GTSCONFIG" != xfalse)
+dnl
+dnl AC_PATH_PROG(GTSCONFIG, gts-config, false, $PATH)
+dnl if test x"$GTSCONFIG" != xfalse; then
+dnl 	fc_gts_incs=`gts-config --cflags`
+dnl 	fc_gts_libs=`gts-config --libs`
+dnl 
+dnl 	AC_SUBST([GTS_CFLAGS], [$fc_gts_incs])
+dnl 	AC_SUBST([GTS_LIBS], [$fc_gts_libs])
+dnl else
+dnl 	AC_MSG_WARN([
+dnl 	**** Cannot find GTS library files.
+dnl 	Modules that depend on this library cannot be built. ****
+dnl   ])
+dnl fi
+dnl
+dnl AM_CONDITIONAL(HAVE_GTS, test x"$GTSCONFIG" != xfalse)
 
 dnl checking for OpenCV
 dnl **************************************************************************
 
-HAVE_OPENCV=false
-PKG_CHECK_MODULES(opencv, opencv, [HAVE_OPENCV=true], [true])
-if test x$HAVE_OPENCV = xfalse; then
-	AC_MSG_WARN([
-	**** Cannot find OpenCV library files.
-	Modules that depend on this library cannot be built. ****
-  ])
-fi
-
-AM_CONDITIONAL([HAVE_OPENCV], [test x$HAVE_OPENCV = xtrue])
+dnl HAVE_OPENCV=false
+dnl PKG_CHECK_MODULES(opencv, opencv, [HAVE_OPENCV=true], [true])
+dnl if test x$HAVE_OPENCV = xfalse; then
+dnl 	AC_MSG_WARN([
+dnl 	**** Cannot find OpenCV library files.
+dnl 	Modules that depend on this library cannot be built. ****
+dnl   ])
+dnl fi
+dnl
+dnl AM_CONDITIONAL([HAVE_OPENCV], [test x$HAVE_OPENCV = xtrue])
 
 dnl **************************************************************************
 
