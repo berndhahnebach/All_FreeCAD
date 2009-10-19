@@ -136,6 +136,8 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
     // get the current item
     this->contextItem = itemAt(e->pos());
     if (this->contextItem && this->contextItem->type() == DocumentType) {
+        if (!contextMenu.actions().isEmpty())
+            contextMenu.addSeparator();
         contextMenu.addAction(this->createGroupAction);
     }
     else if (this->contextItem && this->contextItem->type() == ObjectType) {
