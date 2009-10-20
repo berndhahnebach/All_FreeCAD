@@ -70,16 +70,17 @@ getProjectFile(PyObject *self, PyObject *args)
 static PyObject *
 getPartAsPovray(PyObject *self, PyObject *args)
 {
+	float r=0.5,g=0.5,b=0.5;
     PyObject *ShapeObject;
     const char *PartName;
-    if (! PyArg_ParseTuple(args, "sO!",&PartName,
-        &(Part::TopoShapePy::Type), &ShapeObject)) 
+    if (! PyArg_ParseTuple(args, "sO!|fff",&PartName,
+        &(Part::TopoShapePy::Type), &ShapeObject,&r,&g,&b)) 
         return NULL;
 
 	std::stringstream out;
     TopoDS_Shape &aShape = static_cast<Part::TopoShapePy *>(ShapeObject)->getTopoShapePtr()->_Shape;
     
-    PovTools::writeShape(out,PartName,aShape,(float)0.1);
+    PovTools::writeShape(out,PartName,aShape,(float)0.1,r,b,g);
 
 	return Py::new_reference_to(Py::String(out.str()));
 }
