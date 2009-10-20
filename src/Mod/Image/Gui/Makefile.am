@@ -28,7 +28,7 @@ libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App 
 		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 
-#		$(opencv_LIBS) \
+#		$(opencv_LIBS)
 libImageGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
