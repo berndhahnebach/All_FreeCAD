@@ -85,7 +85,7 @@ std::string PovTools::getCamera(const CamDef& Cam)
 		// default light
 		<< "//default light" << endl      
 		<< "light_source {" << endl      
-		<< "  cam_location - cam_look_at * 5 + cam_angle * 10            // light's position" << endl 
+		<< "  cam_location + cam_angle * 100            // light's position" << endl 
 		<< "  color rgb <10, 10, 10>  // light's color" << endl 
 		<< "}" << endl ; 
 	return out.str();

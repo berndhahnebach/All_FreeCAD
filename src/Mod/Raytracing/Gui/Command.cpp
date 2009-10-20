@@ -40,11 +40,13 @@
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
+#include <App/Material.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
 #include <Gui/View.h>
+#include <Gui/ViewProvider.h>
 #include <Gui/Selection.h>
 #include <Gui/FileDialog.h>
 #include <Gui/MainWindow.h>
@@ -236,8 +238,11 @@ void CmdRaytracingWriteView::activated(int iMsg)
     doCommand(Doc,"OutFile.write(RaytracingGui.povViewCamera())");
 	// go through all document objects
 	for(std::vector<App::DocumentObject*>::const_iterator it=DocObjects.begin();it!=DocObjects.end();++it)
-		if((*it)->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
-			doCommand(Doc,"OutFile.write(Raytracing.getPartAsPovray('%s',App.activeDocument().%s.Shape))",(*it)->getNameInDocument(),(*it)->getNameInDocument());
+		if((*it)->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())){
+			App::PropertyColor *pcColor = dynamic_cast<App::PropertyColor *>(getActiveGuiDocument()->getViewProvider(*it)->getPropertyByName("ShapeColor"));
+			App::Color col = pcColor->getValue();
+			doCommand(Doc,"OutFile.write(Raytracing.getPartAsPovray('%s',App.activeDocument().%s.Shape,%f,%f,%f))",(*it)->getNameInDocument(),(*it)->getNameInDocument(),col.r,col.g,col.b);
+		}
     doCommand(Doc,"OutFile.close()");
     doCommand(Doc,"del OutFile");
 

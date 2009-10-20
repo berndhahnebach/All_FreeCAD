@@ -9,7 +9,9 @@
 // ----------------------------------------
 
 global_settings {
-  assumed_gamma 1.0
+    assumed_gamma 1.0
+    ambient_light color rgb <1.0,1.0,1.0>
+    max_trace_level 20
 }  
 
 // ----------------------------------------
@@ -30,9 +32,14 @@ sky_sphere {
 
 plane {
   y, -1
-  texture { pigment {rgb <0.0,0.0,0.0>} finish {ambient 1.0 reflection 0.05 specular 0.0} }
+  texture { pigment {rgb <0.0,0.0,0.0>} finish {ambient 0.0 reflection 0.05 specular 0.0} }
 }
 
 // Standard finish
-#declare StdFinish = F_MetalA;
+//#declare StdFinish = F_MetalA;
+//#declare StdFinish = finish { diffuse 0.7 };
+//#declare StdFinish = finish { phong 0.5 };
+//#declare StdFinish = finish { ambient rgb <0.5,0.5,0.5> };
+//#declare StdFinish = finish { crand 0.5 phong 0.9};
+#declare StdFinish = finish { ambient 0.01 diffuse 0.9 phong 1.0 phong_size 70 metallic brilliance 1.5} ;
 

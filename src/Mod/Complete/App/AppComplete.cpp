@@ -49,7 +49,7 @@ void AppCompleteExport initComplete()
         //Base::Interpreter().loadModule("Assembly");
         Base::Interpreter().loadModule("Drawing");
         Base::Interpreter().loadModule("Raytracing");
-        Base::Interpreter().loadModule("Sketcher");
+        //Base::Interpreter().loadModule("Sketcher");
         Base::Interpreter().loadModule("PartDesign");
         Base::Interpreter().loadModule("Image");
         //Base::Interpreter().loadModule("Cam");
