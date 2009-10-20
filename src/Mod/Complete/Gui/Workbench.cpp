@@ -319,8 +319,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
     // Part Design
     Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
-    part_design->setCommand(QT_TR_NOOP("View"));
-    *part_design  << "Sketcher_NewSketch"
+    part_design->setCommand(QT_TR_NOOP("Part design"));
+    *part_design  /*<< "Sketcher_NewSketch"
                   << "Sketcher_LeaveSketch"
                   << "Separator" 
                   << "Sketcher_CreatePoint" 
@@ -331,7 +331,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
                   << "Sketcher_CreateRectangle"
                   << "Sketcher_CreateText"
                   << "Sketcher_CreateDraftLine"	  
-                  << "Separator" 
+                  << "Separator" */
                   << "PartDesign_Pad" 
                   << "PartDesign_Fillet";
 

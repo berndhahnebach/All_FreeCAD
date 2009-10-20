@@ -25,7 +25,7 @@
    <item row="0" column="0" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
-      <string>Appearance</string>
+      <string>Default appearance for new meshes</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -34,6 +34,19 @@
       <property name="spacing" >
        <number>6</number>
       </property>
+      <item row="0" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>217</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="0" column="0" >
        <layout class="QGridLayout" >
         <property name="margin" >
@@ -42,14 +55,23 @@
         <property name="spacing" >
          <number>6</number>
         </property>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="labelFaceColor" >
+        <item row="2" column="0" >
+         <widget class="Gui::PrefCheckBox" name="checkboxRendering" >
           <property name="text" >
-           <string>Default face color for newly created meshes</string>
+           <string>Two-side rendering</string>
+          </property>
+          <property name="checked" >
+           <bool>false</bool>
+          </property>
+          <property name="prefEntry" stdset="0" >
+           <cstring>TwoSideRendering</cstring>
+          </property>
+          <property name="prefPath" stdset="0" >
+           <cstring>Mod/Mesh</cstring>
           </property>
          </widget>
         </item>
-        <item row="2" column="1" >
+        <item row="1" column="1" >
          <widget class="Gui::PrefColorButton" name="buttonBackfaceColor" >
           <property name="enabled" >
            <bool>false</bool>
@@ -69,20 +91,27 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1" >
+        <item row="0" column="0" >
+         <widget class="QLabel" name="labelFaceColor" >
+          <property name="text" >
+           <string>Default mesh color</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
          <spacer>
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" >
            <size>
-            <width>112</width>
+            <width>78</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item row="1" column="1" >
+        <item row="0" column="1" >
          <widget class="Gui::PrefColorButton" name="buttonMeshColor" >
           <property name="color" >
            <color>
@@ -99,23 +128,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0" >
-         <widget class="Gui::PrefCheckBox" name="checkboxRendering" >
-          <property name="text" >
-           <string>Two-side rendering</string>
-          </property>
-          <property name="checked" >
-           <bool>false</bool>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>TwoSideRendering</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>Mod/Mesh</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" >
+        <item row="1" column="0" >
          <widget class="QLabel" name="labelBackfaceColor" >
           <property name="text" >
            <string>Backface color</string>
@@ -124,21 +137,21 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>251</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
      </layout>
     </widget>
+   </item>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>541</width>
+       <height>41</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="1" column="0" >
     <widget class="QGroupBox" name="GroupBox12" >
@@ -220,31 +233,11 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>541</width>
-       <height>41</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Gui::PrefColorButton</class>
-   <extends>Gui::ColorButton</extends>
-   <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
   <customwidget>
    <class>Gui::PrefDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
@@ -255,6 +248,13 @@
   <customwidget>
    <class>Gui::PrefCheckBox</class>
    <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefColorButton</class>
+   <extends>Gui::ColorButton</extends>
    <header>Gui/PrefWidgets.h</header>
    <container>0</container>
    <pixmap></pixmap>
