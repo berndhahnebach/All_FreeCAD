@@ -69,6 +69,7 @@ public:
     virtual ~GeomCurve();
 
     TopoDS_Shape toShape() const;
+    bool tangent(double u, gp_Dir&) const;
 };
 
 class PartExport GeomBezierCurve : public GeomCurve
@@ -210,6 +211,8 @@ public:
     virtual ~GeomSurface();
 
     TopoDS_Shape toShape() const;
+    bool tangentU(double u, double v, gp_Dir& dirU) const;
+    bool tangentV(double u, double v, gp_Dir& dirV) const;
 };
 
 class PartExport GeomBezierSurface : public GeomSurface

@@ -46,6 +46,8 @@
 # include <Geom_OffsetSurface.hxx>
 # include <Geom_SurfaceOfRevolution.hxx>
 # include <Geom_SurfaceOfLinearExtrusion.hxx>
+# include <GeomLProp_CLProps.hxx>
+# include <GeomLProp_SLProps.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Elips.hxx>
 # include <gp_Hypr.hxx>
@@ -131,6 +133,18 @@ TopoDS_Shape GeomCurve::toShape() const
     Handle_Geom_Curve c = Handle_Geom_Curve::DownCast(handle());
     BRepBuilderAPI_MakeEdge mkBuilder(c, c->FirstParameter(), c->LastParameter());
     return mkBuilder.Shape();
+}
+
+bool GeomCurve::tangent(double u, gp_Dir& dir) const
+{
+    Handle_Geom_Curve c = Handle_Geom_Curve::DownCast(handle());
+    GeomLProp_CLProps prop(c,u,1,Precision::Confusion());
+    if (prop.IsTangentDefined()) {
+        prop.Tangent(dir);
+        return true;
+    }
+
+    return false;
 }
 
 // -------------------------------------------------
@@ -393,6 +407,30 @@ TopoDS_Shape GeomSurface::toShape() const
     s->Bounds(u1,u2,v1,v2);
     BRepBuilderAPI_MakeFace mkBuilder(s, u1, u2, v1, v2);
     return mkBuilder.Shape();
+}
+
+bool GeomSurface::tangentU(double u, double v, gp_Dir& dirU) const
+{
+    Handle_Geom_Surface s = Handle_Geom_Surface::DownCast(handle());
+    GeomLProp_SLProps prop(s,u,v,1,Precision::Confusion());
+    if (prop.IsTangentUDefined()) {
+        prop.TangentU(dirU);
+        return true;
+    }
+
+    return false;
+}
+
+bool GeomSurface::tangentV(double u, double v, gp_Dir& dirV) const
+{
+    Handle_Geom_Surface s = Handle_Geom_Surface::DownCast(handle());
+    GeomLProp_SLProps prop(s,u,v,1,Precision::Confusion());
+    if (prop.IsTangentVDefined()) {
+        prop.TangentV(dirV);
+        return true;
+    }
+
+    return false;
 }
 
 // -------------------------------------------------

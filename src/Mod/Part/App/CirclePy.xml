@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
-      Father="GeometryPy" 
+      Father="GeometryCurvePy" 
       Name="CirclePy" 
       Twin="GeomCircle" 
       TwinPointer="GeomCircle" 
       Include="Mod/Part/App/Geometry.h" 
       Namespace="Part" 
-      FatherInclude="Mod/Part/App/GeometryPy.h" 
+      FatherInclude="Mod/Part/App/GeometryCurvePy.h" 
       FatherNamespace="Part"
       Constructor="true">
     <Documentation>
@@ -48,9 +48,5 @@ Part.Circle(Point1,Point2,Point3)
       </Documentation>
       <Parameter Name="Axis" Type="Object"/>
     </Attribute>
-	<ClassDeclarations>public:
-      CirclePy(const Geom_Circle &amp; circ, PyTypeObject *T = &amp;Type)
-      :GeometryPy(new GeomCircle(new Geom_Circle(circ)),T){}
-	</ClassDeclarations>
   </PythonExport>
 </GenerateModel>

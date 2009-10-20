@@ -23,13 +23,13 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <gp_Vec.hxx>
 # include <QFileInfo>
 # include <Inventor/SoInput.h>
 # include <Inventor/nodes/SoNode.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <vector>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
-# include <gp_Vec.hxx>
 #endif
 
 #include <Base/PyObjectBase.h>
