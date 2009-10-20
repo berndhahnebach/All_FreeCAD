@@ -16,7 +16,7 @@ libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImage_la_CPPFLAGS = -DImageAppExport=
 
-#		$(opencv_LIBS) \
+#		$(opencv_LIBS)
 libImage_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
