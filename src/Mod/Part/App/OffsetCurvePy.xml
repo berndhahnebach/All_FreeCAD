@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
 	<PythonExport
-		Father="GeometryPy"
+		Father="GeometryCurvePy"
 		Name="OffsetCurvePy"
 		Twin="GeomOffsetCurve"
 		TwinPointer="GeomOffsetCurve"
 		Include="Mod/Part/App/Geometry.h"
 		Namespace="Part"
-		FatherInclude="Mod/Part/App/GeometryPy.h"
+		FatherInclude="Mod/Part/App/GeometryCurvePy.h"
 		FatherNamespace="Part"
 		Constructor="true">
 		<Documentation>

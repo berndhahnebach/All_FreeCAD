@@ -9,6 +9,8 @@ BUILT_SOURCES=\
 		ParabolaPy.cpp \
 		OffsetCurvePy.cpp \
 		GeometryPy.cpp \
+		GeometryCurvePy.cpp \
+		GeometrySurfacePy.cpp \
 		LinePy.cpp \
 		BezierCurvePy.cpp \
 		BSplineCurvePy.cpp \
@@ -42,6 +44,8 @@ libPart_la_BUILT=\
 		ParabolaPy.h \
 		OffsetCurvePy.h \
 		GeometryPy.h \
+		GeometryCurvePy.h \
+		GeometrySurfacePy.h \
 		LinePy.h \
 		BezierCurvePy.h \
 		BSplineCurvePy.h \
@@ -76,6 +80,8 @@ libPart_la_SOURCES=\
 		ParabolaPyImp.cpp \
 		OffsetCurvePyImp.cpp \
 		GeometryPyImp.cpp \
+		GeometryCurvePyImp.cpp \
+		GeometrySurfacePyImp.cpp \
 		LinePyImp.cpp \
 		BezierCurvePyImp.cpp \
 		BSplineCurvePyImp.cpp \
@@ -225,6 +231,8 @@ EXTRA_DIST = \
 		ParabolaPy.xml \
 		OffsetCurvePy.xml \
 		GeometryPy.xml \
+		GeometryCurvePy.xml \
+		GeometrySurfacePy.xml \
 		LinePy.xml \
 		BezierCurvePy.xml \
 		BSplineCurvePy.xml \

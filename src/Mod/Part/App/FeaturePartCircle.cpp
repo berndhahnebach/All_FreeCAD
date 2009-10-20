@@ -111,7 +111,7 @@ const Geom_Circle& PropertyCircle::getValue(void) const
 
 PyObject *PropertyCircle::getPyObject(void)
 {
-    return new CirclePy(this->_circle);
+    return new CirclePy(new GeomCircle(new Geom_Circle(this->_circle)));
 }
 
 void PropertyCircle::setPyObject(PyObject *value)
