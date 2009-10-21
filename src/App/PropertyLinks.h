@@ -132,6 +132,9 @@ public:
     /// return the list of sub elements 
     const std::vector<std::string>& getSubValues(void) const;
 
+    /// return the list of sub elements starts with a special string 
+    std::vector<std::string> getSubValuesStartsWith(const char*) const;
+
     /** Returns the link type checked
      */
     App::DocumentObject * getValue(Base::Type t) const;

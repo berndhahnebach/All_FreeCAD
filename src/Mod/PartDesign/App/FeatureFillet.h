@@ -25,6 +25,7 @@
 #define PART_FEATUREFILLET_H
 
 #include <App/PropertyStandard.h>
+#include <App/PropertyLinks.h>
 #include <Mod/Part/App/PartFeature.h>
 
 namespace PartDesign
