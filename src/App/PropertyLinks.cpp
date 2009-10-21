@@ -195,6 +195,15 @@ const std::vector<std::string>& PropertyLinkSub::getSubValues(void) const
     return _cSubList;
 }
 
+std::vector<std::string> PropertyLinkSub::getSubValuesStartsWith(const char* starter) const
+{
+    std::vector<std::string> temp;
+    for(std::vector<std::string>::const_iterator it=_cSubList.begin();it!=_cSubList.end();++it)
+        if(strncmp(starter,it->c_str(),strlen(starter))==0)
+            temp.push_back(*it);
+    return temp;
+}
+
 App::DocumentObject * PropertyLinkSub::getValue(Base::Type t) const
 {
     return (_pcLinkSub && _pcLinkSub->getTypeId().isDerivedFrom(t)) ? _pcLinkSub : 0;

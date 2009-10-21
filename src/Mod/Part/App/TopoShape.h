@@ -80,6 +80,8 @@ public:
     /// get the subelement by type and number
     virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}
+    /// get the Topo"sub"Shape with the given name
+    TopoDS_Shape getSubShape(const char* Type) const;
 
     /** @name Save/restore */
     //@{

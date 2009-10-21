@@ -172,20 +172,27 @@ std::vector<const char*> TopoShape::getElementTypes(void) const
 
 Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n) const
 {
+    std::string temp(Type);
+    temp += n;
+    return new ShapeSegment(getSubShape(temp.c_str()));
+}
+
+
+TopoDS_Shape TopoShape::getSubShape(const char* Type) const
+{
     unsigned long i = 1;
 
     if ( Type[0]== 'F' && 
          Type[1]== 'a' && 
          Type[2]== 'c' && 
-         Type[3]== 'e' && 
-         Type[4]== '\0'){
-
+         Type[3]== 'e' ){
+        int n = atoi(&Type[4]);
 
         TopExp_Explorer Ex(_Shape,TopAbs_FACE);
         while (Ex.More()) 
         {
             if(i==n)
-                return new ShapeSegment(Ex.Current());
+                return Ex.Current();
             //M.Add(Ex.Current());
             Ex.Next();
             i++;
@@ -193,15 +200,14 @@ Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n) const
     } else if ( Type[0]== 'E' && 
                 Type[1]== 'd' && 
                 Type[2]== 'g' && 
-                Type[3]== 'e' && 
-                Type[4]== '\0'){
-
+                Type[3]== 'e' ){
+        int n = atoi(&Type[4]);
 
         TopExp_Explorer Ex(_Shape,TopAbs_EDGE);
         while (Ex.More()) 
         {
             if(i==n)
-                return new ShapeSegment(Ex.Current());
+                return Ex.Current();
             //M.Add(Ex.Current());
             Ex.Next();
             i++;
@@ -213,19 +219,19 @@ Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n) const
                 Type[3]== 'e' && 
                 Type[3]== 'x' && 
                 Type[4]== '\0'){
-
+        int n = atoi(&Type[6]);
 
         TopExp_Explorer Ex(_Shape,TopAbs_VERTEX);
         while (Ex.More()) 
         {
             if(i==n)
-                return new ShapeSegment(Ex.Current());
+                return Ex.Current();
             //M.Add(Ex.Current());
             Ex.Next();
             i++;
         }
     } 
-    return 0;
+    return TopoDS_Shape();
 }
 
 

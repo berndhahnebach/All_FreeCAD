@@ -29,6 +29,7 @@
 # include <TopoDS_Edge.hxx>
 #endif
 
+#include <Mod/Part/App/TopoShape.h>
 
 #include "FeatureFillet.h"
 
@@ -62,15 +63,19 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
     Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
+    const Part::TopoShape& TopShape = base->Shape.getShape();
+
+    const std::vector<std::string>& SubVals = Base.getSubValuesStartsWith("Edge");
+    if (SubVals.size() == 0)
+        return new App::DocumentObjectExecReturn("No Edges specified");
 
     float radius = Radius.getValue();
 
     try {
         BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
-        TopExp_Explorer xp(base->Shape.getValue(), TopAbs_EDGE);
 
-        for (;xp.More();xp.Next()) {
-            TopoDS_Edge edge = TopoDS::Edge(xp.Current());
+        for (std::vector<std::string>::const_iterator it= SubVals.begin();it!=SubVals.end();++it) {
+            TopoDS_Edge edge = TopoDS::Edge(TopShape.getSubShape(it->c_str()));
             mkFillet.Add(radius, radius, edge);
         }
 
