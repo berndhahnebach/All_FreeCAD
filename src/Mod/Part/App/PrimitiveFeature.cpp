@@ -440,7 +440,7 @@ App::DocumentObjectExecReturn *Helix::execute(void)
         if (myHeight < Precision::Confusion())
             return new App::DocumentObjectExecReturn("Height of helix too small");
 
-        if (myHeight < Precision::Confusion())
+        if (myRadius < Precision::Confusion())
             return new App::DocumentObjectExecReturn("Radius of helix too small");
 
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());

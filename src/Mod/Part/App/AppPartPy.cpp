@@ -39,17 +39,22 @@
 # include <BRepBuilderAPI_MakeSolid.hxx>
 # include <BRepOffsetAPI_Sewing.hxx>
 # include <BRepFill.hxx>
+# include <BRepLib.hxx>
 # include <gp_Circ.hxx>
 # include <gp_Pnt.hxx>
 # include <gp_Lin.hxx>
+# include <GCE2d_MakeSegment.hxx>
+# include <Geom2d_Line.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_BSplineSurface.hxx>
+# include <Geom_CylindricalSurface.hxx>
 # include <Geom_OffsetSurface.hxx>
 # include <GeomAPI_PointsToBSplineSurface.hxx>
 # include <Handle_Geom_Circle.hxx>
 # include <Handle_Geom_Plane.hxx>
+# include <Handle_Geom2d_TrimmedCurve.hxx>
 # include <ShapeUpgrade_ShellSewing.hxx>
 # include <Standard_ConstructionError.hxx>
 # include <Standard_DomainError.hxx>
@@ -617,6 +622,46 @@ static PyObject * makeTorus(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makeHelix(PyObject *self, PyObject *args)
+{
+    double pitch, height, radius;
+    if (!PyArg_ParseTuple(args, "ddd", &pitch, &height, &radius))
+        return 0;
+
+    try {
+        if (pitch < Precision::Confusion())
+            Standard_Failure::Raise("Pitch of helix too small");
+
+        if (height < Precision::Confusion())
+            Standard_Failure::Raise("Height of helix too small");
+
+        if (radius < Precision::Confusion())
+            Standard_Failure::Raise("Radius of helix too small");
+
+        gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
+        Handle(Geom_CylindricalSurface) cyl = new Geom_CylindricalSurface(cylAx2 , radius);
+
+        gp_Pnt2d aPnt(0, 0);
+        gp_Dir2d aDir(2. * PI, pitch);
+        gp_Ax2d aAx2d(aPnt, aDir);
+
+        Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
+        gp_Pnt2d beg = line->Value(0);
+        gp_Pnt2d end = line->Value(2.0*PI*(height/pitch));
+        Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
+
+        TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , cyl);
+        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edgeOnSurf);
+        BRepLib::BuildCurves3d(wire);
+        return new TopoShapeWirePy(new TopoShape(wire));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
 static PyObject * makeLine(PyObject *self, PyObject *args)
 {
     PyObject *obj1, *obj2;
@@ -1067,6 +1112,9 @@ struct PyMethodDef Part_methods[] = {
     {"makeTorus" ,makeTorus,METH_VARARGS,
      "makeTorus(radius1,radius2,[pnt,dir,angle1,angle2,angle]) -- Make a torus with a given radii and angles\n"
      "By default pnt=Vector(0,0,0),dir=Vector(0,0,1),angle1=0,angle1=2*PI and angle=2*PI"},
+
+    {"makeHelix" ,makeHelix,METH_VARARGS,
+     "makeHelix(pitch,height,radius) -- Make a helix with a given pitch, height and radius"},
 
     {"makeRevolution" ,makeRevolution,METH_VARARGS,
      "makeRevolution(Curve,[vmin,vmax,angle,pnt,dir]) -- Make a revolved shape\n"
