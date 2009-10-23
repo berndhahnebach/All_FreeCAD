@@ -172,14 +172,15 @@ std::vector<const char*> TopoShape::getElementTypes(void) const
 
 Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n) const
 {
-    std::string temp(Type);
-    temp += n;
+    std::stringstream str;
+    str << Type << n;
+    std::string temp = str.str();
     return new ShapeSegment(getSubShape(temp.c_str()));
 }
 
-
 TopoDS_Shape TopoShape::getSubShape(const char* Type) const
 {
+    //FIXME: Totally bullshit :)
     unsigned long i = 1;
 
     if ( Type[0]== 'F' && 
