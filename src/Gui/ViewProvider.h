@@ -192,7 +192,10 @@ protected:
     void setDefaultMode(int);
     //@}
     /// Helper method to get picked entities while editing
-    SoPickedPoint* getPointOnRay(const SbVec3f& pos,const SbVec3f& dir, const View3DInventorViewer& viewer) const;
+    SoPickedPoint* getPointOnRay(const SbVec3f& pos,const SbVec3f& dir,
+        const View3DInventorViewer& viewer) const;
+    /// Reimplemented from subclass
+    void onChanged(const App::Property* prop);
 
 protected:
     /// The root Separator of the ViewProvider

@@ -157,9 +157,8 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
     else if ( prop == &BoundingBox ) {
         showBoundingBox( BoundingBox.getValue() );
     }
-    else {
-        ViewProviderDocumentObject::onChanged(prop);
-    }
+
+    ViewProviderDocumentObject::onChanged(prop);
 }
 
 void ViewProviderGeometryObject::attach(App::DocumentObject *pcObj)
