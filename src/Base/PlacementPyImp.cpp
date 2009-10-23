@@ -84,8 +84,8 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double angle;
     if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
                                         &(Base::VectorPy::Type), &o)) {
-        Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
-        *getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
+        Base::Rotation rot(static_cast<Base::VectorPy*>(o)->value(), angle);
+        *getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(d)->value(),rot);
         return 0;
     }
 
