@@ -84,8 +84,12 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double angle;
     if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
                                         &(Base::VectorPy::Type), &o)) {
-        Base::Rotation rot(static_cast<Base::VectorPy*>(o)->value(), angle);
-        *getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(d)->value(),rot);
+        // NOTE: The first parameter defines the rotation axis, the second the rotation angle
+        // and the last parameter defines the translation part. This also is clearly stated in
+        // the Python documentation of the placement constructor. This constructor is used
+        // throughout the sources under this premiss and thus should not change its meaning. 
+        Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
+        *getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
         return 0;
     }
 
