@@ -27,6 +27,7 @@ SOURCE_GROUP("Resources" FILES ${RobotResource_SRCS})
 set(RobotGui_UIC_SRCS
 		 TaskTrajectory.ui
 		 TaskRobot6Axis.ui
+		 TrajectorySimulate.ui
 		 
 )
 qt4_wrap_ui(RobotGui_UIC_HDRS ${RobotGui_UIC_SRCS})
@@ -34,6 +35,7 @@ qt4_wrap_ui(RobotGui_UIC_HDRS ${RobotGui_UIC_SRCS})
 set(RobotGui_MOC_HDRS
  		 TaskTrajectory.h
 		 TaskRobot6Axis.h
+		 TrajectorySimulate.h
 )
 fc_wrap_cpp(RobotGui_MOC_SRCS ${RobotGui_MOC_HDRS})
 SOURCE_GROUP("Qt" FILES ${PartDesignGui_MOC_SRCS})
@@ -61,6 +63,9 @@ SET(RobotGui_SRCS
  		 TaskTrajectory.ui
 		 TaskTrajectory.cpp
 		 TaskTrajectory.h
+ 		 TrajectorySimulate.ui
+		 TrajectorySimulate.cpp
+		 TrajectorySimulate.h
 )
 
 add_library(RobotGui SHARED ${RobotGui_SRCS})
