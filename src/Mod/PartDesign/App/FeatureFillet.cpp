@@ -52,6 +52,8 @@ short Fillet::mustExecute() const
 {
     if (Base.isTouched() || Radius.isTouched())
         return 1;
+    if (Base.getValue() && Base.getValue()->isTouched())
+        return 1;
     return 0;
 }
 
