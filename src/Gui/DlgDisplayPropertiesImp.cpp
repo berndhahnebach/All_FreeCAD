@@ -23,6 +23,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <algorithm>
+# include <boost/bind.hpp>
 # include <QDockWidget>
 #endif
 
@@ -85,6 +87,9 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
     dw->show();
 
     Gui::Selection().Attach(this);
+
+    Gui::Application::Instance->signalChangedObject.connect(boost::bind
+        (&DlgDisplayPropertiesImp::slotChangedObject, this, _1, _2));
 }
 
 /** 
@@ -112,6 +117,70 @@ void DlgDisplayPropertiesImp::OnChange(Gui::SelectionSingleton::SubjectType &rCa
         setLineWidth(views);
         setTransparency(views);
         setLineTransparency(views);
+    }
+}
+
+void DlgDisplayPropertiesImp::slotChangedObject(const Gui::ViewProvider& obj,
+                                                const App::Property& prop)
+{
+    // This method gets called if a property of any view provider is changed.
+    // We pick out all the properties for which we need to update this dialog.
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    std::vector<Gui::ViewProvider*>::const_iterator vp = std::find_if
+        (Provider.begin(), Provider.end(), 
+        std::bind2nd(std::equal_to<Gui::ViewProvider*>(),
+        const_cast<Gui::ViewProvider*>(&obj)));
+    if (vp != Provider.end()) {
+        std::string prop_name = obj.getName(&prop);
+        if (prop.getTypeId() == App::PropertyColor::getClassTypeId()) {
+            App::Color value = static_cast<const App::PropertyColor&>(prop).getValue();
+            if (prop_name == "ShapeColor") {
+                bool blocked = buttonColor->blockSignals(true);
+                buttonColor->setColor(QColor((int)(255.0f*value.r),
+                                             (int)(255.0f*value.g),
+                                             (int)(255.0f*value.b)));
+                buttonColor->blockSignals(blocked);
+            }
+            else if (prop_name == "LineColor") {
+                bool blocked = buttonLineColor->blockSignals(true);
+                buttonLineColor->setColor(QColor((int)(255.0f*value.r),
+                                                 (int)(255.0f*value.g),
+                                                 (int)(255.0f*value.b)));
+                buttonLineColor->blockSignals(blocked);
+            }
+        }
+        else if (prop.getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+            long value = static_cast<const App::PropertyInteger&>(prop).getValue();
+            if (prop_name == "Transparency") {
+                bool blocked = spinTransparency->blockSignals(true);
+                spinTransparency->setValue(value);
+                spinTransparency->blockSignals(blocked);
+                blocked = horizontalSlider->blockSignals(true);
+                horizontalSlider->setValue(value);
+                horizontalSlider->blockSignals(blocked);
+            }
+            else if (prop_name == "LineTransparency") {
+                bool blocked = spinLineTransparency->blockSignals(true);
+                spinLineTransparency->setValue(value);
+                spinLineTransparency->blockSignals(blocked);
+                blocked = sliderLineTransparency->blockSignals(true);
+                sliderLineTransparency->setValue(value);
+                sliderLineTransparency->blockSignals(blocked);
+            }
+        }
+        else if (prop.getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            float value = static_cast<const App::PropertyFloat&>(prop).getValue();
+            if (prop_name == "PointSize") {
+                bool blocked = spinPointSize->blockSignals(true);
+                spinPointSize->setValue(value);
+                spinPointSize->blockSignals(blocked);
+            }
+            else if (prop_name == "LineWidth") {
+                bool blocked = spinLineWidth->blockSignals(true);
+                spinLineWidth->setValue(value);
+                spinLineWidth->blockSignals(blocked);
+            }
+        }
     }
 }
 

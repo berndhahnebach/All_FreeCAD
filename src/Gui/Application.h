@@ -42,6 +42,7 @@ class MacroManager;
 class MDIView;
 class MainWindow;
 class MenuItem;
+class ViewProvider;
 
 /** The Applcation main class
  * This is the central class of the GUI 
@@ -96,6 +97,8 @@ public:
     boost::signal<void (Gui::Document&)> signalRenameDocument;
     /// signal on activating Document
     boost::signal<void (Gui::Document&)> signalActiveDocument;
+    /// signal on changed object property
+    boost::signal<void (const Gui::ViewProvider&, const App::Property&)> signalChangedObject;
     /// signal on activated workbench
     boost::signal<void (const char*)> signalActivateWorkbench;
     /// signal on added workbench

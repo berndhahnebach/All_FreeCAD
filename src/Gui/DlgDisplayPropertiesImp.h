@@ -32,7 +32,7 @@
 
 namespace App
 {
-  class DocumentObject;
+  class Property;
 }
 
 namespace Gui {
@@ -47,7 +47,8 @@ namespace Dialog {
  * templates to create a new document.
  * \author Jürgen Riegel
  */
-class DlgDisplayPropertiesImp : public QDialog, public Ui_DlgDisplayProperties, public Gui::SelectionSingleton::ObserverType
+class DlgDisplayPropertiesImp : public QDialog, public Ui_DlgDisplayProperties,
+                                public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
@@ -71,6 +72,7 @@ private Q_SLOTS:
     void on_buttonUserDefinedMaterial_clicked();
 
 private:
+    void slotChangedObject(const Gui::ViewProvider&, const App::Property& Prop);
     void reject();
     void setDisplayModes(const std::vector<ViewProvider*>&);
     void setMaterial(const std::vector<ViewProvider*>&);

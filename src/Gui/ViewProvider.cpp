@@ -279,6 +279,11 @@ void ViewProvider::setDefaultMode(int val)
     _iActualMode = val;
 }
 
+void ViewProvider::onChanged(const App::Property* prop)
+{
+    Application::Instance->signalChangedObject(*this, *prop);
+}
+
 std::string ViewProvider::toString() const
 {
     return SoFCDB::writeNodesToString(pcRoot);

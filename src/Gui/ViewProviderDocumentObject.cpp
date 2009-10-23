@@ -75,6 +75,8 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
             Visibility.StatusBits.reset(8);
         }
     }
+
+    ViewProvider::onChanged(prop);
 }
 
 void ViewProviderDocumentObject::hide(void)
