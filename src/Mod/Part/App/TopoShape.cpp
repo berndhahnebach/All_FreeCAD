@@ -180,61 +180,29 @@ Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n) const
 
 TopoDS_Shape TopoShape::getSubShape(const char* Type) const
 {
-    //FIXME: Totally bullshit :)
-    unsigned long i = 1;
+    if (!Type) return TopoDS_Shape();
+    std::string shapetype(Type);
+    if (shapetype.size() > 4 && shapetype.substr(0,4) == "Face") {
+        int index=std::atoi(&shapetype[4]);
+        TopTools_IndexedMapOfShape anIndices;
+        TopExp::MapShapes(this->_Shape, TopAbs_FACE, anIndices);
+        return anIndices.FindKey(index);
+    }
+    else if (shapetype.size() > 4 && shapetype.substr(0,4) == "Edge") {
+        int index=std::atoi(&shapetype[4]);
+        TopTools_IndexedMapOfShape anIndices;
+        TopExp::MapShapes(this->_Shape, TopAbs_EDGE, anIndices);
+        return anIndices.FindKey(index);
+    }
+    else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") {
+        int index=std::atoi(&shapetype[6]);
+        TopTools_IndexedMapOfShape anIndices;
+        TopExp::MapShapes(this->_Shape, TopAbs_VERTEX, anIndices);
+        return anIndices.FindKey(index);
+    }
 
-    if ( Type[0]== 'F' && 
-         Type[1]== 'a' && 
-         Type[2]== 'c' && 
-         Type[3]== 'e' ){
-        int n = atoi(&Type[4]);
-
-        TopExp_Explorer Ex(_Shape,TopAbs_FACE);
-        while (Ex.More()) 
-        {
-            if(i==n)
-                return Ex.Current();
-            //M.Add(Ex.Current());
-            Ex.Next();
-            i++;
-        }
-    } else if ( Type[0]== 'E' && 
-                Type[1]== 'd' && 
-                Type[2]== 'g' && 
-                Type[3]== 'e' ){
-        int n = atoi(&Type[4]);
-
-        TopExp_Explorer Ex(_Shape,TopAbs_EDGE);
-        while (Ex.More()) 
-        {
-            if(i==n)
-                return Ex.Current();
-            //M.Add(Ex.Current());
-            Ex.Next();
-            i++;
-        }
-    } else if ( Type[0]== 'V' && 
-                Type[1]== 'e' && 
-                Type[2]== 'r' && 
-                Type[3]== 't' && 
-                Type[3]== 'e' && 
-                Type[3]== 'x' && 
-                Type[4]== '\0'){
-        int n = atoi(&Type[6]);
-
-        TopExp_Explorer Ex(_Shape,TopAbs_VERTEX);
-        while (Ex.More()) 
-        {
-            if(i==n)
-                return Ex.Current();
-            //M.Add(Ex.Current());
-            Ex.Next();
-            i++;
-        }
-    } 
     return TopoDS_Shape();
 }
-
 
 void TopoShape::operator = (const TopoShape& sh)
 {
