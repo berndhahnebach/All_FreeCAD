@@ -98,17 +98,17 @@ private:
  * @author Werner Mayer
  */
 struct AppPartExport FilletElement {
-    int hashval;
+    int edgeid;
     double radius1, radius2;
 };
 
-class AppPartExport PropertyFilletContour : public App::PropertyLists
+class AppPartExport PropertyFilletEdges : public App::PropertyLists
 {
     TYPESYSTEM_HEADER();
 
 public:
-    PropertyFilletContour();
-    ~PropertyFilletContour();
+    PropertyFilletEdges();
+    ~PropertyFilletEdges();
 
     virtual void setSize(int newSize) {
         _lValueList.resize(newSize);

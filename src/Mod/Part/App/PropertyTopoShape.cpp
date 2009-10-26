@@ -261,41 +261,41 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 
 // -------------------------------------------------------------------------
 
-TYPESYSTEM_SOURCE(Part::PropertyFilletContour , App::PropertyLists);
+TYPESYSTEM_SOURCE(Part::PropertyFilletEdges , App::PropertyLists);
 
-PropertyFilletContour::PropertyFilletContour()
+PropertyFilletEdges::PropertyFilletEdges()
 {
 }
 
-PropertyFilletContour::~PropertyFilletContour()
+PropertyFilletEdges::~PropertyFilletEdges()
 {
 }
 
-void PropertyFilletContour::setValue(int id, double r1, double r2)
+void PropertyFilletEdges::setValue(int id, double r1, double r2)
 {
     aboutToSetValue();
     _lValueList.resize(1);
-    _lValueList[0].hashval = id;
+    _lValueList[0].edgeid = id;
     _lValueList[0].radius1 = r1;
     _lValueList[0].radius2 = r2;
     hasSetValue();
 }
 
-void PropertyFilletContour::setValues(const std::vector<FilletElement>& values)
+void PropertyFilletEdges::setValues(const std::vector<FilletElement>& values)
 {
     aboutToSetValue();
     _lValueList = values;
     hasSetValue();
 }
 
-PyObject *PropertyFilletContour::getPyObject(void)
+PyObject *PropertyFilletEdges::getPyObject(void)
 {
     Py::List list(getSize());
     std::vector<FilletElement>::const_iterator it;
     int index = 0;
     for (it = _lValueList.begin(); it != _lValueList.end(); ++it) {
         Py::Tuple ent(3);
-        ent.setItem(0, Py::Int(it->hashval));
+        ent.setItem(0, Py::Int(it->edgeid));
         ent.setItem(1, Py::Float(it->radius1));
         ent.setItem(2, Py::Float(it->radius2));
         list[index++] = ent;
@@ -304,7 +304,7 @@ PyObject *PropertyFilletContour::getPyObject(void)
     return Py::new_reference_to(list);
 }
 
-void PropertyFilletContour::setPyObject(PyObject *value)
+void PropertyFilletEdges::setPyObject(PyObject *value)
 {
     Py::List list(value);
     std::vector<FilletElement> values;
@@ -312,7 +312,7 @@ void PropertyFilletContour::setPyObject(PyObject *value)
     for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
         FilletElement fe;
         Py::Tuple ent(*it);
-        fe.hashval = (int)Py::Int(ent.getItem(0));
+        fe.edgeid = (int)Py::Int(ent.getItem(0));
         fe.radius1 = (double)Py::Float(ent.getItem(1));
         fe.radius2 = (double)Py::Float(ent.getItem(2));
         values.push_back(fe);
@@ -321,16 +321,16 @@ void PropertyFilletContour::setPyObject(PyObject *value)
     setValues(values);
 }
 
-void PropertyFilletContour::Save (Base::Writer &writer) const
+void PropertyFilletEdges::Save (Base::Writer &writer) const
 {
     if (!writer.isForceXML()) {
-        writer.Stream() << writer.ind() << "<FilletContour file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+        writer.Stream() << writer.ind() << "<FilletEdges file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
     }
 }
 
-void PropertyFilletContour::Restore(Base::XMLReader &reader)
+void PropertyFilletEdges::Restore(Base::XMLReader &reader)
 {
-    reader.readElement("FilletContour");
+    reader.readElement("FilletEdges");
     std::string file (reader.getAttribute("file") );
 
     if (!file.empty()) {
@@ -339,38 +339,38 @@ void PropertyFilletContour::Restore(Base::XMLReader &reader)
     }
 }
 
-void PropertyFilletContour::SaveDocFile (Base::Writer &writer) const
+void PropertyFilletEdges::SaveDocFile (Base::Writer &writer) const
 {
     Base::OutputStream str(writer.Stream());
     uint32_t uCt = (uint32_t)getSize();
     str << uCt;
     for (std::vector<FilletElement>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it) {
-        str << it->hashval << it->radius1 << it->radius2;
+        str << it->edgeid << it->radius1 << it->radius2;
     }
 }
 
-void PropertyFilletContour::RestoreDocFile(Base::Reader &reader)
+void PropertyFilletEdges::RestoreDocFile(Base::Reader &reader)
 {
     Base::InputStream str(reader);
     uint32_t uCt=0;
     str >> uCt;
     std::vector<FilletElement> values(uCt);
     for (std::vector<FilletElement>::iterator it = values.begin(); it != values.end(); ++it) {
-        str >> it->hashval >> it->radius1 >> it->radius2;
+        str >> it->edgeid >> it->radius1 >> it->radius2;
     }
     setValues(values);
 }
 
-App::Property *PropertyFilletContour::Copy(void) const
+App::Property *PropertyFilletEdges::Copy(void) const
 {
-    PropertyFilletContour *p= new PropertyFilletContour();
+    PropertyFilletEdges *p= new PropertyFilletEdges();
     p->_lValueList = _lValueList;
     return p;
 }
 
-void PropertyFilletContour::Paste(const Property &from)
+void PropertyFilletEdges::Paste(const Property &from)
 {
     aboutToSetValue();
-    _lValueList = dynamic_cast<const PropertyFilletContour&>(from)._lValueList;
+    _lValueList = dynamic_cast<const PropertyFilletEdges&>(from)._lValueList;
     hasSetValue();
 }

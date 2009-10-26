@@ -24,9 +24,11 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepFilletAPI_MakeFillet.hxx>
+# include <TopExp.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Edge.hxx>
+# include <TopTools_IndexedMapOfShape.hxx>
 #endif
 
 
@@ -41,13 +43,13 @@ PROPERTY_SOURCE(Part::Fillet, Part::Feature)
 Fillet::Fillet()
 {
     ADD_PROPERTY(Base,(0));
-    ADD_PROPERTY(Contour,(0,0,0));
-    Contour.setSize(0);
+    ADD_PROPERTY(Edges,(0,0,0));
+    Edges.setSize(0);
 }
 
 short Fillet::mustExecute() const
 {
-    if (Base.isTouched() || Contour.isTouched())
+    if (Base.isTouched() || Edges.isTouched())
         return 1;
     return 0;
 }
@@ -63,22 +65,16 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
 
     try {
         BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
-        TopExp_Explorer xp(base->Shape.getValue(), TopAbs_EDGE);
+        TopTools_IndexedMapOfShape mapOfShape;
+        TopExp::MapShapes(base->Shape.getValue(), TopAbs_EDGE, mapOfShape);
 
-        std::map<int, TopoDS_Edge> edgeMap;
-        for (;xp.More();xp.Next()) {
-            TopoDS_Edge edge = TopoDS::Edge(xp.Current());
-            edgeMap[edge.HashCode(IntegerLast())] = edge;
-        }
-
-        std::vector<FilletElement> values = Contour.getValues();
+        std::vector<FilletElement> values = Edges.getValues();
         for (std::vector<FilletElement>::iterator it = values.begin(); it != values.end(); ++it) {
-            int id = it->hashval;
+            int id = it->edgeid;
             double radius1 = it->radius1;
             double radius2 = it->radius2;
-            std::map<int, TopoDS_Edge>::iterator ed = edgeMap.find(id);
-            if (ed != edgeMap.end())
-                mkFillet.Add(radius1, radius2, ed->second);
+            const TopoDS_Edge& edge = TopoDS::Edge(mapOfShape.FindKey(id));
+            mkFillet.Add(radius1, radius2, edge);
         }
 
         TopoDS_Shape shape = mkFillet.Shape();

@@ -28,6 +28,7 @@
 # include <TopExp.hxx>
 # include <TopTools_ListOfShape.hxx>
 # include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+# include <TopTools_IndexedMapOfShape.hxx>
 # include <QItemDelegate>
 # include <QHeaderView>
 # include <QMessageBox>
@@ -159,12 +160,14 @@ void DlgFilletEdges::on_shapeObject_activated(int index)
         }
         model->insertRows(0, count);
         int index = 0;
+        TopTools_IndexedMapOfShape mapOfShape;
+        TopExp::MapShapes(myShape, TopAbs_EDGE, mapOfShape);
         for (int i=1; i<= edge2Face.Extent(); ++i, ++index) {
             // set the hash value as user data to use it in accept()
             TopoDS_Shape edge = edge2Face.FindKey(i);
             if (edge2Face.FindFromIndex(i).Extent() == 2) {
-                int id = edge.HashCode(IntegerLast());
-                model->setData(model->index(index, 0), QVariant(tr("Edge <%1>").arg(id)));
+                int id = mapOfShape.FindIndex(edge);
+                model->setData(model->index(index, 0), QVariant(tr("Edge%1").arg(id)));
                 model->setData(model->index(index, 0), QVariant(id), Qt::UserRole);
                 model->setData(model->index(index, 0), Qt::Checked, Qt::CheckStateRole);
                 model->setData(model->index(index, 1), QVariant(QString::fromAscii("%1").arg(1.0,0,'f',2)));
@@ -271,7 +274,7 @@ void DlgFilletEdges::accept()
     }
 
     code += QString::fromAscii(
-        "FreeCAD.ActiveDocument.%1.Contour = __fillets__\n"
+        "FreeCAD.ActiveDocument.%1.Edges = __fillets__\n"
         "del __fillets__\n"
         "FreeCADGui.ActiveDocument.%2.Visibility = False\n")
         .arg(name).arg(shape);

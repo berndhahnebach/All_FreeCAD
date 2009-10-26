@@ -26,8 +26,6 @@
 #ifndef _ImportStep_h_
 #define _ImportStep_h_
 
-//#include <Base/Factory.h>
-//#include <Base/PyExport.h>
 #include <TopoDS_Shape.hxx>
 #include <App/ComplexGeoData.h>
 

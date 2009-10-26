@@ -38,7 +38,7 @@ public:
     Fillet();
 
     App::PropertyLink Base;
-    PropertyFilletContour Contour;
+    PropertyFilletEdges Edges;
 
     /** @name methods override feature */
     //@{
