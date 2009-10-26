@@ -90,9 +90,12 @@ libdir = $(prefix)/Mod/Raytracing
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		Icons/Raytrace_Camera.svg \
+		Icons/Raytrace_Export.svg \
+		Icons/Raytrace_New.svg \
+		Icons/Raytrace_Part.svg \
 		DlgSettingsRay.ui \
 		FreeCADpov \
 		Raytracing.qrc \
 		Raytracing_de.qm \
-		Raytracing_de.ts \
 		CMakeLists.txt

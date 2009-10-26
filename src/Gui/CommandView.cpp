@@ -59,6 +59,7 @@
 #include <Base/Reader.h>
 #include <App/Document.h>
 #include <App/GeoFeature.h>
+#include <App/DocumentObjectGroup.h>
 #include <App/MeasureDistance.h>
 #include <App/Feature.h>
 
@@ -511,9 +512,34 @@ void StdCmdToggleVisibility::activated(int iMsg)
     const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
     for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
         Document *pcDoc = Application::Instance->getDocument(*it);
-        const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
+        std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
             (App::DocumentObject::getClassTypeId(), (*it)->getName());
-        for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
+
+        // in case a group object and an object of the group is selected then ignore the group object
+        std::vector<App::DocumentObject*> ignore;
+        for (std::vector<App::DocumentObject*>::iterator ft=sel.begin();ft!=sel.end();ft++) {
+            if ((*ft)->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId())) {
+                App::DocumentObjectGroup* grp = static_cast<App::DocumentObjectGroup*>(*ft);
+                std::vector<App::DocumentObject*> sub = grp->Group.getValues();
+                for (std::vector<App::DocumentObject*>::iterator st = sub.begin(); st != sub.end(); ++st) {
+                    if (std::find(sel.begin(), sel.end(), *st) != sel.end()) {
+                        ignore.push_back(*ft);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!ignore.empty()) {
+            std::sort(sel.begin(), sel.end());
+            std::sort(ignore.begin(), ignore.end());
+            std::vector<App::DocumentObject*> diff;
+            std::back_insert_iterator<std::vector<App::DocumentObject*> > biit(diff);
+            std::set_difference(sel.begin(), sel.end(), ignore.begin(), ignore.end(), biit);
+            sel = diff;
+        }
+
+        for (std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
             if (pcDoc && pcDoc->isShow((*ft)->getNameInDocument()))
                 doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False"
                              , (*it)->getName(), (*ft)->getNameInDocument());
