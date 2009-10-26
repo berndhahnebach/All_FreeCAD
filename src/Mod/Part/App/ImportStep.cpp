@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
+# include <BRep_Builder.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
 # include <STEPControl_Writer.hxx>
 # include <STEPControl_Reader.hxx>
@@ -32,6 +33,7 @@
 # include <TopoDS_Shape.hxx>
 # include <TopoDS_Shell.hxx>
 # include <TopoDS_Solid.hxx>
+# include <TopoDS_Compound.hxx>
 # include <TopExp_Explorer.hxx>
 #endif
 
@@ -121,6 +123,36 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
 
                 Part::Feature *pcFeature = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", name.c_str()));
                 pcFeature->Shape.setValue(aShell);
+            }
+
+            // put all other free-flying shapes into a single compound
+            Standard_Boolean emptyComp = Standard_True;
+            BRep_Builder builder;
+            TopoDS_Compound comp;
+            builder.MakeCompound(comp);
+
+            for (ex.Init(aShape, TopAbs_FACE, TopAbs_SHELL); ex.More(); ex.Next()) {
+                builder.Add(comp, ex.Current());
+                emptyComp = Standard_False;
+            }
+            for (ex.Init(aShape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
+                builder.Add(comp, ex.Current());
+                emptyComp = Standard_False;
+            }
+            for (ex.Init(aShape, TopAbs_EDGE, TopAbs_WIRE); ex.More(); ex.Next()) {
+                builder.Add(comp, ex.Current());
+                emptyComp = Standard_False;
+            }
+            for (ex.Init(aShape, TopAbs_VERTEX, TopAbs_EDGE); ex.More(); ex.Next()) {
+                builder.Add(comp, ex.Current());
+                emptyComp = Standard_False;
+            }
+
+            if (!emptyComp) {
+                std::string name = fi.fileNamePure();
+                Part::Feature *pcFeature = static_cast<Part::Feature*>(pcDoc->addObject
+                    ("Part::Feature", name.c_str()));
+                pcFeature->Shape.setValue(comp);
             }
         }
     }

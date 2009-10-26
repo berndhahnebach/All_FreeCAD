@@ -117,7 +117,7 @@ void AppPartExport initPart()
 
     Part::TopoShape             ::init();
     Part::PropertyPartShape     ::init();
-    Part::PropertyFilletContour ::init();
+    Part::PropertyFilletEdges   ::init();
 #if 1
     Part::PropertyCircle        ::init();
 #endif
