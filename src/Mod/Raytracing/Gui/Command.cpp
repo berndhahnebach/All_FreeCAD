@@ -76,7 +76,7 @@ CmdRaytracingWriteCamera::CmdRaytracingWriteCamera()
     sToolTipText  = QT_TR_NOOP("Export the camera positon of the active 3D view in PovRay format to a file");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    sPixmap       = 0;
+    sPixmap       = "Raytrace_Camera";
     iAccel        = 0;
 }
 
@@ -122,7 +122,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
     filter << QObject::tr("All Files (*.*)");
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
     if (fn.isEmpty()) 
-		return;
+        return;
     std::string cFullName = (const char*)fn.toAscii();
 
     // building up the python string
@@ -163,7 +163,7 @@ CmdRaytracingWritePart::CmdRaytracingWritePart()
     sToolTipText  = QT_TR_NOOP("Write the selected Part (object) as a povray file");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    sPixmap       = 0;
+    sPixmap       = "Raytrace_Part";
     iAccel        = 0;
 }
 
@@ -371,7 +371,7 @@ CmdRaytracingNewPovrayProject::CmdRaytracingNewPovrayProject()
     sToolTipText    = QT_TR_NOOP("Insert new Povray project into the document");
     sWhatsThis      = "Raytracing_NewPovrayProject";
     sStatusTip      = sToolTipText;
-    sPixmap         = 0;
+    sPixmap         = "Raytrace_New";
 }
 
 void CmdRaytracingNewPovrayProject::activated(int iMsg)
@@ -457,7 +457,7 @@ CmdRaytracingExportProject::CmdRaytracingExportProject()
     sToolTipText  = QT_TR_NOOP("Export the Povray project file");
     sWhatsThis    = "Raytracing_ExportProject";
     sStatusTip    = sToolTipText;
-    sPixmap       = 0;
+    sPixmap       = "Raytrace_Export";
     iAccel        = 0;
 }
 
