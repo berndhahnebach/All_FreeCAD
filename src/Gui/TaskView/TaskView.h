@@ -29,6 +29,7 @@
 #include <vector>
 
 #include <Gui/iisTaskPanel/include/iisTaskPanel>
+#include <Gui/Selection.h>
 
 namespace App {
 class Property;
@@ -71,13 +72,18 @@ public:
   * This elements get injected mostly by the ViewProvider classes of the selected
   * DocumentObjects. 
   */
-class GuiExport TaskView : public iisTaskPanel
+class GuiExport TaskView : public iisTaskPanel, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
     TaskView(QWidget *parent = 0);
     ~TaskView();
+
+    /// Observer message from the Selection
+    virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                          Gui::SelectionSingleton::MessageType Reason);
+
 
 protected:
 

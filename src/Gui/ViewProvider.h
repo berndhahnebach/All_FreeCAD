@@ -54,7 +54,9 @@ namespace App {
 #include <Base/Vector3D.h>
 
 namespace Gui {
-
+	namespace TaskView {
+		class TaskContent;
+	}
 class View3DInventorViewer;
 class ViewProviderPy;
 class ObjectItem;
@@ -140,6 +142,15 @@ public:
     virtual bool setEdit(int ModNum = 0);
     /// is called when you loose the edit mode
     virtual void unsetEdit(void);
+    //@}
+
+    /** @name Task panel 
+     * With this interface the ViewProvider can steer the 
+	 * apearance of whidgets in the TaskView
+     */
+    //@{
+    /// get a list of TaskBoxes acociated with this object
+	virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&){}
     //@}
 
     /// is called when the provider is in edit and a key event occurs. Only ESC ends edit.

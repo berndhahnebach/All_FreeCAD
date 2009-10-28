@@ -213,7 +213,7 @@ CmdRaytracingWriteView::CmdRaytracingWriteView()
     sToolTipText  = QT_TR_NOOP("Write the active 3D view with camera and all its content to a povray file");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    sPixmap       = 0;
+    sPixmap       = "Raytrace_Export";
     iAccel        = 0;
 }
 

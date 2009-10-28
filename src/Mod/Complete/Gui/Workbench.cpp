@@ -332,8 +332,39 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
                   << "Sketcher_CreateText"
                   << "Sketcher_CreateDraftLine"	  
                   << "Separator" */
-                  << "PartDesign_Pad" 
-                  << "PartDesign_Fillet";
+				  << "Part_Box"
+				  << "Part_Cylinder"
+				  << "Part_Sphere"
+				  << "Part_Cone"
+				  << "Part_Torus"
+				  //<< "Part_Primitives"
+				  << "Separator"
+				  << "Part_Boolean"
+				  << "Part_Cut" 
+				  << "Part_Fuse" 
+				  << "Part_Common" 
+				  << "Part_Section"
+				  << "Separator"
+				  << "Part_Extrude"
+				  << "Part_Revolve"
+				  << "Part_Fillet"
+                  << "PartDesign_Pad";
+
+	    // Drawing
+    Gui::ToolBarItem* drawing = new Gui::ToolBarItem( root );
+    drawing->setCommand(QT_TR_NOOP("Drawings"));
+    *drawing  << "Drawing_Open" 
+             << "Separator" 
+             << "Drawing_NewA3Landscape"  
+             << "Drawing_NewView" 
+             << "Drawing_ExportPage" ;
+
+		    // Raytracing
+    Gui::ToolBarItem* raytracing = new Gui::ToolBarItem( root );
+    raytracing->setCommand(QT_TR_NOOP("Drawings"));
+    *raytracing  << "Raytracing_WriteView" 
+		<< "Raytracing_WriteCamera" 
+		<< "Raytracing_WritePart";
 
     return root;
 }

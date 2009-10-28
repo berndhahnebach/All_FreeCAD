@@ -66,6 +66,10 @@ public:
     virtual void hide(void);
     virtual void show(void);
 
+    /// get a list of TaskBoxes acociated with this object
+	virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&);
+
+
     void updateView();
     virtual void updateData(const App::Property*){};
     App::DocumentObject *getObject(void) const {return pcObject;}

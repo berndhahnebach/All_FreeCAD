@@ -70,9 +70,12 @@ CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
 
     tabs->addTab(splitter,trUtf8("Project"));
 
+	// commented out in the 0.9 release until it works
+#if 0
     // task panel
     taskPanel = new Gui::TaskView::TaskView(this);
     tabs->addTab(taskPanel, trUtf8("Tasks"));
+#endif
 }
 
 CombiView::~CombiView()
