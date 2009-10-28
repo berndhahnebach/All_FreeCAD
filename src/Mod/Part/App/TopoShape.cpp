@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <cstdlib>
 # include <sstream>
 # include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
