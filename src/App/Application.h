@@ -99,19 +99,19 @@ public:
     /** @name Signals of the Application */
     //@{
     /// signal on new Document
-    boost::signal<void (Document&)> signalNewDocument;
+    boost::signal<void (const Document&)> signalNewDocument;
     /// signal on deleted Document
-    boost::signal<void (Document&)> signalDeleteDocument;
+    boost::signal<void (const Document&)> signalDeleteDocument;
     /// signal on relabeling Document (user name)
-    boost::signal<void (Document&)> signalRelabelDocument;
+    boost::signal<void (const Document&)> signalRelabelDocument;
     /// signal on renaming Document (internal name)
-    boost::signal<void (Document&)> signalRenameDocument;
+    boost::signal<void (const Document&)> signalRenameDocument;
     /// signal on activating Document
-    boost::signal<void (Document&)> signalActiveDocument;
+    boost::signal<void (const Document&)> signalActiveDocument;
     /// signal on saving Document
-    boost::signal<void (Document&)> signalSaveDocument;
+    boost::signal<void (const Document&)> signalSaveDocument;
     /// signal on restoring Document
-    boost::signal<void (Document&)> signalRestoreDocument;
+    boost::signal<void (const Document&)> signalRestoreDocument;
     //@}
 
 
@@ -121,16 +121,16 @@ public:
      */
     //@{
     /// signal on new Object
-    boost::signal<void (App::DocumentObject&)> signalNewObject;
+    boost::signal<void (const App::DocumentObject&)> signalNewObject;
     //boost::signal<void (const App::DocumentObject&)>     m_sig;
     /// signal on deleted Object
-    boost::signal<void (App::DocumentObject&)> signalDeletedObject;
+    boost::signal<void (const App::DocumentObject&)> signalDeletedObject;
     /// signal on changed Object
-    boost::signal<void (App::DocumentObject&, App::Property&)> signalChangedObject;
+    boost::signal<void (const App::DocumentObject&, const App::Property&)> signalChangedObject;
     /// signal on renamed Object
-    boost::signal<void (App::DocumentObject&)> signalRenamedObject;
+    boost::signal<void (const App::DocumentObject&)> signalRenamedObject;
     /// signal on activated Object
-    boost::signal<void (App::DocumentObject&)> signalActivatedObject;
+    boost::signal<void (const App::DocumentObject&)> signalActivatedObject;
     //@}
 
 
@@ -229,11 +229,11 @@ protected:
      * This slot get connected to all App::Documents created
      */
     //@{
-    void slotNewObject(App::DocumentObject&);
-    void slotDeletedObject(App::DocumentObject&);
-    void slotChangedObject(App::DocumentObject&, App::Property& Prop);
-    void slotRenamedObject(App::DocumentObject&);
-    void slotActivatedObject(App::DocumentObject&);
+    void slotNewObject(const App::DocumentObject&);
+    void slotDeletedObject(const App::DocumentObject&);
+    void slotChangedObject(const App::DocumentObject&, const App::Property& Prop);
+    void slotRenamedObject(const App::DocumentObject&);
+    void slotActivatedObject(const App::DocumentObject&);
     //@}
 
 private:

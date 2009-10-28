@@ -682,13 +682,13 @@ bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
     return false;
 }
 
-void SelectionSingleton::slotDeletedObject(App::DocumentObject& Obj)
+void SelectionSingleton::slotDeletedObject(const App::DocumentObject& Obj)
 {
     // remove also from the selection, if selected
     Selection().rmvSelection( Obj.getDocument()->getName(), Obj.getNameInDocument() );
 }
 
-void SelectionSingleton::slotRenamedObject(App::DocumentObject& Obj)
+void SelectionSingleton::slotRenamedObject(const App::DocumentObject& Obj)
 {
     // compare internals with the document and change them if needed
     App::Document* pDoc = Obj.getDocument();

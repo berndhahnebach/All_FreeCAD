@@ -24,6 +24,8 @@
 #ifndef APP_DOCUMENTOBSERVER_H
 #define APP_DOCUMENTOBSERVER_H
 
+#include <boost/signals.hpp>
+
 namespace App
 {
 class Document;
@@ -58,15 +60,15 @@ public:
 
 private:
     /** Checks if a new document was created */
-    virtual void slotCreatedDocument(App::Document& Doc) = 0;
+    virtual void slotCreatedDocument(const App::Document& Doc) = 0;
     /** Checks if the given document is about to be closed */
-    virtual void slotDeletedDocument(App::Document& Doc) = 0;
+    virtual void slotDeletedDocument(const App::Document& Doc) = 0;
     /** Checks if a new object was added. */
-    virtual void slotCreatedObject(App::DocumentObject& Obj) = 0;
+    virtual void slotCreatedObject(const App::DocumentObject& Obj) = 0;
     /** Checks if the given object is about to be removed. */
-    virtual void slotDeletedObject(App::DocumentObject& Obj) = 0;
+    virtual void slotDeletedObject(const App::DocumentObject& Obj) = 0;
     /** The property of an observed object has changed */
-    virtual void slotChangedObject(App::DocumentObject& Obj, App::Property& Prop) = 0;
+    virtual void slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop) = 0;
 
 protected:
     Document* getDocument() const;

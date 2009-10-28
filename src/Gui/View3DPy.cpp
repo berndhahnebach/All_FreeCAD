@@ -38,7 +38,6 @@
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 
-#include <Base/PyExport.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>

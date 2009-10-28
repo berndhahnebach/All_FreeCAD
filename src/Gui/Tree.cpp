@@ -249,7 +249,7 @@ void TreeWidget::mouseDoubleClickEvent (QMouseEvent * event)
     if (!Item) return;
     if (Item->type() == TreeWidget::DocumentType) {
         QTreeWidget::mouseDoubleClickEvent(event);
-        Gui::Document* doc = static_cast<DocumentItem*>(Item)->document();
+        const Gui::Document* doc = static_cast<DocumentItem*>(Item)->document();
         if (!doc) return;
         MDIView *view = doc->getActiveView();
         if (!view) return;
@@ -444,7 +444,7 @@ void TreeWidget::drawRow(QPainter *painter, const QStyleOptionViewItem &options,
     //}
 }
 
-void TreeWidget::slotNewDocument(Gui::Document& Doc)
+void TreeWidget::slotNewDocument(const Gui::Document& Doc)
 {
     DocumentItem* item = new DocumentItem(&Doc, this->rootItem);
     this->expandItem(item);
@@ -453,9 +453,9 @@ void TreeWidget::slotNewDocument(Gui::Document& Doc)
     DocumentMap[ &Doc ] = item;
 }
 
-void TreeWidget::slotDeleteDocument(Gui::Document& Doc)
+void TreeWidget::slotDeleteDocument(const Gui::Document& Doc)
 {
-    std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
+    std::map<const Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
     if (it != DocumentMap.end()) {
         this->rootItem->takeChild(this->rootItem->indexOfChild(it->second));
         delete it->second;
@@ -463,25 +463,25 @@ void TreeWidget::slotDeleteDocument(Gui::Document& Doc)
     }
 }
 
-void TreeWidget::slotRenameDocument(Gui::Document& Doc)
+void TreeWidget::slotRenameDocument(const Gui::Document& Doc)
 {
     // do nothing here
 }
 
-void TreeWidget::slotRelabelDocument(Gui::Document& Doc)
+void TreeWidget::slotRelabelDocument(const Gui::Document& Doc)
 {
-    std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
+    std::map<const Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(&Doc);
     if (it != DocumentMap.end()) {
         it->second->setText(0, QString::fromUtf8(Doc.getDocument()->Label.getValue()));
     }
 }
 
-void TreeWidget::slotActiveDocument(Gui::Document& Doc)
+void TreeWidget::slotActiveDocument(const Gui::Document& Doc)
 {
-    std::map<Gui::Document*, DocumentItem*>::iterator jt = DocumentMap.find(&Doc);
+    std::map<const Gui::Document*, DocumentItem*>::iterator jt = DocumentMap.find(&Doc);
     if (jt == DocumentMap.end())
         return; // signal is emitted before the item gets created
-    for (std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.begin();
+    for (std::map<const Gui::Document*, DocumentItem*>::iterator it = DocumentMap.begin();
          it != DocumentMap.end(); ++it)
     {
         QFont f = it->second->font(0);
@@ -493,7 +493,8 @@ void TreeWidget::slotActiveDocument(Gui::Document& Doc)
 void TreeWidget::onTestStatus(void)
 {
     if (isVisible()) {
-        for (std::map<Gui::Document*,DocumentItem*>::iterator pos = DocumentMap.begin();pos!=DocumentMap.end();++pos) {
+        std::map<const Gui::Document*,DocumentItem*>::iterator pos;
+        for (pos = DocumentMap.begin();pos!=DocumentMap.end();++pos) {
             pos->second->testStatus();
         }
     }
@@ -513,7 +514,8 @@ void TreeWidget::onItemEntered(QTreeWidgetItem * item)
 
 void TreeWidget::scrollItemToTop(Gui::Document* doc)
 {
-    std::map<Gui::Document*,DocumentItem*>::iterator it = DocumentMap.find(doc);
+    std::map<const Gui::Document*,DocumentItem*>::iterator it;
+    it = DocumentMap.find(doc);
     if (it != DocumentMap.end()) {
         DocumentItem* root = it->second;
         QTreeWidgetItemIterator it(root, QTreeWidgetItemIterator::Selected);
@@ -543,7 +545,8 @@ void TreeWidget::onItemSelectionChanged ()
 
     // block tmp. the connection to avoid to notify us ourself
     bool lock = this->blockConnection(true);
-    for (std::map<Gui::Document*,DocumentItem*>::iterator pos = DocumentMap.begin();pos!=DocumentMap.end();++pos) {
+    std::map<const Gui::Document*,DocumentItem*>::iterator pos;
+    for (pos = DocumentMap.begin();pos!=DocumentMap.end();++pos) {
         pos->second->updateSelection();
     }
     this->blockConnection(lock);
@@ -556,7 +559,8 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
     case SelectionChanges::AddSelection:
         {
             Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
-            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            std::map<const Gui::Document*, DocumentItem*>::iterator it;
+            it = DocumentMap.find(pDoc);
             bool lock = this->blockConnection(true);
             if (it!= DocumentMap.end())
                 it->second->setObjectSelected(msg.pObjectName,true);
@@ -565,7 +569,8 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
     case SelectionChanges::RmvSelection:
         {
             Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
-            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            std::map<const Gui::Document*, DocumentItem*>::iterator it;
+            it = DocumentMap.find(pDoc);
             bool lock = this->blockConnection(true);
             if (it!= DocumentMap.end())
                 it->second->setObjectSelected(msg.pObjectName,false);
@@ -574,7 +579,8 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
     case SelectionChanges::SetSelection:
         {
             Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
-            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            std::map<const Gui::Document*, DocumentItem*>::iterator it;
+            it = DocumentMap.find(pDoc);
             // we get notified from the selection and must only update the selection on the tree,
             // thus no need to notify again the selection. See also onItemSelectionChanged().
             if (it != DocumentMap.end()) {
@@ -592,9 +598,10 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
             else {
                 // clears the selection of the given document
                 Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
-                std::map<Gui::Document*, DocumentItem*>::iterator pos = DocumentMap.find(pDoc);
-                if (pos != DocumentMap.end()) {
-                    pos->second->clearSelection();
+                std::map<const Gui::Document*, DocumentItem*>::iterator it;
+                it = DocumentMap.find(pDoc);
+                if (it != DocumentMap.end()) {
+                    it->second->clearSelection();
                 }
             }
             this->update();
@@ -602,14 +609,16 @@ void TreeWidget::onSelectionChanged(const SelectionChanges& msg)
     case SelectionChanges::SetPreselect:
         {
             Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
-            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            std::map<const Gui::Document*, DocumentItem*>::iterator it;
+            it = DocumentMap.find(pDoc);
             if (it!= DocumentMap.end())
                 it->second->setObjectHighlighted(msg.pObjectName,true);
         }   break;
     case SelectionChanges::RmvPreselect:
         {
             Gui::Document* pDoc = Application::Instance->getDocument(msg.pDocName);
-            std::map<Gui::Document*, DocumentItem*>::iterator it = DocumentMap.find(pDoc);
+            std::map<const Gui::Document*, DocumentItem*>::iterator it;
+            it = DocumentMap.find(pDoc);
             if (it!= DocumentMap.end())
                 it->second->setObjectHighlighted(msg.pObjectName,false);
         }   break;
@@ -652,17 +661,18 @@ TreeDockWidget::~TreeDockWidget()
 
 // ----------------------------------------------------------------------------
 
-DocumentItem::DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent)
+DocumentItem::DocumentItem(const Gui::Document* doc, QTreeWidgetItem * parent)
     : QTreeWidgetItem(parent, TreeWidget::DocumentType), pDocument(doc)
 {
     // Setup connections
-    doc->signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, this, _1));
-    doc->signalDeletedObject.connect(boost::bind(&DocumentItem::slotDeleteObject, this, _1));
-    doc->signalChangedObject.connect(boost::bind(&DocumentItem::slotChangeObject, this, _1));
-    doc->signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenameObject, this, _1));
-    doc->signalActivatedObject.connect(boost::bind(&DocumentItem::slotActiveObject, this, _1));
-    doc->signalInEdit.connect(boost::bind(&DocumentItem::slotInEdit, this, _1));
-    doc->signalResetEdit.connect(boost::bind(&DocumentItem::slotResetEdit, this, _1));
+    Gui::Document* pdoc = const_cast<Gui::Document*>(doc);
+    pdoc->signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, this, _1));
+    pdoc->signalDeletedObject.connect(boost::bind(&DocumentItem::slotDeleteObject, this, _1));
+    pdoc->signalChangedObject.connect(boost::bind(&DocumentItem::slotChangeObject, this, _1));
+    pdoc->signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenameObject, this, _1));
+    pdoc->signalActivatedObject.connect(boost::bind(&DocumentItem::slotActiveObject, this, _1));
+    pdoc->signalInEdit.connect(boost::bind(&DocumentItem::slotInEdit, this, _1));
+    pdoc->signalResetEdit.connect(boost::bind(&DocumentItem::slotResetEdit, this, _1));
 
     setFlags(Qt::ItemIsEnabled/*|Qt::ItemIsEditable*/);
 }
@@ -671,7 +681,7 @@ DocumentItem::~DocumentItem()
 {
 }
 
-void DocumentItem::slotInEdit(Gui::ViewProviderDocumentObject& v)
+void DocumentItem::slotInEdit(const Gui::ViewProviderDocumentObject& v)
 {
     std::string name (v.getObject()->getNameInDocument());
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
@@ -679,7 +689,7 @@ void DocumentItem::slotInEdit(Gui::ViewProviderDocumentObject& v)
         it->second->setBackgroundColor(0,Qt::yellow);
 }
 
-void DocumentItem::slotResetEdit(Gui::ViewProviderDocumentObject& v)
+void DocumentItem::slotResetEdit(const Gui::ViewProviderDocumentObject& v)
 {
     std::string name (v.getObject()->getNameInDocument());
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(name);
@@ -688,13 +698,15 @@ void DocumentItem::slotResetEdit(Gui::ViewProviderDocumentObject& v)
     }
 }
 
-void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
+void DocumentItem::slotNewObject(const Gui::ViewProviderDocumentObject& obj)
 {
     std::string displayName = obj.getObject()->Label.getValue();
     std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
     if (it == ObjectMap.end()) {
-        DocumentObjectItem* item = new DocumentObjectItem(&obj, this);
+        // cast to non-const object
+        DocumentObjectItem* item = new DocumentObjectItem(
+            const_cast<Gui::ViewProviderDocumentObject*>(&obj), this);
         item->setIcon(0, obj.getIcon());
         item->setText(0, QString::fromUtf8(displayName.c_str()));
         ObjectMap[objectName] = item;
@@ -703,7 +715,7 @@ void DocumentItem::slotNewObject(Gui::ViewProviderDocumentObject& obj)
     }
 }
 
-void DocumentItem::slotDeleteObject(Gui::ViewProviderDocumentObject& obj)
+void DocumentItem::slotDeleteObject(const Gui::ViewProviderDocumentObject& obj)
 {
     std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator it = ObjectMap.find(objectName);
@@ -720,7 +732,7 @@ void DocumentItem::slotDeleteObject(Gui::ViewProviderDocumentObject& obj)
     }
 }
 
-void DocumentItem::slotChangeObject(Gui::ViewProviderDocumentObject& view)
+void DocumentItem::slotChangeObject(const Gui::ViewProviderDocumentObject& view)
 {
     // As we immediately add a newly created object to the tree we check here which
     // item (this or a DocumentObjectItem) is the parent of the associated item of 'view'
@@ -775,7 +787,7 @@ void DocumentItem::slotChangeObject(Gui::ViewProviderDocumentObject& view)
     }
 }
 
-void DocumentItem::slotRenameObject(Gui::ViewProviderDocumentObject& obj)
+void DocumentItem::slotRenameObject(const Gui::ViewProviderDocumentObject& obj)
 {
     for (std::map<std::string,DocumentObjectItem*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it) {
         if (it->second->object() == &obj) {
@@ -791,7 +803,7 @@ void DocumentItem::slotRenameObject(Gui::ViewProviderDocumentObject& obj)
     Base::Console().Warning("DocumentItem::slotRenamedObject: Cannot rename unknown object.\n");
 }
 
-void DocumentItem::slotActiveObject(Gui::ViewProviderDocumentObject& obj)
+void DocumentItem::slotActiveObject(const Gui::ViewProviderDocumentObject& obj)
 {
     std::string objectName = obj.getObject()->getNameInDocument();
     std::map<std::string, DocumentObjectItem*>::iterator jt = ObjectMap.find(objectName);
@@ -806,7 +818,7 @@ void DocumentItem::slotActiveObject(Gui::ViewProviderDocumentObject& obj)
     }
 }
 
-Gui::Document* DocumentItem::document() const
+const Gui::Document* DocumentItem::document() const
 {
     return this->pDocument;
 }
@@ -937,7 +949,8 @@ void DocumentItem::selectItems(void)
 
 // ----------------------------------------------------------------------------
 
-DocumentObjectItem::DocumentObjectItem(Gui::ViewProviderDocumentObject* pcViewProvider, QTreeWidgetItem* parent)
+DocumentObjectItem::DocumentObjectItem(Gui::ViewProviderDocumentObject* pcViewProvider,
+                                       QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent, TreeWidget::ObjectType), previousStatus(-1), viewObject(pcViewProvider)
 {
     setFlags(flags()|Qt::ItemIsEditable);

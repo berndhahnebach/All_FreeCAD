@@ -26,6 +26,7 @@
 
 #include "TaskView.h"
 #include <Gui/Selection.h>
+#include <boost/signals.hpp>
 
 
 class Ui_TaskAppearance;
@@ -37,8 +38,7 @@ class Property;
 namespace Gui {
 class ViewProvider;
 namespace TaskView {
-
-
+typedef boost::signals::connection TaskAppearance_Connection;
 
 class TaskAppearance : public TaskBox, public Gui::SelectionSingleton::ObserverType
 {
@@ -62,6 +62,7 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+    void slotChangedObject(const Gui::ViewProvider&, const App::Property& Prop);
     void setDisplayModes(const std::vector<Gui::ViewProvider*>&);
     void setPointSize(const std::vector<Gui::ViewProvider*>&);
     void setLineWidth(const std::vector<Gui::ViewProvider*>&);
@@ -71,6 +72,7 @@ private:
 private:
     QWidget* proxy;
     Ui_TaskAppearance* ui;
+    TaskAppearance_Connection connectChangedObject;
 };
 
 } //namespace TaskView

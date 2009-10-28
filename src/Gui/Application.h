@@ -88,15 +88,15 @@ public:
     /** @name Signals of the Application */
     //@{
     /// signal on new Document
-    boost::signal<void (Gui::Document&)> signalNewDocument;
+    boost::signal<void (const Gui::Document&)> signalNewDocument;
     /// signal on deleted Document
-    boost::signal<void (Gui::Document&)> signalDeleteDocument;
+    boost::signal<void (const Gui::Document&)> signalDeleteDocument;
     /// signal on relabeling Document
-    boost::signal<void (Gui::Document&)> signalRelabelDocument;
+    boost::signal<void (const Gui::Document&)> signalRelabelDocument;
     /// signal on renaming Document
-    boost::signal<void (Gui::Document&)> signalRenameDocument;
+    boost::signal<void (const Gui::Document&)> signalRenameDocument;
     /// signal on activating Document
-    boost::signal<void (Gui::Document&)> signalActiveDocument;
+    boost::signal<void (const Gui::Document&)> signalActiveDocument;
     /// signal on changed object property
     boost::signal<void (const Gui::ViewProvider&, const App::Property&)> signalChangedObject;
     /// signal on activated workbench
@@ -111,11 +111,11 @@ public:
     //@{
 protected:
     /// Observer message from the Application
-    void slotNewDocument(App::Document&);
-    void slotDeleteDocument(App::Document&);
-    void slotRelabelDocument(App::Document&);
-    void slotRenameDocument(App::Document&);
-    void slotActiveDocument(App::Document&);
+    void slotNewDocument(const App::Document&);
+    void slotDeleteDocument(const App::Document&);
+    void slotRelabelDocument(const App::Document&);
+    void slotRenameDocument(const App::Document&);
+    void slotActiveDocument(const App::Document&);
 
 public:
     /// create the Browser view with the start page
@@ -134,7 +134,7 @@ public:
     /** Retrieves a pointer to the Gui::Document whose App::Document matches to \a pDoc.
     * If no such document exists 0 is returned.
     */
-    Gui::Document* getDocument(App::Document* pDoc) const;
+    Gui::Document* getDocument(const App::Document* pDoc) const;
     /// Shows the associated view provider of the given object
     void showViewProvider(App::DocumentObject*);
     /// Hides the associated view provider of the given object
