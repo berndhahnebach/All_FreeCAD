@@ -100,12 +100,12 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
     std::string temp;
 
     if (Reason.Type == SelectionChanges::AddSelection) {
-		Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
-		Gui::ViewProvider *pVP = pDoc->getViewProviderByName(Reason.pObjectName);
+        Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
+        Gui::ViewProvider *pVP = pDoc->getViewProviderByName(Reason.pObjectName);
     }
     else if (Reason.Type == SelectionChanges::ClrSelection) {
     }
-    else if (Reason.Type == SelectionChanges::RmvSelection) {
+    else if (Reason.Type == SelectionChanges::SetSelection) {
     }
     else if (Reason.Type == SelectionChanges::RmvSelection) {
     }

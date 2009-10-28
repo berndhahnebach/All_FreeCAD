@@ -66,8 +66,8 @@ public:
     virtual void hide(void);
     virtual void show(void);
 
-    /// get a list of TaskBoxes acociated with this object
-	virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&);
+    /// get a list of TaskBoxes associated with this object
+    virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&) const;
 
 
     void updateView();
