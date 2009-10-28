@@ -67,11 +67,6 @@ public:
   //virtual const char* getViewProviderName(void) const {
   //  return "RaytracingGui::ViewProviderRaytracingView";
   //}
-
-
-	
- // virtual PyObject* getPyObject(void);
-
 };
 
 

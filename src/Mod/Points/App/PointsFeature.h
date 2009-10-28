@@ -70,8 +70,6 @@ public:
     virtual const char* getViewProviderName(void) const {
         return "PointsGui::ViewProviderPoints";
     }
-    // handling the PointsPy object
-    //virtual PyObject* getPyObject(void);
 protected:
     void onChanged(const App::Property* prop);
     //@}

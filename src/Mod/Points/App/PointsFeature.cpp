@@ -89,15 +89,6 @@ void Feature::onChanged(const App::Property* prop)
     GeoFeature::onChanged(prop);
 }
 
-//PyObject *Feature::getPyObject(void)
-//{
-//    if(PythonObject.is(Py::_None())){
-//        // ref counter is set to 1
-//        PythonObject.set(new PointsFeaturePy(this),true);
-//    }
-//    return Py::new_reference_to(PythonObject); 
-//}
-
 // ------------------------------------------------------------------
 
 PROPERTY_SOURCE(Points::Export, Points::Feature)

@@ -52,16 +52,3 @@ PageGroup::PageGroup(void)
 PageGroup::~PageGroup()
 {
 }
-
-
-//
-//PyObject *PageGroup::getPyObject(void)
-//{
-// if(PythonObject.is(Py::_None())){
-//    // ref counter is set to 1
-//    PythonObject.set(new PageGroupPy(this),true);
-//  }
-//  return Py::new_reference_to(PythonObject); 
-//}
-
-

@@ -29,7 +29,6 @@
 #include <string>
 
 #include <Base/Factory.h>
-#include <Base/PyExport.h>
 #include <Base/TimeInfo.h>
 
 #include <App/DocumentObject.h>

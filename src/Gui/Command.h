@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-#include <Base/PyExport.h>
 #include <Base/Type.h>
 
 class QWidget;
