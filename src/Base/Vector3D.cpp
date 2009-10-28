@@ -125,16 +125,29 @@ Vector3<_Precision>& Vector3<_Precision>::operator *= (_Precision fScale)
 {
     x *= fScale;
     y *= fScale;
-    z *= fScale;        
+    z *= fScale;
     return *this;
 }
 
 template <class _Precision>
-Vector3<_Precision> Vector3<_Precision>::operator * (_Precision fScale)
+Vector3<_Precision>& Vector3<_Precision>::operator /= (_Precision fDiv) 
 {
-    Vector3<_Precision> temp(*this);
-    temp *= fScale;
-    return temp;
+    x /= fDiv;
+    y /= fDiv;
+    z /= fDiv;
+    return *this;
+}
+
+template <class _Precision>
+Vector3<_Precision> Vector3<_Precision>::operator * (_Precision fScale) const
+{
+    return Vector3<_Precision>(this->x*fScale,this->y*fScale,this->z*fScale);
+}
+
+template <class _Precision>
+Vector3<_Precision> Vector3<_Precision>::operator / (_Precision fDiv) const
+{
+    return Vector3<_Precision>(this->x/fDiv,this->y/fDiv,this->z/fDiv);
 }
 
 template <class _Precision>
@@ -150,15 +163,6 @@ template <class _Precision>
 _Precision Vector3<_Precision>::operator *  (const Vector3<_Precision>& rcVct) const
 {
     return (x * rcVct.x) + (y * rcVct.y) + (z * rcVct.z);
-}
-
-template <class _Precision>
-Vector3<_Precision>& Vector3<_Precision>::operator /  (_Precision fDiv) 
-{
-    x /= fDiv;
-    y /= fDiv;
-    z /= fDiv;
-    return *this;
 }
 
 template <class _Precision>

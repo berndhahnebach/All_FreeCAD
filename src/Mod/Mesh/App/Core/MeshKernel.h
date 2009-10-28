@@ -513,9 +513,12 @@ inline Base::Vector3f MeshKernel::GetNormal (const MeshFacet &rclFacet) const
 
 inline Base::Vector3f MeshKernel::GetGravityPoint (const MeshFacet &rclFacet) const
 {
-    return (_aclPointArray[rclFacet._aulPoints[0]]+
-            _aclPointArray[rclFacet._aulPoints[1]]+
-            _aclPointArray[rclFacet._aulPoints[2]])/3.0f;
+    const Base::Vector3f& p0 = _aclPointArray[rclFacet._aulPoints[0]];
+    const Base::Vector3f& p1 = _aclPointArray[rclFacet._aulPoints[1]];
+    const Base::Vector3f& p2 = _aclPointArray[rclFacet._aulPoints[2]];
+    return Base::Vector3f((p0.x+p1.x+p2.x)/3.0f,
+                          (p0.y+p1.y+p2.y)/3.0f,
+                          (p0.z+p1.z+p2.z)/3.0f);
 }
 
 inline void MeshKernel::GetFacetPoints (unsigned long ulFaIndex, unsigned long &rclP0,

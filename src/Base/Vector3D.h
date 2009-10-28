@@ -83,19 +83,18 @@ public:
     /// Negative vector
     Vector3 operator - (void) const;
     /// Vector summation
-    Vector3 &operator += (const Vector3<_Precision>& rcVct);
+    Vector3 & operator += (const Vector3<_Precision>& rcVct);
     /// Vector subtraction
     Vector3 & operator -= (const Vector3<_Precision>& rcVct);
     /// Vector scaling
+    Vector3 operator * (_Precision fScale) const;
+    Vector3 operator / (_Precision fDiv) const;
     Vector3 & operator *= (_Precision fScale);
-    /// Vector scaling
-    Vector3 operator *   (_Precision fScale);
+    Vector3 & operator /= (_Precision fDiv);
     /// Assignment
     Vector3 & operator =  (const Vector3<_Precision>& rcVct);
     /// Scalar product
     _Precision operator *  (const Vector3<_Precision>& rcVct) const;
-    /// Vector scaling
-    Vector3 & operator / (_Precision fDiv); 
     /// Cross product
     Vector3 operator %  (const Vector3<_Precision>& rcVct) const;
     /// Comparing for inequality
@@ -166,16 +165,17 @@ public:
 
 /// Returns the distance between two points
 template <class _Precision>
-inline _Precision Distance (const Vector3<_Precision> &rcVct1, const Vector3<_Precision> &rcVct2)
+inline _Precision Distance (const Vector3<_Precision> &v1, const Vector3<_Precision> &v2)
 {
-    return (rcVct1 - rcVct2).Length();
+    _Precision x=v1.x-v2.x, y=v1.y-v2.y, z=v1.z-v2.z;
+    return (_Precision)sqrt((x * x) + (y * y) + (z * z));
 }
 
 /// Returns the squared distance between two points
 template <class _Precision>
-inline _Precision DistanceP2 (const Vector3<_Precision> &rclV1, const Vector3<_Precision> &rclV2)
+inline _Precision DistanceP2 (const Vector3<_Precision> &v1, const Vector3<_Precision> &v2)
 {
-    _Precision x=rclV1.x-rclV2.x, y=rclV1.y-rclV2.y, z=rclV1.z-rclV2.z;
+    _Precision x=v1.x-v2.x, y=v1.y-v2.y, z=v1.z-v2.z;
     return x * x + y * y + z * z;
 }
 
