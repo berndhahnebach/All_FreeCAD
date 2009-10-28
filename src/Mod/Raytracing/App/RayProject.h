@@ -26,9 +26,6 @@
 #ifndef _RayProject_h_
 #define _RayProject_h_
 
-//#include <Base/Factory.h>
-//#include <Base/PyExport.h>
-
 #include <App/DocumentObjectGroup.h>
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>

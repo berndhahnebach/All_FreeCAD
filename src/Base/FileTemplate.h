@@ -26,8 +26,6 @@
 
 // Std. configurations
 
-#include "PyExport.h"
-
 #include <string>
 
 namespace Base

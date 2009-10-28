@@ -68,11 +68,6 @@ public:
   virtual const char* getViewProviderName(void) const {
     return "DrawingGui::ViewProviderDrawingView";
   }
-
-
-	
- // virtual PyObject* getPyObject(void);
-
 };
 
 

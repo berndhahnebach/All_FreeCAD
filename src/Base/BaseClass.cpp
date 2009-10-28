@@ -31,8 +31,6 @@
 #include "BaseClass.h"
 #include "PyObjectBase.h"
 
-#define new DEBUG_CLIENTBLOCK
-
 using namespace Base;
 
 Type BaseClass::classTypeId = Base::Type::badType();
@@ -64,42 +62,42 @@ BaseClass::~BaseClass()
 
 void BaseClass::init(void)
 {
-  assert(BaseClass::classTypeId == Type::badType() && "don't init() twice!");
-  /* Make sure superclass gets initialized before subclass. */ 
-  /*assert(strcmp(#_parentclass_), "inherited"));*/
-  /*Type parentType(Type::fromName(#_parentclass_));*/ 
-  /*assert(parentType != Type::badType() && "you forgot init() on parentclass!");*/
- 
-  /* Set up entry in the type system. */ 
-  BaseClass::classTypeId = 
-    Type::createType(Type::badType(), 
-                     "Base::BaseClass", 
-                     BaseClass::create); 
+    assert(BaseClass::classTypeId == Type::badType() && "don't init() twice!");
+    /* Make sure superclass gets initialized before subclass. */ 
+    /*assert(strcmp(#_parentclass_), "inherited"));*/
+    /*Type parentType(Type::fromName(#_parentclass_));*/ 
+    /*assert(parentType != Type::badType() && "you forgot init() on parentclass!");*/
+
+    /* Set up entry in the type system. */ 
+    BaseClass::classTypeId = 
+        Type::createType(Type::badType(), 
+                         "Base::BaseClass", 
+                         BaseClass::create); 
 }
 
 Type BaseClass::getClassTypeId(void) 
 {
-  return BaseClass::classTypeId; 
-} 
+    return BaseClass::classTypeId; 
+}
 
 Type BaseClass::getTypeId(void) const 
-{ 
-  return BaseClass::classTypeId; 
-} 
-
-
-void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const char *ParentName, Type::instantiationMethod method)
 {
-  // dont't init twice!
-  assert(toInit == Base::Type::badType());
-  // get the parent class
-  Base::Type parentType(Base::Type::fromName(ParentName)); 
-  // forgot init parent!
-  assert(parentType != Base::Type::badType() );
+    return BaseClass::classTypeId; 
+}
 
-  // create the new type
-  toInit = Base::Type::createType(parentType, ClassName, method);
 
+void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const char *ParentName,
+                             Type::instantiationMethod method)
+{
+    // dont't init twice!
+    assert(toInit == Base::Type::badType());
+    // get the parent class
+    Base::Type parentType(Base::Type::fromName(ParentName)); 
+    // forgot init parent!
+    assert(parentType != Base::Type::badType() );
+
+    // create the new type
+    toInit = Base::Type::createType(parentType, ClassName, method);
 }
 
 /**
@@ -114,11 +112,11 @@ void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const cha
  */
 PyObject *BaseClass::getPyObject(void)
 {
-  assert(0);
-  Py_Return;
+    assert(0);
+    Py_Return;
 }
 
 void BaseClass::setPyObject(PyObject *)
 {
-  assert(0);
+    assert(0);
 }

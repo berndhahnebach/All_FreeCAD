@@ -26,9 +26,6 @@
 #ifndef _RayFeature_h_
 #define _RayFeature_h_
 
-//#include <Base/Factory.h>
-//#include <Base/PyExport.h>
-
 #include <App/Feature.h>
 #include <App/PropertyLinks.h>
 #include <App/PropertyFile.h>

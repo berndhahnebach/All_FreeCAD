@@ -27,12 +27,8 @@
 #define _AppPlacement_h_
 
 #include <Base/Placement.h>
-//#include <Base/PyExport.h>
-//#include <Base/TimeInfo.h>
-//#include <Base/Vector3D.h>
 
 #include "DocumentObject.h"
-//#include <App/Material.h>
 #include "PropertyGeo.h"
 
 
