@@ -37,6 +37,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "Selection.h"
+#include "TaskView/TaskAppearance.h"
 #include "ViewProviderDocumentObject.h"
 #include "ViewProviderDocumentObjectPy.h"
 
@@ -60,6 +61,12 @@ ViewProviderDocumentObject::~ViewProviderDocumentObject()
 {
     // Make sure that the property class does not destruct our string list
     DisplayMode.setEnums(0);
+}
+
+
+void ViewProviderDocumentObject::getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>& vec)
+{
+	vec.push_back(new Gui::TaskView::TaskAppearance());
 }
 
 void ViewProviderDocumentObject::onChanged(const App::Property* prop)

@@ -29,6 +29,9 @@
 #include "TaskView.h"
 #include "TaskAppearance.h"
 #include "TaskEditControl.h"
+#include <Gui/Document.h>
+#include <Gui/Application.h>
+#include <Gui/ViewProvider.h>
 
 using namespace Gui::TaskView;
 
@@ -91,5 +94,21 @@ TaskView::~TaskView()
 {
 }
 
+void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                        Gui::SelectionSingleton::MessageType Reason)
+{
+    std::string temp;
+
+    if (Reason.Type == SelectionChanges::AddSelection) {
+		Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
+		Gui::ViewProvider *pVP = pDoc->getViewProviderByName(Reason.pObjectName);
+    }
+    else if (Reason.Type == SelectionChanges::ClrSelection) {
+    }
+    else if (Reason.Type == SelectionChanges::RmvSelection) {
+    }
+    else if (Reason.Type == SelectionChanges::RmvSelection) {
+    }
+}
 
 #include "moc_TaskView.cpp"
