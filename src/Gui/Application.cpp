@@ -115,7 +115,7 @@ struct ApplicationP
     }
 
     /// list of all handled documents
-    std::map<App::Document*, Gui::Document*> lpcDocuments;
+    std::map<const App::Document*, Gui::Document*> lpcDocuments;
     /// Active document
     Gui::Document*   _pcActiveDocument;
     MacroManager*  _pcMacroMngr;
@@ -394,22 +394,22 @@ void Application::createStandardOperations()
     Gui::CreateTestCommands();
 }
 
-void Application::slotNewDocument(App::Document& Doc)
+void Application::slotNewDocument(const App::Document& Doc)
 {
 #ifdef FC_DEBUG
-    std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(&Doc);
     assert(it==d->lpcDocuments.end());
 #endif
-    Gui::Document* pDoc = new Gui::Document(&Doc,this);
+    Gui::Document* pDoc = new Gui::Document(const_cast<App::Document*>(&Doc),this);
     d->lpcDocuments[&Doc] = pDoc;
     signalNewDocument(*pDoc);
     pDoc->createView("View3DIv");
     qApp->processEvents(); // make sure to show the window stuff on the right place
 }
 
-void Application::slotDeleteDocument(App::Document& Doc)
+void Application::slotDeleteDocument(const App::Document& Doc)
 {
-    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
     assert(doc!=d->lpcDocuments.end());
 #endif
@@ -427,9 +427,9 @@ void Application::slotDeleteDocument(App::Document& Doc)
     d->lpcDocuments.erase(doc);
 }
 
-void Application::slotRelabelDocument(App::Document& Doc)
+void Application::slotRelabelDocument(const App::Document& Doc)
 {
-    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
     assert(doc!=d->lpcDocuments.end());
 #endif
@@ -438,9 +438,9 @@ void Application::slotRelabelDocument(App::Document& Doc)
     doc->second->onRelabel();
 }
 
-void Application::slotRenameDocument(App::Document& Doc)
+void Application::slotRenameDocument(const App::Document& Doc)
 {
-    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
     assert(doc!=d->lpcDocuments.end());
 #endif
@@ -448,9 +448,9 @@ void Application::slotRenameDocument(App::Document& Doc)
     signalRenameDocument(*doc->second);
 }
 
-void Application::slotActiveDocument(App::Document& Doc)
+void Application::slotActiveDocument(const App::Document& Doc)
 {
-    std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
 #ifdef FC_DEBUG
     assert(doc!=d->lpcDocuments.end());
 #endif
@@ -540,19 +540,19 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
         (*It)->setDocument(pcDocument);
 }
 
-Gui::Document* Application::getDocument( const char* name ) const
+Gui::Document* Application::getDocument(const char* name) const
 {
     App::Document* pDoc = App::GetApplication().getDocument( name );
-    std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
+    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
     if ( it!=d->lpcDocuments.end() )
         return it->second;
     else
         return 0;
 }
 
-Gui::Document* Application::getDocument(App::Document* pDoc) const
+Gui::Document* Application::getDocument(const App::Document* pDoc) const
 {
-    std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
+    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
     if ( it!=d->lpcDocuments.end() )
         return it->second;
     else
@@ -598,10 +598,11 @@ void Application::detachView(Gui::BaseView* pcView)
 void Application::onUpdate(void)
 {
     // update all documents
-    for (map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+    std::map<const App::Document*, Gui::Document*>::iterator It;
+    for (It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
         It->second->onUpdate();
     // update all the independed views
-    for(list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
+    for (std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
         (*It2)->onUpdate();
 }
 
@@ -632,7 +633,8 @@ void Application::tryClose(QCloseEvent * e)
     }
     else {
         // ask all documents if closable
-        for (std::map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++) {
+        std::map<const App::Document*, Gui::Document*>::iterator It;
+        for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++) {
             MDIView* active = It->second->getActiveView();
             e->setAccepted(active->canClose());
             if (!e->isAccepted())
@@ -650,7 +652,7 @@ void Application::tryClose(QCloseEvent * e)
     if (e->isAccepted()) {
         d->_bIsClosing = true;
 
-        std::map<App::Document*, Gui::Document*>::iterator It;
+        std::map<const App::Document*, Gui::Document*>::iterator It;
 
         //detach the passive views
         //SetActiveDocument(0);

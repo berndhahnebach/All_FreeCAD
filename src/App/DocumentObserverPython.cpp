@@ -88,14 +88,14 @@ DocumentObserverPython::~DocumentObserverPython()
     this->connectDocumentChangedObject.disconnect();
 }
 
-void DocumentObserverPython::slotCreatedDocument(App::Document& Doc)
+void DocumentObserverPython::slotCreatedDocument(const App::Document& Doc)
 {
     Base::PyGILStateLocker lock;
     try {
         if (this->inst.hasAttr(std::string("slotCreatedDocument"))) {
             Py::Callable method(this->inst.getAttr(std::string("slotCreatedDocument")));
             Py::Tuple args(1);
-            args.setItem(0, Py::Object(Doc.getPyObject(), true));
+            args.setItem(0, Py::Object(const_cast<App::Document&>(Doc).getPyObject(), true));
             method.apply(args);
         }
     }
@@ -105,14 +105,14 @@ void DocumentObserverPython::slotCreatedDocument(App::Document& Doc)
     }
 }
 
-void DocumentObserverPython::slotDeletedDocument(App::Document& Doc)
+void DocumentObserverPython::slotDeletedDocument(const App::Document& Doc)
 {
     Base::PyGILStateLocker lock;
     try {
         if (this->inst.hasAttr(std::string("slotDeletedDocument"))) {
             Py::Callable method(this->inst.getAttr(std::string("slotDeletedDocument")));
             Py::Tuple args(1);
-            args.setItem(0, Py::Object(Doc.getPyObject(), true));
+            args.setItem(0, Py::Object(const_cast<App::Document&>(Doc).getPyObject(), true));
             method.apply(args);
         }
     }
@@ -122,14 +122,14 @@ void DocumentObserverPython::slotDeletedDocument(App::Document& Doc)
     }
 }
 
-void DocumentObserverPython::slotRelabelDocument(App::Document& Doc)
+void DocumentObserverPython::slotRelabelDocument(const App::Document& Doc)
 {
     Base::PyGILStateLocker lock;
     try {
         if (this->inst.hasAttr(std::string("slotRelabelDocument"))) {
             Py::Callable method(this->inst.getAttr(std::string("slotRelabelDocument")));
             Py::Tuple args(1);
-            args.setItem(0, Py::Object(Doc.getPyObject(), true));
+            args.setItem(0, Py::Object(const_cast<App::Document&>(Doc).getPyObject(), true));
             method.apply(args);
         }
     }
@@ -139,14 +139,14 @@ void DocumentObserverPython::slotRelabelDocument(App::Document& Doc)
     }
 }
 
-void DocumentObserverPython::slotActivateDocument(App::Document& Doc)
+void DocumentObserverPython::slotActivateDocument(const App::Document& Doc)
 {
     Base::PyGILStateLocker lock;
     try {
         if (this->inst.hasAttr(std::string("slotActivateDocument"))) {
             Py::Callable method(this->inst.getAttr(std::string("slotActivateDocument")));
             Py::Tuple args(1);
-            args.setItem(0, Py::Object(Doc.getPyObject(), true));
+            args.setItem(0, Py::Object(const_cast<App::Document&>(Doc).getPyObject(), true));
             method.apply(args);
         }
     }
@@ -156,14 +156,14 @@ void DocumentObserverPython::slotActivateDocument(App::Document& Doc)
     }
 }
 
-void DocumentObserverPython::slotCreatedObject(App::DocumentObject& Obj)
+void DocumentObserverPython::slotCreatedObject(const App::DocumentObject& Obj)
 {
     Base::PyGILStateLocker lock;
     try {
         if (this->inst.hasAttr(std::string("slotCreatedObject"))) {
             Py::Callable method(this->inst.getAttr(std::string("slotCreatedObject")));
             Py::Tuple args(1);
-            args.setItem(0, Py::Object(Obj.getPyObject(), true));
+            args.setItem(0, Py::Object(const_cast<App::DocumentObject&>(Obj).getPyObject(), true));
             method.apply(args);
         }
     }
@@ -173,14 +173,14 @@ void DocumentObserverPython::slotCreatedObject(App::DocumentObject& Obj)
     }
 }
 
-void DocumentObserverPython::slotDeletedObject(App::DocumentObject& Obj)
+void DocumentObserverPython::slotDeletedObject(const App::DocumentObject& Obj)
 {
     Base::PyGILStateLocker lock;
     try {
         if (this->inst.hasAttr(std::string("slotDeletedObject"))) {
             Py::Callable method(this->inst.getAttr(std::string("slotDeletedObject")));
             Py::Tuple args(1);
-            args.setItem(0, Py::Object(Obj.getPyObject(), true));
+            args.setItem(0, Py::Object(const_cast<App::DocumentObject&>(Obj).getPyObject(), true));
             method.apply(args);
         }
     }
@@ -190,15 +190,15 @@ void DocumentObserverPython::slotDeletedObject(App::DocumentObject& Obj)
     }
 }
 
-void DocumentObserverPython::slotChangedObject(App::DocumentObject& Obj,
-                                               App::Property& Prop)
+void DocumentObserverPython::slotChangedObject(const App::DocumentObject& Obj,
+                                               const App::Property& Prop)
 {
     Base::PyGILStateLocker lock;
     try {
         if (this->inst.hasAttr(std::string("slotChangedObject"))) {
             Py::Callable method(this->inst.getAttr(std::string("slotChangedObject")));
             Py::Tuple args(2);
-            args.setItem(0, Py::Object(Obj.getPyObject(), true));
+            args.setItem(0, Py::Object(const_cast<App::DocumentObject&>(Obj).getPyObject(), true));
             std::string prop_name = Obj.getName(&Prop);
             args.setItem(1, Py::String(prop_name));
             method.apply(args);

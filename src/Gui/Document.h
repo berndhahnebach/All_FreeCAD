@@ -30,7 +30,6 @@
 #include <map>
 #include <string>
 
-#include <Base/PyExport.h>
 #include <Base/Persistence.h>
 #include <App/Document.h>
 
@@ -72,31 +71,30 @@ protected:
     /** @name I/O of the document */
     //@{
     /// This slot is connected to the App::Document::signalNewObject(...)
-    void slotNewObject(App::DocumentObject&);
-    void slotDeletedObject(App::DocumentObject&);
-    void slotChangedObject(App::DocumentObject&, App::Property&);
-    void slotRenamedObject(App::DocumentObject&);
-    void slotActivatedObject(App::DocumentObject&);
-    virtual void refresh(App::DocumentObject&) const {};
+    void slotNewObject(const App::DocumentObject&);
+    void slotDeletedObject(const App::DocumentObject&);
+    void slotChangedObject(const App::DocumentObject&, const App::Property&);
+    void slotRenamedObject(const App::DocumentObject&);
+    void slotActivatedObject(const App::DocumentObject&);
     //@}
 
 public:
     /** @name Signals of the document */
     //@{
     /// signal on new Object
-    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalNewObject;
+    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalNewObject;
     /// signal on deleted Object
-    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalDeletedObject;
+    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalDeletedObject;
     /// signal on changed Object
-    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalChangedObject;
+    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalChangedObject;
     /// signal on renamed Object
-    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalRenamedObject;
+    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalRenamedObject;
     /// signal on activated Object
-    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalActivatedObject;
+    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalActivatedObject;
     /// signal on goes in edti mode
-    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalInEdit;
+    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalInEdit;
    /// signal on leave edit mode
-    boost::signal<void (Gui::ViewProviderDocumentObject&)> signalResetEdit;
+    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalResetEdit;
     //@}
 
     /** @name I/O of the document */
@@ -150,7 +148,7 @@ public:
     /** @name View provider handling  */
     //@{
     /// Get the view provider for that object
-    ViewProvider* getViewProvider(App::DocumentObject *) const;
+    ViewProvider* getViewProvider(const App::DocumentObject *) const;
     /// set an annotation view provider
     void setAnnotationViewProvider(const char* name, ViewProvider *pcProvider);
     /// get an annotation view provider

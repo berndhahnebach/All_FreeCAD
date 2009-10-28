@@ -71,7 +71,7 @@ void CleanupHandler::cleanup()
 
 /* TRANSLATOR MeshGui::DlgEvaluateMeshImp */
 
-void DlgEvaluateMeshImp::slotCreatedObject(App::DocumentObject& Obj)
+void DlgEvaluateMeshImp::slotCreatedObject(const App::DocumentObject& Obj)
 {
     // add new mesh object to the list
     if (Obj.getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
@@ -81,7 +81,7 @@ void DlgEvaluateMeshImp::slotCreatedObject(App::DocumentObject& Obj)
     }
 }
 
-void DlgEvaluateMeshImp::slotDeletedObject(App::DocumentObject& Obj)
+void DlgEvaluateMeshImp::slotDeletedObject(const App::DocumentObject& Obj)
 {
     // remove mesh objects from the list
     if (Obj.getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
@@ -101,7 +101,7 @@ void DlgEvaluateMeshImp::slotDeletedObject(App::DocumentObject& Obj)
     }
 }
 
-void DlgEvaluateMeshImp::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
+void DlgEvaluateMeshImp::slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop)
 {
     // if the current mesh object was modified update everything
     if (&Obj == _meshFeature && Prop.getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
@@ -121,11 +121,11 @@ void DlgEvaluateMeshImp::slotChangedObject(App::DocumentObject& Obj, App::Proper
     }
 }
 
-void DlgEvaluateMeshImp::slotCreatedDocument(App::Document& Doc)
+void DlgEvaluateMeshImp::slotCreatedDocument(const App::Document& Doc)
 {
 }
 
-void DlgEvaluateMeshImp::slotDeletedDocument(App::Document& Doc)
+void DlgEvaluateMeshImp::slotDeletedDocument(const App::Document& Doc)
 {
     if (&Doc == getDocument()) {
         // the view is already destroyed

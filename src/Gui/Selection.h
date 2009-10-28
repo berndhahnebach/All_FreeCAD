@@ -33,7 +33,6 @@
 #include <CXX/Objects.hxx>
 
 #include <Base/Observer.h>
-#include <Base/PyExport.h>
 #include <Base/Type.h>
 #include <App/Document.h>
 
@@ -270,8 +269,8 @@ protected:
     virtual ~SelectionSingleton();
 
     /// Observer message from the App doc
-    void slotRenamedObject(App::DocumentObject&);
-    void slotDeletedObject(App::DocumentObject&);
+    void slotRenamedObject(const App::DocumentObject&);
+    void slotDeletedObject(const App::DocumentObject&);
 
     /// helper to retrieve document by name
     App::Document* getDocument(const char* pDocName=0) const;

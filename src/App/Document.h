@@ -24,7 +24,6 @@
 #define APP_DOCUMENT_H
 
 #include <CXX/Objects.hxx>
-#include <Base/PyExport.h>
 #include <Base/Observer.h>
 #include <Base/Persistence.h>
 #include <Base/Type.h>
@@ -84,16 +83,16 @@ public:
     /** @name Signals of the document */
     //@{
     /// signal on new Object
-    boost::signal<void (App::DocumentObject&)> signalNewObject;
+    boost::signal<void (const App::DocumentObject&)> signalNewObject;
     //boost::signal<void (const App::DocumentObject&)>     m_sig;
     /// signal on deleted Object
-    boost::signal<void (App::DocumentObject&)> signalDeletedObject;
+    boost::signal<void (const App::DocumentObject&)> signalDeletedObject;
     /// signal on changed Object
-    boost::signal<void (App::DocumentObject&, App::Property&)> signalChangedObject;
+    boost::signal<void (const App::DocumentObject&, const App::Property&)> signalChangedObject;
     /// signal on renamed Object
-    boost::signal<void (App::DocumentObject&)> signalRenamedObject;
+    boost::signal<void (const App::DocumentObject&)> signalRenamedObject;
     /// signal on activated Object
-    boost::signal<void (App::DocumentObject&)> signalActivatedObject;
+    boost::signal<void (const App::DocumentObject&)> signalActivatedObject;
     /** signal on load/save document
      * this signal is given when the document gets streamed.
      * you can use this hook to write additional information in 

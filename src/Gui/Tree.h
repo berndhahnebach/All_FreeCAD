@@ -26,7 +26,6 @@
 
 #include <QTreeWidget>
 
-#include <Base/PyExport.h>
 #include <App/Document.h>
 #include <App/Application.h>
 
@@ -80,11 +79,11 @@ private Q_SLOTS:
     void onTestStatus(void);
 
 private:
-    void slotNewDocument(Gui::Document&);
-    void slotDeleteDocument(Gui::Document&);
-    void slotRenameDocument(Gui::Document&);
-    void slotActiveDocument(Gui::Document&);
-    void slotRelabelDocument(Gui::Document&);
+    void slotNewDocument(const Gui::Document&);
+    void slotDeleteDocument(const Gui::Document&);
+    void slotRenameDocument(const Gui::Document&);
+    void slotActiveDocument(const Gui::Document&);
+    void slotRelabelDocument(const Gui::Document&);
 
     void changeEvent(QEvent *e);
 
@@ -96,7 +95,7 @@ private:
     QTreeWidgetItem* rootItem;
     QTimer* statusTimer;
     static QPixmap* documentPixmap;
-    std::map<Gui::Document*,DocumentItem*> DocumentMap;
+    std::map<const Gui::Document*,DocumentItem*> DocumentMap;
     bool fromOutside;
 };
 
@@ -108,10 +107,10 @@ private:
 class DocumentItem : public QTreeWidgetItem
 {
 public:
-    DocumentItem(Gui::Document* doc, QTreeWidgetItem * parent);
+    DocumentItem(const Gui::Document* doc, QTreeWidgetItem * parent);
     ~DocumentItem();
 
-    Gui::Document* document() const;
+    const Gui::Document* document() const;
     void setObjectHighlighted(const char*, bool);
     void setObjectSelected(const char*, bool);
     void clearSelection(void);
@@ -124,19 +123,19 @@ protected:
     /** Adds a view provider to the document item.
      * If this view provider is already added nothing happens.
      */
-    void slotNewObject(Gui::ViewProviderDocumentObject&);
+    void slotNewObject(const Gui::ViewProviderDocumentObject&);
     /** Removes a view provider from the document item.
      * If this view provider is not added nothing happens.
      */
-    void slotDeleteObject(Gui::ViewProviderDocumentObject&);
-    void slotChangeObject(Gui::ViewProviderDocumentObject&);
-    void slotRenameObject(Gui::ViewProviderDocumentObject&);
-    void slotActiveObject(Gui::ViewProviderDocumentObject&);
-    void slotInEdit      (Gui::ViewProviderDocumentObject&);
-    void slotResetEdit   (Gui::ViewProviderDocumentObject&);
+    void slotDeleteObject(const Gui::ViewProviderDocumentObject&);
+    void slotChangeObject(const Gui::ViewProviderDocumentObject&);
+    void slotRenameObject(const Gui::ViewProviderDocumentObject&);
+    void slotActiveObject(const Gui::ViewProviderDocumentObject&);
+    void slotInEdit      (const Gui::ViewProviderDocumentObject&);
+    void slotResetEdit   (const Gui::ViewProviderDocumentObject&);
 
 private:
-    Gui::Document* pDocument;
+    const Gui::Document* pDocument;
     std::map<std::string,DocumentObjectItem*> ObjectMap;
 };
 

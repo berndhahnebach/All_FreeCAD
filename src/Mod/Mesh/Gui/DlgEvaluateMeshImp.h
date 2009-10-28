@@ -73,15 +73,15 @@ public:
 
 private:
     /** Checks if a new document was created */
-    void slotCreatedDocument(App::Document& Doc);
+    void slotCreatedDocument(const App::Document& Doc);
     /** Checks if the given document is about to be closed */
-    void slotDeletedDocument(App::Document& Doc);
+    void slotDeletedDocument(const App::Document& Doc);
     /** Checks if a new object was added. */
-    void slotCreatedObject(App::DocumentObject& Obj);
+    void slotCreatedObject(const App::DocumentObject& Obj);
     /** Checks if the given object is about to be removed. */
-    void slotDeletedObject(App::DocumentObject& Obj);
+    void slotDeletedObject(const App::DocumentObject& Obj);
     /** The property of an observed object has changed */
-    void slotChangedObject(App::DocumentObject& Obj, App::Property& Prop);
+    void slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop);
 
 protected Q_SLOTS:
     void on_checkOrientationButton_clicked();

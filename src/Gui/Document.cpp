@@ -77,7 +77,7 @@ struct DocumentP
     std::list<Gui::BaseView*> _LpcViews;
     /// List of all registered views
     std::list<Gui::BaseView*> _LpcPassivViews;
-    std::map<App::DocumentObject*,ViewProviderDocumentObject*> _ViewProviderMap;
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*> _ViewProviderMap;
     std::map<std::string,ViewProvider*> _ViewProviderMapAnnotation;
 };
 
@@ -132,7 +132,7 @@ Document::~Document()
     for(std::list<Gui::BaseView*>::iterator it=temp.begin();it!=temp.end();++it)
         delete *it;
 
-    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
     for (it = d->_ViewProviderMap.begin();it != d->_ViewProviderMap.end(); ++it)
         delete it->second;
     std::map<std::string,ViewProvider*>::iterator it2;
@@ -228,9 +228,9 @@ void Document::removeAnnotationViewProvider(const char* name)
 }
 
 
-ViewProvider* Document::getViewProvider(App::DocumentObject* Feat) const
+ViewProvider* Document::getViewProvider(const App::DocumentObject* Feat) const
 {
-    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
     it = d->_ViewProviderMap.find( Feat );
     return ( (it != d->_ViewProviderMap.end()) ? it->second : 0 );
 }
@@ -238,7 +238,7 @@ ViewProvider* Document::getViewProvider(App::DocumentObject* Feat) const
 std::vector<ViewProvider*> Document::getViewProvidersOfType(const Base::Type& typeId) const
 {
     std::vector<ViewProvider*> Objects;
-    for (std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it = 
+    for (std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it = 
          d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it ) {
         if (it->second->getTypeId().isDerivedFrom(typeId))
             Objects.push_back(it->second);
@@ -253,7 +253,7 @@ ViewProvider *Document::getViewProviderByName(const char* name) const
 
     if (pcFeat)
     {
-        std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
+        std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator
         it = d->_ViewProviderMap.find( pcFeat );
 
         if (it != d->_ViewProviderMap.end())
@@ -307,7 +307,7 @@ void Document::setPos(const char* name, const Base::Matrix4D& rclMtrx)
 //*****************************************************************************************************
 // Document
 //*****************************************************************************************************
-void Document::slotNewObject(App::DocumentObject& Obj)
+void Document::slotNewObject(const App::DocumentObject& Obj)
 {
     //Base::Console().Log("Document::slotNewObject() called\n");
     std::string cName = Obj.getViewProviderName();
@@ -327,7 +327,8 @@ void Document::slotNewObject(App::DocumentObject& Obj)
 
         try {
             // if succesfully created set the right name and calculate the view
-            pcProvider->attach(&Obj);
+            //FIXME: Consider to change argument of attach() to const pointer
+            pcProvider->attach(const_cast<App::DocumentObject*>(&Obj));
             pcProvider->updateView();
             pcProvider->setActiveMode();
         }
@@ -358,7 +359,7 @@ void Document::slotNewObject(App::DocumentObject& Obj)
     }
 }
 
-void Document::slotDeletedObject(App::DocumentObject& Obj)
+void Document::slotDeletedObject(const App::DocumentObject& Obj)
 {
     std::list<Gui::BaseView*>::iterator VIt;
     setModified(true);
@@ -385,7 +386,7 @@ void Document::slotDeletedObject(App::DocumentObject& Obj)
     }
 }
 
-void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
+void Document::slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop)
 {
     //Base::Console().Log("Document::slotChangedObject() called\n");
     ViewProvider* viewProvider = getViewProvider(&Obj);
@@ -408,7 +409,7 @@ void Document::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
     setModified(true);
 }
 
-void Document::slotRenamedObject(App::DocumentObject& Obj)
+void Document::slotRenamedObject(const App::DocumentObject& Obj)
 {
     ViewProvider* viewProvider = getViewProvider(&Obj);
     if (viewProvider && viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) {
@@ -416,7 +417,7 @@ void Document::slotRenamedObject(App::DocumentObject& Obj)
     }
 }
 
-void Document::slotActivatedObject(App::DocumentObject& Obj)
+void Document::slotActivatedObject(const App::DocumentObject& Obj)
 {
     ViewProvider* viewProvider = getViewProvider(&Obj);
     if (viewProvider && viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) {
@@ -517,7 +518,7 @@ unsigned int Document::getMemSize (void) const
     unsigned int size = 0;
 
     // size of the view providers in the document
-    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
     for (it = d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it)
         size += it->second->getMemSize();
     return size;
@@ -631,7 +632,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
 
     writer.Stream() << "<Document SchemaVersion=\"1\">" << std::endl;
 
-    std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator it;
 
     // writing the view provider names itself
     writer.incInd(); // indention for 'ViewProviderData Count'
@@ -642,7 +643,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
     writer.setForceXML(true);
     writer.incInd(); // indention for 'ViewProvider name'
     for(it = d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it) {
-        App::DocumentObject* doc = it->first;
+        const App::DocumentObject* doc = it->first;
         ViewProvider* obj = it->second;
         writer.Stream() << writer.ind() << "<ViewProvider name=\""
                         << doc->getNameInDocument() << "\">" << std::endl;
@@ -687,7 +688,7 @@ void Document::createView(const char* sType)
         //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);
     
         // attach the viewprovider
-        std::map<App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
+        std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
         for (It1=d->_ViewProviderMap.begin();It1!=d->_ViewProviderMap.end();++It1)
             ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
         std::map<std::string,ViewProvider*>::const_iterator It2;

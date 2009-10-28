@@ -762,27 +762,27 @@ std::map<std::string, std::string> Application::getExportFilters(void) const
 
 //**************************************************************************
 // signaling
-void Application::slotNewObject(App::DocumentObject&O)
+void Application::slotNewObject(const App::DocumentObject&O)
 {
     this->signalNewObject(O);
 }
 
-void Application::slotDeletedObject(App::DocumentObject&O)
+void Application::slotDeletedObject(const App::DocumentObject&O)
 {
     this->signalDeletedObject(O);
 }
 
-void Application::slotChangedObject(App::DocumentObject&O, App::Property& P)
+void Application::slotChangedObject(const App::DocumentObject&O, const App::Property& P)
 {
     this->signalChangedObject(O,P);
 }
 
-void Application::slotRenamedObject(App::DocumentObject&O)
+void Application::slotRenamedObject(const App::DocumentObject&O)
 {
     this->signalRenamedObject(O);
 }
 
-void Application::slotActivatedObject(App::DocumentObject&O)
+void Application::slotActivatedObject(const App::DocumentObject&O)
 {
     this->signalActivatedObject(O);
 }

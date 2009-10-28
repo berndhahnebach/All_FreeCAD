@@ -150,15 +150,15 @@ void ViewProviderMeshCurvature::init(const Mesh::PropertyCurvatureList* pCurvInf
     pcColorBar->setRange( fMin, fMax, 3 );
 }
 
-void ViewProviderMeshCurvature::slotCreatedObject(App::DocumentObject& Obj)
+void ViewProviderMeshCurvature::slotCreatedObject(const App::DocumentObject& Obj)
 {
 }
 
-void ViewProviderMeshCurvature::slotDeletedObject(App::DocumentObject& Obj)
+void ViewProviderMeshCurvature::slotDeletedObject(const App::DocumentObject& Obj)
 {
 }
 
-void ViewProviderMeshCurvature::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
+void ViewProviderMeshCurvature::slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop)
 {
     // we get this for any object for that a property has changed. Thus, we must regard that object
     // which is linked by our link property
@@ -174,11 +174,11 @@ void ViewProviderMeshCurvature::slotChangedObject(App::DocumentObject& Obj, App:
     }
 }
 
-void ViewProviderMeshCurvature::slotCreatedDocument(App::Document& Doc)
+void ViewProviderMeshCurvature::slotCreatedDocument(const App::Document& Doc)
 {
 }
 
-void ViewProviderMeshCurvature::slotDeletedDocument(App::Document& Doc)
+void ViewProviderMeshCurvature::slotDeletedDocument(const App::Document& Doc)
 {
 }
 

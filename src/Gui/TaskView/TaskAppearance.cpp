@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <algorithm>
+# include <boost/bind.hpp>
 #endif
 
 #include "ui_TaskAppearance.h"
@@ -49,18 +51,17 @@ TaskAppearance::TaskAppearance(QWidget *parent)
     QMetaObject::connectSlotsByName(this);
 
     this->groupLayout()->addWidget(proxy);
-
-    std::vector<Gui::ViewProvider*> views;
-    setDisplayModes(views);
-    setPointSize(views);
-    setLineWidth(views);
-    setTransparency(views);
     Gui::Selection().Attach(this);
+
+    this->connectChangedObject =
+    Gui::Application::Instance->signalChangedObject.connect(boost::bind
+        (&TaskAppearance::slotChangedObject, this, _1, _2));
 }
 
 TaskAppearance::~TaskAppearance()
 {
     delete ui;
+    this->connectChangedObject.disconnect();
     Gui::Selection().Detach(this);
 }
 
@@ -84,6 +85,45 @@ void TaskAppearance::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
         setPointSize(views);
         setLineWidth(views);
         setTransparency(views);
+    }
+}
+
+void TaskAppearance::slotChangedObject(const Gui::ViewProvider& obj,
+                                       const App::Property& prop)
+{
+    // This method gets called if a property of any view provider is changed.
+    // We pick out all the properties for which we need to update this dialog.
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    std::vector<Gui::ViewProvider*>::const_iterator vp = std::find_if
+        (Provider.begin(), Provider.end(), 
+        std::bind2nd(std::equal_to<Gui::ViewProvider*>(),
+        const_cast<Gui::ViewProvider*>(&obj)));
+    if (vp != Provider.end()) {
+        std::string prop_name = obj.getName(&prop);
+        if (prop.getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+            long value = static_cast<const App::PropertyInteger&>(prop).getValue();
+            if (prop_name == "Transparency") {
+                bool blocked = ui->spinTransparency->blockSignals(true);
+                ui->spinTransparency->setValue(value);
+                ui->spinTransparency->blockSignals(blocked);
+                blocked = ui->horizontalSlider->blockSignals(true);
+                ui->horizontalSlider->setValue(value);
+                ui->horizontalSlider->blockSignals(blocked);
+            }
+        }
+        else if (prop.getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            float value = static_cast<const App::PropertyFloat&>(prop).getValue();
+            if (prop_name == "PointSize") {
+                bool blocked = ui->spinPointSize->blockSignals(true);
+                ui->spinPointSize->setValue(value);
+                ui->spinPointSize->blockSignals(blocked);
+            }
+            else if (prop_name == "LineWidth") {
+                bool blocked = ui->spinLineWidth->blockSignals(true);
+                ui->spinLineWidth->setValue(value);
+                ui->spinLineWidth->blockSignals(blocked);
+            }
+        }
     }
 }
 
@@ -203,7 +243,9 @@ void TaskAppearance::setPointSize(const std::vector<Gui::ViewProvider*>& views)
     for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
         App::Property* prop = (*it)->getPropertyByName("PointSize");
         if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            bool blocked = ui->spinPointSize->blockSignals(true);
             ui->spinPointSize->setValue((int)static_cast<App::PropertyFloat*>(prop)->getValue());
+            ui->spinPointSize->blockSignals(blocked);
             pointSize = true;
             break;
         }
@@ -218,7 +260,9 @@ void TaskAppearance::setLineWidth(const std::vector<Gui::ViewProvider*>& views)
     for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
         App::Property* prop = (*it)->getPropertyByName("LineWidth");
         if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+            bool blocked = ui->spinLineWidth->blockSignals(true);
             ui->spinLineWidth->setValue((int)static_cast<App::PropertyFloat*>(prop)->getValue());
+            ui->spinLineWidth->blockSignals(blocked);
             lineWidth = true;
             break;
         }
@@ -233,7 +277,9 @@ void TaskAppearance::setTransparency(const std::vector<Gui::ViewProvider*>& view
     for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
         App::Property* prop = (*it)->getPropertyByName("Transparency");
         if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+            bool blocked = ui->spinTransparency->blockSignals(true);
             ui->spinTransparency->setValue(static_cast<App::PropertyInteger*>(prop)->getValue());
+            ui->spinTransparency->blockSignals(blocked);
             transparency = true;
             break;
         }

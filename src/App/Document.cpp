@@ -70,7 +70,6 @@ recompute path. Also enabels more complicated dependencies beond trees.
 #include "Feature.h"
 #include "PropertyLinks.h"
 
-#include <Base/PyExport.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
