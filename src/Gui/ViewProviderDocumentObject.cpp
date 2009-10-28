@@ -63,10 +63,9 @@ ViewProviderDocumentObject::~ViewProviderDocumentObject()
     DisplayMode.setEnums(0);
 }
 
-
-void ViewProviderDocumentObject::getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>& vec)
+void ViewProviderDocumentObject::getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>& vec) const
 {
-	vec.push_back(new Gui::TaskView::TaskAppearance());
+    vec.push_back(new Gui::TaskView::TaskAppearance());
 }
 
 void ViewProviderDocumentObject::onChanged(const App::Property* prop)

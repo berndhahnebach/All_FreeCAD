@@ -350,21 +350,21 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 				  << "Part_Fillet"
                   << "PartDesign_Pad";
 
-	    // Drawing
+    // Drawing
     Gui::ToolBarItem* drawing = new Gui::ToolBarItem( root );
     drawing->setCommand(QT_TR_NOOP("Drawings"));
-    *drawing  << "Drawing_Open" 
+    *drawing << "Drawing_Open" 
              << "Separator" 
              << "Drawing_NewA3Landscape"  
              << "Drawing_NewView" 
              << "Drawing_ExportPage" ;
 
-		    // Raytracing
+    // Raytracing
     Gui::ToolBarItem* raytracing = new Gui::ToolBarItem( root );
-    raytracing->setCommand(QT_TR_NOOP("Drawings"));
-    *raytracing  << "Raytracing_WriteView" 
-		<< "Raytracing_WriteCamera" 
-		<< "Raytracing_WritePart";
+    raytracing->setCommand(QT_TR_NOOP("Raytracing"));
+    *raytracing << "Raytracing_WriteView" 
+                << "Raytracing_WriteCamera" 
+                << "Raytracing_WritePart";
 
     return root;
 }

@@ -54,9 +54,9 @@ namespace App {
 #include <Base/Vector3D.h>
 
 namespace Gui {
-	namespace TaskView {
-		class TaskContent;
-	}
+    namespace TaskView {
+        class TaskContent;
+    }
 class View3DInventorViewer;
 class ViewProviderPy;
 class ObjectItem;
@@ -146,11 +146,11 @@ public:
 
     /** @name Task panel 
      * With this interface the ViewProvider can steer the 
-	 * apearance of whidgets in the TaskView
+     * appearance of widgets in the task view
      */
     //@{
-    /// get a list of TaskBoxes acociated with this object
-	virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&){}
+    /// get a list of TaskBoxes associated with this object
+    virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&) const {}
     //@}
 
     /// is called when the provider is in edit and a key event occurs. Only ESC ends edit.
