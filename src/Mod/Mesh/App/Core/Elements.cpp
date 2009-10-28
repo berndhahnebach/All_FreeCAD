@@ -683,7 +683,9 @@ float MeshGeomFacet::DistanceToPoint (const Base::Vector3f &rclPt, Base::Vector3
 void MeshGeomFacet::SubSample (float fStep, std::vector<Base::Vector3f> &rclPoints) const
 {
   std::vector<Base::Vector3f> clPoints;
-  Base::Vector3f A = _aclPoints[0], B = _aclPoints[1], C = _aclPoints[2];
+  Base::Vector3f A = _aclPoints[0];
+  Base::Vector3f B = _aclPoints[1];
+  Base::Vector3f C = _aclPoints[2];
   Base::Vector3f clVecAB(B - A);
   Base::Vector3f clVecAC(C - A);
   Base::Vector3f clVecBC(C - B);
@@ -740,7 +742,7 @@ void MeshGeomFacet::SubSample (float fStep, std::vector<Base::Vector3f> &rclPoin
 
   // if couldn't subsample the facet take gravity center
   if (clPoints.size() == 0)
-    clPoints.push_back((A + B + C) / 3.0f);
+      clPoints.push_back(this->GetGravityPoint());
 
   rclPoints.insert(rclPoints.end(), clPoints.begin(), clPoints.end());
 }
@@ -857,29 +859,32 @@ bool MeshGeomFacet::IsPointOf (const Base::Vector3f &P) const
 
 float MeshGeomFacet::CenterOfInscribedCircle(Base::Vector3f& rclCenter) const
 {
-  Base::Vector3f p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
-  Base::Vector3f p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
-  Base::Vector3f p2(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
+  const Base::Vector3f& p0 = _aclPoints[0];
+  const Base::Vector3f& p1 = _aclPoints[1];
+  const Base::Vector3f& p2 = _aclPoints[2];
 
-  float a = (p1-p2).Length();
-  float b = (p2-p0).Length();
-  float c = (p0-p1).Length();
+  float a = Base::Distance(p1,p2);
+  float b = Base::Distance(p2,p0);
+  float c = Base::Distance(p0,p1);
 
   // radius of the circle
   float fRadius = Area();
   fRadius *= 2.0f/(a + b + c); 
 
   // center of the circle
-  rclCenter = (a*p0 + b*p1 + c*p2)/(a + b + c);
+  float w = a + b + c;
+  rclCenter.x = (a*p0.x + b*p1.x + c*p2.x)/w;
+  rclCenter.y = (a*p0.y + b*p1.y + c*p2.y)/w;
+  rclCenter.z = (a*p0.z + b*p1.z + c*p2.z)/w;
 
   return fRadius;
 }
 
 float MeshGeomFacet::CenterOfCircumCircle(Base::Vector3f& rclCenter) const
 {
-  Base::Vector3f p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
-  Base::Vector3f p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
-  Base::Vector3f p2(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
+  const Base::Vector3f& p0 = _aclPoints[0];
+  const Base::Vector3f& p1 = _aclPoints[1];
+  const Base::Vector3f& p2 = _aclPoints[2];
 
   Base::Vector3f u = (p1-p0);
   Base::Vector3f v = (p2-p1);
@@ -897,7 +902,10 @@ float MeshGeomFacet::CenterOfCircumCircle(Base::Vector3f& rclCenter) const
   float w2 = (float)(2 * sqrt(vv * ww - vw * vw) * vw / (vv * ww));
 
   // center of the circle
-  rclCenter = (w0 * p0 +w1 * p1 + w2 *p2) / (w0 + w1 + w2);
+  float wx = w0 + w1 + w2;
+  rclCenter.x = (w0*p0.x + w1*p1.x + w2*p2.x)/wx;
+  rclCenter.y = (w0*p0.y + w1*p1.y + w2*p2.y)/wx;
+  rclCenter.z = (w0*p0.z + w1*p1.z + w2*p2.z)/wx;
 
   // radius of the circle
   float fRadius = (float)(sqrt(uu * vv * ww) / (4 * Area()));

@@ -51,7 +51,7 @@ public:
 protected:
     void changeEvent(QEvent *e);
 
-protected Q_SLOTS:
+protected:
     void on_lineEditDownload_fileNameSelected(const QString&);
 };
 
