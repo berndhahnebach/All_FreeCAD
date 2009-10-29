@@ -28,6 +28,7 @@
 # include "InventorAll.h"
 #endif
 
+class QGLWidget;
 
 namespace Gui {
 /**
@@ -52,6 +53,56 @@ protected:
 
 private:
   SbBool interactiveMode;
+};
+
+class GuiExport SoGLWidgetElement : public SoElement {
+  typedef SoElement inherited;
+
+  SO_ELEMENT_HEADER(SoGLWidgetElement);
+
+public:
+  static void initClass(void);
+
+  virtual void init(SoState * state);
+  virtual void push(SoState * state);
+  virtual void pop(SoState * state, const SoElement * prevTopElement);
+
+  virtual SbBool matches(const SoElement * element) const;
+  virtual SoElement * copyMatchInfo(void) const;
+
+  static  void set(SoState * state, QGLWidget * window);
+  static  void get(SoState * state, QGLWidget *& window);
+
+protected:
+  virtual ~SoGLWidgetElement();
+
+protected:
+  QGLWidget * window;
+};
+
+class GuiExport SoGLRenderActionElement : public SoElement {
+  typedef SoElement inherited;
+
+  SO_ELEMENT_HEADER(SoGLRenderActionElement);
+
+public:
+  static void initClass(void);
+
+  virtual void init(SoState * state);
+  virtual void push(SoState * state);
+  virtual void pop(SoState * state, const SoElement * prevTopElement);
+
+  virtual SbBool matches(const SoElement * element) const;
+  virtual SoElement * copyMatchInfo(void) const;
+
+  static  void set(SoState * state, SoGLRenderAction * action);
+  static  void get(SoState * state, SoGLRenderAction * & action);
+
+protected:
+  virtual ~SoGLRenderActionElement();
+
+protected:
+  SoGLRenderAction * glRenderAction;
 };
 
 } // namespace Gui

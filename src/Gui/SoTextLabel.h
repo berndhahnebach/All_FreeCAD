@@ -29,6 +29,8 @@
 #include <Inventor/fields/SoSFColor.h>
 #include <Inventor/fields/SoSFFloat.h>
 #include <Inventor/fields/SoSFBool.h>
+#include <Inventor/fields/SoSFName.h>
+#include <Inventor/fields/SoSFInt32.h>
 
 namespace Gui {
 
@@ -51,6 +53,25 @@ public:
 
 protected:
     virtual ~SoTextLabel() {};
+    virtual void GLRender(SoGLRenderAction *action);
+};
+
+class GuiExport SoLabel : public SoNode {
+    typedef SoNode inherited;
+
+    SO_NODE_HEADER(SoLabel);
+
+public:
+    static void initClass();
+    SoLabel();
+
+    SoMFString string;
+    SoSFColor  textColor;
+    SoSFName   name;
+    SoSFInt32  size;
+
+protected:
+    virtual ~SoLabel() {};
     virtual void GLRender(SoGLRenderAction *action);
 };
 

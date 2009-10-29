@@ -28,16 +28,13 @@
 # include "InventorAll.h"
 #endif
 
-class SoCoordinate3;
-class SoMFString;
-class SbVec2s;
 class SbColor;
 class SoGLRenderAction;
 
 namespace Gui {
 
-class GuiExport SoFCBackgroundGradient : public SoSeparator {
-    typedef SoSeparator inherited;
+class GuiExport SoFCBackgroundGradient : public SoNode {
+    typedef SoNode inherited;
 
     SO_NODE_HEADER(Gui::SoFCBackgroundGradient);
 
@@ -46,16 +43,14 @@ public:
     static void finish(void);
     SoFCBackgroundGradient(void);
 
-    void GLRenderBelowPath (SoGLRenderAction *action);
+    void GLRender (SoGLRenderAction *action);
     void setColorGradient(const SbColor& fromColor, const SbColor& toColor);
     void setColorGradient(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor);
 
 protected:
-    void setViewportSize(const SbVec2s& size);
     virtual ~SoFCBackgroundGradient();
 
-    SoCoordinate3* coords;
-    SbVec2s viewsize;
+    SbColor fCol, tCol, mCol;
 };
 
 } // namespace Gui

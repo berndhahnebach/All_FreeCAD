@@ -65,3 +65,112 @@ const SoFCInteractiveElement * SoFCInteractiveElement::getInstance(SoState * sta
 {
   return (const SoFCInteractiveElement *) SoElement::getConstElement(state, classStackIndex);
 }
+
+// ---------------------------------
+
+SO_ELEMENT_SOURCE(SoGLWidgetElement);
+
+void SoGLWidgetElement::initClass(void)
+{
+  SO_ELEMENT_INIT_CLASS(SoGLWidgetElement, inherited);
+  SO_ENABLE(SoGLRenderAction, SoGLWidgetElement);
+}
+
+void SoGLWidgetElement::init(SoState * state)
+{
+  inherited::init(state);
+  this->window = 0;
+}
+
+SoGLWidgetElement::~SoGLWidgetElement()
+{
+}
+
+void SoGLWidgetElement::set(SoState * state, QGLWidget * window)
+{
+  SoGLWidgetElement * elem = static_cast<SoGLWidgetElement *>
+        (SoElement::getElement(state, classStackIndex));
+  elem->window = window;
+}
+
+void SoGLWidgetElement::get(SoState * state, QGLWidget *& window)
+{
+    const SoGLWidgetElement* that =  static_cast<const SoGLWidgetElement *>
+        (SoElement::getConstElement(state, classStackIndex));
+    window = that->window;
+}
+
+void SoGLWidgetElement::push(SoState * state)
+{
+    inherited::push(state);
+}
+
+void SoGLWidgetElement::pop(SoState * state, const SoElement * prevTopElement)
+{
+    inherited::pop(state, prevTopElement);
+}
+
+SbBool SoGLWidgetElement::matches(const SoElement * element) const
+{
+    return TRUE;
+}
+
+SoElement * SoGLWidgetElement::copyMatchInfo(void) const
+{
+    return 0;
+}
+
+// ---------------------------------
+
+SO_ELEMENT_SOURCE(SoGLRenderActionElement);
+
+void SoGLRenderActionElement::initClass(void)
+{
+  SO_ELEMENT_INIT_CLASS(SoGLRenderActionElement, inherited);
+  SO_ENABLE(SoGLRenderAction, SoGLRenderActionElement);
+}
+
+void SoGLRenderActionElement::init(SoState * state)
+{
+  inherited::init(state);
+  this->glRenderAction = 0;
+}
+
+SoGLRenderActionElement::~SoGLRenderActionElement()
+{
+}
+
+void SoGLRenderActionElement::set(SoState * state, SoGLRenderAction * action)
+{
+  SoGLRenderActionElement * elem = static_cast<SoGLRenderActionElement *>
+        (SoElement::getElement(state, classStackIndex));
+  elem->glRenderAction = action;
+}
+
+void SoGLRenderActionElement::get(SoState * state, SoGLRenderAction * & action)
+{
+    const SoGLRenderActionElement* that =  static_cast<const SoGLRenderActionElement *>
+        (SoElement::getConstElement(state, classStackIndex));
+    action = that->glRenderAction;
+}
+
+void SoGLRenderActionElement::push(SoState * state)
+{
+    inherited::push(state);
+}
+
+void SoGLRenderActionElement::pop(SoState * state, const SoElement * prevTopElement)
+{
+    inherited::pop(state, prevTopElement);
+}
+
+SbBool SoGLRenderActionElement::matches(const SoElement * element) const
+{
+    return TRUE;
+}
+
+SoElement * SoGLRenderActionElement::copyMatchInfo(void) const
+{
+    return 0;
+}
+

@@ -789,6 +789,8 @@ void View3DInventorViewer::actualRedraw(void)
 
     // Render our scenegraph with the image.
     SoGLRenderAction * glra = this->getGLRenderAction();
+    SoGLWidgetElement::set(glra->getState(), qobject_cast<QGLWidget*>(this->getGLWidget()));
+    SoGLRenderActionElement::set(glra->getState(), glra);
     glra->apply(this->backgroundroot);
 
     navigation->updateAnimation();
