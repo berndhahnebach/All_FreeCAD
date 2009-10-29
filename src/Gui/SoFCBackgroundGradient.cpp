@@ -25,8 +25,6 @@
 
 #include "SoFCBackgroundGradient.h"
 
-#include <Inventor/nodes/SoText2.h>
-
 using namespace Gui;
 
 SO_NODE_SOURCE(SoFCBackgroundGradient);
@@ -39,60 +37,12 @@ void SoFCBackgroundGradient::finish()
 /*!
   Constructor.
 */
-SoFCBackgroundGradient::SoFCBackgroundGradient() : viewsize(0,0)
+SoFCBackgroundGradient::SoFCBackgroundGradient()
 {
     SO_NODE_CONSTRUCTOR(SoFCBackgroundGradient);
-
-    // points
-    SbVec3f* vertices = new SbVec3f[9];
-    float fMinX= -0.5f, fMaxX=0.5f, fAvgX=0.0f;
-    float fMinY= -0.5f, fMaxY=0.5f, fAvgY=0.0f;
-    vertices[0].setValue( fMinX, fMaxY, 0.0f);
-    vertices[1].setValue( fAvgX, fMaxY, 0.0f);
-    vertices[2].setValue( fMaxX, fMaxY, 0.0f);
-    vertices[3].setValue( fMinX, fAvgY, 0.0f);
-    vertices[4].setValue( fAvgX, fAvgY, 0.0f);
-    vertices[5].setValue( fMaxX, fAvgY, 0.0f);
-    vertices[6].setValue( fMinX, fMinY, 0.0f);
-    vertices[7].setValue( fAvgX, fMinY, 0.0f);
-    vertices[8].setValue( fMaxX, fMinY, 0.0f);
-
-    coords = new SoCoordinate3;
-    coords->ref();
-    coords->point.setValues(0,9, vertices);
-
-    float colors[9][3] =
-    {  
-        { 0.5f, 0.5f, 0.8f}, { 0.5f, 0.5f, 0.8f}, { 0.5f, 0.5f, 0.8f}, 
-        { 0.7f, 0.7f, 0.9f}, { 0.7f, 0.7f, 0.9f}, { 0.7f, 0.7f, 0.9f}, 
-        { 1.0f, 1.0f, 1.0f}, { 1.0f, 1.0f, 1.0f}, { 1.0f, 1.0f, 1.0f}, 
-    };
-
-    SoMaterial* mat = new SoMaterial;
-    mat->diffuseColor.setValues(0, 9, colors);
-    mat->transparency = 0.0f;
-
-    SoMaterialBinding* matBinding = new SoMaterialBinding;
-    matBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-
-    // face indices
-    int32_t face_idx[32]=
-    {
-        0,3,1,SO_END_FACE_INDEX, 4,1,3,SO_END_FACE_INDEX,
-        1,4,2,SO_END_FACE_INDEX, 5,2,4,SO_END_FACE_INDEX,
-        3,6,4,SO_END_FACE_INDEX, 7,4,6,SO_END_FACE_INDEX,
-        4,7,5,SO_END_FACE_INDEX, 8,5,7,SO_END_FACE_INDEX,
-    };
-
-    SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-    faceset->coordIndex.setValues(0,32,(const int32_t*) face_idx);
-
-    addChild(new SoDirectionalLight);
-    addChild(coords);
-    addChild(mat);
-    addChild(matBinding);
-    addChild(faceset);
-    delete [] vertices;
+    fCol.setValue(0.5f, 0.5f, 0.8f);
+    tCol.setValue(0.7f, 0.7f, 0.9f);
+    mCol.setValue(1.0f, 1.0f, 1.0f);
 }
 
 /*!
@@ -100,83 +50,69 @@ SoFCBackgroundGradient::SoFCBackgroundGradient() : viewsize(0,0)
 */
 SoFCBackgroundGradient::~SoFCBackgroundGradient()
 {
-    //delete THIS;
-    coords->unref();
 }
 
 // doc from parent
 void SoFCBackgroundGradient::initClass(void)
 {
-    SO_NODE_INIT_CLASS(SoFCBackgroundGradient,SoSeparator,"Separator");
+    SO_NODE_INIT_CLASS(SoFCBackgroundGradient,SoNode,"Node");
 }
 
-void SoFCBackgroundGradient::GLRenderBelowPath ( SoGLRenderAction *action )
+void SoFCBackgroundGradient::GLRender (SoGLRenderAction *action)
 {
-    const SbViewportRegion& vp = action->getViewportRegion();
-    const SbVec2s&  size = vp.getWindowSize();
-    if (size != viewsize) {
-        setViewportSize(size);
-        viewsize = size;
-    }
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(-1,1,-1,1,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glPushAttrib(GL_ENABLE_BIT);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
 
-    inherited::GLRenderBelowPath(action);
+    glBegin(GL_TRIANGLE_STRIP);
+    if (mCol[0] < 0) {
+        glColor3f(fCol[0],fCol[1],fCol[2]); glVertex2f(-1, 1);
+        glColor3f(tCol[0],tCol[1],tCol[2]); glVertex2f(-1,-1);
+        glColor3f(fCol[0],fCol[1],fCol[2]); glVertex2f( 1, 1);
+        glColor3f(tCol[0],tCol[1],tCol[2]); glVertex2f( 1,-1);
+    }
+    else {
+        glColor3f(fCol[0],fCol[1],fCol[2]); glVertex2f(-1, 1);
+        glColor3f(mCol[0],mCol[1],mCol[2]); glVertex2f(-1, 0);
+        glColor3f(fCol[0],fCol[1],fCol[2]); glVertex2f( 1, 1);
+        glColor3f(mCol[0],mCol[1],mCol[2]); glVertex2f( 1, 0);
+        glEnd();
+        glBegin(GL_TRIANGLE_STRIP);
+        glColor3f(mCol[0],mCol[1],mCol[2]); glVertex2f(-1, 0);
+        glColor3f(tCol[0],tCol[1],tCol[2]); glVertex2f(-1,-1);
+        glColor3f(mCol[0],mCol[1],mCol[2]); glVertex2f( 1, 0);
+        glColor3f(tCol[0],tCol[1],tCol[2]); glVertex2f( 1,-1);
+    }
+    glEnd();
+
+    glPopAttrib();
+    glPopMatrix(); // restore modelview
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
 }
 
-void SoFCBackgroundGradient::setViewportSize( const SbVec2s& size )
+void SoFCBackgroundGradient::setColorGradient(const SbColor& fromColor,
+                                              const SbColor& toColor)
 {
-    float fRatio = ((float)size[0])/((float)size[1]);
-    float fMinX= -0.5f, fMaxX=0.5f, fAvgX=0.0f;
-    float fMinY= -0.5f, fMaxY=0.5f, fAvgY=0.0f;
-
-    if (fRatio > 1.0f) {
-        fMinX = - 0.5f * fRatio;
-        fMaxX =   0.5f * fRatio;
-    }
-    else if (fRatio < 1.0f) {
-        fMinX = - 0.5f / fRatio;
-        fMaxX =   0.5f / fRatio;
-        fMinY = - 0.5f / fRatio;
-        fMaxY =   0.5f / fRatio;
-    }
-
-    SbVec3f* vertices = new SbVec3f[9];
-    vertices[0].setValue( fMinX, fMaxY, 0.0f );
-    vertices[1].setValue( fAvgX, fMaxY, 0.0f );
-    vertices[2].setValue( fMaxX, fMaxY, 0.0f );
-    vertices[3].setValue( fMinX, fAvgY, 0.0f );
-    vertices[4].setValue( fAvgX, fAvgY, 0.0f );
-    vertices[5].setValue( fMaxX, fAvgY, 0.0f );
-    vertices[6].setValue( fMinX, fMinY, 0.0f );
-    vertices[7].setValue( fAvgX, fMinY, 0.0f );
-    vertices[8].setValue( fMaxX, fMinY, 0.0f );
-    coords->point.setValues(0,9, vertices);
-    delete [] vertices;
+    fCol = fromColor;
+    tCol = toColor;
+    mCol[0] = -1.0f;
 }
 
-void SoFCBackgroundGradient::setColorGradient(const SbColor& fromColor, const SbColor& toColor)
+void SoFCBackgroundGradient::setColorGradient(const SbColor& fromColor,
+                                              const SbColor& toColor,
+                                              const SbColor& midColor)
 {
-    SoNode* child = getChild(2);
-    if (child->getTypeId() == SoMaterial::getClassTypeId()) {
-        const float* rgb1 = fromColor.getValue();
-        const float* rgb2 = toColor.getValue();
-        SbColor mid(0.5f*(rgb1[0]+rgb2[0]), 0.5f*(rgb1[1]+rgb2[1]), 0.5f*(rgb1[2]+rgb2[2]));
-        setColorGradient(fromColor, toColor, mid);
-    }
-}
-
-void SoFCBackgroundGradient::setColorGradient(const SbColor& fromColor, const SbColor& toColor, const SbColor& midColor)
-{
-    SoNode* child = getChild(2);
-    if (child->getTypeId() == SoMaterial::getClassTypeId()) {
-        SoMaterial* mat = static_cast<SoMaterial*>(child);
-        mat->diffuseColor.set1Value(0, fromColor);
-        mat->diffuseColor.set1Value(1, fromColor);
-        mat->diffuseColor.set1Value(2, fromColor);
-        mat->diffuseColor.set1Value(3, midColor);
-        mat->diffuseColor.set1Value(4, midColor);
-        mat->diffuseColor.set1Value(5, midColor);
-        mat->diffuseColor.set1Value(6, toColor);
-        mat->diffuseColor.set1Value(7, toColor);
-        mat->diffuseColor.set1Value(8, toColor);
-    }
+    fCol = fromColor;
+    tCol = toColor;
+    mCol = midColor;
 }

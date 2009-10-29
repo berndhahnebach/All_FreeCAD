@@ -58,6 +58,8 @@ void Gui::SoFCDB::init()
     SoFCSelectionAction             ::initClass();
     SoFCDocumentAction              ::initClass();
     SoFCInteractiveElement          ::initClass();
+    SoGLWidgetElement               ::initClass();
+    SoGLRenderActionElement         ::initClass();
     SoFCEnableSelectionAction       ::initClass();
     SoFCEnableHighlightAction       ::initClass();
     SoFCSelectionColorAction        ::initClass();
@@ -65,6 +67,7 @@ void Gui::SoFCDB::init()
     SoFCDocumentObjectAction        ::initClass();
     SoFCVectorizeSVGAction          ::initClass();
     SoTextLabel                     ::initClass();
+    SoLabel                         ::initClass();
 
 
     PropertyItem                    ::init();
