@@ -56,14 +56,14 @@ protected:
     virtual void GLRender(SoGLRenderAction *action);
 };
 
-class GuiExport SoLabel : public SoNode {
+class GuiExport SoStringLabel : public SoNode {
     typedef SoNode inherited;
 
-    SO_NODE_HEADER(SoLabel);
+    SO_NODE_HEADER(SoStringLabel);
 
 public:
     static void initClass();
-    SoLabel();
+    SoStringLabel();
 
     SoMFString string;
     SoSFColor  textColor;
@@ -71,7 +71,7 @@ public:
     SoSFInt32  size;
 
 protected:
-    virtual ~SoLabel() {};
+    virtual ~SoStringLabel() {};
     virtual void GLRender(SoGLRenderAction *action);
 };
 
