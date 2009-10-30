@@ -1063,6 +1063,9 @@ bool Application::runPythonCode(const char* cmd, bool gui)
 //**************************************************************************
 // Init, Destruct and ingleton
 
+typedef void (*_qt_msg_handler_old)(QtMsgType type, const char *msg);
+_qt_msg_handler_old old_qtmsg_handler = 0;
+
 void messageHandler(QtMsgType type, const char *msg)
 {
 #ifdef FC_DEBUG
@@ -1078,6 +1081,10 @@ void messageHandler(QtMsgType type, const char *msg)
         Base::Console().Error("%s\n", msg);
         abort();                    // deliberately core dump
     }
+#ifdef FC_OS_WIN32
+    if (old_qtmsg_handler)
+        (*old_qtmsg_handler)(type, msg);
+#endif
 #else
     // do not stress user with Qt internals but write to log file if enabled
     Base::Console().Log("%s\n", msg);
@@ -1102,6 +1109,10 @@ void messageHandlerCoin(const SoError * error, void * userdata)
             Base::Console().Error( msg );
             break;
         }
+#ifdef FC_OS_WIN32
+    if (old_qtmsg_handler)
+        (*old_qtmsg_handler)(QtDebugMsg, msg);
+#endif
     }
     else if (error) {
         const char* msg = error->getDebugString().getString();
@@ -1123,7 +1134,7 @@ void Application::initApplication(void)
         // add resources
         Q_INIT_RESOURCE(resource);
         Q_INIT_RESOURCE(translation);
-        qInstallMsgHandler(messageHandler);
+        old_qtmsg_handler = qInstallMsgHandler(messageHandler);
     }
     catch (...) {
         // force to flush the log

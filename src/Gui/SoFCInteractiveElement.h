@@ -105,6 +105,24 @@ protected:
   SoGLRenderAction * glRenderAction;
 };
 
+class GuiExport SoGLWidgetNode : public SoNode {
+    typedef SoNode inherited;
+
+    SO_NODE_HEADER(SoGLWidgetNode);
+
+public:
+    static void initClass(void);
+    SoGLWidgetNode(void);
+
+    QGLWidget * window;
+
+    virtual void doAction(SoAction * action);
+    virtual void GLRender(SoGLRenderAction * action);
+
+protected:
+    virtual ~SoGLWidgetNode();
+};
+
 } // namespace Gui
 
 #endif // GUI_SOFCINTERACTIVEELEMENT_H

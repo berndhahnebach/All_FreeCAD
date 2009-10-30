@@ -309,6 +309,10 @@ void SoLabel::GLRender(SoGLRenderAction *action)
     state->push();
     SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
     SoGLWidgetElement::get(state, window);
+    if (!window) {
+        state->pop();
+        return;
+    }
 
     // Enter in 2D screen mode
     glMatrixMode(GL_PROJECTION);

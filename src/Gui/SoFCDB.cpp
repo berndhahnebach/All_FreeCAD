@@ -60,6 +60,7 @@ void Gui::SoFCDB::init()
     SoFCInteractiveElement          ::initClass();
     SoGLWidgetElement               ::initClass();
     SoGLRenderActionElement         ::initClass();
+    SoGLWidgetNode                  ::initClass();
     SoFCEnableSelectionAction       ::initClass();
     SoFCEnableHighlightAction       ::initClass();
     SoFCSelectionColorAction        ::initClass();

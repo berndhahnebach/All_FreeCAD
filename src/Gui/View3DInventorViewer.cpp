@@ -336,6 +336,17 @@ void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)
     }
 }
 
+void View3DInventorViewer::setGLWidget(void * userdata, SoAction * action)
+{
+    //FIXME: This causes the Coin error message:
+    // Coin error in SoNode::GLRenderS(): GL error: 'GL_STACK_UNDERFLOW', nodetype:
+    // Separator (set envvar COIN_GLERROR_DEBUGGING=1 and re-run to get more information)
+    if (action->isOfType(SoGLRenderAction::getClassTypeId())) {
+        QWidget* gl = reinterpret_cast<QWidget*>(userdata);
+        SoGLWidgetElement::set(action->getState(), qobject_cast<QGLWidget*>(gl));
+    }
+}
+
 void View3DInventorViewer::setGradientBackgroud(bool on)
 {
     if (on && backgroundroot->findChild(pcBackGround) == -1)
@@ -467,6 +478,9 @@ void View3DInventorViewer::savePicture(const char* filename, int w, int h,
     }
     root->addChild(getHeadlight());
     root->addChild(camera);
+    SoCallback* gl = new SoCallback;
+    gl->setCallback(setGLWidget,this->getGLWidget());
+    root->addChild(gl);
     root->addChild(pcViewProviderRoot);
     if (useBackground)
         root->addChild(cb);
@@ -534,6 +548,9 @@ void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage
     }
     root->addChild(getHeadlight());
     root->addChild(camera);
+    SoCallback* gl = new SoCallback;
+    gl->setCallback(setGLWidget, this->getGLWidget());
+    root->addChild(gl);
     root->addChild(pcViewProviderRoot);
     if (useBackground)
         root->addChild(cb);
