@@ -68,7 +68,7 @@ void Gui::SoFCDB::init()
     SoFCDocumentObjectAction        ::initClass();
     SoFCVectorizeSVGAction          ::initClass();
     SoTextLabel                     ::initClass();
-    SoLabel                         ::initClass();
+    SoStringLabel                   ::initClass();
 
 
     PropertyItem                    ::init();

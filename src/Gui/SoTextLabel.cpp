@@ -283,16 +283,16 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
 
 // ------------------------------------------------------
 
-SO_NODE_SOURCE(SoLabel);
+SO_NODE_SOURCE(SoStringLabel);
 
-void SoLabel::initClass()
+void SoStringLabel::initClass()
 {
-    SO_NODE_INIT_CLASS(SoLabel, SoNode, "Node");
+    SO_NODE_INIT_CLASS(SoStringLabel, SoNode, "Node");
 }
 
-SoLabel::SoLabel()
+SoStringLabel::SoStringLabel()
 {
-    SO_NODE_CONSTRUCTOR(SoLabel);
+    SO_NODE_CONSTRUCTOR(SoStringLabel);
     SO_NODE_ADD_FIELD(string, (""));
     SO_NODE_ADD_FIELD(textColor, (SbVec3f(1.0f,1.0f,1.0f)));
     SO_NODE_ADD_FIELD(name, ("Helvetica"));
@@ -302,7 +302,7 @@ SoLabel::SoLabel()
 /**
  * Renders the open edges only.
  */
-void SoLabel::GLRender(SoGLRenderAction *action)
+void SoStringLabel::GLRender(SoGLRenderAction *action)
 {
     QGLWidget* window;
     SoState * state = action->getState();
