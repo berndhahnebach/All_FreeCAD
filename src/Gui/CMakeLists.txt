@@ -67,6 +67,7 @@ set(Gui_MOC_HDRS
 		 DlgKeyboardImp.h
 		 DlgMacroExecuteImp.h
 		 DlgMacroRecordImp.h
+		 DlgRunExternal.h
 		 DlgMaterialPropertiesImp.h
 		 DlgOnlineHelpImp.h
 		 DlgParameterImp.h
@@ -139,6 +140,7 @@ SET(Gui_UIC_SRCS
 		 DlgInputDialog.ui
 		 DlgKeyboard.ui
 		 DlgMacroExecute.ui
+		 DlgRunExternal.ui
 		 DlgMacroRecord.ui
 		 DlgMaterialProperties.ui
 		 DlgOnlineHelp.ui
@@ -201,6 +203,9 @@ SET(Dialog_SRCS
 		 DlgMacroExecute.ui
 		 DlgMacroExecuteImp.cpp
 		 DlgMacroExecuteImp.h
+		 DlgRunExternal.ui
+		 DlgRunExternal.cpp
+		 DlgRunExternal.h
 		 DlgMacroRecord.ui
 		 DlgMacroRecordImp.cpp
 		 DlgMacroRecordImp.h

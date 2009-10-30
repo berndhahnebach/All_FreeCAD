@@ -29,7 +29,7 @@
 #include <Gui/Document.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
-#include <Gui/FileDialog.h>
+#include <Gui/DlgRunExternal.h>
 
 #include "ViewProviderSketch.h"
 
@@ -54,9 +54,15 @@ CmdSketcherNewSketch::CmdSketcherNewSketch()
 
 void CmdSketcherNewSketch::activated(int iMsg)
 {
-    openCommand("Sketcher Create a new Sketch");
-    doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
-    commitCommand();
+	Gui::Dialog::DlgRunExternal dlg(Gui::getMainWindow());
+
+	dlg.ProcName = QString::fromAscii("C:/_SW-Projects/Privat/FreeCAD/FreeCAD_0.9_VC9/bin/sketchflat.exe");
+
+    dlg.Do();
+
+    //openCommand("Sketcher Create a new Sketch");
+    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
+    //commitCommand();
       
 }
 
