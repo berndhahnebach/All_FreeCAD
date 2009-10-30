@@ -263,6 +263,7 @@ protected:
     void printDimension();
 
     static void clearBuffer(void * userdata, SoAction * action);
+    static void setGLWidget(void * userdata, SoAction * action);
     static void interactionStartCB(void * data, SoQtViewer * viewer);
     static void interactionFinishCB(void * data, SoQtViewer * viewer);
     static void interactionLoggerCB(void * ud, SoAction* action);

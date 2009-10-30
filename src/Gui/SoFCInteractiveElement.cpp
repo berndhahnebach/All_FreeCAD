@@ -174,3 +174,41 @@ SoElement * SoGLRenderActionElement::copyMatchInfo(void) const
     return 0;
 }
 
+// ---------------------------------
+
+SO_NODE_SOURCE(SoGLWidgetNode);
+
+/*!
+  Constructor.
+*/
+SoGLWidgetNode::SoGLWidgetNode(void) : window(0)
+{
+    SO_NODE_CONSTRUCTOR(SoGLWidgetNode);
+}
+
+/*!
+  Destructor.
+*/
+SoGLWidgetNode::~SoGLWidgetNode()
+{
+}
+
+// Doc from superclass.
+void SoGLWidgetNode::initClass(void)
+{
+    SO_NODE_INIT_CLASS(SoGLWidgetNode, SoNode, "Node");
+
+    SO_ENABLE(SoGLRenderAction, SoGLWidgetElement);
+}
+
+// Doc from superclass.
+void SoGLWidgetNode::doAction(SoAction * action)
+{
+    SoGLWidgetElement::set(action->getState(), this->window);
+}
+
+// Doc from superclass.
+void SoGLWidgetNode::GLRender(SoGLRenderAction * action)
+{
+    SoGLWidgetNode::doAction(action);
+}
