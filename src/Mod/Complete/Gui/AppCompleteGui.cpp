@@ -31,7 +31,9 @@
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
-//#include "resources/qrc_Complete.cpp"
+
+#include <Mod/Complete/App/CompleteConfiguration.h>
+
 
 // use a different name to CreateCommand()
 void CreateCompleteCommands(void);
@@ -65,11 +67,17 @@ void CompleteGuiExport initCompleteGui()
         //Base::Interpreter().loadModule("AssemblyGui");
         Base::Interpreter().loadModule("DrawingGui");
         Base::Interpreter().loadModule("RaytracingGui");
-        //Base::Interpreter().loadModule("SketcherGui");
+#       ifdef COMPLETE_SHOW_SKETCHER
+        Base::Interpreter().loadModule("SketcherGui");
+#       endif
         Base::Interpreter().loadModule("PartDesignGui");
         Base::Interpreter().loadModule("ImageGui");
         //Base::Interpreter().loadModule("CamGui");
         Base::Interpreter().loadModule("TestGui");
+#       ifdef COMPLETE_USE_DRAFTING
+        Base::Interpreter().loadModule("draftGui");
+#       endif
+
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

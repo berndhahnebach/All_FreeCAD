@@ -21,51 +21,23 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-# include <Python.h>
+#ifndef __CompleteConfiguration_h__
+#define __CompleteConfiguration_h__
+
+#include <FCConfig.h>
+
+// Exporting of App classes
+#ifdef FC_OS_WIN32
+#    define COMPLETE_SHOW_SKETCHER
+#    ifndef _DEBUG
+#        define COMPLETE_USE_DRAFTING
+#    endif
+#else // for Linux
+#    define COMPLETE_USE_DRAFTING
 #endif
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
-
-#include "CompleteConfiguration.h"
-
-extern struct PyMethodDef Complete_methods[];
-
-PyDoc_STRVAR(module_Complete_doc,
-"This module is the Complete module.");
 
 
-/* Python entry */
-extern "C" {
-void AppCompleteExport initComplete()
-{
-    // load dependend module
-    try {
-        Base::Interpreter().loadModule("Part");
-        Base::Interpreter().loadModule("Mesh");
-        Base::Interpreter().loadModule("Points");
-        //Base::Interpreter().loadModule("MeshPart");
-        //Base::Interpreter().loadModule("Assembly");
-        Base::Interpreter().loadModule("Drawing");
-        Base::Interpreter().loadModule("Raytracing");
-#       ifdef COMPLETE_SHOW_SKETCHER
-        Base::Interpreter().loadModule("Sketcher");
-#       endif
-        Base::Interpreter().loadModule("PartDesign");
-        Base::Interpreter().loadModule("Image");
-        //Base::Interpreter().loadModule("Cam");
-#       ifdef COMPLETE_USE_DRAFTING
-        Base::Interpreter().loadModule("Draft");
-#       endif
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        return;
-    }
-    Py_InitModule3("Complete", Complete_methods, module_Complete_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading Complete module... done\n");
-}
 
-} // extern "C"
+#endif
+

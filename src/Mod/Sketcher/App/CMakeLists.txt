@@ -77,7 +77,7 @@ SET(SketchSolver_SRCS
 		 sketchsolver/Derivatives.cpp
 		 sketchsolver/solve.cpp
 		 sketchsolver/solve.h
-		 sketchsolver/SolverPointers.cpp
+		 #sketchsolver/SolverPointers.cpp
 		 sketchsolver/timer.h
 )
 SOURCE_GROUP("Sketchsolver" FILES ${SketchSolver_SRCS})

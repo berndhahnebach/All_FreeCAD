@@ -90,16 +90,31 @@ bool Assistant::startAssistant()
         // get the name of the executable and the doc path
         QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
         QString doc = QString::fromUtf8(App::Application::getHelpDir().c_str());
-        doc = doc + exe.toLower() + QLatin1String(".qhc");
+        QString qhc = doc + exe.toLower() + QLatin1String(".qhc");
 
         static bool first = true;
         if (first) {
             Base::Console().Log("Help file at %s\n", (const char*)doc.toUtf8());
             first = false;
+            // we have first to register the qch befor qhc works!
+            //QString qch = doc + exe.toLower() + QLatin1String(".qch");
+            //QStringList args;
+
+            //args   //<< QLatin1String("-collectionFile") << qhc
+            //       << QLatin1String("-register") << qch;
+            //        
+            //proc->start(app, args);
+            //// start the registering, error if take longer then 10 seconds
+            //if (!proc->waitForFinished(20000)) {
+            //    QMessageBox::critical(0, QObject::tr("FreeCAD Help"),
+            //    QObject::tr("Unable to launch Qt Assistant (%1)").arg(app));
+            //    return false;
+            //}
         }
 
         QStringList args;
-        args << QLatin1String("-collectionFile") << doc
+
+        args << QLatin1String("-collectionFile") << qhc
              << QLatin1String("-enableRemoteControl");
 
         proc->start(app, args);
