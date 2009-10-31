@@ -75,7 +75,8 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
                                       &type, &name, &vel, &cont, &tool, &base ))
         return -1;
 
-    getWaypointPtr()->EndPos = *static_cast<Base::PlacementPy*>(pos)->getPlacementPtr();
+    Base::Placement TempPos = *static_cast<Base::PlacementPy*>(pos)->getPlacementPtr();
+    getWaypointPtr()->EndPos = TempPos;
     getWaypointPtr()->Name   = name;
     std::string typeStr(type);
     if(typeStr=="PTP")

@@ -76,6 +76,7 @@ Trajectory::~Trajectory()
 Trajectory &Trajectory::operator=(const Trajectory& Trac)
 {
     vpcWaypoints.clear();
+    vpcWaypoints.resize(Trac.vpcWaypoints.size());
 
     int i=0;
     for( std::vector<Waypoint*>::const_iterator it=Trac.vpcWaypoints.begin();it!=Trac.vpcWaypoints.end();++it,i++)
