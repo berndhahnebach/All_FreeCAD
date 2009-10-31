@@ -35,6 +35,7 @@
 #  include <Inventor/nodes/SoProfileCoordinate3.h>
 #  include <Inventor/nodes/SoSwitch.h>
 #  include <Inventor/nodes/SoTransformation.h>
+#  include <Inventor/nodes/SoIndexedFaceSet.h>
 #endif
 
 #include <Base/Console.h>
@@ -652,6 +653,88 @@ void SoFCDocumentObjectAction::setHandled()
 }
 
 SbBool SoFCDocumentObjectAction::isHandled() const
+{
+  return this->_handled;
+}
+
+// ---------------------------------------------------------------
+
+SO_ACTION_SOURCE(SoGLSelectAction);
+
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoGLSelectAction::initClass()
+{
+  SO_ACTION_INIT_CLASS(SoGLSelectAction,SoAction);
+
+  SO_ENABLE(SoGLSelectAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoGLSelectAction, SoModelMatrixElement);
+  SO_ENABLE(SoGLSelectAction, SoShapeStyleElement);
+  SO_ENABLE(SoGLSelectAction, SoComplexityElement);
+  SO_ENABLE(SoGLSelectAction, SoComplexityTypeElement);
+  SO_ENABLE(SoGLSelectAction, SoCoordinateElement);
+  SO_ENABLE(SoGLSelectAction, SoFontNameElement);
+  SO_ENABLE(SoGLSelectAction, SoFontSizeElement);
+  SO_ENABLE(SoGLSelectAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoGLSelectAction, SoProfileElement);
+  SO_ENABLE(SoGLSelectAction, SoSwitchElement);
+  SO_ENABLE(SoGLSelectAction, SoUnitsElement);
+  SO_ENABLE(SoGLSelectAction, SoViewVolumeElement);
+  SO_ENABLE(SoGLSelectAction, SoViewingMatrixElement);
+  SO_ENABLE(SoGLSelectAction, SoViewportRegionElement);
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+  SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
+}
+
+SoGLSelectAction::SoGLSelectAction () : _handled(FALSE)
+{
+  x = y = w = h = 0;
+  SO_ACTION_CONSTRUCTOR(SoGLSelectAction);
+}
+
+SoGLSelectAction::~SoGLSelectAction()
+{
+}
+
+void SoGLSelectAction::beginTraversal(SoNode *node)
+{
+  traverse(node);
+}
+
+void SoGLSelectAction::callDoAction(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+void SoGLSelectAction::setHandled()
+{
+  this->_handled = TRUE;
+}
+
+SbBool SoGLSelectAction::isHandled() const
 {
   return this->_handled;
 }

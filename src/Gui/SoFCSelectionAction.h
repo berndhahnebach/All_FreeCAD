@@ -27,6 +27,7 @@
 //#include <Inventor/SoAction.h> 
 #include <Inventor/actions/SoSubAction.h>
 #include <Inventor/events/SoSubEvent.h>
+#include <vector>
 
 class SoSFString;
 class SoSFColor;
@@ -214,6 +215,37 @@ public:
     SbString documentName;
     SbString objectName;
     SbString componentName;
+
+private:
+    SbBool _handled;
+};
+
+/**
+ * The SoGLSelectAction class is used to get all data under a selected area.
+ * @author Werner Mayer
+ */
+class GuiExport SoGLSelectAction : public SoAction
+{
+    SO_ACTION_HEADER(SoGLSelectAction);
+
+public:
+    SoGLSelectAction ();
+    ~SoGLSelectAction();
+
+    void setHandled();
+    SbBool isHandled() const;
+
+    static void initClass();
+
+protected:
+    virtual void beginTraversal(SoNode *node);
+
+private:
+    static void callDoAction(SoAction *action,SoNode *node);
+
+public:
+    std::vector<unsigned int> indices;
+    int x,y,w,h;
 
 private:
     SbBool _handled;
