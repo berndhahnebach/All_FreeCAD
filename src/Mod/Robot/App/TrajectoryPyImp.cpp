@@ -64,7 +64,7 @@ PyObject* TrajectoryPy::insertWaypoints(PyObject * args)
         getTrajectoryPtr()->addWaypoint(Robot::Waypoint("Pt",*plm));
         getTrajectoryPtr()->generateTrajectory();
 
-        Py_Return;
+        return new TrajectoryPy(new Robot::Trajectory(*getTrajectoryPtr()));
     }
 
     PyErr_Clear();
@@ -73,7 +73,7 @@ PyObject* TrajectoryPy::insertWaypoints(PyObject * args)
         getTrajectoryPtr()->addWaypoint(wp);
         getTrajectoryPtr()->generateTrajectory();
        
-        Py_Return;
+        return new TrajectoryPy(new Robot::Trajectory(*getTrajectoryPtr()));
     }
 
     PyErr_Clear();
@@ -88,7 +88,7 @@ PyObject* TrajectoryPy::insertWaypoints(PyObject * args)
         }
         getTrajectoryPtr()->generateTrajectory();
        
-        Py_Return;
+        return new TrajectoryPy(new Robot::Trajectory(*getTrajectoryPtr()));
     }
 
     Py_Error(PyExc_Exception, "Wrong parameters - waypoint or placement expected");

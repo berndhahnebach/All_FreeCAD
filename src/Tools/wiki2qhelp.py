@@ -193,7 +193,7 @@ The help files for FreeCAD.
     about.write(txt)
     about.close()
     qhcfile = OUTPUTPATH + os.sep + "freecad.qhc"
-    if not os.system('qcollectiongenerator '+qhcpfile+' -o '+qhcfile):
+    if not os.system(QCOLLECTIOMGENERATOR+' '+qhcpfile+' -o '+qhcfile):
         if VERBOSE: print "Successfully created ",qhcfile
         return 0
 
