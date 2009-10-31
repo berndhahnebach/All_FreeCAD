@@ -23,6 +23,7 @@ BUILT_SOURCES=\
 		moc_DlgParameterImp.cpp \
 		moc_DlgPreferencesImp.cpp \
 		moc_DlgReportViewImp.cpp \
+		moc_DlgRunExternal.cpp \
 		moc_DlgSettings3DViewImp.cpp \
 		moc_DlgSettingsViewColor.cpp \
 		moc_DlgSettingsColorGradientImp.cpp \
@@ -82,6 +83,7 @@ BUILT_SOURCES=\
 		ui_DlgPreferences.h \
 		ui_DlgProjectInformation.h \
 		ui_DlgReportView.h \
+		ui_DlgRunExternal.h \
 		ui_DlgSettings3DView.h \
 		ui_DlgSettingsViewColor.h \
 		ui_DlgSettingsColorGradient.h \
@@ -123,6 +125,7 @@ libFreeCADGui_la_UI=\
 		DlgPreferences.ui \
 		DlgProjectInformation.ui \
 		DlgReportView.ui \
+		DlgRunExternal.ui \
 		DlgSettings3DView.ui \
 		DlgSettingsViewColor.ui \
 		DlgSettingsDocument.ui \
@@ -196,6 +199,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgProjectInformationImp.h \
 		DlgReportViewImp.cpp \
 		DlgReportViewImp.h \
+		DlgRunExternal.cpp \
+		DlgRunExternal.h \
 		DlgSettings3DViewImp.cpp \
 		DlgSettings3DViewImp.h \
 		DlgSettingsViewColor.cpp \
