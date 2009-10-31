@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
+#include <Gui/WorkbenchManager.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
 
@@ -75,16 +76,56 @@ void CompleteGuiExport initCompleteGui()
         //Base::Interpreter().loadModule("CamGui");
         Base::Interpreter().loadModule("TestGui");
 #       ifdef COMPLETE_USE_DRAFTING
-        Base::Interpreter().loadModule("draftGui");
-#       endif
+        Py::Module module(PyImport_ImportModule("FreeCADGui"),true);
+        Py::Callable method(module.getAttr(std::string("getWorkbench")));
 
+        // Get the CompleteWorkbench handler
+        Py::Tuple args(1);
+        args.setItem(0,Py::String("DraftWorkbench"));
+        Py::Object handler(method.apply(args));
+
+        std::string type;
+        if (!handler.hasAttr(std::string("__Workbench__"))) {
+            // call its GetClassName method if possible
+            Py::Callable method(handler.getAttr(std::string("GetClassName")));
+            Py::Tuple args;
+            Py::String result(method.apply(args));
+            type = result.as_std_string();
+            if (type == "Gui::PythonWorkbench") {
+                Gui::Workbench* wb = Gui::WorkbenchManager::instance()->createWorkbench("DraftWorkbench", type);
+                handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject(), true));
+            }
+
+            // import the matching module first
+            Py::Callable activate(handler.getAttr(std::string("Initialize")));
+            activate.apply(args);
+        }
+
+        // Get the CompleteWorkbench handler
+        args.setItem(0,Py::String("CompleteWorkbench"));
+        Py::Object handler2(method.apply(args));
+        handler2.setAttr("draftToolBar", handler.getAttr("draftToolBar"));
+#       endif
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
         return;
     }
+    catch (Py::Exception& e) {
+        Py::Object o = Py::type(e);
+        if (o.isString()) {
+            Py::String s(o);
+            Base::Console().Error("%s\n", s.as_std_string().c_str());
+        }
+        else {
+            Py::String s(o.repr());
+            Base::Console().Error("%s\n", s.as_std_string().c_str());
+        }
+        // Prints message to console window if we are in interactive mode
+        PyErr_Print();
+    }
 
-	(void) Py_InitModule("CompleteGui", CompleteGui_Import_methods);   /* mod name, table ptr */
+    (void) Py_InitModule("CompleteGui", CompleteGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Complete module... done\n");
 
     // instanciating the commands
