@@ -69,7 +69,7 @@ from draftlibs import fcgeo
 try:
 	from pivy import coin, sogui
 except:
-	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
+	self.ui.printMsg("Error: The Python-Pivy package must be installed on your system to use the Draft module")
 
 # Constants
 
@@ -190,7 +190,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 		newpoint = point
 		for i in snapArray:
 			if i[0] == None:
-				FreeCAD.Console.PrintMessage("snapPoint: debug 'i[0]' is 'None'\n")
+				self.ui.printMsg("snapPoint: debug 'i[0]' is 'None'\n")
 			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
 			if sqdist < shortest:
 				shortest = sqdist
@@ -444,10 +444,13 @@ class lineTracker(Tracker):
 
 class rectangleTracker(Tracker):
 	"a tracking rectangle"
-	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1)):
+	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1),upvec=Vector(0,1,0),xvec=Vector(1,0,0)):
 		Tracker.__init__(self,dotted,scolor,swidth)
 		line = coin.SoLineSet()
 		line.numVertices.setValue(5)
+		self.axis = axis
+		self.upVec = upvec
+		self.xVec = xvec
 		self.coords = coin.SoCoordinate3() # this is the coordinate
 		self.coords.point.setValues(0,5,[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,0]])
 		self.node.addChild(self.coords)
@@ -460,9 +463,12 @@ class rectangleTracker(Tracker):
 		self.origin = point
 
 	def update(self,point):
-		self.coords.point.set1Value(1,point.x,self.origin.y,self.origin.z)
+		diagonal = point.sub(self.origin)
+		inpoint1 = self.origin.add(fcvec.project(diagonal,self.upVec))
+		inpoint2 = self.origin.add(fcvec.project(diagonal,self.xVec))
+		self.coords.point.set1Value(1,inpoint1.x,inpoint1.y,inpoint1.z)
 		self.coords.point.set1Value(2,point.x,point.y,point.z)
-		self.coords.point.set1Value(3,self.origin.x,point.y,self.origin.z)
+		self.coords.point.set1Value(3,inpoint2.x,inpoint2.y,inpoint2.z)
 
 class dimTracker(Tracker):
 	"a tracking bridge for drawing dimensions"
@@ -823,7 +829,7 @@ class Creator:
 		self.ui.cross(False)
 		self.ui.sourceCmd=None
 		FreeCAD.activeDraftCommand = None
-		FreeCAD.Console.PrintMessage("")
+		self.ui.printMsg("")
 		
 	
 class Line(Creator):
@@ -847,7 +853,7 @@ class Line(Creator):
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		FreeCAD.Console.PrintMessage("Pick first point:\n")
+		self.ui.printMsg("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -918,20 +924,20 @@ class Line(Creator):
 		"draws a new segment"
 		if (len(self.node) == 1):
 			self.linetrack.on()
-			FreeCAD.Console.PrintMessage("Pick next point:\n")
+			self.ui.printMsg("Pick next point:\n")
 		elif (len(self.node) == 2):
 			self.createObject()
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
-			FreeCAD.Console.PrintMessage("Pick next point, or (F)inish or (C)lose:\n")
+			self.ui.printMsg("Pick next point, or (F)inish or (C)lose:\n")
 		else:
 			currentshape = self.obj.Shape
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			newshape=currentshape.fuse(newseg)
 			self.obj.Shape = newshape
-			FreeCAD.Console.PrintMessage("Pick next point, or (F)inish or (C)lose:\n")
+			self.ui.printMsg("Pick next point, or (F)inish or (C)lose:\n")
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1012,8 +1018,8 @@ class Rectangle(Creator):
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		self.axis = self.view.getViewDirection()
 		self.snap = snapTracker()
-		self.rect = rectangleTracker(axis=self.axis)
-		FreeCAD.Console.PrintMessage("Pick first point:\n")
+		self.rect = rectangleTracker(axis=self.axis,upvec=self.upVec,xvec=self.xVec)
+		self.ui.printMsg("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -1025,26 +1031,12 @@ class Rectangle(Creator):
 
 	def createObject(self):
 		"creates the final object in the current doc"
-		ve = []
-		edges = []
-		z = self.node[0].z
-		if self.node[0].x < self.node[1].x:
-			minx = self.node[0].x
-			maxx = self.node[-1].x
-		else:
-			minx = self.node[-1].x
-			maxx = self.node[0].x
-		if self.node[0].y < self.node[-1].y:
-			miny = self.node[0].y
-			maxy = self.node[-1].y
-		else:
-			miny = self.node[-1].y
-			maxy = self.node[0].y
-		edges.append(Part.Line(Vector(minx,maxy,z),Vector(maxx,maxy,z)).toShape())
-		edges.append(Part.Line(Vector(maxx,maxy,z),Vector(maxx,miny,z)).toShape())
-		edges.append(Part.Line(Vector(maxx,miny,z),Vector(minx,miny,z)).toShape())
-		edges.append(Part.Line(Vector(minx,miny,z),Vector(minx,maxy,z)).toShape())	
-		shape=Part.Wire(edges)
+		p1 = self.node[0]
+		p3 = self.node[-1]
+		diagonal = p3.sub(p1)
+		p2 = p1.add(fcvec.project(diagonal,self.upVec))
+		p4 = p1.add(fcvec.project(diagonal,self.xVec))
+		shape = Part.makePolygon([p1,p2,p3,p4,p1])
 		self.doc.openTransaction("Create "+self.featureName) 
 		self.obj=self.doc.addObject("Part::Feature",self.featureName)
 		self.obj.Shape = shape
@@ -1077,7 +1069,7 @@ class Rectangle(Creator):
 			self.rect.update(point)
 			self.createObject()
 		else:
-			FreeCAD.Console.PrintMessage("Pick opposite point:\n")
+			self.ui.printMsg("Pick opposite point:\n")
 			self.rect.setorigin(point)
 			self.rect.on()
 
@@ -1115,7 +1107,7 @@ class Arc(Creator):
 		self.constraintrack = lineTracker(dotted=True)
 		self.arctrack = arcTracker(axis=self.axis)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage("Pick center point:\n")
+		self.ui.printMsg("Pick center point:\n")
 
 	def finish(self,closed=False):
 		"finishes the arc"
@@ -1265,7 +1257,7 @@ class Arc(Creator):
 								self.ui.radiusUi()
 								self.step = 1
 								self.linetrack.on()
-								FreeCAD.Console.PrintMessage("Pick radius:\n")
+								self.ui.printMsg("Pick radius:\n")
 					else:
 						if len(self.tangents) == 1:
 							self.tanpoints.append(point)
@@ -1279,7 +1271,7 @@ class Arc(Creator):
 						self.ui.radiusUi()
 						self.step = 1
 						self.linetrack.on()
-						FreeCAD.Console.PrintMessage("Pick radius:\n")
+						self.ui.printMsg("Pick radius:\n")
 				elif (self.step == 1):
 					if self.closedCircle:
 						self.ui.cross(False)
@@ -1289,12 +1281,12 @@ class Arc(Creator):
 						self.linetrack.p1(self.center)
 						self.linetrack.on()
 						self.step = 2
-						FreeCAD.Console.PrintMessage("Pick start angle:\n")
+						self.ui.printMsg("Pick start angle:\n")
 				elif (self.step == 2):
 					self.ui.labelRadius.setText("End angle")
 					self.step = 3
 					self.arctrack.startangle(-self.firstangle)
-					FreeCAD.Console.PrintMessage("Pick end angle:\n")
+					self.ui.printMsg("Pick end angle:\n")
 				else:
 					self.step = 4
 					self.drawArc()
@@ -1332,7 +1324,7 @@ class Arc(Creator):
 		self.arctrack.on()
 		self.ui.radiusUi()
 		self.step = 1
-		FreeCAD.Console.PrintMessage("Pick radius")
+		self.ui.printMsg("Pick radius")
 		
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -1358,13 +1350,13 @@ class Arc(Creator):
 				self.ui.labelRadius.setText("Start angle")
 				self.linetrack.p1(self.center)
 				self.linetrack.on()
-				FreeCAD.Console.PrintMessage("Pick start angle:\n")
+				self.ui.printMsg("Pick start angle:\n")
 		elif (self.step == 2):
 			self.ui.labelRadius.setText("End angle")
 			self.firstangle = math.radians(rad)
 			self.arctrack.trans.rotation.setValue(coin.SbVec3f(0,0,1),self.firstangle)
 			self.step = 3
-			FreeCAD.Console.PrintMessage("Pick end angle:\n")
+			self.ui.printMsg("Pick end angle:\n")
 		else:
 			self.lastangle = math.radians(rad)
 			self.step = 4
@@ -1407,7 +1399,7 @@ class Text(Creator):
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
 		self.snap = snapTracker()
-		FreeCAD.Console.PrintMessage("Pick location point:\n")
+		self.ui.printMsg("Pick location point:\n")
 		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -1470,7 +1462,7 @@ class Dim(Creator):
 		self.snap = snapTracker()
 		self.dimtrack = dimTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		FreeCAD.Console.PrintMessage("Pick first point:\n")
+		self.ui.printMsg("Pick first point:\n")
 		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -1584,7 +1576,7 @@ class Modifier:
 		self.ui.offUi()
 		self.ui.sourceCmd=None
 		FreeCAD.activeDraftCommand = None
-		FreeCAD.Console.PrintMessage("")
+		self.ui.printMsg("")
 		self.ui.cross(False)
 			
 class Move(Modifier):
@@ -1606,7 +1598,7 @@ class Move(Modifier):
 			self.linetrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			FreeCAD.Console.PrintMessage("Select an object to move\n")
+			self.ui.printMsg("Select an object to move\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -1622,7 +1614,7 @@ class Move(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage("Pick start point:\n")
+		self.ui.printMsg("Pick start point:\n")
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1688,7 +1680,7 @@ class Move(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					FreeCAD.Console.PrintMessage("Pick end point:\n")
+					self.ui.printMsg("Pick end point:\n")
 				else:
 					last = self.node[-1]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -1707,7 +1699,7 @@ class Move(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			FreeCAD.Console.PrintMessage("Pick end point point:\n")
+			self.ui.printMsg("Pick end point point:\n")
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
@@ -1765,7 +1757,7 @@ class Rotate(Modifier):
 			self.arctrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			FreeCAD.Console.PrintMessage("Select an object to rotate\n")
+			self.ui.printMsg("Select an object to rotate\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -1792,7 +1784,7 @@ class Rotate(Modifier):
 		self.arctrack = arcTracker(axis=self.axis)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage("Pick rotation center:\n")
+		self.ui.printMsg("Pick rotation center:\n")
 		self.ui.cross(True)
 				
 	def finish(self,closed=False):
@@ -1891,7 +1883,7 @@ class Rotate(Modifier):
 					self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
 					self.linetrack.on()
 					self.step = 1
-					FreeCAD.Console.PrintMessage("Pick base angle:\n")
+					self.ui.printMsg("Pick base angle:\n")
 				elif (self.step == 1):
 					self.ui.labelRadius.setText("Rotation")
 					self.arctrack.startangle(self.firstangle)
@@ -1901,7 +1893,7 @@ class Rotate(Modifier):
 					self.arctrack.trans.scaleFactor.setValue([self.rad,self.rad,self.rad])
 					self.ui.isCopy.show()
 					self.step = 2
-					FreeCAD.Console.PrintMessage("Pick rotation angle:\n")
+					self.ui.printMsg("Pick rotation angle:\n")
 				else:
 					currentrad = fcvec.dist(point,self.center)
 					angle = point.sub(self.center).getAngle(self.xVec)
@@ -1929,7 +1921,7 @@ class Rotate(Modifier):
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Base angle")
 		self.step = 1
-		FreeCAD.Console.PrintMessage("Pick base angle:\n")
+		self.ui.printMsg("Pick base angle:\n")
 
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -1941,7 +1933,7 @@ class Rotate(Modifier):
 			self.ghost.on()
 			self.ui.isCopy.show()
 			self.step = 2
-			FreeCAD.Console.PrintMessage("Pick rotation angle:\n")
+			self.ui.printMsg("Pick rotation angle:\n")
 		else:
 			self.rot(math.radians(rad),self.ui.isCopy.isChecked())
 			self.finish()
@@ -1968,7 +1960,7 @@ class Offset(Modifier):
 			self.arctrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			FreeCAD.Console.PrintMessage("Select an object to offset\n")
+			self.ui.printMsg("Select an object to offset\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		elif len(FreeCADGui.Selection.getSelection()) > 1:
 			FreeCAD.Console.PrintWarning("Offset only works on one object at a time\n")
@@ -2005,7 +1997,7 @@ class Offset(Modifier):
 			if isinstance(e.Curve,Part.Line): self.ghost.append(lineTracker())
 			else: self.ghost.append(arcTracker())
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		self.ui.printMsg("Pick distance:\n")
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2100,7 +2092,7 @@ class Offset(Modifier):
 		if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 		else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
 		angle = fcvec.angle(baseVec,perp)
-		offset1 = fcvec.rotate(offsetVec,angle)
+		offset1 = fcvec.rotate(offsetVec,-angle)
 		offedge1 = fcgeo.offset(edge,offset1)
 		if prev:
 			if (isinstance(prev.Curve,Part.Line)): perp = fcgeo.vec(prev)
@@ -2122,13 +2114,13 @@ class Offset(Modifier):
 			if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 			else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
 			angle = fcvec.angle(baseVec,perp)
-			offset1 = fcvec.rotate(offsetVec,angle)
+			offset1 = fcvec.rotate(offsetVec,-angle)
 			offedge1 = fcgeo.offset(edge,offset1)
 			if next:
 				if (isinstance(next.Curve,Part.Line)): perp = fcgeo.vec(next)
 				else: perp = fcvec.crossproduct(fcvec.new(next.Vertexes[0].Point,next.Curve.Center))
 				angle = fcvec.angle(baseVec,perp)
-				offset2 = fcvec.rotate(offsetVec,angle)
+				offset2 = fcvec.rotate(offsetVec,-angle)
 				offedge2 = fcgeo.offset(next,offset2)
 				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 				last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
@@ -2177,7 +2169,7 @@ class Offset(Modifier):
 			else:
 				targetOb.Shape = Part.Wire(newedges)
 			self.doc.commitTransaction()
-		else: FreeCAD.Console.PrintMessage("Couldn't determine where to apply distance!\n")
+		else: self.ui.printMsg("Couldn't determine where to apply distance!\n")
 		self.finish()
 			
 
@@ -2203,7 +2195,7 @@ class Upgrade(Modifier):
 		self.call = None
 		if not FreeCADGui.Selection.getSelection():
 			self.ui.selectUi()
-			FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
+			self.ui.printMsg("Select an object to upgrade\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2315,7 +2307,7 @@ class Downgrade(Modifier):
 		self.call = None
 		if not FreeCADGui.Selection.getSelection():
 			self.ui.selectUi()
-			FreeCAD.Console.PrintMessage("Select an object to upgrade\n")
+			self.ui.printMsg("Select an object to upgrade\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2390,7 +2382,7 @@ class Trimex(Modifier):
 			self.linetrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			FreeCAD.Console.PrintMessage("Select an object to trim/extend\n")
+			self.ui.printMsg("Select an object to trim/extend\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2431,7 +2423,7 @@ class Trimex(Modifier):
 		self.alt = False
 		self.force = None
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage("Pick distance:\n")
+		self.ui.printMsg("Pick distance:\n")
 		self.ui.cross(True)
 
 				
@@ -2618,7 +2610,7 @@ class Scale(Modifier):
 			self.linetrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			FreeCAD.Console.PrintMessage("Select an object to scale\n")
+			self.ui.printMsg("Select an object to scale\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2634,7 +2626,7 @@ class Scale(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage("Pick base point:\n")
+		self.ui.printMsg("Pick base point:\n")
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2698,7 +2690,7 @@ class Scale(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					FreeCAD.Console.PrintMessage("Pick scale factor:\n")
+					self.ui.printMsg("Pick scale factor:\n")
 				else:
 					last = self.node[-1]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -2717,7 +2709,7 @@ class Scale(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			FreeCAD.Console.PrintMessage("Pick scale factor:\n")
+			self.ui.printMsg("Pick scale factor:\n")
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
