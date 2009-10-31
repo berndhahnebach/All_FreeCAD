@@ -47,7 +47,10 @@ class AppRobotExport Trajectory : public Base::Persistence
 
 public:
     Trajectory();
+    Trajectory(const Trajectory&);
     ~Trajectory();
+
+    Trajectory &operator=(const Trajectory&);
 
 	// from base class
     virtual unsigned int getMemSize (void) const;

@@ -154,7 +154,7 @@ void CmdRobotInsertWaypoint::activated(int iMsg)
     std::string TrakName = pcTrajectoryObject->getNameInDocument();
 
     openCommand("Insert waypoint");
-    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoint(App.activeDocument().%s.Tcp)",TrakName.c_str(),TrakName.c_str(),RoboName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoints(App.activeDocument().%s.Tcp)",TrakName.c_str(),TrakName.c_str(),RoboName.c_str());
     updateActive();
     commitCommand();
       

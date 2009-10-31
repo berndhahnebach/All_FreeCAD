@@ -61,12 +61,29 @@ Trajectory::Trajectory()
 
 }
 
+Trajectory::Trajectory(const Trajectory& Trac)
+:vpcWaypoints(Trac.vpcWaypoints.size()),pcTrajectory(0)
+{
+    operator=(Trac);
+}
+
 Trajectory::~Trajectory()
 {
     for(std::vector<Waypoint*>::iterator it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it)
         delete ( *it );
 }
 
+Trajectory &Trajectory::operator=(const Trajectory& Trac)
+{
+    vpcWaypoints.clear();
+
+    int i=0;
+    for( std::vector<Waypoint*>::const_iterator it=Trac.vpcWaypoints.begin();it!=Trac.vpcWaypoints.end();++it,i++)
+        vpcWaypoints[i] = new Waypoint(**it);
+
+    generateTrajectory();
+    return *this;
+}
 
 double Trajectory::getLength(void) const
 {
@@ -129,8 +146,9 @@ void Trajectory::generateTrajectory(void)
                     KDL::Frame Next = toFrame((*it)->EndPos);
                     pcPath = new KDL::Path_Line(Last,
                                                 Next,
-                                                new KDL::RotationalInterpolation_SingleAxis,
-                                                1.0
+                                                new KDL::RotationalInterpolation_SingleAxis(),
+                                                1.0,
+                                                false
                                                 );
                     pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
                     pcVelPrf->SetProfile(0,pcPath->PathLength());
