@@ -1,7 +1,8 @@
 lib_LTLIBRARIES=libComplete.la Complete.la
 
 libComplete_la_SOURCES=\
-                AppCompletePy.cpp \
+		AppCompletePy.cpp \
+		CompleteConfiguration.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
