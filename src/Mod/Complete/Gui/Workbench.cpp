@@ -40,6 +40,7 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 
+#include <Mod/Complete/App/CompleteConfiguration.h>
 
 using namespace CompleteGui;
 
@@ -207,15 +208,16 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Separator"
           << "Part_ShapeInfo";
 
-  /*  Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
+#   ifdef COMPLETE_SHOW_SKETCHER
+    Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
     sketch->setCommand(QT_TR_NOOP("Ske&tch"));
-    *sketch << "Sketcher_NewSketch"
-            << "Sketcher_LeaveSketch"
-            << "Sketcher_CreateLine"
-            << "Sketcher_CreatePolyline"
-            << "Separator" 
-            << "PartDesign_Pad" 
-            << "PartDesign_Fillet";*/
+    *sketch 
+        << "Sketcher_NewSketch"
+        << "Separator" 
+        << "PartDesign_Pad" 
+        << "PartDesign_Fillet"
+ ;
+#   endif
 
     // Drawing ****************************************************************************************************
 
@@ -239,6 +241,32 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 		<< "Raytracing_WritePart"; 
 ;
 
+    // Drafting ****************************************************************************************************
+#   ifdef COMPLETE_USE_DRAFTING
+
+    Gui::MenuItem* Drafting = new Gui::MenuItem(menuBar);
+
+    Drafting->setCommand(QT_TR_NOOP("&Drafting"));
+    *Drafting 
+		<< "Draft_Line"
+		<< "Draft_Polyline"
+		<< "Draft_Circle"
+		<< "Draft_Arc"
+		<< "Draft_Rectangle"
+		<< "Draft_Text"
+		<< "Draft_Dimension"
+        << "Separator" 
+		<< "Draft_Move" 
+		<< "Draft_Rotate" 
+		<< "Draft_Offset" 
+		<< "Draft_Trimex" 
+		<< "Draft_Upgrade" 
+		<< "Draft_Downgrade" 
+		<< "Draft_Scale" 
+        << "Separator" 
+		<< "Draft_ApplyStyle"
+;
+#   endif
 
     // xxx ****************************************************************************************************
 
@@ -320,18 +348,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     // Part Design
     Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
     part_design->setCommand(QT_TR_NOOP("Part design"));
-    *part_design  /*<< "Sketcher_NewSketch"
-                  << "Sketcher_LeaveSketch"
-                  << "Separator" 
-                  << "Sketcher_CreatePoint" 
-                  << "Sketcher_CreateArc"
-                  << "Sketcher_CreateCircle"
-                  << "Sketcher_CreateLine"
-                  << "Sketcher_CreatePolyline"
-                  << "Sketcher_CreateRectangle"
-                  << "Sketcher_CreateText"
-                  << "Sketcher_CreateDraftLine"	  
-                  << "Separator" */
+    *part_design  
 				  << "Part_Box"
 				  << "Part_Cylinder"
 				  << "Part_Sphere"
@@ -348,7 +365,20 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 				  << "Part_Extrude"
 				  << "Part_Revolve"
 				  << "Part_Fillet"
-                  << "PartDesign_Pad";
+;
+
+    // Sketch based
+
+#   ifdef COMPLETE_SHOW_SKETCHER
+    Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
+    sketch_based->setCommand(QT_TR_NOOP("Sketch based"));
+    *sketch_based 
+        << "Sketcher_NewSketch"
+        << "Separator"
+        << "PartDesign_Pad"
+        << "PartDesign_Fillet"
+;
+#   endif 
 
     // Drawing
     Gui::ToolBarItem* drawing = new Gui::ToolBarItem( root );
@@ -365,6 +395,33 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *raytracing << "Raytracing_WriteView" 
                 << "Raytracing_WriteCamera" 
                 << "Raytracing_WritePart";
+
+    // Drafting ****************************************************************************************************
+#   ifdef COMPLETE_USE_DRAFTING
+
+    Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
+    Drafting->setCommand(QT_TR_NOOP("Drafting"));
+    *Drafting 
+		<< "Draft_Line"
+		<< "Draft_Polyline"
+		<< "Draft_Circle"
+		<< "Draft_Arc"
+		<< "Draft_Rectangle"
+		<< "Draft_Text"
+		<< "Draft_Dimension"
+        << "Separator" 
+		<< "Draft_Move" 
+		<< "Draft_Rotate" 
+		<< "Draft_Offset" 
+		<< "Draft_Trimex" 
+		<< "Draft_Upgrade" 
+		<< "Draft_Downgrade" 
+		<< "Draft_Scale" 
+        << "Separator" 
+		<< "Draft_ApplyStyle"
+;
+#   endif
+
 
     return root;
 }

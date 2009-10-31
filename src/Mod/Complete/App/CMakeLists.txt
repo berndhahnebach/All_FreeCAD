@@ -22,6 +22,7 @@ SET(Complete_SRCS
 		 AppCompletePy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
+		 CompleteConfiguration.h
 )
 
 add_library(Complete SHARED ${Complete_SRCS})
