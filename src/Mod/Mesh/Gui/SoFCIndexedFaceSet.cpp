@@ -63,15 +63,16 @@ SoFCIndexedFaceSet::SoFCIndexedFaceSet() : renderTriangleLimit(100000), selectBu
  */
 void SoFCIndexedFaceSet::GLRender(SoGLRenderAction *action)
 {
-    // Here we must save the model and projection matrices because
-    // we need them later for picking
-    glGetFloatv(GL_MODELVIEW_MATRIX, this->modelview);
-    glGetFloatv(GL_PROJECTION_MATRIX, this->projection);
     if (this->coordIndex.getNum() < 3)
         return;
 
     if (!this->shouldGLRender(action))
         return;
+
+    // Here we must save the model and projection matrices because
+    // we need them later for picking
+    glGetFloatv(GL_MODELVIEW_MATRIX, this->modelview);
+    glGetFloatv(GL_PROJECTION_MATRIX, this->projection);
 
     SoState * state = action->getState();
     SbBool mode = Gui::SoFCInteractiveElement::get(state);

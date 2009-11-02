@@ -703,6 +703,7 @@ void SoGLSelectAction::initClass()
   SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
   SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+  SO_ACTION_ADD_METHOD(SoShape,callDoAction);
   SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);

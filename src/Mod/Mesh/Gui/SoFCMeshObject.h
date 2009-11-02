@@ -32,6 +32,10 @@
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Mod/Mesh/App/Mesh.h>
 
+typedef unsigned int GLuint;
+typedef int GLint;
+typedef float GLfloat;
+
 namespace MeshGui {
 
 class MeshGuiExport SoSFMeshObject : public SoSField {
@@ -120,6 +124,7 @@ public:
     unsigned int renderTriangleLimit;
 
 protected:
+    virtual void doAction(SoAction * action);
     virtual void GLRender(SoGLRenderAction *action);
     virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
     virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
@@ -150,8 +155,15 @@ private:
     void drawPoints(const Mesh::MeshObject *, SbBool needNormals, SbBool ccw) const;
     unsigned int countTriangles(SoAction * action) const;
 
+    void startSelection(SoAction * action, const Mesh::MeshObject*);
+    void stopSelection(SoAction * action, const Mesh::MeshObject*);
+    void renderSelectionGeometry(const Mesh::MeshObject*);
+
 private:
     bool meshChanged;
+    GLuint *selectBuf;
+    GLfloat modelview[16];
+    GLfloat projection[16];
 };
 
 class MeshGuiExport SoFCMeshSegmentShape : public SoShape {

@@ -31,6 +31,7 @@
 # include <OpenGL/gl.h>
 # else
 # include <GL/gl.h>
+# include <GL/glu.h>
 # endif
 # include <Inventor/actions/SoCallbackAction.h>
 # include <Inventor/actions/SoGetBoundingBoxAction.h>
@@ -46,6 +47,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Gui/SoFCInteractiveElement.h>
+#include <Gui/SoFCSelectionAction.h>
 #include <Mod/Mesh/App/Core/MeshIO.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Core/Elements.h>
@@ -443,6 +445,11 @@ void SoFCMeshObjectShape::GLRender(SoGLRenderAction *action)
     {
         SoState*  state = action->getState();
 
+        // Here we must save the model and projection matrices because
+        // we need them later for picking
+        glGetFloatv(GL_MODELVIEW_MATRIX, this->modelview);
+        glGetFloatv(GL_PROJECTION_MATRIX, this->projection);
+
         SbBool mode = Gui::SoFCInteractiveElement::get(state);
         const Mesh::MeshObject * mesh = SoFCMeshObjectElement::get(state);
         if (!mesh || mesh->countPoints() == 0) return;
@@ -668,6 +675,140 @@ void SoFCMeshObjectShape::drawPoints(const Mesh::MeshObject * mesh, SbBool needN
             }
         }
         glEnd();
+    }
+}
+
+void SoFCMeshObjectShape::doAction(SoAction * action)
+{
+    if (action->getTypeId() == Gui::SoGLSelectAction::getClassTypeId()) {
+        SoNode* node = action->getNodeAppliedTo();
+        if (!node) return; // on no node applied
+
+        // The node we have is the parent of this node and the coordinate node
+        // thus we search there for it.
+        SoSearchAction sa;
+        sa.setInterest(SoSearchAction::FIRST);
+        sa.setSearchingAll(FALSE);
+        sa.setType(SoFCMeshObjectNode::getClassTypeId(), 1);
+        sa.apply(node);
+        SoPath * path = sa.getPath();
+        if (!path) return;
+
+        // make sure we got the node we wanted
+        SoNode* coords = path->getNodeFromTail(0);
+        if (!(coords && coords->getTypeId().isDerivedFrom(SoFCMeshObjectNode::getClassTypeId())))
+            return;
+        const Mesh::MeshObject* mesh = static_cast<SoFCMeshObjectNode*>(coords)->mesh.getValue();
+        startSelection(action, mesh);
+        renderSelectionGeometry(mesh);
+        stopSelection(action, mesh);
+    }
+
+    inherited::doAction(action);
+}
+
+void SoFCMeshObjectShape::startSelection(SoAction * action, const Mesh::MeshObject* mesh)
+{
+    Gui::SoGLSelectAction *doaction = static_cast<Gui::SoGLSelectAction*>(action);
+    int x = doaction->x;
+    int y = doaction->y;
+    int w = doaction->w;
+    int h = doaction->h;
+
+    unsigned int bufSize = 5*mesh->countFacets(); // make the buffer big enough
+    this->selectBuf = new GLuint[bufSize];
+
+    glSelectBuffer(bufSize, selectBuf);
+    glRenderMode(GL_SELECT);
+
+    glInitNames();
+    glPushName(-1);
+
+    //double mp[16];
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    glMatrixMode(GL_PROJECTION);
+    //glGetDoublev(GL_PROJECTION_MATRIX ,mp);
+    glPushMatrix();
+    glLoadIdentity();
+    gluPickMatrix(x, y, w, h, viewport);
+    glMultMatrixf(/*mp*/this->projection);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadMatrixf(this->modelview);
+}
+
+void SoFCMeshObjectShape::stopSelection(SoAction * action, const Mesh::MeshObject* mesh)
+{
+    // restoring the original projection matrix
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glFlush();
+
+    // returning to normal rendering mode
+    GLint hits = glRenderMode(GL_RENDER);
+
+    GLenum errorEnum = glGetError();
+
+    unsigned int bufSize = 5*mesh->countFacets();
+    std::vector< std::pair<double,unsigned int> > hit;
+    GLuint index=0;
+    for (GLint ii=0;ii<hits && index<bufSize;ii++) {
+        GLint ct = (GLint)selectBuf[index];
+        hit.push_back(std::pair<double,unsigned int>
+            (selectBuf[index+1]/4294967295.0,selectBuf[index+3]));
+        index = index+ct+3;
+    }
+
+    delete [] selectBuf;
+    selectBuf = 0;
+    bool sorted = true;
+    if(sorted) std::sort(hit.begin(),hit.end());
+
+    Gui::SoGLSelectAction *doaction = static_cast<Gui::SoGLSelectAction*>(action);
+    doaction->indices.reserve(hit.size());
+    for (GLint ii=0;ii<hits;ii++) {
+        doaction->indices.push_back(hit[ii].second);
+    }
+}
+
+void SoFCMeshObjectShape::renderSelectionGeometry(const Mesh::MeshObject* mesh)
+{
+    unsigned int numfaces = mesh->countFacets();
+/*    const int32_t * cindices = this->coordIndex.getValues(0);
+
+    int fcnt=0;
+    int32_t v1, v2, v3;
+    for (int index=0; index<numfaces;index++,cindices++) {
+        glLoadName(fcnt);
+        glBegin(GL_TRIANGLES);
+            v1 = *cindices++;
+            glVertex3fv((const GLfloat*)(coords3d + v1));
+            v2 = *cindices++;
+            glVertex3fv((const GLfloat*)(coords3d + v2));
+            v3 = *cindices++;
+            glVertex3fv((const GLfloat*)(coords3d + v3));
+        glEnd();
+        fcnt++;
+    }*/
+
+    int fcnt=0;
+    const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
+    const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();
+    MeshCore::MeshFacetArray::_TConstIterator it_end = rFacets.end();
+    for (MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != it_end; ++it) {
+        const MeshCore::MeshPoint& v0 = rPoints[it->_aulPoints[0]];
+        const MeshCore::MeshPoint& v1 = rPoints[it->_aulPoints[1]];
+        const MeshCore::MeshPoint& v2 = rPoints[it->_aulPoints[2]];
+        glLoadName(fcnt);
+        glBegin(GL_TRIANGLES);
+        glVertex(v0);
+        glVertex(v1);
+        glVertex(v2);
+        glEnd();
+        fcnt++;
     }
 }
 
