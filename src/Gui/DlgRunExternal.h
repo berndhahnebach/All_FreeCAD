@@ -53,9 +53,11 @@ protected Q_SLOTS:
     virtual void reject (void);
 	virtual void accept (void);
 	virtual void abort  (void);
+	virtual void advanced  (void);
 	void finished ( int exitCode, QProcess::ExitStatus exitStatus );
 protected:
 	QProcess process;
+	bool advancedHidden;
 
 };
 

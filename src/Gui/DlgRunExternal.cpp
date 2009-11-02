@@ -44,13 +44,19 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgRunExternal::DlgRunExternal( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl ),process(this)
+    : QDialog( parent, fl ),process(this),advancedHidden(true)
 {
     this->setupUi(this);
 	QObject::connect(&process,SIGNAL(finished()),this,SLOT(finished()));
 	QObject::connect(ButtonAccept,SIGNAL(clicked()),this,SLOT(accept()));
 	QObject::connect(ButtonDiscard,SIGNAL(clicked()),this,SLOT(reject()));
 	QObject::connect(ButtonAbort,SIGNAL(clicked()),this,SLOT(abort()));
+	QObject::connect(ButtonAdvanced,SIGNAL(clicked()),this,SLOT(advanced()));
+
+	Output->hide();
+	ChooseProgramm->hide();
+	Programm->hide();
+
 
 }
 
@@ -73,7 +79,7 @@ int DlgRunExternal::Do(void)
 }
 void DlgRunExternal::reject (void)
 {
-
+	QDialog::reject();
 }
 
 void DlgRunExternal::accept (void)
@@ -83,11 +89,31 @@ void DlgRunExternal::accept (void)
 
 void DlgRunExternal::abort (void)
 {
+	process.terminate();
+	QDialog::reject();
+
+}
+
+void DlgRunExternal::advanced (void)
+{
+	if(advancedHidden){
+		Output->show();
+		ChooseProgramm->show();
+		Programm->show();
+		advancedHidden = false;
+	}else{
+		Output->hide();
+		ChooseProgramm->hide();
+		Programm->hide();
+		advancedHidden = true;
+	}
 
 }
 
 void DlgRunExternal::finished ( int exitCode, QProcess::ExitStatus exitStatus )
 {
+	ButtonAccept->setEnabled(true);
+	ButtonDiscard->setEnabled(true);
 
 }
 
