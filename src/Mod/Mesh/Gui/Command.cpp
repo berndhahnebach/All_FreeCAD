@@ -730,6 +730,59 @@ bool CmdMeshPolySegm::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
+DEF_STD_CMD_A(CmdMeshPolySelect);
+
+CmdMeshPolySelect::CmdMeshPolySelect()
+  : Command("Mesh_PolySelect")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Select mesh");
+    sToolTipText  = QT_TR_NOOP("Select an area of the mesh");
+    sWhatsThis    = "Mesh_PolySelect";
+    sStatusTip    = QT_TR_NOOP("Select an area of the mesh");
+}
+
+void CmdMeshPolySelect::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it) {
+        if (it == docObj.begin()) {
+            Gui::Document* doc = getActiveGuiDocument();
+            Gui::MDIView* view = doc->getActiveView();
+            if (view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+                Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+                viewer->setEditing(true);
+                viewer->startPicking(Gui::View3DInventorViewer::Rectangle);
+                viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshFaceSet::selectGLCallback);
+            }
+            else {
+                return;
+            }
+        }
+
+        Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
+        pVP->setEdit();
+    }
+}
+
+bool CmdMeshPolySelect::isActive(void)
+{
+    // Check for the selected mesh feature (all Mesh types)
+    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshPolyCut);
 
 CmdMeshPolyCut::CmdMeshPolyCut()
@@ -1536,6 +1589,7 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshIntersection());
   rcCmdMgr.addCommand(new CmdMeshDemolding());
   rcCmdMgr.addCommand(new CmdMeshPolySegm());
+  rcCmdMgr.addCommand(new CmdMeshPolySelect());
   rcCmdMgr.addCommand(new CmdMeshPolyCut());
   rcCmdMgr.addCommand(new CmdMeshPolySplit());
   rcCmdMgr.addCommand(new CmdMeshToolMesh());

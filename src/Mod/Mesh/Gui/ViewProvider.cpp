@@ -56,6 +56,7 @@
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/SoFCSelection.h>
+#include <Gui/SoFCSelectionAction.h>
 #include <Gui/MainWindow.h>
 #include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
@@ -698,6 +699,58 @@ void ViewProviderMesh::segmMeshCallback(void * ud, SoEventCallback * cb)
     view->render();
 }
 
+void ViewProviderMesh::selectGLCallback(void * ud, SoEventCallback * n)
+{
+    // When this callback function is invoked we must in either case leave the edit mode
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    view->setEditing(false);
+    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), selectGLCallback,ud);
+    n->setHandled();
+
+    std::vector<SbVec2f> clPoly = view->getPickedPolygon();
+    if (clPoly.size() != 1)
+        return;
+    const SoEvent* ev = n->getEvent();
+
+    SbVec2f pos = clPoly[0];
+    float pX,pY; pos.getValue(pX,pY);
+    const SbVec2s& sz = view->getViewportRegion().getViewportSizePixels();
+    float fRatio = view->getViewportRegion().getViewportAspectRatio();
+    if (fRatio > 1.0f) {
+        pX = (pX - 0.5f) / fRatio + 0.5f;
+        pos.setValue(pX,pY);
+    }
+    else if (fRatio < 1.0f) {
+        pY = (pY - 0.5f) * fRatio + 0.5f;
+        pos.setValue(pX,pY);
+    }
+
+    short x1 = (short)(pX * sz[0] + 0.5f);
+    short y1 = (short)(pY * sz[1] + 0.5f);
+    SbVec2s loc = ev->getPosition();
+    short x2 = loc[0];
+    short y2 = loc[1];
+
+    short x = (x1+x2)/2;
+    short y = (y1+y2)/2;
+    short w = (x2-x1);
+    short h = (y2-y1);
+    if (w<0) w = -w;
+    if (h<0) h = -h;
+
+    std::vector<Gui::ViewProvider*> views;
+    views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
+    for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+        ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
+        if (that->m_bEdit) {
+            that->unsetEdit();
+            that->selectArea(x, y, w, h);
+        }
+    }
+
+    view->render();
+}
+
 namespace MeshGui {
 template <class T>
 struct iotaGen {
@@ -1134,6 +1187,33 @@ void ViewProviderMesh::removePart()
 unsigned long ViewProviderMesh::countMarkedFacets() const
 {
     return _markedFacets.size();
+}
+
+void ViewProviderMesh::selectArea(short x, short y, short w, short h)
+{
+    Gui::SoGLSelectAction gl;
+    gl.x = x; gl.y = y;
+    gl.w = w; gl.h = h;
+    gl.apply(this->pcHighlight);
+
+    _markedFacets.clear();
+    _markedFacets.reserve(gl.indices.size());
+    for (std::vector<unsigned int>::iterator it = gl.indices.begin(); it != gl.indices.end(); ++it)
+        _markedFacets.push_back(*it);
+
+    // Colorize the selected part
+    pcMatBinding->value = SoMaterialBinding::PER_FACE;
+    App::Color c = ShapeColor.getValue();
+    const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
+    unsigned long uCtFacets = rKernel.CountFacets();
+    pcShapeMaterial->diffuseColor.setNum(uCtFacets);
+
+    SbColor* cols = pcShapeMaterial->diffuseColor.startEditing();
+    for (unsigned long i=0; i<uCtFacets; i++)
+        cols[i].setValue(c.r,c.g,c.b);
+    for (std::vector<unsigned long>::iterator it = _markedFacets.begin(); it != _markedFacets.end(); ++it)
+        cols[*it].setValue(1.0f,0.0f,0.0f);
+    pcShapeMaterial->diffuseColor.finishEditing();
 }
 
 // ------------------------------------------------------

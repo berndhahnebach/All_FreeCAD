@@ -138,6 +138,7 @@ protected:
     virtual void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
     virtual void faceInfo(unsigned long facet);
     virtual void fillHole(unsigned long facet);
+    virtual void selectArea(short, short, short, short);
 
     virtual SoShape* getShapeNode() const;
 
@@ -148,6 +149,7 @@ public:
     static void clipMeshCallback(void * ud, SoEventCallback * n);
     static void partMeshCallback(void * ud, SoEventCallback * n);
     static void segmMeshCallback(void * ud, SoEventCallback * n);
+    static void selectGLCallback(void * ud, SoEventCallback * n);
     /// Creates a tool mesh from the previous picked polygon on the viewer
     static bool createToolMesh(const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol,
             const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>&);
