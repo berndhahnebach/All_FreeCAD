@@ -32,6 +32,7 @@
 # include <QCloseEvent>
 # include <QMessageBox>
 # include <QPointer>
+# include <QGLFormat>
 #endif
 
 #include <QSessionManager>
@@ -1266,6 +1267,12 @@ void Application::runApplication(void)
     plugin = QString::fromUtf8(App::GetApplication().GetHomePath());
     plugin += QLatin1String("/plugins");
     QCoreApplication::addLibraryPath(plugin);
+
+    // check for OpenGL
+    if (!QGLFormat::hasOpenGL()) {
+        QMessageBox::critical(0, QObject::tr("No OpenGL"), QObject::tr("This system has no OpenGL support"));
+        throw Base::Exception("This system has no OpenGL support");
+    }
 
     Application app;
     MainWindow mw;

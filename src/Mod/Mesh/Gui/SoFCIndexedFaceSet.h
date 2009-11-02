@@ -29,6 +29,10 @@
 class SoGLCoordinateElement;
 class SoTextureCoordinateBundle;
 
+typedef unsigned int GLuint;
+typedef int GLint;
+typedef float GLfloat;
+
 namespace MeshGui {
 
 /**
@@ -50,6 +54,8 @@ public:
     unsigned int renderTriangleLimit;
 
 protected:
+    // Force using the reference count mechanism.
+    virtual ~SoFCIndexedFaceSet() {};
     virtual void GLRender(SoGLRenderAction *action);
     void drawCoords(const SoGLCoordinateElement * const vertexlist,
                     const int32_t *vertexindices,
@@ -58,13 +64,20 @@ protected:
                     const int32_t *normalindices,
                     SoMaterialBundle *materials,
                     const int32_t *matindices,
-                    const SbBool overall,
+                    const int32_t binding,
                     const SoTextureCoordinateBundle * const texcoords,
                     const int32_t *texindices);
 
+    void doAction(SoAction * action);
+
 private:
-    // Force using the reference count mechanism.
-    virtual ~SoFCIndexedFaceSet() {};
+    void startSelection(SoAction * action);
+    void stopSelection(SoAction * action);
+    void renderSelectionGeometry(const SbVec3f *);
+
+    GLuint *selectBuf;
+    GLfloat modelview[16];
+    GLfloat projection[16];
 };
 
 } // namespace MeshGui

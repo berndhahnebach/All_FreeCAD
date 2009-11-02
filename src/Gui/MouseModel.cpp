@@ -96,9 +96,6 @@ int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRe
             SbVec2f pos = ev->getNormalizedPosition(vp);
             float pX,pY; pos.getValue(pX,pY);
 
-            SbVec2f org = vp.getViewportOrigin();
-            float Ox, Oy; org.getValue( Ox, Oy );
-
             SbVec2f siz = vp.getViewportSize();
             float dX, dY; siz.getValue( dX, dY );
 
