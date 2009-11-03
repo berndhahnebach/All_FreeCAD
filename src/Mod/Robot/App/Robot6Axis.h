@@ -24,8 +24,8 @@
 #ifndef ROBOT_ROBOT6AXLE_H
 #define ROBOT_ROBOT6AXLE_H
 
-#include "kdl/chain.hpp"
-#include "kdl/jntarray.hpp"
+#include "kdl_cp/chain.hpp"
+#include "kdl_cp/jntarray.hpp"
 
 #include <Base/Persistence.h>
 #include <Base/Placement.h>

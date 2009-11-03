@@ -24,7 +24,7 @@
 #ifndef ROBOT_Trajectory_H
 #define ROBOT_Trajectory_H
 
-#include "kdl/trajectory.hpp"
+#include "kdl_cp/trajectory.hpp"
 
 #include "Waypoint.h"
 

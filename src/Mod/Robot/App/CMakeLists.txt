@@ -19,11 +19,11 @@ else(WIN32)
 		 		 FreeCADApp)
 endif(WIN32)
 
-FILE( GLOB KDL_SRCS KDL/[^.]*.cpp )
-FILE( GLOB KDL_HPPS KDL/[^.]*.hpp KDL/[^.]*.inl)
+FILE( GLOB KDL_SRCS KDL_CP/[^.]*.cpp )
+FILE( GLOB KDL_HPPS KDL_CP/[^.]*.hpp KDL_CP/[^.]*.inl)
 
-FILE( GLOB UTIL_SRCS KDL/utilities/[^.]*.cpp KDL/utilities/[^.]*.cxx)
-FILE( GLOB UTIL_HPPS KDL/utilities/[^.]*.h KDL/utilities/[^.]*.hpp)
+FILE( GLOB UTIL_SRCS KDL_CP/utilities/[^.]*.cpp KDL_CP/utilities/[^.]*.cxx)
+FILE( GLOB UTIL_HPPS KDL_CP/utilities/[^.]*.h KDL_CP/utilities/[^.]*.hpp)
 
 generate_from_xml(Robot6AxisPy)
 generate_from_xml(TrajectoryPy)

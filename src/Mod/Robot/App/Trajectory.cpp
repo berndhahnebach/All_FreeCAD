@@ -28,13 +28,13 @@
 
 #include <Base/Writer.h>
 
-#include "kdl/chain.hpp"
-#include "kdl/path_line.hpp"
-#include "kdl/path_roundedcomposite.hpp"
-#include "kdl/trajectory_composite.hpp"
-#include "kdl/rotational_interpolation_sa.hpp"
-#include "kdl/VelocityProfile_Trap.hpp"
-#include "kdl/Trajectory_Segment.hpp"
+#include "kdl_cp/chain.hpp"
+#include "kdl_cp/path_line.hpp"
+#include "kdl_cp/path_roundedcomposite.hpp"
+#include "kdl_cp/trajectory_composite.hpp"
+#include "kdl_cp/rotational_interpolation_sa.hpp"
+#include "kdl_cp/VelocityProfile_Trap.hpp"
+#include "kdl_cp/Trajectory_Segment.hpp"
 
 #include "Trajectory.h"
 #include "RobotAlgos.h"
