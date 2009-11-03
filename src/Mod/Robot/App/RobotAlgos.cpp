@@ -27,14 +27,14 @@
 
 #endif
 
-#include "kdl/chain.hpp"
-#include "kdl/chainfksolver.hpp"
-#include "kdl/chainfksolverpos_recursive.hpp"
-#include "kdl/frames_io.hpp"
-#include "kdl/chainiksolver.hpp"
-#include "kdl/chainiksolvervel_pinv.hpp"
-#include "kdl/chainjnttojacsolver.hpp"
-#include "kdl/chainiksolverpos_nr.hpp"
+#include "kdl_cp/chain.hpp"
+#include "kdl_cp/chainfksolver.hpp"
+#include "kdl_cp/chainfksolverpos_recursive.hpp"
+#include "kdl_cp/frames_io.hpp"
+#include "kdl_cp/chainiksolver.hpp"
+#include "kdl_cp/chainiksolvervel_pinv.hpp"
+#include "kdl_cp/chainjnttojacsolver.hpp"
+#include "kdl_cp/chainiksolverpos_nr.hpp"
 
 #include <stdio.h>
 #include <iostream>

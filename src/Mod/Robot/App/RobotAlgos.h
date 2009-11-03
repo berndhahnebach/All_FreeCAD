@@ -29,7 +29,7 @@
 #include <Base/Vector3D.h>
 #include <string>
 
-#include "kdl/frames_io.hpp"
+#include "kdl_cp/frames_io.hpp"
 #include <Base/Placement.h>
 
 namespace Robot
