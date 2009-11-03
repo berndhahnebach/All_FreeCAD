@@ -29,24 +29,35 @@
 #include <Base/Console.h>
 #include <Base/VectorPy.h>
 
+#include "TrajectoryPy.h"
+#include "Robot6AxisPy.h"
+#include "Simulation.h"
+
 #include "RobotAlgos.h"
 
 using namespace Robot;
 
 static PyObject * 
-test(PyObject *self, PyObject *args)
+simulateToFile(PyObject *self, PyObject *args)
 {
- //   PyObject *pcObjShape;
- //   PyObject *pcObjDir=0;
+    PyObject *pcRobObj;
+    PyObject *pcTracObj;
+    float tick;
+    char* FileName;
 
-	//if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
- //       return NULL;                             // NULL triggers exception
+	if (!PyArg_ParseTuple(args, "O!O!fs", &(Robot6AxisPy::Type), &pcRobObj,
+                                          &(TrajectoryPy::Type), &pcTracObj,
+                                          &tick,&FileName
+                                          )  )  
+        return NULL;                             // NULL triggers exception
 
     PY_TRY {
-		RobotAlgos Alg;
+        Robot::Trajectory &Trac = * static_cast<TrajectoryPy*>(pcTracObj)->getTrajectoryPtr();
+        Robot::Robot6Axis &Rob  = * static_cast<Robot6AxisPy*>(pcRobObj)->getRobot6AxisPtr();
+		Simulation Sim(Trac,Rob);
 
-		Alg.Test();
 
+		
     } PY_CATCH;
 
 	return Py::new_reference_to(Py::Float(0.0));
@@ -56,7 +67,7 @@ test(PyObject *self, PyObject *args)
 
 /* registration table  */
 struct PyMethodDef Robot_methods[] = {
-   {"test"       ,test      ,METH_VARARGS,
-     "void test(void) - runs test code for development."},
+   {"simulateToFile"       ,simulateToFile      ,METH_VARARGS,
+     "void simulateToFile(Robot,Trajectory,TickSize,FileName) - runs the simulation and write the result to a file."},
     {NULL, NULL}        /* end of table marker */
 };

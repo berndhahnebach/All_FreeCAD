@@ -149,7 +149,7 @@ void Trajectory::generateTrajectory(void)
                                                 Next,
                                                 new KDL::RotationalInterpolation_SingleAxis(),
                                                 1.0,
-                                                false
+                                                true
                                                 );
                     pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
                     pcVelPrf->SetProfile(0,pcPath->PathLength());

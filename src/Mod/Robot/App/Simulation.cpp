@@ -37,6 +37,8 @@
 
 
 #include "Simulation.h"
+#include "Trajectory.h"
+#include "Robot6Axis.h"
 
 using namespace Robot;
 using namespace std;
@@ -50,7 +52,8 @@ using namespace KDL;
 
 
 
-Simulation::Simulation(void) 
+Simulation::Simulation(Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
+:Trac(Trac),Rob(Rob)
 {
 	
 }

@@ -32,7 +32,8 @@
 
 namespace Robot
 {
-
+class Trajectory;
+class Robot6Axis;
 
 /** Algo class for projecting shapes and creating SVG output of it
  */
@@ -41,9 +42,11 @@ class AppRobotExport Simulation
 
 public:
 	/// Constructor
-	Simulation(void);
+	Simulation(Trajectory &Trac,Robot6Axis &Rob);
 	virtual ~Simulation();
 
+    Trajectory &Trac;
+    Robot6Axis &Rob;
 };
 
 
