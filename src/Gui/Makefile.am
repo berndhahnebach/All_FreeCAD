@@ -19,6 +19,7 @@ BUILT_SOURCES=\
 		moc_DlgMacroExecuteImp.cpp \
 		moc_DlgMacroRecordImp.cpp \
 		moc_DlgMaterialPropertiesImp.cpp \
+		moc_DlgEditFileIncludeProptertyExternal.cpp \
 		moc_DlgOnlineHelpImp.cpp \
 		moc_DlgParameterImp.cpp \
 		moc_DlgPreferencesImp.cpp \
@@ -201,6 +202,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgReportViewImp.h \
 		DlgRunExternal.cpp \
 		DlgRunExternal.h \
+		DlgEditFileIncludeProptertyExternal.cpp \
+		DlgEditFileIncludeProptertyExternal.h \
 		DlgSettings3DViewImp.cpp \
 		DlgSettings3DViewImp.h \
 		DlgSettingsViewColor.cpp \

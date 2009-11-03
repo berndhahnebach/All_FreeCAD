@@ -58,6 +58,8 @@ SET(Robot_SRCS
 		 Robot6Axis.h
 		 Trajectory.cpp
 		 Trajectory.h
+		 Simulation.cpp
+		 Simulation.h
 		 Waypoint.cpp
 		 Waypoint.h
 		 ${KDL_SRCS}
