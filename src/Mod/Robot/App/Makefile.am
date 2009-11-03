@@ -150,6 +150,8 @@ libRobot_la_SOURCES=\
 		TrajectoryPyImp.cpp \
 		Waypoint.cpp \
 		Waypoint.h \
+		Simulation.cpp \
+		Simulation.h \
 		WaypointPyImp.cpp 
 
 %.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py

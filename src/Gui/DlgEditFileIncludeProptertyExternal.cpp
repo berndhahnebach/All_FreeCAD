@@ -28,101 +28,40 @@
 
 #include "Application.h"
 #include "MainWindow.h"
-#include "DlgRunExternal.h"
+#include "DlgEditFileIncludeProptertyExternal.h"
 #include "FileDialog.h"
 
 
 using namespace Gui::Dialog;
 
-/* TRANSLATOR Gui::Dialog::DlgRunExternal */
+/* TRANSLATOR Gui::Dialog::DlgEditFileIncludePropertyExternal */
 
 /**
- *  Constructs a DlgRunExternal which is a child of 'parent', with the 
+ *  Constructs a DlgEditFileIncludePropertyExternal which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgRunExternal::DlgRunExternal( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl ),process(this),advancedHidden(true)
+DlgEditFileIncludePropertyExternal::DlgEditFileIncludePropertyExternal( QWidget* parent, Qt::WFlags fl )
+    : DlgRunExternal( parent, fl )
 {
-    this->setupUi(this);
-	QObject::connect(&process,SIGNAL(finished(int, QProcess::ExitStatus)),this,SLOT(finished(int, QProcess::ExitStatus)));
-	QObject::connect(ButtonAccept,SIGNAL(clicked()),this,SLOT(accept()));
-	QObject::connect(ButtonDiscard,SIGNAL(clicked()),this,SLOT(reject()));
-	QObject::connect(ButtonAbort,SIGNAL(clicked()),this,SLOT(abort()));
-	QObject::connect(ButtonAdvanced,SIGNAL(clicked()),this,SLOT(advanced()));
-
-	Output->hide();
-	ChooseProgramm->hide();
-	Programm->hide();
-
 
 }
 
 /** 
  *  Destroys the object and frees any allocated resources
  */
-DlgRunExternal::~DlgRunExternal()
+DlgEditFileIncludePropertyExternal::~DlgEditFileIncludePropertyExternal()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
 
-int DlgRunExternal::Do(void)
+int DlgEditFileIncludePropertyExternal::Do(void)
 {
-	QFileInfo ifo (ProcName);
-
-	ProgrammName->setText(ifo.baseName());
-	Programm->setText(ProcName);
-
-	process.start(ProcName,arguments);
-
-	ButtonAccept->setEnabled(false);
-	ButtonDiscard->setEnabled(false);
-	return exec();
-}
-void DlgRunExternal::reject (void)
-{
-	QDialog::reject();
+	return 0;
 }
 
-void DlgRunExternal::accept (void)
-{
-	QDialog::accept();
-
-}
-
-void DlgRunExternal::abort (void)
-{
-	process.terminate();
-	DlgRunExternal::reject();
-
-}
-
-void DlgRunExternal::advanced (void)
-{
-	if(advancedHidden){
-		Output->show();
-		ChooseProgramm->show();
-		Programm->show();
-		advancedHidden = false;
-	}else{
-		Output->hide();
-		ChooseProgramm->hide();
-		Programm->hide();
-		advancedHidden = true;
-	}
-
-}
-
-void DlgRunExternal::finished ( int exitCode, QProcess::ExitStatus exitStatus )
-{
-	ButtonAccept->setEnabled(true);
-	ButtonDiscard->setEnabled(true);
-	ButtonAbort->setEnabled(false);
-
-}
-
-#include "moc_DlgRunExternal.cpp"
+#include "moc_DlgEditFileIncludeProptertyExternal.cpp"
 

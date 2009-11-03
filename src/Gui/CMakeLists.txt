@@ -68,6 +68,7 @@ set(Gui_MOC_HDRS
 		 DlgMacroExecuteImp.h
 		 DlgMacroRecordImp.h
 		 DlgRunExternal.h
+		 DlgEditFileIncludeProptertyExternal.h
 		 DlgMaterialPropertiesImp.h
 		 DlgOnlineHelpImp.h
 		 DlgParameterImp.h
@@ -206,6 +207,8 @@ SET(Dialog_SRCS
 		 DlgRunExternal.ui
 		 DlgRunExternal.cpp
 		 DlgRunExternal.h
+		 DlgEditFileIncludeProptertyExternal.cpp
+		 DlgEditFileIncludeProptertyExternal.h
 		 DlgMacroRecord.ui
 		 DlgMacroRecordImp.cpp
 		 DlgMacroRecordImp.h
