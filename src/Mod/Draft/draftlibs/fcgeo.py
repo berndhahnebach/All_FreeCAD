@@ -439,6 +439,8 @@ def offset(edge,vector):
 	if the edge is an arc, the vector will be added at its first point
 	and a complete circle will be returned
 	'''
+	if (not isinstance(edge,Part.Shape)) or (not isinstance(vector,FreeCAD.Vector)):
+		return None
 	if isinstance(edge.Curve,Part.Line):
 		v1 = Vector.add(edge.Vertexes[0].Point, vector)
 		v2 = Vector.add(edge.Vertexes[-1].Point, vector)
@@ -457,8 +459,9 @@ def findDistance(point,edge,strict=False):
 	if isinstance(point, FreeCAD.Vector):
 		if isinstance(edge.Curve, Part.Line):
 			segment = vec(edge)
-			perp = fcvec.crossproduct(segment)
 			chord = fcvec.new(point,edge.Vertexes[0].Point)
+			norm = fcvec.crossproduct(segment,chord)
+			perp = fcvec.crossproduct(segment,norm)
 			dist = fcvec.project(chord,perp)
 			newpoint = Vector.add(point, dist)
 			if (dist.Length == 0):

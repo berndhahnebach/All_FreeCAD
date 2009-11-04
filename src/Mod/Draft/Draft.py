@@ -69,7 +69,7 @@ from draftlibs import fcgeo
 try:
 	from pivy import coin, sogui
 except:
-	self.ui.printMsg("Error: The Python-Pivy package must be installed on your system to use the Draft module")
+	FreeCADGui.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
 
 # Constants
 
@@ -190,7 +190,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 		newpoint = point
 		for i in snapArray:
 			if i[0] == None:
-				self.ui.printMsg("snapPoint: debug 'i[0]' is 'None'\n")
+				self.ui.translate("snapPoint: debug 'i[0]' is 'None'\n")
 			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
 			if sqdist < shortest:
 				shortest = sqdist
@@ -632,10 +632,12 @@ class Dimension:
 class DimensionViewProvider:
 	"this class defines a view provider for Dimension objects"
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyLength","FontSize","Base","Font size").FontSize=0.2
+		prm = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+		obj.addProperty("App::PropertyLength","FontSize","Base","Font size").FontSize=prm.GetFloat("textheight")
+		obj.addProperty("App::PropertyString","FontName","Base","Font Name").FontName=prm.GetString("textfont")
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
 		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
-		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines ").ExtLines=0.3
+		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines").ExtLines=0.3
 		obj.Proxy = self
 
 	def calcGeom(self,obj):
@@ -708,6 +710,7 @@ class DimensionViewProvider:
 		self.node.addChild(marks)
 		obj.addDisplayMode(self.node,"Wireframe")
 		self.onChanged(obj,"FontSize")
+		self.onChanged(obj,"FontName")
         
 	def updateData(self, obj, prop):
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
@@ -721,6 +724,8 @@ class DimensionViewProvider:
 	def onChanged(self, vp, prop):
 		if prop == "FontSize":
 			self.font.size = vp.FontSize
+		elif prop == "FontName":
+			self.font.name = str(vp.FontName)
 		elif prop == "LineColor":
 			c = vp.LineColor
 			self.color.rgb.setValue(c[0],c[1],c[2])
@@ -829,7 +834,7 @@ class Creator:
 		self.ui.cross(False)
 		self.ui.sourceCmd=None
 		FreeCAD.activeDraftCommand = None
-		self.ui.printMsg("")
+		self.ui.translate("")
 		
 	
 class Line(Creator):
@@ -853,7 +858,7 @@ class Line(Creator):
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		self.ui.printMsg("Pick first point:\n")
+		self.ui.translate("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -924,20 +929,20 @@ class Line(Creator):
 		"draws a new segment"
 		if (len(self.node) == 1):
 			self.linetrack.on()
-			self.ui.printMsg("Pick next point:\n")
+			self.ui.translate("Pick next point:\n")
 		elif (len(self.node) == 2):
 			self.createObject()
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
-			self.ui.printMsg("Pick next point, or (F)inish or (C)lose:\n")
+			self.ui.translate("Pick next point, or (F)inish or (C)lose:\n")
 		else:
 			currentshape = self.obj.Shape
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			newshape=currentshape.fuse(newseg)
 			self.obj.Shape = newshape
-			self.ui.printMsg("Pick next point, or (F)inish or (C)lose:\n")
+			self.ui.translate("Pick next point, or (F)inish or (C)lose:\n")
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1019,7 +1024,7 @@ class Rectangle(Creator):
 		self.axis = self.view.getViewDirection()
 		self.snap = snapTracker()
 		self.rect = rectangleTracker(axis=self.axis,upvec=self.upVec,xvec=self.xVec)
-		self.ui.printMsg("Pick first point:\n")
+		self.ui.translate("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -1069,7 +1074,7 @@ class Rectangle(Creator):
 			self.rect.update(point)
 			self.createObject()
 		else:
-			self.ui.printMsg("Pick opposite point:\n")
+			self.ui.translate("Pick opposite point:\n")
 			self.rect.setorigin(point)
 			self.rect.on()
 
@@ -1107,7 +1112,7 @@ class Arc(Creator):
 		self.constraintrack = lineTracker(dotted=True)
 		self.arctrack = arcTracker(axis=self.axis)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.printMsg("Pick center point:\n")
+		self.ui.translate("Pick center point:\n")
 
 	def finish(self,closed=False):
 		"finishes the arc"
@@ -1257,7 +1262,7 @@ class Arc(Creator):
 								self.ui.radiusUi()
 								self.step = 1
 								self.linetrack.on()
-								self.ui.printMsg("Pick radius:\n")
+								self.ui.translate("Pick radius:\n")
 					else:
 						if len(self.tangents) == 1:
 							self.tanpoints.append(point)
@@ -1271,7 +1276,7 @@ class Arc(Creator):
 						self.ui.radiusUi()
 						self.step = 1
 						self.linetrack.on()
-						self.ui.printMsg("Pick radius:\n")
+						self.ui.translate("Pick radius:\n")
 				elif (self.step == 1):
 					if self.closedCircle:
 						self.ui.cross(False)
@@ -1281,12 +1286,12 @@ class Arc(Creator):
 						self.linetrack.p1(self.center)
 						self.linetrack.on()
 						self.step = 2
-						self.ui.printMsg("Pick start angle:\n")
+						self.ui.translate("Pick start angle:\n")
 				elif (self.step == 2):
 					self.ui.labelRadius.setText("End angle")
 					self.step = 3
 					self.arctrack.startangle(-self.firstangle)
-					self.ui.printMsg("Pick end angle:\n")
+					self.ui.translate("Pick end angle:\n")
 				else:
 					self.step = 4
 					self.drawArc()
@@ -1324,7 +1329,7 @@ class Arc(Creator):
 		self.arctrack.on()
 		self.ui.radiusUi()
 		self.step = 1
-		self.ui.printMsg("Pick radius")
+		self.ui.translate("Pick radius")
 		
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -1350,13 +1355,13 @@ class Arc(Creator):
 				self.ui.labelRadius.setText("Start angle")
 				self.linetrack.p1(self.center)
 				self.linetrack.on()
-				self.ui.printMsg("Pick start angle:\n")
+				self.ui.translate("Pick start angle:\n")
 		elif (self.step == 2):
 			self.ui.labelRadius.setText("End angle")
 			self.firstangle = math.radians(rad)
 			self.arctrack.trans.rotation.setValue(coin.SbVec3f(0,0,1),self.firstangle)
 			self.step = 3
-			self.ui.printMsg("Pick end angle:\n")
+			self.ui.translate("Pick end angle:\n")
 		else:
 			self.lastangle = math.radians(rad)
 			self.step = 4
@@ -1399,7 +1404,7 @@ class Text(Creator):
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
 		self.snap = snapTracker()
-		self.ui.printMsg("Pick location point:\n")
+		self.ui.translate("Pick location point:\n")
 		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -1462,7 +1467,7 @@ class Dim(Creator):
 		self.snap = snapTracker()
 		self.dimtrack = dimTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		self.ui.printMsg("Pick first point:\n")
+		self.ui.translate("Pick first point:\n")
 		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -1566,6 +1571,15 @@ class Modifier:
 		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 		FreeCAD.activeDraftCommand = self
 		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+		if self.ui.lockedz:
+			self.axis = Vector(0,0,1)
+			self.xVec = Vector(1,0,0)
+			self.upVec = Vector(0,1,0)
+		else:
+			self.axis = fcvec.neg(self.view.getViewDirection())
+			rot = self.view.getViewer().getCamera().orientation.getValue()
+			self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
+			self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 		self.node = []
 		self.ui.sourceCmd = self
 		self.constrain = None
@@ -1576,7 +1590,7 @@ class Modifier:
 		self.ui.offUi()
 		self.ui.sourceCmd=None
 		FreeCAD.activeDraftCommand = None
-		self.ui.printMsg("")
+		self.ui.translate("")
 		self.ui.cross(False)
 			
 class Move(Modifier):
@@ -1598,7 +1612,7 @@ class Move(Modifier):
 			self.linetrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			self.ui.printMsg("Select an object to move\n")
+			self.ui.translate("Select an object to move\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -1614,7 +1628,7 @@ class Move(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.printMsg("Pick start point:\n")
+		self.ui.translate("Pick start point:\n")
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1680,7 +1694,7 @@ class Move(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					self.ui.printMsg("Pick end point:\n")
+					self.ui.translate("Pick end point:\n")
 				else:
 					last = self.node[-1]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -1699,7 +1713,7 @@ class Move(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			self.ui.printMsg("Pick end point point:\n")
+			self.ui.translate("Pick end point point:\n")
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
@@ -1757,7 +1771,7 @@ class Rotate(Modifier):
 			self.arctrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			self.ui.printMsg("Select an object to rotate\n")
+			self.ui.translate("Select an object to rotate\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -1784,7 +1798,7 @@ class Rotate(Modifier):
 		self.arctrack = arcTracker(axis=self.axis)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.printMsg("Pick rotation center:\n")
+		self.ui.translate("Pick rotation center:\n")
 		self.ui.cross(True)
 				
 	def finish(self,closed=False):
@@ -1883,7 +1897,7 @@ class Rotate(Modifier):
 					self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
 					self.linetrack.on()
 					self.step = 1
-					self.ui.printMsg("Pick base angle:\n")
+					self.ui.translate("Pick base angle:\n")
 				elif (self.step == 1):
 					self.ui.labelRadius.setText("Rotation")
 					self.arctrack.startangle(self.firstangle)
@@ -1893,7 +1907,7 @@ class Rotate(Modifier):
 					self.arctrack.trans.scaleFactor.setValue([self.rad,self.rad,self.rad])
 					self.ui.isCopy.show()
 					self.step = 2
-					self.ui.printMsg("Pick rotation angle:\n")
+					self.ui.translate("Pick rotation angle:\n")
 				else:
 					currentrad = fcvec.dist(point,self.center)
 					angle = point.sub(self.center).getAngle(self.xVec)
@@ -1921,7 +1935,7 @@ class Rotate(Modifier):
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Base angle")
 		self.step = 1
-		self.ui.printMsg("Pick base angle:\n")
+		self.ui.translate("Pick base angle:\n")
 
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -1933,7 +1947,7 @@ class Rotate(Modifier):
 			self.ghost.on()
 			self.ui.isCopy.show()
 			self.step = 2
-			self.ui.printMsg("Pick rotation angle:\n")
+			self.ui.translate("Pick rotation angle:\n")
 		else:
 			self.rot(math.radians(rad),self.ui.isCopy.isChecked())
 			self.finish()
@@ -1960,7 +1974,7 @@ class Offset(Modifier):
 			self.arctrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			self.ui.printMsg("Select an object to offset\n")
+			self.ui.translate("Select an object to offset\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		elif len(FreeCADGui.Selection.getSelection()) > 1:
 			FreeCAD.Console.PrintWarning("Offset only works on one object at a time\n")
@@ -1997,7 +2011,7 @@ class Offset(Modifier):
 			if isinstance(e.Curve,Part.Line): self.ghost.append(lineTracker())
 			else: self.ghost.append(arcTracker())
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.printMsg("Pick distance:\n")
+		self.ui.translate("Pick distance:\n")
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2092,13 +2106,13 @@ class Offset(Modifier):
 		if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 		else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
 		angle = fcvec.angle(baseVec,perp)
-		offset1 = fcvec.rotate(offsetVec,-angle)
+		offset1 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
 		offedge1 = fcgeo.offset(edge,offset1)
 		if prev:
 			if (isinstance(prev.Curve,Part.Line)): perp = fcgeo.vec(prev)
 			else: perp = fcvec.crossproduct(fcvec.new(prev.Vertexes[0].Point,prev.Curve.Center))
 			angle = fcvec.angle(baseVec,perp)
-			offset2 = fcvec.rotate(offsetVec,angle)
+			offset2 = fcvec.rotate(offsetVec,angle,axis=self.axis)
 			offedge2 = fcgeo.offset(prev,offset2)
 			inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 			first = inter[fcgeo.findClosest(edge.Vertexes[0].Point,inter)]
@@ -2114,13 +2128,13 @@ class Offset(Modifier):
 			if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 			else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
 			angle = fcvec.angle(baseVec,perp)
-			offset1 = fcvec.rotate(offsetVec,-angle)
+			offset1 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
 			offedge1 = fcgeo.offset(edge,offset1)
 			if next:
 				if (isinstance(next.Curve,Part.Line)): perp = fcgeo.vec(next)
 				else: perp = fcvec.crossproduct(fcvec.new(next.Vertexes[0].Point,next.Curve.Center))
 				angle = fcvec.angle(baseVec,perp)
-				offset2 = fcvec.rotate(offsetVec,-angle)
+				offset2 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
 				offedge2 = fcgeo.offset(next,offset2)
 				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 				last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
@@ -2169,7 +2183,7 @@ class Offset(Modifier):
 			else:
 				targetOb.Shape = Part.Wire(newedges)
 			self.doc.commitTransaction()
-		else: self.ui.printMsg("Couldn't determine where to apply distance!\n")
+		else: self.ui.translate("Couldn't determine where to apply distance!\n")
 		self.finish()
 			
 
@@ -2195,7 +2209,7 @@ class Upgrade(Modifier):
 		self.call = None
 		if not FreeCADGui.Selection.getSelection():
 			self.ui.selectUi()
-			self.ui.printMsg("Select an object to upgrade\n")
+			self.ui.translate("Select an object to upgrade\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2307,7 +2321,7 @@ class Downgrade(Modifier):
 		self.call = None
 		if not FreeCADGui.Selection.getSelection():
 			self.ui.selectUi()
-			self.ui.printMsg("Select an object to upgrade\n")
+			self.ui.translate("Select an object to upgrade\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2382,7 +2396,7 @@ class Trimex(Modifier):
 			self.linetrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			self.ui.printMsg("Select an object to trim/extend\n")
+			self.ui.translate("Select an object to trim/extend\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2423,7 +2437,7 @@ class Trimex(Modifier):
 		self.alt = False
 		self.force = None
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.printMsg("Pick distance:\n")
+		self.ui.translate("Pick distance:\n")
 		self.ui.cross(True)
 
 				
@@ -2610,7 +2624,7 @@ class Scale(Modifier):
 			self.linetrack = None
 			self.constraintrack = None
 			self.ui.selectUi()
-			self.ui.printMsg("Select an object to scale\n")
+			self.ui.translate("Select an object to scale\n")
 			self.call = self.view.addEventCallback("SoEvent",selectObject)
 		else:
 			self.proceed()
@@ -2626,7 +2640,7 @@ class Scale(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.printMsg("Pick base point:\n")
+		self.ui.translate("Pick base point:\n")
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2690,7 +2704,7 @@ class Scale(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					self.ui.printMsg("Pick scale factor:\n")
+					self.ui.translate("Pick scale factor:\n")
 				else:
 					last = self.node[-1]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -2709,7 +2723,7 @@ class Scale(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			self.ui.printMsg("Pick scale factor:\n")
+			self.ui.translate("Pick scale factor:\n")
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
