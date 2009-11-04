@@ -282,6 +282,10 @@ class toolBar:
 
 				QtCore.QMetaObject.connectSlotsByName(draftToolbar)
 
+#---------------------------------------------------------------------------
+# language tools
+#---------------------------------------------------------------------------
+				
 			def retranslateUi(self, draftToolbar):
 				self.cmdlabel.setText(QtGui.QApplication.translate("draftToolbar", "None", None, QtGui.QApplication.UnicodeUTF8))
 				self.cmdlabel.setToolTip(QtGui.QApplication.translate("draftToolbar", "Active Draft command", None, QtGui.QApplication.UnicodeUTF8))
@@ -306,6 +310,14 @@ class toolBar:
 				self.colorButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line color for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.widthButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.applyButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
+
+
+			def translate(self,text,dest="message"):
+				ttext = QtGui.QApplication.translate("draftToolbar", text, None, QtGui.QApplication.UnicodeUTF8)
+				if dest == "message":
+					FreeCAD.Console.PrintMessage(str(ttext))
+				elif dest == "warning":
+					FreeCAD.Console.PrintWarning(str(ttext))
 
 #---------------------------------------------------------------------------
 # Interface modes
