@@ -98,7 +98,7 @@ void Waypoint::Save (Writer &writer) const
                     << "acc=\""  <<  Accelaration	         << "\" "
 					<< "cont=\"" <<  int((Cont)?1:0)         << "\" "
 					<< "tool=\"" <<  Tool                    << "\" "
-					<< "base=\"" <<  Base                    << "\" "
+					<< "base=\"" <<  Base                    << "\">"
 
 					                      
                     << std::endl;

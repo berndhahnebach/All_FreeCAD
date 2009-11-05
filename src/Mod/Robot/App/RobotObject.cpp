@@ -30,6 +30,9 @@
 #include <App/DocumentObjectPy.h>
 #include <Base/Placement.h>
 
+#include <Base/Writer.h>
+#include <Base/Reader.h>
+
 using namespace Robot;
 using namespace App;
 
@@ -124,4 +127,16 @@ void RobotObject::onChanged(const Property* prop)
         block = false;
     }
     App::GeoFeature::onChanged(prop);
+}
+
+void RobotObject::Save (Base::Writer &writer) const
+{
+    App::GeoFeature::Save(writer);
+    robot.Save(writer);
+}
+
+void RobotObject::Restore(Base::XMLReader &reader)
+{
+    App::GeoFeature::Restore(reader);
+    robot.Restore(reader);
 }
