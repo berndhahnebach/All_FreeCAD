@@ -180,7 +180,7 @@ void Robot6Axis::Save (Writer &writer) const
                         << "maxAngle=\""    <<  MaxAngle[i]		     << "\" "
                         << "minAngle=\""    <<  MinAngle[i]			 << "\" "
                         << "Acceleration=\""<<  Acceration[i]        << "\" "
-                        << "Pos=\""         <<  Actuall(i)           << "\">"
+                        << "Pos=\""         <<  Actuall(i)           << "\"/>"
 					                      
                         << std::endl;
     }

@@ -206,7 +206,7 @@ void Trajectory::Restore(XMLReader &reader)
         tmp->Restore(reader);
         vpcWaypoints[i] = tmp;
     }
-
+    generateTrajectory();
 }
 
 
