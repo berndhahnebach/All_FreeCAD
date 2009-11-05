@@ -35,7 +35,8 @@
 
 
 #define SMALL_NUM  1e-6
-#define ERR_TOL    0.05       // Abbruchkriterium für Least-Square-Matching
+#define ERR_TOL    0.05       // Abbruchkriterium für Least-Square-Matching (Fehleränderung zweier aufeinanderfolgenden Iterationsschritten)
+
 
 /*! \class best_fit
  \brief The main class for the best_fit routine

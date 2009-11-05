@@ -10,6 +10,7 @@ include_directories(
 		 ${CMAKE_SOURCE_DIR}/src/3rdParty/ANN/include
 		 #${CMAKE_SOURCE_DIR}/src/3rdParty/OCCAdaptMesh/Include
 		 ${Boost_INCLUDE_DIRS}
+		 ${QT_INCLUDE_DIR}
 		 ${OCC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
@@ -17,9 +18,10 @@ include_directories(
 
 if(WIN32)
 		 set(Cam_LIBS
-				#OCCAdaptMesh
 		 		 Mesh
 		 		 Part
+				 ${QT_DEBUG_LIBRARIES}
+				 ${QT_LIBRARIES}
 		 		 ANN
 		 		 #${ATLAS_LIBRARIES}
 				 importlib_atlas.lib 
@@ -62,8 +64,12 @@ endif(WIN32)
 
 SET(Cam_SRCS
 		 AppCamPy.cpp
+		 deviation.cpp
+		 deviation.h
 		 Approx.cpp
 		 Approx.h
+		 mergedata.h
+		 mergedata.cpp
 		 best_fit.cpp
 		 best_fit.h
 		 BRepAdaptor_CompCurve2.cxx

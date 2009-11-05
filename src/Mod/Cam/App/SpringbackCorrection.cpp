@@ -30,26 +30,25 @@
 #include <Mod/Mesh/App/Core/Builder.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
 
-#include <BRepMesh.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <Base/Builder3D.h>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
+#include <BRep_Builder.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
-#include <BRep_Builder.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
-#include <Poly_Triangulation.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TopExp.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <BRep_Tool.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <TopoDS.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Geom_Surface.hxx>
+
 
 
 
@@ -1229,9 +1228,8 @@ bool SpringbackCorrection::CorrectScale(double zLim)
 }
 */
 
-bool SpringbackCorrection::Perform(int deg_Tol)
+bool SpringbackCorrection::Perform(int deg_Tol, bool out)
 {
-	//deg_Tol = 150;
     unsigned int NumRef;
 	std::vector<double> dist_vec;
 
@@ -1241,22 +1239,21 @@ bool SpringbackCorrection::Perform(int deg_Tol)
     // EdgeMap wird hier gefüllt
 
 	Base::Vector3f nullvec(0.0,0.0,0.0);
-	m_dist_vec.resize(m_CadMesh.CountPoints(), nullvec);
+	m_dist_vec.resize(m_CadMesh.CountPoints(), nullvec); // fülle mit Nullvektoren
 
     cout << "SetFixEdges" << endl;
-    SetFixEdges();
+    
+	SetFixEdges();
 
 	const MeshCore::MeshKernel RefMesh23 = m_CadMesh;
 
     cout << "CalcCurv" << endl;
-    if (!CalcCurv())
-	{   cout << "soso" << endl;
-		return false;
-	}
+
+    if (!CalcCurv())	
+	   return false;
+	
 	// berechne Krümmungswerte über Edgekrümmungen
     // MeshMap wird hier gefüllt
-
-	cout << "herewego" << endl;
 
     const MeshCore::MeshKernel RefMesh = m_CadMesh;  // übegebe CAD-Mesh vor der Verformung
 
@@ -1345,33 +1342,35 @@ bool SpringbackCorrection::Perform(int deg_Tol)
                            (float) (m_set.correction_factor*m_Offset[i]));
     }
 
-	for(int i=0;  i< m_normals.size(); ++i)
+	for(int i=0; i<m_normals.size(); ++i)
 	{
 		 m_dist_vec[i] = m_normals[i];
 	}
 
+	if(out==true) //hier werden die Outputvektoren für Catia geschrieben
+	{
 		MeshCore::MeshPointArray mpts = RefMesh23.GetPoints();
 
-	Base::Builder3D loooo;
-	ofstream anOutputFile;
-	anOutputFile.open("c:/catia_offset.txt");
-    anOutputFile.precision(7);
+		Base::Builder3D loo;
+		ofstream anOutputFile;
+		anOutputFile.open("c:/catia_offset.txt");
+		anOutputFile.precision(7);
 
-	for(int i=0; i< mpts.size(); ++i)
-	{
-		loooo.addSingleArrow(mpts[i], mpts[i] + m_dist_vec[i]);
-		anOutputFile <<  mpts[i].x << " " << mpts[i].y << " " << mpts[i].z << " " << m_dist_vec[i].x << " " << m_dist_vec[i].y << " " << m_dist_vec[i].z << endl;
+		for(int i=0; i< mpts.size(); ++i)
+		{
+			loo.addSingleArrow(mpts[i], mpts[i] + m_dist_vec[i]);
+			anOutputFile <<  mpts[i].x << " " << mpts[i].y << " " << mpts[i].z << " " << m_dist_vec[i].x << " " << m_dist_vec[i].y << " " << m_dist_vec[i].z << endl;
+		}
+
+		loo.saveToFile("c:/prpopo.iv");
+	    anOutputFile.close();
+		return true; //mehr braucne wir auch nicht....
 	}
-
-	loooo.saveToFile("c:/prpopo.iv");
-	  anOutputFile.close();
 
 
 
     std::vector<int> tmpVec;
     tmpVec = FaceCheck(m_CadMesh, deg_Tol+1);
-    cout << " Anfangsstand: " << tmpVec.size() << " remaining" << endl;
-
 	
     NumRef = (int) tmpVec.size();
 
@@ -1988,7 +1987,6 @@ std::vector<double> SpringbackCorrection::MeshCurvature(const TopoDS_Face& aFace
     gp_Pnt2d par;
     gp_Pnt P;
     gp_Vec D1U, D1V, D2U, D2V, D2UV, nor, xvv, xuv, xuu;
-	double tmp_d;
 	double H,K;   // Gaußsche- und mittlere Krümmung
 
 	std::vector<double> aMaxCurve, aMinCurve;
