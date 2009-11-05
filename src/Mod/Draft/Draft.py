@@ -805,36 +805,44 @@ class DimensionViewProvider:
 class Creator:
 	" General settings for all geometry creation tools"
 	def Activated(self):
+		self.ui = None
+		self.call = None
+		self.doc = None
 		self.doc = FreeCAD.ActiveDocument
-		if not self.doc: self.finish()
-		if FreeCAD.activeDraftCommand: self.finish()
-		self.view = FreeCADGui.ActiveDocument.ActiveView
-		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		FreeCAD.activeDraftCommand = self
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-		if self.ui.lockedz:
-			self.axis = Vector(0,0,1)
-			self.xVec = Vector(1,0,0)
-			self.upVec = Vector(0,1,0)
+		if not self.doc:
+			self.finish()
 		else:
-			self.axis = fcvec.neg(self.view.getViewDirection())
-			rot = self.view.getViewer().getCamera().orientation.getValue()
-			self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
-			self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
-		self.ui.cross(True)
-		self.node = []
-		self.pos = []
-		self.ui.sourceCmd = self
-		self.constrain = None
-		self.obj = None
+			if FreeCAD.activeDraftCommand: self.finish()
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			FreeCAD.activeDraftCommand = self
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+			if self.ui.lockedz:
+				self.axis = Vector(0,0,1)
+				self.xVec = Vector(1,0,0)
+				self.upVec = Vector(0,1,0)
+			else:
+				self.axis = fcvec.neg(self.view.getViewDirection())
+				rot = self.view.getViewer().getCamera().orientation.getValue()
+				self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
+				self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
+			self.ui.cross(True)
+			self.node = []
+			self.pos = []
+			self.ui.sourceCmd = self
+			self.constrain = None
+			self.obj = None
 		
 	def finish(self):
 		self.node=[]
-		self.ui.offUi()
-		self.ui.cross(False)
-		self.ui.sourceCmd=None
 		FreeCAD.activeDraftCommand = None
-		self.ui.translate("")
+		if self.ui:
+			self.ui.offUi()
+			self.ui.cross(False)
+			self.ui.sourceCmd = None
+			self.ui.translate("")
+		if self.call:
+			self.view.removeEventCallback("SoEvent",self.call)
 		
 	
 class Line(Creator):
@@ -852,13 +860,14 @@ class Line(Creator):
 
 	def Activated(self):
 		Creator.Activated(self)
-		self.featureName = "Line"
-		self.ui.lineUi()
-		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.snap = snapTracker()
-		self.linetrack = lineTracker()
-		self.constraintrack = lineTracker(dotted=True)
-		self.ui.translate("Pick first point:\n")
+		if self.doc:
+			self.featureName = "Line"
+			self.ui.lineUi()
+			self.snap = snapTracker()
+			self.linetrack = lineTracker()
+			self.constraintrack = lineTracker(dotted=True)
+			self.call = self.view.addEventCallback("SoEvent",self.action)
+			self.ui.translate("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -872,10 +881,10 @@ class Line(Creator):
 			newshape=Part.Wire(e)
 			self.obj.Shape = newshape
 		Creator.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.linetrack
-		del self.constraintrack
-		del self.snap
+		if self.ui:
+			del self.linetrack
+			del self.constraintrack
+			del self.snap
 
 	def createObject(self):
 		"creates an object in the current doc"
@@ -1016,23 +1025,24 @@ class Rectangle(Creator):
 
 	def Activated(self):
 		Creator.Activated(self)
-		self.featureName = "Rectangle"
-		self.refpoint = None
-		self.ui.lineUi()
-		self.ui.cmdlabel.setText("Rectangle")
-		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.axis = self.view.getViewDirection()
-		self.snap = snapTracker()
-		self.rect = rectangleTracker(axis=self.axis,upvec=self.upVec,xvec=self.xVec)
-		self.ui.translate("Pick first point:\n")
+		if self.ui:
+			self.featureName = "Rectangle"
+			self.refpoint = None
+			self.ui.lineUi()
+			self.ui.cmdlabel.setText("Rectangle")
+			self.call = self.view.addEventCallback("SoEvent",self.action)
+			self.axis = self.view.getViewDirection()
+			self.snap = snapTracker()
+			self.rect = rectangleTracker(axis=self.axis,upvec=self.upVec,xvec=self.xVec)
+			self.ui.translate("Pick first point:\n")
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
-		Creator.finish(self)
-		self.rect.off()
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.rect
-		del self.snap
+		Creator.finish(self) 
+		if self.ui:
+			self.rect.off()
+			del self.rect
+			del self.snap
 
 	def createObject(self):
 		"creates the final object in the current doc"
@@ -1094,37 +1104,38 @@ class Arc(Creator):
 
 	def Activated(self):
 		Creator.Activated(self)
-		self.step = 0
-		self.doc.openTransaction("Create "+self.featureName)
-		self.obj = self.doc.addObject("Part::Feature",self.featureName)
-		self.doc.commitTransaction()
-		formatObject(self.obj)
-		self.center = None
-		self.rad = None
-		self.tangents = []
-		self.tanpoints = []
-		if self.featureName == "Arc": self.ui.arcUi()
-		else: self.ui.circleUi()
-		self.altdown = False
-		self.ui.sourceCmd = self
-		self.snap = snapTracker()
-		self.linetrack = lineTracker(dotted=True)
-		self.constraintrack = lineTracker(dotted=True)
-		self.arctrack = arcTracker(axis=self.axis)
-		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.translate("Pick center point:\n")
+		if self.ui:
+			self.step = 0
+			self.doc.openTransaction("Create "+self.featureName)
+			self.obj = self.doc.addObject("Part::Feature",self.featureName)
+			self.doc.commitTransaction()
+			formatObject(self.obj)
+			self.center = None
+			self.rad = None
+			self.tangents = []
+			self.tanpoints = []
+			if self.featureName == "Arc": self.ui.arcUi()
+			else: self.ui.circleUi()
+			self.altdown = False
+			self.ui.sourceCmd = self
+			self.snap = snapTracker()
+			self.linetrack = lineTracker(dotted=True)
+			self.constraintrack = lineTracker(dotted=True)
+			self.arctrack = arcTracker(axis=self.axis)
+			self.call = self.view.addEventCallback("SoEvent",self.action)
+			self.ui.translate("Pick center point:\n")
 
 	def finish(self,closed=False):
 		"finishes the arc"
 		Creator.finish(self)
-		if (self.rad == None): self.doc.undo()
-		elif not(self.closedCircle) and (self.step < 4): self.doc.undo()
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.snap
-		del self.linetrack
-		del self.constraintrack
-		del self.arctrack
-		self.doc.recompute()
+		if self.ui:
+			if (self.rad == None): self.doc.undo()
+			elif not(self.closedCircle) and (self.step < 4): self.doc.undo()
+			del self.snap
+			del self.linetrack
+			del self.constraintrack
+			del self.arctrack
+			self.doc.recompute()
 
 	def action(self,arg):
 		"scene event handler"
@@ -1394,25 +1405,26 @@ class Text(Creator):
 
 	def Activated(self):
 		Creator.Activated(self)
-		self.featureName = "Text"
-		self.dialog = None
-		self.text = ''
-		self.ui.sourceCmd = self
-		self.ui.pointUi()
-		self.ui.cmdlabel.setText("Text")
-		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.xValue.setFocus()
-		self.ui.xValue.selectAll()
-		self.snap = snapTracker()
-		self.ui.translate("Pick location point:\n")
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+		if self.ui:
+			self.featureName = "Text"
+			self.dialog = None
+			self.text = ''
+			self.ui.sourceCmd = self
+			self.ui.pointUi()
+			self.ui.cmdlabel.setText("Text")
+			self.call = self.view.addEventCallback("SoEvent",self.action)
+			self.ui.xValue.setFocus()
+			self.ui.xValue.selectAll()
+			self.snap = snapTracker()
+			self.ui.translate("Pick location point:\n")
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
 		Creator.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.snap
-		del self.dialog
+		if self.ui:
+			del self.snap
+			del self.dialog
 
 	def createObject(self):
 		"creates an object in the current doc"
@@ -1460,23 +1472,24 @@ class Dim(Creator):
 
 	def Activated(self):
 		Creator.Activated(self)
-		self.featureName = "Dimension"
-		self.ui.lineUi()
-		self.altdown = False
-		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.snap = snapTracker()
-		self.dimtrack = dimTracker()
-		self.constraintrack = lineTracker(dotted=True)
-		self.ui.translate("Pick first point:\n")
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+		if self.ui:
+			self.featureName = "Dimension"
+			self.ui.lineUi()
+			self.altdown = False
+			self.call = self.view.addEventCallback("SoEvent",self.action)
+			self.snap = snapTracker()
+			self.dimtrack = dimTracker()
+			self.constraintrack = lineTracker(dotted=True)
+			self.ui.translate("Pick first point:\n")
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
 		Creator.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.dimtrack
-		del self.constraintrack
-		del self.snap
+		if self.ui:
+			del self.dimtrack
+			del self.constraintrack
+			del self.snap
 
 	def createObject(self):
 		"creates an object in the current doc"
@@ -1564,34 +1577,41 @@ class Modifier:
 	"This stores general stuff for all modifier tools"
 
 	def Activated(self):
+		self.ui = None
+		self.call = None
 		self.doc = FreeCAD.ActiveDocument
-		if not self.doc: self.finish()
-		if FreeCAD.activeDraftCommand: self.finish()
-		self.view = FreeCADGui.ActiveDocument.ActiveView
-		self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-		FreeCAD.activeDraftCommand = self
-		FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-		if self.ui.lockedz:
-			self.axis = Vector(0,0,1)
-			self.xVec = Vector(1,0,0)
-			self.upVec = Vector(0,1,0)
+		if not self.doc:
+			self.finish()
 		else:
-			self.axis = fcvec.neg(self.view.getViewDirection())
-			rot = self.view.getViewer().getCamera().orientation.getValue()
-			self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
-			self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
-		self.node = []
-		self.ui.sourceCmd = self
-		self.constrain = None
-		self.obj = None
+			if FreeCAD.activeDraftCommand: self.finish()
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			FreeCAD.activeDraftCommand = self
+			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+			if self.ui.lockedz:
+				self.axis = Vector(0,0,1)
+				self.xVec = Vector(1,0,0)
+				self.upVec = Vector(0,1,0)
+			else:
+				self.axis = fcvec.neg(self.view.getViewDirection())
+				rot = self.view.getViewer().getCamera().orientation.getValue()
+				self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
+				self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
+			self.node = []
+			self.ui.sourceCmd = self
+			self.constrain = None
+			self.obj = None
 		
 	def finish(self):
 		self.node = []
-		self.ui.offUi()
-		self.ui.sourceCmd=None
 		FreeCAD.activeDraftCommand = None
-		self.ui.translate("")
-		self.ui.cross(False)
+		if self.ui:
+			self.ui.offUi()
+			self.ui.sourceCmd=None
+			self.ui.translate("")
+			self.ui.cross(False)
+		if self.call:
+			self.view.removeEventCallback("SoEvent",self.call)
 			
 class Move(Modifier):
 	"This class translates the selected objects from a point to another point."
@@ -1603,19 +1623,20 @@ class Move(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.ui.cmdlabel.setText("Move")
-		self.featureName = "Move"
-		self.call = None
-		if not FreeCADGui.Selection.getSelection():
-			self.ghost = None
-			self.snap = None
-			self.linetrack = None
-			self.constraintrack = None
-			self.ui.selectUi()
-			self.ui.translate("Select an object to move\n")
-			self.call = self.view.addEventCallback("SoEvent",selectObject)
-		else:
-			self.proceed()
+		if self.ui:
+			self.ui.cmdlabel.setText("Move")
+			self.featureName = "Move"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.constraintrack = None
+				self.ui.selectUi()
+				self.ui.translate("Select an object to move\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
@@ -1633,11 +1654,11 @@ class Move(Modifier):
 
 	def finish(self,closed=False):
 		Modifier.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.ghost
-		del self.snap
-		del self.linetrack
-		del self.constraintrack
+		if self.ui:
+			del self.ghost
+			del self.snap
+			del self.linetrack
+			del self.constraintrack
 
 	def move(self,delta,copy=False):
 		"moving the real shapes"
@@ -1733,21 +1754,20 @@ class ApplyStyle(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.sel = FreeCADGui.Selection.getSelection()
-		if (len(self.sel)>0):
-			self.doc.openTransaction("Change style")
-			for ob in self.sel:
-				if (ob.Type == "App::DocumentObjectGroup"): self.formatGroup(ob)
-				else: formatObject(ob)
-			self.doc.commitTransaction()
+		if self.ui:
+			self.sel = FreeCADGui.Selection.getSelection()
+			if (len(self.sel)>0):
+				self.doc.openTransaction("Change style")
+				for ob in self.sel:
+					if (ob.Type == "App::DocumentObjectGroup"): self.formatGroup(ob)
+					else: formatObject(ob)
+				self.doc.commitTransaction()
 
 	def formatGroup(self,grpob):
 		for ob in grpob.Group:
 			if (ob.Type == "App::DocumentObjectGroup"): self.formatGroup(ob)
 			else: formatObject(ob)
 
-
-	
 			
 class Rotate(Modifier):
 	'''
@@ -1761,20 +1781,21 @@ class Rotate(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.ui.cmdlabel.setText("Rotate")
-		self.featureName = "Rotate"
-		self.call = None
-		if not FreeCADGui.Selection.getSelection():
-			self.ghost = None
-			self.snap = None
-			self.linetrack = None
-			self.arctrack = None
-			self.constraintrack = None
-			self.ui.selectUi()
-			self.ui.translate("Select an object to rotate\n")
-			self.call = self.view.addEventCallback("SoEvent",selectObject)
-		else:
-			self.proceed()
+		if self.ui:
+			self.ui.cmdlabel.setText("Rotate")
+			self.featureName = "Rotate"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.arctrack = None
+				self.constraintrack = None
+				self.ui.selectUi()
+				self.ui.translate("Select an object to rotate\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
@@ -1804,13 +1825,13 @@ class Rotate(Modifier):
 	def finish(self,closed=False):
 		"finishes the arc"
 		Modifier.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.snap
-		del self.linetrack
-		del self.constraintrack
-		del self.arctrack
-		del self.ghost
-		self.doc.recompute()
+		if self.ui:
+			del self.snap
+			del self.linetrack
+			del self.constraintrack
+			del self.arctrack
+			del self.ghost
+			self.doc.recompute()
 
 	def rot (self,angle,copy=False):
 		"rotating the real shapes"
@@ -1964,22 +1985,23 @@ class Offset(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.ui.cmdlabel.setText("Offset")
-		self.featureName = "Offset"
-		self.call = None
-		if not FreeCADGui.Selection.getSelection():
-			self.ghost = None
-			self.snap = None
-			self.linetrack = None
-			self.arctrack = None
-			self.constraintrack = None
-			self.ui.selectUi()
-			self.ui.translate("Select an object to offset\n")
-			self.call = self.view.addEventCallback("SoEvent",selectObject)
-		elif len(FreeCADGui.Selection.getSelection()) > 1:
-			FreeCAD.Console.PrintWarning("Offset only works on one object at a time\n")
-		else:
-			self.proceed()
+		if self.ui:
+			self.ui.cmdlabel.setText("Offset")
+			self.featureName = "Offset"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.arctrack = None
+				self.constraintrack = None
+				self.ui.selectUi()
+				self.ui.translate("Select an object to offset\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			elif len(FreeCADGui.Selection.getSelection()) > 1:
+				self.ui.translate("Offset only works on one object at a time\n")
+			else:
+				self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
@@ -2016,11 +2038,11 @@ class Offset(Modifier):
 
 	def finish(self,closed=False):
 		Modifier.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.snap
-		del self.linetrack
-		del self.constraintrack
-		del self.ghost
+		if self.ui:
+			del self.snap
+			del self.linetrack
+			del self.constraintrack
+			del self.ghost
 
 	def action(self,arg):
 		"scene event handler"
@@ -2204,15 +2226,16 @@ class Upgrade(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.ui.cmdlabel.setText("Upgrade")			
-		self.featureName = "Upgrade"
-		self.call = None
-		if not FreeCADGui.Selection.getSelection():
-			self.ui.selectUi()
-			self.ui.translate("Select an object to upgrade\n")
-			self.call = self.view.addEventCallback("SoEvent",selectObject)
-		else:
-			self.proceed()
+		if self.ui:
+			self.ui.cmdlabel.setText("Upgrade")			
+			self.featureName = "Upgrade"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ui.selectUi()
+				self.ui.translate("Select an object to upgrade\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
 
 	def compound(self):
 		shapeslist = []
@@ -2316,15 +2339,16 @@ class Downgrade(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.ui.cmdlabel.setText("Downgrade")		
-		self.featureName = "Downgrade"
-		self.call = None
-		if not FreeCADGui.Selection.getSelection():
-			self.ui.selectUi()
-			self.ui.translate("Select an object to upgrade\n")
-			self.call = self.view.addEventCallback("SoEvent",selectObject)
-		else:
-			self.proceed()
+		if self.ui:
+			self.ui.cmdlabel.setText("Downgrade")		
+			self.featureName = "Downgrade"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ui.selectUi()
+				self.ui.translate("Select an object to upgrade\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
 
 
 	def proceed(self):
@@ -2387,19 +2411,20 @@ class Trimex(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.ui.cmdlabel.setText("Trimex")
-		self.featureName = "Trimex"
-		self.call = None
-		if not FreeCADGui.Selection.getSelection():
-			self.ghost = None
-			self.snap = None
-			self.linetrack = None
-			self.constraintrack = None
-			self.ui.selectUi()
-			self.ui.translate("Select an object to trim/extend\n")
-			self.call = self.view.addEventCallback("SoEvent",selectObject)
-		else:
-			self.proceed()
+		if self.ui:
+			self.ui.cmdlabel.setText("Trimex")
+			self.featureName = "Trimex"
+			self.sel = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.constraintrack = None
+				self.ui.selectUi()
+				self.ui.translate("Select an object to trim/extend\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
@@ -2590,14 +2615,14 @@ class Trimex(Modifier):
 
 	def finish(self,closed=False):		
 		Modifier.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		self.ui.labelRadius.setText("Distance")
-		del self.snap
-		del self.linetrack
-		del self.constraintrack
-		del self.ghost
-		self.sel.ViewObject.Visibility = True
-		select(self.sel)
+		if self.ui:
+			self.ui.labelRadius.setText("Distance")
+			del self.snap
+			del self.linetrack
+			del self.constraintrack
+			del self.ghost
+			self.sel.ViewObject.Visibility = True
+			select(self.sel)
 
 	def numericRadius(self,dist):
 		"this function gets called by the toolbar when valid distance have been entered there"
@@ -2615,19 +2640,20 @@ class Scale(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
-		self.ui.cmdlabel.setText("Scale")
-		self.featureName = "Scale"
-		self.call = None
-		if not FreeCADGui.Selection.getSelection():
-			self.ghost = None
-			self.snap = None
-			self.linetrack = None
-			self.constraintrack = None
-			self.ui.selectUi()
-			self.ui.translate("Select an object to scale\n")
-			self.call = self.view.addEventCallback("SoEvent",selectObject)
-		else:
-			self.proceed()
+		if self.ui:
+			self.ui.cmdlabel.setText("Scale")
+			self.featureName = "Scale"
+			self.call = None
+			if not FreeCADGui.Selection.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.constraintrack = None
+				self.ui.selectUi()
+				self.ui.translate("Select an object to scale\n")
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			else:
+				self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
@@ -2645,11 +2671,11 @@ class Scale(Modifier):
 
 	def finish(self,closed=False):
 		Modifier.finish(self)
-		self.view.removeEventCallback("SoEvent",self.call)
-		del self.ghost
-		del self.snap
-		del self.linetrack
-		del self.constraintrack
+		if self.ui:
+			del self.ghost
+			del self.snap
+			del self.linetrack
+			del self.constraintrack
 
 	def scale(self,delta,copy=False):
 		"moving the real shapes"
