@@ -3894,7 +3894,7 @@ static PyObject * spring_back(PyObject *self, PyObject *args)
 
         /*-----------------------------------------------*/
         SpringbackCorrection aShapeTri(cad, mesh);
-        aShapeTri.Perform(60);
+        aShapeTri.Perform(60,1);
         /*-----------------------------------------------*/
 
         seconds2 = time(NULL);

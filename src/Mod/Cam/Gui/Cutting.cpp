@@ -30,6 +30,7 @@
 #include <Mod/Cam/App/SpringbackCorrection.h>
 #include <Mod/Cam/App/UniGridApprox.h>
 #include <Mod/Cam/App/Approx.h>
+#include <Mod/Cam/App/deviation.h>
 #include <QTimer>
 #include <QByteArray>
 
@@ -82,7 +83,9 @@
 using namespace CamGui;
 
 Cutting::Cutting(QWidget* parent,Qt::WFlags fl)
-        :QDialog(parent,fl),m_Process(NULL),m_PathSimulate(NULL),m_CuttingAlgo(NULL),m_BestFit(NULL)
+        :QDialog(parent,fl),m_Process(NULL),
+		m_PathSimulate(NULL),m_CuttingAlgo(NULL),
+		m_BestFit(NULL),m_MergeData(NULL),m_Deviation(NULL)
 {
     this->setupUi(this);
     m_timer= false;
@@ -94,6 +97,8 @@ Cutting::~Cutting()
     delete m_PathSimulate;
     delete m_Process;
     delete m_BestFit;
+	delete m_Deviation;
+	delete m_MergeData;
 }
 
 bool Cutting::getProcessOutput()
@@ -175,6 +180,68 @@ void Cutting::on_start_simulation_clicked()
     connect(m_Process,SIGNAL(readyReadStandardError()),this,SLOT(getProcessOutput()));
     connect(m_Process,SIGNAL(readyReadStandardOutput()),this,SLOT(getProcessOutput()));
     m_Process->start(program, arguments);
+}
+
+void Cutting::on_Deviation_button_clicked()
+{
+	m_Deviation = new Deviation();
+	deviation_geometry1_button->setEnabled(true);
+	deviation_geometry2_button->setEnabled(true);
+	deviation_go_button->setEnabled(true);
+}
+
+void Cutting::on_deviation_geometry1_button_clicked()
+{
+	selectShape();
+}
+
+void Cutting::on_deviation_geometry2_button_clicked()
+{
+	selectMesh();
+}
+
+void Cutting::on_deviation_go_button_clicked()
+{
+	QString current_filename = QFileDialog::getSaveFileName(this,"Select Deviation Files","","*.txt");
+	m_Deviation->ImportGeometry(m_Shape, m_Mesh);
+	m_Deviation->Compute();
+	
+	
+	m_Deviation->WriteOutput(current_filename);
+	
+}
+
+void Cutting::on_error_accumulation_select_files_button_clicked()
+{
+	m_MergeData = new MergeData();
+
+	QStringList m_dateinamen = QFileDialog::getOpenFileNames(
+		this,
+		"Select one or more files to open",
+		"c:",
+		"Deviation Files (*.txt)");
+	
+	if (!m_dateinamen.isEmpty())
+	{
+		if (!m_MergeData->Einlesen(m_dateinamen))
+		{
+			QMessageBox::information(this, tr("FreeCAD CamWorkbench"),
+				tr("Alles i.O. Output kann erzeugt werden\n"),
+				QMessageBox::Ok, QMessageBox::NoButton);
+		}
+	
+		
+	}
+	error_accumulation_go_button->setEnabled(true);
+	
+}
+
+void Cutting::on_error_accumulation_go_button_clicked()
+{
+		QString current_filename = QFileDialog::getSaveFileName(this,"Select Output File","","*.txt");
+
+	m_MergeData->WriteOutput(current_filename);
+
 }
 
 void Cutting::selectShape()
@@ -482,11 +549,11 @@ void Cutting::on_GenSimOut_clicked()
             adaptdynainput->setEnabled(true);
         break;
     case 2:
-        if (m_PathSimulate->MakePathSimulate_Feat(m_CuttingAlgo->getFlatAreas()))
+        if (m_PathSimulate->MakePathSimulate_Feat(m_CuttingAlgo->getFlatAreas(),0))
             adaptdynainput->setEnabled(true);
         break;
      case 3:
-        if (m_PathSimulate->MakePathSimulate_Spiral(m_CuttingAlgo->getFlatAreas()))
+        if (m_PathSimulate->MakePathSimulate_Feat(m_CuttingAlgo->getFlatAreas(),1))
             adaptdynainput->setEnabled(true);
     break;
     }
@@ -600,8 +667,9 @@ void Cutting::on_SelectFace_button_clicked()
 
 void Cutting::on_best_fit_go_button_clicked()
 {
-    //First transfer the settings to the Cutting_tools class (-> m_Settings)
-    getSettings();
+	bool out = 1;  //gibt an ob beim springback NUR die Fehlervektoren ausgegeben werden solle
+    getSettings(); //First transfer the settings to the Cutting_tools class (-> m_Settings)
+        
 
     switch (m_selection)
     {
@@ -628,7 +696,7 @@ void Cutting::on_best_fit_go_button_clicked()
       	m_Spring->Load(m_Mesh);
         m_Spring->Init_Setting(m_Settings);
         m_Spring->Init();
- m_Spring->Perform(m_Settings.limit_angle);
+ m_Spring->Perform(m_Settings.limit_angle,out);
          m_MeshCad = m_Spring->m_CadMesh;
 
 
@@ -637,9 +705,12 @@ void Cutting::on_best_fit_go_button_clicked()
         best_fit_mesh_button->setEnabled(false);
         best_fit_go_button  ->setEnabled(false);
 
-        DisplayMeshOutput(m_MeshCad);
-       		DisplayMeshOutput(m_Spring->m_Mesh_vis);
-		DisplayMeshOutput(m_Spring->m_Mesh_vis2);
+		if(out==0)
+		{
+			DisplayMeshOutput(m_MeshCad);
+			DisplayMeshOutput(m_Spring->m_Mesh_vis);
+			DisplayMeshOutput(m_Spring->m_Mesh_vis2);
+		}
 best_fit_mesh2_button->setEnabled(true);
         break;
 

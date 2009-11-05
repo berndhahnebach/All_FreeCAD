@@ -157,7 +157,7 @@ public:
 
 	/** @brief main-function 
 	    @param deg_Tol limiting forming-angle*/
-    bool Perform(int deg_Tol);
+    bool Perform(int deg_Tol, bool out);
 
 	/** @brief sets curvature-radius-value of user-specified edges to zero */
     bool SetFixEdges();
@@ -221,7 +221,12 @@ public:
     //bool CorrectScale(double max_zVal);
 	/** @brief checks the visit-state of specified triangle */ 
     bool Visit(const MeshCore::MeshFacet &rclFacet, const MeshCore::MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
-    
+	
+	/** @brief builds a mesh-kernel out of one face-triangulation
+    @param aFace face of concern
+	@param TFaceMesh MeshKernel where the triangulation will be stored*/
+    bool TransferFaceTriangulationtoFreeCAD(const TopoDS_Face& aFace, MeshCore::MeshKernel& TFaceMesh);
+	
 	/** @brief computes offset-values for the inner-points of the specified region */
 	std::vector< std::pair<unsigned long, double> > RegionEvaluate(const MeshCore::MeshKernel &mesh, std::vector<unsigned long> &RegionFacets, std::vector<Base::Vector3f> &normals);
     
@@ -237,10 +242,7 @@ public:
 	std::vector<Base::Vector3f> m_dist_vec;
 
 private:
-	/** @brief builds a mesh-kernel out of one face-triangulation
-	    @param aFace face of concern
-		@param TFaceMesh MeshKernel where the triangulation will be stored*/
-    bool TransferFaceTriangulationtoFreeCAD(const TopoDS_Face& aFace, MeshCore::MeshKernel& TFaceMesh);
+
     /** @brief initial input-shape (CAD-model)*/
 	TopoDS_Shape m_Shape;
     /** @brief vector containing the maximum curvature-radius-values at all mesh-points*/
@@ -280,11 +282,12 @@ private:
 	std::vector<MeshPnt> m_MeshStruct;
     /** @brief vector containing the resulting offset-values of all mesh-points */
 	std::vector<double> m_Offset;
-    /** @brief map wich links mesh-point to mesh-index*/
+public:
+	/** @brief map wich links mesh-point to mesh-index*/
 	std::map<Base::Vector3f,MeshPnt,MeshPntLess > MeshMap;
     /** @brief map over all edges*/
 	std::map<TopoDS_Edge, std::vector<double>, Edge_Less> EdgeMap;
-public:
+
     /** @brief vector containing the user-specified faces wich stands fix during the springback-correction*/
 	std::vector<TopoDS_Face> m_FixFaces;
 };

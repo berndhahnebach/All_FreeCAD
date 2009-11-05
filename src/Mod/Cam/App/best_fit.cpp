@@ -166,10 +166,28 @@ bool best_fit::Perform()
 {
     Base::Matrix4D M;
 
+ofstream Runtime_BestFit;
+	time_t sec1, sec2;
+
+	Runtime_BestFit.open("c:/Runtime_BestFit.txt");
+	Runtime_BestFit << "Runtime Best-Fit" << std::endl;
+
+
+
     cout << "tesselate shape" << endl;
-    Tesselate_Shape(m_Cad, m_CadMesh, 1);
-	return true;
-    Comp_Weights();
+
+	sec1 = time(NULL);
+   	  Tesselate_Shape(m_Cad, m_CadMesh, 1); // Tesselates m_Cad Shape and stores Tesselation in m_CadMesh 
+	sec2 = time(NULL);
+
+	Runtime_BestFit << "Tesselate Shape: " << sec2 - sec1 << " sec" << std::endl;  
+
+	sec1 = time(NULL);
+      Comp_Weights(); // m_pnts, m_weights, m_normals des Cad-Meshs werden hier gefüllt
+    sec2 = time(NULL);
+
+	Runtime_BestFit << "Compute Weights: " << sec2 - sec1 << " sec" << std::endl;  
+	
 
 	/*RotMat(M, 180, 1);
     m_MeshWork.Transform(M);
@@ -189,9 +207,10 @@ bool best_fit::Perform()
 	//m_MeshWork.Assign(pntarr,facetarr);
 
 
-    cout << "trafo2origin" << endl;
-    MeshFit_Coarse();
-    ShapeFit_Coarse();
+    sec1 = time(NULL);
+	
+	MeshFit_Coarse();  // Transformation Mesh -> CAD
+    ShapeFit_Coarse(); // Translation    CAD  -> Origin
 
 	
     M.setToUnity();
@@ -199,21 +218,23 @@ bool best_fit::Perform()
     M[1][3] = m_cad2orig.Y();
     M[2][3] = m_cad2orig.Z();
 
-    m_CadMesh.Transform(M);
+    m_CadMesh.Transform(M); // besser: tesselierung nach der trafo !!!
+m_MeshWork.Transform(M);
     PointTransform(m_pnts,M);
 
-    cout << "error: " << ANN() << endl;
+    Runtime_BestFit << "- Error: " << ANN() << endl;
 
     Coarse_correction();
 	//return true;
-    time_t seconds1, seconds2;
-    seconds1 = time(NULL);
 
-    cout << "Least-Square-Matching" << endl;
-    LSM();
+	sec2 = time(NULL);
+	Runtime_BestFit << "Coarse Correction: " << sec2-sec1 << " sec" << endl;
 
-    seconds2 = time(NULL);
-    cout << "laufzeit: " << seconds2-seconds1 << " sec" << endl;
+    sec1 = time(NULL);
+	LSM();
+	sec2 = time(NULL);
+    Runtime_BestFit << "Least-Square-Matching: " << sec2-sec1 << " sec" << endl;
+	Runtime_BestFit.close();
 
     Base::Matrix4D T;
     T.setToUnity();
@@ -308,11 +329,22 @@ bool best_fit::Coarse_correction()
 {
     double error, error_tmp, rot = 0.0;
     Base::Matrix4D M,T;
+	ofstream CoarseCorr;
+    
+	/* Umleitung !!! */
+	
+	RotMat(M, 10, 3);
+    m_MeshWork.Transform(M);
+	return true;
+
+	/* Umleitung Ende !!! */
+
+	CoarseCorr.open("c:/CoarseCorr.txt");
 
     MeshCore::MeshKernel MeshCopy = m_MeshWork;
 
     T.setToUnity();
-
+best_fit befi; 
     //error = CompError_GetPnts(m_pnts, m_normals)[0];  // startfehler    int n=360/rstep_corr;
     error = ANN();
 
@@ -324,6 +356,8 @@ bool best_fit::Coarse_correction()
 
         //error_tmp = CompError_GetPnts(m_pnts, m_normals)[0];
         error_tmp = ANN();
+//error_tmp = befi.CompTotalError(m_MeshWork);
+		CoarseCorr << i << ", " << error_tmp << endl;
 
         if (error_tmp < error)
         {
@@ -334,6 +368,8 @@ bool best_fit::Coarse_correction()
         m_MeshWork = MeshCopy;
     }
 
+	CoarseCorr << "BEST CHOICE: " << error << endl;
+	CoarseCorr.close();
     m_MeshWork.Transform(T);
 	/*RotMat(M, 180, 1);
     m_MeshWork.Transform(M);
@@ -345,21 +381,23 @@ bool best_fit::Coarse_correction()
 
 bool best_fit::LSM()
 {
-    double TOL  = 0.01;          // Abbruchkriterium des Newton-Verfahren
-    int maxIter = 250;           // maximale Anzahl von Iterationen für den Fall,
+    double TOL  = 0.05;          // Abbruchkriterium des Newton-Verfahren
+    int maxIter = 70;           // maximale Anzahl von Iterationen für den Fall,
     // dass das Abbruchkriterium nicht erfüllt wird
 
-    double val, tmp;
+   int mult = 2;               // zur halbierung der Schrittweite bei Misserfolg des Newton Verfahrens
+
+    double val, tmp = 1e+10, delta, delta_tmp = 0.0;
     Base::Matrix4D Tx,Ty,Tz,Rx,Ry,Rz,M;   // Transformaitonsmatrizen
 
 	ofstream anOutputFile;
 	anOutputFile.open("c:/outputBestFit.txt");
     anOutputFile.precision(7);
 
-    int c=0;
-    int mult;
+      int c=0; // Laufvariable
+    
 
-    std::vector<double> errVec(2,ERR_TOL+1);
+
     std::vector<double> del_x(3,0.0);
     std::vector<double>     x(3,0.0); // Startparameter entspricht Nullvektor
 
@@ -371,38 +409,42 @@ bool best_fit::LSM()
     std::vector<double> Jac(3);           // 1.Ableitung der Fehlerfunktion (Jacobi-Matrix)
     std::vector< std::vector<double> > H; // 2.Ableitung der Fehlerfunktion (Hesse-Matrix)
 
-    time_t seconds1, seconds2;
+    time_t seconds1, seconds2, sec1, sec2;
     seconds1 = time(NULL);
 
-    while (true)
+while (true)
     {
 
         seconds1 = time(NULL);
+        m_Mesh = m_MeshWork;
 
-        if (c==maxIter || errVec[0] < ERR_TOL) break; // Abbruchkriterium
 
-        /*
-        time_t seconds1, seconds2;
-           seconds1 = time(NULL);
-        */
 
-        // Fehlerberechnung vom CAD -> Mesh
-        //errVec = CompError_GetPnts(m_pnts, m_normals);   // hier: - Berechnung der LS-Punktesätze
-        //       - Berechnung der zugehörigen Gewichtungen
 
-		m_Mesh = m_MeshWork;
-        errVec[0] = /* CompTotalError();//*/ANN();
-        /*
+
+
+
+                                                           // Fehlerberechnung vom CAD -> Mesh
+        //tmp = CompError_GetPnts(m_pnts, m_normals);      // hier: - Berechnung der LS-Punktesätze
+        //      CompTotalError()                           //       - Berechnung der zugehörigen Gewichtungen
+
+		delta = delta_tmp;
+        delta_tmp = ANN();  // gibt durchschnittlichen absoluten Fehler aus
+		delta = delta - delta_tmp ; // hier wird die Fehlerverbesserung zum vorigen Iterationsschritt gespeichert
+
+		if (c==maxIter || delta < ERR_TOL && c>1) break; // Abbruchkriterium (falls maximale Iterationsschrite erreicht
+										                 //                   oder falls Fehleränderung unsignifikant gering)
+
         seconds2 = time(NULL);
-              cout << "laufzeit projection: " << seconds2-seconds1 << " sec" << endl;
-        */
-
-        seconds2 = time(NULL);
-        std::cout << "Iter.: " << c << " AVG. : " << errVec[0] << "   " << "MAX. : " << errVec[1] <<  " Time: " <<  seconds2-seconds1 << " sec" << endl;
-        anOutputFile << c << ", " << errVec[0] << ", " << errVec[1] << endl;
+		anOutputFile << c << ", " << delta_tmp << ", " << delta << "    -    Time: " << seconds2 - seconds1 << " sec" << endl;
 		seconds1 = time(NULL);
 
-        for (unsigned int i=0; i<x.size(); ++i) x[i] = 0.0; // setze startwerte auf null
+		sec1 = time(NULL);
+        for (unsigned int i=0; i<x.size(); ++i) x[i] = 0.0; // setzt startwerte für newton auf null
+
+
+
+
 
         // Berechne gewichtete Schwerpunkte und verschiebe die Punktesätze entsprechend:
         centr_l.Scale(0.0,0.0,0.0);
@@ -443,18 +485,19 @@ bool best_fit::LSM()
         PointTransform(m_LSPnts[0],M);
         m_MeshWork.Transform(M);
 
-        TransMat(Tx,centr_r.x,1);
-        TransMat(Ty,centr_r.y,2);
-        TransMat(Tz,centr_r.z,3);
+TransMat(Tx,centr_r.x,1); // Berechnung der Translationsmatrix in x-Richtung
+        TransMat(Ty,centr_r.y,2); // Berechnung der Translationsmatrix in y-Richtung
+        TransMat(Tz,centr_r.z,3); // Berechnung der Translationsmatrix in z-Richtung
 
-        M = Tx*Ty*Tz;
-        PointTransform(m_LSPnts[1],M);
-        PointNormalTransform(m_pnts, m_normals, M);
-        m_CadMesh.Transform(M);
+        M = Tx*Ty*Tz;                  // Zusammenfügen zu einer Gesamttranslationsmatrix
+        PointTransform(m_LSPnts[1],M); // Anwendung der Translation auf m_LSPnts
+        PointNormalTransform(m_pnts, m_normals, M); // Anwendung der Translation auf m_pnts
+        m_CadMesh.Transform(M);                     // Anwendung der Translation auf das CadMesh
 
-        tmp  = 1e+10;
-        mult = 2;
+        sec2 = time(NULL);
+		anOutputFile << c+1 << " - Initialisierung und Transformation um gewichtete Schwerpunkte: " << sec2 - sec1 << " sec" << endl;
 
+		sec1 = time(NULL);
         // Newton-Verfahren zur Berechnung der Rotationsmatrix:
         while (true)
         {
@@ -494,6 +537,9 @@ bool best_fit::LSM()
             }
         }
 
+		sec2 = time(NULL);
+		anOutputFile << c+1 << " - Newton: " << seconds2 - seconds1 << " sec" << endl;
+        sec1 = time(NULL);
         // Rotiere und verschiebe zurück zum Ursprung der !!! CAD-Geometrie !!!
         RotMat  (Rx,(x[0]*180.0/PI),1);
         RotMat  (Ry,(x[1]*180.0/PI),2);
@@ -521,10 +567,14 @@ bool best_fit::LSM()
         m_CadMesh.Transform(M);
         PointNormalTransform(m_pnts, m_normals, M);
 
-        ++c;
+   		sec2 = time(NULL);
+		
+		anOutputFile << c+1 << " - Trafo: " << seconds2 - seconds1 << " sec" << endl;
+        ++c;  //Erhöhe Laufvariable 
     }
 
 	anOutputFile.close();
+return true;
 
     /*TransMat(Tx,-centr_l.x,1);
        TransMat(Ty,-centr_l.y,2);
@@ -547,7 +597,7 @@ bool best_fit::LSM()
 
     log.saveToFile("c:/newton_pnts.iv");*/
 
-    return true;
+  
 }
 
 
@@ -638,6 +688,7 @@ std::vector<std::vector<double> > best_fit::Comp_Hess(const std::vector<double> 
 
 bool best_fit::Comp_Weights()
 {
+	double weight_low = 1, weight_high = 2;
     TopExp_Explorer aExpFace;
     MeshCore::MeshKernel FaceMesh;
     MeshCore::MeshFacetArray facetArr;
@@ -716,7 +767,7 @@ bool best_fit::Comp_Weights()
     for (unsigned int i=0; i<pnts.size(); ++i)
     {
         m_pnts.push_back(pnts[i]);
-        m_weights.push_back(0.2);
+        m_weights.push_back(weight_low);
     }
 
     pnts = mesh2.GetPoints();
@@ -724,7 +775,7 @@ bool best_fit::Comp_Weights()
     for (unsigned int i=0; i<pnts.size(); ++i)
     {
         m_pnts.push_back(pnts[i]);
-        m_weights.push_back(1);
+        m_weights.push_back(weight_high);
     }
 
     m_normals = Comp_Normals(mesh1);
@@ -868,8 +919,7 @@ bool best_fit::MeshFit_Coarse()
     v2.Normalize();
     v3.Normalize();
 
-    v1 *= -1;
-    v2 *= -1;
+  
 
     v = v1;
     v.Cross(v2);
@@ -884,44 +934,28 @@ bool best_fit::MeshFit_Coarse()
     orig.SetX(T5[0][3]);orig.SetY(T5[1][3]);orig.SetZ(T5[2][3]);
     //orig  = prop.CentreOfMass();
 
-    Base::Matrix4D M;
 
-    M[0][0] =  v1.X();
-    M[0][1] =  v1.Y();
-    M[0][2] =  v1.Z();
-    M[0][3] = 0.0f;
-    M[1][0] =  v2.X();
-    M[1][1] =  v2.Y();
-    M[1][2] =  v2.Z();
-    M[1][3] = 0.0f;
-    M[2][0] =  v3.X();
-    M[2][1] =  v3.Y();
-    M[2][2] =  v3.Z();
-    M[2][3] = 0.0f;
-    M[3][0] =  0.0f;
-    M[3][1] =  0.0f;
-    M[3][2] =  0.0f;
-    M[3][3] = 1.0f;
+    // plot CAD -> local coordinate system
 
-    M.inverse();
+	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
+    y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
+    z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
+
+     pnt.x = orig.X();
+	pnt.y = orig.Y();
+	pnt.z = orig.Z();
+
+		log3d_cad.addSingleArrow(pnt,x,3,1,0,0);
+	log3d_cad.addSingleArrow(pnt,y,3,0,1,0);
+	log3d_cad.addSingleArrow(pnt,z,3,0,0,1);
+	//log3d_cad.addSinglePoint(pnt,6,1,1,1);
+	log3d_cad.saveToFile("c:/CAD_CoordSys.iv");
 
     MeshCore::MeshEigensystem pca2(m_MeshWork);
     pca2.Evaluate();
     Base::Matrix4D T1 =  pca2.Transform();
     m_MeshWork.Transform(T5*T1);
-
-    // plot CAD -> local coordinate system
-
-    x.x = 50*v1.X()+orig.X();x.y = 50*v1.Y()+orig.Y();x.z = 50*v1.Z()+orig.Z();
-    y.x = 50*v2.X()+orig.X();y.y = 50*v2.Y()+orig.Y();y.z = 50*v2.Z()+orig.Z();
-    z.x = -50*v3.X()+orig.X();z.y = -50*v3.Y()+orig.Y();z.z = -50*v3.Z()+orig.Z();
-
-    pnt.x = orig.X();pnt.y = orig.Y();pnt.z = orig.Z();
-
-	log3d_cad.addSingleArrow(pnt,x,3,1,0,0);log3d_cad.addSingleArrow(pnt,y,3,1,0,0);log3d_cad.addSingleArrow(pnt,z,3,1,0,0);
-	//log3d_cad.addSinglePoint(pnt,6,1,1,1);
-	log3d_cad.saveToFile("c:/CAD_CoordSys.iv");
-
+	//m_MeshWork.Transform(T1);
     // plot Mesh -> local coordinate system
 
 	
@@ -934,13 +968,16 @@ bool best_fit::MeshFit_Coarse()
     T1.inverse();
     orig.SetX(T1[0][3]);orig.SetY(T1[1][3]);orig.SetZ(T1[2][3]);
 
-    x.x = -50*v1.X()+orig.X();x.y = -50*v1.Y()+orig.Y();x.z = -50*v1.Z()+orig.Z();
-    y.x = 50*v2.X()+orig.X();y.y = 50*v2.Y()+orig.Y();y.z = 50*v2.Z()+orig.Z();
-    z.x = 50*v3.X()+orig.X();z.y = 50*v3.Y()+orig.Y();z.z = 50*v3.Z()+orig.Z();
+	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
+    y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
+    z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
 
-    pnt.x = orig.X();pnt.y = orig.Y();pnt.z = orig.Z();
+    pnt.x = orig.X();
+	pnt.y = orig.Y();
+	pnt.z = orig.Z();
 
-	log3d_mesh.addSingleArrow(pnt,x,3,1,0,0);log3d_mesh.addSingleArrow(pnt,y,3,1,0,0);log3d_mesh.addSingleArrow(pnt,z,3,1,0,0);
+	log3d_mesh.addSingleArrow(pnt,x,3,1,0,0);log3d_mesh.addSingleArrow(pnt,y,3,0,1,0);log3d_mesh.addSingleArrow(pnt,z,3,0,0,1);
+	log3d_mesh.addSinglePoint(0,0,0,20,1,1,1); // plotte Ursprung
     //log3d_mesh.addSinglePoint(pnt,6,0,0,0);
 	log3d_mesh.saveToFile("c:/Mesh_CoordSys.iv");
 

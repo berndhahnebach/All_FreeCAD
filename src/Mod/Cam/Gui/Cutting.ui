@@ -1,39 +1,40 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CamGui::Cutting</class>
- <widget class="QDialog" name="CamGui::Cutting" >
-  <property name="geometry" >
+ <widget class="QDialog" name="CamGui::Cutting">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
+    <width>790</width>
     <height>604</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>420</x>
      <y>560</y>
      <width>351</width>
      <height>33</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>0</number>
-    </property>
-    <property name="spacing" >
+   <layout class="QHBoxLayout">
+    <property name="spacing">
      <number>6</number>
+    </property>
+    <property name="margin">
+     <number>0</number>
     </property>
     <item>
      <spacer>
-      <property name="orientation" >
+      <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0">
        <size>
         <width>131</width>
         <height>31</height>
@@ -42,72 +43,72 @@
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="okButton" >
-      <property name="text" >
+     <widget class="QPushButton" name="okButton">
+      <property name="text">
        <string>OK</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="cancelButton" >
-      <property name="text" >
+     <widget class="QPushButton" name="cancelButton">
+      <property name="text">
        <string>Cancel</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox_5" >
-   <property name="geometry" >
+  <widget class="QGroupBox" name="groupBox_5">
+   <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>460</x>
      <y>10</y>
      <width>320</width>
      <height>252</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Main-Functions</string>
    </property>
-   <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
+   <layout class="QVBoxLayout">
+    <property name="spacing">
      <number>6</number>
     </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
     <item>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QPushButton" name="select_shape_z_level_button" >
-          <property name="toolTip" >
+         <widget class="QPushButton" name="select_shape_z_level_button">
+          <property name="toolTip">
            <string>Select Shape to Cut</string>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Select Shape</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -116,22 +117,20 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="CalculateZLevel" >
-          <property name="enabled" >
+         <widget class="QPushButton" name="CalculateZLevel">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>0</hsizetype>
-            <vsizetype>0</vsizetype>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>6</verstretch>
            </sizepolicy>
           </property>
-          <property name="toolTip" >
+          <property name="toolTip">
            <string/>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Calculate Z-Level Toolpath</string>
           </property>
          </widget>
@@ -140,10 +139,10 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -152,29 +151,29 @@
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QPushButton" name="select_shape_feature_based_button" >
-          <property name="toolTip" >
+         <widget class="QPushButton" name="select_shape_feature_based_button">
+          <property name="toolTip">
            <string>Select Shape to Cut</string>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Select Shape</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -183,14 +182,14 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="CalculateFeatureBased" >
-          <property name="enabled" >
+         <widget class="QPushButton" name="CalculateFeatureBased">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Calculate Feature Based Toolpath</string>
           </property>
-          <property name="autoDefault" >
+          <property name="autoDefault">
            <bool>true</bool>
           </property>
          </widget>
@@ -199,10 +198,10 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -211,32 +210,32 @@
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QPushButton" name="select_shape_spiral_based_button" >
-          <property name="toolTip" >
+         <widget class="QPushButton" name="select_shape_spiral_based_button">
+          <property name="toolTip">
            <string>Select Shape to Cut</string>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Select Shape</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="CalculateSpiralBased" >
-          <property name="enabled" >
+         <widget class="QPushButton" name="CalculateSpiralBased">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Calculate Spiral Based Toolpath</string>
           </property>
-          <property name="autoDefault" >
+          <property name="autoDefault">
            <bool>true</bool>
           </property>
          </widget>
@@ -245,10 +244,10 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -257,18 +256,18 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="BestFitButton" >
-        <property name="text" >
+       <widget class="QPushButton" name="BestFitButton">
+        <property name="text">
          <string>Make a Best-Fit</string>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -277,18 +276,18 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="SpringbackButton" >
-        <property name="text" >
+       <widget class="QPushButton" name="SpringbackButton">
+        <property name="text">
          <string>Correct Springback</string>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -297,9 +296,16 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="Approximate_button" >
-        <property name="text" >
+       <widget class="QPushButton" name="Approximate_button">
+        <property name="text">
          <string>Approximate NURB Surface</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="Deviation_button">
+        <property name="text">
+         <string>Deviation Analysis</string>
         </property>
        </widget>
       </item>
@@ -307,8 +313,8 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox" >
-   <property name="geometry" >
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
@@ -316,40 +322,40 @@
      <height>166</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Selection</string>
    </property>
-   <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
+   <layout class="QVBoxLayout">
+    <property name="spacing">
      <number>6</number>
     </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
     <item>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QPushButton" name="toolpath_calculation_highest_level_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="toolpath_calculation_highest_level_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Highest Level</string>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -358,21 +364,21 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="toolpath_calculation_middle_level_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="toolpath_calculation_middle_level_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Middle Level</string>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -381,21 +387,21 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="toolpath_calculation_lowest_level_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="toolpath_calculation_lowest_level_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Lowest Level</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="toolpath_calculation_go_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="toolpath_calculation_go_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>GO</string>
         </property>
        </widget>
@@ -404,52 +410,52 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox_4" >
-   <property name="geometry" >
+  <widget class="QGroupBox" name="groupBox_4">
+   <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>460</x>
      <y>282</y>
      <width>320</width>
      <height>94</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Post-Processing</string>
    </property>
-   <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
+   <layout class="QVBoxLayout">
+    <property name="spacing">
      <number>6</number>
     </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
     <item>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QPushButton" name="GenRobotOut" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="GenRobotOut">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Generate Robot-Output</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="GenSimOut" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="GenSimOut">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Generate Simulation-Output</string>
         </property>
-        <property name="autoDefault" >
+        <property name="autoDefault">
          <bool>true</bool>
         </property>
        </widget>
@@ -457,19 +463,19 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QPushButton" name="adaptdynainput" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="adaptdynainput">
+        <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>AdaptDynaInput</string>
         </property>
        </widget>
@@ -478,55 +484,55 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox_6" >
-   <property name="geometry" >
+  <widget class="QGroupBox" name="groupBox_6">
+   <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>460</x>
      <y>383</y>
      <width>321</width>
      <height>92</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Simulation-Stuff</string>
    </property>
-   <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
+   <layout class="QVBoxLayout">
+    <property name="spacing">
      <number>6</number>
     </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
     <item>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QPushButton" name="start_simulation" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="start_simulation">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Start Simulation</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_6" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="pushButton_6">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="toolTip" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Start Continuous Simulation Mode&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Start Continuous Simulation Mode&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Cont-Simulation</string>
         </property>
        </widget>
@@ -535,69 +541,69 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="label_8" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>620</x>
      <y>490</y>
      <width>74</width>
      <height>14</height>
     </rect>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Y-Offset-Robot</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_7" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>540</x>
      <y>490</y>
      <width>74</width>
      <height>14</height>
     </rect>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>X-Offset-Robot</string>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="xoffset_box" >
-   <property name="geometry" >
+  <widget class="QDoubleSpinBox" name="xoffset_box">
+   <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>550</x>
      <y>510</y>
      <width>62</width>
      <height>22</height>
     </rect>
    </property>
-   <property name="maximum" >
+   <property name="maximum">
     <double>1000.000000000000000</double>
    </property>
-   <property name="value" >
+   <property name="value">
     <double>290.000000000000000</double>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="yoffset_box" >
-   <property name="geometry" >
+  <widget class="QDoubleSpinBox" name="yoffset_box">
+   <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>630</x>
      <y>510</y>
      <width>62</width>
      <height>22</height>
     </rect>
    </property>
-   <property name="maximum" >
+   <property name="maximum">
     <double>1000.000000000000000</double>
    </property>
-   <property name="value" >
+   <property name="value">
     <double>145.000000000000000</double>
    </property>
   </widget>
-  <widget class="QGroupBox" name="best_fit_box" >
-   <property name="enabled" >
+  <widget class="QGroupBox" name="best_fit_box">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="geometry" >
+   <property name="geometry">
     <rect>
      <x>150</x>
      <y>10</y>
@@ -605,70 +611,70 @@ p, li { white-space: pre-wrap; }
      <height>194</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Best-Fit and Springback</string>
    </property>
-   <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
+   <layout class="QHBoxLayout">
+    <property name="spacing">
      <number>6</number>
     </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
     <item>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>7</number>
       </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QPushButton" name="best_fit_cad_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="best_fit_cad_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>CAD-Part</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="best_fit_mesh_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="best_fit_mesh_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Scanned Mesh</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="best_fit_mesh2_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="best_fit_mesh2_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Scanned Mesh 2</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="SelectFace_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="SelectFace_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Select Face</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="best_fit_go_button" >
-        <property name="enabled" >
+       <widget class="QPushButton" name="best_fit_go_button">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>GO</string>
         </property>
        </widget>
@@ -677,20 +683,20 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2" >
-   <property name="geometry" >
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
     <rect>
      <x>10</x>
-     <y>200</y>
+     <y>219</y>
      <width>255</width>
-     <height>360</height>
+     <height>341</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Settings</string>
    </property>
-   <widget class="QLabel" name="label_6" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>25</y>
@@ -698,12 +704,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Smallest CAD radius</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>103</y>
@@ -711,12 +717,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Cutting-Distance</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="level_distance_box" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="level_distance_box">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>103</y>
@@ -724,12 +730,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>1.000000000000000</double>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>129</y>
@@ -737,12 +743,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Correction Factor for Springback</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>155</y>
@@ -750,12 +756,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Limit Angle</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_9" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>181</y>
@@ -763,12 +769,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Sheet Thickness</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_11" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>207</y>
@@ -776,15 +782,15 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Max-Velocity</string>
     </property>
-    <property name="alignment" >
+    <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_12" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>233</y>
@@ -792,12 +798,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Max-Acceleration</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_13" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>260</y>
@@ -805,12 +811,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Spring Pretension</string>
     </property>
    </widget>
-   <widget class="QLabel" name="errtol" >
-    <property name="geometry" >
+   <widget class="QLabel" name="errtol">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>287</y>
@@ -818,12 +824,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Error-Tolerance</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="max_acc" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="max_acc">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>233</y>
@@ -831,21 +837,21 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="decimals" >
+    <property name="decimals">
      <number>0</number>
     </property>
-    <property name="maximum" >
+    <property name="maximum">
      <double>50000.000000000000000</double>
     </property>
-    <property name="singleStep" >
+    <property name="singleStep">
      <double>500.000000000000000</double>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>20000.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="sheet_thickness_box" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="sheet_thickness_box">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>181</y>
@@ -853,21 +859,21 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="prefix" >
+    <property name="prefix">
      <string/>
     </property>
-    <property name="suffix" >
+    <property name="suffix">
      <string/>
     </property>
-    <property name="singleStep" >
+    <property name="singleStep">
      <double>0.500000000000000</double>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>1.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="max_vel" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="max_vel">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>207</y>
@@ -875,15 +881,15 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="maximum" >
+    <property name="maximum">
      <double>10000.000000000000000</double>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>600.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="correction_factor_box" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="correction_factor_box">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>129</y>
@@ -891,12 +897,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>0.700000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="limit_angle_box" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="limit_angle_box">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>155</y>
@@ -904,12 +910,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>60.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="slave_radius_box" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="slave_radius_box">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>77</y>
@@ -917,12 +923,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>10.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="master_radius_box" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="master_radius_box">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>51</y>
@@ -930,15 +936,15 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="maximum" >
+    <property name="maximum">
      <double>99.989999999999995</double>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>10.000000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="cad_radius_box" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="cad_radius_box">
+    <property name="geometry">
      <rect>
       <x>11</x>
       <y>25</y>
@@ -946,12 +952,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>10.000000000000000</double>
     </property>
    </widget>
-   <widget class="QLabel" name="label" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>51</y>
@@ -959,12 +965,12 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Master-Radius</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2" >
-    <property name="geometry" >
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
      <rect>
       <x>90</x>
       <y>77</y>
@@ -972,25 +978,25 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Slave-Radius</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="clockwise_checkbox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="clockwise_checkbox">
+    <property name="geometry">
      <rect>
       <x>11</x>
-      <y>340</y>
+      <y>320</y>
       <width>168</width>
       <height>19</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Clockwise Movement</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="error_tolerance" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="error_tolerance">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>287</y>
@@ -998,21 +1004,21 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="decimals" >
+    <property name="decimals">
      <number>1</number>
     </property>
-    <property name="maximum" >
+    <property name="maximum">
      <double>10.000000000000000</double>
     </property>
-    <property name="singleStep" >
+    <property name="singleStep">
      <double>0.100000000000000</double>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>0.500000000000000</double>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="spring_pretension" >
-    <property name="geometry" >
+   <widget class="QDoubleSpinBox" name="spring_pretension">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>260</y>
@@ -1020,19 +1026,137 @@ p, li { white-space: pre-wrap; }
       <height>20</height>
      </rect>
     </property>
-    <property name="decimals" >
+    <property name="decimals">
      <number>1</number>
     </property>
-    <property name="maximum" >
+    <property name="maximum">
      <double>10.000000000000000</double>
     </property>
-    <property name="singleStep" >
+    <property name="singleStep">
      <double>0.100000000000000</double>
     </property>
-    <property name="value" >
+    <property name="value">
      <double>1.000000000000000</double>
     </property>
    </widget>
+  </widget>
+  <widget class="QGroupBox" name="deviation_box">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>10</y>
+     <width>132</width>
+     <height>194</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Deviation Analysis</string>
+   </property>
+   <layout class="QHBoxLayout" name="_2">
+    <property name="spacing">
+     <number>6</number>
+    </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" name="_3">
+      <property name="spacing">
+       <number>7</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="deviation_geometry1_button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Geometry 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deviation_geometry2_button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Geometry 2</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deviation_go_button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>GO</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="error_accumulation">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>220</y>
+     <width>132</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Error Accumulation</string>
+   </property>
+   <layout class="QHBoxLayout" name="_4">
+    <property name="spacing">
+     <number>6</number>
+    </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" name="_5">
+      <property name="spacing">
+       <number>7</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="error_accumulation_select_files_button">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Select Files</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="error_accumulation_go_button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>GO</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
@@ -1043,11 +1167,11 @@ p, li { white-space: pre-wrap; }
    <receiver>CamGui::Cutting</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>446</x>
      <y>407</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>239</x>
      <y>398</y>
     </hint>
@@ -1059,11 +1183,11 @@ p, li { white-space: pre-wrap; }
    <receiver>CamGui::Cutting</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>521</x>
      <y>404</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>581</x>
      <y>392</y>
     </hint>
