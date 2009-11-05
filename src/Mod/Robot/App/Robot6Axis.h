@@ -58,9 +58,7 @@ public:
 	bool calcTcp(void);
 	Base::Placement getTcp(void);
 
-    void exportChain(const char* FileName);
-    void importChain(const char* FileName);
-    
+    void setKinematik(const std::vector<std::vector<float> > &KinTable);
 
 
 protected:
@@ -68,8 +66,9 @@ protected:
 	KDL::JntArray Actuall;
 	KDL::Frame Tcp;
 
-	float MaxAngle[6];
-	float MinAngle[6];
+	double MaxAngle[6];
+	double MinAngle[6];
+	double Acceration[6];
 
 };
 

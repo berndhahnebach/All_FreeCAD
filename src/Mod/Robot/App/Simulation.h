@@ -27,13 +27,14 @@
 #define _Simulation_h_
 
 #include <Base/Vector3D.h>
+#include <Base/Placement.h>
 #include <string>
 
+#include "Trajectory.h"
+#include "Robot6Axis.h"
 
 namespace Robot
 {
-class Trajectory;
-class Robot6Axis;
 
 /** Algo class for projecting shapes and creating SVG output of it
  */
@@ -44,6 +45,17 @@ public:
 	/// Constructor
 	Simulation(Trajectory &Trac,Robot6Axis &Rob);
 	virtual ~Simulation();
+
+	double getLength(void){return Trac.getLength();}
+	double getDuration(void){return Trac.getDuration();}
+
+    Base::Placement getPosition(void){return Trac.getPosition(Pos);}
+    double getVelocity(void){return Trac.getVelocity(Pos);}
+
+	void step(double tick);
+
+	double Pos;
+	std::vector<float> Axis;
 
     Trajectory &Trac;
     Robot6Axis &Rob;

@@ -132,23 +132,12 @@ unsigned int PropertyTrajectory::getMemSize (void) const
 
 void PropertyTrajectory::Save (Base::Writer &writer) const
 {
-    //if(!writer.isForceXML()) {
-    //    //See SaveDocFile(), RestoreDocFile()
-    //    writer.Stream() << writer.ind() << "<Part file=\"" 
-    //                    << writer.addFile("PartShape.brp", this)
-    //                    << "\"/>" << std::endl;
-    //}
+    _Trajectory.Save(writer);
 }
 
 void PropertyTrajectory::Restore(Base::XMLReader &reader)
 {
-    //reader.readElement("Part");
-    //std::string file (reader.getAttribute("file") );
-
-    //if (!file.empty()) {
-    //    // initate a file read
-    //    reader.addFile(file.c_str(),this);
-    //}
+    _Trajectory.Restore(reader);
 }
 
 
