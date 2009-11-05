@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/Writer.h>
+#include <Base/Reader.h>
 
 #include "kdl_cp/chain.hpp"
 #include "kdl_cp/chainfksolver.hpp"
@@ -38,6 +39,7 @@
 #include "kdl_cp/chainiksolverpos_nr.hpp"
 
 #include "Robot6Axis.h"
+#include "RobotAlgos.h"
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -139,17 +141,80 @@ Robot6Axis::~Robot6Axis()
 {
 }
 
+void Robot6Axis::setKinematik(const std::vector<std::vector<float> > &KinTable)
+{
+    Chain Temp;
+
+    // only 6-Axis are allowed
+    assert(KinTable.size()==6);
+
+    int i=0;
+    for(std::vector<std::vector<float> >::const_iterator Axis=KinTable.begin();Axis!=KinTable.end();++Axis,i++){
+        // need at least the standard values as descriped in documentation
+        assert(Axis->size() >= 7); 
+      	Temp.addSegment(Segment(Joint(Joint::RotZ),Frame::DH((*Axis)[0], (*Axis)[1]*(M_PI/180), (*Axis)[2], (*Axis)[3])));
+        MaxAngle[i]   = (*Axis)[4];
+        MinAngle[i]   = (*Axis)[5];
+        Acceration[i] = (*Axis)[6];    
+    }
+    Kinematic = Temp;
+}
+
 unsigned int Robot6Axis::getMemSize (void) const
 {
 	return 0;
 }
 
-void Robot6Axis::Save (Writer &/*writer*/) const
+void Robot6Axis::Save (Writer &writer) const
 {
+    for(unsigned int i=0;i<6;i++){
+        Base::Placement Tip = toPlacement(Kinematic.getSegment(i).getFrameToTip());
+	    writer.Stream() << writer.ind() << "<Axis "
+                        << "Px=\""          <<  Tip.getPosition().x  << "\" " 
+                        << "Py=\""          <<  Tip.getPosition().y  << "\" "
+                        << "Pz=\""          <<  Tip.getPosition().z  << "\" "
+					    << "Q0=\""          <<  Tip.getRotation()[0] << "\" "
+                        << "Q1=\""          <<  Tip.getRotation()[1] << "\" "
+                        << "Q2=\""          <<  Tip.getRotation()[2] << "\" "
+                        << "Q3=\""          <<  Tip.getRotation()[3] << "\" "
+                        << "maxAngle=\""    <<  MaxAngle[i]		     << "\" "
+                        << "minAngle=\""    <<  MinAngle[i]			 << "\" "
+                        << "Acceleration=\""<<  Acceration[i]        << "\" "
+                        << "Pos=\""         <<  Actuall(i)           << "\" "
+					                      
+                        << std::endl;
+    }
+
 }
 
-void Robot6Axis::Restore(XMLReader &/*reader*/)
+void Robot6Axis::Restore(XMLReader &reader)
 {
+    Chain Temp;
+    Base::Placement Tip;
+
+    for(unsigned int i=0;i<6;i++){
+        // read my Element
+        reader.readElement("Axis");
+        // get the value of the placement
+        Tip =    Base::Placement(Base::Vector3d(reader.getAttributeAsFloat("Px"),
+                                                reader.getAttributeAsFloat("Py"),
+                                                reader.getAttributeAsFloat("Pz")),
+                                 Base::Rotation(reader.getAttributeAsFloat("Q0"),
+                                                reader.getAttributeAsFloat("Q1"),
+                                                reader.getAttributeAsFloat("Q2"),
+                                                reader.getAttributeAsFloat("Q3")));
+        Temp.addSegment(Segment(Joint(Joint::RotZ),toFrame(Tip)));
+
+
+        MaxAngle[i]   = reader.getAttributeAsFloat("maxAngle");
+        MinAngle[i]	  = reader.getAttributeAsFloat("minAngle");
+        Acceration[i] = reader.getAttributeAsFloat("Acceleration");
+        Acceration[i] = reader.getAttributeAsFloat("Pos");
+    }
+    Kinematic = Temp;
+
+    calcTcp();
+
 }
 
 
@@ -213,15 +278,5 @@ bool Robot6Axis::setAxis(int Axis,float Value)
 float Robot6Axis::getAxis(int Axis)
 {
 	return (float) (Actuall(Axis)/(M_PI/180)); // radian to degree
-}
-
-void Robot6Axis::exportChain(const char* FileName)
-{
-
-}
-
-void Robot6Axis::importChain(const char* FileName)
-{
-
 }
 

@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/Writer.h>
+#include <Base/Reader.h>
 
 #include "kdl_cp/chain.hpp"
 #include "kdl_cp/path_line.hpp"
@@ -180,12 +181,32 @@ unsigned int Trajectory::getMemSize (void) const
 	return 0;
 }
 
-void Trajectory::Save (Writer &/*writer*/) const
+void Trajectory::Save (Writer &writer) const
 {
+    writer.Stream() << writer.ind() << "<Trajectory count=\"" <<  getSize() <<"\">" << std::endl;
+    writer.incInd();
+    for(unsigned int i = 0;i<getSize(); i++)
+        vpcWaypoints[i]->Save(writer);
+    writer.decInd();
+    writer.Stream() << writer.ind() << "</Trajectory>" << std::endl ;
+
 }
 
-void Trajectory::Restore(XMLReader &/*reader*/)
+void Trajectory::Restore(XMLReader &reader)
 {
+    vpcWaypoints.clear();
+    // read my element
+    reader.readElement("Trajectory");
+    // get the value of my Attribute
+    int count = reader.getAttributeAsInteger("count");
+    vpcWaypoints.resize(count);
+
+    for (int i = 0; i < count; i++) {
+        Waypoint *tmp = new Waypoint();
+        tmp->Restore(reader);
+        vpcWaypoints[i] = tmp;
+    }
+
 }
 
 

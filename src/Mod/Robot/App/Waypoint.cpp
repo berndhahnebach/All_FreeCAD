@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/Writer.h>
+#include <Base/Reader.h>
 
 #include "kdl_cp/chain.hpp"
 #include "kdl_cp/chainfksolver.hpp"
@@ -59,11 +60,12 @@ Waypoint::Waypoint(  const char* name,
                      const Base::Placement &endPos, 
                      WaypointType type, 
                      float velocity, 
+                     float accelaration, 
                      bool cont,
                      unsigned int tool, 
                      unsigned int base)
 
-:Name(name),Type(type),EndPos(endPos),Velocity(velocity),Cont(cont),Tool(tool),Base(base)
+:Name(name),Type(type),EndPos(endPos),Velocity(velocity),Cont(cont),Tool(tool),Base(base),Accelaration(accelaration)
 {
 }
 
@@ -81,11 +83,46 @@ unsigned int Waypoint::getMemSize (void) const
 	return 0;
 }
 
-void Waypoint::Save (Writer &/*writer*/) const
+void Waypoint::Save (Writer &writer) const
 {
+	writer.Stream() << writer.ind() << "<Waypoint "
+					<< "name=\"" << Name << "\" " 
+					<< "Px=\""   <<  EndPos.getPosition().x  << "\" " 
+                    << "Py=\""   <<  EndPos.getPosition().y  << "\" "
+                    << "Pz=\""   <<  EndPos.getPosition().z  << "\" "
+					<< "Q0=\""   <<  EndPos.getRotation()[0] << "\" "
+                    << "Q1=\""   <<  EndPos.getRotation()[1] << "\" "
+                    << "Q2=\""   <<  EndPos.getRotation()[2] << "\" "
+                    << "Q3=\""   <<  EndPos.getRotation()[3] << "\" "
+                    << "vel=\""  <<  Velocity				 << "\" "
+                    << "acc=\""  <<  Accelaration	         << "\" "
+					<< "cont=\"" <<  int((Cont)?1:0)         << "\" "
+					<< "tool=\"" <<  Tool                    << "\" "
+					<< "base=\"" <<  Base                    << "\" "
+
+					                      
+                    << std::endl;
 }
 
-void Waypoint::Restore(XMLReader &/*reader*/)
+void Waypoint::Restore(XMLReader &reader)
 {
+    // read my Element
+    reader.readElement("Waypoint");
+    Name = reader.getAttribute("name");
+    // get the value of the placement
+    EndPos = Base::Placement(Base::Vector3d(reader.getAttributeAsFloat("Px"),
+                                            reader.getAttributeAsFloat("Py"),
+                                            reader.getAttributeAsFloat("Pz")),
+                             Base::Rotation(reader.getAttributeAsFloat("Q0"),
+                                            reader.getAttributeAsFloat("Q1"),
+                                            reader.getAttributeAsFloat("Q2"),
+                                            reader.getAttributeAsFloat("Q3")));
+
+    Velocity     = (float) reader.getAttributeAsFloat("vel");
+    Accelaration = (float) reader.getAttributeAsFloat("acc");
+    Cont         = (reader.getAttributeAsInteger("cont") != 0)?true:false;
+    Tool         = reader.getAttributeAsInteger("tool");
+    Base         = reader.getAttributeAsInteger("base");
+
 }
 
