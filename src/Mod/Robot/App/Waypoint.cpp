@@ -98,10 +98,18 @@ void Waypoint::Save (Writer &writer) const
                     << "acc=\""  <<  Accelaration	         << "\" "
 					<< "cont=\"" <<  int((Cont)?1:0)         << "\" "
 					<< "tool=\"" <<  Tool                    << "\" "
-					<< "base=\"" <<  Base                    << "\">"
-
-					                      
-                    << std::endl;
+					<< "base=\"" <<  Base                    << "\" ";
+    if(Type == Waypoint::PTP)
+        writer.Stream() << " type=\"PTP\"/> ";
+    else if(Type == Waypoint::LINE)
+        writer.Stream() << " type=\"LIN\"/> ";
+    else if(Type == Waypoint::CIRC)
+        writer.Stream() << " type=\"CIRC\"/> ";
+    else if(Type == Waypoint::WAIT)
+        writer.Stream() << " type=\"WAIT\"/> ";
+    else if(Type == Waypoint::UNDEF)
+        writer.Stream() << " type=\"UNDEF\"/> ";
+    writer.Stream()<< std::endl;
 }
 
 void Waypoint::Restore(XMLReader &reader)
@@ -123,6 +131,19 @@ void Waypoint::Restore(XMLReader &reader)
     Cont         = (reader.getAttributeAsInteger("cont") != 0)?true:false;
     Tool         = reader.getAttributeAsInteger("tool");
     Base         = reader.getAttributeAsInteger("base");
+
+    std::string type = reader.getAttribute("type");
+    if(type=="PTP")
+        Type = Waypoint::PTP;
+    else if(type=="LIN")
+        Type = Waypoint::LINE;
+    else if(type=="CIRC")
+        Type = Waypoint::CIRC;
+    else if(type=="WAIT")
+        Type = Waypoint::WAIT;
+    else 
+        Type = Waypoint::UNDEF;
+
 
 }
 
