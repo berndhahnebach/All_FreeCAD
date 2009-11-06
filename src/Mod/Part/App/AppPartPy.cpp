@@ -114,6 +114,14 @@ using namespace std;
 
 extern const char* BRepBuilderAPI_FaceErrorText(BRepBuilderAPI_FaceError fe);
 
+#ifndef M_PI
+    #define M_PI    3.14159265358979323846 /* pi */
+#endif
+
+#ifndef M_PI_2
+    #define M_PI_2  1.57079632679489661923 /* pi/2 */
+#endif
+
 /* module functions */
 static PyObject * open(PyObject *self, PyObject *args)
 {
@@ -463,7 +471,7 @@ static PyObject * makeBox(PyObject *self, PyObject *args)
 
 static PyObject * makeCircle(PyObject *self, PyObject *args)
 {
-    double radius, angle1=0.0, angle2=2.0*Standard_PI;
+    double radius, angle1=0.0, angle2=360;
     PyObject *pPnt=0, *pDir=0;
     if (!PyArg_ParseTuple(args, "d|O!O!dd", &radius,
                                             &(Base::VectorPy::Type), &pPnt,
@@ -488,7 +496,7 @@ static PyObject * makeCircle(PyObject *self, PyObject *args)
         circle.SetRadius(radius);
 
         Handle_Geom_Circle hCircle = new Geom_Circle (circle);
-        BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle1, angle2);
+        BRepBuilderAPI_MakeEdge aMakeEdge(hCircle, angle1*(M_PI/180), angle2*(M_PI/180));
         TopoDS_Edge edge = aMakeEdge.Edge();
         return new TopoShapeEdgePy(new TopoShape(edge)); 
     }
@@ -500,7 +508,7 @@ static PyObject * makeCircle(PyObject *self, PyObject *args)
 
 static PyObject * makeSphere(PyObject *self, PyObject *args)
 {
-    double radius, angle1=-M_PI_2, angle2=M_PI_2, angle3=2.0*Standard_PI;
+    double radius, angle1=-90, angle2=90, angle3=360;
     PyObject *pPnt=0, *pDir=0;
     if (!PyArg_ParseTuple(args, "d|O!O!ddd", &radius,
                                              &(Base::VectorPy::Type), &pPnt,
@@ -519,7 +527,7 @@ static PyObject * makeSphere(PyObject *self, PyObject *args)
             Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
             d.SetCoord(vec.x, vec.y, vec.z);
         }
-        BRepPrimAPI_MakeSphere mkSphere(gp_Ax2(p,d), radius, angle1, angle2, angle3);
+        BRepPrimAPI_MakeSphere mkSphere(gp_Ax2(p,d), radius, angle1*(M_PI/180), angle2*(M_PI/180), angle3*(M_PI/180));
         TopoDS_Shape shape = mkSphere.Shape();
         return new TopoShapeSolidPy(new TopoShape(shape));
     }
@@ -531,7 +539,7 @@ static PyObject * makeSphere(PyObject *self, PyObject *args)
 
 static PyObject * makeCylinder(PyObject *self, PyObject *args)
 {
-    double radius, height, angle=2.0*Standard_PI;
+    double radius, height, angle=360;
     PyObject *pPnt=0, *pDir=0;
     if (!PyArg_ParseTuple(args, "dd|O!O!d", &radius, &height,
                                             &(Base::VectorPy::Type), &pPnt,
@@ -550,7 +558,7 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
             Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
             d.SetCoord(vec.x, vec.y, vec.z);
         }
-        BRepPrimAPI_MakeCylinder mkCyl(gp_Ax2(p,d),radius, height, angle);
+        BRepPrimAPI_MakeCylinder mkCyl(gp_Ax2(p,d),radius, height, angle*(M_PI/180));
         TopoDS_Shape shape = mkCyl.Shape();
         return new TopoShapeSolidPy(new TopoShape(shape));
     }
@@ -562,7 +570,7 @@ static PyObject * makeCylinder(PyObject *self, PyObject *args)
 
 static PyObject * makeCone(PyObject *self, PyObject *args)
 {
-    double radius1, radius2,  height, angle=2.0*Standard_PI;
+    double radius1, radius2,  height, angle=360;
     PyObject *pPnt=0, *pDir=0;
     if (!PyArg_ParseTuple(args, "ddd|O!O!d", &radius1, &radius2, &height,
                                              &(Base::VectorPy::Type), &pPnt,
@@ -581,7 +589,7 @@ static PyObject * makeCone(PyObject *self, PyObject *args)
             Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
             d.SetCoord(vec.x, vec.y, vec.z);
         }
-        BRepPrimAPI_MakeCone mkCone(gp_Ax2(p,d),radius1, radius2, height, angle);
+        BRepPrimAPI_MakeCone mkCone(gp_Ax2(p,d),radius1, radius2, height, angle*(M_PI/180));
         TopoDS_Shape shape = mkCone.Shape();
         return new TopoShapeSolidPy(new TopoShape(shape));
     }
@@ -593,7 +601,7 @@ static PyObject * makeCone(PyObject *self, PyObject *args)
 
 static PyObject * makeTorus(PyObject *self, PyObject *args)
 {
-    double radius1, radius2, angle1=0.0, angle2=2.0*Standard_PI, angle=2.0*Standard_PI;
+    double radius1, radius2, angle1=0.0, angle2=360, angle=360;
     PyObject *pPnt=0, *pDir=0;
     if (!PyArg_ParseTuple(args, "dd|O!O!ddd", &radius1, &radius2,
                                               &(Base::VectorPy::Type), &pPnt,
@@ -612,7 +620,7 @@ static PyObject * makeTorus(PyObject *self, PyObject *args)
             Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
             d.SetCoord(vec.x, vec.y, vec.z);
         }
-        BRepPrimAPI_MakeTorus mkTorus(gp_Ax2(p,d), radius1, radius2, angle1, angle2, angle);
+        BRepPrimAPI_MakeTorus mkTorus(gp_Ax2(p,d), radius1, radius2, angle1*(M_PI/180), angle2*(M_PI/180), angle*(M_PI/180));
         const TopoDS_Shape& shape = mkTorus.Shape();
         return new TopoShapeSolidPy(new TopoShape(shape));
     }
@@ -780,7 +788,7 @@ static PyObject * makePolygon(PyObject *self, PyObject *args)
 static PyObject * makeRevolution(PyObject *self, PyObject *args)
 {
     double vmin = DBL_MAX, vmax=-DBL_MAX;
-    double angle=2.0*Standard_PI;
+    double angle=360;
     PyObject *pPnt=0, *pDir=0, *pCrv;
     if (!PyArg_ParseTuple(args, "O!|dddO!O!", &(GeometryPy::Type), &pCrv,
                                               &vmin, &vmax, &angle,
@@ -815,7 +823,7 @@ static PyObject * makeRevolution(PyObject *self, PyObject *args)
             Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
             d.SetCoord(vec.x, vec.y, vec.z);
         }
-        BRepPrimAPI_MakeRevolution mkRev(gp_Ax2(p,d),curve, vmin, vmax, angle);
+        BRepPrimAPI_MakeRevolution mkRev(gp_Ax2(p,d),curve, vmin, vmax, angle*(M_PI/180));
         TopoDS_Shape shape = mkRev.Solid();
         return new TopoShapeSolidPy(new TopoShape(shape));
     }
@@ -1095,23 +1103,23 @@ struct PyMethodDef Part_methods[] = {
 
     {"makeCircle" ,makeCircle,METH_VARARGS,
      "makeCircle(radius,[pnt,dir,angle1,angle2]) -- Make a circle with a given radius\n"
-     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0 and angle2=2*PI"},
+     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0 and angle2=360"},
 
     {"makeSphere" ,makeSphere,METH_VARARGS,
      "makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius\n"
-     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0, angle2=0.5*PI and angle3=2*PI"},
+     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0, angle2=90 and angle3=360"},
 
     {"makeCylinder" ,makeCylinder,METH_VARARGS,
      "makeCylinder(radius,height,[pnt,dir,angle]) -- Make a cylinder with a given radius and height\n"
-     "By default pnt=Vector(0,0,0),dir=Vector(0,0,1) and angle=2*PI"},
+     "By default pnt=Vector(0,0,0),dir=Vector(0,0,1) and angle=360"},
 
     {"makeCone" ,makeCone,METH_VARARGS,
      "makeCone(radius1,radius2,height,[pnt,dir,angle]) -- Make a cone with given radii and height\n"
-     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1) and angle=2*PI"},
+     "By default pnt=Vector(0,0,0), dir=Vector(0,0,1) and angle=360"},
 
     {"makeTorus" ,makeTorus,METH_VARARGS,
      "makeTorus(radius1,radius2,[pnt,dir,angle1,angle2,angle]) -- Make a torus with a given radii and angles\n"
-     "By default pnt=Vector(0,0,0),dir=Vector(0,0,1),angle1=0,angle1=2*PI and angle=2*PI"},
+     "By default pnt=Vector(0,0,0),dir=Vector(0,0,1),angle1=0,angle1=360 and angle=360"},
 
     {"makeHelix" ,makeHelix,METH_VARARGS,
      "makeHelix(pitch,height,radius) -- Make a helix with a given pitch, height and radius"},
@@ -1119,7 +1127,7 @@ struct PyMethodDef Part_methods[] = {
     {"makeRevolution" ,makeRevolution,METH_VARARGS,
      "makeRevolution(Curve,[vmin,vmax,angle,pnt,dir]) -- Make a revolved shape\n"
      "by rotating the curve or a portion of it around an axis given by (pnt,dir).\n"
-     "By default vmin/vmax=bounds of the curve,angle=2*PI,pnt=Vector(0,0,0) and\n"
+     "By default vmin/vmax=bounds of the curve,angle=360,pnt=Vector(0,0,0) and\n"
      "dir=Vector(0,0,1)"},
 
     {"makeRuledSurface" ,makeRuledSurface,METH_VARARGS,

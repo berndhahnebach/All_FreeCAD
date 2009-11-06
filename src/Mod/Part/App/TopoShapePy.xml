@@ -46,7 +46,9 @@
     </Methode>
     <Methode Name="revolve">
       <Documentation>
-        <UserDocu>Make a revolved object.</UserDocu>
+        <UserDocu>Revolve the shape around a Axis to a given degree.
+Part.revolve(Vector(0,0,0),Vector(0,0,1),360) - revolves the shape around the Z Axis 360 degree. 
+        </UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="check">
@@ -114,7 +116,10 @@ the underlying geometry.</UserDocu>
     </Methode>
     <Methode Name="rotate">
       <Documentation>
-        <UserDocu>Apply the rotation to the current location of this shape.</UserDocu>
+        <UserDocu>
+          Apply the rotation (degree) to the current location of this shape
+          Shp.rotate(Vector(0,0,0),Vector(0,0,1),180) - rotate the shape around the Z Axis 180 degrees.
+        </UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="scale">

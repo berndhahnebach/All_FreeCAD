@@ -61,4 +61,11 @@ void AppSketcherExport initSketcher()
     Sketcher::SketchObject        ::init();
 }
 
+
+// debug print for sketchsolv 
+void debugprint(std::string s)
+{
+    Base::Console().Log(s.c_str());
+}
+
 } // extern "C"

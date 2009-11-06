@@ -46,7 +46,7 @@ std::string PlacementPy::representation(void) const
 
     str << "Placement [Pos=(";
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
-    str << "), Euler=(" << A << "," << B << "," << C << ")]";
+    str << "), Rot=(" << A << "," << B << "," << C << ")]";
 
     return str.str();
 }
