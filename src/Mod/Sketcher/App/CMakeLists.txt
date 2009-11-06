@@ -85,7 +85,7 @@ SOURCE_GROUP("Sketchsolver" FILES ${SketchSolver_SRCS})
 SET(Sketcher_SRCS
 		 ${Features_SRCS}
 		 ${Sketchflat_SRCS}
-		 ${SketchSolver_SRCS}
+		 #${SketchSolver_SRCS}
 		 AppSketcher.cpp
 		 AppSketcherPy.cpp
 		 PreCompiled.cpp

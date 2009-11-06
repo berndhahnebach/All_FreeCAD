@@ -69,6 +69,15 @@
 
 using namespace Part;
 
+#ifndef M_PI
+    #define M_PI    3.14159265358979323846 /* pi */
+#endif
+
+#ifndef M_PI_2
+    #define M_PI_2  1.57079632679489661923 /* pi/2 */
+#endif
+
+
 // returns a string which represents the object e.g. when printed in python
 std::string TopoShapePy::representation(void) const
 {
@@ -252,13 +261,13 @@ PyObject* TopoShapePy::extrude(PyObject *args)
 PyObject* TopoShapePy::revolve(PyObject *args)
 {
     PyObject *pPos,*pDir;
-    double d=2.0*Standard_PI;
+    double d=360;
     if (PyArg_ParseTuple(args, "O!O!|d", &(Base::VectorPy::Type), &pPos, &(Base::VectorPy::Type), &pDir,&d)) {
         try {
             Base::Vector3d pos = static_cast<Base::VectorPy*>(pPos)->value();
             Base::Vector3d dir = static_cast<Base::VectorPy*>(pDir)->value();
             TopoDS_Shape shape = this->getTopoShapePtr()->revolve(
-                gp_Ax1(gp_Pnt(pos.x,pos.y,pos.z), gp_Dir(dir.x,dir.y,dir.z)),d);
+                gp_Ax1(gp_Pnt(pos.x,pos.y,pos.z), gp_Dir(dir.x,dir.y,dir.z)),d*(M_PI/180));
             TopAbs_ShapeEnum type = shape.ShapeType();
             switch (type)
             {
@@ -603,7 +612,7 @@ PyObject*  TopoShapePy::rotate(PyObject *args)
 
         gp_Ax1 axis(pos, dir);
         gp_Trsf mov;
-        mov.SetRotation(axis, angle);
+        mov.SetRotation(axis, angle*(M_PI/180));
         TopLoc_Location loc(mov);
         getTopoShapePtr()->_Shape.Move(loc);
         Py_Return;
