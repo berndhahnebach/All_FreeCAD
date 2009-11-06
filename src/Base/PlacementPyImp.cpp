@@ -44,9 +44,14 @@ std::string PlacementPy::representation(void) const
     std::stringstream str;
     ptr->getRotation().getYawPitchRoll(A,B,C);
 
+    // convert to degree
+    A = A*180.0/D_PI;
+    B = B*180.0/D_PI;
+    C = C*180.0/D_PI;
+
     str << "Placement [Pos=(";
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
-    str << "), Rot=(" << A << "," << B << "," << C << ")]";
+    str << "), Yaw-Pitch-Roll=(" << A << "," << B << "," << C << ")]";
 
     return str.str();
 }
@@ -82,24 +87,22 @@ int PlacementPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
     PyObject* d;
     double angle;
-    if (PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &d, &angle,
-                                        &(Base::VectorPy::Type), &o)) {
-        // NOTE: The first parameter defines the rotation axis, the second the rotation angle
-        // and the last parameter defines the translation part. This also is clearly stated in
-        // the Python documentation of the placement constructor. This constructor is used
-        // throughout the sources under this premiss and thus should not change its meaning. 
-        Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle);
+    if (PyArg_ParseTuple(args, "O!O!d", &(Base::VectorPy::Type), &o,
+                                        &(Base::VectorPy::Type), &d, &angle)) {
+        // NOTE: The first parameter defines the translation, the second the rotation axis
+        // and the last parameter defines the rotation angle in degree.
+        Base::Rotation rot(static_cast<Base::VectorPy*>(d)->value(), angle/180.0*D_PI);
         *getPlacementPtr() = Base::Placement(static_cast<Base::VectorPy*>(o)->value(),rot);
         return 0;
     }
 
     PyErr_Clear();
-    if (PyArg_ParseTuple(args, "O!O!", &(Base::RotationPy::Type), &d,
-                                       &(Base::VectorPy::Type), &o)) {
-        Base::Rotation *rot = static_cast<Base::RotationPy*>(d)->getRotationPtr();
-        getPlacementPtr()->setRotation(*rot);
+    if (PyArg_ParseTuple(args, "O!O!", &(Base::VectorPy::Type), &o,
+                                       &(Base::RotationPy::Type), &d)) {
         Base::Vector3d *pos = static_cast<Base::VectorPy*>(o)->getVectorPtr();
         getPlacementPtr()->setPosition(*pos);
+        Base::Rotation *rot = static_cast<Base::RotationPy*>(d)->getRotationPtr();
+        getPlacementPtr()->setRotation(*rot);
         return 0;
     }
 
@@ -176,7 +179,7 @@ void PlacementPy::setRotation(Py::Object arg)
     Py::Tuple tuple;
     if (tuple.accepts(arg.ptr())) {
         tuple = arg;
-		getPlacementPtr()->setRotation(Base::Rotation((double)Py::Float(tuple[0]),
+        getPlacementPtr()->setRotation(Base::Rotation((double)Py::Float(tuple[0]),
                                                       (double)Py::Float(tuple[1]),
                                                       (double)Py::Float(tuple[2]),
                                                       (double)Py::Float(tuple[3])

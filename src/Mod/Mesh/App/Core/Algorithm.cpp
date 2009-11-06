@@ -286,7 +286,7 @@ void MeshAlgorithm::GetMeshBorders (std::list<std::vector<unsigned long> > &rclB
   for (std::vector<unsigned long>::iterator pI = aulAllFacets.begin(); pI != aulAllFacets.end(); pI++)
     *pI = k++;
 
-  GetFacetBorders(aulAllFacets, rclBorders);
+  GetFacetBorders(aulAllFacets, rclBorders, true);
 }
 
 void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Base::Vector3f> > &rclBorders) const
@@ -404,96 +404,91 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd,
                                      std::list<std::vector<unsigned long> > &rclBorders,
                                      bool ignoreOrientation) const
 {
-  const MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
+    const MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
 
-  // alle Facets markieren die in der Indizie-Liste vorkommen
-  ResetFacetFlag(MeshFacet::VISIT);
-  for (std::vector<unsigned long>::const_iterator pIter = raulInd.begin(); pIter != raulInd.end(); pIter++)
-    rclFAry[*pIter].SetFlag(MeshFacet::VISIT);
+    // mark all facets that are in the indices list
+    ResetFacetFlag(MeshFacet::VISIT);
+    for (std::vector<unsigned long>::const_iterator it = raulInd.begin(); it != raulInd.end(); ++it)
+        rclFAry[*it].SetFlag(MeshFacet::VISIT);
 
-  std::list<std::pair<unsigned long, unsigned long> >  aclEdges;
-  // alle Randkanten suchen und ablegen (unsortiert)
-  for (std::vector<unsigned long>::const_iterator pIter2 = raulInd.begin(); pIter2 != raulInd.end(); pIter2++)
-  {
-    const MeshFacet  &rclFacet = rclFAry[*pIter2];
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulNB = rclFacet._aulNeighbours[i];
-      if (ulNB != ULONG_MAX)
-      {
-        if (rclFAry[ulNB].IsFlag(MeshFacet::VISIT) == true)
-          continue;
-      }
+    // collect all boundary edges (unsorted)
+    std::list<std::pair<unsigned long, unsigned long> >  aclEdges;
+    for (std::vector<unsigned long>::const_iterator it = raulInd.begin(); it != raulInd.end(); ++it) {
+        const MeshFacet  &rclFacet = rclFAry[*it];
+        for (int i = 0; i < 3; i++) {
+            unsigned long ulNB = rclFacet._aulNeighbours[i];
+            if (ulNB != ULONG_MAX) {
+                if (rclFAry[ulNB].IsFlag(MeshFacet::VISIT) == true)
+                    continue;
+                }
 
-      aclEdges.push_back(rclFacet.GetEdge(i));
+                aclEdges.push_back(rclFacet.GetEdge(i));
+            }
+        }
+
+    if (aclEdges.size() == 0)
+        return; // no borders found (=> solid)
+
+    // search for edges in the unsorted list
+    unsigned long              ulFirst, ulLast;
+    std::list<unsigned long>   clBorder;
+    ulFirst = aclEdges.begin()->first;
+    ulLast  = aclEdges.begin()->second;
+
+    aclEdges.erase(aclEdges.begin());
+    clBorder.push_back(ulFirst);
+    clBorder.push_back(ulLast);
+
+    while (aclEdges.size() > 0) {
+        // get adjacent edge
+        std::list<std::pair<unsigned long, unsigned long> >::iterator pEI;
+        for (pEI = aclEdges.begin(); pEI != aclEdges.end(); ++pEI) {
+            if (pEI->first == ulLast) {
+                ulLast = pEI->second;
+                clBorder.push_back(ulLast);
+                aclEdges.erase(pEI);
+                break;
+            }
+            else if (pEI->second == ulFirst) {
+                ulFirst = pEI->first;
+                clBorder.push_front(ulFirst);
+                aclEdges.erase(pEI);
+                break;
+            }
+            // Note: Using this might result into boundaries with wrong orientation.
+            // But if the mesh has some facets with wrong orientation we might get
+            // broken boundary curves.
+            else if (pEI->second == ulLast && ignoreOrientation) {
+                ulLast = pEI->first;
+                clBorder.push_back(ulLast);
+                aclEdges.erase(pEI);
+                break;
+            }
+            else if (pEI->first == ulFirst && ignoreOrientation) {
+                ulFirst = pEI->second;
+                clBorder.push_front(ulFirst);
+                aclEdges.erase(pEI);
+                break;
+            }
+        }
+
+        // Note: Calling erase on list iterators doesn't force a re-allocation and
+        // thus doesn't invalidate the iterator itself, only the referenced object
+        if ((pEI == aclEdges.end()) || aclEdges.empty() || (ulLast == ulFirst)) {
+            // no further edge found or closed polyline, respectively
+            rclBorders.push_back(std::vector<unsigned long>(clBorder.begin(), clBorder.end()));
+            clBorder.clear();
+
+            if (aclEdges.size() > 0) {
+                // start new boundary
+                ulFirst = aclEdges.begin()->first;
+                ulLast  = aclEdges.begin()->second;
+                aclEdges.erase(aclEdges.begin());
+                clBorder.push_back(ulFirst);
+                clBorder.push_back(ulLast);
+            }
+        }
     }
-  }
-
-  if (aclEdges.size() == 0)
-    return; // no borders found (=> solid)
-
-  // Kanten aus der unsortieren Kantenliste suchen
-  unsigned long              ulFirst, ulLast;
-  std::list<unsigned long>   clBorder;
-  ulFirst = aclEdges.begin()->first;
-  ulLast  = aclEdges.begin()->second;
-
-  aclEdges.erase(aclEdges.begin());
-  clBorder.push_back(ulFirst);
-  clBorder.push_back(ulLast);
-
-  while (aclEdges.size() > 0)
-  {
-    // naechste anliegende Kante suchen
-    std::list<std::pair<unsigned long, unsigned long> >::iterator pEI;
-    for (pEI = aclEdges.begin(); pEI != aclEdges.end(); pEI++)
-    {
-      if (pEI->first == ulLast)
-      {
-        ulLast = pEI->second;
-        clBorder.push_back(ulLast);
-        aclEdges.erase(pEI);
-        break;
-      }
-      else if (pEI->second == ulFirst)
-      {
-        ulFirst = pEI->first;
-        clBorder.push_front(ulFirst);
-        aclEdges.erase(pEI);
-        break;
-      }
-      // Note: Using this might result into boundaries with wrong orientation. But if the mesh has some 
-      // facets with wrong orientation we might get broken boundary curves.
-      else if (pEI->second == ulLast && ignoreOrientation)
-      {
-        ulLast = pEI->first;
-        clBorder.push_back(ulLast);
-        aclEdges.erase(pEI);
-        break;
-      }
-      else if (pEI->first == ulFirst && ignoreOrientation)
-      {
-        ulFirst = pEI->second;
-        clBorder.push_front(ulFirst);
-        aclEdges.erase(pEI);
-        break;
-      }
-    }
-    if ((pEI == aclEdges.end()) || (ulLast == ulFirst))
-    {  // keine weitere Kante gefunden bzw. Polylinie geschlossen
-      rclBorders.push_back(std::vector<unsigned long>(clBorder.begin(), clBorder.end()));
-      clBorder.clear();
-
-      if (aclEdges.size() > 0)
-      {  // neue Border anfangen
-        ulFirst = aclEdges.begin()->first;
-        ulLast  = aclEdges.begin()->second;
-        aclEdges.erase(aclEdges.begin());
-        clBorder.push_back(ulFirst);
-        clBorder.push_back(ulLast);
-      }
-    }
-  }
 }
 
 void MeshAlgorithm::GetMeshBorder(unsigned long uFacet, std::list<unsigned long>& rBorder) const
@@ -562,64 +557,63 @@ void MeshAlgorithm::GetMeshBorder(unsigned long uFacet, std::list<unsigned long>
 
 void MeshAlgorithm::SplitBoundaryLoops( std::list<std::vector<unsigned long> >& aBorders )
 {
-  // Count the number of open edges for each point
-  std::map<unsigned long, int> openPointDegree;
-  for ( MeshFacetArray::_TConstIterator jt = _rclMesh._aclFacetArray.begin(); jt != _rclMesh._aclFacetArray.end(); ++jt ) 
-  {
-    for ( int i=0; i<3; i++ ) {
-      if ( jt->_aulNeighbours[i] == ULONG_MAX ) {
-        openPointDegree[jt->_aulPoints[i]]++;
-        openPointDegree[jt->_aulPoints[(i+1)%3]]++;
-      }
-    }
-  }
-
-  // go through all boundaries and split them if needed
-  std::list<std::vector<unsigned long> > aSplitBorders;
-  for ( std::list<std::vector<unsigned long> >::iterator it = aBorders.begin(); it != aBorders.end(); ++it )
-  {
-    bool split=false;
-    for ( std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt )
-    {
-      // two (ore more) boundaries meet in one non-manifold point
-      if ( openPointDegree[*jt] > 2) {
-        split = true;
-        break;
-      }
+    // Count the number of open edges for each point
+    std::map<unsigned long, int> openPointDegree;
+    for (MeshFacetArray::_TConstIterator jt = _rclMesh._aclFacetArray.begin();
+        jt != _rclMesh._aclFacetArray.end(); ++jt) {
+        for (int i=0; i<3; i++) {
+            if (jt->_aulNeighbours[i] == ULONG_MAX) {
+                openPointDegree[jt->_aulPoints[i]]++;
+                openPointDegree[jt->_aulPoints[(i+1)%3]]++;
+            }
+        }
     }
 
-    if ( !split )
-      aSplitBorders.push_back( *it );
-    else
-      SplitBoundaryLoops( *it, aSplitBorders );
-  }
+    // go through all boundaries and split them if needed
+    std::list<std::vector<unsigned long> > aSplitBorders;
+    for (std::list<std::vector<unsigned long> >::iterator it = aBorders.begin();
+        it != aBorders.end(); ++it) {
+        bool split=false;
+        for (std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt) {
+            // two (ore more) boundaries meet in one non-manifold point
+            if (openPointDegree[*jt] > 2) {
+                split = true;
+                break;
+            }
+        }
 
-  aBorders = aSplitBorders;
+        if (!split)
+            aSplitBorders.push_back( *it );
+        else
+            SplitBoundaryLoops( *it, aSplitBorders );
+    }
+
+    aBorders = aSplitBorders;
 }
 
-void MeshAlgorithm::SplitBoundaryLoops( const std::vector<unsigned long>& rBound, std::list<std::vector<unsigned long> >& aBorders )
+void MeshAlgorithm::SplitBoundaryLoops(const std::vector<unsigned long>& rBound,
+                                       std::list<std::vector<unsigned long> >& aBorders)
 {
-  std::map<unsigned long, int> aPtDegree;
-  std::vector<unsigned long> cBound;
-  for ( std::vector<unsigned long>::const_iterator it = rBound.begin(); it != rBound.end(); ++it )
-  {
-    int deg = (aPtDegree[*it]++);
-    if ( deg > 0 ) {
-      for ( std::vector<unsigned long>::iterator jt = cBound.begin(); jt != cBound.end(); ++jt ) {
-        if ( *jt == *it ) {
-          std::vector<unsigned long> cBoundLoop;
-          cBoundLoop.insert(cBoundLoop.end(), jt, cBound.end());
-          cBoundLoop.push_back( *it );
-          cBound.erase(jt, cBound.end());
-          aBorders.push_back( cBoundLoop );
-          (aPtDegree[*it]--);
-          break;
+    std::map<unsigned long, int> aPtDegree;
+    std::vector<unsigned long> cBound;
+    for (std::vector<unsigned long>::const_iterator it = rBound.begin(); it != rBound.end(); ++it) {
+        int deg = (aPtDegree[*it]++);
+        if (deg > 0) {
+            for (std::vector<unsigned long>::iterator jt = cBound.begin(); jt != cBound.end(); ++jt) {
+                if (*jt == *it) {
+                    std::vector<unsigned long> cBoundLoop;
+                    cBoundLoop.insert(cBoundLoop.end(), jt, cBound.end());
+                    cBoundLoop.push_back(*it);
+                    cBound.erase(jt, cBound.end());
+                    aBorders.push_back(cBoundLoop);
+                    (aPtDegree[*it]--);
+                    break;
+                }
+            }
         }
-      }
-    }
 
-    cBound.push_back( *it );
-  }
+        cBound.push_back(*it);
+    }
 }
 
 bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary, 
@@ -627,9 +621,14 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
                                MeshFacetArray& rFaces, MeshPointArray& rPoints,
                                int level, const MeshRefPointToFacets* pP2FStructure) const
 {
-    // first and last vertex are identical
-    if ( boundary.size() < 4 )
+    if (boundary.front() == boundary.back()) {
+        // first and last vertex are identical
+        if (boundary.size() < 4)
+            return false; // something strange
+    }
+    else if (boundary.size() < 3) {
         return false; // something strange
+    }
 
     // Get a facet as reference coordinate system
     MeshGeomFacet rTriangle;

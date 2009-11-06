@@ -57,14 +57,14 @@ QString DlgPrimitives::toPlacement() const
     Base::Vector3f d = ui.getDirection();
     Base::Rotation rot(Base::Vector3d(0.0,0.0,1.0),
                        Base::Vector3d(d.x,d.y,d.z));
-    return QString::fromAscii("Base.Placement(Base.Rotation(%1,%2,%3,%4),Base.Vector(%5,%6,%7))")
+    return QString::fromAscii("Base.Placement(Base.Vector(%1,%2,%3),Base.Rotation(%4,%5,%6,%7))")
+        .arg(ui.xPos->value(),0,'f',2)
+        .arg(ui.yPos->value(),0,'f',2)
+        .arg(ui.zPos->value(),0,'f',2)
         .arg(rot[0],0,'f',2)
         .arg(rot[1],0,'f',2)
         .arg(rot[2],0,'f',2)
-        .arg(rot[3],0,'f',2)
-        .arg(ui.xPos->value(),0,'f',2)
-        .arg(ui.yPos->value(),0,'f',2)
-        .arg(ui.xPos->value(),0,'f',2);
+        .arg(rot[3],0,'f',2);
 }
 
 void DlgPrimitives::accept()
