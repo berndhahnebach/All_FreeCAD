@@ -21,8 +21,8 @@ The following constructors are supported:
 Placement() -- empty constructor
 Placement(Placement) -- copy constructor
 Placement(Matrix) -- 4D matrix consisting of rotation and translation
-Placement(Rotation, Base) -- define rotation and position
-Placement(Axis, Angle, Base) -- Axis/Angle define the rotation axis
+Placement(Base, Rotation) -- define position and rotation
+Placement(Base, Axis, Angle) -- define position and rotation
 		</DeveloperDocu>
 		<UserDocu>Placement</UserDocu>
 	</Documentation>

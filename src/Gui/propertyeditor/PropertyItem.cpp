@@ -914,20 +914,18 @@ void PropertyPlacementItem::setValue(const QVariant& value)
     if (!value.canConvert<Base::Placement>())
         return;
     const Base::Placement& val = value.value<Base::Placement>();
-    double angle;
-    Base::Vector3d dir, pos;
-    val.getRotation().getValue(dir, angle);
-    pos = val.getPosition();
-    QString data = QString::fromAscii("App.Base.Placement("
-                                      "App.Vector(%1,%2,%3),%4,"
-                                      "App.Vector(%5,%6,%7))")
-                    .arg(dir.x,0,'g',6)
-                    .arg(dir.y,0,'g',6)
-                    .arg(dir.z,0,'g',6)
-                    .arg(angle,0,'g',6)
+    Base::Vector3d pos = val.getPosition();
+    const Base::Rotation& rt = val.getRotation();
+    QString data = QString::fromAscii("App.Placement("
+                                      "App.Vector(%1,%2,%3),"
+                                      "App.Rotation(%4,%5,%6,%7))")
                     .arg(pos.x,0,'g',6)
                     .arg(pos.y,0,'g',6)
-                    .arg(pos.z,0,'g',6);
+                    .arg(pos.z,0,'g',6)
+                    .arg(rt[0],0,'g',6)
+                    .arg(rt[1],0,'g',6)
+                    .arg(rt[2],0,'g',6)
+                    .arg(rt[3],0,'g',6);
     setPropertyValue(data);
 }
 

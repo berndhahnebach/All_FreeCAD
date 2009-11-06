@@ -68,7 +68,8 @@ int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
     double angle;
     if (PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type), &o, &angle)) {
-        getRotationPtr()->setValue(static_cast<Base::VectorPy*>(o)->value(), angle);
+        // NOTE: The last parameter defines the rotation angle in degree.
+        getRotationPtr()->setValue(static_cast<Base::VectorPy*>(o)->value(), angle/180.0*D_PI);
         return 0;
     }
 
@@ -118,9 +119,9 @@ PyObject* RotationPy::toEuler(PyObject * args)
     this->getRotationPtr()->getYawPitchRoll(A,B,C);
 
     Py::Tuple tuple(3);
-    tuple.setItem(0, Py::Float(A));
-    tuple.setItem(1, Py::Float(B));
-    tuple.setItem(2, Py::Float(C));
+    tuple.setItem(0, Py::Float(A*180.0/D_PI));
+    tuple.setItem(1, Py::Float(B*180.0/D_PI));
+    tuple.setItem(2, Py::Float(C*180.0/D_PI));
     return Py::new_reference_to(tuple);
 }
 
