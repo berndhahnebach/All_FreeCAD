@@ -290,11 +290,7 @@ def formatObject(target,origin=None):
 	b = float(ui.color.blue()/255.0)
 	lw = float(ui.widthButton.value())
 	col = (r,g,b,0.0)
-	params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-	fontheight = params.GetFloat("textheight")
 	if (target.Type == "App::Annotation"):
-		obrep.DisplayMode="World"
-		obrep.FontSize=fontheight
 		obrep.TextColor=col
 	else:
 		if not origin:
@@ -306,9 +302,6 @@ def formatObject(target,origin=None):
 			obrep.LineColor = matchrep.LineColor
 			if (target.Type[:4] == "Part"):
 				obrep.ShapeColor = matchrep.ShapeColor
-	if (target.Type == "App::FeaturePython"):
-		if 'Dimline' in target.PropertiesList:
-			target.ViewObject.FontSize=fontheight
 
 def select(object):
 	"deselects everything and selects only the passed object"
@@ -1433,6 +1426,10 @@ class Text(Creator):
 		self.doc.commitTransaction()
 		self.obj.LabelText=self.text.encode('latin1')
 		self.obj.Position=self.node[0]
+		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+		self.obj.ViewObject.DisplayMode="World"
+		self.obj.ViewObject.FontSize=params.GetFloat("textheight")
+		self.obj.ViewObject.FontName=params.GetString("textfont")
 		formatObject(self.obj)
 		select(self.obj)
 		self.finish()

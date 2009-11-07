@@ -462,13 +462,19 @@ class toolBar:
 				g = float(self.color.green()/255.0)
 				b = float(self.color.blue()/255.0)
 				col = (r,g,b,0.0)
-				for i in FreeCADGui.Selection.getSelection(): i.ViewObject.LineColor = col
+				for i in FreeCADGui.Selection.getSelection():
+					if (i.Type == "App::Annotation"):
+						i.ViewObject.TextColor=col
+					else:
+						i.ViewObject.LineColor = col
 					
 			def setwidth(self,val):
 				if self.params.GetBool("saveonexit"):
 					self.params.SetInt("linewidth",int(val))
 				lw = float(val)
-				for i in FreeCADGui.Selection.getSelection(): i.ViewObject.LineWidth = lw
+				for i in FreeCADGui.Selection.getSelection():
+					if not (i.Type == "App::Annotation"):
+						i.ViewObject.LineWidth = lw
 
 			def apply(self):
 				r = float(self.color.red()/255.0)
@@ -477,8 +483,11 @@ class toolBar:
 				lw = float(self.widthButton.value())
 				col = (r,g,b,0.0)
 				for i in FreeCADGui.Selection.getSelection():
-					i.ViewObject.LineColor = col
-					i.ViewObject.LineWidth = lw	
+					if (i.Type == "App::Annotation"):
+						i.ViewObject.TextColor=col
+					else:
+						i.ViewObject.LineColor = col
+						i.ViewObject.LineWidth = lw	
 					
 			def checkx(self):
 				if self.yValue.isEnabled():

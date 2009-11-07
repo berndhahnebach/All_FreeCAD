@@ -139,13 +139,14 @@ def rotate(first,rotangle,axis=Vector(0,0,1)):
 	'''rotate(Vector,Float,axis=Vector): rotates the first Vector
 	around the given axis, at the given angle.
 	If axis is omitted, the rotation is made on the xy plane.'''
+	if rotangle == 0: return first
 	if isinstance(first,Vector) and isinstance(axis,Vector):
-		axisxy = rounded(Vector(axis.x,axis.y,0))
+		axisxy = Vector(axis.x,axis.y,0)
 		mat1 = FreeCAD.Matrix()
 		if not isNull(axisxy):
 			mat1.rotateZ(angle(axisxy))
 		axisrot1 = mat1.multiply(axis)
-		axisxz = rounded(Vector(axisrot1.x,axisrot1.z,0))
+		axisxz = Vector(axisrot1.x,axisrot1.z,0)
 		mat2 = FreeCAD.Matrix()
 		if not isNull(axisxz):
 			mat2.rotateY(angle(axisxz)-math.pi/2)
@@ -155,6 +156,7 @@ def rotate(first,rotangle,axis=Vector(0,0,1)):
 		vec = Vector(math.cos(rotangle)*vec.x-math.sin(rotangle)*vec.y,math.sin(rotangle)*vec.x+math.cos(rotangle)*vec.y,vec.z)
 		vec = mat2.inverse().multiply(vec)
 		vec = mat1.inverse().multiply(vec)
+		return vec
 
 def isNull(vector):
 	'''isNull(vector): Tests if a vector is nul vector'''
