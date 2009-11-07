@@ -105,7 +105,7 @@ else(MSVC)
 endif(MSVC)
 
 fc_copy_to_path("bin/pivy/gui" 
-	__init__.py
+	gui/__init__.py
 	soqt.py)
 
 install(FILES __init__.py soqt.py DESTINATION bin/pivy/gui)
