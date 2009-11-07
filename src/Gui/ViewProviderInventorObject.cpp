@@ -108,10 +108,11 @@ void ViewProviderInventorObject::updateData(const App::Property* prop)
     if (prop == &ivObj->FileName) {
         // read also from file
         const char* filename = ivObj->FileName.getValue();
-        QFile file(QString::fromUtf8(filename));
+        QString fn = QString::fromUtf8(filename);
+        QFile file(fn);
         SoInput in;
         pcFile->removeAllChildren();
-        if (file.open(QFile::ReadOnly)) {
+        if (!fn.isEmpty() && file.open(QFile::ReadOnly)) {
             QByteArray buffer = file.readAll();
             in.setBuffer((void *)buffer.constData(), buffer.length());
             SoSeparator * node = SoDB::readAll(&in);

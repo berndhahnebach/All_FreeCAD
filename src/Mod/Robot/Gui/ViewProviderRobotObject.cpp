@@ -143,10 +143,11 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
     if (prop == &robObj->RobotVrmlFile) {
         // read also from file
         const char* filename = robObj->RobotVrmlFile.getValue();
-        QFile file(QString::fromUtf8(filename));
+        QString fn = QString::fromUtf8(filename);
+        QFile file(fn);
         SoInput in;
         pcRobotRoot->removeAllChildren();
-        if (file.open(QFile::ReadOnly)) {
+        if (!fn.isEmpty() && file.open(QFile::ReadOnly)) {
             QByteArray buffer = file.readAll();
             in.setBuffer((void *)buffer.constData(), buffer.length());
             SoSeparator * node = SoDB::readAll(&in);
