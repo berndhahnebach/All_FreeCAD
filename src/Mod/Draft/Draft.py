@@ -1842,7 +1842,7 @@ class Rotate(Modifier):
 			else: newob = ob
 			if (ob.Type == "Part::Feature"):
 				shape = ob.Shape
-				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),angle)
+				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),math.degrees(angle))
 				newob.Shape=shape
 			if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
