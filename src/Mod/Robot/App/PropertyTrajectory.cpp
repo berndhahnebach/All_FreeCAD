@@ -137,7 +137,9 @@ void PropertyTrajectory::Save (Base::Writer &writer) const
 
 void PropertyTrajectory::Restore(Base::XMLReader &reader)
 {
-    _Trajectory.Restore(reader);
+    Robot::Trajectory temp;
+    temp.Restore(reader);
+    setValue(temp);
 }
 
 

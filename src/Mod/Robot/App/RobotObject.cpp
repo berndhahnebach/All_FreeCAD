@@ -139,4 +139,6 @@ void RobotObject::Restore(Base::XMLReader &reader)
 {
     App::GeoFeature::Restore(reader);
     robot.Restore(reader);
+    
+
 }
