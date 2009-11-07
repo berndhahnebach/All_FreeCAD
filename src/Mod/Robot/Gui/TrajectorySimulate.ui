@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>466</height>
+    <height>654</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -130,17 +130,6 @@
      <widget class="QTableWidget" name="trajectoryTable">
       <column>
        <property name="text">
-        <string>No</string>
-       </property>
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-      </column>
-      <column>
-       <property name="text">
         <string>Type</string>
        </property>
       </column>
@@ -151,7 +140,17 @@
       </column>
       <column>
        <property name="text">
+        <string>C</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>V</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Neue Spalte</string>
        </property>
       </column>
      </widget>
