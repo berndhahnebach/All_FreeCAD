@@ -237,6 +237,18 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 				throw; // should not happen
 			Axis6Node = static_cast<SoVRMLTransform *>(node);
 		}
+		if(Axis1Node)
+			Axis1Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis1.getValue()*-(M_PI/180));
+		if(Axis2Node)
+			Axis2Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis2.getValue()*(M_PI/180));
+		if(Axis3Node)
+			Axis3Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis3.getValue()*(M_PI/180));
+		if(Axis4Node)
+			Axis4Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis4.getValue()*(M_PI/180));
+		if(Axis5Node)
+			Axis5Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis5.getValue()*(M_PI/180));
+		if(Axis6Node)
+			Axis6Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis6.getValue()*(M_PI/180));
     }else if (prop == &robObj->Axis1) {
 		if(Axis1Node)
 			Axis1Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis1.getValue()*-(M_PI/180));
