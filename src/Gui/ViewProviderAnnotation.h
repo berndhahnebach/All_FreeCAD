@@ -26,7 +26,7 @@
 
 #include "ViewProviderDocumentObject.h"
 
-class SoFontStyle;
+class SoFont;
 class SoText2;
 class SoAsciiText;
 class SoBaseColor;
@@ -47,7 +47,8 @@ public:
     // Display properties
     App::PropertyColor          TextColor;
     App::PropertyEnumeration    Justification;
-    App::PropertyFloat        FontSize;
+    App::PropertyFloat          FontSize;
+    App::PropertyString         FontName;
 
     void attach(App::DocumentObject *);
     void updateData(const App::Property*);
@@ -58,7 +59,7 @@ protected:
     void onChanged(const App::Property* prop);
 
 private:
-    SoFontStyle      * pFont;
+    SoFont           * pFont;
     SoText2          * pLabel;
     SoAsciiText      * pLabel3d;
     SoBaseColor      * pColor;
