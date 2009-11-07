@@ -25,6 +25,7 @@
 #define GUI_DIALOG_DlgEditFileIncludePropertyExternal_H
 
 #include "DlgRunExternal.h"
+#include <App/PropertyFile.h>
 
 namespace Gui {
 namespace Dialog {
@@ -38,7 +39,7 @@ class GuiExport DlgEditFileIncludePropertyExternal : public DlgRunExternal
     Q_OBJECT
 
 public:
-    DlgEditFileIncludePropertyExternal( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    DlgEditFileIncludePropertyExternal( App::PropertyFileIncluded& Prop, QWidget* parent = 0, Qt::WFlags fl = 0 );
     virtual ~DlgEditFileIncludePropertyExternal();
 
 	int Do(void);
@@ -46,6 +47,7 @@ public:
 
 protected Q_SLOTS:
 protected:
+    App::PropertyFileIncluded& Prop;
 
 };
 

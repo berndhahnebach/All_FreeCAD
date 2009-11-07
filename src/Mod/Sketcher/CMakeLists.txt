@@ -7,6 +7,8 @@ if(FREECAD_BUILD_GUI)
 	fc_copy_to_mod_path("Sketcher" InitGui.py)
 endif(FREECAD_BUILD_GUI)
 
+configure_file(Templates/Sketch.skf ${CMAKE_BINARY_DIR}/Mod/Sketcher/Templates/Sketch.skf COPYONLY)
+
 install(
 		 FILES
 		 		 Init.py

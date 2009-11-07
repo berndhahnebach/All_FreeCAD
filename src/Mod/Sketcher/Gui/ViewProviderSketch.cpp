@@ -46,9 +46,11 @@
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>
+#include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
 #include <Mod/Sketcher/App/SketchFlatInterface.h>
 #include <Mod/Sketcher/App/SketchObject.h>
+
 
 #include "ViewProviderSketch.h"
 
@@ -337,7 +339,17 @@ bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint* pp) const
 
 bool ViewProviderSketch::doubleClicked(void)
 {
-	Gui::Application::Instance->activeDocument()->setEdit(this);
+
+    Sketcher::SketchObject *obj = static_cast<Sketcher::SketchObject *>(getObject());
+
+	Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
+
+	dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
+
+    if(dlg.Do() == 1)
+        App::GetApplication().getActiveDocument()->recompute();
+
+	//Gui::Application::Instance->activeDocument()->setEdit(this);
 	return true;
 }
 
@@ -468,26 +480,28 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
-    if (SketchFlatInterface::isAlive()) {
-        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Cannot edit sketch"),
-            QObject::tr("Sketch cannot be edited because there is already another sketch in edit mode.\n"
-            "Please leave the edit mode for the other sketch to enter edit mode for this sketch."));
-        return false;
-    }
 
-    // interface to the solver
-	SketchFlat = new SketchFlatInterface();
 
-    // insert the SketchFlat file
-    SketchFlat->load(getSketchObject()->SketchFlatFile.getValue());
+ //   if (SketchFlatInterface::isAlive()) {
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Cannot edit sketch"),
+ //           QObject::tr("Sketch cannot be edited because there is already another sketch in edit mode.\n"
+ //           "Please leave the edit mode for the other sketch to enter edit mode for this sketch."));
+ //       return false;
+ //   }
 
-    createEditInventorNodes();
-    this->hide(); // avoid that the wires interfere with the edit lines
+ //   // interface to the solver
+	//SketchFlat = new SketchFlatInterface();
 
-	ShowGrid.setValue(true);
+ //   // insert the SketchFlat file
+ //   SketchFlat->load(getSketchObject()->SketchFlatFile.getValue());
 
-    SketchFlat->solve();
-	draw();
+ //   createEditInventorNodes();
+ //   this->hide(); // avoid that the wires interfere with the edit lines
+
+	//ShowGrid.setValue(true);
+
+ //   SketchFlat->solve();
+	//draw();
 
 	return true;
 }
@@ -559,53 +573,53 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
 void ViewProviderSketch::unsetEdit(void)
 {
-	ShowGrid.setValue(false);
+	//ShowGrid.setValue(false);
 
-    std::string file;
+ //   std::string file;
 
-    // save the result of editing
-    if (std::string(getSketchObject()->SketchFlatFile.getValue())=="") {
-        // make a meaningfull name
-        Base::FileInfo temp(getSketchObject()->SketchFlatFile.getDocTransientPath()
-                            + "/" + getSketchObject()->getNameInDocument() + ".skf");
-        if (temp.exists())
-            // save under save name
-            file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObject()
-                            ->SketchFlatFile.getDocTransientPath().c_str());
-        else
-            file = temp.filePath();
-    }
-    else {
-        // save under old name
-        file = getSketchObject()->SketchFlatFile.getExchangeTempFile();
-    }
+ //   // save the result of editing
+ //   if (std::string(getSketchObject()->SketchFlatFile.getValue())=="") {
+ //       // make a meaningfull name
+ //       Base::FileInfo temp(getSketchObject()->SketchFlatFile.getDocTransientPath()
+ //                           + "/" + getSketchObject()->getNameInDocument() + ".skf");
+ //       if (temp.exists())
+ //           // save under save name
+ //           file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObject()
+ //                           ->SketchFlatFile.getDocTransientPath().c_str());
+ //       else
+ //           file = temp.filePath();
+ //   }
+ //   else {
+ //       // save under old name
+ //       file = getSketchObject()->SketchFlatFile.getExchangeTempFile();
+ //   }
 
-    // save the sketch and set the property
-    SketchFlat->save(file.c_str());
-    getSketchObject()->SketchFlatFile.setValue(file.c_str());
-    getSketchObject()->touch();
+ //   // save the sketch and set the property
+ //   SketchFlat->save(file.c_str());
+ //   getSketchObject()->SketchFlatFile.setValue(file.c_str());
+ //   getSketchObject()->touch();
 
-	// close the solver
-	delete(SketchFlat);
+	//// close the solver
+	//delete(SketchFlat);
 
-    // recompute the part
-    getSketchObject()->getDocument()->recompute();
+ //   // recompute the part
+ //   getSketchObject()->getDocument()->recompute();
 
-	// empty the nodes
-	EditRoot->removeAllChildren();
-	PointsMaterials = 0;
-	LinesMaterials = 0;
-	CurvesMaterials = 0;
-	PointsCoordinate = 0;
-	LinesCoordinate = 0;
-	CurvesCoordinate = 0;
-	LineSet = 0;
-	CurveSet = 0;
-    PointSet = 0;
+	//// empty the nodes
+	//EditRoot->removeAllChildren();
+	//PointsMaterials = 0;
+	//LinesMaterials = 0;
+	//CurvesMaterials = 0;
+	//PointsCoordinate = 0;
+	//LinesCoordinate = 0;
+	//CurvesCoordinate = 0;
+	//LineSet = 0;
+	//CurveSet = 0;
+ //   PointSet = 0;
 
-    PreselectCurve = -1;
-    PreselectPoint = -1;
-    this->show();
+ //   PreselectCurve = -1;
+ //   PreselectPoint = -1;
+ //   this->show();
 }
 
 Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void)

@@ -29,7 +29,9 @@
 #include <Gui/Document.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
-#include <Gui/DlgRunExternal.h>
+#include <Gui/DlgEditFileIncludeProptertyExternal.h>
+
+#include <Mod/Sketcher/App/SketchObject.h>
 
 #include "ViewProviderSketch.h"
 
@@ -54,15 +56,24 @@ CmdSketcherNewSketch::CmdSketcherNewSketch()
 
 void CmdSketcherNewSketch::activated(int iMsg)
 {
-	Gui::Dialog::DlgRunExternal dlg(Gui::getMainWindow());
 
-	dlg.ProcName = QString::fromAscii("C:/_SW-Projects/Privat/FreeCAD/FreeCAD_0.9_VC9/bin/sketchflat.exe");
+    std::string FeatName = getUniqueObjectName("Sketch");
+
+    openCommand("Create a new Sketch");
+    doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.SketchFlatFile = App.getResourceDir()+'Mod/Sketcher/Templates/Sketch.skf'",FeatName.c_str());
+  
+    Sketcher::SketchObject *obj = static_cast<Sketcher::SketchObject *>(getDocument()->getObject( FeatName.c_str() ));
+
+	Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
+
+	dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
 
     dlg.Do();
 
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
-    //commitCommand();
+    commitCommand();
+    getDocument()->recompute();
+
       
 }
 
