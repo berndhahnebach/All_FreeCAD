@@ -26,7 +26,6 @@
 #ifndef _PreComp_
 #endif
 
-#include "ui_TaskTrajectory.h"
 #include "TrajectorySimulate.h"
 #include <Gui/Application.h>
 #include <Gui/Document.h>
@@ -35,6 +34,8 @@
 #include <Gui/WaitCursor.h>
 #include <Base/Console.h>
 #include <Gui/Selection.h>
+
+#include <Mod/Robot/App/Waypoint.h>
 
 
 using namespace RobotGui;
@@ -46,10 +47,27 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
     this->setupUi(this);
     QMetaObject::connectSlotsByName(this);
 
+    trajectoryTable->setSortingEnabled(false);
+
     Robot::Trajectory trac = pcTrajectoryObject->Trajectory.getValue();
+    trajectoryTable->setRowCount(trac.getSize());
+
     for(unsigned int i=0;i<trac.getSize();i++){
         Robot::Waypoint pt = trac.getWaypoint(i);
-        
+        switch(pt.Type){
+            case Robot::Waypoint::UNDEF: trajectoryTable->setItem(i, 0, new QTableWidgetItem(QString::fromAscii("UNDEF")));break;
+            case Robot::Waypoint::CIRC: trajectoryTable->setItem(i, 0, new QTableWidgetItem(QString::fromAscii("CIRC")));break;
+            case Robot::Waypoint::PTP: trajectoryTable->setItem(i, 0, new QTableWidgetItem(QString::fromAscii("PTP")));break;
+            case Robot::Waypoint::LINE: trajectoryTable->setItem(i, 0, new QTableWidgetItem(QString::fromAscii("LIN")));break;
+            default: trajectoryTable->setItem(i, 0, new QTableWidgetItem(QString::fromAscii("UNDEF")));break;
+        }
+        trajectoryTable->setItem(i, 1, new QTableWidgetItem(QString::fromUtf8(pt.Name.c_str())));
+        if(pt.Cont)
+            trajectoryTable->setItem(i, 2, new QTableWidgetItem(QString::fromAscii("|")));
+        else
+            trajectoryTable->setItem(i, 2, new QTableWidgetItem(QString::fromAscii("-")));
+        trajectoryTable->setItem(i, 3, new QTableWidgetItem(QString::number(pt.Velocity)));
+        trajectoryTable->setItem(i, 4, new QTableWidgetItem(QString::number(pt.Accelaration)));
 
     }
 }
