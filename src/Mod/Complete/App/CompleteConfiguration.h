@@ -29,9 +29,7 @@
 // Exporting of App classes
 #ifdef FC_OS_WIN32
 #    define COMPLETE_SHOW_SKETCHER
-#    ifndef _DEBUG
-#        define COMPLETE_USE_DRAFTING
-#    endif
+#    define COMPLETE_USE_DRAFTING
 #else // for Linux
 #    define COMPLETE_USE_DRAFTING
 #endif
