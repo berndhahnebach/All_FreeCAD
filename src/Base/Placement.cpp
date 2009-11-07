@@ -48,6 +48,14 @@ Placement::Placement(const Vector3d& Pos, const Rotation &Rot)
     this->_rot = Rot;
 }
 
+Placement::Placement(const Vector3d& Pos, const Rotation &Rot, const Vector3d& Cnt)
+{
+    Vector3d RotC = Cnt;
+    Rot.multVec(RotC, RotC);
+    this->_pos = Pos + Cnt - RotC;
+    this->_rot = Rot;
+}
+
 Base::Matrix4D Placement::toMatrix(void) const
 {
     Base::Matrix4D matrix;

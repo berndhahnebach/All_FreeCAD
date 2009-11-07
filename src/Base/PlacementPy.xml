@@ -22,6 +22,7 @@ Placement() -- empty constructor
 Placement(Placement) -- copy constructor
 Placement(Matrix) -- 4D matrix consisting of rotation and translation
 Placement(Base, Rotation) -- define position and rotation
+Placement(Base, Rotation,Center) -- define position and rotation with center
 Placement(Base, Axis, Angle) -- define position and rotation
 		</DeveloperDocu>
 		<UserDocu>Placement</UserDocu>

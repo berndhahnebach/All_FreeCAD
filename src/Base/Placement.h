@@ -43,6 +43,7 @@ public:
     Placement(void);
     Placement(const Placement&);
     Placement(const Vector3d& Pos, const Rotation &Rot);
+    Placement(const Vector3d& Pos, const Rotation &Rot, const Vector3d& Cnt);
     /// Destruction
     ~Placement () {};
 

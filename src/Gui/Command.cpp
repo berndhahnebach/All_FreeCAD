@@ -700,18 +700,17 @@ Action * PythonCommand::createAction(void)
     Action *pcAction;
 
     pcAction = new Action(this,getMainWindow());
-//  pcAction->setText(sName);
-    pcAction->setText(QString::fromUtf8(getResource("MenuText")));
-    pcAction->setToolTip(QString::fromUtf8(getResource("ToolTip")));
-    pcAction->setStatusTip(QString::fromUtf8(getResource("StatusTip")));
+    pcAction->setText(QObject::trUtf8(getResource("MenuText")));
+    pcAction->setToolTip(QObject::trUtf8(getResource("ToolTip")));
+    pcAction->setStatusTip(QObject::trUtf8(getResource("StatusTip")));
     pcAction->setWhatsThis(QString::fromUtf8(getResource("WhatsThis")));
     if (strcmp(getResource("Pixmap"),"") != 0)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
 
-    if ( pcAction->statusTip().isEmpty() )
-        pcAction->setStatusTip(QString::fromUtf8(getResource("ToolTip")));
-    if ( pcAction->whatsThis().isEmpty() )
-        pcAction->setWhatsThis(QString::fromUtf8(getResource("ToolTip")));
+    if (pcAction->statusTip().isEmpty())
+        pcAction->setStatusTip(QObject::trUtf8(getResource("ToolTip")));
+    if (pcAction->whatsThis().isEmpty())
+        pcAction->setWhatsThis(QObject::trUtf8(getResource("ToolTip")));
 
     return pcAction;
 }
