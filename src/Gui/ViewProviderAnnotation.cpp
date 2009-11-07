@@ -26,7 +26,7 @@
 #ifndef _PreComp_
 # include <Inventor/nodes/SoAnnotation.h>
 # include <Inventor/nodes/SoBaseColor.h>
-# include <Inventor/nodes/SoFontStyle.h>
+# include <Inventor/nodes/SoFont.h>
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoAsciiText.h>
 # include <Inventor/nodes/SoTranslation.h>
@@ -49,8 +49,9 @@ ViewProviderAnnotation::ViewProviderAnnotation()
     ADD_PROPERTY(Justification,((long)0));
     Justification.setEnums(JustificationEnums);
     ADD_PROPERTY(FontSize,(12));
+    ADD_PROPERTY(FontName,("Arial"));
 
-    pFont = new SoFontStyle();
+    pFont = new SoFont();
     pFont->ref();
     pLabel = new SoText2();
     pLabel->ref();
@@ -63,6 +64,7 @@ ViewProviderAnnotation::ViewProviderAnnotation()
 
     TextColor.touch();
     FontSize.touch();
+    FontName.touch();
 
     sPixmap = "Tree_Annotation";
 }
@@ -98,6 +100,9 @@ void ViewProviderAnnotation::onChanged(const App::Property* prop)
     }
     else if (prop == &FontSize) {
         pFont->size = FontSize.getValue();
+    }
+    else if (prop == &FontName) {
+        pFont->name = FontName.getValue();
     }
     else {
         ViewProviderDocumentObject::onChanged(prop);

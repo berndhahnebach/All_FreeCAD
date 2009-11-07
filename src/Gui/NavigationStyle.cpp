@@ -991,6 +991,9 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
                 this->setViewing(false);
                 processed = TRUE;
             }
+            else if (viewer->isEditing() && (this->currentmode == NavigationStyle::SPINNING)) {
+                processed = TRUE;
+            }
             break;
         case SoMouseButtonEvent::BUTTON2:
             // If we are in edit mode then simply ignore the RMB events
