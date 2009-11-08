@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 #endif
 
+#include <QTimer>
 #include "TrajectorySimulate.h"
 #include <Gui/Application.h>
 #include <Gui/Document.h>
@@ -51,6 +52,7 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
 
     Robot::Trajectory trac = pcTrajectoryObject->Trajectory.getValue();
     trajectoryTable->setRowCount(trac.getSize());
+    duration = trac.getDuration();
 
     for(unsigned int i=0;i<trac.getSize();i++){
         Robot::Waypoint pt = trac.getWaypoint(i);
@@ -70,12 +72,52 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
         trajectoryTable->setItem(i, 4, new QTableWidgetItem(QString::number(pt.Accelaration)));
 
     }
+
+    QObject::connect(ButtonStepStart    ,SIGNAL(clicked()),this,SLOT(start()));
+    QObject::connect(ButtonStepStop     ,SIGNAL(clicked()),this,SLOT(stop()));
+    QObject::connect(ButtonStepRun      ,SIGNAL(clicked()),this,SLOT(run()));
+    QObject::connect(ButtonStepBack     ,SIGNAL(clicked()),this,SLOT(back()));
+    QObject::connect(ButtonStepForward  ,SIGNAL(clicked()),this,SLOT(forward()));
+    QObject::connect(ButtonStepEnd      ,SIGNAL(clicked()),this,SLOT(end()));
+
+    // set up timer
+    timer = new QTimer( this );
+    timer->setInterval(100);
+    QObject::connect( timer, SIGNAL(timeout()), this, SLOT(timerDone()) );
+
 }
 
 TrajectorySimulate::~TrajectorySimulate()
 {
 }
 
+void TrajectorySimulate::start(void)
+{
+}
+void TrajectorySimulate::stop(void)
+{
+}
+void TrajectorySimulate::run(void)
+{
+}
+void TrajectorySimulate::back(void)
+{
+}
+void TrajectorySimulate::forward(void)
+{
+}
+void TrajectorySimulate::end(void)
+{
+}
+
+void TrajectorySimulate::timerDone(void)
+{
+}
+
+void TrajectorySimulate::valueChanged ( int value )
+{
+
+}
 
 
 #include "moc_TrajectorySimulate.cpp"
