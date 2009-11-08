@@ -50,7 +50,7 @@ using namespace KDL;
 
 
 
-Simulation::Simulation(Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
+Simulation::Simulation(const Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
 :Trac(Trac),Rob(Rob),Pos(0.0)
 {
 	
@@ -63,4 +63,16 @@ Simulation::~Simulation()
 void Simulation::step(double tick)
 {
 	Pos += tick;
+}
+
+void Simulation::setToWaypoint(unsigned int n)
+{
+
+
+}
+
+void Simulation::setToTime(float t)
+{
+
+
 }

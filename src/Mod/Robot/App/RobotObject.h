@@ -55,6 +55,8 @@ public:
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
+    Robot6Axis &getRobot(void){return robot;}
+
     App::PropertyFileIncluded RobotVrmlFile;
 
     App::PropertyFloat Axis1,Axis2,Axis3,Axis4,Axis5,Axis6;

@@ -57,6 +57,9 @@ class Trajectory_Composite: public Trajectory
 		virtual Path*      GetPath();
 		virtual VelocityProfile* GetProfile();
 
+        // access the single members
+        Trajectory *Get(unsigned int n){return vt[n];}
+
 		virtual ~Trajectory_Composite();
 	};
 

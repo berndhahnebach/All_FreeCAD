@@ -43,7 +43,7 @@ class AppRobotExport Simulation
 
 public:
 	/// Constructor
-	Simulation(Trajectory &Trac,Robot6Axis &Rob);
+	Simulation(const Trajectory &Trac,Robot6Axis &Rob);
 	virtual ~Simulation();
 
 	double getLength(void){return Trac.getLength();}
@@ -53,11 +53,13 @@ public:
     double getVelocity(void){return Trac.getVelocity(Pos);}
 
 	void step(double tick);
+    void setToWaypoint(unsigned int n);
+    void setToTime(float t);
 
 	double Pos;
-	std::vector<float> Axis;
+	float Axis[6];
 
-    Trajectory &Trac;
+    Trajectory Trac;
     Robot6Axis &Rob;
 };
 
