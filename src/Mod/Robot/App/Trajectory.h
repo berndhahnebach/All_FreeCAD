@@ -63,8 +63,10 @@ public:
     unsigned int getSize(void) const{return vpcWaypoints.size();}
     const Waypoint &getWaypoint(unsigned int pos)const {return *vpcWaypoints[pos];}
 
-    double getLength(void) const;
-    double getDuration (void) const;
+    /// return the Length (mm) of the Trajectory if -1 or of the Waypoint with the given number
+    double getLength(int n=-1) const;
+    /// return the duration (s) of the Trajectory if -1 or of the Waypoint with the given number
+    double getDuration (int n=-1) const;
     Base::Placement getPosition(double time);
     double getVelocity(double time);
 

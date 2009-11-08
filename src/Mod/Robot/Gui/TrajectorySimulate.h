@@ -32,6 +32,7 @@
 #include <Mod/Robot/App/Robot6Axis.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
 #include <Mod/Robot/App/Trajectory.h>
+#include <Mod/Robot/App/Simulation.h>
 
 
 
@@ -60,6 +61,8 @@ private Q_SLOTS:
 
 protected:
     QTimer *timer;
+
+    Robot::Simulation sim;
 
     float timePos;
     float duration;

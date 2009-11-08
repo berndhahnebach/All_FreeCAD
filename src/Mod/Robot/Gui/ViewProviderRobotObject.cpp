@@ -280,6 +280,23 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 	}
 
 }
+void ViewProviderRobotObject::setAxisTo(float A1,float A2,float A3,float A4,float A5,float A6)
+{
+	if(Axis1Node)
+        // FIXME Uggly hack for the wrong transformation of the Kuka 500 robot VRML the minus sign on Axis 1
+		Axis1Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A1*-(M_PI/180));
+	if(Axis2Node)
+		Axis2Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A2*(M_PI/180));
+	if(Axis3Node)
+		Axis3Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A3*(M_PI/180));
+	if(Axis4Node)
+		Axis4Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A4*(M_PI/180));
+	if(Axis5Node)
+		Axis5Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A5*(M_PI/180));
+	if(Axis6Node)
+		Axis6Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A6*(M_PI/180));
+
+}
 
 void ViewProviderRobotObject::sDraggerMotionCallback(void *data, SoDragger *dragger)
 {

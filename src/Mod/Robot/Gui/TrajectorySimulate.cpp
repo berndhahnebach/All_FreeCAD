@@ -43,7 +43,7 @@ using namespace RobotGui;
 using namespace Gui;
 
 TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject,QWidget *parent)
-    : QDialog( parent)
+    : QDialog( parent),sim(pcTrajectoryObject->Trajectory.getValue(),pcRobotObject->getRobot())
 {
     this->setupUi(this);
     QMetaObject::connectSlotsByName(this);
