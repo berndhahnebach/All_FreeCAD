@@ -48,12 +48,23 @@ public:
     ~TrajectorySimulate();
 
 private Q_SLOTS:
+    void start(void);
+    void stop(void);
+    void run(void);
+    void back(void);
+    void forward(void);
+    void end(void);
+
+    void timerDone(void);
+    void valueChanged ( int value );
 
 protected:
+    QTimer *timer;
 
+    float timePos;
+    float duration;
 private:
 
-private:
 };
 
 } //namespace PartDesignGui
