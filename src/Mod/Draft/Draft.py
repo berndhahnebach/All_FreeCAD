@@ -69,7 +69,7 @@ from draftlibs import fcgeo
 try:
 	from pivy import coin, sogui
 except:
-	FreeCADGui.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
+	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
 
 # Constants
 
