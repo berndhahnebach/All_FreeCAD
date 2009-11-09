@@ -16,6 +16,9 @@ fc_copy_to_path("Mod/Robot/Lib/Kuka"
 	Lib/Kuka/kr_500_2.pdf
 )
 
+fc_copy_to_path("Mod/Robot"
+	Lib/Kuka/KukaExporter.py
+)
 
 install(
 		 FILES
