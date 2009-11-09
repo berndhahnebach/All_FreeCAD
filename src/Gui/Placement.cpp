@@ -62,22 +62,42 @@ Placement::~Placement()
 
 void Placement::onPlacementChanged(int)
 {
-    if (ui->applyPlacement->isChecked()) {
+    if (ui->applyPlacementChange->isChecked()) {
         Base::Placement plm = this->getPlacement();
         QVariant data = QVariant::fromValue<Base::Placement>(plm);
         placementChanged(data);
     }
 }
 
-void Placement::on_applyPlacement_toggled(bool on)
+void Placement::on_applyPlacementChange_toggled(bool on)
 {
     ui->applyButton->setDisabled(on);
     if (on) onPlacementChanged(0);
 }
 
+void Placement::on_applyIncrementalPlacement_toggled(bool on)
+{
+    if (on) {
+        this->pm = getPlacementData();
+        QList<QDoubleSpinBox*> sb = this->findChildren<QDoubleSpinBox*>();
+        for (QList<QDoubleSpinBox*>::iterator it = sb.begin(); it != sb.end(); ++it) {
+            (*it)->blockSignals(true);
+            (*it)->setValue(0.0);
+            (*it)->blockSignals(false);
+        }
+    }
+    else {
+        Base::Placement p = getPlacementData();
+        this->pm = p * this->pm;
+        this->blockSignals(true);
+        setPlacementData(this->pm);
+        this->blockSignals(false);
+    }
+}
+
 void Placement::accept()
 {
-    if (!ui->applyPlacement->isChecked())
+    if (!ui->applyPlacementChange->isChecked())
         on_applyButton_clicked();
     QDialog::accept();
 }
@@ -87,6 +107,18 @@ void Placement::on_applyButton_clicked()
     Base::Placement plm = this->getPlacement();
     QVariant data = QVariant::fromValue<Base::Placement>(plm);
     placementChanged(data);
+}
+
+void Placement::on_resetButton_clicked()
+{
+    QList<QDoubleSpinBox*> sb = this->findChildren<QDoubleSpinBox*>();
+    for (QList<QDoubleSpinBox*>::iterator it = sb.begin(); it != sb.end(); ++it) {
+        (*it)->blockSignals(true);
+        (*it)->setValue(0.0);
+        (*it)->blockSignals(false);
+    }
+
+    onPlacementChanged(0);
 }
 
 void Placement::directionActivated(int index)
@@ -103,6 +135,13 @@ Base::Vector3f Placement::getDirection() const
 
 void Placement::setPlacement(const Base::Placement& p)
 {
+    this->pm = p;
+    setPlacementData(this->pm);
+}
+
+void Placement::setPlacementData(const Base::Placement& p)
+{
+
     ui->xPos->setValue(p.getPosition().x);
     ui->yPos->setValue(p.getPosition().y);
     ui->zPos->setValue(p.getPosition().z);
@@ -142,25 +181,34 @@ void Placement::setPlacement(const Base::Placement& p)
 
 Base::Placement Placement::getPlacement() const
 {
+    Base::Placement p = getPlacementData();
+    if (ui->applyIncrementalPlacement->isChecked())
+        p = p * this->pm;
+    return p;
+}
+
+Base::Placement Placement::getPlacementData() const
+{
     int index = ui->rotationInput->currentIndex();
-    Base::Placement p;
+    Base::Rotation rot;
+    Base::Vector3d pos;
+    Base::Vector3d cnt;
+
+    pos = Base::Vector3d(ui->xPos->value(),ui->yPos->value(),ui->zPos->value());
+    cnt = Base::Vector3d(ui->xCnt->value(),ui->yCnt->value(),ui->zCnt->value());
+
     if (index == 0) {
-        p.setPosition(Base::Vector3d
-            (ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
         Base::Vector3f dir = getDirection();
-        p.setRotation(Base::Rotation
-            (Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0));
+        rot.setValue(Base::Vector3d(dir.x,dir.y,dir.z),ui->angle->value()*D_PI/180.0);
     }
     else if (index == 1) {
-        p.setPosition(Base::Vector3d
-            (ui->xPos->value(),ui->yPos->value(),ui->zPos->value()));
-        Base::Rotation rot;
         rot.setYawPitchRoll(
             ui->yawAngle->value()*D_PI/180.0,
             ui->pitchAngle->value()*D_PI/180.0,
             ui->rollAngle->value()*D_PI/180.0);
-        p.setRotation(rot);
     }
+
+    Base::Placement p(pos, rot, cnt);
     return p;
 }
 

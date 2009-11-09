@@ -48,10 +48,14 @@ protected:
 
 private Q_SLOTS:
     void on_applyButton_clicked();
-    void on_applyPlacement_toggled(bool);
+    void on_applyPlacementChange_toggled(bool);
+    void on_applyIncrementalPlacement_toggled(bool);
     void onPlacementChanged(int);
+    void on_resetButton_clicked();
 
 private:
+    void setPlacementData(const Base::Placement&);
+    Base::Placement getPlacementData() const;
     void directionActivated(int);
 
 Q_SIGNALS:
@@ -61,6 +65,7 @@ Q_SIGNALS:
 private:
     typedef Gui::LocationInterfaceComp<Ui_Placement> Ui_PlacementComp;
     Ui_PlacementComp* ui;
+    Base::Placement pm;
 };
 
 } // namespace Dialog
