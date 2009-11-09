@@ -760,6 +760,7 @@ class PlacementEditor : public Gui::LabelButton
 public:
     PlacementEditor(QWidget * parent = 0) : LabelButton(parent)
     {
+        dlg = 0;
     }
     ~PlacementEditor()
     {
@@ -767,11 +768,17 @@ public:
 protected:
     void browse()
     {
-        Gui::Dialog::Placement dlg(this);
-        dlg.setPlacement(value().value<Base::Placement>());
-        connect(&dlg, SIGNAL(placementChanged(const QVariant &)),
+        if (dlg) {
+            dlg->show();
+            return;
+        }
+        
+        dlg = new Gui::Dialog::Placement(this);
+        dlg->setPlacement(value().value<Base::Placement>());
+        connect(dlg, SIGNAL(placementChanged(const QVariant &)),
                 this, SLOT(setValue(const QVariant&)));
-        dlg.exec();
+        dlg->setAttribute(Qt::WA_DeleteOnClose);
+        dlg->show();
     }
     void showValue(const QVariant& d)
     {
@@ -790,6 +797,8 @@ protected:
                         .arg(pos.z,0,'f',2);
         getLabel()->setText(data);
     }
+
+    QPointer<Gui::Dialog::Placement> dlg;
 };
 }
 }
