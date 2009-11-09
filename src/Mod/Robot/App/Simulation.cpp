@@ -73,6 +73,14 @@ void Simulation::setToWaypoint(unsigned int n)
 
 void Simulation::setToTime(float t)
 {
-
+    Pos = t;
+    Base::Placement NeededPos = Trac.getPosition(Pos);
+    Rob.setTo(NeededPos);
+    Axis[0] = Rob.getAxis(0);
+    Axis[1] = Rob.getAxis(1);
+    Axis[2] = Rob.getAxis(2);
+    Axis[3] = Rob.getAxis(3);
+    Axis[4] = Rob.getAxis(4);
+    Axis[5] = Rob.getAxis(5);
 
 }

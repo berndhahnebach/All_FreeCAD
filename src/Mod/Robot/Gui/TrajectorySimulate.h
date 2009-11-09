@@ -34,6 +34,7 @@
 #include <Mod/Robot/App/Trajectory.h>
 #include <Mod/Robot/App/Simulation.h>
 
+#include "ViewProviderRobotObject.h"
 
 
 namespace RobotGui { 
@@ -58,11 +59,19 @@ private Q_SLOTS:
 
     void timerDone(void);
     void valueChanged ( int value );
+    void valueChanged ( double d );
 
 protected:
+    void setTo(void);
+
     QTimer *timer;
 
     Robot::Simulation sim;
+
+    ViewProviderRobotObject *ViewProv;
+
+    bool Run;
+    bool block;
 
     float timePos;
     float duration;

@@ -109,7 +109,7 @@ double Trajectory::getDuration(int n) const
         return 0;
 }
 
-Placement Trajectory::getPosition(double time)
+Placement Trajectory::getPosition(double time)const
 {
     if(pcTrajectory)
         return Placement(toPlacement(pcTrajectory->Pos(time)));
@@ -117,7 +117,7 @@ Placement Trajectory::getPosition(double time)
         return Placement();
 }
 
-double Trajectory::getVelocity(double time)
+double Trajectory::getVelocity(double time)const
 {
     if(pcTrajectory){
         KDL::Vector vec = pcTrajectory->Vel(time).vel;
