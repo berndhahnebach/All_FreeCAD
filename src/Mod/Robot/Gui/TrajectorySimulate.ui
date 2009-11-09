@@ -220,6 +220,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QSlider" name="timeSlider">
+       <property name="maximum">
+        <number>999</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -259,10 +262,16 @@
        </sizepolicy>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>50</number>
+       <number>40</number>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>22</number>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>22</number>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>50</number>
+       <number>40</number>
       </attribute>
       <column>
        <property name="text">

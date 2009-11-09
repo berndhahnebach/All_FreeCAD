@@ -67,8 +67,8 @@ public:
     double getLength(int n=-1) const;
     /// return the duration (s) of the Trajectory if -1 or of the Waypoint with the given number
     double getDuration (int n=-1) const;
-    Base::Placement getPosition(double time);
-    double getVelocity(double time);
+    Base::Placement getPosition(double time)const;
+    double getVelocity(double time)const;
 
 
 protected:

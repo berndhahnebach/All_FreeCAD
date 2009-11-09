@@ -43,7 +43,11 @@ using namespace RobotGui;
 using namespace Gui;
 
 TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject,QWidget *parent)
-    : QDialog( parent),sim(pcTrajectoryObject->Trajectory.getValue(),pcRobotObject->getRobot())
+    : QDialog( parent),
+      sim(pcTrajectoryObject->Trajectory.getValue(),pcRobotObject->getRobot()),
+      Run(false),
+      timePos(0.0),
+      block(false)
 {
     this->setupUi(this);
     QMetaObject::connectSlotsByName(this);
@@ -53,6 +57,7 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
     Robot::Trajectory trac = pcTrajectoryObject->Trajectory.getValue();
     trajectoryTable->setRowCount(trac.getSize());
     duration = trac.getDuration();
+    timeSpinBox->setMaximum(duration);
 
     for(unsigned int i=0;i<trac.getSize();i++){
         Robot::Waypoint pt = trac.getWaypoint(i);
@@ -80,25 +85,45 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
     QObject::connect(ButtonStepForward  ,SIGNAL(clicked()),this,SLOT(forward()));
     QObject::connect(ButtonStepEnd      ,SIGNAL(clicked()),this,SLOT(end()));
 
+
     // set up timer
     timer = new QTimer( this );
     timer->setInterval(100);
-    QObject::connect( timer, SIGNAL(timeout()), this, SLOT(timerDone()) );
+    QObject::connect(timer      ,SIGNAL(timeout ()),this,SLOT(timerDone()));
 
+    QObject::connect( timeSpinBox       ,SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)) );
+    QObject::connect( timeSlider        ,SIGNAL(valueChanged(int)   ), this, SLOT(valueChanged(int)) );
+
+    // get the view provider
+    ViewProv = dynamic_cast<ViewProviderRobotObject*>(Gui::Application::Instance->activeDocument()->getViewProvider(pcRobotObject) );
 }
 
 TrajectorySimulate::~TrajectorySimulate()
 {
 }
 
+void TrajectorySimulate::setTo(void)
+{
+    sim.setToTime(timePos);
+    ViewProv->setAxisTo(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5]);
+}
+
 void TrajectorySimulate::start(void)
 {
+    timePos = 0.0f;
+    timeSpinBox->setValue(timePos);
+    timeSlider->setValue(int((timePos/duration)*1000));
+
 }
 void TrajectorySimulate::stop(void)
 {
+    timer->stop();
+    Run = false;
 }
 void TrajectorySimulate::run(void)
 {
+    timer->start();
+    Run = true;
 }
 void TrajectorySimulate::back(void)
 {
@@ -108,15 +133,46 @@ void TrajectorySimulate::forward(void)
 }
 void TrajectorySimulate::end(void)
 {
+    timePos = duration;
+    timeSpinBox->setValue(timePos);
+    timeSlider->setValue(int((timePos/duration)*1000));
+
 }
 
 void TrajectorySimulate::timerDone(void)
 {
+    if(timePos < duration){
+        timePos += .1f;
+        timeSpinBox->setValue(timePos);
+        timeSlider->setValue(int((timePos/duration)*1000));
+        setTo();
+        timer->start();
+    }else{
+        timer->stop();
+        Run = false;
+    }
 }
 
 void TrajectorySimulate::valueChanged ( int value )
 {
+    if(!block){
+        timePos = duration*(value/1000.0);
+        block=true;
+        timeSpinBox->setValue(timePos);
+        block=false;
+        setTo();
+    }
+}
 
+void TrajectorySimulate::valueChanged ( double value )
+{
+    if(!block){
+        timePos = value;
+        block=true;
+        timeSlider->setValue(int((timePos/duration)*1000));
+        block=false;
+        setTo();
+    }
 }
 
 
