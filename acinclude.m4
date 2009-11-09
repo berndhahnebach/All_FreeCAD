@@ -210,6 +210,7 @@ case $host_os in
     QT_LIBS="$QT_LIBS -Wl,-framework,QtXml"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtSql"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtSvg"
+	QT_LIBS="$QT_LIBS -Wl,-framework,QtWebKit"
 
     QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtGui.framework/Headers"
@@ -218,6 +219,7 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtNetwork.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtSvg.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtXml.framework/Headers"
+	QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtWebKit.framework/Headers"
     # QtUiTools doesn't seem to be available as framework
     QT_CXXFLAGS="$QT_CXXFLAGS -I/usr/include/QtUiTools"
     # QtWebKit check

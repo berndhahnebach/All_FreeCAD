@@ -383,17 +383,31 @@ PyObject*  MeshPy::transformToEigen(PyObject *args)
 PyObject*  MeshPy::addFacet(PyObject *args)
 {
     double x1,y1,z1,x2,y2,z2,x3,y3,z3;
-    if (!PyArg_ParseTuple(args, "ddddddddd",&x1,&y1,&z1,&x2,&y2,&z2,&x3,&y3,&z3))
-        return NULL;
-
-    PY_TRY {
+    if (PyArg_ParseTuple(args, "ddddddddd",&x1,&y1,&z1,&x2,&y2,&z2,&x3,&y3,&z3)) {
         getMeshObjectPtr()->addFacet(MeshCore::MeshGeomFacet(
                         Base::Vector3f((float)x1,(float)y1,(float)z1),
                         Base::Vector3f((float)x2,(float)y2,(float)z2),
                         Base::Vector3f((float)x3,(float)y3,(float)z3)));
-    } PY_CATCH;
+        Py_Return;
+    }
 
-    Py_Return;
+    PyErr_Clear();
+    PyObject *v1, *v2, *v3;
+    if (PyArg_ParseTuple(args, "O!O!O!",&(Base::VectorPy::Type), &v1,
+                                        &(Base::VectorPy::Type), &v2,
+                                        &(Base::VectorPy::Type), &v3)) {
+        Base::Vector3d *p1 = static_cast<Base::VectorPy*>(v1)->getVectorPtr();
+        Base::Vector3d *p2 = static_cast<Base::VectorPy*>(v2)->getVectorPtr();
+        Base::Vector3d *p3 = static_cast<Base::VectorPy*>(v3)->getVectorPtr();
+        getMeshObjectPtr()->addFacet(MeshCore::MeshGeomFacet(
+                        Base::Vector3f((float)p1->x,(float)p1->y,(float)p1->z),
+                        Base::Vector3f((float)p2->x,(float)p2->y,(float)p2->z),
+                        Base::Vector3f((float)p3->x,(float)p3->y,(float)p3->z)));
+        Py_Return;
+    }
+
+    PyErr_SetString(PyExc_Exception, "set 9 floats or three vectors");
+    return 0;
 }
 
 PyObject*  MeshPy::addFacets(PyObject *args)
