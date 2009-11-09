@@ -1,8 +1,8 @@
 
 /// Version Number
 #define FCVersionMajor "0"
-#define FCVersionMinor "9"
-#define FCVersionName  "Endor"
+#define FCVersionMinor "10"
+#define FCVersionName  "Dagoba"
 
 #define FCRevision      "2237"      //Highest committed revision number
 #define FCRevisionRange "2237"    //Update revision range
