@@ -96,6 +96,8 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
 
     // get the view provider
     ViewProv = dynamic_cast<ViewProviderRobotObject*>(Gui::Application::Instance->activeDocument()->getViewProvider(pcRobotObject) );
+
+    setTo();
 }
 
 TrajectorySimulate::~TrajectorySimulate()
@@ -113,6 +115,7 @@ void TrajectorySimulate::start(void)
     timePos = 0.0f;
     timeSpinBox->setValue(timePos);
     timeSlider->setValue(int((timePos/duration)*1000));
+    setTo();
 
 }
 void TrajectorySimulate::stop(void)
@@ -136,7 +139,7 @@ void TrajectorySimulate::end(void)
     timePos = duration;
     timeSpinBox->setValue(timePos);
     timeSlider->setValue(int((timePos/duration)*1000));
-
+    setTo();
 }
 
 void TrajectorySimulate::timerDone(void)

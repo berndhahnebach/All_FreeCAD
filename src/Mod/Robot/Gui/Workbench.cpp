@@ -51,6 +51,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *part << "Robot_CreateTrajectory";
     *part << "Robot_InsertWaypoint";
     *part << "Robot_Simulate";
+    *part << "Robot_Export";
      return root;
 }
 
