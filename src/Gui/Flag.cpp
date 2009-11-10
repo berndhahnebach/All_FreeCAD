@@ -341,7 +341,11 @@ void Flag::contextMenuEvent(QContextMenuEvent * e)
     topright->setCheckable(true);
     QAction* botright = menu.addAction(tr("Bottom right"));
     botright->setCheckable(true);
-    menu.exec(e->globalPos());
+    menu.addSeparator();
+    QAction* remove = menu.addAction(tr("Remove"));
+    QAction* select = menu.exec(e->globalPos());
+    if (remove == select)
+        this->deleteLater();
 }
 
 QSize Flag::sizeHint() const
