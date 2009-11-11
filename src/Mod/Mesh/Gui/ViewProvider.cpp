@@ -1114,6 +1114,37 @@ void ViewProviderMesh::fillHole(unsigned long uFacet)
     Gui::Application::Instance->activeDocument()->commitCommand();
 }
 
+void ViewProviderMesh::selectFacet(unsigned long facet)
+{
+    std::vector<unsigned long> selection;
+    selection.push_back(facet);
+
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+
+    rMesh.addFacetsToSelection(selection);
+    selection.clear();
+    rMesh.getFacetsFromSelection(selection);
+
+    // Colorize the selection
+    pcMatBinding->value = SoMaterialBinding::PER_FACE;
+    App::Color c = ShapeColor.getValue();
+    int uCtFacets = (int)rMesh.countFacets();
+
+    if (uCtFacets != pcShapeMaterial->diffuseColor.getNum()) {
+        pcShapeMaterial->diffuseColor.setNum(uCtFacets);
+
+        SbColor* cols = pcShapeMaterial->diffuseColor.startEditing();
+        for (int i=0; i<uCtFacets; i++)
+            cols[i].setValue(c.r,c.g,c.b);
+        for (std::vector<unsigned long>::iterator it = selection.begin(); it != selection.end(); ++it)
+            cols[*it].setValue(1.0f,0.0f,0.0f);
+        pcShapeMaterial->diffuseColor.finishEditing();
+    }
+    else {
+        pcShapeMaterial->diffuseColor.set1Value(facet,1.0f,0.0f,0.0f);
+    }
+}
+
 void ViewProviderMesh::selectPart(unsigned long uFacet)
 {
     std::vector<unsigned long> selection;
