@@ -210,7 +210,8 @@ case $host_os in
     QT_LIBS="$QT_LIBS -Wl,-framework,QtXml"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtSql"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtSvg"
-	QT_LIBS="$QT_LIBS -Wl,-framework,QtWebKit"
+	# remove this line again once the Webkit check is working
+    QT_LIBS="$QT_LIBS -Wl,-framework,QtWebKit"
 
     QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtGui.framework/Headers"
@@ -219,14 +220,15 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtNetwork.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtSvg.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtXml.framework/Headers"
-	QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtWebKit.framework/Headers"
+	# remove this line again once the Webkit check is working
+    QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtWebKit.framework/Headers"
     # QtUiTools doesn't seem to be available as framework
     QT_CXXFLAGS="$QT_CXXFLAGS -I/usr/include/QtUiTools"
     # QtWebKit check
     fc_ac_save_cppflags=$CPPFLAGS
-    CPPFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtWebKit"
+    CPPFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtWebKit.framework/Headers"
     AC_MSG_CHECKING([whether QtWebKit is available])
-    AC_TRY_LINK([#include <QWebView>], [],
+    AC_TRY_COMPILE([#include <QWebView>], [],
         [
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtWebKit.framework/Headers"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtWebKit"
@@ -247,9 +249,9 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtUiTools"
     # QtWebKit check
     fc_ac_save_cppflags=$CPPFLAGS
-    CPPFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtWebKit"
+    CPPFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtWebKit"
     AC_MSG_CHECKING([whether QtWebKit is available])
-    AC_TRY_LINK([#include <QWebView>], [],
+    AC_TRY_COMPILE([#include <QWebView>], [],
         [
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtWebKit"
     QT_LIBS="$QT_LIBS -lQtWebKit"
