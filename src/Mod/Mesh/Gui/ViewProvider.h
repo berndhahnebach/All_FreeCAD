@@ -119,6 +119,7 @@ public:
     /// Returns the edit mode
     const char* getEditModeName(void);
     void selectPart(unsigned long facet);
+    void selectFacet(unsigned long facet);
     void clearSelection();
     void removeSelection();
     void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
