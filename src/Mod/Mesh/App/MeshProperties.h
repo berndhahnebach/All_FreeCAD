@@ -172,6 +172,8 @@ public:
 
     /** @name Modification */
     //@{
+    MeshObject* startEditing();
+    void finishEditing();
     /// Transform the real mesh data
     void transformGeometry(const Base::Matrix4D &rclMat);
     void deletePointIndices ( const std::vector<unsigned long>& );

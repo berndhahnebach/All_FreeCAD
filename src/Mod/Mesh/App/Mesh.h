@@ -163,6 +163,12 @@ public:
     void addMesh(const MeshCore::MeshKernel&);
     void deleteFacets(const std::vector<unsigned long>& removeIndices);
     void deletePoints(const std::vector<unsigned long>& removeIndices);
+    void deleteSelectedFacets();
+    void deleteSelectedPoints();
+    void addFacetsToSelection(const std::vector<unsigned long>&) const;
+    void addPointsToSelection(const std::vector<unsigned long>&) const;
+    void getFacetsFromSelection(std::vector<unsigned long>&) const;
+    void getPointsFromSelection(std::vector<unsigned long>&) const;
     unsigned long countComponents() const;
     void removeComponents(unsigned long);
     void fillupHoles(unsigned long, int, MeshCore::AbstractPolygonTriangulator&);

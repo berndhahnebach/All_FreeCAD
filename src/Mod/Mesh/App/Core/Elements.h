@@ -73,11 +73,17 @@ public:
  * The flags can be modified by the Set() and Reset() and queried by IsFlag().
  * A point can temporary be in an invalid state (e.g during deletion of several points), but
  * must not be set in general, i.e. always usable within a mesh-internal algorithm.
+ *
+ * Note: The status flag SEGMENT mark a point to be part of certain subset, a segment.
+ * This flag must not be set by any algorithm unless it adds or removes points to a segment.
+ *
+ * Note: The status flag SELECTED mark a point to be selected which is e.g. used in the GUI.
+ * This flag must not be set by any algorithm unless it adds or removes points to the selection.
  */
 class MeshExport MeshPoint: public Base::Vector3f
 {
 public:
-  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
+  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, SELECTED=16, REV=32, TMP0=64, TMP1=128};
 
   /** @name Construction */
   //@{
@@ -152,11 +158,17 @@ public:
  * \li neighbour or edge number of 1 is defined by corner 1 and 2
  * \li neighbour or edge number of 2 is defined by corner 2 and 0
  * \li neighbour index is set to ULONG_MAX if there is no neighbour facet
+ *
+ * Note: The status flag SEGMENT mark a facet to be part of certain subset, a segment.
+ * This flag must not be set by any algorithm unless it adds or removes facets to a segment.
+ *
+ * Note: The status flag SELECTED mark a facet to be selected which is e.g. used in the GUI.
+ * This flag must not be set by any algorithm unless it adds or removes facets to the selection.
  */
 class MeshFacet
 {
 public:
-  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
+  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, SELECTED=16, REV=32, TMP0=64, TMP1=128};
 
 public:
   /** @name Construction */

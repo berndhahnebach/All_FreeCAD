@@ -118,11 +118,9 @@ public:
     void unsetEdit(void);
     /// Returns the edit mode
     const char* getEditModeName(void);
-    void markPart(unsigned long facet);
-    bool isMarked(unsigned long facet) const;
-    void unmarkParts();
-    void removePart();
-    unsigned long countMarkedFacets() const;
+    void selectPart(unsigned long facet);
+    void clearSelection();
+    void removeSelection();
     void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
                               Gui::View3DInventorViewer &Viewer, SbBool inner,
                               std::vector<unsigned long>& indices) const;
@@ -166,7 +164,6 @@ protected:
     //SoMaterial          * pcBacksideMaterial;
 
 private:
-    std::vector<unsigned long> _markedFacets;
     bool m_bEdit;
 
     static App::PropertyFloatConstraint::Constraints floatRange;

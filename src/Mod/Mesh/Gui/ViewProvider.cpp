@@ -984,6 +984,8 @@ void ViewProviderMesh::markPartCallback(void * ud, SoEventCallback * n)
             // context-menu
             QMenu menu;
             QAction* cl = menu.addAction(QObject::tr("Leave removal mode"));
+            QAction* rm = menu.addAction(QObject::tr("Remove selected faces"));
+            QAction* cf = menu.addAction(QObject::tr("Clear selected faces"));
             QAction* id = menu.exec(QCursor::pos());
             if (cl == id) {
                 view->setEditing(false);
@@ -991,8 +993,23 @@ void ViewProviderMesh::markPartCallback(void * ud, SoEventCallback * n)
 
                 std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
                 for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
-                    static_cast<ViewProviderMesh*>(*it)->unmarkParts();
+                    static_cast<ViewProviderMesh*>(*it)->clearSelection();
                 }
+            }
+            else if (cf == id) {
+                std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
+                for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+                    static_cast<ViewProviderMesh*>(*it)->clearSelection();
+                }
+            }
+            else if (rm == id) {
+                Gui::Application::Instance->activeDocument()->openCommand("Remove");
+                std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
+                for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+                    static_cast<ViewProviderMesh*>(*it)->removeSelection();
+                }
+                view->render();
+                Gui::Application::Instance->activeDocument()->commitCommand();
             }
         }
         else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
@@ -1013,42 +1030,10 @@ void ViewProviderMesh::markPartCallback(void * ud, SoEventCallback * n)
             const SoDetail* detail = point->getDetail(that->getShapeNode());
             if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
                 // get the boundary to the picked facet
-                unsigned long uFacet = ((SoFaceDetail*)detail)->getFaceIndex();
-                if (that->isMarked(uFacet)) {
-                    Gui::Application::Instance->activeDocument()->openCommand("Remove");
-                    that->removePart();
-                    view->render();
-                    Gui::Application::Instance->activeDocument()->commitCommand();
-                }
-                else {
-                    that->markPart(uFacet);
-                }
+                unsigned long uFacet = static_cast<const SoFaceDetail*>(detail)->getFaceIndex();
+                that->selectPart(uFacet);
             }
         }
-#if 0
-        else if (mbe->getButton() == SoMouseButtonEvent::BUTTON3 && mbe->getState() == SoButtonEvent::DOWN) {
-            Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
-            std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
-
-            // Check if facets are marked
-            unsigned long count = 0;
-            for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
-                count += static_cast<ViewProviderMesh*>(*it)->countMarkedFacets();
-            }
-
-            if (count > 0) {
-                Gui::Application::Instance->activeDocument()->openCommand("Remove");
-                for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
-                    unsigned long count = static_cast<ViewProviderMesh*>(*it)->countMarkedFacets();
-                    static_cast<ViewProviderMesh*>(*it)->removePart();
-                    if (count > 0)
-                        view->render();
-                }
-                
-                Gui::Application::Instance->activeDocument()->commitCommand();
-            }
-        }
-#endif
     }
 }
 
@@ -1119,7 +1104,7 @@ void ViewProviderMesh::fillHole(unsigned long uFacet)
             }
         }
     }
- 
+
     if (newFacets.empty())
         return; // nothing to do
  
@@ -1129,64 +1114,64 @@ void ViewProviderMesh::fillHole(unsigned long uFacet)
     Gui::Application::Instance->activeDocument()->commitCommand();
 }
 
-void ViewProviderMesh::markPart(unsigned long uFacet)
+void ViewProviderMesh::selectPart(unsigned long uFacet)
 {
-    _markedFacets.push_back(uFacet);
-    MeshCore::MeshTopFacetVisitor clVisitor(_markedFacets);
-    const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
+    std::vector<unsigned long> selection;
+    selection.push_back(uFacet);
+
+    MeshCore::MeshTopFacetVisitor clVisitor(selection);
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
     MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::VISIT);
     rKernel.VisitNeighbourFacets(clVisitor, uFacet);
 
+    rMesh.addFacetsToSelection(selection);
+    selection.clear();
+    rMesh.getFacetsFromSelection(selection);
+
+    // Colorize the selection
     pcMatBinding->value = SoMaterialBinding::PER_FACE;
     App::Color c = ShapeColor.getValue();
     unsigned long uCtFacets = rKernel.CountFacets();
     pcShapeMaterial->diffuseColor.setNum(uCtFacets);
+
+    SbColor* cols = pcShapeMaterial->diffuseColor.startEditing();
     for (unsigned long i=0; i<uCtFacets; i++)
-        pcShapeMaterial->diffuseColor.set1Value(i, c.r,c.g,c.b);
-    for (std::vector<unsigned long>::iterator it = _markedFacets.begin(); it != _markedFacets.end(); ++it)
-        pcShapeMaterial->diffuseColor.set1Value(*it, 1.0f,0.0f,0.0f);
+        cols[i].setValue(c.r,c.g,c.b);
+    for (std::vector<unsigned long>::iterator it = selection.begin(); it != selection.end(); ++it)
+        cols[*it].setValue(1.0f,0.0f,0.0f);
+    pcShapeMaterial->diffuseColor.finishEditing();
 }
 
-bool ViewProviderMesh::isMarked(unsigned long facet) const
+void ViewProviderMesh::clearSelection()
 {
-    for (std::vector<unsigned long>::const_iterator it = _markedFacets.begin(); it != _markedFacets.end(); ++it) {
-        if (*it == facet)
-            return true;
-    }
-    return false;
-}
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
+    MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::SELECTED);
 
-void ViewProviderMesh::unmarkParts()
-{
-    _markedFacets.clear();
     pcMatBinding->value = SoMaterialBinding::OVERALL;
     App::Color c = ShapeColor.getValue();
-    pcShapeMaterial->diffuseColor.setNum(0);
+    pcShapeMaterial->diffuseColor.setNum(1);
     pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 }
 
-void ViewProviderMesh::removePart()
+void ViewProviderMesh::removeSelection()
 {
-    if (!_markedFacets.empty()) {
-        // Get the attached mesh property
-        Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
-        meshProp.deleteFacetIndices(_markedFacets);
-        ((Mesh::Feature*)pcObject)->purgeTouched();
-        
-        // notify the mesh shape node
-        const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
+    std::vector<unsigned long> indices;
+    Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
+    const Mesh::MeshObject& rMesh = meshProp.getValue();
+    rMesh.getFacetsFromSelection(indices);
+    if (!indices.empty()) {
+        pcShapeMaterial->diffuseColor.setNum(1);
         App::Color c = ShapeColor.getValue();
-        unsigned long uCtFacets = rKernel.CountFacets();
-        pcShapeMaterial->diffuseColor.setNum(uCtFacets);
-        for (unsigned long i=0; i<uCtFacets; i++)
-            pcShapeMaterial->diffuseColor.set1Value(i, c.r,c.g,c.b);
-        _markedFacets.clear();
-    }
-}
+        pcMatBinding->value = SoMaterialBinding::OVERALL;
+        pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 
-unsigned long ViewProviderMesh::countMarkedFacets() const
-{
-    return _markedFacets.size();
+        Mesh::MeshObject* pMesh = meshProp.startEditing();
+        pMesh->deleteFacets(indices);
+        meshProp.finishEditing();
+        pcObject->purgeTouched();
+    }
 }
 
 void ViewProviderMesh::selectArea(short x, short y, short w, short h)
@@ -1196,22 +1181,21 @@ void ViewProviderMesh::selectArea(short x, short y, short w, short h)
     gl.w = w; gl.h = h;
     gl.apply(this->pcHighlight);
 
-    _markedFacets.clear();
-    _markedFacets.reserve(gl.indices.size());
-    for (std::vector<unsigned int>::iterator it = gl.indices.begin(); it != gl.indices.end(); ++it)
-        _markedFacets.push_back(*it);
+    std::vector<unsigned long> selection;
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    rMesh.addFacetsToSelection(gl.indices);
+    rMesh.getFacetsFromSelection(selection);
 
     // Colorize the selected part
     pcMatBinding->value = SoMaterialBinding::PER_FACE;
     App::Color c = ShapeColor.getValue();
-    const MeshCore::MeshKernel& rKernel = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue().getKernel();
-    unsigned long uCtFacets = rKernel.CountFacets();
+    unsigned long uCtFacets = rMesh.countFacets();
     pcShapeMaterial->diffuseColor.setNum(uCtFacets);
 
     SbColor* cols = pcShapeMaterial->diffuseColor.startEditing();
     for (unsigned long i=0; i<uCtFacets; i++)
         cols[i].setValue(c.r,c.g,c.b);
-    for (std::vector<unsigned long>::iterator it = _markedFacets.begin(); it != _markedFacets.end(); ++it)
+    for (std::vector<unsigned long>::iterator it = selection.begin(); it != selection.end(); ++it)
         cols[*it].setValue(1.0f,0.0f,0.0f);
     pcShapeMaterial->diffuseColor.finishEditing();
 }

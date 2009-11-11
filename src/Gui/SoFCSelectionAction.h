@@ -244,7 +244,7 @@ private:
     static void callDoAction(SoAction *action,SoNode *node);
 
 public:
-    std::vector<unsigned int> indices;
+    std::vector<unsigned long> indices;
     int x,y,w,h;
 
 private:

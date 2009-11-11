@@ -170,6 +170,10 @@ public:
   void SetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF) const;
   /** Sets to all points in \a raulInds the flag \a tF. */
   void SetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF) const;
+  /** Gets all facets in \a raulInds with the flag \a tF. */
+  void GetFacetsFlag (std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF) const;
+  /** Gets all points in \a raulInds with the flag \a tF. */
+  void GetPointsFlag (std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF) const;
   /** Resets from all facets in \a raulInds the flag \a tF. */
   void ResetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF) const;
   /** Resets from all points in \a raulInds the flag \a tF. */

@@ -361,6 +361,17 @@ unsigned int PropertyMeshKernel::getMemSize (void) const
     return size;
 }
 
+MeshObject* PropertyMeshKernel::startEditing()
+{
+    aboutToSetValue();
+    return (MeshObject*)_meshObject;
+}
+
+void PropertyMeshKernel::finishEditing()
+{
+    hasSetValue();
+}
+
 void PropertyMeshKernel::transformGeometry(const Base::Matrix4D &rclMat)
 {
     aboutToSetValue();
@@ -385,7 +396,7 @@ void PropertyMeshKernel::deleteFacetIndices( const std::vector<unsigned long>& i
     hasSetValue();
 }
 
-void PropertyMeshKernel::setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& inds )
+void PropertyMeshKernel::setPointIndices(const std::vector<std::pair<unsigned long, Base::Vector3f> >& inds)
 {
     aboutToSetValue();
     MeshCore::MeshKernel& kernel = _meshObject->getKernel();
@@ -394,7 +405,8 @@ void PropertyMeshKernel::setPointIndices( const std::vector<std::pair<unsigned l
     hasSetValue();
 }
 
-void PropertyMeshKernel::append( const std::vector<MeshCore::MeshFacet>& rFaces, const std::vector<Base::Vector3f>& rPoints)
+void PropertyMeshKernel::append(const std::vector<MeshCore::MeshFacet>& rFaces,
+                                const std::vector<Base::Vector3f>& rPoints)
 {
     aboutToSetValue();
     _meshObject->addFacets(rFaces, rPoints);

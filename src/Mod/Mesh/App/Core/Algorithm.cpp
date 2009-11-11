@@ -801,6 +801,28 @@ void MeshAlgorithm::SetPointsFlag (const std::vector<unsigned long> &raulInds, M
     _rclMesh._aclPointArray[*i].SetFlag(tF);
 }
 
+void MeshAlgorithm::GetFacetsFlag (std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF) const
+{
+    raulInds.reserve(raulInds.size() + CountFacetFlag(tF));
+    MeshFacetArray::_TConstIterator beg = _rclMesh._aclFacetArray.begin();
+    MeshFacetArray::_TConstIterator end = _rclMesh._aclFacetArray.end();
+    for (MeshFacetArray::_TConstIterator it = beg; it != end; ++it) {
+        if (it->IsFlag(tF))
+            raulInds.push_back(it-beg);
+    }
+}
+
+void MeshAlgorithm::GetPointsFlag (std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF) const
+{
+    raulInds.reserve(raulInds.size() + CountPointFlag(tF));
+    MeshPointArray::_TConstIterator beg = _rclMesh._aclPointArray.begin();
+    MeshPointArray::_TConstIterator end = _rclMesh._aclPointArray.end();
+    for (MeshPointArray::_TConstIterator it = beg; it != end; ++it) {
+        if (it->IsFlag(tF))
+            raulInds.push_back(it-beg);
+    }
+}
+
 void MeshAlgorithm::ResetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF) const
 {
   for (std::vector<unsigned long>::const_iterator i = raulInds.begin(); i != raulInds.end(); i++)
