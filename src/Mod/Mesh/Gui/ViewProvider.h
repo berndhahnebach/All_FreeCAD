@@ -118,8 +118,9 @@ public:
     void unsetEdit(void);
     /// Returns the edit mode
     const char* getEditModeName(void);
-    void selectPart(unsigned long facet);
+    void selectComponent(unsigned long facet);
     void selectFacet(unsigned long facet);
+    void addSelection(const std::vector<unsigned long>&);
     void clearSelection();
     void removeSelection();
     void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
@@ -138,6 +139,8 @@ protected:
     virtual void faceInfo(unsigned long facet);
     virtual void fillHole(unsigned long facet);
     virtual void selectArea(short, short, short, short);
+    void highlightSelection();
+    void unhighlightSelection();
 
     virtual SoShape* getShapeNode() const;
 

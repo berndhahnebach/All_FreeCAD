@@ -1031,7 +1031,7 @@ void ViewProviderMesh::markPartCallback(void * ud, SoEventCallback * n)
             if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
                 // get the boundary to the picked facet
                 unsigned long uFacet = static_cast<const SoFaceDetail*>(detail)->getFaceIndex();
-                that->selectPart(uFacet);
+                that->selectComponent(uFacet);
             }
         }
     }
@@ -1131,21 +1131,14 @@ void ViewProviderMesh::selectFacet(unsigned long facet)
     int uCtFacets = (int)rMesh.countFacets();
 
     if (uCtFacets != pcShapeMaterial->diffuseColor.getNum()) {
-        pcShapeMaterial->diffuseColor.setNum(uCtFacets);
-
-        SbColor* cols = pcShapeMaterial->diffuseColor.startEditing();
-        for (int i=0; i<uCtFacets; i++)
-            cols[i].setValue(c.r,c.g,c.b);
-        for (std::vector<unsigned long>::iterator it = selection.begin(); it != selection.end(); ++it)
-            cols[*it].setValue(1.0f,0.0f,0.0f);
-        pcShapeMaterial->diffuseColor.finishEditing();
+        highlightSelection();
     }
     else {
         pcShapeMaterial->diffuseColor.set1Value(facet,1.0f,0.0f,0.0f);
     }
 }
 
-void ViewProviderMesh::selectPart(unsigned long uFacet)
+void ViewProviderMesh::selectComponent(unsigned long uFacet)
 {
     std::vector<unsigned long> selection;
     selection.push_back(uFacet);
@@ -1157,21 +1150,20 @@ void ViewProviderMesh::selectPart(unsigned long uFacet)
     rKernel.VisitNeighbourFacets(clVisitor, uFacet);
 
     rMesh.addFacetsToSelection(selection);
-    selection.clear();
+
+    // Colorize the selection
+    highlightSelection();
+}
+
+void ViewProviderMesh::addSelection(const std::vector<unsigned long>& indices)
+{
+    std::vector<unsigned long> selection;
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    rMesh.addFacetsToSelection(indices);
     rMesh.getFacetsFromSelection(selection);
 
     // Colorize the selection
-    pcMatBinding->value = SoMaterialBinding::PER_FACE;
-    App::Color c = ShapeColor.getValue();
-    unsigned long uCtFacets = rKernel.CountFacets();
-    pcShapeMaterial->diffuseColor.setNum(uCtFacets);
-
-    SbColor* cols = pcShapeMaterial->diffuseColor.startEditing();
-    for (unsigned long i=0; i<uCtFacets; i++)
-        cols[i].setValue(c.r,c.g,c.b);
-    for (std::vector<unsigned long>::iterator it = selection.begin(); it != selection.end(); ++it)
-        cols[*it].setValue(1.0f,0.0f,0.0f);
-    pcShapeMaterial->diffuseColor.finishEditing();
+    highlightSelection();
 }
 
 void ViewProviderMesh::clearSelection()
@@ -1179,11 +1171,7 @@ void ViewProviderMesh::clearSelection()
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
     const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
     MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::SELECTED);
-
-    pcMatBinding->value = SoMaterialBinding::OVERALL;
-    App::Color c = ShapeColor.getValue();
-    pcShapeMaterial->diffuseColor.setNum(1);
-    pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+    unhighlightSelection();
 }
 
 void ViewProviderMesh::removeSelection()
@@ -1193,10 +1181,7 @@ void ViewProviderMesh::removeSelection()
     const Mesh::MeshObject& rMesh = meshProp.getValue();
     rMesh.getFacetsFromSelection(indices);
     if (!indices.empty()) {
-        pcShapeMaterial->diffuseColor.setNum(1);
-        App::Color c = ShapeColor.getValue();
-        pcMatBinding->value = SoMaterialBinding::OVERALL;
-        pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+        unhighlightSelection();
 
         Mesh::MeshObject* pMesh = meshProp.startEditing();
         pMesh->deleteFacets(indices);
@@ -1212,23 +1197,39 @@ void ViewProviderMesh::selectArea(short x, short y, short w, short h)
     gl.w = w; gl.h = h;
     gl.apply(this->pcHighlight);
 
-    std::vector<unsigned long> selection;
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
     rMesh.addFacetsToSelection(gl.indices);
-    rMesh.getFacetsFromSelection(selection);
 
     // Colorize the selected part
+    highlightSelection();
+}
+
+void ViewProviderMesh::highlightSelection()
+{
+    std::vector<unsigned long> selection;
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    rMesh.getFacetsFromSelection(selection);
+
+    // Colorize the selection
     pcMatBinding->value = SoMaterialBinding::PER_FACE;
     App::Color c = ShapeColor.getValue();
-    unsigned long uCtFacets = rMesh.countFacets();
+    int uCtFacets = (int)rMesh.countFacets();
     pcShapeMaterial->diffuseColor.setNum(uCtFacets);
 
     SbColor* cols = pcShapeMaterial->diffuseColor.startEditing();
-    for (unsigned long i=0; i<uCtFacets; i++)
+    for (int i=0; i<uCtFacets; i++)
         cols[i].setValue(c.r,c.g,c.b);
     for (std::vector<unsigned long>::iterator it = selection.begin(); it != selection.end(); ++it)
         cols[*it].setValue(1.0f,0.0f,0.0f);
     pcShapeMaterial->diffuseColor.finishEditing();
+}
+
+void ViewProviderMesh::unhighlightSelection()
+{
+    App::Color c = ShapeColor.getValue();
+    pcMatBinding->value = SoMaterialBinding::OVERALL;
+    pcShapeMaterial->diffuseColor.setNum(1);
+    pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 }
 
 // ------------------------------------------------------
