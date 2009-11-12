@@ -27,6 +27,7 @@
 # include <algorithm>
 # ifdef FC_OS_MACOSX
 # include <OpenGL/gl.h>
+# include <OpenGL/glu.h>
 # else
 # include <GL/gl.h>
 # include <GL/glu.h>
