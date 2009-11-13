@@ -60,6 +60,7 @@ BUILT_SOURCES=\
 		moc_TaskPanelView.cpp \
 		moc_TextEdit.cpp \
 		moc_ToolBox.cpp \
+		moc_Transform.cpp \
 		moc_Tree.cpp \
 		moc_MDIView.cpp\
 		moc_View3DInventor.cpp \
@@ -290,6 +291,8 @@ libFreeCADGui_la_SOURCES=\
 		ToolBarManager.cpp \
 		ToolBox.cpp \
 		ToolBoxManager.cpp \
+		Transform.cpp \
+		Transform.h \
 		Tree.cpp \
 		View.cpp \
 		View3DInventor.cpp \

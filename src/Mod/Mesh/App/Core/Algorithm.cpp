@@ -1249,6 +1249,21 @@ void MeshAlgorithm::CutBorderFacets (std::vector<unsigned long> &raclFacetIndice
   raclFacetIndices = aclResult;
 }
 
+unsigned long MeshAlgorithm::CountBorderEdges() const
+{
+    unsigned long cnt=0;
+    const MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
+    MeshFacetArray::_TConstIterator end = rclFAry.end();
+    for (MeshFacetArray::_TConstIterator it = rclFAry.begin(); it != end; ++it) {
+        for (int i=0; i<3; i++) {
+            if (it->_aulNeighbours[i] == ULONG_MAX)
+                cnt++;
+        }
+    }
+
+    return cnt;
+}
+
 void MeshAlgorithm::CheckBorderFacets (const std::vector<unsigned long> &raclFacetIndices, std::vector<unsigned long> &raclResultIndices, unsigned short usLevel) const
 {
   ResetFacetFlag(MeshFacet::TMP0);

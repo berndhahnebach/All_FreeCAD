@@ -110,6 +110,7 @@ set(Gui_MOC_HDRS
 		 TaskPanelView.h
 		 TextEdit.h
 		 ToolBox.h
+		 Transform.h
 		 Tree.h
 		 View3DInventor.h
 		 WidgetFactory.h
@@ -238,6 +239,8 @@ SET(Dialog_SRCS
 		 SceneInspector.ui
 		 SceneInspector.cpp
 		 SceneInspector.h
+		 Transform.cpp
+		 Transform.h
 )
 SOURCE_GROUP("Dialog" FILES ${Dialog_SRCS})
 
