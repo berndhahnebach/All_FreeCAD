@@ -227,6 +227,8 @@ public:
    * \note The mesh structure is not modified by this method. This is in the responsibility of the user.
    */
   void CutBorderFacets (std::vector<unsigned long> &raclFacetIndices, unsigned short usLevel = 1) const;
+  /** Returns the number of border edges */
+  unsigned long CountBorderEdges() const;
   /**
    * Determines all border points as indices of the facets in \a raclFacetIndices. The points are unsorted.
    */

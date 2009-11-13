@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QStatusBar>
+# include <QPointer>
 #endif
 #include <algorithm>
 
@@ -43,8 +44,8 @@
 #include "BitmapFactory.h"
 #include "Selection.h"
 #include "DlgProjectInformationImp.h"
+#include "Transform.h"
 
-using Base::Sequencer;
 using namespace Gui;
 
 
@@ -755,6 +756,35 @@ bool StdCmdRefresh::isActive(void)
   return this->getDocument() && this->getDocument()->isTouched();
 }
 
+//===========================================================================
+// Std_Transform
+//===========================================================================
+DEF_STD_CMD_A(StdCmdTransform);
+
+StdCmdTransform::StdCmdTransform()
+  : Command("Std_Transform")
+{
+    sGroup        = QT_TR_NOOP("Edit");
+    sMenuText     = QT_TR_NOOP("Transform...");
+    sToolTipText  = QT_TR_NOOP("Transform the geometry of selected objects");
+    sStatusTip    = QT_TR_NOOP("Transform the geometry of selected objects");
+    sWhatsThis    = "Std_Transform";
+}
+
+void StdCmdTransform::activated(int iMsg)
+{
+    static QPointer<QDialog> dlg = 0;
+    if (!dlg)
+        dlg = new Gui::Dialog::Transform(getMainWindow());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
+bool StdCmdTransform::isActive(void)
+{
+    return true;
+}
+
 
 namespace Gui {
 
@@ -781,6 +811,7 @@ void CreateDocCommands(void)
     rcCmdMgr.addCommand(new StdCmdSelectAll());
     rcCmdMgr.addCommand(new StdCmdDelete());
     rcCmdMgr.addCommand(new StdCmdRefresh());
+    rcCmdMgr.addCommand(new StdCmdTransform());
 }
 
 } // namespace Gui
