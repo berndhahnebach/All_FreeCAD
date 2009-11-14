@@ -30,6 +30,10 @@
 //#include <Inventor/nodes/SoSubNodeP.h>
 #include <Inventor/elements/SoOverrideElement.h>
 #include <Inventor/elements/SoLazyElement.h>
+#include <Inventor/elements/SoCacheElement.h>
+#include <Inventor/elements/SoOverrideElement.h>
+#include <Inventor/elements/SoWindowElement.h>
+
 #include <Inventor/SoFullPath.h>
 #include <Inventor/actions/SoGLRenderAction.h>
 #include <Inventor/actions/SoHandleEventAction.h>
@@ -40,13 +44,16 @@
 #include <Inventor/events/SoLocation2Event.h>
 #include <Inventor/SoPickedPoint.h>
 
+#include "View3DInventor.h"
+#include "View3DInventorViewer.h"
+
 #include <Base/Console.h>
 #include "SoFCSelection.h"
 #include "MainWindow.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
 
-#define NO_FRONTBUFFER
+//#define NO_FRONTBUFFER
 
 using namespace Gui;
 
@@ -70,7 +77,7 @@ SoFCSelection::SoFCSelection()
   SO_NODE_ADD_FIELD(style,          (EMISSIVE));
   SO_NODE_ADD_FIELD(highlightMode,  (AUTO));
   SO_NODE_ADD_FIELD(selectionMode,  (SEL_ON));
-  SO_NODE_ADD_FIELD(selected,       (NOTSELECTED));
+  //SO_NODE_ADD_FIELD(selected,       (NOTSELECTED));
   SO_NODE_ADD_FIELD(documentName,   (""));
   SO_NODE_ADD_FIELD(objectName,    (""));
   SO_NODE_ADD_FIELD(subElementName, (""));
@@ -89,13 +96,16 @@ SoFCSelection::SoFCSelection()
   SO_NODE_DEFINE_ENUM_VALUE(SelectionModes, SEL_OFF);
   SO_NODE_SET_SF_ENUM_TYPE (selectionMode, SelectionModes);
 
-  SO_NODE_DEFINE_ENUM_VALUE(Selected, NOTSELECTED);
-  SO_NODE_DEFINE_ENUM_VALUE(Selected, SELECTED);
-  SO_NODE_SET_SF_ENUM_TYPE(selected, Selected);
+  //SO_NODE_DEFINE_ENUM_VALUE(Selected, NOTSELECTED);
+  //SO_NODE_DEFINE_ENUM_VALUE(Selected, SELECTED);
+  //SO_NODE_SET_SF_ENUM_TYPE(selected, Selected);
 
   highlighted = FALSE;
   bShift      = false;
   bCtrl       = false;
+
+  selected = NOTSELECTED;
+  selectionChanged = false;
 }
 
 /*!
@@ -169,7 +179,11 @@ void SoFCSelection::doAction(SoAction *action)
         else {
             this->selectionMode = SoFCSelection::SEL_OFF;
             //this->style = SoFCSelection::BOX;
-            this->selected = NOTSELECTED;
+            if(selected == SELECTED){
+                this->selected = NOTSELECTED;
+                selectionChanged = true; 
+            }
+
         }
     }
 
@@ -193,24 +207,45 @@ void SoFCSelection::doAction(SoAction *action)
                 (subElementName.getValue() == selaction->SelChange.pSubName || 
                 *(selaction->SelChange.pSubName) == '\0') ) {
                 if (selaction->SelChange.Type == SelectionChanges::AddSelection) {
-                    selected = SELECTED;
+                    if(selected == NOTSELECTED){
+                        selected = SELECTED;
+                        selectionChanged = true; 
+                    }
                 }
                 else {
-                    selected = NOTSELECTED;
+                    if(selected == SELECTED){
+                        selected = NOTSELECTED;
+                        selectionChanged = true;  
+                    }
                 }
+                return;
             }
         }
         else if (selaction->SelChange.Type == SelectionChanges::ClrSelection) {
             if (documentName.getValue() == selaction->SelChange.pDocName ||
-                strcmp(selaction->SelChange.pDocName,"") == 0)
-                selected = NOTSELECTED;
+                strcmp(selaction->SelChange.pDocName,"") == 0){
+                    if(selected == SELECTED){
+                        selected = NOTSELECTED;
+                        selectionChanged = true; 
+                }
+            }
         }
         else if (selaction->SelChange.Type == SelectionChanges::SetSelection) {
             bool sel = Selection().isSelected(
                     documentName.getValue().getString(),
                     objectName.getValue().getString()/*,
                     subElementName.getValue().getString()*/);
-            selected = (sel ? SELECTED : NOTSELECTED);
+            if(sel){
+                   if(selected == NOTSELECTED){
+                        selected = SELECTED;
+                        selectionChanged = true; 
+                   }
+            }else{
+                if(selected == SELECTED){
+                     selected = NOTSELECTED;
+                     selectionChanged = true;  
+                }
+            }
         }
     }
 
@@ -467,6 +502,12 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
 		    // draw this object highlighted
 		        redrawHighlighted(action, TRUE);
 	    }
+        if(selectionChanged){
+            redrawHighlighted(action, TRUE);
+            selectionChanged = false;
+        }
+
+            
 
     }
     // key press events
@@ -618,10 +659,6 @@ SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
 	action->getState()->pop();
 #endif
 }
-#include <Inventor/elements/SoCacheElement.h>
-#include <Inventor/elements/SoLazyElement.h>
-#include <Inventor/elements/SoOverrideElement.h>
-#include <Inventor/elements/SoWindowElement.h>
 
 SbBool
 SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
@@ -639,14 +676,14 @@ SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
     // ??? never be called. We are not caching this node correctly yet....
     //SoCacheElement::invalidate(state);
 
-    SbBool drawHighlighted = (highlightMode.getValue() == ON || isHighlighted(action) || selected.getValue() == SELECTED);
+    SbBool drawHighlighted = (highlightMode.getValue() == ON || isHighlighted(action) || selected == SELECTED);
 
     if (drawHighlighted) {
 
 	    // prevent diffuse & emissive color from leaking out...
 	    state->push();
         SbColor col;
-        if(selected.getValue() == SELECTED)
+        if(selected == SELECTED)
 	        col = colorSelection.getValue();
         else
 	        col = colorHighlight.getValue();
@@ -680,9 +717,6 @@ SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
   Empty method in Coin. Can be used by subclasses to be told
   when status change.
 */
-#include "MainWindow.h"
-#include "View3DInventor.h"
-#include "View3DInventorViewer.h"
 void
 SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
 {
@@ -785,7 +819,7 @@ void
 SoFCSelection::setOverride(SoGLRenderAction * action)
 {
   SoState * state = action->getState();
-  if(this->selected.getValue() == SELECTED)
+  if(this->selected == SELECTED)
     SoLazyElement::setEmissive(state, &this->colorSelection.getValue());
   else
     SoLazyElement::setEmissive(state, &this->colorHighlight.getValue());
@@ -793,7 +827,7 @@ SoFCSelection::setOverride(SoGLRenderAction * action)
 
   Styles mystyle = (Styles) this->style.getValue();
   if (mystyle == SoFCSelection::EMISSIVE_DIFFUSE) {
-    if(this->selected.getValue() == SELECTED)
+    if(this->selected == SELECTED)
       SoLazyElement::setDiffuse(state, this,1, &this->colorSelection.getValue(),&colorpacker);
     else
       SoLazyElement::setDiffuse(state, this,1, &this->colorHighlight.getValue(),&colorpacker);
