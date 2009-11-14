@@ -71,7 +71,8 @@ public:
 
   enum Selected {
     NOTSELECTED, SELECTED
-  };
+  } selected;
+  bool selectionChanged;
 
   enum Styles {
     EMISSIVE, EMISSIVE_DIFFUSE, BOX
@@ -84,7 +85,7 @@ public:
   SoSFEnum style;
   SoSFEnum highlightMode;
   SoSFEnum selectionMode;
-  SoSFEnum selected;
+  
 
   SoSFString documentName;
   SoSFString objectName;
