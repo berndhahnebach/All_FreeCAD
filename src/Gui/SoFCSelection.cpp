@@ -222,10 +222,10 @@ void SoFCSelection::doAction(SoAction *action)
 void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
-#ifdef NO_FRONTBUFFER
     static char buf[513];
     HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
     const SoEvent * event = action->getEvent();
+#ifdef NO_FRONTBUFFER
   
     // mouse move events for preselection
     if (event->isOfType(SoLocation2Event::getClassTypeId())) {
@@ -402,56 +402,154 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
     // NOTE: we still have to pick for ON even though we don't have
     // to re-render, because the app needs to be notified as the mouse
     // goes over locate highlight nodes.
-    if ( highlightMode.getValue() == OFF ) {
-	SoSeparator::handleEvent( action );
-	return;
-    }
+    //if ( highlightMode.getValue() == OFF ) {
+	   // SoSeparator::handleEvent( action );
+	   // return;
+    //}
 
-    // get event from the action
-    const SoEvent *event = action->getEvent();
-
+    
     //
     // If this is a mouseMotion event, then check for locate highlighting
     //
     if (event->isOfType(SoLocation2Event::getClassTypeId())) {
 
-	// check to see if the mouse is over our geometry...
-	SbBool underTheMouse = FALSE;
-	const SoPickedPoint *pp = action->getPickedPoint();
-	SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
-	if (pPath && pPath->containsPath(action->getCurPath())) {
-	    // Make sure I'm the lowest LocHL in the pick path!
-	    underTheMouse = TRUE;
-	    for (int i = 0; i < pPath->getLength(); i++) {
-		SoNode *node = pPath->getNodeFromTail(i);
-		if (node->isOfType(SoFCSelection::getClassTypeId())) {
-		    if (node != this)
-			underTheMouse = FALSE;
-		    break; // found the lowest LocHL - look no further
-		}
-	    }
-	}
+	    // check to see if the mouse is over our geometry...
+	    SbBool underTheMouse = FALSE;
+	    const SoPickedPoint *pp = action->getPickedPoint();
+	    SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
+	    if (pPath && pPath->containsPath(action->getCurPath())) {
+	        // Make sure I'm the lowest LocHL in the pick path!
+	        underTheMouse = TRUE;
+	        for (int i = 0; i < pPath->getLength(); i++) {
+		        SoNode *node = pPath->getNodeFromTail(i);
+		        if (node->isOfType(SoFCSelection::getClassTypeId())) {
+		            if (node != this)
+			        underTheMouse = FALSE;
+		            break; // found the lowest LocHL - look no further
+		        }
+	        }
+            if (underTheMouse) {
+               if (!isHighlighted(action)) {
+                   const SoPickedPoint * pp = action->getPickedPoint();
+                   Gui::Selection().setPreselect(documentName.getValue().getString()
+                                                 ,objectName.getValue().getString()
+                                                 ,subElementName.getValue().getString()
+                                                 ,pp->getPoint()[0]
+                                                 ,pp->getPoint()[1]
+                                                 ,pp->getPoint()[2]);
+                     
+               }
+               snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                                                   ,objectName.getValue().getString()
+                                                                   ,subElementName.getValue().getString()
+                                                                   ,pp->getPoint()[0]
+                                                                   ,pp->getPoint()[1]
+                                                                   ,pp->getPoint()[2]);
 
-	// Am I currently highlighted?
-	if (isHighlighted(action)) {
-	    if ( ! underTheMouse)
-		// re-draw the object with it's normal color
-		redrawHighlighted(action, FALSE);
-	    else
-		action->setHandled();
-	}
-	// Else I am not currently highlighted
-	else {
-	    // If under the mouse, then highlight!
-	    if (underTheMouse)
-		// draw this object highlighted
-		redrawHighlighted(action, TRUE);
-	}
+                getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+
+            }
+        
+
+        }
+        	// Am I currently highlighted?
+	    if (isHighlighted(action)) {
+	        if ( ! underTheMouse)
+		    // re-draw the object with it's normal color
+		        redrawHighlighted(action, FALSE);
+	        else
+		        action->setHandled();
+	    }
+	    // Else I am not currently highlighted
+	    else {
+	        // If under the mouse, then highlight!
+	        if (underTheMouse)
+		    // draw this object highlighted
+		        redrawHighlighted(action, TRUE);
+	    }
+
     }
+    // key press events
+    else if (event->isOfType(SoKeyboardEvent ::getClassTypeId())) {
+        SoKeyboardEvent  * const e = (SoKeyboardEvent  *) event;
+        if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_SHIFT)     ||
+            SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_SHIFT)     )
+            bShift = true;
+        if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_SHIFT)   ||
+            SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
+            bShift = false;
+        if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_CONTROL)   ||
+            SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
+            bCtrl = true;
+        if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
+            SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL) )
+            bCtrl = false;
+
+    // mouse press events for (de)selection
+    } else if (event->isOfType(SoMouseButtonEvent::getClassTypeId())) {
+        SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
+        if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+            //FIXME: Shouldn't we remove the preselection for newly selected objects?
+            //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
+            const SoPickedPoint * pp = action->getPickedPoint();
+            if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+                if (bCtrl) {
+                    if (Gui::Selection().isSelected(documentName.getValue().getString()
+                                         ,objectName.getValue().getString()
+                                         ,subElementName.getValue().getString())) {
+                        Gui::Selection().rmvSelection(documentName.getValue().getString()
+                                          ,objectName.getValue().getString()
+                                          ,subElementName.getValue().getString());
+                    } else {
+                        Gui::Selection().addSelection(documentName.getValue().getString()
+                                          ,objectName.getValue().getString()
+                                          ,subElementName.getValue().getString()
+                                          ,pp->getPoint()[0]
+                                          ,pp->getPoint()[1]
+                                          ,pp->getPoint()[2]);
+
+                        if (mymode == OFF) {
+                            snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                                       ,objectName.getValue().getString()
+                                                       ,subElementName.getValue().getString()
+                                                       ,pp->getPoint()[0]
+                                                       ,pp->getPoint()[1]
+                                                       ,pp->getPoint()[2]);
+
+                            getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                        }
+                    }
+                } else { // Ctrl
+                    Gui::Selection().clearSelection(documentName.getValue().getString());
+                    Gui::Selection().addSelection(documentName.getValue().getString()
+                                          ,objectName.getValue().getString()
+                                          ,subElementName.getValue().getString()
+                                          ,pp->getPoint()[0]
+                                          ,pp->getPoint()[1]
+                                          ,pp->getPoint()[2]);
+ 
+                    if (mymode == OFF) {
+                        snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                                   ,objectName.getValue().getString()
+                                                   ,subElementName.getValue().getString()
+                                                   ,pp->getPoint()[0]
+                                                   ,pp->getPoint()[1]
+                                                   ,pp->getPoint()[2]);
+
+                        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                    }
+                }
+
+                action->setHandled(); 
+            } // picked point
+        } // mouse release
+    }
+
+    
 
     // Let the base class traverse the children.
     if ( action->getGrabber() != this )
-	SoSeparator::handleEvent(action);
+	    SoSeparator::handleEvent(action);
 #endif
 }
 
@@ -532,33 +630,36 @@ SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
 {
     // If not performing locate highlighting, just return.
     if (highlightMode.getValue() == OFF)
-	return FALSE;
+	    return FALSE;
 
     SoState *state = action->getState();
 
     // ??? prevent caching at this level - for some reason the
     // ??? SoWindowElement::copyMatchInfo() method get called, which should
     // ??? never be called. We are not caching this node correctly yet....
-    SoCacheElement::invalidate(state);
+    //SoCacheElement::invalidate(state);
 
-    SbBool drawHighlighted = (highlightMode.getValue() == ON || isHighlighted(action));
+    SbBool drawHighlighted = (highlightMode.getValue() == ON || isHighlighted(action) || selected.getValue() == SELECTED);
 
     if (drawHighlighted) {
 
-	// prevent diffuse & emissive color from leaking out...
-	state->push();
+	    // prevent diffuse & emissive color from leaking out...
+	    state->push();
+        SbColor col;
+        if(selected.getValue() == SELECTED)
+	        col = colorSelection.getValue();
+        else
+	        col = colorHighlight.getValue();
 
-	SbColor col = colorHighlight.getValue();
+	    // Emissive Color
+	    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
+	    SoLazyElement::setEmissive(state, &col);
 
-	// Emissive Color
-	SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
-	SoLazyElement::setEmissive(state, &col);
-
-	// Diffuse Color
-	if (style.getValue() == EMISSIVE_DIFFUSE) {
-	    SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
-	    SoLazyElement::setDiffuse(state, this, 1, &col, &colorpacker);
-	}
+	    // Diffuse Color
+	    if (style.getValue() == EMISSIVE_DIFFUSE) {
+	        SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+	        SoLazyElement::setDiffuse(state, this, 1, &col, &colorpacker);
+	    }
     }
 
     // Draw on top of other things at same z-buffer depth if:
@@ -567,9 +668,9 @@ SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
     //     non-hilit to lit OR VICE VERSA.
     // Otherwise, leave it alone...
     if (drawHighlighted || highlighted) {
-	glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFunc);
-	if (oldDepthFunc != GL_LEQUAL)
-	    glDepthFunc(GL_LEQUAL);
+	    glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFunc);
+	    if (oldDepthFunc != GL_LEQUAL)
+	        glDepthFunc(GL_LEQUAL);
     }
 
     return drawHighlighted;

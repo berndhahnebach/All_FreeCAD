@@ -804,6 +804,9 @@ void View3DInventorViewer::actualRedraw(void)
     glClearColor(col[0], col[1], col[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // using 90% of the z-buffer for the background and the main node
+    //glDepthRange(0,0.9);
+
     // Render our scenegraph with the image.
     SoGLRenderAction * glra = this->getGLRenderAction();
     SoGLWidgetElement::set(glra->getState(), qobject_cast<QGLWidget*>(this->getGLWidget()));
@@ -824,11 +827,23 @@ void View3DInventorViewer::actualRedraw(void)
             QObject::tr("Not enough memory available to display the data."));
     }
 
-    // Render overlay front scenegraph.
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glra->apply(this->foregroundroot);
+    // using 10% of the z-buffer for the foreground node
+    //glDepthRange(0.9,1.0);
 
+    // Render overlay front scenegraph.
+    glDisable(GL_DEPTH_TEST);
+    // FIXME: Deleting the Depth buffer yield some problems with the frontbuffer 
+    // higllighting. Disable the depth test for the front nodes will do the job,
+    // but there is no oclusion in the front nodes then. would be much better to 
+    // partition the Z-Buffer in some regions for the back-main-front area of rendering.
+    // see: http://mailman.coin3d.org/pipermail/coin-discuss/2006-August/007105.html
+    //glClear(GL_DEPTH_BUFFER_BIT);
+    glra->apply(this->foregroundroot);
+    glEnable(GL_DEPTH_TEST);
     if (this->axiscrossEnabled) { this->drawAxisCross(); }
+   
+    // using the whole z-buffer again (for frontbuffer highlighting)
+    //glDepthRange(0.0,1.0);
 
     // draw lines for the flags
     int ct = _flaglayout->count();
