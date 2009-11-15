@@ -74,6 +74,7 @@ void SoGLWidgetElement::initClass(void)
 {
   SO_ELEMENT_INIT_CLASS(SoGLWidgetElement, inherited);
   SO_ENABLE(SoGLRenderAction, SoGLWidgetElement);
+  SO_ENABLE(SoHandleEventAction, SoGLWidgetElement);
 }
 
 void SoGLWidgetElement::init(SoState * state)
@@ -128,6 +129,7 @@ void SoGLRenderActionElement::initClass(void)
 {
   SO_ELEMENT_INIT_CLASS(SoGLRenderActionElement, inherited);
   SO_ENABLE(SoGLRenderAction, SoGLRenderActionElement);
+  SO_ENABLE(SoHandleEventAction, SoGLRenderActionElement);
 }
 
 void SoGLRenderActionElement::init(SoState * state)

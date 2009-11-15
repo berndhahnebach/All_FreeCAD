@@ -47,6 +47,9 @@ using namespace Gui::PropertyEditor;
 
 void Gui::SoFCDB::init()
 {
+    SoGLRenderActionElement         ::initClass();
+    SoFCInteractiveElement          ::initClass();
+    SoGLWidgetElement               ::initClass();
     SoFCColorBarBase                ::initClass();
     SoFCColorBar                    ::initClass();
     SoFCColorLegend                 ::initClass();
@@ -57,9 +60,6 @@ void Gui::SoFCDB::init()
     SoFCSelection                   ::initClass();
     SoFCSelectionAction             ::initClass();
     SoFCDocumentAction              ::initClass();
-    SoFCInteractiveElement          ::initClass();
-    SoGLWidgetElement               ::initClass();
-    SoGLRenderActionElement         ::initClass();
     SoGLWidgetNode                  ::initClass();
     SoFCEnableSelectionAction       ::initClass();
     SoFCEnableHighlightAction       ::initClass();

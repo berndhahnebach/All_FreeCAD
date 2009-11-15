@@ -52,6 +52,7 @@
 #include "MainWindow.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
+#include "SoFCInteractiveElement.h"
 
 //#define NO_FRONTBUFFER
 
@@ -769,20 +770,21 @@ SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
 
     SoState *state = action->getState();
 
-    void* window;
-    void* context;
-    void *display;
+    //void* window;
+    //void* context;
+    //void *display;
+    QGLWidget* window;
     SoGLRenderAction *glAction;
-    SoWindowElement::get(state, window, context, display, glAction);
+    //SoWindowElement::get(state, window, context, display, glAction);
+    SoGLWidgetElement::get(state, window);
+    SoGLRenderActionElement::get(state, glAction);
 
     // If we don't have a current window, then simply return...
-    //if (window == 0 || context == NULL || display == NULL || glAction == NULL)
-	//return;
+    if (window == 0 /*|| context == NULL || display == NULL*/ || glAction == NULL)
+        return;
 
-    glAction = static_cast<View3DInventor*>(getMainWindow()->activeWindow())
-        ->getViewer()->getGLRenderAction();
-
-#ifndef WIN32  // FIXME !!!!
+    window->makeCurrent();
+#ifndef WIN32
     // set the current window
     //glXMakeCurrent(display, window, context);
 #endif
@@ -790,7 +792,7 @@ SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
     GLint whichBuffer;
     glGetIntegerv(GL_DRAW_BUFFER, &whichBuffer);
     if (whichBuffer != GL_FRONT)
-	glDrawBuffer(GL_FRONT);
+        glDrawBuffer(GL_FRONT);
 
     highlighted = TRUE;
     glAction->apply(pathToRender);
@@ -798,7 +800,7 @@ SoFCSelection::redrawHighlighted(SoAction *  action , SbBool  doHighlight )
 
     // restore the buffering type
     if (whichBuffer != GL_FRONT)
-	glDrawBuffer((GLenum)whichBuffer);
+        glDrawBuffer((GLenum)whichBuffer);
     glFlush();
 
     pathToRender->unref();
