@@ -34,13 +34,13 @@
 +Maintainer: Werner Mayer <wmayer@users.sourceforge.net>
 +Homepage: http://sourceforge.net/projects/free-cad
 +Build-Depends: debhelper (>= 5), autotools-dev, libc6-dev (>= 2.1.3),
-+ libstdc++6, libboost1.39-dev, libboost-filesystem1.39-dev,
-+ libboost-graph1.39-dev, libboost-program-options1.39-dev,
-+ libboost-regex1.39-dev, libboost-serialization1.39-dev, libboost-signals1.39-dev, libboost-system1.39-dev,
++ libstdc++6, libboost1.40-dev, libboost-filesystem1.40-dev,
++ libboost-graph1.40-dev, libboost-program-options1.40-dev,
++ libboost-regex1.40-dev, libboost-serialization1.40-dev, libboost-signals1.40-dev, libboost-system1.40-dev,
 + zlib1g-dev, libxerces-c-dev,
 + libxt-dev, libxmu-dev, libxi-dev, libx11-dev, libxext-dev,
 + libqt4-dev, libsoqt4-dev, libcoin60-dev, libgl1-mesa-dev,
-+ python2.5-dev, python, python-central (>= 0.5.6),
++ python-dev, python, python-central (>= 0.5.6),
 + libgts-dev, libcv-dev, libopencascade-foundation-dev, libopencascade-modeling-dev
 +Standards-Version: 3.8.2
 +XS-Python-Version: current
