@@ -200,6 +200,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
     pEventCallback->setUserData(this);
     pEventCallback->ref();
     pcViewProviderRoot->addChild(pEventCallback);
+    pEventCallback->addEventCallback(SoEvent::getClassTypeId(), handleEventCB, this);
 
     // This is a callback node that logs all action that traverse the Inventor tree.
 #if defined (FC_DEBUG) && defined(FC_LOGGING_CB)
@@ -345,6 +346,15 @@ void View3DInventorViewer::setGLWidget(void * userdata, SoAction * action)
         QWidget* gl = reinterpret_cast<QWidget*>(userdata);
         SoGLWidgetElement::set(action->getState(), qobject_cast<QGLWidget*>(gl));
     }
+}
+
+void View3DInventorViewer::handleEventCB(void * ud, SoEventCallback * n)
+{
+    View3DInventorViewer* that = reinterpret_cast<View3DInventorViewer*>(ud);
+    SoGLRenderAction * glra = that->getGLRenderAction();
+    SoAction* action = n->getAction();
+    SoGLRenderActionElement::set(action->getState(), glra);
+    SoGLWidgetElement::set(action->getState(), qobject_cast<QGLWidget*>(that->getGLWidget()));
 }
 
 void View3DInventorViewer::setGradientBackgroud(bool on)
