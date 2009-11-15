@@ -68,6 +68,7 @@
 # include <Inventor/nodes/SoPointSet.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoSwitch.h>
+# include <Inventor/nodes/SoGroup.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -418,7 +419,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
     }
 }
 
-Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeEdges (SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
 {
     //TopExp_Explorer ex;
 
@@ -541,7 +542,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
     return true;
 }
 
-Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const TopoDS_Shape &myShape)
 {
     VertexRoot->addChild(pcPointMaterial);  
     VertexRoot->addChild(pcPointStyle);
@@ -584,7 +585,7 @@ Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, cons
     return true;
 }
 
-Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape)
 {
     TopExp_Explorer ex;
 

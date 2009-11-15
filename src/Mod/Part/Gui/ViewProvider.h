@@ -35,6 +35,7 @@ class TopoDS_Edge;
 class TopoDS_Wire;
 class TopoDS_Face;
 class SoSeparator;
+class SoGroup;
 class SoSwitch;
 class SoVertexShape;
 class SoPickedPoint;
@@ -81,9 +82,9 @@ protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
     bool loadParameter();
-    Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
-    Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-    Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
+    Standard_Boolean computeFaces   (SoGroup* root, const TopoDS_Shape &myShape);
+    Standard_Boolean computeEdges   (SoGroup* root, const TopoDS_Shape &myShape);
+    Standard_Boolean computeVertices(SoGroup* root, const TopoDS_Shape &myShape);
 
     void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
          int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
@@ -93,9 +94,9 @@ protected:
     void showControlPointsOfFace(const TopoDS_Face&);
 
     // nodes for the data representation
-    SoSeparator  *EdgeRoot;
-    SoSeparator  *FaceRoot;
-    SoSeparator  *VertexRoot;
+    SoGroup  *EdgeRoot;
+    SoGroup  *FaceRoot;
+    SoGroup  *VertexRoot;
     SoMaterial   *pcLineMaterial;
     SoMaterial   *pcPointMaterial;
     SoDrawStyle  *pcLineStyle;
