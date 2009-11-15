@@ -68,6 +68,7 @@
 #include <Inventor/nodes/SoCube.h>
 #include <Inventor/nodes/SoFont.h>
 #include <Inventor/nodes/SoGroup.h>
+#include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoProfile.h>
 #include <Inventor/nodes/SoProfileCoordinate2.h>
 #include <Inventor/nodes/SoProfileCoordinate3.h>

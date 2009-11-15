@@ -33,7 +33,7 @@
 # endif
 
 #include <Inventor/nodes/SoSubNode.h>
-#include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoGroup.h>
 #include <Inventor/fields/SoSFColor.h>
 #include <Inventor/fields/SoSFEnum.h>
 #include <Inventor/fields/SoSFString.h>
@@ -51,8 +51,8 @@ namespace Gui {
  *  it is d
  *  \author Jürgen Riegel
  */
-class GuiExport SoFCSelection : public SoSeparator {
-  typedef SoSeparator inherited;
+class GuiExport SoFCSelection : public SoGroup {
+  typedef SoGroup inherited;
 
   SO_NODE_HEADER(Gui::SoFCSelection);
 
@@ -71,8 +71,7 @@ public:
 
   enum Selected {
     NOTSELECTED, SELECTED
-  } selected;
-  bool selectionChanged;
+  };
 
   enum Styles {
     EMISSIVE, EMISSIVE_DIFFUSE, BOX
@@ -83,6 +82,7 @@ public:
   SoSFColor colorHighlight;
   SoSFColor colorSelection;
   SoSFEnum style;
+  SoSFEnum selected;
   SoSFEnum highlightMode;
   SoSFEnum selectionMode;
   
@@ -119,8 +119,8 @@ private:
   bool bShift;
   bool bCtrl;
 
-    SbBool		isHighlighted(SoAction *action);
-    SbBool		preRender(SoGLRenderAction *act, GLint &oldDepthFunc);
+  SbBool		isHighlighted(SoAction *action);
+  SbBool		preRender(SoGLRenderAction *act, GLint &oldDepthFunc);
 };
 
 

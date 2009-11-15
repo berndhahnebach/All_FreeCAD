@@ -30,6 +30,7 @@
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoMarkerSet.h>
+# include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
 #endif
 

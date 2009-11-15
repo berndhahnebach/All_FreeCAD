@@ -37,6 +37,7 @@
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoTransform.h>
+# include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <QAction>
 # include <QMenu>

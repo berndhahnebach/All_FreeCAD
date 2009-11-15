@@ -39,6 +39,7 @@
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPolygonOffset.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/nodes/SoSeparator.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
