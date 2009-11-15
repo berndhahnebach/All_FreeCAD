@@ -44,11 +44,17 @@
 			</Documentation>
 			<Parameter Name="Annotation" Type="Object" />
 		</Attribute>
-		<Attribute Name="RootNode" ReadOnly="false">
-			<Documentation>
-				<UserDocu>A pivy Separator with the root of this ViewProvider</UserDocu>
-			</Documentation>
-			<Parameter Name="RootNode" Type="Object" />
-		</Attribute>
-	</PythonExport>
+    <Attribute Name="RootNode" ReadOnly="false">
+      <Documentation>
+        <UserDocu>A pivy Separator with the root of this ViewProvider</UserDocu>
+      </Documentation>
+      <Parameter Name="RootNode" Type="Object" />
+    </Attribute>
+    <Attribute Name="IV" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Represents the whole ViewProvider as an Inventor string.</UserDocu>
+      </Documentation>
+      <Parameter Name="IV" Type="String" />
+    </Attribute>
+  </PythonExport>
 </GenerateModel>
