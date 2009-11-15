@@ -28,6 +28,7 @@
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
+# include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/manips/SoTransformerManip.h>
 #endif
 

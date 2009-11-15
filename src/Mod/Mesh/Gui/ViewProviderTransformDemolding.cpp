@@ -31,6 +31,7 @@
 # include <Inventor/draggers/SoTrackballDragger.h>
 # include <Inventor/nodes/SoAntiSquish.h>
 # include <Inventor/nodes/SoSurroundScale.h>
+# include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/manips/SoTransformerManip.h>
 #endif
 
