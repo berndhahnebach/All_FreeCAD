@@ -93,7 +93,7 @@ public:
 
 
   virtual void doAction( SoAction *action);
-
+  virtual void GLRender(SoGLRenderAction * action);
 
   virtual void handleEvent(SoHandleEventAction * action);
   virtual void GLRenderBelowPath(SoGLRenderAction * action);

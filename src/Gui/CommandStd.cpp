@@ -79,7 +79,7 @@ StdCmdWorkbench::StdCmdWorkbench()
     sToolTipText  = QT_TR_NOOP("Switch between workbenches");
     sWhatsThis    = "Std_Workbench";
     sStatusTip    = QT_TR_NOOP("Switch between workbenches");
-    sPixmap       = "FCIcon";
+    sPixmap       = "freecad";
     iAccel        = 0;
 }
 

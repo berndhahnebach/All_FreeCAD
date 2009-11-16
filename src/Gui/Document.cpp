@@ -679,39 +679,26 @@ void Document::SaveDocFile (Base::Writer &writer) const
 
 void Document::createView(const char* sType) 
 {
-    QPixmap FCIcon = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
-    MDIView* pcView3D=0;
-    if (strcmp(sType,"View3DIv") == 0){
-        pcView3D = new Gui::View3DInventor(this,getMainWindow());
+    QPixmap px = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
+    View3DInventor* view3D = new View3DInventor(this, getMainWindow());
 
-        // add the selction node of the document
-        //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);
-    
-        // attach the viewprovider
-        std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
-        for (It1=d->_ViewProviderMap.begin();It1!=d->_ViewProviderMap.end();++It1)
-            ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
-        std::map<std::string,ViewProvider*>::const_iterator It2;
-        for (It2=d->_ViewProviderMapAnnotation.begin();It2!=d->_ViewProviderMapAnnotation.end();++It2)
-            ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);
-
-    } else /* if(strcmp(sType,"View3DOCC") == 0){
-        pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
-    }else*/
-    {
-        Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
-        return;
-    }
+    // attach the viewprovider
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::const_iterator It1;
+    for (It1=d->_ViewProviderMap.begin();It1!=d->_ViewProviderMap.end();++It1)
+        view3D->getViewer()->addViewProvider(It1->second);
+    std::map<std::string,ViewProvider*>::const_iterator It2;
+    for (It2=d->_ViewProviderMapAnnotation.begin();It2!=d->_ViewProviderMapAnnotation.end();++It2)
+        view3D->getViewer()->addViewProvider(It2->second);
 
     const char* name = getDocument()->Label.getValue();
 
-    QString aName = QString::fromAscii("%1 : %2[*]")
+    QString title = QString::fromAscii("%1 : %2[*]")
         .arg(QString::fromUtf8(name)).arg(d->_iWinCount++);
 
-    pcView3D->setWindowTitle(aName);
-    pcView3D->setWindowIcon(FCIcon);
-    pcView3D->resize( 400, 300 );
-    getMainWindow()->addWindow(pcView3D);
+    view3D->setWindowTitle(title);
+    view3D->setWindowIcon(px);
+    view3D->resize(400, 300);
+    getMainWindow()->addWindow(view3D);
 }
 
 void Document::attachView(Gui::BaseView* pcView, bool bPassiv)

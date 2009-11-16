@@ -245,7 +245,6 @@ void Application::createStartPage(const char* URL)
     if (d->pcStartPage.isNull()) {
         d->pcStartPage = new Gui::BrowserView(getMainWindow());   
         d->pcStartPage->setWindowTitle(QObject::tr("Start page"));
-        //d->pcStartPage->setWindowIcon(FCIcon);
         d->pcStartPage->resize(400, 300);
         d->pcStartPage->load(URL);
         getMainWindow()->addWindow(d->pcStartPage);

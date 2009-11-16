@@ -396,7 +396,7 @@ void Document::onChangedProperty(const DocumentObject *Who, const Property *What
 {
     if (d->activeTransaction && !d->rollback)
         d->activeTransaction->addObjectChange(Who,What);
-    signalChangedObject(const_cast<DocumentObject&>(*Who), const_cast<Property&>(*What));
+    signalChangedObject(*Who, *What);
 }
 
 void Document::setTransactionMode(int iMode)

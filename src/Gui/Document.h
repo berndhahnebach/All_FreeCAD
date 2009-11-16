@@ -82,19 +82,19 @@ public:
     /** @name Signals of the document */
     //@{
     /// signal on new Object
-    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalNewObject;
+    mutable boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalNewObject;
     /// signal on deleted Object
-    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalDeletedObject;
+    mutable boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalDeletedObject;
     /// signal on changed Object
-    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalChangedObject;
+    mutable boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalChangedObject;
     /// signal on renamed Object
-    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalRenamedObject;
+    mutable boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalRenamedObject;
     /// signal on activated Object
-    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalActivatedObject;
+    mutable boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalActivatedObject;
     /// signal on goes in edti mode
-    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalInEdit;
+    mutable boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalInEdit;
    /// signal on leave edit mode
-    boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalResetEdit;
+    mutable boost::signal<void (const Gui::ViewProviderDocumentObject&)> signalResetEdit;
     //@}
 
     /** @name I/O of the document */

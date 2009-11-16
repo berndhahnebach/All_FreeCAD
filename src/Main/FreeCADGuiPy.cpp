@@ -185,7 +185,7 @@ PyMODINIT_FUNC initFreeCADGui()
 {
     try {
         Base::Interpreter().loadModule("FreeCAD");
-        App::Application::Config()["AppIcon"] = "FCIcon";
+        App::Application::Config()["AppIcon"] = "freecad";
         App::Application::Config()["ConsoleBanner"] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n";
         Gui::Application::initApplication();
         static Gui::Application *app = new Gui::Application();
