@@ -160,7 +160,7 @@ int main( int argc, char ** argv )
 
     // set the banner (for logging and console)
     App::Application::Config()["ConsoleBanner"] = sBanner;
-    App::Application::Config()["AppIcon"] = "FCIcon";
+    App::Application::Config()["AppIcon"] = "freecad";
     App::Application::Config()["SplashPicture"] = "freecadsplash";
     App::Application::Config()["StartWorkbench"] = "CompleteWorkbench";
     //App::Application::Config()["HiddenDockWindow"] = "Property editor";

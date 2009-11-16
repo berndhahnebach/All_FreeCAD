@@ -30,13 +30,28 @@ __author__ = "Werner Mayer <wmayer@users.sourceforge.net>"
 import FreeCAD, FreeCADGui, Part
 from pivy import coin
 
-class Box:
+class Geometry:
 	def __init__(self, obj):
+		''' Add placement property '''
+		obj.addProperty("App::PropertyPlacement","Placement")
+		obj.Proxy = self
+
+class PartFeature(Geometry):
+	def __init__(self, obj):
+		Geometry.__init__(self, obj)
+		obj.addProperty("Part::PropertyPartShape","Shape")
+
+	def onChanged(self, fp, prop):
+		if prop == "Placement":
+			fp.Shape.Matrix = fp.Placement.toMatrix()
+
+class Box(Geometry):
+	def __init__(self, obj):
+		Geometry.__init__(self, obj)
 		''' Add some custom properties to our box feature '''
 		obj.addProperty("App::PropertyLength","Length","Box","Length of the box").Length=1.0
 		obj.addProperty("App::PropertyLength","Width","Box","Width of the box").Width=1.0
 		obj.addProperty("App::PropertyLength","Height","Box", "Height of the box").Height=1.0
-		obj.Proxy = self
 	
 	def onChanged(self, fp, prop):
 		''' Print the name of the property that has changed '''

@@ -665,14 +665,13 @@ DocumentItem::DocumentItem(const Gui::Document* doc, QTreeWidgetItem * parent)
     : QTreeWidgetItem(parent, TreeWidget::DocumentType), pDocument(doc)
 {
     // Setup connections
-    Gui::Document* pdoc = const_cast<Gui::Document*>(doc);
-    pdoc->signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, this, _1));
-    pdoc->signalDeletedObject.connect(boost::bind(&DocumentItem::slotDeleteObject, this, _1));
-    pdoc->signalChangedObject.connect(boost::bind(&DocumentItem::slotChangeObject, this, _1));
-    pdoc->signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenameObject, this, _1));
-    pdoc->signalActivatedObject.connect(boost::bind(&DocumentItem::slotActiveObject, this, _1));
-    pdoc->signalInEdit.connect(boost::bind(&DocumentItem::slotInEdit, this, _1));
-    pdoc->signalResetEdit.connect(boost::bind(&DocumentItem::slotResetEdit, this, _1));
+    doc->signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, this, _1));
+    doc->signalDeletedObject.connect(boost::bind(&DocumentItem::slotDeleteObject, this, _1));
+    doc->signalChangedObject.connect(boost::bind(&DocumentItem::slotChangeObject, this, _1));
+    doc->signalRenamedObject.connect(boost::bind(&DocumentItem::slotRenameObject, this, _1));
+    doc->signalActivatedObject.connect(boost::bind(&DocumentItem::slotActiveObject, this, _1));
+    doc->signalInEdit.connect(boost::bind(&DocumentItem::slotInEdit, this, _1));
+    doc->signalResetEdit.connect(boost::bind(&DocumentItem::slotResetEdit, this, _1));
 
     setFlags(Qt::ItemIsEnabled/*|Qt::ItemIsEditable*/);
 }

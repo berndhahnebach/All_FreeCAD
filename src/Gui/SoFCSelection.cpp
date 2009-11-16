@@ -625,6 +625,11 @@ SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 #endif
 }
 
+void SoFCSelection::GLRender(SoGLRenderAction * action)
+{
+    SoGroup::GLRender(action);
+}
+
 // doc from parent
 void
 SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
@@ -690,13 +695,13 @@ SoFCSelection::preRender(SoGLRenderAction *action, GLint &oldDepthFunc)
 	        col = colorHighlight.getValue();
 
 	    // Emissive Color
-	    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
 	    SoLazyElement::setEmissive(state, &col);
+	    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
 
 	    // Diffuse Color
 	    if (style.getValue() == EMISSIVE_DIFFUSE) {
-	        SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
 	        SoLazyElement::setDiffuse(state, this, 1, &col, &colorpacker);
+	        SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
 	    }
     }
 

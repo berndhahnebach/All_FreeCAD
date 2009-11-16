@@ -2,6 +2,7 @@
     <qresource prefix="/icons" >
         <file>SplashScreen.xpm</file>
         <file>freecadsplash.png</file>
+        <file>freecad.svg</file>
         <file>bulb.xpm</file>
         <file>button_down.xpm</file>
         <file>button_left.xpm</file>
