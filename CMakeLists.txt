@@ -159,7 +159,12 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 	find_package(OpenGL)
 
 # -------------------------------- Eigen --------------------------------
+
 	find_package(Eigen2)
+
+# -------------------------------- ODE ----------------------------------
+
+	find_package(ODE)
 
 # -------------------------------- Qt --------------------------------
 

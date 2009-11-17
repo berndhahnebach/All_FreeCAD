@@ -5,17 +5,12 @@ include_directories(
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCES_INCLUDE_DIR}
+		 ${ODE_INCLUDE_DIRS})
 
-if(WIN32)
-		 set(Assembly_LIBS
-				 ode_double
-		 		 FreeCADApp)
-else(WIN32)
-		 set(Assembly_LIBS
-				 ode
-		 		 FreeCADApp)
-endif(WIN32)
+set(Assembly_LIBS
+		 ${ODE_LIBRARIES}
+		 FreeCADApp)
 
 SET(Assembly_SRCS
 		 AppAssembly.cpp
