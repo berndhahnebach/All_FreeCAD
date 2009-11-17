@@ -34,8 +34,8 @@
 #include "kdl_cp/path_roundedcomposite.hpp"
 #include "kdl_cp/trajectory_composite.hpp"
 #include "kdl_cp/rotational_interpolation_sa.hpp"
-#include "kdl_cp/VelocityProfile_Trap.hpp"
-#include "kdl_cp/Trajectory_Segment.hpp"
+#include "kdl_cp/velocityprofile_trap.hpp"
+#include "kdl_cp/trajectory_segment.hpp"
 
 #include "Trajectory.h"
 #include "RobotAlgos.h"
