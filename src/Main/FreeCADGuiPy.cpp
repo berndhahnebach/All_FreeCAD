@@ -189,6 +189,7 @@ PyMODINIT_FUNC initFreeCADGui()
         App::Application::Config()["ConsoleBanner"] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n";
         Gui::Application::initApplication();
         static Gui::Application *app = new Gui::Application();
+        Q_UNUSED(app);
 
         PyObject *module = PyImport_AddModule("FreeCADGui");
         PyMethodDef *meth = FreeCADGui_methods;

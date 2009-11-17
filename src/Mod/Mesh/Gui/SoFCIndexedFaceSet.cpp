@@ -263,8 +263,6 @@ void SoFCIndexedFaceSet::stopSelection(SoAction * action)
     // returning to normal rendering mode
     GLint hits = glRenderMode(GL_RENDER);
 
-    GLenum errorEnum = glGetError();
-
     int bufSize = 5*(this->coordIndex.getNum()/4);
     std::vector< std::pair<double,unsigned int> > hit;
     GLint index=0;

@@ -751,8 +751,6 @@ void SoFCMeshObjectShape::stopSelection(SoAction * action, const Mesh::MeshObjec
     // returning to normal rendering mode
     GLint hits = glRenderMode(GL_RENDER);
 
-    GLenum errorEnum = glGetError();
-
     unsigned int bufSize = 5*mesh->countFacets();
     std::vector< std::pair<double,unsigned int> > hit;
     GLuint index=0;
@@ -777,24 +775,6 @@ void SoFCMeshObjectShape::stopSelection(SoAction * action, const Mesh::MeshObjec
 
 void SoFCMeshObjectShape::renderSelectionGeometry(const Mesh::MeshObject* mesh)
 {
-    unsigned int numfaces = mesh->countFacets();
-/*    const int32_t * cindices = this->coordIndex.getValues(0);
-
-    int fcnt=0;
-    int32_t v1, v2, v3;
-    for (int index=0; index<numfaces;index++,cindices++) {
-        glLoadName(fcnt);
-        glBegin(GL_TRIANGLES);
-            v1 = *cindices++;
-            glVertex3fv((const GLfloat*)(coords3d + v1));
-            v2 = *cindices++;
-            glVertex3fv((const GLfloat*)(coords3d + v2));
-            v3 = *cindices++;
-            glVertex3fv((const GLfloat*)(coords3d + v3));
-        glEnd();
-        fcnt++;
-    }*/
-
     int fcnt=0;
     const MeshCore::MeshPointArray & rPoints = mesh->getKernel().GetPoints();
     const MeshCore::MeshFacetArray & rFacets = mesh->getKernel().GetFacets();

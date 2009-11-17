@@ -132,8 +132,8 @@ void SoTextLabel::GLRender(SoGLRenderAction *action)
         SbVec2s vpsize = vp.getViewportSizePixels();
 
         // font stuff
-        float space = this->spacing.getValue();
-        float fontsize = SoFontSizeElement::get(state);
+        //float space = this->spacing.getValue();
+        //float fontsize = SoFontSizeElement::get(state);
         SbName fontname = SoFontNameElement::get(state);
         int lines = this->string.getNum();
 

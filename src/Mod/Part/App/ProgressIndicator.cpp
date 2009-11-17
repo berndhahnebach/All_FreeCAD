@@ -73,7 +73,7 @@ Standard_Boolean ProgressIndicator::Show (const Standard_Boolean theForce)
             this->myProgress->setText (aName->ToCString());
     }
 
-    Standard_Real aPc = GetPosition(); //always within [0,1]
+    //Standard_Real aPc = GetPosition(); //always within [0,1]
     //Standard_Integer aVal = (Standard_Integer)(aPc * GetValue());
     try {
         this->myProgress->next();
