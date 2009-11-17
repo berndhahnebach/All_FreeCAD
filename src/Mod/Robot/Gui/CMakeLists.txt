@@ -30,6 +30,7 @@ set(RobotGui_UIC_SRCS
 		 TrajectorySimulate.ui
 		 
 )
+
 qt4_wrap_ui(RobotGui_UIC_HDRS ${RobotGui_UIC_SRCS})
 
 set(RobotGui_MOC_HDRS
