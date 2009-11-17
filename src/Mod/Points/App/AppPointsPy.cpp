@@ -23,11 +23,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <stdio.h>
-# if defined (_POSIX_C_SOURCE)
-#   undef  _POSIX_C_SOURCE
-# endif // (re-)defined in pyconfig.h
-#	include <Python.h>
 #endif
 
 #include <Base/Console.h>

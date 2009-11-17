@@ -277,7 +277,7 @@ void PythonSyntaxHighlighter::highlightBlock (const QString & text)
           } break;
         case '(': case ')': case '[': case ']': 
         case '+': case '-': case '*': case '/': 
-        case ':': case '°': case '^': case '~': 
+        case ':': case '%': case '^': case '~': 
         case '!': case '=': case '<': case '>': // possibly two characters
           {
             setFormat(i, 1, this->colorByType(SyntaxHighlighter::Operator));

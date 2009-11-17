@@ -26,6 +26,23 @@
 #ifndef __PARAMETER_H__
 #define __PARAMETER_H__
 
+// (re-)defined in pyconfig.h
+#if defined (_POSIX_C_SOURCE)
+#   undef    _POSIX_C_SOURCE
+#endif
+#if defined (_XOPEN_SOURCE)
+#   undef    _XOPEN_SOURCE
+#endif
+
+// Include files
+#include <Python.h>
+#ifdef FC_OS_LINUX
+#include <sstream>
+#endif
+#include <map>
+#include <vector>
+#include <xercesc/util/XercesDefs.hpp>
+
 // Std. configurations
 #include "Handle.h"
 #include "Observer.h"
@@ -38,15 +55,6 @@
 #	pragma warning( disable : 4275 )
 #endif
 
-
-// Include files
-#ifdef FC_OS_LINUX
-#  include <sstream>
-#endif
-#include <map>
-#include <vector>
-#include <Python.h>
-#include <xercesc/util/XercesDefs.hpp>
 
 XERCES_CPP_NAMESPACE_BEGIN
 class DOMNode;
