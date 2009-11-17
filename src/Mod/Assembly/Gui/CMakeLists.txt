@@ -7,19 +7,13 @@ include_directories(
 		 ${QT_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCES_INCLUDE_DIR}
+		 ${ODE_INCLUDE_DIRS})
 
-if(WIN32)
-		 set(AssemblyGui_LIBS
-				 ode_double
-		 		 Assembly
-		 		 FreeCADGui)
-else(WIN32)
-		 set(AssemblyGui_LIBS
-				 ode
-		 		 Assembly
-		 		 FreeCADGui)
-endif(WIN32)
+set(AssemblyGui_LIBS
+		 ${ODE_LIBRARIES}
+ 		 Assembly
+ 		 FreeCADGui)
 
 qt4_add_resources(AssemblyGui_SRCS Resources/Assembly.qrc)
 
