@@ -27,7 +27,10 @@
 
 // (re-)defined in pyconfig.h
 #if defined (_POSIX_C_SOURCE)
-#   undef  _POSIX_C_SOURCE
+#   undef    _POSIX_C_SOURCE
+#endif
+#if defined (_XOPEN_SOURCE)
+#   undef    _XOPEN_SOURCE
 #endif
 
 // needed header

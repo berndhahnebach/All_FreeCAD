@@ -27,7 +27,6 @@
 # include <Handle_Geom_BSplineSurface.hxx>
 #endif
 
-#include <Python.h>
 #include <CXX/Objects.hxx>
 #include <Base/PyObjectBase.h>
 #include <Base/Console.h>
