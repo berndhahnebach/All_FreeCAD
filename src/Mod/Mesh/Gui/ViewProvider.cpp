@@ -170,7 +170,7 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     ADD_PROPERTY(OpenEdges,(false));
     ADD_PROPERTY(Lighting,(1));
     Lighting.setEnums(LightingEnums);
-    ADD_PROPERTY(LineColor,(ShapeColor.getValue()));
+    ADD_PROPERTY(LineColor,(0,0,0));
     //ADD_PROPERTY(BacksideColor,(0.8f,0.8f,0.8f));
 
     pOpenColor = new SoBaseColor();
@@ -209,6 +209,8 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
 
     // read the correct shape color from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+
+    // Mesh color
     App::Color color = ShapeColor.getValue();
     unsigned long current = color.getPackedValue();
     unsigned long setting = hGrp->GetUnsigned("MeshColor", current);
@@ -216,6 +218,17 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
         color.setPackedValue((uint32_t)setting);
         ShapeColor.setValue(color);
     }
+    Transparency.setValue(hGrp->GetInt("MeshTransparency", 0));
+
+    // Line color
+    color = LineColor.getValue();
+    current = color.getPackedValue();
+    setting = hGrp->GetUnsigned("LineColor", current);
+    if (current != setting) {
+        color.setPackedValue((uint32_t)setting);
+        LineColor.setValue(color);
+    }
+    LineTransparency.setValue(hGrp->GetInt("LineTransparency", 0));
 
     bool twoside = hGrp->GetBool("TwoSideRendering", false);
     if (twoside) Lighting.setValue(1);
