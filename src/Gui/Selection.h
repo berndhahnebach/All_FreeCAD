@@ -185,6 +185,7 @@ public:
     /// remove the present preselection
     void rmvPreselect();
     /// returns the present preselection 
+    const SelectionChanges &getPreselection(void) const;
 
 
     /** Returns the number of selected objects with a special object type
@@ -274,6 +275,8 @@ protected:
 
     /// helper to retrieve document by name
     App::Document* getDocument(const char* pDocName=0) const;
+
+    SelectionChanges ActualPreselection;
 
     struct _SelObj {
         std::string DocName;

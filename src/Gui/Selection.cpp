@@ -416,8 +416,8 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
     hy = y;
     hz = z;
 
+    // set up the change object
     SelectionChanges Chng;
-
     Chng.pDocName  = DocName.c_str();
     Chng.pObjectName = FeatName.c_str();
     Chng.pSubName  = SubName.c_str();
@@ -426,6 +426,8 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
     Chng.z = z;
     Chng.Type = SelectionChanges::SetPreselect;
 
+    // set the actual preselection
+    ActualPreselection = Chng;
 
     Notify(Chng);
     signalSelectionChanged(Chng);
@@ -447,6 +449,15 @@ void SelectionSingleton::rmvPreselect()
     Chng.pSubName  = SubName.c_str();
     Chng.Type = SelectionChanges::RmvPreselect;
 
+    // reset the actual preselection
+    ActualPreselection.pDocName =0;
+    ActualPreselection.pObjectName = 0;
+    ActualPreselection.pSubName = 0;
+    ActualPreselection.x = 0.0;
+    ActualPreselection.y = 0.0;
+    ActualPreselection.z = 0.0;
+
+    // notify observing objects
     Notify(Chng);
     signalSelectionChanged(Chng);
 
@@ -458,6 +469,11 @@ void SelectionSingleton::rmvPreselect()
     hz = 0;
 
     //Base::Console().Log("Sel : Rmv preselect \n");
+}
+
+const SelectionChanges &SelectionSingleton::getPreselection(void) const
+{
+    return ActualPreselection;
 }
 
 App::Document* SelectionSingleton::getDocument(const char* pDocName) const

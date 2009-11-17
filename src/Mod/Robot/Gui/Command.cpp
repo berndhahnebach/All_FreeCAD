@@ -167,6 +167,71 @@ bool CmdRobotInsertWaypoint::isActive(void)
 
 // #####################################################################################################
 
+DEF_STD_CMD_A(CmdRobotInsertWaypointPreselect);
+
+CmdRobotInsertWaypointPreselect::CmdRobotInsertWaypointPreselect()
+	:Command("Robot_InsertWaypointPreselect")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Insert in trajectory");
+    sToolTipText    = QT_TR_NOOP("Insert robot TCP location into trajectory");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_InsertWaypointPreselect";
+}
+
+
+void CmdRobotInsertWaypointPreselect::activated(int iMsg)
+{
+    unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
+    unsigned int n2 = getSelection().countObjectsOfType(Robot::TrajectoryObject::getClassTypeId());
+ 
+    if (n1 != 1 || n2 != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Robot and one Trajectory object."));
+        return;
+    }
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    const Gui::SelectionChanges & PreSel = getSelection().getPreselection();
+
+
+    Robot::RobotObject *pcRobotObject;
+    if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[1].pObject);
+    std::string RoboName = pcRobotObject->getNameInDocument();
+
+    Robot::TrajectoryObject *pcTrajectoryObject;
+    if(Sel[0].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[1].pObject);
+    std::string TrakName = pcTrajectoryObject->getNameInDocument();
+
+    if(PreSel.pDocName == 0){
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No preselection"),
+            QObject::tr("You have to hover above a geometry (Preselection) with the mouse to use this command. See documentation for details."));
+        return;
+    }
+
+    openCommand("Insert waypoint");
+    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoints(Waypoint())",TrakName.c_str(),TrakName.c_str());
+    updateActive();
+    commitCommand();
+      
+}
+
+bool CmdRobotInsertWaypointPreselect::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+// #####################################################################################################
+
 DEF_STD_CMD_A(CmdRobotSimulate);
 
 CmdRobotSimulate::CmdRobotSimulate()
@@ -261,6 +326,7 @@ void CmdRobotExport::activated(int iMsg)
 
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
+
     Robot::RobotObject *pcRobotObject;
     if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
         pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
@@ -302,6 +368,7 @@ void CreateRobotCommands(void)
     rcCmdMgr.addCommand(new CmdRobotConstraintAxle());
     rcCmdMgr.addCommand(new CmdRobotCreateTrajectory());
     rcCmdMgr.addCommand(new CmdRobotInsertWaypoint());
+    rcCmdMgr.addCommand(new CmdRobotInsertWaypointPreselect());
     rcCmdMgr.addCommand(new CmdRobotSimulate());
     rcCmdMgr.addCommand(new CmdRobotExport());
  }

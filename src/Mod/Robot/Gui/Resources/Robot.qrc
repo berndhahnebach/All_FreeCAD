@@ -1,4 +1,5 @@
 <RCC>
+    <qresource prefix="/" >
 	<qresource prefix="/" >
 		<file>translations/Robot_de.qm</file>
 	</qresource>
@@ -6,7 +7,8 @@
 		<file>icons/Robot_CreateRobot.svg</file>
 		<file>icons/Robot_CreateTrajectory.svg</file>
 		<file>icons/Robot_InsertWaypoint.svg</file>
-		<file>icons/Robot_Simulate.svg</file>
+    	<file>icons/Robot_InsertWaypointPre.svg</file>
+    	<file>icons/Robot_Simulate.svg</file>
 		<file>icons/Robot_Export.svg</file>
 	</qresource>
 </RCC>
