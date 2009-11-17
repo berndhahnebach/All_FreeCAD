@@ -63,8 +63,7 @@ FeaturePage::~FeaturePage()
 
 App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
-	const char* t = PageResult.getValue();
-	if(std::string(PageResult.getValue()) == "")
+	if (std::string(PageResult.getValue()) == "")
 		PageResult.setValue(Template.getValue());
 
     Base::FileInfo fi(Template.getValue());

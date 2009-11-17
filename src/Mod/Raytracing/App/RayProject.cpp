@@ -53,7 +53,6 @@ RayProject::RayProject(void)
 
 App::DocumentObjectExecReturn *RayProject::execute(void)
 {
-	const char* t = PageResult.getValue();
 	if(std::string(PageResult.getValue()) == "")
 		PageResult.setValue(Template.getValue());
 

@@ -89,7 +89,7 @@ SoSeparator* ViewProvider2DObject::createGrid(void) {
 	float MaY = MaxY + (MaxY-MinY)*0.5;
 	//float Step = 10.0;
   double dz = 0.0;                     // carpet-grid separation
-  int gridsize = 20;                    // grid size
+  //int gridsize = 20;                    // grid size
 
   SoSeparator *parent = GridRoot;
   GridRoot->removeAllChildren();

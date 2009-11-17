@@ -408,10 +408,8 @@ static std::list<TopoDS_Edge> sort_Edges(const std::list<TopoDS_Edge>& edges)
 
 Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 {
-	int point=-1;
     hPoint pt0=0, pt1=0, pt2=0;
     hParam prm0=0;
-	bool bFirst=true;
 	double x,y,R;
 	//struct points2D {
 	//	points2D(double x,double y):x(x),y(y){}
@@ -562,10 +560,8 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 
 void SketchFlatInterface::getLineSet(std::vector<Base::Vector3d> &coords,std::vector<unsigned int> &index,std::vector<unsigned int> &color)
 {
-	int point=-1;
     hPoint pt0=0, pt1=0, pt2=0;
     hParam prm0=0;
-	bool bFirst=true;
 	double x,y,R;
 
 	for(int i = 0; i<SK->entities; ++i)

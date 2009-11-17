@@ -80,7 +80,7 @@ private:
         return Py::None();
     }
 };
-
+/*
 static PyObject* addTest(PyObject *self, PyObject *args)          
 {
     char *pstr=0;
@@ -108,13 +108,13 @@ static PyObject* setTest(PyObject *self, PyObject *args)
     dlg->raise();
     Py_Return;       
 }
-
+*/
 /* registration table  */
-static struct PyMethodDef TestGui_methods[] = {
-    {"addTest", addTest, 1},       
-    {"setTest", setTest, 1},       
-    {NULL, NULL}                   /* end of table marker */
-};
+//static struct PyMethodDef TestGui_methods[] = {
+//    {"addTest", addTest, 1},       
+//    {"setTest", setTest, 1},       
+//    {NULL, NULL}                   /* end of table marker */
+//};
 
 void loadTestResource()
 {

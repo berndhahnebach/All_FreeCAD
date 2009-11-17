@@ -357,7 +357,7 @@ void ViewProviderSketch::draw(void)
 {
     double x,y;
     //double x0, y0, dx, dy;
-    int i=0,l=0,r=0;
+    int i=0;
     //bool Construction;
     // sketchflat generate curves out of entities:
     //SketchFlat->setUpRendering();
