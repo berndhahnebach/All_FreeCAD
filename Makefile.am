@@ -5,6 +5,8 @@ SUBDIRS=src
 EXTRA_DIST = \
 		cMake/ConfigureChecks.cmake \
 		cMake/FindCoin3D.cmake \
+		cMake/FindEigen2.cmake \
+		cMake/FindODE.cmake \
 		cMake/FindOpenCasCade.cmake \
 		cMake/FindOpenCV.cmake \
 		cMake/FindSoQt.cmake \
@@ -15,6 +17,8 @@ EXTRA_DIST = \
 		config.h.cmake \
 		CMakeLists.txt \
 		autogen.sh \
+		BuildAll.bat \
+		BuildAllNice.bat \
 		build.sh \
 		ChangeLog.txt \
 		copying.lib \
