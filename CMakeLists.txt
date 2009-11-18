@@ -73,8 +73,9 @@ endif(WIN32)
 
 OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command line and the Python import module." ON)
 OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
-OPTION(FREECAD_BUILD_CAM "Build the FreeCAD CAM module and the needed libs, be Aware, unfinished code!" OFF)
-OPTION(FREECAD_BUILD_ROBOT "Build the FreeCAD Robot module and the needed libs, be Aware, unfinished code!" OFF)
+OPTION(FREECAD_BUILD_CAM "Build the FreeCAD CAM module and the needed libs, be aware, unfinished code!" OFF)
+OPTION(FREECAD_BUILD_ROBOT "Build the FreeCAD Robot module and the needed libs, be aware, unfinished code!" OFF)
+OPTION(FREECAD_BUILD_ASSEMBLY "Build the FreeCAD Assembly module and the needed libs, be aware, unfinished code!" OFF)
 
 
 
@@ -224,9 +225,11 @@ if(FREECAD_MAINTAINERS_BUILD AND WIN32)
 	find_package(Wix REQUIRED)
 endif(FREECAD_MAINTAINERS_BUILD AND WIN32)
 
-# copy build convinient files for M$
+# copy build convenient files for M$
+if(WIN32)
 configure_file(BuildAll.bat ${CMAKE_BINARY_DIR}/BuildAll.bat COPYONLY)
 configure_file(BuildAllNice.bat ${CMAKE_BINARY_DIR}/BuildAllNice.bat COPYONLY)
+endif(WIN32)
 
 
 include(cMake/FreeCadMacros.cmake)
