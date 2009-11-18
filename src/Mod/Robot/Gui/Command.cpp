@@ -178,7 +178,9 @@ CmdRobotInsertWaypointPreselect::CmdRobotInsertWaypointPreselect()
     sToolTipText    = QT_TR_NOOP("Insert robot TCP location into trajectory");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Robot_InsertWaypointPreselect";
+    sPixmap         = "Robot_InsertWaypointPre";
+    iAccel          = Qt::Key_W;
+
 }
 
 
@@ -196,6 +198,9 @@ void CmdRobotInsertWaypointPreselect::activated(int iMsg)
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     const Gui::SelectionChanges & PreSel = getSelection().getPreselection();
+    float x = PreSel.x;
+    float y = PreSel.y;
+    float z = PreSel.z;
 
 
     Robot::RobotObject *pcRobotObject;
@@ -219,7 +224,7 @@ void CmdRobotInsertWaypointPreselect::activated(int iMsg)
     }
 
     openCommand("Insert waypoint");
-    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoints(Waypoint())",TrakName.c_str(),TrakName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoints(Robot.Waypoint(FreeCAD.Placement(FreeCAD.Vector(%f,%f,%f),FreeCAD.Vector(1,0,0),180),type='LIN',name='Pt',vel=1000.0,cont=True,tool=1))",TrakName.c_str(),TrakName.c_str(),x,y,z);
     updateActive();
     commitCommand();
       

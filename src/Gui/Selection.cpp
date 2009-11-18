@@ -28,6 +28,8 @@
 # include <string>
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
+# include <QString>
+# include <QStatusBar>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -40,6 +42,8 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <App/DocumentObjectPy.h>
+#include "MainWindow.h"
+
 
 
 using namespace Gui;
@@ -406,6 +410,8 @@ unsigned int SelectionSingleton::countObjectsOfType(const char* typeName, const 
 
 bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x, float y, float z)
 {
+    static char buf[513];
+
     if (DocName != "")
         rmvPreselect();
 
@@ -429,6 +435,14 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
     // set the actual preselection
     ActualPreselection = Chng;
 
+    snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",Chng.pDocName
+                                                       ,Chng.pObjectName
+                                                       ,Chng.pSubName
+                                                       ,x,y,z);
+
+    getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+
+
     Notify(Chng);
     signalSelectionChanged(Chng);
 
@@ -436,6 +450,22 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
 
     // allows the preselection
     return true;
+}
+
+void SelectionSingleton::setPreselectCoord( float x, float y, float z)
+{
+    static char buf[513];
+
+    ActualPreselection.x = x;
+    ActualPreselection.y = y;
+    ActualPreselection.z = z;
+
+    snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",ActualPreselection.pDocName
+                                                       ,ActualPreselection.pObjectName
+                                                       ,ActualPreselection.pSubName
+                                                       ,x,y,z);
+
+    getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
 }
 
 void SelectionSingleton::rmvPreselect()

@@ -184,6 +184,8 @@ public:
     bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
     /// remove the present preselection
     void rmvPreselect();
+    /// sets different coords for the preselection 
+    void SelectionSingleton::setPreselectCoord( float x, float y, float z);
     /// returns the present preselection 
     const SelectionChanges &getPreselection(void) const;
 
