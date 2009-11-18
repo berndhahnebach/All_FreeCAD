@@ -36,13 +36,13 @@ print w.Name,w.Type,w.Pos,w.Cont,w.Velocity,w.Base,w.Tool
 # generate more
 l = [w]
 for i in range(5):
-  l.append(Waypoint(Placement(Vector(1,0,0),0,Vector(0,0,i*100)),"LIN","Pt"))
+  l.append(Waypoint(Placement(Vector(0,0,i*100),Vector(1,0,0),0),"LIN","Pt"))
 
 # create a trajectory  
 t = Trajectory(l)
 print t
 for i in range(5):
-  t.insertWaypoints(Waypoint(Placement(Vector(1,0,0),0,Vector(0,0,i*100+500)),"LIN","Pt"))
+  t.insertWaypoints(Waypoint(Placement(Vector(0,0,i*100+500),Vector(1,0,0),0),"LIN","Pt"))
 
 
 

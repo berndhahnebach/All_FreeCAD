@@ -75,6 +75,7 @@ void Simulation::setToTime(float t)
 {
     Pos = t;
     Base::Placement NeededPos = Trac.getPosition(Pos);
+    NeededPos *= Tool;
     Rob.setTo(NeededPos);
     Axis[0] = Rob.getAxis(0);
     Axis[1] = Rob.getAxis(1);

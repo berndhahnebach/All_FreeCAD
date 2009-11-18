@@ -458,44 +458,36 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
 		            break; // found the lowest LocHL - look no further
 		        }
 	        }
-            if (underTheMouse) {
-               if (!isHighlighted(action)) {
-                   const SoPickedPoint * pp = action->getPickedPoint();
-                   Gui::Selection().setPreselect(documentName.getValue().getString()
+ 
+        }
+        	// Am I currently highlighted?
+	    if (isHighlighted(action)) {
+            if ( ! underTheMouse ){
+		    // re-draw the object with it's normal color
+		        redrawHighlighted(action, FALSE);
+            }else{
+		        action->setHandled();
+                const SoPickedPoint * pp = action->getPickedPoint();
+                Gui::Selection().setPreselectCoord(pp->getPoint()[0]
+                                                 ,pp->getPoint()[1]
+                                                 ,pp->getPoint()[2]);
+            }
+	    }
+	    // Else I am not currently highlighted
+	    else {
+	        // If under the mouse, then highlight!
+            if (underTheMouse ){
+		    // draw this object highlighted
+		        redrawHighlighted(action, TRUE);
+                const SoPickedPoint * pp = action->getPickedPoint();
+                Gui::Selection().setPreselect(documentName.getValue().getString()
                                                  ,objectName.getValue().getString()
                                                  ,subElementName.getValue().getString()
                                                  ,pp->getPoint()[0]
                                                  ,pp->getPoint()[1]
                                                  ,pp->getPoint()[2]);
-                     
-               }
-               snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
-                                                                   ,objectName.getValue().getString()
-                                                                   ,subElementName.getValue().getString()
-                                                                   ,pp->getPoint()[0]
-                                                                   ,pp->getPoint()[1]
-                                                                   ,pp->getPoint()[2]);
-
-                getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
-
             }
-        
 
-        }
-        	// Am I currently highlighted?
-	    if (isHighlighted(action)) {
-	        if ( ! underTheMouse )
-		    // re-draw the object with it's normal color
-		        redrawHighlighted(action, FALSE);
-	        else
-		        action->setHandled();
-	    }
-	    // Else I am not currently highlighted
-	    else {
-	        // If under the mouse, then highlight!
-	        if (underTheMouse )
-		    // draw this object highlighted
-		        redrawHighlighted(action, TRUE);
 	    }
         //if(selected == SELECTED){
         //    redrawHighlighted(action, TRUE);
