@@ -685,6 +685,7 @@ src/Mod/Sketcher/Makefile
 src/Mod/Sketcher/App/Makefile
 src/Mod/Sketcher/Gui/Makefile
 src/Mod/Sketcher/Gui/Resources/Makefile
+src/Mod/Sketcher/Templates/Makefile
 src/Mod/Points/Makefile
 src/Mod/Points/App/Makefile
 src/Mod/Points/Gui/Makefile
