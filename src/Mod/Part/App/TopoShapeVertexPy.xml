@@ -12,7 +12,7 @@
       FatherNamespace="Part">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
-      <UserDocu>TopoShapeFace is the OpenCasCade topological face wrapper</UserDocu>
+      <UserDocu>TopoShapeVertex is the OpenCasCade topological vertex wrapper</UserDocu>
     </Documentation>
 	  <Attribute Name="X" ReadOnly="true">
 		  <Documentation>
