@@ -432,8 +432,8 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
     Chng.z = z;
     Chng.Type = SelectionChanges::SetPreselect;
 
-    // set the actual preselection
-    ActualPreselection = Chng;
+    // set the current preselection
+    CurrentPreselection = Chng;
 
     snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",Chng.pDocName
                                                        ,Chng.pObjectName
@@ -456,13 +456,13 @@ void SelectionSingleton::setPreselectCoord( float x, float y, float z)
 {
     static char buf[513];
 
-    ActualPreselection.x = x;
-    ActualPreselection.y = y;
-    ActualPreselection.z = z;
+    CurrentPreselection.x = x;
+    CurrentPreselection.y = y;
+    CurrentPreselection.z = z;
 
-    snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",ActualPreselection.pDocName
-                                                       ,ActualPreselection.pObjectName
-                                                       ,ActualPreselection.pSubName
+    snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",CurrentPreselection.pDocName
+                                                       ,CurrentPreselection.pObjectName
+                                                       ,CurrentPreselection.pSubName
                                                        ,x,y,z);
 
     getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
@@ -479,13 +479,13 @@ void SelectionSingleton::rmvPreselect()
     Chng.pSubName  = SubName.c_str();
     Chng.Type = SelectionChanges::RmvPreselect;
 
-    // reset the actual preselection
-    ActualPreselection.pDocName =0;
-    ActualPreselection.pObjectName = 0;
-    ActualPreselection.pSubName = 0;
-    ActualPreselection.x = 0.0;
-    ActualPreselection.y = 0.0;
-    ActualPreselection.z = 0.0;
+    // reset the current preselection
+    CurrentPreselection.pDocName =0;
+    CurrentPreselection.pObjectName = 0;
+    CurrentPreselection.pSubName = 0;
+    CurrentPreselection.x = 0.0;
+    CurrentPreselection.y = 0.0;
+    CurrentPreselection.z = 0.0;
 
     // notify observing objects
     Notify(Chng);
@@ -503,7 +503,7 @@ void SelectionSingleton::rmvPreselect()
 
 const SelectionChanges &SelectionSingleton::getPreselection(void) const
 {
-    return ActualPreselection;
+    return CurrentPreselection;
 }
 
 App::Document* SelectionSingleton::getDocument(const char* pDocName) const
