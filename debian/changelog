@@ -1,137 +1,113 @@
-freecad (0.7.2008-1hardy1) hardy; urgency=low
+freecad (0.9.2646-1) unstable; urgency=low
 
-  * New release for Ubuntu 8.04 (Hardy Heron)
+  [ Werner Mayer ]
+  * New upstream release
+  * In-source copy of PyCXX has been dropped (closes: #547936)
+  * In-source copy of zipios++ has been dropped (closes: #547941)
+  * Change build-dependency on python2.5-dev to python-dev
+  * Add freecad-doc binary package
+  * Remove Suggestion of a chm viewer, suggest freecad-doc instead
 
- -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 21 Mar 2009 15:21:43 +0100
+  [ Teemu Ikonen ]
+  * Add override to dh_compress
+  * Add versioned build-deb to debhelper (>= 7.0.50)
+  * Add build-deps to libzipios++-dev and python-cxx-dev.
 
-freecad (0.7.1779-1hardy1) hardy; urgency=low
+ -- Teemu Ikonen <tpikonen@gmail.com>  Tue, 17 Nov 2009 14:22:00 +0100
 
-  * New release for Ubuntu 8.04 (Hardy Heron)
+freecad (0.8.2237-2) unstable; urgency=low
 
- -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 14 Dec 2008 15:20:20 +0200
+  * Added libboost-python-dev to Build-Depends (closes: #549738).
+  * Added myself to uploaders list.
+  * Bumped Standards-Version.
 
-freecad (0.7.1658-1feisty1) feisty; urgency=low
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 12 Nov 2009 12:02:42 -0500
 
-  * New release for Ubuntu 7.04 (Feisty Fawn)
+freecad (0.8.2237-1) unstable; urgency=low
 
- -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 12 Oct 2008 20:30:14 +0200
+  * New Upstream release
 
-freecad (0.7.1658-1intrepid1) intrepid; urgency=low
+ -- Teemu Ikonen <tpikonen@gmail.com>  Thu, 16 Jul 2009 18:37:41 +0200
 
-  * New release for Ubuntu 8.10 (Intrepid Ibex)
+freecad (0.7.1658-1) UNRELEASED; urgency=low
 
- -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 12 Oct 2008 16:20:54 +0200
+  * New upstream release
 
-freecad (0.7.1658-1hardy1) hardy; urgency=low
+ -- Teemu Ikonen <tpikonen@gmail.com>  Mon, 20 Oct 2008 15:35:58 +0200
 
-  * New release for Ubuntu 8.04 (Hardy Heron)
-
- -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 11 Oct 2008 18:45:20 +0200
-
-freecad (0.7.1658-1gutsy1) gutsy; urgency=low
-
-  * New release for Ubuntu 7.10 (Gutsy Gibbon)
-  * Fix many license issues
-  * Define QT_NO_CAST_FROM_ASCII to avoid problems with UTF-8 encoded strings
-  * Support additional module paths in home directory
-  * Re-implement the "What's this" facility to start the help window with context-sensitive help
-  * Create Python commands from the user input in the property editor
-  * Support of groups in property editor
-  * Implement general export framework
-  * Implement graphical user-interface for creation of fillets and extrusions
-  * Add scene inspector for analyzing the OpenInventor scene graph  
-
- -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 11 Oct 2008 15:56:27 +0200
-
-freecad (0.7.1525-1feisty1) feisty; urgency=low
-
-  * Activate MIME support in rules file
-
- -- Werner Mayer <wmayer@users.sourceforge.net>  Tue,  5 Aug 2008 21:27:46 +0200
-
-freecad (0.7.1522-1feisty1) feisty; urgency=low
-
-  * Package for Ubuntu 7.04 (Feisty Fawn)
-  * Abstract interface for geometric data types
-  * Avoid flickering of cursor when cutting several meshes at once
-  * Update to the latest debian policy version 3.7.3
-  * Several bugs fixed with Python GIL
-  * Providing a dev package for freecad
-  * Make TopoDS_Shape and Geom_Geometry classes accessible from Python
-  * Make Python interface for algorithms on shapes and geometries
-  * Support of mesh segments
-  * Add test/annotation object
-  * Add simple measurement facility
-  * Remove OpenCascade dependency in Mesh module
-  * Thumbnail facility added
-
- -- Werner Mayer <wmayer@users.sourceforge.net>  Mon, 04 Aug 2008 20:11:20 +0200
-
-freecad (0.7.1514-1) unstable; urgency=low
+freecad (0.7.1514-1) UNRELEASED; urgency=low
 
   * New upstream version
   * Add more stuff to the copyright file
-  * control: add build-dep to python-central 
+  * control: add build-dep to python-central
 
  -- Teemu Ikonen <tpikonen@gmail.com>  Wed, 06 Aug 2008 18:25:02 +0200
 
-freecad (0.7.1350-1hardy1) hardy; urgency=low
+freecad (0.7.1350-1hardy1) UNRELEASED; urgency=low
 
   * Package for Ubuntu 8.04 (Hardy Heron)
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Thu, 29 May 2008 11:11:20 +0200
 
-freecad (0.7.1350-1gutsy1) gutsy; urgency=low
+freecad (0.7.1350-1gutsy1) UNRELEASED; urgency=low
 
   * Backport to Ubuntu 7.10 (Gutsy Gibbon)
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 24 May 2008 01:54:39 +0200
 
-freecad (0.7.1350-1feisty1) feisty; urgency=low
+freecad (0.7.1350-1feisty1) UNRELEASED; urgency=low
 
   * Backport to Ubuntu 7.04 (Feisty Fawn)
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 24 May 2008 00:09:08 +0200
 
-freecad (0.7.1350-1) unstable; urgency=low
+freecad (0.7.1350-1) UNRELEASED; urgency=low
 
-  * Official release for version 0.7
+  * New upstream release from sf.net
+  * Import to debian-science repository at git.debian.org
+  * control:
+    - Update to standards-version 3.7.3
+    - Add Vcs-* fields pointing to git.debian.org
+    - Improve descriptions
+  * Convert copyright to (pseudo) machine readable format, audit source
+  * Fix categories in .desktop file
+  * Change Section to Science/Engineering in .doc-base and menu files
+  * rules: do not ignore errors on clean target, add dh_desktop call
+ -- Teemu Ikonen <tpikonen@gmail.com>  Tue, 05 Aug 2008 18:58:07 +0200
 
- -- Werner Mayer <wmayer@users.sourceforge.net>  Fri, 23 May 2008 23:39:47 +0200
-
-freecad (0.7.1344-1ubuntu2) feisty; urgency=low
+freecad (0.7.1344-1ubuntu2) UNRELEASED; urgency=low
 
   * New package with fixed self-dependency problem
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Thu, 22 May 2008 15:34:34 +0200
 
-freecad (0.7.1344-1ubuntu1) feisty; urgency=low
+freecad (0.7.1344-1ubuntu1) UNRELEASED; urgency=low
 
   * New debian package for Feisty
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Thu, 22 May 2008 11:04:06 +0200
 
-freecad (0.7.1344-1) unstable; urgency=low
+freecad (0.7.1344-1) UNRELEASED; urgency=low
 
   * Write patch file to make builds with OpenCASCADE libs inside but with no
     dependency to libopencascade6.2
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Wed, 21 May 2008 10:06:07 +0200
 
-freecad (0.7.1343-1) unstable; urgency=low
+freecad (0.7.1343-1) UNRELEASED; urgency=low
 
   * Embed required OpenCASCADE libs into this package as long as no official
-    Debian package is available  
+    Debian package is available
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 20 May 2008 00:40:39 +0200
 
-freecad (0.7.1342-1) unstable; urgency=low
+freecad (0.7.1342-1) UNRELEASED; urgency=low
 
-  * Switch to new versioning scheme of OpenCASCADE packages 
+  * Switch to new versioning scheme of OpenCASCADE packages
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Mon, 19 May 2008 23:55:31 +0200
 
-freecad (0.7.1316-1) unstable; urgency=low
+freecad (0.7.1316-1) UNRELEASED; urgency=low
 
   * Support of pivy (Python binding for Coin/SoQt)
   * Support of PyQt4
@@ -139,7 +115,7 @@ freecad (0.7.1316-1) unstable; urgency=low
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 26 Apr 2008 13:51:25 +0200
 
-freecad (0.7.1031-1) unstable; urgency=low
+freecad (0.7.1031-1) UNRELEASED; urgency=low
 
   * Qt4 port finished
   * Support of Python binding for Qt4
@@ -150,13 +126,13 @@ freecad (0.7.1031-1) unstable; urgency=low
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 04 Jan 2008 13:50:37 +0200
 
-freecad (0.7.645-1) unstable; urgency=low
+freecad (0.7.645-1) UNRELEASED; urgency=low
 
   * Qt4 port started
 
  -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 24 Jul 2007 13:04:37 +0200
 
-freecad (0.6.472-1) unstable; urgency=low
+freecad (0.6.472-1) UNRELEASED; urgency=low
 
   * Initial Release
 
