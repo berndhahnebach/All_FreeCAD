@@ -185,9 +185,9 @@ public:
     /// remove the present preselection
     void rmvPreselect();
     /// sets different coords for the preselection 
-    void SelectionSingleton::setPreselectCoord( float x, float y, float z);
+    void setPreselectCoord(float x, float y, float z);
     /// returns the present preselection 
-    const SelectionChanges &getPreselection(void) const;
+    const SelectionChanges& getPreselection(void) const;
 
 
     /** Returns the number of selected objects with a special object type
@@ -278,7 +278,7 @@ protected:
     /// helper to retrieve document by name
     App::Document* getDocument(const char* pDocName=0) const;
 
-    SelectionChanges ActualPreselection;
+    SelectionChanges CurrentPreselection;
 
     struct _SelObj {
         std::string DocName;
