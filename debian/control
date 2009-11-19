@@ -1,27 +1,29 @@
 Source: freecad
-Section: x11
-Priority: optional
-Maintainer: Werner Mayer <wmayer@users.sourceforge.net>
-Homepage: http://sourceforge.net/projects/free-cad
-Build-Depends: debhelper (>= 5), autotools-dev, libc6-dev (>= 2.1.3),
- libstdc++6, libboost-dev, libboost-date-time-dev, libboost-filesystem-dev,
+Section: science
+Priority: extra
+Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
+Uploaders: Teemu Ikonen <tpikonen@gmail.com>, "Adam C. Powell, IV" <hazelsct@debian.org>
+Vcs-Browser: http://git.debian.org/?p=debian-science/packages/freecad.git
+Vcs-Git: git://git.debian.org/git/debian-science/packages/freecad.git
+Homepage: http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev,
+ libboost-dev, libboost-date-time-dev, libboost-filesystem-dev,
  libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev,
  libboost-regex-dev, libboost-serialization-dev, libboost-signals-dev,
- zlib1g-dev, libxerces27-dev | libxerces-c2-dev,
- libxt-dev, libxmu-dev, libxi-dev, libx11-dev, libxext-dev,
- libqt4-dev, libsoqt4-dev, libcoin40-dev, libgl1-mesa-dev,
- python2.5-dev, python, python-central (>= 0.5.6),
- libgts-dev, libcv-dev, libopencascade-dev
-Standards-Version: 3.7.3
-XS-Python-Version: current
+ libboost-python-dev, python-dev, python-opencv, python-support,
+ libqt4-dev, libxt-dev, libxext-dev, libxmu-dev, libxi-dev, libx11-dev,
+ libcoin60-dev, libsoqt4-dev (>= 1.4.2~svn20090224), libgl1-mesa-dev,
+ libgts-bin, libgts-dev, libcv-dev, zlib1g-dev, libxerces-c2-dev,
+ libopencascade-foundation-dev, libopencascade-modeling-dev, python-cxx-dev,
+ libswscale-dev, libblas-dev, libatlas-headers, libzipios++-dev
+Standards-Version: 3.8.3
 
 Package: freecad
 Architecture: any
 Section: science
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python
-XB-Python-Version: ${python:Versions}
-Conflicts: freecad (<= 0.6.472-1)
-Suggests: gnochm | kchmviewer | kchmviewer-nokde | xchm, python-opencv
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Recommends: python-pivy
+Suggests: freecad-doc, python-opencv
 Description: An extensible Open Source CAx program (alpha)
  FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
  It features some key concepts like macro recording, workbenches, ability
@@ -35,8 +37,7 @@ Description: An extensible Open Source CAx program (alpha)
 Package: freecad-dev
 Architecture: any
 Section: libdevel
-Depends: freecad (>= ${source:Version})
-XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends}, ${misc:Depends}, freecad (= ${binary:Version})
 Description: FreeCAD development files
  FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
  It features some key concepts like macro recording, workbenches, ability
@@ -47,4 +48,20 @@ Description: FreeCAD development files
  This package contains the libtool .la files, headers and symlinks necessary to
  develop modules for FreeCAD.
 
+Package: freecad-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}, qt4-dev-tools
+Description: FreeCAD documentation
+ FreeCAD is an Open Source CAx RAD based on OpenCasCade, Qt and Python.
+ It features some key concepts like macro recording, workbenches, ability
+ to run as a server and dynamically loadable application extensions and
+ it is designed to be platform independent.
+ For more details see http://sourceforge.net/projects/free-cad
+ .
+ This package contains the FreeCAD documentation.
+ .
+ The documentation is provided in Qt's new help format;
+ the new help format version can be viewed in conjunction with the Qt Assistant
+ found in the qt4-dev-tools package.
 
