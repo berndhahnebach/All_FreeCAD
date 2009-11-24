@@ -1598,6 +1598,7 @@ class Modifier:
 			self.ui.sourceCmd = self
 			self.constrain = None
 			self.obj = None
+			self.extendedCopy = False
 		
 	def finish(self):
 		self.node = []
@@ -1702,6 +1703,8 @@ class Move(Modifier):
 				last = self.node[len(self.node)-1]
 				delta = point.sub(last)
 				self.ghost.trans.translation.setValue([delta.x,delta.y,delta.z])
+			if self.extendedCopy:
+				if not arg["AltDown"]: self.finish()
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				point,ctrlPoint = getPoint(self,arg)
@@ -1714,12 +1717,15 @@ class Move(Modifier):
 					self.linetrack.p1(point)
 					self.ui.translate("Pick end point:\n")
 				else:
-					last = self.node[-1]
+					last = self.node[0]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
 						self.move(point.sub(last),True)
 					else:
 						self.move(point.sub(last))
-					self.finish()
+					if arg["AltDown"]:
+						self.extendedCopy = True
+					else:
+						self.finish()
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1853,6 +1859,8 @@ class Rotate(Modifier):
 				viewdelta = fcvec.project(point.sub(self.center),self.axis)
 				if not fcvec.isNull(viewdelta):
 					point = point.add(fcvec.neg(viewdelta))
+			if self.extendedCopy:
+				if not arg["AltDown"]: self.finish()
 			if (self.step == 0):
 				pass
 			elif (self.step == 1):
@@ -1939,7 +1947,10 @@ class Rotate(Modifier):
 						self.rot(sweep,True)
 					else:
 						self.rot(sweep)
-					self.finish()
+					if arg["AltDown"]:
+						self.extendedCopy = True
+					else:
+						self.finish()
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -2073,6 +2084,8 @@ class Offset(Modifier):
 				self.ui.radiusValue.setText("off")
 			self.ui.radiusValue.setFocus()
 			self.ui.radiusValue.selectAll()
+			if self.extendedCopy:
+				if not arg["AltDown"]: self.finish()
 
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
@@ -2098,7 +2111,10 @@ class Offset(Modifier):
 					else:
 						targetOb.Shape = Part.Wire(newedges)
 					self.doc.commitTransaction()
-				self.finish()
+				if arg["AltDown"]:
+					self.extendedCopy = True
+				else:
+					self.finish()
 
 
 
@@ -2717,6 +2733,8 @@ class Scale(Modifier):
 				corr.scale(delta.x,delta.y,delta.z)
 				corr = fcvec.neg(corr.sub(self.node[0]))
 				self.ghost.trans.translation.setValue([corr.x,corr.y,corr.z])
+			if self.extendedCopy:
+				if not arg["AltDown"]: self.finish()
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				point,ctrlPoint = getPoint(self,arg,sym=True)
@@ -2729,12 +2747,15 @@ class Scale(Modifier):
 					self.linetrack.p1(point)
 					self.ui.translate("Pick scale factor:\n")
 				else:
-					last = self.node[-1]
+					last = self.node[0]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
 						self.scale(point.sub(last),True)
 					else:
 						self.scale(point.sub(last))
-					self.finish()
+					if arg["AltDown"]:
+						self.extendedCopy = True
+					else:
+						self.finish()
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
