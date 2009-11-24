@@ -86,14 +86,20 @@ public:
 // Export an instance of the base class (to avoid warning C4275, see also 
 // C++ Language Reference/General Rules and Limitations on MSDN for more details.)
 //
-// For compiler gcc4.1 we need to define the template class outside namespace 'Gui' otherwise we get the compiler error: 
-// 'explicit instantiation of 'class Base::Subject<const Gui::SelectionChanges&>' in namespace 'Gui' 
-// (which does not enclose namespace 'Base')
+// For compiler gcc4.1 we need to define the template class outside namespace 'Gui'
+// otherwise we get the compiler error: 
+// 'explicit instantiation of 'class Base::Subject<const Gui::SelectionChanges&>'
+// in namespace 'Gui' (which does not enclose namespace 'Base')
+// 
+// It seems that this costruct is not longer needed for gcc4.4 and even leads to
+// errors under Mac OS X. Thus, we check for version between 4.1 and 4.4.
 
 #if defined(__GNUC__) && defined(__GNUC_MINOR__)
-#if ((__GNUC__)*100+(__GNUC_MINOR__)*10) >= 410
+#define GNUC_VERSION (((__GNUC__)<<16)+((__GNUC_MINOR__)<<8))
+#if GNUC_VERSION >= 0x040100 && GNUC_VERSION < 0x040400
 template class GuiExport Base::Subject<const Gui::SelectionChanges&>;
 #endif
+#undef GNUC_VERSION
 #endif
 
 namespace Gui
