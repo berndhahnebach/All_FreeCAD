@@ -66,8 +66,7 @@ void MeshSmoothing::Smooth(unsigned int iterations)
 
     MeshCore::MeshPointIterator v_it(kernel);
     MeshCore::MeshRefPointToPoints vv_it(kernel);
-    std::set<MeshCore::MeshPointArray::_TConstIterator> cv;// circulator
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator cv_it;
+    MeshCore::MeshPointArray::_TConstIterator v_beg = kernel.GetPoints().begin();
 
     for (unsigned int i=0; i<iterations; i++) {
         Base::Vector3f N, L;
@@ -75,13 +74,14 @@ void MeshSmoothing::Smooth(unsigned int iterations)
             MeshCore::PlaneFit pf;
             pf.AddPoint(*v_it);
             center = *v_it;
-            cv = vv_it[v_it.Position()];
+            const std::set<unsigned long>& cv = vv_it[v_it.Position()];
             if (cv.size() < 3)
                 continue;
 
+            std::set<unsigned long>::const_iterator cv_it;
             for (cv_it = cv.begin(); cv_it !=cv.end(); ++cv_it) {
-                pf.AddPoint((*cv_it)[0]);
-                center += (*cv_it)[0];
+                pf.AddPoint(v_beg[*cv_it]);
+                center += v_beg[*cv_it];
             }
 
             float scale = 1.0f/((float)cv.size()+1.0f);
@@ -123,17 +123,101 @@ LaplaceSmoothing::~LaplaceSmoothing()
 
 void LaplaceSmoothing::Smooth(unsigned int iterations)
 {
+    const MeshCore::MeshPointArray& points = kernel.GetPoints();
+    MeshCore::MeshPointArray::_TConstIterator v_it,
+        v_beg = points.begin(), v_end = points.end();
+    MeshCore::MeshRefPointToPoints vv_it(kernel);
+    MeshCore::MeshRefPointToFacets vf_it(kernel);
+
+    // Theoretically Taubin does not shrink the surface
+    if (iterations % 2 == 1) // Make sure we have an even number of loops
+        iterations++;
+    for (unsigned int i=0; i<iterations; i++) {
+        unsigned long pos = 0;
+        for (v_it = points.begin(); v_it != v_end; ++v_it,++pos) {
+            const std::set<unsigned long>& cv = vv_it[pos];
+            if (cv.size() < 3)
+                continue;
+            if (cv.size() != vf_it[pos].size()) {
+                // do nothing for border points
+                continue;
+            }
+
+            unsigned int n_count = cv.size();
+            double w;
+            w=1.0/double(n_count);
+
+            double delx=0.0,dely=0.0,delz=0.0;
+            std::set<unsigned long>::const_iterator cv_it;
+            for (cv_it = cv.begin(); cv_it !=cv.end(); ++cv_it) {
+                delx += w*((v_beg[*cv_it]).x-v_it->x);
+                dely += w*((v_beg[*cv_it]).y-v_it->y);
+                delz += w*((v_beg[*cv_it]).z-v_it->z);
+            }
+
+            float x = (float)(v_it->x+0.6307*delx);
+            float y = (float)(v_it->y+0.6307*dely);
+            float z = (float)(v_it->z+0.6307*delz);
+            kernel.SetPoint(pos,x,y,z);
+        }
+    }
 }
 
-JacobiLaplaceSmoothing::JacobiLaplaceSmoothing(MeshKernel& m)
-  : LaplaceSmoothing(m)
+TaubinSmoothing::TaubinSmoothing(MeshKernel& m)
+  : MeshSmoothing(m)
 {
 }
 
-JacobiLaplaceSmoothing::~JacobiLaplaceSmoothing()
+TaubinSmoothing::~TaubinSmoothing()
 {
 }
 
-void JacobiLaplaceSmoothing::Smooth(unsigned int iterations)
+void TaubinSmoothing::Smooth(unsigned int iterations)
 {
+    const MeshCore::MeshPointArray& points = kernel.GetPoints();
+    MeshCore::MeshPointArray::_TConstIterator v_it,
+        v_beg = points.begin(), v_end = points.end();
+    MeshCore::MeshRefPointToPoints vv_it(kernel);
+    MeshCore::MeshRefPointToFacets vf_it(kernel);
+
+    // Theoretically Taubin does not shrink the surface
+    if (iterations % 2 == 1) // Make sure we have an even number of loops
+        iterations++;
+    for (unsigned int i=0; i<iterations; i++) {
+        unsigned long pos = 0;
+        for (v_it = points.begin(); v_it != v_end; ++v_it,++pos) {
+            const std::set<unsigned long>& cv = vv_it[pos];
+            if (cv.size() < 3)
+                continue;
+            if (cv.size() != vf_it[pos].size()) {
+                // do nothing for border points
+                continue;
+            }
+
+            unsigned int n_count = cv.size();
+            double w;
+            w=1.0/double(n_count);
+
+            double delx=0.0,dely=0.0,delz=0.0;
+            std::set<unsigned long>::const_iterator cv_it;
+            for (cv_it = cv.begin(); cv_it !=cv.end(); ++cv_it) {
+                delx += w*((v_beg[*cv_it]).x-v_it->x);
+                dely += w*((v_beg[*cv_it]).y-v_it->y);
+                delz += w*((v_beg[*cv_it]).z-v_it->z);
+            }
+
+            if (i%2 == 0) {
+                float x = (float)(v_it->x+0.6307*delx);
+                float y = (float)(v_it->y+0.6307*dely);
+                float z = (float)(v_it->z+0.6307*delz);
+                kernel.SetPoint(pos,x,y,z);
+            }
+            else {
+                float x = (float)(v_it->x-0.6731*delx);
+                float y = (float)(v_it->y-0.6731*dely);
+                float z = (float)(v_it->z-0.6731*delz);
+                kernel.SetPoint(pos,x,y,z);
+            }
+        }
+    }
 }

@@ -42,6 +42,8 @@ libMesh_la_SOURCES=\
 		Core/Projection.h \
 		Core/SetOperations.cpp \
 		Core/SetOperations.h \
+		Core/Smoothing.cpp \
+		Core/Smoothing.h \
 		Core/tritritest.h \
 		Core/Triangulation.cpp \
 		Core/Triangulation.h \

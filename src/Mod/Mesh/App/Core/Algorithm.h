@@ -312,7 +312,8 @@ public:
 
     /// Rebuilds up data structure
     void Rebuild (void);
-    std::set<MeshFacetArray::_TConstIterator> operator[] (unsigned long) const;
+    const std::set<unsigned long>& operator[] (unsigned long) const;
+    MeshFacetArray::_TConstIterator getFacet (unsigned long) const;
     std::set<unsigned long> NeighbourPoints(const std::vector<unsigned long>& , int level) const;
     void Neighbours (unsigned long ulFacetInd, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
     Base::Vector3f GetNormal(unsigned long) const;
@@ -346,7 +347,7 @@ public:
 
     /// Returns a set of facets sharing one or more points with the facet with
     /// index \a ulFacetIndex.
-    std::set<MeshFacetArray::_TConstIterator> operator[] (unsigned long) const;
+    const std::set<unsigned long>& operator[] (unsigned long) const;
 
 protected:
     const MeshKernel  &_rclMesh; /**< The mesh kernel. */
@@ -371,7 +372,7 @@ public:
 
     /// Rebuilds up data structure
     void Rebuild (void);
-    std::set<MeshPointArray::_TConstIterator> operator[] (unsigned long) const;
+    const std::set<unsigned long>& operator[] (unsigned long) const;
     Base::Vector3f GetNormal(unsigned long) const;
 
 protected:

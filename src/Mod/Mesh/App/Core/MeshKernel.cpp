@@ -42,6 +42,7 @@
 #include "Iterator.h"
 #include "Evaluation.h"
 #include "Builder.h"
+#include "Smoothing.h"
 
 using namespace MeshCore;
 
@@ -892,57 +893,9 @@ void MeshKernel::Transform (const Base::Matrix4D &rclMat)
     }
 }
 
-void MeshKernel::Smooth(int iterations, float d_max)
+void MeshKernel::Smooth(int iterations, float stepsize)
 {
-    MeshCore::MeshPoint center;
-    MeshCore::MeshPointArray PointArray = this->GetPoints();
-
-    MeshCore::MeshPointIterator v_it(*this);
-    MeshCore::MeshRefPointToPoints vv_it(*this);
-    std::set<MeshCore::MeshPointArray::_TConstIterator> cv;// circulator
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator cv_it;
-
-    for (int i=0; i<iterations; i++) {
-        Base::Vector3f N, L;
-        for (v_it.Begin(); v_it.More(); v_it.Next()) {
-            MeshCore::PlaneFit pf;
-            pf.AddPoint(*v_it);
-            center = *v_it;
-            cv = vv_it[v_it.Position()];
-            if (cv.size() < 3)
-                continue;
-
-            for (cv_it = cv.begin(); cv_it !=cv.end(); ++cv_it) {
-                pf.AddPoint((*cv_it)[0]);
-                center += (*cv_it)[0];
-            }
-
-            float scale = 1.0f/((float)cv.size()+1.0f);
-            center.Scale(scale,scale,scale);
-
-            // get the mean plane of the current vertex with the surrounding vertices
-            pf.Fit();
-            N = pf.GetNormal();
-            N.Normalize();
-
-            // look in which direction we should move the vertex
-            L.Set(v_it->x - center.x, v_it->y - center.y, v_it->z - center.z);
-            if (N*L < 0.0)
-                N.Scale(-1.0, -1.0, -1.0);
-
-            // maximum value to move is distance to mean plane
-            float d = std::min<float>((float)fabs(d_max),(float)fabs(N*L));
-            N.Scale(d,d,d);
-
-            PointArray[v_it.Position()].Set(v_it->x - N.x, v_it->y - N.y, v_it->z - N.z);
-        }
-
-        // assign values without affecting iterators
-        unsigned long count = this->_aclPointArray.size();
-        for (unsigned long idx = 0; idx < count; idx++) {
-            this->_aclPointArray[idx] = PointArray[idx];
-        }
-    }
+    LaplaceSmoothing(*this).Smooth(iterations);
 }
 
 void MeshKernel::RecalcBoundBox (void)

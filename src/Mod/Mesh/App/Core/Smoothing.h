@@ -75,11 +75,11 @@ public:
     void Smooth(unsigned int);
 };
 
-class MeshExport JacobiLaplaceSmoothing : public LaplaceSmoothing
+class MeshExport TaubinSmoothing : public MeshSmoothing
 {
 public:
-    JacobiLaplaceSmoothing(MeshKernel&);
-    virtual ~JacobiLaplaceSmoothing();
+    TaubinSmoothing(MeshKernel&);
+    virtual ~TaubinSmoothing();
     void Smooth(unsigned int);
 };
 
