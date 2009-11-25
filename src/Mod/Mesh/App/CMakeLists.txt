@@ -50,6 +50,8 @@ SET(Core_SRCS
 		 Core/Projection.h
 		 Core/SetOperations.cpp
 		 Core/SetOperations.h
+		 Core/Smoothing.cpp
+		 Core/Smoothing.h
 		 Core/Tools.cpp
 		 Core/Tools.h
 		 Core/TopoAlgorithm.cpp

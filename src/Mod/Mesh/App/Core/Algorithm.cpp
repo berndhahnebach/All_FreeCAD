@@ -636,12 +636,12 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
     unsigned long refPoint0 = *(boundary.begin());
     unsigned long refPoint1 = *(boundary.begin()+1);
     if (pP2FStructure) {
-        std::set<MeshFacetArray::_TConstIterator> ring = (*pP2FStructure)[refPoint0];
+        const std::set<unsigned long>& ring = (*pP2FStructure)[refPoint0];
         bool found = false;
-        for (std::set<MeshFacetArray::_TConstIterator>::iterator it = ring.begin(); it != ring.end() && !found; ++it) {
+        for (std::set<unsigned long>::const_iterator it = ring.begin(); it != ring.end() && !found; ++it) {
             for (int i=0; i<3; i++) {
-                if ((*it)->_aulPoints[i] == refPoint1) {
-                    rFace = **it;
+                if (pP2FStructure->getFacet(*it)->_aulPoints[i] == refPoint1) {
+                    rFace = *pP2FStructure->getFacet(*it);
                     rTriangle = _rclMesh.GetFacet(rFace);
                     found = true;
                     break;
@@ -1713,13 +1713,14 @@ std::set<unsigned long> MeshRefPointToFacets::NeighbourPoints(const std::vector<
     std::set<unsigned long> cp,nb,lp;
     cp.insert(pt.begin(), pt.end());
     lp.insert(pt.begin(), pt.end());
+    MeshFacetArray::_TConstIterator f_it = _rclMesh.GetFacets().begin();
     for (int i=0; i < level; i++) {
         std::set<unsigned long> cur;
         for (std::set<unsigned long>::iterator it = lp.begin(); it != lp.end(); ++it) {
-            const std::set<MeshFacetArray::_TConstIterator>& ft = (*this)[*it];
-            for (std::set<MeshFacetArray::_TConstIterator>::const_iterator jt = ft.begin(); jt != ft.end(); ++jt) {
+            const std::set<unsigned long>& ft = (*this)[*it];
+            for (std::set<unsigned long>::const_iterator jt = ft.begin(); jt != ft.end(); ++jt) {
                 for (int j = 0; j < 3; j++) {
-                    unsigned long index = (*jt)->_aulPoints[j];
+                    unsigned long index = f_it[*jt]._aulPoints[j];
                     if (cp.find(index) == cp.end() && nb.find(index) == nb.end()) {
                         nb.insert(index);
                         cur.insert(index);
@@ -1751,43 +1752,39 @@ void MeshRefPointToFacets::Neighbours (unsigned long ulFacetInd, float fMpxDist,
 }
 
 /// @todo
-void MeshRefPointToFacets::SearchNeighbours(MeshFacetArray::_TConstIterator pFIter, const Base::Vector3f &rclCenter, float fMpxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb)
+void MeshRefPointToFacets::SearchNeighbours(MeshFacetArray::_TConstIterator f_it, const Base::Vector3f &rclCenter, float fMpxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb)
 {
-    if (pFIter->IsFlag(MeshFacet::VISIT) == true)
+    if (f_it->IsFlag(MeshFacet::VISIT) == true)
         return;
 
-    if (Base::DistanceP2(rclCenter, _rclMesh.GetFacet(*pFIter).GetGravityPoint()) > fMpxDist)
+    if (Base::DistanceP2(rclCenter, _rclMesh.GetFacet(*f_it).GetGravityPoint()) > fMpxDist)
         return;
 
-    rclNb.push_back(pFIter);
-    pFIter->SetFlag(MeshFacet::VISIT);
+    rclNb.push_back(f_it);
+    f_it->SetFlag(MeshFacet::VISIT);
 
-    const MeshPointArray& rPoints = _rclMesh.GetPoints();
-    MeshPointArray::_TConstIterator pPBegin = rPoints.begin();
+    MeshPointArray::_TConstIterator p_beg = _rclMesh.GetPoints().begin();
+    MeshFacetArray::_TConstIterator f_beg = _rclMesh.GetFacets().begin();
 
     for (int i = 0; i < 3; i++) {
-        MeshPointArray::_TConstIterator pPIter = rPoints.begin() + pFIter->_aulPoints[i];
-        const std::set<MeshFacetArray::_TConstIterator> &f = operator[](pPIter - pPBegin);
+        const std::set<unsigned long> &f = (*this)[f_it->_aulPoints[i]];
 
-        for (std::set<MeshFacetArray::_TConstIterator>::const_iterator j = f.begin(); j != f.end(); ++j) {
-            SearchNeighbours(*j, rclCenter, fMpxDist, rclNb);
+        for (std::set<unsigned long>::const_iterator j = f.begin(); j != f.end(); ++j) {
+            SearchNeighbours(f_beg+*j, rclCenter, fMpxDist, rclNb);
         }
     }
 }
 
-std::set<MeshFacetArray::_TConstIterator>
+MeshFacetArray::_TConstIterator
+MeshRefPointToFacets::getFacet (unsigned long index) const
+{
+    return _rclMesh.GetFacets().begin() + index;
+}
+
+const std::set<unsigned long>&
 MeshRefPointToFacets::operator[] (unsigned long pos) const
 {
-    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
-    MeshFacetArray::_TConstIterator  pBegin = rFacets.begin();
-    std::set<MeshCore::MeshFacetArray::_TConstIterator> fts;
-
-    const std::set<unsigned long>& n = _map[pos];
-    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
-        fts.insert(pBegin + *it);
-    }
-
-    return fts;
+    return _map[pos];
 }
 
 //----------------------------------------------------------------------------
@@ -1803,26 +1800,17 @@ void MeshRefFacetToFacets::Rebuild (void)
     MeshFacetArray::_TConstIterator pFBegin = rFacets.begin();
     for (MeshFacetArray::_TConstIterator pFIter = pFBegin; pFIter != rFacets.end(); ++pFIter) {
         for (int i = 0; i < 3; i++) {
-            std::set<MeshFacetArray::_TConstIterator> faces = vertexFace[pFIter->_aulPoints[i]];
-            for (std::set<MeshFacetArray::_TConstIterator>::iterator it = faces.begin(); it != faces.end(); ++it)
-                _map[pFIter - pFBegin].insert(*it - pFBegin);
+            const std::set<unsigned long>& faces = vertexFace[pFIter->_aulPoints[i]];
+            for (std::set<unsigned long>::const_iterator it = faces.begin(); it != faces.end(); ++it)
+                _map[pFIter - pFBegin].insert(*it);
         }
     }
 }
 
-std::set<MeshFacetArray::_TConstIterator>
+const std::set<unsigned long>&
 MeshRefFacetToFacets::operator[] (unsigned long pos) const
 {
-    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
-    MeshFacetArray::_TConstIterator  pBegin = rFacets.begin();
-    std::set<MeshCore::MeshFacetArray::_TConstIterator> fts;
-
-    const std::set<unsigned long>& n = _map[pos];
-    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
-        fts.insert(pBegin + *it);
-    }
-
-    return fts;
+    return _map[pos];
 }
 
 //----------------------------------------------------------------------------
@@ -1868,17 +1856,8 @@ Base::Vector3f MeshRefPointToPoints::GetNormal(unsigned long pos) const
     return normal;
 }
 
-std::set<MeshPointArray::_TConstIterator>
+const std::set<unsigned long>&
 MeshRefPointToPoints::operator[] (unsigned long pos) const
 {
-    const MeshPointArray& rPoints = _rclMesh.GetPoints();
-    MeshPointArray::_TConstIterator  pBegin = rPoints.begin();
-    std::set<MeshCore::MeshPointArray::_TConstIterator> pts;
-
-    const std::set<unsigned long>& n = _map[pos];
-    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
-        pts.insert(pBegin + *it);
-    }
-
-    return pts;
+    return _map[pos];
 }

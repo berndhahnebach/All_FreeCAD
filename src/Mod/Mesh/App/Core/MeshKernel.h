@@ -379,6 +379,8 @@ public:
     inline void MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans);
     /** Sets the point at the given index to the new \a rPoint. */
     inline void SetPoint (unsigned long ulPtIndex, const Base::Vector3f &rPoint);
+    /** Sets the point at the given index to the new \a rPoint. */
+    inline void SetPoint (unsigned long ulPtIndex, float x, float y, float z);
     /** Smothes the mesh kernel. */
     void Smooth(int iterations, float d_max);
     /**
@@ -492,6 +494,11 @@ inline void MeshKernel::MovePoint (unsigned long ulPtIndex, const Base::Vector3f
 inline void MeshKernel::SetPoint (unsigned long ulPtIndex, const Base::Vector3f &rPoint)
 {
     _aclPointArray[ulPtIndex] = rPoint;
+}
+
+inline void MeshKernel::SetPoint (unsigned long ulPtIndex, float x, float y, float z)
+{
+    _aclPointArray[ulPtIndex].Set(x,y,z);
 }
 
 inline void MeshKernel::AdjustNormal (MeshFacet &rclFacet, const Base::Vector3f &rclNormal)

@@ -448,91 +448,96 @@ bool MeshFixDegeneratedFacets::Fixup()
 
 unsigned long MeshFixDegeneratedFacets::RemoveEdgeTooSmall (float fMinEdgeLength, float fMinEdgeAngle)
 {
-  unsigned long ulCtLastLoop, ulCtFacets = _rclMesh.CountFacets();
+    unsigned long ulCtLastLoop, ulCtFacets = _rclMesh.CountFacets();
 
-  MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
-  MeshPointArray &rclPAry = _rclMesh._aclPointArray;
+    MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
+    MeshPointArray &rclPAry = _rclMesh._aclPointArray;
+    MeshFacetArray::_TConstIterator f_beg = rclFAry.begin();
 
-  // wiederhole solange, bis keine Facets mehr entfernt werden
-  do
-  {
-    MeshRefPointToFacets  clPt2Facets(_rclMesh);
+    // repeat until no facet van be removed
+    do {
+        MeshRefPointToFacets  clPt2Facets(_rclMesh);
 
-    rclFAry.ResetInvalid();
-    rclPAry.ResetInvalid();
-    rclPAry.ResetFlag(MeshPoint::VISIT);
+        rclFAry.ResetInvalid();
+        rclPAry.ResetInvalid();
+        rclPAry.ResetFlag(MeshPoint::VISIT);
 
-    std::set<std::pair<unsigned long, unsigned long> > aclPtDelList;
+        std::set<std::pair<unsigned long, unsigned long> > aclPtDelList;
 
-    MeshFacetIterator clFIter(_rclMesh), clFN0(_rclMesh), clFN1(_rclMesh), clFN2(_rclMesh);
-    for (clFIter.Init(); clFIter.More(); clFIter.Next())
-    {
-      MeshGeomFacet clSFacet = *clFIter;
-      Base::Vector3f clP0  = clSFacet._aclPoints[0];
-      Base::Vector3f clP1  = clSFacet._aclPoints[1];
-      Base::Vector3f clP2  = clSFacet._aclPoints[2];
-      Base::Vector3f clE01 = clP1 - clP0;
-      Base::Vector3f clE12 = clP2 - clP1;
-      Base::Vector3f clE20 = clP2 - clP0;
-      MeshFacet clFacet = clFIter.GetIndices();
-      unsigned long    ulP0 = clFacet._aulPoints[0];
-      unsigned long    ulP1 = clFacet._aulPoints[1];
-      unsigned long    ulP2 = clFacet._aulPoints[2];
+        MeshFacetIterator clFIter(_rclMesh), clFN0(_rclMesh), clFN1(_rclMesh), clFN2(_rclMesh);
+        for (clFIter.Init(); clFIter.More(); clFIter.Next()) {
+            MeshGeomFacet clSFacet = *clFIter;
+            Base::Vector3f clP0  = clSFacet._aclPoints[0];
+            Base::Vector3f clP1  = clSFacet._aclPoints[1];
+            Base::Vector3f clP2  = clSFacet._aclPoints[2];
+            Base::Vector3f clE01 = clP1 - clP0;
+            Base::Vector3f clE12 = clP2 - clP1;
+            Base::Vector3f clE20 = clP2 - clP0;
+            MeshFacet clFacet = clFIter.GetIndices();
+            unsigned long    ulP0 = clFacet._aulPoints[0];
+            unsigned long    ulP1 = clFacet._aulPoints[1];
+            unsigned long    ulP2 = clFacet._aulPoints[2];
 
-      if ((Base::Distance(clP0, clP1) < fMinEdgeLength) || (clE20.GetAngle(-clE12) < fMinEdgeAngle))
-      {  // loesche Punkt P1 auf P0
-        aclPtDelList.insert(std::make_pair(std::min<unsigned long>(ulP1, ulP0), std::max<unsigned long>(ulP1, ulP0)));
-      }
-      else if ((Base::Distance(clP1, clP2) < fMinEdgeLength) || (clE01.GetAngle(-clE20) < fMinEdgeAngle))
-      {  // loesche Punkt P2 auf P1
-        aclPtDelList.insert(std::make_pair(std::min<unsigned long>(ulP2, ulP1), std::max<unsigned long>(ulP2, ulP1)));
-      }
-      else if ((Base::Distance(clP2, clP0) < fMinEdgeLength) || (clE12.GetAngle(-clE01) < fMinEdgeAngle))
-      {  // loesche Punkt P0 auf P2
-        aclPtDelList.insert(std::make_pair(std::min<unsigned long>(ulP0, ulP2), std::max<unsigned long>(ulP0, ulP2)));
-      }
-    }
-
-    // Punkte entfernen, Indizes korrigieren
-    for (std::set<std::pair<unsigned long, unsigned long> >::iterator pI = aclPtDelList.begin(); pI != aclPtDelList.end(); pI++)
-    {
-      // einer der beiden Punkte des Punktpaars bereits bearbeitet
-      if ((rclPAry[pI->first].IsFlag(MeshPoint::VISIT) == true) || (rclPAry[pI->second].IsFlag(MeshPoint::VISIT) == true))
-        continue;
-
-      rclPAry[pI->first].SetFlag(MeshPoint::VISIT);
-      rclPAry[pI->second].SetFlag(MeshPoint::VISIT);
-      rclPAry[pI->second].SetInvalid();
-
-      // alle Eckpunkt-Indizies der Dreiecke die den geloeschten Punkte indizieren umbiegen auf neuen (Nachbar-)Punkt
-      for (std::set<MeshFacetArray::_TConstIterator>::iterator pF = clPt2Facets[pI->second].begin(); pF != clPt2Facets[pI->second].end(); pF++)
-      {
-        const MeshFacet &rclF = *(*pF);
-
-        for (int i = 0; i < 3; i++)
-        {
-//          if (rclF._aulPoints[i] == pI->second)
-//            rclF._aulPoints[i] = pI->first;
+            if ((Base::Distance(clP0, clP1) < fMinEdgeLength) ||
+                (clE20.GetAngle(-clE12) < fMinEdgeAngle)) {
+                // delete point P1 on P0
+                aclPtDelList.insert(std::make_pair
+                    (std::min<unsigned long>(ulP1, ulP0), std::max<unsigned long>(ulP1, ulP0)));
+            }
+            else if ((Base::Distance(clP1, clP2) < fMinEdgeLength) ||
+                    (clE01.GetAngle(-clE20) < fMinEdgeAngle)) {
+                // delete point P2 on P1
+                aclPtDelList.insert(std::make_pair
+                    (std::min<unsigned long>(ulP2, ulP1), std::max<unsigned long>(ulP2, ulP1)));
+            }
+            else if ((Base::Distance(clP2, clP0) < fMinEdgeLength) ||
+                    (clE12.GetAngle(-clE01) < fMinEdgeAngle)) {
+                // delete point P0 on P2
+                aclPtDelList.insert(std::make_pair
+                    (std::min<unsigned long>(ulP0, ulP2), std::max<unsigned long>(ulP0, ulP2)));
+            }
         }
 
-        // Facets mit 2 indentischen Eckpunkten loeschen
-        if ((rclF._aulPoints[0] == rclF._aulPoints[1]) ||
-            (rclF._aulPoints[0] == rclF._aulPoints[2]) ||
-            (rclF._aulPoints[1] == rclF._aulPoints[2]))
-        {
-          rclF.SetInvalid();
+        // remove points, fix indices
+        for (std::set<std::pair<unsigned long, unsigned long> >::iterator pI = aclPtDelList.begin();
+            pI != aclPtDelList.end(); pI++) {
+            // one of the point pairs is already processed
+            if ((rclPAry[pI->first].IsFlag(MeshPoint::VISIT) == true) ||
+                (rclPAry[pI->second].IsFlag(MeshPoint::VISIT) == true))
+                continue;
+
+            rclPAry[pI->first].SetFlag(MeshPoint::VISIT);
+            rclPAry[pI->second].SetFlag(MeshPoint::VISIT);
+            rclPAry[pI->second].SetInvalid();
+
+            // Redirect all point-indices to the new neighbour point of all facets referencing the
+            // deleted point
+            const std::set<unsigned long>& faces = clPt2Facets[pI->second];
+            for (std::set<unsigned long>::const_iterator pF = faces.begin(); pF != faces.end(); ++pF) {
+                const MeshFacet &rclF = f_beg[*pF];
+
+                for (int i = 0; i < 3; i++) {
+//                  if (rclF._aulPoints[i] == pI->second)
+//                      rclF._aulPoints[i] = pI->first;
+                }
+
+                // Delete facets with two identical corners
+                if ((rclF._aulPoints[0] == rclF._aulPoints[1]) ||
+                    (rclF._aulPoints[0] == rclF._aulPoints[2]) ||
+                    (rclF._aulPoints[1] == rclF._aulPoints[2])) {
+                    rclF.SetInvalid();
+                }
+            }
         }
-      }
+
+        ulCtLastLoop = _rclMesh.CountFacets();
+        _rclMesh.RemoveInvalids();
     }
+    while (ulCtLastLoop > _rclMesh.CountFacets());
 
-    ulCtLastLoop = _rclMesh.CountFacets();
-    _rclMesh.RemoveInvalids();
-  }
-  while (ulCtLastLoop > _rclMesh.CountFacets());
+    _rclMesh.RebuildNeighbours();
 
-  _rclMesh.RebuildNeighbours();
-
-  return ulCtFacets - _rclMesh.CountFacets();
+    return ulCtFacets - _rclMesh.CountFacets();
 }
 
 // ----------------------------------------------------------------------
@@ -635,6 +640,7 @@ bool MeshEvalFoldsOnSurface::Evaluate()
     this->indices.clear();
     MeshRefPointToFacets  clPt2Facets(_rclMesh);
     const MeshPointArray& rPntAry = _rclMesh.GetPoints();
+    MeshFacetArray::_TConstIterator f_beg = _rclMesh.GetFacets().begin();
 
     MeshGeomFacet rTriangle;
     Base::Vector3f tmp;
@@ -645,21 +651,21 @@ bool MeshEvalFoldsOnSurface::Evaluate()
 
         // get the local neighbourhood of the point
         std::set<unsigned long> nb = clPt2Facets.NeighbourPoints(point,1);
-        std::set<MeshFacetArray::_TConstIterator> faces = clPt2Facets[index];
+        const std::set<unsigned long>& faces = clPt2Facets[index];
 
         for (std::set<unsigned long>::iterator pt = nb.begin(); pt != nb.end(); ++pt) {
             const MeshPoint& mp = rPntAry[*pt];
-            for (std::set<MeshFacetArray::_TConstIterator>::iterator
+            for (std::set<unsigned long>::const_iterator
                 ft = faces.begin(); ft != faces.end(); ++ft) {
                     // the point must not be part of the facet we test
-                    if ((*ft)->_aulPoints[0] == *pt)
+                    if (f_beg[*ft]._aulPoints[0] == *pt)
                         continue;
-                    if ((*ft)->_aulPoints[1] == *pt)
+                    if (f_beg[*ft]._aulPoints[1] == *pt)
                         continue;
-                    if ((*ft)->_aulPoints[2] == *pt)
+                    if (f_beg[*ft]._aulPoints[2] == *pt)
                         continue;
                     // is the point projectable onto the facet?
-                    rTriangle = _rclMesh.GetFacet(**ft);
+                    rTriangle = _rclMesh.GetFacet(f_beg[*ft]);
                     if (rTriangle.IntersectWithLine(mp,rTriangle.GetNormal(),tmp)) {
                         this->indices.push_back(*pt);
                         break;
