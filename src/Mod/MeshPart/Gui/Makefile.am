@@ -43,6 +43,8 @@ MeshPartGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lMeshPartGui
 
+MeshPartGui_la_DEPENDENCIES = libMeshPartGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

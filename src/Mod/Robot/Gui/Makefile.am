@@ -57,6 +57,8 @@ RobotGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lRobotGui
 
+RobotGui_la_DEPENDENCIES = libRobotGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

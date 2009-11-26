@@ -98,6 +98,8 @@ Sketcher_la_LIBADD   = \
 		$(libSketcher_la_LIBADD) \
 		-lSketcher
 
+Sketcher_la_DEPENDENCIES = libSketcher.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

@@ -43,6 +43,8 @@ CamGui_la_LIBADD   = \
 		$(libCamGui_la_LIBADD) \
 		-lCamGui
 
+CamGui_la_DEPENDENCIES = libCamGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

@@ -65,6 +65,8 @@ SketcherGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lSketcherGui
 
+SketcherGui_la_DEPENDENCIES = libSketcherGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

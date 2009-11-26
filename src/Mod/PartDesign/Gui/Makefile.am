@@ -51,6 +51,8 @@ PartDesignGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lPartDesignGui
 
+PartDesignGui_la_DEPENDENCIES = libPartDesignGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

@@ -53,6 +53,8 @@ PartDesign_la_LIBADD   = \
 		$(libPartDesign_la_LIBADD) \
 		-lPartDesign
 
+PartDesign_la_DEPENDENCIES = libPartDesign.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
