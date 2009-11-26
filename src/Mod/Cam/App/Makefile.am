@@ -84,6 +84,8 @@ Cam_la_LIBADD   = \
 		$(libCam_la_LIBADD) \
 		-lCam
 
+Cam_la_DEPENDENCIES = libCam.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

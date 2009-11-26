@@ -52,6 +52,8 @@ Assembly_la_LIBADD   = \
 		$(libAssembly_la_LIBADD) \
 		-lAssembly
 
+Assembly_la_DEPENDENCIES = libAssembly.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

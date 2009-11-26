@@ -50,6 +50,8 @@ MeshPart_la_LIBADD   = \
 		$(libMeshPart_la_LIBADD) \
 		-lMeshPart
 
+MeshPart_la_DEPENDENCIES = libMeshPart.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure

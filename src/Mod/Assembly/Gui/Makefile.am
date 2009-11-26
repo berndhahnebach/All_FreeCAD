@@ -44,6 +44,8 @@ AssemblyGui_la_LIBADD   = \
 		Resources/libResources.la \
 		-lAssemblyGui
 
+AssemblyGui_la_DEPENDENCIES = libAssemblyGui.la
+
 #--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:

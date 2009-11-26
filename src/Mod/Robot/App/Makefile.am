@@ -183,6 +183,8 @@ Robot_la_LIBADD   = \
 		$(libRobot_la_LIBADD) \
 		-lRobot
 
+Robot_la_DEPENDENCIES = libRobot.la
+
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
