@@ -204,6 +204,7 @@ void Transform::on_applyButton_clicked()
         (App::DocumentObject::getClassTypeId());
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     if (!sel.empty() && doc) {
+        doc->openCommand("Transform");
         for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
             std::map<std::string,App::Property*> props;
             (*it)->getPropertyMap(props);
@@ -221,6 +222,7 @@ void Transform::on_applyButton_clicked()
                 static_cast<App::PropertyComplexGeoData*>(jt->second)->transformGeometry(mat);
             }
         }
+        doc->commitCommand();
     }
 
     // nullify the values
