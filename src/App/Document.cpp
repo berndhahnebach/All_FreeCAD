@@ -54,6 +54,7 @@ recompute path. Also enabels more complicated dependencies beond trees.
 
 #ifndef _PreComp_
 # include <sstream>
+# include <climits>
 #endif
 
 #include <boost/graph/topological_sort.hpp>
