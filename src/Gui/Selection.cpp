@@ -611,17 +611,28 @@ void SelectionSingleton::setSelection(const char* pDocName, const std::vector<Ap
     if (!pcDoc)
         return;
 
+    std::set<App::DocumentObject*> cur_sel, new_sel;
+    new_sel.insert(sel.begin(), sel.end());
+
+    // Make sure to keep the order of the currently selected objects
     std::list<_SelObj> temp;
-    std::vector<App::DocumentObject*> prev_sel;
     for (std::list<_SelObj>::const_iterator it = _SelList.begin(); it != _SelList.end(); ++it) {
         if (it->pDoc != pcDoc)
             temp.push_back(*it);
-        else
-            prev_sel.push_back(it->pObject);
+        else {
+            cur_sel.insert(it->pObject);
+            if (new_sel.find(it->pObject) != new_sel.end())
+                temp.push_back(*it);
+        }
     }
 
+    // Get the objects we must add to the selection
+    std::vector<App::DocumentObject*> diff_new_cur;
+    std::back_insert_iterator< std::vector<App::DocumentObject*> > biit(diff_new_cur);
+    std::set_difference(new_sel.begin(), new_sel.end(), cur_sel.begin(), cur_sel.end(), biit);
+
     _SelObj obj;
-    for (std::vector<App::DocumentObject*>::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+    for (std::vector<App::DocumentObject*>::const_iterator it = diff_new_cur.begin(); it != diff_new_cur.end(); ++it) {
         obj.pDoc = pcDoc;
         obj.pObject = *it;
         obj.DocName = pDocName;
@@ -634,10 +645,7 @@ void SelectionSingleton::setSelection(const char* pDocName, const std::vector<Ap
         temp.push_back(obj);
     }
 
-    std::vector<App::DocumentObject*> curr_sel = sel;
-    std::sort(curr_sel.begin(), curr_sel.end());
-    std::sort(prev_sel.begin(), prev_sel.end());
-    if (curr_sel == prev_sel) // nothing has changed
+    if (cur_sel == new_sel) // nothing has changed
         return;
 
     _SelList = temp;
