@@ -93,8 +93,9 @@ public:
 // 
 // It seems that this costruct is not longer needed for gcc4.4 and even leads to
 // errors under Mac OS X. Thus, we check for version between 4.1 and 4.4.
+// It seems that for Mac OS X this can be completely ignored
 
-#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && !defined(FC_OS_MACOSX)
 #define GNUC_VERSION (((__GNUC__)<<16)+((__GNUC_MINOR__)<<8))
 #if GNUC_VERSION >= 0x040100 && GNUC_VERSION < 0x040400
 template class GuiExport Base::Subject<const Gui::SelectionChanges&>;
