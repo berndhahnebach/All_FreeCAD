@@ -1,13 +1,7 @@
 
 add_subdirectory(App)
-fc_copy_to_mod_path("Mesh" 
-	Init.py
-	BuildRegularGeoms.py
-	App/MeshTestsApp.py
-)
 if(FREECAD_BUILD_GUI)
 	add_subdirectory(Gui)
-	fc_copy_to_mod_path("Mesh" InitGui.py)
 endif(FREECAD_BUILD_GUI)
 
 

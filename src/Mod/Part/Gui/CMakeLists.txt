@@ -157,6 +157,8 @@ add_library(PartGui SHARED ${PartGui_SRCS})
 
 target_link_libraries(PartGui ${PartGui_LIBS})
 
+fc_copy_script("Mod/Part" "PartGui" InitGui.py)
+
 if(WIN32)
 		 set_target_properties(PartGui PROPERTIES SUFFIX ".pyd")
 		 set_target_properties(PartGui PROPERTIES DEBUG_OUTPUT_NAME "PartGui_d")
