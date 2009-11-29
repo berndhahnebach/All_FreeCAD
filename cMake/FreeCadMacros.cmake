@@ -66,6 +66,27 @@ MACRO (fc_copy_to_path path_name)
 	ENDFOREACH(it)
 ENDMACRO(fc_copy_to_path)
 
+MACRO (fc_copy_sources path_name mod_name)
+	foreach(it ${ARGN})
+		file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${path_name}/${it}" outfile)
+		get_filename_component(infile ${it} ABSOLUTE)
+		get_filename_component(outfile ${outfile} ABSOLUTE)
+		add_file_dependencies(${infile} ${outfile})
+		ADD_CUSTOM_COMMAND(
+			SOURCE    ${infile}
+			COMMAND   ${CMAKE_COMMAND}
+			ARGS      -E copy ${infile} ${outfile}
+			TARGET    ${mod_name}
+			OUTPUTS   ${outfile}
+		)
+	endforeach(it)
+	ADD_CUSTOM_COMMAND(
+		SOURCE    ${mod_name}
+		TARGET    ${mod_name}
+		DEPENDS   ${ARGN}
+	)
+ENDMACRO(fc_copy_sources)
+
 macro(copy_to_local_output_paths SOURCE_PATHS)
 		 if(CMAKE_CFG_INTDIR STREQUAL .)
 		 		 # No Debug/Release output paths

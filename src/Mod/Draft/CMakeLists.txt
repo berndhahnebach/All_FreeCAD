@@ -1,53 +1,44 @@
 
+SET(Draft_SRCS
+		Init.py
+		InitGui.py
+		Draft.py
+		draftGui.py
+		importDXF.py
+		importOCA.py
+		importSVG.py
+		icons.svg
+		preferences-draft.svg
+		userprefs.ui
+)
+SOURCE_GROUP("" FILES ${Draft_SRCS})
 
-fc_copy_to_path("Mod/Draft" 
-	Init.py
-	InitGui.py
-	Draft.py
-	draftGui.py
-	importDXF.py
-	importOCA.py
-	importSVG.py
-	icons.svg
-	preferences-draft.svg
-	userprefs.ui
+SET(DraftLibs_SRCS
+		draftlibs/dxfColorMap.py
+		draftlibs/dxfImportObjects.py
+		draftlibs/dxfLibrary.py
+		draftlibs/dxfReader.py
+		draftlibs/fcgeo.py
+		draftlibs/fcvec.py
+		draftlibs/__init__.py
+)
+SOURCE_GROUP("draftlibs" FILES ${DraftLibs_SRCS})
+SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS})
+
+ADD_CUSTOM_TARGET(Draft
+		SOURCES ${all_files}
 )
 
-fc_copy_to_path("Mod/Draft/draftlibs" 
-	draftlibs/dxfColorMap.py
-	draftlibs/dxfImportObjects.py
-	draftlibs/dxfLibrary.py
-	draftlibs/dxfReader.py
-	draftlibs/fcgeo.py
-	draftlibs/fcvec.py
-	draftlibs/__init__.py
-)
-
+fc_copy_sources("Mod/Draft" "Draft" ${all_files})
 
 install(
-		 FILES
-				 draftlibs/dxfColorMap.py
-				 draftlibs/dxfImportObjects.py
-				 draftlibs/dxfLibrary.py
-				 draftlibs/dxfReader.py
-				 draftlibs/fcvec.py
-				 draftlibs/fcgeo.py
-				 draftlibs/__init__.py
-		 DESTINATION
-		 		 Mod/Draft/draftlibs)
+		FILES
+				${DraftLibs_SRCS}
+		DESTINATION
+		 		Mod/Draft/draftlibs)
 
 install(
-		 FILES
-				 Draft.py
-				 draftGui.py
-				 importOCA.py
-				 importDXF.py
-				 importSVG.py
-				 Init.py
-				 InitGui.py
-				 icons.svg
-				 preferences-draft.svg
-				 userprefs.ui
-		 DESTINATION
-		 		 Mod/Draft)
-
+		FILES
+				${Draft_SRCS}
+		DESTINATION
+		 		Mod/Draft)
