@@ -93,6 +93,8 @@ add_library(MeshGui SHARED ${MeshGui_SRCS})
 
 target_link_libraries(MeshGui ${MeshGui_LIBS})
 
+fc_copy_script("Mod/Mesh" "MeshGui" InitGui.py)
+
 if(WIN32)
 		set_target_properties(MeshGui PROPERTIES SUFFIX ".pyd")
 		set_target_properties(MeshGui PROPERTIES DEBUG_OUTPUT_NAME "MeshGui_d")

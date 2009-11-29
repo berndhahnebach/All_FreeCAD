@@ -308,7 +308,6 @@ SET(Mesh_SRCS
 		 MeshProperties.h
 		 MeshPy.xml
 		 MeshPyImp.cpp
-		 MeshTestsApp.py
 		 PreCompiled.cpp
 		 PreCompiled.h
 		 Segment.cpp
@@ -318,6 +317,9 @@ SET(Mesh_SRCS
 add_library(Mesh SHARED ${Mesh_SRCS})
 
 target_link_libraries(Mesh ${Mesh_LIBS})
+
+fc_copy_script ("Mod/Mesh" "Mesh" Init.py BuildRegularGeoms.py)
+fc_copy_sources("Mod/Mesh" "Mesh" MeshTestsApp.py)
 
 if(WIN32)
 		set_target_properties(Mesh PROPERTIES SUFFIX ".pyd")
