@@ -147,5 +147,12 @@
 #include <QUiLoader>
 #include <QtDesigner/QFormBuilder>
 
+// QtWebKit
+#if QT_VERSION >= 0x040400
+#include <QWebFrame>
+#include <QWebView>
+#include <QWebSettings>
+#endif
+
 
 #endif
