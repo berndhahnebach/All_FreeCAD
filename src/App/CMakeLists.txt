@@ -34,96 +34,131 @@ generate_from_xml(PropertyContainerPy)
 generate_from_py(FreeCADInit InitScript.h)
 generate_from_py(FreeCADTest TestScript.h)
 
-SET(Document_SRCS
-		 Annotation.cpp
-		 Annotation.h
-		 Document.cpp
-		 Document.h
-		 DocumentObject.cpp
-		 DocumentObject.h
-		 DocumentObjectFileIncluded.cpp
-		 DocumentObjectFileIncluded.h
-		 DocumentObjectGroup.cpp
-		 DocumentObjectGroup.h
+SET(FreeCADApp_XML_SRCS
 		 DocumentObjectGroupPy.xml
-		 DocumentObjectGroupPyImp.cpp
 		 DocumentObjectPy.xml
+		 DocumentPy.xml
+		 FeaturePy.xml
+		 FeaturePythonPy.xml
+		 PropertyContainerPy.xml
+		 ComplexGeoDataPy.xml
+)
+SOURCE_GROUP("XML" FILES ${FreeCADApp_XML_SRCS})
+
+# The document stuff
+SET(Document_CPP_SRCS
+		 Annotation.cpp
+		 Document.cpp
+		 DocumentObject.cpp
+		 DocumentObjectFileIncluded.cpp
+		 DocumentObjectGroup.cpp
+		 DocumentObjectGroupPyImp.cpp
 		 DocumentObjectPyImp.cpp
 		 DocumentObserver.cpp
-		 DocumentObserver.h
 		 DocumentObserverPython.cpp
-		 DocumentObserverPython.h
-		 DocumentPy.xml
 		 DocumentPyImp.cpp
 		 Feature.cpp
-		 Feature.h
-		 FeaturePy.xml
 		 FeaturePyImp.cpp
 		 FeaturePython.cpp
-		 FeaturePython.h
-		 FeaturePythonPy.xml
 		 FeaturePythonPyImp.cpp
 		 FeatureTest.cpp
-		 FeatureTest.h
 		 GeoFeature.cpp
-		 GeoFeature.h
 		 InventorObject.cpp
-		 InventorObject.h
 		 MeasureDistance.cpp
-		 MeasureDistance.h
 		 Placement.cpp
-		 Placement.h
 		 Transactions.cpp
-		 Transactions.h
 		 VRMLObject.cpp
+)
+
+SET(Document_HPP_SRCS
+		 Annotation.h
+		 Document.h
+		 DocumentObject.h
+		 DocumentObjectFileIncluded.h
+		 DocumentObjectGroup.h
+		 DocumentObserver.h
+		 DocumentObserverPython.h
+		 Feature.h
+		 FeaturePython.h
+		 FeatureTest.h
+		 GeoFeature.h
+		 InventorObject.h
+		 MeasureDistance.h
+		 Placement.h
+		 Transactions.h
 		 VRMLObject.h
+)
+SET(Document_SRCS
+		 ${Document_CPP_SRCS}
+		 ${Document_HPP_SRCS}
 )
 SOURCE_GROUP("Document" FILES ${Document_SRCS})
 
-SET(Properties_SRCS
+# The property stuff
+SET(Properties_CPP_SRCS
 		 DynamicProperty.cpp
-		 DynamicProperty.h
 		 Property.cpp
-		 Property.h
 		 PropertyContainer.cpp
-		 PropertyContainer.h
-		 PropertyContainerPy.xml
 		 PropertyContainerPyImp.cpp
 		 PropertyFile.cpp
-		 PropertyFile.h
 		 PropertyGeo.cpp
-		 PropertyGeo.h
 		 PropertyLinks.cpp
-		 PropertyLinks.h
 		 PropertyPythonObject.cpp
-		 PropertyPythonObject.h
 		 PropertyStandard.cpp
+)
+SET(Properties_HPP_SRCS
+		 DynamicProperty.h
+		 Property.h
+		 PropertyContainer.h
+		 PropertyFile.h
+		 PropertyGeo.h
+		 PropertyLinks.h
+		 PropertyPythonObject.h
 		 PropertyStandard.h
+)
+SET(Properties_SRCS
+		 ${Properties_CPP_SRCS}
+		 ${Properties_HPP_SRCS}
 )
 SOURCE_GROUP("Properties" FILES ${Properties_SRCS})
 
-SET(FreeCADApp_SRCS
-		 ${Document_SRCS}
-		 ${Properties_SRCS}
+SET(FreeCADApp_CPP_SRCS
+		 ${Document_CPP_SRCS}
+		 ${Properties_CPP_SRCS}
 		 Application.cpp
-		 Application.h
 		 ApplicationPy.cpp
 		 ColorModel.cpp
-		 ColorModel.h
 		 ComplexGeoData.cpp
-		 ComplexGeoData.h
-		 ComplexGeoDataPy.xml
 		 ComplexGeoDataPyImp.cpp
+		 Material.cpp
+		 MaterialPy.cpp
+)
+
+SET(FreeCADApp_HPP_SRCS
+		 ${Document_HPP_SRCS}
+		 ${Properties_HPP_SRCS}
+		 Application.h
+		 ColorModel.h
+		 ComplexGeoData.h
+		 Material.h
+		 MaterialPy.h
+)
+
+SET(FreeCADApp_SRCS
+		 ${FreeCADApp_CPP_SRCS}
+		 ${FreeCADApp_HPP_SRCS}
+		 ${FreeCADApp_XML_SRCS}
 		 Doxygen.cpp
 		 FreeCADInit.py
 		 FreeCADTest.py
-		 Material.cpp
-		 Material.h
-		 MaterialPy.cpp
-		 MaterialPy.h
 		 PreCompiled.cpp
 		 PreCompiled.h
 )
+
+if(MSVC)
+	add_definitions(-D_PreComp_)
+	ADD_MSVC_PRECOMPILED_HEADER("PreCompiled.h" "PreCompiled.cpp" FreeCADApp_CPP_SRCS)
+endif(MSVC)
 
 add_library(FreeCADApp SHARED ${FreeCADApp_SRCS})
 

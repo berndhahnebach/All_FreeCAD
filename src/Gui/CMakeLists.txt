@@ -52,6 +52,18 @@ generate_from_xml(SelectionObjectPy)
 
 generate_from_py(FreeCADGuiInit GuiInitScript.h)
 
+# The XML files
+SET(FreeCADGui_XML_SRCS
+		 ViewProviderDocumentObjectPy.xml
+		 ViewProviderPythonFeaturePy.xml
+		 ViewProviderPy.xml
+		 PythonWorkbenchPy.xml
+		 WorkbenchPy.xml
+		 SelectionObjectPy.xml
+		 DocumentPy.xml
+)
+SOURCE_GROUP("XML" FILES ${FreeCADApp_XML_SRCS})
+
 set(Gui_MOC_HDRS
 		 Action.h
 		 CallTips.h
@@ -176,11 +188,10 @@ QT4_ADD_RESOURCES(Gui_QRC_SRCS ${Gui_RES_SRCS})
 QT4_WRAP_UI(Gui_UIC_HDRS ${Gui_UIC_SRCS})
 SOURCE_GROUP("Uic" FILES ${Gui_UIC_HDRS})
 
-SET(Command_SRCS
+# The command sources
+SET(Command_CPP_SRCS
 		 Action.cpp
-		 Action.h
 		 Command.cpp
-		 Command.h
 		 CommandDoc.cpp
 		 CommandFeat.cpp
 		 CommandStd.cpp
@@ -188,206 +199,258 @@ SET(Command_SRCS
 		 CommandTest.cpp
 		 CommandView.cpp
 )
+SET(Command_SRCS
+		 ${Command_CPP_SRCS}
+		 Action.h
+		 Command.h
+)
 SOURCE_GROUP("Command" FILES ${Command_SRCS})
 
+# The dialog sources
+SET(Dialog_CPP_SRCS
+		 DlgActivateWindowImp.cpp
+		 DlgDisplayPropertiesImp.cpp
+		 DlgInputDialogImp.cpp
+		 DlgMacroExecuteImp.cpp
+		 DlgRunExternal.cpp
+		 DlgEditFileIncludeProptertyExternal.cpp
+		 DlgMacroRecordImp.cpp
+		 DlgMaterialPropertiesImp.cpp
+		 DlgParameterImp.cpp
+		 DlgProjectInformationImp.cpp
+		 DlgTipOfTheDayImp.cpp
+		 DlgUndoRedo.cpp
+		 InputVector.cpp
+		 Placement.cpp
+		 PropertyPage.cpp
+		 SceneInspector.cpp
+		 Transform.cpp
+)
+
+SET(Dialog_HPP_SRCS
+		 DlgActivateWindowImp.h
+		 DlgDisplayPropertiesImp.h
+		 DlgInputDialogImp.h
+		 DlgMacroExecuteImp.h
+		 DlgRunExternal.h
+		 DlgEditFileIncludeProptertyExternal.h
+		 DlgMacroRecordImp.h
+		 DlgMaterialPropertiesImp.h
+		 DlgParameterImp.h
+		 DlgProjectInformationImp.h
+		 DlgTipOfTheDayImp.h
+		 DlgUndoRedo.h
+		 InputVector.h
+		 Placement.h
+		 PropertyPage.h
+		 SceneInspector.h
+		 Transform.h
+)
+
 SET(Dialog_SRCS
+		 ${Dialog_CPP_SRCS}
+		 ${Dialog_HPP_SRCS}
 		 AboutApplication.ui
 		 DlgActivateWindow.ui
-		 DlgActivateWindowImp.cpp
-		 DlgActivateWindowImp.h
 		 DlgAuthorization.ui
 		 DlgDisplayProperties.ui
-		 DlgDisplayPropertiesImp.cpp
-		 DlgDisplayPropertiesImp.h
 		 DlgInputDialog.ui
-		 DlgInputDialogImp.cpp
-		 DlgInputDialogImp.h
 		 DlgMacroExecute.ui
-		 DlgMacroExecuteImp.cpp
-		 DlgMacroExecuteImp.h
 		 DlgRunExternal.ui
-		 DlgRunExternal.cpp
-		 DlgRunExternal.h
-		 DlgEditFileIncludeProptertyExternal.cpp
-		 DlgEditFileIncludeProptertyExternal.h
 		 DlgMacroRecord.ui
-		 DlgMacroRecordImp.cpp
-		 DlgMacroRecordImp.h
 		 DlgMaterialProperties.ui
-		 DlgMaterialPropertiesImp.cpp
-		 DlgMaterialPropertiesImp.h
 		 DlgParameter.ui
-		 DlgParameterImp.cpp
-		 DlgParameterImp.h
 		 DlgProjectInformation.ui
-		 DlgProjectInformationImp.cpp
-		 DlgProjectInformationImp.h
 		 DlgTipOfTheDay.ui
-		 DlgTipOfTheDayImp.cpp
-		 DlgTipOfTheDayImp.h
 		 DlgTreeWidget.ui
-		 DlgUndoRedo.cpp
-		 DlgUndoRedo.h
 		 InputVector.ui
-		 InputVector.cpp
-		 InputVector.h
 		 Placement.ui
-		 Placement.cpp
-		 Placement.h
-		 PropertyPage.cpp
-		 PropertyPage.h
 		 SceneInspector.ui
-		 SceneInspector.cpp
-		 SceneInspector.h
-		 Transform.cpp
-		 Transform.h
 )
 SOURCE_GROUP("Dialog" FILES ${Dialog_SRCS})
 
-SET(Dialog_Customize_SRCS
-		 DlgActions.ui
+# The customize dialog sources
+SET(Dialog_Customize_CPP_SRCS
 		 DlgActionsImp.cpp
+		 DlgCommandsImp.cpp
+		 DlgCustomizeImp.cpp
+		 DlgKeyboardImp.cpp
+		 DlgToolbarsImp.cpp
+)
+SET(Dialog_Customize_HPP_SRCS
 		 DlgActionsImp.h
+		 DlgCommandsImp.h
+		 DlgCustomizeImp.h
+		 DlgKeyboardImp.h
+		 DlgToolbarsImp.h
+)
+SET(Dialog_Customize_SRCS
+		 ${Dialog_Customize_CPP_SRCS}
+		 ${Dialog_Customize_HPP_SRCS}
+		 DlgActions.ui
 		 DlgChooseIcon.ui
 		 DlgCommands.ui
-		 DlgCommandsImp.cpp
-		 DlgCommandsImp.h
-		 DlgCustomizeImp.cpp
-		 DlgCustomizeImp.h
 		 DlgKeyboard.ui
-		 DlgKeyboardImp.cpp
-		 DlgKeyboardImp.h
-		 DlgToolbarsImp.cpp
 		 DlgToolbars.ui
-		 DlgToolbarsImp.h
 )
 SOURCE_GROUP("Dialog\\Customize" FILES ${Dialog_Customize_SRCS})
 
-SET(Dialog_Settings_SRCS
-		 DlgEditor.ui
+# The settings dialog sources
+SET(Dialog_Settings_CPP_SRCS
 		 DlgEditorImp.cpp
-		 DlgEditorImp.h
-		 DlgGeneral.ui
 		 DlgGeneralImp.cpp
-		 DlgGeneralImp.h
-		 DlgOnlineHelp.ui
 		 DlgOnlineHelpImp.cpp
-		 DlgOnlineHelpImp.h
-		 DlgPreferences.ui
 		 DlgPreferencesImp.cpp
-		 DlgPreferencesImp.h
-		 DlgReportView.ui
 		 DlgReportViewImp.cpp
-		 DlgReportViewImp.h
-		 DlgSettings3DView.ui
 		 DlgSettings3DViewImp.cpp
-		 DlgSettings3DViewImp.h
-		 DlgSettingsViewColor.ui
 		 DlgSettingsViewColor.cpp
-		 DlgSettingsViewColor.h
-		 DlgSettingsColorGradient.ui
 		 DlgSettingsColorGradientImp.cpp
-		 DlgSettingsColorGradientImp.h
-		 DlgSettingsDocument.ui
 		 DlgSettingsDocumentImp.cpp
-		 DlgSettingsDocumentImp.h
-		 DlgSettingsImage.ui
 		 DlgSettingsImageImp.cpp
-		 DlgSettingsImageImp.h
-		 DlgSettingsMacro.ui
 		 DlgSettingsMacroImp.cpp
+)
+SET(Dialog_Settings_HPP_SRCS
+		 DlgEditorImp.h
+		 DlgGeneralImp.h
+		 DlgOnlineHelpImp.h
+		 DlgPreferencesImp.h
+		 DlgReportViewImp.h
+		 DlgSettings3DViewImp.h
+		 DlgSettingsViewColor.h
+		 DlgSettingsColorGradientImp.h
+		 DlgSettingsDocumentImp.h
+		 DlgSettingsImageImp.h
 		 DlgSettingsMacroImp.h
+)
+SET(Dialog_Settings_SRCS
+		 ${Dialog_Settings_CPP_SRCS}
+		 ${Dialog_Settings_HPP_SRCS}
+		 DlgEditor.ui
+		 DlgGeneral.ui
+		 DlgOnlineHelp.ui
+		 DlgPreferences.ui
+		 DlgReportView.ui
+		 DlgSettings3DView.ui
+		 DlgSettingsViewColor.ui
+		 DlgSettingsColorGradient.ui
+		 DlgSettingsDocument.ui
+		 DlgSettingsImage.ui
+		 DlgSettingsMacro.ui
 )
 SOURCE_GROUP("Dialog\\Settings" FILES ${Dialog_Settings_SRCS})
 
-SET(Dock_Windows_SRCS
+# The dock windows sources
+SET(Dock_Windows_CPP_SRCS
 		 CombiView.cpp
-		 CombiView.h
 		 DockWindow.cpp
-		 DockWindow.h
 		 HelpView.cpp
-		 HelpView.h
 		 PropertyView.cpp
-		 PropertyView.h
 		 ReportView.cpp
-		 ReportView.h
 		 SelectionView.cpp
-		 SelectionView.h
 		 TaskPanelView.cpp
-		 TaskPanelView.h
 		 ToolBox.cpp
-		 ToolBox.h
 		 Tree.cpp
+)
+SET(Dock_Windows_HPP_SRCS
+		 CombiView.h
+		 DockWindow.h
+		 HelpView.h
+		 PropertyView.h
+		 ReportView.h
+		 SelectionView.h
+		 TaskPanelView.h
+		 ToolBox.h
 		 Tree.h
+)
+SET(Dock_Windows_SRCS
+		 ${Dock_Windows_CPP_SRCS}
+		 ${Dock_Windows_HPP_SRCS}
 )
 SOURCE_GROUP("Dock Windows" FILES ${Dock_Windows_SRCS})
 
-SET(Editor_SRCS
+# The editor sources
+SET(Editor_CPP_SRCS
 		 CallTips.cpp
-		 CallTips.h
 		 EditorView.cpp
-		 EditorView.h
 		 PythonConsole.cpp
-		 PythonConsole.h
 		 PythonConsolePy.cpp
-		 PythonConsolePy.h
 		 PythonEditor.cpp
-		 PythonEditor.h
 		 SyntaxHighlighter.cpp
-		 SyntaxHighlighter.h
 		 TextEdit.cpp
+)
+SET(Editor_HPP_SRCS
+		 CallTips.h
+		 EditorView.h
+		 PythonConsole.h
+		 PythonConsolePy.h
+		 PythonEditor.h
+		 SyntaxHighlighter.h
 		 TextEdit.h
+)
+SET(Editor_SRCS
+		 ${Editor_CPP_SRCS}
+		 ${Editor_HPP_SRCS}
 )
 SOURCE_GROUP("Editor" FILES ${Editor_SRCS})
 
-SET(Help_SRCS
+# The help system
+SET(Help_CPP_SRCS
 		 Assistant.cpp
-		 Assistant.h
 		 NetworkRetriever.cpp
-		 NetworkRetriever.h
 		 OnlineDocumentation.cpp
-		 OnlineDocumentation.h
 		 WhatsThis.cpp
+)
+SET(Help_SRCS
+		 ${Help_CPP_SRCS}
+		 Assistant.h
+		 NetworkRetriever.h
+		 OnlineDocumentation.h
 		 WhatsThis.h
 )
 SOURCE_GROUP("Help" FILES ${Help_SRCS})
 
-SET(Inventor_SRCS
+# The Inventor sources
+SET(Inventor_CPP_SRCS
 		 SoFCBackgroundGradient.cpp
-		 SoFCBackgroundGradient.h
 		 SoFCBoundingBox.cpp
-		 SoFCBoundingBox.h
 		 SoFCColorBar.cpp
-		 SoFCColorBar.h
 		 SoFCColorGradient.cpp
-		 SoFCColorGradient.h
 		 SoFCColorLegend.cpp
-		 SoFCColorLegend.h
 		 SoFCDB.cpp
-		 SoFCDB.h
 		 SoFCInteractiveElement.cpp
-		 SoFCInteractiveElement.h
 		 SoFCOffscreenRenderer.cpp
-		 SoFCOffscreenRenderer.h
 		 SoFCSelection.cpp
-		 SoFCSelection.h
 		 SoFCSelectionAction.cpp
-		 SoFCSelectionAction.h
 		 SoFCVectorizeSVGAction.cpp
-		 SoFCVectorizeSVGAction.h
 		 SoNavigationDragger.cpp
-		 SoNavigationDragger.h
 		 SoTextLabel.cpp
+)
+SET(Inventor_SRCS
+		 ${Inventor_CPP_SRCS}
+		 SoFCBackgroundGradient.h
+		 SoFCBoundingBox.h
+		 SoFCColorBar.h
+		 SoFCColorGradient.h
+		 SoFCColorLegend.h
+		 SoFCDB.h
+		 SoFCInteractiveElement.h
+		 SoFCOffscreenRenderer.h
+		 SoFCSelection.h
+		 SoFCSelectionAction.h
+		 SoFCVectorizeSVGAction.h
+		 SoNavigationDragger.h
 		 SoTextLabel.h
 )
 SOURCE_GROUP("Inventor" FILES ${Inventor_SRCS})
 
+# The i18n sources
 SET(Language_SRCS
 		 Language/Translator.cpp
 		 Language/Translator.h
 )
 SOURCE_GROUP("Language" FILES ${Language_SRCS})
 
+# The property editor
 SET(Propertyeditor_SRCS
 		 propertyeditor/PropertyEditor.cpp
 		 propertyeditor/PropertyEditor.h
@@ -401,6 +464,7 @@ SET(Propertyeditor_SRCS
 )
 SOURCE_GROUP("Propertyeditor" FILES ${Propertyeditor_SRCS})
 
+# The task view
 SET(Task_View_SRCS
 		 TaskView/TaskAppearance.cpp
 		 TaskView/TaskAppearance.h
@@ -454,144 +518,159 @@ SOURCE_GROUP("Widget\\iisTaskPanel\\Mocs" FILES ${iis_MOC_SRCS})
 #)
 #SOURCE_GROUP("Resource" FILES ${Resource_SRCS})
 
-SET(View3D_SRCS
+# The 3d view
+SET(View3D_CPP_SRCS
 		 Flag.cpp
-		 Flag.h
 		 MouseModel.cpp
-		 MouseModel.h
 		 NavigationStyle.cpp
-		 NavigationStyle.h
 		 SplitView3DInventor.cpp
-		 SplitView3DInventor.h
 		 View.cpp
-		 View.h
 		 View3DInventor.cpp
-		 View3DInventor.h
 		 View3DInventorExamples.cpp
-		 View3DInventorExamples.h
 		 View3DInventorViewer.cpp
-		 View3DInventorViewer.h
 		 View3DPy.cpp
+)
+SET(View3D_SRCS
+		 ${View3D_CPP_SRCS}
+		 Flag.h
+		 MouseModel.h
+		 NavigationStyle.h
+		 SplitView3DInventor.h
+		 View.h
+		 View3DInventor.h
+		 View3DInventorExamples.h
+		 View3DInventorViewer.h
 		 View3DPy.h
 )
 SOURCE_GROUP("View3D" FILES ${View3D_SRCS})
 
-SET(Viewprovider_SRCS
+# The view provider sources
+SET(Viewprovider_CPP_SRCS
 		 ViewProvider.cpp
-		 ViewProvider.h
 		 ViewProviderAnnotation.cpp
-		 ViewProviderAnnotation.h
 		 ViewProviderDocumentObject.cpp
-		 ViewProviderDocumentObject.h
 		 ViewProviderDocumentObjectGroup.cpp
-		 ViewProviderDocumentObjectGroup.h
-		 ViewProviderDocumentObjectPy.xml
 		 ViewProviderDocumentObjectPyImp.cpp
-		 ViewProviderPythonFeaturePy.xml
 		 ViewProviderPythonFeaturePyImp.cpp
 		 ViewProviderExtern.cpp
-		 ViewProviderExtern.h
 		 ViewProviderFeature.cpp
-		 ViewProviderFeature.h
 		 ViewProviderGeometryObject.cpp
-		 ViewProviderGeometryObject.h
 		 ViewProviderInventorObject.cpp
-		 ViewProviderInventorObject.h
 		 ViewProviderMeasureDistance.cpp
-		 ViewProviderMeasureDistance.h
-		 ViewProviderPy.xml
 		 ViewProviderPyImp.cpp
 		 ViewProviderPythonFeature.cpp
-		 ViewProviderPythonFeature.h
 		 ViewProviderVRMLObject.cpp
+)
+SET(Viewprovider_SRCS
+		 ${Viewprovider_CPP_SRCS}
+		 ViewProvider.h
+		 ViewProviderAnnotation.h
+		 ViewProviderDocumentObject.h
+		 ViewProviderDocumentObjectGroup.h
+		 ViewProviderExtern.h
+		 ViewProviderFeature.h
+		 ViewProviderGeometryObject.h
+		 ViewProviderInventorObject.h
+		 ViewProviderMeasureDistance.h
+		 ViewProviderPythonFeature.h
 		 ViewProviderVRMLObject.h
 )
 SOURCE_GROUP("Viewprovider" FILES ${Viewprovider_SRCS})
 
-SET(Widget_SRCS
+# The widget sources
+SET(Widget_CPP_SRCS
+		 BrowserView.cpp
 		 FileDialog.cpp
-		 FileDialog.h
 		 MainWindow.cpp
-		 MainWindow.h
 		 MDIView.cpp
-		 MDIView.h
 		 PrefWidgets.cpp
-		 PrefWidgets.h
 		 ProgressBar.cpp
-		 ProgressBar.h
 		 SpinBox.cpp
-		 SpinBox.h
 		 Splashscreen.cpp
-		 Splashscreen.h
 		 WidgetFactory.cpp
-		 WidgetFactory.h
 		 Widgets.cpp
-		 Widgets.h
 		 Window.cpp
+)
+SET(Widget_HPP_SRCS
+		 BrowserView.h
+		 FileDialog.h
+		 MainWindow.h
+		 MDIView.h
+		 PrefWidgets.h
+		 ProgressBar.h
+		 SpinBox.h
+		 Splashscreen.h
+		 WidgetFactory.h
+		 Widgets.h
 		 Window.h
+)
+SET(Widget_SRCS
+		 ${Widget_CPP_SRCS}
+		 ${Widget_HPP_SRCS}
 )
 SOURCE_GROUP("Widget" FILES ${Widget_SRCS})
 
-SET(Workbench_SRCS
+# The workbench sources
+SET(Workbench_CPP_SRCS
 		 DockWindowManager.cpp
-		 DockWindowManager.h
 		 MenuManager.cpp
-		 MenuManager.h
-		 PythonWorkbenchPy.xml
 		 PythonWorkbenchPyImp.cpp
 		 ToolBarManager.cpp
-		 ToolBarManager.h
 		 ToolBoxManager.cpp
-		 ToolBoxManager.h
 		 Workbench.cpp
-		 Workbench.h
 		 WorkbenchFactory.cpp
-		 WorkbenchFactory.h
 		 WorkbenchManager.cpp
-		 WorkbenchManager.h
-		 WorkbenchPy.xml
 		 WorkbenchPyImp.cpp
+)
+SET(Workbench_SRCS
+		 ${Workbench_CPP_SRCS}
+		 DockWindowManager.h
+		 MenuManager.h
+		 ToolBarManager.h
+		 ToolBoxManager.h
+		 Workbench.h
+		 WorkbenchFactory.h
+		 WorkbenchManager.h
 )
 SOURCE_GROUP("Workbench" FILES ${Workbench_SRCS})
 
-SET(FreeCADGui_SRCS
+# The FreeCADGui sources
+SET(FreeCADGui_CPP_SRCS
 		 Application.cpp
-		 Application.h
 		 ApplicationPy.cpp
-		 SelectionObjectPy.xml
 		 SelectionObjectPyImp.cpp
 		 SelectionObject.cpp
-		 SelectionObject.h
 		 BitmapFactory.cpp
-		 BitmapFactory.h
 		 Document.cpp
-		 Document.h
-		 DocumentPy.xml
 		 DocumentPyImp.cpp
+		 GuiConsole.cpp
+		 Macro.cpp
+		 resource.cpp
+		 Selection.cpp
+		 Thumbnail.cpp
+		 WaitCursor.cpp
+)
+SET(FreeCADGui_SRCS
+		 Application.h
+		 SelectionObject.h
+		 BitmapFactory.h
+		 Document.h
 		 Doxygen.cpp
 		 FreeCADGuiInit.py
-		 GuiConsole.cpp
 		 GuiConsole.h
 		 InventorAll.h
-		 Macro.cpp
 		 Macro.h
 		 PreCompiled.cpp
 		 PreCompiled.h
 		 Qt4All.h
-		 resource.cpp
-		 Selection.cpp
 		 Selection.h
-		 Thumbnail.cpp
 		 Thumbnail.h
-		 WaitCursor.cpp
 		 WaitCursor.h
-		 BrowserView.cpp
-		 BrowserView.h
 )
-#SOURCE_GROUP("" FILES ${FreeCADGui_SRCS})
 
 SET(FreeCADGui_SRCS
-		 #${Gui_MOC_SRCS}
+		 ${FreeCADGui_CPP_SRCS}
+		 ${FreeCADGui_XML_SRCS}
 		 ${iis_MOC_SRCS}
 		 ${Gui_QRC_SRCS}
 		 ${Gui_UIC_HDRS}
@@ -616,84 +695,8 @@ SET(FreeCADGui_SRCS
 )
 
 if(MSVC)
-add_definitions(-D_PreComp_)
-SET(FreeCADGui_CPP_SRCS
-		 Action.cpp
-		 Action.h
-		 Command.cpp
-		 Command.h
-		 CommandDoc.cpp
-		 CommandFeat.cpp
-		 CommandStd.cpp
-		 CommandWindow.cpp
-		 CommandTest.cpp
-		 CommandView.cpp
-		 DlgActivateWindowImp.cpp
-		 DlgDisplayPropertiesImp.cpp
-		 DlgInputDialogImp.cpp
-		 DlgMacroExecuteImp.cpp
-		 DlgRunExternal.cpp
-		 DlgEditFileIncludeProptertyExternal.cpp
-		 DlgMacroRecordImp.cpp
-		 DlgMaterialPropertiesImp.cpp
-		 DlgParameterImp.cpp
-		 DlgProjectInformationImp.cpp
-		 DlgTipOfTheDayImp.cpp
-		 DlgUndoRedo.cpp
-		 InputVector.cpp
-		 Placement.cpp
-		 PropertyPage.cpp
-		 SceneInspector.cpp
-		 Transform.cpp
-		 DlgActionsImp.cpp
-		 DlgCommandsImp.cpp
-		 DlgCustomizeImp.cpp
-		 DlgKeyboardImp.cpp
-		 DlgToolbarsImp.cpp
-		 DlgEditorImp.cpp
-		 DlgGeneralImp.cpp
-		 DlgOnlineHelpImp.cpp
-		 DlgPreferencesImp.cpp
-		 DlgReportViewImp.cpp
-		 DlgSettings3DViewImp.cpp
-		 DlgSettingsViewColor.cpp
-		 DlgSettingsColorGradientImp.cpp
-		 DlgSettingsDocumentImp.cpp
-		 DlgSettingsImageImp.cpp
-		 DlgSettingsMacroImp.cpp
-		 CombiView.cpp
-		 DockWindow.cpp
-		 HelpView.cpp
-		 PropertyView.cpp
-		 ReportView.cpp
-		 SelectionView.cpp
-		 TaskPanelView.cpp
-		 ToolBox.cpp
-		 Tree.cpp
-		 CallTips.cpp
-		 EditorView.cpp
-		 PythonConsole.cpp
-		 PythonConsolePy.cpp
-		 PythonEditor.cpp
-		 SyntaxHighlighter.cpp
-		 TextEdit.cpp
-		 Assistant.cpp
-		 NetworkRetriever.cpp
-		 OnlineDocumentation.cpp
-		 WhatsThis.cpp
-		 SoFCBackgroundGradient.cpp
-		 SoFCBoundingBox.cpp
-		 SoFCColorBar.cpp
-		 SoFCColorGradient.cpp
-		 SoFCColorLegend.cpp
-		 SoFCDB.cpp
-		 SoFCInteractiveElement.cpp
-		 SoFCOffscreenRenderer.cpp
-		 SoFCSelection.cpp
-		 SoFCSelectionAction.cpp
-		 SoFCVectorizeSVGAction.cpp
-		 SoNavigationDragger.cpp
-		 SoTextLabel.cpp
+	add_definitions(-D_PreComp_)
+	SET(FreeCADGui_CPP_SRCS
 		 Language/Translator.cpp
 		 propertyeditor/PropertyEditor.cpp
 		 propertyeditor/PropertyItem.cpp
@@ -702,64 +705,21 @@ SET(FreeCADGui_CPP_SRCS
 		 TaskView/TaskAppearance.cpp
 		 TaskView/TaskEditControl.cpp
 		 TaskView/TaskView.cpp
-		 Flag.cpp
-		 MouseModel.cpp
-		 NavigationStyle.cpp
-		 SplitView3DInventor.cpp
-		 View.cpp
-		 View3DInventor.cpp
-		 View3DInventorExamples.cpp
-		 View3DInventorViewer.cpp
-		 View3DPy.cpp
-		 ViewProvider.cpp
-		 ViewProviderAnnotation.cpp
-		 ViewProviderDocumentObject.cpp
-		 ViewProviderDocumentObjectGroup.cpp
-		 ViewProviderDocumentObjectPyImp.cpp
-		 ViewProviderPythonFeaturePyImp.cpp
-		 ViewProviderExtern.cpp
-		 ViewProviderFeature.cpp
-		 ViewProviderGeometryObject.cpp
-		 ViewProviderInventorObject.cpp
-		 ViewProviderMeasureDistance.cpp
-		 ViewProviderPyImp.cpp
-		 ViewProviderPythonFeature.cpp
-		 ViewProviderVRMLObject.cpp
-		 FileDialog.cpp
-		 MainWindow.cpp
-		 MDIView.cpp
-		 PrefWidgets.cpp
-		 ProgressBar.cpp
-		 SpinBox.cpp
-		 Splashscreen.cpp
-		 WidgetFactory.cpp
-		 Widgets.cpp
-		 Window.cpp
-		 DockWindowManager.cpp
-		 MenuManager.cpp
-		 PythonWorkbenchPyImp.cpp
-		 ToolBarManager.cpp
-		 ToolBoxManager.cpp
-		 Workbench.cpp
-		 WorkbenchFactory.cpp
-		 WorkbenchManager.cpp
-		 WorkbenchPyImp.cpp
-		 Application.cpp
-		 ApplicationPy.cpp
-		 SelectionObjectPyImp.cpp
-		 SelectionObject.cpp
-		 BitmapFactory.cpp
-		 Document.cpp
-		 Document.h
-		 DocumentPyImp.cpp
-		 GuiConsole.cpp
-		 Macro.cpp
-		 Selection.cpp
-		 Thumbnail.cpp
-		 WaitCursor.cpp
-		 BrowserView.cpp
-)
-ADD_MSVC_PRECOMPILED_HEADER("PreCompiled.h" "PreCompiled.cpp" FreeCADGui_CPP_SRCS)
+		 ${Command_CPP_SRCS}
+		 ${Dialog_CPP_SRCS}
+		 ${Dialog_Customize_CPP_SRCS}
+		 ${Dialog_Settings_CPP_SRCS}
+		 ${Dock_Windows_CPP_SRCS}
+		 ${Editor_CPP_SRCS}
+		 ${Help_CPP_SRCS}
+		 ${Inventor_CPP_SRCS}
+		 ${View3D_CPP_SRCS}
+		 ${Viewprovider_CPP_SRCS}
+		 ${Widget_CPP_SRCS}
+		 ${Workbench_CPP_SRCS}
+		 ${FreeCADGui_CPP_SRCS}
+	)
+	ADD_MSVC_PRECOMPILED_HEADER("PreCompiled.h" "PreCompiled.cpp" FreeCADGui_CPP_SRCS)
 endif(MSVC)
 
 add_library(FreeCADGui SHARED ${FreeCADGui_SRCS})

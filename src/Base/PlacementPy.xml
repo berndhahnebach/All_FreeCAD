@@ -13,7 +13,7 @@
 		FatherNamespace="Base">
 	<Documentation>
 		<Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
-		<DeveloperDocu>Placement
+		<UserDocu>Placement
 A placement defines an orientation (rotation) and a position (base) in 3D space.
 It is used when no scaling or other distortion is needed.
 
@@ -24,8 +24,8 @@ Placement(Matrix) -- 4D matrix consisting of rotation and translation
 Placement(Base, Rotation) -- define position and rotation
 Placement(Base, Rotation,Center) -- define position and rotation with center
 Placement(Base, Axis, Angle) -- define position and rotation
-		</DeveloperDocu>
-		<UserDocu>Placement</UserDocu>
+		</UserDocu>
+		<DeveloperDocu>Placement</DeveloperDocu>
 	</Documentation>
 		<Methode Name="move">
 			<Documentation>
