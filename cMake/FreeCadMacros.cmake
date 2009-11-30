@@ -262,3 +262,22 @@ MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar
     LIST(APPEND ${SourcesVar} ${PrecompiledSource})
   ENDIF(MSVC)
 ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
+
+MACRO(GET_MSVC_PRECOMPILED_SOURCE PrecompiledSource SourcesVar)
+  IF(MSVC)
+    FOREACH (it ${ARGN})
+      GET_FILENAME_COMPONENT(file_ext ${it} EXT)
+      GET_FILENAME_COMPONENT(file_name ${it} NAME)
+	  STRING(COMPARE EQUAL ${it} ${PrecompiledSource} pch)
+	  IF (NOT pch)
+	    # get c++ source files
+		STRING(REGEX MATCH "^(.cpp|.cc|.cxx)$" cpp_file ${file_ext})
+		# ignore any generated source files from Qt
+		STRING(REGEX MATCH "^(moc_|qrc_|ui_)" gen_file ${file_name})
+		IF(cpp_file AND NOT gen_file)
+			LIST(APPEND ${SourcesVar} ${it})
+		ENDIF(cpp_file AND NOT gen_file)
+	  ENDIF(NOT pch)
+    ENDFOREACH (it)
+  ENDIF(MSVC)
+ENDMACRO(GET_MSVC_PRECOMPILED_SOURCE)
