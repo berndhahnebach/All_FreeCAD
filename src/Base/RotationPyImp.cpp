@@ -80,6 +80,13 @@ int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
+    PyErr_Clear();
+    double y, p, r;
+    if (PyArg_ParseTuple(args, "ddd", &y, &p, &r)) {
+        getRotationPtr()->setYawPitchRoll(y/180.0*D_PI, p/180.0*D_PI, r/180.0*D_PI);
+        return 0;
+    }
+
     PyErr_SetString(PyExc_Exception, "empty parameter list, four floats or Vector and float");
     return -1;
 }

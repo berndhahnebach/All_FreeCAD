@@ -48,8 +48,6 @@ generate_from_xml(MatrixPy)
 generate_from_xml(RotationPy)
 generate_from_xml(PlacementPy)
 
-
-
 SET(zipios_SRCS
 	../zipios++/backbuffer.h
 	../zipios++/basicentry.cpp
@@ -119,109 +117,129 @@ SET(pycxx_SRCS
 )
 SOURCE_GROUP("pycxx" FILES ${pycxx_SRCS})
 
-
-SET(FreeCADBase_SRCS
-	${zipios_SRCS}
-	${pycxx_SRCS}
-	Base64.cpp
-	Base64.h
-	BaseClass.cpp
-	BaseClass.h
+SET(FreeCADBase_XML_SRCS
 	BaseClassPy.xml
-	BaseClassPyImp.cpp
-	BoundBox.h
 	BoundBoxPy.xml
+	MatrixPy.xml
+	PersistencePy.xml
+	PlacementPy.xml
+	RotationPy.xml
+	VectorPy.xml
+)
+SOURCE_GROUP("XML" FILES ${FreeCADBase_XML_SRCS})
+
+SET(FreeCADBase_CPP_SRCS
+	Base64.cpp
+	BaseClass.cpp
+	BaseClassPyImp.cpp
 	BoundBoxPyImp.cpp
 	Builder3D.cpp
-	Builder3D.h
 	Console.cpp
-	Console.h
-	Doxygen.cpp
 	Exception.cpp
-	Exception.h
 	Factory.cpp
-	Factory.h
 	FileInfo.cpp
-	FileInfo.h
 	FileTemplate.cpp
-	FileTemplate.h
-	fdstream.hpp
 	gzstream.cpp
 	gzstream.h
 	GeometryPyCXX.cpp
-	GeometryPyCXX.h
 	Handle.cpp
-	Handle.h
 	InputSource.cpp
-	InputSource.h
 	Interpreter.cpp
-	Interpreter.h
 	Matrix.cpp
-	Matrix.h
-	MatrixPy.xml
 	MatrixPyImp.cpp
 	MemDebug.cpp
-	MemDebug.h
-	Observer.h
 	Parameter.cpp
-	Parameter.h
 	ParameterPy.cpp
 	Persistence.cpp
-	Persistence.h
-	PersistencePy.xml
 	PersistencePyImp.cpp
 	Placement.cpp
-	Placement.h
-	PlacementPy.xml
 	PlacementPyImp.cpp
-	PreCompiled.cpp
-	PreCompiled.h
 	PyExport.cpp
 	PyExport.h
 	PyObjectBase.cpp
 	PyObjectBase.h
-	PyTools.c
-	PyTools.h
 	Reader.cpp
-	Reader.h
 	Rotation.cpp
-	Rotation.h
-	RotationPy.xml
 	RotationPyImp.cpp
 	Sequencer.cpp
-	Sequencer.h
 	Stream.cpp
-	Stream.h
 	Swap.cpp
-	Swap.h
 	swigpyrun_1.3.25.cpp
-	swigpyrun_1.3.25.h
 	swigpyrun_1.3.33.cpp
-	swigpyrun_1.3.33.h
 	swigpyrun_1.3.36.cpp
-	swigpyrun_1.3.36.h
 	swigpyrun_1.3.38.cpp
-	swigpyrun_1.3.38.h
 	swigpyrun.cpp
-	swigpyrun.inl
 	TimeInfo.cpp
-	TimeInfo.h
 	Tools2D.cpp
-	Tools2D.h
 	Type.cpp
-	Type.h
 	Uuid.cpp
-	Uuid.h
 	Vector3D.cpp
-	Vector3D.h
-	VectorPy.xml
 	VectorPyImp.cpp
-	ViewProj.h
 	Writer.cpp
-	Writer.h
 	XMLTools.cpp
+)
+
+SET(FreeCADBase_HPP_SRCS
+	Base64.h
+	BaseClass.h
+	BoundBox.h
+	Builder3D.h
+	Console.h
+	Exception.h
+	Factory.h
+	FileInfo.h
+	FileTemplate.h
+	fdstream.hpp
+	gzstream.h
+	GeometryPyCXX.h
+	Handle.h
+	InputSource.h
+	Interpreter.h
+	Matrix.h
+	MemDebug.h
+	Observer.h
+	Parameter.h
+	Persistence.h
+	Placement.h
+	PyExport.h
+	PyObjectBase.h
+	Reader.h
+	Rotation.h
+	Sequencer.h
+	Stream.h
+	Swap.h
+	swigpyrun_1.3.25.h
+	swigpyrun_1.3.33.h
+	swigpyrun_1.3.36.h
+	swigpyrun_1.3.38.h
+	swigpyrun.inl
+	TimeInfo.h
+	Tools2D.h
+	Type.h
+	Uuid.h
+	Vector3D.h
+	ViewProj.h
+	Writer.h
 	XMLTools.h
 )
+
+SET(FreeCADBase_SRCS
+	${zipios_SRCS}
+	${pycxx_SRCS}
+	${FreeCADBase_CPP_SRCS}
+	${FreeCADBase_HPP_SRCS}
+	${FreeCADBase_XML_SRCS}
+	Doxygen.cpp
+	PyTools.c
+	PyTools.h
+	PreCompiled.cpp
+	PreCompiled.h
+)
+
+if(MSVC)
+add_definitions(-D_PreComp_)
+ADD_MSVC_PRECOMPILED_HEADER("PreCompiled.h" "PreCompiled.cpp" FreeCADBase_CPP_SRCS)
+endif(MSVC)
 
 add_library(FreeCADBase SHARED ${FreeCADBase_SRCS})
 
