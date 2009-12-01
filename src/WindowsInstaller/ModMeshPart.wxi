@@ -22,7 +22,7 @@
    Juergen Riegel 2005                                                  
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Directory Id="ModMeshPart" Name="MeshPart" FileSource="..\Mod\MeshPart">
+    <Directory Id="ModMeshPart" Name="MeshPart" FileSource="../../Mod/MeshPart">
         <Component Id="CompModMeshPart" Guid="6c6fbdc0-94a5-11dd-ad8b-0800200c9a66">
             <File Id="MeshPartInitPy" Name="Init.py" DiskId="1" />
             <File Id="MeshPartInitGuiPy" Name="InitGui.py" DiskId="1" />

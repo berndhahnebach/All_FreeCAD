@@ -22,7 +22,7 @@
    Juergen Riegel 2008                                                  
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Directory Id="ModTest" Name="Test" FileSource="..\Mod\Test">
+    <Directory Id="ModTest" Name="Test" FileSource="../../Mod/Test">
         <Component Id="CompModTest" Guid="f962974e-d693-4aeb-a542-87d47cef8461">
             <File Id="TestInitPy" Name="Init.py" DiskId="1" />
             <File Id="TestInitGuiPy" Name="InitGui.py" DiskId="1" />

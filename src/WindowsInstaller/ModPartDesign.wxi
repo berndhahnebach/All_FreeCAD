@@ -22,7 +22,7 @@
    Juergen Riegel 2005                                                  
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Directory Id="ModPartDesign" Name="PartDesign" FileSource="..\Mod\PartDesign">
+    <Directory Id="ModPartDesign" Name="PartDesign" FileSource="../../Mod/PartDesign">
         <Component Id="CompModPartDesign" Guid="62d8c130-94a5-11dd-ad8b-0800200c9a66">
             <File Id="PartDesignInitPy" Name="Init.py" DiskId="1" />
             <File Id="PartDesignInitGuiPy" Name="InitGui.py" DiskId="1" />

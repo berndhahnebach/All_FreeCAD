@@ -22,7 +22,7 @@
    Juergen Riegel 2005                                                  
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Directory Id="ModMesh" Name="Mesh" FileSource="..\Mod\Mesh">
+    <Directory Id="ModMesh" Name="Mesh" FileSource="../../Mod/Mesh">
         <Component Id="CompModMesh" Guid="209D916B-10C6-445d-8973-F276E28E2A72">
             <File Id="MeshInitPy" Name="Init.py" DiskId="1" />
             <File Id="MeshInitGuiPy" Name="InitGui.py" DiskId="1" />

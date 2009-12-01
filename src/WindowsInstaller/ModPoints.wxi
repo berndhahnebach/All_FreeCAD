@@ -22,7 +22,7 @@
    Juergen Riegel 2005                                                  
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Directory Id="ModPoints" Name="Points" FileSource="..\Mod\Points">
+    <Directory Id="ModPoints" Name="Points" FileSource="../../Mod/Points">
         <Component Id="CompModPoints" Guid="F14D207D-B088-41e6-A758-A44DDDDD56F8">
             <File Id="PointsInitPy" Name="Init.py" DiskId="1" />
             <File Id="PointsInitGuiPy" Name="InitGui.py" DiskId="1" />

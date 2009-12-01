@@ -26,11 +26,14 @@
 	<?include Version.wxi ?>
 	<?define RTMProductVersion="$(var.FCVersionMajor).$(var.FCVersionMinor).0" ?>
 	<?define ProductVersion="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" ?>
-	<?define UpgradeCode="{D898BEFD-CFFA-4163-A624-AB36B2C7A710}"?>
+	<!-- this is the product UID and have to change for every x.y Version  -->
+	<?define ProductCode="{81abc4a0-de63-11de-8a39-0800200c9a66}"?>
+	<!-- this is the product upgrade UID and have to change for every x.y Version  -->
+	<?define UpgradeCode="{b921eb30-de63-11de-8a39-0800200c9a66}"?>
 	<?define PackageCode="{????????-????-????-????-????????????}"?>
 
 
-	<Product Id='0C6EC504-2794-4992-BE14-2F57378C1183' 
+	<Product Id='$(var.ProductCode)' 
 				UpgradeCode='$(var.UpgradeCode)' 
 				Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" 
 				Language="1033" 
@@ -41,7 +44,7 @@
 				InstallerVersion="200" 
 				Compressed="yes"
 				AdminImage='no'
-				Platforms='Intel'
+				Platform='x86'
 				ReadOnly='yes'
 				Keywords='FreeCAD,Installer,MSI' />
 
@@ -64,7 +67,7 @@
 		<Property Id="ARPCONTACT">Juergen Riegel (FreeCAD@juergen-riegel.net)</Property>
 		<Property Id="ARPHELPLINK">http://sourceforge.net/forum/forum.php?forum_id=161659</Property>
 		<Property Id="ARPURLINFOABOUT">http://free-cad.sourceforge.net/</Property>
-		<Property Id="ARPURLUPDATEINFO">http://sourceforge.net/project/showfiles.php?group_id=49159</Property>
+		<Property Id="ARPURLUPDATEINFO">https://sourceforge.net/projects/free-cad/files/</Property>
 		<Property Id="ALLUSERS">1</Property>
 
 		<WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
@@ -72,8 +75,8 @@
 
         <Directory Id="TARGETDIR" Name="SourceDir">
  			<!-- These installs the Visual C++ 8.0 Runtime Libraries -->
-			<Merge  Id="CRT" Language="0" SourceFile='Microsoft_VC80_CRT_x86.msm' DiskId="1"/>
-			<Merge  Id="CRT_Policy" Language="0" SourceFile='Policy_8_0_Microsoft_VC80_CRT_x86.msm' DiskId="1"/>
+			<Merge  Id="CRT" Language="0" SourceFile='Microsoft_VC90_CRT_x86.msm' DiskId="1"/>
+			<Merge  Id="CRT_Policy" Language="0" SourceFile='Policy_9_0_Microsoft_VC90_CRT_x86.msm' DiskId="1"/>
 			
 			<Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
@@ -128,6 +131,7 @@
             <ComponentRef Id="CompModCam" />
 	        <ComponentRef Id="CompModDrawingTemplates" />
             <ComponentRef Id="CompModDrawing" />
+            <ComponentRef Id="CompModRobot" />
 		
             <Feature Id="FeatModImage" Title="The Image module" Description="Module to handle pictures" Level="1">
                 <ComponentRef Id="CompModImage" />

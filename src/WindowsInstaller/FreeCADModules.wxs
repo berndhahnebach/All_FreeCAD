@@ -38,6 +38,7 @@
             <?include ModPartDesign.wxi ?>
             <?include ModDrawing.wxi ?>
             <?include ModDraft.wxi ?>
+            <?include ModRobot.wxi ?>
         </DirectoryRef>
     </Fragment>
 </Wix>

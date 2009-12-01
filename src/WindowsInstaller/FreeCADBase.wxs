@@ -24,18 +24,18 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment Id="FreeCADBase">
-		<DirectoryRef Id="BinDir" FileSource="../bin/">
+		<DirectoryRef Id="BinDir" FileSource="../../bin/">
 			<Component Id="Base" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7">
 				<File Id="Exe" Name="FreeCAD.exe" >
 					<Shortcut Id="FCShortcut" 
 						Directory="MenuDir"  
 						Name="FreeCAD" 
 						Icon="FreeCADIcon.exe"
-						Description="FreeCAD the one and only open source CAD package" 
+						Description="FreeCAD gui version" 
 						WorkingDirectory="BinDir" 
-						Advertise="yes" >
+						Advertise="no" >
 						<Icon Id="FreeCADIcon.exe"
-					          SourceFile="../bin/FreeCAD.exe" />
+					          SourceFile="../../bin/FreeCAD.exe" />
 					</Shortcut>
 
 <!--					<Shortcut Id="FCShortcutDesk" 
@@ -55,9 +55,9 @@
 						Icon="FreeCADCMDIcon.exe"
 						Description="FreeCAD command line version" 
 						WorkingDirectory="BinDir" 
-						Advertise="yes" >
+						Advertise="no" >
 						<Icon Id="FreeCADCMDIcon.exe"
-					          SourceFile="../bin/FreeCADCmd.exe" />
+					          SourceFile="../../bin/FreeCADCmd.exe" />
 					</Shortcut>
 
 				</File>
