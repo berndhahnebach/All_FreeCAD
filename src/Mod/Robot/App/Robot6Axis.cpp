@@ -178,7 +178,7 @@ void Robot6Axis::Save (Writer &writer) const
                         << "Q3=\""          <<  Tip.getRotation()[3] << "\" "
                         << "maxAngle=\""    <<  MaxAngle[i]		     << "\" "
                         << "minAngle=\""    <<  MinAngle[i]			 << "\" "
-                        << "Acceleration=\""<<  Acceration[i]        << "\" "
+                        << "AxisVelocity=\""<<  Acceration[i]        << "\" "
                         << "Pos=\""         <<  Actuall(i)           << "\"/>"
 					                      
                         << std::endl;
@@ -207,7 +207,7 @@ void Robot6Axis::Restore(XMLReader &reader)
 
         MaxAngle[i]   = reader.getAttributeAsFloat("maxAngle");
         MinAngle[i]	  = reader.getAttributeAsFloat("minAngle");
-        Acceration[i] = reader.getAttributeAsFloat("Acceleration");
+        Acceration[i] = reader.getAttributeAsFloat("AxisVelocity");
         Acceration[i] = reader.getAttributeAsFloat("Pos");
     }
     Kinematic = Temp;
