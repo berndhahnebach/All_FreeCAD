@@ -10,82 +10,49 @@
 IF (WIN32)
   IF (CYGWIN)
 
-    FIND_PATH(OCC_INCLUDE_DIR Inventor/So.h
-      /usr/include
-      /usr/local/include
+    FIND_PATH(OCC_INCLUDE_DIR Standard_Version.hxx
+      /usr/include/opencascade
+      /usr/local/include/opencascade
     )
 
-    FIND_LIBRARY(OCC_LIBRARY Coin
+    FIND_LIBRARY(OCC_LIBRARY TKernel
       /usr/lib
       /usr/local/lib
-    )
+	  /opt/opencascade/lib
+    )   
 
   ELSE (CYGWIN)
 
-    FIND_PATH(OCC_INCLUDE_DIR Inventor/So.h
+    FIND_PATH(OCC_INCLUDE_DIR Standard_Version.hxx
       "[HKEY_LOCAL_MACHINE\\SOFTWARE\\SIM\\OCC\\2;Installation Path]/include"
     )
 
-    FIND_LIBRARY(OCC_LIBRARY_DEBUG coin2d
+    FIND_LIBRARY(OCC_LIBRARY TKernel
       "[HKEY_LOCAL_MACHINE\\SOFTWARE\\SIM\\OCC\\2;Installation Path]/lib"
     )
-
-    FIND_LIBRARY(OCC_LIBRARY_RELEASE coin2
-      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\SIM\\OCC\\2;Installation Path]/lib"
-    )
-
-    IF (OCC_LIBRARY_DEBUG AND OCC_LIBRARY_RELEASE)
-      SET(OCC_LIBRARY optimized ${OCC_LIBRARY_RELEASE}
-                         debug ${OCC_LIBRARY_DEBUG})
-    ELSE (OCC_LIBRARY_DEBUG AND OCC_LIBRARY_RELEASE)
-      IF (OCC_LIBRARY_DEBUG)
-        SET (OCC_LIBRARY ${OCC_LIBRARY_DEBUG})
-      ENDIF (OCC_LIBRARY_DEBUG)
-      IF (OCC_LIBRARY_RELEASE)
-        SET (OCC_LIBRARY ${OCC_LIBRARY_RELEASE})
-      ENDIF (OCC_LIBRARY_RELEASE)
-    ENDIF (OCC_LIBRARY_DEBUG AND OCC_LIBRARY_RELEASE)
-
-    IF (OCC_LIBRARY)
-      ADD_DEFINITIONS ( -DCOIN_NOT_DLL )
-    #ELSE (OCC_LIBRARY)
-    #  SET (OCC_LIBRARY coin2d CACHE STRING "OCC Library (Debug) - Open Inventor API")
-    ENDIF (OCC_LIBRARY)
 
   ENDIF (CYGWIN)
 
 ELSE (WIN32)
-  IF(APPLE)
-    FIND_PATH(OCC_INCLUDE_DIR Inventor/So.h
-     /Library/Frameworks/Inventor.framework/Headers 
-     /usr/local/include
-     /usr/include
-    )
-    FIND_LIBRARY(OCC_LIBRARY Coin
-      /Library/Frameworks/Inventor.framework/Libraries
-      /usr/lib
-      /usr/local/lib
-    )   
-    SET(OCC_LIBRARY "-framework OCC" CACHE STRING "OCC library for OSX")
-   ELSE(APPLE)
 
   FIND_PATH(OCC_INCLUDE_DIR Standard_Version.hxx
     /usr/include/opencascade
     /usr/local/include/opencascade
+	/opt/opencascade/include
   )
 
   FIND_LIBRARY(OCC_LIBRARY TKernel
     /usr/lib
     /usr/local/lib
+	/opt/opencascade/lib
   )   
-  ENDIF(APPLE)
 
 ENDIF (WIN32)
 
 
-SET( OCC_FOUND "NO" )
+SET(OCC_FOUND FALSE)
 IF(OCC_LIBRARY)
-  SET( OCC_FOUND "YES" )
+  SET(OCC_FOUND TRUE)
   set(OCC_LIBRARIES
 		 TKFillet
 		 TKMesh
