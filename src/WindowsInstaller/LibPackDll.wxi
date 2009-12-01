@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?><Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <File Id="DLL1"  Name="boost_date_time-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL2"  Name="boost_filesystem-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL3"  Name="boost_iostreams-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL4"  Name="boost_program_options-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL5"  Name="boost_regex-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL6"  Name="boost_serialization-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL7"  Name="boost_signals-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL8"  Name="boost_thread-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL9"  Name="boost_wserialization-vc80-mt-1_33_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL13"  Name="coin2.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL14"  Name="glib-1.3.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL15"  Name="gmodule-1.3.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL16"  Name="gthread-1.3.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL17"  Name="gts-0.7.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL18"  Name="iconv.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL19"  Name="libgplugin_a.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL20"  Name="libgplugin_b.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL21"  Name="mscmd.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL22"  Name="msvcp60.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL23"  Name="msvcp71.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL24"  Name="Msvcr71.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL25"  Name="pthread.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL26"  Name="python25.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL27"  Name="python25.zip" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL28"  Name="simage1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL29"  Name="soqt1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL40"  Name="Qt3Support4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL1"  Name="boost_date_time-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL2"  Name="boost_filesystem-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL3"  Name="boost_iostreams-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL4"  Name="boost_program_options-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL5"  Name="boost_regex-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL6"  Name="boost_serialization-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL7"  Name="boost_signals-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL8"  Name="boost_thread-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL9"  Name="boost_wserialization-vc90-mt-1_39_1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL13"  Name="coin3.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL26"  Name="python26.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL27"  Name="python26.zip" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL28"  Name="_socket.pyd" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL29"  Name="pyexpat.pyd" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL30"  Name="select.pyd" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL31"  Name="sip.pyd" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL32"  Name="unicodedata.pyd" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL40"  Name="soqt1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL41"  Name="QtCore4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL42"  Name="QtDesigner4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL43"  Name="QtDesignerComponents4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
@@ -36,6 +27,7 @@
     <File Id="DLL48"  Name="QtSvg4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL49"  Name="QtTest4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL50"  Name="QtXml4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL51"  Name="QtWebKit4.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL61"  Name="TKBO.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL62"  Name="TKBool.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL63"  Name="TKBRep.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
@@ -62,7 +54,7 @@
     <File Id="DLL84"  Name="TKTopAlgo.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL85"  Name="TKXSBase.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL86"  Name="Wm3Foundation80.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
-    <File Id="DLL87"  Name="xerces-c_2_6.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
+    <File Id="DLL87"  Name="xerces-c_2_8.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL88"  Name="zlib1.dll" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <File Id="DLL90"  Name="wget.exe" Source="$(env.FREECADLIB)\bin\" DiskId="1" />
     <!--<File Id='DLL91'    Name='ERR91' LongName='_sre.pyd' src='$(env.FREECADLIB)\bin\' DiskId='1' /> -->

@@ -22,7 +22,7 @@
    Juergen Riegel 2008                                                  
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Directory Id="ModCam" Name="Cam" FileSource="..\Mod\Cam">
+    <Directory Id="ModCam" Name="Cam" FileSource="../../Mod/Cam">
         <Component Id="CompModCam" Guid="1e198527-7b8c-4113-abd4-a116c8f8c849">
             <File Id="CamInitPy" Name="Init.py" DiskId="1" />
             <File Id="CamInitGuiPy" Name="InitGui.py" DiskId="1" />

@@ -24,7 +24,7 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment Id="LibPack">
-		<DirectoryRef Id="BinDir" FileSource="..\bin\">
+		<DirectoryRef Id="BinDir" FileSource="../../bin/">
 			<Component Id="LibPackBinaries" Guid="515D7157-403B-4085-AC2F-0DC95A47F2D4">
 				<File Id="PythonExe" Name="python.exe">
 					<Shortcut Id="PythonShortcut" 
@@ -33,21 +33,21 @@
 						Icon="PythonIcon.exe"
 						Description="Starts directly the python console" 
 						WorkingDirectory="BinDir"
-						Advertise="yes" >
+						Advertise="no" >
 						<Icon Id="PythonIcon.exe"
-					          SourceFile="../bin/python.exe" />
+					          SourceFile="../../bin/python.exe" />
 					</Shortcut>
 
 				</File>
-				<File Id="LibPack1" Name="boost_date_time-vc80-mt-1_34_1.dll" />
-				<File Id="LibPack2" Name="boost_filesystem-vc80-mt-1_34_1.dll" />
-				<File Id="LibPack3" Name="boost_iostreams-vc80-mt-1_34_1.dll" />
-				<File Id="LibPack4" Name="boost_program_options-vc80-mt-1_34_1.dll" />
-				<File Id="LibPack5" Name="boost_regex-vc80-mt-1_34_1.dll"  />
-				<File Id="LibPack6" Name="boost_serialization-vc80-mt-1_34_1.dll"  />
-				<File Id="LibPack7" Name="boost_signals-vc80-mt-1_34_1.dll"  />
-				<File Id="LibPack8" Name="boost_thread-vc80-mt-1_34_1.dll" />
-				<File Id="LibPack9" Name="boost_wserialization-vc80-mt-1_34_1.dll"  />
+				<File Id="LibPack1" Name="boost_date_time-vc90-mt-1_39_1.dll" />
+				<File Id="LibPack2" Name="boost_filesystem-vc90-mt-1_39_1.dll" />
+				<File Id="LibPack3" Name="boost_iostreams-vc90-mt-1_39_1.dll" />
+				<File Id="LibPack4" Name="boost_program_options-vc90-mt-1_39_1.dll" />
+				<File Id="LibPack5" Name="boost_regex-vc90-mt-1_39_1.dll"  />
+				<File Id="LibPack6" Name="boost_serialization-vc90-mt-1_39_1.dll"  />
+				<File Id="LibPack7" Name="boost_signals-vc90-mt-1_39_1.dll"  />
+				<File Id="LibPack8" Name="boost_thread-vc90-mt-1_39_1.dll" />
+				<File Id="LibPack9" Name="boost_wserialization-vc90-mt-1_39_1.dll"  />
 				<File Id="LibPack10" Name="sip.pyd"  />
 				<File Id="LibPack11" Name="atlas.dll"  />
 				<File Id="LibPack12" Name="ANN.dll"  />
@@ -59,10 +59,9 @@
 				<File Id="LibPack18" Name="highgui100.dll"  />
 				<File Id="LibPack19" Name="OCCAdaptMesh.dll"  />
 				<File Id="LibPack20" Name="libumfpack.dll"  />
-				<File Id="LibPack26" Name="python25.dll"   />
-				<File Id="LibPack27" Name="python25.zip"   />
+				<File Id="LibPack26" Name="python26.dll"   />
+				<File Id="LibPack27" Name="python26.zip"   />
 				<File Id="LibPack29" Name="soqt1.dll"   />
-				<File Id="LibPack40" Name="Qt3Support4.dll"/>
 				<File Id="LibPack41" Name="QtCore4.dll"   />
 				<File Id="LibPack42" Name="QtDesigner4.dll"   />
 				<File Id="LibPack43" Name="QtDesignerComponents4.dll"   />
@@ -101,7 +100,7 @@
 				<File Id="LibPack87" Name="xerces-c_2_8.dll"   />
 				<File Id="LibPack88" Name="zlib1.dll"   />
 			</Component>
-			<Directory Id="ImageFormDir" Name="imageformats" FileSource="../bin/imageformats" >
+			<Directory Id="ImageFormDir" Name="imageformats" FileSource="../../bin/imageformats" >
 				<Component Id="ImageForm"  Guid="2139da00-a109-11dd-ad8b-0800200c9a66">
 					<File Id="ImageForm1" Name="qgif4.dll"   />
 					<File Id="ImageForm2" Name="qjpeg4.dll"   />
@@ -110,13 +109,13 @@
 					<File Id="ImageForm5" Name="qtiff4.dll"   />
 				</Component>			
 			</Directory>
-			<Directory Id="accessibleDir" Name="accessible" FileSource="../bin/accessible" >
+			<Directory Id="accessibleDir" Name="accessible" FileSource="../../bin/accessible" >
 				<Component Id="accessible"  Guid="f5800b90-a109-11dd-ad8b-0800200c9a66">
 					<File Id="accessible1" Name="qtaccessiblecompatwidgets4.dll"   />
 					<File Id="accessible2" Name="qtaccessiblewidgets4.dll"   />
 				</Component>			
 			</Directory>
-			<Directory Id="codecsDir" Name="codecs" FileSource="../bin/codecs" >
+			<Directory Id="codecsDir" Name="codecs" FileSource="../../bin/codecs" >
 				<Component Id="codecs"  Guid="641d0030-a10a-11dd-ad8b-0800200c9a66">
 					<File Id="codecs1" Name="qcncodecs4.dll"   />
 					<File Id="codecs2" Name="qjpcodecs4.dll"   />
@@ -124,24 +123,24 @@
 					<File Id="codecs4" Name="qtwcodecs4.dll"   />
 				</Component>			
 			</Directory>
-			<Directory Id="iconenginesDir" Name="iconengines" FileSource="../bin/iconengines" >
+			<Directory Id="iconenginesDir" Name="iconengines" FileSource="../../bin/iconengines" >
 				<Component Id="iconengines"  Guid="c65a8970-a10a-11dd-ad8b-0800200c9a66">
 					<File Id="iconengines1" Name="qsvg4.dll"   />
 				</Component>			
 			</Directory>
-			<Directory Id="sqldriversDir" Name="sqldrivers" FileSource="../bin/sqldrivers" >
+			<Directory Id="sqldriversDir" Name="sqldrivers" FileSource="../../bin/sqldrivers" >
 				<Component Id="sqldrivers"  Guid="16bcd850-a10b-11dd-ad8b-0800200c9a66">
 					<File Id="sqldrivers1" Name="qsqlite4.dll"   />
 				</Component>			
 			</Directory>
-			<Directory Id="PivyDir" Name="pivy" FileSource="../bin/pivy" >
+			<Directory Id="PivyDir" Name="pivy" FileSource="../../bin/pivy" >
 				<Component Id="PivyTop"  Guid="b18123c0-3fb0-4cc0-85e8-f71038172b34">
 					<File Id="Pivy1" Name="__init__.py"   />
 					<File Id="Pivy2" Name="_coin.pyd"   />
 					<File Id="Pivy3" Name="coin.py"   />
 					<File Id="Pivy4" Name="sogui.py"   />
 				</Component>
-				<Directory Id="PivyGuiDir" Name="gui" FileSource="../bin/pivy/gui" >
+				<Directory Id="PivyGuiDir" Name="gui" FileSource="../../bin/pivy/gui" >
 					<Component Id="PivyGui"  Guid="9829370b-fad4-4606-9802-6ff90ad8474e">
 						<File Id="Pivy5" Name="__init__.py"   />
 						<File Id="Pivy6" Name="_soqt.pyd"   />
@@ -149,7 +148,7 @@
 					</Component>
 				</Directory>
 			</Directory>
-			<Directory Id="PyQtDir" Name="PyQt4" FileSource="../bin/PyQt4" >
+			<Directory Id="PyQtDir" Name="PyQt4" FileSource="../../bin/PyQt4" >
 				<Component Id="PyQtTop"  Guid="17b2fc4c-61e2-447e-95af-5b65cad125aa">
 					<File Id="PyQt1" Name="__init__.py"   />
 					<File Id="PyQt2" Name="_qt.pyd"   />
@@ -169,7 +168,7 @@
 					<File Id="PyQt16" Name="QtTest.pyd"   />
 					<File Id="PyQt17" Name="QtXml.pyd"   />
 				</Component>
-				<Directory Id="PyQtUicDir" Name="uic" FileSource="../bin/PyQt4/uic" >
+				<Directory Id="PyQtUicDir" Name="uic" FileSource="../../bin/PyQt4/uic" >
 					<Component Id="PyQtUic"  Guid="c81a900c-8292-4631-9b52-25ac825b99c8">
 						<File Id="PyQt18" Name="__init__.py"   />
 						<File Id="PyQt19" Name="exceptions.py"   />
@@ -178,7 +177,7 @@
 						<File Id="PyQt22" Name="pyuic.py"   />
 						<File Id="PyQt23" Name="uiparser.py"   />
 					</Component>
-					<Directory Id="PyQtCompilerDir" Name="Compiler" FileSource="../bin/PyQt4/uic/Compiler" >
+					<Directory Id="PyQtCompilerDir" Name="Compiler" FileSource="../../bin/PyQt4/uic/Compiler" >
 						<Component Id="PyQtCompiler"  Guid="f20f3c7f-5550-48e4-b769-5d6658a1fb4e">
 							<File Id="PyQt24" Name="__init__.py"   />
 							<File Id="PyQt25" Name="compiler.py"   />
@@ -187,14 +186,14 @@
 							<File Id="PyQt28" Name="qtproxies.py"   />
 						</Component>											
 					</Directory>
-					<Directory Id="PyQtLoaderDir" Name="Loader" FileSource="../bin/PyQt4/uic/Loader" >
+					<Directory Id="PyQtLoaderDir" Name="Loader" FileSource="../../bin/PyQt4/uic/Loader" >
 						<Component Id="PyQtLoader"  Guid="3f0dfb67-fd56-4928-83f4-148a7f4bf115">
 							<File Id="PyQt29" Name="__init__.py"   />
 							<File Id="PyQt30" Name="loader.py"   />
 							<File Id="PyQt31" Name="qobjectcreator.py"   />
 						</Component>											
 					</Directory>
-					<Directory Id="PyQtWidgetPluginsDir" Name="widget-plugins" FileSource="../bin/PyQt4/uic/widget-plugins" >
+					<Directory Id="PyQtWidgetPluginsDir" Name="widget-plugins" FileSource="../../bin/PyQt4/uic/widget-plugins" >
 						<Component Id="PyQtWidgetPlugins"  Guid="6f4ee199-1574-4989-86c9-2f05036a3a44">
 							<File Id="PyQt32" Name="qaxcontainer.py"   />
 							<File Id="PyQt33" Name="qscintilla.py"   />
@@ -202,7 +201,7 @@
 						</Component>											
 					</Directory>
 				</Directory>
-				<Directory Id="PyQtQwt5Dir" Name="Qwt5" FileSource="../bin/PyQt4/Qwt5" >
+				<Directory Id="PyQtQwt5Dir" Name="Qwt5" FileSource="../../bin/PyQt4/Qwt5" >
 					<Component Id="PyQtQwt5"  Guid="40fefaa5-e488-429f-a360-170aef59814c">
 						<File Id="PyQt35" Name="__init__.py"   />
 						<File Id="PyQt36" Name="anynumpy.py"   />

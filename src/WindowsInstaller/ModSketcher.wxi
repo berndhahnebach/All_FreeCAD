@@ -22,7 +22,7 @@
    Juergen Riegel 2005                                                  
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Directory Id="ModSketcher" Name="Sketcher" FileSource="..\Mod\Sketcher">
+    <Directory Id="ModSketcher" Name="Sketcher" FileSource="../../Mod/Sketcher">
         <Component Id="CompModSketcher" Guid="bb6ad720-0746-11de-8c30-0800200c9a66">
             <File Id="SketcherInitPy" Name="Init.py" DiskId="1" />
             <File Id="SketcherInitGuiPy" Name="InitGui.py" DiskId="1" />

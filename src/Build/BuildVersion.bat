@@ -1,4 +1,4 @@
 
 
-C:\Programme\TortoiseSVN\bin\SubWCRev.exe .. Version.h.in Version.h
+"C:\Program Files\TortoiseSVN\bin\SubWCRev.exe" .. Version.h.in Version.h
 
