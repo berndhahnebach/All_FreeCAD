@@ -148,6 +148,42 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_7">
+          <property name="toolTip">
+           <string>This is the default state of the Z coordinate lock. If checked, FreeCAD starts with the Z coordinate locked, so all 2D commands work only in a horizontal plane. You can of course lock and unlock the Z coordinate at any moment during your work.</string>
+          </property>
+          <property name="text">
+           <string>Default Z lock state</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>zlock</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_6">
+          <property name="toolTip">
+           <string>Check this if you want FreeCAD to save the Z lock state when you close the application and restore it on next session.</string>
+          </property>
+          <property name="text">
+           <string>Save across sessions</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>savezlock</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
          <widget class="QLabel" name="label_6">

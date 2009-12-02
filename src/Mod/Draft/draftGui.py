@@ -105,8 +105,8 @@ class toolBar:
 				self.params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 				paramcolor = self.params.GetUnsigned("color")>>8
 				paramlinewidth = self.params.GetInt("linewidth")
-
 				icons = findicons()
+				self.lockedz = self.params.GetBool("zlock")
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
 				self.state = None
@@ -155,7 +155,7 @@ class toolBar:
 				self.zValue.setGeometry(QtCore.QRect(420,4,70,18))
 				self.zValue.setObjectName("zValue")
 				self.zValue.setText("0.00")
-				self.zValue.setEnabled(False)
+				if self.lockedz: self.zValue.setEnabled(False)
 				self.zValue.hide()
 
 				self.lockButton = QtGui.QPushButton(draftToolbar)
@@ -164,9 +164,8 @@ class toolBar:
 				self.lockButton.setIconSize(QtCore.QSize(16, 16))
 				self.lockButton.setObjectName("lockButton")
 				self.lockButton.setCheckable(True)
-				self.lockButton.setChecked(True)
+				if self.lockedz: self.lockButton.setChecked(True)
 				self.lockButton.hide()
-				self.lockedz = True
 
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
 				self.isRelative.setGeometry(QtCore.QRect(530,6,91,18))
@@ -442,6 +441,8 @@ class toolBar:
 			def lockz(self,checked):
 					self.zValue.setEnabled(not checked)
 					self.lockedz = checked
+					if self.params.GetBool("savezlock"):
+						self.params.SetBool("zlock",self.lockedz)
 
 
 				
