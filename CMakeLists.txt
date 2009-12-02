@@ -74,7 +74,6 @@ endif(WIN32)
 OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command line and the Python import module." ON)
 OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
 OPTION(FREECAD_BUILD_CAM "Build the FreeCAD CAM module and the needed libs, be aware, unfinished code!" OFF)
-OPTION(FREECAD_BUILD_ROBOT "Build the FreeCAD Robot module and the needed libs, be aware, unfinished code!" OFF)
 OPTION(FREECAD_BUILD_ASSEMBLY "Build the FreeCAD Assembly module and the needed libs, be aware, unfinished code!" OFF)
 
 
