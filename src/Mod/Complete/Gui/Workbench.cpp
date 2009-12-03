@@ -81,6 +81,7 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
+    Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
     // Setup the default menu bar
     Gui::MenuItem* menuBar = new Gui::MenuItem;
 
@@ -209,14 +210,16 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Part_ShapeInfo";
 
 #   ifdef COMPLETE_SHOW_SKETCHER
-    Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
-    sketch->setCommand(QT_TR_NOOP("Ske&tch"));
-    *sketch 
-        << "Sketcher_NewSketch"
-        << "Separator" 
-        << "PartDesign_Pad" 
-        << "PartDesign_Fillet"
- ;
+    if (mgr.getCommandByName("Sketcher_NewSketch")) {
+        Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
+        sketch->setCommand(QT_TR_NOOP("Ske&tch"));
+        *sketch 
+            << "Sketcher_NewSketch"
+            << "Separator" 
+            << "PartDesign_Pad" 
+            << "PartDesign_Fillet"
+        ;
+    }
 #   endif
 
     // Drawing ****************************************************************************************************
@@ -224,11 +227,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* drawing = new Gui::MenuItem(menuBar);
 
     drawing->setCommand(QT_TR_NOOP("&Drawing"));
-    *drawing << "Drawing_Open" 
-             << "Separator" 
-             << "Drawing_NewA3Landscape"  
-             << "Drawing_NewView" 
-             << "Drawing_ExportPage" ;
+    *drawing
+        << "Drawing_Open" 
+        << "Separator" 
+        << "Drawing_NewA3Landscape"  
+        << "Drawing_NewView" 
+        << "Drawing_ExportPage"
+    ;
 
     // Raytracing ****************************************************************************************************
 
@@ -236,36 +241,37 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     raytracing->setCommand(QT_TR_NOOP("&Raytracing"));
     *raytracing 
-		<< "Raytracing_WriteView" 
-		<< "Raytracing_WriteCamera" 
-		<< "Raytracing_WritePart"; 
-;
+        << "Raytracing_WriteView" 
+        << "Raytracing_WriteCamera" 
+        << "Raytracing_WritePart"; 
+    ;
 
     // Drafting ****************************************************************************************************
 #   ifdef COMPLETE_USE_DRAFTING
+    if (mgr.getCommandByName("Draft_Line")) {
+        Gui::MenuItem* Drafting = new Gui::MenuItem(menuBar);
 
-    Gui::MenuItem* Drafting = new Gui::MenuItem(menuBar);
-
-    Drafting->setCommand(QT_TR_NOOP("&Drafting"));
-    *Drafting 
-		<< "Draft_Line"
-		<< "Draft_Polyline"
-		<< "Draft_Circle"
-		<< "Draft_Arc"
-		<< "Draft_Rectangle"
-		<< "Draft_Text"
-		<< "Draft_Dimension"
-        << "Separator" 
-		<< "Draft_Move" 
-		<< "Draft_Rotate" 
-		<< "Draft_Offset" 
-		<< "Draft_Trimex" 
-		<< "Draft_Upgrade" 
-		<< "Draft_Downgrade" 
-		<< "Draft_Scale" 
-        << "Separator" 
-		<< "Draft_ApplyStyle"
-;
+        Drafting->setCommand(QT_TR_NOOP("&Drafting"));
+        *Drafting 
+            << "Draft_Line"
+            << "Draft_Polyline"
+            << "Draft_Circle"
+            << "Draft_Arc"
+            << "Draft_Rectangle"
+            << "Draft_Text"
+            << "Draft_Dimension"
+            << "Separator" 
+            << "Draft_Move" 
+            << "Draft_Rotate" 
+            << "Draft_Offset" 
+            << "Draft_Trimex" 
+            << "Draft_Upgrade" 
+            << "Draft_Downgrade" 
+            << "Draft_Scale" 
+            << "Separator" 
+            << "Draft_ApplyStyle"
+        ;
+    }
 #   endif
 
     // xxx ****************************************************************************************************
@@ -310,6 +316,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
+    Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
 
     // File
@@ -348,36 +355,38 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     // Part Design
     Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
     part_design->setCommand(QT_TR_NOOP("Part design"));
-    *part_design  
-				  << "Part_Box"
-				  << "Part_Cylinder"
-				  << "Part_Sphere"
-				  << "Part_Cone"
-				  << "Part_Torus"
-				  //<< "Part_Primitives"
-				  << "Separator"
-				  << "Part_Boolean"
-				  << "Part_Cut" 
-				  << "Part_Fuse" 
-				  << "Part_Common" 
-				  << "Part_Section"
-				  << "Separator"
-				  << "Part_Extrude"
-				  << "Part_Revolve"
-				  << "Part_Fillet"
-;
+    *part_design
+        << "Part_Box"
+        << "Part_Cylinder"
+        << "Part_Sphere"
+        << "Part_Cone"
+        << "Part_Torus"
+        //<< "Part_Primitives"
+        << "Separator"
+        << "Part_Boolean"
+        << "Part_Cut" 
+        << "Part_Fuse" 
+        << "Part_Common" 
+        << "Part_Section"
+        << "Separator"
+        << "Part_Extrude"
+        << "Part_Revolve"
+        << "Part_Fillet"
+    ;
 
     // Sketch based
 
 #   ifdef COMPLETE_SHOW_SKETCHER
-    Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
-    sketch_based->setCommand(QT_TR_NOOP("Sketch based"));
-    *sketch_based 
-        << "Sketcher_NewSketch"
-        << "Separator"
-        << "PartDesign_Pad"
-        << "PartDesign_Fillet"
-;
+    if (mgr.getCommandByName("Sketcher_NewSketch")) {
+        Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
+        sketch_based->setCommand(QT_TR_NOOP("Sketch based"));
+        *sketch_based 
+            << "Sketcher_NewSketch"
+            << "Separator"
+            << "PartDesign_Pad"
+            << "PartDesign_Fillet"
+        ;
+    }
 #   endif 
 
     // Drawing
@@ -398,30 +407,30 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
     // Drafting ****************************************************************************************************
 #   ifdef COMPLETE_USE_DRAFTING
-
-    Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
-    Drafting->setCommand(QT_TR_NOOP("Drafting"));
-    *Drafting 
-		<< "Draft_Line"
-		<< "Draft_Polyline"
-		<< "Draft_Circle"
-		<< "Draft_Arc"
-		<< "Draft_Rectangle"
-		<< "Draft_Text"
-		<< "Draft_Dimension"
-        << "Separator" 
-		<< "Draft_Move" 
-		<< "Draft_Rotate" 
-		<< "Draft_Offset" 
-		<< "Draft_Trimex" 
-		<< "Draft_Upgrade" 
-		<< "Draft_Downgrade" 
-		<< "Draft_Scale" 
-        << "Separator" 
-		<< "Draft_ApplyStyle"
-;
+    if (mgr.getCommandByName("Draft_Line")) {
+        Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
+        Drafting->setCommand(QT_TR_NOOP("Drafting"));
+        *Drafting
+            << "Draft_Line"
+            << "Draft_Polyline"
+            << "Draft_Circle"
+            << "Draft_Arc"
+            << "Draft_Rectangle"
+            << "Draft_Text"
+            << "Draft_Dimension"
+            << "Separator" 
+            << "Draft_Move" 
+            << "Draft_Rotate" 
+            << "Draft_Offset" 
+            << "Draft_Trimex" 
+            << "Draft_Upgrade" 
+            << "Draft_Downgrade" 
+            << "Draft_Scale" 
+            << "Separator" 
+            << "Draft_ApplyStyle"
+        ;
+    }
 #   endif
-
 
     return root;
 }
