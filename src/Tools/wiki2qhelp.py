@@ -189,7 +189,7 @@ def generate(qhcpfile):
     txt="""
 The help files for FreeCAD.
     """
-    about=open("about.txt","w")
+    about=open(TMPFOLDER + os.sep + "about.txt","w")
     about.write(txt)
     about.close()
     qhcfile = OUTPUTPATH + os.sep + "freecad.qhc"
@@ -203,8 +203,8 @@ def createCollProjectFile(folder=TMPFOLDER):
     <assistant>
         <title>FreeCAD User Manual</title>
         <applicationIcon>Crystal_Clear_app_tutorials.png</applicationIcon>
-        <cacheDirectory>Trolltech/SimpleTextViewer</cacheDirectory>
-        <startPage>qthelp://org.freecad.usermanual/doc/Online_Help_Startpage.html</startPage>
+        <cacheDirectory>freecad/freecad</cacheDirectory>
+        <startPage>qthelp://org.freecad.usermanual_0.9/doc/Online_Help_Startpage.html</startPage>
         <aboutMenuText>
             <text>About FreeCAD</text>
         </aboutMenuText>
@@ -215,9 +215,9 @@ def createCollProjectFile(folder=TMPFOLDER):
             -->
             <icon>Crystal_Clear_app_tutorials.png</icon>
         </aboutDialog>
-        <enableDocumentationManager>false</enableDocumentationManager>
-        <enableAddressBar>false</enableAddressBar>
-        <enableFilterFunctionality>false</enableFilterFunctionality>
+        <enableDocumentationManager>true</enableDocumentationManager>
+        <enableAddressBar>true</enableAddressBar>
+        <enableFilterFunctionality>true</enableFilterFunctionality>
     </assistant>
     <docFiles>
         <generate>
@@ -228,10 +228,10 @@ def createCollProjectFile(folder=TMPFOLDER):
             </generate>
         <register>
             <file>freecad.qch</file>
-            </register>
-        </docFiles>
-    </QHelpCollectionProject>
-	'''
+        </register>
+    </docFiles>
+</QHelpCollectionProject>
+'''
     if VERBOSE: print "Building project file..."
     qfilename = folder + os.sep + "freecad.qhcp"
     f = open(qfilename,'w')
@@ -245,7 +245,7 @@ def buildtoc(folder=TMPFOLDER,page=INDEX):
     
     qhelpfile = '''<?xml version="1.0" encoding="UTF-8"?>
 <QtHelpProject version="1.0">
-    <namespace>org.freecad.usermanual</namespace>
+    <namespace>org.freecad.usermanual_0.9</namespace>
     <virtualFolder>doc</virtualFolder>
     <!--
     <customFilter name="FreeCAD 0.9">
