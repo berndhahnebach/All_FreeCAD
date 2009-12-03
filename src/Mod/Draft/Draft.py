@@ -70,6 +70,7 @@ try:
 	from pivy import coin, sogui
 except:
 	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
+	raise
 
 # Constants
 

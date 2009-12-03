@@ -37,7 +37,6 @@ EXTRA_DIST = \
 		plugins/widget/plugin.cpp \
 		plugins/widget/plugin.h \
 		plugins/widget/plugin.pro \
-		chm.css \
 		dir2qrc.py \
 		DistTools.py \
 		fcbt.py \
@@ -50,6 +49,4 @@ EXTRA_DIST = \
 		PythonToCPP.py \
 		pythondoc.py \
 		SubWCRev.py \
-		wiki2chm.py \
-		WixFileTool.py
-
+		wiki2qhelp.py

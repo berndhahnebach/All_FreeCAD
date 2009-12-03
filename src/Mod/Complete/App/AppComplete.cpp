@@ -57,7 +57,13 @@ void AppCompleteExport initComplete()
         Base::Interpreter().loadModule("Image");
         //Base::Interpreter().loadModule("Cam");
 #       ifdef COMPLETE_USE_DRAFTING
-        Base::Interpreter().loadModule("Draft");
+        try {
+            Base::Interpreter().loadModule("Draft");
+        }
+        catch (const Base::PyException& e) {
+            // If called from console then issue a message but don't stop with an error
+            PySys_WriteStdout("Import error: %s\n", e.what());
+        }
 #       endif
     }
     catch(const Base::Exception& e) {
