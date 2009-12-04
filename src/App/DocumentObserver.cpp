@@ -91,3 +91,48 @@ void DocumentObserver::detachDocument()
         this->connectDocumentChangedObject.disconnect();
     }
 }
+
+// -----------------------------------------------------------------------------
+
+DocumentObjectObserver::DocumentObjectObserver()
+{
+}
+
+DocumentObjectObserver::~DocumentObjectObserver()
+{
+}
+
+void DocumentObjectObserver::slotCreatedDocument(const App::Document&)
+{
+}
+
+void DocumentObjectObserver::slotDeletedDocument(const App::Document& Doc)
+{
+    if (this->getDocument() == &Doc) {
+        this->detachDocument();
+        _objects.clear();
+        cancelObservation();
+    }
+}
+
+void DocumentObjectObserver::slotCreatedObject(const App::DocumentObject&)
+{
+}
+
+void DocumentObjectObserver::slotDeletedObject(const App::DocumentObject& Obj)
+{
+    for (std::list<App::DocumentObject*>::iterator it = _objects.begin(); it != _objects.end(); ++it) {
+        if (*it == &Obj) {
+            _objects.erase(it);
+            break;
+        }
+    }
+
+    if (_objects.empty())
+        cancelObservation();
+}
+
+void DocumentObjectObserver::slotChangedObject(const App::DocumentObject&,
+                                               const App::Property&)
+{
+}
