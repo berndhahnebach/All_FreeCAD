@@ -167,6 +167,8 @@ public:
     void deleteSelectedPoints();
     void addFacetsToSelection(const std::vector<unsigned long>&) const;
     void addPointsToSelection(const std::vector<unsigned long>&) const;
+    void removeFacetsFromSelection(const std::vector<unsigned long>&) const;
+    void removePointsFromSelection(const std::vector<unsigned long>&) const;
     void getFacetsFromSelection(std::vector<unsigned long>&) const;
     void getPointsFromSelection(std::vector<unsigned long>&) const;
     unsigned long countComponents() const;

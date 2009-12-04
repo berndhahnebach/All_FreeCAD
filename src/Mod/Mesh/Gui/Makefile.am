@@ -5,10 +5,12 @@ BUILT_SOURCES=\
 		ui_DlgEvaluateMesh.h \
 		ui_DlgRegularSolid.h \
 		ui_DlgSettingsMeshView.h \
+		ui_RemoveComponents.h \
 		moc_DlgEvaluateMeshImp.cpp \
 		moc_DlgRegularSolidImp.cpp \
 		moc_DlgSettingsMeshView.cpp \
 		moc_PropertyEditorMesh.cpp \
+		moc_RemoveComponents.cpp \
 		qrc_Mesh.cpp 
 
 libMeshGui_la_SOURCES=\
@@ -23,6 +25,8 @@ libMeshGui_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PropertyEditorMesh.cpp \
+		RemoveComponents.cpp \
+		RemoveComponents.h \
 		SoFCIndexedFaceSet.cpp \
 		SoFCMeshObject.cpp \
 		ViewProvider.cpp \
@@ -112,6 +116,7 @@ EXTRA_DIST = \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
 		DlgSettingsMeshView.ui \
+		RemoveComponents.ui \
 		Mesh.qrc \
 		Mesh_de.qm \
 		Mesh_it.qm \
