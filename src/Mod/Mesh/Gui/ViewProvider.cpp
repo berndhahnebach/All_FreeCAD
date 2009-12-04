@@ -998,7 +998,7 @@ void ViewProviderMesh::markPartCallback(void * ud, SoEventCallback * n)
             // context-menu
             QMenu menu;
             QAction* cl = menu.addAction(QObject::tr("Leave removal mode"));
-            QAction* rm = menu.addAction(QObject::tr("Remove selected faces"));
+            QAction* rm = menu.addAction(QObject::tr("Delete selected faces"));
             QAction* cf = menu.addAction(QObject::tr("Clear selected faces"));
             QAction* id = menu.exec(QCursor::pos());
             if (cl == id) {
@@ -1017,10 +1017,10 @@ void ViewProviderMesh::markPartCallback(void * ud, SoEventCallback * n)
                 }
             }
             else if (rm == id) {
-                Gui::Application::Instance->activeDocument()->openCommand("Remove");
+                Gui::Application::Instance->activeDocument()->openCommand("Delete");
                 std::vector<ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
                 for (std::vector<ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
-                    static_cast<ViewProviderMesh*>(*it)->removeSelection();
+                    static_cast<ViewProviderMesh*>(*it)->deleteSelection();
                 }
                 view->render();
                 Gui::Application::Instance->activeDocument()->commitCommand();
@@ -1171,10 +1171,17 @@ void ViewProviderMesh::selectComponent(unsigned long uFacet)
 
 void ViewProviderMesh::addSelection(const std::vector<unsigned long>& indices)
 {
-    std::vector<unsigned long> selection;
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
     rMesh.addFacetsToSelection(indices);
-    rMesh.getFacetsFromSelection(selection);
+
+    // Colorize the selection
+    highlightSelection();
+}
+
+void ViewProviderMesh::removeSelection(const std::vector<unsigned long>& indices)
+{
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    rMesh.removeFacetsFromSelection(indices);
 
     // Colorize the selection
     highlightSelection();
@@ -1188,7 +1195,7 @@ void ViewProviderMesh::clearSelection()
     unhighlightSelection();
 }
 
-void ViewProviderMesh::removeSelection()
+void ViewProviderMesh::deleteSelection()
 {
     std::vector<unsigned long> indices;
     Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;

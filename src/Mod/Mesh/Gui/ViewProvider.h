@@ -121,8 +121,9 @@ public:
     void selectComponent(unsigned long facet);
     void selectFacet(unsigned long facet);
     void addSelection(const std::vector<unsigned long>&);
+    void removeSelection(const std::vector<unsigned long>&);
     void clearSelection();
-    void removeSelection();
+    void deleteSelection();
     void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
                               Gui::View3DInventorViewer &Viewer, SbBool inner,
                               std::vector<unsigned long>& indices) const;

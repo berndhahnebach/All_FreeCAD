@@ -493,6 +493,16 @@ void MeshObject::addPointsToSelection(const std::vector<unsigned long>& inds) co
     MeshCore::MeshAlgorithm(this->_kernel).SetPointsFlag(inds, MeshCore::MeshPoint::SELECTED);
 }
 
+void MeshObject::removeFacetsFromSelection(const std::vector<unsigned long>& inds) const
+{
+    MeshCore::MeshAlgorithm(this->_kernel).ResetFacetsFlag(inds, MeshCore::MeshFacet::SELECTED);
+}
+
+void MeshObject::removePointsFromSelection(const std::vector<unsigned long>& inds) const
+{
+    MeshCore::MeshAlgorithm(this->_kernel).ResetPointsFlag(inds, MeshCore::MeshPoint::SELECTED);
+}
+
 void MeshObject::getFacetsFromSelection(std::vector<unsigned long>& inds) const
 {
     MeshCore::MeshAlgorithm(this->_kernel).GetFacetsFlag(inds, MeshCore::MeshFacet::SELECTED);

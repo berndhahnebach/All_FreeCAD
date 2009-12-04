@@ -61,6 +61,7 @@
 
 #include "DlgEvaluateMeshImp.h"
 #include "DlgRegularSolidImp.h"
+#include "RemoveComponents.h"
 #include "ViewProviderMeshFaceSet.h"
 #include "ViewProviderCurvature.h"
 
@@ -1030,6 +1031,36 @@ bool CmdMeshEvaluateFacet::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
+DEF_STD_CMD_A(CmdMeshRemoveComponents);
+
+CmdMeshRemoveComponents::CmdMeshRemoveComponents()
+  : Command("Mesh_RemoveComponents")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Remove components...");
+    sToolTipText  = QT_TR_NOOP("Remove topologic independant components from the mesh");
+    sWhatsThis    = "Mesh_RemoveComponents";
+    sStatusTip    = QT_TR_NOOP("Remove topologic independant components from the mesh");
+}
+
+void CmdMeshRemoveComponents::activated(int iMsg)
+{
+    static QPointer<MeshGui::RemoveComponents> dlg=0;
+    if (!dlg)
+        dlg = new MeshGui::RemoveComponents(Gui::getMainWindow());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
+bool CmdMeshRemoveComponents::isActive(void)
+{
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshRemoveCompByHand);
 
 CmdMeshRemoveCompByHand::CmdMeshRemoveCompByHand()
@@ -1482,50 +1513,6 @@ void CmdMeshFillupHoles::activated(int iMsg)
 }
 
 bool CmdMeshFillupHoles::isActive(void)
-{
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
-}
-
-//--------------------------------------------------------------------------------------
-
-DEF_STD_CMD_A(CmdMeshRemoveComponents);
-
-CmdMeshRemoveComponents::CmdMeshRemoveComponents()
-  :Command("Mesh_RemoveComponents")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Remove components...");
-  sToolTipText  = QT_TR_NOOP("Remove topologic independant components from the mesh");
-  sWhatsThis    = "Mesh_RemoveComponents";
-  sStatusTip    = QT_TR_NOOP("Remove topologic independant components from the mesh");
-//  sPixmap       = "curv_info";
-}
-
-void CmdMeshRemoveComponents::activated(int iMsg)
-{
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  bool ok;
-  int RemoveCompOfSize = QInputDialog::getInteger( Gui::getMainWindow(), QObject::tr("Remove components"), QObject::tr("Removes components up to a maximum number of triangles:"), 
-                                                      3, 1, 10000000, 1, &ok );
-  if (!ok) return;
-
-  openCommand("Remove components");
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_rem_comps";
-    fName = getUniqueObjectName(fName.c_str());
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::RemoveComponents\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
-    doCommand(Doc,"App.activeDocument().%s.RemoveCompOfSize = %d",fName.c_str(), RemoveCompOfSize);
-  }
-  commitCommand();
-  updateActive();
-}
-
-bool CmdMeshRemoveComponents::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
