@@ -3323,11 +3323,11 @@ initialize_pyqt_module_import_name()
    * PyQt module import */
   if (!PYQT_MODULE_IMPORT_NAME) {
     PYQT_MODULE_IMPORT_NAME = "qt";
-      
-    if (strlen(SoQt::getVersionToolkitString()) >= 1 &&
-	SoQt::getVersionToolkitString()[0] == '4') {
+    // FIXME Version 1.4.1 of SoQt dont have this methode (Juergen)
+    //if (strlen(SoQt::getVersionToolkitString()) >= 1 &&
+	//SoQt::getVersionToolkitString()[0] == '4') {
       PYQT_MODULE_IMPORT_NAME = "PyQt4.Qt";
-    }
+    //}
   }
 }
 
@@ -20009,7 +20009,9 @@ SWIGINTERN PyObject *_wrap_SoQt_getVersionToolkitString(PyObject *SWIGUNUSEDPARM
   char *result = 0 ;
   
   if(!PyArg_UnpackTuple(args,(char *)"SoQt_getVersionToolkitString",0,0)) SWIG_fail;
-  result = (char *)SoQt::getVersionToolkitString();
+  // FIXME Version 1.4.1 of SoQt dont have this methode (Juergen)
+  //result = (char *)SoQt::getVersionToolkitString();
+  return NULL;
   resultobj = SWIG_FromCharPtr((const char *)result);
   return resultobj;
 fail:
@@ -20106,7 +20108,9 @@ SWIGINTERN PyObject *_wrap_SoQt_lockGL(PyObject *SWIGUNUSEDPARM(self), PyObject 
   PyObject *resultobj = 0;
   
   if(!PyArg_UnpackTuple(args,(char *)"SoQt_lockGL",0,0)) SWIG_fail;
-  SoQt::lockGL();
+  // FIXME Version 1.4.1 of SoQt dont have this methode (Juergen)
+  //SoQt::lockGL();
+  return NULL;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -20118,7 +20122,9 @@ SWIGINTERN PyObject *_wrap_SoQt_unlockGL(PyObject *SWIGUNUSEDPARM(self), PyObjec
   PyObject *resultobj = 0;
   
   if(!PyArg_UnpackTuple(args,(char *)"SoQt_unlockGL",0,0)) SWIG_fail;
-  SoQt::unlockGL();
+  // FIXME Version 1.4.1 of SoQt dont have this methode (Juergen)
+  //SoQt::unlockGL();
+  return NULL;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
