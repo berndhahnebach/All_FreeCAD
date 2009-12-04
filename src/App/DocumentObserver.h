@@ -25,6 +25,7 @@
 #define APP_DOCUMENTOBSERVER_H
 
 #include <boost/signals.hpp>
+#include <list>
 
 namespace App
 {
@@ -81,6 +82,37 @@ private:
     Connection connectDocumentCreatedObject;
     Connection connectDocumentDeletedObject;
     Connection connectDocumentChangedObject;
+};
+
+/**
+ * The DocumentObjectObserver class checks for a list of ojects
+ * which of them get removed.
+ *
+ * @author Werner Mayer
+ */
+class AppExport DocumentObjectObserver : public DocumentObserver
+{
+
+public:
+    /// Constructor
+    DocumentObjectObserver();
+    virtual ~DocumentObjectObserver();
+
+private:
+    /** Checks if a new document was created */
+    virtual void slotCreatedDocument(const App::Document& Doc);
+    /** Checks if the given document is about to be closed */
+    virtual void slotDeletedDocument(const App::Document& Doc);
+    /** Checks if a new object was added. */
+    virtual void slotCreatedObject(const App::DocumentObject& Obj);
+    /** Checks if the given object is about to be removed. */
+    virtual void slotDeletedObject(const App::DocumentObject& Obj);
+    /** The property of an observed object has changed */
+    virtual void slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop);
+    virtual void cancelObservation() = 0;
+
+protected:
+    std::list<App::DocumentObject*> _objects;
 };
 
 } //namespace App

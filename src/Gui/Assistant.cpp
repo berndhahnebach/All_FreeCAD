@@ -64,7 +64,7 @@ void Assistant::showDocumentation(const QString &page)
 bool Assistant::startAssistant()
 {
 #if QT_VERSION < 0x040400
-    QMessageBox::critical(0, QObject::tr("FreeCAD Help"),
+    QMessageBox::critical(0, QObject::tr("Help"),
     QObject::tr("Unable to load documentation.\n"
     "In order to load it Qt 4.4 or higher is required."));
     return false;
@@ -94,22 +94,8 @@ bool Assistant::startAssistant()
 
         static bool first = true;
         if (first) {
-            Base::Console().Log("Help file at %s\n", (const char*)doc.toUtf8());
+            Base::Console().Log("Help file at %s\n", (const char*)qhc.toUtf8());
             first = false;
-            // we have first to register the qch befor qhc works!
-            //QString qch = doc + exe.toLower() + QLatin1String(".qch");
-            //QStringList args;
-
-            //args   //<< QLatin1String("-collectionFile") << qhc
-            //       << QLatin1String("-register") << qch;
-            //        
-            //proc->start(app, args);
-            //// start the registering, error if take longer then 10 seconds
-            //if (!proc->waitForFinished(20000)) {
-            //    QMessageBox::critical(0, QObject::tr("FreeCAD Help"),
-            //    QObject::tr("Unable to launch Qt Assistant (%1)").arg(app));
-            //    return false;
-            //}
         }
 
         QStringList args;
@@ -120,7 +106,7 @@ bool Assistant::startAssistant()
         proc->start(app, args);
 
         if (!proc->waitForStarted()) {
-            QMessageBox::critical(0, QObject::tr("FreeCAD Help"),
+            QMessageBox::critical(0, QObject::tr("%1 Help").arg(exe),
             QObject::tr("Unable to launch Qt Assistant (%1)").arg(app));
             return false;
         }
