@@ -14,8 +14,8 @@ SET(Test_SRCS
 )
 SOURCE_GROUP("" FILES ${Test_SRCS})
 
-ADD_CUSTOM_TARGET(Test
-		SOURCES ${Test_SRCS}
+ADD_CUSTOM_TARGET(Test ALL
+	SOURCES ${Test_SRCS}
 )
 
 fc_copy_to_mod_path("Test" Init.py)

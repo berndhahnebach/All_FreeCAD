@@ -25,7 +25,7 @@ SET(DraftLibs_SRCS
 SOURCE_GROUP("draftlibs" FILES ${DraftLibs_SRCS})
 SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS})
 
-ADD_CUSTOM_TARGET(Draft
+ADD_CUSTOM_TARGET(Draft ALL
 		SOURCES ${all_files}
 )
 

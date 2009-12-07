@@ -51,6 +51,7 @@ SET(TestGui_SRCS
 add_library(QtUnitGui SHARED ${TestGui_SRCS})
 
 target_link_libraries(QtUnitGui ${TestGui_LIBS})
+add_dependencies(QtUnitGui Test)
 
 if(WIN32)
 		 set_target_properties(QtUnitGui PROPERTIES SUFFIX ".pyd")
