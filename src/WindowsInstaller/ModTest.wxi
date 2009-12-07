@@ -24,18 +24,17 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModTest" Name="Test" FileSource="../../Mod/Test">
         <Component Id="CompModTest" Guid="f962974e-d693-4aeb-a542-87d47cef8461">
-            <File Id="TestInitPy" Name="Init.py" DiskId="1" />
-            <File Id="TestInitGuiPy" Name="InitGui.py" DiskId="1" />
-            <File Id="TestApp" Name="TestApp.py" DiskId="1" />
-            <File Id="TestGui" Name="TestGui.py" DiskId="1" />
-            <File Id="TestGuipyd" Name="QtUnitGui.pyd" DiskId="1" />
-            <File Id="TestBase" Name="Base.py" DiskId="1" />
-            <File Id="TestDocument" Name="Document.py" DiskId="1" />
-            <File Id="TestMenu" Name="Menu.py" DiskId="1" />
-            <File Id="TestWorkbench" Name="Workbench.py" DiskId="1" />
-            <File Id="TestUnittestgui" Name="unittestgui.py" DiskId="1" />
-            <File Id="TestQtUnit" Name="qtunittest.py" DiskId="1" />
-            <File Id="TestUnicode" Name="UnicodeTests.py" DiskId="1" />
+            <File Id="TestInitPy"    	Name="Init.py" DiskId="1" />
+            <File Id="TestInitGuiPy" 	Name="InitGui.py" DiskId="1" />
+            <File Id="TestApp" 			Name="TestApp.py" DiskId="1" />
+            <File Id="TestGui" 			Name="TestGui.py" DiskId="1" />
+            <File Id="TestGuipyd" 		Name="QtUnitGui.pyd" DiskId="1" />
+            <File Id="TestBase" 		Name="Base.py" DiskId="1" />
+            <File Id="TestDocument" 	Name="Document.py" DiskId="1" />
+            <File Id="TestMenu" 		Name="Menu.py" DiskId="1" />
+            <File Id="TestWorkbench" 	Name="Workbench.py" DiskId="1" />
+            <File Id="TestQtUnit" 		Name="qtunittest.py" DiskId="1" />
+            <File Id="TestUnicode" 		Name="UnicodeTests.py" DiskId="1" />
         </Component>
     </Directory>
 </Include>
