@@ -64,6 +64,7 @@ private:
     static void selectGLCallback(void * ud, SoEventCallback * n);
 
 private:
+    struct iotaGen;
     Ui_RemoveComponents* ui;
     bool selectRegion;
 };
