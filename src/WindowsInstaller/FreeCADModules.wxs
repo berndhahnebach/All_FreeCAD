@@ -32,7 +32,7 @@
             <?include ModImage.wxi ?>
             <?include ModRaytracing.wxi ?>
             <?include ModTest.wxi ?>
-            <?include ModCam.wxi ?>
+            <!--include ModCam.wxi ?-->
             <?include ModComplete.wxi ?>
             <?include ModMeshPart.wxi ?>
             <?include ModPartDesign.wxi ?>

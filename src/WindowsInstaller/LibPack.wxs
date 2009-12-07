@@ -49,8 +49,10 @@
 				<File Id="LibPack8" Name="boost_thread-vc90-mt-1_39.dll" />
 				<File Id="LibPack9" Name="boost_wserialization-vc90-mt-1_39.dll"  />
 				<File Id="LibPack10" Name="sip.pyd"  />
+				<!-- No libs for CAM at the moment 
 				<File Id="LibPack11" Name="atlas.dll"  />
 				<File Id="LibPack12" Name="ANN.dll"  />
+				-->
 				<File Id="LibPack13" Name="coin3.dll"  />
 				<File Id="LibPack20" Name="libumfpack.dll"  />
 				<File Id="LibPack26" Name="python26.dll"   />
@@ -119,7 +121,7 @@
 			</Directory>
 			<Directory Id="iconenginesDir" Name="iconengines" FileSource="../../bin/iconengines" >
 				<Component Id="iconengines"  Guid="c65a8970-a10a-11dd-ad8b-0800200c9a66">
-					<File Id="iconengines1" Name="qsvg4.dll"   />
+					<File Id="iconengines1" Name="qsvgicon4.dll"   />
 				</Component>			
 			</Directory>
 			<Directory Id="sqldriversDir" Name="sqldrivers" FileSource="../../bin/sqldrivers" >
@@ -145,10 +147,7 @@
 			<Directory Id="PyQtDir" Name="PyQt4" FileSource="../../bin/PyQt4" >
 				<Component Id="PyQtTop"  Guid="17b2fc4c-61e2-447e-95af-5b65cad125aa">
 					<File Id="PyQt1" Name="__init__.py"   />
-					<File Id="PyQt2" Name="_qt.pyd"   />
-					<File Id="PyQt3" Name="LICENSE"   />
 					<File Id="PyQt4" Name="pyqtconfig.py"   />
-					<File Id="PyQt5" Name="Qsci.pyd"   />
 					<File Id="PyQt6" Name="Qt.pyd"   />
 					<File Id="PyQt7" Name="QtAssistant.pyd"   />
 					<File Id="PyQt8" Name="QtCore.pyd"   />
@@ -161,15 +160,20 @@
 					<File Id="PyQt15" Name="QtSvg.pyd"   />
 					<File Id="PyQt16" Name="QtTest.pyd"   />
 					<File Id="PyQt17" Name="QtXml.pyd"   />
+					<File Id="PyQt18" Name="QtHelp.pyd"   />
+					<File Id="PyQt19" Name="QtScriptTools.pyd"   />
+					<File Id="PyQt20" Name="QtTest.pyd"   />
+					<File Id="PyQt21" Name="QtWebKit.pyd"   />
+					<File Id="PyQt22" Name="QtXmlPatterns.pyd"   />
 				</Component>
 				<Directory Id="PyQtUicDir" Name="uic" FileSource="../../bin/PyQt4/uic" >
 					<Component Id="PyQtUic"  Guid="c81a900c-8292-4631-9b52-25ac825b99c8">
-						<File Id="PyQt18" Name="__init__.py"   />
-						<File Id="PyQt19" Name="exceptions.py"   />
-						<File Id="PyQt20" Name="objcreator.py"   />
-						<File Id="PyQt21" Name="properties.py"   />
-						<File Id="PyQt22" Name="pyuic.py"   />
-						<File Id="PyQt23" Name="uiparser.py"   />
+						<File Id="PyQt_18" Name="__init__.py"   />
+						<File Id="PyQt_19" Name="exceptions.py"   />
+						<File Id="PyQt_20" Name="objcreator.py"   />
+						<File Id="PyQt_21" Name="properties.py"   />
+						<File Id="PyQt_22" Name="pyuic.py"   />
+						<File Id="PyQt_23" Name="uiparser.py"   />
 					</Component>
 					<Directory Id="PyQtCompilerDir" Name="Compiler" FileSource="../../bin/PyQt4/uic/Compiler" >
 						<Component Id="PyQtCompiler"  Guid="f20f3c7f-5550-48e4-b769-5d6658a1fb4e">
@@ -191,10 +195,11 @@
 						<Component Id="PyQtWidgetPlugins"  Guid="6f4ee199-1574-4989-86c9-2f05036a3a44">
 							<File Id="PyQt32" Name="qaxcontainer.py"   />
 							<File Id="PyQt33" Name="qscintilla.py"   />
-							<File Id="PyQt34" Name="qwt.py"   />
+							<File Id="PyQt34" Name="qtwebkit.py"   />
 						</Component>											
 					</Directory>
 				</Directory>
+				<!--
 				<Directory Id="PyQtQwt5Dir" Name="Qwt5" FileSource="../../bin/PyQt4/Qwt5" >
 					<Component Id="PyQtQwt5"  Guid="40fefaa5-e488-429f-a360-170aef59814c">
 						<File Id="PyQt35" Name="__init__.py"   />
@@ -202,6 +207,7 @@
 						<File Id="PyQt37" Name="Qwt.pyd"   />
 					</Component>
 				</Directory>
+				-->
 			</Directory>
 		</DirectoryRef>
 	</Fragment>

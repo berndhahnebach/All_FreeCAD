@@ -110,7 +110,9 @@
             <ComponentRef Id="PyQtCompiler" />
             <ComponentRef Id="PyQtLoader" />
             <ComponentRef Id="PyQtWidgetPlugins" />
-            <ComponentRef Id="PyQtQwt5" />
+			<!--            
+			<ComponentRef Id="PyQtQwt5" />
+			-->
             <ComponentRef Id="PivyGui" />
             <ComponentRef Id="PivyTop" />
             <ComponentRef Id="ImageForm" />
@@ -128,7 +130,9 @@
             <ComponentRef Id="CompModDraft" />
             <ComponentRef Id="CompModDraftLib" />
             <ComponentRef Id="CompModTest" />
+			<!-- No CAM at the moment 
             <ComponentRef Id="CompModCam" />
+			-->
 	        <ComponentRef Id="CompModDrawingTemplates" />
             <ComponentRef Id="CompModDrawing" />
             <ComponentRef Id="CompModRobot" />
