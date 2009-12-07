@@ -133,22 +133,22 @@ void RemoveComponents::on_deselectRegion_clicked()
     }
 }
 
+struct RemoveComponents::iotaGen {
+    unsigned long operator()() { return n++; }
+    iotaGen() : n(0) {}
+private:
+    unsigned long n;
+};
+
 void RemoveComponents::on_selectAll_clicked()
 {
     // select the complete meshes
-    struct iotaGen {
-        unsigned long operator()() { return n++; }
-        iotaGen() : n(0) {}
-    private:
-        unsigned long n;
-    } iota_gen;
-
     std::list<ViewProviderMesh*> views = getViewProviders();
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
         const Mesh::MeshObject* mo = mf->Mesh.getValuePtr();
         std::vector<unsigned long> faces(mo->countFacets());
-        std::generate(faces.begin(), faces.end(), iota_gen);
+        std::generate(faces.begin(), faces.end(), iotaGen());
         (*it)->addSelection(faces);
     }
 }
