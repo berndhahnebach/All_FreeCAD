@@ -24,12 +24,15 @@
 #ifndef MESH_TOOLS_H
 #define MESH_TOOLS_H
 
+#include <functional>
+
 #include <Mod/Mesh/App/WildMagic4/Wm4DistVector3Triangle3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4Sphere3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4Triangle3.h>
 
 #include "MeshKernel.h"
 #include "Algorithm.h"
+#include "Iterator.h"
 
 namespace MeshCore {
 
@@ -137,6 +140,59 @@ inline bool MeshSearchNeighbours::TriangleCutsSphere (const MeshFacet &rclF) con
   float fRSqr = _akSphere.Radius*_akSphere.Radius;
   return fSqrDist < fRSqr;
 }
+
+class MeshFaceIterator : public std::unary_function<unsigned long, Base::Vector3f>
+{
+public:
+    MeshFaceIterator(const MeshKernel& mesh)
+        : it(mesh) {}
+    Base::Vector3f operator() (unsigned long index)
+    {
+        it.Set(index);
+        return it->GetGravityPoint();
+    }
+
+private:
+    MeshFacetIterator it;
+};
+
+class MeshVertexIterator : public std::unary_function<unsigned long, Base::Vector3f>
+{
+public:
+    MeshVertexIterator(const MeshKernel& mesh)
+        : it(mesh) {}
+    Base::Vector3f operator() (unsigned long index)
+    {
+        it.Set(index);
+        return *it;
+    }
+
+private:
+    MeshPointIterator it;
+};
+
+template <class T>
+class MeshNearestIndexToPlane : public std::unary_function<unsigned long, void>
+{
+public:
+    MeshNearestIndexToPlane(const MeshKernel& mesh, const Base::Vector3f& b, const Base::Vector3f& n)
+        : nearest_index(ULONG_MAX),nearest_dist(FLOAT_MAX), it(mesh), base(b), normal(n) {}
+    void operator() (unsigned long index)
+    {
+        float dist = (float)fabs(it(index).DistanceToPlane(base, normal));
+        if (dist < nearest_dist) {
+            nearest_dist = dist;
+            nearest_index = index;
+        }
+    }
+
+    unsigned long nearest_index;
+    float nearest_dist;
+
+private:
+    T it;
+    Base::Vector3f base, normal;
+};
 
 } // namespace MeshCore
 

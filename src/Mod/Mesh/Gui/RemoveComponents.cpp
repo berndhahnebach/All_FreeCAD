@@ -44,6 +44,7 @@
 #include <Mod/Mesh/App/Core/Algorithm.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
+#include <Mod/Mesh/App/Core/Tools.h>
 
 using namespace MeshGui;
 
@@ -289,6 +290,11 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
     if (w<0) w = -w;
     if (h<0) h = -h;
 
+    SbVec3f pnt, dir;
+    view->getNearPlane(pnt, dir);
+    Base::Vector3f point (pnt[0],pnt[1],pnt[2]);
+    Base::Vector3f normal(dir[0],dir[1],dir[2]);
+
     RemoveComponents* that = reinterpret_cast<RemoveComponents*>(ud);
     std::list<ViewProviderMesh*> views = that->getViewProviders();
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
@@ -297,10 +303,34 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
         gl.x = x; gl.y = y;
         gl.w = w; gl.h = h;
         gl.apply(vp->getRoot());
+
+        const Mesh::MeshObject& mesh = static_cast<Mesh::Feature*>((*it)->getObject())->Mesh.getValue();
+        const MeshCore::MeshKernel& kernel = mesh.getKernel();
+
+        // get the nearest facet to the user (using front clipping plane)
+        MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator> p =
+            std::for_each(gl.indices.begin(), gl.indices.end(),
+                MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator>
+                (kernel, point, normal));
+
+        // succeeded
+        std::vector<unsigned long> faces;
+        if (p.nearest_index != ULONG_MAX) {
+            // set VISIT flag to all outer facets
+            MeshCore::MeshAlgorithm alg(kernel);
+            alg.SetFacetFlag(MeshCore::MeshFacet::VISIT);
+            alg.ResetFacetsFlag(gl.indices, MeshCore::MeshFacet::VISIT);
+
+            MeshCore::MeshTopFacetVisitor visitor(faces);
+            kernel.VisitNeighbourFacets(visitor, p.nearest_index);
+            // append also the start facet
+            faces.push_back(p.nearest_index);
+        }
+
         if (that->selectRegion)
-            vp->addSelection(gl.indices);
+            vp->addSelection(faces);
         else
-            vp->removeSelection(gl.indices);
+            vp->removeSelection(faces);
     }
 
     view->render();
