@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <sstream>
-
 #endif
 
 
@@ -40,9 +39,9 @@
 using namespace Drawing;
 using namespace std;
 
-  
+
 //===========================================================================
-// FeatureView
+// FeaturePage
 //===========================================================================
 
 PROPERTY_SOURCE(Drawing::FeaturePage, App::DocumentObjectGroup)
@@ -51,20 +50,37 @@ const char *group = "Drawing view";
 
 FeaturePage::FeaturePage(void) 
 {
-  static const char *group = "Drawing view";
+    static const char *group = "Drawing view";
 
-  ADD_PROPERTY_TYPE(PageResult ,(0),group,App::Prop_Output,"Resulting SVG document of that page");
-  ADD_PROPERTY_TYPE(Template   ,(""),group,App::Prop_None  ,"Template for the page");
+    ADD_PROPERTY_TYPE(PageResult ,(0),group,App::Prop_Output,"Resulting SVG document of that page");
+    ADD_PROPERTY_TYPE(Template   ,(""),group,App::Prop_None  ,"Template for the page");
 }
 
 FeaturePage::~FeaturePage()
 {
 }
 
+short FeaturePage::mustExecute() const
+{
+    // get through the children and check if one is touched
+    const std::vector<App::DocumentObject*> &Grp = Group.getValues();
+    for (std::vector<App::DocumentObject*>::const_iterator It= Grp.begin();It!=Grp.end();++It) {
+        if ((*It)->getTypeId().isDerivedFrom(Drawing::FeatureView::getClassTypeId())) {
+            Drawing::FeatureView *View = static_cast<Drawing::FeatureView *>(*It);
+            if (View->isTouched())
+                return 1;
+            if (View->ViewResult.isTouched())
+                return 1;
+        }
+    }
+
+    return 0;
+}
+
 App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
-	if (std::string(PageResult.getValue()) == "")
-		PageResult.setValue(Template.getValue());
+    if (std::string(PageResult.getValue()).empty())
+        PageResult.setValue(Template.getValue());
 
     Base::FileInfo fi(Template.getValue());
     if (!fi.isReadable()) {
@@ -74,30 +90,29 @@ App::DocumentObjectExecReturn *FeaturePage::execute(void)
     }
     // open Template file
     string line;
-    ifstream file ( fi.filePath().c_str() );
+    ifstream file (fi.filePath().c_str());
 
     // make a temp file for FileIncluded Property
     string tempName = PageResult.getExchangeTempFile();
     ofstream ofile(tempName.c_str());
 
-    while (! file.eof() )
+    while (!file.eof())
     {
-      getline (file,line);
-      if(line != "<!- DrawingContent -->")
-        ofile << line << endl;
-      else
-      {
-        // get through the children and collect all the views
-		  const std::vector<App::DocumentObject*> &Grp = Group.getValues();
-		  for(std::vector<App::DocumentObject*>::const_iterator It= Grp.begin();It!=Grp.end();++It){
-			  if((*It)->getTypeId().isDerivedFrom(Drawing::FeatureView::getClassTypeId())){
-				  Drawing::FeatureView *View = dynamic_cast<Drawing::FeatureView *>(*It);
-				  ofile << View->ViewResult.getValue();
-				  ofile << endl << endl << endl;
-			  }
-
-		  }
-      }
+        getline (file,line);
+        if(line != "<!- DrawingContent -->")
+            ofile << line << endl;
+        else
+        {
+            // get through the children and collect all the views
+            const std::vector<App::DocumentObject*> &Grp = Group.getValues();
+            for (std::vector<App::DocumentObject*>::const_iterator It= Grp.begin();It!=Grp.end();++It) {
+                if ((*It)->getTypeId().isDerivedFrom(Drawing::FeatureView::getClassTypeId())) {
+                    Drawing::FeatureView *View = dynamic_cast<Drawing::FeatureView *>(*It);
+                    ofile << View->ViewResult.getValue();
+                    ofile << endl << endl << endl;
+                }
+            }
+        }
     }
 
     file.close();
@@ -105,15 +120,12 @@ App::DocumentObjectExecReturn *FeaturePage::execute(void)
 
     PageResult.setValue(tempName.c_str());
 
- 
-  //const char* text = "lskdfjlsd";
-  //const char* regex = "lskdflds";
-  //boost::regex e(regex);
-  //boost::smatch what;
-  //if(boost::regex_match(string(text), what, e))
-  //{
-  //}
-  return App::DocumentObject::StdReturn;
+    //const char* text = "lskdfjlsd";
+    //const char* regex = "lskdflds";
+    //boost::regex e(regex);
+    //boost::smatch what;
+    //if(boost::regex_match(string(text), what, e))
+    //{
+    //}
+    return App::DocumentObject::StdReturn;
 }
-
-

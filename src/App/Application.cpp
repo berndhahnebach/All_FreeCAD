@@ -455,7 +455,7 @@ const char* Application::GetHomePath(void) const
 std::string Application::getResourceDir()
 {
 # ifdef RESOURCEDIR
-    return std::string(RESOURCEDIR);
+    return std::string(RESOURCEDIR) + "/";
 #else
     return mConfig["AppHomePath"];
 #endif

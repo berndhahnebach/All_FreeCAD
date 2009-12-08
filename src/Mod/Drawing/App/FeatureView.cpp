@@ -43,7 +43,7 @@ using namespace Drawing;
 // FeatureView
 //===========================================================================
 
-PROPERTY_SOURCE(Drawing::FeatureView, App::AbstractFeature)
+PROPERTY_SOURCE(Drawing::FeatureView, App::DocumentObject)
 
 
 

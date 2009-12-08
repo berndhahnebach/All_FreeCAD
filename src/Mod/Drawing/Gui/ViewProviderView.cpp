@@ -44,12 +44,6 @@
 
 #include "ViewProviderView.h"
 
-//#include <Mod/Drawing/App/DrawingFeature.h>
-
-
-//#include "Tree.h"
-
-
 
 using namespace DrawingGui;
 
@@ -59,47 +53,35 @@ PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingView, Gui::ViewProviderDocumentOb
 //**************************************************************************
 // Construction/Destruction
 
-       
+
 ViewProviderDrawingView::ViewProviderDrawingView()
 {
-
-
-  sPixmap = "Page";
-
+    sPixmap = "Page";
 }
 
 ViewProviderDrawingView::~ViewProviderDrawingView()
 {
 }
 
-
 void ViewProviderDrawingView::attach(App::DocumentObject *pcFeat)
 {
-  // call parent attach method
-  ViewProviderDocumentObject::attach(pcFeat);
-
- 
+    // call parent attach method
+    ViewProviderDocumentObject::attach(pcFeat);
 }
 
 void ViewProviderDrawingView::setDisplayMode(const char* ModeName)
 {
- 
-  ViewProviderDocumentObject::setDisplayMode( ModeName );
+    ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderDrawingView::getDisplayModes(void) const
 {
-  // get the modes of the father
-  std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
+    // get the modes of the father
+    std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
 
- 
-  return StrList;
+    return StrList;
 }
 
 void ViewProviderDrawingView::updateData(const App::Property*)
 {
-
-
 }
-
-

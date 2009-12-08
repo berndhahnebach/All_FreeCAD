@@ -27,7 +27,7 @@
 #define _FeatureView_h_
 
 
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/PropertyStandard.h>
 #include <App/PropertyGeo.h>
 
@@ -45,34 +45,32 @@ namespace Drawing
 
 /** Base class of all View Features in the drawing module
  */
-class AppDrawingExport FeatureView: public App::AbstractFeature
+class AppDrawingExport FeatureView : public App::DocumentObject
 {
-  PROPERTY_HEADER(Drawing::FeatureView);
+    PROPERTY_HEADER(Drawing::FeatureView);
 
 public:
-	/// Constructor
-	FeatureView(void);
-  virtual ~FeatureView();
+    /// Constructor
+    FeatureView(void);
+    virtual ~FeatureView();
 
-  App::PropertyFloat X,Y,Scale,Rotation;
-  App::PropertyString ViewResult;
+    App::PropertyFloat X,Y,Scale,Rotation;
+    App::PropertyString ViewResult;
 
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    //@}
 
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "DrawingGui::ViewProviderDrawingView";
-  }
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "DrawingGui::ViewProviderDrawingView";
+    }
 };
 
-
 } //namespace Drawing
-
 
 
 #endif

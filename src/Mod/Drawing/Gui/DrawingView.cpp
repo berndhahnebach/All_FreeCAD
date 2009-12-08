@@ -244,24 +244,31 @@ void DrawingView::viewAll()
     fitDrawing();
 }
 
-void DrawingView::load (const QString & file)
+bool DrawingView::load (const QString & file)
 {
     QFileInfo fi(file);
     QString suffix = fi.suffix().toLower();
+    bool ok;
     if (suffix == QLatin1String("svg")) {
-        this->_drawingView->load(file);
+        ok = this->_drawingView->renderer()->load(file);
     } else if (suffix == QLatin1String("svgz")) {
         QByteArray contents;
         Gui::ByteArrayStream buf(contents);
         Base::igzstream gzip(file.toUtf8());
         gzip >> &buf;
         gzip.close();
-        this->_drawingView->load(contents);
+        ok = this->_drawingView->renderer()->load(contents);
     }
 
-    QSize size = this->_drawingView->renderer()->defaultSize();
-    this->aspectRatio = (float)size.width() / (float)size.height();
-    this->_drawingView->resize(size);
+    if (ok) {
+        QSize size = this->_drawingView->renderer()->defaultSize();
+        this->aspectRatio = (float)size.width() / (float)size.height();
+    }
+    else {
+        this->aspectRatio = 1.0f;
+    }
+
+    return ok;
 }
 
 // Create the action groups, actions, menus and toolbars
@@ -303,10 +310,14 @@ void DrawingView::fitDrawing()
 
 }
 
-
 // Slot function to display the Drawing at a 1:1 scale"
 void DrawingView::oneToOneDrawing()
 {
+    QSize size = this->_drawingView->renderer()->defaultSize();
+    if (size.isValid())
+        this->_drawingView->resize(size);
+    else
+        this->_drawingView->resize(this->size());
 }
 
 // Slot function to handle the color actions
@@ -343,10 +354,6 @@ void DrawingView::sliderValueAdjusted(int NewValue)
     if (_pShowBrightAct->isChecked() == true)
         showBrightened();
 }
-
-
-
-
 
 // Mouse press event
 void DrawingView::mousePressEvent(QMouseEvent* cEvent)
