@@ -133,7 +133,7 @@ void DocumentObject::setDocument(App::Document* doc)
 
 void DocumentObject::onBeforeChange(const Property* prop)
 {
-    if(_pDoc)
+    if (_pDoc)
         _pDoc->onBeforeChangeProperty(this,prop);
 }
 

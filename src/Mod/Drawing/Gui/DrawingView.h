@@ -45,7 +45,7 @@ public:
     DrawingView(QWidget* parent = 0);
     virtual ~DrawingView();
 
-    void load (const QString & file);
+    bool load (const QString & file);
     const char *getName(void) const {return "DrawingView";}
     void onUpdate(void){};
 
@@ -72,11 +72,11 @@ public:
     //virtual int setColorMapBlueValue(int index, float value);
     //virtual int setColorMapAlphaValue(int index, float value);
 
-public slots:
+public Q_SLOTS:
     virtual void fitDrawing();
     virtual void oneToOneDrawing();
 
-protected slots:
+protected Q_SLOTS:
     virtual void handleColorAct( QAction* act);
     virtual void sliderValueAdjusted(int NewValue);
     virtual void drawGraphics();

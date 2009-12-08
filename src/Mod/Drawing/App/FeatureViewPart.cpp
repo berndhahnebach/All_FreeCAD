@@ -67,7 +67,7 @@ using namespace std;
 
 
 //===========================================================================
-// FeatureView
+// FeatureViewPart
 //===========================================================================
 
 PROPERTY_SOURCE(Drawing::FeatureViewPart, Drawing::FeatureView)
@@ -75,15 +75,36 @@ PROPERTY_SOURCE(Drawing::FeatureViewPart, Drawing::FeatureView)
 
 FeatureViewPart::FeatureViewPart(void) 
 {
-  static const char *group = "Shape view";
+    static const char *group = "Shape view";
 
-  ADD_PROPERTY_TYPE(Direction ,(0,0,1.0),group,App::Prop_None,"Projection direction");
-  ADD_PROPERTY_TYPE(Source ,(0),group,App::Prop_None,"Shape to view");
-  ADD_PROPERTY_TYPE(ShowHiddenLines ,(false),group,App::Prop_None,"Control the aperance of the dashed hiden lines");
+    ADD_PROPERTY_TYPE(Direction ,(0,0,1.0),group,App::Prop_None,"Projection direction");
+    ADD_PROPERTY_TYPE(Source ,(0),group,App::Prop_None,"Shape to view");
+    ADD_PROPERTY_TYPE(ShowHiddenLines ,(false),group,App::Prop_None,"Control the appearance of the dashed hidden lines");
 }
 
 FeatureViewPart::~FeatureViewPart()
 {
+}
+
+short FeatureViewPart::mustExecute() const
+{
+    if (X.isTouched())
+        return 1;
+    if (Y.isTouched())
+        return 1;
+    if (Scale.isTouched())
+        return 1;
+    if (Rotation.isTouched())
+        return 1;
+    if (Source.isTouched())
+        return 1;
+    if (Source.getValue() && Source.getValue()->isTouched())
+        return 1;
+    if (Direction.isTouched())
+        return 1;
+    if (ShowHiddenLines.isTouched())
+        return 1;
+    return 0;
 }
 
 #if 0 
@@ -171,7 +192,7 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 {
     std::stringstream result;
-	std::string ViewName = Label.getValue();
+    std::string ViewName = Label.getValue();
 
     App::DocumentObject* link = Source.getValue();
     if (!link)
@@ -181,18 +202,18 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
     TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
     if (shape.IsNull())
         return new App::DocumentObjectExecReturn("Linked shape object is empty");
-	Base::Vector3f Dir = Direction.getValue();
-	bool hidden = ShowHiddenLines.getValue();
+    Base::Vector3f Dir = Direction.getValue();
+    bool hidden = ShowHiddenLines.getValue();
 
-	ProjectionAlgos Alg(shape,Dir);
+    ProjectionAlgos Alg(shape,Dir);
 
     result  << "<g" 
             << " id=\"" << ViewName << "\"" << endl
-			<< "   transform=\"rotate("<< Rotation.getValue() << ","<< X.getValue()<<","<<Y.getValue()<<") translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
+            << "   transform=\"rotate("<< Rotation.getValue() << ","<< X.getValue()<<","<<Y.getValue()<<") translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
             << "  >" << endl;
-			
-	result << Alg.getSVG(hidden?ProjectionAlgos::WithHidden:ProjectionAlgos::Plain);
- 
+
+    result << Alg.getSVG(hidden?ProjectionAlgos::WithHidden:ProjectionAlgos::Plain);
+
     result << "</g>" << endl;
 
     // Apply the resulting fragment

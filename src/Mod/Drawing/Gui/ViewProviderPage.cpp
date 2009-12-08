@@ -48,13 +48,6 @@
 #include "ViewProviderPage.h"
 #include <Mod/Drawing/App/FeaturePage.h>
 
-//#include <Mod/Drawing/App/DrawingFeature.h>
-
-
-//#include "Tree.h"
-
-
-
 using namespace DrawingGui;
 
 PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingPage, Gui::ViewProviderDocumentObjectGroup)
@@ -63,66 +56,56 @@ PROPERTY_SOURCE(DrawingGui::ViewProviderDrawingPage, Gui::ViewProviderDocumentOb
 //**************************************************************************
 // Construction/Destruction
 
-       
 ViewProviderDrawingPage::ViewProviderDrawingPage()
-:view(0)
+  : view(0)
 {
-
-
-  sPixmap = "Page";
-
+    sPixmap = "Page";
 }
 
 ViewProviderDrawingPage::~ViewProviderDrawingPage()
 {
 }
 
-
 void ViewProviderDrawingPage::attach(App::DocumentObject *pcFeat)
 {
-  // call parent attach method
-  ViewProviderDocumentObject::attach(pcFeat);
-
- 
+    // call parent attach method
+    ViewProviderDocumentObject::attach(pcFeat);
 }
 
 void ViewProviderDrawingPage::setDisplayMode(const char* ModeName)
 {
- 
-  ViewProviderDocumentObject::setDisplayMode( ModeName );
+    ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderDrawingPage::getDisplayModes(void) const
 {
-  // get the modes of the father
-  std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
+    // get the modes of the father
+    std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
 
- 
-  return StrList;
+    return StrList;
 }
 
 void ViewProviderDrawingPage::updateData(const App::Property* prop)
 {
-	Gui::ViewProviderDocumentObjectGroup::updateData(prop);
+    Gui::ViewProviderDocumentObjectGroup::updateData(prop);
     if (prop->getTypeId() == App::PropertyFileIncluded::getClassTypeId()) {
-
-		if(std::string(getPageObject()->PageResult.getValue()) != ""){
-			if(!view){
-				view = new DrawingView(Gui::getMainWindow());
-				view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
-				view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
-				view->setWindowTitle(QObject::tr("Drawing viewer"));
-				view->resize( 400, 300 );
-				Gui::getMainWindow()->addWindow(view);
-			}else{
-				try{
-				view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
-				}catch(...){}// dirty hack for the moment....
-			}
-		}
-	}
-
-
+        if (std::string(getPageObject()->PageResult.getValue()) != ""){
+            if (!view){
+                view = new DrawingView(Gui::getMainWindow());
+                view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+                view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
+                view->setWindowTitle(QObject::tr("Drawing viewer"));
+                view->resize(400, 300);
+                view->oneToOneDrawing();
+                Gui::getMainWindow()->addWindow(view);
+            }
+            else {
+                try{
+                    view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+                }catch(...){}// dirty hack for the moment....
+            }
+        }
+    }
 }
 
 bool ViewProviderDrawingPage::doubleClicked(void)
@@ -135,16 +118,10 @@ bool ViewProviderDrawingPage::doubleClicked(void)
     Gui::getMainWindow()->addWindow(view);
 
     return true;*/
-	return false;
+    return false;
 }
-
-
 
 Drawing::FeaturePage* ViewProviderDrawingPage::getPageObject(void)
 {
     return dynamic_cast<Drawing::FeaturePage*>(pcObject);
 }
-
-
-
-

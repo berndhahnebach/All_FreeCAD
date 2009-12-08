@@ -46,33 +46,32 @@ namespace Drawing
  */
 class AppDrawingExport FeatureViewPart: public FeatureView
 {
-  PROPERTY_HEADER(Part::FeatureViewPart);
+    PROPERTY_HEADER(Part::FeatureViewPart);
 
 public:
-	/// Constructor
-	FeatureViewPart(void);
-  virtual ~FeatureViewPart();
+    /// Constructor
+    FeatureViewPart(void);
+    virtual ~FeatureViewPart();
 
-  App::PropertyLink   Source;
-  App::PropertyVector Direction;
-  App::PropertyBool   ShowHiddenLines;
+    App::PropertyLink   Source;
+    App::PropertyVector Direction;
+    App::PropertyBool   ShowHiddenLines;
  
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual short mustExecute() const;
+    virtual App::DocumentObjectExecReturn *execute(void);
+    //@}
 
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "DrawingGui::ViewProviderDrawingView";
-  }
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "DrawingGui::ViewProviderDrawingView";
+    }
 };
 
-
 } //namespace Drawing
-
 
 
 #endif

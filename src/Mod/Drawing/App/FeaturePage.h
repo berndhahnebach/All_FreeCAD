@@ -20,8 +20,6 @@
  *                                                                         *
  ***************************************************************************/
 
- 
-
 
 #ifndef _FeaturePage_h_
 #define _FeaturePage_h_
@@ -35,7 +33,7 @@
 class PyObjectBase;
 
 namespace Base{
-  class PyObjectBase;
+    class PyObjectBase;
 }
 
 namespace Drawing
@@ -46,27 +44,28 @@ namespace Drawing
  */
 class AppDrawingExport FeaturePage: public App::DocumentObjectGroup
 {
-  PROPERTY_HEADER(Drawing::FeaturePage);
+    PROPERTY_HEADER(Drawing::FeaturePage);
 
 public:
-	/// Constructor
-	FeaturePage(void);
-  virtual ~FeaturePage();
+    /// Constructor
+    FeaturePage(void);
+    virtual ~FeaturePage();
 
-  App::PropertyFileIncluded PageResult;
-  App::PropertyFile Template;
+    App::PropertyFileIncluded PageResult;
+    App::PropertyFile Template;
 
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual short mustExecute() const;
+    virtual App::DocumentObjectExecReturn *execute(void);
+    //@}
 
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "DrawingGui::ViewProviderDrawingPage";
-  }
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "DrawingGui::ViewProviderDrawingPage";
+    }
 };
 
 
