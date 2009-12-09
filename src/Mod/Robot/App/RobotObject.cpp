@@ -43,7 +43,7 @@ RobotObject::RobotObject()
 :block(false)
 {
     ADD_PROPERTY_TYPE(RobotVrmlFile     ,(0),"Robot definition"    ,Prop_None,"Included file with the VRML representation of the robot");
-    ADD_PROPERTY_TYPE(RobotKinematicFile,(0),"Kinematic definition",Prop_None,"Included file with kinematic definition of the robot Axis");
+    ADD_PROPERTY_TYPE(RobotKinematicFile,(0),"Robot definition",Prop_None,"Included file with kinematic definition of the robot Axis");
 
     ADD_PROPERTY_TYPE(Axis1,(0.0),"Robot kinematic",Prop_None,"Axis 1 angle of the robot in degre");
     ADD_PROPERTY_TYPE(Axis2,(0.0),"Robot kinematic",Prop_None,"Axis 2 angle of the robot in degre");
@@ -79,6 +79,12 @@ PyObject *RobotObject::getPyObject()
 
 void RobotObject::onChanged(const Property* prop)
 {
+
+    if(prop == &RobotKinematicFile){
+        // load the new kinematic
+        robot.readKinematic(RobotKinematicFile.getValue());
+    }
+
     static bool block = false;
     if(prop == &Axis1 && !block){
         robot.setAxis(0,Axis1.getValue());

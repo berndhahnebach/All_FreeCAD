@@ -101,8 +101,47 @@ void Robot6Axis::setKinematic(const AxisDefinition KinDef[6])
 	calcTcp();
 }
 
+void split(std::string const& string, const char delemiter, std::vector<std::string>& destination)
+{
+    std::string::size_type  last_position(0);
+    std::string::size_type  position(0);
+         
+    for (std::string::const_iterator it(string.begin()); it != string.end(); ++it, ++position)
+    {
+        if (*it == delemiter )
+        {
+            destination.push_back(string.substr(last_position, position - last_position ));
+            last_position = position + 1;
+        }
+    }
+    destination.push_back(string.substr(last_position, position - last_position ));
+}
+
 void Robot6Axis::readKinematic(const char * FileName)
 {
+    char buf[120];
+    std::ifstream in(FileName);
+    std::vector<std::string> destination;
+    AxisDefinition temp[6];
+
+    // over read the header
+    in.getline(buf,119,'\n');
+    // read 6 Axis
+    for( int i = 0; i<6; i++){
+        in.getline(buf,79,'\n');
+        destination.clear();
+        split(std::string(buf),',',destination);
+        // transfer the values in kinematic structure
+        temp[i].a        = atof(destination[0].c_str());
+        temp[i].alpha    = atof(destination[1].c_str());
+        temp[i].d        = atof(destination[2].c_str());
+        temp[i].theta    = atof(destination[3].c_str());
+        temp[i].minAngle = atof(destination[4].c_str());
+        temp[i].maxAngle = atof(destination[5].c_str());
+        temp[i].velocity = atof(destination[6].c_str());
+    }
+
+    setKinematic(temp);
 
 }
 
