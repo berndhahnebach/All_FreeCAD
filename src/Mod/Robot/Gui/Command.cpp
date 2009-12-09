@@ -60,10 +60,12 @@ void CmdRobotConstraintAxle::activated(int iMsg)
 {
     std::string FeatName = getUniqueObjectName("Robot");
     std::string RobotPath = "Mod/Robot/Lib/Kuka/kr500_1.wrl";
+    std::string KinematicPath = "Mod/Robot/Lib/Kuka/kr500_1.csv";
 
     openCommand("Place robot");
     doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
     updateActive();
