@@ -46,7 +46,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
-#include <Base/Tools2D.h>
+#include <Base/Tools.h>
 #include <Base/ViewProj.h>
 
 #include <App/Document.h>
@@ -765,18 +765,6 @@ void ViewProviderMesh::selectGLCallback(void * ud, SoEventCallback * n)
     view->render();
 }
 
-namespace MeshGui {
-template <class T>
-struct iotaGen {
-public:
-    T operator()() { return n++; }
-    iotaGen(T v) : n(v) {}
-
-private:
-    T n;
-};
-}
-
 void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
                                             Gui::View3DInventorViewer &Viewer,
                                             SbBool inner,
@@ -807,7 +795,7 @@ void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
     if (!inner) {
         // get the indices that are completely outside
         std::vector<unsigned long> complete(meshProp.getValue().countFacets());
-        std::generate(complete.begin(), complete.end(), iotaGen<unsigned long>(0));
+        std::generate(complete.begin(), complete.end(), Base::iotaGen<unsigned long>(0));
         std::sort(indices.begin(), indices.end());
         std::vector<unsigned long> complementary;
         std::back_insert_iterator<std::vector<unsigned long> > biit(complementary);
@@ -850,7 +838,7 @@ void ViewProviderMesh::splitMesh(const MeshCore::MeshKernel& toolMesh, const Bas
     if (!clip_inner) {
         // get the indices that are completely outside
         std::vector<unsigned long> complete(meshPropKernel.CountFacets());
-        std::generate(complete.begin(), complete.end(), iotaGen<unsigned long>(0));
+        std::generate(complete.begin(), complete.end(), Base::iotaGen<unsigned long>(0));
         std::sort(indices.begin(), indices.end());
         std::vector<unsigned long> complementary;
         std::back_insert_iterator<std::vector<unsigned long> > biit(complementary);
@@ -882,7 +870,7 @@ void ViewProviderMesh::segmentMesh(const MeshCore::MeshKernel& toolMesh, const B
     if (!clip_inner) {
         // get the indices that are completely outside
         std::vector<unsigned long> complete(meshPropKernel.CountFacets());
-        std::generate(complete.begin(), complete.end(), iotaGen<unsigned long>(0));
+        std::generate(complete.begin(), complete.end(), Base::iotaGen<unsigned long>(0));
         std::sort(indices.begin(), indices.end());
         std::vector<unsigned long> complementary;
         std::back_insert_iterator<std::vector<unsigned long> > biit(complementary);
@@ -1134,10 +1122,7 @@ void ViewProviderMesh::selectFacet(unsigned long facet)
     selection.push_back(facet);
 
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
-
     rMesh.addFacetsToSelection(selection);
-    selection.clear();
-    rMesh.getFacetsFromSelection(selection);
 
     // Colorize the selection
     pcMatBinding->value = SoMaterialBinding::PER_FACE;
@@ -1152,6 +1137,28 @@ void ViewProviderMesh::selectFacet(unsigned long facet)
     }
 }
 
+void ViewProviderMesh::deselectFacet(unsigned long facet)
+{
+    std::vector<unsigned long> selection;
+    selection.push_back(facet);
+
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    rMesh.removeFacetsFromSelection(selection);
+
+    // Colorize the selection
+    pcMatBinding->value = SoMaterialBinding::PER_FACE;
+    App::Color c = ShapeColor.getValue();
+    int uCtFacets = (int)rMesh.countFacets();
+
+    if (uCtFacets != pcShapeMaterial->diffuseColor.getNum()) {
+        highlightSelection();
+    }
+    else {
+        App::Color c = ShapeColor.getValue();
+        pcShapeMaterial->diffuseColor.set1Value(facet,c.r,c.g,c.b);
+    }
+}
+
 void ViewProviderMesh::selectComponent(unsigned long uFacet)
 {
     std::vector<unsigned long> selection;
@@ -1162,8 +1169,34 @@ void ViewProviderMesh::selectComponent(unsigned long uFacet)
     const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
     MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::VISIT);
     rKernel.VisitNeighbourFacets(clVisitor, uFacet);
-
     rMesh.addFacetsToSelection(selection);
+
+    // Colorize the selection
+    highlightSelection();
+}
+
+void ViewProviderMesh::deselectComponent(unsigned long uFacet)
+{
+    std::vector<unsigned long> selection;
+    selection.push_back(uFacet);
+
+    MeshCore::MeshTopFacetVisitor clVisitor(selection);
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
+    MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::VISIT);
+    rKernel.VisitNeighbourFacets(clVisitor, uFacet);
+    rMesh.removeFacetsFromSelection(selection);
+
+    // Colorize the selection
+    highlightSelection();
+}
+
+void ViewProviderMesh::setSelection(const std::vector<unsigned long>& indices)
+{
+    const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
+    const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
+    MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::SELECTED);
+    rMesh.addFacetsToSelection(indices);
 
     // Colorize the selection
     highlightSelection();

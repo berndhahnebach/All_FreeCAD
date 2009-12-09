@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <algorithm>
 # include <climits>
+# include <Inventor/SoPickedPoint.h>
+# include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoSeparator.h>
 #endif
@@ -33,6 +35,8 @@
 #include "RemoveComponents.h"
 #include "ui_RemoveComponents.h"
 #include "ViewProvider.h"
+#include <Base/Console.h>
+#include <Base/Tools.h>
 #include <App/Application.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
@@ -67,7 +71,7 @@ static unsigned char cross_mask_bitmap[] = {
 };
 
 RemoveComponents::RemoveComponents(QWidget* parent, Qt::WFlags fl)
-  : QDialog(parent, fl)
+  : QDialog(parent, fl),  _interactiveMode(0)
 {
     ui = new Ui_RemoveComponents;
     ui->setupUi(this);
@@ -98,11 +102,11 @@ void RemoveComponents::on_selectRegion_clicked()
 {
     // a rubberband to select a rectangle area of the meshes
     this->selectRegion = true;
-    Gui::Document* doc = Gui::Application::Instance->getDocument(this->getDocument());
-    Gui::MDIView* view = doc->getActiveView();
-    if (view && view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
-        viewer->setEditing(true);
+    Gui::View3DInventorViewer* viewer = this->getViewer();
+    if (viewer) {
+        stopInteractiveCallback(viewer);
+        startInteractiveCallback(viewer, selectGLCallback);
+        // set cross cursor
         viewer->startPicking(Gui::View3DInventorViewer::Rectangle);
         SoQtCursor::CustomCursor custom;
         custom.dim.setValue(CROSS_WIDTH, CROSS_HEIGHT);
@@ -110,7 +114,6 @@ void RemoveComponents::on_selectRegion_clicked()
         custom.bitmap = cross_bitmap;
         custom.mask = cross_mask_bitmap;
         viewer->setComponentCursor(SoQtCursor(&custom));
-        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), selectGLCallback, this);
     }
 }
 
@@ -118,11 +121,11 @@ void RemoveComponents::on_deselectRegion_clicked()
 {
     // a rubberband to deselect a rectangle area of the meshes
     this->selectRegion = false;
-    Gui::Document* doc = Gui::Application::Instance->getDocument(this->getDocument());
-    Gui::MDIView* view = doc->getActiveView();
-    if (view && view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
-        viewer->setEditing(true);
+    Gui::View3DInventorViewer* viewer = this->getViewer();
+    if (viewer) {
+        stopInteractiveCallback(viewer);
+        startInteractiveCallback(viewer, selectGLCallback);
+        // set cross cursor
         viewer->startPicking(Gui::View3DInventorViewer::Rectangle);
         SoQtCursor::CustomCursor custom;
         custom.dim.setValue(CROSS_WIDTH, CROSS_HEIGHT);
@@ -130,16 +133,8 @@ void RemoveComponents::on_deselectRegion_clicked()
         custom.bitmap = cross_bitmap;
         custom.mask = cross_mask_bitmap;
         viewer->setComponentCursor(SoQtCursor(&custom));
-        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), selectGLCallback, this);
     }
 }
-
-struct RemoveComponents::iotaGen {
-    unsigned long operator()() { return n++; }
-    iotaGen() : n(0) {}
-private:
-    unsigned long n;
-};
 
 void RemoveComponents::on_selectAll_clicked()
 {
@@ -149,7 +144,7 @@ void RemoveComponents::on_selectAll_clicked()
         Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
         const Mesh::MeshObject* mo = mf->Mesh.getValuePtr();
         std::vector<unsigned long> faces(mo->countFacets());
-        std::generate(faces.begin(), faces.end(), iotaGen());
+        std::generate(faces.begin(), faces.end(), Base::iotaGen<unsigned long>(0));
         (*it)->addSelection(faces);
     }
 }
@@ -178,7 +173,7 @@ void RemoveComponents::on_selectComponents_clicked()
 
         std::vector<unsigned long> faces;
         for (std::vector<std::vector<unsigned long> >::iterator jt = segm.begin(); jt != segm.end(); ++jt) {
-            if (jt->size() <= (unsigned long)size)
+            if (jt->size() < (unsigned long)size)
                 faces.insert(faces.end(), jt->begin(), jt->end());
         }
 
@@ -201,7 +196,7 @@ void RemoveComponents::on_deselectComponents_clicked()
 
         std::vector<unsigned long> faces;
         for (std::vector<std::vector<unsigned long> >::iterator jt = segm.begin(); jt != segm.end(); ++jt) {
-            if (jt->size() >= (unsigned long)size)
+            if (jt->size() > (unsigned long)size)
                 faces.insert(faces.end(), jt->begin(), jt->end());
         }
 
@@ -233,8 +228,57 @@ void RemoveComponents::on_deleteButton_clicked()
     doc->commitCommand();
 }
 
+void RemoveComponents::on_invertButton_clicked()
+{
+    std::list<ViewProviderMesh*> views = getViewProviders();
+    for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
+        Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
+        const Mesh::MeshObject* mo = mf->Mesh.getValuePtr();
+        const MeshCore::MeshFacetArray& faces = mo->getKernel().GetFacets();
+        unsigned long num_notsel = std::count_if(faces.begin(), faces.end(),
+            std::bind2nd(MeshCore::MeshIsNotFlag<MeshCore::MeshFacet>(),
+            MeshCore::MeshFacet::SELECTED));
+        std::vector<unsigned long> notselect;
+        notselect.reserve(num_notsel);
+        MeshCore::MeshFacetArray::_TConstIterator beg = faces.begin();
+        MeshCore::MeshFacetArray::_TConstIterator end = faces.end();
+        for (MeshCore::MeshFacetArray::_TConstIterator jt = beg; jt != end; ++jt) {
+            if (!jt->IsFlag(MeshCore::MeshFacet::SELECTED))
+                notselect.push_back(jt-beg);
+        }
+        (*it)->setSelection(notselect);
+    }
+}
+
+void RemoveComponents::on_selectTriangle_clicked()
+{
+    // a rubberband to select a rectangle area of the meshes
+    this->selectRegion = true;
+    Gui::View3DInventorViewer* viewer = this->getViewer();
+    if (viewer) {
+        stopInteractiveCallback(viewer);
+        startInteractiveCallback(viewer, pickFaceCallback);
+    }
+}
+
+void RemoveComponents::on_deselectTriangle_clicked()
+{
+    // a rubberband to select a rectangle area of the meshes
+    this->selectRegion = false;
+    Gui::View3DInventorViewer* viewer = this->getViewer();
+    if (viewer) {
+        stopInteractiveCallback(viewer);
+        startInteractiveCallback(viewer, pickFaceCallback);
+    }
+}
+
 void RemoveComponents::reject()
 {
+    if (_interactiveMode) {
+        Gui::View3DInventorViewer* viewer = this->getViewer();
+        if (viewer)
+            stopInteractiveCallback(viewer);
+    }
     on_deselectAll_clicked();
     QDialog::reject();
 }
@@ -251,12 +295,47 @@ std::list<ViewProviderMesh*> RemoveComponents::getViewProviders() const
     return vps;
 }
 
+Gui::View3DInventorViewer* RemoveComponents::getViewer() const
+{
+    App::Document* app = this->getDocument();
+    if (!app) return 0;
+    Gui::Document* doc = Gui::Application::Instance->getDocument(app);
+    if (!doc) return 0;
+    Gui::MDIView* view = doc->getActiveView();
+    if (view && view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return viewer;
+    }
+
+    return 0;
+}
+
+void RemoveComponents::startInteractiveCallback(Gui::View3DInventorViewer* viewer,SoEventCallbackCB *cb)
+{
+    if (this->_interactiveMode)
+        return;
+    viewer->setEditing(true);
+    viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), cb, this);
+    this->_interactiveMode = cb;
+}
+
+void RemoveComponents::stopInteractiveCallback(Gui::View3DInventorViewer* viewer)
+{
+    if (!this->_interactiveMode)
+        return;
+    if (viewer->isEditing()) {
+        viewer->setEditing(false);
+        viewer->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), this->_interactiveMode, this);
+        this->_interactiveMode = 0;
+    }
+}
+
 void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
 {
     // When this callback function is invoked we must leave the edit mode
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
-    view->setEditing(false);
-    view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), selectGLCallback,ud);
+    RemoveComponents* that = reinterpret_cast<RemoveComponents*>(ud);
+    that->stopInteractiveCallback(view);
     n->setHandled();
     std::vector<SbVec2f> clPoly = view->getPickedPolygon();
     if (clPoly.size() != 1)
@@ -295,7 +374,6 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
     Base::Vector3f point (pnt[0],pnt[1],pnt[2]);
     Base::Vector3f normal(dir[0],dir[1],dir[2]);
 
-    RemoveComponents* that = reinterpret_cast<RemoveComponents*>(ud);
     std::list<ViewProviderMesh*> views = that->getViewProviders();
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         ViewProviderMesh* vp = static_cast<ViewProviderMesh*>(*it);
@@ -334,6 +412,56 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
     }
 
     view->render();
+}
+
+void RemoveComponents::pickFaceCallback(void * ud, SoEventCallback * n)
+{
+    // handle only mouse button events
+    if (n->getEvent()->isOfType(SoMouseButtonEvent::getClassTypeId())) {
+        const SoMouseButtonEvent * mbe = static_cast<const SoMouseButtonEvent*>(n->getEvent());
+        Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+
+        // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
+        n->getAction()->setHandled();
+        if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
+            const SoPickedPoint * point = n->getPickedPoint();
+            if (point == NULL) {
+                Base::Console().Message("No facet picked.\n");
+                return;
+            }
+
+            n->setHandled();
+
+            // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
+            // really from the mesh we render and not from any other geometry
+            Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
+            if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMesh::getClassTypeId()))
+                return;
+            ViewProviderMesh* that = static_cast<ViewProviderMesh*>(vp);
+            RemoveComponents* dlg = reinterpret_cast<RemoveComponents*>(ud);
+            std::list<ViewProviderMesh*> views = dlg->getViewProviders();
+            if (std::find(views.begin(), views.end(), that) == views.end())
+                return;
+            const SoDetail* detail = point->getDetail(/*that->getShapeNode()*/);
+            if (detail && detail->getTypeId() == SoFaceDetail::getClassTypeId()) {
+                // get the boundary to the picked facet
+                unsigned long uFacet = static_cast<const SoFaceDetail*>(detail)->getFaceIndex();
+                std::vector<unsigned long> faces; faces.push_back(uFacet);
+                if (dlg->selectRegion) {
+                    if (dlg->ui->cbSelectComp->isChecked())
+                        that->selectComponent(uFacet);
+                    else
+                        that->selectFacet(uFacet);
+                }
+                else {
+                    if (dlg->ui->cbDeselectComp->isChecked())
+                        that->deselectComponent(uFacet);
+                    else
+                        that->removeSelection(faces);
+                }
+            }
+        }
+    }
 }
 
 #include "moc_RemoveComponents.cpp"

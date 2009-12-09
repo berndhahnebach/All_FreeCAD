@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>225</height>
+    <width>520</width>
+    <height>231</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,71 +22,6 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="1" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
-      <string>Deselect</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="2" column="1" >
-       <widget class="QSpinBox" name="spDeselectComp" />
-      </item>
-      <item row="0" column="0" >
-       <widget class="QPushButton" name="deselectRegion" >
-        <property name="text" >
-         <string>Region</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>21</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QPushButton" name="deselectAll" >
-        <property name="text" >
-         <string>All</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>21</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QPushButton" name="deselectComponents" >
-        <property name="text" >
-         <string>Components</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="2" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
@@ -96,13 +31,20 @@
       <number>6</number>
      </property>
      <item>
+      <widget class="QPushButton" name="invertButton" >
+       <property name="text" >
+        <string>Invert selection</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" >
         <size>
-         <width>211</width>
+         <width>141</width>
          <height>31</height>
         </size>
        </property>
@@ -136,39 +78,27 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="1" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+      <item row="3" column="1" colspan="2" >
+       <widget class="QCheckBox" name="cbSelectComp" >
+        <property name="text" >
+         <string>Select whole component</string>
         </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
-      <item row="0" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+      <item row="3" column="0" >
+       <widget class="QPushButton" name="selectTriangle" >
+        <property name="text" >
+         <string>Pick triangle</string>
         </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
-      <item row="2" column="1" >
+      <item row="2" column="2" >
        <widget class="QSpinBox" name="spSelectComp" />
       </item>
-      <item row="2" column="0" >
-       <widget class="QPushButton" name="selectComponents" >
+      <item row="2" column="1" >
+       <widget class="QLabel" name="label" >
         <property name="text" >
-         <string>Components</string>
+         <string>&lt; faces than</string>
         </property>
        </widget>
       </item>
@@ -179,10 +109,129 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0" >
+       <widget class="QPushButton" name="selectComponents" >
+        <property name="text" >
+         <string>Components</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>161</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="1" column="0" >
        <widget class="QPushButton" name="selectAll" >
         <property name="text" >
          <string>All</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>161</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Deselect</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="3" column="1" colspan="2" >
+       <widget class="QCheckBox" name="cbDeselectComp" >
+        <property name="text" >
+         <string>Deselect whole component</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QPushButton" name="deselectTriangle" >
+        <property name="text" >
+         <string>Pick triangle</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QSpinBox" name="spDeselectComp" />
+      </item>
+      <item row="2" column="1" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>> faces than</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>181</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QPushButton" name="deselectRegion" >
+        <property name="text" >
+         <string>Region</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>21</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="deselectAll" >
+        <property name="text" >
+         <string>None</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QPushButton" name="deselectComponents" >
+        <property name="text" >
+         <string>Components</string>
         </property>
        </widget>
       </item>
@@ -197,10 +246,14 @@
   <tabstop>selectAll</tabstop>
   <tabstop>selectComponents</tabstop>
   <tabstop>spSelectComp</tabstop>
+  <tabstop>selectTriangle</tabstop>
+  <tabstop>cbSelectComp</tabstop>
   <tabstop>deselectRegion</tabstop>
   <tabstop>deselectAll</tabstop>
   <tabstop>deselectComponents</tabstop>
   <tabstop>spDeselectComp</tabstop>
+  <tabstop>deselectTriangle</tabstop>
+  <tabstop>cbDeselectComp</tabstop>
   <tabstop>deleteButton</tabstop>
   <tabstop>closeButton</tabstop>
  </tabstops>

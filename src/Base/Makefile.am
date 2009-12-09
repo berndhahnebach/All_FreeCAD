@@ -76,6 +76,7 @@ libFreeCADBase_la_SOURCES=\
 		swigpyrun_1.3.38.h \
 		TimeInfo.cpp \
 		Type.cpp \
+		Tools.cpp \
 		Tools2D.cpp \
 		Uuid.cpp \
 		VectorPyImp.cpp \
@@ -116,6 +117,7 @@ include_HEADERS=\
 		Swap.h \
 		TimeInfo.h \
 		Type.h \
+		Tools.h \
 		Tools2D.h \
 		Uuid.h \
 		Vector3D.h \
