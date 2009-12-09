@@ -25,6 +25,7 @@
 #define BASE_TOOLS_H
 
 #include <functional>
+#include <algorithm>
 
 namespace Base
 {
