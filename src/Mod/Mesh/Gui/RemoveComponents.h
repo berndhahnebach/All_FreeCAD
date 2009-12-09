@@ -25,11 +25,14 @@
 #define MESHGUI_REMOVECOMPONENTS_H
 
 #include <QDialog>
+#include <Inventor/nodes/SoEventCallback.h>
 #include <App/DocumentObserver.h>
 
 // forward declarations
 class SoEventCallback;
 namespace App { class DocumentObject; }
+namespace Gui { class View3DInventorViewer; }
+
 namespace MeshGui {
 class ViewProviderMesh;
 class Ui_RemoveComponents;
@@ -52,20 +55,27 @@ public Q_SLOTS:
     void on_selectRegion_clicked();
     void on_selectAll_clicked();
     void on_selectComponents_clicked();
+    void on_selectTriangle_clicked();
     void on_deselectRegion_clicked();
     void on_deselectAll_clicked();
     void on_deselectComponents_clicked();
+    void on_deselectTriangle_clicked();
     void on_deleteButton_clicked();
+    void on_invertButton_clicked();
 
 private:
     void cancelObservation();
     std::list<ViewProviderMesh*> getViewProviders() const;
+    Gui::View3DInventorViewer* getViewer() const;
+    void startInteractiveCallback(Gui::View3DInventorViewer* ,SoEventCallbackCB *);
+    void stopInteractiveCallback(Gui::View3DInventorViewer*);
 
     static void selectGLCallback(void * ud, SoEventCallback * n);
+    static void pickFaceCallback(void * ud, SoEventCallback * n);
 
 private:
-    struct iotaGen;
     Ui_RemoveComponents* ui;
+    SoEventCallbackCB *_interactiveMode;
     bool selectRegion;
 };
 

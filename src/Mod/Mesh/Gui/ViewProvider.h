@@ -119,7 +119,10 @@ public:
     /// Returns the edit mode
     const char* getEditModeName(void);
     void selectComponent(unsigned long facet);
+    void deselectComponent(unsigned long facet);
     void selectFacet(unsigned long facet);
+    void deselectFacet(unsigned long facet);
+    void setSelection(const std::vector<unsigned long>&);
     void addSelection(const std::vector<unsigned long>&);
     void removeSelection(const std::vector<unsigned long>&);
     void clearSelection();
