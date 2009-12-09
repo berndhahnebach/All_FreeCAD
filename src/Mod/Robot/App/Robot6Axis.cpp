@@ -53,111 +53,78 @@ using namespace Robot;
 using namespace Base;
 using namespace KDL;
 
+// some default roboter
+
+AxisDefinition KukaIR500[6] = {
+//   a    ,alpha ,d    ,theta ,maxAngle ,minAngle ,AxisVelocity 
+    {500  ,-90   ,1045 ,0     ,+185     ,-185     ,156         }, // Axis 1
+    {1300 ,0     ,0    ,0     ,+35      ,-155     ,156         }, // Axis 2
+    {55   ,+90   ,0    ,-90   ,+154     ,-130     ,156         }, // Axis 3
+    {0    ,-90   ,-1025,0     ,+350     ,-350     ,330         }, // Axis 4
+    {0    ,+90   ,0    ,0     ,+130     ,-130     ,330         }, // Axis 5
+    {0    ,+180  ,-300 ,0     ,+350     ,-350     ,615         }  // Axis 6
+};
+
 
 TYPESYSTEM_SOURCE(Robot::Robot6Axis , Base::Persistence);
 
 Robot6Axis::Robot6Axis()
 {
-	Chain KukaIR16;
-
-	// Puma 560
-#if 0
-    KukaIR16.addSegment(Segment());
-    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(0.0,M_PI_2,0.0,0.0),
-                               RigidBodyInertia(0,Vector::Zero(),RotationalInertia(0,350,0,0,0,0))));
-    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(431.8,0.0,0.0,0.0),
-                               RigidBodyInertia(17.4,Vector(-.3638,.006,.2275),RotationalInertia(0.13,0.524,0.539,0,0,0))));
-    KukaIR16.addSegment(Segment());
-    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(20.3,-M_PI_2,150,0.0),
-                               RigidBodyInertia(4.8,Vector(-.0203,-.0141,.070),RotationalInertia(0.066,0.086,0.0125,0,0,0))));
-    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(0.0,M_PI_2,431.8,0.0),
-                               RigidBodyInertia(0.82,Vector(0,.019,0),RotationalInertia(1.8e-3,1.3e-3,1.8e-3,0,0,0))));
-    KukaIR16.addSegment(Segment());
-    KukaIR16.addSegment(Segment());
-    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(0.0,-M_PI_2,0.0,0.0),
-                               RigidBodyInertia(0.34,Vector::Zero(),RotationalInertia(.3e-3,.4e-3,.3e-3,0,0,0))));
-    KukaIR16.addSegment(Segment(Joint(Joint::RotZ),
-                               Frame::DH(0.0,0.0,0.0,0.0),
-                               RigidBodyInertia(0.09,Vector(0,0,.032),RotationalInertia(.15e-3,0.15e-3,.04e-3,0,0,0))));
-    KukaIR16.addSegment(Segment());
-#endif
-#if 0
-	// Kuka IR16
-    //KukaIR16.addSegment(Segment());
- 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(260  ,-M_PI_2  ,576  ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(680  ,0        ,0    ,0       )));
-    //KukaIR16.addSegment(Segment());
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,/*-M_PI_2*/0 )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,-M_PI_2  ,-670 ,0       )));
-    //KukaIR16.addSegment(Segment());
-    //KukaIR16.addSegment(Segment());
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI     ,-158 ,0       )));
-    //KukaIR16.addSegment(Segment());
-#endif
-	// Kuka IR210
-#if 0
-    KukaIR16.addSegment(Segment());
- 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(350  ,-M_PI_2  ,750  ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(1250 ,0        ,0    ,0       )));
-    KukaIR16.addSegment(Segment());
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,-M_PI_2 )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,-M_PI_2  ,-1025,0       )));
-    KukaIR16.addSegment(Segment());
-    KukaIR16.addSegment(Segment());
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI     ,-250 ,0       )));
-    KukaIR16.addSegment(Segment());
-#endif
-
-	// Kuka IR500
-#if 1
- 	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(500  ,-M_PI_2  ,1045 ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(1300 ,0        ,0    ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(55   ,M_PI_2   ,0    ,-M_PI_2 )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,-M_PI_2  ,-1025,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI_2   ,0    ,0       )));
-	KukaIR16.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(0    ,M_PI     ,-300 ,0       )));
-#endif
-
-	// for now and testing
-    Kinematic = KukaIR16;
-
-	// Create joint array
-    unsigned int nj = KukaIR16.getNrOfJoints();
-    Actuall = JntArray(nj);
-
-	// get the actuall TCP out of tha axis
-	calcTcp();
+    // set to default kuka 500
+    setKinematic(KukaIR500);
 }
 
 Robot6Axis::~Robot6Axis()
 {
 }
 
-void Robot6Axis::setKinematik(const std::vector<std::vector<float> > &KinTable)
+
+void Robot6Axis::setKinematic(const AxisDefinition KinDef[6])
 {
-    Chain Temp;
+	Chain temp;
 
-    // only 6-Axis are allowed
-    assert(KinTable.size()==6);
-
-    int i=0;
-    for(std::vector<std::vector<float> >::const_iterator Axis=KinTable.begin();Axis!=KinTable.end();++Axis,i++){
-        // need at least the standard values as descriped in documentation
-        assert(Axis->size() >= 7); 
-      	Temp.addSegment(Segment(Joint(Joint::RotZ),Frame::DH((*Axis)[0], (*Axis)[1]*(M_PI/180), (*Axis)[2], (*Axis)[3])));
-        MaxAngle[i]   = (*Axis)[4];
-        MinAngle[i]   = (*Axis)[5];
-        Acceration[i] = (*Axis)[6];    
+    for(int i=0 ; i<6 ;i++){
+        temp.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(KinDef[i].a  ,KinDef[i].alpha * (M_PI/180) ,KinDef[i].d ,KinDef[i].theta * (M_PI/180)      )));
+        MaxAngle[i] = KinDef[i].maxAngle;
+        MinAngle[i] = KinDef[i].minAngle;
+        Velocity[i] = KinDef[i].velocity;
     }
-    Kinematic = Temp;
+
+	// for now and testing
+    Kinematic = temp;
+
+	// Create joint array
+    unsigned int nj = temp.getNrOfJoints();
+    Actuall = JntArray(nj);
+
+	// get the actuall TCP out of tha axis
+	calcTcp();
 }
+
+void Robot6Axis::readKinematic(const char * FileName)
+{
+
+}
+
+
+//void Robot6Axis::setKinematik(const std::vector<std::vector<float> > &KinTable)
+//{
+//    Chain Temp;
+//
+//    // only 6-Axis are allowed
+//    assert(KinTable.size()==6);
+//
+//    int i=0;
+//    for(std::vector<std::vector<float> >::const_iterator Axis=KinTable.begin();Axis!=KinTable.end();++Axis,i++){
+//        // need at least the standard values as descriped in documentation
+//        assert(Axis->size() >= 7); 
+//      	Temp.addSegment(Segment(Joint(Joint::RotZ),Frame::DH((*Axis)[0], (*Axis)[1]*(M_PI/180), (*Axis)[2], (*Axis)[3])));
+//        MaxAngle[i]   = (*Axis)[4];
+//        MinAngle[i]   = (*Axis)[5];
+//        Acceration[i] = (*Axis)[6];    
+//    }
+//    Kinematic = Temp;
+//}
 
 unsigned int Robot6Axis::getMemSize (void) const
 {
@@ -178,7 +145,7 @@ void Robot6Axis::Save (Writer &writer) const
                         << "Q3=\""          <<  Tip.getRotation()[3] << "\" "
                         << "maxAngle=\""    <<  MaxAngle[i]		     << "\" "
                         << "minAngle=\""    <<  MinAngle[i]			 << "\" "
-                        << "AxisVelocity=\""<<  Acceration[i]        << "\" "
+                        << "AxisVelocity=\""<<  Velocity[i]          << "\" "
                         << "Pos=\""         <<  Actuall(i)           << "\"/>"
 					                      
                         << std::endl;
@@ -208,9 +175,9 @@ void Robot6Axis::Restore(XMLReader &reader)
         MaxAngle[i]   = reader.getAttributeAsFloat("maxAngle");
         MinAngle[i]	  = reader.getAttributeAsFloat("minAngle");
         if(reader.hasAttribute("AxisVelocity"))
-            Acceration[i] = reader.getAttributeAsFloat("AxisVelocity");
+            Velocity[i] = reader.getAttributeAsFloat("AxisVelocity");
         else
-            Acceration[i] = 156.0;
+            Velocity[i] = 156.0;
         Actuall(i) = reader.getAttributeAsFloat("Pos");
     }
     Kinematic = Temp;

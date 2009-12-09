@@ -33,6 +33,17 @@
 namespace Robot
 {
 
+/// Definition of the Axis properties
+struct AxisDefinition {
+    double a;        // a of the Denavit-Hartenberg parameters (mm) 
+    double alpha;    // alpha of the Denavit-Hartenberg parameters (°)
+    double d;        // d of the Denavit-Hartenberg parameters (mm)
+    double theta;    // a of the Denavit-Hartenberg parameters (°) 
+    double maxAngle; // soft ends + in °
+    double minAngle; // soft ends - in ° 
+    double velocity; // max vlocity of the axle in °/s
+};
+
 
 /** The representation for a 6-Axis industry grade robot
  */
@@ -50,7 +61,12 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
 
 	// interface
-	/// set the robot to that position, calculates the Axis
+    /// set the kinematic parameters of the robot
+    void setKinematic(const AxisDefinition KinDef[6]);
+    /// read the kinematic parameters of the robot from a file
+    void readKinematic(const char * FileName);
+    
+    /// set the robot to that position, calculates the Axis
 	bool setTo(const Base::Placement &To);
 	bool setAxis(int Axis,float Value);
 	float getAxis(int Axis);
@@ -58,7 +74,7 @@ public:
 	bool calcTcp(void);
 	Base::Placement getTcp(void);
 
-    void setKinematik(const std::vector<std::vector<float> > &KinTable);
+    //void setKinematik(const std::vector<std::vector<float> > &KinTable);
 
 
 protected:
@@ -68,7 +84,7 @@ protected:
 
 	double MaxAngle[6];
 	double MinAngle[6];
-	double Acceration[6];
+	double Velocity[6];
 
 };
 
