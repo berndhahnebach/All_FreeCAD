@@ -58,6 +58,7 @@ public:
     Robot6Axis &getRobot(void){return robot;}
 
     App::PropertyFileIncluded RobotVrmlFile;
+    App::PropertyFileIncluded RobotKinematicFile;
 
     App::PropertyFloat Axis1,Axis2,Axis3,Axis4,Axis5,Axis6;
 
