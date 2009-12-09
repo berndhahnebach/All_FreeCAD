@@ -207,8 +207,11 @@ void Robot6Axis::Restore(XMLReader &reader)
 
         MaxAngle[i]   = reader.getAttributeAsFloat("maxAngle");
         MinAngle[i]	  = reader.getAttributeAsFloat("minAngle");
-        Acceration[i] = reader.getAttributeAsFloat("AxisVelocity");
-        Acceration[i] = reader.getAttributeAsFloat("Pos");
+        if(reader.hasAttribute("AxisVelocity"))
+            Acceration[i] = reader.getAttributeAsFloat("AxisVelocity");
+        else
+            Acceration[i] = 156.0;
+        Actuall(i) = reader.getAttributeAsFloat("Pos");
     }
     Kinematic = Temp;
 
