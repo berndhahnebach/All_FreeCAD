@@ -55,7 +55,7 @@
 #include "Application.h"
 #include "MainWindow.h"
 #include "MenuManager.h"
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <Base/Console.h>
 
 // build in Inventor

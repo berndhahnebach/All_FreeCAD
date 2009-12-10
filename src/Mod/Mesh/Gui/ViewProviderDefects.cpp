@@ -40,7 +40,6 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <App/Application.h>
-#include <App/Feature.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
 

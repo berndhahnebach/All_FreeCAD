@@ -61,7 +61,7 @@
 #include <App/GeoFeature.h>
 #include <App/DocumentObjectGroup.h>
 #include <App/MeasureDistance.h>
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 
 #include <QDomDocument>
 #include <QDomElement>

@@ -44,7 +44,7 @@
 
 #include <Base/Console.h>
 #include <App/Application.h>
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/Material.h>
 
 using namespace Gui::Dialog;

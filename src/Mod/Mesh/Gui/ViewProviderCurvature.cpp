@@ -45,7 +45,6 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <App/Application.h>
-#include <App/Feature.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>

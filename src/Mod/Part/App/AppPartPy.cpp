@@ -141,22 +141,21 @@ static PyObject * open(PyObject *self, PyObject *args)
 #endif 
             pcDoc->recompute();
         }
-        else if (file.hasExtension("igs") || file.hasExtension("iges")) {
-            // create new document and add Import feature
-            App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-            Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
-            pcFeature->FileName.setValue(Name);
-            pcDoc->recompute();
-        }
-        else if (file.hasExtension("brp") || file.hasExtension("brep")) {
-            // create new document and add Import feature
-            App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-            Part::ImportBrep *pcFeature = (Part::ImportBrep *)pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
-            pcFeature->FileName.setValue(Name);
-            pcDoc->recompute();
-        }
         else {
-            Py_Error(PyExc_Exception,"unknown file ending");
+            try {
+                TopoShape shape;
+                shape.read(Name);
+
+                // create new document set loaded shape
+                App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+                Part::Feature *object = static_cast<Part::Feature *>(pcDoc->addObject
+                    ("Part::Feature",file.fileNamePure().c_str()));
+                object->Shape.setValue(shape);
+                pcDoc->recompute();
+            }
+            catch (const Base::Exception& e) {
+                Py_Error(PyExc_Exception, e.what());
+            }
         }
     } PY_CATCH;
 
@@ -194,18 +193,21 @@ static PyObject * insert(PyObject *self, PyObject *args)
 #endif 
             pcDoc->recompute();
         }
-        else if (file.hasExtension("igs") || file.hasExtension("iges")) {
-            Part::ImportIges *pcFeature = (Part::ImportIges *)pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
-            pcFeature->FileName.setValue(Name);
-            pcDoc->recompute();
-        }
-        else if (file.hasExtension("brp") || file.hasExtension("brep")) {
-            Part::ImportBrep *pcFeature = (Part::ImportBrep *) pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
-            pcFeature->FileName.setValue(Name);
-            pcDoc->recompute();
-        }
         else {
-            Py_Error(PyExc_Exception,"unknown file ending");
+            try {
+                TopoShape shape;
+                shape.read(Name);
+
+                // create new document set loaded shape
+                App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+                Part::Feature *object = static_cast<Part::Feature *>(pcDoc->addObject
+                    ("Part::Feature",file.fileNamePure().c_str()));
+                object->Shape.setValue(shape);
+                pcDoc->recompute();
+            }
+            catch (const Base::Exception& e) {
+                Py_Error(PyExc_Exception, e.what());
+            }
         }
     } PY_CATCH;
 
@@ -854,6 +856,11 @@ static PyObject * makeRuledSurface(PyObject *self, PyObject *args)
         PyErr_SetString(PyExc_Exception, "creation of ruled surface failed");
         return 0;
     }
+}
+
+static PyObject * makeTube(PyObject *self, PyObject *args)
+{
+    return 0;
 }
 
 static PyObject * toPythonOCC(PyObject *self, PyObject *args)

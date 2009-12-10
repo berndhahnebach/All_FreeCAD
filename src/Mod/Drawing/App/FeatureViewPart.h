@@ -27,7 +27,7 @@
 #define _FeatureViewPart_h_
 
 
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/PropertyLinks.h>
 #include "FeatureView.h"
 
@@ -44,7 +44,7 @@ namespace Drawing
 
 /** Base class of all View Features in the drawing module
  */
-class AppDrawingExport FeatureViewPart: public FeatureView
+class AppDrawingExport FeatureViewPart : public FeatureView
 {
     PROPERTY_HEADER(Part::FeatureViewPart);
 
@@ -61,7 +61,6 @@ public:
     /** @name methods overide Feature */
     //@{
     /// recalculate the Feature
-    virtual short mustExecute() const;
     virtual App::DocumentObjectExecReturn *execute(void);
     //@}
 

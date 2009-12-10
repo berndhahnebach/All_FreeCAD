@@ -33,7 +33,7 @@
 #include <Base/Sequencer.h>
 #include <App/Document.h>
 #include <App/DocumentObjectGroup.h>
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 
 #include "Action.h"
 #include "Application.h"

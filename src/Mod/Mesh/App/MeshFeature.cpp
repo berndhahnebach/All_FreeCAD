@@ -36,7 +36,6 @@
 
 #include "MeshFeature.h"
 #include "MeshFeaturePy.h"
-#include <App/Feature.h>
 
 using namespace Mesh;
 

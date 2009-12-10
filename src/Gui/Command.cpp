@@ -46,7 +46,6 @@
 #include <Base/Sequencer.h>
 
 #include <App/Document.h>
-#include <App/Feature.h>
 #include <App/DocumentObject.h>
 
 
@@ -244,12 +243,12 @@ Application *Command::getGuiApplication(void)
     return Application::Instance;
 }
 
-Gui::Document* Command::getActiveGuiDocument(void)
+Gui::Document* Command::getActiveGuiDocument(void) const
 {
     return getGuiApplication()->activeDocument();
 }
 
-App::Document* Command::getDocument(const char* Name)
+App::Document* Command::getDocument(const char* Name) const
 {
     if (Name)
         return App::GetApplication().getDocument(Name);
@@ -262,16 +261,7 @@ App::Document* Command::getDocument(const char* Name)
     }
 }
 
-App::AbstractFeature* Command::getFeature(const char* Name)
-{
-    App::DocumentObject *pObj = getObject(Name);
-    if (pObj && pObj->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()))
-        return dynamic_cast<App::AbstractFeature*>(pObj);
-    else
-        return 0;
-}
-
-App::DocumentObject* Command::getObject(const char* Name)
+App::DocumentObject* Command::getObject(const char* Name) const
 {
     App::Document*pDoc = getDocument();
     if (pDoc)
@@ -338,7 +328,7 @@ void Command::testActive(void)
 // Helper methods
 //--------------------------------------------------------------------------
 
-bool Command::hasActiveDocument(void)
+bool Command::hasActiveDocument(void) const
 {
     return getActiveGuiDocument() != 0;
 }
@@ -353,7 +343,7 @@ Gui::SelectionSingleton&  Command::getSelection(void)
     return Gui::Selection();
 }
 
-std::string Command::getUniqueObjectName(const char *BaseName)
+std::string Command::getUniqueObjectName(const char *BaseName) const
 {
     assert(hasActiveDocument());
 

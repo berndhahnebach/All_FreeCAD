@@ -31,7 +31,7 @@
 
 #include <App/Application.h>
 #include <App/Document.h>
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/Property.h>
 
 #include "Points.h"

@@ -55,7 +55,7 @@ FeatureView::FeatureView(void)
     ADD_PROPERTY_TYPE(Scale ,(1.0),group,App::Prop_None,"Scale factor of the view");
     ADD_PROPERTY_TYPE(Rotation ,(0),group,App::Prop_None,"Rotation of the view in degres counterclockwise");
 
-    App::PropertyType type = (App::PropertyType)(App::Prop_Output|App::Prop_Hidden);
+    App::PropertyType type = (App::PropertyType)(App::Prop_Hidden);
     ADD_PROPERTY_TYPE(ViewResult ,(0),group,type,"Resulting SVG fragment of that view");
 }
 

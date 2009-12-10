@@ -26,7 +26,7 @@
 #define __FEATURETEST_H__
 
 
-#include "Feature.h"
+#include "DocumentObject.h"
 #include "PropertyStandard.h"
 #include "PropertyGeo.h"
 #include "PropertyLinks.h"

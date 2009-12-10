@@ -69,7 +69,6 @@
 #include <Base/PlacementPy.h>
 #include <Base/RotationPy.h>
 
-#include "Feature.h"
 #include "GeoFeature.h"
 #include "FeatureTest.h"
 #include "FeaturePython.h"
@@ -968,7 +967,6 @@ void Application::initTypes(void)
     App ::PropertyPythonObject      ::init();
     // Document classes
     App ::DocumentObject            ::init();
-    App ::AbstractFeature           ::init();
     App ::GeoFeature                ::init();
     App ::FeatureTest               ::init();
     App ::FeatureTestException      ::init();

@@ -27,7 +27,7 @@
 #define _RaySegment_h_
 
 
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/PropertyStandard.h>
 #include <App/PropertyGeo.h>
 
@@ -45,7 +45,7 @@ namespace Raytracing
 
 /** Base class of all View Features in the drawing module
  */
-class AppRaytracingExport RaySegment: public App::AbstractFeature
+class AppRaytracingExport RaySegment: public App::DocumentObject
 {
   PROPERTY_HEADER(Raytracing::RaySegment);
 

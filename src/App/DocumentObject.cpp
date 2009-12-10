@@ -90,7 +90,7 @@ DocumentObjectExecReturn *DocumentObject::execute(void)
 
 short DocumentObject::mustExecute(void) const
 {
-    return 0;
+    return (isTouched() ? 1 : 0);
 }
 
 const char* DocumentObject::getStatusString(void) const
