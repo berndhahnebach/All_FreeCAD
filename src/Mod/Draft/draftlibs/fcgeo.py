@@ -1,7 +1,7 @@
 
 #***************************************************************************
 #*                                                                         *
-#*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     *  
+#*   Copyright (c) 2009 Yorik van Havre <yorik@uncreated.net>              *  
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -21,9 +21,9 @@
 #*                                                                         *
 #***************************************************************************
 
-__title__="FreeCAD Draft Workbench - Geometry li"
-__author__ = "Yorik van Havre <yorik@gmx.fr>"
-__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
+__title__="FreeCAD Draft Workbench - Geometry library"
+__author__ = "Yorik van Havre <yorik@uncreated.net>"
+__url__ = ["http://yorik.uncreated.net","http://free-cad.sourceforge.net"]
 
 "this file contains generic geometry functions for manipulating Part shapes"
 
@@ -336,10 +336,11 @@ def sortEdges(lEdges, aVertex=None):
 	olEdges = [] # ol stands for ordered list 
 	if aVertex == None:
 		for i in range(len(lEdges)*2) :
-			result = lookfor(lEdges[i/2].Vertexes[i%2],lEdges)
-			if result[0] == 1 :  # Have we found an end ?
-				olEdges = sortEdges(lEdges, result[3].Vertexes[result[2]])
-				return olEdges
+			if len(lEdges[i/2].Vertexes) > 1:
+				result = lookfor(lEdges[i/2].Vertexes[i%2],lEdges)
+				if result[0] == 1 :  # Have we found an end ?
+					olEdges = sortEdges(lEdges, result[3].Vertexes[result[2]])
+					return olEdges
 		# if the wire is closed there is no end so choose 1st Vertex
 		return sortEdges(lEdges, lEdges[0].Vertexes[0]) 
 	else :
