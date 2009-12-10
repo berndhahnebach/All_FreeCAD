@@ -177,20 +177,19 @@ public:
   /// Get a referenc to the selection 
   Gui::SelectionSingleton&  getSelection(void);
   /// Get pointer to the active gui document
-  Gui::Document*  getActiveGuiDocument(void);
+  Gui::Document*  getActiveGuiDocument(void) const;
   /** Get pointer to the named or active App document
    *  Returns a pointer to the named docuement or the active
    *  document when no name is given. NULL is returnd
    *  when the name does not exist or no document is active!
    */
-  App::Document*  getDocument(const char* Name=0);
+  App::Document*  getDocument(const char* Name=0) const;
   /// checks if the active view is of a special type or derived
   bool isViewOfType(Base::Type t) const;
   /// returns the named feature or the active one from the active document or NULL
-  App::AbstractFeature* getFeature(const char* Name);
-  App::DocumentObject*  getObject(const char* Name);
+  App::DocumentObject*  getObject(const char* Name) const;
   /// Get unique Feature name from the active document 
-  std::string getUniqueObjectName(const char *BaseName);
+  std::string getUniqueObjectName(const char *BaseName) const;
   //@}
 
   /** @name Helper methods for the Undo/Redo and Update handling */
@@ -240,7 +239,7 @@ public:
   /** @name Helper methods for the Active tests */
   //@{
   /// true when there is a document
-  bool hasActiveDocument(void);
+  bool hasActiveDocument(void) const;
   /// true when there is a document and a Feature with Name
   bool hasObject(const char* Name);
   //@}

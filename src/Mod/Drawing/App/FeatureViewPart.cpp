@@ -86,27 +86,6 @@ FeatureViewPart::~FeatureViewPart()
 {
 }
 
-short FeatureViewPart::mustExecute() const
-{
-    if (X.isTouched())
-        return 1;
-    if (Y.isTouched())
-        return 1;
-    if (Scale.isTouched())
-        return 1;
-    if (Rotation.isTouched())
-        return 1;
-    if (Source.isTouched())
-        return 1;
-    if (Source.getValue() && Source.getValue()->isTouched())
-        return 1;
-    if (Direction.isTouched())
-        return 1;
-    if (ShowHiddenLines.isTouched())
-        return 1;
-    return 0;
-}
-
 #if 0 
 
 App::DocumentObjectExecReturn *FeatureViewPart::execute(void)

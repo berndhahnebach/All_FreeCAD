@@ -43,7 +43,7 @@ using namespace Raytracing;
 // RaySegment
 //===========================================================================
 
-PROPERTY_SOURCE(Raytracing::RaySegment, App::AbstractFeature)
+PROPERTY_SOURCE(Raytracing::RaySegment, App::DocumentObject)
 
 
 

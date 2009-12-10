@@ -60,23 +60,6 @@ FeaturePage::~FeaturePage()
 {
 }
 
-short FeaturePage::mustExecute() const
-{
-    // get through the children and check if one is touched
-    const std::vector<App::DocumentObject*> &Grp = Group.getValues();
-    for (std::vector<App::DocumentObject*>::const_iterator It= Grp.begin();It!=Grp.end();++It) {
-        if ((*It)->getTypeId().isDerivedFrom(Drawing::FeatureView::getClassTypeId())) {
-            Drawing::FeatureView *View = static_cast<Drawing::FeatureView *>(*It);
-            if (View->isTouched())
-                return 1;
-            if (View->ViewResult.isTouched())
-                return 1;
-        }
-    }
-
-    return 0;
-}
-
 App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
     if (std::string(PageResult.getValue()).empty())

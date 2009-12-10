@@ -34,7 +34,7 @@
 #include <App/PropertyGeo.h>
 #include <App/PropertyLinks.h>
 #include <App/PropertyContainer.h>
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/Document.h>
 
 #include "PropertyView.h"

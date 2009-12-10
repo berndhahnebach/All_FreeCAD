@@ -68,7 +68,7 @@ recompute path. Also enabels more complicated dependencies beond trees.
 #include "Document.h"
 #include "DocumentPy.h"
 #include "Application.h"
-#include "Feature.h"
+#include "DocumentObject.h"
 #include "PropertyLinks.h"
 
 #include <Base/Console.h>

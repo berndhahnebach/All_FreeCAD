@@ -79,7 +79,7 @@ PyObject *FeaturePythonPy::getCustomAttributes(const char* attr) const
 {
     PY_TRY{
         if (Base::streq(attr, "__dict__")){
-            PyObject* dict = FeaturePy::getCustomAttributes(attr);
+            PyObject* dict = DocumentObjectPy::getCustomAttributes(attr);
             if (dict){
                 std::vector<std::string> Props = getFeaturePythonPtr()->props->getDynamicPropertyNames();
                 for (std::vector<std::string>::const_iterator it = Props.begin(); it != Props.end(); ++it)
@@ -102,7 +102,7 @@ int FeaturePythonPy::setCustomAttributes(const char* attr, PyObject *value)
     Property* prop = getFeaturePythonPtr()->props->getDynamicPropertyByName(attr);
 
     if (!prop)
-        return FeaturePy::setCustomAttributes(attr, value);
+        return DocumentObjectPy::setCustomAttributes(attr, value);
     else {
         try {
             prop->setPyObject(value);

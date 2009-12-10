@@ -47,7 +47,7 @@
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <App/DocumentObjectGroup.h>
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/MainWindow.h>

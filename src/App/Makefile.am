@@ -6,7 +6,6 @@ BUILT_SOURCES=\
 		DocumentObjectGroupPy.cpp \
 		DocumentObjectPy.cpp \
 		DocumentPy.cpp \
-		FeaturePy.cpp \
 		FeaturePythonPy.cpp \
 		PropertyContainerPy.cpp \
 		InitScript.h \
@@ -17,7 +16,6 @@ libFreeCADApp_la_BUILT=\
 		DocumentObjectGroupPy.h \
 		DocumentObjectPy.h \
 		DocumentPy.h \
-		FeaturePy.h \
 		FeaturePythonPy.h \
 		PropertyContainerPy.h
 
@@ -40,8 +38,6 @@ libFreeCADApp_la_SOURCES=\
 		DocumentPyImp.cpp \
 		Doxygen.cpp \
 		DynamicProperty.cpp \
-		Feature.cpp \
-		FeaturePyImp.cpp \
 		FeaturePython.cpp \
 		FeaturePythonPyImp.cpp \
 		FeatureTest.cpp \
@@ -80,7 +76,6 @@ include_HEADERS=\
 		DocumentObserver.h \
 		DocumentObserverPython.h \
 		DynamicProperty.h \
-		Feature.h \
 		FeaturePython.h \
 		FeatureTest.h \
 		GeoFeature.h \
@@ -127,7 +122,6 @@ EXTRA_DIST = \
 		DocumentObjectGroupPy.xml \
 		DocumentObjectPy.xml \
 		DocumentPy.xml \
-		FeaturePy.xml \
 		FeaturePythonPy.xml \
 		PropertyContainerPy.xml \
 		CMakeLists.txt \

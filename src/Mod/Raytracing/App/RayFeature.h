@@ -26,7 +26,7 @@
 #ifndef _RayFeature_h_
 #define _RayFeature_h_
 
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 #include <App/PropertyLinks.h>
 #include <App/PropertyFile.h>
 
