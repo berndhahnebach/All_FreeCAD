@@ -79,6 +79,7 @@ void View3DInventorPy::init_type()
     add_varargs_method("saveImage",&View3DInventorPy::saveImage,"saveImage()");
     add_varargs_method("saveVectorGraphic",&View3DInventorPy::saveVectorGraphic,"saveVectorGraphic()");
     add_varargs_method("getCamera",&View3DInventorPy::getCamera,"getCamera()");
+    add_varargs_method("getCameraNode",&View3DInventorPy::getCameraNode,"getCameraNode()");
     add_varargs_method("getViewDirection",&View3DInventorPy::getViewDirection,"getViewDirection()");
     add_varargs_method("setCamera",&View3DInventorPy::setCamera,"setCamera()");
     add_varargs_method("getCameraType",&View3DInventorPy::getCameraType,"getCameraType()");
@@ -481,6 +482,27 @@ Py::Object View3DInventorPy::saveVectorGraphic(const Py::Tuple& args)
     }
     catch(...) {
         throw Py::Exception("Unknown C++ exception");
+    }
+}
+
+Py::Object View3DInventorPy::getCameraNode(const Py::Tuple& args)
+{
+    if (!PyArg_ParseTuple(args.ptr(), ""))
+        throw Py::Exception();
+
+    try {
+        SoNode* camera = _view->getViewer()->getCamera();
+        PyObject* proxy = 0;
+        std::string type;
+        type = "So"; // seems that So prefix is missing in camera node
+        type += camera->getTypeId().getName().getString();
+        type += " *";
+        proxy = Base::Interpreter().createSWIGPointerObj(type.c_str(), (void*)camera, 1);
+        camera->ref();
+        return Py::Object(proxy, true);
+    }
+    catch (const Base::Exception& e) {
+        throw Py::Exception(e.what());
     }
 }
 
