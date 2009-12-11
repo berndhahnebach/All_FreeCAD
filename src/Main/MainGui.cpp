@@ -148,6 +148,7 @@ int main( int argc, char ** argv )
     // Make sure that we use '.' as decimal point
 #if defined(FC_OS_LINUX)
     putenv("LANG=C");
+    putenv("LC_ALL=C");
 #else
     setlocale(LC_NUMERIC, "C");
 #endif
