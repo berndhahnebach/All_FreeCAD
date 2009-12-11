@@ -499,7 +499,7 @@ class arcTracker(Tracker):
 	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1)):
 		Tracker.__init__(self,dotted,scolor,swidth)
 		self.axis = axis
-		self.initrot = FreeCADGui.ActiveDocument.ActiveView.getViewer().getCamera().orientation
+		self.initrot = FreeCADGui.ActiveDocument.ActiveView.getCameraNode().orientation
 		container = coin.SoSeparator()
 		self.startrot = coin.SoRotation()
 		self.coords = coin.SoCoordinate4()
@@ -817,7 +817,7 @@ class Creator:
 				self.upVec = Vector(0,1,0)
 			else:
 				self.axis = fcvec.neg(self.view.getViewDirection())
-				rot = self.view.getViewer().getCamera().orientation.getValue()
+				rot = self.view.getCameraNode().orientation.getValue()
 				self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
 				self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 			self.ui.cross(True)
@@ -1592,7 +1592,7 @@ class Modifier:
 				self.upVec = Vector(0,1,0)
 			else:
 				self.axis = fcvec.neg(self.view.getViewDirection())
-				rot = self.view.getViewer().getCamera().orientation.getValue()
+				rot = self.view.getCameraNode().orientation.getValue()
 				self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
 				self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 			self.node = []
@@ -1817,7 +1817,7 @@ class Rotate(Modifier):
 			self.upVec = Vector(0,1,0)
 		else:
 			self.axis = fcvec.neg(self.view.getViewDirection())
-			rot = self.view.getViewer().getCamera().orientation.getValue()
+			rot = self.view.getCameraNode().orientation.getValue()
 			self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
 			self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 		self.arctrack = arcTracker(axis=self.axis)
