@@ -1,9 +1,18 @@
+if(MSVC)
+		 add_definitions(-DFCGuiRobot -DHAVE_ACOSH -DHAVE_ASINH -DHAVE_ATANH)
+else(MSVC)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(MSVC)
+
+
+
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${COIN_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
+ 		 ${OCC_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
 		 ${EIGEN2_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
@@ -49,6 +58,9 @@ SET(RobotGui_SRCS
 		 AppRobotGui.cpp
 		 AppRobotGuiPy.cpp
 		 Command.cpp
+		 CommandTrajectory.cpp
+		 CommandInsertRobot.cpp
+		 CommandExport.cpp
 		 Resources/Robot.qrc
 		 PreCompiled.cpp
 		 PreCompiled.h

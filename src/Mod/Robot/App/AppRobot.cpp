@@ -52,7 +52,7 @@ void AppRobotExport initRobot()
 {
     // load dependend module
     try {
-        //Base::Interpreter().loadModule("Part");
+        Base::Interpreter().loadModule("Part");
         //Base::Interpreter().loadModule("Mesh");
     }
     catch(const Base::Exception& e) {

@@ -29,6 +29,7 @@
 // Importing of App classes
 #ifdef FC_OS_WIN32
 # define AppRobotExport __declspec(dllimport)
+# define AppPartExport  __declspec(dllimport)
 # define RobotGuiExport __declspec(dllexport)
 #else // for Linux
 # define AppRobotExport

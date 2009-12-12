@@ -29,6 +29,8 @@
 
 #include "Workbench.h"
 #include <Gui/ToolBarManager.h>
+#include <Gui/MenuManager.h>
+
 
 using namespace RobotGui;
 
@@ -48,18 +50,46 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Robot"));
     *part << "Robot_Create";
+    *part << "Separator";
     *part << "Robot_CreateTrajectory";
     *part << "Robot_InsertWaypoint";
     *part << "Robot_InsertWaypointPreselect";
+    *part << "Separator";
     *part << "Robot_Simulate";
-    *part << "Robot_Export";
-     return root;
-}
-
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
     return root;
 }
 
+Gui::MenuItem* Workbench::setupMenuBar() const
+{
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+    Gui::MenuItem* robot = new Gui::MenuItem;
+    root->insertItem( item, robot );
+
+    // analyze
+    Gui::MenuItem* insertRobots = new Gui::MenuItem;
+    insertRobots->setCommand(QT_TR_NOOP("Insert Robots"));
+    *insertRobots << "Robot_InsertKukaIR500" 
+                  << "Robot_InsertKukaIR16" 
+                  ;
+
+    // boolean
+    Gui::MenuItem* exportM = new Gui::MenuItem;
+    exportM->setCommand(QT_TR_NOOP("Export trajectory"));
+    *exportM << "Robot_ExportKukaCompact" 
+             << "Robot_ExportKukaFull"
+             ;
+ 
+    robot->setCommand(QT_TR_NOOP("&Robot"));
+    *robot << insertRobots 
+           << "Robot_CreateTrajectory"
+           << "Separator"
+           << "Robot_CreateTrajectory"
+           << "Robot_InsertWaypoint"
+           << "Robot_InsertWaypointPreselect"
+           << "Separator"
+           << "Robot_Simulate"
+           << exportM
+           ;
+    return root;
+}

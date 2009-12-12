@@ -41,7 +41,7 @@ public:
 
 protected:
   Gui::ToolBarItem* setupToolBars() const;
-  Gui::ToolBarItem* setupCommandBars() const;
+  Gui::MenuItem*    setupMenuBar() const;
 };
 
 } // namespace RobotGui
