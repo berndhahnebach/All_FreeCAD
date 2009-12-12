@@ -140,6 +140,8 @@
 #include <QTcpSocket>
 // QtOpenGL
 #include <qgl.h>
+#include <QGLFramebufferObject>
+#include <QGLPixelBuffer>
 // QtSvg
 #include <QSvgRenderer>
 #include <QSvgWidget>
