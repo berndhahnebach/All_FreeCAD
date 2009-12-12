@@ -48,6 +48,11 @@ generate_from_xml(MatrixPy)
 generate_from_xml(RotationPy)
 generate_from_xml(PlacementPy)
 
+if(SWIG_FOUND)
+	execute_process(COMMAND ${SWIG_EXECUTABLE} -python -external-runtime)
+	add_definitions(-DHAVE_SWIG=1)
+endif(SWIG_FOUND)
+
 SET(zipios_SRCS
 	../zipios++/backbuffer.h
 	../zipios++/basicentry.cpp

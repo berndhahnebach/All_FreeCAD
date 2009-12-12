@@ -69,7 +69,7 @@ else(WIN32)
 endif(WIN32)
 
 # ================================================================================
-# == All th Options for the build process    ============
+# == All the options for the build process    ============
 
 OPTION(FREECAD_BUILD_GUI "Build FreeCAD Gui. Otherwise you have only the command line and the Python import module." ON)
 OPTION(FREECAD_MAINTAINERS_BUILD "Build FreeCAD for Maintainers, with Docu and 3rd party libs. On Windows the Installer is build." OFF)
@@ -152,6 +152,13 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 	# not needed at the moment
 	#find_package(OpenCV REQUIRED)
 
+# -------------------------------- Swig ----------------------------------
+
+	find_package(SWIG)
+
+	IF(NOT SWIG_FOUND)
+		MESSAGE("SWIG was not found, build no SWIG binding for pivy")
+	ENDIF(NOT SWIG_FOUND)
 	
 	if(FREECAD_BUILD_GUI)	
 # -------------------------------- OpenGL --------------------------------
