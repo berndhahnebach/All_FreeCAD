@@ -1,9 +1,16 @@
+if(MSVC)
+		 add_definitions(-DFCAppRobot -DHAVE_ACOSH -DHAVE_ASINH -DHAVE_ATANH)
+else(MSVC)
+		 add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
+endif(MSVC)
+
 
 include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_BINARY_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
+		 ${OCC_INCLUDE_DIR}
 		 ${EIGEN2_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
@@ -11,11 +18,11 @@ include_directories(
 
 if(WIN32)
 		 set(Robot_LIBS
-				 #ode
+				 Part
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Robot_LIBS
-				 #ode
+				 Part
 		 		 FreeCADApp)
 endif(WIN32)
 
@@ -28,12 +35,16 @@ FILE( GLOB UTIL_HPPS KDL_CP/utilities/[^.]*.h KDL_CP/utilities/[^.]*.hpp)
 generate_from_xml(Robot6AxisPy)
 generate_from_xml(TrajectoryPy)
 generate_from_xml(WaypointPy)
+generate_from_xml(RobotObjectPy)
+
 
 SET(Python_SRCS
 		 Robot6AxisPy.xml
 		 Robot6AxisPyImp.cpp
 		 TrajectoryPy.xml
-		 TrajectoryPyImp.cpp
+		 TrajectoryPyImp.cpp 
+		 RobotObjectPy.xml
+		 RobotObjectPyImp.cpp
 		 WaypointPy.xml
 		 WaypointPyImp.cpp
 )

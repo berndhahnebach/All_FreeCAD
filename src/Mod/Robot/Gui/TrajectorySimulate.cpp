@@ -53,7 +53,7 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
     QMetaObject::connectSlotsByName(this);
 
     // set Tool
-    sim.Tool = Base::Placement(Base::Vector3d(0,0,-100),Base::Rotation());
+    sim.Tool = pcRobotObject->Tool.getValue();
 
     trajectoryTable->setSortingEnabled(false);
 

@@ -27,6 +27,7 @@
 #include <App/GeoFeature.h>
 #include <App/PropertyFile.h>
 #include <App/PropertyGeo.h>
+#include <App/PropertyLinks.h>
 
 #include "Robot6Axis.h"
 
@@ -63,6 +64,8 @@ public:
     App::PropertyFloat Axis1,Axis2,Axis3,Axis4,Axis5,Axis6;
 
 	App::PropertyPlacement Base;
+	App::PropertyPlacement Tool;
+	App::PropertyLink      ToolShape;
 	App::PropertyPlacement Tcp;
 	App::PropertyPlacement Position;
 

@@ -41,64 +41,23 @@
 
 using namespace std;
 
-DEF_STD_CMD_A(CmdRobotConstraintAxle);
+DEF_STD_CMD_A(CmdRobotExportKukaCompact);
 
-CmdRobotConstraintAxle::CmdRobotConstraintAxle()
-	:Command("Robot_Create")
+CmdRobotExportKukaCompact::CmdRobotExportKukaCompact()
+	:Command("Robot_ExportKukaCompact")
 {
     sAppModule      = "Robot";
     sGroup          = QT_TR_NOOP("Robot");
-    sMenuText       = QT_TR_NOOP("Place robot...");
-    sToolTipText    = QT_TR_NOOP("Place a robot (experimental!)");
+    sMenuText       = QT_TR_NOOP("Kuka compact subroutine...");
+    sToolTipText    = QT_TR_NOOP("Export the trajectory as a compact KRL subroutine.");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_CreateRobot";
 }
 
 
-void CmdRobotConstraintAxle::activated(int iMsg)
+void CmdRobotExportKukaCompact::activated(int iMsg)
 {
-    std::string FeatName = getUniqueObjectName("Robot");
-    std::string RobotPath = "Mod/Robot/Lib/Kuka/kr500_1.wrl";
-    std::string KinematicPath = "Mod/Robot/Lib/Kuka/kr500_1.csv";
-
-    openCommand("Place robot");
-    doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
-    doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
-    updateActive();
-    commitCommand();
-      
-}
-
-bool CmdRobotConstraintAxle::isActive(void)
-{
-    return hasActiveDocument();
-}
-
-
-// #####################################################################################################
-
-DEF_STD_CMD_A(CmdRobotSimulate);
-
-CmdRobotSimulate::CmdRobotSimulate()
-	:Command("Robot_Simulate")
-{
-    sAppModule      = "Robot";
-    sGroup          = QT_TR_NOOP("Robot");
-    sMenuText       = QT_TR_NOOP("Simulate a trajectory");
-    sToolTipText    = QT_TR_NOOP("Run a simulation on a trajectory");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Robot_Simulate";
-}
-
-
-void CmdRobotSimulate::activated(int iMsg)
-{
- 
     unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
     unsigned int n2 = getSelection().countObjectsOfType(Robot::TrajectoryObject::getClassTypeId());
  
@@ -109,6 +68,7 @@ void CmdRobotSimulate::activated(int iMsg)
     }
 
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
 
     Robot::RobotObject *pcRobotObject;
     if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
@@ -124,26 +84,98 @@ void CmdRobotSimulate::activated(int iMsg)
         pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[1].pObject);
     std::string TrakName = pcTrajectoryObject->getNameInDocument();
 
-    RobotGui::TrajectorySimulate dlg(pcRobotObject,pcTrajectoryObject,Gui::getMainWindow());
-    dlg.exec();
+    QStringList filter;
+    filter << QObject::tr("KRL file(*.src)");
+    filter << QObject::tr("All Files (*.*)");
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export program"), QString(), filter.join(QLatin1String(";;")));
+    if (fn.isEmpty()) 
+        return;
+
+
+    doCommand(Doc,"from KukaExporter import ExportCompactSub");
+    doCommand(Doc,"ExportCompactSub(App.activeDocument().%s,App.activeDocument().%s,'%s')",pcRobotObject->getNameInDocument(),pcTrajectoryObject->getNameInDocument(),(const char*)fn.toLatin1());
+     
       
 }
 
-bool CmdRobotSimulate::isActive(void)
+bool CmdRobotExportKukaCompact::isActive(void)
 {
     return hasActiveDocument();
 }
 
+// #####################################################################################################
 
+
+DEF_STD_CMD_A(CmdRobotExportKukaFull);
+
+CmdRobotExportKukaFull::CmdRobotExportKukaFull()
+	:Command("Robot_ExportKukaFull")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Kuka full subroutine...");
+    sToolTipText    = QT_TR_NOOP("Export the trajectory as a full KRL subroutine.");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_CreateRobot";
+}
+
+
+void CmdRobotExportKukaFull::activated(int iMsg)
+{
+    unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
+    unsigned int n2 = getSelection().countObjectsOfType(Robot::TrajectoryObject::getClassTypeId());
+ 
+    if (n1 != 1 || n2 != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Robot and one Trajectory object."));
+        return;
+    }
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+
+    Robot::RobotObject *pcRobotObject;
+    if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[1].pObject);
+    std::string RoboName = pcRobotObject->getNameInDocument();
+
+    Robot::TrajectoryObject *pcTrajectoryObject;
+    if(Sel[0].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[1].pObject);
+    std::string TrakName = pcTrajectoryObject->getNameInDocument();
+
+    //RobotGui::TrajectorySimulate dlg(pcRobotObject,pcTrajectoryObject,Gui::getMainWindow());
+    //dlg.exec();
+
+/*   openCommand("Place robot");
+    doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
+    updateActive();
+    commitCommand();*/
+      
+      
+}
+
+bool CmdRobotExportKukaFull::isActive(void)
+{
+    return hasActiveDocument();
+}
 
 // #####################################################################################################
 
 
 
-void CreateRobotCommands(void)
+void CreateRobotCommandsExport(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
-    rcCmdMgr.addCommand(new CmdRobotConstraintAxle());
-    rcCmdMgr.addCommand(new CmdRobotSimulate());
+    rcCmdMgr.addCommand(new CmdRobotExportKukaFull());
+    rcCmdMgr.addCommand(new CmdRobotExportKukaCompact());
  }

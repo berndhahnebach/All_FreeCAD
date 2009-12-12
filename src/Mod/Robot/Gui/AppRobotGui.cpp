@@ -36,6 +36,9 @@
 
 // use a different name to CreateCommand()
 void CreateRobotCommands(void);
+void CreateRobotCommandsExport(void);
+void CreateRobotCommandsInsertRobots(void);
+void CreateRobotCommandsTrajectory(void);
 
 void loadRobotResource()
 {
@@ -62,6 +65,9 @@ void RobotGuiExport initRobotGui()
 
     // instanciating the commands
     CreateRobotCommands();
+    CreateRobotCommandsExport();
+    CreateRobotCommandsInsertRobots();
+    CreateRobotCommandsTrajectory();
 
     // addition objects
     RobotGui::Workbench                  ::init();
