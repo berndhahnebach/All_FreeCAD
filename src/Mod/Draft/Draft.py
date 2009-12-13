@@ -67,7 +67,7 @@ from draftlibs import fcvec
 from draftlibs import fcgeo
 
 try:
-	from pivy import coin, sogui
+	from pivy import coin
 except:
 	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
 	raise
@@ -2028,6 +2028,9 @@ class Offset(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.faces = False
 		self.edges = []
+		if len(self.sel.Shape.Faces)>1:
+			self.ui.translate("The offset tool cannot currently work on multi-face objects\n")
+			self.finish()
 		c = fcgeo.complexity(self.sel)	
 		if (c >= 7): 
 			self.edges = fcgeo.getBoundary(self.sel.Shape)
@@ -2452,9 +2455,9 @@ class Trimex(Modifier):
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
 		self.sel.ViewObject.Visibility = False
-
 		self.edges = []
-		c = fcgeo.complexity(self.sel)	
+		c = fcgeo.complexity(self.sel)
+		print c
 		if (c >= 7): 
 			self.finish()
 		elif (c >= 4): 
