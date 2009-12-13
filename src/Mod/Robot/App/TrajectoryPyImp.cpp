@@ -123,7 +123,11 @@ Py::Float TrajectoryPy::getDuration(void) const
 
 Py::List TrajectoryPy::getWaypoints(void) const
 {
-     return Py::List();
+    Py::List list;
+    for(unsigned int i = 0; i < getTrajectoryPtr()->getSize(); i++)
+        list.append(Py::Object(new Robot::WaypointPy(new Robot::Waypoint(getTrajectoryPtr()->getWaypoint(i)))));
+
+    return list;
 }
 
 Py::Float TrajectoryPy::getLength(void) const
@@ -135,7 +139,7 @@ Py::Float TrajectoryPy::getLength(void) const
 
 void TrajectoryPy::setWaypoints(Py::List)
 {
- 
+   
 }
 
 PyObject *TrajectoryPy::getCustomAttributes(const char* /*attr*/) const
