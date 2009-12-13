@@ -277,7 +277,9 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
         pcDragger->setMotionMatrix(M);
 		//pcTcpTransform->translation = SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z);
 		//pcTcpTransform->rotation = SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]);
-	}
+	}else if (prop == &robObj->ToolShape) {
+        SbMatrix  M;
+ 	}
 
 }
 void ViewProviderRobotObject::setAxisTo(float A1,float A2,float A3,float A4,float A5,float A6)
