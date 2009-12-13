@@ -142,34 +142,37 @@ CmdRobotAddToolShape::CmdRobotAddToolShape()
 void CmdRobotAddToolShape::activated(int iMsg)
 {
  
-    //unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
-    //unsigned int n2 = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
+    unsigned int n2 = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
  
-    //if (n1 != 1 || n2 != 1) {
-    //    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-    //        QObject::tr("Select one Robot and one Trajectory object."));
-    //    return;
-    //}
+    if (n1 != 1 || n2 != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Robot and one Trajectory object."));
+        return;
+    }
 
-    //std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
-    //Robot::RobotObject *pcRobotObject;
-    //if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
-    //    pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
-    //else if(Sel[1].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
-    //    pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[1].pObject);
-    //std::string RoboName = pcRobotObject->getNameInDocument();
+    Robot::RobotObject *pcRobotObject;
+    if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[1].pObject);
+    std::string RoboName = pcRobotObject->getNameInDocument();
 
-    //Robot::TrajectoryObject *pcTrajectoryObject;
-    //if(Sel[0].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
-    //    pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[0].pObject);
-    //else if(Sel[1].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
-    //    pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[1].pObject);
-    //std::string TrakName = pcTrajectoryObject->getNameInDocument();
+    Part::Feature *pcShapeObject;
+    if(Sel[0].pObject->getTypeId() == Part::Feature::getClassTypeId())
+        pcShapeObject = dynamic_cast<Part::Feature*>(Sel[0].pObject);
+    else if(Sel[1].pObject->getTypeId() == Part::Feature::getClassTypeId())
+        pcShapeObject = dynamic_cast<Part::Feature*>(Sel[1].pObject);
+    std::string ShapeName = pcShapeObject->getNameInDocument();
 
-    //RobotGui::TrajectoryAddToolShape dlg(pcRobotObject,pcTrajectoryObject,Gui::getMainWindow());
-    //dlg.exec();
-      
+    openCommand("Add tool to robot");
+    doCommand(Doc,"App.activeDocument().%s.ToolShape = App.activeDocument().%s",RoboName.c_str(),ShapeName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",ShapeName.c_str());
+    updateActive();
+    commitCommand();
+        
 }
 
 bool CmdRobotAddToolShape::isActive(void)
@@ -183,4 +186,5 @@ void CreateRobotCommandsInsertRobots(void)
 
     rcCmdMgr.addCommand(new CmdRobotInsertKukaIR16());
     rcCmdMgr.addCommand(new CmdRobotInsertKukaIR500());
+    rcCmdMgr.addCommand(new CmdRobotAddToolShape());
  }

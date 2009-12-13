@@ -71,6 +71,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     insertRobots->setCommand(QT_TR_NOOP("Insert Robots"));
     *insertRobots << "Robot_InsertKukaIR500" 
                   << "Robot_InsertKukaIR16" 
+                  << "Separator"
+                  << "Robot_AddToolShape"
                   ;
 
     // boolean

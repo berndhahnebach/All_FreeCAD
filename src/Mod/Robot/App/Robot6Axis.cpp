@@ -121,6 +121,7 @@ void Robot6Axis::readKinematic(const char * FileName)
 {
     char buf[120];
     std::ifstream in(FileName);
+    if(!in)return;
     std::vector<std::string> destination;
     AxisDefinition temp[6];
 
