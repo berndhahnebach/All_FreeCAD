@@ -62,6 +62,7 @@ public:
     void addWaypoint(const Waypoint &WPnt);
     unsigned int getSize(void) const{return vpcWaypoints.size();}
     const Waypoint &getWaypoint(unsigned int pos)const {return *vpcWaypoints[pos];}
+    std::string getUniqueWaypointName(const char *Name) const;
 
     /// return the Length (mm) of the Trajectory if -1 or of the Waypoint with the given number
     double getLength(int n=-1) const;

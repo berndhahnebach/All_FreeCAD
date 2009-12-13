@@ -35,8 +35,8 @@ std::string WaypointPy::representation(void) const
         str << "WAIT ";
     else if(getWaypointPtr()->Type == Waypoint::UNDEF)
         str << "UNDEF ";
-
-    str << "(";
+    str << getWaypointPtr()->Name;
+    str << " (";
     str << getWaypointPtr()->EndPos.getPosition().x << ","<< getWaypointPtr()->EndPos.getPosition().y << "," << getWaypointPtr()->EndPos.getPosition().z;
     str << ";" << A << "," << B << "," << C << ")";
     str << "v=" << getWaypointPtr()->Velocity << " ";
@@ -96,10 +96,10 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
                 getWaypointPtr()->Velocity = 100;
                 break;
             case Waypoint::LINE:
-                getWaypointPtr()->Velocity = 2;
+                getWaypointPtr()->Velocity = 2000;
                 break;
             case Waypoint::CIRC:
-                getWaypointPtr()->Velocity = 2;
+                getWaypointPtr()->Velocity = 2000;
                 break;
             default:
                 getWaypointPtr()->Velocity = 0;

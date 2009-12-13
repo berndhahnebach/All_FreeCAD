@@ -173,9 +173,58 @@ void Trajectory::generateTrajectory(void)
 
 }
 
+std::string Trajectory::getUniqueWaypointName(const char *Name) const
+{
+    if (!Name || *Name == '\0')
+        return std::string();
+
+    // check for first character whether it's a digit
+    std::string CleanName = Name;
+    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
+        CleanName[0] = '_';
+    // strip illegal chars
+    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
+        if (!((*it>=48 && *it<=57) ||  // number
+             (*it>=65 && *it<=90)  ||  // uppercase letter
+             (*it>=97 && *it<=122)))   // lowercase letter
+             *it = '_'; // it's neither number nor letter
+    }
+
+    // name in use?
+    std::vector<Robot::Waypoint*>::const_iterator it;
+    for(it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it)
+        if((*it)->Name == CleanName) break;
+  
+    if (it == vpcWaypoints.end()) {
+        // if not, name is OK
+        return CleanName;
+    }
+    else {
+        // find highest suffix
+        int nSuff = 0;
+        for(it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it) {
+            const std::string &ObjName = (*it)->Name;
+            if (ObjName.substr(0, CleanName.length()) == CleanName) { // same prefix
+                std::string clSuffix(ObjName.substr(CleanName.length()));
+                if (clSuffix.size() > 0) {
+                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
+                    if (nPos==std::string::npos)
+                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
+                }
+            }
+        }
+
+        std::stringstream str;
+        str << CleanName << (nSuff + 1);
+        return str.str();
+    }
+}
+
 void Trajectory::addWaypoint(const Waypoint &WPnt)
 {
+    std::string UniqueName = getUniqueWaypointName(WPnt.Name.c_str());
     Waypoint *tmp = new Waypoint(WPnt);
+    tmp->Name = UniqueName;
     vpcWaypoints.push_back(tmp);
 }
 
