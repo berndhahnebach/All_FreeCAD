@@ -2,10 +2,10 @@
 lib_LTLIBRARIES=libSketcher.la Sketcher.la
 
 BUILT_SOURCES=\
-		SketchObjectPy.cpp
+		SketchObjectSFPy.cpp
 
 libSketcher_la_BUILT=\
-		SketchObjectPy.h
+		SketchObjectSFPy.h
 
 libSketcher_la_SOURCES = \
 		sketchflat/assume.cpp \
@@ -43,9 +43,9 @@ libSketcher_la_SOURCES = \
 		AppSketcherPy.cpp \
 		SketchFlatInterface.cpp \
 		SketchFlatInterface.h \
-		SketchObject.cpp \
-		SketchObject.h \
-		SketchObjectPyImp.cpp \
+		SketchObjectSF.cpp \
+		SketchObjectSF.h \
+		SketchObjectSFPyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 

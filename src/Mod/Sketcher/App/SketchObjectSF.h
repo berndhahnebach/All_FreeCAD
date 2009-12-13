@@ -22,8 +22,8 @@
 
 
 
-#ifndef __SketchObject_H__
-#define __SketchObject_H__
+#ifndef __SketchObjectSF_H__
+#define __SketchObjectSF_H__
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
@@ -34,12 +34,12 @@ namespace Sketcher
 {
 
 
-class SketchObject :public Part::Part2DObject
+class SketchObjectSF :public Part::Part2DObject
 {
-    PROPERTY_HEADER(Part::SketchObject);
+    PROPERTY_HEADER(Part::SketchObjectSF);
 
 public:
-    SketchObject();
+    SketchObjectSF();
 
     /// Property
     App::PropertyFileIncluded SketchFlatFile;
@@ -51,7 +51,7 @@ public:
     short mustExecute() const;
     /// returns the type name of the ViewProvider
     const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketch";
+        return "SketcherGui::ViewProviderSketchSF";
     }
     //@}
 

@@ -62,8 +62,8 @@ SET(SketcherGui_SRCS
 		 TaskSketcherGeneral.ui
 		 TaskSketcherGeneral.cpp
 		 TaskSketcherGeneral.h
-		 ViewProviderSketch.cpp
-		 ViewProviderSketch.h
+		 ViewProviderSketchSF.cpp
+		 ViewProviderSketchSF.h
 		 Workbench.cpp
 		 Workbench.h
 )

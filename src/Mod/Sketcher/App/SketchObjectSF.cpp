@@ -27,22 +27,22 @@
 
 
 
-#include "SketchObject.h"
+#include "SketchObjectSF.h"
 #include "SketchFlatInterface.h"
 
 
 using namespace Sketcher;
 
 
-PROPERTY_SOURCE(Sketcher::SketchObject, Part::Part2DObject)
+PROPERTY_SOURCE(Sketcher::SketchObjectSF, Part::Part2DObject)
 
 
-SketchObject::SketchObject()
+SketchObjectSF::SketchObjectSF()
 {
     ADD_PROPERTY_TYPE(SketchFlatFile,(0),"",(App::PropertyType)(App::Prop_None),"SketchFlat file (*.skf) which defines this sketch");
 }
 
-short SketchObject::mustExecute() const
+short SketchObjectSF::mustExecute() const
 {
     if ( SketchFlatFile.isTouched() )
         return 1;
@@ -50,7 +50,7 @@ short SketchObject::mustExecute() const
 }
 
 
-App::DocumentObjectExecReturn *SketchObject::execute(void)
+App::DocumentObjectExecReturn *SketchObjectSF::execute(void)
 {
     SketchFlatInterface temp;
     temp.load(SketchFlatFile.getValue());

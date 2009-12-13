@@ -49,10 +49,10 @@
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
 #include <Mod/Sketcher/App/SketchFlatInterface.h>
-#include <Mod/Sketcher/App/SketchObject.h>
+#include <Mod/Sketcher/App/SketchObjectSF.h>
 
 
-#include "ViewProviderSketch.h"
+#include "ViewProviderSketchSF.h"
 
 
 using namespace SketcherGui;
@@ -68,10 +68,10 @@ const float fDatumLineColor[] = {0.0f,0.8f,0.0f};
 //**************************************************************************
 // Construction/Destruction
 
-PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
+PROPERTY_SOURCE(SketcherGui::ViewProviderSketchSF, PartGui::ViewProvider2DObject)
 
 
-ViewProviderSketch::ViewProviderSketch()
+ViewProviderSketchSF::ViewProviderSketchSF()
   : Mode(STATUS_NONE),DragPoint(-1),EditRoot(0)
 {
 	PointsMaterials = 0;
@@ -90,7 +90,7 @@ ViewProviderSketch::ViewProviderSketch()
     sPixmap = "Sketcher_NewSketch";
 }
 
-ViewProviderSketch::~ViewProviderSketch()
+ViewProviderSketchSF::~ViewProviderSketchSF()
 {
 
 }
@@ -98,28 +98,28 @@ ViewProviderSketch::~ViewProviderSketch()
 
 // **********************************************************************************
 
-void ViewProviderSketch::setSketchMode(int mode)
+void ViewProviderSketchSF::setSketchMode(int mode)
 {
 	Mode = mode;
 }
 
-bool ViewProviderSketch::setConstrainOnSelected(int Constrain)
+bool ViewProviderSketchSF::setConstrainOnSelected(int Constrain)
 {
 	return false;
 }
 
-bool ViewProviderSketch::keyPressed(int key)
+bool ViewProviderSketchSF::keyPressed(int key)
 {
 	return true;
 }
 
-void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)
+void ViewProviderSketchSF::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)
 {
 	// Plane form
 	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
 
     // move to position of Sketch
-    Base::Placement Plz = getSketchObject()->Placement.getValue();
+    Base::Placement Plz = getSketchObjectSF()->Placement.getValue();
     R0 = Plz.getPosition() ; 
 	Base::Rotation tmp(Plz.getRotation());
     tmp.multVec(RN,RN);
@@ -139,7 +139,7 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 	v = S.y;
 }
 
-bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
+bool ViewProviderSketchSF::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
                                             const SbVec3f &normal, const SoPickedPoint* pp)
 {
     double x,y;
@@ -241,7 +241,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 	return false;
 }
 
-bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
+bool ViewProviderSketchSF::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
 {
 	double x,y;
 	getCoordsOnSketchPlane(x,y,point,normal);
@@ -270,7 +270,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 	return false;
 }
 
-bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
+bool ViewProviderSketchSF::handlePreselection(const SoPickedPoint* Point)
 {
     if (Point) {
         Base::Console().Log("Point pick\n");
@@ -330,17 +330,17 @@ bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
     return false;
 }
 
-bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint* pp) const
+bool ViewProviderSketchSF::isPointOnSketch(const SoPickedPoint* pp) const
 {
     // checks if we picked a point on the sketch or any other nodes like the grid
     SoPath* path = pp->getPath();
     return path->containsNode(EditRoot);
 }
 
-bool ViewProviderSketch::doubleClicked(void)
+bool ViewProviderSketchSF::doubleClicked(void)
 {
 
-    Sketcher::SketchObject *obj = static_cast<Sketcher::SketchObject *>(getObject());
+    Sketcher::SketchObjectSF *obj = static_cast<Sketcher::SketchObjectSF *>(getObject());
 
 	Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
 
@@ -353,7 +353,7 @@ bool ViewProviderSketch::doubleClicked(void)
 	return true;
 }
 
-void ViewProviderSketch::draw(void)
+void ViewProviderSketchSF::draw(void)
 {
     double x,y;
     //double x0, y0, dx, dy;
@@ -462,23 +462,23 @@ void ViewProviderSketch::draw(void)
     }
 }
 
-void ViewProviderSketch::updateData(const App::Property* prop)
+void ViewProviderSketchSF::updateData(const App::Property* prop)
 {
     ViewProvider2DObject::updateData(prop);
 }
 
-void ViewProviderSketch::onChanged(const App::Property* prop)
+void ViewProviderSketchSF::onChanged(const App::Property* prop)
 {
     // call father
     PartGui::ViewProvider2DObject::onChanged(prop);
 }
 
-void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
+void ViewProviderSketchSF::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderPart::attach(pcFeat);
 }
 
-bool ViewProviderSketch::setEdit(int ModNum)
+bool ViewProviderSketchSF::setEdit(int ModNum)
 {
 
 
@@ -493,7 +493,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	//SketchFlat = new SketchFlatInterface();
 
  //   // insert the SketchFlat file
- //   SketchFlat->load(getSketchObject()->SketchFlatFile.getValue());
+ //   SketchFlat->load(getSketchObjectSF()->SketchFlatFile.getValue());
 
  //   createEditInventorNodes();
  //   this->hide(); // avoid that the wires interfere with the edit lines
@@ -506,7 +506,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
 	return true;
 }
 
-void ViewProviderSketch::createEditInventorNodes(void)
+void ViewProviderSketchSF::createEditInventorNodes(void)
 {
 	if (!EditRoot) {
 		EditRoot = new SoSeparator;
@@ -571,39 +571,39 @@ void ViewProviderSketch::createEditInventorNodes(void)
 	EditRoot->addChild( CurveSet );
 }
 
-void ViewProviderSketch::unsetEdit(void)
+void ViewProviderSketchSF::unsetEdit(void)
 {
 	//ShowGrid.setValue(false);
 
  //   std::string file;
 
  //   // save the result of editing
- //   if (std::string(getSketchObject()->SketchFlatFile.getValue())=="") {
+ //   if (std::string(getSketchObjectSF()->SketchFlatFile.getValue())=="") {
  //       // make a meaningfull name
- //       Base::FileInfo temp(getSketchObject()->SketchFlatFile.getDocTransientPath()
- //                           + "/" + getSketchObject()->getNameInDocument() + ".skf");
+ //       Base::FileInfo temp(getSketchObjectSF()->SketchFlatFile.getDocTransientPath()
+ //                           + "/" + getSketchObjectSF()->getNameInDocument() + ".skf");
  //       if (temp.exists())
  //           // save under save name
- //           file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObject()
+ //           file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObjectSF()
  //                           ->SketchFlatFile.getDocTransientPath().c_str());
  //       else
  //           file = temp.filePath();
  //   }
  //   else {
  //       // save under old name
- //       file = getSketchObject()->SketchFlatFile.getExchangeTempFile();
+ //       file = getSketchObjectSF()->SketchFlatFile.getExchangeTempFile();
  //   }
 
  //   // save the sketch and set the property
  //   SketchFlat->save(file.c_str());
- //   getSketchObject()->SketchFlatFile.setValue(file.c_str());
- //   getSketchObject()->touch();
+ //   getSketchObjectSF()->SketchFlatFile.setValue(file.c_str());
+ //   getSketchObjectSF()->touch();
 
 	//// close the solver
 	//delete(SketchFlat);
 
  //   // recompute the part
- //   getSketchObject()->getDocument()->recompute();
+ //   getSketchObjectSF()->getDocument()->recompute();
 
 	//// empty the nodes
 	//EditRoot->removeAllChildren();
@@ -622,7 +622,7 @@ void ViewProviderSketch::unsetEdit(void)
  //   this->show();
 }
 
-Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void)
+Sketcher::SketchObjectSF* ViewProviderSketchSF::getSketchObjectSF(void)
 {
-    return dynamic_cast<Sketcher::SketchObject*>(pcObject);
+    return dynamic_cast<Sketcher::SketchObjectSF*>(pcObject);
 }

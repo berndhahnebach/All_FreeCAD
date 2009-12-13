@@ -31,9 +31,9 @@
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
-#include <Mod/Sketcher/App/SketchObject.h>
+#include <Mod/Sketcher/App/SketchObjectSF.h>
 
-#include "ViewProviderSketch.h"
+#include "ViewProviderSketchSF.h"
 
 using namespace std;
 using namespace SketcherGui;
@@ -60,10 +60,10 @@ void CmdSketcherNewSketch::activated(int iMsg)
     std::string FeatName = getUniqueObjectName("Sketch");
 
     openCommand("Create a new Sketch");
-    doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObjectSF','%s')",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.SketchFlatFile = App.getResourceDir()+'Mod/Sketcher/Templates/Sketch.skf'",FeatName.c_str());
   
-    Sketcher::SketchObject *obj = static_cast<Sketcher::SketchObject *>(getDocument()->getObject( FeatName.c_str() ));
+    Sketcher::SketchObjectSF *obj = static_cast<Sketcher::SketchObjectSF *>(getDocument()->getObject( FeatName.c_str() ));
 
 	Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
 
@@ -111,9 +111,9 @@ bool CmdSketcherLeaveSketch::isActive(void)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
 			return true;
 	return false;
 }
@@ -138,8 +138,8 @@ void CmdSketcherCreateArc::activated(int iMsg)
 {
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setSketchMode(ViewProviderSketch::STATUS_SKETCH_CreateArc);
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
+			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setSketchMode(ViewProviderSketchSF::STATUS_SKETCH_CreateArc);
       
 }
 
@@ -148,9 +148,9 @@ bool CmdSketcherCreateArc::isActive(void)
 	//Gui::Document *doc = getActiveGuiDocument();
 	//if(doc)
 	//	// checks if a Sketch Viewprovider is in Edit and is in no special mode
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-	//		if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-	//			->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+	//		if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
+	//			->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
 	//		return true;
 	return false;
 }
@@ -174,7 +174,7 @@ CmdSketcherCreateCircle::CmdSketcherCreateCircle()
 void CmdSketcherCreateCircle::activated(int iMsg)
 {
     //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
+    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
     //commitCommand();
       
 }
@@ -183,7 +183,7 @@ bool CmdSketcherCreateCircle::isActive(void)
 {
 	//Gui::Document *doc = getActiveGuiDocument();
 	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
 	//		return true;
 	return false;
 }
@@ -207,7 +207,7 @@ CmdSketcherCreatePoint::CmdSketcherCreatePoint()
 void CmdSketcherCreatePoint::activated(int iMsg)
 {
     //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
+    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
     //commitCommand();
       
 }
@@ -216,7 +216,7 @@ bool CmdSketcherCreatePoint::isActive(void)
 {
 	//Gui::Document *doc = getActiveGuiDocument();
 	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
 	//		return true;
 	return false;
 }
@@ -240,9 +240,9 @@ void CmdSketcherCreateLine::activated(int iMsg)
 {
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-			    ->setSketchMode(ViewProviderSketch::STATUS_SKETCH_CreateLine);
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
+			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
+			    ->setSketchMode(ViewProviderSketchSF::STATUS_SKETCH_CreateLine);
       
 }
 
@@ -251,9 +251,9 @@ bool CmdSketcherCreateLine::isActive(void)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
 			return true;
 	return false;
 }
@@ -278,9 +278,9 @@ void CmdSketcherCreatePolyline::activated(int iMsg)
     Gui::Document *doc = getActiveGuiDocument();
     if (doc) {
         Gui::ViewProvider* vp = doc->getInEdit();
-        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-            static_cast<SketcherGui::ViewProviderSketch*>(vp)->setSketchMode
-            (ViewProviderSketch::STATUS_SKETCH_CreatePolyline);
+        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+            static_cast<SketcherGui::ViewProviderSketchSF*>(vp)->setSketchMode
+            (ViewProviderSketchSF::STATUS_SKETCH_CreatePolyline);
     }
 }
 
@@ -290,9 +290,9 @@ bool CmdSketcherCreatePolyline::isActive(void)
     if (doc) {
         // checks if a sketch is in edit mode and is in no special mode
         Gui::ViewProvider* vp = doc->getInEdit();
-        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-            if (static_cast<SketcherGui::ViewProviderSketch*>(vp)->getSketchMode() ==
-                ViewProviderSketch::STATUS_NONE)
+        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+            if (static_cast<SketcherGui::ViewProviderSketchSF*>(vp)->getSketchMode() ==
+                ViewProviderSketchSF::STATUS_NONE)
                 return true;
     }
 
@@ -318,7 +318,7 @@ CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
 void CmdSketcherCreateRectangle::activated(int iMsg)
 {
     //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
+    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
     //commitCommand();
       
 }
@@ -327,7 +327,7 @@ bool CmdSketcherCreateRectangle::isActive(void)
 {
 	//Gui::Document *doc = getActiveGuiDocument();
 	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
 	//		return true;
 	return false;
 }
@@ -351,7 +351,7 @@ CmdSketcherCreateText::CmdSketcherCreateText()
 void CmdSketcherCreateText::activated(int iMsg)
 {
     //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
+    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
     //commitCommand();
       
 }
@@ -360,7 +360,7 @@ bool CmdSketcherCreateText::isActive(void)
 {
 	//Gui::Document *doc = getActiveGuiDocument();
 	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
 	//		return true;
 	return false;
 }
@@ -384,7 +384,7 @@ CmdSketcherCreateDraftLine::CmdSketcherCreateDraftLine()
 void CmdSketcherCreateDraftLine::activated(int iMsg)
 {
     //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObject\",\"Sketch\")");
+    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
     //commitCommand();
       
 }
@@ -393,7 +393,7 @@ bool CmdSketcherCreateDraftLine::isActive(void)
 {
 	//Gui::Document *doc = getActiveGuiDocument();
 	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
 	//		return true;
 	return false;
 }
@@ -418,8 +418,8 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
 {
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketch::CONSTRAIN_HORIZONTAL);
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
+			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_HORIZONTAL);
       
 }
 
@@ -428,9 +428,9 @@ bool CmdSketcherConstrainHorizontal::isActive(void)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
 			return true;
 	return false;
 }
@@ -454,8 +454,8 @@ void CmdSketcherConstrainVertical::activated(int iMsg)
 {
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketch::CONSTRAIN_VERTICAL);
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
+			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_VERTICAL);
       
 }
 
@@ -464,9 +464,9 @@ bool CmdSketcherConstrainVertical::isActive(void)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
 			return true;
 	return false;
 }
@@ -491,8 +491,8 @@ void CmdSketcherConstrainLock::activated(int iMsg)
 {
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketch::CONSTRAIN_LOCK);
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
+			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_LOCK);
       
 }
 
@@ -501,9 +501,9 @@ bool CmdSketcherConstrainLock::isActive(void)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
 			return true;
 	return false;
 }

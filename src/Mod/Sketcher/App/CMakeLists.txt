@@ -28,13 +28,13 @@ else(WIN32)
 		 		 FreeCADApp)
 endif(WIN32)
 
-generate_from_xml(SketchObjectPy)
+generate_from_xml(SketchObjectSFPy)
 
 SET(Features_SRCS
-		 SketchObject.cpp
-		 SketchObject.h
-		 SketchObjectPy.xml
-		 SketchObjectPyImp.cpp
+		 SketchObjectSF.cpp
+		 SketchObjectSF.h
+		 SketchObjectSFPy.xml
+		 SketchObjectSFPyImp.cpp
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 

@@ -40,7 +40,7 @@
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/TopoShapePy.h>
 
-#include "SketchObject.h"
+#include "SketchObjectSF.h"
 
 using Base::Console;
 using namespace Part;
@@ -67,7 +67,7 @@ static PyObject * open(PyObject *self, PyObject *args)
             // create new document and add Import feature
             App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
 
-            Sketcher::SketchObject *pcFeature = (Sketcher::SketchObject *)pcDoc->addObject("Sketcher::SketchObject",file.fileNamePure().c_str());
+            Sketcher::SketchObjectSF *pcFeature = (Sketcher::SketchObjectSF *)pcDoc->addObject("Sketcher::SketchObjectSF",file.fileNamePure().c_str());
             pcFeature->SketchFlatFile.setValue(Name);
 
             pcDoc->recompute();
@@ -109,7 +109,7 @@ static PyObject * insert(PyObject *self, PyObject *args)
 
          if (file.hasExtension("skf")) {
 
-            Sketcher::SketchObject *pcFeature = (Sketcher::SketchObject *)pcDoc->addObject("Sketcher::SketchObject",file.fileNamePure().c_str());
+            Sketcher::SketchObjectSF *pcFeature = (Sketcher::SketchObjectSF *)pcDoc->addObject("Sketcher::SketchObjectSF",file.fileNamePure().c_str());
             pcFeature->SketchFlatFile.setValue(Name);
 
             pcDoc->recompute();

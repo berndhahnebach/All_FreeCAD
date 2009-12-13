@@ -44,21 +44,21 @@ namespace Gui {
 
 namespace Sketcher {
     class SketchFlatInterface;
-    class SketchObject;
+    class SketchObjectSF;
 }
 
 namespace SketcherGui {
 
 
-class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject
+class SketcherGuiExport ViewProviderSketchSF : public PartGui::ViewProvider2DObject
 {
-    PROPERTY_HEADER(PartGui::ViewProviderSketch);
+    PROPERTY_HEADER(PartGui::ViewProviderSketchSF);
 
 public:
 	/// constructor
-	ViewProviderSketch();
+	ViewProviderSketchSF();
 	/// destructor
-	virtual ~ViewProviderSketch();
+	virtual ~ViewProviderSketchSF();
 
 	virtual void attach(App::DocumentObject *);
 	virtual void updateData(const App::Property*);
@@ -111,7 +111,7 @@ public:
 	int getSketchMode(void){return Mode;}
 
 
-    Sketcher::SketchObject* getSketchObject(void);
+    Sketcher::SketchObjectSF* getSketchObjectSF(void);
 
 protected:
     /// helper to detect whether the picked point lies on the sketch
