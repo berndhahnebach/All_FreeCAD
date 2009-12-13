@@ -2,10 +2,10 @@
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
     Father="Part2DObjectPy"  
-    Name="SketchObjectPy" 
-    Twin="SketchObject" 
-    TwinPointer="SketchObject" 
-    Include="Mod/Sketcher/App/SketchObject.h" 
+    Name="SketchObjectSFPy" 
+    Twin="SketchObjectSF" 
+    TwinPointer="SketchObjectSF" 
+    Include="Mod/Sketcher/App/SketchObjectSF.h" 
     Namespace="Sketcher" 
     FatherInclude="Mod/Part/App/Part2DObjectPy.h" 
     FatherNamespace="Part">
