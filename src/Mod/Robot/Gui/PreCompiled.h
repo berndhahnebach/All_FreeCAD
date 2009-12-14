@@ -32,6 +32,7 @@
 # define AppPartExport  __declspec(dllimport)
 # define RobotGuiExport __declspec(dllexport)
 #else // for Linux
+# define AppPartExport
 # define AppRobotExport
 # define RobotGuiExport
 #endif
