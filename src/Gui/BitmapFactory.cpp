@@ -212,8 +212,14 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(const char* name, const QSize& size) co
     if (!iconPath.isEmpty()) {
         QFile file(iconPath);
         if (file.open(QFile::ReadOnly | QFile::Text)) {
+#if QT_VERSION >= 0x040400
+            // SVG graphics can be directly loaded
+            icon.load(iconPath);
+            icon = icon.scaled(size);
+#else
             QByteArray content = file.readAll();
             icon = pixmapFromSvg(content, size);
+#endif
         }
     }
 
