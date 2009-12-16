@@ -26,6 +26,7 @@
 # include <gp_Pln.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
+# include <BRepBuilderAPI_MakeFace.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Surface.hxx>
 # include <TopoDS.hxx>
@@ -111,11 +112,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 
 	TopoDS_Wire theWire = TopoDS::Wire(shape);
 
-	BRep_Builder aB;
-	TopoDS_Face aFace;
-	aB.MakeFace (aFace, aSurf, Precision::Confusion());
-	aB.Add (aFace, theWire);
-	//aB.Add (aFace, anIntW.Reversed()); //material should lie on the right of the inner wire
+	TopoDS_Face aFace = BRepBuilderAPI_MakeFace(theWire);
 
     // extrude the face to a solid
     Base::Vector3f v = Dir.getValue();
