@@ -92,14 +92,15 @@ protected:
 class MeshExport MeshOrientationVisitor : public MeshFacetVisitor
 {
 public:
-  MeshOrientationVisitor();
+    MeshOrientationVisitor();
 
-  /** Returns false after the first inconsistence is found, true otherwise. */
-  bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
-  bool HasNonUnifomOrientedFacets() const;
+    /** Returns false after the first inconsistence is found, true otherwise. */
+    bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
+    bool HasNonUnifomOrientedFacets() const;
+    bool IsSameOrientation(const MeshFacet &, const MeshFacet &) const;
 
 private:
-  bool _nonuniformOrientation;
+    bool _nonuniformOrientation;
 };
 
 /**
@@ -110,14 +111,29 @@ private:
 class MeshExport MeshOrientationCollector : public MeshOrientationVisitor
 {
 public:
-  MeshOrientationCollector(std::vector<unsigned long>& aulIndices, std::vector<unsigned long>& aulComplement);
+    MeshOrientationCollector(std::vector<unsigned long>& aulIndices,
+                             std::vector<unsigned long>& aulComplement);
 
-  /** Returns always true and collects the indices with wrong orientation. */
-  bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
+    /** Returns always true and collects the indices with wrong orientation. */
+    bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long);
 
 private:
-  std::vector<unsigned long>& _aulIndices;
-  std::vector<unsigned long>& _aulComplement;
+    std::vector<unsigned long>& _aulIndices;
+    std::vector<unsigned long>& _aulComplement;
+};
+
+/**
+ * @author Werner Mayer
+ */
+class MeshExport MeshSameOrientationCollector : public MeshOrientationVisitor
+{
+public:
+    MeshSameOrientationCollector(std::vector<unsigned long>& aulIndices);
+    /** Returns always true and collects the indices with wrong orientation. */
+    bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long);
+
+private:
+    std::vector<unsigned long>& _aulIndices;
 };
 
 /**
@@ -127,10 +143,13 @@ private:
 class MeshExport MeshEvalOrientation : public MeshEvaluation
 {
 public:
-  MeshEvalOrientation (const MeshKernel& rclM);
-  ~MeshEvalOrientation();
-  bool Evaluate ();
-  std::vector<unsigned long> GetIndices() const;
+    MeshEvalOrientation (const MeshKernel& rclM);
+    ~MeshEvalOrientation();
+    bool Evaluate ();
+    std::vector<unsigned long> GetIndices() const;
+
+private:
+    unsigned long HasFalsePositives(const std::vector<unsigned long>&) const;
 };
 
 /**
@@ -140,9 +159,9 @@ public:
 class MeshExport MeshFixOrientation : public MeshValidation
 {
 public:
-  MeshFixOrientation (MeshKernel& rclM);
-  ~MeshFixOrientation();
-  bool Fixup();
+    MeshFixOrientation (MeshKernel& rclM);
+    ~MeshFixOrientation();
+    bool Fixup();
 };
 
 // ----------------------------------------------------

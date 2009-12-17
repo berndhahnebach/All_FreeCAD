@@ -76,8 +76,8 @@ protected:
     void ComputeError(int &h, double eps_1, double eps_2, double &max_error,
                       double &av, double &c2, std::vector <double> &err_w);
     void ExtendNurb(double c2, int h);
-    void ReorderNeighbourList(std::set<MeshCore::MeshPointArray::_TConstIterator> &pnt,
-                              std::set<MeshCore::MeshFacetArray::_TConstIterator> &face, std::vector<unsigned long> &nei,unsigned long CurInd);
+    void ReorderNeighbourList(std::set<unsigned long> &pnt,
+                              std::set<unsigned long> &face, std::vector<unsigned long> &nei,unsigned long CurInd);
     //void RemakeList(std::vector<MyMesh::VertexHandle> &v_neighbour);
 
 private:

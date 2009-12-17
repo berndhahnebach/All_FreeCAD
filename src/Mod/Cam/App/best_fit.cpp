@@ -1194,15 +1194,15 @@ std::vector<Base::Vector3f> best_fit::Comp_Normals(MeshCore::MeshKernel &M)
         origPoint.y = mPnt.y;
         origPoint.z = mPnt.z;
 
-        const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+        const std::set<unsigned long>& faceSet = rf2pt[i];
         fArea = 0.0;
         normal.Set(0.0,0.0,0.0);
 
         // Iteriere über die Dreiecke zu jedem Punkt
-        for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
+        for (std::set<unsigned long>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
         {
             // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
-            t_face = M.GetFacet(**it);
+            t_face = M.GetFacet(*it);
             // Flaecheninhalt aufsummieren
             local_Area = t_face.Area();
             local_normal = t_face.GetNormal();
@@ -1525,23 +1525,21 @@ double best_fit::CompTotalError()
     //}
 
 
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator v_it;
     MeshCore::MeshRefPointToPoints vv_it(m_CadMesh);
+    MeshCore::MeshPointArray::_TConstIterator v_beg = m_CadMesh.GetPoints().begin();
 
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
-
+    std::set<unsigned long>::const_iterator v_it;
     for (unsigned int i=0; i<FailProj.size(); ++i)
     {
-        PntNei = vv_it[FailProj[i]];
+        const std::set<unsigned long>& PntNei = vv_it[FailProj[i]];
         m_error[FailProj[i]] = 0.0;
 
         for (v_it = PntNei.begin(); v_it !=PntNei.end(); ++v_it)
         {
-            m_error[FailProj[i]] += m_error[(*v_it)[0]._ulProp];
+            m_error[FailProj[i]] += m_error[v_beg[*v_it]._ulProp];
         }
 
         m_error[FailProj[i]] /= double(PntNei.size());
-        PntNei.clear();
     }
 
 
@@ -1615,25 +1613,24 @@ double best_fit::CompTotalError(MeshCore::MeshKernel &mesh)
         ++i;
     }
 
-	std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator v_it;
     MeshCore::MeshRefPointToPoints vv_it(m_CadMesh);
+    MeshCore::MeshPointArray::_TConstIterator v_beg = m_CadMesh.GetPoints().begin();
 
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
 	double error;
+	std::set<unsigned long>::const_iterator v_it;
     for (unsigned int i=0; i<FailProj.size(); ++i)
     {
-        PntNei = vv_it[FailProj[i]];
+        const std::set<unsigned long>& PntNei = vv_it[FailProj[i]];
 		error = 0.0;
 
 
         for (v_it = PntNei.begin(); v_it !=PntNei.end(); ++v_it)
         {
-			error += m_error[(*v_it)[0]._ulProp];
+			error += m_error[v_beg[*v_it]._ulProp];
         }
 
 		error /= double(PntNei.size());
         m_error[FailProj[i]] += error;
-        PntNei.clear();
     }
 
 

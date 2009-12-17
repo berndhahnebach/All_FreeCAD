@@ -856,8 +856,8 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, double d_max)
 
     MeshCore::MeshPointIterator v_it(Mesh);
     MeshCore::MeshRefPointToPoints vv_it(Mesh);
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator pnt_it;
+    std::set<unsigned long>::const_iterator pnt_it;
+    MeshCore::MeshPointArray::_TConstIterator v_beg = Mesh.GetPoints().begin();
 
     Base::Vector3f N, L, coor;
     int n = m_MeshStruct.size();
@@ -870,15 +870,15 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, double d_max)
         spnt.Set(0.0, 0.0, 0.0);
         locPointArray.push_back(*v_it);
         spnt += *v_it;
-        PntNei = vv_it[(*v_it)._ulProp];
+        const std::set<unsigned long>& PntNei = vv_it[(*v_it)._ulProp];
 
         if (PntNei.size() < 3)
             continue;
 
         for (pnt_it = PntNei.begin(); pnt_it !=PntNei.end(); ++pnt_it)
         {
-            locPointArray.push_back((*pnt_it)[0]);
-            spnt += (*pnt_it)[0];
+            locPointArray.push_back(v_beg[*pnt_it]);
+            spnt += v_beg[*pnt_it];
         }
 
         spnt.Scale((float) (1.0/(double(PntNei.size()) + 1.0)),(float) (1.0/(double(PntNei.size()) + 1.0)),(float) (1.0/(double(PntNei.size()) + 1.0)));
@@ -955,8 +955,8 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, std::vector<in
 
     MeshCore::MeshPointIterator v_it(Mesh);
     MeshCore::MeshRefPointToPoints vv_it(Mesh);
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator pnt_it;
+    std::set<unsigned long>::const_iterator pnt_it;
+    MeshCore::MeshPointArray::_TConstIterator v_beg = Mesh.GetPoints().begin();
 
     Base::Vector3f N, L, coor;
 
@@ -968,15 +968,15 @@ bool SpringbackCorrection::SmoothMesh(MeshCore::MeshKernel &Mesh, std::vector<in
         spnt.Set(0.0, 0.0, 0.0);
         locPointArray.push_back(*v_it);
         spnt += *v_it;
-        PntNei = vv_it[(*v_it)._ulProp];
+        const std::set<unsigned long>& PntNei = vv_it[(*v_it)._ulProp];
 
         if (PntNei.size() < 3)
             continue;
 
         for (pnt_it = PntNei.begin(); pnt_it !=PntNei.end(); ++pnt_it)
         {
-            locPointArray.push_back((*pnt_it)[0]);
-            spnt += (*pnt_it)[0];
+            locPointArray.push_back(v_beg[*pnt_it]);
+            spnt += v_beg[*pnt_it];
         }
 
         spnt.Scale((float) (1.0/(double(PntNei.size()) + 1.0)),(float) (1.0/(double(PntNei.size()) + 1.0)),(float) (1.0/(double(PntNei.size()) + 1.0)));
@@ -1089,6 +1089,7 @@ std::vector<int> SpringbackCorrection::InitFaceCheck(MeshCore::MeshKernel &mesh,
 
     MeshCore::MeshPointArray mPnts   = mesh.GetPoints();
     MeshCore::MeshFacetArray mFacets = mesh.GetFacets();
+    MeshCore::MeshFacetArray::_TConstIterator f_beg = mesh.GetFacets().begin();
 
     int n = mesh.CountFacets();
 
@@ -1124,14 +1125,12 @@ std::vector<int> SpringbackCorrection::InitFaceCheck(MeshCore::MeshKernel &mesh,
 
             for (int j=0; j<3; ++j)
             {
-                std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = p2fIt[mFacets[i]._aulPoints[j]];
+                const std::set<unsigned long>& faceSet = p2fIt[mFacets[i]._aulPoints[j]];
 
-                for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
+                for (std::set<unsigned long>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
                 {
-                    (*it)[0].SetProperty(5);
+                    f_beg[*it].SetProperty(5);
                 }
-
-                faceSet.clear();
             }
 
             log.addSingleArrow(gpnt,gpnt+normal,4,1,0,0);
@@ -1796,19 +1795,19 @@ bool SpringbackCorrection::FacetRegionGrowing(MeshCore::MeshKernel &mesh,
         std::vector<MeshCore::MeshFacet> &FacetRegion,
         MeshCore::MeshFacetArray &mFacets)
 {
-    std::set<MeshCore::MeshFacetArray::_TConstIterator>::iterator f_it;
     MeshCore::MeshRefFacetToFacets ff_It(mesh);
-    std::set<MeshCore::MeshFacetArray::_TConstIterator> FacetNei;
 
     MeshCore::MeshFacet facet = FacetRegion.back();
-    FacetNei = ff_It[facet._ulProp];
+    const std::set<unsigned long>& FacetNei = ff_It[facet._ulProp];
+    MeshCore::MeshFacetArray::_TConstIterator f_beg = mesh.GetFacets().begin();
 
+    std::set<unsigned long>::const_iterator f_it;
     for (f_it = FacetNei.begin(); f_it != FacetNei.end(); ++f_it)
     {
-        if ((*f_it)[0]._ucFlag == MeshCore::MeshFacet::VISIT)
+        if (f_beg[*f_it]._ucFlag == MeshCore::MeshFacet::VISIT)
         {
-            FacetRegion.push_back((*f_it)[0]);
-            mFacets[(*f_it)[0]._ulProp].SetFlag(MeshCore::MeshFacet::INVALID); // markiere als schon zugewiesen
+            FacetRegion.push_back(f_beg[*f_it]);
+            mFacets[f_beg[*f_it]._ulProp].SetFlag(MeshCore::MeshFacet::INVALID); // markiere als schon zugewiesen
             FacetRegionGrowing(mesh, FacetRegion, mFacets);
         }
     }
@@ -1917,14 +1916,15 @@ bool SpringbackCorrection::GetCurvature(TopoDS_Face aFace)
 
     MeshCore::MeshPointIterator v_it(m_Mesh);
     MeshCore::MeshRefPointToPoints vv_it(m_Mesh);
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei2;
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei3;
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei4;
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator pnt_it1;
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator pnt_it2;
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator pnt_it3;
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator pnt_it4;
+    MeshCore::MeshPointArray::_TConstIterator v_beg = m_Mesh.GetPoints().begin();
+    std::set<unsigned long> PntNei;
+    std::set<unsigned long> PntNei2;
+    std::set<unsigned long> PntNei3;
+    std::set<unsigned long> PntNei4;
+    std::set<unsigned long>::iterator pnt_it1;
+    std::set<unsigned long>::iterator pnt_it2;
+    std::set<unsigned long>::iterator pnt_it3;
+    std::set<unsigned long>::iterator pnt_it4;
     std::vector<unsigned long> nei;
     double curv;
 
@@ -1937,27 +1937,27 @@ bool SpringbackCorrection::GetCurvature(TopoDS_Face aFace)
 
         for (pnt_it1 = PntNei.begin(); pnt_it1 !=PntNei.end(); ++pnt_it1)
         {
-            if (m_CurvMax[(*pnt_it1)[0]._ulProp] < curv)
-                curv = m_CurvMax[(*pnt_it1)[0]._ulProp];
+            if (m_CurvMax[v_beg[*pnt_it1]._ulProp] < curv)
+                curv = m_CurvMax[v_beg[*pnt_it1]._ulProp];
 
-            PntNei2 = vv_it[(*pnt_it1)[0]._ulProp];
+            PntNei2 = vv_it[v_beg[*pnt_it1]._ulProp];
             for (pnt_it2 = PntNei2.begin(); pnt_it2 !=PntNei2.end(); ++pnt_it2)
             {
-                if (m_CurvMax[(*pnt_it2)[0]._ulProp] < curv)
-                    curv = m_CurvMax[(*pnt_it2)[0]._ulProp];
+                if (m_CurvMax[v_beg[*pnt_it2]._ulProp] < curv)
+                    curv = m_CurvMax[v_beg[*pnt_it2]._ulProp];
 
 
-                PntNei3 = vv_it[(*pnt_it2)[0]._ulProp];
+                PntNei3 = vv_it[v_beg[*pnt_it2]._ulProp];
                 for (pnt_it3 = PntNei3.begin(); pnt_it3 !=PntNei3.end(); ++pnt_it3)
                 {
-                    if (m_CurvMax[(*pnt_it3)[0]._ulProp] < curv)
-                        curv = m_CurvMax[(*pnt_it3)[0]._ulProp];
+                    if (m_CurvMax[v_beg[*pnt_it3]._ulProp] < curv)
+                        curv = m_CurvMax[v_beg[*pnt_it3]._ulProp];
 
-                    PntNei4 = vv_it[(*pnt_it3)[0]._ulProp];
+                    PntNei4 = vv_it[v_beg[*pnt_it3]._ulProp];
                     for (pnt_it4 = PntNei4.begin(); pnt_it4 !=PntNei4.end(); ++pnt_it4)
                     {
-                        if (m_CurvMax[(*pnt_it4)[0]._ulProp] < curv)
-                            curv = m_CurvMax[(*pnt_it4)[0]._ulProp];
+                        if (m_CurvMax[v_beg[*pnt_it4]._ulProp] < curv)
+                            curv = m_CurvMax[v_beg[*pnt_it4]._ulProp];
                     }
                 }
             }
