@@ -3321,16 +3321,16 @@ static PyObject * offset_mesh(PyObject *self, PyObject *args)
         for (unsigned long i=0; i<mesh.CountPoints(); i++)
         {
             // Satz von Dreiecken zu jedem Punkt
-            const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+            const std::set<unsigned long>& faceSet = rf2pt[i];
             float fArea = 0.0;
             normal.Set(0.0,0.0,0.0);
 
 
             // Iteriere über die Dreiecke zu jedem Punkt
-            for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
+            for (std::set<unsigned long>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
             {
-                // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
-                t_face = mesh.GetFacet(**it);
+                // Einmal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+                t_face = mesh.GetFacet(*it);
                 // Flaecheninhalt aufsummieren
                 float local_Area = t_face.Area();
                 local_normal = t_face.GetNormal();
@@ -4077,16 +4077,16 @@ static PyObject * fit_iter(PyObject *self, PyObject *args)
             for (unsigned long i=0; i<mesh.CountPoints(); i++)
             {
                 // Satz von Dreiecken zu jedem Punkt
-                const std::set<MeshCore::MeshFacetArray::_TConstIterator>& faceSet = rf2pt[i];
+                const std::set<unsigned long>& faceSet = rf2pt[i];
                 float fArea = 0.0;
                 normal.Set(0.0,0.0,0.0);
 
 
                 // Iteriere über die Dreiecke zu jedem Punkt
-                for (std::set<MeshCore::MeshFacetArray::_TConstIterator>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
+                for (std::set<unsigned long>::const_iterator it = faceSet.begin(); it != faceSet.end(); ++it)
                 {
-                    // Zweimal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
-                    t_face = mesh.GetFacet(**it);
+                    // Einmal derefernzieren, um an das MeshFacet zu kommen und dem Kernel uebergeben, dass er ein MeshGeomFacet liefert
+                    t_face = mesh.GetFacet(*it);
                     // Flaecheninhalt aufsummieren
                     float local_Area = t_face.Area();
                     local_normal = t_face.GetNormal();

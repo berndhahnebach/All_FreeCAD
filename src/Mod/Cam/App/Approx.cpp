@@ -525,8 +525,8 @@ void Approximate::ParameterInnerPoints()
     MeshCore::MeshAlgorithm algo(LocalMesh);
     MeshCore::MeshRefPointToPoints vv_it(LocalMesh);
     MeshCore::MeshRefPointToFacets vf_it(LocalMesh);
-    std::set<MeshCore::MeshPointArray::_TConstIterator> PntNei;
-    std::set<MeshCore::MeshFacetArray::_TConstIterator> FacetNei;
+    std::set<unsigned long> PntNei;
+    std::set<unsigned long> FacetNei;
     ublas::compressed_matrix<double> Lambda(NumOfInnerPoints, NumOfPoints);
     int count = 0;
 
@@ -1470,17 +1470,19 @@ void Approximate::ExtendNurb(double c2, int h)
   facet list and will not be checked by this function. (i.e the third vertex i.e vertex in first facet that
   is not the CurIndex or the first neighbour in pnt[Ok, I am also lost with this..., just debug and step to see what I mean...])
 */
-void Approximate::ReorderNeighbourList(std::set<MeshCore::MeshPointArray::_TConstIterator> &pnt,
-                                       std::set<MeshCore::MeshFacetArray::_TConstIterator> &face, std::vector<unsigned long> &nei, unsigned long CurInd)
+void Approximate::ReorderNeighbourList(std::set<unsigned long> &pnt,
+                                       std::set<unsigned long> &face, std::vector<unsigned long> &nei, unsigned long CurInd)
 {
-    std::set<MeshCore::MeshPointArray::_TConstIterator>::iterator pnt_it;
-    std::set<MeshCore::MeshFacetArray::_TConstIterator>::iterator face_it;
+    MeshCore::MeshPointArray::_TConstIterator v_beg = LocalMesh.GetPoints().begin();
+    MeshCore::MeshFacetArray::_TConstIterator f_beg = LocalMesh.GetFacets().begin();
+    std::set<unsigned long>::iterator pnt_it;
+    std::set<unsigned long>::iterator face_it;
     std::vector<unsigned long>::iterator vec_it;
     std::vector<unsigned long>::iterator ulong_it;
     unsigned long PrevIndex;
     pnt_it = pnt.begin();
     face_it = face.begin();
-    nei.push_back((*pnt_it)[0]._ulProp);  //push back first neighbour
+    nei.push_back(v_beg[*pnt_it]._ulProp);  //push back first neighbour
     vec_it = nei.begin();
     PrevIndex = nei[0];  //Initialize PrevIndex
     for (unsigned int i = 1; i < pnt.size(); i++) //Start
@@ -1488,9 +1490,9 @@ void Approximate::ReorderNeighbourList(std::set<MeshCore::MeshPointArray::_TCons
         while (true)
         {
             std::vector<unsigned long> facetpnt;
-            facetpnt.push_back((*face_it)[0]._aulPoints[0]); //push back into a vector for easier iteration
-            facetpnt.push_back((*face_it)[0]._aulPoints[1]);
-            facetpnt.push_back((*face_it)[0]._aulPoints[2]);
+            facetpnt.push_back(f_beg[*face_it]._aulPoints[0]); //push back into a vector for easier iteration
+            facetpnt.push_back(f_beg[*face_it]._aulPoints[1]);
+            facetpnt.push_back(f_beg[*face_it]._aulPoints[2]);
             if ((ulong_it = find(facetpnt.begin(), facetpnt.end(), PrevIndex)) == facetpnt.end())  //if PrevIndex not found
             {
                 //in current facet
