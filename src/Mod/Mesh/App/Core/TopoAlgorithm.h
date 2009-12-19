@@ -80,7 +80,7 @@ public:
     void OptimizeTopology(float fMaxAngle);
     /**
      * Tries to make a more beautiful mesh by swapping the common edge of two
-     * adjacent facets where needed. A swap is needed where to adjacent facets
+     * adjacent facets where needed. A swap is needed where two adjacent facets
      * don't fulfill the Delaunay condition.
      */
     void DelaunayFlip(float fMaxAngle);
