@@ -125,7 +125,7 @@ std::string Property::encodeAttribute(const std::string& str) const
         else if (*it == '&')
             tmp += "&amp;";
         else if (*it == '>')
-            tmp += "&gt";
+            tmp += "&gt;";
         else if (*it == '\n')
             tmp += " ";
         else
