@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,46 @@
  ***************************************************************************/
 
 
+#ifndef __PRECOMPILED__
+#define __PRECOMPILED__
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#include <FCConfig.h>
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
+// Exporting of App classes
+#ifdef FC_OS_WIN32
+# define AppFemExport   __declspec(dllexport)
+# define FemExport      __declspec(dllexport)
+# define AppPartExport  __declspec(dllimport)
+# define PartExport     __declspec(dllimport)
+# define MeshExport     __declspec(dllimport)
+# define BaseExport     __declspec(dllimport)
+#else // for Linux
+# define AppFemExport
+# define FemExport
+# define AppPartExport 
+# define PartExport   
+# define MeshExport  
+# define BaseExport  
+#endif
 
-#include <Mod/Part/App/Part2DObject.h>
+#ifdef _PreComp_
 
-namespace Sketcher
-{
+// standard
+#include <iostream>
+#include <sstream>
+#include <stdio.h>
+#include <assert.h>
+#include <string>
+#include <map>
+#include <vector>
+#include <set>
+#include <bitset>
 
-
-class SketchObjectSF :public Part::Part2DObject
-{
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
-
-public:
-    SketchObjectSF();
-
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
-    //@}
-
-    bool save(const char* FileName);
-    bool load(const char* FileName);
-
-
-};
-
-} //namespace Part
+#include <Python.h>
 
 
-#endif // __FEATUREPARTBOX_H__
+
+
+#endif // _PreComp_
+#endif
+

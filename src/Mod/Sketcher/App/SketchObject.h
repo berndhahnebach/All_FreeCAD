@@ -34,15 +34,15 @@ namespace Sketcher
 {
 
 
-class SketchObjectSF :public Part::Part2DObject
+class SketchObject :public Part::Part2DObject
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+    PROPERTY_HEADER(Sketcher::SketchObject);
 
 public:
-    SketchObjectSF();
+    SketchObject();
 
     /// Property
-    App::PropertyFileIncluded SketchFlatFile;
+    //App::PropertyFileIncluded SketchFlatFile;
 
     /** @name methods overide Feature */
     //@{
@@ -51,13 +51,14 @@ public:
     short mustExecute() const;
     /// returns the type name of the ViewProvider
     const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
+        return "SketcherGui::ViewProviderSketch";
     }
     //@}
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
-
+	// from base class
+    virtual unsigned int getMemSize (void) const;
+	virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
 };
 

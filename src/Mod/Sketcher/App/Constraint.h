@@ -22,41 +22,30 @@
 
 
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#ifndef __Constraint_H__
+#define __Constraint_H__
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
 
-#include <Mod/Part/App/Part2DObject.h>
+#include <Base/Persistence.h>
 
 namespace Sketcher
 {
 
 
-class SketchObjectSF :public Part::Part2DObject
+class Constraint :public Base::Persistence
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+    TYPESYSTEM_HEADER();
 
 public:
-    SketchObjectSF();
+    Constraint();
+    ~Constraint();
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
-    //@}
-
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+	// from base class
+    virtual unsigned int getMemSize (void) const;
+	virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
 
 };

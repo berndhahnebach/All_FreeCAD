@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,50 @@
  ***************************************************************************/
 
 
+#include "PreCompiled.h"
+#ifndef _PreComp_
+# include <Python.h>
+#endif
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#include <Base/Console.h>
+#include <Base/VectorPy.h>
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
+#include "FemMeshPy.h"
 
-#include <Mod/Part/App/Part2DObject.h>
+using namespace Fem;
 
-namespace Sketcher
+static PyObject * 
+meshShape(PyObject *self, PyObject *args)
 {
+ //   PyObject *pcRobObj;
+ //   PyObject *pcTracObj;
+ //   float tick;
+ //   char* FileName;
+
+	//if (!PyArg_ParseTuple(args, "O!O!fs", &(Fem6AxisPy::Type), &pcRobObj,
+ //                                         &(TrajectoryPy::Type), &pcTracObj,
+ //                                         &tick,&FileName
+ //                                         )  )  
+ //       return NULL;                             // NULL triggers exception
+
+ //   PY_TRY {
+ //       Fem::Trajectory &Trac = * static_cast<TrajectoryPy*>(pcTracObj)->getTrajectoryPtr();
+ //       Fem::Fem6Axis &Rob  = * static_cast<Fem6AxisPy*>(pcRobObj)->getFem6AxisPtr();
+	//	Simulation Sim(Trac,Rob);
 
 
-class SketchObjectSF :public Part::Part2DObject
-{
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+	//	
+ //   } PY_CATCH;
 
-public:
-    SketchObjectSF();
+	return Py::new_reference_to(Py::Float(0.0));
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
-    //@}
-
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+}
 
 
+/* registration table  */
+struct PyMethodDef Fem_methods[] = {
+   {
+     "meshShape"       ,meshShape      ,METH_VARARGS,
+     "FemMesh meshShape(Shape) - Meshes a shape"},
+    {NULL, NULL}        /* end of table marker */
 };
-
-} //namespace Part
-
-
-#endif // __FEATUREPARTBOX_H__

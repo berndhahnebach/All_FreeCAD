@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,53 @@
  ***************************************************************************/
 
 
+#include "PreCompiled.h"
+#ifndef _PreComp_
+# include <Python.h>
+#endif
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#include <Base/Console.h>
+#include <Gui/Application.h>
+#include <Gui/Language/Translator.h>
+#include "ViewProviderFemMesh.h"
+#include "Workbench.h"
+//#include "resources/qrc_Fem.cpp"
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
+// use a different name to CreateCommand()
+void CreateFemCommands(void);
 
-#include <Mod/Part/App/Part2DObject.h>
-
-namespace Sketcher
+void loadFemResource()
 {
+    // add resources and reloads the translators
+    Q_INIT_RESOURCE(Fem);
+    Gui::Translator::instance()->refresh();
+}
+
+/* registration table  */
+extern struct PyMethodDef FemGui_Import_methods[];
 
 
-class SketchObjectSF :public Part::Part2DObject
+/* Python entry */
+extern "C" {
+void FemGuiExport initFemGui()  
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
-
-public:
-    SketchObjectSF();
-
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
+    if (!Gui::Application::Instance) {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
     }
-    //@}
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+    (void) Py_InitModule("FemGui", FemGui_Import_methods);   /* mod name, table ptr */
+    Base::Console().Log("Loading GUI of Fem module... done\n");
 
+    // instanciating the commands
+    CreateFemCommands();
 
-};
+    // addition objects
+    FemGui::Workbench                  ::init();
+	FemGui::ViewProviderFemMesh        ::init();
 
-} //namespace Part
+     // add resources and reloads the translators
+    loadFemResource();
+}
 
-
-#endif // __FEATUREPARTBOX_H__
+} // extern "C" {

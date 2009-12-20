@@ -29,14 +29,32 @@ else(WIN32)
 endif(WIN32)
 
 generate_from_xml(SketchObjectSFPy)
+generate_from_xml(SketchObjectPy)
+generate_from_xml(ConstraintPy)
 
 SET(Features_SRCS
 		 SketchObjectSF.cpp
 		 SketchObjectSF.h
-		 SketchObjectSFPy.xml
-		 SketchObjectSFPyImp.cpp
+		 SketchObject.cpp
+		 SketchObject.h
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
+
+SET(Datatypes_SRCS
+		 Constraint.cpp
+		 Constraint.h
+)
+SOURCE_GROUP("Datatypes" FILES ${Datatypes_SRCS})
+
+SET(Python_SRCS
+		 SketchObjectSFPy.xml
+		 SketchObjectSFPyImp.cpp
+		 SketchObjectPy.xml
+		 SketchObjectPyImp.cpp
+		 ConstraintPyImp.cpp
+		 ConstraintPy.xml
+)
+SOURCE_GROUP("Python" FILES ${Python_SRCS})
 
 SET(Sketchflat_SRCS
 		 sketchflat/assume.cpp
@@ -84,16 +102,23 @@ SET(SketchSolver_SRCS
 )
 SOURCE_GROUP("Sketchsolve" FILES ${SketchSolver_SRCS})
 
-SET(Sketcher_SRCS
-		 ${Features_SRCS}
-		 ${Sketchflat_SRCS}
-		 ${SketchSolver_SRCS}
+SET(SketchModule_SRCS
 		 AppSketcher.cpp
 		 AppSketcherPy.cpp
 		 PreCompiled.cpp
 		 PreCompiled.h
 		 SketchFlatInterface.cpp
 		 SketchFlatInterface.h
+)
+SOURCE_GROUP("Module" FILES ${SketchModule_SRCS})
+
+SET(Sketcher_SRCS
+		 ${Features_SRCS}
+		 ${Sketchflat_SRCS}
+		 ${SketchSolver_SRCS}
+		 ${SketchModule_SRCS}
+		 ${Python_SRCS}
+		 ${Datatypes_SRCS}
 )
 
 add_library(Sketcher SHARED ${Sketcher_SRCS})

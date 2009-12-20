@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport 
+      Father="PersistencePy" 
+      Name="FemMeshPy" 
+      Twin="FemMesh" 
+      TwinPointer="FemMesh" 
+      Include="Mod/Fem/App/FemMesh.h" 
+      Namespace="Fem" 
+      FatherInclude="Base/PersistencePy.h" 
+      FatherNamespace="Base"
+      Constructor="true">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
+      <UserDocu>FemMesh class</UserDocu>
+    </Documentation>
+
+  </PythonExport>
+</GenerateModel>

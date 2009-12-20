@@ -1,0 +1,8 @@
+<RCC>
+	<qresource prefix="/" >
+		<file>translations/Fem_de.qm</file>
+	</qresource>
+	<qresource>
+		<file>icons/Fem_FemMesh.svg</file>
+	</qresource>
+</RCC>

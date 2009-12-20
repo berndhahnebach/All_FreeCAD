@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,4 @@
  ***************************************************************************/
 
 
-
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
-
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
-
-#include <Mod/Part/App/Part2DObject.h>
-
-namespace Sketcher
-{
-
-
-class SketchObjectSF :public Part::Part2DObject
-{
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
-
-public:
-    SketchObjectSF();
-
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
-    //@}
-
-    bool save(const char* FileName);
-    bool load(const char* FileName);
-
-
-};
-
-} //namespace Part
-
-
-#endif // __FEATUREPARTBOX_H__
+#include "PreCompiled.h" 
