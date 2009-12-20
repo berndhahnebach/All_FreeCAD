@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2009     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,82 @@
  ***************************************************************************/
 
 
+#include "PreCompiled.h"
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#ifndef _PreComp_
+#endif
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
+#include <Base/Writer.h>
+#include <Base/Reader.h>
 
-#include <Mod/Part/App/Part2DObject.h>
 
-namespace Sketcher
+#include "FemMesh.h"
+
+
+using namespace Fem;
+using namespace Base;
+//using namespace KDL;
+
+
+TYPESYSTEM_SOURCE(Fem::FemMesh , Base::Persistence);
+
+FemMesh::FemMesh()
 {
 
+}
 
-class SketchObjectSF :public Part::Part2DObject
+FemMesh::FemMesh(const FemMesh& Mesh)
+
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+    
+}
 
-public:
-    SketchObjectSF();
+FemMesh::~FemMesh()
+{
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
+}
 
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
-    //@}
-
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+FemMesh &FemMesh::operator=(const FemMesh& Trac)
+{
+    return *this;
+}
 
 
-};
 
-} //namespace Part
+unsigned int FemMesh::getMemSize (void) const
+{
+	return 0;
+}
+
+void FemMesh::Save (Writer &writer) const
+{
+    //writer.Stream() << writer.ind() << "<FemMesh count=\"" <<  getSize() <<"\">" << std::endl;
+    //writer.incInd();
+    //for(unsigned int i = 0;i<getSize(); i++)
+    //    vpcWaypoints[i]->Save(writer);
+    //writer.decInd();
+    //writer.Stream() << writer.ind() << "</FemMesh>" << std::endl ;
+
+}
+
+void FemMesh::Restore(XMLReader &reader)
+{
+    //vpcWaypoints.clear();
+    //// read my element
+    //reader.readElement("FemMesh");
+    //// get the value of my Attribute
+    //int count = reader.getAttributeAsInteger("count");
+    //vpcWaypoints.resize(count);
+
+    //for (int i = 0; i < count; i++) {
+    //    Waypoint *tmp = new Waypoint();
+    //    tmp->Restore(reader);
+    //    vpcWaypoints[i] = tmp;
+    //}
+    //generateFemMesh();
+}
 
 
-#endif // __FEATUREPARTBOX_H__
+
+
+ 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,49 @@
  ***************************************************************************/
 
 
+#include "PreCompiled.h"
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#ifndef _PreComp_
+#endif
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
+#include "FemMeshObject.h"
+#include <App/DocumentObjectPy.h>
+#include <Base/Placement.h>
 
-#include <Mod/Part/App/Part2DObject.h>
+using namespace Fem;
+using namespace App;
 
-namespace Sketcher
+PROPERTY_SOURCE(Fem::FemMeshObject, App::GeoFeature)
+
+
+FemMeshObject::FemMeshObject()
 {
 
+    ADD_PROPERTY_TYPE( Base,   (Base::Placement())  , "FemMesh",Prop_None,"Actuall base frame of the trajectory");
+    ADD_PROPERTY_TYPE( FemMesh,(Fem::FemMesh()), "FemMesh",Prop_None,"FemMesh object");
 
-class SketchObjectSF :public Part::Part2DObject
+}
+
+FemMeshObject::~FemMeshObject()
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+}
 
-public:
-    SketchObjectSF();
+short FemMeshObject::mustExecute(void) const
+{
+    return 0;
+}
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
+PyObject *FemMeshObject::getPyObject()
+{
+    if (PythonObject.is(Py::_None())){
+        // ref counter is set to 1
+        PythonObject = Py::Object(new DocumentObjectPy(this),true);
     }
-    //@}
+    return Py::new_reference_to(PythonObject); 
+}
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
-
-
-};
-
-} //namespace Part
-
-
-#endif // __FEATUREPARTBOX_H__
+void FemMeshObject::onChanged(const Property* prop)
+{
+ 
+    App::GeoFeature::onChanged(prop);
+}

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,54 @@
  ***************************************************************************/
 
 
+#include "PreCompiled.h"
+#ifndef _PreComp_
+# include <Python.h>
+#endif
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#include <Base/Console.h>
+#include <Base/Interpreter.h>
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
 
-#include <Mod/Part/App/Part2DObject.h>
+#include "FemMeshPy.h"
+#include "FemMesh.h"
+#include "FemMeshProperty.h"
+#include "FemMeshObject.h"
 
-namespace Sketcher
+extern struct PyMethodDef Fem_methods[];
+
+PyDoc_STRVAR(module_Fem_doc,
+"This module is the FEM module.");
+
+
+/* Python entry */
+extern "C" {
+void AppFemExport initFem()
 {
-
-
-class SketchObjectSF :public Part::Part2DObject
-{
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
-
-public:
-    SketchObjectSF();
-
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
+    // load dependend module
+    try {
+        Base::Interpreter().loadModule("Part");
+        //Base::Interpreter().loadModule("Mesh");
     }
-    //@}
-
-    bool save(const char* FileName);
-    bool load(const char* FileName);
-
-
-};
-
-} //namespace Part
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
+    PyObject* femModule = Py_InitModule3("Fem", Fem_methods, module_Fem_doc);   /* mod name, table ptr */
+    Base::Console().Log("Loading Fem module... done\n");
 
 
-#endif // __FEATUREPARTBOX_H__
+    // Add Types to module
+    Base::Interpreter().addType(&Fem::FemMeshPy          ::Type,femModule,"FemMesh");
+
+
+    // NOTE: To finish the initialization of our own type objects we must
+    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+    // This function is responsible for adding inherited slots from a type's base class.
+ 
+    Fem::FemMesh         ::init();
+    Fem::FemMeshObject        ::init();
+    Fem::PropertyFemMesh   ::init();
+}
+
+} // extern "C"

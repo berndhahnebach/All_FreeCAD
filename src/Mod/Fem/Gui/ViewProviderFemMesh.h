@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,48 @@
  ***************************************************************************/
 
 
+#ifndef ROBOT_ViewProviderFemMesh_H
+#define ROBOT_ViewProviderFemMesh_H
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#include <Inventor/VRMLnodes/SoVRMLTransform.h>
+#include <Gui/ViewProviderGeometryObject.h>
+#include <Gui/SoFCSelection.h>
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
+class SoDragger;
+class SoJackDragger;
+class SoCoordinate3;
+class SoDrawStyle;  
+class SoLineSet; 
 
-#include <Mod/Part/App/Part2DObject.h>
-
-namespace Sketcher
+namespace FemGui
 {
 
-
-class SketchObjectSF :public Part::Part2DObject
+class FemGuiExport ViewProviderFemMesh : public Gui::ViewProviderGeometryObject
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+    PROPERTY_HEADER(FemGui::ViewProviderFemMesh);
 
 public:
-    SketchObjectSF();
+    /// constructor.
+    ViewProviderFemMesh();
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
+    /// destructor.
+    ~ViewProviderFemMesh();
 
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
-    //@}
+    void attach(App::DocumentObject *pcObject);
+    void setDisplayMode(const char* ModeName);
+    std::vector<std::string> getDisplayModes() const;
+    void updateData(const App::Property*);
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+protected:
+ 
+    Gui::SoFCSelection    * pcFemMeshRoot;
+    SoCoordinate3         * pcCoords;
+    SoDrawStyle           * pcDrawStyle;
+    SoLineSet             * pcLines;
 
+ };
 
-};
-
-} //namespace Part
+} //namespace FemGui
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // ROBOT_VIEWPROVIDERROBOTOBJECT_H

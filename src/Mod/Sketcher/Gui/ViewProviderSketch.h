@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef SKETCHERGUI_VIEWPROVIDERSKETCHSF_H
-#define SKETCHERGUI_VIEWPROVIDERSKETCHSF_H
+#ifndef SKETCHERGUI_VIEWPROVIDERSKETCH_H
+#define SKETCHERGUI_VIEWPROVIDERSKETCH_H
 
 #include <Mod/Part/Gui/ViewProvider2DObject.h>
 #include <Inventor/SbColor.h>
@@ -44,21 +44,21 @@ namespace Gui {
 
 namespace Sketcher {
     class SketchFlatInterface;
-    class SketchObjectSF;
+    class SketchObject;
 }
 
 namespace SketcherGui {
 
 
-class SketcherGuiExport ViewProviderSketchSF : public PartGui::ViewProvider2DObject
+class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject
 {
-    PROPERTY_HEADER(PartGui::ViewProviderSketchSF);
+    PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
 public:
 	/// constructor
-	ViewProviderSketchSF();
+	ViewProviderSketch();
 	/// destructor
-	virtual ~ViewProviderSketchSF();
+	virtual ~ViewProviderSketch();
 
 	virtual void attach(App::DocumentObject *);
 	virtual void updateData(const App::Property*);
@@ -111,7 +111,7 @@ public:
 	int getSketchMode(void){return Mode;}
 
 
-    Sketcher::SketchObjectSF* getSketchObjectSF(void);
+    Sketcher::SketchObject* getSketchObject(void);
 
 protected:
     /// helper to detect whether the picked point lies on the sketch

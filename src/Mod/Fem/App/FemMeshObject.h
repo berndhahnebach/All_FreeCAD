@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,49 @@
  ***************************************************************************/
 
 
+#ifndef Fem_FemMeshObject_H
+#define Fem_FemMeshObject_H
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
-
-#include <App/PropertyStandard.h>
+#include <App/GeoFeature.h>
 #include <App/PropertyFile.h>
+#include <App/PropertyGeo.h>
 
-#include <Mod/Part/App/Part2DObject.h>
+#include "FemMesh.h"
+#include "FemMeshProperty.h"
 
-namespace Sketcher
+namespace Fem
 {
 
-
-class SketchObjectSF :public Part::Part2DObject
+class AppFemExport FemMeshObject : public App::GeoFeature
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+    PROPERTY_HEADER(Fem::FemMeshObject);
 
 public:
-    SketchObjectSF();
+    /// Constructor
+    FemMeshObject(void);
+    virtual ~FemMeshObject();
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
     /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
+    virtual const char* getViewProviderName(void) const {
+        return "FemGui::ViewProviderFemMesh";
     }
-    //@}
+    virtual App::DocumentObjectExecReturn *execute(void) {
+        return App::DocumentObject::StdReturn;
+    }
+    virtual short mustExecute(void) const;
+    virtual PyObject *getPyObject(void);
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+	App::PropertyPlacement Base;
+	PropertyFemMesh     FemMesh;
 
+
+protected:
+    /// get called by the container when a property has changed
+    virtual void onChanged (const App::Property* prop);
 
 };
 
-} //namespace Part
+} //namespace Fem
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // ROBOT_ROBOTOBJECT_H

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2009     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,44 @@
  ***************************************************************************/
 
 
+#ifndef FEM_FemMesh_H
+#define FEM_FemMesh_H
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
 
-#include <Mod/Part/App/Part2DObject.h>
+#include <Base/Persistence.h>
+#include <Base/Placement.h>
 
-namespace Sketcher
+#include <vector>
+
+
+namespace Fem
 {
 
 
-class SketchObjectSF :public Part::Part2DObject
+/** The representation of a FemMesh
+ */
+class AppFemExport FemMesh : public Base::Persistence
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+    TYPESYSTEM_HEADER();
 
 public:
-    SketchObjectSF();
+    FemMesh();
+    FemMesh(const FemMesh&);
+    ~FemMesh();
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
+    FemMesh &operator=(const FemMesh&);
 
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
-    //@}
+	// from base class
+    virtual unsigned int getMemSize (void) const;
+	virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
-
+protected:
 
 };
 
 } //namespace Part
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // PART_TOPOSHAPE_H

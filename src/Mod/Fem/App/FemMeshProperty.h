@@ -21,47 +21,65 @@
  ***************************************************************************/
 
 
+#ifndef Fem_PropertyFemMesh_H
+#define Fem_PropertyFemMesh_H
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#include "FemMesh.h"
+#include <App/Property.h>
+#include <Base/BoundBox.h>
 
-#include <App/PropertyStandard.h>
-#include <App/PropertyFile.h>
-
-#include <Mod/Part/App/Part2DObject.h>
-
-namespace Sketcher
+namespace Fem
 {
 
 
-class SketchObjectSF :public Part::Part2DObject
+/** The part shape property class.
+ * @author Werner Mayer
+ */
+class AppFemExport PropertyFemMesh : public App::Property
 {
-    PROPERTY_HEADER(Sketcher::SketchObjectSF);
+    TYPESYSTEM_HEADER();
 
 public:
-    SketchObjectSF();
+    PropertyFemMesh();
+    ~PropertyFemMesh();
 
-    /// Property
-    App::PropertyFileIncluded SketchFlatFile;
-
-    /** @name methods overide Feature */
+    /** @name Getter/setter */
     //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
+    /// set the FemMesh shape
+    void setValue(const FemMesh&);
+    /// get the FemMesh shape
+    const FemMesh &getValue(void) const;
     //@}
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+ 
+    /** @name Getting basic geometric entities */
+    //@{
+    /** Returns the bounding box around the underlying mesh kernel */
+    Base::BoundBox3d getBoundingBox() const;
+    //@}
 
+    /** @name Python interface */
+    //@{
+    PyObject* getPyObject(void);
+    void setPyObject(PyObject *value);
+    //@}
 
+    /** @name Save/restore */
+    //@{
+    void Save (Base::Writer &writer) const;
+    void Restore(Base::XMLReader &reader);
+
+    App::Property *Copy(void) const;
+    void Paste(const App::Property &from);
+    unsigned int getMemSize (void) const;
+    //@}
+
+private:
+    FemMesh _FemMesh;
 };
 
-} //namespace Part
+
+} //namespace Fem
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // PROPERTYTOPOSHAPE_H
