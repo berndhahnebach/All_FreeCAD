@@ -112,46 +112,44 @@ CmdDrawingNewView::CmdDrawingNewView()
 {
     sAppModule      = "Drawing";
     sGroup          = QT_TR_NOOP("Drawing");
-    sMenuText       = QT_TR_NOOP("Insert a new View of a Part in the active drawing");
+    sMenuText       = QT_TR_NOOP("Insert view in drawing");
     sToolTipText    = QT_TR_NOOP("Insert a new View of a Part in the active drawing");
     sWhatsThis      = "Drawing_NewView";
     sStatusTip      = sToolTipText;
     sPixmap         = "actions/drawing-view";
 }
 
-
 void CmdDrawingNewView::activated(int iMsg)
 {
-
-   unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-    if (n != 1) {
+    std::vector<App::DocumentObject*> shapes = getSelection().getObjectsOfType(Part::Feature::getClassTypeId());
+    if (shapes.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select a Part object."));
         return;
     }
 
-	App::DocumentObject *page = this->getDocument()->getObject("Page");
-	if ( !page /*|| !page->getClassTypeId().isDerivedFrom(Drawing::FeaturePage::getClassTypeId()) */){
+    std::vector<App::DocumentObject*> pages = this->getDocument()->getObjectsOfType(Drawing::FeaturePage::getClassTypeId());
+    if (pages.empty()){
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No page to insert"),
             QObject::tr("Create a page to insert."));
         return;
     }
 
     std::string FeatName = getUniqueObjectName("View");
+    std::string PageName = pages.front()->getNameInDocument();
 
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Create view");
     doCommand(Doc,"App.activeDocument().addObject('Drawing::FeatureViewPart','%s')",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),shapes.front()->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.Direction = (0.0,0.0,1.0)",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.X = 10.0",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Y = 10.0",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Scale = 1.0",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().Page.addObject(App.activeDocument().%s)",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.addObject(App.activeDocument().%s)",PageName.c_str(),FeatName.c_str());
     updateActive();
     commitCommand();
-
 }
 
 //===========================================================================
