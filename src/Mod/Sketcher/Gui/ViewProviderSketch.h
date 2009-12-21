@@ -44,7 +44,7 @@ namespace Gui {
 
 namespace Sketcher {
     class SketchFlatInterface;
-    class SketchObject;
+    class SketchObjectSF;
 }
 
 namespace SketcherGui {
@@ -111,7 +111,7 @@ public:
 	int getSketchMode(void){return Mode;}
 
 
-    Sketcher::SketchObject* getSketchObject(void);
+    Sketcher::SketchObjectSF* getSketchObjectSF(void);
 
 protected:
     /// helper to detect whether the picked point lies on the sketch
