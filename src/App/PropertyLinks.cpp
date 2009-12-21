@@ -32,6 +32,7 @@
 #include <Base/Exception.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
+#include <Base/Console.h>
 
 #include "DocumentObject.h"
 #include "DocumentObjectPy.h"
@@ -130,7 +131,7 @@ void PropertyLink::Restore(Base::XMLReader &reader)
 
     if (name != ""){
         DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
-        assert(pcObject);
+        Base::Console().Warning("Lost link to '%s' while loading, maybe a object was not loaded correctly\n",name.c_str());
         setValue(pcObject);
     }
     else {
@@ -285,7 +286,8 @@ void PropertyLinkSub::Restore(Base::XMLReader &reader)
     DocumentObject *pcObject;
     if (name != ""){
         pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
-        assert(pcObject);
+            Base::Console().Warning("Lost link to '%s' while loading, maybe a object was not loaded correctly\n",name.c_str());
+
         setValue(pcObject,values);
     }
     else {
