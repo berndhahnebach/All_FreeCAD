@@ -155,9 +155,6 @@ void DlgCustomToolbars::on_workbenchBox_activated(int index)
     QString workbench = data.toString();
     toolbarTreeWidget->clear();
 
-    renameButton->setEnabled(false);
-    deleteButton->setEnabled(false);
-
     QByteArray workbenchname = workbench.toAscii();
     importCustomToolbars(workbenchname);
 }
@@ -233,56 +230,6 @@ void DlgCustomToolbars::exportCustomToolbars(const QByteArray& workbench)
     }
 }
 
-/** Enables/disables buttons for change */
-void DlgCustomToolbars::on_commandTreeWidget_currentItemChanged(QTreeWidgetItem* item)
-{
-    bool canAdd = false;
-    if (item && commandTreeWidget->isItemSelected(item)) {
-        QTreeWidgetItem* current = toolbarTreeWidget->currentItem();
-        if (current && !current->parent() && toolbarTreeWidget->isItemSelected(current)) {
-            canAdd = true;
-        }
-    }
-
-    moveActionRightButton->setEnabled(canAdd);
-}
-
-/** Enables/disables buttons for change */
-void DlgCustomToolbars::on_toolbarTreeWidget_currentItemChanged(QTreeWidgetItem* item)
-{
-    bool canAdd = false;
-    bool canRemove = false;
-    bool canMoveUp = false;
-    bool canMoveDown = false;
-    bool canRename = false;
-    bool canDelete = false;
-
-    if (item && toolbarTreeWidget->isItemSelected(item)) {
-        // must not be top-level
-        QTreeWidgetItem* parent = item->parent();
-        if (parent) {
-            canRemove = true;
-            if (parent->indexOfChild(item) > 0)
-                canMoveUp = true;
-            if (parent->indexOfChild(item) < parent->childCount()-1)
-                canMoveDown = true;
-        } else {
-            canRename = true;
-            canDelete = true;
-            QTreeWidgetItem* current = commandTreeWidget->currentItem();
-            if (current && commandTreeWidget->isItemSelected(current))
-                canAdd = true;
-        }
-    }
-
-    moveActionRightButton->setEnabled(canAdd);
-    moveActionLeftButton->setEnabled(canRemove);
-    moveActionUpButton->setEnabled(canMoveUp);
-    moveActionDownButton->setEnabled(canMoveDown);
-    renameButton->setEnabled(canRename);
-    deleteButton->setEnabled(canDelete);
-}
-
 /** Adds a new action */
 void DlgCustomToolbars::on_moveActionRightButton_clicked()
 {
@@ -327,9 +274,11 @@ void DlgCustomToolbars::on_moveActionUpButton_clicked()
     if (item && item->parent() && toolbarTreeWidget->isItemSelected(item)) {
         QTreeWidgetItem* parent = item->parent();
         int index = parent->indexOfChild(item);
-        parent->takeChild(index);
-        parent->insertChild(index-1, item);
-        toolbarTreeWidget->setCurrentItem(item);
+        if (index > 0) {
+            parent->takeChild(index);
+            parent->insertChild(index-1, item);
+            toolbarTreeWidget->setCurrentItem(item);
+        }
     }
 
     QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
@@ -344,9 +293,11 @@ void DlgCustomToolbars::on_moveActionDownButton_clicked()
     if (item && item->parent() && toolbarTreeWidget->isItemSelected(item)) {
         QTreeWidgetItem* parent = item->parent();
         int index = parent->indexOfChild(item);
-        parent->takeChild(index);
-        parent->insertChild(index+1, item);
-        toolbarTreeWidget->setCurrentItem(item);
+        if (index < parent->childCount()-1) {
+            parent->takeChild(index);
+            parent->insertChild(index+1, item);
+            toolbarTreeWidget->setCurrentItem(item);
+        }
     }
 
     QVariant data = workbenchBox->itemData(workbenchBox->currentIndex(), Qt::UserRole);
