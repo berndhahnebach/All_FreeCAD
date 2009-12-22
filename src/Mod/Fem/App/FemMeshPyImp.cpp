@@ -1,8 +1,18 @@
 
 #include "PreCompiled.h"
 
+#include <SMESH_GEN.hxx>
+#include <SMESH_Mesh.hxx>
+#include <SMDS_VolumeTool.hxx>
+
+#include <TopoDS_Shape.hxx>
+
 #include <Base/VectorPy.h>
 #include <Base/PlacementPy.h>
+
+#include <Mod/Part/App/TopoShapePy.h>
+#include <Mod/Part/App/TopoShape.h>
+
 #include "Mod/Fem/App/FemMesh.h"
 
 // inclusion of the generated files (generated out of FemMeshPy.xml)
@@ -53,8 +63,112 @@ int FemMeshPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return 0;
 }
 
+// ===== Methodes ============================================================
 
+PyObject* FemMeshPy::setShape(PyObject *args)
+{
+   PyObject *pcObj;
+   if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj))
+        return NULL;
 
+    TopoDS_Shape shape = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+    getFemMeshPtr()->myMesh->ShapeToMesh(shape);
+
+}
+
+PyObject* FemMeshPy::read(PyObject *args)
+{
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+
+    getFemMeshPtr()->read(filename);
+    Py_Return;
+}
+
+PyObject* FemMeshPy::write(PyObject *args)
+{
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+
+    getFemMeshPtr()->write(filename);
+    Py_Return;
+}
+
+// ===== Atributes ============================================================
+
+Py::Int FemMeshPy::getNodeCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbNodes());
+}
+
+Py::Int FemMeshPy::getEdgeCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbEdges());
+}
+
+Py::Int FemMeshPy::getFacesCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbFaces());
+}
+
+Py::Int FemMeshPy::getTriangleCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbTriangles());
+}
+
+Py::Int FemMeshPy::getQuadrangleCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbQuadrangles());
+}
+
+Py::Int FemMeshPy::getPolygonCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbPolygons());
+}
+
+Py::Int FemMeshPy::getVolumeCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbVolumes());
+}
+
+Py::Int FemMeshPy::getTetraCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbTetras());
+}
+
+Py::Int FemMeshPy::getHexaCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbHexas());
+}
+
+Py::Int FemMeshPy::getPyramidCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbPyramids());
+}
+
+Py::Int FemMeshPy::getPrismCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbPrisms());
+}
+
+Py::Int FemMeshPy::getPolyhedronCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbPolyhedrons());
+}
+
+Py::Int FemMeshPy::getSubMeshCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbSubMesh());
+}
+
+Py::Int FemMeshPy::getGroupCount(void) const
+{
+    return Py::Int(getFemMeshPtr()->myMesh->NbGroup());
+}
+
+// ===== custom attributes ============================================================
 
 PyObject *FemMeshPy::getCustomAttributes(const char* /*attr*/) const
 {

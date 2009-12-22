@@ -67,28 +67,7 @@ const FemMesh &PropertyFemMesh::getValue(void)const
 
 Base::BoundBox3d PropertyFemMesh::getBoundingBox() const
 {
-    Base::BoundBox3d box;
-    //if (_FemMesh._FemMesh.IsNull())
-    //    return box;
-    //try {
-    //    // If the shape is empty an exception may be thrown
-    //    Bnd_Box bounds;
-    //    BRepBndLib::Add(_FemMesh._FemMesh, bounds);
-    //    bounds.SetGap(0.0);
-    //    Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
-    //    bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
-
-    //    box.MinX = xMin;
-    //    box.MaxX = xMax;
-    //    box.MinY = yMin;
-    //    box.MaxY = yMax;
-    //    box.MinZ = zMin;
-    //    box.MaxZ = zMax;
-    //}
-    //catch (Standard_Failure) {
-    //}
-
-    return box;
+    return _FemMesh.getBoundBox();
 }
 
 

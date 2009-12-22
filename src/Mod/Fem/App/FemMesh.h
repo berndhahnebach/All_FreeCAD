@@ -26,11 +26,12 @@
 
 
 
-#include <Base/Persistence.h>
+#include <App/ComplexGeoData.h>
 #include <Base/Placement.h>
 
 #include <vector>
 
+class SMESH_Mesh;
 
 namespace Fem
 {
@@ -38,7 +39,7 @@ namespace Fem
 
 /** The representation of a FemMesh
  */
-class AppFemExport FemMesh : public Base::Persistence
+class AppFemExport FemMesh : public Data::ComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
@@ -53,8 +54,37 @@ public:
     virtual unsigned int getMemSize (void) const;
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    void SaveDocFile (Base::Writer &writer) const;
+    void RestoreDocFile(Base::Reader &reader);
 
-protected:
+    /** @name Subelement management */
+    //@{
+    /** Sub type list
+     *  List of different subelement types
+     *  it is NOT a list of the subelements itself
+     */
+    virtual std::vector<const char*> getElementTypes(void) const;
+    /// get the subelement by type and number
+    virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
+    //@}
+
+    /** @name Placement control */
+    //@{
+    /// set the transformation 
+    void setTransform(const Base::Matrix4D& rclTrf);
+    /// get the transformation 
+    Base::Matrix4D getTransform(void) const;
+    /// Bound box from the shape
+    Base::BoundBox3d getBoundBox(void)const;
+    //@}
+
+
+    /// import from files
+    void read(const char *FileName);
+    void write(const char *FileName);
+
+
+    SMESH_Mesh *myMesh;
 
 };
 
