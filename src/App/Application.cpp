@@ -1122,7 +1122,7 @@ void Application::processCmdLineFiles(void)
                 // try to open
                 Application::_pcSingleton->openDocument(File.filePath().c_str());
             }
-            else if (File.hasExtension("fcscript")) {
+            else if (File.hasExtension("fcscript")||File.hasExtension("fcmacro")) {
                 Base::Interpreter().runFile(File.filePath().c_str());
             }
             else if (File.hasExtension("py")) {
