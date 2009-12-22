@@ -51,8 +51,6 @@ protected:
 protected Q_SLOTS:
     void on_categoryBox_activated(int index);
     void on_workbenchBox_activated(int index);
-    void on_commandTreeWidget_currentItemChanged(QTreeWidgetItem*);
-    void on_toolbarTreeWidget_currentItemChanged(QTreeWidgetItem*);
     void on_moveActionRightButton_clicked();
     void on_moveActionLeftButton_clicked();
     void on_moveActionUpButton_clicked();

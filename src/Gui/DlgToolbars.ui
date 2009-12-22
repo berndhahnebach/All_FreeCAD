@@ -32,7 +32,7 @@
    <item row="1" column="1" >
     <widget class="QPushButton" name="moveActionRightButton" >
      <property name="enabled" >
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="minimumSize" >
       <size>
@@ -89,7 +89,7 @@
    <item row="2" column="1" >
     <widget class="QPushButton" name="moveActionLeftButton" >
      <property name="enabled" >
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="minimumSize" >
       <size>
@@ -120,7 +120,7 @@
    <item row="4" column="1" >
     <widget class="QPushButton" name="moveActionDownButton" >
      <property name="enabled" >
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="minimumSize" >
       <size>
@@ -148,7 +148,7 @@
    <item row="3" column="1" >
     <widget class="QPushButton" name="moveActionUpButton" >
      <property name="enabled" >
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="minimumSize" >
       <size>

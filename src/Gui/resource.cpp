@@ -71,7 +71,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     new CustomPageProducer<DlgCustomCommandsImp>;
     new CustomPageProducer<DlgCustomKeyboardImp>;
     new CustomPageProducer<DlgCustomToolbarsImp>;
-    new CustomPageProducer<DlgCustomToolBoxbarsImp>;
+  //new CustomPageProducer<DlgCustomToolBoxbarsImp>;
     new CustomPageProducer<DlgCustomActionsImp>;
 
     // ADD YOUR PREFERENCE WIDGETS HERE
