@@ -13,15 +13,18 @@ include_directories(
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
+ 		 ${SMESH_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
 		 set(Fem_LIBS
 				 Part
+				 ${SMESH_LIBRARIES}
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Fem_LIBS
 				 Part
+				 ${SMESH_LIBRARIES}
 		 		 FreeCADApp)
 endif(WIN32)
 

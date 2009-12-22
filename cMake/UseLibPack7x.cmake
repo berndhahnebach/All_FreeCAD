@@ -53,6 +53,22 @@ set(Boost_FOUND TRUE)
 set(ZLIB_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/zlib)
 set(ZLIB_LIBRARIES  zdll.lib)
 set(ZLIB_FOUND TRUE) 
+
+# SMESH
+set(SMESH_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/smesh)
+set(SMESH_LIBRARIES   
+ StdMeshers.lib
+ MEFISTO2.lib
+ SMESH.lib
+ DriverUNV.lib
+ SMESHDS.lib
+ DriverSTL.lib
+ DriverDAT.lib
+ Driver.lib
+ SMDS.lib
+ )
+
+set(SMESH_FOUND TRUE) 
 	
 # Coin3D
 set(COIN_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/coin)
@@ -250,11 +266,6 @@ set(OPENCV_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/opencv)
 set(OPENCV_LIBRARIES  cv.lib cvaux.lib cxcore.lib cxts.lib highgui.lib)
 set(OPENCV_FOUND TRUE) 
 
-# ODE
-set(ODE_INCLUDE_DIRS ${FREECAD_LIBPACK_DIR}/include)
-set(ODE_LIBRARIES  ode_double.lib)
-set(ODE_FOUND TRUE) 
-
 # OCC
 set(OCC_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/OpenCascade)
 set(OCC_LIBRARIES
@@ -281,8 +292,11 @@ set(OCC_LIBRARIES
 
 set(OCC_FOUND TRUE) 
 
-SET(EIGEN2_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/eigen2)
-set(EIGEN2_FOUND TRUE)
+if(FREECAD_BUILD_ROBOT)
+  SET(EIGEN2_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/eigen2)
+  set(EIGEN2_FOUND TRUE)
+endif(FREECAD_BUILD_ROBOT)
+
 
 
 
