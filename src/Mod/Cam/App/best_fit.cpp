@@ -28,7 +28,6 @@
 *
 *********************************************/
 
-
 #include "PreCompiled.h"
 #include "best_fit.h"
 #include "routine.h"
@@ -60,6 +59,8 @@
 
 #include <ANN/ANN.h> // ANN declarations
 
+#include <SMESH_GEN.hxx>
+
 
 best_fit::best_fit()
 {
@@ -89,14 +90,15 @@ double best_fit::ANN()
 
 	Base::Builder3D log_error;
 
-    MeshCore::MeshPointArray meshPnts = m_MeshWork.GetPoints();
+    //MeshCore::MeshPointArray meshPnts = m_MeshWork.GetPoints();
+	m_pntCloud_2;
     Base::Vector3f projPoint;
 
     double error = 0.0;
 
     int a_dim = 3;
-    int a_nbPnts =(int) meshPnts.size(); //Size vom eingescanntem Netz
-    int a_nbNear = 1;                    //anzahl der rückgabewerte
+    int a_nbPnts =(int) m_pntCloud_2.size();        // Size vom eingescanntem Netz
+    int a_nbNear = 1;                               // anzahl der rückgabewerte
     queryPt = annAllocPt(a_dim);                    // allocate query point storage
     dataPts = annAllocPts(a_nbPnts, a_dim);         // allocate data points storage
     nnIdx = new ANNidx[a_nbNear];                   // allocate near neigh indices
@@ -107,9 +109,9 @@ double best_fit::ANN()
 
     for (int i=0; i<a_nbPnts; ++i)
     {
-        dataPts[i][0] = meshPnts[i].x;
-        dataPts[i][1] = meshPnts[i].y;
-        dataPts[i][2] = meshPnts[i].z;
+        dataPts[i][0] = m_pntCloud_2[i].x;
+        dataPts[i][1] = m_pntCloud_2[i].y;
+        dataPts[i][2] = m_pntCloud_2[i].z;
     }
 
     kdTree = new ANNkd_tree(        // build search structure
@@ -118,29 +120,29 @@ double best_fit::ANN()
         a_dim);                     // dimension of space
 
 
-    for (unsigned int i = 0 ; i < m_pnts.size() ; i++ )
+    for (unsigned int i = 0 ; i < m_pntCloud_1.size() ; i++ )
     {
-        queryPt[0] = m_pnts[i].x;
-        queryPt[1] = m_pnts[i].y;
-        queryPt[2] = m_pnts[i].z;
+        queryPt[0] = m_pntCloud_1[i].x;
+        queryPt[1] = m_pntCloud_1[i].y;
+        queryPt[2] = m_pntCloud_1[i].z;
 
         kdTree->annkSearch(                        // search
-            queryPt,                        // query point
-            a_nbNear,                        // number of near neighbors
-            nnIdx,                            // nearest neighbors (returned)
-            dists                           // distance (returned)
-        );                            // error bound
+            queryPt,							   // query point
+            a_nbNear,						       // number of near neighbors
+            nnIdx,                                 // nearest neighbors (returned)
+            dists                                  // distance (returned)
+        );                                         // error bound
 
-        m_LSPnts[1].push_back(m_pnts[i]);
-        m_LSPnts[0].push_back(meshPnts[nnIdx[0]]);
+        m_LSPnts[1].push_back(m_pntCloud_1[i]);
+        m_LSPnts[0].push_back(m_pntCloud_2[nnIdx[0]]);
 
-		if(m_pnts[i].z <= meshPnts[nnIdx[0]].z)
+		if(m_pntCloud_1[i].z <= m_pntCloud_2[nnIdx[0]].z)
 		{
-			log_error.addSingleLine(m_pnts[i],meshPnts[nnIdx[0]],8,1,0,0);
+			log_error.addSingleLine(m_pntCloud_1[i],m_pntCloud_2[nnIdx[0]],8,1,0,0);
 		}
 		else
 		{
-			log_error.addSingleLine(m_pnts[i],meshPnts[nnIdx[0]],8,0,1,0);
+			log_error.addSingleLine(m_pntCloud_1[i],m_pntCloud_2[nnIdx[0]],8,0,1,0);
 		}
 
 		//if(dists[0] > error)
@@ -150,7 +152,7 @@ double best_fit::ANN()
 
 	log_error.saveToFile("c:/errorVec_fit.iv");
 
-    error /= double(m_pnts.size());
+    error /= double(m_pntCloud_1.size());
     m_weights_loc = m_weights;
 
 
@@ -166,12 +168,11 @@ bool best_fit::Perform()
 {
     Base::Matrix4D M;
 
-ofstream Runtime_BestFit;
+    ofstream Runtime_BestFit;
 	time_t sec1, sec2;
 
 	Runtime_BestFit.open("c:/Runtime_BestFit.txt");
 	Runtime_BestFit << "Runtime Best-Fit" << std::endl;
-
 
 
     cout << "tesselate shape" << endl;
@@ -183,7 +184,7 @@ ofstream Runtime_BestFit;
 	Runtime_BestFit << "Tesselate Shape: " << sec2 - sec1 << " sec" << std::endl;  
 
 	sec1 = time(NULL);
-      Comp_Weights(); // m_pnts, m_weights, m_normals des Cad-Meshs werden hier gefüllt
+      Comp_Weights(); // m_pntCloud_1, m_weights, m_normals des/r Cad-Meshs/Punktewolke werden hier gefüllt
     sec2 = time(NULL);
 
 	Runtime_BestFit << "Compute Weights: " << sec2 - sec1 << " sec" << std::endl;  
@@ -212,6 +213,7 @@ ofstream Runtime_BestFit;
 	MeshFit_Coarse();  // Transformation Mesh -> CAD
     ShapeFit_Coarse(); // Translation    CAD  -> Origin
 
+	//return true;
 	
     M.setToUnity();
     M[0][3] = m_cad2orig.X();
@@ -219,13 +221,20 @@ ofstream Runtime_BestFit;
     M[2][3] = m_cad2orig.Z();
 
     m_CadMesh.Transform(M); // besser: tesselierung nach der trafo !!!
-m_MeshWork.Transform(M);
-    PointTransform(m_pnts,M);
+    m_MeshWork.Transform(M);
+    PointTransform(m_pntCloud_1,M);
+
+	MeshCore::MeshPointArray pnts = m_MeshWork.GetPoints();
+
+	for (unsigned int i=0; i<pnts.size(); ++i)
+	{
+		m_pntCloud_2.push_back(pnts[i]);
+
+	}
 
     Runtime_BestFit << "- Error: " << ANN() << endl;
 
     Coarse_correction();
-	//return true;
 
 	sec2 = time(NULL);
 	Runtime_BestFit << "Coarse Correction: " << sec2-sec1 << " sec" << endl;
@@ -250,6 +259,65 @@ m_MeshWork.Transform(M);
     return true;
 
 
+}
+
+bool best_fit::Perform_PointCloud()
+{
+	Base::Matrix4D M;
+
+	ofstream Runtime_BestFit;
+	time_t sec1, sec2;
+
+	Runtime_BestFit.open("c:/Runtime_BestFit_PntCld.txt");
+	Runtime_BestFit << "Runtime Best-Fit" << std::endl;
+
+	PointCloud_Coarse();  
+
+	M.setToUnity();
+
+	for(int i=0; i<m_pntCloud_1.size(); i++)
+		m_weights.push_back(1.0);
+	
+	M[0][3] = m_cad2orig.X();
+	M[1][3] = m_cad2orig.Y();
+	M[2][3] = m_cad2orig.Z();
+
+	PointTransform(m_pntCloud_1,M);
+	PointTransform(m_pntCloud_2,M);
+
+	//Runtime_BestFit << "- Error: " << ANN() << endl;
+    sec1 = time(NULL);
+	Coarse_correction();
+	sec2 = time(NULL);
+	Runtime_BestFit << "Coarse Correction: " << sec2-sec1 << " sec" << endl;
+
+	//M[0][3] = m_cad2orig.X();
+	//M[1][3] = m_cad2orig.Y();
+	//M[2][3] = m_cad2orig.Z();
+
+	//PointTransform(m_pntCloud_1,M);
+	//PointTransform(m_pntCloud_2,M);
+
+	sec1 = time(NULL);
+	LSM();
+	sec2 = time(NULL);
+	Runtime_BestFit << "Least-Square-Matching: " << sec2-sec1 << " sec" << endl;
+	Runtime_BestFit.close();
+
+	Base::Matrix4D T;
+	T.setToUnity();
+	T[0][3] = -m_cad2orig.X();
+	T[1][3] = -m_cad2orig.Y();
+	T[2][3] = -m_cad2orig.Z();
+	PointTransform(m_pntCloud_1, T);
+	PointTransform(m_pntCloud_2, T);
+	m_MeshWork.Transform(T);
+	m_CadMesh.Transform(T);
+
+	m_Mesh = m_MeshWork;
+	CompTotalError();
+
+	return true;
 }
 
 /*
@@ -330,33 +398,29 @@ bool best_fit::Coarse_correction()
     double error, error_tmp, rot = 0.0;
     Base::Matrix4D M,T;
 	ofstream CoarseCorr;
-    
-	/* Umleitung !!! */
-	
-	RotMat(M, 10, 3);
-    m_MeshWork.Transform(M);
-	return true;
-
-	/* Umleitung Ende !!! */
 
 	CoarseCorr.open("c:/CoarseCorr.txt");
 
-    MeshCore::MeshKernel MeshCopy = m_MeshWork;
+    std::vector<Base::Vector3f> m_pntCloud_Work = m_pntCloud_2;
 
     T.setToUnity();
-best_fit befi; 
-    //error = CompError_GetPnts(m_pnts, m_normals)[0];  // startfehler    int n=360/rstep_corr;
-    error = ANN();
+    best_fit befi; 
+    
+	//error = CompError_GetPnts(m_pnts, m_normals)[0];  // startfehler    int n=360/rstep_corr;
+    
+	error = ANN();
 
     for (int i=1; i<4; ++i)
     {
-
         RotMat(M, 180, i);
-        m_MeshWork.Transform(M);
+        PointTransform(m_pntCloud_2, M);
+		//m_MeshWork.Transform(M);
 
-        //error_tmp = CompError_GetPnts(m_pnts, m_normals)[0];
         error_tmp = ANN();
-//error_tmp = befi.CompTotalError(m_MeshWork);
+		
+		//error_tmp = CompError_GetPnts(m_pnts, m_normals)[0];
+        //error_tmp = befi.CompTotalError(m_MeshWork);
+		
 		CoarseCorr << i << ", " << error_tmp << endl;
 
         if (error_tmp < error)
@@ -365,27 +429,26 @@ best_fit befi;
             error = error_tmp;
         }
 
-        m_MeshWork = MeshCopy;
+        m_pntCloud_2 = m_pntCloud_Work;
     }
 
 	CoarseCorr << "BEST CHOICE: " << error << endl;
 	CoarseCorr.close();
-    m_MeshWork.Transform(T);
-	/*RotMat(M, 180, 1);
-    m_MeshWork.Transform(M);
-	RotMat(M, 180, 2);
-    m_MeshWork.Transform(M);*/
+    PointTransform(m_pntCloud_2, T);
+	m_MeshWork.Transform(T);
+
 
     return true;
 }
 
+
 bool best_fit::LSM()
 {
     double TOL  = 0.05;          // Abbruchkriterium des Newton-Verfahren
-    int maxIter = 70;           // maximale Anzahl von Iterationen für den Fall,
-    // dass das Abbruchkriterium nicht erfüllt wird
+    int maxIter = 100;            // maximale Anzahl von Iterationen für den Fall,
+							     // dass das Abbruchkriterium nicht erfüllt wird
 
-   int mult = 2;               // zur halbierung der Schrittweite bei Misserfolg des Newton Verfahrens
+   int mult = 2;                 // zur Halbierung der Schrittweite bei Misserfolg des Newton Verfahrens
 
     double val, tmp = 1e+10, delta, delta_tmp = 0.0;
     Base::Matrix4D Tx,Ty,Tz,Rx,Ry,Rz,M;   // Transformaitonsmatrizen
@@ -412,24 +475,18 @@ bool best_fit::LSM()
     time_t seconds1, seconds2, sec1, sec2;
     seconds1 = time(NULL);
 
-while (true)
+    while (true)
     {
 
         seconds1 = time(NULL);
-        m_Mesh = m_MeshWork;
-
-
-
-
-
-
-
-                                                           // Fehlerberechnung vom CAD -> Mesh
+        //m_Mesh = m_MeshWork;
+        
+		// Fehlerberechnung vom CAD -> Mesh
         //tmp = CompError_GetPnts(m_pnts, m_normals);      // hier: - Berechnung der LS-Punktesätze
         //      CompTotalError()                           //       - Berechnung der zugehörigen Gewichtungen
 
 		delta = delta_tmp;
-        delta_tmp = ANN();  // gibt durchschnittlichen absoluten Fehler aus
+        delta_tmp = ANN();          // gibt durchschnittlichen absoluten Fehler aus
 		delta = delta - delta_tmp ; // hier wird die Fehlerverbesserung zum vorigen Iterationsschritt gespeichert
 
 		if (c==maxIter || delta < ERR_TOL && c>1) break; // Abbruchkriterium (falls maximale Iterationsschrite erreicht
@@ -441,9 +498,6 @@ while (true)
 
 		sec1 = time(NULL);
         for (unsigned int i=0; i<x.size(); ++i) x[i] = 0.0; // setzt startwerte für newton auf null
-
-
-
 
 
         // Berechne gewichtete Schwerpunkte und verschiebe die Punktesätze entsprechend:
@@ -461,7 +515,7 @@ while (true)
             q.Scale((float) m_weights_loc[i],(float) m_weights_loc[i],(float) m_weights_loc[i]);
 
 			Sum += m_weights_loc[i];
-            centr_l += p;
+			centr_l += p;
             centr_r += q;
         }
 
@@ -483,16 +537,19 @@ while (true)
 
         M = Tx*Ty*Tz;
         PointTransform(m_LSPnts[0],M);
+		PointTransform(m_pntCloud_1,M);
+		PointTransform(m_pntCloud_2,M);
         m_MeshWork.Transform(M);
 
-TransMat(Tx,centr_r.x,1); // Berechnung der Translationsmatrix in x-Richtung
+        TransMat(Tx,centr_r.x,1); // Berechnung der Translationsmatrix in x-Richtung
         TransMat(Ty,centr_r.y,2); // Berechnung der Translationsmatrix in y-Richtung
         TransMat(Tz,centr_r.z,3); // Berechnung der Translationsmatrix in z-Richtung
 
         M = Tx*Ty*Tz;                  // Zusammenfügen zu einer Gesamttranslationsmatrix
         PointTransform(m_LSPnts[1],M); // Anwendung der Translation auf m_LSPnts
-        PointNormalTransform(m_pnts, m_normals, M); // Anwendung der Translation auf m_pnts
-        m_CadMesh.Transform(M);                     // Anwendung der Translation auf das CadMesh
+        PointTransform(m_pntCloud_1,M);
+		//PointNormalTransform(m_pnts, m_normals, M); // Anwendung der Translation auf m_pnts
+        m_CadMesh.Transform(M);                       // Anwendung der Translation auf das CadMesh
 
         sec2 = time(NULL);
 		anOutputFile << c+1 << " - Initialisierung und Transformation um gewichtete Schwerpunkte: " << sec2 - sec1 << " sec" << endl;
@@ -557,15 +614,18 @@ TransMat(Tx,centr_r.x,1); // Berechnung der Translationsmatrix in x-Richtung
 		TransMat(Tz, -centr_r.z - cent.z + centr_l.z, 3);
 
         M = Tx*Ty*Tz*Rx*Ry*Rz; // Rotiere zuerst !!! (Rotationen stets um den Nullpunkt...)
-        m_MeshWork.Transform(M);
+        
+		PointTransform(m_pntCloud_2,M);
+		m_MeshWork.Transform(M);
 
 		TransMat(Tx, -centr_r.x, 1);
 		TransMat(Ty, -centr_r.y, 2);
 		TransMat(Tz, -centr_r.z, 3);
 
         M = Tx*Ty*Tz;
+		PointTransform(m_pntCloud_1,M);
         m_CadMesh.Transform(M);
-        PointNormalTransform(m_pnts, m_normals, M);
+        //PointNormalTransform(m_pnts, m_normals, M);
 
    		sec2 = time(NULL);
 		
@@ -759,14 +819,14 @@ bool best_fit::Comp_Weights()
     builder1.Finish();
     builder2.Finish();
 
-    m_pnts.clear();
+    m_pntCloud_1.clear();
     m_weights.clear();
 
     MeshCore::MeshPointArray pnts = mesh1.GetPoints();
 
     for (unsigned int i=0; i<pnts.size(); ++i)
     {
-        m_pnts.push_back(pnts[i]);
+        m_pntCloud_1.push_back(pnts[i]);
         m_weights.push_back(weight_low);
     }
 
@@ -774,7 +834,7 @@ bool best_fit::Comp_Weights()
 
     for (unsigned int i=0; i<pnts.size(); ++i)
     {
-        m_pnts.push_back(pnts[i]);
+        m_pntCloud_1.push_back(pnts[i]);
         m_weights.push_back(weight_high);
     }
 
@@ -868,6 +928,108 @@ bool best_fit::PointNormalTransform(std::vector<Base::Vector3f> &pnts,
     return true;
 }
 
+bool best_fit::output_best_fit_mesh()
+{
+	
+	SMDS_NodeIteratorPtr aNodeIter = m_meshtobefit->GetMeshDS()->nodesIterator();
+
+	for(;aNodeIter->more();) 
+	{
+		const SMDS_MeshNode* aNode = aNodeIter->next();
+		m_meshtobefit->GetMeshDS()->MoveNode(aNode,m_pntCloud_2[(aNode->GetID()-1)].x,m_pntCloud_2[(aNode->GetID()-1)].y,m_pntCloud_2[(aNode->GetID()-1)].z);
+	}
+	m_meshtobefit->ExportUNV("c:/best_fit_mesh.unv");
+
+	return true;
+}
+
+bool best_fit::Initialize_Mesh_Geometrie_1()
+{
+	m_aMeshGen1 = new SMESH_Gen();
+	m_referencemesh = m_aMeshGen1->CreateMesh(1,false);
+	m_referencemesh->UNVToMesh("c:/cad_mesh_cenaero.unv");
+
+	m_pntCloud_1.clear();
+
+	//add the nodes
+	SMDS_NodeIteratorPtr aNodeIter = m_referencemesh->GetMeshDS()->nodesIterator();
+	for(;aNodeIter->more();) {
+		const SMDS_MeshNode* aNode = aNodeIter->next();
+		Base::Vector3f a3DVector;
+		a3DVector.Set(aNode->X(), aNode->Y(), aNode->Z()),
+		m_pntCloud_1.push_back(a3DVector);
+    }
+
+
+
+	return true;
+}
+
+
+
+bool best_fit::Initialize_Mesh_Geometrie_2()
+{
+
+	m_aMeshGen2 = new SMESH_Gen();
+	m_meshtobefit = m_aMeshGen2->CreateMesh(1,false);
+	m_meshtobefit->UNVToMesh("c:/mesh_cenaero.unv");
+
+	m_pntCloud_2.clear();
+
+	//add the nodes
+	SMDS_NodeIteratorPtr aNodeIter = m_meshtobefit->GetMeshDS()->nodesIterator();
+	for(;aNodeIter->more();) {
+		const SMDS_MeshNode* aNode = aNodeIter->next();
+		Base::Vector3f a3DVector;
+		a3DVector.Set(aNode->X(), aNode->Y(), aNode->Z()),
+		m_pntCloud_2.push_back(a3DVector);
+	}
+
+	////add the 2D edge-Elements
+	//SMDS_EdgeIteratorPtr 	anEdgeIter = Reference_Mesh->GetMeshDS()->edgesIterator();
+	//for(;anEdgeIter->more();) {
+	//	const SMDS_MeshEdge* anElem = anEdgeIter->next();
+	//	myElements.push_back( anElem->GetID() );
+	//}
+	////add the 2D-Planar Elements like triangles 
+	//SMDS_FaceIteratorPtr 	aFaceIter = Reference_Mesh->GetMeshDS()->facesIterator();
+	//for(;aFaceIter->more();) {
+	//	const SMDS_MeshFace* anElem = aFaceIter->next();
+	//	int element_node_count = anElem->NbNodes();
+	//	myElements.push_back( anElem->GetID() );
+	//}
+	////Add the Volume-Elements
+	//SMDS_VolumeIteratorPtr aVolumeIter = Reference_Mesh->GetMeshDS()->volumesIterator();
+	//for(;aVolumeIter->more();) {
+	//	const SMDS_MeshVolume* anElem = aVolumeIter->next();
+	//	myElements.push_back( anElem->GetID() );
+	//}
+
+	//int testsize = myElements.size();
+
+	//SMDS_VolumeTool aTooling;
+
+
+	////Now take the Element-Vector and work with the elements
+	////check validity of element
+	//for (unsigned int i=0;i<myElements.size();i++)
+	//{
+	//	const SMDS_MeshElement* CurrentElement = Reference_Mesh->GetMeshDS()->FindElement(myElements[i]);
+	//	if (CurrentElement->GetType() == SMDSAbs_Volume) 
+	//	{
+	//		//We encountered a Surface-Element like a triangle and we have to check if its a triangle or not
+	//		aTooling.Set(CurrentElement);
+	//		//Now we have to check what kind of volume element we have
+	//		if(aTooling.GetVolumeType()== SMDS_VolumeTool::HEXA)
+	//		{
+	//			//Found a HEXA Element
+	//		}
+	//	}
+	//}
+
+	return true;
+}
+
 bool best_fit::PointTransform(std::vector<Base::Vector3f> &pnts, Base::Matrix4D &M)
 {
     int m = pnts.size();
@@ -885,7 +1047,170 @@ bool best_fit::PointTransform(std::vector<Base::Vector3f> &pnts, Base::Matrix4D 
     return true;
 }
 
+bool best_fit::PointCloud_Coarse()
+{
+	GProp_GProps prop;
+	GProp_PrincipalProps pprop;
 
+	MeshCore::PlaneFit FitFunc_1, FitFunc_2;
+
+	Base::Vector3f pnt(0.0,0.0,0.0);
+	Base::Vector3f DirA_1, DirB_1, DirC_1, Grav_1,
+  		           DirA_2, DirB_2, DirC_2, Grav_2;
+	Base::Vector3f x,y,z;
+	Base::Builder3D log3d_mesh, log3d_cad;
+	gp_Pnt orig;
+
+	gp_Vec v1,v2,v3,v,vec; // Hauptachsenrichtungen
+	gp_Trsf trafo;
+
+	FitFunc_1.Clear();
+	FitFunc_2.Clear();
+
+	FitFunc_1.AddPoints(m_pntCloud_1);
+	FitFunc_2.AddPoints(m_pntCloud_2);
+	
+	FitFunc_1.Fit();
+	FitFunc_2.Fit();
+
+	DirA_1 = FitFunc_1.GetDirU();
+	DirB_1 = FitFunc_1.GetDirV();
+	DirC_1 = FitFunc_1.GetNormal();
+	Grav_1 = FitFunc_1.GetGravity();
+
+	m_cad2orig.SetX(-Grav_1.x);
+	m_cad2orig.SetY(-Grav_1.y);
+	m_cad2orig.SetZ(-Grav_1.z);
+
+	DirA_2 = FitFunc_2.GetDirU();
+	DirB_2 = FitFunc_2.GetDirV();
+	DirC_2 = FitFunc_2.GetNormal();
+	Grav_2 = FitFunc_2.GetGravity();
+
+	Base::Matrix4D T5, T1;
+
+	// Füllt Matrix T5 
+	T5[0][0] = DirA_1.x;
+	T5[1][0] = DirA_1.y;
+	T5[2][0] = DirA_1.z;
+
+	T5[0][1] = DirB_1.x;
+	T5[1][1] = DirB_1.y;
+	T5[2][1] = DirB_1.z;
+
+	T5[0][2] = DirC_1.x;
+	T5[1][2] = DirC_1.y;
+	T5[2][2] = DirC_1.z;
+
+	T5[0][3] = Grav_1.x;
+	T5[1][3] = Grav_1.y;
+	T5[2][3] = Grav_1.z;
+
+	/*T5[0][0] = DirA_1.x;
+	T5[0][1] = DirA_1.y;
+	T5[0][2] = DirA_1.z;
+
+	T5[1][0] = DirB_1.x;
+	T5[1][1] = DirB_1.y;
+	T5[1][2] = DirB_1.z;
+
+	T5[2][0] = DirC_1.x;
+	T5[2][1] = DirC_1.y;
+	T5[2][2] = DirC_1.z;
+
+	T5[0][3] = Grav_1.x;
+	T5[1][3] = Grav_1.y;
+	T5[2][3] = Grav_1.z;*/
+
+
+	// Füllt Matrix T1
+	T1[0][0] = DirA_2.x;
+	T1[1][0] = DirA_2.y;
+	T1[2][0] = DirA_2.z;
+
+	T1[0][1] = DirB_2.x;
+	T1[1][1] = DirB_2.y;
+	T1[2][1] = DirB_2.z;
+
+	T1[0][2] = DirC_2.x;
+	T1[1][2] = DirC_2.y;
+	T1[2][2] = DirC_2.z;
+
+	T1[0][3] = Grav_2.x;
+	T1[1][3] = Grav_2.y;
+	T1[2][3] = Grav_2.z;
+
+	v1.SetX(T5[0][0]);v1.SetY(T5[0][1]);v1.SetZ(T5[0][2]);
+	v2.SetX(T5[1][0]);v2.SetY(T5[1][1]);v2.SetZ(T5[1][2]);
+	v3.SetX(T5[2][0]);v3.SetY(T5[2][1]);v3.SetZ(T5[2][2]);
+
+	v1.Normalize();
+	v2.Normalize();
+	v3.Normalize();
+
+	v = v1;
+	v.Cross(v2);
+
+	// right-hand-system check
+	if ( v.Dot(v3) < 0.0 )
+		v3 *= -1;
+
+	T1.inverse();
+
+	orig.SetX(T5[0][3]);orig.SetY(T5[1][3]);orig.SetZ(T5[2][3]);
+
+	// plot CAD -> local coordinate system
+
+	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
+	y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
+	z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
+
+	pnt.x = orig.X();
+	pnt.y = orig.Y();
+	pnt.z = orig.Z();
+
+	log3d_cad.addSingleArrow(pnt,x,3,1,0,0);
+	log3d_cad.addSingleArrow(pnt,y,3,0,1,0);
+	log3d_cad.addSingleArrow(pnt,z,3,0,0,1);
+
+	//log3d_cad.addSinglePoint(pnt,6,1,1,1);
+
+	log3d_cad.saveToFile("c:/CAD_CoordSys.iv");
+
+	PointTransform(m_pntCloud_2,T5*T1);
+
+	//m_MeshWork.Transform(T1);
+	// plot Mesh -> local coordinate system
+
+	v1.SetX(T1[0][0]);v1.SetY(T1[0][1]);v1.SetZ(T1[0][2]);
+	v2.SetX(T1[1][0]);v2.SetY(T1[1][1]);v2.SetZ(T1[1][2]);
+	v3.SetX(T1[2][0]);v3.SetY(T1[2][1]);v3.SetZ(T1[2][2]);
+
+	T1.inverse();
+	orig.SetX(T1[0][3]);orig.SetY(T1[1][3]);orig.SetZ(T1[2][3]);
+
+	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
+	y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
+	z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
+
+	pnt.x = orig.X();
+	pnt.y = orig.Y();
+	pnt.z = orig.Z();
+
+	log3d_mesh.addSingleArrow(pnt,x,3,1,0,0);log3d_mesh.addSingleArrow(pnt,y,3,0,1,0);log3d_mesh.addSingleArrow(pnt,z,3,0,0,1);
+	log3d_mesh.addSinglePoint(0,0,0,20,1,1,1); // plotte Ursprung
+	//log3d_mesh.addSinglePoint(pnt,6,0,0,0);
+	log3d_mesh.saveToFile("c:/Mesh_CoordSys.iv");
+
+	/*for(int i=0; i< m_pntCloud_2.size(); i++)
+	{
+		m_pntCloud_2[i].x = m_pntCloud_2[i].x + Grav_1.x - Grav_2.x;
+		m_pntCloud_2[i].y = m_pntCloud_2[i].y + Grav_1.y - Grav_2.y;
+		m_pntCloud_2[i].z = m_pntCloud_2[i].z + Grav_1.z - Grav_2.z;
+	}*/
+
+	return true;
+}
 bool best_fit::MeshFit_Coarse()
 {
 
@@ -919,7 +1244,6 @@ bool best_fit::MeshFit_Coarse()
     v2.Normalize();
     v3.Normalize();
 
-  
 
     v = v1;
     v.Cross(v2);
@@ -928,12 +1252,10 @@ bool best_fit::MeshFit_Coarse()
     if ( v.Dot(v3) < 0.0 )
         v3 *= -1;
 
-
-	    T5.inverse();
+	T5.inverse();
 
     orig.SetX(T5[0][3]);orig.SetY(T5[1][3]);orig.SetZ(T5[2][3]);
     //orig  = prop.CentreOfMass();
-
 
     // plot CAD -> local coordinate system
 
@@ -941,14 +1263,16 @@ bool best_fit::MeshFit_Coarse()
     y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
     z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
 
-     pnt.x = orig.X();
+    pnt.x = orig.X();
 	pnt.y = orig.Y();
 	pnt.z = orig.Z();
 
-		log3d_cad.addSingleArrow(pnt,x,3,1,0,0);
+    log3d_cad.addSingleArrow(pnt,x,3,1,0,0);
 	log3d_cad.addSingleArrow(pnt,y,3,0,1,0);
 	log3d_cad.addSingleArrow(pnt,z,3,0,0,1);
+	
 	//log3d_cad.addSinglePoint(pnt,6,1,1,1);
+	
 	log3d_cad.saveToFile("c:/CAD_CoordSys.iv");
 
     MeshCore::MeshEigensystem pca2(m_MeshWork);

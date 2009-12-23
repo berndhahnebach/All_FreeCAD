@@ -605,8 +605,23 @@ const CuttingToolsSettings& Cutting::getSettings()
 
 void Cutting::on_BestFitButton_clicked()
 {
+
+
+
+
+
+
     m_selection = BestFit;
     m_BestFit = new best_fit();
+
+
+	// Best-Fit based on Point-Clouds
+	m_BestFit->Initialize_Mesh_Geometrie_1();
+	m_BestFit->Initialize_Mesh_Geometrie_2();
+	m_BestFit->Perform_PointCloud();
+	m_BestFit->output_best_fit_mesh();
+
+
     best_fit_cad_button->setEnabled(true);
 }
 
@@ -676,8 +691,8 @@ void Cutting::on_best_fit_go_button_clicked()
 
     case BestFit:
 
+		
         m_BestFit->Load(m_Mesh,m_Shape);
-        //m_BestFit->testPro();
         m_BestFit->Perform();
 
         best_fit_cad_button ->setEnabled(false);
@@ -687,7 +702,10 @@ void Cutting::on_best_fit_go_button_clicked()
         m_MeshOut = m_BestFit->m_MeshWork;
         m_MeshCad = m_BestFit->m_CadMesh;
         DisplayMeshOutput(m_MeshOut);
-        DisplayMeshOutput(m_MeshCad);
+        //DisplayMeshOutput(m_MeshCad);
+
+		
+
 
         break;
 
@@ -696,8 +714,8 @@ void Cutting::on_best_fit_go_button_clicked()
       	m_Spring->Load(m_Mesh);
         m_Spring->Init_Setting(m_Settings);
         m_Spring->Init();
- m_Spring->Perform(m_Settings.limit_angle,out);
-         m_MeshCad = m_Spring->m_CadMesh;
+        m_Spring->Perform(m_Settings.limit_angle,out);
+        m_MeshCad = m_Spring->m_CadMesh;
 
 
 
@@ -749,7 +767,7 @@ best_fit_mesh2_button->setEnabled(true);
 void Cutting::DisplayMeshOutput(const MeshCore::MeshKernel &mesh)
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
-    App::DocumentObject* obj = doc->addObject("Mesh::Feature","Output-Mesh");
+    App::DocumentObject* obj = doc->addObject("Mesh::Feature","Best_Fit-Mesh");
 
     Mesh::Feature* part1 = static_cast<Mesh::Feature*>(obj);
     part1->Mesh.setValue(mesh);
