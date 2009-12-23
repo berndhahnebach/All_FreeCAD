@@ -64,6 +64,13 @@ protected Q_SLOTS:
 
 protected:
     void hideEvent(QHideEvent * event);
+    virtual void addCustomToolbar(const QString&);
+    virtual void removeCustomToolbar(const QString&);
+    virtual void renameCustomToolbar(const QString&, const QString&);
+    virtual void addCustomCommand(const QString&, const QByteArray&);
+    virtual void removeCustomCommand(const QString&, const QByteArray&);
+    virtual void moveUpCustomCommand(const QString&, const QByteArray&);
+    virtual void moveDownCustomCommand(const QString&, const QByteArray&);
 
 private:
     void importCustomToolbars(const QByteArray&);
@@ -85,6 +92,15 @@ class DlgCustomToolbarsImp : public DlgCustomToolbars
 public:
     DlgCustomToolbarsImp(QWidget* parent = 0);
     ~DlgCustomToolbarsImp();
+
+protected:
+    virtual void addCustomToolbar(const QString&);
+    virtual void removeCustomToolbar(const QString&);
+    virtual void renameCustomToolbar(const QString&, const QString&);
+    virtual void addCustomCommand(const QString&, const QByteArray&);
+    virtual void removeCustomCommand(const QString&, const QByteArray&);
+    virtual void moveUpCustomCommand(const QString&, const QByteArray&);
+    virtual void moveDownCustomCommand(const QString&, const QByteArray&);
 };
 
 /** This class implements the creation of user defined toolbox bars.

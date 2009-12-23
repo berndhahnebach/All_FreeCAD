@@ -198,8 +198,6 @@ static PyObject * insert(PyObject *self, PyObject *args)
                 TopoShape shape;
                 shape.read(Name);
 
-                // create new document set loaded shape
-                App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
                 Part::Feature *object = static_cast<Part::Feature *>(pcDoc->addObject
                     ("Part::Feature",file.fileNamePure().c_str()));
                 object->Shape.setValue(shape);
