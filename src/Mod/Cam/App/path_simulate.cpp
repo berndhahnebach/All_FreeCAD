@@ -1749,6 +1749,7 @@ bool path_simulate::Gen_Path()
 // Idee: Skaliere die Geschwindigkeiten und Beschleunigungen derjenigen Bahn mit der kürzeren Durchlaufzeit,
 // so dass die Durchlaufzeiten für Master und Slave übereinstimmen
 
+		
 		if(t_ma <= t_sl)					   
 		{
 			// Ab hier: Korrektur für den Master

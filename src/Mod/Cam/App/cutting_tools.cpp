@@ -130,6 +130,8 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape, float pitch)
 
 }
 
+
+
 cutting_tools::cutting_tools(TopoDS_Shape aShape)
         :m_Shape(aShape),m_aMeshAlgo(NULL),m_CAD_Mesh_Grid(NULL),m_cad(false),m_pitch(0.0)
 {
@@ -145,7 +147,11 @@ cutting_tools::cutting_tools(TopoDS_Shape aShape)
     classifyShape();
     //checkFlatLevel();
     initializeMeshStuff();
+
+
+
 }
+
 
 cutting_tools::~cutting_tools()
 {
@@ -2268,7 +2274,7 @@ bool cutting_tools::OffsetWires_Spiral()
             direction_vector.Subtract(help_Vec);
             //direction_vector.SetZ(0.0);
             direction_vector.Normalize();
-            direction_vector.Multiply(10.0);
+            direction_vector.Multiply(1.0); //Zum testen bauen wir keinen Offset ein
             //switch the Spiral-direction if the clockwise flag is checked and  the
             //angle between the last and current round is more then 90°
             double angle = direction_vector.Angle(last_direction_vector);

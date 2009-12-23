@@ -26,16 +26,19 @@
 #define BEST_FIT_H
 
 
+#include <Mod/Mesh/App/Core/Approximation.h>
 #include <Mod/Mesh/App/Core/Evaluation.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Base/Exception.h>
 #include <gp_Vec.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
+#include <SMESH_Mesh.hxx>
+#include <SMDS_VolumeTool.hxx>
 
 
 #define SMALL_NUM  1e-6
-#define ERR_TOL    0.05       // Abbruchkriterium für Least-Square-Matching (Fehleränderung zweier aufeinanderfolgenden Iterationsschritten)
+#define ERR_TOL    0.001       // Abbruchkriterium für Least-Square-Matching (Fehleränderung zweier aufeinanderfolgenden Iterationsschritten)
 
 
 /*! \class best_fit
@@ -58,6 +61,9 @@ public:
 		\param mesh Input-mesh
 		\param cad  Input-shape*/
     void Load(const MeshCore::MeshKernel &InputMesh, const TopoDS_Shape &CAD_Shape);
+
+	bool Initialize_Mesh_Geometrie_1();
+	bool Initialize_Mesh_Geometrie_2();
 	
 	/*! \brief Determines the local-coordinate-systems of the input-shapes and apply a coordinate transformation
 		to the mesh */
@@ -67,14 +73,23 @@ public:
 		to the global origin */
     bool ShapeFit_Coarse();
 
+	/*! \brief Determines the center of mass of the point-cloud and translates the shape
+	to the global origin */
+	bool PointCloud_Coarse();
+
 	/*! \brief Main function of the best-fit-algorithm */
     bool Perform();
+
+	/*! \brief Main function of the best-fit-algorithm only on point clouds*/
+	bool Perform_PointCloud();
+
+	bool output_best_fit_mesh();
 
     //double CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals);
     //double CompError(std::vector<Base::Vector3f> &pnts, std::vector<Base::Vector3f> &normals, bool plot);
 
     //std::vector<double> CompError_GetPnts(std::vector<Base::Vector3f> pnts,
-    //´                                     std::vector<Base::Vector3f> &normals);
+    //                                     std::vector<Base::Vector3f> &normals);
 
 	/*! \brief Computes error between the input-shapes through intersection along the normal-directions
 	and returns an average-error-value
@@ -118,6 +133,11 @@ public:
 
 	/*! \brief Triangulated input-shape m_Cad */
     MeshCore::MeshKernel m_CadMesh;  // Netz aus CAD-Triangulierung
+
+
+	std::vector<Base::Vector3f> m_pntCloud_1;
+	std::vector<Base::Vector3f> m_pntCloud_2;
+
 
 	/*! \brief Stores the knots of m_CadMesh in relative order */
     std::vector<Base::Vector3f> m_pnts;
@@ -188,6 +208,13 @@ private:
 		in form of a two-dimensional vector of type double
 		\param x is a three-dimensional-vector specifying the rotation-angle along the x-,y- and z-axis */
 	std::vector<std::vector<double> > Comp_Hess  (const std::vector<double> &params);
+
+	SMESH_Mesh *m_referencemesh;
+	SMESH_Mesh *m_meshtobefit;
+	SMESH_Gen *m_aMeshGen1;
+	SMESH_Gen *m_aMeshGen2;
+
+	
     
 	//int intersect_RayTriangle(const Base::Vector3f &normal,const MeshCore::MeshGeomFacet &T, Base::Vector3f &P, Base::Vector3f &I);
 	// bool Intersect(const Base::Vector3f &normal,const MeshCore::MeshKernel &mesh, Base::Vector3f &P, Base::Vector3f &I);
