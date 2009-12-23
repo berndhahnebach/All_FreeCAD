@@ -411,7 +411,7 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
     </message>
     <message>
         <source>Rename...</source>
-        <translation>Umbenenneb...</translation>
+        <translation>Umbenennen...</translation>
     </message>
     <message>
         <source>Icon</source>
