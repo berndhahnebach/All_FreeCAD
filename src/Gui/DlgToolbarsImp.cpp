@@ -26,6 +26,7 @@
 # include <QInputDialog>
 # include <QHeaderView>
 # include <QMessageBox>
+# include <QToolBar>
 #endif
 
 #include "DlgToolbarsImp.h"
