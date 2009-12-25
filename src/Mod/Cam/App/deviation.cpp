@@ -22,6 +22,7 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "PreCompiled.h"
 #include "deviation.h"
 
 #include <Mod/Mesh/App/Core/MeshKernel.h>

@@ -26,7 +26,6 @@
 #ifndef DEVIATION_H
 #define DEVIATION_H
 
-#include "PreCompiled.h"
 #include "best_fit.h"
 #include "SpringbackCorrection.h"
 #include <string.h>

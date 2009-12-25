@@ -1,3 +1,5 @@
+
+#include "PreCompiled.h"
 #include "mergedata.h"
 #include <QFileDialog>
 
@@ -58,7 +60,7 @@ bool MergeData::Einlesen (const QStringList &dateinamen)
 			while ( !in.atEnd() )
 			{
 				QString line = in.readLine();
-				QStringList fields = line.split ( ',',QString::SkipEmptyParts );
+				QStringList fields = line.split ( QLatin1Char(','),QString::SkipEmptyParts );
 				if(fields.size()<5)
 					return true;
 
