@@ -27,7 +27,6 @@
 #define MERGEDATA_H
 
 #include <QStringList>
-#include "PreCompiled.h"
 #include <vector>
 
 class AppCamExport MergeData
