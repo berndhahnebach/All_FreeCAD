@@ -47,7 +47,10 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("PartDesign"));
-    *part << "PartDesign_Pad" << "PartDesign_Fillet" ;
+    *part << "Sketcher_NewSketch" 
+          << "Separator" 
+          << "PartDesign_Pad" 
+          << "PartDesign_Fillet" ;
      return root;
 }
 
