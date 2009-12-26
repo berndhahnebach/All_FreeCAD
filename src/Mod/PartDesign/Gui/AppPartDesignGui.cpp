@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
@@ -52,6 +53,15 @@ void PartDesignGuiExport initPartDesignGui()
 {
     if (!Gui::Application::Instance) {
         PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
+
+    try {
+        Base::Interpreter().loadModule("PartGui");
+        Base::Interpreter().loadModule("SketcherGui");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
         return;
     }
 

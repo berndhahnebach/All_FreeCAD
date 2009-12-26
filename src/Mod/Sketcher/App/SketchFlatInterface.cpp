@@ -529,7 +529,7 @@ Part::TopoShape SketchFlatInterface::getGeoAsShape(void)
 	}
 
 
-	if(false){
+	if(true){
 		BRepBuilderAPI_MakeWire mkWire;
 		mkEdges = sort_Edges(mkEdges);
 		for (std::list<TopoDS_Edge>::iterator it = mkEdges.begin(); it != mkEdges.end(); ++it) {
