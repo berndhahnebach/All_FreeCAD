@@ -35,6 +35,7 @@ namespace Gui {
 class GuiExport SoFCDB
 {
 public:
+    static SbBool isInitialized(void);
     static void init();
     static void finish();
     /// helper to apply a SoWriteAction to a node and write it to a string
