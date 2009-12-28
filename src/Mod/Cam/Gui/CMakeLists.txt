@@ -15,7 +15,8 @@ include_directories(
  		 ${QT_INCLUDE_DIR}
 		 ${ZLIB_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR}
-		 ${SMSH_INCLUDE_DIR})
+		 ${SMSH_INCLUDE_DIR}
+		 ${SMESH_INCLUDE_DIR})
 
 if(WIN32)
 		 set(CamGui_LIBS
@@ -26,6 +27,7 @@ if(WIN32)
  				importlib_atlas.lib 
 				importlib_umfpackamd.lib
 				${SMSH_LIBRARIES}
+				${SMESH_LIBRARIES}
 				#OCCAdaptMesh
 			)
 else(WIN32)

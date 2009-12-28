@@ -16,7 +16,8 @@ include_directories(
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCES_INCLUDE_DIR}
 		 ${UMFPACK_INCLUDE_DIR}
-		 ${SMSH_INCLUDE_DIR})
+		 ${SMSH_INCLUDE_DIR}
+		 ${SMESH_INCLUDE_DIR})
 
 if(WIN32)
 		 set(Cam_LIBS
@@ -29,6 +30,7 @@ if(WIN32)
 				 importlib_atlas.lib 
 				 importlib_umfpackamd.lib
 				 ${SMSH_LIBRARIES}
+				 ${SMESH_LIBRARIES}
 				 )
 else(WIN32)
 		 set(Cam_LIBS
