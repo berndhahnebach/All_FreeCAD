@@ -67,6 +67,43 @@ project(PyObject *self, PyObject *args)
 }
 
 static PyObject * 
+projectEx(PyObject *self, PyObject *args)
+{
+    PyObject *pcObjShape;
+    PyObject *pcObjDir=0;
+
+	if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    PY_TRY {
+        TopoShapePy* pShape = static_cast<TopoShapePy*>(pcObjShape);
+		
+		Base::Vector3d Vector(0,0,1);
+		if(pcObjDir)
+			Vector = *static_cast<Base::VectorPy*>(pcObjDir)->getVectorPtr();
+
+		ProjectionAlgos Alg(pShape->getTopoShapePtr()->_Shape,Base::Vector3f((float)Vector.x,(float)Vector.y,(float)Vector.z));
+
+
+        Py::List list;
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V1))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VN))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VO))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VI))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H1))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HN))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HO))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HI))));
+
+        return Py::new_reference_to(list);
+
+    } PY_CATCH;
+
+}
+
+static PyObject * 
 projectToSVG(PyObject *self, PyObject *args)
 {
     PyObject *pcObjShape;
@@ -105,6 +142,8 @@ projectToSVG(PyObject *self, PyObject *args)
 struct PyMethodDef Drawing_methods[] = {
    {"project"       ,project      ,METH_VARARGS,
      "[visiblyG0,visiblyG1,hiddenG0,hiddenG1] = project(TopoShape[,App.Vector Direction, string type]) -- Project a shape and return the visible/invisible parts of it."},
+   {"projectEx"       ,projectEx      ,METH_VARARGS,
+     "[V,V1,VN,VO,VI,H,H1,HN,HO,HI] = projectEx(TopoShape[,App.Vector Direction, string type]) -- Project a shape and return the all parts of it."},
    {"projectToSVG"       ,projectToSVG      ,METH_VARARGS,
      "string = projectToSVG(TopoShape[,App.Vector Direction, string type]) -- Project a shape and return the SVG representation as string."},
     {NULL, NULL}        /* end of table marker */
