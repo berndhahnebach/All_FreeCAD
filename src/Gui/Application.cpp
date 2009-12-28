@@ -226,6 +226,7 @@ Application::Application(bool GUIenabled)
         PyModule_AddObject(module, "Selection", pSelectionModule);
     }
 
+    Base::PyGILStateLocker lock;
     PyObject *module = PyImport_AddModule("FreeCADGui");
     PyMethodDef *meth = FreeCADGui_methods;
     PyObject *dict = PyModule_GetDict(module);
