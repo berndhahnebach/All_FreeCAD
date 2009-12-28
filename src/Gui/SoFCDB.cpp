@@ -45,6 +45,13 @@
 using namespace Gui;
 using namespace Gui::PropertyEditor;
 
+static SbBool init_done = FALSE;
+
+SbBool Gui::SoFCDB::isInitialized(void)
+{
+    return init_done;
+}
+
 void Gui::SoFCDB::init()
 {
     SoGLRenderActionElement         ::initClass();
@@ -93,6 +100,7 @@ void Gui::SoFCDB::init()
     CADNavigationStyle              ::init();
 
     qRegisterMetaType<Base::Vector3f>("Base::Vector3f");
+    init_done = TRUE;
 }
 
 void Gui::SoFCDB::finish()

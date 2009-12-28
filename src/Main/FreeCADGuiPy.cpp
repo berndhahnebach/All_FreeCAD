@@ -128,11 +128,17 @@ FreeCADGui_setupWithoutGUI(PyObject * /*self*/, PyObject *args)
         static Gui::Application *app = new Gui::Application(false);
         Q_UNUSED(app);
     }
+    else {
+        PyErr_SetString(PyExc_RuntimeError, "FreeCADGui already initialized");
+        return 0;
+    }
 
     if (!SoDB::isInitialized()) {
         // init the Inventor subsystem
         SoDB::init();
         SoQt::init("FreeCAD");
+    }
+    if (!Gui::SoFCDB::isInitialized()) {
         Gui::SoFCDB::init();
     }
 
