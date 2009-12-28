@@ -37,6 +37,8 @@
 #include "Core/Iterator.h"
 #include "Core/Elements.h"
 #include "Core/Grid.h"
+#include "Core/MeshIO.h"
+#include "Core/MeshKernel.h"
 #include "Core/Triangulation.h"
 
 using namespace Mesh;
@@ -146,6 +148,18 @@ PyObject*  MeshPy::write(PyObject *args)
     } PY_CATCH;
     
     Py_Return; 
+}
+
+PyObject*  MeshPy::writeInventor(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    const MeshCore::MeshKernel& obj = getMeshObjectPtr()->getKernel();
+    std::stringstream result;
+    MeshCore::MeshOutput(obj).SaveInventor(result);
+    
+    return Py::new_reference_to(Py::String(result.str()));
 }
 
 PyObject*  MeshPy::offset(PyObject *args)
