@@ -537,8 +537,8 @@ Py::Object View3DInventorPy::getViewDirection(const Py::Tuple& args)
     if (!PyArg_ParseTuple(args.ptr(), ""))
         throw Py::Exception();
     try {
-	SbVec3f dvec = _view->getViewer()->getViewDirection();
-	return Py::Vector(Base::Vector3f(dvec[0], dvec[1], dvec[2]));
+        SbVec3f dvec = _view->getViewer()->getViewDirection();
+        return Py::Vector(Base::Vector3f(dvec[0], dvec[1], dvec[2]));
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());

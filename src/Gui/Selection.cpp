@@ -440,7 +440,8 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
                                                        ,Chng.pSubName
                                                        ,x,y,z);
 
-    getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+    if (getMainWindow())
+        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
 
 
     Notify(Chng);
@@ -465,7 +466,8 @@ void SelectionSingleton::setPreselectCoord( float x, float y, float z)
                                                        ,CurrentPreselection.pSubName
                                                        ,x,y,z);
 
-    getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+    if (getMainWindow())
+        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
 }
 
 void SelectionSingleton::rmvPreselect()

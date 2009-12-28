@@ -49,6 +49,7 @@
 #include <Base/Factory.h>
 #include <Base/FileInfo.h>
 #include <App/Document.h>
+#include <App/DocumentObjectPy.h>
 
 #include "Application.h"
 #include "MainWindow.h"
@@ -136,42 +137,107 @@ struct ApplicationP
 #endif 
 };
 
+static PyObject *
+FreeCADGui_subgraphFromObject(PyObject * /*self*/, PyObject *args)
+{
+    PyObject *o;
+    if (!PyArg_ParseTuple(args, "O!",&(App::DocumentObjectPy::Type), &o))
+        return NULL;
+    App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(o)->getDocumentObjectPtr();
+    std::string vp = obj->getViewProviderName();
+    SoNode* node = 0;
+    try {
+        Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(vp.c_str(), true));
+        if (base && base->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId())) {
+            std::auto_ptr<Gui::ViewProviderDocumentObject> vp(static_cast<Gui::ViewProviderDocumentObject*>(base));
+            std::map<std::string, App::Property*> Map;
+            obj->getPropertyMap(Map);
+            vp->attach(obj);
+            for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+                vp->updateData(it->second);
+            }
+
+            std::vector<std::string> modes = vp->getDisplayModes();
+            if (!modes.empty())
+                vp->setDisplayMode(modes.front().c_str());
+            node = vp->getRoot()->copy();
+            node->ref();
+            std::string type = "So";
+            type += node->getTypeId().getName().getString();
+            type += " *";
+            PyObject* proxy = 0;
+            proxy = Base::Interpreter().createSWIGPointerObj(type.c_str(), (void*)node, 1);
+            return Py::new_reference_to(Py::Object(proxy, true));
+        }
+    }
+    catch (const Base::Exception& e) {
+        if (node) node->unref();
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return 0;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+struct PyMethodDef FreeCADGui_methods[] = { 
+    {"subgraphFromObject",FreeCADGui_subgraphFromObject,METH_VARARGS,
+     "subgraphFromObject(object) -> Node\n\n"
+     "Return the Inventor subgraph to an object"},
+    {NULL, NULL}  /* sentinel */
+};
+
 } // namespace Gui
 
-Application::Application()
+Application::Application(bool GUIenabled)
 {
     //App::GetApplication().Attach(this);
-    App::GetApplication().signalNewDocument.connect(boost::bind(&Gui::Application::slotNewDocument, this, _1));
-    App::GetApplication().signalDeleteDocument.connect(boost::bind(&Gui::Application::slotDeleteDocument, this, _1));
-    App::GetApplication().signalRenameDocument.connect(boost::bind(&Gui::Application::slotRenameDocument, this, _1));
-    App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::Application::slotActiveDocument, this, _1));
-    App::GetApplication().signalRelabelDocument.connect(boost::bind(&Gui::Application::slotRelabelDocument, this, _1));
+    if (GUIenabled) {
+        App::GetApplication().signalNewDocument.connect(boost::bind(&Gui::Application::slotNewDocument, this, _1));
+        App::GetApplication().signalDeleteDocument.connect(boost::bind(&Gui::Application::slotDeleteDocument, this, _1));
+        App::GetApplication().signalRenameDocument.connect(boost::bind(&Gui::Application::slotRenameDocument, this, _1));
+        App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::Application::slotActiveDocument, this, _1));
+        App::GetApplication().signalRelabelDocument.connect(boost::bind(&Gui::Application::slotRelabelDocument, this, _1));
 
 
-    // install the last active language
-    ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
-    hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
-    Translator::instance()->activateLanguage(hPGrp->GetASCII("Language", "English").c_str());
-    GetWidgetFactorySupplier();
+        // install the last active language
+        ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+        hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
+        Translator::instance()->activateLanguage(hPGrp->GetASCII("Language", "English").c_str());
+        GetWidgetFactorySupplier();
 
-    // setting up Python binding
-    Base::PyGILStateLocker lock;
-    PyObject* module = Py_InitModule3("FreeCADGui", Application::Methods,
-        "The functions in the FreeCADGui module allow working with GUI documents,\n"
-        "view providers, views, workbenches and much more.\n\n"
-        "The FreeCADGui instance provides a list of references of GUI documents which\n"
-        "can be addressed by a string. These documents contain the view providers for\n"
-        "objects in the associated App document. An App and GUI document can be\n"
-        "accessed with the same name.\n\n"
-        "The FreeCADGui module also provides a set of functions to work with so called\n"
-        "workbenches.");
-    Py::Module(module).setAttr(std::string("ActiveDocument"),Py::None());
+        // setting up Python binding
+        Base::PyGILStateLocker lock;
+        PyObject* module = Py_InitModule3("FreeCADGui", Application::Methods,
+            "The functions in the FreeCADGui module allow working with GUI documents,\n"
+            "view providers, views, workbenches and much more.\n\n"
+            "The FreeCADGui instance provides a list of references of GUI documents which\n"
+            "can be addressed by a string. These documents contain the view providers for\n"
+            "objects in the associated App document. An App and GUI document can be\n"
+            "accessed with the same name.\n\n"
+            "The FreeCADGui module also provides a set of functions to work with so called\n"
+            "workbenches.");
+        Py::Module(module).setAttr(std::string("ActiveDocument"),Py::None());
 
-    //insert Selection module
-    PyObject* pSelectionModule = Py_InitModule3("Selection", SelectionSingleton::Methods,
-        "Selection module");
-    Py_INCREF(pSelectionModule);
-    PyModule_AddObject(module, "Selection", pSelectionModule);
+        //insert Selection module
+        PyObject* pSelectionModule = Py_InitModule3("Selection", SelectionSingleton::Methods,
+            "Selection module");
+        Py_INCREF(pSelectionModule);
+        PyModule_AddObject(module, "Selection", pSelectionModule);
+    }
+
+    PyObject *module = PyImport_AddModule("FreeCADGui");
+    PyMethodDef *meth = FreeCADGui_methods;
+    PyObject *dict = PyModule_GetDict(module);
+    for (; meth->ml_name != NULL; meth++) {
+        PyObject *descr;
+        descr = PyCFunction_NewEx(meth,0,0);
+        if (descr == NULL)
+            break;
+        if (PyDict_SetItemString(dict, meth->ml_name, descr) != 0)
+            break;
+        Py_DECREF(descr);
+    }
 
     // Python console binding
     PythonStdout    ::init_type();
@@ -1285,7 +1351,7 @@ void Application::runApplication(void)
         Base::Console().Log("This system does not support pbuffers");
     }
 
-    Application app;
+    Application app(true);
     MainWindow mw;
     mw.setWindowTitle(mainApp.applicationName());
 
