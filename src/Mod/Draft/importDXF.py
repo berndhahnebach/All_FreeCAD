@@ -536,89 +536,173 @@ def insert(filename,docname):
 	for l in layers:
 		importgroup.addObject(l)
 
-def export(exportList,filename):
-	"called when freecad exports a file"
-	dxf = dxfLibrary.Drawing()
-	for i in exportList:
-		if isinstance(i,Part.Feature):			
-			for wire in i.Shape.Wires:
+		
+# EXPORT ########################################################################
 
-				# polylines
-				
+
+def getSplineSegs(edge):
+	"returns an array of vectors from a bSpline edge"
+	curve = edge.Curve
+	params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+	seglength = params.GetInt("maxsplinesegment")
+	points = []
+	if seglength == 0:
+		points.append(edge.Vertexes[0].Point)
+		points.append(edge.Vertexes[-1].Point)
+	else:
+		l = curve.toShape().Length
+		points.append(curve.value(0))
+		if l > seglength:
+			nbverts = int(math.floor(l/seglength))
+			step = seglength/l
+			for nv in range(nbverts):
+				u = step+step*nv
+				v = curve.value(u)
+				points.append(v)
+		points.append(curve.value(1))
+	return points
+
+def getWire(wire):
+	"returns an array of dxf-ready points and bulges from a wire"
+	edges = fcgeo.sortEdges(wire.Edges)
+	points = []
+	for edge in edges:
+		v1 = edge.Vertexes[0].Point
+		if (isinstance(edge.Curve,Part.Circle)):
+			v2 = edge.Vertexes[-1].Point
+			c = edge.Curve.Center
+			angle = abs(fcvec.angle(fcvec.new(c,v1),fcvec.new(c,v2)))
+			if (fcvec.angle(fcvec.new(c,v2)) < fcvec.angle(fcvec.new(c,v1))):
+				angle = -angle
+			bul = math.tan(angle/4)
+			points.append((v1.x,v1.y,v1.z,None,None,bul))
+		elif (isinstance(edge.Curve,Part.BSplineCurve)):
+			spline = getSplineSegs(edge)
+			spline.pop()
+			for p in spline:
+				points.append((p.x,p.y,p.z,None,None,bul))
+		else:
+			bul = 0.0
+			points.append((v1.x,v1.y,v1.z,None,None,bul))
+	if not wire.isClosed():
+		v = edges[-1].Vertexes[-1].Point
+		points.append(fcvec.tup(v))
+	return points
+
+def getBlock(obj):
+	"returns a dxf block with the contents of the object"
+	block = dxfLibrary.Block(name=obj.Name,layer=getGroup(obj,exportList))
+	writeShape(obj,block)
+	
+	return block
+
+def writeShape(ob,dxfobject):
+	"writes the object's shape contents in the given dxf object"
+	processededges = []
+	for wire in ob.Shape.Wires: # polylines
+		for e in wire.Edges: processededges.append(e.hashCode())
+		dxfobject.append(dxfLibrary.PolyLine(getWire(wire), [0.0,0.0,0.0],
+					       int(wire.isClosed()), color=getACI(ob),
+					       layer=getGroup(ob,exportList)))
+	if len(processededges) < len(ob.Shape.Edges): # lone edges
+		loneedges = []
+		for e in ob.Shape.Edges:
+			if not(e.hashCode() in processededges): loneedges.append(e)
+		print "lone edges ",loneedges
+		for edge in loneedges:
+			if (len(edge.Vertexes) == 2) and (isinstance (edge.Curve,Part.Line)): # lines
+				ve1=edge.Vertexes[0].Point
+				ve2=edge.Vertexes[1].Point
+				dxfobject.append(dxfLibrary.Line([fcvec.tup(ve1), fcvec.tup(ve2)],
+								 color=getACI(ob),
+								 layer=getGroup(ob,exportList)))
+			elif (isinstance(edge.Curve,Part.BSplineCurve)): # splines
 				points = []
-				bulges = []
-				flag= int(wire.isClosed())
-				org_point = [0.0,0.0,0.0]
-				edges = fcgeo.sortEdges(wire.Edges)
-				for edge in edges:
-					v1 = edge.Vertexes[0].Point
-					if (isinstance(edge.Curve,Part.Circle)):
-						v2 = edge.Vertexes[-1].Point
-						c = edge.Curve.Center
-						angle = abs(fcvec.angle(fcvec.new(c,v1),fcvec.new(c,v2)))
-						if (fcvec.angle(fcvec.new(c,v2)) < fcvec.angle(fcvec.new(c,v1))):
-							angle = -angle
-						bul = math.tan(angle/4)
+				spline = getSplineSegs(edge)
+				for p in spline:
+					points.append((p.x,p.y,p.z,None,None,0.0))
+				dxfobject.append(dxfLibrary.PolyLine(points, [0.0,0.0,0.0],
+								     0, color=getACI(ob),
+								     layer=getGroup(ob,exportList)))
+			elif (len(edge.Vertexes) == 1): # circles
+				center = fcvec.tup(edge.Curve.Center)
+				radius = ob.Shape.Edges[0].Curve.Radius
+				dxfobject.append(dxfLibrary.Circle(center, radius,
+								   color=getACI(ob),
+								   layer=getGroup(ob,exportList)))
+			elif (len(edge.Vertexes) == 3) or (isinstance (edge.Curve,Part.Circle)): # arcs
+				ce = ob.Shape.Edges[0].Curve.Center
+				radius = ob.Shape.Edges[0].Curve.Radius
+				ve1 = edge.Vertexes[0].Point
+				ve2 = edge.Vertexes[-1].Point
+				ang1=-math.degrees(fcvec.angle(fcvec.new(ce,ve1)))
+				ang2=-math.degrees(fcvec.angle(fcvec.new(ce,ve2)))
+				dxfobject.append(dxfLibrary.Arc(fcvec.tup(ce), radius,
+								ang1, ang2, color=getACI(i),
+								layer=getGroup(i,exportList)))
+
+		
+		
+def export(objectslist,filename):
+	"called when freecad exports a file"
+	global exportList
+	exportList = objectslist
+	dxf = dxfLibrary.Drawing()
+	for ob in exportList:
+		print "processing ",ob.Name
+		if isinstance(ob,Part.Feature):
+			if ob.Shape.ShapeType == 'Compound':
+				if (len(ob.Shape.Wires) == 1):
+					print "open wire found"
+					if (len(ob.Shape.Wires[0].Edges) == len(ob.Shape.Edges)):
+						wire = ob.Shape.Wires[0]
+						dxf.append(dxfLibrary.PolyLine(getWire(wire),
+									       [0.0,0.0,0.0],
+									       int(wire.isClosed()),
+									       color=getACI(ob),
+									       layer=getGroup(ob,exportList)))
 					else:
-						bul = 0.0
-					points.append((v1.x,v1.y,v1.z,None,None,bul))
-				if not wire.isClosed():
-					points.append(fcvec.tup(edges[-1].Vertexes[-1].Point))
-						
-				dxf.append(dxfLibrary.PolyLine(points, org_point, flag, color=getACI(i), layer=getGroup(i,exportList)))
-										
-			if (len(i.Shape.Wires) == 0) and (len(i.Shape.Edges) == 1):
-				edge = i.Shape.Edges[0]
-				if (len(i.Shape.Vertexes) == 2) and (isinstance (edge.Curve,Part.Line)):
-
-					# lines
-					
-					ve1=edge.Vertexes[0].Point
-					ve2=edge.Vertexes[1].Point
-					dxf.append(dxfLibrary.Line([fcvec.tup(ve1),fcvec.tup(ve2)], color=getACI(i), layer=getGroup(i,exportList)))
-				elif (len(i.Shape.Vertexes) == 1):
-
-					# circles
-					
-					center = fcvec.tup(edge.Curve.Center)
-					radius = i.Shape.Edges[0].Curve.Radius
-					dxf.append(dxfLibrary.Circle(center, radius, color=getACI(i), layer=getGroup(i,exportList)))
-
-				elif (len(i.Shape.Vertexes) == 3) or (isinstance (edge.Curve,Part.Circle)):
-
-					# arcs
-					
-					ce = i.Shape.Edges[0].Curve.Center
-					radius = i.Shape.Edges[0].Curve.Radius
-					ve1 = edge.Vertexes[0].Point
-					ve2 = edge.Vertexes[-1].Point
-					ang1=-math.degrees(fcvec.angle(fcvec.new(ce,ve1)))
-					ang2=-math.degrees(fcvec.angle(fcvec.new(ce,ve2)))
-					dxf.append(dxfLibrary.Arc(fcvec.tup(ce), radius, ang1, ang2, color=getACI(i), layer=getGroup(i,exportList)))
-
-		elif (i.Type == "App::Annotation"):
+						print "creating block - 1 wire"
+						block = getBlock(ob)
+						dxf.blocks.append(block)
+						dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
+				else:
+					print "creating block"
+					block = getBlock(ob)
+					dxf.blocks.append(block)
+					dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
+			else:
+				writeShape(ob,dxf)
+				
+		elif (ob.Type == "App::Annotation"):
 
 			# texts
 
 			# temporary - as dxfLibrary doesn't support mtexts well, we use several single-line texts
 			# well, anyway, at the moment, Draft only writes single-line texts, so...
-			for text in i.LabelText:
-				point = fcvec.tup(FreeCAD.Vector(i.Position.x,i.Position.y-i.LabelText.index(text),i.Position.z))
-				if gui: height = float(i.ViewObject.FontSize)
+			for text in ob.LabelText:
+				point = fcvec.tup(FreeCAD.Vector(ob.Position.x,
+								 ob.Position.y-ob.LabelText.index(text),
+								 ob.Position.z))
+				if gui: height = float(ob.ViewObject.FontSize)
 				else: height = 1
-				dxf.append(dxfLibrary.Text(text,point,height=height, color=getACI(i,text=True), layer=getGroup(i,exportList)))
+				dxf.append(dxfLibrary.Text(text,point,height=height,
+							   color=getACI(ob,text=True),
+							   style='STANDARD',
+							   layer=getGroup(ob,exportList)))
 
-		elif (i.Type == "App::FeaturePython"):
-			if 'Dimline' in i.PropertiesList:
-				p1 = fcvec.tup(i.Start)
-				p2 = fcvec.tup(i.End)
-				base = Part.Line(i.Start,i.End).toShape()
-				proj = fcgeo.findDistance(i.Dimline,base)
+		elif (ob.Type == "App::FeaturePython"):
+			if 'Dimline' in ob.PropertiesList:
+				p1 = fcvec.tup(ob.Start)
+				p2 = fcvec.tup(ob.End)
+				base = Part.Line(ob.Start,ob.End).toShape()
+				proj = fcgeo.findDistance(ob.Dimline,base)
 				if not proj:
-					pbase = fcvec.tup(i.End)
+					pbase = fcvec.tup(ob.End)
 				else:
-					pbase = fcvec.tup(i.End.add(fcvec.neg(proj)))
-				dxf.append(dxfLibrary.Dimension(pbase,p1,p2,color=getACI(i), layer=getGroup(i,exportList)))
+					pbase = fcvec.tup(ob.End.add(fcvec.neg(proj)))
+				dxf.append(dxfLibrary.Dimension(pbase,p1,p2,color=getACI(ob),
+								layer=getGroup(ob,exportList)))
 					
 	dxf.saveas(filename)
 	FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
