@@ -45,6 +45,22 @@ set(Boost_FOUND TRUE)
 set(ZLIB_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/zlib)
 set(ZLIB_LIBRARIES  zlib1.lib)
 set(ZLIB_FOUND TRUE) 
+
+# SMESH
+set(SMESH_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/smesh)
+set(SMESH_LIBRARIES   
+ StdMeshers.lib
+ MEFISTO2.lib
+ SMESH.lib
+ DriverUNV.lib
+ SMESHDS.lib
+ DriverSTL.lib
+ DriverDAT.lib
+ Driver.lib
+ SMDS.lib
+ )
+
+set(SMESH_FOUND TRUE) 
 	
 # Coin3D
 set(COIN_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/coin)

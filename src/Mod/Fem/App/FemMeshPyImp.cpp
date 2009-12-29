@@ -73,7 +73,7 @@ PyObject* FemMeshPy::setShape(PyObject *args)
 
     TopoDS_Shape shape = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
     getFemMeshPtr()->myMesh->ShapeToMesh(shape);
-
+    Py_Return;
 }
 
 PyObject* FemMeshPy::read(PyObject *args)

@@ -23,7 +23,7 @@
 
 
 //Because we ommit the PreCompiled Header we have to define some stuff here
-#include "../../../FCConfig.h"
+#include <FCConfig.h>
 // Exporting of App classes
 #ifdef FC_OS_WIN32
 # define AppCamExport   __declspec(dllexport)
@@ -39,6 +39,9 @@
 # define PartExport
 # define AppMeshExport
 # define MeshExport
+#endif
+#ifdef _MSC_VER
+# pragma warning(disable : 4290)
 #endif
 
 
