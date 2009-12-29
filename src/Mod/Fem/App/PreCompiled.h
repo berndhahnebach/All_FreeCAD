@@ -43,6 +43,10 @@
 # define BaseExport  
 #endif
 
+#ifdef _MSC_VER
+# pragma warning(disable : 4290)
+#endif
+
 #ifdef _PreComp_
 
 // standard
