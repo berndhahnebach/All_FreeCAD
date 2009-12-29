@@ -2031,15 +2031,18 @@ class Offset(Modifier):
 		if len(self.sel.Shape.Faces)>1:
 			self.ui.translate("The offset tool cannot currently work on multi-face objects\n")
 			self.finish()
-		c = fcgeo.complexity(self.sel)	
+		c = fcgeo.complexity(self.sel)
+		self.closed = False
 		if (c >= 7): 
 			self.edges = fcgeo.getBoundary(self.sel.Shape)
 			self.faces = True
+			self.closed = True
 			self.edges = fcgeo.sortEdges(self.edges)
 		elif (c >=4): 
 			self.edges = self.sel.Shape.Wires[0].Edges
 			self.edges = fcgeo.sortEdges(self.edges)
-		else: self.edges = self.sel.Shape.Edges	
+			self.closed = self.sel.Shape.Wires[0].isClosed()
+		else: self.edges = self.sel.Shape.Edges
 		self.ghost = []
 		for e in self.edges:
 			if isinstance(e.Curve,Part.Line): self.ghost.append(lineTracker())
@@ -2125,11 +2128,10 @@ class Offset(Modifier):
 
 	def redraw(self,dist,real=False):
 		"offsets the ghost to the given distance. if real=True, the shape itself will be redrawn too"
-		closed = Part.Wire(self.edges).isClosed()
 		offsetVec = fcvec.neg(dist[0])
 		if real: newedges=[]
 
-		#finding the base vector, which is the segment at base of the offset vector
+		# finding the base vector, which is the segment at base of the offset vector
 		base = self.edges[dist[1]]
 		if (isinstance(base.Curve,Part.Line)):
 			baseVec = fcgeo.vec(base)
@@ -2140,7 +2142,7 @@ class Offset(Modifier):
 
 		# offsetting the first vertex
 		edge = self.edges[0]
-		if closed and (len(self.edges)>1): prev = self.edges[-1]
+		if self.closed and (len(self.edges)>1): prev = self.edges[-1]
 		else: prev = None
 		if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 		else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
@@ -2162,7 +2164,7 @@ class Offset(Modifier):
 			edge = self.edges[i]
 			if (i < len(self.edges)-1): next = self.edges[i+1]
 			else:
-				if closed and (len(self.edges)>1): next = self.edges[0]
+				if self.closed and (len(self.edges)>1): next = self.edges[0]
 				else: next = None
 			if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 			else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
@@ -2176,7 +2178,7 @@ class Offset(Modifier):
 				offset2 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
 				offedge2 = fcgeo.offset(next,offset2)
 				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
-				last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
+				if inter: last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
 			else: last = Vector.add(edge.Vertexes[-1].Point,offset1)
 			
 			if isinstance(edge.Curve,Part.Line):

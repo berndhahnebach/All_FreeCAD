@@ -30,7 +30,8 @@ __url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
 import math,FreeCAD
 from FreeCAD import Vector
 
-PREC = 4	# Precision of comparisions
+params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+precision = params.GetInt("precision")
 
 def tup(first,array=False):
 	"returns a tuple (x,y,z) with the vector coords, or an array if array=true"
@@ -68,9 +69,9 @@ def equals(first,other):
 	is that we round off a bit (default to 4 digits, which is what the Part module uses).
 	'''
 	if isinstance(first,Vector) and isinstance(other,Vector):
-		if (round(first.x,PREC) == round(other.x,PREC)):
-			if (round(first.y,PREC) == round(other.y,PREC)):
-				if (round(first.z,PREC) == round(other.z,PREC)):
+		if (round(first.x,precision) == round(other.x,precision)):
+			if (round(first.y,precision) == round(other.y,precision)):
+				if (round(first.z,precision) == round(other.z,precision)):
 					return True
 		return False
 
@@ -135,32 +136,40 @@ def project(first, other):
 			return scale(other, dotproduct(first,other)/dotproduct(other,other))
 	return None
 
+def rotate2D(first,angle):
+	"rotate2D(Vector,angle): rotates the given vector around the Z axis"
+	return Vector(math.cos(-angle)*first.x-math.sin(-angle)*first.y,
+					math.sin(-angle)*first.x+math.cos(-angle)*first.y,first.z)
+
 def rotate(first,rotangle,axis=Vector(0,0,1)):
 	'''rotate(Vector,Float,axis=Vector): rotates the first Vector
 	around the given axis, at the given angle.
 	If axis is omitted, the rotation is made on the xy plane.'''
+	# print 'rotation: ',first,' : ',math.degrees(rotangle),' : ',rounded(axis)
 	if rotangle == 0: return first
 	if isinstance(first,Vector) and isinstance(axis,Vector):
-		axisxy = Vector(axis.x,axis.y,0)
-		mat1 = FreeCAD.Matrix()
-		if not isNull(axisxy):
-			mat1.rotateZ(angle(axisxy))
-		axisrot1 = mat1.multiply(axis)
-		axisxz = Vector(axisrot1.x,axisrot1.z,0)
-		mat2 = FreeCAD.Matrix()
-		if not isNull(axisxz):
-			mat2.rotateY(angle(axisxz)-math.pi/2)
-		axisrot2 = mat2.multiply(axisrot1)
-		vec = mat1.multiply(first)
-		vec = mat2.multiply(vec)
-		vec = Vector(math.cos(rotangle)*vec.x-math.sin(rotangle)*vec.y,math.sin(rotangle)*vec.x+math.cos(rotangle)*vec.y,vec.z)
-		vec = mat2.inverse().multiply(vec)
-		vec = mat1.inverse().multiply(vec)
-		return vec
+		if not equals(axis,Vector(0,0,1)):
+			anglexy = -angle(Vector(axis.x,axis.y,0))
+			axisxy = rotate2D(axis,-anglexy)
+			# print  'angle in xy plane ',math.degrees(anglexy), ' axis in xy plane ', rounded(axisxy)
+			vecxy = rotate2D(first,-anglexy)
+			anglexz = -math.pi/2-angle(Vector(axisxy.x,axisxy.z,0))
+			axisxz = rotate2D(Vector(axisxy.x,axisxy.z,0),-anglexz)
+			# print 'angle in xz plane ',math.degrees(anglexz), ' axis in xz plane ',rounded(axisxz)
+			vecxz = rotate2D(Vector(vecxy.x,vecxy.z,vecxy.y),-anglexz)
+			vecxz = Vector(vecxz.x,vecxz.z,vecxz.y)
+			vecxz = rotate2D(vecxz,rotangle)
+			vecxy = rotate2D(Vector(vecxz.x,vecxz.z,vecxz.y),anglexz)
+			vecxy = Vector(vecxy.x,vecxy.z,vecxy.y)
+			vec = rotate2D(vecxy,anglexy)
+			return vec
+		else:
+			# print 'xy rotation'
+			return rotate2D(first,rotangle)
 
 def isNull(vector):
 	'''isNull(vector): Tests if a vector is nul vector'''
-	if round(vector.x,PREC)==0 and round(vector.y,PREC)==0 and round(vector.z,PREC)==0 :
+	if round(vector.x,precision)==0 and round(vector.y,precision)==0 and round(vector.z,precision)==0 :
 		return True
 	else :
 		return False
@@ -175,7 +184,7 @@ def find(vector,vlist):
 				return i
 	return None
 
-def rounded(vector,pr=PREC):
+def rounded(vector,pr=precision):
 	'''rounded(vector,int) - returns a rounded vector to given precision, or is
 	precision is not specified, built-in precision is used.'''
 	if isinstance(vector,Vector) and isinstance(pr,int):

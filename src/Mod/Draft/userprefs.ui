@@ -145,6 +145,48 @@
           </property>
          </widget>
         </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Precision level</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefSpinBox" name="gui::prefspinbox_3">
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>The number of decimals in internal coordinates operations (for ex. 3 = 0.001)</string>
+          </property>
+          <property name="value">
+           <number>3</number>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>precision</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
@@ -166,12 +208,25 @@
          </widget>
         </item>
         <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_6">
           <property name="toolTip">
            <string>Check this if you want FreeCAD to save the Z lock state when you close the application and restore it on next session.</string>
           </property>
           <property name="text">
-           <string>Save across sessions</string>
+           <string>Save Z lock state across sessions</string>
           </property>
           <property name="prefEntry" stdset="0">
            <cstring>savezlock</cstring>
@@ -184,7 +239,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="label_6">
           <property name="text">
@@ -214,10 +269,19 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QLabel" name="label_5">
           <property name="text">
@@ -255,7 +319,7 @@ such as &quot;Arial:Bold&quot;</string>
    <item>
     <widget class="QGroupBox" name="GroupBox12">
      <property name="title">
-      <string>DXF Import Settings</string>
+      <string>DXF Import/Export Settings</string>
      </property>
      <layout class="QVBoxLayout">
       <property name="spacing">
@@ -362,6 +426,19 @@ If color mapping is choosed, you must choose a color mapping file containing a t
          </widget>
         </item>
         <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_3">
           <property name="toolTip">
            <string>if this is checked, paper space objects will be imported too</string>
@@ -379,13 +456,46 @@ If color mapping is choosed, you must choose a color mapping file containing a t
         </item>
        </layout>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Max Spline Segment</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefSpinBox" name="gui::prefspinbox_2">
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>When exporting splines to DXF, they are transformed in polylines. This value is the maximum length of each of the polyline segments. If 0, then the whole spline is treated as a straight segment.</string>
+          </property>
+          <property name="value">
+           <number>5</number>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>maxsplinesegment</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="GroupBox12_2">
      <property name="title">
-      <string>SVG Import Settings</string>
+      <string>SVG Import/Export Settings</string>
      </property>
      <layout class="QVBoxLayout" name="_3">
       <property name="spacing">
@@ -448,7 +558,7 @@ If color mapping is choosed, you must choose a color mapping file containing a t
    <item>
     <widget class="QGroupBox" name="GroupBox12_3">
      <property name="title">
-      <string>OCA Import Settings</string>
+      <string>OCA Import/Export Settings</string>
      </property>
      <layout class="QVBoxLayout" name="_6">
       <property name="spacing">
@@ -483,21 +593,21 @@ If color mapping is choosed, you must choose a color mapping file containing a t
         </item>
        </layout>
       </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

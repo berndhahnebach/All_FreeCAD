@@ -31,8 +31,9 @@ import FreeCAD, Part, fcvec, math, cmath
 from FreeCAD import Vector
 
 NORM = Vector(0,0,1) # provisory normal direction for all geometry ops.
-PREC = 4 # Precision of comparisions (decimal places/digits).
 
+params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+precision = params.GetInt("precision")
 
 # Generic functions *********************************************************
 
@@ -70,8 +71,8 @@ def isPtOnEdge(pt,edge) :
 		center = edge.Curve.Center
 		axis   = edge.Curve.Axis ; axis.normalize()
 		radius = edge.Curve.Radius
-		if  round(pt.sub(center).dot(axis),PREC) == 0 \
-		and round(pt.sub(center).Length - radius,PREC) == 0 :
+		if  round(pt.sub(center).dot(axis),precision) == 0 \
+		and round(pt.sub(center).Length - radius,precision) == 0 :
 			if len(edge.Vertexes) == 1 :
 				return True # edge is a complete circle
 			else :
@@ -83,7 +84,7 @@ def isPtOnEdge(pt,edge) :
 					# newArc = Part.Arc(begin,pt,end)
 					# return fcvec.isNull(newArc.Center.sub(center)) \
 					#    and fcvec.isNull(newArc.Axis-axis) \
-					#    and round(newArc.Radius-radius,PREC) == 0
+					#    and round(newArc.Radius-radius,precision) == 0
 					angle1 = fcvec.angle(begin.sub(center))
 					angle2 = fcvec.angle(end.sub(center))
 					anglept = fcvec.angle(pt.sub(center))
@@ -158,7 +159,7 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
 				int = [center.add(toLine).add(onLine)]
 				onLine  = Vector(dirVec) ; onLine.scale(-dOnLine,-dOnLine,-dOnLine)
 				int += [center.add(toLine).add(onLine)]
-			elif round(toLine.Length-arc.Curve.Radius,PREC) == 0 :
+			elif round(toLine.Length-arc.Curve.Radius,precision) == 0 :
 				int = [center.add(toLine)]
 			else :
 				return []
@@ -171,7 +172,7 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
 				toPlane = Vector(vec1)
 				toPlane.scale(dToPlane/d,dToPlane/d,dToPlane/d)
 				ptOnPlane = toPlane.add(pt1)
-				if round(ptOnPlane.sub(center).Length - arc.Curve.Radius,PREC) == 0 :
+				if round(ptOnPlane.sub(center).Length - arc.Curve.Radius,precision) == 0 :
 					int = [ptOnPlane]
 				else :
 					return []
@@ -198,12 +199,12 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
 		c2c          = cent2.sub(cent1)
 		
 		if fcvec.isNull(axis1.cross(axis2)) :
-			if round(c2c.dot(axis1),PREC) == 0 :
+			if round(c2c.dot(axis1),precision) == 0 :
 				# circles are on same plane
 				dc2c = c2c.Length ;
 				if not fcvec.isNull(c2c): c2c.normalize()
-				if round(rad1+rad2-dc2c,PREC) < 0 \
-				or round(rad1-dc2c-rad2,PREC) > 0 or round(rad2-dc2c-rad1,PREC) > 0 :
+				if round(rad1+rad2-dc2c,precision) < 0 \
+				or round(rad1-dc2c-rad2,precision) > 0 or round(rad2-dc2c-rad1,precision) > 0 :
 					return []
 				else :
 					norm = c2c.cross(axis1)
@@ -212,7 +213,7 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
 					else: x = (dc2c**2 + rad1**2 - rad2**2)/(2*dc2c)
 					y = abs(rad1**2 - x**2)**(0.5)
 					c2c.scale(x,x,x)
-					if round(y,PREC) != 0 :
+					if round(y,precision) != 0 :
 						norm.scale(y,y,y)
 						int =  [cent1.add(c2c).add(norm)]
 						int += [cent1.add(c2c).sub(norm)]
@@ -233,7 +234,7 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
 			intTemp = findIntersection(planeIntersectionVector,edge1,True,True)
 			int = []
 			for pt in intTemp :
-				if round(pt.sub(cent2).Length-rad2,PREC) == 0 :
+				if round(pt.sub(cent2).Length-rad2,precision) == 0 :
 					int += [pt]
 					
 		if infinite1 == False :
@@ -313,7 +314,7 @@ def sortEdges(lEdges, aVertex=None):
 	"an alternative, more accurate version of Part.__sortEdges__"
 	
 	def isSameVertex(V1, V2):
-		''' Test if vertexes have same coordinates with precision 10E(-PREC)'''
+		''' Test if vertexes have same coordinates with precision 10E(-precision)'''
 		if round(V1.X-V2.X,1)==0 and round(V1.Y-V2.Y,1)==0 and round(V1.Z-V2.Z,1)==0 :
 			return True
 		else :
@@ -425,7 +426,6 @@ def findPerpendicular(point,edgeslist,force=None):
 				else:
 					if (dist.Length < valid[0].Length):
 						valid = [dist,edgeslist.index(edge)]
-
 		return valid
 	else:
 		edge = edgeslist[force]
@@ -460,11 +460,11 @@ def findDistance(point,edge,strict=False):
 	if isinstance(point, FreeCAD.Vector):
 		if isinstance(edge.Curve, Part.Line):
 			segment = vec(edge)
-			chord = fcvec.new(point,edge.Vertexes[0].Point)
-			norm = fcvec.crossproduct(segment,chord)
-			perp = fcvec.crossproduct(segment,norm)
+			chord = edge.Vertexes[0].Point.sub(point)
+			norm = segment.cross(chord)
+			perp = segment.cross(norm)
 			dist = fcvec.project(chord,perp)
-			newpoint = Vector.add(point, dist)
+			newpoint = point.add(dist)
 			if (dist.Length == 0):
 				return 0
 			if strict:
