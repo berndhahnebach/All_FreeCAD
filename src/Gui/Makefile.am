@@ -433,7 +433,8 @@ libFreeCADGui_la_LIBADD   =\
 		propertyeditor/libpropertyeditor.la \
 		iisTaskPanel/libTaskPanel.la \
 		TaskView/libTaskView.la \
-		@BOOST_FILESYSTEM_LIB@ @BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ \
+		@BOOST_FILESYSTEM_LIB@ @BOOST_SIGNALS_LIB@ \
+		@BOOST_PROGOPTIONS_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ @ZIPIOS_LIB@ \
 		-lQtUiTools \
 		-lxerces-c \
