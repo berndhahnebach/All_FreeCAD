@@ -232,24 +232,19 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(const char* name, const QSize& size) co
 
 QPixmap BitmapFactoryInst::pixmapFromSvg(const QByteArray& contents, const QSize& size) const
 {
-    // create an icon with transparent background
-    QPixmap icon(size);
-    QBitmap mask(size);
-    mask.fill(Qt::color0);
-    icon.setMask(mask);
+    QImage image(size, QImage::Format_ARGB32_Premultiplied);
+    image.fill(0x00000000);
 
-    QPainter* painter = new QPainter;
-    painter->begin(&icon);
+    QPainter p(&image);
     // tmp. disable the report window to suppress some bothering warnings
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, false);
     QSvgRenderer* svg = new QSvgRenderer(contents);
     Base::Console().SetEnabledMsgType("ReportOutput", ConsoleMsgType::MsgType_Wrn, true);
-    svg->render(painter);
-    painter->end();
+    svg->render(&p);
+    p.end();
     delete svg;
-    delete painter;
 
-    return icon;
+    return QPixmap::fromImage(image);
 }
 
 QStringList BitmapFactoryInst::pixmapNames() const
