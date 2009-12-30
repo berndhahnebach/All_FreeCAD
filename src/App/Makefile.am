@@ -106,8 +106,12 @@ libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT
 libFreeCADApp_la_CPPFLAGS = -DRESOURCEDIR=\"$(datadir)\" -DDOCDIR=\"$(docdir)\"
 
 libFreeCADApp_la_LIBADD   = \
-		@BOOST_FILESYSTEM_LIB@ @BOOST_PROGOPTIONS_LIB@ \
-		@BOOST_SIGNALS_LIB@ @BOOST_SYSTEM_LIB@ @ZIPIOS_LIB@ \
+		@BOOST_FILESYSTEM_LIB@ \
+		@BOOST_PROGOPTIONS_LIB@ \
+		@BOOST_SIGNALS_LIB@ \
+		@BOOST_SYSTEM_LIB@ \
+		@BOOST_REGEX_LIB@ \
+		@ZIPIOS_LIB@ \
 		-lFreeCADBase \
 		-l@PYTHON_LIB@ \
 		-lxerces-c
