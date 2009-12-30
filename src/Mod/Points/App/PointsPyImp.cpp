@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #include "Mod/Points/App/Points.h"
+#include <Base/Builder3D.h>
 #include <Base/VectorPy.h>
 #include <Base/GeometryPyCXX.h>
 
@@ -95,6 +96,23 @@ PyObject* PointsPy::write(PyObject * args)
     } PY_CATCH;
     
     Py_Return; 
+}
+
+PyObject* PointsPy::writeInventor(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    std::stringstream result;
+    Base::InventorBuilder builder(result);
+    builder.beginPoints();
+    PointKernel* kernel = getPointKernelPtr();
+    for (Points::PointKernel::const_iterator it = kernel->begin(); it != kernel->end(); ++it)
+        builder.addPoint((float)it->x,(float)it->y,(float)it->z);
+    builder.endPoints();
+    builder.close();
+
+    return Py::new_reference_to(Py::String(result.str()));
 }
 
 PyObject* PointsPy::addPoints(PyObject * args)

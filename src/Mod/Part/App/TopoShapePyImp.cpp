@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <sstream>
+# include <BRepMesh.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
@@ -130,7 +131,6 @@ int TopoShapePy::PyInit(PyObject* args, PyObject*)
     return 0;
 }
 
-
 PyObject*  TopoShapePy::read(PyObject *args)
 {
     char* filename;
@@ -139,6 +139,27 @@ PyObject*  TopoShapePy::read(PyObject *args)
 
     getTopoShapePtr()->read(filename);
     Py_Return;
+}
+
+PyObject* TopoShapePy::writeInventor(PyObject * args)
+{
+    double dev=0.3, angle=0.4;
+    int mode=2;
+    if (!PyArg_ParseTuple(args, "|idd", &mode,&dev,&angle))
+        return NULL;
+
+    std::stringstream result;
+    BRepMesh::Mesh(getTopoShapePtr()->_Shape,dev);
+    if (mode == 0)
+        getTopoShapePtr()->exportFaceSet(dev, angle, result);
+    else if (mode == 1)
+        getTopoShapePtr()->exportLineSet(result);
+    else {
+        getTopoShapePtr()->exportFaceSet(dev, angle, result);
+        getTopoShapePtr()->exportLineSet(result);
+    }
+    BRepTools::Clean(getTopoShapePtr()->_Shape); // remove triangulation
+    return Py::new_reference_to(Py::String(result.str()));
 }
 
 PyObject*  TopoShapePy::exportIges(PyObject *args)

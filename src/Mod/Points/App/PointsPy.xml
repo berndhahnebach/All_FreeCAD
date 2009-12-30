@@ -29,6 +29,11 @@ transforming and much more.
         <UserDocu>Write the mesh object into file.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="writeInventor" Const="true">
+      <Documentation>
+        <UserDocu>Write the mesh in OpenInventor format to a string.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="addPoints" >
       <Documentation>
         <UserDocu>add one or more (list of) points to the object</UserDocu>

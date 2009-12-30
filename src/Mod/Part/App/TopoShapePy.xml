@@ -19,6 +19,11 @@
         <UserDocu>Read in an IGES, STEP or BREP file.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="writeInventor" Const="true">
+      <Documentation>
+        <UserDocu>Write the mesh in OpenInventor format to a string.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="exportIges">
       <Documentation>
         <UserDocu>Export the content of this shape to an IGES file.</UserDocu>
