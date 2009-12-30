@@ -27,6 +27,8 @@
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <BRepLProp_CLProps.hxx>
+# include <BRepLProp_CurveTool.hxx>
+# include <GProp_GProps.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Ellipse.hxx>
@@ -119,7 +121,9 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
-PyObject* TopoShapeEdgePy::tangent(PyObject *args)
+// ====== Methodes  ======================================================================
+
+PyObject* TopoShapeEdgePy::tangentAt(PyObject *args)
 {
     double u;
     if (!PyArg_ParseTuple(args, "d",&u))
@@ -129,14 +133,226 @@ PyObject* TopoShapeEdgePy::tangent(PyObject *args)
     Py::Tuple tuple(1);
     TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
     BRepAdaptor_Curve adapt(e);
-    BRepLProp_CLProps prop(adapt,u,1,Precision::Confusion());
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
     if (prop.IsTangentDefined()) {
         prop.Tangent(dir);
-        tuple.setItem(0, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
+        return new Base::VectorPy(new Base::Vector3d(dir.X(),dir.Y(),dir.Z()));
+    } else {
+        PyErr_SetString(PyExc_NotImplementedError, "Tangent not defined at that posiotion!");
+        return 0;
     }
-
-    return Py::new_reference_to(tuple);
 }
+
+PyObject* TopoShapeEdgePy::valueAt(PyObject *args)
+{
+    double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    gp_Dir dir;
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    gp_Pnt V = prop.Value();
+    
+    return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
+
+}
+
+PyObject* TopoShapeEdgePy::derivative1At(PyObject *args)
+{
+    double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    gp_Dir dir;
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    gp_Vec V = prop.D1();
+    
+    return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
+}
+
+PyObject* TopoShapeEdgePy::derivative2At(PyObject *args)
+{
+   double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    gp_Dir dir;
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    gp_Vec V = prop.D2();
+    
+    return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
+}
+
+PyObject* TopoShapeEdgePy::derivative3At(PyObject *args)
+{
+   double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    gp_Dir dir;
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    gp_Vec V = prop.D3();
+    
+    return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
+}
+
+PyObject* TopoShapeEdgePy::curvatureAt(PyObject *args)
+{
+   double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    gp_Dir dir;
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    double C = prop.Curvature();
+    
+    return Py::new_reference_to(Py::Float(C));
+}
+
+PyObject* TopoShapeEdgePy::centerOfCurvatureAt(PyObject *args)
+{
+    double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    gp_Pnt V ;
+    prop.CentreOfCurvature(V);
+    
+    return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
+}
+
+PyObject* TopoShapeEdgePy::normalAt(PyObject *args)
+{
+    double u;
+    if (!PyArg_ParseTuple(args, "d",&u))
+        return 0;
+
+    Py::Tuple tuple(1);
+    TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+
+    // get length
+    GProp_GProps props;
+    BRepGProp::LinearProperties(e, props);
+    double length = props.Mass();
+
+    // normalizing parameter space to length
+    double first = BRepLProp_CurveTool::FirstParameter(adapt);
+    double last  = BRepLProp_CurveTool::LastParameter(adapt);
+
+    double streatch = (last - first) / length;
+
+    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    gp_Dir V ;
+    prop.Normal(V);
+    
+    return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
+}
+
+// ====== Attributes ======================================================================
 
 Py::Object TopoShapeEdgePy::getCurve() const
 {
@@ -213,6 +429,7 @@ Py::Object TopoShapeEdgePy::getCenterOfMass(void) const
     gp_Pnt c = props.CentreOfMass();
     return Py::Vector(Base::Vector3d(c.X(),c.Y(),c.Z()));
 }
+
 
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const
 {
