@@ -96,12 +96,15 @@
 # include <Standard_Failure.hxx>
 # include <gp_GTrsf.hxx>
 #endif
+# include <Poly_Polygon3D.hxx>
+# include <Poly_PolygonOnTriangulation.hxx>
 # include <BRepMesh.hxx>
 # include <BRepBuilderAPI_Sewing.hxx>
 # include <ShapeFix_Shape.hxx>
 # include <XSControl_WorkSession.hxx>
 # include <Transfer_TransientProcess.hxx>
 
+#include <Base/Builder3D.h>
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>
 
@@ -460,6 +463,163 @@ void TopoShape::exportStl(const char *filename) const
     //writer.RelativeMode() = false;
     //writer.SetDeflection(0.1);
     writer.Write(this->_Shape,(const Standard_CString)filename);
+}
+
+void TopoShape::exportFaceSet(double dev, double ca, std::ostream& str) const
+{
+    Base::InventorBuilder builder(str);
+    TopExp_Explorer ex;
+
+    BRepMesh_IncrementalMesh MESH(this->_Shape,dev);
+    for (ex.Init(this->_Shape, TopAbs_FACE); ex.More(); ex.Next()) {
+        // get the shape and mesh it
+        const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
+        Standard_Integer nbNodesInFace,nbTriInFace;
+        std::vector<Base::Vector3f> vertices;
+        std::vector<int> indices;
+
+        // doing the meshing and checking the result
+        TopLoc_Location aLoc;
+        Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
+        if (aPoly.IsNull()) continue;
+
+        // getting the transformation of the shape/face
+        gp_Trsf myTransf;
+        Standard_Boolean identity = true;
+        if (!aLoc.IsIdentity()) {
+            identity = false;
+            myTransf = aLoc.Transformation();
+        }
+
+        // getting size and create the array
+        nbNodesInFace = aPoly->NbNodes();
+        nbTriInFace = aPoly->NbTriangles();
+        vertices.resize(nbNodesInFace);
+        indices.resize(4*nbTriInFace);
+
+        // check orientation
+        TopAbs_Orientation orient = aFace.Orientation();
+
+        // cycling through the poly mesh
+        const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
+        const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+        for (int i=1;i<=nbTriInFace;i++) {
+            // Get the triangle
+            Standard_Integer N1,N2,N3;
+            Triangles(i).Get(N1,N2,N3);
+
+            // change orientation of the triangles
+            if (orient != TopAbs_FORWARD) {
+                Standard_Integer tmp = N1;
+                N1 = N2;
+                N2 = tmp;
+            }
+
+            gp_Pnt V1 = Nodes(N1);
+            gp_Pnt V2 = Nodes(N2);
+            gp_Pnt V3 = Nodes(N3);
+
+            // transform the vertices to the place of the face
+            if (!identity) {
+                V1.Transform(myTransf);
+                V2.Transform(myTransf);
+                V3.Transform(myTransf);
+            }
+
+            vertices[N1-1].Set((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
+            vertices[N2-1].Set((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
+            vertices[N3-1].Set((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
+
+            int j = i - 1;
+            N1--; N2--; N3--;
+            indices[4*j] = N1; indices[4*j+1] = N2; indices[4*j+2] = N3; indices[4*j+3] = -1;
+        }
+
+        builder.addIndexedFaceSet(vertices, indices, (float)ca);
+    } // end of face loop
+}
+
+void TopoShape::exportLineSet(std::ostream& str) const
+{
+    Base::InventorBuilder builder(str);
+    // get a indexed map of edges
+    TopTools_IndexedMapOfShape M;
+    TopExp::MapShapes(this->_Shape, TopAbs_EDGE, M);
+
+    // build up map edge->face
+    TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
+    TopExp::MapShapesAndAncestors(this->_Shape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
+    for (int i=0; i<M.Extent(); i++)
+    {
+        const TopoDS_Edge& aEdge = TopoDS::Edge(M(i+1));
+        gp_Trsf myTransf;
+        Standard_Boolean identity = true;
+        TopLoc_Location aLoc;
+
+        // try to triangulate the edge
+        Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
+
+        std::vector<Base::Vector3f> vertices;
+        Standard_Integer nbNodesInFace;
+
+        // triangulation succeeded?
+        if (!aPoly.IsNull()) {
+            if (!aLoc.IsIdentity()) {
+                identity = false;
+                myTransf = aLoc.Transformation();
+            }
+            nbNodesInFace = aPoly->NbNodes();
+            vertices.resize(nbNodesInFace);
+
+            const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+
+            gp_Pnt V;
+            for (Standard_Integer i=0;i < nbNodesInFace;i++) {
+                V = Nodes(i+1);
+                V.Transform(myTransf);
+                vertices[i].Set((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
+            }
+        }
+        else {
+            // the edge has not its own triangulation, but then a face the edge is attached to
+            // must provide this triangulation
+
+            // Look for one face in our map (it doesn't care which one we take)
+            const TopoDS_Face& aFace = TopoDS::Face(edge2Face.FindFromKey(aEdge).First());
+
+            // take the face's triangulation instead
+            Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
+            if (!aLoc.IsIdentity()) {
+                identity = false;
+                myTransf = aLoc.Transformation();
+            }
+
+            if (aPolyTria.IsNull()) break;
+
+            // this holds the indices of the edge's triangulation to the actual points
+            Handle(Poly_PolygonOnTriangulation) aPoly = BRep_Tool::PolygonOnTriangulation(aEdge, aPolyTria, aLoc);
+            if (aPoly.IsNull())
+                continue; // polygon does not exist
+
+            // getting size and create the array
+            nbNodesInFace = aPoly->NbNodes();
+            vertices.resize(nbNodesInFace);
+
+            const TColStd_Array1OfInteger& indices = aPoly->Nodes();
+            const TColgp_Array1OfPnt& Nodes = aPolyTria->Nodes();
+
+            gp_Pnt V;
+            int pos = 0;
+            // go through the index array
+            for (Standard_Integer i=indices.Lower();i <= indices.Upper();i++) {
+                V = Nodes(indices(i));
+                V.Transform(myTransf);
+                vertices[pos++].Set((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
+            }
+        }
+
+        builder.addLineSet(vertices, 2, 0, 0, 0);
+    }
 }
 
 Base::BoundBox3d TopoShape::getBoundBox(void) const

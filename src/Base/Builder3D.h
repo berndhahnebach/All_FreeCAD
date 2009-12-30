@@ -151,6 +151,8 @@ public:
     //@{
     /// starts a point set
     void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
+    /// starts a point set
+    void beginPoints();
     /// insert a point in an point set
     void addPoint(float x, float y, float z);
     /// add a vector to a point set
@@ -174,6 +176,7 @@ public:
     /// add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
     void addLineSet(const std::vector<Vector3f>& points, short lineSize=2,
                     float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+    void addIndexedFaceSet(const std::vector<Vector3f>& points, const std::vector<int>& indices, float crease);
     //@}
 
     /** @name Triangle handling */

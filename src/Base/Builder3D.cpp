@@ -354,7 +354,7 @@ void InventorBuilder::close()
 
 /**
  * Starts the definition of point set with the given point size and color.
- * If posible make not to much startPoints() and endPoints() calls. Try to put all
+ * If posible make not too much startPoints() and endPoints() calls. Try to put all
  * points in one set. 
  * @see endPoints()
  * @param pointSize the point size in pixel the points are showed.
@@ -364,60 +364,73 @@ void InventorBuilder::close()
  */
 void InventorBuilder::startPoints(short pointSize, float color_r,float color_g,float color_b)
 {
- bStartEndOpen = true;
- result << "  Separator { " << std::endl;
- result << "    Material { " << std::endl;
- result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
- result << "    } " << std::endl;
- result << "    MaterialBinding { value PER_PART } " << std::endl;
- result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
- result << "    Coordinate3 { " << std::endl;
- result << "      point [ ";
+    bStartEndOpen = true;
+    result << "  Separator { " << std::endl;
+    result << "    Material { " << std::endl;
+    result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
+    result << "    } " << std::endl;
+    result << "    MaterialBinding { value PER_PART } " << std::endl;
+    result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
+    result << "    Coordinate3 { " << std::endl;
+    result << "      point [ ";
+}
 
+/**
+ * Starts the definition of point set.
+ * If posible make not too much beginPoints() and endPoints() calls. Try to put all
+ * points in one set. 
+ * @see startPoints()
+ * @see endPoints()
+ */
+void InventorBuilder::beginPoints()
+{
+    bStartEndOpen = true;
+    result << "  Separator { " << std::endl;
+    result << "    Coordinate3 { " << std::endl;
+    result << "      point [ ";
 }
 
 /// insert a point in an point set
 void InventorBuilder::addPoint(float x, float y, float z)
 {
-  result << x << " " << y << " " << z << "," << std::endl;
+    result << x << " " << y << " " << z << "," << std::endl;
 }
-
 
 /// add a vector to a point set
 void InventorBuilder::addPoint(const Vector3f &vec)
 {
-  addPoint(vec.x,vec.y,vec.z);
+    addPoint(vec.x,vec.y,vec.z);
 }
+
 /**
  * Ends the point set operations and write the resulting inventor string.
  * @see startPoints()
  */
 void InventorBuilder::endPoints(void)
 {
-  result  << "] " << std::endl;
-  result  << "  } " << std::endl;
-  result  <<   "PointSet { } " << std::endl;
-  result  << "} " << std::endl;
-  bStartEndOpen = false;
+    result  << "] " << std::endl;
+    result  << "  } " << std::endl;
+    result  <<   "PointSet { } " << std::endl;
+    result  << "} " << std::endl;
+    bStartEndOpen = false;
 }
 
 void InventorBuilder::addSinglePoint(float x, float y, float z,short pointSize, float color_r,float color_g,float color_b)
 {
-  // addSinglePoint() not between startXXX() and endXXX() allowed
-  assert( bStartEndOpen == false );
+    // addSinglePoint() not between startXXX() and endXXX() allowed
+    assert( bStartEndOpen == false );
 
-  result << "  Separator { " << std::endl;
-  result << "    Material { " << std::endl;
-  result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
-  result << "    } " << std::endl;
-  result << "    MaterialBinding { value PER_PART } " << std::endl;
-  result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
-  result << "    Coordinate3 { " << std::endl;
-  result << "      point [ " << x << " " << y << " " << z << " ] " << std::endl;
-  result << "    } " << std::endl;
-  result << "    PointSet { } " << std::endl;
-  result << "  } " << std::endl;
-
+    result << "  Separator { " << std::endl;
+    result << "    Material { " << std::endl;
+    result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
+    result << "    } " << std::endl;
+    result << "    MaterialBinding { value PER_PART } " << std::endl;
+    result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
+    result << "    Coordinate3 { " << std::endl;
+    result << "      point [ " << x << " " << y << " " << z << " ] " << std::endl;
+    result << "    } " << std::endl;
+    result << "    PointSet { } " << std::endl;
+    result << "  } " << std::endl;
 }
 
 void InventorBuilder::addSinglePoint(const Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
@@ -545,7 +558,7 @@ void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short line
          << "    } " << std::endl
          << "    LineSet { " << std::endl
          << "      numVertices [ ";
-  size_t ct = points.size() / 2;
+  /*size_t ct = points.size() / 2;
   if ( ct > 0 )
   {
     result << "2";
@@ -556,7 +569,8 @@ void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short line
         result << std::endl << "          "; 
       result << "2";
     }
-  }
+  }*/
+  result << " -1 ";
   result << " ] " << std::endl
          << "    } " << std::endl
          << "  } " << std::endl;
@@ -564,6 +578,41 @@ void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short line
 
 //**************************************************************************
 // triangle handling
+
+void InventorBuilder::addIndexedFaceSet(const std::vector<Vector3f>& points, const std::vector<int>& indices, float crease)
+{
+    if (points.empty() || indices.size() < 4)
+        return;
+    result << "  Separator { " << std::endl
+           << "    ShapeHints {" << std::endl
+           << "       creaseAngle " << crease << std::endl
+           << "    }" << std::endl
+           << "    Coordinate3 { " << std::endl
+           << "      point [ ";
+    std::vector<Vector3f>::const_iterator it_last_p = points.end()-1;
+    for (std::vector<Vector3f>::const_iterator it = points.begin(); it != points.end(); ++it) {
+        if (it != it_last_p)
+            result << it->x << " " << it->y << " " << it->z << "," << std::endl;
+        else
+            result << it->x << " " << it->y << " " << it->z << " ] " << std::endl;
+    }
+
+    result << "    } " << std::endl
+           << "    IndexedFaceSet { " << std::endl
+           << "      coordIndex [ ";
+    std::vector<int>::const_iterator it_last_f = indices.end()-1;
+    int index=0;
+    for (std::vector<int>::const_iterator it = indices.begin(); it != indices.end(); ++it) {
+            if (it != it_last_f)
+                result << *it << ", ";
+            else
+                result << *it << " ] ";
+            if (++index%8==0)
+                result << std::endl;
+    }
+    result << "    } " << std::endl
+           << "  } " << std::endl;
+}
 
 void InventorBuilder::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2,
                                         bool filled, short lineSize, float color_r, float color_g, float color_b)

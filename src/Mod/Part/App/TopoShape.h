@@ -24,6 +24,7 @@
 #ifndef PART_TOPOSHAPE_H
 #define PART_TOPOSHAPE_H
 
+#include <iostream>
 #include <gp_Vec.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ListOfShape.hxx>
@@ -104,6 +105,8 @@ public:
     void exportStep(const char *FileName) const;
     void exportBrep(const char *FileName) const;
     void exportStl (const char *FileName) const;
+    void exportFaceSet(double, double, std::ostream&) const;
+    void exportLineSet(std::ostream&) const;
     //@}
 
     /** @name Query*/
