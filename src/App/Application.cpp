@@ -1310,7 +1310,7 @@ void Application::ParseOptions(int ac, char ** av)
     config.add_options()
     //("write-log,l", value<string>(), "write a log file")
     ("write-log,l", descr.c_str())
-    ("logfile", value<string>(), "Unlike to --write-log this allows to log to an arbitrary file")
+    ("log-file", value<string>(), "Unlike to --write-log this allows to log to an arbitrary file")
     ("user-cfg,u", value<string>(),"User config file to load/save user settings")
     ("system-cfg,s", value<string>(),"Systen config file to load/save system settings")
     ("run-test,t",   value<int>()   ,"Test level")
@@ -1458,9 +1458,9 @@ void Application::ParseOptions(int ac, char ** av)
         mConfig["LoggingFileName"] = mConfig["UserAppData"] + mConfig["ExeName"] + ".log";
     }
 
-    if (vm.count("logfile")) {
+    if (vm.count("log-file")) {
         mConfig["LoggingFile"] = "1";
-        mConfig["LoggingFileName"] = vm["logfile"].as<string>();
+        mConfig["LoggingFileName"] = vm["log-file"].as<string>();
     }
 
     if (vm.count("user-cfg")) {
