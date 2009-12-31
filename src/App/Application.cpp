@@ -1192,9 +1192,10 @@ void Application::LoadParameters(void)
 
     // Init parameter sets ===========================================================
     //
-
-    mConfig["UserParameter"]   = mConfig["UserAppData"] + "user.cfg";
-    mConfig["SystemParameter"] = mConfig["UserAppData"] + "system.cfg";
+    if (mConfig.find("UserParameter") == mConfig.end())
+        mConfig["UserParameter"]   = mConfig["UserAppData"] + "user.cfg";
+    if (mConfig.find("SystemParameter") == mConfig.end())
+        mConfig["SystemParameter"] = mConfig["UserAppData"] + "system.cfg";
 
 
     try {
@@ -1309,6 +1310,9 @@ void Application::ParseOptions(int ac, char ** av)
     config.add_options()
     //("write-log,l", value<string>(), "write a log file")
     ("write-log,l", descr.c_str())
+    ("logfile", value<string>(), "Unlike to --write-log this allows to log to an arbitrary file")
+    ("user-cfg,u", value<string>(),"User config file to load/save user settings")
+    ("system-cfg,s", value<string>(),"Systen config file to load/save system settings")
     ("run-test,t",   value<int>()   ,"Test level")
     ("module-path,M", value< vector<string> >()->composing(),"Additional module paths")
     ("python-path,P", value< vector<string> >()->composing(),"Additional python paths")
@@ -1452,6 +1456,19 @@ void Application::ParseOptions(int ac, char ** av)
         mConfig["LoggingFile"] = "1";
         //mConfig["LoggingFileName"] = vm["write-log"].as<string>();
         mConfig["LoggingFileName"] = mConfig["UserAppData"] + mConfig["ExeName"] + ".log";
+    }
+
+    if (vm.count("logfile")) {
+        mConfig["LoggingFile"] = "1";
+        mConfig["LoggingFileName"] = vm["logfile"].as<string>();
+    }
+
+    if (vm.count("user-cfg")) {
+        mConfig["UserParameter"] = vm["user-cfg"].as<string>();
+    }
+
+    if (vm.count("system-cfg")) {
+        mConfig["SystemParameter"] = vm["system-cfg"].as<string>();
     }
 
     if (vm.count("run-test")) {

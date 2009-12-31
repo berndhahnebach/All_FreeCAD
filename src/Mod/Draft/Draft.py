@@ -68,8 +68,16 @@ from draftlibs import fcgeo
 
 try:
 	from pivy import coin
-except:
+	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
+		raise AssertionError("FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.")
+except AssertionError:
+	FreeCAD.Console.PrintMessage("Error: FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.")
+	raise
+except ImportError:
 	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
+	raise
+except:
+	FreeCAD.Console.PrintMessage("Error: Unknown error while trying to load the Python-Pivy package")
 	raise
 
 # Constants

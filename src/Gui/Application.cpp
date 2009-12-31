@@ -180,10 +180,34 @@ FreeCADGui_subgraphFromObject(PyObject * /*self*/, PyObject *args)
     return Py_None;
 }
 
-struct PyMethodDef FreeCADGui_methods[] = { 
+static PyObject *
+FreeCADGui_getSoDBVersion(PyObject * /*self*/, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    return PyString_FromString(SoDB::getVersion());
+}
+
+static PyObject *
+FreeCADGui_getSoQtVersion(PyObject * /*self*/, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    return PyString_FromString(SoQt::getVersionString());
+}
+
+struct PyMethodDef FreeCADGui_methods[] = {
     {"subgraphFromObject",FreeCADGui_subgraphFromObject,METH_VARARGS,
      "subgraphFromObject(object) -> Node\n\n"
      "Return the Inventor subgraph to an object"},
+    {"getSoDBVersion",FreeCADGui_getSoDBVersion,METH_VARARGS,
+     "getSoDBVersion() -> String\n\n"
+     "Return a text string containing the name\n"
+     "of the Coin library and version information"},
+    {"getSoQtVersion",FreeCADGui_getSoQtVersion,METH_VARARGS,
+     "getSoQtVersion() -> String\n\n"
+     "Return a text string containing the name\n"
+     "of the SoQt library and version information"},
     {NULL, NULL}  /* sentinel */
 };
 
