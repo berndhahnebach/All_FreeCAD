@@ -70,8 +70,13 @@ PyObject*  FeaturePythonPy::supportedProperties(PyObject *args)
     std::vector<Base::Type> ary;
     Base::Type::getAllDerivedFrom(App::Property::getClassTypeId(), ary);
     Py::List res;
-    for (std::vector<Base::Type>::iterator it = ary.begin(); it != ary.end(); ++it)
-        res.append(Py::String(it->getName()));
+    for (std::vector<Base::Type>::iterator it = ary.begin(); it != ary.end(); ++it) {
+        Base::BaseClass *data = static_cast<Base::BaseClass*>(it->createInstance());
+        if (data) {
+            delete data;
+            res.append(Py::String(it->getName()));
+        }
+    }
     return Py::new_reference_to(res);
 }
 

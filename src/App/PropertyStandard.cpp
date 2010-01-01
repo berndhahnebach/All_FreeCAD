@@ -56,7 +56,7 @@ TYPESYSTEM_SOURCE(App::PropertyInteger , App::Property);
 
 PropertyInteger::PropertyInteger()
 {
-
+    _lValue = 0;
 }
 
 
@@ -381,6 +381,22 @@ std::vector<std::string> PropertyEnumeration::getEnumVector(void) const
     return result;
 }
 
+void PropertyEnumeration::setEnumVector(const std::vector<std::string>& values)
+{
+    delete [] _EnumArray;
+    _EnumArray = new const char*[values.size()+1];
+    int i=0;
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
+#if defined (_MSC_VER)
+        _EnumArray[i++] = _strdup(it->c_str());
+#else
+        _EnumArray[i++] = strdup(it->c_str());
+#endif
+    }
+
+    _EnumArray[i] = 0; // null termination
+}
+
 const char** PropertyEnumeration::getEnums(void) const
 {
     return _EnumArray;
@@ -388,6 +404,11 @@ const char** PropertyEnumeration::getEnums(void) const
 
 PyObject *PropertyEnumeration::getPyObject(void)
 {
+    if (!_EnumArray) {
+        PyErr_SetString(PyExc_AssertionError, "The enum is empty");
+        return 0;
+    }
+
     return Py_BuildValue("s", getValueAsString());
 }
 
@@ -410,6 +431,24 @@ void PropertyEnumeration::setPyObject(PyObject *value)
             setValue(PyString_AsString (value));
         else
             throw Py::ValueError("not a member of the enum");
+    }
+    else if (PyList_Check(value)) {
+        Py_ssize_t nSize = PyList_Size(value);
+        std::vector<std::string> values;
+        values.resize(nSize);
+
+        for (Py_ssize_t i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            if (!PyString_Check(item)) {
+                std::string error = std::string("type in list must be str, not ");
+                error += item->ob_type->tp_name;
+                throw Py::TypeError(error);
+            }
+            values[i] = PyString_AsString(item);
+        }
+
+        setEnumVector(values);
+        setValue((long)0);
     }
     else {
         std::string error = std::string("type must be int or str, not ");
@@ -1178,10 +1217,10 @@ TYPESYSTEM_SOURCE(App::PropertyBool , App::Property);
 
 //**************************************************************************
 // Construction/Destruction
-       
+
 PropertyBool::PropertyBool()
 {
-
+    _lValue = false;
 }
 
 PropertyBool::~PropertyBool()
