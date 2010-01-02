@@ -87,6 +87,10 @@ class DraftLineEdit(QtGui.QLineEdit):
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.emit(QtCore.SIGNAL("escaped()"))
+		elif event.key() == QtCore.Qt.Key_Up:
+			self.emit(QtCore.SIGNAL("up()"))
+		elif event.key() == QtCore.Qt.Key_Down:
+			self.emit(QtCore.SIGNAL("down()"))
 		elif (event.key() == QtCore.Qt.Key_Z) and QtCore.Qt.ControlModifier:
 			self.emit(QtCore.SIGNAL("undo()"))
 		else:
@@ -109,7 +113,9 @@ class toolBar:
 				self.lockedz = self.params.GetBool("zlock")
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
+				# draftToolbar.resize(800,32)
 				self.state = None
+				self.textbuffer = []
 				self.draftToolbar = draftToolbar
 
 				self.cmdlabel = QtGui.QLabel(draftToolbar)
@@ -214,6 +220,8 @@ class toolBar:
 
 				self.textValue = DraftLineEdit(draftToolbar)
 				self.textValue.setGeometry(QtCore.QRect(280,4,480,18))
+				# self.textValue = QtGui.QPlainTextEdit(draftToolbar)
+				# self.textValue.setGeometry(QtCore.QRect(280, 4, 480, 64))
 				self.textValue.setObjectName("textValue")
 				self.textValue.hide()
 				
@@ -257,6 +265,8 @@ class toolBar:
 				QtCore.QObject.connect(self.radiusValue,QtCore.SIGNAL("returnPressed()"),self.validatePoint)
 				QtCore.QObject.connect(self.textValue,QtCore.SIGNAL("returnPressed()"),self.sendText)
 				QtCore.QObject.connect(self.textValue,QtCore.SIGNAL("escaped()"),self.finish)
+				QtCore.QObject.connect(self.textValue,QtCore.SIGNAL("down()"),self.sendText)
+				QtCore.QObject.connect(self.textValue,QtCore.SIGNAL("up()"),self.lineUp)
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("returnPressed()"),self.xValue.setFocus)
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("returnPressed()"),self.xValue.selectAll)
 
@@ -397,7 +407,11 @@ class toolBar:
 				self.labelText.show()
 				self.textValue.show()
 				self.textValue.setText('')
+				# self.textValue.setPlainText('')
 				self.textValue.setFocus()
+				# self.draftToolbar.setFixedHeight(70)
+				self.textbuffer=[]
+				self.textline=0
 
 			def switchUi(self,store=True):
 				if store:
@@ -564,10 +578,40 @@ class toolBar:
 					self.lockz(not self.lockedz)
 
 			def sendText(self):
-				"this function sends the entered text to the active draft command"
+				'''
+				this function sends the entered text to the active draft command
+				if enter has been pressed twice. Otherwise it blanks the line.
+				'''
+				print "sendText: ",self.textbuffer, self.textline
+				if self.textline == len(self.textbuffer):
+					if self.textline:
+						if not self.textValue.text():
+							print "current line is empty"
+							self.sourceCmd.text=self.textbuffer
+							self.sourceCmd.createObject()
+					self.textbuffer.append(self.textValue.text())
+					self.textline += 1
+					self.textValue.setText('')
+				elif self.textline < len(self.textbuffer):
+					self.textbuffer[self.textline] = self.textValue.text()
+					self.textline += 1
+					if self.textline < len(self.textbuffer):
+						self.textValue.setText(self.textbuffer[self.textline])
+					else:
+						self.textValue.setText('')
 
-				self.sourceCmd.text=unicode(self.textValue.text())
-				self.sourceCmd.createObject()
+			def lineUp(self):
+				"displays previous line in text editor"
+				if self.textline:
+					if self.textline == len(self.textbuffer):
+						self.textbuffer.append(self.textValue.text())
+						self.textline -= 1
+						if self.textValue.text():
+							self.textValue.setText(self.textbuffer[self.textline])
+					elif self.textline < len(self.textbuffer):
+						self.textbuffer[self.textline] = self.textValue.text()
+						self.textline -= 1
+						self.textValue.setText(self.textbuffer[self.textline])
 
 			def displayPoint(self, point, last=None):
 				"this function displays the passed coords in the x, y, and z widgets"

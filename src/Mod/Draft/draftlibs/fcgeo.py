@@ -464,9 +464,10 @@ def findDistance(point,edge,strict=False):
 			norm = segment.cross(chord)
 			perp = segment.cross(norm)
 			dist = fcvec.project(chord,perp)
+			if not dist: return None
 			newpoint = point.add(dist)
 			if (dist.Length == 0):
-				return 0
+				return None
 			if strict:
 				s1 = fcvec.new(edge.Vertexes[0].Point,newpoint)
 				s2 = fcvec.new(edge.Vertexes[-1].Point,newpoint)
