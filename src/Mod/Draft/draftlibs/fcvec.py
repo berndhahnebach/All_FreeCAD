@@ -148,7 +148,13 @@ def rotate(first,rotangle,axis=Vector(0,0,1)):
 	# print 'rotation: ',first,' : ',math.degrees(rotangle),' : ',rounded(axis)
 	if rotangle == 0: return first
 	if isinstance(first,Vector) and isinstance(axis,Vector):
-		if not equals(axis,Vector(0,0,1)):
+		if equals(axis,Vector(0,0,1)):
+			# print '2D rotation'
+			return rotate2D(first,rotangle)
+		elif equals(axis,Vector(0,0,-1)):
+			# print '2D rotation'
+			return rotate2D(first,-rotangle)
+		else:
 			anglexy = -angle(Vector(axis.x,axis.y,0))
 			axisxy = rotate2D(axis,-anglexy)
 			# print  'angle in xy plane ',math.degrees(anglexy), ' axis in xy plane ', rounded(axisxy)
@@ -163,10 +169,7 @@ def rotate(first,rotangle,axis=Vector(0,0,1)):
 			vecxy = Vector(vecxy.x,vecxy.z,vecxy.y)
 			vec = rotate2D(vecxy,anglexy)
 			return vec
-		else:
-			# print 'xy rotation'
-			return rotate2D(first,rotangle)
-
+	
 def isNull(vector):
 	'''isNull(vector): Tests if a vector is nul vector'''
 	if round(vector.x,precision)==0 and round(vector.y,precision)==0 and round(vector.z,precision)==0 :

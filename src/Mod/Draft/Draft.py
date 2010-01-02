@@ -60,11 +60,14 @@ How it works / how to extend:
 '''
 
 # import FreeCAD modules
+
 import FreeCAD, FreeCADGui, Part, math, sys
 sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
 from FreeCAD import Base, Vector
 from draftlibs import fcvec
 from draftlibs import fcgeo
+
+# Pre-run tests
 
 try:
 	from pivy import coin
@@ -82,7 +85,6 @@ except:
 
 # Constants
 
-NORM = Vector(0,0,1) # temporary normal for all objects (always horiontal)
 lastObj = [0,0] # last snapped objects, for quick intersection calculation
 
 #---------------------------------------------------------------------------
@@ -1313,7 +1315,7 @@ class Arc(Creator):
 		"actually draws the FreeCAD object"
 		if self.closedCircle:
 			if self.ui.lockedz:
-				arc = Part.Circle(self.center,NORM,self.rad).toShape()
+				arc = Part.Circle(self.center,Vector(0,0,1),self.rad).toShape()
 			else:
 				arc = Part.Circle(self.center,self.axis,self.rad).toShape()
 		else:
@@ -1430,10 +1432,12 @@ class Text(Creator):
 
 	def createObject(self):
 		"creates an object in the current doc"
+		textbuffer = []
+		for l in self.text: textbuffer.append(str(l).encode('latin1'))
 		self.doc.openTransaction("Create "+self.featureName) 
 		self.obj=self.doc.addObject("App::Annotation",self.featureName)
 		self.doc.commitTransaction()
-		self.obj.LabelText=self.text.encode('latin1')
+		self.obj.LabelText=textbuffer
 		self.obj.Position=self.node[0]
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		self.obj.ViewObject.DisplayMode="World"
