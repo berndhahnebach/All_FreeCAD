@@ -18,17 +18,7 @@ ADD_CUSTOM_TARGET(Test ALL
 	SOURCES ${Test_SRCS}
 )
 
-fc_copy_to_mod_path("Test" Init.py)
-fc_copy_to_mod_path("Test" Base.py)
-fc_copy_to_mod_path("Test" Document.py)
-fc_copy_to_mod_path("Test" Menu.py)
-fc_copy_to_mod_path("Test" TestApp.py)
-fc_copy_to_mod_path("Test" TestGui.py)
-fc_copy_to_mod_path("Test" UnicodeTests.py)
-fc_copy_to_mod_path("Test" Workbench.py)
-fc_copy_to_mod_path("Test" InitGui.py)
-fc_copy_to_mod_path("Test" Gui/qtunittest.py)
-
+fc_copy_sources("Mod/Test" "Test" ${Test_SRCS})
 
 install(
 		FILES
