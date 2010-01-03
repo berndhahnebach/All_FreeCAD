@@ -48,7 +48,6 @@ namespace App
     class DocumentObject;
     class DocumentObjectExecReturn;
     class Document;
-    class AbstractFeature;
     class DocumentPy; // the python document class
     class Application;
     class Transaction;

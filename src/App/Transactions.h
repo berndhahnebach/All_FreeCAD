@@ -33,7 +33,6 @@ class Document;
 class DocumentObject;
 class Property;
 class Transaction;
-class AbstractFeature;
 
 
 /** Represents an entry for an object in a Transaction

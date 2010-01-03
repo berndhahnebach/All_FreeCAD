@@ -37,7 +37,6 @@ class QWidget;
 namespace App
 {
   class Document;
-  class AbstractFeature;
   class DocumentObject;
 }
 
