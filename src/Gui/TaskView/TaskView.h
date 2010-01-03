@@ -38,6 +38,8 @@ class Property;
 namespace Gui {
 namespace TaskView {
 
+class TaskDialog;
+
 /// Father class of all content in TaskView
 class GuiExport TaskContent 
 {
@@ -84,8 +86,11 @@ public:
     virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                           Gui::SelectionSingleton::MessageType Reason);
 
+    void showDialog(TaskDialog *dlg);
+
 
 protected:
+    TaskDialog *ActiveDialog;
 
 private:
   

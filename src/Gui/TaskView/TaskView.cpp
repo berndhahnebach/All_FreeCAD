@@ -27,6 +27,7 @@
 #endif
 
 #include "TaskView.h"
+#include "TaskDialog.h"
 #include "TaskAppearance.h"
 #include "TaskEditControl.h"
 #include <Gui/Document.h>
@@ -78,15 +79,15 @@ TaskBox::~TaskBox()
 
 //**************************************************************************
 //**************************************************************************
-// Seperator for additional classes
+// TaskView
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TaskView::TaskView(QWidget *parent)
-    : iisTaskPanel(parent)
+    : iisTaskPanel(parent),ActiveDialog(0)
 {
-    addWidget(new TaskEditControl(this));
-    addWidget(new TaskAppearance(this));
-    addStretch();
+    //addWidget(new TaskEditControl(this));
+    //addWidget(new TaskAppearance(this));
+    //addStretch();
     setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
 }
 
@@ -110,5 +111,21 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
     else if (Reason.Type == SelectionChanges::RmvSelection) {
     }
 }
+
+void TaskView::showDialog(TaskDialog *dlg)
+{
+    std::vector<QWidget*> &cont = dlg->getDlgContent();
+
+    addWidget(new TaskEditControl(this));
+
+    for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
+        addWidget(*it);
+    }
+    
+}
+
+
+
+
 
 #include "moc_TaskView.cpp"

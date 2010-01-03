@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,71 +21,54 @@
  ***************************************************************************/
 
 
+#ifndef GUI_CONTROL_H
+#define GUI_CONTROL_H
 
-#ifndef GUI_DOCKWND_COMBIVIEW_H
-#define GUI_DOCKWND_COMBIVIEW_H
+// Std. configurations
 
-#include "DockWindow.h"
-#include "Selection.h"
+#include <QObject>
 
-class QTabWidget;
-
-namespace App {
-  class PropertyContainer;
+namespace App
+{
+  class DocumentObject;
+  class Document;
 }
 
-namespace Gui {
-    class TreeWidget;
-    class PropertyView;
-
-namespace PropertyEditor {
-class EditableListView;
-class EditableItem;
-class PropertyEditor;
-} // namespace PropertyEditor
-
-namespace TaskView {
-class TaskView;
-class TaskDialog;
-} // namespace TaskView
-} // namespace Gui
-
-
-namespace Gui {
-namespace DockWnd {
-
-/** Combi View
-  * is a combination of a tree, property and TaskPanel for 
-  * integrated user action.
- */
-class CombiView : public Gui::DockWindow
+namespace Gui
 {
-    Q_OBJECT
+
+
+
+/** The control class
+ */
+    class GuiExport Control : public QObject
+{
+     Q_OBJECT
 
 public:
-    /**
-     * A constructor.
-     * A more elaborate description of the constructor.
-     */
-    CombiView(Gui::Document*  pcDocument, QWidget *parent=0);
+ 
+    static Control& instance(void);
+    static void destruct (void);
 
-    /**
-     * A destructor.
-     * A more elaborate description of the destructor.
-    */
-    virtual ~CombiView();
+protected:
+ 
+protected:
+    /// Construction
+    Control();
+    /// Destruction
+    virtual ~Control();
 
-    void showDialog(Gui::TaskView::TaskDialog *dlg);
+    static Control* _pcSingleton;
 
 
-private:
-    QTabWidget                         * tabs;
-    Gui::PropertyView                  * prop;
-    Gui::TreeWidget                    * tree;
-    Gui::TaskView::TaskView            * taskPanel;
 };
 
-} // namespace DockWnd
-} // namespace Gui
+/// Get the global instance
+inline Control& Selection(void)
+{
+    return Control::instance();
+}
 
-#endif // GUI_DOCKWND_SELECTIONVIEW_H
+} //namespace Gui
+
+#endif // GUI_CONTROL_H

@@ -23,72 +23,55 @@
 
 #include "PreCompiled.h"
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
+#ifndef _PreComp_
+#endif
 
-#include "CombiView.h"
-#include "BitmapFactory.h"
-#include "iisTaskPanel/include/iisTaskPanel"
-#include "PropertyView.h"
-#include "Application.h"
-#include "Document.h"
-#include "Tree.h"
-#include "TaskView/TaskView.h"
-#include "propertyeditor/PropertyEditor.h"
+#include "TaskDialog.h"
 
-using namespace Gui;
-using namespace Gui::DockWnd;
+using namespace Gui::TaskView;
 
 
-CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
-  : DockWindow(pcDocument,parent)
+//**************************************************************************
+//**************************************************************************
+// TaskDialog
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TaskDialog::TaskDialog( )
+    : QObject(0)
 {
-    setWindowTitle(tr("CombiView"));
-
-    QGridLayout* pLayout = new QGridLayout(this); 
-    pLayout->setSpacing( 0 );
-    pLayout->setMargin ( 0 );
-
-    // tabs to switch between Tree/Properties and TaskPanel
-    tabs = new QTabWidget ();
-    tabs->setObjectName(QString::fromUtf8("combiTab"));
-    tabs->setTabPosition(QTabWidget::North);
-    //tabs->setTabShape(QTabWidget::Triangular);
-    pLayout->addWidget( tabs, 0, 0 );
-
-    // splitter between tree and property view
-    QSplitter *splitter = new QSplitter();
-    splitter->setOrientation(Qt::Vertical);
-
-    // tree widget
-    tree =  new TreeWidget(this);
-    //tree->setRootIsDecorated(false);
-    splitter->addWidget(tree);
-
-    // property view
-    prop = new PropertyView(this);
-    splitter->addWidget(prop);
-
-    tabs->addTab(splitter,trUtf8("Project"));
-
-    // task panel
-    taskPanel = new Gui::TaskView::TaskView(this);
-    tabs->addTab(taskPanel, trUtf8("Tasks"));
-
+    
 }
 
-CombiView::~CombiView()
+TaskDialog::~TaskDialog()
 {
 }
 
+//==== Slots ===============================================================
 
-void CombiView::showDialog(Gui::TaskView::TaskDialog *dlg)
+std::vector<QWidget*> &TaskDialog::getDlgContent(void)
 {
-    // switch to the TaskView tab
-    tabs->setCurrentIndex(1);
-    // set the dialog
-    taskPanel->showDialog(dlg);
+    return Content;
+}
+
+//==== Slots ===============================================================
+
+void TaskDialog::open()
+{
+    
+}
+void TaskDialog::done(int)
+{
+    
+}
+void TaskDialog::accept()
+{
+    
+}
+void TaskDialog::reject()
+{
+    
 }
 
 
 
-#include "moc_CombiView.cpp"
+#include "moc_TaskDialog.cpp"

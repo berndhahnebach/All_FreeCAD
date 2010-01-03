@@ -21,71 +21,55 @@
  ***************************************************************************/
 
 
+#ifndef GUI_TASKVIEW_TASKDIALOG_H
+#define GUI_TASKVIEW_TASKDIALOG_H
 
-#ifndef GUI_DOCKWND_COMBIVIEW_H
-#define GUI_DOCKWND_COMBIVIEW_H
+#include <map>
+#include <string>
+#include <vector>
 
-#include "DockWindow.h"
-#include "Selection.h"
-
-class QTabWidget;
+#include <Gui/iisTaskPanel/include/iisTaskPanel>
+#include <Gui/Selection.h>
 
 namespace App {
-  class PropertyContainer;
+
 }
 
 namespace Gui {
-    class TreeWidget;
-    class PropertyView;
-
-namespace PropertyEditor {
-class EditableListView;
-class EditableItem;
-class PropertyEditor;
-} // namespace PropertyEditor
-
 namespace TaskView {
-class TaskView;
-class TaskDialog;
-} // namespace TaskView
-} // namespace Gui
 
+class TaskContent;
 
-namespace Gui {
-namespace DockWnd {
-
-/** Combi View
-  * is a combination of a tree, property and TaskPanel for 
-  * integrated user action.
- */
-class CombiView : public Gui::DockWindow
+/// Father class of content with header and Icon
+class GuiExport TaskDialog : public QObject
 {
     Q_OBJECT
 
 public:
-    /**
-     * A constructor.
-     * A more elaborate description of the constructor.
-     */
-    CombiView(Gui::Document*  pcDocument, QWidget *parent=0);
+    TaskDialog();
+    ~TaskDialog();
 
-    /**
-     * A destructor.
-     * A more elaborate description of the destructor.
-    */
-    virtual ~CombiView();
+    std::vector<QWidget*> &getDlgContent(void);
 
-    void showDialog(Gui::TaskView::TaskDialog *dlg);
+Q_SIGNALS:
+    void finished(int result);
+    void accepted();
+    void rejected();
 
+public Q_SLOTS:
+    void open();
+    virtual void done(int);
+    virtual void accept();
+    virtual void reject();
 
-private:
-    QTabWidget                         * tabs;
-    Gui::PropertyView                  * prop;
-    Gui::TreeWidget                    * tree;
-    Gui::TaskView::TaskView            * taskPanel;
+protected:
+    std::vector<QWidget*> Content;
+
 };
 
-} // namespace DockWnd
-} // namespace Gui
 
-#endif // GUI_DOCKWND_SELECTIONVIEW_H
+
+} //namespace TaskView
+} //namespace Gui
+
+#endif // GUI_TASKVIEW_TASKDIALOG_H
