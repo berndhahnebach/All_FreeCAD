@@ -121,6 +121,7 @@ void TaskView::showDialog(TaskDialog *dlg)
     for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
         addWidget(*it);
     }
+    addStretch();
     
 }
 

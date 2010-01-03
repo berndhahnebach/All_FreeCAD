@@ -36,37 +36,43 @@ namespace App
 
 namespace Gui
 {
-
+namespace TaskView
+{
+    class TaskDialog;
+}
 
 
 /** The control class
  */
-    class GuiExport Control : public QObject
+class GuiExport ControlSingelton : public QObject
 {
      Q_OBJECT
 
 public:
  
-    static Control& instance(void);
+    static ControlSingelton& instance(void);
     static void destruct (void);
+
+    void showDialog(Gui::TaskView::TaskDialog *dlg);
+
 
 protected:
  
 protected:
     /// Construction
-    Control();
+    ControlSingelton();
     /// Destruction
-    virtual ~Control();
+    virtual ~ControlSingelton();
 
-    static Control* _pcSingleton;
+    static ControlSingelton* _pcSingleton;
 
 
 };
 
 /// Get the global instance
-inline Control& Selection(void)
+inline ControlSingelton& Control(void)
 {
-    return Control::instance();
+    return ControlSingelton::instance();
 }
 
 } //namespace Gui

@@ -41,11 +41,13 @@ using namespace RobotGui;
 TaskDlgSimulate::TaskDlgSimulate( )
     : TaskDialog()
 {
-    
+    Content.push_back(new TaskRobot6Axis());
+    Content.push_back(new TaskTrajectory());
 }
 
 TaskDlgSimulate::~TaskDlgSimulate()
 {
+
 }
 
 

@@ -28,18 +28,22 @@
 
 #include <App/Application.h>
 #include <Gui/Application.h>
-#include <Gui/Command.h>
 #include <Gui/MainWindow.h>
+#include <Gui/Command.h>
 #include <Gui/FileDialog.h>
 #include <Gui/Selection.h>
 #include <Gui/Document.h>
+#include <Gui/Control.h>
 
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
 
 #include "TrajectorySimulate.h"
+#include "TaskDlgSimulate.h"
+
 
 using namespace std;
+using namespace RobotGui;
 
 DEF_STD_CMD_A(CmdRobotConstraintAxle);
 
@@ -98,6 +102,12 @@ CmdRobotSimulate::CmdRobotSimulate()
 
 void CmdRobotSimulate::activated(int iMsg)
 {
+#if 0
+    Gui::TaskView::TaskDialog* dlg = new TaskDlgSimulate();
+    Gui::Control().showDialog(dlg);
+     
+#else
+
  
     unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
     unsigned int n2 = getSelection().countObjectsOfType(Robot::TrajectoryObject::getClassTypeId());
@@ -126,7 +136,7 @@ void CmdRobotSimulate::activated(int iMsg)
 
     RobotGui::TrajectorySimulate dlg(pcRobotObject,pcTrajectoryObject,Gui::getMainWindow());
     dlg.exec();
-      
+#endif  
 }
 
 bool CmdRobotSimulate::isActive(void)

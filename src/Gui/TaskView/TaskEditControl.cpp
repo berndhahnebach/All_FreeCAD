@@ -26,7 +26,6 @@
 #ifndef _PreComp_
 #endif
 
-#include "ui_TaskEditControl.h"
 #include "TaskEditControl.h"
 
 using namespace Gui::TaskView;
@@ -34,36 +33,19 @@ using namespace Gui::TaskView;
 TaskEditControl::TaskEditControl(QWidget *parent)
     : TaskWidget(parent)
 {
-    ui = new Ui_TaskEditControl();
-    ui->setupUi(this);
-    QMetaObject::connectSlotsByName(this);
+        hboxLayout = new QHBoxLayout(this);
+        buttonBox = new QDialogButtonBox(this);
+        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+        buttonBox->setCenterButtons(true);
 
-    Gui::Selection().Attach(this);
+        hboxLayout->addWidget(buttonBox);
 }
 
 TaskEditControl::~TaskEditControl()
 {
-    delete ui;
-    Gui::Selection().Detach(this);
 }
 
-void TaskEditControl::changeEvent(QEvent *e)
-{
-    TaskWidget::changeEvent(e);
-    if (e->type() == QEvent::LanguageChange) {
-        ui->retranslateUi(this);
-    }
-}
 
-void TaskEditControl::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                               Gui::SelectionSingleton::MessageType Reason)
-{
-    if (Reason.Type == SelectionChanges::AddSelection ||
-        Reason.Type == SelectionChanges::RmvSelection ||
-        Reason.Type == SelectionChanges::SetSelection ||
-        Reason.Type == SelectionChanges::ClrSelection) {
-    }
-}
 
 
 

@@ -25,7 +25,9 @@
 #define GUI_TASKVIEW_TASKEDITCONTROL_H
 
 #include "TaskView.h"
-#include <Gui/Selection.h>
+
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QHBoxLayout>
 
 
 class Ui_TaskEditControl;
@@ -40,27 +42,21 @@ namespace TaskView {
 
 
 
-class TaskEditControl : public TaskWidget, public Gui::SelectionSingleton::ObserverType
+class TaskEditControl : public TaskWidget
 {
     Q_OBJECT
 
 public:
     TaskEditControl(QWidget *parent = 0);
     ~TaskEditControl();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
+    friend TaskView;
 
 private Q_SLOTS:
 
 protected:
-    void changeEvent(QEvent *e);
+    QHBoxLayout *hboxLayout;
+    QDialogButtonBox *buttonBox;
 
-private:
-    std::vector<Gui::ViewProvider*> getSelection() const;
-
-private:
-    Ui_TaskEditControl* ui;
 };
 
 } //namespace TaskView
