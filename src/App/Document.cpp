@@ -39,13 +39,12 @@ user friendlines and speed (no on will whait for Undo to long).
 
 \section Dependency Graph and dependency handling
 The FreeCAD document handles the dependencies of its DocumentObjects with
-a adjacence list. This gives the opertunetie to calculate the shortest
-recompute path. Also enabels more complicated dependencies beond trees.
+an adjacence list. This gives the opportunity to calculate the shortest
+recompute path. Also enables more complicated dependencies beyond trees.
 
 
 @see App::Application
 @see App::DocumentObject
-@see App::AbstractFeature
 */
 
 
@@ -1041,7 +1040,6 @@ bool Document::_recomputeFeature(DocumentObject* Feat)
 
     // error code
     if (returnCode == DocumentObject::StdReturn) {
-        //Feat->status.setValue(AbstractFeature::Error);
         Feat->resetError();
     }
     else {

@@ -41,11 +41,6 @@ namespace Base
   class Matrix4D;
 }
 
-namespace App
-{
-  class AbstractFeature;
-}
-
 namespace Gui {
 
 class ViewProvider;
