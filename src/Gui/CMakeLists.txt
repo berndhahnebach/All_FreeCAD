@@ -177,7 +177,6 @@ SET(Gui_UIC_SRCS
 		 InputVector.ui
 		 Placement.ui
 		 TaskView/TaskAppearance.ui
-		 TaskView/TaskEditControl.ui
 )
 
 SET(Gui_RES_SRCS

@@ -29,31 +29,48 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Control.h"
 
+#include <Gui/MainWindow.h>
+#include <Gui/CombiView.h>
+#include <Gui/DockWindowManager.h>
 
 
 using namespace Gui;
 using namespace std;
 
-Control* Control::_pcSingleton = 0;
+ControlSingelton* ControlSingelton::_pcSingleton = 0;
 
-Control::Control()
+ControlSingelton::ControlSingelton()
 {
     
 }
 
-Control::~Control()
+ControlSingelton::~ControlSingelton()
 {
     
 }
 
-Control& Control::instance(void)
+
+void ControlSingelton::showDialog(Gui::TaskView::TaskDialog *dlg)
+{
+    Gui::DockWnd::CombiView* pcCombiView = (Gui::DockWnd::CombiView*) Gui::DockWindowManager::instance()->getDockWindow("Combo View");
+    // shut return the pointer to compi view
+    assert(pcCombiView);
+    pcCombiView->showDialog(dlg);
+}
+
+
+
+
+// -------------------------------------------
+
+ControlSingelton& ControlSingelton::instance(void)
 {
     if (_pcSingleton == NULL)
-        _pcSingleton = new Control;
+        _pcSingleton = new ControlSingelton;
     return *_pcSingleton;
 }
 
-void Control::destruct (void)
+void ControlSingelton::destruct (void)
 {
     if (_pcSingleton != NULL)
         delete _pcSingleton;
