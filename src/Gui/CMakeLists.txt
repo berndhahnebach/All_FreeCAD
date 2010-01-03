@@ -68,6 +68,7 @@ set(Gui_MOC_HDRS
 		 Action.h
 		 CallTips.h
 		 CombiView.h
+		 Control.h
 		 DlgActionsImp.h
 		 DlgActivateWindowImp.h
 		 DlgCommandsImp.h
@@ -134,6 +135,7 @@ set(Gui_MOC_HDRS
 		 propertyeditor/PropertyItemDelegate.h
 		 propertyeditor/PropertyModel.h
 		 TaskView/TaskAppearance.h
+		 TaskView/TaskDialog.h
 		 TaskView/TaskEditControl.h
 		 TaskView/TaskView.h
 )
@@ -474,6 +476,8 @@ SET(Task_View_SRCS
 		 TaskView/TaskEditControl.ui
 		 TaskView/TaskView.cpp
 		 TaskView/TaskView.h
+		 TaskView/TaskDialog.cpp
+		 TaskView/TaskDialog.h
 )
 SOURCE_GROUP("Task View" FILES ${Task_View_SRCS})
 
@@ -647,6 +651,7 @@ SET(FreeCADGui_CPP_SRCS
 		 Macro.cpp
 		 resource.cpp
 		 Selection.cpp
+		 Control.cpp
 		 Thumbnail.cpp
 		 WaitCursor.cpp
 )
@@ -664,6 +669,7 @@ SET(FreeCADGui_SRCS
 		 PreCompiled.h
 		 Qt4All.h
 		 Selection.h
+		 Control.h
 		 Thumbnail.h
 		 WaitCursor.h
 )

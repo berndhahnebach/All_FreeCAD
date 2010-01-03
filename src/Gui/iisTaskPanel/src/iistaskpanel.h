@@ -22,6 +22,7 @@ public:
 	~iisTaskPanel();
 
 	void addWidget(QWidget *w);
+	void removeWidget(QWidget *w);
 	void addStretch(int s = 0);
 
 	void setScheme(iisTaskPanelScheme *scheme);

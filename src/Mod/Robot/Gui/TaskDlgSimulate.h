@@ -21,71 +21,28 @@
  ***************************************************************************/
 
 
+#ifndef ROBOTGUI_TASKDLGSIMULATE_H
+#define ROBOTGUI_TASKDLGSIMULATE_H
 
-#ifndef GUI_DOCKWND_COMBIVIEW_H
-#define GUI_DOCKWND_COMBIVIEW_H
-
-#include "DockWindow.h"
-#include "Selection.h"
-
-class QTabWidget;
-
-namespace App {
-  class PropertyContainer;
-}
-
-namespace Gui {
-    class TreeWidget;
-    class PropertyView;
-
-namespace PropertyEditor {
-class EditableListView;
-class EditableItem;
-class PropertyEditor;
-} // namespace PropertyEditor
-
-namespace TaskView {
-class TaskView;
-class TaskDialog;
-} // namespace TaskView
-} // namespace Gui
+#include <Gui/TaskView/TaskDialog.h>
 
 
-namespace Gui {
-namespace DockWnd {
+namespace RobotGui {
 
-/** Combi View
-  * is a combination of a tree, property and TaskPanel for 
-  * integrated user action.
- */
-class CombiView : public Gui::DockWindow
+
+/// simulation dialog for the TaskView
+class RobotGuiExport TaskDlgSimulate : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
 
 public:
-    /**
-     * A constructor.
-     * A more elaborate description of the constructor.
-     */
-    CombiView(Gui::Document*  pcDocument, QWidget *parent=0);
+    TaskDlgSimulate();
+    ~TaskDlgSimulate();
 
-    /**
-     * A destructor.
-     * A more elaborate description of the destructor.
-    */
-    virtual ~CombiView();
-
-    void showDialog(Gui::TaskView::TaskDialog *dlg);
-
-
-private:
-    QTabWidget                         * tabs;
-    Gui::PropertyView                  * prop;
-    Gui::TreeWidget                    * tree;
-    Gui::TaskView::TaskView            * taskPanel;
 };
 
-} // namespace DockWnd
-} // namespace Gui
 
-#endif // GUI_DOCKWND_SELECTIONVIEW_H
+
+} //namespace RobotGui
+
+#endif // ROBOTGUI_TASKDLGSIMULATE_H

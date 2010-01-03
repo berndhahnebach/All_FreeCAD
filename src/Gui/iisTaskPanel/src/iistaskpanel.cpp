@@ -62,6 +62,11 @@ void iisTaskPanel::addWidget(QWidget *w)
 	if (w)
 		layout()->addWidget(w);
 }
+void iisTaskPanel::removeWidget(QWidget *w)
+{
+	if (w)
+		layout()->removeWidget(w);
+}
 
 void iisTaskPanel::addStretch(int s)
 {
