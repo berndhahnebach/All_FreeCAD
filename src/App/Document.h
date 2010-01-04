@@ -192,7 +192,7 @@ public:
     void openTransaction(const char* name=0);
     // Commit the Command transaction. Do nothing If there is no Command transaction open.
     void commitTransaction();
-    /// Abort the  actually runing transaction. 
+    /// Abort the  actually running transaction. 
     void abortTransaction();
     /// Set the Undo limit in Byte!
     void SetUndoLimit(unsigned int MemSize=0);

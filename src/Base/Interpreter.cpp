@@ -361,7 +361,7 @@ PyObject* InterpreterSingleton::runMethodObject(PyObject *pobject, const char *m
                       &pcO,		   // return object
                       "()")		   // no arguments
             != 0)
-        throw PyException(/*"Error runing InterpreterSingleton::RunMethodObject()"*/);
+        throw PyException();
 
     return pcO;
 }
@@ -377,7 +377,7 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
     PyGILStateLocker locker;
     pmeth = PyObject_GetAttrString(pobject, method);
     if (pmeth == NULL)                             /* get callable object */
-        throw Exception("Error runing InterpreterSingleton::RunMethod() method not defined");                                 /* bound method? has self */
+        throw Exception("Error running InterpreterSingleton::RunMethod() method not defined");                                 /* bound method? has self */
 
     pargs = Py_VaBuildValue(argfmt, argslist);     /* args: c->python */
 
@@ -393,10 +393,9 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
     if (PP_Convert_Result(presult, resfmt, cresult)!= 0) {
         if ( PyErr_Occurred() )
             PyErr_Print();
-        throw Exception("Error runing InterpreterSingleton::RunMethod() exception in called method");
+        throw Exception("Error running InterpreterSingleton::RunMethod() exception in called method");
     }
 }
-
 
 void InterpreterSingleton::dbgObserveFile(const char* sFileName)
 {

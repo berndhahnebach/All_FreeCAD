@@ -292,7 +292,7 @@ void Builder3D::addTransformation(const Base::Vector3f& translation, const Base:
 
 /**
  * Save the resulting inventor 3D representation to the Console().Log() facility.
- * In DEBUG mode the Gui (if runing) will trigger on that and show the representation in 
+ * In DEBUG mode the Gui (if running) will trigger on that and show the representation in 
  * the active Viewer/Document. It shows only one representation on time. If you need to 
  * show more then one representation use saveToFile() instead.
  * @see saveToFile()
