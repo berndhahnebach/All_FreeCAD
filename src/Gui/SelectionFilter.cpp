@@ -30,6 +30,7 @@
 #include <App/DocumentObject.h>
 #include <Base/Interpreter.h>
 
+#include "Selection.h"
 #include "SelectionFilter.h"
 //#include "SelectionFilterPy.h"
 #include "Application.h"
@@ -41,16 +42,47 @@ using namespace Gui;
 SelectionFilter::SelectionFilter(const char* filter)
 :Filter(filter)
 {
+    parse();
 }
 
 SelectionFilter::SelectionFilter(const std::string filter)
 :Filter(filter)
 {
+     parse();
 }
 
 SelectionFilter::~SelectionFilter()
 {
 }
+
+
+bool SelectionFilter::match(void)
+{
+    assert(Ast);
+
+    for (std::vector< Node_Object *>::iterator it= Ast->Objects.begin();it!=Ast->Objects.end();++it){
+        const char* name = (*it)->Namespace->c_str();
+        const char* type = (*it)->ObjectType->c_str();
+        int min;
+        int max;
+
+        if((*it)->Slice){
+            min          = (*it)->Slice->Min;
+            max          = (*it)->Slice->Max;
+        }else{
+            min          = 1;
+            max          = 1;
+        }
+
+        std::string type_name = *(*it)->Namespace + "::" + *(*it)->ObjectType;
+        std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx(0,type_name.c_str());
+        if(temp.size()<min || temp.size()>max)
+            return false;
+        Result.push_back(temp);
+    }
+    return true;
+}
+
 
 void SelectionFilter::addError(const char* e)
 {
@@ -70,24 +102,6 @@ void SelectionFilter::addError(const char* e)
 //}
 
 
-// === Abstract syntax tree (AST) ===========================================
-
-struct Node_Slice 
-{
-    Node_Slice(int min=1,int max=INT_MAX):Min(min),Max(max){}
-    int Min,Max;
-
-};
-
-
-struct Node_Object 
-{
-    Node_Object(std::string namespc,std::string type,Node_Slice* slc=0):Namespace(namespc),ObjectType(type),Slice(slc){}
-    std::string Namespace;
-    std::string ObjectType;
-    Node_Slice  *Slice;
-
-};
 
 
 // === Parser & Scanner stuff ===============================================
@@ -96,6 +110,7 @@ struct Node_Object
 # pragma warning(disable : 4335) // disable MAC file format warning on VC
 
 SelectionFilter* ActFilter=0;
+Node_Block *TopBlock=0;
 
 // error func
 void yyerror(char *errorinfo)
@@ -117,7 +132,7 @@ int fileno(FILE *stream){return _fileno(stream);}
 #include "lex.SelectionFilter.c"
 
 
-bool SelectionFilter::match(void)
+bool SelectionFilter::parse(void)
 {
     Errors = "";
     YY_BUFFER_STATE my_string_buffer = SelectionFilter_scan_string (Filter.c_str());
@@ -126,6 +141,8 @@ bool SelectionFilter::match(void)
     ActFilter = this;
     int my_parse_result  = yyparse ();
     ActFilter = 0;
+    Ast = TopBlock;
+    TopBlock = 0;
     SelectionFilter_delete_buffer (my_string_buffer);
 
     return true;

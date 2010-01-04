@@ -103,9 +103,22 @@ CmdRobotSimulate::CmdRobotSimulate()
 
 void CmdRobotSimulate::activated(int iMsg)
 {
-#if 1
-    Gui::SelectionFilter filter("RobotObject & TrajectoryObject");
-    filter.match();
+#if 0
+    const char * SelFilter = 
+        "FROM Robot SELECT RobotObject  \n"
+        "FROM Robot SELECT TrajectoryObject  ";
+
+    Gui::SelectionFilter filter(SelFilter);
+    Robot::RobotObject *pcRobotObject;
+    Robot::TrajectoryObject *pcTrajectoryObject;
+
+    if(filter.match()){
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(filter.Result[0][0].getObject());
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(filter.Result[1][0].getObject());;
+    }else{
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Robot and one Trajectory object."));
+    }
 
     Gui::TaskView::TaskDialog* dlg = new TaskDlgSimulate();
     Gui::Control().showDialog(dlg);
@@ -113,30 +126,21 @@ void CmdRobotSimulate::activated(int iMsg)
 #else
 
  
-    unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
-    unsigned int n2 = getSelection().countObjectsOfType(Robot::TrajectoryObject::getClassTypeId());
- 
-    if (n1 != 1 || n2 != 1) {
+   const char * SelFilter = 
+        "FROM Robot SELECT RobotObject  \n"
+        "FROM Robot SELECT TrajectoryObject  ";
+
+    Gui::SelectionFilter filter(SelFilter);
+    Robot::RobotObject *pcRobotObject;
+    Robot::TrajectoryObject *pcTrajectoryObject;
+
+    if(filter.match()){
+        pcRobotObject = dynamic_cast<Robot::RobotObject*>(filter.Result[0][0].getObject());
+        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(filter.Result[1][0].getObject());;
+    }else{
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select one Robot and one Trajectory object."));
-        return;
     }
-
-    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
-
-    Robot::RobotObject *pcRobotObject;
-    if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
-        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
-    else if(Sel[1].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
-        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[1].pObject);
-    std::string RoboName = pcRobotObject->getNameInDocument();
-
-    Robot::TrajectoryObject *pcTrajectoryObject;
-    if(Sel[0].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
-        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[0].pObject);
-    else if(Sel[1].pObject->getTypeId() == Robot::TrajectoryObject::getClassTypeId())
-        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(Sel[1].pObject);
-    std::string TrakName = pcTrajectoryObject->getNameInDocument();
 
     RobotGui::TrajectorySimulate dlg(pcRobotObject,pcTrajectoryObject,Gui::getMainWindow());
     dlg.exec();

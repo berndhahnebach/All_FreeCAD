@@ -314,11 +314,17 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
     return temp;
 }
 
-std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName) const
+std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName,const char* typeName) const
 {
     std::vector<SelectionObject> temp;
     
     std::map<App::DocumentObject*,SelectionObject> SortMap;
+
+    // search the type
+    Base::Type typeId = Base::Type::fromName(typeName);
+    if (typeId == Base::Type::badType()) 
+        return temp;
+
 
     App::Document *pcDoc;
     string DocName;
@@ -330,21 +336,24 @@ std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDoc
 
     for (std::list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
         if (It->pDoc == pcDoc) {
-            // if the object has already an entry
-            if (SortMap.find(It->pObject) != SortMap.end()){
-                // only add sub-element
-                SortMap[It->pObject].SubNames.push_back(It->SubName);
-                SortMap[It->pObject].SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
-            }
-            else{
-                // create a new entry
-                SelectionObject tempSelObj;
-                tempSelObj.DocName  = It->DocName;
-                tempSelObj.FeatName = It->FeatName;
-                tempSelObj.SubNames.push_back(It->SubName);
-                tempSelObj.TypeName = It->TypeName.c_str();
-                tempSelObj.SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
-                SortMap.insert(std::pair<App::DocumentObject*,SelectionObject>(It->pObject,tempSelObj));
+            // right type?
+            if(It->pObject->getTypeId().isDerivedFrom(typeId)){
+                // if the object has already an entry
+                if (SortMap.find(It->pObject) != SortMap.end()){
+                    // only add sub-element
+                    SortMap[It->pObject].SubNames.push_back(It->SubName);
+                    SortMap[It->pObject].SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
+                }
+                else{
+                    // create a new entry
+                    SelectionObject tempSelObj;
+                    tempSelObj.DocName  = It->DocName;
+                    tempSelObj.FeatName = It->FeatName;
+                    tempSelObj.SubNames.push_back(It->SubName);
+                    tempSelObj.TypeName = It->TypeName.c_str();
+                    tempSelObj.SelPoses.push_back(Base::Vector3d(It->x,It->y,It->z));
+                    SortMap.insert(std::pair<App::DocumentObject*,SelectionObject>(It->pObject,tempSelObj));
+                }
             }
         }
     }

@@ -7,6 +7,7 @@
     std::string *string;
     Node_Object *object;
     Node_Slice  *slice;
+    Node_Block  *block;
     int          token;
     int          number;
 }
@@ -25,24 +26,31 @@
 %type <slice> slice count
 %type <object> matchline
 %type <string> namespc
+%type <block>  matchlines block
 
 %start filter
 
 %%
 
-slice : TNUMBER TSLICE TNUMBER  { $$ = new Node_Slice($1,$3) }
-count : TCOUNT slice            { $$ = $2 }
+slice : TNUMBER TSLICE TNUMBER    { $$ = new Node_Slice($1,$3) }
+      | TNUMBER TSLICE            { $$ = new Node_Slice($1) }
+      | TNUMBER                   { $$ = new Node_Slice($1,$1) }
+      
+count : TCOUNT slice              { $$ = $2 }
 			
-namespc : TFROM TIDENTIFIER     { $$ = $2 }
+namespc : TFROM TIDENTIFIER       { $$ = $2 }
 
-matchline  : namespc TSELECT TIDENTIFIER count { $$ = new Node_Object(*$1,*$3,$4) }
+matchline  : namespc TSELECT TIDENTIFIER count { $$ = new Node_Object($1,$3,$4) }
+           | namespc TSELECT TIDENTIFIER       { $$ = new Node_Object($1,$3,0) }
+           | TSELECT TIDENTIFIER count         { $$ = new Node_Object(new std::string(),$2,$3) }
+           | TSELECT TIDENTIFIER               { $$ = new Node_Object(new std::string(),$2,0 ) }
 
-matchlines : matchline    {}
-           | matchlines matchline {}
+matchlines : matchline            { $$ = new Node_Block($1);  }
+           | matchlines matchline { $$ = $1 ; $$->Objects.push_back($2); }
            
-block : matchlines 
+block : matchlines                { $$ = $1 }
 
-filter:   block 
+filter:   block					  { TopBlock = $1 }
 ;
 
 
