@@ -535,7 +535,7 @@ class arcTracker(Tracker):
 		self.node.addChild(container)
 
 	def startangle(self,angle):
-		self.startrot.rotation.setValue(coin.SbVec3f(0,0,1),-angle)
+		self.startrot.rotation.setValue(coin.SbVec3f(0,0,1),math.pi+angle)
 
 	def center(self,center):
 		self.trans.translation.setValue([center.x,center.y,center.z])
@@ -1879,7 +1879,7 @@ class Rotate(Modifier):
 			elif (self.step == 1):
 				currentrad = fcvec.dist(point,self.center)
 				if (currentrad != 0):
-					angle = point.sub(self.center).getAngle(self.xVec)
+					angle = -point.sub(self.center).getAngle(self.xVec)
 					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
 						angle = -angle
 				else: angle = 0
@@ -1898,7 +1898,7 @@ class Rotate(Modifier):
 				currentrad = fcvec.dist(point,self.center)
 				self.arctrack.trans.scaleFactor.setValue([currentrad,currentrad,currentrad])
 				if (currentrad != 0):
-					angle = point.sub(self.center).getAngle(self.xVec)
+					angle = -point.sub(self.center).getAngle(self.xVec)
 					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
 						angle = -angle
 				else: angle = 0
@@ -2164,7 +2164,7 @@ class Offset(Modifier):
 		if prev:
 			if (isinstance(prev.Curve,Part.Line)): perp = fcgeo.vec(prev)
 			else: perp = fcvec.crossproduct(fcvec.new(prev.Vertexes[0].Point,prev.Curve.Center))
-			angle = fcvec.angle(baseVec,perp)
+			angle = -fcvec.angle(baseVec,perp)
 			offset2 = fcvec.rotate(offsetVec,angle,axis=self.axis)
 			offedge2 = fcgeo.offset(prev,offset2)
 			inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
