@@ -248,7 +248,7 @@ public:
      * If nothing for this document is selected an empty vector is returned.
      * The vector reflects the sequence of selection.
      */
-    std::vector<Gui::SelectionObject> getSelectionEx(const char* pDocName=0) const;
+    std::vector<Gui::SelectionObject> getSelectionEx(const char* pDocName=0,const char* typeName="App::DocumentObject") const;
 
     /** Returns a vector of all selection objects of all documents. */
     std::vector<SelObj> getCompleteSelection() const;
