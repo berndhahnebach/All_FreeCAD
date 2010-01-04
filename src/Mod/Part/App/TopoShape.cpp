@@ -109,6 +109,9 @@
 #include <Base/Exception.h>
 
 #include "TopoShape.h"
+#include "TopoShapeFacePy.h"
+#include "TopoShapeEdgePy.h"
+#include "TopoShapeVertexPy.h"
 #include "ProgressIndicator.h"
 
 using namespace Part;
@@ -208,6 +211,22 @@ TopoDS_Shape TopoShape::getSubShape(const char* Type) const
     return TopoDS_Shape();
 }
 
+PyObject * TopoShape::getPySubShape(const char* Type) const
+{
+    // get the shape
+    TopoDS_Shape Shape = getSubShape(Type);
+    // destinquish the return type
+    std::string shapetype(Type);
+    if (shapetype.size() > 4 && shapetype.substr(0,4) == "Face") 
+        return new TopoShapeFacePy(new TopoShape(Shape));
+    else if (shapetype.size() > 4 && shapetype.substr(0,4) == "Edge") 
+        return new TopoShapeEdgePy(new TopoShape(Shape));
+    else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") 
+        return new TopoShapeVertexPy(new TopoShape(Shape));
+    else 
+        return 0;
+
+}
 void TopoShape::operator = (const TopoShape& sh)
 {
     if (this != &sh) {

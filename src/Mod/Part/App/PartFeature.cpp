@@ -76,6 +76,17 @@ PyObject *Feature::getPyObject(void)
     return Py::new_reference_to(PythonObject); 
 }
 
+std::vector<PyObject *> Feature::getPySubObjects(const std::vector<std::string> NameVec) const
+{
+    std::vector<PyObject *> temp;
+    for(std::vector<std::string>::const_iterator it=NameVec.begin();it!=NameVec.end();++it){
+        PyObject *obj = Shape.getShape().getPySubShape((*it).c_str());
+        if(obj)
+            temp.push_back(obj);
+    }
+    return temp;
+}
+
 void Feature::onChanged(const App::Property* prop)
 {
     // if the placement has changed apply the change to the point data as well

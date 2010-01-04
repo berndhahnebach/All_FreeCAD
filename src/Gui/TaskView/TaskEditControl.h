@@ -49,9 +49,7 @@ class TaskEditControl : public TaskWidget
 public:
     TaskEditControl(QWidget *parent = 0);
     ~TaskEditControl();
-    friend TaskView;
-
-private Q_SLOTS:
+    friend class TaskView;
 
 protected:
     QHBoxLayout *hboxLayout;

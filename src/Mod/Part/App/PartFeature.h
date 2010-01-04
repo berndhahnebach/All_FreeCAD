@@ -67,6 +67,7 @@ public:
     }
 
     virtual PyObject* getPyObject(void);
+    virtual std::vector<PyObject *> getPySubObjects(const std::vector<std::string>) const;
 
 protected:
     void onChanged(const App::Property* prop);

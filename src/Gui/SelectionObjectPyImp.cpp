@@ -15,7 +15,7 @@ using namespace Gui;
 // returns a string which represents the object e.g. when printed in python
 std::string SelectionObjectPy::representation(void) const
 {
-    return "<SelectionObject object>";
+    return "<SelectionObject>";
 }
 
 
@@ -39,9 +39,15 @@ Py::String SelectionObjectPy::getObjectName(void) const
     return Py::String(getSelectionObjectPtr()->getFeatName());
 }
 
-Py::String SelectionObjectPy::getSubElementName(void) const
+Py::List SelectionObjectPy::getSubElementNames(void) const
 {
-    return Py::String(/*getSelectionObjectPtr()->getSubName()*/);
+    Py::List temp;
+    std::vector<std::string> objs = getSelectionObjectPtr()->getSubNames();
+
+    for(std::vector<std::string>::const_iterator it= objs.begin();it!=objs.end();++it)
+        temp.append(Py::String(*it));
+
+    return temp;
 }
 
 Py::String SelectionObjectPy::getFullName(void) const
@@ -72,14 +78,18 @@ Py::Object SelectionObjectPy::getObject(void) const
     return Py::Object(getSelectionObjectPtr()->getObject()->getPyObject(), true);
 }
 
-Py::Object SelectionObjectPy::getSubObject(void) const
+Py::List SelectionObjectPy::getSubObjects(void) const
 {
-    return Py::Object();
+    Py::List temp;
+    std::vector<PyObject *> objs = getSelectionObjectPtr()->getObject()->getPySubObjects(getSelectionObjectPtr()->getSubNames());
+    for(std::vector<PyObject *>::const_iterator it= objs.begin();it!=objs.end();++it)
+        temp.append(Py::Object(*it,true));
+    return temp;
 }
 
-Py::Boolean SelectionObjectPy::getHasSubObject(void) const
+Py::Boolean SelectionObjectPy::getHasSubObjects(void) const
 {
-    return Py::Boolean();
+    return Py::Boolean(getSelectionObjectPtr()->hasSubNames());
 }
 
 PyObject *SelectionObjectPy::getCustomAttributes(const char* /*attr*/) const
