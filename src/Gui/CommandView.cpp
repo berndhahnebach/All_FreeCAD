@@ -83,6 +83,7 @@ StdOrthographicCamera::StdOrthographicCamera()
   sStatusTip    = QT_TR_NOOP("Switches to orthographic view mode");
   sPixmap       = "view-isometric";
   iAccel        = Qt::Key_O;
+  eType         = Alter3DView;
 }
 
 void StdOrthographicCamera::activated(int iMsg)
@@ -130,6 +131,7 @@ StdPerspectiveCamera::StdPerspectiveCamera()
   sStatusTip    = QT_TR_NOOP("Switches to perspective view mode");
   sPixmap       = "view-perspective";
   iAccel        = Qt::Key_P;
+  eType         = Alter3DView;
 }
 
 void StdPerspectiveCamera::activated(int iMsg)
@@ -203,6 +205,7 @@ StdCmdFreezeViews::StdCmdFreezeViews()
   sWhatsThis    = "Std_FreezeViews";
   sStatusTip    = QT_TR_NOOP("Freezes the current view position");
   iAccel        = Qt::SHIFT+Qt::Key_F;
+  eType         = Alter3DView;
 }
 
 Action * StdCmdFreezeViews::createAction(void)
@@ -454,6 +457,7 @@ StdCmdToggleClipPlane::StdCmdToggleClipPlane()
   sToolTipText  = QT_TR_NOOP("Toggles clipping plane for active view");
   sWhatsThis    = "Std_ToggleClipPlane";
   sStatusTip    = QT_TR_NOOP("Toggles clipping plane for active view");
+  eType         = Alter3DView;
 }
 
 Action * StdCmdToggleClipPlane::createAction(void)
@@ -504,6 +508,7 @@ StdCmdToggleVisibility::StdCmdToggleVisibility()
     sStatusTip    = QT_TR_NOOP("Toggles visibility");
     sWhatsThis    = "Std_ToggleVisibility";
     iAccel        = Qt::Key_Space;
+    eType         = Alter3DView;
 }
 
 void StdCmdToggleVisibility::activated(int iMsg)
@@ -568,6 +573,7 @@ StdCmdShowSelection::StdCmdShowSelection()
     sToolTipText  = QT_TR_NOOP("Show all selected objects");
     sStatusTip    = QT_TR_NOOP("Show all selected objects");
     sWhatsThis    = "Std_ShowSelection";
+    eType         = Alter3DView;
 }
 
 void StdCmdShowSelection::activated(int iMsg)
@@ -602,6 +608,7 @@ StdCmdHideSelection::StdCmdHideSelection()
     sToolTipText  = QT_TR_NOOP("Hide all selected objects");
     sStatusTip    = QT_TR_NOOP("Hide all selected objects");
     sWhatsThis    = "Std_HideSelection";
+    eType         = Alter3DView;
 }
 
 void StdCmdHideSelection::activated(int iMsg)
@@ -636,6 +643,7 @@ StdCmdToggleObjects::StdCmdToggleObjects()
     sToolTipText  = QT_TR_NOOP("Toggles visibility of all objects in the active document");
     sStatusTip    = QT_TR_NOOP("Toggles visibility of all objects in the active document");
     sWhatsThis    = "Std_ToggleObjects";
+    eType         = Alter3DView;
 }
 
 void StdCmdToggleObjects::activated(int iMsg)
@@ -674,6 +682,7 @@ StdCmdShowObjects::StdCmdShowObjects()
     sToolTipText  = QT_TR_NOOP("Show all objects in the document");
     sStatusTip    = QT_TR_NOOP("Show all objects in the document");
     sWhatsThis    = "Std_ShowObjects";
+    eType         = Alter3DView;
 }
 
 void StdCmdShowObjects::activated(int iMsg)
@@ -708,6 +717,7 @@ StdCmdHideObjects::StdCmdHideObjects()
     sToolTipText  = QT_TR_NOOP("Hide all objects in the document");
     sStatusTip    = QT_TR_NOOP("Hide all objects in the document");
     sWhatsThis    = "Std_HideObjects";
+    eType         = Alter3DView;
 }
 
 void StdCmdHideObjects::activated(int iMsg)
@@ -744,6 +754,7 @@ StdCmdSetAppearance::StdCmdSetAppearance()
     sStatusTip    = QT_TR_NOOP("Sets the display properties of the selected object");
     sPixmap       = "Std_Tool1";
     iAccel        = Qt::CTRL+Qt::Key_D;
+    eType         = Alter3DView;
 }
 
 void StdCmdSetAppearance::activated(int iMsg)
@@ -776,6 +787,7 @@ StdCmdViewBottom::StdCmdViewBottom()
   sStatusTip    = QT_TR_NOOP("Set to bottom view");
   sPixmap       = "view-bottom";
   iAccel        = Qt::Key_5;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewBottom::activated(int iMsg)
@@ -798,6 +810,7 @@ StdCmdViewFront::StdCmdViewFront()
   sStatusTip    = QT_TR_NOOP("Set to front view");
   sPixmap       = "view-front";
   iAccel        = Qt::Key_1;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewFront::activated(int iMsg)
@@ -820,6 +833,7 @@ StdCmdViewLeft::StdCmdViewLeft()
   sStatusTip    = QT_TR_NOOP("Set to left view");
   sPixmap       = "view-left";
   iAccel        = Qt::Key_6;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewLeft::activated(int iMsg)
@@ -842,6 +856,7 @@ StdCmdViewRear::StdCmdViewRear()
   sStatusTip    = QT_TR_NOOP("Set to rear view");
   sPixmap       = "view-rear";
   iAccel        = Qt::Key_4;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewRear::activated(int iMsg)
@@ -864,6 +879,7 @@ StdCmdViewRight::StdCmdViewRight()
   sStatusTip    = QT_TR_NOOP("Set to right view");
   sPixmap       = "view-right";
   iAccel        = Qt::Key_3;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewRight::activated(int iMsg)
@@ -886,6 +902,7 @@ StdCmdViewTop::StdCmdViewTop()
   sStatusTip    = QT_TR_NOOP("Set to top view");
   sPixmap       = "view-top";
   iAccel        = Qt::Key_2;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewTop::activated(int iMsg)
@@ -908,6 +925,7 @@ StdCmdViewAxo::StdCmdViewAxo()
   sStatusTip  = QT_TR_NOOP("Set to axometric view");
   sPixmap     = "view-axometric";
   iAccel      = Qt::Key_0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewAxo::activated(int iMsg)
@@ -930,6 +948,7 @@ StdCmdViewFitAll::StdCmdViewFitAll()
   sStatusTip    = QT_TR_NOOP("Fits the whole content on the screen");
   sPixmap       = "view-zoom-all";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewFitAll::activated(int iMsg)
@@ -961,6 +980,7 @@ StdCmdViewFitSelection::StdCmdViewFitSelection()
     sPixmap       = "view-zoom-selection";
 #endif
     iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewFitSelection::activated(int iMsg)
@@ -988,6 +1008,7 @@ StdViewDockUndockFullscreen::StdViewDockUndockFullscreen()
   sToolTipText= QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
   sWhatsThis  = "Std_ViewDockUndockFullscreen";
   sStatusTip  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
+  eType         = Alter3DView;
 }
 
 Action * StdViewDockUndockFullscreen::createAction(void)
@@ -1081,6 +1102,7 @@ StdViewScreenShot::StdViewScreenShot()
     sStatusTip  = QT_TR_NOOP("Creates a screenshot of the active view");
     iAccel      = 0;
     sPixmap     = "camera-photo";
+    eType         = Alter3DView;
 }
 
 void StdViewScreenShot::activated(int iMsg)
@@ -1189,6 +1211,7 @@ StdCmdViewCreate::StdCmdViewCreate()
     sStatusTip  = QT_TR_NOOP("Creates a new  view window for the active document");
     sPixmap     = "window-new";
     iAccel      = 0;
+    eType         = Alter3DView;
 }
 
 void StdCmdViewCreate::activated(int iMsg)
@@ -1216,6 +1239,7 @@ StdCmdViewExample1::StdCmdViewExample1()
   sStatusTip    = QT_TR_NOOP("Shows a 3D texture with manipulator");
   sPixmap       = "Std_Tool1";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewExample1::activated(int iMsg)
@@ -1242,6 +1266,7 @@ StdCmdViewExample2::StdCmdViewExample2()
   sStatusTip    = QT_TR_NOOP("Shows spheres and drag-lights");
   sPixmap       = "Std_Tool2";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewExample2::activated(int iMsg)
@@ -1269,6 +1294,7 @@ StdCmdViewExample3::StdCmdViewExample3()
   sStatusTip    = QT_TR_NOOP("Shows a animated texture");
   sPixmap       = "Std_Tool3";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewExample3::activated(int iMsg)
@@ -1297,6 +1323,7 @@ StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing off");
   sPixmap       = "Std_Tool6";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewIvStereoOff::activated(int iMsg)
@@ -1325,6 +1352,7 @@ StdCmdViewIvStereoRedGreen::StdCmdViewIvStereoRedGreen()
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to red/green");
   sPixmap       = "Std_Tool7";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewIvStereoRedGreen::activated(int iMsg)
@@ -1352,6 +1380,7 @@ StdCmdViewIvStereoQuadBuff::StdCmdViewIvStereoQuadBuff()
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to quad buffer");
   sPixmap       = "Std_Tool7";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewIvStereoQuadBuff::activated(int iMsg)
@@ -1379,6 +1408,7 @@ StdCmdViewIvStereoInterleavedRows::StdCmdViewIvStereoInterleavedRows()
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to Interleaved Rows");
   sPixmap       = "Std_Tool7";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewIvStereoInterleavedRows::activated(int iMsg)
@@ -1406,6 +1436,7 @@ StdCmdViewIvStereoInterleavedColumns::StdCmdViewIvStereoInterleavedColumns()
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to Interleaved Columns");
   sPixmap       = "Std_Tool7";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewIvStereoInterleavedColumns::activated(int iMsg)
@@ -1434,6 +1465,7 @@ StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
   sStatusTip    = QT_TR_NOOP("Issue the camera position to the console and to a macro, to easily recall this position");
   sPixmap       = "Std_Tool8";
   iAccel        = 0;
+  eType         = Alter3DView;
 }
 
 void StdCmdViewIvIssueCamPos::activated(int iMsg)
@@ -1485,6 +1517,7 @@ StdViewZoomIn::StdViewZoomIn()
     sPixmap       = "view-zoom-in";
 #endif
     iAccel        = Qt::Key_Plus;
+    eType         = Alter3DView;
 }
 
 void StdViewZoomIn::activated(int iMsg)
@@ -1524,6 +1557,7 @@ StdViewZoomOut::StdViewZoomOut()
     sPixmap       = "view-zoom-out";
 #endif
     iAccel        = Qt::Key_Minus;
+    eType         = Alter3DView;
 }
 
 void StdViewZoomOut::activated(int iMsg)
@@ -1562,6 +1596,7 @@ StdViewBoxZoom::StdViewBoxZoom()
     sPixmap       = "view-zoom-border";
 #endif
     iAccel        = Qt::CTRL+Qt::Key_B;
+    eType         = Alter3DView;
 }
 
 void StdViewBoxZoom::activated(int iMsg)
@@ -1589,6 +1624,7 @@ StdCmdTreeSelection::StdCmdTreeSelection()
     sWhatsThis    = "Std_TreeSelection";
     sStatusTip    = QT_TR_NOOP("Scroll to first selected item");
     iAccel        = 0;
+    eType         = Alter3DView;
 }
 
 void StdCmdTreeSelection::activated(int iMsg)
@@ -1615,6 +1651,7 @@ StdCmdMeasureDistance::StdCmdMeasureDistance()
     sWhatsThis    = "Std_MeasureDistance";
     sStatusTip    = QT_TR_NOOP("Measure distance");
     iAccel        = 0;
+    eType         = Alter3DView;
 }
 
 void StdCmdMeasureDistance::activated(int iMsg)
@@ -1651,6 +1688,7 @@ StdCmdSceneInspector::StdCmdSceneInspector()
     sToolTipText  = QT_TR_NOOP("Scene inspector");
     sWhatsThis    = "Std_SceneInspector";
     sStatusTip    = QT_TR_NOOP("Scene inspector");
+    eType         = Alter3DView;
 }
 
 void StdCmdSceneInspector::activated(int iMsg)

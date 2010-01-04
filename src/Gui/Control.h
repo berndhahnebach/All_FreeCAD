@@ -27,6 +27,8 @@
 // Std. configurations
 
 #include <QObject>
+#include <bitset>
+#include <stack>
 
 namespace App
 {
@@ -56,7 +58,19 @@ public:
     void showDialog(Gui::TaskView::TaskDialog *dlg);
 
 
+    bool isAllowedAlterDocument(void);
+    bool isAllowedAlterView(void);
+    bool isAllowedAlterSelection(void);
+
+
 protected:
+    struct status {
+        std::bitset<32> StatusBits;
+    } ActualStatus;
+
+    std::stack<status> StatusStack;
+
+    Gui::TaskView::TaskDialog *ActiveDialog;
  
 protected:
     /// Construction

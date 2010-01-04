@@ -254,6 +254,13 @@ public:
   //@}
 
 protected:
+
+    enum CmdType {
+        AlterDoc       = 1,  /// Command change the Document
+        Alter3DView    = 2,  /// Command change the Gui
+        AlterSelection = 4   /// Command change the Selection
+    };
+
   /** @name Attributes 
    *  Set by the inherited constructor to set up the most important properties 
    *  of the command. In the Command constructor are set default values! 
@@ -264,6 +271,7 @@ protected:
   const char* sGroup;
   const char* sName;
   const char* sHelpUrl;
+  int         eType;
   //@}
 private:
   static bool _blockCmd;

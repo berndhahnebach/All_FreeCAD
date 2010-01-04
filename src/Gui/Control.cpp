@@ -55,9 +55,27 @@ void ControlSingelton::showDialog(Gui::TaskView::TaskDialog *dlg)
     Gui::DockWnd::CombiView* pcCombiView = (Gui::DockWnd::CombiView*) Gui::DockWindowManager::instance()->getDockWindow("Combo View");
     // shut return the pointer to compi view
     assert(pcCombiView);
+    // only one Dialog at a time
+    assert(!ActiveDialog);
     pcCombiView->showDialog(dlg);
+    ActiveDialog = dlg;
 }
 
+
+bool ControlSingelton::isAllowedAlterDocument(void)
+{
+    return true;
+}
+
+bool ControlSingelton::isAllowedAlterView(void)
+{
+    return true;
+}
+
+bool ControlSingelton::isAllowedAlterSelection(void)
+{
+    return true;
+}
 
 
 
