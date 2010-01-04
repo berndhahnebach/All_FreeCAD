@@ -103,7 +103,7 @@ CmdRobotSimulate::CmdRobotSimulate()
 
 void CmdRobotSimulate::activated(int iMsg)
 {
-#if 0
+#if 1
     const char * SelFilter = 
         "FROM Robot SELECT RobotObject  \n"
         "FROM Robot SELECT TrajectoryObject  ";

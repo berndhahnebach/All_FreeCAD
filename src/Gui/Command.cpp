@@ -39,6 +39,7 @@
 #include "BitmapFactory.h"
 #include "WhatsThis.h"
 #include "WaitCursor.h"
+#include "Control.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -212,6 +213,7 @@ Command::Command(const char* name)
 {
     sAppModule  = "FreeCAD";
     sGroup      = QT_TR_NOOP("Standard");
+    eType       = AlterDoc | Alter3DView | AlterSelection;
 }
 
 Command::~Command()
@@ -317,6 +319,13 @@ void Command::testActive(void)
 
     if ( _blockCmd ) {
         _pcAction->setEnabled ( false );
+        return;
+    }
+
+    if(!Gui::Control().isAllowedAlterDocument() && eType & AlterDoc
+     ||!Gui::Control().isAllowedAlterView()     && eType & Alter3DView
+     ||!Gui::Control().isAllowedAlterSelection()&& eType & AlterSelection){
+         _pcAction->setEnabled ( false);
         return;
     }
 
