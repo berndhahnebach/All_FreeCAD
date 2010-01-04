@@ -39,7 +39,7 @@ try: import FreeCADGui
 except: gui = False
 else: gui = True
 try: draftui = FreeCADGui.activeWorkbench().draftToolBar.ui
-except: draftgui = None
+except: draftui = None
 
 pythonopen = open
 
@@ -238,7 +238,7 @@ class svgHandler(xml.sax.ContentHandler):
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		self.style = params.GetInt("svgstyle")
 	
-		if gui and draftgui:
+		if gui and draftui:
 			r = float(draftui.color.red()/255.0)
 			g = float(draftui.color.green()/255.0)
 			b = float(draftui.color.blue()/255.0)
