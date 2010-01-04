@@ -51,10 +51,12 @@ def findicons():
 			raise Exception("Cannot open file %s" % (filepath))
 		ba=file.readAll()
 		render=QtSvg.QSvgRenderer(ba)
-		iconmap = QtGui.QPixmap(render.viewBox().width(),render.viewBox().height())
-		painter=QtGui.QPainter(iconmap)
+		image = QtGui.QImage(render.viewBox().size(),QtGui.QImage.Format_ARGB32_Premultiplied)
+		image.fill(0x00000000)
+		painter=QtGui.QPainter(image)
 		render.render(painter)
 		painter.end()
+		iconmap = QtGui.QPixmap.fromImage(image)
 	return iconmap
 	
 def getMainWindow():
