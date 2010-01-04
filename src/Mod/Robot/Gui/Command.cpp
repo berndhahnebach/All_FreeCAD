@@ -32,6 +32,7 @@
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
 #include <Gui/Selection.h>
+#include <Gui/SelectionFilter.h>
 #include <Gui/Document.h>
 #include <Gui/Control.h>
 
@@ -102,7 +103,10 @@ CmdRobotSimulate::CmdRobotSimulate()
 
 void CmdRobotSimulate::activated(int iMsg)
 {
-#if 0
+#if 1
+    Gui::SelectionFilter filter("RobotObject & TrajectoryObject");
+    filter.match();
+
     Gui::TaskView::TaskDialog* dlg = new TaskDlgSimulate();
     Gui::Control().showDialog(dlg);
      

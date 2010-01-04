@@ -265,6 +265,7 @@ libFreeCADGui_la_SOURCES=\
 		SceneInspector.h \
 		Selection.cpp \
 		SelectionObject.cpp \
+		SelectionFilter.cpp \
 		SelectionObjectPyImp.cpp \
 		SelectionView.cpp \
 		SoFCBackgroundGradient.cpp \

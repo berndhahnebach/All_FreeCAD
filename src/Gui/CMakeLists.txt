@@ -637,26 +637,35 @@ SET(Workbench_SRCS
 )
 SOURCE_GROUP("Workbench" FILES ${Workbench_SRCS})
 
+SET(Selection_SRCS
+		 SelectionObjectPyImp.cpp
+		 SelectionObject.h
+		 SelectionObject.cpp
+ 		 Selection.h
+		 Selection.cpp
+ 		 SelectionFilter.h
+		 SelectionFilter.cpp
+		 SelectionFilter.y
+		 SelectionFilter.l
+)
+SOURCE_GROUP("Selection" FILES ${Selection_SRCS})
+
 # The FreeCADGui sources
 SET(FreeCADGui_CPP_SRCS
 		 Application.cpp
 		 ApplicationPy.cpp
-		 SelectionObjectPyImp.cpp
-		 SelectionObject.cpp
 		 BitmapFactory.cpp
 		 Document.cpp
 		 DocumentPyImp.cpp
 		 GuiConsole.cpp
 		 Macro.cpp
 		 resource.cpp
-		 Selection.cpp
 		 Control.cpp
 		 Thumbnail.cpp
 		 WaitCursor.cpp
 )
 SET(FreeCADGui_SRCS
 		 Application.h
-		 SelectionObject.h
 		 BitmapFactory.h
 		 Document.h
 		 Doxygen.cpp
@@ -667,7 +676,6 @@ SET(FreeCADGui_SRCS
 		 PreCompiled.cpp
 		 PreCompiled.h
 		 Qt4All.h
-		 Selection.h
 		 Control.h
 		 Thumbnail.h
 		 WaitCursor.h
@@ -696,6 +704,7 @@ SET(FreeCADGui_SRCS
 		 ${Viewprovider_SRCS}
 		 ${Widget_SRCS}
 		 ${Workbench_SRCS}
+		 ${Selection_SRCS}
 		 ${FreeCADGui_SRCS}
 )
 
