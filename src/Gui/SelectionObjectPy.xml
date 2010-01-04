@@ -30,11 +30,11 @@
 		  </Documentation>
 		  <Parameter Name="ObjectName" Type="String" />
 	  </Attribute>
-	  <Attribute Name="SubElementName" ReadOnly="true">
+	  <Attribute Name="SubElementNames" ReadOnly="true">
 	  <Documentation>
 	    <UserDocu>Name of the selected sub element if any</UserDocu>
 	  </Documentation>
-	  <Parameter Name="SubElementName" Type="String" />
+	  <Parameter Name="SubElementNames" Type="List" />
 	</Attribute>
 	<Attribute Name="FullName" ReadOnly="true">
 	  <Documentation>
@@ -60,17 +60,17 @@
 		  </Documentation>
 		  <Parameter Name="Object" Type="Object" />
 	  </Attribute>
-	  <Attribute Name="SubObject" ReadOnly="true">
+	  <Attribute Name="SubObjects" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>Selected sub object, if any</UserDocu>
 		  </Documentation>
-		  <Parameter Name="SubObject" Type="Object" />
+		  <Parameter Name="SubObjects" Type="List" />
 	  </Attribute>
-	  <Attribute Name="HasSubObject" ReadOnly="true">
+	  <Attribute Name="HasSubObjects" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>Selected sub object, if any</UserDocu>
 		  </Documentation>
-		  <Parameter Name="HasSubObject" Type="Boolean" />
+		  <Parameter Name="HasSubObjects" Type="Boolean" />
 	  </Attribute>
 
 	  <CustomAttributes />

@@ -54,6 +54,8 @@ public:
 
 	/// get the SubElement name of this SelectionObject
     inline const std::vector<std::string> &getSubNames(void) const{return SubNames;}
+    /// are there any SubNames selected
+    bool hasSubNames(void)const {return SubNames.size() != 0;}
 	/// get the name of the Document of this SelctionObject
 	inline const char* getDocName(void){return DocName.c_str();}
 	/// get the name of the Document Object of this SelectionObject

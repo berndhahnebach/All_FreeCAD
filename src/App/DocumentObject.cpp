@@ -157,6 +157,11 @@ PyObject *DocumentObject::getPyObject(void)
     return Py::new_reference_to(PythonObject); 
 }
 
+std::vector<PyObject *> DocumentObject::getPySubObjects(const std::vector<std::string>) const
+{
+    // default implementation return nothing
+    return std::vector<PyObject *>();
+}
 void DocumentObject::touch(void)
 {
     StatusBits.set(0);
