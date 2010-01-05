@@ -104,7 +104,7 @@ CmdRobotSimulate::CmdRobotSimulate()
 void CmdRobotSimulate::activated(int iMsg)
 {
 #if 1
-   /* const char * SelFilter = 
+    const char * SelFilter = 
         "FROM Robot SELECT RobotObject  \n"
         "FROM Robot SELECT TrajectoryObject  ";
 
@@ -118,9 +118,9 @@ void CmdRobotSimulate::activated(int iMsg)
     }else{
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select one Robot and one Trajectory object."));
-    }*/
+    }
 
-    Gui::TaskView::TaskDialog* dlg = new TaskDlgSimulate();
+    Gui::TaskView::TaskDialog* dlg = new TaskDlgSimulate(pcRobotObject,pcTrajectoryObject);
     Gui::Control().showDialog(dlg);
      
 #else

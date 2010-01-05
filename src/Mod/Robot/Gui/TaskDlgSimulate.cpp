@@ -38,11 +38,17 @@ using namespace RobotGui;
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskDlgSimulate::TaskDlgSimulate( )
+TaskDlgSimulate::TaskDlgSimulate(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject)
     : TaskDialog()
 {
-    Content.push_back(new TaskRobot6Axis());
-    Content.push_back(new TaskTrajectory());
+    TaskRobot6Axis *rob  = new TaskRobot6Axis(pcRobotObject);
+    TaskTrajectory *trac = new TaskTrajectory(pcRobotObject,pcTrajectoryObject);
+    
+    QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float)),
+                     rob  ,SLOT  (setAxis(float,float,float,float,float,float)));
+
+    Content.push_back(rob);
+    Content.push_back(trac);
 }
 
 TaskDlgSimulate::~TaskDlgSimulate()

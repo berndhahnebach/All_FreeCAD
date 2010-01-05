@@ -27,6 +27,9 @@
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 
+#include <Mod/Robot/App/RobotObject.h>
+#include <Mod/Robot/App/TrajectoryObject.h>
+
 
 class Ui_TaskRobot6Axis;
 
@@ -42,21 +45,19 @@ namespace RobotGui {
 
 
 
-class TaskRobot6Axis : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskRobot6Axis : public Gui::TaskView::TaskBox
 {
     Q_OBJECT
 
 public:
-    TaskRobot6Axis(QWidget *parent = 0);
+    TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent = 0);
     ~TaskRobot6Axis();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
 
 private Q_SLOTS:
+    void setAxis(float A1,float A2,float A3,float A4,float A5,float A6);
 
 protected:
-    void changeEvent(QEvent *e);
+    Robot::RobotObject *pcRobot;
 
 private:
 
