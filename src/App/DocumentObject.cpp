@@ -150,16 +150,16 @@ void DocumentObject::onChanged(const Property* prop)
 
 PyObject *DocumentObject::getPyObject(void)
 {
-    if(PythonObject.is(Py::_None())){
+    if (PythonObject.is(Py::_None())){
         // ref counter is set to 1
         PythonObject = Py::Object(new DocumentObjectPy(this),true);
     }
     return Py::new_reference_to(PythonObject); 
 }
 
-std::vector<PyObject *> DocumentObject::getPySubObjects(const std::vector<std::string>) const
+std::vector<PyObject *> DocumentObject::getPySubObjects(const std::vector<std::string>&) const
 {
-    // default implementation return nothing
+    // default implementation returns nothing
     return std::vector<PyObject *>();
 }
 void DocumentObject::touch(void)

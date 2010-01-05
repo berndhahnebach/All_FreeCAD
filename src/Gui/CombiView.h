@@ -29,6 +29,7 @@
 #include "Selection.h"
 
 class QTabWidget;
+class QTreeView;
 
 namespace App {
   class PropertyContainer;
@@ -81,7 +82,7 @@ public:
 private:
     QTabWidget                         * tabs;
     Gui::PropertyView                  * prop;
-    Gui::TreeWidget                    * tree;
+    QTreeView                          * tree;
     Gui::TaskView::TaskView            * taskPanel;
 };
 

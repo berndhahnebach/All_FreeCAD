@@ -34,8 +34,6 @@ namespace App {
 
 namespace Gui {
 
-	class SelectionSingelton;
-
 /**
  * The Selection object class
  */

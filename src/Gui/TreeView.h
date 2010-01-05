@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel  (FreeCAD@juergen-riegel.net>              *
+ *   Copyright (c) 2010 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,76 +21,28 @@
  ***************************************************************************/
 
 
-#ifndef GUI_SelectionFilter_H
-#define GUI_SelectionFilter_H
+#ifndef GUI_TREEVIEW_H
+#define GUI_TREEVIEW_H
 
-#include <string>
+#include <QTreeView>
 
-namespace App {
-    class DocumentObject;
-}
+#include <App/Document.h>
+#include <App/Application.h>
+
+#include <Gui/DockWindow.h>
+#include <Gui/Selection.h>
 
 namespace Gui {
-    struct Node_Block;
-    
 
-/**
- * The Selection object class
- */
-class GuiExport SelectionFilter 
+class GuiExport TreeView : public QTreeView
 {
-
 public:
-    /** Constructs a SelectionFilter object. */
-    SelectionFilter(const char* filter);
-    SelectionFilter(const std::string& filter);
-    virtual ~SelectionFilter();
-
-    bool match(void);
-
-    void addError(const char* e);
- 
-    friend class SelectionSingleton;
-
-    std::vector<std::vector<SelectionObject> > Result;
-
-protected:
-
-    std::string Filter;
-    std::string Errors;
-    bool parse(void);
-
-    Node_Block *Ast;
-
+    TreeView(QWidget* parent=0);
+    virtual ~TreeView();
 };
 
-// === Abstract syntax tree (AST) ===========================================
-
-struct Node_Slice 
-{
-    Node_Slice(int min=1,int max=INT_MAX):Min(min),Max(max){}
-    int Min,Max;
-
-};
+}
 
 
-struct Node_Object 
-{
-    Node_Object(std::string *namespc,std::string *type,Node_Slice* slc=0):Namespace(namespc),ObjectType(type),Slice(slc){}
-    std::string *Namespace;
-    std::string *ObjectType;
-    Node_Slice  *Slice;
+#endif // GUI_TREEVIEW_H
 
-};
-
-struct Node_Block 
-{
-    Node_Block(Node_Object* obj){Objects.push_back(obj);}
-    std::vector< Node_Object *> Objects;
-};
-
-
-} // namespace Gui
-
-
-#endif // GUI_SelectionFilter_H 
