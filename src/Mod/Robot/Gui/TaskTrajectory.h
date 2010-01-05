@@ -27,6 +27,14 @@
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 
+#include <Mod/Robot/App/RobotObject.h>
+#include <Mod/Robot/App/Robot6Axis.h>
+#include <Mod/Robot/App/TrajectoryObject.h>
+#include <Mod/Robot/App/Trajectory.h>
+#include <Mod/Robot/App/Simulation.h>
+
+#include "ViewProviderRobotObject.h"
+
 
 class Ui_TaskTrajectory;
 
@@ -42,23 +50,46 @@ namespace RobotGui {
 
 
 
-class TaskTrajectory : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskTrajectory : public Gui::TaskView::TaskBox
 {
     Q_OBJECT
 
 public:
-    TaskTrajectory(QWidget *parent = 0);
+    TaskTrajectory(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject,QWidget *parent = 0);
     ~TaskTrajectory();
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
 
 private Q_SLOTS:
+    void start(void);
+    void stop(void);
+    void run(void);
+    void back(void);
+    void forward(void);
+    void end(void);
+
+    void timerDone(void);
+    void valueChanged ( int value );
+    void valueChanged ( double d );
+
+Q_SIGNALS:
+    void axisChanged(float A1,float A2,float A3,float A4,float A5,float A6);
 
 protected:
-    void changeEvent(QEvent *e);
+    void setTo(void);
 
-private:
+    QTimer *timer;
+
+    Robot::Simulation sim;
+
+    ViewProviderRobotObject *ViewProv;
+
+    bool Run;
+    bool block;
+
+    float timePos;
+    float duration;
 
 private:
     QWidget* proxy;

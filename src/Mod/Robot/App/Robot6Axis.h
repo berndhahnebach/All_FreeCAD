@@ -70,6 +70,8 @@ public:
 	bool setTo(const Base::Placement &To);
 	bool setAxis(int Axis,float Value);
 	float getAxis(int Axis);
+    double getMaxAngle(int Axis){return MaxAngle[Axis];}
+    double getMinAngle(int Axis){return MinAngle[Axis];}
 	/// calculate the new Tcp out of the Axis
 	bool calcTcp(void);
 	Base::Placement getTcp(void);

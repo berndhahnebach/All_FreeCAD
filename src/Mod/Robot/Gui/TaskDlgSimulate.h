@@ -25,6 +25,8 @@
 #define ROBOTGUI_TASKDLGSIMULATE_H
 
 #include <Gui/TaskView/TaskDialog.h>
+#include <Mod/Robot/App/RobotObject.h>
+#include <Mod/Robot/App/TrajectoryObject.h>
 
 
 namespace RobotGui {
@@ -36,7 +38,7 @@ class RobotGuiExport TaskDlgSimulate : public Gui::TaskView::TaskDialog
     Q_OBJECT
 
 public:
-    TaskDlgSimulate();
+    TaskDlgSimulate(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject);
     ~TaskDlgSimulate();
 
 public:
