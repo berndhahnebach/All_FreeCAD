@@ -26,11 +26,10 @@
 
 #include "TaskView.h"
 
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QHBoxLayout>
-
 
 class Ui_TaskEditControl;
+class QHBoxLayout;
+class QDialogButtonBox;
 
 namespace App {
 class Property;
@@ -54,7 +53,6 @@ public:
 protected:
     QHBoxLayout *hboxLayout;
     QDialogButtonBox *buttonBox;
-
 };
 
 } //namespace TaskView

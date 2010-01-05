@@ -125,6 +125,7 @@ set(Gui_MOC_HDRS
 		 ToolBox.h
 		 Transform.h
 		 Tree.h
+		 TreeView.h
 		 View3DInventor.h
 		 WidgetFactory.h
 		 Widgets.h
@@ -351,6 +352,7 @@ SET(Dock_Windows_CPP_SRCS
 		 TaskPanelView.cpp
 		 ToolBox.cpp
 		 Tree.cpp
+		 TreeView.cpp
 )
 SET(Dock_Windows_HPP_SRCS
 		 CombiView.h
@@ -362,6 +364,7 @@ SET(Dock_Windows_HPP_SRCS
 		 TaskPanelView.h
 		 ToolBox.h
 		 Tree.h
+		 TreeView.h
 )
 SET(Dock_Windows_SRCS
 		 ${Dock_Windows_CPP_SRCS}
@@ -656,6 +659,7 @@ SET(FreeCADGui_CPP_SRCS
 		 ApplicationPy.cpp
 		 BitmapFactory.cpp
 		 Document.cpp
+		 DocumentModel.cpp
 		 DocumentPyImp.cpp
 		 GuiConsole.cpp
 		 Macro.cpp
@@ -668,6 +672,7 @@ SET(FreeCADGui_SRCS
 		 Application.h
 		 BitmapFactory.h
 		 Document.h
+		 DocumentModel.h
 		 Doxygen.cpp
 		 FreeCADGuiInit.py
 		 GuiConsole.h

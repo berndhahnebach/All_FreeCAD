@@ -76,7 +76,7 @@ PyObject *Feature::getPyObject(void)
     return Py::new_reference_to(PythonObject); 
 }
 
-std::vector<PyObject *> Feature::getPySubObjects(const std::vector<std::string> NameVec) const
+std::vector<PyObject *> Feature::getPySubObjects(const std::vector<std::string>& NameVec) const
 {
     std::vector<PyObject *> temp;
     for(std::vector<std::string>::const_iterator it=NameVec.begin();it!=NameVec.end();++it){

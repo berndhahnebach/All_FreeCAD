@@ -28,25 +28,25 @@
 
 #include "TaskEditControl.h"
 
+#include <QDialogButtonBox>
+#include <QHBoxLayout>
+
 using namespace Gui::TaskView;
 
 TaskEditControl::TaskEditControl(QWidget *parent)
     : TaskWidget(parent)
 {
-        hboxLayout = new QHBoxLayout(this);
-        buttonBox = new QDialogButtonBox(this);
-        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
-        buttonBox->setCenterButtons(true);
+    hboxLayout = new QHBoxLayout(this);
+    buttonBox = new QDialogButtonBox(this);
+    buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+    buttonBox->setCenterButtons(true);
 
-        hboxLayout->addWidget(buttonBox);
+    hboxLayout->addWidget(buttonBox);
 }
 
 TaskEditControl::~TaskEditControl()
 {
 }
-
-
-
 
 
 #include "moc_TaskEditControl.cpp"

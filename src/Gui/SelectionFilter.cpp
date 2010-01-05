@@ -37,16 +37,23 @@
 
 using namespace Gui;
 
+// suppress annoying warnings from generated source files
+#ifdef _MSC_VER
+# pragma warning(disable : 4003)
+# pragma warning(disable : 4018)
+# pragma warning(disable : 4065)
+#endif
+
 
 
 SelectionFilter::SelectionFilter(const char* filter)
-:Filter(filter)
+  : Filter(filter)
 {
     parse();
 }
 
-SelectionFilter::SelectionFilter(const std::string filter)
-:Filter(filter)
+SelectionFilter::SelectionFilter(const std::string& filter)
+  : Filter(filter)
 {
      parse();
 }
@@ -76,7 +83,7 @@ bool SelectionFilter::match(void)
 
         std::string type_name = *(*it)->Namespace + "::" + *(*it)->ObjectType;
         std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx(0,type_name.c_str());
-        if(temp.size()<min || temp.size()>max)
+        if ((int)temp.size()<min || (int)temp.size()>max)
             return false;
         Result.push_back(temp);
     }
