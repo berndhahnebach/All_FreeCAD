@@ -40,6 +40,7 @@ using namespace std;
 ControlSingleton* ControlSingleton::_pcSingleton = 0;
 
 ControlSingleton::ControlSingleton()
+:ActiveDialog(0)
 {
     
 }
@@ -48,7 +49,6 @@ ControlSingleton::~ControlSingleton()
 {
     
 }
-
 
 void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
 {
@@ -61,10 +61,15 @@ void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
     ActiveDialog = dlg;
 }
 
+void ControlSingleton::dlgDone()
+{
+    assert(ActiveDialog);
+    ActiveDialog = 0;
+}
 
 bool ControlSingleton::isAllowedAlterDocument(void) const
 {
-    return true;
+    return !ActiveDialog;
 }
 
 bool ControlSingleton::isAllowedAlterView(void) const

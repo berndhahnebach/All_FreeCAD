@@ -28,6 +28,8 @@
 #include <string>
 #include <vector>
 
+#include <QDialogButtonBox>
+
 #include <Gui/iisTaskPanel/include/iisTaskPanel>
 #include <Gui/Selection.h>
 
@@ -51,18 +53,24 @@ public:
 
     std::vector<QWidget*> &getDlgContent(void);
 
-Q_SIGNALS:
-    void finished(int result);
-    void accepted();
-    void rejected();
+    /// tells the framework which buttons whisched for the dialog
+    virtual QDialogButtonBox::StandardButtons getStandardButtons(void){return QDialogButtonBox::Ok|QDialogButtonBox::Cancel;}
 
-public Q_SLOTS:
-    void open();
-    virtual void done(int);
+
+public:
+    /// is called the TaskView when the dialog is opened
+    virtual void open();
+    /// is called by the framework if an button is clicked which has no accept or rject role
+    virtual void clicked(QAbstractButton *);
+    /// is called by the framework if the dialog is accepted (Ok)
     virtual void accept();
+    /// is called by the framework if the dialog is rejected (Cancel)
     virtual void reject();
+    /// is called by the framework if the user press the help button 
+    virtual void helpRequested();
 
 protected:
+    /// List of TaskBoxes of that dialog
     std::vector<QWidget*> Content;
 
 };

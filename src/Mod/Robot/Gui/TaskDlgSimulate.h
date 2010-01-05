@@ -39,6 +39,21 @@ public:
     TaskDlgSimulate();
     ~TaskDlgSimulate();
 
+public:
+    /// is called the TaskView when the dialog is opened
+    virtual void open();
+    /// is called by the framework if an button is clicked which has no accept or rject role
+    virtual void clicked(QAbstractButton *);
+    /// is called by the framework if the dialog is accepted (Ok)
+    virtual void accept();
+    /// is called by the framework if the dialog is rejected (Cancel)
+    virtual void reject();
+    /// is called by the framework if the user press the help button 
+    virtual void helpRequested();
+
+    /// returns for Close and Help button 
+    virtual QDialogButtonBox::StandardButtons getStandardButtons(void){return QDialogButtonBox::Close|QDialogButtonBox::Help;}
+
 };
 
 

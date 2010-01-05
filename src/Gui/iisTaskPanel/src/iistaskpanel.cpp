@@ -10,6 +10,7 @@
 #include "iistaskbox.h"
 #include "iistaskgroup.h"
 
+
 iisTaskPanel::iisTaskPanel(QWidget *parent) :
 	QWidget(parent)
 {
@@ -70,6 +71,15 @@ void iisTaskPanel::removeWidget(QWidget *w)
 
 void iisTaskPanel::addStretch(int s)
 {
-	((QVBoxLayout*)layout())->addStretch(s);
+    mySpacer = new QSpacerItem(0,0,QSizePolicy::Minimum, QSizePolicy::Expanding);
+    layout()->addItem(mySpacer);
+	//((QVBoxLayout*)layout())->addStretch(s);
+}
+
+void iisTaskPanel::rmvStretch(void)
+{
+    
+    layout()->removeItem(mySpacer);
+	delete mySpacer;
 }
 

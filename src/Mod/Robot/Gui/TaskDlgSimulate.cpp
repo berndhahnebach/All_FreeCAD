@@ -50,7 +50,30 @@ TaskDlgSimulate::~TaskDlgSimulate()
 
 }
 
+//==== calls from the TaskView ===============================================================
 
+
+void TaskDlgSimulate::open()
+{
+    
+}
+void TaskDlgSimulate::clicked(QAbstractButton *)
+{
+    
+}
+void TaskDlgSimulate::accept()
+{
+    
+}
+void TaskDlgSimulate::reject()
+{
+    
+}
+
+void TaskDlgSimulate::helpRequested()
+{
+
+}
 
 
 #include "moc_TaskDlgSimulate.cpp"

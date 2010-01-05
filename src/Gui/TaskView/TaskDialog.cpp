@@ -44,6 +44,11 @@ TaskDialog::TaskDialog( )
 
 TaskDialog::~TaskDialog()
 {
+    for(std::vector<QWidget*>::iterator it=Content.begin();it!=Content.end();++it){
+        delete(*it);
+        *it = 0;
+    }
+
 }
 
 //==== Slots ===============================================================
@@ -53,13 +58,13 @@ std::vector<QWidget*> &TaskDialog::getDlgContent(void)
     return Content;
 }
 
-//==== Slots ===============================================================
+//==== calls from the TaskView ===============================================================
 
 void TaskDialog::open()
 {
     
 }
-void TaskDialog::done(int)
+void TaskDialog::clicked(QAbstractButton *)
 {
     
 }
@@ -70,6 +75,11 @@ void TaskDialog::accept()
 void TaskDialog::reject()
 {
     
+}
+
+void TaskDialog::helpRequested()
+{
+
 }
 
 

@@ -36,8 +36,13 @@ class Property;
 }
 
 namespace Gui {
+class Control;
+namespace DockWnd{
+class CombiView;
+}
 namespace TaskView {
 
+class TaskEditControl;
 class TaskDialog;
 
 /// Father class of all content in TaskView
@@ -86,11 +91,22 @@ public:
     virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                           Gui::SelectionSingleton::MessageType Reason);
 
-    void showDialog(TaskDialog *dlg);
+    friend class Gui::DockWnd::CombiView;
 
+public Q_SLOTS:
+    virtual void accept();
+    virtual void reject();
+    virtual void helpRequested();
+    virtual void clicked ( QAbstractButton * button );
 
 protected:
+    /// used by Gui::Contol to register Dialogs
+    void showDialog(TaskDialog *dlg);
+    // removes the runing dialog after accept() or reject() from the TaskView
+    void rmvDialog(void);
     TaskDialog *ActiveDialog;
+    TaskEditControl *ActiveCtrl;
+
 
 private:
   
