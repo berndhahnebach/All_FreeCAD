@@ -7,6 +7,7 @@ BUILT_SOURCES=\
 		moc_BrowserView.cpp \
 		moc_CallTips.cpp \
 		moc_CombiView.cpp \
+		moc_Control.cpp \
 		moc_DlgActionsImp.cpp \
 		moc_DlgActivateWindowImp.cpp \
 		moc_DlgCommandsImp.cpp \
@@ -62,6 +63,7 @@ BUILT_SOURCES=\
 		moc_ToolBox.cpp \
 		moc_Transform.cpp \
 		moc_Tree.cpp \
+		moc_TreeView.cpp \
 		moc_MDIView.cpp\
 		moc_View3DInventor.cpp \
 		moc_WidgetFactory.cpp \
@@ -160,6 +162,7 @@ libFreeCADGui_la_SOURCES=\
 		BrowserView.cpp \
 		CallTips.cpp \
 		CombiView.cpp \
+		Control.cpp \
 		Command.cpp \
 		CommandDoc.cpp  \
 		CommandFeat.cpp  \
@@ -227,6 +230,7 @@ libFreeCADGui_la_SOURCES=\
 		DockWindowManager.cpp \
 		Document.cpp \
 		DocumentPyImp.cpp \
+		DocumentModel.cpp \
 		Doxygen.cpp \
 		FileDialog.cpp \
 		Flag.cpp \
@@ -295,6 +299,7 @@ libFreeCADGui_la_SOURCES=\
 		Transform.cpp \
 		Transform.h \
 		Tree.cpp \
+		TreeView.cpp \
 		View.cpp \
 		View3DInventor.cpp \
 		View3DInventorExamples.cpp \
@@ -338,10 +343,12 @@ include_HEADERS=\
 		BrowserView.h \
 		CallTips.h \
 		CombiView.h \
+		Control.h \
 		Command.h \
 		DockWindow.h \
 		DockWindowManager.h \
 		Document.h \
+		DocumentModel.h \
 		FileDialog.h \
 		Flag.h \
 		HelpView.h \
@@ -363,6 +370,7 @@ include_HEADERS=\
 		ReportView.h \
 		Selection.h \
 		SelectionObject.h \
+		SelectionFilter.h \
 		SelectionView.h \
 		SoFCBackgroundGradient.h \
 		SoFCBoundingBox.h \
@@ -387,6 +395,7 @@ include_HEADERS=\
 		ToolBox.h \
 		ToolBoxManager.h \
 		Tree.h \
+		TreeView.h \
 		View.h \
 		View3DInventor.h \
 		View3DInventorViewer.h \
@@ -413,6 +422,10 @@ include_HEADERS=\
 
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
+		lex.SelectionFilter.c \
+		SelectionFilter.l \
+		SelectionFilter.y \
+		SelectionFilter.tab.c \
 		FreeCADGuiInit.py \
 		DocumentPy.xml \
 		PythonWorkbenchPy.xml \

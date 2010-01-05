@@ -1,10 +1,15 @@
+SUBDIRS=sketchsolve_cp
 
 lib_LTLIBRARIES=libSketcher.la Sketcher.la
 
 BUILT_SOURCES=\
+		ConstraintPy.cpp \
+		SketchObjectPy.cpp \
 		SketchObjectSFPy.cpp
 
 libSketcher_la_BUILT=\
+		ConstraintPy.h \
+		SketchObjectPy.h \
 		SketchObjectSFPy.h
 
 libSketcher_la_SOURCES = \
@@ -41,8 +46,14 @@ libSketcher_la_SOURCES = \
 		sketchflat/README.txt \
 		\
 		AppSketcherPy.cpp \
+		Constraint.cpp \
+		Constraint.h \
+		ConstraintPyImp.cpp \
 		SketchFlatInterface.cpp \
 		SketchFlatInterface.h \
+		SketchObject.cpp \
+		SketchObject.h \
+		SketchObjectPyImp.cpp \
 		SketchObjectSF.cpp \
 		SketchObjectSF.h \
 		SketchObjectSFPyImp.cpp \
@@ -56,6 +67,7 @@ libSketcher_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App 
 libSketcher_la_CPPFLAGS = -DSketcherAppExport=
 
 libSketcher_la_LIBADD = \
+		sketchsolve_cp/libsketchsolve.la \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
@@ -112,4 +124,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libSketcher_la_BUILT)
 
 EXTRA_DIST = \
 		CMakeLists.txt \
-		SketchObjectPy.xml
+		ConstraintPy.xml \
+		SketchObjectPy.xml \
+		SketchObjectSFPy.xml
+
