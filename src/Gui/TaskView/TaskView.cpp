@@ -33,6 +33,7 @@
 #include <Gui/Document.h>
 #include <Gui/Application.h>
 #include <Gui/ViewProvider.h>
+#include <Gui/Control.h>
 
 using namespace Gui::TaskView;
 
@@ -83,7 +84,7 @@ TaskBox::~TaskBox()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TaskView::TaskView(QWidget *parent)
-    : iisTaskPanel(parent),ActiveDialog(0)
+    : iisTaskPanel(parent),ActiveDialog(0),ActiveCtrl(0)
 {
     //addWidget(new TaskEditControl(this));
     //addWidget(new TaskAppearance(this));
@@ -114,15 +115,78 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
 
 void TaskView::showDialog(TaskDialog *dlg)
 {
+    assert(!ActiveDialog);
+    assert(!ActiveCtrl);
+
+    // first creat the control element set it up and wire it:
+    ActiveCtrl = new TaskEditControl(this);
+    ActiveCtrl->buttonBox->setStandardButtons(dlg->getStandardButtons());
+
+    // make conection to the needed signals
+    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(accepted()),this,SLOT(accept()));
+    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(rejected()),this,SLOT(reject()));
+    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(helpRequested()),this,SLOT(helpRequested()));
+    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(clicked(QAbstractButton *)),this,SLOT(clicked(QAbstractButton *)));
+
     std::vector<QWidget*> &cont = dlg->getDlgContent();
 
-    addWidget(new TaskEditControl(this));
+    addWidget(ActiveCtrl);
 
     for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
         addWidget(*it);
     }
     addStretch();
+
+    // set as active Dialog
+    ActiveDialog = dlg;
+
+    ActiveDialog->open();
     
+}
+
+void TaskView::rmvDialog(void)
+{
+    
+    removeWidget(ActiveCtrl);
+    delete ActiveCtrl;
+    ActiveCtrl = 0;
+
+    std::vector<QWidget*> &cont = ActiveDialog->getDlgContent();
+    for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
+        removeWidget(*it);
+    }
+    rmvStretch();
+    // signal control the end of the dialog
+    Gui::Control().dlgDone();
+    delete ActiveDialog;
+    ActiveDialog = 0;
+    
+}
+
+void TaskView::accept()
+{
+    ActiveDialog->accept();
+    rmvDialog();
+
+}
+
+
+void TaskView::reject()
+{
+    ActiveDialog->reject();
+    rmvDialog();
+
+}
+
+void TaskView::helpRequested()
+{
+   ActiveDialog->helpRequested();
+
+}
+
+void TaskView::clicked ( QAbstractButton * button )
+{
+    ActiveDialog->clicked(button);
 }
 
 

@@ -53,6 +53,7 @@ class TaskDialog;
 
 
 namespace Gui {
+    class ControlSingleton;
 namespace DockWnd {
 
 /** Combi View
@@ -76,8 +77,12 @@ public:
     */
     virtual ~CombiView();
 
-    void showDialog(Gui::TaskView::TaskDialog *dlg);
 
+    friend class Gui::ControlSingleton;
+
+protected:
+
+    void showDialog(Gui::TaskView::TaskDialog *dlg);
 
 private:
     QTabWidget                         * tabs;

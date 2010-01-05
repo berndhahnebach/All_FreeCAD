@@ -30,6 +30,8 @@
 #include <bitset>
 #include <stack>
 
+#include <Gui/TaskView/TaskDialog.h>
+
 namespace App
 {
   class DocumentObject;
@@ -55,8 +57,15 @@ public:
     static ControlSingleton& instance(void);
     static void destruct (void);
 
+    /** @name dialog handling 
+   *  this methodes are used to control the TaskDialog stuff.
+   */
+    //@{
+    /// This methode start an Task dialog in the TaskView
     void showDialog(Gui::TaskView::TaskDialog *dlg);
-
+    /// This get called by the TaskView when the Dialog is finished
+    void dlgDone();
+    //@}
 
     bool isAllowedAlterDocument(void) const;
     bool isAllowedAlterView(void) const;
