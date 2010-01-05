@@ -37,58 +37,56 @@
 using namespace Gui;
 using namespace std;
 
-ControlSingelton* ControlSingelton::_pcSingleton = 0;
+ControlSingleton* ControlSingleton::_pcSingleton = 0;
 
-ControlSingelton::ControlSingelton()
+ControlSingleton::ControlSingleton()
 {
     
 }
 
-ControlSingelton::~ControlSingelton()
+ControlSingleton::~ControlSingleton()
 {
     
 }
 
 
-void ControlSingelton::showDialog(Gui::TaskView::TaskDialog *dlg)
+void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
 {
     Gui::DockWnd::CombiView* pcCombiView = (Gui::DockWnd::CombiView*) Gui::DockWindowManager::instance()->getDockWindow("Combo View");
-    // shut return the pointer to compi view
+    // should return the pointer to combi view
     assert(pcCombiView);
-    // only one Dialog at a time
+    // only one dialog at a time
     assert(!ActiveDialog);
     pcCombiView->showDialog(dlg);
     ActiveDialog = dlg;
 }
 
 
-bool ControlSingelton::isAllowedAlterDocument(void)
+bool ControlSingleton::isAllowedAlterDocument(void) const
 {
     return true;
 }
 
-bool ControlSingelton::isAllowedAlterView(void)
+bool ControlSingleton::isAllowedAlterView(void) const
 {
     return true;
 }
 
-bool ControlSingelton::isAllowedAlterSelection(void)
+bool ControlSingleton::isAllowedAlterSelection(void) const
 {
     return true;
 }
-
-
 
 // -------------------------------------------
 
-ControlSingelton& ControlSingelton::instance(void)
+ControlSingleton& ControlSingleton::instance(void)
 {
     if (_pcSingleton == NULL)
-        _pcSingleton = new ControlSingelton;
+        _pcSingleton = new ControlSingleton;
     return *_pcSingleton;
 }
 
-void ControlSingelton::destruct (void)
+void ControlSingleton::destruct (void)
 {
     if (_pcSingleton != NULL)
         delete _pcSingleton;
@@ -100,3 +98,4 @@ void ControlSingelton::destruct (void)
 
 
 #include "moc_Control.cpp"
+

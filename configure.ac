@@ -644,7 +644,7 @@ dnl **************************************************************************
 
 dnl Define DISTCHECK_CONFIGURE_FLAGS
 dnl **************************************************************************
-DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS CXXFLAGS=\"-fno-strict-aliasing\" LDFLAGS=\"-Wl,-z,defs\" --with-occ-include=$fc_occ_incs --with-occ-lib=$fc_occ_libs"
+DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS CXXFLAGS=\"-fno-strict-aliasing -Wno-write-strings\" LDFLAGS=\"-Wl,-z,defs\""
 AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 
 CXX=g++
@@ -683,6 +683,7 @@ src/Mod/PartDesign/Gui/Makefile
 src/Mod/PartDesign/Gui/Resources/Makefile
 src/Mod/Sketcher/Makefile
 src/Mod/Sketcher/App/Makefile
+src/Mod/Sketcher/App/sketchsolve_cp/Makefile
 src/Mod/Sketcher/Gui/Makefile
 src/Mod/Sketcher/Gui/Resources/Makefile
 src/Mod/Sketcher/Templates/Makefile

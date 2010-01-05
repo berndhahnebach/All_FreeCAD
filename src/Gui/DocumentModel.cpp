@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include <QApplication>
+# include <boost/signals.hpp>
+# include <boost/bind.hpp>
 #endif
 
 #include "DocumentModel.h"

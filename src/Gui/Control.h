@@ -46,27 +46,27 @@ namespace TaskView
 
 /** The control class
  */
-class GuiExport ControlSingelton : public QObject
+class GuiExport ControlSingleton : public QObject
 {
      Q_OBJECT
 
 public:
  
-    static ControlSingelton& instance(void);
+    static ControlSingleton& instance(void);
     static void destruct (void);
 
     void showDialog(Gui::TaskView::TaskDialog *dlg);
 
 
-    bool isAllowedAlterDocument(void);
-    bool isAllowedAlterView(void);
-    bool isAllowedAlterSelection(void);
+    bool isAllowedAlterDocument(void) const;
+    bool isAllowedAlterView(void) const;
+    bool isAllowedAlterSelection(void) const;
 
 
 protected:
     struct status {
         std::bitset<32> StatusBits;
-    } ActualStatus;
+    } CurrentStatus;
 
     std::stack<status> StatusStack;
 
@@ -74,19 +74,17 @@ protected:
  
 protected:
     /// Construction
-    ControlSingelton();
+    ControlSingleton();
     /// Destruction
-    virtual ~ControlSingelton();
+    virtual ~ControlSingleton();
 
-    static ControlSingelton* _pcSingleton;
-
-
+    static ControlSingleton* _pcSingleton;
 };
 
 /// Get the global instance
-inline ControlSingelton& Control(void)
+inline ControlSingleton& Control(void)
 {
-    return ControlSingelton::instance();
+    return ControlSingleton::instance();
 }
 
 } //namespace Gui

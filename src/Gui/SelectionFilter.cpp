@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel (FreeCAD@juergen-riegel.net)             *
+ *   Copyright (c) 2009 Juergen Riegel (FreeCAD@juergen-riegel.net)        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifdef __GNUC__
+# include <unistd.h>
+#endif
 
 #include <strstream>
 
@@ -42,6 +45,7 @@ using namespace Gui;
 # pragma warning(disable : 4003)
 # pragma warning(disable : 4018)
 # pragma warning(disable : 4065)
+# pragma warning(disable : 4335) // disable MAC file format warning on VC
 #endif
 
 
@@ -68,8 +72,8 @@ bool SelectionFilter::match(void)
     assert(Ast);
 
     for (std::vector< Node_Object *>::iterator it= Ast->Objects.begin();it!=Ast->Objects.end();++it){
-        const char* name = (*it)->Namespace->c_str();
-        const char* type = (*it)->ObjectType->c_str();
+        //const char* name = (*it)->Namespace->c_str();
+        //const char* type = (*it)->ObjectType->c_str();
         int min;
         int max;
 
@@ -114,7 +118,6 @@ void SelectionFilter::addError(const char* e)
 // === Parser & Scanner stuff ===============================================
 
 // include the Scanner and the Parser for the filter language
-# pragma warning(disable : 4335) // disable MAC file format warning on VC
 
 SelectionFilter* ActFilter=0;
 Node_Block *TopBlock=0;
@@ -128,8 +131,10 @@ void yyerror(char *errorinfo)
 int SelectionFilterlex(void);
 
 // for VC9 (isatty and fileno not suported anymore)
-int isatty (int i){return _isatty(i);}
-int fileno(FILE *stream){return _fileno(stream);}
+#ifdef _MSC_VER
+int isatty (int i) {return _isatty(i);}
+int fileno(FILE *stream) {return _fileno(stream);}
+#endif
 
 
 // Parser, defined in SelectionFilter.y
@@ -137,7 +142,6 @@ int fileno(FILE *stream){return _fileno(stream);}
 
 // Scanner, defined in SelectionFilter.l
 #include "lex.SelectionFilter.c"
-
 
 bool SelectionFilter::parse(void)
 {
