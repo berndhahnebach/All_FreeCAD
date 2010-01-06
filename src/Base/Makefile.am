@@ -79,6 +79,8 @@ libFreeCADBase_la_SOURCES=\
 		Tools.cpp \
 		Tools2D.cpp \
 		Uuid.cpp \
+		UnitsApi.cpp \
+		UnitsApi.h \
 		VectorPyImp.cpp \
 		Vector3D.cpp \
 		Writer.cpp \
@@ -157,7 +159,11 @@ EXTRA_DIST = \
 		PersistencePy.xml \
 		PlacementPy.xml \
 		RotationPy.xml \
-		VectorPy.xml
+		VectorPy.xml \
+		lex-UnitsApi.c \
+		UnitsApi.tab.c \
+		UnitsApi.l \
+		UnitsApi.y
 
 # -------------------------------------------------------------------------------
 # Debian based systems offer packages for PyCXX and zipios++ but other Linux
