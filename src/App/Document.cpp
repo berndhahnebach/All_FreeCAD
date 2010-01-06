@@ -107,6 +107,20 @@ using namespace zipios;
 //#  define FC_LOGFEATUREUPDATE
 #endif 
 
+// typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
+typedef boost::adjacency_list <
+boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
+boost::vecS,           // class VertexListS   : a Sequence or a RandomAccessContainer
+boost::directedS,      // class DirectedS     : This is a directed graph
+boost::no_property,    // class VertexProperty:
+boost::no_property,    // class EdgeProperty:
+boost::no_property,    // class GraphProperty:
+boost::listS           // class EdgeListS:
+> DependencyList;
+typedef boost::graph_traits<DependencyList> Traits;
+typedef Traits::vertex_descriptor Vertex;
+typedef Traits::edge_descriptor Edge;
+
 namespace App {
 
 // Pimpl class
@@ -121,6 +135,7 @@ struct DocumentP
     int iTransactionMode;
     int iTransactionCount;
     std::map<int,Transaction*> mTransactions;
+    std::map<Vertex,DocumentObject*> vertexMap;
     bool rollback;
     bool closable;
     int iUndoMode;
@@ -140,23 +155,6 @@ struct DocumentP
 } // namespace App
 
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
-
-
-// typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
-typedef boost::adjacency_list <
-boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
-boost::vecS,           // class VertexListS   : a Sequence or a RandomAccessContainer
-boost::directedS,      // class DirectedS     : This is a directed graph
-boost::no_property,    // class VertexProperty:
-boost::no_property,    // class EdgeProperty:
-boost::no_property,    // class GraphProperty:
-boost::listS           // class EdgeListS:
-> DependencyList;
-typedef boost::graph_traits<DependencyList> Traits;
-typedef Traits::vertex_descriptor Vertex;
-typedef Traits::edge_descriptor Edge;
-
-
 
 void Document::writeDependencyGraphViz(std::ostream &out)
 {
@@ -936,16 +934,16 @@ void Document::recompute()
     boost::topological_sort(DepList, std::front_inserter(make_order));
 
     // caching vertex to DocObject
-    std::map<Vertex,DocumentObject*> VertexMap;
     for (std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
-        VertexMap[It1->second] = It1->first;
+        d->vertexMap[It1->second] = It1->first;
 
 #ifdef FC_LOGFEATUREUPDATE
     std::clog << "make ordering: " << std::endl;
 #endif
 
     for (std::list<Vertex>::reverse_iterator i = make_order.rbegin();i != make_order.rend(); ++i) {
-        DocumentObject* Cur = VertexMap[*i];
+        DocumentObject* Cur = d->vertexMap[*i];
+        if (!Cur) continue;
 #ifdef FC_LOGFEATUREUPDATE
         std::clog << Cur->getNameInDocument() << " dep on: " ;
 #endif
@@ -957,7 +955,8 @@ void Document::recompute()
         else {// if (Cur->mustExecute() == -1)
             // update if one of the dependencies is touched
             for (boost::tie(j, jend) = out_edges(*i, DepList); j != jend; ++j) {
-                DocumentObject* Test = VertexMap[target(*j, DepList)];
+                DocumentObject* Test = d->vertexMap[target(*j, DepList)];
+                if (!Test) continue;
 #ifdef FC_LOGFEATUREUPDATE
                 std::clog << Test->getNameInDocument() << ", " ;
 #endif
@@ -975,15 +974,20 @@ void Document::recompute()
 #ifdef FC_LOGFEATUREUPDATE
             std::clog << "Recompute" << std::endl;
 #endif
-            if(_recomputeFeature(Cur))
+            if (_recomputeFeature(Cur)) {
                 // if somthing happen break execution of recompute
+                d->vertexMap.clear();
                 return;
+            }
         }
-
     }
+
     // reset all touched
-    for (std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
-        It1->first->purgeTouched();
+    for (std::map<Vertex,DocumentObject*>::iterator it = d->vertexMap.begin(); it != d->vertexMap.end(); ++it) {
+        if (it->second)
+            it->second->purgeTouched();
+    }
+    d->vertexMap.clear();
 }
 
 const char *Document::getErrorDescription(const App::DocumentObject*Obj) const
@@ -1145,6 +1149,15 @@ void Document::remObject(const char* sName)
         d->activeObject = 0;
 
     signalDeletedObject(*(pos->second));
+    if (!d->vertexMap.empty()) {
+        // recompute of document is running
+        for (std::map<Vertex,DocumentObject*>::iterator it = d->vertexMap.begin(); it != d->vertexMap.end(); ++it) {
+            if (it->second == pos->second) {
+                it->second = 0; // just nullify the pointer
+                break;
+            }
+        }
+    }
 
     // Before deleting we must nullify all dependant objects
     breakDependency(pos->second, true);
