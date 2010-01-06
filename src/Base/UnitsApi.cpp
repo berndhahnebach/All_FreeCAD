@@ -127,11 +127,7 @@ int fileno(FILE *stream) {return _fileno(stream);}
 #include "UnitsApi.tab.c"
 
 // Scanner, defined in UnitsApi.l
-#ifdef __GNUC__
-#include "lex.UnitsApi_gcc.c"
-#else
 #include "lex.UnitsApi.c"
-#endif
 
 bool UnitsApi::parse(void)
 {
