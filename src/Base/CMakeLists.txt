@@ -133,6 +133,14 @@ SET(FreeCADBase_XML_SRCS
 )
 SOURCE_GROUP("XML" FILES ${FreeCADBase_XML_SRCS})
 
+SET(FreeCADBase_UNITAPI_SRCS
+	UnitsApi.cpp
+	UnitsApi.h
+	UnitsApi.y
+	UnitsApi.l
+)
+SOURCE_GROUP("Units" FILES ${FreeCADBase_UNITAPI_SRCS})
+
 SET(FreeCADBase_CPP_SRCS
 	Base64.cpp
 	BaseClass.cpp
@@ -236,6 +244,7 @@ SET(FreeCADBase_SRCS
 	${FreeCADBase_CPP_SRCS}
 	${FreeCADBase_HPP_SRCS}
 	${FreeCADBase_XML_SRCS}
+	${FreeCADBase_UNITAPI_SRCS}
 	Doxygen.cpp
 	PyTools.c
 	PyTools.h
