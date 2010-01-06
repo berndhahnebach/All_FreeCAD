@@ -39,6 +39,9 @@ class GuiExport TreeView : public QTreeView
 public:
     TreeView(QWidget* parent=0);
     virtual ~TreeView();
+
+protected:
+    void mouseDoubleClickEvent (QMouseEvent * );
 };
 
 }

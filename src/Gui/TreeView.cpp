@@ -24,6 +24,11 @@
 #include "PreCompiled.h"
 #include "TreeView.h"
 #include "DocumentModel.h"
+#include "Application.h"
+#include "Document.h"
+#include "MDIView.h"
+#include "MainWindow.h"
+#include "ViewProvider.h"
 
 using namespace Gui;
 
@@ -31,8 +36,39 @@ TreeView::TreeView(QWidget* parent)
   : QTreeView(parent)
 {
     setModel(new DocumentModel(this));
+    QModelIndex root = this->model()->index(0,0,QModelIndex());
+    this->setExpanded(root, true);
+    this->setDragEnabled(true);
+    this->setAcceptDrops(true);
+    this->setDropIndicatorShown(false);
+    this->setRootIsDecorated(false);
+    this->setSelectionMode(QAbstractItemView::ExtendedSelection);
+#if QT_VERSION >= 0x040200
+    // causes unexpected drop events (possibly only with Qt4.1.x)
+    this->setMouseTracking(true); // needed for itemEntered() to work
+#endif
 }
 
 TreeView::~TreeView()
 {
+}
+
+void TreeView::mouseDoubleClickEvent (QMouseEvent * event)
+{
+    QModelIndex index = indexAt(event->pos());
+    if (!index.isValid() || index.internalPointer() == Application::Instance)
+        return;
+    Base::BaseClass* item = 0;
+    item = static_cast<Base::BaseClass*>(index.internalPointer());
+    if (item->getTypeId() == Document::getClassTypeId()) {
+        QTreeView::mouseDoubleClickEvent(event);
+        const Gui::Document* doc = static_cast<Gui::Document*>(item);
+        MDIView *view = doc->getActiveView();
+        if (!view) return;
+        getMainWindow()->setActiveWindow(view);
+    }
+    else if (item->getTypeId().isDerivedFrom(ViewProvider::getClassTypeId())) {
+        if (static_cast<ViewProvider*>(item)->doubleClicked() == false)
+            QTreeView::mouseDoubleClickEvent(event);
+    }
 }
