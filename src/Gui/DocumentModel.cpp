@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <QApplication>
+# include <algorithm>
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
 #endif
@@ -39,12 +40,40 @@
 
 using namespace Gui;
 
+namespace Gui {
+    class ApplicationIndex : public Base::BaseClass
+    {
+    private:
+        TYPESYSTEM_HEADER();
+        static ApplicationIndex* _instance;
+
+        ApplicationIndex(){}
+
+    public:
+        static ApplicationIndex* instance() 
+        {
+            if (!_instance)
+                _instance = new ApplicationIndex();
+            return _instance; 
+        }
+    };
+
+    TYPESYSTEM_SOURCE_ABSTRACT(Gui::ApplicationIndex,Base::BaseClass);
+
+    ApplicationIndex* ApplicationIndex::_instance = 0;
+}
 
 QIcon* DocumentModel::documentIcon = 0;
 
 DocumentModel::DocumentModel(QObject* parent)
     : QAbstractItemModel(parent)
 {
+    static bool inittype = false;
+    if (!inittype) {
+        inittype = true;
+        ApplicationIndex::init();
+    }
+
     // Setup connections
     Application::Instance->signalNewDocument.connect(boost::bind(&DocumentModel::slotNewDocument, this, _1));
     Application::Instance->signalDeleteDocument.connect(boost::bind(&DocumentModel::slotDeleteDocument, this, _1));
@@ -69,15 +98,24 @@ void DocumentModel::slotNewDocument(const Gui::Document& Doc)
     Doc.signalInEdit.connect(boost::bind(&DocumentModel::slotInEdit, this, _1));
     Doc.signalResetEdit.connect(boost::bind(&DocumentModel::slotResetEdit, this, _1));
 
-    QModelIndex parent = createIndex(0,0,Application::Instance);
+    QModelIndex parent = createIndex(0,0,ApplicationIndex::instance());
     int count_docs = (int)this->docs.size();
-    beginInsertRows(parent, count_docs, count_docs+1);
+    beginInsertRows(parent, count_docs, count_docs);
     this->docs.push_back(&Doc);
     endInsertRows();
 }
 
 void DocumentModel::slotDeleteDocument(const Gui::Document& Doc)
 {
+    std::vector<const Gui::Document*>::iterator it = std::find
+        (this->docs.begin(), this->docs.end(), &Doc);
+    if (it != this->docs.end()) {
+        QModelIndex parent = createIndex(0,0,ApplicationIndex::instance());
+        int index = it - this->docs.begin();
+        beginRemoveRows(parent, index, index);
+        this->docs.erase(it);
+        endRemoveRows();
+    }
 }
 
 void DocumentModel::slotRenameDocument(const Gui::Document& Doc)
@@ -121,6 +159,19 @@ void DocumentModel::slotActiveObject(const Gui::ViewProviderDocumentObject& obj)
 {
 }
 
+Document* DocumentModel::getDocument(const QModelIndex& index) const
+{
+    if (!index.isValid())
+        return 0;
+    Base::BaseClass* item = 0;
+    item = static_cast<Base::BaseClass*>(index.internalPointer());
+    if (item->getTypeId() == Document::getClassTypeId()) {
+        return static_cast<Document*>(item);
+    }
+
+    return 0;
+}
+
 int DocumentModel::columnCount (const QModelIndex & /*parent*/) const
 {
     return 1;
@@ -132,24 +183,43 @@ QVariant DocumentModel::data (const QModelIndex & index, int role) const
         return QVariant();
     if (role == Qt::DecorationRole) {
         // the root item
-        if (index.internalPointer() == Application::Instance) {
-            return qApp->windowIcon();
-        }
         Base::BaseClass* item = 0;
         item = static_cast<Base::BaseClass*>(index.internalPointer());
-        if (item->getTypeId() == Document::getClassTypeId()) {
+        if (item->getTypeId() == ApplicationIndex::getClassTypeId()) {
+            return qApp->windowIcon();
+        }
+        else if (item->getTypeId() == Document::getClassTypeId()) {
             return *documentIcon;
         }
     }
     else if (role == Qt::DisplayRole) {
         // the root item
-        if (index.internalPointer() == Application::Instance)
-            return tr("Application");
         Base::BaseClass* item = 0;
         item = static_cast<Base::BaseClass*>(index.internalPointer());
-        if (item->getTypeId() == Document::getClassTypeId()) {
+        if (item->getTypeId() == ApplicationIndex::getClassTypeId())
+            return tr("Application");
+        else if (item->getTypeId() == Document::getClassTypeId()) {
             App::Document* doc = static_cast<Document*>(item)->getDocument();
             return QString::fromUtf8(doc->Label.getValue());
+        }
+        else if (item->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId())) {
+            App::DocumentObject* obj = static_cast<Gui::ViewProviderDocumentObject*>(item)->getObject();
+            return QString::fromUtf8(obj->Label.getValue());
+        }
+    }
+    else if (role == Qt::FontRole) {
+        // the root item
+        Base::BaseClass* item = 0;
+        item = static_cast<Base::BaseClass*>(index.internalPointer());
+        if (item->getTypeId() == ApplicationIndex::getClassTypeId())
+            return QVariant();
+        else if (item->getTypeId() == Document::getClassTypeId()) {
+            Document* doc = Application::Instance->activeDocument();
+            QFont font;
+            font.setBold(doc==item);
+            QVariant variant;
+            variant.setValue<QFont>(font);
+            return variant;
         }
         else if (item->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId())) {
             App::DocumentObject* obj = static_cast<Gui::ViewProviderDocumentObject*>(item)->getObject();
@@ -174,23 +244,24 @@ bool DocumentModel::setData(const QModelIndex& index, const QVariant & value, in
 
 Qt::ItemFlags DocumentModel::flags(const QModelIndex &index) const
 {
+    if (index.internalPointer() == ApplicationIndex::instance())
+        return Qt::ItemIsEnabled;
     return QAbstractItemModel::flags(index);
 }
 
 QModelIndex DocumentModel::index (int row, int column, const QModelIndex & parent) const
 {
     if (!parent.isValid())
-        return createIndex(row, column, Application::Instance);
-    if (parent.internalPointer() == Application::Instance) {
+        return createIndex(row, column, ApplicationIndex::instance());
+    Base::BaseClass* item = 0;
+    item = static_cast<Base::BaseClass*>(parent.internalPointer());
+    if (item->getTypeId() == ApplicationIndex::getClassTypeId()) {
         if (row >= (int)this->docs.size())
             return QModelIndex();
         Gui::Document* doc = const_cast<Gui::Document*>(this->docs[row]);
         return createIndex(row, column, doc);
     }
-
-    Base::BaseClass* item = 0;
-    item = static_cast<Base::BaseClass*>(parent.internalPointer());
-    if (item->getTypeId() == Document::getClassTypeId()) {
+    else if (item->getTypeId() == Document::getClassTypeId()) {
         App::Document* doc = static_cast<Document*>(item)->getDocument();
         std::vector<App::DocumentObject*> objs = doc->getObjects();
         if (objs.empty()) return QModelIndex();
@@ -205,12 +276,10 @@ QModelIndex DocumentModel::parent (const QModelIndex & index) const
 {
     if (!index.isValid())
         return QModelIndex();
-    if (index.internalPointer() == Application::Instance)
-        return QModelIndex();
     Base::BaseClass* item = 0;
     item = static_cast<Base::BaseClass*>(index.internalPointer());
     if (item->getTypeId() == Document::getClassTypeId()) {
-        return createIndex(0, 0, Application::Instance);
+        return createIndex(0, 0, ApplicationIndex::instance());
     }
 
     return QModelIndex();
@@ -220,12 +289,12 @@ int DocumentModel::rowCount (const QModelIndex & parent) const
 {
     if (!parent.isValid())
         return 1; // the root item
-    if (parent.internalPointer() == Application::Instance)
-        return (int)this->docs.size();
-
     Base::BaseClass* item = 0;
     item = static_cast<Base::BaseClass*>(parent.internalPointer());
-    if (item->getTypeId() == Document::getClassTypeId()) {
+    if (item->getTypeId() == ApplicationIndex::getClassTypeId()) {
+        return (int)this->docs.size();
+    }
+    else if (item->getTypeId() == Document::getClassTypeId()) {
         App::Document* doc = static_cast<Document*>(item)->getDocument();
         std::vector<App::DocumentObject*> objs = doc->getObjects();
         return (int)objs.size();
