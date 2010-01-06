@@ -151,7 +151,7 @@ public:
     void runMethodVoid(PyObject *pobject, const char *method);
     /// runs a python object method which returns a arbitrary object
     PyObject* runMethodObject(PyObject *pobject, const char *method);
-    /// runs a python methode with arbitrary params
+    /// runs a python method with arbitrary params
     void runMethod(PyObject *pobject, const char *method,
                    const char *resfmt=0,   void *cresult=0,   
                    const char *argfmt="()",   ...  );

@@ -63,7 +63,7 @@ int FemMeshPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return 0;
 }
 
-// ===== Methodes ============================================================
+// ===== Methods ============================================================
 
 PyObject* FemMeshPy::setShape(PyObject *args)
 {

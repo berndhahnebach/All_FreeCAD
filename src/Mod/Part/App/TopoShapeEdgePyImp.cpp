@@ -121,7 +121,7 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return -1;
 }
 
-// ====== Methodes  ======================================================================
+// ====== Methods  ======================================================================
 
 PyObject* TopoShapeEdgePy::tangentAt(PyObject *args)
 {

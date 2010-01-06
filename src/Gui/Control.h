@@ -58,10 +58,10 @@ public:
     static void destruct (void);
 
     /** @name dialog handling 
-   *  this methodes are used to control the TaskDialog stuff.
+   *  this methods are used to control the TaskDialog stuff.
    */
     //@{
-    /// This methode start an Task dialog in the TaskView
+    /// This method start an Task dialog in the TaskView
     void showDialog(Gui::TaskView::TaskDialog *dlg);
     /// This get called by the TaskView when the Dialog is finished
     void dlgDone();

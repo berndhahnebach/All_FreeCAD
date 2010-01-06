@@ -170,10 +170,10 @@ namespace Base
  *  The class App::Document is a good expample for a exported class.
  *  There are some conveniance macros to make it easier to inherit
  *  from this class and defining new methods exported to python.
- *  PYFUNCDEF_D defines a new exported methode.
- *  PYFUNCIMP_D defines the implementation of the new exported methode.
+ *  PYFUNCDEF_D defines a new exported method.
+ *  PYFUNCIMP_D defines the implementation of the new exported method.
  *  In the implementation you can use Py_Return, Py_Error, Py_Try and Py_Assert.
- *  PYMETHODEDEF makes the entry in the python methods tabel.
+ *  PYMETHODEDEF makes the entry in the python method tabel.
  *  @see Document
  *  @see PYFUNCDEF_D
  *  @see PYFUNCIMP_D
