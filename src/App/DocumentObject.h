@@ -119,7 +119,7 @@ public:
     /** Called in case of loosing a link
      * Get called by the document when a object got deleted a link property of this 
      * object ist pointing to. The standard behaivour of the DocumentObject implementation 
-     * is to reset the links to nothing. You may overide this methode to implement 
+     * is to reset the links to nothing. You may overide this method to implement 
      *additional or different behavior.
      */
     virtual void onLoseLinkToObject(DocumentObject*);
@@ -137,7 +137,7 @@ public:
 
 protected:
     /** get called by the document to recompute this feature
-      * Normaly this methode get called in the processing of 
+      * Normaly this method get called in the processing of 
       * Document::recompute(). 
       * In execute() the outpupt properties get recomputed
       * with the data from linked objects and objects own 

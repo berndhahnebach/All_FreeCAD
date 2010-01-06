@@ -112,11 +112,11 @@ UnitsApi* ActUnit=0;
 void yyerror(char *errorinfo)
 	{  ActUnit->addError(errorinfo);  }
 
-// show the parser the lexer methode
+// show the parser the lexer method
 #define yylex UnitsApilex
 int UnitsApilex(void);
 
-// for VC9 (isatty and fileno not suported anymore)
+// for VC9 (isatty and fileno not supported anymore)
 #ifdef _MSC_VER
 int isatty (int i) {return _isatty(i);}
 int fileno(FILE *stream) {return _fileno(stream);}

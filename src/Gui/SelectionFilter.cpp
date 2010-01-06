@@ -126,11 +126,11 @@ Node_Block *TopBlock=0;
 void yyerror(char *errorinfo)
 	{  ActFilter->addError(errorinfo);  }
 
-// show the parser the lexer methode
+// show the parser the lexer method
 #define yylex SelectionFilterlex
 int SelectionFilterlex(void);
 
-// for VC9 (isatty and fileno not suported anymore)
+// for VC9 (isatty and fileno not supported anymore)
 #ifdef _MSC_VER
 int isatty (int i) {return _isatty(i);}
 int fileno(FILE *stream) {return _fileno(stream);}
