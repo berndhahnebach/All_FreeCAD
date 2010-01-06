@@ -423,7 +423,6 @@ include_HEADERS=\
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
 		lex.SelectionFilter.c \
-		lex.SelectionFilter_gcc.c \
 		SelectionFilter.l \
 		SelectionFilter.y \
 		SelectionFilter.tab.c \

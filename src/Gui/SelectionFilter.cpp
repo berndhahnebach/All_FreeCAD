@@ -141,11 +141,7 @@ int fileno(FILE *stream) {return _fileno(stream);}
 #include "SelectionFilter.tab.c"
 
 // Scanner, defined in SelectionFilter.l
-#ifdef __GNUC__
-#include "lex.SelectionFilter_gcc.c"
-#else
 #include "lex.SelectionFilter.c"
-#endif
 
 bool SelectionFilter::parse(void)
 {
