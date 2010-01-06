@@ -1,44 +1,33 @@
-/* Parser for the FreeCAD selection Units language */
+/* Parser for the FreeCAD  Units language           */
 /* (c) 2010 Juergen Riegel  LGPL                    */
 
 
 /* Represents the many different ways we can access our data */
-%union {
-    double       number;
-    std::string *string;
-}
+%{
+       #define YYSTYPE double
+       #include <math.h>
+       #include <stdio.h>
+ %}
 
-/* Define our terminal symbols (tokens). This should
-   match our tokens.l lex file. We also define the node type
-   they represent.
- */
-%token <string> TIDENTIFIER 
-%token <token> TFROM TSELECT TCOUNT TSLICE
-%token <number> TNUMBER
+     /* Bison declarations.  */
+     %token NUM
+     %token UNIT
+     %left '-' '+'
+     %left '*' '/'
+     %left NEG     /* negation--unary minus */
+     %right '^'    /* exponentiation */
 
-%left '-' '+'
-%left '*' '/'
-%left NEG     /* negation--unary minus */
-%right '^'    /* exponentiation */
 
-/* Define the type of node our nonterminal symbols represent.
-   The types refer to the %union declaration above.
- */
-%type <number> exp
 
 %start input
 
 %%
 
-    input:    /* empty */
-             | input line
-     ;
+    input:     exp                { ScanResult = $1     ;    }
+             | exp uexp           { ScanResult = $1 * $2;    }
+;     
      
-     line:     '\n'
-             | exp '\n'  { printf ("\t%.10g\n", $1); }
-     ;
-     
-     exp:      TNUMBER            { $$ = $1;         }
+     exp:      NUM                { $$ = $1;         }
              | exp '+' exp        { $$ = $1 + $3;    }
              | exp '-' exp        { $$ = $1 - $3;    }
              | exp '*' exp        { $$ = $1 * $3;    }
@@ -46,6 +35,12 @@
              | '-' exp  %prec NEG { $$ = -$2;        }
              | exp '^' exp        { $$ = pow ($1, $3); }
              | '(' exp ')'        { $$ = $2;         }
+ ;            
+     uexp:     UNIT               { $$ = $1;         }
+             | uexp '*' uexp      { $$ = $1 * $3;    }
+             | uexp '/' uexp      { $$ = $1 / $3;    }
+             | uexp '^' NUM       { $$ = pow ($1, $3); }
+             | '(' uexp ')'       { $$ = $2;         }
      ;
 
 

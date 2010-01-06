@@ -280,6 +280,7 @@ private:
     static PyObject* sListDocuments     (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sAddDocObserver    (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sRemoveDocObserver (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject* sTranslateUnit     (PyObject *self,PyObject *args,PyObject *kwd);
 
     static PyMethodDef    Methods[]; 
 
