@@ -1,6 +1,6 @@
 %{
-/* Lexer for the FreeCAD selection Units language   */
-/* (c) 2010 Juergen Riegel  LGPL                    */
+/* Lexer for the FreeCAD  Units language   */
+/* (c) 2010 Juergen Riegel  LGPL           */
 
 #include <string>
 
@@ -24,27 +24,24 @@
 /* no support for include files is planned */
 %option noyywrap nounput 
 
+DIGIT    [0-9]
+ID       [a-z][a-z0-9]*
+
 
 %% /*** Filter language Part ***/
 
  
 [ \t]                   ;
 [\n]+                   ;
-"FROM"                  return TFROM;
-"SELECT"                return TSELECT;
-"COUNT"                 return TCOUNT;
-".."					return TSLICE;
 
-[a-zA-Z_][a-zA-Z0-9_]*  {
-       yylval.string = new std::string(yytext);
-       return TIDENTIFIER;
-      }
-[0-9]+                  {
-       long n = strtol (yytext, NULL, 10);
-       yylval.number = n;
-       return TNUMBER;
-     }
+"mm"                    yylval = 1.0;    return UNIT; // Milimeter
+"m"                     yylval = 1000.0; return UNIT; // Meter
+"cm"                    yylval = 100.0;  return UNIT; // Centimeter
 
 
+
+{DIGIT}+"."{DIGIT}*    {yylval = atof( yytext ); return NUM;}
+{DIGIT}+               {yylval = atof( yytext ); return NUM;}
+                     
 
  

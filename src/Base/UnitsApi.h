@@ -42,43 +42,17 @@ public:
     UnitsApi(const std::string& filter);
     virtual ~UnitsApi();
 
-    bool match(void);
+    static double translateUnit(const char*);
+    static double translateUnit(const std::string&);
 
-    void addError(const char* e);
- 
+    double Result;
+
 protected:
 
-    std::string Filter;
-    std::string Errors;
-    bool parse(void);
+    // do the real work
+    static double parse(const char*);
 
 };
-
-// === Abstract syntax tree (AST) ===========================================
-
-//struct Node_Slice 
-//{
-//    Node_Slice(int min=1,int max=INT_MAX):Min(min),Max(max){}
-//    int Min,Max;
-//
-//};
-//
-//
-//struct Node_Object 
-//{
-//    Node_Object(std::string *namespc,std::string *type,Node_Slice* slc=0):Namespace(namespc),ObjectType(type),Slice(slc){}
-//    std::string *Namespace;
-//    std::string *ObjectType;
-//    Node_Slice  *Slice;
-//
-//};
-//
-//struct Node_Block 
-//{
-//    Node_Block(Node_Object* obj){Objects.push_back(obj);}
-//    std::vector< Node_Object *> Objects;
-//};
-
 
 } // namespace Base
 

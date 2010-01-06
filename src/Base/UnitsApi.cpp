@@ -49,54 +49,27 @@ using namespace Base;
 
 
 UnitsApi::UnitsApi(const char* filter)
-  : Filter(filter)
 {
-    parse();
+    Result = parse(filter);
 }
 
 UnitsApi::UnitsApi(const std::string& filter)
-  : Filter(filter)
 {
-     parse();
+    Result = parse(filter.c_str());
 }
 
 UnitsApi::~UnitsApi()
 {
 }
 
-
-bool UnitsApi::match(void)
+double UnitsApi::translateUnit(const char* str)
 {
-    //assert(Ast);
-
-    //for (std::vector< Node_Object *>::iterator it= Ast->Objects.begin();it!=Ast->Objects.end();++it){
-    //    //const char* name = (*it)->Namespace->c_str();
-    //    //const char* type = (*it)->ObjectType->c_str();
-    //    int min;
-    //    int max;
-
-    //    if((*it)->Slice){
-    //        min          = (*it)->Slice->Min;
-    //        max          = (*it)->Slice->Max;
-    //    }else{
-    //        min          = 1;
-    //        max          = 1;
-    //    }
-
-    //    std::string type_name = *(*it)->Namespace + "::" + *(*it)->ObjectType;
-    //    std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx(0,type_name.c_str());
-    //    if ((int)temp.size()<min || (int)temp.size()>max)
-    //        return false;
-    //    Result.push_back(temp);
-    //}
-    return true;
+    return parse( str ); 
 }
 
-
-void UnitsApi::addError(const char* e)
+double UnitsApi::translateUnit(const std::string& str)
 {
-    Errors+=e;
-    Errors += '\n';
+    return parse( str.c_str() );  
 }
 
 
@@ -106,11 +79,11 @@ void UnitsApi::addError(const char* e)
 // include the Scanner and the Parser for the filter language
 
 UnitsApi* ActUnit=0;
-//Node_Block *TopBlock=0;
+double ScanResult=0;
 
 // error func
 void yyerror(char *errorinfo)
-	{  ActUnit->addError(errorinfo);  }
+{  throw Base::Exception(errorinfo);  }
 
 // show the parser the lexer method
 #define yylex UnitsApilex
@@ -129,18 +102,17 @@ int fileno(FILE *stream) {return _fileno(stream);}
 // Scanner, defined in UnitsApi.l
 #include "lex.UnitsApi.c"
 
-bool UnitsApi::parse(void)
+double UnitsApi::parse(const char* buffer)
 {
-    Errors = "";
-    YY_BUFFER_STATE my_string_buffer = UnitsApi_scan_string (Filter.c_str());
+    YY_BUFFER_STATE my_string_buffer = UnitsApi_scan_string (buffer);
     // be aware that this parser is not reentrant! Dont use with Threats!!!
-    assert(!ActUnit);
-    ActUnit = this;
-    int my_parse_result  = yyparse ();
-    ActUnit = 0;
+    //assert(!ActUnit);
+    //ActUnit = this;
+    yyparse ();
+    //ActUnit = 0;
     //Ast = TopBlock;
     //TopBlock = 0;
     UnitsApi_delete_buffer (my_string_buffer);
 
-    return true;
+    return ScanResult;
 }
