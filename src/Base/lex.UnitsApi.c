@@ -379,8 +379,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 28
-#define YY_END_OF_BUFFER 29
+#define YY_NUM_RULES 37
+#define YY_END_OF_BUFFER 38
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -388,13 +388,14 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[49] =
+static yyconst flex_int16_t yy_accept[61] =
     {   0,
-        0,    0,   29,   28,    1,    2,    3,   27,   25,   28,
-       28,   28,   14,   28,   28,   28,    5,   28,   28,   28,
-       16,   28,   21,    2,   26,   27,    6,    0,    7,   10,
-        0,    9,   13,    8,   17,   24,   15,    4,   18,    0,
-       19,   11,   12,   26,   20,   23,   22,    0
+        0,    0,   38,   37,    1,    2,    3,   34,   27,   28,
+       32,   37,   37,   36,   37,   14,   26,   37,   37,   37,
+        5,   37,   37,   37,   24,   16,   37,    2,   33,   34,
+       29,    6,    0,    0,    7,   10,    0,    9,   13,    8,
+       17,   31,   15,    0,    4,    0,   18,   35,    0,   19,
+       11,   12,   33,   20,   21,   23,   25,   30,   22,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -405,19 +406,19 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    2,    1,    1,    1,    1,    1,    1,    1,    4,
         4,    4,    4,    1,    4,    5,    4,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    1,    1,    1,
-        4,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    7,    1,    1,    1,    1,
+        4,    1,    1,    1,    7,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    8,    9,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    4,    1,    1,    8,    9,   10,   11,
+        1,    1,    1,    4,    1,    1,   10,   11,   12,   13,
 
-        1,   12,   13,   14,   15,    1,   16,   17,   18,   19,
-       20,    1,    1,   21,   22,   23,    1,    1,   24,    1,
-       25,   26,    1,    1,    1,    1,    1,    1,    1,    1,
+       14,   15,   16,   17,   18,    1,   19,   20,   21,   22,
+       23,   24,    1,   25,   26,   27,    1,    1,   28,    1,
+       29,   30,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,   27,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
 
@@ -429,55 +430,61 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[28] =
+static yyconst flex_int32_t yy_meta[31] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int16_t yy_base[49] =
+static yyconst flex_int16_t yy_base[61] =
     {   0,
-        0,    0,   56,   57,   57,   52,   57,   23,   57,   12,
-       36,   33,   32,   32,   19,   41,   26,   23,   40,   24,
-       32,   24,   57,   40,   36,   29,   57,   18,   57,   57,
-       21,   57,   57,   57,   57,   57,   57,   57,   57,   27,
-       57,   57,   57,   25,   57,   57,   57,   57
+        0,    0,   67,   68,   68,   63,   68,   26,   68,   68,
+       68,   20,   21,   68,   42,   41,   68,   40,   18,   49,
+       40,   29,   39,   45,   27,   36,   27,   48,   44,   31,
+       68,   68,   20,   30,   68,   68,   23,   68,   68,   68,
+       68,   68,   68,   22,   68,   23,   68,   68,   27,   68,
+       68,   68,   32,   68,   68,   68,   68,   68,   68,   68
     } ;
 
-static yyconst flex_int16_t yy_def[49] =
+static yyconst flex_int16_t yy_def[61] =
     {   0,
-       48,    1,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,    0
+       60,    1,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,    0
     } ;
 
-static yyconst flex_int16_t yy_nxt[85] =
+static yyconst flex_int16_t yy_nxt[99] =
     {   0,
-        4,    5,    6,    7,    4,    8,    9,    4,    4,   10,
-       11,   12,   13,    4,   14,   15,   16,   17,    4,   18,
-       19,   20,   21,    4,   22,    4,   23,   25,   26,   27,
-       44,   33,   36,   25,   26,   28,   34,   47,   37,   46,
-       45,   44,   24,   38,   43,   42,   41,   40,   39,   35,
-       32,   31,   30,   29,   24,   48,    3,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48
+        4,    5,    6,    7,    4,    8,    9,   10,   11,    4,
+        4,   12,   13,   14,   15,   16,   17,   18,   19,   20,
+       21,    4,   22,   23,   24,   25,   26,    4,   27,    4,
+       29,   30,   31,   39,   34,   29,   30,   53,   40,   59,
+       32,   35,   58,   57,   56,   55,   54,   33,   42,   53,
+       28,   52,   51,   50,   49,   43,   48,   44,   47,   41,
+       45,   38,   46,   37,   36,   28,   60,    3,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60
+
     } ;
 
-static yyconst flex_int16_t yy_chk[85] =
+static yyconst flex_int16_t yy_chk[99] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    8,    8,   10,
-       44,   15,   17,   26,   26,   10,   15,   40,   17,   31,
-       28,   25,   24,   17,   22,   21,   20,   19,   18,   16,
-       14,   13,   12,   11,    6,    3,   48,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,   48
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        8,    8,   12,   19,   13,   30,   30,   53,   19,   49,
+       12,   13,   46,   44,   37,   34,   33,   12,   21,   29,
+       28,   27,   26,   25,   24,   21,   23,   21,   22,   20,
+       21,   18,   21,   16,   15,    6,    3,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60
+
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -501,6 +508,7 @@ char *UnitsApitext;
 
 #include <string>
 #define M_PI       3.14159265358979323846
+#define M_E        2.71828182845904523536
 #include "stdio.h"
 
 
@@ -512,7 +520,7 @@ char *UnitsApitext;
 /* change the name of the scanner class. results in "SelectionFilterFlexLexer" */
 /* the manual says "somewhat more optimized" */
 /* no support for include files is planned */
-#line 516 "lex.UnitsApi.c"
+#line 524 "lex.UnitsApi.c"
 
 #define INITIAL 0
 
@@ -692,11 +700,11 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 31 "UnitsApi.l"
+#line 32 "UnitsApi.l"
 
 
  
-#line 700 "lex.UnitsApi.c"
+#line 708 "lex.UnitsApi.c"
 
 	if ( !(yy_init) )
 		{
@@ -749,13 +757,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 49 )
+				if ( yy_current_state >= 61 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_current_state != 48 );
+		while ( yy_current_state != 60 );
 		yy_cp = (yy_last_accepting_cpos);
 		yy_current_state = (yy_last_accepting_state);
 
@@ -777,146 +785,191 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 34 "UnitsApi.l"
+#line 35 "UnitsApi.l"
 ;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 35 "UnitsApi.l"
+#line 36 "UnitsApi.l"
 ;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 37 "UnitsApi.l"
+#line 38 "UnitsApi.l"
 { return *UnitsApitext; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 39 "UnitsApi.l"
+#line 40 "UnitsApi.l"
 yylval = 1.0;        return UNIT; // milimeter       (internal standard length)
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 40 "UnitsApi.l"
+#line 41 "UnitsApi.l"
 yylval = 1000.0;     return UNIT; // meter
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 41 "UnitsApi.l"
+#line 42 "UnitsApi.l"
 yylval = 10.0;       return UNIT; // centimeter
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 42 "UnitsApi.l"
+#line 43 "UnitsApi.l"
 yylval = 100.0;      return UNIT; // decimeter
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 43 "UnitsApi.l"
+#line 44 "UnitsApi.l"
 yylval = 1000000.0;  return UNIT; // kilometer
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 45 "UnitsApi.l"
+#line 46 "UnitsApi.l"
 yylval = 25.4;       return UNIT; // inch
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 46 "UnitsApi.l"
+#line 47 "UnitsApi.l"
 yylval = 304.8;      return UNIT; // foot
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 47 "UnitsApi.l"
+#line 48 "UnitsApi.l"
 yylval = 0.0254;     return UNIT; // thou
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 48 "UnitsApi.l"
+#line 49 "UnitsApi.l"
 yylval = 914.4;      return UNIT; // yard
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 50 "UnitsApi.l"
+#line 51 "UnitsApi.l"
 yylval = 1.0;        return UNIT; // kilogramm       (internal standard mass)
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 51 "UnitsApi.l"
+#line 52 "UnitsApi.l"
 yylval = 0.001;      return UNIT; // gramm
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 52 "UnitsApi.l"
+#line 53 "UnitsApi.l"
 yylval = 0.000001;   return UNIT; // miligramm
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 53 "UnitsApi.l"
+#line 54 "UnitsApi.l"
 yylval = 1000.0;     return UNIT; // ton
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 55 "UnitsApi.l"
+#line 56 "UnitsApi.l"
 yylval = 0.45359237; return UNIT; // pound
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 56 "UnitsApi.l"
+#line 57 "UnitsApi.l"
 yylval = 0.45359237; return UNIT; // ounce
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 57 "UnitsApi.l"
+#line 58 "UnitsApi.l"
 yylval = 6.35029318; return UNIT; // Stone
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 58 "UnitsApi.l"
+#line 59 "UnitsApi.l"
 yylval = 50.80234544;return UNIT; // hundredwights
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 60 "UnitsApi.l"
+#line 61 "UnitsApi.l"
 yylval = 1.0;        return UNIT; // degree         (internal standard angle)
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 61 "UnitsApi.l"
-yylval = M_PI/180;   return UNIT; // radian         
+#line 62 "UnitsApi.l"
+yylval = 180/M_PI;   return UNIT; // radian         
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 62 "UnitsApi.l"
+#line 63 "UnitsApi.l"
 yylval = 360.0/400.0;return UNIT; // gon         
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 65 "UnitsApi.l"
-yylval = 1.0;        return UNIT; // microliter mm^3 (internal standard volume)
+yylval = 1.0;        return UNIT; // second         (internal standard time)
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 66 "UnitsApi.l"
-yylval = 1000000.0;  return UNIT; // Liter      dm^3
+yylval = 60.0;       return UNIT; // minute
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 71 "UnitsApi.l"
-{yylval = atof( UnitsApitext ); return NUM;}
+#line 67 "UnitsApi.l"
+yylval = 3600.0;     return UNIT; // hour  
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 72 "UnitsApi.l"
-{yylval = atof( UnitsApitext ); return NUM;}
+#line 69 "UnitsApi.l"
+yylval = 1.0;        return UNIT; // second         (internal standard electric current)
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 76 "UnitsApi.l"
+#line 70 "UnitsApi.l"
+yylval = 1.0;        return UNIT; // second         (internal standard thermodynamic temperature)
+	YY_BREAK
+case 29:
+YY_RULE_SETUP
+#line 71 "UnitsApi.l"
+yylval = 1.0;        return UNIT; // second         (internal standard luminous intensity)        
+	YY_BREAK
+case 30:
+YY_RULE_SETUP
+#line 72 "UnitsApi.l"
+yylval = 1.0;        return UNIT; // second         (internal standard amount of substance)        
+	YY_BREAK
+case 31:
+YY_RULE_SETUP
+#line 74 "UnitsApi.l"
+yylval = 1.0;        return UNIT; // microliter mm^3  (derived  standard volume)
+	YY_BREAK
+case 32:
+YY_RULE_SETUP
+#line 75 "UnitsApi.l"
+yylval = 1000000.0;  return UNIT; // Liter      dm^3
+	YY_BREAK
+case 33:
+YY_RULE_SETUP
+#line 80 "UnitsApi.l"
+{yylval = atof( UnitsApitext ); return NUM;}
+	YY_BREAK
+case 34:
+YY_RULE_SETUP
+#line 81 "UnitsApi.l"
+{yylval = atof( UnitsApitext ); return NUM;}
+	YY_BREAK
+case 35:
+YY_RULE_SETUP
+#line 83 "UnitsApi.l"
+{yylval = M_PI          ; return NUM;} // constante pi         
+	YY_BREAK
+case 36:
+YY_RULE_SETUP
+#line 84 "UnitsApi.l"
+{yylval = M_E           ; return NUM;} // constante e         
+	YY_BREAK
+case 37:
+YY_RULE_SETUP
+#line 88 "UnitsApi.l"
 ECHO;
 	YY_BREAK
-#line 920 "lex.UnitsApi.c"
+#line 973 "lex.UnitsApi.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1209,7 +1262,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 49 )
+			if ( yy_current_state >= 61 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1237,11 +1290,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 49 )
+		if ( yy_current_state >= 61 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 48);
+	yy_is_jam = (yy_current_state == 60);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1878,4 +1931,4 @@ void UnitsApifree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 76 "UnitsApi.l"
+#line 88 "UnitsApi.l"

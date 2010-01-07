@@ -4,6 +4,7 @@
 
 #include <string>
 #define M_PI       3.14159265358979323846
+#define M_E        2.71828182845904523536
 #include "stdio.h"
 
 
@@ -57,15 +58,20 @@ ID       [a-z][a-z0-9]*
 "st"        yylval = 6.35029318; return UNIT; // Stone
 "cwt"       yylval = 50.80234544;return UNIT; // hundredwights
 
-"°"         yylval = 1.0;        return UNIT; // degree         (internal standard angle)
-"rad"       yylval = M_PI/180;   return UNIT; // radian         
+"deg"       yylval = 1.0;        return UNIT; // degree         (internal standard angle)
+"rad"       yylval = 180/M_PI;   return UNIT; // radian         
 "gon"       yylval = 360.0/400.0;return UNIT; // gon         
 
 "s"         yylval = 1.0;        return UNIT; // second         (internal standard time)
 "min"       yylval = 60.0;       return UNIT; // minute
-"h"         yylval = 3600.0;     return UNIT; // hour           
+"h"         yylval = 3600.0;     return UNIT; // hour  
 
-"mL"        yylval = 1.0;        return UNIT; // microliter mm^3 (internal standard volume)
+"A"         yylval = 1.0;        return UNIT; // second         (internal standard electric current)
+"K"         yylval = 1.0;        return UNIT; // second         (internal standard thermodynamic temperature)
+"cd"        yylval = 1.0;        return UNIT; // second         (internal standard luminous intensity)        
+"mol"       yylval = 1.0;        return UNIT; // second         (internal standard amount of substance)        
+
+"mL"        yylval = 1.0;        return UNIT; // microliter mm^3  (derived  standard volume)
 "L"         yylval = 1000000.0;  return UNIT; // Liter      dm^3
 
 
@@ -73,7 +79,9 @@ ID       [a-z][a-z0-9]*
 
 {DIGIT}+"."{DIGIT}*    {yylval = atof( yytext ); return NUM;}
 {DIGIT}+               {yylval = atof( yytext ); return NUM;}
+
 "pi"                   {yylval = M_PI          ; return NUM;} // constante pi         
+"e"                    {yylval = M_E           ; return NUM;} // constante e         
                      
 
  
