@@ -25,7 +25,8 @@
 
     input:     exp                { ScanResult = $1     ;    }
              | exp uexp           { ScanResult = $1 * $2;    }
-;     
+             | uexp               { ScanResult = $1     ;    }
+ ;     
      
      exp:      NUM                { $$ = $1;         }
              | exp '+' exp        { $$ = $1 + $3;    }
@@ -35,13 +36,13 @@
              | '-' exp  %prec NEG { $$ = -$2;        }
              | exp '^' exp        { $$ = pow ($1, $3); }
              | '(' exp ')'        { $$ = $2;         }
+             | exp uexp           { $$ = $1 * $2;    }
  ;            
      uexp:     UNIT               { $$ = $1;         }
              | uexp '*' uexp      { $$ = $1 * $3;    }
              | uexp '/' uexp      { $$ = $1 / $3;    }
              | uexp '^' NUM       { $$ = pow ($1, $3); }
              | '(' uexp ')'       { $$ = $2;         }
-     ;
-
+ ;
 
 %%

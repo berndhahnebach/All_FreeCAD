@@ -3,7 +3,7 @@
 /* (c) 2010 Juergen Riegel  LGPL           */
 
 #include <string>
-
+#define M_PI       3.14159265358979323846
 #include "stdio.h"
 
 
@@ -31,12 +31,40 @@ ID       [a-z][a-z0-9]*
 %% /*** Filter language Part ***/
 
  
-[ \t]                   ;
-[\n]+                   ;
+[ \t]       ;
+[\n]+       ;
 
-"mm"                    yylval = 1.0;    return UNIT; // Milimeter
-"m"                     yylval = 1000.0; return UNIT; // Meter
-"cm"                    yylval = 100.0;  return UNIT; // Centimeter
+[-+()=/*^]  { return *yytext; }
+
+"mm"        yylval = 1.0;        return UNIT; // milimeter       (internal standard length)
+"m"         yylval = 1000.0;     return UNIT; // meter
+"cm"        yylval = 10.0;       return UNIT; // centimeter
+"dm"        yylval = 100.0;      return UNIT; // decimeter
+"km"        yylval = 1000000.0;  return UNIT; // kilometer
+
+"in"        yylval = 25.4;       return UNIT; // inch
+"fo"        yylval = 304.8;      return UNIT; // foot
+"th"        yylval = 0.0254;     return UNIT; // thou
+"yr"        yylval = 914.4;      return UNIT; // yard
+
+"kg"        yylval = 1.0;        return UNIT; // kilogramm       (internal standard mass)
+"g"         yylval = 0.001;      return UNIT; // gramm
+"mg"        yylval = 0.000001;   return UNIT; // miligramm
+"t"         yylval = 1000.0;     return UNIT; // ton
+
+"lb"        yylval = 0.45359237; return UNIT; // pound
+"oz"        yylval = 0.45359237; return UNIT; // ounce
+"st"        yylval = 6.35029318; return UNIT; // Stone
+"cwt"       yylval = 50.80234544;return UNIT; // hundredwights
+
+"°"         yylval = 1.0;        return UNIT; // degree         (internal standard angle)
+"rad"       yylval = M_PI/180;   return UNIT; // radian         
+"gon"       yylval = 360.0/400.0;return UNIT; // gon         
+
+
+"mL"        yylval = 1.0;        return UNIT; // microliter mm^3 (internal standard volume)
+"L"         yylval = 1000000.0;  return UNIT; // Liter      dm^3
+
 
 
 
