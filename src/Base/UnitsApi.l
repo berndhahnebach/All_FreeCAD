@@ -37,7 +37,7 @@ ID       [a-z][a-z0-9]*
 
 [-+()=/*^]  { return *yytext; }
 
-"mm"        yylval = 1.0;        return UNIT; // milimeter       (internal standard length)
+"mm"        yylval = 1.0;        return UNIT; // millimeter      (internal standard length)
 "m"         yylval = 1000.0;     return UNIT; // meter
 "cm"        yylval = 10.0;       return UNIT; // centimeter
 "dm"        yylval = 100.0;      return UNIT; // decimeter
@@ -48,15 +48,15 @@ ID       [a-z][a-z0-9]*
 "th"        yylval = 0.0254;     return UNIT; // thou
 "yr"        yylval = 914.4;      return UNIT; // yard
 
-"kg"        yylval = 1.0;        return UNIT; // kilogramm       (internal standard mass)
-"g"         yylval = 0.001;      return UNIT; // gramm
-"mg"        yylval = 0.000001;   return UNIT; // miligramm
+"kg"        yylval = 1.0;        return UNIT; // kilogram        (internal standard mass)
+"g"         yylval = 0.001;      return UNIT; // gram
+"mg"        yylval = 0.000001;   return UNIT; // milligram
 "t"         yylval = 1000.0;     return UNIT; // ton
 
 "lb"        yylval = 0.45359237; return UNIT; // pound
 "oz"        yylval = 0.45359237; return UNIT; // ounce
 "st"        yylval = 6.35029318; return UNIT; // Stone
-"cwt"       yylval = 50.80234544;return UNIT; // hundredwights
+"cwt"       yylval = 50.80234544;return UNIT; // hundredweights
 
 "deg"       yylval = 1.0;        return UNIT; // degree         (internal standard angle)
 "rad"       yylval = 180/M_PI;   return UNIT; // radian         
@@ -66,13 +66,13 @@ ID       [a-z][a-z0-9]*
 "min"       yylval = 60.0;       return UNIT; // minute
 "h"         yylval = 3600.0;     return UNIT; // hour  
 
-"A"         yylval = 1.0;        return UNIT; // second         (internal standard electric current)
-"K"         yylval = 1.0;        return UNIT; // second         (internal standard thermodynamic temperature)
-"cd"        yylval = 1.0;        return UNIT; // second         (internal standard luminous intensity)        
-"mol"       yylval = 1.0;        return UNIT; // second         (internal standard amount of substance)        
+"A"         yylval = 1.0;        return UNIT; // Ampere         (internal standard electric current)
+"K"         yylval = 1.0;        return UNIT; // Kelvin         (internal standard thermodynamic temperature)
+"cd"        yylval = 1.0;        return UNIT; // Candela        (internal standard luminous intensity)        
+"mol"       yylval = 1.0;        return UNIT; // Mole           (internal standard amount of substance)        
 
-"mL"        yylval = 1.0;        return UNIT; // microliter mm^3  (derived  standard volume)
-"L"         yylval = 1000000.0;  return UNIT; // Liter      dm^3
+"ml"        yylval = 1000.0;     return UNIT; // milliliter     (derived  standard volume)
+"l"         yylval = 1000000.0;  return UNIT; // Liter      dm^3
 
 
 
@@ -80,8 +80,8 @@ ID       [a-z][a-z0-9]*
 {DIGIT}+"."{DIGIT}*    {yylval = atof( yytext ); return NUM;}
 {DIGIT}+               {yylval = atof( yytext ); return NUM;}
 
-"pi"                   {yylval = M_PI          ; return NUM;} // constante pi         
-"e"                    {yylval = M_E           ; return NUM;} // constante e         
+"pi"                   {yylval = M_PI          ; return NUM;} // constant pi         
+"e"                    {yylval = M_E           ; return NUM;} // constant e         
                      
 
  
