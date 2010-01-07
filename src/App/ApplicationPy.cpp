@@ -125,7 +125,7 @@ PyMethodDef Application::Methods[] = {
      "Remove an added document observer."},
     {"translateUnit",  (PyCFunction) Application::sTranslateUnit  ,1,
      "translateUnit(string) -> double\n\n"
-     "translate a string with quanteties and unit specifiers to the internal representation"},
+     "translate a string with quantities and unit specifiers to the internal representation"},
 
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
@@ -147,6 +147,7 @@ PyObject* Application::sTranslateUnit(PyObject * /*self*/, PyObject *args,PyObje
         return 0L;
     }
 }
+
 PyObject* Application::sOpenDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     char *pstr;
