@@ -62,11 +62,11 @@ private:
     void slotRenameObject(const Gui::ViewProviderDocumentObject& obj);
     void slotActiveObject(const Gui::ViewProviderDocumentObject& obj);
 
-    Document* getDocument(const QModelIndex&) const;
+    const Document* getDocument(const QModelIndex&) const;
 
 private:
-    static QIcon* documentIcon;
-    std::vector<const Gui::Document*> docs;
+    struct DocumentModelP *d;
+    //std::vector<const Gui::Document*> docs;
 };
 
 } //namespace Gui

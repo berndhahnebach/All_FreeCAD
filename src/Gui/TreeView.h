@@ -42,6 +42,7 @@ public:
 
 protected:
     void mouseDoubleClickEvent (QMouseEvent * );
+    void rowsInserted (const QModelIndex & parent, int start, int end);
 };
 
 }

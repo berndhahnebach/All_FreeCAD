@@ -41,37 +41,173 @@
 using namespace Gui;
 
 namespace Gui {
-    class ApplicationIndex : public Base::BaseClass
+    class DocumentModelIndex : public Base::BaseClass
     {
-    private:
         TYPESYSTEM_HEADER();
-        static ApplicationIndex* _instance;
-
-        ApplicationIndex(){}
 
     public:
-        static ApplicationIndex* instance() 
+        virtual ~DocumentModelIndex()
+        { qDeleteAll(childItems); }
+
+        void reset()
+        { qDeleteAll(childItems); childItems.clear(); }
+        void setParent(DocumentModelIndex* parent)
+        { parentItem = parent; }
+        DocumentModelIndex *parent() const
+        { return parentItem; }
+        void appendChild(DocumentModelIndex *child)
+        { childItems.append(child); child->setParent(this); }
+        void removeChild(int row)
+        { childItems.removeAt(row); }
+
+        DocumentModelIndex *child(int row)
+        { return childItems.value(row); }
+        int row() const
         {
-            if (!_instance)
-                _instance = new ApplicationIndex();
-            return _instance; 
+            if (parentItem)
+                return parentItem->childItems.indexOf(const_cast<DocumentModelIndex*>(this));
+            return 0;
+        }
+        int childCount() const
+        { return childItems.count(); }
+        virtual QVariant data(int role) const
+        { return QVariant(); }
+        virtual bool setData (const QVariant & value, int role)
+        {
+            if (role == Qt::EditRole) {
+                return true;
+            }
+
+            return true;
+        }
+        virtual Qt::ItemFlags flags() const
+        {
+            return Qt::ItemIsSelectable|Qt::ItemIsEnabled;
+        }
+
+    protected:
+        DocumentModelIndex() : parentItem(0) {}
+        DocumentModelIndex *parentItem;
+        QList<DocumentModelIndex*> childItems;
+    };
+
+    class ApplicationIndex : public DocumentModelIndex
+    {
+        TYPESYSTEM_HEADER();
+
+    public:
+        ApplicationIndex(){}
+        int findDocument(const Gui::Document& d) const;
+        Qt::ItemFlags flags() const
+        { return Qt::ItemIsEnabled; }
+        QVariant data(int role) const
+        {
+            if (role == Qt::DecorationRole) {
+                return qApp->windowIcon();
+            }
+            else if (role == Qt::DisplayRole) {
+                return DocumentModel::tr("Application");
+            }
+            return QVariant();
         }
     };
 
-    TYPESYSTEM_SOURCE_ABSTRACT(Gui::ApplicationIndex,Base::BaseClass);
+    class DocumentIndex : public DocumentModelIndex
+    {
+        TYPESYSTEM_HEADER();
+        static QIcon* documentIcon;
 
-    ApplicationIndex* ApplicationIndex::_instance = 0;
+    public:
+        const Gui::Document& d;
+        DocumentIndex(const Gui::Document& d) : d(d)
+        {
+            if (!documentIcon)
+                documentIcon = new QIcon(Gui::BitmapFactory().pixmap("Document"));
+        }
+
+        QVariant data(int role) const
+        {
+            if (role == Qt::DecorationRole) {
+                return *documentIcon;
+            }
+            else if (role == Qt::DisplayRole) {
+                App::Document* doc = d.getDocument();
+                return QString::fromUtf8(doc->Label.getValue());
+            }
+            else if (role == Qt::FontRole) {
+                Document* doc = Application::Instance->activeDocument();
+                QFont font;
+                font.setBold(doc==&d);
+                QVariant variant;
+                variant.setValue<QFont>(font);
+                return variant;
+            }
+
+            return QVariant();
+        }
+    };
+
+    QIcon* DocumentIndex::documentIcon = 0;
+
+    class ViewProviderIndex : public DocumentModelIndex
+    {
+        TYPESYSTEM_HEADER();
+
+    public:
+        const Gui::ViewProviderDocumentObject& v;
+        ViewProviderIndex(const Gui::ViewProviderDocumentObject& v) : v(v){}
+        QVariant data(int role) const
+        {
+            if (role == Qt::DecorationRole) {
+                return v.getIcon();
+            }
+            else if (role == Qt::DisplayRole) {
+                App::DocumentObject* obj = v.getObject();
+                return QString::fromUtf8(obj->Label.getValue());
+            }
+
+            return QVariant();
+        }
+    };
+
+    struct DocumentModelP
+    {
+        DocumentModelP()
+        { rootItem = new ApplicationIndex(); }
+        ~DocumentModelP()
+        { delete rootItem; }
+        ApplicationIndex *rootItem;
+    };
+
+    int ApplicationIndex::findDocument(const Gui::Document& d) const
+    {
+        int child=0;
+        QList<DocumentModelIndex*>::const_iterator it;
+        for (it = childItems.begin(); it != childItems.end(); ++it, ++child) {
+            DocumentIndex* doc = static_cast<DocumentIndex*>(*it);
+            if (&doc->d == &d)
+                return child;
+        }
+
+        return -1;
+    }
+
+    TYPESYSTEM_SOURCE_ABSTRACT(Gui::DocumentModelIndex, Base::BaseClass);
+    TYPESYSTEM_SOURCE_ABSTRACT(Gui::ApplicationIndex,Gui::DocumentModelIndex);
+    TYPESYSTEM_SOURCE_ABSTRACT(Gui::DocumentIndex, Gui::DocumentModelIndex);
+    TYPESYSTEM_SOURCE_ABSTRACT(Gui::ViewProviderIndex, Gui::DocumentModelIndex);
 }
 
-QIcon* DocumentModel::documentIcon = 0;
-
 DocumentModel::DocumentModel(QObject* parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent), d(new DocumentModelP)
 {
     static bool inittype = false;
     if (!inittype) {
         inittype = true;
-        ApplicationIndex::init();
+        DocumentModelIndex  ::init();
+        ApplicationIndex    ::init();
+        DocumentIndex       ::init();
+        ViewProviderIndex   ::init();
     }
 
     // Setup connections
@@ -80,12 +216,11 @@ DocumentModel::DocumentModel(QObject* parent)
     Application::Instance->signalRenameDocument.connect(boost::bind(&DocumentModel::slotRenameDocument, this, _1));
     Application::Instance->signalActiveDocument.connect(boost::bind(&DocumentModel::slotActiveDocument, this, _1));
     Application::Instance->signalRelabelDocument.connect(boost::bind(&DocumentModel::slotRelabelDocument, this, _1));
-    if (!documentIcon)
-        documentIcon = new QIcon(Gui::BitmapFactory().pixmap("Document"));
 }
 
 DocumentModel::~DocumentModel()
 {
+    delete d; d = 0;
 }
 
 void DocumentModel::slotNewDocument(const Gui::Document& Doc)
@@ -98,22 +233,22 @@ void DocumentModel::slotNewDocument(const Gui::Document& Doc)
     Doc.signalInEdit.connect(boost::bind(&DocumentModel::slotInEdit, this, _1));
     Doc.signalResetEdit.connect(boost::bind(&DocumentModel::slotResetEdit, this, _1));
 
-    QModelIndex parent = createIndex(0,0,ApplicationIndex::instance());
-    int count_docs = (int)this->docs.size();
+    QModelIndex parent = createIndex(0,0,d->rootItem);
+    int count_docs = d->rootItem->childCount();
     beginInsertRows(parent, count_docs, count_docs);
-    this->docs.push_back(&Doc);
+    d->rootItem->appendChild(new DocumentIndex(Doc));
     endInsertRows();
 }
 
 void DocumentModel::slotDeleteDocument(const Gui::Document& Doc)
 {
-    std::vector<const Gui::Document*>::iterator it = std::find
-        (this->docs.begin(), this->docs.end(), &Doc);
-    if (it != this->docs.end()) {
-        QModelIndex parent = createIndex(0,0,ApplicationIndex::instance());
-        int index = it - this->docs.begin();
-        beginRemoveRows(parent, index, index);
-        this->docs.erase(it);
+    int row = d->rootItem->findDocument(Doc);
+    if (row > -1) {
+        QModelIndex parent = createIndex(0,0,d->rootItem);
+        beginRemoveRows(parent, row, row);
+        DocumentModelIndex* item = d->rootItem->child(row);
+        d->rootItem->removeChild(row);
+        delete item;
         endRemoveRows();
     }
 }
@@ -125,10 +260,21 @@ void DocumentModel::slotRenameDocument(const Gui::Document& Doc)
 
 void DocumentModel::slotRelabelDocument(const Gui::Document& Doc)
 {
+    int row = d->rootItem->findDocument(Doc);
+    if (row > -1) {
+        QModelIndex parent = createIndex(0,0,d->rootItem);
+        QModelIndex item = index (row, 0, parent);
+        dataChanged(item, item);
+    }
 }
 
-void DocumentModel::slotActiveDocument(const Gui::Document& Doc)
+void DocumentModel::slotActiveDocument(const Gui::Document& /*Doc*/)
 {
+    // don't know which was the previous active document, so check simply all
+    QModelIndex parent = createIndex(0,0,d->rootItem);
+    QModelIndex top = index (0, 0, parent);
+    QModelIndex bottom = index (d->rootItem->childCount()-1, 0, parent);
+    dataChanged(top, bottom);
 }
 
 void DocumentModel::slotInEdit(const Gui::ViewProviderDocumentObject& v)
@@ -141,6 +287,17 @@ void DocumentModel::slotResetEdit(const Gui::ViewProviderDocumentObject& v)
 
 void DocumentModel::slotNewObject(const Gui::ViewProviderDocumentObject& obj)
 {
+    App::Document* doc = obj.getObject()->getDocument();
+    Gui::Document* gdc = Application::Instance->getDocument(doc);
+    int row = d->rootItem->findDocument(*gdc);
+    if (row > -1) {
+        DocumentIndex* index = static_cast<DocumentIndex*>(d->rootItem->child(row));
+        QModelIndex parent = createIndex(index->row(),0,index);
+        int count_obj = index->childCount();
+        beginInsertRows(parent, count_obj, count_obj);
+        index->appendChild(new ViewProviderIndex(obj));
+        endInsertRows();
+    }
 }
 
 void DocumentModel::slotDeleteObject(const Gui::ViewProviderDocumentObject& obj)
@@ -159,14 +316,15 @@ void DocumentModel::slotActiveObject(const Gui::ViewProviderDocumentObject& obj)
 {
 }
 
-Document* DocumentModel::getDocument(const QModelIndex& index) const
+const Document* DocumentModel::getDocument(const QModelIndex& index) const
 {
     if (!index.isValid())
         return 0;
     Base::BaseClass* item = 0;
     item = static_cast<Base::BaseClass*>(index.internalPointer());
-    if (item->getTypeId() == Document::getClassTypeId()) {
-        return static_cast<Document*>(item);
+    if (item->getTypeId() == DocumentIndex::getClassTypeId()) {
+        const Gui::Document& d = static_cast<DocumentIndex*>(item)->d;
+        return (&d);
     }
 
     return 0;
@@ -181,126 +339,55 @@ QVariant DocumentModel::data (const QModelIndex & index, int role) const
 {
     if (!index.isValid())
         return QVariant();
-    if (role == Qt::DecorationRole) {
-        // the root item
-        Base::BaseClass* item = 0;
-        item = static_cast<Base::BaseClass*>(index.internalPointer());
-        if (item->getTypeId() == ApplicationIndex::getClassTypeId()) {
-            return qApp->windowIcon();
-        }
-        else if (item->getTypeId() == Document::getClassTypeId()) {
-            return *documentIcon;
-        }
-    }
-    else if (role == Qt::DisplayRole) {
-        // the root item
-        Base::BaseClass* item = 0;
-        item = static_cast<Base::BaseClass*>(index.internalPointer());
-        if (item->getTypeId() == ApplicationIndex::getClassTypeId())
-            return tr("Application");
-        else if (item->getTypeId() == Document::getClassTypeId()) {
-            App::Document* doc = static_cast<Document*>(item)->getDocument();
-            return QString::fromUtf8(doc->Label.getValue());
-        }
-        else if (item->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId())) {
-            App::DocumentObject* obj = static_cast<Gui::ViewProviderDocumentObject*>(item)->getObject();
-            return QString::fromUtf8(obj->Label.getValue());
-        }
-    }
-    else if (role == Qt::FontRole) {
-        // the root item
-        Base::BaseClass* item = 0;
-        item = static_cast<Base::BaseClass*>(index.internalPointer());
-        if (item->getTypeId() == ApplicationIndex::getClassTypeId())
-            return QVariant();
-        else if (item->getTypeId() == Document::getClassTypeId()) {
-            Document* doc = Application::Instance->activeDocument();
-            QFont font;
-            font.setBold(doc==item);
-            QVariant variant;
-            variant.setValue<QFont>(font);
-            return variant;
-        }
-        else if (item->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId())) {
-            App::DocumentObject* obj = static_cast<Gui::ViewProviderDocumentObject*>(item)->getObject();
-            return QString::fromUtf8(obj->Label.getValue());
-        }
-    }
-
-    return QVariant();
+    return static_cast<DocumentModelIndex*>(index.internalPointer())->data(role);
 }
 
 bool DocumentModel::setData(const QModelIndex& index, const QVariant & value, int role)
 {
     if (!index.isValid())
         return false;
-
-    if (role == Qt::EditRole) {
-        return true;
-    }
-
-    return true;
+    return static_cast<DocumentModelIndex*>(index.internalPointer())->setData(value, role);
 }
 
 Qt::ItemFlags DocumentModel::flags(const QModelIndex &index) const
 {
-    if (index.internalPointer() == ApplicationIndex::instance())
-        return Qt::ItemIsEnabled;
-    return QAbstractItemModel::flags(index);
+    //if (index.internalPointer() == d->rootItem)
+    //    return Qt::ItemIsEnabled;
+    //return QAbstractItemModel::flags(index);
+    if (!index.isValid())
+        return 0;
+    return static_cast<DocumentModelIndex*>(index.internalPointer())->flags();
 }
 
 QModelIndex DocumentModel::index (int row, int column, const QModelIndex & parent) const
 {
+    DocumentModelIndex* item = 0;
     if (!parent.isValid())
-        return createIndex(row, column, ApplicationIndex::instance());
-    Base::BaseClass* item = 0;
-    item = static_cast<Base::BaseClass*>(parent.internalPointer());
-    if (item->getTypeId() == ApplicationIndex::getClassTypeId()) {
-        if (row >= (int)this->docs.size())
-            return QModelIndex();
-        Gui::Document* doc = const_cast<Gui::Document*>(this->docs[row]);
-        return createIndex(row, column, doc);
-    }
-    else if (item->getTypeId() == Document::getClassTypeId()) {
-        App::Document* doc = static_cast<Document*>(item)->getDocument();
-        std::vector<App::DocumentObject*> objs = doc->getObjects();
-        if (objs.empty()) return QModelIndex();
-        App::DocumentObject* obj = objs[row];
-        return createIndex(row, column, obj);
-    }
-
-    return QModelIndex();
+        item = d->rootItem;
+    else
+        item = static_cast<DocumentModelIndex*>(parent.internalPointer())->child(row);
+    if (!item)
+        return QModelIndex();
+    return createIndex(row, column, item);
 }
 
 QModelIndex DocumentModel::parent (const QModelIndex & index) const
 {
-    if (!index.isValid())
+    if (!index.isValid() || index.internalPointer() == d->rootItem)
         return QModelIndex();
-    Base::BaseClass* item = 0;
-    item = static_cast<Base::BaseClass*>(index.internalPointer());
-    if (item->getTypeId() == Document::getClassTypeId()) {
-        return createIndex(0, 0, ApplicationIndex::instance());
-    }
-
-    return QModelIndex();
+    DocumentModelIndex* item = 0;
+    item = static_cast<DocumentModelIndex*>(index.internalPointer());
+    DocumentModelIndex* parent = item->parent();
+    return createIndex(parent->row(), 0, parent);
 }
 
 int DocumentModel::rowCount (const QModelIndex & parent) const
 {
     if (!parent.isValid())
         return 1; // the root item
-    Base::BaseClass* item = 0;
-    item = static_cast<Base::BaseClass*>(parent.internalPointer());
-    if (item->getTypeId() == ApplicationIndex::getClassTypeId()) {
-        return (int)this->docs.size();
-    }
-    else if (item->getTypeId() == Document::getClassTypeId()) {
-        App::Document* doc = static_cast<Document*>(item)->getDocument();
-        std::vector<App::DocumentObject*> objs = doc->getObjects();
-        return (int)objs.size();
-    }
-
-    return 0;
+    DocumentModelIndex* item = 0;
+    item = static_cast<DocumentModelIndex*>(parent.internalPointer());
+    return item->childCount();
 }
 
 QVariant DocumentModel::headerData (int section, Qt::Orientation orientation, int role) const
