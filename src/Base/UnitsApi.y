@@ -41,7 +41,7 @@
      uexp:     UNIT               { $$ = $1;         }
              | uexp '*' uexp      { $$ = $1 * $3;    }
              | uexp '/' uexp      { $$ = $1 / $3;    }
-             | uexp '^' NUM       { $$ = pow ($1, $3); }
+             | uexp '^' exp       { $$ = pow ($1, $3); }
              | '(' uexp ')'       { $$ = $2;         }
  ;
 
