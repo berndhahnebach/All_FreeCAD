@@ -137,7 +137,7 @@ PyObject* Application::sTranslateUnit(PyObject * /*self*/, PyObject *args,PyObje
         return NULL;                             // NULL triggers exception
     try {
         return Py::new_reference_to(Py::Object(Py::Float(UnitsApi::translateUnit(pstr))));
-     }
+    }
     catch (const Base::Exception& e) {
         PyErr_Format(PyExc_IOError, "invalid unit expresion %s: %s\n", pstr, e.what());
         return 0L;
