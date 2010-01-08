@@ -71,7 +71,8 @@ ID       [a-z][a-z0-9]*
 "cd"        yylval = 1.0;        return UNIT; // Candela        (internal standard luminous intensity)        
 "mol"       yylval = 1.0;        return UNIT; // Mole           (internal standard amount of substance)        
 
-"ml"        yylval = 1000.0;     return UNIT; // milliliter     (derived  standard volume)
+"yl"        yylval = 1.0;        return UNIT; // microliter mm^3(derived  standard volume)
+"ml"        yylval = 1000.0;     return UNIT; // milliliter cm^3    
 "l"         yylval = 1000000.0;  return UNIT; // Liter      dm^3
 
 
