@@ -112,12 +112,14 @@ void CmdRobotSimulate::activated(int iMsg)
     Robot::RobotObject *pcRobotObject;
     Robot::TrajectoryObject *pcTrajectoryObject;
 
-    if(filter.match()){
-        pcRobotObject = dynamic_cast<Robot::RobotObject*>(filter.Result[0][0].getObject());
-        pcTrajectoryObject = dynamic_cast<Robot::TrajectoryObject*>(filter.Result[1][0].getObject());;
-    }else{
+    if (filter.match()) {
+        pcRobotObject = static_cast<Robot::RobotObject*>(filter.Result[0][0].getObject());
+        pcTrajectoryObject = static_cast<Robot::TrajectoryObject*>(filter.Result[1][0].getObject());;
+    }
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select one Robot and one Trajectory object."));
+        return;
     }
 
     Gui::TaskView::TaskDialog* dlg = new TaskDlgSimulate(pcRobotObject,pcTrajectoryObject);
