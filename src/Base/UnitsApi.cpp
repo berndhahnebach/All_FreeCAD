@@ -47,6 +47,15 @@ using namespace Base;
 #endif
 
 
+// === static attributes  ================================================
+
+UnitsApi::UnitSystem  UnitsApi::UserPrefSystem = SI;
+
+double                UnitsApi::UserPrefLengthFactor = 1.0;
+std::string           UnitsApi::UserPrefLengthSymbol = "mm";
+double                UnitsApi::UserPrefAngleFactor  = 1.0;
+std::string           UnitsApi::UserPrefAngleSymbol  = "deg";
+
 
 UnitsApi::UnitsApi(const char* filter)
 {
@@ -70,6 +79,39 @@ double UnitsApi::translateUnit(const char* str)
 double UnitsApi::translateUnit(const std::string& str)
 {
     return parse( str.c_str() );  
+}
+
+
+// === static translation methodes ==========================================
+
+std::string UnitsApi::toStrWithUserPrefsLength(double Value)
+{
+    return std::string("NULL");
+}
+
+std::string UnitsApi::toStrWithUserPrefsAngle(double Value)
+{
+    return std::string("NULL");
+}
+
+double UnitsApi::toDblWithUserPrefsLength(const char* Str)
+{
+    return 0.0;
+}
+
+double UnitsApi::toDblWithUserPrefsLength(double UserVal)
+{
+    return 0.0;
+}
+
+double UnitsApi::toDblWithUserPrefsLength(PyObject *ArgObj)
+{
+    return 0.0;
+}
+
+double UnitsApi::toDblWithUserPrefsAngle(const char* Str)
+{
+    return 0.0;
 }
 
 

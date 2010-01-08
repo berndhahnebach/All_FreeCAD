@@ -25,6 +25,7 @@
 #define GUI_UnitsApi_H
 
 #include <string>
+#include <Python.h>
 
 
 namespace Base {
@@ -42,12 +43,56 @@ public:
     UnitsApi(const std::string& filter);
     virtual ~UnitsApi();
 
+    /// raw parser interface to calculat units (only from and to internal)
     static double translateUnit(const char*);
     static double translateUnit(const std::string&);
+
+    /** Units systems*/
+    enum UnitSystem { 
+        SI      , /** the SI system (http://en.wikipedia.org/wiki/International_System_of_Units) */  
+        Imperial  /** the Imperial system (http://en.wikipedia.org/wiki/Imperial_units) */  
+    } ;
+
+    /** @name Translation from internal to user prefs */
+    //@{
+    /// generate a string for a length quantity in user prefered system
+    static std::string toStrWithUserPrefsLength(double Value);
+    /// generate a string for a angle quantity in user prefered system
+    static std::string toStrWithUserPrefsAngle(double Value);
+   //@}
+
+   /** @name Translation to internal regarding user prefs 
+     * That means if no unit is issued the user prefs are in 
+     * charge. If one unit is used the user prefs get ignored
+     */
+    //@{
+    /// generate a value for a length quantity with default user prefered system
+    static double toDblWithUserPrefsLength(const char* Str);
+    /// generate a value for a length quantity with default user prefered system
+    static double toDblWithUserPrefsLength(double UserVal);
+    /// generate a value for a length quantity with default user prefered system
+    static double toDblWithUserPrefsLength(PyObject *ArgObj);
+    /// generate a value for a angle quantity with default user prefered system
+    static double toDblWithUserPrefsAngle(const char* Str);
+   //@}
+
 
     double Result;
 
 protected:
+
+    // not used at the moment
+    static UnitSystem  UserPrefSystem;
+
+    /// cached factor to translate
+    static double      UserPrefLengthFactor;
+    /// name of the unit the user whants to use as standard length
+    static std::string UserPrefLengthSymbol;
+
+    /// cached factor to translate
+    static double      UserPrefAngleFactor;
+    /// name of the unit the user whants to use as standard angle
+    static std::string UserPrefAngleSymbol;
 
     // do the real work
     static double parse(const char*);
