@@ -41,6 +41,10 @@
 using namespace Gui;
 
 namespace Gui {
+    // forward declaration
+    class ViewProviderIndex;
+
+    // Base class
     class DocumentModelIndex : public Base::BaseClass
     {
         TYPESYSTEM_HEADER();
@@ -90,14 +94,14 @@ namespace Gui {
         DocumentModelIndex *parentItem;
         QList<DocumentModelIndex*> childItems;
     };
-
+    // Root node
     class ApplicationIndex : public DocumentModelIndex
     {
         TYPESYSTEM_HEADER();
 
     public:
         ApplicationIndex(){}
-        int findDocument(const Gui::Document& d) const;
+        int findChild(const Gui::Document& d) const;
         Qt::ItemFlags flags() const
         { return Qt::ItemIsEnabled; }
         QVariant data(int role) const
@@ -111,7 +115,7 @@ namespace Gui {
             return QVariant();
         }
     };
-
+    // Document nodes
     class DocumentIndex : public DocumentModelIndex
     {
         TYPESYSTEM_HEADER();
@@ -124,7 +128,7 @@ namespace Gui {
             if (!documentIcon)
                 documentIcon = new QIcon(Gui::BitmapFactory().pixmap("Document"));
         }
-
+        void findViewProviders(const ViewProvider&, QList<ViewProviderIndex*>&);
         QVariant data(int role) const
         {
             if (role == Qt::DecorationRole) {
@@ -147,8 +151,7 @@ namespace Gui {
         }
     };
 
-    QIcon* DocumentIndex::documentIcon = 0;
-
+    // Object nodes
     class ViewProviderIndex : public DocumentModelIndex
     {
         TYPESYSTEM_HEADER();
@@ -156,6 +159,7 @@ namespace Gui {
     public:
         const Gui::ViewProviderDocumentObject& v;
         ViewProviderIndex(const Gui::ViewProviderDocumentObject& v) : v(v){}
+        void findViewProviders(const ViewProvider&, QList<ViewProviderIndex*>&);
         QVariant data(int role) const
         {
             if (role == Qt::DecorationRole) {
@@ -165,21 +169,21 @@ namespace Gui {
                 App::DocumentObject* obj = v.getObject();
                 return QString::fromUtf8(obj->Label.getValue());
             }
+            else if (role == Qt::FontRole) {
+                App::DocumentObject* obj = v.getObject();
+                App::DocumentObject* act = obj->getDocument()->getActiveObject();
+                QFont font;
+                font.setBold(obj==act);
+                QVariant variant;
+                variant.setValue<QFont>(font);
+                return variant;
+            }
 
             return QVariant();
         }
     };
 
-    struct DocumentModelP
-    {
-        DocumentModelP()
-        { rootItem = new ApplicationIndex(); }
-        ~DocumentModelP()
-        { delete rootItem; }
-        ApplicationIndex *rootItem;
-    };
-
-    int ApplicationIndex::findDocument(const Gui::Document& d) const
+    int ApplicationIndex::findChild(const Gui::Document& d) const
     {
         int child=0;
         QList<DocumentModelIndex*>::const_iterator it;
@@ -192,10 +196,43 @@ namespace Gui {
         return -1;
     }
 
+    QIcon* DocumentIndex::documentIcon = 0;
+
+    void DocumentIndex::findViewProviders(const ViewProvider& vp,
+        QList<ViewProviderIndex*>& index)
+    {
+        QList<DocumentModelIndex*>::const_iterator it;
+        for (it = childItems.begin(); it != childItems.end(); ++it) {
+            ViewProviderIndex* v = static_cast<ViewProviderIndex*>(*it);
+            v->findViewProviders(vp, index);
+        }
+    }
+
+    void ViewProviderIndex::findViewProviders(const ViewProvider& vp,
+        QList<ViewProviderIndex*>& index)
+    {
+        if (&this->v == &vp)
+            index.push_back(const_cast<ViewProviderIndex*>(this));
+        QList<DocumentModelIndex*>::const_iterator it;
+        for (it = childItems.begin(); it != childItems.end(); ++it) {
+            ViewProviderIndex* v = static_cast<ViewProviderIndex*>(*it);
+            v->findViewProviders(vp, index);
+        }
+    }
+
     TYPESYSTEM_SOURCE_ABSTRACT(Gui::DocumentModelIndex, Base::BaseClass);
     TYPESYSTEM_SOURCE_ABSTRACT(Gui::ApplicationIndex,Gui::DocumentModelIndex);
     TYPESYSTEM_SOURCE_ABSTRACT(Gui::DocumentIndex, Gui::DocumentModelIndex);
     TYPESYSTEM_SOURCE_ABSTRACT(Gui::ViewProviderIndex, Gui::DocumentModelIndex);
+
+    struct DocumentModelP
+    {
+        DocumentModelP()
+        { rootItem = new ApplicationIndex(); }
+        ~DocumentModelP()
+        { delete rootItem; }
+        ApplicationIndex *rootItem;
+    };
 }
 
 DocumentModel::DocumentModel(QObject* parent)
@@ -242,7 +279,7 @@ void DocumentModel::slotNewDocument(const Gui::Document& Doc)
 
 void DocumentModel::slotDeleteDocument(const Gui::Document& Doc)
 {
-    int row = d->rootItem->findDocument(Doc);
+    int row = d->rootItem->findChild(Doc);
     if (row > -1) {
         QModelIndex parent = createIndex(0,0,d->rootItem);
         beginRemoveRows(parent, row, row);
@@ -260,7 +297,7 @@ void DocumentModel::slotRenameDocument(const Gui::Document& Doc)
 
 void DocumentModel::slotRelabelDocument(const Gui::Document& Doc)
 {
-    int row = d->rootItem->findDocument(Doc);
+    int row = d->rootItem->findChild(Doc);
     if (row > -1) {
         QModelIndex parent = createIndex(0,0,d->rootItem);
         QModelIndex item = index (row, 0, parent);
@@ -289,7 +326,7 @@ void DocumentModel::slotNewObject(const Gui::ViewProviderDocumentObject& obj)
 {
     App::Document* doc = obj.getObject()->getDocument();
     Gui::Document* gdc = Application::Instance->getDocument(doc);
-    int row = d->rootItem->findDocument(*gdc);
+    int row = d->rootItem->findChild(*gdc);
     if (row > -1) {
         DocumentIndex* index = static_cast<DocumentIndex*>(d->rootItem->child(row));
         QModelIndex parent = createIndex(index->row(),0,index);
@@ -302,6 +339,23 @@ void DocumentModel::slotNewObject(const Gui::ViewProviderDocumentObject& obj)
 
 void DocumentModel::slotDeleteObject(const Gui::ViewProviderDocumentObject& obj)
 {
+    App::Document* doc = obj.getObject()->getDocument();
+    Gui::Document* gdc = Application::Instance->getDocument(doc);
+    int row = d->rootItem->findChild(*gdc);
+    if (row > -1) {
+        DocumentIndex* index = static_cast<DocumentIndex*>(d->rootItem->child(row));
+        QList<ViewProviderIndex*> views;
+        index->findViewProviders(obj, views);
+        for (QList<ViewProviderIndex*>::iterator it = views.begin(); it != views.end(); ++it) {
+            DocumentModelIndex* parentitem = (*it)->parent();
+            QModelIndex parent = createIndex(index->row(), 0, parentitem);
+            int row = (*it)->row();
+            beginRemoveRows(parent, row, row);
+            parentitem->removeChild(row);
+            delete *it;
+            endRemoveRows();
+        }
+    }
 }
 
 void DocumentModel::slotChangeObject(const Gui::ViewProviderDocumentObject& view)
@@ -314,6 +368,8 @@ void DocumentModel::slotRenameObject(const Gui::ViewProviderDocumentObject& obj)
 
 void DocumentModel::slotActiveObject(const Gui::ViewProviderDocumentObject& obj)
 {
+    // do nothing here because this is automatically done by calling
+    // ViewProviderIndex::data()
 }
 
 const Document* DocumentModel::getDocument(const QModelIndex& index) const
