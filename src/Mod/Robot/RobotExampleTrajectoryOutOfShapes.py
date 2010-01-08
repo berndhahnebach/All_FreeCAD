@@ -1,0 +1,24 @@
+# Examples to generate trajectories out of shapes
+
+# geting selected edges from the selection and sort them
+count = 0
+FirstPos1 = None
+FirstPos2 = None
+LastPos2  = None
+SortedEdgeList = []
+for so in Gui.Selection.getSelectionEx():
+	for edge in obj.SubObjects:
+		if edge.Type != 'Part::TopoShape':continue 
+		pos1 = edge.valueAt(0)
+		pos2 = edge.valueAt(edge.Length)
+		print pos1,pos2
+		if count=0: # first edge
+			FirstPos1 = pos1
+			FirstPos2 = pos2
+		else: if count=1 : # second edge
+			if 
+		else: # the rest
+			SortedEdgeList.append( (pos1,pos2,edge) )
+
+			
+
