@@ -66,7 +66,6 @@ private:
 
 private:
     struct DocumentModelP *d;
-    //std::vector<const Gui::Document*> docs;
 };
 
 } //namespace Gui
