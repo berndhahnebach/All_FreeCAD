@@ -116,7 +116,10 @@ TaskTrajectory::~TaskTrajectory()
 
 void TaskTrajectory::setTo(void)
 {
-    sim.setToTime(timePos);
+    if(timePos < 0.0001)
+        sim.reset();
+    else
+        sim.setToTime(timePos);
     ViewProv->setAxisTo(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5]);
     axisChanged(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5]);
 }

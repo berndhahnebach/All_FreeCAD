@@ -50,6 +50,12 @@
      </item>
      <item row="0" column="1">
       <widget class="QSlider" name="horizontalSlider_Axis1">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>-180</number>
        </property>
@@ -71,9 +77,14 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>16777215</height>
+         <width>40</width>
+         <height>16</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -86,6 +97,12 @@
      </item>
      <item row="1" column="1">
       <widget class="QSlider" name="horizontalSlider_Axis2">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>-180</number>
        </property>
@@ -107,9 +124,14 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>16777215</height>
+         <width>40</width>
+         <height>16</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -122,6 +144,12 @@
      </item>
      <item row="2" column="1">
       <widget class="QSlider" name="horizontalSlider_Axis3">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>-180</number>
        </property>
@@ -143,9 +171,14 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>16777215</height>
+         <width>40</width>
+         <height>16</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -158,6 +191,12 @@
      </item>
      <item row="3" column="1">
       <widget class="QSlider" name="horizontalSlider_Axis4">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>-180</number>
        </property>
@@ -179,9 +218,14 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>16777215</height>
+         <width>40</width>
+         <height>16</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -194,6 +238,12 @@
      </item>
      <item row="4" column="1">
       <widget class="QSlider" name="horizontalSlider_Axis5">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>-180</number>
        </property>
@@ -215,9 +265,14 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>16777215</height>
+         <width>40</width>
+         <height>16</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -230,6 +285,12 @@
      </item>
      <item row="5" column="1">
       <widget class="QSlider" name="horizontalSlider_Axis6">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>-180</number>
        </property>
@@ -251,9 +312,14 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>16777215</height>
+         <width>40</width>
+         <height>16</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
        </property>
       </widget>
      </item>

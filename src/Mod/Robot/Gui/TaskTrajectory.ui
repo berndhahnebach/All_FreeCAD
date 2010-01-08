@@ -275,6 +275,21 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label_Pos">
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>9</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>TCP: (200.23,300.23,400.23,234,343,343)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTableWidget" name="trajectoryTable">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">

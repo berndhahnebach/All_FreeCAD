@@ -33,6 +33,7 @@
 # include <Inventor/nodes/SoRotation.h>
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/draggers/SoJackDragger.h>
+# include <Inventor/draggers/SoTrackballDragger.h>
 # include <Inventor/VRMLnodes/SoVRMLTransform.h>
 # include <QFile>
 #endif
@@ -64,10 +65,10 @@ ViewProviderRobotObject::ViewProviderRobotObject()
     pcSimpleRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
     pcSimpleRoot->ref();
 
-    pcOffRoot = new SoSeparator();
+    pcOffRoot = new SoGroup();
     pcOffRoot->ref();
 
-    pcTcpRoot = new SoSeparator();
+    pcTcpRoot = new SoGroup();
     //pcTcpTransform = new SoTransform();
     //pcTcpTransform->scaleFactor = SbVec3f(150,150,150);
     //pcTcpRoot->addChild(pcTcpTransform);
@@ -76,6 +77,7 @@ ViewProviderRobotObject::ViewProviderRobotObject()
     //SoRotation *rot = new SoRotation();
     //rot->rotation.setValue(SbVec3f(0, 0, 1), 1.5707963f);
 
+    //pcDragger = new SoTrackballDragger();
     pcDragger = new SoJackDragger();
     pcDragger->addMotionCallback(sDraggerMotionCallback,this);
     //pcTcpRoot->addChild(sphere);

@@ -53,7 +53,15 @@ using namespace KDL;
 Simulation::Simulation(const Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
 :Trac(Trac),Rob(Rob),Pos(0.0)
 {
-	
+    setToTime(0);
+
+	startAxis[0] = Rob.getAxis(0);
+    startAxis[1] = Rob.getAxis(1);
+    startAxis[2] = Rob.getAxis(2);
+    startAxis[3] = Rob.getAxis(3);
+    startAxis[4] = Rob.getAxis(4);
+    startAxis[5] = Rob.getAxis(5);
+
 }
 
 Simulation::~Simulation()
@@ -84,4 +92,18 @@ void Simulation::setToTime(float t)
     Axis[4] = Rob.getAxis(4);
     Axis[5] = Rob.getAxis(5);
 
+}
+
+void Simulation::reset(void)
+{
+    Rob.setAxis(0,startAxis[0]);
+    Rob.setAxis(1,startAxis[1]);
+    Rob.setAxis(2,startAxis[2]);
+    Rob.setAxis(3,startAxis[3]);
+    Rob.setAxis(4,startAxis[4]);
+    Rob.setAxis(5,startAxis[5]);
+
+    Base::Placement NeededPos = Trac.getPosition(0.0);
+    NeededPos *= Tool;
+    Rob.setTo(NeededPos);
 }
