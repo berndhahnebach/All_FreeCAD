@@ -37,7 +37,7 @@ class Fillet : public Part::Feature
 public:
     Fillet();
 
-    App::PropertyLink Base;
+    App::PropertyLinkWeak Base;
     PropertyFilletEdges Edges;
 
     /** @name methods override feature */
