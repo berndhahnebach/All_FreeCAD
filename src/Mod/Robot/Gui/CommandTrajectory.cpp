@@ -51,8 +51,8 @@ CmdRobotCreateTrajectory::CmdRobotCreateTrajectory()
 {
     sAppModule      = "Robot";
     sGroup          = QT_TR_NOOP("Robot");
-    sMenuText       = QT_TR_NOOP("Creat trajectory");
-    sToolTipText    = QT_TR_NOOP("Creat a new empty trajecotry ");
+    sMenuText       = QT_TR_NOOP("Create trajectory");
+    sToolTipText    = QT_TR_NOOP("Create a new empty trajectory ");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_CreateTrajectory";
