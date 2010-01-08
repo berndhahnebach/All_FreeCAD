@@ -950,6 +950,7 @@ void Application::initTypes(void)
     App ::PropertyString            ::init();
     App ::PropertyStringList        ::init();
     App ::PropertyLink              ::init();
+    App ::PropertyLinkWeak          ::init();
     App ::PropertyLinkSub           ::init();
     App ::PropertyLinkList          ::init();
     App ::PropertyMatrix            ::init();

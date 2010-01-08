@@ -157,13 +157,28 @@ std::vector<DocumentObject*> PropertyContainer::getOutList(void) const
     {
         if ((*It)->isDerivedFrom(PropertyLinkList::getClassTypeId()))
         {
-			const std::vector<DocumentObject*> &OutList = dynamic_cast<PropertyLinkList*>(*It)->getValues();
-			for(std::vector<DocumentObject*>::const_iterator It2 = OutList.begin();It2 != OutList.end(); ++It2)
-				ret.push_back(*It2 );
+            const std::vector<DocumentObject*> &OutList = static_cast<PropertyLinkList*>(*It)->getValues();
+            for(std::vector<DocumentObject*>::const_iterator It2 = OutList.begin();It2 != OutList.end(); ++It2)
+                ret.push_back(*It2 );
         }
-        if ((*It)->isDerivedFrom(PropertyLink::getClassTypeId()))
+        else if ((*It)->isDerivedFrom(PropertyLink::getClassTypeId()))
         {
-            ret.push_back(dynamic_cast<PropertyLink*>(*It)->getValue() );
+            ret.push_back(static_cast<PropertyLink*>(*It)->getValue() );
+        }
+    }
+    return ret;
+}
+
+std::vector<DocumentObject*> PropertyContainer::getWeakOutList(void) const
+{
+    std::vector<Property*> List;
+    std::vector<DocumentObject*> ret;
+    getPropertyList(List);
+    for(std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It)
+    {
+        if ((*It)->isDerivedFrom(PropertyLinkWeak::getClassTypeId()))
+        {
+            ret.push_back(static_cast<PropertyLinkWeak*>(*It)->getValue() );
         }
     }
     return ret;

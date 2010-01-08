@@ -43,7 +43,7 @@ class DocumentObject;
 /** the general Link Poperty
  *  Main Purpose of this property is to Link Objects and Feautures in a document.
  */
-class AppExport PropertyLink: public Property
+class AppExport PropertyLink : public Property
 {
     TYPESYSTEM_HEADER();
 
@@ -94,7 +94,28 @@ public:
 
 protected:
     App::DocumentObject *_pcLink;
+};
 
+/** A special Link Poperty
+ * Does basically the same as its parent class unless that referenced objects
+ * are not sorted hierarchically in the tree view in the GUI.
+ */
+class AppExport PropertyLinkWeak : public PropertyLink
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyLinkWeak();
+
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    ~PropertyLinkWeak();
 };
 
 
