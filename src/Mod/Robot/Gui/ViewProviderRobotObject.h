@@ -30,6 +30,7 @@
 
 class SoDragger;
 class SoJackDragger;
+class SoTrackballDragger;
 
 namespace RobotGui
 {
@@ -59,11 +60,12 @@ protected:
 
     Gui::SoFCSelection    * pcRobotRoot;
     Gui::SoFCSelection    * pcSimpleRoot;
-    SoSeparator           * pcOffRoot;
+    SoGroup               * pcOffRoot;
 
-    SoSeparator           * pcTcpRoot;
+    SoGroup               * pcTcpRoot;
     SoTransform           * pcTcpTransform;
 
+    //SoTrackballDragger    * pcDragger;
     SoJackDragger         * pcDragger;
 
 	// Pointers to the robot axis nodes in the VRML model

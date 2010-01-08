@@ -137,8 +137,8 @@ void Robot6Axis::readKinematic(const char * FileName)
         temp[i].alpha    = atof(destination[1].c_str());
         temp[i].d        = atof(destination[2].c_str());
         temp[i].theta    = atof(destination[3].c_str());
-        temp[i].minAngle = atof(destination[4].c_str());
-        temp[i].maxAngle = atof(destination[5].c_str());
+        temp[i].maxAngle = atof(destination[4].c_str());
+        temp[i].minAngle = atof(destination[5].c_str());
         temp[i].velocity = atof(destination[6].c_str());
     }
 
