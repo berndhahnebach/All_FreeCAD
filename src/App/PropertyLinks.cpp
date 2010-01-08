@@ -121,21 +121,24 @@ void PropertyLink::Save (Writer &writer) const
 
 void PropertyLink::Restore(Base::XMLReader &reader)
 {
-    // read my Element
+    // read my element
     reader.readElement("Link");
-    // get the value of my Attribute
+    // get the value of my attribute
     std::string name = reader.getAttribute("value");
 
-    // Property not in a Feature!
+    // Property not in a DocumentObject!
     assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-    if (name != ""){
-        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
-        Base::Console().Warning("Lost link to '%s' while loading, maybe a object was not loaded correctly\n",name.c_str());
+    if (name != "") {
+        DocumentObject *pcObject = static_cast<DocumentObject*>(getContainer())->
+            getDocument()->getObject(name.c_str());
+        if (!pcObject)
+            Base::Console().Warning("Lost link to '%s' while loading, maybe "
+                                    "an object was not loaded correctly\n",name.c_str());
         setValue(pcObject);
     }
     else {
-       setValue(0);
+        setValue(0);
     }
 }
 
@@ -266,13 +269,13 @@ void PropertyLinkSub::Save (Writer &writer) const
 
 void PropertyLinkSub::Restore(Base::XMLReader &reader)
 {
-    // read my Element
+    // read my element
     reader.readElement("LinkSub");
-    // get the values of my Attributes
+    // get the values of my attributes
     std::string name = reader.getAttribute("value");
     int count = reader.getAttributeAsInteger("count");
 
-    // Property not in a Feature!
+    // Property not in a DocumentObject!
     assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
     std::vector<std::string> values(count);
@@ -285,9 +288,11 @@ void PropertyLinkSub::Restore(Base::XMLReader &reader)
 
     DocumentObject *pcObject;
     if (name != ""){
-        pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
-            Base::Console().Warning("Lost link to '%s' while loading, maybe a object was not loaded correctly\n",name.c_str());
-
+        pcObject = static_cast<DocumentObject*>(getContainer())->
+            getDocument()->getObject(name.c_str());
+        if (!pcObject)
+            Base::Console().Warning("Lost link to '%s' while loading, maybe "
+                                    "an object was not loaded correctly\n",name.c_str());
         setValue(pcObject,values);
     }
     else {
