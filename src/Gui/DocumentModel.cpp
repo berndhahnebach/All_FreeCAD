@@ -37,6 +37,7 @@
 #include "ViewProviderDocumentObject.h"
 #include <App/Document.h>
 #include <App/DocumentObject.h>
+#include <App/PropertyLinks.h>
 
 using namespace Gui;
 
@@ -69,7 +70,8 @@ namespace Gui {
         int row() const
         {
             if (parentItem)
-                return parentItem->childItems.indexOf(const_cast<DocumentModelIndex*>(this));
+                return parentItem->childItems.indexOf
+                    (const_cast<DocumentModelIndex*>(this));
             return 0;
         }
         int childCount() const
@@ -128,7 +130,8 @@ namespace Gui {
             if (!documentIcon)
                 documentIcon = new QIcon(Gui::BitmapFactory().pixmap("Document"));
         }
-        void findViewProviders(const ViewProvider&, QList<ViewProviderIndex*>&);
+        int findViewProvider(const ViewProvider&) const;
+        void findViewProviders(const ViewProvider&, QList<ViewProviderIndex*>&) const;
         QVariant data(int role) const
         {
             if (role == Qt::DecorationRole) {
@@ -159,7 +162,7 @@ namespace Gui {
     public:
         const Gui::ViewProviderDocumentObject& v;
         ViewProviderIndex(const Gui::ViewProviderDocumentObject& v) : v(v){}
-        void findViewProviders(const ViewProvider&, QList<ViewProviderIndex*>&);
+        void findViewProviders(const ViewProvider&, QList<ViewProviderIndex*>&) const;
         QVariant data(int role) const
         {
             if (role == Qt::DecorationRole) {
@@ -199,7 +202,7 @@ namespace Gui {
     QIcon* DocumentIndex::documentIcon = 0;
 
     void DocumentIndex::findViewProviders(const ViewProvider& vp,
-        QList<ViewProviderIndex*>& index)
+        QList<ViewProviderIndex*>& index) const
     {
         QList<DocumentModelIndex*>::const_iterator it;
         for (it = childItems.begin(); it != childItems.end(); ++it) {
@@ -208,8 +211,21 @@ namespace Gui {
         }
     }
 
+    int DocumentIndex::findViewProvider(const ViewProvider& vp) const
+    {
+        QList<DocumentModelIndex*>::const_iterator it;
+        int index=0;
+        for (it = childItems.begin(); it != childItems.end(); ++it, ++index) {
+            ViewProviderIndex* v = static_cast<ViewProviderIndex*>(*it);
+            if (&v->v == &vp)
+                return index;
+        }
+
+        return -1;
+    }
+
     void ViewProviderIndex::findViewProviders(const ViewProvider& vp,
-        QList<ViewProviderIndex*>& index)
+        QList<ViewProviderIndex*>& index) const
     {
         if (&this->v == &vp)
             index.push_back(const_cast<ViewProviderIndex*>(this));
@@ -234,6 +250,8 @@ namespace Gui {
         ApplicationIndex *rootItem;
     };
 }
+
+// -----------------------------------------------------------------
 
 DocumentModel::DocumentModel(QObject* parent)
     : QAbstractItemModel(parent), d(new DocumentModelP)
@@ -264,7 +282,7 @@ void DocumentModel::slotNewDocument(const Gui::Document& Doc)
 {
     Doc.signalNewObject.connect(boost::bind(&DocumentModel::slotNewObject, this, _1));
     Doc.signalDeletedObject.connect(boost::bind(&DocumentModel::slotDeleteObject, this, _1));
-    Doc.signalChangedObject.connect(boost::bind(&DocumentModel::slotChangeObject, this, _1));
+    Doc.signalChangedObject.connect(boost::bind(&DocumentModel::slotChangeObject, this, _1, _2));
     Doc.signalRenamedObject.connect(boost::bind(&DocumentModel::slotRenameObject, this, _1));
     Doc.signalActivatedObject.connect(boost::bind(&DocumentModel::slotActiveObject, this, _1));
     Doc.signalInEdit.connect(boost::bind(&DocumentModel::slotInEdit, this, _1));
@@ -343,12 +361,12 @@ void DocumentModel::slotDeleteObject(const Gui::ViewProviderDocumentObject& obj)
     Gui::Document* gdc = Application::Instance->getDocument(doc);
     int row = d->rootItem->findChild(*gdc);
     if (row > -1) {
-        DocumentIndex* index = static_cast<DocumentIndex*>(d->rootItem->child(row));
+        DocumentIndex* doc_index = static_cast<DocumentIndex*>(d->rootItem->child(row));
         QList<ViewProviderIndex*> views;
-        index->findViewProviders(obj, views);
+        doc_index->findViewProviders(obj, views);
         for (QList<ViewProviderIndex*>::iterator it = views.begin(); it != views.end(); ++it) {
             DocumentModelIndex* parentitem = (*it)->parent();
-            QModelIndex parent = createIndex(index->row(), 0, parentitem);
+            QModelIndex parent = createIndex(doc_index->row(), 0, parentitem);
             int row = (*it)->row();
             beginRemoveRows(parent, row, row);
             parentitem->removeChild(row);
@@ -358,12 +376,65 @@ void DocumentModel::slotDeleteObject(const Gui::ViewProviderDocumentObject& obj)
     }
 }
 
-void DocumentModel::slotChangeObject(const Gui::ViewProviderDocumentObject& view)
+void DocumentModel::slotChangeObject(const Gui::ViewProviderDocumentObject& obj, const App::Property& Prop)
 {
+    App::DocumentObject* fea = obj.getObject();
+    if (&fea->Label == &Prop) {
+        App::Document* doc = fea->getDocument();
+        Gui::Document* gdc = Application::Instance->getDocument(doc);
+        int row = d->rootItem->findChild(*gdc);
+        if (row > -1) {
+            DocumentIndex* doc_index = static_cast<DocumentIndex*>(d->rootItem->child(row));
+            QList<ViewProviderIndex*> views;
+            doc_index->findViewProviders(obj, views);
+            for (QList<ViewProviderIndex*>::iterator it = views.begin(); it != views.end(); ++it) {
+                DocumentModelIndex* parentitem = (*it)->parent();
+                QModelIndex parent = createIndex(0,0,parentitem);
+                int row = (*it)->row();
+                QModelIndex item = index (row, 0, parent);
+                dataChanged(item, item);
+            }
+        }
+    }
+    else if (isPropertyLink(Prop)) {
+        App::Document* doc = fea->getDocument();
+        Gui::Document* gdc = Application::Instance->getDocument(doc);
+        std::vector<ViewProviderDocumentObject*> views = getLinkedObjects(*gdc, Prop);
+
+        int row = d->rootItem->findChild(*gdc);
+        if (row > -1) {
+            DocumentIndex* doc_index = static_cast<DocumentIndex*>(d->rootItem->child(row));
+            QList<ViewProviderIndex*> obj_index;
+            doc_index->findViewProviders(obj, obj_index);
+
+            // remove from top level in document
+            for (std::vector<ViewProviderDocumentObject*>::iterator vp = views.begin(); vp != views.end(); ++vp) {
+                int row = doc_index->findViewProvider(**vp);
+                if (row >= 0) {
+                    DocumentModelIndex* child = doc_index->child(row);
+                    QModelIndex parent = createIndex(doc_index->row(), 0, doc_index);
+                    beginRemoveRows(parent, row, row);
+                    doc_index->removeChild(row);
+                    delete child;
+                    endRemoveRows();
+                }
+            }
+
+            for (QList<ViewProviderIndex*>::iterator it = obj_index.begin(); it != obj_index.end(); ++it) {
+                QModelIndex parent = createIndex((*it)->row(),0,*it);
+                int count_obj = (*it)->childCount();
+                beginInsertRows(parent, count_obj, count_obj + (int)views.size());
+                for (std::vector<ViewProviderDocumentObject*>::iterator jt = views.begin(); jt != views.end(); ++jt)
+                    (*it)->appendChild(new ViewProviderIndex(**jt));
+                endInsertRows();
+            }
+        }
+    }
 }
 
 void DocumentModel::slotRenameObject(const Gui::ViewProviderDocumentObject& obj)
 {
+    // renaming of objects not supported at the moment
 }
 
 void DocumentModel::slotActiveObject(const Gui::ViewProviderDocumentObject& obj)
@@ -384,6 +455,43 @@ const Document* DocumentModel::getDocument(const QModelIndex& index) const
     }
 
     return 0;
+}
+
+bool DocumentModel::isPropertyLink(const App::Property& prop) const
+{
+    if (prop.isDerivedFrom(App::PropertyLinkWeak::getClassTypeId()))
+        return false;
+    if (prop.isDerivedFrom(App::PropertyLink::getClassTypeId()))
+        return true;
+    if (prop.isDerivedFrom(App::PropertyLinkList::getClassTypeId()))
+        return true;
+    return false;
+}
+
+std::vector<ViewProviderDocumentObject*>
+DocumentModel::getLinkedObjects(const Gui::Document& doc, const App::Property& prop) const
+{
+    std::vector<ViewProviderDocumentObject*> links;
+    if (prop.isDerivedFrom(App::PropertyLinkWeak::getClassTypeId()))
+        return links;
+    if (prop.isDerivedFrom(App::PropertyLink::getClassTypeId())) {
+        App::DocumentObject* obj;
+        obj = static_cast<const App::PropertyLink&>(prop).getValue();
+        ViewProvider* view = doc.getViewProvider(obj);
+        if (view && view->getTypeId().isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+            links.push_back(static_cast<ViewProviderDocumentObject*>(view));
+    }
+    else if (prop.isDerivedFrom(App::PropertyLinkList::getClassTypeId())) {
+        const std::vector<App::DocumentObject*>& refs = static_cast
+            <const App::PropertyLinkList&>(prop).getValues();
+        for (std::vector<App::DocumentObject*>::const_iterator it = refs.begin();it != refs.end(); ++it) {
+            ViewProvider* view = doc.getViewProvider(*it);
+            if (view && view->getTypeId().isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+                links.push_back(static_cast<ViewProviderDocumentObject*>(view));
+        }
+    }
+
+    return links;
 }
 
 int DocumentModel::columnCount (const QModelIndex & /*parent*/) const

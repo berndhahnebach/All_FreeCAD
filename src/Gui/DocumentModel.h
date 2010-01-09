@@ -28,6 +28,9 @@
 #include <vector>
 #include <map>
 
+namespace App {
+class Property;
+}
 namespace Gui {
 class Document;
 class ViewProviderDocumentObject;
@@ -58,11 +61,14 @@ private:
     void slotResetEdit(const Gui::ViewProviderDocumentObject& v);
     void slotNewObject(const Gui::ViewProviderDocumentObject& obj);
     void slotDeleteObject(const Gui::ViewProviderDocumentObject& obj);
-    void slotChangeObject(const Gui::ViewProviderDocumentObject& view);
+    void slotChangeObject(const Gui::ViewProviderDocumentObject& obj, const App::Property& Prop);
     void slotRenameObject(const Gui::ViewProviderDocumentObject& obj);
     void slotActiveObject(const Gui::ViewProviderDocumentObject& obj);
 
     const Document* getDocument(const QModelIndex&) const;
+    bool isPropertyLink(const App::Property&) const;
+    std::vector<ViewProviderDocumentObject*> getLinkedObjects
+        (const Gui::Document&, const App::Property&) const;
 
 private:
     struct DocumentModelP *d;
