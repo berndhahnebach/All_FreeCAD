@@ -26,8 +26,7 @@ if(WIN32)
 else(WIN32)
 		 set(Robot_LIBS
 				 Part
-		         optimized QtCore4.lib
-		         debug QtCored4.lib
+		         ${QT_LIBRARIES}
 		 		 FreeCADApp)
 endif(WIN32)
 
