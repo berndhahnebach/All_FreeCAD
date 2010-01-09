@@ -68,6 +68,7 @@
 #include <Base/BoundBoxPy.h>
 #include <Base/PlacementPy.h>
 #include <Base/RotationPy.h>
+#include <Base/UnitsApi.h>
 
 #include "GeoFeature.h"
 #include "FeatureTest.h"
@@ -1048,6 +1049,9 @@ void Application::initConfig(int argc, char ** argv)
                           mConfig["BuildRevision"].c_str());
 
     LoadParameters();
+
+    // set the default units
+    UnitsApi::setDefaults();
 
     // capture python variables
     SaveEnv("PYTHONPATH");
