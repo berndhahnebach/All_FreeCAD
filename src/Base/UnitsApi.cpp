@@ -89,7 +89,7 @@ QString UnitsApi::toStrWithUserPrefs(QuantityType t,double Value)
 
 PyObject *UnitsApi::toPyWithUserPrefs(QuantityType t,double Value)
 {
-    return 0;
+    return PyFloat_FromDouble(Value * UserPrefFactor[t]);
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,const QString & Str)
@@ -104,13 +104,20 @@ double UnitsApi::toDblWithUserPrefs(QuantityType t,const char* Str)
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,double UserVal)
 {
-    return 0.0;
+    return UserPrefFactor[t]/UserVal;
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,PyObject *ArgObj)
 {
-    return 0.0;
-}
+    if (PyString_Check(ArgObj)) 
+        return toDblWithUserPrefs(t,PyString_AsString(ArgObj));
+    else if (PyFloat_Check(ArgObj))
+        return toDblWithUserPrefs(t,PyFloat_AsDouble(ArgObj));
+    else if (PyInt_Check(ArgObj))
+        return toDblWithUserPrefs(t,(double)PyInt_AsLong(ArgObj));
+    else
+        throw Base::Exception("Wrong parameter type!");
+ }
 
 void UnitsApi::setPrefOf(QuantityType t,const char* Str)
 {
