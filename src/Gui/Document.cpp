@@ -402,7 +402,7 @@ void Document::slotChangedObject(const App::DocumentObject& Obj, const App::Prop
         }
 
         if (viewProvider->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
-            signalChangedObject(*(static_cast<ViewProviderDocumentObject*>(viewProvider)));
+            signalChangedObject(static_cast<ViewProviderDocumentObject&>(*viewProvider), Prop);
     }
 
     // a property of an object has changed
