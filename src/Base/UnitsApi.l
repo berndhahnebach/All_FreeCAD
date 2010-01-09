@@ -48,7 +48,9 @@ ID       [a-z][a-z0-9]*
 "km"        yylval = 1000000.0;  return UNIT; // kilometer
 
 "in"        yylval = 25.4;       return UNIT; // inch
+"\""        yylval = 25.4;       return UNIT; // inch
 "fo"        yylval = 304.8;      return UNIT; // foot
+"'"         yylval = 304.8;      return UNIT; // foot
 "th"        yylval = 0.0254;     return UNIT; // thou
 "yr"        yylval = 914.4;      return UNIT; // yard
 
@@ -88,5 +90,21 @@ ID       [a-z][a-z0-9]*
 "pi"                   {yylval = M_PI          ; return NUM;} // constant pi         
 "e"                    {yylval = M_E           ; return NUM;} // constant e         
                      
+"acos"                 return ACOS;
+"asin"                 return ASIN;
+"atan"                 return ATAN;
+"atan2"                return ATAN2;
+"cos"                  return COS;
+"exp"                  return EXP;
+"abs"                  return ABS;
+"mod"                  return MOD;
+"log"                  return LOG;
+"log10"                return LOG10;
+"pow"                  return POW;
+"sin"                  return SIN;
+"sinh"                 return SINH;
+"tan"                  return TAN;
+"tanh"                 return TANH;
+"sqrt"                 return SQRT;
 
- 
+

@@ -7,6 +7,7 @@ SET(Test_SRCS
 	TestApp.py
 	TestGui.py
 	UnicodeTests.py
+	UnitTests.py
 	Workbench.py
 	unittestgui.py
 	Gui/qtunittest.py
