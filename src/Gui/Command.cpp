@@ -317,20 +317,20 @@ void Command::testActive(void)
 {
     if (!_pcAction) return;
 
-    if ( _blockCmd ) {
-        _pcAction->setEnabled ( false );
+    if (_blockCmd) {
+        _pcAction->setEnabled(false);
         return;
     }
 
-    if(!Gui::Control().isAllowedAlterDocument() && eType & AlterDoc
-     ||!Gui::Control().isAllowedAlterView()     && eType & Alter3DView
-     ||!Gui::Control().isAllowedAlterSelection()&& eType & AlterSelection){
-         _pcAction->setEnabled ( false);
+    if ((!Gui::Control().isAllowedAlterDocument()  && eType & AlterDoc)    ||
+        (!Gui::Control().isAllowedAlterView()      && eType & Alter3DView) ||
+        (!Gui::Control().isAllowedAlterSelection() && eType & AlterSelection)) {
+         _pcAction->setEnabled(false);
         return;
     }
 
     bool bActive = isActive();
-    _pcAction->setEnabled ( bActive );
+    _pcAction->setEnabled(bActive);
 }
 
 //--------------------------------------------------------------------------
