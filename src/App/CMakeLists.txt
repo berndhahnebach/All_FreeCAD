@@ -10,6 +10,7 @@ include_directories(
 		 ${Boost_INCLUDE_DIRS}
 		 ${PYTHON_INCLUDE_PATH}
 	     ${XERCESC_INCLUDE_DIR}
+         ${QT_INCLUDE_DIR}
 	     ${ZLIB_INCLUDE_DIR})
 
 if(WIN32)

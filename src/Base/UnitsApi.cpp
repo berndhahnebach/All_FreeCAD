@@ -49,12 +49,10 @@ using namespace Base;
 
 // === static attributes  ================================================
 
-UnitsApi::UnitSystem  UnitsApi::UserPrefSystem = SI;
+UnitsApi::UnitSystem  UnitsApi::UserPrefSystem = SI1;
 
-double                UnitsApi::UserPrefLengthFactor = 1.0;
-std::string           UnitsApi::UserPrefLengthSymbol = "mm";
-double                UnitsApi::UserPrefAngleFactor  = 1.0;
-std::string           UnitsApi::UserPrefAngleSymbol  = "deg";
+double   UnitsApi::UserPrefFactor [50];
+QString  UnitsApi::UserPrefUnit   [50];
 
 
 UnitsApi::UnitsApi(const char* filter)
@@ -76,43 +74,66 @@ double UnitsApi::translateUnit(const char* str)
     return parse( str ); 
 }
 
-double UnitsApi::translateUnit(const std::string& str)
+double UnitsApi::translateUnit(const QString & str)
 {
-    return parse( str.c_str() );  
+    return parse( str.toUtf8() );  
 }
 
 
 // === static translation methodes ==========================================
 
-std::string UnitsApi::toStrWithUserPrefsLength(double Value)
+QString UnitsApi::toStrWithUserPrefs(QuantityType t,double Value)
 {
-    return std::string("NULL");
+    return QString::fromLatin1("NULL");
 }
 
-std::string UnitsApi::toStrWithUserPrefsAngle(double Value)
+PyObject *UnitsApi::toPyWithUserPrefs(QuantityType t,double Value)
 {
-    return std::string("NULL");
+    return 0;
 }
 
-double UnitsApi::toDblWithUserPrefsLength(const char* Str)
+double UnitsApi::toDblWithUserPrefs(QuantityType t,const QString & Str)
 {
     return 0.0;
 }
 
-double UnitsApi::toDblWithUserPrefsLength(double UserVal)
+double UnitsApi::toDblWithUserPrefs(QuantityType t,const char* Str)
 {
     return 0.0;
 }
 
-double UnitsApi::toDblWithUserPrefsLength(PyObject *ArgObj)
+double UnitsApi::toDblWithUserPrefs(QuantityType t,double UserVal)
 {
     return 0.0;
 }
 
-double UnitsApi::toDblWithUserPrefsAngle(const char* Str)
+double UnitsApi::toDblWithUserPrefs(QuantityType t,PyObject *ArgObj)
 {
     return 0.0;
 }
+
+void UnitsApi::setPrefOf(QuantityType t,const char* Str)
+{
+    double Factor = translateUnit(Str);
+    UserPrefUnit[t] = QString::fromLatin1(Str);
+    UserPrefFactor[t] = Factor;
+}
+
+const QString & UnitsApi::getPrefUnitOf(QuantityType t)
+{
+    return UserPrefUnit[t];
+}
+const double UnitsApi::getPrefFactorOf(QuantityType t)
+{
+    return UserPrefFactor[t];
+}
+
+void UnitsApi::setDefaults(void)
+{
+    setPrefOf(Length,"mm");
+  
+}
+
 
 
 

@@ -14,15 +14,20 @@ include_directories(
 		 ${EIGEN2_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
+	     ${QT_INCLUDE_DIR}
 		 ${XERCES_INCLUDE_DIR})
 
 if(WIN32)
 		 set(Robot_LIBS
 				 Part
+		         optimized QtCore4.lib
+		         debug QtCored4.lib
 		 		 FreeCADApp)
 else(WIN32)
 		 set(Robot_LIBS
 				 Part
+		         optimized QtCore4.lib
+		         debug QtCored4.lib
 		 		 FreeCADApp)
 endif(WIN32)
 

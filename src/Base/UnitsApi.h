@@ -26,6 +26,7 @@
 
 #include <string>
 #include <Python.h>
+#include <QString>
 
 
 namespace Base {
@@ -45,37 +46,62 @@ public:
 
     /// raw parser interface to calculat units (only from and to internal)
     static double translateUnit(const char*);
-    static double translateUnit(const std::string&);
+    static double translateUnit(const QString &);
 
     /** Units systems*/
     enum UnitSystem { 
-        SI      , /** the SI system (http://en.wikipedia.org/wiki/International_System_of_Units) */  
-        Imperial  /** the Imperial system (http://en.wikipedia.org/wiki/Imperial_units) */  
+        SI1      , /** internal (mm,kg,s) SI system (http://en.wikipedia.org/wiki/International_System_of_Units) */  
+        SI2      , /** MKS (m,kg,s) SI system  */  
+        Imperial1  /** the Imperial system (http://en.wikipedia.org/wiki/Imperial_units) */  
+    } ;
+
+    /** quantity types*/
+    enum QuantityType{ 
+        Length      ,   
+        Area        ,   
+        Volume      ,   
+        Angle       , 
+        TimeSpan    , 
+        Velocity    , 
+        Acceleration, 
+        Mass        ,
+        Temperature
     } ;
 
     /** @name Translation from internal to user prefs */
     //@{
-    /// generate a string for a length quantity in user prefered system
-    static std::string toStrWithUserPrefsLength(double Value);
-    /// generate a string for a angle quantity in user prefered system
-    static std::string toStrWithUserPrefsAngle(double Value);
-   //@}
+    /// generate a string (UTF-8) for a quantity in user prefered system
+    static QString toStrWithUserPrefs(QuantityType t,double Value);
+    /// generate a python for a quantity in user prefered system
+    static PyObject *toPyWithUserPrefs(QuantityType t,double Value);
+    //@}
 
-   /** @name Translation to internal regarding user prefs 
+    /** @name Translation to internal regarding user prefs 
      * That means if no unit is issued the user prefs are in 
      * charge. If one unit is used the user prefs get ignored
      */
     //@{
-    /// generate a value for a length quantity with default user prefered system
-    static double toDblWithUserPrefsLength(const char* Str);
-    /// generate a value for a length quantity with default user prefered system
-    static double toDblWithUserPrefsLength(double UserVal);
-    /// generate a value for a length quantity with default user prefered system
-    static double toDblWithUserPrefsLength(PyObject *ArgObj);
-    /// generate a value for a angle quantity with default user prefered system
-    static double toDblWithUserPrefsAngle(const char* Str);
+    /// generate a value for a quantity with default user prefered system
+    static double toDblWithUserPrefs(QuantityType t,const QString & Str);
+    /// generate a value for a quantity with default user prefered system
+    static double toDblWithUserPrefs(QuantityType t,const char* Str);
+    /// generate a value for a quantity with default user prefered system
+    static double toDblWithUserPrefs(QuantityType t,double UserVal);
+    /// generate a value for a quantity with default user prefered system
+    static double toDblWithUserPrefs(QuantityType t,PyObject *ArgObj);
    //@}
 
+   /** @name query and set the user preferences */
+    //@{
+    /// set the default unit of a quantity type (e.g. m/s)
+    static void setPrefOf(QuantityType t,const char* Str);
+    /// get the default unit of a quantity (e.g. m/s)
+    static const QString & getPrefUnitOf(QuantityType t);
+    /// get the translation factor for the default unit of a quantity
+    static const double getPrefFactorOf(QuantityType t);
+    /// set the application defaults
+    static void setDefaults(void);
+   //@}
 
     double Result;
 
@@ -85,14 +111,9 @@ protected:
     static UnitSystem  UserPrefSystem;
 
     /// cached factor to translate
-    static double      UserPrefLengthFactor;
-    /// name of the unit the user whants to use as standard length
-    static std::string UserPrefLengthSymbol;
-
-    /// cached factor to translate
-    static double      UserPrefAngleFactor;
-    /// name of the unit the user whants to use as standard angle
-    static std::string UserPrefAngleSymbol;
+    static double   UserPrefFactor [50] ;
+    /// name of the unit the user whants to use as quantities
+    static QString  UserPrefUnit   [50] ;
 
     // do the real work
     static double parse(const char*);
