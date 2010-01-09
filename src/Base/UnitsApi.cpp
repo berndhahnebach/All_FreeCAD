@@ -152,12 +152,9 @@ UnitsApi* ActUnit=0;
 double ScanResult=0;
 
 // error func
-void yyerror(char *errorinfo)
+void Unit_yyerror(char *errorinfo)
 {  throw Base::Exception(errorinfo);  }
 
-// show the parser the lexer method
-#define yylex UnitsApilex
-int UnitsApilex(void);
 
 // for VC9 (isatty and fileno not supported anymore)
 #ifdef _MSC_VER
@@ -165,6 +162,11 @@ int isatty (int i) {return _isatty(i);}
 int fileno(FILE *stream) {return _fileno(stream);}
 #endif
 
+namespace UnitParser {
+
+// show the parser the lexer method
+#define yylex UnitsApilex
+int UnitsApilex(void);
 
 // Parser, defined in UnitsApi.y
 #include "UnitsApi.tab.c"
@@ -172,17 +174,19 @@ int fileno(FILE *stream) {return _fileno(stream);}
 // Scanner, defined in UnitsApi.l
 #include "lex.UnitsApi.c"
 
+}
+
 double UnitsApi::parse(const char* buffer)
 {
-    YY_BUFFER_STATE my_string_buffer = UnitsApi_scan_string (buffer);
+    UnitParser::YY_BUFFER_STATE my_string_buffer = UnitParser::UnitsApi_scan_string (buffer);
     // be aware that this parser is not reentrant! Dont use with Threats!!!
     //assert(!ActUnit);
     //ActUnit = this;
-    yyparse ();
+    UnitParser::Unit_yyparse ();
     //ActUnit = 0;
     //Ast = TopBlock;
     //TopBlock = 0;
-    UnitsApi_delete_buffer (my_string_buffer);
+    UnitParser::UnitsApi_delete_buffer (my_string_buffer);
 
     return ScanResult;
 }

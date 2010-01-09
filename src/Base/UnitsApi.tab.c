@@ -115,6 +115,9 @@
 #line 6 "UnitsApi.y"
 
        #define YYSTYPE double
+       #define yyparse Unit_yyparse
+       #define yyerror Unit_yyerror
+
        #include <math.h>
        #include <stdio.h>
  
@@ -150,7 +153,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 154 "UnitsApi.tab.c"
+#line 157 "UnitsApi.tab.c"
 
 #ifdef short
 # undef short
@@ -447,9 +450,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    26,    26,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54
+       0,    29,    29,    32,    33,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    57
 };
 #endif
 
@@ -1521,143 +1524,143 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 26 "UnitsApi.y"
+#line 29 "UnitsApi.y"
     { ScanResult = (yyvsp[(1) - (1)])     ;    ;}
     break;
 
   case 3:
-#line 29 "UnitsApi.y"
+#line 32 "UnitsApi.y"
     { (yyval) = (yyvsp[(1) - (1)]);         	;}
     break;
 
   case 4:
-#line 30 "UnitsApi.y"
+#line 33 "UnitsApi.y"
     { (yyval) = (yyvsp[(1) - (1)]);       	;}
     break;
 
   case 5:
-#line 31 "UnitsApi.y"
+#line 34 "UnitsApi.y"
     { (yyval) = (yyvsp[(1) - (3)]) + (yyvsp[(3) - (3)]);    	;}
     break;
 
   case 6:
-#line 32 "UnitsApi.y"
+#line 35 "UnitsApi.y"
     { (yyval) = (yyvsp[(1) - (3)]) - (yyvsp[(3) - (3)]);    	;}
     break;
 
   case 7:
-#line 33 "UnitsApi.y"
+#line 36 "UnitsApi.y"
     { (yyval) = (yyvsp[(1) - (2)]) * (yyvsp[(2) - (2)]);    	;}
     break;
 
   case 8:
-#line 34 "UnitsApi.y"
+#line 37 "UnitsApi.y"
     { (yyval) = (yyvsp[(1) - (3)]) * (yyvsp[(3) - (3)]);    	;}
     break;
 
   case 9:
-#line 35 "UnitsApi.y"
+#line 38 "UnitsApi.y"
     { (yyval) = (yyvsp[(1) - (3)]) / (yyvsp[(3) - (3)]);    	;}
     break;
 
   case 10:
-#line 36 "UnitsApi.y"
+#line 39 "UnitsApi.y"
     { (yyval) = -(yyvsp[(2) - (2)]);        	;}
     break;
 
   case 11:
-#line 37 "UnitsApi.y"
+#line 40 "UnitsApi.y"
     { (yyval) = pow ((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)]));;}
     break;
 
   case 12:
-#line 38 "UnitsApi.y"
+#line 41 "UnitsApi.y"
     { (yyval) = (yyvsp[(2) - (3)]);         	;}
     break;
 
   case 13:
-#line 39 "UnitsApi.y"
+#line 42 "UnitsApi.y"
     { (yyval) = acos((yyvsp[(3) - (4)]));   	;}
     break;
 
   case 14:
-#line 40 "UnitsApi.y"
+#line 43 "UnitsApi.y"
     { (yyval) = asin((yyvsp[(3) - (4)]));   	;}
     break;
 
   case 15:
-#line 41 "UnitsApi.y"
+#line 44 "UnitsApi.y"
     { (yyval) = atan((yyvsp[(3) - (4)]));   	;}
     break;
 
   case 16:
-#line 42 "UnitsApi.y"
+#line 45 "UnitsApi.y"
     { (yyval) = atan2((yyvsp[(3) - (6)]),(yyvsp[(5) - (6)]));;}
     break;
 
   case 17:
-#line 43 "UnitsApi.y"
+#line 46 "UnitsApi.y"
     { (yyval) = fabs((yyvsp[(3) - (4)]));   	;}
     break;
 
   case 18:
-#line 44 "UnitsApi.y"
+#line 47 "UnitsApi.y"
     { (yyval) = exp((yyvsp[(3) - (4)]));    	;}
     break;
 
   case 19:
-#line 45 "UnitsApi.y"
+#line 48 "UnitsApi.y"
     { (yyval) = fmod((yyvsp[(3) - (6)]),(yyvsp[(5) - (6)])); ;}
     break;
 
   case 20:
-#line 46 "UnitsApi.y"
+#line 49 "UnitsApi.y"
     { (yyval) = log((yyvsp[(3) - (4)]));     ;}
     break;
 
   case 21:
-#line 47 "UnitsApi.y"
+#line 50 "UnitsApi.y"
     { (yyval) = log10((yyvsp[(3) - (4)]));   ;}
     break;
 
   case 22:
-#line 48 "UnitsApi.y"
+#line 51 "UnitsApi.y"
     { (yyval) = pow((yyvsp[(3) - (6)]),(yyvsp[(5) - (6)]));  ;}
     break;
 
   case 23:
-#line 49 "UnitsApi.y"
+#line 52 "UnitsApi.y"
     { (yyval) = sin((yyvsp[(3) - (4)]));     ;}
     break;
 
   case 24:
-#line 50 "UnitsApi.y"
+#line 53 "UnitsApi.y"
     { (yyval) = sinh((yyvsp[(3) - (4)]));    ;}
     break;
 
   case 25:
-#line 51 "UnitsApi.y"
+#line 54 "UnitsApi.y"
     { (yyval) = tan((yyvsp[(3) - (4)]));     ;}
     break;
 
   case 26:
-#line 52 "UnitsApi.y"
+#line 55 "UnitsApi.y"
     { (yyval) = tanh((yyvsp[(3) - (4)]));    ;}
     break;
 
   case 27:
-#line 53 "UnitsApi.y"
+#line 56 "UnitsApi.y"
     { (yyval) = tanh((yyvsp[(3) - (4)]));    ;}
     break;
 
   case 28:
-#line 54 "UnitsApi.y"
+#line 57 "UnitsApi.y"
     { (yyval) = cos((yyvsp[(3) - (4)]));    ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1661 "UnitsApi.tab.c"
+#line 1664 "UnitsApi.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1871,6 +1874,6 @@ yyreturn:
 }
 
 
-#line 58 "UnitsApi.y"
+#line 61 "UnitsApi.y"
 
 
