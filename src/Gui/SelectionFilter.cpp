@@ -126,9 +126,6 @@ Node_Block *TopBlock=0;
 void yyerror(char *errorinfo)
 	{  ActFilter->addError(errorinfo);  }
 
-// show the parser the lexer method
-#define yylex SelectionFilterlex
-int SelectionFilterlex(void);
 
 // for VC9 (isatty and fileno not supported anymore)
 #ifdef _MSC_VER
@@ -136,6 +133,11 @@ int isatty (int i) {return _isatty(i);}
 int fileno(FILE *stream) {return _fileno(stream);}
 #endif
 
+namespace SelectionParser {
+
+// show the parser the lexer method
+#define yylex SelectionFilterlex
+int SelectionFilterlex(void);
 
 // Parser, defined in SelectionFilter.y
 #include "SelectionFilter.tab.c"
@@ -143,18 +145,20 @@ int fileno(FILE *stream) {return _fileno(stream);}
 // Scanner, defined in SelectionFilter.l
 #include "lex.SelectionFilter.c"
 
+}
+
 bool SelectionFilter::parse(void)
 {
     Errors = "";
-    YY_BUFFER_STATE my_string_buffer = SelectionFilter_scan_string (Filter.c_str());
+    SelectionParser::YY_BUFFER_STATE my_string_buffer = SelectionParser::SelectionFilter_scan_string (Filter.c_str());
     // be aware that this parser is not reentrant! Dont use with Threats!!!
     assert(!ActFilter);
     ActFilter = this;
-    int my_parse_result  = yyparse ();
+    int my_parse_result  = SelectionParser::yyparse ();
     ActFilter = 0;
     Ast = TopBlock;
     TopBlock = 0;
-    SelectionFilter_delete_buffer (my_string_buffer);
+    SelectionParser::SelectionFilter_delete_buffer (my_string_buffer);
 
     return true;
 }

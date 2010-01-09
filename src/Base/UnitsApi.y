@@ -5,6 +5,9 @@
 /* Represents the many different ways we can access our data */
 %{
        #define YYSTYPE double
+       #define yyparse Unit_yyparse
+       #define yyerror Unit_yyerror
+
        #include <math.h>
        #include <stdio.h>
  %}
