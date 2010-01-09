@@ -24,7 +24,7 @@
 
 import FreeCAD, os, unittest
 
-
+	
 #---------------------------------------------------------------------------
 # define the functions to test the FreeCAD base code
 #---------------------------------------------------------------------------
@@ -34,6 +34,7 @@ def All():
     suite = unittest.TestSuite()
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("UnicodeTests") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("UnitTests") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Base") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("MeshTestsApp") )
     if ( FreeCAD.GuiUp == 1):
@@ -43,18 +44,22 @@ def All():
 
     
 def TestText(s):
-    s = unittest.defaultTestLoader.loadTestsFromName(s)
     r = unittest.TextTestRunner()
     r.run(s)
 
 def Test(s):
     TestText(s)
-    
+
+def testAll():
+    TestText(All())
+
+def testUnit():
+    TestText(unittest.TestLoader().loadTestsFromName('UnitTests'))
+
+def testDocument():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
+    TestText(suite)
 
 
-
-    
-
-
-        
 
