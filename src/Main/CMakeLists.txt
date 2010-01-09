@@ -65,7 +65,11 @@ SET(FreeCADMainCmd_SRCS
 )
 add_executable(FreeCADMainCmd ${FreeCADMainCmd_SRCS})
 
-target_link_libraries(FreeCADMainCmd FreeCADApp)
+target_link_libraries(FreeCADMainCmd 
+        FreeCADApp
+	 ${QT_DEBUG_LIBRARIES}
+	 ${QT_LIBRARIES}
+    )
 
 # Note this is IDE specific, not necessarily platform specific
 if(MSVC)
