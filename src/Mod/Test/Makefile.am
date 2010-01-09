@@ -11,6 +11,7 @@ data_DATA = \
 		TestApp.py \
 		TestGui.py \
 		UnicodeTests.py \
+		UnitTests.py \
 		Workbench.py
 
 EXTRA_DIST = \
