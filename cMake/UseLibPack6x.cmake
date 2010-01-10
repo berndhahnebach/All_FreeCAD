@@ -85,7 +85,12 @@ set(QT_INCLUDE_DIR
     ${FREECAD_LIBPACK_DIR}/include/QT/QtOpenGl
     ${FREECAD_LIBPACK_DIR}/include/QT/QtWebKit
 	)
-	
+
+set(QT_QTCORE_INCLUDE_DIR
+    ${FREECAD_LIBPACK_DIR}/include/QT/
+    ${FREECAD_LIBPACK_DIR}/include/QT/QtCore
+    )
+
 set(QT_LIBRARIES 
     optimized QtCore4.lib
     optimized QtGui4.lib
@@ -110,6 +115,15 @@ set(QT_DEBUG_LIBRARIES
     debug QtOpenGld4.lib
     debug QtWebKitd4.lib
 )
+
+set(QT_QTCORE_LIBRARY_DEBUG 
+    debug QtCored4.lib
+ )
+ 
+set(QT_QTCORE_LIBRARY 
+    optimized QtCore4.lib
+)
+
 set(QT_UIC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/uic.exe)
 set(QT_MOC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/moc.exe)
 set(QT_RCC_EXECUTABLE ${FREECAD_LIBPACK_DIR}/bin/rcc.exe)
