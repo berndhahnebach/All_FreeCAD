@@ -75,7 +75,6 @@ UnitsApi::UnitSystem  UnitsApi::UserPrefSystem = SI1;
 double   UnitsApi::UserPrefFactor [50];
 QString  UnitsApi::UserPrefUnit   [50];
 
-
 UnitsApi::UnitsApi(const char* filter)
 {
     bool temp;

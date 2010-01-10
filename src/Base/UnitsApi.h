@@ -105,6 +105,10 @@ public:
 
     double Result;
 
+    // Python interface
+    static PyMethodDef    Methods[];
+
+
 protected:
 
     // not used at the moment
@@ -117,6 +121,11 @@ protected:
 
     // do the real work
     static double parse(const char*,bool &UsedUnit);
+
+protected: // the python API wrapper methodes
+    static PyObject *sTranslateUnit   (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sGetWithPrefs    (PyObject *self,PyObject *args,PyObject *kwd);
+
 
 };
 

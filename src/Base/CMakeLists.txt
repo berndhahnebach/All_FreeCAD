@@ -139,6 +139,7 @@ SOURCE_GROUP("XML" FILES ${FreeCADBase_XML_SRCS})
 
 SET(FreeCADBase_UNITAPI_SRCS
 	UnitsApi.cpp
+	UnitsApiPy.cpp
 	UnitsApi.h
 	UnitsApi.y
 	UnitsApi.l

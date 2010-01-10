@@ -123,30 +123,10 @@ PyMethodDef Application::Methods[] = {
     {"removeDocumentObserver",  (PyCFunction) Application::sRemoveDocObserver  ,1,
      "removeDocumentObserver() -> None\n\n"
      "Remove an added document observer."},
-    {"translateUnit",  (PyCFunction) Application::sTranslateUnit  ,1,
-     "translateUnit(string) -> double\n\n"
-     "translate a string with quantities and unit specifiers to the internal representation"},
 
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
-PyObject* Application::sTranslateUnit(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
-{
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
-        return NULL;                             // NULL triggers exception
-    try {
-        return Py::new_reference_to(Py::Object(Py::Float(UnitsApi::translateUnit(pstr))));
-    }
-    catch (const Base::Exception& e) {
-        PyErr_Format(PyExc_IOError, "invalid unit expresion %s: %s\n", pstr, e.what());
-        return 0L;
-    }
-    catch (const std::exception& e) {
-        PyErr_Format(PyExc_IOError, "invalid unit expresion %s: %s\n", pstr, e.what());
-        return 0L;
-    }
-}
 
 PyObject* Application::sOpenDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
