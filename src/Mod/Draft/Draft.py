@@ -22,8 +22,8 @@
 #***************************************************************************
 
 __title__="FreeCAD Draft Workbench"
-__author__ = "Yorik van Havre <yorik@gmx.fr>, Werner Mayer, Martin Burbaum"
-__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
+__author__ = "Yorik van Havre <yorik@uncreated.net>, Werner Mayer, Martin Burbaum"
+__url__ = ["http://yorik.uncreated.net","http://free-cad.sourceforge.net"]
 
 '''
 General description:
@@ -1858,7 +1858,7 @@ class Rotate(Modifier):
 			else: newob = ob
 			if (ob.Type == "Part::Feature"):
 				shape = ob.Shape
-				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),math.degrees(angle))
+				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),math.degrees(-angle))
 				newob.Shape=shape
 			if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
@@ -2056,9 +2056,13 @@ class Offset(Modifier):
 			self.closed = self.sel.Shape.Wires[0].isClosed()
 		else: self.edges = self.sel.Shape.Edges
 		self.ghost = []
+		self.buildBissectArray()
+		self.redraw = self.redrawFast
 		for e in self.edges:
 			if isinstance(e.Curve,Part.Line): self.ghost.append(lineTracker())
-			else: self.ghost.append(arcTracker())
+			else:
+				self.ghost.append(arcTracker())
+				self.redraw = self.redrawSlow
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		self.ui.translate("Pick distance:\n")
 		self.ui.cross(True)
@@ -2136,9 +2140,59 @@ class Offset(Modifier):
 					self.finish()
 
 
+	def buildBissectArray(self):
+		'''builds an array of displacement vectors for each vertex,
+		corresponding to an offset of 1 unit'''
+		self.bissectors=[]
+		basevec = fcgeo.vec(self.edges[0])
+		baseoffset = fcvec.normalized(basevec.cross(self.axis))
+		if self.closed: prev = self.edges[-1]
+		else: prev = None
 
+		# finding the first vector
+		if prev:
+			prevvec = fcgeo.vec(prev)
+			angle = fcvec.angle(prevvec,basevec,self.axis)/2
+			offset = fcvec.rotate(baseoffset,angle,self.axis)
+			sfact = math.sqrt(math.tan(angle)**2+1)
+			self.bissectors.append(fcvec.scale(offset,sfact))
+		else:
+			self.bissectors.append(baseoffset)
 
-	def redraw(self,dist,real=False):
+		for e in range(len(self.edges)):
+			if (e < len(self.edges)-1):
+				next = self.edges[e+1]
+			else:
+				if self.closed and (len(self.edges)>1): next = self.edges[0]
+				else: next = None
+			edgevec = fcgeo.vec(self.edges[e])
+			angle = fcvec.angle(edgevec,basevec,self.axis)
+			offset = fcvec.rotate(baseoffset,angle,self.axis)
+			if next:
+				nextvec = fcgeo.vec(next)
+				angle2 = fcvec.angle(nextvec,edgevec,self.axis)/2
+				offset2 = fcvec.rotate(offset,angle2,self.axis)
+				sfact = math.sqrt(math.tan(angle2)**2+1)
+				self.bissectors.append(fcvec.scale(offset2,sfact))
+			else:
+				self.bissectors.append(offset)
+							
+	def redrawFast(self,dist,real=False):
+		"hopefully faster method"
+		distance = dist[0].Length
+		angle = fcvec.angle(fcvec.neg(dist[0]),self.bissectors[dist[1]])
+		if abs(angle) > math.pi/2: distance = -distance
+		if real: newedges = []
+		for e in range(len(self.edges)):
+			edge = self.edges[e]
+			first = edge.Vertexes[0].Point.add(fcvec.scale(self.bissectors[e],distance))
+			last = edge.Vertexes[-1].Point.add(fcvec.scale(self.bissectors[e+1],distance))
+			self.ghost[e].p1(first)
+			self.ghost[e].p2(last)
+			if real: newedges.append(Part.Line(first,last).toShape())
+		if real: return newedges
+
+	def redrawSlow(self,dist,real=False):
 		"offsets the ghost to the given distance. if real=True, the shape itself will be redrawn too"
 		offsetVec = fcvec.neg(dist[0])
 		if real: newedges=[]
@@ -2174,7 +2228,8 @@ class Offset(Modifier):
 		# iterating throught edges, offsetting the last vertex
 		for i in range(len(self.edges)):
 			edge = self.edges[i]
-			if (i < len(self.edges)-1): next = self.edges[i+1]
+			if (i < len(self.edges)-1):
+				next = self.edges[i+1]
 			else:
 				if self.closed and (len(self.edges)>1): next = self.edges[0]
 				else: next = None
@@ -2182,7 +2237,7 @@ class Offset(Modifier):
 			else: perp = fcvec.crossproduct(fcvec.new(edge.Vertexes[0].Point,edge.Curve.Center))
 			angle = fcvec.angle(baseVec,perp)
 			offset1 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
-			offedge1 = fcgeo.offset(edge,offset1)
+			offedge1 = fcgeo.offset(edge,offset1)			             
 			if next:
 				if (isinstance(next.Curve,Part.Line)): perp = fcgeo.vec(next)
 				else: perp = fcvec.crossproduct(fcvec.new(next.Vertexes[0].Point,next.Curve.Center))
@@ -2191,6 +2246,7 @@ class Offset(Modifier):
 				offedge2 = fcgeo.offset(next,offset2)
 				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 				if inter: last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
+				else: print "debug: offset: intersection missing!"
 			else: last = Vector.add(edge.Vertexes[-1].Point,offset1)
 			
 			if isinstance(edge.Curve,Part.Line):
