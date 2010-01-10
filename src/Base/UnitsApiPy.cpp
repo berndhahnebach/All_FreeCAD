@@ -106,11 +106,11 @@ PyObject* UnitsApi::sGetWithPrefs(PyObject * /*self*/, PyObject *args,PyObject *
         double result = toDblWithUserPrefs(t,obj);
         return Py::new_reference_to(Py::Object(Py::Float(result)));
     }
-    catch (const Base::Exception& e) {
+    catch (const Base::Exception&) {
         PyErr_Format(PyExc_IOError, "invalid unit expression \n");
         return 0L;
     }
-    catch (const std::exception& e) {
+    catch (const std::exception&) {
         PyErr_Format(PyExc_IOError, "invalid unit expression \n");
         return 0L;
     }
