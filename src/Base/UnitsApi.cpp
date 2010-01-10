@@ -36,6 +36,27 @@
 #include "UnitsApi.h"
 //#include "UnitsApiPy.h"
 
+#include <string>
+#include <math.h>
+#include <stdio.h>
+
+
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
+#ifndef M_E
+#define M_E        2.71828182845904523536
+#endif
+#ifndef  DOUBLE_MAX
+# define DOUBLE_MAX 1.7976931348623157E+308    /* max decimal value of a "double"*/
+#endif
+#ifndef  DOUBLE_MIN
+# define DOUBLE_MIN 2.2250738585072014E-308    /* min decimal value of a "double"*/
+#endif
+
+#include "stdio.h"
+
+
 using namespace Base;
 
 // suppress annoying warnings from generated source files
@@ -57,12 +78,14 @@ QString  UnitsApi::UserPrefUnit   [50];
 
 UnitsApi::UnitsApi(const char* filter)
 {
-    Result = parse(filter);
+    bool temp;
+    Result = parse(filter,temp);
 }
 
 UnitsApi::UnitsApi(const std::string& filter)
 {
-    Result = parse(filter.c_str());
+    bool temp;
+    Result = parse(filter.c_str(),temp);
 }
 
 UnitsApi::~UnitsApi()
@@ -71,12 +94,14 @@ UnitsApi::~UnitsApi()
 
 double UnitsApi::translateUnit(const char* str)
 {
-    return parse( str ); 
+     bool temp;
+    return parse( str,temp ); 
 }
 
 double UnitsApi::translateUnit(const QString & str)
 {
-    return parse( str.toUtf8() );  
+     bool temp;
+    return parse( str.toUtf8() ,temp);  
 }
 
 
@@ -84,7 +109,8 @@ double UnitsApi::translateUnit(const QString & str)
 
 QString UnitsApi::toStrWithUserPrefs(QuantityType t,double Value)
 {
-    return QString::fromLatin1("NULL");
+    double UnitValue = toDblWithUserPrefs(t,Value);
+    return QString::fromAscii("%1%2").arg(UnitValue).arg(UserPrefUnit[t]);
 }
 
 PyObject *UnitsApi::toPyWithUserPrefs(QuantityType t,double Value)
@@ -94,12 +120,18 @@ PyObject *UnitsApi::toPyWithUserPrefs(QuantityType t,double Value)
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,const QString & Str)
 {
-    return 0.0;
+    return toDblWithUserPrefs(t,Str.toUtf8());
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,const char* Str)
 {
-    return 0.0;
+    bool UsedUnit;
+    double Value = parse( Str,UsedUnit ); 
+
+    if(UsedUnit)
+        return Value;
+    else
+        return Value/UserPrefFactor[t];
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,double UserVal)
@@ -137,7 +169,15 @@ const double UnitsApi::getPrefFactorOf(QuantityType t)
 
 void UnitsApi::setDefaults(void)
 {
-    setPrefOf(Length,"mm");
+    setPrefOf( Length       ,"mm"       );
+    setPrefOf( Area         ,"mm^2"     );
+    setPrefOf( Volume       ,"mm^3"     );
+    setPrefOf( Angle        ,"deg"      );
+    setPrefOf( TimeSpan     ,"s"        );
+    setPrefOf( Velocity     ,"mm/s"     );
+    setPrefOf( Acceleration ,"mm/s^2"   );
+    setPrefOf( Mass         ,"kg"       );
+    setPrefOf( Temperature  ,"K"        );
   
 }
 
@@ -148,8 +188,8 @@ void UnitsApi::setDefaults(void)
 
 // include the Scanner and the Parser for the filter language
 
-UnitsApi* ActUnit=0;
 double ScanResult=0;
+bool   UU = false;
 
 // error func
 void Unit_yyerror(char *errorinfo)
@@ -176,17 +216,21 @@ int UnitsApilex(void);
 
 }
 
-double UnitsApi::parse(const char* buffer)
+double UnitsApi::parse(const char* buffer,bool &UsedUnit)
 {
+    // parse from buffer
     UnitParser::YY_BUFFER_STATE my_string_buffer = UnitParser::UnitsApi_scan_string (buffer);
-    // be aware that this parser is not reentrant! Dont use with Threats!!!
-    //assert(!ActUnit);
-    //ActUnit = this;
+    // set the global return variables
+    ScanResult = DOUBLE_MIN;
+    UU = false;
+    // run the parser
     UnitParser::Unit_yyparse ();
-    //ActUnit = 0;
-    //Ast = TopBlock;
-    //TopBlock = 0;
+    UsedUnit = UU;
+    UU=false;
+    // free the scan buffer
     UnitParser::UnitsApi_delete_buffer (my_string_buffer);
 
+    if(ScanResult == DOUBLE_MIN)
+        throw Base::Exception("Unknown error in Unit expresion");
     return ScanResult;
 }
