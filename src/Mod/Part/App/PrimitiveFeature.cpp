@@ -73,20 +73,22 @@ Primitive::~Primitive()
 
 short Primitive::mustExecute(void) const
 {
-    return 0;
+    return Feature::mustExecute();
 }
 
 void Primitive::onChanged(const App::Property* prop)
 {
-    // Do not support sphere, ellipsoid and torus because the creation
-    // takes too long and thus is not feasible
-    std::string grp = (prop->getGroup() ? prop->getGroup() : "");
-    if (grp == "Plane" || grp == "Cylinder" || grp == "Cone"){
-        try {
-            App::DocumentObjectExecReturn *ret = recompute();
-            delete ret;
-        }
-        catch (...) {
+    if (!isRestoring()) {
+        // Do not support sphere, ellipsoid and torus because the creation
+        // takes too long and thus is not feasible
+        std::string grp = (prop->getGroup() ? prop->getGroup() : "");
+        if (grp == "Plane" || grp == "Cylinder" || grp == "Cone"){
+            try {
+                App::DocumentObjectExecReturn *ret = recompute();
+                delete ret;
+            }
+            catch (...) {
+            }
         }
     }
     Part::Feature::onChanged(prop);

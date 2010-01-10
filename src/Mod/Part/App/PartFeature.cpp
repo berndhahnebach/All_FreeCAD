@@ -59,7 +59,7 @@ Feature::~Feature()
 
 short Feature::mustExecute(void) const
 {
-    return 0;
+    return GeoFeature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Feature::execute(void)

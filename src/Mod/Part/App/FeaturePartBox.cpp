@@ -197,9 +197,11 @@ void Box::Restore(Base::XMLReader &reader)
 
 void Box::onChanged(const App::Property* prop)
 {
-    if (prop == &Length || prop == &Width || prop == &Height){
-        App::DocumentObjectExecReturn *ret = recompute();
-        delete ret;
+    if (prop == &Length || prop == &Width || prop == &Height) {
+        if (!isRestoring()) {
+            App::DocumentObjectExecReturn *ret = recompute();
+            delete ret;
+        }
     }
     else if (prop == &this->Shape) {
         // see Box::Restore
