@@ -210,8 +210,8 @@ case $host_os in
     QT_LIBS="$QT_LIBS -Wl,-framework,QtXml"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtSql"
     QT_LIBS="$QT_LIBS -Wl,-framework,QtSvg"
-	# remove this line again once the Webkit check is working
-    #QT_LIBS="$QT_LIBS -Wl,-framework,QtWebKit"
+	# Separated libs
+	QT4_CORE_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtCore"
 
     QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtGui.framework/Headers"
@@ -220,8 +220,8 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtNetwork.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtSvg.framework/Headers"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtXml.framework/Headers"
-	# remove this line again once the Webkit check is working
-    #QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_frm/QtWebKit.framework/Headers"
+	# Separated flags
+	QT4_CORE_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/QtCore.framework/Headers"
     # QtUiTools doesn't seem to be available as framework
     QT_CXXFLAGS="$QT_CXXFLAGS -I/usr/include/QtUiTools"
     # QtWebKit check
@@ -247,6 +247,9 @@ case $host_os in
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtSvg"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtXml"
     QT_CXXFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtUiTools"
+	# Separated flags and libs
+    QT4_CORE_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtCore"
+    QT4_CORE_LIBS="-L$fc_qt4_lib -lQtCore"
     # QtWebKit check
     fc_ac_save_cppflags=$CPPFLAGS
     CPPFLAGS="$QT_CXXFLAGS -I$fc_qt4_include/QtWebKit"
@@ -283,11 +286,12 @@ case $host_os in
         AC_MSG_RESULT(yes)],
         AC_MSG_RESULT(no))
     CPPFLAGS=$fc_ac_save_cppflags
-    #QT4_CFLAGS="-I$fc_qt4_include"
+    #QT4_CXXFLAGS="-I$fc_qt4_include"
     #QT4_LIBS="-L$fc_qt4_lib $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
-    #QT4_CORE_CFLAGS="-I$fc_qt4_include/QtCore"
-    #QT4_CORE_LIBS="-lQtCore"
-    #QT4_GUI_CFLAGS="-I$fc_qt4_include/QtGui"
+	# Separated flags and libs
+    QT4_CORE_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtCore"
+    QT4_CORE_LIBS="-L$fc_qt4_lib -lQtCore"
+    #QT4_GUI_CXXFLAGS="-I$fc_qt4_include/QtGui"
     #QT4_GUI_LIBS="-lQtGui"
     #QT4_NETWORK_CFLAGS="-I$fc_qt4_include/QtNetwork"
     #QT4_NETWORK_LIBS="-lQtNetwork"
@@ -392,6 +396,8 @@ fi
 AC_SUBST(QT_DIR)
 AC_SUBST(QT_CXXFLAGS)
 AC_SUBST(QT_LIBS)
+AC_SUBST(QT4_CORE_CXXFLAGS)
+AC_SUBST(QT4_CORE_LIBS)
 AC_SUBST(QT_UIC)
 AC_SUBST(QT_MOC)
 AC_SUBST(QT_RCC)
