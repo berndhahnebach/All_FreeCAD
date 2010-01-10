@@ -101,7 +101,8 @@ include_HEADERS=\
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 # the library search path.
-libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADApp_la_LDFLAGS = -L../Base $(QT4_CORE_LIBS) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADApp_la_CPPFLAGS = -DRESOURCEDIR=\"$(datadir)\" -DDOCDIR=\"$(docdir)\"
 
@@ -117,7 +118,7 @@ libFreeCADApp_la_LIBADD   = \
 		-lxerces-c
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT4_CORE_CXXFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADApp_la_BUILT)
 

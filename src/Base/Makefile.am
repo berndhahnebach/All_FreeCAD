@@ -142,12 +142,13 @@ libFreeCADBase_la_LIBADD   = \
 		-lz
 
 # set the include path found by configure
-INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT4_CORE_CXXFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 
 # the library version number
-libFreeCADBase_la_LDFLAGS = $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADBase_la_LDFLAGS = $(QT4_CORE_LIBS) $(all_libraries) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libFreeCADBase_la_CPPFLAGS = -DHAVE_SWIG=$(HAVE_SWIG)
 
 

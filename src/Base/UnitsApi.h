@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef GUI_UnitsApi_H
-#define GUI_UnitsApi_H
+#ifndef BASE_UNITSAPI_H
+#define BASE_UNITSAPI_H
 
 #include <string>
 #include <Python.h>
@@ -123,4 +123,4 @@ protected:
 } // namespace Base
 
 
-#endif // GUI_UnitsApi_H 
+#endif // BASE_UNITSAPI_H
