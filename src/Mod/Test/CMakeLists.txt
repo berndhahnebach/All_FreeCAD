@@ -10,7 +10,6 @@ SET(Test_SRCS
 	UnitTests.py
 	Workbench.py
 	unittestgui.py
-	Gui/qtunittest.py
 	InitGui.py
 )
 SOURCE_GROUP("" FILES ${Test_SRCS})

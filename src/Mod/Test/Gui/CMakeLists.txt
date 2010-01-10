@@ -48,6 +48,8 @@ SET(TestGui_SRCS
 		 PreCompiled.h
 )
 
+fc_copy_sources("Mod/Test" "Test" qtunittest.py)
+
 add_library(QtUnitGui SHARED ${TestGui_SRCS})
 
 target_link_libraries(QtUnitGui ${TestGui_LIBS})
