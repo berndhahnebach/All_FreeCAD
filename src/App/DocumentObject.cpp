@@ -116,7 +116,7 @@ const char *DocumentObject::getNameInDocument(void) const
     return pcNameInDocument->c_str();
 }
 
-void DocumentObject::onLoseLinkToObject(DocumentObject*)
+void DocumentObject::onLostLinkToObject(DocumentObject*)
 {
 
 }
@@ -162,6 +162,7 @@ std::vector<PyObject *> DocumentObject::getPySubObjects(const std::vector<std::s
     // default implementation returns nothing
     return std::vector<PyObject *>();
 }
+
 void DocumentObject::touch(void)
 {
     StatusBits.set(0);

@@ -636,8 +636,9 @@ void Document::Restore(Base::XMLReader &reader)
             string name = reader.getAttribute("name");
             DocumentObject* pObj = getObject(name.c_str());
             if (pObj) { // check if this feature has been registered
-                //FIXME: We must save/restore that state of a feature
+                pObj->StatusBits.set(4);
                 pObj->Restore(reader);
+                pObj->StatusBits.reset(4);
             }
             reader.readEndElement("Feature");
         }
@@ -669,8 +670,9 @@ void Document::Restore(Base::XMLReader &reader)
             string name = reader.getAttribute("name");
             DocumentObject* pObj = getObject(name.c_str());
             if (pObj) { // check if this feature has been registered
-                //FIXME: We must save/restore that state of a feature
+                pObj->StatusBits.set(4);
                 pObj->Restore(reader);
+                pObj->StatusBits.reset(4);
             }
             reader.readEndElement("Object");
         }

@@ -373,14 +373,15 @@ void ViewProviderPart::updateData(const App::Property* prop)
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
         TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
-        if (cShape.IsNull())
-            return;
 
         // clear anchor nodes
         vertexShapeMap.clear();
         EdgeRoot->removeAllChildren();
         FaceRoot->removeAllChildren();
         VertexRoot->removeAllChildren();
+        // do nothing if shape is empty
+        if (cShape.IsNull())
+            return;
 
         try {
             // creating the mesh on the data structure

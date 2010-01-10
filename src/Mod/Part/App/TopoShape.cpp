@@ -388,19 +388,25 @@ void TopoShape::importStep(const char *FileName)
 
 void TopoShape::importBrep(const char *FileName)
 {
-    // read brep-file
-    BRep_Builder aBuilder;
-    TopoDS_Shape aShape;
-#if OCC_HEX_VERSION >= 0x060300
-    Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
-    pi->NewScope(100, "Reading BREP file...");
-    pi->Show();
-    BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder,pi);
-    pi->EndScope();
-#else
-    BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder);
-#endif
-    this->_Shape = aShape;
+    try {
+        // read brep-file
+        BRep_Builder aBuilder;
+        TopoDS_Shape aShape;
+    #if OCC_HEX_VERSION >= 0x060300
+        Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
+        pi->NewScope(100, "Reading BREP file...");
+        pi->Show();
+        BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder,pi);
+        pi->EndScope();
+    #else
+        BRepTools::Read(aShape,(const Standard_CString)FileName,aBuilder);
+    #endif
+        this->_Shape = aShape;
+    }
+    catch (Standard_Failure) {
+        Handle(Standard_Failure) aFail = Standard_Failure::Caught();
+        throw Base::Exception(aFail->GetMessageString());
+    }
 }
 
 void TopoShape::write(const char *FileName) const

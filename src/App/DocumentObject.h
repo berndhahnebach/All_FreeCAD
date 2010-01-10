@@ -98,6 +98,7 @@ public:
     /// remove the error from the object
     void purgeError(void){StatusBits.reset(1);}
     bool isRecomputing() const {return StatusBits.test(3);}
+    bool isRestoring() const {return StatusBits.test(4);}
     App::DocumentObjectExecReturn *recompute(void);
     unsigned long getStatus() const {return StatusBits.to_ulong();}
     //@}
@@ -122,7 +123,7 @@ public:
      * is to reset the links to nothing. You may overide this method to implement 
      *additional or different behavior.
      */
-    virtual void onLoseLinkToObject(DocumentObject*);
+    virtual void onLostLinkToObject(DocumentObject*);
     virtual PyObject *getPyObject(void);
     /// its used to get the python sub objects by name (e.g. by the selection)
     virtual std::vector<PyObject *> getPySubObjects(const std::vector<std::string>&) const;
@@ -153,7 +154,7 @@ protected:
      * 1 - object is marked as 'erroneous'
      * 2 - object is marked as 'new'
      * 3 - object is marked as 'recompute', i.e. the object gets recomputed now
-     * 4 - reserved
+     * 4 - object is marked as 'restoring', i.e. the object gets loaded at the moment
      * 5 - reserved
      * 6 - reserved
      * 7 - reserved
