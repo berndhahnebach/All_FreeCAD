@@ -120,7 +120,7 @@ PyObject *UnitsApi::toPyWithUserPrefs(QuantityType t,double Value)
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,const QString & Str)
 {
-    return toDblWithUserPrefs(t,Str.toUtf8());
+    return toDblWithUserPrefs(t,(const char*) Str.toUtf8());
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,const char* Str)
