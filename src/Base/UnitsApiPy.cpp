@@ -43,7 +43,7 @@ using namespace Base;
 PyMethodDef UnitsApi::Methods[] = {
     {"translateUnit",  (PyCFunction) UnitsApi::sTranslateUnit  ,1,
      "translateUnit(string) -> double\n\n"
-     "calculate a mathematical expresion with units to a number. \n"
+     "calculate a mathematical expression with units to a number. \n"
      "can be used for simple unit translation like: \n"
      " translateUnit('10m')\n"
      " or for more complex espressions:\n"
@@ -79,11 +79,11 @@ PyObject* UnitsApi::sTranslateUnit(PyObject * /*self*/, PyObject *args,PyObject 
         return Py::new_reference_to(Py::Object(Py::Float(UnitsApi::translateUnit(pstr))));
     }
     catch (const Base::Exception& e) {
-        PyErr_Format(PyExc_IOError, "invalid unit expresion %s: %s\n", pstr, e.what());
+        PyErr_Format(PyExc_IOError, "invalid unit expression %s: %s\n", pstr, e.what());
         return 0L;
     }
     catch (const std::exception& e) {
-        PyErr_Format(PyExc_IOError, "invalid unit expresion %s: %s\n", pstr, e.what());
+        PyErr_Format(PyExc_IOError, "invalid unit expression %s: %s\n", pstr, e.what());
         return 0L;
     }
 }
@@ -104,14 +104,14 @@ PyObject* UnitsApi::sGetWithPrefs(PyObject * /*self*/, PyObject *args,PyObject *
         }
 
         double result = toDblWithUserPrefs(t,obj);
-        return Py::new_reference_to(Py::Object(Py::Float(0.0)));
+        return Py::new_reference_to(Py::Object(Py::Float(result)));
     }
     catch (const Base::Exception& e) {
-        PyErr_Format(PyExc_IOError, "invalid unit expresion \n");
+        PyErr_Format(PyExc_IOError, "invalid unit expression \n");
         return 0L;
     }
     catch (const std::exception& e) {
-        PyErr_Format(PyExc_IOError, "invalid unit expresion \n");
+        PyErr_Format(PyExc_IOError, "invalid unit expression \n");
         return 0L;
     }
 }

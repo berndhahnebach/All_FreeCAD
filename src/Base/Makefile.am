@@ -81,6 +81,7 @@ libFreeCADBase_la_SOURCES=\
 		Uuid.cpp \
 		UnitsApi.cpp \
 		UnitsApi.h \
+		UnitsApiPy.cpp \
 		VectorPyImp.cpp \
 		Vector3D.cpp \
 		Writer.cpp \
@@ -143,6 +144,7 @@ libFreeCADBase_la_LIBADD   = \
 
 # set the include path found by configure
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT4_CORE_CXXFLAGS)
+AM_CFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
 
 CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 

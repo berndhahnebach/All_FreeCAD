@@ -215,12 +215,11 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
     Py_INCREF(pConsoleModule);
     PyModule_AddObject(pAppModule, "Console", pConsoleModule);
 
-    //insert Selection module
+    //insert Units module
     PyObject* pUnitsModule = Py_InitModule3("Units", Base::UnitsApi::Methods,
           "The Unit API");
     Py_INCREF(pUnitsModule);
     PyModule_AddObject(pAppModule, "Units", pUnitsModule);
-
 }
 
 Application::~Application()
