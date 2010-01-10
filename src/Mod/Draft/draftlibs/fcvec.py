@@ -113,17 +113,19 @@ def crossproduct(first, other=Vector(0,0,1)):
 	if isinstance(first,Vector) and isinstance(other,Vector):
 		return Vector(first.y*other.z - first.z*other.y, first.z*other.x - first.x*other.z, first.x*other.y - first.y*other.x)
 
-def angle(first, other=Vector(1,0,0)):
-	'''angle(Vector,Vector) - returns the angle in radians between the two vectors.
-	If only one is given, angle is between the vector and the horizontal East direction
+def angle(first, other=Vector(1,0,0),normal=Vector(0,0,1)):
+	'''angle(Vector,[Vector],[Vector]) - returns the angle in radians between the two vectors.
+	If only one is given, angle is between the vector and the horizontal East direction.
+	If a third vector is given, it is the normal used to determine the sign of the angle.
 	'''
 	if isinstance(first,Vector) and isinstance(other,Vector):
 		dp=dotproduct(normalized(first),normalized(other))
 		if (dp >= -1) and (dp <= 1):
-			#angle =  math.atan2(normalized(crossproduct(first,other)),dotproduct(first,other))
-			ang = math.acos(dotproduct(normalized(first),normalized(other)))
-			# next line works only for 2D at the moment. Only used by DXF importer...
-			if ((first.x * other.y - first.y * other.x) < 0): ang = -ang			
+			ang = math.acos(dp)
+			yaxis = normalized(crossproduct(first,normal))
+			coeff = dotproduct(other,yaxis)
+			if coeff < 0: ang = -ang
+			if equals(normal,Vector(0,0,1)): ang = -ang # still don't get why this is needed
 			return ang
 		else:
 			return 0
@@ -133,7 +135,7 @@ def project(first, other):
 	if isinstance(first,Vector) and isinstance(other,Vector):
 		dp = dotproduct(other,other)
 		if dp:
-			return scale(other, dotproduct(first,other)/dotproduct(other,other))
+			return scale(other, dotproduct(first,other)/dp)
 	return None
 
 def rotate2D(first,angle):
