@@ -55,6 +55,7 @@ StdCmdArrangeIcons::StdCmdArrangeIcons()
   sWhatsThis    = QT_TR_NOOP("Arrange Icons");
   sStatusTip    = QT_TR_NOOP("Arrange Icons");
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdArrangeIcons::activated(int iMsg)
@@ -82,6 +83,7 @@ StdCmdTileWindows::StdCmdTileWindows()
   sStatusTip    = QT_TR_NOOP("Tile the windows");
   sPixmap       = "Std_WindowTileVer";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdTileWindows::activated(int iMsg)
@@ -109,6 +111,7 @@ StdCmdCascadeWindows::StdCmdCascadeWindows()
   sStatusTip    = QT_TR_NOOP("Tile pragmatic");
   sPixmap       = "Std_WindowCascade";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdCascadeWindows::activated(int iMsg)
@@ -135,6 +138,7 @@ StdCmdCloseActiveWindow::StdCmdCloseActiveWindow()
   sWhatsThis    = QT_TR_NOOP("Close active window");
   sStatusTip    = QT_TR_NOOP("Close active window");
   iAccel        = Qt::CTRL+Qt::Key_F4;
+  eType         = 0;
 }
 
 void StdCmdCloseActiveWindow::activated(int iMsg)
@@ -161,6 +165,7 @@ StdCmdCloseAllWindows::StdCmdCloseAllWindows()
   sWhatsThis    = QT_TR_NOOP("Close all windows");
   sStatusTip    = QT_TR_NOOP("Close all windows");
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdCloseAllWindows::activated(int iMsg)
@@ -188,6 +193,7 @@ StdCmdActivateNextWindow::StdCmdActivateNextWindow()
   sStatusTip    = QT_TR_NOOP("Activate next window");
   sPixmap       = "Std_WindowNext";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdActivateNextWindow::activated(int iMsg)
@@ -215,6 +221,7 @@ StdCmdActivatePrevWindow::StdCmdActivatePrevWindow()
   sStatusTip    = QT_TR_NOOP("Activate previous window");
   sPixmap       = "Std_WindowPrev";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdActivatePrevWindow::activated(int iMsg)
@@ -242,6 +249,7 @@ StdCmdWindows::StdCmdWindows()
   sStatusTip    = QT_TR_NOOP("Windows list");
   //sPixmap     = "";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdWindows::activated(int iMsg)
@@ -264,6 +272,7 @@ StdCmdUserInterface::StdCmdUserInterface()
   sWhatsThis    = QT_TR_NOOP("Dock all top-level views");
   sStatusTip    = QT_TR_NOOP("Dock all top-level views");
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdUserInterface::activated(int)
@@ -286,6 +295,7 @@ StdCmdDockViewMenu::StdCmdDockViewMenu()
   sWhatsThis    = QT_TR_NOOP("Toggles this window");
   sStatusTip    = QT_TR_NOOP("Toggles this window");
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdDockViewMenu::activated(int iMsg)
@@ -324,6 +334,7 @@ StdCmdToolBarMenu::StdCmdToolBarMenu()
   sWhatsThis    = QT_TR_NOOP("Toggles this window");
   sStatusTip    = QT_TR_NOOP("Toggles this window");
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdToolBarMenu::activated(int iMsg)
@@ -362,6 +373,7 @@ StdCmdStatusBar::StdCmdStatusBar()
   sWhatsThis    = QT_TR_NOOP("Toggles the status bar");
   sStatusTip    = QT_TR_NOOP("Toggles the status bar");
   iAccel        = 0;
+  eType         = 0;
 }
 
 Action * StdCmdStatusBar::createAction(void)
@@ -393,6 +405,7 @@ StdCmdWindowsMenu::StdCmdWindowsMenu()
   sWhatsThis    = QT_TR_NOOP("Activates this window");
   sStatusTip    = QT_TR_NOOP("Activates this window");
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdWindowsMenu::activated(int iMsg)

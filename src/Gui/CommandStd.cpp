@@ -81,6 +81,7 @@ StdCmdWorkbench::StdCmdWorkbench()
     sStatusTip    = QT_TR_NOOP("Switch between workbenches");
     sPixmap       = "freecad";
     iAccel        = 0;
+    eType         = 0;
 }
 
 void StdCmdWorkbench::activated(int i)
@@ -148,6 +149,7 @@ StdCmdRecentFiles::StdCmdRecentFiles()
     sWhatsThis    = "Std_RecentFiles";
     sStatusTip    = QT_TR_NOOP("Recent file list");
     iAccel        = 0;
+    eType         = 0;
 }
 
 /**
@@ -191,6 +193,7 @@ StdCmdAbout::StdCmdAbout()
     sWhatsThis    = "Std_About";
     sStatusTip    = QT_TR_NOOP("About %1");
     sPixmap       = App::Application::Config()["AppIcon"].c_str();
+    eType         = 0;
 }
 
 Action * StdCmdAbout::createAction(void)
@@ -248,6 +251,7 @@ StdCmdAboutQt::StdCmdAboutQt()
   sToolTipText  = QT_TR_NOOP("About Qt");
   sWhatsThis    = "Std_AboutQt";
   sStatusTip    = QT_TR_NOOP("About Qt");
+  eType         = 0;
 }
 
 void StdCmdAboutQt::activated(int iMsg)
@@ -268,6 +272,7 @@ StdCmdTipOfTheDay::StdCmdTipOfTheDay()
   sToolTipText  = QT_TR_NOOP("Tip of the day");
   sWhatsThis    = "Std_TipOfTheDay";
   sStatusTip    = QT_TR_NOOP("Tip of the day");
+  eType         = 0;
 }
 
 void StdCmdTipOfTheDay::activated(int iMsg)
@@ -291,6 +296,7 @@ StdCmdWhatsThis::StdCmdWhatsThis()
   sStatusTip    = QT_TR_NOOP("What's This");
   iAccel        = Qt::SHIFT+Qt::Key_F1;
   sPixmap       = "WhatsThis";
+  eType         = 0;
 }
 
 void StdCmdWhatsThis::activated(int iMsg)
@@ -313,6 +319,7 @@ StdCmdDlgParameter::StdCmdDlgParameter()
   sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the parameters");
   //sPixmap     = "settings";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdDlgParameter::activated(int iMsg)
@@ -336,6 +343,7 @@ StdCmdDlgPreferences::StdCmdDlgPreferences()
     sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
     sPixmap     = "preferences-system";
     iAccel        = 0;
+    eType         = 0;
 }
 
 void StdCmdDlgPreferences::activated(int iMsg)
@@ -359,6 +367,7 @@ StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
   sStatusTip    = QT_TR_NOOP("Opens a dialog to record a macro");
   sPixmap       = "macro-record";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdDlgMacroRecord::activated(int iMsg)
@@ -387,6 +396,7 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
   sStatusTip    = QT_TR_NOOP("Opens a dialog to let you execute a recorded macro");
   sPixmap       = "accessories-text-editor";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdDlgMacroExecute::activated(int iMsg)
@@ -415,6 +425,7 @@ StdCmdDlgMacroExecuteDirect::StdCmdDlgMacroExecuteDirect()
   sStatusTip    = QT_TR_NOOP("Execute the macro/script in the editor");
   sPixmap       = "macro-execute";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdDlgMacroExecuteDirect::activated(int iMsg)
@@ -442,6 +453,7 @@ StdCmdMacroStop::StdCmdMacroStop()
   sStatusTip    = QT_TR_NOOP("Stop the macro recording session");
   sPixmap       = "macro-stop";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdMacroStop::activated(int iMsg)
@@ -469,6 +481,7 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
     sStatusTip    = QT_TR_NOOP("Customize toolbars and command bars");
     sPixmap       = "applications-accessories";
     iAccel        = 0;
+    eType         = 0;
 }
 
 void StdCmdDlgCustomize::activated(int iMsg)
@@ -495,6 +508,7 @@ StdCmdCommandLine::StdCmdCommandLine()
   sStatusTip    = QT_TR_NOOP("Opens the command line in the console");
   sPixmap       = "utilities-terminal";
   iAccel        = 0;
+  eType         = 0;
 }
 
 void StdCmdCommandLine::activated(int iMsg)
@@ -541,6 +555,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
     sStatusTip    = QT_TR_NOOP("Help");
     sPixmap       = "help-browser";
     iAccel        = Qt::Key_F1;
+    eType         = 0;
 }
 
 void StdCmdOnlineHelp::activated(int iMsg)
@@ -563,6 +578,7 @@ StdCmdOnlineHelpPython::StdCmdOnlineHelpPython()
     sWhatsThis    = "Std_OnlineHelpPython";
     sStatusTip    = QT_TR_NOOP("Show the Python documentation");
     sPixmap       = "python";
+    eType         = 0;
 }
 
 void StdCmdOnlineHelpPython::activated(int iMsg)
@@ -597,6 +613,7 @@ StdCmdOnlineHelpWebsite::StdCmdOnlineHelpWebsite()
     sToolTipText  = QT_TR_NOOP("The website where the help is maintained");
     sWhatsThis    = "Std_OnlineHelpWebsite";
     sStatusTip    = QT_TR_NOOP("Help Website");
+    eType         = 0;
 }
 
 void StdCmdOnlineHelpWebsite::activated(int iMsg)
@@ -620,6 +637,7 @@ StdCmdFreeCADWebsite::StdCmdFreeCADWebsite()
     sToolTipText  = QT_TR_NOOP("The FreeCAD website");
     sWhatsThis    = "Std_FreeCADWebsite";
     sStatusTip    = QT_TR_NOOP("FreeCAD Website");
+    eType         = 0;
 }
 
 void StdCmdFreeCADWebsite::activated(int iMsg)
@@ -642,6 +660,7 @@ StdCmdPythonWebsite::StdCmdPythonWebsite()
     sWhatsThis    = "Std_PythonWebsite";
     sStatusTip    = QT_TR_NOOP("Python Website");
     sPixmap       = "python";
+    eType         = 0;
 }
 
 void StdCmdPythonWebsite::activated(int iMsg)
