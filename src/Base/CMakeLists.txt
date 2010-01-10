@@ -12,7 +12,7 @@ include_directories(
 	${Boost_INCLUDE_DIRS}
 	${PYTHON_INCLUDE_PATH}
 	${XERCESC_INCLUDE_DIR}
-    ${QT_INCLUDE_DIR}
+	${QT_QTCORE_INCLUDE_DIR}
 	${ZLIB_INCLUDE_DIR})
 
 if(MSVC)
@@ -23,8 +23,8 @@ if(MSVC)
 		optimized ${PYTHON_LIBRARY}
 		debug ${XERCESC_DEBUG_LIBRARIES}
 		optimized ${XERCESC_LIBRARIES}
-		optimized QtCore4.lib
-		debug QtCored4.lib
+		optimized ${QT_QTCORE_LIBRARY}
+		debug ${QT_QTCORE_LIBRARY_DEBUG}
 		${ZLIB_LIBRARIES}
 		debug MSVCRTD.LIB
         debug MSVCPRTD.LIB
@@ -36,6 +36,7 @@ else(MSVC)
 	set(FreeCADBase_LIBS
 		${PYTHON_LIBRARY}
 		${XERCESC_LIBRARIES}
+		${QT_QTCORE_LIBRARY}
 		${Boost_LIBRARIES}
 		${ZLIB_LIBRARIES}
 		-lutil
