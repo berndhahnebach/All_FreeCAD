@@ -116,7 +116,7 @@ protected:
     static QString  UserPrefUnit   [50] ;
 
     // do the real work
-    static double parse(const char*);
+    static double parse(const char*,bool &UsedUnit);
 
 };
 

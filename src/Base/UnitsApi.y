@@ -7,10 +7,7 @@
        #define YYSTYPE double
        #define yyparse Unit_yyparse
        #define yyerror Unit_yyerror
-
-       #include <math.h>
-       #include <stdio.h>
- %}
+%}
 
      /* Bison declarations.  */
      %token ACOS ASIN ATAN ATAN2 COS EXP ABS MOD LOG LOG10 POW SIN SINH TAN TANH SQRT;
@@ -30,10 +27,10 @@
  ;     
      
      exp:      NUM                			{ $$ = $1;         	}
-             | UNIT            			    { $$ = $1;       	}
+             | UNIT            			    { $$ = $1;UU=true; 	}
+             | NUM UNIT            			{ $$ = $1*$2;UU=true; 	}
              | exp '+' exp        			{ $$ = $1 + $3;    	}
              | exp '-' exp        			{ $$ = $1 - $3;    	}
-             | exp exp             			{ $$ = $1 * $2;    	}
              | exp '*' exp        			{ $$ = $1 * $3;    	}
              | exp '/' exp        			{ $$ = $1 / $3;    	}
              | '-' exp  %prec NEG 			{ $$ = -$2;        	}
@@ -55,6 +52,7 @@
              | TANH  '(' exp ')'   			{ $$ = tanh($3);    }
              | SQRT  '(' exp ')'   			{ $$ = tanh($3);    }
              | COS  '(' exp ')'   			{ $$ = cos($3);    }
+             | exp exp             			{ $$ = $1 * $2;    	}
 ;            
 
 
