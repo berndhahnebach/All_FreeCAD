@@ -72,8 +72,6 @@ bool SelectionFilter::match(void)
     assert(Ast);
 
     for (std::vector< Node_Object *>::iterator it= Ast->Objects.begin();it!=Ast->Objects.end();++it){
-        //const char* name = (*it)->Namespace->c_str();
-        //const char* type = (*it)->ObjectType->c_str();
         int min;
         int max;
 
@@ -85,8 +83,7 @@ bool SelectionFilter::match(void)
             max          = 1;
         }
 
-        std::string type_name = *(*it)->Namespace + "::" + *(*it)->ObjectType;
-        std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx(0,type_name.c_str());
+        std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx(0,(*it)->ObjectType);
         if ((int)temp.size()<min || (int)temp.size()>max)
             return false;
         Result.push_back(temp);

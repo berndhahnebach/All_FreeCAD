@@ -313,15 +313,28 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
 
     return temp;
 }
-
-std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName,const char* typeName) const
+//std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName) const
+//{
+//    return getSelectionEx(pDocName,App::DocumentObject::getClassTypeId());
+//}
+//
+//std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName,const char* typeName) const
+//{
+//    // search the type
+//    Base::Type typeId;
+//    if(typeName)
+//        typeId = Base::Type::fromName(typeName);
+//    else
+//        typeId = App::DocumentObject::getClassTypeId();
+//    return getSelectionEx(pDocName,typeId);
+//}
+std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName,Base::Type typeId) const
 {
     std::vector<SelectionObject> temp;
     
     std::map<App::DocumentObject*,SelectionObject> SortMap;
 
-    // search the type
-    Base::Type typeId = Base::Type::fromName(typeName);
+    // check the type
     if (typeId == Base::Type::badType()) 
         return temp;
 
