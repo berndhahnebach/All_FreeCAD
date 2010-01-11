@@ -76,9 +76,15 @@ struct Node_Slice
 
 struct Node_Object 
 {
-    Node_Object(std::string *namespc,std::string *type,Node_Slice* slc=0):Namespace(namespc),ObjectType(type),Slice(slc){}
-    std::string *Namespace;
-    std::string *ObjectType;
+    Node_Object(std::string *namespc,std::string *type,Node_Slice* slc=0)
+        :Slice(slc)
+    {
+        std::string type_name = *namespc + "::" + *type;
+        ObjectType = Base::Type::fromName(type_name.c_str());
+        delete (namespc);
+        delete (type);
+    }
+    Base::Type ObjectType;
     Node_Slice  *Slice;
 
 };
