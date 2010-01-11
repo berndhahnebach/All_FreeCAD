@@ -12,7 +12,7 @@
 
 
 iisTaskPanel::iisTaskPanel(QWidget *parent) :
-	QWidget(parent)
+	QWidget(parent), mySpacer(0)
 {
 	myScheme = iisTaskPanelScheme::defaultScheme();
 
@@ -63,6 +63,7 @@ void iisTaskPanel::addWidget(QWidget *w)
 	if (w)
 		layout()->addWidget(w);
 }
+
 void iisTaskPanel::removeWidget(QWidget *w)
 {
 	if (w)
@@ -71,15 +72,18 @@ void iisTaskPanel::removeWidget(QWidget *w)
 
 void iisTaskPanel::addStretch(int s)
 {
-    mySpacer = new QSpacerItem(0,0,QSizePolicy::Minimum, QSizePolicy::Expanding);
-    layout()->addItem(mySpacer);
+	if (!mySpacer) {
+		mySpacer = new QSpacerItem(0,0,QSizePolicy::Minimum, QSizePolicy::Expanding);
+		layout()->addItem(mySpacer);
+	}
 	//((QVBoxLayout*)layout())->addStretch(s);
 }
 
-void iisTaskPanel::rmvStretch(void)
+void iisTaskPanel::removeStretch()
 {
-    
-    layout()->removeItem(mySpacer);
-	delete mySpacer;
+	if (mySpacer) {
+		layout()->removeItem(mySpacer);
+		delete mySpacer; mySpacer = 0;
+	}
 }
 

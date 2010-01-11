@@ -79,7 +79,7 @@ public:
   * This elements get injected mostly by the ViewProvider classes of the selected
   * DocumentObjects. 
   */
-class GuiExport TaskView : public iisTaskPanel, public Gui::SelectionSingleton::ObserverType
+class GuiExport TaskView : public QScrollArea, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
@@ -103,7 +103,9 @@ protected:
     /// used by Gui::Contol to register Dialogs
     void showDialog(TaskDialog *dlg);
     // removes the runing dialog after accept() or reject() from the TaskView
-    void rmvDialog(void);
+    void removeDialog(void);
+
+    iisTaskPanel* taskPanel;
     TaskDialog *ActiveDialog;
     TaskEditControl *ActiveCtrl;
 
