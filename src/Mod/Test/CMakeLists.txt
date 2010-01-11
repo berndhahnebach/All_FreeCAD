@@ -20,7 +20,6 @@ ADD_CUSTOM_TARGET(Test ALL
 
 COPY_IF_DIFFERENT( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/Mod/Test ${Test_SRCS} Test "TestScripts")
 
-fc_copy_sources("Mod/Test" "Test" ${Test_SRCS})
 
 install(
 		FILES
