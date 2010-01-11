@@ -93,6 +93,7 @@ TaskView::TaskView(QWidget *parent)
     taskPanel->setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
     this->setWidget(taskPanel);
     setWidgetResizable(true);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     taskPanel->setMinimumWidth(200);
 }
 
