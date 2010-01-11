@@ -84,12 +84,16 @@ TaskBox::~TaskBox()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TaskView::TaskView(QWidget *parent)
-    : iisTaskPanel(parent),ActiveDialog(0),ActiveCtrl(0)
+    : QScrollArea(parent),ActiveDialog(0),ActiveCtrl(0)
 {
     //addWidget(new TaskEditControl(this));
     //addWidget(new TaskAppearance(this));
     //addStretch();
-    setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
+    taskPanel = new iisTaskPanel(this);
+    taskPanel->setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
+    this->setWidget(taskPanel);
+    setWidgetResizable(true);
+    taskPanel->setMinimumWidth(200);
 }
 
 TaskView::~TaskView()
@@ -130,67 +134,57 @@ void TaskView::showDialog(TaskDialog *dlg)
 
     std::vector<QWidget*> &cont = dlg->getDlgContent();
 
-    addWidget(ActiveCtrl);
+    taskPanel->addWidget(ActiveCtrl);
 
     for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
-        addWidget(*it);
+        taskPanel->addWidget(*it);
     }
-    addStretch();
+    taskPanel->addStretch();
 
     // set as active Dialog
     ActiveDialog = dlg;
 
     ActiveDialog->open();
-    
 }
 
-void TaskView::rmvDialog(void)
+void TaskView::removeDialog(void)
 {
-    
-    removeWidget(ActiveCtrl);
+    taskPanel->removeWidget(ActiveCtrl);
     delete ActiveCtrl;
     ActiveCtrl = 0;
 
     std::vector<QWidget*> &cont = ActiveDialog->getDlgContent();
     for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
-        removeWidget(*it);
+        taskPanel->removeWidget(*it);
     }
-    rmvStretch();
+    taskPanel->removeStretch();
     // signal control the end of the dialog
     Gui::Control().dlgDone();
     delete ActiveDialog;
     ActiveDialog = 0;
-    
 }
 
 void TaskView::accept()
 {
     ActiveDialog->accept();
-    rmvDialog();
-
+    removeDialog();
 }
-
 
 void TaskView::reject()
 {
     ActiveDialog->reject();
-    rmvDialog();
-
+    removeDialog();
 }
 
 void TaskView::helpRequested()
 {
    ActiveDialog->helpRequested();
-
 }
 
 void TaskView::clicked ( QAbstractButton * button )
 {
     ActiveDialog->clicked(button);
 }
-
-
-
 
 
 #include "moc_TaskView.cpp"
