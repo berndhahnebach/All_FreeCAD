@@ -52,12 +52,20 @@ ControlSingleton::~ControlSingleton()
 
 void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
 {
-    Gui::DockWnd::CombiView* pcCombiView = (Gui::DockWnd::CombiView*) Gui::DockWindowManager::instance()->getDockWindow("Combo View");
-    // should return the pointer to combi view
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+    // should return the pointer to combo view
     assert(pcCombiView);
     // only one dialog at a time
     assert(!ActiveDialog);
     pcCombiView->showDialog(dlg);
+    // make sure that the combo view is shown
+    QDockWidget* dw = qobject_cast<QDockWidget*>(pcCombiView->parentWidget());
+    if (dw) {
+        dw->setVisible(true);
+        dw->toggleViewAction()->setVisible(true);
+    }
+
     ActiveDialog = dlg;
 }
 

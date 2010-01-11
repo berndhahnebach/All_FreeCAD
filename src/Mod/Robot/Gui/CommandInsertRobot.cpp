@@ -135,36 +135,27 @@ CmdRobotAddToolShape::CmdRobotAddToolShape()
     sToolTipText    = QT_TR_NOOP("Add a tool shape to the robot");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Robot_AddToolShape";
+  //sPixmap         = "Robot_AddToolShape";
 }
 
 
 void CmdRobotAddToolShape::activated(int iMsg)
 {
+    std::vector<App::DocumentObject*> robots = getSelection()
+        .getObjectsOfType(Robot::RobotObject::getClassTypeId());
+    std::vector<App::DocumentObject*> shapes = getSelection()
+        .getObjectsOfType(Part::Feature::getClassTypeId());
  
-    unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
-    unsigned int n2 = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
- 
-    if (n1 != 1 || n2 != 1) {
+    if (robots.size() != 1 || shapes.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select one Robot and one Trajectory object."));
+            QObject::tr("Select one robot and one shape object."));
         return;
     }
 
-    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
-
-    Robot::RobotObject *pcRobotObject;
-    if(Sel[0].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
-        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[0].pObject);
-    else if(Sel[1].pObject->getTypeId() == Robot::RobotObject::getClassTypeId())
-        pcRobotObject = dynamic_cast<Robot::RobotObject*>(Sel[1].pObject);
+    Robot::RobotObject *pcRobotObject = static_cast<Robot::RobotObject*>(robots.front());
     std::string RoboName = pcRobotObject->getNameInDocument();
 
-    Part::Feature *pcShapeObject;
-    if(Sel[0].pObject->getTypeId() == Part::Feature::getClassTypeId())
-        pcShapeObject = dynamic_cast<Part::Feature*>(Sel[0].pObject);
-    else if(Sel[1].pObject->getTypeId() == Part::Feature::getClassTypeId())
-        pcShapeObject = dynamic_cast<Part::Feature*>(Sel[1].pObject);
+    Part::Feature *pcShapeObject = static_cast<Part::Feature*>(shapes.front());
     std::string ShapeName = pcShapeObject->getNameInDocument();
 
     openCommand("Add tool to robot");
@@ -172,11 +163,11 @@ void CmdRobotAddToolShape::activated(int iMsg)
     doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",ShapeName.c_str());
     updateActive();
     commitCommand();
-        
 }
 
 bool CmdRobotAddToolShape::isActive(void)
 {
+    return false; // not yet implemetned thus not active
     return hasActiveDocument();
 }
 
