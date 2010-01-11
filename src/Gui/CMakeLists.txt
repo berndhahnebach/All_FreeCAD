@@ -137,6 +137,7 @@ set(Gui_MOC_HDRS
 		 propertyeditor/PropertyModel.h
 		 TaskView/TaskAppearance.h
 		 TaskView/TaskDialog.h
+		 TaskView/TaskWatcher.h
 		 TaskView/TaskEditControl.h
 		 TaskView/TaskView.h
 )
@@ -480,6 +481,8 @@ SET(Task_View_SRCS
 		 TaskView/TaskView.h
 		 TaskView/TaskDialog.cpp
 		 TaskView/TaskDialog.h
+		 TaskView/TaskWatcher.cpp
+		 TaskView/TaskWatcher.h
 )
 SOURCE_GROUP("Task View" FILES ${Task_View_SRCS})
 

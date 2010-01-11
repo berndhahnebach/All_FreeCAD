@@ -3,6 +3,7 @@ noinst_LTLIBRARIES=libTaskView.la
 BUILT_SOURCES=\
 		moc_TaskAppearance.cpp \
 		moc_TaskDialog.cpp \
+		moc_TaskWatcher.cpp \
 		moc_TaskEditControl.cpp \
 		moc_TaskView.cpp \
 		ui_TaskAppearance.h \
@@ -15,6 +16,7 @@ libTaskView_la_UI=\
 libTaskView_la_SOURCES=\
 		TaskAppearance.cpp \
 		TaskDialog.cpp \
+		TaskWatcher.cpp \
 		TaskEditControl.cpp \
 		TaskView.cpp
 
@@ -23,6 +25,7 @@ includedir = @includedir@/Gui/TaskView
 include_HEADERS=\
 		TaskAppearance.h \
 		TaskDialog.h \
+		TaskWatcher.h \
 		TaskEditControl.h \
 		TaskView.h
 
