@@ -126,12 +126,12 @@ void RobotObject::onChanged(const Property* prop)
     if(prop == &Tcp && !block){
         robot.setTo(Tcp.getValue());
         block = true;
-        Axis1.setValue(robot.getAxis(0));
-        Axis2.setValue(robot.getAxis(1));
-        Axis3.setValue(robot.getAxis(2));
-        Axis4.setValue(robot.getAxis(3));
-        Axis5.setValue(robot.getAxis(4));
-        Axis6.setValue(robot.getAxis(5));
+        Axis1.setValue((float)robot.getAxis(0));
+        Axis2.setValue((float)robot.getAxis(1));
+        Axis3.setValue((float)robot.getAxis(2));
+        Axis4.setValue((float)robot.getAxis(3));
+        Axis5.setValue((float)robot.getAxis(4));
+        Axis6.setValue((float)robot.getAxis(5));
         block = false;
     }
     App::GeoFeature::onChanged(prop);

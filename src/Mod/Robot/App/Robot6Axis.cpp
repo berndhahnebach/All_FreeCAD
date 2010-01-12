@@ -56,13 +56,13 @@ using namespace KDL;
 // some default roboter
 
 AxisDefinition KukaIR500[6] = {
-//   a    ,alpha ,d    ,theta ,maxAngle ,minAngle ,AxisVelocity 
-    {500  ,-90   ,1045 ,0     ,+185     ,-185     ,156         }, // Axis 1
-    {1300 ,0     ,0    ,0     ,+35      ,-155     ,156         }, // Axis 2
-    {55   ,+90   ,0    ,-90   ,+154     ,-130     ,156         }, // Axis 3
-    {0    ,-90   ,-1025,0     ,+350     ,-350     ,330         }, // Axis 4
-    {0    ,+90   ,0    ,0     ,+130     ,-130     ,330         }, // Axis 5
-    {0    ,+180  ,-300 ,0     ,+350     ,-350     ,615         }  // Axis 6
+//   a    ,alpha ,d    ,theta ,rotDir ,maxAngle ,minAngle ,AxisVelocity 
+    {500  ,-90   ,1045 ,0     , -1    ,+185     ,-185     ,156         }, // Axis 1
+    {1300 ,0     ,0    ,0     , 1     ,+35      ,-155     ,156         }, // Axis 2
+    {55   ,+90   ,0    ,-90   , 1     ,+154     ,-130     ,156         }, // Axis 3
+    {0    ,-90   ,-1025,0     , 1     ,+350     ,-350     ,330         }, // Axis 4
+    {0    ,+90   ,0    ,0     , 1     ,+130     ,-130     ,330         }, // Axis 5
+    {0    ,+180  ,-300 ,0     , 1     ,+350     ,-350     ,615         }  // Axis 6
 };
 
 
@@ -85,6 +85,7 @@ void Robot6Axis::setKinematic(const AxisDefinition KinDef[6])
 
     for(int i=0 ; i<6 ;i++){
         temp.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(KinDef[i].a  ,KinDef[i].alpha * (M_PI/180) ,KinDef[i].d ,KinDef[i].theta * (M_PI/180)      )));
+        RotDir  [i] = KinDef[i].rotDir;
         MaxAngle[i] = KinDef[i].maxAngle;
         MinAngle[i] = KinDef[i].minAngle;
         Velocity[i] = KinDef[i].velocity;
@@ -137,9 +138,10 @@ void Robot6Axis::readKinematic(const char * FileName)
         temp[i].alpha    = atof(destination[1].c_str());
         temp[i].d        = atof(destination[2].c_str());
         temp[i].theta    = atof(destination[3].c_str());
-        temp[i].maxAngle = atof(destination[4].c_str());
-        temp[i].minAngle = atof(destination[5].c_str());
-        temp[i].velocity = atof(destination[6].c_str());
+        temp[i].rotDir   = atof(destination[4].c_str());
+        temp[i].maxAngle = atof(destination[5].c_str());
+        temp[i].minAngle = atof(destination[6].c_str());
+        temp[i].velocity = atof(destination[7].c_str());
     }
 
     setKinematic(temp);
@@ -183,6 +185,7 @@ void Robot6Axis::Save (Writer &writer) const
                         << "Q1=\""          <<  Tip.getRotation()[1] << "\" "
                         << "Q2=\""          <<  Tip.getRotation()[2] << "\" "
                         << "Q3=\""          <<  Tip.getRotation()[3] << "\" "
+                        << "rotDir=\""      <<  RotDir[i]		     << "\" "
                         << "maxAngle=\""    <<  MaxAngle[i]		     << "\" "
                         << "minAngle=\""    <<  MinAngle[i]			 << "\" "
                         << "AxisVelocity=\""<<  Velocity[i]          << "\" "
@@ -212,6 +215,10 @@ void Robot6Axis::Restore(XMLReader &reader)
         Temp.addSegment(Segment(Joint(Joint::RotZ),toFrame(Tip)));
 
 
+        if(reader.hasAttribute("rotDir"))
+            Velocity[i] = reader.getAttributeAsFloat("rotDir");
+        else
+            Velocity[i] = 1.0;
         MaxAngle[i]   = reader.getAttributeAsFloat("maxAngle");
         MinAngle[i]	  = reader.getAttributeAsFloat("minAngle");
         if(reader.hasAttribute("AxisVelocity"))
@@ -277,15 +284,15 @@ bool Robot6Axis::calcTcp(void)
     }
 }
 
-bool Robot6Axis::setAxis(int Axis,float Value)
+bool Robot6Axis::setAxis(int Axis,double Value)
 {
-	Actuall(Axis) = Value*(M_PI/180); // degree to radiants
+	Actuall(Axis) = RotDir[Axis] * Value * (M_PI/180); // degree to radiants
 
 	return calcTcp();
 }
 
-float Robot6Axis::getAxis(int Axis)
+double Robot6Axis::getAxis(int Axis)
 {
-	return (float) (Actuall(Axis)/(M_PI/180)); // radian to degree
+	return RotDir[Axis] * (Actuall(Axis)/(M_PI/180)); // radian to degree
 }
 
