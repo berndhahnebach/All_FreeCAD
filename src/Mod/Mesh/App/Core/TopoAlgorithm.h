@@ -85,6 +85,11 @@ public:
      */
     void DelaunayFlip(float fMaxAngle);
     /**
+     * Overloaded method DelaunayFlip that doesn't use ShouldSwapEdge to check for
+     * legal swap edge.
+     */
+    int DelaunayFlip();
+    /**
      * Tries to adjust the edges to the curvature direction with the minimum
      * absolute value of maximum and minimum curvature.
      * @note This is a high-level operation and tries to optimze the mesh as a

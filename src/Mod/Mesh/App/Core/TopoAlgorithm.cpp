@@ -281,6 +281,46 @@ void MeshTopoAlgorithm::DelaunayFlip(float fMaxAngle)
     }
 }
 
+int MeshTopoAlgorithm::DelaunayFlip()
+{
+    int cnt_swap=0;
+    _rclMesh._aclFacetArray.ResetFlag(MeshFacet::TMP0);
+    unsigned long cnt_facets = _rclMesh._aclFacetArray.size();
+    for (unsigned long i=0;i<cnt_facets;i++) {
+        const MeshFacet& f_face = _rclMesh._aclFacetArray[i];
+        if (f_face.IsFlag(MeshFacet::TMP0))
+            continue;
+        for (int j=0;j<3;j++) {
+            unsigned long n = f_face._aulNeighbours[j];
+            if (n != ULONG_MAX) {
+                const MeshFacet& n_face = _rclMesh._aclFacetArray[n];
+                if (n_face.IsFlag(MeshFacet::TMP0))
+                    continue;
+                unsigned short k = n_face.Side(f_face);
+                MeshGeomFacet f1 = _rclMesh.GetFacet(f_face);
+                MeshGeomFacet f2 = _rclMesh.GetFacet(n_face);
+                Base::Vector3f c1, c2, p1, p2;
+                p1 = f1._aclPoints[(j+2)%3];
+                p2 = f2._aclPoints[(k+2)%3];
+                float r1 = f1.CenterOfCircumCircle(c1);
+                r1 = r1*r1;
+                float r2 = f2.CenterOfCircumCircle(c2);
+                r2 = r2*r2;
+                float d1 = Base::DistanceP2(c1, p2);
+                float d2 = Base::DistanceP2(c2, p1);
+                if (d1 < r1 || d2 < r2) {
+                    SwapEdge(i, n);
+                    cnt_swap++;
+                    f_face.SetFlag(MeshFacet::TMP0);
+                    n_face.SetFlag(MeshFacet::TMP0);
+                }
+            }
+        }
+    }
+
+    return cnt_swap;
+}
+
 void MeshTopoAlgorithm::AdjustEdgesToCurvatureDirection()
 {
   std::vector< Wm4::Vector3<float> > aPnts;

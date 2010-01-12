@@ -1856,6 +1856,18 @@ Base::Vector3f MeshRefPointToPoints::GetNormal(unsigned long pos) const
     return normal;
 }
 
+float MeshRefPointToPoints::GetAverageEdgeLength(unsigned long index) const
+{
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    float len=0.0f;
+    const std::set<unsigned long>& n = (*this)[index];
+    const Base::Vector3f& p = rPoints[index];
+    for (std::set<unsigned long>::const_iterator it = n.begin(); it != n.end(); ++it) {
+        len += Base::Distance(p, rPoints[*it]);
+    }
+    return (len/n.size());
+}
+
 const std::set<unsigned long>&
 MeshRefPointToPoints::operator[] (unsigned long pos) const
 {
