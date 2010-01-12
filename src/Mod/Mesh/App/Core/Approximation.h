@@ -68,6 +68,10 @@ public:
      */
     void AddPoints(const std::list<Base::Vector3f> &rsPointList);
     /**
+     * Get all added points.
+     */
+    const std::list<Base::Vector3f>& GetPoints() const { return _vPoints; }
+    /**
      * Returns the center of gravity of the current added points.
      * @return Base::Vector3f
      */
