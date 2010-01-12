@@ -130,6 +130,8 @@ double Trajectory::getVelocity(double time)const
 
 void Trajectory::generateTrajectory(void)
 {
+    if(vpcWaypoints.size()==0)return;
+
     // delete the old and create a new one
     if(pcTrajectory) delete (pcTrajectory);
     pcTrajectory = new KDL::Trajectory_Composite();
