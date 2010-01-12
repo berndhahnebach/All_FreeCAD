@@ -374,6 +374,7 @@ public:
     void Rebuild (void);
     const std::set<unsigned long>& operator[] (unsigned long) const;
     Base::Vector3f GetNormal(unsigned long) const;
+    float GetAverageEdgeLength(unsigned long) const;
 
 protected:
     const MeshKernel  &_rclMesh; /**< The mesh kernel. */
