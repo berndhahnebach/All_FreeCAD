@@ -48,6 +48,7 @@ namespace App
 namespace Gui
 {
 
+    class SelectionFilter;
 
 /** Transport the changes of the Selection
  * This class transports closer information what was changed in the
@@ -259,6 +260,7 @@ public:
 
     static SelectionSingleton& instance(void);
     static void destruct (void);
+    friend SelectionFilter;
 
     // Python interface
     static PyMethodDef    Methods[];

@@ -39,6 +39,7 @@ struct AxisDefinition {
     double alpha;    // alpha of the Denavit-Hartenberg parameters (°)
     double d;        // d of the Denavit-Hartenberg parameters (mm)
     double theta;    // a of the Denavit-Hartenberg parameters (°) 
+    double rotDir;   // rotational direction (1|-1)
     double maxAngle; // soft ends + in °
     double minAngle; // soft ends - in ° 
     double velocity; // max vlocity of the axle in °/s
@@ -68,8 +69,8 @@ public:
     
     /// set the robot to that position, calculates the Axis
 	bool setTo(const Base::Placement &To);
-	bool setAxis(int Axis,float Value);
-	float getAxis(int Axis);
+	bool setAxis(int Axis,double Value);
+	double getAxis(int Axis);
     double getMaxAngle(int Axis){return MaxAngle[Axis];}
     double getMinAngle(int Axis){return MinAngle[Axis];}
 	/// calculate the new Tcp out of the Axis
@@ -87,6 +88,7 @@ protected:
 	double MaxAngle[6];
 	double MinAngle[6];
 	double Velocity[6];
+	double RotDir  [6];
 
 };
 
