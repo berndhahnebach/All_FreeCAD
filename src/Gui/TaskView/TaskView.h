@@ -93,6 +93,9 @@ public:
 
     friend class Gui::DockWnd::CombiView;
 
+    void addTaskWatcher(std::vector<TaskWatcher*> &Watcher);
+    void removeTaskWatcher(void);
+
 public Q_SLOTS:
     virtual void accept();
     virtual void reject();
@@ -104,6 +107,8 @@ protected:
     void showDialog(TaskDialog *dlg);
     // removes the runing dialog after accept() or reject() from the TaskView
     void removeDialog(void);
+
+    std::vector<TaskWatcher*> ActiveWatcher;
 
     iisTaskPanel* taskPanel;
     TaskDialog *ActiveDialog;

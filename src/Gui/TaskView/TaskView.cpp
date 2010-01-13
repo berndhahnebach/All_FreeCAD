@@ -165,6 +165,20 @@ void TaskView::removeDialog(void)
     ActiveDialog = 0;
 }
 
+void TaskView::addTaskWatcher(std::vector<TaskWatcher*> &Watcher)
+{
+    ActiveWatcher = Watcher;
+
+
+
+}
+
+void TaskView::removeTaskWatcher(void)
+{
+
+
+}
+
 void TaskView::accept()
 {
     ActiveDialog->accept();
