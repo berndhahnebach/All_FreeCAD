@@ -260,7 +260,7 @@ public:
 
     static SelectionSingleton& instance(void);
     static void destruct (void);
-    friend SelectionFilter;
+    friend class SelectionFilter;
 
     // Python interface
     static PyMethodDef    Methods[];
