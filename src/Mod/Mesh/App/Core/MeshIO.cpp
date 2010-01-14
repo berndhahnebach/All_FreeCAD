@@ -554,6 +554,32 @@ bool MeshInput::LoadPLY (std::istream &inp)
     }
 
     if (format == ascii) {
+        boost::regex rx_p("^([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                          "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                          "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)\\s*$");
+        boost::regex rx_f("^\\s*3\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s*$");
+        boost::cmatch what;
+        Base::Vector3f pt;
+        for (std::size_t i = 0; i < v_count && std::getline(inp, line); i++) {
+            if (boost::regex_match(line.c_str(), what, rx_p)) {
+                pt.x = (float)std::atof(what[1].first);
+                pt.y = (float)std::atof(what[4].first);
+                pt.z = (float)std::atof(what[7].first);
+                meshPoints.push_back(pt);
+            }
+            else {
+                return false;
+            }
+        }
+        int f1, f2, f3;
+        for (std::size_t i = 0; i < f_count && std::getline(inp, line); i++) {
+            if (boost::regex_match(line.c_str(), what, rx_f)) {
+                f1 = std::atoi(what[1].first);
+                f2 = std::atoi(what[2].first);
+                f3 = std::atoi(what[3].first);
+                meshFacets.push_back(MeshFacet(f1,f2,f3));
+            }
+        }
     }
     else {
         Base::InputStream is(inp);
