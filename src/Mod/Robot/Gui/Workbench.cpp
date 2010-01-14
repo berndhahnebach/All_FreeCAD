@@ -44,6 +44,19 @@ Workbench::~Workbench()
 {
 }
 
+void Workbench::activated()
+{
+
+}
+
+
+void Workbench::deactivated()
+{
+
+
+}
+
+
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();

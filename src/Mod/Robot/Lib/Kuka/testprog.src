@@ -1,0 +1,16 @@
+&ACCESS RVP
+&REL 22
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\ExpertVorgabe
+&PARAM EDITMASK = *
+DEF TestProg( )
+
+
+$BASE = $WORLD
+$TOOL = $NULLFRAME
+PDAT_ACT = {VEL 100.0,ACC 30.0,APO_DIST 100.0}
+
+PTP {AXIS: A1 0,A2 -90,A3 90,A4 0,A5 0,A6 0} 
+
+
+
+END
