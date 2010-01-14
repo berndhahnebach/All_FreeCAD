@@ -67,6 +67,9 @@ public:
   unsigned short _ausCorner[2];  // corner point indices of the facet
 };
 
+/** MeshEdge just a pair of two point indices */
+typedef std::pair<unsigned long, unsigned long> MeshEdge;
+
 /**
  * The MeshPoint class represents a point in the mesh data structure. The class inherits from
  * Vector3f and provides some additional information such as flag state and property value.

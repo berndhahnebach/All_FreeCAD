@@ -1873,3 +1873,69 @@ MeshRefPointToPoints::operator[] (unsigned long pos) const
 {
     return _map[pos];
 }
+
+//----------------------------------------------------------------------------
+
+void MeshRefEdgeToFacets::Rebuild (void)
+{
+    _map.clear();
+
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    unsigned long index = 0;
+    for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it, ++index) {
+        for (int i=0; i<3; i++) {
+            MeshEdge e;
+            e.first = it->_aulPoints[i];
+            e.second = it->_aulPoints[(i+1)%3];
+            std::map<MeshEdge, MeshFacetPair, EdgeOrder>::iterator jt =
+                _map.find(e);
+            if (jt == _map.end()) {
+                _map[e].first = index;
+                _map[e].second = ULONG_MAX;
+            }
+            else {
+                _map[e].second = index;
+            }
+        }
+    }
+}
+
+const std::pair<unsigned long, unsigned long>&
+MeshRefEdgeToFacets::operator[] (const MeshEdge& edge) const
+{
+    return _map.find(edge)->second;
+}
+
+//----------------------------------------------------------------------------
+
+void MeshRefNormalToPoints::Rebuild (void)
+{
+    _norm.clear();
+
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    _norm.resize(rPoints.size());
+
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    for (MeshFacetArray::_TConstIterator pF = rFacets.begin(); pF != rFacets.end(); ++pF) {
+        const MeshPoint &p0 = rPoints[pF->_aulPoints[0]];
+        const MeshPoint &p1 = rPoints[pF->_aulPoints[1]];
+        const MeshPoint &p2 = rPoints[pF->_aulPoints[2]];
+        float l2p01 = Base::DistanceP2(p0,p1);
+        float l2p12 = Base::DistanceP2(p1,p2);
+        float l2p20 = Base::DistanceP2(p2,p0);
+
+        Base::Vector3f facenormal = _rclMesh.GetFacet(*pF).GetNormal();
+        _norm[pF->_aulPoints[0]] += facenormal * (1.0f / (l2p01 * l2p20));
+        _norm[pF->_aulPoints[1]] += facenormal * (1.0f / (l2p12 * l2p01));
+        _norm[pF->_aulPoints[2]] += facenormal * (1.0f / (l2p20 * l2p12));
+    }
+    for (std::vector<Base::Vector3f>::iterator it = _norm.begin(); it != _norm.end(); ++it)
+        it->Normalize();
+}
+
+const Base::Vector3f&
+MeshRefNormalToPoints::operator[] (unsigned long pos) const
+{
+    return _norm[pos];
+}
