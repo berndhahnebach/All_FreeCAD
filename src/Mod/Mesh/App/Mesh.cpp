@@ -270,7 +270,7 @@ void MeshObject::RestoreDocFile(Base::Reader &reader)
     load(reader);
 }
 
-void MeshObject::save(const char* file, MeshCore::MeshOutput::Format f) const
+void MeshObject::save(const char* file, MeshCore::MeshIO::Format f) const
 {
     MeshCore::MeshOutput aWriter(_kernel);
     aWriter.SaveAny(file, f);

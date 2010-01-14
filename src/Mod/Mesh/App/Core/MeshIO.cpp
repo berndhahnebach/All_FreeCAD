@@ -318,6 +318,9 @@ bool MeshInput::LoadAny(const char* FileName)
         else if (fi.hasExtension("obj")) {
             ok = LoadOBJ( str );
         }
+        else if (fi.hasExtension("ply")) {
+            ok = LoadPLY( str );
+        }
         else {
             throw Base::FileException("File extension not supported",FileName);
         }
@@ -425,6 +428,161 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
             i2 = std::atoi(what[2].first);
             i3 = std::atoi(what[3].first);
             meshFacets.push_back(MeshFacet(i1-1,i2-1,i3-1));
+        }
+    }
+
+    this->_rclMesh.Clear(); // remove all data before
+    // Don't use Assign() because Merge() checks which points are really needed.
+    // This method sets already the correct neighbourhood
+    MeshKernel tmp;
+    tmp.Adopt(meshPoints,meshFacets);
+    this->_rclMesh.Merge(tmp);
+
+    return true;
+}
+
+bool MeshInput::LoadPLY (std::istream &inp)
+{
+    // http://local.wasp.uwa.edu.au/~pbourke/dataformats/ply/
+    std::size_t v_count=0, f_count=0;
+    MeshPointArray meshPoints;
+    MeshFacetArray meshFacets;
+
+    enum {
+        ascii, binary_little_endian, binary_big_endian
+    } format;
+    if (!inp || inp.bad() == true)
+        return false;
+
+    std::streambuf* buf = inp.rdbuf();
+    if (!buf)
+        return false;
+
+    // read in the first three characters
+    char ply[3];
+    inp.read(ply, 3);
+    inp.ignore(1);
+    if (!inp)
+        return false;
+    if ((ply[0] != 'p') || (ply[1] != 'l') || (ply[2] != 'y'))
+        return false; // wrong header
+
+    std::string line, element;
+    bool xyz_float=false,xyz_double=false;
+    while (std::getline(inp, line)) {
+        std::istringstream str(line);
+        str.unsetf(std::ios_base::skipws);
+        str >> std::ws;
+        if (str.eof())
+            continue; // empty line
+        std::string kw;
+        str >> kw;
+        if (kw == "format") {
+            std::string format_string, version;
+            char space_format_string, space_format_version;
+            str >> space_format_string >> std::ws
+                >> format_string >> space_format_version
+                >> std::ws >> version >> std::ws;
+            if (!str || !str.eof() ||
+                !std::isspace(space_format_string) ||
+                !std::isspace(space_format_version)) {
+                return false;
+            }
+            if (format_string == "ascii") {
+                format = ascii;
+            }
+            else if (format_string == "binary_big_endian") {
+                format = binary_big_endian;
+            }
+            else if (format_string == "binary_little_endian") {
+                format = binary_little_endian;
+            }
+            else {
+                // wrong format version
+                return false;
+            }
+            if (version != "1.0") {
+                // wrong version
+                return false;
+            }
+        }
+        else if (kw == "element") {
+            std::string name;
+            std::size_t count;
+            char space_element_name, space_name_count;
+            str >> space_element_name >> std::ws
+                >> name >> space_name_count >> std::ws
+                >> count >> std::ws;
+            if (!str || !str.eof() ||
+                !std::isspace(space_element_name) ||
+                !std::isspace(space_name_count)) {
+                return false;
+            }
+            else if (name == "vertex") {
+                element = name;
+                v_count = count;
+                meshPoints.reserve(count);
+            }
+            else if (name == "face") {
+                element = name;
+                f_count = count;
+                meshFacets.reserve(count);
+            }
+            else {
+                element.clear();
+            }
+        }
+        else if (kw == "property") {
+            std::string type, name;
+            char space;
+            if (element == "vertex") {
+                str >> space >> std::ws
+                    >> type >> space >> std::ws >> name >> std::ws;
+                if (name == "x") {
+                    if (type == "float" || type == "float32")
+                        xyz_float = true;
+                    else if (type == "double" || type == "float64")
+                        xyz_double = true;
+                }
+            }
+            else if (element == "face") {
+            }
+        }
+        else if (kw == "end_header") {
+            break; // end of the header, now read the data
+        }
+    }
+
+    if (format == ascii) {
+    }
+    else {
+        Base::InputStream is(inp);
+        if (format == binary_little_endian)
+            is.setByteOrder(Base::Stream::LittleEndian);
+        else
+            is.setByteOrder(Base::Stream::BigEndian);
+        if (xyz_float) {
+            Base::Vector3f pt;
+            for (std::size_t i = 0; i < v_count; i++) {
+                is >> pt.x >> pt.y >> pt.z;
+                meshPoints.push_back(pt);
+            }
+        }
+        else if (xyz_double) {
+            Base::Vector3d pt;
+            for (std::size_t i = 0; i < v_count; i++) {
+                is >> pt.x >> pt.y >> pt.z;
+                meshPoints.push_back(Base::Vector3f((float)pt.x,(float)pt.y,(float)pt.z));
+            }
+        }
+        unsigned char n;
+        int f1, f2, f3;
+        for (std::size_t i = 0; i < f_count; i++) {
+            is >> n;
+            if (n==3) {
+                is >> f1 >> f2 >> f3;
+                meshFacets.push_back(MeshFacet(f1,f2,f3));
+            }
         }
     }
 
@@ -936,7 +1094,7 @@ bool MeshInput::LoadCadmouldFE (std::ifstream &rstrIn)
 // --------------------------------------------------------------
 
 /// Save in a file, format is decided by the extension if not explicitly given
-bool MeshOutput::SaveAny(const char* FileName,MeshOutput::Format format) const
+bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
 {
     // ask for write permission
     Base::FileInfo fi(FileName);
@@ -944,43 +1102,46 @@ bool MeshOutput::SaveAny(const char* FileName,MeshOutput::Format format) const
     if ((fi.exists() && !fi.isWritable()) || !di.exists() || !di.isWritable())
         throw Base::FileException("No write permission for file",FileName);
 
-    MeshOutput::Format fileformat = format;
-    if (fileformat == MeshOutput::Undefined) {
+    MeshIO::Format fileformat = format;
+    if (fileformat == MeshIO::Undefined) {
         if (fi.hasExtension("bms")) {
-            fileformat = MeshOutput::BMS;
+            fileformat = MeshIO::BMS;
         }
         else if (fi.hasExtension("stl")) {
-            fileformat = MeshOutput::BSTL;
+            fileformat = MeshIO::BSTL;
         }
         else if (fi.hasExtension("ast")) {
-            fileformat = MeshOutput::ASTL;
+            fileformat = MeshIO::ASTL;
         }
         else if (fi.hasExtension("obj")) {
-            fileformat = MeshOutput::OBJ;
+            fileformat = MeshIO::OBJ;
+        }
+        else if (fi.hasExtension("ply")) {
+            fileformat = MeshIO::PLY;
         }
         else if (fi.hasExtension("iv")) {
-            fileformat = MeshOutput::IV;
+            fileformat = MeshIO::IV;
         }
         else if (fi.hasExtension("py")) {
-            fileformat = MeshOutput::PY;
+            fileformat = MeshIO::PY;
         }
         else if (fi.hasExtension("wrl") || fi.hasExtension("vrml")) {
-            fileformat = MeshOutput::VRML;
+            fileformat = MeshIO::VRML;
         }
         else if (fi.hasExtension("wrz")) {
-            fileformat = MeshOutput::WRZ;
+            fileformat = MeshIO::WRZ;
         }
         else if (fi.hasExtension("nas") || fi.hasExtension("bdf")) {
-            fileformat = MeshOutput::NAS;
+            fileformat = MeshIO::NAS;
         }
     }
 
     Base::ofstream str(fi, std::ios::out | std::ios::binary);
 
-    if (fileformat == MeshOutput::BMS) {
+    if (fileformat == MeshIO::BMS) {
         _rclMesh.Write(str);
     }
-    else if (fileformat == MeshOutput::BSTL) {
+    else if (fileformat == MeshIO::BSTL) {
         MeshOutput aWriter(_rclMesh);
 
         // write file
@@ -990,7 +1151,7 @@ bool MeshOutput::SaveAny(const char* FileName,MeshOutput::Format format) const
             throw Base::FileException("Export of STL mesh failed",FileName);
           
     }
-    else if (fileformat == MeshOutput::ASTL) {
+    else if (fileformat == MeshIO::ASTL) {
         MeshOutput aWriter(_rclMesh);
 
         // write file
@@ -1000,28 +1161,33 @@ bool MeshOutput::SaveAny(const char* FileName,MeshOutput::Format format) const
             throw Base::FileException("Export of STL mesh failed",FileName);
           
     }
-    else if (fileformat == MeshOutput::OBJ) {
+    else if (fileformat == MeshIO::OBJ) {
         // write file
         if (!SaveOBJ(str)) 
             throw Base::FileException("Export of OBJ mesh failed",FileName);
     }
-    else if (fileformat == MeshOutput::IV) {
+    else if (fileformat == MeshIO::PLY) {
+        // write file
+        if (!SavePLY(str)) 
+            throw Base::FileException("Export of PLY mesh failed",FileName);
+    }
+    else if (fileformat == MeshIO::IV) {
         // write file
         if (!SaveInventor(str))
             throw Base::FileException("Export of Inventor mesh failed",FileName);
     }
-    else if (fileformat == MeshOutput::PY) {
+    else if (fileformat == MeshIO::PY) {
         // write file
         if (!SavePython(str))
             throw Base::FileException("Export of Python mesh failed",FileName);
     }
-    else if (fileformat == MeshOutput::VRML) {
+    else if (fileformat == MeshIO::VRML) {
         // write file
         App::Material clMat;
         if (!SaveVRML(str, clMat))
             throw Base::FileException("Export of VRML mesh failed",FileName);
     }
-    else if (fileformat == MeshOutput::WRZ) {
+    else if (fileformat == MeshIO::WRZ) {
         // Compressed VRML is nothing else than a GZIP'ped VRML ascii file
         // str.close();
         //Base::ogzstream gzip(FileName, std::ios::out | std::ios::binary);
@@ -1034,7 +1200,7 @@ bool MeshOutput::SaveAny(const char* FileName,MeshOutput::Format format) const
         if (!SaveVRML(gzip, clMat))
             throw Base::FileException("Export of compressed VRML mesh failed",FileName);
     }
-    else if (fileformat == MeshOutput::NAS) {
+    else if (fileformat == MeshIO::NAS) {
         // write file
         if (!SaveNastran(str))
             throw Base::FileException("Export of NASTRAN mesh failed",FileName);
@@ -1164,6 +1330,46 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
                         << it->_aulPoints[1]+1 << " "
                         << it->_aulPoints[2]+1 << std::endl;
         seq.next(true); // allow to cancel
+    }
+
+    return true;
+}
+
+bool MeshOutput::SavePLY (std::ostream &out) const
+{
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+    std::size_t v_count = rPoints.size();
+    std::size_t f_count = rFacets.size();
+    if (!out || out.bad() == true)
+        return false;
+    out << "ply" << std::endl
+        << "format binary_little_endian 1.0" << std::endl
+        << "comment Created by FreeCAD <http://free-cad.sourceforge.net>" << std::endl
+        << "element vertex " << v_count << std::endl
+        << "property float32 x" << std::endl
+        << "property float32 y" << std::endl
+        << "property float32 z" << std::endl
+        << "element face " << f_count << std::endl
+        << "property list uchar int vertex_index" << std::endl
+        << "end_header" << std::endl;
+
+    Base::OutputStream os(out);
+    os.setByteOrder(Base::Stream::LittleEndian);
+    Base::Vector3f pt;
+    for (std::size_t i = 0; i < v_count; i++) {
+        const MeshPoint& p = rPoints[i];
+        os << p.x << p.y << p.z;
+    }
+    unsigned char n = 3;
+    int f1, f2, f3;
+    for (std::size_t i = 0; i < f_count; i++) {
+        const MeshFacet& f = rFacets[i];
+        f1 = (int)f._aulPoints[0];
+        f2 = (int)f._aulPoints[1];
+        f3 = (int)f._aulPoints[2];
+        os << n;
+        os << f1 << f2 << f3;
     }
 
     return true;

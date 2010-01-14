@@ -124,20 +124,21 @@ PyObject*  MeshPy::write(PyObject *args)
     if (!PyArg_ParseTuple(args, "s|s",&Name,&Ext))
         return NULL;
 
-    MeshCore::MeshOutput::Format format = MeshCore::MeshOutput::Undefined;
+    MeshCore::MeshIO::Format format = MeshCore::MeshIO::Undefined;
     if (Ext) {
-        std::map<std::string, MeshCore::MeshOutput::Format> ext;
-        ext["BMS" ] = MeshCore::MeshOutput::BMS;
-        ext["STL" ] = MeshCore::MeshOutput::BSTL;
-        ext["AST" ] = MeshCore::MeshOutput::ASTL;
-        ext["OBJ" ] = MeshCore::MeshOutput::OBJ;
-        ext["IV"  ] = MeshCore::MeshOutput::IV;
-        ext["VRML"] = MeshCore::MeshOutput::VRML;
-        ext["WRL" ] = MeshCore::MeshOutput::VRML;
-        ext["WRZ" ] = MeshCore::MeshOutput::WRZ;
-        ext["NAS" ] = MeshCore::MeshOutput::NAS;
-        ext["BDF" ] = MeshCore::MeshOutput::NAS;
-        ext["PY"  ] = MeshCore::MeshOutput::PY;
+        std::map<std::string, MeshCore::MeshIO::Format> ext;
+        ext["BMS" ] = MeshCore::MeshIO::BMS;
+        ext["STL" ] = MeshCore::MeshIO::BSTL;
+        ext["AST" ] = MeshCore::MeshIO::ASTL;
+        ext["OBJ" ] = MeshCore::MeshIO::OBJ;
+        ext["IV"  ] = MeshCore::MeshIO::IV;
+        ext["VRML"] = MeshCore::MeshIO::VRML;
+        ext["WRL" ] = MeshCore::MeshIO::VRML;
+        ext["WRZ" ] = MeshCore::MeshIO::WRZ;
+        ext["NAS" ] = MeshCore::MeshIO::NAS;
+        ext["BDF" ] = MeshCore::MeshIO::NAS;
+        ext["PLY" ] = MeshCore::MeshIO::PLY;
+        ext["PY"  ] = MeshCore::MeshIO::PY;
         if (ext.find(Ext) != ext.end())
             format = ext[Ext];
     };

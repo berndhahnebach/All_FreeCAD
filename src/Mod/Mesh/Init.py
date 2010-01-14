@@ -31,8 +31,8 @@
 ParGrp = FreeCAD.ParamGet("System parameter:Modules").GetGroup("Mesh")
 
 # Append the open handler
-FreeCAD.addImportType("Mesh formats (*.stl *.ast *.bms *.obj)","Mesh")
-FreeCAD.addExportType("Mesh formats (*.stl *.ast *.bms *.obj)","Mesh")
+FreeCAD.addImportType("Mesh formats (*.stl *.ast *.bms *.obj *.ply)","Mesh")
+FreeCAD.addExportType("Mesh formats (*.stl *.ast *.bms *.obj *.ply)","Mesh")
 
 
 # Set the needed information
