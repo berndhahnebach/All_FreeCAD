@@ -37,6 +37,22 @@ namespace MeshCore {
 
 class MeshKernel;
 
+namespace MeshIO {
+    enum Format {
+        Undefined,
+        BMS,
+        ASTL,
+        BSTL,
+        OBJ,
+        IV,
+        VRML,
+        WRZ,
+        NAS,
+        PLY,
+        PY
+    };
+}
+
 /**
  * The MeshInput class is able to read a mesh object from a input stream
  * in various formats.
@@ -59,6 +75,8 @@ public:
     bool LoadBinarySTL (std::istream &rstrIn);
     /** Loads an OBJ Mesh file. */
     bool LoadOBJ (std::istream &rstrIn);
+    /** Loads a PLY Mesh file. */
+    bool LoadPLY (std::istream &rstrIn);
     /** Loads the mesh object from an XML file. */
     void LoadXML (Base::XMLReader &reader);
     /** Loads a node from an OpenInventor file. */
@@ -81,23 +99,10 @@ protected:
 class MeshExport MeshOutput
 {
 public:
-    enum Format {
-        Undefined,
-        BMS,
-        ASTL,
-        BSTL,
-        OBJ,
-        IV,
-        VRML,
-        WRZ,
-        NAS,
-        PY
-    };
-
     MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
     virtual ~MeshOutput (void) { }
     /// Saves the file, decided by extension if not explicitly given
-    bool SaveAny(const char* FileName, Format f=Undefined) const;
+    bool SaveAny(const char* FileName, MeshIO::Format f=MeshIO::Undefined) const;
 
     /** Saves the mesh object into an ASCII STL file. */
     bool SaveAsciiSTL (std::ostream &rstrOut) const;
@@ -105,6 +110,8 @@ public:
     bool SaveBinarySTL (std::ostream &rstrOut) const;
     /** Saves the mesh object into an OBJ file. */
     bool SaveOBJ (std::ostream &rstrOut) const;
+    /** Saves the mesh object into a PLY file. */
+    bool SavePLY (std::ostream &rstrOut) const;
     /** Saves the mesh object into an XML file. */
     void SaveXML (Base::Writer &writer) const;
     /** Saves a node to an OpenInventor file. */
