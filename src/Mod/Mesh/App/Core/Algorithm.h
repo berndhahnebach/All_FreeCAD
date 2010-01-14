@@ -381,6 +381,70 @@ protected:
     std::vector<std::set<unsigned long> > _map;
 };
 
+/**
+ * The MeshRefEdgeToFacets builds up a structure to have access to all facets 
+ * of an edge. On a manifold mesh an edge has one or two facets associated.
+ * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
+ * be rebuilt.
+ */
+class MeshExport MeshRefEdgeToFacets
+{
+public:
+    /// Construction
+    MeshRefEdgeToFacets (const MeshKernel &rclM) : _rclMesh(rclM) 
+    { Rebuild(); }
+    /// Destruction
+    ~MeshRefEdgeToFacets (void)
+    { }
+
+    /// Rebuilds up data structure
+    void Rebuild (void);
+    const std::pair<unsigned long, unsigned long>& operator[] (const MeshEdge&) const;
+
+protected:
+    class EdgeOrder {
+    public:
+        bool operator () (const MeshEdge &e1, const MeshEdge &e2) const
+        {
+            if (e1.first < e2.first)
+                return true;
+            else if (e1.first > e2.first)
+                return false;
+            else if (e1.second < e2.second)
+                return true;
+            else
+                return false;
+        }
+    };
+    typedef std::pair<unsigned long, unsigned long> MeshFacetPair;
+    const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    std::map<MeshEdge, MeshFacetPair, EdgeOrder> _map;
+};
+
+/**
+ * The MeshRefNormalToPoints builds up a structure to have access to the normal of a vertex.
+ * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
+ * be rebuilt.
+ */
+class MeshExport MeshRefNormalToPoints
+{
+public:
+    /// Construction
+    MeshRefNormalToPoints (const MeshKernel &rclM) : _rclMesh(rclM) 
+    { Rebuild(); }
+    /// Destruction
+    ~MeshRefNormalToPoints (void)
+    { }
+
+    /// Rebuilds up data structure
+    void Rebuild (void);
+    const Base::Vector3f& operator[] (unsigned long) const;
+
+protected:
+    const MeshKernel  &_rclMesh; /**< The mesh kernel. */
+    std::vector<Base::Vector3f> _norm;
+};
+
 }; // namespace MeshCore 
 
 #endif  // MESH_ALGORITHM_H 

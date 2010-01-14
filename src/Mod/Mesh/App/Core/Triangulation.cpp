@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <queue>
 #endif
 
 #include "Triangulation.h"
@@ -650,4 +651,19 @@ bool ConstraintDelaunayTriangulator::Triangulate()
     this->_triangles = tria.GetTriangles();
 
     return succeeded;
+}
+
+// -------------------------------------------------------------
+
+Triangulator::Triangulator(const MeshKernel& k) : _kernel(k)
+{
+}
+
+Triangulator::~Triangulator()
+{
+}
+
+bool Triangulator::Triangulate()
+{
+    return false;
 }

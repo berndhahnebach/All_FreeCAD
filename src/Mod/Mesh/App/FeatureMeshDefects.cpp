@@ -293,8 +293,8 @@ PROPERTY_SOURCE(Mesh::FillHoles, Mesh::FixDefects)
 
 FillHoles::FillHoles()
 {
-  ADD_PROPERTY(FillupHolesOfLength,(0));
-  ADD_PROPERTY(MaxArea,(0.1f));
+    ADD_PROPERTY(FillupHolesOfLength,(0));
+    ADD_PROPERTY(MaxArea,(0.1f));
 }
 
 FillHoles::~FillHoles()
@@ -311,6 +311,7 @@ App::DocumentObjectExecReturn *FillHoles::execute(void)
         std::auto_ptr<MeshObject> mesh(new MeshObject);
         *mesh = kernel->getValue();
         MeshCore::ConstraintDelaunayTriangulator cTria(MaxArea.getValue());
+        //MeshCore::Triangulator cTria(mesh->getKernel());
         mesh->fillupHoles(FillupHolesOfLength.getValue(), 1, cTria);
         this->Mesh.setValuePtr(mesh.release());
     }
@@ -324,7 +325,7 @@ PROPERTY_SOURCE(Mesh::RemoveComponents, Mesh::FixDefects)
 
 RemoveComponents::RemoveComponents()
 {
-  ADD_PROPERTY(RemoveCompOfSize,(0));
+    ADD_PROPERTY(RemoveCompOfSize,(0));
 }
 
 RemoveComponents::~RemoveComponents()

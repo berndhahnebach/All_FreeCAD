@@ -29,6 +29,7 @@
 
 namespace MeshCore
 {
+class MeshKernel;
 
 class MeshExport AbstractPolygonTriangulator
 {
@@ -184,6 +185,18 @@ protected:
 
 private:
     float fMaxArea;
+};
+
+class MeshExport Triangulator : public AbstractPolygonTriangulator
+{
+public:
+    Triangulator(const MeshKernel&);
+    ~Triangulator();
+
+protected:
+    bool Triangulate();
+
+    const MeshKernel& _kernel;
 };
 
 } // namespace MeshCore
