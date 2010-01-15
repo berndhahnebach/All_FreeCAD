@@ -169,14 +169,27 @@ void TaskView::addTaskWatcher(std::vector<TaskWatcher*> &Watcher)
 {
     ActiveWatcher = Watcher;
 
+    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
+        std::vector<QWidget*> &cont = (*it)->getWatcherContent();
+        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it){
+            taskPanel->addWidget(*it2);
+        }
 
+    }
+    taskPanel->addStretch();
 
 }
 
 void TaskView::removeTaskWatcher(void)
 {
+    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
+        std::vector<QWidget*> &cont = (*it)->getWatcherContent();
+        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it){
+            taskPanel->removeWidget(*it2);
+        }
 
-
+    }
+    taskPanel->removeStretch();
 }
 
 void TaskView::accept()

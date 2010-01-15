@@ -76,7 +76,7 @@ void TaskWatcher::open()
 // TaskWatcherCommands
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char** commands, const char* name, const char* pixmap )
+TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands[], const char* name, const char* pixmap )
     :TaskWatcher(Filter)
 {
     CommandManager mgr = Gui::Application::Instance->commandManager();

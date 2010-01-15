@@ -25,6 +25,7 @@
 #define IMAGE_WORKBENCH_H
 
 #include <Gui/Workbench.h>
+#include <Gui/TaskView/TaskWatcher.h>
 
 namespace RobotGui {
 
@@ -48,6 +49,8 @@ public:
 protected:
     Gui::ToolBarItem* setupToolBars() const;
     Gui::MenuItem*    setupMenuBar() const;
+
+    std::vector<Gui::TaskView::TaskWatcher*> Watcher;
 };
 
 } // namespace RobotGui
