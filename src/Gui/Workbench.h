@@ -27,6 +27,7 @@
 #include <list>
 #include <string>
 #include <Base/BaseClass.h>
+#include <Gui/TaskView/TaskWatcher.h>
 
 namespace Base {
 class PyObjectBase;
@@ -87,6 +88,11 @@ public:
     virtual void activated();
     /** Run some actions when the workbench gets deactivated. */
     virtual void deactivated();
+
+    /// helper to add TaskWatcher to the TaskView
+    void addTaskWatcher(std::vector<Gui::TaskView::TaskWatcher*> &Watcher);
+    /// remove the added TaskWatcher
+    void removeTaskWatcher(void);
 
 protected:
     /** Returns a MenuItem tree structure of menus for this workbench. */

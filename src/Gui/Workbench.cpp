@@ -35,6 +35,9 @@
 #include "ToolBoxManager.h"
 #include "Window.h"
 #include "Selection.h"
+#include <Gui/CombiView.h>
+#include <Gui/TaskView/TaskView.h>
+#include <Gui/TaskView/TaskWatcher.h>
 
 #include <App/Application.h>
 #include <App/DocumentObject.h>
@@ -337,6 +340,23 @@ void Workbench::retranslate() const
 PyObject* Workbench::getPyObject()
 {
     return new WorkbenchPy(this);
+}
+
+void Workbench::addTaskWatcher(std::vector<Gui::TaskView::TaskWatcher*> &Watcher)
+{
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+
+    pcCombiView->getTaskPanel()->addTaskWatcher(Watcher); 
+}
+
+
+void Workbench::removeTaskWatcher(void)
+{
+   Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+
+   pcCombiView->getTaskPanel()->removeTaskWatcher();
 }
 
 // --------------------------------------------------------------------
@@ -855,3 +875,5 @@ std::list<std::string> PythonWorkbench::listCommandbars() const
         bars.push_back((*item)->command());
     return bars;
 }
+
+ 

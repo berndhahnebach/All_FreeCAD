@@ -68,7 +68,7 @@ class GuiExport TaskWatcherCommands : public TaskWatcher
     Q_OBJECT
 
 public:
-    TaskWatcherCommands(const char* Filter,const char** commands, const char* name, const char* pixmap);
+    TaskWatcherCommands(const char* Filter,const char* commands[], const char* name, const char* pixmap);
     ~TaskWatcherCommands();
 
 public:

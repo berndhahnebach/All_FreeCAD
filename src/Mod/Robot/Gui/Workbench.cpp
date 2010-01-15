@@ -30,6 +30,11 @@
 #include "Workbench.h"
 #include <Gui/ToolBarManager.h>
 #include <Gui/MenuManager.h>
+#include <Gui/MainWindow.h>
+#include <Gui/CombiView.h>
+#include <Gui/DockWindowManager.h>
+#include <Gui/TaskView/TaskView.h>
+#include <Gui/TaskView/TaskWatcher.h>
 
 
 using namespace RobotGui;
@@ -46,13 +51,24 @@ Workbench::~Workbench()
 
 void Workbench::activated()
 {
+    const char* test[] = {"hh","jj"};
 
+    std::vector<Gui::TaskView::TaskWatcher*> Watcher;
+    Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
+        "",
+        test,
+        "Trajectory tools",
+        ""
+    ));
+    
+    addTaskWatcher(Watcher);
+ 
 }
 
 
 void Workbench::deactivated()
 {
-
+   removeTaskWatcher();
 
 }
 

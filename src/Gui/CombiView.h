@@ -77,6 +77,8 @@ public:
     */
     virtual ~CombiView();
 
+    Gui::TaskView::TaskView *getTaskPanel(void){return taskPanel;}
+
 
     friend class Gui::ControlSingleton;
 
