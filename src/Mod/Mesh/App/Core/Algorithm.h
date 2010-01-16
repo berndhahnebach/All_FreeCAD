@@ -26,6 +26,7 @@
 
 #include <set>
 #include <vector>
+#include <map>
 
 #include "MeshKernel.h"
 #include "Elements.h"
