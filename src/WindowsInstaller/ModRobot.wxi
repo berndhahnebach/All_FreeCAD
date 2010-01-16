@@ -40,6 +40,6 @@
 					<File Id="Kuka6" Name="kr_210_2.csv"   />
 				</Component>			
 			</Directory>
-
+		</Directory>
     </Directory>
 </Include>

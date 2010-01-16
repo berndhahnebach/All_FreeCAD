@@ -70,9 +70,11 @@
 				<File Id="LibPack49" Name="QtTest4.dll"   />
 				<File Id="LibPack50" Name="QtXml4.dll"   />
 				<File Id="LibPack51" Name="QtWebKit4.dll"   />
+				<File Id="LibPack55" Name="QtHelp4.dll"   />
+				<File Id="LibPack56" Name="QtCLucene4.dll"   />
 				<File Id="LibPack52" Name="phonon4.dll"   />
 				<File Id="LibPack53" Name="sketchflat.exe"   />
-				<File Id="LibPack53" Name="assistant.exe"   />
+				<File Id="LibPack54" Name="assistant.exe"   />
 				<File Id="LibPack61" Name="TKBO.dll"   />
 				<File Id="LibPack62" Name="TKBool.dll"   />
 				<File Id="LibPack63" Name="TKBRep.dll"   />
