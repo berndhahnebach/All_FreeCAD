@@ -175,7 +175,7 @@ CmdRobotAddToolShape::CmdRobotAddToolShape()
     sToolTipText    = QT_TR_NOOP("Add a tool shape to the robot");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-  //sPixmap         = "Robot_AddToolShape";
+    //sPixmap         = "Robot_AddToolShape";
 }
 
 
@@ -208,7 +208,7 @@ void CmdRobotAddToolShape::activated(int iMsg)
 bool CmdRobotAddToolShape::isActive(void)
 {
     return false; // not yet implemetned thus not active
-    return hasActiveDocument();
+    //return hasActiveDocument();
 }
 
 void CreateRobotCommandsInsertRobots(void)
