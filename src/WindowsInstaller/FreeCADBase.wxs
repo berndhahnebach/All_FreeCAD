@@ -26,44 +26,52 @@
 	<Fragment Id="FreeCADBase">
 		<DirectoryRef Id="BinDir" FileSource="../../bin/">
 			<Component Id="Base" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7">
-				<File Id="Exe" Name="FreeCAD.exe" >
-					<Shortcut Id="FCShortcut" 
-						Directory="MenuDir"  
-						Name="FreeCAD" 
-						Icon="FreeCADIcon.exe"
-						Description="FreeCAD gui version" 
-						WorkingDirectory="BinDir" 
-						Advertise="no" >
-						<Icon Id="FreeCADIcon.exe"
-					          SourceFile="../../bin/FreeCAD.exe" />
-					</Shortcut>
-
-<!--					<Shortcut Id="FCShortcutDesk" 
-						Directory="DesktopFolder"  
-						Name="FreeCAD" 
-						Description="FreeCAD the one and only open source CAD package" 
-						WorkingDirectory="BinDir"
-						Advertise="yes" />  -->
-				</File>
+				<File Id="Exe" Name="FreeCAD.exe" />
 				<File Id="GuiDll"   Name="FreeCADGui.dll"  />
 			</Component>
 			<Component Id="BaseCmd" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F8">
-				<File Id="CmdExe" Name="FreeCADCmd.exe">
-					<Shortcut Id="FCCmdShortcut" 
-						Directory="MenuDir" 
-						Name="command line" 
-						Icon="FreeCADCMDIcon.exe"
-						Description="FreeCAD command line version" 
-						WorkingDirectory="BinDir" 
-						Advertise="no" >
-						<Icon Id="FreeCADCMDIcon.exe"
-					          SourceFile="../../bin/FreeCADCmd.exe" />
-					</Shortcut>
-
-				</File>
+				<File Id="CmdExe" Name="FreeCADCmd.exe"/>
 				<File Id="PyModule" Name="FreeCAD.pyd"     />
 				<File Id="AppDll"   Name="FreeCADApp.dll"  />
 				<File Id="BaseDll"  Name="FreeCADBase.dll" />
+			</Component>
+		</DirectoryRef>
+		<DirectoryRef Id="MenuDir" >
+			<Component Id="BaseShortcuts" Guid="06974300-02a5-11df-8a39-0800200c9a66">
+				<Shortcut Id="FCShortcut" 
+						Name="FreeCAD" 
+						Icon="FreeCADIcon.exe"
+						Description="FreeCAD gui version" 
+						Target = "[BinDir]FreeCAD.exe"
+						WorkingDirectory="BinDir" >
+						<Icon Id="FreeCADIcon.exe" SourceFile="../../bin/FreeCAD.exe" /> 
+						
+				</Shortcut>
+				<RegistryValue 
+					Root="HKCU" 
+					Key="Software\Microsoft\FreeCAD" 
+					Name="installed"
+					Type="integer" 
+					Value="1" 
+					KeyPath="yes"/>
+			</Component>
+			<Component Id="BaseCmdShortcuts" Guid="f29d51e0-02a5-11df-8a39-0800200c9a66">
+				<Shortcut Id="FCCmdShortcut" 
+						Name="command line" 
+						Icon="FreeCADCMDIcon.exe"
+						Description="FreeCAD command line version" 
+						Target = "[BinDir]FreeCADCmd.exe"
+						WorkingDirectory="BinDir" >
+						<Icon Id="FreeCADCMDIcon.exe"
+					          SourceFile="../../bin/FreeCADCmd.exe" />
+				</Shortcut>
+				<RegistryValue 
+					Root="HKCU" 
+					Key="Software\Microsoft\FreeCADCmd" 
+					Name="installed" 
+					Type="integer" 
+					Value="1" 
+					KeyPath="yes"/>
 				<RemoveFolder Id="RmvMenuFolder" Directory="MenuDir" On="uninstall"/>
 			</Component>
 		</DirectoryRef>

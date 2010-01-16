@@ -27,7 +27,7 @@
 		<DirectoryRef Id="BinDir" FileSource="../../bin/">
 			<Component Id="LibPackBinaries" Guid="515D7157-403B-4085-AC2F-0DC95A47F2D4">
 				<File Id="PythonExe" Name="python.exe">
-					<Shortcut Id="PythonShortcut" 
+<!--					<Shortcut Id="PythonShortcut" 
 						Directory="MenuDir" 
 						Name="Python console" 
 						Icon="PythonIcon.exe"
@@ -36,7 +36,7 @@
 						Advertise="no" >
 						<Icon Id="PythonIcon.exe"
 					          SourceFile="../../bin/python.exe" />
-					</Shortcut>
+					</Shortcut>-->
 
 				</File>
 				<File Id="LibPack1" Name="boost_date_time-vc90-mt-1_39.dll" />
@@ -48,6 +48,7 @@
 				<File Id="LibPack7" Name="boost_signals-vc90-mt-1_39.dll"  />
 				<File Id="LibPack8" Name="boost_thread-vc90-mt-1_39.dll" />
 				<File Id="LibPack9" Name="boost_wserialization-vc90-mt-1_39.dll"  />
+				<File Id="LibPack11" Name="boost_system-vc90-mt-1_39.dll"  />
 				<File Id="LibPack10" Name="sip.pyd"  />
 				<!-- No libs for CAM at the moment 
 				<File Id="LibPack11" Name="atlas.dll"  />
@@ -68,6 +69,10 @@
 				<File Id="LibPack48" Name="QtSvg4.dll"   />
 				<File Id="LibPack49" Name="QtTest4.dll"   />
 				<File Id="LibPack50" Name="QtXml4.dll"   />
+				<File Id="LibPack51" Name="QtWebKit4.dll"   />
+				<File Id="LibPack52" Name="phonon4.dll"   />
+				<File Id="LibPack53" Name="sketchflat.exe"   />
+				<File Id="LibPack53" Name="assistant.exe"   />
 				<File Id="LibPack61" Name="TKBO.dll"   />
 				<File Id="LibPack62" Name="TKBool.dll"   />
 				<File Id="LibPack63" Name="TKBRep.dll"   />
@@ -162,7 +167,6 @@
 					<File Id="PyQt17" Name="QtXml.pyd"   />
 					<File Id="PyQt18" Name="QtHelp.pyd"   />
 					<File Id="PyQt19" Name="QtScriptTools.pyd"   />
-					<File Id="PyQt20" Name="QtTest.pyd"   />
 					<File Id="PyQt21" Name="QtWebKit.pyd"   />
 					<File Id="PyQt22" Name="QtXmlPatterns.pyd"   />
 				</Component>

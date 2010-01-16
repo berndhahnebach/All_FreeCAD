@@ -24,7 +24,7 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<?include Version.wxi ?>
-	<?define RTMProductVersion="$(var.FCVersionMajor).$(var.FCVersionMinor).0" ?>
+	<?define RTMProductVersion="$(var.FCVersionMajor).$(var.FCVersionMinor)" ?>
 	<?define ProductVersion="$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionRevision)" ?>
 	<!-- this is the product UID and have to change for every x.y Version  -->
 	<?define ProductCode="{81abc4a0-de63-11de-8a39-0800200c9a66}"?>
@@ -41,7 +41,7 @@
 				Manufacturer="Juergen Riegel (FreeCAD@juergen-riegel.net)">
         <Package Description="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package" 
 				Comments="for details about FreeCAD see http://free-cad.sourceforge.net" 
-				InstallerVersion="200" 
+				InstallerVersion="300" 
 				Compressed="yes"
 				AdminImage='no'
 				Platform='x86'
@@ -76,7 +76,7 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
  			<!-- These installs the Visual C++ 8.0 Runtime Libraries -->
 			<Merge  Id="CRT" Language="0" SourceFile='Microsoft_VC90_CRT_x86.msm' DiskId="1"/>
-			<Merge  Id="CRT_Policy" Language="0" SourceFile='Policy_9_0_Microsoft_VC90_CRT_x86.msm' DiskId="1"/>
+			<Merge  Id="CRT_Policy" Language="0" SourceFile='policy_9_0_Microsoft_VC90_CRT_x86.msm' DiskId="1"/>
 			
 			<Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
@@ -104,6 +104,8 @@
             <MergeRef Id="CRT_Policy" />
             <ComponentRef Id="Base" />
             <ComponentRef Id="BaseCmd" />
+            <ComponentRef Id="BaseShortcuts" />
+            <ComponentRef Id="BaseCmdShortcuts" />
             <ComponentRef Id="LibPackBinaries" />
             <ComponentRef Id="PyQtTop" />
             <ComponentRef Id="PyQtUic" />
@@ -136,6 +138,7 @@
 	        <ComponentRef Id="CompModDrawingTemplates" />
             <ComponentRef Id="CompModDrawing" />
             <ComponentRef Id="CompModRobot" />
+            <ComponentRef Id="CompModRobotLibKuka" />
 		
             <Feature Id="FeatModImage" Title="The Image module" Description="Module to handle pictures" Level="1">
                 <ComponentRef Id="CompModImage" />
