@@ -35,6 +35,7 @@
             <File Id="TestWorkbench" 	Name="Workbench.py" DiskId="1" />
             <File Id="TestQtUnit" 		Name="qtunittest.py" DiskId="1" />
             <File Id="TestUnicode" 		Name="UnicodeTests.py" DiskId="1" />
+            <File Id="TestUnit" 		Name="UnitTests.py" DiskId="1" />
         </Component>
     </Directory>
 </Include>
