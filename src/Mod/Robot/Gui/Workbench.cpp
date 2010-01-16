@@ -51,14 +51,19 @@ Workbench::~Workbench()
 
 void Workbench::activated()
 {
-    const char* test[] = {"hh","jj"};
+    Gui::Workbench::activated();
+
+    const char* test[] = {
+        "Robot_InsertWaypoint",
+        "Robot_InsertWaypointPreselect",
+        0};
 
     std::vector<Gui::TaskView::TaskWatcher*> Watcher;
     Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
-        "",
+        "FROM Robot SELECT TrajectoryObject COUNT 1..",
         test,
         "Trajectory tools",
-        ""
+        "Robot_InsertWaypoint"
     ));
     
     addTaskWatcher(Watcher);
@@ -68,7 +73,8 @@ void Workbench::activated()
 
 void Workbench::deactivated()
 {
-   removeTaskWatcher();
+    Gui::Workbench::deactivated();
+    removeTaskWatcher();
 
 }
 

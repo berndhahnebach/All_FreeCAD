@@ -4,12 +4,17 @@
 &PARAM EDITMASK = *
 DEF TestProg( )
 
+;--------- Declarations ------------------------------------
+EXT BAS (BAS_COMMAND :IN,REAL :IN )
 
-$BASE = $WORLD
-$TOOL = $NULLFRAME
-PDAT_ACT = {VEL 100.0,ACC 30.0,APO_DIST 100.0}
+;---------- Init -------------------------------------------
+BAS (#INITMOV,0 ) ;Initialicing the defaults for Vel and so on 
 
+; SAK 
 PTP {AXIS: A1 0,A2 -90,A3 90,A4 0,A5 0,A6 0} 
+
+; Velocity for LIN points
+$VEL.CP = 2 ; m/s
 
 
 

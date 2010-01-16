@@ -79,11 +79,12 @@ void TaskWatcher::open()
 TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands[], const char* name, const char* pixmap )
     :TaskWatcher(Filter)
 {
-    CommandManager mgr = Gui::Application::Instance->commandManager();
+    CommandManager &mgr = Gui::Application::Instance->commandManager();
     iisTaskBox *tb = new iisTaskBox(BitmapFactory().pixmap(pixmap), QString::fromUtf8(name), true, 0);
 
 
     for(const char** i=commands;*i;i++){
+        if(!i) break;
         Command *c = mgr.getCommandByName(*i);
         if(c){
            	iisIconLabel *label = new iisIconLabel(BitmapFactory().pixmap(c->getPixmap()), QString::fromUtf8(c->getMenuText()), tb);
