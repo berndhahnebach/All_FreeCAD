@@ -135,7 +135,7 @@ double UnitsApi::toDblWithUserPrefs(QuantityType t,const char* Str)
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,double UserVal)
 {
-    return UserPrefFactor[t]/UserVal;
+    return UserVal/UserPrefFactor[t];
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,PyObject *ArgObj)

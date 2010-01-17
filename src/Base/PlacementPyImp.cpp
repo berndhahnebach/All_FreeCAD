@@ -44,11 +44,6 @@ std::string PlacementPy::representation(void) const
     std::stringstream str;
     ptr->getRotation().getYawPitchRoll(A,B,C);
 
-    // convert to degree
-    A = A*180.0/D_PI;
-    B = B*180.0/D_PI;
-    C = C*180.0/D_PI;
-
     str << "Placement [Pos=(";
     str << ptr->getPosition().x << ","<< ptr->getPosition().y << "," << ptr->getPosition().z;
     str << "), Yaw-Pitch-Roll=(" << A << "," << B << "," << C << ")]";

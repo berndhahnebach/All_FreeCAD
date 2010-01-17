@@ -27,10 +27,6 @@
 #endif
 
 #include "TaskDlgSimulate.h"
-#include "TaskRobot6Axis.h"
-#include "TaskTrajectory.h"
-#include "TaskRobotControl.h"
-#include "TaskRobotMessages.h"
 
 using namespace RobotGui;
 
@@ -43,12 +39,12 @@ using namespace RobotGui;
 TaskDlgSimulate::TaskDlgSimulate(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject)
     : TaskDialog()
 {
-    TaskRobot6Axis    *rob  = new TaskRobot6Axis(pcRobotObject);
-    TaskRobotControl  *ctr  = new TaskRobotControl(pcRobotObject);
-    ctr->showHide();
-    TaskTrajectory    *trac = new TaskTrajectory(pcRobotObject,pcTrajectoryObject);
-    TaskRobotMessages *msg  = new TaskRobotMessages(pcRobotObject);
-    msg->showHide();
+    rob  = new TaskRobot6Axis(pcRobotObject);
+    ctr  = new TaskRobotControl(pcRobotObject);
+    
+    trac = new TaskTrajectory(pcRobotObject,pcTrajectoryObject);
+    msg  = new TaskRobotMessages(pcRobotObject);
+    
     
     QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float)),
                      rob  ,SLOT  (setAxis(float,float,float,float,float,float)));
@@ -69,8 +65,10 @@ TaskDlgSimulate::~TaskDlgSimulate()
 
 void TaskDlgSimulate::open()
 {
-    
+    msg->hide();   
+    ctr->hide();
 }
+
 void TaskDlgSimulate::clicked(QAbstractButton *)
 {
     

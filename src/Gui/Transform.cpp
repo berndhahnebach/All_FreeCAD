@@ -263,9 +263,9 @@ Base::Placement Transform::getPlacementData() const
     }
     else if (index == 1) {
         rot.setYawPitchRoll(
-            ui->yawAngle->value()*D_PI/180.0,
-            ui->pitchAngle->value()*D_PI/180.0,
-            ui->rollAngle->value()*D_PI/180.0);
+            ui->yawAngle->value(),
+            ui->pitchAngle->value(),
+            ui->rollAngle->value());
     }
 
     Base::Placement p(pos, rot, cnt);
