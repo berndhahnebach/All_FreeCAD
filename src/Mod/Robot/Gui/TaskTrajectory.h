@@ -24,6 +24,9 @@
 #ifndef GUI_TASKVIEW_TaskTrajectory_H
 #define GUI_TASKVIEW_TaskTrajectory_H
 
+#include <Base/UnitsApi.h>
+
+
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 
@@ -74,15 +77,16 @@ private Q_SLOTS:
     void valueChanged ( double d );
 
 Q_SIGNALS:
-    void axisChanged(float A1,float A2,float A3,float A4,float A5,float A6);
+    void axisChanged(float A1,float A2,float A3,float A4,float A5,float A6,const Base::Placement &Tcp);
 
 protected:
     void setTo(void);
+    void viewTool(const Base::Placement pos);
 
     QTimer *timer;
 
     Robot::Simulation sim;
-
+    Robot::RobotObject *pcRobot;
     ViewProviderRobotObject *ViewProv;
 
     bool Run;

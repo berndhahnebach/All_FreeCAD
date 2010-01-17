@@ -44,6 +44,7 @@ TaskTrajectory::TaskTrajectory(Robot::RobotObject *pcRobotObject,Robot::Trajecto
     : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Trajectory"),true, parent),
       sim(pcTrajectoryObject->Trajectory.getValue(),pcRobotObject->getRobot()),
       Run(false),
+      pcRobot(pcRobotObject),
       timePos(0.0),
       block(false)
 
@@ -113,15 +114,33 @@ TaskTrajectory::~TaskTrajectory()
    
 }
 
+void TaskTrajectory::viewTool(const Base::Placement pos)
+{
+    double A,B,C;
+    pos.getRotation().getYawPitchRoll(A,B,C);
+
+    QString result = QString::fromAscii("Pos:(%1, %2, %3, %4, %5, %6)")
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().x),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().y),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().z),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,A),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,B),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,C),0,'f',1);
+
+    ui->label_Pos->setText(result);
+}
 
 void TaskTrajectory::setTo(void)
 {
     if(timePos < 0.0001)
         sim.reset();
-    else
+    else{
+        sim.Tool = pcRobot->Tool.getValue();
         sim.setToTime(timePos);
+    }
     ViewProv->setAxisTo(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5]);
-    axisChanged(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5]);
+    axisChanged(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5],sim.Rob.getTcp());
+    viewTool(sim.Rob.getTcp());
 }
 
 void TaskTrajectory::start(void)

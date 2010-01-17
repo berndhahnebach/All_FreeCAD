@@ -28,6 +28,7 @@
 
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <Base/Exception.h>
 
 #include "kdl_cp/chain.hpp"
 #include "kdl_cp/path_line.hpp"
@@ -36,6 +37,8 @@
 #include "kdl_cp/rotational_interpolation_sa.hpp"
 #include "kdl_cp/velocityprofile_trap.hpp"
 #include "kdl_cp/trajectory_segment.hpp"
+#include "kdl_cp/path_roundedcomposite.hpp"
+#include "kdl_cp/utilities/error.h"
 
 #include "Trajectory.h"
 #include "RobotAlgos.h"
@@ -140,37 +143,73 @@ void Trajectory::generateTrajectory(void)
     KDL::Trajectory_Segment     *pcTrak;
     KDL::Path                   *pcPath;
     KDL::VelocityProfile        *pcVelPrf;
+    KDL::Path_RoundedComposite  *pcRoundComp=0;
     KDL::Frame                  Last;
 
-    // handle the first waypoint special
-    bool first=true;
+    try {
+        // handle the first waypoint special
+        bool first=true;
 
-    for(std::vector<Waypoint*>::const_iterator it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it){
-        if(first){
-            Last = toFrame((*it)->EndPos);
-            first = false;
-        }else{
-            switch((*it)->Type){
-                case Waypoint::LINE:
-                case Waypoint::PTP:{
-                    KDL::Frame Next = toFrame((*it)->EndPos);
-                    pcPath = new KDL::Path_Line(Last,
-                                                Next,
-                                                new KDL::RotationalInterpolation_SingleAxis(),
-                                                1.0,
-                                                true
-                                                );
-                    pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
-                    pcVelPrf->SetProfile(0,pcPath->PathLength());
-                    pcTrak = new KDL::Trajectory_Segment(pcPath,pcVelPrf);
-                    Last = Next;
-                    break;}
-                case Waypoint::WAIT:
-                    break;
-                    
+        for(std::vector<Waypoint*>::const_iterator it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it){
+            if(first){
+                Last = toFrame((*it)->EndPos);
+                first = false;
+            }else{
+                // destinct the type of movement
+                switch((*it)->Type){
+                    case Waypoint::LINE:
+                    case Waypoint::PTP:{
+                         KDL::Frame Next = toFrame((*it)->EndPos);
+                         // continues the movement until no continus waypoint or the end
+                         bool Cont = (*it)->Cont && !(it==--vpcWaypoints.end());
+                        // start of a continue block
+                        if(Cont && pcRoundComp==0){
+                            pcRoundComp = new KDL::Path_RoundedComposite(3,
+                                                        3,
+                                                        new KDL::RotationalInterpolation_SingleAxis()
+                                                        );
+                            // the velocity of the first waypoint is used
+                            pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
+                            pcRoundComp->Add(Last);
+                            pcRoundComp->Add(Next);
+
+                        // continue a continues block
+                        }else if (Cont && pcRoundComp){
+                            pcRoundComp->Add(Next);
+
+                        // end a continous block
+                        }else if (Cont==false && pcRoundComp){
+                            // add the last one
+                            pcRoundComp->Add(Next);
+                            pcVelPrf->SetProfile(0,pcRoundComp->PathLength());
+                            pcTrak = new KDL::Trajectory_Segment(pcRoundComp,pcVelPrf);
+                            pcRoundComp = 0;
+
+                        // normal block
+                        }else if (Cont==false && pcRoundComp==0){
+                            pcPath = new KDL::Path_Line(Last,
+                                                        Next,
+                                                        new KDL::RotationalInterpolation_SingleAxis(),
+                                                        1.0,
+                                                        true
+                                                        );
+                            pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
+                            pcVelPrf->SetProfile(0,pcPath->PathLength());
+                            pcTrak = new KDL::Trajectory_Segment(pcPath,pcVelPrf);
+                        }
+                        Last = Next;
+                        break;}
+                    case Waypoint::WAIT:
+                        break;
+                        
+                }
+                // add the segment if no continous block is runing
+                if(!pcRoundComp)
+                    pcTrajectory->Add(pcTrak);
             }
-            pcTrajectory->Add(pcTrak);
         }
+    }catch (KDL::Error &e) {
+        throw Base::Exception(e.Description());
     }
 
 }

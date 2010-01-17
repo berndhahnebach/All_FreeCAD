@@ -305,7 +305,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>8</pointsize>
+       <pointsize>7</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -322,7 +322,7 @@
        <property name="font">
         <font>
          <family>Arial</family>
-         <pointsize>9</pointsize>
+         <pointsize>8</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
