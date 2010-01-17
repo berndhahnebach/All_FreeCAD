@@ -333,7 +333,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pushButtonChooseTool">
        <property name="maximumSize">
         <size>
          <width>30</width>

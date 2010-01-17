@@ -94,7 +94,7 @@ TaskView::TaskView(QWidget *parent)
     this->setWidget(taskPanel);
     setWidgetResizable(true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    taskPanel->setMinimumWidth(200);
+    this->setMinimumWidth(200);
 }
 
 TaskView::~TaskView()

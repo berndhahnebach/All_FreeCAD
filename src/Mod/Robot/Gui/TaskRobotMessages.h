@@ -21,73 +21,51 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef GUI_TASKVIEW_TaskRobotMessages_H
+#define GUI_TASKVIEW_TaskRobotMessages_H
 
-#ifndef _PreComp_
-#endif
+#include <Gui/TaskView/TaskView.h>
+#include <Gui/Selection.h>
 
-#include "TaskDlgSimulate.h"
-#include "TaskRobot6Axis.h"
-#include "TaskTrajectory.h"
-#include "TaskRobotControl.h"
-#include "TaskRobotMessages.h"
-
-using namespace RobotGui;
+#include <Mod/Robot/App/RobotObject.h>
+#include <Mod/Robot/App/TrajectoryObject.h>
 
 
-//**************************************************************************
-//**************************************************************************
-// TaskDialog
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class Ui_TaskRobotMessages;
 
-TaskDlgSimulate::TaskDlgSimulate(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject)
-    : TaskDialog()
+namespace App {
+class Property;
+}
+
+namespace Gui {
+class ViewProvider;
+}
+
+namespace RobotGui { 
+
+
+
+class TaskRobotMessages : public Gui::TaskView::TaskBox
 {
-    TaskRobot6Axis    *rob  = new TaskRobot6Axis(pcRobotObject);
-    TaskRobotControl  *ctr  = new TaskRobotControl(pcRobotObject);
-    ctr->showHide();
-    TaskTrajectory    *trac = new TaskTrajectory(pcRobotObject,pcTrajectoryObject);
-    TaskRobotMessages *msg  = new TaskRobotMessages(pcRobotObject);
-    msg->showHide();
+    Q_OBJECT
+
+public:
+    TaskRobotMessages(Robot::RobotObject *pcRobotObject,QWidget *parent = 0);
+    ~TaskRobotMessages();
+
+private Q_SLOTS:
     
-    QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float)),
-                     rob  ,SLOT  (setAxis(float,float,float,float,float,float)));
 
-    Content.push_back(rob);
-    Content.push_back(ctr);
-    Content.push_back(trac);
-    Content.push_back(msg);
-}
+protected:
+    Robot::RobotObject *pcRobot;
 
-TaskDlgSimulate::~TaskDlgSimulate()
-{
+private:
 
-}
+private:
+    QWidget* proxy;
+    Ui_TaskRobotMessages* ui;
+};
 
-//==== calls from the TaskView ===============================================================
+} //namespace PartDesignGui
 
-
-void TaskDlgSimulate::open()
-{
-    
-}
-void TaskDlgSimulate::clicked(QAbstractButton *)
-{
-    
-}
-void TaskDlgSimulate::accept()
-{
-    
-}
-void TaskDlgSimulate::reject()
-{
-    
-}
-
-void TaskDlgSimulate::helpRequested()
-{
-
-}
-
-
-#include "moc_TaskDlgSimulate.cpp"
+#endif // GUI_TASKVIEW_TASKAPPERANCE_H
