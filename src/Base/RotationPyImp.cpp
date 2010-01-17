@@ -83,7 +83,7 @@ int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
     double y, p, r;
     if (PyArg_ParseTuple(args, "ddd", &y, &p, &r)) {
-        getRotationPtr()->setYawPitchRoll(y/180.0*D_PI, p/180.0*D_PI, r/180.0*D_PI);
+        getRotationPtr()->setYawPitchRoll(y, p, r);
         return 0;
     }
 
@@ -126,9 +126,9 @@ PyObject* RotationPy::toEuler(PyObject * args)
     this->getRotationPtr()->getYawPitchRoll(A,B,C);
 
     Py::Tuple tuple(3);
-    tuple.setItem(0, Py::Float(A*180.0/D_PI));
-    tuple.setItem(1, Py::Float(B*180.0/D_PI));
-    tuple.setItem(2, Py::Float(C*180.0/D_PI));
+    tuple.setItem(0, Py::Float(A));
+    tuple.setItem(1, Py::Float(B));
+    tuple.setItem(2, Py::Float(C));
     return Py::new_reference_to(tuple);
 }
 

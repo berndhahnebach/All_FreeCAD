@@ -26,17 +26,22 @@
 #ifndef _PreComp_
 #endif
 
+#include <Base/Console.h>
+#include <Base/UnitsApi.h>
+
 #include <QString>
 #include <QSlider>
 #include "ui_TaskRobot6Axis.h"
 #include "TaskRobot6Axis.h"
+
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
-#include <Base/Console.h>
 #include <Gui/Selection.h>
+#include <Gui/Placement.h>
+
 
 
 using namespace RobotGui;
@@ -44,7 +49,7 @@ using namespace Gui;
 
 TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskRobot6Axis"),true, parent),
-    pcRobot(pcRobotObject)
+    pcRobot(pcRobotObject),Rob(pcRobot->getRobot())
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -54,7 +59,14 @@ TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent
 
     this->groupLayout()->addWidget(proxy);
 
-    Robot::Robot6Axis &Rob = pcRobot->getRobot();
+    QObject::connect(ui->horizontalSlider_Axis1,SIGNAL(sliderMoved(int)),this,SLOT(changeSliderA1(int)));
+    QObject::connect(ui->horizontalSlider_Axis2,SIGNAL(sliderMoved(int)),this,SLOT(changeSliderA2(int)));
+    QObject::connect(ui->horizontalSlider_Axis3,SIGNAL(sliderMoved(int)),this,SLOT(changeSliderA3(int)));
+    QObject::connect(ui->horizontalSlider_Axis4,SIGNAL(sliderMoved(int)),this,SLOT(changeSliderA4(int)));
+    QObject::connect(ui->horizontalSlider_Axis5,SIGNAL(sliderMoved(int)),this,SLOT(changeSliderA5(int)));
+    QObject::connect(ui->horizontalSlider_Axis6,SIGNAL(sliderMoved(int)),this,SLOT(changeSliderA6(int)));
+
+    QObject::connect(ui->pushButtonChooseTool,SIGNAL(clicked()),this,SLOT(createPlacementDlg()));
 
     ui->horizontalSlider_Axis1->setMaximum(  (int ) Rob.getMaxAngle(0) );
     ui->horizontalSlider_Axis1->setMinimum(  (int ) Rob.getMinAngle(0) );
@@ -74,13 +86,105 @@ TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent
     ui->horizontalSlider_Axis6->setMaximum(  (int ) Rob.getMaxAngle(5) );
     ui->horizontalSlider_Axis6->setMinimum(  (int ) Rob.getMinAngle(5) );
 
+    setAxis(pcRobot->Axis1.getValue(),
+            pcRobot->Axis2.getValue(),
+            pcRobot->Axis3.getValue(),
+            pcRobot->Axis4.getValue(),
+            pcRobot->Axis5.getValue(),
+            pcRobot->Axis6.getValue()
+            );
+    viewTcp(pcRobot->Tcp.getValue());
+    viewTool(pcRobot->Tool.getValue());
 }
 
 TaskRobot6Axis::~TaskRobot6Axis()
 {
     delete ui;
-    
 }
+
+void TaskRobot6Axis::createPlacementDlg(void)
+{
+    Gui::Dialog::Placement *plc = new Gui::Dialog::Placement();
+    plc->setPlacement(pcRobot->Tool.getValue());
+    if(plc->exec()==QDialog::Accepted)
+        pcRobot->Tool.setValue(plc->getPlacement());
+    viewTool(pcRobot->Tool.getValue());
+}
+
+
+void TaskRobot6Axis::viewTcp(const Base::Placement pos)
+{
+    double A,B,C;
+    pos.getRotation().getYawPitchRoll(A,B,C);
+
+    QString result = QString::fromAscii("TCP:(%1,%2,%3,%4,%5,%6)")
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().x),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().y),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().z),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,A),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,B),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,C),0,'f',1);
+
+    ui->label_TCP->setText(result);
+}
+
+void TaskRobot6Axis::viewTool(const Base::Placement pos)
+{
+    double A,B,C;
+    pos.getRotation().getYawPitchRoll(A,B,C);
+
+    QString result = QString::fromAscii("Tool:(%1,%2,%3,%4,%5,%6)")
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().x),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().y),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().z),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,A),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,B),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,C),0,'f',1);
+
+    ui->label_Tool->setText(result);
+}
+
+void TaskRobot6Axis::changeSliderA1(int value){
+    pcRobot->Axis1.setValue(float (value));
+    viewTcp(pcRobot->Tcp.getValue());
+    ui->lineEdit_Axis1->setText(QString::fromLatin1("%1°").arg((float)value,0,'f',1));
+}
+
+void TaskRobot6Axis::changeSliderA2(int value)
+{
+    pcRobot->Axis2.setValue(float (value));
+    viewTcp(pcRobot->Tcp.getValue());
+    ui->lineEdit_Axis2->setText(QString::fromLatin1("%1°").arg((float)value,0,'f',1));
+}
+
+void TaskRobot6Axis::changeSliderA3(int value)
+{
+    pcRobot->Axis3.setValue(float (value));
+    viewTcp(pcRobot->Tcp.getValue());
+    ui->lineEdit_Axis3->setText(QString::fromLatin1("%1°").arg((float)value,0,'f',1));
+}
+
+void TaskRobot6Axis::changeSliderA4(int value)
+{
+    pcRobot->Axis4.setValue(float (value));
+    viewTcp(pcRobot->Tcp.getValue());
+    ui->lineEdit_Axis4->setText(QString::fromLatin1("%1°").arg((float)value,0,'f',1));
+}
+
+void TaskRobot6Axis::changeSliderA5(int value)
+{
+    pcRobot->Axis5.setValue(float (value));
+    viewTcp(pcRobot->Tcp.getValue());
+    ui->lineEdit_Axis5->setText(QString::fromLatin1("%1°").arg((float)value,0,'f',1));
+}
+
+void TaskRobot6Axis::changeSliderA6(int value)
+{
+    pcRobot->Axis6.setValue(float (value));
+    viewTcp(pcRobot->Tcp.getValue());
+    ui->lineEdit_Axis6->setText(QString::fromLatin1("%1°").arg((float)value,0,'f',1));
+}
+
 
 void TaskRobot6Axis::setAxis(float A1,float A2,float A3,float A4,float A5,float A6)
 {

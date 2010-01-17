@@ -148,9 +148,9 @@ void Placement::setPlacementData(const Base::Placement& p)
 
     double Y,P,R;
     p.getRotation().getYawPitchRoll(Y,P,R);
-    ui->yawAngle->setValue(Y*180.0/D_PI);
-    ui->pitchAngle->setValue(P*180.0/D_PI);
-    ui->rollAngle->setValue(R*180.0/D_PI);
+    ui->yawAngle->setValue(Y);
+    ui->pitchAngle->setValue(P);
+    ui->rollAngle->setValue(R);
 
     // check if the user-defined direction is already there
     double angle;
@@ -203,9 +203,9 @@ Base::Placement Placement::getPlacementData() const
     }
     else if (index == 1) {
         rot.setYawPitchRoll(
-            ui->yawAngle->value()*D_PI/180.0,
-            ui->pitchAngle->value()*D_PI/180.0,
-            ui->rollAngle->value()*D_PI/180.0);
+            ui->yawAngle->value(),
+            ui->pitchAngle->value(),
+            ui->rollAngle->value());
     }
 
     Base::Placement p(pos, rot, cnt);

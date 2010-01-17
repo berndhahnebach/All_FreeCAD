@@ -55,15 +55,25 @@ public:
 
 private Q_SLOTS:
     void setAxis(float A1,float A2,float A3,float A4,float A5,float A6);
+    void changeSliderA1(int value);
+    void changeSliderA2(int value);
+    void changeSliderA3(int value);
+    void changeSliderA4(int value);
+    void changeSliderA5(int value);
+    void changeSliderA6(int value);
+    void createPlacementDlg(void);
 
 protected:
     Robot::RobotObject *pcRobot;
+    void viewTcp(const Base::Placement pos);
+    void viewTool(const Base::Placement pos);
 
 private:
 
 private:
     QWidget* proxy;
     Ui_TaskRobot6Axis* ui;
+    Robot::Robot6Axis &Rob;
 };
 
 } //namespace PartDesignGui

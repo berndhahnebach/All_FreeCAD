@@ -377,12 +377,12 @@ void Rotation::setYawPitchRoll(double y, double p, double r)
 {
     // taken from http://www.resonancepub.com/quaterni.htm
     // The Euler angles (yaw,pitch,roll) are in ZY'X''-notation
-    double c1 = cos(y/2.0);
-    double s1 = sin(y/2.0);
-    double c2 = cos(p/2.0);
-    double s2 = sin(p/2.0);
-    double c3 = cos(r/2.0);
-    double s3 = sin(r/2.0);
+    double c1 = cos(((y/180.0)*D_PI)/2.0);
+    double s1 = sin(((y/180.0)*D_PI)/2.0);
+    double c2 = cos(((p/180.0)*D_PI)/2.0);
+    double s2 = sin(((p/180.0)*D_PI)/2.0);
+    double c3 = cos(((r/180.0)*D_PI)/2.0);
+    double s3 = sin(((r/180.0)*D_PI)/2.0);
 
     quat[0] = c1*c2*s3 - s1*s2*c3;
     quat[1] = c1*s2*c3 + s1*c2*s3;
@@ -409,4 +409,9 @@ void Rotation::getYawPitchRoll(double& y, double& p, double& r) const
     y = atan2(2.0*(q01+q23),(q00+q33)-(q11+q22));
     p = qd2 > 1.0 ? D_PI/2.0 : (qd2 < -1.0 ? -D_PI/2.0 : asin (qd2));
     r = atan2(2.0*(q12+q03),(q22+q33)-(q00+q11));
+
+    // convert to degree
+    y = (y/D_PI)*180;
+    p = (p/D_PI)*180;
+    r = (r/D_PI)*180;
 }

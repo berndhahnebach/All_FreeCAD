@@ -32,6 +32,7 @@ public:
 
 	void addIconLabel(iisIconLabel *label, bool addToLayout = true);
 
+    void hide();
 public Q_SLOTS:
 	void showHide();
 

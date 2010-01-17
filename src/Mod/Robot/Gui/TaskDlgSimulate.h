@@ -28,6 +28,10 @@
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
 
+#include "TaskRobot6Axis.h"
+#include "TaskTrajectory.h"
+#include "TaskRobotControl.h"
+#include "TaskRobotMessages.h"
 
 namespace RobotGui {
 
@@ -55,6 +59,12 @@ public:
 
     /// returns for Close and Help button 
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void){return QDialogButtonBox::Close|QDialogButtonBox::Help;}
+
+protected:
+    TaskRobot6Axis    *rob; 
+    TaskRobotControl  *ctr ;
+    TaskTrajectory    *trac;
+    TaskRobotMessages *msg ;
 
 };
 
