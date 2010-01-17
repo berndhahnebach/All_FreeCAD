@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>222</width>
-    <height>315</height>
+    <height>314</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -217,17 +217,17 @@
     </layout>
    </item>
    <item>
+    <widget class="QSlider" name="timeSlider">
+     <property name="maximum">
+      <number>999</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QSlider" name="timeSlider">
-       <property name="maximum">
-        <number>999</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QDoubleSpinBox" name="timeSpinBox"/>
      </item>
@@ -247,6 +247,35 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxIpo">
+       <item>
+        <property name="text">
+         <string>10 ms</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>50 ms</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>100 ms</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>500 ms</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>1 s</string>
+        </property>
+       </item>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -254,13 +283,13 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>8</pointsize>
+       <pointsize>7</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
      <property name="text">
-      <string>TCP: (200.23,300.23,400.23,234,343,343)</string>
+      <string>Pos: (200.23, 300.23, 400.23, 234, 343 ,343)</string>
      </property>
     </widget>
    </item>

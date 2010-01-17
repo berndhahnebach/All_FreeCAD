@@ -54,7 +54,7 @@ public:
     ~TaskRobot6Axis();
 
 private Q_SLOTS:
-    void setAxis(float A1,float A2,float A3,float A4,float A5,float A6);
+    void setAxis(float A1,float A2,float A3,float A4,float A5,float A6,const Base::Placement &Tcp);
     void changeSliderA1(int value);
     void changeSliderA2(int value);
     void changeSliderA3(int value);

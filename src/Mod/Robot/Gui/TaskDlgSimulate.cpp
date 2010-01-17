@@ -46,8 +46,8 @@ TaskDlgSimulate::TaskDlgSimulate(Robot::RobotObject *pcRobotObject,Robot::Trajec
     msg  = new TaskRobotMessages(pcRobotObject);
     
     
-    QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float)),
-                     rob  ,SLOT  (setAxis(float,float,float,float,float,float)));
+    QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float,const Base::Placement &)),
+                     rob  ,SLOT  (setAxis(float,float,float,float,float,float,const Base::Placement &)));
 
     Content.push_back(rob);
     Content.push_back(ctr);

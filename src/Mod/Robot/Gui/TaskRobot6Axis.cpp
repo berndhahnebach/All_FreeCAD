@@ -91,9 +91,8 @@ TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent
             pcRobot->Axis3.getValue(),
             pcRobot->Axis4.getValue(),
             pcRobot->Axis5.getValue(),
-            pcRobot->Axis6.getValue()
-            );
-    viewTcp(pcRobot->Tcp.getValue());
+            pcRobot->Axis6.getValue(),
+            pcRobot->Tcp.getValue());
     viewTool(pcRobot->Tool.getValue());
 }
 
@@ -117,7 +116,7 @@ void TaskRobot6Axis::viewTcp(const Base::Placement pos)
     double A,B,C;
     pos.getRotation().getYawPitchRoll(A,B,C);
 
-    QString result = QString::fromAscii("TCP:(%1,%2,%3,%4,%5,%6)")
+    QString result = QString::fromAscii("TCP:( %1, %2, %3, %4, %5, %6 )")
         .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().x),0,'f',1)
         .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().y),0,'f',1)
         .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().z),0,'f',1)
@@ -133,7 +132,7 @@ void TaskRobot6Axis::viewTool(const Base::Placement pos)
     double A,B,C;
     pos.getRotation().getYawPitchRoll(A,B,C);
 
-    QString result = QString::fromAscii("Tool:(%1,%2,%3,%4,%5,%6)")
+    QString result = QString::fromAscii("Tool:( %1, %2, %3, %4, %5, %6 )")
         .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().x),0,'f',1)
         .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().y),0,'f',1)
         .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().z),0,'f',1)
@@ -186,7 +185,7 @@ void TaskRobot6Axis::changeSliderA6(int value)
 }
 
 
-void TaskRobot6Axis::setAxis(float A1,float A2,float A3,float A4,float A5,float A6)
+void TaskRobot6Axis::setAxis(float A1,float A2,float A3,float A4,float A5,float A6,const Base::Placement &Tcp)
 {
     ui->horizontalSlider_Axis1->setSliderPosition((int)A1);
     ui->lineEdit_Axis1->setText(QString::fromLatin1("%1°").arg(A1,0,'f',1));
@@ -206,6 +205,7 @@ void TaskRobot6Axis::setAxis(float A1,float A2,float A3,float A4,float A5,float 
     ui->horizontalSlider_Axis6->setSliderPosition((int)A6);
     ui->lineEdit_Axis6->setText(QString::fromLatin1("%1°").arg(A6,0,'f',1));
 
+    viewTcp(Tcp);
 
 }
 
