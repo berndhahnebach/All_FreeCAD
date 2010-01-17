@@ -6,11 +6,18 @@ BUILT_SOURCES=\
 		moc_TaskRobot6Axis.cpp \
 		moc_TaskTrajectory.cpp \
 		ui_TaskRobot6Axis.h \
-		ui_TaskTrajectory.h
+		ui_TaskTrajectory.h \
+	    ui_TaskRobotMessages.h \
+		ui_TaskRobotControl.h \
+		moc_TaskRobotMessages.cpp \
+		moc_TaskRobotControl.cpp
+
 
 libRobotGui_la_UI=\
 		TaskRobot6Axis.ui \
-		TaskTrajectory.ui
+		TaskTrajectory.ui \
+		 TaskRobotMessages.ui \
+		 TaskRobotControl.ui
 
 libRobotGui_la_SOURCES=\
 		AppRobotGuiPy.cpp \
@@ -21,6 +28,10 @@ libRobotGui_la_SOURCES=\
 		TaskRobot6Axis.h \
 		TaskTrajectory.cpp \
 		TaskTrajectory.h \
+		 TaskRobotMessages.cpp \
+		 TaskRobotControl.cpp \
+		 TaskRobotMessages.h \
+		 TaskRobotControl.h \
 		ViewProviderRobotObject.cpp \
 		ViewProviderRobotObject.h \
 		ViewProviderTrajectory.cpp \

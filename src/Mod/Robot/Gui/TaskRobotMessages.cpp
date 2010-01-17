@@ -26,68 +26,47 @@
 #ifndef _PreComp_
 #endif
 
-#include "TaskDlgSimulate.h"
-#include "TaskRobot6Axis.h"
-#include "TaskTrajectory.h"
-#include "TaskRobotControl.h"
+#include <QString>
+#include <QSlider>
+#include "ui_TaskRobotMessages.h"
 #include "TaskRobotMessages.h"
+#include <Gui/Application.h>
+#include <Gui/Document.h>
+#include <Gui/BitmapFactory.h>
+#include <Gui/ViewProvider.h>
+#include <Gui/WaitCursor.h>
+#include <Base/Console.h>
+#include <Gui/Selection.h>
+
 
 using namespace RobotGui;
+using namespace Gui;
 
-
-//**************************************************************************
-//**************************************************************************
-// TaskDialog
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-TaskDlgSimulate::TaskDlgSimulate(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject)
-    : TaskDialog()
+TaskRobotMessages::TaskRobotMessages(Robot::RobotObject *pcRobotObject,QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskRobotMessages"),true, parent),
+    pcRobot(pcRobotObject)
 {
-    TaskRobot6Axis    *rob  = new TaskRobot6Axis(pcRobotObject);
-    TaskRobotControl  *ctr  = new TaskRobotControl(pcRobotObject);
-    ctr->showHide();
-    TaskTrajectory    *trac = new TaskTrajectory(pcRobotObject,pcTrajectoryObject);
-    TaskRobotMessages *msg  = new TaskRobotMessages(pcRobotObject);
-    msg->showHide();
-    
-    QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float)),
-                     rob  ,SLOT  (setAxis(float,float,float,float,float,float)));
+    // we need a separate container widget to add all controls to
+    proxy = new QWidget(this);
+    ui = new Ui_TaskRobotMessages();
+    ui->setupUi(proxy);
+    QMetaObject::connectSlotsByName(this);
 
-    Content.push_back(rob);
-    Content.push_back(ctr);
-    Content.push_back(trac);
-    Content.push_back(msg);
-}
+    this->groupLayout()->addWidget(proxy);
 
-TaskDlgSimulate::~TaskDlgSimulate()
-{
+    Robot::Robot6Axis &Rob = pcRobot->getRobot();
+
+
 
 }
 
-//==== calls from the TaskView ===============================================================
-
-
-void TaskDlgSimulate::open()
+TaskRobotMessages::~TaskRobotMessages()
 {
-    
-}
-void TaskDlgSimulate::clicked(QAbstractButton *)
-{
-    
-}
-void TaskDlgSimulate::accept()
-{
-    
-}
-void TaskDlgSimulate::reject()
-{
+    delete ui;
     
 }
 
-void TaskDlgSimulate::helpRequested()
-{
-
-}
 
 
-#include "moc_TaskDlgSimulate.cpp"
+
+#include "moc_TaskRobotMessages.cpp"
