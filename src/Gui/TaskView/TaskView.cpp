@@ -68,13 +68,60 @@ TaskWidget::~TaskWidget()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TaskBox::TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent)
-    : iisTaskBox(icon, title, expandable, parent)
+    : iisTaskBox(icon, title, expandable, parent), wasShown(false)
 {
     setScheme(iisFreeCADTaskPanelScheme::defaultScheme());
 }
 
 TaskBox::~TaskBox()
 {
+}
+
+void TaskBox::showEvent(QShowEvent*)
+{
+    wasShown = true;
+}
+
+void TaskBox::hideGroupBox()
+{
+    if (!wasShown) {
+        // get approximate height
+        int h=0;
+        int ct = groupLayout()->count();
+        for (int i=0; i<ct; i++) {
+            QLayoutItem* item = groupLayout()->itemAt(i);
+            if (item && item->widget()) {
+                QWidget* w = item->widget();
+                h += w->height();
+            }
+        }
+
+        m_tempHeight = m_fullHeight = h;
+        // For the very first time the group gets shown
+        // we cannot do the animation because the layouting
+        // is not yet fully done
+        m_foldDelta = 0;
+    }
+    else {
+        m_tempHeight = m_fullHeight = myGroup->height();
+        m_foldDelta = m_fullHeight / myScheme->groupFoldSteps;
+    }
+
+    m_foldStep = 0.0;
+    m_foldDirection = -1;
+
+    // make sure to have the correct icon
+    bool block = myHeader->blockSignals(true);
+    myHeader->fold();
+    myHeader->blockSignals(block);
+
+    myDummy->setFixedHeight(0);
+    myDummy->hide();
+    myGroup->hide();
+
+    m_foldPixmap = QPixmap();
+    setFixedHeight(myHeader->height());
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 
 

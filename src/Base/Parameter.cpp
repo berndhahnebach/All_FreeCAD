@@ -268,7 +268,7 @@ void ParameterGrp::exportTo(const char* FileName)
     Mngr.CreateDocument();
 
     // copy all into the new document
-    insertTo(Mngr.GetGroup("root"));
+    insertTo(Mngr.GetGroup("BaseApp"));
 
     Mngr.SaveDocument(FileName);
 }
@@ -278,10 +278,9 @@ void ParameterGrp::importFrom(const char* FileName)
     ParameterManager Mngr;
 
     if (Mngr.LoadDocument(FileName) != 1)
-        throw Exception("ParameterGrp::import() cant load document");
+        throw Exception("ParameterGrp::import() cannot load document");
 
-    Mngr.GetGroup("root")->copyTo(Base::Reference<ParameterGrp>(this));
-
+    Mngr.GetGroup("BaseApp")->copyTo(Base::Reference<ParameterGrp>(this));
 }
 
 void ParameterGrp::insert(const char* FileName)
@@ -289,10 +288,9 @@ void ParameterGrp::insert(const char* FileName)
     ParameterManager Mngr;
 
     if (Mngr.LoadDocument(FileName) != 1)
-        throw Exception("ParameterGrp::import() cant load document");
+        throw Exception("ParameterGrp::import() cannot load document");
 
     Mngr.GetGroup("root")->insertTo(Base::Reference<ParameterGrp>(this));
-
 }
 
 Base::Reference<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
@@ -328,7 +326,6 @@ Base::Reference<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
         //sbsequent call
         return _GetGroup(cTemp.c_str())->GetGroup(cName.c_str());
     }
-
 }
 
 Base::Reference<ParameterGrp> ParameterGrp::_GetGroup(const char* Name)
@@ -350,7 +347,6 @@ Base::Reference<ParameterGrp> ParameterGrp::_GetGroup(const char* Name)
     _GroupMap[Name] = rParamGrp;
 
     return rParamGrp;
-
 }
 
 std::vector<Base::Reference<ParameterGrp> > ParameterGrp::GetGroups(void)
@@ -396,7 +392,6 @@ bool ParameterGrp::HasGroup(const char* Name) const
         return true;
 
     return false;
-
 }
 
 bool ParameterGrp::GetBool(const char* Name, bool bPreset) const

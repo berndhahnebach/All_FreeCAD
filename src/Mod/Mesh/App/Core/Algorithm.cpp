@@ -693,11 +693,11 @@ bool MeshAlgorithm::FillupHole(const std::vector<unsigned long>& boundary,
     }
 
     if (cTria.TriangulatePolygon()) {
-        // get the facets and add the additional points to the array
-        rFaces.insert(rFaces.end(), cTria.GetFacets().begin(), cTria.GetFacets().end());
         // if we have enough points then we fit a surface through the points and project
         // the added points onto this surface
         cTria.ProjectOntoSurface(surf_pts);
+        // get the facets and add the additional points to the array
+        rFaces.insert(rFaces.end(), cTria.GetFacets().begin(), cTria.GetFacets().end());
         std::vector<Base::Vector3f> newVertices = cTria.AddedPoints();
         for (std::vector<Base::Vector3f>::iterator pt = newVertices.begin(); pt != newVertices.end(); ++pt) {
             rPoints.push_back((*pt));
