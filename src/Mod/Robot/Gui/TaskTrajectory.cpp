@@ -43,11 +43,10 @@ using namespace Gui;
 TaskTrajectory::TaskTrajectory(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject,QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Trajectory"),true, parent),
       sim(pcTrajectoryObject->Trajectory.getValue(),pcRobotObject->getRobot()),
-      Run(false),
       pcRobot(pcRobotObject),
-      timePos(0.0),
-      block(false)
-
+      Run(false),
+      block(false),
+      timePos(0.0)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);

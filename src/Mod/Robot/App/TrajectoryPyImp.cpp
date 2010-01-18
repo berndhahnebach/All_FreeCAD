@@ -42,7 +42,6 @@ int TrajectoryPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     if (pcObj) {
         Py::List list(pcObj);
-        bool first = true;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             if (PyObject_TypeCheck((*it).ptr(), &(Robot::WaypointPy::Type))) {
                 Robot::Waypoint &wp = *static_cast<Robot::WaypointPy*>((*it).ptr())->getWaypointPtr();
@@ -79,7 +78,6 @@ PyObject* TrajectoryPy::insertWaypoints(PyObject * args)
     PyErr_Clear();
     if (PyArg_ParseTuple(args, "O!", &(PyList_Type), &o)) {
         Py::List list(o);
-        bool first = true;
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             if (PyObject_TypeCheck((*it).ptr(), &(Robot::WaypointPy::Type))) {
                 Robot::Waypoint &wp = *static_cast<Robot::WaypointPy*>((*it).ptr())->getWaypointPtr();

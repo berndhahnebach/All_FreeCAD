@@ -125,7 +125,7 @@ void RobotAlgos::Test(void)
 	//Set destination frame
 	Frame F_dest=cartpos;
 	 
-	int ret = iksolver1.CartToJnt(q_init,F_dest,result);
+	iksolver1.CartToJnt(q_init,F_dest,result);
 
 	for(unsigned int i=0;i<nj;i++){
         printf ("Axle %i: %f \n",i,result(i));

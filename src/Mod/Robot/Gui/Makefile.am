@@ -3,35 +3,46 @@ SUBDIRS=Resources
 lib_LTLIBRARIES=libRobotGui.la RobotGui.la
 
 BUILT_SOURCES=\
+		moc_TaskDlgSimulate.cpp \
 		moc_TaskRobot6Axis.cpp \
-		moc_TaskTrajectory.cpp \
-		ui_TaskRobot6Axis.h \
-		ui_TaskTrajectory.h \
-	    ui_TaskRobotMessages.h \
-		ui_TaskRobotControl.h \
+		moc_TaskRobotControl.cpp \
 		moc_TaskRobotMessages.cpp \
-		moc_TaskRobotControl.cpp
+		moc_TaskTrajectory.cpp \
+		moc_TrajectorySimulate.cpp \
+		ui_TaskRobot6Axis.h \
+		ui_TaskRobotControl.h \
+		ui_TaskRobotMessages.h \
+		ui_TaskTrajectory.h \
+		ui_TrajectorySimulate.h
 
 
 libRobotGui_la_UI=\
 		TaskRobot6Axis.ui \
+		TaskRobotControl.ui \
+		TaskRobotMessages.ui \
 		TaskTrajectory.ui \
-		 TaskRobotMessages.ui \
-		 TaskRobotControl.ui
+		TrajectorySimulate.ui
 
 libRobotGui_la_SOURCES=\
 		AppRobotGuiPy.cpp \
 		Command.cpp \
+		CommandExport.cpp \
+		CommandInsertRobot.cpp \
+		CommandTrajectory.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		TaskDlgSimulate.cpp \
+		TaskDlgSimulate.h \
 		TaskRobot6Axis.cpp \
 		TaskRobot6Axis.h \
+		TaskRobotControl.cpp \
+		TaskRobotControl.h \
+		TaskRobotMessages.cpp \
+		TaskRobotMessages.h \
 		TaskTrajectory.cpp \
 		TaskTrajectory.h \
-		 TaskRobotMessages.cpp \
-		 TaskRobotControl.cpp \
-		 TaskRobotMessages.h \
-		 TaskRobotControl.h \
+		TrajectorySimulate.cpp \
+		TrajectorySimulate.h \
 		ViewProviderRobotObject.cpp \
 		ViewProviderRobotObject.h \
 		ViewProviderTrajectory.cpp \
@@ -41,6 +52,7 @@ libRobotGui_la_SOURCES=\
 
 # the library search path.
 libRobotGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
+		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
 		$(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRobotGui_la_CPPFLAGS = -DRobotAppExport= -DRobotGuiExport=
 

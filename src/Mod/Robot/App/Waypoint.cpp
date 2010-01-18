@@ -65,7 +65,7 @@ Waypoint::Waypoint(  const char* name,
                      unsigned int tool, 
                      unsigned int base)
 
-:Name(name),Type(type),EndPos(endPos),Velocity(velocity),Cont(cont),Tool(tool),Base(base),Accelaration(accelaration)
+:Name(name),Type(type),Velocity(velocity),Accelaration(accelaration),Cont(cont),Tool(tool),Base(base),EndPos(endPos)
 {
 }
 

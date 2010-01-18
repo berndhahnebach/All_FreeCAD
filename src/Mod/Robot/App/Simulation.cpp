@@ -51,7 +51,7 @@ using namespace KDL;
 
 
 Simulation::Simulation(const Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
-:Trac(Trac),Rob(Rob),Pos(0.0)
+:Pos(0.0),Trac(Trac),Rob(Rob)
 {
     setToTime(0);
 

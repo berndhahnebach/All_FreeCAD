@@ -705,6 +705,11 @@ src/Mod/ReverseEngineering/Makefile
 src/Mod/ReverseEngineering/App/Makefile
 src/Mod/ReverseEngineering/Gui/Makefile
 src/Mod/ReverseEngineering/Gui/Resources/Makefile
+src/Mod/Robot/Makefile
+src/Mod/Robot/App/Makefile
+src/Mod/Robot/Gui/Makefile
+src/Mod/Robot/Gui/Resources/Makefile
+src/Mod/Robot/Lib/Makefile
 src/Mod/Complete/Makefile
 src/Mod/Complete/App/Makefile
 src/Mod/Complete/Gui/Makefile
