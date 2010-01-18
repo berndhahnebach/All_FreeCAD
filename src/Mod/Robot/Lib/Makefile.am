@@ -1,5 +1,5 @@
 # Change data dir from default $(datadir) to $(datadir)/Mod/Robot/Lib
-datadir = @datadir@/Mod/Robot/Lib
+datadir = @datadir@/Mod/Robot/Lib/Kuka
 data_DATA = \
 		Kuka/kr16.wrl \
 		Kuka/kr210.WRL \
