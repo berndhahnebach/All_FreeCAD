@@ -62,6 +62,11 @@ class GuiExport TaskBox : public iisTaskBox, public TaskContent
 public:
     TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent);
     ~TaskBox();
+    void hideGroupBox();
+
+private:
+    void showEvent(QShowEvent*);
+    bool wasShown;
 };
 
 /// Father class of content of a Free widget (without header and Icon), shut be a exception!

@@ -65,8 +65,8 @@ TaskDlgSimulate::~TaskDlgSimulate()
 
 void TaskDlgSimulate::open()
 {
-    msg->hide();   
-    ctr->hide();
+    msg->hideGroupBox();
+    ctr->hideGroupBox();
 }
 
 void TaskDlgSimulate::clicked(QAbstractButton *)

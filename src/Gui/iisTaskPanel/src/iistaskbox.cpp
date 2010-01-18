@@ -101,15 +101,6 @@ void iisTaskBox::showHide()
 
 	myDummy->show();
 }
-void iisTaskBox::hide(){
-		myDummy->setFixedHeight(0);
-		myDummy->hide();
-   		myGroup->hide();
-
-		m_foldPixmap = QPixmap();
-		setFixedHeight(myHeader->height());
-		setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-}
 
 void iisTaskBox::processHide()
 {
