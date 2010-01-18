@@ -181,6 +181,7 @@ void Trajectory::generateTrajectory(void)
                         }else if (Cont==false && pcRoundComp){
                             // add the last one
                             pcRoundComp->Add(Next);
+                             pcRoundComp->Finish();
                             pcVelPrf->SetProfile(0,pcRoundComp->PathLength());
                             pcTrak = new KDL::Trajectory_Segment(pcRoundComp,pcVelPrf);
                             pcRoundComp = 0;
