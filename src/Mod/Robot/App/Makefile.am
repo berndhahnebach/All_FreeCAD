@@ -1,12 +1,14 @@
 
 lib_LTLIBRARIES=libRobot.la Robot.la
+noinst_LTLIBRARIES=libkdl.la
 
 BUILT_SOURCES=\
 		Robot6AxisPy.cpp \
+		RobotObjectPy.cpp \
 		TrajectoryPy.cpp \
 		WaypointPy.cpp
 
-libRobot_la_SOURCES=\
+libkdl_la_SOURCES=\
 		kdl_cp/utilities/error.h \
 		kdl_cp/utilities/error_stack.cxx \
 		kdl_cp/utilities/error_stack.h \
@@ -131,11 +133,14 @@ libRobot_la_SOURCES=\
 		kdl_cp/velocityprofile_trap.cpp \
 		kdl_cp/velocityprofile_traphalf.cpp \
 		kdl_cp/velocityprofile_traphalf.hpp \
-		kdl_cp/velocityprofile_trap.hpp \
-		\
-                AppRobotPy.cpp \
+		kdl_cp/velocityprofile_trap.hpp
+
+libRobot_la_SOURCES=\
+		AppRobotPy.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		PropertyTrajectory.cpp \
+		PropertyTrajectory.h \
 		Robot6Axis.cpp \
 		Robot6Axis.h \
 		Robot6AxisPyImp.cpp \
@@ -143,6 +148,9 @@ libRobot_la_SOURCES=\
 		RobotAlgos.h \
 		RobotObject.cpp \
 		RobotObject.h \
+		RobotObjectPyImp.cpp \
+		Simulation.cpp \
+		Simulation.h \
 		Trajectory.cpp \
 		Trajectory.h \
 		TrajectoryObject.cpp \
@@ -150,8 +158,6 @@ libRobot_la_SOURCES=\
 		TrajectoryPyImp.cpp \
 		Waypoint.cpp \
 		Waypoint.h \
-		Simulation.cpp \
-		Simulation.h \
 		WaypointPyImp.cpp 
 
 %.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py
@@ -161,11 +167,13 @@ libRobot_la_SOURCES=\
 libRobot_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
 	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRobot_la_CPPFLAGS = -DRobotAppExport=
+#libkdl_la_CPPFLAGS = -Wno-sign-compare -Wno-reorder
 
 libRobot_la_LIBADD   = \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lkdl \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -183,6 +191,7 @@ Robot_la_LIBADD   = \
 		$(libRobot_la_LIBADD) \
 		-lRobot
 
+libRobot_la_DEPENDENCIES = libkdl.la
 Robot_la_DEPENDENCIES = libRobot.la
 
 #--------------------------------------------------------------------------------------
@@ -201,6 +210,8 @@ EXTRA_DIST = \
 		kdl_cp/README.txt \
 		kdl_cp/TODO.txt \
 		Robot6AxisPy.xml \
+		RobotObjectPy.xml \
 		TrajectoryPy.xml \
 		WaypointPy.xml \
 		CMakeLists.txt
+

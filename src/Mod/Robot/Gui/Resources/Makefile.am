@@ -9,7 +9,9 @@ nodist_libResources_la_SOURCES=\
 EXTRA_DIST = \
 		icons/Robot_CreateRobot.svg \
 		icons/Robot_CreateTrajectory.svg \
+		icons/Robot_Export.svg \
 		icons/Robot_InsertWaypoint.svg \
+		icons/Robot_InsertWaypointPre.svg \
 		icons/Robot_Simulate.svg \
 		translations/Robot_de.qm \
 		Robot.qrc \

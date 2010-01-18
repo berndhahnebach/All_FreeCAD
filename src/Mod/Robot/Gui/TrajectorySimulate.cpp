@@ -46,8 +46,8 @@ TrajectorySimulate::TrajectorySimulate(Robot::RobotObject *pcRobotObject,Robot::
     : QDialog( parent),
       sim(pcTrajectoryObject->Trajectory.getValue(),pcRobotObject->getRobot()),
       Run(false),
-      timePos(0.0),
-      block(false)
+      block(false),
+      timePos(0.0)
 {
     this->setupUi(this);
     QMetaObject::connectSlotsByName(this);

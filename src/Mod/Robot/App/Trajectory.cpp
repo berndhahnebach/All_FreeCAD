@@ -201,7 +201,8 @@ void Trajectory::generateTrajectory(void)
                         break;}
                     case Waypoint::WAIT:
                         break;
-                        
+                	default:
+                        break;
                 }
                 // add the segment if no continous block is runing
                 if(!pcRoundComp)

@@ -53,16 +53,11 @@ TaskRobotControl::TaskRobotControl(Robot::RobotObject *pcRobotObject,QWidget *pa
     QMetaObject::connectSlotsByName(this);
 
     this->groupLayout()->addWidget(proxy);
-
-    Robot::Robot6Axis &Rob = pcRobot->getRobot();
-
-
 }
 
 TaskRobotControl::~TaskRobotControl()
 {
     delete ui;
-    
 }
 
 

@@ -53,20 +53,12 @@ TaskRobotMessages::TaskRobotMessages(Robot::RobotObject *pcRobotObject,QWidget *
     QMetaObject::connectSlotsByName(this);
 
     this->groupLayout()->addWidget(proxy);
-
-    Robot::Robot6Axis &Rob = pcRobot->getRobot();
-
-
-
 }
 
 TaskRobotMessages::~TaskRobotMessages()
 {
     delete ui;
-    
 }
-
-
 
 
 #include "moc_TaskRobotMessages.cpp"

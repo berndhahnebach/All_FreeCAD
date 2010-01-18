@@ -24,6 +24,14 @@
 #ifndef BASE_UNITSAPI_H
 #define BASE_UNITSAPI_H
 
+// (re-)defined in pyconfig.h
+#if defined (_POSIX_C_SOURCE)
+#   undef    _POSIX_C_SOURCE
+#endif
+#if defined (_XOPEN_SOURCE)
+#   undef    _XOPEN_SOURCE
+#endif
+
 #include <string>
 #include <Python.h>
 #include <QString>

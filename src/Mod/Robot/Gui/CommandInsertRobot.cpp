@@ -37,8 +37,6 @@
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
 
-#include <Mod/Part/App/PartFeature.h>
-
 
 #include "TrajectorySimulate.h"
 
@@ -187,7 +185,7 @@ void CmdRobotAddToolShape::activated(int iMsg)
     std::vector<App::DocumentObject*> robots = getSelection()
         .getObjectsOfType(Robot::RobotObject::getClassTypeId());
     std::vector<App::DocumentObject*> shapes = getSelection()
-        .getObjectsOfType(Part::Feature::getClassTypeId());
+        .getObjectsOfType(Base::Type::fromName("Part::Feature"));
  
     if (robots.size() != 1 || shapes.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -195,11 +193,8 @@ void CmdRobotAddToolShape::activated(int iMsg)
         return;
     }
 
-    Robot::RobotObject *pcRobotObject = static_cast<Robot::RobotObject*>(robots.front());
-    std::string RoboName = pcRobotObject->getNameInDocument();
-
-    Part::Feature *pcShapeObject = static_cast<Part::Feature*>(shapes.front());
-    std::string ShapeName = pcShapeObject->getNameInDocument();
+    std::string RoboName = robots.front()->getNameInDocument();
+    std::string ShapeName = shapes.front()->getNameInDocument();
 
     openCommand("Add tool to robot");
     doCommand(Doc,"App.activeDocument().%s.ToolShape = App.activeDocument().%s",RoboName.c_str(),ShapeName.c_str());
