@@ -1,4 +1,4 @@
-SUBDIRS=sketchsolve_cp
+SUBDIRS=sketchsolve_cp sketchflat
 
 lib_LTLIBRARIES=libSketcher.la Sketcher.la
 
@@ -13,38 +13,6 @@ libSketcher_la_BUILT=\
 		SketchObjectSFPy.h
 
 libSketcher_la_SOURCES = \
-		sketchflat/assume.cpp \
-		sketchflat/constraint.cpp \
-		sketchflat/curve.cpp \
-		sketchflat/derive.cpp \
-		sketchflat/derived.h \
-		sketchflat/draw.cpp \
-		sketchflat/draw_constraint.cpp \
-		sketchflat/draw_sketch.cpp \
-		sketchflat/export.cpp \
-		sketchflat/expr.cpp \
-		sketchflat/expr.h \
-		sketchflat/FCsimple.cpp \
-		sketchflat/FCtext.cpp \
-		sketchflat/FCutil.cpp \
-		sketchflat/FCwindow.cpp \
-		sketchflat/layer.cpp \
-		sketchflat/loadsave.cpp \
-		sketchflat/measure.cpp \
-		sketchflat/newton.cpp \
-		sketchflat/polygon.cpp \
-		sketchflat/sketch.cpp \
-		sketchflat/sketch.h \
-		sketchflat/sketchflat.cpp \
-		sketchflat/sketchflat.h \
-		sketchflat/solve.cpp \
-		sketchflat/ttf.cpp \
-		sketchflat/ui.h \
-		sketchflat/undoredo.cpp \
-		sketchflat/util.cpp \
-		sketchflat/COPYING.txt \
-		sketchflat/README.txt \
-		\
 		AppSketcherPy.cpp \
 		Constraint.cpp \
 		Constraint.h \
@@ -68,6 +36,7 @@ libSketcher_la_CPPFLAGS = -DSketcherAppExport=
 
 libSketcher_la_LIBADD = \
 		sketchsolve_cp/libsketchsolve.la \
+		sketchflat/libsketchflat.la \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
