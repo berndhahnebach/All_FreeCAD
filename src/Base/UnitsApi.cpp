@@ -26,20 +26,9 @@
 # include <unistd.h>
 #endif
 
-#include <strstream>
-
-#include <App/Application.h>
-#include <App/Document.h>
-#include <App/DocumentObject.h>
-#include <Base/Interpreter.h>
-
+#include "Exception.h"
 #include "UnitsApi.h"
 //#include "UnitsApiPy.h"
-
-#include <string>
-#include <math.h>
-#include <stdio.h>
-
 
 #ifndef M_PI
 #define M_PI       3.14159265358979323846
@@ -54,9 +43,6 @@
 # define DOUBLE_MIN 2.2250738585072014E-308    /* min decimal value of a "double"*/
 #endif
 
-#include "stdio.h"
-
-
 using namespace Base;
 
 // suppress annoying warnings from generated source files
@@ -64,6 +50,7 @@ using namespace Base;
 # pragma warning(disable : 4003)
 # pragma warning(disable : 4018)
 # pragma warning(disable : 4065)
+# pragma warning( disable : 4273 )
 # pragma warning(disable : 4335) // disable MAC file format warning on VC
 #endif
 
