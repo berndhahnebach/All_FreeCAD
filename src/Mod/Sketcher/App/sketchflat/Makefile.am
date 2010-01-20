@@ -2,7 +2,6 @@ noinst_LTLIBRARIES=libsketchflat.la
 
 libsketchflat_la_SOURCES = \
 		assume.cpp \
-		constraint.cpp \
 		curve.cpp \
 		derive.cpp \
 		derived.h \
@@ -21,6 +20,7 @@ libsketchflat_la_SOURCES = \
 		measure.cpp \
 		newton.cpp \
 		polygon.cpp \
+		sketch_constraint.cpp \
 		sketch.cpp \
 		sketch.h \
 		sketchflat.cpp \
