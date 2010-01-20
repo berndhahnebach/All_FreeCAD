@@ -58,7 +58,6 @@ SOURCE_GROUP("Python" FILES ${Python_SRCS})
 
 SET(Sketchflat_SRCS
 		 sketchflat/assume.cpp
-		 sketchflat/constraint.cpp
 		 sketchflat/curve.cpp
 		 sketchflat/derive.cpp
 		 sketchflat/derived.h
@@ -77,6 +76,7 @@ SET(Sketchflat_SRCS
 		 sketchflat/measure.cpp
 		 sketchflat/newton.cpp
 		 sketchflat/polygon.cpp
+		 sketchflat/sketch_constraint.cpp
 		 sketchflat/sketch.cpp
 		 sketchflat/sketch.h
 		 sketchflat/sketchflat.cpp
