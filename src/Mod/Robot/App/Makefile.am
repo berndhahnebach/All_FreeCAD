@@ -8,6 +8,12 @@ BUILT_SOURCES=\
 		TrajectoryPy.cpp \
 		WaypointPy.cpp
 
+libRobot_la_BUILT=\
+		Robot6AxisPy.h \
+		RobotObjectPy.h \
+		TrajectoryPy.h \
+		WaypointPy.h
+
 libkdl_la_SOURCES=\
 		kdl_cp/utilities/error.h \
 		kdl_cp/utilities/error_stack.cxx \
@@ -202,6 +208,8 @@ AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/Mod/
 
 
 libdir = $(prefix)/Mod/Robot
+
+CLEANFILES = $(BUILT_SOURCES) $(libRobot_la_BUILT)
 
 EXTRA_DIST = \
 		kdl_cp/utilities/header.txt \
