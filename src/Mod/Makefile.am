@@ -1,5 +1,5 @@
 #SUBDIRS=Part Mesh Points Raytracing Image Drawing Complete Draft Test TemplatePyMod
-SUBDIRS=Points Robot Complete Draft Test TemplatePyMod
+SUBDIRS=Points Complete Draft Test TemplatePyMod
 
 #if HAVE_OPENCV
 SUBDIRS += Image
@@ -8,6 +8,10 @@ SUBDIRS += Image
 #if HAVE_GTS
 SUBDIRS += Mesh
 #endif
+
+if HAVE_EIGEN2
+SUBDIRS += Robot
+endif
 
 if HAVE_OPENCASCADE
 SUBDIRS += Part PartDesign Raytracing Drawing Sketcher

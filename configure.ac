@@ -291,6 +291,38 @@ else
 fi
 
 
+dnl checking for eigen2
+dnl **************************************************************************
+AC_MSG_CHECKING([for eigen2])
+AC_ARG_WITH(eigen2-include,
+	AC_HELP_STRING([--with-eigen2-include=DIR], [Path to the eigen2 header files]),
+	[fc_eig_incs=$withval],
+	[fc_eig_incs=/usr/include/eigen2])
+
+AC_CHECK_FILE($fc_eig_incs/Eigen,,
+	[AC_CHECK_FILE(/usr/local/include/eigen2,[fc_eig_incs=/usr/local/include/eigen2])])
+
+fc_eig_ac_save_cppflags=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS -I$fc_eig_incs"
+
+fc_cv_lib_eig_avail=no
+AC_CHECK_HEADER(Eigen/Core,
+	fc_cv_lib_eig_avail=yes,)
+
+CPPFLAGS=$fc_eig_ac_save_cppflags
+
+if test x"$fc_cv_lib_eig_avail" = xyes; then
+	AC_SUBST([EIGEN2_INC], [$fc_eig_incs])
+else
+	AC_MSG_WARN([
+	**** Cannot find eigen2 devel files.
+	Modules that depend on this library cannot be built. ****
+   ])
+fi
+
+AM_CONDITIONAL(HAVE_EIGEN2, test x"$fc_cv_lib_eig_avail" = xyes)
+
+
 dnl checking for boost
 dnl ******************
 
@@ -300,7 +332,7 @@ FREECAD_AC_HAVE_BOOST
 dnl checking for Qt
 dnl ***************
 
-FREECAD_AC_HAVE_QT(4.1)
+FREECAD_AC_HAVE_QT(4.3)
 
 
 dnl checking for Coin
