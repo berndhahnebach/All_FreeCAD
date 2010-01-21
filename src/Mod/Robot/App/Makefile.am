@@ -198,7 +198,7 @@ Robot_la_DEPENDENCIES = libRobot.la
 
 # set the include path found by configure
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/Mod/Robot/App \
-		$(all_includes) -I/usr/include/eigen2
+		$(all_includes) -I$(EIGEN2_INC)
 
 
 libdir = $(prefix)/Mod/Robot
@@ -206,7 +206,6 @@ libdir = $(prefix)/Mod/Robot
 EXTRA_DIST = \
 		kdl_cp/utilities/header.txt \
 		kdl_cp/CMakeLists.txt \
-		kdl_cp/kdl.pc.in \
 		kdl_cp/README.txt \
 		kdl_cp/TODO.txt \
 		Robot6AxisPy.xml \

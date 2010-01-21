@@ -163,7 +163,7 @@ EXTRA_DIST = \
 		PlacementPy.xml \
 		RotationPy.xml \
 		VectorPy.xml \
-		lex-UnitsApi.c \
+		lex.UnitsApi.c \
 		UnitsApi.tab.c \
 		UnitsApi.l \
 		UnitsApi.y
