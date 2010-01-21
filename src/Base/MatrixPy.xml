@@ -50,7 +50,7 @@ Scale the matrix with the vector
     </Methode>
     <Methode Name="rotateY">
       <Documentation>
-        <UserDocu>rotateX(float) - rotate around Y</UserDocu>
+        <UserDocu>rotateY(float) - rotate around Y</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="rotateZ">
