@@ -172,6 +172,16 @@ PyObject*  VectorPy::scale(PyObject *args)
     Py_Return;
 }
 
+PyObject*  VectorPy::multiply(PyObject *args)
+{
+    double factor;
+    if (!PyArg_ParseTuple(args, "d", &factor))
+        return 0;
+    VectorPy::PointerType ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
+    ptr->Scale(factor, factor, factor);
+    Py_Return;
+}
+
 PyObject*  VectorPy::dot(PyObject *args)
 {
     PyObject *obj;

@@ -32,6 +32,11 @@
 				<UserDocu>scale(Float,Float,Float) - scale (multiplies) this vector by a factor</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="multiply">
+			<Documentation>
+				<UserDocu>multiply(Float) - multiplies (scales) this vector by a single factor</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="dot">
 			<Documentation>
 				<UserDocu>dot(Vector) - return the dot product of the two vectors</UserDocu>
