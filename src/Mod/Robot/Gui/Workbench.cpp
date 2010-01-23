@@ -53,7 +53,7 @@ void Workbench::activated()
 {
     Gui::Workbench::activated();
 
- /*   const char* test[] = {
+    const char* test[] = {
         "Robot_InsertWaypoint",
         "Robot_InsertWaypointPreselect",
         0};
@@ -66,7 +66,7 @@ void Workbench::activated()
         "Robot_InsertWaypoint"
     ));
     
-    addTaskWatcher(Watcher);*/
+    addTaskWatcher(Watcher);
  
 }
 
@@ -74,7 +74,7 @@ void Workbench::activated()
 void Workbench::deactivated()
 {
     Gui::Workbench::deactivated();
-    //removeTaskWatcher();
+    removeTaskWatcher();
 
 }
 
