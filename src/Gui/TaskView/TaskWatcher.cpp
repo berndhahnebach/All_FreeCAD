@@ -30,6 +30,7 @@
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/TaskView/TaskView.h>
 
 #include "TaskWatcher.h"
 
@@ -80,7 +81,7 @@ TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands
     :TaskWatcher(Filter)
 {
     CommandManager &mgr = Gui::Application::Instance->commandManager();
-    iisTaskBox *tb = new iisTaskBox(BitmapFactory().pixmap(pixmap), QString::fromUtf8(name), true, 0);
+    Gui::TaskView::TaskBox *tb = new Gui::TaskView::TaskBox(BitmapFactory().pixmap(pixmap), QString::fromUtf8(name), true, 0);
 
 
     for(const char** i=commands;*i;i++){
@@ -92,15 +93,12 @@ TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands
         }
 
     }
+
+    Content.push_back(tb);
 }
 
 TaskWatcherCommands::~TaskWatcherCommands()
 {
-    for(std::vector<QWidget*>::iterator it=Content.begin();it!=Content.end();++it){
-        delete(*it);
-        *it = 0;
-    }
-
 }
 
 //==== implementer ===========================================================================

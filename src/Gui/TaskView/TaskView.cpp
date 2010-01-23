@@ -142,10 +142,13 @@ TaskView::TaskView(QWidget *parent)
     setWidgetResizable(true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setMinimumWidth(200);
+
+    Gui::Selection().Attach(this);
 }
 
 TaskView::~TaskView()
 {
+     Gui::Selection().Detach(this);
 }
 
 void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
@@ -163,12 +166,18 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
     }
     else if (Reason.Type == SelectionChanges::RmvSelection) {
     }
+
+    updateWatcher();
+
 }
 
 void TaskView::showDialog(TaskDialog *dlg)
 {
     assert(!ActiveDialog);
     assert(!ActiveCtrl);
+
+    // remove the TaskWatcher as long the Dialog is up
+    removeTaskWatcher();
 
     // first creat the control element set it up and wire it:
     ActiveCtrl = new TaskEditControl(this);
@@ -210,29 +219,65 @@ void TaskView::removeDialog(void)
     Gui::Control().dlgDone();
     delete ActiveDialog;
     ActiveDialog = 0;
+
+    // put the watcher back in control
+    addTaskWatcher();
 }
 
-void TaskView::addTaskWatcher(std::vector<TaskWatcher*> &Watcher)
-{
-    ActiveWatcher = Watcher;
 
+void TaskView::updateWatcher(void)
+{
+    // add all widghets for all watcher to the task view
+    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
+
+        bool match = (*it)->match();
+        std::vector<QWidget*> &cont = (*it)->getWatcherContent();
+        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
+            taskPanel->addWidget(*it2);
+            if(match)
+                (*it2)->show();
+            else
+                (*it2)->hide();
+        }
+
+    }
+}
+
+void TaskView::addTaskWatcher(const std::vector<TaskWatcher*> &Watcher)
+{
+    // remove and delete the old set of TaskWatcher
+    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it)
+        delete *it;
+
+    ActiveWatcher = Watcher;
+    addTaskWatcher();
+}
+
+void TaskView::addTaskWatcher(void)
+{
+    // add all widghets for all watcher to the task view
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
-        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it){
+        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
             taskPanel->addWidget(*it2);
+            (*it2)->show();
         }
 
     }
     taskPanel->addStretch();
 
+    // initial visibility check
+    updateWatcher();
 }
 
 void TaskView::removeTaskWatcher(void)
 {
+    // remove all widghets
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
-        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it){
+        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
             taskPanel->removeWidget(*it2);
+             (*it2)->hide();
         }
 
     }

@@ -98,7 +98,8 @@ public:
 
     friend class Gui::DockWnd::CombiView;
 
-    void addTaskWatcher(std::vector<TaskWatcher*> &Watcher);
+    void addTaskWatcher(const std::vector<TaskWatcher*> &Watcher);
+    void addTaskWatcher(void);
     void removeTaskWatcher(void);
 
 public Q_SLOTS:
@@ -108,6 +109,8 @@ public Q_SLOTS:
     virtual void clicked ( QAbstractButton * button );
 
 protected:
+    /// update the visibility of the TaskWatcher accordant to the selection
+    void updateWatcher(void);
     /// used by Gui::Contol to register Dialogs
     void showDialog(TaskDialog *dlg);
     // removes the runing dialog after accept() or reject() from the TaskView
