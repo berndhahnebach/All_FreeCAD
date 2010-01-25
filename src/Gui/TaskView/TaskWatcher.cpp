@@ -27,10 +27,13 @@
 #  include <QPixmap>
 #endif
 
+
+#include <QObject>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/TaskView/TaskView.h>
+#include <Gui/Action.h>
 
 #include "TaskWatcher.h"
 
@@ -90,6 +93,8 @@ TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands
         if(c){
            	iisIconLabel *label = new iisIconLabel(BitmapFactory().pixmap(c->getPixmap()), QString::fromUtf8(c->getMenuText()), tb);
 	        tb->addIconLabel(label);
+            Gui::Action *a = c->getAction();
+            QObject::connect(label,SIGNAL(clicked()),a,SLOT(onActivated()));
         }
 
     }
