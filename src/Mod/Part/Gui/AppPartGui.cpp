@@ -24,6 +24,7 @@
 
 #include "SoFCShapeObject.h"
 #include "ViewProvider.h"
+#include "ViewProviderPython.h"
 #include "ViewProviderBox.h"
 #include "ViewProviderCurveNet.h"
 #include "ViewProviderImport.h"
@@ -79,6 +80,7 @@ void AppPartGuiExport initPartGui()
 
     PartGui::SoFCControlPoints          ::initClass();
     PartGui::ViewProviderPart           ::init();
+    PartGui::ViewProviderPython         ::init();
     PartGui::ViewProviderBox            ::init();
     PartGui::ViewProviderImport         ::init();
     PartGui::ViewProviderCurveNet       ::init();

@@ -28,8 +28,12 @@
 #include <App/PropertyPythonObject.h>
 #include <App/DynamicProperty.h>
 
+class SoSensor;
+class SoDragger;
 
 namespace Gui {
+class SoFCSelection;
+class SoFCBoundingBox;
 
 class GuiExport ViewProviderPythonFeature : public ViewProviderDocumentObject
 {
@@ -127,7 +131,7 @@ public:
 
     PyObject* getPyObject();
 
-private:
+protected:
     virtual void onChanged(const App::Property* prop);
     std::string getUniquePropertyName(const char *Name) const;
 
@@ -137,6 +141,57 @@ private:
     App::DocumentObject* docObject;
 
     friend class ViewProviderPythonFeaturePy;
+};
+
+/**
+ * The base class for all view providers that display geometric data, like mesh, point cloudes and shapes.
+ * @author Werner Mayer
+ */
+class GuiExport ViewProviderPythonGeometry : public ViewProviderPythonFeature
+{
+    PROPERTY_HEADER(Gui::ViewProviderPythonGeometry);
+
+public:
+    /// constructor.
+    ViewProviderPythonGeometry();
+
+    /// destructor.
+    virtual ~ViewProviderPythonGeometry();
+
+    // Display properties
+    App::PropertyColor ShapeColor;
+    App::PropertyPercent Transparency;
+    App::PropertyMaterial ShapeMaterial;
+    App::PropertyBool BoundingBox;
+
+    /**
+     * Attaches the document object to this view provider.
+     */
+    void attach(App::DocumentObject *pcObject);
+    void updateData(const App::Property*);
+    /** @name Edit methods */
+    //@{
+    bool doubleClicked(void);
+    bool setEdit(int ModNum = 0);
+    void unsetEdit(void);
+    //@}
+
+protected:
+    SoFCSelection* createFromSettings();
+    void showBoundingBox(bool);
+    /// get called by the container whenever a property has been changed
+    void onChanged(const App::Property* prop);
+
+private:
+    static void sensorCallback(void * data, SoSensor * sensor);
+    static void dragStartCallback(void * data, SoDragger * d);
+    static void dragFinishCallback(void * data, SoDragger * d);
+
+protected:
+    SoFCSelection    * pcHighlight;
+    SoMaterial       * pcShapeMaterial;
+    SoFCBoundingBox  * pcBoundingBox;
+    SoSwitch         * pcBoundSwitch;
 };
 
 

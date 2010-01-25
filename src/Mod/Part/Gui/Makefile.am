@@ -61,6 +61,7 @@ libPartGui_la_SOURCES=\
 		ViewProviderImport.cpp \
 		ViewProviderExtrusion.cpp \
 		ViewProvider2DObject.cpp \
+		ViewProviderPython.cpp \
 		Workbench.cpp
 
 include_HEADERS=\
@@ -71,6 +72,7 @@ include_HEADERS=\
 		ViewProviderImport.h \
 		ViewProviderExtrusion.h \
 		ViewProvider2DObject.h \
+		ViewProviderPython.h \
 		Workbench.h
 
 # the library search path.

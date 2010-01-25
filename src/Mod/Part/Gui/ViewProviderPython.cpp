@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jrgen Riegel <juergen.riegel@web.de>               *
+ *   Copyright (c) 2010 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -82,7 +82,7 @@
 #include <Gui/View3DInventorViewer.h>
 
 
-#include "ViewProvider.h"
+#include "ViewProviderPython.h"
 #include "SoFCShapeObject.h"
 
 #include <Mod/Part/App/PartFeature.h>
@@ -90,16 +90,16 @@
 
 using namespace PartGui;
 
-PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
+PROPERTY_SOURCE(PartGui::ViewProviderPython, Gui::ViewProviderPythonGeometry)
 
 
 //**************************************************************************
 // Construction/Destruction
 
-App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {1.0f,64.0f,1.0f};
-const char* ViewProviderPart::LightingEnums[]= {"One side","Two side",NULL};
+App::PropertyFloatConstraint::Constraints ViewProviderPython::floatRange = {1.0f,64.0f,1.0f};
+const char* ViewProviderPython::LightingEnums[]= {"One side","Two side",NULL};
 
-ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
+ViewProviderPython::ViewProviderPython() : pcControlPoints(0)
 {
     App::Material mat;
     mat.ambientColor.set(0.2f,0.2f,0.2f);
@@ -153,7 +153,7 @@ ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
     loadParameter();
 }
 
-ViewProviderPart::~ViewProviderPart()
+ViewProviderPython::~ViewProviderPython()
 {
     EdgeRoot->unref();
     FaceRoot->unref();
@@ -165,7 +165,7 @@ ViewProviderPart::~ViewProviderPart()
     pShapeHints->unref();
 }
 
-void ViewProviderPart::onChanged(const App::Property* prop)
+void ViewProviderPython::onChanged(const App::Property* prop)
 {
     if (prop == &LineWidth) {
         pcLineStyle->lineWidth = LineWidth.getValue();
@@ -217,14 +217,14 @@ void ViewProviderPart::onChanged(const App::Property* prop)
             pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
     }
     else {
-        ViewProviderGeometryObject::onChanged(prop);
+        ViewProviderPythonGeometry::onChanged(prop);
     }
 }
 
-void ViewProviderPart::attach(App::DocumentObject *pcFeat)
+void ViewProviderPython::attach(App::DocumentObject *pcFeat)
 {
     // call parent attach method
-    ViewProviderGeometryObject::attach(pcFeat);
+    ViewProviderPythonGeometry::attach(pcFeat);
 
     SoGroup* pcNormalRoot = new SoGroup();
     SoGroup* pcFlatRoot = new SoGroup();
@@ -259,7 +259,7 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
     addDisplayMaskMode(pcPointsRoot, "Point");
 }
 
-void ViewProviderPart::setDisplayMode(const char* ModeName)
+void ViewProviderPython::setDisplayMode(const char* ModeName)
 {
     if ( strcmp("Flat Lines",ModeName)==0 )
         setDisplayMaskMode("Flat Lines");
@@ -270,13 +270,13 @@ void ViewProviderPart::setDisplayMode(const char* ModeName)
     else if ( strcmp("Points",ModeName)==0 )
         setDisplayMaskMode("Point");
 
-    ViewProviderGeometryObject::setDisplayMode( ModeName );
+    ViewProviderPythonGeometry::setDisplayMode( ModeName );
 }
 
-std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
+std::vector<std::string> ViewProviderPython::getDisplayModes(void) const
 {
     // get the modes of the father
-    std::vector<std::string> StrList = ViewProviderGeometryObject::getDisplayModes();
+    std::vector<std::string> StrList = ViewProviderPythonGeometry::getDisplayModes();
 
     // add your own modes
     StrList.push_back("Flat Lines");
@@ -287,7 +287,7 @@ std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
     return StrList;
 }
 
-void ViewProviderPart::shapeInfoCallback(void * ud, SoEventCallback * n)
+void ViewProviderPython::shapeInfoCallback(void * ud, SoEventCallback * n)
 {
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
@@ -312,9 +312,9 @@ void ViewProviderPart::shapeInfoCallback(void * ud, SoEventCallback * n)
         // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
         // really from the mesh we render and not from any other geometry
         Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
-        if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderPart::getClassTypeId()))
+        if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderPython::getClassTypeId()))
             return;
-        ViewProviderPart* that = static_cast<ViewProviderPart*>(vp);
+        ViewProviderPython* that = static_cast<ViewProviderPython*>(vp);
         TopoDS_Shape sh = that->getShape(point);
         if (!sh.IsNull()) {
             SbVec3f pt = point->getPoint();
@@ -323,7 +323,7 @@ void ViewProviderPart::shapeInfoCallback(void * ud, SoEventCallback * n)
     }
 }
 
-TopoDS_Shape ViewProviderPart::getShape(const SoPickedPoint* point) const
+TopoDS_Shape ViewProviderPython::getShape(const SoPickedPoint* point) const
 {
     if (point && point->getPath()->getTail()->getTypeId().isDerivedFrom(SoVertexShape::getClassTypeId())) {
         SoVertexShape* vs = static_cast<SoVertexShape*>(point->getPath()->getTail());
@@ -335,7 +335,7 @@ TopoDS_Shape ViewProviderPart::getShape(const SoPickedPoint* point) const
     return TopoDS_Shape();
 }
 
-bool ViewProviderPart::loadParameter()
+bool ViewProviderPython::loadParameter()
 {
     bool changed = false;
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
@@ -360,7 +360,7 @@ bool ViewProviderPart::loadParameter()
     return changed;
 }
 
-void ViewProviderPart::reload()
+void ViewProviderPython::reload()
 {
     if (loadParameter()) {
         App::Property* shape     = pcObject->getPropertyByName("Shape");
@@ -368,9 +368,9 @@ void ViewProviderPart::reload()
     }
 }
 
-void ViewProviderPart::updateData(const App::Property* prop)
+void ViewProviderPython::updateData(const App::Property* prop)
 {
-    Gui::ViewProviderGeometryObject::updateData(prop);
+    Gui::ViewProviderPythonGeometry::updateData(prop);
     if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
         TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
 
@@ -418,7 +418,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
     }
 }
 
-Standard_Boolean ViewProviderPart::computeEdges (SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPython::computeEdges (SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
 {
     //TopExp_Explorer ex;
 
@@ -541,7 +541,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoGroup* EdgeRoot, const TopoDS
     return true;
 }
 
-Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPython::computeVertices(SoGroup* VertexRoot, const TopoDS_Shape &myShape)
 {
     VertexRoot->addChild(pcPointMaterial);  
     VertexRoot->addChild(pcPointStyle);
@@ -584,7 +584,7 @@ Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const To
     return true;
 }
 
-Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPython::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape)
 {
     TopExp_Explorer ex;
 
@@ -670,7 +670,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_
     return true;
 }
 
-void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
+void ViewProviderPython::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
                                        int32_t** cons,int &nbNodesInFace,int &nbTriInFace )
 {
     TopLoc_Location aLoc;
@@ -783,7 +783,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     }
 }
 
-void ViewProviderPart::showControlPoints(bool show)
+void ViewProviderPython::showControlPoints(bool show)
 {
     if (!pcControlPoints && show) {
         pcControlPoints = new SoSwitch();
@@ -827,7 +827,7 @@ void ViewProviderPart::showControlPoints(bool show)
     }
 }
 
-void ViewProviderPart::showControlPointsOfEdge(const TopoDS_Edge& edge)
+void ViewProviderPython::showControlPointsOfEdge(const TopoDS_Edge& edge)
 {
     std::list<gp_Pnt> poles, knots; 
     gp_Pnt start, end;
@@ -857,7 +857,7 @@ void ViewProviderPart::showControlPointsOfEdge(const TopoDS_Edge& edge)
     }
 }
 
-void ViewProviderPart::showControlPointsOfWire(const TopoDS_Wire& wire)
+void ViewProviderPython::showControlPointsOfWire(const TopoDS_Wire& wire)
 {
     TopoDS_Iterator it;
     for (it.Initialize(wire); it.More(); it.Next()) {
@@ -894,7 +894,7 @@ void ViewProviderPart::showControlPointsOfWire(const TopoDS_Wire& wire)
     }
 }
 
-void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
+void ViewProviderPython::showControlPointsOfFace(const TopoDS_Face& face)
 {
     std::list<gp_Pnt> knots;
     std::vector<std::vector<gp_Pnt> > poles;
