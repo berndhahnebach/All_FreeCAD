@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QLocale>
 # include <QStyleFactory>
 #endif
 
@@ -156,15 +157,17 @@ void DlgGeneralImp::loadSettings()
 
     // search for the language files
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-    QByteArray language = hGrp->GetASCII("Language", "English").c_str();
+    QString lang = QLocale::languageToString(QLocale::system().language());
+    QByteArray language = hGrp->GetASCII("Language", (const char*)lang.toAscii()).c_str();
     Languages->addItem(Gui::Translator::tr("English"), QByteArray("English"));
     int index = 1;
     TStringList list = Translator::instance()->supportedLanguages();
     for (TStringList::iterator it = list.begin(); it != list.end(); ++it, index++) {
         QByteArray lang = it->c_str();
         Languages->addItem(Gui::Translator::tr(lang.constData()), lang);
-        if (language == lang)
+        if (language == lang) {
             Languages->setCurrentIndex(index);
+        }
     }
 }
 

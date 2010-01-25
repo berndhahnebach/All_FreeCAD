@@ -136,6 +136,29 @@ void DlgPreferencesImp::addPage(const std::string& className, const std::string&
     _pages.push_back(std::make_pair(group, pages));
 }
 
+void DlgPreferencesImp::removePage(const std::string& className, const std::string& group)
+{
+    for (std::list<TGroupPages>::iterator it = _pages.begin(); it != _pages.end(); ++it) {
+        if (it->first == group) {
+            if (className.empty()) {
+                _pages.erase(it);
+                return;
+            }
+            else {
+                std::list<std::string>& p = it->second;
+                for (std::list<std::string>::iterator jt = p.begin(); jt != p.end(); ++jt) {
+                    if (*jt == className) {
+                        p.erase(jt);
+                        if (p.empty())
+                            _pages.erase(it);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
+
 /**
  * Activates the page at position \a index of the group with name \a group.
  */
