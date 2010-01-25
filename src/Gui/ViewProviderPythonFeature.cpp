@@ -25,6 +25,22 @@
 
 #ifndef _PreComp_
 # include <QPixmap>
+# include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/actions/SoSearchAction.h>
+# include <Inventor/draggers/SoDragger.h>
+# include <Inventor/manips/SoCenterballManip.h>
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCamera.h>
+# include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoSwitch.h>
+# include <Inventor/nodes/SoDirectionalLight.h>
+# include <Inventor/sensors/SoNodeSensor.h> 
+# include <Inventor/SoPickedPoint.h>
+# include <Inventor/actions/SoRayPickAction.h> 
 #endif
 
 #include "ViewProviderPythonFeature.h"
