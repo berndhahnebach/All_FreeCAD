@@ -123,6 +123,7 @@ void AppPartExport initPart()
 #endif
 
     Part::Feature               ::init();
+    Part::FeaturePython         ::init();
     Part::Primitive             ::init();
     Part::Box                   ::init();
     Part::Boolean               ::init();

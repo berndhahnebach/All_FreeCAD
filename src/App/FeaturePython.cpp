@@ -212,3 +212,16 @@ void FeaturePython::setPyObject(PyObject *obj)
     else
         PythonObject = Py::None();
 }
+
+// ---------------------------------------------------------
+
+PROPERTY_SOURCE(App::GeometryPython, App::FeaturePython)
+
+GeometryPython::GeometryPython(void)
+{
+    ADD_PROPERTY(Placement,(Base::Placement()));
+}
+
+GeometryPython::~GeometryPython(void)
+{
+}

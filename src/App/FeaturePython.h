@@ -29,6 +29,7 @@
 #include <App/DocumentObject.h>
 #include <App/DynamicProperty.h>
 #include <App/PropertyPythonObject.h>
+#include <App/PropertyGeo.h>
 
 namespace App
 {
@@ -36,7 +37,7 @@ namespace App
 class Property;
 class FeaturePythonPy;
 
-class FeaturePython : public DocumentObject
+class AppExport FeaturePython : public DocumentObject
 {
     PROPERTY_HEADER(App::FeaturePython);
 
@@ -44,7 +45,7 @@ public:
     FeaturePython();  
     virtual ~FeaturePython();  
 
-    /** @name methods overide Feature */
+    /** @name methods override DocumentObject */
     //@{
     short mustExecute() const;
     /// recalculate the Feature
@@ -105,6 +106,20 @@ protected:
 private:
     DynamicProperty *props;
     PropertyPythonObject Proxy;
+};
+
+/** Base class of all geometric document objects.
+ */
+class AppExport GeometryPython : public FeaturePython
+{
+    PROPERTY_HEADER(App::GeometryPython);
+
+public:
+    PropertyPlacement Placement;
+
+    /// Constructor
+    GeometryPython(void);
+    virtual ~GeometryPython();
 };
 
 } //namespace App

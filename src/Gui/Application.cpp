@@ -1250,6 +1250,7 @@ void Application::initTypes(void)
     Gui::ViewProviderDocumentObject             ::init();
     Gui::ViewProviderFeature                    ::init();
     Gui::ViewProviderPythonFeature              ::init();
+    Gui::ViewProviderPythonGeometry             ::init();
     Gui::ViewProviderDocumentObjectGroup        ::init();
     Gui::ViewProviderGeometryObject             ::init();
     Gui::ViewProviderInventorObject             ::init();

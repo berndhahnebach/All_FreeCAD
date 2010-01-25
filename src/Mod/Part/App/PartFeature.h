@@ -27,6 +27,7 @@
 #include "TopoShape.h"
 #include "PropertyTopoShape.h"
 #include <App/GeoFeature.h>
+#include <App/FeaturePython.h>
 #include <App/PropertyGeo.h>
 
 class PyObjectBase;
@@ -74,6 +75,30 @@ protected:
 
 protected:
     TopLoc_Location getLocation() const;
+};
+
+/** Base class of all shape feature classes in FreeCAD
+ */
+class AppPartExport FeaturePython : public App::GeometryPython
+{
+    PROPERTY_HEADER(Part::FeaturePython);
+
+public:
+    /// Constructor
+    FeaturePython(void);
+    virtual ~FeaturePython();
+
+    PropertyPartShape Shape;
+
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderPython";
+    }
+
+    virtual std::vector<PyObject *> getPySubObjects(const std::vector<std::string>&) const;
+
+protected:
+    void onChanged(const App::Property* prop);
 };
 
 } //namespace Part

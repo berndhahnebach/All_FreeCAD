@@ -979,6 +979,7 @@ void Application::initTypes(void)
     App ::FeatureTest               ::init();
     App ::FeatureTestException      ::init();
     App ::FeaturePython             ::init();
+    App ::GeometryPython            ::init();
     App ::Document                  ::init();
     App ::DocumentObjectGroup       ::init();
     App ::DocumentObjectFileIncluded::init();
