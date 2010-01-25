@@ -107,6 +107,7 @@ class GuiExport DlgPreferencesImp : public QDialog,public Ui_DlgPreferences
 
 public:
     static void addPage(const std::string& className, const std::string& group);
+    static void removePage(const std::string& className, const std::string& group);
 
     DlgPreferencesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~DlgPreferencesImp();

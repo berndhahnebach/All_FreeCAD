@@ -84,6 +84,7 @@
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <QListWidget>
+#include <QLocale>
 #include <QMainWindow>
 #include <qmenubar.h>
 #include <qmessagebox.h>

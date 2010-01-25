@@ -30,6 +30,7 @@
 # include <sstream>
 # include <stdexcept>
 # include <QCloseEvent>
+# include <QLocale>
 # include <QMessageBox>
 # include <QPointer>
 # include <QGLFormat>
@@ -37,9 +38,9 @@
 #if QT_VERSION >= 0x040200
 # include <QGLFramebufferObject>
 #endif
+# include <QSessionManager>
 #endif
 
-#include <QSessionManager>
 
 // FreeCAD Base header
 #include <Base/Console.h>
@@ -227,7 +228,8 @@ Application::Application(bool GUIenabled)
         // install the last active language
         ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
         hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
-        Translator::instance()->activateLanguage(hPGrp->GetASCII("Language", "English").c_str());
+        QString lang = QLocale::languageToString(QLocale::system().language());
+        Translator::instance()->activateLanguage(hPGrp->GetASCII("Language", (const char*)lang.toAscii()).c_str());
         GetWidgetFactorySupplier();
 
         // setting up Python binding
