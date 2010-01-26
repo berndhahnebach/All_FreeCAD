@@ -25,4 +25,44 @@
 #ifndef _PreComp_
 #endif
 
+#include <csignal>
 #include "Tools.h"
+#include "Exception.h"
+
+using namespace Base;
+
+SignalHandler::SignalHandler()
+{
+    segv_handler = std::signal(SIGSEGV,segfault_handler);
+    abrt_handler = std::signal(SIGABRT,segfault_handler);
+}
+
+SignalHandler::~SignalHandler()
+{
+    std::signal(SIGSEGV,segv_handler);
+    std::signal(SIGABRT,abrt_handler);
+}
+
+void SignalHandler::segfault_handler(int sig)
+{
+    switch (sig) {
+        case SIGSEGV:
+#ifdef FC_DEBUG
+            std::cerr << "Illegal storage access, try to continue..." << std::endl;
+#endif
+            throw Base::AccessViolation();
+            break;
+        case SIGABRT:
+#ifdef FC_DEBUG
+            std::cerr << "Abnormal program termination, try to continue..." << std::endl;
+#endif
+            throw Base::AbnormalProgramTermination();
+            break;
+        default:
+#ifdef FC_DEBUG
+            std::cerr << "Unknown error occurred, try to continue..." << std::endl;
+#endif
+            throw Base::Exception("Unknown error occurred");
+            break;
+    }
+}

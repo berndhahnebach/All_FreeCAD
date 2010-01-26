@@ -149,3 +149,27 @@ const char* MemoryException::what() const throw()
 }
 #endif
 
+// ---------------------------------------------------------
+
+AccessViolation::AccessViolation()
+{
+    _sErrMsg = "Access violation";
+}
+
+AccessViolation::AccessViolation(const AccessViolation &inst)
+ : Exception(inst)
+{
+}
+
+// ---------------------------------------------------------
+
+AbnormalProgramTermination::AbnormalProgramTermination()
+{
+    _sErrMsg = "Abnormal program termination";
+}
+
+AbnormalProgramTermination::AbnormalProgramTermination(const AbnormalProgramTermination &inst)
+ : Exception(inst)
+{
+}
+

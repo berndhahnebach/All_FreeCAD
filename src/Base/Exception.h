@@ -120,6 +120,36 @@ public:
 #endif
 };
 
+/**
+ * The AccessViolation can be used in an own signal handler.
+ * @author Werner Mayer
+ */
+class BaseExport AccessViolation : public Exception
+{
+public:
+  /// Construction
+  AccessViolation();
+  /// Construction
+  AccessViolation(const AccessViolation &inst);
+  /// Destruction
+  virtual ~AccessViolation() throw() {}
+};
+
+/**
+ * The AbnormalProgramTermination can be used in an own signal handler.
+ * @author Werner Mayer
+ */
+class BaseExport AbnormalProgramTermination : public Exception
+{
+public:
+  /// Construction
+  AbnormalProgramTermination();
+  /// Construction
+  AbnormalProgramTermination(const AbnormalProgramTermination &inst);
+  /// Destruction
+  virtual ~AbnormalProgramTermination() throw() {}
+};
+
 
 inline void Exception::setMessage(const char * sMessage)
 {

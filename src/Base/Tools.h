@@ -47,6 +47,19 @@ inline T clamp (T num, T lower, T upper)
     return std::max<T>(std::min<T>(upper,num),lower);
 }
 
+class BaseExport SignalHandler
+{
+public:
+    SignalHandler();
+    ~SignalHandler();
+    static void segfault_handler(int sig);
+
+private:
+    typedef void (*_sig_handler)(int);
+    _sig_handler segv_handler;
+    _sig_handler abrt_handler;
+};
+
 }
 
 #endif // BASE_TOOLS_H
