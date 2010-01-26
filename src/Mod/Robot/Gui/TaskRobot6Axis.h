@@ -32,6 +32,7 @@
 
 
 class Ui_TaskRobot6Axis;
+class QLineEdit;
 
 namespace App {
 class Property;
@@ -67,7 +68,7 @@ protected:
     Robot::RobotObject *pcRobot;
     void viewTcp(const Base::Placement pos);
     void viewTool(const Base::Placement pos);
-
+    void setColor(int i,float angle, QLineEdit &lineEdit);
 private:
 
 private:
