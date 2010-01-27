@@ -1,4 +1,6 @@
+if BUILD_TEMPLATE
 SUBDIRS=_TEMPLATE_
+endif
 
 
 EXTRA_DIST = \

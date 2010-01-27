@@ -574,6 +574,16 @@ if $fc_set_loginfo; then
 	CPPFLAGS="$CPPFLAGS -DFC_DEBUG"
 fi
 
+AC_ARG_ENABLE([template],
+  AC_HELP_STRING([--enable-template], [Enable the build of the _TEMPLATE_ module (disabled by default)]),
+  [case $enableval in
+    no | false) fc_set_template=false ;;
+    *)          fc_set_template=true ;;
+  esac],
+  [fc_set_template=false])
+
+AM_CONDITIONAL(BUILD_TEMPLATE, test x"$fc_set_template" = xtrue)
+
 dnl Check if you want debug information enabled, or not
 dnl **************************************************************************
 
