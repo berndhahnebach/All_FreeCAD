@@ -259,6 +259,26 @@ private:
     QTime displayTime;
 };
 
+// ----------------------------------------------------------------------
+
+class GuiExport StatusWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    StatusWidget(QWidget* parent);
+    ~StatusWidget();
+    void setStatusText(const QString&);
+    QSize sizeHint () const;
+
+protected:
+    void showEvent(QShowEvent*);
+    void hideEvent(QHideEvent*);
+    void adjustPosition(QWidget* w);
+
+private:
+    QLabel* label;
+};
 } // namespace Gui
 
 #endif // GUI_WIDGETS_H

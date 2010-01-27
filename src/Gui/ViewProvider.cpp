@@ -60,7 +60,7 @@ using namespace Gui;
 PROPERTY_SOURCE_ABSTRACT(Gui::ViewProvider, App::PropertyContainer)
 
 ViewProvider::ViewProvider() 
-  : pcAnnotation(0), pyViewObject(0), _iActualMode(-1)
+  : pcAnnotation(0), pyViewObject(0), _iActualMode(-1), _updateData(true)
 {
     pcRoot = new SoSeparator();
     pcRoot->ref();
@@ -95,6 +95,16 @@ bool ViewProvider::setEdit(int ModNum)
 
 void ViewProvider::unsetEdit(void)
 {
+}
+
+bool ViewProvider::isUpdatesEnabled () const
+{
+    return _updateData;
+}
+
+void ViewProvider::setUpdatesEnabled (bool enable)
+{
+    _updateData = enable;
 }
 
 void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
@@ -172,6 +182,8 @@ SoSeparator* ViewProvider::getAnnotation(void)
 void ViewProvider::update(const App::Property* prop)
 {
     // Hide the object temporarily to speed up the update
+    if (!isUpdatesEnabled())
+        return;
     bool vis = ViewProvider::isShow();
     if (vis) ViewProvider::hide();
     updateData(prop);

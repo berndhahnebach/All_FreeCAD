@@ -108,6 +108,8 @@ public:
      */
     void update(const App::Property*);
     virtual void updateData(const App::Property*)=0;
+    bool isUpdatesEnabled () const;
+    void setUpdatesEnabled (bool enable);
 
     std::string toString() const;
     PyObject* getPyObject();
@@ -224,6 +226,7 @@ private:
     int _iActualMode;
     std::string _sCurrentMode;
     std::map<std::string, int> _sDisplayMaskModes;
+    bool _updateData;
 };
 
 } // namespace Gui
