@@ -319,14 +319,14 @@ class svgHandler(xml.sax.ContentHandler):
 
 			path = []
 			point = []
-			lastvec = None
+			lastvec = Vector(0,0,0)
 			command = None
 			relative = False
 			firstvec = None
 
 			pathdata = []
 			for d in data['d']:
-				if (len(d) == 1):
+				if (len(d) == 1) and (d in ['m','M','l','L','h','H','v','V','a','A','c','C']):
 					pathdata.append(d)
 				else:
 					try:
@@ -385,11 +385,11 @@ class svgHandler(xml.sax.ContentHandler):
 					command = "close"
 					point = []
 				elif (d == "C"):
-					command = "connect"
+					command = "curve"
 					relative = False
 					point = []
 				elif (d == "c"):
-					command = "connect"
+					command = "curve"
 					relative = True
 					point = []
 				else:
@@ -397,6 +397,8 @@ class svgHandler(xml.sax.ContentHandler):
 						point.append(float(d))
 					except ValueError:
 						pass
+
+				print "command: ",command, ' point: ',point
 
 				if (len(point)==2) and (command=="move"):
 					if path:
@@ -409,16 +411,20 @@ class svgHandler(xml.sax.ContentHandler):
 						path = []
 					if relative:
 						lastvec = lastvec.add(Vector(point[0],-point[1],0))
+						command="line"
 					else:
 						lastvec = Vector(point[0],-point[1],0)
 					firstvec = lastvec
-					command = None
+					print "move ",lastvec
+					command = "line"
+					point = []
 				elif (len(point)==2) and (command=="line"):
 					if relative:
 						currentvec = lastvec.add(Vector(point[0],-point[1],0))
 					else:
 						currentvec = Vector(point[0],-point[1],0)
 					seg = Part.Line(lastvec,currentvec).toShape()
+					print "line ",lastvec,currentvec
 					lastvec = currentvec
 					path.append(seg)
 					point = []
@@ -474,13 +480,14 @@ class svgHandler(xml.sax.ContentHandler):
 						path = []
 					point = []
 					command = None
-				elif (len(point)==2) and (command=="connect"):
+				elif (len(point)==6) and (command=="curve"):
 					if relative:
-						currentvec = lastvec.add(Vector(point[0],-point[1],0))
+						currentvec = lastvec.add(Vector(point[4],-point[5],0))
 					else:
-						currentvec = Vector(point[0],-point[1],0)
+						currentvec = Vector(point[4],-point[5],0)
 					if not fcvec.equals(currentvec,lastvec):
 						seg = Part.Line(lastvec,currentvec).toShape()
+						print "connect ",lastvec,currentvec
 						lastvec = currentvec
 						path.append(seg)
 					point = []
