@@ -467,8 +467,9 @@ bool Document::saveAs(void)
 
     QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
     QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save %1 Document").arg(exe), 
-                 QDir::currentPath(), QObject::tr("%1 document (*.FCStd)").arg(exe));
+                 FileDialog::getWorkingDirectory(), QObject::tr("%1 document (*.FCStd)").arg(exe));
     if (!fn.isEmpty()) {
+        FileDialog::setWorkingDirectory(fn);
         QString file = fn.toLower();
         if (!file.endsWith(QLatin1String(".fcstd"))) {
             fn += QLatin1String(".fcstd");

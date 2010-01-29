@@ -161,8 +161,11 @@ QString FileDialog::getWorkingDirectory()
     std::string path = App::GetApplication().Config()["UserHomePath"];
     Base::Reference<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-    path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-    return QString::fromUtf8(path.c_str());
+    std::string dir = hPath->GetASCII("FileOpenSavePath", path.c_str());
+    QFileInfo fi(QString::fromUtf8(dir.c_str()));
+    if (!fi.exists())
+        dir = path;
+    return QString::fromUtf8(dir.c_str());
 }
 
 /**
@@ -170,7 +173,7 @@ QString FileDialog::getWorkingDirectory()
  * If \a dir is a file then the path only is taken.
  * getWorkingDirectory() returns the working directory.
  */
-void FileDialog::setWorkingDirectory( const QString& dir )
+void FileDialog::setWorkingDirectory(const QString& dir)
 {
     QString dirName = dir;
     if (!dir.isEmpty()) {
