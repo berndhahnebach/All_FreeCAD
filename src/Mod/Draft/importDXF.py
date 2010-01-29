@@ -299,16 +299,19 @@ def drawPolyline(polyline):
 
 def drawArc(arc):
 	"returns a Part shape from a dxf arc"
+	print arc, arc.start_angle, arc.end_angle
 	v=FreeCAD.Vector(arc.loc[0],arc.loc[1],arc.loc[2])
 	firstangle=(arc.start_angle/180)*math.pi
 	lastangle=(arc.end_angle/180)*math.pi
+	print firstangle, lastangle
 	rayvec=FreeCAD.Vector(arc.radius,0,0)
-	v1 = fcvec.add(v,fcvec.rotate(rayvec,firstangle))
-	v3 = fcvec.add(v,fcvec.rotate(rayvec,lastangle))
+	v1 = fcvec.add(v,fcvec.rotate(rayvec,-firstangle))
+	v3 = fcvec.add(v,fcvec.rotate(rayvec,-lastangle))
 	if lastangle > firstangle:
-		v2 = fcvec.add(v,fcvec.rotate(rayvec,(lastangle-firstangle)/2+firstangle))
+		v2 = fcvec.add(v,fcvec.rotate(rayvec,-((lastangle-firstangle)/2+firstangle)))
 	else:
-		v2 = fcvec.add(v,fcvec.rotate(rayvec,(lastangle-(math.pi*2-firstangle))/2))
+		print "case2"
+		v2 = fcvec.add(v,fcvec.rotate(rayvec,-((lastangle-(math.pi*2-firstangle))/2)))
 	return Part.Arc(v1,v2,v3).toShape()
 
 def drawCircle(circle):
