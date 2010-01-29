@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QColorDialog>
+# include <QDesktopWidget>
 # include <QDrag>
 # include <QKeyEvent>
 # include <QMimeData>
