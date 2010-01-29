@@ -46,8 +46,8 @@ class Persistence;
 
 
 /** The Writer class 
- * This is a important helper class for the store and retrivel system
- * of objects in FreeCAD. 
+ * This is an important helper class for the store and retrieval system
+ * of persistent objects in FreeCAD.
  * \see Base::Persistence
  * \author Juergen Riegel
  */
@@ -55,7 +55,6 @@ class BaseExport Writer
 {
 
 public:
-    /// opens the file and write the first file
     Writer(void);
     virtual ~Writer();
 
@@ -71,21 +70,21 @@ public:
 
     /** @name additional file writing */
     //@{
-    /// add a write request of a Persitant object
+    /// add a write request of a persistent object
     std::string addFile(const char* Name, const Base::Persistence *Object);
-    /// process the requested file writes
+    /// process the requested file storing
     virtual void writeFiles(void)=0;
     /// get all registered file names
     const std::vector<std::string>& getFilenames() const;
     //@}
 
-    /** @name prety formating for XML */
+    /** @name pretty formating for XML */
     //@{
-    /// get the actual indetion
+    /// get the current indention
     const char* ind(void) const {return indBuf;}
-    /// increase indetion by one tab
+    /// increase indention by one tab
     void incInd(void);
-    /// decreas indetion by one tab
+    /// decrease indention by one tab
     void decInd(void);
     //@}
 
@@ -111,8 +110,8 @@ protected:
 
 
 /** The ZipWriter class 
- * This is a important helper class implementation for the store and retrivel system
- * of objects in FreeCAD. 
+ * This is an important helper class implementation for the store and retrieval system
+ * of persistent objects in FreeCAD. 
  * \see Base::Persistence
  * \author Juergen Riegel
  */
@@ -120,7 +119,6 @@ class BaseExport ZipWriter : public Writer
 {
 
 public:
-    /// opens the file and write the first file
     ZipWriter(const char* FileName);
     ZipWriter(std::ostream&);
     ~ZipWriter();
@@ -147,7 +145,6 @@ class BaseExport StringWriter : public Writer
 {
 
 public:
-
     virtual std::ostream &Stream(void){return StrStream;}
     std::string getString(void){return StrStream.str();}
     virtual void writeFiles(void){assert(0);}
