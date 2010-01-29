@@ -41,7 +41,6 @@ texts, colors,layers (from groups)
 import FreeCAD, os, Part, math, re, string
 from draftlibs import fcvec, dxfColorMap, dxfLibrary, fcgeo
 from draftlibs.dxfReader import readDXF
-from PyQt4 import QtGui
 from Draft import Dimension, DimensionViewProvider
 
 try: import FreeCADGui
@@ -299,20 +298,13 @@ def drawPolyline(polyline):
 
 def drawArc(arc):
 	"returns a Part shape from a dxf arc"
-	print arc, arc.start_angle, arc.end_angle
 	v=FreeCAD.Vector(arc.loc[0],arc.loc[1],arc.loc[2])
-	firstangle=(arc.start_angle/180)*math.pi
+        firstangle=(arc.start_angle/180)*math.pi
 	lastangle=(arc.end_angle/180)*math.pi
-	print firstangle, lastangle
-	rayvec=FreeCAD.Vector(arc.radius,0,0)
-	v1 = fcvec.add(v,fcvec.rotate(rayvec,-firstangle))
-	v3 = fcvec.add(v,fcvec.rotate(rayvec,-lastangle))
-	if lastangle > firstangle:
-		v2 = fcvec.add(v,fcvec.rotate(rayvec,-((lastangle-firstangle)/2+firstangle)))
-	else:
-		print "case2"
-		v2 = fcvec.add(v,fcvec.rotate(rayvec,-((lastangle-(math.pi*2-firstangle))/2)))
-	return Part.Arc(v1,v2,v3).toShape()
+	circle=Part.Circle()
+	circle.Center=v
+	circle.Radius=arc.radius
+	return circle.toShape(firstangle,lastangle)
 
 def drawCircle(circle):
 	"returns a Part shape from a dxf circle"
