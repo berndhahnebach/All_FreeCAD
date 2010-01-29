@@ -31,6 +31,7 @@
 #include "Persistence.h"
 #include "Exception.h"
 #include "Base64.h"
+#include "FileInfo.h"
 
 #include <algorithm>
 #include <locale>
@@ -125,13 +126,17 @@ std::string Writer::getUniqueFileName(const char *Name)
         return CleanName;
     }
     else {
-        // find highest sufix
-        int nSuff = 0;  
+        // find highest suffix
+        int nSuff = 0;
+        FileInfo fi(CleanName);
+        CleanName = fi.fileNamePure();
+        std::string ext = fi.extension();
         for (pos = FileNames.begin();pos != FileNames.end();++pos) {
-            const std::string &FilName = *pos;
-            if (FilName.substr(0, CleanName.length()) == CleanName) { // same prefix
-                std::string clSuffix(FilName.substr(CleanName.length()));
-                if (clSuffix.size() > 0){
+            fi.setFile(*pos);
+            std::string FileName = fi.fileNamePure();
+            if (FileName.substr(0, CleanName.length()) == CleanName && fi.extension() == ext) { // same prefix
+                std::string clSuffix(FileName.substr(CleanName.length()));
+                if (clSuffix.size() > 0) {
                     std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
                     if (nPos==std::string::npos)
                         nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
@@ -141,6 +146,8 @@ std::string Writer::getUniqueFileName(const char *Name)
 
         std::stringstream str;
         str << CleanName << (nSuff + 1);
+        if (!ext.empty())
+            str << "." << ext;
         return str.str();
     }
 }
