@@ -156,8 +156,13 @@ dnl       [AC_MSG_ERROR([
 dnl 	**** Install Python version 2.5 or later ****
 dnl       ])])
 
+AC_ARG_WITH(python-version,
+	AC_HELP_STRING([--with-python-version=VER], [Choose the required Python version]),
+	[fc_py_ver=$withval],
+	[fc_py_ver=2.5])
+
 dnl At least version 2.5 required
-AM_PATH_PYTHON(2.5)
+AM_PATH_PYTHON($fc_py_ver)
 
 
 AC_ARG_WITH(python-include,
