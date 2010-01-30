@@ -392,11 +392,15 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
 bool MeshInput::LoadOBJ (std::istream &rstrIn)
 {
     boost::regex rx_p("^v\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
-                      "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
-                      "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)\\s*$");
-    boost::regex rx_f("^f\\s+([0-9]+)/?[0-9]*/?[0-9]*"
-                      "\\s+([0-9]+)/?[0-9]*/?[0-9]*"
-                      "\\s+([0-9]+)/?[0-9]*/?[0-9]*\\s*$");
+                        "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)"
+                        "\\s+([-+]?[0-9]*)\\.?([0-9]+([eE][-+]?[0-9]+)?)\\s*$");
+    boost::regex rx_f3("^f\\s+([0-9]+)/?[0-9]*/?[0-9]*"
+                         "\\s+([0-9]+)/?[0-9]*/?[0-9]*"
+                         "\\s+([0-9]+)/?[0-9]*/?[0-9]*\\s*$");
+    boost::regex rx_f4("^f\\s+([0-9]+)/?[0-9]*/?[0-9]*"
+                         "\\s+([0-9]+)/?[0-9]*/?[0-9]*"
+                         "\\s+([0-9]+)/?[0-9]*/?[0-9]*"
+                         "\\s+([0-9]+)/?[0-9]*/?[0-9]*\\s*$");
     boost::cmatch what;
 
     MeshPointArray meshPoints;
@@ -404,7 +408,7 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
 
     std::string line;
     float fX, fY, fZ;
-    unsigned int  i1=1,i2=1,i3=1;
+    unsigned int  i1=1,i2=1,i3=1,i4=1;
     MeshGeomFacet clFacet;
 
     if (!rstrIn || rstrIn.bad() == true)
@@ -423,17 +427,45 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
             fZ = (float)std::atof(what[7].first);
             meshPoints.push_back(MeshPoint(Base::Vector3f(fX, fY, fZ)));
         }
-        else if (boost::regex_match(line.c_str(), what, rx_f)) {
+        else if (boost::regex_match(line.c_str(), what, rx_f3)) {
+            // 3-vertex face
             i1 = std::atoi(what[1].first);
             i2 = std::atoi(what[2].first);
             i3 = std::atoi(what[3].first);
             meshFacets.push_back(MeshFacet(i1-1,i2-1,i3-1));
+        }
+        else if (boost::regex_match(line.c_str(), what, rx_f4)) {
+            // 4-vertex face
+            i1 = std::atoi(what[1].first);
+            i2 = std::atoi(what[2].first);
+            i3 = std::atoi(what[3].first);
+            i4 = std::atoi(what[4].first);
+            meshFacets.push_back(MeshFacet(i1-1,i2-1,i3-1));
+            meshFacets.push_back(MeshFacet(i3-1,i4-1,i1-1));
         }
     }
 
     this->_rclMesh.Clear(); // remove all data before
     // Don't use Assign() because Merge() checks which points are really needed.
     // This method sets already the correct neighbourhood
+    unsigned long ct = meshPoints.size();
+    std::list<unsigned long> removeFaces;
+    for (MeshFacetArray::_TConstIterator it = meshFacets.begin(); it != meshFacets.end(); ++it) {
+        bool ok = true;
+        for (int i=0;i<3;i++) {
+            if (it->_aulPoints[i] >= ct) {
+                Base::Console().Warning("Face index %ld out of range\n", it->_aulPoints[i]);
+                ok = false;
+            }
+        }
+
+        if (!ok)
+            removeFaces.push_front(it-meshFacets.begin());
+    }
+
+    for (std::list<unsigned long>::iterator it = removeFaces.begin(); it != removeFaces.end(); ++it)
+        meshFacets.erase(meshFacets.begin() + *it);
+
     MeshKernel tmp;
     tmp.Adopt(meshPoints,meshFacets);
     this->_rclMesh.Merge(tmp);
