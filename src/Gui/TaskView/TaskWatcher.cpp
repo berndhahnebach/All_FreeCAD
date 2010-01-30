@@ -29,6 +29,8 @@
 
 
 #include <QObject>
+#include <App/Application.h>
+#include <App/Document.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
@@ -70,9 +72,9 @@ std::vector<QWidget*> &TaskWatcher::getWatcherContent(void)
 
 //==== calls from the TaskView ===============================================================
 
-void TaskWatcher::open()
+bool TaskWatcher::shutShow()
 {
-    
+    return false;
 }
 
 //**************************************************************************
@@ -111,9 +113,32 @@ TaskWatcherCommands::~TaskWatcherCommands()
 
 //==== calls from the TaskView ===============================================================
 
-void TaskWatcherCommands::open()
+bool TaskWatcherCommands::shutShow()
 {
-    
+  return match();   
+}
+//**************************************************************************
+//**************************************************************************
+// TaskWatcherCommandsEmptyDoc
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TaskWatcherCommandsEmptyDoc::TaskWatcherCommandsEmptyDoc(const char* commands[], const char* name, const char* pixmap )
+    :TaskWatcherCommands("",commands,name,pixmap)
+{
+}
+
+TaskWatcherCommandsEmptyDoc::~TaskWatcherCommandsEmptyDoc()
+{
+}
+
+//==== implementer ===========================================================================
+
+
+//==== calls from the TaskView ===============================================================
+
+bool TaskWatcherCommandsEmptyDoc::shutShow()
+{
+    return App::GetApplication().getActiveDocument() && App::GetApplication().getActiveDocument()->getSize() == 0;
 }
 
 

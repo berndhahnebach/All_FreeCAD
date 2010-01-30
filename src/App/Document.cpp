@@ -908,6 +908,12 @@ bool Document::isClosable() const
     return d->closable;
 }
 
+int Document::getSize(void)
+{
+   return d->objectArray.size();
+}
+
+
 void Document::recompute()
 {
     // delete recompute log

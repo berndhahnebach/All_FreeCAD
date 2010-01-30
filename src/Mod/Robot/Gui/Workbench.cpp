@@ -36,6 +36,8 @@
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/TaskView/TaskWatcher.h>
 
+#include "TaskWatcher.h"
+
 
 using namespace RobotGui;
 
@@ -53,18 +55,33 @@ void Workbench::activated()
 {
     Gui::Workbench::activated();
 
-    const char* test[] = {
+    const char* RobotAndTrac[] = {
         "Robot_InsertWaypoint",
         "Robot_InsertWaypointPreselect",
         0};
 
+    const char* Empty[] = {
+        "Robot_InsertKukaIR500",
+        "Robot_InsertKukaIR16",
+        "Robot_InsertKukaIR210",
+        0};
+
     std::vector<Gui::TaskView::TaskWatcher*> Watcher;
     Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
-        "FROM Robot SELECT TrajectoryObject COUNT 1..",
-        test,
+        "FROM Robot SELECT TrajectoryObject COUNT 1"
+        "FROM Robot SELECT RobotObject COUNT 1",
+        RobotAndTrac,
         "Trajectory tools",
         "Robot_InsertWaypoint"
     ));
+
+   Watcher.push_back(new Gui::TaskView::TaskWatcherCommandsEmptyDoc(
+         Empty,
+        "Insert Robot",
+        "Robot_CreateRobot"
+    ));
+
+   Watcher.push_back(new TaskWatcherRobot);
     
     addTaskWatcher(Watcher);
  

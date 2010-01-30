@@ -154,6 +154,8 @@ public:
     std::vector<DocumentObject*> getObjects() const;
     std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
     int countObjectsOfType(const Base::Type& typeId) const;
+    /// get the number of objects in the document
+    int getSize(void);
     //@}
 
     /** @name methods for modification and state handling

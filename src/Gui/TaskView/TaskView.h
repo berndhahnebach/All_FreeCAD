@@ -27,6 +27,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <boost/signal.hpp>
 
 #include <Gui/iisTaskPanel/include/iisTaskPanel>
 #include <Gui/Selection.h>
@@ -63,6 +64,7 @@ public:
     TaskBox(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent);
     ~TaskBox();
     void hideGroupBox();
+
 
 private:
     void showEvent(QShowEvent*);
@@ -115,6 +117,8 @@ protected:
     void showDialog(TaskDialog *dlg);
     // removes the runing dialog after accept() or reject() from the TaskView
     void removeDialog(void);
+
+    void slotActiveDocument(const App::Document&);
 
     std::vector<TaskWatcher*> ActiveWatcher;
 

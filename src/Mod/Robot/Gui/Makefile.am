@@ -9,6 +9,7 @@ BUILT_SOURCES=\
 		moc_TaskRobotMessages.cpp \
 		moc_TaskTrajectory.cpp \
 		moc_TrajectorySimulate.cpp \
+		moc_TaskWatcher.cpp \
 		ui_TaskRobot6Axis.h \
 		ui_TaskRobotControl.h \
 		ui_TaskRobotMessages.h \
@@ -47,6 +48,8 @@ libRobotGui_la_SOURCES=\
 		ViewProviderRobotObject.h \
 		ViewProviderTrajectory.cpp \
 		ViewProviderTrajectory.h \
+		TaskWatcher.cpp \
+		TaskWatcher.h \
 		Workbench.cpp \
 		Workbench.h
 
