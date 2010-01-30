@@ -44,8 +44,8 @@ public:
     TaskWatcherRobot();
     ~TaskWatcherRobot();
 
-    /// is called wenn the document or the Selection changes. 
-    virtual bool shutShow(void);
+    /// is called when the document or the selection changes. 
+    virtual bool shouldShow(void);
 
 protected:
     TaskRobot6Axis    *rob; 

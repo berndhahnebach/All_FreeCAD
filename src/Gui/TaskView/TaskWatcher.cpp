@@ -72,7 +72,7 @@ std::vector<QWidget*> &TaskWatcher::getWatcherContent(void)
 
 //==== calls from the TaskView ===============================================================
 
-bool TaskWatcher::shutShow()
+bool TaskWatcher::shouldShow()
 {
     return false;
 }
@@ -113,9 +113,9 @@ TaskWatcherCommands::~TaskWatcherCommands()
 
 //==== calls from the TaskView ===============================================================
 
-bool TaskWatcherCommands::shutShow()
+bool TaskWatcherCommands::shouldShow()
 {
-  return match();   
+    return match();   
 }
 //**************************************************************************
 //**************************************************************************
@@ -136,9 +136,9 @@ TaskWatcherCommandsEmptyDoc::~TaskWatcherCommandsEmptyDoc()
 
 //==== calls from the TaskView ===============================================================
 
-bool TaskWatcherCommandsEmptyDoc::shutShow()
+bool TaskWatcherCommandsEmptyDoc::shouldShow()
 {
-    return App::GetApplication().getActiveDocument() && App::GetApplication().getActiveDocument()->getSize() == 0;
+    return App::GetApplication().getActiveDocument() && App::GetApplication().getActiveDocument()->countObjects() == 0;
 }
 
 

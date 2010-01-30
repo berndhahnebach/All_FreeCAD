@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <boost/bind.hpp>
 #endif
 
 #include "TaskView.h"
@@ -144,8 +145,8 @@ TaskView::TaskView(QWidget *parent)
     this->setMinimumWidth(200);
 
     Gui::Selection().Attach(this);
-    App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::TaskView::TaskView::slotActiveDocument, this, _1));
-
+    App::GetApplication().signalActiveDocument.connect
+        (boost::bind(&Gui::TaskView::TaskView::slotActiveDocument, this, _1));
 }
 
 TaskView::~TaskView()
@@ -238,7 +239,7 @@ void TaskView::updateWatcher(void)
     // add all widghets for all watcher to the task view
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
 
-        bool match = (*it)->shutShow();
+        bool match = (*it)->shouldShow();
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
         for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
             if(match)

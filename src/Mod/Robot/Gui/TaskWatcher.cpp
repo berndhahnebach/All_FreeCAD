@@ -55,7 +55,7 @@ TaskWatcherRobot::~TaskWatcherRobot()
 
 //==== calls from the TaskView ===============================================================
 
-bool TaskWatcherRobot::shutShow()
+bool TaskWatcherRobot::shouldShow()
 {
     if(match()){
         rob->setRobot((Robot::RobotObject *)Result[0][0].getObject());

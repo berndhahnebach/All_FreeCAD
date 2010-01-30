@@ -27,11 +27,11 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <boost/signal.hpp>
 
 #include <Gui/iisTaskPanel/include/iisTaskPanel>
 #include <Gui/Selection.h>
 #include "TaskWatcher.h"
+
 namespace App {
 class Property;
 }

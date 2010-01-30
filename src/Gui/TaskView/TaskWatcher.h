@@ -55,7 +55,7 @@ public:
 
 public:
     /// is called wenn the document or the Selection changes. 
-    virtual bool shutShow(void);
+    virtual bool shouldShow(void);
 
 protected:
     /// List of TaskBoxes of that dialog
@@ -76,7 +76,7 @@ public:
 
 public:
     /// is called wenn the document or the Selection changes. 
-    virtual bool shutShow(void);
+    virtual bool shouldShow(void);
 
 };
 
@@ -93,7 +93,7 @@ public:
 
 public:
     /// is called wenn the document or the Selection changes. 
-    virtual bool shutShow(void);
+    virtual bool shouldShow(void);
 
 };
 
