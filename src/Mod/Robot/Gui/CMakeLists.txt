@@ -50,7 +50,7 @@ set(RobotGui_MOC_HDRS
 		 TaskDlgSimulate.h
  		 TaskRobotMessages.h
 		 TaskRobotControl.h
-
+		 TaskWatcher.h
 )
 fc_wrap_cpp(RobotGui_MOC_SRCS ${RobotGui_MOC_HDRS})
 SOURCE_GROUP("Qt" FILES ${PartDesignGui_MOC_SRCS})
@@ -92,6 +92,8 @@ SET(RobotGui_SRCS
 		 TrajectorySimulate.h
 		 TaskDlgSimulate.h
 		 TaskDlgSimulate.cpp
+		 TaskWatcher.h
+		 TaskWatcher.cpp
 )
 
 add_library(RobotGui SHARED ${RobotGui_SRCS})

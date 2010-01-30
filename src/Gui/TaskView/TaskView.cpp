@@ -53,7 +53,7 @@ using namespace Gui::TaskView;
 TaskWidget::TaskWidget( QWidget *parent)
     : QWidget(parent)
 {
-    
+
 }
 
 TaskWidget::~TaskWidget()
@@ -144,12 +144,20 @@ TaskView::TaskView(QWidget *parent)
     this->setMinimumWidth(200);
 
     Gui::Selection().Attach(this);
+    App::GetApplication().signalActiveDocument.connect(boost::bind(&Gui::TaskView::TaskView::slotActiveDocument, this, _1));
+
 }
 
 TaskView::~TaskView()
 {
      Gui::Selection().Detach(this);
 }
+
+void TaskView::slotActiveDocument(const App::Document& doc)
+{
+    updateWatcher();
+}
+
 
 void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                         Gui::SelectionSingleton::MessageType Reason)
@@ -230,10 +238,9 @@ void TaskView::updateWatcher(void)
     // add all widghets for all watcher to the task view
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
 
-        bool match = (*it)->match();
+        bool match = (*it)->shutShow();
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
         for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
-            taskPanel->addWidget(*it2);
             if(match)
                 (*it2)->show();
             else
@@ -259,14 +266,11 @@ void TaskView::addTaskWatcher(void)
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
         for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
-            taskPanel->addWidget(*it2);
-            (*it2)->show();
+           taskPanel->addWidget(*it2);
+           (*it2)->show();
         }
-
     }
     taskPanel->addStretch();
-
-    // initial visibility check
     updateWatcher();
 }
 
@@ -276,8 +280,8 @@ void TaskView::removeTaskWatcher(void)
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
         for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
+            (*it2)->hide();
             taskPanel->removeWidget(*it2);
-             (*it2)->hide();
         }
 
     }

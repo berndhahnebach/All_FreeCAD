@@ -50,7 +50,7 @@ using namespace Gui;
 
 TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskRobot6Axis"),true, parent),
-    pcRobot(pcRobotObject),Rob(pcRobot->getRobot())
+    pcRobot(pcRobotObject),Rob()
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -69,23 +69,36 @@ TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent
 
     QObject::connect(ui->pushButtonChooseTool,SIGNAL(clicked()),this,SLOT(createPlacementDlg()));
 
-    ui->horizontalSlider_Axis1->setMaximum(  (int ) Rob.getMaxAngle(0) );
-    ui->horizontalSlider_Axis1->setMinimum(  (int ) Rob.getMinAngle(0) );
+    if(pcRobotObject)
+        setRobot(pcRobotObject);
+}
+
+TaskRobot6Axis::~TaskRobot6Axis()
+{
+    delete ui;
+}
+
+void TaskRobot6Axis::setRobot(Robot::RobotObject *pcRobotObject)
+{
+    pcRobot = pcRobotObject;
+    Rob = new Robot::Robot6Axis(pcRobot->getRobot());
+    ui->horizontalSlider_Axis1->setMaximum(  (int ) Rob->getMaxAngle(0) );
+    ui->horizontalSlider_Axis1->setMinimum(  (int ) Rob->getMinAngle(0) );
  
-    ui->horizontalSlider_Axis2->setMaximum(  (int ) Rob.getMaxAngle(1) );
-    ui->horizontalSlider_Axis2->setMinimum(  (int ) Rob.getMinAngle(1) );
+    ui->horizontalSlider_Axis2->setMaximum(  (int ) Rob->getMaxAngle(1) );
+    ui->horizontalSlider_Axis2->setMinimum(  (int ) Rob->getMinAngle(1) );
 
-    ui->horizontalSlider_Axis3->setMaximum(  (int ) Rob.getMaxAngle(2) );
-    ui->horizontalSlider_Axis3->setMinimum(  (int ) Rob.getMinAngle(2) );
+    ui->horizontalSlider_Axis3->setMaximum(  (int ) Rob->getMaxAngle(2) );
+    ui->horizontalSlider_Axis3->setMinimum(  (int ) Rob->getMinAngle(2) );
 
-    ui->horizontalSlider_Axis4->setMaximum(  (int ) Rob.getMaxAngle(3) );
-    ui->horizontalSlider_Axis4->setMinimum(  (int ) Rob.getMinAngle(3) );
+    ui->horizontalSlider_Axis4->setMaximum(  (int ) Rob->getMaxAngle(3) );
+    ui->horizontalSlider_Axis4->setMinimum(  (int ) Rob->getMinAngle(3) );
 
-    ui->horizontalSlider_Axis5->setMaximum(  (int ) Rob.getMaxAngle(4) );
-    ui->horizontalSlider_Axis5->setMinimum(  (int ) Rob.getMinAngle(4) );
+    ui->horizontalSlider_Axis5->setMaximum(  (int ) Rob->getMaxAngle(4) );
+    ui->horizontalSlider_Axis5->setMinimum(  (int ) Rob->getMinAngle(4) );
 
-    ui->horizontalSlider_Axis6->setMaximum(  (int ) Rob.getMaxAngle(5) );
-    ui->horizontalSlider_Axis6->setMinimum(  (int ) Rob.getMinAngle(5) );
+    ui->horizontalSlider_Axis6->setMaximum(  (int ) Rob->getMaxAngle(5) );
+    ui->horizontalSlider_Axis6->setMinimum(  (int ) Rob->getMinAngle(5) );
 
     setAxis(pcRobot->Axis1.getValue(),
             pcRobot->Axis2.getValue(),
@@ -95,11 +108,6 @@ TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent
             pcRobot->Axis6.getValue(),
             pcRobot->Tcp.getValue());
     viewTool(pcRobot->Tool.getValue());
-}
-
-TaskRobot6Axis::~TaskRobot6Axis()
-{
-    delete ui;
 }
 
 void TaskRobot6Axis::createPlacementDlg(void)
@@ -197,7 +205,7 @@ void TaskRobot6Axis::changeSliderA6(int value)
 }
 void TaskRobot6Axis::setColor(int i,float angle, QLineEdit &lineEdit){
 
-    if( angle > Rob.getMaxAngle(i) || angle < Rob.getMinAngle(i)){
+    if( angle > Rob->getMaxAngle(i) || angle < Rob->getMinAngle(i)){
         QPalette p = lineEdit.palette();
         p.setColor(QPalette::Base, QColor(255,220,220));//green color
         lineEdit.setPalette(p);

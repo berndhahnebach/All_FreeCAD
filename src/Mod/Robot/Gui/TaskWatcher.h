@@ -21,85 +21,38 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TASKWATCHER_H
-#define GUI_TASKVIEW_TASKWATCHER_H
+#ifndef ROBOTGUI_TASKWATCHER_H
+#define ROBOTGUI_TASKWATCHER_H
 
-#include <map>
-#include <string>
-#include <vector>
+
+
+#include <Gui/TaskView/TaskWatcher.h>
+#include "TaskRobot6Axis.h"
+
 #include <QObject>
 
-#include <Gui/iisTaskPanel/include/iisTaskPanel>
-#include <Gui/Selection.h>
-#include <Gui/SelectionFilter.h>
-
-namespace App {
-
-}
-
-namespace Gui {
-namespace TaskView {
+namespace RobotGui {
 
 class TaskContent;
 
 /// Father class of watcher classes
-class GuiExport TaskWatcher : public QObject, public Gui::SelectionFilter
+class RobotGuiExport TaskWatcherRobot : public Gui::TaskView::TaskWatcher 
 {
     Q_OBJECT
 
 public:
-    TaskWatcher(const char* Filter);
-    ~TaskWatcher();
+    TaskWatcherRobot();
+    ~TaskWatcherRobot();
 
-    std::vector<QWidget*> &getWatcherContent(void);
-
-public:
     /// is called wenn the document or the Selection changes. 
     virtual bool shutShow(void);
 
 protected:
-    /// List of TaskBoxes of that dialog
-    std::vector<QWidget*> Content;
-
-};
-
-// --------------------------------------------------------------------------
-
-/// Special watcher class for showing commands dependene on the selection
-class GuiExport TaskWatcherCommands : public TaskWatcher
-{
-    Q_OBJECT
-
-public:
-    TaskWatcherCommands(const char* Filter,const char* commands[], const char* name, const char* pixmap);
-    ~TaskWatcherCommands();
-
-public:
-    /// is called wenn the document or the Selection changes. 
-    virtual bool shutShow(void);
-
-};
-
-// --------------------------------------------------------------------------
-
-/// Special watcher class for showing commands when active document is empty
-class GuiExport TaskWatcherCommandsEmptyDoc : public TaskWatcherCommands
-{
-    Q_OBJECT
-
-public:
-    TaskWatcherCommandsEmptyDoc(const char* commands[], const char* name, const char* pixmap);
-    ~TaskWatcherCommandsEmptyDoc();
-
-public:
-    /// is called wenn the document or the Selection changes. 
-    virtual bool shutShow(void);
+    TaskRobot6Axis    *rob; 
 
 };
 
 
+} //namespace RobotGui
 
-} //namespace TaskView
-} //namespace Gui
-
-#endif // GUI_TASKVIEW_TASKWATCHER_H
+#endif // ROBOTGUI_TASKWATCHER_H
