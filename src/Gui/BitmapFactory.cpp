@@ -127,6 +127,9 @@ bool BitmapFactoryInst::findPixmapInCache(const char* name, QPixmap& px) const
 
 QPixmap BitmapFactoryInst::pixmap(const char* name) const
 {
+    if(!name)
+        return QPixmap(px);
+
     // as very first test check whether the pixmap is in the cache
     QMap<std::string, QPixmap>::ConstIterator it = d->xpmCache.find(name);
     if (it != d->xpmCache.end())

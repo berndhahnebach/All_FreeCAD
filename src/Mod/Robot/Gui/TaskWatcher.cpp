@@ -44,7 +44,10 @@ TaskWatcherRobot::TaskWatcherRobot()
     : Gui::TaskView::TaskWatcher("FROM Robot SELECT RobotObject COUNT 1")
 {
     rob  = new TaskRobot6Axis(0);
+    ctr  = new TaskRobotControl(0);
+
     Content.push_back(rob);
+    Content.push_back(ctr);
 
 }
 
@@ -59,6 +62,7 @@ bool TaskWatcherRobot::shouldShow()
 {
     if(match()){
         rob->setRobot((Robot::RobotObject *)Result[0][0].getObject());
+        ctr->setRobot((Robot::RobotObject *)Result[0][0].getObject());
         return true;
     }
     return false;

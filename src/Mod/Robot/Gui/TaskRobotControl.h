@@ -53,6 +53,8 @@ public:
     TaskRobotControl(Robot::RobotObject *pcRobotObject,QWidget *parent = 0);
     ~TaskRobotControl();
 
+    void setRobot(Robot::RobotObject *pcRobotObject);
+
 private Q_SLOTS:
     
 

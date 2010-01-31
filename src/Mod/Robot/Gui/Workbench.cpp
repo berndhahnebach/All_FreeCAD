@@ -60,6 +60,10 @@ void Workbench::activated()
         "Robot_InsertWaypointPreselect",
         0};
 
+    const char* Robot[] = {
+        "Robot_AddToolShape",
+        0};
+
     const char* Empty[] = {
         "Robot_InsertKukaIR500",
         "Robot_InsertKukaIR16",
@@ -67,6 +71,7 @@ void Workbench::activated()
         0};
 
     std::vector<Gui::TaskView::TaskWatcher*> Watcher;
+
     Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
         "FROM Robot SELECT TrajectoryObject COUNT 1"
         "FROM Robot SELECT RobotObject COUNT 1",
@@ -75,13 +80,21 @@ void Workbench::activated()
         "Robot_InsertWaypoint"
     ));
 
+    Watcher.push_back(new TaskWatcherRobot);
+
+    Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
+        "FROM Robot SELECT RobotObject COUNT 1",
+        Robot,
+        "Robot tools",
+        "Robot_CreateRobot"
+    ));
+
    Watcher.push_back(new Gui::TaskView::TaskWatcherCommandsEmptyDoc(
          Empty,
         "Insert Robot",
         "Robot_CreateRobot"
     ));
 
-   Watcher.push_back(new TaskWatcherRobot);
     
     addTaskWatcher(Watcher);
  

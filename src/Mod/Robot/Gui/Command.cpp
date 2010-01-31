@@ -73,6 +73,7 @@ void CmdRobotConstraintAxle::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis5 = 45",FeatName.c_str());
     updateActive();
     commitCommand();
       
