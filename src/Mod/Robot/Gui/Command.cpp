@@ -46,6 +46,86 @@
 using namespace std;
 using namespace RobotGui;
 
+DEF_STD_CMD_A(CmdRobotSetHomePos);
+
+CmdRobotSetHomePos::CmdRobotSetHomePos()
+	:Command("Robot_SetHomePos")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Set the home position");
+    sToolTipText    = QT_TR_NOOP("Set the home position");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_CreateRobot";
+}
+
+
+void CmdRobotSetHomePos::activated(int iMsg)
+{
+    //std::string FeatName = getUniqueObjectName("Robot");
+    //std::string RobotPath = "Mod/Robot/Lib/Kuka/kr500_1.wrl";
+    //std::string KinematicPath = "Mod/Robot/Lib/Kuka/kr500_1.csv";
+
+    //openCommand("Place robot");
+    //doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
+    //doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
+    //doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
+    //doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
+    //doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
+    //doCommand(Doc,"App.activeDocument().%s.Axis5 = 45",FeatName.c_str());
+    //updateActive();
+    //commitCommand();
+      
+}
+
+bool CmdRobotSetHomePos::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+
+// #####################################################################################################
+DEF_STD_CMD_A(CmdRobotRestoreHomePos);
+
+CmdRobotRestoreHomePos::CmdRobotRestoreHomePos()
+	:Command("Robot_RestoreHomePos")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Move to home");
+    sToolTipText    = QT_TR_NOOP("Move to home");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_CreateRobot";
+}
+
+
+void CmdRobotRestoreHomePos::activated(int iMsg)
+{
+ /*   std::string FeatName = getUniqueObjectName("Robot");
+    std::string RobotPath = "Mod/Robot/Lib/Kuka/kr500_1.wrl";
+    std::string KinematicPath = "Mod/Robot/Lib/Kuka/kr500_1.csv";
+
+    openCommand("Place robot");
+    doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis5 = 45",FeatName.c_str());
+    updateActive();
+    commitCommand();*/
+      
+}
+
+bool CmdRobotRestoreHomePos::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+
+// #####################################################################################################
 DEF_STD_CMD_A(CmdRobotConstraintAxle);
 
 CmdRobotConstraintAxle::CmdRobotConstraintAxle()
@@ -165,6 +245,8 @@ void CreateRobotCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
+    rcCmdMgr.addCommand(new CmdRobotRestoreHomePos());
+    rcCmdMgr.addCommand(new CmdRobotSetHomePos());
     rcCmdMgr.addCommand(new CmdRobotConstraintAxle());
     rcCmdMgr.addCommand(new CmdRobotSimulate());
  }

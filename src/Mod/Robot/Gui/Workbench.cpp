@@ -62,6 +62,8 @@ void Workbench::activated()
 
     const char* Robot[] = {
         "Robot_AddToolShape",
+        "Robot_SetHomePos",
+        "Robot_RestoreHomePos",
         0};
 
     const char* Empty[] = {
