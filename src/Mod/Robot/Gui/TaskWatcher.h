@@ -28,6 +28,7 @@
 
 #include <Gui/TaskView/TaskWatcher.h>
 #include "TaskRobot6Axis.h"
+#include "TaskRobotControl.h"
 
 #include <QObject>
 
@@ -49,6 +50,8 @@ public:
 
 protected:
     TaskRobot6Axis    *rob; 
+    TaskRobotControl  *ctr ;
+; 
 
 };
 

@@ -49,7 +49,7 @@ using namespace RobotGui;
 using namespace Gui;
 
 TaskRobot6Axis::TaskRobot6Axis(Robot::RobotObject *pcRobotObject,QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskRobot6Axis"),true, parent),
+    : TaskBox(Gui::BitmapFactory().pixmap("Robot_CreateRobot"),tr("TaskRobot6Axis"),true, parent),
     pcRobot(pcRobotObject),Rob()
 {
     // we need a separate container widget to add all controls to
@@ -81,6 +81,11 @@ TaskRobot6Axis::~TaskRobot6Axis()
 void TaskRobot6Axis::setRobot(Robot::RobotObject *pcRobotObject)
 {
     pcRobot = pcRobotObject;
+    if(!pcRobotObject){
+        delete Rob;
+        return;
+    }
+
     Rob = new Robot::Robot6Axis(pcRobot->getRobot());
     ui->horizontalSlider_Axis1->setMaximum(  (int ) Rob->getMaxAngle(0) );
     ui->horizontalSlider_Axis1->setMinimum(  (int ) Rob->getMinAngle(0) );

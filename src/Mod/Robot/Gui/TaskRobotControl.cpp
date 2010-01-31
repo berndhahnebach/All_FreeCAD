@@ -43,7 +43,7 @@ using namespace RobotGui;
 using namespace Gui;
 
 TaskRobotControl::TaskRobotControl(Robot::RobotObject *pcRobotObject,QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskRobotControl"),true, parent),
+    : TaskBox(Gui::BitmapFactory().pixmap("Robot_CreateRobot"),tr("TaskRobotControl"),true, parent),
     pcRobot(pcRobotObject)
 {
     // we need a separate container widget to add all controls to
@@ -53,6 +53,15 @@ TaskRobotControl::TaskRobotControl(Robot::RobotObject *pcRobotObject,QWidget *pa
     QMetaObject::connectSlotsByName(this);
 
     this->groupLayout()->addWidget(proxy);
+
+    if(pcRobotObject)
+        setRobot(pcRobotObject);
+
+}
+
+void TaskRobotControl::setRobot(Robot::RobotObject *pcRobotObject)
+{
+    pcRobot = pcRobotObject;
 }
 
 TaskRobotControl::~TaskRobotControl()
