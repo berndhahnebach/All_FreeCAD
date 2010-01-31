@@ -127,7 +127,7 @@ bool BitmapFactoryInst::findPixmapInCache(const char* name, QPixmap& px) const
 
 QPixmap BitmapFactoryInst::pixmap(const char* name) const
 {
-    if(!name)
+    if (!name || *name == '\0')
         return QPixmap(px);
 
     // as very first test check whether the pixmap is in the cache
