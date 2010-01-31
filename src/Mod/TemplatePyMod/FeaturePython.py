@@ -2,7 +2,7 @@
 Examples for a feature class and its view provider.
 
 ***************************************************************************
-*   Copyright (c) 2009 Werner Mayer <wmayer@users.sourceforge.net>        *
+*   Copyright (c) 2009 Werner Mayer <wmayer[at]users.sourceforge.net>     *
 *                                                                         *
 *   This file is part of the FreeCAD CAx development system.              *
 *                                                                         *
@@ -30,78 +30,45 @@ __author__ = "Werner Mayer <wmayer@users.sourceforge.net>"
 import FreeCAD, FreeCADGui, Part
 from pivy import coin
 
-class Geometry:
+class PartFeature:
 	def __init__(self, obj):
-		''' Add placement property '''
-		obj.addProperty("App::PropertyPlacement","Placement")
 		obj.Proxy = self
 
-class PartFeature(Geometry):
+class Box(PartFeature):
 	def __init__(self, obj):
-		Geometry.__init__(self, obj)
-		obj.addProperty("Part::PropertyPartShape","Shape")
-
-	def onChanged(self, fp, prop):
-		if prop == "Placement":
-			fp.Shape.Matrix = fp.Placement.toMatrix()
-
-class Box(Geometry):
-	def __init__(self, obj):
-		Geometry.__init__(self, obj)
+		PartFeature.__init__(self, obj)
 		''' Add some custom properties to our box feature '''
 		obj.addProperty("App::PropertyLength","Length","Box","Length of the box").Length=1.0
 		obj.addProperty("App::PropertyLength","Width","Box","Width of the box").Width=1.0
 		obj.addProperty("App::PropertyLength","Height","Box", "Height of the box").Height=1.0
-	
+
 	def onChanged(self, fp, prop):
 		''' Print the name of the property that has changed '''
 		FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
+		if prop == "Length" or prop == "Width" or prop == "Height":
+			fp.Shape = Part.makeBox(fp.Length,fp.Width,fp.Height)
 
 	def execute(self, fp):
 		''' Print a short message when doing a recomputation, this method is mandatory '''
 		FreeCAD.Console.PrintMessage("Recompute Python Box feature\n")
+		fp.Shape = Part.makeBox(fp.Length,fp.Width,fp.Height)
 
 class ViewProviderBox:
 	def __init__(self, obj):
 		''' Set this object to the proxy object of the actual view provider '''
-		obj.addProperty("App::PropertyColor","Color","Box","Color of the box").Color=(1.0,0.0,0.0)
 		obj.Proxy = self
 
 	def attach(self, obj):
 		''' Setup the scene sub-graph of the view provider, this method is mandatory '''
-		self.shaded = coin.SoGroup()
-		self.wireframe = coin.SoGroup()
-		self.scale = coin.SoScale()
-		self.color = coin.SoBaseColor()
-		
-		data=coin.SoCube()
-		self.shaded.addChild(self.scale)
-		self.shaded.addChild(self.color)
-		self.shaded.addChild(data)
-		obj.addDisplayMode(self.shaded,"Shaded");
-		style=coin.SoDrawStyle()
-		style.style = coin.SoDrawStyle.LINES
-		self.wireframe.addChild(style)
-		self.wireframe.addChild(self.scale)
-		self.wireframe.addChild(self.color)
-		self.wireframe.addChild(data)
-		obj.addDisplayMode(self.wireframe,"Wireframe");
-		self.onChanged(obj,"Color")
+		return
 
 	def updateData(self, fp, prop):
 		''' If a property of the handled feature has changed we have the chance to handle this here '''
-		# fp is the handled feature, prop is the name of the property that has changed
-		l = fp.getPropertyByName("Length")
-		w = fp.getPropertyByName("Width")
-		h = fp.getPropertyByName("Height")
-		self.scale.scaleFactor.setValue(l,w,h)
-		pass
+		return
 
 	def getDisplayModes(self,obj):
 		''' Return a list of display modes. '''
 		modes=[]
-		modes.append("Shaded")
-		modes.append("Wireframe")
 		return modes
 
 	def getDefaultDisplayMode(self):
@@ -117,9 +84,6 @@ class ViewProviderBox:
 	def onChanged(self, vp, prop):
 		''' Print the name of the property that has changed '''
 		FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
-		if prop == "Color":
-			c = vp.getPropertyByName("Color")
-			self.color.rgb.setValue(c[0],c[1],c[2])
 
 	def getIcon(self):
 		''' Return the icon in XMP format which will appear in the tree view. This method is optional
@@ -169,7 +133,7 @@ class ViewProviderBox:
 
 def makeBox():
 	FreeCAD.newDocument()
-	a=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Box")
+	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Box")
 	Box(a)
 	ViewProviderBox(a.ViewObject)
 
