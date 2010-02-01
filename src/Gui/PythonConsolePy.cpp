@@ -24,10 +24,12 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QInputDialog>
+# include <QEventLoop>
 #endif
 
 #include "PythonConsolePy.h"
 #include "PythonConsole.h"
+#include "MainWindow.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -219,10 +221,12 @@ void PythonStdin::init_type()
 PythonStdin::PythonStdin(PythonConsole *pc)
   : pyConsole(pc)
 {
+    editField = new PythonInputField(/*getMainWindow()*/);
 }
 
 PythonStdin::~PythonStdin()
 {
+    delete editField;
 }
 
 Py::Object PythonStdin::repr()
@@ -235,8 +239,14 @@ Py::Object PythonStdin::repr()
 
 Py::Object PythonStdin::readline(const Py::Tuple& args)
 {
-    QString txt = QInputDialog::getText(pyConsole,
-        Gui::PythonConsole::tr("Python Input Dialog"),
-        Gui::PythonConsole::tr("Input for Python:"), QLineEdit::Normal);
+    QEventLoop loop;
+    QObject::connect(editField, SIGNAL(textEntered()), &loop, SLOT(quit()));
+    editField->clear();
+    editField->show();
+    loop.exec();
+    QString txt = editField->getText();
+    if (txt.isEmpty())
+        editField->hide();
+
     return Py::String((const char*)txt.toAscii());
 }
