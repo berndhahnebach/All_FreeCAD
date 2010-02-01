@@ -30,6 +30,7 @@ libMeshGui_la_SOURCES=\
 		SoFCIndexedFaceSet.cpp \
 		SoFCMeshObject.cpp \
 		ViewProvider.cpp \
+		ViewProviderPython.cpp \
 		ViewProviderMeshFaceSet.cpp \
 		ViewProviderCurvature.cpp \
 		ViewProviderDefects.cpp \
@@ -42,6 +43,7 @@ include_HEADERS=\
 		SoFCIndexedFaceSet.h \
 		SoFCMeshObject.h \
 		ViewProvider.h \
+		ViewProviderPython.h \
 		ViewProviderMeshFaceSet.h \
 		ViewProviderCurvature.h \
 		ViewProviderDefects.h \

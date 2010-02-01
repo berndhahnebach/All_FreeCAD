@@ -26,6 +26,7 @@
 #define POINTS_FEATURE_H
 
 #include <App/GeoFeature.h>
+#include <App/FeaturePython.h>
 #include <App/PropertyLinks.h>
 #include <App/PropertyGeo.h>
 #include "Points.h"
@@ -57,8 +58,6 @@ public:
     /// Constructor
     Feature(void);
     virtual ~Feature(void);
-
-    App::PropertyPlacement Placement;
 
     /** @name methods overide Feature */
     //@{
@@ -98,6 +97,28 @@ public:
     /// recalculate the Feature
     virtual App::DocumentObjectExecReturn *execute(void);
     //@}
+};
+
+/** Base class of all Python point feature classes in FreeCAD
+ */
+class PointsAppExport FeaturePython : public App::GeometryPython
+{
+    PROPERTY_HEADER(Points::FeaturePython);
+
+public:
+    /// Constructor
+    FeaturePython(void);
+    virtual ~FeaturePython();
+
+    PropertyPointKernel Points;
+
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "PointsGui::ViewProviderPython";
+    }
+
+protected:
+    void onChanged(const App::Property* prop);
 };
 
 } //namespace Points

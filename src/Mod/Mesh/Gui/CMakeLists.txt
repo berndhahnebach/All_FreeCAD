@@ -65,6 +65,8 @@ SOURCE_GROUP("resource" FILES ${resource_SRCS})
 SET(ViewProvider_SRCS
 		 ViewProvider.cpp
 		 ViewProvider.h
+		 ViewProviderPython.cpp
+		 ViewProviderPython.h
 		 ViewProviderCurvature.cpp
 		 ViewProviderCurvature.h
 		 ViewProviderDefects.cpp

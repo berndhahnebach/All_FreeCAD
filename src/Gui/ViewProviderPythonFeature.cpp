@@ -116,7 +116,7 @@ void ViewProviderPythonFeature::onChanged(const App::Property* prop)
 {
     if (prop == &Proxy) {
         if (docObject && !Proxy.getValue().is(Py::_None())) {
-            attach(docObject);
+            ViewProviderPythonFeature::attach(docObject);
             updateView();
             docObject = 0;
         }

@@ -48,7 +48,6 @@ PROPERTY_SOURCE(Points::Feature, App::GeoFeature)
 Feature::Feature() 
 {
     ADD_PROPERTY(Points, (PointKernel()));
-    ADD_PROPERTY(Placement, (Base::Placement()));
 }
 
 Feature::~Feature()
@@ -131,4 +130,36 @@ App::DocumentObjectExecReturn *Export::execute(void)
   }
 
   return App::DocumentObject::StdReturn;
+}
+
+// -------------------------------------------------
+
+PROPERTY_SOURCE(Points::FeaturePython, App::GeometryPython)
+
+
+FeaturePython::FeaturePython(void) 
+{
+    ADD_PROPERTY(Points, (PointKernel()));
+}
+
+FeaturePython::~FeaturePython()
+{
+}
+
+void FeaturePython::onChanged(const App::Property* prop)
+{
+    // if the placement has changed apply the change to the point data as well
+    if (prop == &this->Placement) {
+        PointKernel& pts = const_cast<PointKernel&>(this->Points.getValue());
+        pts.setTransform(this->Placement.getValue().toMatrix());
+    }
+    // if the point data has changed check and adjust the transformation as well
+    else if (prop == &this->Points) {
+        Base::Placement p;
+        p.fromMatrix(this->Points.getValue().getTransform());
+        if (p != this->Placement.getValue())
+            this->Placement.setValue(p);
+    }
+
+    GeometryPython::onChanged(prop);
 }
