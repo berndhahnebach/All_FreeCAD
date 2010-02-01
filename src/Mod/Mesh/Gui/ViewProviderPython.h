@@ -21,96 +21,82 @@
  ***************************************************************************/
 
 
-#ifndef PARTGUI_VIEWPROVIDERPYTHON_H
-#define PARTGUI_VIEWPROVIDERPYTHON_H
+#ifndef MESHGUI_VIEWPROVIDERPYTHON_H
+#define MESHGUI_VIEWPROVIDERPYTHON_H
 
-#include <Standard_math.hxx>
-#include <Standard_Boolean.hxx>
-#include <TopoDS_Shape.hxx>
+#include <vector>
+#include <Inventor/fields/SoSFVec2f.h>
+
 #include <Gui/ViewProviderPythonFeature.h>
-#include <map>
+#include <App/PropertyStandard.h>
 
-class TopoDS_Shape;
-class TopoDS_Edge;
-class TopoDS_Wire;
-class TopoDS_Face;
 class SoSeparator;
-class SoGroup;
-class SoSwitch;
-class SoVertexShape;
-class SoPickedPoint;
-class SoShapeHints;
 class SoEventCallback;
-class SbVec3f;
+class SbViewVolume;
+class SoBaseColor;
+class SoShape;
+class SoCoordinate3;
+class SoIndexedFaceSet;
+class SoShapeHints;
+class SoMaterialBinding;
 
-namespace PartGui {
+namespace MeshCore {
+  class MeshKernel;
+}
+
+namespace MeshGui {
 
 
-class AppPartGuiExport ViewProviderPython : public Gui::ViewProviderPythonGeometry
+class MeshGuiExport ViewProviderPython : public Gui::ViewProviderPythonGeometry
 {
-    PROPERTY_HEADER(PartGui::ViewProviderPython);
+    PROPERTY_HEADER(MeshGui::ViewProviderPython);
 
 public:
     ViewProviderPython();
     virtual ~ViewProviderPython();
 
     // Display properties
+    App::PropertyPercent LineTransparency;
     App::PropertyFloatConstraint LineWidth;
     App::PropertyFloatConstraint PointSize;
-    App::PropertyColor LineColor;
-    App::PropertyColor PointColor;
-    App::PropertyMaterial LineMaterial;
-    App::PropertyMaterial PointMaterial;
-    App::PropertyBool ControlPoints;
+    App::PropertyFloatConstraint CreaseAngle;
+    App::PropertyBool OpenEdges;
     App::PropertyEnumeration Lighting;
-
+    App::PropertyColor LineColor;
 
     virtual void attach(App::DocumentObject *);
     virtual void setDisplayMode(const char* ModeName);
     /// returns a list of all possible modes
     virtual std::vector<std::string> getDisplayModes(void) const;
-    /// Update the view representation
-    void reload();
-
     virtual void updateData(const App::Property*);
 
 protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
-    bool loadParameter();
-    Standard_Boolean computeFaces   (SoGroup* root, const TopoDS_Shape &myShape);
-    Standard_Boolean computeEdges   (SoGroup* root, const TopoDS_Shape &myShape);
-    Standard_Boolean computeVertices(SoGroup* root, const TopoDS_Shape &myShape);
-
-    void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
-         int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
-    void showControlPoints(bool);
-    void showControlPointsOfEdge(const TopoDS_Edge&);
-    void showControlPointsOfWire(const TopoDS_Wire&);
-    void showControlPointsOfFace(const TopoDS_Face&);
+    void createMesh(const MeshCore::MeshKernel& pcMesh);
+    virtual void showOpenEdges(bool);
+    void setOpenEdgeColorFrom(const App::Color& col);
 
     // nodes for the data representation
-    SoGroup  *EdgeRoot;
-    SoGroup  *FaceRoot;
-    SoGroup  *VertexRoot;
-    SoMaterial   *pcLineMaterial;
-    SoMaterial   *pcPointMaterial;
-    SoDrawStyle  *pcLineStyle;
-    SoDrawStyle  *pcPointStyle;
-    SoSwitch     *pcControlPoints;
-    SoShapeHints *pShapeHints;
+    SoDrawStyle         * pcLineStyle;
+    SoDrawStyle         * pcPointStyle;
+    SoSeparator         * pcOpenEdge;
+    SoBaseColor         * pOpenColor;
+    SoMaterial          * pLineColor;
+    SoShapeHints        * pShapeHints;
+    SoMaterialBinding   * pcMatBinding;
+    SoCoordinate3       * pcMeshCoord;
+    SoIndexedFaceSet    * pcMeshFaces;
 
 private:
-    // settings stuff
-    float meshDeviation;
-    bool noPerVertexNormals;
-    bool qualityNormals;
     static App::PropertyFloatConstraint::Constraints floatRange;
+    static App::PropertyFloatConstraint::Constraints angleRange;
+    static App::PropertyIntegerConstraint::Constraints intPercent;
     static const char* LightingEnums[];
 };
 
-} // namespace PartGui
+} // namespace MeshGui
 
 
-#endif // PARTGUI_VIEWPROVIDERPYTHON_H
+#endif // MESHGUI_VIEWPROVIDERPYTHON_H
 

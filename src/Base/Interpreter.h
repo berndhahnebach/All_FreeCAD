@@ -139,9 +139,9 @@ public:
     /** @name execution methods
      */
     //@{
-    /// Run a statement on the python interpreter and gives back a string with the retresentation of the result.
+    /// Run a statement on the python interpreter and gives back a string with the representation of the result.
     std::string runString(const char *psCmd);
-    /// Run a statement on the python interpreter and gives back a string with the retresentation of the result.
+    /// Run a statement on the python interpreter and gives back a string with the representation of the result.
     void runInteractiveString(const char *psCmd);
     /// Run file (script) on the python interpreter
     void runFile(const char*pxFileName);
@@ -208,11 +208,11 @@ public:
     /** @name methods for debugging facility
      */
     //@{
-    /// sets the file name which should be debuged
+    /// sets the file name which should be debugged
     void dbgObserveFile(const char* sFileName="");
-    /// sets a break point to a special line number in the actual file
+    /// sets a break point to a special line number in the current file
     void dbgSetBreakPoint(unsigned int uiLineNumber);
-    /// unsets a break point to a special line number in the actual file
+    /// unsets a break point to a special line number in the current file
     void dbgUnsetBreakPoint(unsigned int uiLineNumber);
     /// One step further
     void dbgStep(void);

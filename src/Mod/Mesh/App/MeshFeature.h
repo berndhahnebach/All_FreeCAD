@@ -25,6 +25,7 @@
 #define MESH_FEATURE_H
 
 #include <App/GeoFeature.h>
+#include <App/FeaturePython.h>
 
 #include "Core/MeshKernel.h"
 #include "Mesh.h"
@@ -52,35 +53,55 @@ class MeshFeaturePy;
  */
 class MeshExport Feature : public App::GeoFeature
 {
-  PROPERTY_HEADER(Mesh::Feature);
+    PROPERTY_HEADER(Mesh::Feature);
 
 public:
-  /// Constructor
-  Feature(void);
-  virtual ~Feature();
+    /// Constructor
+    Feature(void);
+    virtual ~Feature();
 
-  /** @name Properties */
-  //@{
-  /** Property that holds the mesh data. */
-  PropertyMeshKernel Mesh;
-  //@}
+    /** @name Properties */
+    //@{
+    /** Property that holds the mesh data. */
+    PropertyMeshKernel Mesh;
+    //@}
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  virtual void onChanged(const App::Property* prop);
-  //@}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    virtual void onChanged(const App::Property* prop);
+    //@}
 
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const {
-    return "MeshGui::ViewProviderMeshFaceSet";
-  }
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "MeshGui::ViewProviderMeshFaceSet";
+    }
 
-  /// handles the MeshPy object
-  virtual PyObject* getPyObject(void);
+    /// handles the MeshPy object
+    virtual PyObject* getPyObject(void);
+};
 
+/** Base class of all Python mesh feature classes in FreeCAD
+ */
+class MeshExport FeaturePython : public App::GeometryPython
+{
+    PROPERTY_HEADER(Mesh::FeaturePython);
 
+public:
+    /// Constructor
+    FeaturePython(void);
+    virtual ~FeaturePython();
+
+    PropertyMeshKernel Mesh;
+
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "MeshGui::ViewProviderPython";
+    }
+
+protected:
+    void onChanged(const App::Property* prop);
 };
 
 } //namespace Mesh

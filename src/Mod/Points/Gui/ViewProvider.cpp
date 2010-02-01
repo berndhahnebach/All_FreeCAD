@@ -441,3 +441,271 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
     Gui::Application::Instance->activeDocument()->commitCommand();
     fea->purgeTouched();
 }
+
+// -------------------------------------------------
+
+PROPERTY_SOURCE(PointsGui::ViewProviderPython, Gui::ViewProviderPythonGeometry)
+
+
+App::PropertyFloatConstraint::Constraints ViewProviderPython::floatRange = {1.0f,64.0f,1.0f};
+
+ViewProviderPython::ViewProviderPython()
+{
+    ADD_PROPERTY(PointSize,(2.0f));
+    PointSize.setConstraints(&floatRange);
+
+    pcPointsCoord = new SoCoordinate3();
+    pcPointsCoord->ref();
+    pcPoints = new SoPointSet();
+    pcPoints->ref();
+    pcPointsNormal = new SoNormal();  
+    pcPointsNormal->ref();
+    pcColorMat = new SoMaterial;
+    pcColorMat->ref();
+
+    pcPointStyle = new SoDrawStyle();
+    pcPointStyle->ref();
+    pcPointStyle->style = SoDrawStyle::POINTS;
+    pcPointStyle->pointSize = PointSize.getValue();
+}
+
+ViewProviderPython::~ViewProviderPython()
+{
+    pcPointsCoord->unref();
+    pcPoints->unref();
+    pcPointsNormal->unref();
+    pcColorMat->unref();
+    pcPointStyle->unref();
+}
+
+void ViewProviderPython::onChanged(const App::Property* prop)
+{
+    if (prop == &PointSize) {
+        pcPointStyle->pointSize = PointSize.getValue();
+    }
+    else {
+        ViewProviderPythonGeometry::onChanged(prop);
+    }
+}
+
+void ViewProviderPython::createPoints(const Points::PointKernel& cPts)
+{
+    pcPointsCoord->point.setNum(cPts.size());
+    SbVec3f* vec = pcPointsCoord->point.startEditing();
+
+    // get all points
+    int idx=0;
+    const std::vector<Base::Vector3f>& kernel = cPts.getBasicPoints();
+    for (std::vector<Base::Vector3f>::const_iterator it = kernel.begin(); it != kernel.end(); ++it, idx++) {
+        vec[idx].setValue(it->x, it->y, it->z);
+    }
+
+    pcPoints->numPoints = cPts.size();
+    pcPointsCoord->point.finishEditing();
+}
+
+void ViewProviderPython::setVertexColorMode(App::PropertyColorList* pcProperty)
+{
+    const std::vector<App::Color>& val = pcProperty->getValues();
+    unsigned long i=0;
+
+    pcColorMat->enableNotify(false);
+    pcColorMat->diffuseColor.deleteValues(0);
+    pcColorMat->diffuseColor.setNum(val.size());
+
+    for ( std::vector<App::Color>::const_iterator it = val.begin(); it != val.end(); ++it ) {
+        pcColorMat->diffuseColor.set1Value(i++, SbColor(it->r, it->g, it->b));
+    }
+
+    pcColorMat->enableNotify(true);
+    pcColorMat->touch();
+}
+
+void ViewProviderPython::setVertexGreyvalueMode(Points::PropertyGreyValueList* pcProperty)
+{
+    const std::vector<float>& val = pcProperty->getValues();
+    unsigned long i=0;
+
+    pcColorMat->enableNotify(false);
+    pcColorMat->diffuseColor.deleteValues(0);
+    pcColorMat->diffuseColor.setNum(val.size());
+
+    for ( std::vector<float>::const_iterator it = val.begin(); it != val.end(); ++it ) {
+        pcColorMat->diffuseColor.set1Value(i++, SbColor(*it, *it, *it));
+    }
+
+    pcColorMat->enableNotify(true);
+    pcColorMat->touch();
+}
+
+void ViewProviderPython::setVertexNormalMode(Points::PropertyNormalList* pcProperty)
+{
+    const std::vector<Base::Vector3f>& val = pcProperty->getValues();
+    unsigned long i=0;
+
+    pcPointsNormal->enableNotify(false);
+    pcPointsNormal->vector.deleteValues(0);
+    pcPointsNormal->vector.setNum(val.size());
+
+    for ( std::vector<Base::Vector3f>::const_iterator it = val.begin(); it != val.end(); ++it ) {
+        pcPointsNormal->vector.set1Value(i++, it->x, it->y, it->z);
+    }
+
+    pcPointsNormal->enableNotify(true);
+    pcPointsNormal->touch();
+}
+
+void ViewProviderPython::attach(App::DocumentObject* pcObj)
+{
+    // call parent's attach to define display modes
+    ViewProviderPythonGeometry::attach(pcObj);
+
+    SoGroup* pcPointRoot = new SoGroup();
+    SoGroup* pcPointShadedRoot = new SoGroup();
+    SoGroup* pcColorShadedRoot = new SoGroup();
+
+    // Hilight for selection
+    pcHighlight->addChild(pcPointsCoord);
+    pcHighlight->addChild(pcPoints);
+
+    // points part ---------------------------------------------
+    pcPointRoot->addChild(pcPointStyle);
+    pcPointRoot->addChild(pcShapeMaterial);
+    pcPointRoot->addChild(pcHighlight);
+
+    // points shaded ---------------------------------------------
+    pcPointShadedRoot->addChild(pcPointStyle);
+    pcPointShadedRoot->addChild(pcShapeMaterial);
+    pcPointShadedRoot->addChild(pcPointsNormal);
+    pcPointShadedRoot->addChild(pcHighlight);
+
+    // color shaded  ------------------------------------------
+    pcColorShadedRoot->addChild(pcPointStyle);
+    SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
+    pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+    pcColorShadedRoot->addChild(pcColorMat);
+    pcColorShadedRoot->addChild(pcMatBinding);
+    pcColorShadedRoot->addChild(pcHighlight);
+
+    // putting all together with a switch
+    addDisplayMaskMode(pcPointRoot, "Points");
+    addDisplayMaskMode(pcColorShadedRoot, "Color");
+    addDisplayMaskMode(pcPointShadedRoot, "Shaded");
+}
+
+void ViewProviderPython::setDisplayMode(const char* ModeName)
+{
+    int numPoints = pcPointsCoord->point.getNum();
+
+    if (strcmp("Color",ModeName)==0) {
+        std::map<std::string,App::Property*> Map;
+        pcObject->getPropertyMap(Map);
+        for(std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+            Base::Type t = it->second->getTypeId();
+            if (t==App::PropertyColorList::getClassTypeId()) {
+                App::PropertyColorList* colors = (App::PropertyColorList*)it->second;
+                if (numPoints != colors->getSize()) {
+#ifdef FC_DEBUG
+                    SoDebugError::postWarning("ViewProviderPoints::setDisplayMode",
+                        "The number of points (%d) doesn't match with the number of colors (%d).",
+                        numPoints, colors->getSize());
+#endif
+                    // fallback 
+                    setDisplayMaskMode("Points");
+                }
+                else {
+                    setVertexColorMode(colors);
+                    setDisplayMaskMode("Color");
+                }
+                break;
+            }
+        }
+    }
+    else if (strcmp("Intensity",ModeName)==0) {
+        std::map<std::string,App::Property*> Map;
+        pcObject->getPropertyMap(Map);
+        for(std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+            Base::Type t = it->second->getTypeId();
+            if (t==Points::PropertyGreyValueList::getClassTypeId()) {
+                Points::PropertyGreyValueList* greyValues = (Points::PropertyGreyValueList*)it->second;
+                if (numPoints != greyValues->getSize()) {
+#ifdef FC_DEBUG
+                    SoDebugError::postWarning("ViewProviderPoints::setDisplayMode",
+                        "The number of points (%d) doesn't match with the number of grey values (%d).",
+                        numPoints, greyValues->getSize());
+#endif
+                    // Intensity mode is not possible then set the default () mode instead.
+                    setDisplayMaskMode("Points");
+                }
+                else {
+                    setVertexGreyvalueMode((Points::PropertyGreyValueList*)it->second);
+                    setDisplayMaskMode("Color");
+                }
+                break;
+            }
+        }
+    }
+    else if (strcmp("Shaded",ModeName)==0) {
+        std::map<std::string,App::Property*> Map;
+        pcObject->getPropertyMap(Map);
+        for (std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+            Base::Type t = it->second->getTypeId();
+            if (t==Points::PropertyNormalList::getClassTypeId()) {
+                Points::PropertyNormalList* normals = (Points::PropertyNormalList*)it->second;
+                if (numPoints != normals->getSize()) {
+#ifdef FC_DEBUG
+                    SoDebugError::postWarning("ViewProviderPoints::setDisplayMode",
+                        "The number of points (%d) doesn't match with the number of normals (%d).",
+                        numPoints, normals->getSize());
+#endif
+                    // fallback 
+                    setDisplayMaskMode("Points");
+                }
+                else {
+                    setVertexNormalMode(normals);
+                    setDisplayMaskMode("Shaded");
+                }
+                break;
+            }
+        }
+    }
+    else if (strcmp("Points",ModeName)==0) {
+        setDisplayMaskMode("Points");
+    }
+
+    ViewProviderPythonGeometry::setDisplayMode(ModeName);
+}
+
+std::vector<std::string> ViewProviderPython::getDisplayModes(void) const
+{
+    std::vector<std::string> StrList = ViewProviderPythonGeometry::getDisplayModes();
+    StrList.push_back("Points");
+
+    if (pcObject) {
+        std::map<std::string,App::Property*> Map;
+        pcObject->getPropertyMap(Map);
+
+        for(std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+            Base::Type t = it->second->getTypeId();
+            if (t==Points::PropertyNormalList::getClassTypeId())
+                StrList.push_back("Shaded");
+            else if (t==Points::PropertyGreyValueList::getClassTypeId())
+                StrList.push_back("Intensity");
+            else if (t==App::PropertyColorList::getClassTypeId())
+                StrList.push_back("Color");
+        }
+    }
+
+    return StrList;
+}
+
+void ViewProviderPython::updateData(const App::Property* prop)
+{
+    Gui::ViewProviderPythonGeometry::updateData(prop);
+    if (prop->getTypeId() == Points::PropertyPointKernel::getClassTypeId()) {
+        createPoints(static_cast<const Points::PropertyPointKernel*>(prop)->getValue());
+
+        // The number of points might have changed, so force also a resize of the Inventor internals
+        setActiveMode();
+    }
+}

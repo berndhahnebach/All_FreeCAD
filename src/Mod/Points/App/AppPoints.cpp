@@ -61,6 +61,7 @@ void PointsAppExport initPoints()
 
     // add data types
     Points::Feature               ::init();
+    Points::FeaturePython         ::init();
     Points::Export                ::init();
     Points::ImportAscii           ::init();
 }

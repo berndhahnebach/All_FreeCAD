@@ -75,6 +75,7 @@ void PointsGuiExport initPointsGui()
     CreatePointsCommands();
 
     PointsGui::ViewProviderPoints::init();
+    PointsGui::ViewProviderPython::init();
     PointsGui::Workbench         ::init();
 
     // add resources and reloads the translators

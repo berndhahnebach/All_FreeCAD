@@ -45,6 +45,7 @@
 #include "ViewProviderTransform.h"
 #include "ViewProviderTransformDemolding.h"
 #include "ViewProviderDefects.h"
+#include "ViewProviderPython.h"
 #include "Workbench.h"
 #include "qrc_Mesh.cpp"
 
@@ -112,6 +113,7 @@ void MeshGuiExport initMeshGui()
     MeshGui::ViewProviderMeshObject             ::init();
     MeshGui::ViewProviderIndexedFaceSet         ::init();
     MeshGui::ViewProviderMeshFaceSet            ::init();
+    MeshGui::ViewProviderPython                 ::init();
     MeshGui::ViewProviderExport                 ::init();
     MeshGui::ViewProviderMeshCurvature          ::init();
     MeshGui::ViewProviderMeshTransform          ::init();
