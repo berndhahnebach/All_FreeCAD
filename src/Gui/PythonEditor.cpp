@@ -365,7 +365,7 @@ void PythonSyntaxHighlighter::highlightBlock (const QString & text)
       } break;
     case DefineName:
       {
-        if ( ch.isLetterOrNumber() || ch == QLatin1Char(' ') )
+        if ( ch.isLetterOrNumber() || ch == QLatin1Char(' ') || ch == QLatin1Char('_') )
         {
           setFormat( i, 1, this->colorByType(SyntaxHighlighter::Defname));
         }
@@ -378,7 +378,7 @@ void PythonSyntaxHighlighter::highlightBlock (const QString & text)
       } break;
     case ClassName:
       {
-        if ( ch.isLetterOrNumber() || ch == QLatin1Char(' ') )
+        if ( ch.isLetterOrNumber() || ch == QLatin1Char(' ') || ch == QLatin1Char('_') )
         {
           setFormat( i, 1, this->colorByType(SyntaxHighlighter::Classname));
         }
