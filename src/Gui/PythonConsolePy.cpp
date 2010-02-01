@@ -226,7 +226,8 @@ PythonStdin::PythonStdin(PythonConsole *pc)
 
 PythonStdin::~PythonStdin()
 {
-    delete editField;
+    // call deleteLater() because deleting immediately causes problems
+    editField->deleteLater();
 }
 
 Py::Object PythonStdin::repr()
