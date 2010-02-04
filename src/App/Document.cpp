@@ -23,7 +23,7 @@
 
 /*! \class App::Document
 This is bisides the Application class the most importand class in FreeCAD
-It contains all the data of the opend, saved or newly created FreeCAD Document.
+It contains all the data of the opened, saved or newly created FreeCAD Document.
 The Document manage the Undo and Redo mechanism and the linking of documents.
 
 Note: the documents are not free objects. They are completly handled by the

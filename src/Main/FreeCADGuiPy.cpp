@@ -119,6 +119,27 @@ FreeCADGui_showMainWindow(PyObject * /*self*/, PyObject *args)
 }
 
 static PyObject *
+FreeCADGui_exec_loop(PyObject * /*self*/, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    if (!qApp) {
+        PyErr_SetString(PyExc_RuntimeError, "Must construct a QApplication before a QPaintDevice\n");
+        return NULL;
+    }
+    else if (!qobject_cast<QApplication*>(qApp)) {
+        PyErr_SetString(PyExc_RuntimeError, "Cannot create widget when no GUI is being used\n");
+        return NULL;
+    }
+
+    qApp->exec();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
 FreeCADGui_setupWithoutGUI(PyObject * /*self*/, PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
@@ -150,6 +171,9 @@ struct PyMethodDef FreeCADGui_methods[] = {
     {"showMainWindow",FreeCADGui_showMainWindow,METH_VARARGS,
      "showMainWindow() -- Show the main window\n"
      "If no main window does exist one gets created"},
+    {"exec_loop",FreeCADGui_exec_loop,METH_VARARGS,
+     "exec_loop() -- Starts the event loop\n"
+     "Note: this will block the call until the event loop has terminated"},
     {"setupWithoutGUI",FreeCADGui_setupWithoutGUI,METH_VARARGS,
      "setupWithoutGUI() -- Uses this module without starting\n"
      "an event loop or showing up any GUI\n"},

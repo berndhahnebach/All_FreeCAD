@@ -51,6 +51,7 @@ BUILT_SOURCES=\
 		moc_PropertyPage.cpp \
 		moc_PropertyView.cpp \
 		moc_PythonConsole.cpp \
+		moc_PythonDebugger.cpp \
 		moc_PythonEditor.cpp \
 		moc_EditorView.cpp \
 		moc_ReportView.cpp \
@@ -260,6 +261,8 @@ libFreeCADGui_la_SOURCES=\
 		PythonConsole.cpp \
 		PythonConsolePy.cpp \
 		PythonConsolePy.h \
+		PythonDebugger.cpp \
+		PythonDebugger.h \
 		PythonEditor.cpp \
 		EditorView.cpp \
 		PythonWorkbenchPyImp.cpp \

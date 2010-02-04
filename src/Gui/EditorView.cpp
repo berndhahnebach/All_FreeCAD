@@ -42,9 +42,12 @@
 
 #include "EditorView.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "Macro.h"
+#include "PythonDebugger.h"
 
+#include <Base/Interpreter.h>
 #include <Base/Parameter.h>
 
 using namespace Gui;
@@ -120,6 +123,11 @@ EditorView::~EditorView()
     delete d->activityTimer;
     delete d;
     getWindowParameter()->Detach( this );
+}
+
+QTextEdit* EditorView::getEditor() const
+{
+    return d->textEdit;
 }
 
 void EditorView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
@@ -519,6 +527,81 @@ void LineMarker::paintEvent(QPaintEvent*)
         const QString txt = QString::number( lineCount );
         p.drawText( width() - fm.width(txt), qRound( position.y() ) - contentsY + ascent, txt );
     }
+}
+
+// -------------------------------------------------------
+
+PythonEditorView::PythonEditorView(QTextEdit* editor, QWidget* parent)
+  : EditorView(editor, parent), _dbg(new PythonDebugger())
+{
+    // Create actions
+    execute = new QAction(this);
+    execute->setIcon(BitmapFactory().pixmap("macro-execute"));
+    execute->setToolTip(tr("Execute without debugging"));
+    execute->setStatusTip(tr("Execute without debugging"));
+    connect(execute, SIGNAL(triggered()), this, SLOT(executeScript()));
+
+    dbgStart = new QAction(this);
+//    dbgStart->setIcon(QPixmap(debug_start));
+    dbgStart->setText(tr("Start"));
+    dbgStart->setToolTip(tr("Start debugging"));
+    dbgStart->setStatusTip(tr("Start debugging"));
+    connect(dbgStart, SIGNAL(triggered()), this, SLOT(startDebug()));
+
+    dbgStop = new QAction(this);
+//    dbgStop->setIcon(QPixmap(debug_stop));
+    dbgStop->setText(tr("Stop"));
+    dbgStop->setToolTip(tr("Stop debugging"));
+    dbgStop->setStatusTip(tr("Stop debugging"));
+    connect(dbgStop, SIGNAL(triggered()), this, SLOT(stopDebug()));
+
+    dbgNext = new QAction(this);
+//    dbgNext->setIcon(QPixmap(step_over));
+    dbgNext->setText(tr("Step over"));
+    dbgNext->setToolTip(tr("Step over"));
+    dbgNext->setStatusTip(tr("Step over"));
+    connect(dbgNext, SIGNAL(triggered()), this, SLOT(nextStep()));
+
+    // Create the toolbars and add the actions
+    QToolBar* debug = this->addToolBar(tr("Debugger"));
+    debug->addAction(execute);
+    debug->addAction(dbgStart);
+    debug->addAction(dbgStop);
+    debug->addAction(dbgNext);
+}
+
+PythonEditorView::~PythonEditorView()
+{
+    delete _dbg;
+}
+
+void PythonEditorView::executeScript()
+{
+    run();
+}
+
+void PythonEditorView::startDebug()
+{
+    try {
+        if (_dbg->start()) {
+            QString data = getEditor()->toPlainText();
+            Base::Interpreter().runString(data.toAscii());
+            _dbg->stop();
+        }
+    }
+    catch (const Base::PyException&) {
+        _dbg->stop();
+    }
+}
+
+void PythonEditorView::stopDebug()
+{
+    _dbg->tryStop();
+}
+
+void PythonEditorView::nextStep()
+{
+    _dbg->next();
 }
 
 #include "moc_EditorView.cpp"

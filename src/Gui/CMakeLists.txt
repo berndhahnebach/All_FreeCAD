@@ -114,6 +114,7 @@ set(Gui_MOC_HDRS
 		 PropertyPage.h
 		 PropertyView.h
 		 PythonConsole.h
+		 PythonDebugger.h
 		 PythonEditor.h
 		 ReportView.h
 		 SceneInspector.h
@@ -379,6 +380,7 @@ SET(Editor_CPP_SRCS
 		 EditorView.cpp
 		 PythonConsole.cpp
 		 PythonConsolePy.cpp
+		 PythonDebugger.cpp
 		 PythonEditor.cpp
 		 SyntaxHighlighter.cpp
 		 TextEdit.cpp
@@ -388,6 +390,7 @@ SET(Editor_HPP_SRCS
 		 EditorView.h
 		 PythonConsole.h
 		 PythonConsolePy.h
+		 PythonDebugger.h
 		 PythonEditor.h
 		 SyntaxHighlighter.h
 		 TextEdit.h
