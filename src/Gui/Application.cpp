@@ -71,6 +71,7 @@
 #include "BitmapFactory.h"
 #include "SoFCDB.h"
 #include "PythonConsolePy.h"
+#include "PythonDebugger.h"
 #include "View3DPy.h"
 #include "BrowserView.h"
 #include "DlgOnlineHelpImp.h"
@@ -267,11 +268,12 @@ Application::Application(bool GUIenabled)
     }
 
     // Python console binding
-    PythonStdout    ::init_type();
-    PythonStderr    ::init_type();
-    OutputStderr    ::init_type();
-    PythonStdin     ::init_type();
-    View3DInventorPy::init_type();
+    PythonDebugModule   ::init_module();
+    PythonStdout        ::init_type();
+    PythonStderr        ::init_type();
+    OutputStderr        ::init_type();
+    PythonStdin         ::init_type();
+    View3DInventorPy    ::init_type();
 
     d = new ApplicationP;
     bool redir = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OutputWindow")->

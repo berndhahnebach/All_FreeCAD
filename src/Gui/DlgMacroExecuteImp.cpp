@@ -180,7 +180,7 @@ void DlgMacroExecuteImp::on_createButton_clicked()
             file.close();
             PythonEditor* editor = new PythonEditor();
             editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
-            EditorView* edit = new EditorView(editor, getMainWindow());
+            PythonEditorView* edit = new PythonEditorView(editor, getMainWindow());
             edit->open(fi.absoluteFilePath());
             edit->setWindowTitle(fn);
             edit->resize(400, 300);

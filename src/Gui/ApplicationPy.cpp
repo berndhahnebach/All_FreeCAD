@@ -252,7 +252,7 @@ PyObject* Application::sOpen(PyObject * /*self*/, PyObject *args,PyObject * /*kw
                  ext == QLatin1String("fcscript")) {
             PythonEditor* editor = new PythonEditor();
             editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
-            EditorView* edit = new EditorView(editor, getMainWindow());
+            PythonEditorView* edit = new PythonEditorView(editor, getMainWindow());
             edit->open(fileName);
             edit->resize(400, 300);
             getMainWindow()->addWindow( edit );
@@ -300,7 +300,7 @@ PyObject* Application::sInsert(PyObject * /*self*/, PyObject *args,PyObject * /*
                  ext == QLatin1String("fcscript")) {
             PythonEditor* editor = new PythonEditor();
             editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
-            EditorView* edit = new EditorView(editor, getMainWindow());
+            PythonEditorView* edit = new PythonEditorView(editor, getMainWindow());
             edit->open(fileName);
             edit->resize(400, 300);
             getMainWindow()->addWindow( edit );

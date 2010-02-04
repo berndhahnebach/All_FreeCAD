@@ -63,6 +63,7 @@ public:
     EditorView(QTextEdit* editor, QWidget* parent);
     ~EditorView();
 
+    QTextEdit* getEditor() const;
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 
     const char *getName(void) const {return "EditorView";}
@@ -106,6 +107,30 @@ private:
 
 private:
     EditorViewP* d;
+};
+
+class PythonDebugger;
+class GuiExport PythonEditorView : public EditorView
+{
+    Q_OBJECT
+
+public:
+    PythonEditorView(QTextEdit* editor, QWidget* parent);
+    ~PythonEditorView();
+
+public Q_SLOTS:
+    void executeScript();
+    void startDebug();
+    void stopDebug();
+    void nextStep();
+
+private:
+    // Actions
+    QAction* execute;
+    QAction* dbgStart;
+    QAction* dbgStop;
+    QAction* dbgNext;
+    PythonDebugger* _dbg;
 };
 
 } // namespace Gui
