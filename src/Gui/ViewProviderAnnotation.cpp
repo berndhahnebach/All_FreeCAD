@@ -30,6 +30,7 @@
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoAsciiText.h>
 # include <Inventor/nodes/SoTranslation.h>
+# include <Inventor/nodes/SoRotationXYZ.h>
 #endif
 
 #include "ViewProviderAnnotation.h"
@@ -39,6 +40,7 @@
 using namespace Gui;
 
 const char* ViewProviderAnnotation::JustificationEnums[]= {"Left","Right","Center",NULL};
+const char* ViewProviderAnnotation::RotationAxisEnums[]= {"X","Y","Z",NULL};
 
 PROPERTY_SOURCE(Gui::ViewProviderAnnotation, Gui::ViewProviderDocumentObject)
 
@@ -50,6 +52,9 @@ ViewProviderAnnotation::ViewProviderAnnotation()
     Justification.setEnums(JustificationEnums);
     ADD_PROPERTY(FontSize,(12));
     ADD_PROPERTY(FontName,("Arial"));
+    ADD_PROPERTY(Rotation,(0));
+    ADD_PROPERTY(RotationAxis,((long)2));
+    RotationAxis.setEnums(RotationAxisEnums);
 
     pFont = new SoFont();
     pFont->ref();
@@ -61,7 +66,10 @@ ViewProviderAnnotation::ViewProviderAnnotation()
     pColor->ref();
     pTranslation = new SoTranslation();
     pTranslation->ref();
+    pRotationXYZ = new SoRotationXYZ();
+    pRotationXYZ->ref();
 
+    RotationAxis.touch();
     TextColor.touch();
     FontSize.touch();
     FontName.touch();
@@ -76,6 +84,7 @@ ViewProviderAnnotation::~ViewProviderAnnotation()
     pLabel3d->unref();
     pColor->unref();
     pTranslation->unref();
+    pRotationXYZ->unref();
 }
 
 void ViewProviderAnnotation::onChanged(const App::Property* prop)
@@ -103,6 +112,20 @@ void ViewProviderAnnotation::onChanged(const App::Property* prop)
     }
     else if (prop == &FontName) {
         pFont->name = FontName.getValue();
+    }
+    else if (prop == &RotationAxis) {
+        if (RotationAxis.getValue() == 0) {
+	    pRotationXYZ->axis = SoRotationXYZ::X;
+	}
+	else if (RotationAxis.getValue() == 1) {
+	    pRotationXYZ->axis = SoRotationXYZ::Y;
+	}
+	else if (RotationAxis.getValue() == 2) {
+	    pRotationXYZ->axis = SoRotationXYZ::Z;
+	}
+    }
+    else if (prop == &Rotation) {
+        pRotationXYZ->angle = (Rotation.getValue()/360)*(2*M_PI);
     }
     else {
         ViewProviderDocumentObject::onChanged(prop);
@@ -136,11 +159,13 @@ void ViewProviderAnnotation::attach(App::DocumentObject* f)
     SoAnnotation* anno3d = new SoAnnotation();
 
     anno->addChild(pTranslation);
+    anno->addChild(pRotationXYZ);
     anno->addChild(pColor);
     anno->addChild(pFont);
     anno->addChild(pLabel);
 
     anno3d->addChild(pTranslation);
+    anno3d->addChild(pRotationXYZ);
     anno3d->addChild(pColor);
     anno3d->addChild(pFont);
     anno3d->addChild(pLabel3d);

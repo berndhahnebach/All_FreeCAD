@@ -31,6 +31,7 @@ class SoText2;
 class SoAsciiText;
 class SoBaseColor;
 class SoTranslation;
+class SoRotationXYZ;
 
 namespace Gui
 {
@@ -49,6 +50,8 @@ public:
     App::PropertyEnumeration    Justification;
     App::PropertyFloat          FontSize;
     App::PropertyString         FontName;
+    App::PropertyAngle          Rotation;
+    App::PropertyEnumeration    RotationAxis;
 
     void attach(App::DocumentObject *);
     void updateData(const App::Property*);
@@ -64,8 +67,10 @@ private:
     SoAsciiText      * pLabel3d;
     SoBaseColor      * pColor;
     SoTranslation    * pTranslation;
+    SoRotationXYZ    * pRotationXYZ;
 
     static const char* JustificationEnums[];
+    static const char* RotationAxisEnums[];
 };
 
 } //namespace Gui
