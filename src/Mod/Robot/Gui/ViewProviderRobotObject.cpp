@@ -41,6 +41,8 @@
 #include "ViewProviderRobotObject.h"
 
 #include <Mod/Robot/App/RobotObject.h>
+#include <Mod/Part/App/PartFeature.h>
+#include <Mod/Part/Gui/ViewProvider.h>
 #include <App/Document.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
@@ -280,7 +282,12 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 		//pcTcpTransform->translation = SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z);
 		//pcTcpTransform->rotation = SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]);
 	}else if (prop == &robObj->ToolShape) {
-        SbMatrix  M;
+        App::DocumentObject* o = robObj->ToolShape.getValue<App::DocumentObject*>();
+
+        if(o->isDerivedFrom(Part::Feature::getClassTypeId())){
+            Part::Feature *p = dynamic_cast<Part::Feature *>(o); 
+            SbMatrix  M;
+        }
  	}
 
 }

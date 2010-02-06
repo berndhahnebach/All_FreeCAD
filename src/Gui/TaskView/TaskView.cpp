@@ -176,7 +176,8 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
     else if (Reason.Type == SelectionChanges::RmvSelection) {
     }
 
-    updateWatcher();
+    if(!ActiveDialog)
+        updateWatcher();
 
 }
 
