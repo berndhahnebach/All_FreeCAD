@@ -40,10 +40,11 @@ void PythonDebugModule::init_module(void)
     PythonDebugStderr::init_type();
     PythonDebugExcept::init_type();
     static PythonDebugModule* mod = new PythonDebugModule();
+    Q_UNUSED(mod);
 }
 
 PythonDebugModule::PythonDebugModule()
-  : ExtensionModule<PythonDebugModule>("FreeCADDbg")
+  : Py::ExtensionModule<PythonDebugModule>("FreeCADDbg")
 {
     add_varargs_method("getFunctionCallCount", &PythonDebugModule::getFunctionCallCount,
         "Get the total number of function calls executed and the number executed since the last call to this function.");
