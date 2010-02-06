@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderBox_H__
-#define __ViewProviderBox_H__
+#ifndef PARTGUI_VIEWPROVIDERBOX_H
+#define PARTGUI_VIEWPROVIDERBOX_H
 
 #include "ViewProvider.h"
 
@@ -60,5 +60,5 @@ protected:
 } // namespace PartGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+#endif // PARTGUI_VIEWPROVIDERBOX_H
 

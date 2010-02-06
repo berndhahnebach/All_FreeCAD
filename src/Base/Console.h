@@ -25,8 +25,8 @@
 
 
 
-#ifndef __CONSOLE_H__
-#define __CONSOLE_H__
+#ifndef BASE_CONSOLE_H
+#define BASE_CONSOLE_H
 
 // Std. configurations
 #include "PyExport.h"
@@ -269,4 +269,4 @@ private:
 
 } // namespace Base 
 
-#endif
+#endif // BASE_CONSOLE_H

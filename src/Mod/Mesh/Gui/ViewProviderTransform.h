@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __VIEWPROVIDERMESHTRANSFORM_H__
-#define __VIEWPROVIDERMESHTRANSFORM_H__
+#ifndef MESHGUI_VIEWPROVIDERMESHTRANSFORM_H
+#define MESHGUI_VIEWPROVIDERMESHTRANSFORM_H
 
 class SoSeparator;
 class SbVec3f;
@@ -72,12 +72,10 @@ public:
 protected:
 
   SoTransformerManip *pcTransformerDragger;
-
-
 };
 
 } // namespace MeshGui
 
 
-#endif // __VIEWPROVIDERMESHTRANSFORM_H__
+#endif // MESHGUI_VIEWPROVIDERMESHTRANSFORM_H
 

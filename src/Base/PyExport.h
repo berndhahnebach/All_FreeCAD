@@ -28,8 +28,8 @@
  *  \date    5.2001
  */
 
-#ifndef __PYEXPORT_H__
-#define __PYEXPORT_H__
+#ifndef BASE_PYEXPORT_H
+#define BASE_PYEXPORT_H
 
 // Std. configurations
 
@@ -236,4 +236,4 @@ private:
 
 } // namespace Base
 
-#endif
+#endif // BASE_PYEXPORT_H

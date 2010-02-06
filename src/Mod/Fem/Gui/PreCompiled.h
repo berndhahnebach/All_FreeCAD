@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef FEMGUI_PRECOMPILED_H
+#define FEMGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
@@ -74,4 +74,4 @@
 
 #endif //_PreComp_
 
-#endif // __PRECOMPILED_GUI__
+#endif // FEMGUI_PRECOMPILED_H

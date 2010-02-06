@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef POINTS_PRECOMPILED_H
+#define POINTS_PRECOMPILED_H
 
 #include <FCConfig.h>
 

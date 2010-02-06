@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderCurveNet_H__
-#define __ViewProviderCurveNet_H__
+#ifndef PARTGUI_VIEWPROVIDERCURVENET_H
+#define PARTGUI_VIEWPROVIDERCURVENET_H
 
 #include "ViewProvider.h"
 
@@ -85,5 +85,5 @@ protected:
 } // namespace PartGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+#endif // PARTGUI_VIEWPROVIDERCURVENET_H
 

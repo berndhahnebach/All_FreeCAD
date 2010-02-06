@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef PARTGUI_PRECOMPILED_H
+#define PARTGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 

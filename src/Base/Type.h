@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __Type_H__
-#define __Type_H__
+#ifndef BASE_TYPE_H
+#define BASE_TYPE_H
 
 // Std. configurations
 
@@ -194,5 +194,5 @@ Type::isBad(void) const
 } //namespace Base
 
 
-#endif // __Type_H__
+#endif // BASE_TYPE_H
 

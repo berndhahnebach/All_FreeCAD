@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __FCVIEW_H__
-#define __FCVIEW_H__
+#ifndef GUI_VIEW_H
+#define GUI_VIEW_H
 
 #include <vector>
 #include <Base/BaseClass.h>
@@ -108,4 +108,4 @@ protected:
 
 } // namespace Gui
 
-#endif // __FCVIEW_H__ 
+#endif // GUI_VIEW_H 

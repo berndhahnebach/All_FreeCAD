@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDERDrawingVIEW_H__
-#define __VIEWPROVIDERDrawingVIEW_H__
+#ifndef DRAWINGGUI_VIEWPROVIDERVIEW_H
+#define DRAWINGGUI_VIEWPROVIDERVIEW_H
 
 #include <Gui/ViewProviderFeature.h>
 
@@ -57,5 +57,5 @@ protected:
 } // namespace DrawingGui
 
 
-#endif // __VIEWPROVIDERDrawing_H__
+#endif // DRAWINGGUI_VIEWPROVIDERVIEW_H
 

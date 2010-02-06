@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FeaturePartImportStep_H__
-#define __FeaturePartImportStep_H__
+#ifndef PART_FEATUREPARTIMPORTSTEP_H
+#define PART_FEATUREPARTIMPORTSTEP_H
 
 
 #include <App/PropertyStandard.h>
@@ -57,11 +57,7 @@ public:
     //@}
 };
 
-
-
 }
 
 
-
-
-#endif // __FeaturePartImportStep_H__
+#endif // PART_FEATUREPARTIMPORTSTEP_H

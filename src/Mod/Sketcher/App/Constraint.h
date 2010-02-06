@@ -22,8 +22,8 @@
 
 
 
-#ifndef __Constraint_H__
-#define __Constraint_H__
+#ifndef SKETCHER_CONSTRAINT_H
+#define SKETCHER_CONSTRAINT_H
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
@@ -53,4 +53,4 @@ public:
 } //namespace Part
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // SKETCHER_CONSTRAINT_H

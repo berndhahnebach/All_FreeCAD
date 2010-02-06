@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef ROBOTGUI_PRECOMPILED_H
+#define ROBOTGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
@@ -39,6 +39,7 @@
 # define RobotGuiExport
 #endif
 
+#include <Standard_math.hxx>
 
 #ifdef _PreComp_
 
@@ -73,4 +74,4 @@
 
 #endif //_PreComp_
 
-#endif // __PRECOMPILED_GUI__
+#endif // ROBOTGUI_PRECOMPILED_H

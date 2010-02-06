@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef DRAWING_PRECOMPILED_H
+#define DRAWING_PRECOMPILED_H
 
 #include <FCConfig.h>
 

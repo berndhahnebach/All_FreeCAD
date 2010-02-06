@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderExtern_H__
-#define __ViewProviderExtern_H__
+#ifndef GUI_VIEWPROVIDER_EXTERN_H
+#define GUI_VIEWPROVIDER_EXTERN_H
 
 #include "ViewProvider.h"
 
@@ -60,12 +60,7 @@ protected:
     std::vector<std::string> modes;
 };
 
-
-
-
-
-
 } // namespace Gui
 
-#endif // __ViewProviderExtern_H__
+#endif // GUI_VIEWPROVIDER_EXTERN_H
 

@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FeaturePartCurveNet_H__
-#define __FeaturePartCurveNet_H__
+#ifndef PART_FeaturePartCurveNet_H
+#define PART_FeaturePartCurveNet_H
 
 
 #include "PartFeature.h"
@@ -56,4 +56,4 @@ public:
 }
 
 
-#endif // __FeaturePartCurveNet_H__
+#endif // PART_FeaturePartCurveNet_H

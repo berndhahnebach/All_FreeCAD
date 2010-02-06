@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FEATUREPARTBOX_H__
-#define __FEATUREPARTBOX_H__
+#ifndef PART_FEATUREPARTBOX_H
+#define PART_FEATUREPARTBOX_H
 
 #include <App/PropertyStandard.h>
 
@@ -55,11 +55,10 @@ protected:
     void Restore(Base::XMLReader &reader);
     /// get called by the container when a property has changed
     virtual void onChanged (const App::Property* prop);
-
     //@}
 };
 
 } //namespace Part
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // PART_FEATUREPARTBOX_H

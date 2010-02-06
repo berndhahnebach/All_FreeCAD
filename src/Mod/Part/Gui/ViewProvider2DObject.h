@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProvider2DObject_H__
-#define __ViewProvider2DObject_H__
+#ifndef PARTGUI_IEWPROVIDER2DOBJECT_H
+#define PARTGUI_IEWPROVIDER2DOBJECT_H
 
 #include "ViewProvider.h"
 
@@ -81,5 +81,5 @@ protected:
 } // namespace PartGui
 
 
-#endif // __ViewProvider2DObject_H__
+#endif // PARTGUI_IEWPROVIDER2DOBJECT_H
 

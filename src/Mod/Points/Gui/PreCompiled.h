@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef POINTSGUI_PRECOMPILED_H
+#define POINTSGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
@@ -73,4 +73,4 @@
 
 #endif  //_PreComp_
 
-#endif // __PRECOMPILED_GUI__ 
+#endif // POINTSGUI_PRECOMPILED_H 

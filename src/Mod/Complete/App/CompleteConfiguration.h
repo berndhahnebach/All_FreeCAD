@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __CompleteConfiguration_h__
-#define __CompleteConfiguration_h__
+#ifndef COMPLETE_CONFIGURATION_H
+#define COMPLETE_CONFIGURATION_H
 
 #include <FCConfig.h>
 

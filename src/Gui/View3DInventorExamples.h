@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __VIEW3DINVENTOREXAMPLES__
-#define __VIEW3DINVENTOREXAMPLES__
+#ifndef GUI_VIEW3DINVENTOREXAMPLES_H
+#define GUI_VIEW3DINVENTOREXAMPLES_H
 
 
 void Texture3D(SoSeparator * root);
@@ -30,5 +30,5 @@ void LightManip(SoSeparator * root);
 void AnimationTexture(SoSeparator * root);
 
 
-#endif  //__VIEW3DINVENTOREXAMPLES__
+#endif  //GUI_VIEW3DINVENTOREXAMPLES_H
 
