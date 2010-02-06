@@ -198,6 +198,7 @@ SET(Command_CPP_SRCS
 		 Command.cpp
 		 CommandDoc.cpp
 		 CommandFeat.cpp
+		 CommandMacro.cpp
 		 CommandStd.cpp
 		 CommandWindow.cpp
 		 CommandTest.cpp

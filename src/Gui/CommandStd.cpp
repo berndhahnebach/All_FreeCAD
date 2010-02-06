@@ -48,9 +48,6 @@
 #include "View.h"
 
 #include "DlgParameterImp.h"
-#include "DlgMacroExecuteImp.h"
-#include "DlgMacroRecordImp.h"
-#include "Macro.h"
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
 #include "Widgets.h"
@@ -353,120 +350,6 @@ void StdCmdDlgPreferences::activated(int iMsg)
 }
 
 //===========================================================================
-// Std_DlgMacroRecord
-//===========================================================================
-DEF_STD_CMD_A(StdCmdDlgMacroRecord);
-
-StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
-  :Command("Std_DlgMacroRecord")
-{
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("&Macro recording ...");
-  sToolTipText  = QT_TR_NOOP("Opens a dialog to record a macro");
-  sWhatsThis    = "Std_DlgMacroRecord";
-  sStatusTip    = QT_TR_NOOP("Opens a dialog to record a macro");
-  sPixmap       = "macro-record";
-  iAccel        = 0;
-  eType         = 0;
-}
-
-void StdCmdDlgMacroRecord::activated(int iMsg)
-{
-  Gui::Dialog::DlgMacroRecordImp cDlg(getMainWindow());
-  cDlg.exec();
-}
-
-bool StdCmdDlgMacroRecord::isActive(void)
-{
-  return ! (getGuiApplication()->macroManager()->isOpen());
-}
-
-//===========================================================================
-// Std_DlgMacroExecute
-//===========================================================================
-DEF_STD_CMD_A(StdCmdDlgMacroExecute);
-
-StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
-  :Command("Std_DlgMacroExecute")
-{
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("Macros ...");
-  sToolTipText  = QT_TR_NOOP("Opens a dialog to let you execute a recorded macro");
-  sWhatsThis    = "Std_DlgMacroExecute";
-  sStatusTip    = QT_TR_NOOP("Opens a dialog to let you execute a recorded macro");
-  sPixmap       = "accessories-text-editor";
-  iAccel        = 0;
-  eType         = 0;
-}
-
-void StdCmdDlgMacroExecute::activated(int iMsg)
-{
-  Gui::Dialog::DlgMacroExecuteImp cDlg(getMainWindow());
-  cDlg.exec();
-}
-
-bool StdCmdDlgMacroExecute::isActive(void)
-{
-  return ! (getGuiApplication()->macroManager()->isOpen());
-}
-
-//===========================================================================
-// Std_DlgMacroExecuteDirect
-//===========================================================================
-DEF_STD_CMD_A(StdCmdDlgMacroExecuteDirect);
-
-StdCmdDlgMacroExecuteDirect::StdCmdDlgMacroExecuteDirect()
-  :Command("Std_DlgMacroExecuteDirect")
-{
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("Execute &editor");
-  sToolTipText  = QT_TR_NOOP("Execute the macro/script in the editor");
-  sWhatsThis    = "Std_DlgMacroExecuteDirect";
-  sStatusTip    = QT_TR_NOOP("Execute the macro/script in the editor");
-  sPixmap       = "macro-execute";
-  iAccel        = 0;
-  eType         = 0;
-}
-
-void StdCmdDlgMacroExecuteDirect::activated(int iMsg)
-{
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"Run\")");
-}
-
-bool StdCmdDlgMacroExecuteDirect::isActive(void)
-{
-  return getGuiApplication()->sendHasMsgToActiveView("Run");
-}
-
-//===========================================================================
-// Std_MacroStop
-//===========================================================================
-DEF_STD_CMD_A(StdCmdMacroStop);
-
-StdCmdMacroStop::StdCmdMacroStop()
-  :Command("Std_DlgMacroStop")
-{
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("S&top macro recording");
-  sToolTipText  = QT_TR_NOOP("Stop the macro recording session");
-  sWhatsThis    = "Std_DlgMacroStop";
-  sStatusTip    = QT_TR_NOOP("Stop the macro recording session");
-  sPixmap       = "macro-stop";
-  iAccel        = 0;
-  eType         = 0;
-}
-
-void StdCmdMacroStop::activated(int iMsg)
-{
-  getGuiApplication()->macroManager()->commit();
-}
-
-bool StdCmdMacroStop::isActive(void)
-{
-  return getGuiApplication()->macroManager()->isOpen();
-}
-
-//===========================================================================
 // Std_DlgCustomize
 //===========================================================================
 DEF_STD_CMD(StdCmdDlgCustomize);
@@ -679,10 +562,6 @@ void CreateStdCommands(void)
 
     rcCmdMgr.addCommand(new StdCmdDlgParameter());
     rcCmdMgr.addCommand(new StdCmdDlgPreferences());
-    rcCmdMgr.addCommand(new StdCmdDlgMacroRecord());
-    rcCmdMgr.addCommand(new StdCmdDlgMacroExecute());
-    rcCmdMgr.addCommand(new StdCmdDlgMacroExecuteDirect());
-    rcCmdMgr.addCommand(new StdCmdMacroStop());
     rcCmdMgr.addCommand(new StdCmdDlgCustomize());
     rcCmdMgr.addCommand(new StdCmdCommandLine());
     rcCmdMgr.addCommand(new StdCmdWorkbench());

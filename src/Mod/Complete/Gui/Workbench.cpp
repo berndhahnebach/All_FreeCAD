@@ -142,7 +142,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* tool = new Gui::MenuItem( menuBar );
     tool->setCommand(QT_TR_NOOP("&Tools"));
     *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
-          << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
+          << "Std_MacroStopRecord" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
           << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
 
     // Mesh ****************************************************************************************************
@@ -342,7 +342,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     // Macro
     Gui::ToolBarItem* macro = new Gui::ToolBarItem( root );
     macro->setCommand(QT_TR_NOOP("Macro"));
-    *macro << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute"
+    *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
            << "Std_DlgMacroExecuteDirect";
 
     // View

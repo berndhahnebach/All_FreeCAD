@@ -466,10 +466,16 @@ MenuItem* StdWorkbench::setupMenuBar() const
     // Tools
     MenuItem* tool = new MenuItem( menuBar );
     tool->setCommand(QT_TR_NOOP("&Tools"));
-    *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
-          << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
-          << "Separator" << "Std_ViewScreenShot" << "Std_SceneInspector" << "Separator"
+    *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator"
+          << "Std_ViewScreenShot" << "Std_SceneInspector" << "Separator"
           << "Std_DlgCustomize";
+
+    // Macro
+    MenuItem* macro = new MenuItem( menuBar );
+    macro->setCommand(QT_TR_NOOP("&Macro"));
+    *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
+           << "Separator" << "Std_DlgMacroExecuteDirect" << "Std_MacroStartDebug"
+           << "Std_MacroStopDebug" << "Std_MacroStepOver";
 
     // Windows
     MenuItem* wnd = new MenuItem( menuBar );
@@ -510,7 +516,7 @@ ToolBarItem* StdWorkbench::setupToolBars() const
     // Macro
     ToolBarItem* macro = new ToolBarItem( root );
     macro->setCommand(QT_TR_NOOP("Macro"));
-    *macro << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute"
+    *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
            << "Std_DlgMacroExecuteDirect";
 
     // View
@@ -536,9 +542,8 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
     // Special Ops
     ToolBarItem* macro = new ToolBarItem( root );
     macro->setCommand(QT_TR_NOOP("Special Ops"));
-    *macro << "Std_DlgParameter" << "Std_DlgPreferences" << "Std_DlgMacroRecord" << "Std_DlgMacroStop" 
+    *macro << "Std_DlgParameter" << "Std_DlgPreferences" << "Std_DlgMacroRecord" << "Std_MacroStopRecord" 
            << "Std_DlgMacroExecute" << "Std_DlgCustomize" << "Std_CommandLine";
-
 
     return root;
 }

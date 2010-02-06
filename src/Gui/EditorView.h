@@ -86,7 +86,6 @@ public:
     void paste  ();
     void undo   ();
     void redo   ();
-    void run    ();
     void print  ();
     void printPdf();
     //@}
@@ -121,18 +120,14 @@ public:
     PythonEditorView(QTextEdit* editor, QWidget* parent);
     ~PythonEditorView();
 
+    bool onMsg(const char* pMsg,const char** ppReturn);
+    bool onHasMsg(const char* pMsg) const;
+
 public Q_SLOTS:
     void executeScript();
     void startDebug();
-    void stopDebug();
-    void nextStep();
 
 private:
-    // Actions
-    QAction* execute;
-    QAction* dbgStart;
-    QAction* dbgStop;
-    QAction* dbgNext;
     PythonDebugger* _dbg;
 };
 

@@ -40,12 +40,18 @@
 
 #include "MainWindow.h"
 #include "PythonConsole.h"
+#include "PythonDebugger.h"
 
 using namespace Gui;
 
 
 MacroManager::MacroManager()
-  : openMacro(false), recordGui(true), guiAsComment(true),scriptToPyConsole(false),pyConsole(0)
+  : openMacro(false),
+    recordGui(true),
+    guiAsComment(true),
+    scriptToPyConsole(false),
+    pyConsole(0),
+    pyDebugger(new PythonDebugger())
 {
     // Attach to the Parametergroup regarding macros
     this->params = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro");
@@ -55,6 +61,7 @@ MacroManager::MacroManager()
 
 MacroManager::~MacroManager()
 {
+    delete pyDebugger;
     this->params->Detach(this);
 }
 
@@ -189,4 +196,9 @@ void MacroManager::run(MacroType eType,const char *sName)
     {
         qWarning("%s",e.what());
     }
+}
+
+PythonDebugger* MacroManager::debugger() const
+{
+    return pyDebugger;
 }

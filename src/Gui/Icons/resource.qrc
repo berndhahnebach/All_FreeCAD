@@ -24,6 +24,8 @@
         <file>Std_ViewScreenShot.svg</file>
         <file>breakpoint.png</file>
         <file>debug-marker.png</file>
+        <file>debug-start.svg</file>
+        <file>debug-stop.svg</file>
         <file>document-new.svg</file>
         <file>document-open.svg</file>
         <file>document-save.svg</file>

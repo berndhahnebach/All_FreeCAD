@@ -165,10 +165,11 @@ libFreeCADGui_la_SOURCES=\
 		CombiView.cpp \
 		Control.cpp \
 		Command.cpp \
-		CommandDoc.cpp  \
-		CommandFeat.cpp  \
-		CommandStd.cpp  \
-		CommandWindow.cpp  \
+		CommandDoc.cpp \
+		CommandFeat.cpp \
+		CommandMacro.cpp \
+		CommandStd.cpp \
+		CommandWindow.cpp \
 		CommandTest.cpp \
 		CommandView.cpp \
 		DlgActionsImp.cpp \
