@@ -30,6 +30,7 @@
 
 #include "PythonDebugger.h"
 #include <Base/Interpreter.h>
+#include <Base/Console.h>
 
 using namespace Gui;
 
@@ -262,40 +263,61 @@ struct PythonDebuggerP {
     PyObject* out_n;
     PyObject* err_n;
     PyObject* exc_n;
-    bool init, trystop;
+    bool init, trystop, running;
     QEventLoop loop;
     PyObject* pydbg;
     std::string fn;
+
+    PythonDebuggerP(PythonDebugger* that) :
+        init(false), trystop(false), running(false)
+    {
+        Base::PyGILStateLocker lock;
+        out_n = new PythonDebugStdout();
+        err_n = new PythonDebugStderr();
+        PythonDebugExcept* err = new PythonDebugExcept();
+        Py::Object func = err->getattr("fc_excepthook");
+        exc_n = Py::new_reference_to(func);
+        Py_DECREF(err);
+        pydbg = new PythonDebuggerPy(that);
+    }
+    ~PythonDebuggerP()
+    {
+        Py_DECREF(out_n);
+        Py_DECREF(err_n);
+        Py_DECREF(exc_n);
+        Py_DECREF(pydbg);
+    }
 };
 }
 
 PythonDebugger::PythonDebugger()
+  : d(new PythonDebuggerP(this))
 {
-    Base::PyGILStateLocker lock;
-    d = new PythonDebuggerP();
-    d->init = false;
-    d->out_n = new PythonDebugStdout();
-    d->err_n = new PythonDebugStderr();
-    PythonDebugExcept* err = new PythonDebugExcept();
-    Py::Object func = err->getattr("fc_excepthook");
-    d->exc_n = Py::new_reference_to(func);
-    Py_DECREF(err);
-    d->pydbg = new PythonDebuggerPy(this);
 }
 
 PythonDebugger::~PythonDebugger()
 {
-    Py_DECREF(d->out_n);
-    Py_DECREF(d->err_n);
-    Py_DECREF(d->exc_n);
-    Py_DECREF(d->pydbg);
     delete d;
 }
 
 void PythonDebugger::runFile(const QString& fn)
 {
     d->fn = (const char*)fn.toUtf8();
-    Base::Interpreter().runFile(d->fn.c_str());
+    d->running = true;
+    try {
+        Base::Interpreter().runFile(d->fn.c_str());
+    }
+    catch (const Base::PyException&) {
+    }
+    catch (...) {
+        Base::Console().Warning("Unknown exception thrown during macro debugging\n");
+    }
+    d->running = false;
+}
+
+bool PythonDebugger::isRunning() const
+{
+    return d->running;
 }
 
 bool PythonDebugger::start()
@@ -333,9 +355,10 @@ bool PythonDebugger::stop()
 void PythonDebugger::tryStop()
 {
     d->trystop = true;
+    signalNextStep();
 }
 
-void PythonDebugger::next()
+void PythonDebugger::stepOver()
 {
     signalNextStep();
 }
@@ -375,7 +398,7 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
             //    Py_DECREF(str);
             //}
     // For testing only
-            if (dbg->d->fn==file) {
+            if (!dbg->d->trystop && (dbg->d->fn==file)) {
     QEventLoop loop;
     QObject::connect(dbg, SIGNAL(signalNextStep()), &loop, SLOT(quit()));
     loop.exec();

@@ -38,6 +38,8 @@ EXTRA_DIST = \
 		utilities-terminal.svg \
 		breakpoint.png \
 		debug-marker.png \
+		debug-start.svg \
+		debug-stop.svg \
 		document-new.svg \
 		document-open.svg \
 		document-save.svg \

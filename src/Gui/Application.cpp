@@ -488,6 +488,7 @@ void Application::createStandardOperations()
     Gui::CreateStdCommands();
     Gui::CreateDocCommands();
     Gui::CreateFeatCommands();
+    Gui::CreateMacroCommands();
     Gui::CreateViewStdCommands();
     Gui::CreateWindowStdCommands();
     Gui::CreateTestCommands();

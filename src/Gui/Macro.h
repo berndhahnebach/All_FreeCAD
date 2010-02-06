@@ -33,13 +33,14 @@
 namespace Gui {
 struct ApplicationP;
 class PythonConsole;
+class PythonDebugger;
 
 /** Macro recording and play back management
  * The purpos of this class is to handle record function calls from a command and save it in
  * a macro file (so far).
  * \author Jürgen Riegel
  */
-class GuiExport MacroManager: public Base::Observer<const char*> 
+class GuiExport MacroManager : public Base::Observer<const char*> 
 {
 protected:
     MacroManager();
@@ -85,6 +86,8 @@ public:
      */
     void setModule(const char* sModule);
     void run(MacroType eType,const char *sName);
+    /// Get the Python debugger
+    PythonDebugger* debugger() const;
     /** Observes its parameter group. */
     void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
 
@@ -96,6 +99,7 @@ protected:
     bool guiAsComment;
     bool scriptToPyConsole;
     PythonConsole* pyConsole;       // link to the python console
+    PythonDebugger* pyDebugger;
     Base::Reference<ParameterGrp> params;  // link to the Macro parameter group
 
     friend struct ApplicationP;

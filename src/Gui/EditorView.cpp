@@ -65,6 +65,61 @@ public:
 };
 }
 
+LineMarker::LineMarker(QWidget* parent)
+    : QWidget(parent)
+{
+    m_debugLine = 12;
+    debugMarker = QPixmap(QLatin1String(":/icons/debug-marker.png"));
+    setFixedWidth(fontMetrics().width(QLatin1String("0000"))+10);
+}
+
+LineMarker::~LineMarker()
+{
+}
+
+void LineMarker::setTextEdit(QTextEdit *edit)
+{
+    this->edit = edit;
+    connect(edit->document()->documentLayout(), SIGNAL(update(const QRectF &)),
+            this, SLOT(update()));
+    connect(edit->verticalScrollBar(), SIGNAL(valueChanged(int)),
+            this, SLOT(update()));
+}
+
+void LineMarker::paintEvent(QPaintEvent*)
+{
+    QAbstractTextDocumentLayout *layout = edit->document()->documentLayout();
+    int contentsY = edit->verticalScrollBar()->value();
+    qreal pageBottom = contentsY + edit->viewport()->height();
+    const QFontMetrics fm = fontMetrics();
+    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
+    int lineCount = 1;
+
+    QPainter p(this);
+
+    for (QTextBlock block = edit->document()->begin();
+        block.isValid(); block = block.next(), ++lineCount) {
+
+        const QRectF boundingRect = layout->blockBoundingRect( block );
+
+        QPointF position = boundingRect.topLeft();
+        if (position.y() + boundingRect.height() < contentsY)
+            continue;
+        if (position.y() > pageBottom)
+            break;
+
+        const QString txt = QString::number( lineCount );
+        p.drawText(width() - fm.width(txt), qRound(position.y()) - contentsY + ascent, txt);
+    
+        if (m_debugLine == lineCount) {
+            p.drawPixmap(1, qRound(position.y()) - contentsY, debugMarker);
+            debugRect = QRect(1, qRound(position.y()) - contentsY, debugMarker.width(), debugMarker.height());
+        }
+    }
+}
+
+// -------------------------------------------------------
+
 /* TRANSLATOR Gui::EditorView */
 
 /**
@@ -173,9 +228,6 @@ bool EditorView::onMsg(const char* pMsg,const char** ppReturn)
     if (strcmp(pMsg,"Save")==0){
         saveFile();
         return true;
-    } else if (strcmp(pMsg,"Run")==0){
-        run();
-        return true;
     } else if (strcmp(pMsg,"SaveAs")==0){
         saveAs();
         return true;
@@ -209,6 +261,8 @@ bool EditorView::onMsg(const char* pMsg,const char** ppReturn)
 bool EditorView::onHasMsg(const char* pMsg) const
 {
     if (strcmp(pMsg,"Run")==0)  return true;
+    if (strcmp(pMsg,"DebugStart")==0)  return true;
+    if (strcmp(pMsg,"DebugStop")==0)  return true;
     if (strcmp(pMsg,"SaveAs")==0)  return true;
     if (strcmp(pMsg,"Print")==0) return true;
     if (strcmp(pMsg,"PrintPdf")==0) return true;
@@ -298,14 +352,6 @@ bool EditorView::open(const QString& fileName)
 
     setCurrentFileName(fileName);
     return true;
-}
-
-/**
- * Runs the opened script in the macro manager.
- */
-void EditorView::run(void)
-{
-    Application::Instance->macroManager()->run(Gui::MacroManager::File,d->fileName.toUtf8());
 }
 
 /**
@@ -483,131 +529,57 @@ void EditorView::focusInEvent (QFocusEvent * e)
 
 // ---------------------------------------------------------
 
-LineMarker::LineMarker(QWidget* parent)
-    : QWidget(parent)
-{
-    m_debugLine = -1;
-    debugMarker = QPixmap(QLatin1String(":/icons/breakpoint.png"));
-    setFixedWidth(fontMetrics().width(QLatin1String("0000"))+10);
-}
-
-LineMarker::~LineMarker()
-{
-}
-
-void LineMarker::setTextEdit(QTextEdit *edit)
-{
-    this->edit = edit;
-    connect(edit->document()->documentLayout(), SIGNAL(update(const QRectF &)),
-            this, SLOT(update()));
-    connect(edit->verticalScrollBar(), SIGNAL(valueChanged(int)),
-            this, SLOT(update()));
-}
-
-void LineMarker::paintEvent(QPaintEvent*)
-{
-    QAbstractTextDocumentLayout *layout = edit->document()->documentLayout();
-    int contentsY = edit->verticalScrollBar()->value();
-    qreal pageBottom = contentsY + edit->viewport()->height();
-    const QFontMetrics fm = fontMetrics();
-    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
-    int lineCount = 1;
-
-    QPainter p(this);
-
-    for (QTextBlock block = edit->document()->begin();
-        block.isValid(); block = block.next(), ++lineCount) {
-
-        const QRectF boundingRect = layout->blockBoundingRect( block );
-
-        QPointF position = boundingRect.topLeft();
-        if (position.y() + boundingRect.height() < contentsY)
-            continue;
-        if (position.y() > pageBottom)
-            break;
-
-        const QString txt = QString::number( lineCount );
-        p.drawText(width() - fm.width(txt), qRound(position.y()) - contentsY + ascent, txt);
-    
-        if (m_debugLine == lineCount) {
-            p.drawPixmap(1, qRound(position.y()) - contentsY, debugMarker);
-            debugRect = QRect(1, qRound(position.y()) - contentsY, debugMarker.width(), debugMarker.height());
-        }
-    }
-}
-
-// -------------------------------------------------------
-
 PythonEditorView::PythonEditorView(QTextEdit* editor, QWidget* parent)
-  : EditorView(editor, parent), _dbg(new PythonDebugger())
+  : EditorView(editor, parent)
 {
-    // Create actions
-    execute = new QAction(this);
-    execute->setIcon(BitmapFactory().pixmap("macro-execute"));
-    execute->setToolTip(tr("Execute without debugging"));
-    execute->setStatusTip(tr("Execute without debugging"));
-    connect(execute, SIGNAL(triggered()), this, SLOT(executeScript()));
-
-    dbgStart = new QAction(this);
-//    dbgStart->setIcon(QPixmap(debug_start));
-    dbgStart->setText(tr("Start"));
-    dbgStart->setToolTip(tr("Start debugging"));
-    dbgStart->setStatusTip(tr("Start debugging"));
-    connect(dbgStart, SIGNAL(triggered()), this, SLOT(startDebug()));
-
-    dbgStop = new QAction(this);
-//    dbgStop->setIcon(QPixmap(debug_stop));
-    dbgStop->setText(tr("Stop"));
-    dbgStop->setToolTip(tr("Stop debugging"));
-    dbgStop->setStatusTip(tr("Stop debugging"));
-    connect(dbgStop, SIGNAL(triggered()), this, SLOT(stopDebug()));
-
-    dbgNext = new QAction(this);
-//    dbgNext->setIcon(QPixmap(step_over));
-    dbgNext->setText(tr("Step over"));
-    dbgNext->setToolTip(tr("Step over"));
-    dbgNext->setStatusTip(tr("Step over"));
-    connect(dbgNext, SIGNAL(triggered()), this, SLOT(nextStep()));
-
-    // Create the toolbars and add the actions
-    QToolBar* debug = this->addToolBar(tr("Debugger"));
-    debug->addAction(execute);
-    debug->addAction(dbgStart);
-    debug->addAction(dbgStop);
-    debug->addAction(dbgNext);
+    _dbg = Application::Instance->macroManager()->debugger();
 }
 
 PythonEditorView::~PythonEditorView()
 {
-    delete _dbg;
 }
 
+/**
+ * Runs the action specified by \a pMsg.
+ */
+bool PythonEditorView::onMsg(const char* pMsg,const char** ppReturn)
+{
+    if (strcmp(pMsg,"Run")==0) {
+        executeScript();
+        return true;
+    }
+    else if (strcmp(pMsg,"StartDebug")==0) {
+        startDebug();
+        return true;
+    }
+    return EditorView::onMsg(pMsg, ppReturn);
+}
+
+/**
+ * Checks if the action \a pMsg is available. This is for enabling/disabling
+ * the corresponding buttons or menu items for this action.
+ */
+bool PythonEditorView::onHasMsg(const char* pMsg) const
+{
+    if (strcmp(pMsg,"Run")==0)  return true;
+    if (strcmp(pMsg,"StartDebug")==0)  return true;
+    return EditorView::onHasMsg(pMsg);
+}
+
+/**
+ * Runs the opened script in the macro manager.
+ */
 void PythonEditorView::executeScript()
 {
-    run();
+    Application::Instance->macroManager()->run(Gui::MacroManager::File,fileName().toUtf8());
 }
 
 void PythonEditorView::startDebug()
 {
-    try {
-        if (_dbg->start()) {
-            _dbg->runFile(fileName());
-            _dbg->stop();
-        }
-    }
-    catch (const Base::PyException&) {
+    if (_dbg->start()) {
+        _dbg->runFile(fileName());
         _dbg->stop();
     }
-}
-
-void PythonEditorView::stopDebug()
-{
-    _dbg->tryStop();
-}
-
-void PythonEditorView::nextStep()
-{
-    _dbg->next();
 }
 
 #include "moc_EditorView.cpp"

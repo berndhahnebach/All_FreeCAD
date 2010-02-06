@@ -101,10 +101,11 @@ public:
     PythonDebugger();
     ~PythonDebugger();
     void runFile(const QString& fn);
+    bool isRunning() const;
     bool start();
     bool stop();
-    void next();
     void tryStop();
+    void stepOver();
 
 Q_SIGNALS:
     void signalNextStep();

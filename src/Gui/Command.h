@@ -55,6 +55,7 @@ class MDIView;
 void CreateStdCommands(void);
 void CreateDocCommands(void);
 void CreateFeatCommands(void);
+void CreateMacroCommands(void);
 void CreateViewStdCommands(void);
 void CreateWindowStdCommands(void);
 void CreateTestCommands(void);
