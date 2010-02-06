@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef FEM_PRECOMPILED_H
+#define FEM_PRECOMPILED_H
 
 #include <FCConfig.h>
 

@@ -23,8 +23,8 @@
  ***************************************************************************/
 
 
-#ifndef __XMLTOOLS_H__
-#define __XMLTOOLS_H__
+#ifndef BASE_XMLTOOLS_H
+#define BASE_XMLTOOLS_H
 
 // Std. configurations
 
@@ -217,4 +217,4 @@ inline const XMLCh* XStr::unicodeForm() const
     return fUnicodeForm;
 }
 
-#endif // __XMLTOOLS_H__
+#endif // BASE_XMLTOOLS_H

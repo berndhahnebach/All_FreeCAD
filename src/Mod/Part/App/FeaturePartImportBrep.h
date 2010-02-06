@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FeaturePartImportBrep_H__
-#define __FeaturePartImportBrep_H__
+#ifndef PART_FEATUREPARTIMPORTBREP_H
+#define PART_FEATUREPARTIMPORTBREP_H
 
 
 #include "PartFeature.h"
@@ -56,4 +56,4 @@ public:
 }
 
 
-#endif // __FeaturePartImportBrep_H__
+#endif // PART_FEATUREPARTIMPORTBREP_H

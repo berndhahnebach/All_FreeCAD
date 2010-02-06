@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __DLGSETTINGS3DVIEWIMP_H
-#define __DLGSETTINGS3DVIEWIMP_H
+#ifndef PARTGUI_DLGSETTINGS3DVIEWIMP_H
+#define PARTGUI_DLGSETTINGS3DVIEWIMP_H
 
 #include "ui_DlgSettings3DViewPart.h"
 #include <Gui/PropertyPage.h>
@@ -50,4 +50,4 @@ protected:
 
 } // namespace Gui
 
-#endif // __DLGSETTINGS3DVIEWIMP_H
+#endif // PARTGUI_DLGSETTINGS3DVIEWIMP_H

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef COMPLETEGUI_PRECOMPILED_H
+#define COMPLETEGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
@@ -69,4 +69,4 @@
 
 #endif //_PreComp_
 
-#endif // __PRECOMPILED_GUI__
+#endif // COMPLETEGUI_PRECOMPILED_H

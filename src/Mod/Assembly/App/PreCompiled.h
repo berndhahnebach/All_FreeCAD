@@ -21,17 +21,17 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef ASSEMBLY_PRECOMPILED_H
+#define ASSEMBLY_PRECOMPILED_H
 
 #include <FCConfig.h>
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32
-# define AppAssemblyExport __declspec(dllexport)
-# define AppPartExport  __declspec(dllimport)
-# define PartExport     __declspec(dllimport)
-# define MeshExport     __declspec(dllimport)
+# define AppAssemblyExport  __declspec(dllexport)
+# define AppPartExport      __declspec(dllimport)
+# define PartExport         __declspec(dllimport)
+# define MeshExport         __declspec(dllimport)
 #else // for Linux
 # define AppAssemblyExport
 # define AppPartExport 

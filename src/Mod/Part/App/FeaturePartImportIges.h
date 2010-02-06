@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FeaturePartImportIges_H__
-#define __FeaturePartImportIges_H__
+#ifndef PART_FEATUREPARTIMPORTIGES_H
+#define PART_FEATUREPARTIMPORTIGES_H
 
 
 #include "PartFeature.h"
@@ -56,4 +56,4 @@ public:
 }
 
 
-#endif // __FeaturePartImportIges_H__
+#endif // PART_FEATUREPARTIMPORTIGES_H

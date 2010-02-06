@@ -22,8 +22,8 @@
 
 
 
-#ifndef __Part2DObject_H__
-#define __Part2DObject_H__
+#ifndef PART_PART2DOBJECT_H
+#define PART_PART2DOBJECT_H
 
 #include <App/PropertyStandard.h>
 
@@ -56,4 +56,4 @@ public:
 } //namespace Part
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // PART_PART2DOBJECT_H

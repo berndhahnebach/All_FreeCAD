@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MEMDEBUG_H__
-#define __MEMDEBUG_H__
+#ifndef BASE_MEMDEBUG_H
+#define BASE_MEMDEBUG_H
 
 namespace Base
 {
@@ -48,5 +48,5 @@ private:
 
 } //namespace Base
 
-#endif // __FILETEMPLATE_H__
+#endif // BASE_MEMDEBUG_H
 

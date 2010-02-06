@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FEATURETEST_H__
-#define __FEATURETEST_H__
+#ifndef APP_FEATURETEST_H
+#define APP_FEATURETEST_H
 
 
 #include "DocumentObject.h"
@@ -128,4 +128,4 @@ public:
 
 } //namespace App
 
-#endif // __FEATURETEST_H__
+#endif // APP_FEATURETEST_H

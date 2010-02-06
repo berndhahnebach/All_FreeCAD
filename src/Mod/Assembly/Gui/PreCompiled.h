@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef ASSEMGBLYGUI_PRECOMPILED_H
+#define ASSEMGBLYGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
@@ -71,4 +71,4 @@
 
 #endif //_PreComp_
 
-#endif // __PRECOMPILED_GUI__
+#endif // ASSEMGBLYGUI_PRECOMPILED_H

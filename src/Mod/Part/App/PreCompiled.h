@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef PART_PRECOMPILED_H
+#define PART_PRECOMPILED_H
 
 #include <FCConfig.h>
 

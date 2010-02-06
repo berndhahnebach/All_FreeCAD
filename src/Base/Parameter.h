@@ -23,8 +23,8 @@
  ***************************************************************************/
 
 
-#ifndef __PARAMETER_H__
-#define __PARAMETER_H__
+#ifndef BASE__PARAMETER_H
+#define BASE__PARAMETER_H
 
 // (re-)defined in pyconfig.h
 #if defined (_POSIX_C_SOURCE)
@@ -300,4 +300,4 @@ private:
 BaseExport PyObject* GetPyObject( const Base::Reference<ParameterGrp> &hcParamGrp);
 
 
-#endif
+#endif // BASE__PARAMETER_H

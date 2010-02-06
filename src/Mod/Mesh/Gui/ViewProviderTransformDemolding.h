@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
-#define __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
+#ifndef MESGUI_VIEWPROVIDERMESHTRANSFORMDEMOLDING_H
+#define MESGUI_VIEWPROVIDERMESHTRANSFORMDEMOLDING_H
 
 #include <Inventor/nodes/SoRotation.h>
 
@@ -93,5 +93,5 @@ protected:
 } // namespace MeshGui
 
 
-#endif // __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
+#endif // MESGUI_VIEWPROVIDERMESHTRANSFORMDEMOLDING_H
 

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef MESHGUI_PRECOMPILED_H
+#define MESHGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
@@ -85,4 +85,4 @@
 #include <windows.h>
 #endif  //_PreComp_
 
-#endif // __PRECOMPILED_GUI__ 
+#endif // MESHGUI_PRECOMPILED_H 

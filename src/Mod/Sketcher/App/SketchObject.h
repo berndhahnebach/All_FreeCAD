@@ -22,8 +22,8 @@
 
 
 
-#ifndef __SketchObjectSF_H__
-#define __SketchObjectSF_H__
+#ifndef SKETCHER_SKETCHOBJECT_H
+#define SKETCHER_SKETCHOBJECT_H
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
@@ -65,4 +65,4 @@ public:
 } //namespace Part
 
 
-#endif // __FEATUREPARTBOX_H__
+#endif // SKETCHER_SKETCHOBJECT_H

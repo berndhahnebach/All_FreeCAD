@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
+#ifndef PARTGUI_VIEWPROVIDERPART_H
+#define PARTGUI_VIEWPROVIDERPART_H
 
 #include <Standard_math.hxx>
 #include <Standard_Boolean.hxx>
@@ -117,5 +117,5 @@ private:
 } // namespace PartGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+#endif // PARTGUI_VIEWPROVIDERPART_H
 

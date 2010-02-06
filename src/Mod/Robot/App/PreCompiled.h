@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef ROBOT_PRECOMPILED_H
+#define ROBOT_PRECOMPILED_H
 
 #include <FCConfig.h>
 
