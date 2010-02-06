@@ -249,9 +249,10 @@ namespace Gui {
 class PythonDebuggerPy : public Py::PythonExtension<PythonDebuggerPy> 
 {
 public:
-    PythonDebuggerPy(PythonDebugger* d) : dbg(d) { }
+    PythonDebuggerPy(PythonDebugger* d) : dbg(d), depth(0) { }
     ~PythonDebuggerPy() {}
     PythonDebugger* dbg;
+    int depth;
 };
 
 struct PythonDebuggerP {
@@ -264,6 +265,7 @@ struct PythonDebuggerP {
     bool init, trystop;
     QEventLoop loop;
     PyObject* pydbg;
+    std::string fn;
 };
 }
 
@@ -288,6 +290,12 @@ PythonDebugger::~PythonDebugger()
     Py_DECREF(d->exc_n);
     Py_DECREF(d->pydbg);
     delete d;
+}
+
+void PythonDebugger::runFile(const QString& fn)
+{
+    d->fn = (const char*)fn.toUtf8();
+    Base::Interpreter().runFile(d->fn.c_str());
 }
 
 bool PythonDebugger::start()
@@ -338,17 +346,23 @@ void PythonDebugger::next()
 // http://stuff.mit.edu/afs/sipb/project/python/src/python2.2-2.2.2/Modules/_hotshot.c
 int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg)
 {
-    PythonDebuggerPy* pydbg = static_cast<PythonDebuggerPy*>(obj);
-    if (pydbg->dbg->d->trystop)
+    PythonDebuggerPy* self = static_cast<PythonDebuggerPy*>(obj);
+    PythonDebugger* dbg = self->dbg;
+    if (dbg->d->trystop)
         PyErr_SetInterrupt();
     QCoreApplication::processEvents();
     int no;
 
     no = frame->f_tstate->recursion_depth;
+    char* name = PyString_AsString(frame->f_code->co_name);
+    char* file = PyString_AsString(frame->f_code->co_filename);
     switch (what) {
     case PyTrace_CALL:
+        self->depth++;
         return 0;
     case PyTrace_RETURN:
+        if (self->depth > 0)
+            self->depth--;
         return 0;
     case PyTrace_LINE:
         {
@@ -361,9 +375,11 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
             //    Py_DECREF(str);
             //}
     // For testing only
+            if (dbg->d->fn==file) {
     QEventLoop loop;
-    QObject::connect(pydbg->dbg, SIGNAL(signalNextStep()), &loop, SLOT(quit()));
+    QObject::connect(dbg, SIGNAL(signalNextStep()), &loop, SLOT(quit()));
     loop.exec();
+            }
             return 0;
         }
     case PyTrace_EXCEPTION:

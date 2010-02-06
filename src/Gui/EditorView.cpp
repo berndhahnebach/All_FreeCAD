@@ -486,7 +486,9 @@ void EditorView::focusInEvent (QFocusEvent * e)
 LineMarker::LineMarker(QWidget* parent)
     : QWidget(parent)
 {
-    setFixedWidth(fontMetrics().width(QLatin1String("0000")));
+    m_debugLine = -1;
+    debugMarker = QPixmap(QLatin1String(":/icons/breakpoint.png"));
+    setFixedWidth(fontMetrics().width(QLatin1String("0000"))+10);
 }
 
 LineMarker::~LineMarker()
@@ -519,13 +521,18 @@ void LineMarker::paintEvent(QPaintEvent*)
         const QRectF boundingRect = layout->blockBoundingRect( block );
 
         QPointF position = boundingRect.topLeft();
-        if ( position.y() + boundingRect.height() < contentsY )
+        if (position.y() + boundingRect.height() < contentsY)
             continue;
-        if ( position.y() > pageBottom )
+        if (position.y() > pageBottom)
             break;
 
         const QString txt = QString::number( lineCount );
-        p.drawText( width() - fm.width(txt), qRound( position.y() ) - contentsY + ascent, txt );
+        p.drawText(width() - fm.width(txt), qRound(position.y()) - contentsY + ascent, txt);
+    
+        if (m_debugLine == lineCount) {
+            p.drawPixmap(1, qRound(position.y()) - contentsY, debugMarker);
+            debugRect = QRect(1, qRound(position.y()) - contentsY, debugMarker.width(), debugMarker.height());
+        }
     }
 }
 
@@ -584,8 +591,7 @@ void PythonEditorView::startDebug()
 {
     try {
         if (_dbg->start()) {
-            QString data = getEditor()->toPlainText();
-            Base::Interpreter().runString(data.toAscii());
+            _dbg->runFile(fileName());
             _dbg->stop();
         }
     }

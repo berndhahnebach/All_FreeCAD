@@ -46,6 +46,9 @@ protected:
     void paintEvent ( QPaintEvent * );
 
 private:
+    int m_debugLine;
+    QRect debugRect;
+    QPixmap debugMarker;
     QTextEdit *edit;
 };
 
