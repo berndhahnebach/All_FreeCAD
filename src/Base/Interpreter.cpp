@@ -211,14 +211,18 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
 
 void InterpreterSingleton::runFile(const char*pxFileName)
 {
+#ifdef FC_OS_WIN32
     FileInfo fi(pxFileName);
-    Base::ifstream file(fi, std::ios::in);
-    if (file) {
-        std::stringbuf buf;
-        file >> &buf;
-        file.close();
-
-        runString(buf.str().c_str());
+    FILE *fp = _wfopen(fi.toStdWString().c_str(),L"r");
+#else
+    FILE *fp = fopen(pxFileName,"r");
+#endif
+    if (fp) {
+        PyGILStateLocker locker;
+        int ret = PyRun_SimpleFile(fp, pxFileName);
+        fclose(fp);
+        if (ret != 0)
+            throw PyException();
     }
     else {
         std::string err = "Unknown file: ";

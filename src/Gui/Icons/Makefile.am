@@ -36,6 +36,8 @@ EXTRA_DIST = \
 		preferences-general.svg \
 		Std_ViewScreenShot.svg \
 		utilities-terminal.svg \
+		breakpoint.png \
+		debug-marker.png \
 		document-new.svg \
 		document-open.svg \
 		document-save.svg \

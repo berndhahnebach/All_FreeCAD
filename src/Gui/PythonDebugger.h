@@ -100,6 +100,7 @@ class GuiExport PythonDebugger : public QObject
 public:
     PythonDebugger();
     ~PythonDebugger();
+    void runFile(const QString& fn);
     bool start();
     bool stop();
     void next();
