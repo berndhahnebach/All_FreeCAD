@@ -55,9 +55,8 @@ using namespace Gui::Dialog;
  * to the command object.
  */
 Action::Action ( Command* pcCmd,QObject * parent )
-  : QObject(parent), _action(0), _pcCmd(pcCmd)
+  : QObject(parent), _action(new QAction( this )), _pcCmd(pcCmd)
 {
-  _action = new QAction( this );
   _action->setObjectName(QString::fromAscii(_pcCmd->getName()));
   connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
