@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <QEventLoop>
 # include <QCoreApplication>
+# include <QFileInfo>
 # include <QTimer>
 #endif
 
@@ -33,6 +34,66 @@
 #include <Base/Console.h>
 
 using namespace Gui;
+
+Breakpoint::Breakpoint()
+{
+}
+
+Breakpoint::Breakpoint(const Breakpoint& rBp)
+{
+    setFilename(rBp.filename());
+    for (std::set<int>::const_iterator it = rBp._linenums.begin(); it != rBp._linenums.end(); ++it)
+        _linenums.insert(*it);
+}
+
+Breakpoint& Breakpoint::operator= (const Breakpoint& rBp)
+{
+    if (this == &rBp)
+        return *this;
+    setFilename(rBp.filename());
+    _linenums.clear();
+    for (std::set<int>::const_iterator it = rBp._linenums.begin(); it != rBp._linenums.end(); ++it)
+        _linenums.insert(*it);
+    return *this;
+}
+
+Breakpoint::~Breakpoint()
+{
+
+}
+
+void Breakpoint::setFilename(const QString& fn)
+{
+    _filename = fn;
+}
+
+void Breakpoint::addLine(int line)
+{
+    _linenums.insert(line);
+}
+
+void Breakpoint::removeLine(int line)
+{
+    _linenums.erase(line);
+}
+
+bool Breakpoint::checkLine(int line)
+{
+    return (_linenums.find(line) != _linenums.end());
+}
+
+int Breakpoint::lineIndex(int ind)const
+{
+    int i = 0;
+    for (std::set<int>::const_iterator it = _linenums.begin(); it != _linenums.end(); ++it)
+    {
+        if (ind == i++)
+            return *it;
+    }
+    return -1;
+}
+
+// -----------------------------------------------------
 
 void PythonDebugModule::init_module(void)
 {
@@ -268,6 +329,7 @@ struct PythonDebuggerP {
     QEventLoop loop;
     PyObject* pydbg;
     std::string fn;
+    std::vector<Breakpoint> bps;
 
     PythonDebuggerP(PythonDebugger* that) :
         init(false), trystop(false), running(false)
@@ -299,6 +361,39 @@ PythonDebugger::PythonDebugger()
 PythonDebugger::~PythonDebugger()
 {
     delete d;
+}
+
+Breakpoint PythonDebugger::getBreakpoint(const QString& fn) const
+{
+    for (std::vector<Breakpoint>::const_iterator it = d->bps.begin(); it != d->bps.end(); ++it) {
+        if (fn == it->filename()) {
+            return *it;
+        }
+    }
+
+    return Breakpoint();
+}
+
+bool PythonDebugger::toogleBreakpoint(int line, const QString& fn)
+{
+    for (std::vector<Breakpoint>::iterator it = d->bps.begin(); it != d->bps.end(); ++it) {
+        if (fn == it->filename()) {
+            if (it->checkLine(line)) {
+                it->removeLine(line);
+                return false;
+            }
+            else {
+                it->addLine(line);
+                return true;
+            }
+        }
+    }
+
+    Breakpoint bp;
+    bp.setFilename(fn);
+    bp.addLine(line);
+    d->bps.push_back(bp);
+    return true;
 }
 
 void PythonDebugger::runFile(const QString& fn)

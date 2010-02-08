@@ -229,6 +229,31 @@ bool StdCmdMacroStepOver::isActive(void)
     return dbg->isRunning();
 }
 
+DEF_STD_CMD_A(StdCmdToggleBreakpoint);
+
+StdCmdToggleBreakpoint::StdCmdToggleBreakpoint()
+  : Command("Std_ToggleBreakpoint")
+{
+    sGroup        = QT_TR_NOOP("Macro");
+    sMenuText     = QT_TR_NOOP("Toggle breakpoint");
+    sToolTipText  = QT_TR_NOOP("Toggle breakpoint");
+    sWhatsThis    = "Std_ToggleBreakpoint";
+    sStatusTip    = QT_TR_NOOP("Toggle breakpoint");
+    sPixmap       = 0;
+    iAccel        = Qt::Key_F9;
+    eType         = 0;
+}
+
+void StdCmdToggleBreakpoint::activated(int iMsg)
+{
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ToggleBreakpoint\")");
+}
+
+bool StdCmdToggleBreakpoint::isActive(void)
+{
+    return getGuiApplication()->sendHasMsgToActiveView("ToggleBreakpoint");
+}
+
 namespace Gui {
 
 void CreateMacroCommands(void)
@@ -241,6 +266,7 @@ void CreateMacroCommands(void)
     rcCmdMgr.addCommand(new StdCmdMacroStartDebug());
     rcCmdMgr.addCommand(new StdCmdMacroStopDebug());
     rcCmdMgr.addCommand(new StdCmdMacroStepOver());
+    rcCmdMgr.addCommand(new StdCmdToggleBreakpoint());
 }
 
 } // namespace Gui
