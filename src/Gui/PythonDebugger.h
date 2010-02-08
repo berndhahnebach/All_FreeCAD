@@ -169,6 +169,8 @@ public:
     bool stop();
     void tryStop();
     void stepOver();
+    void showDebugMarker(const QString&, int line);
+    void hideDebugMarker(const QString&);
 
 Q_SIGNALS:
     void signalNextStep();

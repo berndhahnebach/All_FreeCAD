@@ -533,7 +533,7 @@ void EditorView::focusInEvent (QFocusEvent * e)
 // ---------------------------------------------------------
 
 PythonEditorView::PythonEditorView(QTextEdit* editor, QWidget* parent)
-  : EditorView(editor, parent), m_debugLine(12),
+  : EditorView(editor, parent), m_debugLine(-1),
     breakpoint(QLatin1String(":/icons/breakpoint.png")),
     debugMarker(QLatin1String(":/icons/debug-marker.png"))
 {
@@ -582,10 +582,10 @@ void PythonEditorView::drawMarker(int line, int x, int y, QPainter* p)
     if (bp.checkLine(line)) {
         p->drawPixmap(x, y, breakpoint);
     }
-    //if (m_debugLine == line) {
-    //    p->drawPixmap(x, y+2, debugMarker);
-    //    debugRect = QRect(x, y+2, debugMarker.width(), debugMarker.height());
-    //}
+    if (m_debugLine == line) {
+        p->drawPixmap(x, y+2, debugMarker);
+        debugRect = QRect(x, y+2, debugMarker.width(), debugMarker.height());
+    }
 }
 
 /**
@@ -609,6 +609,30 @@ void PythonEditorView::toggleBreakpoint()
     QTextCursor cursor = getEditor()->textCursor();
     int line = cursor.blockNumber() + 1;
     _dbg->toogleBreakpoint(line, fileName());
+    getMarker()->update();
+}
+
+void PythonEditorView::showDebugMarker(int line)
+{
+    m_debugLine = line;
+    getMarker()->update();
+    QTextCursor cursor = getEditor()->textCursor();
+    cursor.movePosition(QTextCursor::StartOfBlock);
+    int cur = cursor.blockNumber() + 1;
+    if (cur > line) {
+        for (int i=line; i<cur; i++)
+            cursor.movePosition(QTextCursor::Up);
+    }
+    else if (cur < line) {
+        for (int i=cur; i<line; i++)
+            cursor.movePosition(QTextCursor::Down);
+    }
+    getEditor()->setTextCursor(cursor);
+}
+
+void PythonEditorView::hideDebugMarker()
+{
+    m_debugLine = -1;
     getMarker()->update();
 }
 

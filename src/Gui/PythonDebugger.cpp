@@ -30,6 +30,10 @@
 #endif
 
 #include "PythonDebugger.h"
+#include "MainWindow.h"
+#include "EditorView.h"
+#include "PythonEditor.h"
+#include "BitmapFactory.h"
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
 
@@ -318,6 +322,17 @@ public:
     int depth;
 };
 
+class RunningState
+{
+public:
+    RunningState(bool& s) : state(s)
+    { state = true; }
+    ~RunningState()
+    { state = false; }
+private:
+    bool& state;
+};
+
 struct PythonDebuggerP {
     PyObject* out_o;
     PyObject* err_o;
@@ -328,7 +343,6 @@ struct PythonDebuggerP {
     bool init, trystop, running;
     QEventLoop loop;
     PyObject* pydbg;
-    std::string fn;
     std::vector<Breakpoint> bps;
 
     PythonDebuggerP(PythonDebugger* that) :
@@ -398,17 +412,15 @@ bool PythonDebugger::toogleBreakpoint(int line, const QString& fn)
 
 void PythonDebugger::runFile(const QString& fn)
 {
-    d->fn = (const char*)fn.toUtf8();
-    d->running = true;
     try {
-        Base::Interpreter().runFile(d->fn.c_str());
+        RunningState state(d->running);
+        Base::Interpreter().runFile((const char*)fn.toUtf8());
     }
     catch (const Base::PyException&) {
     }
     catch (...) {
         Base::Console().Warning("Unknown exception thrown during macro debugging\n");
     }
-    d->running = false;
 }
 
 bool PythonDebugger::isRunning() const
@@ -459,6 +471,42 @@ void PythonDebugger::stepOver()
     signalNextStep();
 }
 
+void PythonDebugger::showDebugMarker(const QString& fn, int line)
+{
+    PythonEditorView* edit = 0;
+    QList<QWidget*> mdis = getMainWindow()->windows();
+    for (QList<QWidget*>::iterator it = mdis.begin(); it != mdis.end(); ++it) {
+        edit = qobject_cast<PythonEditorView*>(*it);
+        if (edit && edit->fileName() == fn)
+            break;
+    }
+
+    if (!edit) {
+        PythonEditor* editor = new PythonEditor();
+        editor->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
+        edit = new PythonEditorView(editor, getMainWindow());
+        edit->open(fn);
+        edit->resize(400, 300);
+        getMainWindow()->addWindow(edit);
+    }
+
+    getMainWindow()->setActiveWindow(edit);
+    edit->showDebugMarker(line);
+}
+
+void PythonDebugger::hideDebugMarker(const QString& fn)
+{
+    PythonEditorView* edit = 0;
+    QList<QWidget*> mdis = getMainWindow()->windows();
+    for (QList<QWidget*>::iterator it = mdis.begin(); it != mdis.end(); ++it) {
+        edit = qobject_cast<PythonEditorView*>(*it);
+        if (edit && edit->fileName() == fn) {
+            edit->hideDebugMarker();
+            break;
+        }
+    }
+}
+
 // http://www.koders.com/cpp/fidBA6CD8A0FE5F41F1464D74733D9A711DA257D20B.aspx?s=PyEval_SetTrace
 // http://code.google.com/p/idapython/source/browse/trunk/python.cpp
 // http://www.koders.com/cpp/fid191F7B13CF73133935A7A2E18B7BF43ACC6D1784.aspx?s=PyEval_SetTrace
@@ -474,7 +522,7 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
 
     no = frame->f_tstate->recursion_depth;
     char* name = PyString_AsString(frame->f_code->co_name);
-    char* file = PyString_AsString(frame->f_code->co_filename);
+    QString file = QString::fromUtf8(PyString_AsString(frame->f_code->co_filename));
     switch (what) {
     case PyTrace_CALL:
         self->depth++;
@@ -494,10 +542,15 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
             //    Py_DECREF(str);
             //}
     // For testing only
-            if (!dbg->d->trystop && (dbg->d->fn==file)) {
-    QEventLoop loop;
-    QObject::connect(dbg, SIGNAL(signalNextStep()), &loop, SLOT(quit()));
-    loop.exec();
+            if (!dbg->d->trystop) {
+                Breakpoint bp = dbg->getBreakpoint(file);
+                if (bp.checkLine(line)) {
+                    dbg->showDebugMarker(file, line);
+                    QEventLoop loop;
+                    QObject::connect(dbg, SIGNAL(signalNextStep()), &loop, SLOT(quit()));
+                    loop.exec();
+                    dbg->hideDebugMarker(file);
+                }
             }
             return 0;
         }
@@ -513,7 +566,6 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
         /* ignore PyTrace_EXCEPTION */
         break;
     }
-    return 0;
     return 0;
 }
 

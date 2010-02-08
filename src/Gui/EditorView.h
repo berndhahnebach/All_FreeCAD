@@ -129,6 +129,8 @@ public Q_SLOTS:
     void executeScript();
     void startDebug();
     void toggleBreakpoint();
+    void showDebugMarker(int line);
+    void hideDebugMarker();
 
 private:
     int m_debugLine;
