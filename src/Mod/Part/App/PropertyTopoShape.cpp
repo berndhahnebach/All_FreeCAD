@@ -203,7 +203,9 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
     BRepTools::Clean(_Shape._Shape);
 
     // create a temporary file and copy the content to the zip stream
-    Base::FileInfo fi(Base::FileInfo::getTempFileName());
+    // once the tmp. filename is known use always the same because otherwise
+    // we may run into some problems on the Linux platform
+    static Base::FileInfo fi(Base::FileInfo::getTempFileName());
 
     if (!BRepTools::Write(_Shape._Shape,(const Standard_CString)fi.filePath().c_str())) {
         // Note: Do NOT throw an exception here because if the tmp. file could
