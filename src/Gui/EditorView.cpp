@@ -65,11 +65,9 @@ public:
 };
 }
 
-LineMarker::LineMarker(QWidget* parent)
-    : QWidget(parent)
+LineMarker::LineMarker(EditorView* ev, QWidget* parent)
+    : QWidget(parent), view(ev)
 {
-    m_debugLine = 12;
-    debugMarker = QPixmap(QLatin1String(":/icons/debug-marker.png"));
     setFixedWidth(fontMetrics().width(QLatin1String("0000"))+10);
 }
 
@@ -100,7 +98,7 @@ void LineMarker::paintEvent(QPaintEvent*)
     for (QTextBlock block = edit->document()->begin();
         block.isValid(); block = block.next(), ++lineCount) {
 
-        const QRectF boundingRect = layout->blockBoundingRect( block );
+        const QRectF boundingRect = layout->blockBoundingRect(block);
 
         QPointF position = boundingRect.topLeft();
         if (position.y() + boundingRect.height() < contentsY)
@@ -108,13 +106,9 @@ void LineMarker::paintEvent(QPaintEvent*)
         if (position.y() > pageBottom)
             break;
 
-        const QString txt = QString::number( lineCount );
+        const QString txt = QString::number(lineCount);
         p.drawText(width() - fm.width(txt), qRound(position.y()) - contentsY + ascent, txt);
-    
-        if (m_debugLine == lineCount) {
-            p.drawPixmap(1, qRound(position.y()) - contentsY, debugMarker);
-            debugRect = QRect(1, qRound(position.y()) - contentsY, debugMarker.width(), debugMarker.height());
-        }
+        view->drawMarker(lineCount, 1, qRound(position.y()) - contentsY, &p);
     }
 }
 
@@ -135,7 +129,7 @@ EditorView::EditorView(QTextEdit* editor, QWidget* parent)
     // create the editor first
     d->textEdit = editor;
     d->textEdit->setLineWrapMode(QTextEdit::NoWrap);
-    d->lineMarker = new LineMarker();
+    d->lineMarker = new LineMarker(this);
     d->lineMarker->setTextEdit(d->textEdit);
 
     // Create the layout containing the workspace and a tab bar
@@ -180,9 +174,18 @@ EditorView::~EditorView()
     getWindowParameter()->Detach( this );
 }
 
+void EditorView::drawMarker(int line, int x, int y, QPainter*)
+{
+}
+
 QTextEdit* EditorView::getEditor() const
 {
     return d->textEdit;
+}
+
+LineMarker* EditorView::getMarker() const
+{
+    return d->lineMarker;
 }
 
 void EditorView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
@@ -530,7 +533,9 @@ void EditorView::focusInEvent (QFocusEvent * e)
 // ---------------------------------------------------------
 
 PythonEditorView::PythonEditorView(QTextEdit* editor, QWidget* parent)
-  : EditorView(editor, parent)
+  : EditorView(editor, parent), m_debugLine(12),
+    breakpoint(QLatin1String(":/icons/breakpoint.png")),
+    debugMarker(QLatin1String(":/icons/debug-marker.png"))
 {
     _dbg = Application::Instance->macroManager()->debugger();
 }
@@ -552,6 +557,10 @@ bool PythonEditorView::onMsg(const char* pMsg,const char** ppReturn)
         startDebug();
         return true;
     }
+    else if (strcmp(pMsg,"ToggleBreakpoint")==0) {
+        toggleBreakpoint();
+        return true;
+    }
     return EditorView::onMsg(pMsg, ppReturn);
 }
 
@@ -563,7 +572,20 @@ bool PythonEditorView::onHasMsg(const char* pMsg) const
 {
     if (strcmp(pMsg,"Run")==0)  return true;
     if (strcmp(pMsg,"StartDebug")==0)  return true;
+    if (strcmp(pMsg,"ToggleBreakpoint")==0)  return true;
     return EditorView::onHasMsg(pMsg);
+}
+
+void PythonEditorView::drawMarker(int line, int x, int y, QPainter* p)
+{
+    Breakpoint bp = _dbg->getBreakpoint(fileName());
+    if (bp.checkLine(line)) {
+        p->drawPixmap(x, y, breakpoint);
+    }
+    //if (m_debugLine == line) {
+    //    p->drawPixmap(x, y+2, debugMarker);
+    //    debugRect = QRect(x, y+2, debugMarker.width(), debugMarker.height());
+    //}
 }
 
 /**
@@ -580,6 +602,14 @@ void PythonEditorView::startDebug()
         _dbg->runFile(fileName());
         _dbg->stop();
     }
+}
+
+void PythonEditorView::toggleBreakpoint()
+{
+    QTextCursor cursor = getEditor()->textCursor();
+    int line = cursor.blockNumber() + 1;
+    _dbg->toogleBreakpoint(line, fileName());
+    getMarker()->update();
 }
 
 #include "moc_EditorView.cpp"

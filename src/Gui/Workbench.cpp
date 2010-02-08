@@ -475,7 +475,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
     macro->setCommand(QT_TR_NOOP("&Macro"));
     *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
            << "Separator" << "Std_DlgMacroExecuteDirect" << "Std_MacroStartDebug"
-           << "Std_MacroStopDebug" << "Std_MacroStepOver";
+           << "Std_MacroStopDebug" << "Std_MacroStepOver" << "Std_ToggleBreakpoint";
 
     // Windows
     MenuItem* wnd = new MenuItem( menuBar );

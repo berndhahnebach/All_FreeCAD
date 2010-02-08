@@ -26,8 +26,69 @@
 
 #include <CXX/Extensions.hxx>
 #include <frameobject.h>
+#include <string>
+#include <set>
 
 namespace Gui {
+
+class Breakpoint
+{
+public:
+    Breakpoint();
+    Breakpoint(const Breakpoint&);
+    Breakpoint& operator=(const Breakpoint&);
+
+    ~Breakpoint();
+
+    const QString& filename() const;
+    void setFilename(const QString& fn);
+
+    bool operator ==(const Breakpoint& bp);
+    bool operator ==(const QString& fn);
+
+    void addLine(int line);
+    void removeLine(int line);
+    bool checkLine(int line);
+
+    int countLines()const;
+    int lineIndex(int ind)const;
+
+    bool checkBreakpoint(const QString& fn, int line);
+
+private:
+    QString _filename;
+    std::set<int> _linenums;
+};
+
+inline const QString& Breakpoint::filename()const
+{
+    return _filename;
+}
+
+inline int Breakpoint::countLines()const
+{
+    return _linenums.size();
+}
+
+inline bool Breakpoint::checkBreakpoint(const QString& fn, int line)
+{
+    assert(!_filename.isEmpty());
+    if (_linenums.find(line) != _linenums.end())
+    {
+        return fn == _filename;
+    }
+    return false;
+}
+
+inline bool Breakpoint::operator ==(const Breakpoint& bp)
+{
+    return _filename == bp._filename;
+}
+
+inline bool Breakpoint::operator ==(const QString& fn)
+{
+    return _filename == fn;
+}
 
 /**
  * @author Werner Mayer
@@ -100,6 +161,8 @@ class GuiExport PythonDebugger : public QObject
 public:
     PythonDebugger();
     ~PythonDebugger();
+    Breakpoint getBreakpoint(const QString&) const;
+    bool toogleBreakpoint(int line, const QString&);
     void runFile(const QString& fn);
     bool isRunning() const;
     bool start();

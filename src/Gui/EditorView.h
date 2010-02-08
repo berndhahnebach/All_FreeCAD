@@ -31,13 +31,14 @@ class QTextEdit;
 
 namespace Gui {
 
+class EditorView;
 class LineMarkerP;
 class LineMarker: public QWidget
 {
     Q_OBJECT
 
 public:
-    LineMarker(QWidget* parent=0);
+    LineMarker(EditorView* view, QWidget* parent=0);
     virtual ~LineMarker();
 
     void setTextEdit(QTextEdit *edit);
@@ -46,9 +47,7 @@ protected:
     void paintEvent ( QPaintEvent * );
 
 private:
-    int m_debugLine;
-    QRect debugRect;
-    QPixmap debugMarker;
+    EditorView* view;
     QTextEdit *edit;
 };
 
@@ -67,6 +66,8 @@ public:
     ~EditorView();
 
     QTextEdit* getEditor() const;
+    LineMarker* getMarker() const;
+    virtual void drawMarker(int line, int x, int y, QPainter*);
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 
     const char *getName(void) const {return "EditorView";}
@@ -120,14 +121,20 @@ public:
     PythonEditorView(QTextEdit* editor, QWidget* parent);
     ~PythonEditorView();
 
+    void drawMarker(int line, int x, int y, QPainter*);
     bool onMsg(const char* pMsg,const char** ppReturn);
     bool onHasMsg(const char* pMsg) const;
 
 public Q_SLOTS:
     void executeScript();
     void startDebug();
+    void toggleBreakpoint();
 
 private:
+    int m_debugLine;
+    QRect debugRect;
+    QPixmap breakpoint;
+    QPixmap debugMarker;
     PythonDebugger* _dbg;
 };
 
