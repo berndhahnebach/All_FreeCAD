@@ -405,9 +405,8 @@ void StdCmdCommandLine::activated(int iMsg)
   qApp->processEvents();
 
   // create temporary console sequencer
-  Base::ConsoleSequencer* seq = new Base::ConsoleSequencer;
+  std::auto_ptr<Base::ConsoleSequencer> seq(new Base::ConsoleSequencer);
   Base::Interpreter().runCommandLine("Console mode");
-  delete seq;
 
 #ifdef Q_WS_X11
   // On X11 this may not work. For further information see QWidget::showMaximized
