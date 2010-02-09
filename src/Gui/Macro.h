@@ -76,7 +76,7 @@ public:
     /// cancels the recording session
     void cancel(void);
     /// indicates if a macro recording in in progress
-    bool isOpen(void){return openMacro;}
+    bool isOpen(void) const {return openMacro;}
     /// insert a new line in the macro
     void addLine(LineType Type,const char* sLine);
     /** Set the active module 

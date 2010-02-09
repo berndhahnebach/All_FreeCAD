@@ -132,22 +132,22 @@ void MacroManager::commit(void)
             str << (*it);
         str << footer;
 
-        Base::Console().Log("CmdM: Commit macro: %s\n",(const char*)this->macroName.toUtf8());
+        Base::Console().Log("Commit macro: %s\n",(const char*)this->macroName.toUtf8());
 
         this->macroInProgress.clear();
         this->macroName.clear();
         this->openMacro = false;
-
-    }else{
-
-        Base::Console().Error("CmdM: Cannot open file to write macro: %s\n",(const char*)this->macroName.toUtf8());
-
+    }
+    else {
+        Base::Console().Error("Cannot open file to write macro: %s\n",
+            (const char*)this->macroName.toUtf8());
+        cancel();
     }
 }
 
 void MacroManager::cancel(void)
 {
-    Base::Console().Log("CmdM: Cancel macro: %s\n",(const char*)this->macroName.toUtf8());
+    Base::Console().Log("Cancel macro: %s\n",(const char*)this->macroName.toUtf8());
 
     this->macroInProgress.clear();
     this->macroName.clear();

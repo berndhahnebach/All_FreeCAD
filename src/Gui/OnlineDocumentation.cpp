@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QBuffer>
 # include <QHttpResponseHeader>
 # include <QMessageBox>
 # include <QTcpSocket>

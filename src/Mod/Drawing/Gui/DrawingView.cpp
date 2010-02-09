@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <QAction>
 # include <QApplication>
+# include <QBuffer>
 # include <QFileInfo>
 # include <QScrollArea>
 # include <QSlider>
@@ -36,7 +37,7 @@
 #endif
 
 #include "DrawingView.h"
-#include <Gui/FileDialog.h>
+#include <Base/Stream.h>
 #include <Base/gzstream.h>
 
 using namespace DrawingGui;
@@ -253,7 +254,9 @@ bool DrawingView::load (const QString & file)
         ok = this->_drawingView->renderer()->load(file);
     } else if (suffix == QLatin1String("svgz")) {
         QByteArray contents;
-        Gui::ByteArrayStream buf(contents);
+        QBuffer buffer(&contents);
+        buffer.open(QIODevice::WriteOnly);
+        Base::IODeviceOStreambuf buf(&buffer);
         Base::igzstream gzip(file.toUtf8());
         gzip >> &buf;
         gzip.close();

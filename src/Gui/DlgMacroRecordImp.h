@@ -48,7 +48,7 @@ protected Q_SLOTS:
     void on_buttonStart_clicked();
     void on_buttonStop_clicked();
     void on_buttonCancel_clicked();
-    void on_pushButtonChoseDir_clicked();
+    void on_pushButtonChooseDir_clicked();
     void on_lineEditMacroPath_textChanged ( const QString & );
 
 protected:
