@@ -1,7 +1,7 @@
-
 #***************************************************************************
 #*                                                                         *
-#*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     *  
+#*   Copyright (c) 2009, 2010                                              *
+#*   Yorik van Havre <yorik@gmx.fr>, Ken Cline <cline@frii.com>            *  
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -22,175 +22,194 @@
 #***************************************************************************
 
 __title__="FreeCAD Draft Workbench - Vector library"
-__author__ = "Yorik van Havre <yorik@gmx.fr>, Werner Mayer, Martin Burbaum"
-__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
+__author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum, Ken Cline"
+__url__ = ["http://free-cad.sourceforge.net"]
 
 "a vector math library for FreeCAD"
 
 import math,FreeCAD
-from FreeCAD import Vector
+from FreeCAD import Vector, Matrix
 
 params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-precision = params.GetInt("precision")
+def precision():
+	return params.GetInt("precision")
 
-def tup(first,array=False):
+def typecheck (args_and_types, name="?"):
+	for v,t in args_and_types:
+		if not isinstance (v,t):
+			FreeCAD.Console.PrintWarning("typecheck[" + str(name) + "]: " + str(v) + " is not " + str(t) + "\n")
+			raise TypeError("fcvec." + str(name))
+
+def tup(u,array=False):
 	"returns a tuple (x,y,z) with the vector coords, or an array if array=true"
-	if isinstance(first,Vector):
-		if array:
-			return [first.x,first.y,first.z]
-		else:
-			return (first.x,first.y,first.z)
+	typecheck ([(u,Vector)], "tup");
+	if array:
+		return [u.x,u.y,u.z]
+	else:
+		return (u.x,u.y,u.z)
 
-def new(first, other):
-	"new(Vector,Vector) - creates a new vector from first one to second one"
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		return Vector(other.x-first.x, other.y-first.y, other.z-first.z)
-
-def add(first, other):
-	"add(Vector,Vector) - adds two vectors. OBSOLETE - use Vector.add()"
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		return Vector(first.x+other.x, first.y+other.y, first.z+other.z)
-
-def sub(first, other):
-	'''
-	sub(Vector,Vector) - subtracts second vector from first one.
-	OBSOLETE - use Vector.sub()
-	'''
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		return Vector(first.x-other.x, first.y-other.y, first.z-other.z)
-
-def neg(first):
+def neg(u):
 	"neg(Vector) - returns an opposite (negative) vector"
-	if isinstance(first,Vector):
-		return Vector(-first.x, -first.y, -first.z)
+	typecheck ([(u,Vector)],"neg")
+	return Vector(-u.x, -u.y, -u.z)
 
-def equals(first,other):
-	'''returns True if both vectors are equal. The important point
-	is that we round off a bit (default to 4 digits, which is what the Part module uses).
-	'''
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		if (round(first.x,precision) == round(other.x,precision)):
-			if (round(first.y,precision) == round(other.y,precision)):
-				if (round(first.z,precision) == round(other.z,precision)):
-					return True
-		return False
+def equals(u,v):
+	"returns True if vectors differ by less than precision (from ParamGet), elementwise "
+	typecheck ([(u,Vector), (v,Vector)], "equals")
+	return isNull (u.sub(v))
 
-def scale(first,scalar):
+def scale(u,scalar):
 	"scale(Vector,Float) - scales (multiplies) a vector by a factor"
-	if isinstance(first,Vector):
-		return Vector(first.x*scalar, first.y*scalar, first.z*scalar)
+	typecheck ([(u,Vector), (scalar,(int,long,float))], "scale")
+	return Vector(u.x*scalar, u.y*scalar, u.z*scalar)
 
-def length(first):
-	"lengh(Vector) - gives vector length - OBSOLETE! use Vector.Length instead!"
-	if isinstance(first,Vector):
-		return math.sqrt(first.x*first.x + first.y*first.y + first.z*first.z)
+def scaleTo(u,l):
+	"scaleTo(Vector,length) - scales a vector to a given length"
+	typecheck ([(u,Vector),(l,(int,long,float))], "scaleTo")
+	if u.Length == 0:
+		return Vector(u)
+	else:
+		a = l/u.Length
+		return Vector(u.x*a, u.y*a, u.z*a)
 
-def dist(first, other):
+def dist(u, v):
 	"dist(Vector,Vector) - returns the distance between both points/vectors"
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		return math.sqrt((first.x-other.x)*(first.x-other.x) + (first.y-other.y)*(first.y-other.y) + (first.z-other.z)*(first.z-other.z))
+	typecheck ([(u,Vector), (v,Vector)], "dist")
+	x=u.sub(v).Length
+	return u.sub(v).Length
 
-def normalized(first):
-	"normalized(Vector) - returns a unit vector"
-	if isinstance(first,Vector):
-		l=length(first)
-		if (l!=0):
-			return Vector(first.x/l, first.y/l, first.z/l)
-		else:
-			return 0
-
-def dotproduct(first, other):
-	"dotproduct(Vector,Vector) - returns the dot product of both vectors"
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		return (first.x*other.x + first.y*other.y + first.z*other.z)
-
-def crossproduct(first, other=Vector(0,0,1)):
-	'''
-	crossproduct(Vector,Vector) - returns the cross product of both vectors.
-	If only one is given, cross product is made with vertical axis,
-	thus returning its perpendicular in XY plane
-	'''
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		return Vector(first.y*other.z - first.z*other.y, first.z*other.x - first.x*other.z, first.x*other.y - first.y*other.x)
-
-def angle(first, other=Vector(1,0,0),normal=Vector(0,0,1)):
+def angle(u,v=Vector(1,0,0),normal=Vector(0,0,1)):
 	'''angle(Vector,[Vector],[Vector]) - returns the angle in radians between the two vectors.
 	If only one is given, angle is between the vector and the horizontal East direction.
 	If a third vector is given, it is the normal used to determine the sign of the angle.
 	'''
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		dp=dotproduct(normalized(first),normalized(other))
-		if (dp >= -1) and (dp <= 1):
-			ang = math.acos(dp)
-			yaxis = normalized(crossproduct(first,normal))
-			coeff = dotproduct(other,yaxis)
-			if coeff < 0: ang = -ang
-			if equals(normal,Vector(0,0,1)): ang = -ang # still don't get why this is needed
-			return ang
-		else:
-			return 0
+	typecheck ([(u,Vector), (v,Vector)], "angle")
+	ll = u.Length*v.Length
+	if ll==0: return 0
+	dp=u.dot(v)/ll
+	if (dp < -1): dp = -1 # roundoff errors can push dp out of the ...
+	elif (dp > 1): dp = 1 # ...geometrically meaningful interval [-1,1]
+	ang = math.acos(dp)
+	normal1 = u.cross(v)
+	coeff = normal.dot(normal1)
+	if coeff >= 0:
+		return ang
+	else:
+		return -ang
 
-def project(first, other):
+def project(u,v):
 	"project(Vector,Vector): projects the first vector onto the second one"
-	if isinstance(first,Vector) and isinstance(other,Vector):
-		dp = dotproduct(other,other)
-		if dp:
-			return scale(other, dotproduct(first,other)/dp)
-	return None
+	typecheck([(u,Vector), (v,Vector)], "project")
+	dp = v.dot(v)
+	if dp != 0:
+		return scale(v, u.dot(v)/dp)
+	else: return u #??? is this sensible?  Probably not.  Maybe return (0,0,0)?
 
-def rotate2D(first,angle):
+def rotate2D(u,angle):
 	"rotate2D(Vector,angle): rotates the given vector around the Z axis"
-	return Vector(math.cos(-angle)*first.x-math.sin(-angle)*first.y,
-					math.sin(-angle)*first.x+math.cos(-angle)*first.y,first.z)
+	return Vector(math.cos(-angle)*u.x-math.sin(-angle)*u.y,
+					math.sin(-angle)*u.x+math.cos(-angle)*u.y,u.z)
 
-def rotate(first,rotangle,axis=Vector(0,0,1)):
+def rotate(u,angle,axis=Vector(0,0,1)):
 	'''rotate(Vector,Float,axis=Vector): rotates the first Vector
 	around the given axis, at the given angle.
 	If axis is omitted, the rotation is made on the xy plane.'''
-	# print 'rotation: ',first,' : ',math.degrees(rotangle),' : ',rounded(axis)
-	if rotangle == 0: return first
-	if isinstance(first,Vector) and isinstance(axis,Vector):
-		if equals(axis,Vector(0,0,1)):
-			# print '2D rotation'
-			return rotate2D(first,rotangle)
-		elif equals(axis,Vector(0,0,-1)):
-			# print '2D rotation'
-			return rotate2D(first,-rotangle)
-		else:
-			anglexy = -angle(Vector(axis.x,axis.y,0))
-			axisxy = rotate2D(axis,-anglexy)
-			# print  'angle in xy plane ',math.degrees(anglexy), ' axis in xy plane ', rounded(axisxy)
-			vecxy = rotate2D(first,-anglexy)
-			anglexz = -math.pi/2-angle(Vector(axisxy.x,axisxy.z,0))
-			axisxz = rotate2D(Vector(axisxy.x,axisxy.z,0),-anglexz)
-			# print 'angle in xz plane ',math.degrees(anglexz), ' axis in xz plane ',rounded(axisxz)
-			vecxz = rotate2D(Vector(vecxy.x,vecxy.z,vecxy.y),-anglexz)
-			vecxz = Vector(vecxz.x,vecxz.z,vecxz.y)
-			vecxz = rotate2D(vecxz,rotangle)
-			vecxy = rotate2D(Vector(vecxz.x,vecxz.z,vecxz.y),anglexz)
-			vecxy = Vector(vecxy.x,vecxy.z,vecxy.y)
-			vec = rotate2D(vecxy,anglexy)
-			return vec
+	typecheck ([(u,Vector), (angle,(int,long,float)), (axis,Vector)], "rotate")
+
+	# special case optimizations removed for clarity KEC
+	#if rotangle == 0: return u
+	#if equals(axis,Vector(0,0,1)): return rotate2D(u,rotangle)
+	#if equals(axis,Vector(0,0,-1)): return rotate2D(u,-rotangle)
+
+	l=axis.Length
+	x=axis.x/l
+	y=axis.y/l
+	z=axis.z/l
+	c = math.cos(angle)
+	s = math.sin(angle)
+	t = 1 - c;
+
+	xyt = x*y*t
+	xzt = x*z*t
+	yzt = y*z*t
+	xs = x*s
+	ys = y*s
+	zs = z*s
+
+	m = Matrix(c + x*x*t,	xyt - zs,	xzt + ys,	0,
+		   xyt + zs,	c + y*y*t,	yzt - xs,	0,
+		   xzt - ys,	yzt + xs,	c + z*z*t,	0)
+
+	return m.multiply(u)
 	
 def isNull(vector):
 	'''isNull(vector): Tests if a vector is nul vector'''
-	if round(vector.x,precision)==0 and round(vector.y,precision)==0 and round(vector.z,precision)==0 :
-		return True
-	else :
-		return False
+	p = precision()
+	return (round(vector.x,p)==0 and round(vector.y,p)==0 and round(vector.z,p)==0)
 
 def find(vector,vlist):
 	'''find(vector,vlist): finds a vector in a list of vectors. returns
 	the index of the matching vector, or None if none is found.
 	'''
-	if isinstance(vector,Vector) and isinstance(vlist,list):
-		for i,v in enumerate(vlist):
-			if equals(vector,v):
-				return i
+	typecheck ([(vector,Vector), (vlist,list)], "find")
+	for i,v in enumerate(vlist):
+		if equals(vector,v):
+			return i
 	return None
 
+'''
+Obsolete/useless function.  Complete deletion seems appropriate - KEC
+
+def new(first, other):
+	"new(Vector,Vector) - creates a new vector from first one to second one"
+	typecheck ([(first,Vector), (other,Vector)]);
+	return Vector(other.x-first.x, other.y-first.y, other.z-first.z)
+
+def add(first, other):
+	"add(Vector,Vector) - adds two vectors. OBSOLETE - use Vector.add()"
+	typecheck ([(first,Vector), (other,Vector)]);
+	return Vector(first.x+other.x, first.y+other.y, first.z+other.z)
+
+def sub(first, other):
+	' ' '
+	sub(Vector,Vector) - subtracts second vector from first one.
+	OBSOLETE - use Vector.sub()
+	' ' '
+	typecheck ([(first,Vector), (other,Vector)])
+	return Vector(first.x-other.x, first.y-other.y, first.z-other.z)
+
+def length(first):
+	"lengh(Vector) - gives vector length - OBSOLETE! use Vector.Length instead!"
+	typecheck([(first,Vector)])
+	return math.sqrt(first.x*first.x + first.y*first.y + first.z*first.z)
+
+-- normalized was mainly used idiomatically to for scaling a vector.
+-- replaced with scaleTo and Vector.normalize()
+def normalized(first):
+	"normalized(Vector) - returns a unit vector"
+	typecheck ([(first,Vector)])
+	v = Vector(first)
+	v.normalize
+	return v
+
+-- only single argument version was used.  Eliminated, but could be renamed crossz with second arg removed
+def crossproduct(u, v=Vector(0,0,1)):
+	' ' '
+	crossproduct(Vector,Vector) - returns the cross product of both vectors.
+	If only one is given, cross product is made with vertical axis,
+	thus returning its perpendicular in XY plane
+	' ' '
+	typecheck ([(u,Vector), (v,Vector)])
+	return u.cross(v)
+
+def dotproduct(u, v):
+	"dotproduct(Vector,Vector) - returns the dot product of both vectors"
+	typecheck ([(u,Vector), (v,Vector)])
+	return u.dot(v)
+
 def rounded(vector,pr=precision):
-	'''rounded(vector,int) - returns a rounded vector to given precision, or is
-	precision is not specified, built-in precision is used.'''
+	' ' 'rounded(vector,int) - returns a rounded vector to given precision, or is
+	precision is not specified, built-in precision is used.' ' '
 	if isinstance(vector,Vector) and isinstance(pr,int):
 		return Vector(round(vector.x,pr),round(vector.y,pr),round(vector.z,pr))
+'''
