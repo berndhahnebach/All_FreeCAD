@@ -131,13 +131,18 @@ void MacroManager::commit(void)
         for ( it = body.begin(); it != body.end(); ++it )
             str << (*it);
         str << footer;
+
+        Base::Console().Log("CmdM: Commit macro: %s\n",(const char*)this->macroName.toUtf8());
+
+        this->macroInProgress.clear();
+        this->macroName.clear();
+        this->openMacro = false;
+
+    }else{
+
+        Base::Console().Error("CmdM: Cannot open file to write macro: %s\n",(const char*)this->macroName.toUtf8());
+
     }
-
-    Base::Console().Log("CmdM: Commit macro: %s\n",(const char*)this->macroName.toUtf8());
-
-    this->macroInProgress.clear();
-    this->macroName.clear();
-    this->openMacro = false;
 }
 
 void MacroManager::cancel(void)

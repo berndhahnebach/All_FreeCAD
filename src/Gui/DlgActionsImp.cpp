@@ -53,7 +53,7 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent )
     this->setupUi(this);
     // search for all macros
     std::string cMacroPath = App::GetApplication().
-        GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",App::GetApplication().GetHomePath());
+        GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",App::GetApplication().Config()["UserAppData"].c_str());
 
     QDir d(QString::fromUtf8(cMacroPath.c_str()), QLatin1String("*.FCMacro"));
     actionMacros->insertItems(0, d.entryList());
