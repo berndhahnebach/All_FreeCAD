@@ -143,13 +143,9 @@ void DlgMacroRecordImp::on_pushButtonChooseDir_clicked()
 {
     QString newDir = QFileDialog::getExistingDirectory(0,tr("Choose macro directory"),macroPath);
     if (!newDir.isEmpty()) {
-        macroPath = newDir + QLatin1Char(PATHSEP);
-        this->lineEditMacroPath->setText(newDir);
+        macroPath = QDir::convertSeparators(newDir + QDir::separator());
+        this->lineEditMacroPath->setText(macroPath);
         getWindowParameter()->SetASCII("MacroPath",macroPath.toUtf8());
-
-        // check on PATHSEP at the end
-        if (this->macroPath.at(this->macroPath.length()-1) != QLatin1Char(PATHSEP))
-            this->macroPath += QLatin1Char(PATHSEP);
     }
 }
 
