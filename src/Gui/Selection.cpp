@@ -265,6 +265,11 @@ void SelectionObserverPython::removePreselection(const SelectionChanges& msg)
 
 // -------------------------------------------
 
+bool SelectionSingleton::hasSelection() const
+{
+    return !_SelList.empty();
+}
+
 std::vector<SelectionSingleton::SelObj> SelectionSingleton::getCompleteSelection() const
 {
     std::vector<SelObj> temp;
@@ -289,8 +294,6 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
     SelObj tempSelObj;
 
     App::Document *pcDoc;
-    string DocName;
-
     pcDoc = getDocument(pDocName);
 
     if (!pcDoc)
@@ -313,6 +316,22 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const c
 
     return temp;
 }
+
+bool SelectionSingleton::hasSelection(const char* doc) const
+{
+    App::Document *pcDoc;
+    pcDoc = getDocument(doc);
+    if (!pcDoc)
+        return false;
+    for(std::list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
+        if (It->pDoc == pcDoc) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 //std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDocName) const
 //{
 //    return getSelectionEx(pDocName,App::DocumentObject::getClassTypeId());

@@ -98,6 +98,11 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 
+// QtCore
+#include <QByteArray>
+#include <QIODevice>
+#include <QDataStream>
+
 
 #endif //_PreComp_
 

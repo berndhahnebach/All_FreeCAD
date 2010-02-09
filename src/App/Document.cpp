@@ -533,7 +533,7 @@ void Document::Save (Writer &writer) const
 {
     writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << endl
     << "<!--" << endl
-    << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
+    << " FreeCAD Document, see http://free-cad.sourceforge.net for more information..." << endl
     << "-->" << endl;
 
     writer.Stream() << "<Document SchemaVersion=\"4\">" << endl;
@@ -680,6 +680,103 @@ void Document::Restore(Base::XMLReader &reader)
     }
 
     reader.readEndElement("Document");
+}
+
+void Document::exportObjects(const std::vector<App::DocumentObject*>& obj,
+                            std::ostream& out)
+{
+    Base::ZipWriter writer(out);
+    writer.putNextEntry("Document.xml");
+    writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << endl;
+    writer.Stream() << "<Document SchemaVersion=\"4\">" << endl;
+
+    // writing the features types
+    writer.incInd(); // indention for 'Objects count'
+    writer.Stream() << writer.ind() << "<Objects Count=\"" << obj.size() <<"\">" << endl;
+
+    writer.incInd(); // indention for 'Object type'
+    std::vector<DocumentObject*>::const_iterator it;
+    for (it = obj.begin(); it != obj.end(); ++it) {
+        writer.Stream() << writer.ind() << "<Object "
+        << "type=\"" << (*it)->getTypeId().getName() << "\" "
+        << "name=\"" << (*it)->getNameInDocument() << "\" "
+        << "/>" << endl;
+    }
+
+    writer.decInd();  // indention for 'Object type'
+    writer.Stream() << writer.ind() << "</Objects>" << endl;
+
+    // writing the features itself
+    writer.Stream() << writer.ind() << "<ObjectData Count=\"" << obj.size() <<"\">" << endl;
+
+    writer.incInd(); // indention for 'Object name'
+    for (it = obj.begin(); it != obj.end(); ++it) {
+        writer.Stream() << writer.ind() << "<Object name=\"" << (*it)->getNameInDocument() << "\">" << endl;
+        (*it)->Save(writer);
+        writer.Stream() << writer.ind() << "</Object>" << endl;
+    }
+
+    writer.decInd(); // indention for 'Object name'
+    writer.Stream() << writer.ind() << "</ObjectData>" << endl;
+    writer.decInd();  // indention for 'Objects count'
+    writer.Stream() << "</Document>" << endl;
+
+    // write additional files
+    writer.writeFiles();
+}
+
+std::vector<App::DocumentObject*>
+Document::importObjects(std::istream& input)
+{
+    std::vector<App::DocumentObject*> objs;
+    zipios::ZipInputStream zipstream(input);
+    Base::XMLReader reader("<memory>", zipstream);
+
+    int i,Cnt;
+    reader.readElement("Document");
+    long scheme = reader.getAttributeAsInteger("SchemaVersion");
+    reader.DocumentSchema = scheme;
+
+    // read the feature types
+    reader.readElement("Objects");
+    Cnt = reader.getAttributeAsInteger("Count");
+    for (i=0 ;i<Cnt ;i++) {
+        reader.readElement("Object");
+        string type = reader.getAttribute("type");
+        string name = reader.getAttribute("name");
+
+        try {
+            App::DocumentObject* o = addObject(type.c_str(),name.c_str());
+            objs.push_back(o);
+        }
+        catch ( Base::Exception& ) {
+            Base::Console().Message("Cannot create object '%s'\n", name.c_str());
+        }
+    }
+    reader.readEndElement("Objects");
+
+    // read the features itself
+    reader.readElement("ObjectData");
+    Cnt = reader.getAttributeAsInteger("Count");
+    for (i=0 ;i<Cnt ;i++) {
+        reader.readElement("Object");
+        string name = reader.getAttribute("name");
+        DocumentObject* pObj = getObject(name.c_str());
+        if (pObj) { // check if this feature has been registered
+            pObj->StatusBits.set(4);
+            pObj->Restore(reader);
+            pObj->StatusBits.reset(4);
+        }
+        reader.readEndElement("Object");
+    }
+    reader.readEndElement("ObjectData");
+
+    reader.readEndElement("Document");
+    reader.readFiles(zipstream);
+    // reset all touched
+    for (std::vector<DocumentObject*>::iterator it= objs.begin();it!=objs.end();++it)
+        (*it)->purgeTouched();
+    return objs;
 }
 
 unsigned int Document::getMemSize (void) const

@@ -32,6 +32,8 @@
 #include <string>
 #include <vector>
 
+class QIODevice;
+
 namespace Base {
 
 class BaseExport Stream
@@ -101,10 +103,11 @@ public:
     InputStream& operator >> (float& f);
     InputStream& operator >> (double& d);
 
-	operator bool() const
-	{	// test if _Ipfx succeeded
-			return !_in.eof();
-	}
+    operator bool() const
+    {
+        // test if _Ipfx succeeded
+        return !_in.eof();
+    }
 
 private:
     InputStream (const InputStream&);
@@ -112,6 +115,52 @@ private:
 
 private:
     std::istream& _in;
+};
+
+// ----------------------------------------------------------------------------
+
+/**
+ * Simple class to write data directly into Qt's QIODevice.
+ * This class can only be used for writing but not reading purposes.
+ * @author Werner Mayer
+ */
+class BaseExport IODeviceOStreambuf : public std::streambuf
+{
+public:
+    IODeviceOStreambuf(QIODevice* dev);
+    ~IODeviceOStreambuf();
+
+protected:
+    virtual int_type overflow(int_type v);
+    virtual std::streamsize xsputn (const char* s, std::streamsize num);
+
+protected:
+    QIODevice* device;
+};
+
+/**
+ * Simple class to read data directly from Qt's QIODevice.
+ * This class can only be used for readihg but not writing purposes.
+ * @author Werner Mayer
+ */
+class BaseExport IODeviceIStreambuf : public std::streambuf
+{
+public:
+    IODeviceIStreambuf(QIODevice* dev);
+    ~IODeviceIStreambuf();
+
+protected:
+    virtual int_type underflow();
+
+protected:
+    QIODevice* device;
+    /* data buffer:
+     * - at most, pbSize characters in putback area plus
+     * - at most, bufSize characters in ordinary read buffer
+     */
+    static const int pbSize = 4;        // size of putback area
+    static const int bufSize = 1024;    // size of the data buffer
+    char buffer[bufSize+pbSize];        // data buffer
 };
 
 // ----------------------------------------------------------------------------

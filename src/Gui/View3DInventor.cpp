@@ -26,6 +26,11 @@
 #ifndef _PreComp_
 # include <QAction>
 # include <QApplication>
+# include <QBuffer>
+# include <QByteArray>
+# include <QClipboard>
+# include <QMimeData>
+# include <QFile>
 # include <QFileInfo>
 # include <QKeyEvent>
 # include <QEvent>
@@ -55,8 +60,10 @@
 #include "Application.h"
 #include "MainWindow.h"
 #include "MenuManager.h"
+#include "WaitCursor.h"
 #include <App/DocumentObject.h>
 #include <Base/Console.h>
+#include <Base/Stream.h>
 
 // build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
@@ -443,63 +450,89 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
         getGuiDocument()->saveAs();
         return true;
     }
+    else if (strcmp("Cut",pMsg) == 0) {
+        return false;
+    }
+    else if (strcmp("Copy",pMsg) == 0) {
+        WaitCursor wc;
+        QMimeData * mimeData = createMimeDataFromSelection();
+        QClipboard* cb = QApplication::clipboard();
+        cb->setMimeData(mimeData);
+        return true;
+    }
+    else if (strcmp("Paste",pMsg) == 0) {
+        QClipboard* cb = QApplication::clipboard();
+        const QMimeData* mimeData = cb->mimeData();
+        if (!mimeData) return false;
+        WaitCursor wc;
+        insertFromMimeData(mimeData);
+        return true;
+    }
     else
         return false;
 }
 
-
 bool View3DInventor::onHasMsg(const char* pMsg) const
 {
-  if(strcmp("Save",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("SaveAs",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("Undo",pMsg) == 0 ){
-    return getAppDocument()->getAvailableUndos() > 0;
-  }else if(strcmp("Redo",pMsg) == 0 ){
-    return getAppDocument()->getAvailableRedos() > 0; 
-  }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("Example1",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("Example2",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("Example3",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewFit",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewSelection",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewBottom",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewFront",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewLeft",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewRear",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewRight",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewTop",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("ViewAxo",pMsg) == 0 ){
-    return true;
-  }else if(strcmp("GetCamera",pMsg) == 0 ){
-    return true;
-  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
-    return true;
-  }else if(strncmp("Dump",pMsg,4) == 0 ){
-    return true;
-  }
-  return false;
+    if  (strcmp("Save",pMsg) == 0)
+        return true;
+    else if (strcmp("SaveAs",pMsg) == 0)
+        return true;
+    else if (strcmp("Cut",pMsg) == 0)
+        return Selection().hasSelection();
+    else if (strcmp("Copy",pMsg) == 0)
+        return Selection().hasSelection();
+    else if (strcmp("Paste",pMsg) == 0) {
+        QClipboard* cb = QApplication::clipboard();
+        const QMimeData* mime = cb->mimeData();
+        if (!mime) return false;
+        return canInsertFromMimeData(mime);
+    }
+    else if (strcmp("Undo",pMsg) == 0)
+        return getAppDocument()->getAvailableUndos() > 0;
+    else if (strcmp("Redo",pMsg) == 0)
+        return getAppDocument()->getAvailableRedos() > 0; 
+    else if(strcmp("SetStereoRedGreen",pMsg) == 0)
+        return true;
+    else if(strcmp("SetStereoQuadBuff",pMsg) == 0)
+        return true;
+    else if(strcmp("SetStereoInterleavedRows",pMsg) == 0)
+        return true;
+    else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0)
+        return true;
+    else if(strcmp("SetStereoOff",pMsg) == 0)
+        return true;
+    else if(strcmp("Example1",pMsg) == 0)
+        return true;
+    else if(strcmp("Example2",pMsg) == 0)
+        return true;
+    else if(strcmp("Example3",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewFit",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewSelection",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewBottom",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewFront",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewLeft",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewRear",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewRight",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewTop",pMsg) == 0)
+        return true;
+    else if(strcmp("ViewAxo",pMsg) == 0)
+        return true;
+    else if(strcmp("GetCamera",pMsg) == 0)
+        return true;
+    else if(strncmp("SetCamera",pMsg,9) == 0)
+        return true;
+    else if(strncmp("Dump",pMsg,4) == 0)
+        return true;
+    return false;
 }
 
 bool View3DInventor::setCamera(const char* pCamera)
@@ -620,6 +653,72 @@ void View3DInventor::windowStateChanged(MDIView* view)
 void View3DInventor::stopAnimating()
 {
     _viewer->stopAnimating();
+}
+
+QMimeData * View3DInventor::createMimeDataFromSelection () const
+{
+    std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
+    unsigned int memsize=1000; // ~ for the meta-information
+    std::vector<App::DocumentObject*> obj;
+    obj.reserve(sel.size());
+    for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
+        if (it->pObject) {
+            obj.push_back(it->pObject);
+            memsize += it->pObject->getMemSize();
+        }
+    }
+
+    QByteArray res;
+#if 0
+    res.reserve(memsize);
+    QBuffer buffer(&res);
+    buffer.open(QIODevice::WriteOnly);
+
+    Base::IODeviceOStream buf(&buffer);
+    std::ostream str(&buf);
+    App::Document::exportObjects(obj, str);
+    str.close();
+#else
+    static Base::FileInfo fi(Base::FileInfo::getTempFileName());
+    Base::ofstream str(fi, std::ios::out | std::ios::binary);
+    App::Document::exportObjects(obj, str);
+    str.close();
+    res = fi.filePath().c_str();
+#endif
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData(QLatin1String("application/x-documentobject"),res);
+    return mimeData;
+}
+
+bool View3DInventor::canInsertFromMimeData (const QMimeData * source) const
+{
+    if (!App::GetApplication().getActiveDocument())
+        return false; // should never happen since this view must belong to a document
+    return source->hasFormat(QLatin1String("application/x-documentobject"));
+}
+
+void View3DInventor::insertFromMimeData (const QMimeData * mimeData)
+{
+    if (mimeData->hasFormat(QLatin1String("application/x-documentobject"))) {
+        QByteArray res = mimeData->data(QLatin1String("application/x-documentobject"));
+        App::Document* doc = App::GetApplication().getActiveDocument();
+        if (!doc) return;
+
+#if 0
+        QBuffer buffer(&res);
+        buffer.open(QIODevice::ReadOnly);
+        Base::IODeviceIStream buf(&buffer);
+        //buf.open(std::ios::in | std::ios::binary);
+        std::istream in(0);
+        in.rdbuf(&buf);
+        doc->importObjects(in);
+#else
+        Base::FileInfo fi((const char*)res);
+        Base::ifstream str(fi, std::ios::in | std::ios::binary);
+        doc->importObjects(str);
+        str.close();
+#endif
+    }
 }
 
 /**

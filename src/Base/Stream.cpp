@@ -24,9 +24,11 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <stdlib.h>
+# include <QDataStream>
+# include <QIODevice>
+# include <cstdlib>
 # include <string>
-# include <stdio.h>
+# include <cstdio>
 #ifdef __GNUC__
 # include <stdint.h>
 #endif
@@ -218,6 +220,91 @@ InputStream& InputStream::operator >> (double& d)
     _in.read((char*)&d, sizeof(double));
     if (_swap) SwapEndian<double>(d);
     return *this;
+}
+
+// ----------------------------------------------------------------------
+
+IODeviceOStreambuf::IODeviceOStreambuf(QIODevice* dev) : device(dev)
+{
+}
+
+IODeviceOStreambuf::~IODeviceOStreambuf()
+{
+}
+
+std::streambuf::int_type
+IODeviceOStreambuf::overflow(std::streambuf::int_type c)
+{
+    if (c != EOF) {
+        char z = c;
+        if (device->write (&z, 1) != 1) {
+            return EOF;
+        }
+    }
+    return c;
+}
+
+std::streamsize IODeviceOStreambuf::xsputn (const char* s, std::streamsize num)
+{
+    return device->write(s,num);
+}
+
+// ----------------------------------------------------------------------
+
+IODeviceIStreambuf::IODeviceIStreambuf(QIODevice* dev) : device(dev)
+{
+    setg (buffer+pbSize,     // beginning of putback area
+          buffer+pbSize,     // read position
+          buffer+pbSize);    // end position
+}
+
+IODeviceIStreambuf::~IODeviceIStreambuf()
+{
+}
+
+std::streambuf::int_type
+IODeviceIStreambuf::underflow()
+{
+#ifndef _MSC_VER
+using std::memcpy;
+#endif
+
+    // is read position before end of buffer?
+    if (gptr() < egptr()) {
+        return *gptr();
+    }
+
+    /* process size of putback area
+     * - use number of characters read
+     * - but at most size of putback area
+     */
+    int numPutback;
+    numPutback = gptr() - eback();
+    if (numPutback > pbSize) {
+        numPutback = pbSize;
+    }
+
+    /* copy up to pbSize characters previously read into
+     * the putback area
+     */
+    memcpy (buffer+(pbSize-numPutback), gptr()-numPutback,
+            numPutback);
+
+    // read at most bufSize new characters
+    int num;
+    num = device->read(buffer+pbSize, bufSize);
+    if (num <= 0) {
+        // ERROR or EOF
+        return EOF;
+    }
+
+    // reset buffer pointers
+    setg (buffer+(pbSize-numPutback),   // beginning of putback area
+          buffer+pbSize,                // read position
+          buffer+pbSize+num);           // end of buffer
+
+    // return next character
+    return *gptr();
 }
 
 // ---------------------------------------------------------

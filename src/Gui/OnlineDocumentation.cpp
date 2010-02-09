@@ -32,12 +32,12 @@
 #include <CXX/Objects.hxx>
 #include <zipios++/zipfile.h>
 #include <Base/Interpreter.h>
+#include <Base/Stream.h>
 #include <App/Application.h>
 
 #include "MainWindow.h"
 #include "BitmapFactory.h"
 #include "OnlineDocumentation.h"
-#include "FileDialog.h"
 
 using namespace Gui;
 
@@ -150,7 +150,9 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
 
         // set size of the array so that no re-allocation is needed when reading from the stream
         res.reserve(entry->getSize());
-        ByteArrayStream buf(res);
+        QBuffer buffer(&res);
+        buffer.open(QIODevice::WriteOnly);
+        Base::IODeviceOStreambuf buf(&buffer);
         (*str) >> &buf;
     }
     else {

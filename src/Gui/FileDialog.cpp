@@ -644,23 +644,6 @@ SelectModule::Dict SelectModule::importHandler(const QStringList& fileNames, con
     return dict;
 }
 
-// ----------------------------------------------------------------------
-
-ByteArrayStream::ByteArrayStream(QByteArray& buf) : buffer(buf)
-{
-}
-
-ByteArrayStream::~ByteArrayStream()
-{
-}
-
-int ByteArrayStream::overflow(int v)
-{
-    //does a re-allocation if needed
-    buffer.append((char)v);
-    return v;
-}
-
 
 #include "moc_FileDialog.cpp"
 

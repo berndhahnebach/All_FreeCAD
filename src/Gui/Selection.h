@@ -254,6 +254,8 @@ public:
 
     /** Returns a vector of all selection objects of all documents. */
     std::vector<SelObj> getCompleteSelection() const;
+    bool hasSelection() const;
+    bool hasSelection(const char* doc) const;
 
     /// Size of selcted entities for all documents
     unsigned int size(void) const {return _SelList.size();}

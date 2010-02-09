@@ -109,6 +109,8 @@ public:
     bool save (void);
     /// Restore the document from the file in Property Path
     void restore (void);
+    static void exportObjects(const std::vector<App::DocumentObject*>&, std::ostream&);
+    std::vector<App::DocumentObject*> importObjects(std::istream& buf);
     /// Opens the document from its file name
     //void open (void);
     /// Is the document already saved to a file
