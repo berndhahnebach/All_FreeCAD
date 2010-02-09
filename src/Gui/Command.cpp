@@ -520,7 +520,7 @@ void MacroCommand::activated(int iMsg)
 {
     std::string cMacroPath = App::GetApplication().GetParameterGroupByPath
                              ("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",
-                                     App::GetApplication().GetHomePath());
+                                     App::GetApplication().Config()["UserAppData"].c_str());
 
     QDir d(QString::fromUtf8(cMacroPath.c_str()));
     QFileInfo fi(d, QString::fromUtf8(sScriptName));

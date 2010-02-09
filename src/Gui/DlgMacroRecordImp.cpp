@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMessageBox>
+# include <QDir>
 #endif
 
 #include "Macro.h"
@@ -51,10 +52,13 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent, Qt::WFlags fl )
 
     // get the macro home path
     this->macroPath = QString::fromUtf8(getWindowParameter()->GetASCII("MacroPath",
-        App::GetApplication().GetHomePath()).c_str());
+        App::GetApplication().Config()["UserAppData"].c_str()).c_str());
     // check on PATHSEP at the end
     if (this->macroPath.at(this->macroPath.length()-1) != QLatin1Char(PATHSEP))
         this->macroPath += QLatin1Char(PATHSEP);
+
+    // set the edit fiels
+    this->lineEditMacroPath->setText(macroPath);
 
     // get a pointer to the macro manager
     this->macroManager = Application::Instance->macroManager();
@@ -80,6 +84,14 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
     if(lineEditPath->text().isEmpty())
     {
         QMessageBox::information( getMainWindow(), tr("Macro recorder"), tr("Specify first a place to save."));
+        return;
+    }
+
+    QDir dir(macroPath);
+
+    if(!dir.exists())
+    {
+        QMessageBox::information( getMainWindow(), tr("Macro recorder"), tr("The macro directory don't exist! Choose another one."));
         return;
     }
 
@@ -125,6 +137,27 @@ void DlgMacroRecordImp::on_buttonStop_clicked()
 
     QDialog::accept();
 }
+
+void DlgMacroRecordImp::on_pushButtonChoseDir_clicked()
+{
+    QString newDir = QFileDialog::getExistingDirectory(0,tr("Choose macro directory"),macroPath);
+    if(newDir.size()!=0) {
+        macroPath = newDir + QLatin1Char(PATHSEP);
+        this->lineEditMacroPath->setText(newDir);
+        getWindowParameter()->SetASCII("MacroPath",macroPath.toUtf8());
+
+        // check on PATHSEP at the end
+        if (this->macroPath.at(this->macroPath.length()-1) != QLatin1Char(PATHSEP))
+            this->macroPath += QLatin1Char(PATHSEP);
+    }
+
+}
+
+void DlgMacroRecordImp::on_lineEditMacroPath_textChanged ( const QString & newDir)
+{
+   macroPath = newDir;
+}
+
 
 #include "moc_DlgMacroRecordImp.cpp"
 
