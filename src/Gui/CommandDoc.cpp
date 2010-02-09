@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QClipboard>
 # include <QStatusBar>
 # include <QPointer>
 #endif
@@ -45,6 +46,7 @@
 #include "Selection.h"
 #include "DlgProjectInformationImp.h"
 #include "Transform.h"
+#include "WaitCursor.h"
 
 using namespace Gui;
 
@@ -573,23 +575,23 @@ DEF_STD_CMD_A(StdCmdCut);
 StdCmdCut::StdCmdCut()
   :Command("Std_Cut")
 {
-  sGroup        = QT_TR_NOOP("Edit");
-  sMenuText     = QT_TR_NOOP("&Cut");
-  sToolTipText  = QT_TR_NOOP("Cut out");
-  sWhatsThis    = "Std_Cut";
-  sStatusTip    = QT_TR_NOOP("Cut out");
-  sPixmap       = "edit-cut";
-  iAccel        = Qt::CTRL+Qt::Key_X;
+    sGroup        = QT_TR_NOOP("Edit");
+    sMenuText     = QT_TR_NOOP("&Cut");
+    sToolTipText  = QT_TR_NOOP("Cut out");
+    sWhatsThis    = "Std_Cut";
+    sStatusTip    = QT_TR_NOOP("Cut out");
+    sPixmap       = "edit-cut";
+    iAccel        = Qt::CTRL+Qt::Key_X;
 }
 
 void StdCmdCut::activated(int iMsg)
 {
-  getGuiApplication()->sendMsgToActiveView("Cut");
+    getGuiApplication()->sendMsgToActiveView("Cut");
 }
 
 bool StdCmdCut::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("Cut");
+    return getGuiApplication()->sendHasMsgToActiveView("Cut");
 }
 
 //===========================================================================
@@ -600,23 +602,31 @@ DEF_STD_CMD_A(StdCmdCopy);
 StdCmdCopy::StdCmdCopy()
   :Command("Std_Copy")
 {
-  sGroup        = QT_TR_NOOP("Edit");
-  sMenuText     = QT_TR_NOOP("C&opy");
-  sToolTipText  = QT_TR_NOOP("Copy operation");
-  sWhatsThis    = "Std_Copy";
-  sStatusTip    = QT_TR_NOOP("Copy operation");
-  sPixmap       = "edit-copy";
-  iAccel        = Qt::CTRL+Qt::Key_C;
+    sGroup        = QT_TR_NOOP("Edit");
+    sMenuText     = QT_TR_NOOP("C&opy");
+    sToolTipText  = QT_TR_NOOP("Copy operation");
+    sWhatsThis    = "Std_Copy";
+    sStatusTip    = QT_TR_NOOP("Copy operation");
+    sPixmap       = "edit-copy";
+    iAccel        = Qt::CTRL+Qt::Key_C;
 }
 
 void StdCmdCopy::activated(int iMsg)
 {
-  getGuiApplication()->sendMsgToActiveView("Copy");
+    bool done = getGuiApplication()->sendMsgToActiveView("Copy");
+    if (!done) {
+        WaitCursor wc;
+        QMimeData * mimeData = Application::Instance->createMimeDataFromSelection();
+        QClipboard* cb = QApplication::clipboard();
+        cb->setMimeData(mimeData);
+    }
 }
 
 bool StdCmdCopy::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("Copy");
+    if (getGuiApplication()->sendHasMsgToActiveView("Copy"))
+        return true;
+    return Selection().hasSelection();
 }
 
 //===========================================================================
@@ -627,23 +637,36 @@ DEF_STD_CMD_A(StdCmdPaste);
 StdCmdPaste::StdCmdPaste()
   :Command("Std_Paste")
 {
-  sGroup        = QT_TR_NOOP("Edit");
-  sMenuText     = QT_TR_NOOP("&Paste");
-  sToolTipText  = QT_TR_NOOP("Paste operation");
-  sWhatsThis    = "Std_Paste";
-  sStatusTip    = QT_TR_NOOP("Paste operation");
-  sPixmap       = "edit-paste";
-  iAccel        = Qt::CTRL+Qt::Key_V;
+    sGroup        = QT_TR_NOOP("Edit");
+    sMenuText     = QT_TR_NOOP("&Paste");
+    sToolTipText  = QT_TR_NOOP("Paste operation");
+    sWhatsThis    = "Std_Paste";
+    sStatusTip    = QT_TR_NOOP("Paste operation");
+    sPixmap       = "edit-paste";
+    iAccel        = Qt::CTRL+Qt::Key_V;
 }
 
 void StdCmdPaste::activated(int iMsg)
 {
-  getGuiApplication()->sendMsgToActiveView("Paste");
+    bool done = getGuiApplication()->sendMsgToActiveView("Paste");
+    if (!done) {
+        QClipboard* cb = QApplication::clipboard();
+        const QMimeData* mimeData = cb->mimeData();
+        if (mimeData) {
+            WaitCursor wc;
+            Application::Instance->insertFromMimeData(mimeData);
+        }
+    }
 }
 
 bool StdCmdPaste::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("Paste");
+    if (getGuiApplication()->sendHasMsgToActiveView("Paste"))
+        return true;
+    QClipboard* cb = QApplication::clipboard();
+    const QMimeData* mime = cb->mimeData();
+    if (!mime) return false;
+    return Application::Instance->canInsertFromMimeData(mime);
 }
 
 //===========================================================================

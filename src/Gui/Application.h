@@ -33,6 +33,7 @@
 #include <App/Application.h>
 
 class QCloseEvent;
+class QMimeData;
 
 namespace Gui{
 class BaseView;
@@ -64,6 +65,13 @@ public:
     void importFrom(const char* FileName, const char* DocName, const char* Module);
     /// Export objects from the document DocName to a single file
     void exportTo(const char* FileName, const char* DocName, const char* Module);
+    /// Create mime data from selected objects
+    QMimeData * createMimeDataFromSelection () const;
+    /// Check if mime data contains object data
+    bool canInsertFromMimeData (const QMimeData * source) const;
+    /// Insert the objects into the active document. If no document exists
+    /// one gets created.
+    void insertFromMimeData (const QMimeData * source);
     //@}
 
 
