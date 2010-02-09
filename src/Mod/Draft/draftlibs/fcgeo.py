@@ -1,7 +1,7 @@
-
 #***************************************************************************
 #*                                                                         *
-#*   Copyright (c) 2009 Yorik van Havre <yorik@uncreated.net>              *  
+#*   Copyright (c) 2009, 2010                                              *
+#*   Yorik van Havre <yorik@gmx.fr>, Ken Cline <cline@frii.com>            *  
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -22,8 +22,8 @@
 #***************************************************************************
 
 __title__="FreeCAD Draft Workbench - Geometry library"
-__author__ = "Yorik van Havre <yorik@uncreated.net>"
-__url__ = ["http://yorik.uncreated.net","http://free-cad.sourceforge.net"]
+__author__ = "Yorik van Havre, Jacques-Antoine Gaudin, Ken Cline"
+__url__ = ["http://free-cad.sourceforge.net"]
 
 "this file contains generic geometry functions for manipulating Part shapes"
 
@@ -248,7 +248,7 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
 		
 		return int
 	else :
-		print "fcgeo: Unsupported curve type"
+		print "fcgeo: Unsupported curve type: (" + str(edge1.Curve) + ", " + str(edge2.Curve) + ")"
 
 
 def mirror (point, edge):
@@ -273,7 +273,7 @@ def findClosest(basepoint,pointslist):
 	if not pointslist: return None
 	smallest = 100000
 	for n in range(len(pointslist)):
-		new = fcvec.new(basepoint,pointslist[n]).Length
+		new = basepoint.sub(pointslist[n]).Length
 		if new < smallest:
 			smallest = new
 			npoint = n
@@ -362,18 +362,18 @@ def findMidpoint(edge):
 		center = edge.Curve.Center
 		radius = edge.Curve.Radius
 		axis = edge.Curve.Axis
-		chord = fcvec.new(first,last)
-		perp = fcvec.crossproduct(chord,axis)
-		perp = fcvec.normalized(perp)
-		ray = fcvec.new(center,first)
-		apothem = fcvec.dotproduct(ray,perp)
+		chord = last.sub(first)
+		perp = chord.cross(axis)
+		perp.normalize()
+		ray = first.sub(center)
+		apothem = ray.dot(perp)
 		sagitta = radius - apothem
 		startpoint = Vector.add(first, fcvec.scale(chord,0.5))
-		endpoint = fcvec.scale(fcvec.normalized(perp),sagitta)
+		endpoint = fcvec.scaleTo(perp,sagitta)
 		return Vector.add(startpoint,endpoint)
 
 	elif isinstance(edge.Curve,Part.Line):
-		halfedge = fcvec.scale(fcvec.new(first,last),.5)
+		halfedge = fcvec.scale(last.sub(first),.5)
 		return Vector.add(first,halfedge)
 
 	else:
@@ -447,7 +447,7 @@ def offset(edge,vector):
 		v2 = Vector.add(edge.Vertexes[-1].Point, vector)
 		return Part.Line(v1,v2).toShape()
 	else:
-		rad = fcvec.new(edge.Curve.Center,edge.Vertexes[0].Point)
+		rad = edge.Vertexes[0].Point.sub(edge.Curve.Center)
 		newrad = Vector.add(rad,vector).Length
 		return Part.Circle(edge.Curve.Center,NORM,newrad).toShape()
 
@@ -469,8 +469,8 @@ def findDistance(point,edge,strict=False):
 			if (dist.Length == 0):
 				return None
 			if strict:
-				s1 = fcvec.new(edge.Vertexes[0].Point,newpoint)
-				s2 = fcvec.new(edge.Vertexes[-1].Point,newpoint)
+				s1 = newpoint.sub(edge.Vertexes[0].Point)
+				s2 = newpoint.sub(edge.Vertexes[-1].Point)
 				if (s1.Length <= segment.Length) and (s2.Length <= segment.Length):
 					return dist
 				else:
@@ -483,16 +483,16 @@ def findDistance(point,edge,strict=False):
 			else:
 				ve2 = None
 			center = edge.Curve.Center
-			segment = fcvec.new(point, center)
+			segment = center.sub(point)
 			ratio = (segment.Length - edge.Curve.Radius) / segment.Length
 			dist = fcvec.scale(segment,ratio)
 			newpoint = Vector.add(point, dist)
 			if (dist.Length == 0):
 				return None
 			if strict and ve2:
-				ang1 = fcvec.angle(fcvec.new(center, ve1))
-				ang2 = fcvec.angle(fcvec.new(center, ve2))
-				angpt = fcvec.angle(fcvec.new(center, newpoint))
+				ang1 = fcvec.angle(ve1.sub(center))
+				ang2 = fcvec.angle(ve2.sub(center))
+				angpt = fcvec.angle(newpoint.sub(center))
 				if ((angpt <= ang2 and angpt >= ang1) or (angpt <= ang1 and angpt >= ang2)):
 					return dist
 				else:
@@ -520,13 +520,13 @@ def angleBisection(edge1, edge2):
 			angleDiff = fcvec.angle(line1Dir, p4.sub(p3))
 			ang = angleDiff * 0.5
 			origin = int[0]
-			dir = fcvec.normalized(line1Dir)
-			dir = fcvec.rotate(dir, ang)
+			line1Dir.normalize()
+			dir = fcvec.rotate(line1Dir, ang)
 			return Part.Line(origin,origin.add(dir)).toShape()
 		else:
 			diff = p3.sub(p1)
 			origin = p1.add(fcvec.scale(diff, 0.5))
-			dir = fcvec.normalized(p2.sub(p1))
+			dir = p2.sub(p1); dir.normalize()
 			return Part.Line(origin,origin.add(dir)).toShape()
 	else:
 		return None
@@ -617,15 +617,16 @@ def circlefrom1Line2Points(edge, p1, p2):
 	s = s[0]
 	v1 = p1.sub(s)
 	v2 = p2.sub(s)
-	projectedDist = math.sqrt(abs(fcvec.dotproduct(v1, v2)))
-	edgeDir = fcvec.normalized(vec(edge))
+	projectedDist = math.sqrt(abs(v1.dot(v2)))
+	edgeDir = vec(edge); edgeDir.normailze()
 	projectedCen1 = Vector.add(s, fcvec.scale(edgeDir, projectedDist))
 	projectedCen2 = Vector.add(s, fcvec.scale(edgeDir, -projectedDist))
-	perpEdgeDir = fcvec.crossproduct(edgeDir)
+	perpEdgeDir = edgeDir.cross(Vector(0,0,1))
 	perpCen1 = Vector.add(projectedCen1, perpEdgeDir)
 	perpCen2 = Vector.add(projectedCen2, perpEdgeDir)
 	mid = findMidpoint(p1_p2)
-	perp_mid = Vector.add(mid, fcvec.normalized(fcvec.crossproduct(vec(p1_p2))))
+	x = fcvec.crossproduct(vec(p1_p2)); x.normalize()
+	perp_mid = Vector.add(mid, x)
 	cen1 = findIntersection(edg(projectedCen1, perpCen1), edg(mid, perp_mid), True, True)
 	cen2 = findIntersection(edg(projectedCen2, perpCen2), edg(mid, perp_mid), True, True)
 	circles = []
@@ -714,7 +715,7 @@ def circleFromPointLineRadius (point, edge, radius):
 	center2 = None
 	if dist.Length == 0:
 		segment = vec(edge)
-		perpVec = fcvec.normalized(fcvec.crossproduct(segment))
+		perpVec = fcvec.crossproduct(segment); perpVec.normalize()
 		normPoint_c1 = fcvec.scale(perpVec, radius)
 		normPoint_c2 = fcvec.scale(perpVec, -radius)
 		center1 = point.add(normPoint_c1)
@@ -734,8 +735,8 @@ def circleFromPointLineRadius (point, edge, radius):
 		normPoint = point.add(findDistance(point, edge, False))
 		normDist = fcvec.dist(normPoint, point)
 		dist = math.sqrt(radius**2 - (radius - normDist)**2)
-		centerNormVec = fcvec.scale(fcvec.normalized(point.sub(normPoint)), radius)
-		edgeDir = fcvec.normalized(edge.Vertexes[0].Point.sub(normPoint))
+		centerNormVec = fcvec.scaleTo(point.sub(normPoint), radius)
+		edgeDir = edge.Vertexes[0].Point.sub(normPoint); edgeDir.normalize()
 		center1 = centerNormVec.add(normPoint.add(fcvec.scale(edgeDir, dist)))
 		center2 = centerNormVec.add(normPoint.add(fcvec.scale(edgeDir, -dist)))
 	circles = []
@@ -764,8 +765,8 @@ def circleFrom2PointsRadius(p1, p2, radius):
 		circle = Part.Circle(mid, norm, radius)
 		if circle: return [circle]
 		else: return None
-	dir = fcvec.normalized(vec(p1_p2))
-	perpDir = fcvec.normalized(fcvec.crossproduct(dir))
+	dir = vec(p1_p2); dir.normalize()
+	perpDir = dir.cross(Vector(0,0,1)); perpDir.normailze()
 	dist = math.sqrt(radius**2 - (dist_p1p2 / 2.0)**2)
 	cen1 = Vector.add(mid, fcvec.scale(perpDir, dist))
 	cen2 = Vector.add(mid, fcvec.scale(perpDir, -dist))
@@ -1004,10 +1005,10 @@ def findHomotheticCenterOfCircles(circle1, circle2):
 			return None
 
 		cen1_cen2 = Part.Line(circle1.Curve.Center, circle2.Curve.Center).toShape()
-		cenDir = fcvec.normalized(vec(cen1_cen2))
+		cenDir = vec(cen1_cen2); cenDir.normalize()
 
 		# Get the perpedicular vector.
-		perpCenDir = fcvec.normalized(fcvec.crossproduct(cenDir))
+		perpCenDir = cenDir.cross(Vector(0,0,1)); perpCenDir.normalize()
 
 		# Get point on first circle
 		p1 = Vector.add(circle1.Curve.Center, fcvec.scale(perpCenDir, circle1.Curve.Radius))
@@ -1059,10 +1060,10 @@ def findRadicalAxis(circle1, circle2):
 		cen1 = circle1.Curve.Center
 		# dist .. the distance from cen1 to cen2.
 		dist = fcvec.dist(cen1, circle2.Curve.Center)
-		cenDir = fcvec.normalized(Vector.sub(cen1, circle2.Curve.Center))
+		cenDir = cen1.sub(circle2.Curve.Center); cenDir.normalize()
 
 		# Get the perpedicular vector.
-		perpCenDir = fcvec.normalized(fcvec.crossproduct(cenDir))
+		perpCenDir = cenDir.cross(Vector(0,0,1)); perpCenDir.normalize()
 
 		# J ... The radical center.
 		# K ... The point where the cadical axis crosses the line of cen1->cen2.
