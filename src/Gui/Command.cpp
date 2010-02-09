@@ -520,13 +520,13 @@ void MacroCommand::activated(int iMsg)
 {
     std::string cMacroPath = App::GetApplication().GetParameterGroupByPath
                              ("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",
-                                     App::GetApplication().Config()["UserAppData"].c_str());
+                                     App::Application::getUserAppDataDir().c_str());
 
     QDir d(QString::fromUtf8(cMacroPath.c_str()));
     QFileInfo fi(d, QString::fromUtf8(sScriptName));
     Application::Instance->macroManager()->run(MacroManager::File, fi.filePath().toUtf8());
     // after macro run recalculate the document
-    if ( Application::Instance->activeDocument() )
+    if (Application::Instance->activeDocument())
         Application::Instance->activeDocument()->getDocument()->recompute();
 }
 

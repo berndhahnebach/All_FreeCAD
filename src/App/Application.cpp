@@ -458,6 +458,11 @@ const char* Application::GetHomePath(void) const
     return _mConfig["AppHomePath"].c_str();
 }
 
+std::string Application::getUserAppDataDir()
+{
+    return mConfig["UserAppData"];
+}
+
 std::string Application::getResourceDir()
 {
 # ifdef RESOURCEDIR

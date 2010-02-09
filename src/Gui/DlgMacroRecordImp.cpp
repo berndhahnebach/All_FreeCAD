@@ -46,18 +46,18 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), WindowParameter("Macro")
+    : QDialog(parent, fl), WindowParameter("Macro")
 {
     this->setupUi(this);
 
     // get the macro home path
     this->macroPath = QString::fromUtf8(getWindowParameter()->GetASCII("MacroPath",
-        App::GetApplication().Config()["UserAppData"].c_str()).c_str());
+        App::Application::getUserAppDataDir().c_str()).c_str());
     // check on PATHSEP at the end
     if (this->macroPath.at(this->macroPath.length()-1) != QLatin1Char(PATHSEP))
         this->macroPath += QLatin1Char(PATHSEP);
 
-    // set the edit fiels
+    // set the edit fields
     this->lineEditMacroPath->setText(macroPath);
 
     // get a pointer to the macro manager
@@ -81,17 +81,16 @@ DlgMacroRecordImp::~DlgMacroRecordImp()
 void DlgMacroRecordImp::on_buttonStart_clicked()
 {
     // test if the path already set
-    if(lineEditPath->text().isEmpty())
-    {
-        QMessageBox::information( getMainWindow(), tr("Macro recorder"), tr("Specify first a place to save."));
+    if (lineEditPath->text().isEmpty()) {
+        QMessageBox::information(getMainWindow(), tr("Macro recorder"),
+            tr("Specify first a place to save."));
         return;
     }
 
     QDir dir(macroPath);
-
-    if(!dir.exists())
-    {
-        QMessageBox::information( getMainWindow(), tr("Macro recorder"), tr("The macro directory don't exist! Choose another one."));
+    if (!dir.exists()) {
+        QMessageBox::information(getMainWindow(), tr("Macro recorder"),
+            tr("The macro directory doesn't exist. Please, choose another one."));
         return;
     }
 
@@ -101,8 +100,12 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
     QFileInfo fi(fn);
     if ( fi.isFile() && fi.exists() )
     {
-        if ( QMessageBox::question( this, tr("Existing macro"), tr("The macro '%1' already exists. Do you want to overwrite?").arg(fn),
-                                    QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) == QMessageBox::No )
+        if (QMessageBox::question(this, tr("Existing macro"),
+                tr("The macro '%1' already exists. Do you want to overwrite?").arg(fn),
+                QMessageBox::Yes,
+                QMessageBox::No|
+                QMessageBox::Default|
+                QMessageBox::Escape) == QMessageBox::No)
         return;
     }
 
@@ -116,8 +119,7 @@ void DlgMacroRecordImp::on_buttonStart_clicked()
  */
 void DlgMacroRecordImp::on_buttonCancel_clicked()
 {
-    if(this->macroManager->isOpen())
-    {
+    if (this->macroManager->isOpen()) {
         this->macroManager->cancel();
     }
   
@@ -129,8 +131,7 @@ void DlgMacroRecordImp::on_buttonCancel_clicked()
  */
 void DlgMacroRecordImp::on_buttonStop_clicked()
 {
-    if(this->macroManager->isOpen())
-    {
+    if(this->macroManager->isOpen()) {
         // ends the macrorecording and save the file...
         this->macroManager->commit();
     }
@@ -138,10 +139,10 @@ void DlgMacroRecordImp::on_buttonStop_clicked()
     QDialog::accept();
 }
 
-void DlgMacroRecordImp::on_pushButtonChoseDir_clicked()
+void DlgMacroRecordImp::on_pushButtonChooseDir_clicked()
 {
     QString newDir = QFileDialog::getExistingDirectory(0,tr("Choose macro directory"),macroPath);
-    if(newDir.size()!=0) {
+    if (!newDir.isEmpty()) {
         macroPath = newDir + QLatin1Char(PATHSEP);
         this->lineEditMacroPath->setText(newDir);
         getWindowParameter()->SetASCII("MacroPath",macroPath.toUtf8());
@@ -150,12 +151,11 @@ void DlgMacroRecordImp::on_pushButtonChoseDir_clicked()
         if (this->macroPath.at(this->macroPath.length()-1) != QLatin1Char(PATHSEP))
             this->macroPath += QLatin1Char(PATHSEP);
     }
-
 }
 
-void DlgMacroRecordImp::on_lineEditMacroPath_textChanged ( const QString & newDir)
+void DlgMacroRecordImp::on_lineEditMacroPath_textChanged (const QString & newDir)
 {
-   macroPath = newDir;
+    macroPath = newDir;
 }
 
 

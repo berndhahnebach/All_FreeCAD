@@ -362,10 +362,12 @@ void Application::open(const char* FileName, const char* Module)
     Base::FileInfo File(FileName);
     string te = File.extension();
 
-    // if the active document empty, close it
-    if(App::GetApplication().getActiveDocument()->countObjects() == 0){
-        Command::doCommand(Command::App, "App.closeDocument('%s')", App::GetApplication().getActiveDocument()->getName());
-    }
+    // What should this be good for??? BTW, this code is NOT safe!!!
+    //
+    //// if the active document empty, close it
+    //if (App::GetApplication().getActiveDocument()->countObjects() == 0){
+    //    Command::doCommand(Command::App, "App.closeDocument('%s')", App::GetApplication().getActiveDocument()->getName());
+    //}
 
     if (Module != 0) {
         // issue module loading

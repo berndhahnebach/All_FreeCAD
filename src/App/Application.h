@@ -216,6 +216,7 @@ public:
     //@}
 
     const char* GetHomePath(void) const;
+    static std::string getUserAppDataDir();
     static std::string getResourceDir();
     static std::string getHelpDir();
 
