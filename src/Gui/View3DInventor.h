@@ -29,7 +29,6 @@
 #include <Base/Parameter.h>
 
 class SoNode;
-class QMimeData;
 
 namespace Gui {
 
@@ -92,9 +91,6 @@ public:
     bool eventFilter(QObject*, QEvent* );
 
 protected:
-    QMimeData * createMimeDataFromSelection () const;
-    bool canInsertFromMimeData (const QMimeData * source) const;
-    void insertFromMimeData (const QMimeData * source);
     void windowStateChanged(MDIView* );
     void dropEvent        (QDropEvent      * e);
     void dragEnterEvent   (QDragEnterEvent * e);
