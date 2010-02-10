@@ -1386,7 +1386,7 @@ DocumentObject* Document::_copyObject(DocumentObject* obj, std::map<DocumentObje
                     static_cast<PropertyLink*>(it->second)->setValue(link_copy);
                 }
                 else if (link->getDocument() == this) {
-                    static_cast<PropertyLink*>(it->second)->setValue(link);
+                    //static_cast<PropertyLink*>(it->second)->setValue(link);
                 }
             }
             else if (prop->getTypeId() == PropertyLinkList::getClassTypeId()) {
@@ -1408,18 +1408,17 @@ DocumentObject* Document::_copyObject(DocumentObject* obj, std::map<DocumentObje
                 }
                 else {
                     std::vector<DocumentObject*> links_ref;
-                    for (std::vector<DocumentObject*>::iterator jt = links.begin(); jt != links.end(); ++jt) {
-                        if ((*jt)->getDocument() == this)
-                            links_ref.push_back(*jt);
-                    }
+                    //for (std::vector<DocumentObject*>::iterator jt = links.begin(); jt != links.end(); ++jt) {
+                    //    if ((*jt)->getDocument() == this)
+                    //        links_ref.push_back(*jt);
+                    //}
                     static_cast<PropertyLinkList*>(it->second)->setValues(links_ref);
                 }
             }
             else {
-                Property* data = prop->Copy();
-                if (data) {
+                std::auto_ptr<Property> data(prop->Copy());
+                if (data.get()) {
                     it->second->Paste(*data);
-                    delete data;
                 }
             }
         }

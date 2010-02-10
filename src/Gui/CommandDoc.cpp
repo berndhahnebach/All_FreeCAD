@@ -47,6 +47,7 @@
 #include "DlgProjectInformationImp.h"
 #include "Transform.h"
 #include "WaitCursor.h"
+#include "ViewProvider.h"
 
 using namespace Gui;
 
@@ -573,7 +574,7 @@ Action * StdCmdRedo::createAction(void)
 DEF_STD_CMD_A(StdCmdCut);
 
 StdCmdCut::StdCmdCut()
-  :Command("Std_Cut")
+  : Command("Std_Cut")
 {
     sGroup        = QT_TR_NOOP("Edit");
     sMenuText     = QT_TR_NOOP("&Cut");
@@ -600,7 +601,7 @@ bool StdCmdCut::isActive(void)
 DEF_STD_CMD_A(StdCmdCopy);
 
 StdCmdCopy::StdCmdCopy()
-  :Command("Std_Copy")
+  : Command("Std_Copy")
 {
     sGroup        = QT_TR_NOOP("Edit");
     sMenuText     = QT_TR_NOOP("C&opy");
@@ -616,7 +617,7 @@ void StdCmdCopy::activated(int iMsg)
     bool done = getGuiApplication()->sendMsgToActiveView("Copy");
     if (!done) {
         WaitCursor wc;
-        QMimeData * mimeData = Application::Instance->createMimeDataFromSelection();
+        QMimeData * mimeData = getMainWindow()->createMimeDataFromSelection();
         QClipboard* cb = QApplication::clipboard();
         cb->setMimeData(mimeData);
     }
@@ -635,7 +636,7 @@ bool StdCmdCopy::isActive(void)
 DEF_STD_CMD_A(StdCmdPaste);
 
 StdCmdPaste::StdCmdPaste()
-  :Command("Std_Paste")
+  : Command("Std_Paste")
 {
     sGroup        = QT_TR_NOOP("Edit");
     sMenuText     = QT_TR_NOOP("&Paste");
@@ -654,7 +655,7 @@ void StdCmdPaste::activated(int iMsg)
         const QMimeData* mimeData = cb->mimeData();
         if (mimeData) {
             WaitCursor wc;
-            Application::Instance->insertFromMimeData(mimeData);
+            getMainWindow()->insertFromMimeData(mimeData);
         }
     }
 }
@@ -666,7 +667,81 @@ bool StdCmdPaste::isActive(void)
     QClipboard* cb = QApplication::clipboard();
     const QMimeData* mime = cb->mimeData();
     if (!mime) return false;
-    return Application::Instance->canInsertFromMimeData(mime);
+    return getMainWindow()->canInsertFromMimeData(mime);
+}
+
+DEF_STD_CMD_A(StdCmdDDuplicateSelection);
+
+StdCmdDDuplicateSelection::StdCmdDDuplicateSelection()
+  :Command("Std_DuplicateSelection")
+{
+    sAppModule    = "Edit";
+    sGroup        = QT_TR_NOOP("Edit");
+    sMenuText     = QT_TR_NOOP("Duplicate selection");
+    sToolTipText  = QT_TR_NOOP("Put duplicates of the selected objects to the active document");
+    sWhatsThis    = QT_TR_NOOP("Put duplicates of the selected objects to the active document");
+    sStatusTip    = QT_TR_NOOP("Put duplicates of the selected objects to the active document");
+}
+
+void StdCmdDDuplicateSelection::activated(int iMsg)
+{
+    App::Document* act = App::GetApplication().getActiveDocument();
+    if (!act)
+        return; // no active document found
+    Gui::Document* doc = Gui::Application::Instance->getDocument(act);
+    std::vector<Gui::SelectionSingleton::SelObj> sel = Gui::Selection().getCompleteSelection();
+    for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
+        if (!it->pObject)
+            continue; // should actually not happen
+        // create a copy of the object
+        App::DocumentObject* copy = act->copyObject(it->pObject, false);
+        if (!copy) // continue if no copy could be created
+            continue;
+        // mark all properties of the copy as "touched" which are touched in the original object
+        std::map<std::string,App::Property*> props;
+        it->pObject->getPropertyMap(props);
+        std::map<std::string,App::Property*> copy_props;
+        copy->getPropertyMap(copy_props);
+        for (std::map<std::string,App::Property*>::iterator jt = props.begin(); jt != props.end(); ++jt) {
+            if (jt->second->isTouched()) {
+                std::map<std::string,App::Property*>::iterator kt;
+                kt = copy_props.find(jt->first);
+                if (kt != copy_props.end()) {
+                    kt->second->touch();
+                }
+            }
+        }
+
+        Gui::Document* parent = Gui::Application::Instance->getDocument(it->pObject->getDocument());
+        if (!parent || !doc)
+            continue; // should not happen
+        // copy the properties of the associated view providers
+        Gui::ViewProvider* view = parent->getViewProvider(it->pObject);
+        Gui::ViewProvider* copy_view = doc->getViewProvider(copy);
+        if (!view || !copy_view)
+            continue; // should not happen
+
+        // get the properties of the view provider
+        props.clear();
+        view->getPropertyMap(props);
+        copy_props.clear();
+        copy_view->getPropertyMap(copy_props);
+        for (std::map<std::string,App::Property*>::iterator jt = props.begin(); jt != props.end(); ++jt) {
+            std::map<std::string,App::Property*>::iterator kt;
+            kt = copy_props.find(jt->first);
+            if (kt != copy_props.end()) {
+                std::auto_ptr<App::Property> data(jt->second->Copy());
+                if (data.get()) {
+                    kt->second->Paste(*data);
+                }
+            }
+        }
+    }
+}
+
+bool StdCmdDDuplicateSelection::isActive(void)
+{
+    return Gui::Selection().hasSelection();
 }
 
 //===========================================================================
@@ -831,6 +906,7 @@ void CreateDocCommands(void)
     rcCmdMgr.addCommand(new StdCmdCut());
     rcCmdMgr.addCommand(new StdCmdCopy());
     rcCmdMgr.addCommand(new StdCmdPaste());
+    rcCmdMgr.addCommand(new StdCmdDDuplicateSelection());
     rcCmdMgr.addCommand(new StdCmdSelectAll());
     rcCmdMgr.addCommand(new StdCmdDelete());
     rcCmdMgr.addCommand(new StdCmdRefresh());

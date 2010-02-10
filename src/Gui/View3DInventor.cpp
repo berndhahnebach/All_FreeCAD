@@ -629,26 +629,7 @@ void View3DInventor::dropEvent (QDropEvent * e)
 {
     const QMimeData* data = e->mimeData();
     if (data->hasUrls()) {
-        QList<QUrl> uri = data->urls();
-        QStringList files;
-        App::Document* pDoc = getAppDocument();
-        if (pDoc) {
-            for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
-                QFileInfo info((*it).toLocalFile());
-                if ( info.exists() && info.isFile() ) {
-                    if (info.isSymLink())
-                        info.setFile(info.readLink());
-                    files << info.absoluteFilePath();
-                }
-            }
-
-            const char *docName = pDoc->getName();
-            SelectModule::Dict dict = SelectModule::importHandler(files);
-            // load the files with the associated modules
-            for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
-                Application::Instance->importFrom(it.key().toUtf8(), docName, it.value().toAscii());
-            }
-        }
+        getMainWindow()->loadUrls(getAppDocument(), data->urls());
     }
     else {
         MDIView::dropEvent(e);
@@ -659,7 +640,7 @@ void View3DInventor::dragEnterEvent (QDragEnterEvent * e)
 {
     // Here we must allow uri drafs and check them in dropEvent
     const QMimeData* data = e->mimeData();
-    if ( data->hasUrls() )
+    if (data->hasUrls())
         e->accept();
     else
         e->ignore();

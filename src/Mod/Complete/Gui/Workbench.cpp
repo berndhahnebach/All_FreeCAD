@@ -97,8 +97,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     // Edit
     Gui::MenuItem* edit = new Gui::MenuItem( menuBar );
     edit->setCommand(QT_TR_NOOP("&Edit"));
-    *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" 
-          << "Separator" << "Std_Refresh" << "Std_SelectAll" << "Std_Delete"
+    *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy"
+          << "Std_Paste" << "Std_DuplicateSelection" << "Separator"
+          << "Std_Refresh" << "Std_SelectAll" << "Std_Delete" << "Std_Transform"
           << "Separator" << "Std_DlgPreferences";
 
     // Standard views
