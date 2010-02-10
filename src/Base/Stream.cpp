@@ -29,6 +29,7 @@
 # include <cstdlib>
 # include <string>
 # include <cstdio>
+# include <cstring>
 #ifdef __GNUC__
 # include <stdint.h>
 #endif
