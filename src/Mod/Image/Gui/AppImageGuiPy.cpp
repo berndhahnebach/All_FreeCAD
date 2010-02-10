@@ -43,7 +43,8 @@ static PyObject *
 open(PyObject *self, PyObject *args) 
 {
     const char* Name;
-    if (! PyArg_ParseTuple(args, "s",&Name))
+    const char* DocName=0;
+    if (!PyArg_ParseTuple(args, "s|s",&Name,&DocName))
         return NULL; 
     
     PY_TRY {
@@ -88,14 +89,12 @@ open(PyObject *self, PyObject *args)
 static PyObject *
 insert(PyObject *self, PyObject *args)
 {
-  // not supported to insert an image (by dropping on an image view)
-  // hence do nothing
-  Py_Return;
+    return open(self, args);
 }
 
 /* registration table  */
 struct PyMethodDef ImageGui_Import_methods[] = {
-    {"open"       ,open ,       1},				/* method name, C func ptr, always-tuple */
+    {"open"       ,open ,       1}, /* method name, C func ptr, always-tuple */
     {"insert"     ,insert,      1},
     {NULL, NULL}                   /* end of table marker */
 };

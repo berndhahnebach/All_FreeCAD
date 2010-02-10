@@ -29,10 +29,6 @@
 # include <boost/bind.hpp>
 # include <sstream>
 # include <stdexcept>
-# include <QBuffer>
-# include <QByteArray>
-# include <QClipboard>
-# include <QMimeData>
 # include <QCloseEvent>
 # include <QLocale>
 # include <QMessageBox>
@@ -53,7 +49,6 @@
 #include <Base/Exception.h>
 #include <Base/Factory.h>
 #include <Base/FileInfo.h>
-#include <Base/Stream.h>
 #include <App/Document.h>
 #include <App/DocumentObjectPy.h>
 
@@ -491,96 +486,6 @@ void Application::exportTo(const char* FileName, const char* DocName, const char
         QMessageBox::warning(getMainWindow(), QObject::tr("Unknown filetype"),
             QObject::tr("Cannot save to unknown filetype: %1").arg(QLatin1String(te.c_str())));
         wc.setWaitCursor();
-    }
-}
-
-QMimeData * Application::createMimeDataFromSelection () const
-{
-    std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
-    unsigned int memsize=1000; // ~ for the meta-information
-    std::vector<App::DocumentObject*> obj;
-    obj.reserve(sel.size());
-    for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
-        if (it->pObject) {
-            obj.push_back(it->pObject);
-            memsize += it->pObject->getMemSize();
-        }
-    }
-
-    QByteArray res;
-#if 0
-    res.reserve(memsize);
-    QBuffer buffer(&res);
-    buffer.open(QIODevice::WriteOnly);
-
-    Base::IODeviceOStream buf(&buffer);
-    std::ostream str(&buf);
-    App::Document::exportObjects(obj, str);
-    str.close();
-#else
-    static Base::FileInfo fi(Base::FileInfo::getTempFileName());
-    Base::ofstream str(fi, std::ios::out | std::ios::binary);
-    App::Document::exportObjects(obj, str);
-    str.close();
-    res = fi.filePath().c_str();
-#endif
-    QMimeData *mimeData = new QMimeData();
-    mimeData->setData(QLatin1String("application/x-documentobject"),res);
-    return mimeData;
-}
-
-bool Application::canInsertFromMimeData (const QMimeData * source) const
-{
-    if (!source)
-        return false;
-    return source->hasUrls() || source->hasFormat
-        (QLatin1String("application/x-documentobject"));
-}
-
-void Application::insertFromMimeData (const QMimeData * mimeData)
-{
-    if (!mimeData)
-        return;
-    if (mimeData->hasFormat(QLatin1String("application/x-documentobject"))) {
-        QByteArray res = mimeData->data(QLatin1String("application/x-documentobject"));
-        App::Document* doc = App::GetApplication().getActiveDocument();
-        if (!doc) doc = App::GetApplication().newDocument("Unnamed");
-
-#if 0
-        QBuffer buffer(&res);
-        buffer.open(QIODevice::ReadOnly);
-        Base::IODeviceIStream buf(&buffer);
-        //buf.open(std::ios::in | std::ios::binary);
-        std::istream in(0);
-        in.rdbuf(&buf);
-        doc->importObjects(in);
-#else
-        Base::FileInfo fi((const char*)res);
-        Base::ifstream str(fi, std::ios::in | std::ios::binary);
-        doc->importObjects(str);
-        str.close();
-#endif
-    }
-    else if (mimeData->hasUrls()) {
-        QList<QUrl> uri = mimeData->urls();
-        QStringList files;
-        App::Document* doc = App::GetApplication().getActiveDocument();
-        if (!doc) doc = App::GetApplication().newDocument("Unnamed");
-        for (QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it) {
-            QFileInfo info((*it).toLocalFile());
-            if ( info.exists() && info.isFile() ) {
-                if (info.isSymLink())
-                    info.setFile(info.readLink());
-                files << info.absoluteFilePath();
-            }
-        }
-
-        const char *docName = doc->getName();
-        SelectModule::Dict dict = SelectModule::importHandler(files);
-        // load the files with the associated modules
-        for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
-            importFrom(it.key().toUtf8(), docName, it.value().toAscii());
-        }
     }
 }
 

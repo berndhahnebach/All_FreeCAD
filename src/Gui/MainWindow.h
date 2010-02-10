@@ -32,6 +32,12 @@
 #include <QMainWindow>
 #include <QWorkspace>
 
+class QMimeData;
+class QUrl;
+
+namespace App {
+class Document;
+}
 
 namespace Gui {
 
@@ -125,6 +131,24 @@ public:
     void loadWindowSettings();
     /// Saves the main window settings.
     void saveWindowSettings();
+    //@}
+
+    /** @name MIME data handling
+     */
+    //@{
+    /** Create mime data from selected objects */
+    QMimeData * createMimeDataFromSelection () const;
+    /** Check if mime data contains object data */
+    bool canInsertFromMimeData (const QMimeData * source) const;
+    /** Insert the objects into the active document. If no document exists
+     * one gets created.
+     */
+    void insertFromMimeData (const QMimeData * source);
+    /**
+     * Load files from the given URLs into the given document. If the document is 0
+     * one gets created automatically if needed.
+     */
+    void loadUrls(App::Document*, const QList<QUrl>&);
     //@}
 
 public Q_SLOTS:
