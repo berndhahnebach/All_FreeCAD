@@ -12,7 +12,7 @@
     FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
-      <UserDocu>This class represent selections made by the user. It holds information about the object, document and sub type of the seleciot.</UserDocu>
+      <UserDocu>This class represent selections made by the user. It holds information about the object, document and sub type of the selecion.</UserDocu>
     </Documentation>
     <Methode Name="remove">
       <Documentation>
