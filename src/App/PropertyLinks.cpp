@@ -92,7 +92,7 @@ App::DocumentObject * PropertyLink::getValue(Base::Type t) const
 
 PyObject *PropertyLink::getPyObject(void)
 {
-    if(_pcLink)
+    if (_pcLink)
         return _pcLink->getPyObject();
     else
         Py_Return;
@@ -104,7 +104,7 @@ void PropertyLink::setPyObject(PyObject *value)
         DocumentObjectPy  *pcObject = (DocumentObjectPy*)value;
         setValue(pcObject->getDocumentObjectPtr());
     }
-    else if(Py_None == value) {
+    else if (Py_None == value) {
         setValue(0);
     }
     else {
@@ -427,19 +427,26 @@ void PropertyLinkList::Restore(Base::XMLReader &reader)
 {
     // read my element
     reader.readElement("LinkList");
-    // get the value of my Attribute
+    // get the value of my attribute
     int count = reader.getAttributeAsInteger("count");
     assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-    std::vector<DocumentObject*> values(count);
+    std::vector<DocumentObject*> values;
+    values.reserve(count);
     for (int i = 0; i < count; i++) {
         reader.readElement("Link");
         std::string name = reader.getAttribute("value");
-
+        // In order to do copy/paste it must be allowed to have defined some
+        // referenced objects in XML which do not exist anymore in the new
+        // document. Thus, we should silently ingore this.
         // Property not in an object!
-        DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument()->getObject(name.c_str());
-        assert(pcObject);
-        values[i] = pcObject;
+        DocumentObject* father = static_cast<DocumentObject*>(getContainer());
+        DocumentObject* child = father->getDocument()->getObject(name.c_str());
+        if (child)
+            values.push_back(child);
+        else
+            Base::Console().Warning("Lost link to '%s' while loading, maybe "
+                                    "an object was not loaded correctly\n",name.c_str());
     }
 
     reader.readEndElement("LinkList");
@@ -450,7 +457,7 @@ void PropertyLinkList::Restore(Base::XMLReader &reader)
 
 Property *PropertyLinkList::Copy(void) const
 {
-    PropertyLinkList *p= new PropertyLinkList();
+    PropertyLinkList *p = new PropertyLinkList();
     p->_lValueList = _lValueList;
     return p;
 }
