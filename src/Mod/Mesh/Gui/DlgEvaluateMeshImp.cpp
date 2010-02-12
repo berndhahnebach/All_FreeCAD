@@ -1012,7 +1012,8 @@ DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
     // embed this dialog into a dockable widget container
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
     // use Qt macro for preparing for translation stuff (but not translating yet)
-    QDockWidget* dw = pDockMgr->addDockWindow(QT_TR_NOOP("Evaluate Mesh"), this, Qt::RightDockWidgetArea);
+    QDockWidget* dw = pDockMgr->addDockWindow(QT_TR_NOOP("Evaluate & Repair Mesh"),
+        this, Qt::RightDockWidgetArea);
     //dw->setAttribute(Qt::WA_DeleteOnClose);
     dw->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     dw->show();

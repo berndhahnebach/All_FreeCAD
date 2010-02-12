@@ -11,13 +11,15 @@ set(ANN_SRCS
 		 ../include/ANN/ANN.h ../include/ANN/ANNperf.h ../include/ANN/ANNx.h
 )
 
-set(ANN_LIBS
+if(WIN32)
+	set(ANN_LIBS
 		debug MSVCRTD.LIB
         debug MSVCPRTD.LIB
 		optimized MSVCRT.LIB
         optimized MSVCPRT.LIB
 		Rpcrt4.lib
-)
+	)
+endif(WIN32)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main)
 

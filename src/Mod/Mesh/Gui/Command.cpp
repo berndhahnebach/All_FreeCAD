@@ -953,31 +953,31 @@ DEF_STD_CMD_A(CmdMeshEvaluation);
 CmdMeshEvaluation::CmdMeshEvaluation()
   :Command("Mesh_Evaluation")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Evaluate & Repair mesh...");
-  sToolTipText  = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
-  sWhatsThis    = "Mesh_Evaluation";
-  sStatusTip    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    // needs two ampersands to display one
+    sMenuText     = QT_TR_NOOP("Evaluate && Repair mesh...");
+    sToolTipText  = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
+    sWhatsThis    = "Mesh_Evaluation";
+    sStatusTip    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
 }
 
 void CmdMeshEvaluation::activated(int iMsg)
 {
-  if (MeshGui::DockEvaluateMeshImp::hasInstance()) {
-    MeshGui::DockEvaluateMeshImp::instance()->show();
-    return;
-  }
+    if (MeshGui::DockEvaluateMeshImp::hasInstance()) {
+        MeshGui::DockEvaluateMeshImp::instance()->show();
+        return;
+    }
 
-  MeshGui::DlgEvaluateMeshImp* dlg = MeshGui::DockEvaluateMeshImp::instance();
-  dlg->setAttribute(Qt::WA_DeleteOnClose);
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    dlg->setMesh((Mesh::Feature*)(*it));
-    break;
-  }
+    MeshGui::DlgEvaluateMeshImp* dlg = MeshGui::DockEvaluateMeshImp::instance();
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        dlg->setMesh((Mesh::Feature*)(*it));
+        break;
+    }
 
-  dlg->show();
+    dlg->show();
 }
 
 bool CmdMeshEvaluation::isActive(void)
