@@ -31,8 +31,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <QByteArray>
 
+class QByteArray;
 class QIODevice;
 
 namespace Base {
@@ -128,10 +128,8 @@ private:
 class BaseExport ByteArrayIStreambuf : public std::streambuf
 {
 public:
-    explicit ByteArrayIStreambuf(QByteArray buf);
+    explicit ByteArrayIStreambuf(const QByteArray& buf);
     ~ByteArrayIStreambuf();
-
-    QByteArray buffer() const;
 
 protected:
     virtual int_type uflow();
@@ -147,7 +145,7 @@ protected:
             std::ios::in | std::ios::out);
 
 private:
-    const QByteArray _buffer;
+    const QByteArray& _buffer;
     int _beg, _end, _cur;
 };
 

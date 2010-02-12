@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QByteArray>
 # include <QDataStream>
 # include <QIODevice>
 # include <cstdlib>
@@ -225,7 +226,7 @@ InputStream& InputStream::operator >> (double& d)
 
 // ----------------------------------------------------------------------
 
-ByteArrayIStreambuf::ByteArrayIStreambuf(QByteArray data) : _buffer(data)
+ByteArrayIStreambuf::ByteArrayIStreambuf(const QByteArray& data) : _buffer(data)
 {
     _beg = 0;
     _end = data.size();
