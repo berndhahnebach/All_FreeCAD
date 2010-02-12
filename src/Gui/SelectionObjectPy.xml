@@ -12,7 +12,7 @@
     FatherNamespace="Base">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
-      <UserDocu>This class represent selections made by the user. It holds information about the object, document and sub type of the selecion.</UserDocu>
+      <UserDocu>This class represents selections made by the user. It holds information about the object, document and sub-element of the selection.</UserDocu>
     </Documentation>
     <Methode Name="remove">
       <Documentation>
@@ -32,7 +32,7 @@
 	  </Attribute>
 	  <Attribute Name="SubElementNames" ReadOnly="true">
 	  <Documentation>
-	    <UserDocu>Name of the selected sub element if any</UserDocu>
+	    <UserDocu>Name of the selected sub-element if any</UserDocu>
 	  </Documentation>
 	  <Parameter Name="SubElementNames" Type="List" />
 	</Attribute>
@@ -50,7 +50,7 @@
 	  </Attribute>
 	  <Attribute Name="Document" ReadOnly="true">
 		  <Documentation>
-			  <UserDocu>Selcted document</UserDocu>
+			  <UserDocu>Selected document</UserDocu>
 		  </Documentation>
 		  <Parameter Name="Document" Type="Object" />
 	  </Attribute>
@@ -62,17 +62,16 @@
 	  </Attribute>
 	  <Attribute Name="SubObjects" ReadOnly="true">
 		  <Documentation>
-			  <UserDocu>Selected sub object, if any</UserDocu>
+			  <UserDocu>Selected sub-element, if any</UserDocu>
 		  </Documentation>
 		  <Parameter Name="SubObjects" Type="List" />
 	  </Attribute>
 	  <Attribute Name="HasSubObjects" ReadOnly="true">
 		  <Documentation>
-			  <UserDocu>Selected sub object, if any</UserDocu>
+			  <UserDocu>Selected sub-element, if any</UserDocu>
 		  </Documentation>
 		  <Parameter Name="HasSubObjects" Type="Boolean" />
 	  </Attribute>
-
 	  <CustomAttributes />
   </PythonExport>
 </GenerateModel>
