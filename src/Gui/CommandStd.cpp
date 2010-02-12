@@ -384,41 +384,43 @@ DEF_STD_CMD(StdCmdCommandLine);
 StdCmdCommandLine::StdCmdCommandLine()
   :Command("Std_CommandLine")
 {
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("Start command &line...");
-  sToolTipText  = QT_TR_NOOP("Opens the command line in the console");
-  sWhatsThis    = "Std_CommandLine";
-  sStatusTip    = QT_TR_NOOP("Opens the command line in the console");
-  sPixmap       = "utilities-terminal";
-  iAccel        = 0;
-  eType         = 0;
+    sGroup        = QT_TR_NOOP("Tools");
+    sMenuText     = QT_TR_NOOP("Start command &line...");
+    sToolTipText  = QT_TR_NOOP("Opens the command line in the console");
+    sWhatsThis    = "Std_CommandLine";
+    sStatusTip    = QT_TR_NOOP("Opens the command line in the console");
+    sPixmap       = "utilities-terminal";
+    iAccel        = 0;
+    eType         = 0;
 }
 
 void StdCmdCommandLine::activated(int iMsg)
 {
-  bool show = getMainWindow()->isMaximized ();
+    bool show = getMainWindow()->isMaximized ();
 
-  // pop up the Gui command window
-  GUIConsole Wnd;
+    // pop up the Gui command window
+    GUIConsole Wnd;
 
-  getMainWindow()->showMinimized () ;
-  qApp->processEvents();
+    getMainWindow()->showMinimized () ;
+    qApp->processEvents();
 
-  // create temporary console sequencer
-  std::auto_ptr<Base::ConsoleSequencer> seq(new Base::ConsoleSequencer);
-  Base::Interpreter().runCommandLine("Console mode");
+    // create temporary console sequencer
+    {
+          Base::ConsoleSequencer seq;
+          Base::Interpreter().runCommandLine("Console mode");
+    }
 
 #ifdef Q_WS_X11
-  // On X11 this may not work. For further information see QWidget::showMaximized
-  //
-  // workaround for X11
-  getMainWindow()->hide();
-  getMainWindow()->show();
+    // On X11 this may not work. For further information see QWidget::showMaximized
+    //
+    // workaround for X11
+    getMainWindow()->hide();
+    getMainWindow()->show();
 #endif
 
-  // pop up the main window
-  show ? getMainWindow()->showMaximized () : getMainWindow()->showNormal () ;
-  qApp->processEvents();
+    // pop up the main window
+    show ? getMainWindow()->showMaximized () : getMainWindow()->showNormal () ;
+    qApp->processEvents();
 }
 
 //===========================================================================
