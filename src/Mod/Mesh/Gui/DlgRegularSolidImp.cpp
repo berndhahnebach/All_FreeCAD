@@ -36,6 +36,7 @@
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>
 #include <Gui/PrefWidgets.h>
+#include <Gui/WaitCursor.h>
 
 #include "DlgRegularSolidImp.h"
 
@@ -69,6 +70,7 @@ MeshGui::DlgRegularSolidImp::~DlgRegularSolidImp()
 void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
 {
     try {
+        Gui::WaitCursor wc;
         QString cmd; std::string name;
         App::Document* doc = App::GetApplication().getActiveDocument();
         if (!doc) {

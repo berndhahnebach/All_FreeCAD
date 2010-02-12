@@ -31,6 +31,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <QByteArray>
 
 class QIODevice;
 
@@ -120,6 +121,37 @@ private:
 // ----------------------------------------------------------------------------
 
 /**
+ * This class implements the streambuf interface to read data from a QByteArray.
+ * This class can only be used for reading but not writing purposes.
+ * @author Werner Mayer
+ */
+class BaseExport ByteArrayIStreambuf : public std::streambuf
+{
+public:
+    explicit ByteArrayIStreambuf(QByteArray buf);
+    ~ByteArrayIStreambuf();
+
+    QByteArray buffer() const;
+
+protected:
+    virtual int_type uflow();
+    virtual int_type underflow();
+    virtual int_type pbackfail(int_type ch);
+    virtual std::streamsize showmanyc();
+    virtual pos_type seekoff(off_type off,
+        std::ios_base::seekdir way,
+        std::ios_base::openmode which = 
+            std::ios::in | std::ios::out);
+    virtual pos_type seekpos(pos_type pos, 
+        std::ios_base::openmode which =
+            std::ios::in | std::ios::out);
+
+private:
+    const QByteArray _buffer;
+    int _beg, _end, _cur;
+};
+
+/**
  * Simple class to write data directly into Qt's QIODevice.
  * This class can only be used for writing but not reading purposes.
  * @author Werner Mayer
@@ -133,7 +165,13 @@ public:
 protected:
     virtual int_type overflow(int_type v);
     virtual std::streamsize xsputn (const char* s, std::streamsize num);
-
+    virtual pos_type seekoff(off_type off,
+        std::ios_base::seekdir way,
+        std::ios_base::openmode which =
+            std::ios::in | std::ios::out);
+    virtual pos_type seekpos(pos_type sp,
+        std::ios_base::openmode which =
+            std::ios::in | std::ios::out);
 protected:
     QIODevice* device;
 };
@@ -151,6 +189,13 @@ public:
 
 protected:
     virtual int_type underflow();
+    virtual pos_type seekoff(off_type off,
+        std::ios_base::seekdir way,
+        std::ios_base::openmode which =
+            std::ios::in | std::ios::out);
+    virtual pos_type seekpos(pos_type sp,
+        std::ios_base::openmode which =
+            std::ios::in | std::ios::out);
 
 protected:
     QIODevice* device;
@@ -161,6 +206,31 @@ protected:
     static const int pbSize = 4;        // size of putback area
     static const int bufSize = 1024;    // size of the data buffer
     char buffer[bufSize+pbSize];        // data buffer
+};
+
+class BaseExport Streambuf : public std::streambuf
+{
+public:
+    explicit Streambuf(const std::string& data);
+    ~Streambuf();
+
+protected:
+    virtual int_type uflow();
+    virtual int_type underflow();
+    virtual int_type pbackfail(int_type ch);
+    virtual std::streamsize showmanyc();
+    virtual pos_type seekoff(off_type off,
+        std::ios_base::seekdir way,
+        std::ios_base::openmode which = 
+            std::ios::in | std::ios::out);
+    virtual pos_type seekpos(pos_type pos, 
+        std::ios_base::openmode which =
+            std::ios::in | std::ios::out);
+
+private:
+    std::string::const_iterator _beg;
+    std::string::const_iterator _end;
+    std::string::const_iterator _cur;
 };
 
 // ----------------------------------------------------------------------------
