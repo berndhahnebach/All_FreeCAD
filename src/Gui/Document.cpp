@@ -678,6 +678,91 @@ void Document::SaveDocFile (Base::Writer &writer) const
     writer.Stream() << "</Document>" << std::endl;
 }
 
+void Document::exportObjects(const std::vector<App::DocumentObject*>& obj, Base::Writer& writer)
+{
+    writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << std::endl;
+    writer.Stream() << "<Document SchemaVersion=\"1\">" << std::endl;
+
+    std::map<const App::DocumentObject*,ViewProvider*> views;
+    for (std::vector<App::DocumentObject*>::const_iterator it = obj.begin(); it != obj.end(); ++it) {
+        Document* doc = Application::Instance->getDocument((*it)->getDocument());
+        if (doc) {
+            ViewProvider* vp = doc->getViewProvider(*it);
+            if (vp) views[*it] = vp;
+        }
+    }
+
+    // writing the view provider names itself
+    writer.incInd(); // indention for 'ViewProviderData Count'
+    writer.Stream() << writer.ind() << "<ViewProviderData Count=\"" 
+                    << views.size() <<"\">" << std::endl;
+
+    bool xml = writer.isForceXML();
+    writer.setForceXML(true);
+    writer.incInd(); // indention for 'ViewProvider name'
+    std::map<const App::DocumentObject*,ViewProvider*>::const_iterator it;
+    for (it = views.begin(); it != views.end(); ++it) {
+        const App::DocumentObject* doc = it->first;
+        ViewProvider* obj = it->second;
+        writer.Stream() << writer.ind() << "<ViewProvider name=\""
+                        << doc->getNameInDocument() << "\" type=\""
+                        << obj->getTypeId().getName()
+                        << "\">" << std::endl;
+        obj->Save(writer);
+        writer.Stream() << writer.ind() << "</ViewProvider>" << std::endl;
+    }
+    writer.setForceXML(xml);
+
+    writer.decInd(); // indention for 'ViewProvider name'
+    writer.Stream() << writer.ind() << "</ViewProviderData>" << std::endl;
+    writer.decInd();  // indention for 'ViewProviderData Count'
+    writer.incInd(); // indention for camera settings
+    writer.Stream() << writer.ind() << "<Camera settings=\"\"/>" << std::endl;
+    writer.decInd(); // indention for camera settings
+    writer.Stream() << "</Document>" << std::endl;
+}
+
+void Document::importObjects(const std::vector<App::DocumentObject*>& obj, Base::Reader& reader)
+{
+    // We must create an XML parser to read from the input stream
+    Base::XMLReader xmlReader("GuiDocument.xml", reader);
+    xmlReader.readElement("Document");
+    long scheme = xmlReader.getAttributeAsInteger("SchemaVersion");
+
+    // At this stage all the document objects and their associated view providers exist.
+    // Now we must restore the properties of the view providers only.
+    //
+    // SchemeVersion "1"
+    if (scheme == 1) {
+        // read the viewproviders itself
+        xmlReader.readElement("ViewProviderData");
+        int Cnt = xmlReader.getAttributeAsInteger("Count");
+        std::vector<App::DocumentObject*>::const_iterator it = obj.begin();
+        for (int i=0;i<Cnt&&it!=obj.end();++i,++it) {
+            // The stored name usually doesn't match with the current name anymore
+            // thus we try to match by type. This should work because the order of
+            // objects should not have changed
+            xmlReader.readElement("ViewProvider");
+            std::string type = xmlReader.getAttribute("type");
+            ViewProvider* pObj = getViewProvider(*it);
+            while (pObj && type != pObj->getTypeId().getName()) {
+                if (it != obj.end()) {
+                    ++it;
+                    pObj = getViewProvider(*it);
+                }
+            }
+            if (pObj && type == pObj->getTypeId().getName())
+                pObj->Restore(xmlReader);
+            xmlReader.readEndElement("ViewProvider");
+            if (it == obj.end())
+                break;
+        }
+        xmlReader.readEndElement("ViewProviderData");
+    }
+
+    xmlReader.readEndElement("Document");
+}
+
 void Document::createView(const char* sType) 
 {
     QPixmap px = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());

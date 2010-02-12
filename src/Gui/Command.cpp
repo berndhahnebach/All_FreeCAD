@@ -297,18 +297,14 @@ void Command::invoke (int i)
         QMessageBox::critical(Gui::getMainWindow(), QObject::tr("Exception"), QLatin1String(e.what()));
     }
     catch (std::exception &e) {
-        std::string str;
-        str += "C++ exception thrown (";
-        str += e.what();
-        str += ")";
-        Base::Console().Error(str.c_str());
+        Base::Console().Error("C++ exception thrown (%s)\n", e.what());
     }
     catch (const char* e) {
         Base::Console().Error("%s\n", e);
     }
 #ifndef FC_DEBUG
     catch (...) {
-        Base::Console().Error("Gui::Command::activated(%d): Unknown C++ exception in command thrown", i);
+        Base::Console().Error("Gui::Command::activated(%d): Unknown C++ exception thrown", i);
     }
 #endif
 }

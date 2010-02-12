@@ -724,6 +724,9 @@ void Document::exportObjects(const std::vector<App::DocumentObject*>& obj,
     writer.decInd();  // indention for 'Objects count'
     writer.Stream() << "</Document>" << endl;
 
+    // Hook for others to add further data.
+    signalExportObjects(obj, writer);
+
     // write additional files
     writer.writeFiles();
 }
@@ -779,6 +782,7 @@ Document::importObjects(std::istream& input)
     reader.readEndElement("ObjectData");
 
     reader.readEndElement("Document");
+    signalImportObjects(objs, reader);
     reader.readFiles(zipstream);
     // reset all touched
     for (std::vector<DocumentObject*>::iterator it= objs.begin();it!=objs.end();++it)

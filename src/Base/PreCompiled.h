@@ -99,6 +99,7 @@
 #include <boost/filesystem/exception.hpp>
 
 // QtCore
+#include <QBuffer>
 #include <QByteArray>
 #include <QIODevice>
 #include <QDataStream>

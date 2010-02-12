@@ -41,10 +41,16 @@
 # include <QWhatsThis>
 #endif
 
+#include <boost/signals.hpp>
+
 // FreeCAD Base header
 #include <Base/Parameter.h>
+#include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/Persistence.h>
 #include <Base/Stream.h>
+#include <Base/Reader.h>
+#include <Base/Writer.h>
 #include <App/Application.h>
 #include <App/DocumentObject.h>
 
@@ -997,6 +1003,63 @@ void MainWindow::dragEnterEvent (QDragEnterEvent * e)
         e->ignore();
 }
 
+namespace Gui {
+class MimePersistence : public Base::Persistence
+{
+public:
+    MimePersistence(App::Document* doc)
+    {
+        connectExport = doc->signalExportObjects.connect
+            (boost::bind(&MimePersistence::exportObject, this, _1, _2));
+        connectImport = doc->signalImportObjects.connect
+            (boost::bind(&MimePersistence::importObject, this, _1, _2));
+        document = Gui::Application::Instance->getDocument(doc);
+    }
+    ~MimePersistence()
+    {
+        connectExport.disconnect();
+        connectImport.disconnect();
+    }
+    unsigned int getMemSize (void) const
+    {
+        return 0;
+    }
+    void importObject(const std::vector<App::DocumentObject*>& o, Base::XMLReader & r)
+    {
+        objects = o;
+        Restore(r);
+    }
+    void exportObject(const std::vector<App::DocumentObject*>& o, Base::Writer & w)
+    {
+        objects = o;
+        Save(w);
+    }
+    void Save (Base::Writer & w) const
+    {
+        w.addFile("GuiDocument.xml", this);
+    }
+    void Restore(Base::XMLReader &r)
+    {
+        r.addFile("GuiDocument.xml", this);
+    }
+    void SaveDocFile (Base::Writer & w) const
+    {
+        document->exportObjects(objects, w);
+    }
+    void RestoreDocFile(Base::Reader & r)
+    {
+        document->importObjects(objects, r);
+    }
+
+private:
+    Gui::Document* document;
+    std::vector<App::DocumentObject*> objects;
+    typedef boost::signals::connection Connection;
+    Connection connectExport;
+    Connection connectImport;
+};
+}
+
 QMimeData * MainWindow::createMimeDataFromSelection () const
 {
     std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
@@ -1010,25 +1073,41 @@ QMimeData * MainWindow::createMimeDataFromSelection () const
         }
     }
 
-    QByteArray res;
-#if 0
-    res.reserve(memsize);
-    QBuffer buffer(&res);
-    buffer.open(QIODevice::WriteOnly);
+    // get a pointer to a document
+    if (obj.empty()) return 0;
+    App::Document* doc = obj.front()->getDocument();
+    if (!doc) return 0;
 
-    Base::IODeviceOStream buf(&buffer);
-    std::ostream str(&buf);
-    App::Document::exportObjects(obj, str);
-    str.close();
-#else
-    static Base::FileInfo fi(Base::FileInfo::getTempFileName());
-    Base::ofstream str(fi, std::ios::out | std::ios::binary);
-    App::Document::exportObjects(obj, str);
-    str.close();
-    res = fi.filePath().c_str();
-#endif
+    // if less than ~10 MB
+    bool use_buffer=(memsize < 0xA00000);
+    QByteArray res;
+    try {
+        res.reserve(memsize);
+    }
+    catch (const Base::MemoryException&) {
+        use_buffer = false;
+    }
+
+    QString mime;
+    if (use_buffer) {
+        mime = QLatin1String("application/x-documentobject");
+        Base::ByteArrayOStreambuf buf(res);
+        std::ostream str(&buf);
+        MimePersistence mimeView(doc);
+        doc->exportObjects(obj, str);
+    }
+    else {
+        mime = QLatin1String("application/x-documentobject-file");
+        static Base::FileInfo fi(Base::FileInfo::getTempFileName());
+        Base::ofstream str(fi, std::ios::out | std::ios::binary);
+        MimePersistence mimeView(doc);
+        doc->exportObjects(obj, str);
+        str.close();
+        res = fi.filePath().c_str();
+    }
+
     QMimeData *mimeData = new QMimeData();
-    mimeData->setData(QLatin1String("application/x-documentobject"),res);
+    mimeData->setData(mime,res);
     return mimeData;
 }
 
@@ -1036,8 +1115,9 @@ bool MainWindow::canInsertFromMimeData (const QMimeData * source) const
 {
     if (!source)
         return false;
-    return source->hasUrls() || source->hasFormat
-        (QLatin1String("application/x-documentobject"));
+    return source->hasUrls() || 
+        source->hasFormat(QLatin1String("application/x-documentobject")) ||
+        source->hasFormat(QLatin1String("application/x-documentobject-file"));
 }
 
 void MainWindow::insertFromMimeData (const QMimeData * mimeData)
@@ -1047,25 +1127,27 @@ void MainWindow::insertFromMimeData (const QMimeData * mimeData)
     if (mimeData->hasFormat(QLatin1String("application/x-documentobject"))) {
         QByteArray res = mimeData->data(QLatin1String("application/x-documentobject"));
         App::Document* doc = App::GetApplication().getActiveDocument();
-        if (!doc) doc = App::GetApplication().newDocument("Unnamed");
+        if (!doc) doc = App::GetApplication().newDocument();
 
-#if 0
-        QBuffer buffer(&res);
-        buffer.open(QIODevice::ReadOnly);
-        Base::IODeviceIStream buf(&buffer);
-        //buf.open(std::ios::in | std::ios::binary);
+        Base::ByteArrayIStreambuf buf(res);
         std::istream in(0);
         in.rdbuf(&buf);
+        MimePersistence mimeView(doc);
         doc->importObjects(in);
-#else
+    }
+    else if (mimeData->hasFormat(QLatin1String("application/x-documentobject-file"))) {
+        QByteArray res = mimeData->data(QLatin1String("application/x-documentobject-file"));
+        App::Document* doc = App::GetApplication().getActiveDocument();
+        if (!doc) doc = App::GetApplication().newDocument();
+
         Base::FileInfo fi((const char*)res);
         Base::ifstream str(fi, std::ios::in | std::ios::binary);
+        MimePersistence mimeView(doc);
         doc->importObjects(str);
         str.close();
-#endif
     }
     else if (mimeData->hasUrls()) {
-        // load the files into the active document if there is one otherwise let create one
+        // load the files into the active document if there is one, otherwise let create one
         loadUrls(App::GetApplication().getActiveDocument(), mimeData->urls());
     }
 }

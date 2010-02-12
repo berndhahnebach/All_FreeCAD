@@ -97,8 +97,12 @@ public:
      * you can use this hook to write additional information in 
      * the file (like the Gui::Document it does).
      */
-    boost::signal<void (Base::Writer &)> signalSaveDocument;
+    boost::signal<void (Base::Writer   &)> signalSaveDocument;
     boost::signal<void (Base::XMLReader&)> signalRestoreDocument;
+    boost::signal<void (const std::vector<App::DocumentObject*>&,
+                        Base::Writer   &)> signalExportObjects;
+    boost::signal<void (const std::vector<App::DocumentObject*>&,
+                        Base::XMLReader&)> signalImportObjects;
     //@}
 
     /** @name File handling of the document */
@@ -109,8 +113,8 @@ public:
     bool save (void);
     /// Restore the document from the file in Property Path
     void restore (void);
-    static void exportObjects(const std::vector<App::DocumentObject*>&, std::ostream&);
-    std::vector<App::DocumentObject*> importObjects(std::istream& buf);
+    void exportObjects(const std::vector<App::DocumentObject*>&, std::ostream&);
+    std::vector<App::DocumentObject*> importObjects(std::istream&);
     /// Opens the document from its file name
     //void open (void);
     /// Is the document already saved to a file

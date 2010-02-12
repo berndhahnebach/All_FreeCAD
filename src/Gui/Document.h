@@ -109,6 +109,8 @@ public:
     virtual void SaveDocFile (Base::Writer &writer) const;
     /// This method is used to restore large amounts of data from a binary file.
     virtual void RestoreDocFile(Base::Reader &reader);
+    void exportObjects(const std::vector<App::DocumentObject*>&, Base::Writer&);
+    void importObjects(const std::vector<App::DocumentObject*>&, Base::Reader&);
     //@}
 
     /// Observer message from the App doc
