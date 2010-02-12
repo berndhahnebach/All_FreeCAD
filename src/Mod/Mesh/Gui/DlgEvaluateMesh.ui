@@ -13,7 +13,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Evaluate Mesh</string>
+   <string>Evaluate &amp; Repair Mesh</string>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
