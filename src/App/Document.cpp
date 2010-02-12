@@ -683,12 +683,15 @@ void Document::Restore(Base::XMLReader &reader)
 }
 
 void Document::exportObjects(const std::vector<App::DocumentObject*>& obj,
-                            std::ostream& out)
+                             std::ostream& out)
 {
     Base::ZipWriter writer(out);
     writer.putNextEntry("Document.xml");
     writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << endl;
     writer.Stream() << "<Document SchemaVersion=\"4\">" << endl;
+    // Add this block to have the same layout as for normal documents
+    writer.Stream() << "<Properties Count=\"0\">" << endl;
+    writer.Stream() << "</Properties>" << endl;
 
     // writing the features types
     writer.incInd(); // indention for 'Objects count'
@@ -737,7 +740,8 @@ Document::importObjects(std::istream& input)
     long scheme = reader.getAttributeAsInteger("SchemaVersion");
     reader.DocumentSchema = scheme;
 
-    // read the feature types
+    // read the object types
+    std::map<std::string, std::string> nameMap;
     reader.readElement("Objects");
     Cnt = reader.getAttributeAsInteger("Count");
     for (i=0 ;i<Cnt ;i++) {
@@ -748,8 +752,11 @@ Document::importObjects(std::istream& input)
         try {
             App::DocumentObject* o = addObject(type.c_str(),name.c_str());
             objs.push_back(o);
+            // use this name for the later access because an object with
+            // the given name may already exist
+            nameMap[name] = o->getNameInDocument();
         }
-        catch ( Base::Exception& ) {
+        catch (Base::Exception&) {
             Base::Console().Message("Cannot create object '%s'\n", name.c_str());
         }
     }
@@ -760,7 +767,7 @@ Document::importObjects(std::istream& input)
     Cnt = reader.getAttributeAsInteger("Count");
     for (i=0 ;i<Cnt ;i++) {
         reader.readElement("Object");
-        string name = reader.getAttribute("name");
+        std::string name = nameMap[reader.getAttribute("name")];
         DocumentObject* pObj = getObject(name.c_str());
         if (pObj) { // check if this feature has been registered
             pObj->StatusBits.set(4);
