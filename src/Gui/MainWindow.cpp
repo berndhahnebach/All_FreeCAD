@@ -42,6 +42,7 @@
 #endif
 
 #include <boost/signals.hpp>
+#include <boost/bind.hpp>
 
 // FreeCAD Base header
 #include <Base/Parameter.h>
