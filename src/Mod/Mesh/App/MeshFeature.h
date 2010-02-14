@@ -82,27 +82,7 @@ public:
     virtual PyObject* getPyObject(void);
 };
 
-/** Base class of all Python mesh feature classes in FreeCAD
- */
-class MeshExport FeaturePython : public App::GeometryPython
-{
-    PROPERTY_HEADER(Mesh::FeaturePython);
-
-public:
-    /// Constructor
-    FeaturePython(void);
-    virtual ~FeaturePython();
-
-    PropertyMeshKernel Mesh;
-
-    /// returns the type name of the ViewProvider
-    virtual const char* getViewProviderName(void) const {
-        return "MeshGui::ViewProviderPython";
-    }
-
-protected:
-    void onChanged(const App::Property* prop);
-};
+typedef App::FeaturePythonT<Feature> FeaturePython;
 
 } //namespace Mesh
 

@@ -132,34 +132,12 @@ App::DocumentObjectExecReturn *Export::execute(void)
   return App::DocumentObject::StdReturn;
 }
 
-// -------------------------------------------------
+// ---------------------------------------------------------
 
-PROPERTY_SOURCE(Points::FeaturePython, App::GeometryPython)
-
-
-FeaturePython::FeaturePython(void) 
-{
-    ADD_PROPERTY(Points, (PointKernel()));
+PROPERTY_SOURCE(Points::FeaturePython, Points::Feature)
+const char* Points::FeaturePython::getViewProviderName(void) const {
+    return "PointsGui::ViewProviderPython";
 }
 
-FeaturePython::~FeaturePython()
-{
-}
-
-void FeaturePython::onChanged(const App::Property* prop)
-{
-    // if the placement has changed apply the change to the point data as well
-    if (prop == &this->Placement) {
-        PointKernel& pts = const_cast<PointKernel&>(this->Points.getValue());
-        pts.setTransform(this->Placement.getValue().toMatrix());
-    }
-    // if the point data has changed check and adjust the transformation as well
-    else if (prop == &this->Points) {
-        Base::Placement p;
-        p.fromMatrix(this->Points.getValue().getTransform());
-        if (p != this->Placement.getValue())
-            this->Placement.setValue(p);
-    }
-
-    GeometryPython::onChanged(prop);
-}
+// explicit template instantiation
+template class PointsExport App::FeaturePythonT<Points::Feature>;

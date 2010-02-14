@@ -93,34 +93,12 @@ void Feature::onChanged(const App::Property* prop)
     DocumentObject::onChanged(prop);
 }
 
-// -------------------------------------------------
+// ---------------------------------------------------------
 
-PROPERTY_SOURCE(Mesh::FeaturePython, App::GeometryPython)
-
-
-FeaturePython::FeaturePython(void) 
-{
-    ADD_PROPERTY_TYPE(Mesh,(MeshObject()),0,App::Prop_Output,"The mesh kernel");
+PROPERTY_SOURCE(Mesh::FeaturePython, Mesh::Feature)
+const char* Mesh::FeaturePython::getViewProviderName(void) const {
+    return "MeshGui::ViewProviderPython";
 }
 
-FeaturePython::~FeaturePython()
-{
-}
-
-void FeaturePython::onChanged(const App::Property* prop)
-{
-    // if the placement has changed apply the change to the mesh data as well
-    if (prop == &this->Placement) {
-        MeshObject& mesh = const_cast<MeshObject&>(this->Mesh.getValue());
-        mesh.setTransform(this->Placement.getValue().toMatrix());
-    }
-    // if the mesh data has changed check and adjust the transformation as well
-    else if (prop == &this->Mesh) {
-        Base::Placement p;
-        p.fromMatrix(this->Mesh.getValue().getTransform());
-        if (p != this->Placement.getValue())
-            this->Placement.setValue(p);
-    }
-
-    GeometryPython::onChanged(prop);
-}
+// explicit template instantiation
+template class MeshExport App::FeaturePythonT<Mesh::Feature>;

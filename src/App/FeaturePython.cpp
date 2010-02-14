@@ -36,58 +36,27 @@
 
 using namespace App;
 
-PROPERTY_SOURCE(App::FeaturePython, App::DocumentObject)
-
-
-FeaturePython::FeaturePython()
+FeaturePythonImp::FeaturePythonImp(App::DocumentObject* o) : object(o)
 {
-    ADD_PROPERTY(Proxy,(Py::Object()));
-    props = new DynamicProperty(this);
 }
 
-FeaturePython::~FeaturePython()
+FeaturePythonImp::~FeaturePythonImp()
 {
-    delete props;
 }
 
-short FeaturePython::mustExecute() const
-{
-    if (this->isTouched())
-        return 1;
-    return 0;
-}
-
-/** Invokes the execute method of the registered proxy object.
- * To register a proxy object in Python do it as follows:
- * \code
- *  # Create a document and add a FeaturePython object
- *  d=FreeCAD.newDocument()
- *  f=d.addObject("App::FeaturePython")
- *
- * class Feature:
- *      def execute(arg,obj):
- *          FreeCAD.PrintMessage("Hello, World!")
- *
- *  # Save the callback function
- *  f.Proxy = Feature()
- *
- *  # Performing a recomputation of the document invokes the proxy's execute method
- *  d.recompute()
- * \endcode
- *
- * \note You must always define two parameters, self and e.g. obj for the FreeCAD
- * document object.
- */
-DocumentObjectExecReturn *FeaturePython::execute(void)
+DocumentObjectExecReturn *FeaturePythonImp::execute()
 {
     // Run the execute method of the proxy object.
     Base::PyGILStateLocker lock;
     try {
-        Py::Object feature = this->Proxy.getValue();
-        Py::Callable method(feature.getAttr(std::string("execute")));
-        Py::Tuple args(1);
-        args.setItem(0, this->PythonObject);
-        method.apply(args);
+        Property* proxy = object->getPropertyByName("Proxy");
+        if (proxy && proxy->getTypeId() == PropertyPythonObject::getClassTypeId()) {
+            Py::Object feature = static_cast<PropertyPythonObject*>(proxy)->getValue();
+            Py::Callable method(feature.getAttr(std::string("execute")));
+            Py::Tuple args(1);
+            args.setItem(0, Py::Object(object->getPyObject(), true));
+            method.apply(args);
+        }
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
@@ -97,131 +66,46 @@ DocumentObjectExecReturn *FeaturePython::execute(void)
     return DocumentObject::StdReturn;
 }
 
-void FeaturePython::onChanged(const Property* prop)
+void FeaturePythonImp::onChanged(const Property* prop)
 {
     // Run the execute method of the proxy object.
     Base::PyGILStateLocker lock;
     try {
-        Py::Object vp = this->Proxy.getValue();
-        if (vp.hasAttr(std::string("onChanged"))) {
-            Py::Callable method(vp.getAttr(std::string("onChanged")));
-            Py::Tuple args(2);
-            args.setItem(0, Py::Object(this->getPyObject(), true));
-            std::string prop_name = this->getName(prop);
-            args.setItem(1, Py::String(prop_name));
-            method.apply(args);
+        Property* proxy = object->getPropertyByName("Proxy");
+        if (proxy && proxy->getTypeId() == PropertyPythonObject::getClassTypeId()) {
+            Py::Object vp = static_cast<PropertyPythonObject*>(proxy)->getValue();
+            if (vp.hasAttr(std::string("onChanged"))) {
+                Py::Callable method(vp.getAttr(std::string("onChanged")));
+                Py::Tuple args(2);
+                args.setItem(0, Py::Object(object->getPyObject(), true));
+                std::string prop_name = object->getName(prop);
+                args.setItem(1, Py::String(prop_name));
+                method.apply(args);
+            }
         }
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
         Base::Console().Error("FeaturePython::onChanged: %s\n", e.what());
     }
-
-    DocumentObject::onChanged(prop);
-}
-
-void FeaturePython::getPropertyMap(std::map<std::string,Property*> &Map) const
-{
-    props->getPropertyMap(Map);
-}
-
-Property *FeaturePython::getPropertyByName(const char* name) const
-{
-    return props->getPropertyByName(name);
-}
-
-const char* FeaturePython::getName(const Property* prop) const
-{
-    return props->getName(prop);
-}
-
-short FeaturePython::getPropertyType(const Property* prop) const
-{
-    return props->getPropertyType(prop);
-}
-
-short FeaturePython::getPropertyType(const char *name) const
-{
-    return props->getPropertyType(name);
-}
-
-const char* FeaturePython::getPropertyGroup(const Property* prop) const
-{
-    return props->getPropertyGroup(prop);
-}
-
-const char* FeaturePython::getPropertyGroup(const char *name) const
-{
-    return props->getPropertyGroup(name);
-}
-
-const char* FeaturePython::getPropertyDocumentation(const Property* prop) const
-{
-    return props->getPropertyDocumentation(prop);
-}
-
-const char* FeaturePython::getPropertyDocumentation(const char *name) const
-{
-    return props->getPropertyDocumentation(name);
-}
-
-bool FeaturePython::isReadOnly(const Property* prop) const
-{
-    return props->isReadOnly(prop);
-}
-
-bool FeaturePython::isReadOnly(const char *name) const
-{
-    return props->isReadOnly(name);
-}
-
-bool FeaturePython::isHidden(const Property* prop) const
-{
-    return props->isHidden(prop);
-}
-
-bool FeaturePython::isHidden(const char *name) const
-{
-    return props->isHidden(name);
-}
-
-void FeaturePython::Save (Base::Writer &writer) const 
-{
-    writer.ObjectName = this->getNameInDocument();
-    props->Save(writer);
-}
-
-void FeaturePython::Restore(Base::XMLReader &reader)
-{
-    props->Restore(reader);
-}
-
-PyObject *FeaturePython::getPyObject(void)
-{
-    if (PythonObject.is(Py::_None())) {
-        // ref counter is set to 1
-        PythonObject = Py::Object(new FeaturePythonPy(this),true);
-    }
-    return Py::new_reference_to(PythonObject);
-}
-
-void FeaturePython::setPyObject(PyObject *obj)
-{
-    if (obj)
-        PythonObject = obj;
-    else
-        PythonObject = Py::None();
 }
 
 // ---------------------------------------------------------
 
-PROPERTY_SOURCE(App::GeometryPython, App::FeaturePython)
-
-GeometryPython::GeometryPython(void)
-{
-    ADD_PROPERTY(Placement,(Base::Placement()));
+PROPERTY_SOURCE(App::FeaturePython, App::DocumentObject)
+const char* App::FeaturePython::getViewProviderName(void) const {
+    return "Gui::ViewProviderPythonFeature";
 }
 
-GeometryPython::~GeometryPython(void)
-{
+// explicit template instantiation
+template class AppExport FeaturePythonT<DocumentObject>;
+
+// ---------------------------------------------------------
+
+PROPERTY_SOURCE(App::GeometryPython, App::GeoFeature)
+const char* App::GeometryPython::getViewProviderName(void) const {
+    return "Gui::ViewProviderPythonGeometry";
 }
+
+// explicit template instantiation
+template class AppExport FeaturePythonT<GeoFeature>;

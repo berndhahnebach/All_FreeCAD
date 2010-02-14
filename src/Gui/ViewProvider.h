@@ -227,6 +227,9 @@ private:
     std::string _sCurrentMode;
     std::map<std::string, int> _sDisplayMaskModes;
     bool _updateData;
+
+    // friends
+    friend class ViewProviderPythonFeaturePy;
 };
 
 } // namespace Gui

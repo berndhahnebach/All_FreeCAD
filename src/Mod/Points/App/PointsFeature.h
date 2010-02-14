@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 
-
 #ifndef POINTS_FEATURE_H
 #define POINTS_FEATURE_H
 
@@ -99,27 +98,7 @@ public:
     //@}
 };
 
-/** Base class of all Python point feature classes in FreeCAD
- */
-class PointsAppExport FeaturePython : public App::GeometryPython
-{
-    PROPERTY_HEADER(Points::FeaturePython);
-
-public:
-    /// Constructor
-    FeaturePython(void);
-    virtual ~FeaturePython();
-
-    PropertyPointKernel Points;
-
-    /// returns the type name of the ViewProvider
-    virtual const char* getViewProviderName(void) const {
-        return "PointsGui::ViewProviderPython";
-    }
-
-protected:
-    void onChanged(const App::Property* prop);
-};
+typedef App::FeaturePythonT<Feature> FeaturePython;
 
 } //namespace Points
 

@@ -109,45 +109,7 @@ private:
     bool _bEdit;
 };
 
-class PointsGuiExport ViewProviderPython : public Gui::ViewProviderPythonGeometry
-{
-    PROPERTY_HEADER(PointsGui::ViewProviderPython);
-
-public:
-    ViewProviderPython();
-    virtual ~ViewProviderPython();
-
-    App::PropertyFloatConstraint PointSize;
-
-    /** 
-     * Extracts the point data from the feature \a pcFeature and creates
-     * an Inventor node \a SoNode with these data. 
-     */
-    virtual void attach(App::DocumentObject *);
-    /// set the viewing mode
-    virtual void setDisplayMode(const char* ModeName);
-    /// returns a list of all possible modes
-    virtual std::vector<std::string> getDisplayModes(void) const;
-    /// Update the point representation
-    virtual void updateData(const App::Property*);
-
-protected:
-    void onChanged(const App::Property* prop);
-    void createPoints(const Points::PointKernel& pnts);
-    void setVertexColorMode(App::PropertyColorList*);
-    void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
-    void setVertexNormalMode(Points::PropertyNormalList*);
-
-protected:
-    SoCoordinate3     *pcPointsCoord;
-    SoPointSet        *pcPoints;
-    SoMaterial        *pcColorMat;
-    SoNormal          *pcPointsNormal;
-    SoDrawStyle       *pcPointStyle;
-
-private:
-    static App::PropertyFloatConstraint::Constraints floatRange;
-};
+typedef Gui::ViewProviderPythonFeatureT<ViewProviderPoints> ViewProviderPython;
 
 } // namespace PointsGui
 

@@ -24,76 +24,12 @@
 #ifndef MESHGUI_VIEWPROVIDERPYTHON_H
 #define MESHGUI_VIEWPROVIDERPYTHON_H
 
-#include <vector>
-#include <Inventor/fields/SoSFVec2f.h>
-
 #include <Gui/ViewProviderPythonFeature.h>
-#include <App/PropertyStandard.h>
-
-class SoSeparator;
-class SoEventCallback;
-class SbViewVolume;
-class SoBaseColor;
-class SoShape;
-class SoCoordinate3;
-class SoIndexedFaceSet;
-class SoShapeHints;
-class SoMaterialBinding;
-
-namespace MeshCore {
-  class MeshKernel;
-}
+#include <Mod/Mesh/Gui/ViewProviderMeshFaceSet.h>
 
 namespace MeshGui {
 
-
-class MeshGuiExport ViewProviderPython : public Gui::ViewProviderPythonGeometry
-{
-    PROPERTY_HEADER(MeshGui::ViewProviderPython);
-
-public:
-    ViewProviderPython();
-    virtual ~ViewProviderPython();
-
-    // Display properties
-    App::PropertyPercent LineTransparency;
-    App::PropertyFloatConstraint LineWidth;
-    App::PropertyFloatConstraint PointSize;
-    App::PropertyFloatConstraint CreaseAngle;
-    App::PropertyBool OpenEdges;
-    App::PropertyEnumeration Lighting;
-    App::PropertyColor LineColor;
-
-    virtual void attach(App::DocumentObject *);
-    virtual void setDisplayMode(const char* ModeName);
-    /// returns a list of all possible modes
-    virtual std::vector<std::string> getDisplayModes(void) const;
-    virtual void updateData(const App::Property*);
-
-protected:
-    /// get called by the container whenever a property has been changed
-    virtual void onChanged(const App::Property* prop);
-    void createMesh(const MeshCore::MeshKernel& pcMesh);
-    virtual void showOpenEdges(bool);
-    void setOpenEdgeColorFrom(const App::Color& col);
-
-    // nodes for the data representation
-    SoDrawStyle         * pcLineStyle;
-    SoDrawStyle         * pcPointStyle;
-    SoSeparator         * pcOpenEdge;
-    SoBaseColor         * pOpenColor;
-    SoMaterial          * pLineColor;
-    SoShapeHints        * pShapeHints;
-    SoMaterialBinding   * pcMatBinding;
-    SoCoordinate3       * pcMeshCoord;
-    SoIndexedFaceSet    * pcMeshFaces;
-
-private:
-    static App::PropertyFloatConstraint::Constraints floatRange;
-    static App::PropertyFloatConstraint::Constraints angleRange;
-    static App::PropertyIntegerConstraint::Constraints intPercent;
-    static const char* LightingEnums[];
-};
+typedef Gui::ViewProviderPythonFeatureT<ViewProviderMeshFaceSet> ViewProviderPython;
 
 } // namespace MeshGui
 

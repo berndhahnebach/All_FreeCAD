@@ -26,10 +26,12 @@
 #define APP_FEATUREPYTHON_H
 
 
-#include <App/DocumentObject.h>
+#include <Base/Writer.h>
+#include <App/GeoFeature.h>
 #include <App/DynamicProperty.h>
 #include <App/PropertyPythonObject.h>
 #include <App/PropertyGeo.h>
+#include <App/FeaturePythonPy.h>
 
 namespace App
 {
@@ -37,90 +39,166 @@ namespace App
 class Property;
 class FeaturePythonPy;
 
-class AppExport FeaturePython : public DocumentObject
+class AppExport FeaturePythonImp
 {
-    PROPERTY_HEADER(App::FeaturePython);
+public:
+    FeaturePythonImp(App::DocumentObject*);
+    ~FeaturePythonImp();
+
+    DocumentObjectExecReturn *execute();
+    void onChanged(const Property* prop);
+
+private:
+    App::DocumentObject* object;
+};
+
+template <class FeatureT>
+class FeaturePythonT : public FeatureT
+{
+    PROPERTY_HEADER(App::FeaturePythonT<FeatureT>);
 
 public:
-    FeaturePython();  
-    virtual ~FeaturePython();  
+    FeaturePythonT() {
+        ADD_PROPERTY(Proxy,(Py::Object()));
+        // cannot move this to the initializer list to avoid warning
+        imp = new FeaturePythonImp(this);
+        props = new DynamicProperty(this);
+    }
+    virtual ~FeaturePythonT() {
+        delete imp;
+        delete props;
+    }
 
     /** @name methods override DocumentObject */
     //@{
-    short mustExecute() const;
+    short mustExecute() const {
+        if (this->isTouched())
+            return 1;
+        return FeatureT::mustExecute();
+    }
     /// recalculate the Feature
-    virtual DocumentObjectExecReturn *execute(void);
+    virtual DocumentObjectExecReturn *execute(void) {
+        return imp->execute();
+    }
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {
-        return "Gui::ViewProviderPythonFeature";
+        return FeatureT::getViewProviderName();
+        //return "Gui::ViewProviderPythonFeature";
     }
 
     /** @name Access properties */
     //@{
+    Property* addDynamicProperty(
+        const char* type, const char* name=0,
+        const char* group=0, const char* doc=0,
+        short attr=0, bool ro=false, bool hidden=false) {
+        return props->addDynamicProperty(type, name, group, doc, attr, ro, hidden);
+    }
+    std::vector<std::string> getDynamicPropertyNames() const {
+        return props->getDynamicPropertyNames();
+    }
+    Property *getDynamicPropertyByName(const char* name) const {
+        return props->getDynamicPropertyByName(name);
+    }
     /// get all properties of the class (including parent)
-    virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
+    void getPropertyMap(std::map<std::string,Property*> &Map) const {
+        props->getPropertyMap(Map);
+    }
     /// find a property by its name
-    virtual Property *getPropertyByName(const char* name) const;
+    virtual Property *getPropertyByName(const char* name) const {
+        return props->getPropertyByName(name);
+    }
     /// get the name of a property
-    virtual const char* getName(const Property* prop) const;
+    virtual const char* getName(const Property* prop) const {
+        return props->getName(prop);
+    }
     //@}
 
     /** @name Property attributes */
     //@{
     /// get the Type of a Property
-    short getPropertyType(const Property* prop) const;
+    short getPropertyType(const Property* prop) const {
+        return props->getPropertyType(prop);
+    }
     /// get the Type of a named Property
-    short getPropertyType(const char *name) const;
+    short getPropertyType(const char *name) const {
+        return props->getPropertyType(name);
+    }
     /// get the Group of a Property
-    const char* getPropertyGroup(const Property* prop) const;
+    const char* getPropertyGroup(const Property* prop) const {
+        return props->getPropertyGroup(prop);
+    }
     /// get the Group of a named Property
-    const char* getPropertyGroup(const char *name) const;
+    const char* getPropertyGroup(const char *name) const {
+        return props->getPropertyGroup(name);
+    }
     /// get the Group of a Property
-    const char* getPropertyDocumentation(const Property* prop) const;
+    const char* getPropertyDocumentation(const Property* prop) const {
+        return props->getPropertyDocumentation(prop);
+    }
     /// get the Group of a named Property
-    const char* getPropertyDocumentation(const char *name) const;
+    const char* getPropertyDocumentation(const char *name) const {
+        return props->getPropertyDocumentation(name);
+    }
     /// check if the property is read-only
-    bool isReadOnly(const Property* prop) const;
+    bool isReadOnly(const Property* prop) const {
+        return props->isReadOnly(prop);
+    }
     /// check if the nameed property is read-only
-    bool isReadOnly(const char *name) const;
+    bool isReadOnly(const char *name) const {
+        return props->isReadOnly(name);
+    }
     /// check if the property is hidden
-    bool isHidden(const Property* prop) const;
+    bool isHidden(const Property* prop) const {
+        return props->isHidden(prop);
+    }
     /// check if the named property is hidden
-    bool isHidden(const char *name) const;
+    bool isHidden(const char *name) const {
+        return props->isHidden(name);
+    }
     //@}
 
     /** @name Property serialization */
     //@{
-    void Save (Base::Writer &writer) const;
-    void Restore(Base::XMLReader &reader);
+    void Save (Base::Writer &writer) const {
+        writer.ObjectName = this->getNameInDocument();
+        props->Save(writer);
+    }
+    void Restore(Base::XMLReader &reader) {
+        props->Restore(reader);
+    }
     //@}
 
-    PyObject *getPyObject(void);
-    void setPyObject(PyObject *);
+    PyObject *getPyObject(void) {
+        if (PythonObject.is(Py::_None())) {
+            // ref counter is set to 1
+            PythonObject = Py::Object(new FeaturePythonPy(this),true);
+        }
+        return Py::new_reference_to(PythonObject);
+    }
+    void setPyObject(PyObject *obj) {
+        if (obj)
+            PythonObject = obj;
+        else
+            PythonObject = Py::None();
+    }
 
     friend class FeaturePythonPy;
 
 protected:
-    virtual void onChanged(const Property* prop);
+    virtual void onChanged(const Property* prop) {
+        imp->onChanged(prop);
+    }
 
 private:
-    DynamicProperty *props;
+    FeaturePythonImp* imp;
+    DynamicProperty* props;
     PropertyPythonObject Proxy;
 };
 
-/** Base class of all geometric document objects.
- */
-class AppExport GeometryPython : public FeaturePython
-{
-    PROPERTY_HEADER(App::GeometryPython);
-
-public:
-    PropertyPlacement Placement;
-
-    /// Constructor
-    GeometryPython(void);
-    virtual ~GeometryPython();
-};
+// Special Feature-Python classes
+typedef FeaturePythonT<DocumentObject> FeaturePython;
+typedef FeaturePythonT<GeoFeature    > GeometryPython;
 
 } //namespace App
 

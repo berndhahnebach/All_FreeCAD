@@ -126,49 +126,10 @@ TopLoc_Location Feature::getLocation() const
 
 // -------------------------------------------------
 
-PROPERTY_SOURCE(Part::FeaturePython, App::GeometryPython)
-
-
-FeaturePython::FeaturePython(void) 
-{
-    ADD_PROPERTY(Shape, (TopoDS_Shape()));
+PROPERTY_SOURCE(Part::FeaturePython, Part::Feature)
+const char* Part::FeaturePython::getViewProviderName(void) const {
+    return "PartGui::ViewProviderPython";
 }
 
-FeaturePython::~FeaturePython()
-{
-}
-
-std::vector<PyObject *> FeaturePython::getPySubObjects(const std::vector<std::string>& NameVec) const
-{
-    std::vector<PyObject*> temp;
-    for (std::vector<std::string>::const_iterator it=NameVec.begin();it!=NameVec.end();++it) {
-        PyObject *obj = Shape.getShape().getPySubShape((*it).c_str());
-        if (obj)
-            temp.push_back(obj);
-    }
-    return temp;
-}
-
-void FeaturePython::onChanged(const App::Property* prop)
-{
-    // if the placement has changed apply the change to the point data as well
-    if (prop == &this->Placement) {
-        TopoShape& shape = const_cast<TopoShape&>(this->Shape.getShape());
-        shape.setTransform(this->Placement.getValue().toMatrix());
-    }
-    // if the shape data has changed check and adjust the transformation as well
-    else if (prop == &this->Shape) {
-        if (this->isRecomputing()) {
-            TopoShape& shape = const_cast<TopoShape&>(this->Shape.getShape());
-            shape.setTransform(this->Placement.getValue().toMatrix());
-        }
-        else {
-            Base::Placement p;
-            p.fromMatrix(this->Shape.getShape().getTransform());
-            if (p != this->Placement.getValue())
-                this->Placement.setValue(p);
-        }
-    }
-
-    GeometryPython::onChanged(prop);
-}
+// explicit template instantiation
+template class PartExport App::FeaturePythonT<Part::Feature>;
