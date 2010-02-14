@@ -132,6 +132,18 @@ public:
   virtual bool isHidden(const Property* prop) const;
   /// check if the named property is hidden
   virtual bool isHidden(const char *name) const;
+  virtual App::Property* addDynamicProperty(
+        const char* type, const char* name=0,
+        const char* group=0, const char* doc=0,
+        short attr=0, bool ro=false, bool hidden=false){
+        return 0;
+  }
+  virtual std::vector<std::string> getDynamicPropertyNames() const {
+      return std::vector<std::string>();
+  }
+  virtual App::Property *getDynamicPropertyByName(const char* name) const {
+      return 0;
+  }
 
   /// returns a list of objects this object is pointing to by Links
   std::vector<DocumentObject*> getOutList(void) const;

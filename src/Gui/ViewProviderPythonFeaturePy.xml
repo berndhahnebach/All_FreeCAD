@@ -5,7 +5,7 @@
 		FatherInclude="Gui/ViewProviderDocumentObjectPy.h"
 		Name="ViewProviderPythonFeaturePy" 
 		Twin="ViewProviderPythonFeature" 
-		TwinPointer="ViewProviderPythonFeature" 
+		TwinPointer="ViewProviderDocumentObject" 
 		Include="Gui/ViewProviderPythonFeature.h" 
 		Namespace="Gui" 
 		FatherNamespace="Gui">

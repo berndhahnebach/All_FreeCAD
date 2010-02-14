@@ -24,176 +24,227 @@
 #ifndef GUI_VIEWPROVIDERPYTHONFEATURE_H
 #define GUI_VIEWPROVIDERPYTHONFEATURE_H
 
-#include "ViewProviderDocumentObject.h"
+#include <Gui/ViewProviderGeometryObject.h>
+#include <Gui/ViewProviderPythonFeaturePy.h>
 #include <App/PropertyPythonObject.h>
 #include <App/DynamicProperty.h>
 
 class SoSensor;
 class SoDragger;
+class SoNode;
 
 namespace Gui {
 class SoFCSelection;
 class SoFCBoundingBox;
 
-class GuiExport ViewProviderPythonFeature : public ViewProviderDocumentObject
+class GuiExport ViewProviderPythonFeatureImp
 {
-    PROPERTY_HEADER(Gui::ViewProviderPythonFeature);
-
 public:
     /// constructor.
-    ViewProviderPythonFeature();
+    ViewProviderPythonFeatureImp(ViewProviderDocumentObject*);
     /// destructor.
-    virtual ~ViewProviderPythonFeature();
+    ~ViewProviderPythonFeatureImp();
 
     // Returns the icon
     QIcon getIcon() const;
 
     /** @name Update data methods*/
     //@{
-    virtual void attach(App::DocumentObject *pcObject);
-    virtual void updateData(const App::Property*);
+    void attach(App::DocumentObject *pcObject);
+    void updateData(const App::Property*);
+    void onChanged(const App::Property* prop);
     //@}
 
     /** @name Display methods */
     //@{
-    void addDisplayMode(SoNode *node, const char* type);
     /// get the default display mode
-    virtual const char* getDefaultDisplayMode() const;
+    const char* getDefaultDisplayMode() const;
     /// returns a list of all possible modes
-    virtual std::vector<std::string> getDisplayModes(void) const;
+    std::vector<std::string> getDisplayModes(void) const;
     /// set the display mode
-    virtual void setDisplayMode(const char* ModeName);
+    std::string setDisplayMode(const char* ModeName);
     //@}
 
-    /** @name Edit methods*/
+private:
+    ViewProviderDocumentObject* object;
+};
+
+template <class ViewProviderT>
+class ViewProviderPythonFeatureT : public ViewProviderT
+{
+    PROPERTY_HEADER(Gui::ViewProviderPythonFeatureT<ViewProviderT>);
+
+public:
+    /// constructor.
+    ViewProviderPythonFeatureT() : docObject(0) {
+        ADD_PROPERTY(Proxy,(Py::Object()));
+        imp = new ViewProviderPythonFeatureImp(this);
+        props = new App::DynamicProperty(this);
+    }
+    /// destructor.
+    virtual ~ViewProviderPythonFeatureT() {
+        delete imp;
+        delete props;
+    }
+
+    // Returns the icon
+    QIcon getIcon() const {
+        return imp->getIcon();
+    }
+
+    /** @name Update data methods*/
     //@{
-    /// is called by the document when the provider goes in edit mode
-    virtual bool setEdit(int ModNum = 0);
-    /// is called when you loose the edit mode
-    virtual void unsetEdit(void);
-    /// is called when the provider is in edit and a key event occurs. Only ESC ends edit.
-    virtual bool keyPressed(int key){return false;}
-    /// Is called by the tree if the user double click on the object
-    virtual bool doubleClicked(void){return false;}
-    /// is called when the provider is in edit and the mouse is moved
-    virtual bool mouseMove(const SbVec3f &pos, const SbVec3f &norm, const SoPickedPoint* pp)
-    { return false; }
-    /// is called when the Provider is in edit and the mouse is clicked 
-    virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &pos,
-                                    const SbVec3f &norm, const SoPickedPoint* pp)
-    { return false; }
+    virtual void attach(App::DocumentObject *obj) {
+        if (docObject) {
+            imp->attach(pcObject);
+            ViewProviderT::attach(obj);
+        }
+        else {
+            docObject = obj;
+            pcObject = obj;
+        }
+    }
+    virtual void updateData(const App::Property* prop) {
+        imp->updateData(prop);
+        ViewProviderT::updateData(prop);
+    }
     //@}
 
-    /** @name Selection methods */
+    /** @name Display methods */
     //@{
-    virtual void select(SoPath*) {}
-    virtual void deselect(SoPath*) {}
+    /// get the default display mode
+    virtual const char* getDefaultDisplayMode() const {
+        return imp->getDefaultDisplayMode();
+    }
+    /// returns a list of all possible modes
+    virtual std::vector<std::string> getDisplayModes(void) const {
+        std::vector<std::string> modes = ViewProviderT::getDisplayModes();
+        std::vector<std::string> more_modes = imp->getDisplayModes();
+        modes.insert(modes.end(), more_modes.begin(), more_modes.end());
+        return modes;
+    }
+    /// set the display mode
+    virtual void setDisplayMode(const char* ModeName) {
+        std::string mask = imp->setDisplayMode(ModeName);
+        setDisplayMaskMode(mask.c_str());
+        ViewProviderT::setDisplayMode(ModeName);
+    }
     //@}
+
     /** @name Access properties */
     //@{
+    App::Property* addDynamicProperty(
+        const char* type, const char* name=0,
+        const char* group=0, const char* doc=0,
+        short attr=0, bool ro=false, bool hidden=false) {
+        return props->addDynamicProperty(type, name, group, doc, attr, ro, hidden);
+    }
+    std::vector<std::string> getDynamicPropertyNames() const {
+        return props->getDynamicPropertyNames();
+    }
+    App::Property *getDynamicPropertyByName(const char* name) const {
+        return props->getDynamicPropertyByName(name);
+    }
     /// get all properties of the class (including parent)
-    virtual void getPropertyMap(std::map<std::string,App::Property*> &Map) const;
+    virtual void getPropertyMap(std::map<std::string,App::Property*> &Map) const {
+        return props->getPropertyMap(Map);
+    }
     /// find a property by its name
-    virtual App::Property *getPropertyByName(const char* name) const;
+    virtual App::Property *getPropertyByName(const char* name) const {
+        return props->getPropertyByName(name);
+    }
     /// get the name of a property
-    virtual const char* getName(const App::Property* prop) const;
+    virtual const char* getName(const App::Property* prop) const {
+        return props->getName(prop);
+    }
     //@}
 
     /** @name Property attributes */
     //@{
     /// get the Type of a Property
-    short getPropertyType(const App::Property* prop) const;
+    short getPropertyType(const App::Property* prop) const {
+        return props->getPropertyType(prop);
+    }
     /// get the Type of a named Property
-    short getPropertyType(const char *name) const;
+    short getPropertyType(const char *name) const {
+        return props->getPropertyType(name);
+    }
     /// get the Group of a Property
-    const char* getPropertyGroup(const App::Property* prop) const;
+    const char* getPropertyGroup(const App::Property* prop) const {
+        return props->getPropertyGroup(prop);
+    }
     /// get the Group of a named Property
-    const char* getPropertyGroup(const char *name) const;
+    const char* getPropertyGroup(const char *name) const {
+        return props->getPropertyGroup(name);
+    }
     /// get the Group of a Property
-    const char* getPropertyDocumentation(const App::Property* prop) const;
+    const char* getPropertyDocumentation(const App::Property* prop) const {
+        return props->getPropertyDocumentation(prop);
+    }
     /// get the Group of a named Property
-    const char* getPropertyDocumentation(const char *name) const;
+    const char* getPropertyDocumentation(const char *name) const {
+        return props->getPropertyDocumentation(name);
+    }
     /// check if the property is read-only
-    bool isReadOnly(const App::Property* prop) const;
+    bool isReadOnly(const App::Property* prop) const {
+        return props->isReadOnly(prop);
+    }
     /// check if the nameed property is read-only
-    bool isReadOnly(const char *name) const;
+    bool isReadOnly(const char *name) const {
+        return props->isReadOnly(name);
+    }
     /// check if the property is hidden
-    bool isHidden(const App::Property* prop) const;
+    bool isHidden(const App::Property* prop) const {
+        return props->isHidden(prop);
+    }
     /// check if the named property is hidden
-    bool isHidden(const char *name) const;
+    bool isHidden(const char *name) const {
+        return props->isHidden(name);
+    }
     //@}
 
     /** @name Property serialization */
     //@{
-    void Save (Base::Writer &writer) const;
-    void Restore(Base::XMLReader &reader);
+    void Save (Base::Writer &writer) const {
+        props->Save(writer);
+    }
+    void Restore(Base::XMLReader &reader) {
+        props->Restore(reader);
+    }
     //@}
 
-    PyObject* getPyObject();
+    PyObject* getPyObject() {
+        if (!pyViewObject)
+            pyViewObject = new ViewProviderPythonFeaturePy(this);
+        pyViewObject->IncRef();
+        return pyViewObject;
+    }
 
 protected:
-    virtual void onChanged(const App::Property* prop);
-    std::string getUniquePropertyName(const char *Name) const;
+    virtual void onChanged(const App::Property* prop) {
+        if (prop == &Proxy) {
+            if (docObject && !Proxy.getValue().is(Py::_None())) {
+                ViewProviderPythonFeatureT::attach(docObject);
+                updateView();
+                docObject = 0;
+            }
+        }
+        else {
+            imp->onChanged(prop);
+            ViewProviderT::onChanged(prop);
+        }
+    }
 
 private:
+    ViewProviderPythonFeatureImp* imp;
     App::DynamicProperty *props;
     App::PropertyPythonObject Proxy;
     App::DocumentObject* docObject;
-
-    friend class ViewProviderPythonFeaturePy;
 };
 
-/**
- * The base class for all view providers that display geometric data, like mesh, point cloudes and shapes.
- * @author Werner Mayer
- */
-class GuiExport ViewProviderPythonGeometry : public ViewProviderPythonFeature
-{
-    PROPERTY_HEADER(Gui::ViewProviderPythonGeometry);
-
-public:
-    /// constructor.
-    ViewProviderPythonGeometry();
-
-    /// destructor.
-    virtual ~ViewProviderPythonGeometry();
-
-    // Display properties
-    App::PropertyColor ShapeColor;
-    App::PropertyPercent Transparency;
-    App::PropertyMaterial ShapeMaterial;
-    App::PropertyBool BoundingBox;
-
-    /**
-     * Attaches the document object to this view provider.
-     */
-    void attach(App::DocumentObject *pcObject);
-    void updateData(const App::Property*);
-    /** @name Edit methods */
-    //@{
-    bool doubleClicked(void);
-    bool setEdit(int ModNum = 0);
-    void unsetEdit(void);
-    //@}
-
-protected:
-    SoFCSelection* createFromSettings();
-    void showBoundingBox(bool);
-    /// get called by the container whenever a property has been changed
-    void onChanged(const App::Property* prop);
-
-private:
-    static void sensorCallback(void * data, SoSensor * sensor);
-    static void dragStartCallback(void * data, SoDragger * d);
-    static void dragFinishCallback(void * data, SoDragger * d);
-
-protected:
-    SoFCSelection    * pcHighlight;
-    SoMaterial       * pcShapeMaterial;
-    SoFCBoundingBox  * pcBoundingBox;
-    SoSwitch         * pcBoundSwitch;
-};
-
+// Special Feature-Python classes
+typedef ViewProviderPythonFeatureT<ViewProviderDocumentObject> ViewProviderPythonFeature;
+typedef ViewProviderPythonFeatureT<ViewProviderGeometryObject> ViewProviderPythonGeometry;
 
 } // namespace Gui
 

@@ -58,7 +58,7 @@ PyObject* ViewProviderPythonFeaturePy::addDisplayMode(PyObject * args)
 
     PY_TRY {
         SoNode* node = reinterpret_cast<SoNode*>(ptr);
-        getViewProviderPythonFeaturePtr()->addDisplayMode(node,mode);
+        getViewProviderPythonFeaturePtr()->addDisplayMaskMode(node,mode);
         Py_Return;
     } PY_CATCH;
 }
@@ -73,7 +73,7 @@ PyObject*  ViewProviderPythonFeaturePy::addProperty(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     App::Property* prop=0;
-    prop = getViewProviderPythonFeaturePtr()->props->addDynamicProperty(sType,sName,sGroup,sDoc,attr,ro==Py_True,hd==Py_True);
+    prop = getViewProviderPythonFeaturePtr()->addDynamicProperty(sType,sName,sGroup,sDoc,attr,ro==Py_True,hd==Py_True);
     
     if (!prop) {
         std::stringstream str;
@@ -108,7 +108,7 @@ PyObject *ViewProviderPythonFeaturePy::getCustomAttributes(const char* attr) con
         if (Base::streq(attr, "__dict__")){
             PyObject* dict = ViewProviderDocumentObjectPy::getCustomAttributes(attr);
             if (dict){
-                std::vector<std::string> Props = getViewProviderPythonFeaturePtr()->props->getDynamicPropertyNames();
+                std::vector<std::string> Props = getViewProviderPythonFeaturePtr()->getDynamicPropertyNames();
                 for (std::vector<std::string>::const_iterator it = Props.begin(); it != Props.end(); ++it)
                     PyDict_SetItem(dict, PyString_FromString(it->c_str()), PyString_FromString(""));
             }
@@ -116,7 +116,7 @@ PyObject *ViewProviderPythonFeaturePy::getCustomAttributes(const char* attr) con
         }
 
         // search for dynamic property
-        App::Property* prop = getViewProviderPythonFeaturePtr()->props->getDynamicPropertyByName(attr);
+        App::Property* prop = getViewProviderPythonFeaturePtr()->getDynamicPropertyByName(attr);
         if (prop) return prop->getPyObject();
     } PY_CATCH;
 
@@ -126,7 +126,7 @@ PyObject *ViewProviderPythonFeaturePy::getCustomAttributes(const char* attr) con
 int ViewProviderPythonFeaturePy::setCustomAttributes(const char* attr, PyObject *value)
 {
     // search for dynamic property
-    App::Property* prop = getViewProviderPythonFeaturePtr()->props->getDynamicPropertyByName(attr);
+    App::Property* prop = getViewProviderPythonFeaturePtr()->getDynamicPropertyByName(attr);
 
     if (!prop)
         return ViewProviderDocumentObjectPy::setCustomAttributes(attr, value);

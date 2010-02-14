@@ -4,7 +4,7 @@
     Father="DocumentObjectPy" 
     Name="FeaturePythonPy" 
     Twin="FeaturePython" 
-    TwinPointer="FeaturePython" 
+    TwinPointer="DocumentObject" 
     Include="App/FeaturePython.h" 
     Namespace="App" 
     FatherInclude="App/DocumentObjectPy.h" 
