@@ -25,7 +25,9 @@
 #include <Standard_math.hxx>
 #include "ViewProviderPython.h"
 
-PROPERTY_SOURCE(PartGui::ViewProviderPython, PartGui::ViewProviderPart)
-
+namespace Gui {
+PROPERTY_SOURCE_TEMPLATE(PartGui::ViewProviderPython, PartGui::ViewProviderPart)
 // explicit template instantiation
-template class AppPartGuiExport Gui::ViewProviderPythonFeatureT<PartGui::ViewProviderPart>;
+template class AppPartGuiExport ViewProviderPythonFeatureT<PartGui::ViewProviderPart>;
+}
+

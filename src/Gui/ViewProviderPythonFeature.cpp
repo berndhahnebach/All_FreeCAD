@@ -262,5 +262,17 @@ std::string ViewProviderPythonFeatureImp::setDisplayMode(const char* ModeName)
 
 // ---------------------------------------------------------
 
-PROPERTY_SOURCE(Gui::ViewProviderPythonFeature , Gui::ViewProviderDocumentObject)
-PROPERTY_SOURCE(Gui::ViewProviderPythonGeometry, Gui::ViewProviderGeometryObject)
+namespace Gui {
+PROPERTY_SOURCE_TEMPLATE(Gui::ViewProviderPythonFeature, Gui::ViewProviderDocumentObject)
+// explicit template instantiation
+template class GuiExport ViewProviderPythonFeatureT<ViewProviderDocumentObject>;
+}
+
+// ---------------------------------------------------------
+
+namespace Gui {
+PROPERTY_SOURCE_TEMPLATE(Gui::ViewProviderPythonGeometry, Gui::ViewProviderGeometryObject)
+// explicit template instantiation
+template class GuiExport ViewProviderPythonFeatureT<ViewProviderGeometryObject>;}
+
+

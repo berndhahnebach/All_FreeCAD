@@ -95,10 +95,11 @@ void Feature::onChanged(const App::Property* prop)
 
 // ---------------------------------------------------------
 
-PROPERTY_SOURCE(Mesh::FeaturePython, Mesh::Feature)
-const char* Mesh::FeaturePython::getViewProviderName(void) const {
+namespace App {
+PROPERTY_SOURCE_TEMPLATE(Mesh::FeaturePython, Mesh::Feature)
+template<> const char* Mesh::FeaturePython::getViewProviderName(void) const {
     return "MeshGui::ViewProviderPython";
 }
-
 // explicit template instantiation
-template class MeshExport App::FeaturePythonT<Mesh::Feature>;
+template class MeshExport FeaturePythonT<Mesh::Feature>;}
+

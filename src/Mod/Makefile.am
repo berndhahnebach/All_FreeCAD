@@ -9,12 +9,14 @@ SUBDIRS += Image
 SUBDIRS += Mesh
 #endif
 
-if HAVE_EIGEN2
-SUBDIRS += Robot
-endif
-
 if HAVE_OPENCASCADE
 SUBDIRS += Part PartDesign Raytracing Drawing Sketcher
+endif
+
+if HAVE_EIGEN2
+if HAVE_OPENCASCADE
+SUBDIRS += Robot
+endif
 endif
 
 #if HAVE_GTS
