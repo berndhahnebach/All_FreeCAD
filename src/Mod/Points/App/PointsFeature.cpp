@@ -134,10 +134,11 @@ App::DocumentObjectExecReturn *Export::execute(void)
 
 // ---------------------------------------------------------
 
-PROPERTY_SOURCE(Points::FeaturePython, Points::Feature)
-const char* Points::FeaturePython::getViewProviderName(void) const {
+namespace App {
+PROPERTY_SOURCE_TEMPLATE(Points::FeaturePython, Points::Feature)
+template<> const char* Points::FeaturePython::getViewProviderName(void) const {
     return "PointsGui::ViewProviderPython";
 }
-
 // explicit template instantiation
-template class PointsExport App::FeaturePythonT<Points::Feature>;
+template class PointsExport FeaturePythonT<Points::Feature>;}
+

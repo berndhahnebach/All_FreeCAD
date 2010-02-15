@@ -24,7 +24,9 @@
 #include "PreCompiled.h"
 #include "ViewProviderPython.h"
 
-PROPERTY_SOURCE(MeshGui::ViewProviderPython, MeshGui::ViewProviderMeshFaceSet)
-
+namespace Gui {
+PROPERTY_SOURCE_TEMPLATE(MeshGui::ViewProviderPython, MeshGui::ViewProviderMeshFaceSet)
 // explicit template instantiation
-template class MeshGuiExport Gui::ViewProviderPythonFeatureT<MeshGui::ViewProviderMeshFaceSet>;
+template class MeshGuiExport ViewProviderPythonFeatureT<MeshGui::ViewProviderMeshFaceSet>;
+}
+

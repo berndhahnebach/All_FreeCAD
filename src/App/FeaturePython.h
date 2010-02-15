@@ -170,17 +170,17 @@ public:
     //@}
 
     PyObject *getPyObject(void) {
-        if (PythonObject.is(Py::_None())) {
+        if (FeatureT::PythonObject.is(Py::_None())) {
             // ref counter is set to 1
-            PythonObject = Py::Object(new FeaturePythonPy(this),true);
+            FeatureT::PythonObject = Py::Object(new FeaturePythonPy(this),true);
         }
-        return Py::new_reference_to(PythonObject);
+        return Py::new_reference_to(FeatureT::PythonObject);
     }
     void setPyObject(PyObject *obj) {
         if (obj)
-            PythonObject = obj;
+            FeatureT::PythonObject = obj;
         else
-            PythonObject = Py::None();
+            FeatureT::PythonObject = Py::None();
     }
 
     friend class FeaturePythonPy;

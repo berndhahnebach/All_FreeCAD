@@ -96,12 +96,12 @@ public:
     //@{
     virtual void attach(App::DocumentObject *obj) {
         if (docObject) {
-            imp->attach(pcObject);
+            imp->attach(ViewProviderT::pcObject);
             ViewProviderT::attach(obj);
         }
         else {
             docObject = obj;
-            pcObject = obj;
+            ViewProviderT::pcObject = obj;
         }
     }
     virtual void updateData(const App::Property* prop) {
@@ -126,7 +126,7 @@ public:
     /// set the display mode
     virtual void setDisplayMode(const char* ModeName) {
         std::string mask = imp->setDisplayMode(ModeName);
-        setDisplayMaskMode(mask.c_str());
+        ViewProviderT::setDisplayMaskMode(mask.c_str());
         ViewProviderT::setDisplayMode(ModeName);
     }
     //@}
@@ -214,10 +214,10 @@ public:
     //@}
 
     PyObject* getPyObject() {
-        if (!pyViewObject)
-            pyViewObject = new ViewProviderPythonFeaturePy(this);
-        pyViewObject->IncRef();
-        return pyViewObject;
+        if (!ViewProviderT::pyViewObject)
+            ViewProviderT::pyViewObject = new ViewProviderPythonFeaturePy(this);
+        ViewProviderT::pyViewObject->IncRef();
+        return ViewProviderT::pyViewObject;
     }
 
 protected:
@@ -225,7 +225,7 @@ protected:
         if (prop == &Proxy) {
             if (docObject && !Proxy.getValue().is(Py::_None())) {
                 ViewProviderPythonFeatureT::attach(docObject);
-                updateView();
+                ViewProviderT::updateView();
                 docObject = 0;
             }
         }

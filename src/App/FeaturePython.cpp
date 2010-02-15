@@ -92,20 +92,23 @@ void FeaturePythonImp::onChanged(const Property* prop)
 
 // ---------------------------------------------------------
 
-PROPERTY_SOURCE(App::FeaturePython, App::DocumentObject)
-const char* App::FeaturePython::getViewProviderName(void) const {
+namespace App {
+PROPERTY_SOURCE_TEMPLATE(App::FeaturePython, App::DocumentObject)
+template<> const char* App::FeaturePython::getViewProviderName(void) const {
     return "Gui::ViewProviderPythonFeature";
 }
-
 // explicit template instantiation
 template class AppExport FeaturePythonT<DocumentObject>;
+}
 
 // ---------------------------------------------------------
 
-PROPERTY_SOURCE(App::GeometryPython, App::GeoFeature)
-const char* App::GeometryPython::getViewProviderName(void) const {
+namespace App {
+PROPERTY_SOURCE_TEMPLATE(App::GeometryPython, App::GeoFeature)
+template<> const char* App::GeometryPython::getViewProviderName(void) const {
     return "Gui::ViewProviderPythonGeometry";
 }
-
 // explicit template instantiation
-template class AppExport FeaturePythonT<GeoFeature>;
+template class AppExport FeaturePythonT<GeoFeature>;}
+
+

@@ -124,12 +124,13 @@ TopLoc_Location Feature::getLocation() const
     return TopLoc_Location(trf);
 }
 
-// -------------------------------------------------
+// ---------------------------------------------------------
 
-PROPERTY_SOURCE(Part::FeaturePython, Part::Feature)
-const char* Part::FeaturePython::getViewProviderName(void) const {
+namespace App {
+PROPERTY_SOURCE_TEMPLATE(Part::FeaturePython, Part::Feature)
+template<> const char* Part::FeaturePython::getViewProviderName(void) const {
     return "PartGui::ViewProviderPython";
 }
-
 // explicit template instantiation
-template class PartExport App::FeaturePythonT<Part::Feature>;
+template class PartExport FeaturePythonT<Part::Feature>;}
+

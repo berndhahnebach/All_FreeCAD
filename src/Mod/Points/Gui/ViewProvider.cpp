@@ -444,7 +444,9 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
 
 // -------------------------------------------------
 
-PROPERTY_SOURCE(PointsGui::ViewProviderPython, PointsGui::ViewProviderPoints)
-
+namespace Gui {
+PROPERTY_SOURCE_TEMPLATE(PointsGui::ViewProviderPython, PointsGui::ViewProviderPoints)
 // explicit template instantiation
-template class PointsGuiExport Gui::ViewProviderPythonFeatureT<PointsGui::ViewProviderPoints>;
+template class PointsGuiExport ViewProviderPythonFeatureT<PointsGui::ViewProviderPoints>;
+}
+
