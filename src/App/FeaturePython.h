@@ -188,6 +188,7 @@ public:
 protected:
     virtual void onChanged(const Property* prop) {
         imp->onChanged(prop);
+        FeatureT::onChanged(prop);
     }
 
 private:
