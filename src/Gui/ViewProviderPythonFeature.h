@@ -97,12 +97,12 @@ public:
     virtual void attach(App::DocumentObject *obj) {
         if (docObject) {
             imp->attach(ViewProviderT::pcObject);
-            ViewProviderT::attach(obj);
         }
         else {
             docObject = obj;
             ViewProviderT::pcObject = obj;
         }
+        ViewProviderT::attach(obj);
     }
     virtual void updateData(const App::Property* prop) {
         imp->updateData(prop);
@@ -224,7 +224,7 @@ protected:
     virtual void onChanged(const App::Property* prop) {
         if (prop == &Proxy) {
             if (docObject && !Proxy.getValue().is(Py::_None())) {
-                ViewProviderPythonFeatureT::attach(docObject);
+                imp->attach(docObject);
                 ViewProviderT::updateView();
                 docObject = 0;
             }
