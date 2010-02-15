@@ -76,7 +76,7 @@ class ViewProviderPythonFeatureT : public ViewProviderT
 
 public:
     /// constructor.
-    ViewProviderPythonFeatureT() : docObject(0) {
+    ViewProviderPythonFeatureT() : _attached(false) {
         ADD_PROPERTY(Proxy,(Py::Object()));
         imp = new ViewProviderPythonFeatureImp(this);
         props = new App::DynamicProperty(this);
@@ -95,14 +95,9 @@ public:
     /** @name Update data methods*/
     //@{
     virtual void attach(App::DocumentObject *obj) {
-        if (docObject) {
-            imp->attach(ViewProviderT::pcObject);
-        }
-        else {
-            docObject = obj;
-            ViewProviderT::pcObject = obj;
-        }
-        ViewProviderT::attach(obj);
+        // delay loading of the actual attach() method because the Python
+        // view provider class is not attached yet
+        ViewProviderT::pcObject = obj;
     }
     virtual void updateData(const App::Property* prop) {
         imp->updateData(prop);
@@ -223,10 +218,15 @@ public:
 protected:
     virtual void onChanged(const App::Property* prop) {
         if (prop == &Proxy) {
-            if (docObject && !Proxy.getValue().is(Py::_None())) {
-                imp->attach(docObject);
+            if (ViewProviderT::pcObject && !Proxy.getValue().is(Py::_None())) {
+                if (!_attached) {
+                    _attached = true;
+                    imp->attach(ViewProviderT::pcObject);
+                    ViewProviderT::attach(ViewProviderT::pcObject);
+                    // needed to load the right display mode after they're known now
+                    ViewProviderT::DisplayMode.touch();
+                }
                 ViewProviderT::updateView();
-                docObject = 0;
             }
         }
         else {
@@ -239,7 +239,7 @@ private:
     ViewProviderPythonFeatureImp* imp;
     App::DynamicProperty *props;
     App::PropertyPythonObject Proxy;
-    App::DocumentObject* docObject;
+    bool _attached;
 };
 
 // Special Feature-Python classes
