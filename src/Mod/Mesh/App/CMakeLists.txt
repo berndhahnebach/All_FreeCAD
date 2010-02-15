@@ -18,12 +18,14 @@ set(Mesh_LIBS
 
 generate_from_xml(FacetPy)
 generate_from_xml(MeshFeaturePy)
+generate_from_xml(FeaturePythonPy)
 generate_from_xml(MeshPointPy)
 generate_from_xml(MeshPy)
 
 SET(Mesh_XML_SRCS
 	FacetPy.xml
 	MeshFeaturePy.xml
+	FeaturePythonPy.xml
 	MeshPointPy.xml
 	MeshPy.xml
 )
@@ -222,7 +224,7 @@ SET(WildMagic4_SRCS
 	WildMagic4/Wm4RVector3.h
 	WildMagic4/Wm4RVector3.inl
 	WildMagic4/Wm4Segment3.h
-	 WildMagic4/Wm4Segment3.inl
+	WildMagic4/Wm4Segment3.inl
 	WildMagic4/Wm4Sphere3.h
 	WildMagic4/Wm4Sphere3.inl
 	WildMagic4/Wm4Surface.cpp
@@ -305,6 +307,7 @@ SET(Mesh_SRCS
 	MeshFeature.cpp
 	MeshFeature.h
 	MeshFeaturePyImp.cpp
+	FeaturePythonPyImp.cpp
 	MeshPointPyImp.cpp
 	MeshPoint.h
 	MeshProperties.cpp

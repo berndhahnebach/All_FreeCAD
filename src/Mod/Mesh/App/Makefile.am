@@ -3,12 +3,14 @@ lib_LTLIBRARIES=libMesh.la Mesh.la
 
 BUILT_SOURCES=\
 		FacetPy.cpp \
+		FeaturePythonPy.cpp \
 		MeshFeaturePy.cpp \
 		MeshPointPy.cpp \
 		MeshPy.cpp
 
 libMesh_la_BUILT=\
 		FacetPy.h \
+		FeaturePythonPy.h \
 		MeshFeaturePy.h \
 		MeshPointPy.h \
 		MeshPy.h
@@ -264,6 +266,7 @@ libMesh_la_SOURCES=\
 		FeatureMeshSolid.cpp \
 		FeatureMeshTransform.cpp \
 		FeatureMeshTransformDemolding.cpp \
+		FeaturePythonPyImp.cpp \
 		Mesh.cpp \
 		MeshFeature.cpp \
 		MeshFeaturePyImp.cpp \
@@ -362,6 +365,7 @@ EXTRA_DIST = \
 		$(data_DATA) \
 		CMakeLists.txt \
 		FacetPy.xml \
+		FeaturePythonPy.xml \
 		MeshFeaturePy.xml \
 		MeshPointPy.xml \
 		MeshPy.xml

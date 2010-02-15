@@ -36,6 +36,7 @@
 
 #include "MeshFeature.h"
 #include "MeshFeaturePy.h"
+#include "FeaturePythonPy.h"
 
 using namespace Mesh;
 
@@ -100,6 +101,14 @@ PROPERTY_SOURCE_TEMPLATE(Mesh::FeaturePython, Mesh::Feature)
 template<> const char* Mesh::FeaturePython::getViewProviderName(void) const {
     return "MeshGui::ViewProviderPython";
 }
+template<> PyObject* Mesh::FeaturePython::getPyObject(void) {
+    if (PythonObject.is(Py::_None())) {
+        // ref counter is set to 1
+        PythonObject = Py::Object(new Mesh::FeaturePythonPy(this),true);
+    }
+    return Py::new_reference_to(PythonObject);
+}
+
 // explicit template instantiation
 template class MeshExport FeaturePythonT<Mesh::Feature>;}
 
