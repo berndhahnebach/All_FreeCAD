@@ -8,6 +8,7 @@ BUILT_SOURCES=\
 		moc_CallTips.cpp \
 		moc_CombiView.cpp \
 		moc_Control.cpp \
+		moc_DemoMode.cpp \
 		moc_DlgActionsImp.cpp \
 		moc_DlgActivateWindowImp.cpp \
 		moc_DlgCommandsImp.cpp \
@@ -70,6 +71,7 @@ BUILT_SOURCES=\
 		moc_WidgetFactory.cpp \
 		moc_Widgets.cpp \
 		ui_AboutApplication.h \
+		ui_DemoMode.h \
 		ui_DlgActions.h \
 		ui_DlgActivateWindow.h \
 		ui_DlgAuthorization.h \
@@ -112,6 +114,7 @@ BUILT_SOURCES=\
 
 libFreeCADGui_la_UI=\
 		AboutApplication.ui \
+		DemoMode.ui \
 		DlgActions.ui \
 		DlgActivateWindow.ui \
 		DlgAuthorization.ui \
@@ -172,6 +175,8 @@ libFreeCADGui_la_SOURCES=\
 		CommandWindow.cpp \
 		CommandTest.cpp \
 		CommandView.cpp \
+		DemoMode.cpp \
+		DemoMode.h \
 		DlgActionsImp.cpp \
 		DlgActionsImp.h \
 		DlgActivateWindowImp.cpp \

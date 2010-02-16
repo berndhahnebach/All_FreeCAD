@@ -52,6 +52,7 @@
 #include "WaitCursor.h"
 #include "ViewProviderMeasureDistance.h"
 #include "SceneInspector.h"
+#include "DemoMode.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -1702,9 +1703,31 @@ void StdCmdSceneInspector::activated(int iMsg)
     }
 }
 
+DEF_STD_CMD(StdCmdDemoMode);
+
+StdCmdDemoMode::StdCmdDemoMode()
+  : Command("Std_DemoMode")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Demo mode...");
+    sToolTipText  = QT_TR_NOOP("Demo mode");
+    sWhatsThis    = QT_TR_NOOP("Demo mode");
+    sStatusTip    = QT_TR_NOOP("Demo mode");
+    eType         = Alter3DView;
+}
+
+void StdCmdDemoMode::activated(int iMsg)
+{
+    static QPointer<QDialog> dlg = 0;
+    if (!dlg)
+        dlg = new Gui::Dialog::DemoMode(getMainWindow());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
 
 //===========================================================================
-// Instanciation
+// Instantiation
 //===========================================================================
 
 
@@ -1758,6 +1781,7 @@ void CreateViewStdCommands(void)
     rcCmdMgr.addCommand(new StdCmdTreeSelection());
     rcCmdMgr.addCommand(new StdCmdMeasureDistance());
     rcCmdMgr.addCommand(new StdCmdSceneInspector());
+    rcCmdMgr.addCommand(new StdCmdDemoMode());
 }
 
 } // namespace Gui

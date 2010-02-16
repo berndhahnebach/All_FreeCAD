@@ -649,6 +649,8 @@ void View3DInventor::dragEnterEvent (QDragEnterEvent * e)
 void View3DInventor::setCurrentViewMode(ViewMode newmode)
 {
     ViewMode oldmode = MDIView::currentViewMode();
+    if (oldmode == newmode)
+        return;
     MDIView::setCurrentViewMode(newmode);
 
     // This widget becomes the focus proxy of the embedded GL widget if we leave 
