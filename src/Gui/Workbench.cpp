@@ -468,8 +468,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
     MenuItem* tool = new MenuItem( menuBar );
     tool->setCommand(QT_TR_NOOP("&Tools"));
     *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator"
-          << "Std_ViewScreenShot" << "Std_SceneInspector" << "Separator"
-          << "Std_DlgCustomize";
+          << "Std_ViewScreenShot" << "Std_SceneInspector" << "Std_DemoMode"
+          << "Separator" << "Std_DlgCustomize";
 
     // Macro
     MenuItem* macro = new MenuItem( menuBar );

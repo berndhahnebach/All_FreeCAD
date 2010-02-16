@@ -69,6 +69,7 @@ set(Gui_MOC_HDRS
 		 CallTips.h
 		 CombiView.h
 		 Control.h
+		 DemoMode.h
 		 DlgActionsImp.h
 		 DlgActivateWindowImp.h
 		 DlgCommandsImp.h
@@ -148,6 +149,7 @@ fc_wrap_cpp(Gui_MOC_SRCS ${Gui_MOC_HDRS})
 
 SET(Gui_UIC_SRCS
 		 AboutApplication.ui
+		 DemoMode.ui
 		 DlgActions.ui
 		 DlgActivateWindow.ui
 		 DlgAuthorization.ui
@@ -213,6 +215,7 @@ SOURCE_GROUP("Command" FILES ${Command_SRCS})
 
 # The dialog sources
 SET(Dialog_CPP_SRCS
+		 DemoMode.cpp
 		 DlgActivateWindowImp.cpp
 		 DlgDisplayPropertiesImp.cpp
 		 DlgInputDialogImp.cpp
@@ -233,6 +236,7 @@ SET(Dialog_CPP_SRCS
 )
 
 SET(Dialog_HPP_SRCS
+		 DemoMode.h
 		 DlgActivateWindowImp.h
 		 DlgDisplayPropertiesImp.h
 		 DlgInputDialogImp.h
