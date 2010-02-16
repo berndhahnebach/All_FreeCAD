@@ -260,6 +260,7 @@ SET(Dialog_SRCS
 		 ${Dialog_CPP_SRCS}
 		 ${Dialog_HPP_SRCS}
 		 AboutApplication.ui
+		 DemoMode.ui
 		 DlgActivateWindow.ui
 		 DlgAuthorization.ui
 		 DlgDisplayProperties.ui
