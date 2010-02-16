@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <cmath>
 # include <climits>
+# include <QTimer>
 #endif
 
 #include "DemoMode.h"
@@ -45,6 +46,9 @@ DemoMode::DemoMode(QWidget* parent, Qt::WFlags fl)
 {
     // create widgets
     ui->setupUi(this);
+    timer = new QTimer(this);
+    timer->setInterval(30000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onAutoPlay()));
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -99,17 +103,29 @@ SbVec3f DemoMode::getDirection() const
 
 void DemoMode::on_xSlider_valueChanged(int)
 {
-    on_playButton_clicked();
+    Gui::View3DInventor* view = activeView();
+    if (view && view->getViewer()->isAnimating()) {
+        view->getViewer()->startAnimating(getDirection(),getSpeed
+            (ui->speedSlider->value()));
+    }
 }
 
 void DemoMode::on_ySlider_valueChanged(int)
 {
-    on_playButton_clicked();
+    Gui::View3DInventor* view = activeView();
+    if (view && view->getViewer()->isAnimating()) {
+        view->getViewer()->startAnimating(getDirection(),getSpeed
+            (ui->speedSlider->value()));
+    }
 }
 
 void DemoMode::on_zSlider_valueChanged(int)
 {
-    on_playButton_clicked();
+    Gui::View3DInventor* view = activeView();
+    if (view && view->getViewer()->isAnimating()) {
+        view->getViewer()->startAnimating(getDirection(),getSpeed
+            (ui->speedSlider->value()));
+    }
 }
 
 void DemoMode::on_speedSlider_valueChanged(int v)
@@ -142,6 +158,23 @@ void DemoMode::on_fullscreen_toggled(bool on)
         view->setCurrentViewMode(on ? MDIView::/*TopLevel*/FullScreen : MDIView::Child);
         this->activateWindow();
     }
+}
+
+void DemoMode::onAutoPlay()
+{
+    Gui::View3DInventor* view = activeView();
+    if (view && !view->getViewer()->isAnimating()) {
+        view->getViewer()->startAnimating(getDirection(),getSpeed
+            (ui->speedSlider->value()));
+    }
+}
+
+void DemoMode::on_timerCheck_toggled(bool on)
+{
+    if (on)
+        timer->start();
+    else
+        timer->stop();
 }
 
 #include "moc_DemoMode.cpp"

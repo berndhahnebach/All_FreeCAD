@@ -26,6 +26,8 @@
 
 #include <Inventor/SbLinear.h>
 
+class QTimer;
+
 namespace Gui {
 class View3DInventor;
 namespace Dialog {
@@ -49,10 +51,12 @@ protected Q_SLOTS:
     void on_playButton_clicked();
     void on_stopButton_clicked();
     void on_fullscreen_toggled(bool);
+    void on_timerCheck_toggled(bool);
     void on_speedSlider_valueChanged(int);
     void on_xSlider_valueChanged(int);
     void on_ySlider_valueChanged(int);
     void on_zSlider_valueChanged(int);
+    void onAutoPlay();
 
 private:
     float getSpeed(int) const;
@@ -61,6 +65,7 @@ private:
 
 private:
     Ui_DemoMode* ui;
+    QTimer* timer;
 };
 
 } // namespace Dialog
