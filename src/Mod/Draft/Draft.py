@@ -134,29 +134,37 @@ except:
 	FreeCAD.Console.PrintMessage("Error: Unknown error while trying to load the Python-Pivy package")
 	raise
 
-# Constants
+
+#---------------------------------------------------------------------------
+# Global state
+#---------------------------------------------------------------------------
 
 lastObj = [0,0] # last snapped objects, for quick intersection calculation
 
-'''To do list of (function, argument) pairs to be executed later, via
-PyQt4.QTcore.QTimer.singleShot(0,doTodo).  Use the delay function
-below to schedule geometry manipulation that would crash coin if done
-in the event callback'''
+class todo:
+	''' static todo class, delays execution of functions.  Use todo.delay
+	to schedule geometry manipulation that would crash coin if done in the
+	event callback'''
 
-todo = []
+	'''List of (function, argument) pairs to be executed by
+	PyQt4.QTcore.QTimer.singleShot(0,doTodo).'''
+	itinerary = []
 
-def doTodo():
-	global todo
-	for f, arg in todo:
-		try: f(arg)
-		except:
-			FreeCAD.Console.PrintWarning ("[Draft.doTodo] Unexpected error:" + sys.exc_info()[0])
-	todo = []
+	@staticmethod
+	def doTasks():
+		for f, arg in todo.itinerary:
+			try: f(arg)
+			except:
+				msg = "[Draft.todo] Unexpected error:" + sys.exc_info()[0]
+				FreeCAD.Console.PrintWarning (msg)
+		todo.itinerary = []
 
-def delay (f, arg):
-	global todo
-	if todo == []: PyQt4.QtCore.QTimer.singleShot(0,doTodo)
-	todo.append((f,arg))
+	@staticmethod
+	def delay (f, arg):
+		if todo.itinerary == []:
+			PyQt4.QtCore.QTimer.singleShot(0, todo.doTasks)
+		todo.itinerary.append((f,arg))
+
 
 #---------------------------------------------------------------------------
 # General functions
@@ -461,10 +469,10 @@ class Tracker:
 		self.switch = coin.SoSwitch() # this is the on/off switch
 		self.switch.addChild(node)
 		self.switch.whichChild = -1
-		delay(self._insertSwitch, self.switch)
+		todo.delay(self._insertSwitch, self.switch)
 
 	def finalize(self):
-		delay(self._removeSwitch, self.switch)
+		todo.delay(self._removeSwitch, self.switch)
 		self.switch = None
 
 	def _insertSwitch(self, switch):
