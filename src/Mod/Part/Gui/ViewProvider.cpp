@@ -239,7 +239,7 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
     pcNormalRoot->addChild(pShapeHints);
     pcNormalRoot->addChild(FaceRoot);
     pcNormalRoot->addChild(EdgeRoot);
-    //  pcNormalRoot->addChild(VertexRoot);
+    pcNormalRoot->addChild(VertexRoot);
 
     // just faces with no edges or points
     pcFlatRoot->addChild(pShapeHints);
@@ -247,7 +247,7 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
 
     // only edges
     pcWireframeRoot->addChild(EdgeRoot);
-    //  pcWireframeRoot->addChild(VertexRoot);
+    pcWireframeRoot->addChild(VertexRoot);
 
     // normal viewing with edges and points
     pcPointsRoot->addChild(VertexRoot);
@@ -543,6 +543,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoGroup* EdgeRoot, const TopoDS
 
 Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const TopoDS_Shape &myShape)
 {
+#if 0 // new implementation of computeVertice
     VertexRoot->addChild(pcPointMaterial);  
     VertexRoot->addChild(pcPointStyle);
 
@@ -582,6 +583,55 @@ Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const To
     VertexRoot->addChild(sel);
 
     return true;
+#else
+    VertexRoot->addChild(pcPointMaterial);  
+    VertexRoot->addChild(pcPointStyle);
+
+
+    // get a indexed map of edges
+    TopTools_IndexedMapOfShape M;
+    TopExp::MapShapes(myShape, TopAbs_VERTEX, M);
+    
+
+    //int i=0;
+    //for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
+    for (int i=0; i<M.Extent(); i++)
+    {
+        const TopoDS_Vertex& aVertex = TopoDS::Vertex(M(i+1));
+
+        // each point has its own selection node
+        Gui::SoFCSelection* sel = createFromSettings();
+        SbString name("Point");
+        name += SbString(i+1);
+        sel->objectName = pcObject->getNameInDocument();
+        sel->documentName = pcObject->getDocument()->getName();
+        sel->subElementName = name;
+        sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
+        sel->highlightMode = Gui::SoFCSelection::AUTO;
+        sel->selectionMode = Gui::SoFCSelection::SEL_ON;
+
+        // define the vertices
+        SoCoordinate3 * coords = new SoCoordinate3;
+        coords->point.setNum(1);
+        VertexRoot->addChild(coords);
+
+
+        // get the shape
+        //const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
+        gp_Pnt pnt = BRep_Tool::Pnt(aVertex);
+        coords->point.set1Value(0, (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z());
+
+
+        SoPointSet * pointset = new SoPointSet;
+        sel->addChild(pointset);
+        VertexRoot->addChild(sel);
+        //i++;
+    }
+
+
+    return true;
+
+#endif
 }
 
 Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape)
