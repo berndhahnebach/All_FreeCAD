@@ -1170,7 +1170,7 @@ CADNavigationStyle::CADNavigationStyle() : _bRejectSelection(false), _bSpining(f
 CADNavigationStyle::~CADNavigationStyle()
 {
 }
-#if 1
+#if 0
 SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
 {
     // If we're in picking mode then all events must be redirected to the
