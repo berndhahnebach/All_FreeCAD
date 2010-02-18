@@ -304,7 +304,7 @@ void GLImageBox::getPixFormat(GLenum &pixFormat, GLenum &pixType)
             // Should never happen
             pixFormat = GL_LUMINANCE;
             pixType = GL_UNSIGNED_BYTE;
-            QMessageBox::warning((QWidget *)this, tr("GLImageBox::getPixFormat"),
+            QMessageBox::warning((QWidget *)this, tr("Image pixel format"),
                 tr("Undefined type of colour space for image viewing"));
             return;
     }

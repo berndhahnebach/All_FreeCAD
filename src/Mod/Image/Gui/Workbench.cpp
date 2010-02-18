@@ -47,7 +47,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Image"));
-    *part << "Image_Open" << "Image_CapturerTest";
+    *part << "Image_Open"/* << "Image_CapturerTest"*/;
     return root;
 }
 
@@ -57,7 +57,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
     Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
     img->setCommand(QT_TR_NOOP("Image"));
-    *img << "Image_Open" << "Image_CapturerTest";
+    *img << "Image_Open"/* << "Image_CapturerTest"*/;
     return root;
 }
 

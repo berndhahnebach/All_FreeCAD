@@ -1,32 +1,17 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name>CmdImageCapturerTest</name>
-    <message>
-        <source>Image</source>
-        <translation>Bild</translation>
-    </message>
-    <message>
-        <source>CapturerTest</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>test camara capturing</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CmdImageOpen</name>
     <message>
         <source>Image</source>
         <translation>Bild</translation>
     </message>
     <message>
-        <source>Open</source>
-        <translation>Öffnen</translation>
+        <source>Open...</source>
+        <translation>Öffnen...</translation>
     </message>
     <message>
-        <source>Image open image view function</source>
-        <translation>Funktion zum Öffnen einer Bilddatei</translation>
+        <source>Open image view</source>
+        <translation>Öffnen einer Bilddatei</translation>
     </message>
 </context>
 <context>
@@ -36,8 +21,8 @@
         <translation>Unbekannter Farbraumtyp</translation>
     </message>
     <message>
-        <source>GLImageBox::getPixFormat</source>
-        <translation type="unfinished"></translation>
+        <source>Image pixel format</source>
+        <translation>Bildpixelformat</translation>
     </message>
 </context>
 <context>

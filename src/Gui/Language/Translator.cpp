@@ -135,6 +135,7 @@ Translator::Translator()
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese")] = "jp";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese" )] = "cn";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Korean"  )] = "kr";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Swedish" )] = "se";
     d->activatedLanguage = "English";
 
     d->paths = directories();

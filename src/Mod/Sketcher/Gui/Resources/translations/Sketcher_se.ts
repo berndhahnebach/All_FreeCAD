@@ -57,7 +57,7 @@
         <translation>Skapa cirkelbåge</translation>
     </message>
     <message>
-        <source>Create arc an arc in the scetch</source>
+        <source>Create an arc in the sketch</source>
         <translation>Skapa en cirkelbåge i skissen</translation>
     </message>
 </context>
@@ -65,14 +65,14 @@
     <name>CmdSketcherCreateCircle</name>
     <message>
         <source>Sketcher</source>
-        <translation>Skizze</translation>
+        <translation>Skissare</translation>
     </message>
     <message>
         <source>Create circle</source>
         <translation>Skapa en cirkel</translation>
     </message>
     <message>
-        <source>Create arc a circle in the scetch</source>
+        <source>Create a circle in the sketch</source>
         <translation>Skapa en cirkel i skissen</translation>
     </message>
 </context>
@@ -83,11 +83,11 @@
         <translation>Skissare</translation>
     </message>
     <message>
-        <source>Create DraftLine</source>
+        <source>Create draft line</source>
         <translation>Skapa hjälplinje</translation>
     </message>
     <message>
-        <source>Create DraftLine in the scetch</source>
+        <source>Create a draft line in the sketch</source>
         <translation>Skapa hjälplinje i skissen</translation>
     </message>
 </context>
@@ -102,7 +102,7 @@
         <translation>Skapa linje</translation>
     </message>
     <message>
-        <source>Create arc a line in the scetch</source>
+        <source>Create a line in the sketch</source>
         <translation>Skapa en linje i skissen</translation>
     </message>
 </context>
@@ -113,12 +113,12 @@
         <translation>Skissare</translation>
     </message>
     <message>
-        <source>Create Point</source>
+        <source>Create point</source>
         <translation>Skapa punkt</translation>
     </message>
     <message>
-        <source>Create a Point in the scetch</source>
-        <translation>Skapa en Punkt i skissen</translation>
+        <source>Create a point in the sketch</source>
+        <translation>Skapa en punkt i skissen</translation>
     </message>
 </context>
 <context>
@@ -128,11 +128,11 @@
         <translation>Skissare</translation>
     </message>
     <message>
-        <source>Create arc</source>
-        <translation>Skapa cirkelbåge</translation>
+        <source>Create polyline</source>
+        <translation>Skapa polylinje</translation>
     </message>
     <message>
-        <source>Create arc an arc in the scetch</source>
+        <source>Create a polyline in the sketch</source>
         <translation>Skapa en polylinje i skissen</translation>
     </message>
 </context>
@@ -143,11 +143,11 @@
         <translation>Skissare</translation>
     </message>
     <message>
-        <source>Create rectagle</source>
+        <source>Create rectangle</source>
         <translation>Skapa rektangel</translation>
     </message>
     <message>
-        <source>Create arc a rectagle in the scetch</source>
+        <source>Create a rectangle in the sketch</source>
         <translation>Skapa en rektangel i skissen</translation>
     </message>
 </context>
@@ -167,17 +167,17 @@
     </message>
 </context>
 <context>
-    <name>CmdSketcherLeavSketch</name>
+    <name>CmdSketcherLeaveSketch</name>
     <message>
         <source>Sketcher</source>
         <translation>Skissare</translation>
     </message>
     <message>
-        <source>Leav sketch</source>
+        <source>Leave sketch</source>
         <translation>Lämna skiss</translation>
     </message>
     <message>
-        <source>Close the edition for the sketch</source>
+        <source>Close the editing of the sketch</source>
         <translation>Stäng skiss-sessionen</translation>
     </message>
 </context>
@@ -188,12 +188,12 @@
         <translation>Skissare</translation>
     </message>
     <message>
-        <source>Creat sketch</source>
+        <source>Create sketch</source>
         <translation>Skapa skiss</translation>
     </message>
     <message>
-        <source>Set an axle constraint between two objects</source>
-        <translation>Skapa en axelbegränsning mellan två objekt</translation>
+        <source>Create a new sketch</source>
+        <translation>Skapa skiss</translation>
     </message>
 </context>
 <context>

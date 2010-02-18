@@ -2,33 +2,18 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="sv_SE">
 <context>
-    <name>CmdImageCapturerTest</name>
-    <message>
-        <source>Image</source>
-        <translation>Bild</translation>
-    </message>
-    <message>
-        <source>CapturerTest</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>test camara capturing</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CmdImageOpen</name>
     <message>
         <source>Image</source>
         <translation>Bild</translation>
     </message>
     <message>
-        <source>Open</source>
-        <translation>Öppna</translation>
+        <source>Open...</source>
+        <translation>Öppna...</translation>
     </message>
     <message>
-        <source>Image open image view function</source>
-        <translation type="unfinished">Funktion zum Öffnen einer Bilddatei</translation>
+        <source>Open image view</source>
+        <translation>Öppna bildvy</translation>
     </message>
 </context>
 <context>
@@ -38,7 +23,7 @@
         <translation>Odefinierad färgrymd för bildvisning</translation>
     </message>
     <message>
-        <source>GLImageBox::getPixFormat</source>
+        <source>Image pixel format</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
