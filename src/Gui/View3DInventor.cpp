@@ -740,4 +740,12 @@ void View3DInventor::focusInEvent (QFocusEvent * e)
     _viewer->getGLWidget()->setFocus();
 }
 
+void View3DInventor::customEvent(QEvent * e)
+{
+    if (e->type() == QEvent::User) {
+        NavigationStyleEvent* se = static_cast<NavigationStyleEvent*>(e);
+        _viewer->setNavigationType(se->style());
+    }
+}
+
 #include "moc_View3DInventor.cpp"

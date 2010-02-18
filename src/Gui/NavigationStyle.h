@@ -48,6 +48,19 @@ class View3DInventorViewer;
 class AbstractMouseModel;
 
 /**
+ * @author Werner Mayer
+ */
+class GuiExport NavigationStyleEvent : public QEvent
+{
+public:
+    NavigationStyleEvent(const Base::Type& s);
+    ~NavigationStyleEvent();
+    const Base::Type& style() const;
+private:
+    Base::Type t;
+};
+
+/**
  * The navigation style base class
  * @author Werner Mayer
  */

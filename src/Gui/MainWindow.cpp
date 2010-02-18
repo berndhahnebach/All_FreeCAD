@@ -1223,7 +1223,7 @@ namespace Gui {
 class CustomMessageEvent : public QEvent
 {
 public:
-     enum Type {Msg, Wrn, Err, Log};
+    enum Type {Msg, Wrn, Err, Log};
     CustomMessageEvent(Type t, const QString& s)
       : QEvent(QEvent::User), _type(t), msg(s)
     { }

@@ -25,9 +25,15 @@
 #ifndef _PreComp_
 # include <cfloat>
 # include "InventorAll.h"
+# include <QAction>
+# include <QActionGroup>
 # include <QApplication>
+# include <QByteArray>
 # include <QCursor>
+# include <QList>
 # include <QMenu>
+# include <QMetaObject>
+# include <QRegExp>
 #endif
 #include <Inventor/sensors/SoTimerSensor.h>
 
@@ -53,6 +59,20 @@ struct NavigationStyleP {
     }
     static void viewAnimationCB(void * data, SoSensor * sensor);
 };
+}
+
+NavigationStyleEvent::NavigationStyleEvent(const Base::Type& s)
+  : QEvent(QEvent::User), t(s)
+{
+}
+
+NavigationStyleEvent::~NavigationStyleEvent()
+{
+}
+
+const Base::Type& NavigationStyleEvent::style() const
+{ 
+    return t;
 }
 
 #define PRIVATE(ptr) (ptr->pimpl)
@@ -839,10 +859,52 @@ void NavigationStyle::openPopupMenu(const SbVec2s& position)
     MenuItem* view = new MenuItem;
     Gui::Application::Instance->setupContextMenu("View", view);
 
-    QMenu ContextMenu(viewer->getGLWidget());
-    MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
+    QMenu contextMenu(viewer->getGLWidget());
+    QMenu subMenu;
+    QActionGroup subMenuGroup(&subMenu);
+    subMenuGroup.setExclusive(true);
+    subMenu.setTitle(QObject::tr("Navigation styles"));
+
+    MenuManager::getInstance()->setupContextMenu(view,contextMenu);
+    contextMenu.addMenu(&subMenu);
+
+    // add submenu at the end to select navigation style
+    QRegExp rx(QString::fromAscii("^\\w+::(\\w+)Navigation\\w+$"));
+    std::vector<Base::Type> types;
+    Base::Type::getAllDerivedFrom(NavigationStyle::getClassTypeId(), types);
+    for (std::vector<Base::Type>::iterator it = types.begin(); it != types.end(); ++it) {
+        if (*it != NavigationStyle::getClassTypeId()) {
+            QString data = QString::fromAscii(it->getName());
+            QString name = data.mid(data.indexOf(QLatin1String("::"))+2);
+            if (rx.indexIn(data) > -1) {
+                name = QObject::tr("%1 navigation").arg(rx.cap(1));
+                QAction* item = subMenuGroup.addAction(name);
+                item->setData(QByteArray(it->getName()));
+                item->setCheckable(true);
+                if (*it == this->getTypeId())
+                    item->setChecked(true);
+                subMenu.addAction(item);
+            }
+        }
+    }
+
     delete view;
-    ContextMenu.exec(QCursor::pos());
+    QAction* used = contextMenu.exec(QCursor::pos());
+    if (used && subMenuGroup.actions().indexOf(used) >= 0 && used->isChecked()) {
+        QByteArray type = used->data().toByteArray();
+        QWidget* widget = viewer->getWidget();
+        if (widget) {
+            widget = widget->parentWidget();
+            if (widget) {
+                // this is the widget where the viewer is embedded
+                Base::Type style = Base::Type::fromName((const char*)type);
+                if (style != this->getTypeId()) {
+                    QEvent* event = new NavigationStyleEvent(style);
+                    QApplication::postEvent(widget, event);
+                }
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------------
@@ -1170,7 +1232,7 @@ CADNavigationStyle::CADNavigationStyle() : _bRejectSelection(false), _bSpining(f
 CADNavigationStyle::~CADNavigationStyle()
 {
 }
-#if 0
+#if 1
 SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
 {
     // If we're in picking mode then all events must be redirected to the
@@ -1302,11 +1364,12 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                 this->seekToPoint(pos); // implicitly calls interactiveCountInc()
                 processed = TRUE;
             }
-            else if (press && (this->currentmode == NavigationStyle::IDLE)) {
-                //this->setViewing(true);
-                //processed = TRUE;
-            }
-            else if (press && (this->currentmode == NavigationStyle::PANNING)) {
+            //else if (press && (this->currentmode == NavigationStyle::IDLE)) {
+            //    this->setViewing(true);
+            //    processed = TRUE;
+            //}
+            else if (press && (this->currentmode == NavigationStyle::PANNING ||
+                               this->currentmode == NavigationStyle::ZOOMING)) {
                 newmode = NavigationStyle::DRAGGING;
                 this->centerTime = ev->getTime();
                 processed = TRUE;
@@ -1317,6 +1380,7 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                 if (tmp.getValue() < dci) {
                     newmode = NavigationStyle::ZOOMING;
                 }
+                processed = TRUE;
             }
             else if (!press && (this->currentmode == NavigationStyle::DRAGGING)) {
                 this->setViewing(false);
@@ -1439,8 +1503,8 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
             newmode = NavigationStyle::SELECTION;
         break;
     case BUTTON3DOWN:
-    case SHIFTDOWN|BUTTON1DOWN:
         if (currentmode == NavigationStyle::SPINNING) { break; }
+        else if (newmode == NavigationStyle::ZOOMING) { break; }
         newmode = NavigationStyle::PANNING;
 
         if (currentmode == NavigationStyle::DRAGGING) {
@@ -1449,18 +1513,17 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                 break;
             }
         }
-        else if (newmode == NavigationStyle::ZOOMING) { break; }
         break;
-    case CTRLDOWN:
-    case CTRLDOWN|BUTTON1DOWN:
-    case CTRLDOWN|SHIFTDOWN:
-    case CTRLDOWN|SHIFTDOWN|BUTTON1DOWN:
-        newmode = NavigationStyle::SELECTION;
-        break;
+    //case CTRLDOWN:
+    //case CTRLDOWN|BUTTON1DOWN:
+    //case CTRLDOWN|SHIFTDOWN:
+    //case CTRLDOWN|SHIFTDOWN|BUTTON1DOWN:
+    //    newmode = NavigationStyle::SELECTION;
+    //    break;
     //case BUTTON1DOWN|BUTTON3DOWN:
-    case CTRLDOWN|BUTTON3DOWN:
-        newmode = NavigationStyle::ZOOMING;
-        break;
+    //case CTRLDOWN|BUTTON3DOWN:
+    //    newmode = NavigationStyle::ZOOMING;
+    //    break;
 
         // There are many cases we don't handle that just falls through to
         // the default case, like SHIFTDOWN, CTRLDOWN, CTRLDOWN|SHIFTDOWN,
