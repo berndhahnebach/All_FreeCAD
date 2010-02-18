@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/translations" >
         <file>Points_de.qm</file>
+        <file>Points_se.qm</file>
     </qresource>
 </RCC>

@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/translations" >
         <file>Image_de.qm</file>
+        <file>Image_se.qm</file>
     </qresource>
     <qresource prefix="/icons" >
         <file>image-import.svg</file>

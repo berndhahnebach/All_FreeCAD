@@ -78,5 +78,5 @@ EXTRA_DIST = \
 		UnitTest.ui \
 		Test.qrc \
 		Test_de.qm \
-		Test_de.ts \
+		Test_se.qm \
 		qtunittest.py

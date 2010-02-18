@@ -84,6 +84,6 @@ EXTRA_DIST = \
 		CMakeLists.txt \
 		Image.qrc \
 		Image_de.qm \
-		Image_de.ts \
+		Image_se.qm \
 		image-import.svg
 
