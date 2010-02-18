@@ -363,23 +363,16 @@ void Application::open(const char* FileName, const char* Module)
     string te = File.extension();
 
     // if the active document empty, close it
-    // in case of a automatic created empty document at startup
-    if (App::GetApplication().getActiveDocument() && App::GetApplication().getActiveDocument()->countObjects() == 0){
-        Command::doCommand(Command::App, "App.closeDocument('%s')", App::GetApplication().getActiveDocument()->getName());
+    // in case of an automatically created empty document at startup
+    App::Document* act = App::GetApplication().getActiveDocument();
+    if (act && act->countObjects() == 0){
+        Command::doCommand(Command::App, "App.closeDocument('%s')", act->getName());
+        qApp->processEvents(); // an update is needed otherwise the new view isn't shown
     }
 
     if (Module != 0) {
         // issue module loading
         Command::doCommand(Command::App, "import %s", Module);
-/*
-        // issue gui module loading
-        try {
-            Command::doCommand(Command::Gui, "import %sGui", Module);
-        }
-        catch (const Base::PyException&){
-            // ignore this type of exception (e.g. if Mod is already a Gui module)
-        }*/
-
         try {
             // load the file with the module
             Command::doCommand(Command::App, "%s.open(\"%s\")", Module, File.filePath().c_str());
