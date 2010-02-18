@@ -2,5 +2,6 @@
     <qresource> 
         <file>icons/actions/FitSurface.svg</file>
         <file>translations/ReverseEngineering_de.qm</file>
+        <file>translations/ReverseEngineering_se.qm</file>
     </qresource>
 </RCC> 

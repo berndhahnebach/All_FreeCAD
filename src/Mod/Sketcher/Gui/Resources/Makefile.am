@@ -21,7 +21,7 @@ EXTRA_DIST = \
 		icons/Sketcher_LeaveSketch.svg \
 		icons/Sketcher_NewSketch.svg \
 		translations/Sketcher_de.qm \
-		translations/Sketcher_de.ts \
+		translations/Sketcher_se.qm \
 		Sketcher.qrc
 
 

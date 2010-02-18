@@ -9,7 +9,7 @@ nodist_libResources_la_SOURCES=\
 EXTRA_DIST = \
 		icons/actions/MeshFace.svg \
 		translations/MeshPart_de.qm \
-		translations/MeshPart_de.ts \
+		translations/MeshPart_se.qm \
 		MeshPart.qrc
 
 

@@ -83,4 +83,4 @@ EXTRA_DIST = \
 		CMakeLists.txt \
 		Points.qrc \
 		Points_de.qm \
-		Points_de.ts
+		Points_se.qm
