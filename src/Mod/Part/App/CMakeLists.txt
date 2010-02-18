@@ -189,6 +189,8 @@ SET(Part_SRCS
 		 ProgressIndicator.h
 		 TopoShape.cpp
 		 TopoShape.h
+		 edgecluster.cpp
+		 edgecluster.h
 )
 
 add_library(Part SHARED ${Part_SRCS})

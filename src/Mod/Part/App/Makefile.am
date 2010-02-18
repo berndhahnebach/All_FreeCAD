@@ -34,6 +34,7 @@ BUILT_SOURCES=\
 		TopoShapeSolidPy.cpp \
 		TopoShapeVertexPy.cpp \
 		TopoShapeWirePy.cpp \
+		edgecluster.cpp \
 		TopoShapePy.cpp
 
 libPart_la_BUILT=\
@@ -69,6 +70,7 @@ libPart_la_BUILT=\
 		TopoShapeSolidPy.h \
 		TopoShapeVertexPy.h \
 		TopoShapeWirePy.h \
+		edgecluster.h \
 		TopoShapePy.h
 
 libPart_la_SOURCES=\
