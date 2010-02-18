@@ -838,9 +838,34 @@ int NavigationStyle::getViewingMode() const
     return (int)this->currentmode;
 }
 
+SbBool NavigationStyle::processEvent(const SoEvent * const ev)
+{
+    // If we're in picking mode then all events must be redirected to the
+    // appropriate mouse model.
+    if (pcMouseModel) {
+        int hd=pcMouseModel->handleEvent(ev,viewer->getViewportRegion());
+        if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
+            return TRUE;
+        }
+        else if (hd==AbstractMouseModel::Finish) {
+            pcPolygon = pcMouseModel->getPolygon();
+            clipInner = pcMouseModel->isInner();
+            delete pcMouseModel; pcMouseModel = 0;
+            return FALSE;
+        }
+        else if (hd==AbstractMouseModel::Cancel) {
+            pcPolygon.clear();
+            delete pcMouseModel; pcMouseModel = 0;
+            return FALSE;
+        }
+    }
+
+    return this->processSoEvent(ev);
+}
+
 SbBool NavigationStyle::processSoEvent(const SoEvent * const ev)
 {
-    return viewer->processSoEventBase(ev);
+    return FALSE;
 }
 
 void NavigationStyle::setPopupMenuEnabled(const SbBool on)
@@ -921,26 +946,6 @@ InventorNavigationStyle::~InventorNavigationStyle()
 
 SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 {
-    // If we're in picking mode then all events must be redirected to the
-    // appropriate mouse model.
-    if (pcMouseModel) {
-        int hd=pcMouseModel->handleEvent(ev,viewer->getViewportRegion());
-        if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
-            return TRUE;
-        }
-        else if (hd==AbstractMouseModel::Finish) {
-            pcPolygon = pcMouseModel->getPolygon();
-            clipInner = pcMouseModel->isInner();
-            delete pcMouseModel; pcMouseModel = 0;
-            return inherited::processSoEvent(ev);
-        }
-        else if (hd==AbstractMouseModel::Cancel) {
-            pcPolygon.clear();
-            delete pcMouseModel; pcMouseModel = 0;
-            return inherited::processSoEvent(ev);
-        }
-    }
-
     // Events when in "ready-to-seek" mode are ignored, except those
     // which influence the seek mode itself -- these are handled further
     // up the inheritance hierarchy.
@@ -1225,7 +1230,7 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 
 TYPESYSTEM_SOURCE(Gui::CADNavigationStyle, Gui::NavigationStyle);
 
-CADNavigationStyle::CADNavigationStyle() : _bRejectSelection(false), _bSpining(false)
+CADNavigationStyle::CADNavigationStyle()/* : _bRejectSelection(false), _bSpining(false)*/
 {
 }
 
@@ -1235,25 +1240,6 @@ CADNavigationStyle::~CADNavigationStyle()
 #if 1
 SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
 {
-    // If we're in picking mode then all events must be redirected to the
-    // appropriate mouse model.
-    if (pcMouseModel) {
-        int hd=pcMouseModel->handleEvent(ev,viewer->getViewportRegion());
-        if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
-            return TRUE;
-        }
-        else if (hd==AbstractMouseModel::Finish) {
-            pcPolygon = pcMouseModel->getPolygon();
-            clipInner = pcMouseModel->isInner();
-            delete pcMouseModel; pcMouseModel = 0;
-            return inherited::processSoEvent(ev);
-        }
-        else if (hd==AbstractMouseModel::Cancel) {
-            pcPolygon.clear();
-            delete pcMouseModel; pcMouseModel = 0;
-            return inherited::processSoEvent(ev);
-        }
-    }
 #if 0
     // Events when in "ready-to-seek" mode are ignored, except those
     // which influence the seek mode itself -- these are handled further

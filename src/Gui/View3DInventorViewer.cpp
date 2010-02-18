@@ -969,12 +969,10 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
         }
     }
 
-    return navigation->processSoEvent(ev);
-}
-
-SbBool View3DInventorViewer::processSoEventBase(const SoEvent * const ev)
-{
-    return inherited::processSoEvent(ev);
+    SbBool processed = navigation->processEvent(ev);
+    if (!processed)
+        processed = inherited::processSoEvent(ev);
+    return processed;
 }
 
 SbVec3f View3DInventorViewer::getViewDirection() const

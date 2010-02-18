@@ -259,7 +259,6 @@ protected:
     virtual void setSeekMode(SbBool enable);
     virtual void afterRealizeHook(void);
     virtual void processEvent(QEvent * event);
-    SbBool processSoEventBase(const SoEvent * const ev);
     virtual SbBool processSoEvent(const SoEvent * const ev);
     void printDimension();
 
