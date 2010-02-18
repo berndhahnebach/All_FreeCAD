@@ -112,7 +112,7 @@ public:
 
     void setViewingMode(const ViewerMode newmode);
     int getViewingMode() const;
-    virtual SbBool processSoEvent(const SoEvent * const ev);
+    SbBool processEvent(const SoEvent * const ev);
 
     void setPopupMenuEnabled(const SbBool on);
     SbBool isPopupMenuEnabled(void) const;
@@ -151,6 +151,7 @@ protected:
     SbBool doSpin();
 
     SbBool handleEventInForeground(const SoEvent* const e);
+    virtual SbBool processSoEvent(const SoEvent * const ev);
     virtual void openPopupMenu(const SbVec2s& position);
 
     void clearLog(void);
@@ -204,6 +205,7 @@ public:
     InventorNavigationStyle();
     ~InventorNavigationStyle();
 
+protected:
     SbBool processSoEvent(const SoEvent * const ev);
 };
 
@@ -216,12 +218,13 @@ public:
     CADNavigationStyle();
     ~CADNavigationStyle();
 
+protected:
     SbBool processSoEvent(const SoEvent * const ev);
 
-    bool _bRejectSelection;
-    bool _bSpining;
-    SbTime MoveTime;
-    QCursor _oldCursor;
+    //bool _bRejectSelection;
+    //bool _bSpining;
+    //SbTime MoveTime;
+    //QCursor _oldCursor;
 };
 
 } // namespace Gui
