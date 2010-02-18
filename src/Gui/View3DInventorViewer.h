@@ -252,6 +252,7 @@ public:
                                    const SbColor& midColor);
     void setEnabledFPSCounter(bool b);
     void setNavigationType(Base::Type);
+    NavigationStyle* navigationStyle() const;
 
 protected:
     virtual void actualRedraw(void);
