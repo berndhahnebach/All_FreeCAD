@@ -412,6 +412,11 @@ void View3DInventorViewer::setNavigationType(Base::Type t)
     this->navigation->setViewer(this);
 }
 
+NavigationStyle* View3DInventorViewer::navigationStyle() const
+{
+    return this->navigation;
+}
+
 SoDirectionalLight* View3DInventorViewer::getBacklight(void) const
 {
     return this->backlight;
