@@ -47,8 +47,8 @@ CmdImageOpen::CmdImageOpen()
 {
     sAppModule      = "Image";
     sGroup          = QT_TR_NOOP("Image");
-    sMenuText       = QT_TR_NOOP("Open");
-    sToolTipText    = QT_TR_NOOP("Image open image view function");
+    sMenuText       = QT_TR_NOOP("Open...");
+    sToolTipText    = QT_TR_NOOP("Open image view");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "image-import";
@@ -73,97 +73,94 @@ void CmdImageOpen::activated(int iMsg)
     }
 }
 
+#if 0
 DEF_STD_CMD(CmdImageCapturerTest);
 
 CmdImageCapturerTest::CmdImageCapturerTest()
-    :Command("Image_CapturerTest")
+  : Command("Image_CapturerTest")
 {
     sAppModule      = "Image";
-    sGroup          = QT_TR_NOOP("Image");
-    sMenuText       = QT_TR_NOOP("CapturerTest");
-    sToolTipText    = QT_TR_NOOP("test camara capturing");
+    sGroup          = ("Image");
+    sMenuText       = ("CapturerTest");
+    sToolTipText    = ("test camara capturing");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "camera-photo";
     iAccel          = 0;
 }
 
-
 void CmdImageCapturerTest::activated(int iMsg)
 {
-/*
 #if 0
-
-	    // Reading an image
+    // Reading an image
     QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
                                              QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"));
     if (s.isEmpty()) return;
 
-  IplImage* image = cvLoadImage( 
-    (const char*)s.toLatin1(),
-    CV_LOAD_IMAGE_GRAYSCALE
-  );
- IplImage* src = cvLoadImage( (const char*)s.toLatin1() ); //Changed for prettier show in color
-  CvMemStorage* storage = cvCreateMemStorage(0);
-  cvSmooth(image, image, CV_GAUSSIAN, 5, 5 );
-   CvSeq* results = cvHoughCircles( 
-    image, 
-    storage, 
-    CV_HOUGH_GRADIENT, 
-    2, 
-    image->width/10 
-  ); 
-  for( int i = 0; i < results->total; i++ ) {
-    float* p = (float*) cvGetSeqElem( results, i );
-    CvPoint pt = cvPoint( cvRound( p[0] ), cvRound( p[1] ) );
-    cvCircle( 
-      src,
-      pt, 
-      cvRound( p[2] ),
-      CV_RGB(0xff,0,0) 
+    IplImage* image = cvLoadImage( 
+        (const char*)s.toLatin1(),
+        CV_LOAD_IMAGE_GRAYSCALE
     );
-  }
-  cvNamedWindow( "cvHoughCircles", 1 );
-  cvShowImage( "cvHoughCircles", src);
-  cvWaitKey(0);
-
-
+    IplImage* src = cvLoadImage( (const char*)s.toLatin1() ); //Changed for prettier show in color
+    CvMemStorage* storage = cvCreateMemStorage(0);
+    cvSmooth(image, image, CV_GAUSSIAN, 5, 5 );
+    CvSeq* results = cvHoughCircles( 
+        image, 
+        storage, 
+        CV_HOUGH_GRADIENT, 
+        2, 
+        image->width/10 
+    ); 
+    for( int i = 0; i < results->total; i++ ) {
+        float* p = (float*) cvGetSeqElem( results, i );
+        CvPoint pt = cvPoint( cvRound( p[0] ), cvRound( p[1] ) );
+        cvCircle( 
+            src,
+            pt, 
+            cvRound( p[2] ),
+            CV_RGB(0xff,0,0) 
+        );
+    }
+    cvNamedWindow( "cvHoughCircles", 1 );
+    cvShowImage( "cvHoughCircles", src);
+    cvWaitKey(0);
 #else
-  struct tm *newtime;
+    struct tm *newtime;
 #if defined (_MSC_VER)
-  struct _timeb tstruct;
-  __int64 ltime;
+    struct _timeb tstruct;
+    __int64 ltime;
 #elif defined(__GNUC__)
-  struct timeb tstruct;
-  time_t ltime;
+    struct timeb tstruct;
+    time_t ltime;
 #endif
-  
-  char buff[100];
-  Capturerer cap(Capturerer::chooseCamNum());
-  cap.setCaptureWindows(true);
-  for(int i = 0; i< 200;i++){
+
+    char buff[100];
+    Capturerer cap(Capturerer::chooseCamNum());
+    cap.setCaptureWindows(true);
+    for(int i = 0; i< 200;i++){
 #if defined (_MSC_VER)
-    _ftime( &tstruct ); 
-    _time64( &ltime );
-    // Obtain coordinated universal time:
-    newtime = _gmtime64( &ltime ); // C4996
+        _ftime( &tstruct ); 
+        _time64( &ltime );
+        // Obtain coordinated universal time:
+        newtime = _gmtime64( &ltime ); // C4996
 #elif defined(__GNUC__)
-    ftime( &tstruct ); 
-    time( &ltime );
-    // Obtain coordinated universal time:
-    newtime = gmtime( &ltime ); // C4996
+        ftime( &tstruct ); 
+        time( &ltime );
+        // Obtain coordinated universal time:
+        newtime = gmtime( &ltime ); // C4996
 #endif
-    sprintf(buff,"%2d:%2d:%2d:%3d - %4d",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,tstruct.millitm,i );
-    if(cap.getOneCapture(buff)==27)
-          break;
-  }
-#endif*/
+        sprintf(buff,"%2d:%2d:%2d:%3d - %4d",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,tstruct.millitm,i );
+        if (cap.getOneCapture(buff)==27)
+            break;
+    }
+#endif
 }
+#endif
 
 void CreateImageCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdImageOpen());
-    rcCmdMgr.addCommand(new CmdImageCapturerTest());
+  //rcCmdMgr.addCommand(new CmdImageCapturerTest());
 }

@@ -55,8 +55,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create arc an arc in the scetch</source>
-        <translation type="unfinished"></translation>
+        <source>Create an arc in the sketch</source>
+        <translation>Kreisbogen in der Skizze erzeugen</translation>
     </message>
 </context>
 <context>
@@ -70,7 +70,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create arc a circle in the scetch</source>
+        <source>Create a circle in the sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -81,11 +81,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create DraftLine</source>
+        <source>Create draft line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create DraftLine in the scetch</source>
+        <source>Create a draft line in the sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -100,7 +100,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create arc a line in the scetch</source>
+        <source>Create a line in the sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -111,11 +111,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create Point</source>
+        <source>Create point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create a Point in the scetch</source>
+        <source>Create a point in the sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -126,11 +126,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create arc</source>
+        <source>Create polyline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create arc an arc in the scetch</source>
+        <source>Create a polyline in the sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -141,11 +141,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create rectagle</source>
+        <source>Create rectangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create arc a rectagle in the scetch</source>
+        <source>Create a rectangle in the sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -165,17 +165,17 @@
     </message>
 </context>
 <context>
-    <name>CmdSketcherLeavSketch</name>
+    <name>CmdSketcherLeaveSketch</name>
     <message>
         <source>Sketcher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Leav sketch</source>
+        <source>Leave sketch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Close the edition for the sketch</source>
+        <source>Close the editing of the sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -186,11 +186,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Creat sketch</source>
+        <source>Create sketch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Set an axle constraint between two objects</source>
+        <source>Create a new sketch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
