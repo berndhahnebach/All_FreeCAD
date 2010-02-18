@@ -157,6 +157,17 @@ def find(vector,vlist):
 			return i
 	return None
 
+def isColinear(vlist):
+	'''isColinear(list_of_vectors): checks if vectors in given list are colinear'''
+	typecheck ([(vlist,list)], "isColinear");
+	if len(vlist) < 3: return True
+	first = vlist[1].sub(vlist[0])
+	for i in range(2,len(vlist)):
+		if angle(vlist[i].sub(vlist[0]),first) != 0:
+			return False
+	return True
+		
+
 '''
 Obsolete/useless function.  Complete deletion seems appropriate - KEC
 

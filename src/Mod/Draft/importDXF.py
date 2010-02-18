@@ -42,6 +42,7 @@ import FreeCAD, os, Part, math, re, string
 from draftlibs import fcvec, dxfColorMap, dxfLibrary, fcgeo
 from draftlibs.dxfReader import readDXF
 from Draft import Dimension, DimensionViewProvider
+from FreeCAD import Vector
 
 try: import FreeCADGui
 except: gui = False
@@ -79,12 +80,13 @@ def calcBulge(v1,bulge,v2):
 	calculates intermediary vertex for curved segments.
 	algorithm from http://www.afralisp.net/lisp/Bulges1.htm
 	'''
-	chord = fcvec.new(v1,v2)
+	chord = v2.sub(v1)
 	sagitta = (bulge * chord.Length)/2
-	startpoint = fcvec.add(v1,fcvec.scale(chord,0.5))
-	perp = fcvec.crossproduct(chord)
-	endpoint = fcvec.scale(fcvec.normalized(perp),sagitta)
-	return fcvec.add(startpoint,endpoint)
+	startpoint = v1.add(fcvec.scale(chord,0.5))
+	perp = chord.cross(Vector(1,0,0))
+	if not fcvec.isNull(perp): perp.normalize()
+	endpoint = fcvec.scale(perp,sagitta)
+	return startpoint.add(endpoint)
 
 def getGroup(ob,exportList):
 	"checks if the object is part of a group"
@@ -141,9 +143,9 @@ class fcformat:
 				b2 = float((c2>>8)&0xFF)
 				v1 = FreeCAD.Vector(r1,g1,b1)
 				v2 = FreeCAD.Vector(r2,g2,b2)
-				v = fcvec.new(v1,v2)
+				v = v2.sub(v1)
 				v = fcvec.scale(v,0.5)
-				cv = fcvec.add(v1,v)
+				cv = v1.add(v)
 			else:
 				c1 = bparams.GetUnsigned("BackgroundColor")
 				r1 = float((c1>>24)&0xFF)
@@ -273,7 +275,7 @@ def drawLine(line):
 def drawPolyline(polyline):
 	"returns a Part shape from a dxf polyline"
 	if (len(polyline.points) > 1):
-		if len(polyline.points) == 2: print "debug: 2-point polyline!"
+		# if len(polyline.points) == 2: print "debug: 2-point polyline!"
 		edges = []
 		for p in range(len(polyline.points)-1):
 			p1 = polyline.points[p]
@@ -283,7 +285,10 @@ def drawPolyline(polyline):
 			if not fcvec.equals(v1,v2):
 				if polyline.points[p].bulge:
 					cv = calcBulge(v1,polyline.points[p].bulge,v2)
-					edges.append(Part.Arc(v1,cv,v2).toShape())
+					if fcvec.isColinear([v1,cv,v2]):
+						edges.append(Part.Line(v1,v2).toShape())
+					else:
+						edges.append(Part.Arc(v1,cv,v2).toShape())
 				else:
 					edges.append(Part.Line(v1,v2).toShape())
 		if polyline.closed:
@@ -566,12 +571,13 @@ def getWire(wire):
 		if (isinstance(edge.Curve,Part.Circle)):
 			v2 = edge.Vertexes[-1].Point
 			c = edge.Curve.Center
-			angle = abs(fcvec.angle(fcvec.new(c,v1),fcvec.new(c,v2)))
-			if (fcvec.angle(fcvec.new(c,v2)) < fcvec.angle(fcvec.new(c,v1))):
+			angle = abs(fcvec.angle(v1.sub(c),v2.sub(c)))
+			if (fcvec.angle(v2.sub(c)) < fcvec.angle(v1.sub(c))):
 				angle = -angle
 			bul = math.tan(angle/4)
 			points.append((v1.x,v1.y,v1.z,None,None,bul))
 		elif (isinstance(edge.Curve,Part.BSplineCurve)):
+			bul = 0.0
 			spline = getSplineSegs(edge)
 			spline.pop()
 			for p in spline:
@@ -630,11 +636,11 @@ def writeShape(ob,dxfobject):
 				radius = ob.Shape.Edges[0].Curve.Radius
 				ve1 = edge.Vertexes[0].Point
 				ve2 = edge.Vertexes[-1].Point
-				ang1=-math.degrees(fcvec.angle(fcvec.new(ce,ve1)))
-				ang2=-math.degrees(fcvec.angle(fcvec.new(ce,ve2)))
+				ang1=-math.degrees(fcvec.angle(ve1.sub(ce)))
+				ang2=-math.degrees(fcvec.angle(ve2.sub(ce)))
 				dxfobject.append(dxfLibrary.Arc(fcvec.tup(ce), radius,
-								ang1, ang2, color=getACI(i),
-								layer=getGroup(i,exportList)))
+								ang1, ang2, color=getACI(ob),
+								layer=getGroup(ob,exportList)))
 
 		
 		
