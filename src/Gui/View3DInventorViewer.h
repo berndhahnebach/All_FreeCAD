@@ -260,6 +260,7 @@ protected:
     virtual void afterRealizeHook(void);
     virtual void processEvent(QEvent * event);
     virtual SbBool processSoEvent(const SoEvent * const ev);
+    SbBool processSoEventBase(const SoEvent * const ev);
     void printDimension();
 
     static void clearBuffer(void * userdata, SoAction * action);
