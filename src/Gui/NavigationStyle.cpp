@@ -968,8 +968,8 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
     // at all.
     SbBool processed = FALSE;
 
-    const ViewerMode currentmode = this->currentmode;
-    ViewerMode newmode = currentmode;
+    const ViewerMode curmode = this->currentmode;
+    ViewerMode newmode = curmode;
 
     // Mismatches in state of the modifier keys happens if the user
     // presses or releases them outside the viewer window.
@@ -1159,10 +1159,10 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 
     switch (combo) {
     case 0:
-        if (currentmode == NavigationStyle::SPINNING) { break; }
+        if (curmode == NavigationStyle::SPINNING) { break; }
         newmode = NavigationStyle::IDLE;
 
-        if (currentmode == NavigationStyle::DRAGGING) {
+        if (curmode == NavigationStyle::DRAGGING) {
             if (doSpin())
                 newmode = NavigationStyle::SPINNING;
         }
@@ -1195,26 +1195,26 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
     default:
         // The default will make a spin stop and otherwise not do
         // anything.
-        if ((currentmode != NavigationStyle::SEEK_WAIT_MODE) &&
-            (currentmode != NavigationStyle::SEEK_MODE)) {
+        if ((curmode != NavigationStyle::SEEK_WAIT_MODE) &&
+            (curmode != NavigationStyle::SEEK_MODE)) {
             newmode = NavigationStyle::IDLE;
         }
         break;
     }
 
-    if (newmode != currentmode) {
+    if (newmode != curmode) {
         this->setViewingMode(newmode);
     }
 
     // If not handled in this class, pass on upwards in the inheritance
     // hierarchy.
-    if ((this->currentmode == NavigationStyle::SELECTION || viewer->isEditing()) && !processed)
+    if ((curmode == NavigationStyle::SELECTION || viewer->isEditing()) && !processed)
         processed = inherited::processSoEvent(ev);
     else
         return TRUE;
 
     // check for left click without selecting something
-    if (this->currentmode == NavigationStyle::SELECTION && !processed) {
+    if (curmode == NavigationStyle::SELECTION && !processed) {
         if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
             SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
             if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
@@ -1267,9 +1267,8 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
     // at all.
     SbBool processed = FALSE;
 
-    const ViewerMode currentmode = this->currentmode;
-    ViewerMode newmode = currentmode;
-    ViewerMode oldmode = currentmode;
+    const ViewerMode curmode = this->currentmode;
+    ViewerMode newmode = curmode;
 
     // Mismatches in state of the modifier keys happens if the user
     // presses or releases them outside the viewer window.
@@ -1473,27 +1472,27 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
 
     switch (combo) {
     case 0:
-        if (currentmode == NavigationStyle::SPINNING) { break; }
+        if (curmode == NavigationStyle::SPINNING) { break; }
         newmode = NavigationStyle::IDLE;
 
-        //if (currentmode == NavigationStyle::DRAGGING) {
+        //if (curmode == NavigationStyle::DRAGGING) {
         //    if (doSpin())
         //        newmode = NavigationStyle::SPINNING;
         //}
         break;
     case BUTTON1DOWN:
         // make sure not to change the selection when stopping spinning
-        if (currentmode == NavigationStyle::SPINNING)
+        if (curmode == NavigationStyle::SPINNING)
             newmode = NavigationStyle::IDLE;
         else
             newmode = NavigationStyle::SELECTION;
         break;
     case BUTTON3DOWN:
-        if (currentmode == NavigationStyle::SPINNING) { break; }
+        if (curmode == NavigationStyle::SPINNING) { break; }
         else if (newmode == NavigationStyle::ZOOMING) { break; }
         newmode = NavigationStyle::PANNING;
 
-        if (currentmode == NavigationStyle::DRAGGING) {
+        if (curmode == NavigationStyle::DRAGGING) {
             if (doSpin()) {
                 newmode = NavigationStyle::SPINNING;
                 break;
@@ -1521,26 +1520,26 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
     default:
         // The default will make a spin stop and otherwise not do
         // anything.
-        //if ((currentmode != NavigationStyle::SEEK_WAIT_MODE) &&
-        //    (currentmode != NavigationStyle::SEEK_MODE)) {
+        //if ((curmode != NavigationStyle::SEEK_WAIT_MODE) &&
+        //    (curmode != NavigationStyle::SEEK_MODE)) {
         //    newmode = NavigationStyle::IDLE;
         //}
         break;
     }
 
-    if (newmode != currentmode) {
+    if (newmode != curmode) {
         this->setViewingMode(newmode);
     }
 
     // If not handled in this class, pass on upwards in the inheritance
     // hierarchy.
-    if (/*(oldmode == NavigationStyle::SELECTION || viewer->isEditing()) && */!processed)
+    if (/*(curmode == NavigationStyle::SELECTION || viewer->isEditing()) && */!processed)
         processed = inherited::processSoEvent(ev);
     else
         return TRUE;
 
     // check for left click without selecting something
-    if (oldmode == NavigationStyle::SELECTION && !processed) {
+    if (curmode == NavigationStyle::SELECTION && !processed) {
         if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
             SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
             if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
