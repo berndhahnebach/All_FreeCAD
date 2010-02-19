@@ -87,28 +87,30 @@ protected:
  */
 class GuiExport ActionGroup : public Action
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  ActionGroup ( Command* pcCmd, QObject * parent = 0 );
-  virtual ~ActionGroup();
+    ActionGroup ( Command* pcCmd, QObject * parent = 0 );
+    virtual ~ActionGroup();
 
-  void addTo ( QWidget * w );
-  void setEnabled  ( bool );
-  void setVisible ( bool );
+    void addTo (QWidget * w);
+    void setEnabled (bool);
+    void setDisabled (bool);
+    void setExclusive (bool);
+    void setVisible (bool);
 
-  void setDropDownMenu(bool b) { _dropDown = b; }
-  QAction* addAction(const QString&);
-  QList<QAction*> actions() const;
-  int checkedAction() const;
-  void setCheckedAction(int);
+    void setDropDownMenu(bool b) { _dropDown = b; }
+    QAction* addAction(const QString&);
+    QList<QAction*> actions() const;
+    int checkedAction() const;
+    void setCheckedAction(int);
 
 public Q_SLOTS:
-  void onActivated (QAction*);
+    void onActivated (QAction*);
 
 protected:
-  QActionGroup* _group;
-  bool _dropDown;
+    QActionGroup* _group;
+    bool _dropDown;
 };
 
 // --------------------------------------------------------------------
