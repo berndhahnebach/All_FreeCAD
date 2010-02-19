@@ -140,6 +140,18 @@ Example:
 				<UserDocu>Get a list of facet indices that describes a segment</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="getSeparateComponents" Const="true">
+			<Documentation>
+				<UserDocu>Returns a list containing the different
+components (spearated areas) of the mesh as separate Meshes
+
+import Mesh
+for c in mesh.getSeparatecomponents():
+	Mesh.show(c)
+
+				</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="meshFromSegment">
 			<Documentation>
 				<UserDocu>Create a mesh from segment</UserDocu>
