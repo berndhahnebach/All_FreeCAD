@@ -171,6 +171,7 @@ public:
     void removePointsFromSelection(const std::vector<unsigned long>&) const;
     void getFacetsFromSelection(std::vector<unsigned long>&) const;
     void getPointsFromSelection(std::vector<unsigned long>&) const;
+    std::vector<std::vector<unsigned long> > getComponents() const;
     unsigned long countComponents() const;
     void removeComponents(unsigned long);
     void fillupHoles(unsigned long, int, MeshCore::AbstractPolygonTriangulator&);

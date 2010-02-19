@@ -537,6 +537,14 @@ void MeshObject::updateMesh()
     }
 }
 
+std::vector<std::vector<unsigned long> > MeshObject::getComponents() const
+{
+    std::vector<std::vector<unsigned long> > segments;
+    MeshCore::MeshComponents comp(_kernel);
+    comp.SearchForComponents(MeshCore::MeshComponents::OverEdge,segments);
+    return segments;
+}
+
 unsigned long MeshObject::countComponents() const
 {
     std::vector<std::vector<unsigned long> > segments;

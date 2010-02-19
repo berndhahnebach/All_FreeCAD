@@ -603,6 +603,21 @@ PyObject* MeshPy::getSegment(PyObject *args)
     return Py::new_reference_to(ary);
 }
 
+PyObject* MeshPy::getSeparateComponents(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    Py::List meshesList;
+    std::vector<std::vector<unsigned long> > segs;
+    segs = getMeshObjectPtr()->getComponents();
+    for (int i=0; i<segs.size(); i++) {
+        MeshObject* mesh = getMeshObjectPtr()->meshFromSegment(segs[i]);
+	meshesList.append(Py::Object(new MeshPy(mesh),true));
+    }
+    return Py::new_reference_to(meshesList);
+}
+
 PyObject* MeshPy::meshFromSegment(PyObject *args)
 {
     PyObject* list;
@@ -1294,3 +1309,5 @@ Py::Tuple MeshPy::getTopology(void) const
     tuple.setItem(1, facet);
     return tuple;
 }
+
+
