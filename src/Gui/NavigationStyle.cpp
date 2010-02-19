@@ -860,12 +860,27 @@ SbBool NavigationStyle::processEvent(const SoEvent * const ev)
         }
     }
 
-    return this->processSoEvent(ev);
+    const ViewerMode curmode = this->currentmode;
+
+    SbBool processed = FALSE;
+    processed = this->processSoEvent(ev);
+
+    // check for left click without selecting something
+    if (curmode == NavigationStyle::SELECTION && !processed) {
+        if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+            SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
+            if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+                Gui::Selection().clearSelection();
+            }
+        }
+    }
+
+    return processed;
 }
 
 SbBool NavigationStyle::processSoEvent(const SoEvent * const ev)
 {
-    return FALSE;
+    return viewer->processSoEventBase(ev);
 }
 
 void NavigationStyle::setPopupMenuEnabled(const SbBool on)
@@ -1213,17 +1228,7 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
     else
         return TRUE;
 
-    // check for left click without selecting something
-    if (curmode == NavigationStyle::SELECTION && !processed) {
-        if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-            SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
-            if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
-                Gui::Selection().clearSelection();
-            }
-        }
-    }
-
-    return FALSE;
+    return processed;
 }
 
 // ----------------------------------------------------------------------------------
@@ -1538,17 +1543,7 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
     else
         return TRUE;
 
-    // check for left click without selecting something
-    if (curmode == NavigationStyle::SELECTION && !processed) {
-        if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-            SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
-            if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
-                Gui::Selection().clearSelection();
-            }
-        }
-    }
-
-    return FALSE;
+    return processed;
 }
 #else
 SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
