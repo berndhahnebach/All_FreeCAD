@@ -100,6 +100,7 @@
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
 #include "ImportStep.h"
+#include "edgecluster.h"
 
 using Base::Console;
 using namespace Part;
@@ -982,6 +983,53 @@ static std::list<TopoDS_Edge> sort_Edges(const std::vector<TopoDS_Edge>& edges)
 }
 }
 
+
+static PyObject * getsortedClusters(PyObject *self, PyObject *args)
+{
+	PyObject *obj;
+	if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &obj)) {
+		PyErr_SetString(PyExc_Exception, "list of edges expected");
+		return 0;
+	}
+
+
+	Py::List list(obj);
+	std::vector<TopoDS_Edge> edges;
+	for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+		PyObject* item = (*it).ptr();
+		if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
+			TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+			if (sh.ShapeType() == TopAbs_EDGE)
+				edges.push_back(TopoDS::Edge(sh));
+			else {
+				PyErr_SetString(PyExc_TypeError, "shape is not an edge");
+				return 0;
+			}
+		}
+		else {
+			PyErr_SetString(PyExc_TypeError, "item is not a shape");
+			return 0;
+		}
+	}
+
+	Edgecluster acluster(edges);
+	tEdgeClusterVector aclusteroutput = acluster.GetClusters();
+
+	Py::List root_list;
+	for (tEdgeClusterVector::iterator it=aclusteroutput.begin(); it != aclusteroutput.end();++it)
+	{
+		Py::List add_list;
+		for(tEdgeVector::iterator it1=(*it).begin();it1 != (*it).end();++it1)
+		{
+			add_list.append(Py::Object(new TopoShapeEdgePy(new TopoShape(*it1)),true));
+		}
+		root_list.append(add_list);
+	}
+
+	return Py::new_reference_to(root_list);
+}
+
+
 static PyObject * sortEdges(PyObject *self, PyObject *args)
 {
     PyObject *obj;
@@ -989,6 +1037,7 @@ static PyObject * sortEdges(PyObject *self, PyObject *args)
         PyErr_SetString(PyExc_Exception, "list of edges expected");
         return 0;
     }
+
 
     Py::List list(obj);
     std::vector<TopoDS_Edge> edges;
@@ -1010,6 +1059,7 @@ static PyObject * sortEdges(PyObject *self, PyObject *args)
     }
 
     std::list<TopoDS_Edge> sorted = sort_Edges(edges);
+	
     Py::List sorted_list;
     for (std::list<TopoDS_Edge>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
         sorted_list.append(Py::Object(new TopoShapeEdgePy(new TopoShape(*it)),true));
@@ -1135,6 +1185,9 @@ struct PyMethodDef Part_methods[] = {
 
     {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
      "cast_to_shape(shape) -- Cast to the actual shape type"},
+
+	{"getsortedClusters" ,getsortedClusters,METH_VARARGS,
+	"getsortedClusters(list of edges) -- Helper method to sort and cluster a variety of edges"},
 
     {"__sortEdges__" ,sortEdges,METH_VARARGS,
      "__sortEdges__(list of edges) -- Helper method to sort an unsorted list of edges so that afterwards\n"

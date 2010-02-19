@@ -37,6 +37,8 @@
 #include <BRep_Builder.hxx>
 
 
+using namespace Part;
+
 Edgecluster::Edgecluster(const std::vector<TopoDS_Edge>& unsorted_edges)
         :m_unsortededges(unsorted_edges),m_done(false)
 {

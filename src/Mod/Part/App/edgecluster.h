@@ -21,13 +21,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef EDGESORT_H
-#define EDGESORT_H
+#ifndef EDGECLUSTER_H
+#define EDGECLUSTER_H
 
 #include <gp_Pnt.hxx>
 #include <TopoDS_Edge.hxx>
 #include <vector>
 #include <map>
+
+
+namespace Part {
 
 struct Edgesort_gp_Pnt_Less
 {
@@ -53,13 +56,13 @@ typedef std::pair<gp_Pnt,tEdgeVector> tMapPntEdgePair;
 typedef std::vector<std::vector<TopoDS_Edge> > tEdgeClusterVector;
 
 
-class Edgecluster
+class PartExport Edgecluster
 {
 public:
-    Standard_EXPORT Edgecluster(const std::vector<TopoDS_Edge>& usorted_edges);
-    Standard_EXPORT virtual ~Edgecluster(void);
+    Edgecluster(const std::vector<TopoDS_Edge>& usorted_edges);
+    virtual ~Edgecluster(void);
 	
-    Standard_EXPORT tEdgeClusterVector GetClusters(void);
+    tEdgeClusterVector GetClusters(void);
 private:
     void Perform();
     void Perform(const TopoDS_Edge& edge);
@@ -73,11 +76,10 @@ private:
     tMapPntEdge m_vertices;
     bool m_done;
 
-
-
     tEdgeVector::const_iterator m_edgeIter;
 
 };
 
+}
 #endif
 
