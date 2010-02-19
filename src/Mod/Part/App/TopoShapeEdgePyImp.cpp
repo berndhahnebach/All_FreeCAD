@@ -164,6 +164,8 @@ PyObject* TopoShapeEdgePy::valueAt(PyObject *args)
     gp_Dir dir;
     Py::Tuple tuple(1);
     TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+
+
     BRepAdaptor_Curve adapt(e);
 
     // get length
@@ -177,8 +179,20 @@ PyObject* TopoShapeEdgePy::valueAt(PyObject *args)
 
     double streatch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
-    gp_Pnt V = prop.Value();
+	//Check now the orientation of the edge to make sure that we get the right wanted point!!
+
+	gp_Pnt V;
+	if (e.Orientation() != TopAbs_REVERSED)
+	{
+		BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+		V = prop.Value();
+	}
+	else {
+		BRepLProp_CLProps prop(adapt,last - u*streatch,1,Precision::Confusion());
+		V = prop.Value();
+	}
+
+
     
     return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
 
