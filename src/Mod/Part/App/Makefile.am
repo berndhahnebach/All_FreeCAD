@@ -34,7 +34,6 @@ BUILT_SOURCES=\
 		TopoShapeSolidPy.cpp \
 		TopoShapeVertexPy.cpp \
 		TopoShapeWirePy.cpp \
-		edgecluster.cpp \
 		TopoShapePy.cpp
 
 libPart_la_BUILT=\
@@ -70,7 +69,6 @@ libPart_la_BUILT=\
 		TopoShapeSolidPy.h \
 		TopoShapeVertexPy.h \
 		TopoShapeWirePy.h \
-		edgecluster.h \
 		TopoShapePy.h
 
 libPart_la_SOURCES=\
@@ -97,6 +95,7 @@ libPart_la_SOURCES=\
 		OffsetSurfacePyImp.cpp \
 		SurfaceOfExtrusionPyImp.cpp \
 		SurfaceOfRevolutionPyImp.cpp \
+		edgecluster.cpp \
 		FeaturePartBoolean.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartCircle.cpp \
@@ -138,6 +137,7 @@ nodist_include_HEADERS=\
 		$(libPart_la_BUILT)
 
 include_HEADERS=\
+		edgecluster.h \
 		FeaturePartBoolean.h \
 		FeaturePartBox.h \
 		FeaturePartCircle.h \
