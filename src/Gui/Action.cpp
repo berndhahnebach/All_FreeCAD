@@ -231,6 +231,17 @@ void ActionGroup::setEnabled( bool b )
   _group->setEnabled(b);
 }
 
+void ActionGroup::setDisabled (bool b)
+{
+  Action::setEnabled(!b);
+  _group->setDisabled(b);
+}
+
+void ActionGroup::setExclusive (bool b)
+{
+  _group->setExclusive(b);
+}
+
 void ActionGroup::setVisible( bool b )
 {
   Action::setVisible(b);
@@ -266,7 +277,8 @@ void ActionGroup::setCheckedAction(int i)
  */
 void ActionGroup::onActivated (QAction* a) 
 {
-    _pcCmd->invoke(a->data().toInt());
+    int index = _group->actions().indexOf(a);
+    _pcCmd->invoke(index/*a->data().toInt()*/);
 }
 
 // --------------------------------------------------------------------

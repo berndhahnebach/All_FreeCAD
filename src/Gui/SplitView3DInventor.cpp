@@ -77,14 +77,14 @@ SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, 
 
     setViewerDefaults();
     // apply the user settings
-    hGrp->Notify("HeadlightColor");
-    hGrp->Notify("HeadlightDirection");
-    hGrp->Notify("HeadlightIntensity");
-    hGrp->Notify("EnableBacklight");
-    hGrp->Notify("BacklightColor");
-    hGrp->Notify("BacklightDirection");
-    hGrp->Notify("BacklightIntensity");
-    hGrp->Notify("NavigationStyle");
+    OnChange(*hGrp,"HeadlightColor");
+    OnChange(*hGrp,"HeadlightDirection");
+    OnChange(*hGrp,"HeadlightIntensity");
+    OnChange(*hGrp,"EnableBacklight");
+    OnChange(*hGrp,"BacklightColor");
+    OnChange(*hGrp,"BacklightDirection");
+    OnChange(*hGrp,"BacklightIntensity");
+    OnChange(*hGrp,"NavigationStyle");
 }
 
 SplitView3DInventor::~SplitView3DInventor()
