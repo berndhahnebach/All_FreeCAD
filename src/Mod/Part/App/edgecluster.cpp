@@ -21,6 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "PreCompiled.h"
 
 #include "edgecluster.h"
@@ -44,22 +45,18 @@ Edgecluster::Edgecluster(const std::vector<TopoDS_Edge>& unsorted_edges)
 {
     m_edges.clear();
     m_vertices.clear();
-	m_final_cluster.clear();
+    m_final_cluster.clear();
 }
 
 Edgecluster::~Edgecluster(void)
 {
 }
 
-
 tEdgeClusterVector Edgecluster::GetClusters()
 {
     Perform();
-	return m_final_cluster;
+    return m_final_cluster;
 }
-
-
-
 
 void Edgecluster::Perform()
 {
@@ -69,10 +66,9 @@ void Edgecluster::Perform()
     //adds all the vertices to a map, and store the associated edges
     Standard_Integer nbEdges = 0;
     Standard_Integer nbNonEdges = 0;
-	std::vector<TopoDS_Edge>::iterator aVectorIt;
+    std::vector<TopoDS_Edge>::iterator aVectorIt;
     for (aVectorIt = m_unsortededges.begin();aVectorIt != m_unsortededges.end();aVectorIt++)
     {
-        
         if (IsValidEdge(*aVectorIt))
         {
             Perform(*aVectorIt);
@@ -98,17 +94,14 @@ void Edgecluster::Perform()
             toContinue = PerformEdges(currentPoint);
         }
         while (toContinue == Standard_True);
-		//Store the current adjacent edges as a cluster
-		m_final_cluster.push_back(m_edges);
-		//and continue now with the still existing edges in the m_vertices
+        //Store the current adjacent edges as a cluster
+        m_final_cluster.push_back(m_edges);
+        //and continue now with the still existing edges in the m_vertices
     }
     while (!m_vertices.empty());
 
     m_done = true;
-
 }
-
-
 
 bool Edgecluster::PerformEdges(gp_Pnt& point)
 {
@@ -185,7 +178,7 @@ bool Edgecluster::PerformEdges(gp_Pnt& point)
     //put the edge at the end of the list
     m_edges.push_back(theEdge);
 
-	//Update the point for the next do-while loop
+    //Update the point for the next do-while loop
     point = nextPoint;
     return true;
 

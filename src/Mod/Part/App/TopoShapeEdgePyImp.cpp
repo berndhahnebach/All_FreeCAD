@@ -117,7 +117,20 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
     }
 
-    PyErr_SetString(PyExc_Exception, "a curve expected");
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj)) {
+        TopoShape* shape = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr();
+        if (shape && shape->_Shape.ShapeType() == TopAbs_EDGE) {
+            this->getTopoShapePtr()->_Shape = shape->_Shape;
+            return 0;
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "Shape is not an edge");
+            return -1;
+        }
+    }
+
+    PyErr_SetString(PyExc_Exception, "Curve or shape expected");
     return -1;
 }
 
@@ -143,9 +156,9 @@ PyObject* TopoShapeEdgePy::tangentAt(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
     if (prop.IsTangentDefined()) {
         prop.Tangent(dir);
         return new Base::VectorPy(new Base::Vector3d(dir.X(),dir.Y(),dir.Z()));
@@ -164,8 +177,6 @@ PyObject* TopoShapeEdgePy::valueAt(PyObject *args)
     gp_Dir dir;
     Py::Tuple tuple(1);
     TopoDS_Edge e = TopoDS::Edge(getTopoShapePtr()->_Shape);
-
-
     BRepAdaptor_Curve adapt(e);
 
     // get length
@@ -177,25 +188,21 @@ PyObject* TopoShapeEdgePy::valueAt(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-	//Check now the orientation of the edge to make sure that we get the right wanted point!!
+    // Check now the orientation of the edge to make
+    // sure that we get the right wanted point!
+    gp_Pnt V;
+    if (e.Orientation() != TopAbs_REVERSED) {
+        BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
+        V = prop.Value();
+    }
+    else {
+        BRepLProp_CLProps prop(adapt,last - u*stretch,1,Precision::Confusion());
+        V = prop.Value();
+    }
 
-	gp_Pnt V;
-	if (e.Orientation() != TopAbs_REVERSED)
-	{
-		BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
-		V = prop.Value();
-	}
-	else {
-		BRepLProp_CLProps prop(adapt,last - u*streatch,1,Precision::Confusion());
-		V = prop.Value();
-	}
-
-
-    
     return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
-
 }
 
 PyObject* TopoShapeEdgePy::derivative1At(PyObject *args)
@@ -218,9 +225,9 @@ PyObject* TopoShapeEdgePy::derivative1At(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
     gp_Vec V = prop.D1();
     
     return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
@@ -246,9 +253,9 @@ PyObject* TopoShapeEdgePy::derivative2At(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
     gp_Vec V = prop.D2();
     
     return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
@@ -274,9 +281,9 @@ PyObject* TopoShapeEdgePy::derivative3At(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
     gp_Vec V = prop.D3();
     
     return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
@@ -302,9 +309,9 @@ PyObject* TopoShapeEdgePy::curvatureAt(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
     double C = prop.Curvature();
     
     return Py::new_reference_to(Py::Float(C));
@@ -329,9 +336,9 @@ PyObject* TopoShapeEdgePy::centerOfCurvatureAt(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
     gp_Pnt V ;
     prop.CentreOfCurvature(V);
     
@@ -357,9 +364,9 @@ PyObject* TopoShapeEdgePy::normalAt(PyObject *args)
     double first = BRepLProp_CurveTool::FirstParameter(adapt);
     double last  = BRepLProp_CurveTool::LastParameter(adapt);
 
-    double streatch = (last - first) / length;
+    double stretch = (last - first) / length;
 
-    BRepLProp_CLProps prop(adapt,first + u*streatch,1,Precision::Confusion());
+    BRepLProp_CLProps prop(adapt,first + u*stretch,1,Precision::Confusion());
     gp_Dir V ;
     prop.Normal(V);
     

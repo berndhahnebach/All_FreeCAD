@@ -611,9 +611,9 @@ PyObject* MeshPy::getSeparateComponents(PyObject *args)
     Py::List meshesList;
     std::vector<std::vector<unsigned long> > segs;
     segs = getMeshObjectPtr()->getComponents();
-    for (int i=0; i<segs.size(); i++) {
+    for (unsigned int i=0; i<segs.size(); i++) {
         MeshObject* mesh = getMeshObjectPtr()->meshFromSegment(segs[i]);
-	meshesList.append(Py::Object(new MeshPy(mesh),true));
+        meshesList.append(Py::Object(new MeshPy(mesh),true));
     }
     return Py::new_reference_to(meshesList);
 }
