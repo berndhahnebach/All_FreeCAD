@@ -143,7 +143,7 @@ Example:
 		<Methode Name="getSeparateComponents" Const="true">
 			<Documentation>
 				<UserDocu>Returns a list containing the different
-components (spearated areas) of the mesh as separate Meshes
+components (separated areas) of the mesh as separate meshes
 
 import Mesh
 for c in mesh.getSeparatecomponents():

@@ -21,8 +21,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef EDGECLUSTER_H
-#define EDGECLUSTER_H
+
+#ifndef PART_EDGECLUSTER_H
+#define PART_EDGECLUSTER_H
 
 #include <gp_Pnt.hxx>
 #include <TopoDS_Edge.hxx>
@@ -61,8 +62,9 @@ class PartExport Edgecluster
 public:
     Edgecluster(const std::vector<TopoDS_Edge>& usorted_edges);
     virtual ~Edgecluster(void);
-	
+
     tEdgeClusterVector GetClusters(void);
+
 private:
     void Perform();
     void Perform(const TopoDS_Edge& edge);
@@ -70,8 +72,8 @@ private:
     bool IsValidEdge(const TopoDS_Edge& edge);
 
     tEdgeClusterVector m_final_cluster;
-	tEdgeVector m_unsortededges;
-	tEdgeVector m_edges;
+    tEdgeVector m_unsortededges;
+    tEdgeVector m_edges;
 
     tMapPntEdge m_vertices;
     bool m_done;
@@ -81,5 +83,5 @@ private:
 };
 
 }
-#endif
 
+#endif // PART_EDGECLUSTER_H
