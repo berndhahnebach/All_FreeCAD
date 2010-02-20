@@ -307,7 +307,7 @@ def constrainPoint (target,point,mobile=False,sym=False):
 	you can constrain the next point to be picked to the last drawn point by
 	pressing SHIFT. The vertical or horizontal constraining depends on the
 	position of your mouse in relation to last point at the moment you press
-	SHIFT. if mobile=True, mobile behaviour applies.If sym=True, x alway = y
+	SHIFT. if mobile=True, mobile behaviour applies. If sym=True, x alway = y
 	'''
 	if len(target.node) > 0:
 		last = target.node[-1]
@@ -348,6 +348,7 @@ def constrainPoint (target,point,mobile=False,sym=False):
 				target.ui.xValue.setEnabled(False)
 				target.ui.yValue.setEnabled(False)
 				target.ui.zValue.setEnabled(True)
+			else: target.constrain = 3
 		elif (target.constrain == 0):
 			point.y = last.y
 			point.z = last.z
