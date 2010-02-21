@@ -426,8 +426,6 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
         for (std::string::iterator it = line.begin(); it != line.end(); ++it)
             *it = tolower(*it);
         if (boost::regex_match(line.c_str(), what, rx_p)) {
-            if (!readvertices)
-                offset = meshPoints.size();
             readvertices = true;
             fX = (float)std::atof(what[1].first);
             fY = (float)std::atof(what[4].first);
@@ -442,9 +440,9 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
             }
 
             // 3-vertex face
-            i1 = std::atoi(what[1].first) + offset;
-            i2 = std::atoi(what[2].first) + offset;
-            i3 = std::atoi(what[3].first) + offset;
+            i1 = std::atoi(what[1].first);
+            i2 = std::atoi(what[2].first);
+            i3 = std::atoi(what[3].first);
             item.SetVertices(i1-1,i2-1,i3-1);
             item.SetProperty(segment);
             meshFacets.push_back(item);
@@ -457,10 +455,10 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
             }
 
             // 4-vertex face
-            i1 = std::atoi(what[1].first) + offset;
-            i2 = std::atoi(what[2].first) + offset;
-            i3 = std::atoi(what[3].first) + offset;
-            i4 = std::atoi(what[4].first) + offset;
+            i1 = std::atoi(what[1].first);
+            i2 = std::atoi(what[2].first);
+            i3 = std::atoi(what[3].first);
+            i4 = std::atoi(what[4].first);
 
             item.SetVertices(i1-1,i2-1,i3-1);
             item.SetProperty(segment);
