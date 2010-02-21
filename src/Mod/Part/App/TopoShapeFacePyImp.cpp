@@ -49,6 +49,7 @@
 
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
+#include <BRepLProp_SurfaceTool.hxx>
 
 #include <Base/VectorPy.h>
 #include <Base/GeometryPyCXX.h>
@@ -102,6 +103,10 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
             if (sh.ShapeType() == TopAbs_WIRE) {
                 BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(sh));
                 getTopoShapePtr()->_Shape = mkFace.Face();
+                return 0;
+            }
+            else if (sh.ShapeType() == TopAbs_FACE) {
+                getTopoShapePtr()->_Shape = sh;
                 return 0;
             }
         }
@@ -171,7 +176,7 @@ PyObject* TopoShapeFacePy::makeOffset(PyObject *args)
     return new TopoShapePy(new TopoShape(mkOffset.Shape()));
 }
 
-PyObject* TopoShapeFacePy::tangent(PyObject *args)
+PyObject* TopoShapeFacePy::tangentAt(PyObject *args)
 {
     double u,v;
     if (!PyArg_ParseTuple(args, "dd",&u,&v))
@@ -181,17 +186,121 @@ PyObject* TopoShapeFacePy::tangent(PyObject *args)
     Py::Tuple tuple(2);
     TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
+
     BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
     if (prop.IsTangentUDefined()) {
         prop.TangentU(dir);
         tuple.setItem(0, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
     }
+    else {
+        PyErr_SetString(PyExc_Exception, "tangent in u not defined");
+        return 0;
+    }
     if (prop.IsTangentVDefined()) {
         prop.TangentV(dir);
         tuple.setItem(1, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
     }
+    else {
+        PyErr_SetString(PyExc_Exception, "tangent in v not defined");
+        return 0;
+    }
 
     return Py::new_reference_to(tuple);
+}
+
+PyObject* TopoShapeFacePy::valueAt(PyObject *args)
+{
+    double u,v;
+    if (!PyArg_ParseTuple(args, "dd",&u,&v))
+        return 0;
+
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+    BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
+    gp_Pnt V = prop.Value();
+
+    return new Base::VectorPy(new Base::Vector3d(V.X(),V.Y(),V.Z()));
+}
+
+PyObject* TopoShapeFacePy::derivative1At(PyObject *args)
+{
+    double u,v;
+    if (!PyArg_ParseTuple(args, "dd",&u,&v))
+        return 0;
+
+    Py::Tuple tuple(2);
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+
+    BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
+    const gp_Vec& vecU = prop.D1U();
+    tuple.setItem(0, Py::Vector(Base::Vector3d(vecU.X(),vecU.Y(),vecU.Z())));
+    const gp_Vec& vecV = prop.D1V();
+    tuple.setItem(1, Py::Vector(Base::Vector3d(vecV.X(),vecV.Y(),vecV.Z())));
+
+    return Py::new_reference_to(tuple);
+}
+
+PyObject* TopoShapeFacePy::derivative2At(PyObject *args)
+{
+    double u,v;
+    if (!PyArg_ParseTuple(args, "dd",&u,&v))
+        return 0;
+
+    Py::Tuple tuple(2);
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+
+    BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
+    const gp_Vec& vecU = prop.D2U();
+    tuple.setItem(0, Py::Vector(Base::Vector3d(vecU.X(),vecU.Y(),vecU.Z())));
+    const gp_Vec& vecV = prop.D2V();
+    tuple.setItem(1, Py::Vector(Base::Vector3d(vecV.X(),vecV.Y(),vecV.Z())));
+
+    return Py::new_reference_to(tuple);
+}
+
+PyObject* TopoShapeFacePy::curvatureAt(PyObject *args)
+{
+    double u,v;
+    if (!PyArg_ParseTuple(args, "dd",&u,&v))
+        return 0;
+
+    Py::Tuple tuple(2);
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+
+    BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
+    if (prop.IsCurvatureDefined()) {
+        tuple.setItem(0, Py::Float(prop.MinCurvature()));
+        tuple.setItem(1, Py::Float(prop.MaxCurvature()));
+    }
+    else {
+        PyErr_SetString(PyExc_Exception, "curvature not defined");
+        return 0;
+    }
+
+    return Py::new_reference_to(tuple);
+}
+
+PyObject* TopoShapeFacePy::normalAt(PyObject *args)
+{
+    double u,v;
+    if (!PyArg_ParseTuple(args, "dd",&u,&v))
+        return 0;
+
+    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+
+    BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
+    if (prop.IsNormalDefined()) {
+        const gp_Dir& dir = prop.Normal();
+        return new Base::VectorPy(new Base::Vector3d(dir.X(),dir.Y(),dir.Z()));
+    }
+    else {
+        PyErr_SetString(PyExc_Exception, "normal not defined");
+        return 0;
+    }
 }
 
 Py::Object TopoShapeFacePy::getSurface() const

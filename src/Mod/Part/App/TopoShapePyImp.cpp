@@ -1283,40 +1283,47 @@ Py::Float TopoShapePy::getVolume(void) const
     return Py::Float(props.Mass());
 }
 
+PyObject* TopoShapePy::getComponent(PyObject *args)
+{
+    char* name;
+    if (!PyArg_ParseTuple(args, "s",&name))
+        return NULL;
+    PyObject* comp = getCustomAttributes(name);
+    if (!comp) {
+        PyErr_SetString(PyExc_Exception, "no component found with this name");
+    }
+
+    return comp;
+}
+
 PyObject *TopoShapePy::getCustomAttributes(const char* attr) const
 {
-    if ( attr[0]== 'F' && 
-         attr[1]== 'a' && 
-         attr[2]== 'c' && 
-         attr[3]== 'e' && 
-         attr[4]>=48 && attr[4]<=57 
-         ){
-        Part::ShapeSegment* s = dynamic_cast<Part::ShapeSegment*>(getTopoShapePtr()->getSubElementByName(attr));
-        TopoDS_Shape Shape = s->Shape;
-        delete s;
-        return new TopoShapeFacePy(new TopoShape(Shape));
-    }else if ( attr[0]== 'E' && 
-               attr[1]== 'd' && 
-               attr[2]== 'g' && 
-               attr[3]== 'e' && 
-               attr[4]>=48 && attr[4]<=57 
-         ){
-        Part::ShapeSegment* s = dynamic_cast<Part::ShapeSegment*>(getTopoShapePtr()->getSubElementByName(attr));
-        TopoDS_Shape Shape = s->Shape;
-        delete s;
-        return new TopoShapeEdgePy(new TopoShape(Shape));
-    }else if ( attr[0]== 'V' && 
-               attr[1]== 'e' && 
-               attr[2]== 'r' && 
-               attr[3]== 't' && 
-               attr[4]== 'e' && 
-               attr[5]== 'x' && 
-               attr[6]>=48 && attr[4]<=57 
-               ){
-        Part::ShapeSegment* s = dynamic_cast<Part::ShapeSegment*>(getTopoShapePtr()->getSubElementByName(attr));
-        TopoDS_Shape Shape = s->Shape;
-        delete s;
-        return new TopoShapeVertexPy(new TopoShape(Shape));
+    if (!attr) return 0;
+    std::string name(attr);
+    try {
+        if (name.size() > 4 && name.substr(0,4) == "Face" && name[4]>=48 && name[4]<=57) {
+            std::auto_ptr<Part::ShapeSegment> s(static_cast<Part::ShapeSegment*>
+                (getTopoShapePtr()->getSubElementByName(attr)));
+            TopoDS_Shape Shape = s->Shape;
+            return new TopoShapeFacePy(new TopoShape(Shape));
+        }
+        else if (name.size() > 4 && name.substr(0,4) == "Edge" && name[4]>=48 && name[4]<=57) {
+            std::auto_ptr<Part::ShapeSegment> s(static_cast<Part::ShapeSegment*>
+                (getTopoShapePtr()->getSubElementByName(attr)));
+            TopoDS_Shape Shape = s->Shape;
+            return new TopoShapeEdgePy(new TopoShape(Shape));
+        }
+        else if (name.size() > 6 && name.substr(0,6) == "Vertex" && name[6]>=48 && name[6]<=57) {
+            std::auto_ptr<Part::ShapeSegment> s(static_cast<Part::ShapeSegment*>
+                (getTopoShapePtr()->getSubElementByName(attr)));
+            TopoDS_Shape Shape = s->Shape;
+            return new TopoShapeVertexPy(new TopoShape(Shape));
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
     }
     return 0;
 }

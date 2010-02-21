@@ -235,7 +235,7 @@ PyObject* TopoShapeEdgePy::derivative1At(PyObject *args)
 
 PyObject* TopoShapeEdgePy::derivative2At(PyObject *args)
 {
-   double u;
+    double u;
     if (!PyArg_ParseTuple(args, "d",&u))
         return 0;
 
@@ -263,7 +263,7 @@ PyObject* TopoShapeEdgePy::derivative2At(PyObject *args)
 
 PyObject* TopoShapeEdgePy::derivative3At(PyObject *args)
 {
-   double u;
+    double u;
     if (!PyArg_ParseTuple(args, "d",&u))
         return 0;
 
@@ -291,7 +291,7 @@ PyObject* TopoShapeEdgePy::derivative3At(PyObject *args)
 
 PyObject* TopoShapeEdgePy::curvatureAt(PyObject *args)
 {
-   double u;
+    double u;
     if (!PyArg_ParseTuple(args, "d",&u))
         return 0;
 
@@ -450,7 +450,6 @@ Py::Object TopoShapeEdgePy::getCenterOfMass(void) const
     gp_Pnt c = props.CentreOfMass();
     return Py::Vector(Base::Vector3d(c.X(),c.Y(),c.Z()));
 }
-
 
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const
 {
