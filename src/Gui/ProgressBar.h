@@ -114,6 +114,8 @@ protected:
     void startStep();
     /** Increase the progress bar. */
     void nextStep(bool canAbort);
+    /** Sets the progress indicator to a certain position. */
+    void setProgress(size_t);
     /** Resets the sequencer */
     void resetData();
     void showRemainingTime();
@@ -121,7 +123,7 @@ protected:
 private:
     /** @name for internal use only */
     //@{
-    void setProgress(int step);
+    void setValue(int step);
     /** Throws an exception to stop the pending operation. */
     void abort();
     //@}

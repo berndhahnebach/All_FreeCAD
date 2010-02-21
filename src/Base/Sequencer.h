@@ -117,6 +117,8 @@ protected:
      * In this method startStep() gets invoked that can be reimplemented in sub-classes.
      */
     bool start(const char* pszStr, size_t steps);
+    /** Returns the number of steps. */
+    size_t numberOfSteps() const;
     /**
      * Performs the next step and returns true if the operation is not yet finished.
      * But note, when 0 was passed to start() as the number of total steps this method
@@ -214,6 +216,10 @@ protected:
      * re-implementation this method can throw an AbortException if canAbort is true.
      */
     virtual void nextStep(bool canAbort);
+    /**
+     * Sets the progress indicator to a certain position.
+     */
+    virtual void setProgress(size_t);
     /**
      * Resets internal data.
      * If you want to reimplement this method, it is very important to call it ín
@@ -361,8 +367,11 @@ class BaseExport SequencerLauncher
 public:
     SequencerLauncher(const char* pszStr, size_t steps);
     ~SequencerLauncher();
+    size_t numberOfSteps() const;
     void setText (const char* pszTxt);
     bool next(bool canAbort = false);
+    void setProgress(size_t);
+    bool wasCanceled() const;
 };
 
 /** Access to the only SequencerBase instance */

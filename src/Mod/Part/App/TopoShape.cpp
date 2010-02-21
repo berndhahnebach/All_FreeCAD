@@ -227,6 +227,7 @@ PyObject * TopoShape::getPySubShape(const char* Type) const
         return 0;
 
 }
+
 void TopoShape::operator = (const TopoShape& sh)
 {
     if (this != &sh) {

@@ -91,6 +91,11 @@ bool SequencerBase::start(const char* pszStr, size_t steps)
     return true;
 }
 
+size_t SequencerBase::numberOfSteps() const
+{
+    return this->nTotalSteps;
+}
+
 void SequencerBase::startStep()
 {
 }
@@ -114,6 +119,10 @@ bool SequencerBase::next(bool canAbort)
 }
 
 void SequencerBase::nextStep( bool )
+{
+}
+
+void SequencerBase::setProgress(size_t)
 {
 }
 
@@ -253,4 +262,19 @@ bool SequencerLauncher::next(bool canAbort)
     if (SequencerBase::_topLauncher != this)
         return true; // ignore
     return SequencerBase::Instance().next(canAbort);
+}
+
+void SequencerLauncher::setProgress(size_t pos)
+{
+    SequencerBase::Instance().setProgress(pos);
+}
+
+size_t SequencerLauncher::numberOfSteps() const
+{
+    return SequencerBase::Instance().numberOfSteps();
+}
+
+bool SequencerLauncher::wasCanceled() const
+{
+    return SequencerBase::Instance().wasCanceled();
 }

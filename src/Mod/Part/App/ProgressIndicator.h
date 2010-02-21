@@ -26,6 +26,7 @@
 
 #include <Message_ProgressIndicator.hxx>
 #include <Base/Sequencer.h>
+#include <memory>
 
 namespace Part {
 
@@ -39,8 +40,7 @@ public:
     virtual Standard_Boolean UserBreak();
 
 private:
-    Standard_Boolean cancel;
-    Base::SequencerLauncher *myProgress;
+    std::auto_ptr<Base::SequencerLauncher> myProgress;
 };
 
 }
