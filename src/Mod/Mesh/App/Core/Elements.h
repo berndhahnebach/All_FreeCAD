@@ -209,6 +209,8 @@ public:
 
   // Assignment
   inline MeshFacet& operator = (const MeshFacet &rclF);
+  inline void SetVertices(unsigned long,unsigned long,unsigned long);
+  inline void SetNeighbours(unsigned long,unsigned long,unsigned long);
 
   /**
    * Returns the indices of the corner points of the given edge number. 
@@ -773,6 +775,20 @@ inline MeshFacet& MeshFacet::operator = (const MeshFacet &rclF)
     _aulNeighbours[2] = rclF._aulNeighbours[2];
 
     return *this;
+}
+
+void MeshFacet::SetVertices(unsigned long p1,unsigned long p2,unsigned long p3)
+{
+    _aulPoints[0] = p1;
+    _aulPoints[1] = p2;
+    _aulPoints[2] = p3;
+}
+
+void MeshFacet::SetNeighbours(unsigned long n1,unsigned long n2,unsigned long n3)
+{
+    _aulNeighbours[0] = n1;
+    _aulNeighbours[1] = n2;
+    _aulNeighbours[2] = n3;
 }
 
 inline void MeshFacet::GetEdge (unsigned short usSide, MeshHelpEdge &rclEdge) const

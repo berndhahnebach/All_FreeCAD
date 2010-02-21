@@ -135,7 +135,12 @@ Example:
 				</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="getSegment">
+		<Methode Name="countSegments" Const="true">
+			<Documentation>
+				<UserDocu>Get the number of segments which may also be 0</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="getSegment" Const="true">
 			<Documentation>
 				<UserDocu>Get a list of facet indices that describes a segment</UserDocu>
 			</Documentation>
@@ -152,7 +157,7 @@ for c in mesh.getSeparatecomponents():
 				</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="meshFromSegment">
+		<Methode Name="meshFromSegment" Const="true">
 			<Documentation>
 				<UserDocu>Create a mesh from segment</UserDocu>
 			</Documentation>
