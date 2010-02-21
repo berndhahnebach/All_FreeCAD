@@ -289,7 +289,32 @@ bool MeshObject::load(const char* file)
         return false;
 
     _kernel.Swap(kernel);
+    // Some file formats define several objects per file (e.g. OBJ).
+    // Now we mark each object as an own segment so that we can break
+    // the object into its orriginal objects again.
     this->_segments.clear();
+    const MeshCore::MeshFacetArray& faces = _kernel.GetFacets();
+    MeshCore::MeshFacetArray::_TConstIterator it;
+    std::vector<unsigned long> segment;
+    segment.reserve(faces.size());
+    unsigned long prop = 0;
+    unsigned long index = 0;
+    for (it = faces.begin(); it != faces.end(); ++it) {
+        if (prop < it->_ulProp) {
+            prop = it->_ulProp;
+            if (!segment.empty()) {
+                this->_segments.push_back(Segment(this,segment));
+                segment.clear();
+            }
+        }
+
+        segment.push_back(index++);
+    }
+
+    // if the whole mesh is a single object then don't mark as segment
+    if (!segment.empty() && (segment.size() < faces.size())) {
+        this->_segments.push_back(Segment(this,segment));
+    }
 
 #ifndef FC_DEBUG
     try {

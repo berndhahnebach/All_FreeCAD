@@ -75,11 +75,24 @@ static PyObject * open(PyObject *self, PyObject *args)
             Base::FileInfo file(Name);
             // create new document and add Import feature
             App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-            Mesh::Feature *pcFeature = static_cast<Mesh::Feature *>
-                (pcDoc->addObject("Mesh::Feature", file.fileNamePure().c_str()));
-            pcFeature->Label.setValue(file.fileNamePure().c_str());
-            pcFeature->Mesh.swapMesh(mesh);
-            pcFeature->purgeTouched();
+            unsigned long segmct = mesh.countSegments();
+            if (segmct > 1) {
+                for (unsigned long i=0; i<segmct; i++) {
+                    std::auto_ptr<MeshObject> segm(mesh.meshFromSegment(mesh.getSegment(i).getIndices()));
+                    Mesh::Feature *pcFeature = static_cast<Mesh::Feature *>
+                        (pcDoc->addObject("Mesh::Feature", file.fileNamePure().c_str()));
+                    pcFeature->Label.setValue(file.fileNamePure().c_str());
+                    pcFeature->Mesh.swapMesh(*segm);
+                    pcFeature->purgeTouched();
+                }
+            }
+            else {
+                Mesh::Feature *pcFeature = static_cast<Mesh::Feature *>
+                    (pcDoc->addObject("Mesh::Feature", file.fileNamePure().c_str()));
+                pcFeature->Label.setValue(file.fileNamePure().c_str());
+                pcFeature->Mesh.swapMesh(mesh);
+                pcFeature->purgeTouched();
+            }
         }
     } PY_CATCH;
 
@@ -112,11 +125,24 @@ static PyObject * importer(PyObject *self, PyObject *args)
         MeshObject mesh;
         if (mesh.load(Name)) {
             Base::FileInfo file(Name);
-            Mesh::Feature *pcFeature = static_cast<Mesh::Feature *>
-                (pcDoc->addObject("Mesh::Feature", file.fileNamePure().c_str()));
-            pcFeature->Label.setValue(file.fileNamePure().c_str());
-            pcFeature->Mesh.swapMesh(mesh);
-            pcFeature->purgeTouched();
+            unsigned long segmct = mesh.countSegments();
+            if (segmct > 1) {
+                for (unsigned long i=0; i<segmct; i++) {
+                    std::auto_ptr<MeshObject> segm(mesh.meshFromSegment(mesh.getSegment(i).getIndices()));
+                    Mesh::Feature *pcFeature = static_cast<Mesh::Feature *>
+                        (pcDoc->addObject("Mesh::Feature", file.fileNamePure().c_str()));
+                    pcFeature->Label.setValue(file.fileNamePure().c_str());
+                    pcFeature->Mesh.swapMesh(*segm);
+                    pcFeature->purgeTouched();
+                }
+            }
+            else {
+                Mesh::Feature *pcFeature = static_cast<Mesh::Feature *>
+                    (pcDoc->addObject("Mesh::Feature", file.fileNamePure().c_str()));
+                pcFeature->Label.setValue(file.fileNamePure().c_str());
+                pcFeature->Mesh.swapMesh(mesh);
+                pcFeature->purgeTouched();
+            }
         }
     } PY_CATCH;
 

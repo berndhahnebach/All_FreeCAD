@@ -582,6 +582,15 @@ PyObject*  MeshPy::setPoint(PyObject *args)
     Py_Return;
 }
 
+PyObject* MeshPy::countSegments(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    unsigned long count = getMeshObjectPtr()->countSegments();
+    return Py_BuildValue("k",count);
+}
+
 PyObject* MeshPy::getSegment(PyObject *args)
 {
     unsigned long index;
