@@ -410,7 +410,6 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
     std::string line;
     float fX, fY, fZ;
     unsigned int  i1=1,i2=1,i3=1,i4=1;
-    unsigned int offset=0;
     MeshGeomFacet clFacet;
     MeshFacet item;
 

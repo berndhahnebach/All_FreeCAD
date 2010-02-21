@@ -144,7 +144,7 @@ void Sequencer::nextStep(bool canAbort)
     QThread *currentThread = QThread::currentThread();
     QThread *thr = d->bar->thread(); // this is the main thread
     if (thr != currentThread) {
-        setProgress((int)nProgress+1);
+        setValue((int)nProgress+1);
     }
     else {
         if (wasCanceled() && canAbort) {
@@ -159,16 +159,22 @@ void Sequencer::nextStep(bool canAbort)
                 abort();
             } else {
                 rejectCancel();
-                setProgress((int)nProgress+1);
+                setValue((int)nProgress+1);
             }
         }
         else {
-            setProgress((int)nProgress+1);
+            setValue((int)nProgress+1);
         }
     }
 }
 
-void Sequencer::setProgress(int step)
+void Sequencer::setProgress(size_t step)
+{
+    d->bar->show();
+    setValue(step);
+}
+
+void Sequencer::setValue(int step)
 {
     QThread *currentThread = QThread::currentThread();
     QThread *thr = d->bar->thread(); // this is the main thread

@@ -41,6 +41,7 @@
 #include <Handle_XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSControl_TransferReader.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
@@ -49,6 +50,7 @@
 
 #include "ImportStep.h"
 #include "PartFeature.h"
+#include "ProgressIndicator.h"
 
 using namespace Part;
 
@@ -63,21 +65,24 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
         throw Base::Exception("Cannot open file Step file");
     }
 
-    // just do show the wait cursor when the Gui is up
-    Base::SequencerLauncher seq("Load STEP", 1);
-    seq.next();
-
     if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
         throw Base::Exception("Cannot open file Step file");
     }
+
+    Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
+    aReader.WS()->MapReader()->SetProgress(pi);
+    pi->NewScope(100, "Reading STEP file...");
+    pi->Show();
 
     // Root transfers
     Standard_Integer nbr = aReader.NbRootsForTransfer();
     //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
     for (Standard_Integer n = 1; n<= nbr; n++) {
-        Base::Console().Log("STEP: Transfering Root %d\n",n);
+        Base::Console().Log("STEP: Transferring Root %d\n",n);
         aReader.TransferRoot(n);
     }
+    pi->EndScope();
+
     // Collecting resulting entities
     Standard_Integer nbs = aReader.NbShapes();
     if (nbs == 0) {
@@ -89,7 +94,7 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
         //Handle_XSControl_TransferReader tr = ws->TransferReader();
 
         for (Standard_Integer i=1; i<=nbs; i++) {
-            Base::Console().Log("STEP:   Transfering Shape %d\n",i);
+            Base::Console().Log("STEP:   Transferring Shape %d\n",i);
             aShape = aReader.Shape(i);
 
             TopExp_Explorer ex;

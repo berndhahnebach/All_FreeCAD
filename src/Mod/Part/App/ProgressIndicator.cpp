@@ -53,16 +53,15 @@ using namespace Part;
   pi->EndScope();
   \encode
  */
+
 ProgressIndicator::ProgressIndicator (int theMaxVal)
+  : myProgress(new Base::SequencerLauncher("", theMaxVal))
 {
-    this->cancel = Standard_False;
-    this->myProgress = new Base::SequencerLauncher("", theMaxVal);
     SetScale (0, theMaxVal, 1);
 }
 
 ProgressIndicator::~ProgressIndicator ()
 {
-    delete this->myProgress;
 }
 
 Standard_Boolean ProgressIndicator::Show (const Standard_Boolean theForce)
@@ -70,22 +69,17 @@ Standard_Boolean ProgressIndicator::Show (const Standard_Boolean theForce)
     if (theForce) {
         Handle(TCollection_HAsciiString) aName = GetScope(1).GetName(); //current step
         if (!aName.IsNull())
-            this->myProgress->setText (aName->ToCString());
+            myProgress->setText (aName->ToCString());
     }
 
-    //Standard_Real aPc = GetPosition(); //always within [0,1]
-    //Standard_Integer aVal = (Standard_Integer)(aPc * GetValue());
-    try {
-        this->myProgress->next();
-    }
-    catch (const Base::AbortException&) {
-        this->cancel = Standard_True;
-    }
+    Standard_Real aPc = GetPosition(); //always within [0,1]
+    int aVal = (int)(aPc * myProgress->numberOfSteps());
+    myProgress->setProgress (aVal);
 
     return Standard_True;
 }
 
 Standard_Boolean ProgressIndicator::UserBreak()
 {
-    return this->cancel;
+    return myProgress->wasCanceled();
 }
