@@ -66,7 +66,7 @@ App::DocumentObjectExecReturn *Circle::execute(void)
     circle.SetRadius(this->Radius.getValue());
     
     BRepBuilderAPI_MakeEdge clMakeEdge(circle, this->Angle0.getValue(), this->Angle1.getValue());
-    TopoDS_Edge edge = TopoDS::Edge(clMakeEdge.Shape());
+    const TopoDS_Edge& edge = clMakeEdge.Edge();
     this->Shape.setValue(edge);
 
     return App::DocumentObject::StdReturn;

@@ -120,25 +120,25 @@ int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
 Py::Float TopoShapeVertexPy::getX(void) const
 {
-    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
+    const TopoDS_Vertex& v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
     return Py::Float(BRep_Tool::Pnt(v).X());
 }
 
 Py::Float TopoShapeVertexPy::getY(void) const
 {
-    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
+    const TopoDS_Vertex& v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
     return Py::Float(BRep_Tool::Pnt(v).Y());
 }
 
 Py::Float TopoShapeVertexPy::getZ(void) const
 {
-    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
+    const TopoDS_Vertex& v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
     return Py::Float(BRep_Tool::Pnt(v).Z());
 }
 
 Py::Object TopoShapeVertexPy::getPoint(void) const
 {
-    TopoDS_Vertex v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
+    const TopoDS_Vertex& v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
     gp_Pnt p = BRep_Tool::Pnt(v);
     return Py::Object(new Base::VectorPy(new Base::Vector3d(p.X(),p.Y(),p.Z())));
 }

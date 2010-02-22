@@ -64,7 +64,7 @@ int TopoShapeWirePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyObject *pcObj;
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj)) {
         BRepBuilderAPI_MakeWire mkWire;
-        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+        const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
         if (sh.ShapeType() == TopAbs_EDGE)
             mkWire.Add(TopoDS::Edge(sh));
         else if (sh.ShapeType() == TopAbs_WIRE)
@@ -92,7 +92,7 @@ int TopoShapeWirePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             PyObject* item = (*it).ptr();
             if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
-                TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+                const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
                 if (sh.ShapeType() == TopAbs_EDGE)
                     mkWire.Add(TopoDS::Edge(sh));
                 else if (sh.ShapeType() == TopAbs_WIRE)
@@ -128,9 +128,9 @@ PyObject* TopoShapeWirePy::makeOffset(PyObject *args)
     float dist;
     if (!PyArg_ParseTuple(args, "f",&dist))
         return 0;
-    TopoDS_Wire f = TopoDS::Wire(getTopoShapePtr()->_Shape);
+    const TopoDS_Wire& w = TopoDS::Wire(getTopoShapePtr()->_Shape);
 
-    BRepOffsetAPI_MakeOffset mkOffset(f);
+    BRepOffsetAPI_MakeOffset mkOffset(w);
     mkOffset.Perform(dist);
     
     return new TopoShapePy(new TopoShape(mkOffset.Shape()));

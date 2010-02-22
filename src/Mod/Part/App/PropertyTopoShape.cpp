@@ -75,10 +75,10 @@ void PropertyPartShape::setValue(const TopoShape& sh)
     hasSetValue();
 }
 
-void PropertyPartShape::setValue(TopoDS_Shape m)
+void PropertyPartShape::setValue(const TopoDS_Shape& sh)
 {
     aboutToSetValue();
-    _Shape._Shape = m;
+    _Shape._Shape = sh;
     hasSetValue();
 }
 

@@ -167,7 +167,7 @@ GeomBezierCurve::~GeomBezierCurve()
 {
 }
 
-Handle_Geom_Geometry GeomBezierCurve::handle() const
+const Handle_Geom_Geometry& GeomBezierCurve::handle() const
 {
     return myCurve;
 }
@@ -200,7 +200,7 @@ GeomBSplineCurve::~GeomBSplineCurve()
 {
 }
 
-Handle_Geom_Geometry GeomBSplineCurve::handle() const
+const Handle_Geom_Geometry& GeomBSplineCurve::handle() const
 {
     return myCurve;
 }
@@ -222,7 +222,7 @@ GeomCircle::~GeomCircle()
 {
 }
 
-Handle_Geom_Geometry GeomCircle::handle() const
+const Handle_Geom_Geometry& GeomCircle::handle() const
 {
     return myCurve;
 }
@@ -244,7 +244,7 @@ GeomEllipse::~GeomEllipse()
 {
 }
 
-Handle_Geom_Geometry GeomEllipse::handle() const
+const Handle_Geom_Geometry& GeomEllipse::handle() const
 {
     return myCurve;
 }
@@ -266,7 +266,7 @@ GeomHyperbola::~GeomHyperbola()
 {
 }
 
-Handle_Geom_Geometry GeomHyperbola::handle() const
+const Handle_Geom_Geometry& GeomHyperbola::handle() const
 {
     return myCurve;
 }
@@ -288,7 +288,7 @@ GeomParabola::~GeomParabola()
 {
 }
 
-Handle_Geom_Geometry GeomParabola::handle() const
+const Handle_Geom_Geometry& GeomParabola::handle() const
 {
     return myCurve;
 }
@@ -310,7 +310,7 @@ GeomLine::~GeomLine()
 {
 }
 
-Handle_Geom_Geometry GeomLine::handle() const
+const Handle_Geom_Geometry& GeomLine::handle() const
 {
     return myCurve;
 }
@@ -330,7 +330,7 @@ GeomLineSegment::~GeomLineSegment()
 {
 }
 
-Handle_Geom_Geometry GeomLineSegment::handle() const
+const Handle_Geom_Geometry& GeomLineSegment::handle() const
 {
     return myCurve;
 }
@@ -360,7 +360,7 @@ void GeomOffsetCurve::setHandle(const Handle_Geom_OffsetCurve& c)
     this->myCurve = c;
 }
 
-Handle_Geom_Geometry GeomOffsetCurve::handle() const
+const Handle_Geom_Geometry& GeomOffsetCurve::handle() const
 {
     return this->myCurve;
 }
@@ -385,7 +385,7 @@ void GeomTrimmedCurve::setHandle(const Handle_Geom_TrimmedCurve& c)
     this->myCurve = c;
 }
 
-Handle_Geom_Geometry GeomTrimmedCurve::handle() const
+const Handle_Geom_Geometry& GeomTrimmedCurve::handle() const
 {
     return myCurve;
 }
@@ -454,7 +454,7 @@ GeomBezierSurface::~GeomBezierSurface()
 {
 }
 
-Handle_Geom_Geometry GeomBezierSurface::handle() const
+const Handle_Geom_Geometry& GeomBezierSurface::handle() const
 {
     return mySurface;
 }
@@ -489,7 +489,7 @@ GeomBSplineSurface::~GeomBSplineSurface()
 {
 }
 
-Handle_Geom_Geometry GeomBSplineSurface::handle() const
+const Handle_Geom_Geometry& GeomBSplineSurface::handle() const
 {
     return mySurface;
 }
@@ -506,7 +506,7 @@ GeomCylinder::~GeomCylinder()
 {
 }
 
-Handle_Geom_Geometry GeomCylinder::handle() const
+const Handle_Geom_Geometry& GeomCylinder::handle() const
 {
     return mySurface;
 }
@@ -523,7 +523,7 @@ GeomCone::~GeomCone()
 {
 }
 
-Handle_Geom_Geometry GeomCone::handle() const
+const Handle_Geom_Geometry& GeomCone::handle() const
 {
     return mySurface;
 }
@@ -540,7 +540,7 @@ GeomToroid::~GeomToroid()
 {
 }
 
-Handle_Geom_Geometry GeomToroid::handle() const
+const Handle_Geom_Geometry& GeomToroid::handle() const
 {
     return mySurface;
 }
@@ -557,7 +557,7 @@ GeomSphere::~GeomSphere()
 {
 }
 
-Handle_Geom_Geometry GeomSphere::handle() const
+const Handle_Geom_Geometry& GeomSphere::handle() const
 {
     return mySurface;
 }
@@ -574,7 +574,7 @@ GeomPlane::~GeomPlane()
 {
 }
 
-Handle_Geom_Geometry GeomPlane::handle() const
+const Handle_Geom_Geometry& GeomPlane::handle() const
 {
     return mySurface;
 }
@@ -604,7 +604,7 @@ void GeomOffsetSurface::setHandle(const Handle_Geom_OffsetSurface& s)
     mySurface = s;
 }
 
-Handle_Geom_Geometry GeomOffsetSurface::handle() const
+const Handle_Geom_Geometry& GeomOffsetSurface::handle() const
 {
     return mySurface;
 }
@@ -634,7 +634,7 @@ void GeomSurfaceOfRevolution::setHandle(const Handle_Geom_SurfaceOfRevolution& c
     mySurface = c;
 }
 
-Handle_Geom_Geometry GeomSurfaceOfRevolution::handle() const
+const Handle_Geom_Geometry& GeomSurfaceOfRevolution::handle() const
 {
     return mySurface;
 }
@@ -664,7 +664,7 @@ void GeomSurfaceOfExtrusion::setHandle(const Handle_Geom_SurfaceOfLinearExtrusio
     mySurface = c;
 }
 
-Handle_Geom_Geometry GeomSurfaceOfExtrusion::handle() const
+const Handle_Geom_Geometry& GeomSurfaceOfExtrusion::handle() const
 {
     return mySurface;
 }
