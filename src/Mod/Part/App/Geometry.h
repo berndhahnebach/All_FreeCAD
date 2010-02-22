@@ -56,7 +56,7 @@ public:
     virtual ~Geometry();
 
     virtual TopoDS_Shape toShape() const = 0;
-    virtual Handle_Geom_Geometry handle() const = 0;
+    virtual const Handle_Geom_Geometry& handle() const = 0;
 
 protected:
     Geometry();
@@ -79,7 +79,7 @@ public:
     GeomBezierCurve(const Handle_Geom_BezierCurve&);
     virtual ~GeomBezierCurve();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_BezierCurve myCurve;
@@ -92,7 +92,7 @@ public:
     GeomBSplineCurve(const Handle_Geom_BSplineCurve&);
     virtual ~GeomBSplineCurve();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_BSplineCurve myCurve;
@@ -105,7 +105,7 @@ public:
     GeomCircle(const Handle_Geom_Circle&);
     virtual ~GeomCircle();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_Circle myCurve;
@@ -118,7 +118,7 @@ public:
     GeomEllipse(const Handle_Geom_Ellipse&);
     virtual ~GeomEllipse();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_Ellipse myCurve;
@@ -131,7 +131,7 @@ public:
     GeomHyperbola(const Handle_Geom_Hyperbola&);
     virtual ~GeomHyperbola();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_Hyperbola myCurve;
@@ -144,7 +144,7 @@ public:
     GeomParabola(const Handle_Geom_Parabola&);
     virtual ~GeomParabola();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_Parabola myCurve;
@@ -157,7 +157,7 @@ public:
     GeomLine(const Handle_Geom_Line&);
     virtual ~GeomLine();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_Line myCurve;
@@ -169,7 +169,7 @@ public:
     GeomLineSegment();
     virtual ~GeomLineSegment();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_TrimmedCurve myCurve;
@@ -184,7 +184,7 @@ public:
     virtual ~GeomOffsetCurve();
 
     void setHandle(const Handle_Geom_OffsetCurve& c);
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_OffsetCurve myCurve;
@@ -198,7 +198,7 @@ public:
     virtual ~GeomTrimmedCurve();
 
     void setHandle(const Handle_Geom_TrimmedCurve&);
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_TrimmedCurve myCurve;
@@ -222,7 +222,7 @@ public:
     GeomBezierSurface(const Handle_Geom_BezierSurface&);
     virtual ~GeomBezierSurface();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_BezierSurface mySurface;
@@ -235,7 +235,7 @@ public:
     GeomBSplineSurface(const Handle_Geom_BSplineSurface&);
     virtual ~GeomBSplineSurface();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_BSplineSurface mySurface;
@@ -247,7 +247,7 @@ public:
     GeomCylinder();
     virtual ~GeomCylinder();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_CylindricalSurface mySurface;
@@ -259,7 +259,7 @@ public:
     GeomCone();
     virtual ~GeomCone();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_ConicalSurface mySurface;
@@ -271,7 +271,7 @@ public:
     GeomSphere();
     virtual ~GeomSphere();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_SphericalSurface mySurface;
@@ -283,7 +283,7 @@ public:
     GeomToroid();
     virtual ~GeomToroid();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_ToroidalSurface mySurface;
@@ -295,7 +295,7 @@ public:
     GeomPlane();
     virtual ~GeomPlane();
 
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_Plane mySurface;
@@ -310,7 +310,7 @@ public:
     virtual ~GeomOffsetSurface();
 
     void setHandle(const Handle_Geom_OffsetSurface& s);
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_OffsetSurface mySurface;
@@ -325,7 +325,7 @@ public:
     virtual ~GeomSurfaceOfRevolution();
 
     void setHandle(const Handle_Geom_SurfaceOfRevolution& c);
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_SurfaceOfRevolution mySurface;
@@ -340,7 +340,7 @@ public:
     virtual ~GeomSurfaceOfExtrusion();
 
     void setHandle(const Handle_Geom_SurfaceOfLinearExtrusion& c);
-    Handle_Geom_Geometry handle() const;
+    const Handle_Geom_Geometry& handle() const;
 
 private:
     Handle_Geom_SurfaceOfLinearExtrusion mySurface;

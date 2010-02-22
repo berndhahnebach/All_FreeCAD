@@ -94,7 +94,7 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyObject *pW;
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pW)) {
         try {
-            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
+            const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(pW)->getTopoShapePtr()->_Shape;
             if (sh.IsNull()) {
                 PyErr_SetString(PyExc_Exception, "cannot create face out of empty wire");
                 return -1;
@@ -134,7 +134,7 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
                 for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
                     PyObject* item = (*it).ptr();
                     if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
-                        TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+                        const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
                         if (sh.ShapeType() == TopAbs_WIRE)
                             mkFace.Add(TopoDS::Wire(sh));
                         else {
@@ -168,7 +168,7 @@ PyObject* TopoShapeFacePy::makeOffset(PyObject *args)
     float dist;
     if (!PyArg_ParseTuple(args, "f",&dist))
         return 0;
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
 
     BRepOffsetAPI_MakeOffset mkOffset(f);
     mkOffset.Perform(dist);
@@ -184,7 +184,7 @@ PyObject* TopoShapeFacePy::tangentAt(PyObject *args)
 
     gp_Dir dir;
     Py::Tuple tuple(2);
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
 
     BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
@@ -214,7 +214,7 @@ PyObject* TopoShapeFacePy::valueAt(PyObject *args)
     if (!PyArg_ParseTuple(args, "dd",&u,&v))
         return 0;
 
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
     BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
     gp_Pnt V = prop.Value();
@@ -229,7 +229,7 @@ PyObject* TopoShapeFacePy::derivative1At(PyObject *args)
         return 0;
 
     Py::Tuple tuple(2);
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
 
     BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
@@ -248,7 +248,7 @@ PyObject* TopoShapeFacePy::derivative2At(PyObject *args)
         return 0;
 
     Py::Tuple tuple(2);
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
 
     BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
@@ -267,7 +267,7 @@ PyObject* TopoShapeFacePy::curvatureAt(PyObject *args)
         return 0;
 
     Py::Tuple tuple(2);
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
 
     BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
@@ -289,7 +289,7 @@ PyObject* TopoShapeFacePy::normalAt(PyObject *args)
     if (!PyArg_ParseTuple(args, "dd",&u,&v))
         return 0;
 
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
 
     BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
@@ -305,7 +305,7 @@ PyObject* TopoShapeFacePy::normalAt(PyObject *args)
 
 Py::Object TopoShapeFacePy::getSurface() const
 {
-    TopoDS_Face f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
     BRepAdaptor_Surface adapt(f);
     switch(adapt.GetType())
     {

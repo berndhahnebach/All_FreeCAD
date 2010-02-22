@@ -996,7 +996,7 @@ static PyObject * getSortedClusters(PyObject *self, PyObject *args)
     for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
         PyObject* item = (*it).ptr();
         if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
-            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+            const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
             if (sh.ShapeType() == TopAbs_EDGE)
                 edges.push_back(TopoDS::Edge(sh));
             else {
@@ -1040,7 +1040,7 @@ static PyObject * sortEdges(PyObject *self, PyObject *args)
     for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
         PyObject* item = (*it).ptr();
         if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
-            TopoDS_Shape sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+            const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
             if (sh.ShapeType() == TopAbs_EDGE)
                 edges.push_back(TopoDS::Edge(sh));
             else {
@@ -1055,7 +1055,7 @@ static PyObject * sortEdges(PyObject *self, PyObject *args)
     }
 
     std::list<TopoDS_Edge> sorted = sort_Edges(edges);
-	
+
     Py::List sorted_list;
     for (std::list<TopoDS_Edge>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
         sorted_list.append(Py::Object(new TopoShapeEdgePy(new TopoShape(*it)),true));

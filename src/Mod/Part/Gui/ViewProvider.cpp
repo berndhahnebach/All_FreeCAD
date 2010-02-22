@@ -858,17 +858,17 @@ void ViewProviderPart::showControlPoints(bool show)
         {
         case TopAbs_EDGE:
             {
-                TopoDS_Edge edge = TopoDS::Edge(shape);
+                const TopoDS_Edge& edge = TopoDS::Edge(shape);
                 showControlPointsOfEdge(edge);
             }   break;
         case TopAbs_WIRE:
             {
-                TopoDS_Wire wire = TopoDS::Wire(shape);
+                const TopoDS_Wire& wire = TopoDS::Wire(shape);
                 showControlPointsOfWire(wire);
             }   break;
         case TopAbs_FACE:
             {
-                TopoDS_Face face = TopoDS::Face(shape);
+                const TopoDS_Face& face = TopoDS::Face(shape);
                 showControlPointsOfFace(face);
             }   break;
         default:
@@ -912,7 +912,7 @@ void ViewProviderPart::showControlPointsOfWire(const TopoDS_Wire& wire)
     TopoDS_Iterator it;
     for (it.Initialize(wire); it.More(); it.Next()) {
         if (it.Value().ShapeType() == TopAbs_EDGE) {
-            TopoDS_Edge edge = TopoDS::Edge(it.Value());
+            const TopoDS_Edge& edge = TopoDS::Edge(it.Value());
             BRepAdaptor_Curve curve(edge);
 
             std::list<gp_Pnt> poles, knots; 

@@ -721,7 +721,7 @@ unsigned int TopoShape::getMemSize (void) const
                 {
                     // first, last, tolerance
                     memsize += 5*sizeof(Standard_Real);
-                    TopoDS_Face face = TopoDS::Face(shape);
+                    const TopoDS_Face& face = TopoDS::Face(shape);
                     BRepAdaptor_Surface surface(face);
                     switch (surface.GetType())
                     {
@@ -768,7 +768,7 @@ unsigned int TopoShape::getMemSize (void) const
                 {
                     // first, last, tolerance
                     memsize += 3*sizeof(Standard_Real);
-                    TopoDS_Edge edge = TopoDS::Edge(shape);
+                    const TopoDS_Edge& edge = TopoDS::Edge(shape);
                     BRepAdaptor_Curve curve(edge);
                     switch (curve.GetType())
                     {
