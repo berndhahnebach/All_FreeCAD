@@ -364,7 +364,7 @@ fi
 bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o moc_myqt.o moc_myqt.cpp"
 AC_TRY_EVAL(bnv_try_2)
 if test x"$ac_status" != x0; then
-   AC_MSG_ERROR([Wrong version of Qt meta object compiler (moc), bye...])
+   AC_MSG_ERROR([Failed to compile source file created by Qt meta object compiler (moc), bye...])
 fi
 
 bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o myqt.o myqt.cpp"
