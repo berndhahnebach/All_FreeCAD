@@ -1283,19 +1283,6 @@ Py::Float TopoShapePy::getVolume(void) const
     return Py::Float(props.Mass());
 }
 
-PyObject* TopoShapePy::getComponent(PyObject *args)
-{
-    char* name;
-    if (!PyArg_ParseTuple(args, "s",&name))
-        return NULL;
-    PyObject* comp = getCustomAttributes(name);
-    if (!comp) {
-        PyErr_SetString(PyExc_Exception, "no component found with this name");
-    }
-
-    return comp;
-}
-
 PyObject *TopoShapePy::getCustomAttributes(const char* attr) const
 {
     if (!attr) return 0;
