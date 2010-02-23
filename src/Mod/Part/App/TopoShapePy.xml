@@ -12,7 +12,11 @@
       Constructor="true">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
-      <UserDocu>TopoShape is the OpenCasCade topological shape wrapper</UserDocu>
+      <UserDocu>TopoShape is the OpenCasCade topological shape wrapper.
+Sub-elements such as vertices, edges or faces are accessible as:
+* Vertex#, where # is in range(1, number of vertices)
+* Edge#, where # is in range(1, number of edges)
+* Face#, where # is in range(1, number of faces)</UserDocu>
     </Documentation>
     <Methode Name="read">
       <Documentation>

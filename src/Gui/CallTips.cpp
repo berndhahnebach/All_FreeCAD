@@ -345,6 +345,17 @@ void CallTipsList::extractTipsFromProperties(Py::Object& obj, QMap<QString, Call
         tip.name = str;
         tip.type = CallTip::Property;
         QString longdoc = QString::fromUtf8(container->getPropertyDocumentation(It->second));
+        // a point, mesh or shape property
+        if (It->second->isDerivedFrom(Base::Type::fromName("App::PropertyComplexGeoData"))) {
+            Py::Object data(It->second->getPyObject(), true);
+            if (data.hasAttr("__doc__")) {
+                Py::Object help = data.getAttr("__doc__");
+                if (help.isString()) {
+                    Py::String doc(help);
+                    longdoc = QString::fromUtf8(doc.as_string().c_str());
+                }
+            }
+        }
         if (!longdoc.isEmpty()) {
             int pos = longdoc.indexOf(QLatin1Char('\n'));
             pos = qMin(pos, 70);
