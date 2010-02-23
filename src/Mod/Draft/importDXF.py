@@ -269,13 +269,13 @@ def drawLine(line):
 		v1=FreeCAD.Vector(line.points[0][0],line.points[0][1],line.points[0][2])
 		v2=FreeCAD.Vector(line.points[1][0],line.points[1][1],line.points[1][2])
 		if not fcvec.equals(v1,v2):
-			return Part.Line(v1,v2).toShape()
+			try: return Part.Line(v1,v2).toShape()
+			except: warn(line)
 	return None
 
 def drawPolyline(polyline):
 	"returns a Part shape from a dxf polyline"
 	if (len(polyline.points) > 1):
-		# if len(polyline.points) == 2: print "debug: 2-point polyline!"
 		edges = []
 		for p in range(len(polyline.points)-1):
 			p1 = polyline.points[p]
@@ -286,19 +286,25 @@ def drawPolyline(polyline):
 				if polyline.points[p].bulge:
 					cv = calcBulge(v1,polyline.points[p].bulge,v2)
 					if fcvec.isColinear([v1,cv,v2]):
-						edges.append(Part.Line(v1,v2).toShape())
+						try: edges.append(Part.Line(v1,v2).toShape())
+						except: warn(polyline)
 					else:
-						edges.append(Part.Arc(v1,cv,v2).toShape())
+						try: edges.append(Part.Arc(v1,cv,v2).toShape())
+						except: warn(polyline)
 				else:
-					edges.append(Part.Line(v1,v2).toShape())
+					try: edges.append(Part.Line(v1,v2).toShape())
+					except: warn(polyline)
 		if polyline.closed:
 			p1 = polyline.points[len(polyline.points)-1]
 			p2 = polyline.points[0]
 			v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
 			v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
 			if not fcvec.equals(v1,v2):
-				edges.append(Part.Line(v1,v2).toShape())
-		if edges: return Part.Wire(edges)
+				try: edges.append(Part.Line(v1,v2).toShape())
+				except: warn(polyline)
+		if edges:
+			try: return Part.Wire(edges)
+			except: warn(polyline)
 	return None
 
 def drawArc(arc):
@@ -309,7 +315,9 @@ def drawArc(arc):
 	circle=Part.Circle()
 	circle.Center=v
 	circle.Radius=arc.radius
-	return circle.toShape(firstangle,lastangle)
+	try: return circle.toShape(firstangle,lastangle)
+	except: warn(arc)
+	return None
 
 def drawCircle(circle):
 	"returns a Part shape from a dxf circle"
@@ -317,7 +325,9 @@ def drawCircle(circle):
 	curve = Part.Circle()
 	curve.Radius = circle.radius
 	curve.Center = v
-	return curve.toShape()
+	try: return curve.toShape()
+	except: warn(circle)
+	return None
 
 def drawBlock(blockref):
 	"returns a shape from a dxf block reference"
@@ -340,7 +350,8 @@ def drawBlock(blockref):
 	for insert in blockref.entities.get_type('insert'):
 		s = drawInsert(insert)
 		if s: shapes.append(s)
-	shape = Part.makeCompound(shapes)
+	try: shape = Part.makeCompound(shapes)
+	except: warn(blockref)
 	if shape:
 		blockshapes[blockref.name]=shape
 		return shape
@@ -378,6 +389,7 @@ def processdxf(document,filename):
 	"this does the translation of the dxf contents into FreeCAD Part objects"
 
 	global drawing # for debugging - so drawing is still accessible to python after the script
+	FreeCAD.Console.PrintMessage("opening "+filename+"...\n")
 	drawing = readDXF(filename)
 	global layers
 	layers = []
@@ -385,7 +397,8 @@ def processdxf(document,filename):
 	doc = document
 	global blockshapes
 	blockshapes = {}
-	print "dxf: parsing file ",filename
+	global badobjects
+	badobjects = []
 
 	# getting config parameters
 
@@ -401,7 +414,7 @@ def processdxf(document,filename):
 			newob = addObject(shape,"Line",line.layer)
 			if gui: fmt.formatObject(newob,line)
 						
-	# drawing polylines - at the moment arc segments get straightened...
+	# drawing polylines
 
 	polylines = drawing.entities.get_type("lwpolyline")
 	polylines.extend(drawing.entities.get_type("polyline"))
@@ -434,6 +447,8 @@ def processdxf(document,filename):
 
 	# drawing texts
 
+	print fmt.paramtext
+
 	if fmt.paramtext:
 		texts = drawing.entities.get_type("mtext")
 		texts.extend(drawing.entities.get_type("text"))
@@ -454,7 +469,7 @@ def processdxf(document,filename):
 	# drawing dims
 
 	dims = drawing.entities.get_type("dimension")
-	if dims and fmt.paramtext:
+	if fmt.paramtext:
 		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" dimensions...\n")
 		for dim in dims:
 			try:
@@ -475,7 +490,7 @@ def processdxf(document,filename):
 				if d: angle = float(d)
 				else: angle = 0
 			except:
-				print "debug: dim data not processed: ",dim.data
+				warn(dim)
 			else:
 				lay=locateLayer(layer)
 				pt = FreeCAD.Vector(x1,y1,z1)
@@ -515,9 +530,19 @@ def processdxf(document,filename):
 				newob = addObject(shape,"Block",insert.layer)
 				if gui: fmt.formatObject(newob,insert)
 
+	# finishing
+
 	doc.recompute()
-	del fmt
 	FreeCAD.Console.PrintMessage("successfully imported "+filename+"\n")
+	if badobjects: print "dxf: ",len(badobjects)," objects were not imported"
+	del fmt
+	del doc
+	del blockshapes
+
+def warn(dxfobject):
+	"outputs a warning if a dxf object couldn't be imported"
+	print "dxf: couldn't import", dxfobject
+	badobjects.append(dxfobject)
 
 def open(filename):
 	"called when freecad opens a file"
