@@ -37,6 +37,9 @@
 #include <cassert>
 #include <time.h>
 #include <cfloat>
+#ifdef FC_OS_WIN32
+#define _USE_MATH_DEFINES
+#endif // FC_OS_WIN32
 #include <cmath>
 #include <climits>
 

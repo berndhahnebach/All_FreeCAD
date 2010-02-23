@@ -28,6 +28,8 @@
 #include <QDialog>
 
 class QTimer;
+class SoCamera;
+class SbRotation;
 
 namespace Gui {
 class View3DInventor;
@@ -54,17 +56,20 @@ protected Q_SLOTS:
     void on_fullscreen_toggled(bool);
     void on_timerCheck_toggled(bool);
     void on_speedSlider_valueChanged(int);
-    void on_xSlider_valueChanged(int);
-    void on_ySlider_valueChanged(int);
-    void on_zSlider_valueChanged(int);
+    void on_angleSlider_valueChanged(int);
+    void on_timeout_valueChanged(int);
     void onAutoPlay();
 
 private:
+    void reset();
     float getSpeed(int) const;
-    SbVec3f getDirection() const;
+    void reorientCamera(SoCamera * cam, const SbRotation & rot);
+    SbVec3f getDirection(Gui::View3DInventor*) const;
     Gui::View3DInventor* activeView() const;
+    void startAnimation(Gui::View3DInventor*);
 
 private:
+    int oldvalue;
     Ui_DemoMode* ui;
     QTimer* timer;
 };

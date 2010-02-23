@@ -91,8 +91,19 @@ View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::W
 
     // create the inventor widget and set the defaults
     _viewer = new View3DInventorViewer(this);
-    setViewerDefaults();
     // apply the user settings
+    OnChange(*hGrp,"EyeDistance");
+    OnChange(*hGrp,"CornerCoordSystem");
+    OnChange(*hGrp,"UseAutoRotation");
+    OnChange(*hGrp,"Gradient");
+    OnChange(*hGrp,"BackgroundColor");
+    OnChange(*hGrp,"BackgroundColor2");
+    OnChange(*hGrp,"BackgroundColor3");
+    OnChange(*hGrp,"BackgroundColor4");
+    OnChange(*hGrp,"UseBackgroundColorMid");
+    OnChange(*hGrp,"UseAntialiasing");
+    OnChange(*hGrp,"ShowFPS");
+    OnChange(*hGrp,"Orthographic");
     OnChange(*hGrp,"HeadlightColor");
     OnChange(*hGrp,"HeadlightDirection");
     OnChange(*hGrp,"HeadlightIntensity");
@@ -143,40 +154,6 @@ PyObject *View3DInventor::getPyObject(void)
 
     Py_INCREF(_viewerPy);
     return _viewerPy;
-}
-
-void View3DInventor::setViewerDefaults(void)
-{
-    _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance",65.0));
-    _viewer->setFeedbackVisibility(hGrp->GetBool("CornerCoordSystem",true));
-    _viewer->setAnimationEnabled(hGrp->GetBool("UseAutoRotation",true));
-    _viewer->setGradientBackgroud((hGrp->GetBool("Gradient",true)));
-    unsigned long col1 = hGrp->GetUnsigned("BackgroundColor",0);
-    unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (purple)
-    unsigned long col3 = hGrp->GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
-    unsigned long col4 = hGrp->GetUnsigned("BackgroundColor4",ULONG_MAX); // default color (white)
-    float r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4;
-    r1 = ((col1 >> 24) & 0xff) / 255.0; g1 = ((col1 >> 16) & 0xff) / 255.0; b1 = ((col1 >> 8) & 0xff) / 255.0;
-    r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
-    r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
-    r4 = ((col4 >> 24) & 0xff) / 255.0; g4 = ((col4 >> 16) & 0xff) / 255.0; b4 = ((col4 >> 8) & 0xff) / 255.0;
-    _viewer->setBackgroundColor(SbColor(r1, g1, b1));
-    if (hGrp->GetBool("UseBackgroundColorMid",false) == false)
-        _viewer->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3));
-    else
-        _viewer->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3), SbColor(r4, g4, b4));
-
-    if (hGrp->GetBool("UseAntialiasing"  ,false))
-        _viewer->getGLRenderAction()->setSmoothing(true);
-    else
-        _viewer->getGLRenderAction()->setSmoothing(false);
-    _viewer->setEnabledFPSCounter(hGrp->GetBool("ShowFPS",false));
-
-    // check whether a perspective or orthogrphic camera should be set
-    if (hGrp->GetBool("Orthographic", true))
-        _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
-    else
-        _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
 }
 
 void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
@@ -265,8 +242,46 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
         Base::Type type = Base::Type::fromName(model.c_str());
         _viewer->setNavigationType(type);
     }
+    else if (strcmp(Reason,"EyeDistance") == 0) {
+        _viewer->setStereoOffset(rGrp.GetFloat("EyeDistance",65.0));
+    }
+    else if (strcmp(Reason,"CornerCoordSystem") == 0) {
+        _viewer->setFeedbackVisibility(rGrp.GetBool("CornerCoordSystem",true));
+    }
+    else if (strcmp(Reason,"UseAutoRotation") == 0) {
+        _viewer->setAnimationEnabled(rGrp.GetBool("UseAutoRotation",true));
+    }
+    else if (strcmp(Reason,"Gradient") == 0) {
+        _viewer->setGradientBackgroud((rGrp.GetBool("Gradient",true)));
+    }
+    else if (strcmp(Reason,"UseAntialiasing") == 0) {
+        _viewer->getGLRenderAction()->setSmoothing(rGrp.GetBool("UseAntialiasing",false));
+    }
+    else if (strcmp(Reason,"ShowFPS") == 0) {
+        _viewer->setEnabledFPSCounter(rGrp.GetBool("ShowFPS",false));
+    }
+    else if (strcmp(Reason,"Orthographic") == 0) {
+        // check whether a perspective or orthogrphic camera should be set
+        if (rGrp.GetBool("Orthographic", true))
+            _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+        else
+            _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
+    }
     else {
-        setViewerDefaults();
+        unsigned long col1 = rGrp.GetUnsigned("BackgroundColor",0);
+        unsigned long col2 = rGrp.GetUnsigned("BackgroundColor2",2139082239); // default color (purple)
+        unsigned long col3 = rGrp.GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
+        unsigned long col4 = rGrp.GetUnsigned("BackgroundColor4",ULONG_MAX); // default color (white)
+        float r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4;
+        r1 = ((col1 >> 24) & 0xff) / 255.0; g1 = ((col1 >> 16) & 0xff) / 255.0; b1 = ((col1 >> 8) & 0xff) / 255.0;
+        r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
+        r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
+        r4 = ((col4 >> 24) & 0xff) / 255.0; g4 = ((col4 >> 16) & 0xff) / 255.0; b4 = ((col4 >> 8) & 0xff) / 255.0;
+        _viewer->setBackgroundColor(SbColor(r1, g1, b1));
+        if (rGrp.GetBool("UseBackgroundColorMid",false) == false)
+            _viewer->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3));
+        else
+            _viewer->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3), SbColor(r4, g4, b4));
     }
 }
 

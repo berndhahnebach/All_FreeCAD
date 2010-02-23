@@ -63,9 +63,6 @@ public:
     virtual const char *getName(void) const;
 
     virtual PyObject *getPyObject(void);
-
-    void updatePrefs(void);
-    void setViewerDefaults(void);
     /**
      * If \a b is set to \a FullScreen the MDI view is displayed in full screen mode, if \a b
      * is set to \a TopLevel then it is displayed as an own top-level window, otherwise (\a Normal)
