@@ -27,6 +27,7 @@
 # include <float.h>
 # include <climits>
 # include <QTimer>
+#include <Inventor/nodes/SoCamera.h>
 #endif
 
 #include "DemoMode.h"
@@ -37,6 +38,7 @@
 #include "MainWindow.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
+#include <Base/Tools.h>
 
 using namespace Gui::Dialog;
 
@@ -48,8 +50,9 @@ DemoMode::DemoMode(QWidget* parent, Qt::WFlags fl)
     // create widgets
     ui->setupUi(this);
     timer = new QTimer(this);
-    timer->setInterval(30000);
+    timer->setInterval(1000 * ui->timeout->value());
     connect(timer, SIGNAL(timeout()), this, SLOT(onAutoPlay()));
+    oldvalue = ui->angleSlider->value();
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -58,17 +61,24 @@ DemoMode::~DemoMode()
     delete ui;
 }
 
-void DemoMode::accept()
+void DemoMode::reset()
 {
     on_fullscreen_toggled(false);
     on_stopButton_clicked();
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/View");
+    hGrp->Notify("UseAutoRotation");
+}
+
+void DemoMode::accept()
+{
+    reset();
     QDialog::accept();
 }
 
 void DemoMode::reject()
 {
-    on_fullscreen_toggled(false);
-    on_stopButton_clicked();
+    reset();
     QDialog::reject();
 }
 
@@ -91,49 +101,56 @@ float DemoMode::getSpeed(int v) const
     return speed;
 }
 
-SbVec3f DemoMode::getDirection() const
+SbVec3f DemoMode::getDirection(Gui::View3DInventor* view) const
 {
-    SbVec3f vec((float)ui->xSlider->value(),
-                (float)ui->ySlider->value(),
-                (float)ui->zSlider->value());
+    SoCamera* cam = view->getViewer()->getCamera();
+    SbRotation rot = cam->orientation.getValue();
+    SbRotation inv = rot.inverse();
+    SbVec3f vec(0,0,-1);
+    inv.multVec(vec, vec);
     if (vec.length() < FLT_EPSILON)
-        vec.setValue(1,1,1);
+        vec.setValue(0,0,-1);
     vec.normalize();
     return vec;
 }
 
-void DemoMode::on_xSlider_valueChanged(int)
+void DemoMode::on_angleSlider_valueChanged(int v)
 {
     Gui::View3DInventor* view = activeView();
-    if (view && view->getViewer()->isAnimating()) {
-        view->getViewer()->startAnimating(getDirection(),getSpeed
-            (ui->speedSlider->value()));
+    if (view) {
+        SoCamera* cam = view->getViewer()->getCamera();
+        if (!cam) return;
+        float angle = Base::radians<float>(/*90-v*/v-this->oldvalue);
+        SbRotation rot(SbVec3f(-1,0,0),angle);
+        reorientCamera(cam ,rot);
+        this->oldvalue = v;
+        if (view->getViewer()->isAnimating()) {
+            startAnimation(view);
+        }
     }
 }
 
-void DemoMode::on_ySlider_valueChanged(int)
+void DemoMode::reorientCamera(SoCamera * cam, const SbRotation & rot)
 {
-    Gui::View3DInventor* view = activeView();
-    if (view && view->getViewer()->isAnimating()) {
-        view->getViewer()->startAnimating(getDirection(),getSpeed
-            (ui->speedSlider->value()));
-    }
-}
+    // Find global coordinates of focal point.
+    SbVec3f direction;
+    cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+    SbVec3f focalpoint = cam->position.getValue() +
+                         cam->focalDistance.getValue() * direction;
 
-void DemoMode::on_zSlider_valueChanged(int)
-{
-    Gui::View3DInventor* view = activeView();
-    if (view && view->getViewer()->isAnimating()) {
-        view->getViewer()->startAnimating(getDirection(),getSpeed
-            (ui->speedSlider->value()));
-    }
+    // Set new orientation value by accumulating the new rotation.
+    cam->orientation = rot * cam->orientation.getValue();
+
+    // Reposition camera so we are still pointing at the same old focal point.
+    cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+    cam->position = focalpoint - cam->focalDistance.getValue() * direction;
 }
 
 void DemoMode::on_speedSlider_valueChanged(int v)
 {
     Gui::View3DInventor* view = activeView();
     if (view && view->getViewer()->isAnimating()) {
-        view->getViewer()->startAnimating(getDirection(),getSpeed(v));
+        startAnimation(view);
     }
 }
 
@@ -141,7 +158,7 @@ void DemoMode::on_playButton_clicked()
 {
     Gui::View3DInventor* view = activeView();
     if (view) {
-        view->getViewer()->startAnimating(getDirection(),getSpeed(ui->speedSlider->value()));
+        startAnimation(view);
     }
 }
 
@@ -161,13 +178,25 @@ void DemoMode::on_fullscreen_toggled(bool on)
     }
 }
 
+void DemoMode::on_timeout_valueChanged(int v)
+{
+    timer->setInterval(v*1000);
+}
+
 void DemoMode::onAutoPlay()
 {
     Gui::View3DInventor* view = activeView();
     if (view && !view->getViewer()->isAnimating()) {
-        view->getViewer()->startAnimating(getDirection(),getSpeed
-            (ui->speedSlider->value()));
+        startAnimation(view);
     }
+}
+
+void DemoMode::startAnimation(Gui::View3DInventor* view)
+{
+    if (!view->getViewer()->isAnimationEnabled())
+        view->getViewer()->setAnimationEnabled(true);
+    view->getViewer()->startAnimating(getDirection(view), 
+        getSpeed(ui->speedSlider->value()));
 }
 
 void DemoMode::on_timerCheck_toggled(bool on)

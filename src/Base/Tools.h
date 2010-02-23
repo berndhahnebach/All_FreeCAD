@@ -26,6 +26,7 @@
 
 #include <functional>
 #include <algorithm>
+#include <cmath>
 
 namespace Base
 {
@@ -45,6 +46,18 @@ template<class T>
 inline T clamp (T num, T lower, T upper)
 {
     return std::max<T>(std::min<T>(upper,num),lower);
+}
+
+template<class T>
+inline T radians(T d)
+{
+    return static_cast<T>((d*M_PI)/180.0);
+}
+
+template<class T>
+inline T degrees(T r)
+{
+    return static_cast<T>((r/M_PI)*180.0);
 }
 
 }
