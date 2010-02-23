@@ -35,7 +35,7 @@
 	  </Methode>
 	  <Attribute Name="PropertiesList" ReadOnly="true">
       <Documentation>
-        <UserDocu>A List of all property names</UserDocu>
+        <UserDocu>A list of all property names</UserDocu>
       </Documentation>
       <Parameter Name="PropertiesList" Type="List"/>
     </Attribute>
