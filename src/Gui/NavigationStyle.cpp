@@ -851,12 +851,12 @@ SbBool NavigationStyle::processEvent(const SoEvent * const ev)
             pcPolygon = pcMouseModel->getPolygon();
             clipInner = pcMouseModel->isInner();
             delete pcMouseModel; pcMouseModel = 0;
-            return FALSE;
+            return NavigationStyle::processSoEvent(ev);
         }
         else if (hd==AbstractMouseModel::Cancel) {
             pcPolygon.clear();
             delete pcMouseModel; pcMouseModel = 0;
-            return FALSE;
+            return NavigationStyle::processSoEvent(ev);
         }
     }
 
