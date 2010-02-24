@@ -26,26 +26,22 @@
 # include <QDir>
 # include <QFileInfo>
 # include <QLineEdit>
+# include <QInputDialog>
 # include <Standard_math.hxx>
-# include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 
 #include <Base/Exception.h>
 #include <App/Document.h>
+#include <App/DocumentObject.h>
 #include <Gui/Application.h>
-#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
-#include <Gui/FileDialog.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Selection.h>
-#include <Gui/View3DInventor.h>
-#include <Gui/View3DInventorViewer.h>
-
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <TopoDS_Shape.hxx>
+#include <Gui/WaitCursor.h>
 
 #include "../App/PartFeature.h"
+#include "../App/TopoShape.h"
 #include "DlgPartCylinderImp.h"
 
 
@@ -99,10 +95,74 @@ bool CmdPartSimpleCylinder::isActive(void)
 }
 
 
+//===========================================================================
+// Part_ShapeFromMesh
+//===========================================================================
+DEF_STD_CMD_A(CmdPartShapeFromMesh);
+
+CmdPartShapeFromMesh::CmdPartShapeFromMesh()
+  :Command("Part_ShapeFromMesh")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Create shape from mesh...");
+    sToolTipText  = QT_TR_NOOP("Create shape from selected mesh object");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    iAccel        = 0;
+}
+
+void CmdPartShapeFromMesh::activated(int iMsg)
+{
+    bool ok;
+    double tol = QInputDialog::getDouble(Gui::getMainWindow(), QObject::tr("Sewing Tolerance"),
+        QObject::tr("Enter tolerance for sewing shape:"), 0.1, 0.01,10.0,2,&ok);
+    if (!ok)
+        return;
+    Base::Type meshid = Base::Type::fromName("Mesh::Feature");
+    std::vector<App::DocumentObject*> meshes;
+    meshes = Gui::Selection().getObjectsOfType(meshid);
+    Gui::WaitCursor wc;
+    std::vector<App::DocumentObject*>::iterator it;
+    openCommand("Convert mesh");
+    for (it = meshes.begin(); it != meshes.end(); ++it) {
+        App::Document* doc = (*it)->getDocument();
+        std::string mesh = (*it)->getNameInDocument();
+        std::string name = doc->getUniqueObjectName(mesh.c_str());
+        doCommand(Doc,"import Part");
+        doCommand(Doc,"FreeCAD.getDocument(\"%s\").addObject(\"Part::Feature\",\"%s\")"
+                     ,doc->getName()
+                     ,name.c_str());
+        doCommand(Doc,"__shape__=Part.Shape()");
+        doCommand(Doc,"__shape__.makeShapeFromMesh("
+                      "FreeCAD.getDocument(\"%s\").getObject(\"%s\").Mesh.Topology,%f"
+                      ")"
+                     ,doc->getName()
+                     ,mesh.c_str()
+                     ,tol);
+        doCommand(Doc,"FreeCAD.getDocument(\"%s\").getObject(\"%s\").Shape=__shape__"
+                     ,doc->getName()
+                     ,name.c_str());
+        doCommand(Doc,"FreeCAD.getDocument(\"%s\").getObject(\"%s\").purgeTouched()"
+                     ,doc->getName()
+                     ,name.c_str());
+        doCommand(Doc,"del __shape__");
+    }
+
+    commitCommand();
+}
+
+bool CmdPartShapeFromMesh::isActive(void)
+{
+    Base::Type meshid = Base::Type::fromName("Mesh::Feature");
+    return Gui::Selection().countObjectsOfType(meshid) > 0;
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void CreateSimplePartCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
     rcCmdMgr.addCommand(new CmdPartSimpleCylinder());
+    rcCmdMgr.addCommand(new CmdPartShapeFromMesh());
 } 
