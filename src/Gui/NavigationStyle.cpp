@@ -949,7 +949,11 @@ void NavigationStyle::openPopupMenu(const SbVec2s& position)
 
 // ----------------------------------------------------------------------------------
 
-TYPESYSTEM_SOURCE(Gui::InventorNavigationStyle, Gui::NavigationStyle);
+TYPESYSTEM_SOURCE_ABSTRACT(Gui::UserNavigationStyle,Gui::NavigationStyle);
+
+// ----------------------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::InventorNavigationStyle, Gui::UserNavigationStyle);
 
 InventorNavigationStyle::InventorNavigationStyle()
 {
@@ -1050,15 +1054,23 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
         switch (button) {
         case SoMouseButtonEvent::BUTTON1:
             this->button1down = press;
-            if (!press && ev->wasAltDown()) {
+            if (press && ev->wasShiftDown()) {
+                this->centerTime = ev->getTime();
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
-                if (!this->seekToPoint(pos)) {
-                    panToCenter(panningplane, posn);
-                    this->interactiveCountDec();
+            }
+            else if (!press && ev->wasShiftDown()) {
+                SbTime tmp = (ev->getTime() - this->centerTime);
+                float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+                // is it just a left click?
+                if (tmp.getValue() < dci) {
+                    if (!this->seekToPoint(pos)) {
+                        panToCenter(panningplane, posn);
+                        this->interactiveCountDec();
+                    }
+                    processed = TRUE;
                 }
-                processed = TRUE;
             }
             else if (press && (this->currentmode == NavigationStyle::SEEK_WAIT_MODE)) {
                 newmode = NavigationStyle::SEEK_MODE;
@@ -1233,7 +1245,7 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 
 // ----------------------------------------------------------------------------------
 
-TYPESYSTEM_SOURCE(Gui::CADNavigationStyle, Gui::NavigationStyle);
+TYPESYSTEM_SOURCE(Gui::CADNavigationStyle, Gui::UserNavigationStyle);
 
 CADNavigationStyle::CADNavigationStyle()/* : _bRejectSelection(false), _bSpining(false)*/
 {
@@ -1339,15 +1351,23 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
         switch (button) {
         case SoMouseButtonEvent::BUTTON1:
             this->button1down = press;
-            if (!press && ev->wasAltDown()) {
+            if (press && ev->wasShiftDown()) {
+                this->centerTime = ev->getTime();
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
-                if (!this->seekToPoint(pos)) {
-                    panToCenter(panningplane, posn);
-                    this->interactiveCountDec();
+            }
+            else if (!press && ev->wasShiftDown()) {
+                SbTime tmp = (ev->getTime() - this->centerTime);
+                float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+                // is it just a left click?
+                if (tmp.getValue() < dci) {
+                    if (!this->seekToPoint(pos)) {
+                        panToCenter(panningplane, posn);
+                        this->interactiveCountDec();
+                    }
+                    processed = TRUE;
                 }
-                processed = TRUE;
             }
             else if (press && (this->currentmode == NavigationStyle::SEEK_WAIT_MODE)) {
                 newmode = NavigationStyle::SEEK_MODE;

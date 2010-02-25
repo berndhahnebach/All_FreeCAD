@@ -113,7 +113,7 @@ public:
 
     void setViewingMode(const ViewerMode newmode);
     int getViewingMode() const;
-    SbBool processEvent(const SoEvent * const ev);
+    virtual SbBool processEvent(const SoEvent * const ev);
 
     void setPopupMenuEnabled(const SbBool on);
     SbBool isPopupMenuEnabled(void) const;
@@ -197,8 +197,25 @@ private:
     friend struct NavigationStyleP;
 };
 
-class GuiExport InventorNavigationStyle : public NavigationStyle {
-    typedef NavigationStyle inherited;
+/** Sub-classes of this class appear in the preference dialog where users can
+ * choose their favorite navigation style.
+ * All other classes that inherit directly from NavigationStyle do not appear
+ * in the above dialog.
+ * This mechanism is useful to implement special navigation styles which are
+ * only needed for certain purposes. Thus, it should not be possible to be
+ * choosable by the user 
+ * @author Werner Mayer
+ */
+class GuiExport UserNavigationStyle : public NavigationStyle {
+    TYPESYSTEM_HEADER();
+
+public:
+    UserNavigationStyle(){}
+    ~UserNavigationStyle(){}
+};
+
+class GuiExport InventorNavigationStyle : public UserNavigationStyle {
+    typedef UserNavigationStyle inherited;
 
     TYPESYSTEM_HEADER();
 
@@ -210,8 +227,8 @@ protected:
     SbBool processSoEvent(const SoEvent * const ev);
 };
 
-class GuiExport CADNavigationStyle : public NavigationStyle {
-    typedef NavigationStyle inherited;
+class GuiExport CADNavigationStyle : public UserNavigationStyle {
+    typedef UserNavigationStyle inherited;
 
     TYPESYSTEM_HEADER();
 
