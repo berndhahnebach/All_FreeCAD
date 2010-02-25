@@ -96,6 +96,7 @@ void Gui::SoFCDB::init()
     PropertyPathItem                ::init();
 
     NavigationStyle                 ::init();
+    UserNavigationStyle             ::init();
     InventorNavigationStyle         ::init();
     CADNavigationStyle              ::init();
 

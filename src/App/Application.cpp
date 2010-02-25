@@ -1223,11 +1223,12 @@ void Application::LoadParameters(void)
                               "   configuration.\n");
         }
     }
-    catch (Base::Exception& e) {
-        std::stringstream str;
-        str << "Malformed parameter file " << mConfig["SystemParameter"];
-        e.setMessage(str.str());
-        throw; // re-throw this instance
+    catch (const Base::Exception& e) {
+        // try to proceed with an empty XML document
+        Base::Console().Error("%s in file %s.\n"
+                              "Continue with an empty configuration.",
+                              e.what(), mConfig["SystemParameter"].c_str());
+        _pcSysParamMngr->CreateDocument();
     }
 
     try {
@@ -1239,11 +1240,12 @@ void Application::LoadParameters(void)
 
         }
     }
-    catch (Base::Exception& e) {
-        std::stringstream str;
-        str << "Malformed parameter file " << mConfig["UserParameter"];
-        e.setMessage(str.str());
-        throw; // re-throw this instance
+    catch (const Base::Exception& e) {
+        // try to proceed with an empty XML document
+        Base::Console().Error("%s in file %s.\n"
+                              "Continue with an empty configuration.",
+                              e.what(), mConfig["UserParameter"].c_str());
+        _pcUserParamMngr->CreateDocument();
     }
 }
 
