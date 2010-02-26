@@ -911,9 +911,9 @@ void NavigationStyle::openPopupMenu(const SbVec2s& position)
     // add submenu at the end to select navigation style
     QRegExp rx(QString::fromAscii("^\\w+::(\\w+)Navigation\\w+$"));
     std::vector<Base::Type> types;
-    Base::Type::getAllDerivedFrom(NavigationStyle::getClassTypeId(), types);
+    Base::Type::getAllDerivedFrom(UserNavigationStyle::getClassTypeId(), types);
     for (std::vector<Base::Type>::iterator it = types.begin(); it != types.end(); ++it) {
-        if (*it != NavigationStyle::getClassTypeId()) {
+        if (*it != UserNavigationStyle::getClassTypeId()) {
             QString data = QString::fromAscii(it->getName());
             QString name = data.mid(data.indexOf(QLatin1String("::"))+2);
             if (rx.indexIn(data) > -1) {
