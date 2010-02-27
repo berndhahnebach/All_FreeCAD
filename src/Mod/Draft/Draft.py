@@ -692,6 +692,8 @@ class DimensionViewProvider:
 		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
 		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines").ExtLines=0.3
 		obj.Proxy = self
+		self.Object = obj.Object
+		self.ViewObject = obj
 
 	def calcGeom(self,obj):
 		p1 = obj.Start
@@ -849,6 +851,44 @@ class DimensionViewProvider:
 	def __setstate__(self,state):
 		return None
 
+	def getrgb(self,color):
+		"returns a rgb value #000000 from a freecad color"
+		r = str(hex(int(color[0]*255)))[2:].zfill(2)
+		g = str(hex(int(color[1]*255)))[2:].zfill(2)
+		b = str(hex(int(color[2]*255)))[2:].zfill(2)
+		return "#"+r+g+b
+
+	def getSVG(self):
+		"returns an svg representation of the dimension"
+		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(self.Object)
+		svg='<g id="'+self.Object.Name+'"><path '
+		svg+='d="M '+str(p1.x)+' '+str(p1.y)+' '
+		svg+='L '+str(p2.x)+' '+str(p2.y)+' '
+		svg+='L '+str(p3.x)+' '+str(p3.y)+' '
+		svg+='L '+str(p4.x)+' '+str(p4.y)+'" '
+		svg+='fill="none" stroke="'
+		svg+=self.getrgb(self.ViewObject.LineColor) + '" '
+		svg+='stroke-width="' + str(self.ViewObject.LineWidth/100) + ' px" '
+		svg+='style="stroke-width:'+ str(self.ViewObject.LineWidth/100)
+		svg+=';stroke-miterlimit:4;stroke-dasharray:none"/>\n'
+		svg+='<circle cx="'+str(p2.x)+'" cy="'+str(p2.y)
+		svg+='" r="'+str(self.ViewObject.FontSize/10)+'" '
+		svg+='fill="'+ self.getrgb(self.ViewObject.LineColor) +'" stroke="none" '
+		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
+		svg+='<circle cx="'+str(p3.x)+'" cy="'+str(p3.y)
+		svg+='" r="'+str(self.ViewObject.FontSize/10)+'" '
+		svg+='fill="#000000" stroke="none" '
+		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
+		svg+='<text id="' + self.Object.Name + '" fill="'
+		svg+=str(self.ViewObject.LineWidth/100) +'" font-size="'
+		svg+=str(self.ViewObject.FontSize/10)+'" '
+		svg+='style="text-anchor:middle;text-align:center" '
+		svg+='transform="rotate('+str(math.degrees(angle))
+		svg+=' '+str(tbase.x)+' '+str(tbase.y)+')" '
+		svg+='x="' + str(tbase.x) + '" y="' + str(tbase.y) + '">\n'
+		svg+="%.2f" % p3.sub(p2).Length
+		svg+='</text>\n</g>\n'
+		return svg
 
 
 
