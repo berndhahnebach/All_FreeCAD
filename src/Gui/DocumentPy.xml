@@ -65,5 +65,11 @@
 		  </Documentation>
 		  <Parameter Name="ActiveView" Type="Object" />
 	  </Attribute>
+	  <Attribute Name="Document" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>The related App document to this Gui document</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Document" Type="Object" />
+	  </Attribute>
   </PythonExport>
 </GenerateModel>

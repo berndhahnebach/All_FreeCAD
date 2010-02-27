@@ -200,6 +200,17 @@ void  DocumentPy::setActiveView(Py::Object arg)
     throw Py::AttributeError("'Document' object attribute 'ActiveView' is read-only");
 }
 
+Py::Object DocumentPy::getDocument(void) const
+{
+    App::Document *doc = getDocumentPtr()->getDocument();
+    if (doc) {
+        // already incremented in getPyObject().
+        return Py::Object(doc->getPyObject(), true);
+    } else {
+        return Py::None();
+    }
+}
+
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const
 {
     // Note: Here we want to return only a document object if its
