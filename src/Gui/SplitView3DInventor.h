@@ -49,8 +49,6 @@ public:
     virtual bool onHasMsg(const char* pMsg) const;
     virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
     virtual void onUpdate(void);
-    void updatePrefs(void);
-    void setViewerDefaults(void);
 
     View3DInventorViewer *getViewer(unsigned int) const;
 

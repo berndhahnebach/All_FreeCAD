@@ -1094,6 +1094,32 @@ Py::String TopoShapePy::getOrientation(void) const
     return Py::String(name);
 }
 
+void TopoShapePy::setOrientation(Py::String arg)
+{
+    TopoDS_Shape& sh = getTopoShapePtr()->_Shape;
+    if (sh.IsNull())
+        throw Py::Exception(PyExc_Exception, "cannot determine orientation of null shape");
+    std::string name = (std::string)arg;
+    TopAbs_Orientation type;
+    if (name == "Forward") {
+        type = TopAbs_FORWARD;
+    }
+    else if (name == "Reversed") {
+        type = TopAbs_REVERSED;
+    }
+    else if (name == "Internal") {
+        type = TopAbs_INTERNAL;
+    }
+    else if (name == "External") {
+        type = TopAbs_EXTERNAL;
+    }
+    else {
+        throw Py::AttributeError("Invalid orientation type");
+    }
+
+    sh.Orientation(type);
+}
+
 Py::List TopoShapePy::getFaces(void) const
 {
     Py::List ret;
