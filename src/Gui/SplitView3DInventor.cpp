@@ -75,8 +75,19 @@ SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, 
     mainSplitter->show();
     setCentralWidget(mainSplitter);
 
-    setViewerDefaults();
     // apply the user settings
+    OnChange(*hGrp,"EyeDistance");
+    OnChange(*hGrp,"CornerCoordSystem");
+    OnChange(*hGrp,"UseAutoRotation");
+    OnChange(*hGrp,"Gradient");
+    OnChange(*hGrp,"BackgroundColor");
+    OnChange(*hGrp,"BackgroundColor2");
+    OnChange(*hGrp,"BackgroundColor3");
+    OnChange(*hGrp,"BackgroundColor4");
+    OnChange(*hGrp,"UseBackgroundColorMid");
+    OnChange(*hGrp,"UseAntialiasing");
+    OnChange(*hGrp,"ShowFPS");
+    OnChange(*hGrp,"Orthographic");
     OnChange(*hGrp,"HeadlightColor");
     OnChange(*hGrp,"HeadlightDirection");
     OnChange(*hGrp,"HeadlightIntensity");
@@ -98,47 +109,6 @@ SplitView3DInventor::~SplitView3DInventor()
 View3DInventorViewer* SplitView3DInventor::getViewer(unsigned int n) const
 {
     return (_viewer.size() > n ? _viewer[n] : 0);
-}
-
-void SplitView3DInventor::setViewerDefaults(void)
-{
-    float stereoOffset = hGrp->GetFloat("EyeDistance",65.0);
-    bool drawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
-    bool allowSpinning = hGrp->GetBool("UseAutoRotation",true);
-    bool gradientBackG = hGrp->GetBool("Gradient",true);
-    bool smoothing     = hGrp->GetBool("UseAntialiasing",false);
-    bool showFPSCount  = hGrp->GetBool("ShowFPS",false);
-    bool cameraType    = hGrp->GetBool("Orthographic",false);
-    bool thirdcolor    = hGrp->GetBool("UseBackgroundColorMid",false);
-    unsigned long col1 = hGrp->GetUnsigned("BackgroundColor",0);
-    unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (purple)
-    unsigned long col3 = hGrp->GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
-    unsigned long col4 = hGrp->GetUnsigned("BackgroundColor4",ULONG_MAX); // default color (white)
-
-    float r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4;
-    r1 = ((col1 >> 24) & 0xff) / 255.0; g1 = ((col1 >> 16) & 0xff) / 255.0; b1 = ((col1 >> 8) & 0xff) / 255.0;
-    r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
-    r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
-    r4 = ((col4 >> 24) & 0xff) / 255.0; g4 = ((col4 >> 16) & 0xff) / 255.0; b4 = ((col4 >> 8) & 0xff) / 255.0;
-
-    for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it) {
-        (*it)->setStereoOffset(stereoOffset);
-        (*it)->setFeedbackVisibility(drawAxisCross);
-        (*it)->setAnimationEnabled(allowSpinning);
-        (*it)->getGLRenderAction()->setSmoothing(smoothing);
-        (*it)->setEnabledFPSCounter(showFPSCount);
-        (*it)->setGradientBackgroud(gradientBackG);
-        (*it)->setBackgroundColor(SbColor(r1, g1, b1));
-        if (cameraType)
-            (*it)->setCameraType(SoOrthographicCamera::getClassTypeId());
-        else
-            (*it)->setCameraType(SoPerspectiveCamera::getClassTypeId());
-        if (!thirdcolor)
-            (*it)->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3));
-        else
-            (*it)->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3), SbColor(r4, g4, b4));
-
-    }
 }
 
 /// Observer message from the ParameterGrp
@@ -239,8 +209,58 @@ void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterG
         //for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
         //    (*it)->setNavigationType(type);
     }
+    else if (strcmp(Reason,"EyeDistance") == 0) {
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->setStereoOffset(rGrp.GetFloat("EyeDistance",65.0));
+    }
+    else if (strcmp(Reason,"CornerCoordSystem") == 0) {
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->setFeedbackVisibility(rGrp.GetBool("CornerCoordSystem",true));
+    }
+    else if (strcmp(Reason,"UseAutoRotation") == 0) {
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->setAnimationEnabled(rGrp.GetBool("UseAutoRotation",true));
+    }
+    else if (strcmp(Reason,"Gradient") == 0) {
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->setGradientBackgroud((rGrp.GetBool("Gradient",true)));
+    }
+    else if (strcmp(Reason,"UseAntialiasing") == 0) {
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->getGLRenderAction()->setSmoothing(rGrp.GetBool("UseAntialiasing",false));
+    }
+    else if (strcmp(Reason,"ShowFPS") == 0) {
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+            (*it)->setEnabledFPSCounter(rGrp.GetBool("ShowFPS",false));
+    }
+    else if (strcmp(Reason,"Orthographic") == 0) {
+        // check whether a perspective or orthogrphic camera should be set
+        if (rGrp.GetBool("Orthographic", true)) {
+            for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+                (*it)->setCameraType(SoOrthographicCamera::getClassTypeId());
+        }
+        else {
+            for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
+                (*it)->setCameraType(SoPerspectiveCamera::getClassTypeId());
+        }
+    }
     else {
-        setViewerDefaults();
+        unsigned long col1 = rGrp.GetUnsigned("BackgroundColor",0);
+        unsigned long col2 = rGrp.GetUnsigned("BackgroundColor2",2139082239); // default color (purple)
+        unsigned long col3 = rGrp.GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
+        unsigned long col4 = rGrp.GetUnsigned("BackgroundColor4",ULONG_MAX); // default color (white)
+        float r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4;
+        r1 = ((col1 >> 24) & 0xff) / 255.0; g1 = ((col1 >> 16) & 0xff) / 255.0; b1 = ((col1 >> 8) & 0xff) / 255.0;
+        r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
+        r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
+        r4 = ((col4 >> 24) & 0xff) / 255.0; g4 = ((col4 >> 16) & 0xff) / 255.0; b4 = ((col4 >> 8) & 0xff) / 255.0;
+        for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it) {
+            (*it)->setBackgroundColor(SbColor(r1, g1, b1));
+            if (rGrp.GetBool("UseBackgroundColorMid",false) == false)
+                (*it)->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3));
+            else
+                (*it)->setGradientBackgroudColor(SbColor(r2, g2, b2), SbColor(r3, g3, b3), SbColor(r4, g4, b4));
+        }
     }
 }
 

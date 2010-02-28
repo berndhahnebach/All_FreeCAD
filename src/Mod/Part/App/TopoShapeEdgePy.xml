@@ -54,6 +54,12 @@
 			  <UserDocu>Vector = centerOfCurvatureAt(float pos) - Get the center of curvature at the given parameter [0|Length] if defined</UserDocu>
 		  </Documentation>
 	  </Methode>
+	  <Attribute Name="Length" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Returns the length of the edge</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Length" Type="Float"/>
+	  </Attribute>
 	  <Attribute Name="Curve" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>Returns the 3D curve of the edge</UserDocu>

@@ -239,7 +239,7 @@ into BSpline surfaces.</UserDocu>
       </Documentation>
       <Parameter Name="ShapeType" Type="String"/>
     </Attribute>
-    <Attribute Name="Orientation" ReadOnly="true">
+    <Attribute Name="Orientation" ReadOnly="false">
       <Documentation>
         <UserDocu>Returns the orientation of the shape.</UserDocu>
       </Documentation>
