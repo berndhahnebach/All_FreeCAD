@@ -22,6 +22,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepAdaptor_Curve.hxx>
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepPrimAPI_MakeBox.hxx>
 # include <BRepPrimAPI_MakeCone.hxx>
@@ -71,6 +72,8 @@
 # include <TColStd_Array1OfInteger.hxx>
 # include <Precision.hxx>
 #endif
+
+#include <GeomFill_Pipe.hxx>
 
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
@@ -859,7 +862,41 @@ static PyObject * makeRuledSurface(PyObject *self, PyObject *args)
 
 static PyObject * makeTube(PyObject *self, PyObject *args)
 {
-    return 0;
+    PyObject *pshape;
+    double radius;
+    if (!PyArg_ParseTuple(args, "O!d", &(TopoShapePy::Type), &pshape, &radius))
+        return 0;
+
+    const TopoDS_Shape& shape = static_cast<TopoShapePy*>(pshape)->getTopoShapePtr()->_Shape;
+
+    try {
+        if (shape.ShapeType() == TopAbs_EDGE) {
+            const TopoDS_Edge& edge = TopoDS::Edge(shape);
+            BRepAdaptor_Curve adapt(edge);
+            double umin = adapt.FirstParameter();
+            double umax = adapt.LastParameter();
+
+            Handle_Geom_Curve curve = adapt.Curve().Curve();
+            GeomFill_Pipe mkTube(curve, radius);
+            mkTube.Perform();
+
+            const Handle_Geom_Surface& surf = mkTube.Surface();
+            double u1,u2,v1,v2;
+            surf->Bounds(u1,u2,v1,v2);
+
+            BRepBuilderAPI_MakeFace mkBuilder(surf, umin, umax, v1, v2);
+            const TopoDS_Face& face = mkBuilder.Face();
+            return new TopoShapeFacePy(new TopoShape(face));
+        }
+        else {
+            PyErr_SetString(PyExc_Exception, "path must be an edge");
+            return 0;
+        }
+    }
+    catch (Standard_Failure) {
+        PyErr_SetString(PyExc_Exception, "creation of tube failed");
+        return 0;
+    }
 }
 
 static PyObject * toPythonOCC(PyObject *self, PyObject *args)
@@ -1178,6 +1215,9 @@ struct PyMethodDef Part_methods[] = {
      "makeRuledSurface(Edge|Wire,Edge|Wire) -- Make a ruled surface\n"
      "Create a ruled surface out of two edges or wires. If wires are used then"
      "these must have the same number of edges."},
+
+    {"makeTube" ,makeTube,METH_VARARGS,
+     "makeTube(edge,float) -- Create a tube."},
 
     {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
      "cast_to_shape(shape) -- Cast to the actual shape type"},
