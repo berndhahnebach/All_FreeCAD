@@ -876,8 +876,12 @@ static PyObject * makeTube(PyObject *self, PyObject *args)
             double umin = adapt.FirstParameter();
             double umax = adapt.LastParameter();
 
-            Handle_Geom_Curve curve = adapt.Curve().Curve();
-            GeomFill_Pipe mkTube(curve, radius);
+            const Handle_Geom_Curve& hCurve = adapt.Curve().Curve();
+            if (hCurve.IsNull()) {
+                PyErr_SetString(PyExc_Exception, "invalid curve in edge");
+                return 0;
+            }
+            GeomFill_Pipe mkTube(hCurve, radius);
             mkTube.Perform();
 
             const Handle_Geom_Surface& surf = mkTube.Surface();
@@ -894,7 +898,8 @@ static PyObject * makeTube(PyObject *self, PyObject *args)
         }
     }
     catch (Standard_Failure) {
-        PyErr_SetString(PyExc_Exception, "creation of tube failed");
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return 0;
     }
 }

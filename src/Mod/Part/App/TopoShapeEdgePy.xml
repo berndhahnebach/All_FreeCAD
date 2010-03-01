@@ -60,6 +60,12 @@
 		  </Documentation>
 		  <Parameter Name="Length" Type="Float"/>
 	  </Attribute>
+	  <Attribute Name="ParameterRange" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Returns a 4 tuple with the parameter range</UserDocu>
+		  </Documentation>
+		  <Parameter Name="ParameterRange" Type="Tuple"/>
+	  </Attribute>
 	  <Attribute Name="Curve" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>Returns the 3D curve of the edge</UserDocu>
