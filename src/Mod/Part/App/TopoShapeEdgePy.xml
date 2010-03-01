@@ -75,5 +75,17 @@ absolute Cartesian coordinate system.</UserDocu>
       </Documentation>
       <Parameter Name="CenterOfMass" Type="Object"/>
     </Attribute>
+	<Attribute Name="Closed" ReadOnly="true">
+		<Documentation>
+			<UserDocu>Returns true of the edge is closed</UserDocu>
+		</Documentation>
+		<Parameter Name="Closed" Type="Boolean"/>
+	</Attribute>
+	  <Attribute Name="Degenerated" ReadOnly="true">
+		  <Documentation>
+			  <UserDocu>Returns true of the edge is degenerated</UserDocu>
+		  </Documentation>
+		  <Parameter Name="Degenerated" Type="Boolean"/>
+	  </Attribute>
   </PythonExport>
 </GenerateModel>

@@ -459,6 +459,18 @@ Py::Object TopoShapeEdgePy::getCenterOfMass(void) const
     return Py::Vector(Base::Vector3d(c.X(),c.Y(),c.Z()));
 }
 
+Py::Boolean TopoShapeEdgePy::getClosed(void) const
+{
+    Standard_Boolean ok = BRep_Tool::IsClosed(getTopoShapePtr()->_Shape);
+    return Py::Boolean(ok ? true : false);
+}
+
+Py::Boolean TopoShapeEdgePy::getDegenerated(void) const
+{
+    Standard_Boolean ok = BRep_Tool::Degenerated(TopoDS::Edge(getTopoShapePtr()->_Shape));
+    return Py::Boolean(ok ? true : false);
+}
+
 PyObject *TopoShapeEdgePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
