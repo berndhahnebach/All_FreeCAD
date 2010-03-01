@@ -409,6 +409,23 @@ Py::Object TopoShapeFacePy::getSurface() const
     throw Py::TypeError("undefined surface type");
 }
 
+Py::Tuple TopoShapeFacePy::getParameterRange(void) const
+{
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Surface adapt(f);
+    double u1 = adapt.FirstUParameter();
+    double u2 = adapt.LastUParameter();
+    double v1 = adapt.FirstVParameter();
+    double v2 = adapt.LastVParameter();
+
+    Py::Tuple t(4);
+    t.setItem(0, Py::Float(u1));
+    t.setItem(1, Py::Float(u2));
+    t.setItem(2, Py::Float(v1));
+    t.setItem(3, Py::Float(v2));
+    return t;
+}
+
 Py::Object TopoShapeFacePy::getWire(void) const
 {
     TopoDS_Shape clSh = getTopoShapePtr()->_Shape;

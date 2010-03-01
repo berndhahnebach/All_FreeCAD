@@ -49,6 +49,12 @@
 				<UserDocu>Float = curvatureAt(pos) - Get the curvature at the given parameter [0|Length] if defined</UserDocu>
 			</Documentation>
 		</Methode>
+		<Attribute Name="ParameterRange" ReadOnly="true">
+			<Documentation>
+				<UserDocu>Returns a 4 tuple with the parameter range</UserDocu>
+			</Documentation>
+			<Parameter Name="ParameterRange" Type="Tuple"/>
+		</Attribute>
 		<Attribute Name="Surface" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Returns the geometric surface of the face</UserDocu>

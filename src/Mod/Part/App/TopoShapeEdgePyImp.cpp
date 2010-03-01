@@ -451,6 +451,19 @@ Py::Object TopoShapeEdgePy::getCurve() const
     throw Py::TypeError("undefined curve type");
 }
 
+Py::Tuple TopoShapeEdgePy::getParameterRange(void) const
+{
+    const TopoDS_Edge& e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    BRepAdaptor_Curve adapt(e);
+    double u = adapt.FirstParameter();
+    double v = adapt.LastParameter();
+
+    Py::Tuple t(2);
+    t.setItem(0, Py::Float(u));
+    t.setItem(1, Py::Float(v));
+    return t;
+}
+
 Py::Object TopoShapeEdgePy::getCenterOfMass(void) const
 {
     GProp_GProps props;
