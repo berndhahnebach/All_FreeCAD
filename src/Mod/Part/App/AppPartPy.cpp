@@ -73,7 +73,13 @@
 # include <Precision.hxx>
 #endif
 
+#include <BRepOffsetAPI_ThruSections.hxx>
+#include <BSplCLib.hxx>
+#include <GeomFill_AppSurf.hxx>
+#include <GeomFill_Line.hxx>
 #include <GeomFill_Pipe.hxx>
+#include <GeomFill_SectionGenerator.hxx>
+#include <NCollection_List.hxx>
 
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
@@ -97,6 +103,8 @@
 #include "TopoShapeShellPy.h"
 #include "TopoShapeVertexPy.h"
 #include "GeometryPy.h"
+#include "GeometryCurvePy.h"
+#include "BSplineSurfacePy.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
@@ -644,16 +652,16 @@ static PyObject * makeHelix(PyObject *self, PyObject *args)
             Standard_Failure::Raise("Radius of helix too small");
 
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
-        Handle(Geom_CylindricalSurface) cyl = new Geom_CylindricalSurface(cylAx2 , radius);
+        Handle_Geom_CylindricalSurface cyl = new Geom_CylindricalSurface(cylAx2 , radius);
 
         gp_Pnt2d aPnt(0, 0);
         gp_Dir2d aDir(2. * PI, pitch);
         gp_Ax2d aAx2d(aPnt, aDir);
 
-        Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
+        Handle_Geom2d_Line line = new Geom2d_Line(aAx2d);
         gp_Pnt2d beg = line->Value(0);
         gp_Pnt2d end = line->Value(2.0*PI*(height/pitch));
-        Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
+        Handle_Geom2d_TrimmedCurve segm = GCE2d_MakeSegment(beg , end);
 
         TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , cyl);
         TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edgeOnSurf);
@@ -902,6 +910,91 @@ static PyObject * makeTube(PyObject *self, PyObject *args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return 0;
     }
+}
+
+static PyObject * makeLoft(PyObject *self, PyObject *args)
+{
+#if 0
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    NCollection_List<Handle_Geom_Curve> theSections;
+    Py::List list(pcObj);
+    for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+        if (PyObject_TypeCheck((*it).ptr(), &(Part::GeometryCurvePy::Type))) {
+            Handle_Geom_Curve hCurve = Handle_Geom_Curve::DownCast(
+                static_cast<GeometryCurvePy*>((*it).ptr())->getGeomCurvePtr()->handle());
+            theSections.Append(hCurve);
+        }
+    }
+
+    //populate section generator
+    GeomFill_SectionGenerator aSecGenerator;
+    for (NCollection_List<Handle_Geom_Curve>::Iterator anIt(theSections); anIt.More(); anIt.Next()) {
+        const Handle_Geom_Curve& aCurve = anIt.Value();
+        aSecGenerator.AddCurve (aCurve);
+    }
+    aSecGenerator.Perform (Precision::PConfusion());
+
+    Handle_GeomFill_Line aLine = new GeomFill_Line (theSections.Size());
+
+    //parameters
+    const Standard_Integer aMinDeg = 1, aMaxDeg = BSplCLib::MaxDegree(), aNbIt = 0;
+    Standard_Real aTol3d = 1e-4, aTol2d = Precision::Parametric (aTol3d);
+
+    //algorithm
+    GeomFill_AppSurf anAlgo (aMinDeg, aMaxDeg, aTol3d, aTol2d, aNbIt);
+    anAlgo.Perform (aLine, aSecGenerator);
+
+    if (!anAlgo.IsDone()) {
+        PyErr_SetString(PyExc_Exception, "Failed to create loft surface");
+        return 0;
+    }
+
+    Handle_Geom_BSplineSurface aRes;
+    aRes = new Geom_BSplineSurface(anAlgo.SurfPoles(), anAlgo.SurfWeights(),
+        anAlgo.SurfUKnots(), anAlgo.SurfVKnots(), anAlgo.SurfUMults(), anAlgo.SurfVMults(),
+        anAlgo.UDegree(), anAlgo.VDegree());
+    return new BSplineSurfacePy(new GeomBSplineSurface(aRes));
+#else
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    try {
+        Standard_Boolean anIsSolid = Standard_False;
+        Standard_Boolean anIsRuled = Standard_False;
+        BRepOffsetAPI_ThruSections aGenerator (anIsSolid,anIsRuled);
+
+        Py::List list(pcObj);
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
+                    getTopoShapePtr()->_Shape;
+                if (!sh.IsNull() && sh.ShapeType() == TopAbs_WIRE) {
+                    aGenerator.AddWire(TopoDS::Wire (sh));
+                }
+            }
+        }
+
+        Standard_Boolean anIsCheck = Standard_False;
+        aGenerator.CheckCompatibility (anIsCheck);
+        aGenerator.Build();
+        if (!aGenerator.IsDone()) {
+            PyErr_SetString(PyExc_Exception, "Failed to create loft face");
+            return 0;
+        }
+
+        const TopoDS_Shape& aResult = aGenerator.Shape();
+        return new TopoShapePy(new TopoShape(aResult));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+#endif
 }
 
 static PyObject * toPythonOCC(PyObject *self, PyObject *args)
@@ -1223,6 +1316,9 @@ struct PyMethodDef Part_methods[] = {
 
     {"makeTube" ,makeTube,METH_VARARGS,
      "makeTube(edge,float) -- Create a tube."},
+
+    {"makeLoft" ,makeLoft,METH_VARARGS,
+     "makeLoft() -- Create a loft shape."},
 
     {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
      "cast_to_shape(shape) -- Cast to the actual shape type"},
