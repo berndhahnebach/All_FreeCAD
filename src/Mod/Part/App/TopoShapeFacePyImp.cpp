@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRep_Tool.hxx>
+# include <BRepTools.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <ShapeAnalysis.hxx>
 # include <BRepAdaptor_Surface.hxx>
@@ -40,6 +41,7 @@
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
+# include <gp_Pnt2d.hxx>
 # include <gp_Pln.hxx>
 # include <gp_Cylinder.hxx>
 # include <gp_Cone.hxx>
@@ -47,6 +49,7 @@
 # include <gp_Torus.hxx>
 #endif
 
+#include <BRepTopAdaptor_FClass2d.hxx>
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 #include <BRepLProp_SurfaceTool.hxx>
@@ -311,6 +314,40 @@ PyObject* TopoShapeFacePy::derivative2At(PyObject *args)
         const gp_Vec& vecV = prop.D2V();
         tuple.setItem(1, Py::Vector(Base::Vector3d(vecV.X(),vecV.Y(),vecV.Z())));
         return Py::new_reference_to(tuple);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+PyObject* TopoShapeFacePy::isPartOfDomain(PyObject *args)
+{
+    double u,v;
+    if (!PyArg_ParseTuple(args, "dd",&u,&v))
+        return 0;
+
+    const TopoDS_Face& face = TopoDS::Face(getTopoShapePtr()->_Shape);
+
+    double tol;
+    //double u1, u2, v1, v2, dialen;
+    tol = Precision::Confusion();
+    try {
+        //BRepTools::UVBounds(face, u1, u2, v1, v2);
+        //dialen = (u2-u1)*(u2-u1) + (v2-v1)*(v2-v1);
+        //dialen = sqrt(dialen)/400.0;
+        //tol = std::max<double>(dialen, tol);
+        BRepTopAdaptor_FClass2d CL(face,tol);
+        TopAbs_State state = CL.Perform(gp_Pnt2d(u,v));
+        if (state == TopAbs_ON || state == TopAbs_IN) {
+            Py_INCREF(Py_True);
+            return Py_True;
+        }
+        else {
+            Py_INCREF(Py_False);
+            return Py_False;
+        }
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

@@ -211,6 +211,11 @@ Orientation is not taken into account.</UserDocu>
         <UserDocu>Tessellate the the shape and return a list of vertices and face indices</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="project">
+      <Documentation>
+        <UserDocu>Project a shape on this shape</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="makeShapeFromMesh">
       <Documentation>
         <UserDocu>Make a compund shape out of mesh data.
