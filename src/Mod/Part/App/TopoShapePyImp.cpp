@@ -45,6 +45,7 @@
 
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
+#include <BRepAlgo_NormalProjection.hxx>
 
 
 #include <Base/GeometryPyCXX.h>
@@ -927,6 +928,38 @@ PyObject* TopoShapePy::tessellate(PyObject *args)
     }
     tuple.setItem(1, facet);
     return Py::new_reference_to(tuple);
+}
+
+PyObject* TopoShapePy::project(PyObject *args)
+{
+    PyObject *obj;
+
+    BRepAlgo_NormalProjection algo;
+    algo.Init(this->getTopoShapePtr()->_Shape);
+    if (PyArg_ParseTuple(args, "O!", &(PyList_Type), &obj)) {
+        try {
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& shape = static_cast<TopoShapePy*>((*it).ptr())->getTopoShapePtr()->_Shape;
+                    algo.Add(shape);
+                }
+            }
+
+            algo.Compute3d(Standard_True);
+            algo.SetLimit(Standard_True);
+            algo.SetParams(1.e-6, 1.e-6, GeomAbs_C1, 14, 16);
+            //algo.SetDefaultParams();
+            algo.Build();
+            return new TopoShapePy(new TopoShape(algo.Projection()));
+        }
+        catch (Standard_Failure) {
+            PyErr_SetString(PyExc_Exception, "Failed to project shape");
+            return NULL;
+        }
+    }
+
+    return 0;
 }
 
 PyObject* TopoShapePy::makeShapeFromMesh(PyObject *args)
