@@ -23,6 +23,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <sstream>
+# include <QByteArray>
 # include <QContextMenuEvent>
 # include <QHeaderView>
 # include <QInputDialog>
@@ -81,8 +83,8 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  Qt::WFlags fl )
 #endif
 
     const std::map<std::string,ParameterManager *> rcList = App::GetApplication().GetParameterSetList();
-    for (std::map<std::string,ParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++) {
-        parameterSet->addItem(tr(It->first.c_str()), QVariant(QByteArray(It->first.c_str())));
+    for (std::map<std::string,ParameterManager *>::const_iterator it= rcList.begin();it!=rcList.end();++it) {
+        parameterSet->addItem(tr(it->first.c_str()), QVariant(QByteArray(it->first.c_str())));
     }
 
     QByteArray cStr("User parameter");
@@ -137,9 +139,30 @@ void DlgParameterImp::reject()
     close();
 }
 
+void DlgParameterImp::showEvent(QShowEvent* )
+{
+    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter()
+        .GetGroup("BaseApp")->GetGroup("Preferences");
+    hGrp = hGrp->GetGroup("ParameterEditor");
+    std::string buf = hGrp->GetASCII("Geometry", "");
+    if (!buf.empty()) {
+        int x1, y1, x2, y2;
+        char sep;
+        std::stringstream str(buf);
+        str >> sep >> x1
+            >> sep >> y1
+            >> sep >> x2
+            >> sep >> y2;
+        QRect rect;
+        rect.setCoords(x1, y1, x2, y2);
+        this->setGeometry(rect);
+    }
+}
+
 void DlgParameterImp::closeEvent(QCloseEvent* )
 {
-    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter()
+        .GetGroup("BaseApp")->GetGroup("Preferences");
     hGrp = hGrp->GetGroup("ParameterEditor");
     QTreeWidgetItem* current = paramGroup->currentItem();
     if (current) {
@@ -153,6 +176,12 @@ void DlgParameterImp::closeEvent(QCloseEvent* )
 
         QString path = paths.join(QLatin1String("."));
         hGrp->SetASCII("LastParameterGroup", (const char*)path.toUtf8());
+        // save geometry of window
+        const QRect& r = this->geometry();
+        std::stringstream str;
+        str << "(" << r.left() << "," << r.top() << ","
+            << r.right() << "," << r.bottom() << ")";
+        hGrp->SetASCII("Geometry", str.str().c_str());
     }
 }
 

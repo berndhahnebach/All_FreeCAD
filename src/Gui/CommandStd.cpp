@@ -322,6 +322,7 @@ StdCmdDlgParameter::StdCmdDlgParameter()
 void StdCmdDlgParameter::activated(int iMsg)
 {
   Gui::Dialog::DlgParameterImp cDlg(getMainWindow());
+  cDlg.resize(QSize(800, 600));
   cDlg.exec();
 }
 
