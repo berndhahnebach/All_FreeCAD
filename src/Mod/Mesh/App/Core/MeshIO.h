@@ -44,6 +44,7 @@ namespace MeshIO {
         ASTL,
         BSTL,
         OBJ,
+        OFF,
         IV,
         VRML,
         WRZ,
@@ -110,6 +111,8 @@ public:
     bool SaveBinarySTL (std::ostream &rstrOut) const;
     /** Saves the mesh object into an OBJ file. */
     bool SaveOBJ (std::ostream &rstrOut) const;
+    /** Saves the mesh object into an OFF file. */
+    bool SaveOFF (std::ostream &rstrOut) const;
     /** Saves the mesh object into a PLY file. */
     bool SavePLY (std::ostream &rstrOut) const;
     /** Saves the mesh object into an XML file. */
