@@ -498,6 +498,7 @@ void CmdMeshExport::activated(int iMsg)
     ext << qMakePair<QString, QByteArray>(QObject::tr("ASCII STL (*.ast)"), "AST");
     ext << qMakePair<QString, QByteArray>(QObject::tr("Binary Mesh (*.bms)"), "BMS");
     ext << qMakePair<QString, QByteArray>(QObject::tr("Alias Mesh (*.obj)"), "OBJ");
+    ext << qMakePair<QString, QByteArray>(QObject::tr("Object File Format (*.off)"), "OFF");
     ext << qMakePair<QString, QByteArray>(QObject::tr("Inventor V2.1 ascii (*.iv)"), "IV");
     ext << qMakePair<QString, QByteArray>(QObject::tr("Standford Polygon (*.ply)"), "PLY");
     ext << qMakePair<QString, QByteArray>(QObject::tr("VRML V2.0 (*.wrl *.vrml)"), "VRML");

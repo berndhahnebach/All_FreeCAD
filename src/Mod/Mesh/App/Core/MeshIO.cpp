@@ -1198,6 +1198,9 @@ bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
         else if (fi.hasExtension("obj")) {
             fileformat = MeshIO::OBJ;
         }
+        else if (fi.hasExtension("off")) {
+            fileformat = MeshIO::OFF;
+        }
         else if (fi.hasExtension("ply")) {
             fileformat = MeshIO::PLY;
         }
@@ -1247,6 +1250,11 @@ bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
         // write file
         if (!SaveOBJ(str)) 
             throw Base::FileException("Export of OBJ mesh failed",FileName);
+    }
+    else if (fileformat == MeshIO::OFF) {
+        // write file
+        if (!SaveOFF(str)) 
+            throw Base::FileException("Export of OFF mesh failed",FileName);
     }
     else if (fileformat == MeshIO::PLY) {
         // write file
@@ -1411,6 +1419,37 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
         rstrOut << "f " << it->_aulPoints[0]+1 << " "
                         << it->_aulPoints[1]+1 << " "
                         << it->_aulPoints[2]+1 << std::endl;
+        seq.next(true); // allow to cancel
+    }
+
+    return true;
+}
+
+/** Saves an OFF file. */
+bool MeshOutput::SaveOFF (std::ostream &out) const
+{
+    const MeshPointArray& rPoints = _rclMesh.GetPoints();
+    const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+
+    if (!out || out.bad() == true)
+        return false;
+
+    Base::SequencerLauncher seq("saving...", _rclMesh.CountPoints() + _rclMesh.CountFacets());  
+
+    out << "OFF" << std::endl;
+    out << rPoints.size() << " " << rFacets.size() << " 0" << std::endl;
+
+    // vertices
+    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+        out << it->x << " " << it->y << " " << it->z << std::endl;
+        seq.next(true); // allow to cancel
+    }
+
+    // facet indices (no texture and normal indices)
+    for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
+        out << "3 " << it->_aulPoints[0] 
+            << " " << it->_aulPoints[1]
+            << " " << it->_aulPoints[2] << std::endl;
         seq.next(true); // allow to cancel
     }
 
