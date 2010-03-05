@@ -166,6 +166,18 @@ class toolBar:
 				if self.lockedz: self.zValue.setEnabled(False)
 				self.zValue.hide()
 
+				self.offsetLabel = QtGui.QLabel(draftToolbar)
+				self.offsetLabel.setGeometry(QtCore.QRect(350,4,60,18))
+				self.offsetLabel.setObjectName("offsetLabel")
+				self.offsetLabel.setText("Offset")
+				self.offsetLabel.hide()
+
+				self.offsetValue = DraftLineEdit(draftToolbar)
+				self.offsetValue.setGeometry(QtCore.QRect(390,4,70,18))
+				self.offsetValue.setObjectName("offsetValue")
+				self.offsetValue.setText("0.00")
+				self.offsetValue.hide()
+
 				self.lockButton = QtGui.QPushButton(draftToolbar)
 				self.lockButton.setGeometry(QtCore.QRect(500,3,20,20))
 				self.lockButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(512,64,64,64))))
@@ -201,6 +213,21 @@ class toolBar:
 				self.closeButton.setIconSize(QtCore.QSize(16, 16))
 				self.closeButton.setObjectName("closeButton")
 				self.closeButton.hide()
+
+				self.xyButton = QtGui.QPushButton(draftToolbar)
+				self.xyButton.setGeometry(QtCore.QRect(200,3,40,20))
+				self.xyButton.setObjectName("xyButton")
+				self.xyButton.hide()
+
+				self.xzButton = QtGui.QPushButton(draftToolbar)
+				self.xzButton.setGeometry(QtCore.QRect(250,3,40,20))
+				self.xzButton.setObjectName("xzButton")
+				self.xzButton.hide()
+
+				self.yzButton = QtGui.QPushButton(draftToolbar)
+				self.yzButton.setGeometry(QtCore.QRect(300,3,40,20))
+				self.yzButton.setObjectName("yzButton")
+				self.yzButton.hide()
 
 				self.labelRadius = QtGui.QLabel(draftToolbar)
 				self.labelRadius.setGeometry(QtCore.QRect(200,4,75,18))
@@ -272,9 +299,15 @@ class toolBar:
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("returnPressed()"),self.xValue.setFocus)
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("returnPressed()"),self.xValue.selectAll)
 
+				QtCore.QObject.connect(self.offsetValue,QtCore.SIGNAL("textEdited(QString)"),self.checkSpecialChars)
+				QtCore.QObject.connect(self.offsetValue,QtCore.SIGNAL("returnPressed()"),self.validatePoint)
+
 				QtCore.QObject.connect(self.finishButton,QtCore.SIGNAL("pressed()"),self.finish)
 				QtCore.QObject.connect(self.closeButton,QtCore.SIGNAL("pressed()"),self.closeLine)
 				QtCore.QObject.connect(self.undoButton,QtCore.SIGNAL("pressed()"),self.undoSegment)
+				QtCore.QObject.connect(self.xyButton,QtCore.SIGNAL("pressed()"),self.selectXY)
+				QtCore.QObject.connect(self.xzButton,QtCore.SIGNAL("pressed()"),self.selectXZ)
+				QtCore.QObject.connect(self.yzButton,QtCore.SIGNAL("pressed()"),self.selectYZ)
 
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("escaped()"),self.finish)
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("undo()"),self.undoSegment)
@@ -315,6 +348,12 @@ class toolBar:
 				self.undoButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Undo the last segment (CTRL+Z)", None, QtGui.QApplication.UnicodeUTF8))
 				self.closeButton.setText(QtGui.QApplication.translate("draftToolbar", "Close", None, QtGui.QApplication.UnicodeUTF8))
 				self.closeButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Finishes and closes the current line (C)", None, QtGui.QApplication.UnicodeUTF8))
+				self.xyButton.setText(QtGui.QApplication.translate("draftToolbar", "XY", None, QtGui.QApplication.UnicodeUTF8))
+				self.xyButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select XY plane", None, QtGui.QApplication.UnicodeUTF8))
+				self.xzButton.setText(QtGui.QApplication.translate("draftToolbar", "XZ", None, QtGui.QApplication.UnicodeUTF8))
+				self.xzButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select XZ plane", None, QtGui.QApplication.UnicodeUTF8))
+				self.yzButton.setText(QtGui.QApplication.translate("draftToolbar", "YZ", None, QtGui.QApplication.UnicodeUTF8))
+				self.yzButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select YZ plane", None, QtGui.QApplication.UnicodeUTF8))
 				self.widthButton.setSuffix(QtGui.QApplication.translate("draftToolbar", "px", None, QtGui.QApplication.UnicodeUTF8))
 				self.isCopy.setText(QtGui.QApplication.translate("draftToolbar", "Copy", None, QtGui.QApplication.UnicodeUTF8))
 				self.isCopy.setToolTip(QtGui.QApplication.translate("draftToolbar", "If checked, objects will be copied instead of moved (C)", None, QtGui.QApplication.UnicodeUTF8))
@@ -333,6 +372,14 @@ class toolBar:
 #---------------------------------------------------------------------------
 # Interface modes
 #---------------------------------------------------------------------------
+
+			def selectPlaneUi(self):
+				self.cmdlabel.setText("SelectPlane")
+				self.xyButton.show()
+				self.xzButton.show()
+				self.yzButton.show()
+				self.offsetLabel.show()
+				self.offsetValue.show()
 
 			def lineUi(self):
 				self.cmdlabel.setText("Line")
@@ -379,6 +426,11 @@ class toolBar:
 				self.finishButton.hide()
 				self.undoButton.hide()
 				self.closeButton.hide()
+				self.xyButton.hide()
+				self.xzButton.hide()
+				self.yzButton.hide()
+				self.offsetLabel.hide()
+				self.offsetValue.hide()
 				self.labelRadius.hide()
 				self.radiusValue.hide()
 				self.isCopy.hide()
@@ -530,6 +582,13 @@ class toolBar:
 							pass
 						else:
 							self.sourceCmd.numericRadius(rad)
+					elif (self.offsetLabel.isVisible()):
+						try:
+							offset=float(self.offsetValue.text())
+						except ValueError:
+							pass
+						else:
+							self.sourceCmd.offsetHandler(offset)
 					else:
 						try:
 							numx=float(self.xValue.text())
@@ -557,6 +616,15 @@ class toolBar:
 				"close button action"
 				self.sourceCmd.finish(True)
 		
+			def selectXY(self):
+				self.sourceCmd.selectHandler("XY")
+		
+			def selectXZ(self):
+				self.sourceCmd.selectHandler("XZ")
+		
+			def selectYZ(self):
+				self.sourceCmd.selectHandler("YZ")
+
 			def undoSegment(self):
 				"undo last line segment"
 				self.sourceCmd.undolast()
