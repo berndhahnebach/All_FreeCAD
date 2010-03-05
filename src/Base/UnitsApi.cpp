@@ -26,7 +26,7 @@
 # include <unistd.h>
 #endif
 
-#include <qstring>
+#include <QString>
 #include "Exception.h"
 #include "UnitsApi.h"
 //#include "UnitsApiPy.h"
