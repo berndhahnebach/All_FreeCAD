@@ -4,6 +4,7 @@ SET(Draft_SRCS
 		InitGui.py
 		Draft.py
 		draftGui.py
+		WorkingPlane.py
 		importDXF.py
 		importOCA.py
 		importSVG.py
