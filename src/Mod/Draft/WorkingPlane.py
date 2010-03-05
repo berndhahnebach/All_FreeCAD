@@ -137,7 +137,7 @@ class plane:
 	def setup(self, direction, point):
 		'''If working plane is undefined, define it!'''
 		if self.doc != FreeCAD.ActiveDocument:
-			self.alignToPointAndAxis(point, direction)
+			self.alignToPointAndAxis(point, direction, 0)
 
 	def reset():
 		self.doc = None
