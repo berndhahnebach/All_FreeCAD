@@ -65,54 +65,70 @@ How it works / how to extend:
 
 ToDo list:
 
-        - Implement a Qt translation system
-        - Pressing ctrl should immediately update the marker displayed when picking.
-        - Shift tab should move focus to previous item (presumably a bug outside of Draft)
-        - Picking fails to notice some endpoints and midpoints.  Sometimes
-          flashes end points on an off while the mouse moves with random state
-          when mouse stops
-        - circle ignores length
-        - When attempting to create a circle tangent to two existing circles, fcgeo
+	- Implement a Qt translation system
+	- Pressing ctrl should immediately update the marker displayed when picking.
+	- Shift tab should move focus to previous item (presumably a bug outside of Draft)
+	- Picking fails to notice some endpoints and midpoints.  Sometimes
+	  flashes end points on an off while the mouse moves with random state
+	  when mouse stops
+	- circle ignores length
+	- When attempting to create a circle tangent to two existing circles, fcgeo
 	  fails:  NameError: global name 'circlefrom2Circles1Point' is not defined
-        - Fix offset tool geometry calculation. Should use openCascade's offset tools.
-        - Scale applied to lines produces BSplineCurve objects, which cause
-          fcgeo to report "Unsupported curve type" when snapping (in findIntersection)
-        - DimensionViewProvider sets norm to Vector(0,0,1).  I don't know what
-          is going on here, but this seems dangerous.
-        - Implement a way to specify the working plane.  Make sure all tools
-          function properly in all planes.
-        - The use of angles to specify arcs is not well defined in general.
-          How do we specify u-direction (the x-axis may not always be the
-          right choice)?
-        - fix arc keyboard specifications
-        - is the arctracker in rotate useful?
-        - Rectangle displays junk immediately after first point is selected.
-        - The following exception is raised by drawing a self-intersecting
-          quadrilateral, updrading it, then trying to snap while creating a line:
+	- Fix offset tool geometry calculation. Should use openCascade's offset tools.
+	  Can we use Part.OffsetCurve?  -- probably not :-(
+	- Scale applied to lines produces BSplineCurve objects, which cause
+	  fcgeo to report "Unsupported curve type" when snapping (in findIntersection)
+	- DimensionViewProvider sets norm to Vector(0,0,1).  I don't know what
+	  is going on here, but this seems dangerous.
+	- Implement a way to specify the working plane.  Make sure all tools
+	  function properly in all planes.
+	- The use of angles to specify arcs is not well defined in general.
+	  How do we specify u-direction (the x-axis may not always be the
+	  right choice)?
+	- fix arc keyboard specifications
+	- is the arctracker in rotate useful?
+	- Rectangle displays junk immediately after first point is selected.
+	- The following exception is raised by drawing a self-intersecting
+	  quadrilateral, updrading it, then trying to snap while creating a line:
 
-          [1;33m<type 'exceptions.ReferenceError'>
-          [0mTraceback (most recent call last):
-          File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 926, in action
-          point,ctrlPoint = getPoint(self,arg)
-          File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 372, in getPoint
-          point = snapPoint(target,point,args["Position"],args["CtrlDown"])
-          File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 190, in snapPoint
-          if (lastObj[0].Type[:4] == "Part"):
-          ReferenceError: Cannot access attribute 'Type' of deleted object
+	  [1;33m<type 'exceptions.ReferenceError'>
+	  [0mTraceback (most recent call last):
+	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 926, in action
+	  point,ctrlPoint = getPoint(self,arg)
+	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 372, in getPoint
+	  point = snapPoint(target,point,args["Position"],args["CtrlDown"])
+	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 190, in snapPoint
+	  if (lastObj[0].Type[:4] == "Part"):
+	  ReferenceError: Cannot access attribute 'Type' of deleted object
 
-        - Do we need to delay geometry creation until after the event
-          callback?  The trackers do this, but it is not done for the "real"
-          geometry.  The answer is probably yes - this could cause core dumps. Use
-          PyQt4.QtCore.QTimer.singleShot(msec,callable) to schedule geometry
-          creation (OCC geometry, too!)
-        - There needs to be a global facility for finishing the active
-          command, regardless of which workbench it is in.
+	- Do we need to delay geometry creation until after the event
+	  callback?  The trackers do this, but it is not done for the "real"
+	  geometry.  The answer is probably yes - this could cause core dumps. Use
+	  PyQt4.QtCore.QTimer.singleShot(msec,callable) to schedule geometry
+	  creation (OCC geometry, too!)
+	- There needs to be a global facility for finishing the active
+	  command, regardless of which workbench it is in.
+
+	- Bug in fcgeo.findIntersection for line and arc (circle?) not on the same plane:
+	  [1;33m<type 'exceptions.UnboundLocalError'>
+	  [0mTraceback (most recent call last):
+	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 1247, in action
+	    point,ctrlPoint = getPoint(self,arg)
+	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 469, in getPoint
+	      point = snapPoint(target,point,args["Position"],args["CtrlDown"])
+	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 289, in snapPoint
+	      pt = fcgeo.findIntersection(j,k)
+	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/draftlibs/fcgeo.py", line 170, in findIntersection
+	      d = vec1.dot(toPlane)
+	  UnboundLocalError: local variable 'vec1' referenced before assignment
+
+	- Rectangle can produce non-planar result
 '''
 
 # import FreeCAD modules
 
 import PyQt4
-import FreeCAD, FreeCADGui, Part, math, sys
+import FreeCAD, FreeCADGui, Part, WorkingPlane, math, sys
 sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
 from FreeCAD import Base, Vector
 from draftlibs import fcvec
@@ -166,6 +182,19 @@ class todo:
 		todo.itinerary.append((f,arg))
 
 
+''' plane selection code used to look like this:
+	if self.ui.lockedz:
+		self.axis = Vector(0,0,1)
+		self.xVec = Vector(1,0,0)
+		self.upVec = Vector(0,1,0)
+	else:
+		self.axis = fcvec.neg(self.view.getViewDirection())
+		rot = self.view.getCameraNode().orientation.getValue()
+		self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
+		self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
+'''
+plane = WorkingPlane.plane()
+
 #---------------------------------------------------------------------------
 # General functions
 #---------------------------------------------------------------------------
@@ -193,7 +222,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 
 	# checking if alwaySnap setting is on
 	if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-		    GetBool("alwaysSnap"): ctrl = True
+		GetBool("alwaysSnap"): ctrl = True
 	
 	snapped=target.view.getObjectInfo((cursor[0],cursor[1]))
 	if (snapped == None):
@@ -395,6 +424,9 @@ def formatObject(target,origin=None):
 			if (target.Type[:4] == "Part"):
 				obrep.ShapeColor = matchrep.ShapeColor
 
+def getSelection():
+	return FreeCADGui.Selection.getSelection(FreeCAD.ActiveDocument.Name)
+
 def select(object):
 	"deselects everything and selects only the passed object"
 	FreeCADGui.Selection.clearSelection()
@@ -408,7 +440,7 @@ def selectObject(arg):
 			#TODO : this part raises a coin3D warning about scene traversal, to be fixed.
 	if (arg["Type"] == "SoMouseButtonEvent"):
 		if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-			selection = FreeCADGui.Selection.getSelection()
+			selection = getSelection()
 			cursor = arg["Position"]
 			snapped = FreeCADGui.ActiveDocument.ActiveView.getObjectInfo((cursor[0],cursor[1]))
 			if snapped:
@@ -428,6 +460,15 @@ def getPoint(target,args,mobile=False,sym=False):
 	view = FreeCADGui.ActiveDocument.ActiveView
 	point = view.getPoint(args["Position"][0],args["Position"][1])
 	point = snapPoint(target,point,args["Position"],args["CtrlDown"])
+
+	
+	viewDirection = view.getViewDirection()
+	if FreeCADGui.ActiveDocument.ActiveView.getCameraType() == "Perspective":
+		camera = FreeCADGui.ActiveDocument.ActiveView.getCameraNode()
+		p = camera.getField("position").getValue()
+		# view is from camera to point:
+		viewDirection = point.sub(Vector(p[0],p[1],p[2]))
+	point = plane.projectPoint(point, viewDirection)
 	ctrlPoint = Vector(point.x,point.y,point.z)
 	if (args["ShiftDown"]): # constraining
 		if mobile and (target.constrain == None):
@@ -438,7 +479,7 @@ def getPoint(target,args,mobile=False,sym=False):
 		ui.xValue.setEnabled(True)
 		ui.yValue.setEnabled(True)
 		if not ui.lockedz: ui.zValue.setEnabled(True)
-	if ui.lockedz: point.z = float(ui.zValue.text())
+	#if ui.lockedz: point.z = float(ui.zValue.text()) #???removed
 	if target.node:
 		if target.featureName == "Rectangle":
 			ui.displayPoint(point, target.node[0])
@@ -528,13 +569,10 @@ class lineTracker(Tracker):
 
 class rectangleTracker(Tracker):
 	"a tracking rectangle"
-	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1),upvec=Vector(0,1,0),xvec=Vector(1,0,0)):
+	def __init__(self,dotted=False,scolor=None,swidth=None):
 		self.origin = Vector(0,0,0)
 		line = coin.SoLineSet()
 		line.numVertices.setValue(5)
-		axis = axis
-		self.upVec = upvec
-		self.xVec = xvec
 		self.coords = coin.SoCoordinate3() # this is the coordinate
 		self.coords.point.setValues(0,5,[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,0]])
 		Tracker.__init__(self,dotted,scolor,swidth,[self.coords,line])
@@ -546,8 +584,8 @@ class rectangleTracker(Tracker):
 
 	def update(self,point):
 		diagonal = point.sub(self.origin)
-		inpoint1 = self.origin.add(fcvec.project(diagonal,self.upVec))
-		inpoint2 = self.origin.add(fcvec.project(diagonal,self.xVec))
+		inpoint1 = self.origin.add(fcvec.project(diagonal,plane.v))
+		inpoint2 = self.origin.add(fcvec.project(diagonal,plane.u))
 		self.coords.point.set1Value(1,inpoint1.x,inpoint1.y,inpoint1.z)
 		self.coords.point.set1Value(2,point.x,point.y,point.z)
 		self.coords.point.set1Value(3,inpoint2.x,inpoint2.y,inpoint2.z)
@@ -564,7 +602,7 @@ class dimTracker(Tracker):
 	def update(self,pts):
 		if len(pts) == 2:
 			points = [fcvec.tup(pts[0],True),fcvec.tup(pts[0],True),\
-				  fcvec.tup(pts[1],True),fcvec.tup(pts[1],True)]
+				fcvec.tup(pts[1],True),fcvec.tup(pts[1],True)]
 			self.coords.point.setValues(0,4,points)
 		elif len(pts) == 3:
 			p1 = pts[0]
@@ -582,11 +620,10 @@ class dimTracker(Tracker):
 		
 class arcTracker(Tracker):
 	"a class to create a tracking arc/circle, used by the functions that need it"
-	def __init__(self,dotted=False,scolor=None,swidth=None,axis=Vector(0,0,1)):
+	def __init__(self,dotted=False,scolor=None,swidth=None):
 		self.center = Vector(0,0,0)
 		self.start = Vector(0,0,0)
 		self.angle = 0
-		self.axis = axis
 
 		self.trans = coin.SoTransform()
 		self.trans.translation.setValue([0,0,0])
@@ -628,7 +665,7 @@ class arcTracker(Tracker):
 		u = self.start.sub(self.center) # translate start for rotation
 		w = math.cos(angle/6)
 		def makepoint(i):
-			v = fcvec.rotate(u, i*angle/6, self.axis)
+			v = fcvec.rotate(u, i*angle/6, plane.axis)
 			if i%2==0:
 				return (v.x, v.y, v.z, 1)
 			else:
@@ -890,6 +927,61 @@ class DimensionViewProvider:
 		svg+='</text>\n</g>\n'
 		return svg
 
+class SelectPlane:
+	"choose a plane for Draft module geometry creation"
+
+	def GetResources(self):
+		return {'MenuText': 'SelectPlane',
+			'ToolTip': 'Select plane for geometry creation'}
+
+	def Activated(self):
+		if FreeCAD.activeDraftCommand:
+			FreeCAD.activeDraftCommand.finish()
+		self.offset = 0
+		self.ui = None
+		self.call = None
+		self.doc = FreeCAD.ActiveDocument
+		if self.doc:
+			FreeCAD.activeDraftCommand = self
+			self.view = FreeCADGui.ActiveDocument.ActiveView
+			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui.selectPlaneUi()
+			self.ui.translate("Pick a face to define the drawing plane\n")
+			self.ui.sourceCmd = self
+			if plane.alignToSelection(self.offset):
+				#??? clear selection here
+				self.finish()
+			else:
+				self.call = self.view.addEventCallback("SoEvent", self.action)
+
+	def action(self, arg):
+		if (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+				cursor = arg["Position"]
+				doc = FreeCADGui.ActiveDocument
+				info = doc.ActiveView.getObjectInfo((cursor[0],cursor[1]))
+				shape = doc.getObject(info["Object"]).Object.Shape
+				component = getattr(shape, info["Component"])
+				if plane.alignToFace(component, self.offset) or plane.alignToCurve(component, self.offset):
+					self.finish()
+
+	def selectHandler(self, arg):
+ 		if arg == "XY":
+			plane.alignToPointAndAxis(Vector(0,0,self.offset), Vector(0,0,1), self.offset)
+		elif arg == "XZ":
+			plane.alignToPointAndAxis(Vector(0,self.offset,0), Vector(0,1,0), self.offset)
+		elif arg == "YZ":
+			plane.alignToPointAndAxis(Vector(self.offset,0,0), Vector(1,0,0), self.offset)
+
+	def offsetHandler(self, arg):
+		self.offset = arg
+
+	def finish(self):
+		if self.call:
+			self.view.removeEventCallback("SoEvent",self.call)
+		FreeCAD.activeDraftCommand = None
+		if self.ui:
+			self.ui.offUi()
 
 
 #---------------------------------------------------------------------------
@@ -905,22 +997,16 @@ class Creator:
 		self.call = None
 		self.doc = None
 		self.doc = FreeCAD.ActiveDocument
+		self.view = FreeCADGui.ActiveDocument.ActiveView
 		if not self.doc:
 			self.finish()
 		else:
 			FreeCAD.activeDraftCommand = self
-			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			if self.ui.lockedz:
-				self.axis = Vector(0,0,1)
-				self.xVec = Vector(1,0,0)
-				self.upVec = Vector(0,1,0)
-			else:
-				self.axis = fcvec.neg(self.view.getViewDirection())
-				rot = self.view.getCameraNode().orientation.getValue()
-				self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
-				self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
+
+			#??? need to get offset to calculate point from ui
+			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
 			self.ui.cross(True)
 			self.node = []
 			self.pos = []
@@ -1127,9 +1213,8 @@ class Rectangle(Creator):
 			self.ui.lineUi()
 			self.ui.cmdlabel.setText("Rectangle")
 			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.axis = self.view.getViewDirection()
 			self.snap = snapTracker()
-			self.rect = rectangleTracker(axis=self.axis,upvec=self.upVec,xvec=self.xVec)
+			self.rect = rectangleTracker()
 			self.ui.translate("Pick first point:\n")
 
 	def finish(self,closed=False):
@@ -1145,8 +1230,8 @@ class Rectangle(Creator):
 		p1 = self.node[0]
 		p3 = self.node[-1]
 		diagonal = p3.sub(p1)
-		p2 = p1.add(fcvec.project(diagonal,self.upVec))
-		p4 = p1.add(fcvec.project(diagonal,self.xVec))
+		p2 = p1.add(fcvec.project(diagonal, plane.v))
+		p4 = p1.add(fcvec.project(diagonal, plane.u))
 		shape = Part.makePolygon([p1,p2,p3,p4,p1])
 		self.doc.openTransaction("Create "+self.featureName) 
 		self.obj=self.doc.addObject("Part::Feature",self.featureName)
@@ -1218,7 +1303,7 @@ class Arc(Creator):
 			self.snap = snapTracker()
 			self.linetrack = lineTracker(dotted=True)
 			self.constraintrack = lineTracker(dotted=True)
-			self.arctrack = arcTracker(axis=self.axis)
+			self.arctrack = arcTracker()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.ui.translate("Pick center point:\n")
 
@@ -1261,7 +1346,7 @@ class Arc(Creator):
 			point,ctrlPoint = getPoint(self,arg)
 			# this is to make sure radius is what you see on screen
 			if self.center and fcvec.dist(point,self.center) > 0:
-				viewdelta = fcvec.project(point.sub(self.center),self.axis)
+				viewdelta = fcvec.project(point.sub(self.center), plane.axis)
 				if not fcvec.isNull(viewdelta):
 					point = point.add(fcvec.neg(viewdelta))
 			if (self.step == 0): # choose center
@@ -1326,7 +1411,7 @@ class Arc(Creator):
 			elif (self.step == 2): # choose first angle
 				currentrad = fcvec.dist(point,self.center)
 				if currentrad != 0:
-					angle = fcvec.angle(self.xVec, point.sub(self.center), self.axis)
+					angle = fcvec.angle(plane.u, point.sub(self.center), plane.axis)
 				else: angle = 0
 				self.linetrack.p2(fcvec.scaleTo(point.sub(self.center),self.rad).add(self.center))
 				# Draw constraint tracker line.
@@ -1342,7 +1427,7 @@ class Arc(Creator):
 			else: # choose second angle
 				currentrad = fcvec.dist(point,self.center)
 				if currentrad != 0:
-					angle = fcvec.angle(self.xVec, point.sub(self.center), self.axis)
+					angle = fcvec.angle(plane.u, point.sub(self.center), plane.axis)
 				else: angle = 0
 				self.linetrack.p2(fcvec.scaleTo(point.sub(self.center),self.rad).add(self.center))
 				# Draw constraint tracker line.
@@ -1362,7 +1447,7 @@ class Arc(Creator):
 				point,ctrlPoint = getPoint(self,arg)
 				# this is to make sure radius is what you see on screen
 				if self.center and fcvec.dist(point,self.center) > 0:
-					viewdelta = fcvec.project(point.sub(self.center),self.axis)
+					viewdelta = fcvec.project(point.sub(self.center), plane.axis)
 					if not fcvec.isNull(viewdelta):
 						point = point.add(fcvec.neg(viewdelta))
 				if (self.step == 0): # choose center
@@ -1417,17 +1502,14 @@ class Arc(Creator):
 	def drawArc(self):
 		"actually draws the FreeCAD object"
 		if self.closedCircle:
-			if self.ui.lockedz:
-				arc = Part.Circle(self.center,Vector(0,0,1),self.rad).toShape()
-			else:
-				arc = Part.Circle(self.center,self.axis,self.rad).toShape()
+			arc = Part.Circle(self.center, plane.axis, self.rad).toShape()
 		else:
-			if self.ui.lockedz: self.axis = fcvec.neg(self.axis)
-			radvec = fcvec.scaleTo(self.xVec,self.rad)
-			p1 = Vector.add(self.center,fcvec.rotate(radvec,self.firstangle,self.axis))
-			p3 = Vector.add(self.center,fcvec.rotate(radvec,self.firstangle+self.angle,self.axis))
+			radvec = fcvec.scaleTo(plane.u, self.rad)
+			p1 = Vector.add(self.center,fcvec.rotate(radvec, self.firstangle, plane.axis))
+			p3 = Vector.add(self.center,
+					fcvec.rotate(radvec, self.firstangle+self.angle, plane.axis))
 			mid = self.firstangle + self.angle/2
-			p2 = Vector.add(self.center,fcvec.rotate(radvec,mid,self.axis))			       
+			p2 = Vector.add(self.center, fcvec.rotate(radvec, mid, plane.axis))
 			arc = Part.Arc(p1,p2,p3).toShape()
 		self.obj.Shape = arc
 		formatObject(self.obj)
@@ -1468,8 +1550,8 @@ class Arc(Creator):
 				# synthesize a vector in the arc's plane 
 				# ??? At this point, (1,0,0) might be good enough.  This code
 				# shows one way to guess an orthogonal vector.
-				if fcvec.equals(self.axis, Vector(1,0,0)): ortho = Vector(0,self.rad,0)
-				else: ortho = fcvec.scaleTo(Vector(1,0,0).cross(self.axis), self.rad)
+				if fcvec.equals(plane.axis, Vector(1,0,0)): ortho = Vector(0,self.rad,0)
+				else: ortho = fcvec.scaleTo(Vector(1,0,0).cross(plane.axis), self.rad)
 				self.arctrack.startPoint(ortho.add(self.center))
 				self.arctrack.update(math.radians(360))
 				self.ui.labelRadius.setText("Start angle")
@@ -1479,9 +1561,9 @@ class Arc(Creator):
 		elif (self.step == 2):
 			self.ui.labelRadius.setText("End angle")
 			self.firstangle = math.radians(rad)
-			if fcvec.equals(self.axis, Vector(1,0,0)): u = Vector(0,self.rad,0)
-			else: u = fcvec.scaleTo(Vector(1,0,0).cross(self.axis), self.rad)
-			urotated = fcvec.rotate(u, math.radians(rad), self.axis)
+			if fcvec.equals(plane.axis, Vector(1,0,0)): u = Vector(0,self.rad,0)
+			else: u = fcvec.scaleTo(Vector(1,0,0).cross(plane.axis), self.rad)
+			urotated = fcvec.rotate(u, math.radians(rad), plane.axis)
 			self.arctrack.startPoint(urotated)
 			self.step = 3
 			self.ui.translate("Pick end angle:\n")
@@ -1704,15 +1786,8 @@ class Modifier:
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			if self.ui.lockedz:
-				self.axis = Vector(0,0,1)
-				self.xVec = Vector(1,0,0)
-				self.upVec = Vector(0,1,0)
-			else:
-				self.axis = fcvec.neg(self.view.getViewDirection())
-				rot = self.view.getCameraNode().orientation.getValue()
-				self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
-				self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
+			#??? point should obey ui.
+			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
 			self.node = []
 			self.ui.sourceCmd = self
 			self.constrain = None
@@ -1744,7 +1819,7 @@ class Move(Modifier):
 			self.ui.cmdlabel.setText("Move")
 			self.featureName = "Move"
 			self.call = None
-			if not FreeCADGui.Selection.getSelection():
+			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
@@ -1757,7 +1832,7 @@ class Move(Modifier):
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = FreeCADGui.Selection.getSelection()
+		self.sel = getSelection()
 		self.ui.pointUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
@@ -1877,7 +1952,7 @@ class ApplyStyle(Modifier):
 	def Activated(self):
 		Modifier.Activated(self)
 		if self.ui:
-			self.sel = FreeCADGui.Selection.getSelection()
+			self.sel = getSelection()
 			if (len(self.sel)>0):
 				self.doc.openTransaction("Change style")
 				for ob in self.sel:
@@ -1907,7 +1982,7 @@ class Rotate(Modifier):
 			self.ui.cmdlabel.setText("Rotate")
 			self.featureName = "Rotate"
 			self.call = None
-			if not FreeCADGui.Selection.getSelection():
+			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
@@ -1921,7 +1996,7 @@ class Rotate(Modifier):
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = FreeCADGui.Selection.getSelection()
+		self.sel = getSelection()
 		self.step = 0
 		self.center = None
 		self.ui.arcUi()
@@ -1929,16 +2004,7 @@ class Rotate(Modifier):
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		if self.ui.lockedz:
-			self.axis = Vector(0,0,1)
-			self.xVec = Vector(1,0,0)
-			self.upVec = Vector(0,1,0)
-		else:
-			self.axis = fcvec.neg(self.view.getViewDirection())
-			rot = self.view.getCameraNode().orientation.getValue()
-			self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
-			self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
-		self.arctrack = arcTracker(axis=self.axis)
+		self.arctrack = arcTracker()
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
 		self.ui.translate("Pick rotation center:\n")
@@ -1964,7 +2030,7 @@ class Rotate(Modifier):
 			else: newob = ob
 			if (ob.Type == "Part::Feature"):
 				shape = ob.Shape
-				shape.rotate(fcvec.tup(self.center),fcvec.tup(self.axis),math.degrees(angle))
+				shape.rotate(fcvec.tup(self.center), fcvec.tup(plane.axis), math.degrees(angle))
 				newob.Shape=shape
 			if copy: formatObject(newob,ob)
 		self.doc.commitTransaction()
@@ -1975,7 +2041,7 @@ class Rotate(Modifier):
 			point,ctrlPoint = getPoint(self,arg)
 			# this is to make sure radius is what you see on screen
 			if self.center and fcvec.dist(point,self.center):
-				viewdelta = fcvec.project(point.sub(self.center),self.axis)
+				viewdelta = fcvec.project(point.sub(self.center), plane.axis)
 				if not fcvec.isNull(viewdelta):
 					point = point.add(fcvec.neg(viewdelta))
 			if self.extendedCopy:
@@ -1985,7 +2051,7 @@ class Rotate(Modifier):
 			elif (self.step == 1):
 				currentrad = fcvec.dist(point,self.center)
 				if (currentrad != 0):
-					angle = fcvec.angle(self.xVec, point.sub(self.center), self.axis)
+					angle = fcvec.angle(plane.u, point.sub(self.center), plane.axis)
 				else: angle = 0
 				self.linetrack.p2(point)
 				# Draw constraint tracker line.
@@ -2001,14 +2067,14 @@ class Rotate(Modifier):
 			else:
 				currentrad = fcvec.dist(point,self.center)
 				if (currentrad != 0):
-					angle = fcvec.angle(self.xVec, point.sub(self.center), self.axis)
+					angle = fcvec.angle(plane.u, point.sub(self.center), plane.axis)
 				else: angle = 0
 				if (angle < self.firstangle): 
 					sweep = (2*math.pi-self.firstangle)+angle
 				else:
 					sweep = angle - self.firstangle
 				self.arctrack.update(sweep)
-				self.ghost.trans.rotation.setValue(coin.SbVec3f(fcvec.tup(self.axis)),sweep)
+				self.ghost.trans.rotation.setValue(coin.SbVec3f(fcvec.tup(plane.axis)),sweep)
 				self.linetrack.p2(point)
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
@@ -2017,7 +2083,7 @@ class Rotate(Modifier):
 					self.constraintrack.on()
 				else: self.constraintrack.off()
 				self.ui.radiusValue.setText("%.2f" % math.degrees(sweep))
-				self.updateAngle(angle)
+				self.updateAngle(angle) #??? what does this do.  can we remove it?
 				self.ui.radiusValue.setFocus()
 				self.ui.radiusValue.selectAll()
 
@@ -2025,7 +2091,7 @@ class Rotate(Modifier):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				point,ctrlPoint = getPoint(self,arg)
 				if self.center and fcvec.dist(point,self.center):
-					viewdelta = fcvec.project(point.sub(self.center),self.axis)
+					viewdelta = fcvec.project(point.sub(self.center), plane.axis)
 					if not fcvec.isNull(viewdelta): point = point.add(fcvec.neg(viewdelta))
 				if (self.step == 0):
 					self.center = point
@@ -2050,8 +2116,8 @@ class Rotate(Modifier):
 					self.ui.translate("Pick rotation angle:\n")
 				else:
 					currentrad = fcvec.dist(point,self.center)
-					angle = point.sub(self.center).getAngle(self.xVec)
-					if fcvec.project(point.sub(self.center),self.upVec).getAngle(self.upVec) > 1:
+					angle = point.sub(self.center).getAngle(plane.u)
+					if fcvec.project(point.sub(self.center), plane.v).getAngle(plane.v) > 1:
 						angle = -angle
 					if (angle < self.firstangle): 
 						sweep = (2*math.pi-self.firstangle)+angle
@@ -2111,7 +2177,7 @@ class Offset(Modifier):
 			self.ui.cmdlabel.setText("Offset")
 			self.featureName = "Offset"
 			self.call = None
-			if not FreeCADGui.Selection.getSelection():
+			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
@@ -2120,14 +2186,14 @@ class Offset(Modifier):
 				self.ui.selectUi()
 				self.ui.translate("Select an object to offset\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			elif len(FreeCADGui.Selection.getSelection()) > 1:
+			elif len(getSelection()) > 1:
 				self.ui.translate("Offset only works on one object at a time\n")
 			else:
 				self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = FreeCADGui.Selection.getSelection()[0]
+		self.sel = getSelection()[0]
 		self.step = 0
 		self.constrainSeg = None
 		self.ui.radiusUi()
@@ -2246,15 +2312,15 @@ class Offset(Modifier):
 		corresponding to an offset of 1 unit'''
 		self.bissectors=[]
 		basevec = fcgeo.vec(self.edges[0])
-		baseoffset = basevec.cross(self.axis); baseoffset.normalize()
+		baseoffset = basevec.cross(plane.axis); baseoffset.normalize()
 		if self.closed: prev = self.edges[-1]
 		else: prev = None
 
 		# finding the first vector
 		if prev:
 			prevvec = fcgeo.vec(prev)
-			angle = fcvec.angle(prevvec,basevec,self.axis)/2
-			offset = fcvec.rotate(baseoffset,angle,self.axis)
+			angle = fcvec.angle(prevvec, basevec, plane.axis)/2
+			offset = fcvec.rotate(baseoffset, angle, plane.axis)
 			sfact = math.sqrt(math.tan(angle)**2+1)
 			self.bissectors.append(fcvec.scale(offset,sfact))
 		else:
@@ -2267,12 +2333,12 @@ class Offset(Modifier):
 				if self.closed and (len(self.edges)>1): next = self.edges[0]
 				else: next = None
 			edgevec = fcgeo.vec(self.edges[e])
-			angle = fcvec.angle(edgevec,basevec,self.axis)
-			offset = fcvec.rotate(baseoffset,angle,self.axis)
+			angle = fcvec.angle(edgevec, basevec, plane.axis)
+			offset = fcvec.rotate(baseoffset, angle, plane.axis)
 			if next:
 				nextvec = fcgeo.vec(next)
-				angle2 = fcvec.angle(nextvec,edgevec,self.axis)/2
-				offset2 = fcvec.rotate(offset,angle2,self.axis)
+				angle2 = fcvec.angle(nextvec, edgevec, plane.axis)/2
+				offset2 = fcvec.rotate(offset, angle2, plane.axis)
 				sfact = math.sqrt(math.tan(angle2)**2+1)
 				self.bissectors.append(fcvec.scale(offset2,sfact))
 			else:
@@ -2314,13 +2380,13 @@ class Offset(Modifier):
 		if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 		else: perp = edge.Curve.Center.sub(edge.Vertexes[0].Point).cross(Vector(0,0,1))
 		angle = fcvec.angle(baseVec,perp)
-		offset1 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
+		offset1 = fcvec.rotate(offsetVec, -angle, axis=plane.axis)
 		offedge1 = fcgeo.offset(edge,offset1)
 		if prev:
 			if (isinstance(prev.Curve,Part.Line)): perp = fcgeo.vec(prev)
 			else: perp = prev.Curve.Center.sub(prev.Vertexes[0].Point).cross(Vector(0,0,1))
 			angle = -fcvec.angle(baseVec,perp)
-			offset2 = fcvec.rotate(offsetVec,angle,axis=self.axis)
+			offset2 = fcvec.rotate(offsetVec, angle, axis=plane.axis)
 			offedge2 = fcgeo.offset(prev,offset2)
 			inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 			first = inter[fcgeo.findClosest(edge.Vertexes[0].Point,inter)]
@@ -2337,13 +2403,13 @@ class Offset(Modifier):
 			if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
 			else: perp = edge.Curve.Center.sub(edge.Vertexes[0].Point).cross(Vector(0,0,1))
 			angle = fcvec.angle(baseVec,perp)
-			offset1 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
-			offedge1 = fcgeo.offset(edge,offset1)			             
+			offset1 = fcvec.rotate(offsetVec, -angle, axis=plane.axis)
+			offedge1 = fcgeo.offset(edge,offset1)				     
 			if next:
 				if (isinstance(next.Curve,Part.Line)): perp = fcgeo.vec(next)
 				else: perp = next.Curve.Center.sub(next.Vertexes[0].Point).cross(Vector(0,0,1))
 				angle = fcvec.angle(baseVec,perp)
-				offset2 = fcvec.rotate(offsetVec,-angle,axis=self.axis)
+				offset2 = fcvec.rotate(offsetVec, -angle, axis=plane.axis)
 				offedge2 = fcgeo.offset(next,offset2)
 				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
 				if inter: last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
@@ -2418,7 +2484,7 @@ class Upgrade(Modifier):
 			self.ui.cmdlabel.setText("Upgrade")			
 			self.featureName = "Upgrade"
 			self.call = None
-			if not FreeCADGui.Selection.getSelection():
+			if not getSelection():
 				self.ui.selectUi()
 				self.ui.translate("Select an object to upgrade\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
@@ -2434,7 +2500,7 @@ class Upgrade(Modifier):
 		
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = FreeCADGui.Selection.getSelection()
+		self.sel = getSelection()
 		loneEdges = False
 		loneFaces = False
 		edges = []
@@ -2531,7 +2597,7 @@ class Downgrade(Modifier):
 			self.ui.cmdlabel.setText("Downgrade")		
 			self.featureName = "Downgrade"
 			self.call = None
-			if not FreeCADGui.Selection.getSelection():
+			if not getSelection():
 				self.ui.selectUi()
 				self.ui.translate("Select an object to upgrade\n")
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
@@ -2540,7 +2606,7 @@ class Downgrade(Modifier):
 
 
 	def proceed(self):
-		self.sel = FreeCADGui.Selection.getSelection()
+		self.sel = getSelection()
 		edges = []
 		faces = []
 		for ob in self.sel:
@@ -2603,7 +2669,7 @@ class Trimex(Modifier):
 			self.ui.cmdlabel.setText("Trimex")
 			self.featureName = "Trimex"
 			self.sel = None
-			if not FreeCADGui.Selection.getSelection():
+			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
@@ -2616,7 +2682,7 @@ class Trimex(Modifier):
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = FreeCADGui.Selection.getSelection()[0]
+		self.sel = getSelection()[0]
 		if self.sel.Shape.isClosed(): self.finish()
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Distance")
@@ -2832,7 +2898,7 @@ class Scale(Modifier):
 			self.ui.cmdlabel.setText("Scale")
 			self.featureName = "Scale"
 			self.call = None
-			if not FreeCADGui.Selection.getSelection():
+			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
@@ -2845,7 +2911,7 @@ class Scale(Modifier):
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = FreeCADGui.Selection.getSelection()
+		self.sel = getSelection()
 		self.ui.pointUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
@@ -2960,6 +3026,7 @@ class Scale(Modifier):
 
 		
 # drawing commands
+FreeCADGui.addCommand('Draft_SelectPlane',SelectPlane())
 FreeCADGui.addCommand('Draft_Line',Line())
 FreeCADGui.addCommand('Draft_Polyline',Polyline())
 FreeCADGui.addCommand('Draft_Circle',Circle())
