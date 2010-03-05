@@ -26,6 +26,7 @@
 # include <unistd.h>
 #endif
 
+#include <qstring>
 #include "Exception.h"
 #include "UnitsApi.h"
 //#include "UnitsApiPy.h"
@@ -54,7 +55,26 @@ using namespace Base;
 # pragma warning(disable : 4335) // disable MAC file format warning on VC
 #endif
 
+// === names =============================================================
 
+char *QuantityNames[] = {
+        "length"      ,   
+        "area"        ,   
+        "volume"      ,   
+        "angle"       , 
+        "time span"    , 
+        "velocity"    , 
+        "acceleration", 
+        "mass"        ,
+        "temperature"
+};
+const QString  UnitsApi::getQuntityName(QuantityType t)
+{
+    // check limits
+    assert(t<9);
+    // returns 
+    return QString::fromLatin1(QuantityNames[t]);
+}
 // === static attributes  ================================================
 
 UnitsApi::UnitSystem  UnitsApi::UserPrefSystem = SI1;

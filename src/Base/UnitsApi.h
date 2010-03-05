@@ -105,6 +105,8 @@ public:
     static void setPrefOf(QuantityType t,const char* Str);
     /// get the default unit of a quantity (e.g. m/s)
     static const QString & getPrefUnitOf(QuantityType t);
+    /// get the name of a quantity (e.g. lenth)
+    static const QString getQuntityName(QuantityType t);
     /// get the translation factor for the default unit of a quantity
     static const double getPrefFactorOf(QuantityType t);
     /// set the application defaults
