@@ -529,7 +529,8 @@ Py::Object View3DInventorPy::getCamera(const Py::Tuple& args)
     try {
         SoWriteAction wa(&out);
         SoCamera * cam = _view->getViewer()->getCamera();
-        wa.apply(cam);
+        if (cam) wa.apply(cam);
+        else buffer[0] = '\0';
         return Py::String(buffer);
     }
     catch (const Base::Exception& e) {
@@ -1379,7 +1380,8 @@ wrap_SoQtViewer_setViewDirection(PyObject *proxy, PyObject *args)
         if (dir.length() < 0.001f)
             throw Py::ValueError("Null vector cannot be used to set direction");
         SoCamera* cam = viewer->getCamera();
-        cam->orientation.setValue(SbRotation(SbVec3f(0, 0, -1), dir));
+        if (cam)
+            cam->orientation.setValue(SbRotation(SbVec3f(0, 0, -1), dir));
         return Py::new_reference_to(Py::None());
     }
     catch (Py::Exception&) {
@@ -1405,6 +1407,10 @@ wrap_SoQtViewer_getViewDirection(PyObject *proxy, PyObject *args)
     SoQtViewer* viewer = reinterpret_cast<SoQtViewer*>(ptr);
     try {
         SoCamera* cam = viewer->getCamera();
+        if (!cam) {
+            PyErr_SetString(PyExc_RuntimeError, "No camera set");
+            return 0;
+        }
         SbRotation camrot = cam->orientation.getValue();
         SbVec3f lookat(0, 0, -1); // init to default view direction vector
         camrot.multVec(lookat, lookat);
@@ -1439,7 +1445,8 @@ wrap_SoQtViewer_setFocalDistance(PyObject *proxy, PyObject *args)
     SoQtViewer* viewer = reinterpret_cast<SoQtViewer*>(ptr);
     PY_TRY {
         SoCamera* cam = viewer->getCamera();
-        cam->focalDistance.setValue(distance);
+        if (cam)
+            cam->focalDistance.setValue(distance);
     } PY_CATCH;
 
     Py_Return;
@@ -1461,8 +1468,10 @@ wrap_SoQtViewer_getFocalDistance(PyObject *proxy, PyObject *args)
     }
 
     SoQtViewer* viewer = reinterpret_cast<SoQtViewer*>(ptr);
+    double dist = 0;
     SoCamera* cam = viewer->getCamera();
-    return PyFloat_FromDouble(cam->focalDistance.getValue());
+    if (cam) dist = cam->focalDistance.getValue();
+    return PyFloat_FromDouble(dist);
 }
 
 static PyObject *

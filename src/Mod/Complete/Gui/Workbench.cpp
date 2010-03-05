@@ -254,6 +254,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
         Drafting->setCommand(QT_TR_NOOP("&Drafting"));
         *Drafting 
+            << "Draft_SelectPlane"
             << "Draft_Line"
             << "Draft_Polyline"
             << "Draft_Circle"
@@ -412,6 +413,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
         Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
         Drafting->setCommand(QT_TR_NOOP("Drafting"));
         *Drafting
+            << "Draft_SelectPlane"
             << "Draft_Line"
             << "Draft_Polyline"
             << "Draft_Circle"

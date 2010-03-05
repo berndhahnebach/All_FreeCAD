@@ -104,6 +104,7 @@ float DemoMode::getSpeed(int v) const
 SbVec3f DemoMode::getDirection(Gui::View3DInventor* view) const
 {
     SoCamera* cam = view->getViewer()->getCamera();
+    if (!cam) return SbVec3f(0,0,-1);
     SbRotation rot = cam->orientation.getValue();
     SbRotation inv = rot.inverse();
     SbVec3f vec(0,0,-1);
