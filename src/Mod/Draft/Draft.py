@@ -65,6 +65,8 @@ How it works / how to extend:
 
 ToDo list:
 
+	- SelectPlane should handle esc chars
+        - Add support for meshes in SelectPlane
 	- Implement a Qt translation system
 	- Pressing ctrl should immediately update the marker displayed when picking.
 	- Shift tab should move focus to previous item (presumably a bug outside of Draft)
@@ -960,10 +962,15 @@ class SelectPlane:
 				cursor = arg["Position"]
 				doc = FreeCADGui.ActiveDocument
 				info = doc.ActiveView.getObjectInfo((cursor[0],cursor[1]))
-				shape = doc.getObject(info["Object"]).Object.Shape
-				component = getattr(shape, info["Component"])
-				if plane.alignToFace(component, self.offset) or plane.alignToCurve(component, self.offset):
-					self.finish()
+				if info:
+					try:
+						shape = doc.getObject(info["Object"]).Object.Shape
+						component = getattr(shape, info["Component"])
+						if plane.alignToFace(component, self.offset) \
+							    or plane.alignToCurve(component, self.offset):
+							self.finish()
+					except:
+						pass
 
 	def selectHandler(self, arg):
  		if arg == "XY":
