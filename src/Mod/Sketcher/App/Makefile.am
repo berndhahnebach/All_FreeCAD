@@ -18,8 +18,6 @@ libSketcher_la_SOURCES = \
 		AppSketcherPy.cpp \
 		Constraint.cpp \
 		Constraint.h \
-		Sketch.cpp \
-		Sketch.h \
 		ConstraintPyImp.cpp \
 		SketchFlatInterface.cpp \
 		SketchFlatInterface.h \
@@ -29,6 +27,9 @@ libSketcher_la_SOURCES = \
 		SketchObjectSF.cpp \
 		SketchObjectSF.h \
 		SketchObjectSFPyImp.cpp \
+		Sketch.cpp \
+		Sketch.h \
+		SketchPyImp.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 
