@@ -41,6 +41,7 @@ EXTRA_DIST = \
 		plugins/widget/plugin.pro \
 		dir2qrc.py \
 		DistTools.py \
+		doctools.py \
 		fcbt.py \
 		FCFileTools.py \
 		InstallMsg.txt \

@@ -39,8 +39,6 @@
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/actions/SoToVRML2Action.h>
 # include <Inventor/actions/SoWriteAction.h>
-# include <Inventor/annex/HardCopy/SoVectorizePSAction.h>
-# include <Inventor/annex/HardCopy/SoVectorOutput.h>
 # include <Inventor/manips/SoClipPlaneManip.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCallback.h> 
@@ -96,7 +94,6 @@
 #include "SoFCInteractiveElement.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
-#include "SoFCVectorizeSVGAction.h"
 #include "SoFCDB.h"
 #include "MainWindow.h"
 #include "NavigationStyle.h"
@@ -480,7 +477,7 @@ void View3DInventorViewer::savePicture(const char* filename, int w, int h,
             renderer.setComponents(SoFCOffscreenRenderer::RGB_TRANSPARENCY );
             break;
         default:
-            throw Base::Exception("View3DInventorViewer::makeScreenShot(): Unknown parameter");
+            break;
     }
 
     SoSeparator* root = new SoSeparator;
@@ -550,7 +547,7 @@ void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage
             renderer.setComponents(SoFCOffscreenRenderer::RGB_TRANSPARENCY );
             break;
         default:
-            throw Base::Exception("View3DInventorViewer::makeScreenShot(): Unknown parameter");
+            break;
     }
 
     SoSeparator* root = new SoSeparator;
@@ -584,43 +581,22 @@ void View3DInventorViewer::savePicture(int w, int h, int eBackgroundType, QImage
     }
 }
 
-void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
-                                       int eBackgroundType) const
+void View3DInventorViewer::saveGraphic(int pagesize, int eBackgroundType, SoVectorizeAction* va) const
 {
-    SoVectorizeAction* ps=0;
-    Base::FileInfo fi(filename);
-    if (fi.hasExtension("ps") || fi.hasExtension("eps")) {
-        ps = new SoVectorizePSAction();
-        //ps.setGouraudThreshold(0.0f);
-    }
-    else if (fi.hasExtension("svg")) {
-        ps = new SoFCVectorizeSVGAction();
-    }
-    else
-        throw Base::Exception("Not supported vector graphic");
-
-    SbViewportRegion vp(getViewportRegion());
-    SoVectorOutput * out = ps->getOutput();
-    if (!out->openFile(filename)) {
-        throw Base::FileException("View3DInventorViewer::saveGraphic(): "
-                                  "Cannot open file", filename);
-    }
-
     switch(eBackgroundType){
         case Current:
-            ps->setBackgroundColor(true, this->getBackgroundColor());
+            va->setBackgroundColor(true, this->getBackgroundColor());
             break;
         case White:
-            ps->setBackgroundColor(true, SbColor(1.0, 1.0, 1.0));
+            va->setBackgroundColor(true, SbColor(1.0, 1.0, 1.0));
             break;
         case Black:
-            ps->setBackgroundColor(true, SbColor(0.0, 0.0, 0.0));
+            va->setBackgroundColor(true, SbColor(0.0, 0.0, 0.0));
             break;
         case Transparent:
             break; // not supported
         default:
-            throw Base::Exception("View3DInventorViewer::saveGraphic(): "
-                                  "Unknown parameter");
+            break;
     }
 
     float border = 10.0f;
@@ -628,17 +604,17 @@ void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
     float vpratio = ((float)vpsize[0]) / ((float)vpsize[1]); 
 
     if (vpratio > 1.0f) {
-      ps->setOrientation(SoVectorizeAction::LANDSCAPE);
+      va->setOrientation(SoVectorizeAction::LANDSCAPE);
       vpratio = 1.0f / vpratio;
     }
     else {
-      ps->setOrientation(SoVectorizeAction::PORTRAIT);
+      va->setOrientation(SoVectorizeAction::PORTRAIT);
     }
 
-    ps->beginStandardPage(SoVectorizeAction::PageSize(pagesize), border);
+    va->beginStandardPage(SoVectorizeAction::PageSize(pagesize), border);
 
     // try to fill as much "paper" as possible
-    SbVec2f size = ps->getPageSize();
+    SbVec2f size = va->getPageSize();
 
     float pageratio = size[0] / size[1];
     float xsize, ysize;
@@ -655,15 +631,13 @@ void View3DInventorViewer::saveGraphic(const char* filename, int pagesize,
     float offx = border + (size[0]-xsize) * 0.5f;
     float offy = border + (size[1]-ysize) * 0.5f;
 
-    ps->beginViewport(SbVec2f(offx, offy), SbVec2f(xsize, ysize));
-    ps->calibrate(this->getViewportRegion());
+    va->beginViewport(SbVec2f(offx, offy), SbVec2f(xsize, ysize));
+    va->calibrate(this->getViewportRegion());
     
-    ps->apply(this->getSceneManager()->getSceneGraph());
+    va->apply(this->getSceneManager()->getSceneGraph());
 
-    ps->endViewport();    
-    ps->endPage();
-    out->closeFile();
-    delete ps;
+    va->endViewport();    
+    va->endPage();
 }
 
 void View3DInventorViewer::startPicking(View3DInventorViewer::ePickMode mode)

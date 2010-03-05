@@ -35,6 +35,7 @@
 #include "Document.h"
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
+#include "SoFCVectorizeSVGAction.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 
@@ -470,19 +471,29 @@ Py::Object View3DInventorPy::saveVectorGraphic(const Py::Tuple& args)
     if (!PyArg_ParseTuple(args.ptr(), "s|ii",&filename,&ps,&t))
         throw Py::Exception();
 
-    try {
-        _view->getViewer()->saveGraphic(filename,ps,t);
-        return Py::None();
+    std::auto_ptr<SoVectorizeAction> vo;
+    Base::FileInfo fi(filename);
+    if (fi.hasExtension("ps") || fi.hasExtension("eps")) {
+        vo = std::auto_ptr<SoVectorizeAction>(new SoVectorizePSAction());
+        //vo->setGouraudThreshold(0.0f);
     }
-    catch (const Base::Exception& e) {
-        throw Py::Exception(e.what());
+    else if (fi.hasExtension("svg")) {
+        vo = std::auto_ptr<SoVectorizeAction>(new SoFCVectorizeSVGAction());
     }
-    catch (const std::exception& e) {
-        throw Py::Exception(e.what());
+    else {
+        throw Py::Exception("Not supported vector graphic");
     }
-    catch(...) {
-        throw Py::Exception("Unknown C++ exception");
+
+    SoVectorOutput * out = vo->getOutput();
+    if (!out || !out->openFile(filename)) {
+        std::ostringstream a_out;
+        a_out << "Cannot open file '" << filename << "'";
+        throw Py::Exception(a_out.str());
     }
+
+    _view->getViewer()->saveGraphic(ps,t,vo.get());
+    out->closeFile();
+    return Py::None();
 }
 
 Py::Object View3DInventorPy::getCameraNode(const Py::Tuple& args)
