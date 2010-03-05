@@ -4,6 +4,7 @@ datadir = $(prefix)/Mod/Draft
 data_DATA = \
 		Draft.py \
 		draftGui.py \
+		WorkingPlane.py \
 		importOCA.py \
 		importDXF.py \
 		importSVG.py \
