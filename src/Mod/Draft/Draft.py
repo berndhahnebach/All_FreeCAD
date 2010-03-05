@@ -2319,7 +2319,7 @@ class Offset(Modifier):
 		# finding the first vector
 		if prev:
 			prevvec = fcgeo.vec(prev)
-			angle = fcvec.angle(prevvec, basevec, plane.axis)/2
+			angle = -fcvec.angle(prevvec, basevec, plane.axis)/2
 			offset = fcvec.rotate(baseoffset, angle, plane.axis)
 			sfact = math.sqrt(math.tan(angle)**2+1)
 			self.bissectors.append(fcvec.scale(offset,sfact))
@@ -2333,11 +2333,11 @@ class Offset(Modifier):
 				if self.closed and (len(self.edges)>1): next = self.edges[0]
 				else: next = None
 			edgevec = fcgeo.vec(self.edges[e])
-			angle = fcvec.angle(edgevec, basevec, plane.axis)
+			angle = -fcvec.angle(edgevec, basevec, plane.axis)
 			offset = fcvec.rotate(baseoffset, angle, plane.axis)
 			if next:
 				nextvec = fcgeo.vec(next)
-				angle2 = fcvec.angle(nextvec, edgevec, plane.axis)/2
+				angle2 = -fcvec.angle(nextvec, edgevec, plane.axis)/2
 				offset2 = fcvec.rotate(offset, angle2, plane.axis)
 				sfact = math.sqrt(math.tan(angle2)**2+1)
 				self.bissectors.append(fcvec.scale(offset2,sfact))
