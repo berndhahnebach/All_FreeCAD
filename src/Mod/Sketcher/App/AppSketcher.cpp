@@ -30,6 +30,12 @@
 #include <Base/Interpreter.h>
  
 #include "SketchObjectSF.h"
+#include "SketchObject.h"
+#include "Constraint.h"
+#include "Sketch.h"
+#include "ConstraintPy.h"
+#include "SketchPy.h"
+
 
 extern struct PyMethodDef Sketcher_methods[];
 
@@ -50,8 +56,11 @@ void AppSketcherExport initSketcher()
         PyErr_SetString(PyExc_ImportError, e.what());
         return;
     }
-    Py_InitModule3("Sketcher", Sketcher_methods, module_Sketcher_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading Sketcher module... done\n");
+    PyObject* sketcherModule = Py_InitModule3("Sketcher", Sketcher_methods, module_Sketcher_doc);   /* mod name, table ptr */
+ 
+    // Add Types to module
+    Base::Interpreter().addType(&Sketcher::ConstraintPy  ::Type,sketcherModule,"Constraint");
+    Base::Interpreter().addType(&Sketcher::SketchPy      ::Type,sketcherModule,"Sketch");
 
 
     // NOTE: To finish the initialization of our own type objects we must
@@ -59,6 +68,12 @@ void AppSketcherExport initSketcher()
     // This function is responsible for adding inherited slots from a type's base class.
  
     Sketcher::SketchObjectSF        ::init();
+    Sketcher::SketchObject          ::init();
+    Sketcher::Sketch                ::init();
+    Sketcher::Constraint            ::init();
+
+    Base::Console().Log("Loading Sketcher module... done\n");
+
 }
 
 

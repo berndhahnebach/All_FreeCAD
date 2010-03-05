@@ -4,11 +4,13 @@ lib_LTLIBRARIES=libSketcher.la Sketcher.la
 
 BUILT_SOURCES=\
 		ConstraintPy.cpp \
+		SketchPy.cpp \
 		SketchObjectPy.cpp \
 		SketchObjectSFPy.cpp
 
 libSketcher_la_BUILT=\
 		ConstraintPy.h \
+		SketchPy.h \
 		SketchObjectPy.h \
 		SketchObjectSFPy.h
 
@@ -16,6 +18,8 @@ libSketcher_la_SOURCES = \
 		AppSketcherPy.cpp \
 		Constraint.cpp \
 		Constraint.h \
+		Sketch.cpp \
+		Sketch.h \
 		ConstraintPyImp.cpp \
 		SketchFlatInterface.cpp \
 		SketchFlatInterface.h \
@@ -94,6 +98,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libSketcher_la_BUILT)
 EXTRA_DIST = \
 		CMakeLists.txt \
 		ConstraintPy.xml \
+		SketchPy.xml \
 		SketchObjectPy.xml \
 		SketchObjectSFPy.xml
 

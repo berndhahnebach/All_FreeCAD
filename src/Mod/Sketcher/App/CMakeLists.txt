@@ -31,6 +31,7 @@ endif(WIN32)
 generate_from_xml(SketchObjectSFPy)
 generate_from_xml(SketchObjectPy)
 generate_from_xml(ConstraintPy)
+generate_from_xml(SketchPy)
 
 SET(Features_SRCS
 		 SketchObjectSF.cpp
@@ -43,6 +44,8 @@ SOURCE_GROUP("Features" FILES ${Features_SRCS})
 SET(Datatypes_SRCS
 		 Constraint.cpp
 		 Constraint.h
+		 Sketch.cpp
+		 Sketch.h
 )
 SOURCE_GROUP("Datatypes" FILES ${Datatypes_SRCS})
 
@@ -53,6 +56,8 @@ SET(Python_SRCS
 		 SketchObjectPyImp.cpp
 		 ConstraintPyImp.cpp
 		 ConstraintPy.xml
+		 SketchPy.xml
+		 SketchPyImp.cpp
 )
 SOURCE_GROUP("Python" FILES ${Python_SRCS})
 
