@@ -43,6 +43,7 @@ class SoRotationXYZ;
 class SbSphereSheetProjector;
 class SoEventCallback;
 class SbBox2s;
+class SoVectorizeAction;
 
 namespace Gui {
 
@@ -147,7 +148,7 @@ public:
     void savePicture(const char* filename, int w, int h, int eBackgroundType,
                      const char* comment) const;
     void savePicture(int w, int h, int eBackgroundType, QImage&) const;
-    void saveGraphic(const char* filename, int pagesize, int eBackgroundType) const;
+    void saveGraphic(int pagesize, int eBackgroundType, SoVectorizeAction* va) const;
     //@}
     /**
      * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
