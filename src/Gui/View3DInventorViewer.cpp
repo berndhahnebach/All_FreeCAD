@@ -954,6 +954,7 @@ SbBool View3DInventorViewer::processSoEventBase(const SoEvent * const ev)
 SbVec3f View3DInventorViewer::getViewDirection() const
 {
     SoCamera* cam = this->getCamera();
+    if (!cam) return SbVec3f(0,0,-1); // this is the default
     SbRotation camrot = cam->orientation.getValue();
     SbVec3f lookat(0, 0, -1); // init to default view direction vector
     camrot.multVec(lookat, lookat);
@@ -963,6 +964,7 @@ SbVec3f View3DInventorViewer::getViewDirection() const
 SbVec3f View3DInventorViewer::getUpDirection() const
 {
     SoCamera* cam = this->getCamera();
+    if (!cam) return SbVec3f(0,1,0);
     SbRotation camrot = cam->orientation.getValue();
     SbVec3f upvec(0, 1, 0); // init to default up vector
     camrot.multVec(upvec, upvec);
@@ -991,6 +993,7 @@ SbVec3f View3DInventorViewer::getPointOnScreen(const SbVec2s& pnt) const
     }
 
     SoCamera* pCam = this->getCamera();
+    if (!pCam) return SbVec3f(); // return invalid point
     SbViewVolume  vol = pCam->getViewVolume();
 
     float nearDist = pCam->nearDistance.getValue();
@@ -1010,6 +1013,7 @@ SbVec3f View3DInventorViewer::getPointOnScreen(const SbVec2s& pnt) const
 void View3DInventorViewer::getNearPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
 {
     SoCamera* pCam = getCamera();
+    if (!pCam) return; // just do nothing
     SbViewVolume vol = pCam->getViewVolume();
 
     // get the normal of the front clipping plane
@@ -1024,6 +1028,7 @@ void View3DInventorViewer::getNearPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
 void View3DInventorViewer::getFarPlane(SbVec3f& rcPt, SbVec3f& rcNormal) const
 {
     SoCamera* pCam = getCamera();
+    if (!pCam) return; // just do nothing
     SbViewVolume vol = pCam->getViewVolume();
 
     // get the normal of the back clipping plane
@@ -1039,6 +1044,7 @@ SbVec3f View3DInventorViewer::projectOnNearPlane(const SbVec2f& pt) const
 {
     SbVec3f pt1, pt2;
     SoCamera* cam = this->getCamera();
+    if (!cam) return SbVec3f(); // return invalid point
     SbViewVolume vol = cam->getViewVolume();
     vol.projectPointToLine(pt, pt1, pt2);
     return pt1;
@@ -1048,6 +1054,7 @@ SbVec3f View3DInventorViewer::projectOnFarPlane(const SbVec2f& pt) const
 {
     SbVec3f pt1, pt2;
     SoCamera* cam = this->getCamera();
+    if (!cam) return SbVec3f(); // return invalid point
     SbViewVolume vol = cam->getViewVolume();
     vol.projectPointToLine(pt, pt1, pt2);
     return pt2;
