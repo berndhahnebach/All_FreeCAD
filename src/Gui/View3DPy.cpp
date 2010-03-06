@@ -36,6 +36,7 @@
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
 #include "SoFCVectorizeSVGAction.h"
+#include "SoFCVectorizeU3DAction.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 
@@ -479,6 +480,9 @@ Py::Object View3DInventorPy::saveVectorGraphic(const Py::Tuple& args)
     }
     else if (fi.hasExtension("svg")) {
         vo = std::auto_ptr<SoVectorizeAction>(new SoFCVectorizeSVGAction());
+    }
+    else if (fi.hasExtension("u3d")) {
+        vo = std::auto_ptr<SoVectorizeAction>(new SoFCVectorizeU3DAction());
     }
     else {
         throw Py::Exception("Not supported vector graphic");

@@ -436,6 +436,7 @@ SET(Inventor_CPP_SRCS
 		 SoFCSelection.cpp
 		 SoFCSelectionAction.cpp
 		 SoFCVectorizeSVGAction.cpp
+		 SoFCVectorizeU3DAction.cpp
 		 SoNavigationDragger.cpp
 		 SoTextLabel.cpp
 )
@@ -452,6 +453,7 @@ SET(Inventor_SRCS
 		 SoFCSelection.h
 		 SoFCSelectionAction.h
 		 SoFCVectorizeSVGAction.h
+		 SoFCVectorizeU3DAction.h
 		 SoNavigationDragger.h
 		 SoTextLabel.h
 )

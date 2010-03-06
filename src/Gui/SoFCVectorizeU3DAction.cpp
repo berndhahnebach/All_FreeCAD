@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2010 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -30,7 +30,7 @@
 #include <Inventor/SbBSPTree.h>
 
 #include <Base/FileInfo.h>
-#include "SoFCVectorizeSVGAction.h"
+#include "SoFCVectorizeU3DAction.h"
 
 using namespace Gui;
 
@@ -124,16 +124,16 @@ public:
 
 // ----------------------------------------------------------------
 
-SoSVGVectorOutput::SoSVGVectorOutput()
+SoU3DVectorOutput::SoU3DVectorOutput()
 {
 }
 
-SoSVGVectorOutput::~SoSVGVectorOutput()
+SoU3DVectorOutput::~SoU3DVectorOutput()
 {
     closeFile();
 }
 
-SbBool SoSVGVectorOutput::openFile (const char *filename)
+SbBool SoU3DVectorOutput::openFile (const char *filename)
 {
     Base::FileInfo fi(filename);
 #ifdef _MSC_VER
@@ -145,13 +145,13 @@ SbBool SoSVGVectorOutput::openFile (const char *filename)
     return this->file.is_open();
 }
 
-void SoSVGVectorOutput::closeFile (void)
+void SoU3DVectorOutput::closeFile (void)
 {
     if (this->file.is_open())
         this->file.close();
 }
 
-std::fstream& SoSVGVectorOutput::getFileStream()
+std::fstream& SoU3DVectorOutput::getFileStream()
 {
     return this->file;
 }
@@ -159,10 +159,10 @@ std::fstream& SoSVGVectorOutput::getFileStream()
 // ----------------------------------------------------------------
 
 namespace Gui {
-class SoFCVectorizeSVGActionP
+class SoFCVectorizeU3DActionP
 {
 public:
-    SoFCVectorizeSVGActionP(SoFCVectorizeSVGAction * p) {
+    SoFCVectorizeU3DActionP(SoFCVectorizeU3DAction * p) {
         this->publ = p;
     }
 
@@ -176,24 +176,24 @@ public:
     void printImage(const SoVectorizeImage * item) const;
 
 private:
-    SoFCVectorizeSVGAction * publ;
+    SoFCVectorizeU3DAction * publ;
 };
 }
 
-void SoFCVectorizeSVGActionP::printText(const SoVectorizeText * item) const
+void SoFCVectorizeU3DActionP::printText(const SoVectorizeText * item) const
 {
     SbVec2f mul = publ->getRotatedViewportSize();
     SbVec2f add = publ->getRotatedViewportStartpos();
     float posx = item->pos[0]*mul[0]+add[0];
     float posy = item->pos[1]*mul[1]+add[1];
 
-    std::ostream& str = publ->getSVGOutput()->getFileStream();
+    std::ostream& str = publ->getU3DOutput()->getFileStream();
     str << "<text x=\"" << posx << "\" y=\"" << posy << "\" "
            "font-size=\"" << item->fontsize * mul[1] << "px\">" 
         << item->string.getString() << "</text>" << std::endl;
 }
 
-void SoFCVectorizeSVGActionP::printTriangle(const SoVectorizeTriangle * item) const
+void SoFCVectorizeU3DActionP::printTriangle(const SoVectorizeTriangle * item) const
 {
     SbVec2f mul = publ->getRotatedViewportSize();
     SbVec2f add = publ->getRotatedViewportStartpos();
@@ -212,79 +212,13 @@ void SoFCVectorizeSVGActionP::printTriangle(const SoVectorizeTriangle * item) co
     }
     this->printTriangle((SbVec3f*)v, (SbColor*)c);
 }
-/* TODO: Support gradients, e.g.
-  <defs>
-    <linearGradient id="verlauf" x1="0%" y1="100%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="black" stop-opacity="100%" />
-      <stop offset="100%" stop-color="white" stop-opacity="50%" />
-    </linearGradient>
-  </defs>
-*/
-/* Example: color per vertex
-#Inventor V2.1 ascii
-Separator {
 
-  Coordinate3 {
-    point [ 0.000000  0.000000  0.000000,
-        100.000000  50.000000  0.000000,
-        0.000000  100.000000  0.000000 ]
-
-  }
-  Material {
-    diffuseColor [ 1 1 0, 0 0 1, 1 0 0 ]
-  }
-  
-  MaterialBinding {
-    value PER_VERTEX
-  }
-  IndexedFaceSet {
-    coordIndex [ 0, 1, 2, -1 ]
-  }
-}
-
-<?xml version="1.0"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<defs>
-		<linearGradient id="red" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="35" y2="80">
-			<stop offset="0" stop-color="rgb(255,0,0)" stop-opacity="1"/>
-			<stop offset="1" stop-color="rgb(255,0,0)" stop-opacity="0"/>
-		</linearGradient>
-		<linearGradient id="blue" gradientUnits="userSpaceOnUse" x1="100" y1="50" x2="0" y2="50">
-			<stop offset="0" stop-color="rgb(0,0,255)" stop-opacity="1"/>
-			<stop offset="1" stop-color="rgb(0,0,255)" stop-opacity="0"/>
-		</linearGradient>
-		<linearGradient id="yellow" gradientUnits="userSpaceOnUse" x1="0" y1="100" x2="40" y2="20">
-			<stop offset="0" stop-color="rgb(255,255,0)" stop-opacity="1"/>
-			<stop offset="1" stop-color="rgb(255,255,0)" stop-opacity="0"/>
-		</linearGradient>
-		<path id="triangle1" d="M0 0 L100 50 L0 100 z"/>
-<filter id="colorAdd">
-	<feComposite in="SourceGraphic" in2="BackgroundImage" operator="arithmetic" k2="1" k3="1"/>
-</filter>
-<filter id="Matrix1">
-	<feColorMatrix type="matrix" values="
-	1 0 0 0 0
-	0 1 0 0 0
-	0 0 1 0 0
-	1 1 1 1 0
-	0 0 0 0 1
-	"/>
-</filter>
-</defs>
-<g filter="url(#Matrix1)">
-	<use xlink:href="#triangle1" fill="url(#blue)"/>
-	<use xlink:href="#triangle1" fill="url(#yellow)" filter="url(#colorAdd)"/>
-	<use xlink:href="#triangle1" fill="url(#red)" filter="url(#colorAdd)"/>
-</g>
-</svg>
-*/
-void SoFCVectorizeSVGActionP::printTriangle(const SbVec3f * v, const SbColor * c) const
+void SoFCVectorizeU3DActionP::printTriangle(const SbVec3f * v, const SbColor * c) const
 {
     if (v[0] == v[1] || v[1] == v[2] || v[0] == v[2]) return;
     uint32_t cc = c->getPackedValue();
 
-    std::ostream& str = publ->getSVGOutput()->getFileStream();
+    std::ostream& str = publ->getU3DOutput()->getFileStream();
     str << "<path d=\"M "
         << v[2][0] << "," << v[2][1] << " L "
         << v[1][0] << "," << v[1][1] << " "
@@ -298,17 +232,17 @@ void SoFCVectorizeSVGActionP::printTriangle(const SbVec3f * v, const SbColor * c
         << "    stroke-linecap:round;stroke-linejoin:round\"/>" << std::endl;
 }
 
-void SoFCVectorizeSVGActionP::printCircle(const SbVec3f & v, const SbColor & c, const float radius) const
+void SoFCVectorizeU3DActionP::printCircle(const SbVec3f & v, const SbColor & c, const float radius) const
 {
     // todo
 }
 
-void SoFCVectorizeSVGActionP::printSquare(const SbVec3f & v, const SbColor & c, const float size) const
+void SoFCVectorizeU3DActionP::printSquare(const SbVec3f & v, const SbColor & c, const float size) const
 {
     // todo
 }
 
-void SoFCVectorizeSVGActionP::printLine(const SoVectorizeLine * item) const
+void SoFCVectorizeU3DActionP::printLine(const SoVectorizeLine * item) const
 {
     SbVec2f mul = publ->getRotatedViewportSize();
     SbVec2f add = publ->getRotatedViewportStartpos();
@@ -327,7 +261,7 @@ void SoFCVectorizeSVGActionP::printLine(const SoVectorizeLine * item) const
     }
     uint32_t cc = c->getPackedValue();
 
-    std::ostream& str = publ->getSVGOutput()->getFileStream();
+    std::ostream& str = publ->getU3DOutput()->getFileStream();
     str << "<line "
         << "x1=\"" << v[0][0] << "\" y1=\"" << v[0][1] << "\" "
         << "x2=\"" << v[1][0] << "\" y2=\"" << v[1][1] << "\" "
@@ -336,46 +270,46 @@ void SoFCVectorizeSVGActionP::printLine(const SoVectorizeLine * item) const
         << "\" stroke-width=\"1px\" />\n";
 }
 
-void SoFCVectorizeSVGActionP::printPoint(const SoVectorizePoint * item) const
+void SoFCVectorizeU3DActionP::printPoint(const SoVectorizePoint * item) const
 {
     // todo
 }
 
-void SoFCVectorizeSVGActionP::printImage(const SoVectorizeImage * item) const
+void SoFCVectorizeU3DActionP::printImage(const SoVectorizeImage * item) const
 {
     // todo
 }
 
 // -------------------------------------------------------
 
-SO_ACTION_SOURCE(SoFCVectorizeSVGAction);
+SO_ACTION_SOURCE(SoFCVectorizeU3DAction);
 
-void SoFCVectorizeSVGAction::initClass(void)
+void SoFCVectorizeU3DAction::initClass(void)
 {
-    SO_ACTION_INIT_CLASS(SoFCVectorizeSVGAction, SoVectorizeAction);
+    SO_ACTION_INIT_CLASS(SoFCVectorizeU3DAction, SoVectorizeAction);
 }
 
-SoFCVectorizeSVGAction::SoFCVectorizeSVGAction()
+SoFCVectorizeU3DAction::SoFCVectorizeU3DAction()
 {
-    SO_ACTION_CONSTRUCTOR(SoFCVectorizeSVGAction);
-    this->setOutput(new SoSVGVectorOutput);
-    this->p = new SoFCVectorizeSVGActionP(this);
+    SO_ACTION_CONSTRUCTOR(SoFCVectorizeU3DAction);
+    this->setOutput(new SoU3DVectorOutput);
+    this->p = new SoFCVectorizeU3DActionP(this);
 }
 
-SoFCVectorizeSVGAction::~SoFCVectorizeSVGAction()
+SoFCVectorizeU3DAction::~SoFCVectorizeU3DAction()
 {
     delete this->p;
 }
 
-SoSVGVectorOutput *
-SoFCVectorizeSVGAction::getSVGOutput(void) const
+SoU3DVectorOutput *
+SoFCVectorizeU3DAction::getU3DOutput(void) const
 {
-    return static_cast<SoSVGVectorOutput*>(SoVectorizeAction::getOutput());
+    return static_cast<SoU3DVectorOutput*>(SoVectorizeAction::getOutput());
 }
 
-void SoFCVectorizeSVGAction::printHeader(void) const
+void SoFCVectorizeU3DAction::printHeader(void) const
 {
-    std::ostream& str = this->getSVGOutput()->getFileStream();
+    std::ostream& str = this->getU3DOutput()->getFileStream();
     str << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << std::endl;
     str << "<!-- Created with FreeCAD (http://free-cad.sourceforge.net) -->" << std::endl;
     str << "<svg xmlns=\"http://www.w3.org/2000/svg\"" << std::endl;
@@ -389,18 +323,18 @@ void SoFCVectorizeSVGAction::printHeader(void) const
     str << "<g>" << std::endl;
 }
 
-void SoFCVectorizeSVGAction::printFooter(void) const
+void SoFCVectorizeU3DAction::printFooter(void) const
 {
-    std::ostream& str = this->getSVGOutput()->getFileStream();
+    std::ostream& str = this->getU3DOutput()->getFileStream();
     str << "</g>" << std::endl;
     str << "</svg>";
 }
 
-void SoFCVectorizeSVGAction::printViewport(void) const
+void SoFCVectorizeU3DAction::printViewport(void) const
 {
 }
 
-void SoFCVectorizeSVGAction::printBackground(void) const
+void SoFCVectorizeU3DAction::printBackground(void) const
 {
     SbVec2f mul = getRotatedViewportSize();
     SbVec2f add = getRotatedViewportStartpos();
@@ -415,7 +349,7 @@ void SoFCVectorizeSVGAction::printBackground(void) const
     (void)this->getBackgroundColor(bg);
     uint32_t cc = bg.getPackedValue();
 
-    std::ostream& str = this->getSVGOutput()->getFileStream();
+    std::ostream& str = this->getU3DOutput()->getFileStream();
     str << "</g>" << std::endl;
     str << "<path" << std::endl;
     str << "   d=\"M "
@@ -432,7 +366,7 @@ void SoFCVectorizeSVGAction::printBackground(void) const
     str << "<g>" << std::endl;
 }
 
-void SoFCVectorizeSVGAction::printItem(const SoVectorizeItem * item) const
+void SoFCVectorizeU3DAction::printItem(const SoVectorizeItem * item) const
 {
     switch (item->type) {
     case SoVectorizeItem::TRIANGLE:
