@@ -65,7 +65,7 @@ How it works / how to extend:
 
 ToDo list:
 
-	- SelectPlane should handle esc chars
+	- Provide a method for off-plane geometry creation (e.g. a DisablePlane tool)
         - Add support for meshes in SelectPlane
 	- Implement a Qt translation system
 	- Pressing ctrl should immediately update the marker displayed when picking.
@@ -957,7 +957,9 @@ class SelectPlane:
 				self.call = self.view.addEventCallback("SoEvent", self.action)
 
 	def action(self, arg):
-		if (arg["Type"] == "SoMouseButtonEvent"):
+		if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
+			self.finish()
+		if arg["Type"] == "SoMouseButtonEvent":
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				cursor = arg["Position"]
 				doc = FreeCADGui.ActiveDocument
@@ -974,11 +976,15 @@ class SelectPlane:
 
 	def selectHandler(self, arg):
  		if arg == "XY":
-			plane.alignToPointAndAxis(Vector(0,0,self.offset), Vector(0,0,1), self.offset)
+			plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), self.offset)
+			self.finish()
 		elif arg == "XZ":
-			plane.alignToPointAndAxis(Vector(0,self.offset,0), Vector(0,1,0), self.offset)
+			plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), self.offset)
+			self.finish()
 		elif arg == "YZ":
-			plane.alignToPointAndAxis(Vector(self.offset,0,0), Vector(1,0,0), self.offset)
+			plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), self.offset)
+			self.finish()
+			
 
 	def offsetHandler(self, arg):
 		self.offset = arg
