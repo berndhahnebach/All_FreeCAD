@@ -399,27 +399,26 @@ DEF_STD_CMD_A(StdCmdPrint );
 StdCmdPrint::StdCmdPrint()
   :Command("Std_Print")
 {
-  sGroup        = QT_TR_NOOP("File");
-  sMenuText     = QT_TR_NOOP("&Print...");
-  sToolTipText  = QT_TR_NOOP("Print the document");
-  sWhatsThis    = "Std_Print";
-  sStatusTip    = QT_TR_NOOP("Print the document");
-  sPixmap       = "document-print";
-  iAccel        = Qt::CTRL+Qt::Key_P;;
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Print...");
+    sToolTipText  = QT_TR_NOOP("Print the document");
+    sWhatsThis    = "Std_Print";
+    sStatusTip    = QT_TR_NOOP("Print the document");
+    sPixmap       = "document-print";
+    iAccel        = Qt::CTRL+Qt::Key_P;;
 }
 
 void StdCmdPrint::activated(int iMsg)
 {
-  if ( getMainWindow()->activeWindow() )
-  {
-      getMainWindow()->statusBar()->showMessage(QObject::tr("Printing..."));
-    getMainWindow()->activeWindow()->print();
-  }
+    if (getMainWindow()->activeWindow()) {
+        getMainWindow()->statusBar()->showMessage(QObject::tr("Printing..."));
+        getMainWindow()->activeWindow()->print();
+    }
 }
 
 bool StdCmdPrint::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("Print");
+    return getGuiApplication()->sendHasMsgToActiveView("Print");
 }
 
 //===========================================================================
@@ -430,25 +429,24 @@ DEF_STD_CMD_A(StdCmdPrintPdf);
 StdCmdPrintPdf::StdCmdPrintPdf()
   :Command("Std_PrintPdf")
 {
-  sGroup        = QT_TR_NOOP("File");
-  sMenuText     = QT_TR_NOOP("&Export PDF...");
-  sToolTipText  = QT_TR_NOOP("Export the document as PDF");
-  sWhatsThis    = "Std_PrintPdf";
-  sStatusTip    = QT_TR_NOOP("Export the document as PDF");
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Export PDF...");
+    sToolTipText  = QT_TR_NOOP("Export the document as PDF");
+    sWhatsThis    = "Std_PrintPdf";
+    sStatusTip    = QT_TR_NOOP("Export the document as PDF");
 }
 
 void StdCmdPrintPdf::activated(int iMsg)
 {
-  if ( getMainWindow()->activeWindow() )
-  {
-    getMainWindow()->statusBar()->showMessage(QLatin1String("Exporting PDF..."));
-    getMainWindow()->activeWindow()->printPdf();
-  }
+    if (getMainWindow()->activeWindow()) {
+        getMainWindow()->statusBar()->showMessage(QObject::tr("Exporting PDF..."));
+        getMainWindow()->activeWindow()->printPdf();
+    }
 }
 
 bool StdCmdPrintPdf::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("PrintPdf");
+    return getGuiApplication()->sendHasMsgToActiveView("PrintPdf");
 }
 
 //===========================================================================

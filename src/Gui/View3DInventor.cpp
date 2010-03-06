@@ -31,6 +31,10 @@
 # include <QEvent>
 # include <QDropEvent>
 # include <QDragEnterEvent>
+# include <QFileDialog>
+# include <QPainter>
+# include <QPrinter>
+# include <QPrintDialog>
 # include <QTimer>
 # include <QUrl>
 # include <Inventor/actions/SoWriteAction.h>
@@ -312,6 +316,37 @@ const char *View3DInventor::getName(void) const
     return "View3DInventor";
 }
 
+void View3DInventor::print()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setFullPage(true);
+    QPrintDialog dlg(&printer, this);
+    if (dlg.exec() == QDialog::Accepted) {
+        print(&printer);
+    }
+}
+
+void View3DInventor::printPdf()
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("Export PDF"), QString(), tr("PDF file (*.pdf)"));
+    if (!filename.isEmpty()) {
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(filename);
+        print(&printer);
+    }
+}
+
+void View3DInventor::print(QPrinter* printer)
+{
+    QImage img;
+    QPainter p(printer);
+    QRect rect = printer->pageRect();
+    _viewer->savePicture(rect.width(), rect.height(), View3DInventorViewer::White, img);
+    p.drawImage(0,0,img);
+    p.end();
+}
+
 // **********************************************************************************
 
 bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
@@ -475,6 +510,10 @@ bool View3DInventor::onHasMsg(const char* pMsg) const
         return getAppDocument()->getAvailableUndos() > 0;
     else if (strcmp("Redo",pMsg) == 0)
         return getAppDocument()->getAvailableRedos() > 0; 
+    else if (strcmp("Print",pMsg) == 0)
+        return true; 
+    else if (strcmp("PrintPdf",pMsg) == 0)
+        return true; 
     else if(strcmp("SetStereoRedGreen",pMsg) == 0)
         return true;
     else if(strcmp("SetStereoQuadBuff",pMsg) == 0)

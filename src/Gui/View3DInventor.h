@@ -29,6 +29,7 @@
 #include <Base/Parameter.h>
 
 class SoNode;
+class QPrinter;
 
 namespace Gui {
 
@@ -61,6 +62,10 @@ public:
     virtual void onUpdate(void);
     virtual void viewAll();
     virtual const char *getName(void) const;
+
+    /// print function of the view
+    virtual void print();
+    virtual void printPdf();
 
     virtual PyObject *getPyObject(void);
     /**
@@ -98,6 +103,9 @@ protected:
 
     /// handle to the viewer parameter group
     ParameterGrp::handle hGrp;
+
+private:
+    void print(QPrinter*);
 
 private:
     View3DInventorViewer * _viewer;

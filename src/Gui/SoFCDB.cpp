@@ -37,6 +37,7 @@
 #include "SoFCSelectionAction.h"
 #include "SoFCInteractiveElement.h"
 #include "SoFCVectorizeSVGAction.h"
+#include "SoFCVectorizeU3DAction.h"
 #include "SoTextLabel.h"
 
 #include "propertyeditor/PropertyItem.h"
@@ -75,6 +76,7 @@ void Gui::SoFCDB::init()
     SoFCDocumentObjectAction        ::initClass();
     SoGLSelectAction                ::initClass();
     SoFCVectorizeSVGAction          ::initClass();
+    SoFCVectorizeU3DAction          ::initClass();
     SoTextLabel                     ::initClass();
     SoStringLabel                   ::initClass();
 

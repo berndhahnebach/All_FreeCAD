@@ -294,6 +294,7 @@ libFreeCADGui_la_SOURCES=\
 		SoFCSelection.cpp \
 		SoFCSelectionAction.cpp \
 		SoFCVectorizeSVGAction.cpp \
+		SoFCVectorizeU3DAction.cpp \
 		SoTextLabel.cpp \
 		SpinBox.cpp \
 		Splashscreen.cpp \
@@ -392,6 +393,7 @@ include_HEADERS=\
 		SoFCSelection.h \
 		SoFCSelectionAction.h \
 		SoFCVectorizeSVGAction.h \
+		SoFCVectorizeU3DAction.h \
 		SoTextLabel.h \
 		SpinBox.h \
 		Splashscreen.h \

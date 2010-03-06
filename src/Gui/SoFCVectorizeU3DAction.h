@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2010 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef GUI_SOFCVECTORIZESVGACTION_H
-#define GUI_SOFCVECTORIZESVGACTION_H
+#ifndef GUI_SOFCVECTORIZEU3DACTION_H
+#define GUI_SOFCVECTORIZEU3DACTION_H
 
 #ifndef __InventorAll__
 # include "InventorAll.h"
@@ -33,10 +33,10 @@
 
 namespace Gui {
 
-class GuiExport SoSVGVectorOutput : public SoVectorOutput {
+class GuiExport SoU3DVectorOutput : public SoVectorOutput {
 public:
-    SoSVGVectorOutput();
-    virtual ~SoSVGVectorOutput();
+    SoU3DVectorOutput();
+    virtual ~SoU3DVectorOutput();
 
     virtual SbBool openFile (const char *filename);
     virtual void closeFile (void);
@@ -49,18 +49,18 @@ private:
 /**
  * @author Werner Mayer
  */
-class SoFCVectorizeSVGActionP;
-class GuiExport SoFCVectorizeSVGAction : public SoVectorizeAction {
+class SoFCVectorizeU3DActionP;
+class GuiExport SoFCVectorizeU3DAction : public SoVectorizeAction {
     typedef SoReplacedElement inherited;
 
-    SO_ACTION_HEADER(SoFCVectorizeSVGAction);
+    SO_ACTION_HEADER(SoFCVectorizeU3DAction);
 
 public:
-    SoFCVectorizeSVGAction(void);
-    virtual ~SoFCVectorizeSVGAction();
+    SoFCVectorizeU3DAction(void);
+    virtual ~SoFCVectorizeU3DAction();
 
     static void initClass(void);
-    SoSVGVectorOutput * getSVGOutput(void) const;
+    SoU3DVectorOutput * getU3DOutput(void) const;
 
 protected:
     virtual void printHeader(void) const;
@@ -70,10 +70,10 @@ protected:
     virtual void printViewport(void) const;
 
 private:
-    SoFCVectorizeSVGActionP* p;
-    friend class SoFCVectorizeSVGActionP;
+    SoFCVectorizeU3DActionP* p;
+    friend class SoFCVectorizeU3DActionP;
 };
 
 } // namespace Gui
 
-#endif // GUI_SOFCVECTORIZESVGACTION_H
+#endif // GUI_SOFCVECTORIZEU3DACTION_H
