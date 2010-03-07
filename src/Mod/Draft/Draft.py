@@ -933,8 +933,9 @@ class SelectPlane:
 	"choose a plane for Draft module geometry creation"
 
 	def GetResources(self):
-		return {'MenuText': 'SelectPlane',
-			'ToolTip': 'Select plane for geometry creation'}
+		return {'Pixmap'  : 'Draft_selectPlane',
+			'MenuText': 'SelectPlane',
+			'ToolTip' : 'Select plane for geometry creation'}
 
 	def Activated(self):
 		if FreeCAD.activeDraftCommand:
