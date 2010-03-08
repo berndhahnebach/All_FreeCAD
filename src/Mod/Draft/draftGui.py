@@ -120,6 +120,13 @@ class toolBar:
 				self.textbuffer = []
 				self.draftToolbar = draftToolbar
 
+				def _pushButton (geometry, name, hide=True):
+					button = QtGui.QPushButton(draftToolbar)
+					button.setGeometry(geometry)
+					button.setObjectName(name)
+					if hide: button.hide()
+					return button
+
 				self.cmdlabel = QtGui.QLabel(draftToolbar)
 				self.cmdlabel.setGeometry(QtCore.QRect(110,4,111,18))
 				self.cmdlabel.setObjectName("cmdlabel")
@@ -178,14 +185,11 @@ class toolBar:
 				self.offsetValue.setText("0.00")
 				self.offsetValue.hide()
 
-				self.lockButton = QtGui.QPushButton(draftToolbar)
-				self.lockButton.setGeometry(QtCore.QRect(500,3,20,20))
+				self.lockButton = _pushButton(QtCore.QRect(500,3,20,20),"lockButton")
 				self.lockButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(512,64,64,64))))
 				self.lockButton.setIconSize(QtCore.QSize(16, 16))
-				self.lockButton.setObjectName("lockButton")
 				self.lockButton.setCheckable(True)
 				if self.lockedz: self.lockButton.setChecked(True)
-				self.lockButton.hide()
 
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
 				self.isRelative.setGeometry(QtCore.QRect(530,6,91,18))
@@ -193,46 +197,23 @@ class toolBar:
 				self.isRelative.setObjectName("isRelative")
 				self.isRelative.hide()
 
-				self.undoButton = QtGui.QPushButton(draftToolbar)
-				self.undoButton.setGeometry(QtCore.QRect(610,3,60,20))
+				self.undoButton = _pushButton(QtCore.QRect(610,3,60,20),"undoButton")
 				self.undoButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(64,64,64,64))))
 				self.undoButton.setIconSize(QtCore.QSize(16, 16))
-				self.undoButton.setObjectName("undoButton")
-				self.undoButton.hide()
 
-				self.finishButton = QtGui.QPushButton(draftToolbar)
-				self.finishButton.setGeometry(QtCore.QRect(673,3,80,20))
+				self.finishButton = _pushButton(QtCore.QRect(673,3,80,20),"finishButton")
 				self.finishButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(448,64,64,64))))
 				self.finishButton.setIconSize(QtCore.QSize(16, 16))
-				self.finishButton.setObjectName("finishButton")
-				self.finishButton.hide()
 
-				self.closeButton = QtGui.QPushButton(draftToolbar)
-				self.closeButton.setGeometry(QtCore.QRect(756,3,60,20))
+				self.closeButton = _pushButton(QtCore.QRect(756,3,60,20),"closeButton")
 				self.closeButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(512,64,64,64))))
 				self.closeButton.setIconSize(QtCore.QSize(16, 16))
-				self.closeButton.setObjectName("closeButton")
-				self.closeButton.hide()
 
-				self.xyButton = QtGui.QPushButton(draftToolbar)
-				self.xyButton.setGeometry(QtCore.QRect(200,3,40,20))
-				self.xyButton.setObjectName("xyButton")
-				self.xyButton.hide()
-
-				self.xzButton = QtGui.QPushButton(draftToolbar)
-				self.xzButton.setGeometry(QtCore.QRect(250,3,40,20))
-				self.xzButton.setObjectName("xzButton")
-				self.xzButton.hide()
-
-				self.yzButton = QtGui.QPushButton(draftToolbar)
-				self.yzButton.setGeometry(QtCore.QRect(300,3,40,20))
-				self.yzButton.setObjectName("yzButton")
-				self.yzButton.hide()
-
-				self.currentViewButton = QtGui.QPushButton(draftToolbar)
-				self.currentViewButton.setGeometry(QtCore.QRect(350,3,100,20))
-				self.currentViewButton.setObjectName("currentButton")
-				self.currentViewButton.hide()
+				self.xyButton = _pushButton(QtCore.QRect(200,3,40,20),"xyButton")
+				self.xzButton = _pushButton(QtCore.QRect(250,3,40,20),"xzButton")
+				self.yzButton = _pushButton(QtCore.QRect(300,3,40,20),"yzButton")
+				self.currentViewButton = _pushButton(QtCore.QRect(350,3,40,20),"view")
+				self.resetPlaneButton = _pushButton(QtCore.QRect(400,3,40,20),"none")
 
 				self.labelRadius = QtGui.QLabel(draftToolbar)
 				self.labelRadius.setGeometry(QtCore.QRect(200,4,75,18))
@@ -259,9 +240,7 @@ class toolBar:
 				self.textValue.setObjectName("textValue")
 				self.textValue.hide()
 				
-				self.colorButton = QtGui.QPushButton(draftToolbar)
-				self.colorButton.setGeometry(QtCore.QRect(792,2,22,22))
-				self.colorButton.setObjectName("colorButton")
+				self.colorButton = _pushButton(QtCore.QRect(792,2,22,22),"colorButton",hide=False)
 				self.color = QtGui.QColor(paramcolor)
 				self.colorPix = QtGui.QPixmap(16,16)
 				self.colorPix.fill(self.color)
@@ -278,11 +257,9 @@ class toolBar:
 				self.isCopy.setObjectName("isCopy")
 				self.isCopy.hide()
 
-				self.applyButton = QtGui.QPushButton(draftToolbar)
-				self.applyButton.setGeometry(QtCore.QRect(870,2,22,22))
+				self.applyButton = _pushButton(QtCore.QRect(870,2,22,22),"applyButton", hide=False)
 				self.applyButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(384,64,64,64))))
 				self.applyButton.setIconSize(QtCore.QSize(16, 16))
-				self.applyButton.setObjectName("applyButton")
 
 				self.sourceCmd=None
 
@@ -310,10 +287,11 @@ class toolBar:
 				QtCore.QObject.connect(self.finishButton,QtCore.SIGNAL("pressed()"),self.finish)
 				QtCore.QObject.connect(self.closeButton,QtCore.SIGNAL("pressed()"),self.closeLine)
 				QtCore.QObject.connect(self.undoButton,QtCore.SIGNAL("pressed()"),self.undoSegment)
-				QtCore.QObject.connect(self.xyButton,QtCore.SIGNAL("pressed()"),self.selectXY)
-				QtCore.QObject.connect(self.xzButton,QtCore.SIGNAL("pressed()"),self.selectXZ)
-				QtCore.QObject.connect(self.yzButton,QtCore.SIGNAL("pressed()"),self.selectYZ)
-				QtCore.QObject.connect(self.currentViewButton,QtCore.SIGNAL("pressed()"),self.selectCurrentView)
+				QtCore.QObject.connect(self.xyButton,QtCore.SIGNAL("clicked()"),self.selectXY)
+				QtCore.QObject.connect(self.xzButton,QtCore.SIGNAL("clicked()"),self.selectXZ)
+				QtCore.QObject.connect(self.yzButton,QtCore.SIGNAL("clicked()"),self.selectYZ)
+				QtCore.QObject.connect(self.currentViewButton,QtCore.SIGNAL("clicked()"),self.selectCurrentView)
+				QtCore.QObject.connect(self.resetPlaneButton,QtCore.SIGNAL("clicked()"),self.selectResetPlane)
 
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("escaped()"),self.finish)
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("undo()"),self.undoSegment)
@@ -360,8 +338,10 @@ class toolBar:
 				self.xzButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select XZ plane", None, QtGui.QApplication.UnicodeUTF8))
 				self.yzButton.setText(QtGui.QApplication.translate("draftToolbar", "YZ", None, QtGui.QApplication.UnicodeUTF8))
 				self.yzButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select YZ plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.currentViewButton.setText(QtGui.QApplication.translate("draftToolbar", "Current View", None, QtGui.QApplication.UnicodeUTF8))
-				self.yzButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select plane perpendicular to the current view", None, QtGui.QApplication.UnicodeUTF8))
+				self.currentViewButton.setText(QtGui.QApplication.translate("draftToolbar", "View", None, QtGui.QApplication.UnicodeUTF8))
+				self.currentViewButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select plane perpendicular to the current view", None, QtGui.QApplication.UnicodeUTF8))
+				self.resetPlaneButton.setText(QtGui.QApplication.translate("draftToolbar", "None", None, QtGui.QApplication.UnicodeUTF8))
+				self.resetPlaneButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Do not project points to a drawing plane", None, QtGui.QApplication.UnicodeUTF8))
 				self.widthButton.setSuffix(QtGui.QApplication.translate("draftToolbar", "px", None, QtGui.QApplication.UnicodeUTF8))
 				self.isCopy.setText(QtGui.QApplication.translate("draftToolbar", "Copy", None, QtGui.QApplication.UnicodeUTF8))
 				self.isCopy.setToolTip(QtGui.QApplication.translate("draftToolbar", "If checked, objects will be copied instead of moved (C)", None, QtGui.QApplication.UnicodeUTF8))
@@ -387,6 +367,7 @@ class toolBar:
 				self.xzButton.show()
 				self.yzButton.show()
 				self.currentViewButton.show()
+				self.resetPlaneButton.show()
 				self.offsetLabel.show()
 				self.offsetValue.show()
 
@@ -439,6 +420,7 @@ class toolBar:
 				self.xzButton.hide()
 				self.yzButton.hide()
 				self.currentViewButton.hide()
+				self.resetPlaneButton.hide()
 				self.offsetLabel.hide()
 				self.offsetValue.hide()
 				self.labelRadius.hide()
@@ -637,6 +619,9 @@ class toolBar:
 
 			def selectCurrentView(self):
 				self.sourceCmd.selectHandler("currentView")
+
+			def selectResetPlane(self):
+				self.sourceCmd.selectHandler("reset")
 
 			def undoSegment(self):
 				"undo last line segment"
