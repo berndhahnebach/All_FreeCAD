@@ -30,6 +30,7 @@
 #include <Inventor/SbBSPTree.h>
 
 #include <Base/FileInfo.h>
+#include <Base/Tools.h>
 #include "SoFCVectorizeU3DAction.h"
 
 using namespace Gui;
@@ -188,9 +189,7 @@ void SoFCVectorizeU3DActionP::printText(const SoVectorizeText * item) const
     float posy = item->pos[1]*mul[1]+add[1];
 
     std::ostream& str = publ->getU3DOutput()->getFileStream();
-    str << "<text x=\"" << posx << "\" y=\"" << posy << "\" "
-           "font-size=\"" << item->fontsize * mul[1] << "px\">" 
-        << item->string.getString() << "</text>" << std::endl;
+    // todo
 }
 
 void SoFCVectorizeU3DActionP::printTriangle(const SoVectorizeTriangle * item) const
@@ -219,17 +218,7 @@ void SoFCVectorizeU3DActionP::printTriangle(const SbVec3f * v, const SbColor * c
     uint32_t cc = c->getPackedValue();
 
     std::ostream& str = publ->getU3DOutput()->getFileStream();
-    str << "<path d=\"M "
-        << v[2][0] << "," << v[2][1] << " L "
-        << v[1][0] << "," << v[1][1] << " "
-        << v[0][0] << "," << v[0][1] << " z\"" << std::endl
-        << "    style=\"fill:#"
-        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
-        << "; stroke:#"
-        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
-        << ";" << std::endl
-        << "    stroke-width:1.0;" << std::endl
-        << "    stroke-linecap:round;stroke-linejoin:round\"/>" << std::endl;
+    // todo
 }
 
 void SoFCVectorizeU3DActionP::printCircle(const SbVec3f & v, const SbColor & c, const float radius) const
@@ -262,12 +251,7 @@ void SoFCVectorizeU3DActionP::printLine(const SoVectorizeLine * item) const
     uint32_t cc = c->getPackedValue();
 
     std::ostream& str = publ->getU3DOutput()->getFileStream();
-    str << "<line "
-        << "x1=\"" << v[0][0] << "\" y1=\"" << v[0][1] << "\" "
-        << "x2=\"" << v[1][0] << "\" y2=\"" << v[1][1] << "\" "
-        << "stroke=\"#"
-        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
-        << "\" stroke-width=\"1px\" />\n";
+    // todo
 }
 
 void SoFCVectorizeU3DActionP::printPoint(const SoVectorizePoint * item) const
@@ -287,6 +271,7 @@ SO_ACTION_SOURCE(SoFCVectorizeU3DAction);
 void SoFCVectorizeU3DAction::initClass(void)
 {
     SO_ACTION_INIT_CLASS(SoFCVectorizeU3DAction, SoVectorizeAction);
+    //SO_ACTION_ADD_METHOD(SoNode, SoFCVectorizeU3DAction::actionMethod);
 }
 
 SoFCVectorizeU3DAction::SoFCVectorizeU3DAction()
@@ -307,27 +292,47 @@ SoFCVectorizeU3DAction::getU3DOutput(void) const
     return static_cast<SoU3DVectorOutput*>(SoVectorizeAction::getOutput());
 }
 
+void
+SoFCVectorizeU3DAction::actionMethod(SoAction * a, SoNode * n)
+{
+}
+
+void SoFCVectorizeU3DAction::beginTraversal(SoNode * node)
+{
+    inherited::beginTraversal(node);
+}
+
+void SoFCVectorizeU3DAction::endTraversal(SoNode * node)
+{
+    inherited::endTraversal(node);
+}
+
 void SoFCVectorizeU3DAction::printHeader(void) const
 {
     std::ostream& str = this->getU3DOutput()->getFileStream();
-    str << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << std::endl;
-    str << "<!-- Created with FreeCAD (http://free-cad.sourceforge.net) -->" << std::endl;
-    str << "<svg xmlns=\"http://www.w3.org/2000/svg\"" << std::endl;
-    str << "     xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:ev=\"http://www.w3.org/2001/xml-events\"" << std::endl;
-    str << "     version=\"1.1\" baseProfile=\"full\"" << std::endl;
+    str << "FILE_FORMAT \"IDTF\"" << std::endl
+        << "FORMAT_VERSION 100" << std::endl;
 
-    SbVec2f size = getPageSize();
-    if (this->getOrientation() == LANDSCAPE)
-        SbSwap<float>(size[0], size[1]);
-    str << "     width=\"" << size[0] << "\" height=\"" << size[1] << "\">" << std::endl;
-    str << "<g>" << std::endl;
+    str << Base::tabs(0) << "NODE \"MODEL\" {" << std::endl;
+    str << Base::tabs(1) << "NODE_NAME \"FreeCAD\"" << std::endl;
+    str << Base::tabs(1) << "PARENT_LIST {" << std::endl;
+    str << Base::tabs(2) << "PARENT_COUNT 1" << std::endl;
+    str << Base::tabs(2) << "PARENT 0 {" << std::endl;
+    str << Base::tabs(3) << "PARENT_NAME \"<NULL>\"" << std::endl;
+    str << Base::tabs(3) << "PARENT_TM {" << std::endl;
+    str << Base::tabs(4) << "1.000000 0.000000 0.000000 0.000000" << std::endl;
+    str << Base::tabs(4) << "0.000000 1.000000 0.000000 0.000000" << std::endl;
+    str << Base::tabs(4) << "0.000000 0.000000 1.000000 0.000000" << std::endl;
+    str << Base::tabs(4) << "0.000000 0.000000 0.000000 1.000000" << std::endl;
+    str << Base::tabs(3) << "}" << std::endl;
+    str << Base::tabs(2) << "}" << std::endl;
+    str << Base::tabs(1) << "}" << std::endl;
+    str << Base::tabs(1) << "RESOURCE_NAME \"FreeCAD\"" << std::endl;
+    str << Base::tabs(0) << "}" << std::endl;
 }
 
 void SoFCVectorizeU3DAction::printFooter(void) const
 {
-    std::ostream& str = this->getU3DOutput()->getFileStream();
-    str << "</g>" << std::endl;
-    str << "</svg>";
 }
 
 void SoFCVectorizeU3DAction::printViewport(void) const
@@ -350,20 +355,7 @@ void SoFCVectorizeU3DAction::printBackground(void) const
     uint32_t cc = bg.getPackedValue();
 
     std::ostream& str = this->getU3DOutput()->getFileStream();
-    str << "</g>" << std::endl;
-    str << "<path" << std::endl;
-    str << "   d=\"M "
-        << x[0] << "," << y[0] << " L "
-        << x[1] << "," << y[0] << " L "
-        << x[1] << "," << y[1] << " L "
-        << x[0] << "," << y[1] << " L "
-        << x[0] << "," << y[0] << " z \"" << std::endl;
-    str << "   style=\"fill:#"
-        << std::hex << std::setw(6) << std::setfill('0') << (cc >> 8)
-        << ";fill-opacity:1;fill-rule:evenodd;stroke:none;"
-           "stroke-width:1px;stroke-linecap:butt;stroke-linejoin:"
-           "miter;stroke-opacity:1\" />\n";
-    str << "<g>" << std::endl;
+    // todo
 }
 
 void SoFCVectorizeU3DAction::printItem(const SoVectorizeItem * item) const

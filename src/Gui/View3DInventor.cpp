@@ -351,7 +351,7 @@ void View3DInventor::print(QPrinter* printer)
 
 bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 {
-    if (strcmp("ViewFit",pMsg) == 0 ) {
+    if (strcmp("ViewFit",pMsg) == 0) {
         _viewer->viewAll();
         return true;
     }

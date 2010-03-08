@@ -558,6 +558,11 @@ QString SelectModule::getModule() const
 
 SelectModule::Dict SelectModule::exportHandler(const QString& fileName, const QString& filter)
 {
+    return exportHandler(QStringList() << fileName, filter);
+}
+
+SelectModule::Dict SelectModule::exportHandler(const QStringList& fileNames, const QString& filter)
+{
     // first check if there is a certain filter selected
     SelectModule::Dict dict;
     if (!filter.isEmpty()) {
@@ -566,18 +571,49 @@ SelectModule::Dict SelectModule::exportHandler(const QString& fileName, const QS
         std::map<std::string, std::string>::const_iterator it;
         it = filterList.find((const char*)filter.toUtf8());
         if (it != filterList.end()) {
-            dict[fileName] = QString::fromAscii(it->second.c_str());
+            QString module = QString::fromAscii(it->second.c_str());
+            for (QStringList::const_iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
+                dict[*it] = module;
+            }
             return dict;
         }
     }
 
-    // if no export filter was set then simply use the first matching module
-    QFileInfo fi(fileName);
-    QString ext = fi.suffix().toLower();
-    std::vector<std::string> modules = App::GetApplication().getExportModules(ext.toAscii());
-    // set the default module handler
-    if (!modules.empty())
-        dict[fileName] = QString::fromAscii(modules.front().c_str());
+    // the global filter (or no filter) was selected. We now try to sort filetypes that are
+    // handled by more than one module and ask to the user to select one.
+    QMap<QString, SelectModule::Dict> filetypeHandler;
+    QMap<QString, QStringList > fileExtension;
+    for (QStringList::const_iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
+        QFileInfo fi(*it);
+        QString ext = fi.completeSuffix().toLower();
+        std::map<std::string, std::string> filters = App::GetApplication().getExportFilters(ext.toAscii());
+        
+        if (filters.empty()) {
+            ext = fi.suffix().toLower();
+            filters = App::GetApplication().getExportFilters(ext.toAscii());
+        }
+
+        fileExtension[ext].push_back(*it);
+        for (std::map<std::string, std::string>::iterator jt = filters.begin(); jt != filters.end(); ++jt)
+            filetypeHandler[ext][QString::fromUtf8(jt->first.c_str())] = QString::fromAscii(jt->second.c_str());
+        // set the default module handler
+        if (!filters.empty())
+            dict[*it] = QString::fromAscii(filters.begin()->second.c_str());
+    }
+
+    for (QMap<QString, SelectModule::Dict>::const_iterator it = filetypeHandler.begin(); 
+        it != filetypeHandler.end(); ++it) {
+        if (it.value().size() > 1) {
+            SelectModule dlg(it.key(),it.value(), getMainWindow());
+            QApplication::beep();
+            if (dlg.exec()) {
+                QString mod = dlg.getModule();
+                const QStringList& files = fileExtension[it.key()];
+                for (QStringList::const_iterator jt = files.begin(); jt != files.end(); ++jt)
+                    dict[*jt] = mod;
+            }
+        }
+    }
 
     return dict;
 }
