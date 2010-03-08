@@ -41,6 +41,8 @@ class plane:
 	def __init__(self):
 		# keep track of active document.  Reset view when doc changes.
 		self.doc = None
+		# self.weak is true if the plane has been defined by self.setup or has been reset
+		self.weak = True
 		# u, v axes and position define plane, perpendicular axis is handy, though redundant.
 		self.u = None
 		self.v = None
@@ -99,6 +101,7 @@ class plane:
 			self.u = fcvec.rotate(self.v, -math.pi/2, self.axis)
 		offsetVector = Vector(axis); offsetVector.multiply(offset)
 		self.position = point.add(offsetVector)
+		self.weak = False
 		FreeCAD.Console.PrintMessage("(position = " + str(self.position) + ")\n")
 		FreeCAD.Console.PrintMessage("Plane selected.\n")
 
@@ -138,8 +141,7 @@ class plane:
 		'''If working plane is undefined, define it!'''
 		if self.doc != FreeCAD.ActiveDocument:
 			self.alignToPointAndAxis(point, direction, 0)
+			self.weak = True
 
-	def reset():
-		self.doc = None
-		self.u, self.v, self.axis, self.position = \
-			None, None, None, None
+	def reset(self):
+		self.weak = True
