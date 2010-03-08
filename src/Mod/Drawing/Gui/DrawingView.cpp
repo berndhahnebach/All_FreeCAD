@@ -43,6 +43,7 @@
 #include "DrawingView.h"
 #include <Base/Stream.h>
 #include <Base/gzstream.h>
+#include <Gui/WaitCursor.h>
 
 using namespace DrawingGui;
 
@@ -128,31 +129,32 @@ void DrawingView::printPdf()
 {
     QString filename = QFileDialog::getSaveFileName(this, tr("Export PDF"), QString(), tr("PDF file (*.pdf)"));
     if (!filename.isEmpty()) {
+        Gui::WaitCursor wc;
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
         printer.setOutputFileName(filename);
-        //print(&printer);
+        printer.setOrientation(QPrinter::Landscape);
+        print(&printer);
     }
 }
 
-void DrawingView::print(/*QPrinter* printer*/)
+void DrawingView::print()
 {
-    //QImage img;
-    //QPainter p(printer);
-    //QRect rect = printer->pageRect();
-    //_viewer->savePicture(rect.width(), rect.height(), View3DInventorViewer::White, img);
-    //p.drawImage(0,0,img);
-    //p.end();
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setFullPage(true);
+    printer.setOrientation(QPrinter::Landscape);
+    QPrintDialog dlg(&printer, this);
+    if (dlg.exec() == QDialog::Accepted) {
+        print(&printer);
+    }
 }
 
 void DrawingView::print(QPrinter* printer)
 {
-    //QImage img;
-    //QPainter p(printer);
-    //QRect rect = printer->pageRect();
-    //_viewer->savePicture(rect.width(), rect.height(), View3DInventorViewer::White, img);
-    //p.drawImage(0,0,img);
-    //p.end();
+    QPainter p(printer);
+    QRect rect = printer->pageRect();
+    this->_drawingView->renderer()->render(&p, rect);
+    p.end();
 }
 
 bool DrawingView::load (const QString & file)
