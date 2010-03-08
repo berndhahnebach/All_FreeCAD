@@ -985,7 +985,9 @@ class SelectPlane:
 		elif arg == "YZ":
 			plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), self.offset)
 			self.finish()
-			
+		elif arg == "currentView":
+			plane.alignToPointAndAxis(Vector(0,0,0), fcvec.neg(FreeCADGui.ActiveDocument.ActiveView.getViewDirection()), self.offset)
+			self.finish()
 
 	def offsetHandler(self, arg):
 		self.offset = arg
