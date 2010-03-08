@@ -42,6 +42,38 @@ private:
     T n;
 };
 
+// ----------------------------------------------------------------------------
+
+template <class T>
+class manipulator
+{
+    T i_;
+    std::ostream& (*f_)(std::ostream&, T);
+
+public:
+    manipulator(std::ostream& (*f)(std::ostream&, T), T i) : f_(f), i_(i)
+    {
+    }
+    friend std::ostream& operator<<( std::ostream& os, manipulator m)
+    {
+        return m.f_(os, m.i_);
+    }
+};
+
+inline std::ostream& tabsN(std::ostream& os, int n)
+{
+    for (int i=0;i<n;i++)
+        os << "\t";
+    return os;
+}
+
+inline manipulator<int> tabs(int n)
+{
+    return manipulator<int>(&tabsN, n);
+}
+
+// ----------------------------------------------------------------------------
+
 template<class T>
 inline T clamp (T num, T lower, T upper)
 {

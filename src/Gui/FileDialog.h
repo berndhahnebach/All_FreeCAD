@@ -199,6 +199,7 @@ public:
      */
     //@{
     static Dict exportHandler(const QString& fn, const QString& filter=QString());
+    static Dict exportHandler(const QStringList& fn, const QString& filter=QString());
     static Dict importHandler(const QString& fn, const QString& filter=QString());
     static Dict importHandler(const QStringList& fn, const QString& filter=QString());
     //@}

@@ -187,7 +187,7 @@ void StdCmdImport::activated(int iMsg)
 
 bool StdCmdImport::isActive(void)
 {
-  return ( getActiveGuiDocument() ? true : false );
+    return (getActiveGuiDocument() ? true : false);
 }
 
 

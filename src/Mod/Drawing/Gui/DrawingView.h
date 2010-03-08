@@ -33,6 +33,7 @@ class QPopupMenu;
 class QToolBar;
 class QSvgWidget;
 class QScrollArea;
+class QPrinter;
 
 namespace DrawingGui
 {
@@ -53,38 +54,15 @@ public:
     bool onHasMsg(const char* pMsg) const ;
     void viewAll();
 
-    //virtual void clearDrawing();
-    //virtual int createDrawingCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode = IV_DISPLAY_RESET);
-    //virtual int pointDrawingTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, int displayMode = IV_DISPLAY_RESET);
-
-    //virtual void EnableStatusBar(bool Enable);
-    //virtual void EnableToolBar(bool Enable);
-    //virtual void EnableMouseEvents(bool Enable);
-    //virtual void EnableOneToOneAction(bool Enable);
-    //virtual void EnableFitDrawingAction(bool Enable);
-    //virtual void EnableColorActions(bool Enable);
-    //virtual int createColorMap(int numEntriesReq = 0, bool Initialise = true);
-    //virtual void clearColorMap();
-    //virtual int getNumColorMapEntries() const;
-    //virtual int setColorMapRGBAValue(int index, float red, float green, float blue, float alpha = 1.0);
-    //virtual int setColorMapRedValue(int index, float value);
-    //virtual int setColorMapGreenValue(int index, float value);
-    //virtual int setColorMapBlueValue(int index, float value);
-    //virtual int setColorMapAlphaValue(int index, float value);
+    void print();
+    void printPdf();
 
 public Q_SLOTS:
     virtual void fitDrawing();
     virtual void oneToOneDrawing();
 
-protected Q_SLOTS:
-    virtual void handleColorAct( QAction* act);
-    virtual void sliderValueAdjusted(int NewValue);
-    virtual void drawGraphics();
-
 protected:
     virtual void createActions();
-    virtual void showOriginalColors();
-    virtual void showBrightened();
     virtual void mousePressEvent(QMouseEvent* cEvent);
     virtual void mouseDoubleClickEvent(QMouseEvent* cEvent);
     virtual void mouseMoveEvent(QMouseEvent* cEvent);
@@ -97,7 +75,7 @@ protected:
     virtual void zoom(int prevX, int prevY, int currX, int currY);
     virtual void select(int currX, int currY);
     virtual void addSelect(int currX, int currY);
-
+    void print(QPrinter* printer);
 
     enum {
         nothing = 0,
@@ -110,7 +88,6 @@ protected:
     QSvgWidget* _drawingView;
     QScrollArea* _scroll;
 
- 
     int _currX;
     int _currY;
     int dragStartWCx;
@@ -139,7 +116,6 @@ protected:
     // Flag for status bar enablement
     bool _statusBarEnabled;
     bool _mouseEventsEnabled;
-
 };
 
 } // namespace DrawingViewGui

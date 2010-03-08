@@ -51,7 +51,7 @@ private:
  */
 class SoFCVectorizeU3DActionP;
 class GuiExport SoFCVectorizeU3DAction : public SoVectorizeAction {
-    typedef SoReplacedElement inherited;
+    typedef SoVectorizeAction inherited;
 
     SO_ACTION_HEADER(SoFCVectorizeU3DAction);
 
@@ -63,11 +63,16 @@ public:
     SoU3DVectorOutput * getU3DOutput(void) const;
 
 protected:
+    virtual void beginTraversal(SoNode * node);
+    virtual void endTraversal(SoNode *node);
     virtual void printHeader(void) const;
     virtual void printFooter(void) const;
     virtual void printBackground(void) const;
     virtual void printItem(const SoVectorizeItem * item) const;
     virtual void printViewport(void) const;
+
+private:
+    static void actionMethod(SoAction *, SoNode *);
 
 private:
     SoFCVectorizeU3DActionP* p;
