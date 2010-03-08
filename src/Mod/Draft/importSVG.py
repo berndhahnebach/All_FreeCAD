@@ -693,12 +693,9 @@ def export(exportList,filename):
 					p2 = p1.add(fcvec.neg(proj))
 					p3 = p4.add(fcvec.neg(proj))
 					if dmax and (proj.Length > dmax):
-						p1 = p2.add(fcvec.scale(fcvec.normalized(proj),dmax))
-						p4 = p3.add(fcvec.scale(fcvec.normalized(proj),dmax))
+						p1 = p2.add(fcvec.scale(proj.normalize(),dmax))
+						p4 = p3.add(fcvec.scale(proj.normalize(),dmax))
 				midpoint = p2.add(fcvec.scale(p3.sub(p2),0.5))
-				if not proj:
-					ed = fcgeo.vec(base)
-					proj = fcvec.crossproduct(ed)
 				angle = fcvec.angle(p3.sub(p2))
 				if (angle > math.pi/2) or (angle < -math.pi/2): angle = angle+math.pi
 				offset = fcvec.rotate(FreeCAD.Vector(height*.2,0,0),-angle+math.pi/2)
