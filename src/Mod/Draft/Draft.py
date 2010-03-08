@@ -65,7 +65,7 @@ How it works / how to extend:
 
 ToDo list:
 
-	- Provide a method for off-plane geometry creation (e.g. a DisablePlane tool)
+	- Return in SelectPlane should changes the offset, keeping the current plane.
         - Add support for meshes in SelectPlane
 	- Implement a Qt translation system
 	- Pressing ctrl should immediately update the marker displayed when picking.
@@ -463,14 +463,15 @@ def getPoint(target,args,mobile=False,sym=False):
 	point = view.getPoint(args["Position"][0],args["Position"][1])
 	point = snapPoint(target,point,args["Position"],args["CtrlDown"])
 
-	
-	viewDirection = view.getViewDirection()
-	if FreeCADGui.ActiveDocument.ActiveView.getCameraType() == "Perspective":
-		camera = FreeCADGui.ActiveDocument.ActiveView.getCameraNode()
-		p = camera.getField("position").getValue()
-		# view is from camera to point:
-		viewDirection = point.sub(Vector(p[0],p[1],p[2]))
-	point = plane.projectPoint(point, viewDirection)
+	if not plane.weak:
+		# working plane was explicitely selected - project onto it
+		viewDirection = view.getViewDirection()
+		if FreeCADGui.ActiveDocument.ActiveView.getCameraType() == "Perspective":
+			camera = FreeCADGui.ActiveDocument.ActiveView.getCameraNode()
+			p = camera.getField("position").getValue()
+			# view is from camera to point:
+			viewDirection = point.sub(Vector(p[0],p[1],p[2]))
+		point = plane.projectPoint(point, viewDirection)
 	ctrlPoint = Vector(point.x,point.y,point.z)
 	if (args["ShiftDown"]): # constraining
 		if mobile and (target.constrain == None):
@@ -986,7 +987,11 @@ class SelectPlane:
 			plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), self.offset)
 			self.finish()
 		elif arg == "currentView":
-			plane.alignToPointAndAxis(Vector(0,0,0), fcvec.neg(FreeCADGui.ActiveDocument.ActiveView.getViewDirection()), self.offset)
+			viewDirection = fcvec.neg(self.view.getViewDirection())
+			plane.alignToPointAndAxis(Vector(0,0,0), viewDirection, self.offset)
+			self.finish()
+		elif arg == "reset":
+			plane.reset()
 			self.finish()
 
 	def offsetHandler(self, arg):
@@ -1020,8 +1025,6 @@ class Creator:
 			FreeCAD.activeDraftCommand = self
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-
-			#??? need to get offset to calculate point from ui
 			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
 			self.ui.cross(True)
 			self.node = []
@@ -1802,7 +1805,6 @@ class Modifier:
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
-			#??? point should obey ui.
 			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
 			self.node = []
 			self.ui.sourceCmd = self
