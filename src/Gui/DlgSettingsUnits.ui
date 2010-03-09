@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Gui::Dialog::DlgSettingsMacro</class>
- <widget class="QWidget" name="Gui::Dialog::DlgSettingsMacro">
+ <class>Gui::Dialog::DlgSettingsUnits</class>
+ <widget class="QWidget" name="Gui::Dialog::DlgSettingsUnits">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>345</width>
+    <width>351</width>
     <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Macro</string>
+   <string>Units</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -25,12 +25,12 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>User default system:</string>
+           <string>User view system:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox">
+         <widget class="QComboBox" name="comboBox_ViewSystem">
           <item>
            <property name="text">
             <string>FreeCAD standard (mm/kg/s/degree)</string>
@@ -51,7 +51,27 @@
        </layout>
       </item>
       <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>User units:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QTableWidget" name="tableWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <column>
          <property name="text">
           <string>magnitude</string>
@@ -65,17 +85,34 @@
        </widget>
       </item>
       <item>
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>set to:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_ResetSystem">
+          <item>
+           <property name="text">
+            <string>FreeCAD standard (mm/kg/s/degree)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>MKS (m/kg/s/degree)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Imperial</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

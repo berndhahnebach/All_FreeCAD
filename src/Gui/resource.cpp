@@ -35,6 +35,7 @@
 #include "DlgGeneralImp.h"
 #include "DlgEditorImp.h"
 #include "DlgSettingsMacroImp.h"
+#include "DlgSettingsUnitsImp.h"
 #include "DlgSettingsDocumentImp.h"
 #include "DlgOnlineHelpImp.h"
 #include "DlgReportViewImp.h"
@@ -53,7 +54,7 @@ using namespace Gui::Dialog;
  */
 WidgetFactorySupplier::WidgetFactorySupplier()
 {
-    // ADD YOUR PREFERENCE PAGES HERE
+    // ADD YOUR PREFERENCE PAGES HERE 
     //
     //
     new PrefPageProducer<DlgGeneralImp>         ( QT_TR_NOOP("General") );
@@ -62,6 +63,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
+    new PrefPageProducer<DlgSettingsUnitsImp>   ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Display") );
     new PrefPageProducer<DlgSettingsViewColor>  ( QT_TR_NOOP("Display") );
 
