@@ -198,6 +198,16 @@ PropertyVectorList::~PropertyVectorList()
 //**************************************************************************
 // Base class implementer
 
+void PropertyVectorList::setSize(int newSize)
+{
+    _lValueList.resize(newSize);
+}
+
+int PropertyVectorList::getSize(void) const
+{
+    return static_cast<int>(_lValueList.size());
+}
+
 void PropertyVectorList::setValue(const Base::Vector3f& lValue)
 {
     aboutToSetValue();
@@ -317,6 +327,11 @@ void PropertyVectorList::Paste(const Property &from)
     aboutToSetValue();
     _lValueList = dynamic_cast<const PropertyVectorList&>(from)._lValueList;
     hasSetValue();
+}
+
+unsigned int PropertyVectorList::getMemSize (void) const
+{
+    return static_cast<unsigned int>(_lValueList.size() * sizeof(Base::Vector3f));
 }
 
 //**************************************************************************

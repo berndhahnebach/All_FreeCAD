@@ -96,6 +96,7 @@
 #include <boost/token_functions.hpp>
 #include <boost/signals.hpp>
 #include <boost/bind.hpp>
+#include <boost/version.hpp>
 
 using namespace App;
 using namespace std;
@@ -1253,6 +1254,11 @@ void Application::LoadParameters(void)
 #if (defined(_MSC_VER) && (_MSC_VER < 1600))
 // fix weird error while linking boost (all versions of VC)
 namespace boost { namespace program_options { std::string arg="arg"; } }
+#if (defined (BOOST_VERSION) && (BOOST_VERSION == 104100))
+namespace boost { namespace program_options { 
+    const unsigned options_description::m_default_line_length = 80;
+} }
+#endif
 #endif
 
 pair<string, string> customSyntax(const string& s)

@@ -113,12 +113,8 @@ public:
      */
     ~PropertyVectorList();
 
-    virtual void setSize(int newSize) {
-        _lValueList.resize(newSize);
-    }
-    virtual int getSize(void) const {
-        return _lValueList.size();
-    }
+    virtual void setSize(int newSize);
+    virtual int getSize(void) const;
 
     /** Sets the property
      */
@@ -152,9 +148,7 @@ public:
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
 
-    virtual unsigned int getMemSize (void) const {
-        return _lValueList.size() * sizeof(Base::Vector3f);
-    }
+    virtual unsigned int getMemSize (void) const;
 
 private:
     std::vector<Base::Vector3f> _lValueList;

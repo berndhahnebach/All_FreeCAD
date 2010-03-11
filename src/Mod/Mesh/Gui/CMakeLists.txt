@@ -6,7 +6,7 @@ include_directories(
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 set(MeshGui_LIBS
  		 ${Boost_LIBRARIES}

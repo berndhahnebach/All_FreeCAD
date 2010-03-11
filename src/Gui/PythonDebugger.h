@@ -67,7 +67,7 @@ inline const QString& Breakpoint::filename()const
 
 inline int Breakpoint::countLines()const
 {
-    return _linenums.size();
+    return static_cast<int>(_linenums.size());
 }
 
 inline bool Breakpoint::checkBreakpoint(const QString& fn, int line)

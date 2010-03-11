@@ -113,7 +113,7 @@ public:
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
     
-    virtual unsigned int getMemSize (void) const{return _cValue.string().size();}
+    virtual unsigned int getMemSize (void) const;
 
 protected:
     boost::filesystem::path _cValue;
@@ -263,8 +263,8 @@ public:
      */
     ~PropertyIntegerList();
 
-    virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-    virtual int getSize(void) const {return _lValueList.size();}   
+    virtual void setSize(int newSize);
+    virtual int getSize(void) const;
 
     /** Sets the property 
      */
@@ -286,8 +286,8 @@ public:
     
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
-    
-    virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(long);}
+    virtual unsigned int getMemSize (void) const;
+
 private:
     std::vector<long> _lValueList;
 };
@@ -447,8 +447,8 @@ public:
      */
     virtual ~PropertyFloatList();
     
-    virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-    virtual int getSize(void) const {return _lValueList.size();}   
+    virtual void setSize(int newSize);
+    virtual int getSize(void) const;
 
     /** Sets the property 
      */
@@ -474,9 +474,8 @@ public:
     
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
-    
-    virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(float);}
-    
+    virtual unsigned int getMemSize (void) const;
+
 private:
     std::vector<float> _lValueList;
 };
@@ -518,8 +517,7 @@ public:
 
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
-    
-    virtual unsigned int getMemSize (void) const{return _cValue.size();}
+    virtual unsigned int getMemSize (void) const;
 
 private:
     std::string _cValue;
@@ -542,9 +540,9 @@ public:
      * A more elaborate description of the destructor.
      */
     ~PropertyStringList();
-    
-    virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-    virtual int getSize(void) const {return _lValueList.size();}   
+
+    virtual void setSize(int newSize);
+    virtual int getSize(void) const;
     
     /** Sets the property 
      */
@@ -684,9 +682,9 @@ public:
      * A more elaborate description of the destructor.
      */
     ~PropertyColorList();
-    
-    virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-    virtual int getSize(void) const {return _lValueList.size();}   
+
+    virtual void setSize(int newSize);
+    virtual int getSize(void) const;
     
     /** Sets the property 
      */
@@ -711,8 +709,7 @@ public:
     
     virtual Property *Copy(void) const;
     virtual void Paste(const Property &from);
-    
-    virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(Color);}
+    virtual unsigned int getMemSize (void) const;
     
 private:
     std::vector<Color> _lValueList;

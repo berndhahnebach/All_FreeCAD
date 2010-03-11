@@ -7,7 +7,7 @@ include_directories(
 		 ${CMAKE_CURRENT_SOURCE_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR}
+		 ${XERCESC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR})
 
 

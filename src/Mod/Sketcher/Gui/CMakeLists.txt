@@ -15,7 +15,7 @@ include_directories(
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 if(WIN32)
 		 set(SketcherGui_LIBS

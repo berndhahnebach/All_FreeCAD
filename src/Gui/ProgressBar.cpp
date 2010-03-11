@@ -171,7 +171,7 @@ void Sequencer::nextStep(bool canAbort)
 void Sequencer::setProgress(size_t step)
 {
     d->bar->show();
-    setValue(step);
+    setValue((int)step);
 }
 
 void Sequencer::setValue(int step)

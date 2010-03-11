@@ -8,7 +8,7 @@ include_directories(
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 ######################## FreeCADMain ########################
 if(FREECAD_BUILD_GUI)

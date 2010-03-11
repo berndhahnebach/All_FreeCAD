@@ -237,16 +237,18 @@ App::DocumentObject * PropertyLinkSub::getValue(Base::Type t) const
 PyObject *PropertyLinkSub::getPyObject(void)
 {
     Py::Tuple tup(2);
-    Py::List  list(_cSubList.size());
-    if(_pcLinkSub){
+    Py::List list(static_cast<int>(_cSubList.size()));
+    if (_pcLinkSub) {
         _pcLinkSub->getPyObject();
         tup[0] = Py::Object(_pcLinkSub->getPyObject());
         for(unsigned int i = 0;i<_cSubList.size(); i++)
             list[i] = Py::String(_cSubList[i]);
         tup[1] = list;
         return Py::new_reference_to(tup);
-    }else
-        Py_Return;
+    }
+    else {
+        return Py::new_reference_to(Py::None());
+    }
 }
 
 void PropertyLinkSub::setPyObject(PyObject *value)
@@ -355,6 +357,16 @@ PropertyLinkList::PropertyLinkList()
 PropertyLinkList::~PropertyLinkList()
 {
 
+}
+
+void PropertyLinkList::setSize(int newSize)
+{
+    _lValueList.resize(newSize);
+}
+
+int PropertyLinkList::getSize(void) const
+{
+    return static_cast<int>(_lValueList.size());
 }
 
 void PropertyLinkList::setValue(DocumentObject* lValue)
@@ -467,4 +479,9 @@ void PropertyLinkList::Paste(const Property &from)
     aboutToSetValue();
     _lValueList = dynamic_cast<const PropertyLinkList&>(from)._lValueList;
     hasSetValue();
+}
+
+unsigned int PropertyLinkList::getMemSize (void) const
+{
+    return static_cast<unsigned int>(_lValueList.size() * sizeof(App::DocumentObject *));
 }

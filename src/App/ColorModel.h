@@ -339,7 +339,7 @@ public:
   bool setValue (unsigned long ulPos, float fVal);
   std::string getText (unsigned long ulPos) const;
   bool setText (unsigned long ulPos, const std::string &rclName);
-  unsigned long   hasNumberOfFields (void) const { return _aclColorFields.size(); }
+  unsigned long hasNumberOfFields (void) const { return (unsigned long)_aclColorFields.size(); }
   void setOutsideGrayed (bool bOS) { _bOutsideGrayed = bOS; }
   bool isOutsideGrayed (void) const { return _bOutsideGrayed; }
   inline float  getMinValue (void) const;
@@ -392,7 +392,7 @@ inline unsigned short ColorLegend::getColorIndex (float fVal) const
   if (pI == _aclValues.begin())
     return 0;
   else if (pI == _aclValues.end())
-    return _aclColorFields.size() - 1;
+    return (unsigned short)(_aclColorFields.size() - 1);
   else
     return pI - _aclValues.begin() - 1;
 }

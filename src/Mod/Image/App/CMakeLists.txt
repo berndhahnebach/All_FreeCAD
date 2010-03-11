@@ -6,7 +6,7 @@ include_directories(
 		 #${OPENCV_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 if(WIN32)
 		 set(Image_LIBS

@@ -244,6 +244,10 @@ void PropertyPath::Paste(const Property &from)
     hasSetValue();
 }
 
+unsigned int PropertyPath::getMemSize (void) const
+{
+    return static_cast<unsigned int>(_cValue.string().size());
+}
 
 //**************************************************************************
 //**************************************************************************
@@ -555,6 +559,16 @@ PropertyIntegerList::~PropertyIntegerList()
 
 }
 
+void PropertyIntegerList::setSize(int newSize)
+{
+    _lValueList.resize(newSize);
+}
+
+int PropertyIntegerList::getSize(void) const
+{
+    return static_cast<int>(_lValueList.size());
+}
+
 //**************************************************************************
 // Base class implementer
 
@@ -653,6 +667,10 @@ void PropertyIntegerList::Paste(const Property &from)
     hasSetValue();
 }
 
+unsigned int PropertyIntegerList::getMemSize (void) const
+{
+    return static_cast<unsigned int>(_lValueList.size() * sizeof(long));
+}
 
 //**************************************************************************
 //**************************************************************************
@@ -860,6 +878,16 @@ PropertyFloatList::~PropertyFloatList()
 //**************************************************************************
 // Base class implementer
 
+void PropertyFloatList::setSize(int newSize)
+{
+    _lValueList.resize(newSize);
+}
+
+int PropertyFloatList::getSize(void) const
+{
+    return static_cast<int>(_lValueList.size());
+}
+
 void PropertyFloatList::setValue(float lValue)
 {
     aboutToSetValue();
@@ -976,6 +1004,10 @@ void PropertyFloatList::Paste(const Property &from)
     hasSetValue();
 }
 
+unsigned int PropertyFloatList::getMemSize (void) const
+{
+    return static_cast<unsigned int>(_lValueList.size() * sizeof(float));
+}
 
 //**************************************************************************
 //**************************************************************************
@@ -1071,6 +1103,11 @@ void PropertyString::Paste(const Property &from)
     hasSetValue();
 }
 
+unsigned int PropertyString::getMemSize (void) const
+{
+    return static_cast<unsigned int>(_cValue.size());
+}
+
 //**************************************************************************
 // PropertyStringList
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1089,6 +1126,16 @@ PropertyStringList::~PropertyStringList()
 
 //**************************************************************************
 // Base class implementer
+
+void PropertyStringList::setSize(int newSize)
+{
+    _lValueList.resize(newSize);
+}
+
+int PropertyStringList::getSize(void) const
+{
+    return static_cast<int>(_lValueList.size());
+}
 
 void PropertyStringList::setValue(const std::string& lValue)
 {
@@ -1157,10 +1204,10 @@ void PropertyStringList::setPyObject(PyObject *value)
 
 unsigned int PropertyStringList::getMemSize (void) const
 {
-    unsigned int size=0;
+    size_t size=0;
     for(int i = 0;i<getSize(); i++) 
         size += _lValueList[i].size();
-    return size;
+    return static_cast<unsigned int>(size);
 }
 
 void PropertyStringList::Save (Writer &writer) const
@@ -1471,6 +1518,16 @@ PropertyColorList::~PropertyColorList()
 //**************************************************************************
 // Base class implementer
 
+void PropertyColorList::setSize(int newSize)
+{
+    _lValueList.resize(newSize);
+}
+
+int PropertyColorList::getSize(void) const
+{
+    return static_cast<int>(_lValueList.size());
+}
+
 void PropertyColorList::setValue(const Color& lValue)
 {
     aboutToSetValue();
@@ -1595,6 +1652,11 @@ void PropertyColorList::Paste(const Property &from)
     aboutToSetValue();
     _lValueList = dynamic_cast<const PropertyColorList&>(from)._lValueList;
     hasSetValue();
+}
+
+unsigned int PropertyColorList::getMemSize (void) const
+{
+    return static_cast<unsigned int>(_lValueList.size() * sizeof(Color));
 }
 
 //**************************************************************************
