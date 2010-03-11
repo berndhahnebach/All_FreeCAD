@@ -349,14 +349,14 @@ void Document::clearUndos()
 int Document::getAvailableUndos() const
 {
     if (d->activeUndoTransaction)
-        return mUndoTransactions.size() + 1;
+        return static_cast<int>(mUndoTransactions.size() + 1);
     else
-        return mUndoTransactions.size();
+        return static_cast<int>(mUndoTransactions.size());
 }
 
 int Document::getAvailableRedos() const
 {
-    return mRedoTransactions.size();
+    return static_cast<int>(mRedoTransactions.size());
 }
 
 void Document::setUndoMode(int iMode)
@@ -1018,7 +1018,7 @@ bool Document::isClosable() const
 
 int Document::countObjects(void) const
 {
-   return d->objectArray.size();
+   return static_cast<int>(d->objectArray.size());
 }
 
 void Document::recompute()

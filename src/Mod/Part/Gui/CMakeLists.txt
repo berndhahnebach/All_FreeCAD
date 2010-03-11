@@ -14,7 +14,7 @@ include_directories(
 		 ${PYTHON_INCLUDE_PATH}
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
-		 ${XERCES_INCLUDE_DIR}
+		 ${XERCESC_INCLUDE_DIR}
 		 ${ZLIB_INCLUDE_DIR})
 
 if(WIN32)

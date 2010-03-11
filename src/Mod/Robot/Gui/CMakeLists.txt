@@ -17,7 +17,7 @@ include_directories(
 		 ${EIGEN2_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 if(WIN32)
 		 set(RobotGui_LIBS

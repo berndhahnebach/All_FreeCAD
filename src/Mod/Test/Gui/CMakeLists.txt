@@ -3,7 +3,7 @@ include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${QT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 if(WIN32)
 		 set(TestGui_LIBS

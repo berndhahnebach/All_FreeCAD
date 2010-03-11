@@ -258,7 +258,9 @@ public:
     bool hasSelection(const char* doc) const;
 
     /// Size of selcted entities for all documents
-    unsigned int size(void) const {return _SelList.size();}
+    unsigned int size(void) const {
+        return static_cast<unsigned int>(_SelList.size());
+    }
 
     static SelectionSingleton& instance(void);
     static void destruct (void);
