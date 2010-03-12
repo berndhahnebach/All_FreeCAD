@@ -1880,7 +1880,6 @@ void MeshRefEdgeToFacets::Rebuild (void)
 {
     _map.clear();
 
-    const MeshPointArray& rPoints = _rclMesh.GetPoints();
     const MeshFacetArray& rFacets = _rclMesh.GetFacets();
     unsigned long index = 0;
     for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it, ++index) {

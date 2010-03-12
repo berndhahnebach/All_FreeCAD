@@ -33,6 +33,7 @@ BUILT_SOURCES=\
 		moc_DlgSettingsDocumentImp.cpp \
 		moc_DlgSettingsImageImp.cpp \
 		moc_DlgSettingsMacroImp.cpp \
+		moc_DlgSettingsUnitsImp.cpp \
 		moc_DlgTipOfTheDayImp.cpp \
 		moc_DlgToolbarsImp.cpp \
 		moc_DlgUndoRedo.cpp \
@@ -97,6 +98,7 @@ BUILT_SOURCES=\
 		ui_DlgSettingsDocument.h \
 		ui_DlgSettingsImage.h \
 		ui_DlgSettingsMacro.h \
+		ui_DlgSettingsUnits.h \
 		ui_DlgTipOfTheDay.h \
 		ui_DlgToolbars.h \
 		ui_DlgTreeWidget.h \
@@ -139,6 +141,7 @@ libFreeCADGui_la_UI=\
 		DlgSettingsDocument.ui \
 		DlgSettingsImage.ui \
 		DlgSettingsMacro.ui \
+		DlgSettingsUnits.ui \
 		DlgSettingsColorGradient.ui \
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
@@ -227,6 +230,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgSettingsImageImp.h \
 		DlgSettingsMacroImp.cpp \
 		DlgSettingsMacroImp.h \
+		DlgSettingsUnitsImp.cpp \
+		DlgSettingsUnitsImp.h \
 		DlgTipOfTheDayImp.cpp \
 		DlgTipOfTheDayImp.h \
 		DlgToolbarsImp.cpp \

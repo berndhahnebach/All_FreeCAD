@@ -67,7 +67,9 @@ public:
 
   template<class T>
     struct TopoDSLess : public std::binary_function<T, T, bool> {
-    bool operator()(const T& x, const T& y) const{ return x.HashCode(ULONG_MAX-1) < y.HashCode(ULONG_MAX-1);}
+    bool operator()(const T& x, const T& y) const { 
+      return x.HashCode(INT_MAX-1) < y.HashCode(INT_MAX-1);
+    }
   };
 
   typedef std::map<TopoDS_Edge, std::vector<FaceSplitEdge>,TopoDSLess<TopoDS_Edge> > result_type;
