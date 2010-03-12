@@ -91,7 +91,7 @@ protected:
     void showBoundingBox(bool);
     /// get called by the container whenever a property has been changed
     void onChanged(const App::Property* prop);
-    SoFCSelection* createFromSettings(void);
+    SoFCSelection* createFromSettings() const;
     void setSelectable(bool Selectable=true);
 
 private:
