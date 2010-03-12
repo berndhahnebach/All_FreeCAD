@@ -730,8 +730,8 @@ inline MeshFacet::MeshFacet (void)
 : _ucFlag(0),
   _ulProp(0)
 {
-    memset(_aulNeighbours, ULONG_MAX, sizeof(ULONG_MAX) * 3);
-    memset(_aulPoints, ULONG_MAX, sizeof(ULONG_MAX) * 3);
+    memset(_aulNeighbours, 0xff, sizeof(ULONG_MAX) * 3);
+    memset(_aulPoints, 0xff, sizeof(ULONG_MAX) * 3);
 }
 
 inline MeshFacet::MeshFacet(const MeshFacet &rclF)

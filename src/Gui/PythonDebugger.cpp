@@ -192,7 +192,7 @@ Py::Object PythonDebugStdout::write(const Py::Tuple& args)
     if (strlen(msg) > 0)
     {
         //send it to our stdout
-        printf(msg);
+        printf("%s\n",msg);
 
         //send it to the debugger as well
         //g_DebugSocket.SendMessage(eMSG_OUTPUT, msg);
@@ -521,7 +521,7 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
     int no;
 
     no = frame->f_tstate->recursion_depth;
-    char* name = PyString_AsString(frame->f_code->co_name);
+    //char* name = PyString_AsString(frame->f_code->co_name);
     QString file = QString::fromUtf8(PyString_AsString(frame->f_code->co_filename));
     switch (what) {
     case PyTrace_CALL:

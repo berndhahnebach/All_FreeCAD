@@ -818,7 +818,7 @@ void MeshKernel::Read (std::istream &rclIn)
         rclIn.read(szInfo, 256);
 
         // read the number of points and facets
-        uint32_t uCtPts=ULONG_MAX, uCtFts=ULONG_MAX;
+        uint32_t uCtPts=0, uCtFts=0;
         str >> uCtPts >> uCtFts;
 
         try {

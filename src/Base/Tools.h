@@ -52,7 +52,7 @@ class manipulator
     std::ostream& (*f_)(std::ostream&, T);
 
 public:
-    manipulator(std::ostream& (*f)(std::ostream&, T), T i) : f_(f), i_(i)
+    manipulator(std::ostream& (*f)(std::ostream&, T), T i) : i_(i), f_(f)
     {
     }
     friend std::ostream& operator<<( std::ostream& os, manipulator m)
