@@ -74,36 +74,6 @@ ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
     pcHighlight = createFromSettings();
     pcHighlight->ref();
 
-    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("View");
-
-    /* duplicated code
-    // switch off preselection
-    bool enablePre = hGrp->GetBool("EnablePreselection", false);
-    bool enableSel = hGrp->GetBool("EnableSelection", false);
-    if (!enablePre) {
-        pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
-    }
-    else {
-        // Search for a user defined value with the current color as default
-        SbColor highlightColor = pcHighlight->colorHighlight.getValue();
-        unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-        highlight = hGrp->GetUnsigned("HighlightColor", highlight);
-        highlightColor.setPackedValue((uint32_t)highlight, transparency);
-        pcHighlight->colorHighlight.setValue(highlightColor);
-    }
-    if (!enableSel) {
-        pcHighlight->selectionMode = Gui::SoFCSelection::SEL_OFF;
-        pcHighlight->style = Gui::SoFCSelection::BOX;
-    }
-    else {
-        // Do the same with the selection color
-        SbColor selectionColor = pcHighlight->colorSelection.getValue();
-        unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-        selection = hGrp->GetUnsigned("SelectionColor", selection);
-        selectionColor.setPackedValue((uint32_t)selection, transparency);
-        pcHighlight->colorSelection.setValue(selectionColor);
-    }
-*/
     pcShapeMaterial = new SoMaterial;
     pcShapeMaterial->ref();
     ShapeMaterial.touch();
@@ -125,15 +95,17 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
     // Actually, the properties 'ShapeColor' and 'Transparency' are part of the property 'ShapeMaterial'.
     // Both redundant properties are kept due to more convenience for the user. But we must keep the values
     // consistent of all these properties.
-    if ( prop == &Selectable ) {
+    if (prop == &Selectable) {
         bool Sel = Selectable.getValue();
         setSelectable(Sel);
-    } else if ( prop == &Transparency ) {
+    }
+    else if (prop == &ShapeColor) {
         const App::Color& c = ShapeColor.getValue();
         pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
         if (c != ShapeMaterial.getValue().diffuseColor)
         ShapeMaterial.setDiffuseColor(c);
-    } else if ( prop == &Transparency ) {
+    }
+    else if (prop == &Transparency) {
         const App::Material& Mat = ShapeMaterial.getValue();
         long value = (long)(100*Mat.transparency);
         if (value != Transparency.getValue()) {
@@ -142,7 +114,7 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
             ShapeMaterial.setTransparency(trans);
         }
     }
-    else if ( prop == &ShapeMaterial ) {
+    else if (prop == &ShapeMaterial) {
         const App::Material& Mat = ShapeMaterial.getValue();
         long value = (long)(100*Mat.transparency);
         if (value != Transparency.getValue())
@@ -157,7 +129,7 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
         pcShapeMaterial->shininess.setValue(Mat.shininess);
         pcShapeMaterial->transparency.setValue(Mat.transparency);
     }
-    else if ( prop == &BoundingBox ) {
+    else if (prop == &BoundingBox) {
         showBoundingBox( BoundingBox.getValue() );
     }
 
@@ -375,7 +347,7 @@ void ViewProviderGeometryObject::showBoundingBox(bool show)
     }
 }
 
-SoFCSelection* ViewProviderGeometryObject::createFromSettings()
+SoFCSelection* ViewProviderGeometryObject::createFromSettings() const
 {
     SoFCSelection* sel = new SoFCSelection();
 
@@ -385,7 +357,8 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings()
     bool enableSel = hGrp->GetBool("EnableSelection", false);
     if (!enablePre) {
         sel->highlightMode = Gui::SoFCSelection::OFF;
-    } else {
+    }
+    else {
         // Search for a user defined value with the current color as default
         SbColor highlightColor = sel->colorHighlight.getValue();
         unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
@@ -396,7 +369,8 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings()
     if (!enableSel || !Selectable.getValue()) {
         sel->selectionMode = Gui::SoFCSelection::SEL_OFF;
         sel->style = Gui::SoFCSelection::BOX;
-    } else {
+    }
+    else {
         // Do the same with the selection color
         SbColor selectionColor = sel->colorSelection.getValue();
         unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
@@ -418,15 +392,15 @@ void ViewProviderGeometryObject::setSelectable(bool selectable)
 
     SoPathList & pathList = sa.getPaths();
 
-    for(int i=0;i<pathList.getLength();i++)
-    {
+    for (int i=0;i<pathList.getLength();i++) {
         SoFCSelection *selNode = dynamic_cast<SoFCSelection*>(pathList[i]->getTail());
-        if(selectable){
+        if (selectable) {
             selNode->selectionMode = SoFCSelection::SEL_ON;
-            selNode->highlightMode = SoFCSelection::SEL_ON;
-        } else {
+            selNode->highlightMode = SoFCSelection::AUTO;
+        }
+        else {
             selNode->selectionMode = SoFCSelection::SEL_OFF;
-            selNode->highlightMode = SoFCSelection::SEL_OFF;
+            selNode->highlightMode = SoFCSelection::OFF;
             selNode->selected = SoFCSelection::NOTSELECTED;
         }
     }
