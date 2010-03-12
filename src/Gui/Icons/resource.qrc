@@ -63,8 +63,9 @@
         <file>view-zoom-border.svg</file>
         <file>view-zoom-fit.svg</file>
         <file>view-zoom-in.svg</file>
-        <file>view-zoom-out.svg</file>
-        <file>view-zoom-selection.svg</file>
+		<file>view-zoom-out.svg</file>
+		<file>view-measurement.svg</file>
+		<file>view-zoom-selection.svg</file>
         <file>Tree_Annotation.svg</file>
         <file>Tree_Dimension.svg</file>
         <file>Tree_Python.svg</file>

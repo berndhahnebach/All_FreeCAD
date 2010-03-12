@@ -56,6 +56,7 @@
 #include "GuiConsole.h"
 #include "WorkbenchManager.h"
 #include "Workbench.h"
+#include "Selection.h"
 
 using Base::Console;
 using Base::Sequencer;
@@ -553,6 +554,62 @@ void StdCmdPythonWebsite::activated(int iMsg)
     OpenURLInBrowser("http://python.org");
 }
 
+//===========================================================================
+// Std_MeasurementSimple
+//===========================================================================
+
+DEF_STD_CMD(StdCmdMeasurementSimple);
+
+StdCmdMeasurementSimple::StdCmdMeasurementSimple()
+  :Command("Std_MeasurementSimple")
+{
+    sGroup        = QT_TR_NOOP("Tools");
+    sMenuText     = QT_TR_NOOP("Mesure distance");
+    sToolTipText  = QT_TR_NOOP("Measures distance between two selected objects");
+    sWhatsThis    = QT_TR_NOOP("Measures distance between two selected objects");
+    sStatusTip    = QT_TR_NOOP("Measures distance between two selected objects");
+    sPixmap       = "view-measurement";
+    eType         = 0;
+}
+
+void StdCmdMeasurementSimple::activated(int iMsg)
+{
+    unsigned int n = getSelection().countObjectsOfType(App::DocumentObject::getClassTypeId());
+ 
+    if (n == 1 ) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Only one object selected. Please select two objects.\nBe aware the point where you click matters."));
+        return;
+    }
+    if (n < 1 || n > 2 ) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Please select two objects.\nBe aware the point where you click matters."));
+        return;
+    }
+
+    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    std::string name;
+    name += "Dist ";
+    name += Sel[0].FeatName;
+    name += "-";
+    name += Sel[0].SubName;
+    name += " to ";
+    name += Sel[1].FeatName;
+    name += "-";
+    name += Sel[1].SubName;
+
+    openCommand("Insert measurement");
+    doCommand(Doc,"_f = App.activeDocument().addObject(\"App::MeasureDistance\",\"%s\")","Measurement");
+    doCommand(Doc,"_f.Label ='%s'",name.c_str());
+    doCommand(Doc,"_f.P1 = FreeCAD.Vector(%f,%f,%f)",Sel[0].x,Sel[0].y,Sel[0].z);
+    doCommand(Doc,"_f.P2 = FreeCAD.Vector(%f,%f,%f)",Sel[1].x,Sel[1].y,Sel[1].z);
+    updateActive();
+    commitCommand();
+
+    //OpenURLInBrowser("http://python.org");
+}
+
 namespace Gui {
 
 void CreateStdCommands(void)
@@ -575,6 +632,7 @@ void CreateStdCommands(void)
     rcCmdMgr.addCommand(new StdCmdOnlineHelpWebsite());
     rcCmdMgr.addCommand(new StdCmdFreeCADWebsite());
     rcCmdMgr.addCommand(new StdCmdPythonWebsite());
+    rcCmdMgr.addCommand(new StdCmdMeasurementSimple());
     //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
     rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
     //rcCmdMgr.addCommand(new StdCmdDescription());

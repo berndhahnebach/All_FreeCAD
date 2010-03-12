@@ -35,10 +35,20 @@ PROPERTY_SOURCE(App::MeasureDistance, App::DocumentObject)
 
 MeasureDistance::MeasureDistance() 
 {
-    ADD_PROPERTY(P1,(Base::Vector3f()));
-    ADD_PROPERTY(P2,(Base::Vector3f()));
+    ADD_PROPERTY_TYPE(P1,(Base::Vector3f()) ,"Measurement",Prop_None,"First point of measurement");
+    ADD_PROPERTY_TYPE(P2,(Base::Vector3f()) ,"Measurement",Prop_None,"Second point of measurement");
+    ADD_PROPERTY_TYPE(Distance,(0.0)        ,"Measurement",App::PropertyType(Prop_ReadOnly|Prop_Output),"Distance between the points");
+
 }
 
 MeasureDistance::~MeasureDistance()
 {
+}
+
+DocumentObjectExecReturn *MeasureDistance::execute(void)
+{
+    
+  Distance.setValue((P1.getValue() - P2.getValue()).Length());
+
+  return DocumentObject::StdReturn;
 }

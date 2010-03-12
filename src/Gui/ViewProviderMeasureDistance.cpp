@@ -34,11 +34,12 @@
 # include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoIndexedLineSet.h>
-# include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoMarkerSet.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 #endif
 
 #include "ViewProviderMeasureDistance.h"
+#include "SoFCSelection.h"
 #include <Gui/View3DInventorViewer.h>
 #include <App/PropertyGeo.h>
 #include <App/PropertyStandard.h>
@@ -52,8 +53,11 @@ PROPERTY_SOURCE(Gui::ViewProviderMeasureDistance, Gui::ViewProviderDocumentObjec
 
 ViewProviderMeasureDistance::ViewProviderMeasureDistance() 
 {
-    ADD_PROPERTY(TextColor,(1.0f,1.0f,1.0f));
-    ADD_PROPERTY(FontSize,(12));
+    ADD_PROPERTY(TextColor,(0.0f,0.0f,0.0f));
+    ADD_PROPERTY(LineColor,(1.0f,1.0f,1.0f));
+    ADD_PROPERTY(FontSize,(18));
+    ADD_PROPERTY(DistFactor,(2.0));
+    ADD_PROPERTY(Mirror,(false));
 
     pFont = new SoFontStyle();
     pFont->ref();
@@ -61,6 +65,8 @@ ViewProviderMeasureDistance::ViewProviderMeasureDistance()
     pLabel->ref();
     pColor = new SoBaseColor();
     pColor->ref();
+    pTextColor = new SoBaseColor();
+    pTextColor->ref();
     pTranslation = new SoTranslation();
     pTranslation->ref();
 
@@ -97,8 +103,15 @@ ViewProviderMeasureDistance::~ViewProviderMeasureDistance()
 
 void ViewProviderMeasureDistance::onChanged(const App::Property* prop)
 {
+    if( prop == &Mirror || prop == &DistFactor )
+        updateData(prop);
+
     if (prop == &TextColor) {
         const App::Color& c = TextColor.getValue();
+        pTextColor->rgb.setValue(c.r,c.g,c.b);
+    }
+    if (prop == &LineColor) {
+        const App::Color& c = LineColor.getValue();
         pColor->rgb.setValue(c.r,c.g,c.b);
     }
     else if (prop == &FontSize) {
@@ -124,35 +137,48 @@ void ViewProviderMeasureDistance::setDisplayMode(const char* ModeName)
     ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
-void ViewProviderMeasureDistance::attach(App::DocumentObject* f)
+void ViewProviderMeasureDistance::attach(App::DocumentObject* pcObject)
 {
-    ViewProviderDocumentObject::attach(f);
+    ViewProviderDocumentObject::attach(pcObject);
+
+    pSelection = new SoFCSelection();
+    pSelection->objectName = pcObject->getNameInDocument();
+    pSelection->documentName = pcObject->getDocument()->getName();
+    pSelection->subElementName = "Main";
+
 
     SoSeparator *lineSep = new SoSeparator();
+    SoDrawStyle* style = new SoDrawStyle();
+    style->lineWidth = 2.0f;
+    lineSep->addChild(style);
     lineSep->addChild(pCoords);
     lineSep->addChild(pLines);
-    SoDrawStyle* style = new SoDrawStyle();
-    style->pointSize = 4.0f;
-    SoPointSet* points = new SoPointSet();
+    SoMarkerSet* points = new SoMarkerSet();
+    points->markerIndex = SoMarkerSet::CROSS_9_9;
     points->numPoints=2;
-    lineSep->addChild(style);
     lineSep->addChild(points);
 
     SoSeparator* textsep = new SoSeparator();
     textsep->addChild(pTranslation);
+    textsep->addChild(pTextColor);
     textsep->addChild(pFont);
     textsep->addChild(pLabel);
 
-    SoSeparator* sep = new SoSeparator();
-    sep->addChild(pColor);
-    sep->addChild(lineSep);
-    sep->addChild(textsep);
-    addDisplayMaskMode(sep, "Base");
+    //SoSeparator* sep = new SoSeparator();
+    pSelection->addChild(pColor);
+    pSelection->addChild(lineSep);
+    pSelection->addChild(textsep);
+    addDisplayMaskMode(pSelection, "Base");
 }
 
 void ViewProviderMeasureDistance::updateData(const App::Property* prop)
 {
-    if (prop->getTypeId() == App::PropertyVector::getClassTypeId()) {
+    App::MeasureDistance* measObj = static_cast<App::MeasureDistance*>(pcObject);
+    if (  prop == &measObj->P1
+        ||prop == &measObj->P2
+        ||prop == &Mirror
+        ||prop == &DistFactor
+       ) {
         if (strcmp(prop->getName(),"P1") == 0) {
             Base::Vector3f v = static_cast<const App::PropertyVector*>(prop)->getValue();
             pCoords->point.set1Value(0, SbVec3f(v.x,v.y,v.z));
@@ -162,10 +188,16 @@ void ViewProviderMeasureDistance::updateData(const App::Property* prop)
             pCoords->point.set1Value(1, SbVec3f(v.x,v.y,v.z));
         }
 
-        float length = 10.0f;
         SbVec3f pt1 = pCoords->point[0];
         SbVec3f pt2 = pCoords->point[1];
         SbVec3f dif = pt1-pt2;
+
+        //float length = 10.0f;
+        float length = fabs(dif.length())*DistFactor.getValue();
+        if (Mirror.getValue())
+            length = -length;
+
+
         if (dif.sqrLength() < 10.0e-6f) {
             pCoords->point.set1Value(2, pt1+SbVec3f(0.0f,0.0f,length));
             pCoords->point.set1Value(3, pt2+SbVec3f(0.0f,0.0f,length));
@@ -187,9 +219,9 @@ void ViewProviderMeasureDistance::updateData(const App::Property* prop)
         pTranslation->translation.setValue(pos);
 
         std::stringstream s;
-        s.precision(4);
+        s.precision(3);
         s.setf(std::ios::fixed | std::ios::showpoint);
-        s << "Distance: " << dif.length();
+        s /*<< "Distance: "*/ << dif.length();
         pLabel->string.setValue(s.str().c_str());
     }
 
