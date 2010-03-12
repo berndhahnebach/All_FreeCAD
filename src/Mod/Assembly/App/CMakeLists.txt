@@ -5,7 +5,7 @@ include_directories(
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
-		 ${XERCES_INCLUDE_DIR}
+		 ${XERCESC_INCLUDE_DIR}
 		 ${ODE_INCLUDE_DIRS})
 
 set(Assembly_LIBS
