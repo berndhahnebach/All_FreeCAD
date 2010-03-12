@@ -14,7 +14,7 @@ include_directories(
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
  		 ${SMESH_INCLUDE_DIR}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 if(WIN32)
 		 set(Fem_LIBS

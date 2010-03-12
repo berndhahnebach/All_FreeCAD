@@ -18,7 +18,7 @@ include_directories(
 		 ${SOQT_INCLUDE_DIR}
  		 ${SMESH_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR})
+		 ${XERCESC_INCLUDE_DIR})
 
 if(WIN32)
 		 set(FemGui_LIBS

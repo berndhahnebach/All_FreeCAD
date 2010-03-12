@@ -7,7 +7,7 @@ include_directories(
 		 ${QT_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
-		 ${XERCES_INCLUDE_DIR}
+		 ${XERCESC_INCLUDE_DIR}
 		 ${ODE_INCLUDE_DIRS})
 
 set(AssemblyGui_LIBS
