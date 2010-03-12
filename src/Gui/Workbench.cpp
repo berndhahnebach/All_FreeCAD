@@ -468,7 +468,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
     MenuItem* tool = new MenuItem( menuBar );
     tool->setCommand(QT_TR_NOOP("&Tools"));
     *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator"
-          << "Std_ViewScreenShot" << "Std_SceneInspector" << "Std_DemoMode"
+          << "Std_ViewScreenShot" << "Std_SceneInspector" << "Std_DemoMode" << "Std_MeasurementSimple"
           << "Separator" << "Std_DlgCustomize";
 
     // Macro
@@ -512,7 +512,7 @@ ToolBarItem* StdWorkbench::setupToolBars() const
     file->setCommand(QT_TR_NOOP("File"));
     *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
           << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
-          << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
+          << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_MeasurementSimple" << "Std_WhatsThis";
 
     // Macro
     ToolBarItem* macro = new ToolBarItem( root );

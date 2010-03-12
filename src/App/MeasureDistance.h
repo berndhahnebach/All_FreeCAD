@@ -43,6 +43,10 @@ public:
 
     App::PropertyVector P1;
     App::PropertyVector P2;
+    App::PropertyFloat  Distance;
+
+    /// recalculate the Feature
+    virtual DocumentObjectExecReturn *execute(void);
 
     /// returns the type name of the ViewProvider
     const char* getViewProviderName(void) const {

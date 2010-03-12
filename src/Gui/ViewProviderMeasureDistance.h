@@ -36,6 +36,7 @@ class SoEventCallback;
 
 namespace Gui
 {
+class SoFCSelection;
 
 class GuiExport ViewProviderMeasureDistance : public ViewProviderDocumentObject
 {
@@ -48,7 +49,10 @@ public:
 
     // Display properties
     App::PropertyColor          TextColor;
+    App::PropertyColor          LineColor;
     App::PropertyInteger        FontSize;
+    App::PropertyFloat          DistFactor;
+    App::PropertyBool           Mirror;
 
     void attach(App::DocumentObject *);
     void updateData(const App::Property*);
@@ -64,9 +68,11 @@ private:
     SoFontStyle      * pFont;
     SoText2          * pLabel;
     SoBaseColor      * pColor;
+    SoBaseColor      * pTextColor;
     SoTranslation    * pTranslation;
     SoCoordinate3    * pCoords;
     SoIndexedLineSet * pLines;
+    SoFCSelection    * pSelection;
 
     static SbBool firstPicked;
 };
