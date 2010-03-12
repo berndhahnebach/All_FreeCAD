@@ -68,14 +68,15 @@ ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
     App::Material mat(App::Material::DEFAULT);
     ADD_PROPERTY(ShapeMaterial,(mat));
     ADD_PROPERTY(BoundingBox,(false));
+    ADD_PROPERTY(Selectable,(true));
 
     // Create the selection node
-    pcHighlight = new SoFCSelection();
+    pcHighlight = createFromSettings();
     pcHighlight->ref();
 
-    float transparency;
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("View");
 
+    /* duplicated code
     // switch off preselection
     bool enablePre = hGrp->GetBool("EnablePreselection", false);
     bool enableSel = hGrp->GetBool("EnableSelection", false);
@@ -102,7 +103,7 @@ ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
         selectionColor.setPackedValue((uint32_t)selection, transparency);
         pcHighlight->colorSelection.setValue(selectionColor);
     }
-
+*/
     pcShapeMaterial = new SoMaterial;
     pcShapeMaterial->ref();
     ShapeMaterial.touch();
@@ -124,13 +125,15 @@ void ViewProviderGeometryObject::onChanged(const App::Property* prop)
     // Actually, the properties 'ShapeColor' and 'Transparency' are part of the property 'ShapeMaterial'.
     // Both redundant properties are kept due to more convenience for the user. But we must keep the values
     // consistent of all these properties.
-    if ( prop == &ShapeColor ) {
+    if ( prop == &Selectable ) {
+        bool Sel = Selectable.getValue();
+        setSelectable(Sel);
+    } else if ( prop == &Transparency ) {
         const App::Color& c = ShapeColor.getValue();
         pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
         if (c != ShapeMaterial.getValue().diffuseColor)
         ShapeMaterial.setDiffuseColor(c);
-    } 
-    else if ( prop == &Transparency ) {
+    } else if ( prop == &Transparency ) {
         const App::Material& Mat = ShapeMaterial.getValue();
         long value = (long)(100*Mat.transparency);
         if (value != Transparency.getValue()) {
@@ -382,8 +385,7 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings()
     bool enableSel = hGrp->GetBool("EnableSelection", false);
     if (!enablePre) {
         sel->highlightMode = Gui::SoFCSelection::OFF;
-    }
-    else {
+    } else {
         // Search for a user defined value with the current color as default
         SbColor highlightColor = sel->colorHighlight.getValue();
         unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
@@ -391,11 +393,10 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings()
         highlightColor.setPackedValue((uint32_t)highlight, transparency);
         sel->colorHighlight.setValue(highlightColor);
     }
-    if (!enableSel) {
+    if (!enableSel || !Selectable.getValue()) {
         sel->selectionMode = Gui::SoFCSelection::SEL_OFF;
         sel->style = Gui::SoFCSelection::BOX;
-    }
-    else {
+    } else {
         // Do the same with the selection color
         SbColor selectionColor = sel->colorSelection.getValue();
         unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
@@ -405,4 +406,28 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings()
     }
 
     return sel;
+}
+
+void ViewProviderGeometryObject::setSelectable(bool selectable)
+{
+    SoSearchAction sa;
+    sa.setInterest(SoSearchAction::ALL);
+    sa.setSearchingAll(TRUE);
+    sa.setType(Gui::SoFCSelection::getClassTypeId());
+    sa.apply(pcRoot);
+
+    SoPathList & pathList = sa.getPaths();
+
+    for(int i=0;i<pathList.getLength();i++)
+    {
+        SoFCSelection *selNode = dynamic_cast<SoFCSelection*>(pathList[i]->getTail());
+        if(selectable){
+            selNode->selectionMode = SoFCSelection::SEL_ON;
+            selNode->highlightMode = SoFCSelection::SEL_ON;
+        } else {
+            selNode->selectionMode = SoFCSelection::SEL_OFF;
+            selNode->highlightMode = SoFCSelection::SEL_OFF;
+            selNode->selected = SoFCSelection::NOTSELECTED;
+        }
+    }
 }

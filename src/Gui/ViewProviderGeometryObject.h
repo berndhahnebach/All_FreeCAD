@@ -59,6 +59,7 @@ public:
     App::PropertyPercent Transparency;
     App::PropertyMaterial ShapeMaterial;
     App::PropertyBool BoundingBox;
+    App::PropertyBool Selectable;
 
     /**
      * Attaches the document object to this view provider.
@@ -90,7 +91,8 @@ protected:
     void showBoundingBox(bool);
     /// get called by the container whenever a property has been changed
     void onChanged(const App::Property* prop);
-    static SoFCSelection* createFromSettings();
+    SoFCSelection* createFromSettings(void);
+    void setSelectable(bool Selectable=true);
 
 private:
     static void sensorCallback(void * data, SoSensor * sensor);
