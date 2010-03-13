@@ -63,6 +63,7 @@ EXTRA_DIST = \
 		accessories-text-editor.svg \
 		help-browser.svg \
 		view-refresh.svg \
+		view-measurement.svg \
 		view-fullscreen.svg \
 		view-axometric.svg \
 		view-isometric.svg \
