@@ -9,8 +9,16 @@ sketch = Sketch()
 
 # create some lines
 l1 = Line(Vector(0,0,0),Vector(10,2,0))
-#l2 = Line(Vector(0,0,0),Vector(10,0,0))
 
 # add the geometry to the sketch
 sketch.addGeometry(l1)
-#sketch.addGeometry(l2)
+
+# add constraints
+sketch.addHorizontalConstraint(0,'h')
+
+# solve the sketch
+sketch.solve()
+
+# get the result
+sketch.Geometries[0].StartPoint
+sketch.Geometries[0].EndPoint

@@ -53,6 +53,7 @@ public:
 
     int solve(void);
     int addGeometry(Part::GeomCurve *geo);
+    std::vector<Part::GeomCurve *> getGeometry(void);
 
     /// add dedicated geometry
     //@{

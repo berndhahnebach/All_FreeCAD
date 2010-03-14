@@ -64,7 +64,17 @@
 # include <TColgp_Array2OfPnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColStd_Array1OfInteger.hxx>
+# include <gp.hxx>
+# include <gp_Lin.hxx>
+# include <Geom_Line.hxx>
+# include <Geom_TrimmedCurve.hxx>
+# include <GC_MakeLine.hxx>
+# include <GC_MakeSegment.hxx>
+# include <Precision.hxx>
+
 #endif
+
+#include <Base/Exception.h>
 
 #include "Geometry.h"
 
@@ -402,6 +412,34 @@ Base::Vector3d GeomLineSegment::getEndPoint(void)
     Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast(handle());
     gp_Pnt pnt = this_curve->EndPoint();
     return Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z());
+}
+
+void GeomLineSegment::setPoints(Base::Vector3d Start,Base::Vector3d End)
+{
+    gp_Pnt p1(Start.x,Start.y,Start.z), p2(End.x,End.y,End.z);
+    Handle_Geom_TrimmedCurve this_curv = Handle_Geom_TrimmedCurve::DownCast(handle());
+
+    try {
+        // Create line out of two points
+        if (p1.Distance(p2) < Precision::Confusion()) Standard_Failure::Raise("Both points are equal");
+        GC_MakeSegment ms(p1, p2);
+        if (!ms.IsDone()) {
+            throw Base::Exception(gce_ErrorStatusText(ms.Status()));
+        }
+
+        // get Geom_Line of line segment
+        Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
+            (this_curv->BasisCurve());
+        Handle_Geom_TrimmedCurve that_curv = ms.Value();
+        Handle_Geom_Line that_line = Handle_Geom_Line::DownCast(that_curv->BasisCurve());
+        this_line->SetLin(that_line->Lin());
+        this_curv->SetTrim(that_curv->FirstParameter(), that_curv->LastParameter());
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Base::Exception(e->GetMessageString());
+    }
+
 }
 
 

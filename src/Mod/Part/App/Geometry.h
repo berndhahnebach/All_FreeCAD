@@ -222,6 +222,8 @@ public:
     Base::Vector3d getStartPoint(void);
     Base::Vector3d getEndPoint(void);
 
+    void setPoints(Base::Vector3d p1,Base::Vector3d p2);
+
      // Persistance implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;

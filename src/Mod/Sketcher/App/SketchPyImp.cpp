@@ -12,6 +12,7 @@
 #include "SketchPy.cpp"
 
 using namespace Sketcher;
+using namespace Part;
 
 // returns a string which represents the object e.g. when printed in python
 std::string SketchPy::representation(void) const
@@ -45,11 +46,22 @@ PyObject* SketchPy::addGeometry(PyObject *args)
     if (!PyArg_ParseTuple(args, "O", &pcObj))
         return 0;
 
-    if (PyObject_TypeCheck(pcObj, &(Part::LinePy::Type))) {
-        Part::GeomLineSegment *line = new Part::GeomLineSegment(*static_cast<Part::LinePy*>(pcObj)->getGeomLineSegmentPtr());
+    if (PyObject_TypeCheck(pcObj, &(LinePy::Type))) {
+        GeomLineSegment *line = new GeomLineSegment(*static_cast<LinePy*>(pcObj)->getGeomLineSegmentPtr());
         this->getSketchPtr()->addGeometry(line);
     }
     Py_Return; 
+}
+
+PyObject* SketchPy::addHorizontalConstraint(PyObject *args)
+{
+    int index;
+    char* name=0;
+    if (!PyArg_ParseTuple(args, "i|s", &index,&name))
+        return 0;
+
+    return Py::new_reference_to(Py::Int(getSketchPtr()->addHorizontalConstraint(index,name)));
+
 }
 
 // +++ attributes implementer ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -58,6 +70,29 @@ Py::Int SketchPy::getConstraint(void) const
 {
     //return Py::Int();
     throw Py::AttributeError("Not yet implemented");
+}
+
+Py::Tuple SketchPy::getConstraints(void) const
+{
+    //return Py::Tuple();
+    throw Py::AttributeError("Not yet implemented");
+}
+
+Py::Tuple SketchPy::getGeometries(void) const
+{
+    std::vector<Part::GeomCurve *> geoms = getSketchPtr()->getGeometry();
+
+    Py::Tuple tuple(geoms.size());
+    int i=0;
+    for(std::vector<Part::GeomCurve *>::iterator it=geoms.begin();it!=geoms.end();++it,i++){
+        if((*it)->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
+            GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(*it);
+            tuple[i] = Py::Object(new LinePy(lineSeg));
+        }else{
+            assert(0); // not implemented type in the sketch!
+        }
+    }
+    return tuple;
 }
 
 
