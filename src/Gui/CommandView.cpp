@@ -1706,17 +1706,26 @@ void StdCmdMeasureDistance::activated(int iMsg)
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
     if (view) {
-        App::DocumentObject* obj = doc->getDocument()->addObject(App::MeasureDistance::getClassTypeId().getName(),"Distance");
         Gui::View3DInventorViewer* viewer = view->getViewer();
-        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), ViewProviderMeasureDistance::measureDistanceCallback, obj);
+        viewer->setEditing(true);
+        PointMarker* marker = new PointMarker(viewer);
+        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(),
+            ViewProviderMeasureDistance::measureDistanceCallback, marker);
      }
 }
 
 bool StdCmdMeasureDistance::isActive(void)
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
-    if (doc && doc->countObjectsOfType(App::GeoFeature::getClassTypeId()) > 0)
-        return true;
+    if (!doc || doc->countObjectsOfType(App::GeoFeature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
     return false;
 }
 

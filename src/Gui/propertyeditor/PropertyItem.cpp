@@ -31,6 +31,7 @@
 # include <QSpinBox>
 #endif
 
+#include <Base/UnitsApi.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -518,13 +519,19 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     const std::vector<App::Property*>& prop = getPropertyData();
     if (prop.empty())
         return;
-    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
+    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId())) {
         sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
-    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
-        sb->setSuffix(QLatin1String(" mm"));
+    }
+    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId())) {
+        QString unit = Base::UnitsApi::getPrefUnitOf(Base::UnitsApi::Length);
+        unit.prepend(QLatin1String(" "));
+        sb->setSuffix(unit);
+    }
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId())) {
         sb->setMinimum(0.0);
-        sb->setSuffix(QLatin1String(" mm"));
+        QString unit = Base::UnitsApi::getPrefUnitOf(Base::UnitsApi::Length);
+        unit.prepend(QLatin1String(" "));
+        sb->setSuffix(unit);
     }
 }
 

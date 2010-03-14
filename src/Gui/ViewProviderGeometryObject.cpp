@@ -73,6 +73,8 @@ ViewProviderGeometryObject::ViewProviderGeometryObject() : pcBoundSwitch(0)
     // Create the selection node
     pcHighlight = createFromSettings();
     pcHighlight->ref();
+    if (pcHighlight->selectionMode.getValue() == Gui::SoFCSelection::SEL_OFF)
+        Selectable.setValue(false);
 
     pcShapeMaterial = new SoMaterial;
     pcShapeMaterial->ref();

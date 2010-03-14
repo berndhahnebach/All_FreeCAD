@@ -43,15 +43,18 @@ public:
 
     App::PropertyVector P1;
     App::PropertyVector P2;
-    App::PropertyFloat  Distance;
+    App::PropertyDistance Distance;
 
-    /// recalculate the Feature
+    /// recalculate the object
     virtual DocumentObjectExecReturn *execute(void);
 
     /// returns the type name of the ViewProvider
     const char* getViewProviderName(void) const {
         return "Gui::ViewProviderMeasureDistance";
     }
+
+protected:
+    virtual void onChanged(const Property* prop);
 };
 
 } //namespace App

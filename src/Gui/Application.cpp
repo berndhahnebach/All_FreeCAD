@@ -1258,6 +1258,7 @@ void Application::initTypes(void)
     Gui::ViewProviderInventorObject             ::init();
     Gui::ViewProviderVRMLObject                 ::init();
     Gui::ViewProviderAnnotation                 ::init();
+    Gui::ViewProviderPointMarker                ::init();
     Gui::ViewProviderMeasureDistance            ::init();
     Gui::ViewProviderPythonFeature              ::init();
     Gui::ViewProviderPythonGeometry             ::init();

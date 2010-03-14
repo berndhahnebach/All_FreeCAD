@@ -155,7 +155,7 @@ double UnitsApi::toDblWithUserPrefs(QuantityType t,PyObject *ArgObj)
         return toDblWithUserPrefs(t,(double)PyInt_AsLong(ArgObj));
     else
         throw Base::Exception("Wrong parameter type!");
- }
+}
 
 void UnitsApi::setPrefOf(QuantityType t,const char* Str)
 {
@@ -168,6 +168,7 @@ const QString & UnitsApi::getPrefUnitOf(QuantityType t)
 {
     return UserPrefUnit[t];
 }
+
 const double UnitsApi::getPrefFactorOf(QuantityType t)
 {
     return UserPrefFactor[t];

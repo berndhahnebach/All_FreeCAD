@@ -179,7 +179,7 @@ void SoFCSelection::doAction(SoAction *action)
         else {
             this->selectionMode = SoFCSelection::SEL_OFF;
             //this->style = SoFCSelection::BOX;
-            if(selected.getValue() == SELECTED){
+            if (selected.getValue() == SELECTED) {
                 this->selected = NOTSELECTED;
             }
 
@@ -515,9 +515,10 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
             SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL) )
             bCtrl = false;
-
+    }
     // mouse press events for (de)selection (only if selection is enabled on this node)
-    } else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && selectionMode.getValue() == SoFCSelection::SEL_ON) {
+    else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
+             selectionMode.getValue() == SoFCSelection::SEL_ON) {
         SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
         if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
             //FIXME: Shouldn't we remove the preselection for newly selected objects?

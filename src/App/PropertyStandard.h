@@ -125,7 +125,7 @@ protected:
  * list is not set it act basicly like a IntegerProperty and do no checking.
  * If the list is set it checks on the range and if you set the state with
  * a string if its included in the enumarations.
- * In DEBUG the bounderies get checked, otherwise the caller of setValue()
+ * In DEBUG the boundaries get checked, otherwise the caller of setValue()
  * has the responsebility to check the correctnes.
  * This mean if you set by setValue(const char*) with an not included value
  * and not using isPartOf() before,
@@ -156,7 +156,7 @@ public:
      */
     void setValue(const char* value);
     /** set directly the enum value
-     * In DEBUG checks for bounderies.
+     * In DEBUG checks for boundaries.
      * Is faster then using setValue(const char*).
      */
     void setValue(long);
@@ -185,7 +185,7 @@ private:
 
 /** Constraint integer properties
  * This property fullfill the need of constraint integer. It holds basicly a 
- * state (integer) and a struct of bounderies. If the bounderies
+ * state (integer) and a struct of boundaries. If the boundaries
  * is not set it act basicly like a IntegerProperty and do no checking.
  * The constraints struct can be created on the heap or build in.
  */
@@ -202,11 +202,11 @@ public:
 
     /// Constraint methods 
     //@{
-    /// the boundery struct
+    /// the boundary struct
     struct Constraints {
         long LowerBound, UpperBound, StepSize;
     };
-    /** setting the bounderies
+    /** setting the boundaries
      * This sets the constriant struct. It can be dynamcly 
      * allocated or set as an static in the class the property
      * blongs to:
@@ -335,7 +335,7 @@ protected:
 
 /** Constraint float properties
  * This property fullfill the need of constraint float. It holds basicly a 
- * state (float) and a struct of bounderies. If the bounderies
+ * state (float) and a struct of boundaries. If the boundaries
  * is not set it act basicly like a IntegerProperty and do no checking.
  * The constraints struct can be created on the heap or build in.
  */
@@ -359,11 +359,11 @@ public:
 
     /// Constraint methods 
     //@{
-    /// the boundery struct
+    /// the boundary struct
     struct Constraints {
         float LowerBound, UpperBound, StepSize;
     };
-    /** setting the bounderies
+    /** setting the boundaries
      * This sets the constriant struct. It can be dynamcly 
      * allocated or set as an static in the class the property
      * blongs to:
