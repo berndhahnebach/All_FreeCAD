@@ -498,9 +498,8 @@ void PropertyIntegerConstraint::setPyObject(PyObject *value)
 { 
     if (PyInt_Check(value)) {
         long temp = PyInt_AsLong(value);
-        if (_ConstStruct)
-        {
-            if(temp > _ConstStruct->UpperBound)
+        if (_ConstStruct) {
+            if (temp > _ConstStruct->UpperBound)
                 temp = _ConstStruct->UpperBound;
             else if(temp < _ConstStruct->LowerBound)
                 temp = _ConstStruct->LowerBound;

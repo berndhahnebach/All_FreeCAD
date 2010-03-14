@@ -576,14 +576,16 @@ void StdCmdMeasurementSimple::activated(int iMsg)
 {
     unsigned int n = getSelection().countObjectsOfType(App::DocumentObject::getClassTypeId());
  
-    if (n == 1 ) {
+    if (n == 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Only one object selected. Please select two objects.\nBe aware the point where you click matters."));
+            QObject::tr("Only one object selected. Please select two objects.\n"
+                        "Be aware the point where you click matters."));
         return;
     }
-    if (n < 1 || n > 2 ) {
+    if (n < 1 || n > 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Please select two objects.\nBe aware the point where you click matters."));
+            QObject::tr("Please select two objects.\n"
+                        "Be aware the point where you click matters."));
         return;
     }
 
@@ -606,8 +608,6 @@ void StdCmdMeasurementSimple::activated(int iMsg)
     doCommand(Doc,"_f.P2 = FreeCAD.Vector(%f,%f,%f)",Sel[1].x,Sel[1].y,Sel[1].z);
     updateActive();
     commitCommand();
-
-    //OpenURLInBrowser("http://python.org");
 }
 
 namespace Gui {

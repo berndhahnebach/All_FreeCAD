@@ -1054,13 +1054,15 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
         switch (button) {
         case SoMouseButtonEvent::BUTTON1:
             this->button1down = press;
-            if (press && ev->wasShiftDown()) {
+            if (press && ev->wasShiftDown() &&
+                (this->currentmode != NavigationStyle::SELECTION)) {
                 this->centerTime = ev->getTime();
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
             }
-            else if (!press && ev->wasShiftDown()) {
+            else if (!press && ev->wasShiftDown() &&
+                (this->currentmode != NavigationStyle::SELECTION)) {
                 SbTime tmp = (ev->getTime() - this->centerTime);
                 float dci = (float)QApplication::doubleClickInterval()/1000.0f;
                 // is it just a left click?
@@ -1351,13 +1353,15 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
         switch (button) {
         case SoMouseButtonEvent::BUTTON1:
             this->button1down = press;
-            if (press && ev->wasShiftDown()) {
+            if (press && ev->wasShiftDown() &&
+                (this->currentmode != NavigationStyle::SELECTION)) {
                 this->centerTime = ev->getTime();
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
             }
-            else if (!press && ev->wasShiftDown()) {
+            else if (!press && ev->wasShiftDown() &&
+                (this->currentmode != NavigationStyle::SELECTION)) {
                 SbTime tmp = (ev->getTime() - this->centerTime);
                 float dci = (float)QApplication::doubleClickInterval()/1000.0f;
                 // is it just a left click?

@@ -87,6 +87,27 @@ MACRO (fc_copy_sources path_name mod_name)
 	)
 ENDMACRO(fc_copy_sources)
 
+MACRO (fc_copy_sources_outpath path_name out_path mod_name)
+	foreach(it ${ARGN})
+		file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${out_path}/${it}" outfile)
+		get_filename_component(infile ${it} ABSOLUTE)
+		get_filename_component(outfile ${outfile} ABSOLUTE)
+		add_file_dependencies(${infile} ${outfile})
+		ADD_CUSTOM_COMMAND(
+			SOURCE    ${infile}
+			COMMAND   ${CMAKE_COMMAND}
+			ARGS      -E copy ${infile} ${outfile}
+			TARGET    ${mod_name}
+			OUTPUTS   ${outfile}
+		)
+	endforeach(it)
+	ADD_CUSTOM_COMMAND(
+		SOURCE    ${mod_name}
+		TARGET    ${mod_name}
+		DEPENDS   ${ARGN}
+	)
+ENDMACRO(fc_copy_sources_outpath)
+
 MACRO (fc_copy_script path_name mod_name)
 	foreach(it ${ARGN})
 		file(TO_NATIVE_PATH "${CMAKE_SOURCE_DIR}/src/${path_name}/${it}" infile)

@@ -25,6 +25,7 @@
 #define GUI_VIEWPROVIDERMEASUREDISTANCE_H
 
 #include "ViewProviderDocumentObject.h"
+#include <QObject>
 
 class SoFontStyle;
 class SoText2;
@@ -33,10 +34,43 @@ class SoTranslation;
 class SoCoordinate3;
 class SoIndexedLineSet;
 class SoEventCallback;
+class SoMarkerSet;
 
 namespace Gui
 {
-class SoFCSelection;
+
+class View3DInventorViewer;
+class ViewProviderPointMarker;
+class PointMarker : public QObject
+{
+public:
+    PointMarker(View3DInventorViewer* view);
+    ~PointMarker();
+
+    void addPoint(const SbVec3f&);
+    int countPoints() const;
+
+protected:
+    void customEvent(QEvent* e);
+
+private:
+    View3DInventorViewer *view;
+    ViewProviderPointMarker *vp;
+};
+
+class GuiExport ViewProviderPointMarker : public ViewProviderDocumentObject
+{
+    PROPERTY_HEADER(Gui::ViewProviderPointMarker);
+
+public:
+    ViewProviderPointMarker();
+    virtual ~ViewProviderPointMarker();
+
+protected:
+    SoCoordinate3    * pCoords;
+    SoMarkerSet      * pMarker;
+    friend class PointMarker;
+};
 
 class GuiExport ViewProviderMeasureDistance : public ViewProviderDocumentObject
 {
@@ -72,9 +106,6 @@ private:
     SoTranslation    * pTranslation;
     SoCoordinate3    * pCoords;
     SoIndexedLineSet * pLines;
-    SoFCSelection    * pSelection;
-
-    static SbBool firstPicked;
 };
 
 } //namespace Gui
