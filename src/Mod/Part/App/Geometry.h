@@ -48,6 +48,7 @@
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <Base/Persistence.h>
+#include <Base/Vector3D.h>
 
 using namespace Base;
 
@@ -200,7 +201,7 @@ public:
     GeomLine(const Handle_Geom_Line&);
     virtual ~GeomLine();
 
-    // Persistance implementer ---------------------
+   // Persistance implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -218,7 +219,10 @@ public:
     GeomLineSegment();
     virtual ~GeomLineSegment();
 
-    // Persistance implementer ---------------------
+    Base::Vector3d getStartPoint(void);
+    Base::Vector3d getEndPoint(void);
+
+     // Persistance implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);

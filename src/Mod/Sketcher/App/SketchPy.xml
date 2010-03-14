@@ -8,7 +8,9 @@
     Include="Mod/Sketcher/App/Sketch.h" 
     Namespace="Sketcher" 
     FatherInclude="Base/PersistencePy.h" 
-    FatherNamespace="Base">
+    FatherNamespace="Base"
+    Constructor="true">
+
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <UserDocu>With this objects you can handle constraint sketches</UserDocu>
@@ -16,6 +18,11 @@
     <Methode Name="solve">
       <Documentation>
         <UserDocu>solve the actuall set of geometry and constraints</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="addGeometry">
+      <Documentation>
+        <UserDocu>add a geometric object to the sketch</UserDocu>
       </Documentation>
     </Methode>
     <Attribute Name="Constraint" ReadOnly="true">

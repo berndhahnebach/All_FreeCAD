@@ -27,6 +27,10 @@
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
+#include <Mod/Part/App/Geometry.h>
+#include "Constraint.h"
+
+#include "sketchsolve_cp/solve.h"
 
 #include <Base/Persistence.h>
 
@@ -48,6 +52,46 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
 
     int solve(void);
+    int addGeometry(Part::GeomCurve *geo);
+
+    /// add dedicated geometry
+    //@{
+    /// add a line segment 
+    int addLineSegment(Part::GeomLineSegment lineSegment);
+    //@}
+
+    /// constraints
+    //@{
+    /// add a horizontal constraint to a geometry
+    int addHorizontalConstraint(int geoIndex, const char* name=0);
+    /// add a vertical constraint to a geometry
+    int addVerticalConstraint(int geoIndex, const char* name=0);
+    //@}
+
+    enum GeoType {
+        Point = 1,
+        Line  = 2
+    };
+
+
+protected:
+    /// container element to store and work with the gometric elements of this sketch
+    struct GeoDef {
+        Part::GeomCurve * geo;                 // pointer to the geometry
+        GeoType           type;                // type of the geometry
+        int               parameterStartIndex; // start index for the points of this geometry
+        int               pointStartIndex;     // start index for the points of this geometry
+        int               lineStartIndex;      // start indes of the lines of this geometry
+    };
+
+    std::vector<GeoDef> Geoms;
+    std::vector<Sketch::Constraint> Const;
+
+    // solving parameters
+    std::vector<double*> Parameters;
+    std::vector<point>  Points;
+    std::vector<line>   Lines;
+
 
 };
 

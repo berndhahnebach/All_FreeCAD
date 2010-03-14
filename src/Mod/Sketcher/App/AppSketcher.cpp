@@ -77,10 +77,11 @@ void AppSketcherExport initSketcher()
 }
 
 
+
+} // extern "C"
+
 // debug print for sketchsolv 
 void debugprint(std::string s)
 {
     Base::Console().Log(s.c_str());
 }
-
-} // extern "C"
