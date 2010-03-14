@@ -529,8 +529,8 @@ Standard_Boolean ViewProviderPart::computeEdges (SoGroup* EdgeRoot, const TopoDS
         sel->documentName = pcObject->getDocument()->getName();
         sel->subElementName = name;
         sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
-        sel->highlightMode = Gui::SoFCSelection::AUTO;
-        sel->selectionMode = Gui::SoFCSelection::SEL_ON;
+        //sel->highlightMode = Gui::SoFCSelection::AUTO;
+        //sel->selectionMode = Gui::SoFCSelection::SEL_ON;
 
         SoLineSet * lineset = new SoLineSet;
         sel->addChild(lineset);
@@ -575,8 +575,8 @@ Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const To
     sel->documentName = pcObject->getDocument()->getName();
     sel->subElementName = name;
     sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
-    sel->highlightMode = Gui::SoFCSelection::AUTO;
-    sel->selectionMode = Gui::SoFCSelection::SEL_ON;
+    //sel->highlightMode = Gui::SoFCSelection::AUTO;
+    //sel->selectionMode = Gui::SoFCSelection::SEL_ON;
 
     SoPointSet * pointset = new SoPointSet;
     sel->addChild(pointset);
@@ -607,8 +607,8 @@ Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const To
         sel->documentName = pcObject->getDocument()->getName();
         sel->subElementName = name;
         sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
-        sel->highlightMode = Gui::SoFCSelection::AUTO;
-        sel->selectionMode = Gui::SoFCSelection::SEL_ON;
+        //sel->highlightMode = Gui::SoFCSelection::AUTO;
+        //sel->selectionMode = Gui::SoFCSelection::SEL_ON;
 
         // define the vertices
         SoCoordinate3 * coords = new SoCoordinate3;
@@ -700,8 +700,8 @@ Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_
         sel->documentName = pcObject->getDocument()->getName();
         sel->subElementName = name;
         sel->style = Gui::SoFCSelection::EMISSIVE;
-        sel->highlightMode = Gui::SoFCSelection::AUTO;
-        sel->selectionMode = Gui::SoFCSelection::SEL_ON;
+        //sel->highlightMode = Gui::SoFCSelection::AUTO;
+        //sel->selectionMode = Gui::SoFCSelection::SEL_ON;
 
         SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
         faceset->coordIndex.setValues(0,4*nbTriInFace,(const int32_t*) cons);

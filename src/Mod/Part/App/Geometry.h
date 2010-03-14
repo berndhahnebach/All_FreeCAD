@@ -86,7 +86,7 @@ public:
     GeomBezierCurve(const Handle_Geom_BezierCurve&);
     virtual ~GeomBezierCurve();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -106,7 +106,7 @@ public:
     GeomBSplineCurve(const Handle_Geom_BSplineCurve&);
     virtual ~GeomBSplineCurve();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -125,7 +125,7 @@ public:
     GeomCircle(const Handle_Geom_Circle&);
     virtual ~GeomCircle();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -144,7 +144,7 @@ public:
     GeomEllipse(const Handle_Geom_Ellipse&);
     virtual ~GeomEllipse();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -163,7 +163,7 @@ public:
     GeomHyperbola(const Handle_Geom_Hyperbola&);
     virtual ~GeomHyperbola();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -182,7 +182,7 @@ public:
     GeomParabola(const Handle_Geom_Parabola&);
     virtual ~GeomParabola();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -201,7 +201,7 @@ public:
     GeomLine(const Handle_Geom_Line&);
     virtual ~GeomLine();
 
-   // Persistance implementer ---------------------
+   // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -224,7 +224,7 @@ public:
 
     void setPoints(Base::Vector3d p1,Base::Vector3d p2);
 
-     // Persistance implementer ---------------------
+     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -244,7 +244,7 @@ public:
     GeomOffsetCurve(const Handle_Geom_OffsetCurve&);
     virtual ~GeomOffsetCurve();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -264,7 +264,7 @@ public:
     GeomTrimmedCurve(const Handle_Geom_TrimmedCurve&);
     virtual ~GeomTrimmedCurve();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -296,7 +296,7 @@ public:
     GeomBezierSurface(const Handle_Geom_BezierSurface&);
     virtual ~GeomBezierSurface();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -316,7 +316,7 @@ public:
     GeomBSplineSurface(const Handle_Geom_BSplineSurface&);
     virtual ~GeomBSplineSurface();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -334,7 +334,7 @@ public:
     GeomCylinder();
     virtual ~GeomCylinder();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -352,7 +352,7 @@ public:
     GeomCone();
     virtual ~GeomCone();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -370,7 +370,7 @@ public:
     GeomSphere();
     virtual ~GeomSphere();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -388,7 +388,7 @@ public:
     GeomToroid();
     virtual ~GeomToroid();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -406,7 +406,7 @@ public:
     GeomPlane();
     virtual ~GeomPlane();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -426,7 +426,7 @@ public:
     GeomOffsetSurface(const Handle_Geom_OffsetSurface&);
     virtual ~GeomOffsetSurface();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -447,7 +447,7 @@ public:
     GeomSurfaceOfRevolution(const Handle_Geom_SurfaceOfRevolution&);
     virtual ~GeomSurfaceOfRevolution();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
@@ -468,7 +468,7 @@ public:
     GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinearExtrusion&);
     virtual ~GeomSurfaceOfExtrusion();
 
-    // Persistance implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Writer &/*writer*/) const;
     virtual void Restore(XMLReader &/*reader*/);
