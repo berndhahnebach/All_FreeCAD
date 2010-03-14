@@ -51,6 +51,7 @@
 #include "View3DInventorViewer.h"
 #include "WaitCursor.h"
 #include "ViewProviderMeasureDistance.h"
+#include "ViewProviderGeometryObject.h"
 #include "SceneInspector.h"
 #include "DemoMode.h"
 
@@ -557,6 +558,51 @@ void StdCmdToggleVisibility::activated(int iMsg)
 }
 
 bool StdCmdToggleVisibility::isActive(void)
+{
+    return (Gui::Selection().size() != 0);
+}
+
+//===========================================================================
+// Std_ToggleSelectability
+//===========================================================================
+DEF_STD_CMD_A(StdCmdToggleSelectability);
+
+StdCmdToggleSelectability::StdCmdToggleSelectability()
+  : Command("Std_ToggleSelectability")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Toggle selectability");
+    sToolTipText  = QT_TR_NOOP("Toggles the property of the objects to get selected in the 3D-View");
+    sStatusTip    = QT_TR_NOOP("Toggles the property of the objects to get selected in the 3D-View");
+    sWhatsThis    = "Std_ToggleSelectability";
+    eType         = Alter3DView;
+}
+
+void StdCmdToggleSelectability::activated(int iMsg)
+{
+    // go through all documents
+    const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
+        Document *pcDoc = Application::Instance->getDocument(*it);
+        std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType
+            (App::DocumentObject::getClassTypeId(), (*it)->getName());
+
+ 
+        for (std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
+            ViewProvider *pr = pcDoc->getViewProviderByName((*ft)->getNameInDocument());
+            if(pr->isDerivedFrom(ViewProviderGeometryObject::getClassTypeId())){
+                    if (dynamic_cast<ViewProviderGeometryObject*>(pr)->Selectable.getValue())
+                        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Selectable=False"
+                                     , (*it)->getName(), (*ft)->getNameInDocument());
+                    else
+                        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Selectable=True"
+                                     , (*it)->getName(), (*ft)->getNameInDocument());
+            }
+        }
+    }
+}
+
+bool StdCmdToggleSelectability::isActive(void)
 {
     return (Gui::Selection().size() != 0);
 }
@@ -1766,6 +1812,7 @@ void CreateViewStdCommands(void)
     rcCmdMgr.addCommand(new StdViewDockUndockFullscreen());
     rcCmdMgr.addCommand(new StdCmdSetAppearance());
     rcCmdMgr.addCommand(new StdCmdToggleVisibility());
+    rcCmdMgr.addCommand(new StdCmdToggleSelectability());
     rcCmdMgr.addCommand(new StdCmdShowSelection());
     rcCmdMgr.addCommand(new StdCmdHideSelection());
     rcCmdMgr.addCommand(new StdCmdToggleObjects());
