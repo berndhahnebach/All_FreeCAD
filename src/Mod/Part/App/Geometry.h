@@ -47,11 +47,15 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
+#include <Base/Persistence.h>
+
+using namespace Base;
 
 namespace Part {
 
-class PartExport Geometry
+class PartExport Geometry: public Base::Persistence
 {
+    TYPESYSTEM_HEADER();
 public:
     virtual ~Geometry();
 
@@ -64,6 +68,7 @@ protected:
 
 class PartExport GeomCurve : public Geometry
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomCurve();
     virtual ~GeomCurve();
@@ -74,10 +79,17 @@ public:
 
 class PartExport GeomBezierCurve : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomBezierCurve();
     GeomBezierCurve(const Handle_Geom_BezierCurve&);
     virtual ~GeomBezierCurve();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
+
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -87,10 +99,16 @@ private:
 
 class PartExport GeomBSplineCurve : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomBSplineCurve();
     GeomBSplineCurve(const Handle_Geom_BSplineCurve&);
     virtual ~GeomBSplineCurve();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -100,10 +118,16 @@ private:
 
 class PartExport GeomCircle : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomCircle();
     GeomCircle(const Handle_Geom_Circle&);
     virtual ~GeomCircle();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -113,10 +137,16 @@ private:
 
 class PartExport GeomEllipse : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomEllipse();
     GeomEllipse(const Handle_Geom_Ellipse&);
     virtual ~GeomEllipse();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -126,10 +156,16 @@ private:
 
 class PartExport GeomHyperbola : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomHyperbola();
     GeomHyperbola(const Handle_Geom_Hyperbola&);
     virtual ~GeomHyperbola();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -139,10 +175,16 @@ private:
 
 class PartExport GeomParabola : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomParabola();
     GeomParabola(const Handle_Geom_Parabola&);
     virtual ~GeomParabola();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -152,10 +194,16 @@ private:
 
 class PartExport GeomLine : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomLine();
     GeomLine(const Handle_Geom_Line&);
     virtual ~GeomLine();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -165,9 +213,15 @@ private:
 
 class PartExport GeomLineSegment : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomLineSegment();
     virtual ~GeomLineSegment();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -177,11 +231,17 @@ private:
 
 class PartExport GeomOffsetCurve : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomOffsetCurve();
     GeomOffsetCurve(const Handle_Geom_Curve&, double, const gp_Dir&);
     GeomOffsetCurve(const Handle_Geom_OffsetCurve&);
     virtual ~GeomOffsetCurve();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_OffsetCurve& c);
     const Handle_Geom_Geometry& handle() const;
@@ -192,10 +252,16 @@ private:
 
 class PartExport GeomTrimmedCurve : public GeomCurve
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomTrimmedCurve();
     GeomTrimmedCurve(const Handle_Geom_TrimmedCurve&);
     virtual ~GeomTrimmedCurve();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_TrimmedCurve&);
     const Handle_Geom_Geometry& handle() const;
@@ -206,6 +272,7 @@ private:
 
 class PartExport GeomSurface : public Geometry
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomSurface();
     virtual ~GeomSurface();
@@ -217,10 +284,17 @@ public:
 
 class PartExport GeomBezierSurface : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomBezierSurface();
     GeomBezierSurface(const Handle_Geom_BezierSurface&);
     virtual ~GeomBezierSurface();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
+
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -230,10 +304,16 @@ private:
 
 class PartExport GeomBSplineSurface : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomBSplineSurface();
     GeomBSplineSurface(const Handle_Geom_BSplineSurface&);
     virtual ~GeomBSplineSurface();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -243,9 +323,15 @@ private:
 
 class PartExport GeomCylinder : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomCylinder();
     virtual ~GeomCylinder();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -255,9 +341,15 @@ private:
 
 class PartExport GeomCone : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomCone();
     virtual ~GeomCone();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -267,9 +359,15 @@ private:
 
 class PartExport GeomSphere : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomSphere();
     virtual ~GeomSphere();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -279,9 +377,15 @@ private:
 
 class PartExport GeomToroid : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomToroid();
     virtual ~GeomToroid();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -291,9 +395,15 @@ private:
 
 class PartExport GeomPlane : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomPlane();
     virtual ~GeomPlane();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -303,11 +413,17 @@ private:
 
 class GeomOffsetSurface : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomOffsetSurface();
     GeomOffsetSurface(const Handle_Geom_Surface&, double);
     GeomOffsetSurface(const Handle_Geom_OffsetSurface&);
     virtual ~GeomOffsetSurface();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_OffsetSurface& s);
     const Handle_Geom_Geometry& handle() const;
@@ -318,11 +434,17 @@ private:
 
 class GeomSurfaceOfRevolution : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomSurfaceOfRevolution();
     GeomSurfaceOfRevolution(const Handle_Geom_Curve&, const gp_Ax1&);
     GeomSurfaceOfRevolution(const Handle_Geom_SurfaceOfRevolution&);
     virtual ~GeomSurfaceOfRevolution();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_SurfaceOfRevolution& c);
     const Handle_Geom_Geometry& handle() const;
@@ -333,11 +455,17 @@ private:
 
 class GeomSurfaceOfExtrusion : public GeomSurface
 {
+    TYPESYSTEM_HEADER();
 public:
     GeomSurfaceOfExtrusion();
     GeomSurfaceOfExtrusion(const Handle_Geom_Curve&, const gp_Dir&);
     GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinearExtrusion&);
     virtual ~GeomSurfaceOfExtrusion();
+
+    // Persistance implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Writer &/*writer*/) const;
+    virtual void Restore(XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_SurfaceOfLinearExtrusion& c);
     const Handle_Geom_Geometry& handle() const;

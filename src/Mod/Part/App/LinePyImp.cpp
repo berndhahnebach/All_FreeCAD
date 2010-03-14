@@ -262,6 +262,17 @@ void LinePy::setEndPoint(Py::Object arg)
     }
 }
 
+Py::Boolean LinePy::getInfinite(void) const
+{
+    return Py::Boolean(Infinite);
+}
+
+void  LinePy::setInfinite(Py::Boolean arg)
+{
+    Infinite = arg;
+}
+
+
 PyObject *LinePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

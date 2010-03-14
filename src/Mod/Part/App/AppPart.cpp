@@ -149,6 +149,32 @@ void AppPartExport initPart()
     Part::Helix                 ::init();
     Part::Part2DObject          ::init();
 
+    // Geometry types
+    Part::Geometry                ::init();
+    Part::GeomCurve               ::init();
+    Part::GeomBezierCurve         ::init();
+    Part::GeomBSplineCurve        ::init();
+    Part::GeomCircle              ::init();
+    Part::GeomEllipse             ::init();
+    Part::GeomHyperbola           ::init();
+    Part::GeomParabola            ::init();
+    Part::GeomLine                ::init();
+    Part::GeomLineSegment         ::init();
+    Part::GeomOffsetCurve         ::init();
+    Part::GeomTrimmedCurve        ::init();
+    Part::GeomSurface             ::init();
+    Part::GeomBezierSurface       ::init();
+    Part::GeomBSplineSurface      ::init();
+    Part::GeomCylinder            ::init();
+    Part::GeomCone                ::init();
+    Part::GeomSphere              ::init();
+    Part::GeomToroid              ::init();
+    Part::GeomPlane               ::init();
+    Part::GeomOffsetSurface       ::init();
+    Part::GeomSurfaceOfRevolution ::init();
+    Part::GeomSurfaceOfExtrusion  ::init();
+
+
     // set the user-defined units
     Base::Reference<ParameterGrp> hGrp = App::GetApplication().GetUserParameter()
         .GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("Mod/Part");
