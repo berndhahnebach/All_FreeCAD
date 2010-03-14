@@ -25,11 +25,28 @@
         <UserDocu>add a geometric object to the sketch</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="addHorizontalConstraint">
+      <Documentation>
+        <UserDocu>addHorizontalConstraint(GeoIndex[,name]) - add a horizontal constraint to the geometry with the given index</UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="Constraint" ReadOnly="true">
       <Documentation>
         <UserDocu>0: exactly constraint, -1 under-constraint, 1 over-constraint</UserDocu>
       </Documentation>
       <Parameter Name="Constraint" Type="Int"/>
+    </Attribute>
+    <Attribute Name="Constraints" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Tuple of all constrains in this sketch</UserDocu>
+      </Documentation>
+      <Parameter Name="Constraints" Type="Tuple"/>
+    </Attribute>
+    <Attribute Name="Geometries" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Tuple of all geometric elements in this sketch</UserDocu>
+      </Documentation>
+      <Parameter Name="Geometries" Type="Tuple"/>
     </Attribute>
 
   </PythonExport>

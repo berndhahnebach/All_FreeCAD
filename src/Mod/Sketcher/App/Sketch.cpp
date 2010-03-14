@@ -31,6 +31,7 @@
 
 
 #include "Sketch.h"
+#include "Constraint.h"
 #include <math.h>
 
 #include <iostream>
@@ -64,6 +65,7 @@ int Sketch::addGeometry(Part::GeomCurve *geo)
         return addLineSegment(*lineSeg);
     } else {
         Base::Exception("Sketch::addGeometry(): Unknown or unsoported type added to a sketch");
+        return 0;
     }
 }
 
@@ -111,6 +113,16 @@ int Sketch::addLineSegment(Part::GeomLineSegment lineSegment)
     return Geoms.size()-1;
 }
 
+std::vector<Part::GeomCurve *> Sketch::getGeometry(void)
+{
+    std::vector<Part::GeomCurve *> temp(Geoms.size());
+    int i=0;
+    for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++)
+        temp[i] = it->geo;
+
+    return temp;
+}
+
 // constraint adding ==========================================================
 
 int Sketch::addHorizontalConstraint(int geoIndex, const char* name)
@@ -140,8 +152,37 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
 
 int Sketch::solve(void) {
 
+    Solver s;
+    std::vector<constraint> constraints(Const.size());
+    int i=0;
+    for(std::vector<Constraint>::iterator it=Const.begin();it!=Const.end();++it,i++)
+        constraints[i] = it->constrain;
 
-	return 0;
+    int ret = s.solve(&Parameters[0],Parameters.size(),&constraints[0],Const.size(),0);
+
+    // if successfully solve write the parameter back
+    if(ret == 0){
+        int i=0;
+        for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++){
+            if(it->type == Line){
+                GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
+                lineSeg->setPoints(
+                         Vector3d(
+                             *Parameters[it->parameterStartIndex+0],
+                             *Parameters[it->parameterStartIndex+1],
+                             0.0),
+                         Vector3d(
+                             *Parameters[it->parameterStartIndex+2],
+                             *Parameters[it->parameterStartIndex+3],
+                             0.0)
+                     );
+            }
+
+        }
+    }
+
+
+	return ret;
 }
 
 // Persistance implementer -------------------------------------------------
