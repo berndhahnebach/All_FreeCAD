@@ -451,7 +451,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
     MenuItem* visu = new MenuItem;
     visu->setCommand(QT_TR_NOOP("Visibility"));
     *visu << "Std_ToggleVisibility" << "Std_ShowSelection" << "Std_HideSelection"
-          << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects";
+          << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects" 
+          << "Separator" << "Std_ToggleSelectability";
 
     // View
     MenuItem* view = new MenuItem( menuBar );
