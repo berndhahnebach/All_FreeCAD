@@ -27,6 +27,7 @@
 
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <Base/Exception.h>
 
 
 #include "Sketch.h"
@@ -35,10 +36,9 @@
 #include <iostream>
 
 
-#include "sketchsolve_cp/solve.h"
-
 using namespace Sketcher;
 using namespace Base;
+using namespace Part;
 
 
 TYPESYSTEM_SOURCE(Sketcher::Sketch, Base::Persistence)
@@ -49,7 +49,102 @@ Sketch::Sketch()
 }
 Sketch::~Sketch()
 {
+    for(std::vector<double*>::iterator it;it!=Parameters.end();++it)
+        delete *it;
 }
+
+// Geometry adding ==========================================================
+
+int Sketch::addGeometry(Part::GeomCurve *geo)
+{
+    
+    if(geo->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
+        GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(geo);
+        // create the definition struct for that geom
+        return addLineSegment(*lineSeg);
+    } else {
+        Base::Exception("Sketch::addGeometry(): Unknown or unsoported type added to a sketch");
+    }
+}
+
+
+int Sketch::addLineSegment(Part::GeomLineSegment lineSegment)
+{
+    // create our own copy
+    GeomLineSegment *lineSeg = new GeomLineSegment(lineSegment);
+    // create the definition struct for that geom
+    GeoDef def;
+    def.geo  = lineSeg;
+    def.type = Line;
+
+    // get the points from the line
+    Base::Vector3d start = lineSeg->getStartPoint();
+    Base::Vector3d end   = lineSeg->getEndPoint();
+    // set the parameter for the solver
+    def.parameterStartIndex = Parameters.size();
+    Parameters.push_back(new double(start.x));
+    Parameters.push_back(new double(start.y));
+    Parameters.push_back(new double(end.x));
+    Parameters.push_back(new double(end.y));
+
+    // set the points for later constraints
+    point p1,p2;
+    p1.x = Parameters[def.parameterStartIndex+0];
+    p1.y = Parameters[def.parameterStartIndex+1];
+    p2.x = Parameters[def.parameterStartIndex+2];
+    p2.y = Parameters[def.parameterStartIndex+3];
+    def.pointStartIndex = Points.size();
+    Points.push_back(p1);
+    Points.push_back(p2);
+
+    // set the line for later constraints
+    line l;
+    l.p1 = p1;
+    l.p2 = p2;
+    def.lineStartIndex = Lines.size();
+    Lines.push_back(l);
+
+    // store complete set
+    Geoms.push_back(def);
+    
+    // return the position of the newly added geometry
+    return Geoms.size()-1;
+}
+
+// constraint adding ==========================================================
+
+int Sketch::addHorizontalConstraint(int geoIndex, const char* name)
+{
+    // index out of bounds?
+    assert(geoIndex < Geoms.size());
+    // constraint the right type?
+    assert(Geoms[geoIndex].type = Line);
+
+    Constraint constrain;
+    constrain.constrain.type = horizontal;
+    constrain.constrain.line1 = Lines[Geoms[geoIndex].lineStartIndex];
+    if(name)
+        constrain.name = name;
+
+    Const.push_back(constrain);
+
+    return Const.size()-1;
+}
+
+int Sketch::addVerticalConstraint(int geoIndex, const char* name)
+{
+
+    return Const.size()-1;
+}
+
+
+int Sketch::solve(void) {
+
+
+	return 0;
+}
+
+// Persistance implementer -------------------------------------------------
 
 unsigned int Sketch::getMemSize (void) const
 {
@@ -110,6 +205,8 @@ void Sketch::Restore(XMLReader &reader)
     //calcTcp();
 
 }
+
+#if 0
 
 using namespace std;
 
@@ -238,3 +335,5 @@ int Sketch::solve(void) {
 
 	return 0;
 }
+
+#endif

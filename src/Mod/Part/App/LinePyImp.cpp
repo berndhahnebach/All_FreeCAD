@@ -58,8 +58,10 @@ PyObject *LinePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Pytho
 // constructor method
 int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
+    
     if (PyArg_ParseTuple(args, "")) {
         // default line
+        Infinite=false;
         return 0;
     }
 
@@ -78,6 +80,8 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
             (this->getGeomLineSegmentPtr()->handle());
         Handle_Geom_Line this_line = Handle_Geom_Line::DownCast
             (this_curv->BasisCurve());
+
+        Infinite = pcLine->Infinite;
 
         // Assign the lines
         this_line->SetLin(that_line->Lin());
@@ -110,6 +114,8 @@ int LinePy::PyInit(PyObject* args, PyObject* /*kwd*/)
             Handle_Geom_Line that_line = Handle_Geom_Line::DownCast(that_curv->BasisCurve());
             this_line->SetLin(that_line->Lin());
             this_curv->SetTrim(that_curv->FirstParameter(), that_curv->LastParameter());
+
+            Infinite = false;
             return 0;
         }
         catch (Standard_Failure) {

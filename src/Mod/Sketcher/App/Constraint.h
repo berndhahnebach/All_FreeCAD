@@ -27,6 +27,7 @@
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
+#include "sketchsolve_cp/solve.h"
 
 #include <Base/Persistence.h>
 
@@ -39,13 +40,20 @@ class Constraint :public Base::Persistence
     TYPESYSTEM_HEADER();
 
 public:
-    Constraint();
     ~Constraint();
 
 	// from base class
     virtual unsigned int getMemSize (void) const;
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+
+    friend class Sketch;
+public:
+    std::string name;
+    constraint  constrain;
+
+protected:
+    Constraint();
 
 
 };

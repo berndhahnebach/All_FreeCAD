@@ -362,6 +362,7 @@ const Handle_Geom_Geometry& GeomLine::handle() const
     return myCurve;
 }
 
+
 // Persistance implementer 
 unsigned int GeomLine::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomLine::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
@@ -388,6 +389,21 @@ const Handle_Geom_Geometry& GeomLineSegment::handle() const
 {
     return myCurve;
 }
+
+Base::Vector3d GeomLineSegment::getStartPoint(void)
+{
+    Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast(handle());
+    gp_Pnt pnt = this_curve->StartPoint();
+    return Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z());
+}
+
+Base::Vector3d GeomLineSegment::getEndPoint(void)
+{
+    Handle_Geom_TrimmedCurve this_curve = Handle_Geom_TrimmedCurve::DownCast(handle());
+    gp_Pnt pnt = this_curve->EndPoint();
+    return Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z());
+}
+
 
 // Persistance implementer 
 unsigned int GeomLineSegment::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
