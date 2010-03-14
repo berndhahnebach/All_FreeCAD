@@ -128,7 +128,7 @@ std::vector<Part::GeomCurve *> Sketch::getGeometry(void)
 int Sketch::addHorizontalConstraint(int geoIndex, const char* name)
 {
     // index out of bounds?
-    assert(geoIndex < Geoms.size());
+    assert(geoIndex < (int)Geoms.size());
     // constraint the right type?
     assert(Geoms[geoIndex].type = Line);
 

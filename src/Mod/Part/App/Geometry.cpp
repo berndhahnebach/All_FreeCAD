@@ -187,7 +187,7 @@ const Handle_Geom_Geometry& GeomBezierCurve::handle() const
     return myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomBezierCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBezierCurve::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBezierCurve::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -227,7 +227,7 @@ const Handle_Geom_Geometry& GeomBSplineCurve::handle() const
     return myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomBSplineCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBSplineCurve::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBSplineCurve::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -256,7 +256,7 @@ const Handle_Geom_Geometry& GeomCircle::handle() const
     return myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomCircle::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomCircle::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomCircle::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -285,7 +285,7 @@ const Handle_Geom_Geometry& GeomEllipse::handle() const
     return myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomEllipse::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomEllipse::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomEllipse::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -314,7 +314,7 @@ const Handle_Geom_Geometry& GeomHyperbola::handle() const
     return myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomHyperbola::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomHyperbola::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomHyperbola::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -343,7 +343,7 @@ const Handle_Geom_Geometry& GeomParabola::handle() const
     return myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomParabola::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomParabola::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomParabola::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -373,7 +373,7 @@ const Handle_Geom_Geometry& GeomLine::handle() const
 }
 
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomLine::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomLine::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomLine::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -443,7 +443,7 @@ void GeomLineSegment::setPoints(Base::Vector3d Start,Base::Vector3d End)
 }
 
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomLineSegment::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomLineSegment::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomLineSegment::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -480,7 +480,7 @@ const Handle_Geom_Geometry& GeomOffsetCurve::handle() const
     return this->myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomOffsetCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomOffsetCurve::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomOffsetCurve::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -512,7 +512,7 @@ const Handle_Geom_Geometry& GeomTrimmedCurve::handle() const
     return myCurve;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomTrimmedCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomTrimmedCurve::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomTrimmedCurve::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -590,7 +590,7 @@ const Handle_Geom_Geometry& GeomBezierSurface::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomBezierSurface::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBezierSurface::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBezierSurface::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -632,7 +632,7 @@ const Handle_Geom_Geometry& GeomBSplineSurface::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomBSplineSurface::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBSplineSurface::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBSplineSurface::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -656,7 +656,7 @@ const Handle_Geom_Geometry& GeomCylinder::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomCylinder::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomCylinder::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomCylinder::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -680,7 +680,7 @@ const Handle_Geom_Geometry& GeomCone::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomCone::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomCone::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomCone::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -704,7 +704,7 @@ const Handle_Geom_Geometry& GeomToroid::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomToroid::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomToroid::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomToroid::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -728,7 +728,7 @@ const Handle_Geom_Geometry& GeomSphere::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomSphere::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomSphere::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomSphere::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -752,7 +752,7 @@ const Handle_Geom_Geometry& GeomPlane::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomPlane::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomPlane::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomPlane::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -789,7 +789,7 @@ const Handle_Geom_Geometry& GeomOffsetSurface::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomOffsetSurface::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomOffsetSurface::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomOffsetSurface::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -826,7 +826,7 @@ const Handle_Geom_Geometry& GeomSurfaceOfRevolution::handle() const
     return mySurface;
 }
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomSurfaceOfRevolution::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomSurfaceOfRevolution::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomSurfaceOfRevolution::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
@@ -864,7 +864,7 @@ const Handle_Geom_Geometry& GeomSurfaceOfExtrusion::handle() const
 }
 
 
-// Persistance implementer 
+// Persistence implementer 
 unsigned int GeomSurfaceOfExtrusion::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomSurfaceOfExtrusion::Save       (Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomSurfaceOfExtrusion::Restore    (XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
