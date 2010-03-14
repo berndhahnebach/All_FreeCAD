@@ -40,5 +40,16 @@ Part.Line(Point1,Point2)
       </Documentation>
       <Parameter Name="EndPoint" Type="Object"/>
     </Attribute>
+    <Attribute Name="Infinite" ReadOnly="false">
+      <Documentation>
+        <UserDocu>defines the line as infinite. The StartPoint and EndPoint will be ignored as boundery.</UserDocu>
+      </Documentation>
+      <Parameter Name="EndPoint" Type="Boolean"/>
+    </Attribute>
+    <ClassDeclarations>
+      public:
+      bool Infinite;
+    </ClassDeclarations>
+
   </PythonExport>
 </GenerateModel>
