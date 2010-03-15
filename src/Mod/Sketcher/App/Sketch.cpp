@@ -69,6 +69,21 @@ int Sketch::addGeometry(Part::GeomCurve *geo)
     }
 }
 
+int Sketch::addPoint(Base::Vector3d point)
+{
+
+
+    // return the position of the newly added geometry
+    return Geoms.size()-1;
+}
+
+int Sketch::addLine(Part::GeomLineSegment line)
+{
+
+
+    // return the position of the newly added geometry
+    return Geoms.size()-1;
+}
 
 int Sketch::addLineSegment(Part::GeomLineSegment lineSegment)
 {
@@ -113,6 +128,27 @@ int Sketch::addLineSegment(Part::GeomLineSegment lineSegment)
     return Geoms.size()-1;
 }
 
+int Sketch::addArc(Part::GeomTrimmedCurve circleSegment)
+{
+    
+    // return the position of the newly added geometry
+    return Geoms.size()-1;
+}
+
+int Sketch::addCircle(Part::GeomCircle circle)
+{
+    
+    // return the position of the newly added geometry
+    return Geoms.size()-1;
+}
+
+int Sketch::addEllibse(Part::GeomEllipse ellibse)
+{
+    
+    // return the position of the newly added geometry
+    return Geoms.size()-1;
+}
+
 std::vector<Part::GeomCurve *> Sketch::getGeometry(void)
 {
     std::vector<Part::GeomCurve *> temp(Geoms.size());
@@ -145,6 +181,18 @@ int Sketch::addHorizontalConstraint(int geoIndex, const char* name)
 
 int Sketch::addVerticalConstraint(int geoIndex, const char* name)
 {
+    // index out of bounds?
+    assert(geoIndex < (int)Geoms.size());
+    // constraint the right type?
+    assert(Geoms[geoIndex].type = Line);
+
+    Constraint constrain;
+    constrain.constrain.type = vertical;
+    constrain.constrain.line1 = Lines[Geoms[geoIndex].lineStartIndex];
+    if(name)
+        constrain.name = name;
+
+    Const.push_back(constrain);
 
     return Const.size()-1;
 }
