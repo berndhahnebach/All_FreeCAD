@@ -50,8 +50,6 @@
 #include <Base/Persistence.h>
 #include <Base/Vector3D.h>
 
-using namespace Base;
-
 namespace Part {
 
 class PartExport Geometry: public Base::Persistence
@@ -88,8 +86,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
 
     const Handle_Geom_Geometry& handle() const;
@@ -108,8 +106,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -127,8 +125,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -146,8 +144,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -165,8 +163,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -184,8 +182,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -203,8 +201,8 @@ public:
 
    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -219,15 +217,16 @@ public:
     GeomLineSegment();
     virtual ~GeomLineSegment();
 
-    Base::Vector3d getStartPoint(void);
-    Base::Vector3d getEndPoint(void);
+    Base::Vector3d getStartPoint() const;
+    Base::Vector3d getEndPoint() const;
 
-    void setPoints(Base::Vector3d p1,Base::Vector3d p2);
+    void setPoints(const Base::Vector3d& p1, 
+                   const Base::Vector3d& p2);
 
      // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -246,8 +245,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_OffsetCurve& c);
     const Handle_Geom_Geometry& handle() const;
@@ -266,8 +265,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_TrimmedCurve&);
     const Handle_Geom_Geometry& handle() const;
@@ -298,8 +297,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
 
     const Handle_Geom_Geometry& handle() const;
@@ -318,8 +317,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -336,8 +335,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -354,8 +353,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -372,8 +371,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -390,8 +389,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -408,8 +407,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -428,8 +427,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_OffsetSurface& s);
     const Handle_Geom_Geometry& handle() const;
@@ -449,8 +448,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_SurfaceOfRevolution& c);
     const Handle_Geom_Geometry& handle() const;
@@ -470,8 +469,8 @@ public:
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
-    virtual void Save (Writer &/*writer*/) const;
-    virtual void Restore(XMLReader &/*reader*/);
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
 
     void setHandle(const Handle_Geom_SurfaceOfLinearExtrusion& c);
     const Handle_Geom_Geometry& handle() const;

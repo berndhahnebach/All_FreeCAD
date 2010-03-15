@@ -82,11 +82,11 @@ protected:
         GeoType           type;                // type of the geometry
         int               parameterStartIndex; // start index for the points of this geometry
         int               pointStartIndex;     // start index for the points of this geometry
-        int               lineStartIndex;      // start indes of the lines of this geometry
+        int               lineStartIndex;      // start index of the lines of this geometry
     };
 
     std::vector<GeoDef> Geoms;
-    std::vector<Sketch::Constraint> Const;
+    std::vector<Constraint> Const;
 
     // solving parameters
     std::vector<double*> Parameters;
