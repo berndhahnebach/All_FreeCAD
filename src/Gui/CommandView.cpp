@@ -575,6 +575,7 @@ StdCmdToggleSelectability::StdCmdToggleSelectability()
     sToolTipText  = QT_TR_NOOP("Toggles the property of the objects to get selected in the 3D-View");
     sStatusTip    = QT_TR_NOOP("Toggles the property of the objects to get selected in the 3D-View");
     sWhatsThis    = "Std_ToggleSelectability";
+    sPixmap       = "view-unselectable";
     eType         = Alter3DView;
 }
 
@@ -1698,6 +1699,7 @@ StdCmdMeasureDistance::StdCmdMeasureDistance()
     sWhatsThis    = "Std_MeasureDistance";
     sStatusTip    = QT_TR_NOOP("Measure distance");
     iAccel        = 0;
+    sPixmap       = "view-measurement";
     eType         = Alter3DView;
 }
 

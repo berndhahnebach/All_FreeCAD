@@ -61,7 +61,7 @@ ViewProviderMeasureDistance::ViewProviderMeasureDistance()
     ADD_PROPERTY(TextColor,(0.0f,0.0f,0.0f));
     ADD_PROPERTY(LineColor,(1.0f,1.0f,1.0f));
     ADD_PROPERTY(FontSize,(18));
-    ADD_PROPERTY(DistFactor,(2.0));
+    ADD_PROPERTY(DistFactor,(1.0));
     ADD_PROPERTY(Mirror,(false));
 
     pFont = new SoFontStyle();
@@ -77,6 +77,7 @@ ViewProviderMeasureDistance::ViewProviderMeasureDistance()
 
     TextColor.touch();
     FontSize.touch();
+    LineColor.touch();
 
     static const SbVec3f verts[4] =
     {
