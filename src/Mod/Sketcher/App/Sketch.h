@@ -57,8 +57,18 @@ public:
 
     /// add dedicated geometry
     //@{
+    /// add a point 
+    int addPoint(Base::Vector3d point);
+    /// add a infinit line 
+    int addLine(Part::GeomLineSegment line);
     /// add a line segment 
     int addLineSegment(Part::GeomLineSegment lineSegment);
+    /// add a arc (circle segment)
+    int addArc(Part::GeomTrimmedCurve circleSegment);
+    /// add a circle
+    int addCircle(Part::GeomCircle circle);
+    /// add a ellipse
+    int addEllibse(Part::GeomEllipse ellibse);
     //@}
 
     /// constraints
@@ -70,8 +80,11 @@ public:
     //@}
 
     enum GeoType {
-        Point = 1,
-        Line  = 2
+        Point   = 1,
+        Line    = 2,
+        Arc     = 3,
+        Circle  = 4,
+        Ellipse = 5
     };
 
 

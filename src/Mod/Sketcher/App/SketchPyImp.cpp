@@ -64,6 +64,17 @@ PyObject* SketchPy::addHorizontalConstraint(PyObject *args)
 
 }
 
+PyObject* SketchPy::addVerticalConstraint(PyObject *args)
+{
+    int index;
+    char* name=0;
+    if (!PyArg_ParseTuple(args, "i|s", &index,&name))
+        return 0;
+
+    return Py::new_reference_to(Py::Int(getSketchPtr()->addVerticalConstraint(index,name)));
+
+}
+
 // +++ attributes implementer ++++++++++++++++++++++++++++++++++++++++++++++++
 
 Py::Int SketchPy::getConstraint(void) const

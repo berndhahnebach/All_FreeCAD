@@ -30,6 +30,11 @@
         <UserDocu>addHorizontalConstraint(GeoIndex[,name]) - add a horizontal constraint to the geometry with the given index</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="addVerticalConstraint">
+      <Documentation>
+        <UserDocu>addVerticalConstraint(GeoIndex[,name]) - add a vertical constraint to the geometry with the given index</UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="Constraint" ReadOnly="true">
       <Documentation>
         <UserDocu>0: exactly constraint, -1 under-constraint, 1 over-constraint</UserDocu>
