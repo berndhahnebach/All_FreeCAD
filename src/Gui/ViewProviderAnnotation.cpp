@@ -36,6 +36,9 @@
 #include "ViewProviderAnnotation.h"
 #include <App/PropertyGeo.h>
 #include <App/PropertyStandard.h>
+#include "SoFCSelection.h"
+#include "Application.h"
+#include "Document.h"
 
 using namespace Gui;
 
@@ -158,17 +161,28 @@ void ViewProviderAnnotation::attach(App::DocumentObject* f)
     SoAnnotation* anno = new SoAnnotation();
     SoAnnotation* anno3d = new SoAnnotation();
 
-    anno->addChild(pTranslation);
-    anno->addChild(pRotationXYZ);
-    anno->addChild(pColor);
-    anno->addChild(pFont);
-    anno->addChild(pLabel);
+    SoFCSelection* textsep = new SoFCSelection();
+    textsep->objectName = pcObject->getNameInDocument();
+    textsep->documentName = pcObject->getDocument()->getName();
+    textsep->subElementName = "Main";
+    textsep->addChild(pTranslation);
+    textsep->addChild(pRotationXYZ);
+    textsep->addChild(pColor);
+    textsep->addChild(pFont);
+    textsep->addChild(pLabel);
 
-    anno3d->addChild(pTranslation);
-    anno3d->addChild(pRotationXYZ);
-    anno3d->addChild(pColor);
-    anno3d->addChild(pFont);
-    anno3d->addChild(pLabel3d);
+    SoFCSelection* textsep3d = new SoFCSelection();
+    textsep3d->objectName = pcObject->getNameInDocument();
+    textsep3d->documentName = pcObject->getDocument()->getName();
+    textsep3d->subElementName = "Main";
+    textsep3d->addChild(pTranslation);
+    textsep3d->addChild(pRotationXYZ);
+    textsep3d->addChild(pColor);
+    textsep3d->addChild(pFont);
+    textsep3d->addChild(pLabel3d);
+
+    anno->addChild(textsep);
+    anno3d->addChild(textsep3d);
 
     addDisplayMaskMode(anno, "Screen");
     addDisplayMaskMode(anno3d, "World");
