@@ -197,6 +197,14 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
     return Const.size()-1;
 }
 
+int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name)
+{
+
+    return 0;
+}
+
+
+// solving ==========================================================
 
 int Sketch::solve(void) {
 
@@ -232,6 +240,13 @@ int Sketch::solve(void) {
 
 	return ret;
 }
+
+int Sketch::movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint)
+{
+
+    return 0;
+}
+
 
 // Persistance implementer -------------------------------------------------
 
