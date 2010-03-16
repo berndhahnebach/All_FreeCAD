@@ -111,8 +111,10 @@ class toolBar:
 				self.params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 				paramcolor = self.params.GetUnsigned("color")>>8
 				paramlinewidth = self.params.GetInt("linewidth")
+				paramconstr = self.params.GetUnsigned("constructioncolor")>>8
 				icons = findicons()
 				self.lockedz = self.params.GetBool("zlock")
+				self.constructionMode = False
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
 				# draftToolbar.resize(800,32)
@@ -261,6 +263,12 @@ class toolBar:
 				self.applyButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(384,64,64,64))))
 				self.applyButton.setIconSize(QtCore.QSize(16, 16))
 
+				self.constructionButton = _pushButton(QtCore.QRect(700,3,60,20),"constructionButton", hide=False)
+				self.constructionButton.setCheckable(True)
+				self.constructionButton.setChecked(False)
+				self.constructionColor = QtGui.QColor(paramconstr)
+				draftToolbar.setStyleSheet("#constructionButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
+				
 				self.sourceCmd=None
 
 				self.retranslateUi(draftToolbar)
@@ -307,6 +315,7 @@ class toolBar:
 				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
 
 				QtCore.QObject.connect(self.lockButton,QtCore.SIGNAL("toggled(bool)"),self.lockz)
+				QtCore.QObject.connect(self.constructionButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstructionMode)
 
 				QtCore.QMetaObject.connectSlotsByName(draftToolbar)
 
@@ -348,6 +357,8 @@ class toolBar:
 				self.colorButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line color for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.widthButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.applyButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
+				self.constructionButton.setText(QtGui.QApplication.translate("draftToolbar", "Constr", None, QtGui.QApplication.UnicodeUTF8))
+				self.constructionButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
 
 
 			def translate(self,text,dest="message"):
@@ -497,6 +508,7 @@ class toolBar:
 				self.widthButton.setGeometry(QtCore.QRect(w-113,2,50,22))
 				self.colorButton.setGeometry(QtCore.QRect(w-138,2,22,22))
 				self.applyButton.setGeometry(QtCore.QRect(w-60,2,22,22))
+				self.constructionButton.setGeometry(QtCore.QRect(w-200,2,60,22))
 
 			def lockz(self,checked):
 					self.zValue.setEnabled(not checked)
@@ -696,7 +708,7 @@ class toolBar:
 					self.yValue.setFocus()
 					self.yValue.selectAll()
 
-			def getDefaultColor(self,type):
+			def getDefaultColor(self,type,rgb=False):
 				"gets color from the preferences or toolbar"
 				if type == "snap":
 					color = self.params.GetUnsigned("snapcolor")
@@ -707,14 +719,26 @@ class toolBar:
 					r = float(self.color.red()/255.0)
 					g = float(self.color.green()/255.0)
 					b = float(self.color.blue()/255.0)
+				elif type == "constr":
+					color = QtGui.QColor(self.params.GetUnsigned("constructioncolor")>>8)
+					r = color.red()/255.0
+					g = color.green()/255.0
+					b = color.blue()/255.0
 				else: print "error: couldn't get a color for ",type," type."
-				return (r,g,b)
+				if rgb:
+					return("rgb("+str(int(r*255))+","+str(int(g*255))+","+str(int(b*255))+")")
+				else:
+					return (r,g,b)
 
 			def cross(self,on=True):
 				if on:
 					self.app.setOverrideCursor(QtCore.Qt.CrossCursor)
 				else:
 					self.app.restoreOverrideCursor()
+
+			def toggleConstructionMode(self,checked):
+				self.draftToolbar.setStyleSheet("#constructionButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
+				self.constructionMode = checked
 
 #---------------------------------------------------------------------------
 # Initialization

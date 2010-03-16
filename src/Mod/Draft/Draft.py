@@ -405,14 +405,23 @@ def formatObject(target,origin=None):
 	'''
 	this function applies to the given object the current properties 
 	set on the toolbar (line color and line width), or of another object if given
+	it also places the object in construction group if needed.
 	'''
 	obrep = target.ViewObject
-	ui= FreeCADGui.activeWorkbench().draftToolBar.ui
-	r = float(ui.color.red()/255.0)
-	g = float(ui.color.green()/255.0)
-	b = float(ui.color.blue()/255.0)
+	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+	doc = FreeCAD.ActiveDocument
+	if ui.constructionButton.isChecked():
+		col = ui.getDefaultColor("constr")
+		gname = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
+		GetString("constructiongroupname")
+		if gname:
+			grp = doc.getObject(gname)
+			if not grp: grp = doc.addObject("App::DocumentObjectGroup",gname) 
+			grp.addObject(target)
+	else:
+		col = ui.getDefaultColor("ui")
+	col = (float(col[0]),float(col[1]),float(col[2]),0.0)
 	lw = float(ui.widthButton.value())
-	col = (r,g,b,0.0)
 	if (target.Type == "App::Annotation"):
 		obrep.TextColor=col
 	else:
@@ -3035,6 +3044,15 @@ class Scale(Modifier):
 				self.scale(point.sub(last))
 			self.finish()
 
+class ToggleConstructionMode():
+	"this class simply toggles the Construction Mode button"
+
+	def GetResources(self):
+		return {'MenuText': 'Toggle construcion Mode',
+			'ToolTip': 'Toggles the Construction Mode for next objects.'}
+
+	def Activated(self):
+		FreeCADGui.activeWorkbench().draftToolBar.ui.constructionButton.toggle()
 
 
 #---------------------------------------------------------------------------
@@ -3067,3 +3085,4 @@ FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
 FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
+FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
