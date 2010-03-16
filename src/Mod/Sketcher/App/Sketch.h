@@ -51,9 +51,15 @@ public:
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
+    /// define if you whant to use the end or start point
+    enum PointPos {start,end };
+
     int solve(void);
     int addGeometry(Part::GeomCurve *geo);
     std::vector<Part::GeomCurve *> getGeometry(void);
+
+    /// move this point to a new location and solve
+    int movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint);
 
     /// add dedicated geometry
     //@{
@@ -71,12 +77,15 @@ public:
     int addEllibse(Part::GeomEllipse ellibse);
     //@}
 
+
     /// constraints
     //@{
     /// add a horizontal constraint to a geometry
     int addHorizontalConstraint(int geoIndex, const char* name=0);
     /// add a vertical constraint to a geometry
     int addVerticalConstraint(int geoIndex, const char* name=0);
+    /// add a coincident constraint to two points of two geometries
+    int addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name=0);
     //@}
 
     enum GeoType {
