@@ -256,6 +256,21 @@ const Handle_Geom_Geometry& GeomCircle::handle() const
     return myCurve;
 }
 
+Base::Vector3d GeomCircle::getCenter(void)
+{
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(handle());
+    gp_Ax1 axis = circle->Axis();
+    gp_Pnt loc = axis.Location();
+    return Base::Vector3d(loc.X(),loc.Y(),loc.Z());
+}
+
+double GeomCircle::getRadius(void)
+{
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(handle());
+    return circle->Radius();
+}
+
+
 // Persistence implementer 
 unsigned int GeomCircle::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomCircle::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}

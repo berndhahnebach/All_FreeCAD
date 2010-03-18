@@ -4,6 +4,7 @@
 #include <Mod/Part/App/Geometry.h>
 #include <Mod/Part/App/GeometryCurvePy.h>
 #include <Mod/Part/App/LinePy.h>
+#include <Mod/Part/App/TopoShapePy.h>
 
 #include "Sketch.h"
 
@@ -74,6 +75,16 @@ PyObject* SketchPy::addVerticalConstraint(PyObject *args)
     return Py::new_reference_to(Py::Int(getSketchPtr()->addVerticalConstraint(index,name)));
 
 }
+PyObject* SketchPy::addPointOnPointConstraint(PyObject *args)
+{
+    int index1,index2,index3,index4;
+    char* name=0;
+    if (!PyArg_ParseTuple(args, "iiii|s", &index1,&index2,&index3,&index4,&name))
+        return 0;
+
+    return Py::new_reference_to(Py::Int(getSketchPtr()->addPointCoincidentConstraint(index1,(Sketcher::Sketch::PointPos)index2,index3,(Sketcher::Sketch::PointPos)index4,name)));
+
+}
 
 // +++ attributes implementer ++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -104,6 +115,11 @@ Py::Tuple SketchPy::getGeometries(void) const
         }
     }
     return tuple;
+}
+
+Py::Object SketchPy::getShape(void) const
+{
+    return Py::Object(new TopoShapePy(new TopoShape(getSketchPtr()->toShape())));
 }
 
 

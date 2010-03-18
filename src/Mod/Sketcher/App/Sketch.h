@@ -28,6 +28,7 @@
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
 #include <Mod/Part/App/Geometry.h>
+#include <Mod/Part/App/TopoShape.h>
 #include "Constraint.h"
 
 #include "sketchsolve_cp/solve.h"
@@ -55,6 +56,8 @@ public:
     enum PointPos {start,end };
 
     int solve(void);
+    /// return the actual geometry of the sketch a TopoShape
+    Part::TopoShape toShape(void);
     int addGeometry(Part::GeomCurve *geo);
     std::vector<Part::GeomCurve *> getGeometry(void);
 
@@ -105,6 +108,7 @@ protected:
         int               parameterStartIndex; // start index for the points of this geometry
         int               pointStartIndex;     // start index for the points of this geometry
         int               lineStartIndex;      // start index of the lines of this geometry
+        int               circleStartIndex;    // start index of the circle of this geometry
     };
 
     std::vector<GeoDef> Geoms;
@@ -114,6 +118,7 @@ protected:
     std::vector<double*> Parameters;
     std::vector<point>  Points;
     std::vector<line>   Lines;
+    std::vector<circle> Circles;
 
 
 };
