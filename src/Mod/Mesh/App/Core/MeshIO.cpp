@@ -1337,7 +1337,7 @@ bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
                                         << pclFacet->_aclPoints[i].z << std::endl;
         }
 
-        rstrOut << "    endlooop" << std::endl;
+        rstrOut << "    endloop" << std::endl;
         rstrOut << "  endfacet" << std::endl;
 
         ++clIter; 
