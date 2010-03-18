@@ -35,6 +35,14 @@
         <UserDocu>addVerticalConstraint(GeoIndex[,name]) - add a vertical constraint to the geometry with the given index</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="addPointOnPointConstraint">
+      <Documentation>
+        <UserDocu>addPointOnPointConstraint(GeoIndex1,PointPos1,GeoIndex2,PointPos2[,name]) - add a point on point constraint to the geometrsie with the given indexes
+You give two element idexes and the type of point you whant to use
+0 = StartPoint, 1 = EndPoint, 2 = MiddPoint (in case of an arc or circle)
+        </UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="Constraint" ReadOnly="true">
       <Documentation>
         <UserDocu>0: exactly constraint, -1 under-constraint, 1 over-constraint</UserDocu>
@@ -52,6 +60,12 @@
         <UserDocu>Tuple of all geometric elements in this sketch</UserDocu>
       </Documentation>
       <Parameter Name="Geometries" Type="Tuple"/>
+    </Attribute>
+    <Attribute Name="Shape" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Resulting shape from the sketch geometry</UserDocu>
+      </Documentation>
+      <Parameter Name="Shape" Type="Object"/>
     </Attribute>
 
   </PythonExport>

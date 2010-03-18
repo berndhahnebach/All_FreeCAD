@@ -135,8 +135,44 @@ int Sketch::addArc(Part::GeomTrimmedCurve circleSegment)
     return Geoms.size()-1;
 }
 
-int Sketch::addCircle(Part::GeomCircle circle)
+int Sketch::addCircle(GeomCircle cir)
 {
+    // create our own copy
+    GeomCircle *circ = new GeomCircle(cir);
+    // create the definition struct for that geom
+    GeoDef def;
+    def.geo  = circ;
+    def.type = Circle;
+
+    // get the point from the line
+    Base::Vector3d center = circ->getCenter();
+    double radius         = circ->getRadius();
+ 
+    // set the parameter for the solver
+    def.parameterStartIndex = Parameters.size();
+    Parameters.push_back(new double(center.x));
+    Parameters.push_back(new double(center.y));
+    Parameters.push_back(new double(radius));
+
+    // set the points for later constraints
+    point p1;
+    p1.x = Parameters[def.parameterStartIndex+0];
+    p1.y = Parameters[def.parameterStartIndex+1];
+    def.pointStartIndex = Points.size();
+    Points.push_back(p1);
+
+    // add the radius parameter
+    double *r = Parameters[def.parameterStartIndex+2];
+
+    // set the circel for later constraints
+    circle c;
+    c.center = p1;
+    c.rad    = r;
+    def.circleStartIndex = Circles.size();
+    Circles.push_back(c);
+
+    // store complete set
+    Geoms.push_back(def);
     
     // return the position of the newly added geometry
     return Geoms.size()-1;
@@ -186,6 +222,7 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
     // constraint the right type?
     assert(Geoms[geoIndex].type = Line);
 
+    // creat the constraint and fill it up
     Constraint constrain;
     constrain.constrain.type = vertical;
     constrain.constrain.line1 = Lines[Geoms[geoIndex].lineStartIndex];
@@ -198,9 +235,32 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
 }
 
 int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name)
-{
+{   
+    // index out of bounds?
+    assert(geoIndex1 < (int)Geoms.size());
+    assert(geoIndex2 < (int)Geoms.size());
+    // constraint the right type?
+    assert(Geoms[geoIndex1].type = Line);
+    assert(Geoms[geoIndex2].type = Line);
 
-    return 0;
+    // creat the constraint and fill it up
+    Constraint constrain;
+    constrain.constrain.type = pointOnPoint;
+    if(Pos1 == start)
+        constrain.constrain.point1 = Points[Geoms[geoIndex1].pointStartIndex];
+    else
+        constrain.constrain.point1 = Points[Geoms[geoIndex1].pointStartIndex+1];
+    if(Pos2 == start)
+        constrain.constrain.point2 = Points[Geoms[geoIndex2].pointStartIndex];
+    else
+        constrain.constrain.point2 = Points[Geoms[geoIndex2].pointStartIndex+1];
+
+    if(name)
+        constrain.name = name;
+
+    Const.push_back(constrain);
+
+    return Const.size()-1;
 }
 
 
@@ -241,12 +301,31 @@ int Sketch::solve(void) {
 	return ret;
 }
 
+
+
 int Sketch::movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint)
 {
 
     return 0;
 }
 
+TopoShape Sketch::toShape(void)
+{
+    TopoShape result;
+
+    bool first = true;
+    for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it){
+        TopoDS_Shape sh = it->geo->toShape();
+        if (first) {
+            first = false;
+            result._Shape = sh;
+        }
+        else {
+            result._Shape = result.fuse(sh);
+        }
+    }
+    return result;
+}
 
 // Persistance implementer -------------------------------------------------
 

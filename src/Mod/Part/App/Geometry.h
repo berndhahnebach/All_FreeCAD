@@ -123,6 +123,9 @@ public:
     GeomCircle(const Handle_Geom_Circle&);
     virtual ~GeomCircle();
 
+    Base::Vector3d getCenter(void);
+    double getRadius(void);
+
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
