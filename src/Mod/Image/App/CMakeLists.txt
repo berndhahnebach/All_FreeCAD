@@ -1,45 +1,47 @@
 if(WIN32)
-		 add_definitions(-DFCAppImage)
+	add_definitions(-DFCAppImage)
 endif(WIN32)
 
 include_directories(
-		 #${OPENCV_INCLUDE_DIR}
-		 ${PYTHON_INCLUDE_PATH}
- 		 ${ZLIB_INCLUDE_DIR}
-		 ${XERCESC_INCLUDE_DIR})
+	#${OPENCV_INCLUDE_DIR}
+	${PYTHON_INCLUDE_PATH}
+ 	${ZLIB_INCLUDE_DIR}
+	${XERCESC_INCLUDE_DIR})
 
 if(WIN32)
-		 set(Image_LIBS
-		 		 #${OPENCV_LIBRARIES}
-		 		 FreeCADApp)
+	set(Image_LIBS
+		#${OPENCV_LIBRARIES}
+		FreeCADApp)
 else(WIN32)
-		 set(Image_LIBS
-		 		 #${OPENCV_LIBRARIES}
-		 		 FreeCADApp)
+	set(Image_LIBS
+		#${OPENCV_LIBRARIES}
+		FreeCADApp)
 endif(WIN32)
 
 set(Image_SRCS
-		 #CaptureClass.cpp
-		 #CaptureClass.h
-		 ImageBase.cpp
-		 ImageBase.h
-		 PreCompiled.cpp
-		 PreCompiled.h
-		 AppImage.cpp
+	#CaptureClass.cpp
+	#CaptureClass.h
+	ImageBase.cpp
+	ImageBase.h
+	PreCompiled.cpp
+	PreCompiled.h
+	AppImage.cpp
 )
 
 add_library(Image SHARED ${Image_SRCS})
 
 target_link_libraries(Image ${Image_LIBS})
 
+fc_copy_script("Mod/Image" "Image" Init.py)
+
 if(WIN32)
-		 set_target_properties(Image PROPERTIES SUFFIX ".pyd")
-		 set_target_properties(Image PROPERTIES DEBUG_OUTPUT_NAME "Image_d")
-		 set_target_properties(Image PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
-		 set_target_properties(Image PROPERTIES PREFIX "../")
+	set_target_properties(Image PROPERTIES SUFFIX ".pyd")
+	set_target_properties(Image PROPERTIES DEBUG_OUTPUT_NAME "Image_d")
+	set_target_properties(Image PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
+	set_target_properties(Image PROPERTIES PREFIX "../")
 else(WIN32)
-		 set_target_properties(Image PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
-		 set_target_properties(Image PROPERTIES PREFIX "")
+	set_target_properties(Image PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Image)
+	set_target_properties(Image PROPERTIES PREFIX "")
 endif(WIN32)
 
 install(TARGETS Image DESTINATION lib)
