@@ -1353,6 +1353,7 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
         switch (button) {
         case SoMouseButtonEvent::BUTTON1:
             this->button1down = press;
+#if 0 // disable to avoid interferences where this key combination is used, too
             if (press && ev->wasShiftDown() &&
                 (this->currentmode != NavigationStyle::SELECTION)) {
                 this->centerTime = ev->getTime();
@@ -1373,7 +1374,9 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                     processed = TRUE;
                 }
             }
-            else if (press && (this->currentmode == NavigationStyle::SEEK_WAIT_MODE)) {
+            else
+#endif
+            if (press && (this->currentmode == NavigationStyle::SEEK_WAIT_MODE)) {
                 newmode = NavigationStyle::SEEK_MODE;
                 this->seekToPoint(pos); // implicitly calls interactiveCountInc()
                 processed = TRUE;
