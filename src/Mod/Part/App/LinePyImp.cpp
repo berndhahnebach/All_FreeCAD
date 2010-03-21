@@ -46,7 +46,18 @@ extern const char* gce_ErrorStatusText(gce_ErrorType et);
 // returns a string which represents the object e.g. when printed in python
 std::string LinePy::representation(void) const
 {
-    return "<Line object>";
+    std::stringstream str;
+    //if(Infinite)
+    //   str << "<Line infinite>";
+    //else {
+        Base::Vector3d start = getGeomLineSegmentPtr()->getStartPoint();
+        Base::Vector3d end   = getGeomLineSegmentPtr()->getEndPoint();
+        str << "<Line (" 
+            << start.x << "," <<start.y << "," <<start.z << ") (" 
+            << end.x   << "," <<end.y   << "," <<end.z   << ") >"; 
+    //}
+
+    return str.str();
 }
 
 PyObject *LinePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper

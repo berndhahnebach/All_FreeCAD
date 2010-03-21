@@ -49,7 +49,7 @@ PyObject* SketchPy::addGeometry(PyObject *args)
 
     if (PyObject_TypeCheck(pcObj, &(LinePy::Type))) {
         GeomLineSegment *line = new GeomLineSegment(*static_cast<LinePy*>(pcObj)->getGeomLineSegmentPtr());
-        this->getSketchPtr()->addGeometry(line);
+        return Py::new_reference_to(Py::Int(this->getSketchPtr()->addGeometry(line)));
     }
     Py_Return; 
 }
