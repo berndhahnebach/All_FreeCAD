@@ -82,7 +82,7 @@ App::DocumentObjectExecReturn *FeaturePage::execute(void)
     while (!file.eof())
     {
         getline (file,line);
-        if(line != "<!- DrawingContent -->")
+        if(line != "<!-- DrawingContent -->")
             ofile << line << endl;
         else
         {
