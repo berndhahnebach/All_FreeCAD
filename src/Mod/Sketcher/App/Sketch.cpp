@@ -29,6 +29,12 @@
 #include <Base/Reader.h>
 #include <Base/Exception.h>
 
+#include <Base/VectorPy.h>
+
+#include <Mod/Part/App/Geometry.h>
+#include <Mod/Part/App/GeometryCurvePy.h>
+#include <Mod/Part/App/LinePy.h>
+
 
 #include "Sketch.h"
 #include "Constraint.h"
@@ -47,6 +53,17 @@ TYPESYSTEM_SOURCE(Sketcher::Sketch, Base::Persistence)
 
 Sketch::Sketch()
 {
+    // add the root point at 0,0
+    addPoint(Base::Vector3d());
+    // add x,y axis
+    Part::GeomLineSegment axis;
+    axis.setPoints(Base::Vector3d(0,0,0),Base::Vector3d(100,0,0));
+    addLineSegment(axis);
+    axis.setPoints(Base::Vector3d(0,0,0),Base::Vector3d(0,100,0));
+    addLineSegment(axis);
+
+    // set them to construction elements
+
 }
 Sketch::~Sketch()
 {
@@ -69,10 +86,28 @@ int Sketch::addGeometry(Part::GeomCurve *geo)
     }
 }
 
-int Sketch::addPoint(Base::Vector3d point)
+int Sketch::addPoint(Base::Vector3d newPoint)
 {
+    // create the definition struct for that geom
+    GeoDef def;
+    def.geo  = 0;
+    def.type = Point;
 
+    // set the parameter for the solver
+    def.parameterStartIndex = Parameters.size();
+    Parameters.push_back(new double(newPoint.x));
+    Parameters.push_back(new double(newPoint.y));
+ 
+    // set the points for later constraints
+    point p1;
+    p1.x = Parameters[def.parameterStartIndex+0];
+    p1.y = Parameters[def.parameterStartIndex+1];
+    def.pointStartIndex = Points.size();
+    Points.push_back(p1);
 
+    // store complete set
+    Geoms.push_back(def);
+    
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
@@ -185,15 +220,52 @@ int Sketch::addEllibse(Part::GeomEllipse ellibse)
     return Geoms.size()-1;
 }
 
-std::vector<Part::GeomCurve *> Sketch::getGeometry(void)
+std::vector<Part::GeomCurve *> Sketch::getGeometry(bool withConstrucionElements) const
 {
     std::vector<Part::GeomCurve *> temp(Geoms.size());
     int i=0;
     for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++)
-        temp[i] = it->geo;
+        if(!it->construction || withConstrucionElements)
+          temp[i] = it->geo;
 
     return temp;
 }
+Py::Tuple Sketch::getPyGeometry(void) const
+{
+
+    Py::Tuple tuple(Geoms.size());
+    int i=0;
+    for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++) {
+        if(it->type == Line){
+            GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
+            tuple[i] = Py::Object(new LinePy(lineSeg));
+        }else if(it->type == Point){
+            Base::Vector3d temp(*(Points[Geoms[i].pointStartIndex].x),*(Points[Geoms[i].pointStartIndex].y),0);
+            tuple[i] = Py::Object(new VectorPy(temp));
+        }else {
+            assert(0); // not implemented type in the sketch!
+        }
+    }
+    return tuple;
+}
+
+ void Sketch::setConstruction(int geoIndex,bool isConstruction)
+ {
+    // index out of bounds?
+    assert(geoIndex < (int)Geoms.size());
+
+    Geoms[geoIndex].construction = isConstruction;
+
+ }
+
+bool  Sketch::getConstruction(int geoIndex) const
+ {
+    // index out of bounds?
+    assert(geoIndex < (int)Geoms.size());
+
+    return Geoms[geoIndex].construction;
+
+ }
 
 // constraint adding ==========================================================
 
@@ -240,8 +312,11 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
     assert(geoIndex1 < (int)Geoms.size());
     assert(geoIndex2 < (int)Geoms.size());
     // constraint the right type?
-    assert(Geoms[geoIndex1].type = Line);
-    assert(Geoms[geoIndex2].type = Line);
+    assert(Geoms[geoIndex1].type == Line || Geoms[geoIndex1].type == Point);
+    assert(Geoms[geoIndex2].type == Line || Geoms[geoIndex2].type == Point);
+    // in case of point only the first point is allowed
+    assert(Geoms[geoIndex1].type != Point || Pos1 !=  end);
+    assert(Geoms[geoIndex2].type != Point || Pos2 !=  end);
 
     // creat the constraint and fill it up
     Constraint constrain;
@@ -305,8 +380,15 @@ int Sketch::solve(void) {
 
 int Sketch::movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint)
 {
+    if(Pos1 == start){
+        *(Points[Geoms[geoIndex1].pointStartIndex].x) = toPoint.x;
+        *(Points[Geoms[geoIndex1].pointStartIndex].y) = toPoint.y;
+    }else{
+        *(Points[Geoms[geoIndex1].pointStartIndex+1].x) = toPoint.x;
+        *(Points[Geoms[geoIndex1].pointStartIndex+1].y) = toPoint.y;
+    }
 
-    return 0;
+    return solve();
 }
 
 TopoShape Sketch::toShape(void)
@@ -315,13 +397,15 @@ TopoShape Sketch::toShape(void)
 
     bool first = true;
     for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it){
-        TopoDS_Shape sh = it->geo->toShape();
-        if (first) {
-            first = false;
-            result._Shape = sh;
-        }
-        else {
-            result._Shape = result.fuse(sh);
+        if(!it->construction){
+            TopoDS_Shape sh = it->geo->toShape();
+            if (first) {
+                first = false;
+                result._Shape = sh;
+            }
+            else {
+                result._Shape = result.fuse(sh);
+            }
         }
     }
     return result;

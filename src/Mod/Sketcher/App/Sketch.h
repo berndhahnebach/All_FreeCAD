@@ -58,8 +58,15 @@ public:
     int solve(void);
     /// return the actual geometry of the sketch a TopoShape
     Part::TopoShape toShape(void);
+    /// add unspecified geomtry
     int addGeometry(Part::GeomCurve *geo);
-    std::vector<Part::GeomCurve *> getGeometry(void);
+    /// returns the actual geometry 
+    std::vector<Part::GeomCurve *> getGeometry(bool withConstrucionElements = false) const;
+    /// get the geometry as python objects
+    Py::Tuple getPyGeometry(void) const;
+    /// set an geometric element to a construction element
+    void setConstruction(int geoIndex,bool isConstruction=true);
+    bool getConstruction(int geoIndex) const;
 
     /// move this point to a new location and solve
     int movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint);
@@ -105,6 +112,7 @@ protected:
     struct GeoDef {
         Part::GeomCurve * geo;                 // pointer to the geometry
         GeoType           type;                // type of the geometry
+        bool              construction;        // defines if this element is a construction element
         int               parameterStartIndex; // start index for the points of this geometry
         int               pointStartIndex;     // start index for the points of this geometry
         int               lineStartIndex;      // start index of the lines of this geometry
