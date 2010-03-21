@@ -37,8 +37,7 @@ int SketchPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 
 PyObject* SketchPy::solve(PyObject *args)
 {
-    getSketchPtr()->solve();
-    Py_Return; 
+    return Py::new_reference_to(Py::Int(getSketchPtr()->solve()));
 }
 
 PyObject* SketchPy::addGeometry(PyObject *args)
@@ -102,19 +101,19 @@ Py::Tuple SketchPy::getConstraints(void) const
 
 Py::Tuple SketchPy::getGeometries(void) const
 {
-    std::vector<Part::GeomCurve *> geoms = getSketchPtr()->getGeometry();
+    //std::vector<Part::GeomCurve *> geoms = getSketchPtr()->getGeometry();
 
-    Py::Tuple tuple(geoms.size());
-    int i=0;
-    for(std::vector<Part::GeomCurve *>::iterator it=geoms.begin();it!=geoms.end();++it,i++){
-        if((*it)->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
-            GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(*it);
-            tuple[i] = Py::Object(new LinePy(lineSeg));
-        }else{
-            assert(0); // not implemented type in the sketch!
-        }
-    }
-    return tuple;
+    //Py::Tuple tuple(geoms.size());
+    //int i=0;
+    //for(std::vector<Part::GeomCurve *>::iterator it=geoms.begin();it!=geoms.end();++it,i++){
+    //    if((*it)->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
+    //        GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(*it);
+    //        tuple[i] = Py::Object(new LinePy(lineSeg));
+    //    }else{
+    //        assert(0); // not implemented type in the sketch!
+    //    }
+    //}
+    return getSketchPtr()->getPyGeometry();
 }
 
 Py::Object SketchPy::getShape(void) const

@@ -7,6 +7,10 @@ StartPoint = 0
 EndPoint = 1
 MiddlePoint = 2
 
+RootPoint = 0
+X_Axis    = 1
+Y_Axis    = 2
+
 # === low level sketch building & constraint solving ===
 # create a constraint sketch
 sketch = Sketch()
@@ -29,5 +33,14 @@ sketch.addPointOnPointConstraint(Line1,StartPoint,Line2,StartPoint,'p')
 sketch.solve()
 
 # get the result
-sketch.Geometries[0]
-sketch.Geometries[1]
+sketch.Geometries[Line1]
+sketch.Geometries[Line2]
+
+# constrain to the root point (0,0)
+sketch.addPointOnPointConstraint(Line1,StartPoint,RootPoint,StartPoint,'pr')
+
+# solve the sketch
+sketch.solve()
+# get the result
+sketch.Geometries[Line1]
+sketch.Geometries[Line2]
