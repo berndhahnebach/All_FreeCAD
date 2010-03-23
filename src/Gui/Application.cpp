@@ -1447,10 +1447,14 @@ void Application::runApplication(void)
     }
     
     // show Startup page
-    hGrp = WindowParameter::getDefaultParameter()->GetGroup("OnlineHelp");
-    if (hGrp->GetBool("ShowStartPage",true)) {
-        QString page = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
-        app.createStartPage(page.toUtf8());
+    const std::map<std::string,std::string>& config = App::Application::Config();
+    std::map<std::string, std::string>::const_iterator it = config.find("DisableStartPage");
+    if (it == config.end()) {
+        hGrp = WindowParameter::getDefaultParameter()->GetGroup("OnlineHelp");
+        if (hGrp->GetBool("ShowStartPage",true)) {
+            QString page = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
+            app.createStartPage(page.toUtf8());
+        }
     }
 
     // run the Application event loop
