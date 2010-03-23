@@ -35,8 +35,15 @@
 //**************************************************************************
 // switching the operating systems
 
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+// First check for *WIN64* since the *WIN32* are also set on 64-bit platforms
+#if defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
+#	ifndef FC_OS_WIN32
+#	define FC_OS_WIN32
+#	endif
+#	ifndef FC_OS_WIN64
+#	define FC_OS_WIN64
+#	endif
+#elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #	ifndef FC_OS_WIN32
 #	define FC_OS_WIN32
 #	endif
@@ -54,13 +61,6 @@
 #	define HAVE_UINT64_T
 //#	define HAVE_INTPTR_T
 //#	define HAVE_UINTPTR_T
-#	endif
-#elif defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
-#	ifndef FC_OS_WIN32
-#	define FC_OS_WIN32
-#	endif
-#	ifndef FC_OS_WIN64
-#	define FC_OS_WIN64
 #	endif
 #elif defined(__MWERKS__) && defined(__INTEL__)
 #	ifndef FC_OS_WIN32
@@ -122,9 +122,7 @@
 //**************************************************************************
 // Standard types for Windows
 
-#if defined (FC_OS_WIN64)
-#error "The standard types must be defined for the Windows 64 bit platform"
-#elif defined (FC_OS_WIN32)
+#if defined (FC_OS_WIN64) || defined (FC_OS_WIN32)
 
 #ifndef HAVE_INT8_T
 #define HAVE_INT8_T
