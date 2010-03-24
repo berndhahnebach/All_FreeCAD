@@ -33,7 +33,7 @@
          <widget class="QComboBox" name="comboBox_ViewSystem">
           <item>
            <property name="text">
-            <string>FreeCAD standard (mm/kg/s/degree)</string>
+            <string>Standard (mm/kg/s/degree)</string>
            </property>
           </item>
           <item>
@@ -97,7 +97,7 @@
          <widget class="QComboBox" name="comboBox_ResetSystem">
           <item>
            <property name="text">
-            <string>FreeCAD standard (mm/kg/s/degree)</string>
+            <string>Standard (mm/kg/s/degree)</string>
            </property>
           </item>
           <item>

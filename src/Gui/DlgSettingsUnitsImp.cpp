@@ -76,16 +76,19 @@ void DlgSettingsUnitsImp::saveSettings()
     // where we set some attributes afterwards
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/Units");
-    hGrp->SetASCII("NavigationStyle", "");
-
+    //hGrp->SetASCII("NavigationStyle", "");
 }
 
 void DlgSettingsUnitsImp::loadSettings()
 {
- 
+    QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+    QString viewtext = comboBox_ViewSystem->itemText(0);
+    comboBox_ViewSystem->setItemText(0, QString::fromAscii("%1 %2").arg(exe).arg(viewtext));
+    QString resettext = comboBox_ResetSystem->itemText(0);
+    comboBox_ResetSystem->setItemText(0, QString::fromAscii("%1 %2").arg(exe).arg(resettext));
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/Units");
-    std::string model = hGrp->GetASCII("NavigationStyle","");
+    //std::string model = hGrp->GetASCII("NavigationStyle","");
 }
 
 /**
