@@ -37,12 +37,16 @@ try:
 except:
 	FreeCAD.Console.PrintMessage("Error: Python-qt4 package must be installed on your system to use the Draft module.")
 
+def draftPath():
+	"returns the current Draft module path"
+	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
+	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft"
+	if os.path.exists(path2): return path2
+	else: return path1
+
 def findicons():
-	"checks if Draft is installed system-wide or user-wide, and loads icon file"
-	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft/"
-	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft/"
-	if os.path.exists(path2): filepath = path2+"icons.svg"
-	else: filepath = path1+"icons.svg"
+	"loads the icon file"
+	filepath = draftPath() + os.sep + "icons.svg"
 	iconmap = QtGui.QPixmap()
 	if not iconmap.load(filepath):
 		# If loading by plug-in fails do it the conventional way
@@ -101,6 +105,7 @@ class DraftLineEdit(QtGui.QLineEdit):
 class toolBar:
 	"main draft Toolbar"
 	def __init__(self):
+		
 		class Ui_draftToolbar(object):
 
 #---------------------------------------------------------------------------
@@ -324,56 +329,48 @@ class toolBar:
 #---------------------------------------------------------------------------
 				
 			def retranslateUi(self, draftToolbar):
-				self.cmdlabel.setText(QtGui.QApplication.translate("draftToolbar", "None", None, QtGui.QApplication.UnicodeUTF8))
-				self.cmdlabel.setToolTip(QtGui.QApplication.translate("draftToolbar", "Active Draft command", None, QtGui.QApplication.UnicodeUTF8))
-				self.xValue.setToolTip(QtGui.QApplication.translate("draftToolbar", "X coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
-				self.yValue.setToolTip(QtGui.QApplication.translate("draftToolbar", "Y coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
-				self.zValue.setToolTip(QtGui.QApplication.translate("draftToolbar", "Z coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
-				self.labelRadius.setText(QtGui.QApplication.translate("draftToolbar", "Radius", None, QtGui.QApplication.UnicodeUTF8))
-				self.radiusValue.setToolTip(QtGui.QApplication.translate("draftToolbar", "Radius of Circle", None, QtGui.QApplication.UnicodeUTF8))
-				self.labelText.setText(QtGui.QApplication.translate("draftToolbar", "Text", None, QtGui.QApplication.UnicodeUTF8))
-				self.isRelative.setText(QtGui.QApplication.translate("draftToolbar", "Relative", None, QtGui.QApplication.UnicodeUTF8))
-				self.lockButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "locks the Z coordinate (L)", None, QtGui.QApplication.UnicodeUTF8))
-				self.isRelative.setToolTip(QtGui.QApplication.translate("draftToolbar", "Coordinates relative to last point or absolute (SPACE)", None, QtGui.QApplication.UnicodeUTF8))
-				self.finishButton.setText(QtGui.QApplication.translate("draftToolbar", "Finish", None, QtGui.QApplication.UnicodeUTF8))
-				self.finishButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Finishes the current line without closing (F)", None, QtGui.QApplication.UnicodeUTF8))
-				self.undoButton.setText(QtGui.QApplication.translate("draftToolbar", "Undo", None, QtGui.QApplication.UnicodeUTF8))
-				self.undoButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Undo the last segment (CTRL+Z)", None, QtGui.QApplication.UnicodeUTF8))
-				self.closeButton.setText(QtGui.QApplication.translate("draftToolbar", "Close", None, QtGui.QApplication.UnicodeUTF8))
-				self.closeButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Finishes and closes the current line (C)", None, QtGui.QApplication.UnicodeUTF8))
-				self.xyButton.setText(QtGui.QApplication.translate("draftToolbar", "XY", None, QtGui.QApplication.UnicodeUTF8))
-				self.xyButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select XY plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.xzButton.setText(QtGui.QApplication.translate("draftToolbar", "XZ", None, QtGui.QApplication.UnicodeUTF8))
-				self.xzButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select XZ plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.yzButton.setText(QtGui.QApplication.translate("draftToolbar", "YZ", None, QtGui.QApplication.UnicodeUTF8))
-				self.yzButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select YZ plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.currentViewButton.setText(QtGui.QApplication.translate("draftToolbar", "View", None, QtGui.QApplication.UnicodeUTF8))
-				self.currentViewButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Select plane perpendicular to the current view", None, QtGui.QApplication.UnicodeUTF8))
-				self.resetPlaneButton.setText(QtGui.QApplication.translate("draftToolbar", "None", None, QtGui.QApplication.UnicodeUTF8))
-				self.resetPlaneButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Do not project points to a drawing plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.widthButton.setSuffix(QtGui.QApplication.translate("draftToolbar", "px", None, QtGui.QApplication.UnicodeUTF8))
-				self.isCopy.setText(QtGui.QApplication.translate("draftToolbar", "Copy", None, QtGui.QApplication.UnicodeUTF8))
-				self.isCopy.setToolTip(QtGui.QApplication.translate("draftToolbar", "If checked, objects will be copied instead of moved (C)", None, QtGui.QApplication.UnicodeUTF8))
-				self.colorButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line color for new objects", None, QtGui.QApplication.UnicodeUTF8))
-				self.widthButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
-				self.applyButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
-				self.constructionButton.setText(QtGui.QApplication.translate("draftToolbar", "Constr", None, QtGui.QApplication.UnicodeUTF8))
-				self.constructionButton.setToolTip(QtGui.QApplication.translate("draftToolbar", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
-
-
-			def translate(self,text,dest="message"):
-				ttext = QtGui.QApplication.translate("draftToolbar", text, None, QtGui.QApplication.UnicodeUTF8)
-				if dest == "message":
-					FreeCAD.Console.PrintMessage(str(ttext))
-				elif dest == "warning":
-					FreeCAD.Console.PrintWarning(str(ttext))
+				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
+				self.cmdlabel.setToolTip(QtGui.QApplication.translate("draft", "Active Draft command", None, QtGui.QApplication.UnicodeUTF8))
+				self.xValue.setToolTip(QtGui.QApplication.translate("draft", "X coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
+				self.yValue.setToolTip(QtGui.QApplication.translate("draft", "Y coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
+				self.zValue.setToolTip(QtGui.QApplication.translate("draft", "Z coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
+				self.labelRadius.setText(QtGui.QApplication.translate("draft", "Radius", None, QtGui.QApplication.UnicodeUTF8))
+				self.radiusValue.setToolTip(QtGui.QApplication.translate("draft", "Radius of Circle", None, QtGui.QApplication.UnicodeUTF8))
+				self.labelText.setText(QtGui.QApplication.translate("draft", "Text", None, QtGui.QApplication.UnicodeUTF8))
+				self.isRelative.setText(QtGui.QApplication.translate("draft", "Relative", None, QtGui.QApplication.UnicodeUTF8))
+				self.lockButton.setToolTip(QtGui.QApplication.translate("draft", "locks the Z coordinate (L)", None, QtGui.QApplication.UnicodeUTF8))
+				self.isRelative.setToolTip(QtGui.QApplication.translate("draft", "Coordinates relative to last point or absolute (SPACE)", None, QtGui.QApplication.UnicodeUTF8))
+				self.finishButton.setText(QtGui.QApplication.translate("draft", "Finish", None, QtGui.QApplication.UnicodeUTF8))
+				self.finishButton.setToolTip(QtGui.QApplication.translate("draft", "Finishes the current line without closing (F)", None, QtGui.QApplication.UnicodeUTF8))
+				self.undoButton.setText(QtGui.QApplication.translate("draft", "Undo", None, QtGui.QApplication.UnicodeUTF8))
+				self.undoButton.setToolTip(QtGui.QApplication.translate("draft", "Undo the last segment (CTRL+Z)", None, QtGui.QApplication.UnicodeUTF8))
+				self.closeButton.setText(QtGui.QApplication.translate("draft", "Close", None, QtGui.QApplication.UnicodeUTF8))
+				self.closeButton.setToolTip(QtGui.QApplication.translate("draft", "Finishes and closes the current line (C)", None, QtGui.QApplication.UnicodeUTF8))
+				self.xyButton.setText(QtGui.QApplication.translate("draft", "XY", None, QtGui.QApplication.UnicodeUTF8))
+				self.xyButton.setToolTip(QtGui.QApplication.translate("draft", "Select XY plane", None, QtGui.QApplication.UnicodeUTF8))
+				self.xzButton.setText(QtGui.QApplication.translate("draft", "XZ", None, QtGui.QApplication.UnicodeUTF8))
+				self.xzButton.setToolTip(QtGui.QApplication.translate("draft", "Select XZ plane", None, QtGui.QApplication.UnicodeUTF8))
+				self.yzButton.setText(QtGui.QApplication.translate("draft", "YZ", None, QtGui.QApplication.UnicodeUTF8))
+				self.yzButton.setToolTip(QtGui.QApplication.translate("draft", "Select YZ plane", None, QtGui.QApplication.UnicodeUTF8))
+				self.currentViewButton.setText(QtGui.QApplication.translate("draft", "View", None, QtGui.QApplication.UnicodeUTF8))
+				self.currentViewButton.setToolTip(QtGui.QApplication.translate("draft", "Select plane perpendicular to the current view", None, QtGui.QApplication.UnicodeUTF8))
+				self.resetPlaneButton.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
+				self.resetPlaneButton.setToolTip(QtGui.QApplication.translate("draft", "Do not project points to a drawing plane", None, QtGui.QApplication.UnicodeUTF8))
+				self.widthButton.setSuffix(QtGui.QApplication.translate("draft", "px", None, QtGui.QApplication.UnicodeUTF8))
+				self.isCopy.setText(QtGui.QApplication.translate("draft", "Copy", None, QtGui.QApplication.UnicodeUTF8))
+				self.isCopy.setToolTip(QtGui.QApplication.translate("draft", "If checked, objects will be copied instead of moved (C)", None, QtGui.QApplication.UnicodeUTF8))
+				self.colorButton.setToolTip(QtGui.QApplication.translate("draft", "Current line color for new objects", None, QtGui.QApplication.UnicodeUTF8))
+				self.widthButton.setToolTip(QtGui.QApplication.translate("draft", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
+				self.applyButton.setToolTip(QtGui.QApplication.translate("draft", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
+				self.constructionButton.setText(QtGui.QApplication.translate("draft", "Constr", None, QtGui.QApplication.UnicodeUTF8))
+				self.constructionButton.setToolTip(QtGui.QApplication.translate("draft", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
 
 #---------------------------------------------------------------------------
 # Interface modes
 #---------------------------------------------------------------------------
 
 			def selectPlaneUi(self):
-				self.cmdlabel.setText("Select Plane")
+				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Select Plane", None, QtGui.QApplication.UnicodeUTF8))
 				self.xyButton.show()
 				self.xzButton.show()
 				self.yzButton.show()
@@ -383,7 +380,7 @@ class toolBar:
 				self.offsetValue.show()
 
 			def lineUi(self):
-				self.cmdlabel.setText("Line")
+				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Line", None, QtGui.QApplication.UnicodeUTF8))
 				self.isRelative.show()
 				self.finishButton.show()
 				self.closeButton.show()
@@ -391,13 +388,13 @@ class toolBar:
 				self.pointUi()
 
 			def circleUi(self):
-				self.cmdlabel.setText("Circle")
+				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Circle", None, QtGui.QApplication.UnicodeUTF8))
 				self.pointUi()
-				self.labelx.setText("Center X")
+				self.labelx.setText(QtGui.QApplication.translate("draft", "Center X", None, QtGui.QApplication.UnicodeUTF8))
 
 			def arcUi(self):
-				self.cmdlabel.setText("Arc")
-				self.labelx.setText("Center X")
+				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Arc", None, QtGui.QApplication.UnicodeUTF8))
+				self.labelx.setText(QtGui.QApplication.translate("draft", "Center X", None, QtGui.QApplication.UnicodeUTF8))
 				self.pointUi()
 
 			def pointUi(self):
@@ -415,7 +412,7 @@ class toolBar:
 				self.xValue.selectAll()
 
 			def offUi(self):
-				self.cmdlabel.setText("None")
+				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelx.setText("X")
 				self.labelx.hide()
 				self.labely.hide()
@@ -449,7 +446,7 @@ class toolBar:
 				self.yValue.hide()
 				self.zValue.hide()
 				self.lockButton.hide()
-				self.labelRadius.setText("Radius")
+				self.labelRadius.setText(QtGui.QApplication.translate("draft", "Radius", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelRadius.show()
 				self.radiusValue.show()
 
@@ -499,7 +496,7 @@ class toolBar:
 						self.state = None
 
 			def selectUi(self):
-				self.labelx.setText("pick Object")
+				self.labelx.setText(QtGui.QApplication.translate("draft", "Pick Object", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelx.show()
 
 			def relocate(self):
@@ -662,11 +659,9 @@ class toolBar:
 				this function sends the entered text to the active draft command
 				if enter has been pressed twice. Otherwise it blanks the line.
 				'''
-				print "sendText: ",self.textbuffer, self.textline
 				if self.textline == len(self.textbuffer):
 					if self.textline:
 						if not self.textValue.text():
-							print "current line is empty"
 							self.sourceCmd.text=self.textbuffer
 							self.sourceCmd.createObject()
 					self.textbuffer.append(self.textValue.text())
@@ -724,7 +719,7 @@ class toolBar:
 					r = color.red()/255.0
 					g = color.green()/255.0
 					b = color.blue()/255.0
-				else: print "error: couldn't get a color for ",type," type."
+				else: print "draft: error: couldn't get a color for ",type," type."
 				if rgb:
 					return("rgb("+str(int(r*255))+","+str(int(g*255))+","+str(int(b*255))+")")
 				else:
@@ -771,15 +766,23 @@ class toolBar:
 			bu = QtCore.QBuffer(ba)
 			icon.save(bu,'XPM')
 			FreeCADGui.addIcon(name,str(ba))
-			
 
+		# loads a translation engine
+		languages = {"English":"en","French":"fr","German":"de","Italian":"it"}
+		ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
+		if ln in languages:
+			self.translator = QtCore.QTranslator()
+			self.translator.load("draft_"+languages[ln],draftPath()+os.sep+"Languages")
+			QtGui.QApplication.installTranslator(self.translator)
+			
+		# create the draft Toolbar
 		self.mw = getMainWindow()
 		self.draftWidget = DraftDockWidget()
 		self.ui = Ui_draftToolbar()
 		self.ui.app = QtGui.qApp
 		self.ui.setupUi(self.draftWidget)
 		self.draftWidget.setObjectName("draftToolbar")
-		self.draftWidget.setWindowTitle("draftCommand")
+		self.draftWidget.setWindowTitle(QtGui.QApplication.translate("draft", "draftCommand", None, QtGui.QApplication.UnicodeUTF8))
 		self.mw.addDockWidget(QtCore.Qt.TopDockWidgetArea,self.draftWidget)
 		self.draftWidget.setVisible(False)
 		self.draftWidget.toggleViewAction().setVisible(False)

@@ -24,7 +24,12 @@ SET(DraftLibs_SRCS
 		draftlibs/__init__.py
 )
 SOURCE_GROUP("draftlibs" FILES ${DraftLibs_SRCS})
-SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS})
+
+SET(DraftLang_SRCS
+		Languages/draft_fr.qm
+)
+
+SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS} ${DraftLang_SRCS})
 
 ADD_CUSTOM_TARGET(Draft ALL
 		SOURCES ${all_files}
@@ -37,6 +42,12 @@ install(
 				${DraftLibs_SRCS}
 		DESTINATION
 		 		Mod/Draft/draftlibs)
+
+install(
+		FILES
+				${DraftLang_SRCS}
+		DESTINATION
+		 		Mod/Draft/Languages)
 
 install(
 		FILES

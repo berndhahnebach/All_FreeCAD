@@ -21,8 +21,8 @@ nobase_data_DATA = \
 		draftlibs/dxfReader.py \
 		draftlibs/fcvec.py \
 		draftlibs/fcgeo.py \
-		draftlibs/__init__.py
-
+		draftlibs/__init__.py \
+		Languages/draft_fr.qm
 
 EXTRA_DIST = \
 		$(data_DATA) $(nobase_data_DATA) \
