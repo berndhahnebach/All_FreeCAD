@@ -129,8 +129,8 @@ ToDo list:
 
 # import FreeCAD modules
 
-import PyQt4
-import FreeCAD, FreeCADGui, Part, WorkingPlane, math, sys
+from PyQt4 import QtCore, QtGui
+import FreeCAD, FreeCADGui, Part, WorkingPlane, math, sys, os
 sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
 from FreeCAD import Base, Vector
 from draftlibs import fcvec
@@ -143,13 +143,13 @@ try:
 	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
 		raise AssertionError("FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.")
 except AssertionError:
-	FreeCAD.Console.PrintMessage("Error: FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.")
+	FreeCAD.Console.PrintMessage(str(translate("draft", "Error: FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 	raise
 except ImportError:
-	FreeCAD.Console.PrintMessage("Error: The Python-Pivy package must be installed on your system to use the Draft module")
+	FreeCAD.Console.PrintMessage(str(translate("draft", "Error: The Python-Pivy package must be installed on your system to use the Draft module", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 	raise
 except:
-	FreeCAD.Console.PrintMessage("Error: Unknown error while trying to load the Python-Pivy package")
+	FreeCAD.Console.PrintMessage(str(translate("draft", "Error: Unknown error while trying to load the Python-Pivy package", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 	raise
 
 
@@ -159,13 +159,26 @@ except:
 
 lastObj = [0,0] # last snapped objects, for quick intersection calculation
 
+# loads a translation engine
+languages = {"English":"en","French":"fr","German":"de","Italian":"it"}
+ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
+if ln in languages:
+	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
+	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft"
+	if os.path.exists(path2): lpath = path2 + os.sep + "Languages"
+	else: lpath = path1 + os.sep + "Languages"
+	translator = QtCore.QTranslator()
+	translator.load("draft_"+languages[ln],lpath)
+	QtGui.QApplication.installTranslator(translator)
+translate = QtGui.QApplication.translate
+
 class todo:
 	''' static todo class, delays execution of functions.  Use todo.delay
 	to schedule geometry manipulation that would crash coin if done in the
 	event callback'''
 
 	'''List of (function, argument) pairs to be executed by
-	PyQt4.QTcore.QTimer.singleShot(0,doTodo).'''
+	QTcore.QTimer.singleShot(0,doTodo).'''
 	itinerary = []
 
 	@staticmethod
@@ -180,9 +193,8 @@ class todo:
 	@staticmethod
 	def delay (f, arg):
 		if todo.itinerary == []:
-			PyQt4.QtCore.QTimer.singleShot(0, todo.doTasks)
+			QtCore.QTimer.singleShot(0, todo.doTasks)
 		todo.itinerary.append((f,arg))
-
 
 ''' plane selection code used to look like this:
 	if self.ui.lockedz:
@@ -314,7 +326,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 		newpoint = point
 		for i in snapArray:
 			if i[0] == None:
-				self.ui.translate("snapPoint: debug 'i[0]' is 'None'\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "snapPoint: debug 'i[0]' is 'None'\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
 			if sqdist < shortest:
 				shortest = sqdist
@@ -806,13 +818,18 @@ class DimensionViewProvider:
 		line.numVertices.setValue(4)
 		self.coords = coin.SoCoordinate3()
 		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],[p2.x,p2.y,p2.z],[p3.x,p3.y,p3.z],[p4.x,p4.y,p4.z]])
+		selnode=coin.SoType.fromName("SoFCSelection").createInstance()
+		selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
+		selnode.subElementName = "Dimension";
+		selnode.addChild(label)
+		print selnode
 		self.node = coin.SoGroup()
-		self.node.addChild(self.color)
-		self.node.addChild(self.drawstyle)
-		self.node.addChild(self.coords)
-		self.node.addChild(line)
-		self.node.addChild(label)
-		self.node.addChild(marks)
+		selnode.addChild(self.color)
+		selnode.addChild(self.drawstyle)
+		selnode.addChild(self.coords)
+		selnode.addChild(line)
+		selnode.addChild(marks)
+		self.node.addChild(selnode)
 		obj.addDisplayMode(self.node,"Wireframe")
 		self.onChanged(obj,"FontSize")
 		self.onChanged(obj,"FontName")
@@ -944,8 +961,8 @@ class SelectPlane:
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_selectPlane',
-			'MenuText': 'SelectPlane',
-			'ToolTip' : 'Select plane for geometry creation'}
+			'MenuText': str(translate("draft", "SelectPlane", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip' : str(translate("draft", "Select a working plane for geometry creation", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		if FreeCAD.activeDraftCommand:
@@ -959,7 +976,7 @@ class SelectPlane:
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 			self.ui.selectPlaneUi()
-			self.ui.translate("Pick a face to define the drawing plane\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick a face to define the drawing plane\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 			self.ui.sourceCmd = self
 			if plane.alignToSelection(self.offset):
 				#??? clear selection here
@@ -1049,7 +1066,7 @@ class Creator:
 			self.ui.offUi()
 			self.ui.cross(False)
 			self.ui.sourceCmd = None
-			self.ui.translate("")
+			FreeCAD.Console.PrintMessage("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
 	
@@ -1064,8 +1081,8 @@ class Line(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_line',
-			'MenuText': 'Line',
-			'ToolTip': 'Creates a 2-point line. CTRL to snap, SHIFT to constrain'}
+			'MenuText': str(translate("draft", "Line", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a 2-point line. CTRL to snap, SHIFT to constrain", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Creator.Activated(self)
@@ -1076,7 +1093,7 @@ class Line(Creator):
 			self.linetrack = lineTracker()
 			self.constraintrack = lineTracker(dotted=True)
 			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.ui.translate("Pick first point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick first point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -1147,21 +1164,21 @@ class Line(Creator):
 		"draws a new segment"
 		if (len(self.node) == 1):
 			self.linetrack.on()
-			self.ui.translate("Pick next point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		elif (len(self.node) == 2):
 			self.createObject()
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
 			if self.isPolyline:
-				self.ui.translate("Pick next point, or (F)inish or (C)lose:\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point, or (F)inish or (C)lose:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		else:
 			currentshape = self.obj.Shape
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			newshape=currentshape.fuse(newseg)
 			self.obj.Shape = newshape
-			self.ui.translate("Pick next point, or (F)inish or (C)lose:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point, or (F)inish or (C)lose:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1185,8 +1202,8 @@ class Polyline(Line):
 		Line.__init__(self,polyline=True)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_polyline',
-			'MenuText': 'Polyline',
-			'ToolTip': 'Creates a 2-point line. CTRL to snap, SHIFT to constrain'}
+			'MenuText': str(translate("draft", "Polyline", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a 2-point line. CTRL to snap, SHIFT to constrain", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 
 class FinishLine:
@@ -1197,8 +1214,8 @@ class FinishLine:
 				FreeCAD.activeDraftCommand.finish(False)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_finish',
-			'MenuText': 'Finish Line',
-			'ToolTip': 'Finishes a line without closing it'}
+			'MenuText': str(translate("draft", "Finish line", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Finishes a line without closing it", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	
 class CloseLine:
@@ -1209,8 +1226,8 @@ class CloseLine:
 				FreeCAD.activeDraftCommand.finish(True)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_lock',
-			'MenuText': 'Close Line',
-			'ToolTip': 'Closes the line being drawn'}
+			'MenuText': str(translate("draft", "Close Line", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Closes the line being drawn", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 
 class UndoLine:
@@ -1221,8 +1238,8 @@ class UndoLine:
 				FreeCAD.activeDraftCommand.undolast()
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rotate',
-			'MenuText': 'Undo last segment',
-			'ToolTip': 'Undoes the last drawn segment of the line being drawn'}
+			'MenuText': str(translate("draft", "Undo last segment", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Undoes the last drawn segment of the line being drawn", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	
 class Rectangle(Creator):
@@ -1230,8 +1247,8 @@ class Rectangle(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rectangle',
-			'MenuText': 'Rectangle',
-			'ToolTip': 'Creates a 2-point rectangle. CTRL to snap'}
+			'MenuText': str(translate("draft", "Rectangle", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a 2-point rectangle. CTRL to snap", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Creator.Activated(self)
@@ -1243,7 +1260,7 @@ class Rectangle(Creator):
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.snap = snapTracker()
 			self.rect = rectangleTracker()
-			self.ui.translate("Pick first point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick first point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -1293,7 +1310,7 @@ class Rectangle(Creator):
 			self.rect.update(point)
 			self.createObject()
 		else:
-			self.ui.translate("Pick opposite point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick opposite point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 			self.rect.setorigin(point)
 			self.rect.on()
 
@@ -1308,8 +1325,8 @@ class Arc(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_arc',
-			'MenuText': 'Arc',
-			'ToolTip': 'Creates an arc. CTRL to snap, SHIFT to constrain'}
+			'MenuText': str(translate("draft", "Arc", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates an arc. CTRL to snap, SHIFT to constrain", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Creator.Activated(self)
@@ -1333,7 +1350,7 @@ class Arc(Creator):
 			self.constraintrack = lineTracker(dotted=True)
 			self.arctrack = arcTracker()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.ui.translate("Pick center point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick center point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 
 	def finish(self,closed=False):
 		"finishes the arc"
@@ -1491,7 +1508,7 @@ class Arc(Creator):
 								self.ui.radiusUi()
 								self.step = 1
 								self.linetrack.on()
-								self.ui.translate("Pick radius:\n")
+								FreeCAD.Console.PrintMessage(str(translate("draft", "Pick radius:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 					else:
 						if len(self.tangents) == 1:
 							self.tanpoints.append(point)
@@ -1505,7 +1522,7 @@ class Arc(Creator):
 						self.ui.radiusUi()
 						self.step = 1
 						self.linetrack.on()
-						self.ui.translate("Pick radius:\n")
+						FreeCAD.Console.PrintMessage(str(translate("draft", "Pick radius:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				elif (self.step == 1): # choose radius
 					if self.closedCircle:
 						self.ui.cross(False)
@@ -1515,14 +1532,14 @@ class Arc(Creator):
 						self.linetrack.p1(self.center)
 						self.linetrack.on()
 						self.step = 2
-						self.ui.translate("Pick start angle:\n")
+						FreeCAD.Console.PrintMessage(str(translate("draft", "Pick start angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				elif (self.step == 2): # choose first angle
 					self.ui.labelRadius.setText("End angle")
 					self.step = 3
 					# scale center->point vector for proper display
 					u = fcvec.scaleTo(point.sub(self.center), self.rad)
 					self.arctrack.startPoint(u.add(self.center))
-					self.ui.translate("Pick end angle:\n")
+					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				else: # choose second angle
 					self.step = 4
 					self.drawArc()
@@ -1552,7 +1569,7 @@ class Arc(Creator):
 		self.arctrack.on()
 		self.ui.radiusUi()
 		self.step = 1
-		self.ui.translate("Pick radius")
+		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick radius:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -1585,7 +1602,7 @@ class Arc(Creator):
 				self.ui.labelRadius.setText("Start angle")
 				self.linetrack.p1(self.center)
 				self.linetrack.on()
-				self.ui.translate("Pick start angle:\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Pick start angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		elif (self.step == 2):
 			self.ui.labelRadius.setText("End angle")
 			self.firstangle = math.radians(rad)
@@ -1594,7 +1611,7 @@ class Arc(Creator):
 			urotated = fcvec.rotate(u, math.radians(rad), plane.axis)
 			self.arctrack.startPoint(urotated)
 			self.step = 3
-			self.ui.translate("Pick end angle:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		else:
 			self.updateAngle(rad)
 			self.step = 4
@@ -1609,8 +1626,8 @@ class Circle(Arc):
 		
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_circle',
-			'MenuText': 'Circle',
-			'ToolTip': 'Creates a circle. CTRL to snap, ALT to select tangent objects'}
+			'MenuText': str(translate("draft", "Circle", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a circle. CTRL to snap, ALT to select tangent objects", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	
 class Text(Creator):
@@ -1620,8 +1637,8 @@ class Text(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_text',
-			'MenuText': 'Text',
-			'ToolTip': 'Creates an annotation. CTRL to snap'}
+			'MenuText': str(translate("draft", "Text", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates an annotation. CTRL to snap", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Creator.Activated(self)
@@ -1636,7 +1653,7 @@ class Text(Creator):
 			self.ui.xValue.setFocus()
 			self.ui.xValue.selectAll()
 			self.snap = snapTracker()
-			self.ui.translate("Pick location point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick location point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -1693,8 +1710,8 @@ class Dim(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_dimension',
-			'MenuText': 'Dimension',
-			'ToolTip': 'Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment'}
+			'MenuText': str(translate("draft", "Dimension", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Creator.Activated(self)
@@ -1706,7 +1723,7 @@ class Dim(Creator):
 			self.snap = snapTracker()
 			self.dimtrack = dimTracker()
 			self.constraintrack = lineTracker(dotted=True)
-			self.ui.translate("Pick first point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick first point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -1827,7 +1844,7 @@ class Modifier:
 		if self.ui:
 			self.ui.offUi()
 			self.ui.sourceCmd=None
-			self.ui.translate("")
+			FreeCAD.Console.PrintMessage("")
 			self.ui.cross(False)
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
@@ -1837,8 +1854,8 @@ class Move(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_move',
-			'MenuText': 'Move',
-			'ToolTip': 'Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy'}
+			'MenuText': str(translate("draft", "Move", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -1852,7 +1869,7 @@ class Move(Modifier):
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				self.ui.translate("Select an object to move\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to move\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -1868,7 +1885,7 @@ class Move(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.translate("Pick start point:\n")
+		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick start point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -1936,7 +1953,7 @@ class Move(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					self.ui.translate("Pick end point:\n")
+					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				else:
 					last = self.node[0]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -1958,7 +1975,7 @@ class Move(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			self.ui.translate("Pick end point point:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
@@ -1973,8 +1990,8 @@ class ApplyStyle(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_apply',
-			'MenuText': 'Apply Style',
-			'ToolTip': 'Applies current line width and color to selected objects'}
+			'MenuText': str(translate("draft", "Apply Style", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Applies current line width and color to selected objects", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2000,8 +2017,8 @@ class Rotate(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rotate',
-			'MenuText': 'Rotate',
-			'ToolTip': 'Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy'}
+			'MenuText': str(translate("draft", "Rotate", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2016,7 +2033,7 @@ class Rotate(Modifier):
 				self.arctrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				self.ui.translate("Select an object to rotate\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to rotate\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2034,7 +2051,7 @@ class Rotate(Modifier):
 		self.arctrack = arcTracker()
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.translate("Pick rotation center:\n")
+		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick rotation center:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		self.ui.cross(True)
 				
 	def finish(self,closed=False):
@@ -2131,7 +2148,7 @@ class Rotate(Modifier):
 					self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
 					self.linetrack.on()
 					self.step = 1
-					self.ui.translate("Pick base angle:\n")
+					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick base angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				elif (self.step == 1):
 					self.ui.labelRadius.setText("Rotation")
 					self.arctrack.startPoint(point)
@@ -2140,7 +2157,7 @@ class Rotate(Modifier):
 					self.ghost.on()
 					self.ui.isCopy.show()
 					self.step = 2
-					self.ui.translate("Pick rotation angle:\n")
+					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick rotation angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				else:
 					currentrad = fcvec.dist(point,self.center)
 					angle = point.sub(self.center).getAngle(plane.u)
@@ -2171,7 +2188,7 @@ class Rotate(Modifier):
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Base angle")
 		self.step = 1
-		self.ui.translate("Pick base angle:\n")
+		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick base angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -2183,7 +2200,7 @@ class Rotate(Modifier):
 			self.ghost.on()
 			self.ui.isCopy.show()
 			self.step = 2
-			self.ui.translate("Pick rotation angle:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick rotation angle:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		else:
 			self.rot(math.radians(rad),self.ui.isCopy.isChecked())
 			self.finish()
@@ -2195,8 +2212,8 @@ class Offset(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_offset',
-			'MenuText': 'Offset',
-			'ToolTip': 'Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy'}
+			'MenuText': str(translate("draft", "Offset", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2211,10 +2228,10 @@ class Offset(Modifier):
 				self.arctrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				self.ui.translate("Select an object to offset\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to offset\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			elif len(getSelection()) > 1:
-				self.ui.translate("Offset only works on one object at a time\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Offset only works on one object at a time\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 			else:
 				self.proceed()
 
@@ -2235,7 +2252,7 @@ class Offset(Modifier):
 		self.faces = False
 		self.edges = []
 		if len(self.sel.Shape.Faces)>1:
-			self.ui.translate("The offset tool cannot currently work on multi-face objects\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "The offset tool cannot currently work on multi-face objects\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 			self.finish()
 		c = fcgeo.complexity(self.sel)
 		self.closed = False
@@ -2258,7 +2275,7 @@ class Offset(Modifier):
 				self.ghost.append(arcTracker())
 				self.redraw = self.redrawSlow
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.translate("Pick distance:\n")
+		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick distance:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2486,7 +2503,7 @@ class Offset(Modifier):
 			else:
 				targetOb.Shape = Part.Wire(newedges)
 			self.doc.commitTransaction()
-		else: self.ui.translate("Couldn't determine where to apply distance!\n")
+		else: FreeCAD.Console.PrintMessage(str(translate("draft", "Couldn't determine where to apply distance!\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		self.finish()
 			
 
@@ -2502,8 +2519,8 @@ class Upgrade(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_upgrade',
-			'MenuText': 'Upgrade',
-			'ToolTip': 'Joins the selected objects into one, or converts closed wires to filled faces, or unite faces'}
+			'MenuText': str(translate("draft", "Upgrade", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Joins the selected objects into one, or converts closed wires to filled faces, or unite faces", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2513,7 +2530,7 @@ class Upgrade(Modifier):
 			self.call = None
 			if not getSelection():
 				self.ui.selectUi()
-				self.ui.translate("Select an object to upgrade\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to upgrade\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2615,8 +2632,8 @@ class Downgrade(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_downgrade',
-			'MenuText': 'Downgrade',
-			'ToolTip': 'Explodes the selected objects into simpler objects, or subtract faces'}
+			'MenuText': str(translate("draft", "Downgrade", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Explodes the selected objects into simpler objects, or subtract faces", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2626,7 +2643,7 @@ class Downgrade(Modifier):
 			self.call = None
 			if not getSelection():
 				self.ui.selectUi()
-				self.ui.translate("Select an object to upgrade\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to upgrade\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2687,8 +2704,8 @@ class Trimex(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap' : 'Draft_trimex',
-			'MenuText' : 'TrimExtend',
-			'ToolTip' : 'Trims or Extends the selected object. SHIFT constrains to current segment, ALT inverts'}
+			'MenuText' : str(translate("draft", "Trimex", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip' : str(translate("draft", "Trims or Extends the selected object. SHIFT constrains to current segment, ALT inverts", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2702,7 +2719,7 @@ class Trimex(Modifier):
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				self.ui.translate("Select an object to trim/extend\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to trim/extend\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2743,7 +2760,7 @@ class Trimex(Modifier):
 		self.alt = False
 		self.force = None
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.translate("Pick distance:\n")
+		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick distance:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		self.ui.cross(True)
 
 				
@@ -2916,8 +2933,8 @@ class Scale(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_scale',
-			'MenuText': 'Scale',
-			'ToolTip': 'Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy'}
+			'MenuText': str(translate("draft", "Scale", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2931,7 +2948,7 @@ class Scale(Modifier):
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				self.ui.translate("Select an object to scale\n")
+				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to scale\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2947,7 +2964,7 @@ class Scale(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		self.ui.translate("Pick base point:\n")
+		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick base point:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -3013,7 +3030,7 @@ class Scale(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					self.ui.translate("Pick scale factor:\n")
+					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick scale factor:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 				else:
 					last = self.node[0]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -3035,7 +3052,7 @@ class Scale(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			self.ui.translate("Pick scale factor:\n")
+			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick scale factor:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
@@ -3048,8 +3065,8 @@ class ToggleConstructionMode():
 	"this class simply toggles the Construction Mode button"
 
 	def GetResources(self):
-		return {'MenuText': 'Toggle construcion Mode',
-			'ToolTip': 'Toggles the Construction Mode for next objects.'}
+		return {'MenuText': str(translate("draft", "Toggle construcion Mode", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Toggles the Construction Mode for next objects.", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		FreeCADGui.activeWorkbench().draftToolBar.ui.constructionButton.toggle()
