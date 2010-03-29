@@ -509,9 +509,10 @@ void Application::slotNewDocument(const App::Document& Doc)
 void Application::slotDeleteDocument(const App::Document& Doc)
 {
     std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
-#ifdef FC_DEBUG
-    assert(doc!=d->lpcDocuments.end());
-#endif
+    if (doc == d->lpcDocuments.end()) {
+        Base::Console().Log("GUI document '%s' already deleted\n", Doc.getName());
+        return;
+    }
 
     // We must clear the selection here to notify all observers
     Gui::Selection().clearSelection(doc->second->getDocument()->getName());
@@ -519,10 +520,11 @@ void Application::slotDeleteDocument(const App::Document& Doc)
 
     // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
     // view that becomes active sets the active document again. So, we needn't worry about this.
-    if ( d->_pcActiveDocument == doc->second )
+    if (d->_pcActiveDocument == doc->second)
         setActiveDocument(0);
 
-    delete doc->second; // destroy the Gui document
+    // For exception-safety use a smart pointer
+    auto_ptr<Document> delDoc (doc->second);
     d->lpcDocuments.erase(doc);
 }
 
