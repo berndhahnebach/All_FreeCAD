@@ -79,6 +79,15 @@ struct DocumentP
     std::list<Gui::BaseView*> _LpcPassivViews;
     std::map<const App::DocumentObject*,ViewProviderDocumentObject*> _ViewProviderMap;
     std::map<std::string,ViewProvider*> _ViewProviderMapAnnotation;
+
+    typedef boost::signals::connection Connection;
+    Connection connectNewObject;
+    Connection connectDelObject;
+    Connection connectCngObject;
+    Connection connectRenObject;
+    Connection connectActObject;
+    Connection connectSaveDocument;
+    Connection connectRestDocument;
 };
 
 } // namespace Gui
@@ -99,19 +108,21 @@ Document::Document(App::Document* pcDocument,Application * app)
     d->_pcDocument = pcDocument;
     d->_pcInEdit = 0;
 
-    //pcDocument->m_sig.connect(boost::bind(&Gui::Document::refresh, this, _1));
-    //boost::bind(&Gui::Document::slotNewObject, this, _1)
-
-    //App::Document::connection_t  m_connection;
-    //m_connection = pcDocument->connect(boost::bind(&Document::slotNewObject, this, _1));
-    pcDocument->signalNewObject.connect(boost::bind(&Gui::Document::slotNewObject, this, _1));
-    pcDocument->signalDeletedObject.connect(boost::bind(&Gui::Document::slotDeletedObject, this, _1));
-    pcDocument->signalChangedObject.connect(boost::bind(&Gui::Document::slotChangedObject, this, _1, _2));
-    pcDocument->signalRenamedObject.connect(boost::bind(&Gui::Document::slotRenamedObject, this, _1));
-    pcDocument->signalActivatedObject.connect(boost::bind(&Gui::Document::slotActivatedObject, this, _1));
-    //pcDocument->signalNewObject.connect(&(this->slotNewObject));
-    pcDocument->signalSaveDocument.connect(boost::bind(&Gui::Document::Save, this, _1));
-    pcDocument->signalRestoreDocument.connect(boost::bind(&Gui::Document::Restore, this, _1));
+    // Setup the connections
+    d->connectNewObject = pcDocument->signalNewObject.connect
+        (boost::bind(&Gui::Document::slotNewObject, this, _1));
+    d->connectDelObject = pcDocument->signalDeletedObject.connect
+        (boost::bind(&Gui::Document::slotDeletedObject, this, _1));
+    d->connectCngObject = pcDocument->signalChangedObject.connect
+        (boost::bind(&Gui::Document::slotChangedObject, this, _1, _2));
+    d->connectRenObject = pcDocument->signalRenamedObject.connect
+        (boost::bind(&Gui::Document::slotRenamedObject, this, _1));
+    d->connectActObject = pcDocument->signalActivatedObject.connect
+        (boost::bind(&Gui::Document::slotActivatedObject, this, _1));
+    d->connectSaveDocument = pcDocument->signalSaveDocument.connect
+        (boost::bind(&Gui::Document::Save, this, _1));
+    d->connectRestDocument = pcDocument->signalRestoreDocument.connect
+        (boost::bind(&Gui::Document::Restore, this, _1));
 
     // pointer to the python class
     // NOTE: As this Python object doesn't get returned to the interpreter we
@@ -125,6 +136,16 @@ Document::Document(App::Document* pcDocument,Application * app)
 
 Document::~Document()
 {
+    // disconnect everything to avoid to be double-deleted
+    // in case an exception is raised somewhere
+    d->connectNewObject.disconnect();
+    d->connectDelObject.disconnect();
+    d->connectCngObject.disconnect();
+    d->connectRenObject.disconnect();
+    d->connectActObject.disconnect();
+    d->connectSaveDocument.disconnect();
+    d->connectRestDocument.disconnect();
+
     // e.g. if document gets closed from within a Python command
     d->_isClosing = true;
     // because Calls Document::detachView() and alter the View List
