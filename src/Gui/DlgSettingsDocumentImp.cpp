@@ -28,6 +28,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgSettingsDocumentImp */
+
 /**
  *  Constructs a DlgSettingsDocumentImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

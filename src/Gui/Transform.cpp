@@ -73,6 +73,8 @@ public:
 }
 }
 
+/* TRANSLATOR Gui::Dialog::Transform */
+
 Transform::Transform(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialog(parent, fl)
 {

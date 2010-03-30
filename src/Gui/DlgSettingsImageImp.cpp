@@ -29,6 +29,8 @@
 using namespace Gui::Dialog;
 using namespace std;
 
+/* TRANSLATOR Gui::Dialog::DlgSettingsImageImp */
+
 /**
  *  Constructs a DlgSettingsImageImp as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.

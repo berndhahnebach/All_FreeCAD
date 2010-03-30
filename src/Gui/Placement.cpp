@@ -30,6 +30,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::Placement */
+
 Placement::Placement(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialog(parent, fl)
 {
