@@ -27,6 +27,7 @@ SOURCE_GROUP("draftlibs" FILES ${DraftLibs_SRCS})
 
 SET(DraftLang_SRCS
 		Languages/draft_fr.qm
+		Languages/draft_it.qm
 )
 
 SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS} ${DraftLang_SRCS})

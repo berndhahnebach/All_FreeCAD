@@ -22,7 +22,8 @@ nobase_data_DATA = \
 		draftlibs/fcvec.py \
 		draftlibs/fcgeo.py \
 		draftlibs/__init__.py \
-		Languages/draft_fr.qm
+		Languages/draft_fr.qm \
+		Languages/draft_it.qm
 
 EXTRA_DIST = \
 		$(data_DATA) $(nobase_data_DATA) \
