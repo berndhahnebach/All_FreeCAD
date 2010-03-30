@@ -36,6 +36,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgSettings3DViewImp */
+
 /**
  *  Constructs a DlgSettings3DViewImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

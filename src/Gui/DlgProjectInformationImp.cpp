@@ -31,6 +31,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgProjectInformationImp */
+
 /**
  *  Constructs a Gui::Dialog::DlgProjectInformationImp as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.

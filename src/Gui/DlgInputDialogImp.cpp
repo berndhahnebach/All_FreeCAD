@@ -29,6 +29,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgInputDialogImp */
+
 /**
  *  Constructs a Gui::Dialog::DlgInputDialogImp as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -39,20 +41,20 @@ using namespace Gui::Dialog;
 DlgInputDialogImp::DlgInputDialogImp( const QString& labelTxt, QWidget* parent, bool modal, Type type )
   : QDialog( parent )
 {
-  this->setModal(modal);
-  this->setupUi(this);
-  label->setText(labelTxt);
-  
-  QSize bs = buttonOk->sizeHint().expandedTo( buttonCancel->sizeHint() );
-  buttonOk->setFixedSize( bs );
-  buttonCancel->setFixedSize( bs );
+    this->setModal(modal);
+    this->setupUi(this);
+    label->setText(labelTxt);
 
-  QSize sh = sizeHint();
-  setType( type );
-  resize( qMax( sh.width(), 400 ), 1 );
+    QSize bs = buttonOk->sizeHint().expandedTo(buttonCancel->sizeHint());
+    buttonOk->setFixedSize( bs );
+    buttonCancel->setFixedSize( bs );
 
-  connect(lineEdit, SIGNAL(returnPressed()), this, SLOT(tryAccept()));
-  connect(lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(textChanged(const QString&)));
+    QSize sh = sizeHint();
+    setType(type);
+    resize(qMax(sh.width(), 400), 1);
+
+    connect(lineEdit, SIGNAL(returnPressed()), this, SLOT(tryAccept()));
+    connect(lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(textChanged(const QString&)));
 }
 
 /**
@@ -60,92 +62,93 @@ DlgInputDialogImp::DlgInputDialogImp( const QString& labelTxt, QWidget* parent, 
  */
 DlgInputDialogImp::~DlgInputDialogImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 void DlgInputDialogImp::textChanged( const QString &s )
 {
-  bool on = TRUE;
+    bool on = TRUE;
 
-  if ( lineEdit->validator() ) {
-	  QString str = lineEdit->text();
-	  int index = lineEdit->cursorPosition();
-	  on = ( lineEdit->validator()->validate(str, index) == QValidator::Acceptable );
-  } else if ( type() != LineEdit ) {
-	  on = !s.isEmpty();
-  }
-  
-  buttonOk->setEnabled( on );
+    if (lineEdit->validator()) {
+        QString str = lineEdit->text();
+        int index = lineEdit->cursorPosition();
+        on = ( lineEdit->validator()->validate(str, index) == QValidator::Acceptable );
+    }
+    else if ( type() != LineEdit ) {
+        on = !s.isEmpty();
+    }
+
+    buttonOk->setEnabled( on );
 }
 
 void DlgInputDialogImp::tryAccept()
 {
-  if ( !lineEdit->text().isEmpty() )
-	  accept();
+    if (!lineEdit->text().isEmpty())
+        accept();
 }
 
 void DlgInputDialogImp::setType( DlgInputDialogImp::Type t )
 {
-  inputtype = t;
+    inputtype = t;
 
-  QWidget *input = 0;
-  switch ( inputtype ) 
-  { 
-  case LineEdit:
-	  input = lineEdit;
-	  break;
-  case SpinBox:
-	  input = spinBox;
-	  break;
-  case UIntBox:
-	  input = uIntSpinBox;
-	  break;
-  case FloatSpinBox:
-	  input = floatSpinBox;
-	  break;
-  case ComboBox:
-	  input = comboBox;
-	  break;
-  default:
-	  break;
-  }
+    QWidget *input = 0;
+    switch (inputtype)
+    {
+    case LineEdit:
+        input = lineEdit;
+        break;
+    case SpinBox:
+        input = spinBox;
+        break;
+    case UIntBox:
+        input = uIntSpinBox;
+        break;
+    case FloatSpinBox:
+        input = floatSpinBox;
+        break;
+    case ComboBox:
+        input = comboBox;
+        break;
+    default:
+        break;
+    }
 
-  if ( input ) {
-    stack->setCurrentWidget(input->parentWidget());
-	  stack->setFixedHeight( input->sizeHint().height() );
-	  input->setFocus();
-	  label->setBuddy( input );
-  }
+    if (input) {
+        stack->setCurrentWidget(input->parentWidget());
+        stack->setFixedHeight( input->sizeHint().height() );
+        input->setFocus();
+        label->setBuddy( input );
+    }
 }
 
 DlgInputDialogImp::Type DlgInputDialogImp::type() const
 {
-  return inputtype;
+    return inputtype;
 }
 
 QSpinBox *DlgInputDialogImp::getSpinBox() const
 {
-  return spinBox;
+    return spinBox;
 }
 
 Gui::UIntSpinBox *DlgInputDialogImp::getUIntBox() const
 {
-  return uIntSpinBox;
+    return uIntSpinBox;
 }
 
 QDoubleSpinBox *DlgInputDialogImp::getFloatSpinBox() const
 {
-  return floatSpinBox;
+    return floatSpinBox;
 }
 
 QLineEdit *DlgInputDialogImp::getLineEdit() const
 {
-  return lineEdit;
+    return lineEdit;
 }
 
 QComboBox *DlgInputDialogImp::getComboBox() const
 {
-  return comboBox;
+    return comboBox;
 }
 
 #include "moc_DlgInputDialogImp.cpp"
