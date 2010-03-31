@@ -1246,6 +1246,8 @@ void  ParameterManager::SaveDocument(const char* sFileName) const
 
         // set user specified end of line sequence and output encoding
         theSerializer->setNewLine(gMyEOLSequence);
+        DOMConfiguration* config = theSerializer->getDomConfig();
+        config->setParameter(XStr("format-pretty-print").unicodeForm(),true);
 
         // plug in user's own filter
         if (gUseFilter) {
