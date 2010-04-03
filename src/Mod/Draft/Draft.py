@@ -333,13 +333,13 @@ def snapPoint (target,point,cursor,ctrl=False):
 				newpoint = i
 		target.snap.coords.point.setValue((newpoint[2].x,newpoint[2].y,newpoint[2].z))
 		if (newpoint[1] == 1):
-			target.snap.marker.markerIndex = coin.SoMarkerSet.SQUARE_FILLED_9_9
+			target.snap.setMarker("square")
 		elif (newpoint[1] == 0):
-			target.snap.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
+			target.snap.setMarker("point")
 		elif (newpoint[1] == 3):
-			target.snap.marker.markerIndex = coin.SoMarkerSet.SQUARE_LINE_9_9
+			target.snap.setMarker("square")
 		else:
-			target.snap.marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_9_9
+			target.snap.setMarker("circle")
 		target.snap.switch.whichChild = 0
 		return newpoint[2]
 
@@ -575,6 +575,14 @@ class snapTracker(Tracker):
 		node.addChild(color)
 		node.addChild(self.marker)
 		Tracker.__init__(self,children=[node])
+
+	def setMarker(self,style):
+		if (style == "point"):
+			self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
+		elif (style == "square"):
+			self.marker.markerIndex = coin.SoMarkerSet.SQUARE_LINE_9_9
+		elif (style == "circle"):
+			self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_9_9
 
 class lineTracker(Tracker):
 	"a class to create a tracking line used by the functions that need it"
