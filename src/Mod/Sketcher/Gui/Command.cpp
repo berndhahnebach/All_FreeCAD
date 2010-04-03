@@ -65,16 +65,12 @@ void CmdSketcherNewSketch::activated(int iMsg)
   
     Sketcher::SketchObjectSF *obj = static_cast<Sketcher::SketchObjectSF *>(getDocument()->getObject( FeatName.c_str() ));
 
-	Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
-
-	dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
-
+    Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
+    dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
     dlg.Do();
 
     commitCommand();
     getDocument()->recompute();
-
-      
 }
 
 bool CmdSketcherNewSketch::isActive(void)

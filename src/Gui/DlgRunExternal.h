@@ -24,41 +24,45 @@
 #ifndef GUI_DIALOG_DlgRunExternal_H
 #define GUI_DIALOG_DlgRunExternal_H
 
-#include <Gui/ui_DlgRunExternal.h>
-
 #include <QProcess>
+#include <QDialog>
 
 namespace Gui {
 namespace Dialog {
+class Ui_DlgRunExternal;
 
 /**
  * The DlgRunExternal class implements a dialog to start and control external
  * programms to edit FreeCAD controled content.
  * \author Jürgen Riegel
  */
-class GuiExport DlgRunExternal : public QDialog, public Ui_DlgRunExternal 
+class GuiExport DlgRunExternal : public QDialog
 { 
     Q_OBJECT
 
 public:
-    DlgRunExternal( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    DlgRunExternal(QWidget* parent = 0, Qt::WFlags fl = 0);
     virtual ~DlgRunExternal();
 
-	int Do(void);
+    int Do(void);
 
-	QString ProcName;
-	QStringList arguments;
+    QString ProcName;
+    QStringList arguments;
 
 protected Q_SLOTS:
-    virtual void reject (void);
-	virtual void accept (void);
-	virtual void abort  (void);
-	virtual void advanced  (void);
-	void finished ( int exitCode, QProcess::ExitStatus exitStatus );
-protected:
-	QProcess process;
-	bool advancedHidden;
+    virtual void reject(void);
+    virtual void accept(void);
+    virtual void abort(void);
+    virtual void advanced(void);
+    void finished (int exitCode, QProcess::ExitStatus exitStatus);
+    void on_chooseProgram_clicked();
 
+protected:
+    QProcess process;
+    bool advancedHidden;
+
+private:
+    Ui_DlgRunExternal* ui;
 };
 
 } // namespace Dialog
