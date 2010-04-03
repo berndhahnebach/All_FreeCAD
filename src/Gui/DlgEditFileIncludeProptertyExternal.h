@@ -42,13 +42,11 @@ public:
     DlgEditFileIncludePropertyExternal( App::PropertyFileIncluded& Prop, QWidget* parent = 0, Qt::WFlags fl = 0 );
     virtual ~DlgEditFileIncludePropertyExternal();
 
-	int Do(void);
-
+    int Do(void);
 
 protected Q_SLOTS:
 protected:
     App::PropertyFileIncluded& Prop;
-
 };
 
 } // namespace Dialog

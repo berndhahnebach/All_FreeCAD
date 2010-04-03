@@ -198,7 +198,11 @@ FileOptionsDialog::FileOptionsDialog( QWidget* parent, Qt::WFlags fl )
 
     //search for the grid layout and add the new button
     QGridLayout* grid = this->findChild<QGridLayout*>();
+#if QT_VERSION >= 0x040500
+    grid->addWidget(extensionButton, 4, 2, Qt::AlignLeft);
+#else
     grid->addWidget(extensionButton, 4, 5, Qt::AlignLeft);
+#endif
 
     connect(extensionButton, SIGNAL(clicked()), this, SLOT(toggleExtension()));
 
@@ -276,8 +280,9 @@ void FileOptionsDialog::setOptionsWidget(FileOptionsDialog::ExtensionPosition po
 {
     if (pos == ExtensionRight) {
         setExtension(w);
-        setOrientation( Qt::Horizontal );
-    } else if (pos == ExtensionBottom) {
+        setOrientation(Qt::Horizontal);
+    }
+    else if (pos == ExtensionBottom) {
         setExtension(w);
         setOrientation(Qt::Vertical);
     }

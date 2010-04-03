@@ -43,8 +43,10 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgEditFileIncludePropertyExternal::DlgEditFileIncludePropertyExternal( App::PropertyFileIncluded& Prop, QWidget* parent, Qt::WFlags fl )
-    : DlgRunExternal( parent, fl ), Prop(Prop)
+DlgEditFileIncludePropertyExternal::
+DlgEditFileIncludePropertyExternal(App::PropertyFileIncluded& Prop,
+                                   QWidget* parent, Qt::WFlags fl)
+    : DlgRunExternal(parent, fl), Prop(Prop)
 {
 
 }
@@ -72,12 +74,11 @@ int DlgEditFileIncludePropertyExternal::Do(void)
 
     int ret = DlgRunExternal::Do();
 
-    if(ret == QDialog::Accepted)
+    if (ret == QDialog::Accepted)
         Prop.setValue(TempFile.toUtf8());
 
     QFile::remove(TempFile);
-
-	return ret;
+    return ret;
 }
 
 #include "moc_DlgEditFileIncludeProptertyExternal.cpp"
