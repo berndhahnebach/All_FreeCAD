@@ -57,13 +57,13 @@ using namespace Gui::Dialog;
 Action::Action ( Command* pcCmd,QObject * parent )
   : QObject(parent), _action(new QAction( this )), _pcCmd(pcCmd)
 {
-  _action->setObjectName(QString::fromAscii(_pcCmd->getName()));
-  connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
+    _action->setObjectName(QString::fromAscii(_pcCmd->getName()));
+    connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 
 Action::~Action()
-{ 
-  delete _action;
+{
+    delete _action;
 }
 
 /**
@@ -71,7 +71,7 @@ Action::~Action()
  */
 void Action::addTo(QWidget *w)
 {
-  w->addAction(_action);
+    w->addAction(_action);
 }
 
 /**
@@ -87,29 +87,30 @@ void Action::onActivated ()
  */
 void Action::onToggled ( bool b)
 {
-  _pcCmd->invoke( b ? 1 : 0 );
+    _pcCmd->invoke( b ? 1 : 0 );
 } 
 
 void Action::setCheckable ( bool b )
 {
-  _action->setCheckable(b);
-  if ( b ) {
-    disconnect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
-    connect(_action, SIGNAL(toggled(bool)), this, SLOT(onToggled(bool)));
-  } else {
-    connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
-    disconnect(_action, SIGNAL(toggled(bool)), this, SLOT(onToggled(bool)));
-  }
+    _action->setCheckable(b);
+    if (b) {
+        disconnect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
+        connect(_action, SIGNAL(toggled(bool)), this, SLOT(onToggled(bool)));
+    }
+    else {
+        connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
+        disconnect(_action, SIGNAL(toggled(bool)), this, SLOT(onToggled(bool)));
+    }
 }
 
 void Action::setChecked ( bool b )
 {
-  _action->setChecked(b);
+    _action->setChecked(b);
 }
 
 bool Action::isChecked() const
 {
-  return _action->isChecked();
+    return _action->isChecked();
 }
 
 /**
@@ -117,67 +118,67 @@ bool Action::isChecked() const
  */
 void Action::setEnabled ( bool b) 
 {
-  _action->setEnabled(b);
+    _action->setEnabled(b);
 }
 
 void Action::setVisible ( bool b) 
 {
-  _action->setVisible( b );
+    _action->setVisible( b );
 }
 
 void Action::setShortcut ( const QKeySequence & key )
 {
-  _action->setShortcut(key);
+    _action->setShortcut(key);
 }
 
 QKeySequence Action::shortcut() const
 {
-  return _action->shortcut();
+    return _action->shortcut();
 }
 
 void Action::setIcon ( const QIcon & icon)
 {
-  _action->setIcon(icon);
+    _action->setIcon(icon);
 }
 
 void Action::setStatusTip ( const QString & s)
 {
-  _action->setStatusTip(s);
+    _action->setStatusTip(s);
 }
 
 QString Action::statusTip() const
 {
-  return _action->statusTip();
+    return _action->statusTip();
 }
 
 void Action::setText ( const QString & s)
 {
-  _action->setText(s);
+    _action->setText(s);
 }
 
 QString Action::text() const
 {
-  return _action->text();
+    return _action->text();
 }
 
 void Action::setToolTip ( const QString & s)
 {
-  _action->setToolTip(s);
+    _action->setToolTip(s);
 }
   
 QString Action::toolTip() const
 {
-  return _action->toolTip();
+    return _action->toolTip();
 }
 
 void Action::setWhatsThis ( const QString & s)
 {
-  _action->setWhatsThis(s);
+    _action->setWhatsThis(s);
 }
 
 QString Action::whatsThis() const
 {
-  return _action->whatsThis();
+    return _action->whatsThis();
 }
 
 // --------------------------------------------------------------------
@@ -189,13 +190,13 @@ QString Action::whatsThis() const
 ActionGroup::ActionGroup ( Command* pcCmd,QObject * parent)
   : Action(pcCmd, parent), _group(0), _dropDown(false)
 {
-  _group = new QActionGroup( this );
-  connect(_group, SIGNAL(triggered(QAction*)), this, SLOT(onActivated (QAction*)));
+    _group = new QActionGroup( this );
+    connect(_group, SIGNAL(triggered(QAction*)), this, SLOT(onActivated (QAction*)));
 }
 
 ActionGroup::~ActionGroup()
-{ 
-  delete _group;
+{
+    delete _group;
 }
 
 /**
@@ -203,73 +204,76 @@ ActionGroup::~ActionGroup()
  */
 void ActionGroup::addTo(QWidget *w)
 {
-  // When adding an action that has defined a menu then shortcuts
-  // of the menu actions don't work. To make this working we must 
-  // set the menu explicitly. This means calling QAction::setMenu()
-  // and adding this action to the widget doesn't work.
-  if ( _dropDown ) {
-    if (w->inherits("QMenu")) {
-      QMenu* menu = qobject_cast<QMenu*>(w);
-      menu = menu->addMenu(_action->text());
-      menu->addActions(_group->actions());
-    } else if (w->inherits("QToolBar")) {
-      w->addAction(_action);
-      QToolButton* tb = w->findChildren<QToolButton*>().last();
-      tb->setPopupMode(QToolButton::MenuButtonPopup);
-      tb->addActions(_group->actions());
-    } else {
-      w->addActions(_group->actions()); // no drop-down 
+    // When adding an action that has defined a menu then shortcuts
+    // of the menu actions don't work. To make this working we must 
+    // set the menu explicitly. This means calling QAction::setMenu()
+    // and adding this action to the widget doesn't work.
+    if (_dropDown) {
+        if (w->inherits("QMenu")) {
+            QMenu* menu = qobject_cast<QMenu*>(w);
+            menu = menu->addMenu(_action->text());
+            menu->addActions(_group->actions());
+        }
+        else if (w->inherits("QToolBar")) {
+            w->addAction(_action);
+            QToolButton* tb = w->findChildren<QToolButton*>().last();
+            tb->setPopupMode(QToolButton::MenuButtonPopup);
+            tb->addActions(_group->actions());
+        }
+        else {
+            w->addActions(_group->actions()); // no drop-down 
+        }
     }
-  } else {
-    w->addActions(_group->actions());
-  }
+    else {
+        w->addActions(_group->actions());
+    }
 }
 
 void ActionGroup::setEnabled( bool b )
 {
-  Action::setEnabled(b);
-  _group->setEnabled(b);
+    Action::setEnabled(b);
+    _group->setEnabled(b);
 }
 
 void ActionGroup::setDisabled (bool b)
 {
-  Action::setEnabled(!b);
-  _group->setDisabled(b);
+    Action::setEnabled(!b);
+    _group->setDisabled(b);
 }
 
 void ActionGroup::setExclusive (bool b)
 {
-  _group->setExclusive(b);
+    _group->setExclusive(b);
 }
 
 void ActionGroup::setVisible( bool b )
 {
-  Action::setVisible(b);
-  _group->setVisible(b);
+    Action::setVisible(b);
+    _group->setVisible(b);
 }
 
 QAction* ActionGroup::addAction(const QString& text)
 {
-  int index = _group->actions().size();
-  QAction* action = _group->addAction(text);
-  action->setData(QVariant(index));
-  return action;
+    int index = _group->actions().size();
+    QAction* action = _group->addAction(text);
+    action->setData(QVariant(index));
+    return action;
 }
 
 QList<QAction*> ActionGroup::actions() const
 {
-  return _group->actions();
+    return _group->actions();
 }
 
 int ActionGroup::checkedAction() const
 {
-  QAction* checked = _group->checkedAction();
-  return checked ? checked->data().toInt() : -1;
+    QAction* checked = _group->checkedAction();
+    return checked ? checked->data().toInt() : -1;
 }
 
 void ActionGroup::setCheckedAction(int i)
 {
-  _group->actions()[i]->setChecked(true);
+    _group->actions()[i]->setChecked(true);
 }
 
 /**
@@ -293,23 +297,23 @@ namespace Gui {
 class WorkbenchActionEvent : public QEvent
 {
 public:
-  WorkbenchActionEvent(QAction* a)
-    : QEvent(QEvent::User), act(a)
-  { }
-  ~WorkbenchActionEvent()
-  { }
-  QAction* action() const
-  { return act; }
+    WorkbenchActionEvent(QAction* a)
+      : QEvent(QEvent::User), act(a)
+    { }
+    ~WorkbenchActionEvent()
+    { }
+    QAction* action() const
+    { return act; }
 private:
-  QAction* act;
+    QAction* act;
 };
 }
 
 WorkbenchComboBox::WorkbenchComboBox(WorkbenchGroup* wb, QWidget* parent) : QComboBox(parent), group(wb)
 {
-  connect(this, SIGNAL(activated(int)), this, SLOT(onActivated(int)));
-  connect(getMainWindow(), SIGNAL(workbenchActivated(const QString&)), 
-          this, SLOT(onWorkbenchActivated(const QString&)));
+    connect(this, SIGNAL(activated(int)), this, SLOT(onActivated(int)));
+    connect(getMainWindow(), SIGNAL(workbenchActivated(const QString&)), 
+            this, SLOT(onWorkbenchActivated(const QString&)));
 }
 
 WorkbenchComboBox::~WorkbenchComboBox()
@@ -678,16 +682,16 @@ void RecentFilesAction::save()
 UndoAction::UndoAction ( Command* pcCmd,QObject * parent )
   : Action(pcCmd, parent)
 {
-  _toolAction = new QAction(this);
-  _toolAction->setMenu(new UndoDialog());
-  connect(_toolAction, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
+    _toolAction = new QAction(this);
+    _toolAction->setMenu(new UndoDialog());
+    connect(_toolAction, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 
 UndoAction::~UndoAction()
 {
-  QMenu* menu = _toolAction->menu();
-  delete menu;
-  delete _toolAction;
+    QMenu* menu = _toolAction->menu();
+    delete menu;
+    delete _toolAction;
 }
 
 void UndoAction::addTo ( QWidget * w )
@@ -710,14 +714,14 @@ void UndoAction::addTo ( QWidget * w )
 
 void UndoAction::setEnabled  ( bool b )
 {
-  Action::setEnabled(b);
-  _toolAction->setEnabled(b);
+    Action::setEnabled(b);
+    _toolAction->setEnabled(b);
 }
 
 void UndoAction::setVisible ( bool b )
 {
-  Action::setVisible(b);
-  _toolAction->setVisible(b);
+    Action::setVisible(b);
+    _toolAction->setVisible(b);
 }
 
 // --------------------------------------------------------------------
@@ -725,16 +729,16 @@ void UndoAction::setVisible ( bool b )
 RedoAction::RedoAction ( Command* pcCmd,QObject * parent )
   : Action(pcCmd, parent)
 {
-  _toolAction = new QAction(this);
-  _toolAction->setMenu(new RedoDialog());
-  connect(_toolAction, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
+    _toolAction = new QAction(this);
+    _toolAction->setMenu(new RedoDialog());
+    connect(_toolAction, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 
 RedoAction::~RedoAction()
 {
-  QMenu* menu = _toolAction->menu();
-  delete menu;
-  delete _toolAction;
+    QMenu* menu = _toolAction->menu();
+    delete menu;
+    delete _toolAction;
 }
 
 void RedoAction::addTo ( QWidget * w )
@@ -757,14 +761,14 @@ void RedoAction::addTo ( QWidget * w )
 
 void RedoAction::setEnabled  ( bool b )
 {
-  Action::setEnabled(b);
-  _toolAction->setEnabled(b);
+    Action::setEnabled(b);
+    _toolAction->setEnabled(b);
 }
 
 void RedoAction::setVisible ( bool b )
 {
-  Action::setVisible(b);
-  _toolAction->setVisible(b);
+    Action::setVisible(b);
+    _toolAction->setVisible(b);
 }
 
 // --------------------------------------------------------------------
@@ -776,7 +780,7 @@ DockWidgetAction::DockWidgetAction ( Command* pcCmd, QObject * parent )
 
 DockWidgetAction::~DockWidgetAction()
 {
-  delete _menu;
+    delete _menu;
 }
 
 void DockWidgetAction::addTo ( QWidget * w )
@@ -799,7 +803,7 @@ ToolBarAction::ToolBarAction ( Command* pcCmd, QObject * parent )
 
 ToolBarAction::~ToolBarAction()
 {
-  delete _menu;
+    delete _menu;
 }
 
 void ToolBarAction::addTo ( QWidget * w )
@@ -826,20 +830,23 @@ WindowAction::~WindowAction()
 
 void WindowAction::addTo ( QWidget * w )
 {
-  QMenu* menu = qobject_cast<QMenu*>(w);
-  if ( !menu ) {
-    if (!_menu) {
-      _menu = new QMenu();
-      _action->setMenu(_menu);
-      _menu->addActions(_group->actions());
-      connect( _menu, SIGNAL( aboutToShow()), getMainWindow(), SLOT( onWindowsMenuAboutToShow() ) );
+    QMenu* menu = qobject_cast<QMenu*>(w);
+    if (!menu) {
+        if (!_menu) {
+            _menu = new QMenu();
+            _action->setMenu(_menu);
+            _menu->addActions(_group->actions());
+            connect(_menu, SIGNAL(aboutToShow()),
+                    getMainWindow(), SLOT(onWindowsMenuAboutToShow()));
+        }
+
+        w->addAction(_action);
     }
-    
-    w->addAction(_action);
-  } else {
-    menu->addActions(_group->actions());
-    connect( menu, SIGNAL( aboutToShow()), getMainWindow(), SLOT( onWindowsMenuAboutToShow() ) );
-  }
+    else {
+        menu->addActions(_group->actions());
+        connect(menu, SIGNAL(aboutToShow()),
+                getMainWindow(), SLOT(onWindowsMenuAboutToShow()));
+    }
 }
 
 #include "moc_Action.cpp"
