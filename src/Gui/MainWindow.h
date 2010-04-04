@@ -57,7 +57,7 @@ namespace DockWnd {
  * a status bar and mainly a workspace for the MDI windows.
  * @author Werner Mayer
  */
-class GuiExport MainWindow: public QMainWindow
+class GuiExport MainWindow : public QMainWindow
 {
     Q_OBJECT
  
@@ -66,31 +66,31 @@ public:
      * Constructs an empty main window. For default \a parent is 0, as there usually is
      * no toplevel window there.
      */
-    MainWindow( QWidget * parent = 0, Qt::WFlags f = Qt::Window );
+    MainWindow(QWidget * parent = 0, Qt::WFlags f = Qt::Window);
     /** Destroys the object and frees any allocated resources. */
     ~MainWindow();
     /**
      * Filters events if this object has been installed as an event filter for the watched object.
      */
-    bool eventFilter ( QObject* o, QEvent* e );
+    bool eventFilter(QObject* o, QEvent* e);
     /**
      * Adds an MDI window \a view to the main window's workspace and adds a new tab
      * to the tab bar.
      */
-    void addWindow( MDIView* view );
+    void addWindow(MDIView* view);
     /**
      * Removes an MDI window from the main window's workspace and its associated tab without
      * deleting the widget. If the main windows does not have such a window nothing happens.
      */
-    void removeWindow( MDIView* view );
+    void removeWindow(MDIView* view);
     /**
      * Can be called after the caption of an MDIView has changed to update the tab's caption.
      */
-    void tabChanged( MDIView* view );
+    void tabChanged(MDIView* view);
     /**
      * Returns a list of all MDI windows in the worpspace.
      */
-    QList<QWidget*> windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
+    QList<QWidget*> windows(QWorkspace::WindowOrder order = QWorkspace::CreationOrder) const;
     /**
      * Returns the active MDI window or 0 if there is none.
      */
@@ -174,7 +174,8 @@ public Q_SLOTS:
     void closeActiveWindow ();
     /**
      * Closes all child windows. 
-     * The windows are closed in random order. The operation stops if a window does not accept the close event.
+     * The windows are closed in random order. The operation stops
+     * if a window does not accept the close event.
      */
     void closeAllWindows ();
     /**
