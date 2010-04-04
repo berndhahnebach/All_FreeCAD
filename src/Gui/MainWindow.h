@@ -24,16 +24,25 @@
 #ifndef GUI_MAINWINDOW_H
 #define GUI_MAINWINDOW_H
 
+//#define USE_QT_MDI_AREA
+
 #include "Window.h"
 #include <Base/Console.h>
 #include <string>
 #include <vector>
 
 #include <QMainWindow>
+#ifdef USE_QT_MDI_AREA
+#include <QMdiArea>
+#else
 #include <QWorkspace>
+#endif
 
 class QMimeData;
 class QUrl;
+#if defined (USE_QT_MDI_AREA)
+class QMdiSubWindow;
+#endif
 
 namespace App {
 class Document;
@@ -90,7 +99,11 @@ public:
     /**
      * Returns a list of all MDI windows in the worpspace.
      */
+#if defined(USE_QT_MDI_AREA) 
+    QList<QWidget*> windows(QMdiArea::WindowOrder order = QMdiArea::CreationOrder) const;
+#else
     QList<QWidget*> windows(QWorkspace::WindowOrder order = QWorkspace::CreationOrder) const;
+#endif
     /**
      * Returns the active MDI window or 0 if there is none.
      */
@@ -223,10 +236,18 @@ protected:
     void changeEvent(QEvent *e);
 
 private Q_SLOTS:
+#if defined (USE_QT_MDI_AREA)
+    /**
+     * \internal
+     */
+    void onSetActiveSubWindow(QWidget *window);
     /**
      * Activates the associated tab to this widget.
      */
+    void onWindowActivated(QMdiSubWindow*);
+#else
     void onWindowActivated(QWidget*);
+#endif
     /**
      * Fills up the menu with the current windows in the workspace.
      */
