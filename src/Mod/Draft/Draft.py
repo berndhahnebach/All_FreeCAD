@@ -833,18 +833,18 @@ class DimensionViewProvider:
 		line.numVertices.setValue(4)
 		self.coords = coin.SoCoordinate3()
 		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],[p2.x,p2.y,p2.z],[p3.x,p3.y,p3.z],[p4.x,p4.y,p4.z]])
-		selnode=coin.SoType.fromName("SoFCSelection").createInstance()
-		selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
-		selnode.subElementName = "Dimension";
-		selnode.addChild(label)
-		print selnode
+		labelnode=coin.SoType.fromName("SoFCSelection").createInstance()
+		labelnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
+		labelnode.objectName.setValue(obj.Object.Name)
+		labelnode.subElementName.setValue("Label")
+		labelnode.addChild(label)
 		self.node = coin.SoGroup()
-		selnode.addChild(self.color)
-		selnode.addChild(self.drawstyle)
-		selnode.addChild(self.coords)
-		selnode.addChild(line)
-		selnode.addChild(marks)
-		self.node.addChild(selnode)
+		self.node.addChild(self.color)
+		self.node.addChild(self.drawstyle)
+		self.node.addChild(self.coords)
+		self.node.addChild(line)
+		self.node.addChild(marks)
+		self.node.addChild(labelnode)
 		obj.addDisplayMode(self.node,"Wireframe")
 		self.onChanged(obj,"FontSize")
 		self.onChanged(obj,"FontName")
@@ -971,6 +971,10 @@ class DimensionViewProvider:
 		svg+='</text>\n</g>\n'
 		return svg
 
+#---------------------------------------------------------------------------
+# Helper tools
+#---------------------------------------------------------------------------
+	
 class SelectPlane:
 	"choose a plane for Draft module geometry creation"
 
@@ -1347,10 +1351,6 @@ class Arc(Creator):
 		Creator.Activated(self)
 		if self.ui:
 			self.step = 0
-			self.doc.openTransaction("Create "+self.featureName)
-			self.obj = self.doc.addObject("Part::Feature",self.featureName)
-			self.doc.commitTransaction()
-			formatObject(self.obj)
 			self.center = None
 			self.rad = None
 			self.angle = 0 # angle inscribed by arc
@@ -1571,7 +1571,10 @@ class Arc(Creator):
 			mid = self.firstangle + self.angle/2
 			p2 = Vector.add(self.center, fcvec.rotate(radvec, mid, plane.axis))
 			arc = Part.Arc(p1,p2,p3).toShape()
+		self.doc.openTransaction("Create "+self.featureName)
+		self.obj = self.doc.addObject("Part::Feature",self.featureName)
 		self.obj.Shape = arc
+		self.doc.commitTransaction()
 		formatObject(self.obj)
 		select(self.obj)
 		self.finish()
