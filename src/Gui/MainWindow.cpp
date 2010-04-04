@@ -116,7 +116,11 @@ struct MainWindowP
     QTimer* actionTimer;
     QTimer* activityTimer;
     QTimer* visibleTimer;
+#if defined (USE_QT_MDI_AREA)
+    QMdiArea* workspace;
+#else
     QWorkspace* workspace;
+#endif
     QTabBar* tabs;
     QPointer<MDIView> activeView;
     QSignalMapper* windowMapper;
@@ -190,16 +194,23 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     layout->setMargin(1);
     vbox->setLayout(layout);
 
+#if defined (USE_QT_MDI_AREA)
+    d->workspace = new QMdiArea();
+    d->workspace->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    d->workspace->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    d->workspace->setOption(QMdiArea::DontMaximizeSubWindowOnActivation, false);
+#else
     d->workspace = new QWorkspace();
     d->workspace->setScrollBarsEnabled( true );
-    QPixmap backgnd(( const char** ) background );
+#endif
+    QPixmap backgnd((const char**) background);
     d->workspace->setBackground( backgnd );
     d->tabs = new MDITabbar();
-    d->tabs->setShape( QTabBar:: RoundedSouth );
+    d->tabs->setShape(QTabBar:: RoundedSouth);
 
     layout->addWidget(d->workspace);
     layout->addWidget(d->tabs);
-    setCentralWidget( vbox );
+    setCentralWidget(vbox);
 
     // labels and progressbar
     d->status = new StatusBarObserver();
@@ -230,12 +241,21 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     d->windowMapper = new QSignalMapper(this);
 
     // connection between workspace, window menu and tab bar
+#if defined (USE_QT_MDI_AREA)
+    connect(d->windowMapper, SIGNAL(mapped(QWidget *)),
+            this, SLOT(onSetActiveSubWindow(QWidget*)));
+    connect(d->workspace, SIGNAL(subWindowActivated(QMdiSubWindow*)),
+            this, SLOT(onWindowActivated(QMdiSubWindow* )));
+    connect(d->tabs, SIGNAL(currentChanged(int)),
+            this, SLOT(onTabSelected(int)));
+#else
     connect(d->windowMapper, SIGNAL(mapped(QWidget *)),
             d->workspace, SLOT(setActiveWindow(QWidget* )));
     connect(d->workspace, SIGNAL(windowActivated(QWidget *)),
             this, SLOT(onWindowActivated(QWidget* )));
     connect(d->tabs, SIGNAL(currentChanged(int)),
             this, SLOT(onTabSelected(int)));
+#endif
 
     DockWindowManager* pDockMgr = DockWindowManager::instance();
 
@@ -343,37 +363,63 @@ QMenu* MainWindow::createPopupMenu ()
 
 void MainWindow::arrangeIcons()
 {
+#if !defined (USE_QT_MDI_AREA)
     d->workspace->arrangeIcons();
+#endif
 }
 
 void MainWindow::tile()
 {
+#if defined (USE_QT_MDI_AREA)
+    d->workspace->tileSubWindows();
+#else
     d->workspace->tile();
+#endif
 }
 
 void MainWindow::cascade()
 {
+#if defined (USE_QT_MDI_AREA)
+    d->workspace->cascadeSubWindows();
+#else
     d->workspace->cascade();
+#endif
 }
 
 void MainWindow::closeActiveWindow ()
 {
+#if defined (USE_QT_MDI_AREA)
+    d->workspace->closeActiveSubWindow();
+#else
     d->workspace->closeActiveWindow();
+#endif
 }
 
 void MainWindow::closeAllWindows ()
 {
+#if defined (USE_QT_MDI_AREA)
+    d->workspace->closeAllSubWindows();
+#else
     d->workspace->closeAllWindows();
+#endif
 }
 
 void MainWindow::activateNextWindow ()
 {
+#if defined (USE_QT_MDI_AREA)
+    d->workspace->activateNextSubWindow();
+#else
     d->workspace->activateNextWindow();
+#endif
 }
 
 void MainWindow::activatePreviousWindow ()
 {
+#if defined (USE_QT_MDI_AREA)
+    d->workspace->activatePreviousSubWindow();
+#else
     d->workspace->activatePreviousWindow();
+#endif
 }
 
 void MainWindow::activateWorkbench(const QString& name)
@@ -504,7 +550,12 @@ bool MainWindow::eventFilter(QObject* o, QEvent* e)
 void MainWindow::addWindow(MDIView* view)
 {
     // make workspace parent of view
+#if defined (USE_QT_MDI_AREA)
+    bool isempty = d->workspace->subWindowList().isEmpty();
+    d->workspace->addSubWindow(view, view->windowFlags());
+#else
     d->workspace->addWindow(view);
+#endif
     connect(view, SIGNAL(message(const QString&, int)),
             statusBar(), SLOT(showMessage(const QString&, int)));
     connect(this, SIGNAL(windowStateChanged(MDIView*)),
@@ -514,7 +565,11 @@ void MainWindow::addWindow(MDIView* view)
     view->installEventFilter(this);
 
     // show the very first window in maximized mode
+#if defined (USE_QT_MDI_AREA)
+    if (isempty)
+#else
     if (d->workspace->windowList().isEmpty())
+#endif
         view->showMaximized();
     else
         view->show();
@@ -617,9 +672,18 @@ void MainWindow::onWindowDestroyed()
     }
 }
 
-void MainWindow::onWindowActivated( QWidget* w )
+#if defined (USE_QT_MDI_AREA)
+void MainWindow::onWindowActivated(QMdiSubWindow* w)
+#else
+void MainWindow::onWindowActivated(QWidget* w)
+#endif
 {
+#if defined (USE_QT_MDI_AREA)
+    if (!w) return;
+    MDIView* view = dynamic_cast<MDIView*>(w->widget());
+#else
      MDIView* view = dynamic_cast<MDIView*>(w);
+#endif
 
     // Even if windowActivated() signal is emitted mdi doesn't need to be a top-level window.
     // This happens e.g. if two windows are top-level and one of them gets docked again.
@@ -661,8 +725,13 @@ void MainWindow::onTabSelected(int i)
 
 void MainWindow::onWindowsMenuAboutToShow()
 {
-    QList<QWidget*> windows = d->workspace->windowList( QWorkspace::CreationOrder );
+#if defined (USE_QT_MDI_AREA)
+    QList<QMdiSubWindow*> windows = d->workspace->subWindowList(QMdiArea::CreationOrder);
+    QWidget* active = d->workspace->activeSubWindow();
+#else
+    QList<QWidget*> windows = d->workspace->windowList(QWorkspace::CreationOrder);
     QWidget* active = d->workspace->activeWindow();
+#endif
 
     // We search for the 'Std_WindowsMenu' command that provides the list of actions
     CommandManager& cMgr = Application::Instance->commandManager();
@@ -741,10 +810,22 @@ void MainWindow::onDockWindowMenuAboutToShow()
     }
 }
 
+#if defined (USE_QT_MDI_AREA)
+QList<QWidget*> MainWindow::windows(QMdiArea::WindowOrder order) const
+{
+    QList<QWidget*> mdis;
+    QList<QMdiSubWindow*> wnds = d->workspace->subWindowList(order);
+    for (QList<QMdiSubWindow*>::iterator it = wnds.begin(); it != wnds.end(); ++it) {
+        mdis << (*it)->window();
+    }
+    return mdis;
+}
+#else
 QList<QWidget*> MainWindow::windows(QWorkspace::WindowOrder order) const
 {
     return d->workspace->windowList(order);
 }
+#endif
 
 // set text to the pane
 void MainWindow::setPaneText(int i, QString text)
@@ -765,14 +846,30 @@ MDIView* MainWindow::activeWindow(void) const
     return d->activeView;
 }
 
+#if defined (USE_QT_MDI_AREA)
+void MainWindow::onSetActiveSubWindow(QWidget *window)
+{
+    if (!window)
+        return;
+    d->workspace->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
+}
+
+void MainWindow::setActiveWindow(MDIView* view)
+{
+    onSetActiveSubWindow(view->parentWidget());
+    d->activeView = view;
+    Application::Instance->viewActivated(view);
+}
+#else
 void MainWindow::setActiveWindow(MDIView* view)
 {
     d->workspace->setActiveWindow(view);
     d->activeView = view;
     Application::Instance->viewActivated(view);
 }
+#endif
 
-void MainWindow::closeEvent ( QCloseEvent * e )
+void MainWindow::closeEvent (QCloseEvent * e)
 {
     Application::Instance->tryClose(e);
     if (e->isAccepted()) {
@@ -1246,7 +1343,7 @@ private:
 };
 }
 
-void MainWindow::customEvent( QEvent* e )
+void MainWindow::customEvent(QEvent* e)
 {
     if (e->type() == QEvent::User) {
         Gui::CustomMessageEvent* ce = static_cast<Gui::CustomMessageEvent*>(e);

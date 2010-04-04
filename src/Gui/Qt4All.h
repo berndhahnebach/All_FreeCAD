@@ -131,7 +131,9 @@
 #include <QWhatsThisClickedEvent>
 #include <qwidget.h>
 #include <qobject.h>
-#include <qworkspace.h>
+#include <QMdiArea>
+#include <QMdiSubWindow>
+#include <QWorkspace> // obsolete
 // QtNetwork
 #include <QFtp>
 #include <QHttp>
