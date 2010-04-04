@@ -213,6 +213,13 @@ plane = WorkingPlane.plane()
 # General functions
 #---------------------------------------------------------------------------
 
+def getRealName(name):
+	"strips the trailing numbers from a string name"
+	for i in range(1,len(name)):
+		if not name[-i] in '1234567890':
+			return name[:len(name)-(i-1)]
+	return name
+
 def snapPoint (target,point,cursor,ctrl=False):
 	'''
 	Snap function
@@ -1910,21 +1917,21 @@ class Move(Modifier):
 		else: self.doc.openTransaction("Move")
 		for ob in self.sel:
 			if (ob.Type[:4] == "Part"):
-				if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
+				if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
 				else: newob = ob
 				sh = ob.Shape
 				sh.translate(delta)
 				newob.Shape = sh
 			elif (ob.Type == "App::Annotation"):
 				if copy:
-					newob = self.doc.addObject("App::Annotation",ob.Name)
+					newob = self.doc.addObject("App::Annotation",getRealName(ob.Name))
 					newob.LabelText = ob.LabelText
 				else: newob = ob
 				newob.Position = ob.Position.add(delta)
 			elif (ob.Type == "App::FeaturePython"):
 				if 'Dimline' in ob.PropertiesList:
 					if copy:
-						newob = self.doc.addObject("App::FeaturePython",ob.Name)
+						newob = self.doc.addObject("App::FeaturePython",getRealName(ob.Name))
 						Dimension(newob)
 						DimensionViewProvider(newob.ViewObject)
 					else: newob = ob
@@ -2078,7 +2085,7 @@ class Rotate(Modifier):
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Rotate")
 		for ob in self.sel:
-			if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
+			if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
 			else: newob = ob
 			if (ob.Type == "Part::Feature"):
 				shape = ob.Shape
@@ -2333,7 +2340,7 @@ class Offset(Modifier):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				self.doc.openTransaction("Offset")
 				if arg["AltDown"] or self.ui.isCopy.isChecked():
-					targetOb = self.doc.addObject("Part::Feature",self.sel.Name)
+					targetOb = self.doc.addObject("Part::Feature",getRealName(self.sel.Name))
 					formatObject(targetOb,self.sel)
 				else:
 					targetOb = self.sel
@@ -2501,7 +2508,7 @@ class Offset(Modifier):
 			scaledOffset = fcvec.scaleTo(self.constrainSeg[0],scale)
 			self.doc.openTransaction("Offset")
 			if self.ui.isCopy.isChecked():
-				targetOb = self.doc.addObject("Part::Feature",self.sel.Name)
+				targetOb = self.doc.addObject("Part::Feature",getRealName(self.sel.Name))
 				formatObject(targetOb,self.sel)
 			else:
 				targetOb = self.sel
@@ -2988,7 +2995,7 @@ class Scale(Modifier):
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Move")
 		for ob in self.sel:
-			if copy: newob = self.doc.addObject("Part::Feature",ob.Name)
+			if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
 			else: newob=ob
 			if (ob.Type == "Part::Feature"):
 				sh = ob.Shape
