@@ -230,9 +230,12 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     d->windowMapper = new QSignalMapper(this);
 
     // connection between workspace, window menu and tab bar
-    connect( d->windowMapper, SIGNAL( mapped(QWidget *) ), d->workspace, SLOT( setActiveWindow( QWidget* ) ) );
-    connect( d->workspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
-    connect( d->tabs, SIGNAL( currentChanged( int) ), this, SLOT( onTabSelected(int) ) );
+    connect(d->windowMapper, SIGNAL(mapped(QWidget *)),
+            d->workspace, SLOT(setActiveWindow(QWidget* )));
+    connect(d->workspace, SIGNAL(windowActivated(QWidget *)),
+            this, SLOT(onWindowActivated(QWidget* )));
+    connect(d->tabs, SIGNAL(currentChanged(int)),
+            this, SLOT(onTabSelected(int)));
 
     DockWindowManager* pDockMgr = DockWindowManager::instance();
 
@@ -502,8 +505,10 @@ void MainWindow::addWindow(MDIView* view)
 {
     // make workspace parent of view
     d->workspace->addWindow(view);
-    connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( showMessage(const QString&, int )) );
-    connect( this, SIGNAL( windowStateChanged(MDIView*) ), view, SLOT( windowStateChanged(MDIView*) ) );
+    connect(view, SIGNAL(message(const QString&, int)),
+            statusBar(), SLOT(showMessage(const QString&, int)));
+    connect(this, SIGNAL(windowStateChanged(MDIView*)),
+            view, SLOT(windowStateChanged(MDIView*)));
 
     // listen to the incoming events of the view
     view->installEventFilter(this);
@@ -521,20 +526,21 @@ void MainWindow::addWindow(MDIView* view)
     }
 
     // being informed when the view is destroyed
-    connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
+    connect(view, SIGNAL(destroyed()),
+            this, SLOT(onWindowDestroyed()));
 
     // add a new tab to our tabbar
     int index=-1;
     index = d->tabs->addTab(view->windowIcon(), view->windowTitle());
-    d->tabs->setTabToolTip( index, view->windowTitle() );
+    d->tabs->setTabToolTip(index, view->windowTitle());
     QVariant var; var.setValue<QWidget*>(view);
-    d->tabs->setTabData( index, var);
+    d->tabs->setTabData(index, var);
 
-    tabChanged( view );
-    if ( d->tabs->count() == 1 )
+    tabChanged(view);
+    if (d->tabs->count() == 1)
         d->tabs->show(); // invoke show() for the first tab
     d->tabs->update();
-    d->tabs->setCurrentIndex( index );
+    d->tabs->setCurrentIndex(index);
 }
 
 void MainWindow::removeWindow(Gui::MDIView* view)
@@ -569,7 +575,8 @@ void MainWindow::removeWindow(Gui::MDIView* view)
     }
 
     // this view is not under control of the main window any more
-    disconnect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
+    disconnect(view, SIGNAL(destroyed()),
+               this, SLOT(onWindowDestroyed()));
 }
 
 void MainWindow::tabChanged(MDIView* view)
@@ -642,7 +649,7 @@ void MainWindow::onWindowActivated( QWidget* w )
     }
 }
 
-void MainWindow::onTabSelected( int i)
+void MainWindow::onTabSelected(int i)
 {
     QVariant var = d->tabs->tabData(i);
     if (var.isValid() && var.canConvert<QWidget*>()) {
@@ -687,9 +694,9 @@ void MainWindow::onWindowsMenuAboutToShow()
                 title = QString::fromAscii("%1*").arg(title);
         }
         if (index < 9)
-            text = QString::fromAscii("&%1 %2").arg( index+1 ).arg(title);
+            text = QString::fromAscii("&%1 %2").arg(index+1).arg(title);
         else
-            text = QString::fromAscii("%1 %2").arg( index+1 ).arg(title);
+            text = QString::fromAscii("%1 %2").arg(index+1).arg(title);
         action->setText(text);
         action->setVisible(true);
         action->setChecked(child == active);
@@ -734,9 +741,9 @@ void MainWindow::onDockWindowMenuAboutToShow()
     }
 }
 
-QList<QWidget*> MainWindow::windows( QWorkspace::WindowOrder order ) const
+QList<QWidget*> MainWindow::windows(QWorkspace::WindowOrder order) const
 {
-    return d->workspace->windowList( order );
+    return d->workspace->windowList(order);
 }
 
 // set text to the pane
@@ -961,7 +968,7 @@ QPixmap MainWindow::splashImage() const
     return splash_image;
 }
 
-void MainWindow::showTipOfTheDay( bool force )
+void MainWindow::showTipOfTheDay(bool force)
 {
     // tip of the day?
     ParameterGrp::handle
@@ -1242,7 +1249,7 @@ private:
 void MainWindow::customEvent( QEvent* e )
 {
     if (e->type() == QEvent::User) {
-        Gui::CustomMessageEvent* ce = (Gui::CustomMessageEvent*)e;
+        Gui::CustomMessageEvent* ce = static_cast<Gui::CustomMessageEvent*>(e);
         QString msg = ce->message();
         if (ce->type() == CustomMessageEvent::Log) {
             if (msg.startsWith(QLatin1String("#Inventor V2.1 ascii "))) {
