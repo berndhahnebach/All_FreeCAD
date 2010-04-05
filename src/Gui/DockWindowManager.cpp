@@ -43,12 +43,13 @@ DockWindowItems::~DockWindowItems()
 {
 }
 
-void DockWindowItems::addDockWidget(const char* name, Qt::DockWidgetArea pos, bool visibility)
+void DockWindowItems::addDockWidget(const char* name, Qt::DockWidgetArea pos, bool visibility, bool tabbed)
 {
     DockWindowItem item;
     item.name = QString::fromAscii(name);
     item.pos = pos;
     item.visibility = visibility;
+    item.tabbed = tabbed;
     _items << item;
 }
 
@@ -278,6 +279,7 @@ void DockWindowManager::setup(DockWindowItems* items)
                                ->GetGroup("MainWindow")->GetGroup("DockWindows");
     QList<QDockWidget*> docked = d->_dockedWindows;
     const QList<DockWindowItem>& dws = items->dockWidgets();
+    QList<QDockWidget*> areas[4];
     for (QList<DockWindowItem>::ConstIterator it = dws.begin(); it != dws.end(); ++it) {
         QDockWidget* dw = findDockWidget(docked, it->name);
         QByteArray dockName = it->name.toAscii();
@@ -291,11 +293,42 @@ void DockWindowManager::setup(DockWindowItems* items)
                 dw->toggleViewAction()->setData(it->name);
                 dw->setVisible(visible);
             }
-        } else {
+        }
+        else {
             dw->setVisible(visible);
             dw->toggleViewAction()->setVisible(true);
             int index = docked.indexOf(dw);
             docked.removeAt(index);
+        }
+
+        if (it->tabbed && dw) {
+            Qt::DockWidgetArea pos = getMainWindow()->dockWidgetArea(dw);
+            switch (pos) {
+                case Qt::LeftDockWidgetArea:
+                    areas[0] << dw;
+                    break;
+                case Qt::RightDockWidgetArea:
+                    areas[1] << dw;
+                    break;
+                case Qt::TopDockWidgetArea:
+                    areas[2] << dw;
+                    break;
+                case Qt::BottomDockWidgetArea:
+                    areas[3] << dw;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // tabify dock widgets for which "tabbed" is true and which have the same position
+    for (int i=0; i<4; i++) {
+        const QList<QDockWidget*>& dws = areas[i];
+        for (QList<QDockWidget*>::ConstIterator it = dws.begin(); it != dws.end(); ++it) {
+            if (*it != dws.front()) {
+                getMainWindow()->tabifyDockWidget(dws.front(), *it);
+            }
         }
     }
 

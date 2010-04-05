@@ -56,7 +56,7 @@ TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
     iisIconLabel *i1 = new iisIconLabel(
         Gui::BitmapFactory().pixmap("view-zoom-in"), QLatin1String("Do Task 1"), tb1);
     tb1->addIconLabel(i1);
-    connect(i1, SIGNAL(activated()), this, SLOT(task1()));
+    //connect(i1, SIGNAL(activated()), this, SLOT(task1()));
 
     iisIconLabel *i2 = new iisIconLabel(
         Gui::BitmapFactory().pixmap("view-zoom-out"), QLatin1String("Do Task 2"), tb1);

@@ -99,6 +99,11 @@
 #include "Document.h"
 #include "ViewProviderExtern.h"
 
+#if QT_VERSION >= 0x040500
+#define slots
+#include <private/qmainwindowlayout_p.h>
+#endif
+
 using namespace Gui;
 using namespace Gui::DockWnd;
 using namespace std;
@@ -168,6 +173,49 @@ protected:
 
 private:
     QMenu* menu;
+};
+
+class MainWindowTabBar : public QTabBar
+{
+public:
+    MainWindowTabBar(QWidget *parent) : QTabBar(parent)
+    {
+        setExpanding(false);
+    }
+protected:
+    bool event(QEvent *e)
+    {
+        // show the tooltip if tab is too small to fit label
+        if (e->type() != QEvent::ToolTip)
+            return QTabBar::event(e);
+        QSize size = this->size();
+        QSize hint = sizeHint();
+        if (shape() == QTabBar::RoundedWest || shape() == QTabBar::RoundedEast) {
+            size.transpose();
+            hint.transpose();
+        }
+        if (size.width() < hint.width())
+            return QTabBar::event(e);
+        e->accept();
+        return true;
+    }
+    void tabInserted (int index)
+    {
+        // get all dock windows
+        QList<QDockWidget*> dw = getMainWindow()->findChildren<QDockWidget*>();
+        for (QList<QDockWidget*>::iterator it = dw.begin(); it != dw.end(); ++it) {
+            // compare tab text and window title to get the right dock window
+            if (this->tabText(index) == (*it)->windowTitle()) {
+                QWidget* dock = (*it)->widget();
+                if (dock) {
+                    QIcon icon = dock->windowIcon();
+                    if (!icon.isNull())
+                        setTabIcon(index, icon);
+                }
+                break;
+            }
+        }
+    }
 };
 
 } // namespace Gui
@@ -295,11 +343,11 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pDockMgr->registerDockWindow("Std_SelectionView", pcSelectionView);
 
     // TaskPanel view
-    TaskPanelView* pcTaskPanelView = new TaskPanelView(0, this);
-    pcTaskPanelView->setObjectName
-        (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Task View")));
-    pcTaskPanelView->setMinimumWidth(210);
-    pDockMgr->registerDockWindow("Std_TaskPanelView", pcTaskPanelView);
+    //TaskPanelView* pcTaskPanelView = new TaskPanelView(0, this);
+    //pcTaskPanelView->setObjectName
+    //    (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Task View")));
+    //pcTaskPanelView->setMinimumWidth(210);
+    //pDockMgr->registerDockWindow("Std_TaskPanelView", pcTaskPanelView);
 
     // Combo view
     CombiView* pcCombiView = new CombiView(0, this);
@@ -307,16 +355,39 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pcCombiView->setMinimumWidth(150);
     pDockMgr->registerDockWindow("Std_CombiView", pcCombiView);
 
+#if QT_VERSION < 0x040500
     // Report view
     Gui::DockWnd::ReportView* pcReport = new Gui::DockWnd::ReportView(this);
     pcReport->setObjectName
         (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Report view")));
     pDockMgr->registerDockWindow("Std_ReportView", pcReport);
+#else
+    // Report view
+    ReportOutput* pcReport = new ReportOutput(this);
+    pcReport->setWindowIcon(BitmapFactory().pixmap("MacroEditor"));
+    pcReport->setObjectName
+        (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Report view")));
+    pDockMgr->registerDockWindow("Std_ReportView", pcReport);
 
-    // FIXME: Break into two dock windows in tabbed mode (with icon and correct tab width)
-    //QWidget* pcPython = new PythonConsole(this);
-    //pcPython->setObjectName(QT_TRANSLATE_NOOP("QDockWidget","Python view"));
-    //pDockMgr->registerDockWindow("Std_PythonView", pcPython);
+    // Python console
+    QWidget* pcPython = new PythonConsole(this);
+    pcPython->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
+    pcPython->setObjectName
+        (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Python console")));
+    pDockMgr->registerDockWindow("Std_PythonView", pcPython);
+
+    // add our own QTabBar-derived class to the main window layout
+    // NOTE: This uses some private stuff from QMainWindow
+    QMainWindowLayout* l = static_cast<QMainWindowLayout*>(this->layout());
+    for (int i=0; i<5; i++) {
+        MainWindowTabBar* result = new MainWindowTabBar(this);
+        result->setDrawBase(true);
+        result->setElideMode(Qt::ElideRight);
+        //result->setDocumentMode(_documentMode);
+        connect(result, SIGNAL(currentChanged(int)), l, SLOT(tabChanged()));
+        l->unusedTabBars << result;
+    }
+#endif
 
     // accept drops on the window, get handled in dropEvent, dragEnterEvent
     setAcceptDrops(true);
@@ -554,6 +625,7 @@ void MainWindow::addWindow(MDIView* view)
     bool isempty = d->workspace->subWindowList().isEmpty();
     d->workspace->addSubWindow(view, view->windowFlags());
 #else
+    QWidget* active = d->workspace->activeWindow();
     d->workspace->addWindow(view);
 #endif
     connect(view, SIGNAL(message(const QString&, int)),
@@ -596,6 +668,18 @@ void MainWindow::addWindow(MDIView* view)
         d->tabs->show(); // invoke show() for the first tab
     d->tabs->update();
     d->tabs->setCurrentIndex(index);
+
+#if !defined (USE_QT_MDI_AREA)
+    // With the old QWorkspace class we have some strange update problem
+    // when adding a 3d view and the first view is a web view or text view.
+    static bool do_hack=true;
+    MDIView *active_mdi = qobject_cast<MDIView*>(active);
+    if (do_hack && active_mdi && active_mdi->getTypeId() != view->getTypeId()) {
+        d->workspace->setActiveWindow(active);
+        d->workspace->setActiveWindow(view);
+        do_hack = false; // needs to be done only once
+    }
+#endif
 }
 
 void MainWindow::removeWindow(Gui::MDIView* view)

@@ -34,6 +34,7 @@ struct DockWindowItem {
     QString name;
     Qt::DockWidgetArea pos;
     bool visibility;
+    bool tabbed;
 };
 
 class GuiExport DockWindowItems
@@ -42,7 +43,7 @@ public:
     DockWindowItems();
     ~DockWindowItems();
 
-    void addDockWidget(const char* name, Qt::DockWidgetArea pos, bool visibility);
+    void addDockWidget(const char* name, Qt::DockWidgetArea pos, bool visibility, bool tabbed);
     void setDockingArea(const char* name, Qt::DockWidgetArea pos);
     void setVisibility(const char* name, bool v);
     void setVisibility(bool v);
