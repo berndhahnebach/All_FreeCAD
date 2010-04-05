@@ -79,6 +79,11 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
             watched->installEventFilter(this);
         }
     }
+    if (!watched) {
+        // use separate dock widgets instead of the old tab widget
+        tabReportLabel->hide();
+        AutoloadTabCombo->hide();
+    }
 }
 
 /** 
