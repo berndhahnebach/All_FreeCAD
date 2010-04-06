@@ -751,6 +751,10 @@ void MainWindow::removeWindow(Gui::MDIView* view)
     // this view is not under control of the main window any more
     disconnect(view, SIGNAL(destroyed()),
                this, SLOT(onWindowDestroyed()));
+#else
+    QWidget* parent = view->parentWidget();
+    d->mdiArea->removeSubWindow(parent);
+    parent->deleteLater();
 #endif
 }
 
