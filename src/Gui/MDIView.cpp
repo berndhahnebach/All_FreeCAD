@@ -174,7 +174,7 @@ void MDIView::changeEvent(QEvent *e)
         case QEvent::ModifiedChange:
             {
                 // sets the appropriate tab of the tabbar
-                getMainWindow()->tabChanged( this );
+                getMainWindow()->tabChanged(this);
             }   break;
         default:
             {

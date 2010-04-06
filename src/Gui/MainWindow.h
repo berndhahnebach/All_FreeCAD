@@ -24,7 +24,7 @@
 #ifndef GUI_MAINWINDOW_H
 #define GUI_MAINWINDOW_H
 
-//#define USE_QT_MDI_AREA
+//#define NO_USE_QT_MDI_AREA
 
 #include "Window.h"
 #include <Base/Console.h>
@@ -32,7 +32,7 @@
 #include <vector>
 
 #include <QMainWindow>
-#ifdef USE_QT_MDI_AREA
+#ifndef NO_USE_QT_MDI_AREA
 #include <QMdiArea>
 #else
 #include <QWorkspace>
@@ -40,7 +40,7 @@
 
 class QMimeData;
 class QUrl;
-#if defined (USE_QT_MDI_AREA)
+#if !defined (NO_USE_QT_MDI_AREA)
 class QMdiSubWindow;
 #endif
 
@@ -93,17 +93,17 @@ public:
      */
     void removeWindow(MDIView* view);
     /**
-     * Can be called after the caption of an MDIView has changed to update the tab's caption.
-     */
-    void tabChanged(MDIView* view);
-    /**
      * Returns a list of all MDI windows in the worpspace.
      */
-#if defined(USE_QT_MDI_AREA) 
+#if !defined(NO_USE_QT_MDI_AREA) 
     QList<QWidget*> windows(QMdiArea::WindowOrder order = QMdiArea::CreationOrder) const;
 #else
     QList<QWidget*> windows(QWorkspace::WindowOrder order = QWorkspace::CreationOrder) const;
 #endif
+    /**
+     * Can be called after the caption of an MDIView has changed to update the tab's caption.
+     */
+    void tabChanged(MDIView* view);
     /**
      * Returns the active MDI window or 0 if there is none.
      */
@@ -236,7 +236,7 @@ protected:
     void changeEvent(QEvent *e);
 
 private Q_SLOTS:
-#if defined (USE_QT_MDI_AREA)
+#if !defined (NO_USE_QT_MDI_AREA)
     /**
      * \internal
      */
@@ -245,8 +245,23 @@ private Q_SLOTS:
      * Activates the associated tab to this widget.
      */
     void onWindowActivated(QMdiSubWindow*);
+    /**
+     * Close tab at position index.
+     */
+    void tabCloseRequested(int index);
 #else
+    /**
+     * Activates the associated tab to this widget.
+     */
     void onWindowActivated(QWidget*);
+    /**
+     * Activates the associated window to the tab with \a id.
+     */
+    void onTabSelected(int i);
+    /**
+     * Removes the associated tab to the window when it gets destroyed from outside.
+     */
+    void onWindowDestroyed();
 #endif
     /**
      * Fills up the menu with the current windows in the workspace.
@@ -260,14 +275,6 @@ private Q_SLOTS:
      * Fills up the menu with the current dock windows.
      */
     void onDockWindowMenuAboutToShow();
-    /**
-     * Removes the associated tab to the window when it gets destroyed from outside.
-     */
-    void onWindowDestroyed();
-    /**
-     * Activates the associated window to the tab with \a id.
-     */
-    void onTabSelected(int i);
     /** 
      * This method gets frequently activated and test the commands if they are still active.
      */
