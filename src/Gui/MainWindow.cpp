@@ -650,6 +650,9 @@ void MainWindow::addWindow(MDIView* view)
     child->setAttribute(Qt::WA_DeleteOnClose);
     child->setWidget(view);
     child->setWindowIcon(view->windowIcon());
+    QMenu* menu = child->systemMenu();
+    QAction* action = menu->addAction(tr("Close All"));
+    connect(action, SIGNAL(triggered()), d->mdiArea, SLOT(closeAllSubWindows()));
     d->mdiArea->addSubWindow(child);
 #else
     QWidget* active = d->workspace->activeWindow();
