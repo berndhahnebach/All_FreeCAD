@@ -732,7 +732,8 @@ void View3DInventor::setCurrentViewMode(ViewMode newmode)
         _viewer->getGLWidget()->setFocusProxy(this);
         // To be notfified for new actions
         qApp->installEventFilter(this);
-    } else if (newmode == Child) {
+    }
+    else if (newmode == Child) {
         _viewer->getGLWidget()->setFocusProxy(0);
         qApp->removeEventFilter(this);
         QList<QAction*> acts = this->actions();
@@ -770,7 +771,8 @@ void View3DInventor::keyPressEvent (QKeyEvent* e)
         // by pressing the matching accelerator or ESC. 
         if (e->key() == Qt::Key_Escape) {
             setCurrentViewMode(Child);
-        } else {
+        }
+        else {
             // Note: The key events should be redirected directly to the GL widget and not to the main window
             // otherwise the first redirected key event always disappears in hyperspace.
             //
@@ -778,7 +780,8 @@ void View3DInventor::keyPressEvent (QKeyEvent* e)
             QWidget* w = _viewer->getGLWidget();
             QApplication::sendEvent(w,e);
         }
-    } else {
+    }
+    else {
         QMainWindow::keyPressEvent(e);
     }
 }
@@ -798,6 +801,11 @@ void View3DInventor::keyReleaseEvent (QKeyEvent* e)
 void View3DInventor::focusInEvent (QFocusEvent * e)
 {
     _viewer->getGLWidget()->setFocus();
+}
+
+void View3DInventor::contextMenuEvent (QContextMenuEvent*e)
+{
+    MDIView::contextMenuEvent(e);
 }
 
 void View3DInventor::customEvent(QEvent * e)
