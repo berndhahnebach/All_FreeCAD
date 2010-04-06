@@ -94,7 +94,7 @@ View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::W
     hGrp->Attach(this);
 
     // create the inventor widget and set the defaults
-#if defined (USE_QT_MDI_AREA)
+#if !defined (NO_USE_QT_MDI_AREA)
     _viewer = new View3DInventorViewer(0);
     setCentralWidget(_viewer->getWidget());
 #else

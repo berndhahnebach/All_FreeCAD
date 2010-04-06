@@ -192,7 +192,7 @@ StdCmdActivateNextWindow::StdCmdActivateNextWindow()
     sWhatsThis    = QT_TR_NOOP("Activate next window");
     sStatusTip    = QT_TR_NOOP("Activate next window");
     sPixmap       = "Std_WindowNext";
-#ifdef USE_QT_MDI_AREA
+#ifndef NO_USE_QT_MDI_AREA
     iAccel        = Qt::CTRL | Qt::Key_Tab;
 #else
     iAccel        = 0;
@@ -224,7 +224,7 @@ StdCmdActivatePrevWindow::StdCmdActivatePrevWindow()
     sWhatsThis    = QT_TR_NOOP("Activate previous window");
     sStatusTip    = QT_TR_NOOP("Activate previous window");
     sPixmap       = "Std_WindowPrev";
-#ifdef USE_QT_MDI_AREA
+#ifndef NO_USE_QT_MDI_AREA
     iAccel        = Qt::CTRL | Qt::SHIFT | Qt::Key_Backtab;
 #else
     iAccel        = 0;
