@@ -94,7 +94,12 @@ View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::W
     hGrp->Attach(this);
 
     // create the inventor widget and set the defaults
+#if defined (USE_QT_MDI_AREA)
+    _viewer = new View3DInventorViewer(0);
+    setCentralWidget(_viewer->getWidget());
+#else
     _viewer = new View3DInventorViewer(this);
+#endif
     // apply the user settings
     OnChange(*hGrp,"EyeDistance");
     OnChange(*hGrp,"CornerCoordSystem");
