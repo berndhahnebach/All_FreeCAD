@@ -99,7 +99,7 @@
 #include "Document.h"
 #include "ViewProviderExtern.h"
 
-#if QT_VERSION >= 0x040500
+#if defined(Q_OS_WIN32)
 #define slots
 #include <private/qmainwindowlayout_p.h>
 #endif
@@ -175,6 +175,7 @@ private:
     QMenu* menu;
 };
 
+#if defined(Q_OS_WIN32)
 class MainWindowTabBar : public QTabBar
 {
 public:
@@ -217,6 +218,7 @@ protected:
         }
     }
 };
+#endif
 
 } // namespace Gui
 
@@ -376,6 +378,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
         (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Python console")));
     pDockMgr->registerDockWindow("Std_PythonView", pcPython);
 
+#if defined(Q_OS_WIN32)
     // add our own QTabBar-derived class to the main window layout
     // NOTE: This uses some private stuff from QMainWindow
     QMainWindowLayout* l = static_cast<QMainWindowLayout*>(this->layout());
@@ -387,6 +390,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
         connect(result, SIGNAL(currentChanged(int)), l, SLOT(tabChanged()));
         l->unusedTabBars << result;
     }
+#endif
 #endif
 
     // accept drops on the window, get handled in dropEvent, dragEnterEvent
