@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #include <QSignalMapper>
+#include <QDockWidget>
 
 #include "Placement.h"
 #include "ui_Placement.h"
