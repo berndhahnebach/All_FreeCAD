@@ -68,6 +68,18 @@ private:
     Base::Placement pm;
 };
 
+class GuiExport DockablePlacement : public Placement
+{
+    Q_OBJECT
+
+public:
+    DockablePlacement(QWidget* parent = 0, Qt::WFlags fl = 0);
+    ~DockablePlacement();
+
+    void accept();
+    void reject();
+};
+
 } // namespace Dialog
 } // namespace Gui
 

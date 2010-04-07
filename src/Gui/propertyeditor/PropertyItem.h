@@ -34,6 +34,7 @@
 #include <App/PropertyStandard.h>
 
 Q_DECLARE_METATYPE(Base::Vector3f)
+Q_DECLARE_METATYPE(Base::Vector3d)
 Q_DECLARE_METATYPE(Base::Placement)
 
 namespace Gui {
@@ -211,6 +212,22 @@ protected:
 };
 
 /**
+ * Change a floating point number.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyAngleItem : public PropertyFloatItem
+{
+    TYPESYSTEM_HEADER();
+
+protected:
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant toString(const QVariant&) const;
+
+protected:
+    PropertyAngleItem();
+};
+
+/**
  * Edit properties of boolean type. 
  * \author Werner Mayer
  */
@@ -268,6 +285,39 @@ private:
     PropertyFloatItem* m_z;
 };
 
+class GuiExport PropertyDoubleVectorItem: public PropertyItem
+{
+    Q_OBJECT
+    Q_PROPERTY(double x READ x WRITE setX DESIGNABLE true USER true)
+    Q_PROPERTY(double y READ y WRITE setY DESIGNABLE true USER true)
+    Q_PROPERTY(double z READ z WRITE setZ DESIGNABLE true USER true)
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+    double x() const;
+    void setX(double x);
+    double y() const;
+    void setY(double y);
+    double z() const;
+    void setZ(double z);
+
+protected:
+    virtual QVariant toString(const QVariant&) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyDoubleVectorItem();
+
+private:
+    PropertyFloatItem* m_x;
+    PropertyFloatItem* m_y;
+    PropertyFloatItem* m_z;
+};
+
 /**
  * Edit properties of placement type. 
  * \author Werner Mayer
@@ -275,18 +325,21 @@ private:
 class GuiExport PropertyPlacementItem: public PropertyItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString Axis READ getAxis)
-    Q_PROPERTY(QString Angle READ getAngle)
-    Q_PROPERTY(QString Position READ getPosition)
+    Q_PROPERTY(double Angle READ getAngle WRITE setAngle DESIGNABLE true USER true)
+    Q_PROPERTY(Base::Vector3d Axis READ getAxis WRITE setAxis DESIGNABLE true USER true)
+    Q_PROPERTY(Base::Vector3d Position READ getPosition WRITE setPosition DESIGNABLE true USER true)
     TYPESYSTEM_HEADER();
 
     virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
 
-    QString getAxis() const;
-    QString getAngle() const;
-    QString getPosition() const;
+    double getAngle() const;
+    void setAngle(double);
+    Base::Vector3d getAxis() const;
+    void setAxis(const Base::Vector3d&);
+    Base::Vector3d getPosition() const;
+    void setPosition(const Base::Vector3d&);
 
 protected:
     PropertyPlacementItem();
@@ -296,9 +349,11 @@ protected:
     virtual void setValue(const QVariant&);
 
 private:
-    PropertyStringItem* m_d;
-    PropertyStringItem* m_a;
-    PropertyStringItem* m_p;
+    bool init_axis;
+    Base::Vector3d rot_axis;
+    PropertyAngleItem * m_a;
+    PropertyDoubleVectorItem* m_d;
+    PropertyDoubleVectorItem* m_p;
 };
 
 /**

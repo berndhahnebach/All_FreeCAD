@@ -31,6 +31,7 @@
 # include <QSpinBox>
 #endif
 
+#include <Base/Tools.h>
 #include <Base/UnitsApi.h>
 #include <App/Application.h>
 #include <App/Document.h>
@@ -272,6 +273,10 @@ QVariant PropertyItem::data(int column, int role) const
 
 bool PropertyItem::setData (const QVariant& value)
 {
+    // This is the basic mechanism to set the value to
+    // a property and if no property is set for this item
+    // it delegates it to its parent which sets then the
+    // property or delegates again to its parent...
     if (propertyItems.empty()) {
         PropertyItem* parent = this->parent();
         if (!parent || !parent->parent())
@@ -609,6 +614,29 @@ QVariant PropertyFloatConstraintItem::editorData(QWidget *editor) const
 
 // --------------------------------------------------------------------
 
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyAngleItem, Gui::PropertyEditor::PropertyFloatItem);
+
+PropertyAngleItem::PropertyAngleItem()
+{
+}
+
+void PropertyAngleItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
+    sb->setRange((double)INT_MIN, (double)INT_MAX);
+    sb->setValue(data.toDouble());
+    sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+}
+
+QVariant PropertyAngleItem::toString(const QVariant& prop) const
+{
+    double value = prop.toDouble();
+    QString data = QString::fromUtf8("%1 \xc2\xb0").arg(value,0,'f',2);
+    return QVariant(data);
+}
+
+// --------------------------------------------------------------------
+
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyBoolItem, Gui::PropertyEditor::PropertyItem);
 
 PropertyBoolItem::PropertyBoolItem()
@@ -736,7 +764,7 @@ double PropertyVectorItem::x() const
 
 void PropertyVectorItem::setX(double x)
 {
-    setValue(QVariant::fromValue(Base::Vector3f(x, y(), z())));
+    setData(QVariant::fromValue(Base::Vector3f(x, y(), z())));
 }
 
 double PropertyVectorItem::y() const
@@ -746,7 +774,7 @@ double PropertyVectorItem::y() const
 
 void PropertyVectorItem::setY(double y)
 {
-    setValue(QVariant::fromValue(Base::Vector3f(x(), y, z())));
+    setData(QVariant::fromValue(Base::Vector3f(x(), y, z())));
 }
 
 double PropertyVectorItem::z() const
@@ -756,7 +784,110 @@ double PropertyVectorItem::z() const
 
 void PropertyVectorItem::setZ(double z)
 {
-    setValue(QVariant::fromValue(Base::Vector3f(x(), y(), z)));
+    setData(QVariant::fromValue(Base::Vector3f(x(), y(), z)));
+}
+
+// ---------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyDoubleVectorItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyDoubleVectorItem::PropertyDoubleVectorItem()
+{
+    m_x = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
+    m_x->setParent(this);
+    m_x->setPropertyName(QLatin1String("x"));
+    this->appendChild(m_x);
+    m_y = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
+    m_y->setParent(this);
+    m_y->setPropertyName(QLatin1String("y"));
+    this->appendChild(m_y);
+    m_z = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
+    m_z->setParent(this);
+    m_z->setPropertyName(QLatin1String("z"));
+    this->appendChild(m_z);
+}
+
+QVariant PropertyDoubleVectorItem::toString(const QVariant& prop) const
+{
+    const Base::Vector3d& value = prop.value<Base::Vector3d>();
+    QString data = QString::fromAscii("[%1, %2, %3]")
+        .arg(value.x,0,'f',2)
+        .arg(value.y,0,'f',2)
+        .arg(value.z,0,'f',2);
+    return QVariant(data);
+}
+
+QVariant PropertyDoubleVectorItem::value(const App::Property* prop) const
+{
+    // no real property class is using this
+    return QVariant::fromValue<Base::Vector3d>(Base::Vector3d());
+}
+
+void PropertyDoubleVectorItem::setValue(const QVariant& value)
+{
+    if (!value.canConvert<Base::Vector3d>())
+        return;
+    const Base::Vector3d& val = value.value<Base::Vector3d>();
+    QString data = QString::fromAscii("(%1, %2, %3)")
+                    .arg(val.x,0,'f',2)
+                    .arg(val.y,0,'f',2)
+                    .arg(val.z,0,'f',2);
+    setPropertyValue(data);
+}
+
+QWidget* PropertyDoubleVectorItem::createEditor(QWidget* parent, const QObject* /*receiver*/, const char* /*method*/) const
+{
+    QLineEdit *le = new QLineEdit(parent);
+    le->setFrame(false);
+    le->setReadOnly(true);
+    return le;
+}
+
+void PropertyDoubleVectorItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    QLineEdit* le = qobject_cast<QLineEdit*>(editor);
+    const Base::Vector3d& value = data.value<Base::Vector3d>();
+    QString text = QString::fromAscii("[%1, %2, %3]")
+        .arg(value.x,0,'f',2)
+        .arg(value.y,0,'f',2)
+        .arg(value.z,0,'f',2);
+    le->setText(text);
+}
+
+QVariant PropertyDoubleVectorItem::editorData(QWidget *editor) const
+{
+    QLineEdit *le = qobject_cast<QLineEdit*>(editor);
+    return QVariant(le->text());
+}
+
+double PropertyDoubleVectorItem::x() const
+{
+    return data(1,Qt::EditRole).value<Base::Vector3d>().x;
+}
+
+void PropertyDoubleVectorItem::setX(double x)
+{
+    setData(QVariant::fromValue(Base::Vector3d(x, y(), z())));
+}
+
+double PropertyDoubleVectorItem::y() const
+{
+    return data(1,Qt::EditRole).value<Base::Vector3d>().y;
+}
+
+void PropertyDoubleVectorItem::setY(double y)
+{
+    setData(QVariant::fromValue(Base::Vector3d(x(), y, z())));
+}
+
+double PropertyDoubleVectorItem::z() const
+{
+    return data(1,Qt::EditRole).value<Base::Vector3d>().z;
+}
+
+void PropertyDoubleVectorItem::setZ(double z)
+{
+    setData(QVariant::fromValue(Base::Vector3d(x(), y(), z)));
 }
 
 // --------------------------------------------------------------------
@@ -771,6 +902,8 @@ public:
     }
     ~PlacementEditor()
     {
+        if (dlg)
+            dlg->reject();
     }
 protected:
     void browse()
@@ -780,7 +913,7 @@ protected:
             return;
         }
         
-        dlg = new Gui::Dialog::Placement(this);
+        dlg = new Gui::Dialog::DockablePlacement(this);
         dlg->setPlacement(value().value<Base::Placement>());
         connect(dlg, SIGNAL(placementChanged(const QVariant &)),
                 this, SLOT(setValue(const QVariant&)));
@@ -812,69 +945,94 @@ protected:
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyPlacementItem, Gui::PropertyEditor::PropertyItem);
 
-PropertyPlacementItem::PropertyPlacementItem()
+PropertyPlacementItem::PropertyPlacementItem() : init_axis(false), rot_axis(0,0,1)
 {
-    m_d = static_cast<PropertyStringItem*>(PropertyStringItem::create());
+    m_a = static_cast<PropertyAngleItem*>(PropertyAngleItem::create());
+    m_a->setParent(this);
+    m_a->setPropertyName(QLatin1String("Angle"));
+    this->appendChild(m_a);
+    m_d = static_cast<PropertyDoubleVectorItem*>(PropertyDoubleVectorItem::create());
     m_d->setParent(this);
     m_d->setPropertyName(QLatin1String("Axis"));
     m_d->setReadOnly(true);
     this->appendChild(m_d);
-    m_a = static_cast<PropertyStringItem*>(PropertyStringItem::create());
-    m_a->setParent(this);
-    m_a->setPropertyName(QLatin1String("Angle"));
-    m_a->setReadOnly(true);
-    this->appendChild(m_a);
-    m_p = static_cast<PropertyStringItem*>(PropertyStringItem::create());
+    m_p = static_cast<PropertyDoubleVectorItem*>(PropertyDoubleVectorItem::create());
     m_p->setParent(this);
     m_p->setPropertyName(QLatin1String("Position"));
     m_p->setReadOnly(true);
     this->appendChild(m_p);
 }
 
-QString PropertyPlacementItem::getAxis() const
+double PropertyPlacementItem::getAngle() const
 {
     QVariant value = data(1, Qt::EditRole);
     if (!value.canConvert<Base::Placement>())
-        return QString();
+        return 0.0f;
     const Base::Placement& val = value.value<Base::Placement>();
     double angle;
     Base::Vector3d dir;
     val.getRotation().getValue(dir, angle);
-
-    QString text = QString::fromAscii("[%1, %2, %3]")
-        .arg(dir.x,0,'f',2)
-        .arg(dir.y,0,'f',2)
-        .arg(dir.z,0,'f',2);
-    return text;
+    return Base::degrees<double>(angle);
 }
 
-QString PropertyPlacementItem::getAngle() const
+void PropertyPlacementItem::setAngle(double angle)
 {
     QVariant value = data(1, Qt::EditRole);
     if (!value.canConvert<Base::Placement>())
-        return QString();
-    const Base::Placement& val = value.value<Base::Placement>();
-    double angle;
-    Base::Vector3d dir;
-    val.getRotation().getValue(dir, angle);
-    angle = angle*180.0/D_PI;
+        return;
 
-    QString text = QString::fromUtf8("%1 \xc2\xb0").arg(angle,0,'f',2);
-    return text;
+    Base::Placement val = value.value<Base::Placement>();
+    Base::Rotation rot = val.getRotation();
+    Base::Vector3d axis; double dummy;
+    rot.getValue(axis, dummy);
+    if (dummy * angle < 0.0)
+        axis = -axis;
+    rot.setValue(axis, Base::radians<double>(angle));
+    val.setRotation(rot);
+    setValue(QVariant::fromValue(val));
 }
 
-QString PropertyPlacementItem::getPosition() const
+Base::Vector3d PropertyPlacementItem::getAxis() const
+{
+    // We must store the rotation axis in a member because
+    // if we read the value from the property we would always
+    // get a normalized vector which makes it quite unhandy
+    // to work with
+    return this->rot_axis;
+}
+
+void PropertyPlacementItem::setAxis(const Base::Vector3d& axis)
 {
     QVariant value = data(1, Qt::EditRole);
     if (!value.canConvert<Base::Placement>())
-        return QString();
-    const Base::Placement& val = value.value<Base::Placement>();
+        return;
+    this->rot_axis = axis;
+    Base::Placement val = value.value<Base::Placement>();
+    Base::Rotation rot = val.getRotation();
+    Base::Vector3d dummy; double angle;
+    rot.getValue(dummy, angle);
+    rot.setValue(axis, angle);
+    val.setRotation(rot);
+    setValue(QVariant::fromValue(val));
+}
 
-    QString text = QString::fromAscii("[%1, %2, %3]")
-        .arg(val.getPosition().x,0,'f',2)
-        .arg(val.getPosition().y,0,'f',2)
-        .arg(val.getPosition().z,0,'f',2);
-    return text;
+Base::Vector3d PropertyPlacementItem::getPosition() const
+{
+    QVariant value = data(1, Qt::EditRole);
+    if (!value.canConvert<Base::Placement>())
+        return Base::Vector3d(0,0,0);
+    const Base::Placement& val = value.value<Base::Placement>();
+    return val.getPosition();
+}
+
+void PropertyPlacementItem::setPosition(const Base::Vector3d& pos)
+{
+    QVariant value = data(1, Qt::EditRole);
+    if (!value.canConvert<Base::Placement>())
+        return;
+    Base::Placement val = value.value<Base::Placement>();
+    val.setPosition(pos);
+    setValue(QVariant::fromValue(val));
 }
 
 QVariant PropertyPlacementItem::value(const App::Property* prop) const
@@ -882,6 +1040,13 @@ QVariant PropertyPlacementItem::value(const App::Property* prop) const
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyPlacement::getClassTypeId()));
 
     const Base::Placement& value = static_cast<const App::PropertyPlacement*>(prop)->getValue();
+    double angle;
+    Base::Vector3d dir;
+    value.getRotation().getValue(dir, angle);
+    if (init_axis) {
+        const_cast<PropertyPlacementItem*>(this)->rot_axis = dir;
+        const_cast<PropertyPlacementItem*>(this)->init_axis = true;
+    }
     return QVariant::fromValue<Base::Placement>(value);
 }
 
