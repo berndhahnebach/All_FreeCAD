@@ -88,8 +88,10 @@ void Gui::SoFCDB::init()
     PropertyIntegerConstraintItem   ::init();
     PropertyFloatItem               ::init();
     PropertyFloatConstraintItem     ::init();
+    PropertyAngleItem               ::init();
     PropertyBoolItem                ::init();
     PropertyVectorItem              ::init();
+    PropertyDoubleVectorItem        ::init();
     PropertyPlacementItem           ::init();
     PropertyEnumItem                ::init();
     PropertyStringListItem          ::init();
@@ -103,6 +105,7 @@ void Gui::SoFCDB::init()
     CADNavigationStyle              ::init();
 
     qRegisterMetaType<Base::Vector3f>("Base::Vector3f");
+    qRegisterMetaType<Base::Vector3d>("Base::Vector3d");
     init_done = TRUE;
 }
 

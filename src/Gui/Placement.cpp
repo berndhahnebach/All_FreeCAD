@@ -26,6 +26,7 @@
 
 #include "Placement.h"
 #include "ui_Placement.h"
+#include <Gui/DockWindowManager.h>
 #include <App/PropertyGeo.h>
 
 using namespace Gui::Dialog;
@@ -222,6 +223,37 @@ void Placement::changeEvent(QEvent *e)
     else {
         QDialog::changeEvent(e);
     }
+}
+
+// ----------------------------------------------
+
+DockablePlacement::DockablePlacement(QWidget* parent, Qt::WFlags fl) : Placement(parent, fl)
+{
+    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+    QDockWidget* dw = pDockMgr->addDockWindow(QT_TR_NOOP("Placement"),
+        this, Qt::BottomDockWidgetArea);
+    dw->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    dw->show();
+}
+
+DockablePlacement::~DockablePlacement()
+{
+}
+
+void DockablePlacement::accept()
+{
+    // closes the dock window
+    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+    pDockMgr->removeDockWindow(this);
+    Placement::accept();
+}
+
+void DockablePlacement::reject()
+{
+    // closes the dock window
+    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+    pDockMgr->removeDockWindow(this);
+    Placement::reject();
 }
 
 #include "moc_Placement.cpp"
