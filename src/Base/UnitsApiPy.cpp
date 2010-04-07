@@ -95,9 +95,9 @@ PyObject* UnitsApi::sGetWithPrefs(PyObject * /*self*/, PyObject *args,PyObject *
     if (!PyArg_ParseTuple(args, "sO", &type,&obj))     // convert args: Python->C
         return NULL;                                   // NULL triggers exception
     try {
-        UnitsApi::QuantityType t;
+        QuantityType t;
         if(strcmp("Length",type)==0)
-            t = UnitsApi::Length;
+            t = Length;
         else{
             PyErr_Format(PyExc_IOError, "invalid quantity type: %s!", type);
             return 0L;

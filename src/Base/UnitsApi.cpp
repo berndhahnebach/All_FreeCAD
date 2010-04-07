@@ -29,6 +29,7 @@
 #include <QString>
 #include "Exception.h"
 #include "UnitsApi.h"
+#include "UnitsSchemaInternal.h"
 //#include "UnitsApiPy.h"
 
 #ifndef M_PI
@@ -77,7 +78,7 @@ const QString  UnitsApi::getQuntityName(QuantityType t)
 }
 // === static attributes  ================================================
 
-UnitsApi::UnitSystem  UnitsApi::UserPrefSystem = SI1;
+UnitsSchema  *UnitsApi::UserPrefSystem = new UnitsSchemaInternal();
 
 double   UnitsApi::UserPrefFactor [50];
 QString  UnitsApi::UserPrefUnit   [50];
@@ -117,6 +118,11 @@ QString UnitsApi::toStrWithUserPrefs(QuantityType t,double Value)
 {
     double UnitValue = toDblWithUserPrefs(t,Value);
     return QString::fromAscii("%1%2").arg(UnitValue).arg(UserPrefUnit[t]);
+}
+
+void UnitsApi::toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit)
+{
+
 }
 
 PyObject *UnitsApi::toPyWithUserPrefs(QuantityType t,double Value)
