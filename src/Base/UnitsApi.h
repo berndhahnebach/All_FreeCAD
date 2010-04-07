@@ -35,7 +35,7 @@
 #include <string>
 #include <Python.h>
 #include <QString>
-
+#include "UnitsSchema.h"
 
 namespace Base {
     
@@ -56,30 +56,13 @@ public:
     static double translateUnit(const char*);
     static double translateUnit(const QString &);
 
-    /** Units systems*/
-    enum UnitSystem { 
-        SI1      , /** internal (mm,kg,s) SI system (http://en.wikipedia.org/wiki/International_System_of_Units) */  
-        SI2      , /** MKS (m,kg,s) SI system  */  
-        Imperial1  /** the Imperial system (http://en.wikipedia.org/wiki/Imperial_units) */  
-    } ;
-
-    /** quantity types*/
-    enum QuantityType{ 
-        Length      ,   
-        Area        ,   
-        Volume      ,   
-        Angle       , 
-        TimeSpan    , 
-        Velocity    , 
-        Acceleration, 
-        Mass        ,
-        Temperature
-    } ;
 
     /** @name Translation from internal to user prefs */
     //@{
     /// generate a string (UTF-8) for a quantity in user prefered system
     static QString toStrWithUserPrefs(QuantityType t,double Value);
+    /// generate a string for the value and the unit seperately for a quantity in user prefered system
+    static void toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit);
     /// generate a python for a quantity in user prefered system
     static PyObject *toPyWithUserPrefs(QuantityType t,double Value);
     //@}
@@ -122,7 +105,7 @@ public:
 protected:
 
     // not used at the moment
-    static UnitSystem  UserPrefSystem;
+    static UnitsSchema *  UserPrefSystem;
 
     /// cached factor to translate
     static double   UserPrefFactor [50] ;
@@ -138,6 +121,8 @@ protected: // the python API wrapper methodes
 
 
 };
+
+
 
 } // namespace Base
 

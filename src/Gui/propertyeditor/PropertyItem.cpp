@@ -528,13 +528,13 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
         sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
     }
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId())) {
-        QString unit = Base::UnitsApi::getPrefUnitOf(Base::UnitsApi::Length);
+        QString unit = Base::UnitsApi::getPrefUnitOf(Base::Length);
         unit.prepend(QLatin1String(" "));
         sb->setSuffix(unit);
     }
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId())) {
         sb->setMinimum(0.0);
-        QString unit = Base::UnitsApi::getPrefUnitOf(Base::UnitsApi::Length);
+        QString unit = Base::UnitsApi::getPrefUnitOf(Base::Length);
         unit.prepend(QLatin1String(" "));
         sb->setSuffix(unit);
     }

@@ -119,12 +119,12 @@ void TaskTrajectory::viewTool(const Base::Placement pos)
     pos.getRotation().getYawPitchRoll(A,B,C);
 
     QString result = QString::fromAscii("Pos:(%1, %2, %3, %4, %5, %6)")
-        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().x),0,'f',1)
-        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().y),0,'f',1)
-        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Length,pos.getPosition().z),0,'f',1)
-        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,A),0,'f',1)
-        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,B),0,'f',1)
-        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::UnitsApi::Angle,C),0,'f',1);
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::Length,pos.getPosition().x),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::Length,pos.getPosition().y),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::Length,pos.getPosition().z),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::Angle,A),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::Angle,B),0,'f',1)
+        .arg(Base::UnitsApi::toDblWithUserPrefs(Base::Angle,C),0,'f',1);
 
     ui->label_Pos->setText(result);
 }
