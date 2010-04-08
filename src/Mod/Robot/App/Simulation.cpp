@@ -53,6 +53,9 @@ using namespace KDL;
 Simulation::Simulation(const Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
 :Pos(0.0),Trac(Trac),Rob(Rob)
 {
+    // simulate a trajectory with only one waypoint make no sense!
+    assert(Trac.getSize() > 1);
+        
     setToTime(0);
 
 	startAxis[0] = Rob.getAxis(0);

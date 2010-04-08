@@ -203,6 +203,12 @@ void CmdRobotSimulate::activated(int iMsg)
         return;
     }
 
+    if(pcTrajectoryObject->Trajectory.getValue().getSize() < 2){
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Trajectory not valid"),
+            QObject::tr("You need at least two way points in a trajectory to simulate."));
+        return;
+    }
+
     Gui::TaskView::TaskDialog* dlg = new TaskDlgSimulate(pcRobotObject,pcTrajectoryObject);
     Gui::Control().showDialog(dlg);
      
