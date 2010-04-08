@@ -32,15 +32,20 @@
 # include <QItemDelegate>
 # include <QHeaderView>
 # include <QMessageBox>
+# include <QVBoxLayout>
 #endif
 
 #include "DlgFilletEdges.h"
+#include "ui_DlgFilletEdges.h"
+
 #include "../App/PartFeature.h"
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
+#include <Gui/WaitCursor.h>
 
 using namespace PartGui;
 
@@ -89,10 +94,10 @@ void FilletRadiusDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpt
 /* TRANSLATOR PartGui::DlgFilletEdges */
 
 DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
-  : QDialog(parent, fl)
+  : QWidget(parent, fl), ui(new Ui_DlgFilletEdges())
 {
-    ui.setupUi(this);
-    ui.okButton->setDisabled(true);
+    ui->setupUi(this);
+//    ui->okButton->setDisabled(true);
     findShapes();
 
     // set tree view with three columns
@@ -101,11 +106,11 @@ DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
     model->setHeaderData(0, Qt::Horizontal, tr("Edges to fillet"), Qt::DisplayRole);
     model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
     model->setHeaderData(2, Qt::Horizontal, tr("End radius"), Qt::DisplayRole);
-    ui.treeView->setRootIsDecorated(false);
-    ui.treeView->setItemDelegate(new FilletRadiusDelegate(this));
-    ui.treeView->setModel(model);
+    ui->treeView->setRootIsDecorated(false);
+    ui->treeView->setItemDelegate(new FilletRadiusDelegate(this));
+    ui->treeView->setModel(model);
 
-    QHeaderView* header = ui.treeView->header();
+    QHeaderView* header = ui->treeView->header();
     header->setResizeMode(0, QHeaderView::Stretch);
     header->setDefaultAlignment(Qt::AlignLeft);
     header->setMovable(false);
@@ -129,17 +134,17 @@ void DlgFilletEdges::findShapes()
         (Part::Feature::getClassTypeId());
     int index = 1;
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it, ++index) {
-        ui.shapeObject->addItem(QString::fromUtf8((*it)->Label.getValue()));
-        ui.shapeObject->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
+        ui->shapeObject->addItem(QString::fromUtf8((*it)->Label.getValue()));
+        ui->shapeObject->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
     }
 }
 
 void DlgFilletEdges::on_shapeObject_activated(int index)
 {
-    QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui.treeView->model());
+    QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->treeView->model());
     model->removeRows(0, model->rowCount());
 
-    QByteArray name = ui.shapeObject->itemData(index).toByteArray();
+    QByteArray name = ui->shapeObject->itemData(index).toByteArray();
     App::Document* doc = App::GetApplication().getActiveDocument();
     if (!doc)
         return;
@@ -176,31 +181,31 @@ void DlgFilletEdges::on_shapeObject_activated(int index)
         }
     }
 
-    ui.okButton->setEnabled(model->rowCount() > 0);
+//    ui->okButton->setEnabled(model->rowCount() > 0);
 }
 
 void DlgFilletEdges::on_filletType_activated(int index)
 {
-    QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui.treeView->model());
+    QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->treeView->model());
     if (index == 0) {
         model->setHeaderData(1, Qt::Horizontal, tr("Radius"), Qt::DisplayRole);
-        ui.treeView->hideColumn(2);
-        ui.filletEndRadius->hide();
+        ui->treeView->hideColumn(2);
+        ui->filletEndRadius->hide();
     }
     else {
         model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
-        ui.treeView->showColumn(2);
-        ui.filletEndRadius->show();
+        ui->treeView->showColumn(2);
+        ui->filletEndRadius->show();
     }
 
-    ui.treeView->resizeColumnToContents(0);
-    ui.treeView->resizeColumnToContents(1);
-    ui.treeView->resizeColumnToContents(2);
+    ui->treeView->resizeColumnToContents(0);
+    ui->treeView->resizeColumnToContents(1);
+    ui->treeView->resizeColumnToContents(2);
 }
 
 void DlgFilletEdges::on_filletStartRadius_valueChanged(double radius)
 {
-    QAbstractItemModel* model = ui.treeView->model();
+    QAbstractItemModel* model = ui->treeView->model();
     QString text = QString::fromAscii("%1").arg(radius,0,'f',2);
     for (int i=0; i<model->rowCount(); ++i) {
         QVariant value = model->index(i,0).data(Qt::CheckStateRole);
@@ -215,7 +220,7 @@ void DlgFilletEdges::on_filletStartRadius_valueChanged(double radius)
 
 void DlgFilletEdges::on_filletEndRadius_valueChanged(double radius)
 {
-    QAbstractItemModel* model = ui.treeView->model();
+    QAbstractItemModel* model = ui->treeView->model();
     QString text = QString::fromAscii("%1").arg(radius,0,'f',2);
     for (int i=0; i<model->rowCount(); ++i) {
         QVariant value = model->index(i,0).data(Qt::CheckStateRole);
@@ -228,16 +233,16 @@ void DlgFilletEdges::on_filletEndRadius_valueChanged(double radius)
     }
 }
 
-void DlgFilletEdges::accept()
+bool DlgFilletEdges::accept()
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
-    QAbstractItemModel* model = ui.treeView->model();
-    bool end_radius = !ui.treeView->isColumnHidden(2);
+    QAbstractItemModel* model = ui->treeView->model();
+    bool end_radius = !ui->treeView->isColumnHidden(2);
     bool todo = false;
 
     QString shape, type, name;
-    int index = ui.shapeObject->currentIndex();
-    shape = ui.shapeObject->itemData(index).toString();
+    int index = ui->shapeObject->currentIndex();
+    shape = ui->shapeObject->itemData(index).toString();
     type = QString::fromAscii("Part::Fillet");
     name = QString::fromAscii(activeDoc->getUniqueObjectName("Fillet").c_str());
 
@@ -270,9 +275,10 @@ void DlgFilletEdges::accept()
         QMessageBox::warning(this, tr("No edge selected"),
             tr("No edge entity is checked to fillet.\n"
                "Please check one or more edge entities first."));
-        return;
+        return false;
     }
 
+    Gui::WaitCursor wc;
     code += QString::fromAscii(
         "FreeCAD.ActiveDocument.%1.Edges = __fillets__\n"
         "del __fillets__\n"
@@ -281,8 +287,85 @@ void DlgFilletEdges::accept()
     Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
     activeDoc->commitTransaction();
     activeDoc->recompute();
+    return true;
+}
 
-    QDialog::accept();
+// ---------------------------------------
+
+FilletEdgesDialog::FilletEdgesDialog(QWidget* parent, Qt::WFlags fl)
+  : QDialog(parent, fl)
+{
+    widget = new DlgFilletEdges(this);
+    this->setWindowTitle(widget->windowTitle());
+
+    QVBoxLayout* hboxLayout = new QVBoxLayout(this);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
+    buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+
+    QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    hboxLayout->addWidget(widget);
+    hboxLayout->addWidget(buttonBox);
+}
+
+FilletEdgesDialog::~FilletEdgesDialog()
+{
+}
+
+void FilletEdgesDialog::accept()
+{
+    if (widget->accept())
+        QDialog::accept();
+}
+
+// ---------------------------------------
+
+TaskBoxFilletEdges::TaskBoxFilletEdges(QWidget* parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("Part_Fillet"),
+        tr("Fillet"),true, parent)
+{
+    widget = new DlgFilletEdges(this);
+    this->groupLayout()->addWidget(widget);
+}
+
+TaskBoxFilletEdges::~TaskBoxFilletEdges()
+{
+}
+
+bool TaskBoxFilletEdges::accept()
+{
+    return widget->accept();
+}
+
+// ---------------------------------------
+
+TaskFilletEdges::TaskFilletEdges() : taskbox(new TaskBoxFilletEdges)
+{
+    Content.push_back(taskbox);
+}
+
+TaskFilletEdges::~TaskFilletEdges()
+{
+    // automatically deleted in the sub-class
+}
+
+void TaskFilletEdges::open()
+{
+}
+
+void TaskFilletEdges::clicked(QAbstractButton *)
+{
+}
+
+bool TaskFilletEdges::accept()
+{
+    return taskbox->accept();
+}
+
+bool TaskFilletEdges::reject()
+{
+    return true;
 }
 
 #include "moc_DlgFilletEdges.cpp"

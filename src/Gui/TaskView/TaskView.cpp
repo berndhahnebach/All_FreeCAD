@@ -194,16 +194,20 @@ void TaskView::showDialog(TaskDialog *dlg)
     ActiveCtrl->buttonBox->setStandardButtons(dlg->getStandardButtons());
 
     // make conection to the needed signals
-    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(accepted()),this,SLOT(accept()));
-    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(rejected()),this,SLOT(reject()));
-    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(helpRequested()),this,SLOT(helpRequested()));
-    QObject::connect(ActiveCtrl->buttonBox    ,SIGNAL(clicked(QAbstractButton *)),this,SLOT(clicked(QAbstractButton *)));
+    connect(ActiveCtrl->buttonBox,SIGNAL(accepted()),
+            this,SLOT(accept()));
+    connect(ActiveCtrl->buttonBox,SIGNAL(rejected()),
+            this,SLOT(reject()));
+    connect(ActiveCtrl->buttonBox,SIGNAL(helpRequested()),
+            this,SLOT(helpRequested()));
+    connect(ActiveCtrl->buttonBox,SIGNAL(clicked(QAbstractButton *)),
+            this,SLOT(clicked(QAbstractButton *)));
 
-    std::vector<QWidget*> &cont = dlg->getDlgContent();
+    const std::vector<QWidget*> &cont = dlg->getDialogContent();
 
     taskPanel->addWidget(ActiveCtrl);
 
-    for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
+    for(std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
         taskPanel->addWidget(*it);
     }
     taskPanel->addStretch();
@@ -220,8 +224,8 @@ void TaskView::removeDialog(void)
     delete ActiveCtrl;
     ActiveCtrl = 0;
 
-    std::vector<QWidget*> &cont = ActiveDialog->getDlgContent();
-    for(std::vector<QWidget*>::iterator it=cont.begin();it!=cont.end();++it){
+    const std::vector<QWidget*> &cont = ActiveDialog->getDialogContent();
+    for(std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
         taskPanel->removeWidget(*it);
     }
     taskPanel->removeStretch();
@@ -233,7 +237,6 @@ void TaskView::removeDialog(void)
     // put the watcher back in control
     addTaskWatcher();
 }
-
 
 void TaskView::updateWatcher(void)
 {
@@ -292,22 +295,22 @@ void TaskView::removeTaskWatcher(void)
 
 void TaskView::accept()
 {
-    ActiveDialog->accept();
-    removeDialog();
+    if (ActiveDialog->accept())
+        removeDialog();
 }
 
 void TaskView::reject()
 {
-    ActiveDialog->reject();
-    removeDialog();
+    if (ActiveDialog->reject())
+        removeDialog();
 }
 
 void TaskView::helpRequested()
 {
-   ActiveDialog->helpRequested();
+    ActiveDialog->helpRequested();
 }
 
-void TaskView::clicked ( QAbstractButton * button )
+void TaskView::clicked (QAbstractButton * button)
 {
     ActiveDialog->clicked(button);
 }

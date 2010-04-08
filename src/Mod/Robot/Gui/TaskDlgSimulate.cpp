@@ -73,13 +73,15 @@ void TaskDlgSimulate::clicked(QAbstractButton *)
 {
     
 }
-void TaskDlgSimulate::accept()
+
+bool TaskDlgSimulate::accept()
 {
-    
+    return true;
 }
-void TaskDlgSimulate::reject()
+
+bool TaskDlgSimulate::reject()
 {
-    
+    return true;
 }
 
 void TaskDlgSimulate::helpRequested()

@@ -39,7 +39,7 @@ using namespace Gui::TaskView;
 TaskDialog::TaskDialog( )
     : QObject(0)
 {
-    
+
 }
 
 TaskDialog::~TaskDialog()
@@ -53,7 +53,7 @@ TaskDialog::~TaskDialog()
 
 //==== Slots ===============================================================
 
-std::vector<QWidget*> &TaskDialog::getDlgContent(void)
+const std::vector<QWidget*> &TaskDialog::getDialogContent(void) const
 {
     return Content;
 }
@@ -62,26 +62,28 @@ std::vector<QWidget*> &TaskDialog::getDlgContent(void)
 
 void TaskDialog::open()
 {
-    
+
 }
+
 void TaskDialog::clicked(QAbstractButton *)
 {
-    
+
 }
-void TaskDialog::accept()
+
+bool TaskDialog::accept()
 {
-    
+    return true;
 }
-void TaskDialog::reject()
+
+bool TaskDialog::reject()
 {
-    
+    return true;
 }
 
 void TaskDialog::helpRequested()
 {
 
 }
-
 
 
 #include "moc_TaskDialog.cpp"
