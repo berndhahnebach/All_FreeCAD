@@ -51,14 +51,15 @@ public:
     /// is called by the framework if an button is clicked which has no accept or rject role
     virtual void clicked(QAbstractButton *);
     /// is called by the framework if the dialog is accepted (Ok)
-    virtual void accept();
+    virtual bool accept();
     /// is called by the framework if the dialog is rejected (Cancel)
-    virtual void reject();
+    virtual bool reject();
     /// is called by the framework if the user press the help button 
     virtual void helpRequested();
 
     /// returns for Close and Help button 
-    virtual QDialogButtonBox::StandardButtons getStandardButtons(void){return QDialogButtonBox::Close|QDialogButtonBox::Help;}
+    virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
+    { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
 
 protected:
     TaskRobot6Axis    *rob; 

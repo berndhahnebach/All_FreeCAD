@@ -23,12 +23,14 @@
 #ifndef PARTGUI_DLGFILLETEDGES_H
 #define PARTGUI_DLGFILLETEDGES_H
 
-#include "ui_DlgFilletEdges.h"
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
 #include <QStandardItemModel>
 #include <QItemDelegate>
 
 namespace PartGui {
 
+class Ui_DlgFilletEdges;
 class FilletRadiusDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -65,14 +67,14 @@ public:
     }
 };
 
-class DlgFilletEdges : public QDialog
+class DlgFilletEdges : public QWidget
 {
     Q_OBJECT
 
 public:
     DlgFilletEdges(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgFilletEdges();
-    void accept();
+    bool accept();
 
 protected:
     void findShapes();
@@ -84,7 +86,54 @@ private Q_SLOTS:
     void on_filletEndRadius_valueChanged(double);
 
 private:
-    Ui::DlgFilletEdges ui;
+    std::auto_ptr<Ui_DlgFilletEdges> ui;
+};
+
+class FilletEdgesDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    FilletEdgesDialog(QWidget* parent = 0, Qt::WFlags fl = 0);
+    ~FilletEdgesDialog();
+    void accept();
+
+private:
+    DlgFilletEdges* widget;
+};
+
+class TaskBoxFilletEdges : public Gui::TaskView::TaskBox
+{
+    Q_OBJECT
+
+public:
+    TaskBoxFilletEdges(QWidget *parent = 0);
+    ~TaskBoxFilletEdges();
+    bool accept();
+
+private:
+    DlgFilletEdges* widget;
+};
+
+class TaskFilletEdges : public Gui::TaskView::TaskDialog
+{
+    Q_OBJECT
+
+public:
+    TaskFilletEdges();
+    ~TaskFilletEdges();
+
+public:
+    virtual void open();
+    virtual void clicked(QAbstractButton *);
+    virtual bool accept();
+    virtual bool reject();
+
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
+
+private:
+    TaskBoxFilletEdges* taskbox;
 };
 
 } // namespace PartGui

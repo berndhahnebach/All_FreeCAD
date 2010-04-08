@@ -27,6 +27,7 @@
 # include <algorithm>
 # include <QComboBox>
 # include <QLayout>
+# include <QLocale>
 # include <QPixmap>
 # include <QSpinBox>
 #endif
@@ -477,15 +478,21 @@ PropertyFloatItem::PropertyFloatItem()
 QVariant PropertyFloatItem::toString(const QVariant& prop) const
 {
     double value = prop.toDouble();
-    QString data = QString::fromAscii("%1").arg(value,0,'f',2);
+    QString data = QLocale::system().toString(value, 'f', 2);
     const std::vector<App::Property*>& props = getPropertyData();
     if (!props.empty()) {
         if (props.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
             data += QString::fromUtf8(" \xc2\xb0");
-        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()))
-            data += QLatin1String(" mm");
-        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId()))
-            data += QLatin1String(" mm");
+        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId())) {
+            QString unit = Base::UnitsApi::getPrefUnitOf(Base::Length);
+            unit.prepend(QLatin1String(" "));
+            data += unit;
+        }
+        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId())) {
+            QString unit = Base::UnitsApi::getPrefUnitOf(Base::Length);
+            unit.prepend(QLatin1String(" "));
+            data += unit;
+        }
     }
 
     return QVariant(data);
@@ -557,7 +564,7 @@ PropertyFloatConstraintItem::PropertyFloatConstraintItem()
 QVariant PropertyFloatConstraintItem::toString(const QVariant& prop) const
 {
     double value = prop.toDouble();
-    QString data = QString::fromAscii("%1").arg(value,0,'f',2);
+    QString data = QLocale::system().toString(value, 'f', 2);
     return QVariant(data);
 }
 
@@ -631,7 +638,8 @@ void PropertyAngleItem::setEditorData(QWidget *editor, const QVariant& data) con
 QVariant PropertyAngleItem::toString(const QVariant& prop) const
 {
     double value = prop.toDouble();
-    QString data = QString::fromUtf8("%1 \xc2\xb0").arg(value,0,'f',2);
+    QString data = QString::fromUtf8("%1 \xc2\xb0")
+        .arg(QLocale::system().toString(value, 'f', 2));
     return QVariant(data);
 }
 
@@ -705,10 +713,10 @@ PropertyVectorItem::PropertyVectorItem()
 QVariant PropertyVectorItem::toString(const QVariant& prop) const
 {
     const Base::Vector3f& value = prop.value<Base::Vector3f>();
-    QString data = QString::fromAscii("[%1, %2, %3]")
-        .arg(value.x,0,'f',2)
-        .arg(value.y,0,'f',2)
-        .arg(value.z,0,'f',2);
+    QString data = QString::fromAscii("[%1 %2 %3]")
+        .arg(QLocale::system().toString(value.x, 'f', 2))
+        .arg(QLocale::system().toString(value.y, 'f', 2))
+        .arg(QLocale::system().toString(value.z, 'f', 2));
     return QVariant(data);
 }
 
@@ -744,10 +752,10 @@ void PropertyVectorItem::setEditorData(QWidget *editor, const QVariant& data) co
 {
     QLineEdit* le = qobject_cast<QLineEdit*>(editor);
     const Base::Vector3f& value = data.value<Base::Vector3f>();
-    QString text = QString::fromAscii("[%1, %2, %3]")
-        .arg(value.x,0,'f',2)
-        .arg(value.y,0,'f',2)
-        .arg(value.z,0,'f',2);
+    QString text = QString::fromAscii("[%1 %2 %3]")
+        .arg(QLocale::system().toString(value.x, 'f', 2))
+        .arg(QLocale::system().toString(value.y, 'f', 2))
+        .arg(QLocale::system().toString(value.z, 'f', 2));
     le->setText(text);
 }
 
@@ -810,10 +818,10 @@ PropertyDoubleVectorItem::PropertyDoubleVectorItem()
 QVariant PropertyDoubleVectorItem::toString(const QVariant& prop) const
 {
     const Base::Vector3d& value = prop.value<Base::Vector3d>();
-    QString data = QString::fromAscii("[%1, %2, %3]")
-        .arg(value.x,0,'f',2)
-        .arg(value.y,0,'f',2)
-        .arg(value.z,0,'f',2);
+    QString data = QString::fromAscii("[%1 %2 %3]")
+        .arg(QLocale::system().toString(value.x, 'f', 2))
+        .arg(QLocale::system().toString(value.y, 'f', 2))
+        .arg(QLocale::system().toString(value.z, 'f', 2));
     return QVariant(data);
 }
 
@@ -847,10 +855,10 @@ void PropertyDoubleVectorItem::setEditorData(QWidget *editor, const QVariant& da
 {
     QLineEdit* le = qobject_cast<QLineEdit*>(editor);
     const Base::Vector3d& value = data.value<Base::Vector3d>();
-    QString text = QString::fromAscii("[%1, %2, %3]")
-        .arg(value.x,0,'f',2)
-        .arg(value.y,0,'f',2)
-        .arg(value.z,0,'f',2);
+    QString text = QString::fromAscii("[%1 %2 %3]")
+        .arg(QLocale::system().toString(value.x, 'f', 2))
+        .arg(QLocale::system().toString(value.y, 'f', 2))
+        .arg(QLocale::system().toString(value.z, 'f', 2));
     le->setText(text);
 }
 
@@ -912,7 +920,7 @@ protected:
             dlg->show();
             return;
         }
-        
+
         dlg = new Gui::Dialog::DockablePlacement(this);
         dlg->setPlacement(value().value<Base::Placement>());
         connect(dlg, SIGNAL(placementChanged(const QVariant &)),
@@ -927,14 +935,14 @@ protected:
         Base::Vector3d dir, pos;
         p.getRotation().getValue(dir, angle);
         pos = p.getPosition();
-        QString data = QString::fromAscii("[(%1,%2,%3);%4;(%5,%6,%7)]")
-                        .arg(dir.x,0,'f',2)
-                        .arg(dir.y,0,'f',2)
-                        .arg(dir.z,0,'f',2)
-                        .arg(angle,0,'f',2)
-                        .arg(pos.x,0,'f',2)
-                        .arg(pos.y,0,'f',2)
-                        .arg(pos.z,0,'f',2);
+        QString data = QString::fromAscii("[(%1 %2 %3);%4;(%5 %6 %7)]")
+                        .arg(QLocale::system().toString(dir.x,'f',2))
+                        .arg(QLocale::system().toString(dir.y,'f',2))
+                        .arg(QLocale::system().toString(dir.z,'f',2))
+                        .arg(QLocale::system().toString(angle,'f',2))
+                        .arg(QLocale::system().toString(pos.x,'f',2))
+                        .arg(QLocale::system().toString(pos.y,'f',2))
+                        .arg(QLocale::system().toString(pos.z,'f',2));
         getLabel()->setText(data);
     }
 
@@ -1043,7 +1051,7 @@ QVariant PropertyPlacementItem::value(const App::Property* prop) const
     double angle;
     Base::Vector3d dir;
     value.getRotation().getValue(dir, angle);
-    if (init_axis) {
+    if (!init_axis) {
         const_cast<PropertyPlacementItem*>(this)->rot_axis = dir;
         const_cast<PropertyPlacementItem*>(this)->init_axis = true;
     }
@@ -1059,16 +1067,16 @@ QVariant PropertyPlacementItem::toolTip(const App::Property* prop) const
     Base::Vector3d dir, pos;
     p.getRotation().getValue(dir, angle);
     pos = p.getPosition();
-    QString data = QString::fromAscii("Axis: (%1,%2,%3)\n"
+    QString data = QString::fromAscii("Axis: (%1 %2 %3)\n"
                                       "Angle: %4\n"
-                                      "Move: (%5,%6,%7)")
-                    .arg(dir.x,0,'f',2)
-                    .arg(dir.y,0,'f',2)
-                    .arg(dir.z,0,'f',2)
-                    .arg(angle,0,'f',2)
-                    .arg(pos.x,0,'f',2)
-                    .arg(pos.y,0,'f',2)
-                    .arg(pos.z,0,'f',2);
+                                      "Move: (%5 %6 %7)")
+                    .arg(QLocale::system().toString(dir.x,'f',2))
+                    .arg(QLocale::system().toString(dir.y,'f',2))
+                    .arg(QLocale::system().toString(dir.z,'f',2))
+                    .arg(QLocale::system().toString(angle,'f',2))
+                    .arg(QLocale::system().toString(pos.x,'f',2))
+                    .arg(QLocale::system().toString(pos.y,'f',2))
+                    .arg(QLocale::system().toString(pos.z,'f',2));
     return QVariant(data);
 }
 
@@ -1079,14 +1087,14 @@ QVariant PropertyPlacementItem::toString(const QVariant& prop) const
     Base::Vector3d dir, pos;
     p.getRotation().getValue(dir, angle);
     pos = p.getPosition();
-    QString data = QString::fromAscii("[(%1,%2,%3);%4;(%5,%6,%7)]")
-                    .arg(dir.x,0,'f',2)
-                    .arg(dir.y,0,'f',2)
-                    .arg(dir.z,0,'f',2)
-                    .arg(angle,0,'f',2)
-                    .arg(pos.x,0,'f',2)
-                    .arg(pos.y,0,'f',2)
-                    .arg(pos.z,0,'f',2);
+    QString data = QString::fromAscii("[(%1 %2 %3);%4;(%5 %6 %7)]")
+                    .arg(QLocale::system().toString(dir.x,'f',2))
+                    .arg(QLocale::system().toString(dir.y,'f',2))
+                    .arg(QLocale::system().toString(dir.z,'f',2))
+                    .arg(QLocale::system().toString(angle,'f',2))
+                    .arg(QLocale::system().toString(pos.x,'f',2))
+                    .arg(QLocale::system().toString(pos.y,'f',2))
+                    .arg(QLocale::system().toString(pos.z,'f',2));
     return QVariant(data);
 }
 

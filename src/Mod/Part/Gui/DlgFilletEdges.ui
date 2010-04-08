@@ -1,10 +1,8 @@
-<ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>PartGui::DlgFilletEdges</class>
- <widget class="QDialog" name="PartGui::DlgFilletEdges" >
-  <property name="geometry" >
+ <widget class="QWidget" name="PartGui::DlgFilletEdges">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -12,72 +10,72 @@
     <height>426</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Fillet Edges</string>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
       <string>Fillet Parameter</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>9</number>
       </property>
-      <property name="spacing" >
+      <property name="spacing">
        <number>6</number>
       </property>
-      <item row="2" column="0" colspan="2" >
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
+      <item row="2" column="0" colspan="2">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLabel" name="label_2" >
-          <property name="text" >
+         <widget class="QLabel" name="label_2">
+          <property name="text">
            <string>Radius:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="filletStartRadius" >
-          <property name="singleStep" >
-           <double>0.1</double>
+         <widget class="QDoubleSpinBox" name="filletStartRadius">
+          <property name="singleStep">
+           <double>0.100000000000000</double>
           </property>
-          <property name="value" >
-           <double>1</double>
+          <property name="value">
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="filletEndRadius" >
-          <property name="singleStep" >
-           <double>0.1</double>
+         <widget class="QDoubleSpinBox" name="filletEndRadius">
+          <property name="singleStep">
+           <double>0.100000000000000</double>
           </property>
-          <property name="value" >
-           <double>1</double>
+          <property name="value">
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Minimum</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -87,25 +85,25 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QTreeView" name="treeView" />
+      <item row="1" column="0" colspan="2">
+       <widget class="QTreeView" name="treeView"/>
       </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="labelfillet" >
-        <property name="text" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelfillet">
+        <property name="text">
          <string>Fillet type:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QComboBox" name="filletType" >
+      <item row="0" column="1">
+       <widget class="QComboBox" name="filletType">
         <item>
-         <property name="text" >
+         <property name="text">
           <string>Constant Radius</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>Variable Radius</string>
          </property>
         </item>
@@ -114,66 +112,29 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>131</width>
-         <height>31</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>Shape</string>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="margin">
+       <number>9</number>
+      </property>
       <item>
-       <widget class="QLabel" name="label" >
-        <property name="text" >
+       <widget class="QLabel" name="label">
+        <property name="text">
          <string>Selected shape:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="shapeObject" >
+       <widget class="QComboBox" name="shapeObject">
         <item>
-         <property name="text" >
+         <property name="text">
           <string>No selection</string>
          </property>
         </item>
@@ -184,49 +145,13 @@
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>shapeObject</tabstop>
   <tabstop>filletType</tabstop>
   <tabstop>treeView</tabstop>
   <tabstop>filletStartRadius</tabstop>
   <tabstop>filletEndRadius</tabstop>
-  <tabstop>okButton</tabstop>
-  <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
-   <receiver>PartGui::DlgFilletEdges</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>278</x>
-     <y>253</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>96</x>
-     <y>254</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>PartGui::DlgFilletEdges</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>369</x>
-     <y>253</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>179</x>
-     <y>282</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

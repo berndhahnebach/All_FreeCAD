@@ -36,6 +36,7 @@
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
+#include <Gui/Control.h>
 #include <Gui/Document.h>
 #include <Gui/FileDialog.h>
 #include <Gui/MainWindow.h>
@@ -604,8 +605,9 @@ CmdPartFillet::CmdPartFillet()
 
 void CmdPartFillet::activated(int iMsg)
 {
-    PartGui::DlgFilletEdges dlg(Gui::getMainWindow());
-    dlg.exec();
+    //PartGui::FilletEdgesDialog dlg(Gui::getMainWindow());
+    //dlg.exec();
+    Gui::Control().showDialog(new PartGui::TaskFilletEdges());
 }
 
 bool CmdPartFillet::isActive(void)
