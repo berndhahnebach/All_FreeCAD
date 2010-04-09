@@ -51,7 +51,7 @@ public:
     /// set the part shape
     void setValue(const TopoDS_Shape&);
     /// get the part shape
-    TopoDS_Shape getValue(void) const;
+    const TopoDS_Shape& getValue(void) const;
     const TopoShape& getShape() const;
     //@}
 

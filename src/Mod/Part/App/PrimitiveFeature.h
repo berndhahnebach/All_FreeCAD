@@ -30,7 +30,7 @@
 namespace Part
 {
 
-class Primitive : public Part::Feature
+class PartExport Primitive : public Part::Feature
 {
     PROPERTY_HEADER(Part::Primitive);
 
@@ -49,7 +49,7 @@ protected:
     void onChanged (const App::Property* prop);
 };
 
-class Plane : public Primitive
+class PartExport Plane : public Primitive
 {
     PROPERTY_HEADER(Part::Plane);
 
@@ -67,7 +67,7 @@ public:
     //@}
 };
 
-class Sphere : public Primitive
+class PartExport Sphere : public Primitive
 {
     PROPERTY_HEADER(Part::Sphere);
 
@@ -87,7 +87,7 @@ public:
     //@}
 };
 
-class Ellipsoid : public Primitive
+class PartExport Ellipsoid : public Primitive
 {
     PROPERTY_HEADER(Part::Ellipsoid);
 
@@ -106,9 +106,12 @@ public:
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     //@}
+    virtual const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderEllipsoid";
+    }
 };
 
-class Cylinder : public Primitive
+class PartExport Cylinder : public Primitive
 {
     PROPERTY_HEADER(Part::Cylinder);
 
@@ -127,7 +130,7 @@ public:
     //@}
 };
 
-class Cone : public Primitive
+class PartExport Cone : public Primitive
 {
     PROPERTY_HEADER(Part::Cone);
 
@@ -147,7 +150,7 @@ public:
     //@}
 };
 
-class Torus : public Primitive
+class PartExport Torus : public Primitive
 {
     PROPERTY_HEADER(Part::Torus);
 
@@ -168,7 +171,7 @@ public:
     //@}
 };
 
-class Helix : public Primitive
+class PartExport Helix : public Primitive
 {
     PROPERTY_HEADER(Part::Helix);
 

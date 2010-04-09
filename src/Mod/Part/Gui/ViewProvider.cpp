@@ -69,6 +69,8 @@
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoSwitch.h>
 # include <Inventor/nodes/SoGroup.h>
+# include <Inventor/nodes/SoSphere.h>
+# include <Inventor/nodes/SoScale.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -86,6 +88,7 @@
 #include "SoFCShapeObject.h"
 
 #include <Mod/Part/App/PartFeature.h>
+#include <Mod/Part/App/PrimitiveFeature.h>
 
 
 using namespace PartGui;
@@ -1023,4 +1026,59 @@ void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
     nodes->addChild(control);
 
     pcControlPoints->addChild(nodes);
+}
+
+// ----------------------------------------------------------------------------
+
+PROPERTY_SOURCE(PartGui::ViewProviderEllipsoid, PartGui::ViewProviderPart)
+
+ViewProviderEllipsoid::ViewProviderEllipsoid()
+{
+    pSphere = new SoSphere();
+    pSphere->ref();
+    pScaling = new SoScale();
+    pScaling->ref();
+}
+
+ViewProviderEllipsoid::~ViewProviderEllipsoid()
+{
+    pSphere->unref();
+    pScaling->unref();
+}
+
+void ViewProviderEllipsoid::updateData(const App::Property* prop)
+{
+    if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
+        const TopoDS_Shape& cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
+        // clear anchor nodes
+        //vertexShapeMap.clear();
+        EdgeRoot->removeAllChildren();
+        FaceRoot->removeAllChildren();
+        VertexRoot->removeAllChildren();
+        // do nothing if shape is empty
+        if (cShape.IsNull())
+            return;
+        App::DocumentObject* object = this->getObject();
+        if (object && object->isDerivedFrom(Part::Ellipsoid::getClassTypeId())) {
+            float angle1 = static_cast<Part::Ellipsoid*>(object)->Angle1.getValue();
+            float angle2 = static_cast<Part::Ellipsoid*>(object)->Angle2.getValue();
+            float angle3 = static_cast<Part::Ellipsoid*>(object)->Angle3.getValue();
+            float radius1 = static_cast<Part::Ellipsoid*>(object)->Radius1.getValue();
+            float radius2 = static_cast<Part::Ellipsoid*>(object)->Radius2.getValue();
+            if (angle1 == -90.0f && angle2 == 90.0f && angle3 == 360.0f) {
+                float scale = radius1/radius2;
+                pScaling->scaleFactor.setValue(1,1,scale);
+                pSphere->radius.setValue(radius2);
+                FaceRoot->addChild(pScaling);
+                FaceRoot->addChild(pSphere);
+                return; // ok, done
+            }
+        }
+
+        // if not a full ellipsoid do it the general way
+        ViewProviderPart::updateData(prop);
+    }
+    else {
+        Gui::ViewProviderGeometryObject::updateData(prop);
+    }
 }
