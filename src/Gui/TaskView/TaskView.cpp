@@ -125,6 +125,33 @@ void TaskBox::hideGroupBox()
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 
+void TaskBox::actionEvent (QActionEvent* e)
+{
+    QAction *action = e->action();
+    switch (e->type()) {
+    case QEvent::ActionAdded:
+        {
+            iisIconLabel *label = new iisIconLabel(
+                action->icon(), action->text(), this);
+            this->addIconLabel(label);
+            connect(label,SIGNAL(clicked()),action,SIGNAL(triggered()));
+            break;
+        }
+    case QEvent::ActionChanged:
+        {
+            // cannot change anything
+            break;
+        }
+    case QEvent::ActionRemoved:
+        {
+            // cannot change anything
+            break;
+        }
+    default:
+        break;
+    }
+}
+
 
 //**************************************************************************
 //**************************************************************************

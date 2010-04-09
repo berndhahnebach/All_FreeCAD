@@ -65,9 +65,11 @@ public:
     ~TaskBox();
     void hideGroupBox();
 
+protected:
+    void showEvent(QShowEvent*);
+    void actionEvent (QActionEvent*);
 
 private:
-    void showEvent(QShowEvent*);
     bool wasShown;
 };
 
