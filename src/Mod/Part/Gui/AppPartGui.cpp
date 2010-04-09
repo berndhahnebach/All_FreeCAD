@@ -80,6 +80,7 @@ void AppPartGuiExport initPartGui()
 
     PartGui::SoFCControlPoints          ::initClass();
     PartGui::ViewProviderPart           ::init();
+    PartGui::ViewProviderEllipsoid      ::init();
     PartGui::ViewProviderPython         ::init();
     PartGui::ViewProviderBox            ::init();
     PartGui::ViewProviderImport         ::init();

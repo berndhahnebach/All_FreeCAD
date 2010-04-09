@@ -42,6 +42,8 @@ class SoPickedPoint;
 class SoShapeHints;
 class SoEventCallback;
 class SbVec3f;
+class SoSphere;
+class SoScale;
 
 namespace PartGui {
 
@@ -112,6 +114,23 @@ private:
     static App::PropertyFloatConstraint::Constraints floatRange;
     static const char* LightingEnums[];
     std::map<SoVertexShape*, TopoDS_Shape> vertexShapeMap;
+};
+
+class AppPartGuiExport ViewProviderEllipsoid : public ViewProviderPart
+{
+    PROPERTY_HEADER(PartGui::ViewProviderEllipsoid);
+
+public:
+    /// constructor
+    ViewProviderEllipsoid();
+    /// destructor
+    virtual ~ViewProviderEllipsoid();
+
+    void updateData(const App::Property*);
+
+private:
+    SoSphere* pSphere;
+    SoScale * pScaling;
 };
 
 } // namespace PartGui

@@ -82,7 +82,7 @@ void PropertyPartShape::setValue(const TopoDS_Shape& sh)
     hasSetValue();
 }
 
-TopoDS_Shape PropertyPartShape::getValue(void)const 
+const TopoDS_Shape& PropertyPartShape::getValue(void)const 
 {
     return _Shape._Shape;
 }
