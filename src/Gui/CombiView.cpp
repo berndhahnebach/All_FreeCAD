@@ -80,7 +80,6 @@ CombiView::~CombiView()
 {
 }
 
-
 void CombiView::showDialog(Gui::TaskView::TaskDialog *dlg)
 {
     // switch to the TaskView tab
@@ -89,6 +88,11 @@ void CombiView::showDialog(Gui::TaskView::TaskDialog *dlg)
     taskPanel->showDialog(dlg);
 }
 
+void CombiView::showTreeView()
+{
+    // switch to the TreeView tab
+    tabs->setCurrentIndex(0);
+}
 
 
 #include "moc_CombiView.cpp"

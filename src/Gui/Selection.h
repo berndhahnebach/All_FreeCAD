@@ -187,7 +187,7 @@ public:
     /// Check if selected
     bool isSelected(const char* pDocName, const char* pObjectName=0, const char* pSubName=0) const;
     /// Check if selected
-    bool isSelected(App::DocumentObject*) const;
+    bool isSelected(App::DocumentObject*, const char* pSubName=0) const;
 
     /// set the preselected object (mostly by the 3D view)
     bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
