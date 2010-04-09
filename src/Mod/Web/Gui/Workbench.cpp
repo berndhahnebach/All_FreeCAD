@@ -317,126 +317,22 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
-    return Gui::StdWorkbench::setupToolBars();
+    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
 
-    Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-//
-//    // File
-//    Gui::ToolBarItem* file = new Gui::ToolBarItem( root );
-//    file->setCommand(QT_TR_NOOP("File"));
-//    *file << "Std_New" 
-//          << "Std_Open" 
-//          << "Std_Save" 
-//          << "Std_Print" 
-//          << "Separator" 
-//          << "Std_Cut"
-//          << "Std_Copy" 
-//          << "Std_Paste" 
-//          << "Separator" 
-//          << "Std_Undo" 
-//          << "Std_Redo" 
-//          << "Separator"
-//          << "Std_Refresh" 
-//          << "Separator" 
-//          //<< "Std_Workbench" 
-//          << "Std_WhatsThis";
-//
-//    // Macro
-//    Gui::ToolBarItem* macro = new Gui::ToolBarItem( root );
-//    macro->setCommand(QT_TR_NOOP("Macro"));
-//    *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
-//           << "Std_DlgMacroExecuteDirect";
-//
-//    // View
-//    Gui::ToolBarItem* view = new Gui::ToolBarItem( root );
-//    view->setCommand(QT_TR_NOOP("View"));
-//    *view << "Std_ViewFitAll" << "Separator" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" 
-//          << "Std_ViewRight" << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" 
-//          << "Std_ViewBottom";
-//
-//    // Part Design
-//    Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
-//    part_design->setCommand(QT_TR_NOOP("Part design"));
-//    *part_design
-//        << "Part_Box"
-//        << "Part_Cylinder"
-//        << "Part_Sphere"
-//        << "Part_Cone"
-//        << "Part_Torus"
-//        //<< "Part_Primitives"
-//        << "Separator"
-//        << "Part_Boolean"
-//        << "Part_Cut" 
-//        << "Part_Fuse" 
-//        << "Part_Common" 
-//        << "Part_Section"
-//        << "Separator"
-//        << "Part_Extrude"
-//        << "Part_Revolve"
-//        << "Part_Fillet"
-//    ;
-//
-//    // Sketch based
-//
-//#   ifdef WEB_SHOW_SKETCHER
-//    if (mgr.getCommandByName("Sketcher_NewSketch")) {
-//        Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
-//        sketch_based->setCommand(QT_TR_NOOP("Sketch based"));
-//        *sketch_based 
-//            << "Sketcher_NewSketch"
-//            << "Separator"
-//            << "PartDesign_Pad"
-//            << "PartDesign_Fillet"
-//        ;
-//    }
-//#   endif 
-//
-//    // Drawing
-//    Gui::ToolBarItem* drawing = new Gui::ToolBarItem( root );
-//    drawing->setCommand(QT_TR_NOOP("Drawings"));
-//    *drawing << "Drawing_Open" 
-//             << "Separator" 
-//             << "Drawing_NewA3Landscape"  
-//             << "Drawing_NewView" 
-//             << "Drawing_ExportPage" ;
-//
-//    // Raytracing
-//    Gui::ToolBarItem* raytracing = new Gui::ToolBarItem( root );
-//    raytracing->setCommand(QT_TR_NOOP("Raytracing"));
-//    *raytracing << "Raytracing_WriteView" 
-//                << "Raytracing_WriteCamera" 
-//                << "Raytracing_WritePart";
-//
-//    // Drafting ****************************************************************************************************
-//#   ifdef WEB_USE_DRAFTING
-//    if (mgr.getCommandByName("Draft_Line")) {
-//        Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
-//        Drafting->setCommand(QT_TR_NOOP("Drafting"));
-//        *Drafting
-//            << "Draft_SelectPlane"
-//            << "Draft_Line"
-//            << "Draft_Polyline"
-//            << "Draft_Circle"
-//            << "Draft_Arc"
-//            << "Draft_Rectangle"
-//            << "Draft_Text"
-//            << "Draft_Dimension"
-//            << "Separator" 
-//            << "Draft_Move" 
-//            << "Draft_Rotate" 
-//            << "Draft_Offset" 
-//            << "Draft_Trimex" 
-//            << "Draft_Upgrade" 
-//            << "Draft_Downgrade" 
-//            << "Draft_Scale" 
-//            << "Separator" 
-//            << "Draft_ApplyStyle"
-//        ;
-//    }
-//#   endif
+    // web navigation toolbar
+    Gui::ToolBarItem* navigation = new Gui::ToolBarItem(root);
+    navigation->setCommand(QT_TR_NOOP("Navigation"));
+    *navigation << "Web_OpenWebsite" 
+                << "Separator" 
+                << "Web_BrowserBack" 
+                << "Web_BrowserNext" 
+                << "Web_BrowserRefresh"
+                << "Separator"
+                << "Web_BrowserZoomIn"
+                << "Web_BrowserZoomOut";
 
     return root;
+
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const

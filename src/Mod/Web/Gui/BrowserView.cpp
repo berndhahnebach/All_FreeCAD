@@ -142,34 +142,17 @@ void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcRea
  */
 bool BrowserView::onMsg(const char* pMsg,const char** ppReturn)
 {
-    //if (strcmp(pMsg,"Save")==0){
-    //    saveFile();
-    //    return true;
-    //} else if (strcmp(pMsg,"Run")==0){
-    //    run();
-    //    return true;
-    //} else if (strcmp(pMsg,"SaveAs")==0){
-    //    saveAs();
-    //    return true;
-    //} else if (strcmp(pMsg,"Cut")==0){
-    //    cut();
-    //    return true;
-    //} else if (strcmp(pMsg,"Copy")==0){
-    //    copy();
-    //    return true;
-    //} else if (strcmp(pMsg,"Paste")==0){
-    //    paste();
-    //    return true;
-    //} else if (strcmp(pMsg,"Undo")==0){
-    //    undo();
-    //    return true;
-    //} else if (strcmp(pMsg,"Redo")==0){
-    //    redo();
-    //    return true;
-    //} else if (strcmp(pMsg,"ViewFit")==0){
-    //    // just ignore this
-    //    return true;
-    //}
+    if (strcmp(pMsg,"Back")==0){     
+        return true;
+    } else if (strcmp(pMsg,"Next")==0){
+        return true;
+    } else if (strcmp(pMsg,"Refresh")==0){
+        return true;
+    } else if (strcmp(pMsg,"ZoomIn")==0){
+        return true;
+    } else if (strcmp(pMsg,"ZoomOut")==0){
+        return true;
+    }
 
     return false;
 }
@@ -180,31 +163,11 @@ bool BrowserView::onMsg(const char* pMsg,const char** ppReturn)
  */
 bool BrowserView::onHasMsg(const char* pMsg) const
 {
-    //if (strcmp(pMsg,"Run")==0)  return true;
-    //if (strcmp(pMsg,"SaveAs")==0)  return true;
-    //if (strcmp(pMsg,"Print")==0) return true;
-    //if (strcmp(pMsg,"PrintPdf")==0) return true;
-    //if (strcmp(pMsg,"Save")==0) { 
-    //    return d->textEdit->document()->isModified();
-    //} else if (strcmp(pMsg,"Cut")==0) {
-    //    bool canWrite = !d->textEdit->isReadOnly();
-    //    return (canWrite && (d->textEdit->textCursor().hasSelection()));
-    //} else if (strcmp(pMsg,"Copy")==0) {
-    //    return ( d->textEdit->textCursor().hasSelection() );
-    //} else if (strcmp(pMsg,"Paste")==0) {
-    //    QClipboard *cb = QApplication::clipboard();
-    //    QString text;
-
-    //    // Copy text from the clipboard (paste)
-    //    text = cb->text();
-
-    //    bool canWrite = !d->textEdit->isReadOnly();
-    //    return ( !text.isEmpty() && canWrite );
-    //} else if (strcmp(pMsg,"Undo")==0) {
-    //    return d->textEdit->document()->isUndoAvailable ();
-    //} else if (strcmp(pMsg,"Redo")==0) {
-    //    return d->textEdit->document()->isRedoAvailable ();
-    //}
+    if (strcmp(pMsg,"Back")==0)  return true;
+    if (strcmp(pMsg,"Next")==0)  return true;
+    if (strcmp(pMsg,"Refresh")==0) return true;
+    if (strcmp(pMsg,"ZoomIn")==0) return true;
+    if (strcmp(pMsg,"ZoomOut")==0) return true;
 
     return false;
 }
