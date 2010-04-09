@@ -25,6 +25,7 @@
 
 #include <Gui/TaskView/TaskDialog.h>
 #include <Gui/TaskView/TaskView.h>
+#include <Gui/Selection.h>
 #include <QStandardItemModel>
 #include <QItemDelegate>
 
@@ -54,20 +55,17 @@ class FilletRadiusModel : public QStandardItemModel
     Q_OBJECT
 
 public:
-    FilletRadiusModel(QObject * parent = 0) : QStandardItemModel(parent)
-    {
-    }
+    FilletRadiusModel(QObject * parent = 0);
 
-    Qt::ItemFlags flags (const QModelIndex & index) const
-    {
-        Qt::ItemFlags fl = QStandardItemModel::flags(index);
-        if (index.column() == 0)
-            fl = fl | Qt::ItemIsUserCheckable;
-        return fl;
-    }
+    Qt::ItemFlags flags (const QModelIndex & index) const;
+    bool setData (const QModelIndex & index, const QVariant & value,
+                  int role = Qt::EditRole);
+Q_SIGNALS:
+    void toogleCheckState(const QModelIndex&);
 };
 
-class DlgFilletEdges : public QWidget
+class DlgFilletEdgesP;
+class DlgFilletEdges : public QWidget, public Gui::SelectionObserver
 {
     Q_OBJECT
 
@@ -79,14 +77,21 @@ public:
 protected:
     void findShapes();
 
+private:
+    void onSelectionChanged(const Gui::SelectionChanges& msg);
+
 private Q_SLOTS:
     void on_shapeObject_activated(int);
+    void on_selectAllButton_clicked();
+    void on_selectNoneButton_clicked();
     void on_filletType_activated(int);
     void on_filletStartRadius_valueChanged(double);
     void on_filletEndRadius_valueChanged(double);
+    void toogleCheckState(const QModelIndex&);
 
 private:
     std::auto_ptr<Ui_DlgFilletEdges> ui;
+    std::auto_ptr<DlgFilletEdgesP> d;
 };
 
 class FilletEdgesDialog : public QDialog
