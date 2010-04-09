@@ -48,7 +48,7 @@ using namespace Gui::TaskView;
 // TaskWatcher
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskWatcher::TaskWatcher( const char* Filter )
+TaskWatcher::TaskWatcher(const char* Filter)
     : QObject(0),SelectionFilter(Filter)
 {
     
@@ -56,7 +56,7 @@ TaskWatcher::TaskWatcher( const char* Filter )
 
 TaskWatcher::~TaskWatcher()
 {
-    for(std::vector<QWidget*>::iterator it=Content.begin();it!=Content.end();++it){
+    for (std::vector<QWidget*>::iterator it=Content.begin();it!=Content.end();++it){
         delete(*it);
         *it = 0;
     }
@@ -82,23 +82,21 @@ bool TaskWatcher::shouldShow()
 // TaskWatcherCommands
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands[], const char* name, const char* pixmap )
+TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands[],
+                                         const char* name, const char* pixmap)
     :TaskWatcher(Filter)
 {
     CommandManager &mgr = Gui::Application::Instance->commandManager();
-    Gui::TaskView::TaskBox *tb = new Gui::TaskView::TaskBox(BitmapFactory().pixmap(pixmap), QString::fromUtf8(name), true, 0);
+    Gui::TaskView::TaskBox *tb = new Gui::TaskView::TaskBox
+        (BitmapFactory().pixmap(pixmap), QString::fromUtf8(name), true, 0);
 
-
-    for(const char** i=commands;*i;i++){
+    for (const char** i=commands;*i;i++) {
         if(!i) break;
         Command *c = mgr.getCommandByName(*i);
-        if(c){
-           	iisIconLabel *label = new iisIconLabel(BitmapFactory().pixmap(c->getPixmap()), QString::fromUtf8(c->getMenuText()), tb);
-	        tb->addIconLabel(label);
-            Gui::Action *a = c->getAction();
-            QObject::connect(label,SIGNAL(clicked()),a,SLOT(onActivated()));
+        if (c) {
+            // handled in TaskBox::actionEvent()
+            c->addTo(tb);
         }
-
     }
 
     Content.push_back(tb);
@@ -115,14 +113,17 @@ TaskWatcherCommands::~TaskWatcherCommands()
 
 bool TaskWatcherCommands::shouldShow()
 {
-    return match();   
+    return match();
 }
+
 //**************************************************************************
 //**************************************************************************
 // TaskWatcherCommandsEmptyDoc
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskWatcherCommandsEmptyDoc::TaskWatcherCommandsEmptyDoc(const char* commands[], const char* name, const char* pixmap )
+TaskWatcherCommandsEmptyDoc::TaskWatcherCommandsEmptyDoc(const char* commands[],
+                                                         const char* name,
+                                                         const char* pixmap )
     :TaskWatcherCommands("",commands,name,pixmap)
 {
 }
@@ -138,7 +139,8 @@ TaskWatcherCommandsEmptyDoc::~TaskWatcherCommandsEmptyDoc()
 
 bool TaskWatcherCommandsEmptyDoc::shouldShow()
 {
-    return App::GetApplication().getActiveDocument() && App::GetApplication().getActiveDocument()->countObjects() == 0;
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    return doc && doc->countObjects() == 0;
 }
 
 

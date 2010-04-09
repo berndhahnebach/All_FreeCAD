@@ -322,6 +322,7 @@ void DockWindowManager::setup(DockWindowItems* items)
         }
     }
 
+#if 0 // FIXME: don't tabify always after switching the workbench
     // tabify dock widgets for which "tabbed" is true and which have the same position
     for (int i=0; i<4; i++) {
         const QList<QDockWidget*>& dws = areas[i];
@@ -331,6 +332,7 @@ void DockWindowManager::setup(DockWindowItems* items)
             }
         }
     }
+#endif
 
 #if 0
     // hide all dock windows which we don't need for the moment
