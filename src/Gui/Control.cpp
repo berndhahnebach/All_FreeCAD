@@ -73,6 +73,11 @@ void ControlSingleton::dlgDone()
 {
     assert(ActiveDialog);
     ActiveDialog = 0;
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+    // should return the pointer to combo view
+    assert(pcCombiView);
+    pcCombiView->showTreeView();
 }
 
 bool ControlSingleton::isAllowedAlterDocument(void) const

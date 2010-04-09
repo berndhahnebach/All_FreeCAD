@@ -83,8 +83,8 @@ public:
     friend class Gui::ControlSingleton;
 
 protected:
-
     void showDialog(Gui::TaskView::TaskDialog *dlg);
+    void showTreeView();
 
 private:
     QTabWidget                         * tabs;

@@ -767,13 +767,20 @@ bool SelectionSingleton::isSelected(const char* pDocName, const char* pObjectNam
     return false;
 }
 
-bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
+bool SelectionSingleton::isSelected(App::DocumentObject* obj, const char* pSubName) const
 {
     if (!obj) return false;
 
     for(list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
-        if (It->pObject == obj)
-            return true;
+        if (It->pObject == obj) {
+            if (pSubName) {
+                if (It->SubName == pSubName)
+                    return true;
+            }
+            else {
+                return true;
+            }
+        }
     }
 
     return false;
@@ -885,7 +892,9 @@ PyMethodDef SelectionSingleton::Methods[] = {
 PyObject *SelectionSingleton::sAddSelection(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     PyObject *object;
-    if (!PyArg_ParseTuple(args, "O!", &(App::DocumentObjectPy::Type), &object))     // convert args: Python->C 
+    char* subname=0;
+    float x=0,y=0,z=0;
+    if (!PyArg_ParseTuple(args, "O!|sfff", &(App::DocumentObjectPy::Type),&object,&subname,&x,&y,&z))
         return NULL;                             // NULL triggers exception 
 
     App::DocumentObjectPy* docObjPy = static_cast<App::DocumentObjectPy*>(object);
@@ -895,7 +904,9 @@ PyObject *SelectionSingleton::sAddSelection(PyObject * /*self*/, PyObject *args,
         return NULL;
     }
 
-    Selection().addSelection(docObj->getDocument()->getName(), docObj->getNameInDocument());
+    Selection().addSelection(docObj->getDocument()->getName(),
+                             docObj->getNameInDocument(),
+                             subname,x,y,z);
 
     Py_Return;
 }
@@ -903,7 +914,8 @@ PyObject *SelectionSingleton::sAddSelection(PyObject * /*self*/, PyObject *args,
 PyObject *SelectionSingleton::sRemoveSelection(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     PyObject *object;
-    if (!PyArg_ParseTuple(args, "O!", &(App::DocumentObjectPy::Type), &object))     // convert args: Python->C 
+    char* subname=0;
+    if (!PyArg_ParseTuple(args, "O!|s", &(App::DocumentObjectPy::Type),&object,&subname))
         return NULL;                             // NULL triggers exception 
 
     App::DocumentObjectPy* docObjPy = static_cast<App::DocumentObjectPy*>(object);
@@ -913,7 +925,9 @@ PyObject *SelectionSingleton::sRemoveSelection(PyObject * /*self*/, PyObject *ar
         return NULL;
     }
 
-    Selection().rmvSelection(docObj->getDocument()->getName(), docObj->getNameInDocument());
+    Selection().rmvSelection(docObj->getDocument()->getName(),
+                             docObj->getNameInDocument(),
+                             subname);
 
     Py_Return;
 }
@@ -930,11 +944,12 @@ PyObject *SelectionSingleton::sClearSelection(PyObject * /*self*/, PyObject *arg
 PyObject *SelectionSingleton::sIsSelected(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
 {
     PyObject *object;
-    if (!PyArg_ParseTuple(args, "O!", &(App::DocumentObjectPy::Type), &object))     // convert args: Python->C 
+    char* subname=0;
+    if (!PyArg_ParseTuple(args, "O!|s", &(App::DocumentObjectPy::Type), &object, &subname))
         return NULL;                             // NULL triggers exception 
 
     App::DocumentObjectPy* docObj = static_cast<App::DocumentObjectPy*>(object);
-    bool ok = Selection().isSelected(docObj->getDocumentObjectPtr());
+    bool ok = Selection().isSelected(docObj->getDocumentObjectPtr(), subname);
     return Py_BuildValue("O", (ok ? Py_True : Py_False));
 }
 
