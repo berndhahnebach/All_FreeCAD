@@ -4,7 +4,6 @@ lib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
 		moc_Action.cpp \
-		moc_BrowserView.cpp \
 		moc_CallTips.cpp \
 		moc_CombiView.cpp \
 		moc_Control.cpp \
@@ -166,7 +165,6 @@ libFreeCADGui_la_SOURCES=\
 		Assistant.cpp \
 		Assistant.h \
 		BitmapFactory.cpp \
-		BrowserView.cpp \
 		CallTips.cpp \
 		CombiView.cpp \
 		Control.cpp \
@@ -355,7 +353,6 @@ include_HEADERS=\
 		Action.h \
 		Application.h \
 		BitmapFactory.h \
-		BrowserView.h \
 		CallTips.h \
 		CombiView.h \
 		Control.h \
