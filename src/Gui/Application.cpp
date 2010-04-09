@@ -73,7 +73,6 @@
 #include "PythonConsolePy.h"
 #include "PythonDebugger.h"
 #include "View3DPy.h"
-#include "BrowserView.h"
 #include "DlgOnlineHelpImp.h"
 
 #include "View3DInventor.h"
@@ -109,9 +108,6 @@ struct ApplicationP
     _bIsClosing(false), 
     _bStartingUp(true), 
     _stderr(0)
-#if QT_VERSION >= 0x040400
-    ,pcStartPage(0)
-#endif 
     {
         // create the macro manager
         _pcMacroMngr = new MacroManager();
@@ -134,9 +130,6 @@ struct ApplicationP
     /// Handles all commands 
     CommandManager _cCommandManager;
     PyObject *_stderr;
-#if QT_VERSION >= 0x040400
-    QPointer<BrowserView> pcStartPage;
-#endif 
 };
 
 static PyObject *
@@ -330,25 +323,6 @@ Application::~Application()
 
     delete d;
     Instance = 0;
-}
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Start page
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-void Application::createStartPage(const char* URL)
-{
-#if QT_VERSION < 0x040400
-
-#else
-    if (d->pcStartPage.isNull()) {
-        d->pcStartPage = new Gui::BrowserView(getMainWindow());   
-        d->pcStartPage->setWindowTitle(QObject::tr("Start page"));
-        d->pcStartPage->resize(400, 300);
-        d->pcStartPage->load(URL);
-        getMainWindow()->addWindow(d->pcStartPage);
-    }
-#endif
 }
 
 
@@ -1448,16 +1422,6 @@ void Application::runApplication(void)
         App::GetApplication().newDocument();
     }
     
-    // show Startup page
-    const std::map<std::string,std::string>& config = App::Application::Config();
-    std::map<std::string, std::string>::const_iterator it = config.find("DisableStartPage");
-    if (it == config.end()) {
-        hGrp = WindowParameter::getDefaultParameter()->GetGroup("OnlineHelp");
-        if (hGrp->GetBool("ShowStartPage",true)) {
-            QString page = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
-            app.createStartPage(page.toUtf8());
-        }
-    }
 
     // run the Application event loop
     Base::Console().Log("Init: Entering event loop\n");

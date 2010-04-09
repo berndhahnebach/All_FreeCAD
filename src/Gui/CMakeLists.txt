@@ -101,7 +101,6 @@ set(Gui_MOC_HDRS
 		 DockWindow.h
 		 DockWindowManager.h
 		 EditorView.h
-		 BrowserView.h
 		 FileDialog.h
 		 Flag.h
 		 HelpView.h
@@ -132,7 +131,6 @@ set(Gui_MOC_HDRS
 		 View3DInventor.h
 		 WidgetFactory.h
 		 Widgets.h
-		 BrowserView.h 
 		 Language/Translator.h
 		 propertyeditor/PropertyEditor.h
 		 propertyeditor/PropertyItem.h
@@ -604,7 +602,6 @@ SOURCE_GROUP("Viewprovider" FILES ${Viewprovider_SRCS})
 
 # The widget sources
 SET(Widget_CPP_SRCS
-		 BrowserView.cpp
 		 FileDialog.cpp
 		 MainWindow.cpp
 		 MDIView.cpp
@@ -617,7 +614,6 @@ SET(Widget_CPP_SRCS
 		 Window.cpp
 )
 SET(Widget_HPP_SRCS
-		 BrowserView.h
 		 FileDialog.h
 		 MainWindow.h
 		 MDIView.h

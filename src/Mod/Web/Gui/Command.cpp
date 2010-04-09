@@ -30,36 +30,204 @@
 #include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
 
+#include "BrowserView.h"
 
 using namespace std;
+using namespace Gui;
+using namespace WebGui;
 
-DEF_STD_CMD(CmdWebConstraintAxle);
 
-CmdWebConstraintAxle::CmdWebConstraintAxle()
-	:Command("Web_ConstraintAxle")
+//===========================================================================
+// CmdWebOpenWebsite
+//===========================================================================
+
+DEF_STD_CMD(CmdWebOpenWebsite);
+
+CmdWebOpenWebsite::CmdWebOpenWebsite()
+	:Command("Web_OpenWebsite")
 {
     sAppModule      = "Web";
     sGroup          = QT_TR_NOOP("Web");
-    sMenuText       = QT_TR_NOOP("Constraint Axle...");
-    sToolTipText    = QT_TR_NOOP("set a axle constraint between two objects");
+    sMenuText       = QT_TR_NOOP("Open website...");
+    sToolTipText    = QT_TR_NOOP("Opens a website in FreeCAD");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "actions/document-new";
+    sPixmap         = "actions/web-browser";
 }
 
 
-void CmdWebConstraintAxle::activated(int iMsg)
+void CmdWebOpenWebsite::activated(int iMsg)
 {
-    // load the file with the module
-    //Command::doCommand(Command::Gui, "import Web, WebGui");
+
+    WebGui::BrowserView* pcBrowserView;
+
+    pcBrowserView = new WebGui::BrowserView(Gui::getMainWindow());   
+    pcBrowserView->setWindowTitle(QObject::tr("Start page"));
+    pcBrowserView->resize(400, 300);
+    pcBrowserView->load("http://free-cad.sf.net/");
+    Gui::getMainWindow()->addWindow(pcBrowserView);
       
 }
 
+//===========================================================================
+// CmdWebBrowserBack
+//===========================================================================
+
+DEF_STD_CMD_A(CmdWebBrowserBack);
+
+CmdWebBrowserBack::CmdWebBrowserBack()
+	:Command("Web_BrowserBack")
+{
+    sAppModule      = "Web";
+    sGroup          = QT_TR_NOOP("Web");
+    sMenuText       = QT_TR_NOOP("Previous page");
+    sToolTipText    = QT_TR_NOOP("Go back to the previous page");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/web-previous";
+}
+
+
+void CmdWebBrowserBack::activated(int iMsg)
+{
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView('Back')");
+}
+
+bool CmdWebBrowserBack::isActive(void)
+{
+    if (getGuiApplication()->sendHasMsgToActiveView("Back"))
+        return true;
+}
+
+//===========================================================================
+// CmdWebBrowserNext
+//===========================================================================
+
+DEF_STD_CMD_A(CmdWebBrowserNext);
+
+CmdWebBrowserNext::CmdWebBrowserNext()
+	:Command("Web_BrowserNext")
+{
+    sAppModule      = "Web";
+    sGroup          = QT_TR_NOOP("Web");
+    sMenuText       = QT_TR_NOOP("Next page");
+    sToolTipText    = QT_TR_NOOP("Go to the next page");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/web-next";
+}
+
+
+void CmdWebBrowserNext::activated(int iMsg)
+{
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView('Next')");
+}
+
+bool CmdWebBrowserNext::isActive(void)
+{
+    if (getGuiApplication()->sendHasMsgToActiveView("Next"))
+        return true;
+}
+
+//===========================================================================
+// CmdWebBrowserRefresh
+//===========================================================================
+
+DEF_STD_CMD_A(CmdWebBrowserRefresh);
+
+CmdWebBrowserRefresh::CmdWebBrowserRefresh()
+	:Command("Web_BrowserRefresh")
+{
+    sAppModule      = "Web";
+    sGroup          = QT_TR_NOOP("Web");
+    sMenuText       = QT_TR_NOOP("Refresh web page");
+    sToolTipText    = QT_TR_NOOP("Refresh web page");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/web-refresh";
+}
+
+
+void CmdWebBrowserRefresh::activated(int iMsg)
+{
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView('Refresh')");
+}
+
+bool CmdWebBrowserRefresh::isActive(void)
+{
+    if (getGuiApplication()->sendHasMsgToActiveView("Refresh"))
+        return true;
+}
+
+//===========================================================================
+// CmdWebBrowserZoomIn
+//===========================================================================
+
+DEF_STD_CMD_A(CmdWebBrowserZoomIn);
+
+CmdWebBrowserZoomIn::CmdWebBrowserZoomIn()
+	:Command("Web_BrowserZoomIn")
+{
+    sAppModule      = "Web";
+    sGroup          = QT_TR_NOOP("Web");
+    sMenuText       = QT_TR_NOOP("Zoom in");
+    sToolTipText    = QT_TR_NOOP("Zoom into the page");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/web-zoom-in";
+}
+
+
+void CmdWebBrowserZoomIn::activated(int iMsg)
+{
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView('ZoomIn')");
+}
+
+bool CmdWebBrowserZoomIn::isActive(void)
+{
+    if (getGuiApplication()->sendHasMsgToActiveView("ZoomIn"))
+        return true;
+}
+
+//===========================================================================
+// CmdWebBrowserZoomOut
+//===========================================================================
+
+DEF_STD_CMD_A(CmdWebBrowserZoomOut);
+
+CmdWebBrowserZoomOut::CmdWebBrowserZoomOut()
+	:Command("Web_BrowserZoomOut")
+{
+    sAppModule      = "Web";
+    sGroup          = QT_TR_NOOP("Web");
+    sMenuText       = QT_TR_NOOP("Zoom out");
+    sToolTipText    = QT_TR_NOOP("Zoom out of the page");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/web-zoom-out";
+}
+
+
+void CmdWebBrowserZoomOut::activated(int iMsg)
+{
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView('ZoomOut')");
+}
+
+bool CmdWebBrowserZoomOut::isActive(void)
+{
+    if (getGuiApplication()->sendHasMsgToActiveView("ZoomOut"))
+        return true;
+}
 
 
 void CreateWebCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
-    rcCmdMgr.addCommand(new CmdWebConstraintAxle());
+    rcCmdMgr.addCommand(new CmdWebOpenWebsite());
+    rcCmdMgr.addCommand(new CmdWebBrowserBack());
+    rcCmdMgr.addCommand(new CmdWebBrowserNext());
+    rcCmdMgr.addCommand(new CmdWebBrowserRefresh());
+    rcCmdMgr.addCommand(new CmdWebBrowserZoomIn());
+    rcCmdMgr.addCommand(new CmdWebBrowserZoomOut());
  }
