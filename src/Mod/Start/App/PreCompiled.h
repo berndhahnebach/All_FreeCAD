@@ -21,19 +21,19 @@
  ***************************************************************************/
 
 
-#ifndef COMPLETE_PRECOMPILED_H
-#define COMPLETE_PRECOMPILED_H
+#ifndef START_PRECOMPILED_H
+#define START_PRECOMPILED_H
 
 #include <FCConfig.h>
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32
-# define AppCompleteExport __declspec(dllexport)
+# define AppStartExport __declspec(dllexport)
 # define AppPartExport  __declspec(dllimport)
 # define PartExport     __declspec(dllimport)
 # define MeshExport     __declspec(dllimport)
 #else // for Linux
-# define AppCompleteExport
+# define AppStartExport
 # define AppPartExport 
 # define PartExport   
 # define MeshExport   

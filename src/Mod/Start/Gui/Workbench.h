@@ -21,17 +21,17 @@
  ***************************************************************************/
 
 
-#ifndef COMPLETEGUI_WORKBENCH_H
-#define COMPLETEGUI_WORKBENCH_H
+#ifndef STARTGUI_WORKBENCH_H
+#define STARTGUI_WORKBENCH_H
 
 #include <Gui/Workbench.h>
 
-namespace CompleteGui {
+namespace StartGui {
 
 /**
  * @author Werner Mayer
  */
-class CompleteGuiExport Workbench : public Gui::StdWorkbench
+class StartGuiExport Workbench : public Gui::StdWorkbench
 {
     TYPESYSTEM_HEADER();
 
@@ -53,7 +53,7 @@ protected:
     virtual Gui::DockWindowItems* setupDockWindows() const;
 
 
-}; // namespace CompleteGui
+}; // namespace StartGui
 
 }
-#endif // COMPLETE_WORKBENCH_H 
+#endif // START_WORKBENCH_H 

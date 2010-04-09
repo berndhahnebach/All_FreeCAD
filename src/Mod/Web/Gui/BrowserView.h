@@ -25,14 +25,14 @@
 #define GUI_BROWSERVIEW_H
 
 
-#include "MDIView.h"
-#include "Window.h"
+#include <Gui/MDIView.h>
+#include <Gui/Window.h>
 
 #if QT_VERSION >= 0x040400
 class QWebView;
 #endif
 
-namespace Gui {
+namespace WebGui {
 
 
 
@@ -40,7 +40,7 @@ namespace Gui {
  * A special view class which sends the messages from the application to
  * the editor and embeds it in a window.
  */
-class GuiExport BrowserView : public MDIView, public WindowParameter
+class WebGuiExport BrowserView : public Gui::MDIView, public Gui::WindowParameter
 {
     Q_OBJECT
 
@@ -86,6 +86,6 @@ private:
 #endif
 };
 
-} // namespace Gui
+} // namespace WebGui
 
 #endif // GUI_EDITORVIEW_H

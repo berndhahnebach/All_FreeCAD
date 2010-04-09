@@ -85,7 +85,7 @@ class ProgressBar;
  * just a busy indicator instead of percentage steps.
  * @author Werner Mayer
  */
-class Sequencer : public Base::SequencerBase
+class GuiExport Sequencer : public Base::SequencerBase
 {
 public:
     /** Returns the sequencer object. */

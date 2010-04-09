@@ -21,17 +21,17 @@
  ***************************************************************************/
 
 
-#ifndef COMPLETE_CONFIGURATION_H
-#define COMPLETE_CONFIGURATION_H
+#ifndef START_CONFIGURATION_H
+#define START_CONFIGURATION_H
 
 #include <FCConfig.h>
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32
-#    define COMPLETE_SHOW_SKETCHER
-#    define COMPLETE_USE_DRAFTING
+#    define START_SHOW_SKETCHER
+#    define START_USE_DRAFTING
 #else // for Linux
-#    define COMPLETE_USE_DRAFTING
+#    define START_USE_DRAFTING
 #endif
 
 

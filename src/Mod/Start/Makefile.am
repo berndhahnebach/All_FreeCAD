@@ -1,7 +1,7 @@
 SUBDIRS=App Gui
 
 # Change data dir from default ($(prefix)/share) to $(prefix)
-datadir = $(prefix)/Mod/Complete
+datadir = $(prefix)/Mod/Start
 
 data_DATA = Init.py InitGui.py 
 

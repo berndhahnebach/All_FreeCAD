@@ -7,6 +7,8 @@ libWebGui_la_SOURCES=\
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		BrowserView.cpp \
+		BrowserView.h \
 		Workbench.cpp \
 		Workbench.h
 
@@ -21,8 +23,7 @@ libWebGui_la_LIBADD   = \
 		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \
-		-lFreeCADGui \
-		-lWeb
+		-lFreeCADGui 
 
 #--------------------------------------------------------------------------------------
 # Loader of libWebGui

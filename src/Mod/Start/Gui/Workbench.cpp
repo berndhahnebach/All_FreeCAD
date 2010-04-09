@@ -40,11 +40,11 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 
-#include <Mod/Complete/App/CompleteConfiguration.h>
+#include <Mod/Start/App/StartConfiguration.h>
 
-using namespace CompleteGui;
+using namespace StartGui;
 
-TYPESYSTEM_SOURCE(CompleteGui::Workbench, Gui::StdWorkbench)
+TYPESYSTEM_SOURCE(StartGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
 {
@@ -81,6 +81,8 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
+    return Gui::StdWorkbench::setupMenuBar();
+
     Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
     // Setup the default menu bar
     Gui::MenuItem* menuBar = new Gui::MenuItem;
@@ -210,7 +212,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //          << "Separator"
 //          << "Part_ShapeInfo";
 //
-//#   ifdef COMPLETE_SHOW_SKETCHER
+//#   ifdef START_SHOW_SKETCHER
 //    if (mgr.getCommandByName("Sketcher_NewSketch")) {
 //        Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
 //        sketch->setCommand(QT_TR_NOOP("Ske&tch"));
@@ -248,7 +250,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //    ;
 //
 //    // Drafting ****************************************************************************************************
-//#   ifdef COMPLETE_USE_DRAFTING
+//#   ifdef START_USE_DRAFTING
 //    if (mgr.getCommandByName("Draft_Line")) {
 //        Gui::MenuItem* Drafting = new Gui::MenuItem(menuBar);
 //
@@ -318,6 +320,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
+    return Gui::StdWorkbench::setupToolBars();
+
     Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
 //
@@ -378,7 +382,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //
 //    // Sketch based
 //
-//#   ifdef COMPLETE_SHOW_SKETCHER
+//#   ifdef START_SHOW_SKETCHER
 //    if (mgr.getCommandByName("Sketcher_NewSketch")) {
 //        Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
 //        sketch_based->setCommand(QT_TR_NOOP("Sketch based"));
@@ -408,7 +412,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //                << "Raytracing_WritePart";
 //
 //    // Drafting ****************************************************************************************************
-//#   ifdef COMPLETE_USE_DRAFTING
+//#   ifdef START_USE_DRAFTING
 //    if (mgr.getCommandByName("Draft_Line")) {
 //        Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
 //        Drafting->setCommand(QT_TR_NOOP("Drafting"));

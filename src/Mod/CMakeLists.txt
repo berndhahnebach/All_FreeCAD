@@ -18,6 +18,8 @@ add_subdirectory(MeshPart)
 add_subdirectory(Draft)
 
 add_subdirectory(Robot)
+add_subdirectory(Web)
+add_subdirectory(Start)
 
 if(FREECAD_BUILD_ASSEMBLY)
 	add_subdirectory(Assembly)

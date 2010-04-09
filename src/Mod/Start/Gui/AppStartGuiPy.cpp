@@ -28,6 +28,6 @@
 
 
 /* registration table  */
-struct PyMethodDef CompleteGui_Import_methods[] = {
+struct PyMethodDef StartGui_Import_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };

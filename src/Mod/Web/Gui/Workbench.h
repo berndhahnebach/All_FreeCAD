@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COMPLETEGUI_WORKBENCH_H
-#define COMPLETEGUI_WORKBENCH_H
+#ifndef WEBGUI_WORKBENCH_H
+#define WEBGUI_WORKBENCH_H
 
 #include <Gui/Workbench.h>
 
@@ -56,4 +56,4 @@ protected:
 }; // namespace WebGui
 
 }
-#endif // COMPLETE_WORKBENCH_H 
+#endif // WEB_WORKBENCH_H 
