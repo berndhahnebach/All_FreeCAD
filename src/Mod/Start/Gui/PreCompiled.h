@@ -21,18 +21,18 @@
  ***************************************************************************/
 
 
-#ifndef COMPLETEGUI_PRECOMPILED_H
-#define COMPLETEGUI_PRECOMPILED_H
+#ifndef STARTGUI_PRECOMPILED_H
+#define STARTGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define CompleteAppExport __declspec(dllimport)
-# define CompleteGuiExport __declspec(dllexport)
+# define StartAppExport __declspec(dllimport)
+# define StartGuiExport __declspec(dllexport)
 #else // for Linux
-# define CompleteAppExport
-# define CompleteGuiExport
+# define StartAppExport
+# define StartGuiExport
 #endif
 
 
@@ -69,4 +69,4 @@
 
 #endif //_PreComp_
 
-#endif // COMPLETEGUI_PRECOMPILED_H
+#endif // STARTGUI_PRECOMPILED_H

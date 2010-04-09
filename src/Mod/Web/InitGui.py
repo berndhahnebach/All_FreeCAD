@@ -63,7 +63,7 @@ class WebWorkbench ( Workbench ):
 	def Initialize(self):
 		# load the module
 		import WebGui
-		import Web
+
 	def GetClassName(self):
 		return "WebGui::Workbench"
 

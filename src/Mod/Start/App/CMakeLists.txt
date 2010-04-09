@@ -39,4 +39,4 @@ else(WIN32)
 		 set_target_properties(Start PROPERTIES PREFIX "")
 endif(WIN32)
 
-install(TARGETS StartStart DESTINATION lib)
+install(TARGETS Start DESTINATION lib)

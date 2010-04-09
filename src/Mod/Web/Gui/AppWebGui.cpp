@@ -33,7 +33,6 @@
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
 
-#include <Mod/Web/App/WebConfiguration.h>
 
 
 // use a different name to CreateCommand()
@@ -59,72 +58,7 @@ void WebGuiExport initWebGui()
         return;
     }
 
-    // load dependend module
-    try {
-        Base::Interpreter().loadModule("PartGui");
-        Base::Interpreter().loadModule("MeshGui");
-        Base::Interpreter().loadModule("PointsGui");
-        //Base::Interpreter().loadModule("MeshPartGui");
-        //Base::Interpreter().loadModule("AssemblyGui");
-        Base::Interpreter().loadModule("DrawingGui");
-        Base::Interpreter().loadModule("RaytracingGui");
-#       ifdef COMPLETE_SHOW_SKETCHER
-        Base::Interpreter().loadModule("SketcherGui");
-#       endif
-        Base::Interpreter().loadModule("PartDesignGui");
-        Base::Interpreter().loadModule("ImageGui");
-        //Base::Interpreter().loadModule("CamGui");
-        Base::Interpreter().loadModule("TestGui");
-#       ifdef COMPLETE_USE_DRAFTING
-        Py::Module module(PyImport_ImportModule("FreeCADGui"),true);
-        Py::Callable method(module.getAttr(std::string("getWorkbench")));
-
-        // Get the WebWorkbench handler
-        Py::Tuple args(1);
-        args.setItem(0,Py::String("DraftWorkbench"));
-        Py::Object handler(method.apply(args));
-
-        std::string type;
-        if (!handler.hasAttr(std::string("__Workbench__"))) {
-            // call its GetClassName method if possible
-            Py::Callable method(handler.getAttr(std::string("GetClassName")));
-            Py::Tuple args;
-            Py::String result(method.apply(args));
-            type = result.as_std_string();
-            if (type == "Gui::PythonWorkbench") {
-                Gui::Workbench* wb = Gui::WorkbenchManager::instance()->createWorkbench("DraftWorkbench", type);
-                handler.setAttr(std::string("__Workbench__"), Py::Object(wb->getPyObject(), true));
-            }
-
-            // import the matching module first
-            Py::Callable activate(handler.getAttr(std::string("Initialize")));
-            activate.apply(args);
-        }
-
-        // Get the WebWorkbench handler
-        args.setItem(0,Py::String("WebWorkbench"));
-        Py::Object handler2(method.apply(args));
-        handler2.setAttr("draftToolBar", handler.getAttr("draftToolBar"));
-#       endif
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        return;
-    }
-    catch (Py::Exception& e) {
-        Py::Object o = Py::type(e);
-        if (o.isString()) {
-            Py::String s(o);
-            Base::Console().Error("%s\n", s.as_std_string().c_str());
-        }
-        else {
-            Py::String s(o.repr());
-            Base::Console().Error("%s\n", s.as_std_string().c_str());
-        }
-        // Prints message to console window if we are in interactive mode
-        PyErr_Print();
-    }
-
+ 
     (void) Py_InitModule("WebGui", WebGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Web module... done\n");
 

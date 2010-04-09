@@ -1,4 +1,4 @@
-# Complete gui init module  
+# Start gui init module  
 # (c) 2003 Juergen Riegel
 #
 # Gathering all the information to start FreeCAD
@@ -31,11 +31,11 @@
 
 
 
-class CompleteWorkbench ( Workbench ):
-	"Complete workbench object"
+class StartWorkbench ( Workbench ):
+	"Start workbench object"
 	Icon = """
 			/* XPM */
-			static const char *Complete_Box[]={
+			static const char *Start_Box[]={
 			"16 16 3 1",
 			". c None",
 			"# c #000000",
@@ -57,14 +57,14 @@ class CompleteWorkbench ( Workbench ):
 			".########.......",
 			"................"};
 			"""
-	MenuText = "Complete"
-	ToolTip = "Complete workbench"
+	MenuText = "Start"
+	ToolTip = "Start workbench"
 
 	def Initialize(self):
 		# load the module
-		import CompleteGui
-		import Complete
+		import StartGui
+		import Start
 	def GetClassName(self):
-		return "CompleteGui::Workbench"
+		return "StartGui::Workbench"
 
-Gui.addWorkbench(CompleteWorkbench())
+Gui.addWorkbench(StartWorkbench())

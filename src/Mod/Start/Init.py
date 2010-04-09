@@ -1,4 +1,4 @@
-# FreeCAD init script of the Complete module  
+# FreeCAD init script of the Start module  
 # (c) 2001 Juergen Riegel
 
 #***************************************************************************
@@ -26,22 +26,22 @@
 #***************************************************************************/
 
 
-class CompleteDocument:
-	"Complete document"
+class StartDocument:
+	"Start document"
 	def Info(self):
-		return "Complete document"
+		return "Start document"
 		
             
 # Get the Parameter Group of this module
-ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Complete")
+ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Start")
 
 # Set the needed information
-ParGrp.SetString("HelpIndex",        "Complete/Help/index.html")
-ParGrp.SetString("DocTemplateName",  "Complete")
-ParGrp.SetString("DocTemplateScript","TemplComplete.py")
-ParGrp.SetString("WorkBenchName",    "Complete Design")
-ParGrp.SetString("WorkBenchModule",  "CompleteWorkbench.py")
+ParGrp.SetString("HelpIndex",        "Start/Help/index.html")
+ParGrp.SetString("DocTemplateName",  "Start")
+ParGrp.SetString("DocTemplateScript","TemplStart.py")
+ParGrp.SetString("WorkBenchName",    "Start Design")
+ParGrp.SetString("WorkBenchModule",  "StartWorkbench.py")
 
 
-#FreeCAD.EndingAdd("CAD formats (*.igs *.iges *.step *.stp *.brep *.brp)","Complete")
+#FreeCAD.EndingAdd("CAD formats (*.igs *.iges *.step *.stp *.brep *.brp)","Start")
 

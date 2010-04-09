@@ -47,12 +47,13 @@
 #endif
 
 #include "BrowserView.h"
-#include "Application.h"
-#include "MainWindow.h"
-#include "ProgressBar.h"
+#include <Gui/Application.h>
+#include <Gui/MainWindow.h>
+#include <Gui/ProgressBar.h>
 
 #include <Base/Parameter.h>
 
+using namespace WebGui;
 using namespace Gui;
 
 
@@ -99,17 +100,17 @@ void BrowserView::load(const char* URL)
 void BrowserView::onLoadStarted()
 {
 #if QT_VERSION >= 0x040400
-    QProgressBar* bar = Sequencer::instance()->getProgressBar();
+    QProgressBar* bar = Gui::Sequencer::instance()->getProgressBar();
     bar->setRange(0, 100);
     bar->show();
-    getMainWindow()->statusBar()->showMessage(tr("Loading %1...").arg(WebView->url().toString()));
+    Gui::getMainWindow()->statusBar()->showMessage(tr("Loading %1...").arg(WebView->url().toString()));
 #endif
 }
 
 void BrowserView::onLoadProgress(int step)
 {
 #if QT_VERSION >= 0x040400
-    QProgressBar* bar = Sequencer::instance()->getProgressBar();
+    QProgressBar* bar = Gui::Sequencer::instance()->getProgressBar();
     bar->setValue(step);
 #endif
 }

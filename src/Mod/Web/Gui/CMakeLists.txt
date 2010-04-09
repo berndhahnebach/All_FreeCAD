@@ -10,11 +10,9 @@ include_directories(
 
 if(WIN32)
 		 set(WebGui_LIBS
-		 		 Web
 		 		 FreeCADGui)
 else(WIN32)
 		 set(WebGui_LIBS
-		 		 Web
 		 		 FreeCADGui)
 endif(WIN32)
 
@@ -29,7 +27,15 @@ SET(WebGui_SRCS
 		 PreCompiled.h
 		 Workbench.cpp
 		 Workbench.h
+		 BrowserView.h
+		 BrowserView.cpp
 )
+
+set(WebGui_MOC_HDRS
+		 BrowserView.h
+)
+fc_wrap_cpp(WebGui_MOC_SRCS ${WebGui_MOC_HDRS})
+SOURCE_GROUP("Moc" FILES ${SketcherGui_MOC_SRCS})
 
 add_library(WebGui SHARED ${WebGui_SRCS})
 

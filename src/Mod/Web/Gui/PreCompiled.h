@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COMPLETEGUI_PRECOMPILED_H
-#define COMPLETEGUI_PRECOMPILED_H
+#ifndef WEBGUI_PRECOMPILED_H
+#define WEBGUI_PRECOMPILED_H
 
 #include <FCConfig.h>
 
@@ -69,4 +69,4 @@
 
 #endif //_PreComp_
 
-#endif // COMPLETEGUI_PRECOMPILED_H
+#endif // WEBGUI_PRECOMPILED_H
