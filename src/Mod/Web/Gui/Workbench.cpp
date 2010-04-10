@@ -327,6 +327,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
                 << "Web_BrowserBack" 
                 << "Web_BrowserNext" 
                 << "Web_BrowserRefresh"
+                << "Web_BrowserStop"
                 << "Separator"
                 << "Web_BrowserZoomIn"
                 << "Web_BrowserZoomOut";

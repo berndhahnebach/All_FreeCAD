@@ -26,8 +26,35 @@
 # include <Python.h>
 #endif
 
+#include "BrowserView.h"
+#include <Gui/Application.h>
+#include <Gui/MainWindow.h>
+
+/* module functions */
+static PyObject * 
+openBrowser(PyObject *self, PyObject *args) 
+{
+    const char* Url;
+    if (! PyArg_ParseTuple(args, "s",&Url))
+        return NULL; 
+    
+    PY_TRY {
+
+        WebGui::BrowserView* pcBrowserView;
+
+        pcBrowserView = new WebGui::BrowserView(Gui::getMainWindow());   
+        pcBrowserView->setWindowTitle(QObject::tr("Browser"));
+        pcBrowserView->resize(400, 300);
+        pcBrowserView->load(Url);
+        Gui::getMainWindow()->addWindow(pcBrowserView);
+
+     } PY_CATCH;
+
+	Py_Return; 
+}
 
 /* registration table  */
 struct PyMethodDef WebGui_Import_methods[] = {
+    {"openBrowser"       ,openBrowser ,       1},				/* method name, C func ptr, always-tuple */
     {NULL, NULL}                   /* end of table marker */
 };

@@ -28,9 +28,8 @@
 #include <Gui/MDIView.h>
 #include <Gui/Window.h>
 
-#if QT_VERSION >= 0x040400
 class QWebView;
-#endif
+class QUrl;
 
 namespace WebGui {
 
@@ -79,11 +78,12 @@ protected Q_SLOTS:
     void onLoadStarted();
     void onLoadProgress(int);
     void onLoadFinished();
+    void onLinkClicked ( const QUrl & url ) ;
 
 private:
-#if QT_VERSION >= 0x040400
     QWebView* WebView;
-#endif
+    bool isLoading;
+    float textSizeMultiplyer;
 };
 
 } // namespace WebGui

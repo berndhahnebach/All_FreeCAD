@@ -58,13 +58,8 @@ CmdWebOpenWebsite::CmdWebOpenWebsite()
 
 void CmdWebOpenWebsite::activated(int iMsg)
 {
-    WebGui::BrowserView* pcBrowserView;
-
-    pcBrowserView = new WebGui::BrowserView(Gui::getMainWindow());   
-    pcBrowserView->setWindowTitle(QObject::tr("Start page"));
-    pcBrowserView->resize(400, 300);
-    pcBrowserView->load("http://free-cad.sf.net/");
-    Gui::getMainWindow()->addWindow(pcBrowserView);
+    doCommand(Doc,"import WebGui");
+    doCommand(Command::Gui,"WebGui.openBrowser('http://free-cad.sf.net/')");
 }
 
 //===========================================================================
@@ -92,7 +87,7 @@ void CmdWebBrowserBack::activated(int iMsg)
 
 bool CmdWebBrowserBack::isActive(void)
 {
-    return (getGuiApplication()->sendHasMsgToActiveView("Back"));
+    return getGuiApplication()->sendHasMsgToActiveView("Back");
 }
 
 //===========================================================================
@@ -120,7 +115,7 @@ void CmdWebBrowserNext::activated(int iMsg)
 
 bool CmdWebBrowserNext::isActive(void)
 {
-    return (getGuiApplication()->sendHasMsgToActiveView("Next"));
+    return getGuiApplication()->sendHasMsgToActiveView("Next");
 }
 
 //===========================================================================
@@ -148,7 +143,35 @@ void CmdWebBrowserRefresh::activated(int iMsg)
 
 bool CmdWebBrowserRefresh::isActive(void)
 {
-    return (getGuiApplication()->sendHasMsgToActiveView("Refresh"));
+    return getGuiApplication()->sendHasMsgToActiveView("Refresh");
+}
+//===========================================================================
+// CmdWebBrowserStop
+//===========================================================================
+
+DEF_STD_CMD_A(CmdWebBrowserStop);
+
+CmdWebBrowserStop::CmdWebBrowserStop()
+	:Command("Web_BrowserStop")
+{
+    sAppModule      = "Web";
+    sGroup          = QT_TR_NOOP("Web");
+    sMenuText       = QT_TR_NOOP("Stop loading");
+    sToolTipText    = QT_TR_NOOP("Stop the actuall loading");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "actions/web-stop";
+}
+
+
+void CmdWebBrowserStop::activated(int iMsg)
+{
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView('Stop')");
+}
+
+bool CmdWebBrowserStop::isActive(void)
+{
+    return getGuiApplication()->sendHasMsgToActiveView("Stop");
 }
 
 //===========================================================================
@@ -176,7 +199,7 @@ void CmdWebBrowserZoomIn::activated(int iMsg)
 
 bool CmdWebBrowserZoomIn::isActive(void)
 {
-    return (getGuiApplication()->sendHasMsgToActiveView("ZoomIn"));
+    return getGuiApplication()->sendHasMsgToActiveView("ZoomIn");
 }
 
 //===========================================================================
@@ -204,7 +227,7 @@ void CmdWebBrowserZoomOut::activated(int iMsg)
 
 bool CmdWebBrowserZoomOut::isActive(void)
 {
-    return (getGuiApplication()->sendHasMsgToActiveView("ZoomOut"));
+    return getGuiApplication()->sendHasMsgToActiveView("ZoomOut");
 }
 
 
@@ -216,6 +239,7 @@ void CreateWebCommands(void)
     rcCmdMgr.addCommand(new CmdWebBrowserBack());
     rcCmdMgr.addCommand(new CmdWebBrowserNext());
     rcCmdMgr.addCommand(new CmdWebBrowserRefresh());
+    rcCmdMgr.addCommand(new CmdWebBrowserStop());
     rcCmdMgr.addCommand(new CmdWebBrowserZoomIn());
     rcCmdMgr.addCommand(new CmdWebBrowserZoomOut());
  }

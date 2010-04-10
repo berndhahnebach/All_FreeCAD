@@ -64,9 +64,11 @@ using namespace Gui;
  *  name 'name'.
  */
 BrowserView::BrowserView(QWidget* parent)
-    : MDIView(0,parent,0), WindowParameter( "Browser" )
+    : MDIView(0,parent,0),
+      WindowParameter( "Browser" ),
+      textSizeMultiplyer(1.0),
+      isLoading(false)
 {
-#if QT_VERSION >= 0x040400
     WebView = new QWebView(this);
     setCentralWidget(WebView);
 
@@ -76,65 +78,57 @@ BrowserView::BrowserView(QWidget* parent)
             this, SLOT(onLoadProgress(int)));
     connect(WebView, SIGNAL(loadFinished(bool)),
             this, SLOT(onLoadFinished()));
-#endif
+    connect(WebView, SIGNAL(linkClicked(const QUrl &)),
+            this, SLOT(onLinkClicked(const QUrl &)));
 }
 
 /** Destroys the object and frees any allocated resources */
 BrowserView::~BrowserView()
 {
-#if QT_VERSION >= 0x040400
     delete WebView;
-#endif
+}
+
+void BrowserView::onLinkClicked ( const QUrl & url ) 
+{
+    QString path = url.path();
+    path;
 }
 
 void BrowserView::load(const char* URL)
 {
-#if QT_VERSION >= 0x040400
     QUrl url = QUrl(QString::fromUtf8(URL));
     WebView->load(url);
     WebView->setUrl(url);
+    setWindowTitle(url.host());
     setWindowIcon(QWebSettings::iconForUrl(url));
-#endif
 }
 
 void BrowserView::onLoadStarted()
 {
-#if QT_VERSION >= 0x040400
     QProgressBar* bar = Gui::Sequencer::instance()->getProgressBar();
     bar->setRange(0, 100);
     bar->show();
     Gui::getMainWindow()->statusBar()->showMessage(tr("Loading %1...").arg(WebView->url().toString()));
-#endif
+    isLoading = true;
 }
 
 void BrowserView::onLoadProgress(int step)
 {
-#if QT_VERSION >= 0x040400
     QProgressBar* bar = Gui::Sequencer::instance()->getProgressBar();
     bar->setValue(step);
-#endif
 }
 
 void BrowserView::onLoadFinished()
 {
-#if QT_VERSION >= 0x040400
     QProgressBar* bar = Sequencer::instance()->getProgressBar();
     bar->setValue(100);
     bar->hide();
     getMainWindow()->statusBar()->showMessage(QString());
-#endif
+    isLoading = false;
 }
 
 void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
 {
-    //ParameterGrp::handle hPrefGrp = getWindowParameter();
-    //if (strcmp(rcReason, "EnableLineNumber") == 0) {
-    //    bool show = hPrefGrp->GetBool( "EnableLineNumber", true );
-    //    if ( show )
-    //        d->lineMarker->show();
-    //    else
-    //        d->lineMarker->hide();
-    //}
 }
 
 /**
@@ -142,15 +136,25 @@ void BrowserView::OnChange(Base::Subject<const char*> &rCaller,const char* rcRea
  */
 bool BrowserView::onMsg(const char* pMsg,const char** ppReturn)
 {
-    if (strcmp(pMsg,"Back")==0){     
+    if (strcmp(pMsg,"Back")==0){
+        WebView->back();
         return true;
     } else if (strcmp(pMsg,"Next")==0){
+        WebView->forward();
         return true;
     } else if (strcmp(pMsg,"Refresh")==0){
+        WebView->reload();
+        return true;
+    } else if (strcmp(pMsg,"Stop")==0){
+        WebView->stop();
         return true;
     } else if (strcmp(pMsg,"ZoomIn")==0){
+        textSizeMultiplyer += 0.2f;
+        WebView->setTextSizeMultiplier(textSizeMultiplyer);
         return true;
     } else if (strcmp(pMsg,"ZoomOut")==0){
+        textSizeMultiplyer -= 0.2f;
+        WebView->setTextSizeMultiplier(textSizeMultiplyer);
         return true;
     }
 
@@ -165,7 +169,8 @@ bool BrowserView::onHasMsg(const char* pMsg) const
 {
     if (strcmp(pMsg,"Back")==0)  return true;
     if (strcmp(pMsg,"Next")==0)  return true;
-    if (strcmp(pMsg,"Refresh")==0) return true;
+    if (strcmp(pMsg,"Refresh")==0) return !isLoading;
+    if (strcmp(pMsg,"Stop")==0) return isLoading;
     if (strcmp(pMsg,"ZoomIn")==0) return true;
     if (strcmp(pMsg,"ZoomOut")==0) return true;
 
@@ -175,25 +180,7 @@ bool BrowserView::onHasMsg(const char* pMsg) const
 /** Checking on close state. */
 bool BrowserView::canClose(void)
 {
-    //if ( !d->textEdit->document()->isModified() )
-    //    return true;
-    //this->setFocus(); // raises the view to front
-    //switch( QMessageBox::question(this, tr("Unsaved document"), 
-    //                                tr("The document has been modified.\n"
-    //                                   "Do you want to save your changes?"),
-    //                                 QMessageBox::Yes|QMessageBox::Default, QMessageBox::No, 
-    //                                 QMessageBox::Cancel|QMessageBox::Escape))
-    //{
-    //    case QMessageBox::Yes:
-    //        return saveFile();
-    //    case QMessageBox::No:
-    //        return true;
-    //    case QMessageBox::Cancel:
-    //        return false;
-    //    default:
-    //        return false;
-    //}
-    return true;
+   return true;
 }
 
 
