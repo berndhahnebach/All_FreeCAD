@@ -44,7 +44,7 @@ using namespace WebGui;
 DEF_STD_CMD(CmdWebOpenWebsite);
 
 CmdWebOpenWebsite::CmdWebOpenWebsite()
-	:Command("Web_OpenWebsite")
+  : Command("Web_OpenWebsite")
 {
     sAppModule      = "Web";
     sGroup          = QT_TR_NOOP("Web");
@@ -58,7 +58,6 @@ CmdWebOpenWebsite::CmdWebOpenWebsite()
 
 void CmdWebOpenWebsite::activated(int iMsg)
 {
-
     WebGui::BrowserView* pcBrowserView;
 
     pcBrowserView = new WebGui::BrowserView(Gui::getMainWindow());   
@@ -66,7 +65,6 @@ void CmdWebOpenWebsite::activated(int iMsg)
     pcBrowserView->resize(400, 300);
     pcBrowserView->load("http://free-cad.sf.net/");
     Gui::getMainWindow()->addWindow(pcBrowserView);
-      
 }
 
 //===========================================================================
@@ -76,7 +74,7 @@ void CmdWebOpenWebsite::activated(int iMsg)
 DEF_STD_CMD_A(CmdWebBrowserBack);
 
 CmdWebBrowserBack::CmdWebBrowserBack()
-	:Command("Web_BrowserBack")
+  : Command("Web_BrowserBack")
 {
     sAppModule      = "Web";
     sGroup          = QT_TR_NOOP("Web");
@@ -87,7 +85,6 @@ CmdWebBrowserBack::CmdWebBrowserBack()
     sPixmap         = "actions/web-previous";
 }
 
-
 void CmdWebBrowserBack::activated(int iMsg)
 {
     doCommand(Command::Gui,"Gui.SendMsgToActiveView('Back')");
@@ -95,8 +92,7 @@ void CmdWebBrowserBack::activated(int iMsg)
 
 bool CmdWebBrowserBack::isActive(void)
 {
-    if (getGuiApplication()->sendHasMsgToActiveView("Back"))
-        return true;
+    return (getGuiApplication()->sendHasMsgToActiveView("Back"));
 }
 
 //===========================================================================
@@ -106,7 +102,7 @@ bool CmdWebBrowserBack::isActive(void)
 DEF_STD_CMD_A(CmdWebBrowserNext);
 
 CmdWebBrowserNext::CmdWebBrowserNext()
-	:Command("Web_BrowserNext")
+  : Command("Web_BrowserNext")
 {
     sAppModule      = "Web";
     sGroup          = QT_TR_NOOP("Web");
@@ -117,7 +113,6 @@ CmdWebBrowserNext::CmdWebBrowserNext()
     sPixmap         = "actions/web-next";
 }
 
-
 void CmdWebBrowserNext::activated(int iMsg)
 {
     doCommand(Command::Gui,"Gui.SendMsgToActiveView('Next')");
@@ -125,8 +120,7 @@ void CmdWebBrowserNext::activated(int iMsg)
 
 bool CmdWebBrowserNext::isActive(void)
 {
-    if (getGuiApplication()->sendHasMsgToActiveView("Next"))
-        return true;
+    return (getGuiApplication()->sendHasMsgToActiveView("Next"));
 }
 
 //===========================================================================
@@ -136,7 +130,7 @@ bool CmdWebBrowserNext::isActive(void)
 DEF_STD_CMD_A(CmdWebBrowserRefresh);
 
 CmdWebBrowserRefresh::CmdWebBrowserRefresh()
-	:Command("Web_BrowserRefresh")
+  : Command("Web_BrowserRefresh")
 {
     sAppModule      = "Web";
     sGroup          = QT_TR_NOOP("Web");
@@ -147,7 +141,6 @@ CmdWebBrowserRefresh::CmdWebBrowserRefresh()
     sPixmap         = "actions/web-refresh";
 }
 
-
 void CmdWebBrowserRefresh::activated(int iMsg)
 {
     doCommand(Command::Gui,"Gui.SendMsgToActiveView('Refresh')");
@@ -155,8 +148,7 @@ void CmdWebBrowserRefresh::activated(int iMsg)
 
 bool CmdWebBrowserRefresh::isActive(void)
 {
-    if (getGuiApplication()->sendHasMsgToActiveView("Refresh"))
-        return true;
+    return (getGuiApplication()->sendHasMsgToActiveView("Refresh"));
 }
 
 //===========================================================================
@@ -166,7 +158,7 @@ bool CmdWebBrowserRefresh::isActive(void)
 DEF_STD_CMD_A(CmdWebBrowserZoomIn);
 
 CmdWebBrowserZoomIn::CmdWebBrowserZoomIn()
-	:Command("Web_BrowserZoomIn")
+  : Command("Web_BrowserZoomIn")
 {
     sAppModule      = "Web";
     sGroup          = QT_TR_NOOP("Web");
@@ -177,7 +169,6 @@ CmdWebBrowserZoomIn::CmdWebBrowserZoomIn()
     sPixmap         = "actions/web-zoom-in";
 }
 
-
 void CmdWebBrowserZoomIn::activated(int iMsg)
 {
     doCommand(Command::Gui,"Gui.SendMsgToActiveView('ZoomIn')");
@@ -185,8 +176,7 @@ void CmdWebBrowserZoomIn::activated(int iMsg)
 
 bool CmdWebBrowserZoomIn::isActive(void)
 {
-    if (getGuiApplication()->sendHasMsgToActiveView("ZoomIn"))
-        return true;
+    return (getGuiApplication()->sendHasMsgToActiveView("ZoomIn"));
 }
 
 //===========================================================================
@@ -196,7 +186,7 @@ bool CmdWebBrowserZoomIn::isActive(void)
 DEF_STD_CMD_A(CmdWebBrowserZoomOut);
 
 CmdWebBrowserZoomOut::CmdWebBrowserZoomOut()
-	:Command("Web_BrowserZoomOut")
+  : Command("Web_BrowserZoomOut")
 {
     sAppModule      = "Web";
     sGroup          = QT_TR_NOOP("Web");
@@ -207,7 +197,6 @@ CmdWebBrowserZoomOut::CmdWebBrowserZoomOut()
     sPixmap         = "actions/web-zoom-out";
 }
 
-
 void CmdWebBrowserZoomOut::activated(int iMsg)
 {
     doCommand(Command::Gui,"Gui.SendMsgToActiveView('ZoomOut')");
@@ -215,8 +204,7 @@ void CmdWebBrowserZoomOut::activated(int iMsg)
 
 bool CmdWebBrowserZoomOut::isActive(void)
 {
-    if (getGuiApplication()->sendHasMsgToActiveView("ZoomOut"))
-        return true;
+    return (getGuiApplication()->sendHasMsgToActiveView("ZoomOut"));
 }
 
 
