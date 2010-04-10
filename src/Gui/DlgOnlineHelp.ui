@@ -1,10 +1,8 @@
-<ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Gui::Dialog::DlgOnlineHelp</class>
- <widget class="QWidget" name="Gui::Dialog::DlgOnlineHelp" >
-  <property name="geometry" >
+ <widget class="QWidget" name="Gui::Dialog::DlgOnlineHelp">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -12,25 +10,25 @@
     <height>440</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>On-line help</string>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="0" >
+   <item row="1" column="0">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeType" >
+     <property name="sizeType">
       <enum>QSizePolicy::Expanding</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>373</width>
        <height>291</height>
@@ -38,47 +36,31 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="0" >
-    <widget class="Gui::PrefCheckBox" name="showStartPage" >
-     <property name="text" >
-      <string>Show start page</string>
-     </property>
-     <property name="checked" >
-      <bool>true</bool>
-     </property>
-     <property name="prefEntry" stdset="0" >
-      <cstring>ShowStartPage</cstring>
-     </property>
-     <property name="prefPath" stdset="0" >
-      <cstring>OnlineHelp</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="GroupBoxOther" >
-     <property name="title" >
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="GroupBoxOther">
+     <property name="title">
       <string>Help viewer</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>9</number>
       </property>
-      <property name="spacing" >
+      <property name="spacing">
        <number>6</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="TextLabelURL" >
-        <property name="text" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="TextLabelURL">
+        <property name="text">
          <string>Location of start page</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="Gui::PrefFileChooser" name="prefStartPage" >
-        <property name="prefEntry" stdset="0" >
+      <item row="1" column="0">
+       <widget class="Gui::PrefFileChooser" name="prefStartPage" native="true">
+        <property name="prefEntry" stdset="0">
          <cstring>Startpage</cstring>
         </property>
-        <property name="prefPath" stdset="0" >
+        <property name="prefPath" stdset="0">
          <cstring>OnlineHelp</cstring>
         </property>
        </widget>
@@ -88,22 +70,13 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::PrefCheckBox</class>
-   <extends>QCheckBox</extends>
-   <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Gui::PrefFileChooser</class>
-   <extends>Gui::FileChooser</extends>
+   <extends>QWidget</extends>
    <header>Gui/PrefWidgets.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>

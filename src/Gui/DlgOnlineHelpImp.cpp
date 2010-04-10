@@ -53,17 +53,6 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent )
     if (prefStartPage->fileName().isEmpty()) {
         prefStartPage->setFileName(getStartpage());
     }
-#if QT_VERSION < 0x040400
-    this->setDisabled(true);
-#endif
-
-    const std::map<std::string,std::string>& config = App::Application::Config();
-    std::map<std::string, std::string>::const_iterator it = config.find("DisableStartPage");
-    if (it != config.end()) {
-        this->prefStartPage->setFileName(QString());
-        this->prefStartPage->setDisabled(true);
-        this->showStartPage->setDisabled(true);
-    }
 }
 
 /** 
@@ -88,13 +77,11 @@ QString DlgOnlineHelpImp::getStartpage()
 void DlgOnlineHelpImp::saveSettings()
 {
     prefStartPage->onSave();
-    showStartPage->onSave();
 }
 
 void DlgOnlineHelpImp::loadSettings()
 {
     prefStartPage->onRestore();
-    showStartPage->onRestore();
 }
 
 /**
