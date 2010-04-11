@@ -5,22 +5,22 @@
     <name>CombiView</name>
     <message>
         <source>CombiView</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue combinée</translation>
     </message>
     <message>
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Projet</translation>
     </message>
     <message>
         <source>Tasks</source>
-        <translation type="unfinished"></translation>
+        <translation>Tâches</translation>
     </message>
 </context>
 <context>
     <name>Gui::AccelLineEdit</name>
     <message>
         <source>none</source>
-        <translation>Rien</translation>
+        <translation>aucun</translation>
     </message>
 </context>
 <context>
@@ -122,11 +122,11 @@
     </message>
     <message>
         <source>Password:</source>
-        <translation></translation>
+        <translation>Mot de passe:</translation>
     </message>
     <message>
         <source>User name:</source>
-        <translation></translation>
+        <translation>Nom d&apos;utilisateur:</translation>
     </message>
     <message>
         <source></source>
@@ -156,7 +156,7 @@
     </message>
     <message>
         <source>Setup Custom Macros</source>
-        <translation>Mettre des macros particulières</translation>
+        <translation>Installer des macros personnalisées</translation>
     </message>
     <message>
         <source>Macro:</source>
@@ -180,11 +180,11 @@
     </message>
     <message>
         <source>Status text:</source>
-        <translation>Texte d&apos;état</translation>
+        <translation>Texte d&apos;état:</translation>
     </message>
     <message>
         <source>Tool tip:</source>
-        <translation>Astuce outil</translation>
+        <translation>Astuce outil:</translation>
     </message>
     <message>
         <source>Menu text:</source>
@@ -227,7 +227,7 @@
     </message>
     <message>
         <source>Sorry, couldn&apos;t find macro file &apos;%1&apos;.</source>
-        <translation>Désolé,On ne peut pas trouvé le fichier macro &apos;%1&apos;.</translation>
+        <translation>Désolé,impossible de trouver le fichier macro &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Empty macro</source>
@@ -235,7 +235,7 @@
     </message>
     <message>
         <source>Please specify the macro first.</source>
-        <translation>Spécifier la première macro svp.</translation>
+        <translation>Spécifier d&apos;abord la macro svp.</translation>
     </message>
     <message>
         <source>Empty text</source>
@@ -243,15 +243,15 @@
     </message>
     <message>
         <source>Please specify the menu text first.</source>
-        <translation>Spécifier le premièr menu texte svp.</translation>
+        <translation>Spécifier d&apos;abord le texte du menu svp.</translation>
     </message>
     <message>
         <source>No item selected</source>
-        <translation>Pas d&apos;item sélectionné</translation>
+        <translation>Aucun item sélectionné</translation>
     </message>
     <message>
         <source>Please select a macro item first.</source>
-        <translation>Sélectionner la première macro svp.</translation>
+        <translation>Sélectionner d&apos;abord un item de macro svp.</translation>
     </message>
 </context>
 <context>
@@ -269,7 +269,7 @@
     <name>Gui::Dialog::DlgCustomCommandsImp</name>
     <message>
         <source>Category</source>
-        <translation>Categorie</translation>
+        <translation>Catégorie</translation>
     </message>
     <message>
         <source>Icon</source>
@@ -292,7 +292,7 @@
     </message>
     <message>
         <source>&amp;Category:</source>
-        <translation>&amp;Categorie:</translation>
+        <translation>&amp;Catégorie:</translation>
     </message>
     <message>
         <source>C&amp;ommands:</source>
@@ -300,15 +300,15 @@
     </message>
     <message>
         <source>Current shortcut:</source>
-        <translation>Raccourci courant</translation>
+        <translation>Raccourci actuel:</translation>
     </message>
     <message>
         <source>Press &amp;new shortcut:</source>
-        <translation>Appuyez &amp;sur le nouveau raccourci</translation>
+        <translation>Appuyez &amp;sur le nouveau raccourci:</translation>
     </message>
     <message>
         <source>Currently assigned to:</source>
-        <translation>Couramment assigné à:</translation>
+        <translation>Actuellement assigné à:</translation>
     </message>
     <message>
         <source>&amp;Assign</source>
@@ -328,7 +328,7 @@
     </message>
     <message>
         <source>Re&amp;set All</source>
-        <translation>&amp;Remise à zero de tout</translation>
+        <translation>Remi&amp;se à zero générale</translation>
     </message>
     <message>
         <source>Alt+S</source>
@@ -351,32 +351,34 @@
     </message>
     <message>
         <source>none</source>
-        <translation>Rien</translation>
+        <translation>aucun</translation>
     </message>
     <message>
         <source>Multiple defined shortcut</source>
-        <translation>Raccourcis multiples définis</translation>
+        <translation>Raccourci défini plusieurs fois</translation>
     </message>
     <message>
         <source>The shortcut &apos;%1&apos; is defined more than once. This could result into unexpected behaviour.</source>
-        <translation>Le raccourcis  &apos;%1&apos; est définis plus d&apos;une fois. Cela produit un comportment innatendu.</translation>
+        <translation>Le raccourci &apos;%1&apos; est défini plus d&apos;une fois. Cela pourrait entrainer un comportment innatendu.</translation>
     </message>
     <message>
         <source>Already defined shortcut</source>
-        <translation>Raccourcis déjà défini</translation>
+        <translation>Raccourci déjà défini</translation>
     </message>
     <message>
         <source>The shortcut &apos;%1&apos; is already assigned to &apos;%2&apos;.
 
 Please define another shortcut.</source>
-        <translation>Le raccourci &apos;%1&apos; est déjà défini pour &apos;%2&apos;.Définissez un autre raccourci s&apos;il vous plait.</translation>
+        <translation>Le raccourci &apos;%1&apos; est déjà assigné à &apos;%2&apos;.
+
+Définissez un autre raccourci s&apos;il vous plait.</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgCustomToolBoxbarsImp</name>
     <message>
         <source>Toolbox bars</source>
-        <translation>Barres des boites d&apos;outils</translation>
+        <translation>Barres des boîtes à outils</translation>
     </message>
 </context>
 <context>
@@ -411,7 +413,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;Descendre l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;L&apos;item sera déplacé sans changer le niveau de la hiérarchie.&lt;/p&gt;</translation>
+        <translation>&lt;b&gt;Descendre l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;L&apos;item sera déplacé au sein du niveau de hiérarchie.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -419,7 +421,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;Monter  l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;L&apos;item sera déplacé sans changer le niveau de la hiérarchie.&lt;/p&gt;</translation>
+        <translation>&lt;b&gt;Monter  l&apos;item selectionné d&apos;un niveau.&lt;/b&gt;&lt;p&gt;L&apos;item sera déplacé au sein du niveau de hiérarchie.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>New...</source>
@@ -451,7 +453,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Toolbar name:</source>
-        <translation>Nom de barre d&apos;outils:</translation>
+        <translation>Nom de la barre d&apos;outils:</translation>
     </message>
     <message>
         <source>Duplicated name</source>
@@ -459,7 +461,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>The toolbar name &apos;%1&apos; is already used</source>
-        <translation>Le nom de barres d&apos;outils &apos;%1&apos; est déjà utilisé</translation>
+        <translation>Le nom de barre d&apos;outils &apos;%1&apos; est déjà utilisé</translation>
     </message>
     <message>
         <source>Rename toolbar</source>
@@ -474,7 +476,7 @@ Please define another shortcut.</source>
     <name>Gui::Dialog::DlgCustomizeImp</name>
     <message>
         <source>Customize</source>
-        <translation>Personaliser</translation>
+        <translation>Personnaliser</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -489,7 +491,7 @@ Please define another shortcut.</source>
     <name>Gui::Dialog::DlgDisplayProperties</name>
     <message>
         <source>Display properties</source>
-        <translation>Afficher les propriétés</translation>
+        <translation>Propriétés d&apos;affichage</translation>
     </message>
     <message>
         <source>Display</source>
@@ -497,15 +499,15 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Transparency:</source>
-        <translation>Transparence</translation>
+        <translation>Transparence:</translation>
     </message>
     <message>
         <source>Line width:</source>
-        <translation>Taille de ligne:</translation>
+        <translation>Épaisseur de ligne:</translation>
     </message>
     <message>
         <source>Point size:</source>
-        <translation>Taille du point:</translation>
+        <translation>Taille de point:</translation>
     </message>
     <message>
         <source>Material</source>
@@ -525,11 +527,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Display mode:</source>
-        <translation>Mode affichage</translation>
+        <translation>Mode d&apos;affichage:</translation>
     </message>
     <message>
         <source>Plot mode:</source>
-        <translation>Mode dessin:</translation>
+        <translation>Mode de tracé:</translation>
     </message>
     <message>
         <source></source>
@@ -548,11 +550,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Enable line numbers</source>
-        <translation>Numérotation de ligne possible</translation>
+        <translation>Activer la numérotation des lignes</translation>
     </message>
     <message>
         <source>Enable folding</source>
-        <translation></translation>
+        <translation>Activer le pliage</translation>
     </message>
     <message>
         <source>Indentation</source>
@@ -560,7 +562,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Insert spaces</source>
-        <translation>insérer des espaces</translation>
+        <translation>Insérer des espaces</translation>
     </message>
     <message>
         <source>Tab size:</source>
@@ -568,11 +570,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Indent size:</source>
-        <translation>Taille de l&apos;indentation</translation>
+        <translation>Taille de l&apos;indentation:</translation>
     </message>
     <message>
         <source>Keep tabs</source>
-        <translation>Garderl les tabulations</translation>
+        <translation>Garder les tabulations</translation>
     </message>
     <message>
         <source>Display Items</source>
@@ -588,7 +590,7 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Preview:</source>
-        <translation>Prévisualisé:</translation>
+        <translation>Aperçu:</translation>
     </message>
     <message>
         <source></source>
@@ -607,15 +609,15 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Enable splash screen at start up</source>
-        <translation>Rendre possible l&apos;écran de bienvenue au démarrage</translation>
+        <translation>Activer l&apos;écran de lancement au démarrage</translation>
     </message>
     <message>
         <source>Switch to tab of report window:</source>
-        <translation>Basculer vers le tableau une fenêtre de rapport:</translation>
+        <translation type="unfinished">Basculer vers l&apos;onglet de la fenêtre de rapport:</translation>
     </message>
     <message>
         <source>Auto load module after start up:</source>
-        <translation>Autochargment du module après le démarrage</translation>
+        <translation>Charger automatiquement le module après le démarrage:</translation>
     </message>
     <message>
         <source>Language</source>
@@ -623,11 +625,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Change language:</source>
-        <translation>Changer la langue</translation>
+        <translation>Changer la langue:</translation>
     </message>
     <message>
         <source>Main window</source>
-        <translation>Fen^etre principale</translation>
+        <translation>Fenêtre principale</translation>
     </message>
     <message>
         <source>Size of recent file list</source>
@@ -672,11 +674,11 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Macro name:</source>
-        <translation>Nom macro:</translation>
+        <translation>Nom de la macro:</translation>
     </message>
     <message>
         <source>Macro destination:</source>
-        <translation>Destination macro:</translation>
+        <translation>Destination de la macro:</translation>
     </message>
     <message>
         <source>Execute</source>
@@ -696,18 +698,18 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Éditer</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgMacroExecuteImp</name>
     <message>
         <source>Macros</source>
-        <translation></translation>
+        <translation>Macros</translation>
     </message>
     <message>
         <source>Macro file</source>
-        <translation>Fichier macro</translation>
+        <translation>Fichier de macro</translation>
     </message>
     <message>
         <source>Enter a file name, please:</source>
@@ -724,30 +726,30 @@ This file already exists.</source>
     </message>
     <message>
         <source>Delete macro</source>
-        <translation>Effacer macro</translation>
+        <translation>Effacer la macro</translation>
     </message>
     <message>
         <source>Do you really want to delete the macro &apos;%1&apos;?</source>
-        <translation>Voulez vous réellement effacer la macro &apos;%1&apos;?</translation>
+        <translation>Voulez-vous réellement effacer la macro &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgMacroRecord</name>
     <message>
         <source>Macro recording</source>
-        <translation>Enregistrement macro</translation>
+        <translation>Enregistrement d&apos;une macro</translation>
     </message>
     <message>
         <source>Macro name:</source>
-        <translation>Nom macro:</translation>
+        <translation>Nom de la macro:</translation>
     </message>
     <message>
         <source>Start</source>
-        <translation>Démarrage</translation>
+        <translation>Démarrer</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation>Arr^et</translation>
+        <translation>Arrêter</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -762,7 +764,7 @@ This file already exists.</source>
     </message>
     <message>
         <source>Specify first a place to save.</source>
-        <translation>Spécifier en premier un lieu de stockage</translation>
+        <translation>Spécifier d&apos;abord une destination de sauvegarde.</translation>
     </message>
     <message>
         <source>Existing macro</source>
@@ -777,7 +779,7 @@ This file already exists.</source>
     <name>Gui::Dialog::DlgMaterialProperties</name>
     <message>
         <source>Material properties</source>
-        <translation>Proprétés matériaux</translation>
+        <translation>Propriétés du matériau</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -785,11 +787,11 @@ This file already exists.</source>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation>Alt+F</translation>
     </message>
     <message>
         <source>Material</source>
-        <translation>Matériel</translation>
+        <translation>Matériau</translation>
     </message>
     <message>
         <source>Diffuse color:</source>
@@ -801,15 +803,15 @@ This file already exists.</source>
     </message>
     <message>
         <source>Shininess:</source>
-        <translation>Brillance</translation>
+        <translation>Brillance:</translation>
     </message>
     <message>
         <source>%</source>
-        <translation></translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Ambient color:</source>
-        <translation>Coleur ambiente:</translation>
+        <translation>Coleur ambiante:</translation>
     </message>
     <message>
         <source></source>
@@ -828,15 +830,15 @@ This file already exists.</source>
     </message>
     <message>
         <source>Enable user authorization</source>
-        <translation>Autorisation utilisateur possible</translation>
+        <translation>Activer l&apos;autorisation utilisateur</translation>
     </message>
     <message>
         <source>Download on-line help from:</source>
-        <translation>Télécharger l&apos;aide en ligne de:</translation>
+        <translation>Télécharger l&apos;aide en ligne depuis:</translation>
     </message>
     <message>
         <source>To:</source>
-        <translation>vers:</translation>
+        <translation>Vers:</translation>
     </message>
     <message>
         <source>Proxy server:</source>
@@ -856,7 +858,7 @@ This file already exists.</source>
     </message>
     <message>
         <source>Location of start page</source>
-        <translation>Endroit de la page de démarrage</translation>
+        <translation>Emplacement de la page de démarrage</translation>
     </message>
 </context>
 <context>
@@ -873,22 +875,24 @@ This file already exists.</source>
         <source>Access denied to &apos;%1&apos;
 
 Specify another directory, please.</source>
-        <translation>Accès interdit à &apos;%1&apos;Specifier un autre dossier, svp.</translation>
+        <translation>Accès interdit à &apos;%1&apos;
+
+Specifier un autre dossier, svp.</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgParameter</name>
     <message>
         <source>Parameter Editor</source>
-        <translation>Editeur paramètres</translation>
+        <translation>Editeur de paramètres</translation>
     </message>
     <message>
         <source>Save to disk</source>
-        <translation>Sauvegarder sur disque</translation>
+        <translation>Sauvegarder sur le disque</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation>Alt+F</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -923,11 +927,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Invalid key name &apos;%1&apos;</source>
-        <translation>nom clé Invalide &apos;%1&apos;</translation>
+        <translation>Nom de clé &apos;%1&apos; invalide</translation>
     </message>
     <message>
         <source>System parameter</source>
-        <translation>Paramètre système</translation>
+        <translation>Paramètres système</translation>
     </message>
 </context>
 <context>
@@ -942,7 +946,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Alt+H</source>
-        <translation>Alt+H</translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -958,7 +962,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Annuler</translation>
+        <translation>A&amp;nnuler</translation>
     </message>
     <message>
         <source></source>
@@ -976,11 +980,11 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::DlgProjectInformation</name>
     <message>
         <source>Project information</source>
-        <translation>Information Projet</translation>
+        <translation>Informations sur le projet</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation>Information</translation>
+        <translation>Informations</translation>
     </message>
     <message>
         <source>&amp;Name:</source>
@@ -992,7 +996,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Path:</source>
-        <translation>Chemin macro</translation>
+        <translation>Chemin:</translation>
     </message>
     <message>
         <source>&amp;Last modified by:</source>
@@ -1000,7 +1004,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Created &amp;by:</source>
-        <translation>Crée &amp;par:</translation>
+        <translation>Créé &amp;par:</translation>
     </message>
     <message>
         <source>Com&amp;pany:</source>
@@ -1008,7 +1012,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Last &amp;modification date:</source>
-        <translation>Date &amp;de dernère modification:</translation>
+        <translation>Date &amp;de dernière modification:</translation>
     </message>
     <message>
         <source>Creation &amp;date:</source>
@@ -1055,11 +1059,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Normal messages:</source>
-        <translation>Les messages normaux</translation>
+        <translation>Messages normaux:</translation>
     </message>
     <message>
         <source>Log messages:</source>
-        <translation>Les messages de log</translation>
+        <translation>Messages de log:</translation>
     </message>
     <message>
         <source>Warnings:</source>
@@ -1082,23 +1086,23 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>3D View settings</source>
-        <translation>Réglages Vue 3D</translation>
+        <translation>Paramètres de la vue 3D</translation>
     </message>
     <message>
         <source>Show coordinate system in the corner</source>
-        <translation>Voir les coordonnées système dans le coin</translation>
+        <translation>Afficher le système de coordonnées dans le coin</translation>
     </message>
     <message>
         <source>Show counter of frames per second</source>
-        <translation>Montrer le compteur de frames par secondes</translation>
+        <translation>Afficher le compteur d&apos;images par seconde</translation>
     </message>
     <message>
         <source>Enable animation</source>
-        <translation>Utilisez la rotation spin</translation>
+        <translation>Permettre l&apos;animation</translation>
     </message>
     <message>
         <source>3D Mouse Model</source>
-        <translation>Modèle souris 3D</translation>
+        <translation>Modèle de souris 3D</translation>
     </message>
     <message>
         <source>Simple model</source>
@@ -1110,11 +1114,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Enable anti-aliasing (slower)</source>
-        <translation>Anti-alias activé(ralenti)</translation>
+        <translation>Activer l&apos;anticrénelage (plus lent)</translation>
     </message>
     <message>
         <source>Eye to eye distance for stereo modes:</source>
-        <translation></translation>
+        <translation>Distance entre les yeux pour les modes stéréo:</translation>
     </message>
     <message>
         <source>Selection</source>
@@ -1122,19 +1126,19 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Enable pre-selection highlighting</source>
-        <translation>Activé les surlignement de présélection</translation>
+        <translation>Activer le surlignage pour les présélections</translation>
     </message>
     <message>
         <source>Selection color:</source>
-        <translation>Sélectionner la couleur:</translation>
+        <translation>Couleur de la sélection:</translation>
     </message>
     <message>
         <source>Highlight color:</source>
-        <translation>Couleur surlignée:</translation>
+        <translation>Couleur de surlignage:</translation>
     </message>
     <message>
         <source>Enable selection highlighting</source>
-        <translation>Activé la sélection surlignée</translation>
+        <translation>Activer le surlignage de la sélection</translation>
     </message>
     <message>
         <source>Camera type</source>
@@ -1146,7 +1150,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Perspective rendering</source>
-        <translation>Rendu pour la perspective</translation>
+        <translation>Rendu en perspective</translation>
     </message>
     <message>
         <source>Background color</source>
@@ -1154,7 +1158,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Color gradient</source>
-        <translation>Gradient de couleur</translation>
+        <translation>Dégradé de couleur</translation>
     </message>
     <message>
         <source>Simple color</source>
@@ -1166,14 +1170,14 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Middle color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur intermédiaire</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
         <source>Color gradient settings</source>
-        <translation>Réglages du gradient de couleur</translation>
+        <translation>Réglages du dégradé de couleur</translation>
     </message>
     <message>
         <source>Color model</source>
@@ -1181,23 +1185,23 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Gradient:</source>
-        <translation>&amp;Gradient:</translation>
+        <translation>Dé&amp;gradé:</translation>
     </message>
     <message>
         <source>red-yellow-green-cyan-blue</source>
-        <translation>Rouge-Jaune-Vert-Cyan-Bleu</translation>
+        <translation>rouge-jaune-vert-cyan-bleu</translation>
     </message>
     <message>
         <source>blue-cyan-green-yellow-red</source>
-        <translation>Bleu-cyan-vert-jaune-rouge</translation>
+        <translation>bleu-cyan-vert-jaune-rouge</translation>
     </message>
     <message>
         <source>white-black</source>
-        <translation>Blanc-noir</translation>
+        <translation>blanc-noir</translation>
     </message>
     <message>
         <source>black-white</source>
-        <translation>Noir-blanc</translation>
+        <translation>noir-blanc</translation>
     </message>
     <message>
         <source>Visibility</source>
@@ -1205,7 +1209,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Out g&amp;rayed</source>
-        <translation>Out g&amp;rayed</translation>
+        <translation>Sortie g&amp;risée</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -1225,7 +1229,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Zero</source>
-        <translation>&amp;Zero</translation>
+        <translation>&amp;Zéro</translation>
     </message>
     <message>
         <source>Alt+Z</source>
@@ -1249,7 +1253,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Parameter range</source>
-        <translation>Limites des paramètre</translation>
+        <translation>Limites du paramètre</translation>
     </message>
     <message>
         <source>Mi&amp;nimum:</source>
@@ -1257,11 +1261,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Ma&amp;ximum:</source>
-        <translation>Ma&amp;ximum</translation>
+        <translation>Ma&amp;ximum:</translation>
     </message>
     <message>
         <source>&amp;Labels:</source>
-        <translation>&amp;Etiquettes:</translation>
+        <translation>É&amp;tiquettes:</translation>
     </message>
     <message>
         <source>&amp;Decimals:</source>
@@ -1280,15 +1284,15 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>The maximum value must be higher than the minimum value.</source>
-        <translation>La valeur maxi doit ^etre plus grande que la valeur mini.</translation>
+        <translation>La valeur maximale doit être plus grande que la valeur minimale.</translation>
     </message>
     <message>
         <source>The maximum value must be higher than &apos;%1&apos;.</source>
-        <translation>La valeur maxi doit ^etre plus grande que  &apos;%1&apos;.</translation>
+        <translation>La valeur maximale doit être plus grande que  &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>The minimum value must be lower than &apos;%1&apos;.</source>
-        <translation>La valeur mini doit ^etre plus petite que  &apos;%1&apos;.</translation>
+        <translation>La valeur minimale doit être plus petite que  &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1304,7 +1308,8 @@ Specify another directory, please.</source>
     <message>
         <source>Document save compression level
 (0 = none, 9 = highest, 3 = default)</source>
-        <translation>Niveau de compression pour la sauvegarde des documents(0 = aucune, 9 = forte, 3 = par défaut)</translation>
+        <translation>Niveau de compression pour la sauvegarde du document
+(0 = aucune, 9 = forte, 3 = par défaut)</translation>
     </message>
     <message>
         <source>Undo Redo Size (in Megabyte)</source>
@@ -1316,7 +1321,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Using Undo/Redo on documents (can be very memory consuming)</source>
-        <translation>Utilisation des annulation/rétablissment dans les documents (l&apos;occupation de la mémoire est plus grande)</translation>
+        <translation>Utiliser les annulation/rétablissment dans les documents (l&apos;occupation de la mémoire est plus grande)</translation>
     </message>
     <message>
         <source>Storage</source>
@@ -1328,7 +1333,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Discard saved transaction after saving document</source>
-        <translation>Annuler les transations sauvées après la sauvegarde du document</translation>
+        <translation>Annuler les transactions sauvées après la sauvegarde du document</translation>
     </message>
     <message>
         <source>Save thumbnail into project file when saving document</source>
@@ -1347,7 +1352,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Breakpoint</source>
-        <translation>Point d&apos;arr^et</translation>
+        <translation>Point d&apos;arrêt</translation>
     </message>
     <message>
         <source>Keyword</source>
@@ -1371,7 +1376,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Character</source>
-        <translation>Carctère</translation>
+        <translation>Caractère</translation>
     </message>
     <message>
         <source>Class name</source>
@@ -1402,7 +1407,7 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::DlgSettingsImage</name>
     <message>
         <source>Image settings</source>
-        <translation>Réglages image</translation>
+        <translation>Paramètres de l&apos;image</translation>
     </message>
     <message>
         <source>Image properties</source>
@@ -1410,7 +1415,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Back&amp;ground:</source>
-        <translation>Arr&amp;ière plan</translation>
+        <translation>Arr&amp;ière plan:</translation>
     </message>
     <message>
         <source>Current</source>
@@ -1438,23 +1443,23 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Width:</source>
-        <translation>&amp;Taille:</translation>
+        <translation>&amp;Largeur:</translation>
     </message>
     <message>
         <source>Current screen</source>
-        <translation>Ecran courant</translation>
+        <translation>Écran actuel</translation>
     </message>
     <message>
         <source>Icon       32  x 32</source>
-        <translation>Icon       32  x 32</translation>
+        <translation>Icône       32  x 32</translation>
     </message>
     <message>
         <source>Icon       64 x 64</source>
-        <translation>Icon       64  x 64</translation>
+        <translation>Icône       64  x 64</translation>
     </message>
     <message>
         <source>Icon       128 x 128</source>
-        <translation>Icon       128 x 128</translation>
+        <translation>Icône       128 x 128</translation>
     </message>
     <message>
         <source>CGA       320 x 200</source>
@@ -1534,7 +1539,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Standard sizes:</source>
-        <translation>Tailles standards</translation>
+        <translation>Tailles standardes:</translation>
     </message>
     <message>
         <source>&amp;Height:</source>
@@ -1546,11 +1551,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Screen</source>
-        <translation>&amp;Ecran</translation>
+        <translation>É&amp;cran</translation>
     </message>
     <message>
         <source>Alt+S</source>
-        <translation>Alt+S</translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <source>&amp;4:3</source>
@@ -1578,7 +1583,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Image comment</source>
-        <translation>Commentaire image</translation>
+        <translation>Commentaire de l&apos;image</translation>
     </message>
     <message>
         <source>Insert MIBA</source>
@@ -1586,7 +1591,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Insert comment</source>
-        <translation>Insérer commentaire</translation>
+        <translation>Insérer un commentaire</translation>
     </message>
 </context>
 <context>
@@ -1597,15 +1602,15 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Macro recording settings</source>
-        <translation>Réglages d&apos;nregistrement macro</translation>
+        <translation>Réglages d&apos;enregistrement d&apos;une macro</translation>
     </message>
     <message>
         <source>Logging Commands</source>
-        <translation>Commandes de connection</translation>
+        <translation>Enregistrement des commandes</translation>
     </message>
     <message>
         <source>Show script commands in python console</source>
-        <translation>Montrer les commande du script dans la console Python</translation>
+        <translation>Montrer les commandes du script dans la console Python</translation>
     </message>
     <message>
         <source>Log all commands issued by menus to file:</source>
@@ -1613,14 +1618,15 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>FullScript.FCScript</source>
-        <translation></translation>
+        <translation>FullScript.FCScript</translation>
     </message>
     <message>
         <source>Gui commands</source>
-        <translation>Commandes interface graphique Gui</translation>
+        <translation>Commandes d&apos;interface graphique Gui</translation>
     </message>
     <message>
         <source>Recording GUI commands</source>
+        <translatorcomment>Recording (GUI commands) or (Recording GUI) commands ??</translatorcomment>
         <translation>Enregistrement des commandes de l&apos;interface graphique</translation>
     </message>
     <message>
@@ -1629,7 +1635,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Macro path</source>
-        <translation>Chamin macro</translation>
+        <translation>Chemin de la macro</translation>
     </message>
 </context>
 <context>
@@ -1648,7 +1654,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Alt+S</source>
-        <translation>Alt+S</translation>
+        <translation>Alt+M</translation>
     </message>
     <message>
         <source>&amp;Next Tip</source>
@@ -1656,7 +1662,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Alt+N</source>
-        <translation>Alt+N</translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -1664,7 +1670,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation>Alt+F</translation>
     </message>
     <message>
         <source></source>
@@ -1676,18 +1682,19 @@ Specify another directory, please.</source>
     <message>
         <source>Download failed: %1
 </source>
-        <translation>Téléchargement échoué</translation>
+        <translation>Téléchargement échoué: %1
+</translation>
     </message>
     <message>
         <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
-        <translation>Si vous voulez en apprendre plus à propos de FreeCAD Vous devez allerr sur %1 ou pressez le choix Aide dans le menu Aide.</translation>
+        <translation>Si vous voulez en apprendre plus à propos de FreeCAD, aller sur %1 ou choisissez &apos;Aide&apos; dans le menu Aide.</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::InputVector</name>
     <message>
         <source>Input vector</source>
-        <translation></translation>
+        <translation>Vecteur d&apos;entrée</translation>
     </message>
     <message>
         <source>Vector</source>
@@ -1718,7 +1725,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Add sub-group</source>
-        <translation>Ajouter sous-groupe</translation>
+        <translation>Ajouter un sous-groupe</translation>
     </message>
     <message>
         <source>Remove group</source>
@@ -1730,11 +1737,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Export parameter</source>
-        <translation>Exportertparamètres</translation>
+        <translation>Exporter le paramètre</translation>
     </message>
     <message>
         <source>Import parameter</source>
-        <translation>Importert paramètres</translation>
+        <translation>Importer un paramètre</translation>
     </message>
     <message>
         <source>Collapse</source>
@@ -1742,11 +1749,11 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Do really want to remove this parameter group?</source>
-        <translation>Voulez vous réellement enlever le paramètre du groupe?</translation>
+        <translation>Voulez vous réellement enlever ce groupe de paramètres?</translation>
     </message>
     <message>
         <source>Existing sub-group</source>
-        <translation>Sous-groupe  existant</translation>
+        <translation>Sous-groupe existant</translation>
     </message>
     <message>
         <source>The sub-group &apos;%1&apos; already exists.</source>
@@ -1754,7 +1761,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Export parameter to file</source>
-        <translation>Exportert paramètres vers fichier</translation>
+        <translation>Exporter le paramètre vers un fichier</translation>
     </message>
     <message>
         <source>XML (*.FCParam)</source>
@@ -1762,7 +1769,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Import parameter from file</source>
-        <translation>Importer paramètres du fichier</translation>
+        <translation>Importer un paramètre depuis un fichier</translation>
     </message>
     <message>
         <source>Import Error</source>
@@ -1793,27 +1800,27 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>New string item</source>
-        <translation>Item nouvelle chaine</translation>
+        <translation>Nouvel item chaine</translation>
     </message>
     <message>
         <source>New float item</source>
-        <translation>Item nouveau flottant</translation>
+        <translation>Nouvel item flottant</translation>
     </message>
     <message>
         <source>New integer item</source>
-        <translation>Item nouvel entier</translation>
+        <translation>Nouvel item entier</translation>
     </message>
     <message>
         <source>New unsigned item</source>
-        <translation>Item nouveau non signé</translation>
+        <translation>Nouvel item non signé</translation>
     </message>
     <message>
         <source>New Boolean item</source>
-        <translation>Item nouvel booleen</translation>
+        <translation>Nouvel item booleen</translation>
     </message>
     <message>
         <source>Existing item</source>
-        <translation>item existant</translation>
+        <translation>Item existant</translation>
     </message>
     <message>
         <source>The item &apos;%1&apos; already exists.</source>
@@ -1872,7 +1879,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>User defined...</source>
-        <translation>Utilisateur défini...</translation>
+        <translation>Défini par l&apos;utilisateur...</translation>
     </message>
     <message>
         <source>Axis:</source>
@@ -1883,7 +1890,7 @@ Specify another directory, please.</source>
     <name>Gui::Dialog::SceneInspector</name>
     <message>
         <source>Dialog</source>
-        <translation>Dialog</translation>
+        <translation>Fenêtre de dialogue</translation>
     </message>
     <message>
         <source>Close</source>
@@ -1898,14 +1905,14 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Nodes</source>
-        <translation>Noeux</translation>
+        <translation>Nœuds</translation>
     </message>
 </context>
 <context>
     <name>Gui::DlgTreeWidget</name>
     <message>
         <source>Dialog</source>
-        <translation>Dialogue</translation>
+        <translation>Fenêtre de dialogue</translation>
     </message>
     <message>
         <source>Items</source>
@@ -1948,7 +1955,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>All HTML files (*.html *.htm)</source>
-        <translation>Tous les fichiers HTML  (*.html *.htm)</translation>
+        <translation>Tous les fichiers HTML (*.html *.htm)</translation>
     </message>
     <message>
         <source>External browser</source>
@@ -1956,18 +1963,18 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>No external browser found. Specify in preferences, please</source>
-        <translation>Navigateur externe non trouvé. Specifiez le dans les préférences svp</translation>
+        <translation>Aucun navigateur externe trouvé. Spécifiez-le dans les préférences svp</translation>
     </message>
     <message>
         <source>Starting of %1 failed</source>
-        <translation>Démarrage de  %1 annulé</translation>
+        <translation>Le démarrage de %1 a échoué</translation>
     </message>
 </context>
 <context>
     <name>Gui::DockWnd::PropertyDockView</name>
     <message>
         <source>Property View</source>
-        <translation>Propriété de vue</translation>
+        <translation>Affichage des propriétés</translation>
     </message>
 </context>
 <context>
@@ -1978,14 +1985,14 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Data</source>
-        <translation>Donnée</translation>
+        <translation>Données</translation>
     </message>
 </context>
 <context>
     <name>Gui::DockWnd::ReportOutput</name>
     <message>
         <source>Logging</source>
-        <translation>Connection</translation>
+        <translation>Enregistrement</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -2005,7 +2012,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Save As...</source>
-        <translation>Sauver comme...</translation>
+        <translation>Enregistrer sous...</translation>
     </message>
     <message>
         <source>Save Report Output</source>
@@ -2031,7 +2038,7 @@ Specify another directory, please.</source>
     <name>Gui::DockWnd::SelectionView</name>
     <message>
         <source>Property View</source>
-        <translation>Propriété de vue</translation>
+        <translation>Affichage des propriétés</translation>
     </message>
 </context>
 <context>
@@ -2042,19 +2049,19 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
-        <translation>Vous essayez d&apos;accéder à l&apos;adresse %1 indisponible. Assurez vous que l&apos;URL existe et recharger la page</translation>
+        <translation>Vous essayez d&apos;accéder à l&apos;adresse %1, actuellement indisponible. Assurez vous que l&apos;URL existe et recharger la page.</translation>
     </message>
     <message>
         <source>Connecting to %1</source>
-        <translation>Connection vers %1</translation>
+        <translation>Connexion à %1</translation>
     </message>
     <message>
         <source>Sending to %1</source>
-        <translation>Envoyé vers %1</translation>
+        <translation>Envoi vers %1</translation>
     </message>
     <message>
         <source>Reading from %1</source>
-        <translation>Lecture de %1</translation>
+        <translation>Lecture depuis %1</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
@@ -2066,7 +2073,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Forward</source>
-        <translation>Retour</translation>
+        <translation>Suivant</translation>
     </message>
     <message>
         <source>Home</source>
@@ -2082,7 +2089,7 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Select all</source>
-        <translation>Sélectionner tout</translation>
+        <translation>Tout sélectionner</translation>
     </message>
     <message>
         <source>No description for</source>
@@ -2099,7 +2106,9 @@ Specify another directory, please.</source>
         <source>%1.
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
-        <translation>%1.a été modifié à l&apos;extérieur de l&apos;éditeur de source.Voulez vous le recharger?</translation>
+        <translation>%1.
+
+Ce fichier a été modifié à l&apos;extérieur de l&apos;éditeur de source.Voulez-vous le recharger?</translation>
     </message>
     <message>
         <source>Unsaved document</source>
@@ -2108,7 +2117,8 @@ This has been modified outside of the source editor. Do you want to reload it?</
     <message>
         <source>The document has been modified.
 Do you want to save your changes?</source>
-        <translation>Le document a été modifié.Voulez sauvez les modifications?</translation>
+        <translation>Le document a été modifié.
+Voulez sauvez les modifications?</translation>
     </message>
     <message>
         <source>FreeCAD macro (*.FCMacro);;Python (*.py)</source>
@@ -2116,7 +2126,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Export PDF</source>
-        <translation>Exporter PDF</translation>
+        <translation>Exporter vers PDF</translation>
     </message>
     <message>
         <source>PDF file (*.pdf)</source>
@@ -2124,11 +2134,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>untitled[*]</source>
-        <translation>innommable</translation>
+        <translation>sansnom[*]</translation>
     </message>
     <message>
         <source> - Editor</source>
-        <translation>Editeur</translation>
+        <translation> - Éditeur</translation>
     </message>
     <message>
         <source>%1 chars removed</source>
@@ -2158,7 +2168,7 @@ Do you want to save your changes?</source>
     <name>Gui::FileDialog</name>
     <message>
         <source>Save as</source>
-        <translation>Sauver comme</translation>
+        <translation>Enregistrer sous</translation>
     </message>
     <message>
         <source>Open</source>
@@ -2169,11 +2179,11 @@ Do you want to save your changes?</source>
     <name>Gui::FileOptionsDialog</name>
     <message>
         <source>Extended</source>
-        <translation>Etendu</translation>
+        <translation>Étendu</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation>Tous fichiers (*.*)</translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
 </context>
 <context>
@@ -2184,7 +2194,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Bottom left</source>
-        <translation>En bas à droite</translation>
+        <translation>En bas à gauche</translation>
     </message>
     <message>
         <source>Top right</source>
@@ -2203,7 +2213,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Direction must not be the null vector</source>
-        <translation>La direction ne peut pas etre un vecteur nul</translation>
+        <translation>La direction ne peut pas être un vecteur nul</translation>
     </message>
 </context>
 <context>
@@ -2221,15 +2231,15 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Ready</source>
-        <translation>Pr^et</translation>
+        <translation>Prêt</translation>
     </message>
     <message>
         <source>Toggles this toolbar</source>
-        <translation>Basculez cette barre d&apos;outils</translation>
+        <translation>Bascule cette barre d&apos;outils</translation>
     </message>
     <message>
         <source>Toggles this dockable window</source>
-        <translation>Basculez cette fenêtre dockable</translation>
+        <translation>Bascule cette fenêtre dockable</translation>
     </message>
 </context>
 <context>
@@ -2237,14 +2247,15 @@ Do you want to save your changes?</source>
     <message>
         <source>Download started...
 </source>
-        <translation>Téléchargement commencé</translation>
+        <translation>Téléchargement commencé...
+</translation>
     </message>
 </context>
 <context>
     <name>Gui::ProgressBar</name>
     <message>
         <source>Remaining: %1</source>
-        <translation>Effectué: %1</translation>
+        <translation>Restant: %1</translation>
     </message>
     <message>
         <source>Aborting</source>
@@ -2259,7 +2270,7 @@ Do you want to save your changes?</source>
     <name>Gui::ProgressDialog</name>
     <message>
         <source>Remaining: %1</source>
-        <translation>Effectué: %1</translation>
+        <translation>Restant: %1</translation>
     </message>
     <message>
         <source>Aborting</source>
@@ -2290,7 +2301,8 @@ Do you want to save your changes?</source>
     <message>
         <source>The application is still running.
 Do you want to exit without saving your data?</source>
-        <translation>L&apos;application est en fonctionnement.Voulez vous quitter sans sauvegarder vos données?</translation>
+        <translation>L&apos;application est en fonctionnement.
+Voulez vous quitter sans sauvegarder vos données?</translation>
     </message>
     <message>
         <source>Python console</source>
@@ -2298,19 +2310,19 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Unhandled PyCXX exception.</source>
-        <translation>Exception PyCXX non gérée</translation>
+        <translation>Exception PyCXX non gérée.</translation>
     </message>
     <message>
         <source>Unhandled FreeCAD exception.</source>
-        <translation>Exception FreeCad non gérée</translation>
+        <translation>Exception FreeCad non gérée.</translation>
     </message>
     <message>
         <source>Unhandled unknown C++ exception.</source>
-        <translation>Exception C++  non gérée inconnue</translation>
+        <translation>Exception C++  non gérée et/ou inconnue.</translation>
     </message>
     <message>
         <source>&amp;Copy command</source>
-        <translation>&amp;Commande Copier</translation>
+        <translation>&amp;Copier la commande</translation>
     </message>
     <message>
         <source>&amp;Copy history</source>
@@ -2318,7 +2330,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Save history as...</source>
-        <translation>Sauver l&apos;historique comme...</translation>
+        <translation>Sauver l&apos;historique sous...</translation>
     </message>
     <message>
         <source>Insert file name...</source>
@@ -2338,15 +2350,15 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>All Files (*.*)</source>
-        <translation>Tous fichiers (*.*)</translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <source>Python Input Dialog</source>
-        <translation>Dialogue Entrée Python</translation>
+        <translation>Dialogue d&apos;entrée Python</translation>
     </message>
     <message>
         <source>Input for Python:</source>
-        <translation>Entrée pour Python</translation>
+        <translation>Entrée pour Python:</translation>
     </message>
 </context>
 <context>
@@ -2364,7 +2376,7 @@ Do you want to exit without saving your data?</source>
     <name>Gui::RecentFilesAction</name>
     <message>
         <source>Open file %1</source>
-        <translation>Ouvrir le fichier &apos;%1&apos;.</translation>
+        <translation>Ouvrir le fichier %1</translation>
     </message>
     <message>
         <source>File not found</source>
@@ -2372,7 +2384,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>The file &apos;%1&apos; cannot be opened.</source>
-        <translation>Le fichier &apos;%1&apos; ne peut pas etre ouvert.</translation>
+        <translation>Le fichier &apos;%1&apos; ne peut pas être ouvert.</translation>
     </message>
 </context>
 <context>
@@ -2383,7 +2395,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Open %1 as</source>
-        <translation>Ouvrir  &apos;%1&apos; comme</translation>
+        <translation>Ouvrir &apos;%1&apos; comme</translation>
     </message>
     <message>
         <source>Select</source>
@@ -2417,11 +2429,11 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Opens a browser to show the Python modules</source>
-        <translation>Ouvrez un navigateur pour voir les modules Python</translation>
+        <translation>Ouvre un navigateur pour voir les modules Python</translation>
     </message>
 </context>
 <context>
-    <name>Workbench</name>
+    <name>Gui::StdWorkbench</name>
     <message>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
@@ -2432,7 +2444,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Standard views</source>
-        <translation>Vues standards</translation>
+        <translation>Vues standardes</translation>
     </message>
     <message>
         <source>&amp;Stereo</source>
@@ -2460,7 +2472,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>&amp;On-line help</source>
-        <translation>&amp;Aide-en-ligne</translation>
+        <translation>Aide en &amp;ligne</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -2480,26 +2492,26 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Special Ops</source>
-        <translation>Opération spéciale</translation>
+        <translation>Opérations spéciales</translation>
     </message>
 </context>
 <context>
     <name>Gui::TaskView::TaskAppearance</name>
     <message>
         <source>Display mode:</source>
-        <translation>Mode affichage:</translation>
+        <translation>Mode d&apos;affichage:</translation>
     </message>
     <message>
         <source>Plot mode:</source>
-        <translation>Mode dessin:</translation>
+        <translation>Mode de tracé:</translation>
     </message>
     <message>
         <source>Point size:</source>
-        <translation>Taille du point:</translation>
+        <translation>Taille de point:</translation>
     </message>
     <message>
         <source>Line width:</source>
-        <translation>Taille de ligne:</translation>
+        <translation>Épaisseur de ligne:</translation>
     </message>
     <message>
         <source>Transparency:</source>
@@ -2507,7 +2519,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparence</translation>
     </message>
 </context>
 <context>
@@ -2563,7 +2575,7 @@ Do you want to exit without saving your data?</source>
     <name>Gui::TreeWidget</name>
     <message>
         <source>Create group...</source>
-        <translation>Créer groupe...</translation>
+        <translation>Créer un groupe...</translation>
     </message>
     <message>
         <source>Create a group</source>
@@ -2575,15 +2587,15 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer</translation>
     </message>
     <message>
         <source>Rename object</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer un objet</translation>
     </message>
     <message>
         <source>Labels &amp; Attributes</source>
-        <translation>Labels &amp; Attributs</translation>
+        <translation>Étiquettes &amp; Attributs</translation>
     </message>
     <message>
         <source>Application</source>
@@ -2605,7 +2617,7 @@ Do you want to exit without saving your data?</source>
     <name>Gui::WorkbenchGroup</name>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
-        <translation>Sélectionner  le&apos;%1&apos; établi</translation>
+        <translation>Sélectionner l&apos;établi &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -2616,11 +2628,11 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Property view</source>
-        <translation>Propriété de vue</translation>
+        <translation>Affichage des propriétés</translation>
     </message>
     <message>
         <source>Selection view</source>
-        <translation>Sélectionner la vue</translation>
+        <translation>Afficher la sélection</translation>
     </message>
     <message>
         <source>Report view</source>
@@ -2628,11 +2640,11 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Task View</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les tâches</translation>
     </message>
     <message>
         <source>Combo View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue combinée</translation>
     </message>
 </context>
 <context>
@@ -2711,7 +2723,7 @@ Do you want to exit without saving your data?</source>
     </message>
     <message>
         <source>Freeze view</source>
-        <translation>Bloquer les vues</translation>
+        <translation>Capturer la vue</translation>
     </message>
     <message>
         <source>Clear views</source>
@@ -2736,7 +2748,8 @@ Do you want to exit without saving your data?</source>
     <message>
         <source>Importing the restored views would clear the already stored views.
 Do you want to continue?</source>
-        <translation>Importer des vues sauvegardées effacera les vues déjà stockées.Voulez vous continuer?</translation>
+        <translation>Importer des vues sauvegardées effacera les vues déjà stockées.
+Voulez vous continuer?</translation>
     </message>
     <message>
         <source>Restore frozen views</source>
@@ -2752,7 +2765,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Undocked</source>
-        <translation>non dockée</translation>
+        <translation>Non dockée</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -2760,7 +2773,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>files</source>
-        <translation>Fichiers</translation>
+        <translation>fichiers</translation>
     </message>
     <message>
         <source>Save picture</source>
@@ -2792,7 +2805,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>New unsigned item</source>
-        <translation>Nouvel Item non signé</translation>
+        <translation>Nouvel item non signé</translation>
     </message>
     <message>
         <source>New float item</source>
@@ -2800,11 +2813,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>New Boolean item</source>
-        <translation>Item nouvel booléen</translation>
+        <translation>Nouvel item booléen</translation>
     </message>
     <message>
         <source>Choose an item:</source>
-        <translation>Choisir l&apos;item:</translation>
+        <translation>Choisir an item:</translation>
     </message>
     <message>
         <source>Rename group</source>
@@ -2816,7 +2829,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Existing group</source>
-        <translation>Groupe  existant</translation>
+        <translation>Groupe existant</translation>
     </message>
     <message>
         <source>The group &apos;%1&apos; already exists.</source>
@@ -2828,7 +2841,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Save document under new filename...</source>
-        <translation>Sauver le document sous un un nouveau nom de fichier...</translation>
+        <translation>Sauver le document sous un nouveau nom de fichier...</translation>
     </message>
     <message>
         <source>Saving aborted</source>
@@ -2844,7 +2857,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Save Macro</source>
-        <translation>Sauver macro</translation>
+        <translation>Sauver la macro</translation>
     </message>
     <message>
         <source>Cannot open help file</source>
@@ -2852,7 +2865,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Finish</source>
-        <translation>Fini</translation>
+        <translation>Terminer</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -2864,11 +2877,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Inner</source>
-        <translation>intérieur</translation>
+        <translation>Intérieur</translation>
     </message>
     <message>
         <source>Outer</source>
-        <translation>extérieur</translation>
+        <translation>Extérieur</translation>
     </message>
     <message>
         <source>No Browser</source>
@@ -2888,7 +2901,7 @@ Ouvrer une fenêtre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>Unable to start the server to port %1: %2.</source>
-        <translation>Impossible de démarrer le serveur sur les portst %1: %2.</translation>
+        <translation>Impossible de démarrer le serveur sur le port %1: %2.</translation>
     </message>
     <message>
         <source>Unable to open your system browser.</source>
@@ -2912,7 +2925,7 @@ Ouvrer une fenêtre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>Cannot find file %1 neither in %2 nor in %3</source>
-        <translation>Ne peut pas trouver le fichier %1 ni dans  %2 ni dans %3 </translation>
+        <translation>Ne peut pas trouver le fichier %1 ni dans %2 ni dans %3 </translation>
     </message>
     <message>
         <source>Save %1 Document</source>
@@ -2924,27 +2937,28 @@ Ouvrer une fenêtre navigateur et taper http://localhost:%1 svp .</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer sous</translation>
     </message>
     <message>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 existe déjà.
+Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <source>Document not closable</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de fermer le document</translation>
     </message>
     <message>
         <source>The document is not closable for the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de fermer me document pour le moment.</translation>
     </message>
 </context>
 <context>
     <name>QTextEdit</name>
     <message>
         <source>&amp;Copy</source>
-        <translation>&amp;Copier</translation>
+        <translation>C&amp;opier</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
@@ -2952,7 +2966,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Select All</source>
-        <translation>Sélectionner tout</translation>
+        <translation>Tout sélectionner</translation>
     </message>
 </context>
 <context>
@@ -2963,11 +2977,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>&amp;About %1</source>
-        <translation>&amp;A propos de %1</translation>
+        <translation>&amp;À propos de %1</translation>
     </message>
     <message>
         <source>About %1</source>
-        <translation>A propos %1</translation>
+        <translation>À propos %1</translation>
     </message>
 </context>
 <context>
@@ -2978,11 +2992,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>About &amp;Qt</source>
-        <translation>A propos de &amp;Qt</translation>
+        <translation>À propos de &amp;Qt</translation>
     </message>
     <message>
         <source>About Qt</source>
-        <translation>A propos Qt</translation>
+        <translation>À propos Qt</translation>
     </message>
 </context>
 <context>
@@ -2993,11 +3007,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Ne&amp;xt</source>
-        <translation>Su&amp;ivant</translation>
+        <translation>Su&amp;ivante</translation>
     </message>
     <message>
         <source>Activate next window</source>
-        <translation>Activez fenêtre suivante</translation>
+        <translation>Activez la fenêtre suivante</translation>
     </message>
 </context>
 <context>
@@ -3008,11 +3022,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Pre&amp;vious</source>
-        <translation>Pré&amp;cédent</translation>
+        <translation>Pré&amp;cédente</translation>
     </message>
     <message>
         <source>Activate previous window</source>
-        <translation>Activez fenêtre précédente</translation>
+        <translation>Activez la fenêtre précédente</translation>
     </message>
 </context>
 <context>
@@ -3023,11 +3037,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Arrange &amp;Icons</source>
-        <translation>Arranger &amp;Icones</translation>
+        <translation>Arranger les &amp;Icônes</translation>
     </message>
     <message>
         <source>Arrange Icons</source>
-        <translation>Arranger icones</translation>
+        <translation>Arranger les icônes</translation>
     </message>
 </context>
 <context>
@@ -3038,11 +3052,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>&amp;Cascade</source>
-        <translation>&amp;Cascade de fenêtre(empilement)</translation>
+        <translation>&amp;Cascade de fenêtres(empilement)</translation>
     </message>
     <message>
         <source>Tile pragmatic</source>
-        <translation>Titre pragmatic</translation>
+        <translation>Organisation pragmatique</translation>
     </message>
 </context>
 <context>
@@ -3083,7 +3097,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Start command &amp;line...</source>
-        <translation>Démarrer la &amp;ligne de commande</translation>
+        <translation>Démarrer la &amp;ligne de commande...</translation>
     </message>
     <message>
         <source>Opens the command line in the console</source>
@@ -3132,7 +3146,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Deletes the selected objects</source>
-        <translation>Effacez les objets sélectionnés</translation>
+        <translation>Efface les objets sélectionnés</translation>
     </message>
 </context>
 <context>
@@ -3143,11 +3157,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Cu&amp;stomize...</source>
-        <translation>Pe&amp;rsonaliser</translation>
+        <translation>Per&amp;sonaliser...</translation>
     </message>
     <message>
         <source>Customize toolbars and command bars</source>
-        <translation>Personaliser les barres d&apos;outils et barres de commandes</translation>
+        <translation>Personnaliser les barres d&apos;outils et de commandes</translation>
     </message>
 </context>
 <context>
@@ -3162,7 +3176,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Opens a dialog to let you execute a recorded macro</source>
-        <translation>Ouvrez une boite de dialogue pour laisser éxécuter une macro enregistrée</translation>
+        <translation>Ouvre une boite de dialogue pour éxécuter une macro enregistrée</translation>
     </message>
 </context>
 <context>
@@ -3173,11 +3187,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Execute &amp;editor</source>
-        <translation>Lancer &amp;éditeur</translation>
+        <translation>Lancer l&apos;&amp;éditeur</translation>
     </message>
     <message>
         <source>Execute the macro/script in the editor</source>
-        <translation>Executee la macro/script dans l&apos;éditeur</translation>
+        <translation>Exécute la macro/script dans l&apos;éditeur</translation>
     </message>
 </context>
 <context>
@@ -3188,11 +3202,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>&amp;Macro recording ...</source>
-        <translation>&amp;Enregistrement macro ...</translation>
+        <translation>&amp;Enregistrement de macro ...</translation>
     </message>
     <message>
         <source>Opens a dialog to record a macro</source>
-        <translation>Ouvrez une boite de dialogue pour enregistrer une macro</translation>
+        <translation>Ouvre une boite de dialogue pour enregistrer une macro</translation>
     </message>
 </context>
 <context>
@@ -3203,11 +3217,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>E&amp;dit parameters ...</source>
-        <translation>E&amp;diter paramètres ...</translation>
+        <translation>É&amp;diter paramètres ...</translation>
     </message>
     <message>
         <source>Opens a Dialog to edit the parameters</source>
-        <translation>Ouvrez une boite de dialogue pour éditer les paramètres</translation>
+        <translation>Ouvre une boite de dialogue pour éditer les paramètres</translation>
     </message>
 </context>
 <context>
@@ -3222,7 +3236,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Opens a Dialog to edit the preferences</source>
-        <translation>Ouvrez une boite de dialogue pour éditer les préférences</translation>
+        <translation type="unfinished">Ouvre une boite de dialogue pour éditer les préférences</translation>
     </message>
 </context>
 <context>
@@ -3237,7 +3251,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Toggles this window</source>
-        <translation>Basculez cette fenêtre</translation>
+        <translation>Bascule cette fenêtre</translation>
     </message>
 </context>
 <context>
@@ -3252,7 +3266,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <source>Download %1&apos;s online help</source>
-        <translation>Télécharger %1&apos;s l&apos;aide en ligne</translation>
+        <translation>Télécharger l&apos;aide en ligne de %1</translation>
     </message>
     <message>
         <source>Non-existing directory</source>
@@ -3262,7 +3276,9 @@ Do you want to replace it?</source>
         <source>The directory &apos;%1&apos; does not exist.
 
 Do you want to specify an existing directory?</source>
-        <translation>Le dossier &apos;%1&apos; n&apos;existe pasVoulez vous spécifier un dossier existant?</translation>
+        <translation>Le dossier &apos;%1&apos; n&apos;existe pas.
+
+Voulez vous spécifier un dossier existant?</translation>
     </message>
     <message>
         <source>Missing permission</source>
@@ -3272,11 +3288,13 @@ Do you want to specify an existing directory?</source>
         <source>You don&apos;t have write permission to &apos;%1&apos;
 
 Do you want to specify another directory?</source>
-        <translation>Vous n&apos;avez pas l&apos;accès en écriture à  &apos;%1&apos;Voulez-vous indiquer un autre dossier?</translation>
+        <translation>Vous n&apos;avez pas l&apos;accès en écriture à &apos;%1&apos;
+
+Voulez-vous indiquer un autre dossier?</translation>
     </message>
     <message>
         <source>Stop downloading</source>
-        <translation>Arr^eter le téléchargement</translation>
+        <translation>Arrêter le téléchargement</translation>
     </message>
 </context>
 <context>
@@ -3310,7 +3328,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Recompute feature or document</source>
-        <translation>Recalculer caractéristique ou document</translation>
+        <translation>Recalculer la fonction ou le document</translation>
     </message>
 </context>
 <context>
@@ -3321,11 +3339,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>FreeCAD Website</source>
-        <translation>Site Web FreeCad</translation>
+        <translation>Site Web de FreeCad</translation>
     </message>
     <message>
         <source>The FreeCAD website</source>
-        <translation>Le site web FreeCad</translation>
+        <translation>Le site web de FreeCad</translation>
     </message>
 </context>
 <context>
@@ -3336,11 +3354,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Freeze display</source>
-        <translation>Bloquer l&apos;affichage</translation>
+        <translation>Capturer l&apos;affichage</translation>
     </message>
     <message>
         <source>Freezes the current view position</source>
-        <translation>Bloquez la position courante de la vue</translation>
+        <translation>Capturer la position actuelle de la vue</translation>
     </message>
 </context>
 <context>
@@ -3393,7 +3411,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation></translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
 </context>
 <context>
@@ -3404,11 +3422,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>S&amp;top macro recording</source>
-        <translation>Arrê&amp;ter l&apos;enregistrement macro</translation>
+        <translation>Arrê&amp;ter l&apos;enregistrement de la macro</translation>
     </message>
     <message>
         <source>Stop the macro recording session</source>
-        <translation>Arr^eter le fonctionnement de la session d&apos;enregistrement macro</translation>
+        <translation>Arrêter le fonctionnement de la session d&apos;enregistrement de macro</translation>
     </message>
 </context>
 <context>
@@ -3419,7 +3437,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Measure distance</source>
-        <translation>Mesure de distances</translation>
+        <translation>Mesurer une distance</translation>
     </message>
 </context>
 <context>
@@ -3475,7 +3493,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>The website where the help is maintained</source>
-        <translation>Le site web d&apos;aide est en maintenance</translation>
+        <translation>Le site web où l&apos;aide est maintenue</translation>
     </message>
 </context>
 <context>
@@ -3505,7 +3523,7 @@ Do you want to specify another directory?</source>
     <name>StdCmdPaste</name>
     <message>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
@@ -3539,7 +3557,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>&amp;Export PDF...</source>
-        <translation>&amp;Exporter PDF...</translation>
+        <translation>&amp;Exporter vers PDF...</translation>
     </message>
     <message>
         <source>Export the document as PDF</source>
@@ -3554,11 +3572,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Project i&amp;nformation...</source>
-        <translation>I&amp;nformation Projet ...</translation>
+        <translation>I&amp;nformations sur le projet ...</translation>
     </message>
     <message>
         <source>Show details of the currently active project</source>
-        <translation>Voir les détails du projet actif courant</translation>
+        <translation>Voir les détails du projet actif</translation>
     </message>
 </context>
 <context>
@@ -3588,7 +3606,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Quits the application</source>
-        <translation>Quittez l&apos;application</translation>
+        <translation>Quitte l&apos;application</translation>
     </message>
 </context>
 <context>
@@ -3614,29 +3632,29 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Recent file list</source>
-        <translation>Liste récente de fichiers</translation>
+        <translation>Liste de fichiers récents</translation>
     </message>
 </context>
 <context>
     <name>StdCmdRedo</name>
     <message>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <source>&amp;Redo</source>
-        <translation>&amp;Recommencer</translation>
+        <translation>&amp;Refaire</translation>
     </message>
     <message>
         <source>Redoes a previously undone action</source>
-        <translation>Recommencez une action précedemment annulée</translation>
+        <translation>Refait une action précedemment annulée</translation>
     </message>
 </context>
 <context>
     <name>StdCmdRefresh</name>
     <message>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
@@ -3644,7 +3662,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Recomputes the current active document</source>
-        <translation>Recalculer le document actif courant</translation>
+        <translation>Recalculer le document actif</translation>
     </message>
 </context>
 <context>
@@ -3655,7 +3673,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation>&amp;Sauver</translation>
+        <translation>&amp;Enregistrer</translation>
     </message>
     <message>
         <source>Save the active document</source>
@@ -3670,7 +3688,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Save &amp;As...</source>
-        <translation>Sauver &amp;comme...</translation>
+        <translation>Enregistrer &amp;sous...</translation>
     </message>
     <message>
         <source>Save the active document under a new file name</source>
@@ -3696,15 +3714,15 @@ Do you want to specify another directory?</source>
     <name>StdCmdSelectAll</name>
     <message>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <source>Select &amp;All</source>
-        <translation>Sélectionner &amp;tout</translation>
+        <translation>&amp;Tout sélectionner</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation>Sélectionner tout</translation>
+        <translation>Tout sélectionner</translation>
     </message>
 </context>
 <context>
@@ -3715,11 +3733,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Appearance...</source>
-        <translation>Apparance...</translation>
+        <translation>Apparence...</translation>
     </message>
     <message>
         <source>Sets the display properties of the selected object</source>
-        <translation>Régler l&apos;affichages des propriétés de l&apos;objet sélectionné</translation>
+        <translation>Règle les propriétés d&apos;affichage de l&apos;objet sélectionné</translation>
     </message>
 </context>
 <context>
@@ -3734,7 +3752,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Show all objects in the document</source>
-        <translation>Montrer tous les objets dansle document</translation>
+        <translation>Montrer tous les objets dans le document</translation>
     </message>
 </context>
 <context>
@@ -3764,7 +3782,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Toggles the status bar</source>
-        <translation>Basculer la barre d&apos;état</translation>
+        <translation>Bascule la barre d&apos;état</translation>
     </message>
 </context>
 <context>
@@ -3805,11 +3823,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Clipping plane</source>
-        <translation>Clipping plan</translation>
+        <translation>Plan de clipping</translation>
     </message>
     <message>
         <source>Toggles clipping plane for active view</source>
-        <translation>Basculer plan clippé pour la vue active</translation>
+        <translation>Bascule le plan de clipping pour la vue active</translation>
     </message>
 </context>
 <context>
@@ -3820,11 +3838,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Toggle all objects</source>
-        <translation>Basculez tous les objets</translation>
+        <translation>Basculer tous les objets</translation>
     </message>
     <message>
         <source>Toggles visibility of all objects in the active document</source>
-        <translation>Basculez la visibilité de tous les objets dans le document actif</translation>
+        <translation>Bascule la visibilité de tous les objets dans le document actif</translation>
     </message>
 </context>
 <context>
@@ -3835,11 +3853,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Toggle visibility</source>
-        <translation>Basculez visibilité</translation>
+        <translation>Basculez la visibilité</translation>
     </message>
     <message>
         <source>Toggles visibility</source>
-        <translation>Basculez la visibilité</translation>
+        <translation>Bascule la visibilité</translation>
     </message>
 </context>
 <context>
@@ -3854,7 +3872,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Toggles this window</source>
-        <translation>Basculez cette fenêtre</translation>
+        <translation>Bascule cette fenêtre</translation>
     </message>
 </context>
 <context>
@@ -3869,14 +3887,14 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Scroll to first selected item</source>
-        <translation>Défiler au premier élément sélectionné</translation>
+        <translation>Défiler jusqu&apos;au premier élément sélectionné</translation>
     </message>
 </context>
 <context>
     <name>StdCmdUndo</name>
     <message>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
@@ -3895,11 +3913,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Dock views</source>
-        <translation>Vues dock</translation>
+        <translation>Ancrer les vues</translation>
     </message>
     <message>
         <source>Dock all top-level views</source>
-        <translation></translation>
+        <translation>Ancrer toutes les vues de premier niveau</translation>
     </message>
 </context>
 <context>
@@ -3910,11 +3928,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Axometric</source>
-        <translation>Axométrique</translation>
+        <translation>Axonométrique</translation>
     </message>
     <message>
         <source>Set to axometric view</source>
-        <translation>Mettre en vue axométrique</translation>
+        <translation>Passer en vue axonométrique</translation>
     </message>
 </context>
 <context>
@@ -3925,11 +3943,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Dessus</translation>
+        <translation>Dessous</translation>
     </message>
     <message>
         <source>Set to bottom view</source>
-        <translation>Voir la vue de dessus</translation>
+        <translation>Voir la vue de dessous</translation>
     </message>
 </context>
 <context>
@@ -3944,7 +3962,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Creates a new  view window for the active document</source>
-        <translation>Créez  une fen^etre de nouvelle vue pour le document actif</translation>
+        <translation>Créez une nouvelle fenêtre de vue pour le document actif</translation>
     </message>
 </context>
 <context>
@@ -3955,11 +3973,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Inventor example #1</source>
-        <translation>Inventor exemple #1</translation>
+        <translation>Exemple Inventor #1</translation>
     </message>
     <message>
         <source>Shows a 3D texture with manipulator</source>
-        <translation>Montrer une texture 3D avec manipulation</translation>
+        <translation>Montre une texture 3D avec manipulation</translation>
     </message>
 </context>
 <context>
@@ -3970,11 +3988,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Inventor example #2</source>
-        <translation>Inventor exemple #2</translation>
+        <translation>Exemple Inventor #2</translation>
     </message>
     <message>
         <source>Shows spheres and drag-lights</source>
-        <translation>Montrez les sphères </translation>
+        <translation>Montre des sphères et des lumières déplaçables</translation>
     </message>
 </context>
 <context>
@@ -3985,11 +4003,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Inventor example #3</source>
-        <translation>Inventor exemple #3</translation>
+        <translation>Exemple Inventor #3</translation>
     </message>
     <message>
         <source>Shows a animated texture</source>
-        <translation>Montrez une texture animée</translation>
+        <translation>Montre une texture animée</translation>
     </message>
 </context>
 <context>
@@ -4000,11 +4018,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Fit all</source>
-        <translation>Remplir tout</translation>
+        <translation>Tout afficher</translation>
     </message>
     <message>
         <source>Fits the whole content on the screen</source>
-        <translation>Remplir l&apos;ensemble du contenu à l&apos;écran</translation>
+        <translation>Affiche l&apos;ensemble du contenu à l&apos;écran</translation>
     </message>
 </context>
 <context>
@@ -4015,11 +4033,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Fit selection</source>
-        <translation>Remplir la sélection</translation>
+        <translation>Affiche la sélection</translation>
     </message>
     <message>
         <source>Fits the selected content on the screen</source>
-        <translation>Remplissez le contenu sélectionné à l&apos;écran</translation>
+        <translation>Affiche le contenu sélectionné à l&apos;écran</translation>
     </message>
 </context>
 <context>
@@ -4030,7 +4048,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Front</source>
-        <translation>Devant</translation>
+        <translation>Face</translation>
     </message>
     <message>
         <source>Set to front view</source>
@@ -4045,11 +4063,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Issue camera position</source>
-        <translation>Numéro position caméra</translation>
+        <translation>Récupérer la position de la caméra</translation>
     </message>
     <message>
         <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-        <translation>Numéro position caméra à la console et vers une macro, pour recalculer facilement la position</translation>
+        <translation>Récupérer la position de la caméra dans la console et dans une macro, pour réutiliser facilement cette position</translation>
     </message>
 </context>
 <context>
@@ -4060,11 +4078,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo Interleaved Columns</source>
-        <translation>Colonne entrelacées stereo</translation>
+        <translation>Colonnes entrelacées stéréo</translation>
     </message>
     <message>
         <source>Switch stereo viewing to Interleaved Columns</source>
-        <translation>Basculer la vision stereo vers les colonnes entrelacées</translation>
+        <translation>Basculer la vision stéréo vers la technique des colonnes entrelacées</translation>
     </message>
 </context>
 <context>
@@ -4075,11 +4093,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo Interleaved Rows</source>
-        <translation>Lignes entrelacées stereo</translation>
+        <translation>Lignes entrelacées stéréo</translation>
     </message>
     <message>
         <source>Switch stereo viewing to Interleaved Rows</source>
-        <translation>Basculer la vision stereao vers les lignes entrelacées</translation>
+        <translation>Basculer la vision stéréo vers la technique des ligne entrelacées</translation>
     </message>
 </context>
 <context>
@@ -4090,11 +4108,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo Off</source>
-        <translation>Stéreo annulée</translation>
+        <translation>Désactiver la stéréo</translation>
     </message>
     <message>
         <source>Switch stereo viewing off</source>
-        <translation>Basculer la vue stéreo sur annulé</translation>
+        <translation>Désactiver la vision stéréo</translation>
     </message>
 </context>
 <context>
@@ -4105,11 +4123,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo quad buffer</source>
-        <translation>Quadri tampon stéreo</translation>
+        <translation>Quadri tampon stéréo</translation>
     </message>
     <message>
         <source>Switch stereo viewing to quad buffer</source>
-        <translation>Basculer la vision stéreo vers le quadri tampon</translation>
+        <translation>Basculer la vision stéreo vers la technique quadri tampon</translation>
     </message>
 </context>
 <context>
@@ -4120,11 +4138,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Stereo red/green</source>
-        <translation>Stereo rouge/vert</translation>
+        <translation>Stéréo rouge/vert</translation>
     </message>
     <message>
         <source>Switch stereo viewing to red/green</source>
-        <translation>Basculer la vue stéreo vers rouge/vert</translation>
+        <translation>Basculer la vue stéréo vers la technique anaglyphique rouge/vert</translation>
     </message>
 </context>
 <context>
@@ -4199,7 +4217,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>What&apos;s This</source>
-        <translation>Qu&apos;est ce que c&apos;est?</translation>
+        <translation>Qu&apos;est ce que c&apos;est</translation>
     </message>
 </context>
 <context>
@@ -4210,7 +4228,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>&amp;Windows...</source>
-        <translation>&amp;Fenêtre...</translation>
+        <translation>&amp;Fenêtres...</translation>
     </message>
     <message>
         <source>Windows list</source>
@@ -4225,7 +4243,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Activates this window</source>
-        <translation>Activez cette fenêtre</translation>
+        <translation>Active cette fenêtre</translation>
     </message>
 </context>
 <context>
@@ -4236,7 +4254,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Workbench</source>
-        <translation>Etabli</translation>
+        <translation>Établi</translation>
     </message>
     <message>
         <source>Switch between workbenches</source>
@@ -4255,7 +4273,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Switches to orthographic view mode</source>
-        <translation>Baculer dans le mode vue orthographique</translation>
+        <translation>Bacule vers le mode de vue orthographique</translation>
     </message>
 </context>
 <context>
@@ -4270,7 +4288,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Switches to perspective view mode</source>
-        <translation>Baculer en mode vue en perspective</translation>
+        <translation>Bacule vers le mode de vue en perspective</translation>
     </message>
 </context>
 <context>
@@ -4292,11 +4310,11 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Display mode</source>
-        <translation>Mode affichage</translation>
+        <translation>Mode d&apos;affichage</translation>
     </message>
     <message>
         <source>Display the active view either in fullscreen, in undocked or docked mode</source>
-        <translation>Afficher la vue active comme en plein écran, en mode undocked ou docked</translation>
+        <translation>Afficher la vue active en mode plein écran,non ancrée ou ancrée</translation>
     </message>
 </context>
 <context>
@@ -4311,7 +4329,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Creates a screenshot of the active view</source>
-        <translation>Créez une capture écran de la vue active</translation>
+        <translation>Crée une capture d&apos;écran de la vue active</translation>
     </message>
 </context>
 <context>
@@ -4322,7 +4340,7 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation>Zoom</translation>
+        <translation>Zoom avant</translation>
     </message>
 </context>
 <context>
@@ -4333,21 +4351,21 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation>Dézoomer</translation>
+        <translation>Zoom arrière</translation>
     </message>
 </context>
 <context>
     <name>TaskAppearance</name>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparence</translation>
     </message>
 </context>
 <context>
     <name>TaskPanelView</name>
     <message>
         <source>Task View</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les tâches</translation>
     </message>
 </context>
 <context>
@@ -4368,19 +4386,19 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;Panneau de tâches iis&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Créé pour Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Choose the style of the Task Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir le style du panneau de tâches</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Défaut</translation>
     </message>
     <message>
         <source>Windows XP</source>
