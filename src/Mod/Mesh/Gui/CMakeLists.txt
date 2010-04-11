@@ -10,6 +10,7 @@ include_directories(
 
 set(MeshGui_LIBS
  		 ${Boost_LIBRARIES}
+ 		 ${OPENGL_glu_LIBRARY}
 		 Mesh
 		 FreeCADGui)
 
