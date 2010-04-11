@@ -1,6 +1,7 @@
 <RCC>
     <qresource>
         <file>translations/Mesh_de.qm</file>
+        <file>translations/Mesh_fr.qm</file>
         <file>translations/Mesh_it.qm</file>
     </qresource>
     <qresource>
