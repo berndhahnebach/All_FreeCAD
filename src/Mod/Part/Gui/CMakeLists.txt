@@ -75,7 +75,7 @@ set(PartGui_MOC_HDRS
 fc_wrap_cpp(PartGui_MOC_SRCS ${PartGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${PartGui_MOC_SRCS})
 
-fc_add_resources(PartGui_QRC_SRCS Part.qrc)
+fc_add_resources(PartGui_QRC_SRCS Resources/Part.qrc)
 
 set(PartGui_UIC_SRCS
 		 DlgBooleanOperation.ui
@@ -132,7 +132,7 @@ SET(PartGui_SRCS
 		 DlgSettingsGeneral.cpp
 		 DlgSettingsGeneral.h
 		 DlgSettingsGeneral.ui
-		 Part.qrc
+		 Resources/Part.qrc
 		 PreCompiled.cpp
 		 PreCompiled.h
 		 SoFCShapeObject.cpp
