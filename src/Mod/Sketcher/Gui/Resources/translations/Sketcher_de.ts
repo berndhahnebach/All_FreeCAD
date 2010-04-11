@@ -9,11 +9,11 @@
     </message>
     <message>
         <source>Constrain orizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Bedingung horizontal</translation>
     </message>
     <message>
         <source>Create a horizontal constrain on the selcted item</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine horizontale Bedingung am selektierten Element</translation>
     </message>
 </context>
 <context>
@@ -24,11 +24,11 @@
     </message>
     <message>
         <source>Constrain Lock</source>
-        <translation type="unfinished"></translation>
+        <translation>Bedingung gesperrt</translation>
     </message>
     <message>
         <source>Create a Lock constrain on the selcted item</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine gesperrte Bedingung am selektierten Element</translation>
     </message>
 </context>
 <context>
@@ -39,11 +39,11 @@
     </message>
     <message>
         <source>Constrain vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Bedingung vertikal</translation>
     </message>
     <message>
         <source>Create a vertical constrain on the selcted item</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine vertikale Bedingung am selektierten Element</translation>
     </message>
 </context>
 <context>
@@ -54,11 +54,11 @@
     </message>
     <message>
         <source>Create arc</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Bogen</translation>
     </message>
     <message>
         <source>Create an arc in the sketch</source>
-        <translation>Kreisbogen in der Skizze erzeugen</translation>
+        <translation>Erzeugt einen Kreisbogen in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -69,146 +69,146 @@
     </message>
     <message>
         <source>Create circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Kreis</translation>
     </message>
     <message>
         <source>Create a circle in the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Kreis in der Skizze</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherCreateDraftLine</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze</translation>
     </message>
     <message>
         <source>Create draft line</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine Konstruktionslinie</translation>
     </message>
     <message>
         <source>Create a draft line in the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine Konstruktionslinie in der Skizze</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherCreateLine</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze</translation>
     </message>
     <message>
         <source>Create line</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine Linie</translation>
     </message>
     <message>
         <source>Create a line in the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine Linie in der Skizze</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherCreatePoint</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze</translation>
     </message>
     <message>
         <source>Create point</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Punkt</translation>
     </message>
     <message>
         <source>Create a point in the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Punkt in der Skizze</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherCreatePolyline</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze</translation>
     </message>
     <message>
         <source>Create polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Polylinie</translation>
     </message>
     <message>
         <source>Create a polyline in the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt eine Polylinie in der Skizze</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherCreateRectangle</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze</translation>
     </message>
     <message>
         <source>Create rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt ein Rechteck</translation>
     </message>
     <message>
         <source>Create a rectangle in the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt ein Rechteck in der Skizze</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherCreateText</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze</translation>
     </message>
     <message>
         <source>Create text</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Text</translation>
     </message>
     <message>
         <source>Create text in the scetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt einen Text in der Skizze</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherLeaveSketch</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizzierer</translation>
     </message>
     <message>
         <source>Leave sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze verlassen</translation>
     </message>
     <message>
         <source>Close the editing of the sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Enden der Skizze schließen</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherNewSketch</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizzierer</translation>
     </message>
     <message>
         <source>Create sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge eine Skizze</translation>
     </message>
     <message>
         <source>Create a new sketch</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge eine neue Skizze</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizzierer</translation>
     </message>
     <message>
         <source>Sketcher geoms</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizzierer geometrie</translation>
     </message>
     <message>
         <source>Sketcher constrains</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizzierer Bedingungen</translation>
     </message>
 </context>
 </TS>
