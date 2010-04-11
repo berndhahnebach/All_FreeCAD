@@ -69,7 +69,7 @@ ui_%.h: %.ui
 	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-qrc_%.cpp: %.qrc
+qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
@@ -82,8 +82,9 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		CMakeLists.txt \
-		Image.qrc \
-		Image_de.qm \
-		Image_se.qm \
-		image-import.svg
+		Resources/Image.qrc \
+		Resources/translations/Image_de.qm \
+		Resources/translations/Image_fr.qm \
+		Resources/translations/Image_se.qm \
+		Resources/icons/image-import.svg
 

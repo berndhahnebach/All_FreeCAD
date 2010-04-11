@@ -74,7 +74,7 @@ ui_%.h: %.ui
 	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-qrc_%.cpp: %.qrc
+qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 FreeCADpov.h: FreeCADpov
@@ -90,12 +90,13 @@ libdir = $(prefix)/Mod/Raytracing
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		Icons/Raytrace_Camera.svg \
-		Icons/Raytrace_Export.svg \
-		Icons/Raytrace_New.svg \
-		Icons/Raytrace_Part.svg \
+		Resources/icons/Raytrace_Camera.svg \
+		Resources/icons/Raytrace_Export.svg \
+		Resources/icons/Raytrace_New.svg \
+		Resources/icons/Raytrace_Part.svg \
 		DlgSettingsRay.ui \
 		FreeCADpov \
-		Raytracing.qrc \
-		Raytracing_de.qm \
+		Resources/Raytracing.qrc \
+		Resources/translations/Raytracing_de.qm \
+		Resources/translations/Raytracing_fr.qm \
 		CMakeLists.txt

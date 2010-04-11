@@ -22,6 +22,7 @@ EXTRA_DIST = \
 		icons/Pages.svg \
 		icons/View.svg \
 		translations/Drawing_de.qm \
+		translations/Drawing_fr.qm \
 		translations/Drawing_se.qm \
 		Drawing.qrc \
 		UpdateResources.bat

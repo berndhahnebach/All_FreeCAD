@@ -9,6 +9,7 @@ nodist_libResources_la_SOURCES=\
 EXTRA_DIST = \
 		icons/actions/FitSurface.svg \
 		translations/ReverseEngineering_de.qm \
+		translations/ReverseEngineering_fr.qm \
 		translations/ReverseEngineering_se.qm \
 		ReverseEngineering.qrc \
 		UpdateResources.bat

@@ -25,6 +25,7 @@
 #define PARTGUI_DLGSETTINGS3DVIEWIMP_H
 
 #include <Gui/PropertyPage.h>
+#include <memory>
 
 namespace PartGui {
 class Ui_DlgSettings3DViewPart;
