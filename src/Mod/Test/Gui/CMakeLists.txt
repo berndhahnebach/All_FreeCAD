@@ -33,10 +33,10 @@ SET(Dialogs_SRCS
 )
 SOURCE_GROUP("Dialogs" FILES ${Dialogs_SRCS})
 
-fc_add_resources(Resource_SRCS Test.qrc)
+fc_add_resources(Resource_SRCS Resources/Test.qrc)
 SET(Resource_SRCS
 #		 ${Resource_SRCS}
-		 Test.qrc
+		 Resources/Test.qrc
 )
 SOURCE_GROUP("Resource" FILES ${Resource_SRCS})
 

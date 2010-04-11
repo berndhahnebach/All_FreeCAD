@@ -1,0 +1,7 @@
+<RCC>
+    <qresource>
+        <file>translations/Test_de.qm</file>
+        <file>translations/Test_fr.qm</file>
+        <file>translations/Test_se.qm</file>
+    </qresource>
+</RCC>

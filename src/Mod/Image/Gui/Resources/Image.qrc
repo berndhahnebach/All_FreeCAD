@@ -1,6 +1,7 @@
 <RCC>
     <qresource>
         <file>translations/Image_de.qm</file>
+        <file>translations/Image_fr.qm</file>
         <file>translations/Image_se.qm</file>
     </qresource>
     <qresource>

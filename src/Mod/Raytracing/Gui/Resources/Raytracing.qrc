@@ -1,6 +1,7 @@
 <RCC>
     <qresource>
         <file>translations/Raytracing_de.qm</file>
+        <file>translations/Raytracing_fr.qm</file>
     </qresource>
     <qresource>
 		<file>icons/Raytrace_Camera.svg</file>
