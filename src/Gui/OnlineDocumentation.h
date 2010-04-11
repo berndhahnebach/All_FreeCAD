@@ -100,6 +100,8 @@ class StdCmdPythonHelp : public Command
 public:
     StdCmdPythonHelp();
     ~StdCmdPythonHelp();
+    const char* className() const
+    { return "Gui::StdCmdPythonHelp"; }
 
 protected:
     void activated(int iMsg);

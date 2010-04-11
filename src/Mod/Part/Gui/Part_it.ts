@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="it_IT">
 <context>
     <name>BlockDefinition</name>
     <message>
@@ -78,7 +80,7 @@
         <translation>Perpendicolare allo schizzo</translation>
     </message>
     <message>
-        <source>Referenc</source>
+        <source>Reference</source>
         <translation>Riferimento</translation>
     </message>
     <message>

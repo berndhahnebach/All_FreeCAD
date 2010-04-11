@@ -136,22 +136,6 @@ Action * CommandBase::createAction()
     return 0;
 }
 
-void CommandBase::languageChange()
-{
-    if ( _pcAction ) {
-        _pcAction->setText       ( QObject::tr( sMenuText    ) );
-        _pcAction->setToolTip    ( QObject::tr( sToolTipText ) );
-        if ( sStatusTip )
-            _pcAction->setStatusTip ( QObject::tr( sStatusTip   ) );
-        else
-            _pcAction->setStatusTip ( QObject::tr( sToolTipText ) );
-        if ( sWhatsThis )
-            _pcAction->setWhatsThis( QObject::tr( sWhatsThis   ) );
-        else
-            _pcAction->setWhatsThis( QObject::tr( sToolTipText ) );
-    }
-}
-
 void CommandBase::setMenuText(const char* s)
 {
 #if defined (_MSC_VER)
@@ -474,26 +458,50 @@ const char * Command::endCmdHelp(void)
     return "</body></html>\n\n";
 }
 
+void Command::applyCommandData(Action* action)
+{
+    action->setText(QCoreApplication::translate(
+        this->className(), sMenuText, 0,
+        QCoreApplication::CodecForTr));
+    action->setToolTip(QCoreApplication::translate(
+        this->className(), sToolTipText, 0,
+        QCoreApplication::CodecForTr));
+    if (sStatusTip)
+        action->setStatusTip(QCoreApplication::translate(
+            this->className(), sStatusTip, 0,
+            QCoreApplication::CodecForTr));
+    else
+        action->setStatusTip(QCoreApplication::translate(
+            this->className(), sToolTipText, 0,
+            QCoreApplication::CodecForTr));
+    if (sWhatsThis)
+        action->setWhatsThis(QCoreApplication::translate(
+            this->className(), sWhatsThis, 0,
+            QCoreApplication::CodecForTr));
+    else
+        action->setWhatsThis(QCoreApplication::translate(
+            this->className(), sToolTipText, 0,
+            QCoreApplication::CodecForTr));
+}
+
 Action * Command::createAction(void)
 {
     Action *pcAction;
 
     pcAction = new Action(this,getMainWindow());
-    pcAction->setText(QObject::tr(sMenuText));
-    pcAction->setToolTip(QObject::tr(sToolTipText));
-    if ( sStatusTip )
-        pcAction->setStatusTip(QObject::tr(sStatusTip));
-    else
-        pcAction->setStatusTip(QObject::tr(sToolTipText));
-    if ( sWhatsThis )
-        pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-    else
-        pcAction->setWhatsThis(QObject::tr(sToolTipText));
+    applyCommandData(pcAction);
     if (sPixmap)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
     pcAction->setShortcut(iAccel);
 
     return pcAction;
+}
+
+void Command::languageChange()
+{
+    if (_pcAction) {
+        applyCommandData(_pcAction);
+    }
 }
 
 //===========================================================================

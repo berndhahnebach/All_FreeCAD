@@ -118,18 +118,15 @@ bool StdCmdWorkbench::isActive(void)
 
 Action * StdCmdWorkbench::createAction(void)
 {
-  Action *pcAction;
+    Action *pcAction;
 
-  pcAction = new WorkbenchGroup(this,getMainWindow());
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  if(sPixmap)
-    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setShortcut(iAccel);
+    pcAction = new WorkbenchGroup(this,getMainWindow());
+    applyCommandData(pcAction);
+    if (sPixmap)
+        pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+    pcAction->setShortcut(iAccel);
 
-  return pcAction;
+    return pcAction;
 }
 
 //===========================================================================
@@ -166,14 +163,11 @@ void StdCmdRecentFiles::activated(int iMsg)
  */
 Action * StdCmdRecentFiles::createAction(void)
 {
-  RecentFilesAction* pcAction = new RecentFilesAction(this, getMainWindow());
-  pcAction->setObjectName(QLatin1String("recentFiles"));
-  pcAction->setDropDownMenu(true);
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  return pcAction;
+    RecentFilesAction* pcAction = new RecentFilesAction(this, getMainWindow());
+    pcAction->setObjectName(QLatin1String("recentFiles"));
+    pcAction->setDropDownMenu(true);
+    applyCommandData(pcAction);
+    return pcAction;
 }
 
 //===========================================================================
@@ -200,11 +194,18 @@ Action * StdCmdAbout::createAction(void)
 
     QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
     pcAction = new Action(this,getMainWindow());
-    pcAction->setText(QObject::tr(sMenuText).arg(exe));
-    pcAction->setToolTip(QObject::tr(sToolTipText).arg(exe));
-    pcAction->setStatusTip(QObject::tr(sStatusTip).arg(exe));
+    pcAction->setText(QCoreApplication::translate(
+        this->className(), sMenuText, 0,
+        QCoreApplication::CodecForTr).arg(exe));
+    pcAction->setToolTip(QCoreApplication::translate(
+        this->className(), sToolTipText, 0,
+        QCoreApplication::CodecForTr).arg(exe));
+    pcAction->setStatusTip(QCoreApplication::translate(
+        this->className(), sStatusTip, 0,
+        QCoreApplication::CodecForTr).arg(exe));
     pcAction->setWhatsThis(QLatin1String(sWhatsThis));
-    if(sPixmap)
+
+    if (sPixmap)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
     pcAction->setShortcut(iAccel);
 
@@ -229,9 +230,15 @@ void StdCmdAbout::languageChange()
 {
     if (_pcAction) {
         QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
-        _pcAction->setText(QObject::tr(sMenuText).arg(exe));
-        _pcAction->setToolTip(QObject::tr(sToolTipText).arg(exe));
-        _pcAction->setStatusTip(QObject::tr(sStatusTip).arg(exe));
+        _pcAction->setText(QCoreApplication::translate(
+            this->className(), sMenuText, 0,
+            QCoreApplication::CodecForTr).arg(exe));
+        _pcAction->setToolTip(QCoreApplication::translate(
+            this->className(), sToolTipText, 0,
+            QCoreApplication::CodecForTr).arg(exe));
+        _pcAction->setStatusTip(QCoreApplication::translate(
+            this->className(), sStatusTip, 0,
+            QCoreApplication::CodecForTr).arg(exe));
         _pcAction->setWhatsThis(QLatin1String(sWhatsThis));
     }
 }

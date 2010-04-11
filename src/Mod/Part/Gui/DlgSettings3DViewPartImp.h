@@ -24,28 +24,30 @@
 #ifndef PARTGUI_DLGSETTINGS3DVIEWIMP_H
 #define PARTGUI_DLGSETTINGS3DVIEWIMP_H
 
-#include "ui_DlgSettings3DViewPart.h"
 #include <Gui/PropertyPage.h>
 
 namespace PartGui {
-
+class Ui_DlgSettings3DViewPart;
 /**
  * The DlgSettings3DViewPartImp class implements a preference page to change settings
  * for the Inventor viewer.
  * \author Jürgen Riegel
  */
-class DlgSettings3DViewPartImp : public Gui::Dialog::PreferencePage, public Ui_DlgSettings3DViewPart
+class DlgSettings3DViewPart : public Gui::Dialog::PreferencePage
 { 
     Q_OBJECT
 
 public:
-    DlgSettings3DViewPartImp( QWidget* parent = 0 );
-    ~DlgSettings3DViewPartImp();
+    DlgSettings3DViewPart(QWidget* parent = 0);
+    ~DlgSettings3DViewPart();
 
 protected:
     void saveSettings();
     void loadSettings();
     void changeEvent(QEvent *e);
+
+private:
+    std::auto_ptr<Ui_DlgSettings3DViewPart> ui;
 };
 
 } // namespace Gui

@@ -1,5 +1,6 @@
-<!DOCTYPE TS><TS>
-<defaultcodec>iso8859-1</defaultcodec>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
 <context>
     <name>CombiView</name>
     <message>
@@ -1516,11 +1517,11 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <source>QSXGA   2560 x 2048</source>
         <translation>QSXGA 2560 x 2024</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>QUXGA   3200 × 2400</source>
         <translation>QUXGA 3200 x 2400</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>HUXGA   6400 × 4800</source>
         <translation>HUXGA 6400 x 4800</translation>
     </message>
@@ -2363,7 +2364,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::StdWorkbench</name>
+    <name>Workbench</name>
     <message>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>

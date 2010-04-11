@@ -320,10 +320,7 @@ Action * StdCmdDockViewMenu::createAction(void)
 {
     Action *pcAction;
     pcAction = new DockWidgetAction(this, getMainWindow());
-    pcAction->setText(QObject::tr(sMenuText));
-    pcAction->setToolTip(QObject::tr(sToolTipText));
-    pcAction->setStatusTip(QObject::tr(sStatusTip));
-    pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+    applyCommandData(pcAction);
     return pcAction;
 }
 
@@ -359,10 +356,7 @@ Action * StdCmdToolBarMenu::createAction(void)
 {
     Action *pcAction;
     pcAction = new ToolBarAction(this, getMainWindow());
-    pcAction->setText(QObject::tr(sMenuText));
-    pcAction->setToolTip(QObject::tr(sToolTipText));
-    pcAction->setStatusTip(QObject::tr(sStatusTip));
-    pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+    applyCommandData(pcAction);
     return pcAction;
 }
 
@@ -387,7 +381,7 @@ StdCmdStatusBar::StdCmdStatusBar()
 Action * StdCmdStatusBar::createAction(void)
 {
     Action *pcAction = Command::createAction();
-    pcAction->setCheckable( true );
+    pcAction->setCheckable(true);
     pcAction->setChecked(true);
 
     return pcAction;
@@ -435,9 +429,15 @@ Action * StdCmdWindowsMenu::createAction(void)
     for ( int i=0; i<10; i++ ) {
         QAction* window = pcAction->addAction(QObject::tr(sToolTipText));
         window->setCheckable(true);
-        window->setToolTip(QObject::tr(sToolTipText));
-        window->setStatusTip(QObject::tr(sStatusTip));
-        window->setWhatsThis(QObject::tr(sWhatsThis));
+        window->setToolTip(QCoreApplication::translate(
+            this->className(), sToolTipText, 0,
+            QCoreApplication::CodecForTr));
+        window->setStatusTip(QCoreApplication::translate(
+            this->className(), sStatusTip, 0,
+            QCoreApplication::CodecForTr));
+        window->setWhatsThis(QCoreApplication::translate(
+            this->className(), sWhatsThis, 0,
+            QCoreApplication::CodecForTr));
     }
 
     QAction* sep = pcAction->addAction(QLatin1String(""));

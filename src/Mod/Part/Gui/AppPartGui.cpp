@@ -96,8 +96,8 @@ void AppPartGuiExport initPartGui()
     CreateParamPartCommands();
 
     // register preferences pages
-    new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral> ("Part design");
-    new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ("Part design");
+    new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral>      ("Part design");
+    new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPart>   ("Part design");
 
     // add resources and reloads the translators
     loadPartResource();

@@ -968,9 +968,9 @@ void MainWindow::onDockWindowMenuAboutToShow()
     QList<QDockWidget*> dock = this->findChildren<QDockWidget*>();
     for (QList<QDockWidget*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
         QAction* action = (*it)->toggleViewAction();
-        action->setToolTip(tr("Toogles this dockable window"));
-        action->setStatusTip(tr("Toogles this dockable window"));
-        action->setWhatsThis(tr("Toogles this dockable window"));
+        action->setToolTip(tr("Toggles this dockable window"));
+        action->setStatusTip(tr("Toggles this dockable window"));
+        action->setWhatsThis(tr("Toggles this dockable window"));
         menu->addAction(action);
     }
 }

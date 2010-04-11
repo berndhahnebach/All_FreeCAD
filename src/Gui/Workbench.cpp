@@ -361,7 +361,24 @@ void Workbench::removeTaskWatcher(void)
 
 // --------------------------------------------------------------------
 
-/* TRANSLATOR Gui::StdWorkbench */
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "&File");
+    qApp->translate("Workbench", "&Edit");
+    qApp->translate("Workbench", "Standard views");
+    qApp->translate("Workbench", "&Stereo");
+    qApp->translate("Workbench", "&Zoom");
+    qApp->translate("Workbench", "Visibility");
+    qApp->translate("Workbench", "&View");
+    qApp->translate("Workbench", "&Tools");
+    qApp->translate("Workbench", "&Macro");
+    qApp->translate("Workbench", "&Windows");
+    qApp->translate("Workbench", "&On-line help");
+    qApp->translate("Workbench", "&Help");
+    qApp->translate("Workbench", "File");
+    qApp->translate("Workbench", "Macro");
+    qApp->translate("Workbench", "View");
+    qApp->translate("Workbench", "Special Ops");
+#endif
 
 TYPESYSTEM_SOURCE(Gui::StdWorkbench, Gui::Workbench)
 
@@ -412,7 +429,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // File
     MenuItem* file = new MenuItem( menuBar );
-    file->setCommand(QT_TR_NOOP("&File"));
+    file->setCommand("&File");
     *file << "Std_New" << "Std_Open" << "Separator" << "Std_CloseActiveWindow"
           << "Std_CloseAllWindows" << "Separator" << "Std_Save" << "Std_SaveAs"
           << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
@@ -421,7 +438,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // Edit
     MenuItem* edit = new MenuItem( menuBar );
-    edit->setCommand(QT_TR_NOOP("&Edit"));
+    edit->setCommand("&Edit");
     *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy"
           << "Std_Paste" << "Std_DuplicateSelection" << "Separator"
           << "Std_Refresh" << "Std_SelectAll" << "Std_Delete" << "Std_Transform"
@@ -429,7 +446,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // Standard views
     MenuItem* stdviews = new MenuItem;
-    stdviews->setCommand(QT_TR_NOOP("Standard views"));
+    stdviews->setCommand("Standard views");
     *stdviews << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_ViewAxo"
               << "Separator" << "Std_ViewFront" << "Std_ViewRight"
               << "Std_ViewTop" << "Separator" << "Std_ViewRear" 
@@ -437,26 +454,26 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // stereo
     MenuItem* view3d = new MenuItem;
-    view3d->setCommand(QT_TR_NOOP("&Stereo"));
+    view3d->setCommand("&Stereo");
     *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" 
             << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" 
             << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewIvIssueCamPos";
 
     // zoom
     MenuItem* zoom = new MenuItem;
-    zoom->setCommand(QT_TR_NOOP("&Zoom"));
+    zoom->setCommand("&Zoom");
     *zoom << "Std_ViewZoomIn" << "Std_ViewZoomOut" << "Separator" << "Std_ViewBoxZoom";
 
     // Visibility
     MenuItem* visu = new MenuItem;
-    visu->setCommand(QT_TR_NOOP("Visibility"));
+    visu->setCommand("Visibility");
     *visu << "Std_ToggleVisibility" << "Std_ShowSelection" << "Std_HideSelection"
           << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects" 
           << "Separator" << "Std_ToggleSelectability";
 
     // View
     MenuItem* view = new MenuItem( menuBar );
-    view->setCommand(QT_TR_NOOP("&View"));
+    view->setCommand("&View");
     *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
           << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator" << visu
@@ -467,21 +484,21 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // Tools
     MenuItem* tool = new MenuItem( menuBar );
-    tool->setCommand(QT_TR_NOOP("&Tools"));
+    tool->setCommand("&Tools");
     *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator"
           << "Std_ViewScreenShot" << "Std_SceneInspector" << "Std_DemoMode" 
           << "Separator" << "Std_DlgCustomize";
 
     // Macro
     MenuItem* macro = new MenuItem( menuBar );
-    macro->setCommand(QT_TR_NOOP("&Macro"));
+    macro->setCommand("&Macro");
     *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
            << "Separator" << "Std_DlgMacroExecuteDirect" << "Std_MacroStartDebug"
            << "Std_MacroStopDebug" << "Std_MacroStepOver" << "Std_ToggleBreakpoint";
 
     // Windows
     MenuItem* wnd = new MenuItem( menuBar );
-    wnd->setCommand(QT_TR_NOOP("&Windows"));
+    wnd->setCommand("&Windows");
     *wnd << "Std_ActivateNextWindow" << "Std_ActivatePrevWindow" << "Separator"
          << "Std_TileWindows" << "Std_CascadeWindows"
          << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
@@ -492,11 +509,11 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
     // Help
     MenuItem* helpWebsites = new MenuItem;
-    helpWebsites->setCommand(QT_TR_NOOP("&On-line help"));
+    helpWebsites->setCommand("&On-line help");
     *helpWebsites << "Std_OnlineHelpWebsite" << "Std_FreeCADWebsite" << "Std_PythonWebsite";
     
     MenuItem* help = new MenuItem( menuBar );
-    help->setCommand(QT_TR_NOOP("&Help"));
+    help->setCommand("&Help");
     *help << "Std_OnlineHelp" << "Std_OnlineHelpPython" << "Std_PythonHelp"
           << helpWebsites  << "Std_TipOfTheDay"<< "Separator" << "Std_About"
           << "Std_AboutQt" << "Separator" << "Std_WhatsThis";
@@ -510,20 +527,20 @@ ToolBarItem* StdWorkbench::setupToolBars() const
 
     // File
     ToolBarItem* file = new ToolBarItem( root );
-    file->setCommand(QT_TR_NOOP("File"));
+    file->setCommand("File");
     *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
           << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
           << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
 
     // Macro
     ToolBarItem* macro = new ToolBarItem( root );
-    macro->setCommand(QT_TR_NOOP("Macro"));
+    macro->setCommand("Macro");
     *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
            << "Std_DlgMacroExecuteDirect";
 
     // View
     ToolBarItem* view = new ToolBarItem( root );
-    view->setCommand(QT_TR_NOOP("View"));
+    view->setCommand("View");
     *view << "Std_ViewFitAll" << "Separator" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" 
           << "Std_ViewRight" << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" 
           << "Std_ViewBottom" << "Separator" << "Std_MeasureDistance" ;
@@ -537,13 +554,13 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
 
     // View
     ToolBarItem* view = new ToolBarItem( root );
-    view->setCommand(QT_TR_NOOP("Standard views"));
+    view->setCommand("Standard views");
     *view << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_ViewAxo" << "Separator"
           << "Std_ViewFront" << "Std_ViewRight" << "Std_ViewTop" << "Separator"
           << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
     // Special Ops
     ToolBarItem* macro = new ToolBarItem( root );
-    macro->setCommand(QT_TR_NOOP("Special Ops"));
+    macro->setCommand("Special Ops");
     *macro << "Std_DlgParameter" << "Std_DlgPreferences" << "Std_DlgMacroRecord" << "Std_MacroStopRecord" 
            << "Std_DlgMacroExecute" << "Std_DlgCustomize" << "Std_CommandLine";
 
@@ -594,7 +611,7 @@ MenuItem* NoneWorkbench::setupMenuBar() const
 
     // Edit
     MenuItem* edit = new MenuItem( menuBar );
-    edit->setCommand(QT_TR_NOOP("&Edit"));
+    edit->setCommand("&Edit");
     *edit << "Std_DlgPreferences";
 
     // View
