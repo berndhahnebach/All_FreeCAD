@@ -1,5 +1,6 @@
-<!DOCTYPE TS><TS>
-<defaultcodec></defaultcodec>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="it_IT">
 <context>
     <name>CombiView</name>
     <message>
@@ -349,7 +350,7 @@
 
 Please define another shortcut.</source>
         <translation>La scorciatoia &apos;%1&apos; è già stata assegnata a &apos;%2&apos;. 
-<byte value="x9"/><byte value="x9"/>
+		
 Definire un&apos;altra scorciatoia.</translation>
     </message>
 </context>
@@ -836,7 +837,7 @@ Il file esiste già.</translation>
 
 Specify another directory, please.</source>
         <translation>Accesso negato a &apos;%1&apos;
-<byte value="x9"/><byte value="x9"/>
+		
 Specificare un&apos;altra cartella.</translation>
     </message>
 </context>
@@ -1465,11 +1466,11 @@ Specificare un&apos;altra cartella.</translation>
         <source>QSXGA   2560 x 2048</source>
         <translation>QSXGA   2560 x 2048</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>QUXGA   3200 × 2400</source>
         <translation>QUXGA   3200 × 2400</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>HUXGA   6400 × 4800</source>
         <translation>HUXGA   6400 × 4800</translation>
     </message>
@@ -2038,7 +2039,7 @@ Specificare un&apos;altra cartella.</translation>
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
         <translation>%1.
-<byte value="x9"/><byte value="x9"/>
+		
 Questo è stato modificato al di fuori dell&apos;editor sorgente. Vuoi ricaricarlo?</translation>
     </message>
     <message>
@@ -2364,7 +2365,7 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::StdWorkbench</name>
+    <name>Workbench</name>
     <message>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
@@ -3208,7 +3209,7 @@ Vuoi sostituirlo?</translation>
 
 Do you want to specify an existing directory?</source>
         <translation>La cartella &apos;%1&apos; non esiste.
-<byte value="x9"/><byte value="x9"/>
+		
 Vuoi specificare una cartella esistente?</translation>
     </message>
     <message>
@@ -3220,7 +3221,7 @@ Vuoi specificare una cartella esistente?</translation>
 
 Do you want to specify another directory?</source>
         <translation>Non hai il permesso di scrittura in &apos;%1&apos;
-<byte value="x9"/><byte value="x9"/>
+		
 Vuoi specificare un&apos;altra cartella?</translation>
     </message>
     <message>

@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
 <context>
     <name>CmdMeshBoundingBox</name>
     <message>
@@ -769,7 +771,7 @@
         <translation>Kein aktives Dokument</translation>
     </message>
 </context>
-<context encoding="UTF-8">
+<context>
     <name>MeshGui::DlgSettingsMeshView</name>
     <message>
         <source>Mesh view</source>
@@ -811,7 +813,7 @@
         <source>Define normal per vertex</source>
         <translation>Definiere Normal pro Vertex</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source> °</source>
         <translation> °</translation>
     </message>

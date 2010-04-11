@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #include "DlgSettings3DViewPartImp.h"
+#include "ui_DlgSettings3DViewPart.h"
+
 #include "ViewProvider.h"
 #include <Gui/PrefWidgets.h>
 #include <Gui/Application.h>
@@ -35,28 +37,28 @@
 using namespace PartGui;
 
 /**
- *  Constructs a DlgSettings3DViewPartImp which is a child of 'parent', with the 
+ *  Constructs a DlgSettings3DViewPart which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-DlgSettings3DViewPartImp::DlgSettings3DViewPartImp( QWidget* parent )
-  : PreferencePage( parent )
+DlgSettings3DViewPart::DlgSettings3DViewPart(QWidget* parent)
+  : PreferencePage(parent), ui(new Ui_DlgSettings3DViewPart)
 {
-    this->setupUi(this);
+    ui->setupUi(this);
 }
 
 /** 
  *  Destroys the object and frees any allocated resources
  */
-DlgSettings3DViewPartImp::~DlgSettings3DViewPartImp()
+DlgSettings3DViewPart::~DlgSettings3DViewPart()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgSettings3DViewPartImp::saveSettings()
+void DlgSettings3DViewPart::saveSettings()
 {
-    prefFloatSpinBox1->onSave();
-    prefCheckBox8->onSave();
-    prefCheckBox3->onSave();
+    ui->prefFloatSpinBox1->onSave();
+    ui->prefCheckBox8->onSave();
+    ui->prefCheckBox3->onSave();
 
     // search for Part view providers and apply the new settings
     std::vector<App::Document*> docs = App::GetApplication().getDocuments();
@@ -69,20 +71,20 @@ void DlgSettings3DViewPartImp::saveSettings()
     }
 }
 
-void DlgSettings3DViewPartImp::loadSettings()
+void DlgSettings3DViewPart::loadSettings()
 {
-    prefFloatSpinBox1->onRestore();
-    prefCheckBox8->onRestore();
-    prefCheckBox3->onRestore();
+    ui->prefFloatSpinBox1->onRestore();
+    ui->prefCheckBox8->onRestore();
+    ui->prefCheckBox3->onRestore();
 }
 
 /**
  * Sets the strings of the subwidgets using the current language.
  */
-void DlgSettings3DViewPartImp::changeEvent(QEvent *e)
+void DlgSettings3DViewPart::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
-        retranslateUi(this);
+        ui->retranslateUi(this);
     }
     else {
         QWidget::changeEvent(e);

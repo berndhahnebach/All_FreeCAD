@@ -416,10 +416,18 @@ Action * StdCmdDownloadOnlineHelp::createAction(void)
 
     QString exe = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
     pcAction = new Action(this,getMainWindow());
-    pcAction->setText      ( tr(sMenuText) );
-    pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
-    pcAction->setStatusTip ( tr(sStatusTip).arg(exe)   );
-    pcAction->setWhatsThis ( tr(sWhatsThis).arg(exe)   );
+    pcAction->setText(QCoreApplication::translate(
+        this->className(), sMenuText, 0,
+        QCoreApplication::CodecForTr));
+    pcAction->setToolTip(QCoreApplication::translate(
+        this->className(), sToolTipText, 0,
+        QCoreApplication::CodecForTr).arg(exe));
+    pcAction->setStatusTip(QCoreApplication::translate(
+        this->className(), sStatusTip, 0,
+        QCoreApplication::CodecForTr).arg(exe));
+    pcAction->setWhatsThis(QCoreApplication::translate(
+        this->className(), sWhatsThis, 0,
+        QCoreApplication::CodecForTr).arg(exe));
     pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
     pcAction->setShortcut(iAccel);
 
@@ -428,20 +436,26 @@ Action * StdCmdDownloadOnlineHelp::createAction(void)
 
 void StdCmdDownloadOnlineHelp::languageChange()
 {
-    if ( _pcAction )
-    {
+    if (_pcAction) {
         QString exe = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
-        _pcAction->setText      ( tr(sMenuText) );
-        _pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
-        _pcAction->setStatusTip ( tr(sStatusTip).arg(exe)   );
-        _pcAction->setWhatsThis ( tr(sWhatsThis).arg(exe)   );
+        _pcAction->setText(QCoreApplication::translate(
+            this->className(), sMenuText, 0,
+            QCoreApplication::CodecForTr));
+        _pcAction->setToolTip(QCoreApplication::translate(
+            this->className(), sToolTipText, 0,
+            QCoreApplication::CodecForTr).arg(exe));
+        _pcAction->setStatusTip(QCoreApplication::translate(
+            this->className(), sStatusTip, 0,
+            QCoreApplication::CodecForTr).arg(exe));
+        _pcAction->setWhatsThis(QCoreApplication::translate(
+            this->className(), sWhatsThis, 0,
+            QCoreApplication::CodecForTr).arg(exe));
     }
 }
 
 void StdCmdDownloadOnlineHelp::activated(int iMsg)
 {
-    if ( !wget->isDownloading() )
-    {
+    if (!wget->isDownloading()) {
         ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
         hGrp = hGrp->GetGroup("Preferences")->GetGroup("OnlineHelp");
         std::string url = hGrp->GetASCII("DownloadURL", "http://apps.sourceforge.net/mediawiki/free-cad/");
@@ -449,26 +463,23 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
         bool bUseProxy  = hGrp->GetBool ("UseProxy", false);
         bool bAuthor    = hGrp->GetBool ("Authorize", false);
 
-        if (bUseProxy)
-        {
+        if (bUseProxy) {
             QString username = QString::null;
             QString password = QString::null;
 
-            if ( bAuthor )
-            {
+            if (bAuthor) {
                 QDialog dlg(getMainWindow());
                 dlg.setModal(true);
                 Ui_DlgAuthorization ui;
                 ui.setupUi(&dlg);
 
-                if ( dlg.exec() == QDialog::Accepted )
-                {
+                if (dlg.exec() == QDialog::Accepted) {
                     username = ui.username->text();
                     password = ui.password->text();
                 }
             }
 
-            wget->setProxy(QString::fromAscii(prx.c_str()), username, password );
+            wget->setProxy(QString::fromAscii(prx.c_str()), username, password);
         }
 
         int loop=3;
@@ -480,17 +491,15 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
         ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
         path = QString::fromUtf8(hURLGrp->GetASCII( "DownloadLocation", path.toAscii() ).c_str());
 
-        while ( loop > 0 )
-        {
+        while (loop > 0) {
             loop--;
-            QFileInfo fi( path );
-            if ( !fi.exists() )
-            {
-                if ( QMessageBox::critical(getMainWindow(), tr("Non-existing directory"), 
+            QFileInfo fi( path);
+            if (!fi.exists()) {
+                if (QMessageBox::critical(getMainWindow(), tr("Non-existing directory"), 
                      tr("The directory '%1' does not exist.\n\n"
-                        "Do you want to specify an existing directory?").arg( fi.filePath() ), 
+                        "Do you want to specify an existing directory?").arg(fi.filePath()), 
                      QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) != 
-                     QMessageBox::Yes )
+                     QMessageBox::Yes)
                 {
                     // exit the command
                     return;
@@ -503,34 +512,30 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
                 }
             }
 
-            if ( !fi.permission( QFile::WriteUser ) )
-            {
-                if ( QMessageBox::critical(getMainWindow(), tr("Missing permission"), 
+            if (!fi.permission( QFile::WriteUser)) {
+                if (QMessageBox::critical(getMainWindow(), tr("Missing permission"), 
                      tr("You don't have write permission to '%1'\n\n"
-                        "Do you want to specify another directory?").arg( fi.filePath() ), 
+                        "Do you want to specify another directory?").arg(fi.filePath()), 
                      QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) != 
-                     QMessageBox::Yes )
+                     QMessageBox::Yes)
                 {
                     // exit the command
                     return;
                 }
-                else 
-                {
+                else {
                     path = FileDialog::getExistingDirectory();
                     if ( path.isEmpty() )
                         return;
                 }
             }
-            else
-            {
+            else {
                 wget->setOutputDirectory( path );
                 canStart = true;
                 break;
             }
         }
 
-        if ( canStart )
-        {
+        if (canStart) {
             bool ok = wget->startDownload(QString::fromAscii(url.c_str()));
             if ( ok == false )
                 Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
@@ -546,8 +551,10 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
 
 void StdCmdDownloadOnlineHelp::wgetFinished()
 {
-    if ( _pcAction )
-        _pcAction->setText( tr( sMenuText ) );
+    if (_pcAction)
+        _pcAction->setText(QCoreApplication::translate(
+            this->className(), sMenuText, 0,
+            QCoreApplication::CodecForTr));
 }
 
 #include "moc_NetworkRetriever.cpp"

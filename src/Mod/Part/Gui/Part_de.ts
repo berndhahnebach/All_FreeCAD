@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
 <context>
     <name>BlockDefinition</name>
     <message>
@@ -27,19 +29,19 @@
     </message>
     <message>
         <source>Up to next</source>
-        <translation type="unfinished"></translation>
+        <translation>bis zum Nächsten</translation>
     </message>
     <message>
         <source>Up to last</source>
-        <translation type="unfinished"></translation>
+        <translation>bis zum Letzten</translation>
     </message>
     <message>
         <source>Up to plane</source>
-        <translation type="unfinished"></translation>
+        <translation>bis Ebene</translation>
     </message>
     <message>
         <source>Up to face</source>
-        <translation type="unfinished"></translation>
+        <translation>bis Fläche</translation>
     </message>
     <message>
         <source>Limit:</source>
@@ -75,11 +77,11 @@
     </message>
     <message>
         <source>Perpendicular to scetch</source>
-        <translation type="unfinished"></translation>
+        <translation>Senkrecht zur Skizze</translation>
     </message>
     <message>
-        <source>Referenc</source>
-        <translation type="unfinished"></translation>
+        <source>Reference</source>
+        <translation>Referenz</translation>
     </message>
     <message>
         <source>Apply</source>
@@ -102,11 +104,11 @@
     </message>
     <message>
         <source>Boolean...</source>
-        <translation type="unfinished"></translation>
+        <translation>Boolsche Operation...</translation>
     </message>
     <message>
         <source>Run a boolean operation with two shapes selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Startet eine boolsche Operation mit zwei selektierten Körpern</translation>
     </message>
 </context>
 <context>
@@ -162,11 +164,11 @@
     </message>
     <message>
         <source>Intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschneidung</translation>
     </message>
     <message>
         <source>Intersection of two shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschneidung zweier Körper</translation>
     </message>
 </context>
 <context>
@@ -222,11 +224,13 @@
     </message>
     <message>
         <source>Fillet...</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Verrundung einer Kante mit einem Radius</translatorcomment>
+        <translation>Verrundung...</translation>
     </message>
     <message>
         <source>Fillet the selected edges of a shape</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Verrundung einer selektierten Kante eines Körpers mit einem Radius</translatorcomment>
+        <translation>Verrundung einer selektierten Kante eines Körpers</translation>
     </message>
 </context>
 <context>
@@ -237,11 +241,11 @@
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Vereinigung</translation>
     </message>
     <message>
         <source>Make union of two shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwei Körper vereinigen</translation>
     </message>
 </context>
 <context>
@@ -297,11 +301,11 @@
     </message>
     <message>
         <source>Create primitives...</source>
-        <translation type="unfinished"></translation>
+        <translation>Grundkörper erstellen...</translation>
     </message>
     <message>
         <source>Creation of parametrized geometric primitives</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstellen eines parametrisierten Grundkörper</translation>
     </message>
 </context>
 <context>
@@ -352,11 +356,11 @@
     <name>PartGui::DlgBooleanOperation</name>
     <message>
         <source>Boolean Operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Boolsche Operationen</translation>
     </message>
     <message>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Körper</translation>
     </message>
     <message>
         <source>No selection</source>
@@ -364,31 +368,31 @@
     </message>
     <message>
         <source>Second shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiter Körper</translation>
     </message>
     <message>
         <source>First shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Erster Körper</translation>
     </message>
     <message>
         <source>Boolean operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Boolsche Operation</translation>
     </message>
     <message>
         <source>Section</source>
-        <translation type="unfinished"></translation>
+        <translation>Abschnitt</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtraktion</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Vereinigung</translation>
     </message>
     <message>
         <source>Intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschneidung</translation>
     </message>
     <message>
         <source>OK</source>
@@ -400,14 +404,14 @@
     </message>
     <message>
         <source>Cannot perform a boolean operation with the same shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Boolsche Operation mit dem gleichen Körper möglich</translation>
     </message>
 </context>
 <context>
     <name>PartGui::DlgExtrusion</name>
     <message>
         <source>Extrude</source>
-        <translation type="unfinished"></translation>
+        <translation>Extrudieren</translation>
     </message>
     <message>
         <source>Direction</source>
@@ -415,19 +419,20 @@
     </message>
     <message>
         <source>Along normal</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Senkrecht</translatorcomment>
+        <translation>Entlang der Normalen</translation>
     </message>
     <message>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <source>z</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Length:</source>
@@ -435,11 +440,11 @@
     </message>
     <message>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Körper</translation>
     </message>
     <message>
         <source>Sketch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skizze:</translation>
     </message>
     <message>
         <source>No selection</source>
@@ -455,34 +460,35 @@
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Kommentar</translatorcomment>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>PartGui::DlgFilletEdges</name>
     <message>
         <source>Fillet Edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanten verrundung</translation>
     </message>
     <message>
         <source>Fillet Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter für Verrundung</translation>
     </message>
     <message>
         <source>Radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius:</translation>
     </message>
     <message>
         <source>Fillet type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrundungstyp:</translation>
     </message>
     <message>
         <source>Constant Radius</source>
-        <translation type="unfinished"></translation>
+        <translation>konstanter Radius</translation>
     </message>
     <message>
         <source>Variable Radius</source>
-        <translation type="unfinished"></translation>
+        <translation>variabler Radius</translation>
     </message>
     <message>
         <source>OK</source>
@@ -494,44 +500,45 @@
     </message>
     <message>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Körper</translation>
     </message>
     <message>
         <source>Selected shape:</source>
-        <translation type="unfinished"></translation>
+        <translation>Selektierter Körper:</translation>
     </message>
     <message>
         <source>No selection</source>
-        <translation>Keine Auswahl</translation>
+        <translation>Nichts ist ausgewählt</translation>
     </message>
     <message>
         <source>Edges to fillet</source>
-        <translation type="unfinished"></translation>
+        <translation>Kante zu Radius</translation>
     </message>
     <message>
         <source>Start radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Start Radius</translation>
     </message>
     <message>
         <source>End radius</source>
-        <translation type="unfinished"></translation>
+        <translation>End Radius</translation>
     </message>
     <message>
         <source>Edge &lt;%1&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Kante &lt;%1&gt;</translation>
     </message>
     <message>
         <source>Radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius</translation>
     </message>
     <message>
         <source>No edge selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Kante selektiert</translation>
     </message>
     <message>
         <source>No edge entity is checked to fillet.
 Please check one or more edge entities first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Kante ausgewählt.
+Als erstes wählen Sie bitte eine oder mehrere Kanten aus.</translation>
     </message>
 </context>
 <context>
@@ -562,15 +569,15 @@ Please check one or more edge entities first.</source>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <source>Length:</source>
@@ -578,70 +585,70 @@ Please check one or more edge entities first.</source>
     </message>
     <message>
         <source>Position:</source>
-        <translation type="unfinished"></translation>
+        <translation>Position:</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefiniert...</translation>
     </message>
     <message>
         <source>Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung:</translation>
     </message>
 </context>
 <context>
     <name>PartGui::DlgPartCylinder</name>
     <message>
         <source>Cylinder definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Zylinder erzeugen</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <source>Radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius:</translation>
     </message>
     <message>
         <source>Position:</source>
-        <translation type="unfinished"></translation>
+        <translation>Position:</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefiniert...</translation>
     </message>
     <message>
         <source>Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung:</translation>
     </message>
     <message>
         <source>X:</source>
@@ -684,11 +691,12 @@ Please check one or more edge entities first.</source>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>dateiname</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Kommentar</translatorcomment>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -707,26 +715,26 @@ Please check one or more edge entities first.</source>
     </message>
     <message>
         <source>Step input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Step Datei öffnen</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiname</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>PartGui::DlgPrimitives</name>
     <message>
         <source>Geometric Primitives</source>
-        <translation type="unfinished"></translation>
+        <translation>Grundkörper erstellen</translation>
     </message>
     <message>
         <source>Primitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Grundkörper</translation>
     </message>
     <message>
         <source>Position</source>
@@ -826,11 +834,11 @@ Please check one or more edge entities first.</source>
     </message>
     <message>
         <source>U parametric:</source>
-        <translation type="unfinished"></translation>
+        <translation>U Parameter:</translation>
     </message>
     <message>
         <source>V parametric:</source>
-        <translation type="unfinished"></translation>
+        <translation>V Parameter:</translation>
     </message>
     <message>
         <source>&amp;Create</source>
@@ -881,70 +889,70 @@ Please check one or more edge entities first.</source>
     </message>
     <message>
         <source>Shape view</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht Körper</translation>
     </message>
     <message>
         <source>Tessellation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tessellierung</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If this option is unset Phong shading is used, if it is set flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat-Shading/Phong-Shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Bei Flat-Shading werden die Flächennormalen nicht pro Vertex gesetzt, was zu unnatürlichem Aussehen führen kann, während Phong-Shading zu glatterem Aussehen führt. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Falls diese Option nicht gesetzt ist, wird Phong-Shading verwendet, andernfalls wird Flat-Shading verwendet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Do not define normal per vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Flächennormale nicht per Vertex setzen</translation>
     </message>
     <message>
         <source>Defines the deviation of tessellation to the actual surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Abweichung der tessellierten Fläche zur eigentlichen Fläche</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tessellation&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Defines the maximum deviation of the tessellated mesh to the surface. The smaller the value is the slower the render speed and the nicer the appearance are.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tessellierung&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Setzt die maximale Abweichung der tessellierten Fläche zur CAD-Fläche. Je niedriger der Wert desto langamer die Darstellungsgeschwindigkeit und schöner die Darstellung.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Maximum deviation of tessellated shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximale Abweichung der tessellierten Fläche</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Die Angabe der Normalen per Vertex wird auch &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt; genannt,&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;während die Angabe der Normalen pro Fläche &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt; gennant wird.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;High-quality normals&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This will slow down render speed but will lead to nicer results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hochqualitative Normalen&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Dies verringert die Darstellungsgeschwindigkeit aber führt zu schöneren Ergebnissen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Falsche Auswahl</translation>
     </message>
     <message>
         <source>Select two shapes please.</source>
-        <translation type="unfinished"></translation>
+        <translation>Selektiere Sie bitte zwei Körper.</translation>
     </message>
     <message>
         <source>All CAD Files (*.stp *.step *.igs *.iges *.brp *.brep)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle CAD Formate (*.stp *.step *.igs *.iges *.brp *.brep)</translation>
     </message>
     <message>
         <source>STEP (*.stp *.step)</source>
-        <translation type="unfinished"></translation>
+        <translation>STEP (*.stp *.step)</translation>
     </message>
     <message>
         <source>IGES (*.igs *.iges)</source>
-        <translation type="unfinished"></translation>
+        <translation>IGES (*.igs *.iges)</translation>
     </message>
     <message>
         <source>BREP (*.brp *.brep)</source>
-        <translation type="unfinished"></translation>
+        <translation>BREP (*.brp *.brep)</translation>
     </message>
     <message>
         <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
 </context>
 <context>
@@ -955,11 +963,11 @@ Please check one or more edge entities first.</source>
     </message>
     <message>
         <source>&amp;Simple</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Simple</translation>
     </message>
     <message>
         <source>&amp;Parametric</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Parametric</translation>
     </message>
     <message>
         <source>Part tools</source>

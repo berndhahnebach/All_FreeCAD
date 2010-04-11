@@ -78,14 +78,14 @@ DEF_STD_CMD_AC(StdOrthographicCamera);
 StdOrthographicCamera::StdOrthographicCamera()
   : Command("Std_OrthographicCamera")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Orthographic view");
-  sToolTipText  = QT_TR_NOOP("Switches to orthographic view mode");
-  sWhatsThis    = "Std_OrthographicCamera";
-  sStatusTip    = QT_TR_NOOP("Switches to orthographic view mode");
-  sPixmap       = "view-isometric";
-  iAccel        = Qt::Key_O;
-  eType         = Alter3DView;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Orthographic view");
+    sToolTipText  = QT_TR_NOOP("Switches to orthographic view mode");
+    sWhatsThis    = "Std_OrthographicCamera";
+    sStatusTip    = QT_TR_NOOP("Switches to orthographic view mode");
+    sPixmap       = "view-isometric";
+    iAccel        = Qt::Key_O;
+    eType         = Alter3DView;
 }
 
 void StdOrthographicCamera::activated(int iMsg)
@@ -99,26 +99,24 @@ void StdOrthographicCamera::activated(int iMsg)
 
 bool StdOrthographicCamera::isActive(void)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if ( view )
-  {
-    // update the action group if needed
-    bool check = _pcAction->isChecked();
-    bool mode = view->getViewer()->getCameraType() == SoOrthographicCamera::getClassTypeId();
-    if (mode != check)
-        _pcAction->setChecked(mode);
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if (view) {
+        // update the action group if needed
+        bool check = _pcAction->isChecked();
+        bool mode = view->getViewer()->getCameraType() == SoOrthographicCamera::getClassTypeId();
+        if (mode != check)
+            _pcAction->setChecked(mode);
+        return true;
+    }
 
-    return true;
-  }
-
-  return false;
+    return false;
 }
 
 Action * StdOrthographicCamera::createAction(void)
 {
-  Action *pcAction = Command::createAction();
-  pcAction->setCheckable( true );
-  return pcAction;
+    Action *pcAction = Command::createAction();
+    pcAction->setCheckable(true);
+    return pcAction;
 }
 
 DEF_STD_CMD_AC(StdPerspectiveCamera);
@@ -126,14 +124,14 @@ DEF_STD_CMD_AC(StdPerspectiveCamera);
 StdPerspectiveCamera::StdPerspectiveCamera()
   : Command("Std_PerspectiveCamera")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Perspective view");
-  sToolTipText  = QT_TR_NOOP("Switches to perspective view mode");
-  sWhatsThis    = "Std_PerspectiveCamera";
-  sStatusTip    = QT_TR_NOOP("Switches to perspective view mode");
-  sPixmap       = "view-perspective";
-  iAccel        = Qt::Key_P;
-  eType         = Alter3DView;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Perspective view");
+    sToolTipText  = QT_TR_NOOP("Switches to perspective view mode");
+    sWhatsThis    = "Std_PerspectiveCamera";
+    sStatusTip    = QT_TR_NOOP("Switches to perspective view mode");
+    sPixmap       = "view-perspective";
+    iAccel        = Qt::Key_P;
+    eType         = Alter3DView;
 }
 
 void StdPerspectiveCamera::activated(int iMsg)
@@ -147,26 +145,25 @@ void StdPerspectiveCamera::activated(int iMsg)
 
 bool StdPerspectiveCamera::isActive(void)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if ( view )
-  {
-    // update the action group if needed
-    bool check = _pcAction->isChecked();
-    bool mode = view->getViewer()->getCameraType() == SoPerspectiveCamera::getClassTypeId();
-    if (mode != check)
-        _pcAction->setChecked(mode);
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if (view) {
+        // update the action group if needed
+        bool check = _pcAction->isChecked();
+        bool mode = view->getViewer()->getCameraType() == SoPerspectiveCamera::getClassTypeId();
+        if (mode != check)
+            _pcAction->setChecked(mode);
 
-    return true;
-  }
+        return true;
+    }
 
-  return false;
+    return false;
 }
 
 Action * StdPerspectiveCamera::createAction(void)
 {
-  Action *pcAction = Command::createAction();
-  pcAction->setCheckable( true );
-  return pcAction;
+    Action *pcAction = Command::createAction();
+    pcAction->setCheckable(true);
+    return pcAction;
 }
 
 //===========================================================================
@@ -177,6 +174,8 @@ class StdCmdFreezeViews : public Gui::Command
 public:
     StdCmdFreezeViews();
     virtual ~StdCmdFreezeViews(){}
+    const char* className() const
+    { return "StdCmdFreezeViews"; }
 
 protected: 
     virtual void activated(int iMsg);
@@ -201,83 +200,84 @@ private:
 StdCmdFreezeViews::StdCmdFreezeViews()
   : Command("Std_FreezeViews"), maxViews(50), savedViews(0)
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Freeze display");
-  sToolTipText  = QT_TR_NOOP("Freezes the current view position");
-  sWhatsThis    = "Std_FreezeViews";
-  sStatusTip    = QT_TR_NOOP("Freezes the current view position");
-  iAccel        = Qt::SHIFT+Qt::Key_F;
-  eType         = Alter3DView;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Freeze display");
+    sToolTipText  = QT_TR_NOOP("Freezes the current view position");
+    sWhatsThis    = "Std_FreezeViews";
+    sStatusTip    = QT_TR_NOOP("Freezes the current view position");
+    iAccel        = Qt::SHIFT+Qt::Key_F;
+    eType         = Alter3DView;
 }
 
 Action * StdCmdFreezeViews::createAction(void)
 {
-  ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
-  pcAction->setDropDownMenu(true);
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  
-  // add the action items
-  saveView = pcAction->addAction(QObject::tr("Save views..."));
-  pcAction->addAction(QObject::tr("Load views..."));
-  pcAction->addAction(QString::fromAscii(""))->setSeparator(true);
-  freezeView = pcAction->addAction(QObject::tr("Freeze view"));
-  freezeView->setShortcut(iAccel);
-  clearView = pcAction->addAction(QObject::tr("Clear views"));
-  separator = pcAction->addAction(QString::fromAscii(""));
-  separator->setSeparator(true);
-  offset = pcAction->actions().count();
+    ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
+    pcAction->setDropDownMenu(true);
+    applyCommandData(pcAction);
 
-  // allow up to 50 views
-  for (int i=0; i<maxViews; i++)
-      pcAction->addAction(QString::fromAscii(""))->setVisible(false);
+    // add the action items
+    saveView = pcAction->addAction(QObject::tr("Save views..."));
+    pcAction->addAction(QObject::tr("Load views..."));
+    pcAction->addAction(QString::fromAscii(""))->setSeparator(true);
+    freezeView = pcAction->addAction(QObject::tr("Freeze view"));
+    freezeView->setShortcut(iAccel);
+    clearView = pcAction->addAction(QObject::tr("Clear views"));
+    separator = pcAction->addAction(QString::fromAscii(""));
+    separator->setSeparator(true);
+    offset = pcAction->actions().count();
 
-  return pcAction;
+    // allow up to 50 views
+    for (int i=0; i<maxViews; i++)
+        pcAction->addAction(QString::fromAscii(""))->setVisible(false);
+
+    return pcAction;
 }
 
 void StdCmdFreezeViews::activated(int iMsg)
 {
-  ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
-  
-  if ( iMsg == 0 ) {
-      onSaveViews();
-  } else if ( iMsg == 1 ) {
-      onRestoreViews();
-  } else if ( iMsg == 3 ) {
-    // Create a new view
-    const char* ppReturn=0;
-    getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
+    ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
 
-    QList<QAction*> acts = pcAction->actions();
-    int index = 0;
-    for (QList<QAction*>::ConstIterator it = acts.begin()+offset; it != acts.end(); ++it, index++) {
-      if ( !(*it)->isVisible() ) {
-        savedViews++;
-        QString viewnr = QString(QObject::tr("Restore view &%1")).arg(index+1);
-        (*it)->setText(viewnr);
-        (*it)->setToolTip(QString::fromAscii(ppReturn));
-        (*it)->setVisible(true);
-        if ( index < 9 ) {
-          int accel = Qt::CTRL+Qt::Key_1;
-          (*it)->setShortcut(accel+index);
-        }
-        break;
-      }
+    if (iMsg == 0) {
+        onSaveViews();
     }
-  } else if ( iMsg == 4 ) {
-    savedViews = 0;
-    QList<QAction*> acts = pcAction->actions();   
-    for (QList<QAction*>::ConstIterator it = acts.begin()+offset; it != acts.end(); ++it)
-      (*it)->setVisible(false);
-  } else if ( iMsg >= offset ) {
-    // Activate a view
-    QList<QAction*> acts = pcAction->actions();
-    QString data = acts[iMsg]->toolTip();
-    QString send = QString::fromAscii("SetCamera %1").arg(data);
-    getGuiApplication()->sendMsgToActiveView(send.toAscii());
-  }
+    else if (iMsg == 1) {
+        onRestoreViews();
+    }
+    else if (iMsg == 3) {
+        // Create a new view
+        const char* ppReturn=0;
+        getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
+
+        QList<QAction*> acts = pcAction->actions();
+        int index = 0;
+        for (QList<QAction*>::ConstIterator it = acts.begin()+offset; it != acts.end(); ++it, index++) {
+            if (!(*it)->isVisible()) {
+                savedViews++;
+                QString viewnr = QString(QObject::tr("Restore view &%1")).arg(index+1);
+                (*it)->setText(viewnr);
+                (*it)->setToolTip(QString::fromAscii(ppReturn));
+                (*it)->setVisible(true);
+                if (index < 9) {
+                    int accel = Qt::CTRL+Qt::Key_1;
+                    (*it)->setShortcut(accel+index);
+                }
+                break;
+            }
+        }
+    }
+    else if (iMsg == 4) {
+        savedViews = 0;
+        QList<QAction*> acts = pcAction->actions();   
+        for (QList<QAction*>::ConstIterator it = acts.begin()+offset; it != acts.end(); ++it)
+            (*it)->setVisible(false);
+    }
+    else if (iMsg >= offset) {
+        // Activate a view
+        QList<QAction*> acts = pcAction->actions();
+        QString data = acts[iMsg]->toolTip();
+        QString send = QString::fromAscii("SetCamera %1").arg(data);
+        getGuiApplication()->sendMsgToActiveView(send.toAscii());
+    }
 }
 
 void StdCmdFreezeViews::onSaveViews()
@@ -323,7 +323,7 @@ void StdCmdFreezeViews::onSaveViews()
 void StdCmdFreezeViews::onRestoreViews()
 {
     // Should we clear the already saved views
-    if ( savedViews > 0 ) {
+    if (savedViews > 0) {
         int ret = QMessageBox::question(getMainWindow(), QObject::tr("Restore views"), 
             QObject::tr("Importing the restored views would clear the already stored views.\n"
                         "Do you want to continue?"), QMessageBox::Yes|QMessageBox::Default,
@@ -410,39 +410,40 @@ void StdCmdFreezeViews::onRestoreViews()
 
 bool StdCmdFreezeViews::isActive(void)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if (view) {
-    saveView->setEnabled(savedViews > 0);
-    freezeView->setEnabled(savedViews < maxViews);
-    clearView->setEnabled(savedViews > 0);
-    separator->setVisible(savedViews > 0);
-    return true;
-  } else {
-    separator->setVisible(savedViews > 0);
-  }
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if (view) {
+        saveView->setEnabled(savedViews > 0);
+        freezeView->setEnabled(savedViews < maxViews);
+        clearView->setEnabled(savedViews > 0);
+        separator->setVisible(savedViews > 0);
+        return true;
+    }
+    else {
+        separator->setVisible(savedViews > 0);
+    }
 
-  return false;
+    return false;
 }
 
 void StdCmdFreezeViews::languageChange()
 {
-  Command::languageChange();
+    Command::languageChange();
 
-  if (!_pcAction)
-    return;
-  ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
-  QList<QAction*> acts = pcAction->actions();
-  acts[0]->setText(QObject::tr("Save views..."));
-  acts[1]->setText(QObject::tr("Load views..."));
-  acts[3]->setText(QObject::tr("Freeze view"));
-  acts[4]->setText(QObject::tr("Clear views"));
-  int index=1;
-  for (QList<QAction*>::ConstIterator it = acts.begin()+5; it != acts.end(); ++it, index++) {
-    if ( (*it)->isVisible() ) {
-      QString viewnr = QString(QObject::tr("Restore view &%1")).arg(index);
-      (*it)->setText(viewnr);
+    if (!_pcAction)
+        return;
+    ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
+    QList<QAction*> acts = pcAction->actions();
+    acts[0]->setText(QObject::tr("Save views..."));
+    acts[1]->setText(QObject::tr("Load views..."));
+    acts[3]->setText(QObject::tr("Freeze view"));
+    acts[4]->setText(QObject::tr("Clear views"));
+    int index=1;
+    for (QList<QAction*>::ConstIterator it = acts.begin()+5; it != acts.end(); ++it, index++) {
+        if ((*it)->isVisible()) {
+            QString viewnr = QString(QObject::tr("Restore view &%1")).arg(index);
+            (*it)->setText(viewnr);
+        }
     }
-  }
 }
 
 //===========================================================================
@@ -454,46 +455,47 @@ DEF_STD_CMD_AC(StdCmdToggleClipPlane);
 StdCmdToggleClipPlane::StdCmdToggleClipPlane()
   : Command("Std_ToggleClipPlane")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Clipping plane");
-  sToolTipText  = QT_TR_NOOP("Toggles clipping plane for active view");
-  sWhatsThis    = "Std_ToggleClipPlane";
-  sStatusTip    = QT_TR_NOOP("Toggles clipping plane for active view");
-  eType         = Alter3DView;
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Clipping plane");
+    sToolTipText  = QT_TR_NOOP("Toggles clipping plane for active view");
+    sWhatsThis    = "Std_ToggleClipPlane";
+    sStatusTip    = QT_TR_NOOP("Toggles clipping plane for active view");
+    eType         = Alter3DView;
 }
 
 Action * StdCmdToggleClipPlane::createAction(void)
 {
-  Action *pcAction = (Action*)Command::createAction();
-  pcAction->setCheckable( true );
-  return pcAction;
+    Action *pcAction = (Action*)Command::createAction();
+    pcAction->setCheckable(true);
+    return pcAction;
 }
 
 void StdCmdToggleClipPlane::activated(int iMsg)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if (view) {
-    if (iMsg > 0 && !view->hasClippingPlane())
-      view->toggleClippingPlane();
-    else if (iMsg == 0 && view->hasClippingPlane())
-      view->toggleClippingPlane();
-  }
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if (view) {
+        if (iMsg > 0 && !view->hasClippingPlane())
+            view->toggleClippingPlane();
+        else if (iMsg == 0 && view->hasClippingPlane())
+            view->toggleClippingPlane();
+    }
 }
 
 bool StdCmdToggleClipPlane::isActive(void)
 {
-  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if (view){
-    Action* action = qobject_cast<Action*>(_pcAction);
-    if (action->isChecked() != view->hasClippingPlane())
-      action->setChecked(view->hasClippingPlane());
-    return true;
-  } else {
-    Action* action = qobject_cast<Action*>(_pcAction);
-    if (action->isChecked())
-      action->setChecked(false);
-    return false;
-  }
+    View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+    if (view) {
+        Action* action = qobject_cast<Action*>(_pcAction);
+        if (action->isChecked() != view->hasClippingPlane())
+            action->setChecked(view->hasClippingPlane());
+        return true;
+    }
+    else {
+        Action* action = qobject_cast<Action*>(_pcAction);
+        if (action->isChecked())
+            action->setChecked(false);
+        return false;
+    }
 }
 
 //===========================================================================
@@ -1051,88 +1053,102 @@ DEF_STD_CMD_AC(StdViewDockUndockFullscreen);
 StdViewDockUndockFullscreen::StdViewDockUndockFullscreen()
   : Command("Std_ViewDockUndockFullscreen")
 {
-  sGroup      = QT_TR_NOOP("Standard-View");
-  sMenuText   = QT_TR_NOOP("Display mode");
-  sToolTipText= QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
-  sWhatsThis  = "Std_ViewDockUndockFullscreen";
-  sStatusTip  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
-  eType         = Alter3DView;
+    sGroup      = QT_TR_NOOP("Standard-View");
+    sMenuText   = QT_TR_NOOP("Display mode");
+    sToolTipText= QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
+    sWhatsThis  = "Std_ViewDockUndockFullscreen";
+    sStatusTip  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
+    eType         = Alter3DView;
 }
 
 Action * StdViewDockUndockFullscreen::createAction(void)
 {
-  ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
-  pcAction->setDropDownMenu(true);
-  pcAction->setText(QObject::tr(sMenuText));
+    ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
+    pcAction->setDropDownMenu(true);
+    pcAction->setText(QCoreApplication::translate(
+        this->className(), sMenuText, 0,
+        QCoreApplication::CodecForTr));
 
-  QAction* docked = pcAction->addAction(QObject::tr(QT_TR_NOOP("Docked")));
-  docked->setToolTip(QObject::tr(sToolTipText));
-  docked->setStatusTip(QObject::tr(sStatusTip));
-  docked->setWhatsThis(QObject::tr(sWhatsThis));
-  docked->setShortcut(Qt::Key_D);
-  docked->setCheckable(true);
+    QAction* docked = pcAction->addAction(QObject::tr(QT_TR_NOOP("Docked")));
+    docked->setToolTip(QCoreApplication::translate(
+        this->className(), sToolTipText, 0,
+        QCoreApplication::CodecForTr));
+    docked->setStatusTip(QCoreApplication::translate(
+        this->className(), sStatusTip, 0,
+        QCoreApplication::CodecForTr));
+    docked->setWhatsThis(QCoreApplication::translate(
+        this->className(), sWhatsThis, 0,
+        QCoreApplication::CodecForTr));
+    docked->setShortcut(Qt::Key_D);
+    docked->setCheckable(true);
 
-  QAction* undocked = pcAction->addAction(QObject::tr(QT_TR_NOOP("Undocked")));
-  undocked->setToolTip(QObject::tr(sToolTipText));
-  undocked->setStatusTip(QObject::tr(sStatusTip));
-  undocked->setWhatsThis(QObject::tr(sWhatsThis));
-  undocked->setShortcut(Qt::Key_U);
-  undocked->setCheckable(true);
+    QAction* undocked = pcAction->addAction(QObject::tr(QT_TR_NOOP("Undocked")));
+    undocked->setToolTip(QCoreApplication::translate(
+        this->className(), sToolTipText, 0,
+        QCoreApplication::CodecForTr));
+    undocked->setStatusTip(QCoreApplication::translate(
+        this->className(), sStatusTip, 0,
+        QCoreApplication::CodecForTr));
+    undocked->setWhatsThis(QCoreApplication::translate(
+        this->className(), sWhatsThis, 0,
+        QCoreApplication::CodecForTr));
+    undocked->setShortcut(Qt::Key_U);
+    undocked->setCheckable(true);
 
-  QAction* fullscr = pcAction->addAction(QObject::tr(QT_TR_NOOP("Fullscreen")));
-  fullscr->setToolTip(QObject::tr(sToolTipText));
-  fullscr->setStatusTip(QObject::tr(sStatusTip));
-  fullscr->setWhatsThis(QObject::tr(sWhatsThis));
-  fullscr->setShortcut(Qt::Key_F11);
-  fullscr->setCheckable(true);
-  fullscr->setIcon(Gui::BitmapFactory().pixmap("view-fullscreen"));
+    QAction* fullscr = pcAction->addAction(QObject::tr(QT_TR_NOOP("Fullscreen")));
+    fullscr->setToolTip(QCoreApplication::translate(
+        this->className(), sToolTipText, 0,
+        QCoreApplication::CodecForTr));
+    fullscr->setStatusTip(QCoreApplication::translate(
+        this->className(), sStatusTip, 0,
+        QCoreApplication::CodecForTr));
+    fullscr->setWhatsThis(QCoreApplication::translate(
+        this->className(), sWhatsThis, 0,
+        QCoreApplication::CodecForTr));
+    fullscr->setShortcut(Qt::Key_F11);
+    fullscr->setCheckable(true);
+    fullscr->setIcon(Gui::BitmapFactory().pixmap("view-fullscreen"));
 
-  return pcAction;
+    return pcAction;
 }
 
 void StdViewDockUndockFullscreen::activated(int iMsg)
 {
-  MDIView* view = getMainWindow()->activeWindow();
-  if ( !view ) return; // no active view
-  if ( iMsg == (int)(view->currentViewMode()) ) 
-    return; // nothing to do
+    MDIView* view = getMainWindow()->activeWindow();
+    if (!view) return; // no active view
+    if (iMsg == (int)(view->currentViewMode()))
+        return; // nothing to do
 
-  if (iMsg==0)
-  {
-    view->setCurrentViewMode( MDIView::Child );
-  }
-  else if (iMsg==1)
-  {
-    view->setCurrentViewMode( MDIView::TopLevel );
-  }
-  else if (iMsg==2)
-  {
-    view->setCurrentViewMode( MDIView::FullScreen );
-  }
+    if (iMsg==0) {
+        view->setCurrentViewMode( MDIView::Child );
+    }
+    else if (iMsg==1) {
+        view->setCurrentViewMode( MDIView::TopLevel );
+    }
+    else if (iMsg==2) {
+        view->setCurrentViewMode( MDIView::FullScreen );
+    }
 }
 
 bool StdViewDockUndockFullscreen::isActive(void)
 {
-  MDIView* view = getMainWindow()->activeWindow();
-  if ( view )
-  {
-    // update the action group if needed
-    ActionGroup* pActGrp = qobject_cast<ActionGroup*>(_pcAction);
-    if ( pActGrp )
-    {
-      int index = pActGrp->checkedAction();
-      int mode = (int)(view->currentViewMode());
-      if ( index != mode )
-      {
-        // active window has changed with another view mode
-        pActGrp->setCheckedAction( mode );
-      }
+    MDIView* view = getMainWindow()->activeWindow();
+    if (view) {
+        // update the action group if needed
+        ActionGroup* pActGrp = qobject_cast<ActionGroup*>(_pcAction);
+        if (pActGrp) {
+            int index = pActGrp->checkedAction();
+            int mode = (int)(view->currentViewMode());
+            if (index != mode) {
+                // active window has changed with another view mode
+                pActGrp->setCheckedAction(mode);
+            }
+        }
+
+        return true;
     }
 
-    return true;
-  }
-
-  return false;
+    return false;
 }
 
 //===========================================================================

@@ -191,10 +191,14 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
         bool visible = hPref->GetBool(toolbarName.c_str(), true);
 
         if (!toolbar) {
-            toolbar = getMainWindow()->addToolBar(QObject::trUtf8(toolbarName.c_str())); // i18n
+            toolbar = getMainWindow()->addToolBar(
+                QApplication::translate("Workbench",
+                                        toolbarName.c_str(),
+                                        0, QApplication::UnicodeUTF8)); // i18n
             toolbar->setObjectName(QString::fromAscii((*it)->command().c_str()));
             toolbar->setVisible(visible);
-        } else {
+        }
+        else {
             toolbar->setVisible(visible);
             toolbar->toggleViewAction()->setVisible(true);
             int index = toolbars.indexOf(toolbar);
@@ -286,7 +290,10 @@ void ToolBarManager::retranslate() const
     QList<QToolBar*> toolbars = toolBars();
     for (QList<QToolBar*>::Iterator it = toolbars.begin(); it != toolbars.end(); ++it) {
         QByteArray toolbarName = (*it)->objectName().toUtf8();
-        (*it)->setWindowTitle(QObject::trUtf8(toolbarName.constData()));
+        (*it)->setWindowTitle(
+            QApplication::translate("Workbench",
+                                    (const char*)toolbarName,
+                                    0, QApplication::UnicodeUTF8));
     }
 }
 

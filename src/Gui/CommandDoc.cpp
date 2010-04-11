@@ -507,18 +507,15 @@ bool StdCmdUndo::isActive(void)
 
 Action * StdCmdUndo::createAction(void)
 {
-  Action *pcAction;
+    Action *pcAction;
 
-  pcAction = new UndoAction(this,getMainWindow());
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  if(sPixmap)
-    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setShortcut(iAccel);
+    pcAction = new UndoAction(this,getMainWindow());
+    applyCommandData(pcAction);
+    if (sPixmap)
+        pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+    pcAction->setShortcut(iAccel);
 
-  return pcAction;
+    return pcAction;
 }
 
 //===========================================================================
@@ -552,18 +549,15 @@ bool StdCmdRedo::isActive(void)
 
 Action * StdCmdRedo::createAction(void)
 {
-  Action *pcAction;
+    Action *pcAction;
 
-  pcAction = new RedoAction(this,getMainWindow());
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  if(sPixmap)
-    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setShortcut(iAccel);
+    pcAction = new RedoAction(this,getMainWindow());
+    applyCommandData(pcAction);
+    if (sPixmap)
+        pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+    pcAction->setShortcut(iAccel);
 
-  return pcAction;
+    return pcAction;
 }
 
 //===========================================================================
