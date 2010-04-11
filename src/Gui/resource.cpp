@@ -37,7 +37,7 @@
 #include "DlgSettingsMacroImp.h"
 #include "DlgSettingsUnitsImp.h"
 #include "DlgSettingsDocumentImp.h"
-#include "DlgOnlineHelpImp.h"
+//#include "DlgOnlineHelpImp.h"
 #include "DlgReportViewImp.h"
 
 #include "DlgToolbarsImp.h"
@@ -58,7 +58,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     //
     //
     new PrefPageProducer<DlgGeneralImp>         ( QT_TR_NOOP("General") );
-    new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
+  //new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettingsDocumentImp>( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TR_NOOP("General") );
     new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
