@@ -97,7 +97,7 @@ ui_%.h: %.ui
 	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-qrc_%.cpp: %.qrc
+qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
@@ -111,15 +111,16 @@ libdir = $(prefix)/Mod/Mesh
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		Icons/mesh_cut.svg \
-		Icons/mesh_boundary.svg \
-		Icons/Tree_Mesh.svg \
+		Resources/icons/mesh_cut.svg \
+		Resources/icons/mesh_boundary.svg \
+		Resources/icons/Tree_Mesh.svg \
 		CMakeLists.txt \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
 		DlgSettingsMeshView.ui \
 		RemoveComponents.ui \
-		Mesh.qrc \
-		Mesh_de.qm \
-		Mesh_it.qm \
+		Resources/Mesh.qrc \
+		Resources/translations/Mesh_de.qm \
+		Resources/translations/Mesh_fr.qm \
+		Resources/translations/Mesh_it.qm \
 		images.h

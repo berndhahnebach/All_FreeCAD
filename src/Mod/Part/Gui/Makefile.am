@@ -137,7 +137,7 @@ ui_%.h: %.ui
 	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-qrc_%.cpp: %.qrc
+qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
@@ -151,24 +151,24 @@ libdir = $(prefix)/Mod/Part
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		Icons/Part_Cylinder.svg \
-		Icons/Part_Box.svg \
-		Icons/Part_Torus.svg \
-		Icons/Part_Cone.svg \
-		Icons/Part_Sphere.svg \
-		Icons/Part_Booleans.svg \
-		Icons/Part_Cut.svg \
-		Icons/Part_Common.svg \
-		Icons/Part_Fuse.svg \
-		Icons/Part_Section.svg \
-		Icons/Part_Extrude.svg \
-		Icons/Part_Fillet.svg \
-		Icons/Part_Revolve.svg \
-		Icons/Part_Import.svg \
-		Icons/Tree_Part.svg \
-		Icons/preferences-part_design.svg \
-		Icons/PartFeature.xpm \
-		Icons/PartFeatureImport.xpm \
+		Resources/icons/Part_Cylinder.svg \
+		Resources/icons/Part_Box.svg \
+		Resources/icons/Part_Torus.svg \
+		Resources/icons/Part_Cone.svg \
+		Resources/icons/Part_Sphere.svg \
+		Resources/icons/Part_Booleans.svg \
+		Resources/icons/Part_Cut.svg \
+		Resources/icons/Part_Common.svg \
+		Resources/icons/Part_Fuse.svg \
+		Resources/icons/Part_Section.svg \
+		Resources/icons/Part_Extrude.svg \
+		Resources/icons/Part_Fillet.svg \
+		Resources/icons/Part_Revolve.svg \
+		Resources/icons/Part_Import.svg \
+		Resources/icons/Tree_Part.svg \
+		Resources/icons/preferences-part_design.svg \
+		Resources/icons/PartFeature.xpm \
+		Resources/icons/PartFeatureImport.xpm \
 		DlgBooleanOperation.ui \
 		DlgExtrusion.ui \
 		DlgFilletEdges.ui \
@@ -180,7 +180,8 @@ EXTRA_DIST = \
 		DlgPrimitives.ui \
 		DlgSettings3DViewPart.ui \
 		DlgSettingsGeneral.ui \
-		Part.qrc \
-		Part_de.qm \
-		Part_it.qm \
+		Resources/Part.qrc \
+		Resources/translations/Part_de.qm \
+		Resources/translations/Part_fr.qm \
+		Resources/translations/Part_it.qm \
 		CMakeLists.txt

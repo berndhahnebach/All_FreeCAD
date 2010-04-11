@@ -67,7 +67,7 @@ ui_%.h: %.ui
 	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-qrc_%.cpp: %.qrc
+qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
@@ -81,6 +81,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		DlgPointsRead.ui \
 		CMakeLists.txt \
-		Points.qrc \
-		Points_de.qm \
-		Points_se.qm
+		Resources/Points.qrc \
+		Resources/translations/Points_de.qm \
+		Resources/translations/Points_fr.qm \
+		Resources/translations/Points_se.qm

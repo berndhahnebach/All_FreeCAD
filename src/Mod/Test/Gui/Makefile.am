@@ -57,7 +57,7 @@ ui_%.h: %.ui
 	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-qrc_%.cpp: %.qrc
+qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
@@ -76,7 +76,8 @@ EXTRA_DIST = \
 		$(data_DATA) \
 		CMakeLists.txt \
 		UnitTest.ui \
-		Test.qrc \
-		Test_de.qm \
-		Test_se.qm \
+		Resources/Test.qrc \
+		Resources/translations/Test_de.qm \
+		Resources/translations/Test_fr.qm \
+		Resources/translations/Test_se.qm \
 		qtunittest.py
