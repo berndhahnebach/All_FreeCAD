@@ -31,7 +31,7 @@ fc_wrap_cpp(ImageGui_MOC_SRCS ${ImageGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${ImageGui_MOC_SRCS})
 
 SET(ImageGui_RES_SRCS
-	Image.qrc
+	Resources/Image.qrc
 )
 fc_add_resources(ImageGui_QRC_SRCS ${ImageGui_RES_SRCS})
 #QT4_ADD_RESOURCES(ImageGui_QRC_SRCS ${ImageGui_RES_SRCS})
@@ -44,7 +44,7 @@ SET(ImageGui_SRCS
 	Command.cpp
 	GLImageBox.cpp
 	GLImageBox.h
-	Image.qrc
+	Resources/Image.qrc
 	ImageView.cpp
 	ImageView.h
 	PreCompiled.cpp
