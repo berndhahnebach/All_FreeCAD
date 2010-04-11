@@ -1,0 +1,24 @@
+<RCC>
+    <qresource>
+        <file>translations/Part_de.qm</file>
+        <file>translations/Part_it.qm</file>
+    </qresource>
+    <qresource>
+		<file>icons/preferences-part_design.svg</file>
+		<file>icons/Part_Cylinder.svg</file>
+		<file>icons/Part_Box.svg</file>
+		<file>icons/Part_Torus.svg</file>
+		<file>icons/Part_Cone.svg</file>
+		<file>icons/Part_Sphere.svg</file>
+		<file>icons/Part_Booleans.svg</file>
+		<file>icons/Part_Cut.svg</file>
+		<file>icons/Part_Common.svg</file>
+		<file>icons/Part_Fuse.svg</file>
+		<file>icons/Part_Section.svg</file>
+		<file>icons/Part_Extrude.svg</file>
+		<file>icons/Part_Fillet.svg</file>
+		<file>icons/Part_Revolve.svg</file>
+		<file>icons/Part_Import.svg</file>
+		<file>icons/Tree_Part.svg</file>
+	</qresource>
+</RCC>

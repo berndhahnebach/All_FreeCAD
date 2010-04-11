@@ -38,8 +38,8 @@
 #include <Gui/Language/Translator.h>
 #include "qrc_Part.cpp"
 
-#include "Icons/PartFeature.xpm"
-#include "Icons/PartFeatureImport.xpm"
+#include "Resources/icons/PartFeature.xpm"
+#include "Resources/icons/PartFeatureImport.xpm"
 
 // use a different name to CreateCommand()
 void CreatePartCommands(void);
