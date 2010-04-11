@@ -55,10 +55,10 @@ SET(Inventor_SRCS
 )
 SOURCE_GROUP("Inventor" FILES ${Inventor_SRCS})
 
-fc_add_resources(resource_SRCS Mesh.qrc)
+fc_add_resources(resource_SRCS Resources/Mesh.qrc)
 SET(resource_SRCS
 #		 ${resource_SRCS}
-		 Mesh.qrc
+		 Resources/Mesh.qrc
 )
 SOURCE_GROUP("resource" FILES ${resource_SRCS})
 
