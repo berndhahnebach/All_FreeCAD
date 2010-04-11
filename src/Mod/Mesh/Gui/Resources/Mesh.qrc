@@ -1,0 +1,11 @@
+<RCC>
+    <qresource>
+        <file>translations/Mesh_de.qm</file>
+        <file>translations/Mesh_it.qm</file>
+    </qresource>
+    <qresource>
+        <file>icons/mesh_cut.svg</file>
+        <file>icons/mesh_boundary.svg</file>
+        <file>icons/Tree_Mesh.svg</file>
+    </qresource>
+</RCC>
