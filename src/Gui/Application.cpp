@@ -875,6 +875,7 @@ bool Application::activateWorkbench(const char* name)
 
 QPixmap Application::workbenchIcon(const QString& wb) const
 {
+    Base::PyGILStateLocker lock;
     // get the python workbench object from the dictionary
     PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toAscii());
     // test if the workbench exists
