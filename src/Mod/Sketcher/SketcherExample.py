@@ -44,3 +44,7 @@ sketch.solve()
 # get the result
 sketch.Geometries[Line1]
 sketch.Geometries[Line2]
+
+# move the point to zero grid point
+sketch.movePoint(Line1,StartPoint,Vector(0,0,0))
+

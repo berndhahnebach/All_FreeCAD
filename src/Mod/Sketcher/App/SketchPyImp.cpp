@@ -1,6 +1,8 @@
 
 #include "PreCompiled.h"
 
+#include <Base/VectorPy.h>
+
 #include <Mod/Part/App/Geometry.h>
 #include <Mod/Part/App/GeometryCurvePy.h>
 #include <Mod/Part/App/LinePy.h>
@@ -83,6 +85,17 @@ PyObject* SketchPy::addPointOnPointConstraint(PyObject *args)
 
     return Py::new_reference_to(Py::Int(getSketchPtr()->addPointCoincidentConstraint(index1,(Sketcher::Sketch::PointPos)index2,index3,(Sketcher::Sketch::PointPos)index4,name)));
 
+}
+
+PyObject* SketchPy::movePoint(PyObject *args)
+{
+    int index1,index2;
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "iiO!", &index1,&index2,&(Base::VectorPy::Type),&pcObj))
+        return 0;
+    Base::Vector3d* movePoint = static_cast<Base::VectorPy*>(pcObj)->getVectorPtr();
+
+    return Py::new_reference_to(Py::Int(getSketchPtr()->movePoint(index1,(Sketcher::Sketch::PointPos)index2,*movePoint)));
 }
 
 // +++ attributes implementer ++++++++++++++++++++++++++++++++++++++++++++++++
