@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QApplication>
 # include <QBuffer>
 # include <QByteArray>
 # include <QClipboard>
@@ -548,15 +549,23 @@ bool MainWindow::event(QEvent *e)
             qApp->installEventFilter(this);
         }
     }
-    if (e->type() == QEvent::LeaveWhatsThisMode) {
+    else if (e->type() == QEvent::LeaveWhatsThisMode) {
         // Here we can't do anything because this event is sent
         // before the WhatThisClicked event is sent. Thus, we handle
         // this in eventFilter().
     }
-
-    if (e->type() == QEvent::WhatsThisClicked) {
+    else if (e->type() == QEvent::WhatsThisClicked) {
         QWhatsThisClickedEvent* wt = static_cast<QWhatsThisClickedEvent*>(e);
         showDocumentation((const char*)wt->href().toUtf8());
+    }
+    else if (e->type() == QEvent::ApplicationWindowIconChange) {
+        // if application icon changes apply it to the main window and the "About..." dialog
+        this->setWindowIcon(QApplication::windowIcon());
+        Command* about = Application::Instance->commandManager().getCommandByName("Std_About");
+        if (about) {
+            Action* action = about->getAction();
+            if (action) action->setIcon(QApplication::windowIcon());
+        }
     }
     return QMainWindow::event(e);
 }

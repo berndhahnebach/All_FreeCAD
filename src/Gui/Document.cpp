@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qdir.h>
 # include <qfileinfo.h>
 # include <qmessagebox.h>
@@ -786,7 +787,6 @@ void Document::importObjects(const std::vector<App::DocumentObject*>& obj, Base:
 
 void Document::createView(const char* sType) 
 {
-    QPixmap px = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
     View3DInventor* view3D = new View3DInventor(this, getMainWindow());
 
     // attach the viewprovider
@@ -803,7 +803,7 @@ void Document::createView(const char* sType)
         .arg(QString::fromUtf8(name)).arg(d->_iWinCount++);
 
     view3D->setWindowTitle(title);
-    view3D->setWindowIcon(px);
+    view3D->setWindowIcon(QApplication::windowIcon());
     view3D->resize(400, 300);
     getMainWindow()->addWindow(view3D);
 }

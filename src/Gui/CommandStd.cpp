@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QApplication>
 # include <QMessageBox>
 # include <QWhatsThis>
 #if QT_VERSION >= 0x040200
@@ -184,7 +185,6 @@ StdCmdAbout::StdCmdAbout()
     sToolTipText  = QT_TR_NOOP("About %1");
     sWhatsThis    = "Std_About";
     sStatusTip    = QT_TR_NOOP("About %1");
-    sPixmap       = App::Application::Config()["AppIcon"].c_str();
     eType         = 0;
 }
 
@@ -204,9 +204,7 @@ Action * StdCmdAbout::createAction(void)
         this->className(), sStatusTip, 0,
         QCoreApplication::CodecForTr).arg(exe));
     pcAction->setWhatsThis(QLatin1String(sWhatsThis));
-
-    if (sPixmap)
-        pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+    pcAction->setIcon(QApplication::windowIcon());
     pcAction->setShortcut(iAccel);
 
     return pcAction;
