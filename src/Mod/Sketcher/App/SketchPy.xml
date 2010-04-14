@@ -37,9 +37,22 @@
     </Methode>
     <Methode Name="addPointOnPointConstraint">
       <Documentation>
-        <UserDocu>addPointOnPointConstraint(GeoIndex1,PointPos1,GeoIndex2,PointPos2[,name]) - add a point on point constraint to the geometrsie with the given indexes
-You give two element idexes and the type of point you whant to use
-0 = StartPoint, 1 = EndPoint, 2 = MiddPoint (in case of an arc or circle)
+        <UserDocu>
+          addPointOnPointConstraint(GeoIndex1,PointPos1,GeoIndex2,PointPos2[,name]) - add a point on point constraint to the geometrsie with the given indexes
+          You give two element idexes and the type of point you whant to use
+          0 = StartPoint, 1 = EndPoint, 2 = MiddPoint (in case of an arc or circle)
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="movePoint">
+      <Documentation>
+        <UserDocu>
+          movePoint(GeoIndex,PointPos,Vector) - move a given point to another location.
+          It solves the sketch that way the point stais at the given location or fail.
+          This methode is somewhat tricky. If the move is to bigg it can fail to find a valid
+          solution. It can work if you move the point over some
+          iterations to the target. This methode is mostly used to allow the user to dragg 
+          some portions of the sketch in real time by e.g. the mouse.
         </UserDocu>
       </Documentation>
     </Methode>
