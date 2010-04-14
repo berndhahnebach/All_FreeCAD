@@ -392,8 +392,9 @@ void DockWindowManager::onWidgetDestroyed(QObject* widget)
         }
 
         if ((*it)->widget() == widget) {
+            // Delete the widget if not used anymore
             QDockWidget* dw = *it;
-            dw->setWidget(0);
+            dw->deleteLater();
             break;
         }
     }
