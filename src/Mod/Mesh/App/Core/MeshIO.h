@@ -102,6 +102,12 @@ class MeshExport MeshOutput
 public:
     MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
     virtual ~MeshOutput (void) { }
+    /** Set custom data to the header of a binary STL.
+     * If the data exceeds 80 characters the the characters too much
+     * are ignored. If the data has less than 80 characters they are
+     * automatically filled up with spaces.
+     */
+    static void SetSTLHeaderData(const std::string&);
     /// Saves the file, decided by extension if not explicitly given
     bool SaveAny(const char* FileName, MeshIO::Format f=MeshIO::Undefined) const;
 
@@ -132,6 +138,7 @@ public:
 
 protected:
     const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
+    static std::string stl_header;
 };
 
 struct MeshExport VRMLViewpointData
