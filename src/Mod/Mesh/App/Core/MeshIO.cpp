@@ -1175,6 +1175,23 @@ bool MeshInput::LoadCadmouldFE (std::ifstream &rstrIn)
 
 // --------------------------------------------------------------
 
+std::string MeshOutput::stl_header = "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-"
+                                     "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n";
+
+void MeshOutput::SetSTLHeaderData(const std::string& header)
+{
+    if (header.size() > 80) {
+        stl_header = header.substr(0, 80);
+    }
+    else if (header.size() < 80) {
+        std::fill(stl_header.begin(), stl_header.end(), ' ');
+        std::copy(header.begin(), header.end(), stl_header.begin());
+    }
+    else {
+        stl_header = header;
+    }
+}
+
 /// Save in a file, format is decided by the extension if not explicitly given
 bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
 {
@@ -1363,7 +1380,7 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
 
     Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
  
-    strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n");
+    strcpy(szInfo, stl_header.c_str());
     rstrOut.write(szInfo, std::strlen(szInfo));
 
     uint32_t uCtFts = (uint32_t)_rclMesh.CountFacets();
