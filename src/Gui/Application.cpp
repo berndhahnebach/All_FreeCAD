@@ -660,6 +660,18 @@ void Application::hideViewProvider(App::DocumentObject* obj)
     }
 }
 
+Gui::ViewProvider *Application::getViewProvider(App::DocumentObject* obj)
+{
+    App::Document* doc = obj->getDocument();
+    if (doc) {
+        Gui::Document* gui = getDocument(doc);
+        if (gui) {
+            ViewProvider* vp = gui->getViewProvider(obj);
+            return vp;
+        }
+    }
+}
+
 void Application::attachView(Gui::BaseView* pcView)
 {
     d->_LpcViews.push_back(pcView);

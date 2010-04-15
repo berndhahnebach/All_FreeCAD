@@ -198,15 +198,15 @@ void CmdRobotAddToolShape::activated(int iMsg)
 
     openCommand("Add tool to robot");
     doCommand(Doc,"App.activeDocument().%s.ToolShape = App.activeDocument().%s",RoboName.c_str(),ShapeName.c_str());
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",ShapeName.c_str());
+    //doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",ShapeName.c_str());
     updateActive();
     commitCommand();
 }
 
 bool CmdRobotAddToolShape::isActive(void)
 {
-    return false; // not yet implemetned thus not active
-    //return hasActiveDocument();
+    //return false; // not yet implemetned thus not active
+    return hasActiveDocument();
 }
 
 void CreateRobotCommandsInsertRobots(void)
