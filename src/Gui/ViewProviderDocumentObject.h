@@ -63,16 +63,21 @@ public:
     virtual std::vector<std::string> getDisplayModes(void) const;
     /// Sets the active mode, i.e. the first item of the 'Display' property.
     void setActiveMode();
+    /// hides the object in the View
     virtual void hide(void);
+    /// show the object in the View
     virtual void show(void);
 
     /// get a list of TaskBoxes associated with this object
     virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&) const;
 
-
+    /// cause a redraw
     void updateView();
+    /// get called if some of the property hade bin changed
     virtual void updateData(const App::Property*){};
+    /// get the object this ViewProvider views
     App::DocumentObject *getObject(void) const {return pcObject;}
+    /// get the python wrapper for that ViewProvider
     PyObject* getPyObject();
 
 protected:

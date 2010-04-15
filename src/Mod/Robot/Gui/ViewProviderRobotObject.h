@@ -68,6 +68,9 @@ protected:
     //SoTrackballDragger    * pcDragger;
     SoJackDragger         * pcDragger;
 
+    // view provider of the toolshape if set
+    Gui::ViewProvider *toolShape;
+
 	// Pointers to the robot axis nodes in the VRML model
 	SoVRMLTransform *Axis1Node;
 	SoVRMLTransform *Axis2Node;
