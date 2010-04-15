@@ -57,31 +57,31 @@ public:
     App::PropertyBool Visibility;
 
     virtual void attach(App::DocumentObject *pcObject);
-    /// get the default display mode
+    /// Get the default display mode
     virtual const char* getDefaultDisplayMode() const;
-    /// returns a list of all possible modes
+    /// Return a list of all possible modes
     virtual std::vector<std::string> getDisplayModes(void) const;
-    /// Sets the active mode, i.e. the first item of the 'Display' property.
+    /// Set the active mode, i.e. the first item of the 'Display' property.
     void setActiveMode();
-    /// hides the object in the View
+    /// Hide the object in the view
     virtual void hide(void);
-    /// show the object in the View
+    /// Show the object in the view
     virtual void show(void);
 
-    /// get a list of TaskBoxes associated with this object
+    /// Get a list of TaskBoxes associated with this object
     virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>&) const;
 
-    /// cause a redraw
+    /// Run a redraw
     void updateView();
-    /// get called if some of the property hade bin changed
+    /// Gets called if some of the property hade bin changed
     virtual void updateData(const App::Property*){};
-    /// get the object this ViewProvider views
+    /// Get the object of this ViewProvider object
     App::DocumentObject *getObject(void) const {return pcObject;}
-    /// get the python wrapper for that ViewProvider
+    /// Get the python wrapper for that ViewProvider
     PyObject* getPyObject();
 
 protected:
-    /// get called by the container whenever a property has been changed
+    /// Gets called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
     /** Searches in all view providers that are attached to an object that
      * is part of the same document as the object this view provider is
