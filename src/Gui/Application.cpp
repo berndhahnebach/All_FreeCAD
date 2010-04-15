@@ -636,31 +636,17 @@ Gui::Document* Application::getDocument(const App::Document* pDoc) const
 
 void Application::showViewProvider(App::DocumentObject* obj)
 {
-    App::Document* doc = obj->getDocument();
-    if (doc) {
-        Gui::Document* gui = getDocument(doc);
-        if (gui) {
-            ViewProvider* vp = gui->getViewProvider(obj);
-            if (vp)
-                vp->show();
-        }
-    }
+    ViewProvider* vp = getViewProvider(obj);
+    if (vp) vp->show();
 }
 
 void Application::hideViewProvider(App::DocumentObject* obj)
 {
-    App::Document* doc = obj->getDocument();
-    if (doc) {
-        Gui::Document* gui = getDocument(doc);
-        if (gui) {
-            ViewProvider* vp = gui->getViewProvider(obj);
-            if (vp)
-                vp->hide();
-        }
-    }
+    ViewProvider* vp = getViewProvider(obj);
+    if (vp) vp->hide();
 }
 
-Gui::ViewProvider *Application::getViewProvider(App::DocumentObject* obj)
+Gui::ViewProvider* Application::getViewProvider(App::DocumentObject* obj) const
 {
     App::Document* doc = obj->getDocument();
     if (doc) {
@@ -670,6 +656,8 @@ Gui::ViewProvider *Application::getViewProvider(App::DocumentObject* obj)
             return vp;
         }
     }
+
+    return 0;
 }
 
 void Application::attachView(Gui::BaseView* pcView)

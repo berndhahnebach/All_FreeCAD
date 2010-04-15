@@ -136,8 +136,8 @@ public:
     void showViewProvider(App::DocumentObject*);
     /// Hides the associated view provider of the given object
     void hideViewProvider(App::DocumentObject*);
-    /// get view provider of the given object
-    Gui::ViewProvider *getViewProvider(App::DocumentObject*);
+    /// Get the view provider of the given object
+    Gui::ViewProvider* getViewProvider(App::DocumentObject*) const;
     //@}
 
     /// true when the application shuting down
