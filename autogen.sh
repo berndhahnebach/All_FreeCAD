@@ -25,14 +25,17 @@ else
 fi
 
 # create m4 subdirectory which fails for some older versions of autotools
-mkdir m4
+[[ -d m4 ]] || mkdir m4
 
 if which glibtoolize > /dev/null 2>&1; then
 	echo "calling glibtoolize"
 	glibtoolize --force --copy
-else
+elif which libtoolize > /dev/null 2>71; then
 	echo "calling libtoolize"
 	libtoolize --force --copy
+else
+    echo "can't find libtoolize or glibtoolize"
+    exit 1
 fi
 
 # http://www.gnu.org/software/hello/manual/automake/Macro-Search-Path.html
