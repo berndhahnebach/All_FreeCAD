@@ -5,90 +5,90 @@
     <name>CmdCompleteConstraintAxle</name>
     <message>
         <source>Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesamt</translation>
     </message>
     <message>
         <source>Constraint Axle...</source>
-        <translation type="unfinished"></translation>
+        <translation>Achsen Bedingung...</translation>
     </message>
     <message>
         <source>set a axle constraint between two objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Achsen Bedingung zwischen zwei Objekten erzeugen</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datei</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;earbeiten</translation>
     </message>
     <message>
         <source>Standard views</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard Ansicht</translation>
     </message>
     <message>
         <source>&amp;3D View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;3D Ansicht</translation>
     </message>
     <message>
         <source>&amp;Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zoom</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;nsicht</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Werk&amp;zeuge</translation>
     </message>
     <message>
         <source>Analyze</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished"></translation>
+        <translation>Boolsche Operation</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Netze</translation>
     </message>
     <message>
         <source>&amp;Part</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bauteil</translation>
     </message>
     <message>
         <source>&amp;Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Zei&amp;chnung</translation>
     </message>
     <message>
         <source>&amp;Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fenster</translation>
     </message>
     <message>
         <source>&amp;Online-help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Online-Hilfe</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <source>Macro</source>
-        <translation type="unfinished"></translation>
+        <translation>Makro</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht</translation>
     </message>
 </context>
 </TS>
