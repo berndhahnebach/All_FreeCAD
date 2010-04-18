@@ -900,4 +900,3 @@ std::list<std::string> PythonWorkbench::listCommandbars() const
     return bars;
 }
 
- 

@@ -117,7 +117,6 @@ bool FilletRadiusModel::setData (const QModelIndex & index, const QVariant & val
 {
     bool ok = QStandardItemModel::setData(index, value, role);
     if (role == Qt::CheckStateRole) {
-        Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
         toogleCheckState(index);
     }
     return ok;
@@ -281,7 +280,6 @@ void DlgFilletEdges::on_shapeObject_activated(int index)
         std::vector<int> edge_ids;
         for (int i=1; i<= edge2Face.Extent(); ++i) {
             // set the index value as user data to use it in accept()
-            const TopoDS_Shape& edge = edge2Face.FindKey(i);
             const TopTools_ListOfShape& los = edge2Face.FindFromIndex(i);
             if (los.Extent() == 2) {
                 // set the index value as user data to use it in accept()
