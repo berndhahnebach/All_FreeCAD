@@ -2718,12 +2718,14 @@ class Downgrade(Modifier):
 
 
 class Trimex(Modifier):
-	"this tool trims or extends lines, polylines and arcs. SHIFT constrains to the last point."
+	'''this tool trims or extends lines, polylines and arcs,
+	or extrudes single faces. SHIFT constrains to the last point
+	or extrudes in direction to the face normal.'''
 
 	def GetResources(self):
 		return {'Pixmap' : 'Draft_trimex',
 			'MenuText' : str(translate("draft", "Trimex", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
-			'ToolTip' : str(translate("draft", "Trims or Extends the selected object. SHIFT constrains to current segment, ALT inverts", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
+			'ToolTip' : str(translate("draft", "Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2760,9 +2762,7 @@ class Trimex(Modifier):
 			self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
 			for v in self.sel.Shape.Vertexes:
 				self.ghost.append(lineTracker())
-			for g in self.ghost:
-				print g
-				g.on()
+			for g in self.ghost: g.on()
 		else:
 			self.sel.ViewObject.Visibility = False
 			self.extrudeMode = False
@@ -2807,7 +2807,7 @@ class Trimex(Modifier):
 			self.point = snapPoint(self,point,cursor,arg["CtrlDown"])
 			if not self.ui.zValue.isEnabled(): self.point.z = float(self.ui.zValue.text())
 			if self.extrudeMode:
-				dist = self.extrude(self.point)
+				dist = self.extrude(self.point,self.shift)
 			else:
 				dist = self.redraw(self.point,self.snapped,self.shift,self.alt)
 			self.constraintrack.p1(point)
@@ -2830,14 +2830,14 @@ class Trimex(Modifier):
 				self.trimObject()
 				self.finish()
 
-	def extrude(self,point,real=False):
+	def extrude(self,point,shift=False,real=False):
 		"redraws the ghost in extrude mode"
-		p1 = self.sel.Shape.Vertexes[0].Point
-		dvec = point.sub(p1)
-		delta = fcvec.project(dvec,self.normal)
+		self.newpoint = self.sel.Shape.Faces[0].CenterOfMass
+		dvec = point.sub(self.newpoint)
+		if shift: delta = fcvec.project(dvec,self.normal)
+		else: delta = dvec
 		if real:
 			return self.sel.Shape.Faces[0].extrude(delta)
-		self.newpoint = p1
 		self.ghost[0].trans.translation.setValue([delta.x,delta.y,delta.z])
 		for i in range(1,len(self.ghost)):
 			base = self.sel.Shape.Vertexes[i-1].Point
@@ -2955,7 +2955,7 @@ class Trimex(Modifier):
 	def trimObject(self):
 		"trims the actual object"
 		if self.extrudeMode:
-			newshape = self.extrude(self.point,real=True)
+			newshape = self.extrude(self.point,self.shift,real=True)
 		else:
 			edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
 			newshape = Part.Wire(edges)
