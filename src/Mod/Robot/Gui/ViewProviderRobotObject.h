@@ -27,6 +27,7 @@
 #include <Inventor/VRMLnodes/SoVRMLTransform.h>
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Gui/SoFCSelection.h>
+#include <Base/Placement.h>
 
 class SoDragger;
 class SoJackDragger;
@@ -52,7 +53,7 @@ public:
     void updateData(const App::Property*);
 
     /// for simulation without changing the document:
-    void setAxisTo(float A1,float A2,float A3,float A4,float A5,float A6);
+    void setAxisTo(float A1,float A2,float A3,float A4,float A5,float A6,const Base::Placement &Tcp);
 
 protected:
     static void sDraggerMotionCallback(void *data, SoDragger *dragger);

@@ -216,7 +216,7 @@ CmdRobotAddToolShape::CmdRobotAddToolShape()
     sToolTipText    = QT_TR_NOOP("Add a tool shape to the robot");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    //sPixmap         = "Robot_AddToolShape";
+    sPixmap         = "Robot_CreateRobot";
 }
 
 
@@ -225,16 +225,22 @@ void CmdRobotAddToolShape::activated(int iMsg)
     std::vector<App::DocumentObject*> robots = getSelection()
         .getObjectsOfType(Robot::RobotObject::getClassTypeId());
     std::vector<App::DocumentObject*> shapes = getSelection()
-        .getObjectsOfType(Base::Type::fromName("Part::Feature"));
+        .getObjectsOfType(Base::Type::fromName("App::GeoFeature"));
+    std::vector<App::DocumentObject*> VRMLs = getSelection()
+        .getObjectsOfType(Base::Type::fromName("App::VRMLObject"));
  
-    if (robots.size() != 1 || shapes.size() != 1) {
+    if (robots.size() != 1 || (shapes.size() != 1 && VRMLs.size() != 1)) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select one robot and one shape object."));
+            QObject::tr("Select one robot and one shape or VRML object."));
         return;
     }
 
     std::string RoboName = robots.front()->getNameInDocument();
-    std::string ShapeName = shapes.front()->getNameInDocument();
+    std::string ShapeName;
+    if(shapes.size() == 1)
+        ShapeName = shapes.front()->getNameInDocument();
+    else
+        ShapeName = VRMLs.front()->getNameInDocument();
 
     openCommand("Add tool to robot");
     doCommand(Doc,"App.activeDocument().%s.ToolShape = App.activeDocument().%s",RoboName.c_str(),ShapeName.c_str());

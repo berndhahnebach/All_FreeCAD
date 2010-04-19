@@ -66,6 +66,7 @@ public:
 	App::PropertyPlacement Base;
 	App::PropertyPlacement Tool;
 	App::PropertyLink      ToolShape;
+	App::PropertyPlacement ToolBase;
 	App::PropertyPlacement Tcp;
 	App::PropertyPlacement Position;
 
