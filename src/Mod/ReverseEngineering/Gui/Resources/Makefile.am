@@ -10,6 +10,7 @@ EXTRA_DIST = \
 		icons/actions/FitSurface.svg \
 		translations/ReverseEngineering_de.qm \
 		translations/ReverseEngineering_fr.qm \
+		translations/ReverseEngineering_it.qm \
 		translations/ReverseEngineering_se.qm \
 		ReverseEngineering.qrc \
 		UpdateResources.bat

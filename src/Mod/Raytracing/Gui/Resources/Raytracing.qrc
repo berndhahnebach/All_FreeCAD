@@ -2,6 +2,8 @@
     <qresource>
         <file>translations/Raytracing_de.qm</file>
         <file>translations/Raytracing_fr.qm</file>
+        <file>translations/Raytracing_it.qm</file>
+        <file>translations/Raytracing_se.qm</file>
     </qresource>
     <qresource>
 		<file>icons/Raytrace_Camera.svg</file>

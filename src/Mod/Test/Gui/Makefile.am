@@ -79,5 +79,6 @@ EXTRA_DIST = \
 		Resources/Test.qrc \
 		Resources/translations/Test_de.qm \
 		Resources/translations/Test_fr.qm \
+		Resources/translations/Test_it.qm \
 		Resources/translations/Test_se.qm \
 		qtunittest.py

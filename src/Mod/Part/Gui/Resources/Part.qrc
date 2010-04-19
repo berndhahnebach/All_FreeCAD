@@ -3,6 +3,7 @@
         <file>translations/Part_de.qm</file>
         <file>translations/Part_fr.qm</file>
         <file>translations/Part_it.qm</file>
+        <file>translations/Part_se.qm</file>
     </qresource>
     <qresource>
 		<file>icons/preferences-part_design.svg</file>
