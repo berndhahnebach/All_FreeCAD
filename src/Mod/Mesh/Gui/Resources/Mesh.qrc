@@ -3,6 +3,7 @@
         <file>translations/Mesh_de.qm</file>
         <file>translations/Mesh_fr.qm</file>
         <file>translations/Mesh_it.qm</file>
+        <file>translations/Mesh_se.qm</file>
     </qresource>
     <qresource>
         <file>icons/mesh_cut.svg</file>

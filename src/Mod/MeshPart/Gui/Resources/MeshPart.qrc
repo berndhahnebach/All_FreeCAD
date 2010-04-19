@@ -2,6 +2,7 @@
     <qresource> 
         <file>icons/actions/MeshFace.svg</file>
         <file>translations/MeshPart_de.qm</file>
+        <file>translations/MeshPart_it.qm</file>
         <file>translations/MeshPart_se.qm</file>
     </qresource>
 </RCC> 
