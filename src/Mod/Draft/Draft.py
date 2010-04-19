@@ -2753,24 +2753,37 @@ class Trimex(Modifier):
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		self.sel.ViewObject.Visibility = False
 		self.edges = []
-		c = fcgeo.complexity(self.sel)
-		print c
-		if (c >= 7): 
-			self.finish()
-		elif (c >= 4): 
-			self.edges = self.sel.Shape.Wires[0].Edges
-			self.edges = fcgeo.sortEdges(self.edges)
-		else: self.edges = self.sel.Shape.Edges	
-		self.ghost = []
-		lc = self.sel.ViewObject.LineColor
-		scolor = (lc[0],lc[1],lc[2])
-		swidth = self.sel.ViewObject.LineWidth
-		for e in self.edges:
-			if isinstance(e.Curve,Part.Line): self.ghost.append(lineTracker(scolor=scolor,swidth=swidth))
-			else: self.ghost.append(arcTracker(scolor=scolor,swidth=swidth))
-		for g in self.ghost: g.on()
+		if len(self.sel.Shape.Faces) == 1:
+			self.extrudeMode = True
+			self.ghost = [ghostTracker([self.sel])]
+			self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
+			for v in self.sel.Shape.Vertexes:
+				self.ghost.append(lineTracker())
+			for g in self.ghost:
+				print g
+				g.on()
+		else:
+			self.sel.ViewObject.Visibility = False
+			self.extrudeMode = False
+			c = fcgeo.complexity(self.sel)
+			if (c >= 7):
+				FreeCAD.Console.PrintMessage(str(translate("draft", "The selected object cannot be extended\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
+				self.finish()
+			elif (c >= 4): 
+				self.edges = self.sel.Shape.Wires[0].Edges
+				self.edges = fcgeo.sortEdges(self.edges)
+			else: self.edges = self.sel.Shape.Edges	
+			self.ghost = []
+			lc = self.sel.ViewObject.LineColor
+			sc = (lc[0],lc[1],lc[2])
+			sw = self.sel.ViewObject.LineWidth
+			for e in self.edges:
+				if isinstance(e.Curve,Part.Line):
+					self.ghost.append(lineTracker(scolor=sc,swidth=sw))
+				else:
+					self.ghost.append(arcTracker(scolor=sc,swidth=sw))
+			for g in self.ghost: g.on()
 
 		self.activePoint = 0
 		self.nodes = []
@@ -2793,13 +2806,17 @@ class Trimex(Modifier):
 			else: self.snapped = self.view.getObjectInfo((cursor[0],cursor[1]))
 			self.point = snapPoint(self,point,cursor,arg["CtrlDown"])
 			if not self.ui.zValue.isEnabled(): self.point.z = float(self.ui.zValue.text())
-			dist = self.redraw(self.point,self.snapped,self.shift,self.alt)
+			if self.extrudeMode:
+				dist = self.extrude(self.point)
+			else:
+				dist = self.redraw(self.point,self.snapped,self.shift,self.alt)
 			self.constraintrack.p1(point)
 			self.constraintrack.p2(self.newpoint)
 			self.constraintrack.on()
 			self.ui.radiusValue.setText("%.2f" % dist)
 			self.ui.radiusValue.setFocus()
 			self.ui.radiusValue.selectAll()
+			
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				cursor = arg["Position"]
@@ -2812,6 +2829,21 @@ class Trimex(Modifier):
 				if not self.ui.zValue.isEnabled(): self.point.z = float(self.ui.zValue.text())
 				self.trimObject()
 				self.finish()
+
+	def extrude(self,point,real=False):
+		"redraws the ghost in extrude mode"
+		p1 = self.sel.Shape.Vertexes[0].Point
+		dvec = point.sub(p1)
+		delta = fcvec.project(dvec,self.normal)
+		if real:
+			return self.sel.Shape.Faces[0].extrude(delta)
+		self.newpoint = p1
+		self.ghost[0].trans.translation.setValue([delta.x,delta.y,delta.z])
+		for i in range(1,len(self.ghost)):
+			base = self.sel.Shape.Vertexes[i-1].Point
+			self.ghost[i].p1(base)
+			self.ghost[i].p2(base.add(delta))
+		return delta.Length
 
 	def redraw(self,point,snapped=None,shift=False,alt=False,real=None):
 		"redraws the ghost"
@@ -2922,8 +2954,11 @@ class Trimex(Modifier):
 
 	def trimObject(self):
 		"trims the actual object"
-		edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
-		newshape = Part.Wire(edges)
+		if self.extrudeMode:
+			newshape = self.extrude(self.point,real=True)
+		else:
+			edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
+			newshape = Part.Wire(edges)
 		self.doc.openTransaction("Trim/extend")
 		self.sel.Shape = newshape
 		self.doc.commitTransaction()
