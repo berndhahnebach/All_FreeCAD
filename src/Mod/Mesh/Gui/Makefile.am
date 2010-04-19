@@ -123,4 +123,5 @@ EXTRA_DIST = \
 		Resources/translations/Mesh_de.qm \
 		Resources/translations/Mesh_fr.qm \
 		Resources/translations/Mesh_it.qm \
+		Resources/translations/Mesh_se.qm \
 		images.h

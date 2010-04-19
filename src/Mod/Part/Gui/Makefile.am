@@ -184,4 +184,5 @@ EXTRA_DIST = \
 		Resources/translations/Part_de.qm \
 		Resources/translations/Part_fr.qm \
 		Resources/translations/Part_it.qm \
+		Resources/translations/Part_se.qm \
 		CMakeLists.txt
