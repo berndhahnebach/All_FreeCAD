@@ -38,6 +38,8 @@
 					<File Id="Kuka4" Name="kr500_1.wrl"   />
 					<File Id="Kuka5" Name="kr_16.csv"   />
 					<File Id="Kuka6" Name="kr_210_2.csv"   />
+					<File Id="Kuka7" Name="kr_125.csv"   />
+					<File Id="Kuka8" Name="kr125_3.wrl"   />
 				</Component>			
 			</Directory>
 		</Directory>

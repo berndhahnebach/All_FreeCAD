@@ -161,6 +161,46 @@ bool CmdRobotInsertKukaIR210::isActive(void)
 {
     return hasActiveDocument();
 }
+// #####################################################################################################
+
+
+DEF_STD_CMD_A(CmdRobotInsertKukaIR125);
+
+CmdRobotInsertKukaIR125::CmdRobotInsertKukaIR125()
+	:Command("Robot_InsertKukaIR125")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Kuka IR125");
+    sToolTipText    = QT_TR_NOOP("Insert a Kuka IR125 into the document.");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_CreateRobot";
+}
+
+
+void CmdRobotInsertKukaIR125::activated(int iMsg)
+{
+    std::string FeatName = getUniqueObjectName("Robot");
+    std::string RobotPath = "Mod/Robot/Lib/Kuka/kr125_3.wrl";
+    std::string KinematicPath = "Mod/Robot/Lib/Kuka/kr_125.csv";
+
+    openCommand("Place robot");
+    doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
+    doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis5 = 45",FeatName.c_str());
+    updateActive();
+    commitCommand();
+      
+}
+
+bool CmdRobotInsertKukaIR125::isActive(void)
+{
+    return hasActiveDocument();
+}
 
 
 // #####################################################################################################
@@ -216,5 +256,6 @@ void CreateRobotCommandsInsertRobots(void)
     rcCmdMgr.addCommand(new CmdRobotInsertKukaIR16());
     rcCmdMgr.addCommand(new CmdRobotInsertKukaIR500());
     rcCmdMgr.addCommand(new CmdRobotInsertKukaIR210());
+    rcCmdMgr.addCommand(new CmdRobotInsertKukaIR125());
     rcCmdMgr.addCommand(new CmdRobotAddToolShape());
  }
