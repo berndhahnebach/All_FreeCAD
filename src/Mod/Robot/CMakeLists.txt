@@ -17,6 +17,9 @@ fc_copy_to_path("Mod/Robot/Lib/Kuka"
 	Lib/Kuka/kr16.wrl
 	Lib/Kuka/kr_16.csv
 	Lib/Kuka/kr_16.pdf
+	Lib/Kuka/kr125_3.wrl
+	Lib/Kuka/kr_125.csv
+	Lib/Kuka/kr125_2.pdf
 )
 
 fc_copy_to_path("Mod/Robot"
