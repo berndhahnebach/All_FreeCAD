@@ -313,7 +313,7 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
  	}
 
 }
-void ViewProviderRobotObject::setAxisTo(float A1,float A2,float A3,float A4,float A5,float A6)
+void ViewProviderRobotObject::setAxisTo(float A1,float A2,float A3,float A4,float A5,float A6,const Base::Placement &Tcp)
 {
     Robot::RobotObject* robObj = static_cast<Robot::RobotObject*>(pcObject);
 
@@ -332,7 +332,7 @@ void ViewProviderRobotObject::setAxisTo(float A1,float A2,float A3,float A4,floa
 		Axis6Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A6*(M_PI/180));
     // update tool position
     if(toolShape)
-        toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+        toolShape->setTransformation(Tcp.toMatrix());
 }
 
 void ViewProviderRobotObject::sDraggerMotionCallback(void *data, SoDragger *dragger)

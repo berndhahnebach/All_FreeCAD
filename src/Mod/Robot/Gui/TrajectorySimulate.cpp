@@ -110,7 +110,7 @@ TrajectorySimulate::~TrajectorySimulate()
 void TrajectorySimulate::setTo(void)
 {
     sim.setToTime(timePos);
-    ViewProv->setAxisTo(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5]);
+    ViewProv->setAxisTo(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5],sim.Rob.getTcp());
 }
 
 void TrajectorySimulate::start(void)
