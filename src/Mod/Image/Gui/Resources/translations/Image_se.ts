@@ -2,18 +2,33 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="sv_SE">
 <context>
+    <name>CmdImageCapturerTest</name>
+    <message>
+        <source>Image</source>
+        <translation>Bild</translation>
+    </message>
+    <message>
+        <source>CapturerTest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>test camara capturing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdImageOpen</name>
     <message>
         <source>Image</source>
         <translation>Bild</translation>
     </message>
     <message>
-        <source>Open...</source>
-        <translation>Öppna...</translation>
+        <source>Open</source>
+        <translation>Öppna</translation>
     </message>
     <message>
-        <source>Open image view</source>
-        <translation>Öppna bildvy</translation>
+        <source>Image open image view function</source>
+        <translation>Öppna bildvy funktion</translation>
     </message>
 </context>
 <context>
@@ -23,8 +38,8 @@
         <translation>Odefinierad färgrymd för bildvisning</translation>
     </message>
     <message>
-        <source>Image pixel format</source>
-        <translation type="unfinished"></translation>
+        <source>GLImageBox::getPixFormat</source>
+        <translation>Bildens pixelformat</translation>
     </message>
 </context>
 <context>
@@ -55,11 +70,11 @@
     </message>
     <message>
         <source>&amp;Brightened color</source>
-        <translation type="unfinished">Farben auf&amp;hellen</translation>
+        <translation>&amp;Ljusa färger</translation>
     </message>
     <message>
         <source>Display the image with brightened color(s)</source>
-        <translation type="unfinished">Bild mit aufgeheltten Farben anzeigen</translation>
+        <translation>Visa bilden med ljusare färger</translation>
     </message>
     <message>
         <source>Standard</source>

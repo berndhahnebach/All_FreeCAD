@@ -10,6 +10,7 @@ EXTRA_DIST = \
 		translations/Complete_de.qm \
 		translations/Complete_fr.qm \
 		translations/Complete_it.qm \
+		translations/Complete_se.qm \
 		Complete.qrc \
 		UpdateResources.bat
 
