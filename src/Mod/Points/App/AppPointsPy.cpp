@@ -42,80 +42,72 @@
 using namespace Points;
 
 /* module functions */
-static PyObject *                        
-open(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
+static PyObject *
+open(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    if (! PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
 
-  PY_TRY {
-    
-    Base::Console().Log("Open in Points with %s",Name);
-    Base::FileInfo file(Name);
+    PY_TRY {
+        Base::Console().Log("Open in Points with %s",Name);
+        Base::FileInfo file(Name);
 
-    // extract ending
-    if(file.extension() == "")
-      Py_Error(PyExc_Exception,"no file ending");
+        // extract ending
+        if (file.extension() == "")
+            Py_Error(PyExc_Exception,"no file ending");
 
-    if(file.hasExtension("asc"))
-    {
-      // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-      Points::Feature *pcFeature = (Points::Feature *)pcDoc->addObject("Points::Feature", file.fileNamePure().c_str());
-      Points::PointKernel pkTemp;
-      pkTemp.load(Name);
-      pcFeature->Points.setValue( pkTemp );
+        if (file.hasExtension("asc")) {
+            // create new document and add Import feature
+            App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+            Points::Feature *pcFeature = (Points::Feature *)pcDoc->addObject("Points::Feature", file.fileNamePure().c_str());
+            Points::PointKernel pkTemp;
+            pkTemp.load(Name);
+            pcFeature->Points.setValue( pkTemp );
 
-    }
-    else
-    {
-      Py_Error(PyExc_Exception,"unknown file ending");
-    }
-  } PY_CATCH;
+        }
+        else {
+            Py_Error(PyExc_Exception,"unknown file ending");
+        }
+    } PY_CATCH;
 
-	Py_Return;    
+    Py_Return;
 }
 
-static PyObject *                        
-insert(PyObject *self, PyObject *args)     
-{                                        
-  const char* Name;
-  const char* DocName;
-  if (! PyArg_ParseTuple(args, "ss",&Name,&DocName))	 		 
-    return NULL;                         
-
-  PY_TRY {
-    
-    Base::Console().Log("Import in Points with %s",Name);
-    Base::FileInfo file(Name);
-
-    // extract ending
-    if(file.extension() == "")
-      Py_Error(PyExc_Exception,"no file ending");
-
-    if(file.hasExtension("asc"))
-    {
-      // add Import feature
-      App::Document *pcDoc = App::GetApplication().getDocument(DocName);
-      if (!pcDoc)
-      {
-        PyErr_Format(PyExc_Exception, "Import called to the non-existing document '%s'", DocName);
+static PyObject *
+insert(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    const char* DocName;
+    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
         return NULL;
-      }
 
-      Points::Feature *pcFeature = (Points::Feature *)pcDoc->addObject("Points::Feature", file.fileNamePure().c_str());
-      Points::PointKernel pkTemp;
-      pkTemp.load(Name);
-      pcFeature->Points.setValue( pkTemp );
-    }
-    else
-    {
-      Py_Error(PyExc_Exception,"unknown file ending");
-    }
-  } PY_CATCH;
+    PY_TRY {
+        Base::Console().Log("Import in Points with %s",Name);
+        Base::FileInfo file(Name);
 
-	Py_Return;    
+        // extract ending
+        if (file.extension() == "")
+            Py_Error(PyExc_Exception,"no file ending");
+
+        if (file.hasExtension("asc")) {
+            // add Import feature
+            App::Document *pcDoc = App::GetApplication().getDocument(DocName);
+            if (!pcDoc) {
+                pcDoc = App::GetApplication().newDocument(DocName);
+            }
+
+            Points::Feature *pcFeature = (Points::Feature *)pcDoc->addObject("Points::Feature", file.fileNamePure().c_str());
+            Points::PointKernel pkTemp;
+            pkTemp.load(Name);
+            pcFeature->Points.setValue( pkTemp );
+        }
+        else {
+            Py_Error(PyExc_Exception,"unknown file ending");
+        }
+    } PY_CATCH;
+
+    Py_Return;
 }
 
 static PyObject * 

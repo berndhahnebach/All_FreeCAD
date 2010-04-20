@@ -115,11 +115,7 @@ static PyObject * importer(PyObject *self, PyObject *args)
             pcDoc = App::GetApplication().getActiveDocument();
 
         if (!pcDoc) {
-            if (DocName)
-                PyErr_Format(PyExc_Exception, "Insert called to the non-existing document '%s'", DocName);
-            else
-                PyErr_SetString(PyExc_Exception, "No active document found");
-            return NULL;
+            pcDoc = App::GetApplication().newDocument(DocName);
         }
 
         MeshObject mesh;
