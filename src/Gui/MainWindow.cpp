@@ -1425,9 +1425,6 @@ void MainWindow::loadUrls(App::Document* doc, const QList<QUrl>& url)
             if (!module.empty()) {
                 // ok, we support files with this extension
                 files << info.absoluteFilePath();
-                // we load non-project files, i.e. we must create a new document
-                if (!doc && info.suffix().toLower() != QLatin1String("fcstd"))
-                    doc = App::GetApplication().newDocument();
             }
             else {
                 Base::Console().Message("No support to load file '%s'\n",
@@ -1436,10 +1433,11 @@ void MainWindow::loadUrls(App::Document* doc, const QList<QUrl>& url)
         }
     }
 
-    const char *docName = doc ? doc->getName() : "";
+    const char *docName = doc ? doc->getName() : "Unnamed";
     SelectModule::Dict dict = SelectModule::importHandler(files);
     // load the files with the associated modules
     for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
+        // if the passed document name doesn't exist the module should create it, if needed
         Application::Instance->importFrom(it.key().toUtf8(), docName, it.value().toAscii());
     }
 }

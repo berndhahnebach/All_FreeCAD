@@ -103,11 +103,10 @@ static PyObject * insert(PyObject *self, PyObject *args)
             Py_Error(PyExc_Exception,"no file ending");
         App::Document *pcDoc = App::GetApplication().getDocument(DocName);
         if (!pcDoc) {
-            PyErr_Format(PyExc_Exception, "Import called to the non-existing document '%s'", DocName);
-            return NULL;
+            pcDoc = App::GetApplication().newDocument(DocName);
         }
 
-         if (file.hasExtension("skf")) {
+        if (file.hasExtension("skf")) {
 
             Sketcher::SketchObjectSF *pcFeature = (Sketcher::SketchObjectSF *)pcDoc->addObject("Sketcher::SketchObjectSF",file.fileNamePure().c_str());
             pcFeature->SketchFlatFile.setValue(Name);

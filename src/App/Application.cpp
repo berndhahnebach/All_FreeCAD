@@ -251,7 +251,7 @@ void Application::renameDocument(const char *OldName, const char *NewName)
 Document* Application::newDocument(const char * Name, const char * UserName)
 {
     // get anyway a valid name!
-    if (!Name)
+    if (!Name || Name[0] == '\0')
         Name = "Unnamed";
     string name = getUniqueDocumentName(Name);
 
