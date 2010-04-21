@@ -1,18 +1,8 @@
 #VRML V2.0 utf8
-#
-# This VRML97 file was exported using eM-Workplace
-# (c) Tecnomatix Technologies GmbH & Co. KG
-#     Heisenberg-Bogen 1
-#     D-85609 Aschheim-Dornach
-#     GERMANY
-#
-#Background
-#{
-#   skyColor   [0.207843 0.380392 1.000000]
-#}
+
 Transform
 {
-rotation 1 0 0 -1.5707963
+#rotation 0 0 1 -4.71238
 #   scale .001 .001 .001
    children
    [
@@ -2256,6 +2246,8 @@ normalIndex [
    ] }
 Transform
 {
+               #rotation 1 0 0  3,14159265
+			   #translation 899.996999 1649.997728 850.000000
    children
    [
       Transform { rotation 1 0 0 1.570796 children [
@@ -2269,6 +2261,7 @@ Transform
 	  DEF FREECAD_AXIS1 Transform { rotation 0 1 0 0 children [
       DEF AXIS_07_OBJ Transform
       {
+
          children
          [
          Transform { rotation 1 0 0 -1.570796 children [
@@ -11694,6 +11687,7 @@ Transform
             maxAngle  0.052360
             offset    -1.570796
          }
+      DEF FREECAD_AXIS2_Offset Transform { rotation 0 1 0 1.570796 children [
 	  DEF FREECAD_AXIS2 Transform { rotation 0 1 0 0 children [
       DEF AXIS_21_OBJ Transform
       {
@@ -22868,6 +22862,7 @@ Transform
             maxAngle  2.583087
             offset    1.570796
          }
+		 DEF FREECAD_AXIS3_Offset Transform { rotation 0 1 0 -1.570796 children [
 		 DEF FREECAD_AXIS3 Transform { rotation 0 1 0 0 children [
       DEF AXIS_26_OBJ Transform
       {
@@ -37178,6 +37173,8 @@ coordIndex [
             {
                children
                [
+   ] }
+   ] }
    ] }
    ] }
    ] }
