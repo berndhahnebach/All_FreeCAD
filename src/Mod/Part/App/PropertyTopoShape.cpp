@@ -55,6 +55,14 @@
 
 #include "PropertyTopoShape.h"
 #include "TopoShapePy.h"
+#include "TopoShapeFacePy.h"
+#include "TopoShapeEdgePy.h"
+#include "TopoShapeWirePy.h"
+#include "TopoShapeVertexPy.h"
+#include "TopoShapeSolidPy.h"
+#include "TopoShapeShellPy.h"
+#include "TopoShapeCompSolidPy.h"
+#include "TopoShapeCompoundPy.h"
 
 using namespace Part;
 
@@ -132,7 +140,35 @@ void PropertyPartShape::transformGeometry(const Base::Matrix4D &rclTrf)
 
 PyObject *PropertyPartShape::getPyObject(void)
 {
-    return new TopoShapePy(new TopoShape(_Shape._Shape));
+    const TopoDS_Shape& sh = _Shape._Shape;
+    if (sh.IsNull())
+        return new TopoShapePy(new TopoShape(sh));
+
+    TopoShapePy* shape=0;
+    TopAbs_ShapeEnum type = sh.ShapeType();
+    switch (type)
+    {
+    case TopAbs_COMPOUND:
+        return new TopoShapeCompoundPy(new TopoShape(sh));
+    case TopAbs_COMPSOLID:
+        return new TopoShapeCompSolidPy(new TopoShape(sh));
+    case TopAbs_SOLID:
+        return new TopoShapeSolidPy(new TopoShape(sh));
+    case TopAbs_SHELL:
+        return new TopoShapeShellPy(new TopoShape(sh));
+    case TopAbs_FACE:
+        return new TopoShapeFacePy(new TopoShape(sh));
+    case TopAbs_WIRE:
+        return new TopoShapeWirePy(new TopoShape(sh));
+    case TopAbs_EDGE:
+        return new TopoShapeEdgePy(new TopoShape(sh));
+    case TopAbs_VERTEX:
+        return new TopoShapeVertexPy(new TopoShape(sh));
+    case TopAbs_SHAPE:
+    default:
+        return new TopoShapePy(new TopoShape(sh));
+        break;
+    }
 }
 
 void PropertyPartShape::setPyObject(PyObject *value)
