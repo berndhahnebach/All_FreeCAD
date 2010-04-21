@@ -63,7 +63,8 @@ int TopoShapeCompoundPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
                 const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
                     getTopoShapePtr()->_Shape;
-                builder.Add(Comp, sh);
+                if (!sh.IsNull())
+                    builder.Add(Comp, sh);
             }
         }
     }
