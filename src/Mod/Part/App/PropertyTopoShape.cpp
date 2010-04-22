@@ -144,7 +144,6 @@ PyObject *PropertyPartShape::getPyObject(void)
     if (sh.IsNull())
         return new TopoShapePy(new TopoShape(sh));
 
-    TopoShapePy* shape=0;
     TopAbs_ShapeEnum type = sh.ShapeType();
     switch (type)
     {
