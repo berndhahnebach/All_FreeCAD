@@ -434,7 +434,6 @@ LabelButton::LabelButton (QWidget * parent)
     layout->addWidget(label);
 
     button = new QPushButton(QLatin1String("..."), this);
-    button->setFixedWidth(button->fontMetrics().width(QLatin1String(" ... ")));
     layout->addWidget(button);
 
     connect(button, SIGNAL(clicked()), this, SLOT(browse()));
@@ -442,6 +441,11 @@ LabelButton::LabelButton (QWidget * parent)
 
 LabelButton::~LabelButton()
 {
+}
+
+void LabelButton::resizeEvent(QResizeEvent* e)
+{
+    button->setFixedWidth(e->size().height());
 }
 
 QLabel *LabelButton::getLabel() const

@@ -44,6 +44,13 @@ PropertyItemDelegate::~PropertyItemDelegate()
 {
 }
 
+QSize PropertyItemDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+    QSize size = QItemDelegate::sizeHint(option, index);
+    size.setHeight(20);
+    return size;
+}
+
 void PropertyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &index) const
 {
     QStyleOptionViewItem option = opt;

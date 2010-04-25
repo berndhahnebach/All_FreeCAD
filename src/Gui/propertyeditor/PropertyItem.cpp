@@ -42,6 +42,7 @@
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/ViewProviderDocumentObject.h>
+#include <Gui/MainWindow.h>
 #include <Gui/Widgets.h>
 #include <Gui/Placement.h>
 
@@ -910,8 +911,6 @@ public:
     }
     ~PlacementEditor()
     {
-        if (dlg)
-            dlg->reject();
     }
 protected:
     void browse()
@@ -921,11 +920,14 @@ protected:
             return;
         }
 
-        dlg = new Gui::Dialog::DockablePlacement(this);
+        dlg = Gui::getMainWindow()->findChild<Gui::Dialog::Placement*>();
+        if (!dlg) {
+            dlg = new Gui::Dialog::DockablePlacement(this);
+            dlg->setAttribute(Qt::WA_DeleteOnClose);
+        }
         dlg->setPlacement(value().value<Base::Placement>());
         connect(dlg, SIGNAL(placementChanged(const QVariant &)),
                 this, SLOT(setValue(const QVariant&)));
-        dlg->setAttribute(Qt::WA_DeleteOnClose);
         dlg->show();
     }
     void showValue(const QVariant& d)
@@ -946,7 +948,7 @@ protected:
         getLabel()->setText(data);
     }
 
-    QPointer<Gui::Dialog::Placement> dlg;
+    Gui::Dialog::Placement* dlg;
 };
 }
 }

@@ -210,6 +210,7 @@ public Q_SLOTS:
 
 protected:
     virtual void showValue(const QVariant&) = 0;
+    void resizeEvent(QResizeEvent*);
 
 protected Q_SLOTS:
     virtual void browse() = 0;
