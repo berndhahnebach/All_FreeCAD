@@ -56,6 +56,7 @@ private Q_SLOTS:
 private:
     void setPlacementData(const Base::Placement&);
     Base::Placement getPlacementData() const;
+    void applyPlacement(const Base::Placement& p);
     void directionActivated(int);
 
 Q_SIGNALS:

@@ -28,9 +28,30 @@
 #include "Placement.h"
 #include "ui_Placement.h"
 #include <Gui/DockWindowManager.h>
+#include <Gui/Application.h>
+#include <Gui/Selection.h>
+#include <Gui/ViewProvider.h>
 #include <App/PropertyGeo.h>
+#include <Base/Console.h>
 
 using namespace Gui::Dialog;
+
+namespace Gui { namespace Dialog {
+class find_placement
+{
+public:
+    bool operator () (const std::pair<std::string, App::Property*>& elem) const
+    {
+        if (elem.first == "Placement") {
+            return elem.second->isDerivedFrom
+                (Base::Type::fromName("App::PropertyPlacement"));
+        }
+
+        return false;
+    }
+};
+}
+}
 
 /* TRANSLATOR Gui::Dialog::Placement */
 
@@ -68,8 +89,35 @@ void Placement::onPlacementChanged(int)
 {
     if (ui->applyPlacementChange->isChecked()) {
         Base::Placement plm = this->getPlacement();
-        QVariant data = QVariant::fromValue<Base::Placement>(plm);
-        placementChanged(data);
+        if (receivers(SIGNAL(placementChanged(QVariant))) > 0) {
+            QVariant data = QVariant::fromValue<Base::Placement>(plm);
+            /*emit*/ placementChanged(data);
+        }
+        else {
+            applyPlacement(plm);
+        }
+    }
+}
+
+void Placement::applyPlacement(const Base::Placement& p)
+{
+    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
+        (App::DocumentObject::getClassTypeId());
+    if (!sel.empty()) {
+        for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
+            std::map<std::string,App::Property*> props;
+            (*it)->getPropertyMap(props);
+            // search for the placement property
+            std::map<std::string,App::Property*>::iterator jt;
+            jt = std::find_if(props.begin(), props.end(), find_placement());
+            if (jt != props.end()) {
+                Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(*it);
+                if (vp) vp->setTransformation(p.toMatrix());
+            }
+        }
+    }
+    else {
+        Base::Console().Warning("No object selected.\n");
     }
 }
 
@@ -109,8 +157,13 @@ void Placement::accept()
 void Placement::on_applyButton_clicked()
 {
     Base::Placement plm = this->getPlacement();
-    QVariant data = QVariant::fromValue<Base::Placement>(plm);
-    placementChanged(data);
+    if (receivers(SIGNAL(placementChanged(QVariant))) > 0) {
+        QVariant data = QVariant::fromValue<Base::Placement>(plm);
+        /*emit*/ placementChanged(data);
+    }
+    else {
+        applyPlacement(plm);
+    }
 }
 
 void Placement::on_resetButton_clicked()
