@@ -70,30 +70,21 @@ void PropertyEditor::currentChanged ( const QModelIndex & current, const QModelI
 
 void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const
 {
+    QTreeView::drawBranches(painter, rect, index);
+
     QStyleOptionViewItem opt = viewOptions();
     PropertyItem *property = static_cast<PropertyItem*>(index.internalPointer());
     if (property && property->isSeparator()) {
         painter->fillRect(rect, opt.palette.dark());
-    } else if (selectionModel()->isSelected(index)) {
-        painter->fillRect(rect, opt.palette.brush(QPalette::Highlight));
+    //} else if (selectionModel()->isSelected(index)) {
+    //    painter->fillRect(rect, opt.palette.brush(QPalette::Highlight));
     }
 
-    if (model()->hasChildren(index)) {
-        opt.state |= QStyle::State_Children;
-
-        QRect primitive(rect.left(), rect.top(), indentation(), rect.height());
-        opt.rect = primitive;
-
-        if (isExpanded(index))
-            opt.state |= QStyle::State_Open;
-        style()->drawPrimitive(QStyle::PE_IndicatorBranch, &opt, painter, this);
-    }
-
-    QPen savedPen = painter->pen();
-    QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &opt));
-    painter->setPen(QPen(color));
-    painter->drawLine(rect.x(), rect.bottom(), rect.right(), rect.bottom());
-    painter->setPen(savedPen);
+    //QPen savedPen = painter->pen();
+    //QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &opt));
+    //painter->setPen(QPen(color));
+    //painter->drawLine(rect.x(), rect.bottom(), rect.right(), rect.bottom());
+    //painter->setPen(savedPen);
 }
 
 void PropertyEditor::buildUp(const std::map<std::string, std::vector<App::Property*> >& props)
