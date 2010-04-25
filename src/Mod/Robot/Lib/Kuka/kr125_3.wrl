@@ -2246,7 +2246,7 @@ normalIndex [
    ] }
 Transform
 {
-               #rotation 1 0 0  3,14159265
+               rotation 1.0 0.0 0.0  3.14159265
 			   #translation 899.996999 1649.997728 850.000000
    children
    [
@@ -2267,8 +2267,8 @@ Transform
          Transform { rotation 1 0 0 -1.570796 children [
             DEF AOBJ_006_TRAFO Transform
             {
-               rotation 1.000000 0.000000 0.000000 1.570796
-               translation 0.000000 0.000000 50.000000
+               rotation 1.000000 0.000000 0.000000 -1.570796
+               translation 0.000000 0.000000 -50.000000
                children
                [
 DEF AOBJ_006 Transform
