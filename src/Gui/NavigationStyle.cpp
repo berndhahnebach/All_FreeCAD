@@ -1414,7 +1414,8 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                 // If we are in zoom or pan mode ignore RMB events otherwise
                 // the canvas doesn't get any release events 
                 if (this->currentmode != NavigationStyle::ZOOMING && 
-                    this->currentmode != NavigationStyle::PANNING) {
+                    this->currentmode != NavigationStyle::PANNING &&
+                    this->currentmode != NavigationStyle::DRAGGING) {
                     if (this->isPopupMenuEnabled()) {
                         if (!press) { // release right mouse button
                             this->openPopupMenu(event->getPosition());
@@ -1422,6 +1423,7 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                     }
                 }
             }
+            this->button2down = press;
             break;
         case SoMouseButtonEvent::BUTTON3:
             if (press) {
@@ -1494,10 +1496,12 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
         BUTTON1DOWN = 1 << 0,
         BUTTON3DOWN = 1 << 1,
         CTRLDOWN =    1 << 2,
-        SHIFTDOWN =   1 << 3
+        SHIFTDOWN =   1 << 3,
+        BUTTON2DOWN = 1 << 4
     };
     unsigned int combo =
         (this->button1down ? BUTTON1DOWN : 0) |
+        (this->button2down ? BUTTON2DOWN : 0) |
         (this->button3down ? BUTTON3DOWN : 0) |
         (this->ctrldown ? CTRLDOWN : 0) |
         (this->shiftdown ? SHIFTDOWN : 0);
@@ -1530,6 +1534,15 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                 break;
             }
         }
+        break;
+    case CTRLDOWN|BUTTON2DOWN:
+        newmode = NavigationStyle::PANNING;
+        break;
+    case SHIFTDOWN|BUTTON2DOWN:
+        newmode = NavigationStyle::DRAGGING;
+        break;
+    case CTRLDOWN|SHIFTDOWN|BUTTON2DOWN:
+        newmode = NavigationStyle::ZOOMING;
         break;
     //case CTRLDOWN:
     //case CTRLDOWN|BUTTON1DOWN:
