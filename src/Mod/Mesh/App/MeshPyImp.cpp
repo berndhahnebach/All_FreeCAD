@@ -57,18 +57,23 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
         }
         else if (PyList_Check(pcObj)) {
             PyObject* ret = addFacets(args);
+            bool ok = (ret!=0);
             Py_XDECREF(ret);
-            if (!ret)
-                return -1;
+            if (!ok) return -1;
         }
         else if (PyTuple_Check(pcObj)) {
             PyObject* ret = addFacets(args);
+            bool ok = (ret!=0);
             Py_XDECREF(ret);
-            if (!ret)
-                return -1;
+            if (!ok) return -1;
         }
         else if (PyString_Check(pcObj)) {
             getMeshObjectPtr()->load(PyString_AsString(pcObj));
+        }
+        else {
+            PyErr_Format(PyExc_TypeError, "Cannot create a mesh out of a '%s'",
+                pcObj->ob_type->tp_name);
+            return -1;
         }
     }
     catch (const Base::Exception &e) {
