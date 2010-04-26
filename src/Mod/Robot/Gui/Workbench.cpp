@@ -70,6 +70,7 @@ void Workbench::activated()
         "Robot_InsertKukaIR500",
         "Robot_InsertKukaIR16",
         "Robot_InsertKukaIR210",
+        "Robot_InsertKukaIR125",
         0};
 
     std::vector<Gui::TaskView::TaskWatcher*> Watcher;

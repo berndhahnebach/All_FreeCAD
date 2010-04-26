@@ -54,8 +54,8 @@ void AppAssemblyExport initAssembly()
     Base::Console().Log("Loading Assembly module... done\n");
 
 
-	dWorldID id = dWorldCreate();
-	dWorldDestroy(id);
+	//dWorldID id = dWorldCreate();
+	//dWorldDestroy(id);
 
     // NOTE: To finish the initialization of our own type objects we must
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
