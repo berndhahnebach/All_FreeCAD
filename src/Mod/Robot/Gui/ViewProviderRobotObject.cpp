@@ -44,6 +44,7 @@
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 #include <App/Document.h>
+#include <App/VRMLObject.h>
 #include <Gui/Application.h>
 #include <Base/FileInfo.h>
 #include <Base/Stream.h>
@@ -60,13 +61,13 @@ ViewProviderRobotObject::ViewProviderRobotObject()
     
 	pcRobotRoot = new Gui::SoFCSelection();
     pcRobotRoot->highlightMode = Gui::SoFCSelection::OFF;
-    pcRobotRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
+    //pcRobotRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
     //pcRobotRoot->style = Gui::SoFCSelection::BOX;
     pcRobotRoot->ref();
 
 	pcSimpleRoot = new Gui::SoFCSelection();
     pcSimpleRoot->highlightMode = Gui::SoFCSelection::OFF;
-    pcSimpleRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
+    //pcSimpleRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
     pcSimpleRoot->ref();
 
     pcOffRoot = new SoGroup();
@@ -259,37 +260,37 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
         if(Axis1Node){
 			Axis1Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis1.getValue()*(M_PI/180));
             if(toolShape)
-                toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+                toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
         }
     }else if (prop == &robObj->Axis2) {
         if(Axis2Node){
 			Axis2Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis2.getValue()*(M_PI/180));
             if(toolShape)
-                toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+                toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
         }
     }else if (prop == &robObj->Axis3) {
         if(Axis3Node){
 			Axis3Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis3.getValue()*(M_PI/180));
             if(toolShape)
-                toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+                toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
         }
     }else if (prop == &robObj->Axis4) {
         if(Axis4Node){
 			Axis4Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis4.getValue()*(M_PI/180));
             if(toolShape)
-                toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+                toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
         }
     }else if (prop == &robObj->Axis5) {
         if(Axis5Node){
 			Axis5Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis5.getValue()*(M_PI/180));
             if(toolShape)
-                toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+                toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
         }
     }else if (prop == &robObj->Axis6) {
         if(Axis6Node){
 			Axis6Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),robObj->Axis6.getValue()*(M_PI/180));
             if(toolShape)
-                toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+                toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
         }
 	}else if (prop == &robObj->Tcp) {
         Base::Placement loc = robObj->Tcp.getValue();
@@ -304,10 +305,10 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
 	}else if (prop == &robObj->ToolShape) {
         App::DocumentObject* o = robObj->ToolShape.getValue<App::DocumentObject*>();
 
-        if(o && o->isDerivedFrom(Part::Feature::getClassTypeId())){
-            Part::Feature *p = dynamic_cast<Part::Feature *>(o);
-            toolShape = Gui::Application::Instance->getViewProvider(p);
-            toolShape->setTransformation(robObj->Tcp.getValue().toMatrix());
+        if(o && (o->isDerivedFrom(Part::Feature::getClassTypeId()) || o->isDerivedFrom(App::VRMLObject::getClassTypeId())) ){
+            //Part::Feature *p = dynamic_cast<Part::Feature *>(o);
+            toolShape = Gui::Application::Instance->getViewProvider(o);
+            toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
         }else
             toolShape = 0;
  	}
@@ -332,7 +333,7 @@ void ViewProviderRobotObject::setAxisTo(float A1,float A2,float A3,float A4,floa
 		Axis6Node->rotation.setValue(SbVec3f(0.0,1.0,0.0),A6*(M_PI/180));
     // update tool position
     if(toolShape)
-        toolShape->setTransformation(Tcp.toMatrix());
+        toolShape->setTransformation((Tcp * (robObj->ToolBase.getValue().inverse())).toMatrix());
 }
 
 void ViewProviderRobotObject::sDraggerMotionCallback(void *data, SoDragger *dragger)

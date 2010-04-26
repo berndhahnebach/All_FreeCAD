@@ -225,7 +225,7 @@ void CmdRobotAddToolShape::activated(int iMsg)
     std::vector<App::DocumentObject*> robots = getSelection()
         .getObjectsOfType(Robot::RobotObject::getClassTypeId());
     std::vector<App::DocumentObject*> shapes = getSelection()
-        .getObjectsOfType(Base::Type::fromName("App::GeoFeature"));
+        .getObjectsOfType(Base::Type::fromName("Part::Feature"));
     std::vector<App::DocumentObject*> VRMLs = getSelection()
         .getObjectsOfType(Base::Type::fromName("App::VRMLObject"));
  
