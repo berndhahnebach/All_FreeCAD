@@ -239,10 +239,8 @@ public:
 protected:
     SbBool processSoEvent(const SoEvent * const ev);
 
-    //bool _bRejectSelection;
-    //bool _bSpining;
-    //SbTime MoveTime;
-    //QCursor _oldCursor;
+private:
+    SbBool lockButton1;
 };
 
 } // namespace Gui
