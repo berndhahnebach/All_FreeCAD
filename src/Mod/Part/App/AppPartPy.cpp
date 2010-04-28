@@ -50,6 +50,7 @@
 # include <Geom_Line.hxx>
 # include <Geom_Plane.hxx>
 # include <Geom_BSplineSurface.hxx>
+# include <Geom_ConicalSurface.hxx>
 # include <Geom_CylindricalSurface.hxx>
 # include <Geom_OffsetSurface.hxx>
 # include <GeomAPI_PointsToBSplineSurface.hxx>
@@ -636,8 +637,8 @@ static PyObject * makeTorus(PyObject *self, PyObject *args)
 
 static PyObject * makeHelix(PyObject *self, PyObject *args)
 {
-    double pitch, height, radius;
-    if (!PyArg_ParseTuple(args, "ddd", &pitch, &height, &radius))
+    double pitch, height, radius, angle=-1.0;
+    if (!PyArg_ParseTuple(args, "ddd|d", &pitch, &height, &radius, &angle))
         return 0;
 
     try {
@@ -647,11 +648,19 @@ static PyObject * makeHelix(PyObject *self, PyObject *args)
         if (height < Precision::Confusion())
             Standard_Failure::Raise("Height of helix too small");
 
-        if (radius < Precision::Confusion())
-            Standard_Failure::Raise("Radius of helix too small");
-
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
-        Handle_Geom_CylindricalSurface cyl = new Geom_CylindricalSurface(cylAx2 , radius);
+        Handle_Geom_Surface surf;
+        if (angle < 0) {
+            if (radius < Precision::Confusion())
+                Standard_Failure::Raise("Radius of helix too small");
+            surf = new Geom_CylindricalSurface(cylAx2, radius);
+        }
+        else {
+            angle = angle*(M_PI/180);
+            if (angle < Precision::Confusion())
+                Standard_Failure::Raise("Angle of helix too small");
+            surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), angle, radius);
+        }
 
         gp_Pnt2d aPnt(0, 0);
         gp_Dir2d aDir(2. * PI, pitch);
@@ -662,7 +671,7 @@ static PyObject * makeHelix(PyObject *self, PyObject *args)
         gp_Pnt2d end = line->Value(2.0*PI*(height/pitch));
         Handle_Geom2d_TrimmedCurve segm = GCE2d_MakeSegment(beg , end);
 
-        TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , cyl);
+        TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , surf);
         TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edgeOnSurf);
         BRepLib::BuildCurves3d(wire);
         return new TopoShapeWirePy(new TopoShape(wire));
@@ -1300,7 +1309,9 @@ struct PyMethodDef Part_methods[] = {
      "By default pnt=Vector(0,0,0),dir=Vector(0,0,1),angle1=0,angle1=360 and angle=360"},
 
     {"makeHelix" ,makeHelix,METH_VARARGS,
-     "makeHelix(pitch,height,radius) -- Make a helix with a given pitch, height and radius"},
+     "makeHelix(pitch,height,radius,[angle]) -- Make a helix with a given pitch, height and radius\n"
+     "By default a cylindrical surface is used to create the helix. If the fourth parameter is set\n"
+     "a conical surface is used instead"},
 
     {"makeRevolution" ,makeRevolution,METH_VARARGS,
      "makeRevolution(Curve,[vmin,vmax,angle,pnt,dir]) -- Make a revolved shape\n"
