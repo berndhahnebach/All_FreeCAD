@@ -4,7 +4,7 @@
 
 # Get version and revision number
 MAJ=0
-MIN=9
+MIN=10
 REV=0
 
 if svn --xml info >/dev/null 2>&1; then
