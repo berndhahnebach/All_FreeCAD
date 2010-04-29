@@ -19,8 +19,8 @@
 REV_FILE=./revision.m4
 TMP_PATH=/tmp
 MAJ=0
-MIN=9
-ALIAS="Bespin"
+MIN=10
+ALIAS="Dagoba"
 
 # go to root directory
 cd ..
