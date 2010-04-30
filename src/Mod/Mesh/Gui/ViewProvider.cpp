@@ -588,15 +588,20 @@ void ViewProviderMesh::clipMeshCallback(void * ud, SoEventCallback * n)
         clPoly.push_back(clPoly.front());
 
     std::vector<Gui::ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
-    for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
-        ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
-        if (that->m_bEdit) {
-            that->unsetEdit();
-            that->cutMesh(clPoly, *view, clip_inner);
+    if (!views.empty()) {
+        Gui::Application::Instance->activeDocument()->openCommand("Cut");
+        for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
+            ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
+            if (that->m_bEdit) {
+                that->unsetEdit();
+                that->cutMesh(clPoly, *view, clip_inner);
+            }
         }
-    }
 
-    view->render();
+        Gui::Application::Instance->activeDocument()->commitCommand();
+
+        view->render();
+    }
 }
 
 void ViewProviderMesh::partMeshCallback(void * ud, SoEventCallback * cb)
@@ -818,10 +823,8 @@ void ViewProviderMesh::cutMesh(const std::vector<SbVec2f>& picked,
     Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
 
     //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
-    Gui::Application::Instance->activeDocument()->openCommand("Cut");
-    meshProp.deleteFacetIndices( indices );
-    Gui::Application::Instance->activeDocument()->commitCommand();
-    ((Mesh::Feature*)pcObject)->purgeTouched();
+    meshProp.deleteFacetIndices(indices);
+    pcObject->purgeTouched();
 }
 
 void ViewProviderMesh::splitMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool clip_inner)
