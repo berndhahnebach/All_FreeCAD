@@ -185,7 +185,7 @@ AboutDialog::~AboutDialog()
 void AboutDialog::setupLabels()
 {
     QString exeName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
-    QString banner  = QString::fromAscii(App::Application::Config()["ConsoleBanner"].c_str());
+    QString banner  = QString::fromUtf8(App::Application::Config()["ConsoleBanner"].c_str());
     banner = banner.left( banner.indexOf(QLatin1Char('\n')) );
     QString major  = QString::fromAscii(App::Application::Config()["BuildVersionMajor"].c_str());
     QString minor  = QString::fromAscii(App::Application::Config()["BuildVersionMinor"].c_str());
