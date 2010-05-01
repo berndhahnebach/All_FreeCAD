@@ -57,7 +57,7 @@
 
 void PrintInitHelp(void);
 
-const char sBanner[] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n"\
+const char sBanner[] = "\xc2\xa9 Juergen Riegel, Werner Mayer 2001-2010\n"\
 "  #####                 ####  ###   ####  \n" \
 "  #                    #      # #   #   # \n" \
 "  #     ##  #### ####  #     #   #  #   # \n" \
