@@ -31,5 +31,50 @@
 				<UserDocu>Computes the tangent of parameter (u,v) on this geometry</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="bounds">
+			<Documentation>
+				<UserDocu>
+					Returns the parametric bounds (U1, U2, V1, V2) of this trimmed surface.
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isUPeriodic">
+			<Documentation>
+				<UserDocu>Returns true if this patch is periodic in the given parametric direction.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isVPeriodic">
+			<Documentation>
+				<UserDocu>Returns true if this patch is periodic in the given parametric direction.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isUClosed">
+			<Documentation>
+				<UserDocu>
+					Checks if this surface is closed in the u parametric direction.
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="isVClosed">
+			<Documentation>
+				<UserDocu>
+					Checks if this surface is closed in the v parametric direction.
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="UPeriod">
+			<Documentation>
+				<UserDocu>
+					Returns the period of this patch in the u parametric direction.
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="VPeriod">
+			<Documentation>
+				<UserDocu>
+					Returns the period of this patch in the v parametric direction.
+				</UserDocu>
+			</Documentation>
+		</Methode>
 	</PythonExport>
 </GenerateModel>

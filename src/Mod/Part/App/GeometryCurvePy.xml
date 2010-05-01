@@ -31,5 +31,10 @@
 				<UserDocu>Computes the tangent of parameter u on this curve</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="makeRuledSurface">
+			<Documentation>
+				<UserDocu>Make a ruled surface of this and the given curves</UserDocu>
+			</Documentation>
+		</Methode>
 	</PythonExport>
 </GenerateModel>

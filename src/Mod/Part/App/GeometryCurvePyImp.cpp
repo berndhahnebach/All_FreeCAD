@@ -28,7 +28,11 @@
 # include <gp_Vec.hxx>
 # include <Geom_Geometry.hxx>
 # include <Geom_Curve.hxx>
+# include <Geom_Surface.hxx>
+# include <GeomFill.hxx>
 # include <GeomLProp_CLProps.hxx>
+# include <Handle_Geom_RectangularTrimmedSurface.hxx>
+# include <Handle_Geom_BSplineSurface.hxx>
 # include <Precision.hxx>
 # include <Standard_Failure.hxx>
 #endif
@@ -39,6 +43,8 @@
 #include "Geometry.h"
 #include "GeometryCurvePy.h"
 #include "GeometryCurvePy.cpp"
+#include "RectangularTrimmedSurfacePy.h"
+#include "BSplineSurfacePy.h"
 
 #include "TopoShape.h"
 #include "TopoShapePy.h"
@@ -133,6 +139,48 @@ PyObject* GeometryCurvePy::tangent(PyObject *args)
             }
 
             return Py::new_reference_to(tuple);
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "Geometry is not a curve");
+    return 0;
+}
+
+PyObject* GeometryCurvePy::makeRuledSurface(PyObject *args)
+{
+    PyObject* curve;
+    if (!PyArg_ParseTuple(args, "O!", &(Part::GeometryCurvePy::Type), &curve))
+        return 0;
+
+    try {
+        Handle_Geom_Curve aCrv1 = Handle_Geom_Curve::DownCast(getGeometryPtr()->handle());
+        GeometryCurvePy* c = static_cast<GeometryCurvePy*>(curve);
+        Handle_Geom_Curve aCrv2 = Handle_Geom_Curve::DownCast(c->getGeometryPtr()->handle());
+        Handle_Geom_Surface aSurf = GeomFill::Surface (aCrv1, aCrv2);
+        if (aSurf.IsNull()) {
+            PyErr_SetString(PyExc_Exception, "Failed to create ruled surface");
+            return 0;
+        }
+        // check the result surface type
+        if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
+            Handle_Geom_RectangularTrimmedSurface aTSurf = 
+                Handle_Geom_RectangularTrimmedSurface::DownCast(aSurf);
+            return new RectangularTrimmedSurfacePy(new GeomTrimmedSurface(aTSurf));
+        }
+        else if (aSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) {
+            Handle_Geom_BSplineSurface aBSurf = 
+                Handle_Geom_BSplineSurface::DownCast(aSurf);
+            return new BSplineSurfacePy(new GeomBSplineSurface(aBSurf));
+        }
+        else {
+            PyErr_Format(PyExc_NotImplementedError, "Ruled surface is of type '%s'",
+                aSurf->DynamicType()->Name());
+            return 0;
         }
     }
     catch (Standard_Failure) {

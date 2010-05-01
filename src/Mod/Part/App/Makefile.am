@@ -22,6 +22,7 @@ BUILT_SOURCES=\
 		BezierSurfacePy.cpp \
 		BSplineSurfacePy.cpp \
 		OffsetSurfacePy.cpp \
+		RectangularTrimmedSurfacePy.cpp \
 		SurfaceOfExtrusionPy.cpp \
 		SurfaceOfRevolutionPy.cpp \
 		PartFeaturePy.cpp \
@@ -57,6 +58,7 @@ libPart_la_BUILT=\
 		BezierSurfacePy.h \
 		BSplineSurfacePy.h \
 		OffsetSurfacePy.h \
+		RectangularTrimmedSurfacePy.h \
 		SurfaceOfExtrusionPy.h \
 		SurfaceOfRevolutionPy.h \
 		PartFeaturePy.h \
@@ -93,6 +95,7 @@ libPart_la_SOURCES=\
 		BezierSurfacePyImp.cpp \
 		BSplineSurfacePyImp.cpp \
 		OffsetSurfacePyImp.cpp \
+		RectangularTrimmedSurfacePyImp.cpp \
 		SurfaceOfExtrusionPyImp.cpp \
 		SurfaceOfRevolutionPyImp.cpp \
 		edgecluster.cpp \
@@ -246,6 +249,7 @@ EXTRA_DIST = \
 		BezierSurfacePy.xml \
 		BSplineSurfacePy.xml \
 		OffsetSurfacePy.xml \
+		RectangularTrimmedSurfacePy.xml \
 		SurfaceOfExtrusionPy.xml \
 		SurfaceOfRevolutionPy.xml \
 		PartFeaturePy.xml \
