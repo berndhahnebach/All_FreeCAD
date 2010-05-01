@@ -41,6 +41,7 @@ generate_from_xml(ToroidPy)
 generate_from_xml(BezierSurfacePy)
 generate_from_xml(BSplineSurfacePy)
 generate_from_xml(OffsetSurfacePy)
+generate_from_xml(RectangularTrimmedSurfacePy)
 generate_from_xml(SurfaceOfExtrusionPy)
 generate_from_xml(SurfaceOfRevolutionPy)
 generate_from_xml(PartFeaturePy)
@@ -144,6 +145,8 @@ SET(Python_SRCS
 		 BSplineSurfacePyImp.cpp
 		 OffsetSurfacePy.xml
 		 OffsetSurfacePyImp.cpp
+		 RectangularTrimmedSurfacePy.xml
+		 RectangularTrimmedSurfacePyImp.cpp
 		 SurfaceOfExtrusionPy.xml
 		 SurfaceOfExtrusionPyImp.cpp
 		 SurfaceOfRevolutionPy.xml

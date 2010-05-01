@@ -44,6 +44,7 @@
 # include <Geom_SphericalSurface.hxx>
 # include <Geom_ToroidalSurface.hxx>
 # include <Geom_OffsetSurface.hxx>
+# include <Geom_RectangularTrimmedSurface.hxx>
 # include <Geom_SurfaceOfRevolution.hxx>
 # include <Geom_SurfaceOfLinearExtrusion.hxx>
 # include <GeomLProp_CLProps.hxx>
@@ -806,6 +807,38 @@ const Handle_Geom_Geometry& GeomOffsetSurface::handle() const
 unsigned int GeomOffsetSurface::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomOffsetSurface::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomOffsetSurface::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+// -------------------------------------------------
+
+TYPESYSTEM_SOURCE(Part::GeomTrimmedSurface,Part::GeomSurface);
+
+GeomTrimmedSurface::GeomTrimmedSurface()
+{
+}
+
+GeomTrimmedSurface::GeomTrimmedSurface(const Handle_Geom_RectangularTrimmedSurface& s)
+{
+    this->mySurface = s;
+}
+
+GeomTrimmedSurface::~GeomTrimmedSurface()
+{
+}
+
+void GeomTrimmedSurface::setHandle(const Handle_Geom_RectangularTrimmedSurface& s)
+{
+    mySurface = s;
+}
+
+const Handle_Geom_Geometry& GeomTrimmedSurface::handle() const
+{
+    return mySurface;
+}
+
+// Persistence implementer 
+unsigned int GeomTrimmedSurface::getMemSize (void) const {assert(0); return 0;/* not implemented yet */}
+void         GeomTrimmedSurface::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
+void         GeomTrimmedSurface::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
 
 // -------------------------------------------------
 

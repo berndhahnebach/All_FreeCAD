@@ -63,7 +63,7 @@
 #include "CylinderPy.h"
 #include "OffsetSurfacePy.h"
 #include "PlanePy.h"
-//#include "RectangularTrimmedSurfacePy.h"
+#include "RectangularTrimmedSurfacePy.h"
 #include "SpherePy.h"
 #include "SurfaceOfExtrusionPy.h"
 #include "SurfaceOfRevolutionPy.h"
@@ -112,6 +112,8 @@ void AppPartExport initPart()
     Base::Interpreter().addType(&Part::OffsetSurfacePy      ::Type,partModule,"OffsetSurface");
     Base::Interpreter().addType(&Part::SurfaceOfExtrusionPy ::Type,partModule,"SurfaceOfExtrusion");
     Base::Interpreter().addType(&Part::SurfaceOfRevolutionPy::Type,partModule,"SurfaceOfRevolution");
+    Base::Interpreter().addType(&Part::RectangularTrimmedSurfacePy
+                                                            ::Type,partModule,"RectangularTrimmedSurface");
 
     Base::Interpreter().addType(&Part::PartFeaturePy        ::Type,partModule,"Feature");
 
@@ -171,6 +173,7 @@ void AppPartExport initPart()
     Part::GeomToroid              ::init();
     Part::GeomPlane               ::init();
     Part::GeomOffsetSurface       ::init();
+    Part::GeomTrimmedSurface      ::init();
     Part::GeomSurfaceOfRevolution ::init();
     Part::GeomSurfaceOfExtrusion  ::init();
 

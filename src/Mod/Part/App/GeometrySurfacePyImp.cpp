@@ -148,6 +148,131 @@ PyObject* GeometrySurfacePy::tangent(PyObject *args)
     return 0;
 }
 
+PyObject* GeometrySurfacePy::bounds(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_Surface surf = Handle_Geom_Surface
+        ::DownCast(getGeometryPtr()->handle());
+    Py::Tuple bound(4);
+    Standard_Real u1,u2,v1,v2;
+    surf->Bounds(u1,u2,v1,v2);
+    bound.setItem(0,Py::Float(u1));
+    bound.setItem(1,Py::Float(u2));
+    bound.setItem(2,Py::Float(v1));
+    bound.setItem(3,Py::Float(v2));
+    return Py::new_reference_to(bound);
+}
+
+PyObject* GeometrySurfacePy::isUPeriodic(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_Surface surf = Handle_Geom_Surface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsUPeriodic();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* GeometrySurfacePy::isVPeriodic(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_Surface surf = Handle_Geom_Surface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsVPeriodic();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* GeometrySurfacePy::isUClosed(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_Surface surf = Handle_Geom_Surface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsUClosed();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* GeometrySurfacePy::isVClosed(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_Surface surf = Handle_Geom_Surface::DownCast
+        (getGeometryPtr()->handle());
+    Standard_Boolean val = surf->IsVClosed();
+    if (val) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* GeometrySurfacePy::UPeriod(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    try {
+        Handle_Geom_Surface surf = Handle_Geom_Surface::DownCast
+            (getGeometryPtr()->handle());
+        Standard_Real val = surf->UPeriod();
+        return PyFloat_FromDouble(val);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+PyObject* GeometrySurfacePy::VPeriod(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    try {
+        Handle_Geom_Surface surf = Handle_Geom_Surface::DownCast
+            (getGeometryPtr()->handle());
+        Standard_Real val = surf->VPeriod();
+        return PyFloat_FromDouble(val);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
 PyObject *GeometrySurfacePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

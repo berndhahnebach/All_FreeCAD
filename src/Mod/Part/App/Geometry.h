@@ -42,6 +42,7 @@
 #include <Handle_Geom_ToroidalSurface.hxx>
 #include <Handle_Geom_Plane.hxx>
 #include <Handle_Geom_OffsetSurface.hxx>
+#include <Handle_Geom_RectangularTrimmedSurface.hxx>
 #include <Handle_Geom_SurfaceOfRevolution.hxx>
 #include <Handle_Geom_SurfaceOfLinearExtrusion.hxx>
 #include <TopoDS_Shape.hxx>
@@ -438,6 +439,26 @@ public:
 
 private:
     Handle_Geom_OffsetSurface mySurface;
+};
+
+class GeomTrimmedSurface : public GeomSurface
+{
+    TYPESYSTEM_HEADER();
+public:
+    GeomTrimmedSurface();
+    GeomTrimmedSurface(const Handle_Geom_RectangularTrimmedSurface&);
+    virtual ~GeomTrimmedSurface();
+
+    // Persistence implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
+
+    void setHandle(const Handle_Geom_RectangularTrimmedSurface& s);
+    const Handle_Geom_Geometry& handle() const;
+
+private:
+    Handle_Geom_RectangularTrimmedSurface mySurface;
 };
 
 class GeomSurfaceOfRevolution : public GeomSurface

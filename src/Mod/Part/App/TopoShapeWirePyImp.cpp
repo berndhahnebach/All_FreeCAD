@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <ShapeAlgo_AlgoContainer.hxx>
 # include <BRepBuilderAPI_MakeWire.hxx>
 # include <BRepOffsetAPI_MakeOffset.hxx>
 # include <TopoDS.hxx>
@@ -36,6 +37,7 @@
 #include <Base/VectorPy.h>
 #include <Base/GeometryPyCXX.h>
 
+#include "BSplineCurvePy.h"
 #include "TopoShape.h"
 #include "TopoShapeShellPy.h"
 #include "TopoShapeWirePy.h"
@@ -136,6 +138,31 @@ PyObject* TopoShapeWirePy::makeOffset(PyObject *args)
     return new TopoShapePy(new TopoShape(mkOffset.Shape()));
 }
 
+PyObject* TopoShapeWirePy::makeHomogenousWires(PyObject *args)
+{
+    PyObject* wire;
+    if (!PyArg_ParseTuple(args, "O!",&(Part::TopoShapeWirePy::Type),&wire))
+        return 0;
+    try {
+        TopoDS_Wire o1, o2;
+        const TopoDS_Wire& w1 = TopoDS::Wire(getTopoShapePtr()->_Shape);
+        const TopoDS_Wire& w2 = TopoDS::Wire(static_cast<TopoShapePy*>(wire)->getTopoShapePtr()->_Shape);
+        ShapeAlgo_AlgoContainer shapeAlgo;
+        if (shapeAlgo.HomoWires(w1,w2,o1,o2,Standard_True)) {
+            getTopoShapePtr()->_Shape = o1;
+            return new TopoShapeWirePy(new TopoShape(o2));
+        }
+        else {
+            Py_INCREF(wire);
+            return wire;
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
 
 Py::Object TopoShapeWirePy::getCenterOfMass(void) const
 {
