@@ -18,7 +18,7 @@ o zlib (http://www.zlib.net/)
 
 And for the some FreeCAD modules the additional libraries
 o OpenCascade (http://www.opencascade.org), >= 5.2
-o OpenCV (http://opencvlibrary.sourceforge.net), >= 0.9.7
+o Eigen2 (http://eigen.tuxfamily.org/index.php?title=Main_Page), >= 2.0.5
 o ODE (http://www.ode.org), >= 0.10.x
 are required.
 
@@ -62,18 +62,6 @@ Note: For OpenCascade there does not exist an official .deb package for older De
 	  With Debian Lenny this issue is solved. There is an OpenCascade package currently in the
 	  non-free section.
 
-Note: Especially for Debian Etch users the packages for OpenCV (libcv-dev, libcvaux-dev and
-      libhighgui-dev) provides library names with appended version name.
-      In newer Debian versions and other Linux distributions these library names don't have
-      longer embedded the version name. To make the build process working for Debian Etch you
-      either have to replace in the Makefile in src/Mod/Image/App and src/Mod/Image/Gui
-      -lcxcore -lcv -lhighgui -lcvaux \ with
-      -lcxcore0.9.7 -lcv0.9.7 -lhighgui0.9.7 -lcvaux0.9.7 \ or create the symbolic links
-      ln -s libcxcore0.9.7.so libcxcore.so
-      ln -s libcv0.9.7.so libcv.so
-      ln -s libhighgui0.9.7.so libhighgui.so
-      ln -s libcvaux0.9.7.so libcvaux.so
-
 
 During the compilation some Python scripts get executed. So the Python interpreter has
 to work properly.
@@ -83,6 +71,9 @@ we need for the Qt Designer. The sources are located under Tools/plugins/widget.
 So far, we don't provide a makefile but calling 'qmake plugin.pro' creates it and
 calling 'make' will create the library libFreeCAD_widgets.so. To make known this library
 to your Qt Designer you have to copy the file to $QTDIR/plugin/designer.
+
+On our Wiki you'll find more information to build with different Linux distributions at 
+http://sourceforge.net/apps/mediawiki/free-cad/index.php?title=CompileOnUnix
 
 
 Configuration
@@ -120,4 +111,4 @@ So, just have fun!
 
 
 Werner Mayer <wmayer@users.sourceforge.net>
-April 2008
+May 2010
