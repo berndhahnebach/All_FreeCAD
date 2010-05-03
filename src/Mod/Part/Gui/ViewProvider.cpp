@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <Poly_Polygon3D.hxx>
+# include <BRepBndLib.hxx>
 # include <BRepMesh.hxx>
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRep_Tool.hxx>
@@ -388,13 +389,21 @@ void ViewProviderPart::updateData(const App::Property* prop)
 
         try {
             // creating the mesh on the data structure
-            BRepMesh::Mesh(cShape,this->meshDeviation);
+            Bnd_Box bounds;
+            BRepBndLib::Add(cShape, bounds);
+            bounds.SetGap(0.0);
+            Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
+            bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+            Standard_Real deflection = ((xMax-xMin)+(yMax-yMin)+(zMax-zMin))/300.0 *
+                this->meshDeviation;
+
+            BRepMesh::Mesh(cShape,deflection);
             //BRepMesh_IncrementalMesh MESH(cShape,meshDeviation);
             // We must reset the location here because the transformation data
             // are set in the placement property
             TopLoc_Location aLoc;
             cShape.Location(aLoc);
-            computeFaces   (FaceRoot,cShape);
+            computeFaces   (FaceRoot,cShape,deflection);
             computeEdges   (EdgeRoot,cShape);
             computeVertices(VertexRoot,cShape);
             BRepTools::Clean(cShape); // remove triangulation
@@ -637,14 +646,14 @@ Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const To
 #endif
 }
 
-Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape, double defl)
 {
     TopExp_Explorer ex;
 
     FaceRoot->addChild(pcShapeMaterial);
 
 //  BRepMesh::Mesh(myShape,1.0);
-    BRepMesh_IncrementalMesh MESH(myShape,this->meshDeviation);
+    BRepMesh_IncrementalMesh MESH(myShape,defl);
 
     int i = 1;
     for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),i++) {
