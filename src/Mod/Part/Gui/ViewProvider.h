@@ -84,7 +84,7 @@ protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
     bool loadParameter();
-    Standard_Boolean computeFaces   (SoGroup* root, const TopoDS_Shape &myShape);
+    Standard_Boolean computeFaces   (SoGroup* root, const TopoDS_Shape &myShape, double defl);
     Standard_Boolean computeEdges   (SoGroup* root, const TopoDS_Shape &myShape);
     Standard_Boolean computeVertices(SoGroup* root, const TopoDS_Shape &myShape);
 
