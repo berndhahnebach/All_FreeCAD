@@ -167,6 +167,8 @@ FreeCAD.addImportType("VRML V2.0 (*.wrl *.vrml *.wrz *.wrl.gz)","FreeCADGui")
 FreeCAD.addImportType("Python (*.py *.FCMacro *.FCScript)","FreeCADGui")
 FreeCAD.addExportType("Inventor V2.1 (*.iv)","FreeCADGui")
 FreeCAD.addExportType("VRML V2.0 (*.wrl *.vrml *.wrz *.wrl.gz)","FreeCADGui")
+FreeCAD.addExportType("IDTF (for 3D PDF) (*.idtf)","FreeCADGui")
+FreeCAD.addExportType("SVG (*.svg)","FreeCADGui")
 
 del(InitApplications)
 del(NoneWorkbench)

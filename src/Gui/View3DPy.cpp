@@ -481,7 +481,7 @@ Py::Object View3DInventorPy::saveVectorGraphic(const Py::Tuple& args)
     else if (fi.hasExtension("svg")) {
         vo = std::auto_ptr<SoVectorizeAction>(new SoFCVectorizeSVGAction());
     }
-    else if (fi.hasExtension("u3d")) {
+    else if (fi.hasExtension("idtf")) {
         vo = std::auto_ptr<SoVectorizeAction>(new SoFCVectorizeU3DAction());
     }
     else {

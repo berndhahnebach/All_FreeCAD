@@ -94,6 +94,8 @@
 #include "SoFCInteractiveElement.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
+#include "SoFCVectorizeU3DAction.h"
+#include "SoFCVectorizeSVGAction.h"
 #include "SoFCDB.h"
 #include "MainWindow.h"
 #include "NavigationStyle.h"
@@ -733,6 +735,30 @@ bool View3DInventorViewer::dumpToFile(const char* filename, bool binary) const
                 ret = true;
             }
         }
+    }
+    else if (fi.hasExtension("idtf") || fi.hasExtension("svg") ) {
+        int ps=4, t=2;
+        std::auto_ptr<SoVectorizeAction> vo;
+
+        if (fi.hasExtension("svg")) {
+            vo = std::auto_ptr<SoVectorizeAction>(new SoFCVectorizeSVGAction());
+        }
+        else if (fi.hasExtension("idtf")) {
+            vo = std::auto_ptr<SoVectorizeAction>(new SoFCVectorizeU3DAction());
+        }
+        else {
+            throw Base::Exception("Not supported vector graphic");
+        }
+
+        SoVectorOutput * out = vo->getOutput();
+        if (!out || !out->openFile(filename)) {
+            std::ostringstream a_out;
+            a_out << "Cannot open file '" << filename << "'";
+            throw Base::Exception(a_out.str());
+        }
+
+        saveGraphic(ps,t,vo.get());
+        out->closeFile();
     }
     else {
         // Write Inventor in ASCII

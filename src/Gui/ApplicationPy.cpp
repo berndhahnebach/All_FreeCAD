@@ -336,7 +336,8 @@ PyObject* Application::sExport(PyObject * /*self*/, PyObject *args,PyObject * /*
             fi.setFile(fileName);
             QString ext = fi.completeSuffix().toLower();
             if (ext == QLatin1String("iv") || ext == QLatin1String("wrl") ||
-                ext == QLatin1String("vrml") || ext == QLatin1String("wrz")) {
+                ext == QLatin1String("vrml") || ext == QLatin1String("wrz") ||
+                ext == QLatin1String("svg") || ext == QLatin1String("idtf")) {
                 QString cmd = QString::fromLatin1(
                     "Gui.getDocument(\"%1\").ActiveView.dump(\"%2\")"
                     ).arg(QLatin1String(doc->getName())).arg(fi.absoluteFilePath());
