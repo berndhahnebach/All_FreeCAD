@@ -184,6 +184,8 @@ libPart_la_LIBADD   = \
 		-lTKMath \
 		-lTKMesh \
 		-lTKSTEP \
+		-lTKSTEPAttr \
+		-lTKSTEPBase \
 		-lTKIGES \
 		-lTKSTL \
 		-lTKShHealing \

@@ -17,9 +17,11 @@ include_directories(
 
 
 set(Part_LIBS 
-	 ${OCC_LIBRARIES}
-	 FreeCADApp
- )
+	${OCC_LIBRARIES}
+	TKSTEPAttr
+	TKSTEPBase
+	FreeCADApp
+)
 
 generate_from_xml(ArcPy)
 generate_from_xml(CirclePy)
