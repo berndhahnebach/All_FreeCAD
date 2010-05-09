@@ -105,12 +105,16 @@ public Q_SLOTS:
     void onCopyHistory();
     void onCopyCommand();
 
+private Q_SLOTS:
+    void visibilityChanged (bool visible);
+
 protected:
     void keyPressEvent  ( QKeyEvent         * e );
     void showEvent      ( QShowEvent        * e );
     void dropEvent      ( QDropEvent        * e );
     void dragEnterEvent ( QDragEnterEvent   * e );
     void dragMoveEvent  ( QDragMoveEvent    * e );
+    void changeEvent    ( QEvent            * e );
 
     void overrideCursor(const QString& txt);
 

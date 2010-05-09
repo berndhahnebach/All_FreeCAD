@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QClipboard>
+# include <QDockWidget>
 # include <QGridLayout>
 # include <QHBoxLayout>
 # include <QKeyEvent>
@@ -688,11 +689,29 @@ void PythonConsole::printStatement( const QString& cmd )
 /**
  * Shows the Python window and sets the focus to set text cursor.
  */
-void PythonConsole::showEvent ( QShowEvent * e )
+void PythonConsole::showEvent (QShowEvent * e)
 {
-    TextEdit::showEvent( e );
+    TextEdit::showEvent(e);
     // set also the text cursor to the edit field
     setFocus();
+}
+
+void PythonConsole::visibilityChanged (bool visible)
+{
+    if (visible)
+        setFocus();
+}
+
+void PythonConsole::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::ParentChange) {
+        QDockWidget* dw = qobject_cast<QDockWidget*>(this->parentWidget());
+        if (dw) {
+            connect(dw, SIGNAL(visibilityChanged(bool)),
+                    this, SLOT(visibilityChanged(bool)));
+        }
+    }
+    TextEdit::changeEvent(e);
 }
 
 /**
