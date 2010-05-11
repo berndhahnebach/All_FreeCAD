@@ -119,7 +119,7 @@ class toolBar:
 				paramconstr = self.params.GetUnsigned("constructioncolor")>>8
 				icons = findicons()
 				self.lockedz = self.params.GetBool("zlock")
-				self.constructionMode = False
+				self.constrMode = False
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
 				# draftToolbar.resize(800,32)
@@ -268,11 +268,13 @@ class toolBar:
 				self.applyButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(384,64,64,64))))
 				self.applyButton.setIconSize(QtCore.QSize(16, 16))
 
-				self.constructionButton = _pushButton(QtCore.QRect(700,3,60,20),"constructionButton", hide=False)
-				self.constructionButton.setCheckable(True)
-				self.constructionButton.setChecked(False)
-				self.constructionColor = QtGui.QColor(paramconstr)
-				draftToolbar.setStyleSheet("#constructionButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
+				self.constrButton = _pushButton(QtCore.QRect(738,2,22,22),"constrButton", hide=False)
+                                self.constrButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(640,64,64,64))))
+				self.constrButton.setIconSize(QtCore.QSize(16, 16))
+				self.constrButton.setCheckable(True)
+				self.constrButton.setChecked(False)
+				self.constrColor = QtGui.QColor(paramconstr)
+				draftToolbar.setStyleSheet("#constrButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
 				
 				self.sourceCmd=None
 
@@ -320,7 +322,7 @@ class toolBar:
 				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
 
 				QtCore.QObject.connect(self.lockButton,QtCore.SIGNAL("toggled(bool)"),self.lockz)
-				QtCore.QObject.connect(self.constructionButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstructionMode)
+				QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
 
 				QtCore.QMetaObject.connectSlotsByName(draftToolbar)
 
@@ -362,8 +364,7 @@ class toolBar:
 				self.colorButton.setToolTip(QtGui.QApplication.translate("draft", "Current line color for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.widthButton.setToolTip(QtGui.QApplication.translate("draft", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.applyButton.setToolTip(QtGui.QApplication.translate("draft", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
-				self.constructionButton.setText(QtGui.QApplication.translate("draft", "Constr", None, QtGui.QApplication.UnicodeUTF8))
-				self.constructionButton.setToolTip(QtGui.QApplication.translate("draft", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
+				self.constrButton.setToolTip(QtGui.QApplication.translate("draft", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -505,7 +506,7 @@ class toolBar:
 				self.widthButton.setGeometry(QtCore.QRect(w-113,2,50,22))
 				self.colorButton.setGeometry(QtCore.QRect(w-138,2,22,22))
 				self.applyButton.setGeometry(QtCore.QRect(w-60,2,22,22))
-				self.constructionButton.setGeometry(QtCore.QRect(w-200,2,60,22))
+				self.constrButton.setGeometry(QtCore.QRect(w-162,2,22,22))
 
 			def lockz(self,checked):
 					self.zValue.setEnabled(not checked)
@@ -731,9 +732,9 @@ class toolBar:
 				else:
 					self.app.restoreOverrideCursor()
 
-			def toggleConstructionMode(self,checked):
-				self.draftToolbar.setStyleSheet("#constructionButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
-				self.constructionMode = checked
+			def toggleConstrMode(self,checked):
+				self.draftToolbar.setStyleSheet("#constrButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
+				self.constrMode = checked
 
 #---------------------------------------------------------------------------
 # Initialization
@@ -760,6 +761,7 @@ class toolBar:
 		icons['Draft_lock']=iconfile.copy(QtCore.QRect(512,64,64,64))
 		icons['Draft_scale']=iconfile.copy(QtCore.QRect(576,64,64,64))
 		icons['Draft_selectPlane']=iconfile.copy(QtCore.QRect(576,0,64,64))
+                icons['Draft_sendToDrawing']=iconfile.copy(QtCore.QRect(640,0,64,64)q)
 		icons['preferences-draft']=iconfile.copy(QtCore.QRect(384,0,64,64))
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()

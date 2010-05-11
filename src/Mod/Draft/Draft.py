@@ -429,7 +429,7 @@ def formatObject(target,origin=None):
 	obrep = target.ViewObject
 	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 	doc = FreeCAD.ActiveDocument
-	if ui.constructionButton.isChecked():
+	if ui.constrButton.isChecked():
 		col = ui.getDefaultColor("constr")
 		gname = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
 		GetString("constructiongroupname")
@@ -962,11 +962,12 @@ class DimensionViewProvider:
 		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg+='<text id="' + self.Object.Name + '" fill="'
 		svg+=str(self.ViewObject.LineWidth/100) +'" font-size="'
-		svg+=str(self.ViewObject.FontSize/10)+'" '
+		svg+=str(self.ViewObject.FontSize)+'" '
 		svg+='style="text-anchor:middle;text-align:center" '
 		svg+='transform="rotate('+str(math.degrees(angle))
-		svg+=' '+str(tbase.x)+' '+str(tbase.y)+')" '
-		svg+='x="' + str(tbase.x) + '" y="' + str(tbase.y) + '">\n'
+		svg+=','+ str(tbase.x) + ',' + str(tbase.y) + ') '
+		svg+='translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
+                svg +='scale(0.1,0.1)">\n'
 		svg+="%.2f" % p3.sub(p2).Length
 		svg+='</text>\n</g>\n'
 		return svg
@@ -3122,8 +3123,59 @@ class ToggleConstructionMode():
 			'ToolTip': str(translate("draft", "Toggles the Construction Mode for next objects.", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
-		FreeCADGui.activeWorkbench().draftToolBar.ui.constructionButton.toggle()
+		FreeCADGui.activeWorkbench().draftToolBar.ui.constrButton.toggle()
 
+
+class SendToDrawing():
+        "this tool sends the selected objects to the active Drawing sheet"
+        
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_sendToDrawing',
+			'MenuText': str(translate("draft", "Drawing", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Sends the selected objects to the active Drawing sheet.", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
+
+	def Activated(self):
+                import Drawing
+                doc = FreeCAD.ActiveDocument
+                pages = doc.findObjects('Drawing::FeaturePage')
+                if pages:
+                        page = pages[0]
+                else:
+                        page = doc.addObject('Drawing::FeaturePage','Page')
+                        page.Template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
+                offsetX = 200
+                offsetY = 200
+                scale = 10
+                sel = FreeCADGui.Selection.getSelection()
+                for obj in sel:
+                        name = 'View'+obj.Name
+                        view = None
+                        if 'Dimline' in obj.PropertiesList:
+                                svg = obj.ViewObject.Proxy.getSVG()
+                                view = doc.addObject('Drawing::FeatureView',name)
+                                view.ViewResult = self.formatSVG(name,svg,offsetX,offsetY,scale)
+                        elif obj.Type == 'Part::Feature':
+                                view = doc.addObject('Drawing::FeatureViewPart',name)
+                                view.Source = obj
+                                view.Direction = (0.0,0.0,1.0)
+                        if view:
+                                view.X = offsetX
+                                view.Y = offsetY
+                                view.Scale = scale
+                                oldobj = page.getObject(name)
+                                if oldobj: doc.removeObject(oldobj.Name)
+                                page.addObject(view)
+                doc.recompute()
+                                
+
+        def formatSVG(self,name, svg,xoffset=0,yoffset=0,scale=1,rotation=0):
+                result = '<g id="' + name + '"'
+                result += ' transform="rotate('+str(rotation)+','+str(xoffset)+','+str(yoffset)+')'
+                result += ' translate('+str(xoffset)+','+str(yoffset)+')'
+                result += ' scale('+str(scale)+','+str(scale)+')">'
+                result += svg
+                result += '</g>'
+                return result
 
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager
@@ -3156,3 +3208,4 @@ FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
 FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
+FreeCADGui.addCommand('Draft_SendToDrawing',SendToDrawing())
