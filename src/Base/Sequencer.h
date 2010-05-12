@@ -104,37 +104,15 @@ class SequencerLauncher;
  * This is because if an exception somewhere is thrown the destructor is auto-
  * matically called to clean-up internal data.
  *
+ * \note It's not supported to create an instance of SequencerBase or a sub-class
+ * in another thread than the main thread. But you can create SequencerLauncher
+ * instances in other threads.
+ *
  * \author Werner Mayer
  */
 class BaseExport SequencerBase
 {
     friend class SequencerLauncher;
-
-protected:
-    /**
-     * Starts a new operation, returns false if there is already a pending operation,
-     * otherwise it returns true.
-     * In this method startStep() gets invoked that can be reimplemented in sub-classes.
-     */
-    bool start(const char* pszStr, size_t steps);
-    /** Returns the number of steps. */
-    size_t numberOfSteps() const;
-    /**
-     * Performs the next step and returns true if the operation is not yet finished.
-     * But note, when 0 was passed to start() as the number of total steps this method
-     * always returns false.
-     *
-     * In this method nextStep() gets invoked that can be reimplemented in sub-classes.
-     * If \a canAbort is true then the operations can be aborted, otherwise (the default)
-     * the operation cannot be aborted. In case it gets aborted an exception AbortException
-     * is thrown.
-     */
-    bool next(bool canAbort = false);
-    /**
-     * Stops the sequencer if all operations are finished. It returns false if
-     * there are still pending operations, otherwise it returns true.
-     */
-    bool stop();
 
 public:
     /**
@@ -149,17 +127,6 @@ public:
      * @see Sequencer
      */
     static SequencerBase& Instance();
-    /**
-     * Breaks the sequencer if needed. The default implementation does nothing.
-     * Every pause() must eventually be followed by a corresponding @ref resume().
-     * @see Gui::ProgressBar.
-     */
-    virtual void pause();
-    /**
-     * Continues with progress. The default implementation does nothing.
-     * @see pause(), @see Gui::ProgressBar.
-     */
-    virtual void resume();
     /**
      * Returns true if the running sequencer is blocking any user input.
      * This might be only of interest of the GUI where the progress bar or dialog
@@ -180,6 +147,45 @@ public:
      * Returns true if the pending operation was canceled.
      */
     bool wasCanceled() const;
+
+protected:
+    /**
+     * Starts a new operation, returns false if there is already a pending operation,
+     * otherwise it returns true.
+     * In this method startStep() gets invoked that can be reimplemented in sub-classes.
+     */
+    bool start(const char* pszStr, size_t steps);
+    /** Returns the number of steps. */
+    size_t numberOfSteps() const;
+    /** Returns the current state of progress in percent. */
+    int progressInPercent() const;
+    /**
+     * Performs the next step and returns true if the operation is not yet finished.
+     * But note, when 0 was passed to start() as the number of total steps this method
+     * always returns false.
+     *
+     * In this method nextStep() gets invoked that can be reimplemented in sub-classes.
+     * If \a canAbort is true then the operations can be aborted, otherwise (the default)
+     * the operation cannot be aborted. In case it gets aborted an exception AbortException
+     * is thrown.
+     */
+    bool next(bool canAbort = false);
+    /**
+     * Stops the sequencer if all operations are finished. It returns false if
+     * there are still pending operations, otherwise it returns true.
+     */
+    bool stop();
+    /**
+     * Breaks the sequencer if needed. The default implementation does nothing.
+     * Every pause() must eventually be followed by a corresponding @ref resume().
+     * @see Gui::ProgressBar.
+     */
+    virtual void pause();
+    /**
+     * Continues with progress. The default implementation does nothing.
+     * @see pause(), @see Gui::ProgressBar.
+     */
+    virtual void resume();
     /**
      * Try to cancel the pending operation(s).
      * E.g. @ref Gui::ProgressBar calls this method after the ESC button was pressed.
@@ -191,8 +197,6 @@ public:
      * cancel. If you decide to continue this method must be called.
      */
     void rejectCancel();
-    /** Returns the current state of progress in percent. */
-    int progressInPercent() const;
 
 protected:
     /** construction */
@@ -232,16 +236,9 @@ protected:
     size_t nTotalSteps; /**< Stores the total number of steps */
 
 private:
-    /** Sets a global sequencer object.
-     * Access to the last registered object is performed by @see Sequencer().
-     */
-    void _setGlobalInstance ();
-
     bool _bLocked; /**< Lock/unlock sequencer. */
     bool _bCanceled; /**< Is set to true if the last pending operation was canceled */
     int _nLastPercentage; /**< Progress in percent. */
-    static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */
-    static SequencerLauncher* _topLauncher; /**< The outermost launcher */
 };
 
 /** This special sequencer might be useful if you want to suppress any indication

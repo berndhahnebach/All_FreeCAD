@@ -106,6 +106,9 @@
 #include <QByteArray>
 #include <QIODevice>
 #include <QDataStream>
+#include <QWriteLocker>
+#include <QReadLocker>
+#include <QReadWriteLock>
 
 
 #endif //_PreComp_

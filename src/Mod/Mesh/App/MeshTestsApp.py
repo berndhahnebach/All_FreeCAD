@@ -1,6 +1,7 @@
 #   (c) Juergen Riegel (juergen.riegel@web.de) 2007      LGPL
 
-import FreeCAD, os, unittest,Mesh
+import FreeCAD, os, unittest, Mesh
+import thread, time, tempfile
 
 
 #---------------------------------------------------------------------------
@@ -122,3 +123,41 @@ class PivyTestCases(unittest.TestCase):
 	def tearDown(self):
 		#closing doc
 		FreeCAD.closeDocument("MeshTest")
+
+# Threads
+
+def loadFile(name):
+    #lock.acquire()
+    mesh=Mesh.Mesh()
+    FreeCAD.Console.PrintMessage("Create mesh instance\n")
+    #lock.release()
+    mesh.read(name)
+    FreeCAD.Console.PrintMessage("Mesh loaded successfully.\n")
+
+def createMesh(r,s):
+    FreeCAD.Console.PrintMessage("Create sphere (%s,%s)...\n"%(r,s))
+    mesh=Mesh.createSphere(r,s)
+    FreeCAD.Console.PrintMessage("... destroy sphere\n")
+
+class LoadMeshInThreadsCases(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def testSphereMesh(self):
+        for i in range(6,8):
+            thread.start_new(createMesh,(10.0,(i+1)*20))
+        time.sleep(10)
+
+    def testLoadMesh(self):
+        mesh=Mesh.createSphere(10.0,100) # a fine sphere
+        name=tempfile.gettempdir() + os.sep + "mesh.stl"
+        mesh.write(name)
+        FreeCAD.Console.PrintMessage("Write mesh to %s\n"%(name))
+        #lock=thread.allocate_lock()
+        for i in range(2):
+            thread.start_new(loadFile,(name,))
+        time.sleep(1)
+
+    def tearDown(self):
+        pass
