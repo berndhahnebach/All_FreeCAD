@@ -26,6 +26,9 @@
 #ifndef _PreComp_
 # include <cstdio>
 # include <algorithm>
+# include <QWriteLocker>
+# include <QReadLocker>
+# include <QReadWriteLock>
 #endif
 
 #include "Sequencer.h"
@@ -33,48 +36,63 @@
 
 using namespace Base;
 
-/**
- * The _pclSequencer member just stores the pointer of the
- * all instanciated SequencerBase objects.
- */
-std::vector<SequencerBase*> SequencerBase::_aclInstances;
+namespace Base {
+    struct SequencerP {
+        // members
+        static std::vector<SequencerBase*> _instances; /**< A vector of all created instances */
+        static SequencerLauncher* _topLauncher; /**< The outermost launcher */
+        static QReadWriteLock rwlock; /**< A mutex-like read/write locker for the launcher */
+        /** Sets a global sequencer object.
+         * Access to the last registered object is performed by @see Sequencer().
+         */
+        static void appendInstance (SequencerBase* s)
+        {
+            _instances.push_back(s);
+        }
+        static void removeInstance (SequencerBase* s)
+        {
+            std::vector<SequencerBase*>::iterator it;
+            it = std::find(_instances.begin(), _instances.end(), s);
+            _instances.erase(it);
+        }
+        static SequencerBase& getInstance ()
+        {
+            return *_instances.back();
+        }
+    };
 
-SequencerLauncher* SequencerBase::_topLauncher = 0;
+    /**
+     * The _instances member just stores the pointer of the
+     * all instanciated SequencerBase objects.
+     */
+    std::vector<SequencerBase*> SequencerP::_instances;
+    SequencerLauncher* SequencerP::_topLauncher = 0;
+    QReadWriteLock SequencerP::rwlock/*(QReadWriteLock::Recursive)*/;
+};
 
 SequencerBase& SequencerBase::Instance ()
 {
     // not initialized?
-    if (_aclInstances.size() == 0) {
+    if (SequencerP::_instances.size() == 0) {
         new ConsoleSequencer();
     }
 
-    return *_aclInstances.back();
+    return SequencerP::getInstance();
 }
 
 SequencerBase::SequencerBase()
   : nProgress(0), nTotalSteps(0), _bLocked(false), _bCanceled(false), _nLastPercentage(-1)
 {
-    _setGlobalInstance();
+    SequencerP::appendInstance(this);
 }
 
 SequencerBase::~SequencerBase()
 {
-    std::vector<SequencerBase*>::iterator it;
-    it = std::find(_aclInstances.begin(), _aclInstances.end(), this);
-    _aclInstances.erase(it);
-}
-
-void SequencerBase::_setGlobalInstance ()
-{
-    _aclInstances.push_back(this);
+    SequencerP::removeInstance(this);
 }
 
 bool SequencerBase::start(const char* pszStr, size_t steps)
 {
-    // we have already an instance of SequencerLauncher created
-    if (SequencerBase::_topLauncher)
-        return false;
-
     // reset current state of progress (in percent)
     this->_nLastPercentage = -1;
 
@@ -128,8 +146,6 @@ void SequencerBase::setProgress(size_t)
 
 bool SequencerBase::stop()
 {
-    if (SequencerBase::_topLauncher)
-        return false;
     resetData();
     return true;
 }
@@ -149,6 +165,7 @@ bool SequencerBase::isBlocking() const
 
 bool SequencerBase::setLocked(bool bLocked)
 {
+    QWriteLocker locker(&SequencerP::rwlock);
     bool old = this->_bLocked;
     this->_bLocked = bLocked;
     return old;
@@ -156,16 +173,19 @@ bool SequencerBase::setLocked(bool bLocked)
 
 bool SequencerBase::isLocked() const
 {
+    QReadLocker locker(&SequencerP::rwlock);
     return this->_bLocked;
 }
 
 bool SequencerBase::isRunning() const
 {
-    return (SequencerBase::_topLauncher != 0);
+    QReadLocker locker(&SequencerP::rwlock);
+    return (SequencerP::_topLauncher != 0);
 }
 
 bool SequencerBase::wasCanceled() const
 {
+    QReadLocker locker(&SequencerP::rwlock);
     return this->_bCanceled;
 }
 
@@ -240,37 +260,49 @@ void ConsoleSequencer::resetData()
 
 SequencerLauncher::SequencerLauncher(const char* pszStr, size_t steps)
 {
-    SequencerBase::Instance().start(pszStr, steps);
-    if (!SequencerBase::_topLauncher)
-        SequencerBase::_topLauncher = this;
+    QWriteLocker locker(&SequencerP::rwlock);
+    // Have we already an instance of SequencerLauncher created?
+    if (!SequencerP::_topLauncher) {
+        SequencerBase::Instance().start(pszStr, steps);
+        SequencerP::_topLauncher = this;
+    }
 }
 
 SequencerLauncher::~SequencerLauncher()
 {
-    if (SequencerBase::_topLauncher == this)
-        SequencerBase::_topLauncher = 0;
-    SequencerBase::Instance().stop();
+    QReadLocker locker(&SequencerP::rwlock);
+    if (SequencerP::_topLauncher == this)
+        SequencerBase::Instance().stop();
+    locker.unlock();
+    QWriteLocker write_locker(&SequencerP::rwlock);
+    if (SequencerP::_topLauncher == this) {
+        SequencerP::_topLauncher = 0;
+    }
 }
 
 void SequencerLauncher::setText (const char* pszTxt)
 {
+    QReadLocker locker(&SequencerP::rwlock);
     SequencerBase::Instance().setText(pszTxt);
 }
 
 bool SequencerLauncher::next(bool canAbort)
 {
-    if (SequencerBase::_topLauncher != this)
+    QReadLocker locker(&SequencerP::rwlock);
+    if (SequencerP::_topLauncher != this)
         return true; // ignore
     return SequencerBase::Instance().next(canAbort);
 }
 
 void SequencerLauncher::setProgress(size_t pos)
 {
+    QReadLocker locker(&SequencerP::rwlock);
     SequencerBase::Instance().setProgress(pos);
 }
 
 size_t SequencerLauncher::numberOfSteps() const
 {
+    QReadLocker locker(&SequencerP::rwlock);
     return SequencerBase::Instance().numberOfSteps();
 }
 

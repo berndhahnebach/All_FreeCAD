@@ -447,12 +447,14 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd,
                 ulLast = pEI->second;
                 clBorder.push_back(ulLast);
                 aclEdges.erase(pEI);
+                pEI = aclEdges.begin();
                 break;
             }
             else if (pEI->second == ulFirst) {
                 ulFirst = pEI->first;
                 clBorder.push_front(ulFirst);
                 aclEdges.erase(pEI);
+                pEI = aclEdges.begin();
                 break;
             }
             // Note: Using this might result into boundaries with wrong orientation.
@@ -462,12 +464,14 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd,
                 ulLast = pEI->first;
                 clBorder.push_back(ulLast);
                 aclEdges.erase(pEI);
+                pEI = aclEdges.begin();
                 break;
             }
             else if (pEI->first == ulFirst && ignoreOrientation) {
                 ulFirst = pEI->second;
                 clBorder.push_front(ulFirst);
                 aclEdges.erase(pEI);
+                pEI = aclEdges.begin();
                 break;
             }
         }

@@ -23,10 +23,14 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QEventLoop>
 # include <QMutex>
+# include <QThread>
+# include <QTimer>
 # include <QWaitCondition>
 #endif
 
+#include <Base/Console.h>
 #include "Application.h"
 #include "MainWindow.h"
 #include "Command.h"
@@ -411,7 +415,7 @@ void CmdTestProgress4::activated(int iMsg)
             if (seq) {
                 seq->next(false);
             }
-            Base::SequencerLauncher seq2("Starting progress bar", steps);
+            Base::SequencerLauncher seq2("Starting second progress bar", steps);
             for (unsigned long j=0; j<steps;j++)
             {
                 QWaitCondition().wait(&mutex, (seq ? 5 : 50));
@@ -425,6 +429,86 @@ void CmdTestProgress4::activated(int iMsg)
 }
 
 bool CmdTestProgress4::isActive(void)
+{
+    return (!Base::Sequencer().isRunning());
+}
+
+//===========================================================================
+// Std_TestProgress5
+//===========================================================================
+DEF_STD_CMD_A(CmdTestProgress5);
+
+CmdTestProgress5::CmdTestProgress5()
+  : Command("Std_TestProgress5")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "From thread";
+    sToolTipText    = "Test a progress bar from a thread";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool7";
+    iAccel          = 0;
+}
+
+class BarThread : public QThread
+{
+public:
+    BarThread(unsigned long s) : steps(s)
+    {
+    }
+    ~BarThread()
+    {
+    }
+    void run()
+    {
+        try
+        {
+            QMutex mutex;
+            mutex.lock();
+            Base::SequencerLauncher seq("Starting progress bar in thread", steps);
+
+            for (unsigned long i=0; i<this->steps;i++)
+            {
+                seq.next(true);
+                QWaitCondition().wait(&mutex, 5);
+            }
+            mutex.unlock();
+        }
+        catch (...)
+        {
+        }
+
+        this->deleteLater();
+        Base::Console().Message("Thread with %d steps finished\n",this->steps);
+    }
+
+private:
+    unsigned long steps;
+};
+
+void CmdTestProgress5::activated(int iMsg)
+{
+    QEventLoop loop;
+
+    BarThread* thr1 = new BarThread(2000);
+    QObject::connect(thr1, SIGNAL(finished()), &loop, SLOT(quit()));
+    thr1->start();
+    loop.exec();
+
+    BarThread* thr2 = new BarThread(1500);
+
+    QTimer timer;
+    timer.setSingleShot(true);
+    QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    thr2->start();
+    timer.start(2000); // 2s timeout
+    loop.exec();
+
+    BarThread* thr3 = new BarThread(1000);
+    thr3->start();
+}
+
+bool CmdTestProgress5::isActive(void)
 {
     return (!Base::Sequencer().isRunning());
 }
@@ -446,6 +530,7 @@ void CreateTestCommands(void)
     rcCmdMgr.addCommand(new CmdTestProgress2());
     rcCmdMgr.addCommand(new CmdTestProgress3());
     rcCmdMgr.addCommand(new CmdTestProgress4());
+    rcCmdMgr.addCommand(new CmdTestProgress5());
 }
 
 } // namespace Gui
