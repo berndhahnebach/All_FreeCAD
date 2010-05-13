@@ -23,7 +23,9 @@ MIN=10
 ALIAS="Dagoba"
 
 # go to root directory
-cd ..
+CUR_DIR=$PWD
+verz=`dirname $(readlink -f ${0})`
+cd $verz && cd ..
 
 # let's import OLD_REV (if there)
 if [ -f ./.last_revision ]; then
@@ -64,6 +66,7 @@ echo "OLD_REV=$REV" > ./.last_revision
 SRC_DIR=$PWD
 
 # Prepare source tarball and unpack it in build directory
+cd $CUR_DIR
 make dist
 rm -rf $TMP_PATH/freecad-$REV
 mkdir $TMP_PATH/freecad-$REV

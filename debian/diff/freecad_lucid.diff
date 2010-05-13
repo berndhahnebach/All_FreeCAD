@@ -22,7 +22,7 @@
 +  section="Applications/Science/Engineering"\
 +  title="FreeCAD"\
 +  command="/usr/bin/freecad"\
-+  icon="/usr/share/freecad/FCIcon.xpm"
++  icon="/usr/share/freecad/freecad.svg"
 +
 --- freecad-0.10.3139.orig/debian/freecad.1
 +++ freecad-0.10.3139/debian/freecad.1
@@ -716,7 +716,7 @@
 +Path=/usr/lib/freecad
 +Terminal=false
 +Type=Application
-+Icon=/usr/share/freecad/FCIcon.xpm
++Icon=/usr/share/freecad/freecad.svg
 +Categories=Graphics;Science;Engineering
 +StartupNotify=true
 +GenericName[de_DE]=Feature-basierter parametrischer Modellierer

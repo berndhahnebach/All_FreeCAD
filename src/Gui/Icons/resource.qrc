@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/icons" >
-        <file>SplashScreen.xpm</file>
         <file>freecadsplash.png</file>
         <file>freecad.svg</file>
         <file>bulb.xpm</file>

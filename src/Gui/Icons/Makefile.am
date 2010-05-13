@@ -22,13 +22,10 @@ EXTRA_DIST = \
 		button_right.xpm \
 		button_up.xpm \
 		Document.xpm \
-		FCIcon.xpm \
 		Feature.xpm \
-		SplashScreen.xpm \
 		freecadsplash.png \
 		freecad.svg \
 		images.cpp \
-		ParamDlgImgs.h \
 		macro-execute.svg \
 		macro-record.svg \
 		macro-stop.svg \
@@ -86,7 +83,7 @@ EXTRA_DIST = \
 		Tree_Python.svg \
 		resource.qrc
 
-data_DATA = FCIcon.xpm
+data_DATA = freecad.svg
 
 # rules for Qt Resource Compiler:
 qrc_%.cpp: %.qrc
