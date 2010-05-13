@@ -48,7 +48,6 @@
 #include <App/Application.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/Icons/background.xpm>
-#include <Gui/Icons/SplashScreen.xpm>
 #include <Gui/Application.h>
 
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
@@ -176,7 +175,6 @@ int main( int argc, char ** argv )
         // Inits the Application 
         ProgramOptions po;
         App::Application::init(argc,argv);
-        Gui::BitmapFactory().addXPM("FreeCADSplasher", ( const char** ) splash_screen);
         Gui::Application::initApplication();
     }
     catch (const Base::Exception& e) {
