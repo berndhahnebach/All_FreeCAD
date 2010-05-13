@@ -6,5 +6,5 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += customwidgets.h wizard.h plugin.h
-SOURCES += customwidgets.cpp wizard.cpp plugin.cpp
+HEADERS += customwidgets.h plugin.h
+SOURCES += customwidgets.cpp plugin.cpp
