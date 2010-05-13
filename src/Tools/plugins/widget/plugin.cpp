@@ -34,11 +34,10 @@
 
 #include "customwidgets.h"
 #include "plugin.h"
-#include "wizard.h"
 
 
 /* XPM */
-static char *urllabel_pixmap[]={
+static const char *urllabel_pixmap[]={
 "22 22 3 1",
 "# c #000000",
 "x c #ffffff",
@@ -228,7 +227,7 @@ public:
 };
 
 /* XPM */
-static char *lineedit_pixmap[]={
+static const char *lineedit_pixmap[]={
 "22 22 6 1",
 "a c #000000",
 "# c #000080",
@@ -301,7 +300,7 @@ public:
 };
 
 /* XPM */
-static char *iconview_pixmap[]={
+static const char *iconview_pixmap[]={
 "22 22 10 1",
 "# c #000000",
 "h c #000080",
@@ -378,7 +377,7 @@ public:
 };
 
 /* XPM */
-static char *spinbox_pixmap[]={
+static const char *spinbox_pixmap[]={
 "22 22 6 1",
 "a c #000000",
 "# c #000080",
@@ -492,7 +491,7 @@ public:
 };
 
 /* XPM */
-static char *colorbutton_pixmap[]={
+static const char *colorbutton_pixmap[]={
 "21 21 7 1",
 "d c #000000",
 "b c #000080",
@@ -606,7 +605,7 @@ public:
 };
 
 /* XPM */
-static char *slider_pixmap[]={
+static const char *slider_pixmap[]={
 "22 22 5 1",
 "b c #000000",
 "c c #008080",
@@ -678,7 +677,7 @@ public:
 };
 
 /* XPM */
-static char *radiobutton_pixmap[]={
+static const char *radiobutton_pixmap[]={
 "22 22 4 1",
 "b c #000000",
 "# c #808080",
@@ -749,7 +748,7 @@ public:
 };
 
 /* XPM */
-static char *checkbox_pixmap[]={
+static const char *checkbox_pixmap[]={
 "22 22 4 1",
 "# c #000000",
 "a c #808080",
@@ -820,7 +819,7 @@ public:
 };
 
 /* XPM */
-static char *combobox_pixmap[]={
+static const char *combobox_pixmap[]={
 "22 22 8 1",
 "a c #000000",
 "# c #000080",
@@ -976,107 +975,6 @@ public:
     }
 };
 
-WizardPlugin::WizardPlugin()
-{
-    initialized = false;
-}
-QWidget *WizardPlugin::createWidget(QWidget *parent)
-{
-    Wizard* widget = new Wizard(parent);
-    connect(widget, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(currentIndexChanged(int)));
-    connect(widget, SIGNAL(pageTitleChanged(const QString &)),
-            this, SLOT(pageTitleChanged(const QString &)));
-    widget->backButton()->setObjectName("__qt__passive_back");
-    widget->nextButton()->setObjectName("__qt__passive_next");
-    return widget;
-}
-QString WizardPlugin::group() const
-{
-    return QLatin1String("Wizard [FreeCAD]");
-}
-QIcon WizardPlugin::icon() const
-{
-    return QIcon();
-}
-QString WizardPlugin::includeFile() const
-{
-    return QLatin1String("Gui/Wizard.h");
-}
-QString WizardPlugin::toolTip() const
-{
-    return QLatin1String("Wizard");
-}
-QString WizardPlugin::whatsThis() const
-{
-    return QLatin1String("Wizard");
-}
-bool WizardPlugin::isContainer() const
-{
-    return true;
-}
-QString WizardPlugin::name() const
-{
-    return QLatin1String("Wizard");
-}
-
-bool WizardPlugin::isInitialized() const
-{
-    return initialized;
-}
-
-void WizardPlugin::initialize(QDesignerFormEditorInterface *formEditor)
-{
-    if (initialized)
-        return;
-
-    QExtensionManager *manager = formEditor->extensionManager();
-    QExtensionFactory *factory = new WizardExtensionFactory(manager);
-
-    Q_ASSERT(manager != 0);
-    manager->registerExtensions(factory, Q_TYPEID(QDesignerContainerExtension));
-
-    initialized = true;
-}
-
-QString WizardPlugin::domXml() const
-{
-    return QString("\
-    <widget class=\"Wizard\" name=\"Wizard\">\
-        <widget class=\"QWidget\" name=\"page\" />\
-    </widget>\
-    ");
-}
-
-void WizardPlugin::currentIndexChanged(int index)
-{
-    Wizard *widget = qobject_cast<Wizard*>(sender());
-    if (widget) {
-        QDesignerFormWindowInterface *form;
-        form = QDesignerFormWindowInterface::findFormWindow(widget);
-        if (form)
-            form->emitSelectionChanged();
-    }
-}
-
-void WizardPlugin::pageTitleChanged(const QString &title)
-{
-    Wizard *widget = qobject_cast<Wizard*>(sender());
-    if (widget) {
-        QWidget *page = widget->widget(widget->currentIndex());
-        QDesignerFormWindowInterface *form;
-        form = QDesignerFormWindowInterface::findFormWindow(widget);
-        if (form) {
-            QDesignerFormEditorInterface *editor = form->core();
-            QExtensionManager *manager = editor->extensionManager();
-            QDesignerPropertySheetExtension *sheet;
-            sheet = qt_extension<QDesignerPropertySheetExtension*>(manager, page);
-            int propertyIndex = sheet->indexOf(QLatin1String("windowTitle"));
-            sheet->setChanged(propertyIndex, true);
-        }
-    }
-}
-
 /* XPM */
 /*
 static char *listbox_pixmap[]={
@@ -1133,7 +1031,6 @@ QList<QDesignerCustomWidgetInterface *> CustomWidgetPlugin::customWidgets () con
     cw.append(new PrefComboBoxPlugin);
     cw.append(new PrefLineEditPlugin);
     cw.append(new PrefDoubleSpinBoxPlugin);
-    //cw.append(new WizardPlugin);
     return cw;
 }
 
