@@ -130,7 +130,7 @@ ToDo list:
 # import FreeCAD modules
 
 from PyQt4 import QtCore, QtGui
-import FreeCAD, FreeCADGui, Part, WorkingPlane, math, sys, os
+import FreeCAD, FreeCADGui, Part, WorkingPlane, math, sys, os, re
 sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
 from FreeCAD import Base, Vector
 from draftlibs import fcvec
@@ -962,12 +962,12 @@ class DimensionViewProvider:
 		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg+='<text id="' + self.Object.Name + '" fill="'
 		svg+=str(self.ViewObject.LineWidth/100) +'" font-size="'
-		svg+=str(self.ViewObject.FontSize)+'" '
+		svg+=str(self.ViewObject.FontSize*20)+'" '
 		svg+='style="text-anchor:middle;text-align:center" '
 		svg+='transform="rotate('+str(math.degrees(angle))
 		svg+=','+ str(tbase.x) + ',' + str(tbase.y) + ') '
 		svg+='translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
-                svg +='scale(0.1,0.1)">\n'
+                svg +='scale(0.05,0.05)">\n'
 		svg+="%.2f" % p3.sub(p2).Length
 		svg+='</text>\n</g>\n'
 		return svg
@@ -1025,23 +1025,39 @@ class SelectPlane:
 	def selectHandler(self, arg):
  		if arg == "XY":
 			plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), self.offset)
+                        self.display('top')
 			self.finish()
 		elif arg == "XZ":
 			plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), self.offset)
+                        self.display('front')
 			self.finish()
 		elif arg == "YZ":
 			plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), self.offset)
+                        self.display('side')
 			self.finish()
 		elif arg == "currentView":
 			viewDirection = fcvec.neg(self.view.getViewDirection())
 			plane.alignToPointAndAxis(Vector(0,0,0), viewDirection, self.offset)
+                        self.display(viewDirection)
 			self.finish()
 		elif arg == "reset":
 			plane.reset()
+                        self.display('None')
 			self.finish()
 
 	def offsetHandler(self, arg):
 		self.offset = arg
+
+        def display(self,arg):
+                if self.offset:
+                        if self.offset > 0: suffix = ' + '+str(self.offset)
+                        else: suffix = ' - '+str(self.offset)
+                else: suffix = ''
+                if type(arg).__name__  == 'str':
+                        self.ui.wplabel.setText(arg+suffix)
+                elif type(arg).__name__ == 'Vector':
+                        plv = 'd('+str(arg.x)+','+str(arg.y)+','+str(arg.z)+')'
+                        self.ui.wplabel.setText(plv+suffix)
 
 	def finish(self):
 		if self.call:
@@ -3153,11 +3169,15 @@ class SendToDrawing():
                         if 'Dimline' in obj.PropertiesList:
                                 svg = obj.ViewObject.Proxy.getSVG()
                                 view = doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.formatSVG(name,svg,offsetX,offsetY,scale)
+                                view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
                         elif obj.Type == 'Part::Feature':
-                                view = doc.addObject('Drawing::FeatureViewPart',name)
-                                view.Source = obj
-                                view.Direction = (0.0,0.0,1.0)
+                                # view = doc.addObject('Drawing::FeatureViewPart',name)
+                                # view.Source = obj
+                                # view.Direction = (0.0,0.0,1.0)
+                                svg = Drawing.projectToSVG(obj.Shape)
+                                svg.replace('stroke-width="0.35"','stroke-width="'+str(obj.ViewObject.LineWidth/100)+'px"')
+                                view = doc.addObject('Drawing::FeatureView',name)
+                                view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
                         if view:
                                 view.X = offsetX
                                 view.Y = offsetY
@@ -3168,7 +3188,7 @@ class SendToDrawing():
                 doc.recompute()
                                 
 
-        def formatSVG(self,name, svg,xoffset=0,yoffset=0,scale=1,rotation=0):
+        def transformSVG(self,name, svg,xoffset=0,yoffset=0,scale=1,rotation=0):
                 result = '<g id="' + name + '"'
                 result += ' transform="rotate('+str(rotation)+','+str(xoffset)+','+str(yoffset)+')'
                 result += ' translate('+str(xoffset)+','+str(yoffset)+')'

@@ -275,6 +275,11 @@ class toolBar:
 				self.constrButton.setChecked(False)
 				self.constrColor = QtGui.QColor(paramconstr)
 				draftToolbar.setStyleSheet("#constrButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
+
+                                self.wplabel = QtGui.QLabel(draftToolbar)
+                                self.wplabel.setGeometry(QtCore.QRect(500, 4, 100, 18))
+                                self.wplabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+                                self.wplabel.setObjectName("wplabel")
 				
 				self.sourceCmd=None
 
@@ -365,6 +370,8 @@ class toolBar:
 				self.widthButton.setToolTip(QtGui.QApplication.translate("draft", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.applyButton.setToolTip(QtGui.QApplication.translate("draft", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.constrButton.setToolTip(QtGui.QApplication.translate("draft", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
+                                self.wplabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
+                                self.wplabel.setToolTip(QtGui.QApplication.translate("draft", "Current working plane", None, QtGui.QApplication.UnicodeUTF8))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -507,6 +514,7 @@ class toolBar:
 				self.colorButton.setGeometry(QtCore.QRect(w-138,2,22,22))
 				self.applyButton.setGeometry(QtCore.QRect(w-60,2,22,22))
 				self.constrButton.setGeometry(QtCore.QRect(w-162,2,22,22))
+                                self.wplabel.setGeometry(QtCore.QRect(w-268,4,100,18))
 
 			def lockz(self,checked):
 					self.zValue.setEnabled(not checked)
