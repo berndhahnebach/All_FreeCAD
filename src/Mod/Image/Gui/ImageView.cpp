@@ -412,6 +412,7 @@ void ImageView::mousePressEvent(QMouseEvent* cEvent)
       {
           case Qt::MidButton:
               _currMode = panning;
+              this->setCursor(QCursor(Qt::ClosedHandCursor));
               startDrag();
               break;
           //case Qt::LeftButton | Qt::MidButton:
@@ -506,6 +507,9 @@ void ImageView::mouseReleaseEvent(QMouseEvent* cEvent)
            case addselection:
                addSelect(box_x, box_y);
                break;
+           case panning:
+               this->unsetCursor();
+               break;
            default:
                break;
        }
@@ -536,6 +540,11 @@ void ImageView::wheelEvent(QWheelEvent * cEvent)
        // Update the status bar
        updateStatusBar();
    }
+}
+
+void ImageView::showEvent (QShowEvent * e)
+{
+    _pGLImageBox->setFocus();
 }
 
 // Update the status bar with the image parameters for the current mouse position

@@ -63,11 +63,11 @@ public:
     virtual int setColorMapBlueValue(int index, float value);
     virtual int setColorMapAlphaValue(int index, float value);
 
-public slots:
+public Q_SLOTS:
     virtual void fitImage();
     virtual void oneToOneImage();
 
-protected slots:
+protected Q_SLOTS:
     virtual void handleColorAct( QAction* act);
     virtual void sliderValueAdjusted(int NewValue);
     virtual void drawGraphics();
@@ -81,6 +81,8 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* cEvent);
     virtual void mouseReleaseEvent(QMouseEvent* cEvent);
     virtual void wheelEvent(QWheelEvent * cEvent);
+    virtual void showEvent (QShowEvent * e);
+
     virtual void updateStatusBar();
     virtual QString createStatusBarText();
 
