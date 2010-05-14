@@ -722,3 +722,7 @@
 +GenericName[de_DE]=Feature-basierter parametrischer Modellierer
 +Comment[de_DE]=Feature-basierter parametrischer Modellierer
 +MimeType=application/x-extension-fcstd
+--- freecad-0.10.3139.orig/debian/source/format
++++ freecad-0.10.3139/debian/source/format
+@@ -0,0 +1 @@
++1.0
