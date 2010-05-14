@@ -118,10 +118,12 @@ void ViewProviderPythonFeatureImp::attach(App::DocumentObject *pcObject)
         App::Property* proxy = object->getPropertyByName("Proxy");
         if (proxy && proxy->getTypeId() == App::PropertyPythonObject::getClassTypeId()) {
             Py::Object vp = static_cast<App::PropertyPythonObject*>(proxy)->getValue();
-            Py::Callable method(vp.getAttr(std::string("attach")));
-            Py::Tuple args(1);
-            args.setItem(0, Py::Object(object->getPyObject(), true));
-            method.apply(args);
+            if (vp.hasAttr(std::string("attach"))) {
+                Py::Callable method(vp.getAttr(std::string("attach")));
+                Py::Tuple args(1);
+                args.setItem(0, Py::Object(object->getPyObject(), true));
+                method.apply(args);
+            }
         }
     }
     catch (Py::Exception&) {
