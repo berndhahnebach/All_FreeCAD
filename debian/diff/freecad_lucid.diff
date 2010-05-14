@@ -22,7 +22,7 @@
 +  section="Applications/Science/Engineering"\
 +  title="FreeCAD"\
 +  command="/usr/bin/freecad"\
-+  icon="/usr/share/freecad/freecad.svg"
++  icon="/usr/share/freecad/freecad.xpm"
 +
 --- freecad-0.10.3139.orig/debian/freecad.1
 +++ freecad-0.10.3139/debian/freecad.1
@@ -539,7 +539,7 @@
 + zlib1g-dev, libxerces-c2-dev,
 + libopencascade-foundation-dev, libopencascade-modeling-dev, python-cxx-dev,
 + libswscale-dev, libzipios++-dev, swig
-+Standards-Version: 3.8.3
++Standards-Version: 3.8.4
 +
 +Package: freecad
 +Architecture: any
@@ -716,7 +716,7 @@
 +Path=/usr/lib/freecad
 +Terminal=false
 +Type=Application
-+Icon=/usr/share/freecad/freecad.svg
++Icon=/usr/share/freecad/freecad.xpm
 +Categories=Graphics;Science;Engineering
 +StartupNotify=true
 +GenericName[de_DE]=Feature-basierter parametrischer Modellierer

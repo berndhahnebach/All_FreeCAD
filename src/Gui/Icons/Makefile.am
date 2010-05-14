@@ -6,7 +6,10 @@ BUILT_SOURCES=\
 nodist_libIcons_la_SOURCES=\
 		qrc_resource.cpp
 
+data_DATA = freecad.xpm
+
 EXTRA_DIST = \
+		$(data_DATA) \
 		ClassBrowser/const_member.png \
 		ClassBrowser/member.png \
 		ClassBrowser/method.png \
@@ -83,7 +86,6 @@ EXTRA_DIST = \
 		Tree_Python.svg \
 		resource.qrc
 
-data_DATA = freecad.svg
 
 # rules for Qt Resource Compiler:
 qrc_%.cpp: %.qrc
