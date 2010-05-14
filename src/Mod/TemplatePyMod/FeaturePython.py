@@ -137,6 +137,52 @@ def makeBox():
 	Box(a)
 	ViewProviderBox(a.ViewObject)
 
+class Line:
+	def __init__(self, obj):
+		''' App two point properties '''
+		obj.addProperty("App::PropertyVector","p1","Line","Start point")
+		obj.addProperty("App::PropertyVector","p2","Line","End point").p2=FreeCAD.Vector(1,0,0)
+		obj.Proxy = self
+
+	def execute(self, fp):
+		''' Print a short message when doing a recomputation, this method is mandatory '''
+		fp.Shape = Part.makeLine(fp.p1,fp.p2)
+
+class ViewProviderLine:
+	def __init__(self, obj):
+		''' Set this object to the proxy object of the actual view provider '''
+		obj.Proxy = self
+
+	def attach(self, obj):
+		''' Setup the scene sub-graph of the view provider, this method is mandatory '''
+		return
+
+	def getDefaultDisplayMode(self):
+		''' Return the name of the default display mode. It must be defined in getDisplayModes. '''
+		return "Flat Lines"
+
+	def __getstate__(self):
+		''' When saving the document this object gets stored using Python's cPickle module.
+		Since we have some un-pickable here -- the Coin stuff -- we must define this method
+		to return a tuple of all pickable objects or None.
+
+		'''
+		return None
+
+	def __setstate__(self,state):
+		''' When restoring the pickled object from document we have the chance to set some
+
+		internals here. Since no data were pickled nothing needs to be done here.
+		'''
+		return None
+
+
+def makeLine():
+	FreeCAD.newDocument()
+	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Line")
+	Line(a)
+	ViewProviderLine(a.ViewObject)
+
 class Octahedron:
 	def __init__(self, obj):
 		"Add some custom properties to our box feature"
