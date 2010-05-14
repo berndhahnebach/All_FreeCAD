@@ -130,8 +130,15 @@ void MDIView::closeEvent(QCloseEvent *e)
                 doc->detachView(this);
         }
 
+        // Note: When using QMdiArea we must not use removeWindow()
+        // because otherwise the QMdiSubWindow will loose its parent
+        // and thus the notification in QMdiSubWindow::closeEvent of
+        // other mdi windows to get in fullscreen mode if this window
+        // is fullscreen will fail.
+#if defined (NO_USE_QT_MDI_AREA)
         // avoid flickering
         getMainWindow()->removeWindow(this);
+#endif
         QMainWindow::closeEvent(e);
     }
     else
