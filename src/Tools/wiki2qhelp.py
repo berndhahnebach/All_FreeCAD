@@ -23,8 +23,8 @@
 #***************************************************************************
 
 __title__="wiki2qhelp"
-__author__ = "Yorik van Havre <yorik@gmx.fr>"
-__url__ = "http://yorik.orgfree.com"
+__author__ = "Yorik van Havre <yorik@uncreated.net>"
+__url__ = "http://yorik.uncreated.net"
 
 """
 This script retrieves the contents of a wiki site and saves it locally,
@@ -47,6 +47,9 @@ COMPILE = True # Wether qt assistant will be used to compile the final help file
 OUTPUTPATH = os.path.expanduser("~")+os.sep+'.FreeCAD' # Where to store the qch file
 QHELPCOMPILER = 'qhelpgenerator'
 QCOLLECTIOMGENERATOR = 'qcollectiongenerator'
+PDFOUTPUT = False # if true, a pdf file will be generated instead of qhelp.
+REMOVE = True # if true, the temp html files are removed after successful operation
+PDFCONVERTOR = 'pisa' # can be 'pisa' or 'htmldoc'
 
 #    END CONFIGURATION      ##############################################
 
@@ -54,8 +57,9 @@ URL = DEFAULTURL
 TMPFOLDER = tempfile.mkdtemp()
 wikiindex = "/index.php?title="
 processed = []
+pisa = None
 usage='''
-    wiki2qhelp [options] [url] [index page] [output path]
+    wiki2qhelp [options] [url] [index page]
 
     fetches wiki pages from the specified url, starting from specified
     index page, and outputs a .qch file in the specified output path.
@@ -69,7 +73,15 @@ usage='''
 
     Options:
 
+    -v: Verbose mode
+    -c filename or --helpcompiler-exe filename: Uses filename as qt help compiler
+    -g filename or --helpgenerator-exe filename: Uses filename as qt collection generator
+    -o path or --out-path path: Specifies an output path
     -h or --help: Displays this help message
+    -p [convertor] or --pdf [convertor]: Outputs a pdf file instead of qhelp. Convertor
+                                         can be pisa (default) or htmldoc
+    -t path or --tempfolder path: Uses path as temp folder for storing html files
+
     '''
 css = """/* Basic CSS for offline wiki rendering */
 
@@ -116,7 +128,7 @@ a:hover {
   font-size: 0.8em;
   }
 
-#toc {
+#toc,.docnav {
   display: none;
   }
 
@@ -138,12 +150,32 @@ def rmall(dirPath):                             # delete dirPath and below
 
 def crawl(site=DEFAULTURL):
     "downloads an entire wiki site"
+
+    # tests ###############################################
+    
     if COMPILE and os.system(QHELPCOMPILER +' -v'):
         print "Error: QAssistant not fully installed, exiting."
         return 1
     if COMPILE and os.system(QCOLLECTIOMGENERATOR +' -v'):
         print "Error: QAssistant not fully installed, exiting."
         return 1
+    if PDFOUTPUT:
+        if PDFCONVERTOR == 'pisa':
+            try:
+                import ho.pisa as pisa
+            except: "Error: Python-pisa not installed, exiting."
+            return 1
+        else:
+            if os.system('htmldoc --version'):
+                print "Error: Htmldoc not found, exiting."
+                return 1
+        try:
+            from pyPdf import PdfFileReader,PdfFileWriter
+        except:
+            print "Error: Python-pypdf not installed, exiting."
+
+    # run ########################################################
+    
     URL = site
     if VERBOSE: print "crawling ", URL, ", saving in ", TMPFOLDER
     if not os.path.isdir(TMPFOLDER): os.mkdir(TMPFOLDER)
@@ -165,23 +197,94 @@ def crawl(site=DEFAULTURL):
                 if (not (p in todolist)) and (not (p in processed)):
                     todolist.append(p)
     if VERBOSE: print "Fetched ", count, " pages"
-    qhp = buildtoc()
-    qhcp = createCollProjectFile()
+    if PDFOUTPUT:
+        buildpdffiles()
+        joinpdf()
+        if REMOVE:
+            if VERBOSE: print "Deleting temp files..."
+            rmall(TMPFOLDER)
     if COMPILE:
+        qhp = buildtoc()
+        qhcp = createCollProjectFile()
         if generate(qhcp) or compile(qhp):
             print "Temp Folder ",TMPFOLDER," has not been deleted."
             return 1
         else:
-            if VERBOSE: print "Deleting temp files..."
-            rmall(TMPFOLDER)
+            if REMOVE:
+                if VERBOSE: print "Deleting temp files..."
+                rmall(TMPFOLDER)
     if VERBOSE: print "All done!"
     return 0
 
-def compile(qhpfile):
+def buildpdffiles(folder=TMPFOLDER,convertor=PDFCONVERTOR):
+    "scans a folder for html files and converts them all to pdf"
+    templist = os.listdir(folder)
+    fileslist = []
+    for i in templist:
+        if i[-5:] == '.html':
+            fileslist.append(i)
+    for f in fileslist:
+        if convertor == 'pisa': createpdf_pisa(f[:-5],folder)
+        else: createpdf_htmldoc(f[:-5],folder)
+
+def fetch_resources(uri, rel):
+        """
+        Callback to allow pisa/reportlab to retrieve Images,Stylesheets, etc.
+        'uri' is the href attribute from the html link element.
+        'rel' gives a relative path, but it's not used here.
+
+        Note from Yorik: Not working!!
+        """
+        path = os.path.join(TMPFOLDER,uri.replace("./", ""))
+        return path
+
+def createpdf_pisa(pagename,folder=TMPFOLDER):
+    "creates a pdf file from a saved page using pisa (python module)"
+    infile = file(folder + os.sep + pagename+'.html','ro')
+    outfile = file(folder + os.sep + pagename+'.pdf','wb')
+    if VERBOSE: print "Converting " + pagename + " to pdf..."
+    pdf = pisa.CreatePDF(infile,outfile,folder,link_callback=fetch_resources)
+    outfile.close()
+    if pdf.err: return pdf.err
+    return 0
+
+def createpdf_htmldoc(pagename,folder=TMPFOLDER):
+    "creates a pdf file from a saved page using htmldoc (external app, but supports images)"
+    infile = folder + os.sep + pagename+'.html'
+    outfile = folder + os.sep + pagename+'.pdf'
+    return os.system('htmldoc --webpage -f '+outfile+' '+infile)
+
+def joinpdf(folder=TMPFOLDER,startpage=INDEX,outputname='freecad.pdf'):
+    "creates one pdf file from several others, following order from startpage"
+    if VERBOSE: print "Building table of contents..."
+    f = open(folder+os.sep+startpage+'.html')
+    html = ''
+    for line in f: html += line
+    f.close()
+    html = html.replace("\n"," ")
+    html = html.replace("> <","><")
+    html = re.findall("<ul.*/ul>",html)[0]
+    pages = re.findall('href="(.*?)"',html)
+    pages.insert(1,startpage+".html")
+    result = PdfFileWriter()
+    for p in pages:
+        if exists(p[:-5]):
+            if VERBOSE: print 'Appending',p
+            try: inputfile = PdfFileReader(file(folder+os.sep+p[:-5]+'.pdf','rb'))
+            except: print 'Unable to append',p
+            else:
+                for i in range(inputfile.getNumPages()):
+                    result.addPage(inputfile.getPage(i))
+    outputfile = file(OUTPUTPATH + os.sep + outputname,'wb')
+    result.write(outputfile)
+    outputfile.close()
+    if VERBOSE: print 'Successfully created',OUTPUTPATH,os.sep,outputname
+    
+def compile(qhpfile,outputname='freecad.qch'):
     "compiles the whole html doc with qassistant"
-    qchfile = OUTPUTPATH + os.sep + "freecad.qch"
+    qchfile = OUTPUTPATH + os.sep + outputname
     if not os.system(QHELPCOMPILER + ' '+qhpfile+' -o '+qchfile):
-        if VERBOSE: print "Successfully created ",qchfile
+        if VERBOSE: print "Successfully created",qchfile
         return 0
 
 def generate(qhcpfile):
@@ -248,15 +351,15 @@ def buildtoc(folder=TMPFOLDER,page=INDEX):
     <namespace>org.freecad.usermanual_0.9</namespace>
     <virtualFolder>doc</virtualFolder>
     <!--
-    <customFilter name="FreeCAD 0.9">
+    <customFilter name="FreeCAD 0.10">
         <filterAttribute>FreeCAD</filterAttribute>
-        <filterAttribute>0.9</filterAttribute>
+        <filterAttribute>0.10</filterAttribute>
     </customFilter>
     -->
     <filterSection>
         <!--
         <filterAttribute>FreeCAD</filterAttribute>
-        <filterAttribute>0.9</filterAttribute>
+        <filterAttribute>0.10</filterAttribute>
         -->
         <toc>
             <inserttoc>
@@ -428,7 +531,7 @@ def fetchimage(imagelink):
                 file.close()
                 processed.append(filename)
                 return
-            except HTTPError:
+            except:
                 failcount += 1
         print 'Error: unable to fetch file ' + filename
 
@@ -464,29 +567,36 @@ def output(html,page):
     file.close()
 
 def main(arg):
-	global QHELPCOMPILER,QCOLLECTIOMGENERATOR,OUTPUTPATH
+	global QHELPCOMPILER,QCOLLECTIOMGENERATOR,OUTPUTPATH,PDFOUTPUT,PDFCONVERTOR
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hc:g:o:", ["help", "helpcompiler-exe=", "out-path=", "--helpgenerator-exe="])
+		opts, args = getopt.getopt(sys.argv[1:], "hp:t:c:g:o:", ["help", "pdf=", "noremove", "tempfolder=", "helpcompiler-exe=", "out-path=", "helpgenerator-exe="])
 	except getopt.GetoptError:
 		# print help information and exit:
-		sys.stderr.write(Usage)
+		sys.stderr.write(usage)
 		sys.exit(2)
 
 	# checking on the options
 	for o, a in opts:
 		if o == "-v":
-			verbose = True
+			VERBOSE = True
+                if o in ("-p","--pdf"):
+                        PDFOUTPUT = True
+                        if a in ['pisa','htmldoc']:
+                            print "using pdf converter:",a
+                            PDFCONVERTOR = a
+                if o in ("-t","--tempfolder"):
+                        print "using tempfolder:",a
+                        TMPFOLDER = a
 		if o in ("-h", "--help"):
-			sys.stderr.write(Usage)
+			sys.stderr.write(usage)
 			sys.exit()
 		if o in ("-c", "--helpcompiler-exe"):
 			QHELPCOMPILER = a
 			print 'Using: ',QHELPCOMPILER
-			
 		if o in ("-g", "--helpgenerator-exe"):
 			QCOLLECTIOMGENERATOR = a
 		if o in ("-o", "--out-path"):
-			print "Using output path: " + a +"\n"
+			print "Using output path:",a
 			OUTPUTPATH = a
 #    if arg:
 #        if (arg[0] == '-h') or (arg[0] == '--help'):
