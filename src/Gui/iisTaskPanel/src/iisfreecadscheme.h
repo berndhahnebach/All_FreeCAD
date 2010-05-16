@@ -32,13 +32,14 @@
 class IISTASKPANEL_EXPORT iisFreeCADTaskPanelScheme : public iisTaskPanelScheme
 {
 public:
-	iisFreeCADTaskPanelScheme(QObject *parent=0);
-	~iisFreeCADTaskPanelScheme();
+    iisFreeCADTaskPanelScheme(QObject *parent=0);
+    ~iisFreeCADTaskPanelScheme();
 
-	static iisTaskPanelScheme* defaultScheme();
+    static iisTaskPanelScheme* defaultScheme();
 
 protected:
-	static iisFreeCADTaskPanelScheme *myDefaultXPScheme;
+    static iisFreeCADTaskPanelScheme *myDefaultXPScheme;
+    QPixmap drawFoldIcon(const QPalette&) const;
 };
 
 #endif // IISFREECADTASKPANELSCHEME_H
