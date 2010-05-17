@@ -48,6 +48,7 @@
 #include "Document.h"
 #include "DocumentPy.h"
 #include "Command.h"
+#include "Control.h"
 #include "FileDialog.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
@@ -149,10 +150,10 @@ Document::~Document()
 
     // e.g. if document gets closed from within a Python command
     d->_isClosing = true;
-    // because Calls Document::detachView() and alter the View List
+    // calls Document::detachView() and alter the view list
     std::list<Gui::BaseView*> temp = d->_LpcViews;
     for(std::list<Gui::BaseView*>::iterator it=temp.begin();it!=temp.end();++it)
-        delete *it;
+        (*it)->deleteSelf();
 
     std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
     for (it = d->_ViewProviderMap.begin();it != d->_ViewProviderMap.end(); ++it)
@@ -892,6 +893,12 @@ bool Document::isLastView(void)
 bool Document::canClose ()
 {
     if (!getDocument()->isClosable()) {
+        QMessageBox::warning(getActiveView(),
+            QObject::tr("Document not closable"),
+            QObject::tr("The document is not closable for the moment."));
+        return false;
+    }
+    else if (!Gui::Control().isAllowedAlterDocument()) {
         QMessageBox::warning(getActiveView(),
             QObject::tr("Document not closable"),
             QObject::tr("The document is not closable for the moment."));

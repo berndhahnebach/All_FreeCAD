@@ -144,6 +144,7 @@ DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
 {
     ui->setupUi(this);
 
+    d->object = 0;
     d->connectApplicationDeletedObject = App::GetApplication().signalDeletedObject
         .connect(boost::bind(&DlgFilletEdges::onDeleteObject, this, _1));
     d->connectApplicationDeletedDocument = App::GetApplication().signalDeleteDocument

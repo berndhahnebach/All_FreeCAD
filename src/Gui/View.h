@@ -50,60 +50,62 @@ class ViewProvider;
  */
 class GuiExport BaseView : public Base::BaseClass
 {
-  TYPESYSTEM_HEADER();
+    TYPESYSTEM_HEADER();
 
 public:
-  /** View constructor
-   * Attach the view to the given document. If the document is 0
-   * the view will attach to the active document. Be aware! there isn't
-   * always an active document!
-   */
-  BaseView(Gui::Document* pcDocument=0);
-  /** View destructor
-   * Detach the view from the document, if attached!
-   */
-  virtual ~BaseView();
+    /** View constructor
+     * Attach the view to the given document. If the document is 0
+     * the view will attach to the active document. Be aware! there isn't
+     * always an active document!
+     */
+    BaseView(Gui::Document* pcDocument=0);
+    /** View destructor
+     * Detach the view from the document, if attached!
+     */
+    virtual ~BaseView();
 
 
-  /** @name methods used by the Application and the GuiDocument 
-   */
-  //@{
-  /// sets the view to another document (called by Application)
-  void setDocument(Gui::Document* pcDocument);
-  /// is sent from the document in order to close the document
-  void onClose(void);
-  //@}
+    /** @name methods used by the Application and the GuiDocument 
+     */
+    //@{
+    /// sets the view to another document (called by Application)
+    void setDocument(Gui::Document* pcDocument);
+    /// is sent from the document in order to close the document
+    void onClose(void);
+    //@}
 
-  /// returns the document the view is attached to
-  Gui::Document* getGuiDocument() const {return _pcDocument;}
-  /// returns the document the view is attached to
-  App::Document* getAppDocument() const;
-  /// indicates if the view is in passive mode
-  bool isPassive(void) const {return bIsPassive;}
+    /// returns the document the view is attached to
+    Gui::Document* getGuiDocument() const {return _pcDocument;}
+    /// returns the document the view is attached to
+    App::Document* getAppDocument() const;
+    /// indicates if the view is in passive mode
+    bool isPassive(void) const {return bIsPassive;}
 
-  /** @name methods to overrride 
-   */
-  //@{
-  /// get called when the document is updated
-  virtual void onUpdate(void)=0;
-  /// get called when the document is relabeled (change of its user name)
-  virtual void onRelabel(Gui::Document *){};
-  /// get called when the document is renamed (change of its internal name)
-  virtual void onRename(Gui::Document *){};
-  /// returns the name of the view (important for messages)
-  virtual const char *getName(void) const=0;
-  /// Message handler
-  virtual bool onMsg(const char* pMsg, const char** ppReturn)=0;
-  /// Message handler test
-  virtual bool onHasMsg(const char* pMsg) const=0;
-  /// overwrite when checking on close state
-  virtual bool canClose(void){return true;}
-  //@}
+    /** @name methods to overrride 
+     */
+    //@{
+    /// get called when the document is updated
+    virtual void onUpdate(void)=0;
+    /// get called when the document is relabeled (change of its user name)
+    virtual void onRelabel(Gui::Document *){};
+    /// get called when the document is renamed (change of its internal name)
+    virtual void onRename(Gui::Document *){};
+    /// returns the name of the view (important for messages)
+    virtual const char *getName(void) const=0;
+    /// Message handler
+    virtual bool onMsg(const char* pMsg, const char** ppReturn)=0;
+    /// Message handler test
+    virtual bool onHasMsg(const char* pMsg) const=0;
+    /// overwrite when checking on close state
+    virtual bool canClose(void){return true;}
+    /// delete itself
+    virtual void deleteSelf();
+    //@}
 
 protected:
-  Gui::Document*  _pcDocument;
-  bool bIsDetached;
-  bool bIsPassive;
+    Gui::Document*  _pcDocument;
+    bool bIsDetached;
+    bool bIsPassive;
 };
 
 } // namespace Gui
