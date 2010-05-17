@@ -38,6 +38,8 @@
 # include <QVBoxLayout>
 # include <QItemSelection>
 # include <QItemSelectionModel>
+# include <boost/signal.hpp>
+# include <boost/bind.hpp>
 #endif
 
 #include "DlgFilletEdges.h"
@@ -129,6 +131,9 @@ namespace PartGui {
     {
     public:
         App::DocumentObject* object;
+        typedef boost::signals::connection Connection;
+        Connection connectApplicationDeletedObject;
+        Connection connectApplicationDeletedDocument;
     };
 };
 
@@ -139,6 +144,10 @@ DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
 {
     ui->setupUi(this);
 
+    d->connectApplicationDeletedObject = App::GetApplication().signalDeletedObject
+        .connect(boost::bind(&DlgFilletEdges::onDeleteObject, this, _1));
+    d->connectApplicationDeletedDocument = App::GetApplication().signalDeleteDocument
+        .connect(boost::bind(&DlgFilletEdges::onDeleteDocument, this, _1));
     // set tree view with three columns
     QStandardItemModel* model = new FilletRadiusModel(this);
     connect(model, SIGNAL(toogleCheckState(const QModelIndex&)),
@@ -165,6 +174,8 @@ DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
 DlgFilletEdges::~DlgFilletEdges()
 {
     // no need to delete child widgets, Qt does it all for us
+    d->connectApplicationDeletedDocument.disconnect();
+    d->connectApplicationDeletedObject.disconnect();
 }
 
 void DlgFilletEdges::onSelectionChanged(const Gui::SelectionChanges& msg)
@@ -197,6 +208,42 @@ void DlgFilletEdges::onSelectionChanged(const Gui::SelectionChanges& msg)
                 }
             }
         }
+    }
+}
+
+void DlgFilletEdges::onDeleteObject(const App::DocumentObject& obj)
+{
+    if (d->object == &obj) {
+        d->object = 0;
+        ui->shapeObject->removeItem(ui->shapeObject->currentIndex());
+        ui->shapeObject->setCurrentIndex(0);
+        on_shapeObject_activated(0);
+    }
+    else {
+        QString shape = QString::fromAscii(obj.getNameInDocument());
+        // start from the second item
+        for (int i=1; i<ui->shapeObject->count(); i++) {
+            if (ui->shapeObject->itemData(i).toString() == shape) {
+                ui->shapeObject->removeItem(i);
+                break;
+            }
+        }
+    }
+}
+
+void DlgFilletEdges::onDeleteDocument(const App::Document& doc)
+{
+    if (d->object) {
+        if (d->object->getDocument() == &doc) {
+            ui->shapeObject->setCurrentIndex(0);
+            on_shapeObject_activated(0);
+            setEnabled(false);
+        }
+    }
+    else if (App::GetApplication().getActiveDocument() == &doc) {
+        ui->shapeObject->setCurrentIndex(0);
+        on_shapeObject_activated(0);
+        setEnabled(false);
     }
 }
 
@@ -385,6 +432,12 @@ void DlgFilletEdges::on_filletEndRadius_valueChanged(double radius)
 
 bool DlgFilletEdges::accept()
 {
+    if (!d->object) {
+        QMessageBox::warning(this, tr("No shape selected"),
+            tr("No valid shape is selected.\n"
+               "Please select a valid shape in the drop-down box first."));
+        return false;
+    }
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     QAbstractItemModel* model = ui->treeView->model();
     bool end_radius = !ui->treeView->isColumnHidden(2);
@@ -396,7 +449,7 @@ bool DlgFilletEdges::accept()
     type = QString::fromAscii("Part::Fillet");
     name = QString::fromAscii(activeDoc->getUniqueObjectName("Fillet").c_str());
 
-    activeDoc->openTransaction("Extrude");
+    activeDoc->openTransaction("Fillet");
     QString code = QString::fromAscii(
         "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
         "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
