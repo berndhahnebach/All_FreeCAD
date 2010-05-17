@@ -74,6 +74,8 @@ public:
     virtual bool onHasMsg(const char* pMsg) const;
     /// overwrite when checking on close state
     virtual bool canClose(void);
+    /// delete itself
+    virtual void deleteSelf();
     /// print function of the view
     virtual void print();
     virtual void printPdf();

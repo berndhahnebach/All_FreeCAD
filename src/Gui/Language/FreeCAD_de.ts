@@ -2886,7 +2886,7 @@ Möchten Sie sie ersetzen?</translation>
     </message>
     <message>
         <source>The document is not closable for the moment.</source>
-        <translation>Das Dokument kann im Moment nicht geschloseen werden.</translation>
+        <translation>Das Dokument kann im Moment nicht geschlossen werden.</translation>
     </message>
 </context>
 <context>

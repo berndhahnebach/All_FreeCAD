@@ -73,6 +73,11 @@ void BaseView::onClose(void)
     bIsDetached = true;
 }
 
+void BaseView::deleteSelf()
+{
+    delete this;
+}
+
 void BaseView::setDocument(Gui::Document* pcDocument)
 {
     if (_pcDocument == pcDocument)

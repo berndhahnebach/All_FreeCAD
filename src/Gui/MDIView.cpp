@@ -28,6 +28,7 @@
 # include <qregexp.h>
 # include <QEvent>
 # include <QCloseEvent>
+# include <QMdiSubWindow>
 #endif
 
 
@@ -66,6 +67,19 @@ MDIView::~MDIView()
             par = par->parentWidget();
         }
     }
+}
+
+void MDIView::deleteSelf()
+{
+    // When using QMdiArea make sure to remove the QMdiSubWindow
+    // this view is associated with.
+#if !defined (NO_USE_QT_MDI_AREA)
+    QWidget* parent = this->parentWidget();
+    if (qobject_cast<QMdiSubWindow*>(parent))
+        delete parent;
+    else
+#endif
+        delete this;
 }
 
 void MDIView::onRelabel(Gui::Document *pDoc)
@@ -133,8 +147,8 @@ void MDIView::closeEvent(QCloseEvent *e)
         // Note: When using QMdiArea we must not use removeWindow()
         // because otherwise the QMdiSubWindow will loose its parent
         // and thus the notification in QMdiSubWindow::closeEvent of
-        // other mdi windows to get in fullscreen mode if this window
-        // is fullscreen will fail.
+        // other mdi windows to get maximized if this window
+        // is maximized will fail.
 #if defined (NO_USE_QT_MDI_AREA)
         // avoid flickering
         getMainWindow()->removeWindow(this);
