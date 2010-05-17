@@ -79,6 +79,8 @@ protected:
 
 private:
     void onSelectionChanged(const Gui::SelectionChanges& msg);
+    void onDeleteObject(const App::DocumentObject&);
+    void onDeleteDocument(const App::Document&);
 
 private Q_SLOTS:
     void on_shapeObject_activated(int);
