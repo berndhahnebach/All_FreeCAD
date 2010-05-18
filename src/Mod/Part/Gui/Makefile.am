@@ -82,6 +82,7 @@ libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $
 libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 libPartGui_la_LIBADD   = \
+		@BOOST_SIGNALS_LIB@ \
 		@BOOST_SYSTEM_LIB@ \
 		-lxerces-c \
 		-l@PYTHON_LIB@ \
