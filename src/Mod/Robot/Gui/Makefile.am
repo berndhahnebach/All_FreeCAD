@@ -105,8 +105,8 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) $(all_includes) -I$(OCC_INC) -I$(EIGEN2_INC)
-
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) $(all_includes) -I$(OCC_INC) -I$(EIGEN2_INC) \
+		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 libdir = $(prefix)/Mod/Robot
 

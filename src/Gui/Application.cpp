@@ -931,6 +931,7 @@ QPixmap Application::workbenchIcon(const QString& wb) const
 QString Application::workbenchToolTip(const QString& wb) const
 {
     // get the python workbench object from the dictionary
+    Base::PyGILStateLocker lock;
     PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toAscii());
     // test if the workbench exists
     if (pcWorkbench) {
@@ -954,6 +955,7 @@ QString Application::workbenchToolTip(const QString& wb) const
 QString Application::workbenchMenuText(const QString& wb) const
 {
     // get the python workbench object from the dictionary
+    Base::PyGILStateLocker lock;
     PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toAscii());
     // test if the workbench exists
     if (pcWorkbench) {
