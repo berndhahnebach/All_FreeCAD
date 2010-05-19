@@ -3151,17 +3151,20 @@ class SendToDrawing():
 			'ToolTip': str(translate("draft", "Sends the selected objects to the active Drawing sheet.", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
-                import Drawing
-                doc = FreeCAD.ActiveDocument
-                pages = doc.findObjects('Drawing::FeaturePage')
-                if pages:
-                        page = pages[0]
-                else:
-                        page = doc.addObject('Drawing::FeaturePage','Page')
-                        page.Template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
+                # configs
                 offsetX = 200
                 offsetY = 200
                 scale = 10
+                pagename = 'Page'
+                template = 'A3_Landscape'
+                import Drawing
+                doc = FreeCAD.ActiveDocument
+                pages = doc.findObjects('Drawing::FeaturePage',pagename)
+                if pages:
+                        page = pages[0] #TODO - remove this poor hack...
+                else:
+                        page = doc.addObject('Drawing::FeaturePage',pagename)
+                        page.Template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/'+template+'.svg'
                 sel = FreeCADGui.Selection.getSelection()
                 for obj in sel:
                         name = 'View'+obj.Name
@@ -3171,11 +3174,7 @@ class SendToDrawing():
                                 view = doc.addObject('Drawing::FeatureView',name)
                                 view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
                         elif obj.Type == 'Part::Feature':
-                                # view = doc.addObject('Drawing::FeatureViewPart',name)
-                                # view.Source = obj
-                                # view.Direction = (0.0,0.0,1.0)
-                                svg = Drawing.projectToSVG(obj.Shape)
-                                svg.replace('stroke-width="0.35"','stroke-width="'+str(obj.ViewObject.LineWidth/100)+'px"')
+                                svg = self.formatSVG(Drawing.projectToSVG(obj.Shape),obj)
                                 view = doc.addObject('Drawing::FeatureView',name)
                                 view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
                         if view:
@@ -3186,9 +3185,18 @@ class SendToDrawing():
                                 if oldobj: doc.removeObject(oldobj.Name)
                                 page.addObject(view)
                 doc.recompute()
-                                
 
+        def formatSVG(self,svg,obj):
+                "applies freecad object's color and linewidth to a svg fragment"
+                print svg
+                svg = svg.replace('stroke-width="0.35"','stroke-width="'+str(obj.ViewObject.LineWidth/100)+'px"')
+                lc = obj.ViewObject.LineColor
+                sc = (int(math.ceil(lc[0]*255)),int(math.ceil(lc[1]*255)),int(math.ceil(lc[2]*255)))
+                svg = svg.replace('stroke="rgb(0, 0, 0)"','stroke="rgb('+str(sc[0])+','+str(sc[1])+','+str(sc[2])+')"')
+                return svg
+                                
         def transformSVG(self,name, svg,xoffset=0,yoffset=0,scale=1,rotation=0):
+                "encapsulates a svg fragment into a transformation node"
                 result = '<g id="' + name + '"'
                 result += ' transform="rotate('+str(rotation)+','+str(xoffset)+','+str(yoffset)+')'
                 result += ' translate('+str(xoffset)+','+str(yoffset)+')'
