@@ -26,10 +26,10 @@
 # include <Inventor/nodes/SoSeparator.h>
 #endif
 
-  #include <Inventor/SoDB.h>
-  #include <Inventor/actions/SoWriteAction.h>
-  #include <Inventor/nodes/SoCone.h>
-  #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/SoDB.h>
+#include <Inventor/actions/SoWriteAction.h>
+#include <Inventor/nodes/SoCone.h>
+#include <Inventor/nodes/SoSeparator.h>
 
 #include "ViewProvider.h"
 
@@ -37,6 +37,10 @@
 #include "ViewProviderPy.h"
 #include "ViewProviderPy.cpp"
 #include <Base/Interpreter.h>
+#include <Base/Matrix.h>
+#include <Base/MatrixPy.h>
+#include <Base/Placement.h>
+#include <Base/PlacementPy.h>
 
 using namespace Gui;
 
@@ -103,6 +107,26 @@ PyObject*  ViewProviderPy::toString(PyObject *args)
     } PY_CATCH;
 }
 
+PyObject*  ViewProviderPy::setTransformation(PyObject *args)
+{
+    PyObject* p;
+    Base::Matrix4D mat;
+    if (PyArg_ParseTuple(args, "O!",&(Base::MatrixPy::Type),&p)) {
+        mat = *static_cast<Base::MatrixPy*>(p)->getMatrixPtr();
+        getViewProviderPtr()->setTransformation(mat);
+        Py_Return;
+    }
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!",&(Base::PlacementPy::Type),&p)) {
+        Base::PlacementPy* plc = static_cast<Base::PlacementPy*>(p);
+        getViewProviderPtr()->setTransformation(plc->getPlacementPtr()->toMatrix());
+        Py_Return;
+    }
+
+    PyErr_SetString(PyExc_Exception, "Either set matrix or placement to set transformation");
+    return 0;
+}
+
 PyObject *ViewProviderPy::getCustomAttributes(const char* attr) const
 {
     return 0;
@@ -155,28 +179,26 @@ static size_t buffer_size = 0;
 static void *
 buffer_realloc(void * bufptr, size_t size)
 {
-  buffer = (char *)realloc(bufptr, size);
-  buffer_size = size;
-  return buffer;
+    buffer = (char *)realloc(bufptr, size);
+    buffer_size = size;
+    return buffer;
 }
 
 static SbString
 buffer_writeaction(SoNode * root)
 {
-  SoOutput out;
-  buffer = (char *)malloc(1024);
-  buffer_size = 1024;
-  out.setBuffer(buffer, buffer_size, buffer_realloc);
+    SoOutput out;
+    buffer = (char *)malloc(1024);
+    buffer_size = 1024;
+    out.setBuffer(buffer, buffer_size, buffer_realloc);
 
-  SoWriteAction wa(&out);
-  wa.apply(root);
+    SoWriteAction wa(&out);
+    wa.apply(root);
 
-  SbString s(buffer);
-  free(buffer);
-  return s;
+    SbString s(buffer);
+    free(buffer);
+    return s;
 }
-
-
 
 Py::String ViewProviderPy::getIV(void) const
 {
