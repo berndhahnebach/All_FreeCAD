@@ -675,8 +675,14 @@ PyObject* Application::sRunCommand(PyObject * /*self*/, PyObject *args,PyObject 
     if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
         return NULL;                    // NULL triggers exception 
 
-    Application::Instance->commandManager().runCommandByName(pName);
-
-    Py_INCREF(Py_None);
-    return Py_None;
+    Command* cmd = Application::Instance->commandManager().getCommandByName(pName);
+    if (cmd) {
+        cmd->invoke(0);
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    else {
+        PyErr_Format(PyExc_Exception, "No such command '%s'", pName);
+        return 0;
+    }
 } 
