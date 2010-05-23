@@ -34,7 +34,6 @@
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 #include <Base/FileInfo.h>
-#include <Base/gzstream.h>
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
 #include <zipios++/gzipoutputstream.h>

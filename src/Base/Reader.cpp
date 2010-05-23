@@ -36,7 +36,6 @@
 #include "Reader.h"
 #include "Exception.h"
 #include "Persistence.h"
-#include "gzstream.h"
 #include "InputSource.h"
 #include "Console.h"
 #include "Sequencer.h"

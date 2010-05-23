@@ -78,7 +78,6 @@
 
 #include <sstream>
 #include <Base/Console.h>
-#include <Base/gzstream.h>
 #include <Base/Stream.h>
 #include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
