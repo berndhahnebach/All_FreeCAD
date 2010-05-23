@@ -27,7 +27,6 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#include <Base/gzstream.h>
 #include <Base/Sequencer.h>
 #include "FeatureMeshExport.h"
 #include "MeshFeature.h"
