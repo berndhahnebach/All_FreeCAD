@@ -3177,6 +3177,28 @@ class SendToDrawing():
                                 svg = self.formatSVG(Drawing.projectToSVG(obj.Shape),obj)
                                 view = doc.addObject('Drawing::FeatureView',name)
                                 view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
+                        elif obj.Type == 'App::Annotation':
+                                textcontents = ''
+                                for l in obj.LabelText:
+                                        textcontents+=l
+                                        textcontents+='\n'
+                                svg='<text id="' + obj.Name + '" fill="'
+                                svg+=self.getrgb(obj.ViewObject.TextColor)
+                                svg+='" font-size="'
+                                svg+=str(obj.ViewObject.FontSize*20)+'" '
+                                svg+='style="text-anchor:middle;text-align:center" '
+                                svg+='transform="'
+                                if obj.ViewObject.RotationAxis == 'Z':
+                                        if obj.ViewObject.Rotation != 0:
+                                                svg+='rotate('+str(obj.ViewObject.Rotation)
+                                                svg+=','+ str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
+                                svg+='translate(' + str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
+                                svg +='scale(0.05,0.05)">\n'
+                                svg+=textcontents
+                                svg+='</text>\n'
+                                view = doc.addObject('Drawing::FeatureView',name)
+                                view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
+                                
                         if view:
                                 view.X = offsetX
                                 view.Y = offsetY
@@ -3185,6 +3207,13 @@ class SendToDrawing():
                                 if oldobj: doc.removeObject(oldobj.Name)
                                 page.addObject(view)
                 doc.recompute()
+
+        def getrgb(self,color):
+		"returns a rgb value #000000 from a freecad color"
+		r = str(hex(int(color[0]*255)))[2:].zfill(2)
+		g = str(hex(int(color[1]*255)))[2:].zfill(2)
+		b = str(hex(int(color[2]*255)))[2:].zfill(2)
+		return "#"+r+g+b
 
         def formatSVG(self,svg,obj):
                 "applies freecad object's color and linewidth to a svg fragment"
