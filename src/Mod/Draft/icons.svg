@@ -1027,6 +1027,33 @@
        y1="108.379"
        x2="677.37709"
        y2="108.379" />
+    <inkscape:perspective
+       id="perspective4171"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       y2="1076.6174"
+       x2="3935.5251"
+       y1="1286.7291"
+       x1="3709.3296"
+       id="linearGradient3847-7"
+       xlink:href="#linearGradient3841-0"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient3841-0">
+      <stop
+         id="stop3843-1"
+         offset="0"
+         style="stop-color:#0619c0;stop-opacity:1;" />
+      <stop
+         id="stop3845-0"
+         offset="1"
+         style="stop-color:#379cfb;stop-opacity:1;" />
+    </linearGradient>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1039,8 +1066,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="416.60964"
-     inkscape:cy="91.443318"
+     inkscape:cx="386.6212"
+     inkscape:cy="92.751269"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -2338,6 +2365,26 @@
          id="path4014"
          style="color:#000000;fill:none;stroke:#000bff;stroke-width:3.64180802999999997;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          sodipodi:type="arc" />
+    </g>
+    <g
+       inkscape:label="Layer 1"
+       id="Draft_upgrade-1"
+       transform="matrix(0,1,-1,0,704.36794,131.95935)">
+      <g
+         transform="matrix(0.1731146,0,0,0.1731146,-635.22048,-168.53671)"
+         inkscape:export-ydpi="8.71"
+         inkscape:export-xdpi="8.71"
+         inkscape:export-filename="/home/yorik/Documents/Lab/Draft/icons/upgrade.png"
+         id="g3853-3">
+        <path
+           style="opacity:0.60792954;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:8;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           d="m 3875.9311,1028.0961 -149.5,155.5625 84.8437,0 0,139.4063 127.2813,0 0,-139.4063 76.7813,0 -139.4063,-155.5625 z"
+           id="path3849-7" />
+        <path
+           style="fill:url(#linearGradient3847-7);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           d="m 3848.6875,999.84375 -149.5,155.56245 84.8437,0 0,139.4063 127.2813,0 0,-139.4063 76.7813,0 -139.4063,-155.56245 z"
+           id="rect3066-7" />
+      </g>
     </g>
   </g>
 </svg>

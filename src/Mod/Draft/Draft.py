@@ -3142,7 +3142,7 @@ class ToggleConstructionMode():
 		FreeCADGui.activeWorkbench().draftToolBar.ui.constrButton.toggle()
 
 
-class SendToDrawing():
+class SendToDrawing(Modifier):
         "this tool sends the selected objects to the active Drawing sheet"
         
 	def GetResources(self):
@@ -3151,20 +3151,28 @@ class SendToDrawing():
 			'ToolTip': str(translate("draft", "Sends the selected objects to the active Drawing sheet.", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 	def Activated(self):
-                # configs
-                offsetX = 200
-                offsetY = 200
-                scale = 10
-                pagename = 'Page'
+		Modifier.Activated(self)
+		if self.ui:
+			self.ui.cmdlabel.setText("Send to Drawing")		
+			self.featureName = "SendToDrawing"
+			self.call = None
+                self.ui.pageUi()
+                                
+        def draw(self):
                 template = 'A3_Landscape'
+                offset = self.ui.marginValue.value()
+                scale = int(self.ui.scaleBox.itemText(self.ui.scaleBox.currentIndex())[2:])
                 import Drawing
                 doc = FreeCAD.ActiveDocument
-                pages = doc.findObjects('Drawing::FeaturePage',pagename)
-                if pages:
-                        page = pages[0] #TODO - remove this poor hack...
-                else:
+                if self.ui.pageBox.currentIndex() == 0:
+                        pagename = str(self.ui.pageBox.itemText(0))
+                        if pagename == 'Add New': pagename = 'Page'
                         page = doc.addObject('Drawing::FeaturePage',pagename)
                         page.Template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/'+template+'.svg'
+                else:
+                        pagename = str(self.ui.pageBox.itemText(self.ui.pageBox.currentIndex()))
+                        page = doc.findObjects('Drawing::FeaturePage',pagename)[0]
+                        
                 sel = FreeCADGui.Selection.getSelection()
                 for obj in sel:
                         name = 'View'+obj.Name
@@ -3172,11 +3180,11 @@ class SendToDrawing():
                         if 'Dimline' in obj.PropertiesList:
                                 svg = obj.ViewObject.Proxy.getSVG()
                                 view = doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
+                                view.ViewResult = self.transformSVG(name,svg,offset,scale)
                         elif obj.Type == 'Part::Feature':
                                 svg = self.formatSVG(Drawing.projectToSVG(obj.Shape),obj)
                                 view = doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
+                                view.ViewResult = self.transformSVG(name,svg,offset,scale)
                         elif obj.Type == 'App::Annotation':
                                 textcontents = ''
                                 for l in obj.LabelText:
@@ -3197,16 +3205,17 @@ class SendToDrawing():
                                 svg+=textcontents
                                 svg+='</text>\n'
                                 view = doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.transformSVG(name,svg,offsetX,offsetY,scale)
+                                view.ViewResult = self.transformSVG(name,svg,offset,scale)
                                 
                         if view:
-                                view.X = offsetX
-                                view.Y = offsetY
+                                view.X = offset
+                                view.Y = offset
                                 view.Scale = scale
                                 oldobj = page.getObject(name)
                                 if oldobj: doc.removeObject(oldobj.Name)
                                 page.addObject(view)
                 doc.recompute()
+                self.finish()
 
         def getrgb(self,color):
 		"returns a rgb value #000000 from a freecad color"
@@ -3217,18 +3226,17 @@ class SendToDrawing():
 
         def formatSVG(self,svg,obj):
                 "applies freecad object's color and linewidth to a svg fragment"
-                print svg
                 svg = svg.replace('stroke-width="0.35"','stroke-width="'+str(obj.ViewObject.LineWidth/100)+'px"')
                 lc = obj.ViewObject.LineColor
                 sc = (int(math.ceil(lc[0]*255)),int(math.ceil(lc[1]*255)),int(math.ceil(lc[2]*255)))
                 svg = svg.replace('stroke="rgb(0, 0, 0)"','stroke="rgb('+str(sc[0])+','+str(sc[1])+','+str(sc[2])+')"')
                 return svg
                                 
-        def transformSVG(self,name, svg,xoffset=0,yoffset=0,scale=1,rotation=0):
+        def transformSVG(self,name, svg,offset=0,scale=1,rotation=0):
                 "encapsulates a svg fragment into a transformation node"
                 result = '<g id="' + name + '"'
-                result += ' transform="rotate('+str(rotation)+','+str(xoffset)+','+str(yoffset)+')'
-                result += ' translate('+str(xoffset)+','+str(yoffset)+')'
+                result += ' transform="rotate('+str(rotation)+','+str(offset)+','+str(offset)+')'
+                result += ' translate('+str(offset)+','+str(offset)+')'
                 result += ' scale('+str(scale)+','+str(scale)+')">'
                 result += svg
                 result += '</g>'

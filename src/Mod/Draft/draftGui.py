@@ -280,6 +280,50 @@ class toolBar:
                                 self.wplabel.setGeometry(QtCore.QRect(500, 4, 100, 18))
                                 self.wplabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
                                 self.wplabel.setObjectName("wplabel")
+
+                                self.labelPage = QtGui.QLabel(draftToolbar)
+				self.labelPage.setGeometry(QtCore.QRect(215,4,60,18))
+				self.labelPage.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+				self.labelPage.setObjectName("labelPage")
+				self.labelPage.hide()
+                                
+                                self.pageBox = QtGui.QComboBox(draftToolbar)
+                                self.pageBox.setGeometry(QtCore.QRect(280,4,120,18))
+                                self.pageBox.setEditable(True)
+                                self.pageBox.setObjectName("pageBox")
+                                self.pageBox.addItem("Add New")
+                                self.pageBox.hide()
+
+                                self.labelScale = QtGui.QLabel(draftToolbar)
+				self.labelScale.setGeometry(QtCore.QRect(405,4,60,18))
+				self.labelScale.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+				self.labelScale.setObjectName("labelScale")
+				self.labelScale.hide()
+
+                                self.scaleBox = QtGui.QComboBox(draftToolbar)
+                                self.scaleBox.setGeometry(QtCore.QRect(470,4,120,18))
+                                self.scaleBox.setEditable(True)
+                                self.scaleBox.setObjectName("scaleBox")
+                                self.scaleBox.addItem("1:10")
+                                self.scaleBox.hide()
+
+                                self.labelMargin = QtGui.QLabel(draftToolbar)
+				self.labelMargin.setGeometry(QtCore.QRect(600,4,60,18))
+				self.labelMargin.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+				self.labelMargin.setObjectName("labelMargin")
+				self.labelMargin.hide()
+
+                                self.marginValue = QtGui.QSpinBox(draftToolbar)
+				self.marginValue.setGeometry(QtCore.QRect(665,4,60,18))
+				self.marginValue.setObjectName("marginValue")
+                                self.marginValue.setMaximum(999)
+				self.marginValue.setValue(200)
+				self.marginValue.hide()
+
+                                self.pageButton = _pushButton(QtCore.QRect(730,3,20,20),"pageButton")
+				self.pageButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(640,128,64,64))))
+				self.pageButton.setIconSize(QtCore.QSize(16, 16))
+                                self.pageButton.hide()
 				
 				self.sourceCmd=None
 
@@ -328,6 +372,7 @@ class toolBar:
 
 				QtCore.QObject.connect(self.lockButton,QtCore.SIGNAL("toggled(bool)"),self.lockz)
 				QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
+                                QtCore.QObject.connect(self.pageButton,QtCore.SIGNAL("pressed()"),self.drawPage)
 
 				QtCore.QMetaObject.connectSlotsByName(draftToolbar)
 
@@ -372,6 +417,9 @@ class toolBar:
 				self.constrButton.setToolTip(QtGui.QApplication.translate("draft", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
                                 self.wplabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
                                 self.wplabel.setToolTip(QtGui.QApplication.translate("draft", "Current working plane", None, QtGui.QApplication.UnicodeUTF8))
+                                self.labelPage.setText(QtGui.QApplication.translate("draft", "Page", None, QtGui.QApplication.UnicodeUTF8))
+                                self.labelScale.setText(QtGui.QApplication.translate("draft", "Scale", None, QtGui.QApplication.UnicodeUTF8))
+                                self.labelMargin.setText(QtGui.QApplication.translate("draft", "Margin", None, QtGui.QApplication.UnicodeUTF8))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -445,6 +493,13 @@ class toolBar:
 				self.lockButton.hide()
 				self.labelText.hide()
 				self.textValue.hide()
+                                self.pageBox.hide()
+                                self.labelPage.hide()
+                                self.scaleBox.hide()
+                                self.labelScale.hide()
+                                self.marginValue.hide()
+                                self.labelMargin.hide()
+                                self.pageButton.hide()
 
 			def radiusUi(self):
 				self.labelx.hide()
@@ -506,6 +561,15 @@ class toolBar:
 			def selectUi(self):
 				self.labelx.setText(QtGui.QApplication.translate("draft", "Pick Object", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelx.show()
+
+                        def pageUi(self):
+				self.labelPage.show()
+                                self.pageBox.show()
+                                self.labelScale.show()
+                                self.scaleBox.show()
+                                self.marginValue.show()
+                                self.labelMargin.show()
+                                self.pageButton.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
@@ -743,6 +807,9 @@ class toolBar:
 			def toggleConstrMode(self,checked):
 				self.draftToolbar.setStyleSheet("#constrButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
 				self.constrMode = checked
+
+                        def drawPage(self):
+                                self.sourceCmd.draw()
 
 #---------------------------------------------------------------------------
 # Initialization
