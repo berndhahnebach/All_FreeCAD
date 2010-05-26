@@ -283,7 +283,7 @@ void TopoShape::read(const char *FileName)
   
     // checking on the file
     if (!File.isReadable())
-        throw Base::Exception("File to load not existing or not readable");
+        throw Base::FileException("File to load not existing or not readable", FileName);
     
     if (File.hasExtension("igs") || File.hasExtension("iges")) {
         // read iges file
