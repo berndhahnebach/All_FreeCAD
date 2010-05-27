@@ -241,7 +241,8 @@ void CmdRaytracingWriteView::activated(int iMsg)
 		if((*it)->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())){
 			App::PropertyColor *pcColor = dynamic_cast<App::PropertyColor *>(getActiveGuiDocument()->getViewProvider(*it)->getPropertyByName("ShapeColor"));
 			App::Color col = pcColor->getValue();
-			doCommand(Doc,"OutFile.write(Raytracing.getPartAsPovray('%s',App.activeDocument().%s.Shape,%f,%f,%f))",(*it)->getNameInDocument(),(*it)->getNameInDocument(),col.r,col.g,col.b);
+			doCommand(Doc,"OutFile.write(Raytracing.getPartAsPovray('%s',App.activeDocument().%s.Shape,%f,%f,%f))",
+			         (*it)->getNameInDocument(),(*it)->getNameInDocument(),col.r,col.g,col.b);
 		}
     doCommand(Doc,"OutFile.close()");
     doCommand(Doc,"del OutFile");

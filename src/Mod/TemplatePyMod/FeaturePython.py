@@ -530,3 +530,59 @@ def makeMesh():
 	a.Mesh=Mesh.createSphere(5.0)
 	MeshFeature(a)
 	ViewProviderMesh(a.ViewObject)
+	
+
+class Molecule:
+	def __init__(self, obj):
+		''' App two point properties '''
+		obj.addProperty("App::PropertyVector","p1","Line","Start point")
+		obj.addProperty("App::PropertyVector","p2","Line","End point").p2=FreeCAD.Vector(1,0,0)
+
+		obj.Proxy = self
+
+	def onChanged(self, fp, prop):
+		if prop == "p1" or prop == "p2":
+			''' Print the name of the property that has changed '''
+			fp.Shape = Part.makeLine(fp.p1,fp.p2)
+
+	def execute(self, fp):
+		''' Print a short message when doing a recomputation, this method is mandatory '''
+		fp.Shape = Part.makeLine(fp.p1,fp.p2)
+
+class ViewProviderMolecule:
+	def __init__(self, obj):
+		''' Set this object to the proxy object of the actual view provider '''
+		obj.Proxy = self
+		sep1=coin.SoSeparator()
+		self.trl1=coin.SoTranslation()
+		sep1.addChild(self.trl1)
+		sep1.addChild(coin.SoSphere())
+		sep2=coin.SoSeparator()
+		self.trl2=coin.SoTranslation()
+		sep2.addChild(self.trl2)
+		sep2.addChild(coin.SoSphere())
+		obj.RootNode.addChild(sep1)
+		obj.RootNode.addChild(sep2)
+
+	def updateData(self, fp, prop):
+		"If a property of the handled feature has changed we have the chance to handle this here"
+		# fp is the handled feature, prop is the name of the property that has changed
+		if prop == "p1":
+			p = fp.getPropertyByName("p1")
+			self.trl1.translation=(p.x,p.y,p.z)
+		elif prop == "p2":
+			p = fp.getPropertyByName("p2")
+			self.trl2.translation=(p.x,p.y,p.z)
+
+	def __getstate__(self):
+		return None
+ 
+	def __setstate__(self,state):
+		return None
+
+def makeMolecule():
+	FreeCAD.newDocument()
+	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Molecule")
+	Molecule(a)
+	ViewProviderMolecule(a.ViewObject)
+
