@@ -80,7 +80,10 @@ DrawingView::DrawingView(QWidget* parent)
 
     _scroll = new DrawingScrollArea(this);
     _drawingView = new QSvgWidget(_scroll);
-    _drawingView->setBackgroundRole(QPalette::Base);
+    //_drawingView->setBackgroundRole(QPalette::Base);
+    QPalette p(_drawingView->palette());
+    p.setColor(QPalette::Background, Qt::white);
+    _drawingView->setPalette(p);
     //this->_drawingView->setFocus();
     //scroll->setFocusProxy(_drawingView);
     //_drawingView->setFocusProxy(scroll);
