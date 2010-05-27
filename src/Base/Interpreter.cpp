@@ -567,7 +567,7 @@ bool InterpreterSingleton::convertSWIGPointerObj(const char* Module, const char*
         break;
     default:
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
-        result = Swig_python::convertSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+        result = Swig_python::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
 #else
         result = -1; // indicates error
 #endif

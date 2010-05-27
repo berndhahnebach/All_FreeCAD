@@ -1,6 +1,6 @@
 #   (c) Juergen Riegel (juergen.riegel@web.de) 2007      LGPL
 
-import FreeCAD, os, unittest, Mesh
+import FreeCAD, os, sys, unittest, Mesh
 import thread, time, tempfile
 
 
@@ -89,6 +89,7 @@ class PivyTestCases(unittest.TestCase):
 		planarMeshObject = Mesh.Mesh(self.planarMesh)
 
 		from pivy import coin, sogui; import FreeCADGui
+		if not sys.modules.has_key("pivy.gui.soqt"): from pivy.gui import soqt
 		Mesh.show(planarMeshObject)
 		view=FreeCADGui.ActiveDocument.ActiveView.getViewer()
 		rp=coin.SoRayPickAction(view.getViewportRegion())
@@ -113,6 +114,7 @@ class PivyTestCases(unittest.TestCase):
 		planarMeshObject = Mesh.Mesh(self.planarMesh)
 
 		from pivy import coin, sogui; import FreeCADGui
+		if not sys.modules.has_key("pivy.gui.soqt"): from pivy.gui import soqt
 		Mesh.show(planarMeshObject)
 		view=FreeCADGui.ActiveDocument.ActiveView.getViewer()
 		pc=coin.SoGetPrimitiveCountAction()
