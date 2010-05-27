@@ -80,9 +80,16 @@ getPartAsPovray(PyObject *self, PyObject *args)
 	std::stringstream out;
     TopoDS_Shape &aShape = static_cast<Part::TopoShapePy *>(ShapeObject)->getTopoShapePtr()->_Shape;
     
-    PovTools::writeShape(out,PartName,aShape,(float)0.1,r,b,g);
-
-	return Py::new_reference_to(Py::String(out.str()));
+    PovTools::writeShape(out,PartName,aShape,(float)0.1);
+    // This must not be done in PovTools::writeShape!
+    out << "// instance to render" << endl
+        << "object {" << PartName << endl
+        << "  texture {" << endl
+        << "      pigment {color rgb <"<<r<<","<<g<<","<<b<<">}" << endl
+        << "      finish {StdFinish } //definition on top of the project" << endl
+        << "  }" << endl
+        << "}" << endl   ;
+    return Py::new_reference_to(Py::String(out.str()));
 }
 
 /// write part file
