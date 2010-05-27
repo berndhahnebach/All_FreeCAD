@@ -1563,6 +1563,37 @@ std::string Document::getUniqueObjectName(const char *Name) const
     }
 }
 
+std::string Document::getStandardObjectName(const char *Name, int d) const
+{
+    int highestnum=0;
+    std::string cleanname = Name;
+    std::vector<App::DocumentObject*> mm = getObjects();
+    // go through all objects and check if their names start with "@Name"
+    for (std::vector<App::DocumentObject*>::const_iterator it = mm.begin(); it != mm.end(); ++it) {
+        std::string label = (*it)->Label.getValue();
+        std::string prefix = label.substr(0,cleanname.length());
+        // get the suffix and check whether this is a number
+        if (prefix == cleanname) {
+            int num=-1;
+            std::istringstream istr;
+            std::string number = label.substr(cleanname.length());
+            istr.str(number);
+            istr >> num;
+            if (num > 0) {
+                highestnum = std::max<int>(highestnum,num);
+            }
+        }
+    }
+
+    // build up the new name now
+    std::stringstream str;
+    str << cleanname;
+    str.fill('0');
+    str.width(d);
+    str << ++highestnum;
+    return str.str();
+}
+
 std::vector<DocumentObject*> Document::getObjects() const
 {
     std::vector<DocumentObject*> Objects;
