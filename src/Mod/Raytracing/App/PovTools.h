@@ -37,75 +37,73 @@ namespace Raytracing
 class CamDef
 {
 public:
-  CamDef(const gp_Vec& cCamPos,
-         const gp_Vec& cCamDir,
-         const gp_Vec& cLookAt,
-         const gp_Vec& cUp)
-         :
-CamPos(cCamPos),
-CamDir(cCamDir),
-LookAt(cLookAt),
-Up(cUp)
-{}
+    CamDef(const gp_Vec& cCamPos,
+           const gp_Vec& cCamDir,
+           const gp_Vec& cLookAt,
+           const gp_Vec& cUp)
+            :
+            CamPos(cCamPos),
+            CamDir(cCamDir),
+            LookAt(cLookAt),
+            Up(cUp)
+    {}
 
-  CamDef(const CamDef& copyMe) {this->operator=(copyMe);}
+    CamDef(const CamDef& copyMe) {
+        this->operator=(copyMe);
+    }
 
-  const CamDef& operator=(const CamDef& copyMe)
-  {
-    CamPos = copyMe.CamPos;
-    CamDir = copyMe.CamDir;
-    LookAt = copyMe.LookAt;
-    Up     = copyMe.Up;
+    const CamDef& operator=(const CamDef& copyMe)
+    {
+        CamPos = copyMe.CamPos;
+        CamDir = copyMe.CamDir;
+        LookAt = copyMe.LookAt;
+        Up     = copyMe.Up;
 
-    return *this;
-  }
+        return *this;
+    }
 
-
-  gp_Vec CamPos;
-  gp_Vec CamDir;
-  gp_Vec LookAt;
-  gp_Vec Up;
-
+    gp_Vec CamPos;
+    gp_Vec CamDir;
+    gp_Vec LookAt;
+    gp_Vec Up;
 };
 
 
 class AppRaytracingExport PovTools
 {
 public:
-  /// returns the given camera position as povray defines in a file
-  static std::string getCamera(const CamDef& Cam);
+    /// returns the given camera position as povray defines in a file
+    static std::string getCamera(const CamDef& Cam);
 
-  /// writes the given camera position as povray defines in a file
-  static void writeCamera(const char*   FileName, 
-                          const CamDef& Cam);
+    /// writes the given camera position as povray defines in a file
+    static void writeCamera(const char*   FileName,
+                            const CamDef& Cam);
 
-  /// writes the given camera positions as povray defines in a file
-  static void writeCameraVec(const char*                FileName, 
-                             const std::vector<CamDef>& CamVec);
-
-
-  /// write a given shape as povray file to disk
-  static void writeShape(const char *FileName,
-                         const char *PartName,
-                         const TopoDS_Shape& Shape,
-                         float fMeshDeviation=0.1);
-
-  /// write a given shape as povray in a stream
-  static void writeShape(std::ostream &out,
-                         const char *PartName,
-                         const TopoDS_Shape& Shape,
-                         float fMeshDeviation=0.1);
-
-  /// write a given shape as points and normal Vectors in a coma separeted format
-  static void writeShapeCSV(const char *FileName,
-                         const TopoDS_Shape& Shape,
-                         float fMeshDeviation,
-                         float fLength);
+    /// writes the given camera positions as povray defines in a file
+    static void writeCameraVec(const char*                FileName,
+                               const std::vector<CamDef>& CamVec);
 
 
-  static void transferToArray(const TopoDS_Face& aFace,gp_Vec** vertices,gp_Vec** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+    /// write a given shape as povray file to disk
+    static void writeShape(const char *FileName,
+                           const char *PartName,
+                           const TopoDS_Shape& Shape,
+                           float fMeshDeviation=0.1);
+
+    /// write a given shape as povray in a stream
+    static void writeShape(std::ostream &out,
+                           const char *PartName,
+                           const TopoDS_Shape& Shape,
+                           float fMeshDeviation=0.1);
+
+    /// write a given shape as points and normal Vectors in a coma separeted format
+    static void writeShapeCSV(const char *FileName,
+                              const TopoDS_Shape& Shape,
+                              float fMeshDeviation,
+                              float fLength);
 
 
+    static void transferToArray(const TopoDS_Face& aFace,gp_Vec** vertices,gp_Vec** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
 };
 
 
