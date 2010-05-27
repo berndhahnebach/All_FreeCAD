@@ -720,6 +720,7 @@ src/Mod/Part/Gui/Makefile
 src/Mod/Raytracing/Makefile
 src/Mod/Raytracing/App/Makefile
 src/Mod/Raytracing/Gui/Makefile
+src/Mod/Raytracing/Templates/Makefile
 src/Mod/Mesh/Makefile
 src/Mod/Mesh/App/Makefile
 src/Mod/Mesh/Gui/Makefile
