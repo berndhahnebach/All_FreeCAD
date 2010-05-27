@@ -156,6 +156,8 @@ public:
     const char *getObjectName(DocumentObject *pFeat) const;
     /// Returns a Name of an Object or 0
     std::string getUniqueObjectName(const char *Name) const;
+    /// Returns a name of the form prefix_number. d specifies the number of digits.
+    std::string getStandardObjectName(const char *Name, int d) const;
     /// Returns a list of all Objects
     std::vector<DocumentObject*> getObjects() const;
     std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
