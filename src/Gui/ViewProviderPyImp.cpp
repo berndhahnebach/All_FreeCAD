@@ -141,7 +141,7 @@ Py::Object ViewProviderPy::getAnnotation(void) const
 {
     try {
         SoNode* node = getViewProviderPtr()->getAnnotation();
-        PyObject* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *", node, 1);
+        PyObject* Ptr = Base::Interpreter().createSWIGPointerObj("pivy.coin", "SoSeparator *", node, 1);
         node->ref();
         return Py::Object(Ptr, true);
     }
@@ -159,7 +159,7 @@ Py::Object ViewProviderPy::getRootNode(void) const
 {
     try {
         SoNode* node = getViewProviderPtr()->getRoot();
-        PyObject* Ptr = Base::Interpreter().createSWIGPointerObj("SoSeparator *", node, 1);
+        PyObject* Ptr = Base::Interpreter().createSWIGPointerObj("pivy.coin","SoSeparator *", node, 1);
         node->ref();
         return Py::Object(Ptr, true);
     }

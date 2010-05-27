@@ -1015,7 +1015,7 @@ static PyObject * toPythonOCC(PyObject *self, PyObject *args)
         TopoDS_Shape* shape = new TopoDS_Shape();
         (*shape) = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
         PyObject* proxy = 0;
-        proxy = Base::Interpreter().createSWIGPointerObj("TopoDS_Shape *", (void*)shape, 1);
+        proxy = Base::Interpreter().createSWIGPointerObj("OCC.TopoDS", "TopoDS_Shape *", (void*)shape, 1);
         return proxy;
     }
     catch (const Base::Exception& e) {
@@ -1033,7 +1033,7 @@ static PyObject * fromPythonOCC(PyObject *self, PyObject *args)
     void* ptr;
     try {
         TopoShape* shape = new TopoShape();
-        Base::Interpreter().convertSWIGPointerObj("TopoDS_Shape *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("OCC.TopoDS","TopoDS_Shape *", proxy, &ptr, 0);
         TopoDS_Shape* s = reinterpret_cast<TopoDS_Shape*>(ptr);
         shape->_Shape = (*s);
         return new TopoShapePy(shape);

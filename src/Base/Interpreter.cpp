@@ -28,6 +28,7 @@
 #ifndef _PreComp_
 #   include <Python.h>
 #   include <sstream>
+#   include <boost/regex.hpp>
 #endif
 
 #include "Console.h"
@@ -451,6 +452,49 @@ const std::string InterpreterSingleton::strToPython(const char* Str)
 
 // --------------------------------------------------------------------
 
+int getSWIGVersionFromModule(const std::string& module)
+{
+    static std::map<std::string, int> moduleMap;
+    std::map<std::string, int>::iterator it = moduleMap.find(module);
+    if (it != moduleMap.end()) {
+        return it->second;
+    }
+    else {
+        try {
+            // Get the module and check its __file__ attribute
+            Py::Dict dict(PyImport_GetModuleDict());
+            if (!dict.hasKey(module))
+                return 0;
+            Py::Module mod(module);
+            Py::String file(mod.getAttr("__file__"));
+            std::string filename = (std::string)file;
+            filename = filename.substr(0, filename.size()-1);
+            boost::regex rx("^# Version ([1-9])\\.([1-9])\\.([1-9][1-9])");
+            boost::cmatch what;
+
+            std::string line;
+            Base::FileInfo fi(filename);
+
+            Base::ifstream str(fi, std::ios::in);
+            while (str && std::getline(str, line)) {
+                if (boost::regex_match(line.c_str(), what, rx)) {
+                    int major = std::atoi(what[1].first);
+                    int minor = std::atoi(what[2].first);
+                    int micro = std::atoi(what[3].first);
+                    int version = (major<<16)+(minor<<8)+micro;
+                    moduleMap[module] = version;
+                    return version;
+                }
+            }
+        }
+        catch (Py::Exception& e) {
+            e.clear();
+        }
+    }
+
+    return 0;
+}
+
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
 namespace Swig_python { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 #endif
@@ -459,23 +503,36 @@ namespace Swig_1_3_33 { extern int createSWIGPointerObj_T(const char* TypeName, 
 namespace Swig_1_3_36 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 namespace Swig_1_3_38 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 
-PyObject* InterpreterSingleton::createSWIGPointerObj(const char* TypeName, void* Pointer, int own)
+PyObject* InterpreterSingleton::createSWIGPointerObj(const char* Module, const char* TypeName, void* Pointer, int own)
 {
     int result = 0;
     PyObject* proxy=0;
     PyGILStateLocker locker;
+    int version = getSWIGVersionFromModule(Module);
+    switch (version&0xff)
+    {
+    case 25:
+        result = Swig_1_3_25::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+        break;
+    case 33:
+        result = Swig_1_3_33::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+        break;
+    case 36:
+        result = Swig_1_3_36::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+        break;
+    case 38:
+        result = Swig_1_3_38::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+        break;
+    default:
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
     result = Swig_python::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
-    if (result == 0) return proxy;
+#else
+    result = -1; // indicates error
 #endif
-    result = Swig_1_3_25::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
-    if (result == 0) return proxy;
-    result = Swig_1_3_33::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
-    if (result == 0) return proxy;
-    result = Swig_1_3_36::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
-    if (result == 0) return proxy;
-    result = Swig_1_3_38::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
-    if (result == 0) return proxy;
+    }
+
+    if (result == 0)
+        return proxy;
 
     // none of the SWIG's succeeded
     throw Base::Exception("No SWIG wrapped library loaded");
@@ -489,22 +546,35 @@ namespace Swig_1_3_33 { extern int convertSWIGPointerObj_T(const char* TypeName,
 namespace Swig_1_3_36 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 namespace Swig_1_3_38 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 
-bool InterpreterSingleton::convertSWIGPointerObj(const char* TypeName, PyObject* obj, void** ptr, int flags)
+bool InterpreterSingleton::convertSWIGPointerObj(const char* Module, const char* TypeName, PyObject* obj, void** ptr, int flags)
 {
     int result = 0;
     PyGILStateLocker locker;
+    int version = getSWIGVersionFromModule(Module);
+    switch (version&0xff)
+    {
+    case 25:
+        result = Swig_1_3_25::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
+        break;
+    case 33:
+        result = Swig_1_3_33::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
+        break;
+    case 36:
+        result = Swig_1_3_36::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
+        break;
+    case 38:
+        result = Swig_1_3_38::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
+        break;
+    default:
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
-    result = Swig_python::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
-    if (result == 0) return true;
+        result = Swig_python::convertSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+#else
+        result = -1; // indicates error
 #endif
-    result = Swig_1_3_25::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
-    if (result == 0) return true;
-    result = Swig_1_3_33::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
-    if (result == 0) return true;
-    result = Swig_1_3_36::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
-    if (result == 0) return true;
-    result = Swig_1_3_38::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
-    if (result == 0) return true;
+    }
+
+    if (result == 0)
+        return true;
 
     // none of the SWIG's succeeded
     throw Base::Exception("No SWIG wrapped library loaded");
