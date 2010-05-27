@@ -512,7 +512,7 @@ Py::Object View3DInventorPy::getCameraNode(const Py::Tuple& args)
         type = "So"; // seems that So prefix is missing in camera node
         type += camera->getTypeId().getName().getString();
         type += " *";
-        proxy = Base::Interpreter().createSWIGPointerObj(type.c_str(), (void*)camera, 1);
+        proxy = Base::Interpreter().createSWIGPointerObj("pivy.coin", type.c_str(), (void*)camera, 1);
         camera->ref();
         return Py::Object(proxy, true);
     }
@@ -1346,7 +1346,7 @@ Py::Object View3DInventorPy::getSceneGraph(const Py::Tuple& args)
     try {
         SoNode* scene = _view->getViewer()->getSceneGraph();
         PyObject* proxy = 0;
-        proxy = Base::Interpreter().createSWIGPointerObj("SoSelection *", (void*)scene, 1);
+        proxy = Base::Interpreter().createSWIGPointerObj("pivy.coin", "SoSelection *", (void*)scene, 1);
         scene->ref();
         return Py::Object(proxy, true);
     }
@@ -1366,7 +1366,7 @@ wrap_SoQtViewer_setViewDirection(PyObject *proxy, PyObject *args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.gui.soqt", "SoQtViewer *", proxy, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_RuntimeError, e.what());
@@ -1401,7 +1401,7 @@ wrap_SoQtViewer_getViewDirection(PyObject *proxy, PyObject *args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.gui.soqt", "SoQtViewer *", proxy, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_RuntimeError, e.what());
@@ -1439,7 +1439,7 @@ wrap_SoQtViewer_setFocalDistance(PyObject *proxy, PyObject *args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.gui.soqt", "SoQtViewer *", proxy, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_RuntimeError, e.what());
@@ -1464,7 +1464,7 @@ wrap_SoQtViewer_getFocalDistance(PyObject *proxy, PyObject *args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.gui.soqt", "SoQtViewer *", proxy, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_RuntimeError, e.what());
@@ -1487,7 +1487,7 @@ wrap_SoQtViewer_seekToPoint(PyObject *proxy, PyObject *args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoQtViewer *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.gui.soqt", "SoQtViewer *", proxy, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_RuntimeError, e.what());
@@ -1552,7 +1552,7 @@ Py::Object View3DInventorPy::getViewer(const Py::Tuple& args)
         // Note: Once we have closed the viewer the Python object must not be used
         // anymore as it has a dangling pointer.
         SoQtViewer* view = _view->getViewer();
-        proxy = Base::Interpreter().createSWIGPointerObj("SoQtViewer *", (void*)view, 0);
+        proxy = Base::Interpreter().createSWIGPointerObj("pivy.gui.soqt", "SoQtViewer *", (void*)view, 0);
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -1587,7 +1587,7 @@ void View3DInventorPy::eventCallbackPivy(void * ud, SoEventCallback * n)
 
     PyObject* proxy = 0;
     try {
-        proxy = Base::Interpreter().createSWIGPointerObj(type.c_str(), (void*)e, 0);
+        proxy = Base::Interpreter().createSWIGPointerObj("pivy.coin", type.c_str(), (void*)e, 0);
         // now run the method
         Py::Object event(proxy,true);
         Py::Callable method(reinterpret_cast<PyObject*>(ud));
@@ -1620,7 +1620,7 @@ void View3DInventorPy::eventCallbackPivyEx(void * ud, SoEventCallback * n)
 
     PyObject* proxy = 0;
     try {
-        proxy = Base::Interpreter().createSWIGPointerObj(type.c_str(), (void*)n, 0);
+        proxy = Base::Interpreter().createSWIGPointerObj("pivy.coin", type.c_str(), (void*)n, 0);
         // now run the method
         Py::Object event(proxy,true);
         Py::Callable method(reinterpret_cast<PyObject*>(ud));
@@ -1656,7 +1656,7 @@ Py::Object View3DInventorPy::addEventCallbackPivy(const Py::Tuple& args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoType *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.coin", "SoType *", proxy, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());
@@ -1697,7 +1697,7 @@ Py::Object View3DInventorPy::removeEventCallbackPivy(const Py::Tuple& args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoType *", proxy, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.coin", "SoType *", proxy, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());

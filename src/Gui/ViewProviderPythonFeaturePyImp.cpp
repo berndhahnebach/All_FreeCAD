@@ -49,7 +49,7 @@ PyObject* ViewProviderPythonFeaturePy::addDisplayMode(PyObject * args)
 
     void* ptr = 0;
     try {
-        Base::Interpreter().convertSWIGPointerObj("SoNode *", obj, &ptr, 0);
+        Base::Interpreter().convertSWIGPointerObj("pivy.coin","SoNode *", obj, &ptr, 0);
     }
     catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_RuntimeError, e.what());

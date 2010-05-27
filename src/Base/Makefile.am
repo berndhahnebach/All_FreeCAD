@@ -141,7 +141,8 @@ endif
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 libFreeCADBase_la_LIBADD   = \
-		@BOOST_FILESYSTEM_LIB@ @BOOST_SYSTEM_LIB@ @ZIPIOS_LIB@ \
+		@BOOST_REGEX_LIB@ @BOOST_FILESYSTEM_LIB@ \
+		@BOOST_SYSTEM_LIB@ @ZIPIOS_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lz
