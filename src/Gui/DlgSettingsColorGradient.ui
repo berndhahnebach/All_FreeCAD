@@ -268,10 +268,10 @@
          <number>6</number>
         </property>
         <item row="0" column="1" >
-         <widget class="QLineEdit" name="floatSpinBoxMax" />
+         <widget class="QLineEdit" name="floatLineEditMax" />
         </item>
         <item row="1" column="1" >
-         <widget class="QLineEdit" name="floatSpinBoxMin" />
+         <widget class="QLineEdit" name="floatLineEditMin" />
         </item>
         <item row="1" column="0" >
          <widget class="QLabel" name="textLabelMin" >
@@ -279,7 +279,7 @@
            <string>Mi&amp;nimum:</string>
           </property>
           <property name="buddy" >
-           <cstring>floatSpinBoxMin</cstring>
+           <cstring>floatLineEditMin</cstring>
           </property>
          </widget>
         </item>
@@ -289,7 +289,7 @@
            <string>Ma&amp;ximum:</string>
           </property>
           <property name="buddy" >
-           <cstring>floatSpinBoxMax</cstring>
+           <cstring>floatLineEditMax</cstring>
           </property>
          </widget>
         </item>
@@ -350,8 +350,8 @@
   <tabstop>radioButtonFlow</tabstop>
   <tabstop>checkBoxGrayed</tabstop>
   <tabstop>checkBoxInvisible</tabstop>
-  <tabstop>floatSpinBoxMax</tabstop>
-  <tabstop>floatSpinBoxMin</tabstop>
+  <tabstop>floatLineEditMax</tabstop>
+  <tabstop>floatLineEditMin</tabstop>
   <tabstop>spinBoxLabel</tabstop>
   <tabstop>buttonOk</tabstop>
   <tabstop>buttonCancel</tabstop>
