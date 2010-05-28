@@ -46,10 +46,10 @@ DlgSettingsColorGradientImp::DlgSettingsColorGradientImp( QWidget* parent, Qt::W
   : QDialog( parent, fl )
 {
     this->setupUi(this);
-    fMaxVal = new QDoubleValidator(-1000,1000,0,this);
-    floatSpinBoxMax->setValidator(fMaxVal);
-    fMinVal = new QDoubleValidator(-1000,1000,0,this);
-    floatSpinBoxMin->setValidator(fMinVal);
+    fMaxVal = new QDoubleValidator(-1000,1000,spinBoxDecimals->maximum(),this);
+    floatLineEditMax->setValidator(fMaxVal);
+    fMinVal = new QDoubleValidator(-1000,1000,spinBoxDecimals->maximum(),this);
+    floatLineEditMin->setValidator(fMinVal);
 }
 
 /**
@@ -132,18 +132,18 @@ bool DlgSettingsColorGradientImp::isOutInvisible() const
 
 void DlgSettingsColorGradientImp::setRange( float fMin, float fMax )
 {
-    floatSpinBoxMax->blockSignals(true);
-    floatSpinBoxMax->setText(QString::number(fMax));
-    floatSpinBoxMax->blockSignals(false);
-    floatSpinBoxMin->blockSignals(true);
-    floatSpinBoxMin->setText(QString::number(fMin));
-    floatSpinBoxMin->blockSignals(false);
+    floatLineEditMax->blockSignals(true);
+    floatLineEditMax->setText(QString::number(fMax));
+    floatLineEditMax->blockSignals(false);
+    floatLineEditMin->blockSignals(true);
+    floatLineEditMin->setText(QString::number(fMin));
+    floatLineEditMin->blockSignals(false);
 }
 
 void DlgSettingsColorGradientImp::getRange( float& fMin, float& fMax) const
 {
-    fMax = floatSpinBoxMax->text().toFloat();
-    fMin = floatSpinBoxMin->text().toFloat();
+    fMax = floatLineEditMax->text().toFloat();
+    fMin = floatLineEditMin->text().toFloat();
 }
 
 void DlgSettingsColorGradientImp::setNumberOfLabels(int val)
@@ -168,8 +168,8 @@ int DlgSettingsColorGradientImp::numberOfDecimals() const
 
 void DlgSettingsColorGradientImp::accept()
 {
-    double fMax = floatSpinBoxMax->text().toDouble();
-    double fMin = floatSpinBoxMin->text().toDouble();
+    double fMax = floatLineEditMax->text().toDouble();
+    double fMin = floatLineEditMin->text().toDouble();
 
     if (fMax <= fMin) {
         QMessageBox::warning(this, tr("Wrong parameter"),
