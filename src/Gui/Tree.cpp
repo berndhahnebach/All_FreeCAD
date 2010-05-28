@@ -1079,12 +1079,11 @@ void DocumentObjectItem::displayStatusInfo()
 
 void DocumentObjectItem::setData (int column, int role, const QVariant & value)
 {
+    QTreeWidgetItem::setData(column, role, value);
     if (role == Qt::EditRole) {
         QString label = value.toString();
         viewObject->getObject()->Label.setValue((const char*)label.toUtf8());
     }
-
-    QTreeWidgetItem::setData(column, role, value);
 }
 
 void DocumentObjectItem::slotChangeIcon()
