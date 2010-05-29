@@ -97,6 +97,8 @@ SET(Features_SRCS
 		 Part2DObject.h
 		 PrimitiveFeature.cpp
 		 PrimitiveFeature.h
+		 CustomFeature.cpp
+		 CustomFeature.h
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 

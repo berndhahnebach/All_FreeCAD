@@ -116,6 +116,7 @@ libPart_la_SOURCES=\
 		FeatureRevolution.cpp \
 		Geometry.cpp \
 		ImportStep.cpp \
+		CustomFeature.cpp \
 		PartFeature.cpp \
 		PartFeaturePyImp.cpp \
 		Part2DObject.cpp \
@@ -159,6 +160,7 @@ include_HEADERS=\
 		Geometry.h \
 		ImportStep.h \
 		PartFeature.h \
+		CustomFeature.h \
 		Part2DObject.h \
 		PrimitiveFeature.h \
 		ProgressIndicator.h \
