@@ -39,6 +39,7 @@
 #include "FeatureRevolution.h"
 #include "PrimitiveFeature.h"
 #include "Part2DObject.h"
+#include "CustomFeature.h"
 #include "TopoShapePy.h"
 #include "TopoShapeVertexPy.h"
 #include "TopoShapeFacePy.h"
@@ -126,6 +127,8 @@ void AppPartExport initPart()
 
     Part::Feature               ::init();
     Part::FeaturePython         ::init();
+    Part::CustomFeature         ::init();
+    Part::CustomFeaturePython   ::init();
     Part::Primitive             ::init();
     Part::Box                   ::init();
     Part::Boolean               ::init();
