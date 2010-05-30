@@ -492,6 +492,9 @@ int getSWIGVersionFromModule(const std::string& module)
         }
     }
 
+#if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
+    moduleMap[module] = 0;
+#endif
     return 0;
 }
 
