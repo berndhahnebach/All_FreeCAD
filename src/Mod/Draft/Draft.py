@@ -244,12 +244,12 @@ def snapPoint (target,point,cursor,ctrl=False):
 	- In active mode (ctrl pressed, a filled circle appears), your point
 	  can currently be snapped to the following points:
 	    - Nodes and midpoints of all Part shapes
-	    - Nodes and midpoints of lines/polylines
+	    - Nodes and midpoints of lines/wires
 	    - Centers and quadrant points of circles
 	    - Endpoints of arcs
-	    - Intersection between line, polylines segments, arcs and circles
+	    - Intersection between line, wires segments, arcs and circles
 	    - When constrained (SHIFT pressed), Intersections between
-	      constraining axis and lines/polylines
+	      constraining axis and lines/wires
 	'''
 
 	# checking if alwaySnap setting is on
@@ -364,7 +364,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 def constrainPoint (target,point,mobile=False,sym=False):
 	'''
 	Constrain function
-	On commands that need to enter several points (currently only line/polyline),
+	On commands that need to enter several points (currently only line/wire),
 	you can constrain the next point to be picked to the last drawn point by
 	pressing SHIFT. The vertical or horizontal constraining depends on the
 	position of your mouse in relation to last point at the moment you press
@@ -1129,8 +1129,8 @@ class Line(Creator):
 	This class creates a line or group of lines feature. 
 	Takes 1 optional argument, the max number of points.
 	'''
-	def __init__(self, polyline=False):
-		self.isPolyline = polyline
+	def __init__(self, wiremode=False):
+		self.isWire = wiremode
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_line',
@@ -1194,7 +1194,7 @@ class Line(Creator):
 					self.node.append(point)
 					self.linetrack.p1(point)
 					self.drawSegment(point)
-					if (not self.isPolyline and len(self.node) == 2):
+					if (not self.isWire and len(self.node) == 2):
 						self.finish(False)
 					if (len(self.node) > 2):
 						if fcvec.equals(point,self.node[0]):
@@ -1223,7 +1223,7 @@ class Line(Creator):
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
-			if self.isPolyline:
+			if self.isWire:
 				FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point, or (F)inish or (C)lose:\n", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
 		else:
 			currentshape = self.obj.Shape
@@ -1239,7 +1239,7 @@ class Line(Creator):
 		self.node.append(point)
 		self.linetrack.p1(point)
 		self.drawSegment(point)
-		if (not self.isPolyline and len(self.node) == 2):
+		if (not self.isWire and len(self.node) == 2):
 			self.finish(False)
 		if self.ui.xValue.isEnabled():
 			self.ui.xValue.setFocus()
@@ -1250,13 +1250,13 @@ class Line(Creator):
 
 
 
-class Polyline(Line):
+class Wire(Line):
 	def __init__(self):
-		Line.__init__(self,polyline=True)
+		Line.__init__(self,wiremode=True)
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_polyline',
-			'MenuText': str(translate("draft", "Polyline", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
-			'ToolTip': str(translate("draft", "Creates a 2-point line. CTRL to snap, SHIFT to constrain", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
+		return {'Pixmap'  : 'Draft_wire',
+			'MenuText': str(translate("draft", "Wire", None, QtGui.QApplication.UnicodeUTF8).toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a multiple-point wire. CTRL to snap, SHIFT to constrain", None, QtGui.QApplication.UnicodeUTF8).toLatin1())}
 
 
 class FinishLine:
@@ -2751,7 +2751,7 @@ class Downgrade(Modifier):
 
 
 class Trimex(Modifier):
-	'''this tool trims or extends lines, polylines and arcs,
+	'''this tool trims or extends lines, wires and arcs,
 	or extrudes single faces. SHIFT constrains to the last point
 	or extrudes in direction to the face normal.'''
 
@@ -3330,7 +3330,7 @@ class SendToDrawing(Modifier):
 # drawing commands
 FreeCADGui.addCommand('Draft_SelectPlane',SelectPlane())
 FreeCADGui.addCommand('Draft_Line',Line())
-FreeCADGui.addCommand('Draft_Polyline',Polyline())
+FreeCADGui.addCommand('Draft_Wire',Wire())
 FreeCADGui.addCommand('Draft_Circle',Circle())
 FreeCADGui.addCommand('Draft_Arc',Arc())
 FreeCADGui.addCommand('Draft_Text',Text())

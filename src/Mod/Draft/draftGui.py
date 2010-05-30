@@ -22,8 +22,8 @@
 #***************************************************************************
 
 __title__="FreeCAD Draft Workbench - GUI part"
-__author__ = "Yorik van Havre <yorik@gmx.fr>"
-__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
+__author__ = "Yorik van Havre <yorik@uncreated.net>"
+__url__ = ["http://free-cad.sourceforge.net"]
 
 '''
 This is the GUI part of the Draft module.
@@ -825,7 +825,7 @@ class toolBar:
 		iconfile = findicons()
 		icons = {}
 		icons['Draft_line']=iconfile.copy(QtCore.QRect(0,0,64,64))
-		icons['Draft_polyline']=iconfile.copy(QtCore.QRect(64,0,64,64))
+		icons['Draft_wire']=iconfile.copy(QtCore.QRect(64,0,64,64))
 		icons['Draft_rectangle']=iconfile.copy(QtCore.QRect(128,0,64,64))
 		icons['Draft_circle']=iconfile.copy(QtCore.QRect(196,0,64,64))
 		icons['Draft_arc']=iconfile.copy(QtCore.QRect(256,0,64,64))
