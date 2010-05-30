@@ -2179,7 +2179,6 @@ class Rotate(Modifier):
 					self.constraintrack.on()
 				else: self.constraintrack.off()
 				self.ui.radiusValue.setText("%.2f" % math.degrees(sweep))
-				self.updateAngle(angle) #??? what does this do.  can we remove it?
 				self.ui.radiusValue.setFocus()
 				self.ui.radiusValue.selectAll()
 
@@ -3169,29 +3168,49 @@ class SendToDrawing(Modifier):
 
 	def Activated(self):
 		Modifier.Activated(self)
+                import Drawing
 		if self.ui:
-			self.ui.cmdlabel.setText("Send to Drawing")		
+			self.ui.cmdlabel.setText("to Drawing")		
 			self.featureName = "SendToDrawing"
 			self.call = None
-                self.ui.pageUi()
+                        oldindex = self.ui.pageBox.currentIndex()
+                        if oldindex == 0:
+                                oldindex = None
+                        else:
+                                oldindex = str(self.ui.pageBox.itemText(oldindex))
+                        self.ui.pageBox.clear()
+                        self.ui.pageBox.addItem("Add New")
+                        existingpages = self.doc.findObjects('Drawing::FeaturePage')
+                        for p in existingpages:
+                                self.ui.pageBox.addItem(p.Name)
+                        if oldindex:
+                                for i in range(len(existingpages)):
+                                        if existingpages[i].Name == oldindex:
+                                                self.ui.pageBox.setCurrentIndex(i+1)
+                        self.ui.pageUi()
+                else: self.finish()
                                 
         def draw(self):
-                modifier = 100 # a modifier for adjusting linewidth
+                modifier = self.ui.LWModValue.value()
                 template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
                 if not template: template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
                 offset = self.ui.marginValue.value()
-                scale = int(self.ui.scaleBox.itemText(self.ui.scaleBox.currentIndex())[2:])
-                import Drawing
-                doc = FreeCAD.ActiveDocument
+                scale = int(self.ui.scaleBox.itemText(self.ui.scaleBox.currentIndex()))
                 if self.ui.pageBox.currentIndex() == 0:
                         pagename = str(self.ui.pageBox.itemText(0))
                         if pagename == 'Add New': pagename = 'Page'
-                        page = doc.addObject('Drawing::FeaturePage',pagename)
+                        page = self.doc.addObject('Drawing::FeaturePage',pagename)
                         page.Template = template
+                        self.doc.recompute()
                 else:
                         pagename = str(self.ui.pageBox.itemText(self.ui.pageBox.currentIndex()))
-                        page = doc.findObjects('Drawing::FeaturePage',pagename)[0]
-                        
+                        page = self.doc.findObjects('Drawing::FeaturePage',pagename)[0]
+                pb = open(str(page.PageResult))
+                fb = pb.read()
+                pageheight = re.findall("height=\"(.*?)\"",fb)
+                if pageheight: pageheight = float(pageheight[0])
+                pb.close()
+                del pb
                 sel = FreeCADGui.Selection.getSelection()
                 for obj in sel:
                         name = 'View'+obj.Name
@@ -3199,20 +3218,19 @@ class SendToDrawing(Modifier):
                         if 'Dimline' in obj.PropertiesList:
                                 svg = obj.ViewObject.Proxy.getSVG(modifier)
                         elif obj.Type == 'Part::Feature':
-                                # svg = self.formatSVG(Drawing.projectToSVG(obj.Shape),obj)
                                 svg = self.writeShape(obj,modifier)
                         elif obj.Type == 'App::Annotation':
                                 svg = self.writeText(obj,modifier)
                         if svg:
                                 oldobj = page.getObject(name)
-                                if oldobj: doc.removeObject(oldobj.Name)
-                                view = doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.transformSVG(name,svg,offset,scale)
+                                if oldobj: self.doc.removeObject(oldobj.Name)
+                                view = self.doc.addObject('Drawing::FeatureView',name)
+                                view.ViewResult = self.transformSVG(name,svg,offset,scale,pageheight)
                                 view.X = offset
                                 view.Y = offset
                                 view.Scale = scale
                                 page.addObject(view)
-                doc.recompute()
+                self.doc.recompute()
                 self.finish()
 
         def writeText(self,obj,modifier=100):
@@ -3289,12 +3307,16 @@ class SendToDrawing(Modifier):
                 svg = svg.replace('stroke="rgb(0, 0, 0)"','stroke="rgb('+str(sc[0])+','+str(sc[1])+','+str(sc[2])+')"')
                 return svg
                                 
-        def transformSVG(self,name, svg,offset=0,scale=1,rotation=0):
+        def transformSVG(self,name, svg,offset=0,scale=1,pageheight=None):
                 "encapsulates a svg fragment into a transformation node"
                 result = '<g id="' + name + '"'
-                result += ' transform="rotate('+str(rotation)+','+str(offset)+','+str(offset)+')'
-                result += ' translate('+str(offset)+','+str(offset)+')'
-                result += ' scale('+str(scale)+','+str(scale)+')">'
+                result += ' transform="'
+                if pageheight:
+                        result += ' translate('+str(offset)+','+str(pageheight-offset)+')'
+                        result += ' scale('+str(scale)+','+str(-scale)+')">'
+                else:
+                        result += ' translate('+str(offset)+','+str(offset)+')'
+                        result += ' scale('+str(scale)+','+str(scale)+')">'
                 result += svg
                 result += '</g>'
                 return result

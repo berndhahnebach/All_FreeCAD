@@ -297,32 +297,48 @@ class toolBar:
                                 self.pageBox.hide()
 
                                 self.labelScale = QtGui.QLabel(draftToolbar)
-				self.labelScale.setGeometry(QtCore.QRect(405,4,60,18))
+				self.labelScale.setGeometry(QtCore.QRect(385,4,60,18))
 				self.labelScale.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
 				self.labelScale.setObjectName("labelScale")
 				self.labelScale.hide()
 
                                 self.scaleBox = QtGui.QComboBox(draftToolbar)
-                                self.scaleBox.setGeometry(QtCore.QRect(470,4,120,18))
+                                self.scaleBox.setGeometry(QtCore.QRect(450,4,60,18))
                                 self.scaleBox.setEditable(True)
                                 self.scaleBox.setObjectName("scaleBox")
-                                self.scaleBox.addItem("1:10")
+                                self.scaleBox.addItem("5")
+                                self.scaleBox.addItem("10")
+                                self.scaleBox.addItem("20")
+                                self.scaleBox.addItem("50")
                                 self.scaleBox.hide()
 
                                 self.labelMargin = QtGui.QLabel(draftToolbar)
-				self.labelMargin.setGeometry(QtCore.QRect(600,4,60,18))
+				self.labelMargin.setGeometry(QtCore.QRect(500,4,60,18))
 				self.labelMargin.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
 				self.labelMargin.setObjectName("labelMargin")
 				self.labelMargin.hide()
 
                                 self.marginValue = QtGui.QSpinBox(draftToolbar)
-				self.marginValue.setGeometry(QtCore.QRect(665,4,60,18))
+				self.marginValue.setGeometry(QtCore.QRect(565,4,60,18))
 				self.marginValue.setObjectName("marginValue")
                                 self.marginValue.setMaximum(999)
-				self.marginValue.setValue(200)
+				self.marginValue.setValue(50)
 				self.marginValue.hide()
 
-                                self.pageButton = _pushButton(QtCore.QRect(730,3,20,20),"pageButton")
+                                self.labelLWMod = QtGui.QLabel(draftToolbar)
+				self.labelLWMod.setGeometry(QtCore.QRect(620,4,60,18))
+				self.labelLWMod.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+				self.labelLWMod.setObjectName("labelLWMod")
+				self.labelLWMod.hide()
+
+                                self.LWModValue = QtGui.QSpinBox(draftToolbar)
+				self.LWModValue.setGeometry(QtCore.QRect(685,4,60,18))
+				self.LWModValue.setObjectName("LWModValue")
+                                self.LWModValue.setMaximum(999)
+				self.LWModValue.setValue(100)
+				self.LWModValue.hide()
+
+                                self.pageButton = _pushButton(QtCore.QRect(750,3,20,20),"pageButton")
 				self.pageButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(640,128,64,64))))
 				self.pageButton.setIconSize(QtCore.QSize(16, 16))
                                 self.pageButton.hide()
@@ -418,6 +434,11 @@ class toolBar:
                                 self.labelPage.setText(QtGui.QApplication.translate("draft", "Page", None, QtGui.QApplication.UnicodeUTF8))
                                 self.labelScale.setText(QtGui.QApplication.translate("draft", "Scale", None, QtGui.QApplication.UnicodeUTF8))
                                 self.labelMargin.setText(QtGui.QApplication.translate("draft", "Margin", None, QtGui.QApplication.UnicodeUTF8))
+                                self.labelLWMod.setText(QtGui.QApplication.translate("draft", "LW Mod", None, QtGui.QApplication.UnicodeUTF8))
+                                self.pageBox.setToolTip(QtGui.QApplication.translate("draft", "Page to draw to. If selecting Add New, you can edit the name", None, QtGui.QApplication.UnicodeUTF8))
+                                self.scaleBox.setToolTip(QtGui.QApplication.translate("draft", "Scale factor to apply. Drawing page is always in millimeters. So if you draw in meters, a scale of 10 means 1:100", None, QtGui.QApplication.UnicodeUTF8))
+                                self.marginValue.setToolTip(QtGui.QApplication.translate("draft", "The value of the margin (offset between the (0,0) point and the page border)", None, QtGui.QApplication.UnicodeUTF8))
+                                self.LWModValue.setToolTip(QtGui.QApplication.translate("draft", "Linewidth scale modifier. Lower values mean thicker lines.", None, QtGui.QApplication.UnicodeUTF8))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -496,6 +517,8 @@ class toolBar:
                                 self.marginValue.hide()
                                 self.labelMargin.hide()
                                 self.pageButton.hide()
+                                self.labelLWMod.hide()
+                                self.LWModValue.hide()
 
 			def radiusUi(self):
 				self.labelx.hide()
@@ -561,6 +584,8 @@ class toolBar:
                                 self.marginValue.show()
                                 self.labelMargin.show()
                                 self.pageButton.show()
+                                self.labelLWMod.show()
+                                self.LWModValue.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
