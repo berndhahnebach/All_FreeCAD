@@ -155,9 +155,9 @@ Document::~Document()
     for(std::list<Gui::BaseView*>::iterator it=temp.begin();it!=temp.end();++it)
         (*it)->deleteSelf();
 
-    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
-    for (it = d->_ViewProviderMap.begin();it != d->_ViewProviderMap.end(); ++it)
-        delete it->second;
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::iterator jt;
+    for (jt = d->_ViewProviderMap.begin();jt != d->_ViewProviderMap.end(); ++jt)
+        delete jt->second;
     std::map<std::string,ViewProvider*>::iterator it2;
     for (it2 = d->_ViewProviderMapAnnotation.begin();it2 != d->_ViewProviderMapAnnotation.end(); ++it2)
         delete it2->second;
@@ -723,10 +723,10 @@ void Document::exportObjects(const std::vector<App::DocumentObject*>& obj, Base:
     bool xml = writer.isForceXML();
     writer.setForceXML(true);
     writer.incInd(); // indention for 'ViewProvider name'
-    std::map<const App::DocumentObject*,ViewProvider*>::const_iterator it;
-    for (it = views.begin(); it != views.end(); ++it) {
-        const App::DocumentObject* doc = it->first;
-        ViewProvider* obj = it->second;
+    std::map<const App::DocumentObject*,ViewProvider*>::const_iterator jt;
+    for (jt = views.begin(); jt != views.end(); ++jt) {
+        const App::DocumentObject* doc = jt->first;
+        ViewProvider* obj = jt->second;
         writer.Stream() << writer.ind() << "<ViewProvider name=\""
                         << doc->getNameInDocument() << "\" type=\""
                         << obj->getTypeId().getName()
