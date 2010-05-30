@@ -184,7 +184,9 @@ class todo:
 	@staticmethod
 	def doTasks():
 		for f, arg in todo.itinerary:
-			try: f(arg)
+			try:
+                                # print "debug: executing",f
+                                f(arg)
 			except:
 				msg = "[Draft.todo] Unexpected error:" + sys.exc_info()[0]
 				FreeCAD.Console.PrintWarning (msg)
@@ -192,6 +194,7 @@ class todo:
 
 	@staticmethod
 	def delay (f, arg):
+                # print "debug: delaying",f
 		if todo.itinerary == []:
 			QtCore.QTimer.singleShot(0, todo.doTasks)
 		todo.itinerary.append((f,arg))
@@ -207,7 +210,15 @@ class todo:
 		self.upVec = Vector(rot.multVec(coin.SbVec3f((0,1,0))).getValue())
 		self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 '''
+
 plane = WorkingPlane.plane()
+defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
+if defaultWP == 1:
+        plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), 0)
+elif defaultWP == 2:
+        plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), 0)
+elif defaultWP == 3:
+        plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), 0)
 
 #---------------------------------------------------------------------------
 # General functions
@@ -509,8 +520,14 @@ def getPoint(target,args,mobile=False,sym=False):
 		target.constrain = None
 		ui.xValue.setEnabled(True)
 		ui.yValue.setEnabled(True)
-		if not ui.lockedz: ui.zValue.setEnabled(True)
-	#if ui.lockedz: point.z = float(ui.zValue.text()) #???removed
+		ui.zValue.setEnabled(True)
+                if not plane.weak:
+                        if fcvec.equals(plane.axis,Vector(0,0,1)):
+                                ui.zValue.setEnabled(False)
+                        elif fcvec.equals(plane.axis,Vector(0,1,0)):
+                                ui.yValue.setEnabled(False)
+                        elif fcvec.equals(plane.axis,Vector(1,0,0)):
+                                ui.xValue.setEnabled(False)
 	if target.node:
 		if target.featureName == "Rectangle":
 			ui.displayPoint(point, target.node[0])
@@ -939,7 +956,7 @@ class DimensionViewProvider:
 		b = str(hex(int(color[2]*255)))[2:].zfill(2)
 		return "#"+r+g+b
 
-	def getSVG(self):
+	def getSVG(self,modifier=100):
 		"returns an svg representation of the dimension"
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(self.Object)
 		svg='<g id="'+self.Object.Name+'"><path '
@@ -949,25 +966,25 @@ class DimensionViewProvider:
 		svg+='L '+str(p4.x)+' '+str(p4.y)+'" '
 		svg+='fill="none" stroke="'
 		svg+=self.getrgb(self.ViewObject.LineColor) + '" '
-		svg+='stroke-width="' + str(self.ViewObject.LineWidth/100) + ' px" '
-		svg+='style="stroke-width:'+ str(self.ViewObject.LineWidth/100)
+		svg+='stroke-width="' + str(self.ViewObject.LineWidth/modifier) + ' px" '
+		svg+='style="stroke-width:'+ str(self.ViewObject.LineWidth/modifier)
 		svg+=';stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg+='<circle cx="'+str(p2.x)+'" cy="'+str(p2.y)
-		svg+='" r="'+str(self.ViewObject.FontSize/10)+'" '
+		svg+='" r="'+str(self.ViewObject.FontSize/(modifier/10))+'" '
 		svg+='fill="'+ self.getrgb(self.ViewObject.LineColor) +'" stroke="none" '
 		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg+='<circle cx="'+str(p3.x)+'" cy="'+str(p3.y)
-		svg+='" r="'+str(self.ViewObject.FontSize/10)+'" '
+		svg+='" r="'+str(self.ViewObject.FontSize/(modifier/10))+'" '
 		svg+='fill="#000000" stroke="none" '
 		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg+='<text id="' + self.Object.Name + '" fill="'
-		svg+=str(self.ViewObject.LineWidth/100) +'" font-size="'
-		svg+=str(self.ViewObject.FontSize*20)+'" '
+		svg+=str(self.ViewObject.LineWidth/modifier) +'" font-size="'
+		svg+=str(self.ViewObject.FontSize*(modifier/5))+'" '
 		svg+='style="text-anchor:middle;text-align:center" '
 		svg+='transform="rotate('+str(math.degrees(angle))
 		svg+=','+ str(tbase.x) + ',' + str(tbase.y) + ') '
 		svg+='translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
-                svg +='scale(0.05,0.05)">\n'
+                svg +='scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
 		svg+="%.2f" % p3.sub(p2).Length
 		svg+='</text>\n</g>\n'
 		return svg
@@ -3159,7 +3176,9 @@ class SendToDrawing(Modifier):
                 self.ui.pageUi()
                                 
         def draw(self):
-                template = 'A3_Landscape'
+                modifier = 100 # a modifier for adjusting linewidth
+                template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
+                if not template: template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
                 offset = self.ui.marginValue.value()
                 scale = int(self.ui.scaleBox.itemText(self.ui.scaleBox.currentIndex())[2:])
                 import Drawing
@@ -3168,7 +3187,7 @@ class SendToDrawing(Modifier):
                         pagename = str(self.ui.pageBox.itemText(0))
                         if pagename == 'Add New': pagename = 'Page'
                         page = doc.addObject('Drawing::FeaturePage',pagename)
-                        page.Template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/'+template+'.svg'
+                        page.Template = template
                 else:
                         pagename = str(self.ui.pageBox.itemText(self.ui.pageBox.currentIndex()))
                         page = doc.findObjects('Drawing::FeaturePage',pagename)[0]
@@ -3176,46 +3195,84 @@ class SendToDrawing(Modifier):
                 sel = FreeCADGui.Selection.getSelection()
                 for obj in sel:
                         name = 'View'+obj.Name
-                        view = None
+                        svg = None
                         if 'Dimline' in obj.PropertiesList:
-                                svg = obj.ViewObject.Proxy.getSVG()
-                                view = doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.transformSVG(name,svg,offset,scale)
+                                svg = obj.ViewObject.Proxy.getSVG(modifier)
                         elif obj.Type == 'Part::Feature':
-                                svg = self.formatSVG(Drawing.projectToSVG(obj.Shape),obj)
-                                view = doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.transformSVG(name,svg,offset,scale)
+                                # svg = self.formatSVG(Drawing.projectToSVG(obj.Shape),obj)
+                                svg = self.writeShape(obj,modifier)
                         elif obj.Type == 'App::Annotation':
-                                textcontents = ''
-                                for l in obj.LabelText:
-                                        textcontents+=l
-                                        textcontents+='\n'
-                                svg='<text id="' + obj.Name + '" fill="'
-                                svg+=self.getrgb(obj.ViewObject.TextColor)
-                                svg+='" font-size="'
-                                svg+=str(obj.ViewObject.FontSize*20)+'" '
-                                svg+='style="text-anchor:middle;text-align:center" '
-                                svg+='transform="'
-                                if obj.ViewObject.RotationAxis == 'Z':
-                                        if obj.ViewObject.Rotation != 0:
-                                                svg+='rotate('+str(obj.ViewObject.Rotation)
-                                                svg+=','+ str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
-                                svg+='translate(' + str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
-                                svg +='scale(0.05,0.05)">\n'
-                                svg+=textcontents
-                                svg+='</text>\n'
+                                svg = self.writeText(obj,modifier)
+                        if svg:
+                                oldobj = page.getObject(name)
+                                if oldobj: doc.removeObject(oldobj.Name)
                                 view = doc.addObject('Drawing::FeatureView',name)
                                 view.ViewResult = self.transformSVG(name,svg,offset,scale)
-                                
-                        if view:
                                 view.X = offset
                                 view.Y = offset
                                 view.Scale = scale
-                                oldobj = page.getObject(name)
-                                if oldobj: doc.removeObject(oldobj.Name)
                                 page.addObject(view)
                 doc.recompute()
                 self.finish()
+
+        def writeText(self,obj,modifier=100):
+                "returns an svg representation of a document annotation"
+                textcontents = ''
+                for l in obj.LabelText:
+                        textcontents+=l
+                        textcontents+='\n'
+                svg = '<text id="' + obj.Name + '" fill="'
+                svg += self.getrgb(obj.ViewObject.TextColor)
+                svg += '" font-size="'
+                svg += str(obj.ViewObject.FontSize*(modifier/5))+'" '
+                svg += 'style="text-anchor:middle;text-align:center" '
+                svg += 'transform="'
+                if obj.ViewObject.RotationAxis == 'Z':
+                        if obj.ViewObject.Rotation != 0:
+                                svg += 'rotate('+str(obj.ViewObject.Rotation)
+                                svg += ','+ str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
+                svg += 'translate(' + str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
+                svg +='scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
+                svg += textcontents
+                svg += '</text>\n'
+                return svg
+
+        def writeShape(self,obj,modifier=100):
+                "returns a svg representation of a planar shape"
+                name = obj.Name
+                if obj.Shape.Faces:
+                        fill = self.getrgb(obj.ViewObject.ShapeColor)
+                else: fill = 'none'
+                stroke = self.getrgb(obj.ViewObject.LineColor)
+                width = obj.ViewObject.LineWidth/modifier
+                if len(obj.Shape.Vertexes) > 1:
+                        svg ='<path id="' + name + '" '
+                        edges = fcgeo.sortEdges(obj.Shape.Edges)
+                        v = edges[0].Vertexes[0].Point
+                        svg += 'd="M '+ str(v.x) +' '+ str(v.y) + ' '
+                        for e in edges:
+                                if isinstance(e.Curve,Part.Line):
+                                        v = e.Vertexes[-1].Point
+                                        svg += 'L '+ str(v.x) +' '+ str(v.y) + ' '
+                                elif isinstance(e.Curve,Part.Circle):
+                                        r = e.Curve.Radius
+                                        v = e.Vertexes[-1].Point
+                                        svg += 'A '+ str(r) + ' '+ str(r) +' 0 0 0 '+ str(v.x) +' '
+                                        svg += str(v.y) + ' '
+                        if fill != "none": svg += 'Z'
+                        svg += '" '
+                else:
+                        cen = obj.Shape.Edges[0].Curve.Center
+                        rad = obj.Shape.Edges[0].Curve.Radius
+                        svg += '<circle cx="'+str(cen.x)
+                        svg += '" cy="'+str(cen.y)
+                        svg += '" r="'+str(rad)+'" '
+                svg += 'fill="' + fill + '" stroke="' + stroke + '" '
+                svg += 'stroke-width="' + str(width) + ' px" '
+                svg += 'style="stroke-width:'+ str(width)
+                svg += ';stroke-miterlimit:4;stroke-dasharray:none"'
+                svg += '/>\n'
+                return svg
 
         def getrgb(self,color):
 		"returns a rgb value #000000 from a freecad color"

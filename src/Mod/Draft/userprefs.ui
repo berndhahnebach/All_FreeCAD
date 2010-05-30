@@ -108,6 +108,60 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Construction color</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefColorButton" name="gui::prefcolorbutton_3">
+          <property name="toolTip">
+           <string>This is the default color for objects being drawn while in construction mode.</string>
+          </property>
+          <property name="color">
+           <color>
+            <red>44</red>
+            <green>125</green>
+            <blue>255</blue>
+           </color>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>constructioncolor</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>group name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefLineEdit" name="gui::preflineedit_2">
+          <property name="toolTip">
+           <string>This is the default group name for construction geometry</string>
+          </property>
+          <property name="text">
+           <string>Construction</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>constructiongroupname</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox">
@@ -192,19 +246,40 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
-         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_7">
-          <property name="toolTip">
-           <string>This is the default state of the Z coordinate lock. If checked, FreeCAD starts with the Z coordinate locked, so all 2D commands work only in a horizontal plane. You can of course lock and unlock the Z coordinate at any moment during your work.</string>
-          </property>
+         <widget class="QLabel" name="label_12">
           <property name="text">
-           <string>Default Z lock state</string>
+           <string>Default working plane</string>
           </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefComboBox" name="gui::prefcombobox_2">
           <property name="prefEntry" stdset="0">
-           <cstring>zlock</cstring>
+           <cstring>defaultWP</cstring>
           </property>
           <property name="prefPath" stdset="0">
            <cstring>Mod/Draft</cstring>
           </property>
+          <item>
+           <property name="text">
+            <string>None</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>XY (Top)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>XZ (Front)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>YZ (Side)</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
@@ -219,22 +294,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_6">
-          <property name="toolTip">
-           <string>Check this if you want FreeCAD to save the Z lock state when you close the application and restore it on next session.</string>
-          </property>
-          <property name="text">
-           <string>Save Z lock state across sessions</string>
-          </property>
-          <property name="prefEntry" stdset="0">
-           <cstring>savezlock</cstring>
-          </property>
-          <property name="prefPath" stdset="0">
-           <cstring>Mod/Draft</cstring>
-          </property>
-         </widget>
         </item>
        </layout>
       </item>
@@ -325,6 +384,30 @@ such as &quot;Arial:Bold&quot;</string>
           </property>
           <property name="prefEntry" stdset="0">
            <cstring>alwaysSnap</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Default template sheet</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefFileChooser" name="gui::preffilechooser_2">
+          <property name="toolTip">
+           <string>The default template to use when creating a new drawing sheet</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>template</cstring>
           </property>
           <property name="prefPath" stdset="0">
            <cstring>Mod/Draft</cstring>

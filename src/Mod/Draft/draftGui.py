@@ -118,7 +118,6 @@ class toolBar:
 				paramlinewidth = self.params.GetInt("linewidth")
 				paramconstr = self.params.GetUnsigned("constructioncolor")>>8
 				icons = findicons()
-				self.lockedz = self.params.GetBool("zlock")
 				self.constrMode = False
 				draftToolbar.setObjectName("draftToolbar")
 				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
@@ -177,7 +176,7 @@ class toolBar:
 				self.zValue.setGeometry(QtCore.QRect(420,4,70,18))
 				self.zValue.setObjectName("zValue")
 				self.zValue.setText("0.00")
-				if self.lockedz: self.zValue.setEnabled(False)
+				#TODO if self.lockedz: self.zValue.setEnabled(False)
 				self.zValue.hide()
 
 				self.offsetLabel = QtGui.QLabel(draftToolbar)
@@ -191,12 +190,6 @@ class toolBar:
 				self.offsetValue.setObjectName("offsetValue")
 				self.offsetValue.setText("0.00")
 				self.offsetValue.hide()
-
-				self.lockButton = _pushButton(QtCore.QRect(500,3,20,20),"lockButton")
-				self.lockButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(512,64,64,64))))
-				self.lockButton.setIconSize(QtCore.QSize(16, 16))
-				self.lockButton.setCheckable(True)
-				if self.lockedz: self.lockButton.setChecked(True)
 
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
 				self.isRelative.setGeometry(QtCore.QRect(530,6,91,18))
@@ -280,6 +273,15 @@ class toolBar:
                                 self.wplabel.setGeometry(QtCore.QRect(500, 4, 100, 18))
                                 self.wplabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
                                 self.wplabel.setObjectName("wplabel")
+                                defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
+                                if defaultWP == 1:
+                                        self.wplabel.setText("Top")
+                                elif defaultWP == 2:
+                                        self.wplabel.setText("Front")
+                                elif defaultWP == 3:
+                                        self.wplabel.setText("Side")
+                                else:
+                                        self.wplabel.setText("None")
 
                                 self.labelPage = QtGui.QLabel(draftToolbar)
 				self.labelPage.setGeometry(QtCore.QRect(215,4,60,18))
@@ -369,8 +371,6 @@ class toolBar:
 				QtCore.QObject.connect(self.colorButton,QtCore.SIGNAL("pressed()"),self.getcol)
 				QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
 				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
-
-				QtCore.QObject.connect(self.lockButton,QtCore.SIGNAL("toggled(bool)"),self.lockz)
 				QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
                                 QtCore.QObject.connect(self.pageButton,QtCore.SIGNAL("pressed()"),self.drawPage)
 
@@ -390,7 +390,6 @@ class toolBar:
 				self.radiusValue.setToolTip(QtGui.QApplication.translate("draft", "Radius of Circle", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelText.setText(QtGui.QApplication.translate("draft", "Text", None, QtGui.QApplication.UnicodeUTF8))
 				self.isRelative.setText(QtGui.QApplication.translate("draft", "Relative", None, QtGui.QApplication.UnicodeUTF8))
-				self.lockButton.setToolTip(QtGui.QApplication.translate("draft", "locks the Z coordinate (L)", None, QtGui.QApplication.UnicodeUTF8))
 				self.isRelative.setToolTip(QtGui.QApplication.translate("draft", "Coordinates relative to last point or absolute (SPACE)", None, QtGui.QApplication.UnicodeUTF8))
 				self.finishButton.setText(QtGui.QApplication.translate("draft", "Finish", None, QtGui.QApplication.UnicodeUTF8))
 				self.finishButton.setToolTip(QtGui.QApplication.translate("draft", "Finishes the current line without closing (F)", None, QtGui.QApplication.UnicodeUTF8))
@@ -415,7 +414,6 @@ class toolBar:
 				self.widthButton.setToolTip(QtGui.QApplication.translate("draft", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.applyButton.setToolTip(QtGui.QApplication.translate("draft", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
 				self.constrButton.setToolTip(QtGui.QApplication.translate("draft", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
-                                self.wplabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
                                 self.wplabel.setToolTip(QtGui.QApplication.translate("draft", "Current working plane", None, QtGui.QApplication.UnicodeUTF8))
                                 self.labelPage.setText(QtGui.QApplication.translate("draft", "Page", None, QtGui.QApplication.UnicodeUTF8))
                                 self.labelScale.setText(QtGui.QApplication.translate("draft", "Scale", None, QtGui.QApplication.UnicodeUTF8))
@@ -463,7 +461,6 @@ class toolBar:
 				self.xValue.show()
 				self.yValue.show()
 				self.zValue.show()
-				self.lockButton.show()
 				self.xValue.setFocus()
 				self.xValue.selectAll()
 
@@ -490,7 +487,6 @@ class toolBar:
 				self.labelRadius.hide()
 				self.radiusValue.hide()
 				self.isCopy.hide()
-				self.lockButton.hide()
 				self.labelText.hide()
 				self.textValue.hide()
                                 self.pageBox.hide()
@@ -508,7 +504,6 @@ class toolBar:
 				self.xValue.hide()
 				self.yValue.hide()
 				self.zValue.hide()
-				self.lockButton.hide()
 				self.labelRadius.setText(QtGui.QApplication.translate("draft", "Radius", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelRadius.show()
 				self.radiusValue.show()
@@ -520,7 +515,6 @@ class toolBar:
 				self.xValue.hide()
 				self.yValue.hide()
 				self.zValue.hide()
-				self.lockButton.hide()
 				self.labelText.show()
 				self.textValue.show()
 				self.textValue.setText('')
@@ -539,14 +533,12 @@ class toolBar:
 					self.state.append(self.xValue.isVisible())
 					self.state.append(self.yValue.isVisible())
 					self.state.append(self.zValue.isVisible())
-					self.state.append(self.lockButton.isVisible())
 					self.labelx.hide()
 					self.labely.hide()
 					self.labelz.hide()
 					self.xValue.hide()
 					self.yValue.hide()
 					self.zValue.hide()
-					self.lockButton.hide()
 				else:
 					if self.state:
 						if self.state[0]:self.labelx.show()
@@ -555,7 +547,6 @@ class toolBar:
 						if self.state[3]:self.xValue.show()
 						if self.state[4]:self.yValue.show()
 						if self.state[5]:self.zValue.show()
-						if self.state[6]:self.lockButton.show()
 						self.state = None
 
 			def selectUi(self):
@@ -580,14 +571,6 @@ class toolBar:
 				self.constrButton.setGeometry(QtCore.QRect(w-162,2,22,22))
                                 self.wplabel.setGeometry(QtCore.QRect(w-268,4,100,18))
 
-			def lockz(self,checked):
-					self.zValue.setEnabled(not checked)
-					self.lockedz = checked
-					if self.params.GetBool("savezlock"):
-						self.params.SetBool("zlock",self.lockedz)
-
-
-				
 
 #---------------------------------------------------------------------------
 # Processing functions
@@ -724,8 +707,6 @@ class toolBar:
 					if self.closeButton.isVisible(): self.closeLine()
 					elif self.isCopy.isVisible():
 						self.isCopy.setChecked(not self.isCopy.isChecked())
-				if txt.endsWith("l"):
-					self.lockz(not self.lockedz)
 
 			def sendText(self):
 				'''
