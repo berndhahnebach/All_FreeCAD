@@ -106,25 +106,6 @@ void ViewProviderPoints::onChanged(const App::Property* prop)
     }
 }
 
-void ViewProviderPoints::createPoints(const Points::PointKernel& cPts)
-{
-    // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
-    pcPointsCoord->enableNotify(false);
-    pcPointsCoord->point.deleteValues(0);
-    pcPointsCoord->point.setNum(cPts.size());
-
-    // get all points
-    int idx=0;
-    const std::vector<Base::Vector3f>& kernel = cPts.getBasicPoints();
-    for (std::vector<Base::Vector3f>::const_iterator it = kernel.begin(); it != kernel.end(); ++it, idx++) {
-        pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
-    }
-
-    pcPoints->numPoints = cPts.size();
-    pcPointsCoord->enableNotify(true);
-    pcPointsCoord->touch();
-}
-
 void ViewProviderPoints::setVertexColorMode(App::PropertyColorList* pcProperty)
 {
     const std::vector<App::Color>& val = pcProperty->getValues();
@@ -330,7 +311,8 @@ void ViewProviderPoints::updateData(const App::Property* prop)
 {
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Points::PropertyPointKernel::getClassTypeId()) {
-        createPoints(static_cast<const Points::PropertyPointKernel*>(prop)->getValue());
+        ViewProviderPointsBuilder builder;
+        builder.createPoints(prop, pcPointsCoord, pcPoints);
 
         // The number of points might have changed, so force also a resize of the Inventor internals
         setActiveMode();
@@ -450,3 +432,48 @@ PROPERTY_SOURCE_TEMPLATE(PointsGui::ViewProviderPython, PointsGui::ViewProviderP
 template class PointsGuiExport ViewProviderPythonFeatureT<PointsGui::ViewProviderPoints>;
 }
 
+// -------------------------------------------------
+
+void ViewProviderPointsBuilder::buildNodes(const App::Property* prop, std::vector<SoNode*>& nodes) const
+{
+    SoCoordinate3 *pcPointsCoord=0;
+    SoPointSet *pcPoints=0;
+
+    if (nodes.empty()) {
+        pcPointsCoord = new SoCoordinate3();
+        nodes.push_back(pcPointsCoord);
+        pcPoints = new SoPointSet();
+        nodes.push_back(pcPoints);
+    }
+    else if (nodes.size() == 2) {
+        if (nodes[0]->getTypeId() == SoCoordinate3::getClassTypeId())
+            pcPointsCoord = static_cast<SoCoordinate3*>(nodes[0]);
+        if (nodes[1]->getTypeId() == SoPointSet::getClassTypeId())
+            pcPoints = static_cast<SoPointSet*>(nodes[1]);
+    }
+
+    if (pcPointsCoord && pcPoints)
+        createPoints(prop, pcPointsCoord, pcPoints);
+}
+
+void ViewProviderPointsBuilder::createPoints(const App::Property* prop, SoCoordinate3* coords, SoPointSet* points) const
+{
+    const Points::PropertyPointKernel* prop_points = static_cast<const Points::PropertyPointKernel*>(prop);
+    const Points::PointKernel& cPts = prop_points->getValue();
+
+    // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
+    coords->enableNotify(false);
+    coords->point.deleteValues(0);
+    coords->point.setNum(cPts.size());
+
+    // get all points
+    int idx=0;
+    const std::vector<Base::Vector3f>& kernel = cPts.getBasicPoints();
+    for (std::vector<Base::Vector3f>::const_iterator it = kernel.begin(); it != kernel.end(); ++it, idx++) {
+        coords->point.set1Value(idx, it->x, it->y, it->z);
+    }
+
+    points->numPoints = cPts.size();
+    coords->enableNotify(true);
+    coords->touch();
+}

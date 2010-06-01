@@ -90,6 +90,57 @@ using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
 using MeshCore::MeshFacet;
 
+void ViewProviderMeshBuilder::buildNodes(const App::Property* prop, std::vector<SoNode*>& nodes) const
+{
+    SoCoordinate3 *pcPointsCoord=0;
+    SoIndexedFaceSet *pcFaces=0;
+
+    if (nodes.empty()) {
+        pcPointsCoord = new SoCoordinate3();
+        nodes.push_back(pcPointsCoord);
+        pcFaces = new SoIndexedFaceSet();
+        nodes.push_back(pcFaces);
+    }
+    else if (nodes.size() == 2) {
+        if (nodes[0]->getTypeId() == SoCoordinate3::getClassTypeId())
+            pcPointsCoord = static_cast<SoCoordinate3*>(nodes[0]);
+        if (nodes[1]->getTypeId() == SoIndexedFaceSet::getClassTypeId())
+            pcFaces = static_cast<SoIndexedFaceSet*>(nodes[1]);
+    }
+
+    if (pcPointsCoord && pcFaces)
+        createMesh(prop, pcPointsCoord, pcFaces);
+}
+
+void ViewProviderMeshBuilder::createMesh(const App::Property* prop, SoCoordinate3* coords, SoIndexedFaceSet* faces) const
+{
+    const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
+    const MeshCore::MeshKernel& rcMesh = mesh->getValue().getKernel();
+
+    // set the point coordinates
+    const MeshCore::MeshPointArray& cP = rcMesh.GetPoints();
+    coords->point.setNum(rcMesh.CountPoints());
+    SbVec3f* verts = coords->point.startEditing();
+    unsigned long i=0;
+    for (MeshCore::MeshPointArray::_TConstIterator it = cP.begin(); it != cP.end(); ++it, i++) {
+        verts[i].setValue(it->x, it->y, it->z);
+    }
+    coords->point.finishEditing();
+
+    // set the face indices
+    unsigned long j=0;
+    const MeshCore::MeshFacetArray& cF = rcMesh.GetFacets();
+    faces->coordIndex.setNum(4*rcMesh.CountFacets());
+    int32_t* indices = faces->coordIndex.startEditing();
+    for (MeshCore::MeshFacetArray::_TConstIterator it = cF.begin(); it != cF.end(); ++it, j++) {
+        for (int i=0; i<3; i++) {
+            indices[4*j+i] = it->_aulPoints[i];
+        }
+        indices[4*j+3] = SO_END_FACE_INDEX;
+    }
+    faces->coordIndex.finishEditing();
+}
+
 PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderDocumentObject)
 
 ViewProviderExport::ViewProviderExport()
@@ -1301,32 +1352,6 @@ ViewProviderIndexedFaceSet::~ViewProviderIndexedFaceSet()
 {
 }
 
-void ViewProviderIndexedFaceSet::createMesh(const MeshCore::MeshKernel& rcMesh)
-{
-    // set the point coordinates
-    const MeshCore::MeshPointArray& cP = rcMesh.GetPoints();
-    pcMeshCoord->point.setNum(rcMesh.CountPoints());
-    SbVec3f* verts = pcMeshCoord->point.startEditing();
-    unsigned long i=0;
-    for (MeshCore::MeshPointArray::_TConstIterator it = cP.begin(); it != cP.end(); ++it, i++) {
-        verts[i].setValue(it->x, it->y, it->z);
-    }
-    pcMeshCoord->point.finishEditing();
-
-    // set the face indices
-    unsigned long j=0;
-    const MeshCore::MeshFacetArray& cF = rcMesh.GetFacets();
-    pcMeshFaces->coordIndex.setNum(4*rcMesh.CountFacets());
-    int32_t* indices = pcMeshFaces->coordIndex.startEditing();
-    for (MeshCore::MeshFacetArray::_TConstIterator it = cF.begin(); it != cF.end(); ++it, j++) {
-        for (int i=0; i<3; i++) {
-            indices[4*j+i] = it->_aulPoints[i];
-        }
-        indices[4*j+3] = SO_END_FACE_INDEX;
-    }
-    pcMeshFaces->coordIndex.finishEditing();
-}
-
 /** 
  * Extracts the mesh data from the feature \a pcFeature and creates
  * an Inventor node \a SoNode with these data. 
@@ -1351,8 +1376,8 @@ void ViewProviderIndexedFaceSet::updateData(const App::Property* prop)
 {
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId()) {
-        const Mesh::PropertyMeshKernel* mesh = static_cast<const Mesh::PropertyMeshKernel*>(prop);
-        createMesh(mesh->getValue().getKernel());
+        ViewProviderMeshBuilder builder;
+        builder.createMesh(prop, pcMeshCoord, pcMeshFaces);
         showOpenEdges(OpenEdges.getValue());
     }
 }
