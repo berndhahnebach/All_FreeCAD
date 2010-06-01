@@ -22,6 +22,8 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/WidgetFactory.h>
 
+#include <Mod/Part/App/PropertyTopoShape.h>
+
 #include "SoFCShapeObject.h"
 #include "ViewProvider.h"
 #include "ViewProviderPython.h"
@@ -96,8 +98,10 @@ void AppPartGuiExport initPartGui()
     CreateParamPartCommands();
 
     // register preferences pages
-    new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral>      ("Part design");
-    new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPart>   ("Part design");
+    (void)new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral>      ("Part design");
+    (void)new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPart>   ("Part design");
+    (void)new Gui::ViewProviderProducer<PartGui::ViewProviderShapeBuilder>
+        (Part::PropertyPartShape::getClassTypeId());
 
     // add resources and reloads the translators
     loadPartResource();

@@ -28,6 +28,7 @@
 
 #include <Mod/Mesh/App/Core/Elements.h>
 #include <Gui/ViewProviderGeometryObject.h>
+#include <Gui/ViewProviderBuilder.h>
 #include <App/PropertyStandard.h>
 
 
@@ -60,6 +61,15 @@ namespace MeshCore {
 namespace MeshGui {
 class SoFCMeshObjectNode;
 class SoFCMeshObjectShape;
+
+class ViewProviderMeshBuilder : public Gui::ViewProviderBuilder
+{
+public:
+    ViewProviderMeshBuilder(){}
+    ~ViewProviderMeshBuilder(){}
+    virtual void buildNodes(const App::Property*, std::vector<SoNode*>&) const;
+    void createMesh(const App::Property*, SoCoordinate3*, SoIndexedFaceSet*) const;
+};
 
 /**
  * The ViewProviderExport class creates an empty node.
@@ -200,8 +210,6 @@ public:
 protected:
     void showOpenEdges(bool);
     SoShape* getShapeNode() const;
-    /// helper method to build up the FaceSet
-    void createMesh(const MeshCore::MeshKernel& pcMesh);
 
 private:
     SoCoordinate3       * pcMeshCoord;

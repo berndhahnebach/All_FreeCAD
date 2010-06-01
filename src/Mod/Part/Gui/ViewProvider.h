@@ -28,6 +28,7 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Gui/ViewProviderGeometryObject.h>
+#include <Gui/ViewProviderBuilder.h>
 #include <map>
 
 class TopoDS_Shape;
@@ -47,6 +48,15 @@ class SoScale;
 
 namespace PartGui {
 
+
+class ViewProviderShapeBuilder : public Gui::ViewProviderBuilder
+{
+public:
+    ViewProviderShapeBuilder(){}
+    ~ViewProviderShapeBuilder(){}
+    virtual void buildNodes(const App::Property*, std::vector<SoNode*>&) const;
+    void createShape(const App::Property*, SoSeparator*) const;
+};
 
 class AppPartGuiExport ViewProviderPart : public Gui::ViewProviderGeometryObject
 {

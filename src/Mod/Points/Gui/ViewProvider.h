@@ -26,6 +26,7 @@
 #include <Base/Vector3D.h>
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Gui/ViewProviderPythonFeature.h>
+#include <Gui/ViewProviderBuilder.h>
 #include <Inventor/SbVec2f.h>
 
 
@@ -52,6 +53,15 @@ namespace Points {
 }
 
 namespace PointsGui {
+
+class ViewProviderPointsBuilder : public Gui::ViewProviderBuilder
+{
+public:
+    ViewProviderPointsBuilder(){}
+    ~ViewProviderPointsBuilder(){}
+    virtual void buildNodes(const App::Property*, std::vector<SoNode*>&) const;
+    void createPoints(const App::Property*, SoCoordinate3*, SoPointSet*) const;
+};
 
 /**
  * The ViewProviderPoints class creates
@@ -91,7 +101,6 @@ public:
 
 protected:
     void onChanged(const App::Property* prop);
-    void createPoints(const Points::PointKernel& pnts);
     void setVertexColorMode(App::PropertyColorList*);
     void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
     void setVertexNormalMode(Points::PropertyNormalList*);

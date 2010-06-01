@@ -583,6 +583,7 @@ SET(Viewprovider_CPP_SRCS
 		 ViewProviderPyImp.cpp
 		 ViewProviderPythonFeature.cpp
 		 ViewProviderVRMLObject.cpp
+		 ViewProviderBuilder.cpp
 )
 SET(Viewprovider_SRCS
 		 ${Viewprovider_CPP_SRCS}
@@ -597,6 +598,7 @@ SET(Viewprovider_SRCS
 		 ViewProviderMeasureDistance.h
 		 ViewProviderPythonFeature.h
 		 ViewProviderVRMLObject.h
+		 ViewProviderBuilder.h
 )
 SOURCE_GROUP("Viewprovider" FILES ${Viewprovider_SRCS})
 

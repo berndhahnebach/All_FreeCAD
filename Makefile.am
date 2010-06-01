@@ -14,6 +14,7 @@ EXTRA_DIST = \
 		cMake/FreeCadMacros.cmake \
 		cMake/UseLibPack6x.cmake \
 		cMake/UseLibPack7x.cmake \
+		cMake/UseLibPackCustom.cmake \
 		config.h.cmake \
 		CMakeLists.txt \
 		autogen.sh \

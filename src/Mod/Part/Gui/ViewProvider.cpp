@@ -94,6 +94,15 @@
 
 using namespace PartGui;
 
+void ViewProviderShapeBuilder::buildNodes(const App::Property* prop, std::vector<SoNode*>& nodes) const
+{
+}
+
+void ViewProviderShapeBuilder::createShape(const App::Property* prop, SoSeparator* coords) const
+{
+}
+
+
 PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
 
 

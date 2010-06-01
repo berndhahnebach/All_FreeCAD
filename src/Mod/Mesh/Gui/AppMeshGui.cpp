@@ -33,6 +33,8 @@
 #include <Gui/WidgetFactory.h>
 #include <Gui/Language/Translator.h>
 
+#include <Mod/Mesh/App/MeshProperties.h>
+
 #include "images.h"
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
@@ -127,6 +129,8 @@ void MeshGuiExport initMeshGui()
     MeshGui::ViewProviderMeshIndices            ::init();
     MeshGui::ViewProviderMeshSelfIntersections  ::init();
     MeshGui::Workbench                          ::init();
+    (void)new Gui::ViewProviderProducer<MeshGui::ViewProviderMeshBuilder>
+        (Mesh::PropertyMeshKernel::getClassTypeId());
 
     // add resources and reloads the translators
     loadMeshResource();

@@ -29,6 +29,7 @@
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
+#include <Mod/Points/App/PropertyPointKernel.h>
 
 #include "ViewProvider.h"
 #include "Workbench.h"
@@ -77,6 +78,8 @@ void PointsGuiExport initPointsGui()
     PointsGui::ViewProviderPoints::init();
     PointsGui::ViewProviderPython::init();
     PointsGui::Workbench         ::init();
+    (void)new Gui::ViewProviderProducer<PointsGui::ViewProviderPointsBuilder>
+        (Points::PropertyPointKernel::getClassTypeId());
 
     // add resources and reloads the translators
     loadPointsResource();
