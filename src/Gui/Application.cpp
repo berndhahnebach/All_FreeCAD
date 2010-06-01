@@ -1362,6 +1362,26 @@ void Application::runApplication(void)
         Base::Console().Log("This system does not support pbuffers");
     }
 
+    QGLFormat::OpenGLVersionFlags version = QGLFormat::openGLVersionFlags ();
+    if (version & QGLFormat::OpenGL_Version_3_0)
+        Base::Console().Log("OpenGL version 3.0 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_2_1)
+        Base::Console().Log("OpenGL version 2.1 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_2_0)
+        Base::Console().Log("OpenGL version 2.0 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_1_5)
+        Base::Console().Log("OpenGL version 1.5 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_1_4)
+        Base::Console().Log("OpenGL version 1.4 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_1_3)
+        Base::Console().Log("OpenGL version 1.3 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_1_2)
+        Base::Console().Log("OpenGL version 1.2 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_1_1)
+        Base::Console().Log("OpenGL version 1.1 or higher is present\n");
+    else if (version & QGLFormat::OpenGL_Version_None)
+        Base::Console().Log("No OpenGL is present or no OpenGL context is current\n");
+
     Application app(true);
     MainWindow mw;
     mw.setWindowTitle(mainApp.applicationName());
