@@ -142,7 +142,8 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
             pcMeshFaces->coordIndex.setNum(0);
         }
         else {
-            createMesh(mesh->getKernel());
+            ViewProviderMeshBuilder builder;
+            builder.createMesh(prop, pcMeshCoord, pcMeshFaces);
         }
 
         if (direct != directRendering) {
@@ -161,32 +162,6 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
 
         showOpenEdges(OpenEdges.getValue());
     }
-}
-
-void ViewProviderMeshFaceSet::createMesh(const MeshCore::MeshKernel& rcMesh)
-{
-    // set the point coordinates
-    const MeshCore::MeshPointArray& cP = rcMesh.GetPoints();
-    pcMeshCoord->point.setNum(rcMesh.CountPoints());
-    SbVec3f* verts = pcMeshCoord->point.startEditing();
-    unsigned long i=0;
-    for (MeshCore::MeshPointArray::_TConstIterator it = cP.begin(); it != cP.end(); ++it, i++) {
-        verts[i].setValue(it->x, it->y, it->z);
-    }
-    pcMeshCoord->point.finishEditing();
-
-    // set the face indices
-    unsigned long j=0;
-    const MeshCore::MeshFacetArray& cF = rcMesh.GetFacets();
-    pcMeshFaces->coordIndex.setNum(4*rcMesh.CountFacets());
-    int32_t* indices = pcMeshFaces->coordIndex.startEditing();
-    for (MeshCore::MeshFacetArray::_TConstIterator it = cF.begin(); it != cF.end(); ++it, j++) {
-        for (int i=0; i<3; i++) {
-            indices[4*j+i] = it->_aulPoints[i];
-        }
-        indices[4*j+3] = SO_END_FACE_INDEX;
-    }
-    pcMeshFaces->coordIndex.finishEditing();
 }
 
 void ViewProviderMeshFaceSet::showOpenEdges(bool show)

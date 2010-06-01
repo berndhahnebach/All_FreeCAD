@@ -57,8 +57,6 @@ public:
 protected:
     void showOpenEdges(bool);
     SoShape* getShapeNode() const;
-    /// helper method to build up the FaceSet
-    void createMesh(const MeshCore::MeshKernel& pcMesh);
 
 private:
     bool directRendering;
