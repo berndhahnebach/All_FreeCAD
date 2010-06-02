@@ -221,7 +221,9 @@ void ViewProviderPart::onChanged(const App::Property* prop)
         pcPointMaterial->transparency.setValue(Mat.transparency);
     }
     else if (prop == &ControlPoints) {
-        showControlPoints(ControlPoints.getValue());
+        App::DocumentObject* obj = this->pcObject;
+        App::Property* shape = obj->getPropertyByName("Shape");
+        showControlPoints(ControlPoints.getValue(), shape);
     }
     else if (prop == &Lighting) {
         if (Lighting.getValue() == 0)
@@ -420,7 +422,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
             // update control points if there
             if (pcControlPoints) {
                 pcControlPoints->removeAllChildren();
-                showControlPoints(this->ControlPoints.getValue());
+                showControlPoints(this->ControlPoints.getValue(), prop);
             }
         }
         catch (...){
@@ -854,7 +856,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     }
 }
 
-void ViewProviderPart::showControlPoints(bool show)
+void ViewProviderPart::showControlPoints(bool show, const App::Property* prop)
 {
     if (!pcControlPoints && show) {
         pcControlPoints = new SoSwitch();
@@ -869,10 +871,8 @@ void ViewProviderPart::showControlPoints(bool show)
         return;
 
     // ask for the property we are interested in
-    App::DocumentObject* obj = this->pcObject;
-    App::Property* prop = obj->getPropertyByName("Shape");
     if (prop && prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
-        TopoDS_Shape shape = static_cast<Part::PropertyPartShape*>(prop)->getValue();
+        const TopoDS_Shape& shape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
         if (shape.IsNull())
             return; // empty shape
         switch (shape.ShapeType())

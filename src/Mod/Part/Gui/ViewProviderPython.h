@@ -29,7 +29,24 @@
 
 namespace PartGui {
 
+class AppPartGuiExport ViewProviderCustom : public ViewProviderPart
+{
+    PROPERTY_HEADER(PartGui::ViewProviderCustom);
+
+public:
+    /// constructor
+    ViewProviderCustom();
+    /// destructor
+    virtual ~ViewProviderCustom();
+    virtual void updateData(const App::Property*);
+
+protected:
+    virtual void onChanged(const App::Property* prop);
+    std::map<const App::Property*, Gui::ViewProvider*> propView;
+};
+
 typedef Gui::ViewProviderPythonFeatureT<ViewProviderPart> ViewProviderPython;
+typedef Gui::ViewProviderPythonFeatureT<ViewProviderCustom> ViewProviderCustomPython;
 
 } // namespace PartGui
 

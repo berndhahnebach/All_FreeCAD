@@ -89,6 +89,8 @@ void AppPartGuiExport initPartGui()
     PartGui::ViewProviderCurveNet       ::init();
     PartGui::ViewProviderExtrusion      ::init();
     PartGui::ViewProvider2DObject       ::init();
+    PartGui::ViewProviderCustom         ::init();
+    PartGui::ViewProviderCustomPython   ::init();
 
     PartGui::Workbench                  ::init();
 
@@ -100,8 +102,9 @@ void AppPartGuiExport initPartGui()
     // register preferences pages
     (void)new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral>      ("Part design");
     (void)new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPart>   ("Part design");
-    (void)new Gui::ViewProviderProducer<PartGui::ViewProviderShapeBuilder>
-        (Part::PropertyPartShape::getClassTypeId());
+    Gui::ViewProviderBuilder::add(
+        Part::PropertyPartShape::getClassTypeId(),
+        PartGui::ViewProviderPart::getClassTypeId());
 
     // add resources and reloads the translators
     loadPartResource();

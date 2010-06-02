@@ -32,7 +32,7 @@
 
 using namespace Gui;
 
-std::map<Base::Type, Base::AbstractProducer*> ViewProviderBuilder::_producers;
+std::map<Base::Type, Base::Type> ViewProviderBuilder::_prop_to_view;
 
 ViewProviderBuilder::ViewProviderBuilder() 
 {
@@ -42,20 +42,17 @@ ViewProviderBuilder::~ViewProviderBuilder()
 {
 }
 
-void ViewProviderBuilder::addBuilder(const Base::Type& type, Base::AbstractProducer* prod)
+void ViewProviderBuilder::add(const Base::Type& prop, const Base::Type& view)
 {
-    _producers[type] = prod;
+    _prop_to_view[prop] = view;
 }
 
-std::auto_ptr<ViewProviderBuilder> ViewProviderBuilder::createBuilder(const Base::Type& type)
+ViewProvider* ViewProviderBuilder::create(const Base::Type& type)
 {
-    std::map<Base::Type, Base::AbstractProducer*>::iterator it;
-    it = _producers.find(type);
-    ViewProviderBuilder* inst = 0;
-    if (it != _producers.end())
-        inst = reinterpret_cast<ViewProviderBuilder*>(it->second->Produce());
-
-    return std::auto_ptr<ViewProviderBuilder>(inst);
+    std::map<Base::Type, Base::Type>::iterator it = _prop_to_view.find(type);
+    if (it != _prop_to_view.end())
+        return reinterpret_cast<ViewProvider*>(it->second.createInstance());
+    return 0;
 }
 
 // --------------------------------------

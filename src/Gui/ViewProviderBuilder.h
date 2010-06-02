@@ -39,6 +39,7 @@ namespace App {
 namespace Gui
 {
 
+class ViewProvider;
 class GuiExport ViewProviderBuilder
 {
 public:
@@ -47,11 +48,11 @@ public:
     virtual ~ViewProviderBuilder();
     virtual void buildNodes(const App::Property*, std::vector<SoNode*>&) const = 0;
 
-    static void addBuilder(const Base::Type&, Base::AbstractProducer*);
-    static std::auto_ptr<ViewProviderBuilder> createBuilder(const Base::Type&);
+    static void add(const Base::Type&, const Base::Type&);
+    static ViewProvider* create(const Base::Type&);
 
 private:
-    static std::map<Base::Type, Base::AbstractProducer*> _producers;
+    static std::map<Base::Type, Base::Type> _prop_to_view;
 };
 
 class GuiExport ViewProviderColorBuilder : public ViewProviderBuilder
@@ -61,29 +62,6 @@ public:
     ViewProviderColorBuilder(void);
     virtual ~ViewProviderColorBuilder();
     virtual void buildNodes(const App::Property*, std::vector<SoNode*>&) const;
-};
-
-template <class CLASS>
-class ViewProviderProducer : public Base::AbstractProducer
-{
-public:
-    /** 
-     * Register a special type of widget to the WidgetFactoryInst.
-     */
-    ViewProviderProducer (const Base::Type& type)
-    {
-        ViewProviderBuilder::addBuilder(type, this);
-    }
-
-    ~ViewProviderProducer (){}
-
-    /** 
-     * Creates an instance of the specified widget.
-     */
-    virtual void* Produce (void) const
-    {
-        return (new CLASS);
-    }
 };
 
 } //namespace Gui

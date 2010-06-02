@@ -24,28 +24,15 @@
 #ifndef PART_CUSTOMFEATURE_H
 #define PART_CUSTOMFEATURE_H
 
-#include "TopoShape.h"
-#include "PropertyTopoShape.h"
-#include <App/GeoFeature.h>
-#include <App/FeaturePython.h>
-#include <App/PropertyGeo.h>
-
-class PyObjectBase;
-class FeaturePy;
-
-namespace Base{
-  class PyObjectBase;
-}
+#include <Mod/Part/App/PartFeature.h>
 
 namespace Part
 {
 
-class PartFeaturePy;
-
 /** Base class of all custom feature classes which are almost used as base
  * for python feature classes.
  */
-class AppPartExport CustomFeature : public App::GeoFeature
+class AppPartExport CustomFeature : public Part::Feature
 {
     PROPERTY_HEADER(Part::UserFeature);
 
@@ -63,14 +50,8 @@ public:
 
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {
-        return "PartGui::ViewProviderCustomFeature";
+        return "PartGui::ViewProviderCustom";
     }
-
-    //virtual PyObject* getPyObject(void);
-    virtual std::vector<PyObject *> getPySubObjects(const std::vector<std::string>&) const;
-
-protected:
-    void onChanged(const App::Property* prop);
 };
 
 typedef App::FeaturePythonT<CustomFeature> CustomFeaturePython;

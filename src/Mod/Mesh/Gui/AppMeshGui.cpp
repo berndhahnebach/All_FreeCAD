@@ -129,8 +129,9 @@ void MeshGuiExport initMeshGui()
     MeshGui::ViewProviderMeshIndices            ::init();
     MeshGui::ViewProviderMeshSelfIntersections  ::init();
     MeshGui::Workbench                          ::init();
-    (void)new Gui::ViewProviderProducer<MeshGui::ViewProviderMeshBuilder>
-        (Mesh::PropertyMeshKernel::getClassTypeId());
+    Gui::ViewProviderBuilder::add(
+        Mesh::PropertyMeshKernel::getClassTypeId(),
+        MeshGui::ViewProviderMeshFaceSet::getClassTypeId());
 
     // add resources and reloads the translators
     loadMeshResource();

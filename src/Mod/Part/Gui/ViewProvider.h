@@ -100,7 +100,7 @@ protected:
 
     void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
          int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
-    void showControlPoints(bool);
+    void showControlPoints(bool, const App::Property* prop);
     void showControlPointsOfEdge(const TopoDS_Edge&);
     void showControlPointsOfWire(const TopoDS_Wire&);
     void showControlPointsOfFace(const TopoDS_Face&);
