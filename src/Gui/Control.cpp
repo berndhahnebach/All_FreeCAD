@@ -40,14 +40,14 @@ using namespace std;
 ControlSingleton* ControlSingleton::_pcSingleton = 0;
 
 ControlSingleton::ControlSingleton()
-:ActiveDialog(0)
+  : ActiveDialog(0)
 {
-    
+
 }
 
 ControlSingleton::~ControlSingleton()
 {
-    
+
 }
 
 void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
@@ -57,7 +57,7 @@ void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
     // should return the pointer to combo view
     assert(pcCombiView);
     // only one dialog at a time
-    assert(!ActiveDialog);
+    assert(!ActiveDialog || ActiveDialog==dlg);
     pcCombiView->showDialog(dlg);
     // make sure that the combo view is shown
     QDockWidget* dw = qobject_cast<QDockWidget*>(pcCombiView->parentWidget());
@@ -69,7 +69,12 @@ void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
     ActiveDialog = dlg;
 }
 
-void ControlSingleton::dlgDone()
+Gui::TaskView::TaskDialog* ControlSingleton::activeDialog() const
+{
+    return ActiveDialog;
+}
+
+void ControlSingleton::closeDialog()
 {
     assert(ActiveDialog);
     ActiveDialog = 0;

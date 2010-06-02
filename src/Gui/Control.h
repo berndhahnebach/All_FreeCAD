@@ -63,8 +63,9 @@ public:
     //@{
     /// This method start an Task dialog in the TaskView
     void showDialog(Gui::TaskView::TaskDialog *dlg);
+    Gui::TaskView::TaskDialog* activeDialog() const;
     /// This get called by the TaskView when the Dialog is finished
-    void dlgDone();
+    void closeDialog();
     //@}
 
     bool isAllowedAlterDocument(void) const;

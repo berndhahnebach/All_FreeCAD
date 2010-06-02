@@ -24,6 +24,8 @@
 #define GUI_PLACEMENT_H
 
 #include <Gui/InputVector.h>
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
 #include <Base/Placement.h>
 
 namespace Gui {
@@ -42,6 +44,7 @@ public:
     Base::Vector3f getDirection() const;
     void setPlacement(const Base::Placement&);
     Base::Placement getPlacement() const;
+    void showDefaultButtons(bool);
 
 protected:
     void changeEvent(QEvent *e);
@@ -56,7 +59,6 @@ private Q_SLOTS:
 private:
     void setPlacementData(const Base::Placement&);
     Base::Placement getPlacementData() const;
-    void applyPlacement(const Base::Placement& p);
     void directionActivated(int);
 
 Q_SIGNALS:
@@ -79,6 +81,48 @@ public:
 
     void accept();
     void reject();
+};
+
+class TaskBoxPlacement : public Gui::TaskView::TaskBox
+{
+    Q_OBJECT
+
+public:
+    TaskBoxPlacement(QWidget *parent = 0);
+    ~TaskBoxPlacement();
+    void setPlacement(const Base::Placement&);
+    bool accept();
+
+Q_SIGNALS:
+    void placementChanged(const QVariant &);
+
+private:
+    Placement* widget;
+};
+
+class TaskPlacement : public Gui::TaskView::TaskDialog
+{
+    Q_OBJECT
+
+public:
+    TaskPlacement();
+    ~TaskPlacement();
+
+public:
+    void setPlacement(const Base::Placement&);
+    bool accept();
+
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Ok|QDialogButtonBox::Close; }
+
+public Q_SLOTS:
+    void slotPlacementChanged(const QVariant &);
+
+Q_SIGNALS:
+    void placementChanged(const QVariant &);
+
+private:
+    TaskBoxPlacement* taskbox;
 };
 
 } // namespace Dialog

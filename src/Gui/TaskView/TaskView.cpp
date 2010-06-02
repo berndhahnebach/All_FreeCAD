@@ -210,6 +210,9 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
 
 void TaskView::showDialog(TaskDialog *dlg)
 {
+    // if trying to open the same dialog twice nothing needs to be done
+    if (ActiveDialog == dlg)
+        return;
     assert(!ActiveDialog);
     assert(!ActiveCtrl);
 
@@ -230,11 +233,11 @@ void TaskView::showDialog(TaskDialog *dlg)
     connect(ActiveCtrl->buttonBox,SIGNAL(clicked(QAbstractButton *)),
             this,SLOT(clicked(QAbstractButton *)));
 
-    const std::vector<QWidget*> &cont = dlg->getDialogContent();
+    const std::vector<QWidget*>& cont = dlg->getDialogContent();
 
     taskPanel->addWidget(ActiveCtrl);
 
-    for(std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
+    for (std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
         taskPanel->addWidget(*it);
     }
     taskPanel->addStretch();
@@ -257,7 +260,7 @@ void TaskView::removeDialog(void)
     }
     taskPanel->removeStretch();
     // signal control the end of the dialog
-    Gui::Control().dlgDone();
+    Gui::Control().closeDialog();
     delete ActiveDialog;
     ActiveDialog = 0;
 

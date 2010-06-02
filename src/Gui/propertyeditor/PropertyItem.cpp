@@ -40,9 +40,9 @@
 #include <App/PropertyGeo.h>
 #include <App/PropertyFile.h>
 #include <Gui/Application.h>
+#include <Gui/Control.h>
 #include <Gui/Document.h>
 #include <Gui/ViewProviderDocumentObject.h>
-#include <Gui/MainWindow.h>
 #include <Gui/Widgets.h>
 #include <Gui/Placement.h>
 
@@ -905,9 +905,8 @@ namespace Gui { namespace PropertyEditor {
 class PlacementEditor : public Gui::LabelButton
 {
 public:
-    PlacementEditor(QWidget * parent = 0) : LabelButton(parent)
+    PlacementEditor(QWidget * parent = 0) : LabelButton(parent), _task(0)
     {
-        dlg = 0;
     }
     ~PlacementEditor()
     {
@@ -915,20 +914,24 @@ public:
 protected:
     void browse()
     {
-        if (dlg) {
-            dlg->show();
+        Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
+        Gui::Dialog::TaskPlacement* task;
+        task = qobject_cast<Gui::Dialog::TaskPlacement*>(dlg);
+        if (dlg && !task) {
+            // there is already another task dialog which must be closed first
+            Gui::Control().showDialog(dlg);
             return;
         }
-
-        dlg = Gui::getMainWindow()->findChild<Gui::Dialog::Placement*>();
-        if (!dlg) {
-            dlg = new Gui::Dialog::DockablePlacement(this);
-            dlg->setAttribute(Qt::WA_DeleteOnClose);
+        if (!task) {
+            task = new Gui::Dialog::TaskPlacement();
         }
-        dlg->setPlacement(value().value<Base::Placement>());
-        connect(dlg, SIGNAL(placementChanged(const QVariant &)),
-                this, SLOT(setValue(const QVariant&)));
-        dlg->show();
+        if (!_task) {
+            _task = task;
+            connect(task, SIGNAL(placementChanged(const QVariant &)),
+                    this, SLOT(setValue(const QVariant&)));
+        }
+        task->setPlacement(value().value<Base::Placement>());
+        Gui::Control().showDialog(task);
     }
     void showValue(const QVariant& d)
     {
@@ -948,7 +951,7 @@ protected:
         getLabel()->setText(data);
     }
 
-    Gui::Dialog::Placement* dlg;
+    Gui::Dialog::TaskPlacement* _task;
 };
 }
 }
