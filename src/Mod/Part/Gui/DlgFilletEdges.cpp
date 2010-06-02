@@ -558,7 +558,7 @@ void TaskFilletEdges::open()
 {
 }
 
-void TaskFilletEdges::clicked(QAbstractButton *)
+void TaskFilletEdges::clicked(int)
 {
 }
 

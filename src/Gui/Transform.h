@@ -24,6 +24,8 @@
 #define GUI_TRANSFORM_H
 
 #include <Gui/InputVector.h>
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
 #include <Base/Placement.h>
 
 namespace Gui {
@@ -39,13 +41,16 @@ public:
     ~Transform();
     void accept();
     void reject();
+    void showStandardButtons(bool);
 
 protected:
     Base::Vector3f getDirection() const;
     void changeEvent(QEvent *e);
 
-private Q_SLOTS:
+public Q_SLOTS:
     void on_applyButton_clicked();
+
+private Q_SLOTS:
     void onTransformChanged(int);
 
 private:
@@ -60,6 +65,29 @@ private:
     typedef Gui::LocationInterfaceComp<Ui_Placement> Ui_TransformComp;
     Ui_TransformComp* ui;
     Base::Placement pm;
+};
+
+class TaskTransform : public Gui::TaskView::TaskDialog
+{
+    Q_OBJECT
+
+public:
+    TaskTransform();
+    ~TaskTransform();
+
+public:
+    bool accept();
+    bool reject();
+    void clicked(int);
+
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Ok |
+             QDialogButtonBox::Apply |
+             QDialogButtonBox::Cancel; }
+
+private:
+    Transform* dialog;
+    Gui::TaskView::TaskBox* taskbox;
 };
 
 } // namespace Dialog

@@ -132,7 +132,7 @@ public:
 
 public:
     virtual void open();
-    virtual void clicked(QAbstractButton *);
+    virtual void clicked(int);
     virtual bool accept();
     virtual bool reject();
 

@@ -69,7 +69,7 @@ void TaskDlgSimulate::open()
     ctr->hideGroupBox();
 }
 
-void TaskDlgSimulate::clicked(QAbstractButton *)
+void TaskDlgSimulate::clicked(int)
 {
     
 }

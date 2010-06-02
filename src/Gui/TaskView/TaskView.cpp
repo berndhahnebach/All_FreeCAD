@@ -342,7 +342,8 @@ void TaskView::helpRequested()
 
 void TaskView::clicked (QAbstractButton * button)
 {
-    ActiveDialog->clicked(button);
+    int id = ActiveCtrl->buttonBox->standardButton(button);
+    ActiveDialog->clicked(id);
 }
 
 

@@ -40,6 +40,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "Command.h"
+#include "Control.h"
 #include "FileDialog.h"
 #include "MainWindow.h"
 #include "BitmapFactory.h"
@@ -863,11 +864,7 @@ StdCmdTransform::StdCmdTransform()
 
 void StdCmdTransform::activated(int iMsg)
 {
-    static QPointer<QDialog> dlg = 0;
-    if (!dlg)
-        dlg = new Gui::Dialog::Transform(getMainWindow());
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
-    dlg->show();
+    Gui::Control().showDialog(new Gui::Dialog::TaskTransform());
 }
 
 bool StdCmdTransform::isActive(void)

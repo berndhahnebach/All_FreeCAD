@@ -65,7 +65,7 @@ void TaskDialog::open()
 
 }
 
-void TaskDialog::clicked(QAbstractButton *)
+void TaskDialog::clicked(int)
 {
 
 }
