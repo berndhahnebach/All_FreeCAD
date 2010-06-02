@@ -61,7 +61,7 @@ public:
     /// is called by the framework when the dialog is opened
     virtual void open();
     /// is called by the framework if a button is clicked which has no accept or reject role
-    virtual void clicked(QAbstractButton *);
+    virtual void clicked(int);
     /// is called by the framework if the dialog is accepted (Ok)
     virtual bool accept();
     /// is called by the framework if the dialog is rejected (Cancel)

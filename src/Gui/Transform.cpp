@@ -22,6 +22,7 @@
 
 
 #include "PreCompiled.h"
+#include <QDialogButtonBox>
 #include <QSignalMapper>
 
 #include "Transform.h"
@@ -112,6 +113,13 @@ Transform::Transform(QWidget* parent, Qt::WFlags fl)
 Transform::~Transform()
 {
     delete ui;
+}
+
+void Transform::showStandardButtons(bool b)
+{
+    ui->closeButton->setVisible(b);
+    ui->oKButton->setVisible(b);
+    ui->applyButton->setVisible(b);
 }
 
 void Transform::setRotationCenter()
@@ -283,6 +291,41 @@ void Transform::changeEvent(QEvent *e)
     }
     else {
         QDialog::changeEvent(e);
+    }
+}
+
+// ---------------------------------------
+
+TaskTransform::TaskTransform()
+{
+    dialog = new Transform();
+    dialog->showStandardButtons(false);
+    taskbox = new Gui::TaskView::TaskBox(QPixmap(), dialog->windowTitle(), true, 0);
+    taskbox->groupLayout()->addWidget(dialog);
+    Content.push_back(taskbox);
+}
+
+TaskTransform::~TaskTransform()
+{
+    // automatically deleted in the sub-class
+}
+
+bool TaskTransform::accept()
+{
+    dialog->accept();
+    return (dialog->result() == QDialog::Accepted);
+}
+
+bool TaskTransform::reject()
+{
+    dialog->reject();
+    return (dialog->result() == QDialog::Rejected);
+}
+
+void TaskTransform::clicked(int id)
+{
+    if (id == QDialogButtonBox::Apply) {
+        dialog->on_applyButton_clicked();
     }
 }
 
