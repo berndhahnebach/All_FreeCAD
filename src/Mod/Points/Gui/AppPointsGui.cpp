@@ -78,8 +78,9 @@ void PointsGuiExport initPointsGui()
     PointsGui::ViewProviderPoints::init();
     PointsGui::ViewProviderPython::init();
     PointsGui::Workbench         ::init();
-    (void)new Gui::ViewProviderProducer<PointsGui::ViewProviderPointsBuilder>
-        (Points::PropertyPointKernel::getClassTypeId());
+    Gui::ViewProviderBuilder::add(
+        Points::PropertyPointKernel::getClassTypeId(),
+        PointsGui::ViewProviderPoints::getClassTypeId());
 
     // add resources and reloads the translators
     loadPointsResource();
