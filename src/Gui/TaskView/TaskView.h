@@ -127,10 +127,6 @@ protected:
     iisTaskPanel* taskPanel;
     TaskDialog *ActiveDialog;
     TaskEditControl *ActiveCtrl;
-
-
-private:
-  
 };
 
 } //namespace TaskView

@@ -50,6 +50,28 @@ public:
         return false;
     }
 };
+
+void applyPlacement(const Base::Placement& p)
+{
+    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
+        (App::DocumentObject::getClassTypeId());
+    if (!sel.empty()) {
+        for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
+            std::map<std::string,App::Property*> props;
+            (*it)->getPropertyMap(props);
+            // search for the placement property
+            std::map<std::string,App::Property*>::iterator jt;
+            jt = std::find_if(props.begin(), props.end(), find_placement());
+            if (jt != props.end()) {
+                Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(*it);
+                if (vp) vp->setTransformation(p.toMatrix());
+            }
+        }
+    }
+    else {
+        Base::Console().Warning("No object selected.\n");
+    }
+}
 }
 }
 
@@ -85,8 +107,18 @@ Placement::~Placement()
     delete ui;
 }
 
+void Placement::showDefaultButtons(bool ok)
+{
+    ui->oKButton->setVisible(ok);
+    ui->closeButton->setVisible(ok);
+}
+
 void Placement::onPlacementChanged(int)
 {
+    // If there listeners to the 'placementChanged' signal we rely
+    // on that the listener updates any placement. If no listeners
+    // are connected the placement is applied to all selected objects
+    // automatically.
     if (ui->applyPlacementChange->isChecked()) {
         Base::Placement plm = this->getPlacement();
         if (receivers(SIGNAL(placementChanged(QVariant))) > 0) {
@@ -96,28 +128,6 @@ void Placement::onPlacementChanged(int)
         else {
             applyPlacement(plm);
         }
-    }
-}
-
-void Placement::applyPlacement(const Base::Placement& p)
-{
-    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
-        (App::DocumentObject::getClassTypeId());
-    if (!sel.empty()) {
-        for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
-            std::map<std::string,App::Property*> props;
-            (*it)->getPropertyMap(props);
-            // search for the placement property
-            std::map<std::string,App::Property*>::iterator jt;
-            jt = std::find_if(props.begin(), props.end(), find_placement());
-            if (jt != props.end()) {
-                Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(*it);
-                if (vp) vp->setTransformation(p.toMatrix());
-            }
-        }
-    }
-    else {
-        Base::Console().Warning("No object selected.\n");
     }
 }
 
@@ -156,6 +166,10 @@ void Placement::accept()
 
 void Placement::on_applyButton_clicked()
 {
+    // If there listeners to the 'placementChanged' signal we rely
+    // on that the listener updates any placement. If no listeners
+    // are connected the placement is applied to all selected objects
+    // automatically.
     Base::Placement plm = this->getPlacement();
     if (receivers(SIGNAL(placementChanged(QVariant))) > 0) {
         QVariant data = QVariant::fromValue<Base::Placement>(plm);
@@ -308,6 +322,72 @@ void DockablePlacement::reject()
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
     pDockMgr->removeDockWindow(this);
     Placement::reject();
+}
+
+// ----------------------------------------------
+
+TaskBoxPlacement::TaskBoxPlacement(QWidget* parent)
+    : TaskBox(QPixmap(), tr("Placement"),true, parent)
+{
+    widget = new Placement(this);
+    widget->showDefaultButtons(false);
+    this->groupLayout()->addWidget(widget);
+    connect(widget, SIGNAL(placementChanged(const QVariant &)),
+            this, SIGNAL(placementChanged(const QVariant &)));
+}
+
+TaskBoxPlacement::~TaskBoxPlacement()
+{
+}
+
+bool TaskBoxPlacement::accept()
+{
+    widget->accept();
+    return (widget->result() == QDialog::Accepted);
+}
+
+void TaskBoxPlacement::setPlacement(const Base::Placement& p)
+{
+    widget->setPlacement(p);
+}
+
+// ---------------------------------------
+
+TaskPlacement::TaskPlacement() : taskbox(new TaskBoxPlacement)
+{
+    Content.push_back(taskbox);
+    connect(taskbox, SIGNAL(placementChanged(const QVariant &)),
+            this, SLOT(slotPlacementChanged(const QVariant &)));
+}
+
+TaskPlacement::~TaskPlacement()
+{
+    // automatically deleted in the sub-class
+}
+
+void TaskPlacement::slotPlacementChanged(const QVariant & p)
+{
+    // If there listeners to the 'placementChanged' signal we rely
+    // on that the listener updates any placement. If no listeners
+    // are connected the placement is applied to all selected objects
+    // automatically.
+    if (receivers(SIGNAL(placementChanged(QVariant))) > 0) {
+        /*emit*/ placementChanged(p);
+    }
+    else {
+        Base::Placement plm = p.value<Base::Placement>();
+        applyPlacement(plm);
+    }
+}
+
+bool TaskPlacement::accept()
+{
+    return taskbox->accept();
+}
+
+void TaskPlacement::setPlacement(const Base::Placement& p)
+{
+    taskbox->setPlacement(p);
 }
 
 #include "moc_Placement.cpp"
