@@ -32,6 +32,7 @@
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
 #include "ViewProviderSketchSF.h"
+#include "ViewProviderSketch.h"
 
 //#include "resources/qrc_Sketcher.cpp"
 
@@ -74,6 +75,7 @@ void SketcherGuiExport initSketcherGui()
 
 	// init objects
 	SketcherGui::ViewProviderSketchSF::init();
+	SketcherGui::ViewProviderSketch  ::init();
 
      // add resources and reloads the translators
     loadSketcherResource();

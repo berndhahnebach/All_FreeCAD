@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2010     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,60 +21,80 @@
  ***************************************************************************/
 
 
+#ifndef APP_PropertyConstraintList_H
+#define APP_PropertyConstraintList_H
 
-#ifndef SKETCHER_CONSTRAINT_H
-#define SKETCHER_CONSTRAINT_H
+// Std. configurations
 
 
-#include <Base/Persistence.h>
+#include <vector>
+#include <string>
+#include <App/Property.h>
+#include "Constraint.h"
+
+namespace Base {
+class Writer;
+}
 
 namespace Sketcher
 {
+class Constraint;
 
-enum ConstraintType {
-    None,
-    Coincident,
-    Horizontal,
-    Vertical
-};
-
-/// define if you whant to use the end or start point
-enum PointPos {start,end };
-
-class Constraint :public Base::Persistence
+class AppSketcherExport PropertyConstraintList: public App::PropertyLists
 {
     TYPESYSTEM_HEADER();
 
 public:
-    ~Constraint();
-    Constraint();
-    Constraint(const Constraint&);
-    virtual Constraint *clone(void)const;
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyConstraintList();
+
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    virtual ~PropertyConstraintList();
+
+    virtual void setSize(int newSize);
+    virtual int getSize(void) const;
+
+    /** Sets the property
+     */
+    void setValue(const Constraint*);
+    void setValues(const std::vector<Constraint*>&);
+
+    /// index operator
+    const Constraint *operator[] (const int idx) const {
+        return _lValueList.operator[] (idx);
+    }
 
 
-	// from base class
-    virtual unsigned int getMemSize (void) const;
-	virtual void Save (Base::Writer &/*writer*/) const;
-    virtual void Restore(Base::XMLReader &/*reader*/);
+    void  set1Value (const int idx, Constraint* value) {
+        _lValueList.operator[] (idx) = value->clone();
+    }
+
+    const std::vector<Constraint*> &getValues(void) const {
+        return _lValueList;
+    }
 
     virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
 
-    friend class Sketch;
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
 
-public:
-    ConstraintType Type;
-    std::string Name;
-    float Value;
-    int First;
-    PointPos FirstPos;
-    int Second;
-    PointPos SecondPos;
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
 
+    virtual unsigned int getMemSize (void) const;
 
-
+private:
+    std::vector<Constraint*> _lValueList;
 };
 
-} //namespace Part
+} // namespace Sketcher
 
 
-#endif // SKETCHER_CONSTRAINT_H
+#endif // APP_PropertyConstraintList_H

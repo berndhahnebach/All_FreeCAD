@@ -34,6 +34,7 @@
 #include "FeaturePartCurveNet.h"
 #include "FeaturePartCircle.h"
 #include "FeaturePartPolygon.h"
+#include "FeatureGeometrySet.h"
 #include "FeatureExtrusion.h"
 #include "FeatureFillet.h"
 #include "FeatureRevolution.h"
@@ -127,6 +128,7 @@ void AppPartExport initPart()
 
     Part::Feature               ::init();
     Part::FeaturePython         ::init();
+    Part::FeatureGeometrySet    ::init();
     Part::CustomFeature         ::init();
     Part::CustomFeaturePython   ::init();
     Part::Primitive             ::init();

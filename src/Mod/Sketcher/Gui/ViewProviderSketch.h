@@ -43,8 +43,8 @@ namespace Gui {
 }
 
 namespace Sketcher {
-    class SketchFlatInterface;
-    class SketchObjectSF;
+    class Sketch;
+    class SketchObject;
 }
 
 namespace SketcherGui {
@@ -78,6 +78,8 @@ public:
         const SbVec3f &normal, const SoPickedPoint* pp);
 	/// draw the sketch in the inventor nodes
 	void draw(void);
+	/// solve the sketch 
+	void solve(void);
 
 	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
 	void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
@@ -111,7 +113,7 @@ public:
 	int getSketchMode(void){return Mode;}
 
 
-    Sketcher::SketchObjectSF* getSketchObjectSF(void);
+    Sketcher::SketchObject* getSketchObject(void);
 
 protected:
     /// helper to detect whether the picked point lies on the sketch
@@ -131,8 +133,7 @@ protected:
     SbColor PreselectOldColor;
     int PreselectPoint;
     // pointer to the Solver
-    Sketcher::SketchFlatInterface *SketchFlat;
-
+    Sketcher::Sketch *ActSketch;
     // nodes for the visuals 
     SoMaterial    *PointsMaterials;
     SoMaterial    *CurvesMaterials;

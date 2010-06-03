@@ -40,17 +40,6 @@ Part2DObject::Part2DObject()
 {
 }
 
-short Part2DObject::mustExecute() const
-{
-    //if (x.isTouched() ||
-    //    y.isTouched() ||
-    //    z.isTouched() ||
-    //    l.isTouched() ||
-    //    h.isTouched() ||
-    //    w.isTouched() )
-    //    return 1;
-    return 0;
-}
 
 App::DocumentObjectExecReturn *Part2DObject::execute(void)
 {

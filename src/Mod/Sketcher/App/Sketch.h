@@ -37,9 +37,19 @@
 
 namespace Sketcher
 {
-
-
-class Sketch :public Base::Persistence
+/*
+ class GeometryList: public std::vector<Part::Geometry *>{
+ public:
+     explicit GeometryList(size_type _Count):std::vector<Part::Geometry *>(_Count){}
+     explicit GeometryList(){}
+     virtual ~GeometryList(){
+         for(const_iterator it=begin();it!=end();++it)
+             if(*it)
+                 delete(*it);
+     }
+ };
+*/
+class AppSketcherExport Sketch :public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 
@@ -52,16 +62,22 @@ public:
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
-    /// define if you whant to use the end or start point
-    enum PointPos {start,end };
 
+    /** solve the actuall set up sketch
+      * If the two fixes pointers are non null it leafs out 
+      * this two parameters from the solving. Its like a fixes
+      * constraint on a point
+      */
+    int solve(double * fixed[2]);
     int solve(void);
     /// return the actual geometry of the sketch a TopoShape
     Part::TopoShape toShape(void);
     /// add unspecified geomtry
-    int addGeometry(Part::GeomCurve *geo);
+    int addGeometry(const Part::Geometry *geo);
+    /// add unspecified geomtry
+    void addGeometry(const std::vector<Part::Geometry *> geo);
     /// returns the actual geometry 
-    std::vector<Part::GeomCurve *> getGeometry(bool withConstrucionElements = false) const;
+    std::vector<Part::Geometry *> getGeometry(bool withConstrucionElements = false) const;
     /// get the geometry as python objects
     Py::Tuple getPyGeometry(void) const;
     /// set an geometric element to a construction element
@@ -76,20 +92,22 @@ public:
     /// add a point 
     int addPoint(Base::Vector3d point);
     /// add a infinit line 
-    int addLine(Part::GeomLineSegment line);
+    int addLine(const Part::GeomLineSegment &line);
     /// add a line segment 
-    int addLineSegment(Part::GeomLineSegment lineSegment);
+    int addLineSegment(const Part::GeomLineSegment &lineSegment);
     /// add a arc (circle segment)
-    int addArc(Part::GeomTrimmedCurve circleSegment);
+    int addArc(const Part::GeomTrimmedCurve &circleSegment);
     /// add a circle
-    int addCircle(Part::GeomCircle circle);
+    int addCircle(const Part::GeomCircle &circle);
     /// add a ellipse
-    int addEllibse(Part::GeomEllipse ellibse);
+    int addEllipse(const Part::GeomEllipse &ellipse);
     //@}
 
 
     /// constraints
     //@{
+    /// add all constraints in the list
+    void addConstraints(const std::vector<Constraint *> &ConstraintList);
     /// add a horizontal constraint to a geometry
     int addHorizontalConstraint(int geoIndex, const char* name=0);
     /// add a vertical constraint to a geometry
@@ -110,7 +128,7 @@ public:
 protected:
     /// container element to store and work with the gometric elements of this sketch
     struct GeoDef {
-        Part::GeomCurve * geo;                 // pointer to the geometry
+        Part::Geometry  * geo;                 // pointer to the geometry
         GeoType           type;                // type of the geometry
         bool              construction;        // defines if this element is a construction element
         int               parameterStartIndex; // start index for the points of this geometry
@@ -119,8 +137,14 @@ protected:
         int               circleStartIndex;    // start index of the circle of this geometry
     };
 
+    /// container element to store and work with the constraint elements of this sketch
+    struct ConstrainDef {
+        constraint  constrain; 
+        std::string name;   
+    };
+
     std::vector<GeoDef> Geoms;
-    std::vector<Constraint> Const;
+    std::vector<ConstrainDef> Const;
 
     // solving parameters
     std::vector<double*> Parameters;

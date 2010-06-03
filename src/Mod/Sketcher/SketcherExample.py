@@ -3,48 +3,16 @@ from Sketcher import *
 from Part import *
 from FreeCAD import *
 
-StartPoint = 0
-EndPoint = 1
-MiddlePoint = 2
+if(App.activeDocument() == None):App.newDocument()
 
-RootPoint = 0
-X_Axis    = 1
-Y_Axis    = 2
+f = App.activeDocument().addObject("Sketcher::SketchObject","Sketch")
 
-# === low level sketch building & constraint solving ===
-# create a constraint sketch
-sketch = Sketch()
+f.Geometry = [Line(Vector(0,0,0),Vector(2,20,0)),Line(Vector(0,0,0),Vector(20,2,0))]
 
-# create some lines
-l1 = Line(Vector(0,0,0),Vector(10,2,0))
-l2 = Line(Vector(0,0,0),Vector(2,10,0))
+f.Constraints = [Constraint('Vertical',3),Constraint('Horizontal',4)]
 
-# add the geometry to the sketch
-Line1 = sketch.addGeometry(l1)
-Line2 = sketch.addGeometry(l2)
+App.activeDocument().recompute()
 
-# add constraints
-sketch.addHorizontalConstraint(Line1,'h')
-sketch.addVerticalConstraint(Line2,'v')
-# set a coincident constraint between the start points of both lines
-sketch.addPointOnPointConstraint(Line1,StartPoint,Line2,StartPoint,'p')
+f.Geometry
 
-# solve the sketch
-sketch.solve()
-
-# get the result
-sketch.Geometries[Line1]
-sketch.Geometries[Line2]
-
-# constrain to the root point (0,0)
-sketch.addPointOnPointConstraint(Line1,StartPoint,RootPoint,StartPoint,'pr')
-
-# solve the sketch
-sketch.solve()
-# get the result
-sketch.Geometries[Line1]
-sketch.Geometries[Line2]
-
-# move the point to zero grid point
-sketch.movePoint(Line1,StartPoint,Vector(0,0,0))
 
