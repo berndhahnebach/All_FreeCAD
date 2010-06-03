@@ -15,8 +15,6 @@ if(MSVC)
 endif(MSVC)
 
 set(CoinPy_SRCS
-		__init__.py
-		coin.py
 		coin_wrap.cpp
 		coin_header_includes.h)
 
@@ -53,19 +51,17 @@ else(MSVC)
 	set_target_properties(coin PROPERTIES PREFIX "")
 endif(MSVC)
 
-fc_copy_to_path("bin/pivy" 
+fc_copy_sources_outpath("bin/pivy" "coin"
 	__init__.py
 	coin.py
-	sogui.py)
+	sogui.py
+)
 
 install(FILES __init__.py coin.py sogui.py DESTINATION bin/pivy)
 
 ########################### SoQtPy ###########################
 
 set(SoQtPy_SRCS
-		__init__.py
-		sogui.py
-		soqt.py
 		soqt_wrap.cpp)
 
 if(WIN32)
@@ -104,8 +100,9 @@ else(MSVC)
 	set_target_properties(soqt PROPERTIES PREFIX "")
 endif(MSVC)
 
-fc_copy_to_path("bin/pivy/gui" 
-	__init__.py
-	soqt.py)
+fc_copy_sources_outpath("bin/pivy" "soqt"
+	gui/soqt.py
+	gui/__init__.py
+)
 
 install(FILES __init__.py soqt.py DESTINATION bin/pivy/gui)

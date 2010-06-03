@@ -975,6 +975,7 @@ static PyObject * makeLoft(PyObject *self, PyObject *args)
         Standard_Boolean anIsRuled = Standard_False;
         BRepOffsetAPI_ThruSections aGenerator (anIsSolid,anIsRuled);
 
+        int countWires = 0;
         Py::List list(pcObj);
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
@@ -982,8 +983,15 @@ static PyObject * makeLoft(PyObject *self, PyObject *args)
                     getTopoShapePtr()->_Shape;
                 if (!sh.IsNull() && sh.ShapeType() == TopAbs_WIRE) {
                     aGenerator.AddWire(TopoDS::Wire (sh));
+                    countWires++;
                 }
             }
+        }
+
+        // need at least two wires
+        if (countWires < 2) {
+            PyErr_SetString(PyExc_Exception, "Need at least two wires to create loft face");
+            return 0;
         }
 
         Standard_Boolean anIsCheck = Standard_False;

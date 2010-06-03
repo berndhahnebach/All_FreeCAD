@@ -87,7 +87,7 @@ MACRO (fc_copy_sources path_name mod_name)
 	)
 ENDMACRO(fc_copy_sources)
 
-MACRO (fc_copy_sources_outpath path_name out_path mod_name)
+MACRO (fc_copy_sources_outpath out_path mod_name)
 	foreach(it ${ARGN})
 		file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${out_path}/${it}" outfile)
 		get_filename_component(infile ${it} ABSOLUTE)

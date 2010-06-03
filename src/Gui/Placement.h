@@ -83,23 +83,6 @@ public:
     void reject();
 };
 
-class TaskBoxPlacement : public Gui::TaskView::TaskBox
-{
-    Q_OBJECT
-
-public:
-    TaskBoxPlacement(QWidget *parent = 0);
-    ~TaskBoxPlacement();
-    void setPlacement(const Base::Placement&);
-    bool accept();
-
-Q_SIGNALS:
-    void placementChanged(const QVariant &);
-
-private:
-    Placement* widget;
-};
-
 class TaskPlacement : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
@@ -122,7 +105,8 @@ Q_SIGNALS:
     void placementChanged(const QVariant &);
 
 private:
-    TaskBoxPlacement* taskbox;
+    Placement* widget;
+    Gui::TaskView::TaskBox* taskbox;
 };
 
 } // namespace Dialog
