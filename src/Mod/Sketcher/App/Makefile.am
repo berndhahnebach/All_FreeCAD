@@ -21,6 +21,8 @@ libSketcher_la_SOURCES = \
 		ConstraintPyImp.cpp \
 		SketchFlatInterface.cpp \
 		SketchFlatInterface.h \
+		PropertyConstraintList.cpp \
+		PropertyConstraintList.h \
 		SketchObject.cpp \
 		SketchObject.h \
 		SketchObjectPyImp.cpp \

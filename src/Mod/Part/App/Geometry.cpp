@@ -75,6 +75,27 @@
 
 #endif
 
+#include "LinePy.h"
+#include "CirclePy.h"
+#include "EllipsePy.h"
+#include "ArcPy.h"
+#include "BezierCurvePy.h"
+#include "BSplineCurvePy.h"
+#include "HyperbolaPy.h"
+#include "OffsetCurvePy.h"
+#include "ParabolaPy.h"
+#include "BezierSurfacePy.h"
+#include "BSplineSurfacePy.h"
+#include "ConePy.h"
+#include "CylinderPy.h"
+#include "OffsetSurfacePy.h"
+#include "PlanePy.h"
+#include "RectangularTrimmedSurfacePy.h"
+#include "SpherePy.h"
+#include "SurfaceOfExtrusionPy.h"
+#include "SurfaceOfRevolutionPy.h"
+#include "ToroidPy.h"
+
 #include <Base/Exception.h>
 
 #include "Geometry.h"
@@ -188,10 +209,20 @@ const Handle_Geom_Geometry& GeomBezierCurve::handle() const
     return myCurve;
 }
 
+Geometry *GeomBezierCurve::clone(void)const
+{
+    return new GeomBezierCurve(Handle_Geom_BezierCurve::DownCast(myCurve->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomBezierCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBezierCurve::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBezierCurve::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomBezierCurve::getPyObject(void)
+{
+    return new BezierCurvePy((GeomBezierCurve*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -228,10 +259,20 @@ const Handle_Geom_Geometry& GeomBSplineCurve::handle() const
     return myCurve;
 }
 
+Geometry *GeomBSplineCurve::clone(void)const
+{
+    return new GeomBSplineCurve(Handle_Geom_BSplineCurve::DownCast(myCurve->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomBSplineCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBSplineCurve::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBSplineCurve::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomBSplineCurve::getPyObject(void)
+{
+    return new BSplineCurvePy((GeomBSplineCurve*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -257,6 +298,11 @@ const Handle_Geom_Geometry& GeomCircle::handle() const
     return myCurve;
 }
 
+Geometry *GeomCircle::clone(void)const
+{
+    return new GeomCircle(Handle_Geom_Circle::DownCast(myCurve->Copy()));
+}
+
 Base::Vector3d GeomCircle::getCenter(void) const
 {
     Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(handle());
@@ -276,6 +322,11 @@ double GeomCircle::getRadius(void) const
 unsigned int GeomCircle::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomCircle::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomCircle::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomCircle::getPyObject(void)
+{
+    return new CirclePy((GeomCircle*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -301,10 +352,20 @@ const Handle_Geom_Geometry& GeomEllipse::handle() const
     return myCurve;
 }
 
+Geometry *GeomEllipse::clone(void)const
+{
+    return new GeomEllipse(Handle_Geom_Ellipse::DownCast(myCurve->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomEllipse::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomEllipse::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomEllipse::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomEllipse::getPyObject(void)
+{
+    return new EllipsePy((GeomEllipse*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -330,10 +391,20 @@ const Handle_Geom_Geometry& GeomHyperbola::handle() const
     return myCurve;
 }
 
+Geometry *GeomHyperbola::clone(void)const
+{
+    return new GeomHyperbola(Handle_Geom_Hyperbola::DownCast(myCurve->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomHyperbola::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomHyperbola::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomHyperbola::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomHyperbola::getPyObject(void)
+{
+    return new HyperbolaPy((GeomHyperbola*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -359,10 +430,20 @@ const Handle_Geom_Geometry& GeomParabola::handle() const
     return myCurve;
 }
 
+Geometry *GeomParabola::clone(void)const
+{
+    return new GeomParabola(Handle_Geom_Parabola::DownCast(myCurve->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomParabola::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomParabola::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomParabola::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomParabola::getPyObject(void)
+{
+    return new ParabolaPy((GeomParabola*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -388,11 +469,20 @@ const Handle_Geom_Geometry& GeomLine::handle() const
     return myCurve;
 }
 
+Geometry *GeomLine::clone(void)const
+{
+    return new GeomLine(Handle_Geom_Line::DownCast(myCurve->Copy()));
+}
 
 // Persistence implementer 
 unsigned int GeomLine::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomLine::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomLine::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomLine::getPyObject(void)
+{
+    return 0;
+}
 
 // -------------------------------------------------
 
@@ -414,6 +504,13 @@ GeomLineSegment::~GeomLineSegment()
 const Handle_Geom_Geometry& GeomLineSegment::handle() const
 {
     return myCurve;
+}
+
+Geometry *GeomLineSegment::clone(void)const
+{
+    GeomLineSegment *tempCurve = new GeomLineSegment();
+    tempCurve->myCurve = Handle_Geom_TrimmedCurve::DownCast(myCurve->Copy());
+    return tempCurve;
 }
 
 Base::Vector3d GeomLineSegment::getStartPoint() const
@@ -462,6 +559,11 @@ unsigned int GeomLineSegment::getMemSize (void) const               {assert(0); 
 void         GeomLineSegment::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomLineSegment::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
 
+PyObject *GeomLineSegment::getPyObject(void)
+{
+    return new LinePy((GeomLineSegment*)this->clone());
+}
+
 // -------------------------------------------------
 
 TYPESYSTEM_SOURCE(Part::GeomOffsetCurve,Part::GeomCurve);
@@ -484,6 +586,11 @@ GeomOffsetCurve::~GeomOffsetCurve()
 {
 }
 
+Geometry *GeomOffsetCurve::clone(void)const
+{
+    return new GeomOffsetCurve(Handle_Geom_OffsetCurve::DownCast(myCurve->Copy()));
+}
+
 void GeomOffsetCurve::setHandle(const Handle_Geom_OffsetCurve& c)
 {
     this->myCurve = c;
@@ -498,6 +605,11 @@ const Handle_Geom_Geometry& GeomOffsetCurve::handle() const
 unsigned int GeomOffsetCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomOffsetCurve::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomOffsetCurve::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomOffsetCurve::getPyObject(void)
+{
+    return new OffsetCurvePy((GeomOffsetCurve*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -526,10 +638,20 @@ const Handle_Geom_Geometry& GeomTrimmedCurve::handle() const
     return myCurve;
 }
 
+Geometry *GeomTrimmedCurve::clone(void)const
+{
+    return 0;
+}
+
 // Persistence implementer 
 unsigned int GeomTrimmedCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomTrimmedCurve::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomTrimmedCurve::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomTrimmedCurve::getPyObject(void)
+{
+    return 0;
+}
 
 // -------------------------------------------------
 
@@ -604,10 +726,20 @@ const Handle_Geom_Geometry& GeomBezierSurface::handle() const
     return mySurface;
 }
 
+Geometry *GeomBezierSurface::clone(void)const
+{
+    return new GeomBezierSurface(Handle_Geom_BezierSurface::DownCast(mySurface->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomBezierSurface::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBezierSurface::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBezierSurface::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomBezierSurface::getPyObject(void)
+{
+    return new BezierSurfacePy((GeomBezierSurface*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -646,10 +778,20 @@ const Handle_Geom_Geometry& GeomBSplineSurface::handle() const
     return mySurface;
 }
 
+Geometry *GeomBSplineSurface::clone(void)const
+{
+    return new GeomBSplineSurface(Handle_Geom_BSplineSurface::DownCast(mySurface->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomBSplineSurface::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBSplineSurface::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomBSplineSurface::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomBSplineSurface::getPyObject(void)
+{
+    return new BSplineSurfacePy((GeomBSplineSurface*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -670,10 +812,22 @@ const Handle_Geom_Geometry& GeomCylinder::handle() const
     return mySurface;
 }
 
+Geometry *GeomCylinder::clone(void)const
+{
+    GeomCylinder *tempCurve = new GeomCylinder();
+    tempCurve->mySurface = Handle_Geom_CylindricalSurface::DownCast(mySurface->Copy());
+    return tempCurve;
+}
+
 // Persistence implementer 
 unsigned int GeomCylinder::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomCylinder::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomCylinder::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomCylinder::getPyObject(void)
+{
+    return new CylinderPy((GeomCylinder*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -694,10 +848,22 @@ const Handle_Geom_Geometry& GeomCone::handle() const
     return mySurface;
 }
 
+Geometry *GeomCone::clone(void)const
+{
+    GeomCone *tempCurve = new GeomCone();
+    tempCurve->mySurface = Handle_Geom_ConicalSurface::DownCast(mySurface->Copy());
+    return tempCurve;
+}
+
 // Persistence implementer 
 unsigned int GeomCone::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomCone::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomCone::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomCone::getPyObject(void)
+{
+    return new ConePy((GeomCone*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -718,10 +884,22 @@ const Handle_Geom_Geometry& GeomToroid::handle() const
     return mySurface;
 }
 
+Geometry *GeomToroid::clone(void)const
+{
+    GeomToroid *tempCurve = new GeomToroid();
+    tempCurve->mySurface = Handle_Geom_ToroidalSurface::DownCast(mySurface->Copy());
+    return tempCurve;
+}
+
 // Persistence implementer 
 unsigned int GeomToroid::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomToroid::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomToroid::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomToroid::getPyObject(void)
+{
+    return new ToroidPy((GeomToroid*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -742,10 +920,22 @@ const Handle_Geom_Geometry& GeomSphere::handle() const
     return mySurface;
 }
 
+Geometry *GeomSphere::clone(void)const
+{
+    GeomSphere *tempCurve = new GeomSphere();
+    tempCurve->mySurface = Handle_Geom_SphericalSurface::DownCast(mySurface->Copy());
+    return tempCurve;
+}
+
 // Persistence implementer 
 unsigned int GeomSphere::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomSphere::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomSphere::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomSphere::getPyObject(void)
+{
+    return new SpherePy((GeomSphere*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -766,11 +956,22 @@ const Handle_Geom_Geometry& GeomPlane::handle() const
     return mySurface;
 }
 
+Geometry *GeomPlane::clone(void)const
+{
+    GeomPlane *tempCurve = new GeomPlane();
+    tempCurve->mySurface = Handle_Geom_Plane::DownCast(mySurface->Copy());
+    return tempCurve;
+}
+
 // Persistence implementer 
 unsigned int GeomPlane::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomPlane::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomPlane::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
 
+PyObject *GeomPlane::getPyObject(void)
+{
+    return new PlanePy((GeomPlane*)this->clone());
+}
 // -------------------------------------------------
 
 TYPESYSTEM_SOURCE(Part::GeomOffsetSurface,Part::GeomSurface);
@@ -803,10 +1004,20 @@ const Handle_Geom_Geometry& GeomOffsetSurface::handle() const
     return mySurface;
 }
 
+Geometry *GeomOffsetSurface::clone(void)const
+{
+    return new GeomOffsetSurface(Handle_Geom_OffsetSurface::DownCast(mySurface->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomOffsetSurface::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomOffsetSurface::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomOffsetSurface::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomOffsetSurface::getPyObject(void)
+{
+    return new OffsetSurfacePy((GeomOffsetSurface*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -835,10 +1046,20 @@ const Handle_Geom_Geometry& GeomTrimmedSurface::handle() const
     return mySurface;
 }
 
+Geometry *GeomTrimmedSurface::clone(void)const
+{
+    return new GeomTrimmedSurface(Handle_Geom_RectangularTrimmedSurface::DownCast(mySurface->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomTrimmedSurface::getMemSize (void) const {assert(0); return 0;/* not implemented yet */}
 void         GeomTrimmedSurface::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomTrimmedSurface::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomTrimmedSurface::getPyObject(void)
+{
+    return 0;
+}
 
 // -------------------------------------------------
 
@@ -872,10 +1093,20 @@ const Handle_Geom_Geometry& GeomSurfaceOfRevolution::handle() const
     return mySurface;
 }
 
+Geometry *GeomSurfaceOfRevolution::clone(void)const
+{
+    return new GeomSurfaceOfRevolution(Handle_Geom_SurfaceOfRevolution::DownCast(mySurface->Copy()));
+}
+
 // Persistence implementer 
 unsigned int GeomSurfaceOfRevolution::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomSurfaceOfRevolution::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomSurfaceOfRevolution::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomSurfaceOfRevolution::getPyObject(void)
+{
+    return new SurfaceOfRevolutionPy((GeomSurfaceOfRevolution*)this->clone());
+}
 
 // -------------------------------------------------
 
@@ -909,8 +1140,17 @@ const Handle_Geom_Geometry& GeomSurfaceOfExtrusion::handle() const
     return mySurface;
 }
 
+Geometry *GeomSurfaceOfExtrusion::clone(void)const
+{
+    return new GeomSurfaceOfExtrusion(Handle_Geom_SurfaceOfLinearExtrusion::DownCast(mySurface->Copy()));
+}
 
 // Persistence implementer 
 unsigned int GeomSurfaceOfExtrusion::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomSurfaceOfExtrusion::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
 void         GeomSurfaceOfExtrusion::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+
+PyObject *GeomSurfaceOfExtrusion::getPyObject(void)
+{
+    return new SurfaceOfExtrusionPy((GeomSurfaceOfExtrusion*)this->clone());
+}

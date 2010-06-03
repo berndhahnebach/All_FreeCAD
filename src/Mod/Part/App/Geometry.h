@@ -61,6 +61,8 @@ public:
 
     virtual TopoDS_Shape toShape() const = 0;
     virtual const Handle_Geom_Geometry& handle() const = 0;
+    /// returns a cloned object 
+    virtual Geometry *clone(void)const = 0;
 
 protected:
     Geometry();
@@ -84,11 +86,14 @@ public:
     GeomBezierCurve();
     GeomBezierCurve(const Handle_Geom_BezierCurve&);
     virtual ~GeomBezierCurve();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
 
     const Handle_Geom_Geometry& handle() const;
@@ -104,11 +109,14 @@ public:
     GeomBSplineCurve();
     GeomBSplineCurve(const Handle_Geom_BSplineCurve&);
     virtual ~GeomBSplineCurve();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -123,6 +131,7 @@ public:
     GeomCircle();
     GeomCircle(const Handle_Geom_Circle&);
     virtual ~GeomCircle();
+    virtual Geometry *clone(void)const;
 
     Base::Vector3d getCenter(void) const;
     double getRadius(void) const;
@@ -131,6 +140,8 @@ public:
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -145,11 +156,14 @@ public:
     GeomEllipse();
     GeomEllipse(const Handle_Geom_Ellipse&);
     virtual ~GeomEllipse();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -164,11 +178,14 @@ public:
     GeomHyperbola();
     GeomHyperbola(const Handle_Geom_Hyperbola&);
     virtual ~GeomHyperbola();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -183,11 +200,14 @@ public:
     GeomParabola();
     GeomParabola(const Handle_Geom_Parabola&);
     virtual ~GeomParabola();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -202,11 +222,14 @@ public:
     GeomLine();
     GeomLine(const Handle_Geom_Line&);
     virtual ~GeomLine();
+    virtual Geometry *clone(void)const;
 
    // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -220,6 +243,7 @@ class PartExport GeomLineSegment : public GeomCurve
 public:
     GeomLineSegment();
     virtual ~GeomLineSegment();
+    virtual Geometry *clone(void)const;
 
     Base::Vector3d getStartPoint() const;
     Base::Vector3d getEndPoint() const;
@@ -231,6 +255,8 @@ public:
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -246,11 +272,14 @@ public:
     GeomOffsetCurve(const Handle_Geom_Curve&, double, const gp_Dir&);
     GeomOffsetCurve(const Handle_Geom_OffsetCurve&);
     virtual ~GeomOffsetCurve();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     void setHandle(const Handle_Geom_OffsetCurve& c);
     const Handle_Geom_Geometry& handle() const;
@@ -266,11 +295,14 @@ public:
     GeomTrimmedCurve();
     GeomTrimmedCurve(const Handle_Geom_TrimmedCurve&);
     virtual ~GeomTrimmedCurve();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     void setHandle(const Handle_Geom_TrimmedCurve&);
     const Handle_Geom_Geometry& handle() const;
@@ -298,11 +330,14 @@ public:
     GeomBezierSurface();
     GeomBezierSurface(const Handle_Geom_BezierSurface&);
     virtual ~GeomBezierSurface();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
 
     const Handle_Geom_Geometry& handle() const;
@@ -318,11 +353,14 @@ public:
     GeomBSplineSurface();
     GeomBSplineSurface(const Handle_Geom_BSplineSurface&);
     virtual ~GeomBSplineSurface();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -336,11 +374,14 @@ class PartExport GeomCylinder : public GeomSurface
 public:
     GeomCylinder();
     virtual ~GeomCylinder();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -354,11 +395,14 @@ class PartExport GeomCone : public GeomSurface
 public:
     GeomCone();
     virtual ~GeomCone();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -372,11 +416,14 @@ class PartExport GeomSphere : public GeomSurface
 public:
     GeomSphere();
     virtual ~GeomSphere();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -390,11 +437,14 @@ class PartExport GeomToroid : public GeomSurface
 public:
     GeomToroid();
     virtual ~GeomToroid();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -408,11 +458,14 @@ class PartExport GeomPlane : public GeomSurface
 public:
     GeomPlane();
     virtual ~GeomPlane();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     const Handle_Geom_Geometry& handle() const;
 
@@ -428,11 +481,14 @@ public:
     GeomOffsetSurface(const Handle_Geom_Surface&, double);
     GeomOffsetSurface(const Handle_Geom_OffsetSurface&);
     virtual ~GeomOffsetSurface();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     void setHandle(const Handle_Geom_OffsetSurface& s);
     const Handle_Geom_Geometry& handle() const;
@@ -448,11 +504,14 @@ public:
     GeomTrimmedSurface();
     GeomTrimmedSurface(const Handle_Geom_RectangularTrimmedSurface&);
     virtual ~GeomTrimmedSurface();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     void setHandle(const Handle_Geom_RectangularTrimmedSurface& s);
     const Handle_Geom_Geometry& handle() const;
@@ -469,11 +528,14 @@ public:
     GeomSurfaceOfRevolution(const Handle_Geom_Curve&, const gp_Ax1&);
     GeomSurfaceOfRevolution(const Handle_Geom_SurfaceOfRevolution&);
     virtual ~GeomSurfaceOfRevolution();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     void setHandle(const Handle_Geom_SurfaceOfRevolution& c);
     const Handle_Geom_Geometry& handle() const;
@@ -490,11 +552,14 @@ public:
     GeomSurfaceOfExtrusion(const Handle_Geom_Curve&, const gp_Dir&);
     GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinearExtrusion&);
     virtual ~GeomSurfaceOfExtrusion();
+    virtual Geometry *clone(void)const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize (void) const;
     virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
 
     void setHandle(const Handle_Geom_SurfaceOfLinearExtrusion& c);
     const Handle_Geom_Geometry& handle() const;

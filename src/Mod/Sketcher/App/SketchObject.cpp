@@ -30,7 +30,8 @@
 
 
 #include "SketchObject.h"
-
+#include "SketchObjectPy.h"
+#include "Sketch.h"
 
 using namespace Sketcher;
 using namespace Base;
@@ -41,27 +42,41 @@ PROPERTY_SOURCE(Sketcher::SketchObject, Part::Part2DObject)
 
 SketchObject::SketchObject()
 {
-    //ADD_PROPERTY_TYPE(SketchFlatFile,(0),"",(App::PropertyType)(App::Prop_None),"SketchFlat file (*.skf) which defines this sketch");
-}
-
-short SketchObject::mustExecute() const
-{
-    //if ( SketchFlatFile.isTouched() )
-    //    return 1;
-    return 0;
+    ADD_PROPERTY_TYPE(Geometry,(0),   "Sketch",(App::PropertyType)(App::Prop_None),"Sketch geometry");
+    ADD_PROPERTY_TYPE(Constraints,(0),"Sketch",(App::PropertyType)(App::Prop_None),"Sketch constraints");
 }
 
 
 App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
- //   SketchFlatInterface temp;
- //   temp.load(SketchFlatFile.getValue());
+    Sketch sketch;
 
-	//this->Shape.setValue(temp.getGeoAsShape());
+    sketch.addGeometry(Geometry.getValues());
+    sketch.addConstraints(Constraints.getValues());
+ 
+    // solve the sketch with no fixed points
+    double * fixed[2]={0,0};
+    if(sketch.solve(fixed) != 0)
+        return new App::DocumentObjectExecReturn("Solving the sketch failed!",this);
+
+    std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
+    Geometry.setValues(geomlist);
+    for(std::vector<Part::Geometry *>::iterator it=geomlist.begin();it!=geomlist.end();++it)
+        if(*it)delete(*it);
+
+    Shape.setValue(sketch.toShape());
 
     return App::DocumentObject::StdReturn;
 }
 
+PyObject *SketchObject::getPyObject(void)
+{
+    if (PythonObject.is(Py::_None())){
+        // ref counter is set to 1
+        PythonObject = Py::Object(new SketchObjectPy(this),true);
+    }
+    return Py::new_reference_to(PythonObject); 
+}
 
 unsigned int SketchObject::getMemSize (void) const
 {

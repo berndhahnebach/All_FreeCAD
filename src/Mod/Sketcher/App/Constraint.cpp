@@ -30,7 +30,7 @@
 
 
 #include "Constraint.h"
-#include "SketchFlatInterface.h"
+#include "ConstraintPy.h"
 
 
 using namespace Sketcher;
@@ -43,9 +43,31 @@ TYPESYSTEM_SOURCE(Sketcher::Constraint, Base::Persistence)
 Constraint::Constraint()
 {
 }
+Constraint::Constraint(const Constraint& from)
+: Name(from.Name),
+  Type(from.Type),
+  Value(from.Value),
+  First(from.First),
+  FirstPos(from.FirstPos),
+  Second(from.Second),
+  SecondPos(from.SecondPos)
+{
+}
+
 Constraint::~Constraint()
 {
 }
+
+Constraint *Constraint::clone(void) const
+{
+    return new Constraint(*this);
+}
+
+PyObject *Constraint::getPyObject(void)
+{
+    return new ConstraintPy(new Constraint(*this));
+}
+
 
 unsigned int Constraint::getMemSize (void) const
 {

@@ -30,6 +30,9 @@
 
 #include <Mod/Part/App/Part2DObject.h>
 
+#include <Mod/Part/App/PropertyGeometryList.h>
+#include <Mod/Sketcher/App/PropertyConstraintList.h>
+
 namespace Sketcher
 {
 
@@ -42,13 +45,14 @@ public:
     SketchObject();
 
     /// Property
-    //App::PropertyFileIncluded SketchFlatFile;
+    Part    ::PropertyGeometryList   Geometry;
+    Sketcher::PropertyConstraintList Constraints;
 
     /** @name methods overide Feature */
     //@{
     /// recalculate the Feature
     App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
+
     /// returns the type name of the ViewProvider
     const char* getViewProviderName(void) const {
         return "SketcherGui::ViewProviderSketch";
@@ -56,6 +60,7 @@ public:
     //@}
 
 	// from base class
+    virtual PyObject *getPyObject(void);
     virtual unsigned int getMemSize (void) const;
 	virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);

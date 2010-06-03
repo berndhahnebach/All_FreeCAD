@@ -114,6 +114,7 @@ libPart_la_SOURCES=\
 		FeatureExtrusion.cpp \
 		FeatureFillet.cpp \
 		FeatureRevolution.cpp \
+		FeatureGeometrySet.cpp \
 		Geometry.cpp \
 		ImportStep.cpp \
 		CustomFeature.cpp \

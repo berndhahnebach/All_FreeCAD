@@ -9,6 +9,8 @@
 #include <Mod/Part/App/TopoShapePy.h>
 
 #include "Sketch.h"
+#include "Constraint.h"
+#include "ConstraintPy.h"
 
 // inclusion of the generated files (generated out of SketchPy.xml)
 #include "SketchPy.h"
@@ -39,7 +41,8 @@ int SketchPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 
 PyObject* SketchPy::solve(PyObject *args)
 {
-    return Py::new_reference_to(Py::Int(getSketchPtr()->solve()));
+    double * fixed[2]={0,0};
+    return Py::new_reference_to(Py::Int(getSketchPtr()->solve(fixed)));
 }
 
 PyObject* SketchPy::addGeometry(PyObject *args)
@@ -83,7 +86,7 @@ PyObject* SketchPy::addPointOnPointConstraint(PyObject *args)
     if (!PyArg_ParseTuple(args, "iiii|s", &index1,&index2,&index3,&index4,&name))
         return 0;
 
-    return Py::new_reference_to(Py::Int(getSketchPtr()->addPointCoincidentConstraint(index1,(Sketcher::Sketch::PointPos)index2,index3,(Sketcher::Sketch::PointPos)index4,name)));
+    return Py::new_reference_to(Py::Int(getSketchPtr()->addPointCoincidentConstraint(index1,(Sketcher::PointPos)index2,index3,(Sketcher::PointPos)index4,name)));
 
 }
 
@@ -95,7 +98,7 @@ PyObject* SketchPy::movePoint(PyObject *args)
         return 0;
     Base::Vector3d* movePoint = static_cast<Base::VectorPy*>(pcObj)->getVectorPtr();
 
-    return Py::new_reference_to(Py::Int(getSketchPtr()->movePoint(index1,(Sketcher::Sketch::PointPos)index2,*movePoint)));
+    return Py::new_reference_to(Py::Int(getSketchPtr()->movePoint(index1,(Sketcher::PointPos)index2,*movePoint)));
 }
 
 // +++ attributes implementer ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -114,18 +117,6 @@ Py::Tuple SketchPy::getConstraints(void) const
 
 Py::Tuple SketchPy::getGeometries(void) const
 {
-    //std::vector<Part::GeomCurve *> geoms = getSketchPtr()->getGeometry();
-
-    //Py::Tuple tuple(geoms.size());
-    //int i=0;
-    //for(std::vector<Part::GeomCurve *>::iterator it=geoms.begin();it!=geoms.end();++it,i++){
-    //    if((*it)->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
-    //        GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(*it);
-    //        tuple[i] = Py::Object(new LinePy(lineSeg));
-    //    }else{
-    //        assert(0); // not implemented type in the sketch!
-    //    }
-    //}
     return getSketchPtr()->getPyGeometry();
 }
 

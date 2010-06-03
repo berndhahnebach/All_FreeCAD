@@ -97,6 +97,8 @@ SET(Features_SRCS
 		 Part2DObject.h
 		 PrimitiveFeature.cpp
 		 PrimitiveFeature.h
+		 FeatureGeometrySet.h
+		 FeatureGeometrySet.cpp
 		 CustomFeature.cpp
 		 CustomFeature.h
 )
@@ -105,6 +107,8 @@ SOURCE_GROUP("Features" FILES ${Features_SRCS})
 SET(Properties_SRCS
 		 PropertyTopoShape.cpp
 		 PropertyTopoShape.h
+		 PropertyGeometryList.cpp
+		 PropertyGeometryList.h
 )
 SOURCE_GROUP("Properties" FILES ${Properties_SRCS})
 

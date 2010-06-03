@@ -48,8 +48,10 @@
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
+#include <Mod/Part/App/Geometry.h>
 #include <Mod/Sketcher/App/SketchFlatInterface.h>
-#include <Mod/Sketcher/App/SketchObjectSF.h>
+#include <Mod/Sketcher/App/SketchObject.h>
+#include <Mod/Sketcher/App/Sketch.h>
 
 
 #include "ViewProviderSketch.h"
@@ -119,7 +121,7 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
 
     // move to position of Sketch
-    Base::Placement Plz = getSketchObjectSF()->Placement.getValue();
+    Base::Placement Plz = getSketchObject()->Placement.getValue();
     R0 = Plz.getPosition() ; 
 	Base::Rotation tmp(Plz.getRotation());
     tmp.multVec(RN,RN);
@@ -160,9 +162,9 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 			switch(Mode){
 				case STATUS_NONE:
                     if (PreselectPoint >=0) {
-                        this->DragPoint = SketchFlat->getPoint(PreselectPoint);
+                        //this->DragPoint = SketchFlat->getPoint(PreselectPoint);
 						Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
-					    SketchFlat->forcePoint(this->DragPoint,x,y);
+					    //SketchFlat->forcePoint(this->DragPoint,x,y);
 					    Mode = STATUS_SKETCH_DragPoint;
                         return true;
                     } else
@@ -174,30 +176,30 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 				case STATUS_SKETCH_CreateText:
 					return true;
 				case STATUS_SKETCH_CreateLine:
-					this->DragPoint = SketchFlat->addLine(x,y);
-					SketchFlat->forcePoint(this->DragPoint,x,y);
+					//this->DragPoint = SketchFlat->addLine(x,y);
+					//SketchFlat->forcePoint(this->DragPoint,x,y);
 					Mode = STATUS_SKETCH_DoLine;
 					draw();
 					return true;
 				case STATUS_SKETCH_DoLine:
-					SketchFlat->forcePoint(this->DragPoint,x,y);
-					SketchFlat->solve();
+					//SketchFlat->forcePoint(this->DragPoint,x,y);
+					//SketchFlat->solve();
 					draw();
 					Base::Console().Log("Finish line, point:%d\n",this->DragPoint);
                     this->DragPoint = -1;
 					Mode = STATUS_NONE;
 					return true;
 				case STATUS_SKETCH_CreatePolyline:
-					this->DragPoint = SketchFlat->addLine(x,y);
-					SketchFlat->forcePoint(this->DragPoint,x,y);
+					//this->DragPoint = SketchFlat->addLine(x,y);
+					//SketchFlat->forcePoint(this->DragPoint,x,y);
 					Mode = STATUS_SKETCH_DoPolyline;
 					draw();
 					return true;
 				case STATUS_SKETCH_DoPolyline:
-					SketchFlat->forcePoint(this->DragPoint,x,y);
-					SketchFlat->solve();
-					this->DragPoint = SketchFlat->addLine(x,y);
-					SketchFlat->forcePoint(this->DragPoint,x,y);
+					//SketchFlat->forcePoint(this->DragPoint,x,y);
+					//SketchFlat->solve();
+					//this->DragPoint = SketchFlat->addLine(x,y);
+					//SketchFlat->forcePoint(this->DragPoint,x,y);
 					draw();
 					return true;
                 default:
@@ -209,8 +211,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 			// Do things depending on the mode of the user interaction
 			switch (Mode) {
 				case STATUS_SKETCH_DragPoint:
-					SketchFlat->forcePoint(this->DragPoint,x,y);
-					SketchFlat->solve();
+					//SketchFlat->forcePoint(this->DragPoint,x,y);
+					//SketchFlat->solve();
 					draw();
                     this->DragPoint = -1;
 					Mode = STATUS_NONE;
@@ -225,8 +227,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
         if (pressed) {
             switch(Mode){
                 case STATUS_SKETCH_DoPolyline:
-                    SketchFlat->forcePoint(this->DragPoint,x,y);
-                    SketchFlat->solve();
+                    //SketchFlat->forcePoint(this->DragPoint,x,y);
+                    //SketchFlat->solve();
                     draw();
                     Base::Console().Log("Finish polyline, point:%d\n",this->DragPoint);
                     this->DragPoint = -1;
@@ -261,8 +263,8 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 		case STATUS_SKETCH_DoLine:
 		case STATUS_SKETCH_DoPolyline:
 		case STATUS_SKETCH_DragPoint:
-			SketchFlat->forcePoint(this->DragPoint,x,y);
-			SketchFlat->solve();
+			//SketchFlat->forcePoint(this->DragPoint,x,y);
+			//SketchFlat->solve();
 			draw();
 			return true;
 	}
@@ -340,21 +342,24 @@ bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint* pp) const
 bool ViewProviderSketch::doubleClicked(void)
 {
 
-    Sketcher::SketchObjectSF *obj = static_cast<Sketcher::SketchObjectSF *>(getObject());
-
-	Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
-
-	dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
-
-    if(dlg.Do() == 1)
-        App::GetApplication().getActiveDocument()->recompute();
-
-	//Gui::Application::Instance->activeDocument()->setEdit(this);
+	Gui::Application::Instance->activeDocument()->setEdit(this);
 	return true;
+}
+
+void ViewProviderSketch::solve(void)
+{
+
 }
 
 void ViewProviderSketch::draw(void)
 {
+
+
+    const std::vector<Part::Geometry *> &geomlist = getSketchObject()->Geometry.getValues();
+    for(std::vector<Part::Geometry *>::const_iterator it=geomlist.begin();it!=geomlist.end();++it){
+       ;
+    }
+#if 0
     double x,y;
     //double x0, y0, dx, dy;
     int i=0;
@@ -375,7 +380,7 @@ void ViewProviderSketch::draw(void)
     std::vector<unsigned int> Index;
     std::vector<unsigned int> Color;
 
-    SketchFlat->getLineSet(Coords,Index,Color);
+    //SketchFlat->getLineSet(Coords,Index,Color);
 
     CurveSet->numVertices.setNum(Index.size());
     CurvesCoordinate->point.setNum(Coords.size());
@@ -451,7 +456,7 @@ void ViewProviderSketch::draw(void)
         SbVec3f* verts = PointsCoordinate->point.startEditing();
         SbColor* color = PointsMaterials->diffuseColor.startEditing();
         for (i=0; i<NbrPts; ++i) {
-            SketchFlat->getPoint(i,x,y);
+            //SketchFlat->getPoint(i,x,y);
             verts[i].setValue(x,y,0.2f);
             color[i].setValue(fPointColor);
         }
@@ -460,6 +465,7 @@ void ViewProviderSketch::draw(void)
         PointsCoordinate->point.finishEditing();
         PointsMaterials->diffuseColor.finishEditing();
     }
+#endif
 }
 
 void ViewProviderSketch::updateData(const App::Property* prop)
@@ -480,28 +486,15 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
+    ActSketch = new Sketcher::Sketch();
 
+    createEditInventorNodes();
+    this->hide(); // avoid that the wires interfere with the edit lines
 
- //   if (SketchFlatInterface::isAlive()) {
- //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Cannot edit sketch"),
- //           QObject::tr("Sketch cannot be edited because there is already another sketch in edit mode.\n"
- //           "Please leave the edit mode for the other sketch to enter edit mode for this sketch."));
- //       return false;
- //   }
+	ShowGrid.setValue(true);
 
- //   // interface to the solver
-	//SketchFlat = new SketchFlatInterface();
-
- //   // insert the SketchFlat file
- //   SketchFlat->load(getSketchObjectSF()->SketchFlatFile.getValue());
-
- //   createEditInventorNodes();
- //   this->hide(); // avoid that the wires interfere with the edit lines
-
-	//ShowGrid.setValue(true);
-
- //   SketchFlat->solve();
-	//draw();
+    solve();
+	draw();
 
 	return true;
 }
@@ -573,56 +566,34 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
 void ViewProviderSketch::unsetEdit(void)
 {
-	//ShowGrid.setValue(false);
+	ShowGrid.setValue(false);
 
- //   std::string file;
-
- //   // save the result of editing
- //   if (std::string(getSketchObjectSF()->SketchFlatFile.getValue())=="") {
- //       // make a meaningfull name
- //       Base::FileInfo temp(getSketchObjectSF()->SketchFlatFile.getDocTransientPath()
- //                           + "/" + getSketchObjectSF()->getNameInDocument() + ".skf");
- //       if (temp.exists())
- //           // save under save name
- //           file = Base::FileInfo::getTempFileName("Sketch.skf",getSketchObjectSF()
- //                           ->SketchFlatFile.getDocTransientPath().c_str());
- //       else
- //           file = temp.filePath();
- //   }
- //   else {
- //       // save under old name
- //       file = getSketchObjectSF()->SketchFlatFile.getExchangeTempFile();
- //   }
-
- //   // save the sketch and set the property
- //   SketchFlat->save(file.c_str());
- //   getSketchObjectSF()->SketchFlatFile.setValue(file.c_str());
- //   getSketchObjectSF()->touch();
-
-	//// close the solver
-	//delete(SketchFlat);
+ 
+ 
+	// close the solver
+	delete(ActSketch);
 
  //   // recompute the part
- //   getSketchObjectSF()->getDocument()->recompute();
+ //   getSketchObject()->getDocument()->recompute();
 
-	//// empty the nodes
-	//EditRoot->removeAllChildren();
-	//PointsMaterials = 0;
-	//LinesMaterials = 0;
-	//CurvesMaterials = 0;
-	//PointsCoordinate = 0;
-	//LinesCoordinate = 0;
-	//CurvesCoordinate = 0;
-	//LineSet = 0;
-	//CurveSet = 0;
- //   PointSet = 0;
+	// empty the nodes
+	EditRoot->removeAllChildren();
+	PointsMaterials = 0;
+	LinesMaterials = 0;
+	CurvesMaterials = 0;
+	PointsCoordinate = 0;
+	LinesCoordinate = 0;
+	CurvesCoordinate = 0;
+	LineSet = 0;
+	CurveSet = 0;
+    PointSet = 0;
 
- //   PreselectCurve = -1;
- //   PreselectPoint = -1;
- //   this->show();
+    PreselectCurve = -1;
+    PreselectPoint = -1;
+    this->show();
 }
 
-Sketcher::SketchObjectSF* ViewProviderSketch::getSketchObjectSF(void)
+Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void)
 {
-    return dynamic_cast<Sketcher::SketchObjectSF*>(pcObject);
+    return dynamic_cast<Sketcher::SketchObject*>(pcObject);
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2008     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2010     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,40 +20,47 @@
  *                                                                         *
  ***************************************************************************/
 
+ 
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
+
+#include "Geometry.h"
+
+#include "FeatureGeometrySet.h"
 
 
-#ifndef PART_PART2DOBJECT_H
-#define PART_PART2DOBJECT_H
+using namespace Part;
 
-#include <App/PropertyStandard.h>
 
-#include "PartFeature.h"
+PROPERTY_SOURCE(Part::FeatureGeometrySet, Part::Feature)
 
-namespace Part
+
+FeatureGeometrySet::FeatureGeometrySet()
 {
+    ADD_PROPERTY(GeometrySet,(0));
+}
 
 
-class AppPartExport Part2DObject :public Part::Feature
+App::DocumentObjectExecReturn *FeatureGeometrySet::execute(void)
 {
-    PROPERTY_HEADER(Part::Part2DObject);
+    TopoShape result;
 
-public:
-    Part2DObject();
+    const std::vector<Geometry*> &Geoms = GeometrySet.getValues();
 
-    /** @name methods overide Feature */
-    //@{
-    /// recalculate the Feature
-    App::DocumentObjectExecReturn *execute(void);
-
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "PartGui::ViewProvider2DObject";
+    bool first = true;
+    for(std::vector<Geometry*>::const_iterator it=Geoms.begin();it!=Geoms.end();++it){
+        TopoDS_Shape sh = (*it)->toShape();
+        if (first) {
+            first = false;
+            result._Shape = sh;
+        }
+        else {
+            result._Shape = result.fuse(sh);
+        }
     }
-    //@}
+    
+    Shape.setValue(result);
 
-};
-
-} //namespace Part
-
-
-#endif // PART_PART2DOBJECT_H
+    return App::DocumentObject::StdReturn;
+}

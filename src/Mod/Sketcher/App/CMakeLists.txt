@@ -33,6 +33,14 @@ generate_from_xml(SketchObjectPy)
 generate_from_xml(ConstraintPy)
 generate_from_xml(SketchPy)
 
+
+SET(Properties_SRCS
+		 PropertyConstraintList.cpp
+		 PropertyConstraintList.h
+)
+SOURCE_GROUP("Properties" FILES ${Properties_SRCS})
+
+
 SET(Features_SRCS
 		 SketchObjectSF.cpp
 		 SketchObjectSF.h
@@ -123,6 +131,7 @@ SET(Sketcher_SRCS
 		 ${SketchSolver_SRCS}
 		 ${SketchModule_SRCS}
 		 ${Python_SRCS}
+		 ${Properties_SRCS}
 		 ${Datatypes_SRCS}
 )
 

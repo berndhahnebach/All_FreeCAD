@@ -50,6 +50,7 @@ using namespace Part;
 
 TYPESYSTEM_SOURCE(Sketcher::Sketch, Base::Persistence)
 
+const int IntGeoOffset(3); 
 
 Sketch::Sketch()
 {
@@ -67,23 +68,30 @@ Sketch::Sketch()
 }
 Sketch::~Sketch()
 {
-    for(std::vector<double*>::iterator it;it!=Parameters.end();++it)
+    for(std::vector<double*>::iterator it=Parameters.begin();it!=Parameters.end();++it)
         delete *it;
 }
 
 // Geometry adding ==========================================================
 
-int Sketch::addGeometry(Part::GeomCurve *geo)
+int Sketch::addGeometry(const Part::Geometry *geo)
 {
     
     if(geo->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
-        GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(geo);
+        const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>(geo);
         // create the definition struct for that geom
         return addLineSegment(*lineSeg);
     } else {
         Base::Exception("Sketch::addGeometry(): Unknown or unsoported type added to a sketch");
-        return 0;
+        return 0; 
     }
+}
+
+void Sketch::addGeometry(const std::vector<Part::Geometry *> geo)
+{
+    for(std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it)
+        addGeometry(*it);
+    
 }
 
 int Sketch::addPoint(Base::Vector3d newPoint)
@@ -92,6 +100,7 @@ int Sketch::addPoint(Base::Vector3d newPoint)
     GeoDef def;
     def.geo  = 0;
     def.type = Point;
+    def.construction = false;
 
     // set the parameter for the solver
     def.parameterStartIndex = Parameters.size();
@@ -112,7 +121,7 @@ int Sketch::addPoint(Base::Vector3d newPoint)
     return Geoms.size()-1;
 }
 
-int Sketch::addLine(Part::GeomLineSegment line)
+int Sketch::addLine(const Part::GeomLineSegment &line)
 {
 
 
@@ -120,7 +129,7 @@ int Sketch::addLine(Part::GeomLineSegment line)
     return Geoms.size()-1;
 }
 
-int Sketch::addLineSegment(Part::GeomLineSegment lineSegment)
+int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
 {
     // create our own copy
     GeomLineSegment *lineSeg = new GeomLineSegment(lineSegment);
@@ -128,6 +137,7 @@ int Sketch::addLineSegment(Part::GeomLineSegment lineSegment)
     GeoDef def;
     def.geo  = lineSeg;
     def.type = Line;
+    def.construction = false;
 
     // get the points from the line
     Base::Vector3d start = lineSeg->getStartPoint();
@@ -163,14 +173,14 @@ int Sketch::addLineSegment(Part::GeomLineSegment lineSegment)
     return Geoms.size()-1;
 }
 
-int Sketch::addArc(Part::GeomTrimmedCurve circleSegment)
+int Sketch::addArc(const Part::GeomTrimmedCurve &circleSegment)
 {
     
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
 
-int Sketch::addCircle(GeomCircle cir)
+int Sketch::addCircle(const GeomCircle &cir)
 {
     // create our own copy
     GeomCircle *circ = new GeomCircle(cir);
@@ -178,6 +188,7 @@ int Sketch::addCircle(GeomCircle cir)
     GeoDef def;
     def.geo  = circ;
     def.type = Circle;
+    def.construction = false;
 
     // get the point from the line
     Base::Vector3d center = circ->getCenter();
@@ -213,29 +224,38 @@ int Sketch::addCircle(GeomCircle cir)
     return Geoms.size()-1;
 }
 
-int Sketch::addEllibse(Part::GeomEllipse ellibse)
+int Sketch::addEllipse(const Part::GeomEllipse &ellibse)
 {
     
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
 
-std::vector<Part::GeomCurve *> Sketch::getGeometry(bool withConstrucionElements) const
+std::vector<Part::Geometry *> Sketch::getGeometry(bool withConstrucionElements) const
 {
-    std::vector<Part::GeomCurve *> temp(Geoms.size());
+    std::vector<Part::Geometry *> temp(Geoms.size()-IntGeoOffset);
     int i=0;
-    for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++)
+    std::vector<GeoDef>::const_iterator it=Geoms.begin();
+    // skeep the default elements
+    it += IntGeoOffset;
+         
+    for(;it!=Geoms.end();++it,i++)
         if(!it->construction || withConstrucionElements)
-          temp[i] = it->geo;
+          temp[i] = it->geo->clone();
 
     return temp;
 }
+
 Py::Tuple Sketch::getPyGeometry(void) const
 {
 
     Py::Tuple tuple(Geoms.size());
     int i=0;
-    for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++) {
+    std::vector<GeoDef>::const_iterator it=Geoms.begin();
+    // skeep the default elements
+    it += IntGeoOffset;
+
+    for(;it!=Geoms.end();++it,i++) {
         if(it->type == Line){
             GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
             tuple[i] = Py::Object(new LinePy(lineSeg));
@@ -269,14 +289,34 @@ bool  Sketch::getConstruction(int geoIndex) const
 
 // constraint adding ==========================================================
 
+void Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
+{
+    // constraints on nothing makes no sense 
+    assert((int)Geoms.size()>0);
+
+    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
+        switch ((*it)->Type){
+            case Horizontal:
+                addHorizontalConstraint((*it)->First,(*it)->Name.c_str());
+                break;
+            case Vertical:
+                addVerticalConstraint((*it)->First,(*it)->Name.c_str());
+                break;
+            case Coincident:
+                addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str());
+                break;
+        }
+    }
+}
+
 int Sketch::addHorizontalConstraint(int geoIndex, const char* name)
 {
     // index out of bounds?
     assert(geoIndex < (int)Geoms.size());
     // constraint the right type?
-    assert(Geoms[geoIndex].type = Line);
+    assert(Geoms[geoIndex].type == Line);
 
-    Constraint constrain;
+    ConstrainDef constrain;
     constrain.constrain.type = horizontal;
     constrain.constrain.line1 = Lines[Geoms[geoIndex].lineStartIndex];
     if(name)
@@ -292,10 +332,10 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
     // index out of bounds?
     assert(geoIndex < (int)Geoms.size());
     // constraint the right type?
-    assert(Geoms[geoIndex].type = Line);
+    assert(Geoms[geoIndex].type == Line);
 
     // creat the constraint and fill it up
-    Constraint constrain;
+    ConstrainDef constrain;
     constrain.constrain.type = vertical;
     constrain.constrain.line1 = Lines[Geoms[geoIndex].lineStartIndex];
     if(name)
@@ -319,7 +359,7 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
     assert(Geoms[geoIndex2].type != Point || Pos2 !=  end);
 
     // creat the constraint and fill it up
-    Constraint constrain;
+    ConstrainDef constrain;
     constrain.constrain.type = pointOnPoint;
     if(Pos1 == start)
         constrain.constrain.point1 = Points[Geoms[geoIndex1].pointStartIndex];
@@ -341,15 +381,47 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
 
 // solving ==========================================================
 
-int Sketch::solve(void) {
+void _redirectPoint(point &c,double &fixedValue1,double &fixedValue2,double * fixed[2]){
+    if(fixed[0] && c.x == fixed[0]){
+        // copy the fixes values
+        fixedValue1 = *(c.x);
+        fixedValue2 = *(c.y);
+        // point the constraint to the fixed values
+        c.x = &(fixedValue1);
+        c.y = &(fixedValue2);
+    }
+}
+
+int Sketch::solve(double * fixed[2]) {
 
     Solver s;
+    double fixedValue1=0,fixedValue2=0;
+
+
+    // copy the constraints and handling the fixed constraint ################
     std::vector<constraint> constraints(Const.size());
     int i=0;
-    for(std::vector<Constraint>::iterator it=Const.begin();it!=Const.end();++it,i++)
+    for(std::vector<ConstrainDef>::iterator it=Const.begin();it!=Const.end();++it,i++){
         constraints[i] = it->constrain;
+        if(fixed[0]){
+            // exchange the fixed points in the constraints
+            _redirectPoint(constraints[i].point1,fixedValue1,fixedValue2,fixed);
+            _redirectPoint(constraints[i].point1,fixedValue1,fixedValue2,fixed);
+            _redirectPoint(constraints[i].line1.p1,fixedValue1,fixedValue2,fixed);
+            _redirectPoint(constraints[i].line1.p2,fixedValue1,fixedValue2,fixed);
+            _redirectPoint(constraints[i].line2.p1,fixedValue1,fixedValue2,fixed);
+            _redirectPoint(constraints[i].line2.p2,fixedValue1,fixedValue2,fixed);
+        }
+    }
 
+    // solving with solvesketch ############################################
     int ret = s.solve(&Parameters[0],Parameters.size(),&constraints[0],Const.size(),0);
+
+    // set back the fixed parameters no matter what the solver did with it
+    if(fixed[0]){
+        *(fixed[0]) = fixedValue1;
+        *(fixed[1]) = fixedValue2;
+    }
 
     // if successfully solve write the parameter back
     if(ret == 0){
@@ -376,27 +448,41 @@ int Sketch::solve(void) {
 	return ret;
 }
 
-
+int Sketch::solve(void) 
+{
+    double * fixed[2]={0,0};
+    return solve(fixed);
+}
 
 int Sketch::movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint)
 {
+    // list of the two fixed parameters (point)
+    double * fixed[2]={0,0};
+
     if(Pos1 == start){
         *(Points[Geoms[geoIndex1].pointStartIndex].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].pointStartIndex].y) = toPoint.y;
+        fixed [0] = Points[Geoms[geoIndex1].pointStartIndex].x;
+        fixed [1] = Points[Geoms[geoIndex1].pointStartIndex].y;
     }else{
         *(Points[Geoms[geoIndex1].pointStartIndex+1].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].pointStartIndex+1].y) = toPoint.y;
+        fixed [0] = Points[Geoms[geoIndex1].pointStartIndex+1].x;
+        fixed [1] = Points[Geoms[geoIndex1].pointStartIndex+1].y;
     }
 
-    return solve();
+    return solve(fixed);
 }
 
 TopoShape Sketch::toShape(void)
 {
     TopoShape result;
+    std::vector<GeoDef>::const_iterator it=Geoms.begin();
+    // skeep the default elements
+    it += IntGeoOffset;
 
     bool first = true;
-    for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it){
+    for(;it!=Geoms.end();++it){
         if(!it->construction){
             TopoDS_Shape sh = it->geo->toShape();
             if (first) {
