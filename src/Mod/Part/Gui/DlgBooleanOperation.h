@@ -23,16 +23,18 @@
 #ifndef PARTGUI_DLGBOOLEANOPERATION_H
 #define PARTGUI_DLGBOOLEANOPERATION_H
 
-#include "ui_DlgBooleanOperation.h"
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
 
 namespace PartGui {
 
-class DlgBooleanOperation : public QDialog, public Ui_DlgBooleanOperation
+class Ui_DlgBooleanOperation;
+class DlgBooleanOperation : public QWidget
 {
     Q_OBJECT
 
 public:
-    DlgBooleanOperation(QWidget* parent = 0, Qt::WFlags fl = 0);
+    DlgBooleanOperation(QWidget* parent = 0);
     ~DlgBooleanOperation();
     void accept();
 
@@ -40,8 +42,29 @@ protected:
     void findShapes();
 
 public Q_SLOTS:
-    void on_firstShape_activated(int);
-    void on_secondShape_activated(int);
+    void on_swapButton_clicked();
+
+private:
+    Ui_DlgBooleanOperation* ui;
+};
+
+class TaskBooleanOperation : public Gui::TaskView::TaskDialog
+{
+    Q_OBJECT
+
+public:
+    TaskBooleanOperation();
+    ~TaskBooleanOperation();
+
+public:
+    void clicked(int);
+
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Apply | QDialogButtonBox::Close; }
+
+private:
+    DlgBooleanOperation* widget;
+    Gui::TaskView::TaskBox* taskbox;
 };
 
 } // namespace PartGui

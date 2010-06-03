@@ -52,8 +52,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     root->insertItem(item, part);
     part->setCommand(QT_TR_NOOP("&Part"));
     *part << "Part_Import" << "Separator";
-    *part << "Part_Primitives" << "Part_ShapeFromMesh" << "Part_Boolean" << "Part_Extrude"
-          << "Part_Revolve" << "Part_Fillet" << "Separator" << "Part_ShapeInfo";
+    *part << "Part_Primitives" << "Part_ShapeFromMesh" << "Part_MakeSolid" << "Separator"
+          << "Part_Boolean" << "Part_Extrude" << "Part_Revolve" << "Part_Fillet"
+          << "Separator" << "Part_ShapeInfo";
 
     Gui::MenuItem* partSimple = new Gui::MenuItem;
     root->insertItem(item, partSimple);

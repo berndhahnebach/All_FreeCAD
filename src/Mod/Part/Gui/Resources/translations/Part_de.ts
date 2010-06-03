@@ -380,7 +380,7 @@
     </message>
     <message>
         <source>Section</source>
-        <translation>Abschnitt</translation>
+        <translation>Schnitt</translation>
     </message>
     <message>
         <source>Difference</source>

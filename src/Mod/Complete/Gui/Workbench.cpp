@@ -203,6 +203,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Part_Torus"
           << "Part_Primitives";
     *part << para
+          << "Part_ShapeFromMesh"
+          << "Part_MakeSolid"
+          << "Separator"
           << "Part_Boolean"
           << "Part_Extrude"
           << "Part_Revolve"

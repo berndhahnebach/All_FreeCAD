@@ -23,14 +23,17 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QString>
 # include <QDir>
 # include <QFileInfo>
 # include <QLineEdit>
 # include <QPointer>
 # include <Standard_math.hxx>
+# include <TopoDS_Shape.hxx>
 # include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 
+#include <Base/Console.h>
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
@@ -499,6 +502,84 @@ bool CmdPartImportCurveNet::isActive(void)
 }
 
 //===========================================================================
+// Part_MakeSolid
+//===========================================================================
+DEF_STD_CMD_A(CmdPartMakeSolid);
+
+CmdPartMakeSolid::CmdPartMakeSolid()
+  :Command("Part_MakeSolid")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Convert to solid");
+    sToolTipText  = QT_TR_NOOP("Create solid from a shell or compound");
+    sWhatsThis    = "Part_MakeSolid";
+    sStatusTip    = sToolTipText;
+    iAccel        = 0;
+}
+
+void CmdPartMakeSolid::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> objs = Gui::Selection().getObjectsOfType
+        (Part::Feature::getClassTypeId());
+    doCommand(Doc, "import Part");
+    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
+        const TopoDS_Shape& shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
+        if (!shape.IsNull()) {
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            QString str;
+            if (type == TopAbs_SOLID) {
+                Base::Console().Message("%s is ignored becasue it is already a solid.\n",
+                    (*it)->Label.getValue());
+            }
+            else if (type == TopAbs_COMPOUND || type == TopAbs_COMPSOLID) {
+                str = QString::fromAscii(
+                    "__s__=App.ActiveDocument.%1.Shape.Faces\n"
+                    "__s__=Part.Solid(Part.Shell(__s__))\n"
+                    "__o__=App.ActiveDocument.addObject(\"Part::Feature\",\"%1_solid\")\n"
+                    "__o__.Label=\"%2 (Solid)\"\n"
+                    "__o__.Shape=__s__\n"
+                    "del __s__, __o__"
+                    )
+                    .arg(QLatin1String((*it)->getNameInDocument()))
+                    .arg(QLatin1String((*it)->Label.getValue()));
+            }
+            else if (type == TopAbs_SHELL) {
+                str = QString::fromAscii(
+                    "__s__=App.ActiveDocument.%1.Shape\n"
+                    "__s__=Part.Solid(__s__)\n"
+                    "__o__=App.ActiveDocument.addObject(\"Part::Feature\",\"%1_solid\")\n"
+                    "__o__.Label=\"%2 (Solid)\"\n"
+                    "__o__.Shape=__s__\n"
+                    "del __s__, __o__"
+                    )
+                    .arg(QLatin1String((*it)->getNameInDocument()))
+                    .arg(QLatin1String((*it)->Label.getValue()));
+            }
+            else {
+                Base::Console().Message("%s is ignored because it is neither a shell nor a compound.\n",
+                    (*it)->Label.getValue());
+            }
+
+            try {
+                if (!str.isEmpty())
+                    doCommand(Doc, (const char*)str.toAscii());
+            }
+            catch (const Base::Exception& e) {
+                Base::Console().Error("Cannot convert %s because %s.\n",
+                    (*it)->Label.getValue(), e.what());
+            }
+        }
+    }
+}
+
+bool CmdPartMakeSolid::isActive(void)
+{
+    return Gui::Selection().countObjectsOfType
+        (Part::Feature::getClassTypeId()) > 0;
+}
+
+//===========================================================================
 // Part_Boolean
 //===========================================================================
 DEF_STD_CMD_A(CmdPartBoolean);
@@ -518,8 +599,7 @@ CmdPartBoolean::CmdPartBoolean()
 
 void CmdPartBoolean::activated(int iMsg)
 {
-    PartGui::DlgBooleanOperation dlg(Gui::getMainWindow());
-    dlg.exec();
+    Gui::Control().showDialog(new PartGui::TaskBooleanOperation());
 }
 
 bool CmdPartBoolean::isActive(void)
@@ -605,8 +685,6 @@ CmdPartFillet::CmdPartFillet()
 
 void CmdPartFillet::activated(int iMsg)
 {
-    //PartGui::FilletEdgesDialog dlg(Gui::getMainWindow());
-    //dlg.exec();
     Gui::Control().showDialog(new PartGui::TaskFilletEdges());
 }
 
@@ -714,6 +792,7 @@ void CreatePartCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
+    rcCmdMgr.addCommand(new CmdPartMakeSolid());
     rcCmdMgr.addCommand(new CmdPartBoolean());
     rcCmdMgr.addCommand(new CmdPartExtrude());
     rcCmdMgr.addCommand(new CmdPartRevolve());

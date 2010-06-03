@@ -326,37 +326,15 @@ void DockablePlacement::reject()
 
 // ----------------------------------------------
 
-TaskBoxPlacement::TaskBoxPlacement(QWidget* parent)
-    : TaskBox(QPixmap(), tr("Placement"),true, parent)
+TaskPlacement::TaskPlacement()
 {
-    widget = new Placement(this);
+    widget = new Placement();
     widget->showDefaultButtons(false);
-    this->groupLayout()->addWidget(widget);
-    connect(widget, SIGNAL(placementChanged(const QVariant &)),
-            this, SIGNAL(placementChanged(const QVariant &)));
-}
+    taskbox = new Gui::TaskView::TaskBox(QPixmap(), widget->windowTitle(),true, 0);
+    taskbox->groupLayout()->addWidget(widget);
 
-TaskBoxPlacement::~TaskBoxPlacement()
-{
-}
-
-bool TaskBoxPlacement::accept()
-{
-    widget->accept();
-    return (widget->result() == QDialog::Accepted);
-}
-
-void TaskBoxPlacement::setPlacement(const Base::Placement& p)
-{
-    widget->setPlacement(p);
-}
-
-// ---------------------------------------
-
-TaskPlacement::TaskPlacement() : taskbox(new TaskBoxPlacement)
-{
     Content.push_back(taskbox);
-    connect(taskbox, SIGNAL(placementChanged(const QVariant &)),
+    connect(widget, SIGNAL(placementChanged(const QVariant &)),
             this, SLOT(slotPlacementChanged(const QVariant &)));
 }
 
@@ -382,12 +360,13 @@ void TaskPlacement::slotPlacementChanged(const QVariant & p)
 
 bool TaskPlacement::accept()
 {
-    return taskbox->accept();
+    widget->accept();
+    return (widget->result() == QDialog::Accepted);
 }
 
 void TaskPlacement::setPlacement(const Base::Placement& p)
 {
-    taskbox->setPlacement(p);
+    widget->setPlacement(p);
 }
 
 #include "moc_Placement.cpp"

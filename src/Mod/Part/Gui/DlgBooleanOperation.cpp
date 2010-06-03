@@ -24,25 +24,28 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMessageBox>
+# include <TopoDS_Shape.hxx>
 #endif
 
 #include "DlgBooleanOperation.h"
+#include "ui_DlgBooleanOperation.h"
 #include "../App/PartFeature.h"
+#include <Base/Exception.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <Gui/Command.h>
+#include <Gui/Selection.h>
 #include <Gui/WaitCursor.h>
 
 using namespace PartGui;
 
 /* TRANSLATOR PartGui::DlgBooleanOperation */
 
-DlgBooleanOperation::DlgBooleanOperation(QWidget* parent, Qt::WFlags fl)
-  : QDialog( parent, fl )
+DlgBooleanOperation::DlgBooleanOperation(QWidget* parent)
+  : QWidget(parent), ui(new Ui_DlgBooleanOperation)
 {
-    this->setupUi(this);
-    okButton->setDisabled(true);
+    ui->setupUi(this);
     findShapes();
 }
 
@@ -52,6 +55,7 @@ DlgBooleanOperation::DlgBooleanOperation(QWidget* parent, Qt::WFlags fl)
 DlgBooleanOperation::~DlgBooleanOperation()
 {
     // no need to delete child widgets, Qt does it all for us
+    delete ui;
 }
 
 void DlgBooleanOperation::findShapes()
@@ -61,18 +65,47 @@ void DlgBooleanOperation::findShapes()
 
     std::vector<App::DocumentObject*> objs = activeDoc->getObjectsOfType
         (Part::Feature::getClassTypeId());
-    int index = 1;
-    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it, ++index) {
-        firstShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
-        firstShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
-        secondShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
-        secondShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
+    int index = 1; // the first item marks an invalid entry
+    int index_sel1=0, index_sel2=0;
+    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it) {
+        const TopoDS_Shape& shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
+        //if (!shape.IsNull()) {
+        //    TopAbs_ShapeEnum type = shape.ShapeType();
+        //    if (type == TopAbs_SOLID) {
+                if (index_sel1 == 0 && Gui::Selection().isSelected(*it))
+                    index_sel1 = index;
+                else if (index_sel1 > 0 && index_sel2 == 0 && Gui::Selection().isSelected(*it))
+                    index_sel2 = index;
+                ui->firstShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
+                ui->firstShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
+                ui->secondShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
+                ui->secondShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
+                index++;
+        //    }
+        //}
     }
+
+    ui->firstShape->setCurrentIndex(index_sel1);
+    ui->secondShape->setCurrentIndex(index_sel2);
+}
+
+void DlgBooleanOperation::on_swapButton_clicked()
+{
+    int index_sel1 = ui->firstShape->currentIndex();
+    int index_sel2 = ui->secondShape->currentIndex();
+    ui->firstShape->setCurrentIndex(index_sel2);
+    ui->secondShape->setCurrentIndex(index_sel1);
 }
 
 void DlgBooleanOperation::accept()
 {
-    if (firstShape->currentIndex() == secondShape->currentIndex()) {
+    if (ui->firstShape->currentIndex() == 0 ||
+        ui->secondShape->currentIndex() == 0) {
+        QMessageBox::critical(this, windowTitle(), 
+            tr("Select a shape first"));
+        return;
+    }
+    if (ui->firstShape->currentIndex() == ui->secondShape->currentIndex()) {
         QMessageBox::critical(this, windowTitle(), 
             tr("Cannot perform a boolean operation with the same shape"));
         return;
@@ -80,56 +113,71 @@ void DlgBooleanOperation::accept()
 
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     std::string type, objName;
-    if (unionButton->isChecked()) {
+    if (ui->unionButton->isChecked()) {
         type = "Part::Fuse";
         objName = activeDoc->getUniqueObjectName("Fusion");
     }
-    else if (interButton->isChecked()) {
+    else if (ui->interButton->isChecked()) {
         type = "Part::Common";
         objName = activeDoc->getUniqueObjectName("Common");
     }
-    else if (diffButton->isChecked()) {
+    else if (ui->diffButton->isChecked()) {
         type = "Part::Cut";
         objName = activeDoc->getUniqueObjectName("Cut");
     }
-    else if (sectionButton->isChecked()) {
+    else if (ui->sectionButton->isChecked()) {
         type = "Part::Section";
         objName = activeDoc->getUniqueObjectName("Section");
     }
 
     std::string shapeOne, shapeTwo;
-    shapeOne = (const char*)firstShape->itemData(firstShape->currentIndex()).toByteArray();
-    shapeTwo = (const char*)secondShape->itemData(secondShape->currentIndex()).toByteArray();
+    shapeOne = (const char*)ui->firstShape->itemData(ui->firstShape->currentIndex()).toByteArray();
+    shapeTwo = (const char*)ui->secondShape->itemData(ui->secondShape->currentIndex()).toByteArray();
 
-    Gui::WaitCursor wc;
-    activeDoc->openTransaction("Boolean operation");
-    Gui::Command::doCommand(Gui::Command::Doc,
-        "App.activeDocument().addObject(\"%s\",\"%s\")",
-        type.c_str(), objName.c_str());
-    Gui::Command::doCommand(Gui::Command::Doc,
-        "App.activeDocument().%s.Base = App.activeDocument().%s",
-        objName.c_str(),shapeOne.c_str());
-    Gui::Command::doCommand(Gui::Command::Doc,
-        "App.activeDocument().%s.Tool = App.activeDocument().%s",
-        objName.c_str(),shapeTwo.c_str());
-    Gui::Command::doCommand(Gui::Command::Gui,
-        "Gui.activeDocument().hide(\"%s\")",shapeOne.c_str());
-    Gui::Command::doCommand(Gui::Command::Gui,
-        "Gui.activeDocument().hide(\"%s\")",shapeTwo.c_str());
-    activeDoc->commitTransaction();
-    activeDoc->recompute();
-    
-    QDialog::accept();
+    try {
+        Gui::WaitCursor wc;
+        activeDoc->openTransaction("Boolean operation");
+        Gui::Command::doCommand(Gui::Command::Doc,
+            "App.activeDocument().addObject(\"%s\",\"%s\")",
+            type.c_str(), objName.c_str());
+        Gui::Command::doCommand(Gui::Command::Doc,
+            "App.activeDocument().%s.Base = App.activeDocument().%s",
+            objName.c_str(),shapeOne.c_str());
+        Gui::Command::doCommand(Gui::Command::Doc,
+            "App.activeDocument().%s.Tool = App.activeDocument().%s",
+            objName.c_str(),shapeTwo.c_str());
+        Gui::Command::doCommand(Gui::Command::Gui,
+            "Gui.activeDocument().hide(\"%s\")",shapeOne.c_str());
+        Gui::Command::doCommand(Gui::Command::Gui,
+            "Gui.activeDocument().hide(\"%s\")",shapeTwo.c_str());
+        activeDoc->commitTransaction();
+        activeDoc->recompute();
+    }
+    catch (const Base::Exception& e) {
+        e.ReportException();
+    }
 }
 
-void DlgBooleanOperation::on_firstShape_activated(int index)
+// ---------------------------------------
+
+TaskBooleanOperation::TaskBooleanOperation()
 {
-    okButton->setEnabled(index > 0 && secondShape->currentIndex() > 0);
+    widget = new DlgBooleanOperation();
+    taskbox = new Gui::TaskView::TaskBox(QPixmap(), widget->windowTitle(), true, 0);
+    taskbox->groupLayout()->addWidget(widget);
+    Content.push_back(taskbox);
 }
 
-void DlgBooleanOperation::on_secondShape_activated(int index)
+TaskBooleanOperation::~TaskBooleanOperation()
 {
-    okButton->setEnabled(index > 0 && firstShape->currentIndex() > 0);
+    // automatically deleted in the sub-class
+}
+
+void TaskBooleanOperation::clicked(int id)
+{
+    if (id == QDialogButtonBox::Apply) {
+        widget->accept();
+    }
 }
 
 #include "moc_DlgBooleanOperation.cpp"
