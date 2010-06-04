@@ -62,7 +62,7 @@ using namespace Sketcher;
 
 const float fCurveColor[] =     {1.0f,1.0f,1.0f}; 
 const float fCurveConstructionColor[] = {0.2f,1.0f,0.2f}; 
-const float fPointColor[] =             {0.9f,0.9f,0.9f}; 
+const float fPointColor[] =             {0.5f,0.5f,0.5f}; 
 const float fPreselectColor[] = {0.8f,0.0f,0.0f}; 
 const float fSelectColor[] =    {1.0f,0.0f,0.0f}; 
 const float fDatumLineColor[] = {0.0f,0.8f,0.0f}; 
@@ -275,7 +275,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
 {
     if (Point) {
-        Base::Console().Log("Point pick\n");
+        //Base::Console().Log("Point pick\n");
         const SoDetail* point_detail = Point->getDetail(this->PointSet);
         if (point_detail && point_detail->getTypeId() == SoPointDetail::getClassTypeId()) {
             // get the index
@@ -288,9 +288,9 @@ bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
                 if (PreselectCurve >= 0)
                     CurvesMaterials->diffuseColor.set1Value(PreselectCurve,PreselectOldColor);
                 PreselectCurve = -1;
+                Base::Console().Log("Point pick%d\n",idx);
             }
 
-            Base::Console().Log("Point pick%d\n",idx);
             return true;
         }
 
@@ -307,9 +307,9 @@ bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
                 if (PreselectPoint >= 0)
                     PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
                 PreselectPoint = -1;
+                Base::Console().Log("Curve pick%d\n",idx);
             }
             
-            Base::Console().Log("Curve pick%d\n",idx);
             return true;
         }
 
@@ -353,12 +353,70 @@ void ViewProviderSketch::solve(void)
 
 void ViewProviderSketch::draw(void)
 {
-
+    // Render Geometry ===================================================
+    std::vector<Base::Vector3d> Coords;
+    std::vector<Base::Vector3d> Points;
+    std::vector<unsigned int> Index;
+    std::vector<unsigned int> Color;
+    std::vector<unsigned int> PtColor;
 
     const std::vector<Part::Geometry *> &geomlist = getSketchObject()->Geometry.getValues();
     for(std::vector<Part::Geometry *>::const_iterator it=geomlist.begin();it!=geomlist.end();++it){
-       ;
+        if((*it)->getTypeId()== Part::GeomLineSegment::getClassTypeId()){ // add a line
+            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(*it);
+            // create the definition struct for that geom
+            Coords.push_back(lineSeg->getStartPoint());
+            Coords.push_back(lineSeg->getEndPoint());
+            Points.push_back(lineSeg->getStartPoint());
+            Points.push_back(lineSeg->getEndPoint());
+            Index.push_back(2);
+            Color.push_back(0);
+            PtColor.push_back(0);
+        } else {
+            ; 
+        }
+
     }
+    CurveSet->numVertices.setNum(Index.size());
+    CurvesCoordinate->point.setNum(Coords.size());
+    CurvesMaterials->diffuseColor.setNum(Color.size());
+    PointsCoordinate->point.setNum(Points.size());
+    PointsMaterials->diffuseColor.setNum(PtColor.size());
+
+    SbVec3f* verts = CurvesCoordinate->point.startEditing();
+    int32_t* index = CurveSet->numVertices.startEditing();
+    SbColor* color = CurvesMaterials->diffuseColor.startEditing();
+    SbVec3f* pverts = PointsCoordinate->point.startEditing();
+    SbColor* pcolor = PointsMaterials->diffuseColor.startEditing();
+
+    int i=0; // setting up the line set
+    for(std::vector<Base::Vector3d>::const_iterator it=Coords.begin();it!=Coords.end();++it,i++)
+        verts[i].setValue(it->x,it->y,0.1f);
+    
+    i=0; // setting up the indexes of the line set
+    for(std::vector<unsigned int>::const_iterator it=Index.begin();it!=Index.end();++it,i++)
+        index[i]=*it;
+    
+    i=0; // color of the line set
+    for(std::vector<unsigned int>::const_iterator it=Color.begin();it!=Color.end();++it,i++)
+        color[i].setValue((*it==1?fCurveConstructionColor:fCurveColor));
+    
+    i=0; // setting up the point set
+    for(std::vector<Base::Vector3d>::const_iterator it=Points.begin();it!=Points.end();++it,i++)
+        pverts[i].setValue(it->x,it->y,0.1f);
+    
+    i=0; // color of the point set
+    for(std::vector<unsigned int>::const_iterator it=PtColor.begin();it!=PtColor.end();++it,i++)
+        pcolor[i].setValue((*it==1?fCurveConstructionColor:fPointColor));
+    if (PreselectPoint >= 0 && PreselectPoint < (int) Points.size())
+        color[PreselectPoint].setValue(fPreselectColor);
+
+    CurvesCoordinate->point.finishEditing();
+    CurveSet->numVertices.finishEditing();
+    CurvesMaterials->diffuseColor.finishEditing();
+    PointsCoordinate->point.finishEditing();
+    PointsMaterials->diffuseColor.finishEditing();
+
 #if 0
     double x,y;
     //double x0, y0, dx, dy;
@@ -519,7 +577,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
 	EditRoot->addChild(PointsCoordinate);
 
 	SoDrawStyle *DrawStyle = new SoDrawStyle;
-	DrawStyle->pointSize = 6;
+	DrawStyle->pointSize = 8;
 	EditRoot->addChild( DrawStyle );
     PointSet = new SoPointSet;
 	EditRoot->addChild( PointSet );

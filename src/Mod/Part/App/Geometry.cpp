@@ -97,6 +97,8 @@
 #include "ToroidPy.h"
 
 #include <Base/Exception.h>
+#include <Base/Writer.h>
+#include <Base/Reader.h>
 
 #include "Geometry.h"
 
@@ -144,11 +146,32 @@ const char* gce_ErrorStatusText(gce_ErrorType et)
 TYPESYSTEM_SOURCE_ABSTRACT(Part::Geometry,Base::Persistence);
 
 Geometry::Geometry()
+:Construction(false)
 {
 }
 
 Geometry::~Geometry()
 {
+}
+
+// Persistence implementer 
+unsigned int Geometry::getMemSize (void) const               
+{
+    return 1;
+}
+
+void         Geometry::Save       (Base::Writer &writer) const 
+{
+    const char c = Construction?'1':'0';
+    writer.Stream() << writer.ind() << "<Construction value=\"" <<  c << "\"/>" << endl;
+}
+
+void         Geometry::Restore    (Base::XMLReader &reader)    
+{
+    // read my Element
+    reader.readElement("Construction");
+    // get the value of my Attribute
+    Construction = (int)reader.getAttributeAsInteger("value")==0?false:true;   
 }
 
 // -------------------------------------------------
@@ -556,8 +579,45 @@ void GeomLineSegment::setPoints(const Base::Vector3d& Start, const Base::Vector3
 
 // Persistence implementer 
 unsigned int GeomLineSegment::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
-void         GeomLineSegment::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
-void         GeomLineSegment::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+void GeomLineSegment::Save       (Base::Writer &writer) const 
+{
+    // save the attributes of the father class
+    Geometry::Save(writer);
+
+    Base::Vector3d End   =  getEndPoint();
+    Base::Vector3d Start =  getStartPoint();
+
+    writer.Stream() 
+         << writer.ind() 
+             << "<LineSegment " 
+                << "StartX=\"" <<  Start.x << 
+                "\" StartY=\"" <<  Start.y << 
+                "\" StartZ=\"" <<  Start.z << 
+                "\" EndX=\"" <<  End.x << 
+                "\" EndY=\"" <<  End.y << 
+                "\" EndZ=\"" <<  End.z <<
+             "\"/>" << endl;
+}
+
+void GeomLineSegment::Restore    (Base::XMLReader &reader)    
+{
+    // read the attributes of the father class
+    Geometry::Restore(reader);
+
+    float StartX,StartY,StartZ,EndX,EndY,EndZ;
+    // read my Element
+    reader.readElement("LineSegment");
+    // get the value of my Attribute
+    StartX = (float)reader.getAttributeAsFloat("StartX");
+    StartY = (float)reader.getAttributeAsFloat("StartY");
+    StartZ = (float)reader.getAttributeAsFloat("StartZ");
+    EndX   = (float)reader.getAttributeAsFloat("EndX");
+    EndY   = (float)reader.getAttributeAsFloat("EndY");
+    EndZ   = (float)reader.getAttributeAsFloat("EndZ");
+ 
+    // set the read geometry
+    setPoints(Base::Vector3d(StartX,StartY,StartZ),Base::Vector3d(EndX,EndY,EndZ) );
+}
 
 PyObject *GeomLineSegment::getPyObject(void)
 {

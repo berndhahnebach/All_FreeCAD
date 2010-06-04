@@ -43,5 +43,11 @@ It describes the common behavior of these objects when:
         <UserDocu>Translates this geometric object</UserDocu>
       </Documentation>
     </Methode>
+    <Attribute Name="Construction" ReadOnly="false">
+      <Documentation>
+        <UserDocu>defines this geomtry as a construction one. Means is not part of a later build Shape.</UserDocu>
+      </Documentation>
+      <Parameter Name="Construction" Type="Boolean"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

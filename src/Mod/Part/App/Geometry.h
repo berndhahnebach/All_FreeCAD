@@ -61,8 +61,14 @@ public:
 
     virtual TopoDS_Shape toShape() const = 0;
     virtual const Handle_Geom_Geometry& handle() const = 0;
+    // Persistence implementer ---------------------
+    virtual unsigned int getMemSize (void) const;
+    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
     /// returns a cloned object 
     virtual Geometry *clone(void)const = 0;
+    /// construction geometry (means no impact on a later build topo)
+    bool Construction;
 
 protected:
     Geometry();

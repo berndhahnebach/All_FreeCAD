@@ -179,6 +179,16 @@ PyObject* GeometryPy::translate(PyObject *args)
     return 0;
 }
 
+Py::Boolean GeometryPy::getConstruction(void) const
+{
+    return Py::Boolean(getGeometryPtr()->Construction);
+}
+
+void  GeometryPy::setConstruction(Py::Boolean arg)
+{
+    getGeometryPtr()->Construction = arg;
+}
+
 PyObject *GeometryPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

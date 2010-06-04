@@ -139,8 +139,6 @@ void PropertyConstraintList::Save (Writer &writer) const
     writer.Stream() << writer.ind() << "<ConstraintList count=\"" <<  getSize() <<"\">" << endl;
     writer.incInd();
     for(int i = 0;i<getSize(); i++){
-         writer.Stream() << writer.ind() << "<Constraint  type=\"" 
-                            << _lValueList[i]->getTypeId().getName() << "\">" << endl;;
 
         _lValueList[i]->Save(writer);
     }
@@ -158,11 +156,9 @@ void PropertyConstraintList::Restore(Base::XMLReader &reader)
     std::vector<Constraint*> values;
     values.reserve(count);
     for (int i = 0; i < count; i++) {
-        reader.readElement("Constraint");
-        const char* TypeName = reader.getAttribute("type");
-        Constraint *newG = (Constraint *)Base::Type::fromName(TypeName).createInstance();
-        newG->Restore(reader);
-        values.push_back(newG);
+        Constraint *newC = new Constraint();
+        newC->Restore(reader);
+        values.push_back(newC);
     }
 
     reader.readEndElement("ConstraintList");

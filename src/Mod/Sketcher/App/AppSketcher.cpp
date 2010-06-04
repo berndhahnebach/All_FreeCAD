@@ -35,6 +35,7 @@
 #include "Sketch.h"
 #include "ConstraintPy.h"
 #include "SketchPy.h"
+#include "PropertyConstraintList.h"
 
 
 extern struct PyMethodDef Sketcher_methods[];
@@ -71,6 +72,7 @@ void AppSketcherExport initSketcher()
     Sketcher::SketchObject          ::init();
     Sketcher::Sketch                ::init();
     Sketcher::Constraint            ::init();
+    Sketcher::PropertyConstraintList::init();
 
     Base::Console().Log("Loading Sketcher module... done\n");
 
