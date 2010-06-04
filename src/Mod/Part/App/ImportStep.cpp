@@ -275,7 +275,7 @@ bool Part::ReadColors (const Handle(XSControl_WorkSession) &WS, std::map<int, Qu
 
         // find shape
         TopoDS_Shape S = STEPConstruct::FindShape(Styles.TransientProcess(), style->Item());
-        TopAbs_ShapeEnum type = S.ShapeType();
+        //TopAbs_ShapeEnum type = S.ShapeType();
         Standard_Boolean isSkipSHUOstyle = Standard_False;
         // take shape with real location.
         while (IsComponent) {

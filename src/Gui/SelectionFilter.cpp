@@ -151,7 +151,7 @@ bool SelectionFilter::parse(void)
     // be aware that this parser is not reentrant! Dont use with Threats!!!
     assert(!ActFilter);
     ActFilter = this;
-    int my_parse_result  = SelectionParser::yyparse ();
+    /*int my_parse_result =*/ SelectionParser::yyparse();
     ActFilter = 0;
     Ast = TopBlock;
     TopBlock = 0;

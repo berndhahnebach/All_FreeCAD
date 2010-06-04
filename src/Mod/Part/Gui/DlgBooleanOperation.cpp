@@ -150,7 +150,6 @@ bool DlgBooleanOperation::hasSolids(const App::DocumentObject* obj) const
     if (obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
         const TopoDS_Shape& shape = static_cast<const Part::Feature*>(obj)->Shape.getValue();
         TopExp_Explorer anExp (shape, TopAbs_SOLID);
-        int count=0;
         for (; anExp.More(); anExp.Next()) {
             return true;
         }

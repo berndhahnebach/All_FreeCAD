@@ -41,8 +41,8 @@ TYPESYSTEM_SOURCE(Sketcher::Constraint, Base::Persistence)
 
 
 Constraint::Constraint()
-: Name(""),
-  Type(None),
+: Type(None),
+  Name(""),
   Value(0.0),
   First(-1),
   FirstPos(start),
@@ -52,8 +52,8 @@ Constraint::Constraint()
 {
 }
 Constraint::Constraint(const Constraint& from)
-: Name(from.Name),
-  Type(from.Type),
+: Type(from.Type),
+  Name(from.Name),
   Value(from.Value),
   First(from.First),
   FirstPos(from.FirstPos),
