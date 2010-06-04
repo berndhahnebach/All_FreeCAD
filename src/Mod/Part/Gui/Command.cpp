@@ -604,7 +604,6 @@ void CmdPartReverseShape::activated(int iMsg)
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
         const TopoDS_Shape& shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
         if (!shape.IsNull()) {
-            TopAbs_ShapeEnum type = shape.ShapeType();
             QString str = QString::fromAscii(
                 "__s__=App.ActiveDocument.%1.Shape\n"
                 "__s__.reverse()\n"

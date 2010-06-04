@@ -185,10 +185,10 @@ void SoFCVectorizeU3DActionP::printText(const SoVectorizeText * item) const
 {
     SbVec2f mul = publ->getRotatedViewportSize();
     SbVec2f add = publ->getRotatedViewportStartpos();
-    float posx = item->pos[0]*mul[0]+add[0];
-    float posy = item->pos[1]*mul[1]+add[1];
+    //float posx = item->pos[0]*mul[0]+add[0];
+    //float posy = item->pos[1]*mul[1]+add[1];
 
-    std::ostream& str = publ->getU3DOutput()->getFileStream();
+    //std::ostream& str = publ->getU3DOutput()->getFileStream();
     // todo
 }
 
@@ -215,9 +215,9 @@ void SoFCVectorizeU3DActionP::printTriangle(const SoVectorizeTriangle * item) co
 void SoFCVectorizeU3DActionP::printTriangle(const SbVec3f * v, const SbColor * c) const
 {
     if (v[0] == v[1] || v[1] == v[2] || v[0] == v[2]) return;
-    uint32_t cc = c->getPackedValue();
+    //uint32_t cc = c->getPackedValue();
 
-    std::ostream& str = publ->getU3DOutput()->getFileStream();
+    //std::ostream& str = publ->getU3DOutput()->getFileStream();
     // todo
 }
 
@@ -248,9 +248,9 @@ void SoFCVectorizeU3DActionP::printLine(const SoVectorizeLine * item) const
         v[i][1] = ((1.0f-v[i][1]) * mul[1]) + add[1];
         c[i].setPackedValue(item->col[i], t[i]);
     }
-    uint32_t cc = c->getPackedValue();
+    //uint32_t cc = c->getPackedValue();
 
-    std::ostream& str = publ->getU3DOutput()->getFileStream();
+    //std::ostream& str = publ->getU3DOutput()->getFileStream();
     // todo
 }
 
@@ -352,9 +352,9 @@ void SoFCVectorizeU3DAction::printBackground(void) const
 
     SbColor bg;
     (void)this->getBackgroundColor(bg);
-    uint32_t cc = bg.getPackedValue();
+    //uint32_t cc = bg.getPackedValue();
 
-    std::ostream& str = this->getU3DOutput()->getFileStream();
+    //std::ostream& str = this->getU3DOutput()->getFileStream();
     // todo
 }
 

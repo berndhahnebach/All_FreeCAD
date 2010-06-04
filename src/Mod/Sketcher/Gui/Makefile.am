@@ -24,6 +24,8 @@ libSketcherGui_la_SOURCES=\
 		TaskSketcherCreateCommands.h \
 		TaskSketcherGeneral.cpp \
 		TaskSketcherGeneral.h \
+		ViewProviderSketch.cpp \
+		ViewProviderSketch.h \
 		ViewProviderSketchSF.cpp \
 		ViewProviderSketchSF.h \
 		Workbench.cpp \

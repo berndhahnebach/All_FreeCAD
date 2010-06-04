@@ -269,23 +269,23 @@ Py::Tuple Sketch::getPyGeometry(void) const
     return tuple;
 }
 
- void Sketch::setConstruction(int geoIndex,bool isConstruction)
- {
+void Sketch::setConstruction(int geoIndex,bool isConstruction)
+{
     // index out of bounds?
     assert(geoIndex < (int)Geoms.size());
 
     Geoms[geoIndex].construction = isConstruction;
 
- }
+}
 
 bool  Sketch::getConstruction(int geoIndex) const
- {
+{
     // index out of bounds?
     assert(geoIndex < (int)Geoms.size());
 
     return Geoms[geoIndex].construction;
 
- }
+}
 
 // constraint adding ==========================================================
 
@@ -304,6 +304,8 @@ void Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
                 break;
             case Coincident:
                 addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str());
+                break;
+            case None:
                 break;
         }
     }
