@@ -71,6 +71,7 @@
 #include "SurfaceOfRevolutionPy.h"
 #include "ToroidPy.h"
 #include "PartFeaturePy.h"
+#include "PropertyGeometryList.h"
 
 extern struct PyMethodDef Part_methods[];
 
@@ -121,6 +122,7 @@ void AppPartExport initPart()
 
     Part::TopoShape             ::init();
     Part::PropertyPartShape     ::init();
+    Part::PropertyGeometryList  ::init();
     Part::PropertyFilletEdges   ::init();
 #if 1
     Part::PropertyCircle        ::init();

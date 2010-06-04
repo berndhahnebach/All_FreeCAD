@@ -85,56 +85,15 @@ unsigned int SketchObject::getMemSize (void) const
 
 void SketchObject::Save (Writer &writer) const
 {
- /*   for(unsigned int i=0;i<6;i++){
-        Base::Placement Tip = toPlacement(Kinematic.getSegment(i).getFrameToTip());
-	    writer.Stream() << writer.ind() << "<Axis "
-                        << "Px=\""          <<  Tip.getPosition().x  << "\" " 
-                        << "Py=\""          <<  Tip.getPosition().y  << "\" "
-                        << "Pz=\""          <<  Tip.getPosition().z  << "\" "
-					    << "Q0=\""          <<  Tip.getRotation()[0] << "\" "
-                        << "Q1=\""          <<  Tip.getRotation()[1] << "\" "
-                        << "Q2=\""          <<  Tip.getRotation()[2] << "\" "
-                        << "Q3=\""          <<  Tip.getRotation()[3] << "\" "
-                        << "maxAngle=\""    <<  MaxAngle[i]		     << "\" "
-                        << "minAngle=\""    <<  MinAngle[i]			 << "\" "
-                        << "AxisVelocity=\""<<  Velocity[i]          << "\" "
-                        << "Pos=\""         <<  Actuall(i)           << "\"/>"
-					                      
-                        << std::endl;
-    }*/
+    // save the father classes
+    Part::Part2DObject::Save(writer);
 
-}
+ }
 
 void SketchObject::Restore(XMLReader &reader)
 {
-    //Chain Temp;
-    //Base::Placement Tip;
-
-    //for(unsigned int i=0;i<6;i++){
-    //    // read my Element
-    //    reader.readElement("Axis");
-    //    // get the value of the placement
-    //    Tip =    Base::Placement(Base::Vector3d(reader.getAttributeAsFloat("Px"),
-    //                                            reader.getAttributeAsFloat("Py"),
-    //                                            reader.getAttributeAsFloat("Pz")),
-    //                             Base::Rotation(reader.getAttributeAsFloat("Q0"),
-    //                                            reader.getAttributeAsFloat("Q1"),
-    //                                            reader.getAttributeAsFloat("Q2"),
-    //                                            reader.getAttributeAsFloat("Q3")));
-    //    Temp.addSegment(Segment(Joint(Joint::RotZ),toFrame(Tip)));
-
-
-    //    MaxAngle[i]   = reader.getAttributeAsFloat("maxAngle");
-    //    MinAngle[i]	  = reader.getAttributeAsFloat("minAngle");
-    //    if(reader.hasAttribute("AxisVelocity"))
-    //        Velocity[i] = reader.getAttributeAsFloat("AxisVelocity");
-    //    else
-    //        Velocity[i] = 156.0;
-    //    Actuall(i) = reader.getAttributeAsFloat("Pos");
-    //}
-    //Kinematic = Temp;
-
-    //calcTcp();
+    // read the father classes
+    Part::Part2DObject::Restore(reader);
 
 }
 
