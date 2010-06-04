@@ -41,7 +41,7 @@ Common::Common(void)
 {
 }
 
-TopoDS_Shape Common::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
+TopoDS_Shape Common::runOperation(const TopoDS_Shape& base, const TopoDS_Shape& tool) const
 {
     // Let's call algorithm computing a section operation:
     BRepAlgoAPI_Common mkCommon(base, tool);

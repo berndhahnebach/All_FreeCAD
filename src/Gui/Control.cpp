@@ -87,16 +87,22 @@ void ControlSingleton::closeDialog()
 
 bool ControlSingleton::isAllowedAlterDocument(void) const
 {
-    return !ActiveDialog;
+    if (ActiveDialog)
+        return ActiveDialog->isAllowedAlterDocument();
+    return true;
 }
 
 bool ControlSingleton::isAllowedAlterView(void) const
 {
+    if (ActiveDialog)
+        return ActiveDialog->isAllowedAlterView();
     return true;
 }
 
 bool ControlSingleton::isAllowedAlterSelection(void) const
 {
+    if (ActiveDialog)
+        return ActiveDialog->isAllowedAlterSelection();
     return true;
 }
 

@@ -22,24 +22,31 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QMessageBox>
+#endif
 
+#include "ui_DlgExtrusion.h"
 #include "DlgExtrusion.h"
 #include "../App/PartFeature.h"
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/ViewProvider.h>
+#include <Gui/WaitCursor.h>
 
 using namespace PartGui;
 
 DlgExtrusion::DlgExtrusion(QWidget* parent, Qt::WFlags fl)
-  : QDialog(parent, fl)
+  : QDialog(parent, fl), ui(new Ui_DlgExtrusion)
 {
-    ui.setupUi(this);
-    ui.okButton->setDisabled(true);
+    ui->setupUi(this);
+    ui->checkNormal->hide(); // not supported at the moment
+    ui->dirLen->setMinimumWidth(55); // needed to show all digits
     findShapes();
 }
 
@@ -49,6 +56,7 @@ DlgExtrusion::DlgExtrusion(QWidget* parent, Qt::WFlags fl)
 DlgExtrusion::~DlgExtrusion()
 {
     // no need to delete child widgets, Qt does it all for us
+    delete ui;
 }
 
 void DlgExtrusion::findShapes()
@@ -65,7 +73,7 @@ void DlgExtrusion::findShapes()
         if (type == TopAbs_VERTEX || type == TopAbs_EDGE ||
             type == TopAbs_WIRE || type == TopAbs_FACE ||
             type == TopAbs_SHELL) {
-            QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget);
+            QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
             item->setText(0, QString::fromUtf8((*it)->Label.getValue()));
             item->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
             Gui::ViewProvider* vp = activeGui->getViewProvider(*it);
@@ -77,16 +85,23 @@ void DlgExtrusion::findShapes()
 
 void DlgExtrusion::accept()
 {
+    if (ui->treeWidget->selectedItems().isEmpty()) {
+        QMessageBox::critical(this, windowTitle(), 
+            tr("Select a shape for extrusion, first."));
+        return;
+    }
+
+    Gui::WaitCursor wc;
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     activeDoc->openTransaction("Extrude");
 
     QString shape, type, name;
-    QList<QTreeWidgetItem *> items = ui.treeWidget->selectedItems();
+    QList<QTreeWidgetItem *> items = ui->treeWidget->selectedItems();
     for (QList<QTreeWidgetItem *>::iterator it = items.begin(); it != items.end(); ++it) {
         shape = (*it)->data(0, Qt::UserRole).toString();
         type = QString::fromAscii("Part::Extrusion");
         name = QString::fromAscii(activeDoc->getUniqueObjectName("Extrude").c_str());
-        double len = ui.dirLen->value();
+        double len = ui->dirLen->value();
 
         QString code = QString::fromAscii(
             "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
@@ -94,9 +109,9 @@ void DlgExtrusion::accept()
             "FreeCAD.ActiveDocument.%2.Dir = (%4,%5,%6)\n"
             "FreeCADGui.ActiveDocument.%3.Visibility = False\n")
             .arg(type).arg(name).arg(shape)
-            .arg(ui.dirX->value()*len)
-            .arg(ui.dirY->value()*len)
-            .arg(ui.dirZ->value()*len);
+            .arg(ui->dirX->value()*len)
+            .arg(ui->dirY->value()*len)
+            .arg(ui->dirZ->value()*len);
         Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
     }
 
@@ -106,16 +121,34 @@ void DlgExtrusion::accept()
     QDialog::accept();
 }
 
-void DlgExtrusion::on_treeWidget_itemSelectionChanged()
-{
-    ui.okButton->setEnabled(!ui.treeWidget->selectedItems().isEmpty());
-}
-
 void DlgExtrusion::on_checkNormal_toggled(bool b)
 {
-    ui.dirX->setDisabled(b);
-    ui.dirY->setDisabled(b);
-    ui.dirZ->setDisabled(b);
+    ui->dirX->setDisabled(b);
+    ui->dirY->setDisabled(b);
+    ui->dirZ->setDisabled(b);
+}
+
+// ---------------------------------------
+
+TaskExtrusion::TaskExtrusion()
+{
+    widget = new DlgExtrusion();
+    taskbox = new Gui::TaskView::TaskBox(
+        Gui::BitmapFactory().pixmap("Part_Extrude"),
+        widget->windowTitle(), true, 0);
+    taskbox->groupLayout()->addWidget(widget);
+    Content.push_back(taskbox);
+}
+
+TaskExtrusion::~TaskExtrusion()
+{
+    // automatically deleted in the sub-class
+}
+
+bool TaskExtrusion::accept()
+{
+    widget->accept();
+    return (widget->result() == QDialog::Accepted);
 }
 
 #include "moc_DlgExtrusion.cpp"

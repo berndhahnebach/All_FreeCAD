@@ -529,7 +529,7 @@ void CmdPartMakeSolid::activated(int iMsg)
             TopAbs_ShapeEnum type = shape.ShapeType();
             QString str;
             if (type == TopAbs_SOLID) {
-                Base::Console().Message("%s is ignored becasue it is already a solid.\n",
+                Base::Console().Message("%s is ignored because it is already a solid.\n",
                     (*it)->Label.getValue());
             }
             else if (type == TopAbs_COMPOUND || type == TopAbs_COMPSOLID) {
@@ -574,6 +574,61 @@ void CmdPartMakeSolid::activated(int iMsg)
 }
 
 bool CmdPartMakeSolid::isActive(void)
+{
+    return Gui::Selection().countObjectsOfType
+        (Part::Feature::getClassTypeId()) > 0;
+}
+
+//===========================================================================
+// Part_ReverseShape
+//===========================================================================
+DEF_STD_CMD_A(CmdPartReverseShape);
+
+CmdPartReverseShape::CmdPartReverseShape()
+  :Command("Part_ReverseShape")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Reverse shapes");
+    sToolTipText  = QT_TR_NOOP("Reverse orientation of shapes");
+    sWhatsThis    = "Part_ReverseShape";
+    sStatusTip    = sToolTipText;
+    iAccel        = 0;
+}
+
+void CmdPartReverseShape::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> objs = Gui::Selection().getObjectsOfType
+        (Part::Feature::getClassTypeId());
+    doCommand(Doc, "import Part");
+    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
+        const TopoDS_Shape& shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
+        if (!shape.IsNull()) {
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            QString str = QString::fromAscii(
+                "__s__=App.ActiveDocument.%1.Shape\n"
+                "__s__.reverse()\n"
+                "__o__=App.ActiveDocument.addObject(\"Part::Feature\",\"%1_rev\")\n"
+                "__o__.Label=\"%2 (Rev)\"\n"
+                "__o__.Shape=__s__\n"
+                "del __s__, __o__"
+                )
+                .arg(QLatin1String((*it)->getNameInDocument()))
+                .arg(QLatin1String((*it)->Label.getValue()));
+
+            try {
+                if (!str.isEmpty())
+                    doCommand(Doc, (const char*)str.toAscii());
+            }
+            catch (const Base::Exception& e) {
+                Base::Console().Error("Cannot convert %s because %s.\n",
+                    (*it)->Label.getValue(), e.what());
+            }
+        }
+    }
+}
+
+bool CmdPartReverseShape::isActive(void)
 {
     return Gui::Selection().countObjectsOfType
         (Part::Feature::getClassTypeId()) > 0;
@@ -627,8 +682,7 @@ CmdPartExtrude::CmdPartExtrude()
 
 void CmdPartExtrude::activated(int iMsg)
 {
-    PartGui::DlgExtrusion dlg(Gui::getMainWindow());
-    dlg.exec();
+    Gui::Control().showDialog(new PartGui::TaskExtrusion());
 }
 
 bool CmdPartExtrude::isActive(void)
@@ -656,8 +710,7 @@ CmdPartRevolve::CmdPartRevolve()
 
 void CmdPartRevolve::activated(int iMsg)
 {
-    PartGui::DlgRevolution dlg(Gui::getMainWindow());
-    dlg.exec();
+    Gui::Control().showDialog(new PartGui::TaskRevolution());
 }
 
 bool CmdPartRevolve::isActive(void)
@@ -793,6 +846,7 @@ void CreatePartCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdPartMakeSolid());
+    rcCmdMgr.addCommand(new CmdPartReverseShape());
     rcCmdMgr.addCommand(new CmdPartBoolean());
     rcCmdMgr.addCommand(new CmdPartExtrude());
     rcCmdMgr.addCommand(new CmdPartRevolve());

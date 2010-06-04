@@ -113,8 +113,8 @@ libPart_la_SOURCES=\
 		FeaturePartSection.cpp \
 		FeatureExtrusion.cpp \
 		FeatureFillet.cpp \
-		FeatureRevolution.cpp \
 		FeatureGeometrySet.cpp \
+		FeatureRevolution.cpp \
 		Geometry.cpp \
 		ImportStep.cpp \
 		CustomFeature.cpp \
@@ -126,6 +126,7 @@ libPart_la_SOURCES=\
 		PreCompiled.h \
 		PrimitiveFeature.cpp \
 		ProgressIndicator.cpp \
+		PropertyGeometryList.cpp \
 		PropertyTopoShape.cpp \
 		TopoShape.cpp \
 		TopoShapeCompoundPyImp.cpp \
@@ -157,6 +158,7 @@ include_HEADERS=\
 		FeaturePartSection.h \
 		FeatureExtrusion.h \
 		FeatureFillet.h \
+		FeatureGeometrySet.h \
 		FeatureRevolution.h \
 		Geometry.h \
 		ImportStep.h \
@@ -165,6 +167,7 @@ include_HEADERS=\
 		Part2DObject.h \
 		PrimitiveFeature.h \
 		ProgressIndicator.h \
+		PropertyGeometryList.h \
 		PropertyTopoShape.h \
 		TopoShape.h
 

@@ -41,7 +41,7 @@ public:
     //@{
     /// recalculate the Feature
 protected:
-    TopoDS_Shape runOperation(TopoDS_Shape, TopoDS_Shape) const;
+    TopoDS_Shape runOperation(const TopoDS_Shape&, const TopoDS_Shape&) const;
     //@}
 };
 

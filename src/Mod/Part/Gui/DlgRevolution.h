@@ -24,6 +24,8 @@
 #define PARTGUI_DLGREVOLUTION_H
 
 #include <Gui/InputVector.h>
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
 
 namespace PartGui {
 
@@ -46,12 +48,28 @@ private:
     void findShapes();
     void directionActivated(int);
 
-private Q_SLOTS:
-    void on_treeWidget_itemSelectionChanged();
-
 private:
     typedef Gui::LocationInterfaceComp<Ui_DlgRevolution> Ui_RevolutionComp;
     Ui_RevolutionComp* ui;
+};
+
+class TaskRevolution : public Gui::TaskView::TaskDialog
+{
+    Q_OBJECT
+
+public:
+    TaskRevolution();
+    ~TaskRevolution();
+
+public:
+    bool accept();
+
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Ok | QDialogButtonBox::Cancel; }
+
+private:
+    DlgRevolution* widget;
+    Gui::TaskView::TaskBox* taskbox;
 };
 
 } // namespace PartGui

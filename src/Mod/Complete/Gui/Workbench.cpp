@@ -205,6 +205,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *part << para
           << "Part_ShapeFromMesh"
           << "Part_MakeSolid"
+          << "Part_ReverseShape"
           << "Separator"
           << "Part_Boolean"
           << "Part_Extrude"

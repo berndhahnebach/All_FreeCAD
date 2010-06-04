@@ -24,7 +24,10 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMessageBox>
+# include <QTreeWidget>
 # include <TopoDS_Shape.hxx>
+# include <TopExp_Explorer.hxx>
+# include <boost/bind.hpp>
 #endif
 
 #include "DlgBooleanOperation.h"
@@ -34,8 +37,12 @@
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
+#include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
+#include <Gui/Document.h>
 #include <Gui/Selection.h>
+#include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 
 using namespace PartGui;
@@ -46,6 +53,14 @@ DlgBooleanOperation::DlgBooleanOperation(QWidget* parent)
   : QWidget(parent), ui(new Ui_DlgBooleanOperation)
 {
     ui->setupUi(this);
+    connect(ui->firstShape, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+            this, SLOT(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+    connect(ui->secondShape, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+            this, SLOT(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+    this->connectNewObject = App::GetApplication().signalNewObject.connect(boost::bind
+        (&DlgBooleanOperation::slotCreatedObject, this, _1));
+    this->connectModObject = App::GetApplication().signalChangedObject.connect(boost::bind
+        (&DlgBooleanOperation::slotChangedObject, this, _1, _2));
     findShapes();
 }
 
@@ -56,72 +71,290 @@ DlgBooleanOperation::~DlgBooleanOperation()
 {
     // no need to delete child widgets, Qt does it all for us
     delete ui;
+    this->connectNewObject.disconnect();
+    this->connectModObject.disconnect();
+}
+
+void DlgBooleanOperation::slotCreatedObject(const App::DocumentObject& obj)
+{
+    App::Document* activeDoc = App::GetApplication().getActiveDocument();
+    if (!activeDoc) return;
+    App::Document* doc = obj.getDocument();
+    if (activeDoc == doc && obj.getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
+        observe.push_back(&obj);
+    }
+}
+
+void DlgBooleanOperation::slotChangedObject(const App::DocumentObject& obj,
+                                            const App::Property& prop)
+{
+    std::list<const App::DocumentObject*>::iterator it;
+    it = std::find(observe.begin(), observe.end(), &obj);
+    if (it != observe.end() && prop.getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
+        const TopoDS_Shape& shape = static_cast<const Part::PropertyPartShape&>(prop).getValue();
+        if (!shape.IsNull()) {
+            Gui::Document* activeGui = Gui::Application::Instance->getDocument(obj.getDocument());
+            QString label = QString::fromUtf8(obj.Label.getValue());
+            QString name = QString::fromAscii(obj.getNameInDocument());
+            
+            QTreeWidgetItem* child = new QTreeWidgetItem();
+            child->setCheckState(0, Qt::Unchecked);
+            child->setText(0, label);
+            child->setToolTip(0, label);
+            child->setData(0, Qt::UserRole, name);
+            Gui::ViewProvider* vp = activeGui->getViewProvider(&obj);
+            if (vp)
+                child->setIcon(0, vp->getIcon());
+
+            QTreeWidgetItem* copy = child->clone();
+            copy->setCheckState(0, Qt::Unchecked);
+
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            if (type == TopAbs_SOLID) {
+                ui->firstShape->topLevelItem(0)->addChild(child);
+                ui->secondShape->topLevelItem(0)->addChild(copy);
+                ui->firstShape->topLevelItem(0)->setExpanded(true);
+                ui->secondShape->topLevelItem(0)->setExpanded(true);
+            }
+            else if (type == TopAbs_SHELL) {
+                ui->firstShape->topLevelItem(1)->addChild(child);
+                ui->secondShape->topLevelItem(1)->addChild(copy);
+                ui->firstShape->topLevelItem(1)->setExpanded(true);
+                ui->secondShape->topLevelItem(1)->setExpanded(true);
+            }
+            else if (type == TopAbs_COMPOUND || type == TopAbs_COMPSOLID) {
+                ui->firstShape->topLevelItem(2)->addChild(child);
+                ui->secondShape->topLevelItem(2)->addChild(copy);
+                ui->firstShape->topLevelItem(2)->setExpanded(true);
+                ui->secondShape->topLevelItem(2)->setExpanded(true);
+            }
+            else if (type == TopAbs_FACE) {
+                ui->firstShape->topLevelItem(3)->addChild(child);
+                ui->secondShape->topLevelItem(3)->addChild(copy);
+                ui->firstShape->topLevelItem(3)->setExpanded(true);
+                ui->secondShape->topLevelItem(3)->setExpanded(true);
+            }
+            else { // belongs to none of these groups
+                delete child; child = 0;
+                delete copy; copy = 0;
+            }
+
+            // remove the watched object because now it is added to the tree
+            observe.erase(it);
+        }
+    }
+}
+
+bool DlgBooleanOperation::hasSolids(const App::DocumentObject* obj) const
+{
+    if (obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
+        const TopoDS_Shape& shape = static_cast<const Part::Feature*>(obj)->Shape.getValue();
+        TopExp_Explorer anExp (shape, TopAbs_SOLID);
+        int count=0;
+        for (; anExp.More(); anExp.Next()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void DlgBooleanOperation::findShapes()
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     if (!activeDoc) return;
+    Gui::Document* activeGui = Gui::Application::Instance->getDocument(activeDoc);
+    if (!activeGui) return;
 
     std::vector<App::DocumentObject*> objs = activeDoc->getObjectsOfType
         (Part::Feature::getClassTypeId());
-    int index = 1; // the first item marks an invalid entry
-    int index_sel1=0, index_sel2=0;
+
+    QTreeWidgetItem *item_left=0, *item_right=0;
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it) {
         const TopoDS_Shape& shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
-        //if (!shape.IsNull()) {
-        //    TopAbs_ShapeEnum type = shape.ShapeType();
-        //    if (type == TopAbs_SOLID) {
-                if (index_sel1 == 0 && Gui::Selection().isSelected(*it))
-                    index_sel1 = index;
-                else if (index_sel1 > 0 && index_sel2 == 0 && Gui::Selection().isSelected(*it))
-                    index_sel2 = index;
-                ui->firstShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
-                ui->firstShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
-                ui->secondShape->addItem(QString::fromUtf8((*it)->Label.getValue()));
-                ui->secondShape->setItemData(index, QString::fromAscii((*it)->getNameInDocument()));
-                index++;
-        //    }
-        //}
+        if (!shape.IsNull()) {
+            QString label = QString::fromUtf8((*it)->Label.getValue());
+            QString name = QString::fromAscii((*it)->getNameInDocument());
+            
+            QTreeWidgetItem* child = new QTreeWidgetItem();
+            child->setCheckState(0, Qt::Unchecked);
+            child->setText(0, label);
+            child->setToolTip(0, label);
+            child->setData(0, Qt::UserRole, name);
+            Gui::ViewProvider* vp = activeGui->getViewProvider(*it);
+            if (vp)
+                child->setIcon(0, vp->getIcon());
+
+            QTreeWidgetItem* copy = child->clone();
+            copy->setCheckState(0, Qt::Unchecked);
+
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            if (type == TopAbs_SOLID) {
+                ui->firstShape->topLevelItem(0)->addChild(child);
+                ui->secondShape->topLevelItem(0)->addChild(copy);
+            }
+            else if (type == TopAbs_SHELL) {
+                ui->firstShape->topLevelItem(1)->addChild(child);
+                ui->secondShape->topLevelItem(1)->addChild(copy);
+            }
+            else if (type == TopAbs_COMPOUND || type == TopAbs_COMPSOLID) {
+                ui->firstShape->topLevelItem(2)->addChild(child);
+                ui->secondShape->topLevelItem(2)->addChild(copy);
+            }
+            else if (type == TopAbs_FACE) {
+                ui->firstShape->topLevelItem(3)->addChild(child);
+                ui->secondShape->topLevelItem(3)->addChild(copy);
+            }
+            else { // belongs to none of these groups
+                delete child; child = 0;
+                delete copy; copy = 0;
+            }
+
+            if (!item_left || !item_right) {
+                bool selected = Gui::Selection().isSelected(*it);
+                if (!item_left && selected)
+                    item_left = child;
+                else if (!item_right && selected)
+                    item_right = copy;
+            }
+        }
     }
 
-    ui->firstShape->setCurrentIndex(index_sel1);
-    ui->secondShape->setCurrentIndex(index_sel2);
+    if (item_left) {
+        item_left->setCheckState(0, Qt::Checked);
+        ui->firstShape->setCurrentItem(item_left);
+    }
+    if (item_right) {
+        item_right->setCheckState(0, Qt::Checked);
+        ui->secondShape->setCurrentItem(item_right);
+    }
+    for (int i = 0; i < ui->firstShape->topLevelItemCount(); i++) {
+        QTreeWidgetItem* group = ui->firstShape->topLevelItem(i);
+        group->setFlags(Qt::ItemIsEnabled);
+        if (group->childCount() > 0)
+            group->setExpanded(true);
+    }
+    for (int i = 0; i < ui->secondShape->topLevelItemCount(); i++) {
+        QTreeWidgetItem* group = ui->secondShape->topLevelItem(i);
+        group->setFlags(Qt::ItemIsEnabled);
+        if (group->childCount() > 0)
+            group->setExpanded(true);
+    }
+}
+
+bool DlgBooleanOperation::indexOfCurrentItem(QTreeWidgetItem* item, int& top_ind, int& child_ind) const
+{
+    QTreeWidgetItem* parent = item->parent();
+    if (parent) {
+        top_ind = parent->treeWidget()->indexOfTopLevelItem(parent);
+        child_ind = parent->indexOfChild(item);
+        return true;
+    }
+
+    return false;
+}
+
+void DlgBooleanOperation::currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem * previous)
+{
+//    if (current && current->flags() & Qt::ItemIsUserCheckable)
+//        current->setCheckState(0, Qt::Checked);
+    if (previous && previous->flags() & Qt::ItemIsUserCheckable)
+        previous->setCheckState(0, Qt::Unchecked);
 }
 
 void DlgBooleanOperation::on_swapButton_clicked()
 {
-    int index_sel1 = ui->firstShape->currentIndex();
-    int index_sel2 = ui->secondShape->currentIndex();
-    ui->firstShape->setCurrentIndex(index_sel2);
-    ui->secondShape->setCurrentIndex(index_sel1);
+    QTreeWidgetItem* lChild = ui->firstShape->currentItem();
+    bool lsel = (lChild && (lChild->checkState(0) & Qt::Checked));
+    QTreeWidgetItem* rChild = ui->secondShape->currentItem();
+    bool rsel = (rChild && (rChild->checkState(0) & Qt::Checked));
+
+    if (rsel) {
+        int top_index, child_ind;
+        if (indexOfCurrentItem(rChild, top_index, child_ind)) {
+            QTreeWidgetItem* child = ui->firstShape->topLevelItem(top_index)->child(child_ind);
+            child->setCheckState(0, Qt::Checked);
+            ui->firstShape->setCurrentItem(child);
+        }
+    }
+    if (lsel) {
+        int top_index, child_ind;
+        if (indexOfCurrentItem(lChild, top_index, child_ind)) {
+            QTreeWidgetItem* child = ui->secondShape->topLevelItem(top_index)->child(child_ind);
+            child->setCheckState(0, Qt::Checked);
+            ui->secondShape->setCurrentItem(child);
+        }
+    }
 }
 
 void DlgBooleanOperation::accept()
 {
-    if (ui->firstShape->currentIndex() == 0 ||
-        ui->secondShape->currentIndex() == 0) {
+    int ltop, lchild, rtop, rchild;
+    QTreeWidgetItem* litem = ui->firstShape->currentItem();
+    bool lsel = (litem && (litem->checkState(0) & Qt::Checked));
+    QTreeWidgetItem* ritem = ui->secondShape->currentItem();
+    bool rsel = (ritem && (ritem->checkState(0) & Qt::Checked));
+
+    if (!lsel || !indexOfCurrentItem(litem,ltop,lchild)) {
         QMessageBox::critical(this, windowTitle(), 
-            tr("Select a shape first"));
+            tr("Select a shape on the left side, first"));
         return;
     }
-    if (ui->firstShape->currentIndex() == ui->secondShape->currentIndex()) {
+    if (!rsel || !indexOfCurrentItem(ritem,rtop,rchild)) {
+        QMessageBox::critical(this, windowTitle(), 
+            tr("Select a shape on the right side, first"));
+        return;
+    }
+    if (ltop == rtop && lchild == rchild) {
         QMessageBox::critical(this, windowTitle(), 
             tr("Cannot perform a boolean operation with the same shape"));
         return;
     }
 
+    std::string shapeOne, shapeTwo;
+    shapeOne = (const char*)litem->data(0, Qt::UserRole).toByteArray();
+    shapeTwo = (const char*)ritem->data(0, Qt::UserRole).toByteArray();
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
+    if (!activeDoc) {
+        QMessageBox::critical(this, windowTitle(), 
+            tr("No active document available"));
+        return;
+    }
+
     std::string type, objName;
+    App::DocumentObject* obj1 = activeDoc->getObject(shapeOne.c_str());
+    App::DocumentObject* obj2 = activeDoc->getObject(shapeTwo.c_str());
+    if (!obj1 || !obj2) {
+        // objects don't exists (anymore)
+        QMessageBox::critical(this, windowTitle(), 
+            tr("One of the selected objects doesn't exist anymore"));
+        return;
+    }
+
     if (ui->unionButton->isChecked()) {
+        if (!hasSolids(obj1) || !hasSolids(obj2)) {
+            QMessageBox::critical(this, windowTitle(), 
+                tr("Performing union on non-solids is not possible"));
+            return;
+        }
         type = "Part::Fuse";
         objName = activeDoc->getUniqueObjectName("Fusion");
     }
     else if (ui->interButton->isChecked()) {
+        if (!hasSolids(obj1) || !hasSolids(obj2)) {
+            QMessageBox::critical(this, windowTitle(), 
+                tr("Performing intersection on non-solids is not possible"));
+            return;
+        }
         type = "Part::Common";
         objName = activeDoc->getUniqueObjectName("Common");
     }
     else if (ui->diffButton->isChecked()) {
+        if (!hasSolids(obj1) || !hasSolids(obj2)) {
+            QMessageBox::critical(this, windowTitle(), 
+                tr("Performing difference on non-solids is not possible"));
+            return;
+        }
         type = "Part::Cut";
         objName = activeDoc->getUniqueObjectName("Cut");
     }
@@ -129,10 +362,6 @@ void DlgBooleanOperation::accept()
         type = "Part::Section";
         objName = activeDoc->getUniqueObjectName("Section");
     }
-
-    std::string shapeOne, shapeTwo;
-    shapeOne = (const char*)ui->firstShape->itemData(ui->firstShape->currentIndex()).toByteArray();
-    shapeTwo = (const char*)ui->secondShape->itemData(ui->secondShape->currentIndex()).toByteArray();
 
     try {
         Gui::WaitCursor wc;
@@ -163,7 +392,9 @@ void DlgBooleanOperation::accept()
 TaskBooleanOperation::TaskBooleanOperation()
 {
     widget = new DlgBooleanOperation();
-    taskbox = new Gui::TaskView::TaskBox(QPixmap(), widget->windowTitle(), true, 0);
+    taskbox = new Gui::TaskView::TaskBox(
+        Gui::BitmapFactory().pixmap("Part_Booleans"),
+        widget->windowTitle(), false, 0);
     taskbox->groupLayout()->addWidget(widget);
     Content.push_back(taskbox);
 }
