@@ -23,10 +23,12 @@
 #ifndef PARTGUI_DLGEXTRUSION_H
 #define PARTGUI_DLGEXTRUSION_H
 
-#include "ui_DlgExtrusion.h"
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
 
 namespace PartGui {
 
+class Ui_DlgExtrusion;
 class DlgExtrusion : public QDialog
 {
     Q_OBJECT
@@ -40,11 +42,29 @@ protected:
     void findShapes();
 
 private Q_SLOTS:
-    void on_treeWidget_itemSelectionChanged();
     void on_checkNormal_toggled(bool);
 
 private:
-    Ui::DlgExtrusion ui;
+    Ui_DlgExtrusion* ui;
+};
+
+class TaskExtrusion : public Gui::TaskView::TaskDialog
+{
+    Q_OBJECT
+
+public:
+    TaskExtrusion();
+    ~TaskExtrusion();
+
+public:
+    bool accept();
+
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Ok | QDialogButtonBox::Cancel; }
+
+private:
+    DlgExtrusion* widget;
+    Gui::TaskView::TaskBox* taskbox;
 };
 
 } // namespace PartGui

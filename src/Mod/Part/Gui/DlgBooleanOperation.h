@@ -25,9 +25,17 @@
 
 #include <Gui/TaskView/TaskDialog.h>
 #include <Gui/TaskView/TaskView.h>
+#include <boost/signals.hpp>
 
+class QTreeWidgetItem;
+
+namespace App {
+class DocumentObject;
+class Property;
+}
 namespace PartGui {
 
+typedef boost::signals::connection Connection;
 class Ui_DlgBooleanOperation;
 class DlgBooleanOperation : public QWidget
 {
@@ -38,14 +46,24 @@ public:
     ~DlgBooleanOperation();
     void accept();
 
-protected:
+private:
     void findShapes();
+    bool indexOfCurrentItem(QTreeWidgetItem*, int&, int&) const;
+    void slotCreatedObject(const App::DocumentObject&);
+    void slotChangedObject(const App::DocumentObject&, const App::Property&);
+    bool hasSolids(const App::DocumentObject*) const;
 
 public Q_SLOTS:
     void on_swapButton_clicked();
 
+private Q_SLOTS:
+    void currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*);
+
 private:
     Ui_DlgBooleanOperation* ui;
+    Connection connectNewObject;
+    Connection connectModObject;
+    std::list<const App::DocumentObject*> observe;
 };
 
 class TaskBooleanOperation : public Gui::TaskView::TaskDialog
@@ -61,6 +79,10 @@ public:
 
     virtual QDialogButtonBox::StandardButtons getStandardButtons() const
     { return QDialogButtonBox::Apply | QDialogButtonBox::Close; }
+    virtual bool isAllowedAlterDocument(void) const
+    { return true; }
+    virtual bool needsFullSpace() const
+    { return true; }
 
 private:
     DlgBooleanOperation* widget;

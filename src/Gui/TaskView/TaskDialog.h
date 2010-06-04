@@ -57,6 +57,15 @@ public:
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
     { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
 
+    virtual bool isAllowedAlterDocument(void) const
+    { return false; }
+    virtual bool isAllowedAlterView(void) const
+    { return true; }
+    virtual bool isAllowedAlterSelection(void) const
+    { return true; }
+    virtual bool needsFullSpace() const
+    { return false; }
+
 public:
     /// is called by the framework when the dialog is opened
     virtual void open();

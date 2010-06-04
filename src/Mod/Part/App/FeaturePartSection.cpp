@@ -39,7 +39,7 @@ Section::Section(void)
 {
 }
 
-TopoDS_Shape Section::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
+TopoDS_Shape Section::runOperation(const TopoDS_Shape& base, const TopoDS_Shape& tool) const
 {
     // Let's call algorithm computing a section operation:
     BRepAlgoAPI_Section mkSection(base, tool);

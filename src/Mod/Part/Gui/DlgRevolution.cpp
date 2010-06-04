@@ -22,6 +22,9 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <QMessageBox>
+#endif
 
 #include "ui_DlgRevolution.h"
 #include "DlgRevolution.h"
@@ -34,15 +37,14 @@
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/ViewProvider.h>
+#include <Gui/WaitCursor.h>
 
 using namespace PartGui;
 
 DlgRevolution::DlgRevolution(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialog(parent, fl)
 {
-    setWindowIcon(Gui::BitmapFactory().pixmap("Part_Revolve"));
     ui = new Ui_RevolutionComp(this);
-    ui->okButton->setDisabled(true);
     findShapes();
 }
 
@@ -101,6 +103,13 @@ void DlgRevolution::findShapes()
 
 void DlgRevolution::accept()
 {
+    if (ui->treeWidget->selectedItems().isEmpty()) {
+        QMessageBox::critical(this, windowTitle(), 
+            tr("Select a shape for revolution, first."));
+        return;
+    }
+
+    Gui::WaitCursor wc;
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     activeDoc->openTransaction("Revolve");
 
@@ -132,11 +141,30 @@ void DlgRevolution::accept()
 
     activeDoc->commitTransaction();
     activeDoc->recompute();
+    QDialog::accept();
 }
 
-void DlgRevolution::on_treeWidget_itemSelectionChanged()
+// ---------------------------------------
+
+TaskRevolution::TaskRevolution()
 {
-    ui->okButton->setEnabled(!ui->treeWidget->selectedItems().isEmpty());
+    widget = new DlgRevolution();
+    taskbox = new Gui::TaskView::TaskBox(
+        Gui::BitmapFactory().pixmap("Part_Revolve"),
+        widget->windowTitle(), true, 0);
+    taskbox->groupLayout()->addWidget(widget);
+    Content.push_back(taskbox);
+}
+
+TaskRevolution::~TaskRevolution()
+{
+    // automatically deleted in the sub-class
+}
+
+bool TaskRevolution::accept()
+{
+    widget->accept();
+    return (widget->result() == QDialog::Accepted);
 }
 
 #include "moc_DlgRevolution.cpp"

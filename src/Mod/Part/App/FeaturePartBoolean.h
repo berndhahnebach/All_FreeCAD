@@ -48,7 +48,7 @@ public:
     //@}
 
 protected:
-    virtual TopoDS_Shape runOperation(TopoDS_Shape, TopoDS_Shape) const = 0;
+    virtual TopoDS_Shape runOperation(const TopoDS_Shape&, const TopoDS_Shape&) const = 0;
 };
 
 }

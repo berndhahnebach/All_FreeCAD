@@ -40,7 +40,7 @@ Fuse::Fuse(void)
 {
 }
 
-TopoDS_Shape Fuse::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
+TopoDS_Shape Fuse::runOperation(const TopoDS_Shape& base, const TopoDS_Shape& tool) const
 {
     // Let's call algorithm computing a fuse operation:
     BRepAlgoAPI_Fuse mkFuse(base, tool);

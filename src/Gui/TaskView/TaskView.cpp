@@ -240,7 +240,9 @@ void TaskView::showDialog(TaskDialog *dlg)
     for (std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
         taskPanel->addWidget(*it);
     }
-    taskPanel->addStretch();
+
+    if (!dlg->needsFullSpace())
+        taskPanel->addStretch();
 
     // set as active Dialog
     ActiveDialog = dlg;

@@ -40,7 +40,7 @@ Cut::Cut(void)
 {
 }
 
-TopoDS_Shape Cut::runOperation(TopoDS_Shape base, TopoDS_Shape tool) const
+TopoDS_Shape Cut::runOperation(const TopoDS_Shape& base, const TopoDS_Shape& tool) const
 {
     // Let's call algorithm computing a cut operation:
     BRepAlgoAPI_Cut mkCut(base, tool);

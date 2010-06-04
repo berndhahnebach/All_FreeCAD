@@ -1,128 +1,113 @@
-<ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>PartGui::DlgRevolution</class>
- <widget class="QDialog" name="PartGui::DlgRevolution" >
-  <property name="geometry" >
+ <widget class="QDialog" name="PartGui::DlgRevolution">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
+    <width>307</width>
     <height>231</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Revolve</string>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="0" column="2" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>61</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="1" >
-    <layout class="QGridLayout" >
-     <property name="margin" >
+   <item row="0" column="1">
+    <layout class="QGridLayout">
+     <property name="margin">
       <number>0</number>
      </property>
-     <property name="spacing" >
+     <property name="spacing">
       <number>6</number>
      </property>
-     <item row="2" column="0" >
-      <widget class="QLabel" name="label_3" >
-       <property name="text" >
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
         <string>Y:</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>X:</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="3" column="1" >
-      <widget class="QDoubleSpinBox" name="baseZ" />
+     <item row="3" column="1">
+      <widget class="QDoubleSpinBox" name="baseZ"/>
      </item>
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label_5" >
-       <property name="text" >
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
         <string>Angle:</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" >
-      <widget class="QDoubleSpinBox" name="baseY" />
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="baseY"/>
      </item>
-     <item row="4" column="1" >
-      <widget class="QComboBox" name="direction" />
+     <item row="4" column="1">
+      <widget class="QComboBox" name="direction"/>
      </item>
-     <item row="3" column="0" >
-      <widget class="QLabel" name="label_4" >
-       <property name="text" >
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
         <string>Z:</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="4" column="0" >
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+     <item row="4" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Axis:</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QDoubleSpinBox" name="baseX" />
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="baseX"/>
      </item>
-     <item row="0" column="1" >
-      <widget class="QDoubleSpinBox" name="angle" >
-       <property name="maximum" >
-        <double>360</double>
+     <item row="0" column="1">
+      <widget class="QDoubleSpinBox" name="angle">
+       <property name="maximum">
+        <double>360.000000000000000</double>
        </property>
-       <property name="value" >
-        <double>360</double>
+       <property name="value">
+        <double>360.000000000000000</double>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="1" column="1" >
+   <item row="1" column="1">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>21</width>
        <height>21</height>
@@ -130,56 +115,19 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="1" colspan="2" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>131</width>
-         <height>31</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>Create</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item rowspan="3" row="0" column="0" >
-    <widget class="QTreeWidget" name="treeWidget" >
-     <property name="selectionMode" >
+   <item row="0" column="0" rowspan="3">
+    <widget class="QTreeWidget" name="treeWidget">
+     <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="indentation" >
+     <property name="indentation">
       <number>20</number>
      </property>
-     <property name="rootIsDecorated" >
+     <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Shape</string>
       </property>
      </column>
@@ -187,7 +135,6 @@
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>treeWidget</tabstop>
   <tabstop>angle</tabstop>
@@ -195,42 +142,7 @@
   <tabstop>baseY</tabstop>
   <tabstop>baseZ</tabstop>
   <tabstop>direction</tabstop>
-  <tabstop>okButton</tabstop>
-  <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
-   <receiver>PartGui::DlgRevolution</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>278</x>
-     <y>253</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>96</x>
-     <y>254</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>PartGui::DlgRevolution</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>369</x>
-     <y>253</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>179</x>
-     <y>282</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
