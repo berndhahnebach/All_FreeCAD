@@ -1133,7 +1133,7 @@ void StdViewDockUndockFullscreen::activated(int iMsg)
 bool StdViewDockUndockFullscreen::isActive(void)
 {
     MDIView* view = getMainWindow()->activeWindow();
-    if (view) {
+    if (qobject_cast<View3DInventor*>(view)) {
         // update the action group if needed
         ActionGroup* pActGrp = qobject_cast<ActionGroup*>(_pcAction);
         if (pActGrp) {

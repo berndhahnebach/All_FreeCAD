@@ -543,7 +543,7 @@ protected: \
 };
 
 /** The Command Macro view
- *  This macro makes it easyer to define a new command for the 3D View
+ *  This macro makes it easier to define a new command for the 3D View
  *  It activate the command only when a 3DView is active.
  *  The parameters are the class name
  *  @author Jürgen Riegel
