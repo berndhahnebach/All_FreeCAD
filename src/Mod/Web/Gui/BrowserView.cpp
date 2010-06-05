@@ -66,8 +66,8 @@ using namespace Gui;
 BrowserView::BrowserView(QWidget* parent)
     : MDIView(0,parent,0),
       WindowParameter( "Browser" ),
-      textSizeMultiplyer(1.0),
-      isLoading(false)
+      isLoading(false),
+      textSizeMultiplier(1.0)
 {
     WebView = new QWebView(this);
     setCentralWidget(WebView);
@@ -88,10 +88,10 @@ BrowserView::~BrowserView()
     delete WebView;
 }
 
-void BrowserView::onLinkClicked ( const QUrl & url ) 
+void BrowserView::onLinkClicked (const QUrl & url) 
 {
-    QString path = url.path();
-    path;
+    //QString path = url.path();
+    //path;
 }
 
 void BrowserView::load(const char* URL)
@@ -149,12 +149,12 @@ bool BrowserView::onMsg(const char* pMsg,const char** ppReturn)
         WebView->stop();
         return true;
     } else if (strcmp(pMsg,"ZoomIn")==0){
-        textSizeMultiplyer += 0.2f;
-        WebView->setTextSizeMultiplier(textSizeMultiplyer);
+        textSizeMultiplier += 0.2f;
+        WebView->setTextSizeMultiplier(textSizeMultiplier);
         return true;
     } else if (strcmp(pMsg,"ZoomOut")==0){
-        textSizeMultiplyer -= 0.2f;
-        WebView->setTextSizeMultiplier(textSizeMultiplyer);
+        textSizeMultiplier -= 0.2f;
+        WebView->setTextSizeMultiplier(textSizeMultiplier);
         return true;
     }
 
@@ -183,6 +183,5 @@ bool BrowserView::canClose(void)
    return true;
 }
 
-
-
 #include "moc_BrowserView.cpp"
+

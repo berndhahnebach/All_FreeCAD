@@ -2,6 +2,9 @@ SUBDIRS=Resources
 
 lib_LTLIBRARIES=libWebGui.la WebGui.la
 
+BUILT_SOURCES=\
+		moc_BrowserView.cpp
+
 libWebGui_la_SOURCES=\
 		AppWebGuiPy.cpp \
 		Command.cpp \
@@ -13,14 +16,13 @@ libWebGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libWebGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) \
+libWebGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui $(QT_LIBS) $(GL_LIBS) \
 		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libWebGui_la_CPPFLAGS = -DWebAppExport= -DWebGuiExport=
 
 libWebGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
-		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui 

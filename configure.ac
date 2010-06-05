@@ -766,6 +766,9 @@ src/Mod/Complete/Gui/Resources/Makefile
 src/Mod/Draft/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
+src/Mod/Web/Makefile
+src/Mod/Web/Gui/Makefile
+src/Mod/Web/Gui/Resources/Makefile
 src/Mod/TemplatePyMod/Makefile
 src/Tools/Makefile
 src/Tools/_TEMPLATE_/Makefile
