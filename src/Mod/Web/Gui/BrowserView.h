@@ -83,7 +83,7 @@ protected Q_SLOTS:
 private:
     QWebView* WebView;
     bool isLoading;
-    float textSizeMultiplyer;
+    float textSizeMultiplier;
 };
 
 } // namespace WebGui

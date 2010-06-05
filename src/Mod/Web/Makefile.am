@@ -1,4 +1,4 @@
-SUBDIRS=App Gui
+SUBDIRS=Gui
 
 # Change data dir from default ($(prefix)/share) to $(prefix)
 datadir = $(prefix)/Mod/Web

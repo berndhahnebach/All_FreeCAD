@@ -260,7 +260,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         *Drafting 
             << "Draft_SelectPlane"
             << "Draft_Line"
-            << "Draft_Polyline"
+            << "Draft_Wire"
             << "Draft_Circle"
             << "Draft_Arc"
             << "Draft_Rectangle"
@@ -419,7 +419,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
         *Drafting
             << "Draft_SelectPlane"
             << "Draft_Line"
-            << "Draft_Polyline"
+            << "Draft_Wire"
             << "Draft_Circle"
             << "Draft_Arc"
             << "Draft_Rectangle"
@@ -429,6 +429,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
             << "Draft_Move" 
             << "Draft_Rotate" 
             << "Draft_Offset" 
+
             << "Draft_Trimex" 
             << "Draft_Upgrade" 
             << "Draft_Downgrade" 

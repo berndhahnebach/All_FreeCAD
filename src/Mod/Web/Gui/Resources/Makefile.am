@@ -7,8 +7,14 @@ nodist_libResources_la_SOURCES=\
 		qrc_Web.cpp 
 
 EXTRA_DIST = \
-		translations/Web_de.qm \
-		translations/Web_it.qm \
+		icons/actions/web-browser.svg \
+		icons/actions/web-home.svg \
+		icons/actions/web-next.svg \
+		icons/actions/web-previous.svg \
+		icons/actions/web-refresh.svg \
+		icons/actions/web-stop.svg \
+		icons/actions/web-zoom-in.svg \
+		icons/actions/web-zoom-out.svg \
 		Web.qrc \
 		UpdateResources.bat
 
