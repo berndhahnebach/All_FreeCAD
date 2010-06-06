@@ -50,18 +50,18 @@ using namespace Part;
 
 TYPESYSTEM_SOURCE(Sketcher::Sketch, Base::Persistence)
 
-const int IntGeoOffset(3); 
+const int IntGeoOffset(0); 
 
 Sketch::Sketch()
 {
-    // add the root point at 0,0
-    addPoint(Base::Vector3d());
-    // add x,y axis
-    Part::GeomLineSegment axis;
-    axis.setPoints(Base::Vector3d(0,0,0),Base::Vector3d(100,0,0));
-    addLineSegment(axis);
-    axis.setPoints(Base::Vector3d(0,0,0),Base::Vector3d(0,100,0));
-    addLineSegment(axis);
+    //// add the root point at 0,0
+    //addPoint(Base::Vector3d());
+    //// add x,y axis
+    //Part::GeomLineSegment axis;
+    //axis.setPoints(Base::Vector3d(0,0,0),Base::Vector3d(100,0,0));
+    //addLineSegment(axis);
+    //axis.setPoints(Base::Vector3d(0,0,0),Base::Vector3d(0,100,0));
+    //addLineSegment(axis);
 
     // set them to construction elements
 

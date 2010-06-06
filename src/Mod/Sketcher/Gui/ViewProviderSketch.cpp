@@ -43,6 +43,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Parameter.h>
 #include <Base/Console.h>
+#include <Base/Vector3D.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>
@@ -162,8 +163,9 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 			switch(Mode){
 				case STATUS_NONE:
                     if (PreselectPoint >=0) {
-                        //this->DragPoint = SketchFlat->getPoint(PreselectPoint);
+                        this->DragPoint = PreselectPoint;
 						Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
+                        //ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0));
 					    //SketchFlat->forcePoint(this->DragPoint,x,y);
 					    Mode = STATUS_SKETCH_DragPoint;
                         return true;
@@ -263,6 +265,8 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 		case STATUS_SKETCH_DoLine:
 		case STATUS_SKETCH_DoPolyline:
 		case STATUS_SKETCH_DragPoint:
+            ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0));
+
 			//SketchFlat->forcePoint(this->DragPoint,x,y);
 			//SketchFlat->solve();
 			draw();
