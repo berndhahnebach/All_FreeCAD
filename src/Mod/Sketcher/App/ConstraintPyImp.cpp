@@ -1,6 +1,6 @@
 
 #include "PreCompiled.h"
-
+#include <strstream>
 #include "Mod/Sketcher/App/Constraint.h"
 
 // inclusion of the generated files (generated out of ConstraintPy.xml)
@@ -25,11 +25,13 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
 
     char *ConstraintType;
-    int  FirstIndex=-1;
+    int  FirstIndex =-1;
+    int  FirstPos   =-1;
+    int  SecondIndex=-1;
+    int  SecondPos  =-1;
+
     if (PyArg_ParseTuple(args, "si", &ConstraintType, &FirstIndex)) {
-        if(strcmp("Coincdent",ConstraintType) == 0 ){
-            this->getConstraintPtr()->Type = Coincident ;
-        } else if(strcmp("Horizontal",ConstraintType) == 0 ){
+        if(strcmp("Horizontal",ConstraintType) == 0 ){
             this->getConstraintPtr()->Type = Horizontal ;
         } else if(strcmp("Vertical",ConstraintType) == 0 ){
             this->getConstraintPtr()->Type = Vertical ;
@@ -37,6 +39,21 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->Type = None ;
         }
         this->getConstraintPtr()->First = FirstIndex;
+        return 0;
+    }
+
+    PyErr_Clear();
+
+    if (PyArg_ParseTuple(args, "siiii", &ConstraintType, &FirstIndex,&FirstPos, &SecondIndex,&SecondPos)) {
+        if(strcmp("Coincident",ConstraintType) == 0 ){
+            this->getConstraintPtr()->Type = Coincident ;
+        } else {
+            this->getConstraintPtr()->Type = None ;
+        }
+        this->getConstraintPtr()->First     = FirstIndex;
+        this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
+        this->getConstraintPtr()->Second    = SecondIndex;
+        this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
         return 0;
     }
 
@@ -50,12 +67,16 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 // returns a string which represents the object e.g. when printed in python
 std::string ConstraintPy::representation(void) const
 {
-    std::string result = "<Constraint " ;
+    std::strstream result;
+    result << "<Constraint " ;
     switch(this->getConstraintPtr()->Type) {
-        case None: result += "'None'>";break;
-        default  : result += "'?'>";break;
+        case None: result << "'None'>";break;
+        case Vertical: result << "'Vertical' (" << getConstraintPtr()->First << ")>";break;
+        case Horizontal: result << "'Horizontal' (" << getConstraintPtr()->First << ")>";break;
+        case Coincident: result << "'Coinsident'>";break;
+        default  : result << "'?'>";break;
     }
-    return result;
+    return result.str();
 }
 
 
