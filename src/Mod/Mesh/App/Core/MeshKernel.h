@@ -143,6 +143,10 @@ public:
 
     /** Returns the array of all facets */
     const MeshFacetArray& GetFacets (void) const { return _aclFacetArray; }
+    /** Returns an array of facets to the given indices. The indices
+     * must not be out of range.
+     */
+    MeshFacetArray GetFacets(const std::vector<unsigned long>&) const;
 
     /** Returns the array of all edges.
      *  Notice: The Edgelist will be temporary generated. Changes on the mesh

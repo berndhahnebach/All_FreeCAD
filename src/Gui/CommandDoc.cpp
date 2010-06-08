@@ -47,6 +47,7 @@
 #include "Selection.h"
 #include "DlgProjectInformationImp.h"
 #include "Transform.h"
+#include "Placement.h"
 #include "WaitCursor.h"
 #include "ViewProvider.h"
 
@@ -872,6 +873,31 @@ bool StdCmdTransform::isActive(void)
     return true;
 }
 
+//===========================================================================
+// Std_Placement
+//===========================================================================
+DEF_STD_CMD_A(StdCmdPlacement);
+
+StdCmdPlacement::StdCmdPlacement()
+  : Command("Std_Placement")
+{
+    sGroup        = QT_TR_NOOP("Edit");
+    sMenuText     = QT_TR_NOOP("Placement...");
+    sToolTipText  = QT_TR_NOOP("Place the selected objects");
+    sStatusTip    = QT_TR_NOOP("Place the selected objects");
+    sWhatsThis    = "Std_Placement";
+}
+
+void StdCmdPlacement::activated(int iMsg)
+{
+    Gui::Control().showDialog(new Gui::Dialog::TaskPlacement());
+}
+
+bool StdCmdPlacement::isActive(void)
+{
+    return true;
+}
+
 
 namespace Gui {
 
@@ -900,6 +926,7 @@ void CreateDocCommands(void)
     rcCmdMgr.addCommand(new StdCmdDelete());
     rcCmdMgr.addCommand(new StdCmdRefresh());
     rcCmdMgr.addCommand(new StdCmdTransform());
+    rcCmdMgr.addCommand(new StdCmdPlacement());
 }
 
 } // namespace Gui
