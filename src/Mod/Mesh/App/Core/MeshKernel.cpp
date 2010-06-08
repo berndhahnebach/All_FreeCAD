@@ -749,6 +749,15 @@ std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIt
     return aulBelongs;
 }
 
+MeshFacetArray MeshKernel::GetFacets(const std::vector<unsigned long>& indices) const
+{
+    MeshFacetArray ary;
+    ary.reserve(indices.size());
+    for (std::vector<unsigned long>::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        ary.push_back(this->_aclFacetArray[*it]);
+    return ary;
+}
+
 void MeshKernel::Write (std::ostream &rclOut) const 
 {
     if (!rclOut || rclOut.bad())
