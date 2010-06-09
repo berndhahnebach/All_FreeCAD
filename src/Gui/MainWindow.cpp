@@ -104,6 +104,7 @@
 #if defined(Q_OS_WIN32)
 #define slots
 #include <private/qmainwindowlayout_p.h>
+#include <private/qwidgetresizehandler_p.h>
 #endif
 
 using namespace Gui;
@@ -666,6 +667,14 @@ void MainWindow::addWindow(MDIView* view)
 #else
     QWidget* active = d->workspace->activeWindow();
     d->workspace->addWindow(view);
+#if defined(Q_OS_WIN32)
+    // avoid dragging problem with not maximized mdi childs which have embedded a GL window
+    QWidget* p = view->parentWidget();
+    if (p) {
+        QWidgetResizeHandler* handler = p->findChild<QWidgetResizeHandler*>();
+        if (handler) handler->setMovingEnabled(false);
+    }
+#endif
 #endif
     connect(view, SIGNAL(message(const QString&, int)),
             statusBar(), SLOT(showMessage(const QString&, int)));
