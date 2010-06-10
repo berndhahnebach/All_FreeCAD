@@ -26,7 +26,7 @@
 
 #include <Mod/Part/Gui/ViewProvider2DObject.h>
 #include <Inventor/SbColor.h>
-
+#include <Base/Tools2D.h>
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -49,7 +49,33 @@ namespace Sketcher {
 
 namespace SketcherGui {
 
+class ViewProviderSketch;
 
+/** Handler to create new sketch geometry
+  * This class has to be reimplemented to create geometry in the 
+  * sketcher while its in editing.
+  */
+class SketcherGuiExport DrawSketchHandler
+{
+    DrawSketchHandler(){}
+    virtual ~DrawSketchHandler(){}
+
+    virtual void mouseMove(Base::Vector2D onSketchPos)=0;
+    virtual bool pressButton(Base::Vector2D onSketchPos)=0;
+    virtual bool releaseButton(Base::Vector2D onSketchPos)=0;
+
+    friend class ViewProviderSketch;
+
+protected:
+    ViewProviderSketch *sketchgui;
+};
+
+/** The Sketch ViewProvider
+  * This class handles mainly the drawing and edeting of the sketch.
+  * It draws the geometry and the constraints applied to the sketch.
+  * It uses the class DrawSketchHandler to facilitade the creation 
+  * of new geometry while editing.
+  */
 class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject
 {
     PROPERTY_HEADER(PartGui::ViewProviderSketch);
@@ -60,6 +86,49 @@ public:
 	/// destructor
 	virtual ~ViewProviderSketch();
 
+	/// draw the sketch in the inventor nodes
+	void draw(bool temp=false);
+	/// solve the sketch 
+	void solve(void);
+
+    
+    /** @name handler control */
+    //@{
+    /// sets an DrawSketchHandler in control
+    void activateHandler(DrawSketchHandler *newHandler);
+    /// removes the active handler
+    DrawSketchHandler *purgeHandler(void);
+    //@}
+
+    /** @name modus handling */
+    //@{
+	/// mode table
+	enum SketchMode{
+		STATUS_NONE,              /**< enum value View provider is in neutral. */  
+		STATUS_SELECT_Point,      /**< enum value a point was selected. */  
+		STATUS_SELECT_Edge,       /**< enum value a edge was selected. */  
+		STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */  
+		STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */  
+		STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */  
+	};
+	/// is called by GuiCommands to set the drawing mode
+	void setSketchMode(SketchMode mode){Mode = mode;}
+	/// get the sketch mode
+	SketchMode getSketchMode(void){return Mode;}
+    //@}
+
+    /** @name helper functions */
+    //@{
+	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
+	void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
+    /// helper to detect preselection
+    bool handlePreselection(const SoPickedPoint* pp);
+    /// get the pointer to the sketch document object
+    Sketcher::SketchObject* getSketchObject(void);
+    //@}
+
+    /** @name base class implementer */
+    //@{
 	virtual void attach(App::DocumentObject *);
 	virtual void updateData(const App::Property*);
 
@@ -68,7 +137,6 @@ public:
 
 	/// Is called by the tree if the user double click on the object
 	virtual bool doubleClicked(void);
-
 	/// is called when the Provider is in edit and the mouse is moved
 	virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint* pp);
 	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
@@ -76,44 +144,10 @@ public:
 	/// is called when the Provider is in edit and the mouse is clicked 
 	virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
         const SbVec3f &normal, const SoPickedPoint* pp);
-	/// draw the sketch in the inventor nodes
-	void draw(void);
-	/// solve the sketch 
-	void solve(void);
-
-	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
-	void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
-    /// helper to detect preselection
-    bool handlePreselection(const SoPickedPoint* pp);
-	/// set constrain table
-	enum {
-		CONSTRAIN_LOCK,
-		CONSTRAIN_HORIZONTAL,
-		CONSTRAIN_VERTICAL
-	};
-	/// is called by the GuiCommands to set the constraints on the selected items:
-	bool setConstrainOnSelected(int Constrain);
-
-	/// mode table
-	enum {
-		STATUS_NONE,
-		STATUS_SKETCH_CreateArc,
-		STATUS_SKETCH_CreateCircle,
-		STATUS_SKETCH_CreateLine,
-		STATUS_SKETCH_CreatePolyline,
-		STATUS_SKETCH_CreateRectangle,
-		STATUS_SKETCH_CreateText,
-		STATUS_SKETCH_DragPoint,
-		STATUS_SKETCH_DoLine,
-		STATUS_SKETCH_DoPolyline
-	};
-	/// is called by GuiCommands to set the drawing mode
-	void setSketchMode(int mode);
-	/// get the sketch mode
-	int getSketchMode(void){return Mode;}
+    //@}
 
 
-    Sketcher::SketchObject* getSketchObject(void);
+    friend class DrawSketchHandler;
 
 protected:
     /// helper to detect whether the picked point lies on the sketch
@@ -124,8 +158,10 @@ protected:
     // helper
     void createEditInventorNodes(void);
 
+    // pointer to the active handler for new sketch objects
+    DrawSketchHandler *sketchHandler;
     // modes while sketching
-    int Mode;
+    SketchMode Mode;
     // dragged point
     int DragPoint;
 

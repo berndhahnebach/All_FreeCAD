@@ -75,41 +75,54 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
 
 ViewProviderSketch::ViewProviderSketch()
-  : Mode(STATUS_NONE),DragPoint(-1),EditRoot(0)
+  : Mode(STATUS_NONE),
+    DragPoint(-1),
+    EditRoot(0),
+
+	PointsMaterials(0),
+	LinesMaterials(0),
+	CurvesMaterials(0),
+	PointsCoordinate(0),
+	LinesCoordinate(0),
+	CurvesCoordinate(0),
+	LineSet(0),
+	CurveSet(0),
+    PointSet(0),
+
+    PreselectCurve(-1),
+    PreselectPoint(-1),
+
+    sketchHandler(0)
+
+    
 {
-	PointsMaterials = 0;
-	LinesMaterials = 0;
-	CurvesMaterials = 0;
-	PointsCoordinate = 0;
-	LinesCoordinate = 0;
-	CurvesCoordinate = 0;
-	LineSet = 0;
-	CurveSet = 0;
-    PointSet = 0;
-
-    PreselectCurve = -1;
-    PreselectPoint = -1;
-
     sPixmap = "Sketcher_NewSketch";
 }
 
 ViewProviderSketch::~ViewProviderSketch()
-{
-
-}
+{}
 
 
 // **********************************************************************************
-
-void ViewProviderSketch::setSketchMode(int mode)
+void ViewProviderSketch::activateHandler(DrawSketchHandler *newHandler)
 {
-	Mode = mode;
+    assert(sketchHandler == 0);
+    sketchHandler = newHandler;
+    Mode = STATUS_SKETCH_UseHandler;
+
 }
 
-bool ViewProviderSketch::setConstrainOnSelected(int Constrain)
+
+/// removes the active handler
+DrawSketchHandler *ViewProviderSketch::purgeHandler(void)
 {
-	return false;
+    assert(sketchHandler != 0);
+    DrawSketchHandler *temp =  sketchHandler;  
+    sketchHandler = 0;
+    return temp;
 }
+
+// **********************************************************************************
 
 bool ViewProviderSketch::keyPressed(int key)
 {
@@ -167,51 +180,33 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 						Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         //ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0));
 					    //SketchFlat->forcePoint(this->DragPoint,x,y);
-					    Mode = STATUS_SKETCH_DragPoint;
+					    Mode = STATUS_SELECT_Point;
                         return true;
                     } else
                         return false;
 
-				case STATUS_SKETCH_CreateArc:
-				case STATUS_SKETCH_CreateCircle:
-				case STATUS_SKETCH_CreateRectangle:
-				case STATUS_SKETCH_CreateText:
-					return true;
-				case STATUS_SKETCH_CreateLine:
-					//this->DragPoint = SketchFlat->addLine(x,y);
-					//SketchFlat->forcePoint(this->DragPoint,x,y);
-					Mode = STATUS_SKETCH_DoLine;
-					draw();
-					return true;
-				case STATUS_SKETCH_DoLine:
-					//SketchFlat->forcePoint(this->DragPoint,x,y);
-					//SketchFlat->solve();
-					draw();
-					Base::Console().Log("Finish line, point:%d\n",this->DragPoint);
-                    this->DragPoint = -1;
-					Mode = STATUS_NONE;
-					return true;
-				case STATUS_SKETCH_CreatePolyline:
-					//this->DragPoint = SketchFlat->addLine(x,y);
-					//SketchFlat->forcePoint(this->DragPoint,x,y);
-					Mode = STATUS_SKETCH_DoPolyline;
-					draw();
-					return true;
-				case STATUS_SKETCH_DoPolyline:
-					//SketchFlat->forcePoint(this->DragPoint,x,y);
-					//SketchFlat->solve();
-					//this->DragPoint = SketchFlat->addLine(x,y);
-					//SketchFlat->forcePoint(this->DragPoint,x,y);
-					draw();
-					return true;
+				case STATUS_SKETCH_UseHandler:
+                    return sketchHandler->pressButton(Base::Vector2D(x,y));
                 default:
-                    return false;
-					
+                    return false;					
 			}
         }
         else {
 			// Do things depending on the mode of the user interaction
 			switch (Mode) {
+				case STATUS_SELECT_Point:
+                    Base::Console().Log("Select Point:%d\n",this->DragPoint);
+					// Do selection
+					//Gui::Selection().addSelection(documentName.getValue().getString()
+     //                                            ,objectName.getValue().getString()
+     //                                            ,subElementName.getValue().getString()
+     //                                            ,pp->getPoint()[0]
+     //                                            ,pp->getPoint()[1]
+     //                                            ,pp->getPoint()[2]);
+
+                    this->DragPoint = -1;
+					Mode = STATUS_NONE;
+					return true;
 				case STATUS_SKETCH_DragPoint:
 					//SketchFlat->forcePoint(this->DragPoint,x,y);
 					//SketchFlat->solve();
@@ -219,28 +214,22 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     this->DragPoint = -1;
 					Mode = STATUS_NONE;
 					return true;
+				case STATUS_SKETCH_UseHandler:
+                    return sketchHandler->releaseButton(Base::Vector2D(x,y));
                 default:
                     return false;
             }
         }
 	}
     // Right mouse button ****************************************************
-    else if (Button == 2) {
-        if (pressed) {
-            switch(Mode){
-                case STATUS_SKETCH_DoPolyline:
-                    //SketchFlat->forcePoint(this->DragPoint,x,y);
-                    //SketchFlat->solve();
-                    draw();
-                    Base::Console().Log("Finish polyline, point:%d\n",this->DragPoint);
-                    this->DragPoint = -1;
-                    Mode = STATUS_NONE;
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    }
+    //else if (Button == 2) {
+    //    if (pressed) {
+    //        switch(Mode){
+    //             default:
+    //                return false;
+    //        }
+    //    }
+    //}
 
 	return false;
 }
@@ -255,22 +244,18 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 	switch (Mode) {
 		case STATUS_NONE:
 			return false;
-		case STATUS_SKETCH_CreateArc:
-		case STATUS_SKETCH_CreateCircle:
-		case STATUS_SKETCH_CreatePolyline:
-		case STATUS_SKETCH_CreateRectangle:
-		case STATUS_SKETCH_CreateText:
-		case STATUS_SKETCH_CreateLine:
-			return true;
-		case STATUS_SKETCH_DoLine:
-		case STATUS_SKETCH_DoPolyline:
+		case STATUS_SELECT_Point:
+			Mode = STATUS_SKETCH_DragPoint;
+            return true;
 		case STATUS_SKETCH_DragPoint:
+            Base::Console().Log("Drag Point:%d\n",this->DragPoint);
             ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0));
-
-			//SketchFlat->forcePoint(this->DragPoint,x,y);
-			//SketchFlat->solve();
-			draw();
+			draw(true);
 			return true;
+		case STATUS_SKETCH_UseHandler:
+            return sketchHandler->pressButton(Base::Vector2D(x,y));
+        default:
+            return false;					
 	}
 
 	return false;
@@ -355,7 +340,7 @@ void ViewProviderSketch::solve(void)
 
 }
 
-void ViewProviderSketch::draw(void)
+void ViewProviderSketch::draw(bool temp)
 {
     // Render Geometry ===================================================
     std::vector<Base::Vector3d> Coords;
@@ -364,8 +349,14 @@ void ViewProviderSketch::draw(void)
     std::vector<unsigned int> Color;
     std::vector<unsigned int> PtColor;
 
-    const std::vector<Part::Geometry *> &geomlist = getSketchObject()->Geometry.getValues();
-    for(std::vector<Part::Geometry *>::const_iterator it=geomlist.begin();it!=geomlist.end();++it){
+    const std::vector<Part::Geometry *> *geomlist;
+
+    if(temp)
+        geomlist = &ActSketch->getGeometry();
+    else
+        geomlist = &getSketchObject()->Geometry.getValues();
+
+    for(std::vector<Part::Geometry *>::const_iterator it=geomlist->begin();it!=geomlist->end();++it){
         if((*it)->getTypeId()== Part::GeomLineSegment::getClassTypeId()){ // add a line
             const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(*it);
             // create the definition struct for that geom
@@ -548,7 +539,12 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
+    // creat temporary sketch to solve while edeting
     ActSketch = new Sketcher::Sketch();
+    // fill up actuall constraints and geometry
+    ActSketch->addGeometry(getSketchObject()->Geometry.getValues());
+    ActSketch->addConstraints(getSketchObject()->Constraints.getValues());
+
 
     createEditInventorNodes();
     this->hide(); // avoid that the wires interfere with the edit lines
@@ -629,8 +625,6 @@ void ViewProviderSketch::createEditInventorNodes(void)
 void ViewProviderSketch::unsetEdit(void)
 {
 	ShowGrid.setValue(false);
-
- 
  
 	// close the solver
 	delete(ActSketch);
