@@ -33,6 +33,7 @@
 #include <Base/Writer.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Tools.h>
 
 
 using namespace App;
@@ -220,17 +221,7 @@ Property* DynamicProperty::addDynamicProperty(const char* type, const char* name
 
 std::string DynamicProperty::getUniquePropertyName(const char *Name) const
 {
-    // check for first character whether it's a digit
-    std::string CleanName = Name;
-    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
-        CleanName[0] = '_';
-    // strip illegal chars
-    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
-        if (!((*it>=48 && *it<=57) ||  // number
-             (*it>=65 && *it<=90)  ||  // uppercase letter
-             (*it>=97 && *it<=122)))   // lowercase letter
-             *it = '_'; // it's neither number nor letter
-    }
+    std::string CleanName = Base::Tools::getIdentifier(Name);
 
     // name in use?
     std::map<std::string,Property*> objectProps;
@@ -243,23 +234,12 @@ std::string DynamicProperty::getUniquePropertyName(const char *Name) const
         return CleanName;
     }
     else {
-        // find highest suffix
-        int nSuff = 0;
+        std::vector<std::string> names;
+        names.reserve(objectProps.size());
         for (pos = objectProps.begin();pos != objectProps.end();++pos) {
-            const std::string &PropName = pos->first;
-            if (PropName.substr(0, CleanName.length()) == CleanName) { // same prefix
-                std::string clSuffix(PropName.substr(CleanName.size()));
-                if (clSuffix.size() > 0) {
-                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
-                    if (nPos==std::string::npos)
-                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
-                }
-            }
+            names.push_back(pos->first);
         }
-
-        std::stringstream str;
-        str << CleanName << ++nSuff;
-        return str.str();
+        return Base::Tools::getUniqueName(CleanName, names);
     }
 }
 
