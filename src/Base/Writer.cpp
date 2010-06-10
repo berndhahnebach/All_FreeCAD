@@ -32,6 +32,7 @@
 #include "Exception.h"
 #include "Base64.h"
 #include "FileInfo.h"
+#include "Tools.h"
 
 #include <algorithm>
 #include <locale>
@@ -126,26 +127,19 @@ std::string Writer::getUniqueFileName(const char *Name)
         return CleanName;
     }
     else {
-        // find highest suffix
-        int nSuff = 0;
+        std::vector<std::string> names;
+        names.reserve(FileNames.size());
         FileInfo fi(CleanName);
         CleanName = fi.fileNamePure();
         std::string ext = fi.extension();
         for (pos = FileNames.begin();pos != FileNames.end();++pos) {
             fi.setFile(*pos);
             std::string FileName = fi.fileNamePure();
-            if (FileName.substr(0, CleanName.length()) == CleanName && fi.extension() == ext) { // same prefix
-                std::string clSuffix(FileName.substr(CleanName.length()));
-                if (clSuffix.size() > 0) {
-                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
-                    if (nPos==std::string::npos)
-                        nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
-                }
-            }
+            if (fi.extension() == ext)
+                names.push_back(FileName);
         }
-
         std::stringstream str;
-        str << CleanName << (nSuff + 1);
+        str << Base::Tools::getUniqueName(CleanName, names);
         if (!ext.empty())
             str << "." << ext;
         return str.str();

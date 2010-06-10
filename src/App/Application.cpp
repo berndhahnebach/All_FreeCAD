@@ -68,6 +68,7 @@
 #include <Base/BoundBoxPy.h>
 #include <Base/PlacementPy.h>
 #include <Base/RotationPy.h>
+#include <Base/Tools.h>
 #include <Base/UnitsApi.h>
 
 #include "GeoFeature.h"
@@ -344,18 +345,7 @@ std::string Application::getUniqueDocumentName(const char *Name) const
 {
     if (!Name || *Name == '\0')
         return std::string();
-
-    // check for first character whether it's a digit
-    std::string CleanName = Name;
-    if (!CleanName.empty() && CleanName[0] >= 48 && CleanName[0] <= 57)
-        CleanName[0] = '_';
-    // strip illegal chars
-    for (std::string::iterator it = CleanName.begin(); it != CleanName.end(); ++it) {
-        if (!((*it>=48 && *it<=57) ||  // number
-             (*it>=65 && *it<=90)  ||  // uppercase letter
-             (*it>=97 && *it<=122)))   // lowercase letter
-             *it = '_'; // it's neither number nor letter
-    }
+    std::string CleanName = Base::Tools::getIdentifier(Name);
 
     // name in use?
     std::map<string,Document*>::const_iterator pos;
@@ -366,23 +356,12 @@ std::string Application::getUniqueDocumentName(const char *Name) const
         return CleanName;
     }
     else {
-        // find highest suffix
-        int nSuff = 0;
+        std::vector<std::string> names;
+        names.reserve(DocMap.size());
         for (pos = DocMap.begin();pos != DocMap.end();++pos) {
-            const std::string &DocName = pos->first;
-            if (DocName.substr(0, CleanName.length()) == CleanName) { // same prefix
-                std::string clSuffix(DocName.substr(CleanName.length()));
-                if (clSuffix.size() > 0) {
-                    std::string::size_type nPos = clSuffix.find_first_not_of("0123456789");
-                    if (nPos==std::string::npos)
-                        nSuff = std::max<int>(nSuff, std::atol(clSuffix.c_str()));
-                }
-            }
+            names.push_back(pos->first);
         }
-
-        std::stringstream str;
-        str << CleanName << (nSuff + 1);
-        return str.str();
+        return Base::Tools::getUniqueName(CleanName, names);
     }
 }
 

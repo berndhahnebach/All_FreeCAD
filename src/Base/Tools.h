@@ -28,6 +28,8 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <vector>
+#include <string>
 
 namespace Base
 {
@@ -93,6 +95,14 @@ inline T degrees(T r)
     return static_cast<T>((r/M_PI)*180.0);
 }
 
-}
+// ----------------------------------------------------------------------------
+
+struct BaseExport Tools
+{
+    static std::string getUniqueName(const std::string&, const std::vector<std::string>&);
+    static std::string getIdentifier(const std::string&);
+};
+
+} // namespace Base
 
 #endif // BASE_TOOLS_H
