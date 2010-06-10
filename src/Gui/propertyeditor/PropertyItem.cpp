@@ -980,11 +980,13 @@ double PropertyPlacementItem::getAngle() const
 {
     QVariant value = data(1, Qt::EditRole);
     if (!value.canConvert<Base::Placement>())
-        return 0.0f;
+        return 0.0;
     const Base::Placement& val = value.value<Base::Placement>();
     double angle;
     Base::Vector3d dir;
     val.getRotation().getValue(dir, angle);
+    if (dir * this->rot_axis < 0.0)
+        angle = -angle;
     return Base::degrees<double>(angle);
 }
 
@@ -995,12 +997,8 @@ void PropertyPlacementItem::setAngle(double angle)
         return;
 
     Base::Placement val = value.value<Base::Placement>();
-    Base::Rotation rot = val.getRotation();
-    Base::Vector3d axis; double dummy;
-    rot.getValue(axis, dummy);
-    if (dummy * angle < 0.0)
-        axis = -axis;
-    rot.setValue(axis, Base::radians<double>(angle));
+    Base::Rotation rot;
+    rot.setValue(this->rot_axis, Base::radians<double>(angle));
     val.setRotation(rot);
     setValue(QVariant::fromValue(val));
 }
@@ -1024,6 +1022,8 @@ void PropertyPlacementItem::setAxis(const Base::Vector3d& axis)
     Base::Rotation rot = val.getRotation();
     Base::Vector3d dummy; double angle;
     rot.getValue(dummy, angle);
+    if (dummy * axis < 0.0)
+        angle = -angle;
     rot.setValue(axis, angle);
     val.setRotation(rot);
     setValue(QVariant::fromValue(val));
