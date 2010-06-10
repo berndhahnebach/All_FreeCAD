@@ -172,6 +172,7 @@ protected:
     SbPlane panningplane;
     SbTime prevRedrawTime;
     SbTime centerTime;
+    SbBool panningmove;
     SbBool menuenabled;
     SbBool ctrldown, shiftdown, altdown;
     SbBool button1down, button2down, button3down;
