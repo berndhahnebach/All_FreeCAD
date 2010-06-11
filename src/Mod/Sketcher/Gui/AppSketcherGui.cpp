@@ -34,10 +34,11 @@
 #include "ViewProviderSketchSF.h"
 #include "ViewProviderSketch.h"
 
-//#include "resources/qrc_Sketcher.cpp"
 
-// use a different name to CreateCommand()
+// create the commands
 void CreateSketcherCommands(void);
+void CreateSketcherCommandsCreateGeo(void);
+void CreateSketcherCommandsConstraints(void);
 
 void loadSketcherResource()
 {
@@ -71,6 +72,9 @@ void SketcherGuiExport initSketcherGui()
 
     // instanciating the commands
     CreateSketcherCommands();
+    CreateSketcherCommandsCreateGeo();
+    CreateSketcherCommandsConstraints();
+
     SketcherGui::Workbench::init();
 
 	// init objects

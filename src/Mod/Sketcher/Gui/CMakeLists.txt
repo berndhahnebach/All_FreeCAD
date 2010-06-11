@@ -51,6 +51,8 @@ SET(SketcherGui_SRCS
 		 AppSketcherGui.cpp
 		 AppSketcherGuiPy.cpp
 		 Command.cpp
+		 CommandCreateGeo.cpp
+		 CommandConstraints.cpp
 		 Resources/Sketcher.qrc
 		 PreCompiled.cpp
 		 PreCompiled.h
@@ -66,6 +68,8 @@ SET(SketcherGui_SRCS
 		 ViewProviderSketchSF.h
 		 ViewProviderSketch.cpp
 		 ViewProviderSketch.h
+		 DrawSketchHandler.cpp
+		 DrawSketchHandler.h
 		 Workbench.cpp
 		 Workbench.h
 )

@@ -240,6 +240,70 @@ private:
     std::vector<DocumentObject*> _lValueList;
 };
 
+class AppExport PropertyLinkSubList: public PropertyLists
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    /**
+     * A constructor.
+     * A more elaborate description of the constructor.
+     */
+    PropertyLinkSubList();
+
+    /**
+     * A destructor.
+     * A more elaborate description of the destructor.
+     */
+    virtual ~PropertyLinkSubList();
+
+    struct SubSet {
+        SubSet(DocumentObject*o,const char*s):obj(o),sub(s){}
+        SubSet(DocumentObject*o,const std::string &s):obj(o),sub(s.c_str()){}
+        DocumentObject* obj;
+        const char*     sub;
+    };
+
+    virtual void setSize(int newSize);
+    virtual int getSize(void) const;
+
+    /** Sets the property
+     */
+    void setValue(DocumentObject*,const char*);
+    void setValues(const std::vector<DocumentObject*>&,const std::vector<const char*>&);
+    void setValues(const std::vector<DocumentObject*>&,const std::vector<std::string>&);
+
+    /// index operator
+    SubSet operator[] (const int idx) const {
+        return SubSet(_lValueList.operator[] (idx),_lSubList.operator [](idx));
+    }
+
+
+    void  set1Value (const int idx, DocumentObject* value,const char* subName) {
+        _lValueList.operator[] (idx) = value;
+        _lSubList.operator[] (idx)   = subName;
+    }
+
+    const std::vector<DocumentObject*> &getValues(void) const {
+        return _lValueList;
+    }
+
+    virtual PyObject *getPyObject(void);
+    virtual void setPyObject(PyObject *);
+
+    virtual void Save (Base::Writer &writer) const;
+    virtual void Restore(Base::XMLReader &reader);
+
+    virtual Property *Copy(void) const;
+    virtual void Paste(const Property &from);
+
+    virtual unsigned int getMemSize (void) const;
+
+private:
+    std::vector<DocumentObject*> _lValueList;
+    std::vector<std::string>     _lSubList;
+};
+
 } // namespace App
 
 

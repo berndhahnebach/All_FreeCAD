@@ -9,6 +9,7 @@
 		<file>icons/Sketcher_DraftLine.svg</file>
 		<file>icons/Sketcher_CreatePoint.svg</file>
 		<file>icons/Sketcher_ConstrainLock.svg</file>
+		<file>icons/Sketcher_ConstrainCoincident.svg</file>
 		<file>icons/Sketcher_ConstrainHorizontal.svg</file>
 		<file>icons/Sketcher_ConstrainVertical.svg</file>
 		<file>icons/Sketcher_CreateArc.png</file>

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,59 +21,59 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef SKETCHERGUI_DrawSketchHandler_H
+#define SKETCHERGUI_DrawSketchHandler_H
 
-#ifndef _PreComp_
-# include <qobject.h>
-#endif
+#include <Base/Tools2D.h>
 
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
+class QPixmap;
 
-using namespace SketcherGui;
-
-TYPESYSTEM_SOURCE(SketcherGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
-{
+namespace Gui {
+    class View3DInventorViewer;
+    class SoFCSelection;
 }
 
-Workbench::~Workbench()
-{
+namespace Sketcher {
+    class Sketch;
+    class SketchObject;
 }
 
-Gui::ToolBarItem* Workbench::setupToolBars() const
+namespace SketcherGui {
+
+class ViewProviderSketch;
+
+/** Handler to create new sketch geometry
+  * This class has to be reimplemented to create geometry in the 
+  * sketcher while its in editing.
+  */
+class SketcherGuiExport DrawSketchHandler
 {
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+public:
+    DrawSketchHandler();
+    virtual ~DrawSketchHandler();
 
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Sketcher"));
-    *part << "Sketcher_NewSketch"<< "Sketcher_LeaveSketch";
+    virtual void activated(ViewProviderSketch *sketchgui){};
+    virtual void mouseMove(Base::Vector2D onSketchPos)=0;
+    virtual bool pressButton(Base::Vector2D onSketchPos)=0;
+    virtual bool releaseButton(Base::Vector2D onSketchPos)=0;
 
-    part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Sketcher geoms"));
-    *part << "Sketcher_CreatePoint" 
-		  << "Sketcher_CreateArc"
-		  << "Sketcher_CreateCircle"
-		  << "Sketcher_CreateLine"
-		  << "Sketcher_CreatePolyline"
-		  << "Sketcher_CreateRectangle"
-		  << "Sketcher_CreateText"
-		  << "Sketcher_CreateDraftLine";
+    friend class ViewProviderSketch;
 
-    part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Sketcher constrains"));
-    *part << "Sketcher_ConstrainLock"
-		  << "Sketcher_ConstrainCoincident"
-		  << "Sketcher_ConstrainVertical"
-		  << "Sketcher_ConstrainHorizontal";
-     return root;
-}
+protected:
+    // helpers
+    void setCursor( const QPixmap &p,int x,int y );
+    void unsetCursor(void);
 
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    return root;
-}
+    void doCommand(const char* sCmd,...);
+    void openCommand(const char* sCmdName);
+
+    ViewProviderSketch *sketchgui;
+    QCursor oldCursor;
+};
+
+
+} // namespace SketcherGui
+
+
+#endif // SKETCHERGUI_DrawSketchHandler_H
 

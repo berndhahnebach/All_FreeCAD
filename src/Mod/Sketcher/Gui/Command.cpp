@@ -60,15 +60,7 @@ void CmdSketcherNewSketch::activated(int iMsg)
     std::string FeatName = getUniqueObjectName("Sketch");
 
     openCommand("Create a new Sketch");
-    doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObjectSF','%s')",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.SketchFlatFile = App.getResourceDir()+'Mod/Sketcher/Templates/Sketch.skf'",FeatName.c_str());
-  
-    Sketcher::SketchObjectSF *obj = static_cast<Sketcher::SketchObjectSF *>(getDocument()->getObject( FeatName.c_str() ));
-
-    Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
-    dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
-    dlg.Do();
-
+    doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
     commitCommand();
     getDocument()->recompute();
 }
@@ -80,6 +72,7 @@ bool CmdSketcherNewSketch::isActive(void)
     else
         return false;
 }
+
 
 
 DEF_STD_CMD_A(CmdSketcherLeaveSketch);
@@ -114,396 +107,48 @@ bool CmdSketcherLeaveSketch::isActive(void)
 	return false;
 }
 
-/* Sketch commands =======================================================*/
-DEF_STD_CMD_A(CmdSketcherCreateArc);
+// Sketchflat integration ++++++++++++++++++++++++++++++++++++++++++++++++
 
-CmdSketcherCreateArc::CmdSketcherCreateArc()
-	:Command("Sketcher_CreateArc")
+DEF_STD_CMD_A(CmdSketcherNewSketchSF);
+
+CmdSketcherNewSketchSF::CmdSketcherNewSketchSF()
+	:Command("Sketcher_NewSketchSF")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create arc");
-    sToolTipText    = QT_TR_NOOP("Create an arc in the sketch");
+    sMenuText       = QT_TR_NOOP("Sketchflat sketch");
+    sToolTipText    = QT_TR_NOOP("Create a new sketchflat sketch by starting externel editor");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreateArc";
+    sPixmap         = "Sketcher_NewSketch";
 }
 
-
-void CmdSketcherCreateArc::activated(int iMsg)
+void CmdSketcherNewSketchSF::activated(int iMsg)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setSketchMode(ViewProviderSketchSF::STATUS_SKETCH_CreateArc);
-      
+
+    std::string FeatName = getUniqueObjectName("Sketch");
+
+    openCommand("Create a new Sketch");
+    doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObjectSF','%s')",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.SketchFlatFile = App.getResourceDir()+'Mod/Sketcher/Templates/Sketch.skf'",FeatName.c_str());
+  
+    Sketcher::SketchObjectSF *obj = static_cast<Sketcher::SketchObjectSF *>(getDocument()->getObject( FeatName.c_str() ));
+
+    Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
+    dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
+    dlg.Do();
+
+    commitCommand();
+    getDocument()->recompute();
 }
 
-bool CmdSketcherCreateArc::isActive(void)
+bool CmdSketcherNewSketchSF::isActive(void)
 {
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	// checks if a Sketch Viewprovider is in Edit and is in no special mode
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-	//			->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-	//		return true;
-	return false;
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
-
-
-DEF_STD_CMD_A(CmdSketcherCreateCircle);
-
-CmdSketcherCreateCircle::CmdSketcherCreateCircle()
-	:Command("Sketcher_CreateCircle")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create circle");
-    sToolTipText    = QT_TR_NOOP("Create a circle in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreateCircle";
-}
-
-
-void CmdSketcherCreateCircle::activated(int iMsg)
-{
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
-}
-
-bool CmdSketcherCreateCircle::isActive(void)
-{
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
-}
-
-
-DEF_STD_CMD_A(CmdSketcherCreatePoint);
-
-CmdSketcherCreatePoint::CmdSketcherCreatePoint()
-	:Command("Sketcher_CreatePoint")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create point");
-    sToolTipText    = QT_TR_NOOP("Create a point in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreatePoint";
-}
-
-
-void CmdSketcherCreatePoint::activated(int iMsg)
-{
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
-}
-
-bool CmdSketcherCreatePoint::isActive(void)
-{
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
-}
-
-
-DEF_STD_CMD_A(CmdSketcherCreateLine);
-
-CmdSketcherCreateLine::CmdSketcherCreateLine()
-	:Command("Sketcher_CreateLine")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create line");
-    sToolTipText    = QT_TR_NOOP("Create a line in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreateLine";
-}
-
-void CmdSketcherCreateLine::activated(int iMsg)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-			    ->setSketchMode(ViewProviderSketchSF::STATUS_SKETCH_CreateLine);
-      
-}
-
-bool CmdSketcherCreateLine::isActive(void)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
-}
-
-
-DEF_STD_CMD_A(CmdSketcherCreatePolyline);
-
-CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
-	:Command("Sketcher_CreatePolyline")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create polyline");
-    sToolTipText    = QT_TR_NOOP("Create a polyline in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreatePolyline";
-}
-
-void CmdSketcherCreatePolyline::activated(int iMsg)
-{
-    Gui::Document *doc = getActiveGuiDocument();
-    if (doc) {
-        Gui::ViewProvider* vp = doc->getInEdit();
-        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-            static_cast<SketcherGui::ViewProviderSketchSF*>(vp)->setSketchMode
-            (ViewProviderSketchSF::STATUS_SKETCH_CreatePolyline);
-    }
-}
-
-bool CmdSketcherCreatePolyline::isActive(void)
-{
-    Gui::Document *doc = getActiveGuiDocument();
-    if (doc) {
-        // checks if a sketch is in edit mode and is in no special mode
-        Gui::ViewProvider* vp = doc->getInEdit();
-        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-            if (static_cast<SketcherGui::ViewProviderSketchSF*>(vp)->getSketchMode() ==
-                ViewProviderSketchSF::STATUS_NONE)
-                return true;
-    }
-
-    return false;
-}
-
-
-DEF_STD_CMD_A(CmdSketcherCreateRectangle);
-
-CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
-	:Command("Sketcher_CreateRectangle")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create rectangle");
-    sToolTipText    = QT_TR_NOOP("Create a rectangle in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreateRectangle";
-}
-
-
-void CmdSketcherCreateRectangle::activated(int iMsg)
-{
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
-}
-
-bool CmdSketcherCreateRectangle::isActive(void)
-{
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
-}
-
-
-DEF_STD_CMD_A(CmdSketcherCreateText);
-
-CmdSketcherCreateText::CmdSketcherCreateText()
-	:Command("Sketcher_CreateText")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create text");
-    sToolTipText    = QT_TR_NOOP("Create text in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreateText";
-}
-
-
-void CmdSketcherCreateText::activated(int iMsg)
-{
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
-}
-
-bool CmdSketcherCreateText::isActive(void)
-{
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
-}
-
-
-DEF_STD_CMD_A(CmdSketcherCreateDraftLine);
-
-CmdSketcherCreateDraftLine::CmdSketcherCreateDraftLine()
-	:Command("Sketcher_CreateDraftLine")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create draft line");
-    sToolTipText    = QT_TR_NOOP("Create a draft line in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_DraftLine";
-}
-
-
-void CmdSketcherCreateDraftLine::activated(int iMsg)
-{
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
-}
-
-bool CmdSketcherCreateDraftLine::isActive(void)
-{
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
-}
-
-/* Constrain commands =======================================================*/
-DEF_STD_CMD_A(CmdSketcherConstrainHorizontal);
-
-CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
-	:Command("Sketcher_ConstrainHorizontal")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain orizontal");
-    sToolTipText    = QT_TR_NOOP("Create a horizontal constrain on the selected item");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainHorizontal";
-}
-
-
-void CmdSketcherConstrainHorizontal::activated(int iMsg)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_HORIZONTAL);
-      
-}
-
-bool CmdSketcherConstrainHorizontal::isActive(void)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
-}
-
-DEF_STD_CMD_A(CmdSketcherConstrainVertical);
-
-CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
-	:Command("Sketcher_ConstrainVertical")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain vertical");
-    sToolTipText    = QT_TR_NOOP("Create a vertical constrain on the selected item");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainVertical";
-}
-
-
-void CmdSketcherConstrainVertical::activated(int iMsg)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_VERTICAL);
-      
-}
-
-bool CmdSketcherConstrainVertical::isActive(void)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
-}
-
-
-DEF_STD_CMD_A(CmdSketcherConstrainLock);
-
-CmdSketcherConstrainLock::CmdSketcherConstrainLock()
-	:Command("Sketcher_ConstrainLock")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain Lock");
-    sToolTipText    = QT_TR_NOOP("Create a lock constrain on the selected item");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainLock";
-}
-
-
-void CmdSketcherConstrainLock::activated(int iMsg)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_LOCK);
-      
-}
-
-bool CmdSketcherConstrainLock::isActive(void)
-{
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
-}
-
 
 
 void CreateSketcherCommands(void)
@@ -512,17 +157,6 @@ void CreateSketcherCommands(void)
 
     rcCmdMgr.addCommand(new CmdSketcherNewSketch());
     rcCmdMgr.addCommand(new CmdSketcherLeaveSketch());
+    rcCmdMgr.addCommand(new CmdSketcherNewSketchSF());
 
-	rcCmdMgr.addCommand(new CmdSketcherCreatePoint());
-	rcCmdMgr.addCommand(new CmdSketcherCreateArc());
-	rcCmdMgr.addCommand(new CmdSketcherCreateCircle());
-	rcCmdMgr.addCommand(new CmdSketcherCreateLine());
-	rcCmdMgr.addCommand(new CmdSketcherCreatePolyline());
-	rcCmdMgr.addCommand(new CmdSketcherCreateRectangle());
-	rcCmdMgr.addCommand(new CmdSketcherCreateText());
-	rcCmdMgr.addCommand(new CmdSketcherCreateDraftLine());
-
-	rcCmdMgr.addCommand(new CmdSketcherConstrainHorizontal());
-	rcCmdMgr.addCommand(new CmdSketcherConstrainVertical());
-	rcCmdMgr.addCommand(new CmdSketcherConstrainLock());
  }

@@ -292,7 +292,7 @@ bool  Sketch::getConstruction(int geoIndex) const
 void Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
     // constraints on nothing makes no sense 
-    assert((int)Geoms.size()>0);
+    assert((int)Geoms.size()>0 || ConstraintList.size() == 0 );
 
     for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
         switch ((*it)->Type){
