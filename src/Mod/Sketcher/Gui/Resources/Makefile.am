@@ -7,6 +7,7 @@ nodist_libResources_la_SOURCES=\
 		qrc_Sketcher.cpp 
 
 EXTRA_DIST = \
+		icons/Sketcher_ConstrainCoincident.svg \
 		icons/Sketcher_ConstrainHorizontal.svg \
 		icons/Sketcher_ConstrainLock.svg \
 		icons/Sketcher_ConstrainVertical.svg \
