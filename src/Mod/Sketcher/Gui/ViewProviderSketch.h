@@ -49,26 +49,7 @@ namespace Sketcher {
 
 namespace SketcherGui {
 
-class ViewProviderSketch;
-
-/** Handler to create new sketch geometry
-  * This class has to be reimplemented to create geometry in the 
-  * sketcher while its in editing.
-  */
-class SketcherGuiExport DrawSketchHandler
-{
-    DrawSketchHandler(){}
-    virtual ~DrawSketchHandler(){}
-
-    virtual void mouseMove(Base::Vector2D onSketchPos)=0;
-    virtual bool pressButton(Base::Vector2D onSketchPos)=0;
-    virtual bool releaseButton(Base::Vector2D onSketchPos)=0;
-
-    friend class ViewProviderSketch;
-
-protected:
-    ViewProviderSketch *sketchgui;
-};
+class DrawSketchHandler;
 
 /** The Sketch ViewProvider
   * This class handles mainly the drawing and edeting of the sketch.
@@ -88,6 +69,8 @@ public:
 
 	/// draw the sketch in the inventor nodes
 	void draw(bool temp=false);
+	/// draw the edit curve
+    void drawEdit(const std::vector<Base::Vector2D> &EditCurve);
 	/// solve the sketch 
 	void solve(void);
 
@@ -97,7 +80,7 @@ public:
     /// sets an DrawSketchHandler in control
     void activateHandler(DrawSketchHandler *newHandler);
     /// removes the active handler
-    DrawSketchHandler *purgeHandler(void);
+    void purgeHandler(void);
     //@}
 
     /** @name modus handling */
@@ -122,7 +105,11 @@ public:
 	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
 	void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
     /// helper to detect preselection
-    bool handlePreselection(const SoPickedPoint* pp);
+    //bool handlePreselection(const SoPickedPoint* pp);
+    /// helper to detect preselection
+    bool detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex);
+    /// helper to draw preselection
+    void drawPreselection(void);
     /// get the pointer to the sketch document object
     Sketcher::SketchObject* getSketchObject(void);
     //@}
@@ -173,12 +160,15 @@ protected:
     // nodes for the visuals 
     SoMaterial    *PointsMaterials;
     SoMaterial    *CurvesMaterials;
+    SoMaterial    *EditCurvesMaterials;
     SoMaterial    *LinesMaterials;
     SoCoordinate3 *PointsCoordinate;
     SoCoordinate3 *CurvesCoordinate;
+    SoCoordinate3 *EditCurvesCoordinate;
     SoCoordinate3 *LinesCoordinate;
     SoLineSet     *CurveSet;
     SoLineSet     *LineSet;
+    SoLineSet     *EditCurveSet;
     SoPointSet    *PointSet;
     SoSeparator   *EditRoot;
 };

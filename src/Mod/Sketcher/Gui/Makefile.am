@@ -16,6 +16,8 @@ libSketcherGui_la_UI=\
 libSketcherGui_la_SOURCES=\
 		AppSketcherGuiPy.cpp \
 		Command.cpp \
+		CommandCreateGeo.cpp \
+		CommandConstraints.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		TaskSketcherConstrains.cpp \
@@ -26,6 +28,8 @@ libSketcherGui_la_SOURCES=\
 		TaskSketcherGeneral.h \
 		ViewProviderSketch.cpp \
 		ViewProviderSketch.h \
+		DrawSketchHandler.cpp \
+		DrawSketchHandler.h \
 		ViewProviderSketchSF.cpp \
 		ViewProviderSketchSF.h \
 		Workbench.cpp \

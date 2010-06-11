@@ -485,3 +485,194 @@ unsigned int PropertyLinkList::getMemSize (void) const
 {
     return static_cast<unsigned int>(_lValueList.size() * sizeof(App::DocumentObject *));
 }
+//**************************************************************************
+// PropertyLinkSubList
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyLinkSubList , App::PropertyLists);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyLinkSubList::PropertyLinkSubList()
+{
+
+}
+
+PropertyLinkSubList::~PropertyLinkSubList()
+{
+
+}
+
+void PropertyLinkSubList::setSize(int newSize)
+{
+    _lValueList.resize(newSize);
+    _lSubList  .resize(newSize);
+}
+
+int PropertyLinkSubList::getSize(void) const
+{
+    return static_cast<int>(_lValueList.size());
+}
+
+void PropertyLinkSubList::setValue(DocumentObject* lValue,const char* SubName)
+{
+    if (lValue){
+        aboutToSetValue();
+        _lValueList.resize(1);
+        _lValueList[0]=lValue;
+        _lSubList.resize(1);
+        _lSubList[0]=SubName;
+        hasSetValue();
+    }
+}
+
+void PropertyLinkSubList::setValues(const std::vector<DocumentObject*>& lValue,const std::vector<const char*>& lSubNames)
+{
+    aboutToSetValue();
+    _lValueList = lValue;
+    _lSubList.resize(lSubNames.size());
+    int i = 0;
+    for(std::vector<const char*>::const_iterator it = lSubNames.begin();it!=lSubNames.end();++it)
+        _lSubList[i]  = *it;
+    hasSetValue();
+}
+
+void PropertyLinkSubList::setValues(const std::vector<DocumentObject*>& lValue,const std::vector<std::string>& lSubNames)
+{
+    aboutToSetValue();
+    _lValueList = lValue;
+    _lSubList   = lSubNames;
+    hasSetValue();
+}
+
+PyObject *PropertyLinkSubList::getPyObject(void)
+{
+    Py::List list(getSize());
+    for(int i = 0;i<getSize(); i++){
+        Py::Tuple tup(2);
+        tup[0] = Py::Object(_lValueList[i]->getPyObject());
+        tup[1] = Py::String(_lSubList[i].c_str());
+        list[i] = tup;
+    }
+    return Py::new_reference_to(list);
+
+}
+
+void PropertyLinkSubList::setPyObject(PyObject *value)
+{
+    if (PyList_Check(value)) {
+        Py_ssize_t nSize = PyList_Size(value);
+        std::vector<DocumentObject*> values(nSize);
+        std::vector<std::string>     SubNames(nSize);
+        values.resize(nSize);
+
+        for (Py_ssize_t i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(value, i);
+            if (Py::Object(item).isTuple()) {
+                Py::Tuple tup(item);
+                if (PyObject_TypeCheck(tup[0].ptr(), &(DocumentObjectPy::Type))){
+                    DocumentObjectPy  *pcObj = (DocumentObjectPy*)tup[0].ptr();
+                    values[i]= pcObj->getDocumentObjectPtr();
+                    if (Py::Object(tup[1].ptr()).isString()){
+                        SubNames[i] = Py::String(tup[1].ptr());
+                    }
+                }
+            }
+
+        }
+
+        setValues(values,SubNames);
+    }
+    else if(Py::Object(value).isTuple()) {
+        Py::Tuple tup(value);
+        DocumentObjectPy  *pcObject;
+        std::string SubName;
+        if (PyObject_TypeCheck(tup[0].ptr(), &(DocumentObjectPy::Type)))
+            pcObject = static_cast<DocumentObjectPy*>(value);
+        if (Py::Object(tup[1].ptr()).isString())
+            SubName = Py::String(tup[1].ptr());
+        setValue(pcObject->getDocumentObjectPtr(),SubName.c_str());
+    }
+    else {
+        std::string error = std::string("type must be 'DocumentObject' or list of 'DocumentObject', not ");
+        error += value->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+}
+
+void PropertyLinkSubList::Save (Writer &writer) const
+{
+    writer.Stream() << writer.ind() << "<LinkSubList count=\"" <<  getSize() <<"\">" << endl;
+    writer.incInd();
+    for(int i = 0;i<getSize(); i++)
+        writer.Stream() << writer.ind() << 
+            "<Link " <<
+            "obj=\"" <<  _lValueList[i]->getNameInDocument()  <<
+            "sub=\"" <<  _lSubList[i] <<
+        "\"/>" << endl; ;
+    writer.decInd();
+    writer.Stream() << writer.ind() << "</LinkList>" << endl ;
+}
+
+void PropertyLinkSubList::Restore(Base::XMLReader &reader)
+{
+    // read my element
+    reader.readElement("LinkSubList");
+    // get the value of my attribute
+    int count = reader.getAttributeAsInteger("count");
+    assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+
+    std::vector<DocumentObject*> values;
+    values.reserve(count);
+    std::vector<std::string> SubNames;
+    SubNames.reserve(count);
+    for (int i = 0; i < count; i++) {
+        reader.readElement("Link");
+        std::string name = reader.getAttribute("obj");
+        // In order to do copy/paste it must be allowed to have defined some
+        // referenced objects in XML which do not exist anymore in the new
+        // document. Thus, we should silently ingore this.
+        // Property not in an object!
+        DocumentObject* father = static_cast<DocumentObject*>(getContainer());
+        DocumentObject* child = father->getDocument()->getObject(name.c_str());
+        if (child)
+            values.push_back(child);
+        else
+            Base::Console().Warning("Lost link to '%s' while loading, maybe "
+                                    "an object was not loaded correctly\n",name.c_str());
+        std::string subName = reader.getAttribute("sub");
+        SubNames.push_back(subName);
+    }
+
+    reader.readEndElement("LinkList");
+
+    // assignment
+    setValues(values,SubNames);
+}
+
+Property *PropertyLinkSubList::Copy(void) const
+{
+    PropertyLinkSubList *p = new PropertyLinkSubList();
+    p->_lValueList = _lValueList;
+    p->_lSubList   = _lSubList;
+    return p;
+}
+
+void PropertyLinkSubList::Paste(const Property &from)
+{
+    aboutToSetValue();
+    _lValueList = dynamic_cast<const PropertyLinkSubList&>(from)._lValueList;
+    _lSubList   = dynamic_cast<const PropertyLinkSubList&>(from)._lSubList;
+    hasSetValue();
+}
+
+unsigned int PropertyLinkSubList::getMemSize (void) const
+{
+   unsigned int size = static_cast<unsigned int>(_lValueList.size() * sizeof(App::DocumentObject *));
+   for(int i = 0;i<getSize(); i++)
+       size += _lSubList[i].size(); 
+
+   return size;
+}

@@ -945,6 +945,7 @@ void Application::initTypes(void)
     App ::PropertyLinkWeak          ::init();
     App ::PropertyLinkSub           ::init();
     App ::PropertyLinkList          ::init();
+    App ::PropertyLinkSubList       ::init();
     App ::PropertyMatrix            ::init();
     App ::PropertyVector            ::init();
     App ::PropertyVectorList        ::init();
