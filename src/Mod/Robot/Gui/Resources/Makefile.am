@@ -14,6 +14,7 @@ EXTRA_DIST = \
 		icons/Robot_InsertWaypointPre.svg \
 		icons/Robot_Simulate.svg \
 		translations/Robot_de.qm \
+		translations/Robot_de.ts \
 		Robot.qrc \
 		UpdateResources.bat
 

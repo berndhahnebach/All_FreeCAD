@@ -85,4 +85,9 @@ EXTRA_DIST = \
 		Resources/translations/Points_de.qm \
 		Resources/translations/Points_fr.qm \
 		Resources/translations/Points_it.qm \
-		Resources/translations/Points_se.qm
+		Resources/translations/Points_se.qm \
+		Resources/translations/Points_de.ts \
+		Resources/translations/Points_fr.ts \
+		Resources/translations/Points_it.ts \
+		Resources/translations/Points_se.ts
+		

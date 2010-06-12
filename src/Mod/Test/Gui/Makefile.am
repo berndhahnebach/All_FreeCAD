@@ -81,4 +81,8 @@ EXTRA_DIST = \
 		Resources/translations/Test_fr.qm \
 		Resources/translations/Test_it.qm \
 		Resources/translations/Test_se.qm \
+		Resources/translations/Test_de.ts \
+		Resources/translations/Test_fr.ts \
+		Resources/translations/Test_it.ts \
+		Resources/translations/Test_se.ts \
 		qtunittest.py

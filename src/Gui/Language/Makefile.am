@@ -18,6 +18,10 @@ EXTRA_DIST = \
 		FreeCAD_fr.qm \
 		FreeCAD_it.qm \
 		FreeCAD_se.qm \
+		FreeCAD_de.ts \
+		FreeCAD_fr.ts \
+		FreeCAD_it.ts \
+		FreeCAD_se.ts \
 		qt_de.qm \
 		qt_fr.qm \
 		qt_it.qm
