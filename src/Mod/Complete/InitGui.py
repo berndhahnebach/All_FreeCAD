@@ -34,29 +34,34 @@
 class CompleteWorkbench ( Workbench ):
 	"Complete workbench object"
 	Icon = """
-			/* XPM */
-			static const char *Complete_Box[]={
-			"16 16 3 1",
-			". c None",
-			"# c #000000",
-			"a c #c6c642",
-			"................",
-			".......#######..",
-			"......#aaaaa##..",
-			".....#aaaaa###..",
-			"....#aaaaa##a#..",
-			"...#aaaaa##aa#..",
-			"..#aaaaa##aaa#..",
-			".########aaaa#..",
-			".#aaaaa#aaaaa#..",
-			".#aaaaa#aaaa##..",
-			".#aaaaa#aaa##...",
-			".#aaaaa#aa##....",
-			".#aaaaa#a##... .",
-			".#aaaaa###......",
-			".########.......",
-			"................"};
-			"""
+                /* XPM */
+                static char * complete_xpm[] = {
+                "16 15 9 1",
+                " 	c None",
+                ".	c #DB7B07",
+                "+	c #DA8100",
+                "@	c #F49500",
+                "#	c #E89900",
+                "$	c #FEA200",
+                "%	c #FEAD00",
+                "&	c #FFBB00",
+                "*	c #FDC500",
+                "        +       ",
+                "       ++       ",
+                "      +##+      ",
+                "      +&*+      ",
+                "     +#&*#+     ",
+                "++.++#&&**#+.++ ",
+                " +$%%%&&&*****++",
+                "  +$%%%&&&***++ ",
+                "   +$%%%&&*&+   ",
+                "   .+%%%&&&+    ",
+                "   .@%%%%&&#    ",
+                "   .@$%$%%&#+   ",
+                "   .@@++++%%+   ",
+                "   ..+    +++   ",
+                "   .       ++   "};
+		"""
 	MenuText = "Complete"
 	ToolTip = "Complete workbench"
 
