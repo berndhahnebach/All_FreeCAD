@@ -79,8 +79,8 @@ def getMainWindow():
 # Customized widgets
 #---------------------------------------------------------------------------
 
-class DraftDockWidget(QtGui.QDockWidget):
-	"custom QDockWidget that emits a resized() signal when resized"
+class DraftDockWidget(QtGui.QWidget):
+	"custom Widget that emits a resized() signal when resized"
 	def __init__(self,parent = None):
 		QtGui.QDockWidget.__init__(self,parent)
 	def resizeEvent(self,event):
@@ -88,8 +88,10 @@ class DraftDockWidget(QtGui.QDockWidget):
 
 class DraftLineEdit(QtGui.QLineEdit):
 	"custom QLineEdit widget that has the power to catch Escape keypress"
-	def __init__(self, parent = None):
+	def __init__(self, parent=None, width=None):
 		QtGui.QLineEdit.__init__(self, parent)
+                if not width: width = 800
+                self.setMaximumSize(QtCore.QSize(width,18))
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.emit(QtCore.SIGNAL("escaped()"))
@@ -120,158 +122,206 @@ class toolBar:
 				icons = findicons()
 				self.constrMode = False
 				draftToolbar.setObjectName("draftToolbar")
-				draftToolbar.resize(QtCore.QSize(QtCore.QRect(0,0,800,32).size()).expandedTo(draftToolbar.minimumSizeHint()))
-				# draftToolbar.resize(800,32)
 				self.state = None
 				self.textbuffer = []
 				self.draftToolbar = draftToolbar
 
-				def _pushButton (geometry, name, hide=True):
+				def _pushButton (name, hide=True, icon=None, width=60):
 					button = QtGui.QPushButton(draftToolbar)
-					button.setGeometry(geometry)
+					#button.setGeometry(geometry)
 					button.setObjectName(name)
+                                        button.setMaximumSize(QtCore.QSize(width,22))
 					if hide: button.hide()
+                                        if icon:
+                                                button.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(icon[0],icon[1],64,64))))
+                                                button.setIconSize(QtCore.QSize(16, 16))
 					return button
 
+                                self.hlayout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,draftToolbar)
+                                self.hlayout.setDirection(QtGui.QBoxLayout.LeftToRight)
+                                self.hlayout.setObjectName("hlayout")
+
+                                self.promptlabel = QtGui.QLabel(draftToolbar)
+                                self.promptlabel.setObjectName("promptlabel")
+                                self.hlayout.addWidget(self.promptlabel)
+                                
 				self.cmdlabel = QtGui.QLabel(draftToolbar)
-				self.cmdlabel.setGeometry(QtCore.QRect(110,4,111,18))
 				self.cmdlabel.setObjectName("cmdlabel")
 				boldtxt = QtGui.QFont()
 				boldtxt.setWeight(75)
 				boldtxt.setBold(True)
 				self.cmdlabel.setFont(boldtxt)
+                                self.hlayout.addWidget(self.cmdlabel)
 
+                                xbox = QtGui.QHBoxLayout(draftToolbar)
 				self.labelx = QtGui.QLabel(draftToolbar)
-				self.labelx.setGeometry(QtCore.QRect(150,4,60,18))
-				self.labelx.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
 				self.labelx.setObjectName("labelx")
 				self.labelx.setText("X")
+                                xbox.addWidget(self.labelx)
 				self.labelx.hide()
-
-				self.xValue = DraftLineEdit(draftToolbar)
-				self.xValue.setGeometry(QtCore.QRect(220,4,70,18))
+				self.xValue = DraftLineEdit(draftToolbar,60)
 				self.xValue.setObjectName("xValue")
 				self.xValue.setText("0.00")
+                                xbox.addWidget(self.xValue)
 				self.xValue.hide()
+                                self.hlayout.addItem(xbox)
 
+                                ybox = QtGui.QHBoxLayout(draftToolbar)
 				self.labely = QtGui.QLabel(draftToolbar)
-				self.labely.setGeometry(QtCore.QRect(300,4,30,18))
 				self.labely.setObjectName("labely")
 				self.labely.setText("Y")
+                                ybox.addWidget(self.labely)
 				self.labely.hide()
-
-				self.yValue = DraftLineEdit(draftToolbar)
-				self.yValue.setGeometry(QtCore.QRect(320,4,70,18))
+				self.yValue = DraftLineEdit(draftToolbar,60)
 				self.yValue.setObjectName("yValue")
 				self.yValue.setText("0.00")
+                                ybox.addWidget(self.yValue)
 				self.yValue.hide()
+                                self.hlayout.addItem(ybox)
 
+                                zbox = QtGui.QHBoxLayout(draftToolbar)
 				self.labelz = QtGui.QLabel(draftToolbar)
-				self.labelz.setGeometry(QtCore.QRect(400,4,30,18))
 				self.labelz.setObjectName("labelz")
 				self.labelz.setText("Z")
+                                zbox.addWidget(self.labelz)
 				self.labelz.hide()
-
-				self.zValue = DraftLineEdit(draftToolbar)
-				self.zValue.setGeometry(QtCore.QRect(420,4,70,18))
+				self.zValue = DraftLineEdit(draftToolbar,60)
 				self.zValue.setObjectName("zValue")
 				self.zValue.setText("0.00")
-				#TODO if self.lockedz: self.zValue.setEnabled(False)
+                                zbox.addWidget(self.zValue)
 				self.zValue.hide()
+                                self.hlayout.addItem(zbox)
 
+                                offbox = QtGui.QHBoxLayout(draftToolbar)
 				self.offsetLabel = QtGui.QLabel(draftToolbar)
-				self.offsetLabel.setGeometry(QtCore.QRect(460,4,60,18))
 				self.offsetLabel.setObjectName("offsetLabel")
 				self.offsetLabel.setText("Offset")
+                                offbox.addWidget(self.offsetLabel)
 				self.offsetLabel.hide()
-
 				self.offsetValue = DraftLineEdit(draftToolbar)
-				self.offsetValue.setGeometry(QtCore.QRect(500,4,70,18))
 				self.offsetValue.setObjectName("offsetValue")
 				self.offsetValue.setText("0.00")
+                                offbox.addWidget(self.offsetValue)
 				self.offsetValue.hide()
+                                self.hlayout.addItem(offbox)
 
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
-				self.isRelative.setGeometry(QtCore.QRect(530,6,91,18))
 				self.isRelative.setChecked(True)
 				self.isRelative.setObjectName("isRelative")
+                                self.hlayout.addWidget(self.isRelative)
 				self.isRelative.hide()
 
-				self.undoButton = _pushButton(QtCore.QRect(610,3,60,20),"undoButton")
-				self.undoButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(64,64,64,64))))
-				self.undoButton.setIconSize(QtCore.QSize(16, 16))
+                                linebox = QtGui.QHBoxLayout(draftToolbar)
+				self.undoButton = _pushButton("undoButton",icon=(64,64))
+                                linebox.addWidget(self.undoButton)
+				self.finishButton = _pushButton("finishButton",icon=(448,64))
+                                linebox.addWidget(self.finishButton)
+				self.closeButton = _pushButton("closeButton",icon=(512,64))
+                                linebox.addWidget(self.closeButton)
+                                self.hlayout.addItem(linebox)
 
-				self.finishButton = _pushButton(QtCore.QRect(673,3,80,20),"finishButton")
-				self.finishButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(448,64,64,64))))
-				self.finishButton.setIconSize(QtCore.QSize(16, 16))
+                                wpbox = QtGui.QHBoxLayout(draftToolbar)
+				self.xyButton = _pushButton("xyButton")
+                                wpbox.addWidget(self.xyButton)
+				self.xzButton = _pushButton("xzButton")
+                                wpbox.addWidget(self.xzButton)
+				self.yzButton = _pushButton("yzButton")
+                                wpbox.addWidget(self.yzButton)
+				self.currentViewButton = _pushButton("view")
+                                wpbox.addWidget(self.currentViewButton)
+				self.resetPlaneButton = _pushButton("none")
+                                wpbox.addWidget(self.resetPlaneButton)
+                                self.hlayout.addItem(wpbox)
 
-				self.closeButton = _pushButton(QtCore.QRect(756,3,60,20),"closeButton")
-				self.closeButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(512,64,64,64))))
-				self.closeButton.setIconSize(QtCore.QSize(16, 16))
-
-				self.xyButton = _pushButton(QtCore.QRect(200,3,40,20),"xyButton")
-				self.xzButton = _pushButton(QtCore.QRect(250,3,40,20),"xzButton")
-				self.yzButton = _pushButton(QtCore.QRect(300,3,40,20),"yzButton")
-				self.currentViewButton = _pushButton(QtCore.QRect(350,3,40,20),"view")
-				self.resetPlaneButton = _pushButton(QtCore.QRect(400,3,40,20),"none")
-
+                                rbox = QtGui.QHBoxLayout(draftToolbar)
 				self.labelRadius = QtGui.QLabel(draftToolbar)
-				self.labelRadius.setGeometry(QtCore.QRect(200,4,75,18))
-				self.labelRadius.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
 				self.labelRadius.setObjectName("labelRadius")
+                                rbox.addWidget(self.labelRadius)
 				self.labelRadius.hide()
-
-				self.radiusValue = DraftLineEdit(draftToolbar)
-				self.radiusValue.setGeometry(QtCore.QRect(280,4,70,18))
+				self.radiusValue = DraftLineEdit(draftToolbar,60)
 				self.radiusValue.setObjectName("radiusValue")
 				self.radiusValue.setText("0.00")
+                                rbox.addWidget(self.radiusValue)
 				self.radiusValue.hide()
-
-				self.labelText = QtGui.QLabel(draftToolbar)
-				self.labelText.setGeometry(QtCore.QRect(200,4,75,18))
-				self.labelText.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-				self.labelText.setObjectName("labelText")
-				self.labelText.hide()
+                                self.hlayout.addItem(rbox)
 
 				self.textValue = DraftLineEdit(draftToolbar)
-				self.textValue.setGeometry(QtCore.QRect(280,4,480,18))
-				# self.textValue = QtGui.QPlainTextEdit(draftToolbar)
-				# self.textValue.setGeometry(QtCore.QRect(280, 4, 480, 64))
 				self.textValue.setObjectName("textValue")
+                                self.hlayout.addWidget(self.textValue)
 				self.textValue.hide()
-				
-				self.colorButton = _pushButton(QtCore.QRect(792,2,22,22),"colorButton",hide=False)
-				self.color = QtGui.QColor(paramcolor)
-				self.colorPix = QtGui.QPixmap(16,16)
-				self.colorPix.fill(self.color)
-				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
 
-				self.widthButton = QtGui.QSpinBox(draftToolbar)
-				self.widthButton.setGeometry(QtCore.QRect(817,2,50,22))
-				self.widthButton.setObjectName("widthButton")
-				self.widthButton.setValue(paramlinewidth)
-
-				self.isCopy = QtGui.QCheckBox(draftToolbar)
-				self.isCopy.setGeometry(QtCore.QRect(600,6,91,18))
+                                self.isCopy = QtGui.QCheckBox(draftToolbar)
 				self.isCopy.setChecked(False)
 				self.isCopy.setObjectName("isCopy")
+                                self.hlayout.addWidget(self.isCopy)
 				self.isCopy.hide()
 
-				self.applyButton = _pushButton(QtCore.QRect(870,2,22,22),"applyButton", hide=False)
-				self.applyButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(384,64,64,64))))
-				self.applyButton.setIconSize(QtCore.QSize(16, 16))
+                                pbox = QtGui.QHBoxLayout(draftToolbar)
+                                self.labelPage = QtGui.QLabel(draftToolbar)
+				self.labelPage.setObjectName("labelPage")
+                                pbox.addWidget(self.labelPage)
+				self.labelPage.hide()
+                                self.pageBox = QtGui.QComboBox(draftToolbar)
+                                self.pageBox.setEditable(True)
+                                self.pageBox.setObjectName("pageBox")
+                                self.pageBox.addItem("Add New")
+                                pbox.addWidget(self.pageBox)
+                                self.pageBox.hide()
+                                self.hlayout.addItem(pbox)
+                                
+                                sbox = QtGui.QHBoxLayout(draftToolbar)
+                                self.labelScale = QtGui.QLabel(draftToolbar)
+				self.labelScale.setObjectName("labelScale")
+                                sbox.addWidget(self.labelScale)
+				self.labelScale.hide()
+                                self.scaleBox = QtGui.QComboBox(draftToolbar)
+                                self.scaleBox.setEditable(True)
+                                self.scaleBox.setObjectName("scaleBox")
+                                self.scaleBox.addItem("5")
+                                self.scaleBox.addItem("10")
+                                self.scaleBox.addItem("20")
+                                self.scaleBox.addItem("50")
+                                sbox.addWidget(self.scaleBox)
+                                self.scaleBox.hide()
+                                self.hlayout.addItem(sbox)
 
-				self.constrButton = _pushButton(QtCore.QRect(738,2,22,22),"constrButton", hide=False)
-                                self.constrButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(640,64,64,64))))
-				self.constrButton.setIconSize(QtCore.QSize(16, 16))
-				self.constrButton.setCheckable(True)
-				self.constrButton.setChecked(False)
-				self.constrColor = QtGui.QColor(paramconstr)
-				draftToolbar.setStyleSheet("#constrButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
+                                mbox = QtGui.QHBoxLayout(draftToolbar)
+                                self.labelMargin = QtGui.QLabel(draftToolbar)
+				self.labelMargin.setObjectName("labelMargin")
+                                mbox.addWidget(self.labelMargin)
+				self.labelMargin.hide()
+                                self.marginValue = QtGui.QSpinBox(draftToolbar)
+				self.marginValue.setObjectName("marginValue")
+                                self.marginValue.setMaximum(999)
+				self.marginValue.setValue(50)
+                                mbox.addWidget(self.marginValue)
+				self.marginValue.hide()
+                                self.hlayout.addItem(mbox)
+
+                                lwbox = QtGui.QHBoxLayout(draftToolbar)
+                                self.labelLWMod = QtGui.QLabel(draftToolbar)
+				self.labelLWMod.setObjectName("labelLWMod")
+                                lwbox.addWidget(self.labelLWMod)
+				self.labelLWMod.hide()
+                                self.LWModValue = QtGui.QSpinBox(draftToolbar)
+				self.LWModValue.setObjectName("LWModValue")
+                                self.LWModValue.setMaximum(999)
+				self.LWModValue.setValue(100)
+                                lwbox.addWidget(self.LWModValue)
+				self.LWModValue.hide()
+                                self.hlayout.addItem(lwbox)
+                                
+                                self.pageButton = _pushButton("pageButton",icon=(640,128))
+                                self.hlayout.addWidget(self.pageButton)
+                                self.pageButton.hide()
+
+                                spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding,
+                                                               QtGui.QSizePolicy.Minimum)
+                                self.hlayout.addItem(spacerItem)
+
+                                settingsbox = QtGui.QHBoxLayout(draftToolbar)
 
                                 self.wplabel = QtGui.QLabel(draftToolbar)
-                                self.wplabel.setGeometry(QtCore.QRect(500, 4, 100, 18))
-                                self.wplabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
                                 self.wplabel.setObjectName("wplabel")
                                 defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
                                 if defaultWP == 1:
@@ -282,66 +332,34 @@ class toolBar:
                                         self.wplabel.setText("Side")
                                 else:
                                         self.wplabel.setText("None")
+                                settingsbox.addWidget(self.wplabel)
 
-                                self.labelPage = QtGui.QLabel(draftToolbar)
-				self.labelPage.setGeometry(QtCore.QRect(215,4,60,18))
-				self.labelPage.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-				self.labelPage.setObjectName("labelPage")
-				self.labelPage.hide()
-                                
-                                self.pageBox = QtGui.QComboBox(draftToolbar)
-                                self.pageBox.setGeometry(QtCore.QRect(280,4,120,18))
-                                self.pageBox.setEditable(True)
-                                self.pageBox.setObjectName("pageBox")
-                                self.pageBox.addItem("Add New")
-                                self.pageBox.hide()
+                                self.constrButton = _pushButton("constrButton", hide=False, icon=(640,64),width=22)
+				self.constrButton.setCheckable(True)
+				self.constrButton.setChecked(False)
+				self.constrColor = QtGui.QColor(paramconstr)
+                                style = "#constrButton:Checked {background-color: "
+                                style += self.getDefaultColor("constr",rgb=True)+" }"
+				draftToolbar.setStyleSheet(style)
+                                settingsbox.addWidget(self.constrButton)
+				
+				self.colorButton = _pushButton("colorButton",hide=False,width=22)
+				self.color = QtGui.QColor(paramcolor)
+				self.colorPix = QtGui.QPixmap(16,16)
+				self.colorPix.fill(self.color)
+				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
+                                settingsbox.addWidget(self.colorButton)
 
-                                self.labelScale = QtGui.QLabel(draftToolbar)
-				self.labelScale.setGeometry(QtCore.QRect(385,4,60,18))
-				self.labelScale.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-				self.labelScale.setObjectName("labelScale")
-				self.labelScale.hide()
+				self.widthButton = QtGui.QSpinBox(draftToolbar)
+                                self.widthButton.setMaximumSize(QtCore.QSize(50,22))
+				self.widthButton.setObjectName("widthButton")
+				self.widthButton.setValue(paramlinewidth)
+                                settingsbox.addWidget(self.widthButton)
 
-                                self.scaleBox = QtGui.QComboBox(draftToolbar)
-                                self.scaleBox.setGeometry(QtCore.QRect(450,4,60,18))
-                                self.scaleBox.setEditable(True)
-                                self.scaleBox.setObjectName("scaleBox")
-                                self.scaleBox.addItem("5")
-                                self.scaleBox.addItem("10")
-                                self.scaleBox.addItem("20")
-                                self.scaleBox.addItem("50")
-                                self.scaleBox.hide()
+				self.applyButton = _pushButton("applyButton", hide=False, icon=(384,64),width=22)
+                                settingsbox.addWidget(self.applyButton)
 
-                                self.labelMargin = QtGui.QLabel(draftToolbar)
-				self.labelMargin.setGeometry(QtCore.QRect(500,4,60,18))
-				self.labelMargin.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-				self.labelMargin.setObjectName("labelMargin")
-				self.labelMargin.hide()
-
-                                self.marginValue = QtGui.QSpinBox(draftToolbar)
-				self.marginValue.setGeometry(QtCore.QRect(565,4,60,18))
-				self.marginValue.setObjectName("marginValue")
-                                self.marginValue.setMaximum(999)
-				self.marginValue.setValue(50)
-				self.marginValue.hide()
-
-                                self.labelLWMod = QtGui.QLabel(draftToolbar)
-				self.labelLWMod.setGeometry(QtCore.QRect(620,4,60,18))
-				self.labelLWMod.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-				self.labelLWMod.setObjectName("labelLWMod")
-				self.labelLWMod.hide()
-
-                                self.LWModValue = QtGui.QSpinBox(draftToolbar)
-				self.LWModValue.setGeometry(QtCore.QRect(685,4,60,18))
-				self.LWModValue.setObjectName("LWModValue")
-                                self.LWModValue.setMaximum(999)
-				self.LWModValue.setValue(100)
-				self.LWModValue.hide()
-
-                                self.pageButton = _pushButton(QtCore.QRect(750,3,20,20),"pageButton")
-				self.pageButton.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(640,128,64,64))))
-				self.pageButton.setIconSize(QtCore.QSize(16, 16))
-                                self.pageButton.hide()
+                                self.hlayout.addItem(settingsbox)
 				
 				self.sourceCmd=None
 
@@ -397,6 +415,7 @@ class toolBar:
 #---------------------------------------------------------------------------
 				
 			def retranslateUi(self, draftToolbar):
+                                self.promptlabel.setText(QtGui.QApplication.translate("draft", "active command:", None, QtGui.QApplication.UnicodeUTF8))
 				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
 				self.cmdlabel.setToolTip(QtGui.QApplication.translate("draft", "Active Draft command", None, QtGui.QApplication.UnicodeUTF8))
 				self.xValue.setToolTip(QtGui.QApplication.translate("draft", "X coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
@@ -404,7 +423,6 @@ class toolBar:
 				self.zValue.setToolTip(QtGui.QApplication.translate("draft", "Z coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
 				self.labelRadius.setText(QtGui.QApplication.translate("draft", "Radius", None, QtGui.QApplication.UnicodeUTF8))
 				self.radiusValue.setToolTip(QtGui.QApplication.translate("draft", "Radius of Circle", None, QtGui.QApplication.UnicodeUTF8))
-				self.labelText.setText(QtGui.QApplication.translate("draft", "Text", None, QtGui.QApplication.UnicodeUTF8))
 				self.isRelative.setText(QtGui.QApplication.translate("draft", "Relative", None, QtGui.QApplication.UnicodeUTF8))
 				self.isRelative.setToolTip(QtGui.QApplication.translate("draft", "Coordinates relative to last point or absolute (SPACE)", None, QtGui.QApplication.UnicodeUTF8))
 				self.finishButton.setText(QtGui.QApplication.translate("draft", "Finish", None, QtGui.QApplication.UnicodeUTF8))
@@ -508,7 +526,6 @@ class toolBar:
 				self.labelRadius.hide()
 				self.radiusValue.hide()
 				self.isCopy.hide()
-				self.labelText.hide()
 				self.textValue.hide()
                                 self.pageBox.hide()
                                 self.labelPage.hide()
@@ -538,7 +555,6 @@ class toolBar:
 				self.xValue.hide()
 				self.yValue.hide()
 				self.zValue.hide()
-				self.labelText.show()
 				self.textValue.show()
 				self.textValue.setText('')
 				# self.textValue.setPlainText('')
@@ -589,12 +605,18 @@ class toolBar:
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
-				w=self.draftToolbar.geometry().width()
-				self.widthButton.setGeometry(QtCore.QRect(w-113,2,50,22))
-				self.colorButton.setGeometry(QtCore.QRect(w-138,2,22,22))
-				self.applyButton.setGeometry(QtCore.QRect(w-60,2,22,22))
-				self.constrButton.setGeometry(QtCore.QRect(w-162,2,22,22))
-                                self.wplabel.setGeometry(QtCore.QRect(w-268,4,100,18))
+				#w=self.draftToolbar.geometry().width()
+                                #h=self.draftToolbar.geometry().height()
+                                #print "w=",w,"h=",h
+				#self.widthButton.setGeometry(QtCore.QRect(w-113,2,50,22))
+				#self.colorButton.setGeometry(QtCore.QRect(w-138,2,22,22))
+				#self.applyButton.setGeometry(QtCore.QRect(w-60,2,22,22))
+				#self.constrButton.setGeometry(QtCore.QRect(w-162,2,22,22))
+                                #self.wplabel.setGeometry(QtCore.QRect(w-268,4,100,18))
+                                if self.draftToolbar.geometry().width() < 400:
+                                        self.hlayout.setDirection(QtGui.QBoxLayout.TopToBottom)
+                                else:
+                                       self.hlayout.setDirection(QtGui.QBoxLayout.LeftToRight) 
 
 
 #---------------------------------------------------------------------------
@@ -860,12 +882,14 @@ class toolBar:
 			
 		# create the draft Toolbar
 		self.mw = getMainWindow()
-		self.draftWidget = DraftDockWidget()
+		self.draftWidget = QtGui.QDockWidget()
+                self.insideWidget = DraftDockWidget()
 		self.ui = Ui_draftToolbar()
 		self.ui.app = QtGui.qApp
-		self.ui.setupUi(self.draftWidget)
+		self.ui.setupUi(self.insideWidget)
 		self.draftWidget.setObjectName("draftToolbar")
-		self.draftWidget.setWindowTitle(QtGui.QApplication.translate("draft", "draftCommand", None, QtGui.QApplication.UnicodeUTF8))
+                self.draftWidget.setTitleBarWidget(self.insideWidget)
+		self.draftWidget.setWindowTitle(QtGui.QApplication.translate("draft", "draft Command Bar", None, QtGui.QApplication.UnicodeUTF8))
 		self.mw.addDockWidget(QtCore.Qt.TopDockWidgetArea,self.draftWidget)
 		self.draftWidget.setVisible(False)
 		self.draftWidget.toggleViewAction().setVisible(False)
