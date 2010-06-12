@@ -25,6 +25,10 @@ EXTRA_DIST = \
 		translations/Sketcher_fr.qm \
 		translations/Sketcher_it.qm \
 		translations/Sketcher_se.qm \
+		translations/Sketcher_de.ts \
+		translations/Sketcher_fr.ts \
+		translations/Sketcher_it.ts \
+		translations/Sketcher_se.ts \
 		Sketcher.qrc
 
 

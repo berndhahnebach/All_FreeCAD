@@ -9,6 +9,7 @@ nodist_libResources_la_SOURCES=\
 EXTRA_DIST = \
 		icons/Fem_FemMesh.svg \
 		translations/Fem_de.qm \
+		translations/Fem_de.ts \
 		Fem.qrc \
 		UpdateResources.bat
 

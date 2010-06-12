@@ -8,6 +8,7 @@ nodist_libResources_la_SOURCES=\
 
 EXTRA_DIST = \
 		translations/PartDesign_de.qm \
+		translations/PartDesign_de.ts \
 		icons/PartDesign_Pad.svg \
 		PartDesign.qrc
 

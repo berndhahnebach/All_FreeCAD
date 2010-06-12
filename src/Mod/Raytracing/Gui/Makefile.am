@@ -101,4 +101,8 @@ EXTRA_DIST = \
 		Resources/translations/Raytracing_fr.qm \
 		Resources/translations/Raytracing_it.qm \
 		Resources/translations/Raytracing_se.qm \
+		Resources/translations/Raytracing_de.ts \
+		Resources/translations/Raytracing_fr.ts \
+		Resources/translations/Raytracing_it.ts \
+		Resources/translations/Raytracing_se.ts \
 		CMakeLists.txt

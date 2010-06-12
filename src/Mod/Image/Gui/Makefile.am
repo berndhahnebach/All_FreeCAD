@@ -87,5 +87,9 @@ EXTRA_DIST = \
 		Resources/translations/Image_fr.qm \
 		Resources/translations/Image_it.qm \
 		Resources/translations/Image_se.qm \
+		Resources/translations/Image_de.ts \
+		Resources/translations/Image_fr.ts \
+		Resources/translations/Image_it.ts \
+		Resources/translations/Image_se.ts \
 		Resources/icons/image-import.svg
 

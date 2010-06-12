@@ -25,6 +25,10 @@ EXTRA_DIST = \
 		translations/Drawing_fr.qm \
 		translations/Drawing_it.qm \
 		translations/Drawing_se.qm \
+		translations/Drawing_de.ts \
+		translations/Drawing_fr.ts \
+		translations/Drawing_it.ts \
+		translations/Drawing_se.ts \
 		Drawing.qrc \
 		UpdateResources.bat
 
