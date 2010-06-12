@@ -1251,6 +1251,7 @@ class Line(Creator):
 
 
 class Wire(Line):
+        "a FreeCAD command for creating a wire"
 	def __init__(self):
 		Line.__init__(self,wiremode=True)
 	def GetResources(self):
@@ -2124,7 +2125,7 @@ class Rotate(Modifier):
 		for ob in self.sel:
 			if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
 			else: newob = ob
-			if (ob.Type == "Part::Feature"):
+			if (ob.isDerivedFrom("Part::Feature")):
 				shape = ob.Shape
 				shape.rotate(fcvec.tup(self.center), fcvec.tup(plane.axis), math.degrees(angle))
 				newob.Shape=shape
@@ -3068,7 +3069,7 @@ class Scale(Modifier):
 		for ob in self.sel:
 			if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
 			else: newob=ob
-			if (ob.Type == "Part::Feature"):
+			if (ob.isDerivedFrom("Part::Feature")):
 				sh = ob.Shape
 				m = FreeCAD.Matrix()
 				m.scale(delta)
@@ -3217,7 +3218,7 @@ class SendToDrawing(Modifier):
                         svg = None
                         if 'Dimline' in obj.PropertiesList:
                                 svg = obj.ViewObject.Proxy.getSVG(modifier)
-                        elif obj.Type == 'Part::Feature':
+                        elif obj.isDerivedFrom('Part::Feature'):
                                 svg = self.writeShape(obj,modifier)
                         elif obj.Type == 'App::Annotation':
                                 svg = self.writeText(obj,modifier)
