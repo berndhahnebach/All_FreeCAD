@@ -93,7 +93,8 @@ ViewProviderSketch::ViewProviderSketch()
     PreselectCurve(-1),
     PreselectPoint(-1),
 
-    sketchHandler(0)
+    sketchHandler(0),
+    ActSketch(0)
 
     
 {
@@ -195,7 +196,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 			// Do things depending on the mode of the user interaction
 			switch (Mode) {
 				case STATUS_SELECT_Point:
-                    Base::Console().Log("Select Point:%d\n",this->DragPoint);
+                    //Base::Console().Log("Select Point:%d\n",this->DragPoint);
 					// Do selection
 					//Gui::Selection().addSelection(documentName.getValue().getString()
      //                                            ,objectName.getValue().getString()
@@ -255,8 +256,11 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             return true;
 		case STATUS_SKETCH_DragPoint:
             Base::Console().Log("Drag Point:%d\n",this->DragPoint);
-            ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0));
-			draw(true);
+            int ret;
+            if(ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0)) == 0)
+			    draw(true);
+            else
+                Base::Console().Log("Error solving:%d\n",ret);
 			return true;
 		case STATUS_SKETCH_UseHandler:
             if(preselectChanged)
@@ -270,65 +274,6 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 	return false;
 }
 
-//bool ViewProviderSketch::handlePreselection(const SoPickedPoint* Point)
-//{
-//    if (Point) {
-//        //Base::Console().Log("Point pick\n");
-//        const SoDetail* point_detail = Point->getDetail(this->PointSet);
-//        if (point_detail && point_detail->getTypeId() == SoPointDetail::getClassTypeId()) {
-//            // get the index
-//            int idx = static_cast<const SoPointDetail*>(point_detail)->getCoordinateIndex();
-//            if (PreselectPoint != idx) {
-//                PointsMaterials->diffuseColor.set1Value(idx,fPreselectColor);
-//                if (PreselectPoint >= 0)
-//                    PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
-//                PreselectPoint = idx;
-//                if (PreselectCurve >= 0)
-//                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,PreselectOldColor);
-//                PreselectCurve = -1;
-//                Base::Console().Log("Point pick%d\n",idx);
-//            }
-//
-//            return true;
-//        }
-//
-//        const SoDetail* curve_detail = Point->getDetail(this->CurveSet);
-//        if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
-//            // get the index
-//            int idx = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
-//            if (PreselectCurve != idx) {
-//                if (PreselectCurve >= 0)
-//                    CurvesMaterials->diffuseColor.set1Value(PreselectCurve,PreselectOldColor);
-//				PreselectOldColor = CurvesMaterials->diffuseColor[idx];
-//                CurvesMaterials->diffuseColor.set1Value(idx,fPreselectColor);
-//                PreselectCurve = idx;
-//                if (PreselectPoint >= 0)
-//                    PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
-//                PreselectPoint = -1;
-//                Base::Console().Log("Curve pick%d\n",idx);
-//            }
-//            
-//            return true;
-//        }
-//
-//        const SoDetail* datum_detail = Point->getDetail(this->LineSet);
-//        if (datum_detail && datum_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
-//            // get the index
-//            unsigned long idx = static_cast<const SoLineDetail*>(datum_detail)->getPartIndex();
-//            Base::Console().Log("Datum pick%d\n",idx);
-//            return true;
-//        }
-//    }
-//
-//    if (PreselectCurve >= 0)
-//        CurvesMaterials->diffuseColor.set1Value(PreselectCurve,PreselectOldColor);
-//    PreselectCurve = -1;
-//    if (PreselectPoint >= 0)
-//        PointsMaterials->diffuseColor.set1Value(PreselectPoint,fPointColor);
-//    PreselectPoint = -1;
-//
-//    return false;
-//}
 
 bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex)
 {
@@ -376,7 +321,7 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
 
 void ViewProviderSketch::drawPreselection(void)
 {
-    Base::Console().Log("Draw preseletion\n");
+    //Base::Console().Log("Draw preseletion\n");
 
     int PtNum = PointsMaterials->diffuseColor.getNum();
     SbColor* pcolor = PointsMaterials->diffuseColor.startEditing();
@@ -622,6 +567,15 @@ void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)
 void ViewProviderSketch::updateData(const App::Property* prop)
 {
     ViewProvider2DObject::updateData(prop);
+
+    if(ActSketch && (prop == &(getSketchObject()->Geometry) || &(getSketchObject()->Constraints) )){
+        ActSketch->clear();
+        ActSketch->addGeometry(getSketchObject()->Geometry.getValues());
+        ActSketch->addConstraints(getSketchObject()->Constraints.getValues());
+        draw(true);    
+    }
+    
+
 }
 
 void ViewProviderSketch::onChanged(const App::Property* prop)

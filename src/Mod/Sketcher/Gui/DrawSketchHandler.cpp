@@ -27,6 +27,9 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
+#include <Base/Interpreter.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/Macro.h>
@@ -88,38 +91,37 @@ void DrawSketchHandler::unsetCursor(void)
 /// Run a App level Action
 void DrawSketchHandler::doCommand(const char* sCmd,...)
 {
-//    // temp buffer
-//    size_t format_len = std::strlen(sCmd)+4024;
-//    char* format = (char*) malloc(format_len);
-//    va_list namelessVars;
-//    va_start(namelessVars, sCmd);  // Get the "..." vars
-//    vsnprintf(format, format_len, sCmd, namelessVars);
-//    va_end(namelessVars);
-//
-//    Gui::Application::Instance->macroManager()->addLine(MacroManager::Base,format);
-//
-//    try {
-//        Interpreter().runString(format);
-//    }
-//    catch (...) {
-//        // free memory to avoid a leak if an exception occurred
-//        free (format);
-//        throw;
-//    }
-//
-//#ifdef FC_LOGUSERACTION
-//    Base::Console().Log("CmdC: %s\n",format);
-//#endif
-//    free (format);
+    // temp buffer
+    size_t format_len = std::strlen(sCmd)+4024;
+    char* format = (char*) malloc(format_len);
+    va_list namelessVars;
+    va_start(namelessVars, sCmd);  // Get the "..." vars
+    vsnprintf(format, format_len, sCmd, namelessVars);
+    va_end(namelessVars);
+
+    Gui::Application::Instance->macroManager()->addLine(Gui::MacroManager::Base,format);
+
+    try {
+        Base::Interpreter().runString(format);
+    }
+    catch (Base::Exception e) {
+        Base::Console().Error("%s\n", e.what());
+    }
+    catch (...) {
+       Base::Console().Error("Unknowen Exception in DrawSketchHandler::doCommand()");
+    }
+
+#ifdef FC_LOGUSERACTION
+    Base::Console().Log("CmdC: %s\n",format);
+#endif
+    free (format);
 }
 
 void DrawSketchHandler::openCommand(const char* sCmdName)
 {
-    //// Using OpenCommand with no active document !
-    //assert(getGuiApplication()->activeDocument());
+    // Using OpenCommand with no active document !
+    assert(Gui::Application::Instance->activeDocument());
+    assert(sCmdName);
 
-    //if (sCmdName)
-    //    Gui::Application::Instance->activeDocument()->openCommand(sCmdName);
-    //else
-    //    Gui::Application::Instance->activeDocument()->openCommand(sName);
+    Gui::Application::Instance->activeDocument()->openCommand(sCmdName);
 }

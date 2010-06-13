@@ -2,6 +2,8 @@
 #include "PreCompiled.h"
 
 #include "Mod/Sketcher/App/SketchObject.h"
+#include <Mod/Part/App/LinePy.h>
+#include <Mod/Part/App/Geometry.h>
 
 // inclusion of the generated files (generated out of SketchObjectSFPy.xml)
 #include "SketchObjectPy.h"
@@ -16,6 +18,49 @@ std::string SketchObjectPy::representation(void) const
 }
 
 
+PyObject* SketchObjectPy::solve(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* SketchObjectPy::addGeometry(PyObject *args)
+{
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O", &pcObj))
+        return 0;
+
+    if (PyObject_TypeCheck(pcObj, &(Part::GeometryPy::Type))) {
+        Part::Geometry *geo = static_cast<Part::GeometryPy*>(pcObj)->getGeometryPtr();
+        return Py::new_reference_to(Py::Int(this->getSketchObjectPtr()->addGeometry(geo)));
+    }
+    Py_Return; 
+}
+
+PyObject* SketchObjectPy::addConstraint(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+PyObject* SketchObjectPy::movePoint(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+
+
+Py::Int SketchObjectPy::getConstraintCount(void) const
+{
+    //return Py::Int();
+    throw Py::AttributeError("Not yet implemented");
+}
+
+Py::Int SketchObjectPy::getGeometryCount(void) const
+{
+    //return Py::Int();
+    throw Py::AttributeError("Not yet implemented");
+}
 
 PyObject *SketchObjectPy::getCustomAttributes(const char* /*attr*/) const
 {

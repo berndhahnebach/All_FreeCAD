@@ -50,7 +50,7 @@ void AppSketcherExport initSketcher()
 {
     // load dependend module
     try {
-        Base::Interpreter().loadModule("Part");
+        Base::Interpreter().runString("import Part");
         //Base::Interpreter().loadModule("Mesh");
     }
     catch(const Base::Exception& e) {

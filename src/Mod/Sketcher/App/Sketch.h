@@ -70,6 +70,8 @@ public:
       */
     int solve(double * fixed[2]);
     int solve(void);
+    /// delete all geometry and constraints, leave an empty sketch
+    void clear(void);
     /// return the actual geometry of the sketch a TopoShape
     Part::TopoShape toShape(void);
     /// add unspecified geomtry
@@ -107,7 +109,9 @@ public:
     /// constraints
     //@{
     /// add all constraints in the list
-    void addConstraints(const std::vector<Constraint *> &ConstraintList);
+    int addConstraints(const std::vector<Constraint *> &ConstraintList);
+    /// add one constraint to the sketch
+    int addConstraint(const Constraint *constraint);
     /// add a horizontal constraint to a geometry
     int addHorizontalConstraint(int geoIndex, const char* name=0);
     /// add a vertical constraint to a geometry

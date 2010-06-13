@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 #endif
 
 #include "TimeInfo.h"
@@ -77,6 +78,16 @@ const char* TimeInfo::currentDateTimeString()
 
     const char* dt = asctime(systime);
     return dt;
+}
+
+std::string TimeInfo::diffTime(const TimeInfo &timeStart,const TimeInfo &timeEnd )
+{
+   std::stringstream str;
+   str << timeEnd.getSeconds()-timeStart.getSeconds()
+       << "." 
+       << timeEnd.getMiliseconds()-timeStart.getMiliseconds();
+
+    return str.str();
 }
 
 TimeInfo TimeInfo::null()

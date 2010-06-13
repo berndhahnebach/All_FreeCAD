@@ -227,6 +227,8 @@ public:
     static void blockCommand(bool);
     /// Run a App level Action 
     static void doCommand(DoCmd_Type eType,const char* sCmd,...);
+    /// import a external module only once 
+    //static void addModule(const char* sModuleName);
     /// translate a string to a python string literal (needed e.g. in file names for windows...)
     const std::string strToPython(const char* Str);
     const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());};

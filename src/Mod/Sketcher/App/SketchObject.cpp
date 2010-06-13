@@ -27,7 +27,7 @@
 
 #include <Base/Writer.h>
 #include <Base/Reader.h>
-
+#include <vector>
 
 #include "SketchObject.h"
 #include "SketchObjectPy.h"
@@ -68,6 +68,37 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
+
+    
+int SketchObject::addGeometry(const Part::Geometry *geo)
+{
+    const std::vector< Part::Geometry * > &vals = Geometry.getValues();
+
+    std::vector< Part::Geometry * > newVals(vals);
+    Part::Geometry *geoNew = geo->clone();
+    newVals.push_back(geoNew);
+    Geometry.setValues(newVals);
+    delete geoNew;
+    return Geometry.getSize()-1;
+}
+
+int SketchObject::addGeometry(const std::vector<Part::Geometry *> &geoList)
+{
+    return -1;
+}
+
+
+int SketchObject::addConstraints(const std::vector<Constraint *> &ConstraintList)
+{
+    return -1;
+}
+
+
+int SketchObject::addConstraints(const Constraint *Constraints)
+{
+    return -1;
+}
+
 
 PyObject *SketchObject::getPyObject(void)
 {

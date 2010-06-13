@@ -13,5 +13,44 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <UserDocu>With this objects you can handle sketches</UserDocu>
     </Documentation>
+    <Methode Name="solve">
+      <Documentation>
+        <UserDocu>solve the actuall set of geometry and constraints</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="addGeometry">
+      <Documentation>
+        <UserDocu>add a geometric object to the sketch</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="addConstraint">
+      <Documentation>
+        <UserDocu>add a constraint to the sketch</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="movePoint">
+      <Documentation>
+        <UserDocu>
+          movePoint(GeoIndex,PointPos,Vector) - move a given point to another location.
+          It solves the sketch that way the point stays at the given location or fails.
+          This method is somewhat tricky. If the move is to big it can fail to find a valid
+          solution. It can work if you move the point over some
+          iterations to the target. This method is mostly used to allow the user to drag
+          some portions of the sketch in real time by e.g. the mouse.
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="ConstraintCount" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Number of Constraints in this sketch</UserDocu>
+      </Documentation>
+      <Parameter Name="ConstraintCount" Type="Int"/>
+    </Attribute>
+    <Attribute Name="GeometryCount" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Number of geometric objects in this sketch</UserDocu>
+      </Documentation>
+      <Parameter Name="GeometryCount" Type="Int"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

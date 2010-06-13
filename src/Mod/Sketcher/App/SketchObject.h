@@ -60,6 +60,15 @@ public:
     }
     //@}
 
+    /// add unspecified geomtry
+    int addGeometry(const Part::Geometry *geo);
+    /// add unspecified geomtry
+    int addGeometry(const std::vector<Part::Geometry *> &geoList);
+    /// add all constraints in the list
+    int addConstraints(const std::vector<Constraint *> &ConstraintList);
+    /// add constraint 
+    int addConstraints(const Constraint *Constraints );
+
 	// from base class
     virtual PyObject *getPyObject(void);
     virtual unsigned int getMemSize (void) const;
