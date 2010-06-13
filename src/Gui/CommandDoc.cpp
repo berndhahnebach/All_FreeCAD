@@ -35,6 +35,7 @@
 #include <App/Document.h>
 #include <App/DocumentObjectGroup.h>
 #include <App/DocumentObject.h>
+#include <App/GeoFeature.h>
 
 #include "Action.h"
 #include "Application.h"
@@ -890,7 +891,14 @@ StdCmdPlacement::StdCmdPlacement()
 
 void StdCmdPlacement::activated(int iMsg)
 {
-    Gui::Control().showDialog(new Gui::Dialog::TaskPlacement());
+    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType(App::GeoFeature::getClassTypeId());
+    Gui::Dialog::TaskPlacement* plm = new Gui::Dialog::TaskPlacement();
+    if (!sel.empty()) {
+        App::Property* prop = sel.front()->getPropertyByName("Placement");
+        if (prop && prop->getTypeId() == App::PropertyPlacement::getClassTypeId())
+            plm->setPlacement(static_cast<App::PropertyPlacement*>(prop)->getValue());
+    }
+    Gui::Control().showDialog(plm);
 }
 
 bool StdCmdPlacement::isActive(void)
@@ -930,3 +938,4 @@ void CreateDocCommands(void)
 }
 
 } // namespace Gui
+
