@@ -25,23 +25,14 @@
         <UserDocu>add a geometric object to the sketch</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="addHorizontalConstraint">
+    <Methode Name="addConstraint">
       <Documentation>
-        <UserDocu>addHorizontalConstraint(GeoIndex[,name]) - add a horizontal constraint to the geometry with the given index</UserDocu>
+        <UserDocu>add an constraint object to the sketch</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="addVerticalConstraint">
+    <Methode Name="clear">
       <Documentation>
-        <UserDocu>addVerticalConstraint(GeoIndex[,name]) - add a vertical constraint to the geometry with the given index</UserDocu>
-      </Documentation>
-    </Methode>
-    <Methode Name="addPointOnPointConstraint">
-      <Documentation>
-        <UserDocu>
-          addPointOnPointConstraint(GeoIndex1,PointPos1,GeoIndex2,PointPos2[,name]) - add a point on point constraint to the geometry with the given indexes
-          You give two element indexes and the type of point you want to use
-          0 = StartPoint, 1 = EndPoint, 2 = MiddPoint (in case of an arc or circle)
-        </UserDocu>
+        <UserDocu>clear the sketch</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="movePoint">

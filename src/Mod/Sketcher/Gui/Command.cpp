@@ -33,7 +33,7 @@
 
 #include <Mod/Sketcher/App/SketchObjectSF.h>
 
-#include "ViewProviderSketchSF.h"
+#include "ViewProviderSketch.h"
 
 using namespace std;
 using namespace SketcherGui;
@@ -100,9 +100,9 @@ bool CmdSketcherLeaveSketch::isActive(void)
 	Gui::Document *doc = getActiveGuiDocument();
 	if(doc)
 		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(ViewProviderSketch::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
 			return true;
 	return false;
 }

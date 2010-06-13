@@ -28,6 +28,8 @@
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Exception.h>
+#include <Base/TimeInfo.h>
+#include <Base/Console.h>
 
 #include <Base/VectorPy.h>
 
@@ -70,6 +72,27 @@ Sketch::~Sketch()
 {
     for(std::vector<double*>::iterator it=Parameters.begin();it!=Parameters.end();++it)
         delete *it;
+}
+
+void Sketch::clear(void)
+{
+    // clear all internal data sets
+    Const.clear();
+    Points.clear();
+    Lines.clear();
+    Circles.clear();
+
+    // deleting the doubles allocated with new
+    for(std::vector<double*>::iterator it = Parameters.begin();it!=Parameters.end();++it)
+        if(*it) delete *it;
+    Parameters.clear();
+
+    // deleting the geometry copied into this sketch
+    for(std::vector<GeoDef>::iterator it = Geoms.begin();it!=Geoms.end();++it)
+        if(it->geo) delete it->geo;
+    Geoms.clear();
+
+
 }
 
 // Geometry adding ==========================================================
@@ -289,26 +312,38 @@ bool  Sketch::getConstruction(int geoIndex) const
 
 // constraint adding ==========================================================
 
-void Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
+int Sketch::addConstraint(const Constraint * constraint)
+{
+    // constraints on nothing makes no sense 
+    assert((int)Geoms.size()>0  );
+    int rtn = -1;
+    switch (constraint->Type){
+       case Horizontal:
+           rtn = addHorizontalConstraint(constraint->First,constraint->Name.c_str());
+           break;
+       case Vertical:
+           rtn = addVerticalConstraint(constraint->First,constraint->Name.c_str());
+           break;
+       case Coincident:
+           rtn = addPointCoincidentConstraint(constraint->First,constraint->FirstPos,constraint->Second,constraint->SecondPos,constraint->Name.c_str());
+           break;
+       case None:
+           break;
+    }
+
+    return rtn;
+}
+
+int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
     // constraints on nothing makes no sense 
     assert((int)Geoms.size()>0 || ConstraintList.size() == 0 );
 
-    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
-        switch ((*it)->Type){
-            case Horizontal:
-                addHorizontalConstraint((*it)->First,(*it)->Name.c_str());
-                break;
-            case Vertical:
-                addVerticalConstraint((*it)->First,(*it)->Name.c_str());
-                break;
-            case Coincident:
-                addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str());
-                break;
-            case None:
-                break;
-        }
-    }
+    int rtn = -1;
+    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it)
+        rtn = addConstraint (*it);
+
+    return rtn;
 }
 
 int Sketch::addHorizontalConstraint(int geoIndex, const char* name)
@@ -386,8 +421,8 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
 void _redirectPoint(point &c,double &fixedValue1,double &fixedValue2,double * fixed[2]){
     if(fixed[0] && c.x == fixed[0]){
         // copy the fixes values
-        fixedValue1 = *(c.x);
-        fixedValue2 = *(c.y);
+        //fixedValue1 = *(c.x);
+        //fixedValue2 = *(c.y);
         // point the constraint to the fixed values
         c.x = &(fixedValue1);
         c.y = &(fixedValue2);
@@ -396,9 +431,15 @@ void _redirectPoint(point &c,double &fixedValue1,double &fixedValue2,double * fi
 
 int Sketch::solve(double * fixed[2]) {
 
+    Base::TimeInfo start_time;
+    Base::Console().Log("solv: Start solving (C:%d;G%d) ",Const.size(),Geoms.size());
     Solver s;
     double fixedValue1=0,fixedValue2=0;
 
+    if(fixed[0]){
+        fixedValue1 = *(fixed[0]);
+        fixedValue2 = *(fixed[1]);
+    }
 
     // copy the constraints and handling the fixed constraint ################
     std::vector<constraint> constraints(Const.size());
@@ -429,23 +470,29 @@ int Sketch::solve(double * fixed[2]) {
     if(ret == 0){
         int i=0;
         for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++){
-            if(it->type == Line){
-                GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
-                lineSeg->setPoints(
-                         Vector3d(
-                             *Parameters[it->parameterStartIndex+0],
-                             *Parameters[it->parameterStartIndex+1],
-                             0.0),
-                         Vector3d(
-                             *Parameters[it->parameterStartIndex+2],
-                             *Parameters[it->parameterStartIndex+3],
-                             0.0)
-                     );
+            try{
+                if(it->type == Line){
+                    GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
+                    lineSeg->setPoints(
+                             Vector3d(
+                                 *Parameters[it->parameterStartIndex+0],
+                                 *Parameters[it->parameterStartIndex+1],
+                                 0.0),
+                             Vector3d(
+                                 *Parameters[it->parameterStartIndex+2],
+                                 *Parameters[it->parameterStartIndex+3],
+                                 0.0)
+                         );
+                }
+            }catch(Base::Exception e){
+                Base::Console().Error("Solv: Error build geometry(%d): %s\n",i,e.what());
+                return -1;
             }
 
         }
     }
-
+    Base::TimeInfo end_time;
+    Base::Console().Log("T:%s\n",Base::TimeInfo::diffTime(start_time,end_time).c_str());
 
 	return ret;
 }

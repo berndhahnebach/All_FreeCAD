@@ -50,6 +50,9 @@ public:
     void setCurrent(void);
     void setTime_t (uint64_t seconds);
 
+    uint64_t getSeconds(void) const; 
+    unsigned short  getMiliseconds(void) const; 
+
     void operator =  (const TimeInfo &time); 
     bool operator == (const TimeInfo &time) const;
     bool operator != (const TimeInfo &time) const;
@@ -60,6 +63,7 @@ public:
     bool operator >  (const TimeInfo &time) const;
 
     static const char* currentDateTimeString();
+    static std::string diffTime(const TimeInfo &timeStart,const TimeInfo &timeEnd );
     bool isNull() const;
     static TimeInfo null();
 
@@ -71,6 +75,16 @@ protected:
 #endif
 };
 
+
+ inline uint64_t TimeInfo::getSeconds(void) const
+ {
+     return timebuffer.time;
+ }
+
+ inline unsigned short  TimeInfo::getMiliseconds(void) const
+ {
+     return timebuffer.millitm;
+ } 
 
 inline bool
 TimeInfo::operator != (const TimeInfo &time) const

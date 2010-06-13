@@ -58,18 +58,46 @@ PyObject* SketchPy::addGeometry(PyObject *args)
     Py_Return; 
 }
 
-PyObject* SketchPy::addHorizontalConstraint(PyObject *args)
+PyObject* SketchPy::addConstraint(PyObject *args)
 {
-    int index;
-    char* name=0;
-    if (!PyArg_ParseTuple(args, "i|s", &index,&name))
+    int ret = -1;
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O", &pcObj))
         return 0;
 
-    return Py::new_reference_to(Py::Int(getSketchPtr()->addHorizontalConstraint(index,name)));
+    if (PyList_Check(pcObj)) {
+        Py_ssize_t nSize = PyList_Size(pcObj);
+        std::vector<Constraint*> values;
+        values.resize(nSize);
+
+        for (Py_ssize_t i=0; i<nSize;++i) {
+            PyObject* item = PyList_GetItem(pcObj, i);
+            if (!PyObject_TypeCheck(item, &(ConstraintPy::Type))) {
+                std::string error = std::string("types in list must be 'Constraint', not ");
+                error += item->ob_type->tp_name;
+                throw Py::TypeError(error);
+            }
+
+            values[i] = static_cast<ConstraintPy*>(item)->getConstraintPtr();
+        }
+
+        ret = getSketchPtr()->addConstraints(values);
+    }
+    else if(PyObject_TypeCheck(pcObj, &(ConstraintPy::Type))) {
+        ConstraintPy  *pcObject = static_cast<ConstraintPy*>(pcObj);
+        ret = getSketchPtr()->addConstraint(pcObject->getConstraintPtr());
+    }
+    else {
+        std::string error = std::string("type must be 'Constraint' or list of 'Constraint', not ");
+        error += pcObj->ob_type->tp_name;
+        throw Py::TypeError(error);
+    }
+
+    return Py::new_reference_to(Py::Int(ret));
 
 }
 
-PyObject* SketchPy::addVerticalConstraint(PyObject *args)
+PyObject* SketchPy::clear(PyObject *args)
 {
     int index;
     char* name=0;
@@ -77,16 +105,6 @@ PyObject* SketchPy::addVerticalConstraint(PyObject *args)
         return 0;
 
     return Py::new_reference_to(Py::Int(getSketchPtr()->addVerticalConstraint(index,name)));
-
-}
-PyObject* SketchPy::addPointOnPointConstraint(PyObject *args)
-{
-    int index1,index2,index3,index4;
-    char* name=0;
-    if (!PyArg_ParseTuple(args, "iiii|s", &index1,&index2,&index3,&index4,&name))
-        return 0;
-
-    return Py::new_reference_to(Py::Int(getSketchPtr()->addPointCoincidentConstraint(index1,(Sketcher::PointPos)index2,index3,(Sketcher::PointPos)index4,name)));
 
 }
 
