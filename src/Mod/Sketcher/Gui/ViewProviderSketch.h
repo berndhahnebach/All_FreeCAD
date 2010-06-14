@@ -62,17 +62,17 @@ class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObjec
     PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
 public:
-	/// constructor
-	ViewProviderSketch();
-	/// destructor
-	virtual ~ViewProviderSketch();
+    /// constructor
+    ViewProviderSketch();
+    /// destructor
+    virtual ~ViewProviderSketch();
 
-	/// draw the sketch in the inventor nodes
-	void draw(bool temp=false);
-	/// draw the edit curve
+    /// draw the sketch in the inventor nodes
+    void draw(bool temp=false);
+    /// draw the edit curve
     void drawEdit(const std::vector<Base::Vector2D> &EditCurve);
-	/// solve the sketch 
-	void solve(void);
+    /// solve the sketch 
+    void solve(void);
 
     
     /** @name handler control */
@@ -85,25 +85,25 @@ public:
 
     /** @name modus handling */
     //@{
-	/// mode table
-	enum SketchMode{
-		STATUS_NONE,              /**< enum value View provider is in neutral. */  
-		STATUS_SELECT_Point,      /**< enum value a point was selected. */  
-		STATUS_SELECT_Edge,       /**< enum value a edge was selected. */  
-		STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */  
-		STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */  
-		STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */  
-	};
-	/// is called by GuiCommands to set the drawing mode
-	void setSketchMode(SketchMode mode){Mode = mode;}
-	/// get the sketch mode
-	SketchMode getSketchMode(void){return Mode;}
+    /// mode table
+    enum SketchMode{
+        STATUS_NONE,              /**< enum value View provider is in neutral. */  
+        STATUS_SELECT_Point,      /**< enum value a point was selected. */  
+        STATUS_SELECT_Edge,       /**< enum value a edge was selected. */  
+        STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */  
+        STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */  
+        STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */  
+    };
+    /// is called by GuiCommands to set the drawing mode
+    void setSketchMode(SketchMode mode){Mode = mode;}
+    /// get the sketch mode
+    SketchMode getSketchMode(void){return Mode;}
     //@}
 
     /** @name helper functions */
     //@{
-	/// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
-	void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
+    /// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
+    void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
     /// helper to detect preselection
     //bool handlePreselection(const SoPickedPoint* pp);
     /// helper to detect preselection
@@ -111,25 +111,25 @@ public:
     /// helper to draw preselection
     void drawPreselection(void);
     /// get the pointer to the sketch document object
-    Sketcher::SketchObject* getSketchObject(void);
+    Sketcher::SketchObject* getSketchObject(void) const;
     //@}
 
     /** @name base class implementer */
     //@{
-	virtual void attach(App::DocumentObject *);
-	virtual void updateData(const App::Property*);
+    virtual void attach(App::DocumentObject *);
+    virtual void updateData(const App::Property*);
 
-	virtual bool setEdit(int ModNum);
-	virtual void unsetEdit(void);
+    virtual bool setEdit(int ModNum);
+    virtual void unsetEdit(void);
 
-	/// Is called by the tree if the user double click on the object
-	virtual bool doubleClicked(void);
-	/// is called when the Provider is in edit and the mouse is moved
-	virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint* pp);
-	/// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
-	virtual bool keyPressed(int key);
-	/// is called when the Provider is in edit and the mouse is clicked 
-	virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
+    /// Is called by the tree if the user double click on the object
+    virtual bool doubleClicked(void);
+    /// is called when the Provider is in edit and the mouse is moved
+    virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint* pp);
+    /// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
+    virtual bool keyPressed(int key);
+    /// is called when the Provider is in edit and the mouse is clicked 
+    virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
         const SbVec3f &normal, const SoPickedPoint* pp);
     //@}
 

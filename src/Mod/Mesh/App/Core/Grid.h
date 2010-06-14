@@ -109,7 +109,7 @@ public:
   inline Base::BoundBox3f  GetBoundBox (unsigned long ulX, unsigned long ulY, unsigned long ulZ) const;
   /** Returns the bounding box of the whole. */
   inline Base::BoundBox3f  GetBoundBox     (void) const;
-  /** Returns a extended bounding box of the mesh object. */
+  /** Returns an extended bounding box of the mesh object. */
   inline Base::BoundBox3f  GetMeshBoundBox (void) const;
   //@}
   /** Returns an index for the given grid position. If the specified triple is not a valid grid position ULONG_MAX is returned. 

@@ -67,13 +67,13 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 // returns a string which represents the object e.g. when printed in python
 std::string ConstraintPy::representation(void) const
 {
-    std::strstream result;
+    std::stringstream result;
     result << "<Constraint " ;
     switch(this->getConstraintPtr()->Type) {
         case None: result << "'None'>";break;
         case Vertical: result << "'Vertical' (" << getConstraintPtr()->First << ")>";break;
         case Horizontal: result << "'Horizontal' (" << getConstraintPtr()->First << ")>";break;
-        case Coincident: result << "'Coinsident'>";break;
+        case Coincident: result << "'Coincident'>";break;
         default  : result << "'?'>";break;
     }
     return result.str();

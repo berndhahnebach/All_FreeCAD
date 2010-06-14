@@ -80,14 +80,14 @@ ViewProviderSketch::ViewProviderSketch()
     DragPoint(-1),
     EditRoot(0),
 
-	PointsMaterials(0),
-	LinesMaterials(0),
-	CurvesMaterials(0),
-	PointsCoordinate(0),
-	LinesCoordinate(0),
-	CurvesCoordinate(0),
-	LineSet(0),
-	CurveSet(0),
+    PointsMaterials(0),
+    LinesMaterials(0),
+    CurvesMaterials(0),
+    PointsCoordinate(0),
+    LinesCoordinate(0),
+    CurvesCoordinate(0),
+    LineSet(0),
+    CurveSet(0),
     PointSet(0),
 
     PreselectCurve(-1),
@@ -95,8 +95,6 @@ ViewProviderSketch::ViewProviderSketch()
 
     sketchHandler(0),
     ActSketch(0)
-
-    
 {
     sPixmap = "Sketcher_NewSketch";
 }
@@ -113,9 +111,7 @@ void ViewProviderSketch::activateHandler(DrawSketchHandler *newHandler)
     Mode = STATUS_SKETCH_UseHandler;
     sketchHandler->sketchgui = this;
     sketchHandler->activated(this);
-
 }
-
 
 /// removes the active handler
 void ViewProviderSketch::purgeHandler(void)
@@ -130,33 +126,33 @@ void ViewProviderSketch::purgeHandler(void)
 
 bool ViewProviderSketch::keyPressed(int key)
 {
-	return true;
+    return true;
 }
 
 void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)
 {
-	// Plane form
-	Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
+    // Plane form
+    Base::Vector3d R0(0,0,0),RN(0,0,1),RX(1,0,0),RY(0,1,0);
 
     // move to position of Sketch
     Base::Placement Plz = getSketchObject()->Placement.getValue();
     R0 = Plz.getPosition() ; 
-	Base::Rotation tmp(Plz.getRotation());
+    Base::Rotation tmp(Plz.getRotation());
     tmp.multVec(RN,RN);
     tmp.multVec(RX,RX);
     tmp.multVec(RY,RY);
-	Plz.setRotation(tmp);
+    Plz.setRotation(tmp);
 
-	// line 
-	Base::Vector3d R1(point[0],point[1],point[2]),RA(normal[0],normal[1],normal[2]);
-	// intersection point on plane
-	Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
+    // line 
+    Base::Vector3d R1(point[0],point[1],point[2]),RA(normal[0],normal[1],normal[2]);
+    // intersection point on plane
+    Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
 
-	// distance to x Axle of the sketch
-	S.TransformToCoordinateSystem(R0,RX,RY);
+    // distance to x Axle of the sketch
+    S.TransformToCoordinateSystem(R0,RX,RY);
 
-	u = S.x;
-	v = S.y;
+    u = S.x;
+    v = S.y;
 }
 
 bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
@@ -171,34 +167,34 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
         }
     }
 
-	getCoordsOnSketchPlane(x,y,pos,normal);
+    getCoordsOnSketchPlane(x,y,pos,normal);
 
-	// Left Mouse button ****************************************************
-	if (Button == 1) {
-		if (pressed) {
-			// Do things depending on the mode of the user interaction
-			switch(Mode){
-				case STATUS_NONE:
+    // Left Mouse button ****************************************************
+    if (Button == 1) {
+        if (pressed) {
+            // Do things depending on the mode of the user interaction
+            switch(Mode){
+                case STATUS_NONE:
                     if (PreselectPoint >=0) {
- 						//Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
-					    Mode = STATUS_SELECT_Point;
+                        //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
+                        Mode = STATUS_SELECT_Point;
                         return true;
                     } else
                         return false;
 
-				case STATUS_SKETCH_UseHandler:
+                case STATUS_SKETCH_UseHandler:
                     return sketchHandler->pressButton(Base::Vector2D(x,y));
                 default:
-                    return false;					
-			}
+                    return false;
+            }
         }
         else {
-			// Do things depending on the mode of the user interaction
-			switch (Mode) {
-				case STATUS_SELECT_Point:
+            // Do things depending on the mode of the user interaction
+            switch (Mode) {
+                case STATUS_SELECT_Point:
                     //Base::Console().Log("Select Point:%d\n",this->DragPoint);
-					// Do selection
-					//Gui::Selection().addSelection(documentName.getValue().getString()
+                    // Do selection
+                    //Gui::Selection().addSelection(documentName.getValue().getString()
      //                                            ,objectName.getValue().getString()
      //                                            ,subElementName.getValue().getString()
      //                                            ,pp->getPoint()[0]
@@ -206,21 +202,21 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
      //                                            ,pp->getPoint()[2]);
 
                     this->DragPoint = -1;
-					Mode = STATUS_NONE;
-					return true;
-				case STATUS_SKETCH_DragPoint:
+                    Mode = STATUS_NONE;
+                    return true;
+                case STATUS_SKETCH_DragPoint:
                     PreselectPoint = DragPoint;
                     this->DragPoint = -1;
                     drawPreselection();
-					Mode = STATUS_NONE;
-					return true;
-				case STATUS_SKETCH_UseHandler:
+                    Mode = STATUS_NONE;
+                    return true;
+                case STATUS_SKETCH_UseHandler:
                     return sketchHandler->releaseButton(Base::Vector2D(x,y));
                 default:
                     return false;
             }
         }
-	}
+    }
     // Right mouse button ****************************************************
     //else if (Button == 2) {
     //    if (pressed) {
@@ -231,47 +227,47 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     //    }
     //}
 
-	return false;
+    return false;
 }
 
 bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
 {
-	double x,y;
-	getCoordsOnSketchPlane(x,y,point,normal);
+    double x,y;
+    getCoordsOnSketchPlane(x,y,point,normal);
 
     int PtIndex,CurvIndex;
     bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex);
 
-	switch (Mode) {
-		case STATUS_NONE:
+    switch (Mode) {
+        case STATUS_NONE:
             if(preselectChanged)
                 drawPreselection();
             return false;
-		case STATUS_SELECT_Point:
-			Mode = STATUS_SKETCH_DragPoint;
+        case STATUS_SELECT_Point:
+            Mode = STATUS_SKETCH_DragPoint;
             this->DragPoint = PreselectPoint;
             PreselectCurve = -1;
             PreselectPoint = -1;
 
             return true;
-		case STATUS_SKETCH_DragPoint:
+        case STATUS_SKETCH_DragPoint:
             Base::Console().Log("Drag Point:%d\n",this->DragPoint);
             int ret;
             if(ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0)) == 0)
-			    draw(true);
+                draw(true);
             else
                 Base::Console().Log("Error solving:%d\n",ret);
-			return true;
-		case STATUS_SKETCH_UseHandler:
+            return true;
+        case STATUS_SKETCH_UseHandler:
             if(preselectChanged)
                 drawPreselection();
             sketchHandler->mouseMove(Base::Vector2D(x,y));
             return true;
         default:
-            return false;					
-	}
+            return false;
+    }
 
-	return false;
+    return false;
 }
 
 
@@ -347,9 +343,8 @@ bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint* pp) const
 
 bool ViewProviderSketch::doubleClicked(void)
 {
-
-	Gui::Application::Instance->activeDocument()->setEdit(this);
-	return true;
+    Gui::Application::Instance->activeDocument()->setEdit(this);
+    return true;
 }
 
 void ViewProviderSketch::solve(void)
@@ -601,115 +596,115 @@ bool ViewProviderSketch::setEdit(int ModNum)
     createEditInventorNodes();
     this->hide(); // avoid that the wires interfere with the edit lines
 
-	ShowGrid.setValue(true);
+    ShowGrid.setValue(true);
 
     solve();
-	draw();
+    draw();
 
-	return true;
+    return true;
 }
 
 void ViewProviderSketch::createEditInventorNodes(void)
 {
-	if (!EditRoot) {
-		EditRoot = new SoSeparator;
-		pcRoot->addChild(EditRoot);
+    if (!EditRoot) {
+        EditRoot = new SoSeparator;
+        pcRoot->addChild(EditRoot);
         EditRoot->renderCaching = SoSeparator::OFF ;
-	}
+    }
 
-	// stuff for the points ++++++++++++++++++++++++++++++++++++++
+    // stuff for the points ++++++++++++++++++++++++++++++++++++++
     PointsMaterials = new SoMaterial;
-	EditRoot->addChild(PointsMaterials);
+    EditRoot->addChild(PointsMaterials);
 
-	SoMaterialBinding *MtlBind = new SoMaterialBinding;
-	MtlBind->value = SoMaterialBinding::PER_VERTEX;
-	EditRoot->addChild(MtlBind);
+    SoMaterialBinding *MtlBind = new SoMaterialBinding;
+    MtlBind->value = SoMaterialBinding::PER_VERTEX;
+    EditRoot->addChild(MtlBind);
 
-	PointsCoordinate = new SoCoordinate3;
-	EditRoot->addChild(PointsCoordinate);
+    PointsCoordinate = new SoCoordinate3;
+    EditRoot->addChild(PointsCoordinate);
 
-	SoDrawStyle *DrawStyle = new SoDrawStyle;
-	DrawStyle->pointSize = 8;
-	EditRoot->addChild( DrawStyle );
+    SoDrawStyle *DrawStyle = new SoDrawStyle;
+    DrawStyle->pointSize = 8;
+    EditRoot->addChild( DrawStyle );
     PointSet = new SoPointSet;
-	EditRoot->addChild( PointSet );
+    EditRoot->addChild( PointSet );
 
-	// stuff for the lines +++++++++++++++++++++++++++++++++++++++
+    // stuff for the lines +++++++++++++++++++++++++++++++++++++++
     LinesMaterials = new SoMaterial;
-	EditRoot->addChild(LinesMaterials);
+    EditRoot->addChild(LinesMaterials);
 
-	MtlBind = new SoMaterialBinding;
-	MtlBind->value = SoMaterialBinding::PER_PART;
-	EditRoot->addChild(MtlBind);
+    MtlBind = new SoMaterialBinding;
+    MtlBind->value = SoMaterialBinding::PER_PART;
+    EditRoot->addChild(MtlBind);
 
-	LinesCoordinate = new SoCoordinate3;
-	EditRoot->addChild(LinesCoordinate);
+    LinesCoordinate = new SoCoordinate3;
+    EditRoot->addChild(LinesCoordinate);
 
-	DrawStyle = new SoDrawStyle;
-	DrawStyle->lineWidth = 3;
-	DrawStyle->linePattern = 0x0fff;
-	EditRoot->addChild(DrawStyle);
+    DrawStyle = new SoDrawStyle;
+    DrawStyle->lineWidth = 3;
+    DrawStyle->linePattern = 0x0fff;
+    EditRoot->addChild(DrawStyle);
 
-	LineSet = new SoLineSet;
+    LineSet = new SoLineSet;
 
-	EditRoot->addChild(LineSet);
+    EditRoot->addChild(LineSet);
 
-	// stuff for the Curves +++++++++++++++++++++++++++++++++++++++
+    // stuff for the Curves +++++++++++++++++++++++++++++++++++++++
     CurvesMaterials = new SoMaterial;
-	EditRoot->addChild(CurvesMaterials);
+    EditRoot->addChild(CurvesMaterials);
 
-	MtlBind = new SoMaterialBinding;
-	MtlBind->value = SoMaterialBinding::PER_FACE;
-	EditRoot->addChild(MtlBind);
+    MtlBind = new SoMaterialBinding;
+    MtlBind->value = SoMaterialBinding::PER_FACE;
+    EditRoot->addChild(MtlBind);
 
-	CurvesCoordinate = new SoCoordinate3;
-	EditRoot->addChild(CurvesCoordinate);
+    CurvesCoordinate = new SoCoordinate3;
+    EditRoot->addChild(CurvesCoordinate);
 
-	DrawStyle = new SoDrawStyle;
-	DrawStyle->lineWidth = 3;
-	EditRoot->addChild( DrawStyle );
+    DrawStyle = new SoDrawStyle;
+    DrawStyle->lineWidth = 3;
+    EditRoot->addChild( DrawStyle );
 
-	CurveSet = new SoLineSet;
+    CurveSet = new SoLineSet;
 
-	EditRoot->addChild( CurveSet );
+    EditRoot->addChild( CurveSet );
 
     // stuff for the EditCurves +++++++++++++++++++++++++++++++++++++++
     EditCurvesMaterials = new SoMaterial;
-	EditRoot->addChild(EditCurvesMaterials);
+    EditRoot->addChild(EditCurvesMaterials);
 
-	EditCurvesCoordinate = new SoCoordinate3;
-	EditRoot->addChild(EditCurvesCoordinate);
+    EditCurvesCoordinate = new SoCoordinate3;
+    EditRoot->addChild(EditCurvesCoordinate);
 
-	DrawStyle = new SoDrawStyle;
-	DrawStyle->lineWidth = 3;
-	EditRoot->addChild( DrawStyle );
+    DrawStyle = new SoDrawStyle;
+    DrawStyle->lineWidth = 3;
+    EditRoot->addChild( DrawStyle );
 
-	EditCurveSet = new SoLineSet;
+    EditCurveSet = new SoLineSet;
 
-	EditRoot->addChild( EditCurveSet );
-
+    EditRoot->addChild( EditCurveSet );
 }
 
 void ViewProviderSketch::unsetEdit(void)
 {
-	ShowGrid.setValue(false);
+    ShowGrid.setValue(false);
  
-	// close the solver
-	delete(ActSketch);
+    // close the solver
+    delete ActSketch;
+    ActSketch = 0;
 
  //   // recompute the part
  //   getSketchObject()->getDocument()->recompute();
 
-	// empty the nodes
-	EditRoot->removeAllChildren();
-	PointsMaterials = 0;
-	LinesMaterials = 0;
-	CurvesMaterials = 0;
-	PointsCoordinate = 0;
-	LinesCoordinate = 0;
-	CurvesCoordinate = 0;
-	LineSet = 0;
-	CurveSet = 0;
+    // empty the nodes
+    EditRoot->removeAllChildren();
+    PointsMaterials = 0;
+    LinesMaterials = 0;
+    CurvesMaterials = 0;
+    PointsCoordinate = 0;
+    LinesCoordinate = 0;
+    CurvesCoordinate = 0;
+    LineSet = 0;
+    CurveSet = 0;
     PointSet = 0;
 
     PreselectCurve = -1;
@@ -717,7 +712,7 @@ void ViewProviderSketch::unsetEdit(void)
     this->show();
 }
 
-Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void)
+Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void) const
 {
     return dynamic_cast<Sketcher::SketchObject*>(pcObject);
 }

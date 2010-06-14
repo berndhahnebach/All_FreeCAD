@@ -218,7 +218,7 @@ void PropertyFileIncluded::Save (Writer &writer) const
         writer.Stream() << writer.ind() <<"</FileIncluded>" << endl ;
     }
     else {
-        // instead initiate a extra file 
+        // instead initiate an extra file 
         if (!_cValue.empty()) {
             Base::FileInfo file(_cValue.c_str());
             writer.Stream() << writer.ind() << "<FileIncluded file=\"" << 
