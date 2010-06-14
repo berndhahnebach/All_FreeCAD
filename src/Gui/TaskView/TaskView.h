@@ -73,7 +73,7 @@ private:
     bool wasShown;
 };
 
-/// Father class of content of a Free widget (without header and Icon), shut be a exception!
+/// Father class of content of a Free widget (without header and Icon), shut be an exception!
 class GuiExport TaskWidget : public QWidget, public TaskContent
 {
     Q_OBJECT
