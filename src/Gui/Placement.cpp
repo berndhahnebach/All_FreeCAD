@@ -30,7 +30,6 @@
 #include <Gui/DockWindowManager.h>
 #include <Gui/Application.h>
 #include <Gui/Selection.h>
-#include <Gui/ViewProvider.h>
 #include <App/PropertyGeo.h>
 #include <Base/Console.h>
 
@@ -63,8 +62,24 @@ void applyPlacement(const Base::Placement& p)
             std::map<std::string,App::Property*>::iterator jt;
             jt = std::find_if(props.begin(), props.end(), find_placement());
             if (jt != props.end()) {
-                Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(*it);
-                if (vp) vp->setTransformation(p.toMatrix());
+                //static_cast<App::PropertyPlacement*>(jt->second)->setValue(p);
+                Base::Vector3d pos = p.getPosition();
+                const Base::Rotation& rt = p.getRotation();
+                QString cmd = QString::fromAscii(
+                    "App.getDocument(\"%1\").%2.Placement="
+                    "App.Placement("
+                    "App.Vector(%3,%4,%5),"
+                    "App.Rotation(%6,%7,%8,%9))\n")
+                    .arg(QLatin1String((*it)->getDocument()->getName()))
+                    .arg(QLatin1String((*it)->getNameInDocument()))
+                    .arg(pos.x,0,'g',6)
+                    .arg(pos.y,0,'g',6)
+                    .arg(pos.z,0,'g',6)
+                    .arg(rt[0],0,'g',6)
+                    .arg(rt[1],0,'g',6)
+                    .arg(rt[2],0,'g',6)
+                    .arg(rt[3],0,'g',6);
+                Application::Instance->runPythonCode((const char*)cmd.toAscii());
             }
         }
     }
