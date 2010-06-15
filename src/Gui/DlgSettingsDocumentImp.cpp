@@ -61,6 +61,7 @@ void DlgSettingsDocumentImp::saveSettings()
     prefSaveThumbnail->onSave();
     prefSaveBackupFiles->onSave();
     prefCountBackupFiles->onSave();
+    prefDuplicateLabel->onSave();
 }
 
 void DlgSettingsDocumentImp::loadSettings()
@@ -75,6 +76,7 @@ void DlgSettingsDocumentImp::loadSettings()
     prefSaveThumbnail->onRestore();
     prefSaveBackupFiles->onRestore();
     prefCountBackupFiles->onRestore();
+    prefDuplicateLabel->onRestore();
 }
 
 /**
