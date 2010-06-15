@@ -81,6 +81,7 @@
 #include <Base/Stream.h>
 #include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
+#include <Base/Tools.h>
 #include <zipios++/gzipoutputstream.h>
 
 #include "View3DInventorViewer.h"
@@ -1170,6 +1171,35 @@ void View3DInventorViewer::pubSeekToPoint(const SbVec3f& pos)
 void View3DInventorViewer::setCameraOrientation(const SbRotation& rot)
 {
     navigation->setCameraOrientation(rot);
+}
+
+void View3DInventorViewer::moveCameraTo(const SbRotation& rot, const SbVec3f& pos, int steps, int ms)
+{
+    SoCamera* cam = this->getCamera();
+    if (cam == 0) return;
+
+    SbVec3f campos = cam->position.getValue();
+    SbRotation camrot = cam->orientation.getValue();
+    //SbVec3f dir1, dir2;
+    //camrot.multVec(SbVec3f(0, 0, -1), dir1);
+    //rot.multVec(SbVec3f(0, 0, -1), dir2);
+
+    QEventLoop loop;
+    QTimer timer;
+    timer.setSingleShot(true);
+    QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    for (int i=0; i<steps; i++) {
+        float s = float(i)/float(steps);
+        SbVec3f curpos = campos * (1.0f-s) + pos * s;
+        SbRotation currot = SbRotation::slerp(camrot, rot, s);
+        cam->orientation.setValue(currot);
+        cam->position.setValue(curpos);
+        timer.start(Base::clamp<int>(ms,0,5000));
+        loop.exec(QEventLoop::ExcludeUserInputEvents);
+    }
+
+    cam->orientation.setValue(rot);
+    cam->position.setValue(pos);
 }
 
 void View3DInventorViewer::boxZoom(const SbBox2s& box)

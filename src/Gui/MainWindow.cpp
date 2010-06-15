@@ -390,7 +390,8 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
     pDockMgr->registerDockWindow("Std_ReportView", pcReport);
 
     // Python console
-    QWidget* pcPython = new PythonConsole(this);
+    PythonConsole* pcPython = new PythonConsole(this);
+    pcPython->setWordWrapMode(QTextOption::NoWrap);
     pcPython->setWindowIcon(Gui::BitmapFactory().pixmap("python_small"));
     pcPython->setObjectName
         (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Python console")));

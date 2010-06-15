@@ -46,7 +46,8 @@ DocumentObjectExecReturn *DocumentObject::StdReturn = 0;
 DocumentObject::DocumentObject(void)
   : _pDoc(0),pcNameInDocument(0)
 {
-    ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_None,"User name of the object (UTF8)");
+    // define Label of type 'Output' to avoid being marked as touched after relabeling
+    ADD_PROPERTY_TYPE(Label,("Unnamed"),"Base",Prop_Output,"User name of the object (UTF8)");
 }
 
 DocumentObject::~DocumentObject(void)

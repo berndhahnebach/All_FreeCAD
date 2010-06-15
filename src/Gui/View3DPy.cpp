@@ -43,6 +43,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>
+#include <Base/PlacementPy.h>
 #include <Base/VectorPy.h>
 #include <Base/GeometryPyCXX.h>
 
@@ -70,6 +71,7 @@ void View3DInventorPy::init_type()
     add_varargs_method("viewRight",&View3DInventorPy::viewRight,"viewRight()");
     add_varargs_method("viewTop",&View3DInventorPy::viewTop,"viewTop()");
     add_varargs_method("viewAxometric",&View3DInventorPy::viewAxometric,"viewAxometric()");
+    add_varargs_method("viewPosition",&View3DInventorPy::viewPosition,"viewPosition()");
     add_varargs_method("startAnimating",&View3DInventorPy::startAnimating,"startAnimating()");
     add_varargs_method("stopAnimating",&View3DInventorPy::stopAnimating,"stopAnimating()");
     add_varargs_method("setAnimationEnabled",&View3DInventorPy::setAnimationEnabled,"setAnimationEnabled()");
@@ -379,6 +381,38 @@ Py::Object View3DInventorPy::viewAxometric(const Py::Tuple& args)
     }
 
     return Py::None();
+}
+
+Py::Object View3DInventorPy::viewPosition(const Py::Tuple& args)
+{
+    PyObject* p=0;
+    int steps = 20;
+    int ms = 30;
+    if (!PyArg_ParseTuple(args.ptr(), "|O!ii",&Base::PlacementPy::Type,&p,&steps,&ms))
+        throw Py::Exception();
+
+    if (p) {
+        Base::Placement* plm = static_cast<Base::PlacementPy*>(p)->getPlacementPtr();
+        Base::Rotation rot = plm->getRotation();
+        Base::Vector3d pos = plm->getPosition();
+        double q0,q1,q2,q3;
+        rot.getValue(q0,q1,q2,q3);
+        _view->getViewer()->moveCameraTo(
+            SbRotation((float)q0, (float)q1, (float)q2, (float)q3),
+            SbVec3f((float)pos.x, (float)pos.y, (float)pos.z), steps, ms);
+    }
+
+    SoCamera* cam = _view->getViewer()->getCamera();
+    if (!cam) return Py::None();
+
+    SbRotation rot = cam->orientation.getValue();
+    SbVec3f pos = cam->position.getValue();
+    float q0,q1,q2,q3;
+    rot.getValue(q0,q1,q2,q3);
+    Base::Placement plm(
+        Base::Vector3d(pos[0], pos[1], pos[2]),
+        Base::Rotation(q0, q1, q2, q3));
+    return Py::Placement(plm);
 }
 
 Py::Object View3DInventorPy::startAnimating(const Py::Tuple& args)
