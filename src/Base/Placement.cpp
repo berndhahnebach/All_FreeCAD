@@ -131,3 +131,10 @@ void Placement::multVec(const Vector3d & src, Vector3d & dst) const
     this->_rot.multVec(src, dst);
     dst += this->_pos;
 }
+
+Placement Placement::slerp(const Placement & p0, const Placement & p1, double t)
+{
+    Rotation rot = Rotation::slerp(p0.getRotation(), p1.getRotation(), t);
+    Vector3d pos = p0.getPosition() * (1.0-t) + p1.getPosition() * t;
+    return Placement(pos, rot);
+}

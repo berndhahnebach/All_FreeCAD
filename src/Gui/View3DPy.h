@@ -54,6 +54,7 @@ public:
     Py::Object viewRight(const Py::Tuple&);
     Py::Object viewTop(const Py::Tuple&);
     Py::Object viewAxometric(const Py::Tuple&);
+    Py::Object viewPosition(const Py::Tuple&);
     Py::Object startAnimating(const Py::Tuple&);
     Py::Object stopAnimating(const Py::Tuple&);
     Py::Object setAnimationEnabled(const Py::Tuple&);

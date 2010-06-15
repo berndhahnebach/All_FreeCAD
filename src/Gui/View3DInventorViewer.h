@@ -224,6 +224,7 @@ public:
      * set.
      */
     void setCameraOrientation(const SbRotation& rot);
+    void moveCameraTo(const SbRotation& rot, const SbVec3f& pos, int steps, int ms);
     /** 
      * Zooms the viewport to the size of the bounding box. 
      */

@@ -69,6 +69,8 @@ public:
     void multVec(const Vector3d & src, Vector3d & dst) const;
     //@}
 
+    static Placement slerp(const Placement & p0, const Placement & p1, double t);
+
 protected:
     Vector3<double> _pos;
     Base::Rotation  _rot;
