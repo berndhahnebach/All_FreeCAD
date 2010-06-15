@@ -49,6 +49,7 @@
 #include <Base/Exception.h>
 #include <Base/Factory.h>
 #include <Base/FileInfo.h>
+#include <Base/Tools.h>
 #include <App/Document.h>
 #include <App/DocumentObjectPy.h>
 
@@ -131,6 +132,100 @@ struct ApplicationP
     CommandManager _cCommandManager;
     PyObject *_stderr;
 };
+
+/** Observer that watches relabeled objects and make sure that the labels inside
+ * a document are unique.
+ * @note In the FreeCAD design it is explicitly allowed to have duplicate labels
+ * (i.e. the user visible text e.g. in the tree view) while the internal names
+ * are always guaranteed to be unique.
+ */
+class ObjectLabelObserver
+{
+public:
+    /// The one and only instance.
+    static ObjectLabelObserver* instance();
+    /// Destructs the sole instance.
+    static void destruct ();
+
+    /** Checks the new label of the object and relabel it if needed
+     * to make it unique document-wide
+     */
+    void slotRelabelObject(const App::DocumentObject&, const App::Property&);
+
+private:
+    static ObjectLabelObserver* _singleton;
+
+    ObjectLabelObserver();
+    ~ObjectLabelObserver();
+    const App::DocumentObject* current;
+    ParameterGrp::handle _hPGrp;
+};
+
+ObjectLabelObserver* ObjectLabelObserver::_singleton = 0;
+
+ObjectLabelObserver* ObjectLabelObserver::instance()
+{
+    if (!_singleton)
+        _singleton = new ObjectLabelObserver;
+    return _singleton;
+}
+
+void ObjectLabelObserver::destruct ()
+{
+    delete _singleton;
+    _singleton = 0;
+}
+
+void ObjectLabelObserver::slotRelabelObject(const App::DocumentObject& obj, const App::Property& prop)
+{
+    // observe only the Label property
+    if (&prop == &obj.Label) {
+        // have we processed this (or another?) object right now?
+        if (current) {
+            return;
+        }
+        // only if Label differ from internal name it can happen to have non-unique label
+        std::string label = obj.Label.getValue();
+        if (label != obj.getNameInDocument()) {
+            App::Document* doc = obj.getDocument();
+            if (doc && !_hPGrp->GetBool("DuplicateLabels")) {
+                std::vector<std::string> objectLabels;
+                std::vector<App::DocumentObject*>::const_iterator it;
+                std::vector<App::DocumentObject*> objs = doc->getObjects();
+                bool match = false;
+
+                for (it = objs.begin();it != objs.end();++it) {
+                    if (*it == &obj)
+                        continue; // don't compare object with itself
+                    std::string objLabel = (*it)->Label.getValue();
+                    if (!match && objLabel == label)
+                        match = true;
+                    objectLabels.push_back(objLabel);
+                }
+
+                // make sure that there is a name conflict otherwise we don't have to do anything
+                if (match) {
+                    label = Base::Tools::getUniqueName(label, objectLabels);
+                    this->current = &obj;
+                    const_cast<App::DocumentObject&>(obj).Label.setValue(label);
+                    this->current = 0;
+                }
+            }
+        }
+    }
+}
+
+ObjectLabelObserver::ObjectLabelObserver() : current(0)
+{
+    App::GetApplication().signalChangedObject.connect(boost::bind
+        (&ObjectLabelObserver::slotRelabelObject, this, _1, _2));
+    _hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+    _hPGrp = _hPGrp->GetGroup("Preferences")->GetGroup("Document");
+}
+
+ObjectLabelObserver::~ObjectLabelObserver()
+{
+}
 
 static PyObject *
 FreeCADGui_subgraphFromObject(PyObject * /*self*/, PyObject *args)
@@ -284,6 +379,7 @@ Application::Application(bool GUIenabled)
 
     createStandardOperations();
     MacroCommand::load();
+    ObjectLabelObserver::instance();
 }
 
 Application::~Application()
