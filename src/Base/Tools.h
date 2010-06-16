@@ -99,7 +99,7 @@ inline T degrees(T r)
 
 struct BaseExport Tools
 {
-    static std::string getUniqueName(const std::string&, const std::vector<std::string>&);
+    static std::string getUniqueName(const std::string&, const std::vector<std::string>&,int d=3);
     static std::string getIdentifier(const std::string&);
 };
 
