@@ -66,7 +66,7 @@ struct string_comp  : public std::binary_function<std::string,
 };
 }
 
-std::string Base::Tools::getUniqueName(const std::string& name, const std::vector<std::string>& names)
+std::string Base::Tools::getUniqueName(const std::string& name, const std::vector<std::string>& names, int d)
 {
     // find highest suffix
     std::string num_suffix;
@@ -82,7 +82,12 @@ std::string Base::Tools::getUniqueName(const std::string& name, const std::vecto
     }
 
     std::stringstream str;
-    str << name << Base::string_comp::increment(num_suffix);
+    str << name;
+    if (d > 0) {
+        str.fill('0');
+        str.width(d);
+    }
+    str << Base::string_comp::increment(num_suffix);
     return str.str();
 }
 
