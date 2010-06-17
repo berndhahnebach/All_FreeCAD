@@ -653,7 +653,10 @@ CmdPartBoolean::CmdPartBoolean()
 
 void CmdPartBoolean::activated(int iMsg)
 {
-    Gui::Control().showDialog(new PartGui::TaskBooleanOperation());
+    Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
+    if (!dlg)
+        dlg = new PartGui::TaskBooleanOperation();
+    Gui::Control().showDialog(dlg);
 }
 
 bool CmdPartBoolean::isActive(void)
