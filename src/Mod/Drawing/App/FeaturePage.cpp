@@ -82,7 +82,9 @@ App::DocumentObjectExecReturn *FeaturePage::execute(void)
     while (!file.eof())
     {
         getline (file,line);
-        if(line != "<!-- DrawingContent -->")
+        // check if the marker in the template is found
+        if(line.find("<!-- DrawingContent -->") == string::npos)
+            // if not -  write through
             ofile << line << endl;
         else
         {
