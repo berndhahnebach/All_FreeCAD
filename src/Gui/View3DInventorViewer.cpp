@@ -73,7 +73,9 @@
 # include <Inventor/SoOffscreenRenderer.h>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/VRMLnodes/SoVRMLGroup.h>
+# include <QEventLoop>
 # include <QMessageBox>
+# include <QTimer>
 #endif
 
 #include <sstream>
