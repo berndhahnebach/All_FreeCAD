@@ -48,6 +48,7 @@
 						<xs:attribute name="FatherNamespace" type="xs:string" use="required"/>
 						<xs:attribute name="Constructor" type="xs:boolean" use="optional" default="false"/>
 						<xs:attribute name="NumberProtocol" type="xs:boolean" use="optional" default="false"/>
+						<xs:attribute name="RichCompare" type="xs:boolean" use="optional" default="false"/>
 						<xs:attribute name="TwinPointer" type="xs:string" use="required"/>
 						<xs:attribute name="Delete" type="xs:boolean" use="optional" default="false"/>
 						<xs:attribute name="Reference" type="xs:boolean" use="optional"/>

@@ -49,6 +49,9 @@ public:
 + if (self.export.NumberProtocol):
     static PyNumberMethods Number[];
 -
++ if (self.export.RichCompare):
+    static PyObject * richCompare(PyObject *v, PyObject *w, int op);
+-
     static PyGetSetDef    GetterSetter[];
     static PyParentObject Parents[];
     virtual PyTypeObject *GetType(void) {return &Type;};
@@ -180,11 +183,19 @@ PyTypeObject @self.export.Name@::Type = {
     /* --- Functions to access object as input/output buffer ---------*/
     0,                                                /* tp_as_buffer */
     /* --- Flags to define presence of optional/expanded features */
++ if (self.export.RichCompare):
+    Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS|Py_TPFLAGS_HAVE_RICHCOMPARE,        /*tp_flags */
+= else:
     Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
+-
     "@self.export.Documentation.UserDocu.replace('\\n','\\\\n\\"\\n    \\"')@",           /*tp_doc */
     0,                                                /*tp_traverse */
     0,                                                /*tp_clear */
++ if (self.export.RichCompare):
+    @self.export.Namespace@::@self.export.Name@::richCompare,      /*tp_richcompare*/
+= else:
     0,                                                /*tp_richcompare */
+-
     0,                                                /*tp_weaklistoffset */
     0,                                                /*tp_iter */
     0,                                                /*tp_iternext */
@@ -615,6 +626,14 @@ PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *
     return 0;
 }
 -
+
++ if (self.export.RichCompare):
+PyObject* @self.export.Name@::richCompare(PyObject *v, PyObject *w, int op)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
 + for i in self.export.Attribute:
 
 Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
@@ -703,6 +722,14 @@ PyObject* @self.export.Name@::number_subtract_handler(PyObject *self, PyObject *
 }
 
 PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *other)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
+
++ if (self.export.RichCompare):
+PyObject* @self.export.Name@::richCompare(PyObject *v, PyObject *w, int op)
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
