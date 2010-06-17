@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Sun Jan 11 02:25:41 2009 by generateDS.py.
+# Generated Thu Jun 17 10:35:09 2010 by generateDS.py.
 #
 
 import sys
@@ -216,8 +216,9 @@ class GenerateModel:
 
 class PythonExport:
     subclass = None
-    def __init__(self, FatherNamespace='', Name='', Reference=0, FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', NumberProtocol=0, Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
+    def __init__(self, FatherNamespace='', RichCompare=0, Name='', Reference=0, FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', NumberProtocol=0, Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
         self.FatherNamespace = FatherNamespace
+        self.RichCompare = RichCompare
         self.Name = Name
         self.Reference = Reference
         self.FatherInclude = FatherInclude
@@ -262,6 +263,8 @@ class PythonExport:
     def setClassdeclarations(self, ClassDeclarations): self.ClassDeclarations = ClassDeclarations
     def getFathernamespace(self): return self.FatherNamespace
     def setFathernamespace(self, FatherNamespace): self.FatherNamespace = FatherNamespace
+    def getRichcompare(self): return self.RichCompare
+    def setRichcompare(self, RichCompare): self.RichCompare = RichCompare
     def getName(self): return self.Name
     def setName(self, Name): self.Name = Name
     def getReference(self): return self.Reference
@@ -294,6 +297,8 @@ class PythonExport:
         outfile.write('</%s>\n' % name_)
     def exportAttributes(self, outfile, level, name_='PythonExport'):
         outfile.write(' FatherNamespace="%s"' % (self.getFathernamespace(), ))
+        if self.getRichcompare() is not None:
+            outfile.write(' RichCompare="%s"' % (self.getRichcompare(), ))
         outfile.write(' Name="%s"' % (self.getName(), ))
         if self.getReference() is not None:
             outfile.write(' Reference="%s"' % (self.getReference(), ))
@@ -327,6 +332,8 @@ class PythonExport:
     def exportLiteralAttributes(self, outfile, level, name_):
         showIndent(outfile, level)
         outfile.write('FatherNamespace = "%s",\n' % (self.getFathernamespace(),))
+        showIndent(outfile, level)
+        outfile.write('RichCompare = "%s",\n' % (self.getRichcompare(),))
         showIndent(outfile, level)
         outfile.write('Name = "%s",\n' % (self.getName(),))
         showIndent(outfile, level)
@@ -393,6 +400,13 @@ class PythonExport:
     def buildAttributes(self, attrs):
         if attrs.get('FatherNamespace'):
             self.FatherNamespace = attrs.get('FatherNamespace').value
+        if attrs.get('RichCompare'):
+            if attrs.get('RichCompare').value in ('true', '1'):
+                self.RichCompare = 1
+            elif attrs.get('RichCompare').value in ('false', '0'):
+                self.RichCompare = 0
+            else:
+                raise ValueError('Bad boolean attribute (RichCompare)')
         if attrs.get('Name'):
             self.Name = attrs.get('Name').value
         if attrs.get('Reference'):
@@ -1568,6 +1582,14 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             val = attrs.get('FatherNamespace', None)
             if val is not None:
                 obj.setFathernamespace(val)
+            val = attrs.get('RichCompare', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setRichcompare(1)
+                elif val in ('false', '0'):
+                    obj.setRichcompare(0)
+                else:
+                    self.reportError('"RichCompare" attribute must be boolean ("true", "1", "false", "0")')
             val = attrs.get('Name', None)
             if val is not None:
                 obj.setName(val)

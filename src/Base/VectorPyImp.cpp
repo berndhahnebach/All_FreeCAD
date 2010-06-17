@@ -162,6 +162,36 @@ PyObject*  VectorPy::sub(PyObject *args)
     return new VectorPy(v);
 }
 
+PyObject* VectorPy::richCompare(PyObject *v, PyObject *w, int op)
+{
+    if (PyObject_TypeCheck(v, &(VectorPy::Type)) &&
+        PyObject_TypeCheck(w, &(VectorPy::Type))) {
+        Vector3d v1 = static_cast<VectorPy*>(v)->value();
+        Vector3d v2 = static_cast<VectorPy*>(w)->value();
+
+        PyObject *res=0;
+        if (op != Py_EQ && op != Py_NE) {
+            PyErr_SetString(PyExc_TypeError,
+            "no ordering relation is defined for Vector");
+            return 0;
+        }
+        else if (op == Py_EQ) {
+            res = (v1 == v2) ? Py_True : Py_False;
+            Py_INCREF(res);
+            return res;
+        }
+        else {
+            res = (v1 != v2) ? Py_True : Py_False;
+            Py_INCREF(res);
+            return res;
+        }
+    }
+    else {
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    }
+}
+
 PyObject*  VectorPy::scale(PyObject *args)
 {
     double factorX, factorY, factorZ;
