@@ -67,6 +67,7 @@ void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
     }
 
     ActiveDialog = dlg;
+    connect(dlg, SIGNAL(destroyed()), this, SLOT(closedDialog()));
 }
 
 Gui::TaskView::TaskDialog* ControlSingleton::activeDialog() const
@@ -76,7 +77,15 @@ Gui::TaskView::TaskDialog* ControlSingleton::activeDialog() const
 
 void ControlSingleton::closeDialog()
 {
-    assert(ActiveDialog);
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+    // should return the pointer to combo view
+    assert(pcCombiView);
+    pcCombiView->closeDialog();
+}
+
+void ControlSingleton::closedDialog()
+{
     ActiveDialog = 0;
     Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
         (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));

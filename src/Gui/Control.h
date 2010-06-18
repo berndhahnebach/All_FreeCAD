@@ -53,18 +53,16 @@ class GuiExport ControlSingleton : public QObject
      Q_OBJECT
 
 public:
- 
     static ControlSingleton& instance(void);
     static void destruct (void);
 
     /** @name dialog handling 
-   *  this methods are used to control the TaskDialog stuff.
-   */
+     *  this methods are used to control the TaskDialog stuff.
+     */
     //@{
     /// This method start an Task dialog in the TaskView
     void showDialog(Gui::TaskView::TaskDialog *dlg);
     Gui::TaskView::TaskDialog* activeDialog() const;
-    /// This get called by the TaskView when the Dialog is finished
     void closeDialog();
     //@}
 
@@ -72,8 +70,11 @@ public:
     bool isAllowedAlterView(void) const;
     bool isAllowedAlterSelection(void) const;
 
+private Q_SLOTS:
+    /// This get called by the TaskView when the Dialog is finished
+    void closedDialog();
 
-protected:
+private:
     struct status {
         std::bitset<32> StatusBits;
     } CurrentStatus;
@@ -82,7 +83,7 @@ protected:
 
     Gui::TaskView::TaskDialog *ActiveDialog;
  
-protected:
+private:
     /// Construction
     ControlSingleton();
     /// Destruction

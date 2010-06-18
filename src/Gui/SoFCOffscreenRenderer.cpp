@@ -148,7 +148,7 @@ void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* 
                     img.setText(QLatin1String("Description"), QString::fromUtf8(comment));
                 img.setText(QLatin1String("Creation Time"), QDateTime::currentDateTime().toString());
                 img.setText(QLatin1String("Software"), 
-                    QString::fromUtf8(App::Application::Config()["ExeName"].c_str()));
+                    QString::fromUtf8(App::GetApplication().getExecutableName()));
             }
 
             QFile f(QString::fromUtf8(filename));

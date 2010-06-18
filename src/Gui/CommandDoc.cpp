@@ -871,7 +871,7 @@ void StdCmdTransform::activated(int iMsg)
 
 bool StdCmdTransform::isActive(void)
 {
-    return true;
+    return (Gui::Control().activeDialog()==0);
 }
 
 //===========================================================================
@@ -903,7 +903,7 @@ void StdCmdPlacement::activated(int iMsg)
 
 bool StdCmdPlacement::isActive(void)
 {
-    return true;
+    return (Gui::Control().activeDialog()==0);
 }
 
 

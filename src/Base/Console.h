@@ -30,11 +30,10 @@
 
 // Std. configurations
 #include "PyExport.h"
+#include <Base/Stream.h>
 
 //#pragma warning(disable: 4786)  // specifier longer then 255 chars
 #include <assert.h>
-#include <iostream>
-#include <fstream> 
 #include <set>
 #include <string>
 
@@ -209,7 +208,7 @@ public:
     const char* Name(void){return "File";}
 
 protected:
-    std::ofstream cFileStream;
+    Base::ofstream cFileStream;
 };
 
 /** The CmdConsoleObserver class

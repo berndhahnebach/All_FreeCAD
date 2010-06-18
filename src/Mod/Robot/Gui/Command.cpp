@@ -238,7 +238,7 @@ void CmdRobotSimulate::activated(int iMsg)
 
 bool CmdRobotSimulate::isActive(void)
 {
-    return hasActiveDocument();
+    return (hasActiveDocument() && !Gui::Control().activeDialog());
 }
 
 

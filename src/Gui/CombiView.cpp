@@ -87,6 +87,12 @@ void CombiView::showDialog(Gui::TaskView::TaskDialog *dlg)
     taskPanel->showDialog(dlg);
 }
 
+void CombiView::closeDialog()
+{
+    // close the dialog
+    taskPanel->removeDialog();
+}
+
 void CombiView::showTreeView()
 {
     // switch to the TreeView tab

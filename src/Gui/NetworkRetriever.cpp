@@ -414,7 +414,7 @@ Action * StdCmdDownloadOnlineHelp::createAction(void)
 {
     Action *pcAction;
 
-    QString exe = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
+    QString exe = QString::fromAscii(App::GetApplication().getExecutableName());
     pcAction = new Action(this,getMainWindow());
     pcAction->setText(QCoreApplication::translate(
         this->className(), sMenuText, 0,
@@ -437,7 +437,7 @@ Action * StdCmdDownloadOnlineHelp::createAction(void)
 void StdCmdDownloadOnlineHelp::languageChange()
 {
     if (_pcAction) {
-        QString exe = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
+        QString exe = QString::fromAscii(App::GetApplication().getExecutableName());
         _pcAction->setText(QCoreApplication::translate(
             this->className(), sMenuText, 0,
             QCoreApplication::CodecForTr));
