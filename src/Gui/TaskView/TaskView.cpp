@@ -252,19 +252,22 @@ void TaskView::showDialog(TaskDialog *dlg)
 
 void TaskView::removeDialog(void)
 {
-    taskPanel->removeWidget(ActiveCtrl);
-    delete ActiveCtrl;
-    ActiveCtrl = 0;
-
-    const std::vector<QWidget*> &cont = ActiveDialog->getDialogContent();
-    for(std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
-        taskPanel->removeWidget(*it);
+    if (ActiveCtrl) {
+        taskPanel->removeWidget(ActiveCtrl);
+        delete ActiveCtrl;
+        ActiveCtrl = 0;
     }
+
+    if (ActiveDialog) {
+        const std::vector<QWidget*> &cont = ActiveDialog->getDialogContent();
+        for(std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
+            taskPanel->removeWidget(*it);
+        }
+        delete ActiveDialog;
+        ActiveDialog = 0;
+    }
+
     taskPanel->removeStretch();
-    // signal control the end of the dialog
-    Gui::Control().closeDialog();
-    delete ActiveDialog;
-    ActiveDialog = 0;
 
     // put the watcher back in control
     addTaskWatcher();

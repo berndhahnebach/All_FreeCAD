@@ -83,7 +83,7 @@ void DlgSettingsUnitsImp::saveSettings()
 
 void DlgSettingsUnitsImp::loadSettings()
 {
-    QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+    QString exe = QString::fromUtf8(App::GetApplication().getExecutableName());
     QString viewtext = comboBox_ViewSystem->itemText(0);
     comboBox_ViewSystem->setItemText(0, QString::fromAscii("%1 %2").arg(exe).arg(viewtext));
     QString resettext = comboBox_ResetSystem->itemText(0);

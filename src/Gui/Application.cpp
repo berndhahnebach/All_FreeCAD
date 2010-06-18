@@ -1438,7 +1438,7 @@ void Application::runApplication(void)
     GUIApplication mainApp(argc, App::Application::GetARGV());
     // set application icon and window title
     mainApp.setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
-    mainApp.setApplicationName(QString::fromAscii(App::Application::Config()["ExeName"].c_str()));
+    mainApp.setApplicationName(QString::fromAscii(App::GetApplication().getExecutableName()));
     QString plugin;
     plugin = QString::fromUtf8(App::GetApplication().GetHomePath());
     plugin += QLatin1String("/plugins");

@@ -488,7 +488,7 @@ bool Document::saveAs(void)
 {
     getMainWindow()->statusBar()->showMessage(QObject::tr("Save document under new filename..."));
 
-    QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+    QString exe = QString::fromUtf8(App::GetApplication().getExecutableName());
     QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save %1 Document").arg(exe), 
                  FileDialog::getWorkingDirectory(), QObject::tr("%1 document (*.FCStd)").arg(exe));
     if (!fn.isEmpty()) {

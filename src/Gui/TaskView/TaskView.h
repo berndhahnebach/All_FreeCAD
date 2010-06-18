@@ -106,11 +106,11 @@ public:
     void addTaskWatcher(void);
     void removeTaskWatcher(void);
 
-public Q_SLOTS:
-    virtual void accept();
-    virtual void reject();
-    virtual void helpRequested();
-    virtual void clicked ( QAbstractButton * button );
+protected Q_SLOTS:
+    void accept();
+    void reject();
+    void helpRequested();
+    void clicked (QAbstractButton * button);
 
 protected:
     /// update the visibility of the TaskWatcher accordant to the selection

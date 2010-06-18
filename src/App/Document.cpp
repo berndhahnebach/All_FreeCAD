@@ -485,7 +485,8 @@ Document::Document(void)
     ADD_PROPERTY_TYPE(Id,(id.UuidStr),0,Prop_None,"UUID of the document");
 
     // create transient directory
-    Base::FileInfo TransDir(Base::FileInfo::getTempPath() + "FreeCAD_Doc_" + id.UuidStr);
+    std::string basePath = Base::FileInfo::getTempPath() + GetApplication().getExecutableName();
+    Base::FileInfo TransDir(basePath + "_Doc_" + id.UuidStr);
     if (!TransDir.exists())
         TransDir.createDirectory();
     ADD_PROPERTY_TYPE(TransientDir,(TransDir.filePath().c_str()),0,Prop_Transient,

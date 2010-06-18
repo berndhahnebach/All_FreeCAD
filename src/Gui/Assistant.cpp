@@ -88,7 +88,7 @@ bool Assistant::startAssistant()
 #endif
 
         // get the name of the executable and the doc path
-        QString exe = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+        QString exe = QString::fromUtf8(App::GetApplication().getExecutableName());
         QString doc = QString::fromUtf8(App::Application::getHelpDir().c_str());
         QString qhc = doc + exe.toLower() + QLatin1String(".qhc");
 

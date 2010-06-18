@@ -438,6 +438,11 @@ const char* Application::GetHomePath(void) const
     return _mConfig["AppHomePath"].c_str();
 }
 
+const char* Application::getExecutableName(void) const
+{
+    return _mConfig["ExeName"].c_str();
+}
+
 std::string Application::getUserAppDataDir()
 {
     return mConfig["UserAppData"];
@@ -1371,7 +1376,7 @@ void Application::ParseOptions(int ac, char ** av)
         store( boost::program_options::command_line_parser(ac, av).
                options(cmdline_options).positional(p).extra_parser(customSyntax).run(), vm);
 
-        ifstream ifs("FreeCAD.cfg");
+        std::ifstream ifs("FreeCAD.cfg");
         store(parse_config_file(ifs, config_file_options), vm);
         notify(vm);
     }
@@ -1394,7 +1399,7 @@ void Application::ParseOptions(int ac, char ** av)
 
     if (vm.count("response-file")) {
         // Load the file and tokenize it
-        ifstream ifs(vm["response-file"].as<string>().c_str());
+        std::ifstream ifs(vm["response-file"].as<string>().c_str());
         if (!ifs) {
             Base::Console().Error("Could no open the response file\n");
             cerr << "Could no open the response file: '"

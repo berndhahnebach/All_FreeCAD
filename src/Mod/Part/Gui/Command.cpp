@@ -661,7 +661,7 @@ void CmdPartBoolean::activated(int iMsg)
 
 bool CmdPartBoolean::isActive(void)
 {
-    return hasActiveDocument();
+    return (hasActiveDocument() && !Gui::Control().activeDialog());
 }
 
 //===========================================================================
@@ -689,7 +689,7 @@ void CmdPartExtrude::activated(int iMsg)
 
 bool CmdPartExtrude::isActive(void)
 {
-    return hasActiveDocument();
+    return (hasActiveDocument() && !Gui::Control().activeDialog());
 }
 
 //===========================================================================
@@ -717,7 +717,7 @@ void CmdPartRevolve::activated(int iMsg)
 
 bool CmdPartRevolve::isActive(void)
 {
-    return hasActiveDocument();
+    return (hasActiveDocument() && !Gui::Control().activeDialog());
 }
 
 //===========================================================================
@@ -745,7 +745,7 @@ void CmdPartFillet::activated(int iMsg)
 
 bool CmdPartFillet::isActive(void)
 {
-    return hasActiveDocument();
+    return (hasActiveDocument() && !Gui::Control().activeDialog());
 }
 
 //--------------------------------------------------------------------------------------
