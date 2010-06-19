@@ -71,7 +71,7 @@ StdCmdOpen::StdCmdOpen()
     sWhatsThis    = "Std_Open";
     sStatusTip    = QT_TR_NOOP("Open a document or import files");
     sPixmap       = "document-open";
-    iAccel        = Qt::CTRL+Qt::Key_O;
+    iAccel        = keySequenceToAccel(QKeySequence::Open);
 }
 
 void StdCmdOpen::activated(int iMsg)
@@ -277,7 +277,7 @@ StdCmdNew::StdCmdNew()
   sWhatsThis    = "Std_New";
   sStatusTip    = QT_TR_NOOP("Create a new empty document");
   sPixmap       = "document-new";
-  iAccel        = Qt::CTRL+Qt::Key_N;
+  iAccel        = keySequenceToAccel(QKeySequence::New);
 }
 
 void StdCmdNew::activated(int iMsg)
@@ -299,7 +299,7 @@ StdCmdSave::StdCmdSave()
   sWhatsThis    = "Std_Save";
   sStatusTip    = QT_TR_NOOP("Save the active document");
   sPixmap       = "document-save";
-  iAccel        = Qt::CTRL+Qt::Key_S;
+  iAccel        = keySequenceToAccel(QKeySequence::Save);
 }
 
 void StdCmdSave::activated(int iMsg)
@@ -408,7 +408,7 @@ StdCmdPrint::StdCmdPrint()
     sWhatsThis    = "Std_Print";
     sStatusTip    = QT_TR_NOOP("Print the document");
     sPixmap       = "document-print";
-    iAccel        = Qt::CTRL+Qt::Key_P;;
+    iAccel        = keySequenceToAccel(QKeySequence::Print);
 }
 
 void StdCmdPrint::activated(int iMsg)
@@ -494,7 +494,7 @@ StdCmdUndo::StdCmdUndo()
   sWhatsThis    = "Std_Undo";
   sStatusTip    = QT_TR_NOOP("Undo exactly one action");
   sPixmap       = "edit-undo";
-  iAccel        = Qt::CTRL+Qt::Key_Z;
+  iAccel        = keySequenceToAccel(QKeySequence::Undo);
 }
 
 void StdCmdUndo::activated(int iMsg)
@@ -536,7 +536,7 @@ StdCmdRedo::StdCmdRedo()
   sWhatsThis    = "Std_Redo";
   sStatusTip    = QT_TR_NOOP("Redoes a previously undone action");
   sPixmap       = "edit-redo";
-  iAccel        = Qt::CTRL+Qt::Key_Y;
+  iAccel        = keySequenceToAccel(QKeySequence::Redo);
 }
 
 void StdCmdRedo::activated(int iMsg)
@@ -577,7 +577,7 @@ StdCmdCut::StdCmdCut()
     sWhatsThis    = "Std_Cut";
     sStatusTip    = QT_TR_NOOP("Cut out");
     sPixmap       = "edit-cut";
-    iAccel        = Qt::CTRL+Qt::Key_X;
+    iAccel        = keySequenceToAccel(QKeySequence::Cut);
 }
 
 void StdCmdCut::activated(int iMsg)
@@ -604,7 +604,7 @@ StdCmdCopy::StdCmdCopy()
     sWhatsThis    = "Std_Copy";
     sStatusTip    = QT_TR_NOOP("Copy operation");
     sPixmap       = "edit-copy";
-    iAccel        = Qt::CTRL+Qt::Key_C;
+    iAccel        = keySequenceToAccel(QKeySequence::Copy);
 }
 
 void StdCmdCopy::activated(int iMsg)
@@ -639,7 +639,7 @@ StdCmdPaste::StdCmdPaste()
     sWhatsThis    = "Std_Paste";
     sStatusTip    = QT_TR_NOOP("Paste operation");
     sPixmap       = "edit-paste";
-    iAccel        = Qt::CTRL+Qt::Key_V;
+    iAccel        = keySequenceToAccel(QKeySequence::Paste);
 }
 
 void StdCmdPaste::activated(int iMsg)
@@ -788,7 +788,7 @@ StdCmdDelete::StdCmdDelete()
 #if QT_VERSION >= 0x040200
   sPixmap       = "edit-delete";
 #endif
-  iAccel        = Qt::Key_Delete;
+  iAccel        = keySequenceToAccel(QKeySequence::Delete);
 }
 
 void StdCmdDelete::activated(int iMsg)
@@ -831,7 +831,7 @@ StdCmdRefresh::StdCmdRefresh()
   sWhatsThis    = "Std_Refresh";
   sStatusTip    = QT_TR_NOOP("Recomputes the current active document");
   sPixmap       = "view-refresh";
-  iAccel        = Qt::Key_F5;
+  iAccel        = keySequenceToAccel(QKeySequence::Refresh);
 }
 
 void StdCmdRefresh::activated(int iMsg)

@@ -137,9 +137,9 @@ StdCmdCloseActiveWindow::StdCmdCloseActiveWindow()
     sToolTipText  = QT_TR_NOOP("Close active window");
     sWhatsThis    = QT_TR_NOOP("Close active window");
     sStatusTip    = QT_TR_NOOP("Close active window");
-    // This shortcut is already set by an QMdiSubWindow and thus we must disable it
-    // here to avoid an ambiguous shortcut overload
-    //iAccel        = Qt::CTRL+Qt::Key_F4;
+    // CTRL+F4 is already set by an QMdiSubWindow and thus we must use the
+    // alternative CTRL+W here to avoid an ambiguous shortcut overload
+	iAccel        = Qt::CTRL+Qt::Key_W;
     eType         = 0;
 }
 
@@ -195,7 +195,7 @@ StdCmdActivateNextWindow::StdCmdActivateNextWindow()
     sStatusTip    = QT_TR_NOOP("Activate next window");
     sPixmap       = "Std_WindowNext";
 #ifndef NO_USE_QT_MDI_AREA
-    iAccel        = Qt::CTRL | Qt::Key_Tab;
+    iAccel        = keySequenceToAccel(QKeySequence::NextChild);
 #else
     iAccel        = 0;
 #endif
@@ -227,7 +227,7 @@ StdCmdActivatePrevWindow::StdCmdActivatePrevWindow()
     sStatusTip    = QT_TR_NOOP("Activate previous window");
     sPixmap       = "Std_WindowPrev";
 #ifndef NO_USE_QT_MDI_AREA
-    iAccel        = Qt::CTRL | Qt::SHIFT | Qt::Key_Backtab;
+    iAccel        = keySequenceToAccel(QKeySequence::PreviousChild);
 #else
     iAccel        = 0;
 #endif
