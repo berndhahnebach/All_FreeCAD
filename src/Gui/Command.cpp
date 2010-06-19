@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QDir>
+# include <QKeySequence>
 # include <QMessageBox>
 #endif
 
@@ -452,6 +453,7 @@ const char * Command::beginCmdHelp(void)
             "</head>\n"
             "<body bgcolor=\"#ffffff\">\n\n";
 }
+
 /// returns the end of a online help page
 const char * Command::endCmdHelp(void)
 {
@@ -482,6 +484,11 @@ void Command::applyCommandData(Action* action)
         action->setWhatsThis(QCoreApplication::translate(
             this->className(), sToolTipText, 0,
             QCoreApplication::CodecForTr));
+}
+
+int Command::keySequenceToAccel(int ks) const
+{
+    return static_cast<QVariant>(QKeySequence(ks)).toInt();
 }
 
 Action * Command::createAction(void)
