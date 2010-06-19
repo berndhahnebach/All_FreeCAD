@@ -1,4 +1,4 @@
-import FreeCAD, Part, os, FreeCADGui
+import FreeCAD, Part, os, FreeCADGui, draftGui
 from FreeCAD import Base
 from math import *
 
