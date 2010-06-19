@@ -1580,7 +1580,7 @@ StdViewZoomIn::StdViewZoomIn()
 #if QT_VERSION >= 0x040200
     sPixmap       = "view-zoom-in";
 #endif
-    iAccel        = Qt::Key_Plus;
+    iAccel        = keySequenceToAccel(QKeySequence::ZoomIn);
     eType         = Alter3DView;
 }
 
@@ -1620,14 +1620,14 @@ StdViewZoomOut::StdViewZoomOut()
 #if QT_VERSION >= 0x040200
     sPixmap       = "view-zoom-out";
 #endif
-    iAccel        = Qt::Key_Minus;
+    iAccel        = keySequenceToAccel(QKeySequence::ZoomOut);
     eType         = Alter3DView;
 }
 
 void StdViewZoomOut::activated(int iMsg)
 {
     View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
-    if ( view ) {
+    if (view) {
         View3DInventorViewer* viewer = view->getViewer();
         // send an event to the GL widget to use the internal View3DInventorViewer::zoom() method
         // do only one step to zoom out 

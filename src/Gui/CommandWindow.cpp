@@ -137,7 +137,9 @@ StdCmdCloseActiveWindow::StdCmdCloseActiveWindow()
     sToolTipText  = QT_TR_NOOP("Close active window");
     sWhatsThis    = QT_TR_NOOP("Close active window");
     sStatusTip    = QT_TR_NOOP("Close active window");
-    iAccel        = Qt::CTRL+Qt::Key_F4;
+    // This shortcut is already set by an QMdiSubWindow and thus we must disable it
+    // here to avoid an ambiguous shortcut overload
+    //iAccel        = Qt::CTRL+Qt::Key_F4;
     eType         = 0;
 }
 

@@ -291,20 +291,19 @@ DEF_STD_CMD(StdCmdWhatsThis);
 StdCmdWhatsThis::StdCmdWhatsThis()
   :Command("Std_WhatsThis")
 {
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("&What's This?");
-  sToolTipText  = QT_TR_NOOP("What's This");
-  //	sWhatsThis		= sToolTipText;
-  sWhatsThis    = "Std_WhatsThis";
-  sStatusTip    = QT_TR_NOOP("What's This");
-  iAccel        = Qt::SHIFT+Qt::Key_F1;
-  sPixmap       = "WhatsThis";
-  eType         = 0;
+    sGroup        = QT_TR_NOOP("Help");
+    sMenuText     = QT_TR_NOOP("&What's This?");
+    sToolTipText  = QT_TR_NOOP("What's This");
+    sWhatsThis    = "Std_WhatsThis";
+    sStatusTip    = QT_TR_NOOP("What's This");
+    iAccel        = keySequenceToAccel(QKeySequence::WhatsThis);
+    sPixmap       = "WhatsThis";
+    eType         = 0;
 }
 
 void StdCmdWhatsThis::activated(int iMsg)
 {
-  QWhatsThis::enterWhatsThisMode();
+    QWhatsThis::enterWhatsThisMode();
 }
 
 //===========================================================================
@@ -445,7 +444,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
     sWhatsThis    = "Std_OnlineHelp";
     sStatusTip    = QT_TR_NOOP("Help");
     sPixmap       = "help-browser";
-    iAccel        = Qt::Key_F1;
+    iAccel        = keySequenceToAccel(QKeySequence::HelpContents);
     eType         = 0;
 }
 
