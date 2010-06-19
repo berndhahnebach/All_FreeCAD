@@ -488,7 +488,7 @@ void Command::applyCommandData(Action* action)
 
 int Command::keySequenceToAccel(int ks) const
 {
-    return static_cast<QVariant>(QKeySequence(ks)).toInt();
+	return static_cast<QVariant>(QKeySequence(QKeySequence::StandardKey(ks))).toInt();
 }
 
 Action * Command::createAction(void)
