@@ -239,6 +239,7 @@ App::Document* Command::getDocument(const char* Name) const
 {
     if (Name)
         return App::GetApplication().getDocument(Name);
+
     else {
         Gui::Document * pcDoc = getGuiApplication()->activeDocument();
         if (pcDoc)
@@ -486,9 +487,12 @@ void Command::applyCommandData(Action* action)
             QCoreApplication::CodecForTr));
 }
 
-int Command::keySequenceToAccel(int ks) const
+int Command::keySequenceToAccel(int sk) const
 {
-	return static_cast<QVariant>(QKeySequence(QKeySequence::StandardKey(ks))).toInt();
+    QKeySequence::StandardKey type = (QKeySequence::StandardKey)sk;
+    QKeySequence ks(type);
+    QVariant v = ks.operator QVariant();
+	return v.toInt();
 }
 
 Action * Command::createAction(void)
