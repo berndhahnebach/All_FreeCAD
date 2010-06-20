@@ -73,7 +73,10 @@ def getMainWindow():
 		if i.metaObject().className() == "Gui::MainWindow":
 			return i
 	raise Exception("No main window found")
-	
+
+def translate(context,text):
+        "convenience function for Qt translator"
+        return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 #---------------------------------------------------------------------------
 # Customized widgets
@@ -88,10 +91,8 @@ class DraftDockWidget(QtGui.QWidget):
 
 class DraftLineEdit(QtGui.QLineEdit):
 	"custom QLineEdit widget that has the power to catch Escape keypress"
-	def __init__(self, parent=None, width=None):
+	def __init__(self, parent=None):
 		QtGui.QLineEdit.__init__(self, parent)
-                if not width: width = 800
-                self.setMaximumSize(QtCore.QSize(width,18))
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.emit(QtCore.SIGNAL("escaped()"))
@@ -126,7 +127,7 @@ class toolBar:
 				self.textbuffer = []
 				self.draftToolbar = draftToolbar
 
-				def _pushButton (name, hide=True, icon=None, width=60):
+				def _pushButton (name, layout, hide=True, icon=None, width=60):
 					button = QtGui.QPushButton(draftToolbar)
 					#button.setGeometry(geometry)
 					button.setObjectName(name)
@@ -135,145 +136,86 @@ class toolBar:
                                         if icon:
                                                 button.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(icon[0],icon[1],64,64))))
                                                 button.setIconSize(QtCore.QSize(16, 16))
+                                        layout.addWidget(button)
 					return button
 
-                                self.hlayout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,draftToolbar)
-                                self.hlayout.setDirection(QtGui.QBoxLayout.LeftToRight)
-                                self.hlayout.setObjectName("hlayout")
+                                def _label (name, layout, hide=True):
+                                        label = QtGui.QLabel(draftToolbar)
+                                        label.setObjectName(name)
+                                        if hide: label.hide()
+                                        layout.addWidget(label)
+                                        return label
 
-                                self.promptlabel = QtGui.QLabel(draftToolbar)
-                                self.promptlabel.setObjectName("promptlabel")
-                                self.hlayout.addWidget(self.promptlabel)
-                                
-				self.cmdlabel = QtGui.QLabel(draftToolbar)
-				self.cmdlabel.setObjectName("cmdlabel")
+                                def _lineedit (name, layout, hide=True, width=None):
+                                        lineedit = DraftLineEdit(draftToolbar)
+                                        lineedit.setObjectName(name)
+                                        if hide: lineedit.hide()
+                                        if not width: width = 800
+                                        lineedit.setMaximumSize(QtCore.QSize(width,18))
+                                        layout.addWidget(lineedit)
+                                        return lineedit
+
+                                self.layout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,draftToolbar)
+                                self.layout.setDirection(QtGui.QBoxLayout.LeftToRight)
+                                self.layout.setObjectName("layout")
+
+                                self.promptlabel = _label("promptlabel",self.layout)
+				self.cmdlabel = _label("cmdlabel",self.layout, hide=False)
 				boldtxt = QtGui.QFont()
 				boldtxt.setWeight(75)
 				boldtxt.setBold(True)
 				self.cmdlabel.setFont(boldtxt)
-                                self.hlayout.addWidget(self.cmdlabel)
 
-                                xbox = QtGui.QHBoxLayout(draftToolbar)
-				self.labelx = QtGui.QLabel(draftToolbar)
-				self.labelx.setObjectName("labelx")
-				self.labelx.setText("X")
-                                xbox.addWidget(self.labelx)
-				self.labelx.hide()
-				self.xValue = DraftLineEdit(draftToolbar,60)
-				self.xValue.setObjectName("xValue")
+				self.labelx = _label("labelx", self.layout)
+				self.xValue = _lineedit("xValue",self.layout,width=60)
 				self.xValue.setText("0.00")
-                                xbox.addWidget(self.xValue)
-				self.xValue.hide()
-                                self.hlayout.addItem(xbox)
-
-                                ybox = QtGui.QHBoxLayout(draftToolbar)
-				self.labely = QtGui.QLabel(draftToolbar)
-				self.labely.setObjectName("labely")
-				self.labely.setText("Y")
-                                ybox.addWidget(self.labely)
-				self.labely.hide()
-				self.yValue = DraftLineEdit(draftToolbar,60)
-				self.yValue.setObjectName("yValue")
+				self.labely = _label("labely",self.layout)
+				self.yValue = _lineedit("yValue",self.layout,width=60)
 				self.yValue.setText("0.00")
-                                ybox.addWidget(self.yValue)
-				self.yValue.hide()
-                                self.hlayout.addItem(ybox)
-
-                                zbox = QtGui.QHBoxLayout(draftToolbar)
-				self.labelz = QtGui.QLabel(draftToolbar)
-				self.labelz.setObjectName("labelz")
-				self.labelz.setText("Z")
-                                zbox.addWidget(self.labelz)
-				self.labelz.hide()
-				self.zValue = DraftLineEdit(draftToolbar,60)
-				self.zValue.setObjectName("zValue")
+				self.labelz = _label("labelz",self.layout)
+				self.zValue = _lineedit("zValue",self.layout,width=60)
 				self.zValue.setText("0.00")
-                                zbox.addWidget(self.zValue)
-				self.zValue.hide()
-                                self.hlayout.addItem(zbox)
 
-                                offbox = QtGui.QHBoxLayout(draftToolbar)
-				self.offsetLabel = QtGui.QLabel(draftToolbar)
-				self.offsetLabel.setObjectName("offsetLabel")
-				self.offsetLabel.setText("Offset")
-                                offbox.addWidget(self.offsetLabel)
-				self.offsetLabel.hide()
-				self.offsetValue = DraftLineEdit(draftToolbar)
-				self.offsetValue.setObjectName("offsetValue")
+				self.offsetLabel = _label("offsetlabel",self.layout)
+				self.offsetValue = _lineedit("offsetValue",self.layout,width=60)
 				self.offsetValue.setText("0.00")
-                                offbox.addWidget(self.offsetValue)
-				self.offsetValue.hide()
-                                self.hlayout.addItem(offbox)
 
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
 				self.isRelative.setChecked(True)
 				self.isRelative.setObjectName("isRelative")
-                                self.hlayout.addWidget(self.isRelative)
+                                self.layout.addWidget(self.isRelative)
 				self.isRelative.hide()
+                                
+				self.undoButton = _pushButton("undoButton",self.layout,icon=(64,64))
+				self.finishButton = _pushButton("finishButton",self.layout,icon=(448,64))
+				self.closeButton = _pushButton("closeButton",self.layout,icon=(512,64))
+                                
+				self.xyButton = _pushButton("xyButton",self.layout)
+				self.xzButton = _pushButton("xzButton",self.layout)
+				self.yzButton = _pushButton("yzButton",self.layout)
+				self.currentViewButton = _pushButton("view",self.layout)
+				self.resetPlaneButton = _pushButton("none",self.layout)
 
-                                linebox = QtGui.QHBoxLayout(draftToolbar)
-				self.undoButton = _pushButton("undoButton",icon=(64,64))
-                                linebox.addWidget(self.undoButton)
-				self.finishButton = _pushButton("finishButton",icon=(448,64))
-                                linebox.addWidget(self.finishButton)
-				self.closeButton = _pushButton("closeButton",icon=(512,64))
-                                linebox.addWidget(self.closeButton)
-                                self.hlayout.addItem(linebox)
-
-                                wpbox = QtGui.QHBoxLayout(draftToolbar)
-				self.xyButton = _pushButton("xyButton")
-                                wpbox.addWidget(self.xyButton)
-				self.xzButton = _pushButton("xzButton")
-                                wpbox.addWidget(self.xzButton)
-				self.yzButton = _pushButton("yzButton")
-                                wpbox.addWidget(self.yzButton)
-				self.currentViewButton = _pushButton("view")
-                                wpbox.addWidget(self.currentViewButton)
-				self.resetPlaneButton = _pushButton("none")
-                                wpbox.addWidget(self.resetPlaneButton)
-                                self.hlayout.addItem(wpbox)
-
-                                rbox = QtGui.QHBoxLayout(draftToolbar)
-				self.labelRadius = QtGui.QLabel(draftToolbar)
-				self.labelRadius.setObjectName("labelRadius")
-                                rbox.addWidget(self.labelRadius)
-				self.labelRadius.hide()
-				self.radiusValue = DraftLineEdit(draftToolbar,60)
-				self.radiusValue.setObjectName("radiusValue")
+				self.labelRadius = _label("labelRadius",self.layout)
+				self.radiusValue = _lineedit("radiusValue",self.layout,width=60)
 				self.radiusValue.setText("0.00")
-                                rbox.addWidget(self.radiusValue)
-				self.radiusValue.hide()
-                                self.hlayout.addItem(rbox)
 
-				self.textValue = DraftLineEdit(draftToolbar)
-				self.textValue.setObjectName("textValue")
-                                self.hlayout.addWidget(self.textValue)
-				self.textValue.hide()
+				self.textValue = _lineedit("textValue",self.layout)
 
                                 self.isCopy = QtGui.QCheckBox(draftToolbar)
 				self.isCopy.setChecked(False)
 				self.isCopy.setObjectName("isCopy")
-                                self.hlayout.addWidget(self.isCopy)
+                                self.layout.addWidget(self.isCopy)
 				self.isCopy.hide()
 
-                                pbox = QtGui.QHBoxLayout(draftToolbar)
-                                self.labelPage = QtGui.QLabel(draftToolbar)
-				self.labelPage.setObjectName("labelPage")
-                                pbox.addWidget(self.labelPage)
-				self.labelPage.hide()
+                                self.labelPage = _label("labelPage",self.layout)
                                 self.pageBox = QtGui.QComboBox(draftToolbar)
                                 self.pageBox.setEditable(True)
                                 self.pageBox.setObjectName("pageBox")
                                 self.pageBox.addItem("Add New")
-                                pbox.addWidget(self.pageBox)
+                                self.layout.addWidget(self.pageBox)
                                 self.pageBox.hide()
-                                self.hlayout.addItem(pbox)
-                                
-                                sbox = QtGui.QHBoxLayout(draftToolbar)
-                                self.labelScale = QtGui.QLabel(draftToolbar)
-				self.labelScale.setObjectName("labelScale")
-                                sbox.addWidget(self.labelScale)
-				self.labelScale.hide()
+                                self.labelScale = _label("labelScale",self.layout)
                                 self.scaleBox = QtGui.QComboBox(draftToolbar)
                                 self.scaleBox.setEditable(True)
                                 self.scaleBox.setObjectName("scaleBox")
@@ -281,48 +223,29 @@ class toolBar:
                                 self.scaleBox.addItem("10")
                                 self.scaleBox.addItem("20")
                                 self.scaleBox.addItem("50")
-                                sbox.addWidget(self.scaleBox)
+                                self.layout.addWidget(self.scaleBox)
                                 self.scaleBox.hide()
-                                self.hlayout.addItem(sbox)
-
-                                mbox = QtGui.QHBoxLayout(draftToolbar)
-                                self.labelMargin = QtGui.QLabel(draftToolbar)
-				self.labelMargin.setObjectName("labelMargin")
-                                mbox.addWidget(self.labelMargin)
-				self.labelMargin.hide()
+                                self.labelMargin = _label("labelMargin",self.layout)
                                 self.marginValue = QtGui.QSpinBox(draftToolbar)
 				self.marginValue.setObjectName("marginValue")
                                 self.marginValue.setMaximum(999)
 				self.marginValue.setValue(50)
-                                mbox.addWidget(self.marginValue)
+                                self.layout.addWidget(self.marginValue)
 				self.marginValue.hide()
-                                self.hlayout.addItem(mbox)
-
-                                lwbox = QtGui.QHBoxLayout(draftToolbar)
-                                self.labelLWMod = QtGui.QLabel(draftToolbar)
-				self.labelLWMod.setObjectName("labelLWMod")
-                                lwbox.addWidget(self.labelLWMod)
-				self.labelLWMod.hide()
+                                self.labelLWMod = _label("labelLWMod",self.layout)
                                 self.LWModValue = QtGui.QSpinBox(draftToolbar)
 				self.LWModValue.setObjectName("LWModValue")
                                 self.LWModValue.setMaximum(999)
 				self.LWModValue.setValue(100)
-                                lwbox.addWidget(self.LWModValue)
+                                self.layout.addWidget(self.LWModValue)
 				self.LWModValue.hide()
-                                self.hlayout.addItem(lwbox)
-                                
-                                self.pageButton = _pushButton("pageButton",icon=(640,128))
-                                self.hlayout.addWidget(self.pageButton)
-                                self.pageButton.hide()
+                                self.pageButton = _pushButton("pageButton",self.layout,icon=(640,128))
 
                                 spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding,
                                                                QtGui.QSizePolicy.Minimum)
-                                self.hlayout.addItem(spacerItem)
+                                self.layout.addItem(spacerItem)
 
-                                settingsbox = QtGui.QHBoxLayout(draftToolbar)
-
-                                self.wplabel = QtGui.QLabel(draftToolbar)
-                                self.wplabel.setObjectName("wplabel")
+                                self.wplabel = _label("wplabel",self.layout, hide=False)
                                 defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
                                 if defaultWP == 1:
                                         self.wplabel.setText("Top")
@@ -332,34 +255,27 @@ class toolBar:
                                         self.wplabel.setText("Side")
                                 else:
                                         self.wplabel.setText("None")
-                                settingsbox.addWidget(self.wplabel)
-
-                                self.constrButton = _pushButton("constrButton", hide=False, icon=(640,64),width=22)
+                                self.constrButton = _pushButton("constrButton", self.layout, hide=False, icon=(640,64),width=22)
 				self.constrButton.setCheckable(True)
 				self.constrButton.setChecked(False)
 				self.constrColor = QtGui.QColor(paramconstr)
                                 style = "#constrButton:Checked {background-color: "
                                 style += self.getDefaultColor("constr",rgb=True)+" }"
 				draftToolbar.setStyleSheet(style)
-                                settingsbox.addWidget(self.constrButton)
 				
-				self.colorButton = _pushButton("colorButton",hide=False,width=22)
+				self.colorButton = _pushButton("colorButton",self.layout, hide=False,width=22)
 				self.color = QtGui.QColor(paramcolor)
 				self.colorPix = QtGui.QPixmap(16,16)
 				self.colorPix.fill(self.color)
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
-                                settingsbox.addWidget(self.colorButton)
 
 				self.widthButton = QtGui.QSpinBox(draftToolbar)
                                 self.widthButton.setMaximumSize(QtCore.QSize(50,22))
 				self.widthButton.setObjectName("widthButton")
 				self.widthButton.setValue(paramlinewidth)
-                                settingsbox.addWidget(self.widthButton)
+                                self.layout.addWidget(self.widthButton)
 
-				self.applyButton = _pushButton("applyButton", hide=False, icon=(384,64),width=22)
-                                settingsbox.addWidget(self.applyButton)
-
-                                self.hlayout.addItem(settingsbox)
+				self.applyButton = _pushButton("applyButton", self.layout, hide=False, icon=(384,64),width=22)
 				
 				self.sourceCmd=None
 
@@ -367,7 +283,6 @@ class toolBar:
 
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("returnPressed()"),self.checkx)
 				QtCore.QObject.connect(self.yValue,QtCore.SIGNAL("returnPressed()"),self.checky)
-
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("textEdited(QString)"),self.checkSpecialChars)
 				QtCore.QObject.connect(self.yValue,QtCore.SIGNAL("textEdited(QString)"),self.checkSpecialChars)
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("textEdited(QString)"),self.checkSpecialChars)
@@ -380,10 +295,8 @@ class toolBar:
 				QtCore.QObject.connect(self.textValue,QtCore.SIGNAL("up()"),self.lineUp)
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("returnPressed()"),self.xValue.setFocus)
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("returnPressed()"),self.xValue.selectAll)
-
 				QtCore.QObject.connect(self.offsetValue,QtCore.SIGNAL("textEdited(QString)"),self.checkSpecialChars)
 				QtCore.QObject.connect(self.offsetValue,QtCore.SIGNAL("returnPressed()"),self.validatePoint)
-
 				QtCore.QObject.connect(self.finishButton,QtCore.SIGNAL("pressed()"),self.finish)
 				QtCore.QObject.connect(self.closeButton,QtCore.SIGNAL("pressed()"),self.closeLine)
 				QtCore.QObject.connect(self.undoButton,QtCore.SIGNAL("pressed()"),self.undoSegment)
@@ -392,7 +305,6 @@ class toolBar:
 				QtCore.QObject.connect(self.yzButton,QtCore.SIGNAL("clicked()"),self.selectYZ)
 				QtCore.QObject.connect(self.currentViewButton,QtCore.SIGNAL("clicked()"),self.selectCurrentView)
 				QtCore.QObject.connect(self.resetPlaneButton,QtCore.SIGNAL("clicked()"),self.selectResetPlane)
-
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("escaped()"),self.finish)
 				QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("undo()"),self.undoSegment)
 				QtCore.QObject.connect(self.yValue,QtCore.SIGNAL("escaped()"),self.finish)
@@ -400,14 +312,12 @@ class toolBar:
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("escaped()"),self.finish)
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("undo()"),self.undoSegment)
 				QtCore.QObject.connect(self.radiusValue,QtCore.SIGNAL("escaped()"),self.finish)
-
 				QtCore.QObject.connect(self.draftToolbar,QtCore.SIGNAL("resized()"),self.relocate)
 				QtCore.QObject.connect(self.colorButton,QtCore.SIGNAL("pressed()"),self.getcol)
 				QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
 				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
 				QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
                                 QtCore.QObject.connect(self.pageButton,QtCore.SIGNAL("pressed()"),self.drawPage)
-
 				QtCore.QMetaObject.connectSlotsByName(draftToolbar)
 
 #---------------------------------------------------------------------------
@@ -415,55 +325,60 @@ class toolBar:
 #---------------------------------------------------------------------------
 				
 			def retranslateUi(self, draftToolbar):
-                                self.promptlabel.setText(QtGui.QApplication.translate("draft", "active command:", None, QtGui.QApplication.UnicodeUTF8))
-				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
-				self.cmdlabel.setToolTip(QtGui.QApplication.translate("draft", "Active Draft command", None, QtGui.QApplication.UnicodeUTF8))
-				self.xValue.setToolTip(QtGui.QApplication.translate("draft", "X coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
-				self.yValue.setToolTip(QtGui.QApplication.translate("draft", "Y coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
-				self.zValue.setToolTip(QtGui.QApplication.translate("draft", "Z coordinate of next point", None, QtGui.QApplication.UnicodeUTF8))
-				self.labelRadius.setText(QtGui.QApplication.translate("draft", "Radius", None, QtGui.QApplication.UnicodeUTF8))
-				self.radiusValue.setToolTip(QtGui.QApplication.translate("draft", "Radius of Circle", None, QtGui.QApplication.UnicodeUTF8))
-				self.isRelative.setText(QtGui.QApplication.translate("draft", "Relative", None, QtGui.QApplication.UnicodeUTF8))
-				self.isRelative.setToolTip(QtGui.QApplication.translate("draft", "Coordinates relative to last point or absolute (SPACE)", None, QtGui.QApplication.UnicodeUTF8))
-				self.finishButton.setText(QtGui.QApplication.translate("draft", "Finish", None, QtGui.QApplication.UnicodeUTF8))
-				self.finishButton.setToolTip(QtGui.QApplication.translate("draft", "Finishes the current line without closing (F)", None, QtGui.QApplication.UnicodeUTF8))
-				self.undoButton.setText(QtGui.QApplication.translate("draft", "Undo", None, QtGui.QApplication.UnicodeUTF8))
-				self.undoButton.setToolTip(QtGui.QApplication.translate("draft", "Undo the last segment (CTRL+Z)", None, QtGui.QApplication.UnicodeUTF8))
-				self.closeButton.setText(QtGui.QApplication.translate("draft", "Close", None, QtGui.QApplication.UnicodeUTF8))
-				self.closeButton.setToolTip(QtGui.QApplication.translate("draft", "Finishes and closes the current line (C)", None, QtGui.QApplication.UnicodeUTF8))
-				self.xyButton.setText(QtGui.QApplication.translate("draft", "XY", None, QtGui.QApplication.UnicodeUTF8))
-				self.xyButton.setToolTip(QtGui.QApplication.translate("draft", "Select XY plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.xzButton.setText(QtGui.QApplication.translate("draft", "XZ", None, QtGui.QApplication.UnicodeUTF8))
-				self.xzButton.setToolTip(QtGui.QApplication.translate("draft", "Select XZ plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.yzButton.setText(QtGui.QApplication.translate("draft", "YZ", None, QtGui.QApplication.UnicodeUTF8))
-				self.yzButton.setToolTip(QtGui.QApplication.translate("draft", "Select YZ plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.currentViewButton.setText(QtGui.QApplication.translate("draft", "View", None, QtGui.QApplication.UnicodeUTF8))
-				self.currentViewButton.setToolTip(QtGui.QApplication.translate("draft", "Select plane perpendicular to the current view", None, QtGui.QApplication.UnicodeUTF8))
-				self.resetPlaneButton.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
-				self.resetPlaneButton.setToolTip(QtGui.QApplication.translate("draft", "Do not project points to a drawing plane", None, QtGui.QApplication.UnicodeUTF8))
-				self.widthButton.setSuffix(QtGui.QApplication.translate("draft", "px", None, QtGui.QApplication.UnicodeUTF8))
-				self.isCopy.setText(QtGui.QApplication.translate("draft", "Copy", None, QtGui.QApplication.UnicodeUTF8))
-				self.isCopy.setToolTip(QtGui.QApplication.translate("draft", "If checked, objects will be copied instead of moved (C)", None, QtGui.QApplication.UnicodeUTF8))
-				self.colorButton.setToolTip(QtGui.QApplication.translate("draft", "Current line color for new objects", None, QtGui.QApplication.UnicodeUTF8))
-				self.widthButton.setToolTip(QtGui.QApplication.translate("draft", "Current line width for new objects", None, QtGui.QApplication.UnicodeUTF8))
-				self.applyButton.setToolTip(QtGui.QApplication.translate("draft", "Apply to selected objects", None, QtGui.QApplication.UnicodeUTF8))
-				self.constrButton.setToolTip(QtGui.QApplication.translate("draft", "Toggles Construction Mode", None, QtGui.QApplication.UnicodeUTF8))
-                                self.wplabel.setToolTip(QtGui.QApplication.translate("draft", "Current working plane", None, QtGui.QApplication.UnicodeUTF8))
-                                self.labelPage.setText(QtGui.QApplication.translate("draft", "Page", None, QtGui.QApplication.UnicodeUTF8))
-                                self.labelScale.setText(QtGui.QApplication.translate("draft", "Scale", None, QtGui.QApplication.UnicodeUTF8))
-                                self.labelMargin.setText(QtGui.QApplication.translate("draft", "Margin", None, QtGui.QApplication.UnicodeUTF8))
-                                self.labelLWMod.setText(QtGui.QApplication.translate("draft", "LW Mod", None, QtGui.QApplication.UnicodeUTF8))
-                                self.pageBox.setToolTip(QtGui.QApplication.translate("draft", "Page to draw to. If selecting Add New, you can edit the name", None, QtGui.QApplication.UnicodeUTF8))
-                                self.scaleBox.setToolTip(QtGui.QApplication.translate("draft", "Scale factor to apply. Drawing page is always in millimeters. So if you draw in meters, a scale of 10 means 1:100", None, QtGui.QApplication.UnicodeUTF8))
-                                self.marginValue.setToolTip(QtGui.QApplication.translate("draft", "The value of the margin (offset between the (0,0) point and the page border)", None, QtGui.QApplication.UnicodeUTF8))
-                                self.LWModValue.setToolTip(QtGui.QApplication.translate("draft", "Linewidth scale modifier. Lower values mean thicker lines.", None, QtGui.QApplication.UnicodeUTF8))
+                                
+                                self.promptlabel.setText(translate("draft", "active command:"))
+				self.cmdlabel.setText(translate("draft", "None"))
+				self.cmdlabel.setToolTip(translate("draft", "Active Draft command"))
+				self.xValue.setToolTip(translate("draft", "X coordinate of next point"))
+                                self.labelx.setText(translate("draft", "X"))
+                                self.labely.setText(translate("draft", "Y"))
+                                self.labelz.setText(translate("draft", "Z"))
+				self.yValue.setToolTip(translate("draft", "Y coordinate of next point"))
+				self.zValue.setToolTip(translate("draft", "Z coordinate of next point"))
+				self.labelRadius.setText(translate("draft", "Radius"))
+				self.radiusValue.setToolTip(translate("draft", "Radius of Circle"))
+				self.isRelative.setText(translate("draft", "Relative"))
+				self.isRelative.setToolTip(translate("draft", "Coordinates relative to last point or absolute (SPACE)"))
+				self.finishButton.setText(translate("draft", "Finish"))
+				self.finishButton.setToolTip(translate("draft", "Finishes the current line without closing (F)"))
+				self.undoButton.setText(translate("draft", "Undo"))
+				self.undoButton.setToolTip(translate("draft", "Undo the last segment (CTRL+Z)"))
+				self.closeButton.setText(translate("draft", "Close"))
+				self.closeButton.setToolTip(translate("draft", "Finishes and closes the current line (C)"))
+                                self.offsetLabel.setText(translate("draft", "Offset"))
+				self.xyButton.setText(translate("draft", "XY"))
+				self.xyButton.setToolTip(translate("draft", "Select XY plane"))
+				self.xzButton.setText(translate("draft", "XZ"))
+				self.xzButton.setToolTip(translate("draft", "Select XZ plane"))
+				self.yzButton.setText(translate("draft", "YZ"))
+				self.yzButton.setToolTip(translate("draft", "Select YZ plane"))
+				self.currentViewButton.setText(translate("draft", "View"))
+				self.currentViewButton.setToolTip(translate("draft", "Select plane perpendicular to the current view"))
+				self.resetPlaneButton.setText(translate("draft", "None"))
+				self.resetPlaneButton.setToolTip(translate("draft", "Do not project points to a drawing plane"))
+				self.widthButton.setSuffix(translate("draft", "px"))
+				self.isCopy.setText(translate("draft", "Copy"))
+				self.isCopy.setToolTip(translate("draft", "If checked, objects will be copied instead of moved (C)"))
+				self.colorButton.setToolTip(translate("draft", "Current line color for new objects"))
+				self.widthButton.setToolTip(translate("draft", "Current line width for new objects"))
+				self.applyButton.setToolTip(translate("draft", "Apply to selected objects"))
+				self.constrButton.setToolTip(translate("draft", "Toggles Construction Mode"))
+                                self.wplabel.setToolTip(translate("draft", "Current working plane"))
+                                self.labelPage.setText(translate("draft", "Page"))
+                                self.labelScale.setText(translate("draft", "Scale"))
+                                self.labelMargin.setText(translate("draft", "Margin"))
+                                self.labelLWMod.setText(translate("draft", "LW Mod"))
+                                self.pageBox.setToolTip(translate("draft", "Page to draw to. If selecting Add New, you can edit the name"))
+                                self.scaleBox.setToolTip(translate("draft", "Scale factor to apply. Drawing page is always in millimeters. So if you draw in meters, a scale of 10 means 1:100"))
+                                self.marginValue.setToolTip(translate("draft", "The value of the margin (offset between the (0,0) point and the page border)"))
+                                self.LWModValue.setToolTip(translate("draft", "Linewidth scale modifier. Lower values mean thicker lines."))
 
 #---------------------------------------------------------------------------
 # Interface modes
 #---------------------------------------------------------------------------
 
 			def selectPlaneUi(self):
-				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Select Plane", None, QtGui.QApplication.UnicodeUTF8))
+				self.cmdlabel.setText(translate("draft", "Select Plane"))
 				self.xyButton.show()
 				self.xzButton.show()
 				self.yzButton.show()
@@ -473,7 +388,7 @@ class toolBar:
 				self.offsetValue.show()
 
 			def lineUi(self):
-				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Line", None, QtGui.QApplication.UnicodeUTF8))
+				self.cmdlabel.setText(translate("draft", "Line"))
 				self.isRelative.show()
 				self.finishButton.show()
 				self.closeButton.show()
@@ -481,19 +396,19 @@ class toolBar:
 				self.pointUi()
 
 			def circleUi(self):
-				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Circle", None, QtGui.QApplication.UnicodeUTF8))
+				self.cmdlabel.setText(translate("draft", "Circle"))
 				self.pointUi()
-				self.labelx.setText(QtGui.QApplication.translate("draft", "Center X", None, QtGui.QApplication.UnicodeUTF8))
+				self.labelx.setText(translate("draft", "Center X"))
 
 			def arcUi(self):
-				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "Arc", None, QtGui.QApplication.UnicodeUTF8))
-				self.labelx.setText(QtGui.QApplication.translate("draft", "Center X", None, QtGui.QApplication.UnicodeUTF8))
+				self.cmdlabel.setText(translate("draft", "Arc"))
+				self.labelx.setText(translate("draft", "Center X"))
 				self.pointUi()
 
 			def pointUi(self):
 				self.xValue.setEnabled(True)
 				self.yValue.setEnabled(True)
-				self.labelx.setText("X")
+				self.labelx.setText(translate("draft", "X"))
 				self.labelx.show()
 				self.labely.show()
 				self.labelz.show()
@@ -504,8 +419,8 @@ class toolBar:
 				self.xValue.selectAll()
 
 			def offUi(self):
-				self.cmdlabel.setText(QtGui.QApplication.translate("draft", "None", None, QtGui.QApplication.UnicodeUTF8))
-				self.labelx.setText("X")
+				self.cmdlabel.setText(translate("draft", "None"))
+				self.labelx.setText(translate("draft", "X"))
 				self.labelx.hide()
 				self.labely.hide()
 				self.labelz.hide()
@@ -544,7 +459,7 @@ class toolBar:
 				self.xValue.hide()
 				self.yValue.hide()
 				self.zValue.hide()
-				self.labelRadius.setText(QtGui.QApplication.translate("draft", "Radius", None, QtGui.QApplication.UnicodeUTF8))
+				self.labelRadius.setText(translate("draft", "Radius"))
 				self.labelRadius.show()
 				self.radiusValue.show()
 
@@ -557,9 +472,7 @@ class toolBar:
 				self.zValue.hide()
 				self.textValue.show()
 				self.textValue.setText('')
-				# self.textValue.setPlainText('')
 				self.textValue.setFocus()
-				# self.draftToolbar.setFixedHeight(70)
 				self.textbuffer=[]
 				self.textline=0
 
@@ -589,7 +502,7 @@ class toolBar:
 						self.state = None
 
 			def selectUi(self):
-				self.labelx.setText(QtGui.QApplication.translate("draft", "Pick Object", None, QtGui.QApplication.UnicodeUTF8))
+				self.labelx.setText(translate("draft", "Pick Object"))
 				self.labelx.show()
 
                         def pageUi(self):
@@ -605,18 +518,10 @@ class toolBar:
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
-				#w=self.draftToolbar.geometry().width()
-                                #h=self.draftToolbar.geometry().height()
-                                #print "w=",w,"h=",h
-				#self.widthButton.setGeometry(QtCore.QRect(w-113,2,50,22))
-				#self.colorButton.setGeometry(QtCore.QRect(w-138,2,22,22))
-				#self.applyButton.setGeometry(QtCore.QRect(w-60,2,22,22))
-				#self.constrButton.setGeometry(QtCore.QRect(w-162,2,22,22))
-                                #self.wplabel.setGeometry(QtCore.QRect(w-268,4,100,18))
                                 if self.draftToolbar.geometry().width() < 400:
-                                        self.hlayout.setDirection(QtGui.QBoxLayout.TopToBottom)
+                                        self.layout.setDirection(QtGui.QBoxLayout.TopToBottom)
                                 else:
-                                       self.hlayout.setDirection(QtGui.QBoxLayout.LeftToRight) 
+                                        self.layout.setDirection(QtGui.QBoxLayout.LeftToRight) 
 
 
 #---------------------------------------------------------------------------
@@ -889,7 +794,7 @@ class toolBar:
 		self.ui.setupUi(self.insideWidget)
 		self.draftWidget.setObjectName("draftToolbar")
                 self.draftWidget.setTitleBarWidget(self.insideWidget)
-		self.draftWidget.setWindowTitle(QtGui.QApplication.translate("draft", "draft Command Bar", None, QtGui.QApplication.UnicodeUTF8))
+		self.draftWidget.setWindowTitle(translate("draft", "draft Command Bar"))
 		self.mw.addDockWidget(QtCore.Qt.TopDockWidgetArea,self.draftWidget)
 		self.draftWidget.setVisible(False)
 		self.draftWidget.toggleViewAction().setVisible(False)
