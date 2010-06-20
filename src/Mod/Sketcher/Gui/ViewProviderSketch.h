@@ -158,6 +158,7 @@ protected:
     // pointer to the Solver
     Sketcher::Sketch *ActSketch;
     // nodes for the visuals 
+    SoSeparator   *EditRoot;
     SoMaterial    *PointsMaterials;
     SoMaterial    *CurvesMaterials;
     SoMaterial    *EditCurvesMaterials;
@@ -170,7 +171,6 @@ protected:
     SoLineSet     *LineSet;
     SoLineSet     *EditCurveSet;
     SoPointSet    *PointSet;
-    SoSeparator   *EditRoot;
 };
 
 } // namespace PartGui

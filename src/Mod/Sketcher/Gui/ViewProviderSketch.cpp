@@ -76,25 +76,22 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
 
 ViewProviderSketch::ViewProviderSketch()
-  : Mode(STATUS_NONE),
+  : sketchHandler(0),
+    Mode(STATUS_NONE),
     DragPoint(-1),
-    EditRoot(0),
-
-    PointsMaterials(0),
-    LinesMaterials(0),
-    CurvesMaterials(0),
-    PointsCoordinate(0),
-    LinesCoordinate(0),
-    CurvesCoordinate(0),
-    LineSet(0),
-    CurveSet(0),
-    PointSet(0),
-
     PreselectCurve(-1),
     PreselectPoint(-1),
-
-    sketchHandler(0),
-    ActSketch(0)
+    ActSketch(0),
+    EditRoot(0),
+    PointsMaterials(0),
+    CurvesMaterials(0),
+    LinesMaterials(0),
+    PointsCoordinate(0),
+    CurvesCoordinate(0),
+    LinesCoordinate(0),
+    CurveSet(0),
+    LineSet(0),
+    PointSet(0)
 {
     sPixmap = "Sketcher_NewSketch";
 }
@@ -253,7 +250,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
         case STATUS_SKETCH_DragPoint:
             Base::Console().Log("Drag Point:%d\n",this->DragPoint);
             int ret;
-            if(ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0)) == 0)
+            if ((ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0))) == 0)
                 draw(true);
             else
                 Base::Console().Log("Error solving:%d\n",ret);
@@ -696,6 +693,7 @@ void ViewProviderSketch::unsetEdit(void)
  //   getSketchObject()->getDocument()->recompute();
 
     // empty the nodes
+
     EditRoot->removeAllChildren();
     PointsMaterials = 0;
     LinesMaterials = 0;
