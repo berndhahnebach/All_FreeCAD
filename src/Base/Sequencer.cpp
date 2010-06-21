@@ -33,6 +33,7 @@
 
 #include "Sequencer.h"
 #include "Console.h"
+#include <CXX/Objects.hxx>
 
 using namespace Base;
 
@@ -309,4 +310,76 @@ size_t SequencerLauncher::numberOfSteps() const
 bool SequencerLauncher::wasCanceled() const
 {
     return SequencerBase::Instance().wasCanceled();
+}
+
+// ---------------------------------------------------------
+
+void ProgressIndicatorPy::init_type()
+{
+    behaviors().name("ProgressIndicator");
+    behaviors().doc("Progress indicator");
+    // you must have overwritten the virtual functions
+    behaviors().supportRepr();
+    behaviors().supportGetattr();
+    behaviors().supportSetattr();
+    behaviors().type_object()->tp_new = &PyMake;
+
+    add_varargs_method("start",&ProgressIndicatorPy::start,"start(string,int)");
+    add_varargs_method("next",&ProgressIndicatorPy::next,"next()");
+    add_varargs_method("stop",&ProgressIndicatorPy::stop,"stop()");
+}
+
+PyObject *ProgressIndicatorPy::PyMake(struct _typeobject *, PyObject *, PyObject *)
+{
+    return new ProgressIndicatorPy();
+}
+
+ProgressIndicatorPy::ProgressIndicatorPy()
+{
+}
+
+ProgressIndicatorPy::~ProgressIndicatorPy()
+{
+}
+
+Py::Object ProgressIndicatorPy::repr()
+{
+    std::string s = "Base.ProgressIndicator";
+    return Py::String(s);
+}
+
+Py::Object ProgressIndicatorPy::start(const Py::Tuple& args)
+{
+    char* text;
+    int steps;
+    if (!PyArg_ParseTuple(args.ptr(), "si",&text,&steps))
+        throw Py::Exception();
+    if (!_seq.get())
+        _seq.reset(new SequencerLauncher(text,steps));
+    return Py::None();
+}
+
+Py::Object ProgressIndicatorPy::next(const Py::Tuple& args)
+{
+    int b=0;
+    if (!PyArg_ParseTuple(args.ptr(), "|i",&b))
+        throw Py::Exception();
+    if (_seq.get()) {
+        try {
+            _seq->next(b ? true : false);
+        }
+        catch (const Base::AbortException&) {
+            _seq.reset();
+            throw Py::Exception("abort progress indicator");
+        }
+    }
+    return Py::None();
+}
+
+Py::Object ProgressIndicatorPy::stop(const Py::Tuple& args)
+{
+    if (!PyArg_ParseTuple(args.ptr(), ""))
+        throw Py::Exception();
+    _seq.reset();
+    return Py::None();
 }

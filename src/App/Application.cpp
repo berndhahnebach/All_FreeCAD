@@ -68,6 +68,7 @@
 #include <Base/BoundBoxPy.h>
 #include <Base/PlacementPy.h>
 #include <Base/RotationPy.h>
+#include <Base/Sequencer.h>
 #include <Base/Tools.h>
 #include <Base/UnitsApi.h>
 
@@ -222,6 +223,10 @@ Application::Application(ParameterManager * /*pcSysParamMngr*/,
           "The Unit API");
     Py_INCREF(pUnitsModule);
     PyModule_AddObject(pAppModule, "Units", pUnitsModule);
+
+    Base::ProgressIndicatorPy::init_type();
+    Base::Interpreter().addType(Base::ProgressIndicatorPy::type_object(),
+        pBaseModule,"ProgressIndicator");
 }
 
 Application::~Application()
