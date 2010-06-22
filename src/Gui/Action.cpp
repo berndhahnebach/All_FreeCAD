@@ -668,7 +668,8 @@ void RecentFilesAction::save()
 
     // count all set items
     QList<QAction*> recentFiles = _group->actions();
-    for ( int index = 0; index < recentFiles.count(); index++ ) {
+    int num = std::min<int>(count, recentFiles.count());
+    for (int index = 0; index < num; index++) {
         QString key = QString::fromAscii("MRU%1").arg(index);
         QString value = recentFiles[index]->toolTip();
         if (value.isEmpty())
