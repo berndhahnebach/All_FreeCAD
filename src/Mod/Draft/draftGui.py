@@ -126,6 +126,7 @@ class toolBar:
 				self.state = None
 				self.textbuffer = []
 				self.draftToolbar = draftToolbar
+                                self.crossedViews = []
 
 				def _pushButton (name, layout, hide=True, icon=None, width=60):
 					button = QtGui.QPushButton(draftToolbar)
@@ -733,9 +734,17 @@ class toolBar:
 
 			def cross(self,on=True):
 				if on:
-					self.app.setOverrideCursor(QtCore.Qt.CrossCursor)
+					# self.app.setOverrideCursor(QtCore.Qt.CrossCursor)
+                                        if not self.crossedViews:
+                                                mw = getMainWindow()
+                                                self.crossedViews = mw.findChildren(QtGui.QFrame,"SoQtWidgetName")
+                                        for w in self.crossedViews:
+                                                w.setCursor(QtCore.Qt.CrossCursor)
 				else:
-					self.app.restoreOverrideCursor()
+					# self.app.restoreOverrideCursor()
+                                        for w in self.crossedViews:
+                                                w.unsetCursor()
+                                        self.crossedViews = []
 
 			def toggleConstrMode(self,checked):
 				self.draftToolbar.setStyleSheet("#constrButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")

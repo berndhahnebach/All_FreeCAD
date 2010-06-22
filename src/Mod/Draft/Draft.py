@@ -1180,6 +1180,7 @@ class Line(Creator):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
 			point,ctrlPoint = getPoint(self,arg)
+                        self.ui.cross(True)
 			self.linetrack.p2(point)
 			# Draw constraint tracker line.
 			if (arg["ShiftDown"]):
@@ -1348,6 +1349,7 @@ class Rectangle(Creator):
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
 			point,ctrlPoint = getPoint(self,arg,mobile=True)
 			self.rect.update(point)
+                        self.ui.cross(True)
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				if (arg["Position"] == self.pos):
@@ -1443,6 +1445,7 @@ class Arc(Creator):
 		if (arg["Type"] == "SoLocation2Event"):
 			point,ctrlPoint = getPoint(self,arg)
 			# this is to make sure radius is what you see on screen
+                        self.ui.cross(True)
 			if self.center and fcvec.dist(point,self.center) > 0:
 				viewdelta = fcvec.project(point.sub(self.center), plane.axis)
 				if not fcvec.isNull(viewdelta):
@@ -1808,6 +1811,7 @@ class Dim(Creator):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
 			point,ctrlPoint = getPoint(self,arg)
+                        self.ui.cross(True)
 			if arg["AltDown"] and (len(self.node)<3):
 				if not self.altdown:
 					self.ui.cross(False)
@@ -1987,6 +1991,7 @@ class Move(Modifier):
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
 			point,ctrlPoint = getPoint(self,arg)
 			self.linetrack.p2(point)
+                        self.ui.cross(True)
 			# Draw constraint tracker line.
 			if (arg["ShiftDown"]):
 				self.constraintrack.p1(point)
@@ -2139,6 +2144,7 @@ class Rotate(Modifier):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
 			point,ctrlPoint = getPoint(self,arg)
+                        self.ui.cross(True)
 			# this is to make sure radius is what you see on screen
 			if self.center and fcvec.dist(point,self.center):
 				viewdelta = fcvec.project(point.sub(self.center), plane.axis)
@@ -2344,6 +2350,7 @@ class Offset(Modifier):
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
+                        self.ui.cross(True)
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			point = snapPoint(self,point,cursor,arg["CtrlDown"])
@@ -2835,6 +2842,7 @@ class Trimex(Modifier):
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+                        self.ui.cross(True)
 			cursor = arg["Position"]
 			point = self.view.getPoint(cursor[0],cursor[1])
 			self.shift = arg["ShiftDown"]
@@ -3094,6 +3102,7 @@ class Scale(Modifier):
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
 			point,ctrlPoint = getPoint(self,arg,sym=True)
 			self.linetrack.p2(point)
+                        self.ui.cross(True)
 			# Draw constraint tracker line.
 			if (arg["ShiftDown"]):
 				self.constraintrack.p1(point)
