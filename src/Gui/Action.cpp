@@ -565,12 +565,12 @@ void RecentFilesAction::appendFile(const QString& filename)
  * Set the list of recent files. For each item an action object is
  * created and added to this action group. 
  */
-void RecentFilesAction::setFiles( const QStringList& files )
+void RecentFilesAction::setFiles(const QStringList& files)
 {
     QList<QAction*> recentFiles = _group->actions();
 
     int numRecentFiles = std::min<int>(recentFiles.count(), files.count());
-    for ( int index = 0; index < numRecentFiles; index++ ) {
+    for (int index = 0; index < numRecentFiles; index++) {
         QFileInfo fi(files[index]);
         recentFiles[index]->setText(QString::fromAscii("&%1 %2").arg(index+1).arg(fi.fileName()));
         recentFiles[index]->setStatusTip(tr("Open file %1").arg(files[index]));
@@ -581,8 +581,11 @@ void RecentFilesAction::setFiles( const QStringList& files )
 
     // if less file names than actions
     numRecentFiles = std::min<int>(numRecentFiles, this->visibleItems);
-    for (int index = numRecentFiles; index < recentFiles.count(); index++)
+    for (int index = numRecentFiles; index < recentFiles.count(); index++) {
         recentFiles[index]->setVisible(false);
+        recentFiles[index]->setText(QString());
+        recentFiles[index]->setToolTip(QString());
+    }
 }
 
 /**
@@ -592,7 +595,7 @@ QStringList RecentFilesAction::files() const
 {
     QStringList files;
     QList<QAction*> recentFiles = _group->actions();
-    for ( int index = 0; index < recentFiles.count(); index++ ) {
+    for (int index = 0; index < recentFiles.count(); index++) {
         QString file = recentFiles[index]->toolTip();
         if (file.isEmpty())
             break;
