@@ -491,8 +491,8 @@ int Command::keySequenceToAccel(int sk) const
 {
     QKeySequence::StandardKey type = (QKeySequence::StandardKey)sk;
     QKeySequence ks(type);
-    QVariant v = ks.operator QVariant();
-	return v.toInt();
+    QVariant v = QVariant::fromValue<QKeySequence>(ks);
+    return v.toInt();
 }
 
 Action * Command::createAction(void)
