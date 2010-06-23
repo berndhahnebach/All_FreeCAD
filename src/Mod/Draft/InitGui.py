@@ -168,7 +168,7 @@ class DraftWorkbench (Workbench):
 			import draftGui
 			self.draftToolBar=draftGui.toolBar()
 			FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
-			self.intitialized = True
+			self.initialized = True
  
 	def Activated(self):
 		if self.initialized:
@@ -184,7 +184,7 @@ class DraftWorkbench (Workbench):
 	def ContextMenu(self, recipient):
 		if self.initialized:
 			if (recipient == "View"):
-				if (self.FreeCAD.activeDraftCommand == None):
+				if (FreeCAD.activeDraftCommand == None):
 					if (FreeCADGui.Selection.getSelection() != []):
 						self.appendContextMenu("Draft",self.cmdList+self.modList+self.treecmdList)
 					else:
