@@ -621,7 +621,8 @@ void PythonConsole::runSource(const QString& line)
         // launch the command now
         incomplete = d->interpreter->push(line.toUtf8());
         setFocus(); // if focus was lost
-    } catch (const Base::SystemExitException&) {
+    }
+    catch (const Base::SystemExitException&) {
         int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit without saving your data?"),
         QMessageBox::Yes, QMessageBox::No|QMessageBox::Escape|QMessageBox::Default);
         if (ret == QMessageBox::Yes) {
@@ -629,11 +630,17 @@ void PythonConsole::runSource(const QString& line)
         } else {
             PyErr_Clear();
         }
-    } catch (const Py::Exception&) {
+    }
+    catch (const Py::Exception&) {
         QMessageBox::critical(this, tr("Python console"), tr("Unhandled PyCXX exception."));
-    } catch (const Base::Exception&) {
+    }
+    catch (const Base::Exception&) {
         QMessageBox::critical(this, tr("Python console"), tr("Unhandled FreeCAD exception."));
-    } catch (...) {
+    }
+    catch (const std::exception&) {
+        QMessageBox::critical(this, tr("Python console"), tr("Unhandled std C++ exception."));
+    }
+    catch (...) {
         QMessageBox::critical(this, tr("Python console"), tr("Unhandled unknown C++ exception."));
     }
 
