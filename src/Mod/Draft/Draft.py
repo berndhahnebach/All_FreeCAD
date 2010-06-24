@@ -813,10 +813,10 @@ class DimensionViewProvider:
 		angle = -fcvec.angle(p3.sub(p2))
 		# ???What is the conditional trying to accomplish?  The guard expression seems suspect.
 		if (angle > math.pi/2) or (angle <= -math.pi/2): angle = math.pi+angle
-		# norm = p3.sub(p2).cross(proj)
 		offset = fcvec.rotate(FreeCAD.Vector(obj.ViewObject.FontSize*.2,0,0),angle+math.pi/2)
 		tbase = midpoint.add(offset)
-		norm = Vector(0,0,1)
+		if not proj: norm = Vector(0,0,1)
+                else: norm = fcvec.neg(p3.sub(p2).cross(proj))
 		return p1,p2,p3,p4,tbase,angle,norm
 
 	def attach(self, obj):
@@ -829,7 +829,13 @@ class DimensionViewProvider:
 		self.text.string = ("%.2f" % p3.sub(p2).Length)
 		self.textpos = coin.SoTransform()
 		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
-		self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
+		# self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
+                tm = fcvec.getPlaneRotation(p3.sub(p2),p3.sub(p2).cross(norm))
+                rm = coin.SbRotation(coin.SbMatrix(tm.A11,tm.A12,tm.A13,tm.A14,
+                                                   tm.A21,tm.A22,tm.A23,tm.A24,
+                                                   tm.A31,tm.A32,tm.A33,tm.A34,
+                                                   tm.A41,tm.A42,tm.A43,tm.A44))
+                self.textpos.rotation = rm
 		label = coin.SoSeparator()
 		label.addChild(self.textpos)
 		label.addChild(self.color)
@@ -852,19 +858,22 @@ class DimensionViewProvider:
 		line = coin.SoLineSet()
 		line.numVertices.setValue(4)
 		self.coords = coin.SoCoordinate3()
-		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],[p2.x,p2.y,p2.z],[p3.x,p3.y,p3.z],[p4.x,p4.y,p4.z]])
-		labelnode=coin.SoType.fromName("SoFCSelection").createInstance()
-		labelnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
-		labelnode.objectName.setValue(obj.Object.Name)
-		labelnode.subElementName.setValue("Label")
-		labelnode.addChild(label)
+		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],
+                                                 [p2.x,p2.y,p2.z],
+                                                 [p3.x,p3.y,p3.z],
+                                                 [p4.x,p4.y,p4.z]])
+		selnode=coin.SoType.fromName("SoFCSelection").createInstance()
+		selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
+		selnode.objectName.setValue(obj.Object.Name)
+		selnode.subElementName.setValue("Line")
+		selnode.addChild(line)
 		self.node = coin.SoGroup()
 		self.node.addChild(self.color)
 		self.node.addChild(self.drawstyle)
 		self.node.addChild(self.coords)
-		self.node.addChild(line)
+		self.node.addChild(selnode)
 		self.node.addChild(marks)
-		self.node.addChild(labelnode)
+		self.node.addChild(label)
 		obj.addDisplayMode(self.node,"Wireframe")
 		self.onChanged(obj,"FontSize")
 		self.onChanged(obj,"FontName")
@@ -872,8 +881,17 @@ class DimensionViewProvider:
 	def updateData(self, obj, prop):
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
 		self.text.string = ("%.2f" % p3.sub(p2).Length)
-		self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
-		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],[p2.x,p2.y,p2.z],[p3.x,p3.y,p3.z],[p4.x,p4.y,p4.z]])
+		# self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
+                tm = fcvec.getPlaneRotation(p3.sub(p2),fcvec.neg(p3.sub(p2).cross(norm)))
+                rm = coin.SbRotation(coin.SbMatrix(tm.A11,tm.A12,tm.A13,tm.A14,
+                                                   tm.A21,tm.A22,tm.A23,tm.A24,
+                                                   tm.A31,tm.A32,tm.A33,tm.A34,
+                                                   tm.A41,tm.A42,tm.A43,tm.A44))
+                self.textpos.rotation = rm
+		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],
+                                                 [p2.x,p2.y,p2.z],
+                                                 [p3.x,p3.y,p3.z],
+                                                 [p4.x,p4.y,p4.z]])
 		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
 		self.coord1.point.setValue((p2.x,p2.y,p2.z))
 		self.coord2.point.setValue((p3.x,p3.y,p3.z))
@@ -901,50 +919,30 @@ class DimensionViewProvider:
 
 	def getIcon(self):
 		return """
-                    /* XPM */
-                    static char * path2644_xpm[] = {
-                    "16 16 24 1",
-                    " 	c None",
-                    ".	c #040300",
-                    "+	c #000000",
-                    "@	c #060500",
-                    "#	c #433A00",
-                    "$	c #030200",
-                    "%	c #D5BA00",
-                    "&	c #040400",
-                    "*	c #6E6000",
-                    "=	c #FFDF00",
-                    "-	c #010100",
-                    ";	c #0F0D00",
-                    ">	c #EED000",
-                    ",	c #968300",
-                    "'	c #2A2500",
-                    ")	c #FCDC00",
-                    "!	c #BFA700",
-                    "~	c #050500",
-                    "{	c #514700",
-                    "]	c #DFC300",
-                    "^	c #030300",
-                    "/	c #7C6C00",
-                    "(	c #9C8800",
-                    "_	c #A79200",
-                    "                ",
-                    "       ..       ",
-                    "       ++       ",
-                    "      @##@      ",
-                    "      $%%$      ",
-                    "     &*==*&     ",
-                    "    -;>==>;-    ",
-                    "    -,====,-    ",
-                    "   &')====)'&   ",
-                    "   +!======!+   ",
-                    "  ~{========{~  ",
-                    "  ~]========]~  ",
-                    " ^/==========/^ ",
-                    "-&(__________(&-",
-                    "++++++++++++++++",
-                    "                "};
-                    """
+                        /* XPM */
+                        static char * dim_xpm[] = {
+                        "16 16 4 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #FFFF00",
+                        "@	c #FFFFFF",
+                        "                ",
+                        "                ",
+                        "     .    .     ",
+                        "    ..    ..    ",
+                        "   .+.    .+.   ",
+                        "  .++.    .++.  ",
+                        " .+++. .. .+++. ",
+                        ".++++. .. .++++.",
+                        " .+++. .. .+++. ",
+                        "  .++.    .++.  ",
+                        "   .+.    .+.   ",
+                        "    ..    ..    ",
+                        "     .    .     ",
+                        "                ",
+                        "                ",
+                        "                "};
+                        """
 
 	def __getstate__(self):
 		return None
