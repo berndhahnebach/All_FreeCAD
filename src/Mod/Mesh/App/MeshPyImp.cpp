@@ -223,13 +223,13 @@ PyObject*  MeshPy::crossSections(PyObject *args)
     union PyType_Object pyType = {&(Base::VectorPy::Type)};
     Py::Type vType(pyType.o);
 
-    std::vector<MeshObject::Plane> csPlanes;
+    std::vector<MeshObject::TPlane> csPlanes;
     for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
         Py::Tuple pair(*it);
         Py::Object p1 = pair.getItem(0);
         Py::Object p2 = pair.getItem(1);
         if (p1.isType(vType) && p2.isType(vType)) {
-            MeshObject::Plane plane;
+            MeshObject::TPlane plane;
             Base::Vector3d b = static_cast<Base::VectorPy*>(p1.ptr())->value();
             Base::Vector3d n = static_cast<Base::VectorPy*>(p2.ptr())->value();
             plane.first.Set((float)b.x,(float)b.y,(float)b.z);
@@ -246,21 +246,21 @@ PyObject*  MeshPy::crossSections(PyObject *args)
             float ny = (float)Py::Float(n.getItem(1));
             float nz = (float)Py::Float(n.getItem(2));
 
-            MeshObject::Plane plane;
+            MeshObject::TPlane plane;
             plane.first .Set(bx,by,bz);
             plane.second.Set(nx,ny,nz);
             csPlanes.push_back(plane);
         }
     }
 
-    std::vector<MeshObject::Polylines> sections;
+    std::vector<MeshObject::TPolylines> sections;
     getMeshObjectPtr()->crossSections(csPlanes, sections, min_eps, (poly == Py_True));
 
     // convert to Python objects
     Py::List crossSections;
-    for (std::vector<MeshObject::Polylines>::iterator it = sections.begin(); it != sections.end(); ++it) {
+    for (std::vector<MeshObject::TPolylines>::iterator it = sections.begin(); it != sections.end(); ++it) {
         Py::List section;
-        for (MeshObject::Polylines::const_iterator jt = it->begin(); jt != it->end(); ++jt) {
+        for (MeshObject::TPolylines::const_iterator jt = it->begin(); jt != it->end(); ++jt) {
             Py::List polyline;
             for (std::vector<Base::Vector3f>::const_iterator kt = jt->begin(); kt != jt->end(); ++kt) {
                 polyline.append(Py::Object(new Base::VectorPy(*kt)));
@@ -1248,6 +1248,29 @@ PyObject* MeshPy::nearestFacetOnRay(PyObject *args)
     catch (const Py::Exception&) {
         return 0;
     }
+}
+
+PyObject*  MeshPy::getPlanes(PyObject *args)
+{
+    float dev;
+    if (!PyArg_ParseTuple(args, "f",&dev))
+        return NULL;
+
+    Mesh::MeshObject* mesh = getMeshObjectPtr();
+    std::vector<Mesh::Segment> segments = mesh->getSegmentsFromType
+        (Mesh::MeshObject::PLANE, Mesh::Segment(mesh,false), dev);
+
+    Py::List s;
+    for (std::vector<Mesh::Segment>::iterator it = segments.begin(); it != segments.end(); ++it) {
+        const std::vector<unsigned long>& segm = it->getIndices();
+        Py::List ary;
+        for (std::vector<unsigned long>::const_iterator jt = segm.begin(); jt != segm.end(); ++jt) {
+            ary.append(Py::Int((int)*jt));
+        }
+        s.append(ary);
+    }
+
+    return Py::new_reference_to(s);
 }
 
 Py::Int MeshPy::getCountPoints(void) const

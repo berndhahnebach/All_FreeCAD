@@ -26,6 +26,7 @@
 #include "MeshKernel.h"
 #include "Visitor.h"
 #include "Algorithm.h"
+#include "Approximation.h"
 
 using namespace MeshCore;
 
@@ -172,4 +173,45 @@ std::vector<unsigned long> MeshSearchNeighbourFacetsVisitor::GetAndReset (void)
 {
     MeshAlgorithm(_rclMeshBase).ResetFacetsFlag(_vecFacets, MeshFacet::VISIT);
     return _vecFacets;
+}
+
+// -------------------------------------------------------------------------
+
+MeshPlaneVisitor::MeshPlaneVisitor (const MeshKernel& mesh, unsigned long index,
+                                    float deviation, std::vector<unsigned long> &indices)
+  : mesh(mesh), indices(indices), max_deviation(deviation), fitter(new PlaneFit)
+{
+    MeshGeomFacet triangle = mesh.GetFacet(index);
+    basepoint = triangle.GetGravityPoint();
+    normal = triangle.GetNormal();
+    fitter->AddPoint(triangle._aclPoints[0]);
+    fitter->AddPoint(triangle._aclPoints[1]);
+    fitter->AddPoint(triangle._aclPoints[2]);
+}
+
+MeshPlaneVisitor::~MeshPlaneVisitor ()
+{
+    delete fitter;
+}
+
+bool MeshPlaneVisitor::AllowVisit (const MeshFacet& face, const MeshFacet&, 
+                                   unsigned long, unsigned long, unsigned short neighbourIndex)
+{
+    if (!fitter->Done())
+        fitter->Fit();
+    MeshGeomFacet triangle = mesh.GetFacet(face);
+    for (int i=0; i<3; i++) {
+        if (fabs(fitter->GetDistanceToPlane(triangle._aclPoints[i])) > max_deviation)
+            return false;
+    }
+    return true;
+}
+
+bool MeshPlaneVisitor::Visit (const MeshFacet & face, const MeshFacet &,
+                              unsigned long ulFInd, unsigned long)
+{
+    MeshGeomFacet triangle = mesh.GetFacet(face);
+    indices.push_back(ulFInd);
+    fitter->AddPoint(triangle.GetGravityPoint());
+    return true;
 }

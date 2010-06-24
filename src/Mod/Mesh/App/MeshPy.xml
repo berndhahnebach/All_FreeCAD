@@ -343,6 +343,13 @@ an empty dictionary if there is no intersection.
 </UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="getPlanes" Const="true">
+			<Documentation>
+				<UserDocu>Get all planes of the mesh as segment.
+In the worst case each triangle can be regarded as single
+plane if none of its neighours is coplanar.</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="Points" ReadOnly="true">
 			<Documentation>
 				<UserDocu>A collection of the mesh points

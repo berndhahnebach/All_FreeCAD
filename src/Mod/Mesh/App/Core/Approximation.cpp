@@ -164,7 +164,8 @@ float PlaneFit::Fit()
     }
 
     float sigma = W.Dot(akMat * W);
-    sigma = sqrt(sigma/(nSize-3));
+    if (nSize > 3)
+        sigma = sqrt(sigma/(nSize-3));
     _fLastResult = sigma;
     return _fLastResult;
 }

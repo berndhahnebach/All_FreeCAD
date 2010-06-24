@@ -29,6 +29,7 @@ namespace MeshCore {
 class MeshFacet;
 class MeshKernel;
 class MeshFacetVisitor;
+class PlaneFit;
 
 /**
  * Abstract base class for facet visitors. 
@@ -123,6 +124,34 @@ public:
 
 protected:
     std::vector<unsigned long>  &_raulNeighbours; /**< Indices of all visited facets. */
+};
+
+// -------------------------------------------------------------------------
+
+/**
+ * The MeshPlaneVisitor collects all facets the are co-planar to the plane defined
+ * by the start triangle.
+ */
+class MeshPlaneVisitor : public MeshFacetVisitor
+{
+public:
+    MeshPlaneVisitor (const MeshKernel& mesh,
+                      unsigned long index,
+                      float deviation,
+                      std::vector<unsigned long> &indices);
+    virtual ~MeshPlaneVisitor ();
+    bool AllowVisit (const MeshFacet& face, const MeshFacet&, 
+                     unsigned long, unsigned long, unsigned short neighbourIndex);
+    bool Visit (const MeshFacet & face, const MeshFacet &,
+                unsigned long ulFInd, unsigned long);
+
+protected:
+    const MeshKernel& mesh;
+    std::vector<unsigned long>  &indices;
+    Base::Vector3f basepoint;
+    Base::Vector3f normal;
+    float max_deviation;
+    PlaneFit* fitter;
 };
 
 // -------------------------------------------------------------------------

@@ -66,9 +66,11 @@ class MeshExport MeshObject : public Data::ComplexGeoData
     TYPESYSTEM_HEADER();
 
 public:
+    enum Type {PLANE, CYLINDER, SPHERE};
+
     // typedef needed for cross-section
-    typedef std::pair<Base::Vector3f, Base::Vector3f> Plane;
-    typedef std::list<std::vector<Base::Vector3f> > Polylines;
+    typedef std::pair<Base::Vector3f, Base::Vector3f> TPlane;
+    typedef std::list<std::vector<Base::Vector3f> > TPolylines;
 
     MeshObject();
     explicit MeshObject(const MeshCore::MeshKernel& Kernel);
@@ -185,7 +187,7 @@ public:
     void setPoint(unsigned long, const Base::Vector3d& v);
     void smooth(int iterations, float d_max);
     Base::Vector3d getPointNormal(unsigned long) const;
-    void crossSections(const std::vector<Plane>&, std::vector<Polylines> &sections,
+    void crossSections(const std::vector<TPlane>&, std::vector<TPolylines> &sections,
                        float fMinEps = 1.0e-2f, bool bConnectPolygons = false) const;
     //@}
 
@@ -238,6 +240,7 @@ public:
     const Segment& getSegment(unsigned long) const;
     Segment& getSegment(unsigned long);
     MeshObject* meshFromSegment(const std::vector<unsigned long>&) const;
+    std::vector<Segment> getSegmentsFromType(Type, const Segment& aSegment, float dev) const;
     //@}
 
     /** @name Primitives */

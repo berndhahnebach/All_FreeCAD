@@ -44,6 +44,7 @@
 #include "Core/Evaluation.h"
 #include "Core/Degeneration.h"
 #include "Core/SetOperations.h"
+#include "Core/Visitor.h"
 
 #include "Mesh.h"
 #include "MeshPy.h"
@@ -303,7 +304,7 @@ bool MeshObject::load(const char* file)
         if (prop < it->_ulProp) {
             prop = it->_ulProp;
             if (!segment.empty()) {
-                this->_segments.push_back(Segment(this,segment));
+                this->_segments.push_back(Segment(this,segment,true));
                 segment.clear();
             }
         }
@@ -313,7 +314,7 @@ bool MeshObject::load(const char* file)
 
     // if the whole mesh is a single object then don't mark as segment
     if (!segment.empty() && (segment.size() < faces.size())) {
-        this->_segments.push_back(Segment(this,segment));
+        this->_segments.push_back(Segment(this,segment,true));
     }
 
 #ifndef FC_DEBUG
@@ -728,13 +729,13 @@ Base::Vector3d MeshObject::getPointNormal(unsigned long index) const
     return normal;
 }
 
-void MeshObject::crossSections(const std::vector<MeshObject::Plane>& planes, std::vector<MeshObject::Polylines> &sections,
+void MeshObject::crossSections(const std::vector<MeshObject::TPlane>& planes, std::vector<MeshObject::TPolylines> &sections,
                                float fMinEps, bool bConnectPolygons) const
 {
     MeshCore::MeshFacetGrid grid(_kernel);
     MeshCore::MeshAlgorithm algo(_kernel);
-    for (std::vector<MeshObject::Plane>::const_iterator it = planes.begin(); it != planes.end(); ++it) {
-        MeshObject::Polylines polylines;
+    for (std::vector<MeshObject::TPlane>::const_iterator it = planes.begin(); it != planes.end(); ++it) {
+        MeshObject::TPolylines polylines;
         algo.CutWithPlane(it->first, it->second, grid, polylines, fMinEps, bConnectPolygons);
         sections.push_back(polylines);
     }
@@ -1231,7 +1232,7 @@ void MeshObject::addSegment(const std::vector<unsigned long>& inds)
             throw Base::Exception("Index out of range");
     }
 
-    this->_segments.push_back(Segment(this,inds));
+    this->_segments.push_back(Segment(this,inds,true));
 }
 
 const Segment& MeshObject::getSegment(unsigned long index) const
@@ -1258,6 +1259,53 @@ MeshObject* MeshObject::meshFromSegment(const std::vector<unsigned long>& indice
     kernel.Merge(kernel_p, facets);
 
     return new MeshObject(kernel, _Mtrx);
+}
+
+std::vector<Segment> MeshObject::getSegmentsFromType(MeshObject::Type type, const Segment& aSegment, float dev) const
+{
+    std::vector<Segment> segm;
+    unsigned long startFacet, visited;
+    if (this->_kernel.CountFacets() == 0)
+        return segm;
+
+    // reset VISIT flags
+    MeshCore::MeshAlgorithm cAlgo(this->_kernel);
+    if (aSegment.isEmpty()) {
+        cAlgo.ResetFacetFlag(MeshCore::MeshFacet::VISIT);
+    }
+    else {
+        cAlgo.SetFacetFlag(MeshCore::MeshFacet::VISIT);
+        cAlgo.ResetFacetsFlag(aSegment.getIndices(), MeshCore::MeshFacet::VISIT);
+    }
+
+    const MeshCore::MeshFacetArray& rFAry = this->_kernel.GetFacets();
+    MeshCore::MeshFacetArray::_TConstIterator iTri = rFAry.begin();
+    MeshCore::MeshFacetArray::_TConstIterator iBeg = rFAry.begin();
+    MeshCore::MeshFacetArray::_TConstIterator iEnd = rFAry.end();
+
+    // start from the first not visited facet
+    visited = cAlgo.CountFacetFlag(MeshCore::MeshFacet::VISIT);
+    iTri = std::find_if(iTri, iEnd, std::bind2nd(MeshCore::MeshIsNotFlag<MeshCore::MeshFacet>(),
+        MeshCore::MeshFacet::VISIT));
+    startFacet = iTri - iBeg;
+
+    while (startFacet != ULONG_MAX) {
+        // collect all facets of the same geometry
+        std::vector<unsigned long> indices;
+        indices.push_back(startFacet);
+        MeshCore::MeshPlaneVisitor pv(this->_kernel, startFacet, dev, indices);
+        visited += this->_kernel.VisitNeighbourFacets(pv, startFacet);
+
+        iTri = std::find_if(iTri, iEnd, std::bind2nd(MeshCore::MeshIsNotFlag<MeshCore::MeshFacet>(),
+            MeshCore::MeshFacet::VISIT));
+        if (iTri < iEnd)
+            startFacet = iTri - iBeg;
+        else
+            startFacet = ULONG_MAX;
+        segm.push_back(Segment(const_cast<MeshObject*>(this), indices, false));
+    }
+
+    return segm;
 }
 
 // ----------------------------------------------------------------------------
