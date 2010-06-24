@@ -479,6 +479,10 @@ PyObject*  TopoShapePy::fuse(PyObject *args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
 }
 
 PyObject*  TopoShapePy::common(PyObject *args)
@@ -496,6 +500,10 @@ PyObject*  TopoShapePy::common(PyObject *args)
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
         return NULL;
     }
 }
@@ -517,6 +525,10 @@ PyObject*  TopoShapePy::section(PyObject *args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return NULL;
     }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
 }
 
 PyObject*  TopoShapePy::cut(PyObject *args)
@@ -534,6 +546,10 @@ PyObject*  TopoShapePy::cut(PyObject *args)
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
         return NULL;
     }
 }

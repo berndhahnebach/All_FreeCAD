@@ -101,7 +101,7 @@ wireFromSegment(PyObject *self, PyObject *args)
     Mesh::MeshObject* mesh = static_cast<Mesh::MeshPy*>(m)->getMeshObjectPtr();
     std::vector<unsigned long> segm;
     segm.reserve(list.size());
-    for (int i=0; i<list.size(); i++) {
+    for (unsigned int i=0; i<list.size(); i++) {
         segm.push_back((int)Py::Int(list[i]));
     }
 
