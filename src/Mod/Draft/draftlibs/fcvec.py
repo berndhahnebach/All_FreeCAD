@@ -116,10 +116,10 @@ def rotate(u,angle,axis=Vector(0,0,1)):
 	If axis is omitted, the rotation is made on the xy plane.'''
 	typecheck ([(u,Vector), (angle,(int,long,float)), (axis,Vector)], "rotate")
 
-	# special case optimizations removed for clarity KEC
-	#if rotangle == 0: return u
-	#if equals(axis,Vector(0,0,1)): return rotate2D(u,rotangle)
-	#if equals(axis,Vector(0,0,-1)): return rotate2D(u,-rotangle)
+	# these special cases use a faster formula:
+	if angle == 0: return u
+	if equals(axis,Vector(0,0,1)): return rotate2D(u,angle)
+	if equals(axis,Vector(0,0,-1)): return rotate2D(u,-angle)
 
 	l=axis.Length
 	x=axis.x/l
@@ -166,61 +166,29 @@ def isColinear(vlist):
 		if angle(vlist[i].sub(vlist[0]),first) != 0:
 			return False
 	return True
-		
 
-'''
-Obsolete/useless function.  Complete deletion seems appropriate - KEC
+def rounded(v):
+        "returns a rounded vector"
+        p = precision()
+        return Vector(round(v.x,p),round(v.y,p),round(v.z,p))
 
-def new(first, other):
-	"new(Vector,Vector) - creates a new vector from first one to second one"
-	typecheck ([(first,Vector), (other,Vector)]);
-	return Vector(other.x-first.x, other.y-first.y, other.z-first.z)
-
-def add(first, other):
-	"add(Vector,Vector) - adds two vectors. OBSOLETE - use Vector.add()"
-	typecheck ([(first,Vector), (other,Vector)]);
-	return Vector(first.x+other.x, first.y+other.y, first.z+other.z)
-
-def sub(first, other):
-	' ' '
-	sub(Vector,Vector) - subtracts second vector from first one.
-	OBSOLETE - use Vector.sub()
-	' ' '
-	typecheck ([(first,Vector), (other,Vector)])
-	return Vector(first.x-other.x, first.y-other.y, first.z-other.z)
-
-def length(first):
-	"lengh(Vector) - gives vector length - OBSOLETE! use Vector.Length instead!"
-	typecheck([(first,Vector)])
-	return math.sqrt(first.x*first.x + first.y*first.y + first.z*first.z)
-
--- normalized was mainly used idiomatically to for scaling a vector.
--- replaced with scaleTo and Vector.normalize()
-def normalized(first):
-	"normalized(Vector) - returns a unit vector"
-	typecheck ([(first,Vector)])
-	v = Vector(first)
-	v.normalize
-	return v
-
--- only single argument version was used.  Eliminated, but could be renamed crossz with second arg removed
-def crossproduct(u, v=Vector(0,0,1)):
-	' ' '
-	crossproduct(Vector,Vector) - returns the cross product of both vectors.
-	If only one is given, cross product is made with vertical axis,
-	thus returning its perpendicular in XY plane
-	' ' '
-	typecheck ([(u,Vector), (v,Vector)])
-	return u.cross(v)
-
-def dotproduct(u, v):
-	"dotproduct(Vector,Vector) - returns the dot product of both vectors"
-	typecheck ([(u,Vector), (v,Vector)])
-	return u.dot(v)
-
-def rounded(vector,pr=precision):
-	' ' 'rounded(vector,int) - returns a rounded vector to given precision, or is
-	precision is not specified, built-in precision is used.' ' '
-	if isinstance(vector,Vector) and isinstance(pr,int):
-		return Vector(round(vector.x,pr),round(vector.y,pr),round(vector.z,pr))
-'''
+def getPlaneRotation(u,v):
+        "returns a rotation matrix necessary to rotate the xy plane into uv position)"
+        typecheck([(u,Vector), (v,Vector)], "getPlaneRotation")
+        if equals(u,v): return None
+        hu = Vector(u.x,u.y,0)
+        if isNull(hu): rotZ = 0
+        else: rotZ = angle(hu)
+        vu = Vector(Vector(u.x,u.y,0).Length,u.z,0)
+        if isNull(vu): rotY = 0
+        else: rotY = -angle(vu)
+        vv = rounded(rotate(v,rotZ))
+        vv = rounded(rotate(vv,rotY,Vector(0,1,0)))
+        vv = Vector(vv.y,vv.z,0)    
+        if isNull(vv): rotX = 0
+        else: rotX = angle(vv)
+        m = Matrix()
+        m.rotateX(rotX)
+        m.rotateY(rotY)
+        m.rotateZ(rotZ)
+        return m

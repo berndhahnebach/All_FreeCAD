@@ -92,7 +92,7 @@ class plane:
 		self.doc = FreeCAD.ActiveDocument
 		self.axis = axis;
 		self.axis.normalize()
-		if fcvec.equals(axis, Vector(1,0,0)):
+		if (fcvec.equals(axis, Vector(1,0,0))) or (fcvec.equals(axis, Vector(-1,0,0))):
 			self.u = Vector(0,1,0)
 			self.v = Vector(0,0,1)
 		else:
