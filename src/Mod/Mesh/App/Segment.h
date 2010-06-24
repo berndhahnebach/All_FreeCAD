@@ -36,11 +36,12 @@ class MeshObject;
 class MeshExport Segment
 {
 public:
-    Segment(MeshObject*);
-    Segment(MeshObject*, const std::vector<unsigned long>& inds);
+    Segment(MeshObject*, bool mod);
+    Segment(MeshObject*, const std::vector<unsigned long>& inds, bool mod);
     void addIndices(const std::vector<unsigned long>& inds);
     void removeIndices(const std::vector<unsigned long>& inds);
     const std::vector<unsigned long>& getIndices() const;
+    bool isEmpty() const { return _indices.empty(); };
 
     const Segment& operator = (const Segment&);
     bool operator == (const Segment&) const;
@@ -51,6 +52,7 @@ public:
 private:
     MeshObject* _mesh;
     std::vector<unsigned long> _indices;
+    bool _modifykernel;
 
 public:
     class MeshExport const_facet_iterator

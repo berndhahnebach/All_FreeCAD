@@ -36,14 +36,15 @@
 
 using namespace Mesh;
 
-Segment::Segment(MeshObject* mesh) : _mesh(mesh)
+Segment::Segment(MeshObject* mesh, bool mod) : _mesh(mesh), _modifykernel(mod)
 {
 }
 
-Segment::Segment(MeshObject* mesh, const std::vector<unsigned long>& inds)
-  : _mesh(mesh), _indices(inds)
+Segment::Segment(MeshObject* mesh, const std::vector<unsigned long>& inds, bool mod)
+  : _mesh(mesh), _indices(inds), _modifykernel(mod)
 {
-    _mesh->updateMesh(inds);
+    if (_modifykernel)
+        _mesh->updateMesh(inds);
 }
 
 void Segment::addIndices(const std::vector<unsigned long>& inds)
@@ -51,7 +52,8 @@ void Segment::addIndices(const std::vector<unsigned long>& inds)
     _indices.insert(_indices.end(), inds.begin(), inds.end());
     std::sort(_indices.begin(), _indices.end());
     _indices.erase(std::unique(_indices.begin(), _indices.end()), _indices.end());
-    _mesh->updateMesh(inds);
+    if (_modifykernel)
+        _mesh->updateMesh(inds);
 }
 
 void Segment::removeIndices(const std::vector<unsigned long>& inds)
@@ -64,7 +66,8 @@ void Segment::removeIndices(const std::vector<unsigned long>& inds)
         std::back_insert_iterator<std::vector<unsigned long> >(result));
   
     _indices = result;
-    _mesh->updateMesh();
+    if (_modifykernel)
+        _mesh->updateMesh();
 }
 
 const std::vector<unsigned long>& Segment::getIndices() const
@@ -77,7 +80,8 @@ const Segment& Segment::operator = (const Segment& s)
     // Do not copy the MeshObject pointer
     if (this != &s)
         this->_indices = s._indices;
-    _mesh->updateMesh();
+    if (_modifykernel)
+        _mesh->updateMesh();
     return *this;
 }
 

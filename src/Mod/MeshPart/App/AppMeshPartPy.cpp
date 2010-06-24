@@ -23,12 +23,15 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepBuilderAPI_MakePolygon.hxx>
 #endif
 
 #include <Base/PyObjectBase.h>
 #include <Base/Console.h>
 #include <Base/Vector3D.h>
 #include <Mod/Part/App/TopoShapePy.h>
+#include <Mod/Part/App/TopoShapeWirePy.h>
+#include <Mod/Mesh/App/Core/Algorithm.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshPy.h>
@@ -88,8 +91,52 @@ loftOnCurve(PyObject *self, PyObject *args)
 PyDoc_STRVAR(loft_doc,
 "Loft on curve.");
 
+static PyObject *
+wireFromSegment(PyObject *self, PyObject *args)
+{
+    PyObject *o, *m;
+    if (!PyArg_ParseTuple(args, "O!O!", &(Mesh::MeshPy::Type), &m,&PyList_Type,&o))
+        return 0;
+    Py::List list(o);
+    Mesh::MeshObject* mesh = static_cast<Mesh::MeshPy*>(m)->getMeshObjectPtr();
+    std::vector<unsigned long> segm;
+    segm.reserve(list.size());
+    for (int i=0; i<list.size(); i++) {
+        segm.push_back((int)Py::Int(list[i]));
+    }
+
+    std::list<std::vector<Base::Vector3f> > bounds;
+    MeshCore::MeshAlgorithm algo(mesh->getKernel());
+    algo.GetFacetBorders(segm, bounds);
+
+    Py::List wires;
+    std::list<std::vector<Base::Vector3f> >::iterator bt;
+
+    try {
+        for (bt = bounds.begin(); bt != bounds.end(); ++bt) {
+            BRepBuilderAPI_MakePolygon mkPoly;
+            for (std::vector<Base::Vector3f>::const_reverse_iterator it = bt->rbegin(); it != bt->rend(); ++it) {
+                mkPoly.Add(gp_Pnt(it->x,it->y,it->z));
+            }
+            if (mkPoly.IsDone()) {
+                PyObject* wire = new Part::TopoShapeWirePy(new Part::TopoShape(mkPoly.Wire()));
+                wires.append(Py::Object(wire, true));
+            }
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    return Py::new_reference_to(wires);
+}
+
 /* registration table  */
 struct PyMethodDef MeshPart_methods[] = {
     {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
+    {"wireFromSegment",wireFromSegment, METH_VARARGS,
+     "Create wire(s) from boundary of segment"},
     {NULL, NULL}        /* end of table marker */
 };

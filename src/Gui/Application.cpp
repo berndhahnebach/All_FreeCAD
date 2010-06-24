@@ -432,10 +432,11 @@ void Application::open(const char* FileName, const char* Module)
     Base::FileInfo File(FileName);
     string te = File.extension();
 
-    // if the active document empty, close it
+    // if the active document is empty and not modified, close it
     // in case of an automatically created empty document at startup
     App::Document* act = App::GetApplication().getActiveDocument();
-    if (act && act->countObjects() == 0){
+    Gui::Document* gui = this->getDocument(act);
+    if (act && act->countObjects() == 0 && gui && gui->isModified() == false){
         Command::doCommand(Command::App, "App.closeDocument('%s')", act->getName());
         qApp->processEvents(); // an update is needed otherwise the new view isn't shown
     }

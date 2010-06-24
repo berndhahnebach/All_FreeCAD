@@ -164,6 +164,42 @@ int TopoShapeFacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
     }
 
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!", &(PyList_Type), &bound)) {
+        try {
+            std::vector<TopoDS_Wire> wires;
+            Py::List list(bound);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                PyObject* item = (*it).ptr();
+                if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+                    if (sh.ShapeType() == TopAbs_WIRE)
+                        wires.push_back(TopoDS::Wire(sh));
+                    else
+                        Standard_Failure::Raise("shape is not a wire");
+                }
+                else
+                    Standard_Failure::Raise("shape is not a wire");
+            }
+
+            if (!wires.empty()) {
+                BRepBuilderAPI_MakeFace mkFace(wires.front());
+                for (std::vector<TopoDS_Wire>::iterator it = wires.begin()+1; it != wires.end(); ++it)
+                    mkFace.Add(*it);
+                getTopoShapePtr()->_Shape = mkFace.Face();
+                return 0;
+            }
+            else {
+                Standard_Failure::Raise("no wires in list");
+            }
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return -1;
+        }
+    }
+
     PyErr_SetString(PyExc_Exception, "wire or list of wires expected");
     return -1;
 }
