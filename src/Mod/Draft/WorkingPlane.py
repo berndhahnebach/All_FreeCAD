@@ -146,4 +146,8 @@ class plane:
 	def reset(self):
 		self.doc = None
                 self.weak = True
+
+        def getRotation(self):
+                "returns a matrix describing the working plane orientation"
+                return fcvec.getPlaneRotation(self.u,self.v)
 		

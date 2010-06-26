@@ -227,6 +227,20 @@ elif defaultWP == 3:
 # General functions
 #---------------------------------------------------------------------------
 
+def typecheck (args_and_types, name="?"):
+        "checks arguments types"
+	for v,t in args_and_types:
+		if not isinstance (v,t):
+                        w = "typecheck[" + str(name) + "]: "
+                        w += str(v) + " is not " + str(t) + "\n"
+			FreeCAD.Console.PrintWarning(w)
+			raise TypeError("Draft." + str(name))
+
+def precision():
+        "returns the precision value from user settings"
+        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+	return params.GetInt("precision")
+        
 def getRealName(name):
 	"strips the trailing numbers from a string name"
 	for i in range(1,len(name)):
@@ -990,6 +1004,87 @@ class DimensionViewProvider:
 		svg+='</text>\n</g>\n'
 		return svg
 
+class Rectangle:
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyDistance","Length","Base","Length of the rectangle")
+		obj.addProperty("App::PropertyDistance","Height","Base","Height of the rectange")
+		obj.Proxy = self
+                obj.Length=1
+                obj.Height=1
+
+	def execute(self, fp):
+                self.createGeometry(fp)
+
+        def onChanged(self, fp, prop):
+                if prop in ["Length","Height"]:
+                        self.createGeometry(fp)
+                        
+        def createGeometry(self,fp):
+                plm = fp.Placement
+                p1 = Vector(0,0,0)
+                p2 = Vector(p1.x+fp.Length,p1.y,p1.z)
+		p3 = Vector(p1.x+fp.Length,p1.y+fp.Height,p1.z)
+                p4 = Vector(p1.x,p1.y+fp.Height,p1.z)
+		shape = Part.makePolygon([p1,p2,p3,p4,p1])
+                shape = Part.Face(shape)
+		fp.Shape = shape
+                fp.Placement = plm
+
+class ViewProviderRectangle:
+	def __init__(self, obj):
+		obj.Proxy = self
+
+	def attach(self, obj):
+		return
+
+	def updateData(self, fp, prop):
+		return
+
+	def getDisplayModes(self,obj):
+		modes=[]
+		return modes
+
+	def getDefaultDisplayMode(self):
+		return "Flat Lines"
+
+	def setDisplayMode(self,mode):
+		return mode
+
+	def onChanged(self, vp, prop):
+		return
+
+	def getIcon(self):
+		return """
+                        /* XPM */
+                        static char * rec_xpm[] = {
+                        "16 16 3 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #0000FF",
+                        "                ",
+                        "                ",
+                        "  ............  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "  ............  ",
+                        "                ",
+                        "                "};
+			"""
+
+	def __getstate__(self):
+		return None
+
+	def __setstate__(self,state):
+		return None
+                
 #---------------------------------------------------------------------------
 # Helper tools
 #---------------------------------------------------------------------------
@@ -1298,8 +1393,8 @@ class UndoLine:
 			'ToolTip': str(translate("draft", "Undoes the last drawn segment of the line being drawn").toLatin1())}
 
 	
-class Rectangle(Creator):
-	"This tool creates a rectangle."
+class ToolRectangle(Creator):
+	"the Draft_Rectangle FreeCAD command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rectangle',
@@ -1328,19 +1423,28 @@ class Rectangle(Creator):
 
 	def createObject(self):
 		"creates the final object in the current doc"
-		p1 = self.node[0]
+                ori = plane.getRotation()
+                print ori
+                print plane.u
+                print plane.v
+                p1 = self.node[0]
 		p3 = self.node[-1]
 		diagonal = p3.sub(p1)
 		p2 = p1.add(fcvec.project(diagonal, plane.v))
 		p4 = p1.add(fcvec.project(diagonal, plane.u))
-		shape = Part.makePolygon([p1,p2,p3,p4,p1])
-		self.doc.openTransaction("Create "+self.featureName) 
-		self.obj=self.doc.addObject("Part::Feature",self.featureName)
-		self.obj.Shape = shape
-		self.doc.commitTransaction()
-		formatObject(self.obj)
-		select(self.obj)
-		self.finish()
+                length = p4.sub(p1).Length
+                if abs(fcvec.angle(p4.sub(p1),plane.u,plane.axis)) > 1: length = -length
+                height = p2.sub(p1).Length
+                if abs(fcvec.angle(p2.sub(p1),plane.v,plane.axis)) > 1: height = -height
+                if round(plane.axis.z,precision()) == 0: height = -height
+                self.doc.openTransaction("Create "+self.featureName)
+                obj = makeRectangle(length=length,height=height)
+                s = obj.Shape
+                s.transformShape(ori)
+                s.translate(p1)
+                obj.Shape = s
+                self.doc.commitTransaction()
+                self.finish()
 
 	def action(self,arg):
 		"scene event handler"
@@ -1758,10 +1862,9 @@ class Text(Creator):
 		self.ui.textValue.setFocus()
 		self.ui.cross(False)
 
-class Dim(Creator):
-	'''
-	This class creates a dimension feature.
-	'''
+class ToolDimension(Creator):
+	"The Draft_Dimension FreeCAD command definition"
+        
 	def __init__(self):
 		self.max=2
 
@@ -1794,16 +1897,8 @@ class Dim(Creator):
 	def createObject(self):
 		"creates an object in the current doc"
 		self.doc.openTransaction("Create "+self.featureName) 
-		obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
-		Dimension(obj)
-		DimensionViewProvider(obj.ViewObject)
-		obj.Start = self.node[0]
-		obj.End = self.node[1]
-		obj.Dimline = self.node[2]
+		makeDimension(self.node[0],self.node[1],self.node[2])
 		self.doc.commitTransaction()
-		formatObject(obj)
-		select(obj)
-		self.doc.recompute()
 
 	def action(self,arg):
 		"scene event handler"
@@ -3333,9 +3428,49 @@ class SendToDrawing(Modifier):
                 return result
 
 #---------------------------------------------------------------------------
-# Adds the icons & commands to the FreeCAD command manager
+# API functions
 #---------------------------------------------------------------------------
 
+def makeRectangle(p1=Vector(0,0,0),length=1,height=1,face=True):
+        '''makeRectangle(p1,length,width,face): Creates a Rectangle
+        object with lower left corner at p1, and with length in
+        X direction and height in Y direction. If face is False, the
+        rectangle is shown as a wireframe, otherwise as a face.'''
+        typecheck([(p1,Vector)], "makeRectangle")
+        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Rectangle")
+        Rectangle(obj)
+        ViewProviderRectangle(obj.ViewObject)
+        obj.Length = length
+        obj.Height = height
+        if not face: obj.ViewObject.DisplayMode = "Wireframe"
+        s = obj.Shape
+        s.translate(p1)
+        obj.Shape = s
+        formatObject(obj)
+        select(obj)
+        FreeCAD.ActiveDocument.recompute()
+        return obj
+        
+def makeDimension(p1=Vector(0,0,0),p2=Vector(1,0,0),p3=Vector(0.5,0.5,0)):
+        '''makeDimension(p1,p2,p3): Creates a Dimension object
+        measuring distance between p1 and p2, with the dimension
+        line passign through p3.The current line width and color
+        will be used.'''
+        typecheck([(p1,Vector), (p2,Vector), (p3,Vector)], "makeDimension")
+        obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
+	Dimension(obj)
+	DimensionViewProvider(obj.ViewObject)
+	obj.Start = p1
+	obj.End = p2
+	obj.Dimline = p3
+	formatObject(obj)
+	select(obj)
+	FreeCAD.ActiveDocument.recompute()
+        return obj
+
+#---------------------------------------------------------------------------
+# Adds the icons & commands to the FreeCAD command manager
+#---------------------------------------------------------------------------
 
 		
 # drawing commands
@@ -3345,8 +3480,8 @@ FreeCADGui.addCommand('Draft_Wire',Wire())
 FreeCADGui.addCommand('Draft_Circle',Circle())
 FreeCADGui.addCommand('Draft_Arc',Arc())
 FreeCADGui.addCommand('Draft_Text',Text())
-FreeCADGui.addCommand('Draft_Rectangle',Rectangle())
-FreeCADGui.addCommand('Draft_Dimension',Dim())
+FreeCADGui.addCommand('Draft_Rectangle',ToolRectangle())
+FreeCADGui.addCommand('Draft_Dimension',ToolDimension())
 
 # context commands
 FreeCADGui.addCommand('Draft_FinishLine',FinishLine())

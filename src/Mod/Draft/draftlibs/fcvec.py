@@ -116,10 +116,7 @@ def rotate(u,angle,axis=Vector(0,0,1)):
 	If axis is omitted, the rotation is made on the xy plane.'''
 	typecheck ([(u,Vector), (angle,(int,long,float)), (axis,Vector)], "rotate")
 
-	# these special cases use a faster formula:
 	if angle == 0: return u
-	if equals(axis,Vector(0,0,1)): return rotate2D(u,angle)
-	if equals(axis,Vector(0,0,-1)): return rotate2D(u,-angle)
 
 	l=axis.Length
 	x=axis.x/l
