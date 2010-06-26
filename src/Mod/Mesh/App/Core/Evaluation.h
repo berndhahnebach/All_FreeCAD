@@ -253,6 +253,25 @@ protected:
 // ----------------------------------------------------
 
 /**
+ * The MeshEvalBorderFacet class removes facets whose all three vertices are
+ * part of a boundary.
+ * @see MeshEvalSingleFacet
+ */
+class MeshExport MeshEvalBorderFacet : public MeshEvaluation
+{
+public:
+  MeshEvalBorderFacet (const MeshKernel &rclB, std::vector<unsigned long>& f)
+    : MeshEvaluation(rclB), _facets(f) {}
+  virtual ~MeshEvalBorderFacet () {}
+  bool Evaluate();
+
+protected:
+    std::vector<unsigned long>& _facets;
+};
+
+// ----------------------------------------------------
+
+/**
  * The MeshEvalSelfIntersection class checks the mesh for self intersection.
  * @author Werner Mayer
  */
