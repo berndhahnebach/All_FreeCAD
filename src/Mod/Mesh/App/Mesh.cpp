@@ -992,6 +992,14 @@ void MeshObject::removeFoldsOnSurface()
         this->_segments.clear();
 }
 
+void MeshObject::removeFullBoundaryFacets()
+{
+    std::vector<unsigned long> facets;
+    if (!MeshCore::MeshEvalBorderFacet(_kernel, facets).Evaluate()) {
+        deleteFacets(facets);
+    }
+}
+
 void MeshObject::validateIndices()
 {
     unsigned long count = _kernel.CountFacets();

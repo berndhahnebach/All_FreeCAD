@@ -231,6 +231,7 @@ public:
     bool hasSelfIntersections() const;
     void removeSelfIntersections();
     void removeFoldsOnSurface();
+    void removeFullBoundaryFacets();
     //@}
 
     /** @name Mesh segments */
