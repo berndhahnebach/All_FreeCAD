@@ -92,7 +92,11 @@ CmdSketcherLeaveSketch::CmdSketcherLeaveSketch()
 void CmdSketcherLeaveSketch::activated(int iMsg)
 {
     Gui::Document *doc = getActiveGuiDocument();
-    doc->resetEdit();      
+    doc->resetEdit();
+    openCommand("Sketch changed");
+    doCommand(Doc,"App.ActiveDocument.recompute()");
+    commitCommand();
+
 }
 
 bool CmdSketcherLeaveSketch::isActive(void)

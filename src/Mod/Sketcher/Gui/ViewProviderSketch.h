@@ -27,6 +27,7 @@
 #include <Mod/Part/Gui/ViewProvider2DObject.h>
 #include <Inventor/SbColor.h>
 #include <Base/Tools2D.h>
+#include <Gui/Selection.h>
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -57,7 +58,7 @@ class DrawSketchHandler;
   * It uses the class DrawSketchHandler to facilitade the creation 
   * of new geometry while editing.
   */
-class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject
+class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject, public Gui::SelectionObserver
 {
     PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
@@ -71,8 +72,9 @@ public:
     void draw(bool temp=false);
     /// draw the edit curve
     void drawEdit(const std::vector<Base::Vector2D> &EditCurve);
-    /// solve the sketch 
-    void solve(void);
+
+    /// Observer message from the Selection
+    virtual void onSelectionChanged(const Gui::SelectionChanges& msg);
 
     
     /** @name handler control */
@@ -108,8 +110,8 @@ public:
     //bool handlePreselection(const SoPickedPoint* pp);
     /// helper to detect preselection
     bool detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex);
-    /// helper to draw preselection
-    void drawPreselection(void);
+    /// helper change the color of the sketch acorting to selection and solver status
+    void updateColor(void);
     /// get the pointer to the sketch document object
     Sketcher::SketchObject* getSketchObject(void) const;
     //@}
@@ -157,6 +159,10 @@ protected:
     int PreselectPoint;
     // pointer to the Solver
     Sketcher::Sketch *ActSketch;
+    // container to track our own selected parts
+    std::set<int> *pSelPointSet;
+    std::set<int> *pSelCurvSet;
+
     // nodes for the visuals 
     SoSeparator   *EditRoot;
     SoMaterial    *PointsMaterials;
@@ -171,6 +177,11 @@ protected:
     SoLineSet     *LineSet;
     SoLineSet     *EditCurveSet;
     SoPointSet    *PointSet;
+
+    // colors for selection and preselection
+    static SbColor PreselectColor; 
+    static SbColor SelectColor; 
+
 };
 
 } // namespace PartGui
