@@ -23,20 +23,34 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QMessageBox>
 #endif
 
 #include <Gui/Application.h>
 #include <Gui/Document.h>
+#include <Gui/Selection.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
-#include <Mod/Sketcher/App/SketchObjectSF.h>
+#include <Mod/Sketcher/App/SketchObject.h>
 
-#include "ViewProviderSketchSF.h"
+#include "ViewProviderSketch.h"
 
 using namespace std;
 using namespace SketcherGui;
+
+bool isCreateConstraintActive(Gui::Document *doc)
+{
+	if(doc)
+		// checks if a Sketch Viewprovider is in Edit and is in no special mode
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
+			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
+				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+                if( Gui::Selection().countObjectsOfType(Sketcher::SketchObject::getClassTypeId()) > 0)
+			return true;
+	return false;
+}
 
 
 /* Constrain commands =======================================================*/
@@ -57,23 +71,28 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
 
 void CmdSketcherConstrainHorizontal::activated(int iMsg)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_HORIZONTAL);
+   //unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+
+	std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select an edges from the sketch."));
+        return;
+    }
+
+	const std::vector<std::string> &SubNames = selection[0].getSubNames();
+
+    for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
+        
+    }
+
       
 }
 
 bool CmdSketcherConstrainHorizontal::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
+	return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
 DEF_STD_CMD_A(CmdSketcherConstrainVertical);
@@ -93,23 +112,12 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
 
 void CmdSketcherConstrainVertical::activated(int iMsg)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_VERTICAL);
       
 }
 
 bool CmdSketcherConstrainVertical::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
+	return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
 
@@ -130,23 +138,12 @@ CmdSketcherConstrainLock::CmdSketcherConstrainLock()
 
 void CmdSketcherConstrainLock::activated(int iMsg)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_LOCK);
       
 }
 
 bool CmdSketcherConstrainLock::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
+	return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
 DEF_STD_CMD_A(CmdSketcherConstrainCoincident);
@@ -166,23 +163,12 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
 
 void CmdSketcherConstrainCoincident::activated(int iMsg)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setConstrainOnSelected(ViewProviderSketchSF::CONSTRAIN_LOCK);
       
 }
 
 bool CmdSketcherConstrainCoincident::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-			return true;
-	return false;
+	return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
 
