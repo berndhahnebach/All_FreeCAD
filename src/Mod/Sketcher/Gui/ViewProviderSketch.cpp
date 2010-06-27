@@ -62,12 +62,13 @@
 using namespace SketcherGui;
 using namespace Sketcher;
 
-const float fCurveColor[] =     {1.0f,1.0f,1.0f}; 
-const float fCurveConstructionColor[] = {0.2f,1.0f,0.2f}; 
-const float fPointColor[] =             {0.5f,0.5f,0.5f}; 
-const float fPreselectColor[] = {0.8f,0.0f,0.0f}; 
-const float fSelectColor[] =    {1.0f,0.0f,0.0f}; 
-const float fDatumLineColor[] = {0.0f,0.8f,0.0f}; 
+SbColor sCurveColor             (1.0f,1.0f,1.0f); 
+SbColor sCurveConstructionColor (0.2f,1.0f,0.2f); 
+SbColor sPointColor             (0.5f,0.5f,0.5f); 
+SbColor sDatumLineColor         (0.0f,0.8f,0.0f); 
+
+SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f); 
+SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f); 
 
 //**************************************************************************
 // Construction/Destruction
@@ -155,6 +156,7 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
                                             const SbVec3f &normal, const SoPickedPoint* pp)
 {
+    static char buf[20];
     double x,y;
     SbVec3f pos = point;
     if (pp) {
@@ -176,6 +178,10 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Point;
                         return true;
+                    } else if (PreselectCurve >=0) {
+                        //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
+                        Mode = STATUS_SELECT_Edge;
+                        return true;
                     } else
                         return false;
 
@@ -191,12 +197,27 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                 case STATUS_SELECT_Point:
                     //Base::Console().Log("Select Point:%d\n",this->DragPoint);
                     // Do selection
-                    //Gui::Selection().addSelection(documentName.getValue().getString()
-     //                                            ,objectName.getValue().getString()
-     //                                            ,subElementName.getValue().getString()
-     //                                            ,pp->getPoint()[0]
-     //                                            ,pp->getPoint()[1]
-     //                                            ,pp->getPoint()[2]);
+                    _itoa(PreselectPoint,buf,10);
+                    Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                                                 ,getSketchObject()->getNameInDocument()
+                                                 ,(std::string("Vertex")+buf).c_str()
+                                                 ,pp->getPoint()[0]
+                                                 ,pp->getPoint()[1]
+                                                 ,pp->getPoint()[2]);
+
+                    this->DragPoint = -1;
+                    Mode = STATUS_NONE;
+                    return true;
+                case STATUS_SELECT_Edge:
+                    //Base::Console().Log("Select Point:%d\n",this->DragPoint);
+                    // Do selection
+                    _itoa(PreselectCurve,buf,10);
+                    Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                                                 ,getSketchObject()->getNameInDocument()
+                                                 ,(std::string("Edge")+buf).c_str()
+                                                 ,pp->getPoint()[0]
+                                                 ,pp->getPoint()[1]
+                                                 ,pp->getPoint()[2]);
 
                     this->DragPoint = -1;
                     Mode = STATUS_NONE;
@@ -204,11 +225,13 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                 case STATUS_SKETCH_DragPoint:
                     PreselectPoint = DragPoint;
                     this->DragPoint = -1;
-                    drawPreselection();
+                    updateColor();
                     Mode = STATUS_NONE;
                     return true;
                 case STATUS_SKETCH_UseHandler:
                     return sketchHandler->releaseButton(Base::Vector2D(x,y));
+                
+                case STATUS_NONE:
                 default:
                     return false;
             }
@@ -238,11 +261,18 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     switch (Mode) {
         case STATUS_NONE:
             if(preselectChanged)
-                drawPreselection();
+                updateColor();
             return false;
         case STATUS_SELECT_Point:
             Mode = STATUS_SKETCH_DragPoint;
             this->DragPoint = PreselectPoint;
+            PreselectCurve = -1;
+            PreselectPoint = -1;
+
+            return true;
+        case STATUS_SELECT_Edge:
+            // drag a edge not implemented yet!
+            Mode = STATUS_NONE;
             PreselectCurve = -1;
             PreselectPoint = -1;
 
@@ -257,7 +287,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             return true;
         case STATUS_SKETCH_UseHandler:
             if(preselectChanged)
-                drawPreselection();
+                updateColor();
             sketchHandler->mouseMove(Base::Vector2D(x,y));
             return true;
         default:
@@ -267,11 +297,82 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     return false;
 }
 
+void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
+{
+    // are we in edit?
+    if(ActSketch){
+        std::string temp;
+        if (msg.Type == Gui::SelectionChanges::ClrSelection) {
+            // if something selected in this object?
+            if ( pSelPointSet->size() > 0 || pSelCurvSet->size() > 0){
+                // clear our selection and update the color of the viewed edges and points
+                pSelPointSet->clear();
+                pSelCurvSet->clear();
+                updateColor();
+            }
+        }
+        else if (msg.Type == Gui::SelectionChanges::AddSelection) {
+            // is it this object??
+            if(strcmp(msg.pDocName,getSketchObject()->getDocument()->getName())==0
+                &&strcmp(msg.pObjectName,getSketchObject()->getNameInDocument())== 0) {
+                    if(msg.pSubName){
+                        std::string shapetype(msg.pSubName);
+                        if (shapetype.size() > 4 && shapetype.substr(0,4) == "Edge") {
+                            int index=std::atoi(&shapetype[4]);
+                            pSelCurvSet->insert(index);
+                            updateColor();
+                        }
+                        else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") {
+                            int index=std::atoi(&shapetype[6]);
+                            pSelPointSet->insert(index);
+                            updateColor();
+                        }
+
+                    }
+            }        
+        }
+        else if (msg.Type == Gui::SelectionChanges::RmvSelection) {
+            //// build name
+            //temp = Reason.pDocName;
+            //temp += ".";
+            //temp += Reason.pObjectName;
+            //if (Reason.pSubName[0] != 0) {
+            //    temp += ".";
+            //    temp += Reason.pSubName;
+            //}
+
+            //// remove all items
+            //QList<QListWidgetItem *> l = selectionView->findItems(QLatin1String(temp.c_str()),Qt::MatchExactly);
+            //if (l.size() == 1)
+            //    delete l[0];
+
+        }
+        else if (msg.Type == Gui::SelectionChanges::SetSelection) {
+            // remove all items
+            //selectionView->clear();
+            //std::vector<SelectionSingleton::SelObj> objs = Gui::Selection().getSelection(Reason.pDocName);
+            //for (std::vector<SelectionSingleton::SelObj>::iterator it = objs.begin(); it != objs.end(); ++it) {
+            //    // build name
+            //    temp = it->DocName;
+            //    temp += ".";
+            //    temp += it->FeatName;
+            //    if (it->SubName && it->SubName[0] != '\0') {
+            //        temp += ".";
+            //        temp += it->SubName;
+            //    }
+            //    new QListWidgetItem(QString::fromAscii(temp.c_str()), selectionView);
+            //}
+        }
+        
+    }
+}
+
 
 bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex)
 {
     PtIndex = -1;
     CurvIndex = -1;
+    static char buf[20];
 
     if (Point) {
         //Base::Console().Log("Point pick\n");
@@ -288,14 +389,39 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
         }
     
         assert(PtIndex < 0 || CurvIndex < 0);
-        if(PtIndex>=0 && PtIndex != PreselectPoint){
-            PreselectPoint = PtIndex;
-            PreselectCurve = -1;
-            return true;
-        }else if(CurvIndex>=0 && CurvIndex != PreselectCurve){
-            PreselectCurve = CurvIndex;
-            PreselectPoint = -1;
-            return true;
+        if(PtIndex>=0){ // if a point is hit
+            _itoa(PreselectPoint,buf,10);
+            Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
+                                          ,getSketchObject()->getNameInDocument()
+                                          ,(std::string("Vertex")+buf).c_str()
+                                          ,Point->getPoint()[0]
+                                          ,Point->getPoint()[1]
+                                          ,Point->getPoint()[2]);
+                                                 
+            if(PtIndex != PreselectPoint){
+                PreselectPoint = PtIndex;
+                PreselectCurve = -1;
+                return true;
+            }else
+                return false;
+        }else if(CurvIndex>=0){  // if a curve is hit
+            if(CurvIndex != PreselectCurve){
+                PreselectCurve = CurvIndex;
+                PreselectPoint = -1;
+                _itoa(PreselectCurve,buf,10);
+                Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
+                                             ,getSketchObject()->getNameInDocument()
+                                             ,(std::string("Edge")+buf).c_str()
+                                             ,Point->getPoint()[0]
+                                             ,Point->getPoint()[1]
+                                             ,Point->getPoint()[2]);
+
+                return true;
+            }else{
+                Gui::Selection().setPreselectCoord(Point->getPoint()[0]
+                                                  ,Point->getPoint()[1]
+                                                  ,Point->getPoint()[2]);
+            }
         }else if((CurvIndex<0 && PtIndex<0) && (PreselectCurve>=0 || PreselectPoint>=0) ){
             PreselectCurve = -1;
             PreselectPoint = -1;
@@ -312,22 +438,35 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
     return false;
 }
 
-void ViewProviderSketch::drawPreselection(void)
+void ViewProviderSketch::updateColor(void)
 {
     //Base::Console().Log("Draw preseletion\n");
 
     int PtNum = PointsMaterials->diffuseColor.getNum();
     SbColor* pcolor = PointsMaterials->diffuseColor.startEditing();
-    // color of the point set
-    for(int  i=0;i<PtNum;i++)
-        pcolor[i].setValue(PreselectPoint==i?fPreselectColor:fPointColor);
-    PointsMaterials->diffuseColor.finishEditing();
-
     int CurvNum = CurvesMaterials->diffuseColor.getNum();
     SbColor* color = CurvesMaterials->diffuseColor.startEditing();
+
+    // color of the point set
+    for(int  i=0;i<PtNum;i++)
+        if(pSelPointSet->find(i) != pSelPointSet->end()){
+            pcolor[i] = SelectColor;
+        }else if(PreselectPoint==i){
+            pcolor[i] = PreselectColor;
+        }else
+             pcolor[i] = sPointColor;
     for(int  i=0;i<CurvNum;i++)
-        color[i].setValue(PreselectCurve==i?fPreselectColor:fCurveColor);
+        if(pSelCurvSet->find(i) != pSelCurvSet->end()){
+            color[i] = SelectColor;
+        }else if(PreselectCurve==i){
+            color[i] = PreselectColor;
+        }else
+             color[i] = sCurveColor;
+        //color[i]=PreselectCurve==i?PreselectColor:sCurveColor;
+
+    // end edeting
     CurvesMaterials->diffuseColor.finishEditing();
+    PointsMaterials->diffuseColor.finishEditing();
 
 }
 
@@ -344,10 +483,6 @@ bool ViewProviderSketch::doubleClicked(void)
     return true;
 }
 
-void ViewProviderSketch::solve(void)
-{
-
-}
 
 void ViewProviderSketch::draw(bool temp)
 {
@@ -405,7 +540,7 @@ void ViewProviderSketch::draw(bool temp)
     
     i=0; // color of the line set
     for(std::vector<unsigned int>::const_iterator it=Color.begin();it!=Color.end();++it,i++)
-        color[i].setValue((*it==1?fCurveConstructionColor:fCurveColor));
+        color[i]=(*it==1?sCurveConstructionColor:sCurveColor);
     
     i=0; // setting up the point set
     for(std::vector<Base::Vector3d>::const_iterator it=Points.begin();it!=Points.end();++it,i++)
@@ -413,10 +548,10 @@ void ViewProviderSketch::draw(bool temp)
     
     i=0; // color of the point set
     for(std::vector<unsigned int>::const_iterator it=PtColor.begin();it!=PtColor.end();++it,i++)
-        pcolor[i].setValue((*it==1?fCurveConstructionColor:fPointColor));
+        pcolor[i]=(*it==1?sCurveConstructionColor:sPointColor);
 
     if (PreselectPoint >= 0 && PreselectPoint < (int) Points.size())
-        color[PreselectPoint].setValue(fPreselectColor);
+        color[PreselectPoint]=PreselectColor;
 
     CurvesCoordinate->point.finishEditing();
     CurveSet->numVertices.finishEditing();
@@ -594,8 +729,22 @@ bool ViewProviderSketch::setEdit(int ModNum)
     this->hide(); // avoid that the wires interfere with the edit lines
 
     ShowGrid.setValue(true);
+    // create the container to track selection
+    pSelPointSet = new std::set<int>;
+    pSelCurvSet = new std::set<int>;
 
-    solve();
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
+    float transparency;
+    // set the highlight color
+    unsigned long highlight = (unsigned long)(PreselectColor.getPackedValue());
+    highlight = hGrp->GetUnsigned("HighlightColor", highlight);
+    PreselectColor.setPackedValue((uint32_t)highlight, transparency);
+    // set the selection color
+    highlight = (unsigned long)(SelectColor.getPackedValue());
+    highlight = hGrp->GetUnsigned("SelectionColor", highlight);
+    SelectColor.setPackedValue((uint32_t)highlight, transparency);
+  
+
     draw();
 
     return true;
@@ -689,8 +838,11 @@ void ViewProviderSketch::unsetEdit(void)
     delete ActSketch;
     ActSketch = 0;
 
- //   // recompute the part
- //   getSketchObject()->getDocument()->recompute();
+    // delete the container to track selection
+    delete (pSelPointSet);
+    delete (pSelCurvSet);
+    pSelPointSet = 0;
+    pSelCurvSet = 0;
 
     // empty the nodes
 
