@@ -205,7 +205,7 @@ void ObjectLabelObserver::slotRelabelObject(const App::DocumentObject& obj, cons
 
                 // make sure that there is a name conflict otherwise we don't have to do anything
                 if (match) {
-                    label = Base::Tools::getUniqueName(label, objectLabels);
+                    label = Base::Tools::getUniqueName(label, objectLabels, 3);
                     this->current = &obj;
                     const_cast<App::DocumentObject&>(obj).Label.setValue(label);
                     this->current = 0;
