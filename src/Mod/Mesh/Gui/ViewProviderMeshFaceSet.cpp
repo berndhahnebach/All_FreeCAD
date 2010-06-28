@@ -161,6 +161,7 @@ void ViewProviderMeshFaceSet::updateData(const App::Property* prop)
         }
 
         showOpenEdges(OpenEdges.getValue());
+        highlightSelection();
     }
 }
 

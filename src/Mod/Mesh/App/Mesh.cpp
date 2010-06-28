@@ -509,6 +509,16 @@ void MeshObject::deleteSelectedPoints()
     deletePoints(points);
 }
 
+void MeshObject::clearFacetSelection() const
+{
+    MeshCore::MeshAlgorithm(this->_kernel).ResetFacetFlag(MeshCore::MeshFacet::SELECTED);
+}
+
+void MeshObject::clearPointSelection() const
+{
+    MeshCore::MeshAlgorithm(this->_kernel).ResetPointFlag(MeshCore::MeshPoint::SELECTED);
+}
+
 void MeshObject::addFacetsToSelection(const std::vector<unsigned long>& inds) const
 {
     MeshCore::MeshAlgorithm(this->_kernel).SetFacetsFlag(inds, MeshCore::MeshFacet::SELECTED);

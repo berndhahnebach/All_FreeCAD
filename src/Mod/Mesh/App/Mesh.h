@@ -165,14 +165,6 @@ public:
     void addMesh(const MeshCore::MeshKernel&);
     void deleteFacets(const std::vector<unsigned long>& removeIndices);
     void deletePoints(const std::vector<unsigned long>& removeIndices);
-    void deleteSelectedFacets();
-    void deleteSelectedPoints();
-    void addFacetsToSelection(const std::vector<unsigned long>&) const;
-    void addPointsToSelection(const std::vector<unsigned long>&) const;
-    void removeFacetsFromSelection(const std::vector<unsigned long>&) const;
-    void removePointsFromSelection(const std::vector<unsigned long>&) const;
-    void getFacetsFromSelection(std::vector<unsigned long>&) const;
-    void getPointsFromSelection(std::vector<unsigned long>&) const;
     std::vector<std::vector<unsigned long> > getComponents() const;
     unsigned long countComponents() const;
     void removeComponents(unsigned long);
@@ -189,6 +181,20 @@ public:
     Base::Vector3d getPointNormal(unsigned long) const;
     void crossSections(const std::vector<TPlane>&, std::vector<TPolylines> &sections,
                        float fMinEps = 1.0e-2f, bool bConnectPolygons = false) const;
+    //@}
+
+    /** @name Selection */
+    //@{
+    void deleteSelectedFacets();
+    void deleteSelectedPoints();
+    void addFacetsToSelection(const std::vector<unsigned long>&) const;
+    void addPointsToSelection(const std::vector<unsigned long>&) const;
+    void removeFacetsFromSelection(const std::vector<unsigned long>&) const;
+    void removePointsFromSelection(const std::vector<unsigned long>&) const;
+    void getFacetsFromSelection(std::vector<unsigned long>&) const;
+    void getPointsFromSelection(std::vector<unsigned long>&) const;
+    void clearFacetSelection() const;
+    void clearPointSelection() const;
     //@}
 
     /** @name Boolean operations */

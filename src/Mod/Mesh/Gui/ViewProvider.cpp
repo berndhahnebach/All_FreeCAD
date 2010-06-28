@@ -1248,8 +1248,7 @@ void ViewProviderMesh::deselectComponent(unsigned long uFacet)
 void ViewProviderMesh::setSelection(const std::vector<unsigned long>& indices)
 {
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
-    const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
-    MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::SELECTED);
+    rMesh.clearFacetSelection();
     rMesh.addFacetsToSelection(indices);
 
     // Colorize the selection
@@ -1277,8 +1276,7 @@ void ViewProviderMesh::removeSelection(const std::vector<unsigned long>& indices
 void ViewProviderMesh::clearSelection()
 {
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
-    const MeshCore::MeshKernel& rKernel = rMesh.getKernel();
-    MeshCore::MeshAlgorithm(rKernel).ResetFacetFlag(MeshCore::MeshFacet::SELECTED);
+    rMesh.clearFacetSelection();
     unhighlightSelection();
 }
 
@@ -1317,6 +1315,10 @@ void ViewProviderMesh::highlightSelection()
     std::vector<unsigned long> selection;
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
     rMesh.getFacetsFromSelection(selection);
+    if (selection.empty()) {
+        unhighlightSelection();
+        return;
+    }
 
     // Colorize the selection
     pcMatBinding->value = SoMaterialBinding::PER_FACE;
@@ -1379,6 +1381,7 @@ void ViewProviderIndexedFaceSet::updateData(const App::Property* prop)
         ViewProviderMeshBuilder builder;
         builder.createMesh(prop, pcMeshCoord, pcMeshFaces);
         showOpenEdges(OpenEdges.getValue());
+        highlightSelection();
     }
 }
 
