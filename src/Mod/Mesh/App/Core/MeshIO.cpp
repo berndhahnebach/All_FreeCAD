@@ -349,9 +349,9 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
     uint32_t ulCt;
     rstrIn.read((char*)&ulCt, sizeof(ulCt));
     // Either it's really an invalid STL file or it's just empty. In this case the number of facets must be 0.
-    if (rstrIn.read(szBuf, 50) == false)
+    if (rstrIn.read(szBuf, 100) == false)
         return (ulCt==0);
-    szBuf[50] = 0;
+    szBuf[100] = 0;
     upper(szBuf);
 
     try {
