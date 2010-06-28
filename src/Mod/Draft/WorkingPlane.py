@@ -150,4 +150,13 @@ class plane:
         def getRotation(self):
                 "returns a matrix describing the working plane orientation"
                 return fcvec.getPlaneRotation(self.u,self.v)
+
+        def getPlacement(self):
+                "returns the placement of the working plane"
+                m = FreeCAD.Matrix(
+                        self.u.x,self.v.x,self.axis.x,self.position.x,
+                        self.u.y,self.v.y,self.axis.y,self.position.y,
+                        self.u.z,self.v.z,self.axis.z,self.position.z,
+                        0.0,0.0,0.0,1.0)
+                return FreeCAD.Placement(m)
 		

@@ -1084,6 +1084,82 @@ class ViewProviderRectangle:
 
 	def __setstate__(self,state):
 		return None
+
+class Circle:
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyDistance","Radius","Base","Radius of the circle")
+		obj.Proxy = self
+                obj.Radius=1
+
+	def execute(self, fp):
+                self.createGeometry(fp)
+
+        def onChanged(self, fp, prop):
+                if prop == "Radius":
+                        self.createGeometry(fp)
+                        
+        def createGeometry(self,fp):
+                plm = fp.Placement
+                shape = Part.Circle(Vector(0,0,0),Vector(0,0,1),fp.Radius).toShape()
+                shape = Part.Wire(shape)
+                shape = Part.Face(shape)
+		fp.Shape = shape
+                fp.Placement = plm
+
+class ViewProviderCircle:
+	def __init__(self, obj):
+		obj.Proxy = self
+
+	def attach(self, obj):
+		return
+
+	def updateData(self, fp, prop):
+		return
+
+	def getDisplayModes(self,obj):
+		modes=[]
+		return modes
+
+	def getDefaultDisplayMode(self):
+		return "Flat Lines"
+
+	def setDisplayMode(self,mode):
+		return mode
+
+	def onChanged(self, vp, prop):
+		return
+
+	def getIcon(self):
+		return """
+                        /* XPM */
+                        static char * circ_xpm[] = {
+                        "16 16 3 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #0000FF",
+                        "                ",
+                        "      ....      ",
+                        "    ..++++..    ",
+                        "   .++++++++.   ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        " .++++++++++++. ",
+                        " .++++++++++++. ",
+                        " .++++++++++++. ",
+                        " .++++++++++++. ",
+                        "  .++++++++++.  ",
+                        "  .++++++++++.  ",
+                        "   .++++++++.   ",
+                        "    ..++++..    ",
+                        "      ....      ",
+                        "                "};
+			"""
+
+	def __getstate__(self):
+		return None
+
+	def __setstate__(self,state):
+		return None
                 
 #---------------------------------------------------------------------------
 # Helper tools
@@ -1423,10 +1499,6 @@ class ToolRectangle(Creator):
 
 	def createObject(self):
 		"creates the final object in the current doc"
-                ori = plane.getRotation()
-                print ori
-                print plane.u
-                print plane.v
                 p1 = self.node[0]
 		p3 = self.node[-1]
 		diagonal = p3.sub(p1)
@@ -1436,13 +1508,10 @@ class ToolRectangle(Creator):
                 if abs(fcvec.angle(p4.sub(p1),plane.u,plane.axis)) > 1: length = -length
                 height = p2.sub(p1).Length
                 if abs(fcvec.angle(p2.sub(p1),plane.v,plane.axis)) > 1: height = -height
-                if round(plane.axis.z,precision()) == 0: height = -height
+                p = plane.getPlacement()
+                p.move(p1)
                 self.doc.openTransaction("Create "+self.featureName)
-                obj = makeRectangle(length=length,height=height)
-                s = obj.Shape
-                s.transformShape(ori)
-                s.translate(p1)
-                obj.Shape = s
+                makeRectangle(length,height,p)
                 self.doc.commitTransaction()
                 self.finish()
 
@@ -1476,10 +1545,9 @@ class ToolRectangle(Creator):
 			self.rect.on()
 
 
-class Arc(Creator):
-	'''
-	This class creates an arc (circle feature). 
-	'''
+class ToolArc(Creator):
+	"the Draft_Arc FreeCAD command definition"
+        
 	def __init__(self):
 		self.closedCircle=False
 		self.featureName = "Arc"
@@ -1705,7 +1773,11 @@ class Arc(Creator):
 	def drawArc(self):
 		"actually draws the FreeCAD object"
 		if self.closedCircle:
-			arc = Part.Circle(self.center, plane.axis, self.rad).toShape()
+                        p = plane.getPlacement()
+                        p.move(self.center)
+                        self.doc.openTransaction("Create "+self.featureName)
+			makeCircle(self.rad,p)
+                        self.doc.commitTransaction()
 		else:
 			radvec = fcvec.scaleTo(plane.u, self.rad)
 			p1 = Vector.add(self.center,fcvec.rotate(radvec, self.firstangle, plane.axis))
@@ -1714,13 +1786,13 @@ class Arc(Creator):
 			mid = self.firstangle + self.angle/2
 			p2 = Vector.add(self.center, fcvec.rotate(radvec, mid, plane.axis))
 			arc = Part.Arc(p1,p2,p3).toShape()
-		self.doc.openTransaction("Create "+self.featureName)
-		self.obj = self.doc.addObject("Part::Feature",self.featureName)
-		self.obj.Shape = arc
-		self.doc.commitTransaction()
-		formatObject(self.obj)
-		select(self.obj)
-		self.finish()
+                        self.doc.openTransaction("Create "+self.featureName)
+                        self.obj = self.doc.addObject("Part::Feature",self.featureName)
+                        self.obj.Shape = arc
+                        self.doc.commitTransaction()
+                        formatObject(self.obj)
+                        select(self.obj)
+                self.finish()
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1779,8 +1851,9 @@ class Arc(Creator):
 			self.drawArc()
 
 
-class Circle(Arc):
-	"a modified version of the arc tool, to produce a closed circle"
+class ToolCircle(ToolArc):
+	"The Draft_Circle FreeCAD command definition"
+        
 	def __init__(self):
 		self.closedCircle=True
 		self.featureName = "Circle"
@@ -3431,28 +3504,43 @@ class SendToDrawing(Modifier):
 # API functions
 #---------------------------------------------------------------------------
 
-def makeRectangle(p1=Vector(0,0,0),length=1,height=1,face=True):
-        '''makeRectangle(p1,length,width,face): Creates a Rectangle
-        object with lower left corner at p1, and with length in
-        X direction and height in Y direction. If face is False, the
+def makeCircle(radius, placement=None, face=True):
+        '''makeCircle(radius,[placement,face]): Creates a circle
+        object with given radius. If placement is given, it is
+        used. If face is False, the circle is shown as a
+        wireframe, otherwise as a face.'''
+        if placement: typecheck([(placement,FreeCAD.Placement)], "makeCircle")
+        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Circle")
+        Circle(obj)
+        ViewProviderCircle(obj.ViewObject)
+        obj.Radius = radius
+        if not face: obj.ViewObject.DisplayMode = "Wireframe"
+        if placement: obj.Placement = placement
+        formatObject(obj)
+        select(obj)
+        FreeCAD.ActiveDocument.recompute()
+        return obj
+        
+def makeRectangle(length,height,placement=None,face=True):
+        '''makeRectangle(length,width,[placement,face]): Creates a Rectangle
+        object with length in X direction and height in Y direction.
+        If a placement is given, it is used. If face is False, the
         rectangle is shown as a wireframe, otherwise as a face.'''
-        typecheck([(p1,Vector)], "makeRectangle")
+        if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
         obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Rectangle")
         Rectangle(obj)
         ViewProviderRectangle(obj.ViewObject)
         obj.Length = length
         obj.Height = height
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
-        s = obj.Shape
-        s.translate(p1)
-        obj.Shape = s
+        if placement: obj.Placement = placement
         formatObject(obj)
         select(obj)
         FreeCAD.ActiveDocument.recompute()
         return obj
         
-def makeDimension(p1=Vector(0,0,0),p2=Vector(1,0,0),p3=Vector(0.5,0.5,0)):
-        '''makeDimension(p1,p2,p3): Creates a Dimension object
+def makeDimension(p1,p2,p3=None):
+        '''makeDimension(p1,p2,[p3]): Creates a Dimension object
         measuring distance between p1 and p2, with the dimension
         line passign through p3.The current line width and color
         will be used.'''
@@ -3462,6 +3550,10 @@ def makeDimension(p1=Vector(0,0,0),p2=Vector(1,0,0),p3=Vector(0.5,0.5,0)):
 	DimensionViewProvider(obj.ViewObject)
 	obj.Start = p1
 	obj.End = p2
+        if not p3:
+            p3 = p2.sub(p1)
+            p3.multiply(0.5)
+            p3 = p1.add(p3)
 	obj.Dimline = p3
 	formatObject(obj)
 	select(obj)
@@ -3477,8 +3569,8 @@ def makeDimension(p1=Vector(0,0,0),p2=Vector(1,0,0),p3=Vector(0.5,0.5,0)):
 FreeCADGui.addCommand('Draft_SelectPlane',SelectPlane())
 FreeCADGui.addCommand('Draft_Line',Line())
 FreeCADGui.addCommand('Draft_Wire',Wire())
-FreeCADGui.addCommand('Draft_Circle',Circle())
-FreeCADGui.addCommand('Draft_Arc',Arc())
+FreeCADGui.addCommand('Draft_Circle',ToolCircle())
+FreeCADGui.addCommand('Draft_Arc',ToolArc())
 FreeCADGui.addCommand('Draft_Text',Text())
 FreeCADGui.addCommand('Draft_Rectangle',ToolRectangle())
 FreeCADGui.addCommand('Draft_Dimension',ToolDimension())
