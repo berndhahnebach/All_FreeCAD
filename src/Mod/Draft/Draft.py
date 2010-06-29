@@ -343,8 +343,15 @@ def snapPoint (target,point,cursor,ctrl=False):
 						if fcvec.equals(p,p2): alone = False
 					if alone == True:
 						snapArray.append([p,3,p])
-					
-
+                elif ctrl and ("Dimline" in ob.PropertiesList):
+                        base = Part.Line(ob.Start,ob.End).toShape()
+                        proj = fcgeo.findDistance(ob.Dimline,base)
+                        if not proj: proj = Vector(0,0,0)
+                        p2 = ob.Start.add(fcvec.neg(proj))
+                        dv = ob.End.sub(ob.Start)
+                        dv.multiply(0.5)
+                        p2 = p2.add(dv)
+                        snapArray.append([p2,0,p2])
 		else:
 			cur = Vector(snapped['x'],snapped['y'],snapped['z'])
 			snapArray = [[cur,2,cur]]
@@ -481,6 +488,8 @@ def formatObject(target,origin=None):
 			obrep.LineColor = matchrep.LineColor
 			if (target.Type[:4] == "Part"):
 				obrep.ShapeColor = matchrep.ShapeColor
+                                if matchrep.DisplayMode in obrep.listDisplayModes():
+                                        obrep.DisplayMode = matchrep.DisplayMode
 
 def getSelection():
 	return FreeCADGui.Selection.getSelection(FreeCAD.ActiveDocument.Name)
@@ -2779,73 +2788,91 @@ class Upgrade(Modifier):
 		wires = []
 		openwires = []
 		faces = []
+                groups = []
 		# determining which level we will have
 		for ob in self.sel:
-			if ob.Shape.ShapeType == 'Edge': loneEdges = True
-			if ob.Shape.ShapeType == 'Face': loneFaces = True
-			for f in ob.Shape.Faces:
-				faces.append(f)
-			for w in ob.Shape.Wires:
-				if w.isClosed():
-					wires.append(w)
-				else:
-					openwires.append(w)
-			lastob = ob
+			if ob.Type == "App::DocumentObjectGroup":
+                                groups.append(ob)
+                        else:
+                                if ob.Shape.ShapeType == 'Edge': loneEdges = True
+                                if ob.Shape.ShapeType == 'Face': loneFaces = True
+                                for f in ob.Shape.Faces:
+                                        faces.append(f)
+                                for w in ob.Shape.Wires:
+                                        if w.isClosed():
+                                                wires.append(w)
+                                        else:
+                                                openwires.append(w)
+                                lastob = ob
 		# applying transformation
 		self.doc.openTransaction("Upgrade")
-		if faces:
-			if loneEdges:
-				newob = self.compound()
-				formatObject(newob,lastob)
-			else:
-				u = faces.pop(0)
-				for f in faces:
-					u = u.fuse(f)
-					u = fcgeo.concatenate(u)
-				newob = self.doc.addObject("Part::Feature","Union")
-				newob.Shape = u
-				formatObject(newob,lastob)
-		elif wires:
-			if loneEdges or loneFaces or openwires:
-				newob = self.compound()
-				formatObject(newob,lastob)
-			else:
-				for w in wires:
-					f = Part.Face(w)
-					faces.append(f)
-				for f in faces:
-					newob = self.doc.addObject("Part::Feature","Face")
-					newob.Shape = f
-					formatObject(newob,lastob)
-		elif (len(openwires) == 1):
-			if loneEdges or loneFaces:
-				newob = self.compound()
-				formatObject(newob,lastob)
-			else:
-				p0 = openwires[0].Vertexes[0].Point
-				p1 = openwires[0].Vertexes[-1].Point
-				edges = openwires[0].Edges
-				edges.append(Part.Line(p1,p0).toShape())
-				w = Part.Wire(fcgeo.sortEdges(edges))
-				newob = self.doc.addObject("Part::Feature","Wire")
-				newob.Shape = w
-				formatObject(newob,lastob)
-		else:
-			for ob in self.sel:
-				for e in ob.Shape.Edges:
-					edges.append(e)
-			newob = None
-			try:
-				w = Part.Wire(fcgeo.sortEdges(edges))
-				if len(w.Edges) == len(ob.Shape.Edges):
-					newob = self.doc.addObject("Part::Feature","Wire")
-					newob.Shape = w
-			except:
-				pass
-			if not newob: newob = self.compound()
-			formatObject(newob,lastob)
+                if groups:
+                        for grp in groups: 
+                                for ob in grp.Group:
+                                        if not ob.Shape.Faces:
+                                                for w in ob.Shape.Wires:
+                                                        if w.isClosed:
+                                                                f = Part.Face(w)
+                                                                newob = self.doc.addObject("Part::Feature","Face")
+                                                                newob.Shape = f
+                                                                formatObject(newob,ob)
+                                                                self.sel.append(ob)
+                                                                grp.addObject(newob)
+                else:
+                        if faces:
+                                if loneEdges:
+                                        newob = self.compound()
+                                        formatObject(newob,lastob)
+                                else:
+                                        u = faces.pop(0)
+                                        for f in faces:
+                                                u = u.fuse(f)
+                                                u = fcgeo.concatenate(u)
+                                        newob = self.doc.addObject("Part::Feature","Union")
+                                        newob.Shape = u
+                                        formatObject(newob,lastob)
+                        elif wires:
+                                if loneEdges or loneFaces or openwires:
+                                        newob = self.compound()
+                                        formatObject(newob,lastob)
+                                else:
+                                        for w in wires:
+                                                f = Part.Face(w)
+                                                faces.append(f)
+                                        for f in faces:
+                                                newob = self.doc.addObject("Part::Feature","Face")
+                                                newob.Shape = f
+                                                formatObject(newob,lastob)
+                        elif (len(openwires) == 1):
+                                if loneEdges or loneFaces:
+                                        newob = self.compound()
+                                        formatObject(newob,lastob)
+                                else:
+                                        p0 = openwires[0].Vertexes[0].Point
+                                        p1 = openwires[0].Vertexes[-1].Point
+                                        edges = openwires[0].Edges
+                                        edges.append(Part.Line(p1,p0).toShape())
+                                        w = Part.Wire(fcgeo.sortEdges(edges))
+                                        newob = self.doc.addObject("Part::Feature","Wire")
+                                        newob.Shape = w
+                                        formatObject(newob,lastob)
+                        else:
+                                for ob in self.sel:
+                                        for e in ob.Shape.Edges:
+                                                edges.append(e)
+                                newob = None
+                                try:
+                                        w = Part.Wire(fcgeo.sortEdges(edges))
+                                        if len(w.Edges) == len(ob.Shape.Edges):
+                                                newob = self.doc.addObject("Part::Feature","Wire")
+                                                newob.Shape = w
+                                except:
+                                        pass
+                                if not newob: newob = self.compound()
+                                formatObject(newob,lastob)
 		for ob in self.sel:
-			self.doc.removeObject(ob.Name)
+                        if not ob.Type == "App::DocumentObjectGroup":
+                                self.doc.removeObject(ob.Name)
 		self.doc.commitTransaction()
 		select(newob)
 		Modifier.finish(self)
