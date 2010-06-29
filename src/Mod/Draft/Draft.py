@@ -1511,7 +1511,7 @@ class ToolRectangle(Creator):
                 p = plane.getPlacement()
                 p.move(p1)
                 self.doc.openTransaction("Create "+self.featureName)
-                makeRectangle(length,height,p)
+                makeRectangle(length,height,p,self.ui.hasFill.isChecked())
                 self.doc.commitTransaction()
                 self.finish()
 
@@ -1776,7 +1776,7 @@ class ToolArc(Creator):
                         p = plane.getPlacement()
                         p.move(self.center)
                         self.doc.openTransaction("Create "+self.featureName)
-			makeCircle(self.rad,p)
+			makeCircle(self.rad,p,self.ui.hasFill.isChecked())
                         self.doc.commitTransaction()
 		else:
 			radvec = fcvec.scaleTo(plane.u, self.rad)
