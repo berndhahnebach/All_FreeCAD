@@ -186,6 +186,13 @@ class toolBar:
 				self.isRelative.setObjectName("isRelative")
                                 self.layout.addWidget(self.isRelative)
 				self.isRelative.hide()
+
+                                self.hasFill = QtGui.QCheckBox(draftToolbar)
+				self.hasFill.setChecked(True)
+				self.hasFill.setObjectName("hasFill")
+                                self.hasFill.setChecked(self.params.GetBool("fillmode"))
+                                self.layout.addWidget(self.hasFill)
+				self.hasFill.hide()
                                 
 				self.undoButton = _pushButton("undoButton",self.layout,icon=(64,64))
 				self.finishButton = _pushButton("finishButton",self.layout,icon=(448,64))
@@ -247,7 +254,7 @@ class toolBar:
                                 self.layout.addItem(spacerItem)
 
                                 self.wplabel = _label("wplabel",self.layout, hide=False)
-                                defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
+                                defaultWP = self.params.GetInt("defaultWP")
                                 if defaultWP == 1:
                                         self.wplabel.setText("Top")
                                 elif defaultWP == 2:
@@ -340,6 +347,8 @@ class toolBar:
 				self.radiusValue.setToolTip(translate("draft", "Radius of Circle"))
 				self.isRelative.setText(translate("draft", "Relative"))
 				self.isRelative.setToolTip(translate("draft", "Coordinates relative to last point or absolute (SPACE)"))
+                                self.hasFill.setText(translate("draft", "Filled"))
+				self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe"))
 				self.finishButton.setText(translate("draft", "Finish"))
 				self.finishButton.setToolTip(translate("draft", "Finishes the current line without closing (F)"))
 				self.undoButton.setText(translate("draft", "Undo"))
@@ -391,6 +400,7 @@ class toolBar:
 			def lineUi(self):
 				self.cmdlabel.setText(translate("draft", "Line"))
 				self.isRelative.show()
+                                self.hasFill.show()
 				self.finishButton.show()
 				self.closeButton.show()
 				self.undoButton.show()
@@ -429,6 +439,7 @@ class toolBar:
 				self.yValue.hide()
 				self.zValue.hide()
 				self.isRelative.hide()
+                                self.hasFill.hide()
 				self.finishButton.hide()
 				self.undoButton.hide()
 				self.closeButton.hide()
@@ -463,6 +474,7 @@ class toolBar:
 				self.labelRadius.setText(translate("draft", "Radius"))
 				self.labelRadius.show()
 				self.radiusValue.show()
+                                self.hasFill.show()
 
 			def textUi(self):
 				self.labelx.hide()

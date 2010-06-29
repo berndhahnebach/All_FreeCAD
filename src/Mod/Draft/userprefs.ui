@@ -213,28 +213,15 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>Precision level</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Gui::PrefSpinBox" name="gui::prefspinbox_3">
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>16777215</height>
-           </size>
-          </property>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_6">
           <property name="toolTip">
-           <string>The number of decimals in internal coordinates operations (for ex. 3 = 0.001)</string>
+           <string>If this is checked, objects will appear as filled as default. Otherwise, they will appear as wireframe</string>
           </property>
-          <property name="value">
-           <number>3</number>
+          <property name="text">
+           <string>Fill objects by default</string>
           </property>
           <property name="prefEntry" stdset="0">
-           <cstring>precision</cstring>
+           <cstring>fillmode</cstring>
           </property>
           <property name="prefPath" stdset="0">
            <cstring>Mod/Draft</cstring>
@@ -294,6 +281,35 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Precision level</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefSpinBox" name="gui::prefspinbox_3">
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>The number of decimals in internal coordinates operations (for ex. 3 = 0.001)</string>
+          </property>
+          <property name="value">
+           <number>3</number>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>precision</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
