@@ -181,6 +181,10 @@ class toolBar:
 				self.offsetValue = _lineedit("offsetValue",self.layout,width=60)
 				self.offsetValue.setText("0.00")
 
+                                self.labelRadius = _label("labelRadius",self.layout)
+				self.radiusValue = _lineedit("radiusValue",self.layout,width=60)
+				self.radiusValue.setText("0.00")
+
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
 				self.isRelative.setChecked(True)
 				self.isRelative.setObjectName("isRelative")
@@ -203,10 +207,6 @@ class toolBar:
 				self.yzButton = _pushButton("yzButton",self.layout)
 				self.currentViewButton = _pushButton("view",self.layout)
 				self.resetPlaneButton = _pushButton("none",self.layout)
-
-				self.labelRadius = _label("labelRadius",self.layout)
-				self.radiusValue = _lineedit("radiusValue",self.layout,width=60)
-				self.radiusValue.setText("0.00")
 
 				self.textValue = _lineedit("textValue",self.layout)
 
