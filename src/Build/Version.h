@@ -1,7 +1,7 @@
 
 /// Version Number
 #define FCVersionMajor "0"
-#define FCVersionMinor "10"
+#define FCVersionMinor "11"
 #define FCVersionName  "Dagoba"
 
 #define FCRevision      "3225"      //Highest committed revision number
