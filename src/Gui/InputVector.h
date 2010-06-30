@@ -255,6 +255,33 @@ public:
     }
 
 public:
+    void setDirection(const Base::Vector3f& dir)
+    {
+        if (dir.Length() < FLT_EPSILON) {
+            return;
+        }
+
+        // check if the user-defined direction is already there
+        for (int i=0; i<this->direction->count()-1; i++) {
+            QVariant data = this->direction->itemData (i);
+            if (data.canConvert<Base::Vector3f>()) {
+                const Base::Vector3f val = data.value<Base::Vector3f>();
+                if (val == dir) {
+                    this->direction->setCurrentIndex(i);
+                    return;
+                }
+            }
+        }
+
+        // add a new item before the very last item
+        QString display = QString::fromAscii("(%1,%2,%3)")
+            .arg(dir.x)
+            .arg(dir.y)
+            .arg(dir.z);
+        this->direction->insertItem(this->direction->count()-1, display,
+            QVariant::fromValue<Base::Vector3f>(dir));
+        this->direction->setCurrentIndex(this->direction->count()-2);
+    }
     bool directionActivated(LocationDialog* dlg, int index)
     {
         // last item is selected to define direction by user
@@ -267,27 +294,7 @@ public:
                         LocationDialog::tr("Direction must not be the null vector"));
                     return false;
                 }
-
-                // check if the user-defined direction is already there
-                for (int i=0; i<this->direction->count()-1; i++) {
-                    QVariant data = this->direction->itemData (i);
-                    if (data.canConvert<Base::Vector3f>()) {
-                        const Base::Vector3f val = data.value<Base::Vector3f>();
-                        if (val == dir) {
-                            this->direction->setCurrentIndex(i);
-                            return true;
-                        }
-                    }
-                }
-
-                // add a new item before the very last item
-                QString display = QString::fromAscii("(%1,%2,%3)")
-                    .arg(dir.x)
-                    .arg(dir.y)
-                    .arg(dir.z);
-                this->direction->insertItem(this->direction->count()-1, display,
-                    QVariant::fromValue<Base::Vector3f>(dir));
-                this->direction->setCurrentIndex(this->direction->count()-2);
+                setDirection(dir);
             }
         }
         return true;
