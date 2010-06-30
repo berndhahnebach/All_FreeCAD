@@ -194,13 +194,15 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
         else {
             // Do things depending on the mode of the user interaction
             switch (Mode) {
-                case STATUS_SELECT_Point:
+                
+                case STATUS_SELECT_Point:{
                     //Base::Console().Log("Select Point:%d\n",this->DragPoint);
                     // Do selection
-                    _itoa(PreselectPoint,buf,10);
+                    std::stringstream ss;
+                    ss << "Vertex" << PreselectPoint;
                     Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
                                                  ,getSketchObject()->getNameInDocument()
-                                                 ,(std::string("Vertex")+buf).c_str()
+                                                 , ss.str().c_str()
                                                  ,pp->getPoint()[0]
                                                  ,pp->getPoint()[1]
                                                  ,pp->getPoint()[2]);
@@ -208,20 +210,22 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     this->DragPoint = -1;
                     Mode = STATUS_NONE;
                     return true;
-                case STATUS_SELECT_Edge:
+                                         }
+                case STATUS_SELECT_Edge:{
                     //Base::Console().Log("Select Point:%d\n",this->DragPoint);
                     // Do selection
-                    _itoa(PreselectCurve,buf,10);
-                    Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                    std::stringstream ss;
+                    ss << "Edge" << PreselectCurve;
+                                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
                                                  ,getSketchObject()->getNameInDocument()
-                                                 ,(std::string("Edge")+buf).c_str()
+                                                 ,ss.str().c_str()
                                                  ,pp->getPoint()[0]
                                                  ,pp->getPoint()[1]
                                                  ,pp->getPoint()[2]);
 
                     this->DragPoint = -1;
                     Mode = STATUS_NONE;
-                    return true;
+                    return true;}
                 case STATUS_SKETCH_DragPoint:
                     PreselectPoint = DragPoint;
                     this->DragPoint = -1;
