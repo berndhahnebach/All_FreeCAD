@@ -23,8 +23,11 @@
 #ifndef PARTGUI_DLGPRIMITIVES_H
 #define PARTGUI_DLGPRIMITIVES_H
 
+#include <QPointer>
 #include <Gui/InputVector.h>
 #include "ui_DlgPrimitives.h"
+
+class SoEventCallback;
 
 namespace PartGui {
 
@@ -37,6 +40,13 @@ public:
     ~DlgPrimitives();
     void accept();
     QString toPlacement() const;
+
+private Q_SLOTS:
+    void on_viewPositionButton_clicked();
+
+private:
+    static void pickCallback(void * ud, SoEventCallback * n);
+    QPointer<QWidget> activeView;
 };
 
 } // namespace PartGui

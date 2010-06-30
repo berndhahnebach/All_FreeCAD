@@ -22,6 +22,8 @@
 
 
 #include "PreCompiled.h"
+#include <Inventor/SoPickedPoint.h>
+#include <Inventor/events/SoMouseButtonEvent.h>
 
 #include <Base/Interpreter.h>
 #include <Base/Rotation.h>
@@ -30,6 +32,8 @@
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/Command.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 
 #include "DlgPrimitives.h"
 
@@ -42,6 +46,9 @@ DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
 {
     Gui::Command::doCommand(Gui::Command::Doc, "from FreeCAD import Base");
     Gui::Command::doCommand(Gui::Command::Doc, "import Part,PartGui");
+
+    connect(ui.viewPositionButton, SIGNAL(clicked()),
+            this, SLOT(on_viewPositionButton_clicked()));
 }
 
 /*  
@@ -50,6 +57,13 @@ DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
 DlgPrimitives::~DlgPrimitives()
 {
     // no need to delete child widgets, Qt does it all for us
+    if (!this->activeView.isNull()) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>
+            (this->activeView.data())->getViewer();
+        viewer->setEditing(false);
+        viewer->setRedirectToSceneGraph(false);
+        viewer->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), pickCallback,this);
+    }
 }
 
 QString DlgPrimitives::toPlacement() const
@@ -65,6 +79,59 @@ QString DlgPrimitives::toPlacement() const
         .arg(rot[1],0,'f',2)
         .arg(rot[2],0,'f',2)
         .arg(rot[3],0,'f',2);
+}
+
+void DlgPrimitives::pickCallback(void * ud, SoEventCallback * n)
+{
+    const SoMouseButtonEvent * mbe = static_cast<const SoMouseButtonEvent*>(n->getEvent());
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+
+    // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
+    n->getAction()->setHandled();
+    if (mbe->getButton() == SoMouseButtonEvent::BUTTON1) {
+        if (mbe->getState() == SoButtonEvent::UP) {
+            n->setHandled();
+            view->setEditing(false);
+            view->setRedirectToSceneGraph(false);
+            DlgPrimitives* dlg = reinterpret_cast<DlgPrimitives*>(ud);
+            dlg->activeView = 0;
+            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), pickCallback,ud);
+        }
+        else if (mbe->getState() == SoButtonEvent::DOWN) {
+            const SoPickedPoint * point = n->getPickedPoint();
+            if (point) {
+                SbVec3f pnt = point->getPoint();
+                SbVec3f nor = point->getNormal();
+                DlgPrimitives* dlg = reinterpret_cast<DlgPrimitives*>(ud);
+                dlg->ui.xPos->setValue(pnt[0]);
+                dlg->ui.yPos->setValue(pnt[1]);
+                dlg->ui.zPos->setValue(pnt[2]);
+                dlg->ui.setDirection(Base::Vector3f(nor[0],nor[1],nor[2]));
+                n->setHandled();
+            }
+        }
+    }
+}
+
+void DlgPrimitives::on_viewPositionButton_clicked()
+{
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) {
+        QMessageBox::warning(this, tr("Create %1")
+            .arg(ui.comboBox1->currentText()), tr("No active document"));
+        return;
+    }
+
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view && !this->activeView) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        if (!viewer->isEditing()) {
+            this->activeView = view;
+            viewer->setEditing(true);
+            viewer->setRedirectToSceneGraph(true);
+            viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), pickCallback, this);
+        }
+     }
 }
 
 void DlgPrimitives::accept()
