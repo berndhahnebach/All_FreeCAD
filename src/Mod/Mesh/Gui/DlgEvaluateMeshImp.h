@@ -126,8 +126,8 @@ protected:
     void refreshList();
     void showInformation();
     void cleanInformation();
-    void addViewProvider( const char* vp );
-    void removeViewProvider( const char* vp );
+    void addViewProvider(const char* vp, const std::vector<unsigned long>& indices);
+    void removeViewProvider(const char* vp);
     void removeViewProviders();
 
 private:

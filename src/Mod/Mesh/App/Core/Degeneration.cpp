@@ -667,7 +667,8 @@ bool MeshEvalFoldsOnSurface::Evaluate()
                     // is the point projectable onto the facet?
                     rTriangle = _rclMesh.GetFacet(f_beg[*ft]);
                     if (rTriangle.IntersectWithLine(mp,rTriangle.GetNormal(),tmp)) {
-                        this->indices.push_back(*pt);
+                        const std::set<unsigned long>& f = clPt2Facets[*pt];
+                        this->indices.insert(this->indices.end(), f.begin(), f.end());
                         break;
                     }
             }
@@ -692,7 +693,7 @@ bool MeshFixFoldsOnSurface::Fixup()
     MeshEvalFoldsOnSurface eval(_rclMesh);
     if (!eval.Evaluate()) {
         std::vector<unsigned long> inds = eval.GetIndices();
-        _rclMesh.DeletePoints(inds);
+        _rclMesh.DeleteFacets(inds);
     }
 
     return true;

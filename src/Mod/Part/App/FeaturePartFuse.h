@@ -46,6 +46,23 @@ protected:
     //@}
 };
 
+class MultiFuse : public Part::Feature
+{
+    PROPERTY_HEADER(Part::MultiFuse);
+
+public:
+    MultiFuse();
+
+    App::PropertyLinkList Shapes;
+
+    /** @name methods override feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
+};
+
 }
 
 #endif // PART_FEATUREPARTFUSE_H

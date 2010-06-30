@@ -325,20 +325,19 @@ CmdPartFuse::CmdPartFuse()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Union");
-    sToolTipText  = QT_TR_NOOP("Make union of two shapes");
+    sToolTipText  = QT_TR_NOOP("Make union of several shapes");
     sWhatsThis    = "Part_Fuse";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Fuse";
     iAccel        = 0;
 }
 
-
 void CmdPartFuse::activated(int iMsg)
 {
     unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-    if (n != 2) {
+    if (n < 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select two shapes please."));
+            QObject::tr("Select at least two shapes please."));
         return;
     }
 
@@ -347,18 +346,19 @@ void CmdPartFuse::activated(int iMsg)
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Fusion");
-    doCommand(Doc,"App.activeDocument().addObject(\"Part::Fuse\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    doCommand(Doc,"App.activeDocument().addObject(\"Part::MultiFuse\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"__s__=[]");
+    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it)
+        doCommand(Doc,"__s__.append(App.activeDocument().%s)", it->FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Shapes = __s__",FeatName.c_str());
+    doCommand(Doc,"del __s__");
     updateActive();
     commitCommand();
 }
 
 bool CmdPartFuse::isActive(void)
 {
-    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())>=2;
 }
 
 //===========================================================================

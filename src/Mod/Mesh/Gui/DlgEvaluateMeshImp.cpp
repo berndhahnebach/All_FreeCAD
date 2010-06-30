@@ -211,7 +211,7 @@ void DlgEvaluateMeshImp::setMesh(Mesh::Feature* m)
     }
 }
 
-void DlgEvaluateMeshImp::addViewProvider(const char* name)
+void DlgEvaluateMeshImp::addViewProvider(const char* name, const std::vector<unsigned long>& indices)
 {
     removeViewProvider(name);
 
@@ -220,7 +220,7 @@ void DlgEvaluateMeshImp::addViewProvider(const char* name)
         assert(vp->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
         vp->attach(_meshFeature);
         _view->getViewer()->addViewProvider( vp );
-        vp->showDefects();
+        vp->showDefects(indices);
         _vp[name] = vp;
     }
 }
@@ -295,6 +295,7 @@ void DlgEvaluateMeshImp::showInformation()
     analyzeDegeneratedButton->setEnabled(true);
     analyzeIndicesButton->setEnabled(true);
     analyzeSelfIntersectionButton->setEnabled(true);
+    analyzeFoldsButton->setEnabled(true);
     analyzeAllTogether->setEnabled(true);
 
     const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
@@ -315,6 +316,7 @@ void DlgEvaluateMeshImp::cleanInformation()
     checkDegenerationButton->setText( tr("No information") );
     checkIndicesButton->setText( tr("No information") );
     checkSelfIntersectionButton->setText( tr("No information") );
+    checkFoldsButton->setText( tr("No information") );
     analyzeOrientationButton->setDisabled(true);
     repairOrientationButton->setDisabled(true);
     analyzeDuplicatedFacesButton->setDisabled(true);
@@ -329,6 +331,8 @@ void DlgEvaluateMeshImp::cleanInformation()
     repairIndicesButton->setDisabled(true);
     analyzeSelfIntersectionButton->setDisabled(true);
     repairSelfIntersectionButton->setDisabled(true);
+    analyzeFoldsButton->setDisabled(true);
+    repairFoldsButton->setDisabled(true);
     analyzeAllTogether->setDisabled(true);
     repairAllTogether->setDisabled(true);
 }
@@ -379,7 +383,7 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
                 qApp->restoreOverrideCursor();
                 QMessageBox::warning(this, tr("Orientation"),
                     tr("Check failed due to folds on the surface.\n"
-                    "Please run the repair command for folds first"));
+                    "Please run the command to repair folds first"));
                 qApp->setOverrideCursor(Qt::WaitCursor);
             }
         }
@@ -394,7 +398,7 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
             checkOrientationButton->setChecked(true);
             repairOrientationButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider( "MeshGui::ViewProviderMeshOrientation" );
+            addViewProvider( "MeshGui::ViewProviderMeshOrientation", eval.GetIndices());
         }
 
         qApp->restoreOverrideCursor();
@@ -449,17 +453,26 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
         MeshEvalTopology eval(rMesh);
     
         if (eval.Evaluate()) {
-          checkNonmanifoldsButton->setText(tr("No non-manifolds"));
-          checkNonmanifoldsButton->setChecked(false);
-          repairNonmanifoldsButton->setEnabled(false);
-          removeViewProvider("MeshGui::ViewProviderMeshNonManifolds");
+            checkNonmanifoldsButton->setText(tr("No non-manifolds"));
+            checkNonmanifoldsButton->setChecked(false);
+            repairNonmanifoldsButton->setEnabled(false);
+            removeViewProvider("MeshGui::ViewProviderMeshNonManifolds");
         }
         else {
-          checkNonmanifoldsButton->setText(tr("%1 non-manifolds").arg(eval.CountManifolds()));
-          checkNonmanifoldsButton->setChecked(true);
-          repairNonmanifoldsButton->setEnabled(true);
-          repairAllTogether->setEnabled(true);
-          addViewProvider("MeshGui::ViewProviderMeshNonManifolds");
+            checkNonmanifoldsButton->setText(tr("%1 non-manifolds").arg(eval.CountManifolds()));
+            checkNonmanifoldsButton->setChecked(true);
+            repairNonmanifoldsButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
+            const std::vector<std::pair<unsigned long, unsigned long> >& inds = eval.GetIndices();
+            std::vector<unsigned long> indices;
+            indices.reserve(2*inds.size());
+            std::vector<std::pair<unsigned long, unsigned long> >::const_iterator it;
+            for (it = inds.begin(); it != inds.end(); ++it) {
+                indices.push_back(it->first);
+                indices.push_back(it->second);
+            }
+
+            addViewProvider("MeshGui::ViewProviderMeshNonManifolds", indices);
         }
 
         qApp->restoreOverrideCursor();
@@ -524,28 +537,28 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-           addViewProvider("MeshGui::ViewProviderMeshIndices");
+            addViewProvider("MeshGui::ViewProviderMeshIndices", rf.GetIndices());
         }
         else if (!rp.Evaluate()) {
             checkIndicesButton->setText(tr("Invalid point indices"));
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider("MeshGui::ViewProviderMeshIndices");
+            //addViewProvider("MeshGui::ViewProviderMeshIndices", rp.GetIndices());
         }
         else if (!cf.Evaluate()) {
             checkIndicesButton->setText(tr("Multiple point indices"));
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider("MeshGui::ViewProviderMeshIndices");
+            addViewProvider("MeshGui::ViewProviderMeshIndices", cf.GetIndices());
         }
         else if (!nb.Evaluate()) {
             checkIndicesButton->setText(tr("Invalid neighbour indices"));
             checkIndicesButton->setChecked(true);
             repairIndicesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider("MeshGui::ViewProviderMeshIndices");
+            addViewProvider("MeshGui::ViewProviderMeshIndices", nb.GetIndices());
         }
         else {
             checkIndicesButton->setText(tr("No invalid indices"));
@@ -617,7 +630,7 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
             checkDegenerationButton->setChecked(true);
             repairDegeneratedButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider("MeshGui::ViewProviderMeshDegenerations");
+            addViewProvider("MeshGui::ViewProviderMeshDegenerations", degen);
         }
 
         qApp->restoreOverrideCursor();
@@ -684,7 +697,7 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
             repairDuplicatedFacesButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
 
-            addViewProvider("MeshGui::ViewProviderMeshDuplicatedFaces");
+            addViewProvider("MeshGui::ViewProviderMeshDuplicatedFaces", dupl);
         }
 
         qApp->restoreOverrideCursor();
@@ -749,7 +762,7 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
             checkDuplicatedPointsButton->setChecked(true);
             repairDuplicatedPointsButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider("MeshGui::ViewProviderMeshDuplicatedPoints");
+            addViewProvider("MeshGui::ViewProviderMeshDuplicatedPoints", eval.GetIndices());
         }
 
         qApp->restoreOverrideCursor();
@@ -814,7 +827,7 @@ void DlgEvaluateMeshImp::on_analyzeSelfIntersectionButton_clicked()
             checkSelfIntersectionButton->setChecked(true);
             repairSelfIntersectionButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider("MeshGui::ViewProviderMeshSelfIntersections");
+            addViewProvider("MeshGui::ViewProviderMeshSelfIntersections", std::vector<unsigned long>());
         }
 
         qApp->restoreOverrideCursor();
@@ -865,13 +878,15 @@ void DlgEvaluateMeshImp::on_analyzeFoldsButton_clicked()
         qApp->processEvents();
         qApp->setOverrideCursor(Qt::WaitCursor);
 
-        std::vector<unsigned long> inds;
         const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
         MeshEvalFoldsOnSurface s_eval(rMesh);
         MeshEvalFoldsOnBoundary b_eval(rMesh);
         MeshEvalFoldOversOnSurface f_eval(rMesh);
+        bool ok1 = s_eval.Evaluate();
+        bool ok2 = b_eval.Evaluate();
+        bool ok3 = f_eval.Evaluate();
     
-        if (s_eval.Evaluate() && b_eval.Evaluate() && f_eval.Evaluate()) {
+        if (ok1 && ok2 && ok3) {
             checkFoldsButton->setText(tr("No folds on surface"));
             checkFoldsButton->setChecked(false);
             repairFoldsButton->setEnabled(false);
@@ -892,7 +907,7 @@ void DlgEvaluateMeshImp::on_analyzeFoldsButton_clicked()
             checkFoldsButton->setChecked(true);
             repairFoldsButton->setEnabled(true);
             repairAllTogether->setEnabled(true);
-            addViewProvider("MeshGui::ViewProviderMeshFolds");
+            addViewProvider("MeshGui::ViewProviderMeshFolds", inds);
         }
 
         qApp->restoreOverrideCursor();
