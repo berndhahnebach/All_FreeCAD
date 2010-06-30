@@ -156,7 +156,6 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
                                             const SbVec3f &normal, const SoPickedPoint* pp)
 {
-    static char buf[20];
     double x,y;
     SbVec3f pos = point;
     if (pp) {
@@ -376,7 +375,6 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
 {
     PtIndex = -1;
     CurvIndex = -1;
-    static char buf[20];
 
     if (Point) {
         //Base::Console().Log("Point pick\n");
@@ -394,10 +392,11 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
     
         assert(PtIndex < 0 || CurvIndex < 0);
         if(PtIndex>=0){ // if a point is hit
-            _itoa(PreselectPoint,buf,10);
+            std::stringstream ss;
+            ss << "Vertex" << PreselectPoint;
             Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
                                           ,getSketchObject()->getNameInDocument()
-                                          ,(std::string("Vertex")+buf).c_str()
+                                          ,ss.str().c_str()
                                           ,Point->getPoint()[0]
                                           ,Point->getPoint()[1]
                                           ,Point->getPoint()[2]);
@@ -412,10 +411,11 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
             if(CurvIndex != PreselectCurve){
                 PreselectCurve = CurvIndex;
                 PreselectPoint = -1;
-                _itoa(PreselectCurve,buf,10);
+                std::stringstream ss;
+                ss << "Edge" << PreselectCurve;
                 Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
                                              ,getSketchObject()->getNameInDocument()
-                                             ,(std::string("Edge")+buf).c_str()
+                                             ,ss.str().c_str()
                                              ,Point->getPoint()[0]
                                              ,Point->getPoint()[1]
                                              ,Point->getPoint()[2]);
