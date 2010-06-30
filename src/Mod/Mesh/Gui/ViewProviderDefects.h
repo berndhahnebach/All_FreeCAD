@@ -38,26 +38,26 @@ namespace MeshGui {
  */
 class MeshGuiExport ViewProviderMeshDefects : public Gui::ViewProviderDocumentObject
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshDefects);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshDefects);
 
 public:
-  ViewProviderMeshDefects();
-  virtual ~ViewProviderMeshDefects();
+    ViewProviderMeshDefects();
+    virtual ~ViewProviderMeshDefects();
 
-  // Display properties
-  App::PropertyFloat LineWidth;
+    // Display properties
+    App::PropertyFloat LineWidth;
 
-  // Build up the initial Inventor node
-  virtual void attach(App::DocumentObject* pcFeature) = 0;
-  /// Fill up the Inventor node with data
-  virtual void showDefects() = 0;
+    // Build up the initial Inventor node
+    virtual void attach(App::DocumentObject* pcFeature) = 0;
+    /// Fill up the Inventor node with data
+    virtual void showDefects(const std::vector<unsigned long>&) = 0;
 
 protected:
-  /// get called by the container whenever a property has been changed
-  void onChanged(const App::Property* prop);
+    /// get called by the container whenever a property has been changed
+    void onChanged(const App::Property* prop);
 
-  SoCoordinate3 * pcCoords;
-  SoDrawStyle   * pcDrawStyle;
+    SoCoordinate3 * pcCoords;
+    SoDrawStyle   * pcDrawStyle;
 };
 
 /** The ViewProviderMeshOrientation class displays wrong oriented facets (i.e. flipped normals) in orange. 
@@ -65,17 +65,17 @@ protected:
  */
 class MeshGuiExport ViewProviderMeshOrientation : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshOrientation);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshOrientation);
 
 public:
-  ViewProviderMeshOrientation();
-  virtual ~ViewProviderMeshOrientation();
+    ViewProviderMeshOrientation();
+    virtual ~ViewProviderMeshOrientation();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoFaceSet* pcFaces;
+    SoFaceSet* pcFaces;
 };
 
 /** The ViewProviderMeshNonManifolds class displays edges with more than two faces attached in red. 
@@ -83,17 +83,17 @@ protected:
  */
 class MeshGuiExport ViewProviderMeshNonManifolds : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshNonManifolds);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshNonManifolds);
 
 public:
-  ViewProviderMeshNonManifolds();
-  virtual ~ViewProviderMeshNonManifolds();
+    ViewProviderMeshNonManifolds();
+    virtual ~ViewProviderMeshNonManifolds();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoLineSet* pcLines;
+    SoLineSet* pcLines;
 };
 
 /** The ViewProviderMeshDuplicatedFaces class displays duplicated faces in red. 
@@ -101,17 +101,17 @@ protected:
  */
 class MeshGuiExport ViewProviderMeshDuplicatedFaces : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshDuplicatedFaces);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshDuplicatedFaces);
 
 public:
-  ViewProviderMeshDuplicatedFaces();
-  virtual ~ViewProviderMeshDuplicatedFaces();
+    ViewProviderMeshDuplicatedFaces();
+    virtual ~ViewProviderMeshDuplicatedFaces();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoFaceSet* pcFaces;
+    SoFaceSet* pcFaces;
 };
 
 /** The ViewProviderMeshDegenerations class displays degenerated faces to a line or even a point in orange. 
@@ -119,47 +119,47 @@ protected:
  */
 class MeshGuiExport ViewProviderMeshDegenerations : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshDegenerations);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshDegenerations);
 
 public:
-  ViewProviderMeshDegenerations();
-  virtual ~ViewProviderMeshDegenerations();
+    ViewProviderMeshDegenerations();
+    virtual ~ViewProviderMeshDegenerations();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoLineSet* pcLines;
+    SoLineSet* pcLines;
 };
 
 class MeshGuiExport ViewProviderMeshDuplicatedPoints : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshDuplicatedPoints);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshDuplicatedPoints);
 
 public:
-  ViewProviderMeshDuplicatedPoints();
-  virtual ~ViewProviderMeshDuplicatedPoints();
+    ViewProviderMeshDuplicatedPoints();
+    virtual ~ViewProviderMeshDuplicatedPoints();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoPointSet* pcPoints;
+    SoPointSet* pcPoints;
 };
 
 class MeshGuiExport ViewProviderMeshIndices : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshIndices);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshIndices);
 
 public:
-  ViewProviderMeshIndices();
-  virtual ~ViewProviderMeshIndices();
+    ViewProviderMeshIndices();
+    virtual ~ViewProviderMeshIndices();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoFaceSet* pcFaces;
+    SoFaceSet* pcFaces;
 };
 
 /** The ViewProviderMeshSelfIntersections class displays lines of self-intersections. 
@@ -167,32 +167,32 @@ protected:
  */
 class MeshGuiExport ViewProviderMeshSelfIntersections : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshSelfIntersections);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshSelfIntersections);
 
 public:
-  ViewProviderMeshSelfIntersections();
-  virtual ~ViewProviderMeshSelfIntersections();
+    ViewProviderMeshSelfIntersections();
+    virtual ~ViewProviderMeshSelfIntersections();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoLineSet* pcLines;
+    SoLineSet* pcLines;
 };
 
 class MeshGuiExport ViewProviderMeshFolds : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshFolds);
+    PROPERTY_HEADER(MeshGui::ViewProviderMeshFolds);
 
 public:
-  ViewProviderMeshFolds();
-  virtual ~ViewProviderMeshFolds();
+    ViewProviderMeshFolds();
+    virtual ~ViewProviderMeshFolds();
 
-  void attach(App::DocumentObject* pcFeature);
-  void showDefects();
+    void attach(App::DocumentObject* pcFeature);
+    void showDefects(const std::vector<unsigned long>&);
 
 protected:
-  SoFaceSet* pcFaces;
+    SoFaceSet* pcFaces;
 };
 
 } // namespace MeshGui

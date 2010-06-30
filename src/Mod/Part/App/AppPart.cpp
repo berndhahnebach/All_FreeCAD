@@ -139,6 +139,7 @@ void AppPartExport initPart()
     Part::Common                ::init();
     Part::Cut                   ::init();
     Part::Fuse                  ::init();
+    Part::MultiFuse             ::init();
     Part::Section               ::init();
     Part::Extrusion             ::init();
     Part::Fillet                ::init();
