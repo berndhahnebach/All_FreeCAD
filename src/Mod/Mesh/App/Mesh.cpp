@@ -997,7 +997,6 @@ void MeshObject::removeFoldsOnSurface()
 {
     std::vector<unsigned long> indices;
     MeshCore::MeshEvalFoldsOnSurface s_eval(_kernel);
-    MeshCore::MeshEvalFoldsOnBoundary b_eval(_kernel);
     MeshCore::MeshEvalFoldOversOnSurface f_eval(_kernel);
 
     f_eval.Evaluate();
@@ -1006,17 +1005,23 @@ void MeshObject::removeFoldsOnSurface()
     s_eval.Evaluate();
     std::vector<unsigned long> inds1 = s_eval.GetIndices();
 
-    b_eval.Evaluate();
-    std::vector<unsigned long> inds2 = b_eval.GetIndices();
-
     // remove duplicates
     inds.insert(inds.end(), inds1.begin(), inds1.end());
-    inds.insert(inds.end(), inds2.begin(), inds2.end());
     std::sort(inds.begin(), inds.end());
     inds.erase(std::unique(inds.begin(), inds.end()), inds.end());
 
     if (!inds.empty())
         deleteFacets(inds);
+
+    // do this as additional check after removing folds on closed area
+    for (int i=0; i<5; i++) {
+        MeshCore::MeshEvalFoldsOnBoundary b_eval(_kernel);
+        if (b_eval.Evaluate())
+            break;
+        inds = b_eval.GetIndices();
+        if (!inds.empty())
+            deleteFacets(inds);
+    }
 }
 
 void MeshObject::removeFullBoundaryFacets()
