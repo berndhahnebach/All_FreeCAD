@@ -265,6 +265,10 @@ public:
   inline unsigned short CountOpenEdges() const;
   /** Returns true if there is an edge without neighbour, otherwise false. */
   inline bool HasOpenEdge() const;
+  /** Returns true if the two facets have the same orientation, false otherwise
+   * Therefore the two facets must be adjacent.
+   */
+  inline bool HasSameOrientation(const MeshFacet&) const;
   /** Flips the orientation of the facet. */
   void FlipNormal (void)
   {
@@ -840,6 +844,22 @@ inline unsigned short MeshFacet::CountOpenEdges() const
 inline bool MeshFacet::HasOpenEdge() const
 {
     return (CountOpenEdges() != 0);
+}
+
+inline bool MeshFacet::HasSameOrientation(const MeshFacet& f) const
+{
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (_aulPoints[i] == f._aulPoints[j]) {
+                if ((_aulPoints[(i+1)%3] == f._aulPoints[(j+1)%3]) ||
+                    (_aulPoints[(i+2)%3] == f._aulPoints[(j+2)%3])) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 inline unsigned short MeshFacet::Side (unsigned long ulNIndex) const

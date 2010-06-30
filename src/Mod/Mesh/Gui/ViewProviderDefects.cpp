@@ -44,6 +44,7 @@
 #include <Gui/SoFCSelection.h>
 
 #include <Mod/Mesh/App/Core/Degeneration.h>
+#include <Mod/Mesh/App/Core/Evaluation.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -63,6 +64,7 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshDuplicatedPoints, MeshGui::ViewProvider
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshDegenerations, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshIndices, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshSelfIntersections, MeshGui::ViewProviderMeshDefects)
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshFolds, MeshGui::ViewProviderMeshDefects)
 
 ViewProviderMeshDefects::ViewProviderMeshDefects()
 {
@@ -617,4 +619,92 @@ void ViewProviderMeshSelfIntersections::showDefects()
   }
 
   setDisplayMaskMode("Line");
+}
+
+// ----------------------------------------------------------------------
+
+ViewProviderMeshFolds::ViewProviderMeshFolds()
+{
+  pcFaces = new SoFaceSet;
+  pcFaces->ref();
+}
+
+ViewProviderMeshFolds::~ViewProviderMeshFolds()
+{
+  pcFaces->unref();
+}
+
+void ViewProviderMeshFolds::attach(App::DocumentObject* pcFeat)
+{
+  ViewProviderDocumentObject::attach( pcFeat );
+
+  SoGroup* pcFaceRoot = new SoGroup();
+
+  SoDrawStyle* pcFlatStyle = new SoDrawStyle();
+  pcFlatStyle->style = SoDrawStyle::FILLED;
+  pcFaceRoot->addChild(pcFlatStyle);
+  
+  SoShapeHints * flathints = new SoShapeHints;
+  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+  flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+  pcFaceRoot->addChild(flathints);
+
+  // Draw lines
+  SoSeparator* linesep = new SoSeparator;
+  SoBaseColor * basecol = new SoBaseColor;
+  basecol->rgb.setValue( 1.0f, 0.0f, 0.0f );
+  linesep->addChild(basecol);
+  linesep->addChild(pcCoords);
+  linesep->addChild(pcFaces);
+  pcFaceRoot->addChild(linesep);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  linesep->addChild(markcol);
+  linesep->addChild(marker);
+
+  addDisplayMaskMode(pcFaceRoot, "Face");
+}
+
+void ViewProviderMeshFolds::showDefects()
+{
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
+  MeshCore::MeshEvalFoldsOnSurface s_eval(rMesh);
+  MeshCore::MeshEvalFoldsOnBoundary b_eval(rMesh);
+  MeshCore::MeshEvalFoldOversOnSurface f_eval(rMesh);
+
+  f_eval.Evaluate();
+  std::vector<unsigned long> inds  = f_eval.GetIndices();
+  s_eval.Evaluate();
+  std::vector<unsigned long> inds1 = s_eval.GetIndices();
+  b_eval.Evaluate();
+  std::vector<unsigned long> inds2 = b_eval.GetIndices();
+  inds.insert(inds.end(), inds1.begin(), inds1.end());
+  inds.insert(inds.end(), inds2.begin(), inds2.end());
+
+  // remove duplicates
+  std::sort(inds.begin(), inds.end());
+  inds.erase(std::unique(inds.begin(), inds.end()), inds.end());
+
+  pcCoords->point.deleteValues(0);
+  pcCoords->point.setNum(3*inds.size());
+  MeshCore::MeshFacetIterator cF(rMesh);
+  unsigned long i=0;
+  unsigned long j=0;
+  for ( std::vector<unsigned long>::const_iterator it = inds.begin(); it != inds.end(); ++it ) {
+    cF.Set(*it);
+    for ( int k=0; k<3; k++ ) {
+      Base::Vector3f cP = cF->_aclPoints[k];
+      // move a bit in normal direction to overlay the original faces
+      cP += 0.001f * cF->GetNormal();
+      pcCoords->point.set1Value(i++,cP.x,cP.y,cP.z);
+    }
+    pcFaces->numVertices.set1Value(j++, 3);
+  }
+
+  setDisplayMaskMode("Face");
 }

@@ -347,6 +347,39 @@ public:
     bool Fixup();
 };
 
+class MeshExport MeshEvalFoldOversOnSurface : public MeshEvaluation
+{
+public:
+    MeshEvalFoldOversOnSurface (const MeshKernel &rclM) : MeshEvaluation( rclM ) { }
+    ~MeshEvalFoldOversOnSurface() {}
+
+    bool Evaluate();
+    std::vector<unsigned long> GetIndices() const
+    { return this->indices; }
+
+private:
+    std::vector<unsigned long> indices;
+};
+
+/**
+ * The MeshEvalBorderFacet class removes facets whose all three vertices are
+ * part of a boundary.
+ * @see MeshEvalSingleFacet
+ */
+class MeshExport MeshEvalBorderFacet : public MeshEvaluation
+{
+public:
+  MeshEvalBorderFacet (const MeshKernel &rclB, std::vector<unsigned long>& f)
+    : MeshEvaluation(rclB), _facets(f) {}
+  virtual ~MeshEvalBorderFacet () {}
+  bool Evaluate();
+
+protected:
+    std::vector<unsigned long>& _facets;
+};
+
+// ----------------------------------------------------
+
 /**
  * The MeshEvalRangeFacet class checks whether a facet points to neighbour
  * facets that are out of range. All errors detected by this class would also

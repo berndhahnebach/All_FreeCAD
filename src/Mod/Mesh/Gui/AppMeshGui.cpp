@@ -128,6 +128,7 @@ void MeshGuiExport initMeshGui()
     MeshGui::ViewProviderMeshDegenerations      ::init();
     MeshGui::ViewProviderMeshIndices            ::init();
     MeshGui::ViewProviderMeshSelfIntersections  ::init();
+    MeshGui::ViewProviderMeshFolds              ::init();
     MeshGui::Workbench                          ::init();
     Gui::ViewProviderBuilder::add(
         Mesh::PropertyMeshKernel::getClassTypeId(),

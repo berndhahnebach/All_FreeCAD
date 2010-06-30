@@ -112,6 +112,10 @@ protected Q_SLOTS:
     void on_analyzeSelfIntersectionButton_clicked();
     void on_repairSelfIntersectionButton_clicked();
 
+    void on_checkFoldsButton_clicked();
+    void on_analyzeFoldsButton_clicked();
+    void on_repairFoldsButton_clicked();
+
     void on_analyzeAllTogether_clicked();
     void on_repairAllTogether_clicked();
 
