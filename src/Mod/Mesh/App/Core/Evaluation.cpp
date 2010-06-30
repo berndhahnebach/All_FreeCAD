@@ -527,33 +527,6 @@ bool MeshFixSingleFacet::Fixup ()
 
 // ----------------------------------------------------------------
 
-bool MeshEvalBorderFacet::Evaluate()
-{
-    const MeshCore::MeshFacetArray& facets = _rclMesh.GetFacets();
-    MeshCore::MeshFacetArray::_TConstIterator f_it,
-        f_beg = facets.begin(), f_end = facets.end();
-    MeshCore::MeshRefPointToPoints vv_it(_rclMesh);
-    MeshCore::MeshRefPointToFacets vf_it(_rclMesh);
-
-    for (f_it = facets.begin(); f_it != f_end; ++f_it) {
-        bool ok = true;
-        for (int i=0; i<3; i++) {
-            unsigned long index = f_it->_aulPoints[i];
-            if (vv_it[index].size() == vf_it[index].size()) {
-                ok = false;
-                break;
-            }
-        }
-
-        if (ok)
-            _facets.push_back(f_it-f_beg);
-    }
-
-    return _facets.empty();
-}
-
-// ----------------------------------------------------------------
-
 bool MeshEvalSelfIntersection::Evaluate ()
 {
     // Contains bounding boxes for every facet 

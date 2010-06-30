@@ -703,7 +703,7 @@ bool MeshFixFoldsOnSurface::Fixup()
 bool MeshEvalFoldsOnBoundary::Evaluate()
 {
     // remove all boundary facets with two open edges and where
-    // the angle to the neighbour is more that 30 degree
+    // the angle to the neighbour is more than 30 degree
     this->indices.clear();
     const MeshFacetArray& rFacAry = _rclMesh.GetFacets();
     for (MeshFacetArray::_TConstIterator it = rFacAry.begin(); it != rFacAry.end(); ++it) {
@@ -737,6 +737,66 @@ bool MeshFixFoldsOnBoundary::Fixup()
     }
 
     return true;
+}
+
+// ----------------------------------------------------------------------
+
+bool MeshEvalFoldOversOnSurface::Evaluate()
+{
+    this->indices.clear();
+    const MeshCore::MeshFacetArray& facets = _rclMesh.GetFacets();
+    MeshCore::MeshFacetArray::_TConstIterator f_it,
+        f_beg = facets.begin(), f_end = facets.end();
+
+    Base::Vector3f n1, n2;
+    for (f_it = facets.begin(); f_it != f_end; ++f_it) {
+        for (int i=0; i<3; i++) {
+            unsigned long index1 = f_it->_aulNeighbours[i];
+            unsigned long index2 = f_it->_aulNeighbours[(i+1)%3];
+            if (index1 != ULONG_MAX && index2 != ULONG_MAX) {
+                // if the topology is correct but the normals flip from
+                // two neighbours we have a fold
+                if (f_it->HasSameOrientation(f_beg[index1]) &&
+                    f_it->HasSameOrientation(f_beg[index2])) {
+                    n1 = _rclMesh.GetFacet(index1).GetNormal();
+                    n2 = _rclMesh.GetFacet(index2).GetNormal();
+                    if (n1 * n2 < 0.0f) {
+                        this->indices.push_back(f_it-f_beg);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return this->indices.empty();
+}
+
+// ----------------------------------------------------------------
+
+bool MeshEvalBorderFacet::Evaluate()
+{
+    const MeshCore::MeshFacetArray& facets = _rclMesh.GetFacets();
+    MeshCore::MeshFacetArray::_TConstIterator f_it,
+        f_beg = facets.begin(), f_end = facets.end();
+    MeshCore::MeshRefPointToPoints vv_it(_rclMesh);
+    MeshCore::MeshRefPointToFacets vf_it(_rclMesh);
+
+    for (f_it = facets.begin(); f_it != f_end; ++f_it) {
+        bool ok = true;
+        for (int i=0; i<3; i++) {
+            unsigned long index = f_it->_aulPoints[i];
+            if (vv_it[index].size() == vf_it[index].size()) {
+                ok = false;
+                break;
+            }
+        }
+
+        if (ok)
+            _facets.push_back(f_it-f_beg);
+    }
+
+    return _facets.empty();
 }
 
 // ----------------------------------------------------------------------

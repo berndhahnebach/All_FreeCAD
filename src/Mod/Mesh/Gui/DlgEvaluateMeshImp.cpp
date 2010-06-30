@@ -372,8 +372,18 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
         const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
         MeshEvalOrientation eval(rMesh);
         std::vector<unsigned long> inds = eval.GetIndices();
-    
-        if (inds.empty()) {
+        if (inds.empty() && !eval.Evaluate()) {
+            checkOrientationButton->setText(tr("Flipped normals found"));
+            MeshEvalFoldOversOnSurface f_eval(rMesh);
+            if (!f_eval.Evaluate()) {
+                qApp->restoreOverrideCursor();
+                QMessageBox::warning(this, tr("Orientation"),
+                    tr("Check failed due to folds on the surface.\n"
+                    "Please run the repair command for folds first"));
+                qApp->setOverrideCursor(Qt::WaitCursor);
+            }
+        }
+        else if (inds.empty()) {
             checkOrientationButton->setText( tr("No flipped normals") );
             checkOrientationButton->setChecked(false);
             repairOrientationButton->setEnabled(false);
@@ -834,6 +844,91 @@ void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
         repairSelfIntersectionButton->setEnabled(false);
         checkSelfIntersectionButton->setChecked(false);
         removeViewProvider("MeshGui::ViewProviderMeshSelfIntersections");
+    }
+}
+
+void DlgEvaluateMeshImp::on_checkFoldsButton_clicked()
+{
+    std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshFolds");
+    if (it != _vp.end()) {
+        if (checkFoldsButton->isChecked())
+            it->second->show();
+        else
+            it->second->hide();
+    }
+}
+
+void DlgEvaluateMeshImp::on_analyzeFoldsButton_clicked()
+{
+    if (_meshFeature) {
+        analyzeFoldsButton->setEnabled(false);
+        qApp->processEvents();
+        qApp->setOverrideCursor(Qt::WaitCursor);
+
+        std::vector<unsigned long> inds;
+        const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
+        MeshEvalFoldsOnSurface s_eval(rMesh);
+        MeshEvalFoldsOnBoundary b_eval(rMesh);
+        MeshEvalFoldOversOnSurface f_eval(rMesh);
+    
+        if (s_eval.Evaluate() && b_eval.Evaluate() && f_eval.Evaluate()) {
+            checkFoldsButton->setText(tr("No folds on surface"));
+            checkFoldsButton->setChecked(false);
+            repairFoldsButton->setEnabled(false);
+            removeViewProvider("MeshGui::ViewProviderMeshFolds");
+        }
+        else {
+            std::vector<unsigned long> inds  = f_eval.GetIndices();
+            std::vector<unsigned long> inds1 = s_eval.GetIndices();
+            std::vector<unsigned long> inds2 = b_eval.GetIndices();
+            inds.insert(inds.end(), inds1.begin(), inds1.end());
+            inds.insert(inds.end(), inds2.begin(), inds2.end());
+
+            // remove duplicates
+            std::sort(inds.begin(), inds.end());
+            inds.erase(std::unique(inds.begin(), inds.end()), inds.end());
+            
+            checkFoldsButton->setText(tr("%1 folds on surface").arg(inds.size()));
+            checkFoldsButton->setChecked(true);
+            repairFoldsButton->setEnabled(true);
+            repairAllTogether->setEnabled(true);
+            addViewProvider("MeshGui::ViewProviderMeshFolds");
+        }
+
+        qApp->restoreOverrideCursor();
+        analyzeFoldsButton->setEnabled(true);
+    }
+}
+
+void DlgEvaluateMeshImp::on_repairFoldsButton_clicked()
+{
+    if (_meshFeature) {
+        const char* docName = App::GetApplication().getDocumentName(_meshFeature->getDocument());
+        const char* objName = _meshFeature->getNameInDocument();
+        Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
+        qApp->setOverrideCursor(Qt::WaitCursor);
+        doc->openCommand("Remove folds");
+        try {
+            //Gui::Application::Instance->runCommand(
+            //    true, "App.getDocument(\"%s\").getObject(\"%s\").removeFoldsOnSurface()\n"
+            //        , docName, objName);
+            Mesh::Feature* mesh = static_cast<Mesh::Feature*>(
+                doc->getDocument()->getObject(objName));
+            Mesh::MeshObject* m = mesh->Mesh.startEditing();
+            m->removeFoldsOnSurface();
+            mesh->Mesh.finishEditing();
+        }
+        catch (const Base::Exception& e) {
+            QMessageBox::warning(this, tr("Folds"), QString::fromLatin1(e.what()));
+        }
+
+        doc->commitCommand();
+        doc->getDocument()->recompute();
+    
+        qApp->restoreOverrideCursor();
+        repairFoldsButton->setEnabled(false);
+        checkFoldsButton->setChecked(false);
+        removeViewProvider("MeshGui::ViewProviderMeshFolds");
     }
 }
 

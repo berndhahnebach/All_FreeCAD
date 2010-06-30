@@ -995,11 +995,28 @@ void MeshObject::removeSelfIntersections()
 
 void MeshObject::removeFoldsOnSurface()
 {
-    unsigned long count = _kernel.CountFacets();
-    MeshCore::MeshFixFoldsOnSurface(_kernel).Fixup();
-    MeshCore::MeshFixFoldsOnBoundary(_kernel).Fixup();
-    if (_kernel.CountFacets() < count)
-        this->_segments.clear();
+    std::vector<unsigned long> indices;
+    MeshCore::MeshEvalFoldsOnSurface s_eval(_kernel);
+    MeshCore::MeshEvalFoldsOnBoundary b_eval(_kernel);
+    MeshCore::MeshEvalFoldOversOnSurface f_eval(_kernel);
+
+    f_eval.Evaluate();
+    std::vector<unsigned long> inds  = f_eval.GetIndices();
+
+    s_eval.Evaluate();
+    std::vector<unsigned long> inds1 = s_eval.GetIndices();
+
+    b_eval.Evaluate();
+    std::vector<unsigned long> inds2 = b_eval.GetIndices();
+
+    // remove duplicates
+    inds.insert(inds.end(), inds1.begin(), inds1.end());
+    inds.insert(inds.end(), inds2.begin(), inds2.end());
+    std::sort(inds.begin(), inds.end());
+    inds.erase(std::unique(inds.begin(), inds.end()), inds.end());
+
+    if (!inds.empty())
+        deleteFacets(inds);
 }
 
 void MeshObject::removeFullBoundaryFacets()

@@ -180,6 +180,21 @@ protected:
   SoLineSet* pcLines;
 };
 
+class MeshGuiExport ViewProviderMeshFolds : public ViewProviderMeshDefects
+{
+  PROPERTY_HEADER(MeshGui::ViewProviderMeshFolds);
+
+public:
+  ViewProviderMeshFolds();
+  virtual ~ViewProviderMeshFolds();
+
+  void attach(App::DocumentObject* pcFeature);
+  void showDefects();
+
+protected:
+  SoFaceSet* pcFaces;
+};
+
 } // namespace MeshGui
 
 
