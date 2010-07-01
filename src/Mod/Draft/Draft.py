@@ -3364,7 +3364,7 @@ class ToggleConstructionMode():
 		FreeCADGui.activeWorkbench().draftToolBar.ui.constrButton.toggle()
 
 
-class SendToDrawing(Modifier):
+class ToolSendToDrawing(Modifier):
         "this tool sends the selected objects to the active Drawing sheet"
         
 	def GetResources(self):
@@ -3411,6 +3411,8 @@ class SendToDrawing(Modifier):
                 else:
                         pagename = str(self.ui.pageBox.itemText(self.ui.pageBox.currentIndex()))
                         page = self.doc.findObjects('Drawing::FeaturePage',pagename)[0]
+                page.ViewObject.HintScale = str(scale)
+                page.ViewObject.HintOffset = str(offset)
                 pb = open(str(page.PageResult))
                 fb = pb.read()
                 pageheight = re.findall("height=\"(.*?)\"",fb)
@@ -3464,7 +3466,7 @@ class SendToDrawing(Modifier):
         def writeShape(self,obj,modifier=100):
                 "returns a svg representation of a planar shape"
                 name = obj.Name
-                if obj.Shape.Faces:
+                if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
                         fill = self.getrgb(obj.ViewObject.ShapeColor)
                 else: fill = 'none'
                 stroke = self.getrgb(obj.ViewObject.LineColor)
@@ -3488,7 +3490,7 @@ class SendToDrawing(Modifier):
                 else:
                         cen = obj.Shape.Edges[0].Curve.Center
                         rad = obj.Shape.Edges[0].Curve.Radius
-                        svg += '<circle cx="'+str(cen.x)
+                        svg = '<circle cx="'+str(cen.x)
                         svg += '" cy="'+str(cen.y)
                         svg += '" r="'+str(rad)+'" '
                 svg += 'fill="' + fill + '" stroke="' + stroke + '" '
@@ -3617,4 +3619,4 @@ FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
 FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
-FreeCADGui.addCommand('Draft_SendToDrawing',SendToDrawing())
+FreeCADGui.addCommand('Draft_SendToDrawing',ToolSendToDrawing())
