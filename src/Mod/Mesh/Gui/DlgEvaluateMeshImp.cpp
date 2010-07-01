@@ -415,7 +415,7 @@ void DlgEvaluateMeshImp::on_repairOrientationButton_clicked()
         doc->openCommand("Harmonize normals");
         try {
             Gui::Application::Instance->runCommand(
-                true, "App.getDocument(\"%s\").getObject(\"%s\").harmonizeNormals()\n"
+                true, "App.getDocument(\"%s\").getObject(\"%s\").harmonizeNormals()"
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
@@ -489,7 +489,7 @@ void DlgEvaluateMeshImp::on_repairNonmanifoldsButton_clicked()
         doc->openCommand("Remove non-manifolds");
         try {
             Gui::Application::Instance->runCommand(
-                true, "App.getDocument(\"%s\").getObject(\"%s\").removeNonManifolds()\n"
+                true, "App.getDocument(\"%s\").getObject(\"%s\").removeNonManifolds()"
                     , docName, objName);
         } 
         catch (const Base::Exception& e) {
@@ -581,7 +581,7 @@ void DlgEvaluateMeshImp::on_repairIndicesButton_clicked()
         doc->openCommand("Fix indices");
         try {
             Gui::Application::Instance->runCommand(
-                true, "App.getDocument(\"%s\").getObject(\"%s\").fixIndices()\n"
+                true, "App.getDocument(\"%s\").getObject(\"%s\").fixIndices()"
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
@@ -647,7 +647,7 @@ void DlgEvaluateMeshImp::on_repairDegeneratedButton_clicked()
         doc->openCommand("Remove degenerated faces");
         try {
             Gui::Application::Instance->runCommand(
-                true, "App.getDocument(\"%s\").getObject(\"%s\").fixDegenerations()\n"
+                true, "App.getDocument(\"%s\").getObject(\"%s\").fixDegenerations()"
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
@@ -714,7 +714,7 @@ void DlgEvaluateMeshImp::on_repairDuplicatedFacesButton_clicked()
         doc->openCommand("Remove duplicated faces");
         try {
             Gui::Application::Instance->runCommand(
-                true, "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedFacets()\n"
+                true, "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedFacets()"
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
@@ -779,7 +779,7 @@ void DlgEvaluateMeshImp::on_repairDuplicatedPointsButton_clicked()
         doc->openCommand("Remove duplicated points");
         try {
             Gui::Application::Instance->runCommand(
-                true, "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedPoints()\n"
+                true, "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedPoints()"
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
@@ -844,7 +844,7 @@ void DlgEvaluateMeshImp::on_repairSelfIntersectionButton_clicked()
         doc->openCommand("Fix self-intersections");
         try {
             Gui::Application::Instance->runCommand(
-                true, "App.getDocument(\"%s\").getObject(\"%s\").fixSelfIntersections()\n"
+                true, "App.getDocument(\"%s\").getObject(\"%s\").fixSelfIntersections()"
                     , docName, objName);
         }
         catch (const Base::Exception& e) {
@@ -924,14 +924,9 @@ void DlgEvaluateMeshImp::on_repairFoldsButton_clicked()
         qApp->setOverrideCursor(Qt::WaitCursor);
         doc->openCommand("Remove folds");
         try {
-            //Gui::Application::Instance->runCommand(
-            //    true, "App.getDocument(\"%s\").getObject(\"%s\").removeFoldsOnSurface()\n"
-            //        , docName, objName);
-            Mesh::Feature* mesh = static_cast<Mesh::Feature*>(
-                doc->getDocument()->getObject(objName));
-            Mesh::MeshObject* m = mesh->Mesh.startEditing();
-            m->removeFoldsOnSurface();
-            mesh->Mesh.finishEditing();
+            Gui::Application::Instance->runCommand(
+                true, "App.getDocument(\"%s\").getObject(\"%s\").removeFoldsOnSurface()"
+                    , docName, objName);
         }
         catch (const Base::Exception& e) {
             QMessageBox::warning(this, tr("Folds"), QString::fromLatin1(e.what()));
@@ -956,6 +951,7 @@ void DlgEvaluateMeshImp::on_analyzeAllTogether_clicked()
     on_analyzeDegeneratedButton_clicked();
     on_analyzeIndicesButton_clicked();
     on_analyzeSelfIntersectionButton_clicked();
+    on_analyzeFoldsButton_clicked();
 }
 
 void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
@@ -966,45 +962,57 @@ void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
         const char* objName = _meshFeature->getNameInDocument();
         Gui::Document* doc = Gui::Application::Instance->getDocument(docName);
         doc->openCommand("Repair mesh");
-        //bool state = Base::Sequencer().setLocked(true);
-
-        // containers with indices of invalid elements
-        std::vector<unsigned long> orientation;
-        std::vector<unsigned long> manifolds;
-        std::vector<unsigned long> degenerated;
-        std::vector<unsigned long> duplicatedf;
-        std::vector<unsigned long> duplicatedp;
-        std::vector<std::pair<unsigned long, unsigned long> > intersection;
 
         bool run = false;
+        bool self = true;
         int max_iter=10;
         const MeshKernel& rMesh = _meshFeature->Mesh.getValue().getKernel();
         try {
             do {
                 run = false;
                 {
-                    MeshEvalOrientation eval(rMesh);
-                    std::vector<unsigned long> inds = eval.GetIndices();
-                    if (!inds.empty() && inds != orientation) {
+                    MeshEvalSelfIntersection eval(rMesh);
+                    if (self && !eval.Evaluate()) {
                         Gui::Application::Instance->runCommand(true,
-                            "App.getDocument(\"%s\").getObject(\"%s\").harmonizeNormals()\n",
+                            "App.getDocument(\"%s\").getObject(\"%s\").fixSelfIntersections()",
                             docName, objName);
                         run = true;
                     }
-                    orientation = inds;
+                    else {
+                        self = false; // once no self-intersections found do not repeat it later on
+                    }
+                    qApp->processEvents();
+                }
+                {
+                    MeshEvalFoldsOnSurface s_eval(rMesh);
+                    MeshEvalFoldsOnBoundary b_eval(rMesh);
+                    MeshEvalFoldOversOnSurface f_eval(rMesh);
+                    if (!s_eval.Evaluate() || !b_eval.Evaluate() || !f_eval.Evaluate()) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").removeFoldsOnSurface()",
+                            docName, objName);
+                        run = true;
+                    }
+                    qApp->processEvents();
+                }
+                {
+                    MeshEvalOrientation eval(rMesh);
+                    if (!eval.Evaluate()) {
+                        Gui::Application::Instance->runCommand(true,
+                            "App.getDocument(\"%s\").getObject(\"%s\").harmonizeNormals()",
+                            docName, objName);
+                        run = true;
+                    }
                     qApp->processEvents();
                 }
                 {
                     MeshEvalTopology eval(rMesh);
-                    std::vector<unsigned long> inds;
-                    eval.GetFacetManifolds(inds);
-                    if (!inds.empty() && inds != manifolds) {
+                    if (!eval.Evaluate()) {
                         Gui::Application::Instance->runCommand(true,
-                            "App.getDocument(\"%s\").getObject(\"%s\").removeNonManifolds()\n",
+                            "App.getDocument(\"%s\").getObject(\"%s\").removeNonManifolds()",
                             docName, objName);
                         run = true;
                     }
-                    manifolds = inds;
                     qApp->processEvents();
                 }
                 {
@@ -1014,58 +1022,39 @@ void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
                     MeshEvalNeighbourhood nb(rMesh);
                     if (!rf.Evaluate() || !rp.Evaluate() || !cf.Evaluate() || !nb.Evaluate()) {
                         Gui::Application::Instance->runCommand(true,
-                            "App.getDocument(\"%s\").getObject(\"%s\").fixIndices()\n",
+                            "App.getDocument(\"%s\").getObject(\"%s\").fixIndices()",
                             docName, objName);
                         run = true;
                     }
                 }
                 {
                     MeshEvalDegeneratedFacets eval(rMesh);
-                    std::vector<unsigned long> inds = eval.GetIndices();
-                    if (!inds.empty() && inds != degenerated) {
+                    if (!eval.Evaluate()) {
                         Gui::Application::Instance->runCommand(true,
-                            "App.getDocument(\"%s\").getObject(\"%s\").fixDegenerations()\n",
+                            "App.getDocument(\"%s\").getObject(\"%s\").fixDegenerations()",
                             docName, objName);
                         run = true;
                     }
-                    degenerated = inds;
                     qApp->processEvents();
                 }
                 {
                     MeshEvalDuplicateFacets eval(rMesh);
-                    std::vector<unsigned long> inds = eval.GetIndices();
-                    if (!inds.empty() && duplicatedf != inds) {
+                    if (!eval.Evaluate()) {
                         Gui::Application::Instance->runCommand(true,
-                            "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedFacets()\n",
+                            "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedFacets()",
                             docName, objName);
                         run = true;
                     }
-                    duplicatedf = inds;
                     qApp->processEvents();
                 }
                 {
                     MeshEvalDuplicatePoints eval(rMesh);
-                    std::vector<unsigned long> inds = eval.GetIndices();
-                    if (!inds.empty() && inds != duplicatedp) {
+                    if (!eval.Evaluate()) {
                         Gui::Application::Instance->runCommand(true,
-                            "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedPoints()\n",
+                            "App.getDocument(\"%s\").getObject(\"%s\").removeDuplicatedPoints()",
                             docName, objName);
                         run = true;
                     }
-                    duplicatedp = inds;
-                    qApp->processEvents();
-                }
-                {
-                    MeshEvalSelfIntersection eval(rMesh);
-                    std::vector<std::pair<unsigned long, unsigned long> > inds;
-                    eval.GetIntersections(inds);
-                    if (!inds.empty() && inds != intersection) {
-                        Gui::Application::Instance->runCommand(true,
-                            "App.getDocument(\"%s\").getObject(\"%s\").fixSelfIntersections()\n",
-                            docName, objName);
-                        run = true;
-                    }
-                    intersection = inds;
                     qApp->processEvents();
                 }
             } while(checkRepeatButton->isChecked() && run && (--max_iter > 0));
@@ -1077,7 +1066,6 @@ void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
             QMessageBox::warning(this, tr("Mesh repair"), QString::fromLatin1("Unknown error occurred."));
         }
 
-        //Base::Sequencer().setLocked(state);
         doc->commitCommand();
         doc->getDocument()->recompute();
     }
