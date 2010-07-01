@@ -325,6 +325,7 @@ class toolBar:
 				QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
 				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
 				QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
+                                QtCore.QObject.connect(self.pageBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.changePage)
                                 QtCore.QObject.connect(self.pageButton,QtCore.SIGNAL("pressed()"),self.drawPage)
 				QtCore.QMetaObject.connectSlotsByName(draftToolbar)
 
@@ -764,6 +765,12 @@ class toolBar:
 
                         def drawPage(self):
                                 self.sourceCmd.draw()
+
+                        def changePage(self,index):
+                                pagename = str(self.pageBox.itemText(index))
+                                vobj = FreeCADGui.ActiveDocument.getObject(pagename)
+                                self.scaleBox.setEditText(vobj.HintScale)
+                                self.marginValue.setValue(float(vobj.HintOffset))
 
 #---------------------------------------------------------------------------
 # Initialization
