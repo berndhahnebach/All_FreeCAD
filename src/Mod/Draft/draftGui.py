@@ -769,8 +769,9 @@ class toolBar:
                         def changePage(self,index):
                                 pagename = str(self.pageBox.itemText(index))
                                 vobj = FreeCADGui.ActiveDocument.getObject(pagename)
-                                self.scaleBox.setEditText(vobj.HintScale)
-                                self.marginValue.setValue(float(vobj.HintOffset))
+                                if vobj:
+                                        self.scaleBox.setEditText(vobj.HintScale)
+                                        self.marginValue.setValue(float(vobj.HintOffset))
 
 #---------------------------------------------------------------------------
 # Initialization
