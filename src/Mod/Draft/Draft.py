@@ -1042,6 +1042,7 @@ class Rectangle:
 class ViewProviderRectangle:
 	def __init__(self, obj):
 		obj.Proxy = self
+                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
 
 	def attach(self, obj):
 		return
@@ -1118,6 +1119,7 @@ class Circle:
 class ViewProviderCircle:
 	def __init__(self, obj):
 		obj.Proxy = self
+                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
 
 	def attach(self, obj):
 		return
@@ -3426,7 +3428,8 @@ class ToolSendToDrawing(Modifier):
                         if 'Dimline' in obj.PropertiesList:
                                 svg = obj.ViewObject.Proxy.getSVG(modifier)
                         elif obj.isDerivedFrom('Part::Feature'):
-                                svg = self.writeShape(obj,modifier)
+                                fill = self.getFill(obj.ViewObject,page)
+                                svg = self.writeShape(obj,modifier,fill)
                         elif obj.Type == 'App::Annotation':
                                 svg = self.writeText(obj,modifier)
                         if svg:
@@ -3463,12 +3466,9 @@ class ToolSendToDrawing(Modifier):
                 svg += '</text>\n'
                 return svg
 
-        def writeShape(self,obj,modifier=100):
+        def writeShape(self,obj,modifier=100,fill='none'):
                 "returns a svg representation of a planar shape"
                 name = obj.Name
-                if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
-                        fill = self.getrgb(obj.ViewObject.ShapeColor)
-                else: fill = 'none'
                 stroke = self.getrgb(obj.ViewObject.LineColor)
                 width = obj.ViewObject.LineWidth/modifier
                 if len(obj.Shape.Vertexes) > 1:
@@ -3493,12 +3493,46 @@ class ToolSendToDrawing(Modifier):
                         svg = '<circle cx="'+str(cen.x)
                         svg += '" cy="'+str(cen.y)
                         svg += '" r="'+str(rad)+'" '
-                svg += 'fill="' + fill + '" stroke="' + stroke + '" '
+                svg += 'stroke="' + stroke + '" '
                 svg += 'stroke-width="' + str(width) + ' px" '
                 svg += 'style="stroke-width:'+ str(width)
-                svg += ';stroke-miterlimit:4;stroke-dasharray:none"'
+                svg += ';stroke-miterlimit:4;stroke-dasharray:none;'
+                svg += 'fill:'+fill+'"'
                 svg += '/>\n'
                 return svg
+
+        def getFill(self,viewobj,page):
+                "returns a svg fill value"
+                color = self.getrgb(viewobj.LineColor)
+                if viewobj.Object.Shape.Faces and (viewobj.DisplayMode != "Wireframe"):
+                        if 'FillStyle' in viewobj.PropertiesList:
+                                if viewobj.FillStyle == 'Shape Color':
+                                        fill = self.getrgb(viewobj.ShapeColor)
+                                elif viewobj.FillStyle == 'Simple Hatch':
+                                        fill = 'url(#hatch01)'
+                                        self.addPattern('Hatch01',page,color)
+                                elif viewobj.FillStyle == 'Cross Hatch':
+                                        fill = 'url(#hatch02)'
+                                        self.addPattern('Hatch02',page,color)
+                        else:
+                                fill = self.getrgb(viewobj.ShapeColor)   
+                else: fill = 'none'
+                print fill
+                return fill
+
+        def addPattern(self,pattern,page,svgcolor):
+                "adds a given pattern to the page"
+                patterns = {'Hatch01':'<pattern id="hatch01" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/></g></pattern>','Hatch02':'<pattern id="hatch02" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/><path d="M.12,0 l-.12,.12"/></g></pattern>'}
+                vobj = page.getObject('View'+pattern)
+                if not vobj:
+                        view = self.doc.addObject('Drawing::FeatureView','View'+pattern)
+                        svg = patterns[pattern]
+                        svg = svg.replace('DefaultColor',svgcolor)
+                        view.ViewResult = svg
+                        view.X = 0
+                        view.Y = 0
+                        view.Scale = 1
+                        page.addObject(view)
 
         def getrgb(self,color):
 		"returns a rgb value #000000 from a freecad color"
