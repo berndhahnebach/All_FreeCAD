@@ -248,6 +248,15 @@ def getRealName(name):
 			return name[:len(name)-(i-1)]
 	return name
 
+def getGroupContents(objectslist):
+        "if any object of the given list is a group, its content is appened to the list"
+        for ob in objectslist:
+                if ob.Type == "App::DocumentObjectGroup":
+                        for subob in ob.Group:
+                                if not subob in objectslist:
+                                        objectslist.append(subob)
+        return objectslist
+
 def snapPoint (target,point,cursor,ctrl=False):
 	'''
 	Snap function
@@ -2086,7 +2095,7 @@ class Modifier:
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
 			
-class Move(Modifier):
+class ToolMove(Modifier):
 	"This class translates the selected objects from a point to another point."
 
 	def GetResources(self):
@@ -2114,6 +2123,7 @@ class Move(Modifier):
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = getSelection()
+                self.sel = getGroupContents(self.sel)
 		self.ui.pointUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
@@ -2223,7 +2233,7 @@ class Move(Modifier):
 			self.finish()
 
 			
-class ApplyStyle(Modifier):
+class ToolApplyStyle(Modifier):
 	"this class applies the current line width and line color to selected objects"
 
 	def GetResources(self):
@@ -2248,7 +2258,7 @@ class ApplyStyle(Modifier):
 			else: formatObject(ob)
 
 			
-class Rotate(Modifier):
+class ToolRotate(Modifier):
 	'''
 	This class rotates the selected objects.
 	'''
@@ -2279,6 +2289,7 @@ class Rotate(Modifier):
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = getSelection()
+                self.sel = getGroupContents(self.sel)
 		self.step = 0
 		self.center = None
 		self.ui.arcUi()
@@ -2445,7 +2456,7 @@ class Rotate(Modifier):
 
 
 
-class Offset(Modifier):
+class ToolOffset(Modifier):
 	"This class offsets the selected objects."
 
 	def GetResources(self):
@@ -2746,7 +2757,7 @@ class Offset(Modifier):
 		self.finish()
 			
 
-class Upgrade(Modifier):
+class ToolUpgrade(Modifier):
 	'''
 	This class upgrades selected objects in different ways, following this list (in order):
 	- if there are more than one faces, the faces are merged (union)
@@ -2880,7 +2891,7 @@ class Upgrade(Modifier):
 		select(newob)
 		Modifier.finish(self)
 				
-class Downgrade(Modifier):
+class ToolDowngrade(Modifier):
 	'''
 	This class downgrades selected objects in different ways, following this list (in order):
 	- if there are more than one faces, the subsequent faces are subtracted from the first one
@@ -2969,7 +2980,7 @@ class Downgrade(Modifier):
 
 
 
-class Trimex(Modifier):
+class ToolTrimex(Modifier):
 	'''this tool trims or extends lines, wires and arcs,
 	or extrudes single faces. SHIFT constrains to the last point
 	or extrudes in direction to the face normal.'''
@@ -3241,7 +3252,7 @@ class Trimex(Modifier):
 		self.trimObject()
 		self.finish()
 
-class Scale(Modifier):
+class ToolScale(Modifier):
 	"This class scales the selected objects from a base point."
 
 	def GetResources(self):
@@ -3269,6 +3280,7 @@ class Scale(Modifier):
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = getSelection()
+                self.sel = getGroupContents(self.sel)
 		self.ui.pointUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
@@ -3664,13 +3676,13 @@ FreeCADGui.addCommand('Draft_CloseLine',CloseLine())
 FreeCADGui.addCommand('Draft_UndoLine',UndoLine())
 
 # modification commands
-FreeCADGui.addCommand('Draft_Move',Move())
-FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
-FreeCADGui.addCommand('Draft_Rotate',Rotate())
-FreeCADGui.addCommand('Draft_Offset',Offset())
-FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
-FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
-FreeCADGui.addCommand('Draft_Trimex',Trimex())
-FreeCADGui.addCommand('Draft_Scale',Scale())
+FreeCADGui.addCommand('Draft_Move',ToolMove())
+FreeCADGui.addCommand('Draft_ApplyStyle',ToolApplyStyle())
+FreeCADGui.addCommand('Draft_Rotate',ToolRotate())
+FreeCADGui.addCommand('Draft_Offset',ToolOffset())
+FreeCADGui.addCommand('Draft_Upgrade',ToolUpgrade())
+FreeCADGui.addCommand('Draft_Downgrade',ToolDowngrade())
+FreeCADGui.addCommand('Draft_Trimex',ToolTrimex())
+FreeCADGui.addCommand('Draft_Scale',ToolScale())
 FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
 FreeCADGui.addCommand('Draft_SendToDrawing',ToolSendToDrawing())
