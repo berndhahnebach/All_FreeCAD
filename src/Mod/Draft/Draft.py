@@ -2829,7 +2829,8 @@ class Upgrade(Modifier):
                                         u = faces.pop(0)
                                         for f in faces:
                                                 u = u.fuse(f)
-                                                u = fcgeo.concatenate(u)
+                                                if fcgeo.isCoplanar(faces):
+                                                        u = fcgeo.concatenate(u)
                                         newob = self.doc.addObject("Part::Feature","Union")
                                         newob.Shape = u
                                         formatObject(newob,lastob)
@@ -2918,14 +2919,25 @@ class Downgrade(Modifier):
 				edges.append(e)
 		# applying transformation
 		self.doc.openTransaction("Downgrade")
-		if (len(faces) > 1):
+                if (len(faces) > 2) and (len(self.sel) == 2):
+                        # we have only 2 objects but more than 2 faces: cut 2nd from 1st
+                        s1 = self.sel[0].Shape
+                        s2 = self.sel[1].Shape
+                        newob = self.doc.addObject("Part::Feature","Subtraction")
+                        newob.Shape = s1.cut(s2)
+                        for ob in self.sel:
+                                formatObject(newob,ob)
+                                self.doc.removeObject(ob.Name)
+		elif (len(faces) > 1):
 			if len(self.sel) == 1:
+                                # one object with several faces: split it
 				for f in faces:
 					newob = self.doc.addObject("Part::Feature","Face")
 					newob.Shape = f
 					formatObject(newob,self.sel[0])
 				self.doc.removeObject(ob.Name)
 			else:
+                                # several objects: remove all the faces from the first one
 				u = faces.pop(0)
 				for f in faces:
 					u = u.cut(f)
@@ -2935,6 +2947,7 @@ class Downgrade(Modifier):
 					formatObject(newob,ob)
 					self.doc.removeObject(ob.Name)
 		elif (len(faces) > 0):
+                        # no faces: split wire into single edges
 			w=faces[0].Wires[0]
 			for ob in self.sel:
 				newob = self.doc.addObject("Part::Feature","Wire")
@@ -3196,12 +3209,19 @@ class Trimex(Modifier):
 		"trims the actual object"
 		if self.extrudeMode:
 			newshape = self.extrude(self.point,self.shift,real=True)
+                        self.doc.openTransaction("Extrude")
+                        ob = self.doc.addObject("Part::Feature",self.sel.Name)
+                        ob.Shape = newshape
+                        formatObject(ob,self.sel)
+                        self.doc.commitTransaction()
+                        self.doc.removeObject(self.sel.Name)
+                        self.sel = ob
 		else:
 			edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
 			newshape = Part.Wire(edges)
-		self.doc.openTransaction("Trim/extend")
-		self.sel.Shape = newshape
-		self.doc.commitTransaction()
+                        self.doc.openTransaction("Trim/extend")
+                        self.sel.Shape = newshape
+                        self.doc.commitTransaction()
 		for g in self.ghost: g.off()
 
 	def finish(self,closed=False):		
@@ -3212,7 +3232,7 @@ class Trimex(Modifier):
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
 			for g in self.ghost: g.finalize()
-			self.sel.ViewObject.Visibility = True
+                        self.sel.ViewObject.Visibility = True
 			select(self.sel)
 
 	def numericRadius(self,dist):
@@ -3584,7 +3604,7 @@ def makeCircle(radius, placement=None, face=True):
         FreeCAD.ActiveDocument.recompute()
         return obj
         
-def makeRectangle(length,height,placement=None,face=True):
+def makeRectangle(length, height, placement=None, face=True):
         '''makeRectangle(length,width,[placement,face]): Creates a Rectangle
         object with length in X direction and height in Y direction.
         If a placement is given, it is used. If face is False, the

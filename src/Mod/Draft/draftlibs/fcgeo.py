@@ -540,7 +540,17 @@ def findClosestCircle(point,circles):
 			dist = c.Center.sub(point).Length
 			closest = c
 	return closest
-	
+
+def isCoplanar(faces):
+        "checks if all faces in the given list are coplanar"
+        if len(faces) < 2: return True
+        base =faces[0].normalAt(.5,.5)
+        for i in range(1,len(faces)):
+                normal = faces[i].normalAt(.5,.5)
+                if (normal.getAngle(base) < .0001) or (normal.getAngle(base) > 3.1416):
+                        return False
+        return True
+        
 # circle functions *********************************************************
 
 
