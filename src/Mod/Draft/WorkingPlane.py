@@ -148,8 +148,13 @@ class plane:
                 self.weak = True
 
         def getRotation(self):
-                "returns a matrix describing the working plane orientation"
-                return fcvec.getPlaneRotation(self.u,self.v)
+                "returns a placement describing the working plane orientation ONLY"
+                m = FreeCAD.Matrix(
+                        self.u.x,self.v.x,self.axis.x,0,
+                        self.u.y,self.v.y,self.axis.y,0,
+                        self.u.z,self.v.z,self.axis.z,0,
+                        0.0,0.0,0.0,1.0)
+                return FreeCAD.Placement(m)
 
         def getPlacement(self):
                 "returns the placement of the working plane"

@@ -1528,7 +1528,7 @@ class ToolRectangle(Creator):
                 if abs(fcvec.angle(p4.sub(p1),plane.u,plane.axis)) > 1: length = -length
                 height = p2.sub(p1).Length
                 if abs(fcvec.angle(p2.sub(p1),plane.v,plane.axis)) > 1: height = -height
-                p = plane.getPlacement()
+                p = plane.getRotation()
                 p.move(p1)
                 self.doc.openTransaction("Create "+self.featureName)
                 makeRectangle(length,height,p,self.ui.hasFill.isChecked())
@@ -1793,7 +1793,7 @@ class ToolArc(Creator):
 	def drawArc(self):
 		"actually draws the FreeCAD object"
 		if self.closedCircle:
-                        p = plane.getPlacement()
+                        p = plane.getRotation()
                         p.move(self.center)
                         self.doc.openTransaction("Create "+self.featureName)
 			makeCircle(self.rad,p,self.ui.hasFill.isChecked())
