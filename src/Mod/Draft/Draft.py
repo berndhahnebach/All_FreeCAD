@@ -793,7 +793,7 @@ class ghostTracker(Tracker):
 #---------------------------------------------------------------------------
 		
 class Dimension:
-	"this class defines Dimension objects"
+	"The Dimension object"
 	def __init__(self, obj):
 		obj.addProperty("App::PropertyVector","Start","Base",\
 					"Startpoint of dimension").Start = FreeCAD.Vector(0,0,0)
@@ -810,8 +810,8 @@ class Dimension:
 	def execute(self, fp):
 		pass
 
-class DimensionViewProvider:
-	"this class defines a view provider for Dimension objects"
+class ViewProviderDimension:
+	"A View Provider for the Dimension object"
 	def __init__(self, obj):
 		prm = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		obj.addProperty("App::PropertyLength","FontSize","Base","Font size").FontSize=prm.GetFloat("textheight")
@@ -1023,6 +1023,8 @@ class DimensionViewProvider:
 		return svg
 
 class Rectangle:
+        "The Rectangle object"
+        
 	def __init__(self, obj):
 		obj.addProperty("App::PropertyDistance","Length","Base","Length of the rectangle")
 		obj.addProperty("App::PropertyDistance","Height","Base","Height of the rectange")
@@ -1049,6 +1051,8 @@ class Rectangle:
                 fp.Placement = plm
 
 class ViewProviderRectangle:
+        "A View Provider for the Rectangle object"
+        
 	def __init__(self, obj):
 		obj.Proxy = self
                 obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
@@ -1105,6 +1109,8 @@ class ViewProviderRectangle:
 		return None
 
 class Circle:
+        "The Circle object"
+        
 	def __init__(self, obj):
 		obj.addProperty("App::PropertyDistance","Radius","Base","Radius of the circle")
 		obj.Proxy = self
@@ -1126,6 +1132,8 @@ class Circle:
                 fp.Placement = plm
 
 class ViewProviderCircle:
+        "A View Provider for the Circle object"
+        
 	def __init__(self, obj):
 		obj.Proxy = self
                 obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
@@ -1180,12 +1188,107 @@ class ViewProviderCircle:
 
 	def __setstate__(self,state):
 		return None
+
+class Wire:
+        "The Wire object"
+        
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyVectorList","Points","Base","The vertices of the wire")
+                obj.addProperty("App::PropertyBool","Closed","Base","If the wire is closed or not")
+		obj.Proxy = self
+                obj.Closed = False
+
+	def execute(self, fp):
+                self.createGeometry(fp)
+
+        def onChanged(self, fp, prop):
+                if prop in ["Points","Closed"]:
+                        self.createGeometry(fp)
+                        
+        def createGeometry(self,fp):
+                plm = fp.Placement
+                if fp.Points:
+                        if fp.Points[0] == fp.Points[-1]:
+                                fp.Closed = True
+                                fp.Points.pop()
+                        if fp.Closed and (len(fp.Points) > 2):
+                                shape = Part.makePolygon(fp.Points+[fp.Points[0]])
+                                shape = Part.Face(shape)
+                        else:
+                                edges = []
+                                pts = fp.Points[1:]
+                                lp = fp.Points[0]
+                                for p in pts:
+                                        edges.append(Part.Line(lp,p).toShape())
+                                        lp = p
+                                shape = Part.Wire(edges)
+                        fp.Shape = shape
+                fp.Placement = plm
+
+class ViewProviderWire:
+        "A View Provider for the Wire object"
+        
+	def __init__(self, obj):
+		obj.Proxy = self
+                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
+
+	def attach(self, obj):
+		return
+
+	def updateData(self, fp, prop):
+		return
+
+	def getDisplayModes(self,obj):
+		modes=[]
+		return modes
+
+	def getDefaultDisplayMode(self):
+		return "Flat Lines"
+
+	def setDisplayMode(self,mode):
+		return mode
+
+	def onChanged(self, vp, prop):
+		return
+
+	def getIcon(self):
+		return """
+                       /* XPM */
+                       static char * wire_xpm[] = {
+                       "16 16 3 1",
+                       " 	c None",
+                       ".	c #000000",
+                       "+	c #0000FF",
+                       "                ",
+                       "                ",
+                       "            ....",
+                       "        ....+++.",
+                       "    ....++++++. ",
+                       "....+++++++++.  ",
+                       ".+++++++++++.   ",
+                       " .+++++++++.    ",
+                       " .++++++++++.   ",
+                       "  .++++++++++.  ",
+                       "  .+++++++++++. ",
+                       "   .++++++++++..",
+                       "   .++++++++..  ",
+                       "    .+++++..    ",
+                       "    .+++..      ",
+                       "     ...        "};
+		       """
+
+	def __getstate__(self):
+		return None
+
+	def __setstate__(self,state):
+		return None
+
                 
 #---------------------------------------------------------------------------
 # Helper tools
 #---------------------------------------------------------------------------
 	
-class SelectPlane:
+class ToolSelectPlane:
 	"choose a plane for Draft module geometry creation"
 
 	def GetResources(self):
@@ -1281,7 +1384,7 @@ class SelectPlane:
 #---------------------------------------------------------------------------
 
 class Creator:
-	" General settings for all geometry creation tools"
+	"General settings for all geometry creation tools"
 	def Activated(self):
 		if FreeCAD.activeDraftCommand:
 			FreeCAD.activeDraftCommand.finish()
@@ -1316,11 +1419,9 @@ class Creator:
 			self.view.removeEventCallback("SoEvent",self.call)
 	
 
-class Line(Creator):
-	'''
-	This class creates a line or group of lines feature. 
-	Takes 1 optional argument, the max number of points.
-	'''
+class ToolLine(Creator):
+	"The Line FreeCAD command definition"
+
 	def __init__(self, wiremode=False):
 		self.isWire = wiremode
 
@@ -1342,28 +1443,21 @@ class Line(Creator):
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
-		if closed and (len(self.node) > 2):
-			currentshape = self.obj.Shape
-			first = self.node[0]
-			last = self.node[len(self.node)-1]
-			newseg = Part.Line(last,first).toShape()
-			e=currentshape.Edges
-			e.append(newseg)
-			newshape=Part.Wire(e)
-			self.obj.Shape = newshape
+		if (len(self.node) > 1):
+                        old = self.obj.Name
+                        self.doc.removeObject(old)
+                        self.doc.openTransaction("Create "+self.featureName)
+                        makeWire(self.node,closed)
+                        self.doc.commitTransaction()
 		if self.ui:
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
 			self.snap.finalize()
 		Creator.finish(self)
 
-	def createObject(self):
-		"creates an object in the current doc"
-		self.doc.openTransaction("Create "+self.featureName) 
+	def createTempObject(self):
+		"creates a temporary object in the current doc so we can snap to it" 
 		self.obj=self.doc.addObject("Part::Feature",self.featureName)
-		self.doc.commitTransaction()
-		formatObject(self.obj)
-		select(self.obj)
 
 	def action(self,arg):
 		"scene event handler"
@@ -1412,7 +1506,7 @@ class Line(Creator):
 			self.linetrack.on()
 			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point:\n").toLatin1()))
 		elif (len(self.node) == 2):
-			self.createObject()
+			self.createTempObject()
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
@@ -1443,17 +1537,17 @@ class Line(Creator):
 
 
 
-class Wire(Line):
+class ToolWire(ToolLine):
         "a FreeCAD command for creating a wire"
 	def __init__(self):
-		Line.__init__(self,wiremode=True)
+		ToolLine.__init__(self,wiremode=True)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_wire',
 			'MenuText': str(translate("draft", "Wire").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a multiple-point wire. CTRL to snap, SHIFT to constrain").toLatin1())}
 
 
-class FinishLine:
+class ToolFinishLine:
 	"a FreeCAD command to finish any running Line drawing operation"
 	def Activated(self):
 		if (FreeCAD.activeDraftCommand != None):
@@ -1465,7 +1559,7 @@ class FinishLine:
 			'ToolTip': str(translate("draft", "Finishes a line without closing it").toLatin1())}
 
 	
-class CloseLine:
+class ToolCloseLine:
 	"a FreeCAD command to close any running Line drawing operation"
 	def Activated(self):
 		if (FreeCAD.activeDraftCommand != None):
@@ -1477,7 +1571,7 @@ class CloseLine:
 			'ToolTip': str(translate("draft", "Closes the line being drawn").toLatin1())}
 
 
-class UndoLine:
+class ToolUndoLine:
 	"a FreeCAD command to undo last drawn segment of a line"
 	def Activated(self):
 		if (FreeCAD.activeDraftCommand != None):
@@ -1884,7 +1978,7 @@ class ToolCircle(ToolArc):
 			'ToolTip': str(translate("draft", "Creates a circle. CTRL to snap, ALT to select tangent objects").toLatin1())}
 
 	
-class Text(Creator):
+class ToolText(Creator):
 	'''
 	This class creates an annotation feature.
 	'''
@@ -3642,7 +3736,7 @@ def makeDimension(p1,p2,p3=None):
         typecheck([(p1,Vector), (p2,Vector), (p3,Vector)], "makeDimension")
         obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
 	Dimension(obj)
-	DimensionViewProvider(obj.ViewObject)
+	ViewProviderDimension(obj.ViewObject)
 	obj.Start = p1
 	obj.End = p2
         if not p3:
@@ -3655,25 +3749,46 @@ def makeDimension(p1,p2,p3=None):
 	FreeCAD.ActiveDocument.recompute()
         return obj
 
+def makeWire(pointslist,closed=False,placement=None,face=True):
+        '''makeWire(pointslist,[closed],[placement]): Creates a Wire object
+        from the given list of vectors. If closed is True or first
+        and last points are identical, the wire is closed. If face is
+        true (and wire is closed), the wire will appear filled.'''
+        typecheck([(pointslist,list), (closed,bool)], "makeWire")
+        if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
+        if len(pointslist) == 2: fname = "Line"
+        else: fname = "Wire"
+        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",fname)
+        Wire(obj)
+        ViewProviderWire(obj.ViewObject)
+        obj.Points = pointslist
+        obj.Closed = closed
+        if not face: obj.ViewObject.DisplayMode = "Wireframe"
+        if placement: obj.Placement = placement
+        formatObject(obj)
+	select(obj)
+	FreeCAD.ActiveDocument.recompute()
+        return obj
+
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
 
 		
 # drawing commands
-FreeCADGui.addCommand('Draft_SelectPlane',SelectPlane())
-FreeCADGui.addCommand('Draft_Line',Line())
-FreeCADGui.addCommand('Draft_Wire',Wire())
+FreeCADGui.addCommand('Draft_SelectPlane',ToolSelectPlane())
+FreeCADGui.addCommand('Draft_Line',ToolLine())
+FreeCADGui.addCommand('Draft_Wire',ToolWire())
 FreeCADGui.addCommand('Draft_Circle',ToolCircle())
 FreeCADGui.addCommand('Draft_Arc',ToolArc())
-FreeCADGui.addCommand('Draft_Text',Text())
+FreeCADGui.addCommand('Draft_Text',ToolText())
 FreeCADGui.addCommand('Draft_Rectangle',ToolRectangle())
 FreeCADGui.addCommand('Draft_Dimension',ToolDimension())
 
 # context commands
-FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
-FreeCADGui.addCommand('Draft_CloseLine',CloseLine())
-FreeCADGui.addCommand('Draft_UndoLine',UndoLine())
+FreeCADGui.addCommand('Draft_FinishLine',ToolFinishLine())
+FreeCADGui.addCommand('Draft_CloseLine',ToolCloseLine())
+FreeCADGui.addCommand('Draft_UndoLine',ToolUndoLine())
 
 # modification commands
 FreeCADGui.addCommand('Draft_Move',ToolMove())

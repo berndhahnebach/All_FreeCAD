@@ -128,11 +128,11 @@ class toolBar:
 				self.draftToolbar = draftToolbar
                                 self.crossedViews = []
 
-				def _pushButton (name, layout, hide=True, icon=None, width=60):
+				def _pushButton (name, layout, hide=True, icon=None, width=66):
 					button = QtGui.QPushButton(draftToolbar)
 					#button.setGeometry(geometry)
 					button.setObjectName(name)
-                                        button.setMaximumSize(QtCore.QSize(width,22))
+                                        button.setMaximumSize(QtCore.QSize(width,26))
 					if hide: button.hide()
                                         if icon:
                                                 button.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(icon[0],icon[1],64,64))))
@@ -152,7 +152,7 @@ class toolBar:
                                         lineedit.setObjectName(name)
                                         if hide: lineedit.hide()
                                         if not width: width = 800
-                                        lineedit.setMaximumSize(QtCore.QSize(width,18))
+                                        lineedit.setMaximumSize(QtCore.QSize(width,22))
                                         layout.addWidget(lineedit)
                                         return lineedit
 
