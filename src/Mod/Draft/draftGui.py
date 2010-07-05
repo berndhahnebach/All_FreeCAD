@@ -160,7 +160,7 @@ class toolBar:
                                 self.layout.setDirection(QtGui.QBoxLayout.LeftToRight)
                                 self.layout.setObjectName("layout")
 
-                                self.promptlabel = _label("promptlabel",self.layout)
+                                self.promptlabel = _label("promptlabel",self.layout, hide=False)
 				self.cmdlabel = _label("cmdlabel",self.layout, hide=False)
 				boldtxt = QtGui.QFont()
 				boldtxt.setWeight(75)
