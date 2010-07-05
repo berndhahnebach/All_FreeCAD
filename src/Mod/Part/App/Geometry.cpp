@@ -277,6 +277,11 @@ GeomBSplineCurve::~GeomBSplineCurve()
 {
 }
 
+void GeomBSplineCurve::setHandle(const Handle_Geom_BSplineCurve& c)
+{
+    myCurve = c;
+}
+
 const Handle_Geom_Geometry& GeomBSplineCurve::handle() const
 {
     return myCurve;

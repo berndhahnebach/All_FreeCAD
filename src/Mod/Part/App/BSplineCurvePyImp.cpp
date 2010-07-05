@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Geom_BSplineCurve.hxx>
+# include <GeomAPI_PointsToBSpline.hxx>
 # include <gp_Pnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColgp_Array1OfPnt.hxx>
@@ -52,9 +53,41 @@ PyObject *BSplineCurvePy::PyMake(struct _typeobject *, PyObject *, PyObject *)  
 }
 
 // constructor method
-int BSplineCurvePy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
+int BSplineCurvePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    return 0;
+    if (PyArg_ParseTuple(args, "")) {
+        return 0;
+    }
+
+    PyErr_Clear();
+    PyObject *plist;
+    if (PyArg_ParseTuple(args, "O!", &(PyList_Type), &plist)) {
+        Py::List list(plist);
+        TColgp_Array1OfPnt pnts(1,list.size());
+        int index=1;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Base::Vector3d vec = Py::Vector(*it).toVector();
+            pnts(index++) = gp_Pnt(vec.x,vec.y,vec.z);
+        }
+
+        try {
+            GeomAPI_PointsToBSpline fit(pnts);
+            Handle_Geom_BSplineCurve spline = fit.Curve();
+            if (!spline.IsNull()) {
+                this->getGeomBSplineCurvePtr()->setHandle(spline);
+            }
+            return 0;
+        }
+        catch (Standard_Failure) {
+            PyErr_SetString(PyExc_Exception, "cannot create B-Spline curve from points");
+            return -1;
+        }
+    }
+
+    PyErr_SetString(PyExc_TypeError, "B-Spline constructor accepts:\n"
+        "-- empty parameter list\n"
+        "-- list of points to fit curve into");
+    return -1;
 }
 
 PyObject* BSplineCurvePy::isRational(PyObject *args)
