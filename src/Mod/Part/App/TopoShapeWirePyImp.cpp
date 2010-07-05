@@ -23,7 +23,9 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Approx_Curve3d.hxx>
 # include <ShapeAlgo_AlgoContainer.hxx>
+# include <BRepAdaptor_CompCurve.hxx>
 # include <BRepBuilderAPI_MakeWire.hxx>
 # include <BRepOffsetAPI_MakeOffset.hxx>
 # include <TopoDS.hxx>
@@ -160,6 +162,33 @@ PyObject* TopoShapeWirePy::makeHomogenousWires(PyObject *args)
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+PyObject* TopoShapeWirePy::approximate(PyObject *args)
+{
+    double tol2d = gp::Resolution();
+    double tol3d = 0.0001;
+    int maxseg=10, maxdeg=3;
+    if (!PyArg_ParseTuple(args, "ddii",&tol2d,&tol3d,&maxseg,&maxdeg))
+        return 0;
+    try {
+        BRepAdaptor_CompCurve adapt(TopoDS::Wire(getTopoShapePtr()->_Shape));
+        Handle_Adaptor3d_HCurve hcurve = adapt.Trim(adapt.FirstParameter(),
+                                                    adapt.LastParameter(),
+                                                    tol2d);
+        Approx_Curve3d approx(hcurve, tol3d, GeomAbs_C0, maxseg, maxdeg);
+        if (approx.IsDone()) {
+            return new BSplineCurvePy(new GeomBSplineCurve(approx.Curve()));
+        }
+        else {
+            PyErr_SetString(PyExc_Exception, "failed to approximate wire");
+            return 0;
+        }
+    }
+    catch (Standard_Failure) {
+        PyErr_SetString(PyExc_Exception, "failed to approximate wire");
         return 0;
     }
 }
