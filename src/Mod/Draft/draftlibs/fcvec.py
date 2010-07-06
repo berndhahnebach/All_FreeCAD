@@ -181,12 +181,31 @@ def getPlaneRotation(u,v,w=None):
         return m
 
 def reorient(u,ref):
-        "Checks the orientation of u and reorients on positive axis"
-        if round(u.z) == 0:
-                if ref == "x":
-                        if (angle(u) > math.pi/2) or (angle(u) < -math.pi/2):
+        '''Checks the orientation of u and reorients on
+        what we consider positive axis direction'''
+        if ref == "x":
+                if u.x < 0:
+                        return neg(u)
+                elif u.x == 0:
+                        if u.y > 0:
                                 return neg(u)
-                elif ref == "y":
-                        if (angle(u) > 0) and (angle(u) < math.pi):
+                        elif u.y == 0:
+                                if u.z > 0: return neg(u)
+        elif ref == "y":
+                print "testing",u
+                if u.y < 0:
+                        return neg(u)
+                elif u.y == 0:
+                        if u.x < 0:
                                 return neg(u)
+                        elif u.x == 0:
+                                if u.z < 0: return neg(u)
+        elif ref == "z":
+                if u.z < 0:
+                        return neg(u)
+                elif u.z == 0:
+                        if u.y > 0:
+                                return neg(u)
+                        elif u.y == 0:
+                                if u.x < 0: return neg(u)
         return u
