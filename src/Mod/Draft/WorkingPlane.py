@@ -92,9 +92,12 @@ class plane:
 		self.doc = FreeCAD.ActiveDocument
 		self.axis = axis;
 		self.axis.normalize()
-		if (fcvec.equals(axis, Vector(1,0,0))) or (fcvec.equals(axis, Vector(-1,0,0))):
+		if (fcvec.equals(axis, Vector(1,0,0))):
 			self.u = Vector(0,1,0)
 			self.v = Vector(0,0,1)
+                elif (fcvec.equals(axis, Vector(-1,0,0))):
+                        self.u = Vector(0,-1,0)
+                        self.v = Vector(0,0,1)
 		else:
 			self.v = axis.cross(Vector(1,0,0))
 			self.v.normalize()
@@ -149,11 +152,7 @@ class plane:
 
         def getRotation(self):
                 "returns a placement describing the working plane orientation ONLY"
-                m = FreeCAD.Matrix(
-                        self.u.x,self.v.x,self.axis.x,0,
-                        self.u.y,self.v.y,self.axis.y,0,
-                        self.u.z,self.v.z,self.axis.z,0,
-                        0.0,0.0,0.0,1.0)
+                m = fcvec.getPlaneRotation(self.u,self.v,self.axis)
                 return FreeCAD.Placement(m)
 
         def getPlacement(self):

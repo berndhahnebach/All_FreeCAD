@@ -490,10 +490,14 @@ def formatObject(target,origin=None):
 	else:
 		if not origin:
 			obrep.LineWidth = lw
+                        if "PointColor" in obrep.PropertiesList: obrep.PointColor = col
 			obrep.LineColor = col
 		else:
 			matchrep = origin.ViewObject
 			obrep.LineWidth = matchrep.LineWidth
+                        if ("PointColor" in obrep.PropertiesList) and \
+                                    ("PointColor" in matchrep.PropertiesList):
+                                obrep.PointColor = matchrep.PointColor
 			obrep.LineColor = matchrep.LineColor
 			if (target.Type[:4] == "Part"):
 				obrep.ShapeColor = matchrep.ShapeColor
@@ -854,19 +858,15 @@ class ViewProviderDimension:
 	def attach(self, obj):
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj.Object)
 		self.color = coin.SoBaseColor()
-		self.color.rgb = (0,0,0)
+		self.color.rgb.setValue(obj.LineColor[0],obj.LineColor[1],obj.LineColor[2])
 		self.font = coin.SoFont()
 		self.text = coin.SoAsciiText()
 		self.text.justification = coin.SoAsciiText.CENTER
 		self.text.string = ("%.2f" % p3.sub(p2).Length)
 		self.textpos = coin.SoTransform()
 		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
-		# self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
-                tm = fcvec.getPlaneRotation(p3.sub(p2),p3.sub(p2).cross(norm))
-                rm = coin.SbRotation(coin.SbMatrix(tm.A11,tm.A12,tm.A13,tm.A14,
-                                                   tm.A21,tm.A22,tm.A23,tm.A24,
-                                                   tm.A31,tm.A32,tm.A33,tm.A34,
-                                                   tm.A41,tm.A42,tm.A43,tm.A44))
+                tm = fcvec.getPlaneRotation(p3.sub(p2),norm)
+                rm = coin.SbRotation()
                 self.textpos.rotation = rm
 		label = coin.SoSeparator()
 		label.addChild(self.textpos)
@@ -890,10 +890,6 @@ class ViewProviderDimension:
 		line = coin.SoLineSet()
 		line.numVertices.setValue(4)
 		self.coords = coin.SoCoordinate3()
-		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],
-                                                 [p2.x,p2.y,p2.z],
-                                                 [p3.x,p3.y,p3.z],
-                                                 [p4.x,p4.y,p4.z]])
 		selnode=coin.SoType.fromName("SoFCSelection").createInstance()
 		selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
 		selnode.objectName.setValue(obj.Object.Name)
@@ -914,7 +910,14 @@ class ViewProviderDimension:
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
 		self.text.string = ("%.2f" % p3.sub(p2).Length)
 		# self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
-                tm = fcvec.getPlaneRotation(p3.sub(p2),fcvec.neg(p3.sub(p2).cross(norm)))
+                u = p3.sub(p2)
+                v = p2.sub(p1)
+                u.normalize()
+                v.normalize()
+                u = fcvec.reorient(u,"x")
+                v = fcvec.reorient(v,"y")
+                print u,v
+                tm = fcvec.getPlaneRotation(u,v)
                 rm = coin.SbRotation(coin.SbMatrix(tm.A11,tm.A12,tm.A13,tm.A14,
                                                    tm.A21,tm.A22,tm.A23,tm.A24,
                                                    tm.A31,tm.A32,tm.A33,tm.A34,
