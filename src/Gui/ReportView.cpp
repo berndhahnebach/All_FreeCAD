@@ -241,9 +241,12 @@ ReportOutput::ReportOutput(QWidget* parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     Base::Console().AttachObserver(this);
-    getWindowParameter()->Attach( this );
+    getWindowParameter()->Attach(this);
 
     getWindowParameter()->NotifyAll();
+    _prefs = WindowParameter::getDefaultParameter()->GetGroup("Editor");
+    _prefs->Attach(this);
+    _prefs->Notify("FontSize");
 
     // scroll to bottom at startup to make sure that last appended text is visible
     ensureCursorVisible();
@@ -254,21 +257,16 @@ ReportOutput::ReportOutput(QWidget* parent)
  */
 ReportOutput::~ReportOutput()
 {
-    getWindowParameter()->Detach( this );
+    getWindowParameter()->Detach(this);
+    _prefs->Detach(this);
     Base::Console().DetachObserver(this);
     delete reportHl;
 }
 
 void ReportOutput::restoreFont()
 {
-    QFont _font(  font() );
-    _font.setFamily(QLatin1String("Courier"));
-#ifdef FC_OS_LINUX
-    _font.setPointSize( 12 );
-#else
-    _font.setPointSize( 10 );
-#endif
-    setFont( _font ); 
+    QFont serifFont(QLatin1String("Courier"), 10, QFont::Normal);
+    setFont(serifFont);
 }
 
 void ReportOutput::Warning(const char * s)
@@ -441,6 +439,16 @@ void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sR
     }
     else if (strcmp(sReason, "checkGoToEnd") == 0) {
         gotoEnd = rclGrp.GetBool(sReason, gotoEnd);
+    }
+    else if (strcmp(sReason, "FontSize") == 0 || strcmp(sReason, "Font") == 0) {
+        int fontSize = rclGrp.GetInt("FontSize", 10);
+        QString fontFamily = QString::fromAscii(rclGrp.GetASCII("Font", "Courier").c_str());
+        
+        QFont font(fontFamily, fontSize);
+        setFont(font);
+        QFontMetrics metric(font);
+        int width = metric.width(QLatin1String("0000"));
+        setTabStopWidth(width);
     }
 }
 
