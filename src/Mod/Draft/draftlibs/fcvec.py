@@ -169,23 +169,24 @@ def rounded(v):
         p = precision()
         return Vector(round(v.x,p),round(v.y,p),round(v.z,p))
 
-def getPlaneRotation(u,v):
-        "returns a rotation matrix necessary to rotate the xy plane into uv position)"
-        typecheck([(u,Vector), (v,Vector)], "getPlaneRotation")
-        if equals(u,v): return None
-        hu = Vector(u.x,u.y,0)
-        if isNull(hu): rotZ = 0
-        else: rotZ = angle(hu)
-        vu = Vector(Vector(u.x,u.y,0).Length,u.z,0)
-        if isNull(vu): rotY = 0
-        else: rotY = -angle(vu)
-        vv = rounded(rotate(v,rotZ))
-        vv = rounded(rotate(vv,rotY,Vector(0,1,0)))
-        vv = Vector(vv.y,vv.z,0)    
-        if isNull(vv): rotX = 0
-        else: rotX = angle(vv)
-        m = Matrix()
-        m.rotateX(rotX)
-        m.rotateY(rotY)
-        m.rotateZ(rotZ)
+def getPlaneRotation(u,v,w=None):
+        "returns a rotation matrix defining the (u,v,w) coordinates system"
+        if not w: w = u.cross(v)
+        typecheck([(u,Vector), (v,Vector), (w,Vector)], "getPlaneRotation")
+        m = FreeCAD.Matrix(
+                u.x,v.x,w.x,0,
+                u.y,v.y,w.y,0,
+                u.z,v.z,w.z,0,
+                0.0,0.0,0.0,1.0)
         return m
+
+def reorient(u,ref):
+        "Checks the orientation of u and reorients on positive axis"
+        if round(u.z) == 0:
+                if ref == "x":
+                        if (angle(u) > math.pi/2) or (angle(u) < -math.pi/2):
+                                return neg(u)
+                elif ref == "y":
+                        if (angle(u) > 0) and (angle(u) < math.pi):
+                                return neg(u)
+        return u

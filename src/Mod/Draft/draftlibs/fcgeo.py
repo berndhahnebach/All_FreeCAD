@@ -308,10 +308,13 @@ def getBoundary(shape):
 	for e in shape.Edges:
 		if lut[e.hashCode()] == 1: bound.append(e)
 	return bound
-
 	
 def sortEdges(lEdges, aVertex=None):
 	"an alternative, more accurate version of Part.__sortEdges__"
+
+        for e in lEdges:
+                if not isinstance(e.Curve,Part.Line):
+                        print "Warning: sortedges cannot treat wired containing curves yet."
 	
 	def isSameVertex(V1, V2):
 		''' Test if vertexes have same coordinates with precision 10E(-precision)'''
@@ -349,7 +352,11 @@ def sortEdges(lEdges, aVertex=None):
 		if result[0] != 0 :
 			del lEdges[result[1]]
 			next = sortEdges(lEdges, result[3].Vertexes[-((-result[2])^1)])
-			olEdges += [result[3]] + next
+                        if isSameVertex(aVertex,result[3].Vertexes[0]):
+                                olEdges += [result[3]] + next
+                        else:
+                                newedge = Part.Line(aVertex.Point,result[3].Vertexes[0].Point).toShape()
+                                olEdges += [newedge] + next
 			return olEdges
 		else :
 			return []
