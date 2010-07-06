@@ -175,6 +175,7 @@ public Q_SLOTS:
 private:
     bool gotoEnd;
     ReportHighlighter* reportHl; /**< Syntax highlighter */
+    ParameterGrp::handle _prefs; 
 };
 
 } // namespace DockWnd
