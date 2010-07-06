@@ -994,7 +994,7 @@ static PyObject * makeLoft(PyObject *self, PyObject *args)
             return 0;
         }
 
-        Standard_Boolean anIsCheck = Standard_False;
+        Standard_Boolean anIsCheck = Standard_True;
         aGenerator.CheckCompatibility (anIsCheck);
         aGenerator.Build();
         if (!aGenerator.IsDone()) {
