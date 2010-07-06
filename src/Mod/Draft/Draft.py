@@ -847,8 +847,7 @@ class ViewProviderDimension:
 			ed = fcgeo.vec(base)
 			proj = ed.cross(Vector(0,0,1))
 		angle = -fcvec.angle(p3.sub(p2))
-		# ???What is the conditional trying to accomplish?  The guard expression seems suspect.
-		if (angle > math.pi/2) or (angle <= -math.pi/2): angle = math.pi+angle
+		if (angle >= math.pi/2) or (angle < -math.pi/2): angle = math.pi+angle
 		offset = fcvec.rotate(FreeCAD.Vector(obj.ViewObject.FontSize*.2,0,0),angle+math.pi/2)
 		tbase = midpoint.add(offset)
 		if not proj: norm = Vector(0,0,1)
@@ -916,13 +915,10 @@ class ViewProviderDimension:
                 v.normalize()
                 u = fcvec.reorient(u,"x")
                 v = fcvec.reorient(v,"y")
-                print u,v
-                tm = fcvec.getPlaneRotation(u,v)
-                rm = coin.SbRotation(coin.SbMatrix(tm.A11,tm.A12,tm.A13,tm.A14,
-                                                   tm.A21,tm.A22,tm.A23,tm.A24,
-                                                   tm.A31,tm.A32,tm.A33,tm.A34,
-                                                   tm.A41,tm.A42,tm.A43,tm.A44))
-                self.textpos.rotation = rm
+                w = fcvec.reorient(u.cross(v),"z")
+                print u,v,w
+                tm = FreeCAD.Placement(fcvec.getPlaneRotation(u,v,w)).Rotation.Q
+                self.textpos.rotation = coin.SbRotation(tm[0],tm[1],tm[2],tm[3])
 		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],
                                                  [p2.x,p2.y,p2.z],
                                                  [p3.x,p3.y,p3.z],
