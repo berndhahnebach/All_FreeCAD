@@ -795,6 +795,41 @@ class ghostTracker(Tracker):
 #---------------------------------------------------------------------------
 # Python Features definitions
 #---------------------------------------------------------------------------
+
+class ViewProviderDraft:
+        "A generic View Provider for Draft objects"
+        
+	def __init__(self, obj):
+                obj.addProperty("App::PropertyEnumeration","LineStyle","SVG Output","Line Style")
+                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style")
+                obj.LineStyle=['Continuous','Dashed','Dashdotted','Dotted']
+                obj.FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
+                obj.Proxy = self
+
+	def attach(self, obj):
+		return
+
+	def updateData(self, fp, prop):
+		return
+
+	def getDisplayModes(self,obj):
+		modes=[]
+		return modes
+
+	def getDefaultDisplayMode(self):
+		return "Flat Lines"
+
+	def setDisplayMode(self,mode):
+		return mode
+
+	def onChanged(self, vp, prop):
+		return
+
+        def __getstate__(self):
+		return None
+
+	def __setstate__(self,state):
+		return None
 		
 class Dimension:
 	"The Dimension object"
@@ -1049,31 +1084,8 @@ class Rectangle:
 		fp.Shape = shape
                 fp.Placement = plm
 
-class ViewProviderRectangle:
+class ViewProviderRectangle(ViewProviderDraft):
         "A View Provider for the Rectangle object"
-        
-	def __init__(self, obj):
-		obj.Proxy = self
-                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
-
-	def attach(self, obj):
-		return
-
-	def updateData(self, fp, prop):
-		return
-
-	def getDisplayModes(self,obj):
-		modes=[]
-		return modes
-
-	def getDefaultDisplayMode(self):
-		return "Flat Lines"
-
-	def setDisplayMode(self,mode):
-		return mode
-
-	def onChanged(self, vp, prop):
-		return
 
 	def getIcon(self):
 		return """
@@ -1101,12 +1113,6 @@ class ViewProviderRectangle:
                         "                "};
 			"""
 
-	def __getstate__(self):
-		return None
-
-	def __setstate__(self,state):
-		return None
-
 class Circle:
         "The Circle object"
         
@@ -1130,31 +1136,8 @@ class Circle:
 		fp.Shape = shape
                 fp.Placement = plm
 
-class ViewProviderCircle:
+class ViewProviderCircle(ViewProviderDraft):
         "A View Provider for the Circle object"
-        
-	def __init__(self, obj):
-		obj.Proxy = self
-                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
-
-	def attach(self, obj):
-		return
-
-	def updateData(self, fp, prop):
-		return
-
-	def getDisplayModes(self,obj):
-		modes=[]
-		return modes
-
-	def getDefaultDisplayMode(self):
-		return "Flat Lines"
-
-	def setDisplayMode(self,mode):
-		return mode
-
-	def onChanged(self, vp, prop):
-		return
 
 	def getIcon(self):
 		return """
@@ -1181,12 +1164,6 @@ class ViewProviderCircle:
                         "      ....      ",
                         "                "};
 			"""
-
-	def __getstate__(self):
-		return None
-
-	def __setstate__(self,state):
-		return None
 
 class Wire:
         "The Wire object"
@@ -1224,31 +1201,8 @@ class Wire:
                         fp.Shape = shape
                 fp.Placement = plm
 
-class ViewProviderWire:
+class ViewProviderWire(ViewProviderDraft):
         "A View Provider for the Wire object"
-        
-	def __init__(self, obj):
-		obj.Proxy = self
-                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style").FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
-
-	def attach(self, obj):
-		return
-
-	def updateData(self, fp, prop):
-		return
-
-	def getDisplayModes(self,obj):
-		modes=[]
-		return modes
-
-	def getDefaultDisplayMode(self):
-		return "Flat Lines"
-
-	def setDisplayMode(self,mode):
-		return mode
-
-	def onChanged(self, vp, prop):
-		return
 
 	def getIcon(self):
 		return """
@@ -1275,14 +1229,7 @@ class ViewProviderWire:
                        "    .+++..      ",
                        "     ...        "};
 		       """
-
-	def __getstate__(self):
-		return None
-
-	def __setstate__(self,state):
-		return None
-
-                
+     
 #---------------------------------------------------------------------------
 # Helper tools
 #---------------------------------------------------------------------------
@@ -3621,10 +3568,22 @@ class ToolSendToDrawing(Modifier):
                 svg += 'stroke="' + stroke + '" '
                 svg += 'stroke-width="' + str(width) + ' px" '
                 svg += 'style="stroke-width:'+ str(width)
-                svg += ';stroke-miterlimit:4;stroke-dasharray:none;'
-                svg += 'fill:'+fill+'"'
+                svg += ';stroke-miterlimit:4'
+                svg += ';stroke-dasharray:'+self.getLineStyle(obj.ViewObject)
+                svg += ';fill:'+fill+'"'
                 svg += '/>\n'
                 return svg
+
+        def getLineStyle(self,viewobj):
+                "returns a svg dash array"
+                if "LineStyle" in viewobj.PropertiesList:
+                        if viewobj.LineStyle == "Dashed":
+                                return "0.09,0.05"
+                        elif viewobj.LineStyle == "Dashdotted":
+                                return "0.09,0.05,0.02,0.05"
+                        elif viewobj.LineStyle == "Dotted":
+                                return "0.02,0.02"
+                return "none"
 
         def getFill(self,viewobj,page):
                 "returns a svg fill value"
