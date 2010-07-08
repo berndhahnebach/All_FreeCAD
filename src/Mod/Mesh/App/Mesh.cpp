@@ -273,8 +273,16 @@ void MeshObject::RestoreDocFile(Base::Reader &reader)
 
 void MeshObject::save(const char* file, MeshCore::MeshIO::Format f) const
 {
-    MeshCore::MeshOutput aWriter(_kernel);
-    aWriter.SaveAny(file, f);
+    if (this->_Mtrx != Base::Matrix4D()) {
+        MeshCore::MeshKernel kernel(this->_kernel);
+        kernel.Transform(this->_Mtrx);
+        MeshCore::MeshOutput aWriter(kernel);
+        aWriter.SaveAny(file, f);
+    }
+    else {
+        MeshCore::MeshOutput aWriter(this->_kernel);
+        aWriter.SaveAny(file, f);
+    }
 }
 
 void MeshObject::save(std::ostream& out) const
