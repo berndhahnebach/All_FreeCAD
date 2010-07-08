@@ -22,8 +22,8 @@
 #***************************************************************************
 
 __title__="FreeCAD Draft Workbench - Init file"
-__author__ = "Yorik van Havre <yorik@gmx.fr>"
-__url__ = ["http://yorik.orgfree.com","http://free-cad.sourceforge.net"]
+__author__ = "Yorik van Havre <yorik@uncreated.net>"
+__url__ = ["http://free-cad.sourceforge.net"]
 
 class DraftWorkbench (Workbench):
 	"the Draft Workbench"
@@ -162,9 +162,9 @@ class DraftWorkbench (Workbench):
 			self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
 					"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
                                         "Draft_SendToDrawing"]
-			self.treecmdList = ["Draft_ApplyStyle"]
+			self.treecmdList = ["Draft_ApplyStyle","Draft_MakeDraftWire"]
 			self.appendToolbar("Draft tools",self.cmdList+self.modList)
-			self.appendMenu("Draft",self.cmdList+self.modList)
+			self.appendMenu("Draft",self.cmdList+self.modList+self.treecmdList)
 			import draftGui
 			self.draftToolBar=draftGui.toolBar()
 			FreeCAD.activeDraftCommand = None # a global place to look for active draft Command

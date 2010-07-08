@@ -3427,7 +3427,7 @@ class ToolScale(Modifier):
 				self.scale(point.sub(last))
 			self.finish()
 
-class ToggleConstructionMode():
+class ToolToggleConstructionMode():
 	"this class simply toggles the Construction Mode button"
 
 	def GetResources(self):
@@ -3647,6 +3647,29 @@ class ToolSendToDrawing(Modifier):
                 result += '</g>'
                 return result
 
+class ToolMakeDraftWire():
+	"The MakeDraft FreeCAD command definition"
+
+	def GetResources(self):
+		return {'MenuText': str(translate("draft", "Make Draft Wire").toLatin1()),
+			'ToolTip': str(translate("draft", "Turns selected objects to Draft Wires").toLatin1())}
+
+	def Activated(self):
+		for obj in FreeCADGui.Selection.getSelection():
+                        verts = []
+                        for v in obj.Shape.Vertexes:
+                                verts.append(v.Point)
+                        newobj = makeWire(verts)
+                        if obj.Shape.Faces:
+                                newobj.Closed = True
+                                newobj.ViewObject.DisplayMode = "Flat Lines"
+                        else:
+                                newobj.ViewObject.DisplayMode = "Wireframe"
+                                if obj.Shape.Wires:
+                                        if obj.Shape.Wires[0].isClosed:
+                                                newobj.Closed = True
+                        FreeCAD.ActiveDocument.removeObject(obj.Name)
+
 #---------------------------------------------------------------------------
 # API functions
 #---------------------------------------------------------------------------
@@ -3747,6 +3770,8 @@ FreeCADGui.addCommand('Draft_Dimension',ToolDimension())
 FreeCADGui.addCommand('Draft_FinishLine',ToolFinishLine())
 FreeCADGui.addCommand('Draft_CloseLine',ToolCloseLine())
 FreeCADGui.addCommand('Draft_UndoLine',ToolUndoLine())
+FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToolToggleConstructionMode())
+FreeCADGui.addCommand('Draft_MakeDraftWire',ToolMakeDraftWire())
 
 # modification commands
 FreeCADGui.addCommand('Draft_Move',ToolMove())
@@ -3757,5 +3782,4 @@ FreeCADGui.addCommand('Draft_Upgrade',ToolUpgrade())
 FreeCADGui.addCommand('Draft_Downgrade',ToolDowngrade())
 FreeCADGui.addCommand('Draft_Trimex',ToolTrimex())
 FreeCADGui.addCommand('Draft_Scale',ToolScale())
-FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
 FreeCADGui.addCommand('Draft_SendToDrawing',ToolSendToDrawing())
