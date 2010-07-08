@@ -77,9 +77,9 @@ public:
   inline Vector3f  operator *  (const Vector3f& rclVct) const;
   inline Vector3d  operator *  (const Vector3d& rclVct) const;
   /// Comparison
-  inline bool      operator != (const Matrix4D& rclMtrx);
+  inline bool      operator != (const Matrix4D& rclMtrx) const;
   /// Comparison
-  inline bool      operator == (const Matrix4D& rclMtrx);
+  inline bool      operator == (const Matrix4D& rclMtrx) const;
   /// Index operator
   inline double*   operator [] (unsigned short usNdx);
   /// Index operator
@@ -264,20 +264,19 @@ inline Vector3d Matrix4D::operator* (const Vector3d& rclVct) const
                    dMtrx4D[2][2]*rclVct.z + dMtrx4D[2][3]));
 }
 
-inline bool Matrix4D::operator== (const Matrix4D& rclMtrx)
+inline bool Matrix4D::operator== (const Matrix4D& rclMtrx) const
 {
   short     iz, is;
-  bool      bRet = true;
 
   for (iz = 0; iz < 4; iz++)
     for (is = 0; is < 4; is++) 
       if (fabs(dMtrx4D[iz][is] - rclMtrx.dMtrx4D[iz][is]) > FLOAT_EPS)
-        bRet = false;
+        return false;
 
-  return bRet;
+  return true;
 }
 
-inline bool Matrix4D::operator!= (const Matrix4D& rclMtrx)
+inline bool Matrix4D::operator!= (const Matrix4D& rclMtrx) const
 {
   return !( (*this) == rclMtrx );
 }
