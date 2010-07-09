@@ -115,6 +115,7 @@ Placement::Placement(QWidget* parent, Qt::WFlags fl)
 
     connect(signalMapper, SIGNAL(mapped(int)),
             this, SLOT(onPlacementChanged(int)));
+    ui->applyButton->setDisabled(ui->applyPlacementChange->isChecked());
 }
 
 Placement::~Placement()
