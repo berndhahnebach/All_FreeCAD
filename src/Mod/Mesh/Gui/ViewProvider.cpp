@@ -222,7 +222,6 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     ADD_PROPERTY(Lighting,(1));
     Lighting.setEnums(LightingEnums);
     ADD_PROPERTY(LineColor,(0,0,0));
-    //ADD_PROPERTY(BacksideColor,(0.8f,0.8f,0.8f));
 
     pOpenColor = new SoBaseColor();
     setOpenEdgeColorFrom(ShapeColor.getValue());
@@ -242,10 +241,6 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
     pShapeHints->ref();
 
-    //pBackHints = new SoShapeHints;
-    //pBackHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-    //pBackHints->ref();
-
     pcMatBinding = new SoMaterialBinding;
     pcMatBinding->value = SoMaterialBinding::OVERALL;
     pcMatBinding->ref();
@@ -253,10 +248,6 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     pLineColor = new SoMaterial;
     pLineColor->ref();
     LineColor.touch();
-
-    //pcBacksideMaterial = new SoMaterial;
-    //pcBacksideMaterial->ref();
-    //BacksideColor.touch();
 
     // read the correct shape color from the preferences
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
@@ -285,14 +276,6 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
     if (twoside) Lighting.setValue(1);
     else Lighting.setValue((long)0);
 
-    //color = BacksideColor.getValue();
-    //current = color.getPackedValue();
-    //setting = hGrp->GetUnsigned("BackfaceColor", current);
-    //if (current != setting) {
-    //    color.setPackedValue((uint32_t)setting);
-    //    BacksideColor.setValue(color);
-    //}
-
     bool normal_per_vertex = hGrp->GetBool("VertexPerNormals", false);
     if (normal_per_vertex) {
         double angle = hGrp->GetFloat("CreaseAngle", 0.0);
@@ -306,10 +289,8 @@ ViewProviderMesh::~ViewProviderMesh()
     pcLineStyle->unref();
     pcPointStyle->unref();
     pShapeHints->unref();
-    //pBackHints->unref();
     pcMatBinding->unref();
     pLineColor->unref();
-    //pcBacksideMaterial->unref();
 }
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
@@ -326,7 +307,6 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
     }
     else if (prop == &CreaseAngle) {
         pShapeHints->creaseAngle = (F_PI*CreaseAngle.getValue())/180.0;
-        //pBackHints->creaseAngle = (F_PI*CreaseAngle.getValue())/180.0;
     }
     else if (prop == &OpenEdges) {
         showOpenEdges(OpenEdges.getValue());
@@ -335,22 +315,15 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
         if (Lighting.getValue() == 0) {
             pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
             //pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-            //pcBacksideMaterial->diffuseColor = pcShapeMaterial->diffuseColor;
         }
         else {
             pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-        //    const App::Color& c = BacksideColor.getValue();
-        //    pcBacksideMaterial->diffuseColor.setValue(c.r,c.g,c.b);
         }
     }
     else if (prop == &LineColor) {
         const App::Color& c = LineColor.getValue();
         pLineColor->diffuseColor.setValue(c.r,c.g,c.b);
     }
-    /*else if (prop == &BacksideColor && Lighting.getValue() != 0) {
-        const App::Color& c = BacksideColor.getValue();
-        pcBacksideMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-    }*/
     else {
         // Set the inverse color for open edges
         if (prop == &ShapeColor) {
@@ -387,29 +360,6 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 
     // faces
     SoGroup* pcFlatRoot = new SoGroup();
-    /*
-    {
-        // front face
-        SoSeparator* sep = new SoSeparator();
-        pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-        pShapeHints->shapeType = SoShapeHints::SOLID;
-        sep->addChild(pShapeHints);
-        sep->addChild(pcShapeMaterial);
-        sep->addChild(pcMatBinding);
-        sep->addChild(pcHighlight);
-        pcFlatRoot->addChild(sep);
-    }
-    {
-        // back face
-        SoSeparator* sep = new SoSeparator();
-        pBackHints->vertexOrdering = SoShapeHints::CLOCKWISE;
-        pBackHints->shapeType = SoShapeHints::SOLID;
-        sep->addChild(pBackHints);
-        sep->addChild(pcBacksideMaterial);
-        sep->addChild(pcHighlight);
-        pcFlatRoot->addChild(sep);
-    }
-    */
     pcFlatRoot->addChild(pShapeHints);
     pcFlatRoot->addChild(pcShapeMaterial);
     pcFlatRoot->addChild(pcMatBinding);
@@ -428,7 +378,9 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
     SoGroup* pcWireRoot = new SoGroup();
     pcWireRoot->addChild(pcLineStyle);
     pcWireRoot->addChild(pcLightModel);
-    //pcWireRoot->addChild(pcShapeMaterial);
+    SoMaterialBinding* binding = new SoMaterialBinding;
+    binding->value = SoMaterialBinding::OVERALL; // doesn't set several colors
+    pcWireRoot->addChild(binding);
     pcWireRoot->addChild(pLineColor);
     pcWireRoot->addChild(pcHighlight);
     addDisplayMaskMode(pcWireRoot, "Wireframe");
@@ -445,16 +397,6 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
     pcFlatWireRoot->addChild(offset);
     pcFlatWireRoot->addChild(pcWireRoot);
     addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
-
-    // Turns on backface culling
-    //SoShapeHints * wirehints = new SoShapeHints;
-    //wirehints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
-    //wirehints->shapeType = SoShapeHints::SOLID;
-    //wirehints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
-    //SoGroup* pcHiddenLineRoot = new SoGroup();
-    //pcHiddenLineRoot->addChild(wirehints);
-    //pcHiddenLineRoot->addChild(pcWireRoot);
-    //addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
 }
 
 QIcon ViewProviderMesh::getIcon() const
