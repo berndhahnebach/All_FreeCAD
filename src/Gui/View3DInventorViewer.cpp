@@ -103,6 +103,9 @@
 #include "NavigationStyle.h"
 #include "ViewProvider.h"
 
+#include <Inventor/draggers/SoCenterballDragger.h>
+
+
 //#define FC_LOGGING_CB
 
 #define new DEBUG_CLIENTBLOCK
@@ -176,9 +179,21 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
     cam->nearDistance = 0;
     cam->farDistance = 10;
 
+	// dragger
+	//SoSeparator * draggSep = new SoSeparator();
+	//SoScale *scale = new SoScale();
+	//scale->scaleFactor = SbVec3f  (0.2,0.2,0.2);
+	//draggSep->addChild(scale);
+	//SoCenterballDragger *dragger = new SoCenterballDragger();
+	//dragger->center = SbVec3f  (0.8,0.8,0);
+	////dragger->rotation = SbRotation(rrot[0],rrot[1],rrot[2],rrot[3]);
+	//draggSep->addChild(dragger);
+
+
     this->foregroundroot->addChild(cam);
     this->foregroundroot->addChild(lm);
     this->foregroundroot->addChild(bc);
+    //this->foregroundroot->addChild(draggSep);
 
     // set the ViewProvider root
     SoSelection* selectionRoot = new SoSelection();

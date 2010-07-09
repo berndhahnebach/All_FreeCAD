@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/draggers/SoDragger.h>
+# include <Inventor/draggers/SoCenterballDragger.h>
 # include <Inventor/manips/SoCenterballManip.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCamera.h>
@@ -51,6 +52,8 @@
 #include <Base/Placement.h>
 #include <App/PropertyGeo.h>
 #include <App/GeoFeature.h>
+#include <Inventor/draggers/SoCenterballDragger.h>
+#include <Inventor/nodes/SoDepthBuffer.h>
 
 
 using namespace Gui;
@@ -184,6 +187,7 @@ bool ViewProviderGeometryObject::doubleClicked(void)
 
 bool ViewProviderGeometryObject::setEdit(int ModNum)
 {
+#if 1
     SoSearchAction sa;
     sa.setInterest(SoSearchAction::FIRST);
     sa.setSearchingAll(FALSE);
@@ -203,12 +207,49 @@ bool ViewProviderGeometryObject::setEdit(int ModNum)
         manip->setUserData(sensor);
         return manip->replaceNode(path);
     }
-
     return false;
+#else
+	// get the size of this viewprovider
+	SoGetBoundingBoxAction *boundAction = new SoGetBoundingBoxAction(SbViewportRegion());
+	boundAction->apply(pcRoot);
+    SbBox3f bdBox = boundAction->getBoundingBox();
+	float size = bdBox.getSize().length();
+	App::GeoFeature* geometry = static_cast<App::GeoFeature*>(pcObject);
+	const Base::Placement pos = geometry->Placement.getValue();
+	const Base::Vector3d &vpos = pos.getPosition();
+	const Base::Rotation &rrot = pos.getRotation();
+
+	// set up manipulator node
+	SoSeparator * draggSep = new SoSeparator();
+	SoDepthBuffer *depth = new SoDepthBuffer();
+	depth->test = true;
+	depth->function = SoDepthBuffer::ALWAYS;
+	draggSep->addChild(depth);
+	SoScale *scale = new SoScale();
+	scale->scaleFactor = SbVec3f  (size,size,size);
+	draggSep->addChild(scale);
+	SoCenterballDragger *dragger = new SoCenterballDragger();
+	dragger->center = SbVec3f  (vpos.x,vpos.y,vpos.z);
+	dragger->rotation = SbRotation(rrot[0],rrot[1],rrot[2],rrot[3]);
+	draggSep->addChild(dragger);
+
+    // Attach a sensor to the transform manipulator and set it as its user
+    // data to delete it when the view provider leaves the edit mode
+    SoNodeSensor* sensor = new SoNodeSensor(sensorCallback, this);
+    //sensor->setPriority(0);
+    sensor->attach(dragger);
+
+
+	pcRoot->insertChild(draggSep,0);
+	return true;
+
+#endif 
+
 }
 
 void ViewProviderGeometryObject::unsetEdit(void)
 {
+# if 1
     SoSearchAction sa;
     sa.setType(SoCenterballManip::getClassTypeId());
     sa.setInterest(SoSearchAction::FIRST);
@@ -234,6 +275,9 @@ void ViewProviderGeometryObject::unsetEdit(void)
         App::GeoFeature* geometry = static_cast<App::GeoFeature*>(this->pcObject);
         this->updateData(&geometry->Placement);
     }
+#else
+	pcRoot->removeChild(0);
+#endif 
 }
 
 void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
@@ -268,6 +312,36 @@ void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)
             t += c;
             p.getRotation().multVec(c,c);
             t -= c;
+            p.setPosition(t);
+            geometry->Placement.setValue(p);
+        }
+    } else
+    if (node && node->getTypeId().isDerivedFrom(SoCenterballDragger::getClassTypeId())) {
+        // apply the transformation data to the placement
+        SoCenterballDragger* dragger = static_cast<SoCenterballDragger*>(node);
+        float q0, q1, q2, q3;
+        SbVec3f pos = dragger->center.getValue();
+        dragger->rotation.getValue().getValue(q0, q1, q2, q3);
+    
+        // get the placement
+        ViewProviderGeometryObject* view = reinterpret_cast<ViewProviderGeometryObject*>(data);
+        if (view && view->pcObject && view->pcObject->getTypeId().isDerivedFrom(App::GeoFeature::getClassTypeId())) {
+            App::GeoFeature* geometry = static_cast<App::GeoFeature*>(view->pcObject);
+            // Note: If R is the rotation, c the rotation center and t the translation
+            // vector then Inventor applies the following transformation: R*(x-c)+c+t
+            // In FreeCAD a placement only has a rotation and a translation part but
+            // no rotation center. This means that we must divide the transformation
+            // in a rotation and translation part.
+            // R * (x-c) + c + t = R * x - R * c + c + t
+            // The rotation part is R, the translation part t', however, is:
+            // t' = t + c - R * c
+            Base::Placement p;
+            p.setRotation(Base::Rotation(q0,q1,q2,q3));
+            Base::Vector3d t(pos[0],pos[1],pos[2]);
+ /*           Base::Vector3d c(center[0],center[1],center[2]);
+            t += c;
+            p.getRotation().multVec(c,c);
+            t -= c;*/
             p.setPosition(t);
             geometry->Placement.setValue(p);
         }
