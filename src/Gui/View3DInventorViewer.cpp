@@ -128,10 +128,6 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
   : inherited (parent, name, embed, type, build), inEdit(0),navigation(0),
     editing(FALSE), redirected(FALSE)
 {
-    // set the layout for the flags
-    _flaglayout = new FlagLayout(3);
-    this->getGLWidget()->setLayout(_flaglayout);
-  
     Gui::Selection().Attach(this);
 
     // Coin should not clear the pixel-buffer, so the background image
@@ -856,16 +852,20 @@ void View3DInventorViewer::actualRedraw(void)
     glDepthRange(0.1,1.0);
 
     // draw lines for the flags
-    int ct = _flaglayout->count();
-    SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
-    for (int i=0; i<ct;i++) {
-        Flag* flag = qobject_cast<Flag*>(_flaglayout->itemAt(i)->widget());
-        if (flag) {
-            SbVec3f pt = flag->getOrigin();
-            vv.projectToScreen(pt, pt);
-            int tox = (int)(pt[0] * size[0]);
-            int toy = (int)((1.0f-pt[1]) * size[1]);
-            flag->drawLine(tox, toy);
+    if (_flaglayout) {
+        // it can happen that the GL widget gets replaced internally by SoQt which
+        // causes to destroy the FlagLayout instance
+        int ct = _flaglayout->count();
+        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+        for (int i=0; i<ct;i++) {
+            Flag* flag = qobject_cast<Flag*>(_flaglayout->itemAt(i)->widget());
+            if (flag) {
+                SbVec3f pt = flag->getOrigin();
+                vv.projectToScreen(pt, pt);
+                int tox = (int)(pt[0] * size[0]);
+                int toy = (int)((1.0f-pt[1]) * size[1]);
+                flag->drawLine(tox, toy);
+            }
         }
     }
 
@@ -1858,6 +1858,11 @@ std::vector<ViewProvider*> View3DInventorViewer::getViewProvidersOfType(const Ba
 
 void View3DInventorViewer::addFlag(Flag* item, FlagLayout::Position pos)
 {
+    if (!_flaglayout) {
+        _flaglayout = new FlagLayout(3);
+        this->getGLWidget()->setLayout(_flaglayout);
+    }
+
     item->setParent(this->getGLWidget());
     _flaglayout->addWidget(item, pos);
     item->show();

@@ -34,6 +34,7 @@
 
 #include <Gui/Selection.h>
 #include <Gui/Flag.h>
+#include <QPointer>
 
 
 class SoSeparator;
@@ -307,7 +308,7 @@ public:
     void addFlag(Flag*, FlagLayout::Position);
 
 private:
-    FlagLayout* _flaglayout;
+    QPointer<FlagLayout> _flaglayout;
 
     // friends
     friend class NavigationStyle;
