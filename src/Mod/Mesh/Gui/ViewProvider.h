@@ -110,7 +110,6 @@ public:
     App::PropertyBool OpenEdges;
     App::PropertyEnumeration Lighting;
     App::PropertyColor LineColor;
-    //App::PropertyColor BacksideColor;
 
     virtual void attach(App::DocumentObject *);
     virtual QIcon getIcon() const;
@@ -177,9 +176,7 @@ protected:
     SoBaseColor         * pOpenColor;
     SoMaterial          * pLineColor;
     SoShapeHints        * pShapeHints;
-    //SoShapeHints        * pBackHints;
     SoMaterialBinding   * pcMatBinding;
-    //SoMaterial          * pcBacksideMaterial;
 
 private:
     bool m_bEdit;
