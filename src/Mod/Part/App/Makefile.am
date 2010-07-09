@@ -119,6 +119,7 @@ libPart_la_SOURCES=\
 		ImportStep.cpp \
 		CustomFeature.cpp \
 		PartFeature.cpp \
+		PartFeatureReference.cpp \
 		PartFeaturePyImp.cpp \
 		Part2DObject.cpp \
 		Part2DObjectPyImp.cpp \

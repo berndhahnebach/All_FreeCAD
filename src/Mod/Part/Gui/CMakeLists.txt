@@ -139,6 +139,8 @@ SET(PartGui_SRCS
 		 SoFCShapeObject.h
 		 ViewProvider.cpp
 		 ViewProvider.h
+		 ViewProviderReference.cpp
+		 ViewProviderReference.h
 		 ViewProviderBox.cpp
 		 ViewProviderBox.h
 		 ViewProviderCurveNet.cpp

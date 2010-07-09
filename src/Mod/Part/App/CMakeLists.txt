@@ -93,6 +93,8 @@ SET(Features_SRCS
 		 FeatureRevolution.h
 		 PartFeature.cpp
 		 PartFeature.h
+		 PartFeatureReference.cpp
+		 PartFeatureReference.h
 		 Part2DObject.cpp
 		 Part2DObject.h
 		 PrimitiveFeature.cpp
