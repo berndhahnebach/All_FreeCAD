@@ -173,6 +173,9 @@ EXTRA_DIST = \
 		UnitsApi.l \
 		UnitsApi.y
 
+distclean-compile:
+  # avoid to remove UnitsApi.tab.c
+
 # -------------------------------------------------------------------------------
 # Debian based systems offer packages for PyCXX and zipios++ but other Linux
 # distributions possibly not. Thus, we must prepare a switch for this Makefile

@@ -164,6 +164,7 @@ include_HEADERS=\
 		Geometry.h \
 		ImportStep.h \
 		PartFeature.h \
+		PartFeatureReference.h \
 		CustomFeature.h \
 		Part2DObject.h \
 		PrimitiveFeature.h \
