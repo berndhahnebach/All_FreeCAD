@@ -23,9 +23,11 @@ nobase_data_DATA = \
 		draftlibs/fcgeo.py \
 		draftlibs/__init__.py \
 		Languages/draft_de.qm \
+		Languages/draft_es.qm \
 		Languages/draft_fr.qm \
 		Languages/draft_it.qm \
 		Languages/draft_de.ts \
+		Languages/draft_es.ts \
 		Languages/draft_fr.ts \
 		Languages/draft_it.ts
 

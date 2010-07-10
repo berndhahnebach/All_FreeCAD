@@ -121,10 +121,12 @@ EXTRA_DIST = \
 		RemoveComponents.ui \
 		Resources/Mesh.qrc \
 		Resources/translations/Mesh_de.qm \
+		Resources/translations/Mesh_es.qm \
 		Resources/translations/Mesh_fr.qm \
 		Resources/translations/Mesh_it.qm \
 		Resources/translations/Mesh_se.qm \
 		Resources/translations/Mesh_de.ts \
+		Resources/translations/Mesh_es.ts \
 		Resources/translations/Mesh_fr.ts \
 		Resources/translations/Mesh_it.ts \
 		Resources/translations/Mesh_se.ts \

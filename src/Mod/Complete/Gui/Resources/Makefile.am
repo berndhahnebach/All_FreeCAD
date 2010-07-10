@@ -8,10 +8,12 @@ nodist_libResources_la_SOURCES=\
 
 EXTRA_DIST = \
 		translations/Complete_de.qm \
+		translations/Complete_es.qm \
 		translations/Complete_fr.qm \
 		translations/Complete_it.qm \
 		translations/Complete_se.qm \
 		translations/Complete_de.ts \
+		translations/Complete_es.ts \
 		translations/Complete_fr.ts \
 		translations/Complete_it.ts \
 		translations/Complete_se.ts \

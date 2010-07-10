@@ -22,10 +22,12 @@ EXTRA_DIST = \
 		icons/Sketcher_LeaveSketch.svg \
 		icons/Sketcher_NewSketch.svg \
 		translations/Sketcher_de.qm \
+		translations/Sketcher_es.qm \
 		translations/Sketcher_fr.qm \
 		translations/Sketcher_it.qm \
 		translations/Sketcher_se.qm \
 		translations/Sketcher_de.ts \
+		translations/Sketcher_es.ts \
 		translations/Sketcher_fr.ts \
 		translations/Sketcher_it.ts \
 		translations/Sketcher_se.ts \

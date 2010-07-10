@@ -130,6 +130,7 @@ Translator::Translator()
     d = new TranslatorP;
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("English" )] = "en";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("German"  )] = "de";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Spanish" )] = "es";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("French"  )] = "fr";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Italian" )] = "it";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese")] = "jp";
