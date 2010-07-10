@@ -451,6 +451,9 @@ EXTRA_DIST = \
 		ViewProviderPythonFeaturePy.xml \
 		CMakeLists.txt
 
+distclean-compile:
+  # avoid to remove SelectionFilter.tab.c
+
 # the library search path.
 libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) \
 		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) $(all_libraries) -version-info \
