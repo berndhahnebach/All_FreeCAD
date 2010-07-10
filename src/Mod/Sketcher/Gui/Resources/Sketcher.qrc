@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource>
 		<file>translations/Sketcher_de.qm</file>
+		<file>translations/Sketcher_es.qm</file>
         <file>translations/Sketcher_fr.qm</file>
         <file>translations/Sketcher_it.qm</file>
         <file>translations/Sketcher_se.qm</file>

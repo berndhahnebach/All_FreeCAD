@@ -15,10 +15,12 @@ EXTRA_DIST = \
 		translation.qrc \
 		FreeCAD.po \
 		FreeCAD_de.qm \
+		FreeCAD_es.qm \
 		FreeCAD_fr.qm \
 		FreeCAD_it.qm \
 		FreeCAD_se.qm \
 		FreeCAD_de.ts \
+		FreeCAD_es.ts \
 		FreeCAD_fr.ts \
 		FreeCAD_it.ts \
 		FreeCAD_se.ts \

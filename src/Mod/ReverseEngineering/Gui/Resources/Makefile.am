@@ -9,10 +9,12 @@ nodist_libResources_la_SOURCES=\
 EXTRA_DIST = \
 		icons/actions/FitSurface.svg \
 		translations/ReverseEngineering_de.qm \
+		translations/ReverseEngineering_es.qm \
 		translations/ReverseEngineering_fr.qm \
 		translations/ReverseEngineering_it.qm \
 		translations/ReverseEngineering_se.qm \
 		translations/ReverseEngineering_de.ts \
+		translations/ReverseEngineering_es.ts \
 		translations/ReverseEngineering_fr.ts \
 		translations/ReverseEngineering_it.ts \
 		translations/ReverseEngineering_se.ts \

@@ -185,10 +185,12 @@ EXTRA_DIST = \
 		DlgSettingsGeneral.ui \
 		Resources/Part.qrc \
 		Resources/translations/Part_de.qm \
+		Resources/translations/Part_es.qm \
 		Resources/translations/Part_fr.qm \
 		Resources/translations/Part_it.qm \
 		Resources/translations/Part_se.qm \
 		Resources/translations/Part_de.ts \
+		Resources/translations/Part_es.ts \
 		Resources/translations/Part_fr.ts \
 		Resources/translations/Part_it.ts \
 		Resources/translations/Part_se.ts \

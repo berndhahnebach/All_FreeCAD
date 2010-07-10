@@ -84,10 +84,12 @@ EXTRA_DIST = \
 		CMakeLists.txt \
 		Resources/Image.qrc \
 		Resources/translations/Image_de.qm \
+		Resources/translations/Image_es.qm \
 		Resources/translations/Image_fr.qm \
 		Resources/translations/Image_it.qm \
 		Resources/translations/Image_se.qm \
 		Resources/translations/Image_de.ts \
+		Resources/translations/Image_es.ts \
 		Resources/translations/Image_fr.ts \
 		Resources/translations/Image_it.ts \
 		Resources/translations/Image_se.ts \
