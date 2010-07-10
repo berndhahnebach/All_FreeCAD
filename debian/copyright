@@ -1,8 +1,8 @@
-Format-Specification: http://wiki.debian.org/Proposals/CopyrightFormat
-Upstream-Maintainer: Werner Mayer <wmayer@users.sourceforge.net>
-Packaged-By: Werner Mayer <wmayer@users.sourceforge.net>
-Packaged-Date: 2006-09-26_16:55:15+02:00
-Original-Source-Location: http://sourceforge.net/projects/free-cad
+Format-Specification: http://dep.debian.net/deps/dep5/
+Maintainer: Werner Mayer <wmayer@users.sourceforge.net>
+X-Packaged-By: Werner Mayer <wmayer@users.sourceforge.net>
+X-Packaged-Date: 2006-09-26_16:55:15+02:00
+Source: http://sourceforge.net/projects/free-cad
 
 Files: *
 Copyright: 2001-2009 Jürgen Riegel <juergen.riegel@web.de>,
@@ -22,7 +22,7 @@ License: LGPL-2+
  License along with this package; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, US
  .
- On Debian systems, the complete text of the GNU Lesser General Public 
+ On Debian systems, the complete text of the GNU Lesser General Public
  License version 2 can be found in `/usr/share/common-licenses/LGPL-2'.
 
 Files: src/3rdParty/boost/numeric/bindings/*
@@ -108,6 +108,42 @@ License: other
  for any purpose and without fee is hereby granted.  This software
  is provided on an as is basis, without warranties of any kind.
 
+Files: src/Doc/Start_Page.html
+Copyright: 2004-2009 UnaMesa Association
+License: BSD
+ On Debian systems, the complete text of the BSD license
+ can be found in `/usr/share/common-licenses/BSD'.
+
+Files: src/Doc/Start_Page.html
+Copyright: 2009 John Resig
+License: GPL-2 or MIT
+ On Debian systems, the complete text of the GNU General Public License
+ version 2 can be found in '/usr/share/common-licenses/GPL-2'.
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ .
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Files: src/Doc/Start_Page.html
+Copyright: 2009 The Dojo Foundation, http://sizzlejs.com/
+License: GPL-2 or MIT or BSD
+
 Files: src/Gui/iisTaskPanel/src/*
 Copyright: http://www.ii-system.com
 License: LGPL
@@ -118,6 +154,10 @@ License: GPL-2+
 
 Files: src/Mod/Draft/draftlibs/dxf*
 Copyright: 2005-2008 Ed Blake, Remigiusz Fiedler, Stani Michiels
+License: GPL-2+
+
+Files: src/Mod/Draft/WorkingPlane.py
+Copyright: 2009-2010 Ken Cline <cline@frii.com>
 License: GPL-2+
 
 Files: src/Base/BoundBox.h, src/Base/Swap.*, src/Base/Vector3D.*,
@@ -157,6 +197,10 @@ Files: src/Mod/Mesh/App/WildMagic4/*
 Copyright: 1998-2007 David Eberly http://www.geometrictools.com
 License: LGPL-2.1+
 
+Files: src/Mod/Part/App/edgecluster.*
+Copyright: 2010 Joachim Zettler <Joachim.Zettler@gmx.de>
+License: LGPL-2+
+
 Files: src/Mod/Raytracing/App/resources/*
 Copyright: 2005 Georg Wiora <georg.wiora@quarkbox.de>,
  Juergen Riegel <juergen.riegel@web.de>
@@ -167,6 +211,10 @@ Copyright: 2008 Jonathan Westhues
 License: GPL-3+
  On Debian systems, the complete text of the GNU General Public License
  version 3 can be found in '/usr/share/common-licenses/GPL-3'.
+
+Files: src/Mod/Sketcher/App/sketchsolve_cp/*
+Copyright: 2009 Jonathan George
+License: BSD
 
 Files: src/Mod/Test/unittestgui.py
 Copyright: 1999-2001 Steve Purcell
@@ -190,30 +238,10 @@ Files: src/Mod/Part/MakeBottle.py, src/Tools/*
 Copyright: 2002-2008 Jürgen Riegel <juergen.riegel@web.de>,
  Werner Mayer <wmayer@users.sourceforge.net>
 License: GPL-2+
- On Debian systems, the complete text of the GNU General Public License
- version 2 can be found in '/usr/share/common-licenses/GPL-2'.
 
 Files: src/Tools/generateBase/generateDS.py
 Copyright: 2003 Dave Kuhlman
 License: MIT
- Permission is hereby granted, free of charge, to any person obtaining
- a copy of this software and associated documentation files (the
- "Software"), to deal in the Software without restriction, including
- without limitation the rights to use, copy, modify, merge, publish,
- distribute, sublicense, and/or sell copies of the Software, and to
- permit persons to whom the Software is furnished to do so, subject to
- the following conditions:
- .
- The above copyright notice and this permission notice shall be
- included in all copies or substantial portions of the Software.
- .
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Files: debian/*
 Copyright: 2007-2009 Werner Mayer <wmayer@users.sourceforge.net>,
