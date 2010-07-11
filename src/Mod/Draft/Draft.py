@@ -160,7 +160,7 @@ except:
 lastObj = [0,0] # last snapped objects, for quick intersection calculation
 
 # loads a translation engine
-languages = {"English":"en","French":"fr","German":"de","Italian":"it"}
+languages = {"Swedish":"se","Spanish":"es","English":"en","French":"fr","German":"de","Italian":"it"}
 ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
 if ln in languages:
 	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
@@ -214,6 +214,12 @@ class todo:
 		self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 '''
 
+svgpatterns = {'simple':'<pattern id="simple" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/></g></pattern>',
+            'cross':'<pattern id="cross" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/><path d="M.12,0 l-.12,.12"/></g></pattern>',
+            'line':'<pattern id="line" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0.05 l.12,0"/></g></pattern>',
+            'square':'<pattern id="square" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0.05 l.12,0"/><path d="M0.05,0 l0,.12"/></g></pattern>',
+            }
+
 plane = WorkingPlane.plane()
 defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
 if defaultWP == 1:
@@ -228,7 +234,7 @@ elif defaultWP == 3:
 #---------------------------------------------------------------------------
 
 def typecheck (args_and_types, name="?"):
-        "checks arguments types"
+        "typecheck([arg1,type),(arg2,type),...]): checks arguments types"
 	for v,t in args_and_types:
 		if not isinstance (v,t):
                         w = "typecheck[" + str(name) + "]: "
@@ -237,19 +243,20 @@ def typecheck (args_and_types, name="?"):
 			raise TypeError("Draft." + str(name))
 
 def precision():
-        "returns the precision value from user settings"
+        "returns the precision value from Draft user settings"
         params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 	return params.GetInt("precision")
         
 def getRealName(name):
-	"strips the trailing numbers from a string name"
+	"getRealName(string): strips the trailing numbers from a string name"
 	for i in range(1,len(name)):
 		if not name[-i] in '1234567890':
 			return name[:len(name)-(i-1)]
 	return name
 
 def getGroupContents(objectslist):
-        "if any object of the given list is a group, its content is appened to the list"
+        '''getGroupContents(objectlist): if any object of the given list
+        is a group, its content is appened to the list, which is returned'''
         for ob in objectslist:
                 if ob.Type == "App::DocumentObjectGroup":
                         for subob in ob.Group:
@@ -259,7 +266,7 @@ def getGroupContents(objectslist):
 
 def snapPoint (target,point,cursor,ctrl=False):
 	'''
-	Snap function
+	Snap function used by the Draft tools
 
 	Currently has two modes: passive and active. Pressing CTRL while 
 	clicking puts you in active mode:
@@ -396,7 +403,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 
 def constrainPoint (target,point,mobile=False,sym=False):
 	'''
-	Constrain function
+	Constrain function used by the Draft tools
 	On commands that need to enter several points (currently only line/wire),
 	you can constrain the next point to be picked to the last drawn point by
 	pressing SHIFT. The vertical or horizontal constraining depends on the
@@ -466,9 +473,11 @@ def constrainPoint (target,point,mobile=False,sym=False):
 
 def formatObject(target,origin=None):
 	'''
-	this function applies to the given object the current properties 
-	set on the toolbar (line color and line width), or of another object if given
-	it also places the object in construction group if needed.
+        formatObject(targetObject,[originObject]): This function applies
+        to the given target object the current properties 
+	set on the toolbar (line color and line width),
+        or copies the properties of another object if given as origin.
+	It also places the object in construction group if needed.
 	'''
 	obrep = target.ViewObject
 	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
@@ -505,15 +514,17 @@ def formatObject(target,origin=None):
                                         obrep.DisplayMode = matchrep.DisplayMode
 
 def getSelection():
+        "returns the current FreeCAD selection state of a given object"
 	return FreeCADGui.Selection.getSelection(FreeCAD.ActiveDocument.Name)
 
 def select(object):
-	"deselects everything and selects only the passed object"
+	"select(object): deselects everything and selects only the passed object"
 	FreeCADGui.Selection.clearSelection()
 	FreeCADGui.Selection.addSelection(object)
 
 def selectObject(arg):
-	"this is a scene even handler, to be called from the tools when they need to select an object"
+        '''this is a scene even handler, to be called from the Draft tools
+        when they need to select an object'''
 	if (arg["Type"] == "SoKeyboardEvent"):
 		if (arg["Key"] == "ESCAPE"):
 			FreeCAD.activeDraftCommand.finish()
@@ -531,6 +542,7 @@ def selectObject(arg):
 
 def getPoint(target,args,mobile=False,sym=False):
 	'''
+        Function used by the Draft Tools.
 	returns a constrained 3d point and its original point.
 	if mobile=True, the constraining occurs from the location of
 	mouse cursor when Shift is pressed, otherwise from last entered
@@ -580,7 +592,7 @@ def getPoint(target,args,mobile=False,sym=False):
 #---------------------------------------------------------------------------
 
 class Tracker:
-	"common settings for all trackers"
+	"A generic Draft Tracker, to be used by other specific trackers"
 	def __init__(self,dotted=False,scolor=None,swidth=None,children=[]):
 		color = coin.SoBaseColor()
 		color.rgb = scolor or FreeCADGui.activeWorkbench().draftToolBar.\
@@ -624,7 +636,7 @@ class Tracker:
 
 				
 class snapTracker(Tracker):
-	"a class to create a snap marker symbol, used by the functions that support snapping"
+	"A Snap Mark tracker, used by tools that support snapping"
 	def __init__(self):
 		color = coin.SoBaseColor()
 		color.rgb = FreeCADGui.activeWorkbench().draftToolBar.\
@@ -648,7 +660,7 @@ class snapTracker(Tracker):
 			self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_9_9
 
 class lineTracker(Tracker):
-	"a class to create a tracking line used by the functions that need it"
+	"A Line tracker, used by the tools that need to draw temporary lines"
 	def __init__(self,dotted=False,scolor=None,swidth=None):
 		line = coin.SoLineSet()
 		line.numVertices.setValue(2)
@@ -663,7 +675,7 @@ class lineTracker(Tracker):
 		self.coords.point.set1Value(1,point.x,point.y,point.z)
 
 class rectangleTracker(Tracker):
-	"a tracking rectangle"
+	"A Rectangle tracker, used by the rectangle tool"
 	def __init__(self,dotted=False,scolor=None,swidth=None):
 		self.origin = Vector(0,0,0)
 		line = coin.SoLineSet()
@@ -686,7 +698,7 @@ class rectangleTracker(Tracker):
 		self.coords.point.set1Value(3,inpoint2.x,inpoint2.y,inpoint2.z)
 
 class dimTracker(Tracker):
-	"a tracking bridge for drawing dimensions"
+	"A Dimension tracker, used by the dimension tool"
 	def __init__(self,dotted=False,scolor=None,swidth=None):
 		line = coin.SoLineSet()
 		line.numVertices.setValue(4)
@@ -714,7 +726,7 @@ class dimTracker(Tracker):
 			self.coords.point.setValues(0,4,points)
 		
 class arcTracker(Tracker):
-	"a class to create a tracking arc/circle, used by the functions that need it"
+	"An Arc tracker, used by tools that need to draw temporary arcs"
 	def __init__(self,dotted=False,scolor=None,swidth=None):
 		self.center = Vector(0,0,0)
 		self.start = Vector(0,0,0)
@@ -775,7 +787,7 @@ class arcTracker(Tracker):
 
 
 class ghostTracker(Tracker):
-	"this class creates a copy of the coin representation of all passed objects, to be used as ghost"
+	"A Ghost tracker, that allows to copy whole object representations"
 	def __init__(self,sel):
 		self.trans = coin.SoTransform()
 		self.trans.translation.setValue([0,0,0])
@@ -803,7 +815,7 @@ class ViewProviderDraft:
                 obj.addProperty("App::PropertyEnumeration","LineStyle","SVG Output","Line Style")
                 obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style")
                 obj.LineStyle=['Continuous','Dashed','Dashdotted','Dotted']
-                obj.FillStyle=['Shape Color','Simple Hatch','Cross Hatch']
+                obj.FillStyle=['Shape Color','Simple Hatch','Cross Hatch','Line Hatch','Square Hatch']
                 obj.Proxy = self
 
 	def attach(self, obj):
@@ -1091,19 +1103,21 @@ class ViewProviderRectangle(ViewProviderDraft):
 		return """
                         /* XPM */
                         static char * rec_xpm[] = {
-                        "16 16 3 1",
+                        "16 16 5 1",
                         " 	c None",
                         ".	c #000000",
                         "+	c #0000FF",
-                        "                ",
-                        "                ",
-                        "  ............  ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
+                        "@	c #141010",
+                        "#	c #615BD2",
+                        "        @@@@@@@@",
+                        "        @##@@#@@",
+                        "  ......@##@@##@",
+                        "  .+++++@##@@##@",
+                        "  .+++++@######@",
+                        "  .+++++@##@@##@",
+                        "  .+++++@##@@##@",
+                        "  .+++++@######@",
+                        "  .+++++@@@@@@@@"
                         "  .++++++++++.  ",
                         "  .++++++++++.  ",
                         "  .++++++++++.  ",
@@ -1143,19 +1157,21 @@ class ViewProviderCircle(ViewProviderDraft):
 		return """
                         /* XPM */
                         static char * circ_xpm[] = {
-                        "16 16 3 1",
+                        "16 16 5 1",
                         " 	c None",
                         ".	c #000000",
                         "+	c #0000FF",
-                        "                ",
-                        "      ....      ",
-                        "    ..++++..    ",
-                        "   .++++++++.   ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        " .++++++++++++. ",
-                        " .++++++++++++. ",
-                        " .++++++++++++. ",
+                        "@	c #141010",
+                        "#	c #615BD2",
+                        "        @@@@@@@@",
+                        "      ..@##@@#@@",
+                        "    ..++@##@@##@",
+                        "   .++++@##@@##@",
+                        "  .+++++@######@",
+                        "  .+++++@##@@##@",
+                        " .++++++@##@@##@",
+                        " .++++++@######@",
+                        " .++++++@@@@@@@@",
                         " .++++++++++++. ",
                         "  .++++++++++.  ",
                         "  .++++++++++.  ",
@@ -1208,19 +1224,21 @@ class ViewProviderWire(ViewProviderDraft):
 		return """
                        /* XPM */
                        static char * wire_xpm[] = {
-                       "16 16 3 1",
+                       "16 16 5 1",
                        " 	c None",
                        ".	c #000000",
                        "+	c #0000FF",
-                       "                ",
-                       "                ",
-                       "            ....",
-                       "        ....+++.",
-                       "    ....++++++. ",
-                       "....+++++++++.  ",
-                       ".+++++++++++.   ",
-                       " .+++++++++.    ",
-                       " .++++++++++.   ",
+                       "@	c #141010",
+                       "#	c #615BD2",
+                       "        @@@@@@@@",
+                       "        @##@@#@@",
+                       "        @##@@##@",
+                       "        @##@@##@",
+                       "    ....@######@",
+                       "....++++@##@@##@",
+                       ".+++++++@##@@##@",
+                       " .++++++@######@",
+                       " .++++++@@@@@@@@"
                        "  .++++++++++.  ",
                        "  .+++++++++++. ",
                        "   .++++++++++..",
@@ -1235,7 +1253,7 @@ class ViewProviderWire(ViewProviderDraft):
 #---------------------------------------------------------------------------
 	
 class ToolSelectPlane:
-	"choose a plane for Draft module geometry creation"
+	"The Draft_SelectPlane FreeCAD command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_selectPlane',
@@ -1330,7 +1348,7 @@ class ToolSelectPlane:
 #---------------------------------------------------------------------------
 
 class Creator:
-	"General settings for all geometry creation tools"
+	"A generic Draft Creator Tool used by creation tools such as line or arc"
 	def Activated(self):
 		if FreeCAD.activeDraftCommand:
 			FreeCAD.activeDraftCommand.finish()
@@ -2103,7 +2121,7 @@ class ToolDimension(Creator):
 #---------------------------------------------------------------------------
 
 class Modifier:
-	"This stores general stuff for all modifier tools"
+	"A generic Modifier Tool, used by modification tools such as move"
 
 	def Activated(self):
 		self.ui = None
@@ -2136,7 +2154,7 @@ class Modifier:
 			self.view.removeEventCallback("SoEvent",self.call)
 			
 class ToolMove(Modifier):
-	"This class translates the selected objects from a point to another point."
+	"The Draft_Move FreeCAD command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_move',
@@ -2187,30 +2205,7 @@ class ToolMove(Modifier):
 		"moving the real shapes"
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Move")
-		for ob in self.sel:
-			if (ob.Type[:4] == "Part"):
-				if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
-				else: newob = ob
-				sh = ob.Shape
-				sh.translate(delta)
-				newob.Shape = sh
-			elif (ob.Type == "App::Annotation"):
-				if copy:
-					newob = self.doc.addObject("App::Annotation",getRealName(ob.Name))
-					newob.LabelText = ob.LabelText
-				else: newob = ob
-				newob.Position = ob.Position.add(delta)
-			elif (ob.Type == "App::FeaturePython"):
-				if 'Dimline' in ob.PropertiesList:
-					if copy:
-						newob = self.doc.addObject("App::FeaturePython",getRealName(ob.Name))
-						Dimension(newob)
-						DimensionViewProvider(newob.ViewObject)
-					else: newob = ob
-					newob.Start = ob.Start.add(delta)
-					newob.End = ob.End.add(delta)
-					newob.Dimline = ob.Dimline.add(delta)
-		if copy: formatObject(newob,ob)
+		move(self.sel,delta,copy)
 		self.doc.commitTransaction()
 
 	def action(self,arg):
@@ -2274,7 +2269,7 @@ class ToolMove(Modifier):
 
 			
 class ToolApplyStyle(Modifier):
-	"this class applies the current line width and line color to selected objects"
+	"The Draft_ApplyStyle FreeCA command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_apply',
@@ -2299,9 +2294,7 @@ class ToolApplyStyle(Modifier):
 
 			
 class ToolRotate(Modifier):
-	'''
-	This class rotates the selected objects.
-	'''
+	"The Draft_Rotate FreeCAD command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_rotate',
@@ -2497,7 +2490,7 @@ class ToolRotate(Modifier):
 
 
 class ToolOffset(Modifier):
-	"This class offsets the selected objects."
+	"The Draft_Offset FreeCAD command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_offset',
@@ -2798,8 +2791,9 @@ class ToolOffset(Modifier):
 			
 
 class ToolUpgrade(Modifier):
-	'''
-	This class upgrades selected objects in different ways, following this list (in order):
+	'''The Draft_Upgrade FreeCAD command definition.
+	This class upgrades selected objects in different ways,
+        following this list (in order):
 	- if there are more than one faces, the faces are merged (union)
 	- if there is only one face, nothing is done
 	- if there are closed wires, they are transformed in a face
@@ -2933,8 +2927,11 @@ class ToolUpgrade(Modifier):
 				
 class ToolDowngrade(Modifier):
 	'''
-	This class downgrades selected objects in different ways, following this list (in order):
-	- if there are more than one faces, the subsequent faces are subtracted from the first one
+        The Draft_Downgrade FreeCAD command definition.
+	This class downgrades selected objects in different ways,
+        following this list (in order):
+	- if there are more than one faces, the subsequent
+          faces are subtracted from the first one
 	- if there is only one face, it gets converted to a wire
 	- otherwise wires are exploded into single edges
 	'''
@@ -3015,13 +3012,11 @@ class ToolDowngrade(Modifier):
 		self.doc.commitTransaction()
 		select(newob)
 		Modifier.finish(self)
-		
-
-
 
 
 class ToolTrimex(Modifier):
-	'''this tool trims or extends lines, wires and arcs,
+	''' The Draft_Trimex FreeCAD command definition.
+        This tool trims or extends lines, wires and arcs,
 	or extrudes single faces. SHIFT constrains to the last point
 	or extrudes in direction to the face normal.'''
 
@@ -3293,7 +3288,8 @@ class ToolTrimex(Modifier):
 		self.finish()
 
 class ToolScale(Modifier):
-	"This class scales the selected objects from a base point."
+	'''The Draft_Scale FreeCAD command definition.
+        This tool scales the selected objects from a base point.'''
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_scale',
@@ -3428,7 +3424,7 @@ class ToolScale(Modifier):
 			self.finish()
 
 class ToolToggleConstructionMode():
-	"this class simply toggles the Construction Mode button"
+	"The Draft_ToggleConstructionMode FreeCAD command definition"
 
 	def GetResources(self):
 		return {'MenuText': str(translate("draft", "Toggle construcion Mode").toLatin1()),
@@ -3439,7 +3435,10 @@ class ToolToggleConstructionMode():
 
 
 class ToolSendToDrawing(Modifier):
-        "this tool sends the selected objects to the active Drawing sheet"
+        "The Draft_SendToDrawing FreeCAD command definition"
+
+        def __init__(self):
+                self.interactive = True
         
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_sendToDrawing',
@@ -3467,7 +3466,10 @@ class ToolSendToDrawing(Modifier):
                                 for i in range(len(existingpages)):
                                         if existingpages[i].Name == oldindex:
                                                 self.ui.pageBox.setCurrentIndex(i+1)
-                        self.ui.pageUi()
+                        if self.interactive:
+                                self.ui.pageUi()
+                        else:
+                                self.draw()
                 else: self.finish()
                                 
         def draw(self):
@@ -3593,24 +3595,28 @@ class ToolSendToDrawing(Modifier):
                                 if viewobj.FillStyle == 'Shape Color':
                                         fill = self.getrgb(viewobj.ShapeColor)
                                 elif viewobj.FillStyle == 'Simple Hatch':
-                                        fill = 'url(#hatch01)'
-                                        self.addPattern('Hatch01',page,color)
+                                        fill = 'url(#simple)'
+                                        self.addPattern('simple',page,color)
                                 elif viewobj.FillStyle == 'Cross Hatch':
-                                        fill = 'url(#hatch02)'
-                                        self.addPattern('Hatch02',page,color)
+                                        fill = 'url(#cross)'
+                                        self.addPattern('cross',page,color)
+                                elif viewobj.FillStyle == 'Line Hatch':
+                                        fill = 'url(#line)'
+                                        self.addPattern('line',page,color)
+                                elif viewobj.FillStyle == 'Square Hatch':
+                                        fill = 'url(#square)'
+                                        self.addPattern('square',page,color)
                         else:
                                 fill = self.getrgb(viewobj.ShapeColor)   
                 else: fill = 'none'
-                print fill
                 return fill
 
         def addPattern(self,pattern,page,svgcolor):
                 "adds a given pattern to the page"
-                patterns = {'Hatch01':'<pattern id="hatch01" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/></g></pattern>','Hatch02':'<pattern id="hatch02" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/><path d="M.12,0 l-.12,.12"/></g></pattern>'}
-                vobj = page.getObject('View'+pattern)
+                vobj = page.getObject('Pattern'+pattern)
                 if not vobj:
-                        view = self.doc.addObject('Drawing::FeatureView','View'+pattern)
-                        svg = patterns[pattern]
+                        view = self.doc.addObject('Drawing::FeatureView','Pattern'+pattern)
+                        svg = svgpatterns[pattern]
                         svg = svg.replace('DefaultColor',svgcolor)
                         view.ViewResult = svg
                         view.X = 0
@@ -3646,6 +3652,18 @@ class ToolSendToDrawing(Modifier):
                 result += svg
                 result += '</g>'
                 return result
+
+class ToolSendToDrawingDirect(Modifier):
+        "The Draft_SendToDrawingDirect FreeCAD command definition"
+
+        def __init__(self):
+                self.interactive = False
+        
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_sendToDrawing',
+			'MenuText': str(translate("draft", "DirectDrawing").toLatin1()),
+			'ToolTip': str(translate("draft", "Sends the selected objects to the active Drawing sheet without asking anything, using last settings").toLatin1())}
+        
 
 class ToolMakeDraftWire():
 	"The MakeDraft FreeCAD command definition"
@@ -3751,6 +3769,47 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
 	FreeCAD.ActiveDocument.recompute()
         return obj
 
+
+def move(objectslist,vector,copy=False):
+        '''move(objectslist,vector,[copy]): Moves the objects contained
+        in objectslist in the direction and distance indicated by the given
+        vector. If copy is True, the actual objects are not moved, but copies
+        are created instead.'''
+        typecheck([(objectslist,list), (vector,Vector), (copy,bool)], "move")
+        for obj in objectslist:
+                if (obj.Type[:4] == "Part"):
+                        if copy:
+                                newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
+                        else:
+                                newobj = obj
+                        sh = obj.Shape
+                        sh.translate(vector)
+                        newobj.Shape = sh
+                elif (obj.Type == "App::Annotation"):
+                        if copy:
+                                newobj = FreeCAD.ActiveDocument.addObject("App::Annotation",getRealName(obj.Name))
+                                newobj.LabelText = obj.LabelText
+                        else:
+                                newobj = obj
+                        newobj.Position = obj.Position.add(vector)
+                elif (obj.Type == "App::FeaturePython"):
+                        if 'Dimline' in obj.PropertiesList:
+                                if copy:
+                                        newobj = FreeCAD.ActiveDocument.addObject("App::FeaturePython",getRealName(obj.Name))
+                                        Dimension(newobj)
+                                        DimensionViewProvider(newobj.ViewObject)
+                                else:
+                                        newobj = obj
+                                newobj.Start = obj.Start.add(vector)
+                                newobj.End = obj.End.add(vector)
+                                newobj.Dimline = obj.Dimline.add(vector)
+                else:
+                        if "Placement" in obj.PropertiesList:
+                                pla = obj.Placement
+                                pla.move(vector)
+                                obj.Placement = pla
+		if copy: formatObject(newobj,obj)
+
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
@@ -3783,3 +3842,4 @@ FreeCADGui.addCommand('Draft_Downgrade',ToolDowngrade())
 FreeCADGui.addCommand('Draft_Trimex',ToolTrimex())
 FreeCADGui.addCommand('Draft_Scale',ToolScale())
 FreeCADGui.addCommand('Draft_SendToDrawing',ToolSendToDrawing())
+FreeCADGui.addCommand('Draft_SendToDrawingDirect',ToolSendToDrawingDirect())
