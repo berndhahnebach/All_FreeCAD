@@ -36,7 +36,7 @@ This module provides a class called plane to assist in selecting and maintaining
 
 
 class plane:
-	'''class for keping track of working plane.'''
+	'''A WorkPlane object'''
 
 	def __init__(self):
 		# keep track of active document.  Reset view when doc changes.

@@ -807,7 +807,7 @@ class toolBar:
 			FreeCADGui.addIcon(name,str(ba))
 
 		# loads a translation engine
-		languages = {"English":"en","French":"fr","German":"de","Italian":"it"}
+		languages = {"Swedish":"sw","Spanish":"es","English":"en","French":"fr","German":"de","Italian":"it"}
 		ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
 		if ln in languages:
 			self.translator = QtCore.QTranslator()
