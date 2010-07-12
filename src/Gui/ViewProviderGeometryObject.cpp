@@ -53,8 +53,9 @@
 #include <App/PropertyGeo.h>
 #include <App/GeoFeature.h>
 #include <Inventor/draggers/SoCenterballDragger.h>
+#if (COIN_MAJOR_VERSION > 2)
 #include <Inventor/nodes/SoDepthBuffer.h>
-
+#endif
 
 using namespace Gui;
 
