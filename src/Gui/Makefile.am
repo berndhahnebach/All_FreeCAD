@@ -35,6 +35,7 @@ BUILT_SOURCES=\
 		moc_DlgSettingsUnitsImp.cpp \
 		moc_DlgTipOfTheDayImp.cpp \
 		moc_DlgToolbarsImp.cpp \
+		moc_TaskDlgRelocation.cpp \
 		moc_DlgUndoRedo.cpp \
 		moc_DockWindow.cpp \
 		moc_DockWindowManager.cpp \
@@ -101,6 +102,7 @@ BUILT_SOURCES=\
 		ui_DlgTipOfTheDay.h \
 		ui_DlgToolbars.h \
 		ui_DlgTreeWidget.h \
+		ui_DlgLocationAngle.h \
 		ui_SceneInspector.h \
 		ui_InputVector.h \
 		ui_Placement.h \
@@ -144,6 +146,8 @@ libFreeCADGui_la_UI=\
 		DlgSettingsColorGradient.ui \
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
+		DlgLocationAngle.ui \
+		DlgLocationPos.ui \
 		DlgTreeWidget.ui \
 		SceneInspector.ui \
 		InputVector.ui \
@@ -234,6 +238,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgTipOfTheDayImp.h \
 		DlgToolbarsImp.cpp \
 		DlgToolbarsImp.h \
+		TaskDlgRelocation.cpp \
+		TaskDlgRelocation.h \
 		DlgUndoRedo.cpp \
 		DlgUndoRedo.h \
 		DockWindow.cpp \

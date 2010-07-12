@@ -97,6 +97,7 @@ set(Gui_MOC_HDRS
 		 DlgSettingsUnitsImp.h
 		 DlgTipOfTheDayImp.h
 		 DlgToolbarsImp.h
+		 TaskDlgRelocation.h
 		 DlgUndoRedo.h
 		 DockWindow.h
 		 DockWindowManager.h
@@ -178,6 +179,8 @@ SET(Gui_UIC_SRCS
 		 DlgTipOfTheDay.ui
 		 DlgToolbars.ui
 		 DlgTreeWidget.ui
+		 DlgLocationAngle.ui
+		 DlgLocationPos.ui
 		 SceneInspector.ui
 		 InputVector.ui
 		 Placement.ui
@@ -227,6 +230,7 @@ SET(Dialog_CPP_SRCS
 		 DlgParameterImp.cpp
 		 DlgProjectInformationImp.cpp
 		 DlgTipOfTheDayImp.cpp
+		 TaskDlgRelocation.cpp
 		 DlgUndoRedo.cpp
 		 InputVector.cpp
 		 Placement.cpp
@@ -248,6 +252,7 @@ SET(Dialog_HPP_SRCS
 		 DlgParameterImp.h
 		 DlgProjectInformationImp.h
 		 DlgTipOfTheDayImp.h
+		 TaskDlgRelocation.h
 		 DlgUndoRedo.h
 		 InputVector.h
 		 Placement.h
