@@ -4,11 +4,11 @@
 #define FCVersionMinor "11"
 #define FCVersionName  "Dagoba"
 
-#define FCRevision      "3273"      //Highest committed revision number
-#define FCRevisionDate  "2010/06/30 16:35:49"     //Date of highest committed revision
-#define FCRevisionRange "3273"    //Update revision range
+#define FCRevision      "3306"      //Highest committed revision number
+#define FCRevisionDate  "2010/07/12 18:43:04"     //Date of highest committed revision
+#define FCRevisionRange "3306"    //Update revision range
 #define FCRepositoryURL "https://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk"      //Repository URL of the working copy
-#define FCCurrentDateT  "2010/06/30 16:49:16"      //Current system date & time
+#define FCCurrentDateT  "2010/07/12 19:39:51"      //Current system date & time
 
 //Placeholders of the form "$WCxxx?TrueText:FalseText$" are replaced with
 //TrueText if the tested condition is true, and FalseText if false.
