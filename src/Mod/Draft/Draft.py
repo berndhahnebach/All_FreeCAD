@@ -3769,13 +3769,18 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
 	FreeCAD.ActiveDocument.recompute()
         return obj
 
+def makeLine(p1,p2):
+        '''makeLine(p1,p2): Creates a line between p1 and p2.'''
+        obj = makeWire([p1,p2])
+        return obj
 
 def move(objectslist,vector,copy=False):
         '''move(objectslist,vector,[copy]): Moves the objects contained
         in objectslist in the direction and distance indicated by the given
         vector. If copy is True, the actual objects are not moved, but copies
         are created instead.'''
-        typecheck([(objectslist,list), (vector,Vector), (copy,bool)], "move")
+        typecheck([(vector,Vector), (copy,bool)], "move")
+        if not isinstance(objectslist,list): objectslist = [objectslist]
         for obj in objectslist:
                 if (obj.Type[:4] == "Part"):
                         if copy:
