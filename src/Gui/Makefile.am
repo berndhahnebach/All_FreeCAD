@@ -103,6 +103,7 @@ BUILT_SOURCES=\
 		ui_DlgToolbars.h \
 		ui_DlgTreeWidget.h \
 		ui_DlgLocationAngle.h \
+		ui_DlgLocationPos.h \
 		ui_SceneInspector.h \
 		ui_InputVector.h \
 		ui_Placement.h \
