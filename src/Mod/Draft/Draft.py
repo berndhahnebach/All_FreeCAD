@@ -1977,19 +1977,9 @@ class ToolText(Creator):
 
 	def createObject(self):
 		"creates an object in the current doc"
-		textbuffer = []
-		for l in self.text: textbuffer.append(str(l).encode('latin1'))
-		self.doc.openTransaction("Create "+self.featureName) 
-		self.obj=self.doc.addObject("App::Annotation",self.featureName)
+		self.doc.openTransaction("Create "+self.featureName)
+                makeText(self.node[0],self.text)
 		self.doc.commitTransaction()
-		self.obj.LabelText=textbuffer
-		self.obj.Position=self.node[0]
-		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-		self.obj.ViewObject.DisplayMode="World"
-		self.obj.ViewObject.FontSize=params.GetFloat("textheight")
-		self.obj.ViewObject.FontName=params.GetString("textfont")
-		formatObject(self.obj)
-		select(self.obj)
 		self.finish()
 
 	def action(self,arg):
@@ -2351,14 +2341,7 @@ class ToolRotate(Modifier):
 		"rotating the real shapes"
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Rotate")
-		for ob in self.sel:
-			if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
-			else: newob = ob
-			if (ob.isDerivedFrom("Part::Feature")):
-				shape = ob.Shape
-				shape.rotate(fcvec.tup(self.center), fcvec.tup(plane.axis), math.degrees(angle))
-				newob.Shape=shape
-			if copy: formatObject(newob,ob)
+                rotate(self.sel,angle,self.center,plane.axis,copy)
 		self.doc.commitTransaction()
 
 	def action(self,arg):
@@ -3774,15 +3757,40 @@ def makeLine(p1,p2):
         obj = makeWire([p1,p2])
         return obj
 
+def makeText(point,stringslist,screen=False):
+        '''makeText(point,strings,[screen]): Creates a Text object at the given point,
+        containing the strings given in the strings list, one string by line (strings
+        can also be one single string). The current color and text height and font
+        specified in preferences are used.
+        If screen is True, the text always faces the view direction.'''
+        typecheck([(point,Vector)], "makeText")
+        if not isinstance(stringslist,list): stringslist = [stringslist]
+        textbuffer = []
+        for l in stringslist: textbuffer.append(str(l).encode('latin1'))
+        obj=FreeCAD.ActiveDocument.addObject("App::Annotation","Text")
+        obj.LabelText=textbuffer
+        obj.Position=point
+        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+        if not screen: obj.ViewObject.DisplayMode="World"
+        h = params.GetFloat("textheight")
+        if screen: h = h*10
+        obj.ViewObject.FontSize = h
+        obj.ViewObject.FontName = params.GetString("textfont")
+        formatObject(obj)
+        select(obj)
+	return obj
+
 def move(objectslist,vector,copy=False):
-        '''move(objectslist,vector,[copy]): Moves the objects contained
-        in objectslist in the direction and distance indicated by the given
+        '''move(objects,vector,[copy]): Moves the objects contained
+        in objects (that can be an object or a list of objects)
+        in the direction and distance indicated by the given
         vector. If copy is True, the actual objects are not moved, but copies
-        are created instead.'''
+        are created instead.he objects (or their copies) are returned.'''
         typecheck([(vector,Vector), (copy,bool)], "move")
         if not isinstance(objectslist,list): objectslist = [objectslist]
+        newobjlist = []
         for obj in objectslist:
-                if (obj.Type[:4] == "Part"):
+                if (obj.isDerivedFrom("Part::Feature")):
                         if copy:
                                 newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
                         else:
@@ -3814,11 +3822,37 @@ def move(objectslist,vector,copy=False):
                                 pla.move(vector)
                                 obj.Placement = pla
 		if copy: formatObject(newobj,obj)
+                newobjlist.append(newobj)
+        if len(newobjlist) == 1: return newobjlist[0]
+        return newobjlist
+
+def rotate(objectslist,angle,center,axis=Vector(0,0,1),copy=False):
+        '''rotate(objects,angle,center,[axis,copy]): Rotates the objects contained in objects
+        (that can be a list of objects or an object) of the given angle around the center, using
+        axis as a rotation axis. If axis is omitted, the rotation will be around the vertical Z axis.
+        If copy is True, the actual objects are not moved, but copies
+        are created instead. The objects (or their copies) are returned.'''
+        typecheck([(copy,bool)], "rotate")
+        if not isinstance(objectslist,list): objectslist = [objectslist]
+        newobjlist = []
+        for obj in objectslist:
+                if copy:
+                        newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
+                else:
+                        newobj = obj
+                if (obj.isDerivedFrom("Part::Feature")):
+                        shape = obj.Shape
+                        shape.rotate(fcvec.tup(center), fcvec.tup(axis), math.degrees(angle))
+                        newobj.Shape=shape
+                if copy:
+                        formatObject(newobj,obj)
+                newobjlist.append(newobj)
+        if len(newobjlist) == 1: return newobjlist[0]
+        return newobjlist
 
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
-
 		
 # drawing commands
 FreeCADGui.addCommand('Draft_SelectPlane',ToolSelectPlane())
