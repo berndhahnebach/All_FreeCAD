@@ -1060,14 +1060,14 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
-                this->panningmove = FALSE;
+                this->lockrecenter = FALSE;
             }
             else if (!press && ev->wasShiftDown() &&
                 (this->currentmode != NavigationStyle::SELECTION)) {
                 SbTime tmp = (ev->getTime() - this->centerTime);
                 float dci = (float)QApplication::doubleClickInterval()/1000.0f;
                 // is it just a left click?
-                if (tmp.getValue() < dci && !this->panningmove) {
+                if (tmp.getValue() < dci && !this->lockrecenter) {
                     if (!this->seekToPoint(pos)) {
                         panToCenter(panningplane, posn);
                         this->interactiveCountDec();
@@ -1091,10 +1091,12 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
             else if (viewer->isEditing() && (this->currentmode == NavigationStyle::SPINNING)) {
                 processed = TRUE;
             }
+            this->lockrecenter = TRUE;
             break;
         case SoMouseButtonEvent::BUTTON2:
             // If we are in edit mode then simply ignore the RMB events
             // to pass the event to the base class.
+            this->lockrecenter = TRUE;
             if (!viewer->isEditing()) {
                 // If we are in zoom or pan mode ignore RMB events otherwise
                 // the canvas doesn't get any release events 
@@ -1114,13 +1116,13 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
-                this->panningmove = FALSE;
+                this->lockrecenter = FALSE;
             }
             else {
                 SbTime tmp = (ev->getTime() - this->centerTime);
                 float dci = (float)QApplication::doubleClickInterval()/1000.0f;
                 // is it just a middle click?
-                if (tmp.getValue() < dci && !this->panningmove) {
+                if (tmp.getValue() < dci && !this->lockrecenter) {
                     if (!this->seekToPoint(pos)) {
                         panToCenter(panningplane, posn);
                         this->interactiveCountDec();
@@ -1145,13 +1147,13 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 
     // Mouse Movement handling
     if (type.isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+        this->lockrecenter = TRUE;
         const SoLocation2Event * const event = (const SoLocation2Event *) ev;
         if (this->currentmode == NavigationStyle::ZOOMING) {
             this->zoomByCursor(posn, prevnormalized);
             processed = TRUE;
         }
         else if (this->currentmode == NavigationStyle::PANNING) {
-            this->panningmove = TRUE;
             float ratio = vp.getViewportAspectRatio();
             panCamera(viewer->getCamera(), ratio, this->panningplane, posn, prevnormalized);
             processed = TRUE;
@@ -1355,6 +1357,7 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
         // SoDebugError::postInfo("processSoEvent", "button = %d", button);
         switch (button) {
         case SoMouseButtonEvent::BUTTON1:
+            this->lockrecenter = TRUE;
             this->button1down = press;
 #if 0 // disable to avoid interferences where this key combination is used, too
             if (press && ev->wasShiftDown() &&
@@ -1363,14 +1366,14 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
-                this->panningmove = FALSE;
+                this->lockrecenter = FALSE;
             }
             else if (!press && ev->wasShiftDown() &&
                 (this->currentmode != NavigationStyle::SELECTION)) {
                 SbTime tmp = (ev->getTime() - this->centerTime);
                 float dci = (float)QApplication::doubleClickInterval()/1000.0f;
                 // is it just a left click?
-                if (tmp.getValue() < dci && !this->panningmove) {
+                if (tmp.getValue() < dci && !this->lockrecenter) {
                     if (!this->seekToPoint(pos)) {
                         panToCenter(panningplane, posn);
                         this->interactiveCountDec();
@@ -1414,6 +1417,7 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
         case SoMouseButtonEvent::BUTTON2:
             // If we are in edit mode then simply ignore the RMB events
             // to pass the event to the base class.
+            this->lockrecenter = TRUE;
             if (!viewer->isEditing()) {
                 // If we are in zoom or pan mode ignore RMB events otherwise
                 // the canvas doesn't get any release events 
@@ -1435,13 +1439,13 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                 float ratio = vp.getViewportAspectRatio();
                 SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
                 this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
-                this->panningmove = FALSE;
+                this->lockrecenter = FALSE;
             }
             else {
                 SbTime tmp = (ev->getTime() - this->centerTime);
                 float dci = (float)QApplication::doubleClickInterval()/1000.0f;
                 // is it just a middle click?
-                if (tmp.getValue() < dci && !this->panningmove) {
+                if (tmp.getValue() < dci && !this->lockrecenter) {
                     if (!this->seekToPoint(pos)) {
                         panToCenter(panningplane, posn);
                         this->interactiveCountDec();
@@ -1466,13 +1470,13 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
 
     // Mouse Movement handling
     if (type.isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+        this->lockrecenter = TRUE;
         const SoLocation2Event * const event = (const SoLocation2Event *) ev;
         if (this->currentmode == NavigationStyle::ZOOMING) {
             this->zoomByCursor(posn, prevnormalized);
             processed = TRUE;
         }
         else if (this->currentmode == NavigationStyle::PANNING) {
-            this->panningmove = TRUE;
             float ratio = vp.getViewportAspectRatio();
             panCamera(viewer->getCamera(), ratio, this->panningplane, posn, prevnormalized);
             processed = TRUE;
