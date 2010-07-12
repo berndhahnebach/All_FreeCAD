@@ -78,7 +78,7 @@ TaskBoxAngle::TaskBoxAngle(QWidget *parent)
     //QObject::connect(ui->horizontalSlider_Axis1,SIGNAL(sliderMoved(int)),this,SLOT(changeSliderA1(int)));
 }
 
-TaskBoxPosition::~TaskBoxPosition()
+TaskBoxAngle::~TaskBoxAngle()
 {
     delete ui;
 }
