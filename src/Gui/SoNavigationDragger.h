@@ -44,7 +44,7 @@
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/fields/SoSFRotation.h>
 
-class TranslateRadialDragger;
+//class TranslateRadialDragger;
 class SoRotateCylindricalDragger;
 
 class RotTransDragger : public SoDragger
@@ -115,7 +115,7 @@ class RotTransDragger : public SoDragger
 
   private:
 
-   static const char geomBuffer[];
+   static const char NavigationDraggerLayout[];
 
    // Destructor.
    ~RotTransDragger();

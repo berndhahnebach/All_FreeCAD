@@ -39,6 +39,7 @@
 #include "SoFCVectorizeSVGAction.h"
 #include "SoFCVectorizeU3DAction.h"
 #include "SoTextLabel.h"
+#include "SoNavigationDragger.h"
 
 #include "propertyeditor/PropertyItem.h"
 #include "NavigationStyle.h"
@@ -55,6 +56,7 @@ SbBool Gui::SoFCDB::isInitialized(void)
 
 void Gui::SoFCDB::init()
 {
+    RotTransDragger                 ::initClass();
     SoGLRenderActionElement         ::initClass();
     SoFCInteractiveElement          ::initClass();
     SoGLWidgetElement               ::initClass();
