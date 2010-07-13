@@ -138,18 +138,24 @@ from draftlibs import fcgeo
 
 # Pre-run tests
 
+def msg(text=None):
+        if not text:
+                FreeCAD.Console.PrintMessage("")
+        else:
+                FreeCAD.Console.PrintMessage(str(text.toLatin1()))
+
 try:
 	from pivy import coin
 	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
 		raise AssertionError("FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.")
 except AssertionError:
-	FreeCAD.Console.PrintMessage(str(translate("draft", "Error: FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
+	msg(translate("draft", "Error: FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.", None, QtGui.QApplication.UnicodeUTF8))
 	raise
 except ImportError:
-	FreeCAD.Console.PrintMessage(str(translate("draft", "Error: The Python-Pivy package must be installed on your system to use the Draft module", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
+	msg(translate("draft", "Error: The Python-Pivy package must be installed on your system to use the Draft module", None, QtGui.QApplication.UnicodeUTF8))
 	raise
 except:
-	FreeCAD.Console.PrintMessage(str(translate("draft", "Error: Unknown error while trying to load the Python-Pivy package", None, QtGui.QApplication.UnicodeUTF8).toLatin1()))
+	msg(translate("draft", "Error: Unknown error while trying to load the Python-Pivy package", None, QtGui.QApplication.UnicodeUTF8))
 	raise
 
 
@@ -191,8 +197,8 @@ class todo:
                                 # print "debug: executing",f
                                 f(arg)
 			except:
-				msg = "[Draft.todo] Unexpected error:" + sys.exc_info()[0]
-				FreeCAD.Console.PrintWarning (msg)
+				wrn = "[Draft.todo] Unexpected error:" + sys.exc_info()[0]
+				FreeCAD.Console.PrintWarning (wrn)
 		todo.itinerary = []
 
 	@staticmethod
@@ -254,14 +260,27 @@ def getRealName(name):
 			return name[:len(name)-(i-1)]
 	return name
 
+def shapify(obj):
+        "transforms a parametric shape object into non-parametric"
+        if not (obj.isDerivedFrom("Part::Feature")): return None
+        if not "Shape" in obj.PropertiesList: return None
+        if obj.Type == "Part::Feature": return obj
+        shape = obj.Shape
+        name = getRealName(obj.Name)
+        FreeCAD.ActiveDocument.removeObject(obj.Name)
+        newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",name)
+        newobj.Shape = shape
+        FreeCAD.ActiveDocument.recompute()
+        return newobj
+
 def getGroupContents(objectslist):
         '''getGroupContents(objectlist): if any object of the given list
         is a group, its content is appened to the list, which is returned'''
-        for ob in objectslist:
-                if ob.Type == "App::DocumentObjectGroup":
-                        for subob in ob.Group:
-                                if not subob in objectslist:
-                                        objectslist.append(subob)
+        for obj in objectslist:
+                if obj.Type == "App::DocumentObjectGroup":
+                        for subobj in obj.Group:
+                                if not subobj in objectslist:
+                                        objectslist.append(subobj)
         return objectslist
 
 def snapPoint (target,point,cursor,ctrl=False):
@@ -384,7 +403,7 @@ def snapPoint (target,point,cursor,ctrl=False):
 		newpoint = point
 		for i in snapArray:
 			if i[0] == None:
-				FreeCAD.Console.PrintMessage(str(translate("draft", "snapPoint: debug 'i[0]' is 'None'\n").toLatin1()))
+				msg(translate("draft", "snapPoint: debug 'i[0]' is 'None'\n"))
 			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
 			if sqdist < shortest:
 				shortest = sqdist
@@ -762,9 +781,8 @@ class arcTracker(Tracker):
 		Display the arc using a NURBS curve comprising three
 		equal sections joined by double knots.  For example,
 		to span 270 degrees, the contol point might be:
-		[(1,0,0,1), (s,s,0,s), (0,1,0,1), (-s,s,0,s), (-1,0,0,1), (-s,-s,0,s), (0,-1,0,1)],
-		where s = sqrt(2)
-
+		[(1,0,0,1), (s,s,0,s), (0,1,0,1), (-s,s,0,s), (-1,0,0,1),
+                (-s,-s,0,s), (0,-1,0,1)], where s = sqrt(2)
 		For reasons I do not understand, the arc's shape
 		changes when the control points are translated, so a
 		coin translation is used instead.
@@ -778,7 +796,7 @@ class arcTracker(Tracker):
 			else:
 				return (v.x, v.y, v.z, w)
 		control = [makepoint(i) for i in range(0,7)]
-		knots = [0,0,0,1,1,2,2,3,3,3] # coin docs advise avoiding fractional knot values
+		knots = [0,0,0,1,1,2,2,3,3,3]
 		self.coords.point.setValues(control)
 		self.circle.numControlPoints.setValue(len(control))
 		self.circle.knotVector.setValues(0,len(knots),knots)
@@ -1272,7 +1290,7 @@ class ToolSelectPlane:
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 			self.ui.selectPlaneUi()
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick a face to define the drawing plane\n").toLatin1()))
+			msg(translate("draft", "Pick a face to define the drawing plane\n"))
 			self.ui.sourceCmd = self
 			if plane.alignToSelection(self.offset):
 				#??? clear selection here
@@ -1349,7 +1367,7 @@ class ToolSelectPlane:
 
 class Creator:
 	"A generic Draft Creator Tool used by creation tools such as line or arc"
-	def Activated(self):
+	def Activated(self,name="None"):
 		if FreeCAD.activeDraftCommand:
 			FreeCAD.activeDraftCommand.finish()
 		self.ui = None
@@ -1357,6 +1375,7 @@ class Creator:
 		self.doc = None
 		self.doc = FreeCAD.ActiveDocument
 		self.view = FreeCADGui.ActiveDocument.ActiveView
+                self.featureName = name
 		if not self.doc:
 			self.finish()
 		else:
@@ -1368,6 +1387,7 @@ class Creator:
 			self.node = []
 			self.pos = []
 			self.ui.sourceCmd = self
+                        self.ui.cmdlabel.setText(name)
 			self.constrain = None
 			self.obj = None
 		
@@ -1378,7 +1398,7 @@ class Creator:
 			self.ui.offUi()
 			self.ui.cross(False)
 			self.ui.sourceCmd = None
-			FreeCAD.Console.PrintMessage("")
+			msg("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
 	
@@ -1395,15 +1415,14 @@ class ToolLine(Creator):
 			'ToolTip': str(translate("draft", "Creates a 2-point line. CTRL to snap, SHIFT to constrain").toLatin1())}
 
 	def Activated(self):
-		Creator.Activated(self)
+		Creator.Activated(self,"Line")
 		if self.doc:
-			self.featureName = "Line"
 			self.ui.lineUi()
 			self.snap = snapTracker()
 			self.linetrack = lineTracker()
 			self.constraintrack = lineTracker(dotted=True)
 			self.call = self.view.addEventCallback("SoEvent",self.action)
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick first point:\n").toLatin1()))
+			msg(translate("draft", "Pick first point:\n"))
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -1468,21 +1487,21 @@ class ToolLine(Creator):
 		"draws a new segment"
 		if (len(self.node) == 1):
 			self.linetrack.on()
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point:\n").toLatin1()))
+			msg(translate("draft", "Pick next point:\n"))
 		elif (len(self.node) == 2):
 			self.createTempObject()
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
 			if self.isWire:
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point, or (F)inish or (C)lose:\n").toLatin1()))
+				msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
 		else:
 			currentshape = self.obj.Shape
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			newshape=currentshape.fuse(newseg)
 			self.obj.Shape = newshape
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick next point, or (F)inish or (C)lose:\n").toLatin1()))
+			msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1556,16 +1575,14 @@ class ToolRectangle(Creator):
 			'ToolTip': str(translate("draft", "Creates a 2-point rectangle. CTRL to snap").toLatin1())}
 
 	def Activated(self):
-		Creator.Activated(self)
+		Creator.Activated(self,"Rectangle")
 		if self.ui:
-			self.featureName = "Rectangle"
 			self.refpoint = None
 			self.ui.lineUi()
-			self.ui.cmdlabel.setText("Rectangle")
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.snap = snapTracker()
 			self.rect = rectangleTracker()
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick first point:\n").toLatin1()))
+			msg(translate("draft", "Pick first point:\n"))
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -1618,7 +1635,7 @@ class ToolRectangle(Creator):
 			self.rect.update(point)
 			self.createObject()
 		else:
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick opposite point:\n").toLatin1()))
+			msg(translate("draft", "Pick opposite point:\n"))
 			self.rect.setorigin(point)
 			self.rect.on()
 
@@ -1636,7 +1653,7 @@ class ToolArc(Creator):
 			'ToolTip': str(translate("draft", "Creates an arc. CTRL to snap, SHIFT to constrain").toLatin1())}
 
 	def Activated(self):
-		Creator.Activated(self)
+		Creator.Activated(self,self.featureName)
 		if self.ui:
 			self.step = 0
 			self.center = None
@@ -1653,7 +1670,7 @@ class ToolArc(Creator):
 			self.constraintrack = lineTracker(dotted=True)
 			self.arctrack = arcTracker()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick center point:\n").toLatin1()))
+			msg(translate("draft", "Pick center point:\n"))
 
 	def finish(self,closed=False):
 		"finishes the arc"
@@ -1812,7 +1829,7 @@ class ToolArc(Creator):
 								self.ui.radiusUi()
 								self.step = 1
 								self.linetrack.on()
-								FreeCAD.Console.PrintMessage(str(translate("draft", "Pick radius:\n").toLatin1()))
+								msg(translate("draft", "Pick radius:\n"))
 					else:
 						if len(self.tangents) == 1:
 							self.tanpoints.append(point)
@@ -1826,7 +1843,7 @@ class ToolArc(Creator):
 						self.ui.radiusUi()
 						self.step = 1
 						self.linetrack.on()
-						FreeCAD.Console.PrintMessage(str(translate("draft", "Pick radius:\n").toLatin1()))
+						msg(translate("draft", "Pick radius:\n"))
 				elif (self.step == 1): # choose radius
 					if self.closedCircle:
 						self.ui.cross(False)
@@ -1836,14 +1853,14 @@ class ToolArc(Creator):
 						self.linetrack.p1(self.center)
 						self.linetrack.on()
 						self.step = 2
-						FreeCAD.Console.PrintMessage(str(translate("draft", "Pick start angle:\n").toLatin1()))
+						msg(translate("draft", "Pick start angle:\n"))
 				elif (self.step == 2): # choose first angle
 					self.ui.labelRadius.setText("End angle")
 					self.step = 3
 					# scale center->point vector for proper display
 					u = fcvec.scaleTo(point.sub(self.center), self.rad)
 					self.arctrack.startPoint(u.add(self.center))
-					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end angle:\n").toLatin1()))
+					msg(translate("draft", "Pick end angle:\n"))
 				else: # choose second angle
 					self.step = 4
 					self.drawArc()
@@ -1880,7 +1897,7 @@ class ToolArc(Creator):
 		self.arctrack.on()
 		self.ui.radiusUi()
 		self.step = 1
-		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick radius:\n").toLatin1()))
+		msg(translate("draft", "Pick radius:\n"))
 		
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -1913,7 +1930,7 @@ class ToolArc(Creator):
 				self.ui.labelRadius.setText("Start angle")
 				self.linetrack.p1(self.center)
 				self.linetrack.on()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Pick start angle:\n").toLatin1()))
+				msg(translate("draft", "Pick start angle:\n"))
 		elif (self.step == 2):
 			self.ui.labelRadius.setText("End angle")
 			self.firstangle = math.radians(rad)
@@ -1922,7 +1939,7 @@ class ToolArc(Creator):
 			urotated = fcvec.rotate(u, math.radians(rad), plane.axis)
 			self.arctrack.startPoint(urotated)
 			self.step = 3
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end angle:\n").toLatin1()))
+			msg(translate("draft", "Pick end angle:\n"))
 		else:
 			self.updateAngle(rad)
 			self.step = 4
@@ -1953,19 +1970,17 @@ class ToolText(Creator):
 			'ToolTip': str(translate("draft", "Creates an annotation. CTRL to snap").toLatin1())}
 
 	def Activated(self):
-		Creator.Activated(self)
+		Creator.Activated(self,"Text")
 		if self.ui:
-			self.featureName = "Text"
 			self.dialog = None
 			self.text = ''
 			self.ui.sourceCmd = self
 			self.ui.pointUi()
-			self.ui.cmdlabel.setText("Text")
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.ui.xValue.setFocus()
 			self.ui.xValue.selectAll()
 			self.snap = snapTracker()
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick location point:\n").toLatin1()))
+			msg(translate("draft", "Pick location point:\n"))
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -1978,7 +1993,7 @@ class ToolText(Creator):
 	def createObject(self):
 		"creates an object in the current doc"
 		self.doc.openTransaction("Create "+self.featureName)
-                makeText(self.node[0],self.text)
+                makeText(self.text,self.node[0])
 		self.doc.commitTransaction()
 		self.finish()
 
@@ -2015,16 +2030,15 @@ class ToolDimension(Creator):
 			'ToolTip': str(translate("draft", "Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment").toLatin1())}
 
 	def Activated(self):
-		Creator.Activated(self)
+		Creator.Activated(self,"Dimension")
 		if self.ui:
-			self.featureName = "Dimension"
 			self.ui.lineUi()
 			self.altdown = False
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.snap = snapTracker()
 			self.dimtrack = dimTracker()
 			self.constraintrack = lineTracker(dotted=True)
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick first point:\n").toLatin1()))
+			msg(translate("draft", "Pick first point:\n"))
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
@@ -2113,7 +2127,7 @@ class ToolDimension(Creator):
 class Modifier:
 	"A generic Modifier Tool, used by modification tools such as move"
 
-	def Activated(self):
+	def Activated(self,name="None"):
 		self.ui = None
 		self.call = None
 		self.doc = FreeCAD.ActiveDocument
@@ -2131,6 +2145,8 @@ class Modifier:
 			self.constrain = None
 			self.obj = None
 			self.extendedCopy = False
+                        self.ui.cmdlabel.setText(name)
+			self.featureName = name
 		
 	def finish(self):
 		self.node = []
@@ -2138,7 +2154,7 @@ class Modifier:
 		if self.ui:
 			self.ui.offUi()
 			self.ui.sourceCmd=None
-			FreeCAD.Console.PrintMessage("")
+			msg("")
 			self.ui.cross(False)
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
@@ -2152,18 +2168,15 @@ class ToolMove(Modifier):
 			'ToolTip': str(translate("draft", "Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Move")
 		if self.ui:
-			self.ui.cmdlabel.setText("Move")
-			self.featureName = "Move"
-			self.call = None
 			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to move\n").toLatin1()))
+				msg(translate("draft", "Select an object to move\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2180,7 +2193,7 @@ class ToolMove(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick start point:\n").toLatin1()))
+		msg(translate("draft", "Pick start point:\n"))
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2226,7 +2239,7 @@ class ToolMove(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end point:\n").toLatin1()))
+					msg(translate("draft", "Pick end point:\n"))
 				else:
 					last = self.node[0]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -2248,7 +2261,7 @@ class ToolMove(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick end point:\n").toLatin1()))
+			msg(translate("draft", "Pick end point:\n"))
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
@@ -2292,11 +2305,8 @@ class ToolRotate(Modifier):
 			'ToolTip': str(translate("draft", "Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Rotate")
 		if self.ui:
-			self.ui.cmdlabel.setText("Rotate")
-			self.featureName = "Rotate"
-			self.call = None
 			if not getSelection():
 				self.ghost = None
 				self.snap = None
@@ -2304,7 +2314,7 @@ class ToolRotate(Modifier):
 				self.arctrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to rotate\n").toLatin1()))
+				msg(translate("draft", "Select an object to rotate\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2323,7 +2333,7 @@ class ToolRotate(Modifier):
 		self.arctrack = arcTracker()
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick rotation center:\n").toLatin1()))
+		msg(translate("draft", "Pick rotation center:\n"))
 		self.ui.cross(True)
 				
 	def finish(self,closed=False):
@@ -2413,7 +2423,7 @@ class ToolRotate(Modifier):
 					self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
 					self.linetrack.on()
 					self.step = 1
-					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick base angle:\n").toLatin1()))
+					msg(translate("draft", "Pick base angle:\n"))
 				elif (self.step == 1):
 					self.ui.labelRadius.setText("Rotation")
 					self.arctrack.startPoint(point)
@@ -2422,7 +2432,7 @@ class ToolRotate(Modifier):
 					self.ghost.on()
 					self.ui.isCopy.show()
 					self.step = 2
-					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick rotation angle:\n").toLatin1()))
+					msg(translate("draft", "Pick rotation angle:\n"))
 				else:
 					currentrad = fcvec.dist(point,self.center)
 					angle = point.sub(self.center).getAngle(plane.u)
@@ -2453,7 +2463,7 @@ class ToolRotate(Modifier):
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Base angle")
 		self.step = 1
-		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick base angle:\n").toLatin1()))
+		msg(translate("draft", "Pick base angle:\n"))
 
 	def numericRadius(self,rad):
 		"this function gets called by the toolbar when valid radius have been entered there"
@@ -2465,7 +2475,7 @@ class ToolRotate(Modifier):
 			self.ghost.on()
 			self.ui.isCopy.show()
 			self.step = 2
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick rotation angle:\n").toLatin1()))
+			msg(translate("draft", "Pick rotation angle:\n"))
 		else:
 			self.rot(math.radians(rad),self.ui.isCopy.isChecked())
 			self.finish()
@@ -2481,11 +2491,8 @@ class ToolOffset(Modifier):
 			'ToolTip': str(translate("draft", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Offset")
 		if self.ui:
-			self.ui.cmdlabel.setText("Offset")
-			self.featureName = "Offset"
-			self.call = None
 			if not getSelection():
 				self.ghost = None
 				self.snap = None
@@ -2493,10 +2500,10 @@ class ToolOffset(Modifier):
 				self.arctrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to offset\n").toLatin1()))
+				msg(translate("draft", "Select an object to offset\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			elif len(getSelection()) > 1:
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Offset only works on one object at a time\n").toLatin1()))
+				msg(translate("draft", "Offset only works on one object at a time\n"))
 			else:
 				self.proceed()
 
@@ -2517,7 +2524,7 @@ class ToolOffset(Modifier):
 		self.faces = False
 		self.edges = []
 		if len(self.sel.Shape.Faces)>1:
-			FreeCAD.Console.PrintMessage(str(translate("draft", "The offset tool cannot currently work on multi-face objects\n").toLatin1()))
+			msg(translate("draft", "The offset tool cannot currently work on multi-face objects\n"))
 			self.finish()
 		c = fcgeo.complexity(self.sel)
 		self.closed = False
@@ -2540,7 +2547,7 @@ class ToolOffset(Modifier):
 				self.ghost.append(arcTracker())
 				self.redraw = self.redrawSlow
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick distance:\n").toLatin1()))
+		msg(translate("draft", "Pick distance:\n"))
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -2769,7 +2776,7 @@ class ToolOffset(Modifier):
 			else:
 				targetOb.Shape = Part.Wire(newedges)
 			self.doc.commitTransaction()
-		else: FreeCAD.Console.PrintMessage(str(translate("draft", "Couldn't determine where to apply distance!\n").toLatin1()))
+		else: msg(translate("draft", "Couldn't determine where to apply distance!\n"))
 		self.finish()
 			
 
@@ -2790,14 +2797,11 @@ class ToolUpgrade(Modifier):
 			'ToolTip': str(translate("draft", "Joins the selected objects into one, or converts closed wires to filled faces, or unite faces").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Upgrade")
 		if self.ui:
-			self.ui.cmdlabel.setText("Upgrade")			
-			self.featureName = "Upgrade"
-			self.call = None
 			if not getSelection():
 				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to upgrade\n").toLatin1()))
+				msg(translate("draft", "Select an object to upgrade\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -2925,14 +2929,11 @@ class ToolDowngrade(Modifier):
 			'ToolTip': str(translate("draft", "Explodes the selected objects into simpler objects, or subtract faces").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Downgrade")
 		if self.ui:
-			self.ui.cmdlabel.setText("Downgrade")		
-			self.featureName = "Downgrade"
-			self.call = None
 			if not getSelection():
 				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to upgrade\n").toLatin1()))
+				msg(translate("draft", "Select an object to upgrade\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -3009,18 +3010,15 @@ class ToolTrimex(Modifier):
 			'ToolTip' : str(translate("draft", "Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Trimex")
 		if self.ui:
-			self.ui.cmdlabel.setText("Trimex")
-			self.featureName = "Trimex"
-			self.sel = None
 			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to trim/extend\n").toLatin1()))
+				msg(translate("draft", "Select an object to trim/extend\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -3049,7 +3047,7 @@ class ToolTrimex(Modifier):
 			self.extrudeMode = False
 			c = fcgeo.complexity(self.sel)
 			if (c >= 7):
-				FreeCAD.Console.PrintMessage(str(translate("draft", "The selected object cannot be extended\n").toLatin1()))
+				msg(translate("draft", "The selected object cannot be extended\n"))
 				self.finish()
 			elif (c >= 4): 
 				self.edges = self.sel.Shape.Wires[0].Edges
@@ -3072,7 +3070,7 @@ class ToolTrimex(Modifier):
 		self.alt = False
 		self.force = None
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick distance:\n").toLatin1()))
+		msg(translate("draft", "Pick distance:\n"))
 		self.ui.cross(True)
 
 				
@@ -3280,18 +3278,15 @@ class ToolScale(Modifier):
 			'ToolTip': str(translate("draft", "Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Scale")
 		if self.ui:
-			self.ui.cmdlabel.setText("Scale")
-			self.featureName = "Scale"
-			self.call = None
 			if not getSelection():
 				self.ghost = None
 				self.snap = None
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
-				FreeCAD.Console.PrintMessage(str(translate("draft", "Select an object to scale\n").toLatin1()))
+				msg(translate("draft", "Select an object to scale\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			else:
 				self.proceed()
@@ -3308,7 +3303,7 @@ class ToolScale(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
 		self.call = self.view.addEventCallback("SoEvent",self.action)
-		FreeCAD.Console.PrintMessage(str(translate("draft", "Pick base point:\n").toLatin1()))
+		msg(translate("draft", "Pick base point:\n"))
 		self.ui.cross(True)
 
 	def finish(self,closed=False):
@@ -3323,24 +3318,7 @@ class ToolScale(Modifier):
 		"moving the real shapes"
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Move")
-		for ob in self.sel:
-			if copy: newob = self.doc.addObject("Part::Feature",getRealName(ob.Name))
-			else: newob=ob
-			if (ob.isDerivedFrom("Part::Feature")):
-				sh = ob.Shape
-				m = FreeCAD.Matrix()
-				m.scale(delta)
-				sh = sh.transformGeometry(m)
-				corr = Vector(self.node[0].x,self.node[0].y,self.node[0].z)
-				corr.scale(delta.x,delta.y,delta.z)
-				corr = fcvec.neg(corr.sub(self.node[0]))
-				sh.translate(corr)
-				newob.Shape = sh
-			elif (ob.Type == "App::Annotation"):
-				factor = delta.x * delta.y * delta.z * ob.ViewObject.FontSize
-				ob.ViewObject.Fontsize = factor
-
-		if copy: formatObject(newob,ob)
+                scale(self.sel,delta,self.node[0],copy)
 		self.doc.commitTransaction()
 
 	def action(self,arg):
@@ -3375,7 +3353,7 @@ class ToolScale(Modifier):
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
-					FreeCAD.Console.PrintMessage(str(translate("draft", "Pick scale factor:\n").toLatin1()))
+					msg(translate("draft", "Pick scale factor:\n"))
 				else:
 					last = self.node[0]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -3397,7 +3375,7 @@ class ToolScale(Modifier):
 			self.linetrack.p1(point)
 			self.linetrack.on()
 			self.ghost.on()
-			FreeCAD.Console.PrintMessage(str(translate("draft", "Pick scale factor:\n").toLatin1()))
+			msg(translate("draft", "Pick scale factor:\n"))
 		else:
 			last = self.node[-1]
 			if self.ui.isCopy.isChecked():
@@ -3429,12 +3407,9 @@ class ToolSendToDrawing(Modifier):
 			'ToolTip': str(translate("draft", "Sends the selected objects to the active Drawing sheet.").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self)
+		Modifier.Activated(self,"Send to Drawing")
                 import Drawing
 		if self.ui:
-			self.ui.cmdlabel.setText("to Drawing")		
-			self.featureName = "SendToDrawing"
-			self.call = None
                         oldindex = self.ui.pageBox.currentIndex()
                         if oldindex == 0:
                                 oldindex = None
@@ -3652,7 +3627,8 @@ class ToolMakeDraftWire():
 	"The MakeDraft FreeCAD command definition"
 
 	def GetResources(self):
-		return {'MenuText': str(translate("draft", "Make Draft Wire").toLatin1()),
+		return {'Pixmap'  : 'Draft_makeDraftWire',
+                        'MenuText': str(translate("draft", "Make Draft Wire").toLatin1()),
 			'ToolTip': str(translate("draft", "Turns selected objects to Draft Wires").toLatin1())}
 
 	def Activated(self):
@@ -3757,8 +3733,8 @@ def makeLine(p1,p2):
         obj = makeWire([p1,p2])
         return obj
 
-def makeText(point,stringslist,screen=False):
-        '''makeText(point,strings,[screen]): Creates a Text object at the given point,
+def makeText(stringslist,point=Vector(0,0,0),screen=False):
+        '''makeText(strings,[point],[screen]): Creates a Text object at the given point,
         containing the strings given in the strings list, one string by line (strings
         can also be one single string). The current color and text height and font
         specified in preferences are used.
@@ -3826,10 +3802,11 @@ def move(objectslist,vector,copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
-def rotate(objectslist,angle,center,axis=Vector(0,0,1),copy=False):
-        '''rotate(objects,angle,center,[axis,copy]): Rotates the objects contained in objects
-        (that can be a list of objects or an object) of the given angle around the center, using
-        axis as a rotation axis. If axis is omitted, the rotation will be around the vertical Z axis.
+def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False):
+        '''rotate(objects,angle,[center,axis,copy]): Rotates the objects contained
+        in objects (that can be a list of objects or an object) of the given angle
+        around the center, using axis as a rotation axis. If axis is omitted,
+        the rotation will be around the vertical Z axis.
         If copy is True, the actual objects are not moved, but copies
         are created instead. The objects (or their copies) are returned.'''
         typecheck([(copy,bool)], "rotate")
@@ -3849,6 +3826,39 @@ def rotate(objectslist,angle,center,axis=Vector(0,0,1),copy=False):
                 newobjlist.append(newobj)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
+
+
+def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
+        '''scale(objects,vector,[center,copy]): Scales the objects contained
+        in objects (that can be a list of objects or an object) of the given scale
+        factors defined by the given vector (in X, Y and Z directions) around
+        given center. If copy is True, the actual objects are not moved, but copies
+        are created instead. The objects (or their copies) are returned.'''
+        if not isinstance(objectslist,list): objectslist = [objectslist]
+        newobjlist = []
+        for obj in objectslist:
+                if copy:
+                        newobj = FreeCAD.ActiveDocument.doc.addObject("Part::Feature",getRealName(obj.Name))
+                else:
+                        newobj = shapify(obj)
+                if (obj.isDerivedFrom("Part::Feature")):
+                        sh = obj.Shape
+                        m = FreeCAD.Matrix()
+                        m.scale(delta)
+                        sh = sh.transformGeometry(m)
+                        corr = Vector(center.x,center.y,center.z)
+                        corr.scale(delta.x,delta.y,delta.z)
+                        corr = fcvec.neg(corr.sub(center))
+                        sh.translate(corr)
+                        newobj.Shape = sh
+                elif (obj.Type == "App::Annotation"):
+                        factor = delta.x * delta.y * delta.z * obj.ViewObject.FontSize
+                        obj.ViewObject.Fontsize = factor
+		if copy: formatObject(newobj,obj)
+                newobjlist.append(newobj)
+        if len(newobjlist) == 1: return newobjlist[0]
+        return newobjlist
+
 
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager
