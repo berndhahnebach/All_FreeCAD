@@ -37,6 +37,9 @@
 // Include file for our new class.
 #include "SoNavigationDragger.h"
 
+// Include file the binaray of SoNavigationDraggerLayout.iv, the layout of the dragger.
+#include "SoNavigationDraggerLayout.h"
+
 // This file contains RotTransDragger::geomBuffer, which 
 // describes the default geometry resources for this class.
 //#include "RotTransDraggerGeom.h"
@@ -88,9 +91,10 @@ RotTransDragger::RotTransDragger()
    // defaults. The user can override these by specifying new
    // scene graphs in the file:
    // $(SO_DRAGGER_DIR)/rotTransDragger.iv"
-   //if (SO_KIT_IS_FIRST_INSTANCE())
-   //  readDefaultParts("rotTransDragger.iv", geomBuffer,
-   //                    sizeof(geomBuffer));
+   if (SO_KIT_IS_FIRST_INSTANCE())
+     readDefaultParts("SoNavigationDraggerLayout.iv", 
+					  NavigationDraggerLayout,
+                      strlen(NavigationDraggerLayout));
 
    // Fields that always show current state of the dragger.
    SO_KIT_ADD_FIELD(rotation, (0.0, 0.0, 0.0, 1.0));
@@ -115,20 +119,20 @@ RotTransDragger::RotTransDragger()
    // establishing their callbacks.
 
    // Create the translator dragger.    
-   //SoDragger *tDragger = SO_GET_ANY_PART(this, "translator", 
-   //                      SoTranslate1Dragger);
+   SoDragger *tDragger = SO_GET_ANY_PART(this, "translator", 
+                         SoTranslate1Dragger);
 
    // Create the XRotator dragger.    
-   //SoDragger *XDragger = SO_GET_ANY_PART(this, "XRotator", 
-   //                      SoRotateCylindricalDragger);
+   SoDragger *XDragger = SO_GET_ANY_PART(this, "XRotator", 
+                         SoRotateCylindricalDragger);
 
    // Create the YRotator dragger.    
-   //SoDragger *YDragger = SO_GET_ANY_PART(this, "YRotator", 
-   //                      SoRotateCylindricalDragger);
+   SoDragger *YDragger = SO_GET_ANY_PART(this, "YRotator", 
+                         SoRotateCylindricalDragger);
 
    // Create the ZRotator dragger.    
-   //SoDragger *ZDragger = SO_GET_ANY_PART(this, "ZRotator", 
-   //                      SoRotateCylindricalDragger);
+   SoDragger *ZDragger = SO_GET_ANY_PART(this, "ZRotator", 
+                         SoRotateCylindricalDragger);
 
    // Set rotations in "XRotatorRot" and "ZRotatorRot" parts.
    // These parts will orient the draggers from their default 
