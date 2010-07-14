@@ -62,23 +62,23 @@ iisFreeCADTaskPanelScheme::iisFreeCADTaskPanelScheme(QObject *parent)
     taskLabelScheme.text = QColor(0x215dc6);
     taskLabelScheme.textOver = QColor(0x428eff);
 #else
-    QPalette p = QApplication::style()->standardPalette();
+    QPalette p = QApplication::palette();
     QLinearGradient panelBackgroundGrd(0,0, 0,300);
     panelBackgroundGrd.setColorAt(1, p.color(QPalette::Dark));
     panelBackgroundGrd.setColorAt(0, p.color(QPalette::Midlight));
     panelBackground = panelBackgroundGrd;
 
-    QLinearGradient headerBackgroundGrd(0,0, 300,0);
-    headerBackgroundGrd.setColorAt(0, 0xffffff);
-    headerBackgroundGrd.setColorAt(1, p.color(QPalette::Highlight));
+    QLinearGradient headerBackgroundGrd(0,0,0,100);
+    headerBackgroundGrd.setColorAt(0, p.color(QPalette::Highlight));
+    headerBackgroundGrd.setColorAt(1, p.color(QPalette::Highlight).lighter());
     headerBackground = headerBackgroundGrd;
 
     headerBorder = QPen(Qt::NoPen);
     headerSize = 25;
     headerAnimation = false;
 
-    headerLabelScheme.text = p.color(QPalette::Text);
-    headerLabelScheme.textOver = p.color(QPalette::Highlight);
+    headerLabelScheme.text = p.color(QPalette::HighlightedText);
+    headerLabelScheme.textOver = p.color(QPalette::BrightText);
     headerLabelScheme.iconSize = 22;
 
     headerButtonSize = QSize(17,17);
@@ -94,7 +94,7 @@ iisFreeCADTaskPanelScheme::iisFreeCADTaskPanelScheme(QObject *parent)
     headerButtonUnfoldOver = px2.transformed(mat);
 
     groupBackground = p.window();
-    groupBorder = QColor(0xffffff);
+    groupBorder = p.color(QPalette::Window);
 
     taskLabelScheme.text = p.color(QPalette::Text);
     taskLabelScheme.textOver = p.color(QPalette::Highlight);
