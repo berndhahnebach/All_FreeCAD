@@ -31,7 +31,7 @@ paths, lines, arcs and rects.
 Bezier curves are skipped.
 '''
 
-import xml.sax, string, FreeCAD, os, Part, math
+import xml.sax, string, FreeCAD, os, Part, math, re
 from draftlibs import fcvec, fcgeo
 from FreeCAD import Vector
 
@@ -229,7 +229,7 @@ def getrgb(color):
 	g = str(hex(int(color[1]*255)))[2:].zfill(2)
 	b = str(hex(int(color[2]*255)))[2:].zfill(2)
 	return "#"+r+g+b
-	
+
 class svgHandler(xml.sax.ContentHandler):
 	"this handler parses the svg files and creates freecad objects"
 
@@ -561,6 +561,26 @@ def decodeName(name):
 			print "dxf: error: couldn't determine character encoding"
 			decodedName = name
 	return decodedName
+
+def getContents(filename,tag):
+        "gets the contents of all the occurences of the given tag in the given file"
+        result = {}
+        f = pythonopen(filename)
+        contents = ''
+        for line in f: contents += line
+        contents = contents.replace('\n','_linebreak')
+        f.close()
+        searchpat = '<'+tag+'.*?</'+tag+'>'
+        tags = re.findall(searchpat,contents)
+        for t in tags:
+                tagid = re.findall('id="(.*?)"',t)
+                if tagid:
+                        tagid = tagid[0]
+                else:
+                        tagid = 'none'
+                res = t.replace('_linebreak','\n')
+                result[tagid] = res
+        return result
 
 def open(filename):
 	docname=os.path.split(filename)[1]

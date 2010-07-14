@@ -41,7 +41,7 @@ texts, colors,layers (from groups)
 import FreeCAD, os, Part, math, re, string
 from draftlibs import fcvec, dxfColorMap, dxfLibrary, fcgeo
 from draftlibs.dxfReader import readDXF
-from Draft import Dimension, DimensionViewProvider
+from Draft import Dimension, ViewProviderDimension
 from FreeCAD import Vector
 
 try: import FreeCADGui
