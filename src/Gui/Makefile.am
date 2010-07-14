@@ -305,6 +305,7 @@ libFreeCADGui_la_SOURCES=\
 		SoFCSelectionAction.cpp \
 		SoFCVectorizeSVGAction.cpp \
 		SoFCVectorizeU3DAction.cpp \
+		SoNavigationDraggerLayout.h \
 		SoTextLabel.cpp \
 		SpinBox.cpp \
 		Splashscreen.cpp \
@@ -444,6 +445,7 @@ include_HEADERS=\
 
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
+		SoNavigationDraggerLayout.iv \
 		lex.SelectionFilter.c \
 		SelectionFilter.l \
 		SelectionFilter.y \
