@@ -41,6 +41,7 @@
 #include "WorkbenchManager.h"
 #include "Language/Translator.h"
 #include <App/DocumentObjectPy.h>
+#include <App/PropertyFile.h>
 #include <Base/Interpreter.h>
 #include <Base/Console.h>
 #include <CXX/Objects.hxx>
@@ -265,8 +266,8 @@ PyObject* Application::sOpen(PyObject * /*self*/, PyObject *args,PyObject * /*kw
 PyObject* Application::sInsert(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     const char* Name;
-    const char* DocName;
-    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
+    const char* DocName=0;
+    if (!PyArg_ParseTuple(args, "s|s",&Name,&DocName))
         return NULL;
 
     PY_TRY {
@@ -275,26 +276,38 @@ PyObject* Application::sInsert(PyObject * /*self*/, PyObject *args,PyObject * /*
         fi.setFile(fileName);
         QString ext = fi.completeSuffix().toLower();
         if (ext == QLatin1String("iv")) {
-            //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
-            QString cmd = QString::fromLatin1(
-                "App.ActiveDocument.addObject(\"App::InventorObject\",\"%1\")."
-                "FileName=\"%2\"\n"
-                "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
-                "App.ActiveDocument.recompute()")
-                .arg(fi.baseName()).arg(fi.absoluteFilePath());
-            Base::Interpreter().runString(cmd.toUtf8());
+            App::Document *doc = 0;
+            if (DocName)
+                doc = App::GetApplication().getDocument(DocName);
+            else
+                doc = App::GetApplication().getActiveDocument();
+            if (!doc)
+                doc = App::GetApplication().newDocument(DocName);
+
+            App::DocumentObject* obj = doc->addObject("App::InventorObject",
+                (const char*)fi.baseName().toUtf8());
+            obj->Label.setValue((const char*)fi.baseName().toUtf8());
+            static_cast<App::PropertyString*>(obj->getPropertyByName("FileName"))
+                ->setValue((const char*)fi.absoluteFilePath().toUtf8());
+            doc->recompute();
         }
         else if (ext == QLatin1String("wrl") ||
                  ext == QLatin1String("vrml") ||
                  ext == QLatin1String("wrz")) {
-            //QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absoluteFilePath());
-            QString cmd = QString::fromLatin1(
-                "App.ActiveDocument.addObject(\"App::VRMLObject\",\"%1\")."
-                "VrmlFile=\"%2\"\n"
-                "App.ActiveDocument.ActiveObject.Label=\"%1\"\n"
-                "App.ActiveDocument.recompute()")
-                .arg(fi.baseName()).arg(fi.absoluteFilePath());
-            Base::Interpreter().runString(cmd.toUtf8());
+            App::Document *doc = 0;
+            if (DocName)
+                doc = App::GetApplication().getDocument(DocName);
+            else
+                doc = App::GetApplication().getActiveDocument();
+            if (!doc)
+                doc = App::GetApplication().newDocument(DocName);
+
+            App::DocumentObject* obj = doc->addObject("App::VRMLObject",
+                (const char*)fi.baseName().toUtf8());
+            obj->Label.setValue((const char*)fi.baseName().toUtf8());
+            static_cast<App::PropertyFileIncluded*>(obj->getPropertyByName("VrmlFile"))
+                ->setValue((const char*)fi.absoluteFilePath().toUtf8());
+            doc->recompute();
         }
         else if (ext == QLatin1String("py") || ext == QLatin1String("fcmacro") ||
                  ext == QLatin1String("fcscript")) {
