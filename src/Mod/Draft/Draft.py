@@ -130,7 +130,7 @@ ToDo list:
 # import FreeCAD modules
 
 from PyQt4 import QtCore, QtGui
-import FreeCAD, FreeCADGui, Part, WorkingPlane, math, sys, os, re
+import FreeCAD, FreeCADGui, Part, WorkingPlane, math, sys, os, re, importSVG
 sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
 from FreeCAD import Base, Vector
 from draftlibs import fcvec
@@ -139,10 +139,8 @@ from draftlibs import fcgeo
 # Pre-run tests
 
 def msg(text=None):
-        if not text:
-                FreeCAD.Console.PrintMessage("")
-        else:
-                FreeCAD.Console.PrintMessage(str(text.toLatin1()))
+        if not text: FreeCAD.Console.PrintMessage("")
+        else: FreeCAD.Console.PrintMessage(str(text.toLatin1()))
 
 try:
 	from pivy import coin
@@ -162,24 +160,6 @@ except:
 #---------------------------------------------------------------------------
 # Global state
 #---------------------------------------------------------------------------
-
-lastObj = [0,0] # last snapped objects, for quick intersection calculation
-
-# loads a translation engine
-languages = {"Swedish":"se","Spanish":"es","English":"en","French":"fr","German":"de","Italian":"it"}
-ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
-if ln in languages:
-	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
-	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft"
-	if os.path.exists(path2): lpath = path2 + os.sep + "Languages"
-	else: lpath = path1 + os.sep + "Languages"
-	translator = QtCore.QTranslator()
-	translator.load("draft_"+languages[ln],lpath)
-	QtGui.QApplication.installTranslator(translator)
-
-def translate(context,text):
-        "convenience function for Qt translator"
-        return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 class todo:
 	''' static todo class, delays execution of functions.  Use todo.delay
@@ -220,24 +200,13 @@ class todo:
 		self.xVec = fcvec.rotate(self.upVec,math.pi/2,fcvec.neg(self.axis))
 '''
 
-svgpatterns = {'simple':'<pattern id="simple" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/></g></pattern>',
-            'cross':'<pattern id="cross" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0 l.12,.12"/><path d="M.12,0 l-.12,.12"/></g></pattern>',
-            'line':'<pattern id="line" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0.05 l.12,0"/></g></pattern>',
-            'square':'<pattern id="square" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1"><g style="fill:none; stroke:DefaultColor; stroke-width:.005"><path d="M0,0.05 l.12,0"/><path d="M0.05,0 l0,.12"/></g></pattern>',
-            }
-
-plane = WorkingPlane.plane()
-defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
-if defaultWP == 1:
-        plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), 0)
-elif defaultWP == 2:
-        plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), 0)
-elif defaultWP == 3:
-        plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), 0)
-
 #---------------------------------------------------------------------------
 # General functions
 #---------------------------------------------------------------------------
+
+def translate(context,text):
+        "convenience function for Qt translator"
+        return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 def typecheck (args_and_types, name="?"):
         "typecheck([arg1,type),(arg2,type),...]): checks arguments types"
@@ -248,6 +217,12 @@ def typecheck (args_and_types, name="?"):
 			FreeCAD.Console.PrintWarning(w)
 			raise TypeError("Draft." + str(name))
 
+def getDraftPath(pathname):
+        path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
+	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft"
+	if os.path.exists(path2): return path2 + os.sep + pathname
+	else: return path1 + os.sep + pathname
+                
 def precision():
         "returns the precision value from Draft user settings"
         params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
@@ -830,10 +805,15 @@ class ViewProviderDraft:
         "A generic View Provider for Draft objects"
         
 	def __init__(self, obj):
-                obj.addProperty("App::PropertyEnumeration","LineStyle","SVG Output","Line Style")
-                obj.addProperty("App::PropertyEnumeration","FillStyle","SVG Output","Fill Style")
-                obj.LineStyle=['Continuous','Dashed','Dashdotted','Dotted']
-                obj.FillStyle=['Shape Color','Simple Hatch','Cross Hatch','Line Hatch','Square Hatch']
+                obj.addProperty("App::PropertyEnumeration","LineStyle",
+                                "SVG Output","Line Style")
+                obj.addProperty("App::PropertyEnumeration","FillStyle",
+                                "SVG Output","Fill Style")
+                obj.LineStyle = ['continuous','dashed','dashdotted','dotted']
+                fills = ['shape color']
+                for f in svgpatterns.keys():
+                        fills.append(f+' hatch')
+                obj.FillStyle = fills
                 obj.Proxy = self
 
 	def attach(self, obj):
@@ -3537,11 +3517,11 @@ class ToolSendToDrawing(Modifier):
         def getLineStyle(self,viewobj):
                 "returns a svg dash array"
                 if "LineStyle" in viewobj.PropertiesList:
-                        if viewobj.LineStyle == "Dashed":
+                        if viewobj.LineStyle == "dashed":
                                 return "0.09,0.05"
-                        elif viewobj.LineStyle == "Dashdotted":
+                        elif viewobj.LineStyle == "dashdotted":
                                 return "0.09,0.05,0.02,0.05"
-                        elif viewobj.LineStyle == "Dotted":
+                        elif viewobj.LineStyle == "dotted":
                                 return "0.02,0.02"
                 return "none"
 
@@ -3550,20 +3530,12 @@ class ToolSendToDrawing(Modifier):
                 color = self.getrgb(viewobj.LineColor)
                 if viewobj.Object.Shape.Faces and (viewobj.DisplayMode != "Wireframe"):
                         if 'FillStyle' in viewobj.PropertiesList:
-                                if viewobj.FillStyle == 'Shape Color':
+                                if viewobj.FillStyle == 'shape color':
                                         fill = self.getrgb(viewobj.ShapeColor)
-                                elif viewobj.FillStyle == 'Simple Hatch':
-                                        fill = 'url(#simple)'
-                                        self.addPattern('simple',page,color)
-                                elif viewobj.FillStyle == 'Cross Hatch':
-                                        fill = 'url(#cross)'
-                                        self.addPattern('cross',page,color)
-                                elif viewobj.FillStyle == 'Line Hatch':
-                                        fill = 'url(#line)'
-                                        self.addPattern('line',page,color)
-                                elif viewobj.FillStyle == 'Square Hatch':
-                                        fill = 'url(#square)'
-                                        self.addPattern('square',page,color)
+                                else:
+                                        hatch = viewobj.FillStyle[:-6]
+                                        fill = 'url(#'+hatch+')'
+                                        self.addPattern(hatch,page,color)
                         else:
                                 fill = self.getrgb(viewobj.ShapeColor)   
                 else: fill = 'none'
@@ -3861,7 +3833,7 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
 
 
 #---------------------------------------------------------------------------
-# Adds the icons & commands to the FreeCAD command manager
+# Adds the icons & commands to the FreeCAD command manager, and sets defaults
 #---------------------------------------------------------------------------
 		
 # drawing commands
@@ -3892,3 +3864,30 @@ FreeCADGui.addCommand('Draft_Trimex',ToolTrimex())
 FreeCADGui.addCommand('Draft_Scale',ToolScale())
 FreeCADGui.addCommand('Draft_SendToDrawing',ToolSendToDrawing())
 FreeCADGui.addCommand('Draft_SendToDrawingDirect',ToolSendToDrawingDirect())
+
+# loads a translation engine
+languages = {"Swedish":"se","Spanish":"es",
+             "English":"en","French":"fr",
+             "German":"de","Italian":"it"}
+ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
+if ln in languages:
+	translator = QtCore.QTranslator()
+	translator.load("draft_"+languages[ln],getDraftPath("Languages"))
+	QtGui.QApplication.installTranslator(translator)
+
+# loads the fill patterns
+svgpatterns = importSVG.getContents(getDraftPath('icons.svg'),'pattern')
+altpat = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("patternFile")
+if altpat:
+        altpatterns = importSVG.getContents(atlpat,'pattern')
+        if altpatterns: svgpatterns.update(altpatterns)
+
+# sets the default working plane
+plane = WorkingPlane.plane()
+defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
+if defaultWP == 1: plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), 0)
+elif defaultWP == 2: plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), 0)
+elif defaultWP == 3: plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), 0)
+
+# last snapped objects, for quick intersection calculation
+lastObj = [0,0]

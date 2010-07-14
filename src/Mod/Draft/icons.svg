@@ -20,6 +20,47 @@
    version="1.0">
   <defs
      id="defs4">
+    <pattern id="simple" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1">
+      <g style="fill:none; stroke:DefaultColor; stroke-width:.005">
+        <path d="M0,0 l.12,.12"/>
+      </g>
+    </pattern>
+    <pattern id="cross" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1">
+      <g style="fill:none; stroke:DefaultColor; stroke-width:.005">
+        <path d="M0,0 l.12,.12"/>
+        <path d="M.12,0 l-.12,.12"/>
+      </g>
+    </pattern>
+    <pattern id="line" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1">
+      <g style="fill:none; stroke:DefaultColor; stroke-width:.005">
+        <path d="M0,0.05 l.12,0"/>
+      </g>
+    </pattern>
+    <pattern id="square" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1">
+      <g style="fill:none; stroke:DefaultColor; stroke-width:.005">
+        <path d="M0,0.05 l.12,0"/>
+        <path d="M0.05,0 l0,.12"/>
+      </g>
+    </pattern>
+    <pattern id="concrete" patternUnits="userSpaceOnUse" x="0" y="0" width=".1" height=".1">
+      <g style="fill:none; stroke:DefaultColor; stroke-width:.005">
+        <path d="m 0.025,0.016 a 0.007,0.007 0 1 1 -0.015,0 0.007,0.007 0 1 1 0.015,0 z"/>
+        <path d="m 0.036,0.027 a 0.002,0.002 0 1 1 -0.005,0 0.002,0.002 0 1 1 0.005,0 z"/>
+        <path d="m 0.079,0.036 a 0.003,0.003 0 1 1 -0.007,0 0.003,0.003 0 1 1 0.007,0 z"/>
+        <path d="m 0.065,0.043 a 0.001,0.001 0 1 1 -0.002,0 0.001,0.001 0 1 1 0.002,0 z"/>
+        <path d="m 0.047,0.062 a 0.003,0.003 0 1 1 -0.007,0 0.003,0.003 0 1 1 0.007,0 z"/>
+        <path d="m 0.064,0.014 a 0.001,0.001 0 1 1 -0.002,0 0.001,0.001 0 1 1 0.002,0 z"/>
+        <path d="m 0.073,0.013 a 0.003,0.002 0 1 1 -0.006,0 0.003,0.002 0 1 1 0.006,0 z"/>
+        <path d="m 0.030,0.046 a 0.006,0.005 0 1 1 -0.013,0 0.006,0.005 0 1 1 0.013,0 z"/>
+        <path d="m 0.026,0.056 a 0.001,0.001 0 1 1 -0.003,0 0.001,0.001 0 1 1 0.003,0 z"/>
+        <path d="m 0.048,0.090 a 0.004,0.004 0 1 1 -0.009,0 0.004,0.004 0 1 1 0.009,0 z"/>
+        <path d="m 0.048,0.083 a 0.001,0.001 0 1 1 -0.002,0 0.001,0.001 0 1 1 0.002,0 z"/>
+        <path d="m 0.066,0.075 a 0.000,0.001 0 1 1 -0.001,0 0.001,0.001 0 1 1 0.001,0 z"/>
+        <path d="m 0.085,0.062 a 0.001,0.001 0 1 1 -0.003,0 0.001,0.001 0 1 1 0.003,0 z"/>
+        <path d="m 0.017,0.077 a 0.002,0.002 0 1 1 -0.005,0 0.002,0.002 0 1 1 0.005,0 z"/>
+        <path d="m 0.099,0.086 a 0.002,0.002 0 1 1 -0.004,0 0.002,0.002 0 1 1 0.004,0 z"/>
+      </g>
+    </pattern>
     <linearGradient
        id="linearGradient4300">
       <stop
@@ -688,18 +729,6 @@
        fx="225.26402"
        fy="672.79736"
        r="34.345188" />
-    <pattern
-       patternUnits="userSpaceOnUse"
-       width="65"
-       height="65"
-       patternTransform="translate(-0.5,131.5)"
-       id="pattern3445">
-      <path
-         sodipodi:nodetypes="ccccccccccccccccccccc"
-         id="path3413"
-         d="M 16.5,0.5 L 0.5,16.5 L 16.5,0.5 z M 32.5,0.5 L 0.5,32.5 L 32.5,0.5 z M 48.5,0.5 L 0.5,48.5 L 48.5,0.5 z M 64.5,0.5 L 0.5,64.5 L 64.5,0.5 z M 64.5,16.5 L 16.5,64.5 L 64.5,16.5 z M 64.5,32.5 L 32.5,64.5 L 64.5,32.5 z M 64.5,48.5 L 48.5,64.5 L 64.5,48.5 z"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    </pattern>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3864"
@@ -1061,18 +1090,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <pattern
-       patternUnits="userSpaceOnUse"
-       width="65"
-       height="65"
-       patternTransform="translate(-0.5,131.5)"
-       id="pattern3445-9">
-      <path
-         sodipodi:nodetypes="ccccccccccccccccccccc"
-         id="path3413-4"
-         d="M 16.5,0.5 L 0.5,16.5 L 16.5,0.5 z M 32.5,0.5 L 0.5,32.5 L 32.5,0.5 z M 48.5,0.5 L 0.5,48.5 L 48.5,0.5 z M 64.5,0.5 L 0.5,64.5 L 64.5,0.5 z M 64.5,16.5 L 16.5,64.5 L 64.5,16.5 z M 64.5,32.5 L 32.5,64.5 L 64.5,32.5 z M 64.5,48.5 L 48.5,64.5 L 64.5,48.5 z"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    </pattern>
     <inkscape:perspective
        id="perspective3645"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -1094,18 +1111,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <pattern
-       patternUnits="userSpaceOnUse"
-       width="65"
-       height="65"
-       patternTransform="translate(-0.5,131.5)"
-       id="pattern3445-8">
-      <path
-         sodipodi:nodetypes="ccccccccccccccccccccc"
-         id="path3413-5"
-         d="M 16.5,0.5 L 0.5,16.5 L 16.5,0.5 z M 32.5,0.5 L 0.5,32.5 L 32.5,0.5 z M 48.5,0.5 L 0.5,48.5 L 48.5,0.5 z M 64.5,0.5 L 0.5,64.5 L 64.5,0.5 z M 64.5,16.5 L 16.5,64.5 L 64.5,16.5 z M 64.5,32.5 L 32.5,64.5 L 64.5,32.5 z M 64.5,48.5 L 48.5,64.5 L 64.5,48.5 z"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    </pattern>
     <inkscape:perspective
        id="perspective3725"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -1113,18 +1118,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <pattern
-       patternUnits="userSpaceOnUse"
-       width="65"
-       height="65"
-       patternTransform="translate(-0.5,131.5)"
-       id="pattern3445-1">
-      <path
-         sodipodi:nodetypes="ccccccccccccccccccccc"
-         id="path3413-7"
-         d="M 16.5,0.5 L 0.5,16.5 L 16.5,0.5 z M 32.5,0.5 L 0.5,32.5 L 32.5,0.5 z M 48.5,0.5 L 0.5,48.5 L 48.5,0.5 z M 64.5,0.5 L 0.5,64.5 L 64.5,0.5 z M 64.5,16.5 L 16.5,64.5 L 64.5,16.5 z M 64.5,32.5 L 32.5,64.5 L 64.5,32.5 z M 64.5,48.5 L 48.5,64.5 L 64.5,48.5 z"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    </pattern>
     <inkscape:perspective
        id="perspective3759"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
