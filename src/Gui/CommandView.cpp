@@ -37,6 +37,7 @@
 #include "Action.h"
 #include "Application.h"
 #include "BitmapFactory.h"
+#include "Control.h"
 #include "FileDialog.h"
 #include "MainWindow.h"
 #include "Tree.h"
@@ -54,6 +55,7 @@
 #include "ViewProviderGeometryObject.h"
 #include "SceneInspector.h"
 #include "DemoMode.h"
+#include "TextureMapping.h"
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -1776,6 +1778,36 @@ void StdCmdSceneInspector::activated(int iMsg)
     }
 }
 
+//===========================================================================
+// Std_TextureMapping
+//===========================================================================
+
+DEF_STD_CMD_A(StdCmdTextureMapping);
+
+StdCmdTextureMapping::StdCmdTextureMapping()
+  : Command("Std_TextureMapping")
+{
+    // seting the
+    sGroup        = QT_TR_NOOP("Tools");
+    sMenuText     = QT_TR_NOOP("Texture mapping...");
+    sToolTipText  = QT_TR_NOOP("Texture mapping");
+    sWhatsThis    = "Std_TextureMapping";
+    sStatusTip    = QT_TR_NOOP("Texture mapping");
+    eType         = Alter3DView;
+}
+
+void StdCmdTextureMapping::activated(int iMsg)
+{
+    Gui::Control().showDialog(new Gui::Dialog::TaskTextureMapping);
+}
+
+bool StdCmdTextureMapping::isActive(void)
+{
+    Gui::MDIView* view = getMainWindow()->activeWindow();
+    return view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())
+                && (Gui::Control().activeDialog()==0);
+}
+
 DEF_STD_CMD(StdCmdDemoMode);
 
 StdCmdDemoMode::StdCmdDemoMode()
@@ -1855,6 +1887,7 @@ void CreateViewStdCommands(void)
     rcCmdMgr.addCommand(new StdCmdTreeSelection());
     rcCmdMgr.addCommand(new StdCmdMeasureDistance());
     rcCmdMgr.addCommand(new StdCmdSceneInspector());
+    rcCmdMgr.addCommand(new StdCmdTextureMapping());
     rcCmdMgr.addCommand(new StdCmdDemoMode());
 }
 
