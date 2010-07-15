@@ -34,6 +34,8 @@
 #include <Inventor/nodes/SoTextureCoordinateEnvironment.h>
 #include <QDialogButtonBox>
 
+#include <App/Application.h>
+
 #include "TextureMapping.h"
 #include "BitmapFactory.h"
 #include "ui_TextureMapping.h"
@@ -59,12 +61,20 @@ TextureMapping::TextureMapping(QWidget* parent, Qt::WFlags fl)
     for (QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it) {
         formats << QString::fromAscii("*.%1").arg(QLatin1String(*it));
     }
+    
     ui->fileChooser->setFilter(tr("Image files (%1)").arg(formats.join(QLatin1String(" "))));
 
     this->tex = new SoTexture2();
     this->tex->ref();
     this->env = new SoTextureCoordinateEnvironment();
     this->env->ref();
+
+    std::string path = App::GetApplication().Config()["TextureImage"];
+    if (!path.empty()) {
+        QString file = QString::fromUtf8(path.c_str());
+        ui->fileChooser->setFileName(file);
+        on_fileChooser_fileNameSelected(file);
+    }
 }
 
 TextureMapping::~TextureMapping()
@@ -83,7 +93,7 @@ void TextureMapping::reject()
 {
     if (this->grp) {
         this->grp->removeChild(this->tex);
-        if (this->grp->findChild(this->env))
+        if (this->grp->findChild(this->env) > -1)
             this->grp->removeChild(this->env);
         this->grp->unref();
     }
@@ -133,6 +143,7 @@ void TextureMapping::on_fileChooser_fileNameSelected(const QString& s)
     Gui::BitmapFactory().convert(image, texture);
     this->tex->image = texture;
     //this->tex->filename = (const char*)s.toUtf8();
+    App::GetApplication().Config()["TextureImage"] = (const char*)s.toUtf8();
 }
 
 void TextureMapping::on_checkEnv_toggled(bool b)
