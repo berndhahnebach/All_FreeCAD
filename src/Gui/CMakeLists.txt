@@ -125,6 +125,7 @@ set(Gui_MOC_HDRS
 		 Splashscreen.h
 		 TaskPanelView.h
 		 TextEdit.h
+		 TextureMapping.h
 		 ToolBox.h
 		 Transform.h
 		 Tree.h
@@ -184,6 +185,7 @@ SET(Gui_UIC_SRCS
 		 SceneInspector.ui
 		 InputVector.ui
 		 Placement.ui
+		 TextureMapping.ui
 		 TaskView/TaskAppearance.ui
 )
 
@@ -236,6 +238,7 @@ SET(Dialog_CPP_SRCS
 		 Placement.cpp
 		 PropertyPage.cpp
 		 SceneInspector.cpp
+		 TextureMapping.cpp
 		 Transform.cpp
 )
 
@@ -258,6 +261,7 @@ SET(Dialog_HPP_SRCS
 		 Placement.h
 		 PropertyPage.h
 		 SceneInspector.h
+		 TextureMapping.h
 		 Transform.h
 )
 
@@ -281,6 +285,7 @@ SET(Dialog_SRCS
 		 InputVector.ui
 		 Placement.ui
 		 SceneInspector.ui
+		 TextureMapping.ui
 )
 SOURCE_GROUP("Dialog" FILES ${Dialog_SRCS})
 

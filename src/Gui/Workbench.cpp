@@ -476,7 +476,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
     view->setCommand("&View");
     *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
-          << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator" << visu
+          << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane"
+          << "Std_TextureMapping" << "Separator" << visu
           << "Std_ToggleVisibility" << "Std_SetAppearance" << "Std_RandomColor" << "Separator" 
           << "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 

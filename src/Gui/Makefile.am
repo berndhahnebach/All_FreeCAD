@@ -63,6 +63,7 @@ BUILT_SOURCES=\
 		moc_Splashscreen.cpp \
 		moc_TaskPanelView.cpp \
 		moc_TextEdit.cpp \
+		moc_TextureMapping.cpp \
 		moc_ToolBox.cpp \
 		moc_Transform.cpp \
 		moc_Tree.cpp \
@@ -107,6 +108,7 @@ BUILT_SOURCES=\
 		ui_SceneInspector.h \
 		ui_InputVector.h \
 		ui_Placement.h \
+		ui_TextureMapping.h \
 		DocumentPy.cpp \
 		PythonWorkbenchPy.cpp \
 		SelectionObjectPy.cpp \
@@ -152,7 +154,8 @@ libFreeCADGui_la_UI=\
 		DlgTreeWidget.ui \
 		SceneInspector.ui \
 		InputVector.ui \
-		Placement.ui
+		Placement.ui \
+		TextureMapping.ui
 
 libFreeCADGui_la_BUILT=\
 		DocumentPy.h \
@@ -313,6 +316,8 @@ libFreeCADGui_la_SOURCES=\
 		SyntaxHighlighter.cpp \
 		TaskPanelView.cpp \
 		TextEdit.cpp \
+		TextureMapping.cpp \
+		TextureMapping.h \
 		Thumbnail.cpp \
 		ToolBarManager.cpp \
 		ToolBox.cpp \
