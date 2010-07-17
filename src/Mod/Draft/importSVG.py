@@ -423,10 +423,11 @@ class svgHandler(xml.sax.ContentHandler):
 						currentvec = lastvec.add(Vector(point[0],-point[1],0))
 					else:
 						currentvec = Vector(point[0],-point[1],0)
-					seg = Part.Line(lastvec,currentvec).toShape()
-					print "line ",lastvec,currentvec
-					lastvec = currentvec
-					path.append(seg)
+                                        if not fcvec.equals(lastvec,currentvec):
+                                                seg = Part.Line(lastvec,currentvec).toShape()
+                                                print "line ",lastvec,currentvec
+                                                lastvec = currentvec
+                                                path.append(seg)
 					point = []
 				elif (len(point)==1) and (command=="horizontal"):
 					if relative:

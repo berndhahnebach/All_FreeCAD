@@ -826,9 +826,6 @@ class ViewProviderDraft:
 		modes=[]
 		return modes
 
-	def getDefaultDisplayMode(self):
-		return "Flat Lines"
-
 	def setDisplayMode(self,mode):
 		return mode
 
@@ -1130,21 +1127,29 @@ class Circle:
         
 	def __init__(self, obj):
 		obj.addProperty("App::PropertyDistance","Radius","Base","Radius of the circle")
+                obj.addProperty("App::PropertyAngle","StartAngle","Arc","Start angle of the arc")
+                obj.addProperty("App::PropertyAngle","EndAngle","Arc",
+                                "End angle of the arc (for a full circle, give it same value as Start Angle)")
 		obj.Proxy = self
-                obj.Radius=1
+                obj.Radius = 1
+                obj.StartAngle = obj.EndAngle = 0
 
 	def execute(self, fp):
                 self.createGeometry(fp)
 
         def onChanged(self, fp, prop):
-                if prop == "Radius":
+                if prop in ["Radius","StartAngle","EndAngle"]:
                         self.createGeometry(fp)
                         
         def createGeometry(self,fp):
                 plm = fp.Placement
-                shape = Part.Circle(Vector(0,0,0),Vector(0,0,1),fp.Radius).toShape()
-                shape = Part.Wire(shape)
-                shape = Part.Face(shape)
+                if fp.StartAngle == fp.EndAngle:
+                        shape = Part.Circle(Vector(0,0,0),Vector(0,0,1),fp.Radius).toShape()
+                        shape = Part.Wire(shape)
+                        shape = Part.Face(shape)
+                else:
+                        shape = Part.makeCircle(fp.Radius,Vector(0,0,0),
+                                                Vector(0,0,1),fp.StartAngle,fp.EndAngle)
 		fp.Shape = shape
                 fp.Placement = plm
 
@@ -1847,26 +1852,17 @@ class ToolArc(Creator):
 
 	def drawArc(self):
 		"actually draws the FreeCAD object"
-		if self.closedCircle:
-                        p = plane.getRotation()
-                        p.move(self.center)
-                        self.doc.openTransaction("Create "+self.featureName)
+                p = plane.getRotation()
+                p.move(self.center)
+                self.doc.openTransaction("Create "+self.featureName)
+		if self.closedCircle:                       
 			makeCircle(self.rad,p,self.ui.hasFill.isChecked())
-                        self.doc.commitTransaction()
 		else:
-			radvec = fcvec.scaleTo(plane.u, self.rad)
-			p1 = Vector.add(self.center,fcvec.rotate(radvec, self.firstangle, plane.axis))
-			p3 = Vector.add(self.center,
-					fcvec.rotate(radvec, self.firstangle+self.angle, plane.axis))
-			mid = self.firstangle + self.angle/2
-			p2 = Vector.add(self.center, fcvec.rotate(radvec, mid, plane.axis))
-			arc = Part.Arc(p1,p2,p3).toShape()
-                        self.doc.openTransaction("Create "+self.featureName)
-                        self.obj = self.doc.addObject("Part::Feature",self.featureName)
-                        self.obj.Shape = arc
-                        self.doc.commitTransaction()
-                        formatObject(self.obj)
-                        select(self.obj)
+                        sta = math.degrees(self.firstangle)
+                        end = math.degrees(self.firstangle+self.angle)
+                        if end < sta: sta,end = end,sta
+                        makeCircle(self.rad,p,self.ui.hasFill.isChecked(),sta,end)
+                self.doc.commitTransaction()
                 self.finish()
 
 	def numericInput(self,numx,numy,numz):
@@ -2331,7 +2327,7 @@ class ToolRotate(Modifier):
 		"rotating the real shapes"
 		if copy: self.doc.openTransaction("Copy")
 		else: self.doc.openTransaction("Rotate")
-                rotate(self.sel,angle,self.center,plane.axis,copy)
+                rotate(self.sel,math.degrees(angle),self.center,plane.axis,copy)
 		self.doc.commitTransaction()
 
 	def action(self,arg):
@@ -2798,6 +2794,7 @@ class ToolUpgrade(Modifier):
 		self.sel = getSelection()
 		loneEdges = False
 		loneFaces = False
+                nodelete = False
 		edges = []
 		wires = []
 		openwires = []
@@ -2821,56 +2818,66 @@ class ToolUpgrade(Modifier):
 		# applying transformation
 		self.doc.openTransaction("Upgrade")
                 if groups:
+                        # if we have a group: turn each closed wire inside into a face
                         for grp in groups: 
                                 for ob in grp.Group:
                                         if not ob.Shape.Faces:
                                                 for w in ob.Shape.Wires:
-                                                        if w.isClosed:
-                                                                f = Part.Face(w)
-                                                                newob = self.doc.addObject("Part::Feature","Face")
-                                                                newob.Shape = f
-                                                                formatObject(newob,ob)
-                                                                self.sel.append(ob)
-                                                                grp.addObject(newob)
+                                                        newob = makeWire(w,closed=w.isClosed())
+                                                        self.sel.append(ob)
+                                                        grp.addObject(newob)
                 else:
                         if faces:
                                 if loneEdges:
+                                        # if we have a mix of all kind of things, we just make a compound
                                         newob = self.compound()
                                         formatObject(newob,lastob)
                                 else:
-                                        u = faces.pop(0)
-                                        for f in faces:
-                                                u = u.fuse(f)
+                                        if (not fcgeo.isCoplanar(faces)) and (len(self.sel) == 2):
+                                                # 2 non-coplanar objects: we fuse them
+                                                newob = fuse(self.sel[0],self.sel[1])
+                                                nodelete = True
+                                        else:
+                                                # we try the draft way: make one face out of them
+                                                u = faces.pop(0)
+                                                for f in faces:
+                                                        u = u.fuse(f)
                                                 if fcgeo.isCoplanar(faces):
+                                                        if self.sel[0].ViewObject.DisplayMode == "Wireframe":
+                                                                f = False
+                                                        else:
+                                                                f = True
                                                         u = fcgeo.concatenate(u)
-                                        newob = self.doc.addObject("Part::Feature","Union")
-                                        newob.Shape = u
-                                        formatObject(newob,lastob)
+                                                        newob = makeWire(u.Wires[0],closed=True,face=f)
+                                                else:
+                                                        # if not possible, we do a non-parametric union
+                                                        newob = self.doc.addObject("Part::Feature","Union")
+                                                        newob.Shape = u
+                                                        formatObject(newob,lastob)
                         elif wires:
                                 if loneEdges or loneFaces or openwires:
+                                        # if we have mixed stuff, we do a compound
                                         newob = self.compound()
                                         formatObject(newob,lastob)
                                 else:
+                                        # only closed wires? we make faces
                                         for w in wires:
                                                 f = Part.Face(w)
                                                 faces.append(f)
                                         for f in faces:
-                                                newob = self.doc.addObject("Part::Feature","Face")
-                                                newob.Shape = f
-                                                formatObject(newob,lastob)
+                                                newob = makeWire(f.Wire,closed=True)
                         elif (len(openwires) == 1):
                                 if loneEdges or loneFaces:
                                         newob = self.compound()
                                         formatObject(newob,lastob)
                                 else:
+                                        # special case, we have one open wire. We close it!"
                                         p0 = openwires[0].Vertexes[0].Point
                                         p1 = openwires[0].Vertexes[-1].Point
                                         edges = openwires[0].Edges
                                         edges.append(Part.Line(p1,p0).toShape())
                                         w = Part.Wire(fcgeo.sortEdges(edges))
-                                        newob = self.doc.addObject("Part::Feature","Wire")
-                                        newob.Shape = w
-                                        formatObject(newob,lastob)
+                                        newob = makeWire(w,closed=True)
                         else:
                                 for ob in self.sel:
                                         for e in ob.Shape.Edges:
@@ -2879,15 +2886,15 @@ class ToolUpgrade(Modifier):
                                 try:
                                         w = Part.Wire(fcgeo.sortEdges(edges))
                                         if len(w.Edges) == len(ob.Shape.Edges):
-                                                newob = self.doc.addObject("Part::Feature","Wire")
-                                                newob.Shape = w
+                                                newob = makeWire(w)
                                 except:
                                         pass
                                 if not newob: newob = self.compound()
                                 formatObject(newob,lastob)
-		for ob in self.sel:
-                        if not ob.Type == "App::DocumentObjectGroup":
-                                self.doc.removeObject(ob.Name)
+                if not nodelete:
+                        for ob in self.sel:
+                                if not ob.Type == "App::DocumentObjectGroup":
+                                        self.doc.removeObject(ob.Name)
 		self.doc.commitTransaction()
 		select(newob)
 		Modifier.finish(self)
@@ -2933,13 +2940,7 @@ class ToolDowngrade(Modifier):
 		self.doc.openTransaction("Downgrade")
                 if (len(faces) > 2) and (len(self.sel) == 2):
                         # we have only 2 objects but more than 2 faces: cut 2nd from 1st
-                        s1 = self.sel[0].Shape
-                        s2 = self.sel[1].Shape
-                        newob = self.doc.addObject("Part::Feature","Subtraction")
-                        newob.Shape = s1.cut(s2)
-                        for ob in self.sel:
-                                formatObject(newob,ob)
-                                self.doc.removeObject(ob.Name)
+                        newob = cut(self.sel[0],self.sel[1])
 		elif (len(faces) > 1):
 			if len(self.sel) == 1:
                                 # one object with several faces: split it
@@ -3096,8 +3097,7 @@ class ToolTrimex(Modifier):
 		dvec = point.sub(self.newpoint)
 		if shift: delta = fcvec.project(dvec,self.normal)
 		else: delta = dvec
-		if real:
-			return self.sel.Shape.Faces[0].extrude(delta)
+		if real: return delta
 		self.ghost[0].trans.translation.setValue([delta.x,delta.y,delta.z])
 		for i in range(1,len(self.ghost)):
 			base = self.sel.Shape.Vertexes[i-1].Point
@@ -3215,14 +3215,11 @@ class ToolTrimex(Modifier):
 	def trimObject(self):
 		"trims the actual object"
 		if self.extrudeMode:
-			newshape = self.extrude(self.point,self.shift,real=True)
+			delta = self.extrude(self.point,self.shift,real=True)
                         self.doc.openTransaction("Extrude")
-                        ob = self.doc.addObject("Part::Feature",self.sel.Name)
-                        ob.Shape = newshape
-                        formatObject(ob,self.sel)
+                        obj = extrude(self.sel,delta)
                         self.doc.commitTransaction()
-                        self.doc.removeObject(self.sel.Name)
-                        self.sel = ob
+                        self.sel = obj
 		else:
 			edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
 			newshape = Part.Wire(edges)
@@ -3604,36 +3601,27 @@ class ToolMakeDraftWire():
 			'ToolTip': str(translate("draft", "Turns selected objects to Draft Wires").toLatin1())}
 
 	def Activated(self):
-		for obj in FreeCADGui.Selection.getSelection():
-                        verts = []
-                        for v in obj.Shape.Vertexes:
-                                verts.append(v.Point)
-                        newobj = makeWire(verts)
-                        if obj.Shape.Faces:
-                                newobj.Closed = True
-                                newobj.ViewObject.DisplayMode = "Flat Lines"
-                        else:
-                                newobj.ViewObject.DisplayMode = "Wireframe"
-                                if obj.Shape.Wires:
-                                        if obj.Shape.Wires[0].isClosed:
-                                                newobj.Closed = True
-                        FreeCAD.ActiveDocument.removeObject(obj.Name)
+                turnToDraft(FreeCADGui.Selection.getSelection())
 
 #---------------------------------------------------------------------------
 # API functions
 #---------------------------------------------------------------------------
 
-def makeCircle(radius, placement=None, face=True):
-        '''makeCircle(radius,[placement,face]): Creates a circle
+def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None):
+        '''makeCircle(radius,[placement,face,startangle,endangle]): Creates a circle
         object with given radius. If placement is given, it is
         used. If face is False, the circle is shown as a
-        wireframe, otherwise as a face.'''
+        wireframe, otherwise as a face. If startangle AND endangle are given
+        (in degrees), they are used and the object appears as an arc.'''
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeCircle")
         obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Circle")
         Circle(obj)
         ViewProviderCircle(obj.ViewObject)
         obj.Radius = radius
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
+        if startangle and endangle:
+                obj.StartAngle = startangle
+                obj.EndAngle = endangle
         if placement: obj.Placement = placement
         formatObject(obj)
         select(obj)
@@ -3683,8 +3671,13 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
         '''makeWire(pointslist,[closed],[placement]): Creates a Wire object
         from the given list of vectors. If closed is True or first
         and last points are identical, the wire is closed. If face is
-        true (and wire is closed), the wire will appear filled.'''
-        typecheck([(pointslist,list), (closed,bool)], "makeWire")
+        true (and wire is closed), the wire will appear filled. Instead of
+        a pointslist, you can also pass a Part Wire.'''
+        if not isinstance(pointslist,list):
+                nlist = []
+                for v in pointslist.Vertexes:
+                        nlist.append(v.Point)
+                pointslist = nlist
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
         if len(pointslist) == 2: fname = "Line"
         else: fname = "Wire"
@@ -3727,6 +3720,42 @@ def makeText(stringslist,point=Vector(0,0,0),screen=False):
         formatObject(obj)
         select(obj)
 	return obj
+
+def extrude(obj,vector):
+        '''makeExtrusion(object,vector): extrudes the given object
+        in the direction given by the vector. The original object
+        gets hidden.'''
+        newobj = FreeCAD.ActiveDocument.addObject("Part::Extrusion","Extrusion")
+        newobj.Base = obj
+        newobj.Dir = vector
+        obj.ViewObject.Visibility = False
+        formatObject(newobj,obj)
+        FreeCAD.ActiveDocument.recompute()
+        return newobj
+
+def fuse(object1,object2):
+        '''fuse(oject1,object2): returns a fuse object made from
+        the union of the 2 given objects.'''
+        obj = FreeCAD.ActiveDocument.addObject("Part::Fuse","Fusion")
+        obj.Base = object1
+        obj.Tool = object2
+        object1.ViewObject.Visibility = False
+        object2.ViewObject.Visibility = False
+        formatObject(obj,object1)
+        FreeCAD.ActiveDocument.recompute()
+        return obj
+
+def cut(object1,object2):
+        '''cut(oject1,object2): returns a cut object made from
+        the difference of the 2 given objects.'''
+        obj = FreeCAD.ActiveDocument.addObject("Part::Cut","Cut")
+        obj.Base = object1
+        obj.Tool = object2
+        object1.ViewObject.Visibility = False
+        object2.ViewObject.Visibility = False
+        formatObject(obj,object1)
+        FreeCAD.ActiveDocument.recompute()
+        return obj
 
 def move(objectslist,vector,copy=False):
         '''move(objects,vector,[copy]): Moves the objects contained
@@ -3791,7 +3820,7 @@ def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False)
                         newobj = obj
                 if (obj.isDerivedFrom("Part::Feature")):
                         shape = obj.Shape
-                        shape.rotate(fcvec.tup(center), fcvec.tup(axis), math.degrees(angle))
+                        shape.rotate(fcvec.tup(center), fcvec.tup(axis), angle)
                         newobj.Shape=shape
                 if copy:
                         formatObject(newobj,obj)
@@ -3830,6 +3859,31 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
                 newobjlist.append(newobj)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
+
+def turnToDraft(objectslist):
+        '''turnToDraft(objectslist): turns each object of the given list
+        (objectslist can also be a single object) into a Draft parametric
+        wire'''
+        if not isinstance(objectslist,list): objectslist = [objectslist]
+        newobjlist = []
+        for obj in objectslist:
+                verts = []
+                for v in obj.Shape.Vertexes:
+                        verts.append(v.Point)
+                newobj = makeWire(verts)
+                if obj.Shape.Faces:
+                        newobj.Closed = True
+                        newobj.ViewObject.DisplayMode = "Flat Lines"
+                else:
+                        newobj.ViewObject.DisplayMode = "Wireframe"
+                        if obj.Shape.Wires:
+                                if obj.Shape.Wires[0].isClosed:
+                                        newobj.Closed = True
+                FreeCAD.ActiveDocument.removeObject(obj.Name)
+                newobjlist.append(newobj)
+        if len(newobjlist) == 1: return newobjlist[0]
+        return newobjlist
+
 
 
 #---------------------------------------------------------------------------

@@ -209,3 +209,14 @@ def reorient(u,ref):
                         elif u.y == 0:
                                 if u.x < 0: return neg(u)
         return u
+
+def removeDoubles(vlist):
+        "removes consecutive doubles from a list of vectors"
+        typecheck ([(vlist,list)], "removeDoubles");
+        nlist = []
+        if len(vlist) < 2: return vlist
+        for i in range(len(vlist)-1):
+                if not equals(vlist[i],vlist[i+1]):
+                        nlist.append(vlist[i])
+        nlist.append(vlist[-1])
+        return nlist
