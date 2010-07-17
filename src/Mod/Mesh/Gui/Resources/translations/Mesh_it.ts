@@ -913,16 +913,12 @@
         <translation>Inserisci la tolleranza per la geometria della mesh</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is </source>
-        <translation>La mesh &apos;%1&apos; </translation>
+        <source>The mesh &apos;%1&apos; is a solid.</source>
+        <translation>La mesh &apos;%1&apos; è un solido.</translation>
     </message>
     <message>
-        <source>not a solid.</source>
-        <translation>non è un solido</translation>
-    </message>
-    <message>
-        <source>a solid.</source>
-        <translation>è un solido</translation>
+        <source>The mesh &apos;%1&apos; is not a solid.</source>
+        <translation>La mesh &apos;%1&apos; non è un solido.</translation>
     </message>
     <message>
         <source>Min=&lt;%1,%2,%3&gt;

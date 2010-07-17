@@ -177,9 +177,7 @@ SET(FreeCADBase_CPP_SRCS
 	Placement.cpp
 	PlacementPyImp.cpp
 	PyExport.cpp
-	PyExport.h
 	PyObjectBase.cpp
-	PyObjectBase.h
 	Reader.cpp
 	Rotation.cpp
 	RotationPyImp.cpp

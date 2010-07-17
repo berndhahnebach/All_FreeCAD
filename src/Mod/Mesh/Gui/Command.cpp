@@ -1114,35 +1114,34 @@ DEF_STD_CMD_A(CmdMeshEvaluateSolid);
 CmdMeshEvaluateSolid::CmdMeshEvaluateSolid()
   :Command("Mesh_EvaluateSolid")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Check solid mesh");
-  sToolTipText  = QT_TR_NOOP("Checks whether the mesh is a solid");
-  sWhatsThis    = "Mesh_EvaluateSolid";
-  sStatusTip    = QT_TR_NOOP("Checks whether the mesh is a solid");
-//  sPixmap       = "curv_info";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Check solid mesh");
+    sToolTipText  = QT_TR_NOOP("Checks whether the mesh is a solid");
+    sWhatsThis    = "Mesh_EvaluateSolid";
+    sStatusTip    = QT_TR_NOOP("Checks whether the mesh is a solid");
 }
 
 void CmdMeshEvaluateSolid::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    Mesh::Feature* mesh = (Mesh::Feature*)(*it);
-    QString msg = QObject::tr("The mesh '%1' is ")
-        .arg(QString::fromAscii(mesh->getNameInDocument()));
-    if ( mesh->Mesh.getValue().getKernel().HasOpenEdges() )
-      msg += QObject::tr("not a solid.");
-    else
-      msg += QObject::tr("a solid.");
-    QMessageBox::information(Gui::getMainWindow(), QObject::tr("Solid Mesh"), msg);
-  }
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        Mesh::Feature* mesh = (Mesh::Feature*)(*it);
+        QString msg;
+        if (mesh->Mesh.getValue().getKernel().HasOpenEdges())
+            msg = QObject::tr("The mesh '%1' is not a solid.")
+                .arg(QString::fromAscii(mesh->Label.getValue()));
+        else
+            msg = QObject::tr("The mesh '%1' is a solid.")
+                .arg(QString::fromAscii(mesh->Label.getValue()));
+        QMessageBox::information(Gui::getMainWindow(), QObject::tr("Solid Mesh"), msg);
+    }
 }
 
 bool CmdMeshEvaluateSolid::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1206,36 +1205,30 @@ DEF_STD_CMD_A(CmdMeshHarmonizeNormals);
 CmdMeshHarmonizeNormals::CmdMeshHarmonizeNormals()
   :Command("Mesh_HarmonizeNormals")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Harmonize normals");
-  sToolTipText  = QT_TR_NOOP("Harmonizes the normals of the mesh");
-  sWhatsThis    = "Mesh_HarmonizeNormals";
-  sStatusTip    = QT_TR_NOOP("Harmonizes the normals of the mesh");
-//  sPixmap       = "curv_info";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Harmonize normals");
+    sToolTipText  = QT_TR_NOOP("Harmonizes the normals of the mesh");
+    sWhatsThis    = "Mesh_HarmonizeNormals";
+    sStatusTip    = QT_TR_NOOP("Harmonizes the normals of the mesh");
 }
 
 void CmdMeshHarmonizeNormals::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_Harmonize";
-    fName = getUniqueObjectName(fName.c_str());
-    openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    openCommand("Harmonize mesh normals");
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        doCommand(Doc,"App.activeDocument().getObject(\"%s\").Mesh.harmonizeNormals()"
+                     ,(*it)->getNameInDocument());
+    }
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
-  }
 }
 
 bool CmdMeshHarmonizeNormals::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1245,192 +1238,30 @@ DEF_STD_CMD_A(CmdMeshFlipNormals);
 CmdMeshFlipNormals::CmdMeshFlipNormals()
   :Command("Mesh_FlipNormals")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Flip normals");
-  sToolTipText  = QT_TR_NOOP("Flips the normals of the mesh");
-  sWhatsThis    = "Mesh_FlipNormals";
-  sStatusTip    = QT_TR_NOOP("Flips the normals of the mesh");
-//  sPixmap       = "curv_info";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Flip normals");
+    sToolTipText  = QT_TR_NOOP("Flips the normals of the mesh");
+    sWhatsThis    = "Mesh_FlipNormals";
+    sStatusTip    = QT_TR_NOOP("Flips the normals of the mesh");
 }
 
 void CmdMeshFlipNormals::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_Flip";
-    fName = getUniqueObjectName(fName.c_str());
-    openCommand("Mesh Flip Normals");
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FlipNormals\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    openCommand("Harmonize mesh normals");
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        doCommand(Doc,"App.activeDocument().getObject(\"%s\").Mesh.flipNormals()"
+                     ,(*it)->getNameInDocument());
+    }
     commitCommand();
     updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
-  }
 }
 
 bool CmdMeshFlipNormals::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
-}
-
-//--------------------------------------------------------------------------------------
-
-DEF_STD_CMD_A(CmdMeshFixDegenerations);
-
-CmdMeshFixDegenerations::CmdMeshFixDegenerations()
-  :Command("Mesh_FixDegenerations")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Remove degenerated faces");
-  sToolTipText  = QT_TR_NOOP("Remove degenerated faces from the mesh");
-  sWhatsThis    = "Mesh_FixDegenerations";
-  sStatusTip    = QT_TR_NOOP("Remove degenerated faces from the mesh");
-//  sPixmap       = "curv_info";
-}
-
-void CmdMeshFixDegenerations::activated(int iMsg)
-{
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_Fixed";
-    fName = getUniqueObjectName(fName.c_str());
-    openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
-    commitCommand();
-    updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
-  }
-}
-
-bool CmdMeshFixDegenerations::isActive(void)
-{
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
-}
-
-//--------------------------------------------------------------------------------------
-
-DEF_STD_CMD_A(CmdMeshFixDuplicateFaces);
-
-CmdMeshFixDuplicateFaces::CmdMeshFixDuplicateFaces()
-  :Command("Mesh_FixDuplicateFaces")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Remove duplicated faces");
-  sToolTipText  = QT_TR_NOOP("Remove duplicated faces from the mesh");
-  sWhatsThis    = "Mesh_FixDuplicateFaces";
-  sStatusTip    = QT_TR_NOOP("Remove duplicated faces from the mesh");
-//  sPixmap       = "curv_info";
-}
-
-void CmdMeshFixDuplicateFaces::activated(int iMsg)
-{
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_Fixed";
-    fName = getUniqueObjectName(fName.c_str());
-    openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
-    commitCommand();
-    updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
-  }
-}
-
-bool CmdMeshFixDuplicateFaces::isActive(void)
-{
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
-}
-
-//--------------------------------------------------------------------------------------
-
-DEF_STD_CMD_A(CmdMeshFixDuplicatePoints);
-
-CmdMeshFixDuplicatePoints::CmdMeshFixDuplicatePoints()
-  :Command("Mesh_FixDuplicatePoints")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Remove duplicated points");
-  sToolTipText  = QT_TR_NOOP("Remove duplicated points from the mesh");
-  sWhatsThis    = "Mesh_FixDuplicatePoints";
-  sStatusTip    = QT_TR_NOOP("Remove duplicated points from the mesh");
-//  sPixmap       = "curv_info";
-}
-
-void CmdMeshFixDuplicatePoints::activated(int iMsg)
-{
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_Fixed";
-    fName = getUniqueObjectName(fName.c_str());
-    openCommand("Remove duplicated points");
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
-    commitCommand();
-    updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
-  }
-}
-
-bool CmdMeshFixDuplicatePoints::isActive(void)
-{
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
-}
-
-//--------------------------------------------------------------------------------------
-
-DEF_STD_CMD_A(CmdMeshFixIndices);
-
-CmdMeshFixIndices::CmdMeshFixIndices()
-  :Command("Mesh_FixIndices")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Fix indices");
-  sToolTipText  = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
-  sWhatsThis    = "Mesh_FixIndices";
-  sStatusTip    = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
-//  sPixmap       = "curv_info";
-}
-
-void CmdMeshFixIndices::activated(int iMsg)
-{
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_Fixed";
-    fName = getUniqueObjectName(fName.c_str());
-    openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
-    commitCommand();
-    updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->getNameInDocument());
-  }
-}
-
-bool CmdMeshFixIndices::isActive(void)
-{
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1440,38 +1271,36 @@ DEF_STD_CMD_A(CmdMeshBoundingBox);
 CmdMeshBoundingBox::CmdMeshBoundingBox()
   :Command("Mesh_BoundingBox")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Boundings info...");
-  sToolTipText  = QT_TR_NOOP("Shows the boundings of the selected mesh");
-  sWhatsThis    = "Mesh_BoundingBox";
-  sStatusTip    = QT_TR_NOOP("Shows the boundings of the selected mesh");
-//  sPixmap       = "curv_info";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Boundings info...");
+    sToolTipText  = QT_TR_NOOP("Shows the boundings of the selected mesh");
+    sWhatsThis    = "Mesh_BoundingBox";
+    sStatusTip    = QT_TR_NOOP("Shows the boundings of the selected mesh");
 }
 
 void CmdMeshBoundingBox::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->Mesh.getValue().getKernel();
-    const Base::BoundBox3f& box = rMesh.GetBoundBox();
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->Mesh.getValue().getKernel();
+        const Base::BoundBox3f& box = rMesh.GetBoundBox();
 
-    Base::Console().Message("Boundings: Min=<%f,%f,%f>, Max=<%f,%f,%f>\n",
-                            box.MinX,box.MinY,box.MinZ,box.MaxX,box.MaxY,box.MaxZ);
+        Base::Console().Message("Boundings: Min=<%f,%f,%f>, Max=<%f,%f,%f>\n",
+                                box.MinX,box.MinY,box.MinZ,box.MaxX,box.MaxY,box.MaxZ);
 
-    QString bound = QObject::tr("Min=<%1,%2,%3>\n\nMax=<%4,%5,%6>")
-        .arg(box.MinX).arg(box.MinY).arg(box.MinZ)
-        .arg(box.MaxX).arg(box.MaxY).arg(box.MaxZ);
-    QMessageBox::information(Gui::getMainWindow(), QObject::tr("Boundings"), bound);
-    break;
-  }
+        QString bound = QObject::tr("Min=<%1,%2,%3>\n\nMax=<%4,%5,%6>")
+            .arg(box.MinX).arg(box.MinY).arg(box.MinZ)
+            .arg(box.MaxX).arg(box.MaxY).arg(box.MaxZ);
+        QMessageBox::information(Gui::getMainWindow(), QObject::tr("Boundings"), bound);
+        break;
+    }
 }
 
 bool CmdMeshBoundingBox::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1481,24 +1310,24 @@ DEF_STD_CMD_A(CmdMeshBuildRegularSolid);
 CmdMeshBuildRegularSolid::CmdMeshBuildRegularSolid()
   :Command("Mesh_BuildRegularSolid")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Regular solid...");
-  sToolTipText  = QT_TR_NOOP("Builds a regular solid");
-  sWhatsThis    = "Mesh_BuildRegularSolid";
-  sStatusTip    = QT_TR_NOOP("Builds a regular solid");
-  sPixmap       = "solid_mesh";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Regular solid...");
+    sToolTipText  = QT_TR_NOOP("Builds a regular solid");
+    sWhatsThis    = "Mesh_BuildRegularSolid";
+    sStatusTip    = QT_TR_NOOP("Builds a regular solid");
+    sPixmap       = "solid_mesh";
 }
 
 void CmdMeshBuildRegularSolid::activated(int iMsg)
 {
-  MeshGui::SingleDlgRegularSolidImp::instance()->show();
+    MeshGui::SingleDlgRegularSolidImp::instance()->show();
 }
 
 bool CmdMeshBuildRegularSolid::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return (!MeshGui::SingleDlgRegularSolidImp::hasInstance())&&hasActiveDocument();
+    // Check for the selected mesh feature (all Mesh types)
+    return (!MeshGui::SingleDlgRegularSolidImp::hasInstance())&&hasActiveDocument();
 }
 
 //--------------------------------------------------------------------------------------
@@ -1508,41 +1337,34 @@ DEF_STD_CMD_A(CmdMeshFillupHoles);
 CmdMeshFillupHoles::CmdMeshFillupHoles()
   :Command("Mesh_FillupHoles")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Fill holes...");
-  sToolTipText  = QT_TR_NOOP("Fill holes of the mesh");
-  sWhatsThis    = "Mesh_FillupHoles";
-  sStatusTip    = QT_TR_NOOP("Fill holes of the mesh");
-//  sPixmap       = "curv_info";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Fill holes...");
+    sToolTipText  = QT_TR_NOOP("Fill holes of the mesh");
+    sWhatsThis    = "Mesh_FillupHoles";
+    sStatusTip    = QT_TR_NOOP("Fill holes of the mesh");
 }
 
 void CmdMeshFillupHoles::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  bool ok;
-  int FillupHolesOfLength = QInputDialog::getInteger( Gui::getMainWindow(), QObject::tr("Fill holes"), QObject::tr("Fill holes with maximum number of edges:"), 
-                                                      3, 3, 10000, 1, &ok  );
-  if (!ok) return;
-
-  openCommand("Fill up holes");
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_fill";
-    fName = getUniqueObjectName(fName.c_str());
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FillHoles\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
-    doCommand(Doc,"App.activeDocument().%s.FillupHolesOfLength = %d",fName.c_str(), FillupHolesOfLength);
-  }
-  commitCommand();
-  updateActive();
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    bool ok;
+    int FillupHolesOfLength = QInputDialog::getInteger(Gui::getMainWindow(), QObject::tr("Fill holes"),
+                                QObject::tr("Fill holes with maximum number of edges:"), 3, 3, 10000, 1, &ok);
+    if (!ok) return;
+    openCommand("Fill up holes");
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        doCommand(Doc,"App.activeDocument().getObject(\"%s\").Mesh.fillupHoles(%d)"
+                     ,(*it)->getNameInDocument(), FillupHolesOfLength);
+    }
+    commitCommand();
+    updateActive();
 }
 
 bool CmdMeshFillupHoles::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1614,10 +1436,6 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshHarmonizeNormals());
   rcCmdMgr.addCommand(new CmdMeshFlipNormals());
   rcCmdMgr.addCommand(new CmdMeshSmoothing());
-  rcCmdMgr.addCommand(new CmdMeshFixDegenerations());
-  rcCmdMgr.addCommand(new CmdMeshFixDuplicateFaces());
-  rcCmdMgr.addCommand(new CmdMeshFixDuplicatePoints());
-  rcCmdMgr.addCommand(new CmdMeshFixIndices());
   rcCmdMgr.addCommand(new CmdMeshBoundingBox());
   rcCmdMgr.addCommand(new CmdMeshBuildRegularSolid());
   rcCmdMgr.addCommand(new CmdMeshFillupHoles());

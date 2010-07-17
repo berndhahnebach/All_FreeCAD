@@ -913,16 +913,12 @@
         <translation>Introduzca la tolerancia para la geometría de mallado:</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is </source>
-        <translation>La malla &apos;%1&apos; </translation>
+        <source>The mesh &apos;%1&apos; is a solid.</source>
+        <translation>La malla &apos;%1&apos; es un sólido.</translation>
     </message>
     <message>
-        <source>not a solid.</source>
-        <translation>no es un sólido.</translation>
-    </message>
-    <message>
-        <source>a solid.</source>
-        <translation>es un sólido.</translation>
+        <source>The mesh &apos;%1&apos; is not a solid.</source>
+        <translation>La malla &apos;%1&apos; no es un sólido.</translation>
     </message>
     <message>
         <source>Min=&lt;%1,%2,%3&gt;

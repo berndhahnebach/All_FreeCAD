@@ -33,6 +33,7 @@
 #include "MeshPointPy.h"
 #include "FacetPy.h"
 #include "MeshPy.cpp"
+#include "MeshProperties.h"
 #include "Core/Algorithm.h"
 #include "Core/Iterator.h"
 #include "Core/Elements.h"
@@ -43,6 +44,15 @@
 using namespace Mesh;
 
 
+struct MeshPropertyLock {
+    MeshPropertyLock(PropertyMeshKernel* p) : prop(p)
+    { if (prop) prop->startEditing(); }
+    ~MeshPropertyLock()
+    { if (prop) prop->finishEditing(); }
+private:
+    PropertyMeshKernel* prop;
+};
+
 int MeshPy::PyInit(PyObject* args, PyObject*)
 {
     PyObject *pcObj=0;
@@ -50,6 +60,7 @@ int MeshPy::PyInit(PyObject* args, PyObject*)
         return -1;                             // NULL triggers exception
 
     try {
+        this->parentProperty = 0;
         // if no mesh is given
         if (!pcObj) return 0;
         if (PyObject_TypeCheck(pcObj, &(MeshPy::Type))) {
@@ -725,6 +736,7 @@ PyObject*  MeshPy::flipNormals(PyObject *args)
         return NULL;
 
     PY_TRY {
+        MeshPropertyLock lock(this->parentProperty);
         getMeshObjectPtr()->flipNormals();
     } PY_CATCH;
 
@@ -753,6 +765,7 @@ PyObject*  MeshPy::harmonizeNormals(PyObject *args)
         return NULL;
 
     PY_TRY {
+        MeshPropertyLock lock(this->parentProperty);
         getMeshObjectPtr()->harmonizeNormals();
     } PY_CATCH;
 
@@ -786,17 +799,30 @@ PyObject*  MeshPy::removeComponents(PyObject *args)
 PyObject*  MeshPy::fillupHoles(PyObject *args)
 {
     unsigned long len;
-    float area;
-    int level=0;
-    if (!PyArg_ParseTuple(args, "kf|i", &len, &area, &level))
-        return NULL;                         
+    int level = 0;
+    float max_area = 0.0f;
+    if (!PyArg_ParseTuple(args, "k|if", &len,&level,&max_area))
+        return NULL;
+    try {
+        std::auto_ptr<MeshCore::AbstractPolygonTriangulator> tria;
+        if (max_area > 0.0f) {
+            tria = std::auto_ptr<MeshCore::AbstractPolygonTriangulator>
+                (new MeshCore::ConstraintDelaunayTriangulator(max_area));
+        }
+        else {
+            tria = std::auto_ptr<MeshCore::AbstractPolygonTriangulator>
+                (new MeshCore::FlatTriangulator());
+        }
 
-    PY_TRY {
-        MeshCore::ConstraintDelaunayTriangulator cTria(area);
-        getMeshObjectPtr()->fillupHoles(len, level, cTria);
-    } PY_CATCH;
+        MeshPropertyLock lock(this->parentProperty);
+        getMeshObjectPtr()->fillupHoles(len, level, *tria);
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject*  MeshPy::fixIndices(PyObject *args)
@@ -1181,6 +1207,7 @@ PyObject*  MeshPy::smooth(PyObject *args)
         return NULL;
 
     PY_TRY {
+        MeshPropertyLock lock(this->parentProperty);
         getMeshObjectPtr()->smooth(iter, d_max);
     } PY_CATCH;
 

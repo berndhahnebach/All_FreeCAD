@@ -197,11 +197,6 @@ for c in mesh.getSeparatecomponents():
 				<UserDocu>Remove folds on surfaces</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="flipNormals">
-			<Documentation>
-				<UserDocu>Flip the mesh normals</UserDocu>
-			</Documentation>
-		</Methode>
 		<Methode Name="hasNonUniformOrientedFacets" Const="true">
 			<Documentation>
 				<UserDocu>Check if the mesh has facets with inconsistent orientation</UserDocu>
@@ -212,11 +207,6 @@ for c in mesh.getSeparatecomponents():
 				<UserDocu>Get the number of wrong oriented facets</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="harmonizeNormals">
-			<Documentation>
-				<UserDocu>Adjust wrong oriented facets</UserDocu>
-			</Documentation>
-		</Methode>
 		<Methode Name="countComponents" Const="true">
 			<Documentation>
 				<UserDocu>Get the number of topologic independent areas</UserDocu>
@@ -225,11 +215,6 @@ for c in mesh.getSeparatecomponents():
 		<Methode Name="removeComponents">
 			<Documentation>
 				<UserDocu>Remove components with less or equal to number of given facets</UserDocu>
-			</Documentation>
-		</Methode>
-		<Methode Name="fillupHoles">
-			<Documentation>
-				<UserDocu>Fillup holes</UserDocu>
 			</Documentation>
 		</Methode>
 		<Methode Name="fixIndices">
@@ -322,16 +307,33 @@ for c in mesh.getSeparatecomponents():
 				<UserDocu>Get detailed information about the mesh</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="foraminate">
+		<Methode Name="foraminate" Const="true">
 			<Documentation>
 				<UserDocu>Get a list of facet indices and intersection points</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="smooth">
+		<!-- The Const here is just a hack -->
+		<Methode Name="harmonizeNormals" Const="true">
+			<Documentation>
+				<UserDocu>Adjust wrong oriented facets</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="flipNormals" Const="true">
+			<Documentation>
+				<UserDocu>Flip the mesh normals</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="fillupHoles" Const="true">
+			<Documentation>
+				<UserDocu>Fillup holes</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="smooth" Const="true">
 			<Documentation>
 				<UserDocu>Smooth the mesh</UserDocu>
 			</Documentation>
 		</Methode>
+		<!-- End of hack -->
 		<Methode Name="nearestFacetOnRay" Const="true">
 			<Documentation>
 				<UserDocu>nearestFacetOnRay(tuple, tuple) -> dict
@@ -404,7 +406,9 @@ for p in mesh.Facets:
 			</Documentation>
 			<Parameter Name="Volume" Type="Float" />
 		</Attribute>
-		<ClassDeclarations>
+		<ClassDeclarations>private:
+    friend class PropertyMeshKernel;
+    PropertyMeshKernel* parentProperty;
 		</ClassDeclarations>
 	</PythonExport>
 </GenerateModel>

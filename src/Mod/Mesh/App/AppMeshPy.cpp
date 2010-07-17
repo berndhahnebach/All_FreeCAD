@@ -208,8 +208,14 @@ show(PyObject *self, PyObject *args)
             pcDoc = App::GetApplication().newDocument();
         MeshPy* pMesh = static_cast<MeshPy*>(pcObj);
         Mesh::Feature *pcFeature = (Mesh::Feature *)pcDoc->addObject("Mesh::Feature", "Mesh");
+        Mesh::MeshObject* mo = pMesh->getMeshObjectPtr();
+        if (!mo) {
+            PyErr_SetString(PyExc_ReferenceError,
+                "object doesn't reference a valid mesh");
+            return 0;
+        }
         // copy the data
-        pcFeature->Mesh.setValue(*pMesh->getMeshObjectPtr());
+        pcFeature->Mesh.setValue(*mo);
     } PY_CATCH;
 
     Py_Return;
