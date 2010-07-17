@@ -389,8 +389,8 @@
         <translation>Maillage</translation>
     </message>
     <message>
-        <source>Smooth</source>
-        <translation>Lisser</translation>
+        <source>Smooth...</source>
+        <translation>Lisser...</translation>
     </message>
     <message>
         <source>Smooth the selected meshes</source>

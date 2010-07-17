@@ -389,8 +389,8 @@
         <translation>Nät</translation>
     </message>
     <message>
-        <source>Smooth</source>
-        <translation>Jämna ut</translation>
+        <source>Smooth...</source>
+        <translation>Jämna ut...</translation>
     </message>
     <message>
         <source>Smooth the selected meshes</source>

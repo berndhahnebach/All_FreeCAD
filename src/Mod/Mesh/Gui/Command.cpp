@@ -40,8 +40,9 @@
 # include <Gui/InventorAll.h>
 #endif
 
-#include "../App/MeshFeature.h"
-#include "../App/FeatureMeshCurvature.h"
+#include <Mod/Mesh/App/Core/Smoothing.h>
+#include <Mod/Mesh/App/MeshFeature.h>
+#include <Mod/Mesh/App/FeatureMeshCurvature.h>
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -58,10 +59,12 @@
 #include <Gui/ViewProvider.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
+#include <Gui/WaitCursor.h>
 
 #include "DlgEvaluateMeshImp.h"
 #include "DlgRegularSolidImp.h"
 #include "RemoveComponents.h"
+#include "DlgSmoothing.h"
 #include "ViewProviderMeshFaceSet.h"
 #include "ViewProviderCurvature.h"
 
@@ -1151,7 +1154,7 @@ CmdMeshSmoothing::CmdMeshSmoothing()
 {
     sAppModule    = "Mesh";
     sGroup        = QT_TR_NOOP("Mesh");
-    sMenuText     = QT_TR_NOOP("Smooth");
+    sMenuText     = QT_TR_NOOP("Smooth...");
     sToolTipText  = QT_TR_NOOP("Smooth the selected meshes");
     sWhatsThis    = "Mesh_Smoothing";
     sStatusTip    = QT_TR_NOOP("Smooth the selected meshes");
@@ -1159,14 +1162,35 @@ CmdMeshSmoothing::CmdMeshSmoothing()
 
 void CmdMeshSmoothing::activated(int iMsg)
 {
-    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-    openCommand("Smooth");
-    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
-        App::Document* doc = (*it)->getDocument();
-        doCommand(Doc,"App.getDocument(\"%s\").getObject(\"%s\").smooth()"
-                     ,doc->getName(), (*it)->getNameInDocument());
+    MeshGui::DlgSmoothing dlg(Gui::getMainWindow());
+    if (dlg.exec() == QDialog::Accepted) {
+        Gui::WaitCursor wc;
+        openCommand("Mesh Smoothing");
+        std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+        for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+            Mesh::Feature* mesh = (Mesh::Feature*)*it;
+            Mesh::MeshObject* mm = mesh->Mesh.startEditing();
+            switch (dlg.method()) {
+                case MeshGui::DlgSmoothing::Taubin:
+                    {
+                        MeshCore::TaubinSmoothing s(mm->getKernel());
+                        s.SetLambda(dlg.lambdaStep());
+                        s.SetMicro(dlg.microStep());
+                        s.Smooth(dlg.iterations());
+                    }   break;
+                case MeshGui::DlgSmoothing::Laplace:
+                    {
+                        MeshCore::LaplaceSmoothing s(mm->getKernel());
+                        s.SetLambda(dlg.lambdaStep());
+                        s.Smooth(dlg.iterations());
+                    }   break;
+                default:
+                    break;
+            }
+            mesh->Mesh.finishEditing();
+        }
+        commitCommand();
     }
-    commitCommand();
 }
 
 bool CmdMeshSmoothing::isActive(void)

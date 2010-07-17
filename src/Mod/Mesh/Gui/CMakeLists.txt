@@ -18,6 +18,7 @@ set(Mesh_MOC_HDRS
 		 DlgEvaluateMeshImp.h
 		 DlgRegularSolidImp.h
 		 DlgSettingsMeshView.h
+		 DlgSmoothing.h
 		 PropertyEditorMesh.h
 		 RemoveComponents.h
 )
@@ -28,6 +29,7 @@ set(Dialogs_UIC_SRCS
 		 DlgEvaluateMesh.ui
 		 DlgRegularSolid.ui
 		 DlgSettingsMeshView.ui
+		 DlgSmoothing.ui
 		 RemoveComponents.ui
 )
 qt4_wrap_ui(Dialogs_UIC_HDRS ${Dialogs_UIC_SRCS})
@@ -42,6 +44,9 @@ SET(Dialogs_SRCS
 		 DlgSettingsMeshView.ui
 		 DlgSettingsMeshView.cpp
 		 DlgSettingsMeshView.h
+		 DlgSmoothing.ui
+		 DlgSmoothing.cpp
+		 DlgSmoothing.h
 		 RemoveComponents.ui
 		 RemoveComponents.cpp
 		 RemoveComponents.h

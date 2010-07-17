@@ -5,10 +5,12 @@ BUILT_SOURCES=\
 		ui_DlgEvaluateMesh.h \
 		ui_DlgRegularSolid.h \
 		ui_DlgSettingsMeshView.h \
+		ui_DlgSmoothing.h \
 		ui_RemoveComponents.h \
 		moc_DlgEvaluateMeshImp.cpp \
 		moc_DlgRegularSolidImp.cpp \
 		moc_DlgSettingsMeshView.cpp \
+		moc_DlgSmoothing.cpp \
 		moc_PropertyEditorMesh.cpp \
 		moc_RemoveComponents.cpp \
 		qrc_Mesh.cpp 
@@ -21,6 +23,8 @@ libMeshGui_la_SOURCES=\
 		DlgRegularSolidImp.h \
 		DlgSettingsMeshView.cpp \
 		DlgSettingsMeshView.h \
+		DlgSmoothing.cpp \
+		DlgSmoothing.h \
 		Doxygen.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
@@ -118,6 +122,7 @@ EXTRA_DIST = \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
 		DlgSettingsMeshView.ui \
+		DlgSmoothing.ui \
 		RemoveComponents.ui \
 		Resources/Mesh.qrc \
 		Resources/translations/Mesh_de.qm \
