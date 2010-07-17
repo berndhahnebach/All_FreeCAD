@@ -389,8 +389,8 @@
         <translation>Malla</translation>
     </message>
     <message>
-        <source>Smooth</source>
-        <translation>Suavizar</translation>
+        <source>Smooth...</source>
+        <translation>Suavizar...</translation>
     </message>
     <message>
         <source>Smooth the selected meshes</source>

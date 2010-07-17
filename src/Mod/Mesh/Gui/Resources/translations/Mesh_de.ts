@@ -389,8 +389,8 @@
         <translation>Netz</translation>
     </message>
     <message>
-        <source>Smooth</source>
-        <translation>Glätten</translation>
+        <source>Smooth...</source>
+        <translation>Glätten...</translation>
     </message>
     <message>
         <source>Smooth the selected meshes</source>

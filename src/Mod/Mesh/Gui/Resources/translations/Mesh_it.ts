@@ -389,7 +389,7 @@
         <translation>Mesh</translation>
     </message>
     <message>
-        <source>Smooth</source>
+        <source>Smooth...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

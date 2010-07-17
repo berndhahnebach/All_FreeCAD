@@ -27,6 +27,8 @@
 namespace MeshCore
 {
 class MeshKernel;
+class MeshRefPointToPoints;
+class MeshRefPointToFacets;
 
 /** Base class for smoothing algorithms. */
 class MeshExport AbstractSmoothing
@@ -73,14 +75,26 @@ public:
     LaplaceSmoothing(MeshKernel&);
     virtual ~LaplaceSmoothing();
     void Smooth(unsigned int);
+    void SetLambda(double l) { lambda = l;}
+
+protected:
+    void Umbrella(const MeshRefPointToPoints&,
+                  const MeshRefPointToFacets&, double);
+
+protected:
+    double lambda;
 };
 
-class MeshExport TaubinSmoothing : public MeshSmoothing
+class MeshExport TaubinSmoothing : public LaplaceSmoothing
 {
 public:
     TaubinSmoothing(MeshKernel&);
     virtual ~TaubinSmoothing();
     void Smooth(unsigned int);
+    void SetMicro(double m) { micro = m;}
+
+protected:
+    double micro;
 };
 
 } // namespace MeshCore
