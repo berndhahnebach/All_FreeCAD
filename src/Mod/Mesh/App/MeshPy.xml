@@ -408,7 +408,7 @@ for p in mesh.Facets:
 		</Attribute>
 		<ClassDeclarations>private:
     friend class PropertyMeshKernel;
-    PropertyMeshKernel* parentProperty;
+    class PropertyMeshKernel* parentProperty;
 		</ClassDeclarations>
 	</PythonExport>
 </GenerateModel>
