@@ -44,6 +44,8 @@
 namespace Mesh
 {
 
+class MeshPy;
+
 /** The normals property class.
  * Note: We need an own class for that to distinguish from the base vector list.
  * @author Werner Mayer
@@ -229,6 +231,7 @@ public:
     //@}
 
 private:
+    MeshPy* meshPyObject;
     Base::Reference<MeshObject> _meshObject;
 };
 

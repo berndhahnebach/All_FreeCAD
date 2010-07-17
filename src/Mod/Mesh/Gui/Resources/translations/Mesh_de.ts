@@ -913,16 +913,12 @@
         <translation>Toleranz zum Erzeugen von Dreiecksnetz eingeben:</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is </source>
-        <translation> Das Netz &apos;%1&apos; ist</translation>
+        <source>The mesh &apos;%1&apos; is a solid.</source>
+        <translation>Das Netz &apos;%1&apos; ist ein Solid.</translation>
     </message>
     <message>
-        <source>not a solid.</source>
-        <translation>kein Solid.</translation>
-    </message>
-    <message>
-        <source>a solid.</source>
-        <translation>ein Solid.</translation>
+        <source>The mesh &apos;%1&apos; is not a solid.</source>
+        <translation>Das Netz &apos;%1&apos; ist kein Solid.</translation>
     </message>
     <message>
         <source>Min=&lt;%1,%2,%3&gt;

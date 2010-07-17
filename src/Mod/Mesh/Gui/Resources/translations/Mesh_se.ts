@@ -913,16 +913,12 @@
         <translation>Mata in tolerans för nätning av geometri:</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is </source>
-        <translation>Nätet &apos;%1&apos; är</translation>
+        <source>The mesh &apos;%1&apos; is a solid.</source>
+        <translation>Nätet &apos;%1&apos; är en solid.</translation>
     </message>
     <message>
-        <source>not a solid.</source>
-        <translation>Ingen solid.</translation>
-    </message>
-    <message>
-        <source>a solid.</source>
-        <translation>en solid.</translation>
+        <source>The mesh &apos;%1&apos; is not a solid.</source>
+        <translation>Nätet &apos;%1&apos; är ingen solid.</translation>
     </message>
     <message>
         <source>Min=&lt;%1,%2,%3&gt;

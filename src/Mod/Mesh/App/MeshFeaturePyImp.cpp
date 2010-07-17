@@ -61,7 +61,9 @@ PyObject*  MeshFeaturePy::harmonizeNormals(PyObject *args)
         return NULL;
 
     PY_TRY {
-        getFeaturePtr()->Mesh.harmonizeNormals();
+        Mesh::MeshObject *mesh = getFeaturePtr()->Mesh.startEditing();
+        mesh->harmonizeNormals();
+        getFeaturePtr()->Mesh.finishEditing();
     } PY_CATCH;
 
     Py_Return; 

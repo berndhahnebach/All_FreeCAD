@@ -913,16 +913,12 @@
         <translation>Entrer la tolérance pour la géométrie maillée:</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is </source>
-        <translation>Le maillage &apos;%1&apos; (n&apos;)est</translation>
+        <source>The mesh &apos;%1&apos; is a solid.</source>
+        <translation>Le maillage &apos;%1&apos; est un solide.</translation>
     </message>
     <message>
-        <source>not a solid.</source>
-        <translation>pas un solide.</translation>
-    </message>
-    <message>
-        <source>a solid.</source>
-        <translation>un solide.</translation>
+        <source>The mesh &apos;%1&apos; is not a solid.</source>
+        <translation>Le maillage &apos;%1&apos; n&apos;est pas un solide.</translation>
     </message>
     <message>
         <source>Min=&lt;%1,%2,%3&gt;
