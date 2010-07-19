@@ -67,7 +67,7 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
     /// returns a cloned object 
     virtual Geometry *clone(void)const = 0;
-    /// construction geometry (means no impact on a later build topo)
+    /// construction geometry (means no impact on a later built topo)
     bool Construction;
 
 protected:
