@@ -72,9 +72,9 @@ using namespace std;
 
 
 ProjectionAlgos::ProjectionAlgos(const TopoDS_Shape &Input,const Base::Vector3f &Dir) 
-:Input(Input), Direction(Dir)
+  : Input(Input), Direction(Dir)
 {
-	execute();
+    execute();
 }
 
 ProjectionAlgos::~ProjectionAlgos()
@@ -83,13 +83,12 @@ ProjectionAlgos::~ProjectionAlgos()
 
 void ProjectionAlgos::execute(void)
 {
-
     Handle( HLRBRep_Algo ) brep_hlr = new HLRBRep_Algo;
     brep_hlr->Add( Input );
 
     gp_Ax2 transform(gp_Pnt(0,0,0),gp_Dir(Direction.x,Direction.y,Direction.z));
     HLRAlgo_Projector projector( transform );
-    brep_hlr->Projector( projector );
+    brep_hlr->Projector(projector);
     brep_hlr->Update();
     brep_hlr->Hide();
 
@@ -109,89 +108,91 @@ void ProjectionAlgos::execute(void)
 
 }
 
-std::string  ProjectionAlgos::getSVG(SvgExtractionType type)
+std::string  ProjectionAlgos::getSVG(SvgExtractionType type, float scale)
 {
-	std::stringstream result;
+    std::stringstream result;
+    if (!H.IsNull() && type==WithHidden) {
+        float width = 0.15f/scale;
+        BRepMesh::Mesh(H,0.1);
+        result  << "<g" 
+                //<< " id=\"" << ViewName << "\"" << endl
+                << "   stroke=\"rgb(0, 0, 0)\"" << endl 
+                << "   stroke-width=\"" << width << "\"" << endl
+                << "   stroke-linecap=\"butt\"" << endl
+                << "   stroke-linejoin=\"miter\"" << endl
+                << "   stroke-dasharray=\"5 3\"" << endl
+                << "   fill=\"none\"" << endl
+                << "  >" << endl
+                << Edges2SVG(H)
+                << "</g>" << endl;
+    }
+    if (!HO.IsNull() && type==WithHidden) {
+        float width = 0.15f/scale;
+        BRepMesh::Mesh(HO,0.1);
+        result  << "<g" 
+                //<< " id=\"" << ViewName << "\"" << endl
+                << "   stroke=\"rgb(0, 0, 0)\"" << endl 
+                << "   stroke-width=\"" << width << "\"" << endl
+                << "   stroke-linecap=\"butt\"" << endl
+                << "   stroke-linejoin=\"miter\"" << endl
+                << "   stroke-dasharray=\"5 3\"" << endl
+                << "   fill=\"none\"" << endl
+                << "  >" << endl
+                << Edges2SVG(HO)
+                << "</g>" << endl;
+    }
+    if (!VO.IsNull()) {
+        float width = 0.35f/scale;
+        BRepMesh::Mesh(VO,0.1);
+        result  << "<g" 
+                //<< " id=\"" << ViewName << "\"" << endl
+                << "   stroke=\"rgb(0, 0, 0)\"" << endl 
+                << "   stroke-width=\"" << width << "\"" << endl
+                << "   stroke-linecap=\"butt\"" << endl
+                << "   stroke-linejoin=\"miter\"" << endl
+                << "   fill=\"none\"" << endl
+                << "  >" << endl
+                << Edges2SVG(VO)
+                << "</g>" << endl;
+    }
+    if (!V.IsNull()) {
+        float width = 0.35f/scale;
+        BRepMesh::Mesh(V,0.1);
+        result  << "<g" 
+                //<< " id=\"" << ViewName << "\"" << endl
+                << "   stroke=\"rgb(0, 0, 0)\"" << endl 
+                << "   stroke-width=\"" << width << "\"" << endl
+                << "   stroke-linecap=\"butt\"" << endl
+                << "   stroke-linejoin=\"miter\"" << endl
+                << "   fill=\"none\"" << endl
+                << "  >" << endl
+                << Edges2SVG(V)
+                << "</g>" << endl;
+    }
 
-
-	if(!H.IsNull() && type==WithHidden){
-			BRepMesh::Mesh(H,0.1);
-			result  << "<g" 
-					//<< " id=\"" << ViewName << "\"" << endl
-					<< "   stroke=\"rgb(0, 0, 0)\"" << endl 
-					<< "   stroke-width=\"0.15\"" << endl
-					<< "   stroke-linecap=\"butt\"" << endl
-					<< "   stroke-linejoin=\"miter\"" << endl
-					<< "   stroke-dasharray=\"5 3\"" << endl
-					<< "   fill=\"none\"" << endl
-					<< "  >" << endl
-					<< Edges2SVG(H)
-					<< "</g>" << endl;
-	}
-	if(!HO.IsNull() && type==WithHidden){
-			BRepMesh::Mesh(HO,0.1);
-			result  << "<g" 
-					//<< " id=\"" << ViewName << "\"" << endl
-					<< "   stroke=\"rgb(0, 0, 0)\"" << endl 
-					<< "   stroke-width=\"0.15\"" << endl
-					<< "   stroke-linecap=\"butt\"" << endl
-					<< "   stroke-linejoin=\"miter\"" << endl
-					<< "   stroke-dasharray=\"5 3\"" << endl
-					<< "   fill=\"none\"" << endl
-					<< "  >" << endl
-					<< Edges2SVG(HO)
-					<< "</g>" << endl;
-	}
-	if(!VO.IsNull()){
-			BRepMesh::Mesh(VO,0.1);
-			result  << "<g" 
-					//<< " id=\"" << ViewName << "\"" << endl
-					<< "   stroke=\"rgb(0, 0, 0)\"" << endl 
-					<< "   stroke-width=\"0.35\"" << endl
-					<< "   stroke-linecap=\"butt\"" << endl
-					<< "   stroke-linejoin=\"miter\"" << endl
-					<< "   fill=\"none\"" << endl
-					<< "  >" << endl
-					<< Edges2SVG(VO)
-					<< "</g>" << endl;
-	}
-	if(!V.IsNull()){
-			BRepMesh::Mesh(V,0.1);
-			result  << "<g" 
-					//<< " id=\"" << ViewName << "\"" << endl
-					<< "   stroke=\"rgb(0, 0, 0)\"" << endl 
-					<< "   stroke-width=\"0.35\"" << endl
-					<< "   stroke-linecap=\"butt\"" << endl
-					<< "   stroke-linejoin=\"miter\"" << endl
-					<< "   fill=\"none\"" << endl
-					<< "  >" << endl
-					<< Edges2SVG(V)
-					<< "</g>" << endl;
-	}
-	return result.str();
+    return result.str();
 }
 
 std::string ProjectionAlgos::Edges2SVG(const TopoDS_Shape &Input)
 {
-	std::stringstream result;
+    std::stringstream result;
 
     TopExp_Explorer edges( Input, TopAbs_EDGE );
     for (int i = 1 ; edges.More(); edges.Next(),i++ ) {
-      TopoDS_Edge edge = TopoDS::Edge( edges.Current() );
-      TopLoc_Location location;
-      Handle( Poly_Polygon3D ) polygon = BRep_Tool::Polygon3D( edge, location );
-      if ( !polygon.IsNull() ) {
-        const TColgp_Array1OfPnt& nodes = polygon->Nodes();
-         char c = 'M';
-        result << "<path id= \"" /*<< ViewName*/ << i << "\" d=\" "; 
-        for ( int i = nodes.Lower(); i<= nodes.Upper(); i++ ){
-            result << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
-            c = 'L';
+        TopoDS_Edge edge = TopoDS::Edge( edges.Current() );
+        TopLoc_Location location;
+        Handle( Poly_Polygon3D ) polygon = BRep_Tool::Polygon3D( edge, location );
+        if (!polygon.IsNull()) {
+            const TColgp_Array1OfPnt& nodes = polygon->Nodes();
+            char c = 'M';
+            result << "<path id= \"" /*<< ViewName*/ << i << "\" d=\" "; 
+            for (int i = nodes.Lower(); i <= nodes.Upper(); i++){
+                result << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
+                c = 'L';
+            }
+            result << "\" />" << endl;
         }
-        result << "\" />" << endl;
-      }
     }
-	return result.str();
+
+    return result.str();
 }
-
-
