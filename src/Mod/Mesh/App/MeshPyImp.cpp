@@ -900,11 +900,12 @@ PyObject*  MeshPy::refine(PyObject *args)
 
 PyObject*  MeshPy::optimizeTopology(PyObject *args)
 {
-    float fMaxAngle;
-    if (!PyArg_ParseTuple(args, "f; specify the maximum allowed angle between the normals of two adjacent facets", &fMaxAngle))
+    float fMaxAngle=-1.0f;
+    if (!PyArg_ParseTuple(args, "|f; specify the maximum allowed angle between the normals of two adjacent facets", &fMaxAngle))
         return NULL;
 
     PY_TRY {
+        MeshPropertyLock lock(this->parentProperty);
         getMeshObjectPtr()->optimizeTopology(fMaxAngle);
     } PY_CATCH;
 
@@ -917,6 +918,7 @@ PyObject*  MeshPy::optimizeEdges(PyObject *args)
         return NULL;
 
     PY_TRY {
+        MeshPropertyLock lock(this->parentProperty);
         getMeshObjectPtr()->optimizeEdges();
     } PY_CATCH;
 

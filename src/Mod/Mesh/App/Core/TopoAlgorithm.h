@@ -54,48 +54,14 @@ public:
     virtual ~MeshTopoAlgorithm (void);
 
 public:
+    /** @name Topological Operations */
+    //@{
     /**
      * Inserts a new vertex in the given triangle so that is splitted into three
      * triangles. The given point must lie inside the triangle not outside or on
      * an edge.
      */
     bool InsertVertex(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint);
-    /**
-     * Creates a new triangle with neighbour facet \a ulFacetPos and the vertex
-     * \a rclPoint whereat it must lie outside the given facet.
-     * @note The vertex \a rclPoint doesn't necessarily need to be a new vertex
-     * it can already be part of another triangle but the client programmer must
-     * make sure that no overlaps are created.
-     * @note This operation might be useful to close gaps in a mesh.
-     */
-    bool SnapVertex(unsigned long ulFacetPos, const Base::Vector3f& rP);
-    /**
-     * Tries to make a more beautiful mesh by swapping the common edge of two
-     * adjacent facets where needed. 
-     * \a fMaxAngle is the maximum allowed angle between the normals of two
-     * adjacent facets to allow swapping the common edge. A too high value might
-     * result into folds on the surface.
-     * @note This is a high-level operation and tries to optimze the mesh as a whole.
-     */
-    void OptimizeTopology(float fMaxAngle);
-    /**
-     * Tries to make a more beautiful mesh by swapping the common edge of two
-     * adjacent facets where needed. A swap is needed where two adjacent facets
-     * don't fulfill the Delaunay condition.
-     */
-    void DelaunayFlip(float fMaxAngle);
-    /**
-     * Overloaded method DelaunayFlip that doesn't use ShouldSwapEdge to check for
-     * legal swap edge.
-     */
-    int DelaunayFlip();
-    /**
-     * Tries to adjust the edges to the curvature direction with the minimum
-     * absolute value of maximum and minimum curvature.
-     * @note This is a high-level operation and tries to optimze the mesh as a
-     * whole.
-     */
-    void AdjustEdgesToCurvatureDirection();
     /**
      * This method is provided for convenience. It inserts a new vertex to the
      * mesh and tries to swap the common edges of the newly created facets with
@@ -107,21 +73,6 @@ public:
      */
     bool InsertVertexAndSwapEdge(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint,
                                  float fMaxAngle);
-    /**
-     * Checks whether a swap edge operation is legel that is fulfilled if the
-     * two adjacent facets builds a convex polygon. If this operation is legal
-     * true is returned, false is returned if this operation is illegal or if
-     * \a ulFacetPos and \a ulNeighbour are not adjacent facets.
-     */
-    bool IsSwapEdgeLegal(unsigned long ulFacetPos, unsigned long ulNeighbour) const;
-    /**
-     * Checks whether the swap edge operation is legal and whether it makes
-     * sense. This operation only makes sense if the maximum angle of both
-     * facets is decreased and if the angle between the facet normals does
-     * not exceed \a fMaxAngle.  
-     */
-    bool ShouldSwapEdge(unsigned long ulFacetPos, unsigned long ulNeighbour,
-                        float fMaxAngle) const;
     /**
      * Swaps the common edge of two adjacent facets even if the operation might
      * be illegal. To be sure that this operation is legal check either with
@@ -148,6 +99,16 @@ public:
      */
     void SplitOpenEdge(unsigned long ulFacetPos, unsigned short uSide,
                        const Base::Vector3f& rP);
+    /**
+     * Splits the facet with index \a ulFacetPos into up to three facets. The points
+     * \a rP1 and \a rP2 should lie on two different edges of the facet. This method
+     * splits up the both neighbour facets as well.
+     * If either \a rP1 or \a rP2 (probably due to a previous call of SplitFacet())
+     * is coincident with a corner point then the facet is splitted into two facets.
+     * If both points are coincident with corner points of this facet nothing is done.
+     */
+    void SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1,
+                    const Base::Vector3f& rP2);
     /**
      * Collapses the common edge of two adjacent facets. This operation removes
      * one common point of the collapsed edge and the facets \a ulFacetPos and
@@ -189,20 +150,70 @@ public:
      * must take care not to use such elements.
      */
     bool CollapseFacet(unsigned long ulFacetPos);
+    //@}
+
+    /** @name Topological Optimization */
+    //@{
+    /**
+     * Tries to make a more beautiful mesh by swapping the common edge of two
+     * adjacent facets where needed. 
+     * \a fMaxAngle is the maximum allowed angle between the normals of two
+     * adjacent facets to allow swapping the common edge. A too high value might
+     * result into folds on the surface.
+     * @note This is a high-level operation and tries to optimze the mesh as a whole.
+     */
+    void OptimizeTopology(float fMaxAngle);
+    void OptimizeTopology();
+    /**
+     * Tries to make a more beautiful mesh by swapping the common edge of two
+     * adjacent facets where needed. A swap is needed where two adjacent facets
+     * don't fulfill the Delaunay condition.
+     */
+    void DelaunayFlip(float fMaxAngle);
+    /**
+     * Overloaded method DelaunayFlip that doesn't use ShouldSwapEdge to check for
+     * legal swap edge.
+     */
+    int DelaunayFlip();
+    /**
+     * Tries to adjust the edges to the curvature direction with the minimum
+     * absolute value of maximum and minimum curvature.
+     * @note This is a high-level operation and tries to optimze the mesh as a
+     * whole.
+     */
+    void AdjustEdgesToCurvatureDirection();
+    //@}
+
+    /**
+     * Creates a new triangle with neighbour facet \a ulFacetPos and the vertex
+     * \a rclPoint whereat it must lie outside the given facet.
+     * @note The vertex \a rclPoint doesn't necessarily need to be a new vertex
+     * it can already be part of another triangle but the client programmer must
+     * make sure that no overlaps are created.
+     * @note This operation might be useful to close gaps in a mesh.
+     */
+    bool SnapVertex(unsigned long ulFacetPos, const Base::Vector3f& rP);
+    /**
+     * Checks whether a swap edge operation is legel that is fulfilled if the
+     * two adjacent facets builds a convex polygon. If this operation is legal
+     * true is returned, false is returned if this operation is illegal or if
+     * \a ulFacetPos and \a ulNeighbour are not adjacent facets.
+     */
+    bool IsSwapEdgeLegal(unsigned long ulFacetPos, unsigned long ulNeighbour) const;
+    /**
+     * Checks whether the swap edge operation is legal and whether it makes
+     * sense. This operation only makes sense if the maximum angle of both
+     * facets is decreased and if the angle between the facet normals does
+     * not exceed \a fMaxAngle.  
+     */
+    bool ShouldSwapEdge(unsigned long ulFacetPos, unsigned long ulNeighbour,
+                        float fMaxAngle) const;
+    /** Computes a value for the benefit of swapping the edge. */
+    float SwapEdgeBenefit(unsigned long f, int e) const;
     /**
      * Removes all invalid marked elements from the mesh structure.
      */
     void Cleanup();
-    /**
-     * Splits the facet with index \a ulFacetPos into up to three facets. The points
-     * \a rP1 and \a rP2 should lie on two different edges of the facet. This method
-     * splits up the both neighbour facets as well.
-     * If either \a rP1 or \a rP2 (probably due to a previous call of SplitFacet())
-     * is coincident with a corner point then the facet is splitted into two facets.
-     * If both points are coincident with corner points of this facet nothing is done.
-     */
-    void SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1,
-                    const Base::Vector3f& rP2);
     /**
      * Removes the degenerated facet at position \a index from the mesh structure.
      * A facet is degenerated if its corner points are collinear.

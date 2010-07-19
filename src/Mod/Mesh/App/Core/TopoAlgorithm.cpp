@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include <algorithm>
+# include <utility>
+# include <queue>
 #endif
 
 #include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
@@ -232,6 +234,103 @@ void MeshTopoAlgorithm::OptimizeTopology(float fMaxAngle)
       aEdge2Face.erase(pE);
     }
   }
+}
+
+// Cosine of the maximum angle in triangle (v1,v2,v3)
+static float cos_maxangle(const Base::Vector3f &v1,
+                          const Base::Vector3f &v2,
+                          const Base::Vector3f &v3)
+{
+    float a = Base::Distance(v2,v3);
+    float b = Base::Distance(v3,v1);
+    float c = Base::Distance(v1,v2);
+    float A = a * (b*b + c*c - a*a);
+    float B = b * (c*c + a*a - b*b);
+    float C = c * (a*a + b*b - c*c);
+    return 0.5f * std::min<float>(std::min<float>(A,B),C) / (a*b*c); // min cosine == max angle
+}
+
+static float swap_benefit(const Base::Vector3f &v1, const Base::Vector3f &v2,
+                          const Base::Vector3f &v3, const Base::Vector3f &v4)
+{
+    Base::Vector3f n124 = (v4 - v2) % (v1 - v2);
+    Base::Vector3f n234 = (v3 - v2) % (v4 - v2);
+    if ((n124 * n234) <= 0.0f)
+        return 0.0f; // avoid normal flip
+
+    return std::max<float>(-cos_maxangle(v1,v2,v3), -cos_maxangle(v1,v3,v4)) -
+           std::max<float>(-cos_maxangle(v1,v2,v4), -cos_maxangle(v2,v3,v4));
+}
+
+float MeshTopoAlgorithm::SwapEdgeBenefit(unsigned long f, int e) const
+{
+    const MeshFacetArray& faces = _rclMesh.GetFacets();
+    const MeshPointArray& vertices = _rclMesh.GetPoints();
+
+    unsigned long n = faces[f]._aulNeighbours[e];
+    if (n == ULONG_MAX)
+        return 0.0f; // border edge
+
+    unsigned long v1 = faces[f]._aulPoints[e];
+    unsigned long v2 = faces[f]._aulPoints[(e+1)%3];
+    unsigned long v3 = faces[f]._aulPoints[(e+2)%3];
+    unsigned short s = faces[n].Side(faces[f]);
+    if (s == USHRT_MAX) {
+        std::cerr << "MeshTopoAlgorithm::SwapEdgeBenefit: error in neighbourhood "
+                  << "of faces " << f << " and " << n << std::endl;
+        return 0.0f; // topological error
+    }
+    unsigned long v4 = faces[n]._aulPoints[(s+2)%3];
+    if (v3 == v4) {
+        std::cerr << "MeshTopoAlgorithm::SwapEdgeBenefit: duplicate faces "
+                  << f << " and " << n << std::endl;
+        return 0.0f; // duplicate faces
+    }
+    return swap_benefit(vertices[v2], vertices[v3],
+                        vertices[v1], vertices[v4]);
+}
+
+typedef std::pair<unsigned long,int> FaceEdge; // (face, edge) pair
+typedef std::pair<float, FaceEdge> FaceEdgePriority;
+
+void MeshTopoAlgorithm::OptimizeTopology()
+{
+    // Find all edges that can be swapped and insert them into a
+    // priority queue
+    const MeshFacetArray& faces = _rclMesh.GetFacets();
+    unsigned long nf = _rclMesh.CountFacets();
+    std::priority_queue<FaceEdgePriority> todo;
+    for (unsigned long i = 0; i < nf; i++) {
+        for (int j = 0; j < 3; j++) {
+            float b = SwapEdgeBenefit(i, j);
+            if (b > 0.0f)
+                todo.push(std::make_pair(b, std::make_pair(i, j)));
+        }
+    }
+
+    // Edges are sorted in decreasing order with respect to their benefit
+    while (!todo.empty()) {
+        unsigned long f = todo.top().second.first;
+        int e = todo.top().second.second;
+        todo.pop();
+        // Check again if the swap should still be done
+        if (SwapEdgeBenefit(f, e) <= 0.0f)
+            continue;
+        // OK, swap the edge
+        unsigned long f2 = faces[f]._aulNeighbours[e];
+        SwapEdge(f, f2);
+        // Insert new edges into queue, if necessary
+        for (int j = 0; j < 3; j++) {
+            float b = SwapEdgeBenefit(f, j);
+            if (b > 0.0f)
+                todo.push(std::make_pair(b, std::make_pair(f, j)));
+        }
+        for (int j = 0; j < 3; j++) {
+            float b = SwapEdgeBenefit(f2, j);
+            if (b > 0.0f)
+                todo.push(std::make_pair(b, std::make_pair(f2, j)));
+        }
+    }
 }
 
 void MeshTopoAlgorithm::DelaunayFlip(float fMaxAngle)

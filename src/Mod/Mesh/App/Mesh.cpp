@@ -843,7 +843,10 @@ void MeshObject::refine()
 void MeshObject::optimizeTopology(float fMaxAngle)
 {
     MeshCore::MeshTopoAlgorithm topalg(_kernel);
-    topalg.OptimizeTopology(fMaxAngle);
+    if (fMaxAngle > 0.0f)
+        topalg.OptimizeTopology(fMaxAngle);
+    else
+        topalg.OptimizeTopology();
 
     // clear the segments because we don't know how the new
     // topology looks like
