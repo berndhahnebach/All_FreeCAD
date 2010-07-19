@@ -191,7 +191,7 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
             << "   transform=\"rotate("<< Rotation.getValue() << ","<< X.getValue()<<","<<Y.getValue()<<") translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
             << "  >" << endl;
 
-    result << Alg.getSVG(hidden?ProjectionAlgos::WithHidden:ProjectionAlgos::Plain);
+    result << Alg.getSVG(hidden ? ProjectionAlgos::WithHidden : ProjectionAlgos::Plain, this->Scale.getValue());
 
     result << "</g>" << endl;
 

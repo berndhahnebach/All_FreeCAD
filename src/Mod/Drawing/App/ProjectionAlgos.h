@@ -53,7 +53,7 @@ public:
 		WithHidden
     };
 
-	std::string getSVG(SvgExtractionType type);
+	std::string getSVG(SvgExtractionType type, float scale);
 
 	const TopoDS_Shape &Input;
 	const Base::Vector3f &Direction;
