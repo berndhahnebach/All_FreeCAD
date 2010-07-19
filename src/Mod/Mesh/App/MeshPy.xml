@@ -247,16 +247,6 @@ for c in mesh.getSeparatecomponents():
 				<UserDocu>Refine the mesh</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="optimizeTopology">
-			<Documentation>
-				<UserDocu>Optimize the edges to get nicer facets</UserDocu>
-			</Documentation>
-		</Methode>
-		<Methode Name="optimizeEdges">
-			<Documentation>
-				<UserDocu>Optimize the edges to get nicer facets</UserDocu>
-			</Documentation>
-		</Methode>
 		<Methode Name="splitEdges">
 			<Documentation>
 				<UserDocu>Split all edges</UserDocu>
@@ -331,6 +321,16 @@ for c in mesh.getSeparatecomponents():
 		<Methode Name="smooth" Const="true">
 			<Documentation>
 				<UserDocu>Smooth the mesh</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="optimizeTopology" Const="true">
+			<Documentation>
+				<UserDocu>Optimize the edges to get nicer facets</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="optimizeEdges" Const="true">
+			<Documentation>
+				<UserDocu>Optimize the edges to get nicer facets</UserDocu>
 			</Documentation>
 		</Methode>
 		<!-- End of hack -->
