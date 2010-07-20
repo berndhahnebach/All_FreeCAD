@@ -193,6 +193,18 @@ PyObject* GeometryCurvePy::makeRuledSurface(PyObject *args)
     return 0;
 }
 
+Py::Float GeometryCurvePy::getFirstParameter(void) const
+{
+    return Py::Float(Handle_Geom_Curve::DownCast
+        (getGeometryPtr()->handle())->FirstParameter());
+}
+
+Py::Float GeometryCurvePy::getLastParameter(void) const
+{
+    return Py::Float(Handle_Geom_Curve::DownCast
+        (getGeometryPtr()->handle())->LastParameter());
+}
+
 PyObject *GeometryCurvePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
