@@ -36,5 +36,21 @@
 				<UserDocu>Make a ruled surface of this and the given curves</UserDocu>
 			</Documentation>
 		</Methode>
+		<Attribute Name="FirstParameter" ReadOnly="true">
+			<Documentation>
+				<UserDocu>
+					Returns the value of the first parameter.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="FirstParameter" Type="Float"/>
+		</Attribute>
+		<Attribute Name="LastParameter" ReadOnly="true">
+			<Documentation>
+				<UserDocu>
+					Returns the value of the last parameter.
+				</UserDocu>
+			</Documentation>
+			<Parameter Name="LastParameter" Type="Float"/>
+		</Attribute>
 	</PythonExport>
 </GenerateModel>
