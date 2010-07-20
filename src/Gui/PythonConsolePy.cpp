@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QByteArray>
 # include <QInputDialog>
 # include <QEventLoop>
 #endif
@@ -70,13 +71,15 @@ Py::Object PythonStdout::write(const Py::Tuple& args)
         if (PyUnicode_Check(output.ptr())) {
             PyObject* unicode = PyUnicode_AsUTF8String(output.ptr());
             const char* string = PyString_AsString(unicode);
-            pyConsole->insertPythonOutput(QString::fromUtf8(string));
+            int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
+            pyConsole->insertPythonOutput(QString::fromUtf8(string, maxlen));
             Py_DECREF(unicode);
         }
         else {
             Py::String text(args[0]);
             std::string string = (std::string)text;
-            pyConsole->insertPythonOutput(QString::fromUtf8(string.c_str()));
+            int maxlen = string.size() > 10000 ? 10000 : -1;
+            pyConsole->insertPythonOutput(QString::fromUtf8(string.c_str(), maxlen));
         }
     }
     catch (Py::Exception& e) {
@@ -128,13 +131,15 @@ Py::Object PythonStderr::write(const Py::Tuple& args)
         if (PyUnicode_Check(output.ptr())) {
             PyObject* unicode = PyUnicode_AsUTF8String(output.ptr());
             const char* string = PyString_AsString(unicode);
-            pyConsole->insertPythonError(QString::fromUtf8(string));
+            int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
+            pyConsole->insertPythonError(QString::fromUtf8(string, maxlen));
             Py_DECREF(unicode);
         }
         else {
             Py::String text(args[0]);
             std::string string = (std::string)text;
-            pyConsole->insertPythonError(QString::fromUtf8(string.c_str()));
+            int maxlen = string.size() > 10000 ? 10000 : -1;
+            pyConsole->insertPythonError(QString::fromUtf8(string.c_str(), maxlen));
         }
     }
     catch (Py::Exception& e) {
