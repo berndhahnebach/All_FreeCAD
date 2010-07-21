@@ -78,22 +78,6 @@ bool MeshOrientationVisitor::HasNonUnifomOrientedFacets() const
   return _nonuniformOrientation;
 }
 
-bool MeshOrientationVisitor::IsSameOrientation(const MeshFacet & f1, const MeshFacet & f2) const
-{
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (f1._aulPoints[i] == f2._aulPoints[j]) {
-                if ((f1._aulPoints[(i+1)%3] == f2._aulPoints[(j+1)%3]) ||
-                    (f1._aulPoints[(i+2)%3] == f2._aulPoints[(j+2)%3])) {
-                    return false;
-                }
-            }
-        }
-    }
-
-    return true;
-}
-
 MeshOrientationCollector::MeshOrientationCollector(std::vector<unsigned long>& aulIndices, std::vector<unsigned long>& aulComplement)
  : _aulIndices(aulIndices), _aulComplement(aulComplement)
 {
@@ -103,7 +87,7 @@ bool MeshOrientationCollector::Visit (const MeshFacet &rclFacet, const MeshFacet
                                       unsigned long ulFInd, unsigned long ulLevel)
 {
     // different orientation of rclFacet and rclFrom
-    if (!IsSameOrientation(rclFacet, rclFrom)) {
+    if (!rclFacet.HasSameOrientation(rclFrom)) {
         // is not marked as false oriented
         if (!rclFrom.IsFlag(MeshFacet::TMP0)) {
             // mark this facet as false oriented
@@ -137,7 +121,7 @@ bool MeshSameOrientationCollector::Visit (const MeshFacet &rclFacet, const MeshF
                                           unsigned long ulFInd, unsigned long ulLevel)
 {
     // different orientation of rclFacet and rclFrom
-    if (IsSameOrientation(rclFacet, rclFrom)) {
+    if (rclFacet.HasSameOrientation(rclFrom)) {
         _aulIndices.push_back(ulFInd);
     }
 
@@ -181,6 +165,12 @@ bool MeshEvalOrientation::Evaluate ()
 
 unsigned long MeshEvalOrientation::HasFalsePositives(const std::vector<unsigned long>& inds) const
 {
+    // All faces with wrong orientation (i.e. adjacent faces with a normal flip and their neighbours)
+    // build a segment and are marked as TMP0. Now we check all border faces of the segments with 
+    // their correct neighbours if there was really a normal flip. If there is no normal flip we have
+    // a false positive.
+    // False-positives can occur if the mesh structure has some defects which let the region-grow
+    // algorithm fail to detect the faces with wrong orientation.
     const MeshFacetArray& rFAry = _rclMesh.GetFacets();
     MeshFacetArray::_TConstIterator iBeg = rFAry.begin();
     for (std::vector<unsigned long>::const_iterator it = inds.begin(); it != inds.end(); ++it) {
@@ -190,11 +180,9 @@ unsigned long MeshEvalOrientation::HasFalsePositives(const std::vector<unsigned 
                 const MeshFacet& n = iBeg[f._aulNeighbours[i]];
                 if (f.IsFlag(MeshFacet::TMP0) && !n.IsFlag(MeshFacet::TMP0)) {
                     for (int j = 0; j < 3; j++) {
-                        if (f._aulPoints[i] == n._aulPoints[j]) {
-                            if ((f._aulPoints[(i+1)%3] == n._aulPoints[(j+2)%3]) ||
-                                (f._aulPoints[(i+2)%3] == n._aulPoints[(j+1)%3])) {
-                                return f._aulNeighbours[i]; // adjacent face with same orientation
-                            } 
+                        if (f.HasSameOrientation(n)) {
+                            // adjacent face with same orientation => false positive
+                            return f._aulNeighbours[i];
                         }
                     }
                 }
@@ -255,7 +243,7 @@ std::vector<unsigned long> MeshEvalOrientation::GetIndices() const
     }
 
     // in some very rare cases where we have some strange artefacts in the mesh structure
-    // we get false-psitives. If we find some we check again all 'invalid' faces again
+    // we get false-positives. If we find some we check all 'invalid' faces again
     cAlg.ResetFacetFlag(MeshFacet::TMP0);
     cAlg.SetFacetsFlag(uIndices, MeshFacet::TMP0);
     ulStartFacet = HasFalsePositives(uIndices);
@@ -275,7 +263,10 @@ std::vector<unsigned long> MeshEvalOrientation::GetIndices() const
 
         cAlg.ResetFacetFlag(MeshFacet::TMP0);
         cAlg.SetFacetsFlag(uIndices, MeshFacet::TMP0);
+        unsigned long current = ulStartFacet;
         ulStartFacet = HasFalsePositives(uIndices);
+        if (current == ulStartFacet)
+            break; // avoid an endless loop
     }
 
     return uIndices;
