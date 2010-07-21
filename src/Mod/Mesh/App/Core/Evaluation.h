@@ -97,7 +97,6 @@ public:
     /** Returns false after the first inconsistence is found, true otherwise. */
     bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
     bool HasNonUnifomOrientedFacets() const;
-    bool IsSameOrientation(const MeshFacet &, const MeshFacet &) const;
 
 private:
     bool _nonuniformOrientation;
