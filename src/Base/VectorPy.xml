@@ -102,6 +102,18 @@
 			</Documentation>
 			<Parameter Name="z" Type="Float"/>
 		</Attribute>
+		<Sequence
+			sq_length="true"
+			sq_concat="false"
+			sq_repeat="false"
+			sq_item="true"
+			sq_slice="false"
+			sq_ass_item="true"
+			sq_ass_slice="false"
+			sq_contains="false"
+			sq_inplace_concat="false"
+			sq_inplace_repeat="false">
+		</Sequence>
 		<ClassDeclarations>public:
     VectorPy(const Vector3d &amp; vec, PyTypeObject *T = &amp;Type)
     :PyObjectBase(new Vector3d(vec),T){}

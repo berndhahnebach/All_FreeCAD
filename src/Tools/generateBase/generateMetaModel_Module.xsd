@@ -24,6 +24,7 @@
 									</xs:sequence>
 									<xs:attribute name="Name" type="xs:string" use="required"/>
 									<xs:attribute name="Const" type="xs:boolean" use="optional"/>
+									<xs:attribute name="Keyword" type="xs:boolean" use="optional" default="false"/>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="Attribute" minOccurs="0" maxOccurs="unbounded">
@@ -34,6 +35,20 @@
 									</xs:sequence>
 									<xs:attribute name="Name" type="xs:string" use="required"/>
 									<xs:attribute name="ReadOnly" type="xs:boolean" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Sequence" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:attribute name="sq_length" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_concat" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_repeat" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_item" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_slice" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_ass_item" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_ass_slice" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_contains" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_inplace_concat" type="xs:boolean" use="required"/>
+									<xs:attribute name="sq_inplace_repeat" type="xs:boolean" use="required"/>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="CustomAttributes" minOccurs="0"/>

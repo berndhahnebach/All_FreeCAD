@@ -639,7 +639,8 @@ PyObject*  TopoShapePy::rotate(PyObject *args)
         return NULL;
 
     try {
-        Py::Tuple p1(obj1), p2(obj2);
+        // Vector also supports sequence
+        Py::Sequence p1(obj1), p2(obj2);
         // Convert into OCC representation
         gp_Pnt pos = gp_Pnt((double)Py::Float(p1[0]),
                             (double)Py::Float(p1[1]),

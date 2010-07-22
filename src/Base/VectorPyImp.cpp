@@ -132,6 +132,49 @@ PyObject* VectorPy::number_multiply_handler(PyObject *self, PyObject *other)
     return Py::new_reference_to(mult);
 }
 
+Py_ssize_t VectorPy::sequence_length(PyObject *)
+{
+    return 3;
+}
+
+PyObject * VectorPy::sequence_item (PyObject *self, Py_ssize_t index)
+{
+    if (!PyObject_TypeCheck(self, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "first arg must be Vector");
+        return 0;
+    }
+    if (index < 0 || index > 2) {
+        PyErr_SetString(PyExc_IndexError, "index out of range");
+        return 0;
+    }
+
+    Base::Vector3d a = static_cast<VectorPy*>(self)->value();
+    return Py_BuildValue("d", a[index]);
+}
+
+int VectorPy::sequence_ass_item(PyObject *self, Py_ssize_t index, PyObject *value)
+{
+    if (!PyObject_TypeCheck(self, &(VectorPy::Type))) {
+        PyErr_SetString(PyExc_TypeError, "first arg must be Vector");
+        return -1;
+    }
+    if (index < 0 || index > 2) {
+        PyErr_SetString(PyExc_IndexError, "index out of range");
+        return -1;
+    }
+
+    if (PyFloat_Check(value)) {
+        VectorPy::PointerType ptr = static_cast<VectorPy*>(self)->getVectorPtr();
+        (*ptr)[index] = PyFloat_AsDouble(value);
+    }
+    else {
+        PyErr_SetString(PyExc_ValueError, "value must be float");
+        return -1;
+    }
+
+    return 0;
+}
+
 PyObject*  VectorPy::add(PyObject *args)
 {
     PyObject *obj;

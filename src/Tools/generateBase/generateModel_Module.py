@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Jun 17 10:35:09 2010 by generateDS.py.
+# Generated Thu Jul 22 14:11:34 2010 by generateDS.py.
 #
 
 import sys
@@ -216,7 +216,7 @@ class GenerateModel:
 
 class PythonExport:
     subclass = None
-    def __init__(self, FatherNamespace='', RichCompare=0, Name='', Reference=0, FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', NumberProtocol=0, Delete=0, Documentation=None, Methode=None, Attribute=None, CustomAttributes='', ClassDeclarations=''):
+    def __init__(self, FatherNamespace='', RichCompare=0, Name='', Reference=0, FatherInclude='', Father='', Namespace='', Twin='', Constructor=0, TwinPointer='', Include='', NumberProtocol=0, Delete=0, Documentation=None, Methode=None, Attribute=None, Sequence=None, CustomAttributes='', ClassDeclarations=''):
         self.FatherNamespace = FatherNamespace
         self.RichCompare = RichCompare
         self.Name = Name
@@ -239,6 +239,7 @@ class PythonExport:
             self.Attribute = []
         else:
             self.Attribute = Attribute
+        self.Sequence = Sequence
         self.CustomAttributes = CustomAttributes
         self.ClassDeclarations = ClassDeclarations
     def factory(*args_, **kwargs_):
@@ -257,6 +258,8 @@ class PythonExport:
     def setAttribute(self, Attribute): self.Attribute = Attribute
     def addAttribute(self, value): self.Attribute.append(value)
     def insertAttribute(self, index, value): self.Attribute[index] = value
+    def getSequence(self): return self.Sequence
+    def setSequence(self, Sequence): self.Sequence = Sequence
     def getCustomattributes(self): return self.CustomAttributes
     def setCustomattributes(self, CustomAttributes): self.CustomAttributes = CustomAttributes
     def getClassdeclarations(self): return self.ClassDeclarations
@@ -321,6 +324,8 @@ class PythonExport:
             Methode_.export(outfile, level)
         for Attribute_ in self.getAttribute():
             Attribute_.export(outfile, level)
+        if self.Sequence:
+            self.Sequence.export(outfile, level)
         showIndent(outfile, level)
         outfile.write('<CustomAttributes>%s</CustomAttributes>\n' % quote_xml(self.getCustomattributes()))
         showIndent(outfile, level)
@@ -387,6 +392,12 @@ class PythonExport:
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
+        if self.Sequence:
+            showIndent(outfile, level)
+            outfile.write('Sequence=Sequence(\n')
+            self.Sequence.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
         showIndent(outfile, level)
         outfile.write('CustomAttributes=%s,\n' % quote_python(self.getCustomattributes()))
         showIndent(outfile, level)
@@ -466,6 +477,11 @@ class PythonExport:
             obj_.build(child_)
             self.Attribute.append(obj_)
         elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'Sequence':
+            obj_ = Sequence.factory()
+            obj_.build(child_)
+            self.setSequence(obj_)
+        elif child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'CustomAttributes':
             CustomAttributes_ = ''
             for text__content_ in child_.childNodes:
@@ -482,9 +498,10 @@ class PythonExport:
 
 class Methode:
     subclass = None
-    def __init__(self, Const=0, Name='', Documentation=None, Parameter=None):
+    def __init__(self, Const=0, Name='', Keyword=0, Documentation=None, Parameter=None):
         self.Const = Const
         self.Name = Name
+        self.Keyword = Keyword
         self.Documentation = Documentation
         if Parameter is None:
             self.Parameter = []
@@ -506,6 +523,8 @@ class Methode:
     def setConst(self, Const): self.Const = Const
     def getName(self): return self.Name
     def setName(self, Name): self.Name = Name
+    def getKeyword(self): return self.Keyword
+    def setKeyword(self, Keyword): self.Keyword = Keyword
     def export(self, outfile, level, name_='Methode'):
         showIndent(outfile, level)
         outfile.write('<%s' % (name_, ))
@@ -518,6 +537,8 @@ class Methode:
         if self.getConst() is not None:
             outfile.write(' Const="%s"' % (self.getConst(), ))
         outfile.write(' Name="%s"' % (self.getName(), ))
+        if self.getKeyword() is not None:
+            outfile.write(' Keyword="%s"' % (self.getKeyword(), ))
     def exportChildren(self, outfile, level, name_='Methode'):
         if self.Documentation:
             self.Documentation.export(outfile, level)
@@ -532,6 +553,8 @@ class Methode:
         outfile.write('Const = "%s",\n' % (self.getConst(),))
         showIndent(outfile, level)
         outfile.write('Name = "%s",\n' % (self.getName(),))
+        showIndent(outfile, level)
+        outfile.write('Keyword = "%s",\n' % (self.getKeyword(),))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.Documentation:
             showIndent(outfile, level)
@@ -567,6 +590,13 @@ class Methode:
                 raise ValueError('Bad boolean attribute (Const)')
         if attrs.get('Name'):
             self.Name = attrs.get('Name').value
+        if attrs.get('Keyword'):
+            if attrs.get('Keyword').value in ('true', '1'):
+                self.Keyword = 1
+            elif attrs.get('Keyword').value in ('false', '0'):
+                self.Keyword = 0
+            else:
+                raise ValueError('Bad boolean attribute (Keyword)')
     def buildChildren(self, child_, nodeName_):
         if child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'Documentation':
@@ -668,6 +698,182 @@ class Attribute:
             obj_.build(child_)
             self.setParameter(obj_)
 # end class Attribute
+
+
+class Sequence:
+    subclass = None
+    def __init__(self, sq_slice=0, sq_item=0, sq_concat=0, sq_inplace_repeat=0, sq_ass_slice=0, sq_contains=0, sq_ass_item=0, sq_repeat=0, sq_length=0, sq_inplace_concat=0, valueOf_=''):
+        self.sq_slice = sq_slice
+        self.sq_item = sq_item
+        self.sq_concat = sq_concat
+        self.sq_inplace_repeat = sq_inplace_repeat
+        self.sq_ass_slice = sq_ass_slice
+        self.sq_contains = sq_contains
+        self.sq_ass_item = sq_ass_item
+        self.sq_repeat = sq_repeat
+        self.sq_length = sq_length
+        self.sq_inplace_concat = sq_inplace_concat
+        self.valueOf_ = valueOf_
+    def factory(*args_, **kwargs_):
+        if Sequence.subclass:
+            return Sequence.subclass(*args_, **kwargs_)
+        else:
+            return Sequence(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def getSq_slice(self): return self.sq_slice
+    def setSq_slice(self, sq_slice): self.sq_slice = sq_slice
+    def getSq_item(self): return self.sq_item
+    def setSq_item(self, sq_item): self.sq_item = sq_item
+    def getSq_concat(self): return self.sq_concat
+    def setSq_concat(self, sq_concat): self.sq_concat = sq_concat
+    def getSq_inplace_repeat(self): return self.sq_inplace_repeat
+    def setSq_inplace_repeat(self, sq_inplace_repeat): self.sq_inplace_repeat = sq_inplace_repeat
+    def getSq_ass_slice(self): return self.sq_ass_slice
+    def setSq_ass_slice(self, sq_ass_slice): self.sq_ass_slice = sq_ass_slice
+    def getSq_contains(self): return self.sq_contains
+    def setSq_contains(self, sq_contains): self.sq_contains = sq_contains
+    def getSq_ass_item(self): return self.sq_ass_item
+    def setSq_ass_item(self, sq_ass_item): self.sq_ass_item = sq_ass_item
+    def getSq_repeat(self): return self.sq_repeat
+    def setSq_repeat(self, sq_repeat): self.sq_repeat = sq_repeat
+    def getSq_length(self): return self.sq_length
+    def setSq_length(self, sq_length): self.sq_length = sq_length
+    def getSq_inplace_concat(self): return self.sq_inplace_concat
+    def setSq_inplace_concat(self, sq_inplace_concat): self.sq_inplace_concat = sq_inplace_concat
+    def getValueOf_(self): return self.valueOf_
+    def setValueOf_(self, valueOf_): self.valueOf_ = valueOf_
+    def export(self, outfile, level, name_='Sequence'):
+        showIndent(outfile, level)
+        outfile.write('<%s' % (name_, ))
+        self.exportAttributes(outfile, level, name_='Sequence')
+        outfile.write('>\n')
+        self.exportChildren(outfile, level + 1, name_)
+        showIndent(outfile, level)
+        outfile.write('</%s>\n' % name_)
+    def exportAttributes(self, outfile, level, name_='Sequence'):
+        outfile.write(' sq_slice="%s"' % (self.getSq_slice(), ))
+        outfile.write(' sq_item="%s"' % (self.getSq_item(), ))
+        outfile.write(' sq_concat="%s"' % (self.getSq_concat(), ))
+        outfile.write(' sq_inplace_repeat="%s"' % (self.getSq_inplace_repeat(), ))
+        outfile.write(' sq_ass_slice="%s"' % (self.getSq_ass_slice(), ))
+        outfile.write(' sq_contains="%s"' % (self.getSq_contains(), ))
+        outfile.write(' sq_ass_item="%s"' % (self.getSq_ass_item(), ))
+        outfile.write(' sq_repeat="%s"' % (self.getSq_repeat(), ))
+        outfile.write(' sq_length="%s"' % (self.getSq_length(), ))
+        outfile.write(' sq_inplace_concat="%s"' % (self.getSq_inplace_concat(), ))
+    def exportChildren(self, outfile, level, name_='Sequence'):
+        outfile.write(self.valueOf_)
+    def exportLiteral(self, outfile, level, name_='Sequence'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('sq_slice = "%s",\n' % (self.getSq_slice(),))
+        showIndent(outfile, level)
+        outfile.write('sq_item = "%s",\n' % (self.getSq_item(),))
+        showIndent(outfile, level)
+        outfile.write('sq_concat = "%s",\n' % (self.getSq_concat(),))
+        showIndent(outfile, level)
+        outfile.write('sq_inplace_repeat = "%s",\n' % (self.getSq_inplace_repeat(),))
+        showIndent(outfile, level)
+        outfile.write('sq_ass_slice = "%s",\n' % (self.getSq_ass_slice(),))
+        showIndent(outfile, level)
+        outfile.write('sq_contains = "%s",\n' % (self.getSq_contains(),))
+        showIndent(outfile, level)
+        outfile.write('sq_ass_item = "%s",\n' % (self.getSq_ass_item(),))
+        showIndent(outfile, level)
+        outfile.write('sq_repeat = "%s",\n' % (self.getSq_repeat(),))
+        showIndent(outfile, level)
+        outfile.write('sq_length = "%s",\n' % (self.getSq_length(),))
+        showIndent(outfile, level)
+        outfile.write('sq_inplace_concat = "%s",\n' % (self.getSq_inplace_concat(),))
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('valueOf_ = "%s",\n' % (self.valueOf_,))
+    def build(self, node_):
+        attrs = node_.attributes
+        self.buildAttributes(attrs)
+        for child_ in node_.childNodes:
+            nodeName_ = child_.nodeName.split(':')[-1]
+            self.buildChildren(child_, nodeName_)
+    def buildAttributes(self, attrs):
+        if attrs.get('sq_slice'):
+            if attrs.get('sq_slice').value in ('true', '1'):
+                self.sq_slice = 1
+            elif attrs.get('sq_slice').value in ('false', '0'):
+                self.sq_slice = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_slice)')
+        if attrs.get('sq_item'):
+            if attrs.get('sq_item').value in ('true', '1'):
+                self.sq_item = 1
+            elif attrs.get('sq_item').value in ('false', '0'):
+                self.sq_item = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_item)')
+        if attrs.get('sq_concat'):
+            if attrs.get('sq_concat').value in ('true', '1'):
+                self.sq_concat = 1
+            elif attrs.get('sq_concat').value in ('false', '0'):
+                self.sq_concat = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_concat)')
+        if attrs.get('sq_inplace_repeat'):
+            if attrs.get('sq_inplace_repeat').value in ('true', '1'):
+                self.sq_inplace_repeat = 1
+            elif attrs.get('sq_inplace_repeat').value in ('false', '0'):
+                self.sq_inplace_repeat = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_inplace_repeat)')
+        if attrs.get('sq_ass_slice'):
+            if attrs.get('sq_ass_slice').value in ('true', '1'):
+                self.sq_ass_slice = 1
+            elif attrs.get('sq_ass_slice').value in ('false', '0'):
+                self.sq_ass_slice = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_ass_slice)')
+        if attrs.get('sq_contains'):
+            if attrs.get('sq_contains').value in ('true', '1'):
+                self.sq_contains = 1
+            elif attrs.get('sq_contains').value in ('false', '0'):
+                self.sq_contains = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_contains)')
+        if attrs.get('sq_ass_item'):
+            if attrs.get('sq_ass_item').value in ('true', '1'):
+                self.sq_ass_item = 1
+            elif attrs.get('sq_ass_item').value in ('false', '0'):
+                self.sq_ass_item = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_ass_item)')
+        if attrs.get('sq_repeat'):
+            if attrs.get('sq_repeat').value in ('true', '1'):
+                self.sq_repeat = 1
+            elif attrs.get('sq_repeat').value in ('false', '0'):
+                self.sq_repeat = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_repeat)')
+        if attrs.get('sq_length'):
+            if attrs.get('sq_length').value in ('true', '1'):
+                self.sq_length = 1
+            elif attrs.get('sq_length').value in ('false', '0'):
+                self.sq_length = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_length)')
+        if attrs.get('sq_inplace_concat'):
+            if attrs.get('sq_inplace_concat').value in ('true', '1'):
+                self.sq_inplace_concat = 1
+            elif attrs.get('sq_inplace_concat').value in ('false', '0'):
+                self.sq_inplace_concat = 0
+            else:
+                raise ValueError('Bad boolean attribute (sq_inplace_concat)')
+    def buildChildren(self, child_, nodeName_):
+        self.valueOf_ = ''
+        for child in child_.childNodes:
+            if child.nodeType == Node.TEXT_NODE:
+                self.valueOf_ += child.nodeValue
+# end class Sequence
 
 
 class Module:
@@ -1664,6 +1870,14 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             val = attrs.get('Name', None)
             if val is not None:
                 obj.setName(val)
+            val = attrs.get('Keyword', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setKeyword(1)
+                elif val in ('false', '0'):
+                    obj.setKeyword(0)
+                else:
+                    self.reportError('"Keyword" attribute must be boolean ("true", "1", "false", "0")')
             stackObj = SaxStackElement('Methode', obj)
             self.stack.append(stackObj)
             done = 1
@@ -1692,6 +1906,91 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             if val is not None:
                 obj.setName(val)
             stackObj = SaxStackElement('Attribute', obj)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'Sequence':
+            obj = Sequence.factory()
+            val = attrs.get('sq_slice', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_slice(1)
+                elif val in ('false', '0'):
+                    obj.setSq_slice(0)
+                else:
+                    self.reportError('"sq_slice" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_item', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_item(1)
+                elif val in ('false', '0'):
+                    obj.setSq_item(0)
+                else:
+                    self.reportError('"sq_item" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_concat', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_concat(1)
+                elif val in ('false', '0'):
+                    obj.setSq_concat(0)
+                else:
+                    self.reportError('"sq_concat" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_inplace_repeat', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_inplace_repeat(1)
+                elif val in ('false', '0'):
+                    obj.setSq_inplace_repeat(0)
+                else:
+                    self.reportError('"sq_inplace_repeat" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_ass_slice', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_ass_slice(1)
+                elif val in ('false', '0'):
+                    obj.setSq_ass_slice(0)
+                else:
+                    self.reportError('"sq_ass_slice" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_contains', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_contains(1)
+                elif val in ('false', '0'):
+                    obj.setSq_contains(0)
+                else:
+                    self.reportError('"sq_contains" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_ass_item', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_ass_item(1)
+                elif val in ('false', '0'):
+                    obj.setSq_ass_item(0)
+                else:
+                    self.reportError('"sq_ass_item" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_repeat', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_repeat(1)
+                elif val in ('false', '0'):
+                    obj.setSq_repeat(0)
+                else:
+                    self.reportError('"sq_repeat" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_length', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_length(1)
+                elif val in ('false', '0'):
+                    obj.setSq_length(0)
+                else:
+                    self.reportError('"sq_length" attribute must be boolean ("true", "1", "false", "0")')
+            val = attrs.get('sq_inplace_concat', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setSq_inplace_concat(1)
+                elif val in ('false', '0'):
+                    obj.setSq_inplace_concat(0)
+                else:
+                    self.reportError('"sq_inplace_concat" attribute must be boolean ("true", "1", "false", "0")')
+            stackObj = SaxStackElement('Sequence', obj)
             self.stack.append(stackObj)
             done = 1
         elif name == 'CustomAttributes':
@@ -1806,6 +2105,11 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
         elif name == 'Attribute':
             if len(self.stack) >= 2:
                 self.stack[-2].obj.addAttribute(self.stack[-1].obj)
+                self.stack.pop()
+                done = 1
+        elif name == 'Sequence':
+            if len(self.stack) >= 2:
+                self.stack[-2].obj.setSequence(self.stack[-1].obj)
                 self.stack.pop()
                 done = 1
         elif name == 'CustomAttributes':
