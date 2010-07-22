@@ -49,6 +49,9 @@ public:
 + if (self.export.NumberProtocol):
     static PyNumberMethods Number[];
 -
++ if (self.export.Sequence):
+    static PySequenceMethods Sequence[];
+-
 + if (self.export.RichCompare):
     static PyObject * richCompare(PyObject *v, PyObject *w, int op);
 -
@@ -71,10 +74,17 @@ public:
     /** @name callbacks and implementers for the python object methods */
     //@{
 + for i in self.export.Methode:
++ if i.Keyword:
     /// callback for the @i.Name@() method
     static PyObject * staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject *kwd);
     /// implementer for the @i.Name@() method
+    PyObject*  @i.Name@(PyObject *args, PyObject *kwd);
+= else:
+    /// callback for the @i.Name@() method
+    static PyObject * staticCallback_@i.Name@ (PyObject *self, PyObject *args);
+    /// implementer for the @i.Name@() method
     PyObject*  @i.Name@(PyObject *args);
+-
 -
     //@}
 
@@ -87,6 +97,41 @@ public:
     static PyObject * number_subtract_handler (PyObject *self, PyObject *other);
     /// callback for the number_multiply_handler
     static PyObject * number_multiply_handler (PyObject *self, PyObject *other);
+    //@}
+-
++ if (self.export.Sequence):
+    /** @name callbacks and implementers for the python object sequence protocol */
+    //@{
++ if (self.export.Sequence.sq_length):
+    static Py_ssize_t sequence_length(PyObject *);
+-
++ if (self.export.Sequence.sq_concat):
+    static PyObject* sequence_concat(PyObject *, PyObject *);
+-
++ if (self.export.Sequence.sq_repeat):
+    static PyObject * sequence_repeat(PyObject *, Py_ssize_t);
+-
++ if (self.export.Sequence.sq_item):
+    static PyObject * sequence_item(PyObject *, Py_ssize_t);
+-
++ if (self.export.Sequence.sq_slice):
+    static PyObject * sequence_slice(PyObject *, Py_ssize_t, Py_ssize_t);
+-
++ if (self.export.Sequence.sq_ass_item):
+    static int sequence_ass_item(PyObject *, Py_ssize_t, PyObject *);
+-
++ if (self.export.Sequence.sq_ass_slice):
+    static int sequence_ass_slice(PyObject *, Py_ssize_t, Py_ssize_t, PyObject *);
+-
++ if (self.export.Sequence.sq_contains):
+    static int sequence_contains(PyObject *, PyObject *);
+-
++ if (self.export.Sequence.sq_inplace_concat):
+    static PyObject* sequence_inplace_concat(PyObject *, PyObject *);
+-
++ if (self.export.Sequence.sq_inplace_repeat):
+    static PyObject * sequence_inplace_repeat(PyObject *, Py_ssize_t);
+-
     //@}
 -
 
@@ -173,7 +218,11 @@ PyTypeObject @self.export.Name@::Type = {
 = else:
     0,                                                /*tp_as_number*/
 -
++ if (self.export.Sequence):
+    @self.export.Namespace@::@self.export.Name@::Sequence,      /*tp_as_sequence*/
+= else:
     0,                                                /*tp_as_sequence*/
+-
     0,                                                /*tp_as_mapping*/
     0,                                                /*tp_hash*/
     0,                                                /*tp_call */
@@ -225,7 +274,11 @@ PyMethodDef @self.export.Name@::Methods[] = {
 + for i in self.export.Methode:
     {"@i.Name@",
         (PyCFunction) staticCallback_@i.Name@,
-        Py_NEWARGS,
++ if i.Keyword:
+        METH_VARARGS|METH_KEYWORDS,
+= else:
+        METH_VARARGS,
+-
         "@i.Documentation.UserDocu.replace('\\n','\\\\n')@"
     },
 -
@@ -238,6 +291,61 @@ PyNumberMethods @self.export.Name@::Number[] = { {
     number_subtract_handler,
     number_multiply_handler,
     NULL
+} };
+-
+
++ if (self.export.Sequence):
+PySequenceMethods VectorPy::Sequence[] = { {
++ if (self.export.Sequence.sq_length):
+    sequence_length,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_concat):
+    sequence_concat,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_repeat):
+    sequence_repeat,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_item):
+    sequence_item,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_slice):
+    sequence_slice,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_ass_item):
+    sequence_ass_item,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_ass_slice):
+    sequence_ass_slice,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_contains):
+    sequence_contains,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_inplace_concat):
+    sequence_inplace_concat,
+= else:
+    0,
+-
++ if (self.export.Sequence.sq_inplace_repeat):
+    sequence_inplace_repeat,
+= else:
+    0
+-
 } };
 -
 
@@ -258,7 +366,11 @@ PyGetSetDef @self.export.Name@::GetterSetter[] = {
 // @i.Name@() callback and implementer
 // PyObject*  @self.export.Name@::@i.Name@(PyObject *args){};
 // has to be implemented in @self.export.Name@Imp.cpp
-PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject * /*kwd*/)
++ if i.Keyword:
+PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args, PyObject * kwd)
+= else:
+PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject *args)
+-
 {
     // test if twin object not allready deleted
     if (!((PyObjectBase*) self)->isValid()){
@@ -275,7 +387,11 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 -
 
     try { // catches all exeptions coming up from c++ and generate a python exeption
++ if i.Keyword:
+        return ((@self.export.Name@*)self)->@i.Name@(args, kwd);
+= else:
         return ((@self.export.Name@*)self)->@i.Name@(args);
+-
     }
     catch(Base::Exception &e) // catch the FreeCAD exeptions
     {
@@ -600,7 +716,11 @@ std::string @self.export.Name@::representation(void) const
 }
 + for i in self.export.Methode:
 
++ if i.Keyword:
+PyObject* @self.export.Name@::@i.Name@(PyObject *args, PyObject *kwds)
+= else:
 PyObject* @self.export.Name@::@i.Name@(PyObject *args)
+-
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -625,6 +745,88 @@ PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
+-
++ if (self.export.Sequence):
++ if (self.export.Sequence.sq_length):
+
+Py_ssize_t @self.export.Name@::sequence_length(PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_concat):
+
+PyObject* @self.export.Name@::sequence_concat(PyObject *, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_repeat):
+
+PyObject * @self.export.Name@::sequence_repeat(PyObject *, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_item):
+
+PyObject * @self.export.Name@::sequence_item(PyObject *, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_slice):
+
+PyObject * @self.export.Name@::sequence_slice(PyObject *, Py_ssize_t, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_ass_item):
+
+int @self.export.Name@::sequence_ass_item(PyObject *, Py_ssize_t, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_ass_slice):
+
+int @self.export.Name@::sequence_ass_slice(PyObject *, Py_ssize_t, Py_ssize_t, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_contains):
+
+int @self.export.Name@::sequence_contains(PyObject *, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_inplace_concat):
+
+PyObject* @self.export.Name@::sequence_inplace_concat(PyObject *, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_inplace_repeat):
+
+PyObject * @self.export.Name@::sequence_inplace_repeat(PyObject *, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
 -
 
 + if (self.export.RichCompare):
@@ -701,7 +903,11 @@ int @self.export.Name@::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 
 + for i in self.export.Methode:
 
++ if i.Keyword:
+PyObject* @self.export.Name@::@i.Name@(PyObject * /*args*/, PyObject * /*kwds*/)
+= else:
 PyObject* @self.export.Name@::@i.Name@(PyObject * /*args*/)
+-
 {
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
@@ -726,6 +932,89 @@ PyObject* @self.export.Name@::number_multiply_handler(PyObject *self, PyObject *
     PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
     return 0;
 }
+-
+
++ if (self.export.Sequence):
++ if (self.export.Sequence.sq_length):
+
+Py_ssize_t @self.export.Name@::sequence_length(PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_concat):
+
+PyObject* @self.export.Name@::sequence_concat(PyObject *, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_repeat):
+
+PyObject * @self.export.Name@::sequence_repeat(PyObject *, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_item):
+
+PyObject * @self.export.Name@::sequence_item(PyObject *, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_slice):
+
+PyObject * @self.export.Name@::sequence_slice(PyObject *, Py_ssize_t, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_ass_item):
+
+int @self.export.Name@::sequence_ass_item(PyObject *, Py_ssize_t, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_ass_slice):
+
+int @self.export.Name@::sequence_ass_slice(PyObject *, Py_ssize_t, Py_ssize_t, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_contains):
+
+int @self.export.Name@::sequence_contains(PyObject *, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return -1;
+}
+-
++ if (self.export.Sequence.sq_inplace_concat):
+
+PyObject* @self.export.Name@::sequence_inplace_concat(PyObject *, PyObject *)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
++ if (self.export.Sequence.sq_inplace_repeat):
+
+PyObject * @self.export.Name@::sequence_inplace_repeat(PyObject *, Py_ssize_t)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
+}
+-
 -
 
 + if (self.export.RichCompare):

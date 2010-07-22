@@ -28,6 +28,7 @@ Examples for a feature class and its view provider.
 __author__ = "Werner Mayer <wmayer@users.sourceforge.net>"
 
 import FreeCAD, Part
+from FreeCAD import Base
 from pivy import coin
 
 class PartFeature:
@@ -586,3 +587,62 @@ def makeMolecule():
 	Molecule(a)
 	ViewProviderMolecule(a.ViewObject)
 
+
+class CircleSet:
+	def __init__(self, obj):
+		obj.addProperty("Part::PropertyPartShape","Shape","Circle","Shape")
+		obj.Proxy = self
+
+	def execute(self, fp):
+		pass
+
+
+class ViewProviderCircleSet:
+	def __init__(self, obj):
+		''' Set this object to the proxy object of the actual view provider '''
+		obj.Proxy = self
+
+	def attach(self, obj):
+		self.coords=coin.SoCoordinate3()
+		self.lines=coin.SoLineSet()
+		obj.RootNode.addChild(self.coords)
+		obj.RootNode.addChild(self.lines)
+
+	def updateData(self, fp, prop):
+			if prop == "Shape":
+				edges=p = fp.getPropertyByName("Shape").Edges
+				pts=[]
+				ver=[]
+				for i in edges:
+					length=i.Length
+					ver.append(10)
+					for j in range(10):
+						v=i.valueAt(j/9.0*length)
+						pts.append((v.x,v.y,v.z))
+				
+				self.coords.point.setValues(pts)
+				self.lines.numVertices.setValues(ver)
+
+	def __getstate__(self):
+		return None
+ 
+	def __setstate__(self,state):
+		return None
+
+def makeCircleSet():
+	x=0.5
+	comp=Part.Compound([])
+	for j in range (630):
+		y=0.5
+		for i in range (630):
+			c = Part.makeCircle(0.1, Base.Vector(x,y,0), Base.Vector(0,0,1))
+			#Part.show(c)
+			comp.add(c)
+			y=y+0.5
+		x=x+0.5
+
+	FreeCAD.newDocument()
+	a=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Circles")
+	c=CircleSet(a)
+	v=ViewProviderCircleSet(a.ViewObject)
+	a.Shape=comp
