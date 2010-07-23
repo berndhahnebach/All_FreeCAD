@@ -100,15 +100,17 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
 	'''findIntersection(edge1,edge2,infinite1=False,infinite2=False):
 	returns a list containing the intersection point(s) of 2 edges'''
 	
-	if isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Line) :
-		
-		# deals with 2 lines
-		
-		pt1, pt2, pt3, pt4 = [edge1.Vertexes[0].Point,edge1.Vertexes[1].Point,
-							  edge2.Vertexes[0].Point,edge2.Vertexes[1].Point]
+	if isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Line) :	
+		# deals with 2 lines	
+		pt1, pt2, pt3, pt4 = [edge1.Vertexes[0].Point,
+                                      edge1.Vertexes[1].Point,
+                                      edge2.Vertexes[0].Point,
+                                      edge2.Vertexes[1].Point]
 							  
-		if fcvec.isNull(pt2.sub(pt1).cross(pt3.sub(pt1)).cross(pt2.sub(pt4).cross(pt3.sub(pt4)))) :
+		if fcvec.isNull(pt2.sub(pt1).cross(pt3.sub(pt1)).cross(pt2.sub(pt4).cross(pt3.sub(pt4)))):
 			vec1 = vec(edge1) ; vec2 = vec(edge2)
+                        if fcvec.isNull(vec1) or fcvec.isNull(vec2):
+                                return []
 			vec1.normalize()  ; vec2.normalize()
 			cross = vec1.cross(vec2)
 			if not fcvec.isNull(cross) :
