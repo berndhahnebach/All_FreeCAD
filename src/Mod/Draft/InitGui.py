@@ -156,7 +156,7 @@ class DraftWorkbench (Workbench):
 			FreeCAD.Console.PrintWarning("Pivy and PyQt4 python modules must be installed on your system to use the 2D Drafting module.")
 		else:
 			Log ('Loading Draft GUI...\n')
-			import Draft
+			import draftTools
 			self.cmdList = ["Draft_SelectPlane","Draft_Line","Draft_Wire","Draft_Circle",
 					"Draft_Arc", "Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
 			self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
