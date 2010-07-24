@@ -66,6 +66,8 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
     this->setupUi(this);
     textLabel1_3->hide();
     changePlot->hide();
+    buttonLineColor->setModal(false);
+    buttonColor->setModal(false);
 
     std::vector<Gui::ViewProvider*> views = getSelection();
     setDisplayModes(views);

@@ -259,14 +259,30 @@ void CheckListDialog::accept ()
 
 // ------------------------------------------------------------------------------
 
+namespace Gui {
+struct ColorButtonP
+{
+    QColor col;
+    QPointer<QColorDialog> cd;
+    bool allowChange;
+    bool drawFrame;
+    bool modal;
+
+    ColorButtonP() : cd(0), allowChange(true), drawFrame(true), modal(true)
+    {
+    }
+};
+}
+
 /**
  * Constructs a colored button called \a name with parent \a parent.
  */
-ColorButton::ColorButton( QWidget* parent )
-    : QPushButton( parent ), _allowChange(true), _drawFrame(true)
+ColorButton::ColorButton(QWidget* parent)
+    : QPushButton(parent)
 {
-    _col = palette().color(QPalette::Active,QPalette::Midlight);
-    connect( this, SIGNAL( clicked() ), SLOT( onChooseColor() ));
+    d = new ColorButtonP();
+    d->col = palette().color(QPalette::Active,QPalette::Midlight);
+    connect(this, SIGNAL(clicked()), SLOT(onChooseColor()));
 }
 
 /**
@@ -274,14 +290,15 @@ ColorButton::ColorButton( QWidget* parent )
  */
 ColorButton::~ColorButton()
 {
+    delete d;
 }
 
 /** 
  * Sets the color \a c to the button. 
  */
-void ColorButton::setColor( const QColor& c )
+void ColorButton::setColor(const QColor& c)
 {
-    _col = c;
+    d->col = c;
     update();
 }
 
@@ -290,27 +307,37 @@ void ColorButton::setColor( const QColor& c )
  */
 QColor ColorButton::color() const
 {
-    return _col;
+    return d->col;
 }
 
 void ColorButton::setAllowChangeColor(bool ok)
 {
-    _allowChange = ok;
+    d->allowChange = ok;
 }
 
 bool ColorButton::allowChangeColor() const
 {
-    return _allowChange;
+    return d->allowChange;
 }
 
 void ColorButton::setDrawFrame(bool ok)
 {
-    _drawFrame = ok;
+    d->drawFrame = ok;
 }
 
 bool ColorButton::drawFrame() const
 {
-    return _drawFrame;
+    return d->drawFrame;
+}
+
+void ColorButton::setModal(bool b)
+{
+    d->modal = b;
+}
+
+bool ColorButton::isModal() const
+{
+    return d->modal;
 }
 
 /**
@@ -326,13 +353,14 @@ void ColorButton::paintEvent (QPaintEvent * e)
     QColor pen = palette().color(group,QPalette::ButtonText);
     {
         QPainter paint(this);
-        paint.setPen( pen );
+        paint.setPen(pen);
 
-        if (_drawFrame) {
-            paint.setBrush(QBrush(_col));
+        if (d->drawFrame) {
+            paint.setBrush(QBrush(d->col));
             paint.drawRect(5, 5, width()-10, height()-10);
-        } else {
-            paint.fillRect(5, 5, width()-10, height()-10, QBrush(_col));
+        }
+        else {
+            paint.fillRect(5, 5, width()-10, height()-10, QBrush(d->col));
         }
     }
 
@@ -352,13 +380,30 @@ void ColorButton::paintEvent (QPaintEvent * e)
  */
 void ColorButton::onChooseColor()
 {
-    if (!_allowChange)
+    if (!d->allowChange)
         return;
-    QColor c = QColorDialog::getColor( _col, this );
-    if (c.isValid()) {
-        setColor( c );
-        changed();
+    if (d->modal) {
+        QColor c = QColorDialog::getColor(d->col, this);
+        if (c.isValid()) {
+            setColor(c);
+            changed();
+        }
     }
+    else {
+        if (d->cd.isNull()) {
+            d->cd = new QColorDialog(d->col, this);
+            d->cd->setAttribute(Qt::WA_DeleteOnClose);
+            connect(d->cd, SIGNAL(colorSelected(const QColor &)),
+                    this, SLOT(onColorChosen(const QColor&)));
+        }
+        d->cd->show();
+    }
+}
+
+void ColorButton::onColorChosen(const QColor& c)
+{
+    setColor(c);
+    changed();
 }
 
 // ------------------------------------------------------------------------------
