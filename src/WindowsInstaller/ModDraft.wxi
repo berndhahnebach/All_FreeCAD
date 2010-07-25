@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2009                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -27,6 +27,7 @@
             <File Id="DraftInitPy" Name="Init.py" DiskId="1" />
             <File Id="DraftInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="DraftPy" Name="Draft.py" DiskId="1" />
+            <File Id="draftToolsPy" Name="draftTools.py" DiskId="1" />
             <File Id="draftGuiPy" Name="draftGui.py" DiskId="1" />
             <File Id="importDXFPy" Name="importDXF.py" DiskId="1" />
             <File Id="importOCAPy" Name="importOCA.py" DiskId="1" />
