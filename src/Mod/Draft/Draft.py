@@ -1,7 +1,7 @@
 #***************************************************************************
 #*                                                                         *
 #*   Copyright (c) 2009, 2010                                              *  
-#*   Yorik van Havre <yorik@gmx.fr>, Ken Cline <cline@frii.com>            *  
+#*   Yorik van Havre <yorik@uncreated.net>, Ken Cline <cline@frii.com>     *  
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU General Public License (GPL)            *
@@ -129,10 +129,9 @@ ToDo list:
 
 # import FreeCAD modules
 
-import FreeCAD, FreeCADGui, Part, math, sys,os
-# sys.path.append(FreeCAD.ConfigGet("AppHomePath")+"/bin") # temporary hack for linux
-from FreeCAD import Base, Vector
-from draftlibs import fcvec,fcgeo
+import FreeCAD, FreeCADGui, Part, math, sys, os
+from FreeCAD import Vector
+from draftlibs import fcvec, fcgeo
 from pivy import coin
 
 #---------------------------------------------------------------------------
@@ -148,9 +147,10 @@ def typecheck (args_and_types, name="?"):
 			FreeCAD.Console.PrintWarning(w)
 			raise TypeError("Draft." + str(name))
 
-def getDraftPath(pathname):
-        '''getDraftPath(pathname): returns the user or system path where the
-        Draft module is running from'''
+def getDraftPath(pathname=""):
+        '''getDraftPath([subpath]): returns the user or system path where the
+        Draft module is running from. If path is supplied, the full path to the
+        subpath inside the Draft module is returned'''
         path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
 	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft"
 	if os.path.exists(path2): return path2 + os.sep + pathname
@@ -185,13 +185,13 @@ def shapify(obj):
 def getGroupContents(objectslist):
         '''getGroupContents(objectlist): if any object of the given list
         is a group, its content is appened to the list, which is returned'''
+        newlist = []
         for obj in objectslist:
                 if obj.Type == "App::DocumentObjectGroup":
-                        for subobj in obj.Group:
-                                if not subobj in objectslist:
-                                        objectslist.append(subobj)
-        return objectslist
-
+                        newlist.extend(getGroupContents(obj.Group))
+                else:
+                        newlist.append(obj)
+        return newlist
 
 def formatObject(target,origin=None):
 	'''
@@ -243,10 +243,6 @@ def select(obj):
 	"select(object): deselects everything and selects only the passed object"
 	FreeCADGui.Selection.clearSelection()
 	FreeCADGui.Selection.addSelection(obj)
-
-#---------------------------------------------------------------------------
-# API functions
-#---------------------------------------------------------------------------
 
 def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None):
         '''makeCircle(radius,[placement,face,startangle,endangle]): Creates a circle
@@ -376,9 +372,16 @@ def extrude(obj,vector):
         return newobj
 
 def fuse(object1,object2):
-        '''fuse(oject1,object2): returns a fuse object made from
-        the union of the 2 given objects.'''
-        obj = FreeCAD.ActiveDocument.addObject("Part::Fuse","Fusion")
+        '''fuse(oject1,object2): returns an object made from
+        the union of the 2 given objects. If the objects are
+        coplanar, a special Draft Wire is used, otherwise we use
+        a standard Part fuse.'''
+        if fcgeo.isCoplanar(object1.Shape.fuse(object2.Shape).Faces):
+                obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Fusion")
+                Wire(obj)
+                ViewProviderWire(obj.ViewObject)
+        else:
+                obj = FreeCAD.ActiveDocument.addObject("Part::Fuse","Fusion")
         obj.Base = object1
         obj.Tool = object2
         object1.ViewObject.Visibility = False
@@ -570,11 +573,11 @@ class ViewProviderDraft:
 class Dimension:
 	"The Dimension object"
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyVector","Start","Base",\
+		obj.addProperty("App::PropertyVector","Start","Base",
 					"Startpoint of dimension")
-		obj.addProperty("App::PropertyVector","End","Base",\
+		obj.addProperty("App::PropertyVector","End","Base",
 					"Endpoint of dimension")
-		obj.addProperty("App::PropertyVector","Dimline","Base",\
+		obj.addProperty("App::PropertyVector","Dimline","Base",
 					"Point through which the dimension line passes")
 		self.Type = "Dimension"
                 obj.Start = FreeCAD.Vector(0,0,0)
@@ -926,8 +929,14 @@ class Wire:
         "The Wire object"
         
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyVectorList","Points","Base","The vertices of the wire")
-                obj.addProperty("App::PropertyBool","Closed","Base","If the wire is closed or not")
+		obj.addProperty("App::PropertyVectorList","Points","Base",
+                                "The vertices of the wire")
+                obj.addProperty("App::PropertyBool","Closed","Base",
+                                "If the wire is closed or not")
+                obj.addProperty("App::PropertyLink","Base","Base",
+                                "The base object is the wire is formed from 2 objects")
+                obj.addProperty("App::PropertyLink","Tool","Base",
+                                "The tool object is the wire is formed from 2 objects")
 		obj.Proxy = self
                 obj.Closed = False
 
@@ -935,12 +944,20 @@ class Wire:
                 self.createGeometry(fp)
 
         def onChanged(self, fp, prop):
-                if prop in ["Points","Closed"]:
+                if prop in ["Points","Closed","Base","Tool"]:
                         self.createGeometry(fp)
                         
         def createGeometry(self,fp):
                 plm = fp.Placement
-                if fp.Points:
+                if fp.Base and fp.Tool:
+                        if ('Shape' in fp.Base.PropertiesList) and ('Shape' in fp.Tool.PropertiesList):
+                                sh1 = fp.Base.Shape
+                                sh2 = fp.Tool.Shape
+                                shape = sh1.fuse(sh2)
+                                if fcgeo.isCoplanar(shape.Faces):
+                                        shape = fcgeo.concatenate(shape)
+                                        fp.Shape = shape
+                elif fp.Points:
                         if fp.Points[0] == fp.Points[-1]:
                                 fp.Closed = True
                                 fp.Points.pop()

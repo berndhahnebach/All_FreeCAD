@@ -1,3 +1,30 @@
+#***************************************************************************
+#*                                                                         *
+#*   Copyright (c) 2009, 2010                                              *  
+#*   Yorik van Havre <yorik@uncreated.net>, Ken Cline <cline@frii.com>     *  
+#*                                                                         *
+#*   This program is free software; you can redistribute it and/or modify  *
+#*   it under the terms of the GNU General Public License (GPL)            *
+#*   as published by the Free Software Foundation; either version 2 of     *
+#*   the License, or (at your option) any later version.                   *
+#*   for detail see the LICENCE text file.                                 *
+#*                                                                         *
+#*   This program is distributed in the hope that it will be useful,       *
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+#*   GNU Library General Public License for more details.                  *
+#*                                                                         *
+#*   You should have received a copy of the GNU Library General Public     *
+#*   License along with this program; if not, write to the Free Software   *
+#*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+#*   USA                                                                   *
+#*                                                                         *
+#***************************************************************************
+
+__title__="FreeCAD Draft Workbench GUI Tools"
+__author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum, Ken Cline"
+__url__ = "http://free-cad.sourceforge.net"
+
 #---------------------------------------------------------------------------
 # Generic stuff
 #---------------------------------------------------------------------------
@@ -2211,9 +2238,9 @@ class Upgrade(Modifier):
                                         newob = self.compound()
                                         Draft.formatObject(newob,lastob)
                                 else:
-                                        if (not fcgeo.isCoplanar(faces)) and (len(self.sel) == 2):
-                                                # 2 non-coplanar objects: we fuse them
-                                                newob = fuse(self.sel[0],self.sel[1])
+                                        if len(self.sel) == 2:
+                                                # 2 objects: we fuse them
+                                                newob = Draft.fuse(self.sel[0],self.sel[1])
                                                 nodelete = True
                                         else:
                                                 # we try the draft way: make one face out of them
@@ -2335,9 +2362,9 @@ class Downgrade(Modifier):
 				edges.append(e)
 		# applying transformation
 		self.doc.openTransaction("Downgrade")
-                if (len(faces) > 2) and (len(self.sel) == 2):
-                        # we have only 2 objects but more than 2 faces: cut 2nd from 1st
-                        newob = cut(self.sel[0],self.sel[1])
+                if len(self.sel) == 2:
+                        # we have only 2 objects: cut 2nd from 1st
+                        newob = Draft.cut(self.sel[0],self.sel[1])
 		elif (len(faces) > 1):
 			if len(self.sel) == 1:
                                 # one object with several faces: split it
@@ -2614,7 +2641,7 @@ class Trimex(Modifier):
 		if self.extrudeMode:
 			delta = self.extrude(self.point,self.shift,real=True)
                         self.doc.openTransaction("Extrude")
-                        obj = extrude(self.sel,delta)
+                        obj = Draft.extrude(self.sel,delta)
                         self.doc.commitTransaction()
                         self.sel = obj
 		else:
