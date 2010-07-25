@@ -60,6 +60,7 @@ else(WIN32)
 endif(WIN32)
 
 set(PartGui_MOC_HDRS
+		 CrossSections.h
 		 DlgBooleanOperation.h
 		 DlgExtrusion.h
 		 DlgFilletEdges.h
@@ -78,6 +79,7 @@ SOURCE_GROUP("Moc" FILES ${PartGui_MOC_SRCS})
 fc_add_resources(PartGui_QRC_SRCS Resources/Part.qrc)
 
 set(PartGui_UIC_SRCS
+		 CrossSections.ui
 		 DlgBooleanOperation.ui
 		 DlgExtrusion.ui
 		 DlgFilletEdges.ui
@@ -99,6 +101,9 @@ SET(PartGui_SRCS
 		 Command.cpp
 		 CommandSimple.cpp
 		 CommandParametric.cpp
+		 CrossSections.cpp
+		 CrossSections.h
+		 CrossSections.ui
 		 DlgBooleanOperation.cpp
 		 DlgBooleanOperation.h
 		 DlgBooleanOperation.ui

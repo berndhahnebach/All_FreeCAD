@@ -2,6 +2,7 @@
 lib_LTLIBRARIES=libPartGui.la PartGui.la
 
 BUILT_SOURCES=\
+		ui_CrossSections.h \
 		ui_DlgBooleanOperation.h \
 		ui_DlgExtrusion.h \
 		ui_DlgFilletEdges.h \
@@ -13,6 +14,7 @@ BUILT_SOURCES=\
 		ui_DlgPrimitives.h \
 		ui_DlgSettings3DViewPart.h \
 		ui_DlgSettingsGeneral.h \
+		moc_CrossSections.cpp \
 		moc_DlgBooleanOperation.cpp \
 		moc_DlgExtrusion.cpp \
 		moc_DlgFilletEdges.cpp \
@@ -30,6 +32,8 @@ libPartGui_la_SOURCES=\
 		Command.cpp \
 		CommandSimple.cpp \
 		CommandParametric.cpp \
+		CrossSections.cpp \
+		CrossSections.h \
 		DlgBooleanOperation.cpp \
 		DlgBooleanOperation.h \
 		DlgExtrusion.cpp \
@@ -172,6 +176,7 @@ EXTRA_DIST = \
 		Resources/icons/preferences-part_design.svg \
 		Resources/icons/PartFeature.xpm \
 		Resources/icons/PartFeatureImport.xpm \
+		CrossSections.ui \
 		DlgBooleanOperation.ui \
 		DlgExtrusion.ui \
 		DlgFilletEdges.ui \

@@ -54,6 +54,7 @@
 #include "DlgRevolution.h"
 #include "DlgFilletEdges.h"
 #include "DlgPrimitives.h"
+#include "CrossSections.h"
 #include "ViewProvider.h"
 
 
@@ -748,6 +749,47 @@ bool CmdPartFillet::isActive(void)
     return (hasActiveDocument() && !Gui::Control().activeDialog());
 }
 
+//===========================================================================
+// Part_CrossSections
+//===========================================================================
+DEF_STD_CMD_A(CmdPartCrossSections);
+
+CmdPartCrossSections::CmdPartCrossSections()
+  :Command("Part_CrossSections")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Cross-sections...");
+    sToolTipText  = QT_TR_NOOP("Cross-sections");
+    sWhatsThis    = "Part_CrossSections";
+    sStatusTip    = sToolTipText;
+//  sPixmap       = "Part_Booleans";
+    iAccel        = 0;
+}
+
+void CmdPartCrossSections::activated(int iMsg)
+{
+    Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
+    if (!dlg) {
+        std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType
+            (Part::Feature::getClassTypeId());
+        Base::BoundBox3d bbox;
+        for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {
+            bbox.Add(static_cast<Part::Feature*>(*it)->Shape.getBoundingBox());
+        }
+        dlg = new PartGui::TaskCrossSections(Base::BoundBox3f(
+            (float)bbox.MinX, (float)bbox.MinY, (float)bbox.MinZ,
+            (float)bbox.MaxX, (float)bbox.MaxY, (float)bbox.MaxZ));
+    }
+    Gui::Control().showDialog(dlg);
+}
+
+bool CmdPartCrossSections::isActive(void)
+{
+    return (Gui::Selection().countObjectsOfType(Part::Feature::getClassTypeId()) > 0 &&
+            !Gui::Control().activeDialog());
+}
+
 //--------------------------------------------------------------------------------------
 
 DEF_STD_CMD_A(CmdShapeInfo);
@@ -852,6 +894,7 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartBoolean());
     rcCmdMgr.addCommand(new CmdPartExtrude());
     rcCmdMgr.addCommand(new CmdPartRevolve());
+    rcCmdMgr.addCommand(new CmdPartCrossSections());
     rcCmdMgr.addCommand(new CmdPartFillet());
     rcCmdMgr.addCommand(new CmdPartCommon());
     rcCmdMgr.addCommand(new CmdPartCut());
