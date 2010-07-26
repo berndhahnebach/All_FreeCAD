@@ -469,7 +469,7 @@ int getSWIGVersionFromModule(const std::string& module)
             Py::String file(mod.getAttr("__file__"));
             std::string filename = (std::string)file;
             filename = filename.substr(0, filename.size()-1);
-            boost::regex rx("^# Version ([1-9])\\.([1-9])\\.([1-9][1-9])");
+            boost::regex rx("^# Version ([1-9])\\.([1-9])\\.([1-9][0-9])");
             boost::cmatch what;
 
             std::string line;
@@ -505,6 +505,7 @@ namespace Swig_1_3_25 { extern int createSWIGPointerObj_T(const char* TypeName, 
 namespace Swig_1_3_33 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 namespace Swig_1_3_36 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 namespace Swig_1_3_38 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
+namespace Swig_1_3_40 { extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own); }
 
 PyObject* InterpreterSingleton::createSWIGPointerObj(const char* Module, const char* TypeName, void* Pointer, int own)
 {
@@ -525,6 +526,9 @@ PyObject* InterpreterSingleton::createSWIGPointerObj(const char* Module, const c
         break;
     case 38:
         result = Swig_1_3_38::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
+        break;
+    case 40:
+        result = Swig_1_3_40::createSWIGPointerObj_T(TypeName, Pointer, &proxy, own);
         break;
     default:
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
@@ -548,6 +552,7 @@ namespace Swig_1_3_25 { extern int convertSWIGPointerObj_T(const char* TypeName,
 namespace Swig_1_3_33 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 namespace Swig_1_3_36 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 namespace Swig_1_3_38 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
+namespace Swig_1_3_40 { extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags); }
 
 bool InterpreterSingleton::convertSWIGPointerObj(const char* Module, const char* TypeName, PyObject* obj, void** ptr, int flags)
 {
@@ -567,6 +572,9 @@ bool InterpreterSingleton::convertSWIGPointerObj(const char* Module, const char*
         break;
     case 38:
         result = Swig_1_3_38::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
+        break;
+    case 40:
+        result = Swig_1_3_40::convertSWIGPointerObj_T(TypeName, obj, ptr, flags);
         break;
     default:
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
@@ -590,6 +598,7 @@ namespace Swig_1_3_25 { extern void cleanupSWIG_T(const char* TypeName); }
 namespace Swig_1_3_33 { extern void cleanupSWIG_T(const char* TypeName); }
 namespace Swig_1_3_36 { extern void cleanupSWIG_T(const char* TypeName); }
 namespace Swig_1_3_38 { extern void cleanupSWIG_T(const char* TypeName); }
+namespace Swig_1_3_40 { extern void cleanupSWIG_T(const char* TypeName); }
 
 void InterpreterSingleton::cleanupSWIG(const char* TypeName)
 {
@@ -601,4 +610,5 @@ void InterpreterSingleton::cleanupSWIG(const char* TypeName)
     Swig_1_3_33::cleanupSWIG_T(TypeName);
     Swig_1_3_36::cleanupSWIG_T(TypeName);
     Swig_1_3_38::cleanupSWIG_T(TypeName);
+    Swig_1_3_40::cleanupSWIG_T(TypeName);
 }
