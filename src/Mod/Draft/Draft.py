@@ -505,8 +505,8 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
-def turnToDraft(objectslist):
-        '''turnToDraft(objectslist): turns each object of the given list
+def draftify(objectslist):
+        '''draftify(objectslist): turns each object of the given list
         (objectslist can also be a single object) into a Draft parametric
         wire'''
         if not isinstance(objectslist,list): objectslist = [objectslist]
