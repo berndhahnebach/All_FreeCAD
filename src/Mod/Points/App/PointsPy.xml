@@ -19,19 +19,24 @@ transforming and much more.
 
       </UserDocu>
 		</Documentation>
+		<Methode Name="copy" Const="true">
+			<Documentation>
+				<UserDocu>Create a copy of this points object</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="read">
 			<Documentation>
-				<UserDocu>Read in a mesh object from file.</UserDocu>
+				<UserDocu>Read in a points object from file.</UserDocu>
 			</Documentation>
 		</Methode>
     <Methode Name="write" Const="true">
       <Documentation>
-        <UserDocu>Write the mesh object into file.</UserDocu>
+        <UserDocu>Write the points object into file.</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="writeInventor" Const="true">
       <Documentation>
-        <UserDocu>Write the mesh in OpenInventor format to a string.</UserDocu>
+        <UserDocu>Write the points in OpenInventor format to a string.</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="addPoints" >
@@ -41,7 +46,7 @@ transforming and much more.
     </Methode>
     <Attribute Name="CountPoints" ReadOnly="true">
 			<Documentation>
-				<UserDocu>Return the number of vertices of the mesh object.</UserDocu>
+				<UserDocu>Return the number of vertices of the points object.</UserDocu>
 			</Documentation>
 			<Parameter Name="CountPoints" Type="Int" />
 		</Attribute>

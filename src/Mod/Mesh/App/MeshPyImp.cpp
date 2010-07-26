@@ -120,6 +120,15 @@ PyObject *MeshPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Pytho
     return new MeshPy(new MeshObject);
 }
 
+PyObject* MeshPy::copy(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    const MeshCore::MeshKernel& kernel = getMeshObjectPtr()->getKernel();
+    return new MeshPy(new MeshObject(kernel));
+}
+
 PyObject*  MeshPy::read(PyObject *args)
 {
     const char* Name;

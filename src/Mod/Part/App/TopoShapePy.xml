@@ -230,6 +230,11 @@ into BSpline curves, and all surfaces supporting its faces are converted
 into BSpline surfaces.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="copy" Const="true">
+      <Documentation>
+        <UserDocu>Create a copy of this shape</UserDocu>
+      </Documentation>
+    </Methode>
 <!--
     <Attribute Name="Location" ReadOnly="false">
       <Documentation>

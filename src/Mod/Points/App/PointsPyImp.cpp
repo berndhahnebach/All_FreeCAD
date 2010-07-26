@@ -71,6 +71,16 @@ int PointsPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     return 0;
 }
 
+PyObject* PointsPy::copy(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    PointKernel* kernel = new PointKernel();
+    // assign data
+    *kernel = *getPointKernelPtr();
+    return new PointsPy(kernel);
+}
 
 PyObject* PointsPy::read(PyObject * args)
 {
