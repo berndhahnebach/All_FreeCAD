@@ -1031,6 +1031,22 @@ PyObject* TopoShapePy::toNurbs(PyObject *args)
     }
 }
 
+PyObject* TopoShapePy::copy(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    try {
+        const TopoDS_Shape& shape = this->getTopoShapePtr()->_Shape;
+        return new TopoShapePy(new TopoShape(shape));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
 #if 0 // see ComplexGeoDataPy::Matrix which does the same
 Py::Object TopoShapePy::getLocation(void) const
 {

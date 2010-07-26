@@ -42,6 +42,11 @@ Example:
 				<UserDocu>Write the mesh in OpenInventor format to a string.</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="copy" Const="true">
+			<Documentation>
+				<UserDocu>Create a copy of this mesh</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="offset">
 			<Documentation>
 				<UserDocu>Move the point along their normals</UserDocu>
