@@ -56,7 +56,7 @@
 #include <Base/Sequencer.h>
 
 using namespace PartGui;
-#define CS_FUTURE
+#undef CS_FUTURE // multi-threading causes some problems
 
 namespace PartGui {
 class ViewProviderCrossSections : public Gui::ViewProvider
@@ -332,6 +332,7 @@ void CrossSections::apply()
     Standard::SetReentrant(Standard_True);
 #endif
 
+    Base::SequencerLauncher seq("Cross-sections...", obj.size() * (d.size() +1));
     for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {
         CrossSection cs(a,b,c,static_cast<Part::Feature*>(*it)->Shape.getValue());
 #ifdef CS_FUTURE
@@ -341,8 +342,10 @@ void CrossSections::apply()
         QFuture< std::list<TopoDS_Wire> >::const_iterator ft;
 #else
         std::vector< std::list<TopoDS_Wire> > future;
-        for (std::vector<float>::iterator jt = d.begin(); jt != d.end(); ++jt)
+        for (std::vector<float>::iterator jt = d.begin(); jt != d.end(); ++jt) {
             future.push_back(cs.section(*jt));
+            seq.next();
+        }
         std::vector< std::list<TopoDS_Wire> >::const_iterator ft;
 #endif
 
@@ -364,6 +367,8 @@ void CrossSections::apply()
             (doc->addObject("Part::Feature",s.c_str()));
         section->Shape.setValue(comp);
         section->purgeTouched();
+
+        seq.next();
     }
 
 #else
