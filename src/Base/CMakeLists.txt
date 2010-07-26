@@ -188,6 +188,7 @@ SET(FreeCADBase_CPP_SRCS
 	swigpyrun_1.3.33.cpp
 	swigpyrun_1.3.36.cpp
 	swigpyrun_1.3.38.cpp
+	swigpyrun_1.3.40.cpp
 	swigpyrun.cpp
 	TimeInfo.cpp
 	Tools.cpp
@@ -233,6 +234,7 @@ SET(FreeCADBase_HPP_SRCS
 	swigpyrun_1.3.33.h
 	swigpyrun_1.3.36.h
 	swigpyrun_1.3.38.h
+	swigpyrun_1.3.40.h
 	swigpyrun.inl
 	TimeInfo.h
 	Tools.h
