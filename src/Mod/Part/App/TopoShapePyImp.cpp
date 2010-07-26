@@ -132,6 +132,26 @@ int TopoShapePy::PyInit(PyObject* args, PyObject*)
     return 0;
 }
 
+PyObject* TopoShapePy::copy(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    const TopoDS_Shape& shape = this->getTopoShapePtr()->_Shape;
+    PyTypeObject* type = this->GetType();
+    PyObject* cpy = 0;
+    // let the type object decide
+    if (type->tp_new)
+        cpy = type->tp_new(type, this, 0);
+    if (!cpy) {
+        PyErr_SetString(PyExc_TypeError, "failed to create copy of shape");
+        return 0;
+    }
+
+    static_cast<TopoShapePy*>(cpy)->getTopoShapePtr()->_Shape = shape;
+    return cpy;
+}
+
 PyObject*  TopoShapePy::read(PyObject *args)
 {
     char* filename;
@@ -1023,22 +1043,6 @@ PyObject* TopoShapePy::toNurbs(PyObject *args)
         // Convert into nurbs
         TopoDS_Shape nurbs = this->getTopoShapePtr()->toNurbs();
         return new TopoShapePy(new TopoShape(nurbs));
-    }
-    catch (Standard_Failure) {
-        Handle_Standard_Failure e = Standard_Failure::Caught();
-        PyErr_SetString(PyExc_Exception, e->GetMessageString());
-        return NULL;
-    }
-}
-
-PyObject* TopoShapePy::copy(PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ""))
-        return NULL;
-
-    try {
-        const TopoDS_Shape& shape = this->getTopoShapePtr()->_Shape;
-        return new TopoShapePy(new TopoShape(shape));
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
