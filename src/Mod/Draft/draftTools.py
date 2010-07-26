@@ -3025,7 +3025,7 @@ class MakeDraftWire():
 			'ToolTip': str(translate("draft", "Turns selected objects to Draft Wires").toLatin1())}
 
 	def Activated(self):
-                Draft.turnToDraft(Draft.getSelection())
+                Draft.draftify(Draft.getSelection())
 
 
 
