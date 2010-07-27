@@ -105,31 +105,31 @@ namespace Gui {
 struct ApplicationP
 {
     ApplicationP() : 
-    _pcActiveDocument(0L), 
-    _bIsClosing(false), 
-    _bStartingUp(true), 
+    activeDocument(0L), 
+    isClosing(false), 
+    startingUp(true), 
     _stderr(0)
     {
         // create the macro manager
-        _pcMacroMngr = new MacroManager();
+        macroMngr = new MacroManager();
     }
 
     ~ApplicationP()
     {
-        delete _pcMacroMngr;
+        delete macroMngr;
     }
 
     /// list of all handled documents
-    std::map<const App::Document*, Gui::Document*> lpcDocuments;
+    std::map<const App::Document*, Gui::Document*> documents;
     /// Active document
-    Gui::Document*   _pcActiveDocument;
-    MacroManager*  _pcMacroMngr;
+    Gui::Document*   activeDocument;
+    MacroManager*  macroMngr;
     /// List of all registered views
-    std::list<Gui::BaseView*>   _LpcViews;
-    bool _bIsClosing;
-    bool _bStartingUp;
+    std::list<Gui::BaseView*> passive;
+    bool isClosing;
+    bool startingUp;
     /// Handles all commands 
-    CommandManager _cCommandManager;
+    CommandManager commandManager;
     PyObject *_stderr;
 };
 
@@ -568,11 +568,11 @@ void Application::createStandardOperations()
 void Application::slotNewDocument(const App::Document& Doc)
 {
 #ifdef FC_DEBUG
-    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(&Doc);
-    assert(it==d->lpcDocuments.end());
+    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->documents.find(&Doc);
+    assert(it==d->documents.end());
 #endif
     Gui::Document* pDoc = new Gui::Document(const_cast<App::Document*>(&Doc),this);
-    d->lpcDocuments[&Doc] = pDoc;
+    d->documents[&Doc] = pDoc;
     signalNewDocument(*pDoc);
     pDoc->createView("View3DIv");
     qApp->processEvents(); // make sure to show the window stuff on the right place
@@ -580,8 +580,8 @@ void Application::slotNewDocument(const App::Document& Doc)
 
 void Application::slotDeleteDocument(const App::Document& Doc)
 {
-    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
-    if (doc == d->lpcDocuments.end()) {
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->documents.find(&Doc);
+    if (doc == d->documents.end()) {
         Base::Console().Log("GUI document '%s' already deleted\n", Doc.getName());
         return;
     }
@@ -592,19 +592,19 @@ void Application::slotDeleteDocument(const App::Document& Doc)
 
     // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
     // view that becomes active sets the active document again. So, we needn't worry about this.
-    if (d->_pcActiveDocument == doc->second)
+    if (d->activeDocument == doc->second)
         setActiveDocument(0);
 
     // For exception-safety use a smart pointer
     auto_ptr<Document> delDoc (doc->second);
-    d->lpcDocuments.erase(doc);
+    d->documents.erase(doc);
 }
 
 void Application::slotRelabelDocument(const App::Document& Doc)
 {
-    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->documents.find(&Doc);
 #ifdef FC_DEBUG
-    assert(doc!=d->lpcDocuments.end());
+    assert(doc!=d->documents.end());
 #endif
 
     signalRelabelDocument(*doc->second);
@@ -613,9 +613,9 @@ void Application::slotRelabelDocument(const App::Document& Doc)
 
 void Application::slotRenameDocument(const App::Document& Doc)
 {
-    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->documents.find(&Doc);
 #ifdef FC_DEBUG
-    assert(doc!=d->lpcDocuments.end());
+    assert(doc!=d->documents.end());
 #endif
 
     signalRenameDocument(*doc->second);
@@ -623,9 +623,9 @@ void Application::slotRenameDocument(const App::Document& Doc)
 
 void Application::slotActiveDocument(const App::Document& Doc)
 {
-    std::map<const App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(&Doc);
+    std::map<const App::Document*, Gui::Document*>::iterator doc = d->documents.find(&Doc);
 #ifdef FC_DEBUG
-    assert(doc!=d->lpcDocuments.end());
+    assert(doc!=d->documents.end());
 #endif
 
     signalActiveDocument(*doc->second);
@@ -633,7 +633,7 @@ void Application::slotActiveDocument(const App::Document& Doc)
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)
 {
-    if (!d->_bIsClosing && pcDoc) {
+    if (!d->isClosing && pcDoc) {
         try {
             // Call the closing mechanism from Python. This also checks whether pcDoc is the last open document.
             Command::doCommand(Command::Doc, "App.closeDocument(\"%s\")", pcDoc->getDocument()->getName());
@@ -660,14 +660,14 @@ bool Application::sendHasMsgToActiveView(const char* pMsg)
 /// Getter for the active view
 Gui::Document* Application::activeDocument(void) const
 {
-    return d->_pcActiveDocument;
+    return d->activeDocument;
 }
 
 void Application::setActiveDocument(Gui::Document* pcDocument)
 {
-    if (d->_pcActiveDocument == pcDocument)
+    if (d->activeDocument == pcDocument)
         return; // nothing needs to be done
-    d->_pcActiveDocument = pcDocument;
+    d->activeDocument = pcDocument;
     std::string name;
  
     // This adds just a line to the macro file but does not set the active document
@@ -700,8 +700,8 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
     }
 
     // May be useful for error detection
-    if (d->_pcActiveDocument) {
-        App::Document* doc = d->_pcActiveDocument->getDocument();
+    if (d->activeDocument) {
+        App::Document* doc = d->activeDocument->getDocument();
         Base::Console().Log("Active document is %s (at %p)\n",doc->getName(), doc);
     }
     else {
@@ -709,15 +709,15 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
     }
 
     // notify all views attached to the application (not views belong to a special document)
-    for(list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
+    for(list<Gui::BaseView*>::iterator It=d->passive.begin();It!=d->passive.end();It++)
         (*It)->setDocument(pcDocument);
 }
 
 Gui::Document* Application::getDocument(const char* name) const
 {
     App::Document* pDoc = App::GetApplication().getDocument( name );
-    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
-    if ( it!=d->lpcDocuments.end() )
+    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->documents.find(pDoc);
+    if ( it!=d->documents.end() )
         return it->second;
     else
         return 0;
@@ -725,8 +725,8 @@ Gui::Document* Application::getDocument(const char* name) const
 
 Gui::Document* Application::getDocument(const App::Document* pDoc) const
 {
-    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
-    if ( it!=d->lpcDocuments.end() )
+    std::map<const App::Document*, Gui::Document*>::const_iterator it = d->documents.find(pDoc);
+    if ( it!=d->documents.end() )
         return it->second;
     else
         return 0;
@@ -760,22 +760,22 @@ Gui::ViewProvider* Application::getViewProvider(App::DocumentObject* obj) const
 
 void Application::attachView(Gui::BaseView* pcView)
 {
-    d->_LpcViews.push_back(pcView);
+    d->passive.push_back(pcView);
 }
 
 void Application::detachView(Gui::BaseView* pcView)
 {
-    d->_LpcViews.remove(pcView);
+    d->passive.remove(pcView);
 }
 
 void Application::onUpdate(void)
 {
     // update all documents
     std::map<const App::Document*, Gui::Document*>::iterator It;
-    for (It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+    for (It = d->documents.begin();It != d->documents.end();It++)
         It->second->onUpdate();
     // update all the independed views
-    for (std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
+    for (std::list<Gui::BaseView*>::iterator It2 = d->passive.begin();It2 != d->passive.end();It2++)
         (*It2)->onUpdate();
 }
 
@@ -801,13 +801,13 @@ void Application::updateActive(void)
 
 void Application::tryClose(QCloseEvent * e)
 {
-    if (d->lpcDocuments.size() == 0) {
+    if (d->documents.size() == 0) {
         e->accept();
     }
     else {
         // ask all documents if closable
         std::map<const App::Document*, Gui::Document*>::iterator It;
-        for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++) {
+        for (It = d->documents.begin();It!=d->documents.end();It++) {
             MDIView* active = It->second->getActiveView();
             e->setAccepted(active->canClose());
             if (!e->isAccepted())
@@ -816,30 +816,30 @@ void Application::tryClose(QCloseEvent * e)
     }
 
     // ask all passive views if closable
-    for (std::list<Gui::BaseView*>::iterator It = d->_LpcViews.begin();It!=d->_LpcViews.end();It++) {
+    for (std::list<Gui::BaseView*>::iterator It = d->passive.begin();It!=d->passive.end();It++) {
         e->setAccepted((*It)->canClose());
         if (!e->isAccepted())
             return;
     }
 
     if (e->isAccepted()) {
-        d->_bIsClosing = true;
+        d->isClosing = true;
 
         std::map<const App::Document*, Gui::Document*>::iterator It;
 
         //detach the passive views
         //SetActiveDocument(0);
-        std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();
-        while (It2!=d->_LpcViews.end()) {
-            (*It2)->onClose();
-            It2 = d->_LpcViews.begin();
+        std::list<Gui::BaseView*>::iterator itp = d->passive.begin();
+        while (itp != d->passive.end()) {
+            (*itp)->onClose();
+            itp = d->passive.begin();
         }
 
         // remove all documents
-        size_t cnt = d->lpcDocuments.size();
-        while (d->lpcDocuments.size() > 0 && cnt > 0) {
+        size_t cnt = d->documents.size();
+        while (d->documents.size() > 0 && cnt > 0) {
             // destroys also the Gui document
-            It = d->lpcDocuments.begin();
+            It = d->documents.begin();
             App::GetApplication().closeDocument(It->second->getDocument()->getName());
             --cnt; // avoid infinite loop
         }
@@ -960,7 +960,7 @@ bool Application::activateWorkbench(const char* name)
 
         Base::Console().Error("%s\n", (const char*)msg.toAscii());
         Base::Console().Log("%s\n", e.getStackTrace().c_str());
-        if (!d->_bStartingUp) {
+        if (!d->startingUp) {
             wc.restoreCursor();
             QMessageBox::critical(getMainWindow(), QObject::tr("Workbench failure"), 
                 QObject::tr("%1").arg(msg));
@@ -1158,17 +1158,17 @@ void Application::setupContextMenu(const char* recipient, MenuItem* items) const
 
 bool Application::isClosing(void)
 {
-    return d->_bIsClosing;
+    return d->isClosing;
 }
 
 MacroManager *Application::macroManager(void)
 {
-    return d->_pcMacroMngr;
+    return d->macroMngr;
 }
 
 CommandManager &Application::commandManager(void)
 {
-    return d->_cCommandManager;
+    return d->commandManager;
 }
 
 void Application::runCommand(bool bForce, const char* sCmd,...)
@@ -1182,9 +1182,9 @@ void Application::runCommand(bool bForce, const char* sCmd,...)
     va_end(namelessVars);
 
     if (bForce)
-        d->_pcMacroMngr->addLine(MacroManager::Base,format);
+        d->macroMngr->addLine(MacroManager::Base,format);
     else
-        d->_pcMacroMngr->addLine(MacroManager::Gui,format);
+        d->macroMngr->addLine(MacroManager::Gui,format);
 
     try { 
         Base::Interpreter().runString(format);
@@ -1201,9 +1201,9 @@ void Application::runCommand(bool bForce, const char* sCmd,...)
 bool Application::runPythonCode(const char* cmd, bool gui)
 {
     if (gui)
-        d->_pcMacroMngr->addLine(MacroManager::Gui,cmd);
+        d->macroMngr->addLine(MacroManager::Gui,cmd);
     else
-        d->_pcMacroMngr->addLine(MacroManager::Base,cmd);
+        d->macroMngr->addLine(MacroManager::Base,cmd);
 
     try {
         Base::Interpreter().runString(cmd);
@@ -1532,7 +1532,7 @@ void Application::runApplication(void)
 
     // open the 'Iip of the day' dialog if needed
     mw.showTipOfTheDay();
-    Instance->d->_bStartingUp = false;
+    Instance->d->startingUp = false;
 
     // processing all command line files
     App::Application::processCmdLineFiles();

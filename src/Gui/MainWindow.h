@@ -288,6 +288,7 @@ Q_SIGNALS:
     void timeEvent();
     void windowStateChanged(MDIView*);
     void workbenchActivated(const QString&);
+    void mainWindowClosed();
 
 private:
     /// some kind of singleton
