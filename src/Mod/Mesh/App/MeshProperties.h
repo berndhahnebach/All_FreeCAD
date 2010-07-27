@@ -231,8 +231,8 @@ public:
     //@}
 
 private:
-    MeshPy* meshPyObject;
     Base::Reference<MeshObject> _meshObject;
+    MeshPy* meshPyObject;
 };
 
 } // namespace Mesh
