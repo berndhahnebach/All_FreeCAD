@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <algorithm>
 # include <climits>
+# include <boost/bind.hpp>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
@@ -82,8 +83,9 @@ RemoveComponents::RemoveComponents(QWidget* parent, Qt::WFlags fl)
 
     std::vector<App::DocumentObject*> meshes =
     Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-    this->_objects.insert(this->_objects.begin(), meshes.begin(), meshes.end());
 
+    std::for_each(meshes.begin(), meshes.end(), 
+        boost::bind(&RemoveComponents::addToObservation, this, _1));
     this->attachDocument(App::GetApplication().getActiveDocument());
 }
 
@@ -286,7 +288,7 @@ void RemoveComponents::reject()
 std::list<ViewProviderMesh*> RemoveComponents::getViewProviders() const
 {
     std::list<ViewProviderMesh*> vps;
-    for (std::list<App::DocumentObject*>::const_iterator it = _objects.begin(); it != _objects.end(); ++it) {
+    for (RemoveComponents::const_iterator it = this->begin(); it != this->end(); ++it) {
         App::Document* ad = (*it)->getDocument();
         Gui::Document* gd = Gui::Application::Instance->getDocument(ad);
         vps.push_back(static_cast<ViewProviderMesh*>(gd->getViewProvider(*it)));
