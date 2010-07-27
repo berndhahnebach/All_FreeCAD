@@ -25,7 +25,7 @@
 #define APP_DOCUMENTOBSERVER_H
 
 #include <boost/signals.hpp>
-#include <list>
+#include <set>
 
 namespace App
 {
@@ -94,9 +94,16 @@ class AppExport DocumentObjectObserver : public DocumentObserver
 {
 
 public:
+    typedef std::set<App::DocumentObject*>::const_iterator const_iterator;
+
     /// Constructor
     DocumentObjectObserver();
     virtual ~DocumentObjectObserver();
+
+    const_iterator begin() const;
+    const_iterator end() const;
+    void addToObservation(App::DocumentObject*);
+    void removeFromObservation(App::DocumentObject*);
 
 private:
     /** Checks if a new document was created */
@@ -111,8 +118,8 @@ private:
     virtual void slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop);
     virtual void cancelObservation() = 0;
 
-protected:
-    std::list<App::DocumentObject*> _objects;
+private:
+    std::set<App::DocumentObject*> _objects;
 };
 
 } //namespace App

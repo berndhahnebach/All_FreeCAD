@@ -102,6 +102,26 @@ DocumentObjectObserver::~DocumentObjectObserver()
 {
 }
 
+DocumentObjectObserver::const_iterator DocumentObjectObserver::begin() const
+{
+    return _objects.begin();
+}
+
+DocumentObjectObserver::const_iterator DocumentObjectObserver::end() const
+{
+    return _objects.end();
+}
+
+void DocumentObjectObserver::addToObservation(App::DocumentObject* obj)
+{
+    _objects.insert(obj);
+}
+
+void DocumentObjectObserver::removeFromObservation(App::DocumentObject* obj)
+{
+    _objects.erase(obj);
+}
+
 void DocumentObjectObserver::slotCreatedDocument(const App::Document&)
 {
 }
@@ -121,13 +141,10 @@ void DocumentObjectObserver::slotCreatedObject(const App::DocumentObject&)
 
 void DocumentObjectObserver::slotDeletedObject(const App::DocumentObject& Obj)
 {
-    for (std::list<App::DocumentObject*>::iterator it = _objects.begin(); it != _objects.end(); ++it) {
-        if (*it == &Obj) {
-            _objects.erase(it);
-            break;
-        }
-    }
-
+    std::set<App::DocumentObject*>::iterator it = _objects.find
+        (const_cast<App::DocumentObject*>(&Obj));
+    if (it != _objects.end())
+        _objects.erase(it);
     if (_objects.empty())
         cancelObservation();
 }
