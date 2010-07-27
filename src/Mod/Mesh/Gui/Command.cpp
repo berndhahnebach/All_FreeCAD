@@ -1249,7 +1249,7 @@ CmdMeshFlipNormals::CmdMeshFlipNormals()
 void CmdMeshFlipNormals::activated(int iMsg)
 {
     std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-    openCommand("Harmonize mesh normals");
+    openCommand("Fliap mesh normals");
     for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
         doCommand(Doc,"App.activeDocument().getObject(\"%s\").Mesh.flipNormals()"
                      ,(*it)->getNameInDocument());
