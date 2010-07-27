@@ -474,9 +474,8 @@ StdCmdQuit::StdCmdQuit()
 
 void StdCmdQuit::activated(int iMsg)
 {
-  // close the main window and exit the event loop
-  if (getMainWindow()->close())
-    qApp->quit();
+    // close the main window and exit the event loop
+    getMainWindow()->close();
 }
 
 //===========================================================================

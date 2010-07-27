@@ -1036,10 +1036,11 @@ void MainWindow::closeEvent (QCloseEvent * e)
     if (e->isAccepted()) {
         // Send close event to all non-modal dialogs
         QList<QDialog*> dialogs = this->findChildren<QDialog*>();
-        for (QList<QDialog*>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
+        for (QList<QDialog*>::iterator it = dialogs.begin(); it != dialogs.end(); ++it) {
             (*it)->close();
+        }
         QList<MDIView*> mdis = this->findChildren<MDIView*>();
-        // Force to close any MDI child view
+        // Force to close any remaining (passive) MDI child views
         for (QList<MDIView*>::iterator it = mdis.begin(); it != mdis.end(); ++it) {
             (*it)->hide();
             (*it)->deleteLater();
@@ -1048,7 +1049,9 @@ void MainWindow::closeEvent (QCloseEvent * e)
         saveWindowSettings();
         delete d->assistant;
         d->assistant = 0;
-        QMainWindow::closeEvent( e );
+
+        /*emit*/ mainWindowClosed();
+        qApp->quit(); // stop the event loop
     }
 }
 
