@@ -128,8 +128,6 @@ public:
   virtual void Validate (const MeshKernel &rclM) = 0;
   /** Verifies the grid structure and returns false if inconsistencies are found. */
   virtual bool Verify() const = 0;
-
-protected:
   /** Checks whether the point is inside the grid. In case it is inside true is returned with the grid position,
    * otherwise false is returned and the grid position is undefined.
    */
@@ -139,6 +137,10 @@ protected:
   virtual void Position (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
   /** Checks if this is a valid grid position. */
   inline bool CheckPos (unsigned long ulX, unsigned long ulY, unsigned long ulZ) const;
+  /** Get the indices of all elements lying in the grids around a given grid with distance \a ulDistance. */
+  void GetHull (unsigned long ulX, unsigned long ulY, unsigned long ulZ, unsigned long ulDistance, std::set<unsigned long> &raclInd) const;
+
+protected:
   /** Initializes the size of the internal structure. */
   virtual void InitGrid (void);
   /** Deletes the grid structure. */
@@ -151,8 +153,6 @@ protected:
   virtual void RebuildGrid (void) = 0;
   /** Returns the number of stored elements. Must be implemented in sub-classes. */
   virtual unsigned long HasElements (void) const = 0;
-  /** Get the indices of all elements lying in the grids around a given grid with distance \a ulDistance. */
-  void GetHull (unsigned long ulX, unsigned long ulY, unsigned long ulZ, unsigned long ulDistance, std::set<unsigned long> &raclInd) const;
 
 protected:
   std::vector<std::vector<std::vector<std::set<unsigned long> > > >  _aulGrid;   /**< Grid data structure. */
