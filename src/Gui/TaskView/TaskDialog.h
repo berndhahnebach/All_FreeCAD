@@ -56,6 +56,8 @@ public:
     /// tells the framework which buttons whisched for the dialog
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
     { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
+    virtual void modifyStandardButtons(QDialogButtonBox*)
+    {}
 
     virtual bool isAllowedAlterDocument(void) const
     { return false; }

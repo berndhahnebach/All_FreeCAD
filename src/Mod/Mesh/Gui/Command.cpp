@@ -53,6 +53,7 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Command.h>
+#include <Gui/Control.h>
 #include <Gui/Document.h>
 #include <Gui/FileDialog.h>
 #include <Gui/Selection.h>
@@ -1053,17 +1054,18 @@ CmdMeshRemoveComponents::CmdMeshRemoveComponents()
 
 void CmdMeshRemoveComponents::activated(int iMsg)
 {
-    static QPointer<MeshGui::RemoveComponents> dlg=0;
+    Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
     if (!dlg)
-        dlg = new MeshGui::RemoveComponents(Gui::getMainWindow());
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
-    dlg->show();
+        dlg = new MeshGui::TaskRemoveComponents();
+    Gui::Control().showDialog(dlg);
 }
 
 bool CmdMeshRemoveComponents::isActive(void)
 {
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return (getSelection().countObjectsOfType
+            (Mesh::Feature::getClassTypeId()) > 0
+            && !Gui::Control().activeDialog());
 }
 
 //--------------------------------------------------------------------------------------

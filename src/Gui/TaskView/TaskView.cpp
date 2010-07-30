@@ -235,6 +235,8 @@ void TaskView::showDialog(TaskDialog *dlg)
 
     const std::vector<QWidget*>& cont = dlg->getDialogContent();
 
+    // give task dialog to customize the button box
+    dlg->modifyStandardButtons(ActiveCtrl->buttonBox);
     taskPanel->addWidget(ActiveCtrl);
 
     for (std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){

@@ -27,6 +27,8 @@
 #include <QDialog>
 #include <Inventor/nodes/SoEventCallback.h>
 #include <App/DocumentObserver.h>
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
 
 // forward declarations
 class SoEventCallback;
@@ -50,6 +52,8 @@ public:
     RemoveComponents(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~RemoveComponents();
     void reject();
+    void deleteSelection();
+    void invertSelection();
 
 public Q_SLOTS:
     void on_selectRegion_clicked();
@@ -60,8 +64,6 @@ public Q_SLOTS:
     void on_deselectAll_clicked();
     void on_deselectComponents_clicked();
     void on_deselectTriangle_clicked();
-    void on_deleteButton_clicked();
-    void on_invertButton_clicked();
 
 private:
     void cancelObservation();
@@ -77,6 +79,29 @@ private:
     Ui_RemoveComponents* ui;
     SoEventCallbackCB *_interactiveMode;
     bool selectRegion;
+};
+
+class TaskRemoveComponents : public Gui::TaskView::TaskDialog
+{
+    Q_OBJECT
+
+public:
+    TaskRemoveComponents();
+    ~TaskRemoveComponents();
+
+public:
+    bool accept();
+    void clicked(int);
+
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Ok | QDialogButtonBox::Close; }
+    virtual bool isAllowedAlterDocument(void) const
+    { return true; }
+    virtual void modifyStandardButtons(QDialogButtonBox*);
+
+private:
+    RemoveComponents* widget;
+    Gui::TaskView::TaskBox* taskbox;
 };
 
 }

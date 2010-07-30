@@ -27,6 +27,7 @@
 # include <algorithm>
 # include <climits>
 # include <boost/bind.hpp>
+# include <QPushButton>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
@@ -48,6 +49,7 @@
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/Core/Algorithm.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
+#include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/Core/TopoAlgorithm.h>
 #include <Mod/Mesh/App/Core/Tools.h>
 
@@ -206,7 +208,7 @@ void RemoveComponents::on_deselectComponents_clicked()
     }
 }
 
-void RemoveComponents::on_deleteButton_clicked()
+void RemoveComponents::deleteSelection()
 {
     // delete all selected faces
     bool selected = false;
@@ -230,7 +232,7 @@ void RemoveComponents::on_deleteButton_clicked()
     doc->commitCommand();
 }
 
-void RemoveComponents::on_invertButton_clicked()
+void RemoveComponents::invertSelection()
 {
     std::list<ViewProviderMesh*> views = getViewProviders();
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
@@ -282,7 +284,6 @@ void RemoveComponents::reject()
             stopInteractiveCallback(viewer);
     }
     on_deselectAll_clicked();
-    QDialog::reject();
 }
 
 std::list<ViewProviderMesh*> RemoveComponents::getViewProviders() const
@@ -384,27 +385,50 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
         gl.w = w; gl.h = h;
         gl.apply(vp->getRoot());
 
+        std::vector<unsigned long> faces;
         const Mesh::MeshObject& mesh = static_cast<Mesh::Feature*>((*it)->getObject())->Mesh.getValue();
         const MeshCore::MeshKernel& kernel = mesh.getKernel();
 
-        // get the nearest facet to the user (using front clipping plane)
-        MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator> p =
-            std::for_each(gl.indices.begin(), gl.indices.end(),
-                MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator>
-                (kernel, point, normal));
+        // if the selected are is split into several segments then identify that
+        // with the nearest triangle to the user
+        if (that->ui->frontTriangles->isChecked()) {
+            // get the nearest facet to the user (using front clipping plane)
+            MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator> p =
+                std::for_each(gl.indices.begin(), gl.indices.end(),
+                    MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator>
+                    (kernel, point, normal));
 
-        // succeeded
-        std::vector<unsigned long> faces;
-        if (p.nearest_index != ULONG_MAX) {
-            // set VISIT flag to all outer facets
-            MeshCore::MeshAlgorithm alg(kernel);
-            alg.SetFacetFlag(MeshCore::MeshFacet::VISIT);
-            alg.ResetFacetsFlag(gl.indices, MeshCore::MeshFacet::VISIT);
+            // succeeded
+            if (p.nearest_index != ULONG_MAX) {
+                // set VISIT flag to all outer facets
+                MeshCore::MeshAlgorithm alg(kernel);
+                alg.SetFacetFlag(MeshCore::MeshFacet::VISIT);
+                alg.ResetFacetsFlag(gl.indices, MeshCore::MeshFacet::VISIT);
 
-            MeshCore::MeshTopFacetVisitor visitor(faces);
-            kernel.VisitNeighbourFacets(visitor, p.nearest_index);
-            // append also the start facet
-            faces.push_back(p.nearest_index);
+                MeshCore::MeshTopFacetVisitor visitor(faces);
+                kernel.VisitNeighbourFacets(visitor, p.nearest_index);
+                // append also the start facet
+                faces.push_back(p.nearest_index);
+            }
+        }
+        else {
+            // simply get all triangles under the rubberband
+            faces.insert(faces.end(), gl.indices.begin(), gl.indices.end());
+        }
+
+        // if set filter out all triangles which do not point into user direction
+        if (that->ui->screenTriangles->isChecked()) {
+            std::vector<unsigned long> screen;
+            screen.reserve(faces.size());
+            MeshCore::MeshFacetIterator it_f(kernel);
+            for (std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it) {
+                it_f.Set(*it);
+                if (it_f->GetNormal() * normal > 0.0f) {
+                    screen.push_back(*it);
+                }
+            }
+
+            faces.swap(screen);
         }
 
         if (that->selectRegion)
@@ -463,6 +487,47 @@ void RemoveComponents::pickFaceCallback(void * ud, SoEventCallback * n)
                 }
             }
         }
+    }
+}
+
+// ---------------------------------------
+
+TaskRemoveComponents::TaskRemoveComponents()
+{
+    widget = new RemoveComponents();
+    taskbox = new Gui::TaskView::TaskBox(
+        QPixmap(), widget->windowTitle(), false, 0);
+    taskbox->groupLayout()->addWidget(widget);
+    Content.push_back(taskbox);
+}
+
+TaskRemoveComponents::~TaskRemoveComponents()
+{
+    // automatically deleted in the sub-class
+}
+
+void TaskRemoveComponents::modifyStandardButtons(QDialogButtonBox* box)
+{
+    QPushButton* btn = box->button(QDialogButtonBox::Ok);
+    btn->setText(tr("Delete"));
+    box->addButton(tr("Invert"), QDialogButtonBox::ActionRole);
+}
+
+bool TaskRemoveComponents::accept()
+{
+    return false;
+}
+
+void TaskRemoveComponents::clicked(int id)
+{
+    if (id == QDialogButtonBox::Ok) {
+        widget->deleteSelection();
+    }
+    else if (id == QDialogButtonBox::Close) {
+        widget->reject();
+    }
+    else if (id == QDialogButtonBox::NoButton) {
+        widget->invertSelection();
     }
 }
 

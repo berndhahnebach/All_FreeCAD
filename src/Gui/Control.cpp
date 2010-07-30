@@ -83,6 +83,16 @@ void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
         taskPanel->showDialog(dlg);
         getMainWindow()->addDockWidget(Qt::LeftDockWidgetArea, dw);
         connect(dlg, SIGNAL(destroyed()), dw, SLOT(deleteLater()));
+
+        // if we have the normal tree view available then just tabify with it
+        QWidget* treeView = Gui::DockWindowManager::instance()->getDockWindow("Tree view");
+        QDockWidget* par = treeView ? qobject_cast<QDockWidget*>(treeView->parent()) : 0;
+        if (par && par->isVisible()) {
+            getMainWindow()->tabifyDockWidget(par, dw);
+            qApp->processEvents(); // make sure that the task panel is tabified now
+            dw->show();
+            dw->raise();
+        }
     }
 }
 
