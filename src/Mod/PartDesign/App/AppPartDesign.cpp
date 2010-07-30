@@ -44,8 +44,8 @@ void AppPartDesignExport initPartDesign()
 {
     // load dependend module
     try {
-        Base::Interpreter().loadModule("Part");
-        Base::Interpreter().loadModule("Sketcher");
+		Base::Interpreter().runString("import Part");
+		Base::Interpreter().runString("import Sketcher");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

@@ -70,7 +70,7 @@ void AppPartGuiExport initPartGui()
 
     // load needed modules
     try {
-        Base::Interpreter().loadModule("Part");
+		Base::Interpreter().runString("import Part");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

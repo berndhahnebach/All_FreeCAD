@@ -96,7 +96,14 @@ int SketchObject::addConstraints(const std::vector<Constraint *> &ConstraintList
 
 int SketchObject::addConstraints(const Constraint *Constraints)
 {
-    return -1;
+    const std::vector< Constraint * > &vals = this->Constraints.getValues();
+
+    std::vector< Constraint * > newVals(vals);
+    Constraint *constNew = Constraints->clone();
+    newVals.push_back(constNew);
+    this->Constraints.setValues(newVals);
+    delete constNew;
+    return this->Constraints.getSize()-1;
 }
 
 

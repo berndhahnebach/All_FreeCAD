@@ -71,22 +71,53 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
 
 void CmdSketcherConstrainHorizontal::activated(int iMsg)
 {
-   //unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-
+	// get the selection 
 	std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
+	// only one sketch with its subelements are allowed to be selected
     if (selection.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select an edges from the sketch."));
         return;
     }
 
+	// get the needed lists and objects
 	const std::vector<std::string> &SubNames = selection[0].getSubNames();
+	Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+	const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
 
+	// undo command open
+    openCommand("add horizontal constraint");
+
+	// go through the selected subelements
     for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
-        
+		// only handle edges
+		if (it->size() > 4 && it->substr(0,4) == "Edge") {
+			int index=std::atoi(&(*it)[4]);
+			// check if the edge has already a Horizontal or Vertical constraint
+			for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
+				if((*it)->Type == Sketcher::Horizontal && (*it)->First == index){
+					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Double constraint"),
+						QObject::tr("The selected edge has already a Horizontal constraint!"));
+					return;
+				}
+				if((*it)->Type == Sketcher::Vertical && (*it)->First == index){
+					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Imposible constraint"),
+						QObject::tr("The selected edge has already a Vertical constraint!"));
+					return;
+				}
+			}
+			// isue the actual commands to creat the Constraint
+			doCommand(Doc,"App.ActiveDocument.ActiveObject.addConstraint(Sketcher.Constraint('Horizontal',%i)) ",index);
+		}
     }
+	// finish the transaction and update
+    commitCommand();
+    updateActive();
 
+	// clear the selction (conviniance)
+	getSelection().clearSelection();
+	
       
 }
 
@@ -112,6 +143,53 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
 
 void CmdSketcherConstrainVertical::activated(int iMsg)
 {
+	// get the selection 
+	std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+	// only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select an edges from the sketch."));
+        return;
+    }
+
+	// get the needed lists and objects
+	const std::vector<std::string> &SubNames = selection[0].getSubNames();
+	Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+	const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+
+	// undo command open
+    openCommand("add vertical constraint");
+
+	// go through the selected subelements
+    for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
+		// only handle edges
+		if (it->size() > 4 && it->substr(0,4) == "Edge") {
+			int index=std::atoi(&(*it)[4]);
+			// check if the edge has already a Horizontal or Vertical constraint
+			for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
+				if((*it)->Type == Sketcher::Horizontal && (*it)->First == index){
+					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Imposible constraint"),
+						QObject::tr("The selected edge has already a Horizontal constraint!"));
+					return;
+				}
+				if((*it)->Type == Sketcher::Vertical && (*it)->First == index){
+					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Double constraint"),
+						QObject::tr("The selected edge has already a Vertical constraint!"));
+					return;
+				}
+			}
+			// isue the actual commands to creat the Constraint
+			doCommand(Doc,"App.ActiveDocument.ActiveObject.addConstraint(Sketcher.Constraint('Vertical',%i)) ",index);
+		}
+    }
+	// finish the transaction and update
+    commitCommand();
+    updateActive();
+
+	// clear the selction (conviniance)
+	getSelection().clearSelection();
+	
       
 }
 

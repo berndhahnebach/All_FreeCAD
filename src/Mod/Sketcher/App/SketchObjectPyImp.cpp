@@ -8,6 +8,8 @@
 // inclusion of the generated files (generated out of SketchObjectSFPy.xml)
 #include "SketchObjectPy.h"
 #include "SketchObjectPy.cpp"
+// other python types
+#include "ConstraintPy.h"
 
 using namespace Sketcher;
 
@@ -39,8 +41,15 @@ PyObject* SketchObjectPy::addGeometry(PyObject *args)
 
 PyObject* SketchObjectPy::addConstraint(PyObject *args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O", &pcObj))
+        return 0;
+
+    if (PyObject_TypeCheck(pcObj, &(Sketcher::ConstraintPy::Type))) {
+        Sketcher::Constraint *constr = static_cast<Sketcher::ConstraintPy*>(pcObj)->getConstraintPtr();
+        return Py::new_reference_to(Py::Int(this->getSketchObjectPtr()->addConstraints(constr)));
+    }
+    Py_Return; 
 }
 
 PyObject* SketchObjectPy::movePoint(PyObject *args)
