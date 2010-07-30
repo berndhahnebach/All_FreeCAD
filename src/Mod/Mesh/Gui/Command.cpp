@@ -823,7 +823,8 @@ void CmdMeshPolyCut::activated(int iMsg)
         }
 
         Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
-        pVP->setEdit();
+        if (pVP->isVisible())
+            pVP->setEdit();
     }
 }
 
@@ -1249,7 +1250,7 @@ CmdMeshFlipNormals::CmdMeshFlipNormals()
 void CmdMeshFlipNormals::activated(int iMsg)
 {
     std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-    openCommand("Fliap mesh normals");
+    openCommand("Flip mesh normals");
     for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
         doCommand(Doc,"App.activeDocument().getObject(\"%s\").Mesh.flipNormals()"
                      ,(*it)->getNameInDocument());

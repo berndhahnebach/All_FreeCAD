@@ -71,6 +71,9 @@
 #include <Inventor/elements/SoNormalBindingElement.h>
 #include <Inventor/elements/SoNormalElement.h>
 #include <Inventor/elements/SoReplacedElement.h>
+#include <Inventor/elements/SoViewportRegionElement.h>
+#include <Inventor/elements/SoViewVolumeElement.h>
+#include <Inventor/elements/SoModelMatrixElement.h>
 #include <Inventor/errors/SoDebugError.h> 
 #include <Inventor/errors/SoReadError.h>
 #include <Inventor/events/SoEvent.h>
@@ -139,6 +142,7 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoTransparencyType.h>
+#include <Inventor/nodekits/SoShapeKit.h>
 #include <Inventor/manips/SoTransformBoxManip.h>
 #include <Inventor/projectors/SbSpherePlaneProjector.h>
 #include <Inventor/projectors/SbSphereSheetProjector.h>

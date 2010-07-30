@@ -37,7 +37,7 @@ class Property;
 }
 
 namespace Gui {
-class Control;
+class ControlSingleton;
 namespace DockWnd{
 class CombiView;
 }
@@ -101,6 +101,7 @@ public:
                           Gui::SelectionSingleton::MessageType Reason);
 
     friend class Gui::DockWnd::CombiView;
+    friend class Gui::ControlSingleton;
 
     void addTaskWatcher(const std::vector<TaskWatcher*> &Watcher);
     void addTaskWatcher(void);
@@ -117,7 +118,7 @@ protected:
     void updateWatcher(void);
     /// used by Gui::Contol to register Dialogs
     void showDialog(TaskDialog *dlg);
-    // removes the runing dialog after accept() or reject() from the TaskView
+    // removes the running dialog after accept() or reject() from the TaskView
     void removeDialog(void);
 
     void slotActiveDocument(const App::Document&);
