@@ -24,10 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QDockWidget>
+# include <QPointer>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Control.h"
+#include "TaskView/TaskView.h"
 
 #include <Gui/MainWindow.h>
 #include <Gui/CombiView.h>
@@ -38,6 +41,7 @@ using namespace Gui;
 using namespace std;
 
 ControlSingleton* ControlSingleton::_pcSingleton = 0;
+static QPointer<Gui::TaskView::TaskView> taskPanel = 0;
 
 ControlSingleton::ControlSingleton()
   : ActiveDialog(0)
@@ -52,22 +56,34 @@ ControlSingleton::~ControlSingleton()
 
 void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
 {
+    // only one dialog at a time
+    assert(!ActiveDialog || ActiveDialog==dlg);
     Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
         (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
     // should return the pointer to combo view
-    assert(pcCombiView);
-    // only one dialog at a time
-    assert(!ActiveDialog || ActiveDialog==dlg);
-    pcCombiView->showDialog(dlg);
-    // make sure that the combo view is shown
-    QDockWidget* dw = qobject_cast<QDockWidget*>(pcCombiView->parentWidget());
-    if (dw) {
-        dw->setVisible(true);
-        dw->toggleViewAction()->setVisible(true);
-    }
+    if (pcCombiView) {
+        pcCombiView->showDialog(dlg);
+        // make sure that the combo view is shown
+        QDockWidget* dw = qobject_cast<QDockWidget*>(pcCombiView->parentWidget());
+        if (dw) {
+            dw->setVisible(true);
+            dw->toggleViewAction()->setVisible(true);
+        }
 
-    ActiveDialog = dlg;
-    connect(dlg, SIGNAL(destroyed()), this, SLOT(closedDialog()));
+        ActiveDialog = dlg;
+        connect(dlg, SIGNAL(destroyed()), this, SLOT(closedDialog()));
+    }
+    // not all workbenches have the combo view enabled
+    else if (!taskPanel) {
+        QDockWidget* dw = new QDockWidget();
+        dw->setWindowTitle(tr("Task panel"));
+        dw->setFeatures(QDockWidget::DockWidgetMovable);
+        taskPanel = new Gui::TaskView::TaskView(dw);
+        dw->setWidget(taskPanel);
+        taskPanel->showDialog(dlg);
+        getMainWindow()->addDockWidget(Qt::LeftDockWidgetArea, dw);
+        connect(dlg, SIGNAL(destroyed()), dw, SLOT(deleteLater()));
+    }
 }
 
 Gui::TaskView::TaskDialog* ControlSingleton::activeDialog() const
@@ -80,8 +96,10 @@ void ControlSingleton::closeDialog()
     Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
         (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
     // should return the pointer to combo view
-    assert(pcCombiView);
-    pcCombiView->closeDialog();
+    if (pcCombiView)
+        pcCombiView->closeDialog();
+    else if (taskPanel)
+        taskPanel->removeDialog();
 }
 
 void ControlSingleton::closedDialog()

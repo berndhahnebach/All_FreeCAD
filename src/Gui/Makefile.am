@@ -294,6 +294,7 @@ libFreeCADGui_la_SOURCES=\
 		SelectionFilter.cpp \
 		SelectionObjectPyImp.cpp \
 		SelectionView.cpp \
+		SoAxisCrossKit.cpp \
 		SoFCBackgroundGradient.cpp \
 		SoFCBoundingBox.cpp \
 		SoFCColorBar.cpp \
@@ -398,6 +399,7 @@ include_HEADERS=\
 		SelectionObject.h \
 		SelectionFilter.h \
 		SelectionView.h \
+		SoAxisCrossKit.h \
 		SoFCBackgroundGradient.h \
 		SoFCBoundingBox.h \
 		SoFCColorBar.h \

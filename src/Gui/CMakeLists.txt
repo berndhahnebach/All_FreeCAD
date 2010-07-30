@@ -451,6 +451,7 @@ SET(Inventor_CPP_SRCS
 		 SoFCVectorizeSVGAction.cpp
 		 SoFCVectorizeU3DAction.cpp
 		 SoNavigationDragger.cpp
+		 SoAxisCrossKit.cpp
 		 SoTextLabel.cpp
 )
 SET(Inventor_SRCS
@@ -468,6 +469,7 @@ SET(Inventor_SRCS
 		 SoFCVectorizeSVGAction.h
 		 SoFCVectorizeU3DAction.h
 		 SoNavigationDragger.h
+		 SoAxisCrossKit.h
 		 SoTextLabel.h
 )
 SOURCE_GROUP("Inventor" FILES ${Inventor_SRCS})

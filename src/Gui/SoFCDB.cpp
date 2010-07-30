@@ -38,6 +38,7 @@
 #include "SoFCInteractiveElement.h"
 #include "SoFCVectorizeSVGAction.h"
 #include "SoFCVectorizeU3DAction.h"
+#include "SoAxisCrossKit.h"
 #include "SoTextLabel.h"
 #include "SoNavigationDragger.h"
 
@@ -81,6 +82,8 @@ void Gui::SoFCDB::init()
     SoFCVectorizeU3DAction          ::initClass();
     SoTextLabel                     ::initClass();
     SoStringLabel                   ::initClass();
+    SoShapeScale                    ::initClass();
+    SoAxisCrossKit                  ::initClass();
 
 
     PropertyItem                    ::init();
