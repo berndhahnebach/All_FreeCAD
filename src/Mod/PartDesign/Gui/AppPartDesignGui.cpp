@@ -57,8 +57,8 @@ void PartDesignGuiExport initPartDesignGui()
     }
 
     try {
-        Base::Interpreter().loadModule("PartGui");
-        Base::Interpreter().loadModule("SketcherGui");
+		Base::Interpreter().runString("import PartGui");
+		Base::Interpreter().runString("import SketcherGui");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

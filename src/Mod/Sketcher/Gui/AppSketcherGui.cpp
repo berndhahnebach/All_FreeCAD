@@ -60,7 +60,8 @@ void SketcherGuiExport initSketcherGui()
         return;
     }
     try {
-        Base::Interpreter().loadModule("PartGui");
+		Base::Interpreter().runString("import PartGui");
+		Base::Interpreter().runString("import Sketcher");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
