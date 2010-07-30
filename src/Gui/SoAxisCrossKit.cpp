@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoShape.h>
