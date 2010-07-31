@@ -57,8 +57,8 @@ void PartDesignGuiExport initPartDesignGui()
     }
 
     try {
-		Base::Interpreter().runString("import PartGui");
-		Base::Interpreter().runString("import SketcherGui");
+        Base::Interpreter().runString("import PartGui");
+        Base::Interpreter().runString("import SketcherGui");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
@@ -68,7 +68,7 @@ void PartDesignGuiExport initPartDesignGui()
     (void) Py_InitModule("PartDesignGui", PartDesignGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of PartDesign module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreatePartDesignCommands();
     PartDesignGui::Workbench::init();
 

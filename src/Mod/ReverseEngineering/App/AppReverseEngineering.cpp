@@ -40,7 +40,7 @@ PyDoc_STRVAR(module_ReverseEngineering_doc,
 extern "C" {
 void ReenExport initReverseEngineering()
 {
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Part");
         Base::Interpreter().loadModule("Mesh");

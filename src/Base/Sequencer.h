@@ -280,7 +280,7 @@ private:
 };
 
 /** The SequencerLauncher class is provided for convenience. It allows you to run an instance of the
- * sequencer by instanciating an object of this class -- most suitable on the stack. So this mechanism
+ * sequencer by instantiating an object of this class -- most suitable on the stack. So this mechanism
  * can be used for try-catch-blocks to destroy the object automatically if the C++ exception mechanism
  * cleans up the stack.
  *

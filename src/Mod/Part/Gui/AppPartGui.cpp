@@ -70,7 +70,7 @@ void AppPartGuiExport initPartGui()
 
     // load needed modules
     try {
-		Base::Interpreter().runString("import Part");
+        Base::Interpreter().runString("import Part");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
@@ -94,7 +94,7 @@ void AppPartGuiExport initPartGui()
 
     PartGui::Workbench                  ::init();
 
-    // instanciating the commands
+    // instantiating the commands
     CreatePartCommands();
     CreateSimplePartCommands();
     CreateParamPartCommands();

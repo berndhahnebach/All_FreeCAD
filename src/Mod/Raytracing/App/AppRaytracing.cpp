@@ -39,7 +39,7 @@ extern struct PyMethodDef Raytracing_methods[];
 extern "C" {
 void AppRaytracingExport initRaytracing()
 {
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Part");
     }

@@ -60,7 +60,7 @@ void DrawingGuiExport initDrawingGui()
     (void) Py_InitModule("DrawingGui", DrawingGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Drawing module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateDrawingCommands();
     DrawingGui::Workbench::init();
 

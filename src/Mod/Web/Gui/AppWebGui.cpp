@@ -62,7 +62,7 @@ void WebGuiExport initWebGui()
     (void) Py_InitModule("WebGui", WebGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Web module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateWebCommands();
     WebGui::Workbench::init();
 
