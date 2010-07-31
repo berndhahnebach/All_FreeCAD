@@ -69,6 +69,10 @@ public:
     /// add constraint 
     int addConstraints(const Constraint *Constraints );
 
+    /** retrives for a Vertex number the corosponding GeoId and PointPosition
+    */
+    void getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos);
+
 	// from base class
     virtual PyObject *getPyObject(void);
     virtual unsigned int getMemSize (void) const;
