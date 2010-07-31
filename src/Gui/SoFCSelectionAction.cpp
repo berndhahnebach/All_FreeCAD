@@ -24,18 +24,28 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#  include <cassert>
 #  include <float.h>
+#  include <Inventor/actions/SoSearchAction.h>
+#  include <Inventor/actions/SoGetBoundingBoxAction.h>
 #  include <Inventor/nodes/SoCallback.h>
 #  include <Inventor/nodes/SoComplexity.h>
+#  include <Inventor/nodes/SoCube.h>
+#  include <Inventor/nodes/SoCamera.h>
 #  include <Inventor/nodes/SoCoordinate3.h>
 #  include <Inventor/nodes/SoCoordinate4.h>
 #  include <Inventor/nodes/SoFont.h>
+#  include <Inventor/nodes/SoMatrixTransform.h>
 #  include <Inventor/nodes/SoProfile.h>
 #  include <Inventor/nodes/SoProfileCoordinate2.h>
 #  include <Inventor/nodes/SoProfileCoordinate3.h>
 #  include <Inventor/nodes/SoSwitch.h>
 #  include <Inventor/nodes/SoTransformation.h>
 #  include <Inventor/nodes/SoIndexedFaceSet.h>
+#  include <Inventor/nodes/SoDrawStyle.h>
+#  include <Inventor/nodes/SoComplexity.h>
+#  include <Inventor/nodes/SoLightModel.h>
+#  include <Inventor/nodes/SoBaseColor.h>
 #endif
 
 #include <Base/Console.h>
@@ -741,3 +751,365 @@ SbBool SoGLSelectAction::isHandled() const
   return this->_handled;
 }
 
+// ---------------------------------------------------------------
+
+namespace Gui {
+class SoBoxSelectionRenderActionP {
+public:
+    SoBoxSelectionRenderActionP(SoBoxSelectionRenderAction * master) 
+      : master(master) { }
+
+    SoBoxSelectionRenderAction * master;
+    SoSearchAction * searchaction;
+    SoSearchAction * selectsearch;
+    SoSearchAction * camerasearch;
+    SoGetBoundingBoxAction * bboxaction;
+    SoBaseColor * basecolor;
+    SoTempPath * postprocpath;
+    SoPath * highlightPath;
+    SoSeparator * localRoot;
+    SoMatrixTransform * xform;
+    SoCube * cube;
+    SoDrawStyle * drawstyle;
+    SoColorPacker colorpacker;
+
+    void initBoxGraph();
+    void updateBbox(const SoPath * path);
+};
+
+}
+
+#undef PRIVATE
+#define PRIVATE(p) ((p)->pimpl)
+#undef PUBLIC
+#define PUBLIC(p) ((p)->master)
+
+// used to initialize the internal storage class with variables
+void
+SoBoxSelectionRenderActionP::initBoxGraph() 
+{
+    this->localRoot = new SoSeparator;
+    this->localRoot->ref();
+    this->localRoot->renderCaching = SoSeparator::OFF;
+    this->localRoot->boundingBoxCaching = SoSeparator::OFF;
+
+    this->xform = new SoMatrixTransform;
+    this->cube = new SoCube;
+
+    this->drawstyle = new SoDrawStyle;
+    this->drawstyle->style = SoDrawStyleElement::LINES;
+    this->basecolor = new SoBaseColor;
+
+    SoLightModel * lightmodel = new SoLightModel;
+    lightmodel->model = SoLightModel::BASE_COLOR;
+
+    SoComplexity * complexity = new SoComplexity;
+    complexity->textureQuality = 0.0f;
+    complexity->type = SoComplexityTypeElement::BOUNDING_BOX;
+
+    this->localRoot->addChild(this->drawstyle);
+    this->localRoot->addChild(this->basecolor);
+
+    this->localRoot->addChild(lightmodel);
+    this->localRoot->addChild(complexity);
+
+    this->localRoot->addChild(this->xform);
+    this->localRoot->addChild(this->cube);
+}
+
+
+// used to render shape and non-shape nodes (usually SoGroup or SoSeparator). 
+void 
+SoBoxSelectionRenderActionP::updateBbox(const SoPath * path)
+{
+    if (this->camerasearch == NULL) {
+        this->camerasearch = new SoSearchAction;
+    }
+
+    // find camera used to render node
+    this->camerasearch->setFind(SoSearchAction::TYPE);
+    this->camerasearch->setInterest(SoSearchAction::LAST);
+    this->camerasearch->setType(SoCamera::getClassTypeId());
+    this->camerasearch->apply((SoPath*) path);
+  
+    if (!this->camerasearch->getPath()) {
+        // if there is no camera there is no point rendering the bbox
+        return;
+    }
+    this->localRoot->insertChild(this->camerasearch->getPath()->getTail(), 0);
+    this->camerasearch->reset();
+  
+    if (this->bboxaction == NULL) {
+        this->bboxaction = new SoGetBoundingBoxAction(SbViewportRegion(100, 100));
+    }
+    this->bboxaction->setViewportRegion(PUBLIC(this)->getViewportRegion());
+    this->bboxaction->apply((SoPath*) path);
+  
+    SbXfBox3f & box = this->bboxaction->getXfBoundingBox();
+  
+    if (!box.isEmpty()) {
+        // set cube size
+        float x, y, z;
+        box.getSize(x, y, z);
+        this->cube->width  = x;
+        this->cube->height  = y;
+        this->cube->depth = z;
+    
+        SbMatrix transform = box.getTransform();
+    
+        // get center (in the local bbox coordinate system)
+        SbVec3f center = box.SbBox3f::getCenter();
+    
+        // if center != (0,0,0), move the cube
+        if (center != SbVec3f(0.0f, 0.0f, 0.0f)) {
+            SbMatrix t;
+            t.setTranslate(center);
+            transform.multLeft(t);
+        }
+        this->xform->matrix = transform; 
+    
+        PUBLIC(this)->SoGLRenderAction::apply(this->localRoot);
+    }
+    // remove camera
+    this->localRoot->removeChild(0);
+}
+
+SO_ACTION_SOURCE(SoBoxSelectionRenderAction);
+
+// Overridden from parent class.
+void
+SoBoxSelectionRenderAction::initClass(void)
+{
+    SO_ACTION_INIT_CLASS(SoBoxSelectionRenderAction, SoGLRenderAction);
+}
+
+SoBoxSelectionRenderAction::SoBoxSelectionRenderAction(void)
+  : inherited(SbViewportRegion())
+{
+    this->constructorCommon();
+}
+
+SoBoxSelectionRenderAction::SoBoxSelectionRenderAction(const SbViewportRegion & viewportregion)
+  : inherited(viewportregion)
+{
+    this->constructorCommon();
+}
+
+//
+// private. called by both constructors
+//
+void
+SoBoxSelectionRenderAction::constructorCommon(void)
+{
+    SO_ACTION_CONSTRUCTOR(SoBoxSelectionRenderAction);
+
+    PRIVATE(this) = new SoBoxSelectionRenderActionP(this);
+
+    // Initialize local variables
+    PRIVATE(this)->initBoxGraph();
+
+    this->hlVisible = TRUE;
+
+    PRIVATE(this)->basecolor->rgb.setValue(1.0f, 0.0f, 0.0f);
+    PRIVATE(this)->drawstyle->linePattern = 0xffff;
+    PRIVATE(this)->drawstyle->lineWidth = 1.0f;
+    PRIVATE(this)->searchaction = NULL;
+    PRIVATE(this)->selectsearch = NULL;
+    PRIVATE(this)->camerasearch = NULL;
+    PRIVATE(this)->bboxaction = NULL;
+
+    // SoBase-derived objects should be dynamically allocated.
+    PRIVATE(this)->postprocpath = new SoTempPath(32);
+    PRIVATE(this)->postprocpath->ref();
+    PRIVATE(this)->highlightPath = 0;
+}
+
+SoBoxSelectionRenderAction::~SoBoxSelectionRenderAction(void)
+{
+    PRIVATE(this)->postprocpath->unref();
+    PRIVATE(this)->localRoot->unref();
+
+    delete PRIVATE(this)->searchaction;
+    delete PRIVATE(this)->selectsearch;
+    delete PRIVATE(this)->camerasearch;
+    delete PRIVATE(this)->bboxaction;
+    delete PRIVATE(this);
+}
+
+void
+SoBoxSelectionRenderAction::apply(SoNode * node)
+{
+    SoGLRenderAction::apply(node);
+    if (this->hlVisible) {
+        if (PRIVATE(this)->searchaction == NULL) {
+            PRIVATE(this)->searchaction = new SoSearchAction;
+        }
+        PRIVATE(this)->searchaction->setType(SoFCSelection::getClassTypeId());
+        PRIVATE(this)->searchaction->setInterest(SoSearchAction::ALL);
+        PRIVATE(this)->searchaction->apply(node);
+        const SoPathList & pathlist = PRIVATE(this)->searchaction->getPaths();
+        if (pathlist.getLength() > 0) {
+            for (int i = 0; i < pathlist.getLength(); i++ ) {
+                SoPath * path = pathlist[i];
+                assert(path);
+                SoFCSelection * selection = (SoFCSelection *) path->getTail();
+                assert(selection->getTypeId().isDerivedFrom(SoFCSelection::getClassTypeId()));
+                if (selection->selected.getValue() && selection->style.getValue() == SoFCSelection::BOX) {
+                    PRIVATE(this)->basecolor->rgb.setValue(selection->colorSelection.getValue());
+                    if (PRIVATE(this)->selectsearch == NULL) {
+                        PRIVATE(this)->selectsearch = new SoSearchAction;
+                    }
+                    PRIVATE(this)->selectsearch->setType(SoShape::getClassTypeId());
+                    PRIVATE(this)->selectsearch->setInterest(SoSearchAction::FIRST);
+                    PRIVATE(this)->selectsearch->apply(selection);
+                    SoPath* shapepath = PRIVATE(this)->selectsearch->getPath();
+                    if (shapepath) {
+                        SoPathList list;
+                        list.append(shapepath);
+                        this->drawBoxes(path, &list);
+                    }
+                    PRIVATE(this)->selectsearch->reset();
+                }
+            }
+        }
+        PRIVATE(this)->searchaction->reset();
+    }
+}
+
+void
+SoBoxSelectionRenderAction::apply(SoPath * path)
+{
+    SoGLRenderAction::apply(path);
+    SoNode* node = path->getTail();
+    if (node && node->getTypeId() == SoFCSelection::getClassTypeId()) {
+        SoFCSelection * selection = (SoFCSelection *) node;
+
+        // This happens when dehighlighting the current shape
+        if (PRIVATE(this)->highlightPath == path) {
+            PRIVATE(this)->highlightPath->unref();
+            PRIVATE(this)->highlightPath = 0;
+            // FIXME: Doing a redraw to remove the shown bounding box causes
+            // some problems when moving the mouse from one shape to another
+            // because this will destroy the box immediately
+            selection->touch(); // force a redraw when dehighlighting
+        }
+        else if (selection->isHighlighted() &&
+                 selection->selected.getValue() == SoFCSelection::NOTSELECTED &&
+                 selection->style.getValue() == SoFCSelection::BOX) {
+            PRIVATE(this)->basecolor->rgb.setValue(selection->colorHighlight.getValue());
+
+            if (PRIVATE(this)->selectsearch == NULL) {
+              PRIVATE(this)->selectsearch = new SoSearchAction;
+            }
+            PRIVATE(this)->selectsearch->setType(SoShape::getClassTypeId());
+            PRIVATE(this)->selectsearch->setInterest(SoSearchAction::FIRST);
+            PRIVATE(this)->selectsearch->apply(selection);
+            SoPath* shapepath = PRIVATE(this)->selectsearch->getPath();
+            if (shapepath) {
+                SoPathList list;
+                list.append(shapepath);
+                PRIVATE(this)->highlightPath = path;
+                PRIVATE(this)->highlightPath->ref();
+                this->drawBoxes(path, &list);
+            }
+            PRIVATE(this)->selectsearch->reset();
+        }
+    }
+}
+
+void
+SoBoxSelectionRenderAction::apply(const SoPathList & pathlist,
+                                  SbBool obeysrules)
+{
+    SoGLRenderAction::apply(pathlist, obeysrules);
+}
+
+void
+SoBoxSelectionRenderAction::setColor(const SbColor & color)
+{
+    PRIVATE(this)->basecolor->rgb = color;
+}
+
+const SbColor &
+SoBoxSelectionRenderAction::getColor(void)
+{
+    return PRIVATE(this)->basecolor->rgb[0];
+}
+
+void
+SoBoxSelectionRenderAction::setLinePattern(unsigned short pattern)
+{
+    PRIVATE(this)->drawstyle->linePattern = pattern;
+}
+
+unsigned short
+SoBoxSelectionRenderAction::getLinePattern(void) const
+{
+    return PRIVATE(this)->drawstyle->linePattern.getValue();
+}
+
+void
+SoBoxSelectionRenderAction::setLineWidth(const float width)
+{
+    PRIVATE(this)->drawstyle->lineWidth = width;
+}
+
+float
+SoBoxSelectionRenderAction::getLineWidth(void) const
+{
+    return PRIVATE(this)->drawstyle->lineWidth.getValue();
+}
+
+void
+SoBoxSelectionRenderAction::drawBoxes(SoPath * pathtothis, const SoPathList * pathlist)
+{
+    int i;
+    int thispos = ((SoFullPath *)pathtothis)->getLength()-1;
+    assert(thispos >= 0);
+    PRIVATE(this)->postprocpath->truncate(0); // reset
+  
+    for (i = 0; i < thispos; i++)
+        PRIVATE(this)->postprocpath->append(pathtothis->getNode(i));
+
+    // we need to disable accumulation buffer antialiasing while
+    // rendering selected objects
+    int oldnumpasses = this->getNumPasses();
+    this->setNumPasses(1);
+
+    SoState * thestate = this->getState();
+    thestate->push();
+
+    for (i = 0; i < pathlist->getLength(); i++) {
+        SoFullPath * path = (SoFullPath *)(*pathlist)[i];
+
+        for (int j = 0; j < path->getLength(); j++) {
+            PRIVATE(this)->postprocpath->append(path->getNode(j));
+        }
+
+        // Previously SoGLRenderAction was used to draw the bounding boxes
+        // of shapes in selection paths, by overriding renderstyle state
+        // elements to lines drawstyle and simply doing:
+        //
+        //   SoGLRenderAction::apply(PRIVATE(this)->postprocpath); // Bug
+        //
+        // This could have the unwanted side effect of rendering
+        // non-selected shapes, as they could be part of the path (due to
+        // being placed below SoGroup nodes (instead of SoSeparator
+        // nodes)) up to the selected shape.
+        //
+        //
+        // A better approach turned out to be to soup up and draw only the
+        // bounding boxes of the selected shapes:
+        PRIVATE(this)->updateBbox(PRIVATE(this)->postprocpath);
+
+        // Remove temporary path from path buffer
+        PRIVATE(this)->postprocpath->truncate(thispos);
+    }
+
+    this->setNumPasses(oldnumpasses);
+    thestate->pop();
+}
+
+
+#undef PRIVATE
+#undef PUBLIC
