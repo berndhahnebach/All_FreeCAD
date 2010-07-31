@@ -61,8 +61,8 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain orizontal");
-    sToolTipText    = QT_TR_NOOP("Create a horizontal constrain on the selected item");
+    sMenuText       = QT_TR_NOOP("Constrain horizontally");
+    sToolTipText    = QT_TR_NOOP("Create a horizontal constraint on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainHorizontal";
@@ -78,7 +78,7 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
 	// only one sketch with its subelements are allowed to be selected
     if (selection.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select an edges from the sketch."));
+            QObject::tr("Select an edge from the sketch."));
         return;
     }
 
@@ -99,24 +99,25 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
 			for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
 				if((*it)->Type == Sketcher::Horizontal && (*it)->First == index){
 					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Double constraint"),
-						QObject::tr("The selected edge has already a Horizontal constraint!"));
+						QObject::tr("The selected edge has already a horizontal constraint!"));
 					return;
 				}
 				if((*it)->Type == Sketcher::Vertical && (*it)->First == index){
-					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Imposible constraint"),
-						QObject::tr("The selected edge has already a Vertical constraint!"));
+					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Impossible constraint"),
+						QObject::tr("The selected edge has already a vertical constraint!"));
 					return;
 				}
 			}
-			// isue the actual commands to creat the Constraint
-			doCommand(Doc,"App.ActiveDocument.ActiveObject.addConstraint(Sketcher.Constraint('Horizontal',%i)) ",index);
+			// issue the actual commands to create the constraint
+			doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
+                         ,selection[0].getFeatName(),index);
 		}
     }
 	// finish the transaction and update
     commitCommand();
     updateActive();
 
-	// clear the selction (conviniance)
+	// clear the selction (convenience)
 	getSelection().clearSelection();
 	
       
@@ -134,8 +135,8 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain vertical");
-    sToolTipText    = QT_TR_NOOP("Create a vertical constrain on the selected item");
+    sMenuText       = QT_TR_NOOP("Constrain vertically");
+    sToolTipText    = QT_TR_NOOP("Create a vertical constraint on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainVertical";
@@ -152,7 +153,7 @@ void CmdSketcherConstrainVertical::activated(int iMsg)
 	// only one sketch with its subelements are allowed to be selected
     if (selection.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select an edges from the sketch."));
+            QObject::tr("Select an edge from the sketch."));
         return;
     }
 
@@ -172,28 +173,27 @@ void CmdSketcherConstrainVertical::activated(int iMsg)
 			// check if the edge has already a Horizontal or Vertical constraint
 			for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
 				if((*it)->Type == Sketcher::Horizontal && (*it)->First == index){
-					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Imposible constraint"),
-						QObject::tr("The selected edge has already a Horizontal constraint!"));
+					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Impossible constraint"),
+						QObject::tr("The selected edge has already a horizontal constraint!"));
 					return;
 				}
 				if((*it)->Type == Sketcher::Vertical && (*it)->First == index){
 					QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Double constraint"),
-						QObject::tr("The selected edge has already a Vertical constraint!"));
+						QObject::tr("The selected edge has already a vertical constraint!"));
 					return;
 				}
 			}
-			// isue the actual commands to creat the Constraint
-			doCommand(Doc,"App.ActiveDocument.ActiveObject.addConstraint(Sketcher.Constraint('Vertical',%i)) ",index);
+			// issue the actual command to create the constraint
+			doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%d))"
+                         ,selection[0].getFeatName(),index);
 		}
     }
 	// finish the transaction and update
     commitCommand();
     updateActive();
 
-	// clear the selction (conviniance)
+	// clear the selection (convenience)
 	getSelection().clearSelection();
-	
-      
 }
 
 bool CmdSketcherConstrainVertical::isActive(void)
@@ -292,16 +292,15 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
 
     // undo command open
     openCommand("add coinsident constraint");
-	doCommand(Doc,"App.ActiveDocument.ActiveObject.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) ",GeoId1,Pt1,GeoId2,Pt2);
+    doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) "
+                 ,selection[0].getFeatName(),GeoId1,Pt1,GeoId2,Pt2);
 
-	// finish the transaction and update
+    // finish the transaction and update
     commitCommand();
     updateActive();
 
-	// clear the selction (conviniance)
-	getSelection().clearSelection();
-	
-      
+    // clear the selction (convenience)
+    getSelection().clearSelection();
 }
 
 bool CmdSketcherConstrainCoincident::isActive(void)
