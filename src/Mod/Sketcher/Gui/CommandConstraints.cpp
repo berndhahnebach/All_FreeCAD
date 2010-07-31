@@ -66,6 +66,7 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainHorizontal";
+    iAccel          = Qt::Key_H;
 }
 
 
@@ -93,7 +94,7 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
     for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
 		// only handle edges
 		if (it->size() > 4 && it->substr(0,4) == "Edge") {
-			int index=std::atoi(&(*it)[4]);
+			int index=std::atoi(it->substr(4,4000).c_str());
 			// check if the edge has already a Horizontal or Vertical constraint
 			for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
 				if((*it)->Type == Sketcher::Horizontal && (*it)->First == index){
@@ -138,6 +139,8 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainVertical";
+    iAccel          = Qt::Key_V;
+
 }
 
 
@@ -165,7 +168,7 @@ void CmdSketcherConstrainVertical::activated(int iMsg)
     for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
 		// only handle edges
 		if (it->size() > 4 && it->substr(0,4) == "Edge") {
-			int index=std::atoi(&(*it)[4]);
+			int index=std::atoi(it->substr(4,4000).c_str());
 			// check if the edge has already a Horizontal or Vertical constraint
 			for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
 				if((*it)->Type == Sketcher::Horizontal && (*it)->First == index){
@@ -236,11 +239,68 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainCoincident";
+    iAccel          = Qt::Key_C;
+
 }
 
 
 void CmdSketcherConstrainCoincident::activated(int iMsg)
 {
+	// get the selection 
+	std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+	// only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select vertexes from the sketch."));
+        return;
+    }
+
+	// get the needed lists and objects
+	const std::vector<std::string> &SubNames = selection[0].getSubNames();
+	Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+	const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+
+	// only one sketch with its subelements are allowed to be selected
+    if (SubNames.size() != 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two vertexes from the sketch."));
+        return;
+    }
+
+    int index1,index2;
+    // get first vertex index
+	if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+        index1 = std::atoi(SubNames[0].substr(6,4000).c_str());
+    else{
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two vertexes from the sketch."));
+        return;
+    }
+        
+    // get second vertex index
+	if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+        index2 = std::atoi(SubNames[1].substr(6,4000).c_str());
+    else{
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two vertexes from the sketch."));
+        return;
+    }
+    int GeoId1,GeoId2,Pt1,Pt2;
+    Obj->getGeoVertexIndex(index1,GeoId1,Pt1);
+    Obj->getGeoVertexIndex(index2,GeoId2,Pt2);
+
+    // undo command open
+    openCommand("add coinsident constraint");
+	doCommand(Doc,"App.ActiveDocument.ActiveObject.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) ",GeoId1,Pt1,GeoId2,Pt2);
+
+	// finish the transaction and update
+    commitCommand();
+    updateActive();
+
+	// clear the selction (conviniance)
+	getSelection().clearSelection();
+	
       
 }
 

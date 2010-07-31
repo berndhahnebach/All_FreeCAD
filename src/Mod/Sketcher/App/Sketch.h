@@ -120,6 +120,10 @@ public:
     int addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name=0);
     //@}
 
+    /** retrives for a Vertex number the corosponding GeoId and PointPosition
+    */
+    void getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos);
+
     enum GeoType {
         Point   = 1,
         Line    = 2,

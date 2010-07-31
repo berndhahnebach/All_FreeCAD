@@ -135,3 +135,9 @@ void SketchObject::Restore(XMLReader &reader)
 
 }
 
+void SketchObject::getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos)
+{
+    PointPos = VertexId%2 + 1;
+    GeoId = (int)VertexId/2;
+}
+
