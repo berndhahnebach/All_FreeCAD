@@ -42,10 +42,10 @@ PyDoc_STRVAR(module_PartDesign_doc,
 extern "C" {
 void AppPartDesignExport initPartDesign()
 {
-    // load dependend module
+    // load dependent module
     try {
-		Base::Interpreter().runString("import Part");
-		Base::Interpreter().runString("import Sketcher");
+        Base::Interpreter().runString("import Part");
+        Base::Interpreter().runString("import Sketcher");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

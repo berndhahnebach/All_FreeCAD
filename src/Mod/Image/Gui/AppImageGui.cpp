@@ -47,7 +47,7 @@ void ImageGuiExport initImageGui()
     (void) Py_InitModule("ImageGui", ImageGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Image module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateImageCommands();
     ImageGui::Workbench::init();
 

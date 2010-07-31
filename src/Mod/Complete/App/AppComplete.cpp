@@ -41,7 +41,7 @@ PyDoc_STRVAR(module_Complete_doc,
 extern "C" {
 void AppCompleteExport initComplete()
 {
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Part");
         Base::Interpreter().loadModule("Mesh");

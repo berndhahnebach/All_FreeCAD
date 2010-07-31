@@ -67,7 +67,7 @@ void AppRaytracingGuiExport initRaytracingGui()
     (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Raytracing module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateRaytracingCommands();
     RaytracingGui::Workbench::init();
 

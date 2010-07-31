@@ -58,7 +58,7 @@ void MeshPartGuiExport initMeshPartGui()
     (void) Py_InitModule("MeshPartGui", MeshPartGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of MeshPart module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateMeshPartCommands();
     MeshPartGui::Workbench::init();
 

@@ -60,7 +60,7 @@ void PointsGuiExport initPointsGui()
         return;
     }
 
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Points");
     }
@@ -72,7 +72,7 @@ void PointsGuiExport initPointsGui()
     Base::Console().Log("Loading GUI of Points module... done\n");
     (void) Py_InitModule("PointsGui", PointsGui_methods);   /* mod name, table ptr */
 
-    // instanciating the commands
+    // instantiating the commands
     CreatePointsCommands();
 
     PointsGui::ViewProviderPoints::init();

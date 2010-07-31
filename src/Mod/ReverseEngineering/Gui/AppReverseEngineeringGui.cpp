@@ -58,7 +58,7 @@ void ReenGuiExport initReverseEngineeringGui()
     (void) Py_InitModule("ReverseEngineeringGui", ReverseEngineeringGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of ReverseEngineering module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateReverseEngineeringCommands();
     ReverseEngineeringGui::Workbench::init();
 

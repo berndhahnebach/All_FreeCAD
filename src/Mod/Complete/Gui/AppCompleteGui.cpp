@@ -59,7 +59,7 @@ void CompleteGuiExport initCompleteGui()
         return;
     }
 
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("PartGui");
         Base::Interpreter().loadModule("MeshGui");
@@ -128,7 +128,7 @@ void CompleteGuiExport initCompleteGui()
     (void) Py_InitModule("CompleteGui", CompleteGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Complete module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateCompleteCommands();
     CompleteGui::Workbench::init();
 

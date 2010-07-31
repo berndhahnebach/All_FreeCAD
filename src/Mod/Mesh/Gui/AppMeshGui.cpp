@@ -76,8 +76,7 @@ void MeshGuiExport initMeshGui()
         return;
     }
 
-    // load needed modules
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Mesh");
     }
@@ -96,7 +95,7 @@ void MeshGuiExport initMeshGui()
     Gui::BitmapFactory().addXPM("mesh_fillhole", mesh_fillhole);
     Gui::BitmapFactory().addXPM("mesh_pipette", mesh_pipette);
 
-    // instanciating the commands
+    // instantiating the commands
     CreateMeshCommands();
     (void)new MeshGui::CleanupHandler;
 

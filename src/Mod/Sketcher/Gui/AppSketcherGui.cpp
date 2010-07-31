@@ -60,8 +60,8 @@ void SketcherGuiExport initSketcherGui()
         return;
     }
     try {
-		Base::Interpreter().runString("import PartGui");
-		Base::Interpreter().runString("import Sketcher");
+        Base::Interpreter().runString("import PartGui");
+        Base::Interpreter().runString("import Sketcher");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
@@ -71,7 +71,7 @@ void SketcherGuiExport initSketcherGui()
     (void) Py_InitModule("SketcherGui", SketcherGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Sketcher module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateSketcherCommands();
     CreateSketcherCommandsCreateGeo();
     CreateSketcherCommandsConstraints();

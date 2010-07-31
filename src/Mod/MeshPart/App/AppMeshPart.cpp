@@ -40,7 +40,7 @@ PyDoc_STRVAR(module_MeshPart_doc,
 extern "C" {
 void AppMeshPartExport initMeshPart()
 {
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Part");
         //Base::Interpreter().loadModule("Mesh");

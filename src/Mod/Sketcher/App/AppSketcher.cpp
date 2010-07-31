@@ -48,7 +48,7 @@ PyDoc_STRVAR(module_Sketcher_doc,
 extern "C" {
 void AppSketcherExport initSketcher()
 {
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().runString("import Part");
     }

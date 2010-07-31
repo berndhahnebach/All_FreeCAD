@@ -32,7 +32,7 @@ PyDoc_STRVAR(module_drawing_doc,
 extern "C" {
 void AppDrawingExport initDrawing()
 {
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Part");
         //Base::Interpreter().loadModule("Mesh");

@@ -63,7 +63,7 @@ void RobotGuiExport initRobotGui()
     (void) Py_InitModule("RobotGui", RobotGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Robot module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateRobotCommands();
     CreateRobotCommandsExport();
     CreateRobotCommandsInsertRobots();

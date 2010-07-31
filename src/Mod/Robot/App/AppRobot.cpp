@@ -50,7 +50,7 @@ PyDoc_STRVAR(module_Robot_doc,
 extern "C" {
 void AppRobotExport initRobot()
 {
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("Part");
         //Base::Interpreter().loadModule("Mesh");

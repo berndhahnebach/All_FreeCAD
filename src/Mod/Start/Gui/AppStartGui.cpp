@@ -59,7 +59,7 @@ void StartGuiExport initStartGui()
         return;
     }
 
-    // load dependend module
+    // load dependent module
     try {
         Base::Interpreter().loadModule("WebGui");
     }
@@ -84,7 +84,7 @@ void StartGuiExport initStartGui()
     (void) Py_InitModule("StartGui", StartGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Start module... done\n");
 
-    // instanciating the commands
+    // instantiating the commands
     CreateStartCommands();
     StartGui::Workbench::init();
 
