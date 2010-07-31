@@ -27,6 +27,8 @@
 //#include <Inventor/SoAction.h> 
 #include <Inventor/actions/SoSubAction.h>
 #include <Inventor/events/SoSubEvent.h>
+#include <Inventor/actions/SoGLRenderAction.h>
+#include <Inventor/SbColor.h>
 #include <vector>
 
 class SoSFString;
@@ -249,6 +251,45 @@ public:
 
 private:
     SbBool _handled;
+};
+
+class SoBoxSelectionRenderActionP;
+/**
+ * The SoBoxSelectionRenderAction class renders the scene with highlighted boxes around selections.
+ * @author Werner Mayer
+ */
+class GuiExport SoBoxSelectionRenderAction : public SoGLRenderAction {
+    typedef SoGLRenderAction inherited;
+
+    SO_ACTION_HEADER(SoBoxSelectionRenderAction);
+
+public:
+    SoBoxSelectionRenderAction(void);
+    SoBoxSelectionRenderAction(const SbViewportRegion & viewportregion);
+    virtual ~SoBoxSelectionRenderAction();
+
+    static void initClass(void);
+
+    virtual void apply(SoNode * node);
+    virtual void apply(SoPath * path);
+    virtual void apply(const SoPathList & pathlist, SbBool obeysrules = FALSE);
+    void setVisible(SbBool b) { hlVisible = b; }
+    SbBool isVisible() const { return hlVisible; }
+    void setColor(const SbColor & color);
+    const SbColor & getColor(void);
+    void setLinePattern(unsigned short pattern);
+    unsigned short getLinePattern(void) const;
+    void setLineWidth(const float width);
+    float getLineWidth(void) const;
+
+protected:
+    SbBool hlVisible;
+
+private:
+    void constructorCommon(void);
+    void drawBoxes(SoPath * pathtothis, const SoPathList * pathlist);
+
+    SoBoxSelectionRenderActionP * pimpl;
 };
 
 } // namespace Gui

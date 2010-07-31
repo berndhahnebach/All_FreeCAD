@@ -465,7 +465,7 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings() const
     float transparency;
     ParameterGrp::handle hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("View");
     bool enablePre = hGrp->GetBool("EnablePreselection", false);
-    bool enableSel = hGrp->GetBool("EnableSelection", false);
+    bool enableSel = hGrp->GetBool("EnableSelection", true);
     if (!enablePre) {
         sel->highlightMode = Gui::SoFCSelection::OFF;
     }
@@ -479,7 +479,6 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings() const
     }
     if (!enableSel || !Selectable.getValue()) {
         sel->selectionMode = Gui::SoFCSelection::SEL_OFF;
-        sel->style = Gui::SoFCSelection::BOX;
     }
     else {
         // Do the same with the selection color

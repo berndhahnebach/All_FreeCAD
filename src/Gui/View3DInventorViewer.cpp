@@ -221,6 +221,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
     pcViewProviderRoot->addChild(cb);
 #endif
 
+    // Set our own render action which show a bounding box if
+    // the SoFCSelection::BOX style is set
+    this->setGLRenderAction(new SoBoxSelectionRenderAction);
+
     // set the transperency and antialiasing settings
 //  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
     getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
@@ -228,7 +232,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
 
     // Settings
     setSeekTime(0.4f);
-    if ( isSeekValuePercentage() == false )
+    if (isSeekValuePercentage() == false)
         setSeekValueAsPercentage(true);
     setSeekDistance(100);
     setViewing(false);

@@ -56,6 +56,7 @@ DlgSettingsMeshView::~DlgSettingsMeshView()
 void DlgSettingsMeshView::saveSettings()
 {
     checkboxRendering->onSave();
+    checkboxBoundbox->onSave();
     buttonMeshColor->onSave();
     buttonLineColor->onSave();
     buttonBackfaceColor->onSave();
@@ -86,7 +87,13 @@ void DlgSettingsMeshView::saveSettings()
 
 void DlgSettingsMeshView::loadSettings()
 {
+    Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter();
+    hGrp = hGrp->GetGroup("View");
+    if (!hGrp->GetBool("EnablePreselection",false) &&
+        !hGrp->GetBool("EnableSelection",true))
+        checkboxBoundbox->setDisabled(true);
     checkboxRendering->onRestore();
+    checkboxBoundbox->onRestore();
     buttonMeshColor->onRestore();
     buttonLineColor->onRestore();
     buttonBackfaceColor->onRestore();

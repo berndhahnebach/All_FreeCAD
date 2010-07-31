@@ -281,6 +281,9 @@ ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
         double angle = hGrp->GetFloat("CreaseAngle", 0.0);
         CreaseAngle.setValue(angle);
     }
+
+    if (hGrp->GetBool("ShowBoundingBox", false))
+        pcHighlight->style = Gui::SoFCSelection::BOX;
 }
 
 ViewProviderMesh::~ViewProviderMesh()
@@ -357,6 +360,12 @@ SoShape* ViewProviderMesh::getShapeNode() const
 void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 {
     ViewProviderGeometryObject::attach(pcFeat);
+
+    // Note: Since for mesh data the SoFCSelection node has no SoSeparator but
+    // an SoGroup as parent the EMISSIVE style if set has fundamentally no effect.
+    // This behaviour is given due to the fact that SoFCSelection inherits from
+    // SoGroup (formerly SoSeparator). If we wanted to enable emissive overlay for
+    // highlighting or selection we would need an SoSeparator as parent node below.
 
     // faces
     SoGroup* pcFlatRoot = new SoGroup();
