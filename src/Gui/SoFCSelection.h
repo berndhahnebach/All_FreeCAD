@@ -20,16 +20,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef COIN_SoFCSelection_H
-#define COIN_SoFCSelection_H
+#ifndef GUI_SOFCSELECTION_H
+#define GUI_SOFCSELECTION_H
 
 # ifdef FC_OS_MACOSX
 # include <OpenGL/gl.h>
 # else
-#   ifdef FC_OS_WIN32
-#     include <windows.h>
-#   endif
-#   include <GL/gl.h>
+# ifdef FC_OS_WIN32
+#  include <windows.h>
+# endif
+# include <GL/gl.h>
 # endif
 
 #include <Inventor/nodes/SoSubNode.h>
@@ -45,85 +45,78 @@ class SoFullPath;
 namespace Gui {
 
 
-
-/** selection node
- *  this node do the complete highlighting and selection together with the viewer
- *  it is d
+/** Selection node
+ *  This node does the complete highlighting and selection together with the viewer
  *  \author Jürgen Riegel
  */
 class GuiExport SoFCSelection : public SoGroup {
-  typedef SoGroup inherited;
+    typedef SoGroup inherited;
 
-  SO_NODE_HEADER(Gui::SoFCSelection);
+    SO_NODE_HEADER(Gui::SoFCSelection);
 
 public:
-  static void initClass(void);
-  static void finish(void);
-  SoFCSelection(void);
+    static void initClass(void);
+    static void finish(void);
+    SoFCSelection(void);
 
-  enum HighlightModes {
-    AUTO, ON, OFF
-  };
+    enum HighlightModes {
+        AUTO, ON, OFF
+    };
 
-  enum SelectionModes {
-    SEL_ON, SEL_OFF
-  };
+    enum SelectionModes {
+        SEL_ON, SEL_OFF
+    };
 
-  enum Selected {
-    NOTSELECTED, SELECTED
-  };
+    enum Selected {
+        NOTSELECTED, SELECTED
+    };
 
-  enum Styles {
-    EMISSIVE, EMISSIVE_DIFFUSE, BOX
-  };
+    enum Styles {
+        EMISSIVE, EMISSIVE_DIFFUSE, BOX
+    };
 
-  SbBool isHighlighted(void){return highlighted;}
+    SbBool isHighlighted(void) const {return highlighted;}
 
-  SoSFColor colorHighlight;
-  SoSFColor colorSelection;
-  SoSFEnum style;
-  SoSFEnum selected;
-  SoSFEnum highlightMode;
-  SoSFEnum selectionMode;
-  
+    SoSFColor colorHighlight;
+    SoSFColor colorSelection;
+    SoSFEnum style;
+    SoSFEnum selected;
+    SoSFEnum highlightMode;
+    SoSFEnum selectionMode;
 
-  SoSFString documentName;
-  SoSFString objectName;
-  SoSFString subElementName;
+    SoSFString documentName;
+    SoSFString objectName;
+    SoSFString subElementName;
 
+    virtual void doAction(SoAction *action);
+    virtual void GLRender(SoGLRenderAction * action);
 
-  virtual void doAction( SoAction *action);
-  virtual void GLRender(SoGLRenderAction * action);
-
-  virtual void handleEvent(SoHandleEventAction * action);
-  virtual void GLRenderBelowPath(SoGLRenderAction * action);
-  virtual void GLRenderInPath(SoGLRenderAction * action);
-  static  void turnOffCurrentHighlight(SoGLRenderAction * action);
+    virtual void handleEvent(SoHandleEventAction * action);
+    virtual void GLRenderBelowPath(SoGLRenderAction * action);
+    virtual void GLRenderInPath(SoGLRenderAction * action);
+    static  void turnOffCurrentHighlight(SoGLRenderAction * action);
 
 protected:
-  virtual ~SoFCSelection();
-  virtual void redrawHighlighted(SoAction * act, SbBool  flag);
-  virtual SbBool readInstance  (  SoInput *  in, unsigned short  flags ); 
-
+    virtual ~SoFCSelection();
+    virtual void redrawHighlighted(SoAction * act, SbBool flag);
+    virtual SbBool readInstance(SoInput *  in, unsigned short  flags); 
 
 private:
+    static void turnoffcurrent(SoAction * action);
+    void setOverride(SoGLRenderAction * action);
+    SbBool isHighlighted(SoAction *action);
+    SbBool preRender(SoGLRenderAction *act, GLint &oldDepthFunc);
 
-  static void turnoffcurrent(SoAction * action);
-  void setOverride(SoGLRenderAction * action);
-  static SoFullPath * currenthighlight;
+    static SoFullPath * currenthighlight;
 
-//  SoFCSelectionP * pimpl;
-  SbBool highlighted;
-  SoColorPacker colorpacker;
+    SbBool highlighted;
+    SoColorPacker colorpacker;
 
-  bool bShift;
-  bool bCtrl;
-
-  SbBool		isHighlighted(SoAction *action);
-  SbBool		preRender(SoGLRenderAction *act, GLint &oldDepthFunc);
+    SbBool bShift;
+    SbBool bCtrl;
 };
 
 
 } // namespace Gui
 
-#endif // !COIN_SoFCSelection_H
+#endif // !GUI_SOFCSELECTION_H
