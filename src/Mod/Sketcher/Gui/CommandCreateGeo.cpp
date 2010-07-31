@@ -146,7 +146,9 @@ public:
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
             openCommand("add sketch line");
-            doCommand("App.ActiveDocument.ActiveObject.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)) )",EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+            doCommand("App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
         }
         return true;
