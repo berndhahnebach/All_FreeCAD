@@ -620,35 +620,57 @@ class ghostTracker(Tracker):
 
 class pointEditTracker(Tracker):
 	"A point edit tracker"
-	def __init__(self):
-		color = coin.SoBaseColor()
+	def __init__(self,pos=Vector(0,0,0)):
+                trm = coin.SoTransform()
+                trm.rotation.setValue(coin.SbVec3f(1,0,0),math.pi/2)
+                trm.scaleFactor.setValue([.2,.2,.2])
+                trm.translation.setValue(coin.SbVec3f(pos.x,pos.y,pos.z))
+                color = coin.SoBaseColor()
 		color.rgb = FreeCADGui.activeWorkbench().draftToolBar.\
 			ui.getDefaultColor("snap")
-		self.marker = coin.SoMarkerSet() # this is the marker symbol
-		self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
-		self.coords = coin.SoCoordinate3() # this is the coordinate
-		self.coords.point.setValue((0,0,0))
-		node = coin.SoAnnotation()
-		node.addChild(self.coords)
-		node.addChild(color)
-		node.addChild(self.marker)
-		Tracker.__init__(self,children=[node])
+                t1 = coin.SoTransform()
+                t1.rotation.setValue(coin.SbVec3f(0,0,1),math.pi/2)
+                t1.scaleFactor.setValue([.2,.2,.2])
+                t1.translation.setValue([-1,0,0])
+                c1 = coin.SoCone()
+                c2 = c1.copy()
+                t2 = coin.SoTransform()
+                t2.rotation.setValue(coin.SbVec3f(0,0,1),math.pi)
+                t2.translation.setValue([2,0,0])
+                s1 = coin.SoSeparator()
+                s1.addChild(color)
+                s1.addChild(t1)
+                s1.addChild(c1)
+                s1.addChild(t2)
+                s1.addChild(c2)
+                xydragger = coin.SoTranslate2Dragger()
+                zdragger = coin.SoTranslate1Dragger()
+                zdragger.setPart("translator",s1)
+                self.marker = coin.SoDragPointDragger()
+                # self.marker.translation.setValue(coin.SbVec3f(pos.x,pos.y,pos.z))
+                # self.marker.setPart("xzTranslator",xydragger)
+                # self.marker.setPart("yTranslator",zdragger)
+                Tracker.__init__(self,scolor=color.rgb,children=[trm,self.marker])
 
-	def setMarker(self,style):
-		if (style == "point"):
-			self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
-		elif (style == "square"):
-			self.marker.markerIndex = coin.SoMarkerSet.SQUARE_LINE_9_9
-		elif (style == "circle"):
-			self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_9_9
-
-
+        def setpos(self,pos):
+                self.marker.translation.setValue(coin.SbVec3f(pos.x,pos.y,pos.z))
 
      
 #---------------------------------------------------------------------------
 # Helper tools
 #---------------------------------------------------------------------------
-	
+
+def edit():
+        obj = FreeCAD.ActiveDocument.ActiveObject
+        if obj:
+                trackers = []
+                if "Points" in obj.PropertiesList:
+                        for p in obj.Points:
+                                trackers.append(pointEditTracker(p))
+                        for t in trackers:
+                                t.on()
+                        return trackers
+                	
 class SelectPlane:
 	"The Draft_SelectPlane FreeCAD command definition"
 
@@ -1973,12 +1995,6 @@ class Offset(Modifier):
 
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				self.doc.openTransaction("Offset")
-				if arg["AltDown"] or self.ui.isCopy.isChecked():
-					targetOb = self.doc.addObject("Part::Feature",Draft.getRealName(self.sel.Name))
-					Draft.formatObject(targetOb,self.sel)
-				else:
-					targetOb = self.sel
 				cursor = arg["Position"]
 				point = self.view.getPoint(cursor[0],cursor[1])
 				point = snapPoint(self,point,cursor,arg["CtrlDown"])
@@ -1990,10 +2006,24 @@ class Offset(Modifier):
 					dist = fcgeo.findPerpendicular(point,self.edges)
 				if dist:
 					newedges = self.redraw(dist,True)
+                                        p = []
+                                        for v in Part.Wire(newedges).Vertexes: p.append(v.Point)
+                                        self.doc.openTransaction("Offset")
+                                        if arg["AltDown"] or self.ui.isCopy.isChecked():
+                                                obj = Draft.makeWire(p)
+                                                Draft.formatObject(obj,self.sel)
+                                        else:
+                                                obj = self.sel
+                                                if "Points" in obj.PropertiesList:
+                                                        obj.Points = p
 					if self.faces:
-						targetOb.Shape = Part.Face(Part.Wire(newedges))
+                                                if "Closed" in obj.PropertiesList:
+                                                        obj.Closed = True
+                                                        obj.ViewObject.DisplayMode = "Flat Lines"
 					else:
-						targetOb.Shape = Part.Wire(newedges)
+                                                if "Closed" in obj.PropertiesList:
+                                                        obj.Closed = False
+                                                        obj.ViewObject.DisplayMode = "Wireframe"
 					self.doc.commitTransaction()
 				if arg["AltDown"]:
 					self.extendedCopy = True
@@ -2648,7 +2678,12 @@ class Trimex(Modifier):
 			edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
 			newshape = Part.Wire(edges)
                         self.doc.openTransaction("Trim/extend")
-                        self.sel.Shape = newshape
+                        if 'Points' in self.sel.PropertiesList:
+                                p = []
+                                for v in newshape.Vertexes: p.append(v.Point)
+                                self.sel.Points = p
+                        else:
+                                self.sel.Shape = newshape
                         self.doc.commitTransaction()
 		for g in self.ghost: g.off()
 

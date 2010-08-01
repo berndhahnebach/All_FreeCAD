@@ -484,7 +484,7 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
         newobjlist = []
         for obj in objectslist:
                 if copy:
-                        newobj = FreeCAD.ActiveDocument.doc.addObject("Part::Feature",getRealName(obj.Name))
+                        newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
                 else:
                         newobj = shapify(obj)
                 if (obj.isDerivedFrom("Part::Feature")):
