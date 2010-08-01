@@ -43,7 +43,7 @@ using namespace std;
 DEF_STD_CMD_A(CmdPartDesignPad);
 
 CmdPartDesignPad::CmdPartDesignPad()
-  :Command("PartDesign_Pad")
+  : Command("PartDesign_Pad")
 {
     sAppModule    = "PartDesign";
     sGroup        = QT_TR_NOOP("PartDesign");
@@ -66,13 +66,26 @@ void CmdPartDesignPad::activated(int iMsg)
 
     std::string FeatName = getUniqueObjectName("Pad");
 
-    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::vector<App::DocumentObject*> Sel = getSelection().getObjectsOfType(Part::Part2DObject::getClassTypeId());
+    Part::Part2DObject* part = static_cast<Part::Part2DObject*>(Sel.front());
+    const TopoDS_Shape& shape = part->Shape.getValue();
+    if (shape.IsNull()) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("The shape of the selected object is empty."));
+        return;
+    }
+
+    if (shape.ShapeType() != TopAbs_WIRE) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("The shape of the selected object is not a wire."));
+        return;
+    }
 
     openCommand("Make Pad");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pad\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),part->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.Dir = (0.0,0.0,-5.0)",FeatName.c_str());
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",part->getNameInDocument());
     updateActive();
     commitCommand();
 }
