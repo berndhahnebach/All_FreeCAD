@@ -52,7 +52,8 @@ using namespace Sketcher;
 //**************************************************************************
 // Construction/Destruction
 
-DrawSketchHandler::DrawSketchHandler()
+DrawSketchHandler::DrawSketchHandler(ViewProviderSketch *viewp)
+:sketchgui(viewp)
 {
 
 }
@@ -65,6 +66,12 @@ DrawSketchHandler::~DrawSketchHandler()
 
 //**************************************************************************
 // Helpers
+
+Sketcher::SketchObject* DrawSketchHandler::getObject(void)
+{
+    return (Sketcher::SketchObject*)(sketchgui->getObject());
+}
+
 
 void DrawSketchHandler::setCursor( const QPixmap &p,int x,int y )
 {

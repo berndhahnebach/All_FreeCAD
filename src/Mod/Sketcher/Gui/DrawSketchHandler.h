@@ -49,7 +49,7 @@ class ViewProviderSketch;
 class SketcherGuiExport DrawSketchHandler
 {
 public:
-    DrawSketchHandler();
+    DrawSketchHandler(ViewProviderSketch *viewp=0);
     virtual ~DrawSketchHandler();
 
     virtual void activated(ViewProviderSketch *sketchgui){};
@@ -58,6 +58,8 @@ public:
     virtual bool releaseButton(Base::Vector2D onSketchPos)=0;
 
     friend class ViewProviderSketch;
+
+    Sketcher::SketchObject* getObject(void);
 
 protected:
     // helpers
