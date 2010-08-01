@@ -61,6 +61,14 @@ bool isCreateGeoActive(Gui::Document *doc)
 	return false;
 }
 
+SketcherGui::ViewProviderSketch* getSketchViewprovider(Gui::Document *doc)
+{
+	if(doc)
+		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
+			return dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit());
+    return 0;
+}
+
 /* Sketch commands =======================================================*/
 
 /* XPM */
@@ -186,7 +194,136 @@ bool CmdSketcherCreateLine::isActive(void)
 	return isCreateGeoActive(getActiveGuiDocument());
 }
 
+// ======================================================================================
 
+/* XPM */
+static const char *cursor_createlineset[]={
+"32 32 2 1",
+"# c #646464",
+". c None",
+"................................",
+"................................",
+".......#........................",
+".......#........................",
+".......#........................",
+"................................",
+".......#........................",
+"..###.###.###...................",
+".......#..............###.......",
+"......................#.#.......",
+".......#..............###.......",
+".......#.............#..#.......",
+".......#............#....#......",
+"....................#....#......",
+"...................#......#.....",
+"..................#.......#.....",
+"..................#........#....",
+".................#.........#....",
+"................#..........###..",
+"................#..........#.#..",
+"......#........#...........###..",
+".......#......#.................",
+"........#.....#.................",
+".........#...#..................",
+"..........###...................",
+"..........#.#...................",
+"..........###...................",
+"................................",
+"................................",
+"................................",
+"................................",
+"................................"};
+
+class DrawSketchHandlerLineSet: public DrawSketchHandler
+{
+public:
+    DrawSketchHandlerLineSet(ViewProviderSketch *viewp):DrawSketchHandler(viewp),Mode(STATUS_SEEK_First){}
+    virtual ~DrawSketchHandlerLineSet(){}
+    /// mode table
+	enum LineMode{
+		STATUS_SEEK_First,      /**< enum value ----. */  
+		STATUS_SEEK_Next,       /**< enum value ----. */  
+        STATUS_End
+	};
+
+    virtual void activated(ViewProviderSketch *sketchgui)
+    {
+        setCursor(QPixmap(cursor_createlineset),4,4);
+    } 
+
+    virtual void mouseMove(Base::Vector2D onSketchPos)
+    {
+        if(Mode==STATUS_SEEK_Next){
+            EditCurve[EditCurve.size()-1] = onSketchPos; 
+            sketchgui->drawEdit(EditCurve);
+        }
+    }
+
+    virtual bool pressButton(Base::Vector2D onSketchPos)
+    {
+        if(Mode==STATUS_SEEK_First){
+            EditCurve.push_back( onSketchPos );
+            Mode = STATUS_SEEK_Next;
+        }else{
+            if(onSketchPos == lastPos){
+                unsetCursor();
+                EditCurve.clear();
+                sketchgui->drawEdit(EditCurve);
+                openCommand("add sketch line");
+                doCommand("App.ActiveDocument.ActiveObject.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)) )",EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+                sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+            } else {
+                EditCurve.push_back(onSketchPos);
+                sketchgui->drawEdit(EditCurve);
+            }
+        }
+        return true;
+    }
+
+    virtual bool releaseButton(Base::Vector2D onSketchPos)
+    {
+        if(Mode==STATUS_End){
+            unsetCursor();
+            EditCurve.clear();
+            sketchgui->drawEdit(EditCurve);
+            openCommand("add sketch line");
+            doCommand("App.ActiveDocument.ActiveObject.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)) )",EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+            sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+        }
+        return true;
+    }
+protected:
+    LineMode Mode;
+    std::vector<Base::Vector2D> EditCurve;
+    Base::Vector2D lastPos;
+};
+
+
+DEF_STD_CMD_A(CmdSketcherCreatePolyline);
+
+CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
+	:Command("Sketcher_CreatePolyline")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Create polyline");
+    sToolTipText    = QT_TR_NOOP("Create a polyline in the sketch");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Sketcher_CreatePolyline";
+}
+
+void CmdSketcherCreatePolyline::activated(int iMsg)
+{
+ 	ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerLineSet(getSketchViewprovider(getActiveGuiDocument())) );
+}
+
+bool CmdSketcherCreatePolyline::isActive(void)
+{
+	return isCreateGeoActive(getActiveGuiDocument());
+}
+
+// ======================================================================================
 
 
 DEF_STD_CMD_A(CmdSketcherCreateArc);
@@ -294,45 +431,6 @@ bool CmdSketcherCreatePoint::isActive(void)
 
 
 
-DEF_STD_CMD_A(CmdSketcherCreatePolyline);
-
-CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
-	:Command("Sketcher_CreatePolyline")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create polyline");
-    sToolTipText    = QT_TR_NOOP("Create a polyline in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreatePolyline";
-}
-
-void CmdSketcherCreatePolyline::activated(int iMsg)
-{
-    Gui::Document *doc = getActiveGuiDocument();
-    if (doc) {
-        Gui::ViewProvider* vp = doc->getInEdit();
-        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-            static_cast<SketcherGui::ViewProviderSketchSF*>(vp)->setSketchMode
-            (ViewProviderSketchSF::STATUS_SKETCH_CreatePolyline);
-    }
-}
-
-bool CmdSketcherCreatePolyline::isActive(void)
-{
-    Gui::Document *doc = getActiveGuiDocument();
-    if (doc) {
-        // checks if a sketch is in edit mode and is in no special mode
-        Gui::ViewProvider* vp = doc->getInEdit();
-        if (vp && vp->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-            if (static_cast<SketcherGui::ViewProviderSketchSF*>(vp)->getSketchMode() ==
-                ViewProviderSketchSF::STATUS_NONE)
-                return true;
-    }
-
-    return false;
-}
 
 
 DEF_STD_CMD_A(CmdSketcherCreateRectangle);
