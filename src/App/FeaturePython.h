@@ -39,6 +39,7 @@ namespace App
 class Property;
 class FeaturePythonPy;
 
+// Helper class to hide implementation details
 class AppExport FeaturePythonImp
 {
 public:
@@ -52,6 +53,11 @@ private:
     App::DocumentObject* object;
 };
 
+/**
+ * Generic Python feature class which allows to behave every DocumentObject
+ * derived class as Python feature -- simply by subclassing.
+ * @author Werner Mayer
+ */
 template <class FeatureT>
 class FeaturePythonT : public FeatureT
 {
@@ -99,6 +105,10 @@ public:
     }
     Property *getDynamicPropertyByName(const char* name) const {
         return props->getDynamicPropertyByName(name);
+    }
+    /// get all properties of the class (including properties of the parent)
+    virtual void getPropertyList(std::vector<Property*> &List) const {
+        props->getPropertyList(List);
     }
     /// get all properties of the class (including parent)
     void getPropertyMap(std::map<std::string,Property*> &Map) const {

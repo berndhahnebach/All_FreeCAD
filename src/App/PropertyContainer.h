@@ -105,9 +105,9 @@ public:
   virtual Property *getPropertyByName(const char* name) const;
   /// get the name of a property
   virtual const char* getName(const Property* prop) const;
-  /// get all properties of the class (including properies of the parent)
+  /// get all properties of the class (including properties of the parent)
   virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
-  /// get all properties of the class (including properies of the parent)
+  /// get all properties of the class (including properties of the parent)
   virtual void getPropertyList(std::vector<Property*> &List) const;
   /// set the Status bit of all properties at once
   void setPropertyStatus(unsigned char bit,bool value);

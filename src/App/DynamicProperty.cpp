@@ -47,6 +47,14 @@ DynamicProperty::~DynamicProperty()
 {
 }
 
+void DynamicProperty::getPropertyList(std::vector<Property*> &List) const
+{
+    // get the properties of the base class first and insert the dynamic properties afterwards
+    this->pc->PropertyContainer::getPropertyList(List);
+    for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it)
+        List.push_back(it->second.property);
+}
+
 void DynamicProperty::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
     // get the properties of the base class first and insert the dynamic properties afterwards
