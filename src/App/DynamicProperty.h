@@ -61,6 +61,8 @@ public:
     /** @name Access properties */
     //@{
     /// get all properties of the class (including parent)
+    void getPropertyList(std::vector<Property*> &List) const;
+    /// get all properties of the class (including parent)
     void getPropertyMap(std::map<std::string,Property*> &Map) const;
     /// find a property by its name
     Property *getPropertyByName(const char* name) const;
