@@ -172,13 +172,16 @@ TaskView::TaskView(QWidget *parent)
     this->setMinimumWidth(200);
 
     Gui::Selection().Attach(this);
+
+    connectApplicationActiveDocument = 
     App::GetApplication().signalActiveDocument.connect
         (boost::bind(&Gui::TaskView::TaskView::slotActiveDocument, this, _1));
 }
 
 TaskView::~TaskView()
 {
-     Gui::Selection().Detach(this);
+    connectApplicationActiveDocument.disconnect();
+    Gui::Selection().Detach(this);
 }
 
 void TaskView::slotActiveDocument(const App::Document& doc)
@@ -277,12 +280,11 @@ void TaskView::removeDialog(void)
 
 void TaskView::updateWatcher(void)
 {
-    // add all widghets for all watcher to the task view
-    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
-
+    // add all widgets for all watcher to the task view
+    for (std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it) {
         bool match = (*it)->shouldShow();
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
-        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
+        for (std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2) {
             if(match)
                 (*it2)->show();
             else
@@ -304,7 +306,7 @@ void TaskView::addTaskWatcher(const std::vector<TaskWatcher*> &Watcher)
 
 void TaskView::addTaskWatcher(void)
 {
-    // add all widghets for all watcher to the task view
+    // add all widgets for all watcher to the task view
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
         for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
@@ -318,7 +320,7 @@ void TaskView::addTaskWatcher(void)
 
 void TaskView::removeTaskWatcher(void)
 {
-    // remove all widghets
+    // remove all widgets
     for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
         for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){

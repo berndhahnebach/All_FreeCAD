@@ -107,12 +107,106 @@ Transform::Transform(QWidget* parent, Qt::WFlags fl)
     connect(signalMapper, SIGNAL(mapped(int)),
             this, SLOT(onTransformChanged(int)));
 
+    Gui::SelectionChanges mod;
+    mod.Type = Gui::SelectionChanges::SetSelection;
+    onSelectionChanged(mod);
     setRotationCenter();
 }
 
 Transform::~Transform()
 {
     delete ui;
+}
+
+void Transform::onSelectionChanged(const Gui::SelectionChanges& msg)
+{
+    if (msg.Type == SelectionChanges::SetPreselect ||
+        msg.Type == SelectionChanges::RmvPreselect)
+        return; // nothing to do
+    if (msg.Type == SelectionChanges::ClrSelection) {
+        this->setDisabled(true);
+        for (std::set<App::DocumentObject*>::iterator it = selection.begin();
+             it != selection.end(); ++it)
+             resetTransform(*it);
+        selection.clear();
+        return;
+    }
+
+    std::set<App::DocumentObject*> update_selection;
+    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
+        (App::DocumentObject::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
+        std::map<std::string,App::Property*> props;
+        (*it)->getPropertyMap(props);
+        // search for the placement property
+        std::map<std::string,App::Property*>::iterator jt;
+        jt = std::find_if(props.begin(), props.end(), find_complex_data());
+        if (jt != props.end()) {
+            update_selection.insert(*it);
+        }
+    }
+
+    // reste transform for all deselected objects
+    std::vector<App::DocumentObject*> diff;
+    std::back_insert_iterator< std::vector<App::DocumentObject*> > biit(diff);
+    std::set_difference(selection.begin(), selection.end(),
+        update_selection.begin(), update_selection.end(), biit);
+    for (std::vector<App::DocumentObject*>::iterator it = diff.begin(); it != diff.end(); ++it)
+         resetTransform(*it);
+    selection = update_selection;
+
+    this->setDisabled(selection.empty());
+}
+
+void Transform::acceptTransform(const Base::Matrix4D& mat, App::DocumentObject* obj)
+{
+    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+    std::map<std::string,App::Property*> props;
+    obj->getPropertyMap(props);
+    // search for the placement property
+    std::map<std::string,App::Property*>::iterator jt;
+    jt = std::find_if(props.begin(), props.end(), find_placement());
+    if (jt != props.end()) {
+        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(local.toMatrix());
+    }
+    // Apply the transformation
+    jt = std::find_if(props.begin(), props.end(), find_complex_data());
+    if (jt != props.end()) {
+        static_cast<App::PropertyComplexGeoData*>(jt->second)->transformGeometry(mat);
+    }
+}
+
+void Transform::applyTransform(const Base::Placement& plm, App::DocumentObject* obj)
+{
+    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+    std::map<std::string,App::Property*> props;
+    obj->getPropertyMap(props);
+    // search for the placement property
+    std::map<std::string,App::Property*>::iterator jt;
+    jt = std::find_if(props.begin(), props.end(), find_placement());
+    if (jt != props.end()) {
+        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
+        local *= plm; // in case a placement is already set
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(local.toMatrix());
+    }
+}
+
+void Transform::resetTransform(App::DocumentObject* obj)
+{
+    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+    std::map<std::string,App::Property*> props;
+    obj->getPropertyMap(props);
+    // search for the placement property
+    std::map<std::string,App::Property*>::iterator jt;
+    jt = std::find_if(props.begin(), props.end(), find_placement());
+    if (jt != props.end()) {
+        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(local.toMatrix());
+    }
 }
 
 void Transform::showStandardButtons(bool b)
@@ -126,12 +220,10 @@ void Transform::setRotationCenter()
 {
     // get the global bounding box of all selected objects and use its center as
     // rotation center
-    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
-        (App::DocumentObject::getClassTypeId());
-    if (!sel.empty()) {
+    if (!selection.empty()) {
         Base::BoundBox3d bbox;
         bool first=true;
-        for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
+        for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
             std::map<std::string,App::Property*> props;
             (*it)->getPropertyMap(props);
             // search for a data property
@@ -156,23 +248,8 @@ void Transform::onTransformChanged(int)
 {
     Base::Placement plm = this->getPlacementData();
 
-    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
-        (App::DocumentObject::getClassTypeId());
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    if (!sel.empty() && doc) {
-        for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
-            std::map<std::string,App::Property*> props;
-            (*it)->getPropertyMap(props);
-            // search for the placement property
-            std::map<std::string,App::Property*>::iterator jt;
-            jt = std::find_if(props.begin(), props.end(), find_placement());
-            if (jt != props.end()) {
-                Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
-                local *= plm; // in case a placement is already set
-                Gui::ViewProvider* vp = doc->getViewProvider(*it);
-                if (vp) vp->setTransformation(local.toMatrix());
-            }
-        }
+    for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
+        applyTransform(plm, *it);
     }
 }
 
@@ -184,22 +261,8 @@ void Transform::accept()
 
 void Transform::reject()
 {
-    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
-        (App::DocumentObject::getClassTypeId());
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    if (!sel.empty() && doc) {
-        for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
-            std::map<std::string,App::Property*> props;
-            (*it)->getPropertyMap(props);
-            // search for the placement property
-            std::map<std::string,App::Property*>::iterator jt;
-            jt = std::find_if(props.begin(), props.end(), find_placement());
-            if (jt != props.end()) {
-                Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
-                Gui::ViewProvider* vp = doc->getViewProvider(*it);
-                if (vp) vp->setTransformation(local.toMatrix());
-            }
-        }
+    for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
+        resetTransform(*it);
     }
 
     QDialog::reject();
@@ -210,27 +273,11 @@ void Transform::on_applyButton_clicked()
     Base::Placement plm = this->getPlacementData();
     Base::Matrix4D mat = plm.toMatrix();
 
-    std::vector<App::DocumentObject*> sel = Gui::Selection().getObjectsOfType
-        (App::DocumentObject::getClassTypeId());
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    if (!sel.empty() && doc) {
+    if (doc) {
         doc->openCommand("Transform");
-        for (std::vector<App::DocumentObject*>::iterator it=sel.begin();it!=sel.end();++it) {
-            std::map<std::string,App::Property*> props;
-            (*it)->getPropertyMap(props);
-            // search for the placement property
-            std::map<std::string,App::Property*>::iterator jt;
-            jt = std::find_if(props.begin(), props.end(), find_placement());
-            if (jt != props.end()) {
-                Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
-                Gui::ViewProvider* vp = doc->getViewProvider(*it);
-                if (vp) vp->setTransformation(local.toMatrix());
-            }
-            // Apply the transformation
-            jt = std::find_if(props.begin(), props.end(), find_complex_data());
-            if (jt != props.end()) {
-                static_cast<App::PropertyComplexGeoData*>(jt->second)->transformGeometry(mat);
-            }
+        for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
+            acceptTransform(mat, *it);
         }
         doc->commitCommand();
     }
