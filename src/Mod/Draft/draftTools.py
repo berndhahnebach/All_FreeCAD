@@ -979,7 +979,8 @@ class Rectangle(Creator):
 		Creator.Activated(self,"Rectangle")
 		if self.ui:
 			self.refpoint = None
-			self.ui.lineUi()
+			self.ui.pointUi()
+                        self.ui.hasFill.show()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.snap = snapTracker()
 			self.rect = rectangleTracker()
@@ -1037,6 +1038,7 @@ class Rectangle(Creator):
 			self.createObject()
 		else:
 			msg(translate("draft", "Pick opposite point:\n"))
+                        self.ui.isRelative.show()
 			self.rect.setorigin(point)
 			self.rect.on()
 
@@ -1431,11 +1433,12 @@ class Dimension(Creator):
 	def Activated(self):
 		Creator.Activated(self,"Dimension")
 		if self.ui:
-			self.ui.lineUi()
+			self.ui.pointUi()
 			self.altdown = False
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.snap = snapTracker()
 			self.dimtrack = dimTracker()
+                        self.link = None
 			self.constraintrack = lineTracker(dotted=True)
 			msg(translate("draft", "Pick first point:\n"))
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
@@ -1450,8 +1453,11 @@ class Dimension(Creator):
 
 	def createObject(self):
 		"creates an object in the current doc"
-		self.doc.openTransaction("Create "+self.featureName) 
-		Draft.makeDimension(self.node[0],self.node[1],self.node[2])
+		self.doc.openTransaction("Create "+self.featureName)
+                if self.link:
+                        Draft.makeDimension(self.link[0],self.link[1],self.link[2],self.node[2])
+                else:
+                        Draft.makeDimension(self.node[0],self.node[1],self.node[2])
 		self.doc.commitTransaction()
 
 	def action(self,arg):
@@ -1467,11 +1473,12 @@ class Dimension(Creator):
 				snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 				if snapped:
 					ob = self.doc.getObject(snapped['Object'])
-					num = int(snapped['Component'].lstrip('Edge'))-1
-					ed = ob.Shape.Edges[num]
-					v1 = ed.Vertexes[0].Point
-					v2 = ed.Vertexes[-1].Point
-					self.dimtrack.update([v1,v2])
+                                        if "Edge" in snapped['Component']:
+                                                num = int(snapped['Component'].lstrip('Edge'))-1
+                                                ed = ob.Shape.Edges[num]
+                                                v1 = ed.Vertexes[0].Point
+                                                v2 = ed.Vertexes[-1].Point
+                                                self.dimtrack.update([v1,v2])
 			else:
 				if self.altdown:
 					self.ui.cross(True)
@@ -1491,12 +1498,21 @@ class Dimension(Creator):
 					snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 					if snapped:
 						ob = self.doc.getObject(snapped['Object'])
-						num = int(snapped['Component'].lstrip('Edge'))-1
-						ed = ob.Shape.Edges[num]
-						v1 = ed.Vertexes[0].Point
-						v2 = ed.Vertexes[-1].Point
-						self.node = [v1,v2]
-						self.dimtrack.on()
+                                                if 'Edge' in snapped['Component']:
+                                                        num = int(snapped['Component'].lstrip('Edge'))-1
+                                                        ed = ob.Shape.Edges[num]
+                                                        v1 = ed.Vertexes[0].Point
+                                                        v2 = ed.Vertexes[-1].Point
+                                                        i1 = i2 = None
+                                                        for i in range(len(ob.Shape.Vertexes)):
+                                                                if v1 == ob.Shape.Vertexes[i].Point:
+                                                                        i1 = i
+                                                                if v2 == ob.Shape.Vertexes[i].Point:
+                                                                        i2 = i
+                                                        self.node = [v1,v2]
+                                                        if (i1 != None) and (i2 != None):
+                                                                self.link = [ob,i1,i2]
+                                                        self.dimtrack.on()
 				else:
 					self.node.append(point)
 				self.dimtrack.update(self.node)
