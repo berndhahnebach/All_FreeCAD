@@ -153,8 +153,8 @@ public:
             unsetCursor();
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
-            openCommand("add sketch line");
-            doCommand("App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+            Gui::Command::openCommand("add sketch line");
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
@@ -237,13 +237,15 @@ static const char *cursor_createlineset[]={
 class DrawSketchHandlerLineSet: public DrawSketchHandler
 {
 public:
-    DrawSketchHandlerLineSet(ViewProviderSketch *viewp):DrawSketchHandler(viewp),Mode(STATUS_SEEK_First){}
+    DrawSketchHandlerLineSet()
+		:Mode(STATUS_SEEK_First),EditCurve(2),previousCurve(-1),firstPoint(-1){}
     virtual ~DrawSketchHandlerLineSet(){}
     /// mode table
 	enum LineMode{
 		STATUS_SEEK_First,      /**< enum value ----. */  
-		STATUS_SEEK_Next,       /**< enum value ----. */  
-        STATUS_End
+		STATUS_SEEK_Second,     /**< enum value ----. */  
+        STATUS_Do,
+        STATUS_Close
 	};
 
     virtual void activated(ViewProviderSketch *sketchgui)
@@ -251,10 +253,10 @@ public:
         setCursor(QPixmap(cursor_createlineset),4,4);
     } 
 
-    virtual void mouseMove(Base::Vector2D onSketchPos)
+   virtual void mouseMove(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_SEEK_Next){
-            EditCurve[EditCurve.size()-1] = onSketchPos; 
+        if(Mode==STATUS_SEEK_Second){
+            EditCurve[1] = onSketchPos; 
             sketchgui->drawEdit(EditCurve);
         }
     }
@@ -262,40 +264,77 @@ public:
     virtual bool pressButton(Base::Vector2D onSketchPos)
     {
         if(Mode==STATUS_SEEK_First){
-            EditCurve.push_back( onSketchPos );
-            Mode = STATUS_SEEK_Next;
+			// remember our first point
+			firstPoint = getHighestVertexIndex() + 1;
+			firstCurve = getHighestCurveIndex() + 1;
+            EditCurve[0] = onSketchPos;
+            Mode = STATUS_SEEK_Second;
         }else{
-            if(onSketchPos == lastPos){
-                unsetCursor();
-                EditCurve.clear();
-                sketchgui->drawEdit(EditCurve);
-                openCommand("add sketch line");
-                doCommand("App.ActiveDocument.ActiveObject.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)) )",EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
-                sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
-            } else {
-                EditCurve.push_back(onSketchPos);
-                sketchgui->drawEdit(EditCurve);
-            }
+            EditCurve[1] = onSketchPos;
+            sketchgui->drawEdit(EditCurve);
+			applyCursor();
+			if (EditCurve[1] == EditCurve[0]){
+                // set the old cursor
+				unsetCursor();	
+                // empty the edit draw
+	            EditCurve.clear();
+				sketchgui->drawEdit(EditCurve);
+				sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+			}if(sketchgui->getPreselectPoint() == firstPoint){
+				Mode = STATUS_Close;
+
+			}else
+				Mode = STATUS_Do;
         }
         return true;
     }
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_End){
-            unsetCursor();
-            EditCurve.clear();
-            sketchgui->drawEdit(EditCurve);
-            openCommand("add sketch line");
-            doCommand("App.ActiveDocument.ActiveObject.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)) )",EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
-            sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
-        }
+        if(Mode==STATUS_Do || Mode==STATUS_Close){
+            // open the transaction 
+            Gui::Command::openCommand("add sketch line");
+            // issue the geometry
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+            // issue the constraint
+            if(previousCurve != -1){
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
+                          ,sketchgui->getObject()->getNameInDocument()
+                          ,previousCurve-1,previousCurve
+                          );
+
+            }
+            if(Mode==STATUS_Do){
+                //remember the vertex for the next rounds constraint...
+			    previousCurve = getHighestCurveIndex() + 1;
+                // setup for the next line segment 
+                EditCurve[0] = onSketchPos;
+			    Mode = STATUS_SEEK_Second;
+			    applyCursor();
+            }else{ //Mode==STATUS_Close
+                // close the loop by constrain to the first curve point
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
+                          ,sketchgui->getObject()->getNameInDocument()
+                          ,previousCurve,firstCurve
+                          );
+			    unsetCursor();			
+                // empty the edit draw
+	            EditCurve.clear();
+			    sketchgui->drawEdit(EditCurve);
+			    sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+            }
+        } 
         return true;
     }
 protected:
     LineMode Mode;
     std::vector<Base::Vector2D> EditCurve;
     Base::Vector2D lastPos;
+    int firstPoint;
+    int firstCurve;
+    int previousCurve;
 };
 
 
@@ -315,7 +354,7 @@ CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
 
 void CmdSketcherCreatePolyline::activated(int iMsg)
 {
- 	ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerLineSet(getSketchViewprovider(getActiveGuiDocument())) );
+ 	ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerLineSet() );
 }
 
 bool CmdSketcherCreatePolyline::isActive(void)

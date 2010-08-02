@@ -292,7 +292,7 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
 
     // undo command open
     openCommand("add coinsident constraint");
-    doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) "
+    Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) "
                  ,selection[0].getFeatName(),GeoId1,Pt1,GeoId2,Pt2);
 
     // finish the transaction and update

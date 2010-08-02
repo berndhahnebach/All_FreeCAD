@@ -114,6 +114,9 @@ public:
     void updateColor(void);
     /// get the pointer to the sketch document object
     Sketcher::SketchObject* getSketchObject(void) const;
+
+	int getPreselectPoint(void)const{return PreselectPoint;}
+	int getPreselectCurve(void)const{return PreselectCurve;}
     //@}
 
     /** @name base class implementer */

@@ -49,7 +49,7 @@ class ViewProviderSketch;
 class SketcherGuiExport DrawSketchHandler
 {
 public:
-    DrawSketchHandler(ViewProviderSketch *viewp=0);
+    DrawSketchHandler();
     virtual ~DrawSketchHandler();
 
     virtual void activated(ViewProviderSketch *sketchgui){};
@@ -60,17 +60,21 @@ public:
     friend class ViewProviderSketch;
 
     Sketcher::SketchObject* getObject(void);
+	// get the actual highest vertex index, the next use will be +1
+	int getHighestVertexIndex(void);
+	// get the actual highest edge index, the next use will be +1
+	int getHighestCurveIndex(void);
 
 protected:
     // helpers
     void setCursor( const QPixmap &p,int x,int y );
     void unsetCursor(void);
-
-    void doCommand(const char* sCmd,...);
-    void openCommand(const char* sCmdName);
+	void applyCursor(void);
 
     ViewProviderSketch *sketchgui;
     QCursor oldCursor;
+    QCursor actCursor;
+
 };
 
 
