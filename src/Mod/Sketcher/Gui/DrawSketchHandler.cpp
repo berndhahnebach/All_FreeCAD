@@ -39,6 +39,7 @@
 #include <Gui/View3DInventor.h>
 
 #include <Mod/Part/App/Geometry.h>
+#include <Mod/Sketcher/App/SketchObject.h>
 
 
 #include "DrawSketchHandler.h"
@@ -52,8 +53,8 @@ using namespace Sketcher;
 //**************************************************************************
 // Construction/Destruction
 
-DrawSketchHandler::DrawSketchHandler(ViewProviderSketch *viewp)
-:sketchgui(viewp)
+DrawSketchHandler::DrawSketchHandler()
+:sketchgui(0)
 {
 
 }
@@ -69,9 +70,18 @@ DrawSketchHandler::~DrawSketchHandler()
 
 Sketcher::SketchObject* DrawSketchHandler::getObject(void)
 {
-    return (Sketcher::SketchObject*)(sketchgui->getObject());
+    return dynamic_cast<Sketcher::SketchObject*>(sketchgui->getObject());
 }
 
+int DrawSketchHandler::getHighestVertexIndex(void)
+{
+	return getObject()->Geometry.getSize()*2 - 1;
+}
+
+int DrawSketchHandler::getHighestCurveIndex(void)
+{
+	return getObject()->Geometry.getSize() - 1;
+}
 
 void DrawSketchHandler::setCursor( const QPixmap &p,int x,int y )
 {
@@ -81,10 +91,20 @@ void DrawSketchHandler::setCursor( const QPixmap &p,int x,int y )
  
         oldCursor = viewer->getWidget()->cursor();
         QCursor cursor(p, 4, 4);
+		actCursor = cursor;
 
         viewer->getWidget()->setCursor(cursor);
     }
 
+}
+
+void DrawSketchHandler::applyCursor(void )
+{
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        viewer->getWidget()->setCursor(actCursor);
+    }
 }
 
 void DrawSketchHandler::unsetCursor(void)
@@ -96,40 +116,3 @@ void DrawSketchHandler::unsetCursor(void)
     }
 }
 
-/// Run a App level Action
-void DrawSketchHandler::doCommand(const char* sCmd,...)
-{
-    // temp buffer
-    size_t format_len = std::strlen(sCmd)+4024;
-    char* format = (char*) malloc(format_len);
-    va_list namelessVars;
-    va_start(namelessVars, sCmd);  // Get the "..." vars
-    vsnprintf(format, format_len, sCmd, namelessVars);
-    va_end(namelessVars);
-
-    Gui::Application::Instance->macroManager()->addLine(Gui::MacroManager::Base,format);
-
-    try {
-        Base::Interpreter().runString(format);
-    }
-    catch (Base::Exception e) {
-        Base::Console().Error("%s\n", e.what());
-    }
-    catch (...) {
-       Base::Console().Error("Unknowen Exception in DrawSketchHandler::doCommand()");
-    }
-
-#ifdef FC_LOGUSERACTION
-    Base::Console().Log("CmdC: %s\n",format);
-#endif
-    free (format);
-}
-
-void DrawSketchHandler::openCommand(const char* sCmdName)
-{
-    // Using OpenCommand with no active document !
-    assert(Gui::Application::Instance->activeDocument());
-    assert(sCmdName);
-
-    Gui::Application::Instance->activeDocument()->openCommand(sCmdName);
-}

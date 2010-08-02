@@ -356,22 +356,22 @@ std::string Command::getUniqueObjectName(const char *BaseName) const
 void Command::openCommand(const char* sCmdName)
 {
     // Using OpenCommand with no active document !
-    assert(getGuiApplication()->activeDocument());
+    assert(Gui::Application::Instance->activeDocument());
 
     if (sCmdName)
-        getGuiApplication()->activeDocument()->openCommand(sCmdName);
+        Gui::Application::Instance->activeDocument()->openCommand(sCmdName);
     else
-        getGuiApplication()->activeDocument()->openCommand(sName);
+        Gui::Application::Instance->activeDocument()->openCommand("Command");
 }
 
 void Command::commitCommand(void)
 {
-    getGuiApplication()->activeDocument()->commitCommand();
+    Gui::Application::Instance->activeDocument()->commitCommand();
 }
 
 void Command::abortCommand(void)
 {
-    getGuiApplication()->activeDocument()->abortCommand();
+    Gui::Application::Instance->activeDocument()->abortCommand();
 }
 
 bool Command::_blockCmd = false;
@@ -393,12 +393,12 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
     va_end(namelessVars);
 
     if (eType == Gui)
-        getGuiApplication()->macroManager()->addLine(MacroManager::Gui,format);
+        Gui::Application::Instance->macroManager()->addLine(MacroManager::Gui,format);
     else
-        getGuiApplication()->macroManager()->addLine(MacroManager::Base,format);
+        Gui::Application::Instance->macroManager()->addLine(MacroManager::Base,format);
 
     try {
-        Interpreter().runString(format);
+        Base::Interpreter().runString(format);
     }
     catch (...) {
         // free memory to avoid a leak if an exception occurred
@@ -423,7 +423,7 @@ void Command::updateActive(void)
 {
     WaitCursor wc;
 
-    getGuiApplication()->activeDocument()->getDocument()->recompute();
+    Gui::Application::Instance->activeDocument()->getDocument()->recompute();
     //getGuiApplication()->UpdateActive();
 }
 
@@ -435,7 +435,7 @@ void Command::updateAll(std::list<Gui::Document*> cList)
             (*It)->onUpdate();
     }
     else {
-        getGuiApplication()->onUpdate();
+        Gui::Application::Instance->onUpdate();
     }
 }
 

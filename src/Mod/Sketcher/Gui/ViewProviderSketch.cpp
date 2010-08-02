@@ -46,6 +46,7 @@
 #include <Base/Vector3D.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
+#include <Gui/Command.h>
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
@@ -226,9 +227,16 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     Mode = STATUS_NONE;
                     return true;}
                 case STATUS_SKETCH_DragPoint:
-                    PreselectPoint = DragPoint;
-                    this->DragPoint = -1;
-                    updateColor();
+                    if(DragPoint != -1){
+ /*                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i) "
+                          ,getObject()->getNameInDocument()
+                          ,DragPoint/2,DragPoint%2
+                          );*/
+
+                        PreselectPoint = DragPoint;
+                        this->DragPoint = -1;
+                        //updateColor();
+                    }
                     Mode = STATUS_NONE;
                     return true;
                 case STATUS_SKETCH_UseHandler:
@@ -281,12 +289,14 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
             return true;
         case STATUS_SKETCH_DragPoint:
-            Base::Console().Log("Drag Point:%d\n",this->DragPoint);
-            int ret;
-            if ((ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0))) == 0)
-                draw(true);
-            else
-                Base::Console().Log("Error solving:%d\n",ret);
+            if(DragPoint != -1){
+                Base::Console().Log("Drag Point:%d\n",this->DragPoint);
+                int ret;
+                if ((ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0))) == 0)
+                    draw(true);
+                else
+                    Base::Console().Log("Error solving:%d\n",ret);
+            }
             return true;
         case STATUS_SKETCH_UseHandler:
             if(preselectChanged)

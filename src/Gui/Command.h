@@ -200,15 +200,15 @@ public:
     /** @name Helper methods for the Undo/Redo and Update handling */
     //@{
     /// Open a new Undo transaction on the active document
-    void openCommand(const char* sName=0);
+    static void openCommand(const char* sName=0);
     /// Commit the Undo transaction on the active document
-    void commitCommand(void);
+    static void commitCommand(void);
     /// Abort the Undo transaction on the active document
-    void abortCommand(void);
+    static void abortCommand(void);
     /// Updates the (active) document (propagate changes)
-    void updateActive(void);
+    static void updateActive(void);
     /// Updates the (all or listed) documents (propagate changes)
-    void updateAll(std::list<Gui::Document*> cList);
+    static void updateAll(std::list<Gui::Document*> cList);
     /// Translate command
     void languageChange();
     //@}
