@@ -172,7 +172,7 @@
       <item row="1" column="0">
        <widget class="QPushButton" name="deselectAll">
         <property name="text">
-         <string>None</string>
+         <string>All</string>
         </property>
        </widget>
       </item>
@@ -191,7 +191,7 @@
      <property name="title">
       <string>Region options</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
        <widget class="QCheckBox" name="frontTriangles">
         <property name="text">
