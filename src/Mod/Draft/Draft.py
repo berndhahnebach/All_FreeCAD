@@ -284,25 +284,32 @@ def makeRectangle(length, height, placement=None, face=True):
         FreeCAD.ActiveDocument.recompute()
         return obj
         
-def makeDimension(p1,p2,p3=None):
-        '''makeDimension(p1,p2,[p3]): Creates a Dimension object
-        measuring distance between p1 and p2, with the dimension
-        line passign through p3.The current line width and color
-        will be used.'''
-        typecheck([(p1,Vector), (p2,Vector), (p3,Vector)], "makeDimension")
+def makeDimension(p1,p2,p3=None,p4=None):
+        '''makeDimension(p1,p2,[p3]) or makeDimension(object,i1,i2,[p3]):
+        Creates a Dimension object measuring distance between p1 and p2,
+        with the dimension line passign through p3.The current line width
+        and color will be used. Alternatively, you can also pass an object
+        and two intergers, which are the indices of the vertices of the object
+        that need to be measured.If the object gets updated, the dimension will
+        be updated too on refresh.'''
         obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
-	Dimension(obj)
-	ViewProviderDimension(obj.ViewObject)
-	obj.Start = p1
-	obj.End = p2
+        Dimension(obj)
+        ViewProviderDimension(obj.ViewObject)
+        if isinstance(p1,Vector) and isinstance(p2,Vector):
+                obj.Start = p1
+                obj.End = p2
+        elif isinstance(p2,int) and isinstance(p3,int):
+                obj.Base = p1
+                obj.LinkedVertices = [p2,p3]
+                p3 = p4
         if not p3:
-            p3 = p2.sub(p1)
-            p3.multiply(0.5)
-            p3 = p1.add(p3)
-	obj.Dimline = p3
-	formatObject(obj)
-	select(obj)
-	FreeCAD.ActiveDocument.recompute()
+                p3 = p2.sub(p1)
+                p3.multiply(0.5)
+                p3 = p1.add(p3)
+        obj.Dimline = p3
+        formatObject(obj)
+        select(obj)
+        FreeCAD.ActiveDocument.recompute()
         return obj
 
 def makeWire(pointslist,closed=False,placement=None,face=True):
@@ -574,11 +581,15 @@ class Dimension:
 	"The Dimension object"
 	def __init__(self, obj):
 		obj.addProperty("App::PropertyVector","Start","Base",
-					"Startpoint of dimension")
+                                "Startpoint of dimension")
 		obj.addProperty("App::PropertyVector","End","Base",
-					"Endpoint of dimension")
+                                "Endpoint of dimension")
 		obj.addProperty("App::PropertyVector","Dimline","Base",
-					"Point through which the dimension line passes")
+                                "Point through which the dimension line passes")
+                obj.addProperty("App::PropertyLink","Base","Base",
+                                "The base object this dimension is linked to")
+                obj.addProperty("App::PropertyIntegerList","LinkedVertices","Base",
+                                "The indices of the vertices from the base object to measure")
 		self.Type = "Dimension"
                 obj.Start = FreeCAD.Vector(0,0,0)
                 obj.End = FreeCAD.Vector(1,0,0)
@@ -589,7 +600,8 @@ class Dimension:
 		pass
 
 	def execute(self, fp):
-		pass
+                if fp.ViewObject:
+                        fp.ViewObject.update()
 
 class ViewProviderDimension:
 	"A View Provider for the Dimension object"
@@ -689,6 +701,12 @@ class ViewProviderDimension:
 		self.onChanged(obj,"FontName")
 
 	def updateData(self, obj, prop):
+                if obj.Base and obj.LinkedVertices:
+                        if "Shape" in obj.Base.PropertiesList:
+                                v1 = obj.Base.Shape.Vertexes[obj.LinkedVertices[0]].Point
+                                v2 = obj.Base.Shape.Vertexes[obj.LinkedVertices[1]].Point
+                                if v1 != obj.Start: obj.Start = v1
+                                if v2 != obj.End: obj.End = v2
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
 		self.text.string = ("%.2f" % p3.sub(p2).Length)
 		# self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
@@ -699,7 +717,7 @@ class ViewProviderDimension:
                 u = fcvec.reorient(u,"x")
                 v = fcvec.reorient(v,"y")
                 w = fcvec.reorient(u.cross(v),"z")
-                print u,v,w
+                print "ViewProviderDimension:",u,v,w
                 tm = FreeCAD.Placement(fcvec.getPlaneRotation(u,v,w)).Rotation.Q
                 self.textpos.rotation = coin.SbRotation(tm[0],tm[1],tm[2],tm[3])
 		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],
@@ -720,7 +738,7 @@ class ViewProviderDimension:
 			self.color.rgb.setValue(c[0],c[1],c[2])
 		elif prop == "LineWidth":
 			self.drawstyle.lineWidth = vp.LineWidth
-		elif prop == "ExtLines":
+		else:
 			self.updateData(vp.Object, None)
 
 	def getDisplayModes(self,obj):
@@ -732,7 +750,36 @@ class ViewProviderDimension:
 		return "Wireframe"
 
 	def getIcon(self):
-		return """
+                if self.Object.Base:
+                        return """
+                        /* XPM */
+                        static char * dim_xpm[] = {
+                        "16 16 6 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #FFFF00",
+                        "@	c #FFFFFF",
+                        "$	c #141010",
+                        "#	c #615BD2",
+                        "        $$$$$$$$",
+                        "        $##$$#$$",
+                        "     .  $##$$##$",
+                        "    ..  $##$$##$",
+                        "   .+.  $######$",
+                        "  .++.  $##$$##$",
+                        " .+++. .$##$$##$",
+                        ".++++. .$######$",
+                        " .+++. .$$$$$$$$"
+                        "  .++.    .++.  ",
+                        "   .+.    .+.   ",
+                        "    ..    ..    ",
+                        "     .    .     ",
+                        "                ",
+                        "                ",
+                        "                "};
+                        """
+                else:
+                        return """
                         /* XPM */
                         static char * dim_xpm[] = {
                         "16 16 4 1",
@@ -957,6 +1004,9 @@ class Wire:
                                 if fcgeo.isCoplanar(shape.Faces):
                                         shape = fcgeo.concatenate(shape)
                                         fp.Shape = shape
+                                        p = []
+                                        for v in shape.Vertexes: p.append(v.Point)
+                                        if fp.Points != p: fp.Points = p
                 elif fp.Points:
                         if fp.Points[0] == fp.Points[-1]:
                                 fp.Closed = True

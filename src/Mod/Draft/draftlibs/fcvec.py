@@ -192,7 +192,7 @@ def reorient(u,ref):
                         elif u.y == 0:
                                 if u.z > 0: return neg(u)
         elif ref == "y":
-                print "testing",u
+                print "fcvec.reorient:",u
                 if u.y < 0:
                         return neg(u)
                 elif u.y == 0:
