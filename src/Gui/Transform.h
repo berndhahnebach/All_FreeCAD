@@ -24,15 +24,18 @@
 #define GUI_TRANSFORM_H
 
 #include <Gui/InputVector.h>
+#include <Gui/Selection.h>
 #include <Gui/TaskView/TaskDialog.h>
 #include <Gui/TaskView/TaskView.h>
 #include <Base/Placement.h>
+#include <set>
 
 namespace Gui {
 namespace Dialog {
 
 class Ui_Placement;
-class GuiExport Transform : public Gui::LocationDialog
+class GuiExport Transform : public Gui::LocationDialog,
+                            public Gui::SelectionObserver
 {
     Q_OBJECT
 
@@ -47,6 +50,9 @@ protected:
     Base::Vector3f getDirection() const;
     void changeEvent(QEvent *e);
 
+private:
+    void onSelectionChanged(const Gui::SelectionChanges& msg);
+
 public Q_SLOTS:
     void on_applyButton_clicked();
 
@@ -54,6 +60,9 @@ private Q_SLOTS:
     void onTransformChanged(int);
 
 private:
+    void acceptTransform(const Base::Matrix4D&, App::DocumentObject*);
+    void applyTransform(const Base::Placement&, App::DocumentObject*);
+    void resetTransform(App::DocumentObject*);
     Base::Placement getPlacementData() const;
     void directionActivated(int);
     void setRotationCenter();
@@ -65,6 +74,7 @@ private:
     typedef Gui::LocationInterfaceComp<Ui_Placement> Ui_TransformComp;
     Ui_TransformComp* ui;
     Base::Placement pm;
+    std::set<App::DocumentObject*> selection;
 };
 
 class TaskTransform : public Gui::TaskView::TaskDialog

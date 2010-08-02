@@ -27,6 +27,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <boost/signals.hpp>
 
 #include <Gui/iisTaskPanel/include/iisTaskPanel>
 #include <Gui/Selection.h>
@@ -43,6 +44,7 @@ class CombiView;
 }
 namespace TaskView {
 
+typedef boost::signals::connection Connection;
 class TaskEditControl;
 class TaskDialog;
 
@@ -128,6 +130,8 @@ protected:
     iisTaskPanel* taskPanel;
     TaskDialog *ActiveDialog;
     TaskEditControl *ActiveCtrl;
+
+    Connection connectApplicationActiveDocument;
 };
 
 } //namespace TaskView
