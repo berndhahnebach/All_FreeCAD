@@ -277,10 +277,30 @@ public:
     virtual void Paste(const Property &from);
 };
 
+/** The base class for all basic geometry properties.
+ * @author Werner Mayer
+ */
+class AppExport PropertyGeometry : public App::Property
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    PropertyGeometry();
+    ~PropertyGeometry();
+
+    /** @name Modification */
+    //@{
+    /// Applies a transformation on the real geometric data type
+    virtual void transformGeometry(const Base::Matrix4D &rclMat) = 0;
+    /// Retrieve bounding box information
+    virtual Base::BoundBox3d getBoundingBox() const = 0;
+    //@}
+};
+
 /** The base class for all complex data properties.
  * @author Werner Mayer
  */
-class AppExport PropertyComplexGeoData : public App::Property
+class AppExport PropertyComplexGeoData : public App::PropertyGeometry
 {
     TYPESYSTEM_HEADER();
 

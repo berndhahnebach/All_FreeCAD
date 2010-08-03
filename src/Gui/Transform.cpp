@@ -37,7 +37,7 @@
 using namespace Gui::Dialog;
 
 namespace Gui { namespace Dialog {
-class find_complex_data
+class find_geometry_data
 {
 public:
     bool operator () (const std::pair<std::string, App::Property*>& elem) const
@@ -55,7 +55,9 @@ public:
                 (Base::Type::fromName("Part::PropertyPartShape"));
         }
 
-        return false;
+        // any other geometry type
+        return elem.second->isDerivedFrom
+            (Base::Type::fromName("App::PropertyGeometry"));
     }
 };
 class find_placement
@@ -127,7 +129,7 @@ void Transform::onSelectionChanged(const Gui::SelectionChanges& msg)
         this->setDisabled(true);
         for (std::set<App::DocumentObject*>::iterator it = selection.begin();
              it != selection.end(); ++it)
-             resetTransform(*it);
+             resetViewTransform(*it);
         selection.clear();
         return;
     }
@@ -140,7 +142,7 @@ void Transform::onSelectionChanged(const Gui::SelectionChanges& msg)
         (*it)->getPropertyMap(props);
         // search for the placement property
         std::map<std::string,App::Property*>::iterator jt;
-        jt = std::find_if(props.begin(), props.end(), find_complex_data());
+        jt = std::find_if(props.begin(), props.end(), find_geometry_data());
         if (jt != props.end()) {
             update_selection.insert(*it);
         }
@@ -152,13 +154,13 @@ void Transform::onSelectionChanged(const Gui::SelectionChanges& msg)
     std::set_difference(selection.begin(), selection.end(),
         update_selection.begin(), update_selection.end(), biit);
     for (std::vector<App::DocumentObject*>::iterator it = diff.begin(); it != diff.end(); ++it)
-         resetTransform(*it);
+         resetViewTransform(*it);
     selection = update_selection;
 
     this->setDisabled(selection.empty());
 }
 
-void Transform::acceptTransform(const Base::Matrix4D& mat, App::DocumentObject* obj)
+void Transform::acceptDataTransform(const Base::Matrix4D& mat, App::DocumentObject* obj)
 {
     Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
     std::map<std::string,App::Property*> props;
@@ -171,14 +173,20 @@ void Transform::acceptTransform(const Base::Matrix4D& mat, App::DocumentObject* 
         Gui::ViewProvider* vp = doc->getViewProvider(obj);
         if (vp) vp->setTransformation(local.toMatrix());
     }
+    else {
+        // No placement found
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(Base::Matrix4D());
+    }
+
     // Apply the transformation
-    jt = std::find_if(props.begin(), props.end(), find_complex_data());
+    jt = std::find_if(props.begin(), props.end(), find_geometry_data());
     if (jt != props.end()) {
-        static_cast<App::PropertyComplexGeoData*>(jt->second)->transformGeometry(mat);
+        static_cast<App::PropertyGeometry*>(jt->second)->transformGeometry(mat);
     }
 }
 
-void Transform::applyTransform(const Base::Placement& plm, App::DocumentObject* obj)
+void Transform::applyViewTransform(const Base::Placement& plm, App::DocumentObject* obj)
 {
     Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
     std::map<std::string,App::Property*> props;
@@ -192,9 +200,14 @@ void Transform::applyTransform(const Base::Placement& plm, App::DocumentObject* 
         Gui::ViewProvider* vp = doc->getViewProvider(obj);
         if (vp) vp->setTransformation(local.toMatrix());
     }
+    else {
+        // No placement found, so apply the transformation directly
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(plm.toMatrix());
+    }
 }
 
-void Transform::resetTransform(App::DocumentObject* obj)
+void Transform::resetViewTransform(App::DocumentObject* obj)
 {
     Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
     std::map<std::string,App::Property*> props;
@@ -206,6 +219,11 @@ void Transform::resetTransform(App::DocumentObject* obj)
         Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
         Gui::ViewProvider* vp = doc->getViewProvider(obj);
         if (vp) vp->setTransformation(local.toMatrix());
+    }
+    else {
+        // No placement found
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(Base::Matrix4D());
     }
 }
 
@@ -228,12 +246,12 @@ void Transform::setRotationCenter()
             (*it)->getPropertyMap(props);
             // search for a data property
             std::map<std::string,App::Property*>::iterator jt;
-            jt = std::find_if(props.begin(), props.end(), find_complex_data());
+            jt = std::find_if(props.begin(), props.end(), find_geometry_data());
             if (jt != props.end()) {
                 if (first)
-                    bbox = (static_cast<App::PropertyComplexGeoData*>(jt->second)->getBoundingBox());
+                    bbox = (static_cast<App::PropertyGeometry*>(jt->second)->getBoundingBox());
                 else
-                    bbox.Add(static_cast<App::PropertyComplexGeoData*>(jt->second)->getBoundingBox());
+                    bbox.Add(static_cast<App::PropertyGeometry*>(jt->second)->getBoundingBox());
                 first = false;
             }
         }
@@ -249,7 +267,7 @@ void Transform::onTransformChanged(int)
     Base::Placement plm = this->getPlacementData();
 
     for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
-        applyTransform(plm, *it);
+        applyViewTransform(plm, *it);
     }
 }
 
@@ -262,7 +280,7 @@ void Transform::accept()
 void Transform::reject()
 {
     for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
-        resetTransform(*it);
+        resetViewTransform(*it);
     }
 
     QDialog::reject();
@@ -277,7 +295,7 @@ void Transform::on_applyButton_clicked()
     if (doc) {
         doc->openCommand("Transform");
         for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
-            acceptTransform(mat, *it);
+            acceptDataTransform(mat, *it);
         }
         doc->commitCommand();
     }
