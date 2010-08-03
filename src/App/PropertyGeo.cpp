@@ -618,7 +618,21 @@ void PropertyPlacementLink::Paste(const Property &from)
 
 // ------------------------------------------------------------
 
-TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyComplexGeoData , App::Property);
+TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyGeometry , App::Property);
+
+PropertyGeometry::PropertyGeometry()
+{
+
+}
+
+PropertyGeometry::~PropertyGeometry()
+{
+
+}
+
+// ------------------------------------------------------------
+
+TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyComplexGeoData , App::PropertyGeometry);
 
 PropertyComplexGeoData::PropertyComplexGeoData()
 {

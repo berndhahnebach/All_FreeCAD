@@ -60,9 +60,9 @@ private Q_SLOTS:
     void onTransformChanged(int);
 
 private:
-    void acceptTransform(const Base::Matrix4D&, App::DocumentObject*);
-    void applyTransform(const Base::Placement&, App::DocumentObject*);
-    void resetTransform(App::DocumentObject*);
+    void acceptDataTransform(const Base::Matrix4D&, App::DocumentObject*);
+    void applyViewTransform(const Base::Placement&, App::DocumentObject*);
+    void resetViewTransform(App::DocumentObject*);
     Base::Placement getPlacementData() const;
     void directionActivated(int);
     void setRotationCenter();

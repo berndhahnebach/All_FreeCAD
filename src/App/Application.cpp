@@ -961,6 +961,7 @@ void Application::initTypes(void)
     App ::PropertyVectorList        ::init();
     App ::PropertyPlacement         ::init();
     App ::PropertyPlacementLink     ::init();
+    App ::PropertyGeometry          ::init();
     App ::PropertyComplexGeoData    ::init();
     App ::PropertyColor             ::init();
     App ::PropertyColorList         ::init();
