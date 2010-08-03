@@ -36,6 +36,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
+#include <Base/Exception.h>
 #include <Base/Matrix.h>
 #include <App/PropertyGeo.h>
 
@@ -133,40 +134,47 @@ void ViewProvider::eventCallback(void * ud, SoEventCallback * node)
 
     SoPickedPoint* pp = rp.getPickedPoint();
 
-    // Keyboard events
-    if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-        SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
-        switch (ke->getKey()) {
-        case SoKeyboardEvent::ESCAPE:
-            Gui::Application::Instance->activeDocument()->resetEdit();
-            break;
-        default:
+    try {
+        // Keyboard events
+        if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
+            SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
+            switch (ke->getKey()) {
+            case SoKeyboardEvent::ESCAPE:
+                Gui::Application::Instance->activeDocument()->resetEdit();
+                break;
+            default:
+                // call the virtual method
+                if (self->keyPressed (ke->getKey()))
+                    node->setHandled();
+                break;
+            }
+        }
+        // switching the mouse buttons
+        else if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+
+            const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
+            const int button = event->getButton();
+            const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+
             // call the virtual method
-            if (self->keyPressed (ke->getKey()))
+            if (self->mouseButtonPressed(button,press,point,norm,pp))
                 node->setHandled();
-            break;
+        }
+        // Mouse Movement handling
+        else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+            if (self->mouseMove(point,norm,pp))
+                node->setHandled();
         }
     }
-    // switching the mouse buttons
-    else if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-
-        const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
-        const int button = event->getButton();
-        const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
-
-        // call the virtual method
-        if (self->mouseButtonPressed(button,press,point,norm,pp))
-            node->setHandled();
+    catch (const Base::Exception& e) {
+        Base::Console().Error("Unhandled exception in ViewProvider::eventCallback: %s\n", e.what());
     }
-    // Mouse Movement handling
-    else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
-        if (self->mouseMove(point,norm,pp))
-            node->setHandled();
+    catch (const std::exception& e) {
+        Base::Console().Error("Unhandled std exception in ViewProvider::eventCallback: %s\n", e.what());
     }
-
-    // clean up
-    //if (Point)
-    //    delete Point;
+    catch (...) {
+        Base::Console().Error("Unhandled unknown C++ exception in ViewProvider::eventCallback");
+    }
 }
 
 SoSeparator* ViewProvider::getAnnotation(void)
