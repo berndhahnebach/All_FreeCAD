@@ -148,7 +148,32 @@ void Transform::onSelectionChanged(const Gui::SelectionChanges& msg)
         }
     }
 
-    // reste transform for all deselected objects
+    // now we remove all objects which links to another object
+    // of the selected objects because if the source object changes
+    // it is touched and thus a recompute later would overwrite the
+    // changes here anyway
+    std::set<App::DocumentObject*> filter;
+    for (std::set<App::DocumentObject*>::iterator it=update_selection.begin();
+        it!=update_selection.end();++it) {
+        std::vector<App::DocumentObject*> deps = (*it)->getOutList();
+        std::vector<App::DocumentObject*>::iterator jt;
+        for (jt = deps.begin(); jt != deps.end(); ++jt) {
+            if (update_selection.find(*jt) != update_selection.end()) {
+                filter.insert(*it);
+                break;
+            }
+        }
+    }
+
+    if (!filter.empty()) {
+        std::set<App::DocumentObject*> diff;
+        std::insert_iterator< std::set<App::DocumentObject*> > biit(diff, diff.begin());
+        std::set_difference(update_selection.begin(), update_selection.end(),
+            filter.begin(), filter.end(), biit);
+        update_selection = diff;
+    }
+
+    // reset transform for all deselected objects
     std::vector<App::DocumentObject*> diff;
     std::back_insert_iterator< std::vector<App::DocumentObject*> > biit(diff);
     std::set_difference(selection.begin(), selection.end(),
