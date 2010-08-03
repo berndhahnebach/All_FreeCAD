@@ -471,7 +471,7 @@ class snapTracker(Tracker):
 		if (style == "point"):
 			self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
 		elif (style == "square"):
-			self.marker.markerIndex = coin.SoMarkerSet.SQUARE_LINE_9_9
+			self.marker.markerIndex = coin.SoMarkerSet.DIAMOND_FILLED_9_9
 		elif (style == "circle"):
 			self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_9_9
 
@@ -615,61 +615,40 @@ class ghostTracker(Tracker):
 			print "draft: Couldn't create ghost"
 		else:
 			children.append(ivsep)
-
 		Tracker.__init__(self,children=children)
 
-class pointEditTracker(Tracker):
-	"A point edit tracker"
-	def __init__(self,pos=Vector(0,0,0)):
-                trm = coin.SoTransform()
-                trm.rotation.setValue(coin.SbVec3f(1,0,0),math.pi/2)
-                trm.scaleFactor.setValue([.2,.2,.2])
-                trm.translation.setValue(coin.SbVec3f(pos.x,pos.y,pos.z))
-                color = coin.SoBaseColor()
+class editTracker(Tracker):
+	"A node edit tracker"
+	def __init__(self,pos=Vector(0,0,0),name="None",idx=0):
+		color = coin.SoBaseColor()
 		color.rgb = FreeCADGui.activeWorkbench().draftToolBar.\
 			ui.getDefaultColor("snap")
-                t1 = coin.SoTransform()
-                t1.rotation.setValue(coin.SbVec3f(0,0,1),math.pi/2)
-                t1.scaleFactor.setValue([.2,.2,.2])
-                t1.translation.setValue([-1,0,0])
-                c1 = coin.SoCone()
-                c2 = c1.copy()
-                t2 = coin.SoTransform()
-                t2.rotation.setValue(coin.SbVec3f(0,0,1),math.pi)
-                t2.translation.setValue([2,0,0])
-                s1 = coin.SoSeparator()
-                s1.addChild(color)
-                s1.addChild(t1)
-                s1.addChild(c1)
-                s1.addChild(t2)
-                s1.addChild(c2)
-                xydragger = coin.SoTranslate2Dragger()
-                zdragger = coin.SoTranslate1Dragger()
-                zdragger.setPart("translator",s1)
-                self.marker = coin.SoDragPointDragger()
-                # self.marker.translation.setValue(coin.SbVec3f(pos.x,pos.y,pos.z))
-                # self.marker.setPart("xzTranslator",xydragger)
-                # self.marker.setPart("yTranslator",zdragger)
-                Tracker.__init__(self,scolor=color.rgb,children=[trm,self.marker])
+		self.marker = coin.SoMarkerSet() # this is the marker symbol
+		self.marker.markerIndex = coin.SoMarkerSet.SQUARE_FILLED_9_9
+		self.coords = coin.SoCoordinate3() # this is the coordinate
+		self.coords.point.setValue((pos.x,pos.y,pos.z))
+                selnode = coin.SoType.fromName("SoFCSelection").createInstance()
+		selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
+		selnode.objectName.setValue(name)
+		selnode.subElementName.setValue("EditNode"+str(idx))
+		node = coin.SoAnnotation()
+		selnode.addChild(self.coords)
+		selnode.addChild(color)
+		selnode.addChild(self.marker)
+                node.addChild(selnode)
+		Tracker.__init__(self,children=[node])
+                self.on()
 
-        def setpos(self,pos):
-                self.marker.translation.setValue(coin.SbVec3f(pos.x,pos.y,pos.z))
+        def set(self,pos):
+                self.coords.point.setValue((pos.x,pos.y,pos.z))
 
+        def get(self):
+                p = self.coords.point.getValues()[0]
+                return Vector(p[0],p[1],p[2])
      
 #---------------------------------------------------------------------------
 # Helper tools
 #---------------------------------------------------------------------------
-
-def edit():
-        obj = FreeCAD.ActiveDocument.ActiveObject
-        if obj:
-                trackers = []
-                if "Points" in obj.PropertiesList:
-                        for p in obj.Points:
-                                trackers.append(pointEditTracker(p))
-                        for t in trackers:
-                                t.on()
-                        return trackers
                 	
 class SelectPlane:
 	"The Draft_SelectPlane FreeCAD command definition"
@@ -802,6 +781,88 @@ class Creator:
 			msg("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
+
+class Edit(Creator):
+	"The Draft_Edit FreeCAD command definition"
+
+	def __init__(self, wiremode=False):
+		self.isWire = wiremode
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_Edit',
+			'MenuText': str(translate("draft", "Edit").toLatin1()),
+			'ToolTip': str(translate("draft", "Edits the active object").toLatin1())}
+
+	def Activated(self):
+		Creator.Activated(self,"Edit")
+		if self.doc:
+                        self.obj = self.doc.ActiveObject
+                        if self.obj:
+                                self.virge = True
+                                self.editing = None
+                                self.editpoints = []
+                                if "Points" in self.obj.PropertiesList:
+                                        for p in self.obj.Points:
+                                                self.editpoints.append(p)
+                                self.trackers = []
+                                for ep in range(len(self.editpoints)):
+                                        self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
+                                self.snap = snapTracker()
+                                self.constraintrack = lineTracker(dotted=True)
+                                self.call = self.view.addEventCallback("SoEvent",self.action)
+
+	def finish(self,closed=False):
+		"terminates the operation and closes the poly if asked"
+                if self.ui:
+                        self.snap.finalize()
+                        for t in self.trackers: t.finalize()
+                        self.constraintrack.finalize()
+		Creator.finish(self)
+
+	def action(self,arg):
+		"scene event handler"
+                if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
+			self.finish()
+		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+                        if self.editing != None:
+                                point,ctrlPoint = getPoint(self,arg)
+                                # Draw constraint tracker line.
+                                if (arg["ShiftDown"]):
+                                        self.constraintrack.p1(point)
+                                        self.constraintrack.p2(ctrlPoint)
+                                        self.constraintrack.on()
+                                else: self.constraintrack.off()
+                                self.trackers[self.editing].set(point)
+		elif (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+                                if self.editing == None:
+                                        snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
+                                        if snapped:
+                                                if snapped['Object'] == self.obj.Name:
+                                                        if 'EditNode' in snapped['Component']:
+                                                                self.virge = False
+                                                                self.ui.pointUi()
+                                                                self.ui.isRelative.show()
+                                                                self.editing = int(snapped['Component'][8:])
+                                                                self.node.append(self.obj.Points[self.editing])
+                                else:
+                                        pts = self.obj.Points
+                                        pts[self.editing] = self.trackers[self.editing].get()
+                                        self.obj.Points = pts
+                                        self.editing = None
+                                        self.ui.offUi()
+                                        self.node = []
+
+	def numericInput(self,numx,numy,numz):
+		'''this function gets called by the toolbar
+                when valid x, y, and z have been entered there'''
+                pts = self.obj.Points
+                pts[self.editing] = Vector(numx,numy,numz)
+                self.obj.Points = pts
+                self.editing = None
+                self.ui.offUi()
+                self.node = []
+
 	
 
 class Line(Creator):
@@ -3112,3 +3173,4 @@ FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
 FreeCADGui.addCommand('Draft_SendToDrawing',SendToDrawing())
 FreeCADGui.addCommand('Draft_SendToDrawingDirect',SendToDrawingDirect())
+FreeCADGui.addCommand('Draft_Edit',Edit())
