@@ -205,7 +205,7 @@ def formatObject(target,origin=None):
 	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
 	doc = FreeCAD.ActiveDocument
 	if ui.constrButton.isChecked():
-		col = ui.getDefaultColor("constr")
+		col = fcol = ui.getDefaultColor("constr")
 		gname = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
 		GetString("constructiongroupname")
 		if gname:
@@ -214,26 +214,34 @@ def formatObject(target,origin=None):
 			grp.addObject(target)
 	else:
 		col = ui.getDefaultColor("ui")
+                fcol = ui.getDefaultColor("face")
 	col = (float(col[0]),float(col[1]),float(col[2]),0.0)
+        fcol = (float(fcol[0]),float(fcol[1]),float(fcol[2]),0.0)
 	lw = float(ui.widthButton.value())
-	if (target.Type == "App::Annotation"):
-		obrep.TextColor=col
-	else:
-		if not origin:
-			obrep.LineWidth = lw
-                        if "PointColor" in obrep.PropertiesList: obrep.PointColor = col
-			obrep.LineColor = col
-		else:
-			matchrep = origin.ViewObject
-			obrep.LineWidth = matchrep.LineWidth
-                        if ("PointColor" in obrep.PropertiesList) and \
-                                    ("PointColor" in matchrep.PropertiesList):
-                                obrep.PointColor = matchrep.PointColor
-			obrep.LineColor = matchrep.LineColor
-			if (target.Type[:4] == "Part"):
-				obrep.ShapeColor = matchrep.ShapeColor
-                                if matchrep.DisplayMode in obrep.listDisplayModes():
-                                        obrep.DisplayMode = matchrep.DisplayMode
+        fs = float(ui.fontsizeButton.value())
+        if not origin:
+                if "FontSize" in obrep.PropertiesList: obrep.FontSize = fs
+                if "TextColor" in obrep.PropertiesList: obrep.TextColor = col
+                if "LineWidth" in obrep.PropertiesList: obrep.LineWidth = lw
+                if "PointColor" in obrep.PropertiesList: obrep.PointColor = col
+                if "LineColor" in obrep.PropertiesList: obrep.LineColor = col
+                if "ShapeColor" in obrep.PropertiesList: obrep.ShapeColor = fcol
+        else:
+                matchrep = origin.ViewObject
+                if ("LineWidth" in obrep.PropertiesList) and \
+                            ("LineWidth" in matchrep.PropertiesList):
+                        obrep.LineWidth = matchrep.LineWidth
+                if ("PointColor" in obrep.PropertiesList) and \
+                            ("PointColor" in matchrep.PropertiesList):
+                        obrep.PointColor = matchrep.PointColor
+                if ("LineColor" in obrep.PropertiesList) and \
+                            ("LineColor" in matchrep.PropertiesList):
+                        obrep.LineColor = matchrep.LineColor
+                if ("ShapeColor" in obrep.PropertiesList) and \
+                            ("ShapeColor" in matchrep.PropertiesList):
+                        obrep.ShapeColor = matchrep.ShapeColor
+                if matchrep.DisplayMode in obrep.listDisplayModes():
+                        obrep.DisplayMode = matchrep.DisplayMode
 
 def getSelection():
         "getSelection(): returns the current FreeCAD selection"
