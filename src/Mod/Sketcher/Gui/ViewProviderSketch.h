@@ -37,6 +37,7 @@ class SoCoordinate3;
 class SoPointSet;
 class SoTransform;
 class SoLineSet;
+class SoMarkerSet;
 
 namespace Gui {
     class View3DInventorViewer;
@@ -179,7 +180,7 @@ protected:
     SoLineSet     *CurveSet;
     SoLineSet     *LineSet;
     SoLineSet     *EditCurveSet;
-    SoPointSet    *PointSet;
+    SoMarkerSet   *PointSet;
 
     // colors for selection and preselection
     static SbColor PreselectColor; 

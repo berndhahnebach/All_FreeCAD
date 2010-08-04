@@ -29,6 +29,8 @@
 #include <Base/Matrix.h>
 #include <Base/MatrixPy.h>
 
+#include <App/Document.h>
+
 #include "Document.h"
 #include "ViewProviderExtern.h"
 
@@ -88,6 +90,28 @@ PyObject*  DocumentPy::setPos(PyObject *args)
         getDocumentPtr()->setPos(psFeatStr,mat);  
         Py_Return;
     } PY_CATCH;
+}
+
+PyObject* DocumentPy::setEdit(PyObject *args)
+{
+    char *psFeatStr;
+    int mod = 0;
+    if (!PyArg_ParseTuple(args, "s|i;Name of the Feature to set edti have to be given!",
+                          &psFeatStr,&mod))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+    App::DocumentObject * dobj = getDocumentPtr()->getDocument()->getObject(psFeatStr);
+    getDocumentPtr()->setEdit(getDocumentPtr()->getViewProvider(dobj),mod);
+
+    Py_Return;
+}
+
+PyObject* DocumentPy::resetEdit(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ";No Arguments allowed"))     // convert args: Python->C 
+        return NULL;  // NULL triggers exception 
+    getDocumentPtr()->resetEdit();
+
+    Py_Return;
 }
 
 PyObject*  DocumentPy::addAnnotation(PyObject *args)

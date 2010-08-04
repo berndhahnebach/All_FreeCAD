@@ -4,6 +4,7 @@
 #include "Mod/Sketcher/App/SketchObject.h"
 #include <Mod/Part/App/LinePy.h>
 #include <Mod/Part/App/Geometry.h>
+#include <Base/VectorPy.h>
 
 // inclusion of the generated files (generated out of SketchObjectSFPy.xml)
 #include "SketchObjectPy.h"
@@ -54,8 +55,41 @@ PyObject* SketchObjectPy::addConstraint(PyObject *args)
 
 PyObject* SketchObjectPy::movePoint(PyObject *args)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
-    return 0;
+    PyObject *pcObj;
+    int GeoId,PointType;
+
+    if (!PyArg_ParseTuple(args, "iiO!", &GeoId, &PointType, &(Base::VectorPy::Type), &pcObj))
+        return 0;
+
+    Base::Vector3d v1 = static_cast<Base::VectorPy*>(pcObj)->value();
+
+    const std::vector< Part::Geometry * > &vals = this->getSketchObjectPtr()->Geometry.getValues();
+    const Part::Geometry * actGeom = vals[GeoId];
+    if(actGeom->getTypeId() == Part::GeomLineSegment::getClassTypeId()){
+        const Part::GeomLineSegment * Line = static_cast<const Part::GeomLineSegment*>(actGeom);
+        // create a single new line segment
+        Part::GeomLineSegment *newLine = new Part::GeomLineSegment();
+        // set the right point, leave the other old
+        if(PointType == 1)
+            newLine->setPoints(v1,Line->getEndPoint());
+        else
+            newLine->setPoints(Line->getStartPoint(),v1);
+        //copy the vector and exchange the changed line segment
+        std::vector< Part::Geometry * > newVals(vals);
+        newVals[GeoId] = newLine;
+
+        // set the new set to the property (which clone the objects)
+        this->getSketchObjectPtr()->Geometry.setValues(newVals);
+
+        // set free the new line
+        delete newLine;
+
+    }else
+        Py_Error(PyExc_AttributeError,"wrong Geometry");
+
+
+
+    Py_Return; 
 }
 
 

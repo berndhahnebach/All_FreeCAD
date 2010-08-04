@@ -28,6 +28,21 @@
         <UserDocu>Set the position</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="setEdit">
+      <Documentation>
+        <UserDocu>
+          setEdit([String:Name|ViewProvider|DocumentObjet]|,mod)
+          Set the given object in edit mode.
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="resetEdit">
+      <Documentation>
+        <UserDocu>
+          Reset (end) the actual edit.
+        </UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="addAnnotation">
       <Documentation>
         <UserDocu>Add an Inventor object</UserDocu>

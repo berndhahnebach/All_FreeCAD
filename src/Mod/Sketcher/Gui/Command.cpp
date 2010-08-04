@@ -62,7 +62,9 @@ void CmdSketcherNewSketch::activated(int iMsg)
     openCommand("Create a new Sketch");
     doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
     commitCommand();
-    getDocument()->recompute();
+    doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
+    
+    //getDocument()->recompute();
 }
 
 bool CmdSketcherNewSketch::isActive(void)
@@ -92,8 +94,8 @@ CmdSketcherLeaveSketch::CmdSketcherLeaveSketch()
 void CmdSketcherLeaveSketch::activated(int iMsg)
 {
     Gui::Document *doc = getActiveGuiDocument();
-    doc->resetEdit();
     openCommand("Sketch changed");
+    doCommand(Gui,"Gui.activeDocument().resetEdit()");
     doCommand(Doc,"App.ActiveDocument.recompute()");
     commitCommand();
 
