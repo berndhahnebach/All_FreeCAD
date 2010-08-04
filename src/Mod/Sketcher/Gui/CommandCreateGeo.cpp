@@ -255,7 +255,7 @@ public:
 
    virtual void mouseMove(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_SEEK_Second){
+        if(Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
             EditCurve[1] = onSketchPos; 
             sketchgui->drawEdit(EditCurve);
         }
