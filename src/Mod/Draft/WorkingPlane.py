@@ -48,6 +48,8 @@ class plane:
 		self.v = None
 		self.axis = None
 		self.position = None
+                # a placeholder for a stored state
+                self.stored = None
 
 	def offsetToPoint(self, p, direction=None):
 		'''
@@ -118,7 +120,7 @@ class plane:
 		else:
 			return False
 
-	def alignToFace(self, shape, offset):
+	def alignToFace(self, shape, offset=0):
 		# Set face to the unique selected face, if found
 		if shape.ShapeType == 'Face':
 			#we should really use face.tangentAt to get u and v here, and implement alignToUVPoint
@@ -163,4 +165,19 @@ class plane:
                         self.u.z,self.v.z,self.axis.z,self.position.z,
                         0.0,0.0,0.0,1.0)
                 return FreeCAD.Placement(m)
+
+        def save(self):
+                "stores the current plane state"
+                self.stored = [self.u,self.v,self.axis,self.position,self.weak]
+
+        def restore(self):
+                "restores a previously saved plane state, if exists"
+                if self.stored:
+                        self.u = self.stored[0]
+                        self.v = self.stored[1]
+                        self.axis = self.stored[2]
+                        self.position = self.stored[3]
+                        self.weak = self.stored[4]
+                        self.stored = None
+                
 		

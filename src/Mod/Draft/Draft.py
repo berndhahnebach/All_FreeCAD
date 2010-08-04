@@ -129,7 +129,7 @@ ToDo list:
 
 # import FreeCAD modules
 
-import FreeCAD, FreeCADGui, Part, math, sys, os
+import FreeCAD, FreeCADGui, Part, math, sys, os, Image
 from FreeCAD import Vector
 from draftlibs import fcvec, fcgeo
 from pivy import coin

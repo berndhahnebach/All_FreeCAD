@@ -602,20 +602,37 @@ class arcTracker(Tracker):
 
 
 class ghostTracker(Tracker):
-	"A Ghost tracker, that allows to copy whole object representations"
+	'''A Ghost tracker, that allows to copy whole object representations.
+        You can pass it an object or a list of objects, or a shape.'''
 	def __init__(self,sel):
 		self.trans = coin.SoTransform()
 		self.trans.translation.setValue([0,0,0])
-		children = [self.trans]
-		ivsep = coin.SoSeparator()
-		try:
-			for ob in sel:
-				ivsep.addChild(ob.ViewObject.RootNode.copy())
-		except:
-			print "draft: Couldn't create ghost"
-		else:
-			children.append(ivsep)
-		Tracker.__init__(self,children=children)
+		self.children = [self.trans]
+		self.ivsep = coin.SoSeparator()
+                try:
+                        if isinstance(sel,Part.Shape):
+                                ivin = coin.SoInput()
+                                ivin.setBuffer(sel.writeInventor())
+                                ivob = coin.SoDB.readAll(ivin)
+                                self.ivsep.addChild(ivob.getChildren()[1])
+                        else:
+                                if not isinstance(sel,list):
+                                        sel = [sel]
+                                for obj in sel:
+                                        self.ivsep.addChild(obj.ViewObject.RootNode.copy())
+                except:
+                        print "draft: Couldn't create ghost"
+                self.children.append(self.ivsep)
+		Tracker.__init__(self,children=self.children)
+
+        def update(self,obj):
+                obj.ViewObject.show()
+                self.finalize()
+                self.ivsep = coin.SoSeparator()
+                self.ivsep.addChild(obj.ViewObject.RootNode.copy())
+                Tracker.__init__(self,children=[self.ivsep])
+                self.on()
+                obj.ViewObject.hide()
 
 class editTracker(Tracker):
 	"A node edit tracker"
@@ -645,6 +662,9 @@ class editTracker(Tracker):
         def get(self):
                 p = self.coords.point.getValues()[0]
                 return Vector(p[0],p[1],p[2])
+
+        def move(self,delta):
+                self.set(self.get().add(delta))
      
 #---------------------------------------------------------------------------
 # Helper tools
@@ -673,7 +693,7 @@ class SelectPlane:
 			msg(translate("draft", "Pick a face to define the drawing plane\n"))
 			self.ui.sourceCmd = self
 			if plane.alignToSelection(self.offset):
-				#??? clear selection here
+                                FreeCADGui.Selection.clearSelection()
 				self.finish()
 			else:
 				self.call = self.view.addEventCallback("SoEvent", self.action)
@@ -785,8 +805,8 @@ class Creator:
 class Edit(Creator):
 	"The Draft_Edit FreeCAD command definition"
 
-	def __init__(self, wiremode=False):
-		self.isWire = wiremode
+	def __init__(self):
+		self.running = False
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Edit',
@@ -794,30 +814,50 @@ class Edit(Creator):
 			'ToolTip': str(translate("draft", "Edits the active object").toLatin1())}
 
 	def Activated(self):
-		Creator.Activated(self,"Edit")
-		if self.doc:
-                        self.obj = self.doc.ActiveObject
-                        if self.obj:
-                                self.virge = True
-                                self.editing = None
-                                self.editpoints = []
-                                if "Points" in self.obj.PropertiesList:
-                                        for p in self.obj.Points:
-                                                self.editpoints.append(p)
-                                self.trackers = []
-                                for ep in range(len(self.editpoints)):
-                                        self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
-                                self.snap = snapTracker()
-                                self.constraintrack = lineTracker(dotted=True)
-                                self.call = self.view.addEventCallback("SoEvent",self.action)
+                if self.running:
+                        self.finish()
+                else:
+                        Creator.Activated(self,"Edit")
+                        if self.doc:
+                                self.obj = Draft.getSelection()
+                                if self.obj:
+                                        self.obj = self.obj[0]
+                                        self.editing = None
+                                        self.editpoints = []
+                                        if "Points" in self.obj.PropertiesList:
+                                                for p in self.obj.Points:
+                                                        self.editpoints.append(p)
+                                        elif "Radius" in self.obj.PropertiesList:
+                                                self.editpoints.append(self.obj.Placement.Base)
+                                                if self.obj.StartAngle == self.obj.EndAngle:
+                                                        self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
+                                        elif "Length" in self.obj.PropertiesList:
+                                                self.editpoints.append(self.obj.Placement.Base)
+                                                self.editpoints.append(self.obj.Shape.Vertexes[2].Point)
+                                        self.trackers = []
+                                        for ep in range(len(self.editpoints)):
+                                                self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
+                                        self.snap = snapTracker()
+                                        self.constraintrack = lineTracker(dotted=True)
+                                        self.ghost = ghostTracker(self.obj)
+                                        self.ghost.on()
+                                        self.obj.ViewObject.hide()
+                                        self.call = self.view.addEventCallback("SoEvent",self.action)
+                                        self.running = True
+                                        plane.save()
+                                        plane.alignToFace(self.obj.Shape)
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
                 if self.ui:
+                        self.ghost.finalize()
                         self.snap.finalize()
                         for t in self.trackers: t.finalize()
                         self.constraintrack.finalize()
+                        self.obj.ViewObject.show()
 		Creator.finish(self)
+                plane.restore()
+                self.running = False
 
 	def action(self,arg):
 		"scene event handler"
@@ -840,27 +880,59 @@ class Edit(Creator):
                                         if snapped:
                                                 if snapped['Object'] == self.obj.Name:
                                                         if 'EditNode' in snapped['Component']:
-                                                                self.virge = False
                                                                 self.ui.pointUi()
                                                                 self.ui.isRelative.show()
                                                                 self.editing = int(snapped['Component'][8:])
-                                                                self.node.append(self.obj.Points[self.editing])
+                                                                if "Points" in self.obj.PropertiesList:
+                                                                        self.node.append(self.obj.Points[self.editing])
                                 else:
-                                        pts = self.obj.Points
-                                        pts[self.editing] = self.trackers[self.editing].get()
-                                        self.obj.Points = pts
-                                        self.editing = None
-                                        self.ui.offUi()
-                                        self.node = []
+                                        self.numericInput(self.trackers[self.editing].get())
 
-	def numericInput(self,numx,numy,numz):
+	def numericInput(self,v,numy=None,numz=None):
 		'''this function gets called by the toolbar
                 when valid x, y, and z have been entered there'''
-                pts = self.obj.Points
-                pts[self.editing] = Vector(numx,numy,numz)
-                self.obj.Points = pts
+                if (numy != None):
+                        v = Vector(v,numy,numz)
+                self.doc.openTransaction("Edit "+self.obj.Name)
+                if "Points" in self.obj.PropertiesList:
+                        pts = self.obj.Points
+                        pts[self.editing] = v
+                        self.obj.Points = pts
+                        self.trackers[self.editing].set(pts[self.editing])
+                elif "Radius" in self.obj.PropertiesList:
+                        delta = v.sub(self.obj.Placement.Base)
+                        if self.editing == 0:
+                                p = self.obj.Placement
+                                p.move(delta)
+                                self.obj.Placement = p
+                                self.trackers[0].set(self.obj.Placement.Base)
+                        elif self.editing == 1:
+                                self.obj.Radius = delta.Length
+                        self.trackers[1].set(self.obj.Shape.Vertexes[0].Point)
+                elif "Length" in self.obj.PropertiesList:
+                        delta = v.sub(self.obj.Placement.Base)
+                        if self.editing == 0:
+                                p = self.obj.Placement
+                                p.move(delta)
+                                self.obj.Placement = p
+                        elif self.editing == 1:
+                                diag = v.sub(self.obj.Placement.Base)
+                                x = fcgeo.vec(self.obj.Shape.Edges[0])
+                                y = fcgeo.vec(self.obj.Shape.Edges[1])
+                                nx = fcvec.project(diag,x)
+                                ny = fcvec.project(diag,y)
+                                ax = nx.Length
+                                ay = ny.Length
+                                if abs(nx.getAngle(x)) > 0.1: ax = -ax
+                                if abs(ny.getAngle(y)) > 0.1: ay = -ay
+                                self.obj.Length = ax
+                                self.obj.Height = ay
+                        self.trackers[0].set(self.obj.Placement.Base)
+                        self.trackers[1].set(self.obj.Shape.Vertexes[2].Point)
+                self.doc.commitTransaction()
                 self.editing = None
                 self.ui.offUi()
+                self.ghost.update(self.obj)
                 self.node = []
 
 	
