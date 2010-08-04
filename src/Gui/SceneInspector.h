@@ -24,13 +24,13 @@
 #define GUI_SCENEINSPECTOR_H
 
 #include <QStandardItemModel>
-#include "ui_SceneInspector.h"
 
 class SoNode;
 
 namespace Gui {
 namespace Dialog {
 
+class Ui_SceneInspector;
 class SceneModel : public QStandardItemModel
 {
     Q_OBJECT
@@ -59,8 +59,11 @@ public:
 
     void setNode(SoNode* node);
 
+private Q_SLOTS:
+    void on_refreshButton_clicked();
+
 private:
-    Ui::SceneInspector ui;
+    Ui_SceneInspector* ui;
 };
 
 } // namespace Dialog
