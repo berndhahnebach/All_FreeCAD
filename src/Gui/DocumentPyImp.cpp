@@ -96,18 +96,27 @@ PyObject* DocumentPy::setEdit(PyObject *args)
 {
     char *psFeatStr;
     int mod = 0;
-    if (!PyArg_ParseTuple(args, "s|i;Name of the Feature to set edti have to be given!",
+    if (!PyArg_ParseTuple(args, "s|i;Name of the object to edit has to be given!",
                           &psFeatStr,&mod))     // convert args: Python->C 
         return NULL;  // NULL triggers exception 
-    App::DocumentObject * dobj = getDocumentPtr()->getDocument()->getObject(psFeatStr);
-    getDocumentPtr()->setEdit(getDocumentPtr()->getViewProvider(dobj),mod);
+    App::DocumentObject * obj = getDocumentPtr()->getDocument()->getObject(psFeatStr);
+    if (!obj) {
+        PyErr_Format(PyExc_Exception, "No such object found in document: '%s'", psFeatStr);
+        return 0;
+    }
+    
+    bool ok = getDocumentPtr()->setEdit(getDocumentPtr()->getViewProvider(obj),mod);
+    if (!ok) {
+        PyErr_Format(PyExc_Exception, "Failed to set object '%s' in edit mode", psFeatStr);
+        return 0;
+    }
 
     Py_Return;
 }
 
 PyObject* DocumentPy::resetEdit(PyObject *args)
 {
-    if (!PyArg_ParseTuple(args, ";No Arguments allowed"))     // convert args: Python->C 
+    if (!PyArg_ParseTuple(args, ";No arguments allowed"))     // convert args: Python->C 
         return NULL;  // NULL triggers exception 
     getDocumentPtr()->resetEdit();
 
