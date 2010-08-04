@@ -34,6 +34,7 @@
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoMarkerSet.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoVertexProperty.h>
@@ -47,6 +48,7 @@
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/Command.h>
+#include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
@@ -228,10 +230,11 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     return true;}
                 case STATUS_SKETCH_DragPoint:
                     if(DragPoint != -1){
- /*                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i) "
+                          Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0)) "
                           ,getObject()->getNameInDocument()
-                          ,DragPoint/2,DragPoint%2
-                          );*/
+                          ,DragPoint/2,DragPoint%2+1
+                          ,pp->getPoint()[0],pp->getPoint()[1]
+                          );
 
                         PreselectPoint = DragPoint;
                         this->DragPoint = -1;
@@ -732,6 +735,9 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
 
 bool ViewProviderSketch::setEdit(int ModNum)
 {
+    // clear the selction (convenience)
+    Gui::Selection().clearSelection();
+
     // creat temporary sketch to solve while edeting
     ActSketch = new Sketcher::Sketch();
     // fill up actuall constraints and geometry
@@ -786,7 +792,8 @@ void ViewProviderSketch::createEditInventorNodes(void)
     SoDrawStyle *DrawStyle = new SoDrawStyle;
     DrawStyle->pointSize = 8;
     EditRoot->addChild( DrawStyle );
-    PointSet = new SoPointSet;
+    PointSet = new SoMarkerSet;
+    PointSet->markerIndex = SoMarkerSet::CIRCLE_FILLED_5_5;
     EditRoot->addChild( PointSet );
 
     // stuff for the lines +++++++++++++++++++++++++++++++++++++++
