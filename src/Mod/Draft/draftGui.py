@@ -30,7 +30,7 @@ This is the GUI part of the Draft module.
 Report to Draft.py for info
 '''
 
-import FreeCAD, FreeCADGui, os
+import FreeCAD, FreeCADGui, os, Draft
 
 try:
 	from PyQt4 import QtCore,QtGui,QtSvg	
@@ -119,6 +119,7 @@ class toolBar:
 				self.params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 				paramcolor = self.params.GetUnsigned("color")>>8
 				paramlinewidth = self.params.GetInt("linewidth")
+                                paramfontsize = self.params.GetFloat("textheight")
 				paramconstr = self.params.GetUnsigned("constructioncolor")>>8
 				icons = findicons()
 				self.constrMode = False
@@ -277,11 +278,24 @@ class toolBar:
 				self.colorPix.fill(self.color)
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
 
+                                self.facecolorButton = _pushButton("facecolorButton",self.layout, hide=False,width=22)
+				self.facecolor = QtGui.QColor(204,204,204)
+				self.facecolorPix = QtGui.QPixmap(16,16)
+				self.facecolorPix.fill(self.facecolor)
+				self.facecolorButton.setIcon(QtGui.QIcon(self.facecolorPix))
+
 				self.widthButton = QtGui.QSpinBox(draftToolbar)
                                 self.widthButton.setMaximumSize(QtCore.QSize(50,22))
 				self.widthButton.setObjectName("widthButton")
 				self.widthButton.setValue(paramlinewidth)
                                 self.layout.addWidget(self.widthButton)
+
+                                self.fontsizeButton = QtGui.QDoubleSpinBox(draftToolbar)
+                                self.fontsizeButton.setMaximumSize(QtCore.QSize(50,22))
+				self.fontsizeButton.setObjectName("fontsizeButton")
+				self.fontsizeButton.setValue(paramfontsize)
+                                self.fontsizeButton.setDecimals(2)
+                                self.layout.addWidget(self.fontsizeButton)
 
 				self.applyButton = _pushButton("applyButton", self.layout, hide=False, icon=(384,64),width=22)
 				
@@ -322,7 +336,9 @@ class toolBar:
 				QtCore.QObject.connect(self.radiusValue,QtCore.SIGNAL("escaped()"),self.finish)
 				QtCore.QObject.connect(self.draftToolbar,QtCore.SIGNAL("resized()"),self.relocate)
 				QtCore.QObject.connect(self.colorButton,QtCore.SIGNAL("pressed()"),self.getcol)
+                                QtCore.QObject.connect(self.facecolorButton,QtCore.SIGNAL("pressed()"),self.getfacecol)
 				QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
+                                QtCore.QObject.connect(self.fontsizeButton,QtCore.SIGNAL("valueChanged(double)"),self.setfontsize)
 				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
 				QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
                                 QtCore.QObject.connect(self.pageBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.changePage)
@@ -367,11 +383,13 @@ class toolBar:
 				self.currentViewButton.setToolTip(translate("draft", "Select plane perpendicular to the current view"))
 				self.resetPlaneButton.setText(translate("draft", "None"))
 				self.resetPlaneButton.setToolTip(translate("draft", "Do not project points to a drawing plane"))
-				self.widthButton.setSuffix(translate("draft", "px"))
 				self.isCopy.setText(translate("draft", "Copy"))
 				self.isCopy.setToolTip(translate("draft", "If checked, objects will be copied instead of moved (C)"))
-				self.colorButton.setToolTip(translate("draft", "Current line color for new objects"))
-				self.widthButton.setToolTip(translate("draft", "Current line width for new objects"))
+				self.colorButton.setToolTip(translate("draft", "Line Color"))
+                                self.facecolorButton.setToolTip(translate("draft", "Face Color"))
+				self.widthButton.setToolTip(translate("draft", "Line Width"))
+                                self.widthButton.setSuffix(translate("draft", "px"))
+                                self.fontsizeButton.setToolTip(translate("draft", "Font Size"))
 				self.applyButton.setToolTip(translate("draft", "Apply to selected objects"))
 				self.constrButton.setToolTip(translate("draft", "Toggles Construction Mode"))
                                 self.wplabel.setToolTip(translate("draft", "Current working plane"))
@@ -558,28 +576,41 @@ class toolBar:
 					if (i.Type == "App::Annotation"):
 						i.ViewObject.TextColor=col
 					else:
-						i.ViewObject.LineColor = col
+                                                if "LineColor" in i.ViewObject.PropertiesList:
+                                                        i.ViewObject.LineColor = col
+                                                if "PointColor" in i.ViewObject.PropertiesList:
+                                                        i.ViewObject.PointColor = col
+
+                        def getfacecol(self):
+				"opens a color picker dialog"
+				self.facecolor=QtGui.QColorDialog.getColor()
+				self.facecolorPix.fill(self.facecolor)
+				self.facecolorButton.setIcon(QtGui.QIcon(self.facecolorPix))
+                                r = float(self.facecolor.red()/255.0)
+				g = float(self.facecolor.green()/255.0)
+				b = float(self.facecolor.blue()/255.0)
+				col = (r,g,b,0.0)
+                                for i in FreeCADGui.Selection.getSelection():
+                                        if "ShapeColor" in i.ViewObject.PropertiesList:
+						i.ViewObject.ShapeColor = col
 					
 			def setwidth(self,val):
 				if self.params.GetBool("saveonexit"):
 					self.params.SetInt("linewidth",int(val))
-				lw = float(val)
 				for i in FreeCADGui.Selection.getSelection():
-					if not (i.Type == "App::Annotation"):
-						i.ViewObject.LineWidth = lw
+					if "LineWidth" in i.ViewObject.PropertiesList:
+						i.ViewObject.LineWidth = float(val)
+
+                        def setfontsize(self,val):
+				if self.params.GetBool("saveonexit"):
+					self.params.SetFloat("textheight",float(val))
+				for i in FreeCADGui.Selection.getSelection():
+					if "FontSize" in i.ViewObject.PropertiesList:
+						i.ViewObject.FontSize = float(val)
 
 			def apply(self):
-				r = float(self.color.red()/255.0)
-				g = float(self.color.green()/255.0)
-				b = float(self.color.blue()/255.0)
-				lw = float(self.widthButton.value())
-				col = (r,g,b,0.0)
 				for i in FreeCADGui.Selection.getSelection():
-					if (i.Type == "App::Annotation"):
-						i.ViewObject.TextColor=col
-					else:
-						i.ViewObject.LineColor = col
-						i.ViewObject.LineWidth = lw	
+					Draft.formatObject(i)	
 					
 			def checkx(self):
 				if self.yValue.isEnabled():
@@ -734,6 +765,10 @@ class toolBar:
 					r = float(self.color.red()/255.0)
 					g = float(self.color.green()/255.0)
 					b = float(self.color.blue()/255.0)
+                                elif type == "face":
+					r = float(self.facecolor.red()/255.0)
+					g = float(self.facecolor.green()/255.0)
+					b = float(self.facecolor.blue()/255.0)
 				elif type == "constr":
 					color = QtGui.QColor(self.params.GetUnsigned("constructioncolor")>>8)
 					r = color.red()/255.0
