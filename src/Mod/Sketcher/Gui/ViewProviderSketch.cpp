@@ -229,7 +229,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     Mode = STATUS_NONE;
                     return true;}
                 case STATUS_SKETCH_DragPoint:
-                    if(DragPoint != -1){
+                    if(DragPoint != -1 && pp){
                           Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0)) "
                           ,getObject()->getNameInDocument()
                           ,DragPoint/2,DragPoint%2+1
