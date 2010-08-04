@@ -568,7 +568,7 @@ void ViewProviderSketch::draw(bool temp)
         pcolor[i]=(*it==1?sCurveConstructionColor:sPointColor);
 
     if (PreselectPoint >= 0 && PreselectPoint < (int) Points.size())
-        color[PreselectPoint]=PreselectColor;
+        pcolor[PreselectPoint]=PreselectColor;
 
     CurvesCoordinate->point.finishEditing();
     CurveSet->numVertices.finishEditing();
