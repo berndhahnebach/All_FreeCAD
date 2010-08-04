@@ -39,7 +39,7 @@
     <Methode Name="resetEdit">
       <Documentation>
         <UserDocu>
-          Reset (end) the actual edit.
+          Reset (end) the current editing.
         </UserDocu>
       </Documentation>
     </Methode>
