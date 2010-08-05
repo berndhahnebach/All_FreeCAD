@@ -238,7 +238,7 @@ class DrawSketchHandlerLineSet: public DrawSketchHandler
 {
 public:
     DrawSketchHandlerLineSet()
-		:Mode(STATUS_SEEK_First),EditCurve(2),previousCurve(-1),firstPoint(-1){}
+		:Mode(STATUS_SEEK_First),EditCurve(2),firstPoint(-1),previousCurve(-1){}
     virtual ~DrawSketchHandlerLineSet(){}
     /// mode table
 	enum LineMode{
@@ -473,6 +473,7 @@ bool CmdSketcherCreatePoint::isActive(void)
 
 
 DEF_STD_CMD_A(CmdSketcherCreateRectangle);
+
 
 CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
 	:Command("Sketcher_CreateRectangle")

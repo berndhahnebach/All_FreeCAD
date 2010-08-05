@@ -24,6 +24,7 @@
 #define GUI_SCENEINSPECTOR_H
 
 #include <QStandardItemModel>
+#include <QDialog>
 
 class SoNode;
 

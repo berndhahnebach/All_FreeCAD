@@ -22,8 +22,11 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+#include <Python.h>
 #include <Inventor/SoPickedPoint.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
+#endif
 
 #include <Base/Interpreter.h>
 #include <Base/Rotation.h>
