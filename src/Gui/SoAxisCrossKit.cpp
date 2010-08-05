@@ -199,9 +199,9 @@ SoAxisCrossKit::createAxes()
    set("zHead.transform", "rotation 1 0 0  1.5707999");
 
    // Set colors & styles
-   set("xAxis.appearance.drawStyle", "lineWidth 2");
-   set("yAxis.appearance.drawStyle", "lineWidth 2");
-   set("zAxis.appearance.drawStyle", "lineWidth 2");
+   set("xAxis.appearance.drawStyle", "lineWidth 1");
+   set("yAxis.appearance.drawStyle", "lineWidth 1");
+   set("zAxis.appearance.drawStyle", "lineWidth 1");
    set("xAxis.appearance.material", "diffuseColor 0.5 0.125 0.125");
    set("xHead.appearance.material", "diffuseColor 0.5 0.125 0.125");
    set("yAxis.appearance.material", "diffuseColor 0.125 0.5 0.125");

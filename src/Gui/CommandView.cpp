@@ -1817,10 +1817,10 @@ StdCmdDemoMode::StdCmdDemoMode()
   : Command("Std_DemoMode")
 {
     sGroup        = QT_TR_NOOP("Standard-View");
-    sMenuText     = QT_TR_NOOP("Demo mode...");
-    sToolTipText  = QT_TR_NOOP("Demo mode");
-    sWhatsThis    = QT_TR_NOOP("Demo mode");
-    sStatusTip    = QT_TR_NOOP("Demo mode");
+    sMenuText     = QT_TR_NOOP("View turntable...");
+    sToolTipText  = QT_TR_NOOP("View turntable");
+    sWhatsThis    = QT_TR_NOOP("View turntable");
+    sStatusTip    = QT_TR_NOOP("View turntable");
     eType         = Alter3DView;
 }
 
