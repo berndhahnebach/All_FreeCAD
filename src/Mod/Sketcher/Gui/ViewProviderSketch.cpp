@@ -38,6 +38,9 @@
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoVertexProperty.h>
+# include <Inventor/nodes/SoTranslation.h>
+# include <Inventor/nodes/SoText2.h>
+# include <Inventor/nodes/SoFont.h>
 # include <QMessageBox>
 #endif
 
@@ -240,6 +243,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         this->DragPoint = -1;
                         //updateColor();
                     }
+                    resetPositionText();
                     Mode = STATUS_NONE;
                     return true;
                 case STATUS_SKETCH_UseHandler:
@@ -295,8 +299,10 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             if(DragPoint != -1){
                 Base::Console().Log("Drag Point:%d\n",this->DragPoint);
                 int ret;
-                if ((ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0))) == 0)
+                if ((ret=ActSketch->movePoint(DragPoint/2,DragPoint%2==0?start:end,Base::Vector3d(x,y,0))) == 0){
+                    setPositionText(Base::Vector2D(x,y));
                     draw(true);
+                }
                 else
                     Base::Console().Log("Error solving:%d\n",ret);
             }
@@ -793,7 +799,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
     DrawStyle->pointSize = 8;
     EditRoot->addChild( DrawStyle );
     PointSet = new SoMarkerSet;
-    PointSet->markerIndex = SoMarkerSet::CIRCLE_FILLED_5_5;
+    PointSet->markerIndex = SoMarkerSet::CIRCLE_FILLED_7_7;
     EditRoot->addChild( PointSet );
 
     // stuff for the lines +++++++++++++++++++++++++++++++++++++++
@@ -847,8 +853,29 @@ void ViewProviderSketch::createEditInventorNodes(void)
     EditRoot->addChild( DrawStyle );
 
     EditCurveSet = new SoLineSet;
-
     EditRoot->addChild( EditCurveSet );
+
+    // stuff for the edit coordinates ++++++++++++++++++++++++++++++++++++++
+    SoMaterial *EditMaterials = new SoMaterial;
+    EditMaterials->diffuseColor = SbColor(0,0,1);
+    EditRoot->addChild(EditMaterials);
+
+    SoSeparator * Coordsep = new SoSeparator();
+
+    SoFont * font = new SoFont();
+    font->size = 15.0;
+    Coordsep->addChild(font);
+
+    textPos = new SoTranslation();
+    Coordsep->addChild(textPos);
+
+    textX = new SoText2();
+    textX->justification = SoText2::LEFT;
+    textX->string = "";
+    Coordsep->addChild(textX);
+    EditRoot->addChild(Coordsep);
+
+
 }
 
 void ViewProviderSketch::unsetEdit(void)
@@ -878,9 +905,25 @@ void ViewProviderSketch::unsetEdit(void)
     CurveSet = 0;
     PointSet = 0;
 
+    textPos = 0;
+    textX = 0;
+
     PreselectCurve = -1;
     PreselectPoint = -1;
     this->show();
+}
+
+void ViewProviderSketch::setPositionText(const Base::Vector2D &Pos)
+{
+    char buf[40];
+    sprintf( buf, " (%.1f,%.1f)", Pos.fX,Pos.fY );
+    textX->string = buf;
+    textPos->translation = SbVec3f(Pos.fX,Pos.fY,0.2);
+
+}
+void ViewProviderSketch::resetPositionText(void)
+{
+    textX->string = "";
 }
 
 Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void) const

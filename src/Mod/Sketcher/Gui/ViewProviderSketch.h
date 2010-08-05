@@ -39,6 +39,9 @@ class SoTransform;
 class SoLineSet;
 class SoMarkerSet;
 
+class SoText2;
+class SoTranslation;
+
 namespace Gui {
     class View3DInventorViewer;
     class SoFCSelection;
@@ -151,6 +154,10 @@ protected:
     // helper
     void createEditInventorNodes(void);
 
+    void setPositionText(const Base::Vector2D &Pos);
+    void resetPositionText(void);
+
+
     // pointer to the active handler for new sketch objects
     DrawSketchHandler *sketchHandler;
     // modes while sketching
@@ -181,6 +188,9 @@ protected:
     SoLineSet     *LineSet;
     SoLineSet     *EditCurveSet;
     SoMarkerSet   *PointSet;
+
+    SoText2       * textX;
+    SoTranslation * textPos;
 
     // colors for selection and preselection
     static SbColor PreselectColor; 

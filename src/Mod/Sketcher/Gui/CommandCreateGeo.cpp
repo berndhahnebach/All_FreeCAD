@@ -128,6 +128,7 @@ public:
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
     {
+        setPositionText(onSketchPos);
         if(Mode==STATUS_SEEK_Second){
             EditCurve[1] = onSketchPos; 
             sketchgui->drawEdit(EditCurve);
@@ -152,6 +153,7 @@ public:
         if(Mode==STATUS_End){
             unsetCursor();
             EditCurve.clear();
+            resetPositionText();
             sketchgui->drawEdit(EditCurve);
             Gui::Command::openCommand("add sketch line");
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
@@ -255,6 +257,7 @@ public:
 
    virtual void mouseMove(Base::Vector2D onSketchPos)
     {
+        setPositionText(onSketchPos);
         if(Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
             EditCurve[1] = onSketchPos; 
             sketchgui->drawEdit(EditCurve);
@@ -278,6 +281,7 @@ public:
 				unsetCursor();	
                 // empty the edit draw
 	            EditCurve.clear();
+                resetPositionText();
 				sketchgui->drawEdit(EditCurve);
 				sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
 			}if(sketchgui->getPreselectPoint() == firstPoint){
@@ -322,6 +326,7 @@ public:
 			    unsetCursor();			
                 // empty the edit draw
 	            EditCurve.clear();
+                resetPositionText();
 			    sketchgui->drawEdit(EditCurve);
 			    sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
             }
