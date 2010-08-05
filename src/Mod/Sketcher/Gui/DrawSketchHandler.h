@@ -65,6 +65,9 @@ public:
 	// get the actual highest edge index, the next use will be +1
 	int getHighestCurveIndex(void);
 
+    void setPositionText(const Base::Vector2D &Pos);
+    void resetPositionText(void);
+
 protected:
     // helpers
     void setCursor( const QPixmap &p,int x,int y );

@@ -56,12 +56,15 @@ CmdSketcherNewSketch::CmdSketcherNewSketch()
 
 void CmdSketcherNewSketch::activated(int iMsg)
 {
+    const char camstring[] = "#Inventor V2.1 ascii \\n OrthographicCamera { \\n viewportMapping ADJUST_CAMERA \\n position 0 0 87 \\n orientation 0 0 1  0 \\n nearDistance 37 \\n farDistance 137 \\n aspectRatio 1 \\n focalDistance 87 \\n height 119 }";
 
     std::string FeatName = getUniqueObjectName("Sketch");
 
+    std::string cam(camstring);
+
     openCommand("Create a new Sketch");
     doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
-    commitCommand();
+    doCommand(Gui,"Gui.activeDocument().activeView().setCamera('%s')",cam.c_str());
     doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
     
     //getDocument()->recompute();

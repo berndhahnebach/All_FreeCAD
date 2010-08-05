@@ -24,7 +24,11 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#include <Standard_math.hxx>
+# include <Standard_math.hxx>
+# include <stdio.h>
+# include <Inventor/nodes/SoTranslation.h>
+# include <Inventor/nodes/SoText2.h>
+# include <Inventor/nodes/SoFont.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -116,3 +120,12 @@ void DrawSketchHandler::unsetCursor(void)
     }
 }
 
+void DrawSketchHandler::setPositionText(const Base::Vector2D &Pos)
+{
+    sketchgui->setPositionText(Pos);
+
+}
+void DrawSketchHandler::resetPositionText(void)
+{
+    sketchgui->resetPositionText();
+}
