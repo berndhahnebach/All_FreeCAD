@@ -409,7 +409,8 @@ def getPoint(target,args,mobile=False,sym=False):
 
 class Tracker:
 	"A generic Draft Tracker, to be used by other specific trackers"
-	def __init__(self,dotted=False,scolor=None,swidth=None,children=[]):
+	def __init__(self,dotted=False,scolor=None,swidth=None,children=[],ontop=False):
+                self.ontop = ontop
 		color = coin.SoBaseColor()
 		color.rgb = scolor or FreeCADGui.activeWorkbench().draftToolBar.\
 			ui.getDefaultColor("ui")
@@ -436,7 +437,10 @@ class Tracker:
 		'''insert self.switch into the scene graph.  Must not be called
 		from an event handler (or other scene graph traversal).'''
 		sg=FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-		sg.addChild(switch)
+                if self.ontop:
+                        sg.insertChild(switch,0)
+                else:
+                        sg.addChild(switch)
 
 	def _removeSwitch(self, switch):
 		'''remove self.switch from the scene graph.  As with _insertSwitch,
@@ -653,7 +657,7 @@ class editTracker(Tracker):
 		selnode.addChild(color)
 		selnode.addChild(self.marker)
                 node.addChild(selnode)
-		Tracker.__init__(self,children=[node])
+		Tracker.__init__(self,children=[node],ontop=True)
                 self.on()
 
         def set(self,pos):
@@ -839,9 +843,6 @@ class Edit(Creator):
                                                 self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
                                         self.snap = snapTracker()
                                         self.constraintrack = lineTracker(dotted=True)
-                                        self.ghost = ghostTracker(self.obj)
-                                        self.ghost.on()
-                                        self.obj.ViewObject.hide()
                                         self.call = self.view.addEventCallback("SoEvent",self.action)
                                         self.running = True
                                         plane.save()
@@ -850,11 +851,9 @@ class Edit(Creator):
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
                 if self.ui:
-                        self.ghost.finalize()
                         self.snap.finalize()
                         for t in self.trackers: t.finalize()
                         self.constraintrack.finalize()
-                        self.obj.ViewObject.show()
 		Creator.finish(self)
                 plane.restore()
                 self.running = False
@@ -932,7 +931,6 @@ class Edit(Creator):
                 self.doc.commitTransaction()
                 self.editing = None
                 self.ui.offUi()
-                self.ghost.update(self.obj)
                 self.node = []
 
 	
