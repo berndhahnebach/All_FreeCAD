@@ -1534,6 +1534,7 @@ void Application::runApplication(void)
     mw.showTipOfTheDay();
     Instance->d->startingUp = false;
 
+#if 0
     // processing all command line files
     App::Application::processCmdLineFiles();
 
@@ -1542,7 +1543,10 @@ void Application::runApplication(void)
     if (hGrp->GetBool("CreateNewDoc", false)) {
         App::GetApplication().newDocument();
     }
-    
+#else
+    // gets called once we start the event loop
+    QTimer::singleShot(0, &mw, SLOT(delayedStartup()));
+#endif
 
     // run the Application event loop
     Base::Console().Log("Init: Entering event loop\n");

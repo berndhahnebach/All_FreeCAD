@@ -283,6 +283,10 @@ private Q_SLOTS:
      * \internal
      */
     void showMainWindow();
+    /**
+     * \internal
+     */
+    void delayedStartup();
 
 Q_SIGNALS:
     void timeEvent();

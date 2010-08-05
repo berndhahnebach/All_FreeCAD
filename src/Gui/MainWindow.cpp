@@ -1083,6 +1083,18 @@ void MainWindow::showMainWindow()
 #endif
 }
 
+void MainWindow::delayedStartup()
+{
+    // processing all command line files
+    App::Application::processCmdLineFiles();
+
+    // Create new document?
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
+    if (hGrp->GetBool("CreateNewDoc", false)) {
+        App::GetApplication().newDocument();
+    }
+}
+
 void MainWindow::appendRecentFile(const QString& filename)
 {
     RecentFilesAction *recent = this->findChild<RecentFilesAction *>
