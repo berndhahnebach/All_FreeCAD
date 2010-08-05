@@ -110,7 +110,7 @@ int Sketch::addGeometry(const Part::Geometry *geo)
     }
 }
 
-void Sketch::addGeometry(const std::vector<Part::Geometry *> geo)
+void Sketch::addGeometry(const std::vector<Part::Geometry *> &geo)
 {
     for(std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it)
         addGeometry(*it);
@@ -523,11 +523,11 @@ int Sketch::movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint)
     return solve(fixed);
 }
 
-TopoShape Sketch::toShape(void)
+TopoShape Sketch::toShape(void) const
 {
     TopoShape result;
     std::vector<GeoDef>::const_iterator it=Geoms.begin();
-    // skeep the default elements
+    // skip the default elements
     it += IntGeoOffset;
 
     bool first = true;

@@ -73,11 +73,11 @@ public:
     /// delete all geometry and constraints, leave an empty sketch
     void clear(void);
     /// return the actual geometry of the sketch a TopoShape
-    Part::TopoShape toShape(void);
+    Part::TopoShape toShape(void) const;
     /// add unspecified geomtry
     int addGeometry(const Part::Geometry *geo);
     /// add unspecified geomtry
-    void addGeometry(const std::vector<Part::Geometry *> geo);
+    void addGeometry(const std::vector<Part::Geometry *> &geo);
     /// returns the actual geometry 
     std::vector<Part::Geometry *> getGeometry(bool withConstrucionElements = false) const;
     /// get the geometry as python objects

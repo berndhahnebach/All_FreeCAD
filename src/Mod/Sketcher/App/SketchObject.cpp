@@ -61,8 +61,9 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
 
     std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
     Geometry.setValues(geomlist);
-    for(std::vector<Part::Geometry *>::iterator it=geomlist.begin();it!=geomlist.end();++it)
+    for(std::vector<Part::Geometry *>::iterator it=geomlist.begin();it!=geomlist.end();++it){
         if(*it)delete(*it);
+    }
 
     Shape.setValue(sketch.toShape());
 
