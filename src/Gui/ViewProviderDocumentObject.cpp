@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qpixmap.h>
+# include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoSeparator.h>
@@ -146,11 +147,15 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
         DisplayMode.setValue(defmode);
 }
 
-SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type) const
+SoNode* ViewProviderDocumentObject::findFrontRootOfType(const SoType& type) const
 {
     // first get the document this object is part of and get its GUI counterpart
     App::Document* pAppDoc = pcObject->getDocument();
     Gui::Document* pGuiDoc = Gui::Application::Instance->getDocument(pAppDoc);
+
+    SoSearchAction searchAction;
+    searchAction.setType(type);
+    searchAction.setInterest(SoSearchAction::FIRST);
 
     // search in all view providers for the node type
     std::vector<App::DocumentObject*> obj = pAppDoc->getObjects();
@@ -162,8 +167,14 @@ SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type
         if (!vp || vp == this)
             continue;
         SoSeparator* front = vp->getFrontRoot();
-        if (front && front->getTypeId() == type)
-            return front;
+        //if (front && front->getTypeId() == type)
+        //    return front;
+        if (front) {
+            searchAction.apply(front);
+            SoPath* path = searchAction.getPath();
+            if (path)
+                return path->getTail();
+        }
     }
 
     return 0;

@@ -72,8 +72,12 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshCurvature, Gui::ViewProviderDocumentObj
 
 ViewProviderMeshCurvature::ViewProviderMeshCurvature()
 {
+    pcColorRoot = new SoSeparator();
+    pcColorRoot->ref();
     pcColorMat = new SoMaterial;
     pcColorMat->ref();
+    pcColorStyle = new SoDrawStyle(); 
+    pcColorRoot->addChild(pcColorStyle);
     // simple color bar
     pcColorBar = new Gui::SoFCColorBar;
     pcColorBar->Attach(this);
@@ -85,10 +89,23 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
 
 ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
 {
+    pcColorRoot->unref();
     pcColorMat->unref();
     pcColorBar->Detach(this);
     pcColorBar->unref();
     pcLinkRoot->unref();
+}
+
+void ViewProviderMeshCurvature::hide(void)
+{
+    inherited::hide();
+    pcColorStyle->style = SoDrawStyle::INVISIBLE;
+}
+
+void ViewProviderMeshCurvature::show(void)
+{
+    inherited::show();
+    pcColorStyle->style = SoDrawStyle::FILLED;
 }
 
 void ViewProviderMeshCurvature::init(const Mesh::PropertyCurvatureList* pCurvInfo)
@@ -222,6 +239,8 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
         pcColorBar->unref();
         pcColorBar = pcBar;
     }
+
+    pcColorRoot->addChild(pcColorBar);
 }
 
 void ViewProviderMeshCurvature::updateData(const App::Property* prop)
@@ -254,7 +273,7 @@ void ViewProviderMeshCurvature::updateData(const App::Property* prop)
 
 SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void) const
 {
-    return pcColorBar;
+    return pcColorRoot;
 }
 
 void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)

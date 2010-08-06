@@ -90,7 +90,7 @@ protected:
      * to an object. The method returns after the first front root node 
      * matches. If no front root node matches, 0 is returned.
      */
-    SoSeparator* findFrontRootOfType(const SoType& type) const;
+    SoNode* findFrontRootOfType(const SoType& type) const;
 
 protected:
     App::DocumentObject *pcObject;

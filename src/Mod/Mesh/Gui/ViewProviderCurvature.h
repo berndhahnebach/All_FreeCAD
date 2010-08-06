@@ -82,6 +82,10 @@ public:
     void OnChange(Base::Subject<int> &rCaller,int rcReason);
     /// Returns a color bar
     SoSeparator* getFrontRoot(void) const;
+    /// Hide the object in the view
+    virtual void hide(void);
+    /// Show the object in the view
+    virtual void show(void);
 
 public:
     static void curvatureInfoCallback(void * ud, SoEventCallback * n);
@@ -108,6 +112,8 @@ protected:
     SoMaterial       * pcColorMat;
     SoGroup          * pcLinkRoot;
     Gui::SoFCColorBar* pcColorBar;
+    SoDrawStyle      * pcColorStyle;
+    SoSeparator      * pcColorRoot;
 };
 
 } // namespace MeshGui
