@@ -254,7 +254,7 @@ class toolBar:
                                                                QtGui.QSizePolicy.Minimum)
                                 self.layout.addItem(spacerItem)
 
-                                self.wplabel = _label("wplabel",self.layout, hide=False)
+                                self.wplabel = _pushButton("wplabel",self.layout,icon=(576,0),hide=False)
                                 defaultWP = self.params.GetInt("defaultWP")
                                 if defaultWP == 1:
                                         self.wplabel.setText("Top")
@@ -335,6 +335,7 @@ class toolBar:
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("undo()"),self.undoSegment)
 				QtCore.QObject.connect(self.radiusValue,QtCore.SIGNAL("escaped()"),self.finish)
 				QtCore.QObject.connect(self.draftToolbar,QtCore.SIGNAL("resized()"),self.relocate)
+                                QtCore.QObject.connect(self.wplabel,QtCore.SIGNAL("pressed()"),self.selectplane)
 				QtCore.QObject.connect(self.colorButton,QtCore.SIGNAL("pressed()"),self.getcol)
                                 QtCore.QObject.connect(self.facecolorButton,QtCore.SIGNAL("pressed()"),self.getfacecol)
 				QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
@@ -807,6 +808,9 @@ class toolBar:
                                 if vobj:
                                         self.scaleBox.setEditText(vobj.HintScale)
                                         self.marginValue.setValue(float(vobj.HintOffset))
+
+                        def selectplane(self):
+                                FreeCADGui.runCommand("Draft_SelectPlane")
 
 #---------------------------------------------------------------------------
 # Initialization

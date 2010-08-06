@@ -259,7 +259,6 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
         Drafting->setCommand(QT_TR_NOOP("&Drafting"));
         *Drafting 
-            << "Draft_SelectPlane"
             << "Draft_Line"
             << "Draft_Wire"
             << "Draft_Circle"
@@ -275,8 +274,6 @@ Gui::MenuItem* Workbench::setupMenuBar() const
             << "Draft_Upgrade" 
             << "Draft_Downgrade" 
             << "Draft_Scale" 
-            << "Separator" 
-            << "Draft_ApplyStyle"
         ;
     }
 #   endif
@@ -418,7 +415,6 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
         Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
         Drafting->setCommand(QT_TR_NOOP("Drafting"));
         *Drafting
-            << "Draft_SelectPlane"
             << "Draft_Line"
             << "Draft_Wire"
             << "Draft_Circle"
@@ -430,13 +426,10 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
             << "Draft_Move" 
             << "Draft_Rotate" 
             << "Draft_Offset" 
-
             << "Draft_Trimex" 
             << "Draft_Upgrade" 
             << "Draft_Downgrade" 
             << "Draft_Scale" 
-            << "Separator" 
-            << "Draft_ApplyStyle"
         ;
     }
 #   endif
