@@ -1417,6 +1417,13 @@
        x2="1267.9062"
        y2="1190.875"
        gradientTransform="matrix(0.10456791,0,0,0.10456791,420.90006,31.02362)" />
+    <inkscape:perspective
+       id="perspective4104"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1428,9 +1435,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="341.80815"
-     inkscape:cy="84.225235"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="352.70076"
+     inkscape:cy="101.61994"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -3283,5 +3290,19 @@
          d="m 554.73269,170.53758 -6.65466,6.23214 8.34474,2.1126 -1.69008,-8.34474 z"
          style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.10456792px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </g>
+    <rect
+       style="color:#000000;fill:#000fff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4094"
+       width="34.375309"
+       height="34.707325"
+       x="470.39413"
+       y="155.9351" />
+    <rect
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4094-9"
+       width="34.375309"
+       height="34.707325"
+       x="452.47632"
+       y="137.84422" />
   </g>
 </svg>

@@ -3209,6 +3209,22 @@ class MakeDraftWire():
 	def Activated(self):
                 Draft.draftify(Draft.getSelection())
 
+class ToggleDisplayMode():
+	"The ToggleDisplayMode FreeCAD command definition"
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_switchMode',
+                        'MenuText': str(translate("draft", "Toggles display mode").toLatin1()),
+			'ToolTip': str(translate("draft", "Swaps display mode of selected objects between wireframe and flatlines").toLatin1())}
+
+	def Activated(self):
+                for obj in Draft.getSelection():
+                        if obj.ViewObject.DisplayMode == "Flat Lines":
+                                if "Wireframe" in obj.ViewObject.listDisplayModes():
+                                        obj.ViewObject.DisplayMode = "Wireframe"
+                        elif obj.ViewObject.DisplayMode == "Wireframe":
+                                if "Flat Lines" in obj.ViewObject.listDisplayModes():
+                                        obj.ViewObject.DisplayMode = "Flat Lines"
 
 
 #---------------------------------------------------------------------------
@@ -3244,3 +3260,4 @@ FreeCADGui.addCommand('Draft_Scale',Scale())
 FreeCADGui.addCommand('Draft_SendToDrawing',SendToDrawing())
 FreeCADGui.addCommand('Draft_SendToDrawingDirect',SendToDrawingDirect())
 FreeCADGui.addCommand('Draft_Edit',Edit())
+FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
