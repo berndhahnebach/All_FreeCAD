@@ -144,21 +144,6 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 ViewProviderSketch::ViewProviderSketch()
   : 
     Mode(STATUS_NONE),
-    //sketchHandler(0),
-    //DragPoint(-1),
-    //PreselectCurve(-1),
-    //PreselectPoint(-1),
-    //ActSketch(0),
-    //EditRoot(0),
-    //PointsMaterials(0),
-    //CurvesMaterials(0),
-    //LinesMaterials(0),
-    //PointsCoordinate(0),
-    //CurvesCoordinate(0),
-    //LinesCoordinate(0),
-    //CurveSet(0),
-    //LineSet(0),
-    //PointSet(0),
     edit(0)
 {
     sPixmap = "Sketcher_NewSketch";
@@ -183,6 +168,7 @@ void ViewProviderSketch::activateHandler(DrawSketchHandler *newHandler)
 /// removes the active handler
 void ViewProviderSketch::purgeHandler(void)
 {
+    assert(edit);
     assert(edit->sketchHandler != 0);
     delete(edit->sketchHandler);  
     edit->sketchHandler = 0;
@@ -658,6 +644,9 @@ void ViewProviderSketch::draw(bool temp)
     for(std::vector<Part::Geometry *>::iterator it=tempGeo.begin();it!=tempGeo.end();++it)
         if(*it)delete(*it);
 
+    // Render Constraints ===================================================
+    const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
+    //edit->ActSketch.Cons
 
 
 }
@@ -692,8 +681,6 @@ void ViewProviderSketch::updateData(const App::Property* prop)
         edit->ActSketch.addConstraints(getSketchObject()->Constraints.getValues());
         draw(true);    
     }
-    
-
 }
 
 void ViewProviderSketch::onChanged(const App::Property* prop)
@@ -716,8 +703,6 @@ bool ViewProviderSketch::setEdit(int ModNum)
     assert(!edit);
     edit = new EditData();
 
-    // creat temporary sketch to solve while edeting
-    //edit->ActSketch = new Sketcher::Sketch();
     // fill up actuall constraints and geometry
     edit->ActSketch.addGeometry(getSketchObject()->Geometry.getValues());
     edit->ActSketch.addConstraints(getSketchObject()->Constraints.getValues());
@@ -727,10 +712,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
     this->hide(); // avoid that the wires interfere with the edit lines
 
     ShowGrid.setValue(true);
-    // create the container to track selection
-    //edit->SelPointSet = new std::set<int>;
-    //edit->SelCurvSet = new std::set<int>;
-
+ 
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
     float transparency;
     // set the highlight color
@@ -854,40 +836,12 @@ void ViewProviderSketch::unsetEdit(void)
 {
     ShowGrid.setValue(false);
  
-    // close the solver
-    //delete edit->ActSketch;
-    //ActSketch = 0;
-
-    // delete the container to track selection
-    //delete (SelPointSet);
-    //delete (SelCurvSet);
-    //SelPointSet = 0;
-    //SelCurvSet = 0;
-
-    // empty the nodes
-
     edit->EditRoot->removeAllChildren();
     pcRoot->removeChild(edit->EditRoot);
 
     delete edit;
     edit = 0;
-    /*
-    PointsMaterials = 0;
-    LinesMaterials = 0;
-    CurvesMaterials = 0;
-    PointsCoordinate = 0;
-    LinesCoordinate = 0;
-    CurvesCoordinate = 0;
-    LineSet = 0;
-    CurveSet = 0;
-    PointSet = 0;
-
-    textPos = 0;
-    textX = 0;
-
-    PreselectCurve = -1;
-    PreselectPoint = -1;
-    */
+ 
     this->show();
 }
 
