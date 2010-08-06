@@ -164,39 +164,6 @@ protected:
     // modes while sketching
     SketchMode Mode;
 
-/*
-    // pointer to the active handler for new sketch objects
-    DrawSketchHandler *sketchHandler;
-    // dragged point
-    int DragPoint;
-
-    int PreselectCurve;
-    SbColor PreselectOldColor;
-    int PreselectPoint;
-    // pointer to the Solver
-    Sketcher::Sketch *ActSketch;
-    // container to track our own selected parts
-    std::set<int> *pSelPointSet;
-    std::set<int> *pSelCurvSet;
-
-    // nodes for the visuals 
-    SoSeparator   *EditRoot;
-    SoMaterial    *PointsMaterials;
-    SoMaterial    *CurvesMaterials;
-    SoMaterial    *EditCurvesMaterials;
-    SoMaterial    *LinesMaterials;
-    SoCoordinate3 *PointsCoordinate;
-    SoCoordinate3 *CurvesCoordinate;
-    SoCoordinate3 *EditCurvesCoordinate;
-    SoCoordinate3 *LinesCoordinate;
-    SoLineSet     *CurveSet;
-    SoLineSet     *LineSet;
-    SoLineSet     *EditCurveSet;
-    SoMarkerSet   *PointSet;
-
-    SoText2       * textX;
-    SoTranslation * textPos;
-*/
     // colors for selection and preselection
     static SbColor PreselectColor; 
     static SbColor SelectColor; 
