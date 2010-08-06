@@ -42,6 +42,8 @@ class SoMarkerSet;
 class SoText2;
 class SoTranslation;
 
+struct EditData;
+
 namespace Gui {
     class View3DInventorViewer;
     class SoFCSelection;
@@ -119,8 +121,8 @@ public:
     /// get the pointer to the sketch document object
     Sketcher::SketchObject* getSketchObject(void) const;
 
-	int getPreselectPoint(void)const{return PreselectPoint;}
-	int getPreselectCurve(void)const{return PreselectCurve;}
+	int getPreselectPoint(void)const;
+	int getPreselectCurve(void)const;
     //@}
 
     /** @name base class implementer */
@@ -151,17 +153,20 @@ protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
 
-    // helper
+    /// set up the edition data structure EditData
     void createEditInventorNodes(void);
+    /// pointer to the edit data structure if the ViewProvider is in edit. 
+    EditData *edit;
 
     void setPositionText(const Base::Vector2D &Pos);
     void resetPositionText(void);
 
-
-    // pointer to the active handler for new sketch objects
-    DrawSketchHandler *sketchHandler;
     // modes while sketching
     SketchMode Mode;
+
+/*
+    // pointer to the active handler for new sketch objects
+    DrawSketchHandler *sketchHandler;
     // dragged point
     int DragPoint;
 
@@ -191,7 +196,7 @@ protected:
 
     SoText2       * textX;
     SoTranslation * textPos;
-
+*/
     // colors for selection and preselection
     static SbColor PreselectColor; 
     static SbColor SelectColor; 
