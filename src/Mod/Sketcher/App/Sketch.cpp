@@ -37,6 +37,10 @@
 #include <Mod/Part/App/GeometryCurvePy.h>
 #include <Mod/Part/App/LinePy.h>
 
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+
 
 #include "Sketch.h"
 #include "Constraint.h"
@@ -527,8 +531,10 @@ TopoShape Sketch::toShape(void) const
 {
     TopoShape result;
     std::vector<GeoDef>::const_iterator it=Geoms.begin();
+
     // skip the default elements
     it += IntGeoOffset;
+#if 0
 
     bool first = true;
     for(;it!=Geoms.end();++it){
@@ -544,6 +550,62 @@ TopoShape Sketch::toShape(void) const
         }
     }
     return result;
+#else
+    std::list<TopoDS_Edge> edge_list;
+    std::list<TopoDS_Wire> wires;
+
+    // collecting all (non constructive) edges out of the sketch
+    for(;it!=Geoms.end();++it){
+        if(!it->construction){
+            edge_list.push_back(TopoDS::Edge(it->geo->toShape()));
+        }
+    }
+
+    // sort them together to wires
+    while (edge_list.size() > 0) {
+        BRepBuilderAPI_MakeWire mkWire;
+        // add and erase first edge
+        mkWire.Add(edge_list.front());
+        edge_list.erase(edge_list.begin());
+
+        TopoDS_Wire new_wire = mkWire.Wire(); // current new wire
+
+        // try to connect each edge to the wire, the wire is complete if no more egdes are connectible
+        bool found = false;
+        do {
+            found = false;
+            for (std::list<TopoDS_Edge>::iterator pE = edge_list.begin(); pE != edge_list.end();++pE) {
+                mkWire.Add(*pE);
+                if (mkWire.Error() != BRepBuilderAPI_DisconnectedWire) {
+                    // edge added ==> remove it from list
+                    found = true;
+                    edge_list.erase(pE);
+                    new_wire = mkWire.Wire();
+                    break;
+                }
+            }
+        }
+        while (found);
+        wires.push_back(new_wire);
+    }
+    if (wires.size() == 1)
+        result = *wires.begin();
+    else if (wires.size() > 1) {
+        // FIXME: The right way here would be to determine the outer and inner wires and 
+        // generate a face with holes (inner wires have to be taged REVERSE or INNER).
+        // thats the only way to transport a somwhat more complex sketch...
+        result = *wires.begin();
+    }
+    // FIXME: if free edges are left over its probably better to 
+    // create a compound with the closed structures and let the 
+    // features decide what to do with it...
+    if(edge_list.size() > 0)
+        Base::Console().Warning("Left offer edges in Sketch. Only closed structures will be propagated at the moment!");
+
+#endif
+
+    return result;
+
 }
 
 void Sketch::getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos)
