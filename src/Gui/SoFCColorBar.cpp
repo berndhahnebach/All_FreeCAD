@@ -79,6 +79,26 @@ void SoFCColorBarBase::GLRenderBelowPath(SoGLRenderAction *  action)
 
 // --------------------------------------------------------------------------
 
+namespace Gui {
+// Proxy class that receives an asynchronous custom event
+class SoFCColorBarProxyObject : public QObject
+{
+public:
+    SoFCColorBarProxyObject(SoFCColorBar* b)
+        : QObject(0), bar(b) {}
+    ~SoFCColorBarProxyObject() {}
+    void customEvent(QEvent *)
+    {
+        if (bar->customize())
+            bar->Notify(0);
+        this->deleteLater();
+    }
+
+private:
+    SoFCColorBar* bar;
+};
+}
+
 SO_NODE_SOURCE(SoFCColorBar);
 
 /*!
@@ -224,8 +244,9 @@ void SoFCColorBar::handleEvent (SoHandleEventAction *action)
             if (e->getState() == SoButtonEvent::DOWN) {
                 // double click event
                 if (_timer.restart() < QApplication::doubleClickInterval()) {
-                    if (getActiveBar()->customize())
-                        Notify(0);
+                    QApplication::postEvent(
+                        new SoFCColorBarProxyObject(this),
+                        new QEvent(QEvent::User));
                 }
             }
         }
@@ -247,8 +268,9 @@ void SoFCColorBar::handleEvent (SoHandleEventAction *action)
                 QAction* action = menu.exec(QCursor::pos());
 
                 if (action == option) {
-                    if (customize())
-                        Notify(0);
+                    QApplication::postEvent(
+                        new SoFCColorBarProxyObject(this),
+                        new QEvent(QEvent::User));
                 }
                 else if (action) {
                     int id = action->data().toInt();

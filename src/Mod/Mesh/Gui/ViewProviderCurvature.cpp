@@ -28,16 +28,25 @@
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/details/SoPointDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
+# include <Inventor/events/SoKeyboardEvent.h>
+# include <Inventor/events/SoLocation2Event.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <algorithm>
+# include <sstream>
+# include <QEvent>
+# include <QMenu>
+# include <QMessageBox>
 # include <QCursor>
 # include <QToolTip>
 # include <QWhatsThis>
 #endif
+
+# include <iomanip>
+# include <ios>
 
 // Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
@@ -54,6 +63,7 @@
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Gui/Widgets.h>
+#include <Gui/Flag.h>
 
 #include <Mod/Mesh/App/MeshProperties.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -67,6 +77,7 @@ using namespace Mesh;
 using namespace MeshGui;
 using namespace std;
 
+bool ViewProviderMeshCurvature::addflag = false;
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshCurvature, Gui::ViewProviderDocumentObject)
 
@@ -387,19 +398,69 @@ void ViewProviderMeshCurvature::OnChange(Base::Subject<int> &rCaller,int rcReaso
     setActiveMode();
 }
 
+namespace MeshGui {
+// Proxy class that receives an asynchronous custom event
+class ViewProviderProxyObject : public QObject
+{
+public:
+    ViewProviderProxyObject(QWidget* w) : QObject(0), widget(w) {}
+    ~ViewProviderProxyObject() {}
+    void customEvent(QEvent *)
+    {
+        if (!widget.isNull()) {
+            QList<Gui::Flag*> flags = widget->findChildren<Gui::Flag*>();
+            if (!flags.isEmpty()) {
+                int ret = QMessageBox::question(Gui::getMainWindow(),
+                    QObject::tr("Remove annotations"),
+                    QObject::tr("Do you want to remove all annotations?"),
+                    QMessageBox::Yes,QMessageBox::No);
+                if (ret == QMessageBox::Yes) {
+                    for (QList<Gui::Flag*>::iterator it = flags.begin(); it != flags.end(); ++it)
+                        (*it)->deleteLater();
+                }
+            }
+        }
+
+        this->deleteLater();
+    }
+
+private:
+    QPointer<QWidget> widget;
+};
+}
+
 void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback * n)
 {
-    if (n->getEvent()->getTypeId() == SoMouseButtonEvent::getClassTypeId()) {
-        const SoMouseButtonEvent * mbe = static_cast<const SoMouseButtonEvent *>(n->getEvent());
-        Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
+    const SoEvent* ev = n->getEvent();
+    if (ev->getTypeId() == SoMouseButtonEvent::getClassTypeId()) {
+        const SoMouseButtonEvent * mbe = static_cast<const SoMouseButtonEvent *>(ev);
 
         // Mark all incoming mouse button events as handled, especially, to deactivate the selection node
         n->getAction()->setHandled();
         if (mbe->getButton() == SoMouseButtonEvent::BUTTON2 && mbe->getState() == SoButtonEvent::UP) {
             n->setHandled();
-            view->setEditing(false);
-            view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
-            view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), curvatureInfoCallback);
+            // context-menu
+            QMenu menu;
+            QAction* fl = menu.addAction(QObject::tr("Annotation"));
+            fl->setCheckable(true);
+            fl->setChecked(addflag);
+            QAction* cl = menu.addAction(QObject::tr("Leave info mode"));
+            QAction* id = menu.exec(QCursor::pos());
+            if (fl == id) {
+                addflag = fl->isChecked();
+            }
+            else if (cl == id) {
+                // post an event to a proxy object to make sure to avoid problems
+                // when opening a modal dialog
+                QApplication::postEvent(
+                    new ViewProviderProxyObject(view->getGLWidget()),
+                    new QEvent(QEvent::User));
+                view->setEditing(false);
+                view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
+                view->setRedirectToSceneGraph(false);
+                view->removeEventCallback(SoEvent::getClassTypeId(), curvatureInfoCallback);
+            }
         }
         else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::UP) {
             const SoPickedPoint * point = n->getPickedPoint();
@@ -424,16 +485,65 @@ void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback
                 int index1 = facedetail->getPoint(0)->getCoordinateIndex();
                 int index2 = facedetail->getPoint(1)->getCoordinateIndex();
                 int index3 = facedetail->getPoint(2)->getCoordinateIndex();
-                that->curvatureInfo(index1, index2, index3);
+                std::string info = that->curvatureInfo(true, index1, index2, index3);
+                QString text = QString::fromAscii(info.c_str());
+                if (addflag) {
+                    Gui::Flag* flag = new Gui::Flag;
+                    QPalette p;
+                    p.setColor(QPalette::Window, QColor(85,0,127));
+                    p.setColor(QPalette::Text, QColor(220,220,220));
+                    flag->setPalette(p);
+                    flag->setText(text);
+                    flag->setOrigin(point->getPoint());
+                    view->addFlag(flag, Gui::FlagLayout::BottomLeft);
+                }
+                else {
+                    Gui::ToolTip::showText(QCursor::pos(), text);
+                }
             }
+        }
+    }
+    else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+        const SoPickedPoint * point = n->getPickedPoint();
+        if (point == NULL)
+            return;
+        n->setHandled();
+
+        // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
+        // really from the mesh we render and not from any other geometry
+        Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
+        if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshCurvature::getClassTypeId()))
+            return;
+        ViewProviderMeshCurvature* that = static_cast<ViewProviderMeshCurvature*>(vp);
+        const SoDetail* detail = point->getDetail(point->getPath()->getTail());
+        if (detail && detail->getTypeId() == SoFaceDetail::getClassTypeId()) {
+            // safe downward cast, know the type
+            SoFaceDetail * facedetail = (SoFaceDetail *)detail;
+            // get the curvature info of the three points of the picked facet
+            int index1 = facedetail->getPoint(0)->getCoordinateIndex();
+            int index2 = facedetail->getPoint(1)->getCoordinateIndex();
+            int index3 = facedetail->getPoint(2)->getCoordinateIndex();
+            std::string info = that->curvatureInfo(false, index1, index2, index3);
+            Gui::getMainWindow()->setPaneText(1,QString::fromAscii(info.c_str()));
+        }
+    }
+    // toogle between inspection and navigation mode
+    else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
+        const SoKeyboardEvent * const ke = static_cast<const SoKeyboardEvent *>(ev);
+        if (ke->getState() == SoButtonEvent::DOWN &&
+            ke->getKey() == SoKeyboardEvent::ESCAPE) {
+            SbBool toggle = view->isRedirectedToSceneGraph();
+            view->setRedirectToSceneGraph(!toggle);
+            n->setHandled();
         }
     }
 }
 
-void ViewProviderMeshCurvature::curvatureInfo(int index1, int index2, int index3) const
+std::string ViewProviderMeshCurvature::curvatureInfo(bool detail, int index1, int index2, int index3) const
 {
     // get the curvature info of the three points of the picked facet
     App::Property* prop = pcObject->getPropertyByName("CurvInfo");
+    std::stringstream str;
     if (prop && prop->getTypeId() == Mesh::PropertyCurvatureList::getClassTypeId()) {
         Mesh::PropertyCurvatureList* curv = (Mesh::PropertyCurvatureList*)prop;
         const Mesh::CurvatureInfo& cVal1 = (*curv)[index1];
@@ -472,18 +582,23 @@ void ViewProviderMeshCurvature::curvatureInfo(int index1, int index2, int index3
             print = false;
         }
 
-        QString info, what;
         if (print) {
-            info = QString(QLatin1String("%1: <%2, %3, %4>"))
-                .arg(QString::fromLatin1(mode.c_str())).arg(fVal1).arg(fVal2).arg(fVal3);
-            what = QString::fromAscii("%1\nv1: %2\nv2: %3\nv3: %4")
-                .arg(QString::fromLatin1(mode.c_str())).arg(fVal1).arg(fVal2).arg(fVal3);
+            if (!detail) {
+                str << mode << ": <" << fVal1 << ", " << fVal2 << ", " << fVal3 << ">";
+            }
+            else {
+                str.setf(std::ios::fixed | std::ios::showpoint);
+                str.precision(5);
+                str << mode << std::endl
+                    << "v1: " << std::setw(5) << fVal1 << std::endl
+                    << "v2: " << std::setw(5) << fVal2 << std::endl
+                    << "v3: " << std::setw(5) << fVal3;
+            }
         }
-        else {
-            info = QString::fromLatin1("No curvature mode set");
+        else if (!detail) {
+            str << "No curvature mode set";
         }
-
-        Gui::getMainWindow()->setPaneText(1,info);
-        Gui::ToolTip::showText(QCursor::pos(), what);
     }
+
+    return str.str();
 }

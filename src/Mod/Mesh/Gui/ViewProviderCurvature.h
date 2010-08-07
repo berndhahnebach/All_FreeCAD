@@ -92,7 +92,7 @@ public:
 
 protected:
     void setVertexCurvatureMode(int mode);
-    void curvatureInfo(int index1, int index2, int index3) const;
+    std::string curvatureInfo(bool detail, int index1, int index2, int index3) const;
 
 private:
     void init(const Mesh::PropertyCurvatureList *prop);
@@ -114,6 +114,9 @@ protected:
     Gui::SoFCColorBar* pcColorBar;
     SoDrawStyle      * pcColorStyle;
     SoSeparator      * pcColorRoot;
+
+private:
+    static bool addflag;
 };
 
 } // namespace MeshGui

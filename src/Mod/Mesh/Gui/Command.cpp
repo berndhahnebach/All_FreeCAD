@@ -662,8 +662,10 @@ void CmdMeshVertexCurvatureInfo::activated(int iMsg)
     if (view) {
         Gui::View3DInventorViewer* viewer = view->getViewer();
         viewer->setEditing(true);
+        viewer->setRedirectToSceneGraph(true);
         viewer->setEditingCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
-        viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(), MeshGui::ViewProviderMeshCurvature::curvatureInfoCallback);
+        viewer->addEventCallback(SoEvent::getClassTypeId(),
+            MeshGui::ViewProviderMeshCurvature::curvatureInfoCallback);
      }
 }
 
