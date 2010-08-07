@@ -165,13 +165,15 @@ Flag::Flag(QWidget* parent)
 
 void Flag::initializeGL()
 {
-    qglClearColor(Qt::white);
+    const QPalette& p = this->palette();
+    qglClearColor(/*Qt::white*/p.color(QPalette::Window));
 }
 
 void Flag::paintGL()
 {
+    const QPalette& p = this->palette();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    qglColor(Qt::black);
+    qglColor(/*Qt::black*/p.color(QPalette::Text));
     renderText(10,15,this->text);
 }
 
@@ -350,7 +352,13 @@ void Flag::contextMenuEvent(QContextMenuEvent * e)
 
 QSize Flag::sizeHint() const
 {
-    return QSize(100, 20);
+    int w = 100;
+    int h = 20;
+    QFontMetrics metric(this->font());
+    QRect r = metric.boundingRect(text);
+    w = std::max<int>(w, r.width()+20);
+    h = std::max<int>(h, r.height());
+    return QSize(w, h);
 }
 
 // ------------------------------------------------------------------------

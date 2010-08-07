@@ -976,8 +976,12 @@ void View3DInventorViewer::processEvent(QEvent * event)
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
-    if (isRedirectedToSceneGraph())
-        return SoQtRenderArea::processSoEvent(ev);
+    if (isRedirectedToSceneGraph()) {
+        SbBool processed = SoQtRenderArea::processSoEvent(ev);
+        if (!processed)
+            processed = navigation->processEvent(ev);
+        return processed;
+    }
     if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
         // filter out 'Q' and 'ESC' keys
         const SoKeyboardEvent * const ke = static_cast<const SoKeyboardEvent *>(ev);
