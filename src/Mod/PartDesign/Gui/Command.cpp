@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <TopExp_Explorer.hxx>
 # include <QMessageBox>
 #endif
 
@@ -75,7 +76,13 @@ void CmdPartDesignPad::activated(int iMsg)
         return;
     }
 
-    if (shape.ShapeType() != TopAbs_WIRE) {
+    // count free wires
+    int ctWires=0;
+    TopExp_Explorer ex;
+    for (ex.Init(shape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
+        ctWires++;
+    }
+    if (ctWires == 0) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("The shape of the selected object is not a wire."));
         return;

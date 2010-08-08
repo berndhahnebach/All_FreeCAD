@@ -23,8 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Bnd_Box.hxx>
 # include <gp_Pln.hxx>
 # include <BRep_Builder.hxx>
+# include <BRepBndLib.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <Geom_Plane.hxx>
@@ -32,6 +34,7 @@
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
+# include <TopExp_Explorer.hxx>
 #endif
 
 
@@ -39,6 +42,23 @@
 
 
 using namespace PartDesign;
+
+namespace PartDesign {
+// sort bounding boxes according to diagonal length
+struct Wire_Compare {
+    bool operator() (const TopoDS_Wire& w1, const TopoDS_Wire& w2)
+    {
+        Bnd_Box box1, box2;
+        BRepBndLib::Add(w1, box1);
+        box1.SetGap(0.0);
+
+        BRepBndLib::Add(w2, box2);
+        box2.SetGap(0.0);
+        
+        return box1.SquareExtent() < box2.SquareExtent();
+    }
+};
+}
 
 
 PROPERTY_SOURCE(PartDesign::Pad, Part::Feature)
@@ -67,7 +87,12 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
     if (shape.IsNull())
         return new App::DocumentObjectExecReturn("Linked shape object is empty");
-    if (shape.ShapeType() != TopAbs_WIRE)
+    TopExp_Explorer ex;
+    std::vector<TopoDS_Wire> wires;
+    for (ex.Init(shape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
+        wires.push_back(TopoDS::Wire(ex.Current()));
+    }
+    if (/*shape.ShapeType() != TopAbs_WIRE*/wires.empty()) // there can be several wires
         return new App::DocumentObjectExecReturn("Linked shape object is not a wire");
 
 	/* Version from the blog
@@ -109,10 +134,20 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 
 	Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
 	//anti-clockwise circles if too look from surface normal
-
-	TopoDS_Wire theWire = TopoDS::Wire(shape);
-
-	TopoDS_Face aFace = BRepBuilderAPI_MakeFace(theWire);
+#if 0
+	//TopoDS_Wire theWire = TopoDS::Wire(shape);
+	//TopoDS_Face aFace = BRepBuilderAPI_MakeFace(theWire);
+#else
+    //FIXME: Need a safe method to sort wire that the outermost one comes last
+    // Currently it's done with the diagonal lengths of the bounding boxes
+    std::sort(wires.begin(), wires.end(), Wire_Compare());
+    BRepBuilderAPI_MakeFace mkFace(wires.back());
+    for (std::vector<TopoDS_Wire>::reverse_iterator it = wires.rbegin()+1; it != wires.rend(); ++it) {
+        //it->Reverse(); // Shouldn't inner wires be reversed?
+        mkFace.Add(*it);
+    }
+    TopoDS_Face aFace = mkFace.Face();
+#endif
 
     // extrude the face to a solid
     Base::Vector3f v = Dir.getValue();
@@ -125,3 +160,4 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 
     return App::DocumentObject::StdReturn;
 }
+
