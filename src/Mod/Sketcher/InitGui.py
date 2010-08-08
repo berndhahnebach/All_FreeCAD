@@ -34,28 +34,30 @@
 class SketcherWorkbench ( Workbench ):
 	"Sketcher workbench object"
 	Icon = """
-			/* XPM */
-			static const char *Sketcher_Box[]={
-			"16 16 3 1",
-			". c None",
-			"# c #000000",
-			"a c #c6c642",
-			"................",
-			".......#######..",
-			"......#aaaaa##..",
-			".....#aaaaa###..",
-			"....#aaaaa##a#..",
-			"...#aaaaa##aa#..",
-			"..#aaaaa##aaa#..",
-			".########aaaa#..",
-			".#aaaaa#aaaaa#..",
-			".#aaaaa#aaaa##..",
-			".#aaaaa#aaa##...",
-			".#aaaaa#aa##....",
-			".#aaaaa#a##... .",
-			".#aaaaa###......",
-			".########.......",
-			"................"};
+                        /* XPM */
+                        static char * sketcher_xpm[] = {
+                        "16 16 5 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #00FF00",
+                        "@	c #FFFFFF",
+                        "#	c #F6FF00",
+                        "                ",
+                        " ...... ....... ",
+                        " .++++. .@@@@@. ",
+                        " .++++. ....... ",
+                        " .++++.         ",
+                        " .++++.         ",
+                        " ......  ...    ",
+                        "         .#.    ",
+                        " ...     .#.    ",
+                        " .@.  ....#.    ",
+                        " .@.  .####.    ",
+                        " .@.  ......    ",
+                        " .@.            ",
+                        " .@.            ",
+                        " ...            ",
+                        "                "};
 			"""
 	MenuText = "Sketcher"
 	ToolTip = "Sketcher workbench"
