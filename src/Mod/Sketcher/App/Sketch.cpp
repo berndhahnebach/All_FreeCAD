@@ -23,6 +23,8 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRep_Builder.hxx>
+# include <TopoDS_Compound.hxx>
 #endif
 
 #include <Base/Writer.h>
@@ -594,12 +596,23 @@ TopoShape Sketch::toShape(void) const
         // FIXME: The right way here would be to determine the outer and inner wires and 
         // generate a face with holes (inner wires have to be taged REVERSE or INNER).
         // thats the only way to transport a somwhat more complex sketch...
-        result = *wires.begin();
+        //result = *wires.begin();
+        
+        // I think a compound can be used as container because it is just a collection of
+        // shapes and doesn't need too much information about the topology.
+        // The actual knowledge how to create a prism from several wires should go to the Pad
+        // feature (Werner).
+        BRep_Builder builder;
+        TopoDS_Compound comp;
+        builder.MakeCompound(comp);
+        for (std::list<TopoDS_Wire>::iterator wt = wires.begin(); wt != wires.end(); ++wt)
+        builder.Add(comp, *wt);
+        result._Shape = comp;
     }
     // FIXME: if free edges are left over its probably better to 
     // create a compound with the closed structures and let the 
     // features decide what to do with it...
-    if(edge_list.size() > 0)
+    if (edge_list.size() > 0)
         Base::Console().Warning("Left offer edges in Sketch. Only closed structures will be propagated at the moment!");
 
 #endif

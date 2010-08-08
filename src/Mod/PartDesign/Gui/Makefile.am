@@ -34,6 +34,11 @@ libPartDesignGui_la_LIBADD   = \
 		-lFreeCADApp \
 		-lFreeCADGui \
 		-lPart \
+		-lTKernel \
+		-lTKMath \
+		-lTKXSBase \
+		-lTKBRep \
+		-lTKTopAlgo \
 		-lPartDesign
 
 #--------------------------------------------------------------------------------------
