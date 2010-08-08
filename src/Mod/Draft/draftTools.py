@@ -847,6 +847,8 @@ class Edit(Creator):
                                         self.running = True
                                         plane.save()
                                         plane.alignToFace(self.obj.Shape)
+                                else:
+                                        self.finish()
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
@@ -872,6 +874,7 @@ class Edit(Creator):
                                         self.constraintrack.on()
                                 else: self.constraintrack.off()
                                 self.trackers[self.editing].set(point)
+                                self.update(self.trackers[self.editing].get())
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
                                 if self.editing == None:
@@ -887,12 +890,7 @@ class Edit(Creator):
                                 else:
                                         self.numericInput(self.trackers[self.editing].get())
 
-	def numericInput(self,v,numy=None,numz=None):
-		'''this function gets called by the toolbar
-                when valid x, y, and z have been entered there'''
-                if (numy != None):
-                        v = Vector(v,numy,numz)
-                self.doc.openTransaction("Edit "+self.obj.Name)
+        def update(self,v):
                 if "Points" in self.obj.PropertiesList:
                         pts = self.obj.Points
                         pts[self.editing] = v
@@ -928,6 +926,14 @@ class Edit(Creator):
                                 self.obj.Height = ay
                         self.trackers[0].set(self.obj.Placement.Base)
                         self.trackers[1].set(self.obj.Shape.Vertexes[2].Point)
+
+	def numericInput(self,v,numy=None,numz=None):
+		'''this function gets called by the toolbar
+                when valid x, y, and z have been entered there'''
+                if (numy != None):
+                        v = Vector(v,numy,numz)
+                self.doc.openTransaction("Edit "+self.obj.Name)
+                self.update(v)
                 self.doc.commitTransaction()
                 self.editing = None
                 self.ui.offUi()
