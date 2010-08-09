@@ -267,7 +267,8 @@ protected:
     enum CmdType {
         AlterDoc       = 1,  /// Command change the Document
         Alter3DView    = 2,  /// Command change the Gui
-        AlterSelection = 4   /// Command change the Selection
+        AlterSelection = 4,  /// Command change the Selection
+        ForEdit        = 8   /// Command is in a special edit mode active
     };
 
     /** @name Attributes 

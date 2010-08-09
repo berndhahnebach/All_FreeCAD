@@ -1,37 +1,41 @@
-<ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
- <class>Gui::TaskView::TaskSketcherConstrains</class>
- <widget class="QWidget" name="Gui::TaskView::TaskSketcherConstrains" >
-  <property name="geometry" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SketcherGui::TaskSketcherConstrains</class>
+ <widget class="QWidget" name="SketcherGui::TaskSketcherConstrains">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>216</width>
+    <width>176</width>
     <height>288</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QListWidget" name="listWidgetConstraints" >
-     <property name="modelColumn" >
+    <widget class="QCheckBox" name="checkBoxShowNamed">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Show only named</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="listWidgetConstraints">
+     <property name="modelColumn">
       <number>0</number>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>

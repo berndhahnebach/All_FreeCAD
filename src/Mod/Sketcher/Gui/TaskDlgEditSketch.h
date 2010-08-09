@@ -21,50 +21,53 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TaskSketcherGerneral_H
-#define GUI_TASKVIEW_TaskSketcherGerneral_H
+#ifndef SKETCHERGUI_TaskDlgEditSketch_H
+#define SKETCHERGUI_TaskDlgEditSketch_H
 
-#include <Gui/TaskView/TaskView.h>
-#include <Gui/Selection.h>
+#include <Gui/TaskView/TaskDialog.h>
 
-
-class Ui_TaskSketcherGeneral;
-
-namespace App {
-class Property;
-}
+#include "ViewProviderSketch.h"
+#include "TaskSketcherConstrains.h"
+#include "TaskSketcherGeneral.h"
 
 namespace SketcherGui {
 
-class ViewProviderSketch;
 
-
-class TaskSketcherGeneral : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+/// simulation dialog for the TaskView
+class SketcherGuiExport TaskDlgEditSketch : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
 
 public:
-    TaskSketcherGeneral(ViewProviderSketch *sketchView);
-    ~TaskSketcherGeneral();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
+    TaskDlgEditSketch(ViewProviderSketch *sketchView);
+    ~TaskDlgEditSketch();
 
-public Q_SLOTS:
+public:
+    /// is called the TaskView when the dialog is opened
+    virtual void open();
+    /// is called by the framework if an button is clicked which has no accept or rject role
+    virtual void clicked(int);
+    /// is called by the framework if the dialog is accepted (Ok)
+    virtual bool accept();
+    /// is called by the framework if the dialog is rejected (Cancel)
+    virtual bool reject();
+    /// is called by the framework if the user press the help button 
+    virtual void helpRequested();
 
-Q_SIGNALS:
-    void setGridSnap(int Type);
+    /// returns for Close and Help button 
+    virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
+    { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
 
 protected:
-    void changeEvent(QEvent *e);
+    ViewProviderSketch   *sketchView; 
 
-    ViewProviderSketch *sketchView;
+    TaskSketcherConstrains  *Constrints ;
+    TaskSketcherGeneral     *General;
 
-private:
-    QWidget* proxy;
-    Ui_TaskSketcherGeneral* ui;
 };
 
-} //namespace SketcherGui
 
-#endif // GUI_TASKVIEW_TASKAPPERANCE_H
+
+} //namespace RobotGui
+
+#endif // SKETCHERGUI_TaskDlgEditSketch_H

@@ -304,12 +304,14 @@ void Command::testActive(void)
         return;
     }
 
-    if ((!Gui::Control().isAllowedAlterDocument()  && eType & AlterDoc)    ||
-        (!Gui::Control().isAllowedAlterView()      && eType & Alter3DView) ||
-        (!Gui::Control().isAllowedAlterSelection() && eType & AlterSelection)) {
-         _pcAction->setEnabled(false);
-        return;
-    }
+    if(!(eType & ForEdit))  // special case for commands which are only in some edit modes active
+        
+        if ((!Gui::Control().isAllowedAlterDocument()  && eType & AlterDoc)    ||
+            (!Gui::Control().isAllowedAlterView()      && eType & Alter3DView) ||
+            (!Gui::Control().isAllowedAlterSelection() && eType & AlterSelection)) {
+             _pcAction->setEnabled(false);
+            return;
+        }
 
     bool bActive = isActive();
     _pcAction->setEnabled(bActive);

@@ -7,7 +7,8 @@ BUILT_SOURCES=\
 		moc_TaskSketcherCreateCommands.cpp \
 		moc_TaskSketcherGeneral.cpp \
 		ui_TaskSketcherConstrains.h \
-		ui_TaskSketcherGeneral.h
+		ui_TaskSketcherGeneral.h    \
+		moc_TaskDlgEditSketch.cpp
 
 libSketcherGui_la_UI=\
 		TaskSketcherConstrains.ui \
@@ -33,7 +34,9 @@ libSketcherGui_la_SOURCES=\
 		ViewProviderSketchSF.cpp \
 		ViewProviderSketchSF.h \
 		Workbench.cpp \
-		Workbench.h
+		Workbench.h   \
+		TaskDlgEditSketch.cpp \
+		TaskDlgEditSketch.h
 
 # the library search path.
 libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \

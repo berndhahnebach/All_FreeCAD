@@ -28,6 +28,8 @@
 #include <Inventor/SbColor.h>
 #include <Base/Tools2D.h>
 #include <Gui/Selection.h>
+#include <boost/signals.hpp>
+
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -64,7 +66,7 @@ class DrawSketchHandler;
   * It uses the class DrawSketchHandler to facilitade the creation 
   * of new geometry while editing.
   */
-class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject, public Gui::SelectionObserver
+class SketcherGuiExport ViewProviderSketch :  public PartGui::ViewProvider2DObject, public Gui::SelectionObserver
 {
     PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
@@ -146,6 +148,11 @@ public:
 
 
     friend class DrawSketchHandler;
+
+    /// signals if the Constraints have changed
+    boost::signal<void ()> ConstraintsChanged;
+
+    void setGridSnap(int Type);
 
 protected:
     /// helper to detect whether the picked point lies on the sketch

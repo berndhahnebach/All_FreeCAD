@@ -183,6 +183,8 @@ CmdSketcherCreateLine::CmdSketcherCreateLine()
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateLine";
     iAccel          = Qt::Key_L;
+    eType           = ForEdit;
+
 
 }
 
@@ -355,6 +357,7 @@ CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreatePolyline";
+    eType           = ForEdit;
 }
 
 void CmdSketcherCreatePolyline::activated(int iMsg)
@@ -382,6 +385,7 @@ CmdSketcherCreateArc::CmdSketcherCreateArc()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateArc";
+    eType           = ForEdit;
 }
 
 
@@ -419,6 +423,7 @@ CmdSketcherCreateCircle::CmdSketcherCreateCircle()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateCircle";
+    eType           = ForEdit;
 }
 
 
@@ -452,6 +457,7 @@ CmdSketcherCreatePoint::CmdSketcherCreatePoint()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreatePoint";
+    eType           = ForEdit;
 }
 
 
@@ -490,6 +496,7 @@ CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateRectangle";
+    eType           = ForEdit;
 }
 
 
@@ -523,6 +530,7 @@ CmdSketcherCreateText::CmdSketcherCreateText()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateText";
+    eType           = ForEdit;
 }
 
 
@@ -556,6 +564,7 @@ CmdSketcherCreateDraftLine::CmdSketcherCreateDraftLine()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_DraftLine";
+    eType           = ForEdit;
 }
 
 

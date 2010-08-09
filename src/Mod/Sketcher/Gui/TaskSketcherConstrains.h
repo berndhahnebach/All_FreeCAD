@@ -26,6 +26,7 @@
 
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
+#include <boost/signals.hpp>
 
 
 class Ui_TaskSketcherConstrains;
@@ -34,36 +35,32 @@ namespace App {
 class Property;
 }
 
-namespace Gui {
-class ViewProvider;
-namespace TaskView {
+namespace SketcherGui {
 
+class ViewProviderSketch;
 
-
-class TaskSketcherConstrains : public TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskSketcherConstrains : public Gui::TaskView::TaskBox
 {
     Q_OBJECT
 
 public:
-    TaskSketcherConstrains(QWidget *parent = 0);
+    TaskSketcherConstrains(ViewProviderSketch *sketchView);
     ~TaskSketcherConstrains();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
 
-private Q_SLOTS:
- 
+    void ConstraintsChanged(void);
+
+    
 protected:
     void changeEvent(QEvent *e);
 
-private:
+    ViewProviderSketch *sketchView;
 
+    void* c;
 private:
     QWidget* proxy;
     Ui_TaskSketcherConstrains* ui;
 };
 
-} //namespace TaskView
-} //namespace Gui
+} //namespace SketcherGui
 
 #endif // GUI_TASKVIEW_TASKAPPERANCE_H
