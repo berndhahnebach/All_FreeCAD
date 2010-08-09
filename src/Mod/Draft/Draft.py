@@ -168,6 +168,14 @@ def getRealName(name):
 			return name[:len(name)-(i-1)]
 	return name
 
+def getTranslation(languagecode):
+        "returns the the translation file to use or None if not available"
+        dictname = "draft_"+str(languagecode)[:2]
+        if os.path.exists(getDraftPath("Languages")+os.sep+dictname+".qm"):
+                return dictname
+        else:
+                return None
+
 def shapify(obj):
         '''shapify(object): transforms a parametric shape object into
         non-parametric and returns the new object'''
@@ -543,6 +551,146 @@ def draftify(objectslist):
                 newobjlist.append(newobj)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
+
+def getrgb(color):
+        "returns a rgb value #000000 from a freecad color"
+        r = str(hex(int(color[0]*255)))[2:].zfill(2)
+        g = str(hex(int(color[1]*255)))[2:].zfill(2)
+        b = str(hex(int(color[2]*255)))[2:].zfill(2)
+        return "#"+r+g+b
+
+def getSVG(obj,modifier=100):
+        '''getSVG(object,[modifier]): returns a string containing a SVG representation
+        of the given object. the modifier attribute specifies a scalefactor for linewidth
+        (default = 100).'''
+        svg = ""
+
+        def getPath(edges):
+                svg ='<path id="' + name + '" '
+                edges = fcgeo.sortEdges(edges)
+                v = edges[0].Vertexes[0].Point
+                svg += 'd="M '+ str(v.x) +' '+ str(v.y) + ' '
+                for e in edges:
+                        if isinstance(e.Curve,Part.Line):
+                                v = e.Vertexes[-1].Point
+                                svg += 'L '+ str(v.x) +' '+ str(v.y) + ' '
+                        elif isinstance(e.Curve,Part.Circle):
+                                r = e.Curve.Radius
+                                v = e.Vertexes[-1].Point
+                                svg += 'A '+ str(r) + ' '+ str(r) +' 0 0 0 '+ str(v.x) +' '
+                                svg += str(v.y) + ' '
+                if fill != 'none': svg += 'Z'
+                svg += '" '
+                svg += 'stroke="' + stroke + '" '
+                svg += 'stroke-width="' + str(width) + ' px" '
+                svg += 'style="stroke-width:'+ str(width)
+                svg += ';stroke-miterlimit:4'
+                svg += ';stroke-dasharray:' + lstyle
+                svg += ';fill:' + fill + '"'
+                svg += '/>\n'
+                return svg
+        
+        if 'Dimline' in obj.PropertiesList:
+		p1,p2,p3,p4,tbase,angle,norm = obj.ViewObject.Proxy.calcGeom(obj)
+		svg = '<g id="'+obj.Name+'"><path '
+		svg += 'd="M '+str(p1.x)+' '+str(p1.y)+' '
+		svg += 'L '+str(p2.x)+' '+str(p2.y)+' '
+		svg += 'L '+str(p3.x)+' '+str(p3.y)+' '
+		svg += 'L '+str(p4.x)+' '+str(p4.y)+'" '
+		svg += 'fill="none" stroke="'
+		svg += getrgb(obj.ViewObject.LineColor) + '" '
+		svg += 'stroke-width="' + str(obj.ViewObject.LineWidth/modifier) + ' px" '
+		svg += 'style="stroke-width:'+ str(obj.ViewObject.LineWidth/modifier)
+		svg += ';stroke-miterlimit:4;stroke-dasharray:none"/>\n'
+		svg += '<circle cx="'+str(p2.x)+'" cy="'+str(p2.y)
+		svg += '" r="'+str(obj.ViewObject.FontSize/(modifier/10))+'" '
+		svg += 'fill="'+ getrgb(obj.ViewObject.LineColor) +'" stroke="none" '
+		svg += 'style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
+		svg += '<circle cx="'+str(p3.x)+'" cy="'+str(p3.y)
+		svg += '" r="'+str(obj.ViewObject.FontSize/(modifier/10))+'" '
+		svg += 'fill="#000000" stroke="none" '
+		svg += 'style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
+		svg += '<text id="' + obj.Name + '" fill="'
+		svg += str(obj.ViewObject.LineWidth/modifier) +'" font-size="'
+		svg += str(obj.ViewObject.FontSize*(modifier/5))+'" '
+		svg += 'style="text-anchor:middle;text-align:center" '
+		svg += 'transform="rotate('+str(math.degrees(angle))
+		svg += ','+ str(tbase.x) + ',' + str(tbase.y) + ') '
+		svg += 'translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
+                svg += 'scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
+		svg += "%.2f" % p3.sub(p2).Length
+		svg += '</text>\n</g>\n'
+
+        elif obj.Type == 'App::Annotation':
+                "returns an svg representation of a document annotation"
+                textcontents = ''
+                for l in obj.LabelText:
+                        textcontents+=l
+                        textcontents+='\n'
+                svg = '<text id="' + obj.Name + '" fill="'
+                svg += getrgb(obj.ViewObject.TextColor)
+                svg += '" font-size="'
+                svg += str(obj.ViewObject.FontSize*(modifier/5))+'" '
+                svg += 'style="text-anchor:middle;text-align:center" '
+                svg += 'transform="'
+                if obj.ViewObject.RotationAxis == 'Z':
+                        if obj.ViewObject.Rotation != 0:
+                                svg += 'rotate('+str(obj.ViewObject.Rotation)
+                                svg += ','+ str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
+                svg += 'translate(' + str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
+                svg +='scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
+                svg += textcontents
+                svg += '</text>\n'
+
+        elif obj.isDerivedFrom('Part::Feature'):
+                color = getrgb(obj.ViewObject.LineColor)
+                if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
+                        if 'FillStyle' in obj.ViewObject.PropertiesList:
+                                if obj.ViewObject.FillStyle == 'shape color':
+                                        fill = getrgb(obj.ViewObject.ShapeColor)
+                                else:
+                                        hatch = obj.ViewObject.FillStyle[:-6]
+                                        fill = 'url(#'+hatch+')'
+                        else:
+                                fill = getrgb(obj.ViewObject.ShapeColor)   
+                else: fill = 'none'
+                if "LineStyle" in obj.ViewObject.PropertiesList:
+                        if obj.ViewObject.LineStyle == "dashed":
+                                lstyle = "0.09,0.05"
+                        elif obj.ViewObject.LineStyle == "dashdotted":
+                                lstyle = "0.09,0.05,0.02,0.05"
+                        elif obj.ViewObject.LineStyle == "dotted":
+                                lstyle = "0.02,0.02"
+                        else:
+                                lstyle = "none"
+                else: lstyle = "none"
+                name = obj.Name
+                if obj.ViewObject.DisplayMode == "Shaded":
+                        stroke = "none"
+                else:
+                        stroke = getrgb(obj.ViewObject.LineColor)
+                width = obj.ViewObject.LineWidth/modifier
+                if len(obj.Shape.Vertexes) > 1:
+                        if obj.Shape.Faces:
+                                for f in obj.Shape.Faces:
+                                        svg += getPath(f.Edges)
+                        else:
+                                svg = getPath(obj.Shape.Edges,(fill!='none'))
+                else:
+                        cen = obj.Shape.Edges[0].Curve.Center
+                        rad = obj.Shape.Edges[0].Curve.Radius
+                        svg = '<circle cx="' + str(cen.x)
+                        svg += '" cy="' + str(cen.y)
+                        svg += '" r="' + str(rad)+'" '
+                        svg += 'stroke="' + stroke + '" '
+                        svg += 'stroke-width="' + str(width) + ' px" '
+                        svg += 'style="stroke-width:'+ str(width)
+                        svg += ';stroke-miterlimit:4'
+                        svg += ';stroke-dasharray:' + lstyle
+                        svg += ';fill:' + fill + '"'
+                        svg += '/>\n'
+                
+        return svg
 				
 #---------------------------------------------------------------------------
 # Python Features definitions
@@ -818,46 +966,6 @@ class ViewProviderDimension:
 
 	def __setstate__(self,state):
 		return None
-
-	def getrgb(self,color):
-		"returns a rgb value #000000 from a freecad color"
-		r = str(hex(int(color[0]*255)))[2:].zfill(2)
-		g = str(hex(int(color[1]*255)))[2:].zfill(2)
-		b = str(hex(int(color[2]*255)))[2:].zfill(2)
-		return "#"+r+g+b
-
-	def getSVG(self,modifier=100):
-		"returns an svg representation of the dimension"
-		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(self.Object)
-		svg='<g id="'+self.Object.Name+'"><path '
-		svg+='d="M '+str(p1.x)+' '+str(p1.y)+' '
-		svg+='L '+str(p2.x)+' '+str(p2.y)+' '
-		svg+='L '+str(p3.x)+' '+str(p3.y)+' '
-		svg+='L '+str(p4.x)+' '+str(p4.y)+'" '
-		svg+='fill="none" stroke="'
-		svg+=self.getrgb(self.ViewObject.LineColor) + '" '
-		svg+='stroke-width="' + str(self.ViewObject.LineWidth/modifier) + ' px" '
-		svg+='style="stroke-width:'+ str(self.ViewObject.LineWidth/modifier)
-		svg+=';stroke-miterlimit:4;stroke-dasharray:none"/>\n'
-		svg+='<circle cx="'+str(p2.x)+'" cy="'+str(p2.y)
-		svg+='" r="'+str(self.ViewObject.FontSize/(modifier/10))+'" '
-		svg+='fill="'+ self.getrgb(self.ViewObject.LineColor) +'" stroke="none" '
-		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
-		svg+='<circle cx="'+str(p3.x)+'" cy="'+str(p3.y)
-		svg+='" r="'+str(self.ViewObject.FontSize/(modifier/10))+'" '
-		svg+='fill="#000000" stroke="none" '
-		svg+='style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
-		svg+='<text id="' + self.Object.Name + '" fill="'
-		svg+=str(self.ViewObject.LineWidth/modifier) +'" font-size="'
-		svg+=str(self.ViewObject.FontSize*(modifier/5))+'" '
-		svg+='style="text-anchor:middle;text-align:center" '
-		svg+='transform="rotate('+str(math.degrees(angle))
-		svg+=','+ str(tbase.x) + ',' + str(tbase.y) + ') '
-		svg+='translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
-                svg +='scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
-		svg+="%.2f" % p3.sub(p2).Length
-		svg+='</text>\n</g>\n'
-		return svg
 
 class Rectangle:
         "The Rectangle object"

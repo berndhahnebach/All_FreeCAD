@@ -20,6 +20,17 @@
    version="1.0">
   <defs
      id="defs4">
+    <linearGradient
+       id="linearGradient4095">
+      <stop
+         style="stop-color:#005bff;stop-opacity:1;"
+         offset="0"
+         id="stop4097" />
+      <stop
+         style="stop-color:#c1e3f7;stop-opacity:1;"
+         offset="1"
+         id="stop4099" />
+    </linearGradient>
     <pattern
        id="simple"
        patternUnits="userSpaceOnUse"
@@ -1409,7 +1420,7 @@
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3377-3"
+       xlink:href="#linearGradient4095"
        id="linearGradient3999"
        gradientUnits="userSpaceOnUse"
        x1="901.1875"
@@ -1435,9 +1446,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="352.70076"
-     inkscape:cy="101.61994"
+     inkscape:zoom="1.4"
+     inkscape:cx="485.32715"
+     inkscape:cy="98.382532"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1521,6 +1532,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -3248,7 +3260,10 @@
          style="opacity:0.98999999;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4.30000019;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     </g>
     <g
-       id="g4774">
+       id="g4774"
+       inkscape:export-filename="/home/yorik/Draft_Edit.png"
+       inkscape:export-xdpi="49.52"
+       inkscape:export-ydpi="49.52">
       <path
          id="path3278-8"
          d="m 555.96511,139.41115 -27.02158,14.39468 18.68782,7.07107 -16.66752,31.56726 40.15357,-12.87944 -11.8693,-9.84899 -3.28299,-30.30458 z"
@@ -3267,7 +3282,7 @@
          inkscape:export-filename="/home/yorik/Documents/Lab/Draft/icons/draft.png"
          id="rect2390-8"
          d="m 529.49385,136 -13.83565,12.76056 24.2957,26.34131 c -0.20842,-0.43361 -0.32351,-0.91301 -0.32351,-1.41821 0,-1.92414 1.68147,-3.48341 3.75138,-3.48341 0.56046,0 1.0909,0.11516 1.56852,0.32023 l 0.22548,-0.20913 c -0.0699,-0.26592 -0.10784,-0.54459 -0.10784,-0.83 0,-1.92416 1.67818,-3.48669 3.7481,-3.48669 0.31808,0 0.62651,0.0382 0.92151,0.10783 l 0.78427,-0.72217 c -0.0437,-0.2116 -0.0686,-0.43033 -0.0686,-0.65355 0,-1.51793 1.0483,-2.8067 2.50636,-3.28408 L 529.49388,136 z"
-         style="fill:url(#linearGradient3999);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.40498567;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="fill:url(#linearGradient3999);fill-opacity:1.0;fill-rule:evenodd;stroke:#000000;stroke-width:2.40498566999999985;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          inkscape:export-ydpi="6.2926431"
          inkscape:export-xdpi="6.2926431"

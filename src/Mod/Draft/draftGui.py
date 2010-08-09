@@ -848,13 +848,12 @@ class toolBar:
 			icon.save(bu,'XPM')
 			FreeCADGui.addIcon(name,str(ba))
 
-		# loads a translation engine
-		languages = {"Swedish":"sw","Spanish":"es","English":"en","French":"fr","German":"de","Italian":"it"}
-		ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
-		if ln in languages:
-			self.translator = QtCore.QTranslator()
-			self.translator.load("draft_"+languages[ln],draftPath()+os.sep+"Languages")
-			QtGui.QApplication.installTranslator(self.translator)
+		# loads a translation engine        
+                locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
+                if locale:
+                        translator = QtCore.QTranslator()
+                        translator.load(locale,Draft.getDraftPath("Languages"))
+                        QtGui.QApplication.installTranslator(translator)
 			
 		# create the draft Toolbar
 		self.mw = getMainWindow()
