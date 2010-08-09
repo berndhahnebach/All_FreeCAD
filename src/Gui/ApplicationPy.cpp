@@ -84,6 +84,9 @@ PyMethodDef Application::Methods[] = {
   {"updateLocale",            (PyCFunction) Application::sUpdateLocale,     1,
    "updateLocale() -> None\n\n"
    "Update the localization"},
+  {"getLocale",            (PyCFunction) Application::sGetLocale,     1,
+   "getLocale() -> string\n\n"
+   "Returns the locale currently used by FreeCAD"},
   {"createDialog",            (PyCFunction) Application::sCreateDialog,     1,
    "createDialog(string) -- Open a UI file"},
   {"addPreferencePage",       (PyCFunction) Application::sAddPreferencePage,1,
@@ -401,6 +404,15 @@ PyObject* Application::sUpdateLocale(PyObject * /*self*/, PyObject *args,PyObjec
 
     Py_INCREF(Py_None);
     return Py_None;
+} 
+
+PyObject* Application::sGetLocale(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                                      // NULL triggers exception 
+
+    std::string locale = Translator::instance()->activeLanguage();
+    return PyString_FromString(locale.c_str());
 } 
 
 PyObject* Application::sCreateDialog(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
