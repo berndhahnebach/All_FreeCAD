@@ -617,7 +617,7 @@ def getSVG(obj,modifier=100):
 		svg += 'transform="rotate('+str(math.degrees(angle))
 		svg += ','+ str(tbase.x) + ',' + str(tbase.y) + ') '
 		svg += 'translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
-                svg += 'scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
+                svg += 'scale('+str(modifier/2000)+',-'+str(modifier/2000)+')">\n'
 		svg += "%.2f" % p3.sub(p2).Length
 		svg += '</text>\n</g>\n'
 
