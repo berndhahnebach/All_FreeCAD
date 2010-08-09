@@ -35,13 +35,10 @@ from draftlibs import fcvec,fcgeo
 from FreeCAD import Vector
 
 # loads a translation engine
-languages = {"Swedish":"se","Spanish":"es",
-             "English":"en","French":"fr",
-             "German":"de","Italian":"it"}
-ln = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("Language")
-if ln in languages:
+locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
+if locale:
 	translator = QtCore.QTranslator()
-	translator.load("draft_"+languages[ln],Draft.getDraftPath("Languages"))
+	translator.load(locale,Draft.getDraftPath("Languages"))
 	QtGui.QApplication.installTranslator(translator)
 
 def translate(context,text):
@@ -3044,131 +3041,39 @@ class SendToDrawing(Modifier):
                 del pb
                 sel = Draft.getSelection()
                 for obj in sel:
-                        name = 'View'+obj.Name
-                        svg = None
-                        if 'Dimline' in obj.PropertiesList:
-                                svg = obj.ViewObject.Proxy.getSVG(modifier)
-                        elif obj.isDerivedFrom('Part::Feature'):
-                                fill = self.getFill(obj.ViewObject,page)
-                                svg = self.writeShape(obj,modifier,fill)
-                        elif obj.Type == 'App::Annotation':
-                                svg = self.writeText(obj,modifier)
-                        if svg:
-                                oldobj = page.getObject(name)
-                                if oldobj: self.doc.removeObject(oldobj.Name)
-                                view = self.doc.addObject('Drawing::FeatureView',name)
-                                view.ViewResult = self.transformSVG(name,svg,offset,scale,pageheight)
-                                view.X = offset
-                                view.Y = offset
-                                view.Scale = scale
-                                page.addObject(view)
+                        if obj.ViewObject.isVisible():
+                                self.insertPattern(obj,page)
+                                name = 'View'+obj.Name
+                                svg = Draft.getSVG(obj,modifier)
+                                if svg:
+                                        oldobj = page.getObject(name)
+                                        if oldobj: self.doc.removeObject(oldobj.Name)
+                                        view = self.doc.addObject('Drawing::FeatureView',name)
+                                        view.ViewResult = self.transformSVG(name,svg,offset,scale,pageheight)
+                                        view.X = offset
+                                        view.Y = offset
+                                        view.Scale = scale
+                                        page.addObject(view)
                 self.doc.recompute()
                 self.finish()
 
-        def writeText(self,obj,modifier=100):
-                "returns an svg representation of a document annotation"
-                textcontents = ''
-                for l in obj.LabelText:
-                        textcontents+=l
-                        textcontents+='\n'
-                svg = '<text id="' + obj.Name + '" fill="'
-                svg += self.getrgb(obj.ViewObject.TextColor)
-                svg += '" font-size="'
-                svg += str(obj.ViewObject.FontSize*(modifier/5))+'" '
-                svg += 'style="text-anchor:middle;text-align:center" '
-                svg += 'transform="'
-                if obj.ViewObject.RotationAxis == 'Z':
-                        if obj.ViewObject.Rotation != 0:
-                                svg += 'rotate('+str(obj.ViewObject.Rotation)
-                                svg += ','+ str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
-                svg += 'translate(' + str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
-                svg +='scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
-                svg += textcontents
-                svg += '</text>\n'
-                return svg
-
-        def writeShape(self,obj,modifier=100,fill='none'):
-                "returns a svg representation of a planar shape"
-                name = obj.Name
-                stroke = self.getrgb(obj.ViewObject.LineColor)
-                width = obj.ViewObject.LineWidth/modifier
-                if len(obj.Shape.Vertexes) > 1:
-                        svg ='<path id="' + name + '" '
-                        edges = fcgeo.sortEdges(obj.Shape.Edges)
-                        v = edges[0].Vertexes[0].Point
-                        svg += 'd="M '+ str(v.x) +' '+ str(v.y) + ' '
-                        for e in edges:
-                                if isinstance(e.Curve,Part.Line):
-                                        v = e.Vertexes[-1].Point
-                                        svg += 'L '+ str(v.x) +' '+ str(v.y) + ' '
-                                elif isinstance(e.Curve,Part.Circle):
-                                        r = e.Curve.Radius
-                                        v = e.Vertexes[-1].Point
-                                        svg += 'A '+ str(r) + ' '+ str(r) +' 0 0 0 '+ str(v.x) +' '
-                                        svg += str(v.y) + ' '
-                        if fill != "none": svg += 'Z'
-                        svg += '" '
-                else:
-                        cen = obj.Shape.Edges[0].Curve.Center
-                        rad = obj.Shape.Edges[0].Curve.Radius
-                        svg = '<circle cx="'+str(cen.x)
-                        svg += '" cy="'+str(cen.y)
-                        svg += '" r="'+str(rad)+'" '
-                svg += 'stroke="' + stroke + '" '
-                svg += 'stroke-width="' + str(width) + ' px" '
-                svg += 'style="stroke-width:'+ str(width)
-                svg += ';stroke-miterlimit:4'
-                svg += ';stroke-dasharray:'+self.getLineStyle(obj.ViewObject)
-                svg += ';fill:'+fill+'"'
-                svg += '/>\n'
-                return svg
-
-        def getLineStyle(self,viewobj):
-                "returns a svg dash array"
-                if "LineStyle" in viewobj.PropertiesList:
-                        if viewobj.LineStyle == "dashed":
-                                return "0.09,0.05"
-                        elif viewobj.LineStyle == "dashdotted":
-                                return "0.09,0.05,0.02,0.05"
-                        elif viewobj.LineStyle == "dotted":
-                                return "0.02,0.02"
-                return "none"
-
-        def getFill(self,viewobj,page):
-                "returns a svg fill value"
-                color = self.getrgb(viewobj.LineColor)
-                if viewobj.Object.Shape.Faces and (viewobj.DisplayMode != "Wireframe"):
-                        if 'FillStyle' in viewobj.PropertiesList:
-                                if viewobj.FillStyle == 'shape color':
-                                        fill = self.getrgb(viewobj.ShapeColor)
-                                else:
-                                        hatch = viewobj.FillStyle[:-6]
-                                        fill = 'url(#'+hatch+')'
-                                        self.addPattern(hatch,page,color)
-                        else:
-                                fill = self.getrgb(viewobj.ShapeColor)   
-                else: fill = 'none'
-                return fill
-
-        def addPattern(self,pattern,page,svgcolor):
+        def insertPattern(self,obj,page):
                 "adds a given pattern to the page"
-                vobj = page.getObject('Pattern'+pattern)
-                if not vobj:
-                        view = self.doc.addObject('Drawing::FeatureView','Pattern'+pattern)
-                        svg = FreeCAD.svgpatterns[pattern]
-                        svg = svg.replace('DefaultColor',svgcolor)
-                        view.ViewResult = svg
-                        view.X = 0
-                        view.Y = 0
-                        view.Scale = 1
-                        page.addObject(view)
-
-        def getrgb(self,color):
-		"returns a rgb value #000000 from a freecad color"
-		r = str(hex(int(color[0]*255)))[2:].zfill(2)
-		g = str(hex(int(color[1]*255)))[2:].zfill(2)
-		b = str(hex(int(color[2]*255)))[2:].zfill(2)
-		return "#"+r+g+b
+                if "Shape" in obj.PropertiesList:
+                        if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
+                                if 'FillStyle' in obj.ViewObject.PropertiesList:
+                                        if obj.ViewObject.FillStyle != 'shape color':
+                                                pattern = obj.ViewObject.FillStyle[:-6]
+                                                vobj = page.getObject('Pattern'+pattern)
+                                                if not vobj:
+                                                        view = self.doc.addObject('Drawing::FeatureView','Pattern'+pattern)
+                                                        svg = FreeCAD.svgpatterns[pattern]
+                                                        svg = svg.replace('DefaultColor',Draft.getrgb(obj.ViewObject.LineColor))
+                                                        view.ViewResult = svg
+                                                        view.X = 0
+                                                        view.Y = 0
+                                                        view.Scale = 1
+                                                        page.addObject(view)
 
         def formatSVG(self,svg,obj):
                 "applies freecad object's color and linewidth to a svg fragment"
