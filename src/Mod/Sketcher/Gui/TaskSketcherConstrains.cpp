@@ -28,17 +28,26 @@
 
 #include "ui_TaskSketcherConstrains.h"
 #include "TaskSketcherConstrains.h"
+#include "ViewProviderSketch.h"
+
+#include <Mod/Sketcher/App/SketchObject.h>
+
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Base/Console.h>
+#include <boost/bind.hpp>
 
+
+
+using namespace SketcherGui;
 using namespace Gui::TaskView;
 
-TaskSketcherConstrains::TaskSketcherConstrains(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Appearance"),true, parent)
+TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Constraints"),true, 0)
+    , sketchView(sketchView)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -46,32 +55,56 @@ TaskSketcherConstrains::TaskSketcherConstrains(QWidget *parent)
     ui->setupUi(proxy);
     QMetaObject::connectSlotsByName(this);
 
-    this->groupLayout()->addWidget(proxy);
+    //QObject::connect(sketchView,SIGNAL(ConstraintsChanged()),this,SLOT(ConstraintsChanged()));
+    // idiotic hack to get around moc parse error in header (screw you MOC!)
+    c = new boost::signals::connection();
 
-    Gui::Selection().Attach(this);
+    *static_cast<boost::signals::connection*>(c) = sketchView->ConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::ConstraintsChanged, this));
+
+    this->groupLayout()->addWidget(proxy);
 }
 
 TaskSketcherConstrains::~TaskSketcherConstrains()
 {
+    static_cast<boost::signals::connection*>(c)->disconnect();
+    delete (static_cast<boost::signals::connection*>(c));
     delete ui;
-    Gui::Selection().Detach(this);
 }
+
+void TaskSketcherConstrains::ConstraintsChanged(void)
+{
+    assert(sketchView);
+    // Build up ListView with the constraints
+    const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
+
+    ui->listWidgetConstraints->clear();
+
+	for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
+        switch((*it)->Type){
+            case Sketcher::Horizontal:
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Horizontal")));
+                break;
+            case Sketcher::Vertical:
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Vertical")));
+                break;
+            case Sketcher::Coincident:
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Coincident")));
+                break;
+            default:
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Unknown")));
+                break;
+        }
+
+    }
+
+}
+
 
 void TaskSketcherConstrains::changeEvent(QEvent *e)
 {
     TaskBox::changeEvent(e);
     if (e->type() == QEvent::LanguageChange) {
         ui->retranslateUi(proxy);
-    }
-}
-
-void TaskSketcherConstrains::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                              Gui::SelectionSingleton::MessageType Reason)
-{
-    if (Reason.Type == SelectionChanges::AddSelection ||
-        Reason.Type == SelectionChanges::RmvSelection ||
-        Reason.Type == SelectionChanges::SetSelection ||
-        Reason.Type == SelectionChanges::ClrSelection) {
     }
 }
 

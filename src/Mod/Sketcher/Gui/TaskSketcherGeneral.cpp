@@ -35,10 +35,14 @@
 #include <Gui/WaitCursor.h>
 #include <Base/Console.h>
 
+#include "ViewProviderSketch.h"
+
+using namespace SketcherGui;
 using namespace Gui::TaskView;
 
-TaskSketcherGeneral::TaskSketcherGeneral(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Appearance"),true, parent)
+TaskSketcherGeneral::TaskSketcherGeneral(ViewProviderSketch *sketchView)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Edit controls"),true, 0)
+    , sketchView(sketchView)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -68,11 +72,11 @@ void TaskSketcherGeneral::changeEvent(QEvent *e)
 void TaskSketcherGeneral::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
-    if (Reason.Type == SelectionChanges::AddSelection ||
-        Reason.Type == SelectionChanges::RmvSelection ||
-        Reason.Type == SelectionChanges::SetSelection ||
-        Reason.Type == SelectionChanges::ClrSelection) {
-    }
+    //if (Reason.Type == SelectionChanges::AddSelection ||
+    //    Reason.Type == SelectionChanges::RmvSelection ||
+    //    Reason.Type == SelectionChanges::SetSelection ||
+    //    Reason.Type == SelectionChanges::ClrSelection) {
+    //}
 }
 
 

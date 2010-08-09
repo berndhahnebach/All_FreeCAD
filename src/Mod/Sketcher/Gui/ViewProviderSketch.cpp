@@ -51,6 +51,7 @@
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/Command.h>
+#include <Gui/Control.h>
 #include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
@@ -63,6 +64,7 @@
 
 #include "ViewProviderSketch.h"
 #include "DrawSketchHandler.h"
+#include "TaskDlgEditSketch.h"
 
 
 using namespace SketcherGui;
@@ -681,6 +683,11 @@ void ViewProviderSketch::updateData(const App::Property* prop)
         edit->ActSketch.addConstraints(getSketchObject()->Constraints.getValues());
         draw(true);    
     }
+    if(edit && &(getSketchObject()->Constraints) ){
+        // send the signal for the TaskDlg.
+        ConstraintsChanged();
+    }
+
 }
 
 void ViewProviderSketch::onChanged(const App::Property* prop)
@@ -726,6 +733,10 @@ bool ViewProviderSketch::setEdit(int ModNum)
   
 
     draw();
+
+    // start the edit dialog 
+    TaskDlgEditSketch* dlg = new TaskDlgEditSketch(this);
+    Gui::Control().showDialog(dlg);
 
     return true;
 }
@@ -867,7 +878,13 @@ int ViewProviderSketch::getPreselectCurve(void)const
     return edit->PreselectCurve;
 }
 
+void ViewProviderSketch::setGridSnap(int Type)
+{
+    assert(edit);
+}
+
 Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void) const
 {
     return dynamic_cast<Sketcher::SketchObject*>(pcObject);
 }
+

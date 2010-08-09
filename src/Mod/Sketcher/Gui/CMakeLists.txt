@@ -72,6 +72,8 @@ SET(SketcherGui_SRCS
 		 DrawSketchHandler.h
 		 Workbench.cpp
 		 Workbench.h
+		 TaskDlgEditSketch.cpp
+		 TaskDlgEditSketch.h
 )
 
 add_library(SketcherGui SHARED ${SketcherGui_SRCS})

@@ -21,50 +21,76 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TaskSketcherGerneral_H
-#define GUI_TASKVIEW_TaskSketcherGerneral_H
+#include "PreCompiled.h"
 
-#include <Gui/TaskView/TaskView.h>
-#include <Gui/Selection.h>
+#ifndef _PreComp_
+#endif
+
+#include "TaskDlgEditSketch.h"
+#include "ViewProviderSketch.h"
+#include <Gui/Command.h>
+
+using namespace SketcherGui;
 
 
-class Ui_TaskSketcherGeneral;
+//**************************************************************************
+//**************************************************************************
+// TaskDialog
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-namespace App {
-class Property;
+TaskDlgEditSketch::TaskDlgEditSketch(ViewProviderSketch *sketchView)
+    : TaskDialog(),sketchView(sketchView)
+{
+    assert(sketchView);
+    Constrints  = new TaskSketcherConstrains(sketchView);
+    General  = new TaskSketcherGeneral(sketchView);
+    
+   
+    
+    //QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float,const Base::Placement &)),
+    //                 rob  ,SLOT  (setAxis(float,float,float,float,float,float,const Base::Placement &)));
+
+    Content.push_back(General);
+    Content.push_back(Constrints);
 }
 
-namespace SketcherGui {
-
-class ViewProviderSketch;
-
-
-class TaskSketcherGeneral : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+TaskDlgEditSketch::~TaskDlgEditSketch()
 {
-    Q_OBJECT
 
-public:
-    TaskSketcherGeneral(ViewProviderSketch *sketchView);
-    ~TaskSketcherGeneral();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
+}
 
-public Q_SLOTS:
+//==== calls from the TaskView ===============================================================
 
-Q_SIGNALS:
-    void setGridSnap(int Type);
 
-protected:
-    void changeEvent(QEvent *e);
+void TaskDlgEditSketch::open()
+{
 
-    ViewProviderSketch *sketchView;
+}
 
-private:
-    QWidget* proxy;
-    Ui_TaskSketcherGeneral* ui;
-};
+void TaskDlgEditSketch::clicked(int)
+{
+    
+}
 
-} //namespace SketcherGui
+bool TaskDlgEditSketch::accept()
+{
+    return true;
+}
 
-#endif // GUI_TASKVIEW_TASKAPPERANCE_H
+bool TaskDlgEditSketch::reject()
+{
+    Gui::Command::openCommand("Sketch changed");
+    Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
+    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
+    Gui::Command::commitCommand();
+
+    return true;
+}
+
+void TaskDlgEditSketch::helpRequested()
+{
+
+}
+
+
+#include "moc_TaskDlgEditSketch.cpp"

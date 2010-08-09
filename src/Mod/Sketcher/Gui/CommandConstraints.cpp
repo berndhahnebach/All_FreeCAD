@@ -67,6 +67,7 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainHorizontal";
     iAccel          = Qt::Key_H;
+    eType           = ForEdit;
 }
 
 
@@ -141,6 +142,7 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainVertical";
     iAccel          = Qt::Key_V;
+    eType           = ForEdit;
 
 }
 
@@ -214,6 +216,7 @@ CmdSketcherConstrainLock::CmdSketcherConstrainLock()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainLock";
+    eType           = ForEdit;
 }
 
 
@@ -240,6 +243,7 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainCoincident";
     iAccel          = Qt::Key_C;
+    eType           = ForEdit;
 
 }
 
