@@ -69,6 +69,7 @@ void AppSketcherExport initSketcher()
  
     Sketcher::SketchObjectSF        ::init();
     Sketcher::SketchObject          ::init();
+    Sketcher::SketchObjectPython    ::init();
     Sketcher::Sketch                ::init();
     Sketcher::Constraint            ::init();
     Sketcher::PropertyConstraintList::init();

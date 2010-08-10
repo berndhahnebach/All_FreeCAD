@@ -33,6 +33,7 @@
 #include "Workbench.h"
 #include "ViewProviderSketchSF.h"
 #include "ViewProviderSketch.h"
+#include "ViewProviderPython.h"
 
 
 // create the commands
@@ -79,8 +80,11 @@ void SketcherGuiExport initSketcherGui()
     SketcherGui::Workbench::init();
 
 	// init objects
-	SketcherGui::ViewProviderSketchSF::init();
-	SketcherGui::ViewProviderSketch  ::init();
+	SketcherGui::ViewProviderSketchSF       ::init();
+	SketcherGui::ViewProviderSketch         ::init();
+    SketcherGui::ViewProviderPython         ::init();
+    SketcherGui::ViewProviderCustom         ::init();
+    SketcherGui::ViewProviderCustomPython   ::init();
 
      // add resources and reloads the translators
     loadSketcherResource();
