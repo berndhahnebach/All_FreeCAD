@@ -117,6 +117,10 @@ struct EditData {
     std::set<int> SelPointSet;
     std::set<int> SelCurvSet;
 
+    // helper data structure for the constraint rendering
+    std::vector<ConstraintType> vConstrType;
+
+
         // nodes for the visuals 
     SoSeparator   *EditRoot;
     SoMaterial    *PointsMaterials;
@@ -134,6 +138,9 @@ struct EditData {
 
     SoText2       * textX;
     SoTranslation * textPos;
+
+    SoGroup       * constrGroup;
+
 };
 
 
@@ -642,16 +649,114 @@ void ViewProviderSketch::draw(bool temp)
     edit->PointsCoordinate->point.finishEditing();
     edit->PointsMaterials->diffuseColor.finishEditing();
 
+
+    // Render Constraints ===================================================
+    const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
+    // reset point if the constraint type has changed
+Restart:
+    // check if a new constraint arrived
+    if (ConStr.size() != edit->vConstrType.size())
+        rebuildConstriantsVisual();
+    // go through the constraints and update the position 
+    i = 0;
+    for(std::vector<Sketcher::Constraint*>::const_iterator it=ConStr.begin();it!=ConStr.end();++it,i++){
+        // check if the type has changed
+        if((*it)->Type != edit->vConstrType[i]){
+            // clearing the type vector will force a rebuild of the visual nodes
+            edit->vConstrType.clear();
+            goto Restart;
+        }
+        // root separator for this constraint
+        SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
+        const Constraint *Constr = *it;
+        // destiquish different constraint types to build up
+        switch(Constr->Type) {
+            case Horizontal: // write the new position of the Horizontal constraint
+                {
+                    assert(Constr->First < (int)geomlist->size());
+                    // get the geometry
+                    const Part::Geometry *geo = (*geomlist)[Constr->First];
+                    // horizontal can only be a GeomLineSegment
+                    assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+                    // calculate the half distance between the start and endpoint
+                    Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
+                    dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos.x,pos.y,0.0f);
+                }
+            case Vertical: // write the new position of the Vertical constraint
+                {
+                    assert(Constr->First < (int)geomlist->size());
+                    // get the geometry
+                    const Part::Geometry *geo = (*geomlist)[Constr->First];
+                    // Vertical can only be a GeomLineSegment
+                    assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+                    // calculate the half distance between the start and endpoint
+                    Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
+                    dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos.x,pos.y,0.0f);
+                }
+        }
+    }
+
+    //edit->ActSketch.Cons
+
     // delete the cloned objects 
     for(std::vector<Part::Geometry *>::iterator it=tempGeo.begin();it!=tempGeo.end();++it)
         if(*it)delete(*it);
 
-    // Render Constraints ===================================================
+}
+
+void ViewProviderSketch::rebuildConstriantsVisual(void)
+{
     const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
-    //edit->ActSketch.Cons
+    // clean up 
+    edit->constrGroup->removeAllChildren();
+
+    for(std::vector<Sketcher::Constraint*>::const_iterator it=ConStr.begin();it!=ConStr.end();++it){
+        // root separator for one constraint
+        SoSeparator *sep = new SoSeparator();
+        // no caching for fluctuand data structures
+        sep->renderCaching = SoSeparator::OFF;
+        // destiquish different constraint types to build up
+        switch((*it)->Type) {
+            case Horizontal: // add a Text node with the "H" for that constraint
+                {
+                sep->addChild(new SoTranslation());
+                SoText2 *text = new SoText2();
+                text->justification = SoText2::LEFT;
+                text->string = "H";
+                sep->addChild(text); 
+                // remeber the type of this constraint node
+                edit->vConstrType.push_back(Horizontal);
+                }
+                break;
+            case Vertical: // add a Text node with the "V" for that constraint
+                {
+                sep->addChild(new SoTranslation());
+                SoText2 *text = new SoText2();
+                text->justification = SoText2::LEFT;
+                text->string = "V";
+                sep->addChild(text); 
+                // remeber the type of this constraint node
+                edit->vConstrType.push_back(Vertical);
+                 }
+                break;
+            case Coincident: // no visual for coincident so far
+                edit->vConstrType.push_back(Coincident);
+                break;
+            default:
+                edit->vConstrType.push_back(None);
+                
+        }
+
+
+        edit->constrGroup->addChild(sep);
+    }
+
 
 
 }
+
 
 void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)
 {
@@ -826,6 +931,8 @@ void ViewProviderSketch::createEditInventorNodes(void)
     edit->EditRoot->addChild(EditMaterials);
 
     SoSeparator * Coordsep = new SoSeparator();
+    // no caching for fluctuand data structures
+    Coordsep->renderCaching = SoSeparator::OFF;
 
     SoFont * font = new SoFont();
     font->size = 15.0;
@@ -839,6 +946,19 @@ void ViewProviderSketch::createEditInventorNodes(void)
     edit->textX->string = "";
     Coordsep->addChild(edit->textX);
     edit->EditRoot->addChild(Coordsep);
+
+    // group node for the Constraint visual +++++++++++++++++++++++++++++++++++
+    EditMaterials = new SoMaterial;
+    EditMaterials->diffuseColor = SbColor(0,1,0);
+    edit->EditRoot->addChild(EditMaterials);
+    // add font for the text shown constraints
+    font = new SoFont();
+    font->size = 15.0;
+    edit->EditRoot->addChild(font);
+
+    // add the group where all the constraints has its SoSeparator
+    edit->constrGroup = new SoGroup();
+    edit->EditRoot->addChild(edit->constrGroup);
 
 
 }
@@ -861,7 +981,7 @@ void ViewProviderSketch::setPositionText(const Base::Vector2D &Pos)
     char buf[40];
     sprintf( buf, " (%.1f,%.1f)", Pos.fX,Pos.fY );
     edit->textX->string = buf;
-    edit->textPos->translation = SbVec3f(Pos.fX,Pos.fY,0.2);
+    edit->textPos->translation = SbVec3f(Pos.fX,Pos.fY,0.2f);
 
 }
 void ViewProviderSketch::resetPositionText(void)
