@@ -36,7 +36,9 @@ libSketcherGui_la_SOURCES=\
 		Workbench.cpp \
 		Workbench.h   \
 		TaskDlgEditSketch.cpp \
-		TaskDlgEditSketch.h
+		TaskDlgEditSketch.h  \
+		ViewProviderPython.h  \
+		ViewProviderPython.cpp
 
 # the library search path.
 libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \

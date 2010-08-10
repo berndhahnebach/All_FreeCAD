@@ -74,6 +74,8 @@ SET(SketcherGui_SRCS
 		 Workbench.h
 		 TaskDlgEditSketch.cpp
 		 TaskDlgEditSketch.h
+		 ViewProviderPython.cpp
+		 ViewProviderPython.h
 )
 
 add_library(SketcherGui SHARED ${SketcherGui_SRCS})

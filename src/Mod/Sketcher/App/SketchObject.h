@@ -27,9 +27,9 @@
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
+#include <App/FeaturePython.h>
 
 #include <Mod/Part/App/Part2DObject.h>
-
 #include <Mod/Part/App/PropertyGeometryList.h>
 #include <Mod/Sketcher/App/PropertyConstraintList.h>
 
@@ -81,7 +81,9 @@ public:
 
 };
 
-} //namespace Part
+typedef App::FeaturePythonT<SketchObject> SketchObjectPython;
+
+} //namespace Sketcher
 
 
 #endif // SKETCHER_SKETCHOBJECT_H

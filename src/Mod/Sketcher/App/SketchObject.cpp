@@ -142,3 +142,12 @@ void SketchObject::getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos)
     GeoId = (int)VertexId/2;
 }
 
+// Python Sketcher feature ---------------------------------------------------------
+
+namespace App {
+PROPERTY_SOURCE_TEMPLATE(Sketcher::SketchObjectPython, Sketcher::SketchObject)
+template<> const char* Sketcher::SketchObjectPython::getViewProviderName(void) const {
+    return "SketcherGui::ViewProviderPython";
+}
+// explicit template instantiation
+template class SketcherExport FeaturePythonT<Sketcher::SketchObject>;}
