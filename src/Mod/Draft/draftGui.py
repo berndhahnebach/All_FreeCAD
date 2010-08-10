@@ -37,16 +37,9 @@ try:
 except:
 	FreeCAD.Console.PrintMessage("Error: Python-qt4 package must be installed on your system to use the Draft module.")
 
-def draftPath():
-	"returns the current Draft module path"
-	path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
-	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft"
-	if os.path.exists(path2): return path2
-	else: return path1
-
 def findicons():
 	"loads the icon file"
-	filepath = draftPath() + os.sep + "icons.svg"
+	filepath = Draft.getDraftPath() + os.sep + "icons.svg"
 	iconmap = QtGui.QPixmap()
 	if not iconmap.load(filepath):
 		# If loading by plug-in fails do it the conventional way
@@ -74,9 +67,50 @@ def getMainWindow():
 			return i
 	raise Exception("No main window found")
 
-def translate(context,text):
-        "convenience function for Qt translator"
-        return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
+class todo:
+	''' static todo class, delays execution of functions.  Use todo.delay
+	to schedule geometry manipulation that would crash coin if done in the
+	event callback'''
+
+	'''List of (function, argument) pairs to be executed by
+	QTcore.QTimer.singleShot(0,doTodo).'''
+	itinerary = []
+
+	@staticmethod
+	def doTasks():
+		for f, arg in todo.itinerary:
+			try:
+                                # print "debug: executing",f
+                                f(arg)
+			except:
+				wrn = "[Draft.todo] Unexpected error:" + sys.exc_info()[0]
+				FreeCAD.Console.PrintWarning (wrn)
+		todo.itinerary = []
+
+	@staticmethod
+	def delay (f, arg):
+                # print "debug: delaying",f
+		if todo.itinerary == []:
+			QtCore.QTimer.singleShot(0, todo.doTasks)
+		todo.itinerary.append((f,arg))
+
+class translator:
+        '''static translation class, use translator.load() to load translations,
+        and translator.translate(context,text) to translate text.'''
+        @staticmethod
+        def load():
+                locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
+                if locale:
+                        translator = QtCore.QTranslator()
+                        translator.load(locale,Draft.getDraftPath("Languages"))
+                        QtGui.QApplication.installTranslator(translator)
+        @staticmethod
+        def translate(context,text):
+                "convenience function for Qt translator"
+                return QtGui.QApplication.translate(context, text, None,
+                                                    QtGui.QApplication.UnicodeUTF8)
+
+translate = translator.translate
 
 #---------------------------------------------------------------------------
 # Customized widgets
@@ -128,8 +162,12 @@ class toolBar:
 				self.textbuffer = []
 				self.draftToolbar = draftToolbar
                                 self.crossedViews = []
+                                
+                                self.layout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,draftToolbar)
+                                self.layout.setDirection(QtGui.QBoxLayout.LeftToRight)
+                                self.layout.setObjectName("layout")
 
-				def _pushButton (name, layout, hide=True, icon=None, width=66):
+				def _pushButton (name, hide=True, icon=None, width=66):
 					button = QtGui.QPushButton(draftToolbar)
 					#button.setGeometry(geometry)
 					button.setObjectName(name)
@@ -138,52 +176,76 @@ class toolBar:
                                         if icon:
                                                 button.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(icon[0],icon[1],64,64))))
                                                 button.setIconSize(QtCore.QSize(16, 16))
-                                        layout.addWidget(button)
+                                        self.layout.addWidget(button)
 					return button
 
-                                def _label (name, layout, hide=True):
+                                def _label (name, hide=True):
                                         label = QtGui.QLabel(draftToolbar)
                                         label.setObjectName(name)
                                         if hide: label.hide()
-                                        layout.addWidget(label)
+                                        self.layout.addWidget(label)
                                         return label
 
-                                def _lineedit (name, layout, hide=True, width=None):
+                                def _lineedit (name, hide=True, width=None):
                                         lineedit = DraftLineEdit(draftToolbar)
                                         lineedit.setObjectName(name)
                                         if hide: lineedit.hide()
                                         if not width: width = 800
                                         lineedit.setMaximumSize(QtCore.QSize(width,22))
-                                        layout.addWidget(lineedit)
+                                        self.layout.addWidget(lineedit)
                                         return lineedit
 
-                                self.layout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,draftToolbar)
-                                self.layout.setDirection(QtGui.QBoxLayout.LeftToRight)
-                                self.layout.setObjectName("layout")
+                                def _spinbox (name, val=None, vmax=None, hide=True, double=False, size=None):
+                                        if double:
+                                                sbox = QtGui.QDoubleSpinBox(draftToolbar)
+                                                sbox.setDecimals(2)
+                                        else:
+                                                sbox = QtGui.QSpinBox(draftToolbar)
+                                        sbox.setObjectName(name)
+                                        if val: sbox.setValue(val)
+                                        if vmax: sbox.setMaximum(vmax)
+                                        if size: sbox.setMaximumSize(QtCore.QSize(size[0],size[1]))
+                                        if hide: sbox.hide()
+                                        self.layout.addWidget(sbox)
+                                        return sbox
 
-                                self.promptlabel = _label("promptlabel",self.layout, hide=False)
-				self.cmdlabel = _label("cmdlabel",self.layout, hide=False)
+                                def _combo (name, hide=True, editable = True):
+                                        cbox = QtGui.QComboBox(draftToolbar)
+                                        cbox.setObjectName(name)
+                                        if editable: cbox.setEditable(True)
+                                        if hide: cbox.hide()
+                                        self.layout.addWidget(cbox)
+                                        return cbox
+
+                                # command
+
+                                self.promptlabel = _label("promptlabel", hide=False)
+				self.cmdlabel = _label("cmdlabel", hide=False)
 				boldtxt = QtGui.QFont()
 				boldtxt.setWeight(75)
 				boldtxt.setBold(True)
 				self.cmdlabel.setFont(boldtxt)
 
-				self.labelx = _label("labelx", self.layout)
-				self.xValue = _lineedit("xValue",self.layout,width=60)
+                                # point
+
+				self.labelx = _label("labelx")
+				self.xValue = _lineedit("xValue", width=60)
 				self.xValue.setText("0.00")
-				self.labely = _label("labely",self.layout)
-				self.yValue = _lineedit("yValue",self.layout,width=60)
+				self.labely = _label("labely")
+				self.yValue = _lineedit("yValue", width=60)
 				self.yValue.setText("0.00")
-				self.labelz = _label("labelz",self.layout)
-				self.zValue = _lineedit("zValue",self.layout,width=60)
+				self.labelz = _label("labelz")
+				self.zValue = _lineedit("zValue", width=60)
 				self.zValue.setText("0.00")
 
-				self.offsetLabel = _label("offsetlabel",self.layout)
-				self.offsetValue = _lineedit("offsetValue",self.layout,width=60)
+                                # options
+
+				self.offsetLabel = _label("offsetlabel")
+				self.offsetValue = _lineedit("offsetValue", width=60)
 				self.offsetValue.setText("0.00")
 
-                                self.labelRadius = _label("labelRadius",self.layout)
-				self.radiusValue = _lineedit("radiusValue",self.layout,width=60)
+                                self.labelRadius = _label("labelRadius")
+				self.radiusValue = _lineedit("radiusValue", width=60)
 				self.radiusValue.setText("0.00")
 
 				self.isRelative = QtGui.QCheckBox(draftToolbar)
@@ -199,17 +261,17 @@ class toolBar:
                                 self.layout.addWidget(self.hasFill)
 				self.hasFill.hide()
                                 
-				self.undoButton = _pushButton("undoButton",self.layout,icon=(64,64))
-				self.finishButton = _pushButton("finishButton",self.layout,icon=(448,64))
-				self.closeButton = _pushButton("closeButton",self.layout,icon=(512,64))
+				self.undoButton = _pushButton("undoButton", icon=(64,64))
+				self.finishButton = _pushButton("finishButton", icon=(448,64))
+				self.closeButton = _pushButton("closeButton", icon=(512,64))
                                 
-				self.xyButton = _pushButton("xyButton",self.layout)
-				self.xzButton = _pushButton("xzButton",self.layout)
-				self.yzButton = _pushButton("yzButton",self.layout)
-				self.currentViewButton = _pushButton("view",self.layout)
-				self.resetPlaneButton = _pushButton("none",self.layout)
+				self.xyButton = _pushButton("xyButton")
+				self.xzButton = _pushButton("xzButton")
+				self.yzButton = _pushButton("yzButton")
+				self.currentViewButton = _pushButton("view")
+				self.resetPlaneButton = _pushButton("none")
 
-				self.textValue = _lineedit("textValue",self.layout)
+				self.textValue = _lineedit("textValue")
 
                                 self.isCopy = QtGui.QCheckBox(draftToolbar)
 				self.isCopy.setChecked(False)
@@ -217,44 +279,36 @@ class toolBar:
                                 self.layout.addWidget(self.isCopy)
 				self.isCopy.hide()
 
-                                self.labelPage = _label("labelPage",self.layout)
-                                self.pageBox = QtGui.QComboBox(draftToolbar)
-                                self.pageBox.setEditable(True)
-                                self.pageBox.setObjectName("pageBox")
+                                # page
+
+                                self.labelPage = _label("labelPage")
+                                self.pageBox = _combo("pageBox")
                                 self.pageBox.addItem("Add New")
-                                self.layout.addWidget(self.pageBox)
-                                self.pageBox.hide()
-                                self.labelScale = _label("labelScale",self.layout)
-                                self.scaleBox = QtGui.QComboBox(draftToolbar)
-                                self.scaleBox.setEditable(True)
-                                self.scaleBox.setObjectName("scaleBox")
+                                self.labelScale = _label("labelScale")
+                                self.scaleBox = _combo("scaleBox")
                                 self.scaleBox.addItem("5")
                                 self.scaleBox.addItem("10")
                                 self.scaleBox.addItem("20")
                                 self.scaleBox.addItem("50")
-                                self.layout.addWidget(self.scaleBox)
-                                self.scaleBox.hide()
-                                self.labelMargin = _label("labelMargin",self.layout)
-                                self.marginValue = QtGui.QSpinBox(draftToolbar)
-				self.marginValue.setObjectName("marginValue")
-                                self.marginValue.setMaximum(999)
-				self.marginValue.setValue(50)
-                                self.layout.addWidget(self.marginValue)
-				self.marginValue.hide()
-                                self.labelLWMod = _label("labelLWMod",self.layout)
-                                self.LWModValue = QtGui.QSpinBox(draftToolbar)
-				self.LWModValue.setObjectName("LWModValue")
-                                self.LWModValue.setMaximum(999)
-				self.LWModValue.setValue(100)
-                                self.layout.addWidget(self.LWModValue)
-				self.LWModValue.hide()
-                                self.pageButton = _pushButton("pageButton",self.layout,icon=(640,128))
+                                self.labelMargin = _label("labelMargin")
+                                self.marginValue = _spinbox("marginValue",50,999)
+                                self.labelLWMod = _label("labelLWMod")
+                                self.LWModValue = _spinbox("LWModValue",100,999)
+                                self.LWModValue.setSuffix("%")
+                                self.labelTMod = _label("labelTMod")
+                                self.TModValue = _spinbox("TModValue",100,999)
+                                self.TModValue.setSuffix("%")
+                                self.pageButton = _pushButton("pageButton",icon=(640,128))
+
+                                # spacer
 
                                 spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding,
                                                                QtGui.QSizePolicy.Minimum)
                                 self.layout.addItem(spacerItem)
 
-                                self.wplabel = _pushButton("wplabel",self.layout,icon=(576,0),hide=False)
+                                # settings buttons
+
+                                self.wplabel = _pushButton("wplabel", icon=(576,0),hide=False,width=120)
                                 defaultWP = self.params.GetInt("defaultWP")
                                 if defaultWP == 1:
                                         self.wplabel.setText("Top")
@@ -264,40 +318,27 @@ class toolBar:
                                         self.wplabel.setText("Side")
                                 else:
                                         self.wplabel.setText("None")
-                                self.constrButton = _pushButton("constrButton", self.layout, hide=False, icon=(640,64),width=22)
+                                self.constrButton = _pushButton("constrButton", hide=False, icon=(640,64),width=22)
 				self.constrButton.setCheckable(True)
 				self.constrButton.setChecked(False)
 				self.constrColor = QtGui.QColor(paramconstr)
                                 style = "#constrButton:Checked {background-color: "
                                 style += self.getDefaultColor("constr",rgb=True)+" }"
 				draftToolbar.setStyleSheet(style)
-				
-				self.colorButton = _pushButton("colorButton",self.layout, hide=False,width=22)
+				self.colorButton = _pushButton("colorButton",hide=False,width=22)
 				self.color = QtGui.QColor(paramcolor)
 				self.colorPix = QtGui.QPixmap(16,16)
 				self.colorPix.fill(self.color)
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
-
-                                self.facecolorButton = _pushButton("facecolorButton",self.layout, hide=False,width=22)
+                                self.facecolorButton = _pushButton("facecolorButton",hide=False,width=22)
 				self.facecolor = QtGui.QColor(204,204,204)
 				self.facecolorPix = QtGui.QPixmap(16,16)
 				self.facecolorPix.fill(self.facecolor)
 				self.facecolorButton.setIcon(QtGui.QIcon(self.facecolorPix))
-
-				self.widthButton = QtGui.QSpinBox(draftToolbar)
-                                self.widthButton.setMaximumSize(QtCore.QSize(50,22))
-				self.widthButton.setObjectName("widthButton")
-				self.widthButton.setValue(paramlinewidth)
-                                self.layout.addWidget(self.widthButton)
-
-                                self.fontsizeButton = QtGui.QDoubleSpinBox(draftToolbar)
-                                self.fontsizeButton.setMaximumSize(QtCore.QSize(50,22))
-				self.fontsizeButton.setObjectName("fontsizeButton")
-				self.fontsizeButton.setValue(paramfontsize)
-                                self.fontsizeButton.setDecimals(2)
-                                self.layout.addWidget(self.fontsizeButton)
-
-				self.applyButton = _pushButton("applyButton", self.layout, hide=False, icon=(384,64),width=22)
+				self.widthButton = _spinbox("widthButton",val=paramlinewidth,hide=False,size=(50,22))
+                                self.widthButton.setSuffix("px")
+                                self.fontsizeButton = _spinbox("fontsizeButton",val=paramfontsize,hide=False,double=True,size=(50,22))
+				self.applyButton = _pushButton("applyButton", hide=False, icon=(384,64),width=22)
 				
 				self.sourceCmd=None
 
@@ -389,7 +430,6 @@ class toolBar:
 				self.colorButton.setToolTip(translate("draft", "Line Color"))
                                 self.facecolorButton.setToolTip(translate("draft", "Face Color"))
 				self.widthButton.setToolTip(translate("draft", "Line Width"))
-                                self.widthButton.setSuffix(translate("draft", "px"))
                                 self.fontsizeButton.setToolTip(translate("draft", "Font Size"))
 				self.applyButton.setToolTip(translate("draft", "Apply to selected objects"))
 				self.constrButton.setToolTip(translate("draft", "Toggles Construction Mode"))
@@ -401,7 +441,9 @@ class toolBar:
                                 self.pageBox.setToolTip(translate("draft", "Page to draw to. If selecting Add New, you can edit the name"))
                                 self.scaleBox.setToolTip(translate("draft", "Scale factor to apply. Drawing page is always in millimeters. So if you draw in meters, a scale of 10 means 1:100"))
                                 self.marginValue.setToolTip(translate("draft", "The value of the margin (offset between the (0,0) point and the page border)"))
-                                self.LWModValue.setToolTip(translate("draft", "Linewidth scale modifier. Lower values mean thicker lines."))
+                                self.LWModValue.setToolTip(translate("draft", "Linewidth scale modifier. Higher values mean thicker lines."))
+                                self.labelTMod.setText(translate("draft", "Text Mod"))
+                                self.TModValue.setToolTip(translate("draft", "Text scale modifier. Higher values mean bigger texts."))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -483,6 +525,8 @@ class toolBar:
                                 self.pageButton.hide()
                                 self.labelLWMod.hide()
                                 self.LWModValue.hide()
+                                self.labelTMod.hide()
+                                self.TModValue.hide()
 
 			def radiusUi(self):
 				self.labelx.hide()
@@ -548,6 +592,8 @@ class toolBar:
                                 self.pageButton.show()
                                 self.labelLWMod.show()
                                 self.LWModValue.show()
+                                self.labelTMod.show()
+                                self.TModValue.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
@@ -848,12 +894,8 @@ class toolBar:
 			icon.save(bu,'XPM')
 			FreeCADGui.addIcon(name,str(ba))
 
-		# loads a translation engine        
-                locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
-                if locale:
-                        translator = QtCore.QTranslator()
-                        translator.load(locale,Draft.getDraftPath("Languages"))
-                        QtGui.QApplication.installTranslator(translator)
+		# loads a translation engine
+                translator.load()
 			
 		# create the draft Toolbar
 		self.mw = getMainWindow()
