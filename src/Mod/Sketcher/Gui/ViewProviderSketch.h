@@ -164,6 +164,8 @@ protected:
     void createEditInventorNodes(void);
     /// pointer to the edit data structure if the ViewProvider is in edit. 
     EditData *edit;
+    /// build up the visual of the constraints
+    void rebuildConstriantsVisual(void);
 
     void setPositionText(const Base::Vector2D &Pos);
     void resetPositionText(void);
