@@ -95,6 +95,8 @@ AM_CXXFLAGS = -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src $(all_inclu
 
 
 libdir = $(prefix)/Mod/Sketcher
+datadir = $(prefix)/Mod/Sketcher
+data_DATA = SketcherTestsApp.py 
 
 CLEANFILES = $(BUILT_SOURCES) $(libSketcher_la_BUILT)
 
