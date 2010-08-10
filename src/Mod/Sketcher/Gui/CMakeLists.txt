@@ -33,6 +33,7 @@ set(SketcherGui_MOC_HDRS
 		 TaskSketcherConstrains.h
 		 TaskSketcherCreateCommands.h
 		 TaskSketcherGeneral.h
+		 TaskDlgEditSketch.h
 )
 fc_wrap_cpp(SketcherGui_MOC_SRCS ${SketcherGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${SketcherGui_MOC_SRCS})
