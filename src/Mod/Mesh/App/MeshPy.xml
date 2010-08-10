@@ -361,11 +361,8 @@ plane if none of its neighours is coplanar.</UserDocu>
 			<Documentation>
 				<UserDocu>A collection of the mesh points
 With this attribute it is possible to get access to the points of the mesh
-
 for p in mesh.Points:
-	print p.x, p.y, p.z
-				
-				</UserDocu>
+	print p.x, p.y, p.z</UserDocu>
 			</Documentation>
 			<Parameter Name="Points" Type="List" />
 		</Attribute>
@@ -379,11 +376,8 @@ for p in mesh.Points:
 			<Documentation>
 				<UserDocu>A collection of facets
 With this attribute it is possible to get access to the facets of the mesh
-
 for p in mesh.Facets:
-	print p
-
-				</UserDocu>
+	print p</UserDocu>
 			</Documentation>
 			<Parameter Name="Facets" Type="List" />
 		</Attribute>
