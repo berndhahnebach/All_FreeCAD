@@ -220,6 +220,7 @@ def formatObject(target,origin=None):
 			grp = doc.getObject(gname)
 			if not grp: grp = doc.addObject("App::DocumentObjectGroup",gname) 
 			grp.addObject(target)
+                obrep.Transparency = 80
 	else:
 		col = ui.getDefaultColor("ui")
                 fcol = ui.getDefaultColor("face")
@@ -559,11 +560,18 @@ def getrgb(color):
         b = str(hex(int(color[2]*255)))[2:].zfill(2)
         return "#"+r+g+b
 
-def getSVG(obj,modifier=100):
-        '''getSVG(object,[modifier]): returns a string containing a SVG representation
-        of the given object. the modifier attribute specifies a scalefactor for linewidth
-        (default = 100).'''
+def getSVG(obj,modifier=100,textmodifier=100):
+        '''getSVG(object,[modifier],[textmodifier]): returns a string containing
+        a SVG representation of the given object. the modifier attribute
+        specifies a scale factor for linewidths in %, and textmodifier specifies
+        a scale factor for texts, in % (both default = 100).'''
         svg = ""
+        tmod = ((textmodifier-100)/2)+100
+        if tmod == 0: tmod = 0.01
+        modifier = 200-modifier
+        if modifier == 0: modifier = 0.01
+        pmod = 200-textmodifier
+        if pmod == 0: pmod = 0.01
 
         def getPath(edges):
                 svg ='<path id="' + name + '" '
@@ -589,7 +597,7 @@ def getSVG(obj,modifier=100):
                 svg += ';fill:' + fill + '"'
                 svg += '/>\n'
                 return svg
-        
+
         if 'Dimline' in obj.PropertiesList:
 		p1,p2,p3,p4,tbase,angle,norm = obj.ViewObject.Proxy.calcGeom(obj)
 		svg = '<g id="'+obj.Name+'"><path '
@@ -603,21 +611,21 @@ def getSVG(obj,modifier=100):
 		svg += 'style="stroke-width:'+ str(obj.ViewObject.LineWidth/modifier)
 		svg += ';stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg += '<circle cx="'+str(p2.x)+'" cy="'+str(p2.y)
-		svg += '" r="'+str(obj.ViewObject.FontSize/(modifier/10))+'" '
+		svg += '" r="'+str(obj.ViewObject.FontSize/(pmod/10))+'" '
 		svg += 'fill="'+ getrgb(obj.ViewObject.LineColor) +'" stroke="none" '
 		svg += 'style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg += '<circle cx="'+str(p3.x)+'" cy="'+str(p3.y)
-		svg += '" r="'+str(obj.ViewObject.FontSize/(modifier/10))+'" '
+		svg += '" r="'+str(obj.ViewObject.FontSize/(pmod/10))+'" '
 		svg += 'fill="#000000" stroke="none" '
 		svg += 'style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg += '<text id="' + obj.Name + '" fill="'
-		svg += str(obj.ViewObject.LineWidth/modifier) +'" font-size="'
-		svg += str(obj.ViewObject.FontSize*(modifier/5))+'" '
+		svg += getrgb(obj.ViewObject.LineColor) +'" font-size="'
+		svg += str(obj.ViewObject.FontSize*(tmod/5))+'" '
 		svg += 'style="text-anchor:middle;text-align:center" '
 		svg += 'transform="rotate('+str(math.degrees(angle))
 		svg += ','+ str(tbase.x) + ',' + str(tbase.y) + ') '
 		svg += 'translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
-                svg += 'scale('+str(modifier/2000)+',-'+str(modifier/2000)+')">\n'
+                svg += 'scale('+str(tmod/2000)+',-'+str(tmod/2000)+')">\n'
 		svg += "%.2f" % p3.sub(p2).Length
 		svg += '</text>\n</g>\n'
 
@@ -630,7 +638,7 @@ def getSVG(obj,modifier=100):
                 svg = '<text id="' + obj.Name + '" fill="'
                 svg += getrgb(obj.ViewObject.TextColor)
                 svg += '" font-size="'
-                svg += str(obj.ViewObject.FontSize*(modifier/5))+'" '
+                svg += str(obj.ViewObject.FontSize*(tmod/5))+'" '
                 svg += 'style="text-anchor:middle;text-align:center" '
                 svg += 'transform="'
                 if obj.ViewObject.RotationAxis == 'Z':
@@ -638,7 +646,7 @@ def getSVG(obj,modifier=100):
                                 svg += 'rotate('+str(obj.ViewObject.Rotation)
                                 svg += ','+ str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
                 svg += 'translate(' + str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
-                svg +='scale('+str(modifier/2000)+','+str(modifier/2000)+')">\n'
+                svg +='scale('+str(tmod/2000)+','+str(tmod/2000)+')">\n'
                 svg += textcontents
                 svg += '</text>\n'
 
@@ -646,22 +654,30 @@ def getSVG(obj,modifier=100):
                 color = getrgb(obj.ViewObject.LineColor)
                 if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
                         if 'FillStyle' in obj.ViewObject.PropertiesList:
-                                if obj.ViewObject.FillStyle == 'shape color':
-                                        fill = getrgb(obj.ViewObject.ShapeColor)
-                                else:
-                                        hatch = obj.ViewObject.FillStyle[:-6]
-                                        fill = 'url(#'+hatch+')'
+                                try:
+                                        if obj.ViewObject.FillStyle == 'shape color':
+                                                fill = getrgb(obj.ViewObject.ShapeColor)
+                                        else:
+                                                hatch = obj.ViewObject.FillStyle[:-6]
+                                                fill = 'url(#'+hatch+')'
+                                except:
+                                        print "Draft:getSVG: Unable to read FillStyle"
+                                        fill = "none"
                         else:
                                 fill = getrgb(obj.ViewObject.ShapeColor)   
                 else: fill = 'none'
                 if "LineStyle" in obj.ViewObject.PropertiesList:
-                        if obj.ViewObject.LineStyle == "dashed":
-                                lstyle = "0.09,0.05"
-                        elif obj.ViewObject.LineStyle == "dashdotted":
-                                lstyle = "0.09,0.05,0.02,0.05"
-                        elif obj.ViewObject.LineStyle == "dotted":
-                                lstyle = "0.02,0.02"
-                        else:
+                        try:
+                                if obj.ViewObject.LineStyle == "dashed":
+                                        lstyle = "0.09,0.05"
+                                elif obj.ViewObject.LineStyle == "dashdotted":
+                                        lstyle = "0.09,0.05,0.02,0.05"
+                                elif obj.ViewObject.LineStyle == "dotted":
+                                        lstyle = "0.02,0.02"
+                                else:
+                                        lstyle = "none"
+                        except:
+                                print "Draft:getSVG: Unable to read LineStyle"
                                 lstyle = "none"
                 else: lstyle = "none"
                 name = obj.Name
@@ -675,7 +691,7 @@ def getSVG(obj,modifier=100):
                                 for f in obj.Shape.Faces:
                                         svg += getPath(f.Edges)
                         else:
-                                svg = getPath(obj.Shape.Edges,(fill!='none'))
+                                svg = getPath(obj.Shape.Edges)
                 else:
                         cen = obj.Shape.Edges[0].Curve.Center
                         rad = obj.Shape.Edges[0].Curve.Radius
@@ -773,7 +789,6 @@ class ViewProviderDimension:
                 obj.FontSize=prm.GetFloat("textheight")
                 obj.FontName=prm.GetString("textfont")
                 obj.ExtLines=0.3
-		self.ViewObject = obj
 
 	def calcGeom(self,obj):
 		p1 = obj.Start
@@ -855,6 +870,7 @@ class ViewProviderDimension:
 		obj.addDisplayMode(self.node,"Wireframe")
 		self.onChanged(obj,"FontSize")
 		self.onChanged(obj,"FontName")
+                self.Object = obj.Object
 
 	def updateData(self, obj, prop):
                 if obj.Base and obj.LinkedVertices:

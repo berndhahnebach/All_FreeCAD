@@ -30,26 +30,20 @@ __url__ = "http://free-cad.sourceforge.net"
 #---------------------------------------------------------------------------
 
 import FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft
-from PyQt4 import QtCore,QtGui
 from draftlibs import fcvec,fcgeo
 from FreeCAD import Vector
+from draftGui import todo, translator
 
 # loads a translation engine
-locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
-if locale:
-	translator = QtCore.QTranslator()
-	translator.load(locale,Draft.getDraftPath("Languages"))
-	QtGui.QApplication.installTranslator(translator)
-
-def translate(context,text):
-        "convenience function for Qt translator"
-        return QtGui.QApplication.translate(context, text, None,
-                                            QtGui.QApplication.UnicodeUTF8)
+translator.load()
+translate = translator.translate
 
 def msg(text=None):
+        "prints the given message on the FreeCAD status bar"
         if not text: FreeCAD.Console.PrintMessage("")
         else: FreeCAD.Console.PrintMessage(str(text.toLatin1()))
 
+# run self-tests
 try:
 	from pivy import coin
 	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
@@ -84,33 +78,6 @@ lastObj = [0,0]
 #---------------------------------------------------------------------------
 # Global state
 #---------------------------------------------------------------------------
-
-class todo:
-	''' static todo class, delays execution of functions.  Use todo.delay
-	to schedule geometry manipulation that would crash coin if done in the
-	event callback'''
-
-	'''List of (function, argument) pairs to be executed by
-	QTcore.QTimer.singleShot(0,doTodo).'''
-	itinerary = []
-
-	@staticmethod
-	def doTasks():
-		for f, arg in todo.itinerary:
-			try:
-                                # print "debug: executing",f
-                                f(arg)
-			except:
-				wrn = "[Draft.todo] Unexpected error:" + sys.exc_info()[0]
-				FreeCAD.Console.PrintWarning (wrn)
-		todo.itinerary = []
-
-	@staticmethod
-	def delay (f, arg):
-                # print "debug: delaying",f
-		if todo.itinerary == []:
-			QtCore.QTimer.singleShot(0, todo.doTasks)
-		todo.itinerary.append((f,arg))
 
 ''' plane selection code used to look like this:
 	if self.ui.lockedz:
@@ -203,12 +170,14 @@ def snapPoint (target,point,cursor,ctrl=False):
 						snapArray.append([cur,0,pos])
 
 				if lastObj[0]:
-					if (lastObj[0].Type[:4] == "Part"):
-						for k in lastObj[0].Shape.Edges:
-							pt = fcgeo.findIntersection(j,k)
-							if pt:
-								for p in pt:
-									snapArray.append([p,3,p])
+                                        lastob = FreeCAD.ActiveDocument.getObject(lastObj[0])
+                                        if lastob:
+                                                if (lastob.Type[:4] == "Part"):
+                                                        for k in lastob.Shape.Edges:
+                                                                pt = fcgeo.findIntersection(j,k)
+                                                                if pt:
+                                                                        for p in pt:
+                                                                                snapArray.append([p,3,p])
 			if ob.Shape.ShapeType == 'Compound':
 				tempsnaps = []
 				for e1 in ob.Shape.Edges:
@@ -238,11 +207,11 @@ def snapPoint (target,point,cursor,ctrl=False):
 			snapArray = [[cur,2,cur]]
 
 		if not lastObj[0]:
-			lastObj[0] = ob
-			lastObj[1] = ob
-		if (lastObj[1] != ob):
+			lastObj[0] = ob.Name
+			lastObj[1] = ob.Name
+		if (lastObj[1] != ob.Name):
 			lastObj[0] = lastObj[1]
-			lastObj[1] = ob
+			lastObj[1] = ob.Name
 
 		# calculating shortest distance
 		shortest = 1000000000000000000
@@ -293,6 +262,7 @@ def constrainPoint (target,point,mobile=False,sym=False):
 				target.ui.xValue.setEnabled(True)
 				target.ui.yValue.setEnabled(False)
 				target.ui.zValue.setEnabled(False)
+                                target.ui.xValue.setFocus()
 			elif ((maxy > maxx) and (maxy > maxz)):
 				point.x = last.x
 				point.z = last.z
@@ -303,6 +273,7 @@ def constrainPoint (target,point,mobile=False,sym=False):
 				target.ui.xValue.setEnabled(False)
 				target.ui.yValue.setEnabled(True)
 				target.ui.zValue.setEnabled(False)
+                                target.ui.yValue.setFocus()
 			elif ((maxz > maxx) and (maxz > maxy)):
 				point.x = last.x
 				point.y = last.y
@@ -313,6 +284,7 @@ def constrainPoint (target,point,mobile=False,sym=False):
 				target.ui.xValue.setEnabled(False)
 				target.ui.yValue.setEnabled(False)
 				target.ui.zValue.setEnabled(True)
+                                target.ui.zValue.setFocus()
 			else: target.constrain = 3
 		elif (target.constrain == 0):
 			point.y = last.y
@@ -695,6 +667,7 @@ class SelectPlane:
 			self.ui.sourceCmd = self
 			if plane.alignToSelection(self.offset):
                                 FreeCADGui.Selection.clearSelection()
+                                self.display(plane.axis)
 				self.finish()
 			else:
 				self.call = self.view.addEventCallback("SoEvent", self.action)
@@ -713,6 +686,7 @@ class SelectPlane:
 						component = getattr(shape, info["Component"])
 						if plane.alignToFace(component, self.offset) \
 							    or plane.alignToCurve(component, self.offset):
+                                                        self.display(plane.axis)
 							self.finish()
 					except:
 						pass
@@ -803,140 +777,6 @@ class Creator:
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
 
-class Edit(Creator):
-	"The Draft_Edit FreeCAD command definition"
-
-	def __init__(self):
-		self.running = False
-
-	def GetResources(self):
-		return {'Pixmap'  : 'Draft_Edit',
-			'MenuText': str(translate("draft", "Edit").toLatin1()),
-			'ToolTip': str(translate("draft", "Edits the active object").toLatin1())}
-
-	def Activated(self):
-                if self.running:
-                        self.finish()
-                else:
-                        Creator.Activated(self,"Edit")
-                        if self.doc:
-                                self.obj = Draft.getSelection()
-                                if self.obj:
-                                        self.obj = self.obj[0]
-                                        self.editing = None
-                                        self.editpoints = []
-                                        if "Points" in self.obj.PropertiesList:
-                                                for p in self.obj.Points:
-                                                        self.editpoints.append(p)
-                                        elif "Radius" in self.obj.PropertiesList:
-                                                self.editpoints.append(self.obj.Placement.Base)
-                                                if self.obj.StartAngle == self.obj.EndAngle:
-                                                        self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
-                                        elif "Length" in self.obj.PropertiesList:
-                                                self.editpoints.append(self.obj.Placement.Base)
-                                                self.editpoints.append(self.obj.Shape.Vertexes[2].Point)
-                                        self.trackers = []
-                                        for ep in range(len(self.editpoints)):
-                                                self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
-                                        self.snap = snapTracker()
-                                        self.constraintrack = lineTracker(dotted=True)
-                                        self.call = self.view.addEventCallback("SoEvent",self.action)
-                                        self.running = True
-                                        plane.save()
-                                        plane.alignToFace(self.obj.Shape)
-                                else:
-                                        self.finish()
-
-	def finish(self,closed=False):
-		"terminates the operation and closes the poly if asked"
-                if self.ui:
-                        self.snap.finalize()
-                        for t in self.trackers: t.finalize()
-                        self.constraintrack.finalize()
-		Creator.finish(self)
-                plane.restore()
-                self.running = False
-
-	def action(self,arg):
-		"scene event handler"
-                if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
-			self.finish()
-		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-                        if self.editing != None:
-                                point,ctrlPoint = getPoint(self,arg)
-                                # Draw constraint tracker line.
-                                if (arg["ShiftDown"]):
-                                        self.constraintrack.p1(point)
-                                        self.constraintrack.p2(ctrlPoint)
-                                        self.constraintrack.on()
-                                else: self.constraintrack.off()
-                                self.trackers[self.editing].set(point)
-                                self.update(self.trackers[self.editing].get())
-		elif (arg["Type"] == "SoMouseButtonEvent"):
-			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-                                if self.editing == None:
-                                        snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
-                                        if snapped:
-                                                if snapped['Object'] == self.obj.Name:
-                                                        if 'EditNode' in snapped['Component']:
-                                                                self.ui.pointUi()
-                                                                self.ui.isRelative.show()
-                                                                self.editing = int(snapped['Component'][8:])
-                                                                if "Points" in self.obj.PropertiesList:
-                                                                        self.node.append(self.obj.Points[self.editing])
-                                else:
-                                        self.numericInput(self.trackers[self.editing].get())
-
-        def update(self,v):
-                if "Points" in self.obj.PropertiesList:
-                        pts = self.obj.Points
-                        pts[self.editing] = v
-                        self.obj.Points = pts
-                        self.trackers[self.editing].set(pts[self.editing])
-                elif "Radius" in self.obj.PropertiesList:
-                        delta = v.sub(self.obj.Placement.Base)
-                        if self.editing == 0:
-                                p = self.obj.Placement
-                                p.move(delta)
-                                self.obj.Placement = p
-                                self.trackers[0].set(self.obj.Placement.Base)
-                        elif self.editing == 1:
-                                self.obj.Radius = delta.Length
-                        self.trackers[1].set(self.obj.Shape.Vertexes[0].Point)
-                elif "Length" in self.obj.PropertiesList:
-                        delta = v.sub(self.obj.Placement.Base)
-                        if self.editing == 0:
-                                p = self.obj.Placement
-                                p.move(delta)
-                                self.obj.Placement = p
-                        elif self.editing == 1:
-                                diag = v.sub(self.obj.Placement.Base)
-                                x = fcgeo.vec(self.obj.Shape.Edges[0])
-                                y = fcgeo.vec(self.obj.Shape.Edges[1])
-                                nx = fcvec.project(diag,x)
-                                ny = fcvec.project(diag,y)
-                                ax = nx.Length
-                                ay = ny.Length
-                                if abs(nx.getAngle(x)) > 0.1: ax = -ax
-                                if abs(ny.getAngle(y)) > 0.1: ay = -ay
-                                self.obj.Length = ax
-                                self.obj.Height = ay
-                        self.trackers[0].set(self.obj.Placement.Base)
-                        self.trackers[1].set(self.obj.Shape.Vertexes[2].Point)
-
-	def numericInput(self,v,numy=None,numz=None):
-		'''this function gets called by the toolbar
-                when valid x, y, and z have been entered there'''
-                if (numy != None):
-                        v = Vector(v,numy,numz)
-                self.doc.openTransaction("Edit "+self.obj.Name)
-                self.update(v)
-                self.doc.commitTransaction()
-                self.editing = None
-                self.ui.offUi()
-                self.node = []
-
-	
 
 class Line(Creator):
 	"The Line FreeCAD command definition"
@@ -1049,9 +889,12 @@ class Line(Creator):
 		if self.ui.xValue.isEnabled():
 			self.ui.xValue.setFocus()
 			self.ui.xValue.selectAll()
-		else:
+		elif self.ui.yValue.isEnabled():
 			self.ui.yValue.setFocus()
 			self.ui.yValue.selectAll()
+                else:
+                        self.ui.zValue.setFocus()
+			self.ui.zValue.selectAll()
 
 
 
@@ -2989,8 +2832,8 @@ class SendToDrawing(Modifier):
         
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_sendToDrawing',
-			'MenuText': str(translate("draft", "Drawing").toLatin1()),
-			'ToolTip': str(translate("draft", "Sends the selected objects to the active Drawing sheet.").toLatin1())}
+			'MenuText': str(translate("draft", "Put on Sheet").toLatin1()),
+			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet.").toLatin1())}
 
 	def Activated(self):
 		Modifier.Activated(self,"Send to Drawing")
@@ -3018,10 +2861,11 @@ class SendToDrawing(Modifier):
                                 
         def draw(self):
                 modifier = self.ui.LWModValue.value()
+                textmodifier = self.ui.TModValue.value()
                 template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
                 if not template: template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
                 offset = self.ui.marginValue.value()
-                scale = int(self.ui.scaleBox.itemText(self.ui.scaleBox.currentIndex()))
+                scale = int(self.ui.scaleBox.currentText())
                 if self.ui.pageBox.currentIndex() == 0:
                         pagename = str(self.ui.pageBox.itemText(0))
                         if pagename == 'Add New': pagename = 'Page'
@@ -3040,11 +2884,12 @@ class SendToDrawing(Modifier):
                 pb.close()
                 del pb
                 sel = Draft.getSelection()
+                sel.reverse()
                 for obj in sel:
                         if obj.ViewObject.isVisible():
                                 self.insertPattern(obj,page)
                                 name = 'View'+obj.Name
-                                svg = Draft.getSVG(obj,modifier)
+                                svg = Draft.getSVG(obj,modifier,textmodifier)
                                 if svg:
                                         oldobj = page.getObject(name)
                                         if oldobj: self.doc.removeObject(oldobj.Name)
@@ -3062,18 +2907,21 @@ class SendToDrawing(Modifier):
                 if "Shape" in obj.PropertiesList:
                         if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
                                 if 'FillStyle' in obj.ViewObject.PropertiesList:
-                                        if obj.ViewObject.FillStyle != 'shape color':
-                                                pattern = obj.ViewObject.FillStyle[:-6]
-                                                vobj = page.getObject('Pattern'+pattern)
-                                                if not vobj:
-                                                        view = self.doc.addObject('Drawing::FeatureView','Pattern'+pattern)
-                                                        svg = FreeCAD.svgpatterns[pattern]
-                                                        svg = svg.replace('DefaultColor',Draft.getrgb(obj.ViewObject.LineColor))
-                                                        view.ViewResult = svg
-                                                        view.X = 0
-                                                        view.Y = 0
-                                                        view.Scale = 1
-                                                        page.addObject(view)
+                                        try:
+                                                if obj.ViewObject.FillStyle != 'shape color':
+                                                        pattern = obj.ViewObject.FillStyle[:-6]
+                                                        vobj = page.getObject('Pattern'+pattern)
+                                                        if not vobj:
+                                                                view = self.doc.addObject('Drawing::FeatureView','Pattern'+pattern)
+                                                                svg = FreeCAD.svgpatterns[pattern]
+                                                                svg = svg.replace('DefaultColor',Draft.getrgb(obj.ViewObject.LineColor))
+                                                                view.ViewResult = svg
+                                                                view.X = 0
+                                                                view.Y = 0
+                                                                view.Scale = 1
+                                                                page.addObject(view)
+                                        except:
+                                                print "Draft:sendToDrawing: Unable to read FillStyle"
 
         def formatSVG(self,svg,obj):
                 "applies freecad object's color and linewidth to a svg fragment"
@@ -3097,24 +2945,12 @@ class SendToDrawing(Modifier):
                 result += '</g>'
                 return result
 
-class SendToDrawingDirect(Modifier):
-        "The Draft_SendToDrawingDirect FreeCAD command definition"
-
-        def __init__(self):
-                self.interactive = False
-        
-	def GetResources(self):
-		return {'Pixmap'  : 'Draft_sendToDrawing',
-			'MenuText': str(translate("draft", "DirectDrawing").toLatin1()),
-			'ToolTip': str(translate("draft", "Sends the selected objects to the active Drawing sheet without asking anything, using last settings").toLatin1())}
-        
-
 class MakeDraftWire():
 	"The MakeDraft FreeCAD command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_makeDraftWire',
-                        'MenuText': str(translate("draft", "Make Draft Wire").toLatin1()),
+                        'MenuText': str(translate("draft", "Turn to Draft").toLatin1()),
 			'ToolTip': str(translate("draft", "Turns selected objects to Draft Wires").toLatin1())}
 
 	def Activated(self):
@@ -3125,7 +2961,7 @@ class ToggleDisplayMode():
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_switchMode',
-                        'MenuText': str(translate("draft", "Toggles display mode").toLatin1()),
+                        'MenuText': str(translate("draft", "Toggle display mode").toLatin1()),
 			'ToolTip': str(translate("draft", "Swaps display mode of selected objects between wireframe and flatlines").toLatin1())}
 
 	def Activated(self):
@@ -3136,6 +2972,141 @@ class ToggleDisplayMode():
                         elif obj.ViewObject.DisplayMode == "Wireframe":
                                 if "Flat Lines" in obj.ViewObject.listDisplayModes():
                                         obj.ViewObject.DisplayMode = "Flat Lines"
+
+
+class Edit(Creator):
+	"The Draft_Edit FreeCAD command definition"
+
+	def __init__(self):
+		self.running = False
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_Edit',
+			'MenuText': str(translate("draft", "Edit").toLatin1()),
+			'ToolTip': str(translate("draft", "Edits the active object").toLatin1())}
+
+	def Activated(self):
+                if self.running:
+                        self.finish()
+                else:
+                        Creator.Activated(self,"Edit")
+                        if self.doc:
+                                self.obj = Draft.getSelection()
+                                if self.obj:
+                                        self.obj = self.obj[0]
+                                        self.editing = None
+                                        self.editpoints = []
+                                        if "Points" in self.obj.PropertiesList:
+                                                for p in self.obj.Points:
+                                                        self.editpoints.append(p)
+                                        elif "Radius" in self.obj.PropertiesList:
+                                                self.editpoints.append(self.obj.Placement.Base)
+                                                if self.obj.StartAngle == self.obj.EndAngle:
+                                                        self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
+                                        elif "Length" in self.obj.PropertiesList:
+                                                self.editpoints.append(self.obj.Placement.Base)
+                                                self.editpoints.append(self.obj.Shape.Vertexes[2].Point)
+                                        self.trackers = []
+                                        for ep in range(len(self.editpoints)):
+                                                self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
+                                        self.snap = snapTracker()
+                                        self.constraintrack = lineTracker(dotted=True)
+                                        self.call = self.view.addEventCallback("SoEvent",self.action)
+                                        self.running = True
+                                        plane.save()
+                                        plane.alignToFace(self.obj.Shape)
+                                else:
+                                        self.finish()
+
+	def finish(self,closed=False):
+		"terminates the operation and closes the poly if asked"
+                if self.ui:
+                        self.snap.finalize()
+                        for t in self.trackers: t.finalize()
+                        self.constraintrack.finalize()
+		Creator.finish(self)
+                plane.restore()
+                self.running = False
+
+	def action(self,arg):
+		"scene event handler"
+                if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
+			self.finish()
+		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+                        if self.editing != None:
+                                point,ctrlPoint = getPoint(self,arg)
+                                # Draw constraint tracker line.
+                                if (arg["ShiftDown"]):
+                                        self.constraintrack.p1(point)
+                                        self.constraintrack.p2(ctrlPoint)
+                                        self.constraintrack.on()
+                                else: self.constraintrack.off()
+                                self.trackers[self.editing].set(point)
+                                self.update(self.trackers[self.editing].get())
+		elif (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+                                if self.editing == None:
+                                        snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
+                                        if snapped:
+                                                if snapped['Object'] == self.obj.Name:
+                                                        if 'EditNode' in snapped['Component']:
+                                                                self.ui.pointUi()
+                                                                self.ui.isRelative.show()
+                                                                self.editing = int(snapped['Component'][8:])
+                                                                if "Points" in self.obj.PropertiesList:
+                                                                        self.node.append(self.obj.Points[self.editing])
+                                else:
+                                        self.numericInput(self.trackers[self.editing].get())
+
+        def update(self,v):
+                if "Points" in self.obj.PropertiesList:
+                        pts = self.obj.Points
+                        pts[self.editing] = v
+                        self.obj.Points = pts
+                        self.trackers[self.editing].set(pts[self.editing])
+                elif "Radius" in self.obj.PropertiesList:
+                        delta = v.sub(self.obj.Placement.Base)
+                        if self.editing == 0:
+                                p = self.obj.Placement
+                                p.move(delta)
+                                self.obj.Placement = p
+                                self.trackers[0].set(self.obj.Placement.Base)
+                        elif self.editing == 1:
+                                self.obj.Radius = delta.Length
+                        self.trackers[1].set(self.obj.Shape.Vertexes[0].Point)
+                elif "Length" in self.obj.PropertiesList:
+                        delta = v.sub(self.obj.Placement.Base)
+                        if self.editing == 0:
+                                p = self.obj.Placement
+                                p.move(delta)
+                                self.obj.Placement = p
+                        elif self.editing == 1:
+                                diag = v.sub(self.obj.Placement.Base)
+                                x = fcgeo.vec(self.obj.Shape.Edges[0])
+                                y = fcgeo.vec(self.obj.Shape.Edges[1])
+                                nx = fcvec.project(diag,x)
+                                ny = fcvec.project(diag,y)
+                                ax = nx.Length
+                                ay = ny.Length
+                                if abs(nx.getAngle(x)) > 0.1: ax = -ax
+                                if abs(ny.getAngle(y)) > 0.1: ay = -ay
+                                self.obj.Length = ax
+                                self.obj.Height = ay
+                        self.trackers[0].set(self.obj.Placement.Base)
+                        self.trackers[1].set(self.obj.Shape.Vertexes[2].Point)
+
+	def numericInput(self,v,numy=None,numz=None):
+		'''this function gets called by the toolbar
+                when valid x, y, and z have been entered there'''
+                if (numy != None):
+                        v = Vector(v,numy,numz)
+                self.doc.openTransaction("Edit "+self.obj.Name)
+                self.update(v)
+                self.doc.commitTransaction()
+                self.editing = None
+                self.ui.offUi()
+                self.node = []
+
 
 
 #---------------------------------------------------------------------------
@@ -3169,6 +3140,5 @@ FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
 FreeCADGui.addCommand('Draft_SendToDrawing',SendToDrawing())
-FreeCADGui.addCommand('Draft_SendToDrawingDirect',SendToDrawingDirect())
 FreeCADGui.addCommand('Draft_Edit',Edit())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
