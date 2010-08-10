@@ -135,6 +135,8 @@ SET(Sketcher_SRCS
 		 ${Datatypes_SRCS}
 )
 
+fc_copy_sources("Mod/Sketcher" "Sketcher" SketcherTestsApp.py)
+
 add_library(Sketcher SHARED ${Sketcher_SRCS})
 
 target_link_libraries(Sketcher ${Sketcher_LIBS})
