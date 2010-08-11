@@ -12,8 +12,10 @@
 		<file>icons/Sketcher_ConstrainLock.svg</file>
 		<file>icons/Sketcher_ConstrainCoincident.svg</file>
 		<file>icons/Sketcher_ConstrainHorizontal.svg</file>
-		<file>icons/Sketcher_ConstrainVertical.svg</file>
-		<file>icons/Sketcher_CreateArc.png</file>
+      <file>icons/Sketcher_ConstrainVertical.svg</file>
+      <file>icons/Sketcher_ConstrainDistance.svg</file>
+      <file>icons/Sketcher_ConstrainParallel.svg</file>
+      <file>icons/Sketcher_CreateArc.png</file>
 		<file>icons/Sketcher_CreateCircle.png</file>
 		<file>icons/Sketcher_CreateLine.png</file>
 		<file>icons/Sketcher_CreatePolyline.png</file>

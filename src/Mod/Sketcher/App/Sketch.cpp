@@ -333,6 +333,15 @@ int Sketch::addConstraint(const Constraint * constraint)
        case Coincident:
            rtn = addPointCoincidentConstraint(constraint->First,constraint->FirstPos,constraint->Second,constraint->SecondPos,constraint->Name.c_str());
            break;
+       case Parallel:
+           rtn = addParallelConstraint(constraint->First,constraint->Second,constraint->Name.c_str());
+           break;
+       case Distance:
+           if(constraint->Second == -1)
+                rtn = addDistanceConstraint(constraint->First,constraint->Value, constraint->Name.c_str());
+           else
+               rtn = addDistanceConstraint(constraint->First,constraint->Second,constraint->Value, constraint->Name.c_str());
+           break;
        case None:
            break;
     }
@@ -412,6 +421,80 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
         constrain.constrain.point2 = Points[Geoms[geoIndex2].pointStartIndex];
     else
         constrain.constrain.point2 = Points[Geoms[geoIndex2].pointStartIndex+1];
+
+    if(name)
+        constrain.name = name;
+
+    Const.push_back(constrain);
+
+    return Const.size()-1;
+}
+
+int Sketch::addParallelConstraint(int geoIndex1,int geoIndex2, const char* name)
+{   
+    // index out of bounds?
+    assert(geoIndex1 < (int)Geoms.size());
+    assert(geoIndex2 < (int)Geoms.size());
+    // constraint the right type?
+    assert(Geoms[geoIndex1].type == Line );
+    assert(Geoms[geoIndex2].type == Line );
+
+    // creat the constraint and fill it up
+    ConstrainDef constrain;
+    constrain.constrain.type = parallel;
+    constrain.constrain.line1 = Lines[Geoms[geoIndex1].lineStartIndex];
+    constrain.constrain.line2 = Lines[Geoms[geoIndex2].lineStartIndex];
+
+    if(name)
+        constrain.name = name;
+
+    Const.push_back(constrain);
+
+    return Const.size()-1;
+}
+
+int Sketch::addDistanceConstraint(int geoIndex1, double Value, const char* name)
+{   
+    // index out of bounds?
+    assert(geoIndex1 < (int)Geoms.size());
+    // constraint the right type?
+    assert(Geoms[geoIndex1].type == Line );
+
+    // creat the constraint and fill it up
+    ConstrainDef constrain;
+    constrain.constrain.type = P2PDistance;
+    constrain.constrain.point1 = Points[Geoms[geoIndex1].pointStartIndex];
+    constrain.constrain.point2 = Points[Geoms[geoIndex1].pointStartIndex+1];
+
+    // add the parameter for the length
+    Parameters.push_back(new double(Value));
+    constrain.constrain.parameter = Parameters[Parameters.size()-1];
+
+    if(name)
+        constrain.name = name;
+
+    Const.push_back(constrain);
+
+    return Const.size()-1;
+}
+int Sketch::addDistanceConstraint(int geoIndex1,int geoIndex2, double Value, const char* name)
+{   
+    // index out of bounds?
+    assert(geoIndex1 < (int)Geoms.size());
+    assert(geoIndex2 < (int)Geoms.size());
+    // constraint the right type?
+    assert(Geoms[geoIndex1].type == Line );
+    assert(Geoms[geoIndex2].type == Line );
+
+    // creat the constraint and fill it up
+    ConstrainDef constrain;
+    constrain.constrain.type = P2LDistance;
+    constrain.constrain.line1 = Lines[Geoms[geoIndex1].lineStartIndex];
+    constrain.constrain.point1 = Points[Geoms[geoIndex2].pointStartIndex];
+
+    // add the parameter for the length
+    Parameters.push_back(new double(Value));
+    constrain.constrain.parameter = Parameters[Parameters.size()-1];
 
     if(name)
         constrain.name = name;

@@ -312,6 +312,172 @@ bool CmdSketcherConstrainCoincident::isActive(void)
 	return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
+DEF_STD_CMD_A(CmdSketcherConstrainDistance);
+
+CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
+	:Command("Sketcher_ConstrainDistance")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain Distance");
+    sToolTipText    = QT_TR_NOOP("fix a length of a line or the distance between a line and a vertex");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Sketcher_ConstrainDistance";
+    iAccel          = Qt::Key_C;
+    eType           = ForEdit;
+
+}
+
+
+void CmdSketcherConstrainDistance::activated(int iMsg)
+{
+	//// get the selection 
+	//std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+	//// only one sketch with its subelements are allowed to be selected
+ //   if (selection.size() != 1) {
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select vertexes from the sketch."));
+ //       return;
+ //   }
+
+	//// get the needed lists and objects
+	//const std::vector<std::string> &SubNames = selection[0].getSubNames();
+	//Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+	//const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+
+	//// only one sketch with its subelements are allowed to be selected
+ //   if (SubNames.size() != 2) {
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select exactly two vertexes from the sketch."));
+ //       return;
+ //   }
+
+ //   int index1,index2;
+ //   // get first vertex index
+	//if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+ //       index1 = std::atoi(SubNames[0].substr(6,4000).c_str());
+ //   else{
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select exactly two vertexes from the sketch."));
+ //       return;
+ //   }
+ //       
+ //   // get second vertex index
+	//if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+ //       index2 = std::atoi(SubNames[1].substr(6,4000).c_str());
+ //   else{
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select exactly two vertexes from the sketch."));
+ //       return;
+ //   }
+ //   int GeoId1,GeoId2,Pt1,Pt2;
+ //   Obj->getGeoVertexIndex(index1,GeoId1,Pt1);
+ //   Obj->getGeoVertexIndex(index2,GeoId2,Pt2);
+
+ //   // undo command open
+ //   openCommand("add coinsident constraint");
+ //   Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) "
+ //                ,selection[0].getFeatName(),GeoId1,Pt1,GeoId2,Pt2);
+
+ //   // finish the transaction and update
+ //   commitCommand();
+ //   updateActive();
+
+ //   // clear the selction (convenience)
+ //   getSelection().clearSelection();
+}
+
+bool CmdSketcherConstrainDistance::isActive(void)
+{
+	return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
+
+DEF_STD_CMD_A(CmdSketcherConstrainParallel);
+
+CmdSketcherConstrainParallel::CmdSketcherConstrainParallel()
+	:Command("Sketcher_ConstrainParallel")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain Parallel");
+    sToolTipText    = QT_TR_NOOP("create a parallel constraint between two lines");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Sketcher_ConstrainParallel";
+    iAccel          = Qt::Key_P;
+    eType           = ForEdit;
+
+}
+
+
+void CmdSketcherConstrainParallel::activated(int iMsg)
+{
+	//// get the selection 
+	//std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+	//// only one sketch with its subelements are allowed to be selected
+ //   if (selection.size() != 1) {
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select vertexes from the sketch."));
+ //       return;
+ //   }
+
+	//// get the needed lists and objects
+	//const std::vector<std::string> &SubNames = selection[0].getSubNames();
+	//Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+	//const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+
+	//// only one sketch with its subelements are allowed to be selected
+ //   if (SubNames.size() != 2) {
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select exactly two vertexes from the sketch."));
+ //       return;
+ //   }
+
+ //   int index1,index2;
+ //   // get first vertex index
+	//if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+ //       index1 = std::atoi(SubNames[0].substr(6,4000).c_str());
+ //   else{
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select exactly two vertexes from the sketch."));
+ //       return;
+ //   }
+ //       
+ //   // get second vertex index
+	//if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+ //       index2 = std::atoi(SubNames[1].substr(6,4000).c_str());
+ //   else{
+ //       QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+ //           QObject::tr("Select exactly two vertexes from the sketch."));
+ //       return;
+ //   }
+ //   int GeoId1,GeoId2,Pt1,Pt2;
+ //   Obj->getGeoVertexIndex(index1,GeoId1,Pt1);
+ //   Obj->getGeoVertexIndex(index2,GeoId2,Pt2);
+
+ //   // undo command open
+ //   openCommand("add coinsident constraint");
+ //   Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) "
+ //                ,selection[0].getFeatName(),GeoId1,Pt1,GeoId2,Pt2);
+
+ //   // finish the transaction and update
+ //   commitCommand();
+ //   updateActive();
+
+ //   // clear the selction (convenience)
+ //   getSelection().clearSelection();
+}
+
+bool CmdSketcherConstrainParallel::isActive(void)
+{
+	return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
+
 
 
 void CreateSketcherCommandsConstraints(void)
@@ -322,4 +488,6 @@ void CreateSketcherCommandsConstraints(void)
 	rcCmdMgr.addCommand(new CmdSketcherConstrainVertical());
 	rcCmdMgr.addCommand(new CmdSketcherConstrainLock());
 	rcCmdMgr.addCommand(new CmdSketcherConstrainCoincident());
+	rcCmdMgr.addCommand(new CmdSketcherConstrainParallel());
+	rcCmdMgr.addCommand(new CmdSketcherConstrainDistance());
  }

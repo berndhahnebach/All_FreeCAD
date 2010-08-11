@@ -66,7 +66,9 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *part << "Sketcher_ConstrainLock"
 		  << "Sketcher_ConstrainCoincident"
 		  << "Sketcher_ConstrainVertical"
-		  << "Sketcher_ConstrainHorizontal";
+		  << "Sketcher_ConstrainHorizontal"
+		  << "Sketcher_ConstrainDistance"
+		  << "Sketcher_ConstrainParallel";
      return root;
 }
 

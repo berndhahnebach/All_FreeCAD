@@ -118,6 +118,12 @@ public:
     int addVerticalConstraint(int geoIndex, const char* name=0);
     /// add a coincident constraint to two points of two geometries
     int addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name=0);
+    /// add a length constraint to a line
+    int addDistanceConstraint(int geoIndex1,double Value, const char* name);
+    /// add a distance between a two lines (basically a point to line distance)
+    int addDistanceConstraint(int geoIndex1,int geoIndex2, double Value, const char* name);
+    /// add a parallel constraints between two lines
+    int addParallelConstraint(int geoIndex1,int geoIndex2, const char* name);
     //@}
 
     /** retrives for a Vertex number the corosponding GeoId and PointPosition
