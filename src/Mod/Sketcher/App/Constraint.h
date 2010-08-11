@@ -35,7 +35,10 @@ enum ConstraintType {
     None,
     Coincident,
     Horizontal,
-    Vertical
+    Vertical,
+    Parallel,
+    Distance,
+    Angle
 };
 
 /// define if you whant to use the end or start point
@@ -64,7 +67,7 @@ public:
 public:
     ConstraintType Type;
     std::string Name;
-    float Value;
+    double Value;
     int First;
     PointPos FirstPos;
     int Second;
