@@ -755,14 +755,14 @@ class Creator:
 			self.finish()
 		else:
 			FreeCAD.activeDraftCommand = self
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+                        self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+                        self.ui.cross(True)
+                        self.ui.sourceCmd = self
+                        self.ui.cmdlabel.setText(name)
 			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
-			self.ui.cross(True)
 			self.node = []
 			self.pos = []
-			self.ui.sourceCmd = self
-                        self.ui.cmdlabel.setText(name)
 			self.constrain = None
 			self.obj = None
 		
@@ -773,7 +773,7 @@ class Creator:
 			self.ui.offUi()
 			self.ui.cross(False)
 			self.ui.sourceCmd = None
-			msg("")
+                msg("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
 
@@ -1546,8 +1546,8 @@ class Modifier:
 		if self.ui:
 			self.ui.offUi()
 			self.ui.sourceCmd=None
-			msg("")
 			self.ui.cross(False)
+                msg("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
 			
@@ -2836,7 +2836,7 @@ class SendToDrawing(Modifier):
 			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet.").toLatin1())}
 
 	def Activated(self):
-		Modifier.Activated(self,"Send to Drawing")
+		Modifier.Activated(self,"Put on Sheet")
                 import Drawing
 		if self.ui:
                         oldindex = self.ui.pageBox.currentIndex()
@@ -2864,7 +2864,8 @@ class SendToDrawing(Modifier):
                 textmodifier = self.ui.TModValue.value()
                 template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
                 if not template: template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
-                offset = self.ui.marginValue.value()
+                offsetx = self.ui.marginXValue.value()
+                offsety = self.ui.marginYValue.value()
                 scale = int(self.ui.scaleBox.currentText())
                 if self.ui.pageBox.currentIndex() == 0:
                         pagename = str(self.ui.pageBox.itemText(0))
@@ -2876,7 +2877,8 @@ class SendToDrawing(Modifier):
                         pagename = str(self.ui.pageBox.itemText(self.ui.pageBox.currentIndex()))
                         page = self.doc.findObjects('Drawing::FeaturePage',pagename)[0]
                 page.ViewObject.HintScale = str(scale)
-                page.ViewObject.HintOffset = str(offset)
+                page.ViewObject.HintOffsetX = str(offsetx)
+                page.ViewObject.HintOffsetY = str(offsety)
                 pb = open(str(page.PageResult))
                 fb = pb.read()
                 pageheight = re.findall("height=\"(.*?)\"",fb)
@@ -2894,9 +2896,9 @@ class SendToDrawing(Modifier):
                                         oldobj = page.getObject(name)
                                         if oldobj: self.doc.removeObject(oldobj.Name)
                                         view = self.doc.addObject('Drawing::FeatureView',name)
-                                        view.ViewResult = self.transformSVG(name,svg,offset,scale,pageheight)
-                                        view.X = offset
-                                        view.Y = offset
+                                        view.ViewResult = self.transformSVG(name,svg,offsetx,offsety,scale,pageheight)
+                                        view.X = offsetx
+                                        view.Y = offsety
                                         view.Scale = scale
                                         page.addObject(view)
                 self.doc.recompute()
@@ -2931,15 +2933,15 @@ class SendToDrawing(Modifier):
                 svg = svg.replace('stroke="rgb(0, 0, 0)"','stroke="rgb('+str(sc[0])+','+str(sc[1])+','+str(sc[2])+')"')
                 return svg
                                 
-        def transformSVG(self,name, svg,offset=0,scale=1,pageheight=None):
+        def transformSVG(self,name, svg,offsetx=0,offsety=0,scale=1,pageheight=None):
                 "encapsulates a svg fragment into a transformation node"
                 result = '<g id="' + name + '"'
                 result += ' transform="'
                 if pageheight:
-                        result += ' translate('+str(offset)+','+str(pageheight-offset)+')'
+                        result += ' translate('+str(offsetx)+','+str(pageheight-offsety)+')'
                         result += ' scale('+str(scale)+','+str(-scale)+')">'
                 else:
-                        result += ' translate('+str(offset)+','+str(offset)+')'
+                        result += ' translate('+str(offsetx)+','+str(offsety)+')'
                         result += ' scale('+str(scale)+','+str(scale)+')">'
                 result += svg
                 result += '</g>'
