@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QString.h>
 #endif
 
 #include "ui_TaskSketcherConstrains.h"
@@ -37,6 +38,7 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
+#include <Gui/BitmapFactory.h>
 #include <Base/Console.h>
 #include <boost/bind.hpp>
 
@@ -73,25 +75,38 @@ TaskSketcherConstrains::~TaskSketcherConstrains()
 
 void TaskSketcherConstrains::ConstraintsChanged(void)
 {
+    QIcon horiz( Gui::BitmapFactory().pixmap("Sketcher_ConstrainHorizontal") );
+    QIcon vert ( Gui::BitmapFactory().pixmap("Sketcher_ConstrainVertical") );
+    QIcon lock ( Gui::BitmapFactory().pixmap("Sketcher_ConstrainLock") );
+    QIcon coinc( Gui::BitmapFactory().pixmap("Sketcher_ConstrainCoincident") );
+
     assert(sketchView);
     // Build up ListView with the constraints
     const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
 
     ui->listWidgetConstraints->clear();
+    std::string name;
+    char buf[50];
+    int i=1;
+	for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it,++i){
+        if((*it)->Name == ""){
+            sprintf(buf,"Constraint%d",i);
+            name = buf;
+        }else
+            name =(*it)->Name;
 
-	for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it){
         switch((*it)->Type){
             case Sketcher::Horizontal:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Horizontal")));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(horiz,QString::fromLatin1(name.c_str())));
                 break;
             case Sketcher::Vertical:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Vertical")));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(vert,QString::fromLatin1(name.c_str())));
                 break;
             case Sketcher::Coincident:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Coincident")));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(coinc,QString::fromLatin1(name.c_str())));
                 break;
             default:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(tr("Unknown")));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(QString::fromLatin1(name.c_str())));
                 break;
         }
 
