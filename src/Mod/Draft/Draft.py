@@ -560,11 +560,12 @@ def getrgb(color):
         b = str(hex(int(color[2]*255)))[2:].zfill(2)
         return "#"+r+g+b
 
-def getSVG(obj,modifier=100,textmodifier=100):
-        '''getSVG(object,[modifier],[textmodifier]): returns a string containing
+def getSVG(obj,modifier=100,textmodifier=100,plane=None):
+        '''getSVG(object,[modifier],[textmodifier],[(u,v)]): returns a string containing
         a SVG representation of the given object. the modifier attribute
         specifies a scale factor for linewidths in %, and textmodifier specifies
-        a scale factor for texts, in % (both default = 100).'''
+        a scale factor for texts, in % (both default = 100). You can also supply
+        an arbitrary (u,v) projection plane as a tuple or list of 2 Vectors.'''
         svg = ""
         tmod = ((textmodifier-100)/2)+100
         if tmod == 0: tmod = 0.01
@@ -573,18 +574,28 @@ def getSVG(obj,modifier=100,textmodifier=100):
         pmod = 200-textmodifier
         if pmod == 0: pmod = 0.01
 
+        def getProj(vec):
+                if not plane: return vec
+                nx = fcvec.project(vec,plane[0])
+                lx = nx.Length
+                if abs(nx.getAngle(plane[0])) > 0.1: lx = -lx
+                ny = fcvec.project(vec,plane[1])
+                ly = ny.Length
+                if abs(ny.getAngle(plane[1])) > 0.1: ly = -ly
+                return Vector(lx,ly,0)
+
         def getPath(edges):
                 svg ='<path id="' + name + '" '
                 edges = fcgeo.sortEdges(edges)
-                v = edges[0].Vertexes[0].Point
+                v = getProj(edges[0].Vertexes[0].Point)
                 svg += 'd="M '+ str(v.x) +' '+ str(v.y) + ' '
                 for e in edges:
                         if isinstance(e.Curve,Part.Line):
-                                v = e.Vertexes[-1].Point
+                                v = getProj(e.Vertexes[-1].Point)
                                 svg += 'L '+ str(v.x) +' '+ str(v.y) + ' '
                         elif isinstance(e.Curve,Part.Circle):
                                 r = e.Curve.Radius
-                                v = e.Vertexes[-1].Point
+                                v = getProj(e.Vertexes[-1].Point)
                                 svg += 'A '+ str(r) + ' '+ str(r) +' 0 0 0 '+ str(v.x) +' '
                                 svg += str(v.y) + ' '
                 if fill != 'none': svg += 'Z'
@@ -600,6 +611,11 @@ def getSVG(obj,modifier=100,textmodifier=100):
 
         if 'Dimline' in obj.PropertiesList:
 		p1,p2,p3,p4,tbase,angle,norm = obj.ViewObject.Proxy.calcGeom(obj)
+                p1 = getProj(p1)
+                p2 = getProj(p2)
+                p3 = getProj(p3)
+                p4 = getProj(p4)
+                tbase = getProj(tbase)
 		svg = '<g id="'+obj.Name+'"><path '
 		svg += 'd="M '+str(p1.x)+' '+str(p1.y)+' '
 		svg += 'L '+str(p2.x)+' '+str(p2.y)+' '
@@ -631,6 +647,7 @@ def getSVG(obj,modifier=100,textmodifier=100):
 
         elif obj.Type == 'App::Annotation':
                 "returns an svg representation of a document annotation"
+                p = getProj(obj.Position)
                 textcontents = ''
                 for l in obj.LabelText:
                         textcontents+=l
@@ -644,8 +661,8 @@ def getSVG(obj,modifier=100,textmodifier=100):
                 if obj.ViewObject.RotationAxis == 'Z':
                         if obj.ViewObject.Rotation != 0:
                                 svg += 'rotate('+str(obj.ViewObject.Rotation)
-                                svg += ','+ str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
-                svg += 'translate(' + str(obj.Position.x) + ',' + str(obj.Position.y) + ') '
+                                svg += ','+ str(p.x) + ',' + str(p.y) + ') '
+                svg += 'translate(' + str(p.x) + ',' + str(p.y) + ') '
                 svg +='scale('+str(tmod/2000)+','+str(tmod/2000)+')">\n'
                 svg += textcontents
                 svg += '</text>\n'
@@ -693,7 +710,7 @@ def getSVG(obj,modifier=100,textmodifier=100):
                         else:
                                 svg = getPath(obj.Shape.Edges)
                 else:
-                        cen = obj.Shape.Edges[0].Curve.Center
+                        cen = getProj(obj.Shape.Edges[0].Curve.Center)
                         rad = obj.Shape.Edges[0].Curve.Radius
                         svg = '<circle cx="' + str(cen.x)
                         svg += '" cy="' + str(cen.y)

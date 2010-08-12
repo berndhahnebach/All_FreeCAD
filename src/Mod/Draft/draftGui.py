@@ -300,6 +300,9 @@ class toolBar:
                                 self.labelTMod = _label("labelTMod")
                                 self.TModValue = _spinbox("TModValue",100,999)
                                 self.TModValue.setSuffix("%")
+                                self.pageWpButton = _pushButton("pageWpButton",icon=(576,0))
+                                self.pageWpButton.setCheckable(True)
+				self.pageWpButton.setChecked(False)
                                 self.pageButton = _pushButton("pageButton",icon=(640,128))
 
                                 # spacer
@@ -324,9 +327,6 @@ class toolBar:
 				self.constrButton.setCheckable(True)
 				self.constrButton.setChecked(False)
 				self.constrColor = QtGui.QColor(paramconstr)
-                                style = "#constrButton:Checked {background-color: "
-                                style += self.getDefaultColor("constr",rgb=True)+" }"
-				draftToolbar.setStyleSheet(style)
 				self.colorButton = _pushButton("colorButton",hide=False,width=22)
 				self.color = QtGui.QColor(paramcolor)
 				self.colorPix = QtGui.QPixmap(16,16)
@@ -341,7 +341,12 @@ class toolBar:
                                 self.widthButton.setSuffix("px")
                                 self.fontsizeButton = _spinbox("fontsizeButton",val=paramfontsize,hide=False,double=True,size=(50,22))
 				self.applyButton = _pushButton("applyButton", hide=False, icon=(384,64),width=22)
-				
+
+                                style = "#pageWpButton:Checked {background-color:rgb(255,0,0)} "
+                                style += "#constrButton:Checked {background-color: "
+                                style += self.getDefaultColor("constr",rgb=True)+" }"
+				draftToolbar.setStyleSheet(style)
+                                
 				self.sourceCmd=None
 
 				self.retranslateUi(draftToolbar)
@@ -409,7 +414,7 @@ class toolBar:
 				self.isRelative.setText(translate("draft", "Relative"))
 				self.isRelative.setToolTip(translate("draft", "Coordinates relative to last point or absolute (SPACE)"))
                                 self.hasFill.setText(translate("draft", "Filled"))
-				self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe"))
+                                self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe"))
 				self.finishButton.setText(translate("draft", "Finish"))
 				self.finishButton.setToolTip(translate("draft", "Finishes the current line without closing (F)"))
 				self.undoButton.setText(translate("draft", "Undo"))
@@ -438,16 +443,18 @@ class toolBar:
                                 self.wplabel.setToolTip(translate("draft", "Current working plane"))
                                 self.labelPage.setText(translate("draft", "Page"))
                                 self.labelScale.setText(translate("draft", "Scale"))
-                                self.labelMarginX.setText(translate("draft", "X offset"))
+                                self.labelMarginX.setText(translate("draft", "offset X"))
                                 self.marginXValue.setToolTip(translate("draft", "The offset between the (0,0) point and the left page border"))
-                                self.labelMarginY.setText(translate("draft", "Y offset"))
+                                self.labelMarginY.setText(translate("draft", "Y"))
                                 self.marginYValue.setToolTip(translate("draft", "The offset between the (0,0) point and the bottom page border"))
                                 self.labelLWMod.setText(translate("draft", "LW Mod"))
                                 self.pageBox.setToolTip(translate("draft", "Page to draw to. If selecting Add New, you can edit the name"))
-                                self.scaleBox.setToolTip(translate("draft", "Scale factor to apply. Drawing page is always in millimeters. So if you draw in meters, a scale of 10 means 1:100"))
+                                self.scaleBox.setToolTip(translate("draft", "Scale factor to apply. Drawing page is always in millimeters.\nSo if you draw in meters, a scale of 5 means 1:200, 10 means 1:100, 20 means 1:50 etc"))
                                 self.LWModValue.setToolTip(translate("draft", "Linewidth scale modifier. Higher values mean thicker lines."))
                                 self.labelTMod.setText(translate("draft", "Text Mod"))
                                 self.TModValue.setToolTip(translate("draft", "Text scale modifier. Higher values mean bigger texts."))
+                                self.pageWpButton.setToolTip(translate("draft", "Use the current Working plane as projection plane"))
+                                self.pageButton.setToolTip(translate("draft", "Apply the settings (you can also press the Put on Sheet button again)"))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -532,6 +539,7 @@ class toolBar:
                                 self.labelLWMod.hide()
                                 self.LWModValue.hide()
                                 self.labelTMod.hide()
+                                self.pageWpButton.hide()
                                 self.TModValue.hide()
 
 			def radiusUi(self):
@@ -602,6 +610,7 @@ class toolBar:
                                 self.LWModValue.show()
                                 self.labelTMod.show()
                                 self.TModValue.show()
+                                self.pageWpButton.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
