@@ -165,6 +165,8 @@ class DraftWorkbench (Workbench):
 			self.treecmdList = ["Draft_ApplyStyle","Draft_MakeDraftWire","Draft_ToggleDisplayMode"]
 			self.appendToolbar("Draft tools",self.cmdList+self.modList)
 			self.appendMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+                        import macros
+                        self.appendMenu(["&Macro","Installed Macros"],macros.macrosList)
 			import draftGui
 			self.draftToolBar=draftGui.toolBar()
 			FreeCAD.activeDraftCommand = None # a global place to look for active draft Command

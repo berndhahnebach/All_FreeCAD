@@ -906,6 +906,7 @@ class toolBar:
                 icons['Draft_Edit']=iconfile.copy(QtCore.QRect(512,128,64,64))
                 icons['Draft_switchMode']=iconfile.copy(QtCore.QRect(448,128,64,64))
 		icons['preferences-draft']=iconfile.copy(QtCore.QRect(384,0,64,64))
+                icons['Draft_Macro']=iconfile.copy(QtCore.QRect(384,128,64,64))
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()
 			bu = QtCore.QBuffer(ba)
