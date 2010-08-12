@@ -14,7 +14,7 @@
    id="svg2816"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="Neues Dokument 2">
+   sodipodi:docname="Sketcher_ConstrainParallel.svg">
   <defs
      id="defs2818">
     <inkscape:perspective
@@ -52,7 +52,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -60,29 +60,15 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <path
-       style="fill:none;stroke:#00ff00;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 5.1795879,4.7625118 0,23.7546622"
-       id="path2826" />
-    <path
-       style="fill:none;stroke:#00ff00;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 28.041217,4.3159956 0.0893,24.5583914"
-       id="path2828" />
-    <path
-       style="fill:none;stroke:#00ff00;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 5.3581944,16.371933 8.4838076,0"
-       id="path2830" />
-    <path
-       style="fill:none;stroke:#00ff00;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 19.646713,16.461236 8.483808,-0.267909"
-       id="path2832" />
-    <path
-       style="fill:none;stroke:#00ff00;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 13.306183,11.460255 0,10.805692"
-       id="path2834" />
-    <path
-       style="fill:none;stroke:#00ff00;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 19.468106,11.549558 -0.0893,10.537782"
-       id="path2836" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#ffff00;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="3.4828262"
+       y="30.303238"
+       id="text2818"><tspan
+         sodipodi:role="line"
+         id="tspan2820"
+         x="3.4828262"
+         y="30.303238">P</tspan></text>
   </g>
 </svg>
