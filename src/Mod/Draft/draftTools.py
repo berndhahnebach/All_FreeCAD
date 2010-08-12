@@ -697,7 +697,7 @@ class SelectPlane:
                         self.display('top')
 			self.finish()
 		elif arg == "XZ":
-			plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), self.offset)
+			plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,-1,0), self.offset)
                         self.display('front')
 			self.finish()
 		elif arg == "YZ":
@@ -2827,9 +2827,6 @@ class ToggleConstructionMode():
 class SendToDrawing(Modifier):
         "The Draft_SendToDrawing FreeCAD command definition"
 
-        def __init__(self):
-                self.interactive = True
-        
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_sendToDrawing',
 			'MenuText': str(translate("draft", "Put on Sheet").toLatin1()),
@@ -2839,29 +2836,32 @@ class SendToDrawing(Modifier):
 		Modifier.Activated(self,"Put on Sheet")
                 import Drawing
 		if self.ui:
-                        oldindex = self.ui.pageBox.currentIndex()
-                        if oldindex == 0:
-                                oldindex = None
-                        else:
-                                oldindex = str(self.ui.pageBox.itemText(oldindex))
-                        self.ui.pageBox.clear()
-                        self.ui.pageBox.addItem("Add New")
-                        existingpages = self.doc.findObjects('Drawing::FeaturePage')
-                        for p in existingpages:
-                                self.ui.pageBox.addItem(p.Name)
-                        if oldindex:
-                                for i in range(len(existingpages)):
-                                        if existingpages[i].Name == oldindex:
-                                                self.ui.pageBox.setCurrentIndex(i+1)
-                        if self.interactive:
-                                self.ui.pageUi()
-                        else:
+                        if self.ui.pageButton.isVisible():
                                 self.draw()
+                        else:
+                                oldindex = self.ui.pageBox.currentIndex()
+                                if oldindex == 0:
+                                        oldindex = None
+                                else:
+                                        oldindex = str(self.ui.pageBox.itemText(oldindex))
+                                self.ui.pageBox.clear()
+                                self.ui.pageBox.addItem("Add New")
+                                existingpages = self.doc.findObjects('Drawing::FeaturePage')
+                                for p in existingpages:
+                                        self.ui.pageBox.addItem(p.Name)
+                                if oldindex:
+                                        for i in range(len(existingpages)):
+                                                if existingpages[i].Name == oldindex:
+                                                        self.ui.pageBox.setCurrentIndex(i+1)
+                                self.ui.pageUi()
                 else: self.finish()
                                 
         def draw(self):
                 modifier = self.ui.LWModValue.value()
                 textmodifier = self.ui.TModValue.value()
+                projPlane = None
+                if self.ui.pageWpButton.isChecked() and (not plane.weak):
+                        projPlane = (plane.u,plane.v)
                 template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
                 if not template: template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
                 offsetx = self.ui.marginXValue.value()
@@ -2891,7 +2891,7 @@ class SendToDrawing(Modifier):
                         if obj.ViewObject.isVisible():
                                 self.insertPattern(obj,page)
                                 name = 'View'+obj.Name
-                                svg = Draft.getSVG(obj,modifier,textmodifier)
+                                svg = Draft.getSVG(obj,modifier,textmodifier,projPlane)
                                 if svg:
                                         oldobj = page.getObject(name)
                                         if oldobj: self.doc.removeObject(oldobj.Name)
