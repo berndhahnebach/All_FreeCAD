@@ -65,7 +65,7 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
     sToolTipText    = QT_TR_NOOP("Create a horizontal constraint on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainHorizontal";
+    sPixmap         = "Constraint_Horizontal";
     iAccel          = Qt::Key_H;
     eType           = ForEdit;
 }
@@ -140,7 +140,7 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
     sToolTipText    = QT_TR_NOOP("Create a vertical constraint on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainVertical";
+    sPixmap         = "Constraint_Vertical";
     iAccel          = Qt::Key_V;
     eType           = ForEdit;
 
@@ -241,7 +241,7 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
     sToolTipText    = QT_TR_NOOP("Create a lock constrain on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainCoincident";
+    sPixmap         = "Constraint_PointOnPoint";
     iAccel          = Qt::Key_C;
     eType           = ForEdit;
 
@@ -323,7 +323,7 @@ CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
     sToolTipText    = QT_TR_NOOP("fix a length of a line or the distance between a line and a vertex");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainDistance";
+    sPixmap         = "Constraint_Length";
     iAccel          = Qt::Key_C;
     eType           = ForEdit;
 
@@ -406,7 +406,7 @@ CmdSketcherConstrainParallel::CmdSketcherConstrainParallel()
     sToolTipText    = QT_TR_NOOP("create a parallel constraint between two lines");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_ConstrainParallel";
+    sPixmap         = "Constraint_Parallel";
     iAccel          = Qt::Key_P;
     eType           = ForEdit;
 

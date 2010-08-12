@@ -75,10 +75,11 @@ TaskSketcherConstrains::~TaskSketcherConstrains()
 
 void TaskSketcherConstrains::ConstraintsChanged(void)
 {
-    QIcon horiz( Gui::BitmapFactory().pixmap("Sketcher_ConstrainHorizontal") );
-    QIcon vert ( Gui::BitmapFactory().pixmap("Sketcher_ConstrainVertical") );
+    QIcon horiz( Gui::BitmapFactory().pixmap("Constraint_Horizontal") );
+    QIcon vert ( Gui::BitmapFactory().pixmap("Constraint_Vertical") );
     QIcon lock ( Gui::BitmapFactory().pixmap("Sketcher_ConstrainLock") );
-    QIcon coinc( Gui::BitmapFactory().pixmap("Sketcher_ConstrainCoincident") );
+    QIcon coinc( Gui::BitmapFactory().pixmap("Constraint_PointOnPoint") );
+    QIcon para ( Gui::BitmapFactory().pixmap("Constraint_Parallel") );
 
     assert(sketchView);
     // Build up ListView with the constraints
@@ -104,6 +105,9 @@ void TaskSketcherConstrains::ConstraintsChanged(void)
                 break;
             case Sketcher::Coincident:
                 ui->listWidgetConstraints->addItem(new QListWidgetItem(coinc,QString::fromLatin1(name.c_str())));
+                break;
+            case Sketcher::Parallel:
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(para,QString::fromLatin1(name.c_str())));
                 break;
             default:
                 ui->listWidgetConstraints->addItem(new QListWidgetItem(QString::fromLatin1(name.c_str())));

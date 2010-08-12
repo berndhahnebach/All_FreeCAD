@@ -20,6 +20,26 @@
 		<file>icons/Sketcher_CreateLine.png</file>
 		<file>icons/Sketcher_CreatePolyline.png</file>
 		<file>icons/Sketcher_CreateRectangle.png</file>
-		<file>icons/Sketcher_CreateText.png</file>
-	</qresource>
+      <file>icons/Sketcher_CreateText.png</file>
+      
+      <file>icons/Constraint_Concentric.svg</file>
+      <file>icons/Constraint_EqualLength.svg</file>
+      <file>icons/Constraint_ExternalAngle.svg</file>
+      <file>icons/Constraint_Horizontal.svg</file>
+      <file>icons/Constraint_InternalAngle.svg</file>
+      <file>icons/Constraint_Length.svg</file>
+      <file>icons/Constraint_Parallel.svg</file>
+      <file>icons/Constraint_Perpendicular.svg</file>
+      <file>icons/Constraint_PointOnEnd.svg</file>
+      <file>icons/Constraint_PointOnMidPoint.svg</file>
+      <file>icons/Constraint_PointOnObject.svg</file>
+      <file>icons/Constraint_PointOnPoint.svg</file>
+      <file>icons/Constraint_PointOnStart.svg</file>
+      <file>icons/Constraint_PointToObject.svg</file>
+      <file>icons/Constraint_Radius.svg</file>
+      <file>icons/Constraint_Tangent.svg</file>
+      <file>icons/Constraint_TangentToEnd.svg</file>
+      <file>icons/Constraint_TangentToStart.svg</file>
+      <file>icons/Constraint_Vertical.svg</file>
+    </qresource>
 </RCC> 
