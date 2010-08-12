@@ -744,6 +744,12 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
             case Coincident: // no visual for coincident so far
                 edit->vConstrType.push_back(Coincident);
                 break;
+            case Parallel: // no visual for coincident so far
+                edit->vConstrType.push_back(Parallel);
+                break;
+            case Distance: // no visual for coincident so far
+                edit->vConstrType.push_back(Distance);
+                break;
             default:
                 edit->vConstrType.push_back(None);
                 
