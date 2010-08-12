@@ -12,6 +12,7 @@ data_DATA = \
 		Init.py \
 		InitGui.py \
 		icons.svg \
+		macros.py \
 		preferences-draft.svg \
 		userprefs.ui
 

@@ -9,6 +9,7 @@ SET(Draft_SRCS
 		importDXF.py
 		importOCA.py
 		importSVG.py
+        macros.py
 		icons.svg
 		preferences-draft.svg
 		userprefs.ui
