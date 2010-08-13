@@ -57,7 +57,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 		  << "Sketcher_CreateCircle"
 		  << "Sketcher_CreateLine"
 		  << "Sketcher_CreatePolyline"
-		  << "Sketcher_CreateRectangle"
+		  << "Sketcher_CreateBox"
 		  << "Sketcher_CreateText"
 		  << "Sketcher_CreateDraftLine";
 

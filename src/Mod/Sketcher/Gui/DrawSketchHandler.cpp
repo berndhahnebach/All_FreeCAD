@@ -68,6 +68,14 @@ DrawSketchHandler::~DrawSketchHandler()
 
 }
 
+void DrawSketchHandler::quit(void)
+{
+    assert(sketchgui);
+    sketchgui->drawEdit(std::vector<Base::Vector2D>());
+    resetPositionText();
+    sketchgui->purgeHandler();
+
+}
 
 //**************************************************************************
 // Helpers

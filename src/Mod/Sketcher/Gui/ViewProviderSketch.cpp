@@ -316,14 +316,16 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
         }
     }
     // Right mouse button ****************************************************
-    //else if (Button == 2) {
-    //    if (pressed) {
-    //        switch(Mode){
-    //             default:
-    //                return false;
-    //        }
-    //    }
-    //}
+    else if (Button == 2) {
+        if (pressed) {
+            switch(Mode){
+                case STATUS_SKETCH_UseHandler:
+                    // make the handler quit
+                    edit->sketchHandler->quit();
+                    return true;
+            }
+        }
+    }
 
     return false;
 }
@@ -657,6 +659,8 @@ Restart:
     // check if a new constraint arrived
     if (ConStr.size() != edit->vConstrType.size())
         rebuildConstriantsVisual();
+    assert(ConStr.size()==edit->constrGroup->getNumChildren());
+    assert(edit->vConstrType.size()==edit->constrGroup->getNumChildren());
     // go through the constraints and update the position 
     i = 0;
     for(std::vector<Sketcher::Constraint*>::const_iterator it=ConStr.begin();it!=ConStr.end();++it,i++){
@@ -711,6 +715,7 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
     const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
     // clean up 
     edit->constrGroup->removeAllChildren();
+    edit->vConstrType.clear();
 
     for(std::vector<Sketcher::Constraint*>::const_iterator it=ConStr.begin();it!=ConStr.end();++it){
         // root separator for one constraint
