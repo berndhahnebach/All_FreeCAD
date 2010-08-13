@@ -57,6 +57,8 @@ public:
     virtual bool pressButton(Base::Vector2D onSketchPos)=0;
     virtual bool releaseButton(Base::Vector2D onSketchPos)=0;
 
+    virtual void quit(void);
+
     friend class ViewProviderSketch;
 
     Sketcher::SketchObject* getObject(void);

@@ -198,6 +198,181 @@ bool CmdSketcherCreateLine::isActive(void)
 	return isCreateGeoActive(getActiveGuiDocument());
 }
 
+
+/* Create Box =======================================================*/
+
+/* XPM */
+static const char *cursor_createbox[]={
+"32 32 2 1",
+"# c #646464",
+". c None",
+"................................",
+"................................",
+".......#........................",
+".......#........................",
+".......#........................",
+"................................",
+".......#........................",
+"..###.###.###...................",
+".......#........................",
+"................................",
+".......#........................",
+".......#........................",
+".......#........................",
+"................................",
+"................................",
+"..........................###...",
+"...........################.#...",
+"...........#..............###...",
+"...........#...............#....",
+"...........#...............#....",
+"...........#...............#....",
+"...........#...............#....",
+"...........#...............#....",
+"...........#...............#....",
+"..........###..............#....",
+"..........#.################....",
+"..........###...................",
+"................................",
+"................................",
+"................................",
+"................................",
+"................................"};
+
+class DrawSketchHandlerBox: public DrawSketchHandler
+{
+public:
+    DrawSketchHandlerBox():Mode(STATUS_SEEK_First),EditCurve(5){}
+    virtual ~DrawSketchHandlerBox(){}
+    /// mode table
+	enum BoxMode{
+		STATUS_SEEK_First,      /**< enum value ----. */  
+		STATUS_SEEK_Second,     /**< enum value ----. */  
+        STATUS_End
+	};
+
+    virtual void activated(ViewProviderSketch *sketchgui)
+    {
+        setCursor(QPixmap(cursor_createbox),4,4);
+    } 
+
+    virtual void mouseMove(Base::Vector2D onSketchPos)
+    {
+        setPositionText(onSketchPos);
+        if(Mode==STATUS_SEEK_Second){
+            EditCurve[2] = onSketchPos;
+            EditCurve[1] = Base::Vector2D(onSketchPos.fX ,EditCurve[0].fY);
+            EditCurve[3] = Base::Vector2D(EditCurve[0].fX,onSketchPos.fY);
+            sketchgui->drawEdit(EditCurve);
+        }
+    }
+
+    virtual bool pressButton(Base::Vector2D onSketchPos)
+    {
+        if(Mode==STATUS_SEEK_First){
+            EditCurve[0] = onSketchPos;
+            EditCurve[4] = onSketchPos;
+            Mode = STATUS_SEEK_Second;
+        }else{
+            EditCurve[2] = onSketchPos;
+            EditCurve[1] = Base::Vector2D(onSketchPos.fX ,EditCurve[0].fY);
+            EditCurve[3] = Base::Vector2D(EditCurve[0].fX,onSketchPos.fY);
+            sketchgui->drawEdit(EditCurve);
+            Mode = STATUS_End;
+        }
+        return true;
+    }
+
+    virtual bool releaseButton(Base::Vector2D onSketchPos)
+    {
+        if(Mode==STATUS_End){
+            unsetCursor();
+            EditCurve.clear();
+            resetPositionText();
+            sketchgui->drawEdit(EditCurve);
+            Gui::Command::openCommand("add sketch line");
+            int firstCurve = getHighestCurveIndex() + 1;
+            // add the four line geos
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[1].fX,EditCurve[1].fY,EditCurve[2].fX,EditCurve[2].fY);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[2].fX,EditCurve[2].fY,EditCurve[3].fX,EditCurve[3].fY);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[3].fX,EditCurve[3].fY,EditCurve[0].fX,EditCurve[0].fY);
+            // add the four coincidents to ty them together
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve,firstCurve+1);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve+1,firstCurve+2);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve+2,firstCurve+3);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve+3,firstCurve);
+            // add the horizontal constraints
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve+2);
+            // add the vertical  constraints
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%i)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve+1);
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%i)) "
+                     ,sketchgui->getObject()->getNameInDocument()
+                     ,firstCurve+3);
+
+            sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+        }
+        return true;
+    }
+protected:
+    BoxMode Mode;
+    std::vector<Base::Vector2D> EditCurve;
+};
+
+
+
+DEF_STD_CMD_A(CmdSketcherCreateBox);
+
+CmdSketcherCreateBox::CmdSketcherCreateBox()
+	:Command("Sketcher_CreateBox")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Create line");
+    sToolTipText    = QT_TR_NOOP("Create a line in the sketch");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Sketcher_CreateRectangle";
+    iAccel          = Qt::Key_B;
+    eType           = ForEdit;
+
+
+}
+
+void CmdSketcherCreateBox::activated(int iMsg)
+{
+	ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerBox() );
+}
+
+bool CmdSketcherCreateBox::isActive(void)
+{
+	return isCreateGeoActive(getActiveGuiDocument());
+}
+
+
 // ======================================================================================
 
 /* XPM */
@@ -481,43 +656,6 @@ bool CmdSketcherCreatePoint::isActive(void)
 
 
 
-
-
-DEF_STD_CMD_A(CmdSketcherCreateRectangle);
-
-
-CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
-	:Command("Sketcher_CreateRectangle")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create rectangle");
-    sToolTipText    = QT_TR_NOOP("Create a rectangle in the sketch");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_CreateRectangle";
-    eType           = ForEdit;
-}
-
-
-void CmdSketcherCreateRectangle::activated(int iMsg)
-{
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
-}
-
-bool CmdSketcherCreateRectangle::isActive(void)
-{
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
-}
-
-
 DEF_STD_CMD_A(CmdSketcherCreateText);
 
 CmdSketcherCreateText::CmdSketcherCreateText()
@@ -596,7 +734,7 @@ void CreateSketcherCommandsCreateGeo(void)
 	rcCmdMgr.addCommand(new CmdSketcherCreateCircle());
 	rcCmdMgr.addCommand(new CmdSketcherCreateLine());
 	rcCmdMgr.addCommand(new CmdSketcherCreatePolyline());
-	rcCmdMgr.addCommand(new CmdSketcherCreateRectangle());
+	rcCmdMgr.addCommand(new CmdSketcherCreateBox());
 	rcCmdMgr.addCommand(new CmdSketcherCreateText());
 	rcCmdMgr.addCommand(new CmdSketcherCreateDraftLine());
 
