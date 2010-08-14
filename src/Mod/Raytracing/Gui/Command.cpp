@@ -478,7 +478,7 @@ void CmdRaytracingExportProject::activated(int iMsg)
         std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
         openCommand("Raytracing export project");
 
-        doCommand(Doc,"PageFile = open(App.activeDocument().%s.Result,'r')",Sel[0].FeatName);
+        doCommand(Doc,"PageFile = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
         std::string fname = (const char*)fn.toAscii();
         doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
         doCommand(Doc,"OutFile.write(PageFile.read())");
