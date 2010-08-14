@@ -261,7 +261,7 @@ TYPESYSTEM_SOURCE(App::PropertyEnumeration, App::PropertyInteger);
 
 
 PropertyEnumeration::PropertyEnumeration()
-  : _EnumArray(0)
+  : _CustomEnum(false), _EnumArray(0)
 {
 
 }
@@ -406,6 +406,50 @@ const char** PropertyEnumeration::getEnums(void) const
     return _EnumArray;
 }
 
+void PropertyEnumeration::Save(Base::Writer &writer) const
+{
+    writer.Stream() << writer.ind() << "<Integer value=\"" <<  _lValue <<"\"";
+    if (_CustomEnum)
+        writer.Stream() << " CustomEnum=\"true\"";
+    writer.Stream() << "/>" << std::endl;
+    if (_CustomEnum) {
+        std::vector<std::string> items = getEnumVector();
+        writer.Stream() << writer.ind() << "<CustomEnumList count=\"" <<  items.size() <<"\">" << endl;
+        writer.incInd();
+        for(std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it) {
+            std::string val = encodeAttribute(*it);
+            writer.Stream() << writer.ind() << "<Enum value=\"" <<  val <<"\"/>" << endl;
+        }
+        writer.decInd();
+        writer.Stream() << writer.ind() << "</CustomEnumList>" << endl;
+    }
+}
+
+void PropertyEnumeration::Restore(Base::XMLReader &reader)
+{
+    // read my Element
+    reader.readElement("Integer");
+    // get the value of my Attribute
+    long val = reader.getAttributeAsInteger("value");
+
+    if (reader.hasAttribute("CustomEnum")) {
+        reader.readElement("CustomEnumList");
+        int count = reader.getAttributeAsInteger("count");
+        std::vector<std::string> values(count);
+        for(int i = 0; i < count; i++) {
+            reader.readElement("Enum");
+            values[i] = reader.getAttribute("value");
+        }
+
+        reader.readEndElement("CustomEnumList");
+
+        _CustomEnum = true;
+        setEnumVector(values);
+    }
+
+    setValue(val);
+}
+
 PyObject *PropertyEnumeration::getPyObject(void)
 {
     if (!_EnumArray) {
@@ -451,6 +495,7 @@ void PropertyEnumeration::setPyObject(PyObject *value)
             values[i] = PyString_AsString(item);
         }
 
+        _CustomEnum = true;
         setEnumVector(values);
         setValue((long)0);
     }
