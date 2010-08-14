@@ -401,7 +401,7 @@ bool CmdRaytracingNewPovrayProject::isActive(void)
 DEF_STD_CMD(CmdRaytracingNewPartSegment);
 
 CmdRaytracingNewPartSegment::CmdRaytracingNewPartSegment()
-	:Command("Raytracing_NewPartSegment")
+  : Command("Raytracing_NewPartSegment")
 {
     sAppModule      = "Raytracing";
     sGroup          = QT_TR_NOOP("Raytracing");
@@ -412,35 +412,33 @@ CmdRaytracingNewPartSegment::CmdRaytracingNewPartSegment()
     sPixmap         = 0;
 }
 
-
 void CmdRaytracingNewPartSegment::activated(int iMsg)
 {
-
-   unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
+    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
     if (n != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select a Part object."));
         return;
     }
 
-	App::DocumentObject *page = this->getDocument()->getObject("PovProject");
-	if ( !page /*|| !page->getClassTypeId().isDerivedFrom(Raytracing::FeaturePage::getClassTypeId()) */){
+    std::vector<App::DocumentObject*> pages = App::GetApplication().getActiveDocument()
+        ->getObjectsOfType(Raytracing::RayProject::getClassTypeId());
+    if (pages.empty()) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No Povray project to insert"),
             QObject::tr("Create a Povray project to insert a view."));
         return;
     }
 
     std::string FeatName = getUniqueObjectName("View");
-
+    std::string ProjName = pages.front()->getNameInDocument();
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Create view");
-    doCommand(Doc,"App.activeDocument().addObject('Raytracing::FeatureViewPart','%s')",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject('Raytracing::RayFeature','%s')",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().PovProject.addObject(App.activeDocument().%s)",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.addObject(App.activeDocument().%s)",ProjName.c_str(), FeatName.c_str());
     updateActive();
     commitCommand();
-
 }
 
 //===========================================================================
@@ -464,7 +462,7 @@ CmdRaytracingExportProject::CmdRaytracingExportProject()
 
 void CmdRaytracingExportProject::activated(int iMsg)
 {
-	unsigned int n = getSelection().countObjectsOfType(Raytracing::RayProject::getClassTypeId());
+    unsigned int n = getSelection().countObjectsOfType(Raytracing::RayProject::getClassTypeId());
     if (n != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select one Povray project object."));
@@ -477,14 +475,14 @@ void CmdRaytracingExportProject::activated(int iMsg)
 
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
     if (!fn.isEmpty()) {
-  	   std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+        std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
         openCommand("Raytracing export project");
 
-		doCommand(Doc,"PageFile = open(App.activeDocument().%s.Result,'r')",Sel[0].FeatName);
-		std::string fname = (const char*)fn.toAscii();
-		doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
-		doCommand(Doc,"OutFile.write(PageFile.read())");
-		doCommand(Doc,"del OutFile,PageFile");
+        doCommand(Doc,"PageFile = open(App.activeDocument().%s.Result,'r')",Sel[0].FeatName);
+        std::string fname = (const char*)fn.toAscii();
+        doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
+        doCommand(Doc,"OutFile.write(PageFile.read())");
+        doCommand(Doc,"del OutFile,PageFile");
 
         commitCommand();
     }

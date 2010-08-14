@@ -46,22 +46,18 @@ class AppRaytracingExport RayProject: public App::DocumentObjectGroup
     PROPERTY_HEADER(Raytracing::RayProject);
 
 public:
-	/// Constructor
-	RayProject(void);
+    /// Constructor
+    RayProject(void);
 
     App::PropertyFileIncluded PageResult;
     App::PropertyFile Template;
 
 
-   /** @name methods overide Feature */
+    /** @name methods overide Feature */
     //@{
     /// recalculate the Feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
-    /// returns the type name of the ViewProvider
- /*   const char* getViewProviderName(void) const { 
-        return "RaytracingGui::ViewProviderRayProject"; 
-    }*/
   //@}
 
 
