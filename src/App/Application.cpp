@@ -276,6 +276,12 @@ Document* Application::newDocument(const char * Name, const char * UserName)
     _pActiveDoc->signalRenamedObject.connect(boost::bind(&App::Application::slotRenamedObject, this, _1));
     _pActiveDoc->signalActivatedObject.connect(boost::bind(&App::Application::slotActivatedObject, this, _1));
 
+    // make sure that the active document is set in case no GUI is up
+    {
+        Base::PyGILStateLocker lock;
+        Py::Object active(_pActiveDoc->getPyObject(), true);
+        Py::Module("FreeCAD").setAttr(std::string("ActiveDocument"),active);
+    }
 
     signalNewDocument(*_pActiveDoc);
 
