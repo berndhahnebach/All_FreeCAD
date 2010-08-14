@@ -45,14 +45,13 @@ PROPERTY_SOURCE(Raytracing::RayFeature, Raytracing::RaySegment)
 
 RayFeature::RayFeature(void)
 {
-	ADD_PROPERTY(Source,(0));
+    ADD_PROPERTY(Source,(0));
 }
-	
 
 App::DocumentObjectExecReturn *RayFeature::execute(void)
 {
     std::stringstream result;
-	std::string ViewName = Label.getValue();
+    std::string ViewName = Label.getValue();
 
     App::DocumentObject* link = Source.getValue();
     if (!link)
@@ -60,17 +59,14 @@ App::DocumentObjectExecReturn *RayFeature::execute(void)
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
     TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
-	std::string Name(std::string("Pov_")+static_cast<Part::Feature*>(link)->Label.getValue());
+    std::string Name(std::string("Pov_")+static_cast<Part::Feature*>(link)->Label.getValue());
     if (shape.IsNull())
         return new App::DocumentObjectExecReturn("Linked shape object is empty");
 
-	PovTools::writeShape(result,Name.c_str(),shape);
+    PovTools::writeShape(result,Name.c_str(),shape);
 
     // Apply the resulting fragment
     Result.setValue(result.str().c_str());
 
     return App::DocumentObject::StdReturn;
 }
-
-
-

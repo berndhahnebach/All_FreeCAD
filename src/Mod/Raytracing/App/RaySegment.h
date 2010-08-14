@@ -50,23 +50,18 @@ class AppRaytracingExport RaySegment: public App::DocumentObject
   PROPERTY_HEADER(Raytracing::RaySegment);
 
 public:
-	/// Constructor
-	RaySegment(void);
-  virtual ~RaySegment();
+    /// Constructor
+    RaySegment(void);
+    virtual ~RaySegment();
 
-  App::PropertyString Result;
+    App::PropertyString Result;
 
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual App::DocumentObjectExecReturn *execute(void);
-  //@}
-
-  /// returns the type name of the ViewProvider
-  //virtual const char* getViewProviderName(void) const {
-  //  return "RaytracingGui::ViewProviderRaytracingView";
-  //}
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual App::DocumentObjectExecReturn *execute(void);
+    //@}
 };
 
 

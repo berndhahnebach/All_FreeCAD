@@ -44,17 +44,14 @@ PROPERTY_SOURCE(Raytracing::RayProject, App::DocumentObjectGroup)
 
 RayProject::RayProject(void)
 {
-	ADD_PROPERTY_TYPE(PageResult ,(0),0,App::Prop_Output,"Resulting povray Project file");
-	ADD_PROPERTY_TYPE(Template   ,(""),0,App::Prop_None  ,"Template for the Povray project");
-
-
+    ADD_PROPERTY_TYPE(PageResult ,(0),0,App::Prop_Output,"Resulting povray Project file");
+    ADD_PROPERTY_TYPE(Template   ,(""),0,App::Prop_None  ,"Template for the Povray project");
 }
-	
 
 App::DocumentObjectExecReturn *RayProject::execute(void)
 {
-	if(std::string(PageResult.getValue()) == "")
-		PageResult.setValue(Template.getValue());
+    if (std::string(PageResult.getValue()) == "")
+        PageResult.setValue(Template.getValue());
 
     Base::FileInfo fi(Template.getValue());
     if (!fi.isReadable()) {
@@ -70,24 +67,21 @@ App::DocumentObjectExecReturn *RayProject::execute(void)
     string tempName = PageResult.getExchangeTempFile();
     ofstream ofile(tempName.c_str());
 
-    while (! file.eof() )
-    {
-      getline (file,line);
-      if(line != "<!- ProjectContent -->")
-        ofile << line << endl;
-      else
-      {
-        // get through the children and collect all the views
-		  const std::vector<App::DocumentObject*> &Grp = Group.getValues();
-		  for(std::vector<App::DocumentObject*>::const_iterator It= Grp.begin();It!=Grp.end();++It){
-			  if((*It)->getTypeId().isDerivedFrom(Raytracing::RaySegment::getClassTypeId())){
-				  Raytracing::RaySegment *View = dynamic_cast<Raytracing::RaySegment *>(*It);
-				  ofile << View->Result.getValue();
-				  ofile << endl << endl << endl;
-			  }
-
-		  }
-      }
+    while (!file.eof()) {
+        getline (file,line);
+        if (line != "<!- ProjectContent -->")
+            ofile << line << endl;
+        else {
+            // get through the children and collect all the views
+            const std::vector<App::DocumentObject*> &Grp = Group.getValues();
+            for (std::vector<App::DocumentObject*>::const_iterator It= Grp.begin();It!=Grp.end();++It) {
+                if ((*It)->getTypeId().isDerivedFrom(Raytracing::RaySegment::getClassTypeId())) {
+                    Raytracing::RaySegment *View = dynamic_cast<Raytracing::RaySegment *>(*It);
+                    ofile << View->Result.getValue();
+                    ofile << endl << endl << endl;
+                }
+            }
+        }
     }
 
     file.close();
@@ -95,21 +89,10 @@ App::DocumentObjectExecReturn *RayProject::execute(void)
 
     PageResult.setValue(tempName.c_str());
 
- 
-  //const char* text = "lskdfjlsd";
-  //const char* regex = "lskdflds";
-  //boost::regex e(regex);
-  //boost::smatch what;
-  //if(boost::regex_match(string(text), what, e))
-  //{
-  //}
-  return App::DocumentObject::StdReturn;}
+    return App::DocumentObject::StdReturn;
+}
 
 short RayProject::mustExecute() const
 {
-	return 0;
-
+    return 0;
 }
-
-
-
