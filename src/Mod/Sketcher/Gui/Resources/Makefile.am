@@ -7,6 +7,27 @@ nodist_libResources_la_SOURCES=\
 		qrc_Sketcher.cpp 
 
 EXTRA_DIST = \
+		icons/Constraint_PointOnObject.svg \
+		icons/Constraint_TangentToStart.svg \
+		icons/Constraint_Length.svg \
+		icons/Constraint_Concentric.svg \
+		icons/Constraint_TangentToEnd.svg \
+		icons/Constraint_PointOnMidPoint.svg \
+		icons/Sketcher_ConstrainDistance.svg \
+		icons/Sketcher_ConstrainParallel.svg \
+		icons/Constraint_PointOnStart.svg \
+		icons/Constraint_Vertical.svg \
+		icons/Constraint_PointOnEnd.svg \
+		icons/Constraint_PointToObject.svg \
+		icons/Constraint_InternalAngle.svg \
+		icons/Constraint_Radius.svg \
+		icons/Constraint_Horizontal.svg \
+		icons/Constraint_ExternalAngle.svg \
+		icons/Constraint_Parallel.svg \
+		icons/Constraint_Perpendicular.svg \
+		icons/Constraint_PointOnPoint.svg \
+		icons/Constraint_Tangent.svg \
+		icons/Constraint_EqualLength.svg \
 		icons/Sketcher_ConstrainCoincident.svg \
 		icons/Sketcher_ConstrainHorizontal.svg \
 		icons/Sketcher_ConstrainLock.svg \

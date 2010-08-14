@@ -342,6 +342,8 @@ int Sketch::addConstraint(const Constraint * constraint)
            else
                rtn = addDistanceConstraint(constraint->First,constraint->Second,constraint->Value, constraint->Name.c_str());
            break;
+       case Angle:
+           break;
        case None:
            break;
     }

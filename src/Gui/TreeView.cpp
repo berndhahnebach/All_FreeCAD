@@ -91,3 +91,6 @@ void TreeView::rowsInserted (const QModelIndex & parent, int start, int end)
         }
     }
 }
+
+#include "moc_TreeView.cpp"
+

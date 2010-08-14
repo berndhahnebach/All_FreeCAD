@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <Standard_math.hxx>
-# include <stdio.h>
 # include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoFont.h>
