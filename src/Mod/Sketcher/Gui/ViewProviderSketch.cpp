@@ -152,8 +152,8 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
 ViewProviderSketch::ViewProviderSketch()
   : 
-    Mode(STATUS_NONE),
-    edit(0)
+    edit(0),
+    Mode(STATUS_NONE)
 {
     sPixmap = "Sketcher_NewSketch";
 }
@@ -323,6 +323,12 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     // make the handler quit
                     edit->sketchHandler->quit();
                     return true;
+                case STATUS_NONE:
+                case STATUS_SELECT_Point:
+                case STATUS_SELECT_Edge:
+                case STATUS_SELECT_Constraint:
+                case STATUS_SKETCH_DragPoint:
+                    break;
             }
         }
     }
@@ -659,8 +665,8 @@ Restart:
     // check if a new constraint arrived
     if (ConStr.size() != edit->vConstrType.size())
         rebuildConstriantsVisual();
-    assert(ConStr.size()==edit->constrGroup->getNumChildren());
-    assert(edit->vConstrType.size()==edit->constrGroup->getNumChildren());
+    assert((int)ConStr.size()==edit->constrGroup->getNumChildren());
+    assert((int)edit->vConstrType.size()==edit->constrGroup->getNumChildren());
     // go through the constraints and update the position 
     i = 0;
     for(std::vector<Sketcher::Constraint*>::const_iterator it=ConStr.begin();it!=ConStr.end();++it,i++){
@@ -673,7 +679,7 @@ Restart:
         // root separator for this constraint
         SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
         const Constraint *Constr = *it;
-        // destiquish different constraint types to build up
+        // distinquish different constraint types to build up
         switch(Constr->Type) {
             case Horizontal: // write the new position of the Horizontal constraint
                 {
@@ -686,7 +692,7 @@ Restart:
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
                     dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos.x,pos.y,0.0f);
-                }
+                }   break;
             case Vertical: // write the new position of the Vertical constraint
                 {
                     assert(Constr->First < (int)geomlist->size());
@@ -698,7 +704,13 @@ Restart:
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
                     dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos.x,pos.y,0.0f);
-                }
+                }   break;
+            case Coincident:
+            case Parallel:
+            case Distance:
+            case Angle:
+            case None:
+                break;
         }
     }
 

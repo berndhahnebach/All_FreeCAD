@@ -37,6 +37,7 @@ class Property;
 
 namespace SketcherGui {
 
+typedef boost::signals::connection Connection;
 class ViewProviderSketch;
 
 class TaskSketcherConstrains : public Gui::TaskView::TaskBox
@@ -52,10 +53,9 @@ public:
     
 protected:
     void changeEvent(QEvent *e);
-
     ViewProviderSketch *sketchView;
+    Connection c;
 
-    void* c;
 private:
     QWidget* proxy;
     Ui_TaskSketcherConstrains* ui;

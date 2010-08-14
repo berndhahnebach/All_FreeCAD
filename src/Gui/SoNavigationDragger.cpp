@@ -121,18 +121,22 @@ RotTransDragger::RotTransDragger()
    // Create the translator dragger.    
    SoDragger *tDragger = SO_GET_ANY_PART(this, "translator", 
                          SoTranslate1Dragger);
+   (void)tDragger;
 
    // Create the XRotator dragger.    
    SoDragger *XDragger = SO_GET_ANY_PART(this, "XRotator", 
                          SoRotateCylindricalDragger);
+   (void)XDragger;
 
    // Create the YRotator dragger.    
    SoDragger *YDragger = SO_GET_ANY_PART(this, "YRotator", 
                          SoRotateCylindricalDragger);
+   (void)YDragger;
 
    // Create the ZRotator dragger.    
    SoDragger *ZDragger = SO_GET_ANY_PART(this, "ZRotator", 
                          SoRotateCylindricalDragger);
+   (void)ZDragger;
 
    // Set rotations in "XRotatorRot" and "ZRotatorRot" parts.
    // These parts will orient the draggers from their default 

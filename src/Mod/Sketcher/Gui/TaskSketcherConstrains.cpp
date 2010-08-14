@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <QString.h>
+# include <QString>
 #endif
 
 #include "ui_TaskSketcherConstrains.h"
@@ -58,18 +58,14 @@ TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
     QMetaObject::connectSlotsByName(this);
 
     //QObject::connect(sketchView,SIGNAL(ConstraintsChanged()),this,SLOT(ConstraintsChanged()));
-    // idiotic hack to get around moc parse error in header (screw you MOC!)
-    c = new boost::signals::connection();
-
-    *static_cast<boost::signals::connection*>(c) = sketchView->ConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::ConstraintsChanged, this));
+    c = sketchView->ConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::ConstraintsChanged, this));
 
     this->groupLayout()->addWidget(proxy);
 }
 
 TaskSketcherConstrains::~TaskSketcherConstrains()
 {
-    static_cast<boost::signals::connection*>(c)->disconnect();
-    delete (static_cast<boost::signals::connection*>(c));
+    c.disconnect();
     delete ui;
 }
 

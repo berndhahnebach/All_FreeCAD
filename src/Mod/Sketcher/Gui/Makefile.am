@@ -6,9 +6,9 @@ BUILT_SOURCES=\
 		moc_TaskSketcherConstrains.cpp \
 		moc_TaskSketcherCreateCommands.cpp \
 		moc_TaskSketcherGeneral.cpp \
+		moc_TaskDlgEditSketch.cpp \
 		ui_TaskSketcherConstrains.h \
-		ui_TaskSketcherGeneral.h    \
-		moc_TaskDlgEditSketch.cpp
+		ui_TaskSketcherGeneral.h
 
 libSketcherGui_la_UI=\
 		TaskSketcherConstrains.ui \
@@ -34,11 +34,11 @@ libSketcherGui_la_SOURCES=\
 		ViewProviderSketchSF.cpp \
 		ViewProviderSketchSF.h \
 		Workbench.cpp \
-		Workbench.h   \
+		Workbench.h \
 		TaskDlgEditSketch.cpp \
-		TaskDlgEditSketch.h  \
-		ViewProviderPython.h  \
-		ViewProviderPython.cpp
+		TaskDlgEditSketch.h \
+		ViewProviderPython.cpp \
+		ViewProviderPython.h
 
 # the library search path.
 libSketcherGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \
@@ -52,6 +52,7 @@ libSketcherGui_la_CPPFLAGS = -DSketcherAppExport= -DSketcherGuiExport=
 
 libSketcherGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
+		@BOOST_SIGNALS_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \
