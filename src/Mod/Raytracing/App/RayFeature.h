@@ -53,17 +53,16 @@ public:
 
 	App::PropertyLink         Source;
 
-
-   /** @name methods overide Feature */
+    /** @name methods overide Feature */
     //@{
     /// recalculate the Feature
     App::DocumentObjectExecReturn *execute(void);
 
 	/// returns the type name of the ViewProvider
-    //const char* getViewProviderName(void) const { 
-    //    return "RaytracingGui::ViewProviderRayFeature"; 
-    //}
-  //@}
+    const char* getViewProviderName(void) const { 
+        return "Gui::ViewProviderDocumentObject"; 
+    }
+    //@}
 
 };
 
