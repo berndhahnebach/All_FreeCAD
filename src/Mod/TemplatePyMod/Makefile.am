@@ -5,6 +5,7 @@ data_DATA = \
 		InitGui.py \
 		Commands.py \
 		FeaturePython.py \
+		Mesh2Shape.py \
 		PythonQt.py \
 		Tests.py
 

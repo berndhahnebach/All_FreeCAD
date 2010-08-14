@@ -140,7 +140,7 @@ def makeBox():
 
 class Line:
 	def __init__(self, obj):
-		''' App two point properties '''
+		''' Add two point properties '''
 		obj.addProperty("App::PropertyVector","p1","Line","Start point")
 		obj.addProperty("App::PropertyVector","p2","Line","End point").p2=FreeCAD.Vector(1,0,0)
 		obj.Proxy = self
@@ -535,7 +535,7 @@ def makeMesh():
 
 class Molecule:
 	def __init__(self, obj):
-		''' App two point properties '''
+		''' Add two point properties '''
 		obj.addProperty("App::PropertyVector","p1","Line","Start point")
 		obj.addProperty("App::PropertyVector","p2","Line","End point").p2=FreeCAD.Vector(1,0,0)
 
@@ -646,3 +646,20 @@ def makeCircleSet():
 	c=CircleSet(a)
 	v=ViewProviderCircleSet(a.ViewObject)
 	a.Shape=comp
+	
+
+class EnumTest:
+	def __init__(self, obj):
+		''' Add enum properties '''
+		obj.addProperty("App::PropertyEnumeration","Enum","","Enumeration").Enum=["One","Two","Three"]
+		obj.Proxy = self
+
+	def execute(self, fp):
+		return
+
+def makeEnumTest():
+	FreeCAD.newDocument()
+	a=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Enum")
+	EnumTest(a)
+	a.ViewObject.Proxy=0 # just set it to something different from None
+
