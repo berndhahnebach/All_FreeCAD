@@ -57,19 +57,25 @@ TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
     ui->setupUi(proxy);
     QMetaObject::connectSlotsByName(this);
 
-    //QObject::connect(sketchView,SIGNAL(ConstraintsChanged()),this,SLOT(ConstraintsChanged()));
-    c = sketchView->ConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::ConstraintsChanged, this));
+    QObject::connect(ui->comboBoxFilter,SIGNAL(currentIndexChanged(int)),this,SLOT(on_comboBoxFilter_currentIndexChanged(int)));
+    connectionConstraintsChanged = sketchView->signalConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::slotConstraintsChanged, this));
 
     this->groupLayout()->addWidget(proxy);
+
+    slotConstraintsChanged();
 }
 
 TaskSketcherConstrains::~TaskSketcherConstrains()
 {
-    c.disconnect();
+    connectionConstraintsChanged.disconnect();
     delete ui;
 }
+void TaskSketcherConstrains::on_comboBoxFilter_currentIndexChanged(int)
+{
+    slotConstraintsChanged();
+}
 
-void TaskSketcherConstrains::ConstraintsChanged(void)
+void TaskSketcherConstrains::slotConstraintsChanged(void)
 {
     QIcon horiz( Gui::BitmapFactory().pixmap("Constraint_Horizontal") );
     QIcon vert ( Gui::BitmapFactory().pixmap("Constraint_Vertical") );
@@ -85,6 +91,8 @@ void TaskSketcherConstrains::ConstraintsChanged(void)
     ui->listWidgetConstraints->clear();
     QString name;
 
+    int Filter = ui->comboBoxFilter->currentIndex();
+
     int i=1;
 	for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it,++i){
         if((*it)->Name == ""){
@@ -94,20 +102,26 @@ void TaskSketcherConstrains::ConstraintsChanged(void)
 
         switch((*it)->Type){
             case Sketcher::Horizontal:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(horiz,name));
+                if(Filter<2 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new QListWidgetItem(horiz,name));
                 break;
             case Sketcher::Vertical:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(vert,name));
+                if(Filter<2 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new QListWidgetItem(vert,name));
                 break;
             case Sketcher::Coincident:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(coinc,name));
+                if(Filter<1 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new QListWidgetItem(coinc,name));
                 break;
             case Sketcher::Parallel:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(para,name));
+                if(Filter<2 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new QListWidgetItem(para,name));
                 break;
             case Sketcher::Distance:
-                name = QString(QString::fromLatin1("%1 (%2)")).arg(name).arg((*it)->Value);
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(dist,name));
+                if(Filter<3 || (*it)->Name != ""){
+                    name = QString(QString::fromLatin1("%1 (%2)")).arg(name).arg((*it)->Value);
+                    ui->listWidgetConstraints->addItem(new QListWidgetItem(dist,name));
+                }
                 break;
             default:
                 ui->listWidgetConstraints->addItem(new QListWidgetItem(name));

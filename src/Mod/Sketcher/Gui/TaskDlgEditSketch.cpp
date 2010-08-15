@@ -45,11 +45,6 @@ TaskDlgEditSketch::TaskDlgEditSketch(ViewProviderSketch *sketchView)
     Constrints  = new TaskSketcherConstrains(sketchView);
     General  = new TaskSketcherGeneral(sketchView);
     
-   
-    
-    //QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float,const Base::Placement &)),
-    //                 rob  ,SLOT  (setAxis(float,float,float,float,float,float,const Base::Placement &)));
-
     Content.push_back(General);
     Content.push_back(Constrints);
 }

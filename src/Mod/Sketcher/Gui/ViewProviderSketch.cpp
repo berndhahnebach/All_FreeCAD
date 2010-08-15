@@ -120,8 +120,7 @@ struct EditData {
     // helper data structure for the constraint rendering
     std::vector<ConstraintType> vConstrType;
 
-
-        // nodes for the visuals 
+    // nodes for the visuals 
     SoSeparator   *EditRoot;
     SoMaterial    *PointsMaterials;
     SoMaterial    *CurvesMaterials;
@@ -367,14 +366,17 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             return true;
         case STATUS_SKETCH_DragPoint:
             if(edit->DragPoint != -1){
-                Base::Console().Log("Drag Point:%d\n",edit->DragPoint);
+                //Base::Console().Log("Drag Point:%d\n",edit->DragPoint);
                 int ret;
                 if ((ret=edit->ActSketch.movePoint(edit->DragPoint/2,edit->DragPoint%2==0?start:end,Base::Vector3d(x,y,0))) == 0){
                     setPositionText(Base::Vector2D(x,y));
                     draw(true);
+                    signalSolved(0,edit->ActSketch.SolveTime);
                 }
-                else
-                    Base::Console().Log("Error solving:%d\n",ret);
+                else{
+                    signalSolved(1,edit->ActSketch.SolveTime);
+                    //Base::Console().Log("Error solving:%d\n",ret);
+                }
             }
             return true;
         case STATUS_SKETCH_UseHandler:
@@ -883,11 +885,16 @@ void ViewProviderSketch::updateData(const App::Property* prop)
 
     if(edit && (prop == &(getSketchObject()->Geometry) || &(getSketchObject()->Constraints) )){
         edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),getSketchObject()->Constraints.getValues());
+ /*       double * fixed[2]={0,0};
+        if(edit->ActSketch.solve(fixed) == 0)
+            signalSolved(0,edit->ActSketch.SolveTime);
+        else
+            signalSolved(1,edit->ActSketch.SolveTime);*/
         draw(true);    
     }
     if(edit && &(getSketchObject()->Constraints) ){
         // send the signal for the TaskDlg.
-        ConstraintsChanged();
+        signalConstraintsChanged();
     }
 
 }

@@ -568,7 +568,7 @@ void _redirectPoint(point &c,double &fixedValue1,double &fixedValue2,double * fi
 int Sketch::solve(double * fixed[2]) {
 
     Base::TimeInfo start_time;
-    Base::Console().Log("solv: Start solving (C:%d;G%d) ",Const.size(),Geoms.size());
+    //Base::Console().Log("solv: Start solving (C:%d;G%d) ",Const.size(),Geoms.size());
     Solver s;
     double fixedValue1=0,fixedValue2=0;
 
@@ -627,11 +627,11 @@ int Sketch::solve(double * fixed[2]) {
 
         }
     }else{
-        Base::Console().Log("NotSolved ");
+        //Base::Console().Log("NotSolved ");
     }
     Base::TimeInfo end_time;
-    Base::Console().Log("T:%s\n",Base::TimeInfo::diffTime(start_time,end_time).c_str());
-
+    //Base::Console().Log("T:%s\n",Base::TimeInfo::diffTime(start_time,end_time).c_str());
+    SolveTime = Base::TimeInfo::diffTimeF(start_time,end_time);
 	return ret;
 }
 
