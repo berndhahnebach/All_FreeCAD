@@ -64,6 +64,7 @@ public:
 
     static const char* currentDateTimeString();
     static std::string diffTime(const TimeInfo &timeStart,const TimeInfo &timeEnd );
+    static float diffTimeF(const TimeInfo &timeStart,const TimeInfo &timeEnd );
     bool isNull() const;
     static TimeInfo null();
 

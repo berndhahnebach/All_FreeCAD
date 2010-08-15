@@ -48,13 +48,15 @@ public:
     TaskSketcherConstrains(ViewProviderSketch *sketchView);
     ~TaskSketcherConstrains();
 
-    void ConstraintsChanged(void);
+    void slotConstraintsChanged(void);
 
+public Q_SLOTS:
+    void on_comboBoxFilter_currentIndexChanged(int);
     
 protected:
     void changeEvent(QEvent *e);
     ViewProviderSketch *sketchView;
-    Connection c;
+    Connection connectionConstraintsChanged;
 
 private:
     QWidget* proxy;

@@ -26,9 +26,10 @@
 
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
-
+#include <boost/signals.hpp>
 
 class Ui_TaskSketcherGeneral;
+typedef boost::signals::connection Connection;
 
 namespace App {
 class Property;
@@ -50,7 +51,7 @@ public:
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
 
-public Q_SLOTS:
+    void slotSolved(int type,float time);
 
 Q_SIGNALS:
     void setGridSnap(int Type);
@@ -59,6 +60,7 @@ protected:
     void changeEvent(QEvent *e);
 
     ViewProviderSketch *sketchView;
+    Connection connectionSolved;
 
 private:
     QWidget* proxy;

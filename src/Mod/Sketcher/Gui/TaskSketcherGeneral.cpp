@@ -34,6 +34,7 @@
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Base/Console.h>
+#include <boost/bind.hpp>
 
 #include "ViewProviderSketch.h"
 
@@ -52,13 +53,30 @@ TaskSketcherGeneral::TaskSketcherGeneral(ViewProviderSketch *sketchView)
 
     this->groupLayout()->addWidget(proxy);
 
+    connectionSolved = sketchView->signalSolved.connect(boost::bind(&SketcherGui::TaskSketcherGeneral::slotSolved, this,_1,_2));
+
     Gui::Selection().Attach(this);
 }
 
 TaskSketcherGeneral::~TaskSketcherGeneral()
 {
+    connectionSolved.disconnect();
     delete ui;
     Gui::Selection().Detach(this);
+}
+
+void TaskSketcherGeneral::slotSolved(int type,float time)
+{
+    switch(type){
+        case 0: 
+            ui->labelSolverStatus->setText(QString::fromLatin1("Solved (%1)").arg(time));
+            //ui->labelSolverStatus->P
+            break;
+        case 1: 
+            ui->labelSolverStatus->setText(QString::fromLatin1("Unsolved (%1)").arg(time));
+            //ui->labelSolverStatus->P
+            break;
+    }
 }
 
 void TaskSketcherGeneral::changeEvent(QEvent *e)

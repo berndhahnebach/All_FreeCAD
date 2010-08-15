@@ -140,6 +140,7 @@ public:
         Ellipse = 5
     };
 
+    float SolveTime;
 
 protected:
     /// container element to store and work with the gometric elements of this sketch

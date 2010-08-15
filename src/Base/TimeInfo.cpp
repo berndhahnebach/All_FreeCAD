@@ -83,11 +83,16 @@ const char* TimeInfo::currentDateTimeString()
 std::string TimeInfo::diffTime(const TimeInfo &timeStart,const TimeInfo &timeEnd )
 {
    std::stringstream str;
-   str << timeEnd.getSeconds()-timeStart.getSeconds()
-       << "." 
-       << timeEnd.getMiliseconds()-timeStart.getMiliseconds();
+   str << diffTimeF(timeStart,timeEnd);
+   return str.str();
+}
 
-    return str.str();
+float TimeInfo::diffTimeF(const TimeInfo &timeStart,const TimeInfo &timeEnd )
+{
+    if(timeStart.getSeconds()==timeEnd.getSeconds())
+        return float(timeEnd.getMiliseconds())/1000.0 - float(timeStart.getMiliseconds())/1000.0;
+    else
+        return float(timeEnd.getSeconds()-timeStart.getSeconds()-1)+float((1000-timeStart.getMiliseconds())/1000.0)+float(timeEnd.getMiliseconds())/1000.0;
 }
 
 TimeInfo TimeInfo::null()

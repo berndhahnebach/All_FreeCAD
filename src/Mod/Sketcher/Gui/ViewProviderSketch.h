@@ -150,7 +150,9 @@ public:
     friend class DrawSketchHandler;
 
     /// signals if the Constraints have changed
-    boost::signal<void ()> ConstraintsChanged;
+    boost::signal<void ()> signalConstraintsChanged;
+    /// signals if the Constraints have changed
+    boost::signal<void (int type,float time)> signalSolved;
 
     void setGridSnap(int Type);
 
