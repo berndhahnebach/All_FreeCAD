@@ -72,6 +72,8 @@ public:
     int solve(void);
     /// delete all geometry and constraints, leave an empty sketch
     void clear(void);
+    /// set the sketch up with geoms and constraints
+    void setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vector<Constraint *> &ConstraintList);
     /// return the actual geometry of the sketch a TopoShape
     Part::TopoShape toShape(void) const;
     /// add unspecified geomtry
@@ -162,6 +164,7 @@ protected:
 
     // solving parameters
     std::vector<double*> Parameters;
+    std::vector<double*> FixParameters;
     std::vector<point>  Points;
     std::vector<line>   Lines;
     std::vector<circle> Circles;
