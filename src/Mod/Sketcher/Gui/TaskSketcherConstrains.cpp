@@ -76,37 +76,41 @@ void TaskSketcherConstrains::ConstraintsChanged(void)
     QIcon lock ( Gui::BitmapFactory().pixmap("Sketcher_ConstrainLock") );
     QIcon coinc( Gui::BitmapFactory().pixmap("Constraint_PointOnPoint") );
     QIcon para ( Gui::BitmapFactory().pixmap("Constraint_Parallel") );
+    QIcon dist ( Gui::BitmapFactory().pixmap("Constraint_Length") );
 
     assert(sketchView);
     // Build up ListView with the constraints
     const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
 
     ui->listWidgetConstraints->clear();
-    std::string name;
-    char buf[50];
+    QString name;
+
     int i=1;
 	for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it,++i){
         if((*it)->Name == ""){
-            sprintf(buf,"Constraint%d",i);
-            name = buf;
+            name = QString(QString::fromLatin1("Constraint%1")).arg(i);
         }else
-            name =(*it)->Name;
+            name = QString(QString::fromLatin1((*it)->Name.c_str()));
 
         switch((*it)->Type){
             case Sketcher::Horizontal:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(horiz,QString::fromLatin1(name.c_str())));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(horiz,name));
                 break;
             case Sketcher::Vertical:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(vert,QString::fromLatin1(name.c_str())));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(vert,name));
                 break;
             case Sketcher::Coincident:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(coinc,QString::fromLatin1(name.c_str())));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(coinc,name));
                 break;
             case Sketcher::Parallel:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(para,QString::fromLatin1(name.c_str())));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(para,name));
+                break;
+            case Sketcher::Distance:
+                name = QString(QString::fromLatin1("%1 (%2)")).arg(name).arg((*it)->Value);
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(dist,name));
                 break;
             default:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(QString::fromLatin1(name.c_str())));
+                ui->listWidgetConstraints->addItem(new QListWidgetItem(name));
                 break;
         }
 

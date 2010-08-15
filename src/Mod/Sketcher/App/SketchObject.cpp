@@ -51,8 +51,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
     Sketch sketch;
 
-    sketch.addGeometry(Geometry.getValues());
-    sketch.addConstraints(Constraints.getValues());
+    sketch.setUpSketch(Geometry.getValues(),Constraints.getValues());
  
     // solve the sketch with no fixed points
     double * fixed[2]={0,0};

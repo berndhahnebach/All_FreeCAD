@@ -705,10 +705,57 @@ Restart:
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
                     dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos.x,pos.y,0.0f);
                 }   break;
-            case Coincident:
             case Parallel:
+                {
+                    assert(Constr->First < (int)geomlist->size());
+                    assert(Constr->Second < (int)geomlist->size());
+                    // get the geometry
+                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+                    // Vertical can only be a GeomLineSegment
+                    assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
+                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+                    // calculate the half-distance between the start and endpoint
+                    Base::Vector3d pos1 = lineSeg1->getStartPoint() + ((lineSeg1->getEndPoint()-lineSeg1->getStartPoint())/2);
+                    Base::Vector3d pos2 = lineSeg2->getStartPoint() + ((lineSeg2->getEndPoint()-lineSeg2->getStartPoint())/2);
+                    // move the second point because of two translations in a row. 
+                    pos2 = pos2 - pos1;
+                    dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(2))->translation = SbVec3f(pos2.x,pos2.y,0.0f);
+                }   break;
             case Distance:
+                {
+                    assert(Constr->First < (int)geomlist->size());
+                    // get the geometry
+                    const Part::Geometry *geo = (*geomlist)[Constr->First];
+                    // Vertical can only be a GeomLineSegment
+                    assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+                    // calculate the half distance between the start and endpoint
+                    SbVec3f p1(lineSeg->getStartPoint().x,lineSeg->getStartPoint().y,0);
+                    SbVec3f p2(lineSeg->getEndPoint().x,lineSeg->getEndPoint().y,0);
+                    SbVec3f dir = p2 - p1;
+                    SbVec3f pos = p1 + dir/2;
+                    dir.normalize();
+                    //Base::Vector3d dir = lineSeg->getEndPoint()-lineSeg->getStartPoint();
+                    //Base::Vector3d pos = lineSeg->getStartPoint() + dir/2;
+                    //dir.Normalize();
+                    dir = SbVec3f (-dir[1],dir[0],0); // rotate direction perpendicular
+                    // set the line coordinates:
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(0,p1);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(1,p1+dir*12);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(2,p2);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(3,p2+dir*12);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(4,p1+dir*10);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(5,p2+dir*10);
+                    // set position of datum
+                    dynamic_cast<SoTranslation *>(sep->getChild(2))->translation = pos + dir*10;
+                    dynamic_cast<SoText2 *>(sep->getChild(3))->string = SbString().sprintf("%.2f",Constr->Value);
+                }   break;
             case Angle:
+            case Coincident: // nothing to do for coincident
             case None:
                 break;
         }
@@ -762,10 +809,39 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
                 edit->vConstrType.push_back(Coincident);
                 break;
             case Parallel: // no visual for coincident so far
-                edit->vConstrType.push_back(Parallel);
+                {
+                    sep->addChild(new SoTranslation());
+                    SoText2 *text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "P";
+                    sep->addChild(text); 
+                    sep->addChild(new SoTranslation());
+                    text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "P";
+                    sep->addChild(text); 
+                    // remeber the type of this constraint node
+                    edit->vConstrType.push_back(Parallel);
+                }
                 break;
             case Distance: // no visual for coincident so far
-                edit->vConstrType.push_back(Distance);
+                {
+                    // nodes for the datum lines 
+                    sep->addChild(new SoCoordinate3);
+                    SoLineSet *lineSet = new SoLineSet;
+                    lineSet->numVertices.set1Value(0,2);
+                    lineSet->numVertices.set1Value(1,2);
+                    lineSet->numVertices.set1Value(2,2);
+                    sep->addChild(lineSet);
+
+                    // text node for Distance Value
+                    sep->addChild(new SoTranslation());
+                    SoText2 *text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "";
+                    sep->addChild(text); 
+                    edit->vConstrType.push_back(Distance);
+                }
                 break;
             default:
                 edit->vConstrType.push_back(None);
@@ -806,9 +882,7 @@ void ViewProviderSketch::updateData(const App::Property* prop)
     ViewProvider2DObject::updateData(prop);
 
     if(edit && (prop == &(getSketchObject()->Geometry) || &(getSketchObject()->Constraints) )){
-        edit->ActSketch.clear();
-        edit->ActSketch.addGeometry(getSketchObject()->Geometry.getValues());
-        edit->ActSketch.addConstraints(getSketchObject()->Constraints.getValues());
+        edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),getSketchObject()->Constraints.getValues());
         draw(true);    
     }
     if(edit && &(getSketchObject()->Constraints) ){
@@ -839,8 +913,7 @@ bool ViewProviderSketch::setEdit(int ModNum)
     edit = new EditData();
 
     // fill up actuall constraints and geometry
-    edit->ActSketch.addGeometry(getSketchObject()->Geometry.getValues());
-    edit->ActSketch.addConstraints(getSketchObject()->Constraints.getValues());
+    edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),getSketchObject()->Constraints.getValues());
 
 
     createEditInventorNodes();
@@ -978,6 +1051,12 @@ void ViewProviderSketch::createEditInventorNodes(void)
     font = new SoFont();
     font->size = 15.0;
     edit->EditRoot->addChild(font);
+
+    // use small line with for the Constraints
+    DrawStyle = new SoDrawStyle;
+    DrawStyle->lineWidth = 1;
+    edit->EditRoot->addChild( DrawStyle );
+
 
     // add the group where all the constraints has its SoSeparator
     edit->constrGroup = new SoGroup();

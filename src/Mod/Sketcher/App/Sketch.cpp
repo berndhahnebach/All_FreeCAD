@@ -76,8 +76,7 @@ Sketch::Sketch()
 }
 Sketch::~Sketch()
 {
-    for(std::vector<double*>::iterator it=Parameters.begin();it!=Parameters.end();++it)
-        delete *it;
+    clear();
 }
 
 void Sketch::clear(void)
@@ -92,11 +91,57 @@ void Sketch::clear(void)
     for(std::vector<double*>::iterator it = Parameters.begin();it!=Parameters.end();++it)
         if(*it) delete *it;
     Parameters.clear();
+    for(std::vector<double*>::iterator it = FixParameters.begin();it!=FixParameters.end();++it)
+        if(*it) delete *it;
+    FixParameters.clear();
 
     // deleting the geometry copied into this sketch
     for(std::vector<GeoDef>::iterator it = Geoms.begin();it!=Geoms.end();++it)
         if(it->geo) delete it->geo;
     Geoms.clear();
+
+
+}
+
+void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vector<Constraint *> &ConstraintList)
+{
+    clear();
+
+    // pass 1: building up internel geo list ===========================================================
+    for(std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it){
+        if((*it)->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
+            const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>((*it));
+            // create the definition struct for that geom
+            addLineSegment(*lineSeg);
+        } else {
+            Base::Exception("Sketch::addGeometry(): Unknown or unsoported type added to a sketch");
+        }
+    }
+
+    // pass 2 building up constraints =================================================================
+    // constraints on nothing makes no sense 
+    assert((int)Geoms.size()>0 || ConstraintList.size() == 0 );
+
+    int rtn = -1;
+    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
+        // constraints on nothing makes no sense 
+        assert((int)Geoms.size()>0  );
+        switch ((*it)->Type){
+           case Horizontal: addHorizontalConstraint((*it)->First,(*it)->Name.c_str()); break;
+           case Vertical  : addVerticalConstraint((*it)->First,(*it)->Name.c_str());   break;
+           case Coincident: addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str()); break;
+           case Parallel  : addParallelConstraint((*it)->First,(*it)->Second,(*it)->Name.c_str());  break;
+           case Distance  :
+               if((*it)->Second == -1)
+                    rtn = addDistanceConstraint((*it)->First,(*it)->Value, (*it)->Name.c_str());
+               else
+                   rtn = addDistanceConstraint((*it)->First,(*it)->Second,(*it)->Value, (*it)->Name.c_str());
+               break;
+           case Angle: break;
+           case None :  break;
+        }
+    }
+
 
 
 }
@@ -469,8 +514,8 @@ int Sketch::addDistanceConstraint(int geoIndex1, double Value, const char* name)
     constrain.constrain.point2 = Points[Geoms[geoIndex1].pointStartIndex+1];
 
     // add the parameter for the length
-    Parameters.push_back(new double(Value));
-    constrain.constrain.parameter = Parameters[Parameters.size()-1];
+    FixParameters.push_back(new double(Value));
+    constrain.constrain.parameter = FixParameters[FixParameters.size()-1];
 
     if(name)
         constrain.name = name;
@@ -581,6 +626,8 @@ int Sketch::solve(double * fixed[2]) {
             }
 
         }
+    }else{
+        Base::Console().Log("NotSolved ");
     }
     Base::TimeInfo end_time;
     Base::Console().Log("T:%s\n",Base::TimeInfo::diffTime(start_time,end_time).c_str());
