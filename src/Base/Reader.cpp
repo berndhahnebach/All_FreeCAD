@@ -337,7 +337,7 @@ bool Base::XMLReader::isRegistered(Base::Persistence *Object) const
 // ---------------------------------------------------------------------------
 //  Base::XMLReader: Implementation of the SAX DocumentHandler interface
 // ---------------------------------------------------------------------------
-void Base::XMLReader::startElement(const XMLCh* const /*uri*/, const XMLCh* const localname, const XMLCh* const /*qname*/, const Attributes& attrs)
+void Base::XMLReader::startElement(const XMLCh* const /*uri*/, const XMLCh* const localname, const XMLCh* const /*qname*/, const XERCES_CPP_NAMESPACE_QUALIFIER Attributes& attrs)
 {
     Level++; // new scope
     LocalName = StrX(localname).c_str();
@@ -387,7 +387,7 @@ void Base::XMLReader::resetDocument()
 // ---------------------------------------------------------------------------
 //  Base::XMLReader: Overrides of the SAX ErrorHandler interface
 // ---------------------------------------------------------------------------
-void Base::XMLReader::error(const SAXParseException& e)
+void Base::XMLReader::error(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& e)
 {
     // print some details to error output and throw an
     // exception to abort the parsing
@@ -397,7 +397,7 @@ void Base::XMLReader::error(const SAXParseException& e)
     throw e;
 }
 
-void Base::XMLReader::fatalError(const SAXParseException& e)
+void Base::XMLReader::fatalError(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& e)
 {
     // print some details to error output and throw an
     // exception to abort the parsing
@@ -407,7 +407,7 @@ void Base::XMLReader::fatalError(const SAXParseException& e)
     throw e;
 }
 
-void Base::XMLReader::warning(const SAXParseException& e)
+void Base::XMLReader::warning(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& e)
 {
     // print some details to error output and throw an
     // exception to abort the parsing

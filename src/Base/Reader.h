@@ -125,7 +125,7 @@ public:
     //@{
     /// get the local name of the current Element
     const char* localName(void) const;
-    /// read until a start element is found (<name>) or start-end element (<name/>) (with special name if given)
+    /// read until a start element is found (\<name\>) or start-end element (\<name/\>) (with special name if given)
     void readElement   (const char* ElementName=0);
     /// read until an end element is found (with special name if given)
     void readEndElement(const char* ElementName=0);

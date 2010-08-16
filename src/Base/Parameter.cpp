@@ -876,7 +876,7 @@ void ParameterGrp::Clear(void)
 //**************************************************************************
 // Access methods
 
-DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name) const
+XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *ParameterGrp::FindElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name) const
 {
     for (DOMNode *clChild = Start->getFirstChild(); clChild != 0;  clChild = clChild->getNextSibling()) {
         if (clChild->getNodeType() == DOMNode::ELEMENT_NODE) {
@@ -897,7 +897,7 @@ DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const
     return NULL;
 }
 
-DOMElement *ParameterGrp::FindNextElement(DOMNode *Prev, const char* Type) const
+XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *ParameterGrp::FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type) const
 {
     DOMNode *clChild = Prev;
     if (!clChild) return 0l;
@@ -913,7 +913,7 @@ DOMElement *ParameterGrp::FindNextElement(DOMNode *Prev, const char* Type) const
     return NULL;
 }
 
-DOMElement *ParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name) const
+XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *ParameterGrp::FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name) const
 {
     // first try to find it
     DOMElement *pcElem = FindElement(Start,Type,Name);
