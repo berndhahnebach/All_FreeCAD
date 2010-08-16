@@ -25,16 +25,17 @@
 #define COIN_SOFCBOUNDINGBOX_H
 
 #include <Inventor/SbLinear.h>
-#include <Inventor/nodes/SoShape.h>
+#include <Inventor/actions/SoAction.h>
 #include <Inventor/fields/SoSFFloat.h>
 #include <Inventor/fields/SoSFVec4f.h>
 #include <Inventor/fields/SoSFString.h>
 #include <Inventor/nodes/SoCoordinate3.h>
 #include <Inventor/nodes/SoIndexedLineSet.h>
+#include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/nodes/SoTransform.h>
+#include <Inventor/nodes/SoShape.h>
 #include <Inventor/fields/SoSFBool.h>
-#include <Inventor/nodes/SoSeparator.h>
 
 namespace Gui {
 
@@ -75,6 +76,32 @@ private:
     SoSeparator        *root, *textSep, *dimSep;
     SoCoordinate3      *bboxCoords;
     SoIndexedLineSet   *bboxLines;
+};
+
+/**
+ * This is a special group node which be be defined to ignore bounding box actions.
+ * @author Werner Mayer
+ */
+class GuiExport SoSkipBoundingGroup : public SoGroup {
+    typedef SoGroup inherited;
+
+    SO_NODE_HEADER(Gui::SoSkipBoundingGroup);
+
+public:
+    static void initClass(void);
+    static void finish(void);
+    SoSkipBoundingGroup(void);
+
+    enum Modes {
+        INCLUDE_BBOX, EXCLUDE_BBOX
+    };
+    
+    SoSFEnum mode;
+
+    virtual void getBoundingBox(SoGetBoundingBoxAction *action);
+
+protected:
+    virtual ~SoSkipBoundingGroup();
 };
 
 } // namespace Gui

@@ -393,7 +393,7 @@ void ColorButton::onChooseColor()
         if (d->cd.isNull()) {
             d->cd = new QColorDialog(d->col, this);
             d->cd->setAttribute(Qt::WA_DeleteOnClose);
-            connect(d->cd, SIGNAL(colorSelected(const QColor &)),
+            connect(d->cd, SIGNAL(currentColorChanged(const QColor &)),
                     this, SLOT(onColorChosen(const QColor&)));
         }
         d->cd->show();

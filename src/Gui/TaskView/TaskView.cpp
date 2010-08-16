@@ -238,12 +238,20 @@ void TaskView::showDialog(TaskDialog *dlg)
 
     const std::vector<QWidget*>& cont = dlg->getDialogContent();
 
-    // give task dialog to customize the button box
+    // give to task dialog to customize the button box
     dlg->modifyStandardButtons(ActiveCtrl->buttonBox);
-    taskPanel->addWidget(ActiveCtrl);
 
-    for (std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
-        taskPanel->addWidget(*it);
+    if (dlg->buttonPosition() == TaskDialog::North) {
+        taskPanel->addWidget(ActiveCtrl);
+        for (std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
+            taskPanel->addWidget(*it);
+        }
+    }
+    else {
+        for (std::vector<QWidget*>::const_iterator it=cont.begin();it!=cont.end();++it){
+            taskPanel->addWidget(*it);
+        }
+        taskPanel->addWidget(ActiveCtrl);
     }
 
     if (!dlg->needsFullSpace())

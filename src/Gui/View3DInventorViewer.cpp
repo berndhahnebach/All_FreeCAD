@@ -94,6 +94,7 @@
 #include "SoFCOffscreenRenderer.h"
 #include "SoFCSelection.h"
 #include "SoFCInteractiveElement.h"
+#include "SoFCBoundingBox.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
 #include "SoFCVectorizeU3DAction.h"
@@ -1234,9 +1235,29 @@ void View3DInventorViewer::boxZoom(const SbBox2s& box)
 
 void View3DInventorViewer::viewAll()
 {
+    // in the scene graph we may have objects which we want to exlcude
+    // when doing a fit all. Such objects must be part of the group
+    // SoSkipBoundingGroup.
+    SoSearchAction sa;
+    sa.setType(SoSkipBoundingGroup::getClassTypeId());
+    sa.setInterest(SoSearchAction::ALL);
+    sa.apply(this->getSceneGraph());
+    const SoPathList & pathlist = sa.getPaths();
+    for (int i = 0; i < pathlist.getLength(); i++ ) {
+        SoPath * path = pathlist[i];
+        SoSkipBoundingGroup * group = static_cast<SoSkipBoundingGroup*>(path->getTail());
+        group->mode = SoSkipBoundingGroup::EXCLUDE_BBOX;
+    }
+
     // call the default implementation first to make sure everything is visible
     SoQtViewer::viewAll();
-    navigation->viewAll();
+
+    for (int i = 0; i < pathlist.getLength(); i++ ) {
+        SoPath * path = pathlist[i];
+        SoSkipBoundingGroup * group = static_cast<SoSkipBoundingGroup*>(path->getTail());
+        group->mode = SoSkipBoundingGroup::INCLUDE_BBOX;
+    }
+    //navigation->viewAll();
 }
 
 void View3DInventorViewer::viewSelection()
