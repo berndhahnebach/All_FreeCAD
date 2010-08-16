@@ -33,8 +33,8 @@ iisFreeCADTaskPanelScheme::iisFreeCADTaskPanelScheme(QObject *parent)
 {
 #ifdef Q_OS_WIN32
     QLinearGradient panelBackgroundGrd(0,0, 0,300);
-    panelBackgroundGrd.setColorAt(1, QColor(93,93,150));
-    panelBackgroundGrd.setColorAt(0, QColor(207,210,255));
+    panelBackgroundGrd.setColorAt(1, QColor(51,51,101));
+    panelBackgroundGrd.setColorAt(0, QColor(171,171,193));
     panelBackground = panelBackgroundGrd;
 
     QLinearGradient headerBackgroundGrd(0,0, 300,0);
