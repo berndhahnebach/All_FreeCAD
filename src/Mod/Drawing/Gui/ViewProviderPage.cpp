@@ -76,14 +76,14 @@ void ViewProviderDrawingPage::attach(App::DocumentObject *pcFeat)
 
 void ViewProviderDrawingPage::setDisplayMode(const char* ModeName)
 {
-    ViewProviderDocumentObject::setDisplayMode( ModeName );
+    ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderDrawingPage::getDisplayModes(void) const
 {
     // get the modes of the father
     std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
-
+    StrList.push_back("Drawing");
     return StrList;
 }
 
@@ -91,39 +91,36 @@ void ViewProviderDrawingPage::updateData(const App::Property* prop)
 {
     Gui::ViewProviderDocumentObjectGroup::updateData(prop);
     if (prop->getTypeId() == App::PropertyFileIncluded::getClassTypeId()) {
-        if (std::string(getPageObject()->PageResult.getValue()) != ""){
-            if (!view){
-                view = new DrawingView(Gui::getMainWindow());
-                view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
-                view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
-                view->setWindowTitle(QObject::tr("Drawing viewer"));
-                view->resize(400, 300);
-                view->oneToOneDrawing();
-                Gui::getMainWindow()->addWindow(view);
-            }
-            else {
-                try{
-                    view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
-                }catch(...){}// dirty hack for the moment....
-            }
+        if (std::string(getPageObject()->PageResult.getValue()) != "") {
+            try {
+                showDrawingView()->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+            } catch(...){}// dirty hack for the moment....
         }
     }
 }
 
 bool ViewProviderDrawingPage::doubleClicked(void)
 {
- /*   view = new DrawingView(Gui::getMainWindow());
-    view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
-    view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
-    view->setWindowTitle(QObject::tr("Drawing viewer"));
-    view->resize( 400, 300 );
-    Gui::getMainWindow()->addWindow(view);
-
-    return true;*/
-    return false;
+    Gui::getMainWindow()->setActiveWindow(showDrawingView());
+    return true;
 }
 
-Drawing::FeaturePage* ViewProviderDrawingPage::getPageObject(void)
+DrawingView* ViewProviderDrawingPage::showDrawingView()
+{
+    if (!view){
+        view = new DrawingView(Gui::getMainWindow());
+        view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+        view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
+        view->setWindowTitle(QObject::tr("Drawing viewer"));
+        view->resize(400, 300);
+        view->oneToOneDrawing();
+        Gui::getMainWindow()->addWindow(view);
+    }
+
+    return view;
+}
+
+Drawing::FeaturePage* ViewProviderDrawingPage::getPageObject() const
 {
     return dynamic_cast<Drawing::FeaturePage*>(pcObject);
 }
