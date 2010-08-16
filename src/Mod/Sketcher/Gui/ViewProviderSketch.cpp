@@ -155,6 +155,9 @@ ViewProviderSketch::ViewProviderSketch()
     Mode(STATUS_NONE)
 {
     sPixmap = "Sketcher_NewSketch";
+    LineColor.setValue(1,1,1);
+    PointColor.setValue(1,1,1);
+    PointSize.setValue(4);
 }
 
 ViewProviderSketch::~ViewProviderSketch()
