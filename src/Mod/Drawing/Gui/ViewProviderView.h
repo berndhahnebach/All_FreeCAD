@@ -30,27 +30,22 @@
 namespace DrawingGui {
 
 
-class DrawingGuiExport ViewProviderDrawingView:public Gui::ViewProviderDocumentObject
+class DrawingGuiExport ViewProviderDrawingView : public Gui::ViewProviderDocumentObject
 {
-  PROPERTY_HEADER(DrawingGui::ViewProviderDrawing);
+    PROPERTY_HEADER(DrawingGui::ViewProviderDrawing);
 
 public:
-  /// constructor
-  ViewProviderDrawingView();
-  /// destructor
-  virtual ~ViewProviderDrawingView();
+    /// constructor
+    ViewProviderDrawingView();
+    /// destructor
+    virtual ~ViewProviderDrawingView();
 
 
-  virtual void attach(App::DocumentObject *);
-  virtual void setDisplayMode(const char* ModeName);
-  /// returns a list of all possible modes
-  virtual std::vector<std::string> getDisplayModes(void) const;
-  /// Update the Drawing representation
-  //virtual void update(const ChangeType&);
-
-  virtual void updateData(const App::Property*);
-
-protected:
+    virtual void attach(App::DocumentObject *);
+    virtual void setDisplayMode(const char* ModeName);
+    /// returns a list of all possible modes
+    virtual std::vector<std::string> getDisplayModes(void) const;
+    virtual void updateData(const App::Property*);
 
 };
 
