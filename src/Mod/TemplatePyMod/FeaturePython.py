@@ -646,20 +646,35 @@ def makeCircleSet():
 	c=CircleSet(a)
 	v=ViewProviderCircleSet(a.ViewObject)
 	a.Shape=comp
-	
 
 class EnumTest:
 	def __init__(self, obj):
 		''' Add enum properties '''
 		obj.addProperty("App::PropertyEnumeration","Enum","","Enumeration").Enum=["One","Two","Three"]
+		obj.addProperty("App::PropertyEnumeration","Enum2","","Enumeration2").Enum2=["One","Two","Three"]
 		obj.Proxy = self
 
 	def execute(self, fp):
-		return
+		return                                                                            
+                                                                               
+class ViewProviderEnumTest:
+	def __init__(self, obj):
+		''' Set this object to the proxy object of the actual view provider '''           
+		obj.addProperty("App::PropertyEnumeration","Enum3","","Enumeration3").Enum3=["One","Two","Three"]
+		obj.addProperty("App::PropertyEnumeration","Enum4","","Enumeration4").Enum4=["One","Two","Three"]
+		obj.Proxy = self
+
+	def updateData(self, fp, prop):
+		print "prop updated:",prop
+
+	def __getstate__(self):
+		return None
+
+	def __setstate__(self,state):
+		return None
 
 def makeEnumTest():
 	FreeCAD.newDocument()
-	a=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Enum")
+	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Enum")
 	EnumTest(a)
-	a.ViewObject.Proxy=0 # just set it to something different from None
-
+	ViewProviderEnumTest(a.ViewObject)
