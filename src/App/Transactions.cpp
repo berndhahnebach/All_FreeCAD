@@ -87,12 +87,12 @@ unsigned int Transaction::getMemSize (void) const
     return 0;
 }
 
-void Transaction::Save (Writer &/*writer*/) const
+void Transaction::Save (Base::Writer &/*writer*/) const
 {
     assert(0);
 }
 
-void Transaction::Restore(XMLReader &/*reader*/)
+void Transaction::Restore(Base::XMLReader &/*reader*/)
 {
     assert(0);
 }
@@ -252,12 +252,12 @@ unsigned int TransactionObject::getMemSize (void) const
     return 0;
 }
 
-void TransactionObject::Save (Writer &/*writer*/) const
+void TransactionObject::Save (Base::Writer &/*writer*/) const
 {
     assert(0);
 }
 
-void TransactionObject::Restore(XMLReader &/*reader*/)
+void TransactionObject::Restore(Base::XMLReader &/*reader*/)
 {
     assert(0);
 }

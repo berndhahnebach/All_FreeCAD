@@ -114,7 +114,7 @@ void PropertyLink::setPyObject(PyObject *value)
     }
 }
 
-void PropertyLink::Save (Writer &writer) const
+void PropertyLink::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<Link value=\"" <<  (_pcLink?_pcLink->getNameInDocument():"") <<"\"/>" << std::endl;
 }
@@ -280,7 +280,7 @@ void PropertyLinkSub::setPyObject(PyObject *value)
     }
 }
 
-void PropertyLinkSub::Save (Writer &writer) const
+void PropertyLinkSub::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<LinkSub value=\"" <<  (_pcLinkSub?_pcLinkSub->getNameInDocument():"") <<"\" count=\"" <<  _cSubList.size() <<"\">" << std::endl;
     writer.incInd();
@@ -425,7 +425,7 @@ void PropertyLinkList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyLinkList::Save (Writer &writer) const
+void PropertyLinkList::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
     writer.incInd();
@@ -534,7 +534,7 @@ void PropertyLinkSubList::setValues(const std::vector<DocumentObject*>& lValue,c
     _lValueList = lValue;
     _lSubList.resize(lSubNames.size());
     int i = 0;
-    for(std::vector<const char*>::const_iterator it = lSubNames.begin();it!=lSubNames.end();++it)
+    for (std::vector<const char*>::const_iterator it = lSubNames.begin();it!=lSubNames.end();++it)
         _lSubList[i]  = *it;
     hasSetValue();
 }
@@ -602,7 +602,7 @@ void PropertyLinkSubList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyLinkSubList::Save (Writer &writer) const
+void PropertyLinkSubList::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<LinkSubList count=\"" <<  getSize() <<"\">" << endl;
     writer.incInd();

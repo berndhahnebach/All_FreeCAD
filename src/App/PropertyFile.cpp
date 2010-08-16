@@ -206,7 +206,7 @@ void PropertyFileIncluded::setPyObject(PyObject *value)
     setValue(string.c_str());
 }
 
-void PropertyFileIncluded::Save (Writer &writer) const
+void PropertyFileIncluded::Save (Base::Writer &writer) const
 {
     if (writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<FileIncluded file=\"\">" << endl;
@@ -237,6 +237,7 @@ void PropertyFileIncluded::Restore(Base::XMLReader &reader)
     if (!file.empty()) {
         // initate a file read
         reader.addFile(file.c_str(),this);
+
         // is in the document transient path
         aboutToSetValue();
         _cValue = getDocTransientPath() + "/" + file;

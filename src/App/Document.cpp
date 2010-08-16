@@ -531,7 +531,7 @@ Document::~Document()
 // Exported functions
 //--------------------------------------------------------------------------
 
-void Document::Save (Writer &writer) const
+void Document::Save (Base::Writer &writer) const
 {
     writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << endl
     << "<!--" << endl
