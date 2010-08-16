@@ -298,6 +298,10 @@ ViewProviderMesh::~ViewProviderMesh()
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
 {
+    // we gonna change the number of colors to one
+    if (prop == &ShapeColor || prop == &ShapeMaterial) {
+        pcMatBinding->value = SoMaterialBinding::OVERALL;
+    }
     if (prop == &LineTransparency) {
         float trans = LineTransparency.getValue()/100.0f;
         pLineColor->transparency = trans;

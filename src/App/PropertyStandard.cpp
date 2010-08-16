@@ -1652,11 +1652,13 @@ void PropertyColorList::Save (Writer &writer) const
 void PropertyColorList::Restore(Base::XMLReader &reader)
 {
     reader.readElement("ColorList");
-    std::string file (reader.getAttribute("file") );
+    if (reader.hasAttribute("file")) {
+        std::string file (reader.getAttribute("file"));
 
-    if (!file.empty()) {
-        // initate a file read
-        reader.addFile(file.c_str(),this);
+        if (!file.empty()) {
+            // initate a file read
+            reader.addFile(file.c_str(),this);
+        }
     }
 }
 

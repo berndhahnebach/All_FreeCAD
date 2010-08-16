@@ -48,9 +48,17 @@ class GuiExport TaskDialog : public QObject
     Q_OBJECT
 
 public:
+    enum ButtonPosition {
+        North, South
+    };
+
     TaskDialog();
     ~TaskDialog();
 
+    void setButtonPosition(ButtonPosition p)
+    { pos = p; }
+    ButtonPosition buttonPosition() const
+    { return pos; }
     const std::vector<QWidget*> &getDialogContent(void) const;
 
     /// tells the framework which buttons whisched for the dialog
@@ -83,10 +91,8 @@ public:
 protected:
     /// List of TaskBoxes of that dialog
     std::vector<QWidget*> Content;
-
+    ButtonPosition pos;
 };
-
-
 
 } //namespace TaskView
 } //namespace Gui

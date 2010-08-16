@@ -36,19 +36,18 @@ using namespace Gui::TaskView;
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskDialog::TaskDialog( )
-    : QObject(0)
+TaskDialog::TaskDialog()
+    : QObject(0), pos(North)
 {
 
 }
 
 TaskDialog::~TaskDialog()
 {
-    for(std::vector<QWidget*>::iterator it=Content.begin();it!=Content.end();++it){
-        delete(*it);
+    for (std::vector<QWidget*>::iterator it=Content.begin();it!=Content.end();++it) {
+        delete *it;
         *it = 0;
     }
-
 }
 
 //==== Slots ===============================================================

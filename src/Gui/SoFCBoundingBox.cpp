@@ -34,8 +34,8 @@
 #include <Inventor/elements/SoMaterialBindingElement.h>
 #include <Inventor/elements/SoModelMatrixElement.h>
 #include <Inventor/misc/SoState.h>
-#include <string.h>
 
+#include <string.h>
 #include <iostream>
 
 #include "SoFCBoundingBox.h"
@@ -224,4 +224,46 @@ void SoFCBoundingBox::computeBBox (SoAction *action, SbBox3f &box, SbVec3f &cent
 void SoFCBoundingBox::finish()
 {
   atexit_cleanup();
+}
+
+// ---------------------------------------------------------------
+
+SO_NODE_SOURCE(SoSkipBoundingGroup);
+
+/*!
+  Constructor.
+*/
+SoSkipBoundingGroup::SoSkipBoundingGroup()
+{
+    SO_NODE_CONSTRUCTOR(SoSkipBoundingGroup);
+
+    SO_NODE_ADD_FIELD(mode,          (INCLUDE_BBOX));
+
+    SO_NODE_DEFINE_ENUM_VALUE(Modes, INCLUDE_BBOX);
+    SO_NODE_DEFINE_ENUM_VALUE(Modes, EXCLUDE_BBOX);
+    SO_NODE_SET_SF_ENUM_TYPE (mode, Modes);
+}
+
+/*!
+  Destructor.
+*/
+SoSkipBoundingGroup::~SoSkipBoundingGroup()
+{
+}
+
+void
+SoSkipBoundingGroup::initClass(void)
+{
+    SO_NODE_INIT_CLASS(SoSkipBoundingGroup,SoGroup,"Group");
+}
+
+void SoSkipBoundingGroup::finish()
+{
+    atexit_cleanup();
+}
+
+void SoSkipBoundingGroup::getBoundingBox(SoGetBoundingBoxAction *action)
+{
+    if (mode.getValue() == INCLUDE_BBOX)
+        inherited::doAction(action);
 }

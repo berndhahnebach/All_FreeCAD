@@ -230,7 +230,10 @@ void MDIView::setCurrentViewMode(ViewMode mode)
         case TopLevel:
             {
                 if (this->currentMode == Child) {
-                    getMainWindow()->removeWindow(this);
+#if !defined (NO_USE_QT_MDI_AREA)
+                    if (qobject_cast<QMdiSubWindow*>(this->parentWidget()))
+#endif
+                        getMainWindow()->removeWindow(this);
                     setWindowFlags(windowFlags() | Qt::Window);
                     setParent(0, Qt::Window | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | 
                                  Qt::WindowMinMaxButtonsHint);
@@ -259,7 +262,10 @@ void MDIView::setCurrentViewMode(ViewMode mode)
         case FullScreen:
             {
                 if (this->currentMode == Child) {
-                    getMainWindow()->removeWindow(this);
+#if !defined (NO_USE_QT_MDI_AREA)
+                    if (qobject_cast<QMdiSubWindow*>(this->parentWidget()))
+#endif
+                        getMainWindow()->removeWindow(this);
                     setWindowFlags(windowFlags() | Qt::Window);
                     setParent(0, Qt::Window);
                     showFullScreen();
