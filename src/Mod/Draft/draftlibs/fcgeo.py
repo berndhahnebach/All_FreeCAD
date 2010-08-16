@@ -94,6 +94,15 @@ def isPtOnEdge(pt,edge) :
 
 	
 # edge functions *****************************************************************
+
+def findEdge(anEdge,aList):
+        '''findEdge(anEdge,aList): returns True if anEdge is found in aList of edges'''
+        for e in range(len(aList)):
+                if str(anEdge.Curve) == str(aList[e].Curve):
+                        if fcvec.equals(anEdge.Vertexes[0].Point,aList[e].Vertexes[0].Point):
+                                if fcvec.equals(anEdge.Vertexes[-1].Point,aList[e].Vertexes[-1].Point):
+                                        return(e)
+        return None
 	
 
 def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
