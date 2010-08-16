@@ -265,5 +265,6 @@ void SoSkipBoundingGroup::finish()
 void SoSkipBoundingGroup::getBoundingBox(SoGetBoundingBoxAction *action)
 {
     if (mode.getValue() == INCLUDE_BBOX)
-        inherited::doAction(action);
+        inherited::getBoundingBox(action);
 }
+

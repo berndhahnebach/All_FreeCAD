@@ -345,7 +345,6 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
 	// get the needed lists and objects
 	const std::vector<std::string> &SubNames = selection[0].getSubNames();
 	Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
-	const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
     const std::vector<Part::Geometry *>         &geo  = Obj->Geometry.getValues();
 
 	// only one sketch with its subelements are allowed to be selected
