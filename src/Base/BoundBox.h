@@ -336,7 +336,7 @@ inline bool BoundBox3<_Precision>::GetOctantFromVector (const Vector3<_Precision
 }
 
 template <class _Precision>
-inline BoundBox3<_Precision> BoundBox3<_Precision>::CalcOctant (OCTANT Octant) const
+inline BoundBox3<_Precision> BoundBox3<_Precision>::CalcOctant (typename BoundBox3< _Precision >::OCTANT Octant) const
 {
   BoundBox3<_Precision> cOct (*this);
 

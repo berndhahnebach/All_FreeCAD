@@ -54,7 +54,7 @@ using namespace std;
 // ---------------------------------------------------------------------------
 //  StdInputStream: Constructors and Destructor
 // ---------------------------------------------------------------------------
-StdInputStream::StdInputStream( std::istream& Stream, MemoryManager* const manager ) 
+StdInputStream::StdInputStream( std::istream& Stream, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* const manager ) 
   : stream(Stream), fMemoryManager(manager)
 {
 }
@@ -106,7 +106,7 @@ XMLSize_t StdInputStream::readBytes( XMLByte* const  toFill, const XMLSize_t max
 // ---------------------------------------------------------------------------
 //  StdInputSource: Constructors and Destructor
 // ---------------------------------------------------------------------------
-StdInputSource::StdInputSource ( std::istream& Stream, const char* filePath, MemoryManager* const manager )
+StdInputSource::StdInputSource ( std::istream& Stream, const char* filePath, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* const manager )
   : InputSource(manager),stream(Stream)
 {
   // we have to set the file name in case an error occurs

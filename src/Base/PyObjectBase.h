@@ -343,7 +343,7 @@ protected:
 
 /** Python dynamic class macro for definition
  * sets up a static/dynamic function entry in a class inheriting 
- * from PyObjectBase. Its a pure confiniance macro. You can also do
+ * from PyObjectBase. Its a pure convenience macro. You can also do
  * it by hand if you want. It looks like that:
  * \code
  * PyObject *PyGetGrp(PyObject *args);
@@ -355,7 +355,7 @@ protected:
  * is simply mapped to the method.
  * @param CLASS is the class in which the macro take place.
  * @param DFUNC is the object method get defined and called
- * @param SFUNC is the static method name (use what you want)
+ * sDFUNC is the static method name (use what you want)
  * @see PYFUNCIMP_D
  * @see PyObjectBase
  */

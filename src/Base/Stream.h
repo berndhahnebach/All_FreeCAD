@@ -133,13 +133,13 @@ public:
     ~ByteArrayOStreambuf();
 
 protected:
-    virtual int_type overflow(int_type v);
+    virtual int_type overflow(std::streambuf::int_type v);
     virtual std::streamsize xsputn (const char* s, std::streamsize num);
-    virtual pos_type seekoff(off_type off,
+    virtual pos_type seekoff(std::streambuf::off_type off,
         std::ios_base::seekdir way,
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
-    virtual pos_type seekpos(pos_type sp,
+    virtual pos_type seekpos(std::streambuf::pos_type sp,
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
 
@@ -163,11 +163,11 @@ protected:
     virtual int_type underflow();
     virtual int_type pbackfail(int_type ch);
     virtual std::streamsize showmanyc();
-    virtual pos_type seekoff(off_type off,
+    virtual pos_type seekoff(std::streambuf::off_type off,
         std::ios_base::seekdir way,
         std::ios_base::openmode which = 
             std::ios::in | std::ios::out);
-    virtual pos_type seekpos(pos_type pos, 
+    virtual pos_type seekpos(std::streambuf::pos_type pos, 
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
 
@@ -188,13 +188,13 @@ public:
     ~IODeviceOStreambuf();
 
 protected:
-    virtual int_type overflow(int_type v);
+    virtual int_type overflow(std::streambuf::int_type v);
     virtual std::streamsize xsputn (const char* s, std::streamsize num);
-    virtual pos_type seekoff(off_type off,
+    virtual pos_type seekoff(std::streambuf::off_type off,
         std::ios_base::seekdir way,
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
-    virtual pos_type seekpos(pos_type sp,
+    virtual pos_type seekpos(std::streambuf::pos_type sp,
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
 protected:
@@ -214,11 +214,11 @@ public:
 
 protected:
     virtual int_type underflow();
-    virtual pos_type seekoff(off_type off,
+    virtual pos_type seekoff(std::streambuf::off_type off,
         std::ios_base::seekdir way,
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
-    virtual pos_type seekpos(pos_type sp,
+    virtual pos_type seekpos(std::streambuf::pos_type sp,
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
 
@@ -244,11 +244,11 @@ protected:
     virtual int_type underflow();
     virtual int_type pbackfail(int_type ch);
     virtual std::streamsize showmanyc();
-    virtual pos_type seekoff(off_type off,
+    virtual pos_type seekoff(std::streambuf::off_type off,
         std::ios_base::seekdir way,
         std::ios_base::openmode which = 
             std::ios::in | std::ios::out);
-    virtual pos_type seekpos(pos_type pos, 
+    virtual pos_type seekpos(std::streambuf::pos_type pos, 
         std::ios_base::openmode which =
             std::ios::in | std::ios::out);
 
