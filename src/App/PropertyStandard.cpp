@@ -100,7 +100,7 @@ void PropertyInteger::setPyObject(PyObject *value)
     }
 }
 
-void PropertyInteger::Save (Writer &writer) const
+void PropertyInteger::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<Integer value=\"" <<  _lValue <<"\"/>" << std::endl;
 }
@@ -216,7 +216,7 @@ void PropertyPath::setPyObject(PyObject *value)
 }
 
 
-void PropertyPath::Save (Writer &writer) const
+void PropertyPath::Save (Base::Writer &writer) const
 {
     std::string val = encodeAttribute(_cValue.string());
     writer.Stream() << writer.ind() << "<Path value=\"" <<  val <<"\"/>" << std::endl;
@@ -668,7 +668,7 @@ void PropertyIntegerList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyIntegerList::Save (Writer &writer) const
+void PropertyIntegerList::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<IntegerList count=\"" <<  getSize() <<"\">" << endl;
     writer.incInd();
@@ -776,7 +776,7 @@ void PropertyFloat::setPyObject(PyObject *value)
     }
 }
 
-void PropertyFloat::Save (Writer &writer) const
+void PropertyFloat::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<Float value=\"" <<  _dValue <<"\"/>" << std::endl;
 }
@@ -985,7 +985,7 @@ void PropertyFloatList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyFloatList::Save (Writer &writer) const
+void PropertyFloatList::Save (Base::Writer &writer) const
 {
     if (writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<FloatList count=\"" <<  getSize() <<"\">" << endl;
@@ -1119,7 +1119,7 @@ void PropertyString::setPyObject(PyObject *value)
     setValue(string);
 }
 
-void PropertyString::Save (Writer &writer) const
+void PropertyString::Save (Base::Writer &writer) const
 {
     std::string val = encodeAttribute(_cValue);
     writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
@@ -1254,7 +1254,7 @@ unsigned int PropertyStringList::getMemSize (void) const
     return static_cast<unsigned int>(size);
 }
 
-void PropertyStringList::Save (Writer &writer) const
+void PropertyStringList::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<StringList count=\"" <<  getSize() <<"\">" << endl;
     writer.incInd();
@@ -1356,7 +1356,7 @@ void PropertyBool::setPyObject(PyObject *value)
     }
 }
 
-void PropertyBool::Save (Writer &writer) const
+void PropertyBool::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<Bool value=\"" ;
     if (_lValue)
@@ -1511,7 +1511,7 @@ void PropertyColor::setPyObject(PyObject *value)
     setValue( cCol );
 }
 
-void PropertyColor::Save (Writer &writer) const
+void PropertyColor::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<PropertyColor value=\"" 
     <<  _cCol.getPackedValue() <<"\"/>" << endl;
@@ -1642,7 +1642,7 @@ void PropertyColorList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyColorList::Save (Writer &writer) const
+void PropertyColorList::Save (Base::Writer &writer) const
 {
     if (!writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<ColorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
@@ -1794,7 +1794,7 @@ void PropertyMaterial::setPyObject(PyObject *value)
     }
 }
 
-void PropertyMaterial::Save (Writer &writer) const
+void PropertyMaterial::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<PropertyMaterial ambientColor=\"" 
         <<  _cMat.ambientColor.getPackedValue() 

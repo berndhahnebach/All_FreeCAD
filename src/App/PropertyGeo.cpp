@@ -143,7 +143,7 @@ void PropertyVector::setPyObject(PyObject *value)
     }
 }
 
-void PropertyVector::Save (Writer &writer) const
+void PropertyVector::Save (Base::Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
 }
@@ -275,7 +275,7 @@ void PropertyVectorList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyVectorList::Save (Writer &writer) const
+void PropertyVectorList::Save (Base::Writer &writer) const
 {
     if (!writer.isForceXML()) {
         writer.Stream() << writer.ind() << "<VectorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;

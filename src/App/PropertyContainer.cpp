@@ -203,7 +203,7 @@ private:
     const PropertyContainer* cont;
 };
 
-void PropertyContainer::Save (Writer &writer) const 
+void PropertyContainer::Save (Base::Writer &writer) const 
 {
     std::map<std::string,Property*> Map;
     getPropertyMap(Map);
