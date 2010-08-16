@@ -536,20 +536,24 @@ def draftify(objectslist):
         if not isinstance(objectslist,list): objectslist = [objectslist]
         newobjlist = []
         for obj in objectslist:
-                verts = []
-                for v in obj.Shape.Vertexes:
-                        verts.append(v.Point)
-                newobj = makeWire(verts)
-                if obj.Shape.Faces:
-                        newobj.Closed = True
-                        newobj.ViewObject.DisplayMode = "Flat Lines"
-                else:
-                        newobj.ViewObject.DisplayMode = "Wireframe"
-                        if obj.Shape.Wires:
+                if obj.isDerivedFrom('Part::Feature'):
+                        for w in obj.Shape.Wires:
+                                verts = []
+                                edges = fcgeo.sortEdges(w.Edges)
+                                for e in edges:
+                                        verts.append(e.Vertexes[0].Point)
+                                if w.isClosed():
+                                        verts.append(edges[-1].Vertexes[-1].Point)
+                                newobj = makeWire(verts)
+                                if obj.Shape.Faces:
+                                        newobj.Closed = True
+                                        newobj.ViewObject.DisplayMode = "Flat Lines"
+                                else:
+                                        newobj.ViewObject.DisplayMode = "Wireframe"
                                 if obj.Shape.Wires[0].isClosed:
                                         newobj.Closed = True
-                FreeCAD.ActiveDocument.removeObject(obj.Name)
-                newobjlist.append(newobj)
+                                newobjlist.append(newobj)
+                        FreeCAD.ActiveDocument.removeObject(obj.Name)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
@@ -571,7 +575,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
         if tmod == 0: tmod = 0.01
         modifier = 200-modifier
         if modifier == 0: modifier = 0.01
-        pmod = 200-textmodifier
+        pmod = (200-textmodifier)/20
         if pmod == 0: pmod = 0.01
 
         def getProj(vec):
@@ -590,13 +594,13 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                 v = getProj(edges[0].Vertexes[0].Point)
                 svg += 'd="M '+ str(v.x) +' '+ str(v.y) + ' '
                 for e in edges:
-                        if isinstance(e.Curve,Part.Line):
+                        if isinstance(e.Curve,Part.Line) or  isinstance(e.Curve,Part.BSplineCurve):
                                 v = getProj(e.Vertexes[-1].Point)
                                 svg += 'L '+ str(v.x) +' '+ str(v.y) + ' '
                         elif isinstance(e.Curve,Part.Circle):
                                 r = e.Curve.Radius
                                 v = getProj(e.Vertexes[-1].Point)
-                                svg += 'A '+ str(r) + ' '+ str(r) +' 0 0 0 '+ str(v.x) +' '
+                                svg += 'A '+ str(r) + ' '+ str(r) +' 0 0 1 '+ str(v.x) +' '
                                 svg += str(v.y) + ' '
                 if fill != 'none': svg += 'Z'
                 svg += '" '
@@ -627,17 +631,18 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
 		svg += 'style="stroke-width:'+ str(obj.ViewObject.LineWidth/modifier)
 		svg += ';stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg += '<circle cx="'+str(p2.x)+'" cy="'+str(p2.y)
-		svg += '" r="'+str(obj.ViewObject.FontSize/(pmod/10))+'" '
+		svg += '" r="'+str(obj.ViewObject.FontSize/(pmod))+'" '
 		svg += 'fill="'+ getrgb(obj.ViewObject.LineColor) +'" stroke="none" '
 		svg += 'style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg += '<circle cx="'+str(p3.x)+'" cy="'+str(p3.y)
-		svg += '" r="'+str(obj.ViewObject.FontSize/(pmod/10))+'" '
+		svg += '" r="'+str(obj.ViewObject.FontSize/(pmod))+'" '
 		svg += 'fill="#000000" stroke="none" '
 		svg += 'style="stroke-miterlimit:4;stroke-dasharray:none"/>\n'
 		svg += '<text id="' + obj.Name + '" fill="'
 		svg += getrgb(obj.ViewObject.LineColor) +'" font-size="'
 		svg += str(obj.ViewObject.FontSize*(tmod/5))+'" '
-		svg += 'style="text-anchor:middle;text-align:center" '
+		svg += 'style="text-anchor:middle;text-align:center;'
+                svg += 'font-family:'+obj.ViewObject.FontName+'" '
 		svg += 'transform="rotate('+str(math.degrees(angle))
 		svg += ','+ str(tbase.x) + ',' + str(tbase.y) + ') '
 		svg += 'translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
@@ -656,14 +661,15 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                 svg += getrgb(obj.ViewObject.TextColor)
                 svg += '" font-size="'
                 svg += str(obj.ViewObject.FontSize*(tmod/5))+'" '
-                svg += 'style="text-anchor:middle;text-align:center" '
+                svg += 'style="text-anchor:middle;text-align:center;'
+                svg += 'font-family:'+obj.ViewObject.FontName+'" '
                 svg += 'transform="'
                 if obj.ViewObject.RotationAxis == 'Z':
                         if obj.ViewObject.Rotation != 0:
                                 svg += 'rotate('+str(obj.ViewObject.Rotation)
                                 svg += ','+ str(p.x) + ',' + str(p.y) + ') '
                 svg += 'translate(' + str(p.x) + ',' + str(p.y) + ') '
-                svg +='scale('+str(tmod/2000)+','+str(tmod/2000)+')">\n'
+                svg +='scale('+str(tmod/2000)+','+str(-tmod/2000)+')">\n'
                 svg += textcontents
                 svg += '</text>\n'
 
@@ -704,11 +710,19 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                         stroke = getrgb(obj.ViewObject.LineColor)
                 width = obj.ViewObject.LineWidth/modifier
                 if len(obj.Shape.Vertexes) > 1:
+                        wiredEdges = []
                         if obj.Shape.Faces:
                                 for f in obj.Shape.Faces:
                                         svg += getPath(f.Edges)
+                                        wiredEdges.extend(f.Edges)
                         else:
-                                svg = getPath(obj.Shape.Edges)
+                                for w in obj.Shape.Wires:
+                                        svg += getPath(w.Edges)
+                                        wiredEdges.extend(w.Edges)
+                        if len(wiredEdges) != len(obj.Shape.Edges):
+                                for e in obj.Shape.Edges:
+                                        if (fcgeo.findEdge(e,wiredEdges) == None):
+                                                svg += getPath([e])
                 else:
                         cen = getProj(obj.Shape.Edges[0].Curve.Center)
                         rad = obj.Shape.Edges[0].Curve.Radius
@@ -736,7 +750,7 @@ class ViewProviderDraft:
                 obj.addProperty("App::PropertyEnumeration","LineStyle",
                                 "SVG Output","Line Style")
                 obj.addProperty("App::PropertyEnumeration","FillStyle",
-                                "SVG Output","Fill Style")
+                                "SVG Output","Shape Fill Style")
                 obj.LineStyle = ['continuous','dashed','dashdotted','dotted']
                 fills = ['shape color']
                 for f in FreeCAD.svgpatterns.keys():
@@ -1141,6 +1155,7 @@ class Wire:
 
         def onChanged(self, fp, prop):
                 if prop in ["Points","Closed","Base","Tool"]:
+                        print "changed",prop
                         self.createGeometry(fp)
                         
         def createGeometry(self,fp):
