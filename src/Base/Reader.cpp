@@ -342,7 +342,8 @@ void Base::XMLReader::startElement(const XMLCh* const /*uri*/, const XMLCh* cons
     Level++; // new scope
     LocalName = StrX(localname).c_str();
 
-    // saving attributes
+    // saving attributes of the current scope, delete all previously stored ones
+    AttrMap.clear();
     for (unsigned int i = 0; i < attrs.getLength(); i++) {
         AttrMap[StrX(attrs.getQName(i)).c_str()] = StrXUTF8(attrs.getValue(i)).c_str();
     }
