@@ -54,7 +54,7 @@ using namespace Gui::Dialog;
  * Constructs an action called \a name with parent \a parent. It also stores a pointer
  * to the command object.
  */
-Action::Action ( Command* pcCmd,QObject * parent )
+Action::Action (Command* pcCmd,QObject * parent)
   : QObject(parent), _action(new QAction( this )), _pcCmd(pcCmd)
 {
     _action->setObjectName(QString::fromAscii(_pcCmd->getName()));
@@ -85,12 +85,12 @@ void Action::onActivated ()
 /**
  * Sets whether the command is toggled.
  */
-void Action::onToggled ( bool b)
+void Action::onToggled(bool b)
 {
     _pcCmd->invoke( b ? 1 : 0 );
 } 
 
-void Action::setCheckable ( bool b )
+void Action::setCheckable(bool b)
 {
     _action->setCheckable(b);
     if (b) {
@@ -103,7 +103,7 @@ void Action::setCheckable ( bool b )
     }
 }
 
-void Action::setChecked ( bool b )
+void Action::setChecked(bool b)
 {
     _action->setChecked(b);
 }
@@ -116,17 +116,17 @@ bool Action::isChecked() const
 /**
  * Sets whether the action is enabled.
  */
-void Action::setEnabled ( bool b) 
+void Action::setEnabled(bool b) 
 {
     _action->setEnabled(b);
 }
 
-void Action::setVisible ( bool b) 
+void Action::setVisible(bool b) 
 {
-    _action->setVisible( b );
+    _action->setVisible(b);
 }
 
-void Action::setShortcut ( const QKeySequence & key )
+void Action::setShortcut(const QKeySequence & key)
 {
     _action->setShortcut(key);
 }
@@ -136,12 +136,12 @@ QKeySequence Action::shortcut() const
     return _action->shortcut();
 }
 
-void Action::setIcon ( const QIcon & icon)
+void Action::setIcon (const QIcon & icon)
 {
     _action->setIcon(icon);
 }
 
-void Action::setStatusTip ( const QString & s)
+void Action::setStatusTip(const QString & s)
 {
     _action->setStatusTip(s);
 }
@@ -151,7 +151,7 @@ QString Action::statusTip() const
     return _action->statusTip();
 }
 
-void Action::setText ( const QString & s)
+void Action::setText(const QString & s)
 {
     _action->setText(s);
 }
@@ -161,7 +161,7 @@ QString Action::text() const
     return _action->text();
 }
 
-void Action::setToolTip ( const QString & s)
+void Action::setToolTip(const QString & s)
 {
     _action->setToolTip(s);
 }
@@ -171,7 +171,7 @@ QString Action::toolTip() const
     return _action->toolTip();
 }
 
-void Action::setWhatsThis ( const QString & s)
+void Action::setWhatsThis(const QString & s)
 {
     _action->setWhatsThis(s);
 }
@@ -190,7 +190,7 @@ QString Action::whatsThis() const
 ActionGroup::ActionGroup ( Command* pcCmd,QObject * parent)
   : Action(pcCmd, parent), _group(0), _dropDown(false)
 {
-    _group = new QActionGroup( this );
+    _group = new QActionGroup(this);
     connect(_group, SIGNAL(triggered(QAction*)), this, SLOT(onActivated (QAction*)));
 }
 
@@ -683,7 +683,7 @@ void RecentFilesAction::save()
 
 // --------------------------------------------------------------------
 
-UndoAction::UndoAction ( Command* pcCmd,QObject * parent )
+UndoAction::UndoAction (Command* pcCmd,QObject * parent)
   : Action(pcCmd, parent)
 {
     _toolAction = new QAction(this);
@@ -698,7 +698,7 @@ UndoAction::~UndoAction()
     delete _toolAction;
 }
 
-void UndoAction::addTo ( QWidget * w )
+void UndoAction::addTo (QWidget * w)
 {
     if (w->inherits("QToolBar")) {
         // Do NOT set the shortcut again for _toolAction since this is already
@@ -716,13 +716,13 @@ void UndoAction::addTo ( QWidget * w )
     }
 }
 
-void UndoAction::setEnabled  ( bool b )
+void UndoAction::setEnabled(bool b)
 {
     Action::setEnabled(b);
     _toolAction->setEnabled(b);
 }
 
-void UndoAction::setVisible ( bool b )
+void UndoAction::setVisible(bool b)
 {
     Action::setVisible(b);
     _toolAction->setVisible(b);
