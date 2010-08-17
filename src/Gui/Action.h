@@ -35,54 +35,54 @@ class Command;
 /**
  * The Action class is the link between Qt's QAction class and FreeCAD's 
  * command classes (@ref Command). So, it is possible to have all actions
- * (from toolbars, menus, ...) implemented in classes instead of slots of
- * the main window. 
+ * (from toolbars, menus, ...) implemented in classes instead of many slot
+ * methods in the class @ref MainWindow.
  * @author Werner Mayer
  */
 class GuiExport Action : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  Action ( Command* pcCmd, QObject * parent = 0 );
-  virtual ~Action();
+    Action (Command* pcCmd, QObject * parent = 0);
+    virtual ~Action();
 
-  virtual void addTo ( QWidget * w );
-  virtual void setEnabled  ( bool );
-  virtual void setVisible ( bool );
+    virtual void addTo (QWidget * w);
+    virtual void setEnabled(bool);
+    virtual void setVisible(bool);
 
-  void setCheckable ( bool );
-  void setChecked ( bool );
-  bool isChecked() const;
+    void setCheckable(bool);
+    void setChecked (bool);
+    bool isChecked() const;
 
-  void setShortcut ( const QKeySequence & key );
-  QKeySequence shortcut() const;
-  void setIcon ( const QIcon & );
-  void setStatusTip ( const QString & );
-  QString statusTip() const;
-  void setText ( const QString & );
-  QString text() const;
-  void setToolTip ( const QString & );
-  QString toolTip() const;
-  void setWhatsThis ( const QString & );
-  QString whatsThis() const;
+    void setShortcut (const QKeySequence & key);
+    QKeySequence shortcut() const;
+    void setIcon (const QIcon &);
+    void setStatusTip (const QString &);
+    QString statusTip() const;
+    void setText (const QString &);
+    QString text() const;
+    void setToolTip (const QString &);
+    QString toolTip() const;
+    void setWhatsThis (const QString &);
+    QString whatsThis() const;
 
 public Q_SLOTS:
-  void onActivated ();
-  void onToggled   ( bool ); 
+    void onActivated ();
+    void onToggled   (bool); 
 
 protected:
-  QAction* _action;
-  Command *_pcCmd;
+    QAction* _action;
+    Command *_pcCmd;
 };
 
 // --------------------------------------------------------------------
 
 /**
  * The ActionGroup class is the link between Qt's QActionGroup class and 
- * FreeCAD's command group classes (@ref CommandGroup). So, it is possible to 
- * have all actions (from toolbars, menus, ...) implemented in classes instead of 
- * slots of the main window. 
+ * FreeCAD's command classes (@ref Command). Compared to Action with an
+ * ActionGroup it is possible to implement a single command with a group
+ * of toggable actions where e.g. one is set exclusive.
  * @author Werner Mayer
  */
 class GuiExport ActionGroup : public Action
@@ -90,7 +90,7 @@ class GuiExport ActionGroup : public Action
     Q_OBJECT
 
 public:
-    ActionGroup ( Command* pcCmd, QObject * parent = 0 );
+    ActionGroup (Command* pcCmd, QObject * parent = 0);
     virtual ~ActionGroup();
 
     void addTo (QWidget * w);
@@ -118,51 +118,51 @@ protected:
 class WorkbenchGroup;
 class GuiExport WorkbenchComboBox : public QComboBox
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  WorkbenchComboBox(WorkbenchGroup* wb, QWidget* parent=0);
-  virtual ~WorkbenchComboBox();
+    WorkbenchComboBox(WorkbenchGroup* wb, QWidget* parent=0);
+    virtual ~WorkbenchComboBox();
 
 public Q_SLOTS:
-  void onActivated(int);
-  void onActivated(QAction*);
+    void onActivated(int);
+    void onActivated(QAction*);
 
 protected Q_SLOTS:
-  void onWorkbenchActivated(const QString&);
+    void onWorkbenchActivated(const QString&);
 
 protected:
-  void actionEvent ( QActionEvent* );
+    void actionEvent (QActionEvent*);
 
 private:
-  WorkbenchGroup* group;
+    WorkbenchGroup* group;
 };
 
 /**
- * The WorkbenchGroup class represents a list of workbenches. When it is added to a menu a submenu gets created, 
- * if added to a toolbar a combo box gets created.
+ * The WorkbenchGroup class represents a list of workbenches. When it is added
+ * to a menu a submenu gets created, if added to a toolbar a combo box gets created.
  * @author Werner Mayer
  */
 class GuiExport WorkbenchGroup : public ActionGroup
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /** 
-   * Creates an action for the command \a pcCmd to load the workbench \a name
-   * when it gets activated.
-   */
-  WorkbenchGroup ( Command* pcCmd, QObject * parent );
-  virtual ~WorkbenchGroup();
-  void addTo ( QWidget * w );
-  void refreshWorkbenchList();
+    /** 
+     * Creates an action for the command \a pcCmd to load the workbench \a name
+     * when it gets activated.
+     */
+    WorkbenchGroup (Command* pcCmd, QObject * parent);
+    virtual ~WorkbenchGroup();
+    void addTo (QWidget * w);
+    void refreshWorkbenchList();
 
-  void slotActivateWorkbench(const char*);
-  void slotAddWorkbench(const char*);
-  void slotRemoveWorkbench(const char*);
+    void slotActivateWorkbench(const char*);
+    void slotAddWorkbench(const char*);
+    void slotRemoveWorkbench(const char*);
 
 protected:
-  void customEvent( QEvent* e );
+    void customEvent(QEvent* e);
 };
 
 // --------------------------------------------------------------------
@@ -176,7 +176,7 @@ class GuiExport RecentFilesAction : public ActionGroup
     Q_OBJECT
 
 public:
-    RecentFilesAction ( Command* pcCmd, QObject * parent = 0 );
+    RecentFilesAction (Command* pcCmd, QObject * parent = 0);
     virtual ~RecentFilesAction();
 
     void appendFile(const QString&);
@@ -197,45 +197,45 @@ private:
 // --------------------------------------------------------------------
 
 /**
- * The UndoAction class reimplements the addedTo() function to make a popup menu 
+ * The UndoAction class reimplements a special behaviour to make a menu 
  * appearing when the button with the arrow is clicked.
  * @author Werner Mayer
  */
 class GuiExport UndoAction : public Action
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  UndoAction ( Command* pcCmd,QObject * parent = 0 );
-  ~UndoAction();
-  void addTo ( QWidget * w );
-  void setEnabled  ( bool );
-  void setVisible ( bool );
+    UndoAction (Command* pcCmd,QObject * parent = 0);
+    ~UndoAction();
+    void addTo (QWidget * w);
+    void setEnabled(bool);
+    void setVisible(bool);
 
 private:
-  QAction* _toolAction;
+    QAction* _toolAction;
 };
 
 // --------------------------------------------------------------------
 
 /**
- * The RedoAction class reimplements the addedTo() function to make a popup menu 
+ * The RedoAction class reimplements a special behaviour to make a menu 
  * appearing when the button with the arrow is clicked.
  * @author Werner Mayer
  */
 class GuiExport RedoAction : public Action
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  RedoAction ( Command* pcCmd,QObject * parent = 0 );
-  ~RedoAction();
-  void addTo ( QWidget * w );
-  void setEnabled  ( bool );
-  void setVisible ( bool );
+    RedoAction (Command* pcCmd,QObject * parent = 0);
+    ~RedoAction();
+    void addTo ( QWidget * w );
+    void setEnabled(bool);
+    void setVisible(bool);
 
 private:
-  QAction* _toolAction;
+    QAction* _toolAction;
 };
 
 // --------------------------------------------------------------------
@@ -246,15 +246,15 @@ private:
  */
 class GuiExport DockWidgetAction : public Action
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DockWidgetAction ( Command* pcCmd, QObject * parent = 0 );
-  virtual ~DockWidgetAction();
-  void addTo ( QWidget * w );
+    DockWidgetAction (Command* pcCmd, QObject * parent = 0);
+    virtual ~DockWidgetAction();
+    void addTo (QWidget * w);
 
 private:
-  QMenu* _menu;
+    QMenu* _menu;
 };
 
 // --------------------------------------------------------------------
@@ -265,15 +265,15 @@ private:
  */
 class GuiExport ToolBarAction : public Action
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  ToolBarAction ( Command* pcCmd, QObject * parent = 0 );
-  virtual ~ToolBarAction();
-  void addTo ( QWidget * w );
+    ToolBarAction (Command* pcCmd, QObject * parent = 0);
+    virtual ~ToolBarAction();
+    void addTo (QWidget * w);
 
 private:
-  QMenu* _menu;
+    QMenu* _menu;
 };
 
 // --------------------------------------------------------------------
@@ -283,18 +283,17 @@ private:
  */
 class GuiExport WindowAction : public ActionGroup
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  WindowAction ( Command* pcCmd, QObject * parent = 0 );
-  virtual ~WindowAction();
-  void addTo ( QWidget * w );
+    WindowAction (Command* pcCmd, QObject * parent = 0);
+    virtual ~WindowAction();
+    void addTo (QWidget * w);
 
 private:
-  QMenu* _menu;
+    QMenu* _menu;
 };
 
 } // namespace Gui
 
 #endif // GUI_ACTION_H
-
