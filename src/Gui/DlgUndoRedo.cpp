@@ -76,14 +76,14 @@ void UndoDialog::onFetchInfo()
     }
 }
 
-/** Closes the dialog and emits the @ref clickedListBox() signal. */
+/** Closes the dialog and sends the message 'Undo' to the currently active MDI view. */
 void UndoDialog::onSelected()
 {
-    QAction* a = (QAction*)sender();
+    QAction* a = static_cast<QAction*>(sender());
     QList<QAction*> acts = this->actions();
-    for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
+    for (QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it) {
         Gui::Application::Instance->sendMsgToActiveView("Undo");
-        if ( *it == a )
+        if (*it == a)
             break;
     }
 }
@@ -133,14 +133,14 @@ void RedoDialog::onFetchInfo()
     }
 }
 
-/** Closes the dialog and emits the @ref clickedListBox() signal. */
+/** Closes the dialog and sends the message 'Redo' to the currently active MDI view. */
 void RedoDialog::onSelected()
 {
-    QAction* a = (QAction*)sender();
+    QAction* a = static_cast<QAction*>(sender());
     QList<QAction*> acts = this->actions();
-    for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
+    for (QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it) {
         Gui::Application::Instance->sendMsgToActiveView("Redo");
-        if ( *it == a )
+        if (*it == a)
             break;
     }
 }
