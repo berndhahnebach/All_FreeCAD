@@ -141,11 +141,11 @@ void InteractiveInterpreter::setPrompt()
 /**
  * Compile a command and determine whether it is incomplete.
  * 
- * The source string may contain \n characters.
+ * The source string may contain \n characters. \n
  * Return value / exceptions raised:
- * \item Return a code object if the command is complete and valid
- * \item Return None if the command is incomplete
- * \item Raise SyntaxError, ValueError or OverflowError if the command is a
+ * - Return a code object if the command is complete and valid
+ * - Return None if the command is incomplete
+ * - Raise SyntaxError, ValueError or OverflowError if the command is a
  * syntax error (OverflowError and ValueError can be produced by
  * malformed literals).
  */
@@ -173,13 +173,13 @@ PyObject* InteractiveInterpreter::compile(const char* source) const
 /**
  * Compile a command and determine whether it is incomplete.
  * 
- * The source string may contain \n characters.
+ * The source string may contain \n characters. \n
  * Return value:
- * \item Return  1 if the command is incomplete
- * \item Return  0 if the command is complete and valid
- * \item Return -1 if the command is a syntax error 
- * (OverflowError and ValueError can be produced by
- * malformed literals).
+ * - Return  1 if the command is incomplete
+ * - Return  0 if the command is complete and valid
+ * - Return -1 if the command is a syntax error
+ * .
+ * (OverflowError and ValueError can be produced by malformed literals).
  */
 int InteractiveInterpreter::compileCommand(const char* source) const
 {
@@ -210,15 +210,15 @@ int InteractiveInterpreter::compileCommand(const char* source) const
  *
  * One several things can happen:
  *
- * \item The input is incorrect; compile() raised an exception (SyntaxError or OverflowError).  
- * A syntax traceback will be printed by calling Python's PyErr_Print() method to the redirected stderr.
+ * - The input is incorrect; compile() raised an exception (SyntaxError or OverflowError).  
+ *   A syntax traceback will be printed by calling Python's PyErr_Print() method to the redirected stderr.
  *
- * \item The input is incomplete, and more input is required; compile() returned 'None'. 
- * Nothing happens.
+ * - The input is incomplete, and more input is required; compile() returned 'None'. 
+ *   Nothing happens.
  *
- * \item The input is complete; compile() returned a code object.  The code is executed by calling 
- * runCode() (which also handles run-time exceptions, except for SystemExit).
- * 
+ * - The input is complete; compile() returned a code object.  The code is executed by calling 
+ *   runCode() (which also handles run-time exceptions, except for SystemExit).
+ * .
  * The return value is True if the input is incomplete, False in the other cases (unless
  * an exception is raised). The return value can be used to decide whether to use sys.ps1 
  * or sys.ps2 to prompt the next line.
