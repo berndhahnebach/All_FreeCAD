@@ -471,20 +471,39 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
 
     PtIndex = -1;
     CurvIndex = -1;
+    int ConstrIndex = -1;
 
     if (Point) {
         //Base::Console().Log("Point pick\n");
+        SoPath * path = Point->getPath();
+        SoNode * tail = path->getTail();
+        SoNode * tailFather = path->getNode(path->getLength()-2);
+        SoNode * tailFather2 = path->getNode(path->getLength()-3);
+
+        // cecking for a hit in the points
         const SoDetail* point_detail = Point->getDetail(edit->PointSet);
         if (point_detail && point_detail->getTypeId() == SoPointDetail::getClassTypeId()) {
             // get the index
             PtIndex = static_cast<const SoPointDetail*>(point_detail)->getCoordinateIndex();
+        } else {
+            // checking for a hit in the Curves
+            const SoDetail* curve_detail = Point->getDetail(edit->CurveSet);
+            if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
+                // get the index
+                CurvIndex = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
+            }else {
+                if(tailFather2 == edit->constrGroup)
+                    for(int i=0; i< edit->constrGroup->getNumChildren();i++)
+                        if(edit->constrGroup->getChild(i) == tailFather){
+                            ConstrIndex = i;
+                            Base::Console().Log("Constr %d pick\n",i);
+                            break;
+                        }
+
+            }
+            
         }
 
-        const SoDetail* curve_detail = Point->getDetail(edit->CurveSet);
-        if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
-            // get the index
-            CurvIndex = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
-        }
     
         assert(PtIndex < 0 || CurvIndex < 0);
         if(PtIndex>=0){ // if a point is hit
