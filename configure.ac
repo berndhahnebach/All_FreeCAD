@@ -377,7 +377,7 @@ case $host_os in
   darwin*)
     GL_LIBS="-Wl,-F/System/Library/Frameworks -Wl,-framework,OpenGL"
     ;;
-  linux*)
+  linux*|kfreebsd*-gnu*)
     GL_LIBS="-lGL -lGLU"
     ;;
 esac

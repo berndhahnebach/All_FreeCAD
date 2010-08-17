@@ -56,14 +56,14 @@ typedef unsigned short   WORD;
 #endif
 
 #if defined(FC_OS_LINUX)
-#include <sys/sysinfo.h>
+#include <sys/time.h>
 
 inline DWORD GetTickCount()
 {
-    //FIXME: Must be tested
-    struct sysinfo si;
-    if (sysinfo(&si) == 0) return (si.uptime * 1000);
-    else return 1000;
+    struct timeval tv;
+    
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
 #elif defined(FC_OS_MACOSX)
