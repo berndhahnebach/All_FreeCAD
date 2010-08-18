@@ -70,6 +70,7 @@ private:
 
 private:
     int oldvalue;
+    SbVec3f viewAxis;
     Ui_DemoMode* ui;
     QTimer* timer;
 };
