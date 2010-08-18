@@ -113,7 +113,16 @@ const std::string &FileInfo::getTempPath(void)
         delete [] dest;
 #else
         const char* tmp = getenv("TMPDIR");
-        tempPath = tmp ? tmp : "/tmp/";
+        if (tmp && tmp[0] != '\0') {
+            tempPath = tmp;
+            if (tempPath.empty()) // still empty
+                tempPath = "/tmp/";
+            else if (tempPath.at(tempPath.size()-1)!='/')
+                tempPath.append("/");
+        }
+        else {
+            tempPath = "/tmp/";
+        }
 #endif
     }
 
