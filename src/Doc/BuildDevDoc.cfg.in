@@ -1269,17 +1269,26 @@ PREDEFINED             =
 # The macro definition that is found in the sources will be used.
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
+# macros in Base/PyObjectBase.h
+# macros in Base/BaseClass.h
+# macros in Gui/Command.h
 EXPAND_AS_DEFINED      = Py_Header \
+                         PYFUNCDEF_S \
+                         PYFUNCIMP_S \
                          PYFUNCDEF_D \
+                         PYFUNCIMP_D \
+                         PYMETHODEDEF \
                          TYPESYSTEM_HEADER \
                          TYPESYSTEM_SOURCE_P \
                          TYPESYSTEM_SOURCE_ABSTRACT_P \
                          TYPESYSTEM_SOURCE \
                          TYPESYSTEM_SOURCE_ABSTRACT \
-                         PYFUNCDEF_S \
-                         PYFUNCIMP_S \
-                         PYFUNCIMP_D \
-                         PYMETHODEDEF 
+                         DEF_STD_CMD \
+                         DEF_STD_CMD_A \
+                         DEF_STD_CMD_C \
+                         DEF_STD_CMD_AC \
+                         DEF_STD_CMD_ACL \
+                         DEF_3DV_CMD
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then
 # doxygen's preprocessor will remove all function-like macros that are alone

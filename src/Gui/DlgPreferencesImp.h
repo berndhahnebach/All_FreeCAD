@@ -48,7 +48,7 @@ class PreferencePage;
  * preference widget you have used inside your form in Qt Designer.
  *
  * \li For each widget inside your page - you want to save or load - you have to call 
- * <objectname>->onSave() or <objectname>->onRestore(). The best way to this is either to 
+ * \<objectname\>->onSave() or \<objectname\>->onRestore(). The best way to this is either to 
  * define the protected slots saveSettings() and loadSettings() in your form and overwrite
  * them in a subclass or define these slots in this subclass diretly. 
  *

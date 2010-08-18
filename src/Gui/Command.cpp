@@ -76,7 +76,7 @@ using namespace Gui::DockWnd;
  * \a Gui::CommandBase and \a Gui::Action that represent the link between Qt's QAction world and the FreeCAD's command  world. 
  *
  * The Action class holds a pointer to QAction and CommandBase and acts as a mediator and -- to save memory -- that gets created 
- * (@ref CommandBase::createAction()) not before it is added (@ref Command::addTo()) to a menu or toolbar.
+ * (@ref Gui::CommandBase::createAction()) not before it is added (@ref Gui::Command::addTo()) to a menu or toolbar.
  *
  * Now, the implementation of the slots of MainWindow can be done in the method \a activated() of subclasses of Command instead.
  *
@@ -106,7 +106,7 @@ using namespace Gui::DockWnd;
  *   }
  * };
  * \endcode
- * An instance of \a OpenCommand must be created and added to the \ref CommandManager to make the class known to FreeCAD.
+ * An instance of \a OpenCommand must be created and added to the \ref Gui::CommandManager to make the class known to FreeCAD.
  * To see how menus and toolbars can be built go to the @ref workbench.
  *
  * @see Gui::Command, Gui::CommandManager
@@ -237,9 +237,9 @@ Gui::Document* Command::getActiveGuiDocument(void) const
 
 App::Document* Command::getDocument(const char* Name) const
 {
-    if (Name)
+    if (Name) {
         return App::GetApplication().getDocument(Name);
-
+    }
     else {
         Gui::Document * pcDoc = getGuiApplication()->activeDocument();
         if (pcDoc)

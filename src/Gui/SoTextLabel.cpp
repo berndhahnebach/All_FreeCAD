@@ -81,7 +81,7 @@ s="""
 
 App.ActiveDocument.addObject("App::InventorObject","iv").Buffer=s
 
-\encode
+\endcode
 */
 
 SO_NODE_SOURCE(SoTextLabel);

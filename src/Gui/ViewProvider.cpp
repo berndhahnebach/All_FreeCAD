@@ -255,8 +255,8 @@ std::vector<std::string> ViewProvider::getDisplayMaskModes() const
 }
 
 /**
- * If you add new viewing modes in @ref getModes() then you need to reimplement
- * also setMode() to handle these new modes by setting the appropriate display
+ * If you add new viewing modes in @ref getDisplayModes() then you need to reimplement
+ * also seDisplaytMode() to handle these new modes by setting the appropriate display
  * mode.
  */
 void ViewProvider::setDisplayMode(const char* ModeName)

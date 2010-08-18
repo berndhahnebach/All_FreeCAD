@@ -134,10 +134,9 @@ DlgSettingsEditorImp::~DlgSettingsEditorImp()
     delete d;
 }
 
-/** Searches for the corresponding color value to \e name in @ref DefColorMap and
- *  assigns it to the color button
+/** Searches for the color value corresponding to \e name in current editor
+ *   settings ColorMap and assigns it to the color button
  *  @see Gui::ColorButton
- *  @see DefColorMap
  */
 void DlgSettingsEditorImp::on_displayItems_currentItemChanged(QTreeWidgetItem *item)
 {

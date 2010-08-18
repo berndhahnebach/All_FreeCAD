@@ -18,13 +18,6 @@ QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Tools" )
 QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Windows" )
 QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Help" )
 
-#: CustomWidgets.cpp
-QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Macro recording" )
-QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Standard views" )
-QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "file operations" )
-QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Special Ops" )
-QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Command bar" )
-
 #: DockWindow.cpp
 QT_TRANSLATE_NOOP( "Gui::DockWindow", "Toolbox" )
 QT_TRANSLATE_NOOP( "Gui::DockWindow", "Property editor" )
