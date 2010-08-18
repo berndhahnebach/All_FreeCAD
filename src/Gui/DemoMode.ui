@@ -53,7 +53,7 @@
             <number>100</number>
            </property>
            <property name="value">
-            <number>15</number>
+            <number>5</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

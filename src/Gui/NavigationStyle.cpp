@@ -675,6 +675,7 @@ void NavigationStyle::startAnimating(const SbVec3f& axis, float velocity)
 {
     if (!isAnimationEnabled()) return;
 
+    this->prevRedrawTime = SbTime::getTimeOfDay();
     this->spinincrement = SbRotation::identity();
     SbRotation rot;
     rot.setValue(axis, velocity);

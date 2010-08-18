@@ -45,7 +45,7 @@ using namespace Gui::Dialog;
 /* TRANSLATOR Gui::Dialog::DemoMode */
 
 DemoMode::DemoMode(QWidget* parent, Qt::WFlags fl)
-  : QDialog(/*parent*/0, fl|Qt::WindowStaysOnTopHint), ui(new Ui_DemoMode)
+  : QDialog(0, fl|Qt::WindowStaysOnTopHint), viewAxis(0,0,-1), ui(new Ui_DemoMode)
 {
     // create widgets
     ui->setupUi(this);
@@ -104,13 +104,13 @@ float DemoMode::getSpeed(int v) const
 SbVec3f DemoMode::getDirection(Gui::View3DInventor* view) const
 {
     SoCamera* cam = view->getViewer()->getCamera();
-    if (!cam) return SbVec3f(0,0,-1);
+    if (!cam) return this->viewAxis;
     SbRotation rot = cam->orientation.getValue();
     SbRotation inv = rot.inverse();
-    SbVec3f vec(0,0,-1);
+    SbVec3f vec(this->viewAxis);
     inv.multVec(vec, vec);
     if (vec.length() < FLT_EPSILON)
-        vec.setValue(0,0,-1);
+        vec = this->viewAxis;
     vec.normalize();
     return vec;
 }
@@ -159,6 +159,15 @@ void DemoMode::on_playButton_clicked()
 {
     Gui::View3DInventor* view = activeView();
     if (view) {
+        if (!view->getViewer()->isAnimating()) {
+            SoCamera* cam = view->getViewer()->getCamera();
+            if (cam) {
+                SbRotation rot = cam->orientation.getValue();
+                SbVec3f vec(0,-1,0);
+                rot.multVec(vec, this->viewAxis);
+            }
+        }
+
         startAnimation(view);
     }
 }
