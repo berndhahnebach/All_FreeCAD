@@ -115,7 +115,8 @@ const std::string &FileInfo::getTempPath(void)
         const char* tmp = getenv("TMPDIR");
         if (tmp && tmp[0] != '\0') {
             tempPath = tmp;
-            if (tempPath.empty()) // still empty
+            FileInfo fi(tempPath);
+            if (tempPath.empty() || !fi.isDir()) // still empty or non-existent
                 tempPath = "/tmp/";
             else if (tempPath.at(tempPath.size()-1)!='/')
                 tempPath.append("/");
