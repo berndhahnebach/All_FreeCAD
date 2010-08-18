@@ -438,7 +438,7 @@ void CmdMeshImport::activated(int iMsg)
 {
     // use current path as default
     QStringList filter;
-    filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
+    filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj *.ply)");
     filter << QObject::tr("Binary STL (*.stl)");
     filter << QObject::tr("ASCII STL (*.ast)");
     filter << QObject::tr("Binary Mesh (*.bms)");
