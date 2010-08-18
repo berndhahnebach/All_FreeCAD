@@ -37,18 +37,17 @@ class PrefCheckBox;
 class CommandViewItemPrivate;
 
 /**
- * This class allows to drag one or more items which
- * correspond to a Command object. The dragged items you
- * can drop onto a @ref Gui::CustomToolBar object
+ * This class allows to drag one or more items which correspond to a Command object.
+ * The dragged items can be dropped onto the @ref Gui::PythonConsole.
  * @see CommandViewItem, Command
- * \author Werner Mayer
+ * @author Werner Mayer
  */
 class CommandIconView : public QListWidget
 {
   Q_OBJECT
 
 public:
-  CommandIconView ( QWidget * parent = 0 );
+  CommandIconView (QWidget * parent = 0);
   virtual ~CommandIconView ();
 
 protected:

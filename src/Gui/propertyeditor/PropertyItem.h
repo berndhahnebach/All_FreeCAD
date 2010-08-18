@@ -427,6 +427,10 @@ class GuiExport PropertyFileItem: public PropertyItem
 {
     TYPESYSTEM_HEADER();
 
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
 protected:
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
@@ -444,12 +448,17 @@ class GuiExport PropertyPathItem: public PropertyItem
 {
     TYPESYSTEM_HEADER();
 
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
 protected:
     virtual QVariant value(const App::Property*) const;
     virtual void setValue(const QVariant&);
 
 protected:
     PropertyPathItem();
+    virtual QVariant toolTip(const App::Property*) const;
 };
 
 class PropertyItemEditorFactory : public QItemEditorFactory
