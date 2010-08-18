@@ -117,7 +117,7 @@ public:
     /// helper to detect preselection
     //bool handlePreselection(const SoPickedPoint* pp);
     /// helper to detect preselection
-    bool detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex);
+    bool detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex, int &ConstrIndex);
     /// helper change the color of the sketch acorting to selection and solver status
     void updateColor(void);
     /// get the pointer to the sketch document object
@@ -125,6 +125,7 @@ public:
 
 	int getPreselectPoint(void)const;
 	int getPreselectCurve(void)const;
+    int getPreselectConstraint(void)const;
     //@}
 
     /** @name base class implementer */

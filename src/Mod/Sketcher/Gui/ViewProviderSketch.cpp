@@ -73,7 +73,7 @@ using namespace Sketcher;
 SbColor sCurveColor             (1.0f,1.0f,1.0f); 
 SbColor sCurveConstructionColor (0.2f,1.0f,0.2f); 
 SbColor sPointColor             (0.5f,0.5f,0.5f); 
-SbColor sDatumLineColor         (0.0f,0.8f,0.0f); 
+SbColor sConstraintColor        (0.0f,0.8f,0.0f); 
 
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f); 
 SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f); 
@@ -111,11 +111,13 @@ struct EditData {
     int PreselectCurve;
     SbColor PreselectOldColor;
     int PreselectPoint;
+    int PreselectConstraint;
     // pointer to the Solver
     Sketcher::Sketch ActSketch;
     // container to track our own selected parts
     std::set<int> SelPointSet;
     std::set<int> SelCurvSet;
+    std::set<int> SelConstraintSet;
 
     // helper data structure for the constraint rendering
     std::vector<ConstraintType> vConstrType;
@@ -249,6 +251,10 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Edge;
                         return true;
+                    } else if (edit->PreselectConstraint >=0) {
+                        //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
+                        Mode = STATUS_SELECT_Constraint;
+                        return true;
                     } else
                         return false;
 
@@ -283,6 +289,20 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     // Do selection
                     std::stringstream ss;
                     ss << "Edge" << edit->PreselectCurve;
+                                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                                                 ,getSketchObject()->getNameInDocument()
+                                                 ,ss.str().c_str()
+                                                 ,pp->getPoint()[0]
+                                                 ,pp->getPoint()[1]
+                                                 ,pp->getPoint()[2]);
+
+                    this->edit->DragPoint = -1;
+                    Mode = STATUS_NONE;
+                    return true;}
+                case STATUS_SELECT_Constraint:{
+                     // Do selection
+                    std::stringstream ss;
+                    ss << "Constraint" << edit->PreselectConstraint;
                                         Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
                                                  ,getSketchObject()->getNameInDocument()
                                                  ,ss.str().c_str()
@@ -345,8 +365,8 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     double x,y;
     getCoordsOnSketchPlane(x,y,point,normal);
 
-    int PtIndex,CurvIndex;
-    bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex);
+    int PtIndex,CurvIndex,ConstrIndex;
+    bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex);
 
     switch (Mode) {
         case STATUS_NONE:
@@ -358,13 +378,16 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             edit->DragPoint = edit->PreselectPoint;
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
+            edit->PreselectConstraint = -1;
 
             return true;
         case STATUS_SELECT_Edge:
+        case STATUS_SELECT_Constraint:
             // drag a edge not implemented yet!
             Mode = STATUS_NONE;
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
+            edit->PreselectConstraint = -1;
 
             return true;
         case STATUS_SKETCH_DragPoint:
@@ -401,10 +424,11 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
         std::string temp;
         if (msg.Type == Gui::SelectionChanges::ClrSelection) {
             // if something selected in this object?
-            if ( edit->SelPointSet.size() > 0 || edit->SelCurvSet.size() > 0){
+            if ( edit->SelPointSet.size() > 0 || edit->SelCurvSet.size() > 0 || edit->SelConstraintSet.size() > 0){
                 // clear our selection and update the color of the viewed edges and points
                 edit->SelPointSet.clear();
                 edit->SelCurvSet.clear();
+                edit->SelConstraintSet.clear();
                 updateColor();
             }
         }
@@ -422,6 +446,11 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
                         else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") {
                             int index=std::atoi(&shapetype[6]);
                             edit->SelPointSet.insert(index);
+                            updateColor();
+                        }
+                        else if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
+                            int index=std::atoi(&shapetype[10]);
+                            edit->SelConstraintSet.insert(index);
                             updateColor();
                         }
 
@@ -465,13 +494,13 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
 }
 
 
-bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex)
+bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex, int &ConstrIndex)
 {
     assert(edit);
 
     PtIndex = -1;
     CurvIndex = -1;
-    int ConstrIndex = -1;
+    ConstrIndex = -1;
 
     if (Point) {
         //Base::Console().Log("Point pick\n");
@@ -481,34 +510,55 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
         SoNode * tailFather2 = path->getNode(path->getLength()-3);
 
         // cecking for a hit in the points
-        const SoDetail* point_detail = Point->getDetail(edit->PointSet);
-        if (point_detail && point_detail->getTypeId() == SoPointDetail::getClassTypeId()) {
-            // get the index
-            PtIndex = static_cast<const SoPointDetail*>(point_detail)->getCoordinateIndex();
+        if(tail == edit->PointSet){
+            const SoDetail* point_detail = Point->getDetail(edit->PointSet);
+            if (point_detail && point_detail->getTypeId() == SoPointDetail::getClassTypeId()) {
+                // get the index
+                PtIndex = static_cast<const SoPointDetail*>(point_detail)->getCoordinateIndex();
+            }
         } else {
             // checking for a hit in the Curves
-            const SoDetail* curve_detail = Point->getDetail(edit->CurveSet);
-            if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
-                // get the index
-                CurvIndex = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
+            if(tail == edit->CurveSet){ 
+                const SoDetail* curve_detail = Point->getDetail(edit->CurveSet);
+                if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
+                    // get the index
+                    CurvIndex = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
+                }
             }else {
+                // checking if a constraint is hit
                 if(tailFather2 == edit->constrGroup)
                     for(int i=0; i< edit->constrGroup->getNumChildren();i++)
                         if(edit->constrGroup->getChild(i) == tailFather){
                             ConstrIndex = i;
-                            Base::Console().Log("Constr %d pick\n",i);
+                            //Base::Console().Log("Constr %d pick\n",i);
                             break;
                         }
 
             }
             
         }
-
+        
     
-        assert(PtIndex < 0 || CurvIndex < 0);
-        if(PtIndex>=0){ // if a point is hit
+        if(ConstrIndex>=0){ // if a constraint is hit
             std::stringstream ss;
-            ss << "Vertex" << edit->PreselectPoint;
+            ss << "Constraint" << ConstrIndex;
+            Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
+                                          ,getSketchObject()->getNameInDocument()
+                                          ,ss.str().c_str()
+                                          ,Point->getPoint()[0]
+                                          ,Point->getPoint()[1]
+                                          ,Point->getPoint()[2]);
+                                                 
+            if(ConstrIndex != edit->PreselectConstraint){
+                edit->PreselectConstraint = ConstrIndex;
+                edit->PreselectPoint = -1;
+                edit->PreselectCurve = -1;
+                return true;
+            }else
+                return false;
+        }else if(PtIndex>=0){ // if a point is hit
+            std::stringstream ss;
+            ss << "Vertex" << PtIndex;
             Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
                                           ,getSketchObject()->getNameInDocument()
                                           ,ss.str().c_str()
@@ -519,6 +569,7 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
             if(PtIndex != edit->PreselectPoint){
                 edit->PreselectPoint = PtIndex;
                 edit->PreselectCurve = -1;
+                edit->PreselectConstraint = -1;
                 return true;
             }else
                 return false;
@@ -526,8 +577,9 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
             if(CurvIndex != edit->PreselectCurve){
                 edit->PreselectCurve = CurvIndex;
                 edit->PreselectPoint = -1;
+                edit->PreselectConstraint = -1;
                 std::stringstream ss;
-                ss << "Edge" << edit->PreselectCurve;
+                ss << "Edge" << CurvIndex;
                 Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
                                              ,getSketchObject()->getNameInDocument()
                                              ,ss.str().c_str()
@@ -544,12 +596,14 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
         }else if((CurvIndex<0 && PtIndex<0) && (edit->PreselectCurve>=0 || edit->PreselectPoint>=0) ){
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
-            return true;
+            edit->PreselectConstraint = -1;
+           return true;
         }
 
-    }else if(edit->PreselectCurve>=0 || edit->PreselectPoint>=0 ){
+    }else if(edit->PreselectCurve>=0 || edit->PreselectPoint>=0 || edit->PreselectConstraint>=0){
         edit->PreselectCurve = -1;
         edit->PreselectPoint = -1;
+        edit->PreselectConstraint = -1;
         return true;
     }
 
@@ -567,7 +621,7 @@ void ViewProviderSketch::updateColor(void)
     int CurvNum = edit->CurvesMaterials->diffuseColor.getNum();
     SbColor* color = edit->CurvesMaterials->diffuseColor.startEditing();
 
-    // color of the point set
+    // colors of the point set
     for(int  i=0;i<PtNum;i++)
         if(edit->SelPointSet.find(i) != edit->SelPointSet.end()){
             pcolor[i] = SelectColor;
@@ -575,6 +629,8 @@ void ViewProviderSketch::updateColor(void)
             pcolor[i] = PreselectColor;
         }else
              pcolor[i] = sPointColor;
+
+    // colors or the curves
     for(int  i=0;i<CurvNum;i++)
         if(edit->SelCurvSet.find(i) != edit->SelCurvSet.end()){
             color[i] = SelectColor;
@@ -582,7 +638,18 @@ void ViewProviderSketch::updateColor(void)
             color[i] = PreselectColor;
         }else
              color[i] = sCurveColor;
-        //color[i]=PreselectCurve==i?PreselectColor:sCurveColor;
+
+    // colors of the constraints
+    for(int i=0; i< edit->constrGroup->getNumChildren();i++){
+        SoSeparator *s = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
+        SoMaterial *m = dynamic_cast<SoMaterial *>(s->getChild(0));
+        if(edit->SelConstraintSet.find(i) != edit->SelConstraintSet.end()){
+            m->diffuseColor = SelectColor;
+        }else if(edit->PreselectConstraint==i){
+            m->diffuseColor = PreselectColor;
+        }else
+            m->diffuseColor = sConstraintColor;
+    }
 
     // end edeting
     edit->CurvesMaterials->diffuseColor.finishEditing();
@@ -715,7 +782,7 @@ Restart:
                     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
-                    dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos.x,pos.y,0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos.x,pos.y,0.0f);
                 }   break;
             case Vertical: // write the new position of the Vertical constraint
                 {
@@ -727,7 +794,7 @@ Restart:
                     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
-                    dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos.x,pos.y,0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos.x,pos.y,0.0f);
                 }   break;
             case Parallel:
                 {
@@ -746,8 +813,8 @@ Restart:
                     Base::Vector3d pos2 = lineSeg2->getStartPoint() + ((lineSeg2->getEndPoint()-lineSeg2->getStartPoint())/2);
                     // move the second point because of two translations in a row. 
                     pos2 = pos2 - pos1;
-                    dynamic_cast<SoTranslation *>(sep->getChild(0))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(2))->translation = SbVec3f(pos2.x,pos2.y,0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = SbVec3f(pos2.x,pos2.y,0.0f);
                 }   break;
             case Distance:
                 {
@@ -763,20 +830,18 @@ Restart:
                     SbVec3f dir = p2 - p1;
                     SbVec3f pos = p1 + dir/2;
                     dir.normalize();
-                    //Base::Vector3d dir = lineSeg->getEndPoint()-lineSeg->getStartPoint();
-                    //Base::Vector3d pos = lineSeg->getStartPoint() + dir/2;
-                    //dir.Normalize();
-                    dir = SbVec3f (-dir[1],dir[0],0); // rotate direction perpendicular
+                    // rotate direction perpendicular
+                    dir = SbVec3f (-dir[1],dir[0],0); 
                     // set the line coordinates:
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(0,p1);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(1,p1+dir*12);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(2,p2);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(3,p2+dir*12);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(4,p1+dir*10);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(0))->point.set1Value(5,p2+dir*10);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+dir*12);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+dir*12);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+dir*10);
+                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+dir*10);
                     // set position of datum
-                    dynamic_cast<SoTranslation *>(sep->getChild(2))->translation = pos + dir*10;
-                    dynamic_cast<SoText2 *>(sep->getChild(3))->string = SbString().sprintf("%.2f",Constr->Value);
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = pos + dir*10;
+                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
                 }   break;
             case Angle:
             case Coincident: // nothing to do for coincident
@@ -805,6 +870,11 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
         SoSeparator *sep = new SoSeparator();
         // no caching for fluctuand data structures
         sep->renderCaching = SoSeparator::OFF;
+        // every constrained visual node gets its own material for preselection and selection
+        SoMaterial *Material = new SoMaterial;
+        Material->diffuseColor = sConstraintColor;
+        sep->addChild(Material);
+
         // destiquish different constraint types to build up
         switch((*it)->Type) {
             case Horizontal: // add a Text node with the "H" for that constraint
@@ -832,7 +902,7 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
             case Coincident: // no visual for coincident so far
                 edit->vConstrType.push_back(Coincident);
                 break;
-            case Parallel: // no visual for coincident so far
+            case Parallel: 
                 {
                     sep->addChild(new SoTranslation());
                     SoText2 *text = new SoText2();
@@ -848,7 +918,7 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
                     edit->vConstrType.push_back(Parallel);
                 }
                 break;
-            case Distance: // no visual for coincident so far
+            case Distance: 
                 {
                     // nodes for the datum lines 
                     sep->addChild(new SoCoordinate3);
@@ -1073,9 +1143,10 @@ void ViewProviderSketch::createEditInventorNodes(void)
     edit->EditRoot->addChild(Coordsep);
 
     // group node for the Constraint visual +++++++++++++++++++++++++++++++++++
-    EditMaterials = new SoMaterial;
-    EditMaterials->diffuseColor = SbColor(0,1,0);
-    edit->EditRoot->addChild(EditMaterials);
+    MtlBind = new SoMaterialBinding;
+    MtlBind->value = SoMaterialBinding::OVERALL ;
+    edit->EditRoot->addChild(MtlBind);
+    
     // add font for the text shown constraints
     font = new SoFont();
     font->size = 15.0;
@@ -1122,11 +1193,22 @@ void ViewProviderSketch::resetPositionText(void)
 
 int ViewProviderSketch::getPreselectPoint(void)const
 {
-    return edit->PreselectPoint;
+    if(edit)
+        return edit->PreselectPoint;
+    return -1;
 }
 int ViewProviderSketch::getPreselectCurve(void)const
 {
-    return edit->PreselectCurve;
+    if(edit)
+        return edit->PreselectCurve;
+    return -1;
+}
+
+int ViewProviderSketch::getPreselectConstraint(void)const
+{
+    if(edit)
+        return edit->PreselectConstraint;
+    return -1;
 }
 
 void ViewProviderSketch::setGridSnap(int Type)
