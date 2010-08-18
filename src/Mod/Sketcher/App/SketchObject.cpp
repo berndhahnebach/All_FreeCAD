@@ -69,6 +69,23 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
+void SketchObject::setDatum(double Datum,int ConstrNbr)
+{
+    assert(ConstrNbr >= 0); 
+
+    const std::vector< Constraint * > &vals = this->Constraints.getValues();
+    assert(ConstrNbr < vals.size());
+    assert(vals[ConstrNbr]->Type == Distance);
+
+    // copy the list
+    std::vector< Constraint * > newVals(vals);
+    // clone the changed Constraint
+    Constraint *constNew = vals[ConstrNbr]->clone();
+    constNew->Value = Datum;
+    newVals[ConstrNbr] = constNew;
+    this->Constraints.setValues(newVals);
+    delete constNew;
+}
     
 int SketchObject::addGeometry(const Part::Geometry *geo)
 {

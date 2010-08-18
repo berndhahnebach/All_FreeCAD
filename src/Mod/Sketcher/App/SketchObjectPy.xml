@@ -28,6 +28,11 @@
         <UserDocu>add a constraint to the sketch</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="setDatum">
+      <Documentation>
+        <UserDocu>set the Datum of a Distance or Angle constraint</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="movePoint">
       <Documentation>
         <UserDocu>

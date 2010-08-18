@@ -69,6 +69,10 @@ public:
     /// add constraint 
     int addConstraints(const Constraint *Constraints );
 
+
+    /// set the datum of an Distance or Angle constraint
+    void setDatum(double Datum,int ConstrNbr);
+
     /** retrives for a Vertex number the corosponding GeoId and PointPosition
     */
     void getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos);

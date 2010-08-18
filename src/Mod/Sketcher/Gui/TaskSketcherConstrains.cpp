@@ -28,6 +28,7 @@
 #endif
 
 #include "ui_TaskSketcherConstrains.h"
+#include "ui_InsertDatum.h"
 #include "TaskSketcherConstrains.h"
 #include "ViewProviderSketch.h"
 
@@ -39,6 +40,7 @@
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/Command.h>
 #include <Base/Console.h>
 #include <boost/bind.hpp>
 
@@ -46,6 +48,16 @@
 
 using namespace SketcherGui;
 using namespace Gui::TaskView;
+
+// helper class to store additional information about the listWidget entry.
+class ConstraintItem:public QListWidgetItem
+{
+public:
+    ConstraintItem(const QIcon & icon, const QString & text,int ConstNbr,Sketcher::ConstraintType t):QListWidgetItem(icon,text),ConstraintNbr(ConstNbr),Type(t){}
+    ConstraintItem(const QString & text,int ConstNbr,Sketcher::ConstraintType t):QListWidgetItem(text),ConstraintNbr(ConstNbr),Type(t){}
+    int ConstraintNbr;
+    Sketcher::ConstraintType Type;
+};
 
 TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
     : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Constraints"),true, 0)
@@ -55,25 +67,114 @@ TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
     proxy = new QWidget(this);
     ui = new Ui_TaskSketcherConstrains();
     ui->setupUi(proxy);
-    QMetaObject::connectSlotsByName(this);
+    //QMetaObject::connectSlotsByName(this);
 
-    QObject::connect(ui->comboBoxFilter,SIGNAL(currentIndexChanged(int)),this,SLOT(on_comboBoxFilter_currentIndexChanged(int)));
+    // connecting the needed signals
+    QObject::connect(
+        ui->comboBoxFilter,SIGNAL(currentIndexChanged(int)),
+        this              ,SLOT  (on_comboBoxFilter_currentIndexChanged(int))
+       );
+    QObject::connect(
+        ui->listWidgetConstraints,SIGNAL(itemSelectionChanged ()),
+        this                     ,SLOT  (on_listWidgetConstraints_itemSelectionChanged ())
+       );
+    QObject::connect(
+        ui->listWidgetConstraints,SIGNAL(itemActivated ( QListWidgetItem *)),
+        this                     ,SLOT  (on_listWidgetConstraints_itemActivated ( QListWidgetItem *) )
+       );
+    //QObject::connect(
+    //    ui->listWidgetConstraints,SIGNAL(entered(const QModelIndex &)),
+    //    this                     ,SLOT  (on_listWidgetConstraints_entered(const QModelIndex &))
+    //   );
+
     connectionConstraintsChanged = sketchView->signalConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::slotConstraintsChanged, this));
 
     this->groupLayout()->addWidget(proxy);
+ 
+    Gui::Selection().Attach(this);
 
     slotConstraintsChanged();
 }
 
 TaskSketcherConstrains::~TaskSketcherConstrains()
 {
+    Gui::Selection().Detach(this);
     connectionConstraintsChanged.disconnect();
     delete ui;
 }
+
+void TaskSketcherConstrains::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                              Gui::SelectionSingleton::MessageType msg)
+{
+    std::string temp;
+    if (msg.Type == Gui::SelectionChanges::ClrSelection) {
+        ui->listWidgetConstraints->clearSelection ();
+    }
+    else if (msg.Type == Gui::SelectionChanges::AddSelection) {
+        // is it this object??
+        if(strcmp(msg.pDocName,sketchView->getSketchObject()->getDocument()->getName())==0
+            &&strcmp(msg.pObjectName,sketchView->getSketchObject()->getNameInDocument())== 0) {
+                if(msg.pSubName){
+                    std::string shapetype(msg.pSubName);
+                    if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
+                        int index=std::atoi(&shapetype[10]);
+                        //ui->listWidgetConstraints->setCurrentIndex(QModelIndex(0));
+                    }
+
+                }
+        }        
+    }
+    else if (msg.Type == Gui::SelectionChanges::RmvSelection) {}
+    else if (msg.Type == Gui::SelectionChanges::SetSelection) {}       
+}
+
+
+
 void TaskSketcherConstrains::on_comboBoxFilter_currentIndexChanged(int)
 {
     slotConstraintsChanged();
 }
+
+void TaskSketcherConstrains::on_listWidgetConstraints_itemSelectionChanged (void)
+{
+    
+}
+
+void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated ( QListWidgetItem *item)
+{
+    ConstraintItem *it = dynamic_cast<ConstraintItem*>(item);
+
+    // if its the right constraint
+    if(it->Type == Sketcher::Distance){
+        const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
+        Sketcher::Constraint *Const = vals[it->ConstraintNbr];
+        assert(Const->Type == it->Type);
+        double Datum = Const->Value;
+
+        QDialog *Dlg = new QDialog;
+        Ui::InsertDatum ui;
+        ui.setupUi(Dlg);
+
+        ui.lineEdit->setText(QString::fromAscii("%1").arg(Datum)); 
+        if(Dlg->exec()){
+            double newDatum = ui.lineEdit->text().toDouble();
+            Gui::Command::openCommand("add sketch line");
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
+                      sketchView->getObject()->getNameInDocument(),
+                      newDatum,it->ConstraintNbr);
+
+        }
+
+    }
+
+
+}
+
+//void TaskSketcherConstrains::on_listWidgetConstraints_entered    ( const QModelIndex & index )
+//{
+//    index;
+//}
+
 
 void TaskSketcherConstrains::slotConstraintsChanged(void)
 {
@@ -103,28 +204,28 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
         switch((*it)->Type){
             case Sketcher::Horizontal:
                 if(Filter<2 || (*it)->Name != "")
-                    ui->listWidgetConstraints->addItem(new QListWidgetItem(horiz,name));
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(horiz,name,i-1,(*it)->Type));
                 break;
             case Sketcher::Vertical:
                 if(Filter<2 || (*it)->Name != "")
-                    ui->listWidgetConstraints->addItem(new QListWidgetItem(vert,name));
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(vert,name,i-1,(*it)->Type));
                 break;
             case Sketcher::Coincident:
                 if(Filter<1 || (*it)->Name != "")
-                    ui->listWidgetConstraints->addItem(new QListWidgetItem(coinc,name));
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(coinc,name,i-1,(*it)->Type));
                 break;
             case Sketcher::Parallel:
                 if(Filter<2 || (*it)->Name != "")
-                    ui->listWidgetConstraints->addItem(new QListWidgetItem(para,name));
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(para,name,i-1,(*it)->Type));
                 break;
             case Sketcher::Distance:
                 if(Filter<3 || (*it)->Name != ""){
-                    name = QString(QString::fromLatin1("%1 (%2)")).arg(name).arg((*it)->Value);
-                    ui->listWidgetConstraints->addItem(new QListWidgetItem(dist,name));
+                    name = QString(QString::fromLatin1("%1 (%2)")).arg(name,14).arg((*it)->Value);
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(dist,name,i-1,(*it)->Type));
                 }
                 break;
             default:
-                ui->listWidgetConstraints->addItem(new QListWidgetItem(name));
+                ui->listWidgetConstraints->addItem(new ConstraintItem(name,i-1,(*it)->Type));
                 break;
         }
 
