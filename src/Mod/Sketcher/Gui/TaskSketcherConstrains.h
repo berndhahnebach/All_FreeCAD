@@ -40,7 +40,7 @@ namespace SketcherGui {
 typedef boost::signals::connection Connection;
 class ViewProviderSketch;
 
-class TaskSketcherConstrains : public Gui::TaskView::TaskBox
+class TaskSketcherConstrains : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
@@ -48,10 +48,17 @@ public:
     TaskSketcherConstrains(ViewProviderSketch *sketchView);
     ~TaskSketcherConstrains();
 
+    /// Observer message from the Selection
+    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                  Gui::SelectionSingleton::MessageType Reason);
+
     void slotConstraintsChanged(void);
 
 public Q_SLOTS:
     void on_comboBoxFilter_currentIndexChanged(int);
+    void on_listWidgetConstraints_itemSelectionChanged (void); 
+    void on_listWidgetConstraints_itemActivated ( QListWidgetItem *item); 
+    //void on_listWidgetConstraints_entered      ( const QModelIndex & index ); 
     
 protected:
     void changeEvent(QEvent *e);

@@ -43,6 +43,7 @@ qt4_add_resources(SketcherGui_SRCS Resources/Sketcher.qrc)
 set(SketcherGui_UIC_SRCS
 		 TaskSketcherConstrains.ui
 		 TaskSketcherGeneral.ui
+		 InsertDatum.ui
 )
 qt4_wrap_ui(SketcherGui_UIC_HDRS ${SketcherGui_UIC_SRCS})
 
