@@ -141,7 +141,7 @@ void InteractiveInterpreter::setPrompt()
 /**
  * Compile a command and determine whether it is incomplete.
  * 
- * The source string may contain \n characters. \n
+ * The source string may contain line feeds and/or carriage returns. \n
  * Return value / exceptions raised:
  * - Return a code object if the command is complete and valid
  * - Return None if the command is incomplete
@@ -173,7 +173,7 @@ PyObject* InteractiveInterpreter::compile(const char* source) const
 /**
  * Compile a command and determine whether it is incomplete.
  * 
- * The source string may contain \n characters. \n
+ * The source string may contain line feeds and/or carriage returns. \n
  * Return value:
  * - Return  1 if the command is incomplete
  * - Return  0 if the command is complete and valid

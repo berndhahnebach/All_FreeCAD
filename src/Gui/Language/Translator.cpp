@@ -82,7 +82,7 @@ using namespace Gui;
  * Command Line: rcc.exe -name $(InputName) $(InputPath) -o "$(InputDir)qrc_$(InputName).cpp"
  * Outputs:      $(InputDir)qrc_$(InputName).cpp
  * 
- * For the gcc build system you just have to add the line <resourcefile>.qrc to the BUILT_SOURCES
+ * For the gcc build system you just have to add the line \<resourcefile\>.qrc to the BUILT_SOURCES
  * sources section of the Makefile.am, run automake and configure (or ./confog.status) afterwards.
  *
  * Finally, you have to add a the line

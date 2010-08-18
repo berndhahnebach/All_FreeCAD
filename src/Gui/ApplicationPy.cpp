@@ -127,7 +127,7 @@ PyMethodDef Application::Methods[] = {
   {NULL, NULL}		/* Sentinel */
 };
 
-PyObject* Application::sActiveDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+PyObject* Gui::Application::sActiveDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                       // NULL triggers exception 

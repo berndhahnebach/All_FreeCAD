@@ -14,7 +14,8 @@ SET(DOXYGEN_SOURCE_DIR
    ${CMAKE_SOURCE_DIR}/src/Base
    ${CMAKE_SOURCE_DIR}/src/App
    ${CMAKE_SOURCE_DIR}/src/Gui
-   ${CMAKE_SOURCE_DIR}/src/Mod
+   ${CMAKE_SOURCE_DIR}/src/Tools/plugins/widget
+#   ${CMAKE_SOURCE_DIR}/src/Mod
    )
 
 SET(DOXYGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Doc/SourceDocu)

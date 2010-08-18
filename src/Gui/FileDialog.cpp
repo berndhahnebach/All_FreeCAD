@@ -435,7 +435,7 @@ void FileChooser::setMode( FileChooser::Mode m )
  * \property FileChooser::filter
  *
  * This property holds the set filter to choose a file. This property is used only if 
- * \property FileChooser::Mode is set to File.
+ * FileChooser::Mode is set to File.
  *
  * \sa chooseFile(), filter(), setFilter().
  */
