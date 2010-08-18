@@ -45,6 +45,7 @@
 #include <Gui/ViewProviderDocumentObject.h>
 #include <Gui/Widgets.h>
 #include <Gui/Placement.h>
+#include <Gui/FileDialog.h>
 
 #include "PropertyItem.h"
 
@@ -1379,17 +1380,42 @@ QVariant PropertyFileItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFile::getClassTypeId()));
 
-    std::string value = ((App::PropertyFile*)prop)->getValue();
+    std::string value = static_cast<const App::PropertyFile*>(prop)->getValue();
     return QVariant(QString::fromUtf8(value.c_str()));
 }
 
-void PropertyFileItem::setValue(const QVariant& /*value*/)
+void PropertyFileItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::String))
+        return;
+    QString val = value.toString();
+    QString data = QString::fromAscii("\"%1\"").arg(val);
+    setPropertyValue(data);
 }
 
 QVariant PropertyFileItem::toolTip(const App::Property* prop) const
 {
     return value(prop);
+}
+
+QWidget* PropertyFileItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    Gui::FileChooser *fc = new Gui::FileChooser(parent);
+    fc->setAutoFillBackground(true);
+    QObject::connect(fc, SIGNAL(fileNameSelected(const QString&)), receiver, method);
+    return fc;
+}
+
+void PropertyFileItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    Gui::FileChooser *fc = qobject_cast<Gui::FileChooser*>(editor);
+    fc->setFileName(data.toString());
+}
+
+QVariant PropertyFileItem::editorData(QWidget *editor) const
+{
+    Gui::FileChooser *fc = qobject_cast<Gui::FileChooser*>(editor);
+    return QVariant(fc->fileName());
 }
 
 // --------------------------------------------------------------------
@@ -1400,13 +1426,46 @@ PropertyPathItem::PropertyPathItem()
 {
 }
 
-QVariant PropertyPathItem::value(const App::Property* /*prop*/) const
+QVariant PropertyPathItem::value(const App::Property* prop) const
 {
-    return QVariant();
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFileIncluded::getClassTypeId()));
+
+    std::string value = static_cast<const App::PropertyFileIncluded*>(prop)->getValue();
+    return QVariant(QString::fromUtf8(value.c_str()));
 }
 
-void PropertyPathItem::setValue(const QVariant& /*value*/)
+void PropertyPathItem::setValue(const QVariant& value)
 {
+    if (!value.canConvert(QVariant::String))
+        return;
+    QString val = value.toString();
+    QString data = QString::fromAscii("\"%1\"").arg(val);
+    setPropertyValue(data);
+}
+
+QVariant PropertyPathItem::toolTip(const App::Property* prop) const
+{
+    return value(prop);
+}
+
+QWidget* PropertyPathItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    Gui::FileChooser *fc = new Gui::FileChooser(parent);
+    fc->setAutoFillBackground(true);
+    QObject::connect(fc, SIGNAL(fileNameSelected(const QString&)), receiver, method);
+    return fc;
+}
+
+void PropertyPathItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    Gui::FileChooser *fc = qobject_cast<Gui::FileChooser*>(editor);
+    fc->setFileName(data.toString());
+}
+
+QVariant PropertyPathItem::editorData(QWidget *editor) const
+{
+    Gui::FileChooser *fc = qobject_cast<Gui::FileChooser*>(editor);
+    return QVariant(fc->fileName());
 }
 
 // --------------------------------------------------------------------
