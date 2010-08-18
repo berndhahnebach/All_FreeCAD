@@ -7,6 +7,7 @@ BUILT_SOURCES=\
 		moc_TaskSketcherCreateCommands.cpp \
 		moc_TaskSketcherGeneral.cpp \
 		moc_TaskDlgEditSketch.cpp \
+		ui_InsertDatum.h \
 		ui_TaskSketcherConstrains.h \
 		ui_TaskSketcherGeneral.h
 

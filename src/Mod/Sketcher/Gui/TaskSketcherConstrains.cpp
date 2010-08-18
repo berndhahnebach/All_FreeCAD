@@ -117,7 +117,7 @@ void TaskSketcherConstrains::OnChange(Gui::SelectionSingleton::SubjectType &rCal
                 if(msg.pSubName){
                     std::string shapetype(msg.pSubName);
                     if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
-                        int index=std::atoi(&shapetype[10]);
+                        //int index=std::atoi(&shapetype[10]);
                         //ui->listWidgetConstraints->setCurrentIndex(QModelIndex(0));
                     }
 
