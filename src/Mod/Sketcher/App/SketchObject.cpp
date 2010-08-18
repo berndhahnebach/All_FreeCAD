@@ -74,7 +74,7 @@ void SketchObject::setDatum(double Datum,int ConstrNbr)
     assert(ConstrNbr >= 0); 
 
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
-    assert(ConstrNbr < vals.size());
+    assert(ConstrNbr < (int)vals.size());
     assert(vals[ConstrNbr]->Type == Distance);
 
     // copy the list
@@ -166,4 +166,5 @@ template<> const char* Sketcher::SketchObjectPython::getViewProviderName(void) c
     return "SketcherGui::ViewProviderPython";
 }
 // explicit template instantiation
-template class SketcherExport FeaturePythonT<Sketcher::SketchObject>;}
+template class SketcherExport FeaturePythonT<Sketcher::SketchObject>;
+}
