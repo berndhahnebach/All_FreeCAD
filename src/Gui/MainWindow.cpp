@@ -733,6 +733,12 @@ void MainWindow::addWindow(MDIView* view)
 #endif
 }
 
+/**
+ * Removes the instance of Gui::MDiView from the main window and sends am event
+ * to the parent widget, a QMdiSubWindow to delete itself.
+ * If you want to avoid that the Gui::MDIView instance gets destructed too you
+ * must reparent it afterwards, e.g. set parent to NULL.
+ */
 void MainWindow::removeWindow(Gui::MDIView* view)
 {
     // free all connections
@@ -772,7 +778,12 @@ void MainWindow::removeWindow(Gui::MDIView* view)
                this, SLOT(onWindowDestroyed()));
 #else
     QWidget* parent = view->parentWidget();
-    d->mdiArea->removeSubWindow(parent);
+    // Note: We must not call 'd->mdiArea->removeSubWindow(parent)'
+    // here because otherwise the QMdiSubWindow will loose its parent
+    // and thus the notification in QMdiSubWindow::closeEvent of
+    // other mdi windows to get maximized if this window is maximized
+    // will fail.
+    //d->mdiArea->removeSubWindow(parent);
     parent->deleteLater();
 #endif
 }

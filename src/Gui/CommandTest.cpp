@@ -27,12 +27,15 @@
 # include <QMutex>
 # include <QThread>
 # include <QTimer>
+# include <QMdiArea>
+# include <QMdiSubWindow>
 # include <QWaitCondition>
 #endif
 
 #include <Base/Console.h>
 #include "Application.h"
 #include "MainWindow.h"
+#include "MDIView.h"
 #include "Command.h"
 
 #include "ProgressBar.h"
@@ -105,15 +108,15 @@ bool FCCmdTest2::isActive(void)
 DEF_STD_CMD_A(FCCmdTest3);
 
 FCCmdTest3::FCCmdTest3()
-	:Command("Std_Test3")
+  : Command("Std_Test3")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Test3";
-	sToolTipText	= "Test function 3";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool3";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Test3";
+    sToolTipText    = "Test function 3";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool3";
+    iAccel          = 0;
 }
 
 void FCCmdTest3::activated(int iMsg)
@@ -135,23 +138,21 @@ bool FCCmdTest3::isActive(void)
 DEF_STD_CMD_A(FCCmdTest4);
 
 FCCmdTest4::FCCmdTest4()
-	:Command("Std_Test4")
+  : Command("Std_Test4")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Test4";
-	sToolTipText	= "Test function 4";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool4";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Test4";
+    sToolTipText    = "Test function 4";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool4";
+    iAccel          = 0;
 }
 
 void FCCmdTest4::activated(int iMsg)
 {
-
-  App::Document *pcDoc = getDocument();
-	if(!pcDoc) return;
-
+    App::Document *pcDoc = getDocument();
+    if(!pcDoc) return;
 }
 
 
@@ -166,25 +167,22 @@ bool FCCmdTest4::isActive(void)
 DEF_STD_CMD_A(FCCmdTest5);
 
 FCCmdTest5::FCCmdTest5()
-	:Command("Std_Test5")
+  : Command("Std_Test5")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Test5";
-	sToolTipText	= "Test function 5";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool5";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Test5";
+    sToolTipText    = "Test function 5";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool5";
+    iAccel          = 0;
 }
 
 void FCCmdTest5::activated(int iMsg)
 {
-
-  App::Document *pcDoc = getDocument();
-	if(!pcDoc) return;
-
+    App::Document *pcDoc = getDocument();
+    if(!pcDoc) return;
 }
-
 
 bool FCCmdTest5::isActive(void)
 {
@@ -198,31 +196,27 @@ bool FCCmdTest5::isActive(void)
 DEF_STD_CMD_A(FCCmdTest6);
 
 FCCmdTest6::FCCmdTest6()
-	:Command("Std_Test6")
+  : Command("Std_Test6")
 {
-	sGroup			= "Standard-Test";
-	sMenuText		= "Test6";
-	sToolTipText	= "Test function 6";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool6";
-	iAccel			= 0;
+    sGroup          = "Standard-Test";
+    sMenuText       = "Test6";
+    sToolTipText    = "Test function 6";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Std_Tool6";
+    iAccel          = 0;
 }
 
 void FCCmdTest6::activated(int iMsg)
 {
-
-  App::Document *pcDoc = getDocument();
-	if(!pcDoc) return;
-
+    App::Document *pcDoc = getDocument();
+    if(!pcDoc) return;
 }
-
 
 bool FCCmdTest6::isActive(void)
 {
-  return (getDocument()!=NULL);
+    return (getDocument()!=NULL);
 }
-
 
 //===========================================================================
 // Std_TestProgress1
@@ -513,6 +507,89 @@ bool CmdTestProgress5::isActive(void)
     return (!Base::Sequencer().isRunning());
 }
 
+//===========================================================================
+// Std_MDITest
+//===========================================================================
+DEF_STD_CMD_A(CmdTestMDI1);
+
+CmdTestMDI1::CmdTestMDI1()
+  : Command("Std_MDITest1")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Remove MDI 1";
+    sToolTipText    = "Remove MDI from main window";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestMDI1::activated(int iMsg)
+{
+    MDIView* mdi = getMainWindow()->activeWindow();
+    getMainWindow()->removeWindow(mdi);
+}
+
+bool CmdTestMDI1::isActive(void)
+{
+    return getMainWindow()->activeWindow();
+}
+
+DEF_STD_CMD_A(CmdTestMDI2);
+
+CmdTestMDI2::CmdTestMDI2()
+  : Command("Std_MDITest2")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Remove MDI 2";
+    sToolTipText    = "Remove view from MDI area";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestMDI2::activated(int iMsg)
+{
+    QMdiArea* area = getMainWindow()->findChild<QMdiArea*>();
+    if (area) {
+        MDIView* mdi = getMainWindow()->activeWindow();
+        area->removeSubWindow(mdi->parentWidget());
+        mdi->parentWidget()->showNormal();
+    }
+}
+
+bool CmdTestMDI2::isActive(void)
+{
+    return getMainWindow()->activeWindow();
+}
+
+DEF_STD_CMD_A(CmdTestMDI3);
+
+CmdTestMDI3::CmdTestMDI3()
+  : Command("Std_MDITest3")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Remove MDI 3";
+    sToolTipText    = "Unset parent and remove from main window";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestMDI3::activated(int iMsg)
+{
+    MDIView* mdi = getMainWindow()->activeWindow();
+    getMainWindow()->removeWindow(mdi);
+    mdi->setParent(0, Qt::Window | Qt::WindowTitleHint |
+                   Qt::WindowSystemMenuHint | 
+                   Qt::WindowMinMaxButtonsHint);
+    mdi->show();
+}
+
+bool CmdTestMDI3::isActive(void)
+{
+    return getMainWindow()->activeWindow();
+}
+
 
 namespace Gui {
 
@@ -531,9 +608,9 @@ void CreateTestCommands(void)
     rcCmdMgr.addCommand(new CmdTestProgress3());
     rcCmdMgr.addCommand(new CmdTestProgress4());
     rcCmdMgr.addCommand(new CmdTestProgress5());
+    rcCmdMgr.addCommand(new CmdTestMDI1());
+    rcCmdMgr.addCommand(new CmdTestMDI2());
+    rcCmdMgr.addCommand(new CmdTestMDI3());
 }
 
 } // namespace Gui
-
-
-
