@@ -1,5 +1,6 @@
 
-find_package(Doxygen REQUIRED)
+#find_package(Doxygen REQUIRED)
+find_package(Doxygen)
 
 IF (DOXYGEN_DOT_EXECUTABLE)
  SET(HAVE_DOT YES)
