@@ -50,6 +50,25 @@ public:
     }
 };
 
+class AppExport AnnotationLabel : public DocumentObject
+{
+    PROPERTY_HEADER(App::AnnotationLabel);
+
+public:
+    /// Constructor
+    AnnotationLabel(void);
+    virtual ~AnnotationLabel();
+
+    App::PropertyStringList LabelText;
+    App::PropertyVector BasePosition;
+    App::PropertyVector TextPosition;
+
+    /// returns the type name of the ViewProvider
+    const char* getViewProviderName(void) const {
+        return "Gui::ViewProviderAnnotationLabel";
+    }
+};
+
 } //namespace App
 
 

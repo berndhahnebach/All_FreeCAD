@@ -956,6 +956,7 @@ void Application::initTypes(void)
     App ::PropertyEnumeration       ::init();
     App ::PropertyIntegerList       ::init();
     App ::PropertyString            ::init();
+    App ::PropertyFont              ::init();
     App ::PropertyStringList        ::init();
     App ::PropertyLink              ::init();
     App ::PropertyLinkWeak          ::init();
@@ -989,6 +990,7 @@ void Application::initTypes(void)
     App ::InventorObject            ::init();
     App ::VRMLObject                ::init();
     App ::Annotation                ::init();
+    App ::AnnotationLabel           ::init();
     App ::MeasureDistance           ::init();
 }
 

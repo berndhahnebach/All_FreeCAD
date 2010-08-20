@@ -527,6 +527,19 @@ private:
     std::string _cValue;
 };
 
+/** Property handling with font names.
+ */
+class AppExport PropertyFont : public PropertyString
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    PropertyFont(void);
+    virtual ~PropertyFont();
+    virtual const char* getEditorName(void) const
+    { return "Gui::PropertyEditor::PropertyFontItem"; }
+};
+
 class AppExport PropertyStringList: public PropertyLists
 {
     TYPESYSTEM_HEADER();

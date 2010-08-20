@@ -42,3 +42,19 @@ Annotation::Annotation()
 Annotation::~Annotation()
 {
 }
+
+// --------------------------------------------------
+
+PROPERTY_SOURCE(App::AnnotationLabel, App::DocumentObject)
+
+
+AnnotationLabel::AnnotationLabel() 
+{
+    ADD_PROPERTY(LabelText ,(""));
+    ADD_PROPERTY(BasePosition,(Base::Vector3f()));
+    ADD_PROPERTY(TextPosition,(Base::Vector3f()));
+}
+
+AnnotationLabel::~AnnotationLabel()
+{
+}

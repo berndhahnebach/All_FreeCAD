@@ -118,6 +118,26 @@ protected:
 };
 
 /**
+ * Change a font property.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyFontItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyFontItem();
+};
+
+/**
  * Dummy property to separate groups of properties.
  * \author Werner Mayer
  */
