@@ -43,6 +43,7 @@
 #endif
 
 #include "ViewProviderAnnotation.h"
+#include <App/Annotation.h>
 #include <App/PropertyGeo.h>
 #include <App/PropertyStandard.h>
 #include <Gui/BitmapFactory.h>
@@ -230,6 +231,7 @@ PROPERTY_SOURCE(Gui::ViewProviderAnnotationLabel, Gui::ViewProviderDocumentObjec
 ViewProviderAnnotationLabel::ViewProviderAnnotationLabel() 
 {
     ADD_PROPERTY(TextColor,(1.0f,1.0f,1.0f));
+    ADD_PROPERTY(BackgroundColor,(0.0f,0.333f,1.0f));
     ADD_PROPERTY(Justification,((long)0));
     Justification.setEnums(JustificationEnums);
     ADD_PROPERTY(FontSize,(12));
@@ -244,9 +246,7 @@ ViewProviderAnnotationLabel::ViewProviderAnnotationLabel()
     pImage = new SoImage();
     pImage->ref();
 
-    TextColor.touch();
-    FontSize.touch();
-    FontName.touch();
+    BackgroundColor.touch();
 
     sPixmap = "Tree_Annotation";
 }
@@ -261,21 +261,17 @@ ViewProviderAnnotationLabel::~ViewProviderAnnotationLabel()
 
 void ViewProviderAnnotationLabel::onChanged(const App::Property* prop)
 {
-    if (prop == &TextColor) {
-        const App::Color& c = TextColor.getValue();
+    if (prop == &BackgroundColor) {
+        const App::Color& c = BackgroundColor.getValue();
         pColor->rgb.setValue(c.r,c.g,c.b);
     }
-    else if (prop == &Justification) {
-        if (Justification.getValue() == 0) {
+    if (prop == &TextColor || prop == &BackgroundColor ||
+        prop == &Justification || prop == &FontSize || prop == &FontName) {
+        if (getObject()) {
+            App::Property* label = getObject()->getPropertyByName("LabelText");
+            if (label && label->getTypeId() == App::PropertyStringList::getClassTypeId())
+                drawImage(static_cast<App::PropertyStringList*>(label)->getValues());
         }
-        else if (Justification.getValue() == 1) {
-        }
-        else if (Justification.getValue() == 2) {
-        }
-    }
-    else if (prop == &FontSize) {
-    }
-    else if (prop == &FontName) {
     }
     else {
         ViewProviderDocumentObject::onChanged(prop);
@@ -334,11 +330,14 @@ void ViewProviderAnnotationLabel::updateData(const App::Property* prop)
         drawImage(static_cast<const App::PropertyStringList*>(prop)->getValues());
     }
     else if (prop->getTypeId() == App::PropertyVector::getClassTypeId() &&
-        strcmp(prop->getName(),"Position") == 0) {
+        strcmp(prop->getName(),"BasePosition") == 0) {
         Base::Vector3f v = static_cast<const App::PropertyVector*>(prop)->getValue();
         pTranslation->translation.setValue(v.x,v.y,v.z);
-        pCoords->point.set1Value(0, SbVec3f(0,0,0));
-        pCoords->point.set1Value(1, SbVec3f(0,0,1));
+    }
+    else if (prop->getTypeId() == App::PropertyVector::getClassTypeId() &&
+        strcmp(prop->getName(),"TextPosition") == 0) {
+        Base::Vector3f v = static_cast<const App::PropertyVector*>(prop)->getValue();
+        pCoords->point.set1Value(1, SbVec3f(v.x,v.y,v.z));
     }
 
     ViewProviderDocumentObject::updateData(prop);
@@ -352,10 +351,14 @@ void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
         return;
     }
 
-    QFont font;
+    QFont font(QString::fromAscii(this->FontName.getValue()), this->FontSize.getValue());
     QFontMetrics fm(font);
     int w = 0;
     int h = fm.height() * s.size();
+    const App::Color& b = this->BackgroundColor.getValue();
+    QColor brush(255*b.r,255*b.g,255*b.b);
+    const App::Color& t = this->TextColor.getValue();
+    QColor front(255*t.r,255*t.g,255*t.b);
 
     QStringList lines;
     for (std::vector<std::string>::const_iterator it = s.begin(); it != s.end(); ++it) {
@@ -371,12 +374,13 @@ void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
 
     painter.setPen(QPen(QColor(0,0,127), 2, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
-    painter.setBrush(QBrush(QColor(0,85,255), Qt::SolidPattern));
+    painter.setBrush(QBrush(brush, Qt::SolidPattern));
     QRectF rectangle(0.0, 0.0, w+10, h+10);
     painter.drawRoundedRect(rectangle, 5, 5);
-    painter.setPen(QColor(255,255,255));
+    painter.setPen(front);
 
     QString text = lines.join(QLatin1String("\n"));
+    painter.setFont(font);
     painter.drawText(5,/*h+*/5,w,h,Qt::AlignCenter,text);
     painter.end();
 

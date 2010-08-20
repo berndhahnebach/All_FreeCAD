@@ -92,6 +92,7 @@ public:
 
     // Display properties
     App::PropertyColor          TextColor;
+    App::PropertyColor          BackgroundColor;
     App::PropertyEnumeration    Justification;
     App::PropertyFloat          FontSize;
     App::PropertyFont           FontName;
