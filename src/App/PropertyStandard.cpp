@@ -1153,6 +1153,22 @@ unsigned int PropertyString::getMemSize (void) const
 }
 
 //**************************************************************************
+// PropertyFont
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyFont , App::PropertyString);
+
+PropertyFont::PropertyFont()
+{
+
+}
+
+PropertyFont::~PropertyFont()
+{
+
+}
+
+//**************************************************************************
 // PropertyStringList
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

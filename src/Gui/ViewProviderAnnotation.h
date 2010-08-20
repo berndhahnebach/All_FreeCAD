@@ -32,6 +32,8 @@ class SoAsciiText;
 class SoBaseColor;
 class SoTranslation;
 class SoRotationXYZ;
+class SoImage;
+class SoCoordinate3;
 
 namespace Gui
 {
@@ -71,6 +73,45 @@ private:
 
     static const char* JustificationEnums[];
     static const char* RotationAxisEnums[];
+};
+
+/**
+ * This is a different implementation of an annotation object which uses an
+ * SoImage node instead of an SoText2 or SoAsciiText node.
+ * This approach gives a bit more flexibility since it can render arbitrary
+ * annotations.
+ */
+class GuiExport ViewProviderAnnotationLabel : public ViewProviderDocumentObject
+{
+    PROPERTY_HEADER(Gui::ViewProviderAnnotationLabel);
+
+public:
+    /// Constructor
+    ViewProviderAnnotationLabel(void);
+    virtual ~ViewProviderAnnotationLabel();
+
+    // Display properties
+    App::PropertyColor          TextColor;
+    App::PropertyEnumeration    Justification;
+    App::PropertyFloat          FontSize;
+    App::PropertyFont           FontName;
+
+    void attach(App::DocumentObject *);
+    void updateData(const App::Property*);
+    std::vector<std::string> getDisplayModes(void) const;
+    void setDisplayMode(const char* ModeName);
+
+protected:
+    void onChanged(const App::Property* prop);
+    void drawImage(const std::vector<std::string>&);
+
+private:
+    SoCoordinate3    * pCoords;
+    SoImage          * pImage;
+    SoBaseColor      * pColor;
+    SoTranslation    * pTranslation;
+
+    static const char* JustificationEnums[];
 };
 
 } //namespace Gui

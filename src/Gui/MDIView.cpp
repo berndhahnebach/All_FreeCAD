@@ -149,11 +149,9 @@ void MDIView::closeEvent(QCloseEvent *e)
         // and thus the notification in QMdiSubWindow::closeEvent of
         // other mdi windows to get maximized if this window
         // is maximized will fail.
-
-        // Update 2010-08-18
-        // After removing the line d->mdiArea->removeSubWindow(parent)
-        // in MainWindow::removeWindow() this method seems to work as
-        // expected now.
+        // This odd behaviour is caused by the invocation of 
+        // d->mdiArea->removeSubWindow(parent) which we must let there
+        // because otherwise other parts don't work as they should.
 #if defined (NO_USE_QT_MDI_AREA)
         // avoid flickering
         getMainWindow()->removeWindow(this);

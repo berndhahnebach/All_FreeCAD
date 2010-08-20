@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <algorithm>
 # include <QComboBox>
+# include <QFontDatabase>
 # include <QLayout>
 # include <QLocale>
 # include <QPixmap>
@@ -353,6 +354,55 @@ QVariant PropertyStringItem::editorData(QWidget *editor) const
 {
     QLineEdit *le = qobject_cast<QLineEdit*>(editor);
     return QVariant(le->text());
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyFontItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyFontItem::PropertyFontItem()
+{
+}
+
+QVariant PropertyFontItem::value(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFont::getClassTypeId()));
+
+    std::string value = static_cast<const App::PropertyFont*>(prop)->getValue();
+    return QVariant(QString::fromUtf8(value.c_str()));
+}
+
+void PropertyFontItem::setValue(const QVariant& value)
+{
+    if (!value.canConvert(QVariant::String))
+        return;
+    QString val = value.toString();
+    QString data = QString::fromAscii("\"%1\"").arg(val);
+    setPropertyValue(data);
+}
+
+QWidget* PropertyFontItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    QComboBox *cb = new QComboBox(parent);
+    cb->setFrame(false);
+    QObject::connect(cb, SIGNAL(activated(const QString&)), receiver, method);
+    return cb;
+}
+
+void PropertyFontItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    QComboBox *cb = qobject_cast<QComboBox*>(editor);
+    QFontDatabase fdb;
+    QStringList familyNames = fdb.families(QFontDatabase::Any);
+    cb->addItems(familyNames);
+    int index = familyNames.indexOf(data.toString());
+    cb->setCurrentIndex(index);
+}
+
+QVariant PropertyFontItem::editorData(QWidget *editor) const
+{
+    QComboBox *cb = qobject_cast<QComboBox*>(editor);
+    return QVariant(cb->currentText());
 }
 
 // --------------------------------------------------------------------
