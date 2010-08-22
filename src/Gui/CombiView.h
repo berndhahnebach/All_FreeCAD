@@ -60,7 +60,7 @@ namespace DockWnd {
   * is a combination of a tree, property and TaskPanel for 
   * integrated user action.
  */
-class CombiView : public Gui::DockWindow
+class GuiExport CombiView : public Gui::DockWindow
 {
     Q_OBJECT
 
@@ -82,10 +82,14 @@ public:
 
     friend class Gui::ControlSingleton;
 
+    void showTreeView();
+    void showTaskView();
+
 protected:
     void showDialog(Gui::TaskView::TaskDialog *dlg);
     void closeDialog();
-    void showTreeView();
+
+    int oldTabIndex;
 
 private:
     QTabWidget                         * tabs;
