@@ -119,7 +119,7 @@ void ControlSingleton::closedDialog()
         (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
     // should return the pointer to combo view
     assert(pcCombiView);
-    pcCombiView->showTreeView();
+    pcCombiView->closeDialog();
 }
 
 bool ControlSingleton::isAllowedAlterDocument(void) const

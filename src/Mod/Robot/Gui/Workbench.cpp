@@ -100,6 +100,12 @@ void Workbench::activated()
 
     
     addTaskWatcher(Watcher);
+
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+    // should return the pointer to combo view
+    assert(pcCombiView);
+    pcCombiView->showTaskView();
  
 }
 

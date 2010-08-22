@@ -82,6 +82,7 @@ CombiView::~CombiView()
 void CombiView::showDialog(Gui::TaskView::TaskDialog *dlg)
 {
     // switch to the TaskView tab
+    oldTabIndex = tabs->currentIndex();
     tabs->setCurrentIndex(1);
     // set the dialog
     taskPanel->showDialog(dlg);
@@ -90,13 +91,19 @@ void CombiView::showDialog(Gui::TaskView::TaskDialog *dlg)
 void CombiView::closeDialog()
 {
     // close the dialog
-    taskPanel->removeDialog();
+    //taskPanel->removeDialog();
+    tabs->setCurrentIndex(oldTabIndex);
 }
 
 void CombiView::showTreeView()
 {
-    // switch to the TreeView tab
+    // switch to the old tab
     tabs->setCurrentIndex(0);
+}
+void CombiView::showTaskView()
+{
+    // switch to the old tab
+    tabs->setCurrentIndex(1);
 }
 
 
