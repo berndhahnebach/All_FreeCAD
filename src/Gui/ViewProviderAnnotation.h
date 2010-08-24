@@ -110,7 +110,8 @@ private:
     SoCoordinate3    * pCoords;
     SoImage          * pImage;
     SoBaseColor      * pColor;
-    SoTranslation    * pTranslation;
+    SoTranslation    * pBaseTranslation;
+    SoTranslation    * pTextTranslation;
 
     static const char* JustificationEnums[];
 };

@@ -234,13 +234,16 @@ ViewProviderAnnotationLabel::ViewProviderAnnotationLabel()
     ADD_PROPERTY(BackgroundColor,(0.0f,0.333f,1.0f));
     ADD_PROPERTY(Justification,((long)0));
     Justification.setEnums(JustificationEnums);
-    ADD_PROPERTY(FontSize,(12));
-    ADD_PROPERTY(FontName,("Arial"));
+    QFont fn;
+    ADD_PROPERTY(FontSize,(fn.pointSize()));
+    ADD_PROPERTY(FontName,((const char*)fn.family().toAscii()));
 
     pColor = new SoBaseColor();
     pColor->ref();
-    pTranslation = new SoTranslation();
-    pTranslation->ref();
+    pBaseTranslation = new SoTranslation();
+    pBaseTranslation->ref();
+    pTextTranslation = new SoTranslation();
+    pTextTranslation->ref();
     pCoords = new SoCoordinate3();
     pCoords->ref();
     pImage = new SoImage();
@@ -254,7 +257,8 @@ ViewProviderAnnotationLabel::ViewProviderAnnotationLabel()
 ViewProviderAnnotationLabel::~ViewProviderAnnotationLabel()
 {
     pColor->unref();
-    pTranslation->unref();
+    pBaseTranslation->unref();
+    pTextTranslation->unref();
     pCoords->unref();
     pImage->unref();
 }
@@ -303,13 +307,12 @@ void ViewProviderAnnotationLabel::attach(App::DocumentObject* f)
 
     // plain image
     SoSeparator* textsep = new SoAnnotation();
-    textsep->addChild(pTranslation);
+    textsep->addChild(pBaseTranslation);
     textsep->addChild(pImage);
 
     // image with line
     SoSeparator* linesep = new SoAnnotation();
-    linesep->addChild(pTranslation);
-    linesep->addChild(pImage);
+    linesep->addChild(pBaseTranslation);
     linesep->addChild(pColor);
     linesep->addChild(pCoords);
     linesep->addChild(new SoLineSet());
@@ -318,6 +321,8 @@ void ViewProviderAnnotationLabel::attach(App::DocumentObject* f)
     ds->pointSize.setValue(3.0f);
     linesep->addChild(ds);
     linesep->addChild(new SoPointSet());
+    linesep->addChild(pTextTranslation);
+    linesep->addChild(pImage);
 
     addDisplayMaskMode(linesep, "Line");
     addDisplayMaskMode(textsep, "Object");
@@ -332,12 +337,13 @@ void ViewProviderAnnotationLabel::updateData(const App::Property* prop)
     else if (prop->getTypeId() == App::PropertyVector::getClassTypeId() &&
         strcmp(prop->getName(),"BasePosition") == 0) {
         Base::Vector3f v = static_cast<const App::PropertyVector*>(prop)->getValue();
-        pTranslation->translation.setValue(v.x,v.y,v.z);
+        pBaseTranslation->translation.setValue(v.x,v.y,v.z);
     }
     else if (prop->getTypeId() == App::PropertyVector::getClassTypeId() &&
         strcmp(prop->getName(),"TextPosition") == 0) {
         Base::Vector3f v = static_cast<const App::PropertyVector*>(prop)->getValue();
         pCoords->point.set1Value(1, SbVec3f(v.x,v.y,v.z));
+        pTextTranslation->translation.setValue(v.x,v.y,v.z);
     }
 
     ViewProviderDocumentObject::updateData(prop);
@@ -379,9 +385,16 @@ void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
     painter.drawRoundedRect(rectangle, 5, 5);
     painter.setPen(front);
 
+    Qt::Alignment align = Qt::AlignVCenter;
+    if (Justification.getValue() == 0)
+        align = Qt::AlignVCenter | Qt::AlignLeft;
+    else if (Justification.getValue() == 1)
+        align = Qt::AlignVCenter | Qt::AlignRight;
+    else
+        align = Qt::AlignVCenter | Qt::AlignHCenter;
     QString text = lines.join(QLatin1String("\n"));
     painter.setFont(font);
-    painter.drawText(5,/*h+*/5,w,h,Qt::AlignCenter,text);
+    painter.drawText(5,5,w,h,align,text);
     painter.end();
 
     SoSFImage sfimage;
