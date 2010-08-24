@@ -32,6 +32,7 @@ set(Boost_LIBRARIES
 	optimized boost_program_options-vc90-mt-1_41.lib
 	optimized boost_regex-vc90-mt-1_41.lib
 	optimized boost_signals-vc90-mt-1_41.lib
+	optimized boost_thread-vc90-mt-1_41.lib
 )
 set(Boost_DEBUG_LIBRARIES 
 	debug boost_filesystem-vc90-mt-gd-1_41.lib
@@ -40,6 +41,7 @@ set(Boost_DEBUG_LIBRARIES
 	debug boost_program_options-vc90-mt-gd-1_41.lib
 	debug boost_regex-vc90-mt-gd-1_41.lib
 	debug boost_signals-vc90-mt-gd-1_41.lib
+	debug boost_thread-vc90-mt-gd-1_41.lib
 )
 set(Boost_FOUND TRUE) 
 

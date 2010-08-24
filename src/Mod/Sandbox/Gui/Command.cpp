@@ -27,6 +27,9 @@
 # include <QColorDialog>
 # include <QObject>
 # include <QEventLoop>
+# include <QFuture>
+# include <QFutureWatcher>
+# include <QtConcurrentMap>
 # include <QLabel>
 # include <QTimer>
 # include <QImage>
@@ -34,6 +37,10 @@
 # include <QPainter>
 # include <Inventor/nodes/SoAnnotation.h>
 # include <Inventor/nodes/SoImage.h>
+# include <boost/thread/mutex.hpp>
+# include <boost/thread/condition_variable.hpp>
+# include <boost/thread/future.hpp>
+# include <boost/bind.hpp>
 #endif
 
 #include <Base/Console.h>
@@ -540,6 +547,118 @@ bool CmdSandboxMeshLoader::isActive(void)
     return (hasActiveDocument() && !loop.isRunning());
 }
 
+// -------------------------------------------------------------------------------
+
+Base::Reference<Mesh::MeshObject> loadMesh(const QString& s)
+{
+    Mesh::MeshObject* mesh = new Mesh::MeshObject();
+    mesh->load((const char*)s.toUtf8());
+    return mesh;
+}
+
+DEF_STD_CMD_A(CmdSandboxMeshLoaderBoost)
+
+CmdSandboxMeshLoaderBoost::CmdSandboxMeshLoaderBoost()
+  :Command("Sandbox_MeshLoaderBoost")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Load mesh in boost-thread");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool6";
+}
+
+void CmdSandboxMeshLoaderBoost::activated(int iMsg)
+{
+    // use current path as default
+    QStringList filter;
+    filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
+    filter << QObject::tr("Binary STL (*.stl)");
+    filter << QObject::tr("ASCII STL (*.ast)");
+    filter << QObject::tr("Binary Mesh (*.bms)");
+    filter << QObject::tr("Alias Mesh (*.obj)");
+    filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
+    //filter << "Nastran (*.nas *.bdf)";
+    filter << QObject::tr("All Files (*.*)");
+
+    // Allow multi selection
+    QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
+        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+
+    boost::packaged_task< Base::Reference<Mesh::MeshObject> > pt
+        (boost::bind(&loadMesh, fn));
+    boost::unique_future< Base::Reference<Mesh::MeshObject> > fi=pt.get_future();
+    boost::thread task(boost::move(pt)); // launch task on a thread
+    fi.wait(); // wait for it to be finished
+
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    Mesh::Feature* mesh = static_cast<Mesh::Feature*>(doc->addObject("Mesh::Feature","Mesh"));
+    mesh->Mesh.setValuePtr((Mesh::MeshObject*)fi.get());
+    mesh->purgeTouched();
+}
+
+bool CmdSandboxMeshLoaderBoost::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+DEF_STD_CMD_A(CmdSandboxMeshLoaderFuture)
+
+CmdSandboxMeshLoaderFuture::CmdSandboxMeshLoaderFuture()
+  :Command("Sandbox_MeshLoaderFuture")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Load mesh in QFuture");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool6";
+}
+
+void CmdSandboxMeshLoaderFuture::activated(int iMsg)
+{
+    // use current path as default
+    QStringList filter;
+    filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
+    filter << QObject::tr("Binary STL (*.stl)");
+    filter << QObject::tr("ASCII STL (*.ast)");
+    filter << QObject::tr("Binary Mesh (*.bms)");
+    filter << QObject::tr("Alias Mesh (*.obj)");
+    filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
+    //filter << "Nastran (*.nas *.bdf)";
+    filter << QObject::tr("All Files (*.*)");
+
+    // Allow multi selection
+    QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(),
+        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+
+    QFuture< Base::Reference<Mesh::MeshObject> > future = QtConcurrent::mapped
+        (fn, loadMesh);
+
+    QFutureWatcher< Base::Reference<Mesh::MeshObject> > watcher;
+    watcher.setFuture(future);
+
+    // keep it responsive during computation
+    QEventLoop loop;
+    QObject::connect(&watcher, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
+
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    for (QFuture< Base::Reference<Mesh::MeshObject> >::const_iterator it = future.begin(); it != future.end(); ++it) {
+        Mesh::Feature* mesh = static_cast<Mesh::Feature*>(doc->addObject("Mesh::Feature","Mesh"));
+        mesh->Mesh.setValuePtr((Mesh::MeshObject*)(*it));
+        mesh->purgeTouched();
+    }
+}
+
+bool CmdSandboxMeshLoaderFuture::isActive(void)
+{
+    return hasActiveDocument();
+}
+
 //===========================================================================
 // Std_GrabWidget
 //===========================================================================
@@ -743,6 +862,8 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxDocThreadWithFileDlg());
     rcCmdMgr.addCommand(new CmdSandboxEventLoop);
     rcCmdMgr.addCommand(new CmdSandboxMeshLoader);
+    rcCmdMgr.addCommand(new CmdSandboxMeshLoaderBoost);
+    rcCmdMgr.addCommand(new CmdSandboxMeshLoaderFuture);
     rcCmdMgr.addCommand(new CmdTestGrabWidget());
     rcCmdMgr.addCommand(new CmdTestImageNode());
 }
