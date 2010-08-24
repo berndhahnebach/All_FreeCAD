@@ -77,7 +77,8 @@ protected:
     //Matrix and vectors
     void CramerSolve(std::vector< std::vector<double> > &RHS1, std::vector<double>& RHS2, std::vector<double> &LHS);
     double CalcAngle(Base::Vector3f a, Base::Vector3f b, Base::Vector3f c);
-    inline double det2(std::vector< std::vector<double> > &Matrix)  /*!< \brief Determinant of a 2x2 Matrix */
+    /*! Determinant of a 2x2 Matrix */
+    inline double det2(std::vector< std::vector<double> > &Matrix)
     {
         return ((Matrix[0][0] * Matrix[1][1]) - (Matrix[0][1] * Matrix[1][0]));
     };
