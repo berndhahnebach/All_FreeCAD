@@ -256,14 +256,14 @@ PointKernel::const_point_iterator::operator- (difference_type off) const
 }
 
 PointKernel::const_point_iterator&
-PointKernel::const_point_iterator::operator+=(PointKernel::difference_type off)
+PointKernel::const_point_iterator::operator+=(difference_type off)
 {
     (this->_p_it) += off;
     return *this;
 }
 
 PointKernel::const_point_iterator&
-PointKernel::const_point_iterator::operator-=(PointKernel::difference_type off)
+PointKernel::const_point_iterator::operator-=(difference_type off)
 {
     (this->_p_it) -= off;
     return *this;
