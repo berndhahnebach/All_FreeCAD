@@ -59,7 +59,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* misc = new Gui::MenuItem;
     root->insertItem(item, misc);
     misc->setCommand("Misc");
-    *misc << "Sandbox_EventLoop" << "Sandbox_MeshLoad";
+    *misc << "Sandbox_EventLoop" << "Sandbox_MeshLoad"
+          << "Sandbox_MeshLoaderBoost"
+          << "Sandbox_MeshLoaderFuture";
 
     Gui::MenuItem* widg = new Gui::MenuItem;
     root->insertItem(item, widg);
