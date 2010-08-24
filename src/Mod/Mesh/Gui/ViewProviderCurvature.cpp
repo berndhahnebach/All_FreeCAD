@@ -53,7 +53,10 @@
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <App/Annotation.h>
 #include <App/Application.h>
+#include <App/Document.h>
+#include <App/DocumentObjectGroup.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>
@@ -63,7 +66,6 @@
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Gui/Widgets.h>
-#include <Gui/Flag.h>
 
 #include <Mod/Mesh/App/MeshProperties.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -399,28 +401,58 @@ void ViewProviderMeshCurvature::OnChange(Base::Subject<int> &rCaller,int rcReaso
 }
 
 namespace MeshGui {
+class AnnotationEvent : public QEvent
+{
+public:
+    AnnotationEvent(Gui::ViewProviderDocumentObject* vp, const QString& s,const SbVec3f& p, const SbVec3f& n)
+        : QEvent(QEvent::User), vp(vp), s(s), p(p), n(n)
+    {
+    }
+
+    Gui::ViewProviderDocumentObject* vp;
+    QString s;
+    SbVec3f p;
+    SbVec3f n;
+};
+
 // Proxy class that receives an asynchronous custom event
 class ViewProviderProxyObject : public QObject
 {
 public:
     ViewProviderProxyObject(QWidget* w) : QObject(0), widget(w) {}
     ~ViewProviderProxyObject() {}
-    void customEvent(QEvent *)
+    void customEvent(QEvent * e)
     {
-        if (!widget.isNull()) {
-            QList<Gui::Flag*> flags = widget->findChildren<Gui::Flag*>();
-            if (!flags.isEmpty()) {
-                int ret = QMessageBox::question(Gui::getMainWindow(),
-                    QObject::tr("Remove annotations"),
-                    QObject::tr("Do you want to remove all annotations?"),
-                    QMessageBox::Yes,QMessageBox::No);
-                if (ret == QMessageBox::Yes) {
-                    for (QList<Gui::Flag*>::iterator it = flags.begin(); it != flags.end(); ++it)
-                        (*it)->deleteLater();
-                }
+        AnnotationEvent* ae = static_cast<AnnotationEvent*>(e);
+        App::Document* doc = ae->vp->getObject()->getDocument();
+
+        std::vector<App::DocumentObject*> groups = doc->getObjectsOfType
+            (App::DocumentObjectGroup::getClassTypeId());
+        App::DocumentObjectGroup* group = 0;
+        std::string internalname = "CurvatureGroup";
+        for (std::vector<App::DocumentObject*>::iterator it = groups.begin(); it != groups.end(); ++it) {
+            if (internalname == (*it)->getNameInDocument()) {
+                group = static_cast<App::DocumentObjectGroup*>(*it);
+                break;
             }
         }
+        if (!group) {
+            group = static_cast<App::DocumentObjectGroup*>(doc->addObject
+                ("App::DocumentObjectGroup",internalname.c_str()));
+        }
 
+        App::AnnotationLabel* anno = static_cast<App::AnnotationLabel*>
+            (group->addObject("App::AnnotationLabel", internalname.c_str()));
+        QStringList lines = ae->s.split(QLatin1String("\n"));
+        std::vector<std::string> text;
+        for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it)
+            text.push_back((const char*)it->toAscii());
+        anno->LabelText.setValues(text);
+        std::stringstream str;
+        str << "Curvature info (" << group->Group.getSize() << ")";
+        anno->Label.setValue(str.str());
+        anno->BasePosition.setValue(ae->p[0],ae->p[1],ae->p[2]);
+        anno->TextPosition.setValue(ae->n[0],ae->n[1],ae->n[2]);
         this->deleteLater();
     }
 
@@ -451,11 +483,6 @@ void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback
                 addflag = fl->isChecked();
             }
             else if (cl == id) {
-                // post an event to a proxy object to make sure to avoid problems
-                // when opening a modal dialog
-                QApplication::postEvent(
-                    new ViewProviderProxyObject(view->getGLWidget()),
-                    new QEvent(QEvent::User));
                 view->setEditing(false);
                 view->getWidget()->setCursor(QCursor(Qt::ArrowCursor));
                 view->setRedirectToSceneGraph(false);
@@ -488,14 +515,11 @@ void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback
                 std::string info = that->curvatureInfo(true, index1, index2, index3);
                 QString text = QString::fromAscii(info.c_str());
                 if (addflag) {
-                    Gui::Flag* flag = new Gui::Flag;
-                    QPalette p;
-                    p.setColor(QPalette::Window, QColor(85,0,127));
-                    p.setColor(QPalette::Text, QColor(220,220,220));
-                    flag->setPalette(p);
-                    flag->setText(text);
-                    flag->setOrigin(point->getPoint());
-                    view->addFlag(flag, Gui::FlagLayout::BottomLeft);
+                    SbVec3f pt = point->getPoint();
+                    SbVec3f nl = point->getNormal();
+                    QApplication::postEvent(
+                        new ViewProviderProxyObject(view->getGLWidget()),
+                        new AnnotationEvent(that, text, pt, nl));
                 }
                 else {
                     Gui::ToolTip::showText(QCursor::pos(), text);
