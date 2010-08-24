@@ -31,4 +31,7 @@ endif(FREECAD_BUILD_CAM)
 if(FREECAD_BUILD_FEM)
 	add_subdirectory(Fem)
 endif(FREECAD_BUILD_FEM)
+if(FREECAD_BUILD_SANDBOX)
+	add_subdirectory(Sandbox)
+endif(FREECAD_BUILD_SANDBOX)
 

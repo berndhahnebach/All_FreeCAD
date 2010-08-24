@@ -232,26 +232,26 @@ void DocumentProtector::init()
     (void)DocumentReceiver::globalInstance();
 }
 
-void DocumentProtector::slotCreatedDocument(App::Document& Doc)
+void DocumentProtector::slotCreatedDocument(const App::Document& Doc)
 {
 }
 
-void DocumentProtector::slotDeletedDocument(App::Document& Doc)
+void DocumentProtector::slotDeletedDocument(const App::Document& Doc)
 {
     if (&Doc == getDocument()) {
         this->detachDocument();
     }
 }
 
-void DocumentProtector::slotCreatedObject(App::DocumentObject& Obj)
+void DocumentProtector::slotCreatedObject(const App::DocumentObject& Obj)
 {
 }
 
-void DocumentProtector::slotDeletedObject(App::DocumentObject& Obj)
+void DocumentProtector::slotDeletedObject(const App::DocumentObject& Obj)
 {
 }
 
-void DocumentProtector::slotChangedObject(App::DocumentObject& Obj, App::Property& Prop)
+void DocumentProtector::slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop)
 {
 }
 

@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QColorDialog>
 # include <QObject>
 # include <QEventLoop>
 # include <QTimer>
@@ -430,6 +431,8 @@ class CmdSandboxEventLoop : public Gui::Command
 {
 public:
     CmdSandboxEventLoop();
+    const char* className() const
+    { return "CmdSandboxEventLoop"; }
 protected:
     void activated(int iMsg);
     bool isActive(void);
@@ -471,6 +474,8 @@ class CmdSandboxMeshLoader : public Gui::Command
 {
 public:
     CmdSandboxMeshLoader();
+    const char* className() const
+    { return "CmdSandboxMeshLoader"; }
 protected:
     void activated(int iMsg);
     bool isActive(void);
