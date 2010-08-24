@@ -23,10 +23,17 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QCalendarWidget>
 # include <QColorDialog>
 # include <QObject>
 # include <QEventLoop>
+# include <QLabel>
 # include <QTimer>
+# include <QImage>
+# include <QImageReader>
+# include <QPainter>
+# include <Inventor/nodes/SoAnnotation.h>
+# include <Inventor/nodes/SoImage.h>
 #endif
 
 #include <Base/Console.h>
@@ -34,9 +41,12 @@
 #include <App/Application.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 
 #include <Mod/Sandbox/App/DocumentThread.h>
 #include <Mod/Sandbox/App/DocumentProtector.h>
@@ -530,6 +540,191 @@ bool CmdSandboxMeshLoader::isActive(void)
     return (hasActiveDocument() && !loop.isRunning());
 }
 
+//===========================================================================
+// Std_GrabWidget
+//===========================================================================
+DEF_STD_CMD_A(CmdTestGrabWidget);
+
+CmdTestGrabWidget::CmdTestGrabWidget()
+  : Command("Std_GrabWidget")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Grab widget";
+    sToolTipText    = "Grab widget";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestGrabWidget::activated(int iMsg)
+{
+    QCalendarWidget* c = new QCalendarWidget();
+    c->hide();
+    QPixmap p = QPixmap::grabWidget(c, c->rect());
+    QLabel* label = new QLabel();
+    label->resize(c->size());
+    label->setPixmap(p);
+    label->show();
+    delete c;
+}
+
+bool CmdTestGrabWidget::isActive(void)
+{
+    return true;
+}
+
+//===========================================================================
+// Std_ImageNode
+//===========================================================================
+DEF_3DV_CMD(CmdTestImageNode);
+
+class RenderArea : public QWidget
+{
+private:
+    QPainterPath path;
+    int penWidth;
+    QColor penColor;
+
+public:
+    RenderArea(const QPainterPath &path, QWidget *parent=0)
+      : QWidget(parent), path(path), penColor(0,0,127)
+    {
+        penWidth = 2;
+        setBackgroundRole(QPalette::Base);
+    }
+
+    QSize minimumSizeHint() const
+    {
+        return QSize(50, 50);
+    }
+
+    QSize sizeHint() const
+    {
+        return QSize(100, 30);
+    }
+
+    void setFillRule(Qt::FillRule rule)
+    {
+        path.setFillRule(rule);
+        update();
+    }
+
+    void setPenWidth(int width)
+    {
+        penWidth = width;
+        update();
+    }
+
+    void setPenColor(const QColor &color)
+    {
+        penColor = color;
+        update();
+    }
+
+    void paintEvent(QPaintEvent *)
+    {
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        painter.scale(width() / 100.0, height() / 100.0);
+        painter.translate(50.0, 50.0);
+        painter.translate(-50.0, -50.0);
+
+        painter.setPen(QPen(penColor, penWidth, Qt::SolidLine, Qt::RoundCap,
+                            Qt::RoundJoin));
+        painter.setBrush(QBrush(QColor(0,85,255), Qt::SolidPattern));
+        painter.drawPath(path);
+        painter.setPen(Qt::white);
+        painter.drawText(25, 40, 70, 20, Qt::AlignHCenter|Qt::AlignVCenter,
+            QString::fromAscii("Distance: 2.784mm"));
+        //QPainterPath text;
+        //text.addText(25,55,QFont(), QString::fromAscii("Distance"));
+        //painter.setBrush(QBrush(Qt::white, Qt::SolidPattern));
+        //painter.drawPath(text);
+    }
+};
+
+CmdTestImageNode::CmdTestImageNode()
+  : Command("Std_ImageNode")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "SoImage node";
+    sToolTipText    = "SoImage node";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+#include <QFontMetrics>
+void CmdTestImageNode::activated(int iMsg)
+{
+    QString text = QString::fromAscii("Distance: 2.7jgiorjgor84mm");
+    QFont font;
+    QFontMetrics fm(font);
+    int w = fm.width(text);
+    int h = fm.height();
+
+
+    QPainterPath roundRectPath;
+    //roundRectPath.moveTo(80.0, 35.0);
+    //roundRectPath.arcTo(70.0, 30.0, 10.0, 10.0, 0.0, 90.0);
+    //roundRectPath.lineTo(25.0, 30.0);
+    //roundRectPath.arcTo(20.0, 30.0, 10.0, 10.0, 90.0, 90.0);
+    //roundRectPath.lineTo(20.0, 65.0);
+    //roundRectPath.arcTo(20.0, 60.0, 10.0, 10.0, 180.0, 90.0);
+    //roundRectPath.lineTo(75.0, 70.0);
+    //roundRectPath.arcTo(70.0, 60.0, 10.0, 10.0, 270.0, 90.0);
+    roundRectPath.moveTo(100.0, 5.0);
+    roundRectPath.arcTo(90.0, 0.0, 10.0, 10.0, 0.0, 90.0);
+    roundRectPath.lineTo(5.0, 0.0);
+    roundRectPath.arcTo(0.0, 0.0, 10.0, 10.0, 90.0, 90.0);
+    roundRectPath.lineTo(0.0, 95.0);
+    roundRectPath.arcTo(0.0, 90.0, 10.0, 10.0, 180.0, 90.0);
+    roundRectPath.lineTo(95.0, 100.0);
+    roundRectPath.arcTo(90.0, 90.0, 10.0, 10.0, 270.0, 90.0);
+    roundRectPath.closeSubpath();
+
+
+    QLabel* l = new QLabel();
+    //l.setText(QLatin1String("Distance: 2.784mm"));
+    //QPixmap p = QPixmap::grabWidget(&l, 0,0,100,100);
+    //l.show();
+    //QPixmap p = Gui::BitmapFactory().pixmap("edit-cut");
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+    SoImage* node = new SoImage();
+
+    QImage image(w+10,h+10,QImage::Format_ARGB32_Premultiplied);// = p.toImage();
+    image.fill(0x00000000);
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    painter.setPen(QPen(QColor(0,0,127), 2, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
+    painter.setBrush(QBrush(QColor(0,85,255), Qt::SolidPattern));
+    QRectF rectangle(0.0, 0.0, w+10, h+10);
+    painter.drawRoundedRect(rectangle, 5, 5);
+    //painter.drawRect(rectangle);
+    //painter.drawPath(roundRectPath);
+    painter.setPen(QColor(255,255,255));
+    painter.drawText(5,h+3, text);
+    painter.end();
+    //l->setPixmap(QPixmap::fromImage(image));
+    //l->show();
+    //RenderArea* ra = new RenderArea(roundRectPath);
+    //ra->show();
+
+    //QPixmap p = QPixmap::grabWidget(ra, 0,0,100,30);
+    //image = p.toImage();
+
+    SoSFImage texture;
+    Gui::BitmapFactory().convert(image, texture);
+    node->image = texture;
+    SoAnnotation* anno = new SoAnnotation();
+    anno->addChild(node);
+    static_cast<SoGroup*>(viewer->getSceneGraph())->addChild(anno);
+}
+
 void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -548,4 +743,6 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxDocThreadWithFileDlg());
     rcCmdMgr.addCommand(new CmdSandboxEventLoop);
     rcCmdMgr.addCommand(new CmdSandboxMeshLoader);
+    rcCmdMgr.addCommand(new CmdTestGrabWidget());
+    rcCmdMgr.addCommand(new CmdTestImageNode());
 }

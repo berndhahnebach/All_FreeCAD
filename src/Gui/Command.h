@@ -563,7 +563,7 @@ protected: \
     virtual void activated(int iMsg);\
     virtual bool isActive(void)\
     {\
-        Gui::MDIView* view = getMainWindow()->activeWindow();\
+        Gui::MDIView* view = Gui::getMainWindow()->activeWindow();\
         return view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId());\
     }\
 };

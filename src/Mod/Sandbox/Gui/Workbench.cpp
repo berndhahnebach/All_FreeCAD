@@ -60,6 +60,11 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     root->insertItem(item, misc);
     misc->setCommand("Misc");
     *misc << "Sandbox_EventLoop" << "Sandbox_MeshLoad";
+
+    Gui::MenuItem* widg = new Gui::MenuItem;
+    root->insertItem(item, widg);
+    widg->setCommand("Widgets");
+    *widg << "Std_GrabWidget" << "Std_ImageNode";
     return root;
 }
 
