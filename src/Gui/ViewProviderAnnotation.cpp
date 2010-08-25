@@ -41,6 +41,7 @@
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoPointSet.h>
 #endif
+# include <Inventor/draggers/SoTranslate2Dragger.h>
 
 #include "ViewProviderAnnotation.h"
 #include <App/Annotation.h>
@@ -48,6 +49,7 @@
 #include <App/PropertyStandard.h>
 #include <Gui/BitmapFactory.h>
 #include "SoFCSelection.h"
+#include "SoTextLabel.h"
 #include "Application.h"
 #include "Document.h"
 
@@ -242,7 +244,7 @@ ViewProviderAnnotationLabel::ViewProviderAnnotationLabel()
     pColor->ref();
     pBaseTranslation = new SoTranslation();
     pBaseTranslation->ref();
-    pTextTranslation = new SoTranslation();
+    pTextTranslation = new SoTransform();
     pTextTranslation->ref();
     pCoords = new SoCoordinate3();
     pCoords->ref();
@@ -317,7 +319,6 @@ void ViewProviderAnnotationLabel::attach(App::DocumentObject* f)
     linesep->addChild(pCoords);
     linesep->addChild(new SoLineSet());
     SoDrawStyle *ds = new SoDrawStyle();
-    ds->style = SoDrawStyle::POINTS;
     ds->pointSize.setValue(3.0f);
     linesep->addChild(ds);
     linesep->addChild(new SoPointSet());
@@ -347,6 +348,71 @@ void ViewProviderAnnotationLabel::updateData(const App::Property* prop)
     }
 
     ViewProviderDocumentObject::updateData(prop);
+}
+
+bool ViewProviderAnnotationLabel::doubleClicked(void)
+{
+    Gui::Application::Instance->activeDocument()->setEdit(this);
+    return true;
+}
+
+void ViewProviderAnnotationLabel::dragStartCallback(void *data, SoDragger *)
+{
+    // This is called when a manipulator is about to manipulating
+    Gui::Application::Instance->activeDocument()->openCommand("Transform");
+}
+
+void ViewProviderAnnotationLabel::dragFinishCallback(void *data, SoDragger *)
+{
+    // This is called when a manipulator has done manipulating
+    Gui::Application::Instance->activeDocument()->commitCommand();
+}
+
+void ViewProviderAnnotationLabel::dragMotionCallback(void *data, SoDragger *drag)
+{
+    ViewProviderAnnotationLabel* that = reinterpret_cast<ViewProviderAnnotationLabel*>(data);
+    const SbMatrix& mat = drag->getMotionMatrix();
+    App::DocumentObject* obj = that->getObject();
+    if (obj && obj->getTypeId() == App::AnnotationLabel::getClassTypeId()) {
+        static_cast<App::AnnotationLabel*>(obj)->TextPosition.setValue(mat[3][0],mat[3][1],mat[3][2]);
+    }
+}
+
+bool ViewProviderAnnotationLabel::setEdit(int ModNum)
+{
+    SoSearchAction sa;
+    sa.setInterest(SoSearchAction::FIRST);
+    sa.setSearchingAll(FALSE);
+    sa.setNode(this->pTextTranslation);
+    sa.apply(pcRoot);
+    SoPath * path = sa.getPath();
+    if (path) {
+        TranslateManip * manip = new TranslateManip;
+        SoDragger* dragger = manip->getDragger();
+        dragger->addStartCallback(dragStartCallback, this);
+        dragger->addFinishCallback(dragFinishCallback, this);
+        dragger->addMotionCallback(dragMotionCallback, this);
+        return manip->replaceNode(path);
+    }
+
+    return false;
+}
+
+void ViewProviderAnnotationLabel::unsetEdit(void)
+{
+    SoSearchAction sa;
+    sa.setType(TranslateManip::getClassTypeId());
+    sa.setInterest(SoSearchAction::FIRST);
+    sa.apply(pcRoot);
+    SoPath * path = sa.getPath();
+
+    // No transform manipulator found.
+    if (!path)
+        return;
+
+    TranslateManip * manip = static_cast<TranslateManip*>(path->getTail());
+    SoTransform* transform = this->pTextTranslation;
+    manip->replaceManip(path, transform);
 }
 
 void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
