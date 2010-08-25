@@ -34,24 +34,6 @@ using namespace Gui;
 
 #if 0 // Test functions with transparency
 
-class GDIWidget : public QWidget
-{
-public:
-    GDIWidget(QWidget* parent) : QWidget(parent)
-    {setAttribute(Qt::WA_PaintOnScreen); }
-    QPaintEngine *paintEngine() const { return 0; }
-protected:
-    void paintEvent(QPaintEvent *event) {
-        HDC hdc = getDC();
-        SelectObject(hdc, GetSysColorBrush(COLOR_WINDOW));
-        Rectangle(hdc, 0, 0, width(), height());
-        RECT rect = {0, 0, width(), height() };
-        DrawText(hdc, "Hello World!", 12, &rect,
-        DT_SINGLELINE | DT_VCENTER | DT_CENTER);
-        releaseDC(hdc);
-    }
-};
-
 #if 1
     QDialog* dlg = Gui::getMainWindow()->findChild<QDialog*>();
     QImage image;
@@ -98,10 +80,6 @@ void drawImage(QGLWidget* w,double x1, double y1, double x2, double y2, QImage p
     glTexCoord2d(0,1); glVertex2f(x1,y2);
     glEnd();
     glPopAttrib();
-#elif 0
-    pic = QGLWidget::convertToGLFormat(pic);
-    glRasterPos2d(x1,y1);
-    glDrawPixels(pic.width(),pic.height(),GL_RGBA,GL_UNSIGNED_BYTE,pic.bits());
 #elif 0
     pic = QGLWidget::convertToGLFormat(pic);
     int texid = w->bindTexture(pic);

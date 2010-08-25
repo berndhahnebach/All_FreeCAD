@@ -25,12 +25,15 @@
 #ifndef _PreComp_
 # include <QCalendarWidget>
 # include <QColorDialog>
+# include <QCryptographicHash>
 # include <QObject>
 # include <QEventLoop>
+# include <QFontMetrics>
 # include <QFuture>
 # include <QFutureWatcher>
 # include <QtConcurrentMap>
 # include <QLabel>
+# include <QMessageBox>
 # include <QTimer>
 # include <QImage>
 # include <QImageReader>
@@ -58,6 +61,7 @@
 #include <Mod/Sandbox/App/DocumentThread.h>
 #include <Mod/Sandbox/App/DocumentProtector.h>
 #include <Mod/Mesh/App/MeshFeature.h>
+#include "Workbench.h"
 
 
 DEF_STD_CMD(CmdSandboxDocumentThread);
@@ -763,6 +767,26 @@ public:
     }
 };
 
+#ifdef Q_OS_WIN32
+class GDIWidget : public QWidget
+{
+public:
+    GDIWidget(QWidget* parent) : QWidget(parent)
+    {setAttribute(Qt::WA_PaintOnScreen); }
+    QPaintEngine *paintEngine() const { return 0; }
+protected:
+    void paintEvent(QPaintEvent *event) {
+        HDC hdc = getDC();
+        SelectObject(hdc, GetSysColorBrush(COLOR_WINDOW));
+        Rectangle(hdc, 0, 0, width(), height());
+        RECT rect = {0, 0, width(), height() };
+        DrawText(hdc, "Hello World!", 12, &rect,
+        DT_SINGLELINE | DT_VCENTER | DT_CENTER);
+        releaseDC(hdc);
+    }
+};
+#endif
+
 CmdTestImageNode::CmdTestImageNode()
   : Command("Std_ImageNode")
 {
@@ -773,7 +797,7 @@ CmdTestImageNode::CmdTestImageNode()
     sStatusTip      = sToolTipText;
     iAccel          = 0;
 }
-#include <QFontMetrics>
+
 void CmdTestImageNode::activated(int iMsg)
 {
     QString text = QString::fromAscii("Distance: 2.7jgiorjgor84mm");
@@ -844,6 +868,109 @@ void CmdTestImageNode::activated(int iMsg)
     static_cast<SoGroup*>(viewer->getSceneGraph())->addChild(anno);
 }
 
+//===========================================================================
+// Sandbox_GDIWidget
+//===========================================================================
+DEF_STD_CMD(CmdTestGDIWidget);
+
+CmdTestGDIWidget::CmdTestGDIWidget()
+  : Command("Sandbox_GDIWidget")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "GDI widget";
+    sToolTipText    = "GDI widget";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestGDIWidget::activated(int iMsg)
+{
+#ifdef Q_OS_WIN32
+    GDIWidget* gdi = new GDIWidget(Gui::getMainWindow());
+    gdi->show();
+    gdi->resize(200,200);
+    gdi->move(400,400);
+    gdi->setAttribute(Qt::WA_DeleteOnClose);
+#endif
+}
+
+//===========================================================================
+// Sandbox_RedirectPaint
+//===========================================================================
+DEF_STD_CMD(CmdTestRedirectPaint);
+
+CmdTestRedirectPaint::CmdTestRedirectPaint()
+  : Command("Sandbox_RedirectPaint")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Redirect paint";
+    sToolTipText    = "Redirect paint";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestRedirectPaint::activated(int iMsg)
+{
+    QCalendarWidget* cal = new QCalendarWidget();
+    QLabel* label = new QLabel();
+    QPainter::setRedirected(cal,label);
+    cal->setWindowTitle(QString::fromAscii("QCalendarWidget"));
+    cal->show();
+    label->show();
+    label->setWindowTitle(QString::fromAscii("QLabel"));
+}
+
+//===========================================================================
+// Sandbox_CryptographicHash
+//===========================================================================
+DEF_STD_CMD(CmdTestCryptographicHash);
+
+CmdTestCryptographicHash::CmdTestCryptographicHash()
+  : Command("Sandbox_CryptographicHash")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Cryptographic Hash";
+    sToolTipText    = "Cryptographic Hash";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestCryptographicHash::activated(int iMsg)
+{
+    QByteArray data = "FreeCAD";
+    QByteArray hash = QCryptographicHash::hash(data, QCryptographicHash::Md5);
+    QMessageBox::information(0,QLatin1String("Hash of: FreeCAD"),QString::fromAscii(hash));
+}
+
+//===========================================================================
+// Sandbox_WidgetShape
+//===========================================================================
+DEF_3DV_CMD(CmdTestWidgetShape);
+
+CmdTestWidgetShape::CmdTestWidgetShape()
+  : Command("Sandbox_WidgetShape")
+{
+    sGroup          = "Standard-Test";
+    sMenuText       = "Widget shape";
+    sToolTipText    = "Widget shape";
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    iAccel          = 0;
+}
+
+void CmdTestWidgetShape::activated(int iMsg)
+{
+    SandboxGui::SoWidgetShape* shape = new SandboxGui::SoWidgetShape;
+    shape->setWidget(new QCalendarWidget());
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+    static_cast<SoGroup*>(viewer->getSceneGraph())->addChild(shape);
+}
+
+
 void CreateSandboxCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -866,4 +993,8 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxMeshLoaderFuture);
     rcCmdMgr.addCommand(new CmdTestGrabWidget());
     rcCmdMgr.addCommand(new CmdTestImageNode());
+    rcCmdMgr.addCommand(new CmdTestWidgetShape());
+    rcCmdMgr.addCommand(new CmdTestGDIWidget());
+    rcCmdMgr.addCommand(new CmdTestRedirectPaint());
+    rcCmdMgr.addCommand(new CmdTestCryptographicHash());
 }
