@@ -76,6 +76,7 @@ void SandboxGuiExport initSandboxGui()
     // instanciating the commands
     CreateSandboxCommands();
     SandboxGui::Workbench::init();
+    SandboxGui::SoWidgetShape::initClass();
 
     // the following constructor call registers our extension module
     // with the Python runtime system
