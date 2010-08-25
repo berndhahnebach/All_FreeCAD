@@ -2506,7 +2506,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     <name>Gui::TreeWidget</name>
     <message>
         <source>Create group...</source>
-        <translation>Grupper erstellen...</translation>
+        <translation>Gruppe erstellen...</translation>
     </message>
     <message>
         <source>Create a group</source>
@@ -3552,7 +3552,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Random color</source>
-        <translation>Zufälige Farbe</translation>
+        <translation>Zufällige Farbe</translation>
     </message>
 </context>
 <context>
