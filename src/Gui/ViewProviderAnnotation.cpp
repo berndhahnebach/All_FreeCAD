@@ -28,6 +28,7 @@
 # include <QFontMetrics>
 # include <QImage>
 # include <QPainter>
+# include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/nodes/SoAnnotation.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoDrawStyle.h>
