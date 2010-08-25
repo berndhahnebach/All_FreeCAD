@@ -39,9 +39,11 @@
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
 # include <Inventor/elements/SoLazyElement.h>
+# include <Inventor/nodes/SoSurroundScale.h>
 # include <Inventor/misc/SoState.h>
 #endif
 
+#include <Inventor/draggers/SoTranslate2Dragger.h>
 #include <Inventor/elements/SoFontNameElement.h>
 #include <Inventor/elements/SoFontSizeElement.h>
 #include <Inventor/elements/SoCullElement.h>
@@ -372,4 +374,27 @@ void SoStringLabel::GLRender(SoGLRenderAction *action)
     glMatrixMode(GL_MODELVIEW);
 
     state->pop();
+}
+
+// ------------------------------------------------------
+
+SO_NODE_SOURCE(TranslateManip);
+
+void
+TranslateManip::initClass()
+{
+    SO_NODE_INIT_CLASS(TranslateManip, SoTransformManip,
+                       "TransformManip");
+}
+
+TranslateManip::TranslateManip()
+{
+    SO_NODE_CONSTRUCTOR(TranslateManip);
+
+    SoTranslate2Dragger *myDrag = new SoTranslate2Dragger;
+    setDragger(myDrag);
+}
+
+TranslateManip::~TranslateManip()
+{
 }

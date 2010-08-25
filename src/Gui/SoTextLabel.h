@@ -31,6 +31,7 @@
 #include <Inventor/fields/SoSFBool.h>
 #include <Inventor/fields/SoSFName.h>
 #include <Inventor/fields/SoSFInt32.h>
+#include <Inventor/manips/SoTransformManip.h>
 
 namespace Gui {
 
@@ -73,6 +74,20 @@ public:
 protected:
     virtual ~SoStringLabel() {};
     virtual void GLRender(SoGLRenderAction *action);
+};
+
+class GuiExport TranslateManip : public SoTransformManip
+{
+    SO_NODE_HEADER(TranslateManip);
+
+public:
+    // Constructor
+    TranslateManip();
+    static void initClass();
+
+private:
+    // Destructor
+    ~TranslateManip();
 };
 
 } // namespace Gui

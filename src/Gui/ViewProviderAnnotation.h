@@ -31,6 +31,7 @@ class SoText2;
 class SoAsciiText;
 class SoBaseColor;
 class SoTranslation;
+class SoTransform;
 class SoRotationXYZ;
 class SoImage;
 class SoCoordinate3;
@@ -102,16 +103,28 @@ public:
     std::vector<std::string> getDisplayModes(void) const;
     void setDisplayMode(const char* ModeName);
 
+    /** @name Edit methods */
+    //@{
+    bool doubleClicked(void);
+    bool setEdit(int ModNum = 0);
+    void unsetEdit(void);
+    //@}
+
 protected:
     void onChanged(const App::Property* prop);
     void drawImage(const std::vector<std::string>&);
+
+private:
+    static void dragStartCallback(void * data, SoDragger * d);
+    static void dragFinishCallback(void * data, SoDragger * d);
+    static void dragMotionCallback(void * data, SoDragger * d);
 
 private:
     SoCoordinate3    * pCoords;
     SoImage          * pImage;
     SoBaseColor      * pColor;
     SoTranslation    * pBaseTranslation;
-    SoTranslation    * pTextTranslation;
+    SoTransform      * pTextTranslation;
 
     static const char* JustificationEnums[];
 };

@@ -84,6 +84,7 @@ void Gui::SoFCDB::init()
     SoSkipBoundingGroup             ::initClass();
     SoTextLabel                     ::initClass();
     SoStringLabel                   ::initClass();
+    TranslateManip                  ::initClass();
     SoShapeScale                    ::initClass();
     SoAxisCrossKit                  ::initClass();
 
