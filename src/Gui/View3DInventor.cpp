@@ -327,6 +327,7 @@ void View3DInventor::print()
     printer.setFullPage(true);
     QPrintDialog dlg(&printer, this);
     if (dlg.exec() == QDialog::Accepted) {
+        Gui::WaitCursor wc;
         print(&printer);
     }
 }
@@ -335,6 +336,7 @@ void View3DInventor::printPdf()
 {
     QString filename = QFileDialog::getSaveFileName(this, tr("Export PDF"), QString(), tr("PDF file (*.pdf)"));
     if (!filename.isEmpty()) {
+        Gui::WaitCursor wc;
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
         printer.setOutputFileName(filename);
