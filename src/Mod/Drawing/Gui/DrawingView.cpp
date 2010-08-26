@@ -56,28 +56,6 @@
 
 using namespace DrawingGui;
 
-class DrawingScrollArea : public QScrollArea
-{
-public:
-    DrawingScrollArea(QWidget* parent)
-        : QScrollArea(parent)
-    {
-    }
-
-    ~DrawingScrollArea()
-    {
-    }
-protected:
-    void wheelEvent(QWheelEvent* e)
-    {
-#if QT_VERSION >= 0x040200
-        e->ignore();
-#endif
-    }
-};
-
-// ----------------------------------------------------------------------------
-
 SvgView::SvgView(QWidget *parent)
     : QGraphicsView(parent)
     , m_renderer(Native)
@@ -173,7 +151,7 @@ void SvgView::setHighQualityAntialiasing(bool highQualityAntialiasing)
 void SvgView::setViewBackground(bool enable)
 {
     if (!m_backgroundItem)
-          return;
+        return;
 
     m_backgroundItem->setVisible(enable);
 }
@@ -392,7 +370,6 @@ void DrawingView::print(QPrinter* printer)
 
 void DrawingView::viewAll()
 {
-    QRect area = m_view->visibleRegion().boundingRect();
     m_view->fitInView(m_view->scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
