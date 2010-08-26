@@ -31,6 +31,7 @@ QT_BEGIN_NAMESPACE
 class QSlider;
 class QAction;
 class QActionGroup;
+class QFile;
 class QPopupMenu;
 class QToolBar;
 class QSvgWidget;
