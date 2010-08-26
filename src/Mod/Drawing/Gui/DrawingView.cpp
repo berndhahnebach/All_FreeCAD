@@ -26,9 +26,15 @@
 # include <QAction>
 # include <QApplication>
 # include <QBuffer>
+# include <QContextMenuEvent>
 # include <QFileInfo>
 # include <QFileDialog>
+# include <QGLWidget>
+# include <QGraphicsRectItem>
+# include <QGraphicsSvgItem>
+# include <QMouseEvent>
 # include <QPainter>
+# include <QPaintEvent>
 # include <QPrinter>
 # include <QPrintDialog>
 # include <QScrollArea>
@@ -38,6 +44,7 @@
 # include <QSvgWidget>
 # include <QWheelEvent>
 # include <strstream>
+# include <cmath>
 #endif
 
 #include "DrawingView.h"
@@ -67,46 +74,255 @@ protected:
     }
 };
 
+// ----------------------------------------------------------------------------
+
+SvgView::SvgView(QWidget *parent)
+    : QGraphicsView(parent)
+    , m_renderer(Native)
+    , m_svgItem(0)
+    , m_backgroundItem(0)
+    , m_outlineItem(0)
+{
+    setScene(new QGraphicsScene(this));
+    setTransformationAnchor(AnchorUnderMouse);
+    setDragMode(ScrollHandDrag);
+
+    // Prepare background check-board pattern
+    QPixmap tilePixmap(64, 64);
+    tilePixmap.fill(Qt::white);
+    QPainter tilePainter(&tilePixmap);
+    QColor color(220, 220, 220);
+    tilePainter.fillRect(0, 0, 32, 32, color);
+    tilePainter.fillRect(32, 32, 32, 32, color);
+    tilePainter.end();
+
+    setBackgroundBrush(tilePixmap);
+}
+
+void SvgView::drawBackground(QPainter *p, const QRectF &)
+{
+    p->save();
+    p->resetTransform();
+    p->drawTiledPixmap(viewport()->rect(), backgroundBrush().texture());
+    p->restore();
+}
+
+void SvgView::openFile(const QFile &file)
+{
+    if (!file.exists())
+        return;
+
+    QGraphicsScene *s = scene();
+
+    bool drawBackground = (m_backgroundItem ? m_backgroundItem->isVisible() : true);
+    bool drawOutline = (m_outlineItem ? m_outlineItem->isVisible() : false);
+
+    s->clear();
+    resetTransform();
+
+    m_svgItem = new QGraphicsSvgItem(file.fileName());
+    m_svgItem->setFlags(QGraphicsItem::ItemClipsToShape);
+    m_svgItem->setCacheMode(QGraphicsItem::NoCache);
+    m_svgItem->setZValue(0);
+
+    m_backgroundItem = new QGraphicsRectItem(m_svgItem->boundingRect());
+    m_backgroundItem->setBrush(Qt::white);
+    m_backgroundItem->setPen(Qt::NoPen);
+    m_backgroundItem->setVisible(drawBackground);
+    m_backgroundItem->setZValue(-1);
+
+    m_outlineItem = new QGraphicsRectItem(m_svgItem->boundingRect());
+    QPen outline(Qt::black, 2, Qt::DashLine);
+    outline.setCosmetic(true);
+    m_outlineItem->setPen(outline);
+    m_outlineItem->setBrush(Qt::NoBrush);
+    m_outlineItem->setVisible(drawOutline);
+    m_outlineItem->setZValue(1);
+
+    s->addItem(m_backgroundItem);
+    s->addItem(m_svgItem);
+    s->addItem(m_outlineItem);
+
+    s->setSceneRect(m_outlineItem->boundingRect().adjusted(-10, -10, 10, 10));
+}
+
+void SvgView::setRenderer(RendererType type)
+{
+    m_renderer = type;
+
+    if (m_renderer == OpenGL) {
+#ifndef QT_NO_OPENGL
+        setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+#endif
+    } else {
+        setViewport(new QWidget);
+    }
+}
+
+void SvgView::setHighQualityAntialiasing(bool highQualityAntialiasing)
+{
+#ifndef QT_NO_OPENGL
+    setRenderHint(QPainter::HighQualityAntialiasing, highQualityAntialiasing);
+#else
+    Q_UNUSED(highQualityAntialiasing);
+#endif
+}
+
+void SvgView::setViewBackground(bool enable)
+{
+    if (!m_backgroundItem)
+          return;
+
+    m_backgroundItem->setVisible(enable);
+}
+
+void SvgView::setViewOutline(bool enable)
+{
+    if (!m_outlineItem)
+        return;
+
+    m_outlineItem->setVisible(enable);
+}
+
+void SvgView::paintEvent(QPaintEvent *event)
+{
+    if (m_renderer == Image) {
+        if (m_image.size() != viewport()->size()) {
+            m_image = QImage(viewport()->size(), QImage::Format_ARGB32_Premultiplied);
+        }
+
+        QPainter imagePainter(&m_image);
+        QGraphicsView::render(&imagePainter);
+        imagePainter.end();
+
+        QPainter p(viewport());
+        p.drawImage(0, 0, m_image);
+
+    } else {
+        QGraphicsView::paintEvent(event);
+    }
+}
+
+void SvgView::wheelEvent(QWheelEvent *event)
+{
+    qreal factor = std::pow(1.2, -event->delta() / 240.0);
+    scale(factor, factor);
+    event->accept();
+}
+
+// ----------------------------------------------------------------------------
+
 /* TRANSLATOR DrawingGui::DrawingView */
 
 DrawingView::DrawingView(QWidget* parent)
-  : MDIView(0, parent)
+  : Gui::MDIView(0, parent), m_view(new SvgView)
 {
-    // enable mouse tracking when moving even if no buttons are pressed
-    setMouseTracking(true);
+    m_backgroundAction = new QAction(tr("&Background"), this);
+    m_backgroundAction->setEnabled(false);
+    m_backgroundAction->setCheckable(true);
+    m_backgroundAction->setChecked(true);
+    connect(m_backgroundAction, SIGNAL(toggled(bool)), m_view, SLOT(setViewBackground(bool)));
 
-    // enable the mouse events
-    _mouseEventsEnabled = true; 
+    m_outlineAction = new QAction(tr("&Outline"), this);
+    m_outlineAction->setEnabled(false);
+    m_outlineAction->setCheckable(true);
+    m_outlineAction->setChecked(false);
+    connect(m_outlineAction, SIGNAL(toggled(bool)), m_view, SLOT(setViewOutline(bool)));
 
-    _scroll = new DrawingScrollArea(this);
-    _drawingView = new QSvgWidget(_scroll);
-    //_drawingView->setBackgroundRole(QPalette::Base);
-    QPalette p(_drawingView->palette());
-    p.setColor(QPalette::Background, Qt::white);
-    _drawingView->setPalette(p);
-    //this->_drawingView->setFocus();
-    //scroll->setFocusProxy(_drawingView);
-    //_drawingView->setFocusProxy(scroll);
-    _scroll->setWidget(_drawingView);
-    //_drawingView->resize(20, 20);
-    setCentralWidget(_scroll);
+    m_nativeAction = new QAction(tr("&Native"), this);
+    m_nativeAction->setCheckable(true);
+    m_nativeAction->setChecked(false);
+#ifndef QT_NO_OPENGL
+    m_glAction = new QAction(tr("&OpenGL"), this);
+    m_glAction->setCheckable(true);
+#endif
+    m_imageAction = new QAction(tr("&Image"), this);
+    m_imageAction->setCheckable(true);
 
-    _currMode = nothing;
-    _currX = 0;
-    _currY = 0;
+#ifndef QT_NO_OPENGL
+    m_highQualityAntialiasingAction = new QAction(tr("&High Quality Antialiasing"), this);
+    m_highQualityAntialiasingAction->setEnabled(false);
+    m_highQualityAntialiasingAction->setCheckable(true);
+    m_highQualityAntialiasingAction->setChecked(false);
+    connect(m_highQualityAntialiasingAction, SIGNAL(toggled(bool)),
+            m_view, SLOT(setHighQualityAntialiasing(bool)));
+#endif
 
-    // Create the actions, menus and toolbars
-    createActions();
+    QActionGroup *rendererGroup = new QActionGroup(this);
+    rendererGroup->addAction(m_nativeAction);
+#ifndef QT_NO_OPENGL
+    rendererGroup->addAction(m_glAction);
+#endif
+    rendererGroup->addAction(m_imageAction);
+    connect(rendererGroup, SIGNAL(triggered(QAction *)),
+            this, SLOT(setRenderer(QAction *)));
+
+    setCentralWidget(m_view);
+    //setWindowTitle(tr("SVG Viewer"));
 }
 
-DrawingView::~DrawingView()
+void DrawingView::load (const QString & fileName)
 {
+    if (!fileName.isEmpty()) {
+        QFile file(fileName);
+        if (!file.exists()) {
+            QMessageBox::critical(this, tr("Open SVG File"),
+                           tr("Could not open file '%1'.").arg(fileName));
+
+            m_outlineAction->setEnabled(false);
+            m_backgroundAction->setEnabled(false);
+            return;
+        }
+
+        m_view->openFile(file);
+
+        if (!fileName.startsWith(QLatin1String(":/"))) {
+            m_currentPath = fileName;
+            //setWindowTitle(tr("%1 - SVG Viewer").arg(m_currentPath));
+        }
+
+        m_outlineAction->setEnabled(true);
+        m_backgroundAction->setEnabled(true);
+    }
+}
+
+void DrawingView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu;
+    menu.addAction(this->m_backgroundAction);
+    menu.addAction(this->m_outlineAction);
+    QMenu* submenu = menu.addMenu(tr("&Renderer"));
+    submenu->addAction(this->m_nativeAction);
+    submenu->addAction(this->m_glAction);
+    submenu->addAction(this->m_imageAction);
+    submenu->addSeparator();
+    submenu->addAction(this->m_highQualityAntialiasingAction);
+    menu.exec(event->globalPos());
+}
+
+void DrawingView::setRenderer(QAction *action)
+{
+#ifndef QT_NO_OPENGL
+    m_highQualityAntialiasingAction->setEnabled(false);
+#endif
+
+    if (action == m_nativeAction)
+        m_view->setRenderer(SvgView::Native);
+#ifndef QT_NO_OPENGL
+    else if (action == m_glAction) {
+        m_highQualityAntialiasingAction->setEnabled(true);
+        m_view->setRenderer(SvgView::OpenGL);
+    }
+#endif
+    else if (action == m_imageAction) {
+        m_view->setRenderer(SvgView::Image);
+    }
 }
 
 bool DrawingView::onMsg(const char* pMsg, const char** ppReturn)
 {
     if (strcmp("ViewFit",pMsg) == 0) {
-        fitDrawing();
+        viewAll();
         return true;
     }
     return false;
@@ -121,11 +337,6 @@ bool DrawingView::onHasMsg(const char* pMsg) const
     else if (strcmp("PrintPdf",pMsg) == 0)
         return true; 
     return false;
-}
-
-void DrawingView::viewAll()
-{
-    fitDrawing();
 }
 
 void DrawingView::printPdf()
@@ -154,289 +365,33 @@ void DrawingView::print()
 
 void DrawingView::print(QPrinter* printer)
 {
+#if 1
     QPainter p(printer);
     QRect rect = printer->pageRect();
-    this->_drawingView->renderer()->render(&p, rect);
+    this->m_view->scene()->render(&p, rect);
     p.end();
+#else
+    printer->setResolution(QPrinter::HighResolution);
+    printer->setPageSize(QPrinter::A4);
+    QPainter painter(printer);
+
+    // print, fitting the viewport contents into a full page
+    m_view->render(&painter);
+
+    // print the upper half of the viewport into the lower.
+    // half of the page.
+    QRect viewport = m_view->viewport()->rect();
+    m_view->render(&painter,
+                   QRectF(0, printer->height() / 2,
+                             printer->width(), printer->height() / 2),
+                   viewport.adjusted(0, 0, 0, -viewport.height() / 2));
+#endif
 }
 
-bool DrawingView::load (const QString & file)
+void DrawingView::viewAll()
 {
-    QFileInfo fi(file);
-    QString suffix = fi.suffix().toLower();
-    bool ok;
-    if (suffix == QLatin1String("svg")) {
-        ok = this->_drawingView->renderer()->load(file);
-    }
-    else if (suffix == QLatin1String("svgz")) {
-        QByteArray contents;
-        QBuffer buffer(&contents);
-        buffer.open(QIODevice::WriteOnly);
-        Base::IODeviceOStreambuf buf(&buffer);
-        Base::igzstream gzip(file.toUtf8());
-        gzip >> &buf;
-        gzip.close();
-        ok = this->_drawingView->renderer()->load(contents);
-    }
-
-    if (ok) {
-        QSize size = this->_drawingView->renderer()->defaultSize();
-        this->aspectRatio = (float)size.width() / (float)size.height();
-    }
-    else {
-        this->aspectRatio = 1.0f;
-    }
-
-    return ok;
-}
-
-// Create the action groups, actions, menus and toolbars
-void DrawingView::createActions()
-{
- 
-}
-
-// Slot function to fit (stretch/shrink) the Drawing to the view size
-void DrawingView::fitDrawing()
-{
-    QSize DrawSize = this->_drawingView->size();
-    QSize ScrollSize = this->_scroll->size();
-    float ratio = DrawSize.width()/float(DrawSize.height());
-    if (ratio < ScrollSize.width()/float(ScrollSize.height())) {
-        float height = ScrollSize.height() - 2.0;
-        float width = ratio * height;
-        DrawSize.setWidth ((int)width);
-        DrawSize.setHeight((int)height);
-    }
-    else {
-        float width = ScrollSize.width()- 2.0;
-        float height = width / ratio;
-        DrawSize.setWidth ((int)width);
-        DrawSize.setHeight((int)height);
-    }
-
-    this->_drawingView->resize(DrawSize);
-}
-
-// Slot function to display the Drawing at a 1:1 scale"
-void DrawingView::oneToOneDrawing()
-{
-    QSize size = this->_drawingView->renderer()->defaultSize();
-    if (size.isValid())
-        this->_drawingView->resize(size);
-    else
-        this->_drawingView->resize(this->size());
-}
-
-// Mouse press event
-void DrawingView::mousePressEvent(QMouseEvent* cEvent)
-{
-    if (_mouseEventsEnabled == true) {
-        // Mouse event coordinates are relative to top-left of Drawing view (including toolbar!)
-        // Get current cursor position relative to top-left of Drawing box
-        QPoint offset;// = _pGLDrawingBox->pos();
-        int box_x = cEvent->x() - offset.x();
-        int box_y = cEvent->y() - offset.y();
-        _currX = box_x;
-        _currY = box_y;
-        switch(cEvent->buttons())
-        {
-        case Qt::MidButton:
-            _currMode = panning;
-            startDrag();
-            break;
-      //case Qt::LeftButton | Qt::MidButton:
-      //    _currMode = zooming;
-      //    break;
-        case Qt::LeftButton:
-            if (cEvent->modifiers() & Qt::ShiftModifier)
-                _currMode = addselection;
-            else
-                _currMode = selection;
-            break;
-        case Qt::RightButton:
-            // _pContextMenu->exec(cEvent->globalPos());
-            break;
-        default:
-            _currMode = nothing;
-        }
-    }
-}
-
-void DrawingView::mouseDoubleClickEvent(QMouseEvent* cEvent)
-{
-   if (_mouseEventsEnabled == true)
-   {
-       // Mouse event coordinates are relative to top-left of Drawing view (including toolbar!)
-       // Get current cursor position relative to top-left of Drawing box
-       QPoint offset;// = _pGLDrawingBox->pos();
-       int box_x = cEvent->x() - offset.x();
-       int box_y = cEvent->y() - offset.y();
-       _currX = box_x;
-       _currY = box_y;
-       if(cEvent->button() == Qt::MidButton)
-       {
-//           double icX = _pGLDrawingBox->WCToIC_X(_currX);
-  //         double icY = _pGLDrawingBox->WCToIC_Y(_currY);
-           //int pixX = (int)floor(icX + 0.5);
-           //int pixY = (int)floor(icY + 0.5);
-//           _pGLDrawingBox->setZoomFactor(_pGLDrawingBox->getZoomFactor(), true, (int)floor(icX + 0.5), (int)floor(icY + 0.5));
-//           _pGLDrawingBox->redraw();
-       }
-   }
-}
-
-// Mouse move event
-void DrawingView::mouseMoveEvent(QMouseEvent* cEvent)
-{
-    QApplication::flush();
-
-    // Mouse event coordinates are relative to top-left of Drawing view (including toolbar!)
-    // Get current cursor position relative to top-left of Drawing box
-    QPoint offset ;//= _pGLDrawingBox->pos();
-    int box_x = cEvent->x() - offset.x();
-    int box_y = cEvent->y() - offset.y();
-    if (_mouseEventsEnabled == true) {
-        switch(_currMode)
-        {
-        case nothing:
-            break;
-        case panning:
-            //_pGLDrawingBox->relMoveWC(box_x - dragStartWCx, box_y - dragStartWCy);
-            break;
-        case zooming:
-            zoom(_currX, _currY, box_x, box_y);
-            break;
-        default:
-            break;
-        }
-    }
-
-    _currX = box_x;
-    _currY = box_y;
-
-    // Update the status bar
-    updateStatusBar();
-}
-
-// Mouse release event
-void DrawingView::mouseReleaseEvent(QMouseEvent* cEvent)
-{
-    if (_mouseEventsEnabled == true) {
-        // Mouse event coordinates are relative to top-left of Drawing view (including toolbar!)
-        // Get current cursor position relative to top-left of Drawing box
-        QPoint offset;// = _pGLDrawingBox->pos();
-        int box_x = cEvent->x() - offset.x();
-        int box_y = cEvent->y() - offset.y();
-        switch(_currMode)
-        {
-        case selection:
-            select(box_x, box_y);
-            break;
-        case addselection:
-            addSelect(box_x, box_y);
-            break;
-        default:
-            break;
-        }
-        _currMode = nothing;
-    }
-}
-
-// Mouse wheel event
-void DrawingView::wheelEvent(QWheelEvent * cEvent)
-{
-    if (_mouseEventsEnabled == true) {
-        // Mouse event coordinates are relative to top-left of Drawing view (including toolbar!)
-        // Get current cursor position relative to top-left of Drawing box
-        QPoint offset;// = _pGLDrawingBox->pos();
-        int box_x = cEvent->x() - offset.x();
-        int box_y = cEvent->y() - offset.y();
-
-        // Zoom around centrally displayed Drawing point
-        float numTicks = (float)(-cEvent->delta())/240.0;
-        float factor = pow(2.0f, numTicks);
-        QSize size = this->_drawingView->size();
-        float height = std::max<float>(factor * (float)size.height(),10.0f);
-        float width = this->aspectRatio * height;
-        size.setWidth ((int)width);
-        size.setHeight((int)height);
-        this->_drawingView->resize(size);
-        //int ICx, ICy;
-        //_pGLDrawingBox->getCentrePoint(ICx, ICy);
-        //_pGLDrawingBox->setZoomFactor(_pGLDrawingBox->getZoomFactor() / pow(2.0, (double)numTicks), true, ICx, ICy);
-        //_pGLDrawingBox->redraw();
-        _currX = box_x;
-        _currY = box_y;
-
-        // Update the status bar
-        updateStatusBar();
-    }
-}
-
-// Update the status bar with the Drawing parameters for the current mouse position
-void DrawingView::updateStatusBar()
-{
-    if (_statusBarEnabled == true) {
-        // Create the text string to display in the status bar
-        QString txt = createStatusBarText();
-        // Update status bar with new text
-        statusBar()->showMessage(txt);
-    }
-}
-
-// Create the text to display in the status bar.
-// Gets called by updateStatusBar()
-// Override this function in a derived class to add your own text
-QString DrawingView::createStatusBarText()
-{
-    QString txt;
-    return txt;
-}
-
-// Starts a mouse drag in the Drawing - stores some initial positions
-void DrawingView::startDrag()
-{
-    //_pGLDrawingBox->fixBasePosCurr(); // fixes current Drawing position as base position
-    dragStartWCx = _currX;
-    dragStartWCy = _currY;
-}
-
-// Zoom the Drawing using vertical mouse movement to define a zoom factor
-void DrawingView::zoom(int prevX, int prevY, int currX, int currY)
-{
-    // Check we have more of a vertical shift than a hz one
-    int dx = currX - prevX;
-    int dy = currY - prevY;
-    if (abs(dy) > abs(dx))
-    {
-        // Get centrally displayed Drawing point
-        //int ICx, ICy;
-        //_pGLDrawingBox->getCentrePoint(ICx, ICy);
-
-        // Compute zoom factor multiplier
-        double zoomFactorMultiplier = 1.05;
-        if (currY > prevY)
-            zoomFactorMultiplier = 0.95;
-
-        // Zoom around centrally displayed Drawing point
-        //_pGLDrawingBox->setZoomFactor(_pGLDrawingBox->getZoomFactor() * zoomFactorMultiplier, true, ICx, ICy);
-        //_pGLDrawingBox->redraw();
-    }
-}
-
-// Select at the given position
-void DrawingView::select(int currX, int currY)
-{
-    // base class implementation does nothing
-    // override this method and implement selection capability if required
-}
-
-// Add selection at the given position
-void DrawingView::addSelect(int currX, int currY)
-{
+    QRect area = m_view->visibleRegion().boundingRect();
+    m_view->fitInView(m_view->scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
 #include "moc_DrawingView.cpp"
-
-

@@ -73,6 +73,8 @@
 #include <QFileIconProvider>
 #include <qfontdatabase.h>
 #include <qfontdialog.h>
+#include <QGraphicsRectItem>
+#include <QGraphicsSvgItem>
 #include <QGroupBox>
 #include <QHeaderView>
 #include <qimage.h>

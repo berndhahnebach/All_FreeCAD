@@ -21,11 +21,13 @@
  ***************************************************************************/
 
 
-#ifndef DrawingView_H
-#define DrawingView_H
+#ifndef DRAWINGGUI_DRAWINGVIEW_H
+#define DRAWINGGUI_DRAWINGVIEW_H
 
 #include <Gui/MDIView.h>
+#include <QGraphicsView>
 
+QT_BEGIN_NAMESPACE
 class QSlider;
 class QAction;
 class QActionGroup;
@@ -34,9 +36,42 @@ class QToolBar;
 class QSvgWidget;
 class QScrollArea;
 class QPrinter;
+QT_END_NAMESPACE
 
 namespace DrawingGui
 {
+
+class DrawingGuiExport SvgView : public QGraphicsView
+{
+    Q_OBJECT
+
+public:
+    enum RendererType { Native, OpenGL, Image };
+
+    SvgView(QWidget *parent = 0);
+
+    void openFile(const QFile &file);
+    void setRenderer(RendererType type = Native);
+    void drawBackground(QPainter *p, const QRectF &rect);
+
+public Q_SLOTS:
+    void setHighQualityAntialiasing(bool highQualityAntialiasing);
+    void setViewBackground(bool enable);
+    void setViewOutline(bool enable);
+
+protected:
+    void wheelEvent(QWheelEvent *event);
+    void paintEvent(QPaintEvent *event);
+
+private:
+    RendererType m_renderer;
+
+    QGraphicsItem *m_svgItem;
+    QGraphicsRectItem *m_backgroundItem;
+    QGraphicsRectItem *m_outlineItem;
+
+    QImage m_image;
+};
 
 class DrawingGuiExport DrawingView : public Gui::MDIView
 {
@@ -44,80 +79,35 @@ class DrawingGuiExport DrawingView : public Gui::MDIView
 
 public:
     DrawingView(QWidget* parent = 0);
-    virtual ~DrawingView();
 
-    bool load (const QString & file);
-    const char *getName(void) const {return "DrawingView";}
-    void onUpdate(void){};
-
-    bool onMsg(const char* pMsg,const char** ppReturn);
-    bool onHasMsg(const char* pMsg) const ;
+public Q_SLOTS:
+    void load(const QString &path = QString());
+    void setRenderer(QAction *action);
     void viewAll();
 
+public:
+    bool onMsg(const char* pMsg,const char** ppReturn);
+    bool onHasMsg(const char* pMsg) const;
     void print();
     void printPdf();
 
-public Q_SLOTS:
-    virtual void fitDrawing();
-    virtual void oneToOneDrawing();
-
 protected:
-    virtual void createActions();
-    virtual void mousePressEvent(QMouseEvent* cEvent);
-    virtual void mouseDoubleClickEvent(QMouseEvent* cEvent);
-    virtual void mouseMoveEvent(QMouseEvent* cEvent);
-    virtual void mouseReleaseEvent(QMouseEvent* cEvent);
-    virtual void wheelEvent(QWheelEvent * cEvent);
-    virtual void updateStatusBar();
-    virtual QString createStatusBarText();
-
-    virtual void startDrag();
-    virtual void zoom(int prevX, int prevY, int currX, int currY);
-    virtual void select(int currX, int currY);
-    virtual void addSelect(int currX, int currY);
     void print(QPrinter* printer);
+    void contextMenuEvent(QContextMenuEvent *event);
 
-    enum {
-        nothing = 0,
-        panning,
-        zooming,
-        selection,
-        addselection
-    } _currMode;
+private:
+    QAction *m_nativeAction;
+    QAction *m_glAction;
+    QAction *m_imageAction;
+    QAction *m_highQualityAntialiasingAction;
+    QAction *m_backgroundAction;
+    QAction *m_outlineAction;
 
-    QSvgWidget* _drawingView;
-    QScrollArea* _scroll;
+    SvgView *m_view;
 
-    int _currX;
-    int _currY;
-    int dragStartWCx;
-    int dragStartWCy;
-    float aspectRatio; /**< This is the ratio of width and height of the SVG. */
-
-    // Action groups
-    QActionGroup* _pShowColActGrp;
-
-    // Actions
-    QAction* _pFitAct;
-    QAction* _pOneToOneAct;
-    QAction* _pShowOrigAct;
-    QAction* _pShowBrightAct;
-
-    // Menus
-    QMenu* _pContextMenu;
-
-    // Toolbars
-    QToolBar* _pStdToolBar;
-
-    // Slider for brightness adjustment
-    QSlider* _pSliderBrightAdj;
-    int _sliderBrightAdjVal;
-
-    // Flag for status bar enablement
-    bool _statusBarEnabled;
-    bool _mouseEventsEnabled;
+    QString m_currentPath;
 };
 
 } // namespace DrawingViewGui
 
-#endif // DrawingView_H
+#endif // DRAWINGGUI_DRAWINGVIEW_H
