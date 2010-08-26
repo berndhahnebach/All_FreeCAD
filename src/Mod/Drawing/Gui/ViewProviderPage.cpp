@@ -27,6 +27,7 @@
 # ifdef FC_OS_WIN32
 #  include <windows.h>
 # endif
+# include <QTimer>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -92,9 +93,12 @@ void ViewProviderDrawingPage::updateData(const App::Property* prop)
     Gui::ViewProviderDocumentObjectGroup::updateData(prop);
     if (prop->getTypeId() == App::PropertyFileIncluded::getClassTypeId()) {
         if (std::string(getPageObject()->PageResult.getValue()) != "") {
-            try {
-                showDrawingView()->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
-            } catch(...){}// dirty hack for the moment....
+            DrawingView* view = showDrawingView();
+            view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+            if (view->isHidden())
+                QTimer::singleShot(300, view, SLOT(viewAll()));
+            else
+                view->viewAll();
         }
     }
 }
@@ -109,11 +113,8 @@ DrawingView* ViewProviderDrawingPage::showDrawingView()
 {
     if (!view){
         view = new DrawingView(Gui::getMainWindow());
-        view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
         view->setWindowIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape"));
         view->setWindowTitle(QObject::tr("Drawing viewer"));
-        view->resize(400, 300);
-        view->oneToOneDrawing();
         Gui::getMainWindow()->addWindow(view);
     }
 

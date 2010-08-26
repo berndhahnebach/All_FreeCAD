@@ -85,13 +85,14 @@ public:
      */
     //@{
     /// get called when the document is updated
-    virtual void onUpdate(void)=0;
+    virtual void onUpdate(void){}
     /// get called when the document is relabeled (change of its user name)
-    virtual void onRelabel(Gui::Document *){};
+    virtual void onRelabel(Gui::Document *){}
     /// get called when the document is renamed (change of its internal name)
-    virtual void onRename(Gui::Document *){};
+    virtual void onRename(Gui::Document *){}
     /// returns the name of the view (important for messages)
-    virtual const char *getName(void) const=0;
+    virtual const char *getName(void) const
+    { return "Base view"; }
     /// Message handler
     virtual bool onMsg(const char* pMsg, const char** ppReturn)=0;
     /// Message handler test
