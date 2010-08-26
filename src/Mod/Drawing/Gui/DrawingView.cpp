@@ -32,6 +32,8 @@
 # include <QGLWidget>
 # include <QGraphicsRectItem>
 # include <QGraphicsSvgItem>
+# include <QMenu>
+# include <QMessageBox>
 # include <QMouseEvent>
 # include <QPainter>
 # include <QPaintEvent>
