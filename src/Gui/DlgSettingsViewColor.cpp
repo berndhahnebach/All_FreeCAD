@@ -95,3 +95,4 @@ void DlgSettingsViewColor::changeEvent(QEvent *e)
 }
 
 #include "moc_DlgSettingsViewColor.cpp"
+

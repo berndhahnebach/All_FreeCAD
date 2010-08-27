@@ -181,3 +181,4 @@ void DlgSettingsColorGradientImp::accept()
 }
 
 #include "moc_DlgSettingsColorGradientImp.cpp"
+
