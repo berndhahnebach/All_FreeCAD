@@ -132,3 +132,4 @@ void DlgSettings3DViewImp::retranslate()
 }
 
 #include "moc_DlgSettings3DViewImp.cpp"
+
