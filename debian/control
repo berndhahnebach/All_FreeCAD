@@ -15,8 +15,8 @@ Build-Depends: debhelper (>= 7.0.50~), autotools-dev,
  libcoin60-dev, libsoqt4-dev (>= 1.4.2~svn20090224), libeigen2-dev,
  libgts-bin, libgts-dev, libcv-dev, zlib1g-dev, libxerces-c2-dev,
  libopencascade-foundation-dev, libopencascade-modeling-dev, python-cxx-dev,
- libswscale-dev, libblas-dev, libatlas-dev, libzipios++-dev, swig
-Standards-Version: 3.8.4
+ libswscale-dev, libzipios++-dev, swig
+Standards-Version: 3.9.0
 
 Package: freecad
 Architecture: any
