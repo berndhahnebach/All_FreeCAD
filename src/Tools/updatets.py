@@ -28,18 +28,19 @@ LUPDATE = ""
 
 def find_tools():
     global QMAKE, LUPDATE
-    if (os.system("qmake-qt4 -v") == 0):
+    if (os.system("qmake-qt4 -version") == 0):
         QMAKE = "qmake-qt4"
-    elif (os.system("qmake -v") == 0):
+    elif (os.system("qmake -version") == 0):
         QMAKE = "qmake"
-    else
+    else:
         raise Exception("Cannot find qmake")
-    if (os.system("lupdate-qt4 -v") == 0):
-        QMAKE = "lupdate-qt4"
-    elif (os.system("lupdate -v") == 0):
-        QMAKE = "lupdate"
-    else
+    if (os.system("lupdate-qt4 -version") == 0):
+        LUPDATE = "lupdate-qt4"
+    elif (os.system("lupdate -version") == 0):
+        LUPDATE = "lupdate"
+    else:
         raise Exception("Cannot find lupdate")
+    print "Qt tools:", QMAKE, LUPDATE
 
 def filter_dirs(item):
     global DirFilter
@@ -58,11 +59,16 @@ def update_translation(path):
     filename = os.path.basename(path) + ".pro"
     os.system(QMAKE + " -project")
     os.system(LUPDATE + " " + filename)
-    #os.remove(filename)
+    os.remove(filename)
     os.chdir(cur)
 
 def main():
     find_tools()
+    path = os.path.realpath(__file__)
+    path = os.path.dirname(path)
+    os.chdir(path)
+    os.chdir("..")
+    os.chdir("..")
     dirs=os.listdir("src/Mod")
     for i in range(len(dirs)):
         dirs[i] = "src/Mod/" + dirs[i]
@@ -74,8 +80,5 @@ def main():
         update_translation(i)
 
 if __name__ == "__main__":
-    os.chdir(os.path.dirname(__file__))
-    os.path.chdir("..")
-    os.path.chdir("..")
     main()
 
