@@ -246,9 +246,9 @@ void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterG
     }
     else {
         unsigned long col1 = rGrp.GetUnsigned("BackgroundColor",3940932863UL);
-        unsigned long col2 = rGrp.GetUnsigned("BackgroundColor2",859006463UL); // default color (purple)
-        unsigned long col3 = rGrp.GetUnsigned("BackgroundColor3",2880160255UL); // default color (white)
-        unsigned long col4 = rGrp.GetUnsigned("BackgroundColor4",ULONG_MAX); // default color (white)
+        unsigned long col2 = rGrp.GetUnsigned("BackgroundColor2",859006463UL); // default color (dark blue)
+        unsigned long col3 = rGrp.GetUnsigned("BackgroundColor3",2880160255UL); // default color (blue/grey)
+        unsigned long col4 = rGrp.GetUnsigned("BackgroundColor4",1869583359UL); // default color (blue/grey)
         float r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4;
         r1 = ((col1 >> 24) & 0xff) / 255.0; g1 = ((col1 >> 16) & 0xff) / 255.0; b1 = ((col1 >> 8) & 0xff) / 255.0;
         r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
