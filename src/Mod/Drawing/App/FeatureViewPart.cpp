@@ -202,3 +202,15 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 }
 
 #endif 
+
+
+// Python Drawing feature ---------------------------------------------------------
+
+namespace App {
+PROPERTY_SOURCE_TEMPLATE(Drawing::FeatureViewPartPython, Drawing::FeatureViewPart)
+template<> const char* Drawing::FeatureViewPartPython::getViewProviderName(void) const {
+    return "DrawingGui::ViewProviderDrawingView";
+}
+// explicit template instantiation
+template class AppDrawingExport FeaturePythonT<Drawing::FeatureViewPart>;
+}

@@ -30,6 +30,7 @@
 #include <App/DocumentObject.h>
 #include <App/PropertyLinks.h>
 #include "FeatureView.h"
+#include <App/FeaturePython.h>
 
 
 class PyObjectBase;
@@ -69,6 +70,9 @@ public:
         return "DrawingGui::ViewProviderDrawingView";
     }
 };
+
+typedef App::FeaturePythonT<FeatureViewPart> FeatureViewPartPython;
+
 
 } //namespace Drawing
 

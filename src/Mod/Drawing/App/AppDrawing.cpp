@@ -53,6 +53,8 @@ void AppDrawingExport initDrawing()
     Drawing::FeatureView            ::init();
     Drawing::FeatureViewPart        ::init();
     Drawing::PageGroup              ::init();
+    Drawing::FeatureViewPartPython  ::init();
+    Drawing::FeatureViewPython      ::init();
 }
 
 } // extern "C"
