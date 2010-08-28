@@ -32,11 +32,20 @@ __url__ = "http://free-cad.sourceforge.net"
 import FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft
 from draftlibs import fcvec,fcgeo
 from FreeCAD import Vector
-from draftGui import todo, translator
+from draftGui import todo,QtCore,QtGui
 
 # loads a translation engine
-translator.load()
-translate = translator.translate
+locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
+if locale:
+        translator = QtCore.QTranslator()
+        translator.load(locale,Draft.getDraftPath("Languages"))
+        QtGui.QApplication.installTranslator(translator)
+
+def translate(context,text):
+        "convenience function for Qt translator"
+        return QtGui.QApplication.translate(context, text, None,
+                                            QtGui.QApplication.UnicodeUTF8)
+		
 
 def msg(text=None):
         "prints the given message on the FreeCAD status bar"

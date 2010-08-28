@@ -94,23 +94,10 @@ class todo:
 			QtCore.QTimer.singleShot(0, todo.doTasks)
 		todo.itinerary.append((f,arg))
 
-class translator:
-        '''static translation class, use translator.load() to load translations,
-        and translator.translate(context,text) to translate text.'''
-        @staticmethod
-        def load():
-                locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
-                if locale:
-                        translator = QtCore.QTranslator()
-                        translator.load(locale,Draft.getDraftPath("Languages"))
-                        QtGui.QApplication.installTranslator(translator)
-        @staticmethod
-        def translate(context,text):
-                "convenience function for Qt translator"
-                return QtGui.QApplication.translate(context, text, None,
-                                                    QtGui.QApplication.UnicodeUTF8)
-
-translate = translator.translate
+def translate(context,text):
+        "convenience function for Qt translator"
+        return QtGui.QApplication.translate(context, text, None,
+                                            QtGui.QApplication.UnicodeUTF8)
 
 #---------------------------------------------------------------------------
 # Customized widgets
@@ -914,7 +901,11 @@ class toolBar:
 			FreeCADGui.addIcon(name,str(ba))
 
 		# loads a translation engine
-                translator.load()
+                locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
+                if locale:
+                        translator = QtCore.QTranslator()
+                        translator.load(locale,Draft.getDraftPath("Languages"))
+                        QtGui.QApplication.installTranslator(translator)
 			
 		# create the draft Toolbar
 		self.mw = getMainWindow()
