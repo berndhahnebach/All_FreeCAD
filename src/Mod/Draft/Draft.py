@@ -284,7 +284,7 @@ def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None
         return obj
         
 def makeRectangle(length, height, placement=None, face=True):
-        '''makeRectangle(length,width,[placement,face]): Creates a Rectangle
+        '''makeRectangle(length,width,[placement],[face]): Creates a Rectangle
         object with length in X direction and height in Y direction.
         If a placement is given, it is used. If face is False, the
         rectangle is shown as a wireframe, otherwise as a face.'''
@@ -348,6 +348,30 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
         ViewProviderWire(obj.ViewObject)
         obj.Points = pointslist
         obj.Closed = closed
+        if not face: obj.ViewObject.DisplayMode = "Wireframe"
+        if placement: obj.Placement = placement
+        formatObject(obj)
+	select(obj)
+	FreeCAD.ActiveDocument.recompute()
+        return obj
+
+def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=True):
+        '''makePolgon(nfaces,[radius],[inscribed],[placement],[face]): Creates a
+        polygon object with the given number of faces and the radius.
+        if inscribed is False, the polygon is circumscribed around a circle
+        with the given radius, otherwise it is inscribed. If face is True,
+        the resulting shape is displayed as a face, otherwise as a wireframe.
+        '''
+        if nfaces < 3: return None
+        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Polygon")
+        Polygon(obj)
+        ViewProviderPolygon(obj.ViewObject)
+        obj.FacesNumber = nfaces
+        obj.Radius = radius
+        if inscribed:
+                obj.DrawMode = "inscribed"
+        else:
+                obj.DrawMode = "circumscribed"
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
         if placement: obj.Placement = placement
         formatObject(obj)
@@ -1219,3 +1243,70 @@ class ViewProviderWire(ViewProviderDraft):
                        "    .+++..      ",
                        "     ...        "};
 		       """
+
+class Polygon:
+        "The Polygon object"
+        
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyInteger","FacesNumber","Base","Number of faces")
+		obj.addProperty("App::PropertyDistance","Radius","Base","Radius of the control circle")
+                obj.addProperty("App::PropertyEnumeration","DrawMode","Base","How the polygon must be drawn from the control circle")
+                obj.DrawMode = ['inscribed','circumscribed']
+                obj.FacesNumber = 3
+                obj.Radius = 1
+                obj.Proxy = self
+
+	def execute(self, fp):
+                self.createGeometry(fp)
+
+        def onChanged(self, fp, prop):
+                if prop in ["FacesNumber","Radius","DrawMode"]:
+                        self.createGeometry(fp)
+                        
+        def createGeometry(self,fp):
+                plm = fp.Placement
+                angle = (math.pi*2)/fp.FacesNumber
+                if fp.DrawMode == 'inscribed':
+                        delta = fp.Radius
+                else:
+                        delta = fp.Radius/math.cos(angle/2)
+                pts = [Vector(delta,0,0)]
+                for i in range(fp.FacesNumber-1):
+                        ang = (i+1)*angle
+                        pts.append(Vector(delta*math.cos(ang),delta*math.sin(ang),0))
+                pts.append(pts[0])
+                shape = Part.makePolygon(pts)
+                shape = Part.Face(shape)
+		fp.Shape = shape
+                fp.Placement = plm
+
+class ViewProviderPolygon(ViewProviderDraft):
+        "A View Provider for the Polygon object"
+
+	def getIcon(self):
+		return """
+                        /* XPM */
+                        static char * draft_polygon_xpm[] = {
+                        "16 16 5 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #0000FF",
+                        "@	c #141010",
+                        "#	c #615BD2",
+                        "        @@@@@@@@",
+                        "  ......@##@@##@",
+                        "  ..++++@##@@##@",
+                        " ..+++++@##@@##@",
+                        " ..+++++@######@",
+                        " .++++++@##@@##@",
+                        " .++++++@##@@##@",
+                        " .++++++@######@",
+                        "..++++++@@@@@@@@",
+                        "..++++++++++++..",
+                        "..+++++++++++.. ",
+                        "...+++++++++..  ",
+                        "  ...++++++..   ",
+                        "    ...+++..    ",
+                        "      .....     ",
+                        "        ..      "};
+			"""

@@ -18,7 +18,7 @@ class MacroCommand():
             if os.path.exists(target): execfile(target)
 
             
-if macroPath and os.path.exists(macroPath):
+if macroPath:
     macros = []
     for f in os.listdir(macroPath):
         if ".FCMacro" in f:

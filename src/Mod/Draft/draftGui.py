@@ -227,6 +227,8 @@ class toolBar:
 
                                 # options
 
+                                self.numFaces = _spinbox("numFaces",3)
+
 				self.offsetLabel = _label("offsetlabel")
 				self.offsetValue = _lineedit("offsetValue", width=60)
 				self.offsetValue.setText("0.00")
@@ -408,6 +410,7 @@ class toolBar:
 				self.undoButton.setToolTip(translate("draft", "Undo the last segment (CTRL+Z)"))
 				self.closeButton.setText(translate("draft", "Close"))
 				self.closeButton.setToolTip(translate("draft", "Finishes and closes the current line (C)"))
+                                self.numFaces.setToolTip(translate("draft", "Number of sides"))
                                 self.offsetLabel.setText(translate("draft", "Offset"))
 				self.xyButton.setText(translate("draft", "XY"))
 				self.xyButton.setToolTip(translate("draft", "Select XY plane"))
@@ -498,6 +501,7 @@ class toolBar:
 				self.xValue.hide()
 				self.yValue.hide()
 				self.zValue.hide()
+                                self.numFaces.hide()
 				self.isRelative.hide()
                                 self.hasFill.hide()
 				self.finishButton.hide()
@@ -894,6 +898,7 @@ class toolBar:
                 icons['Draft_switchMode']=iconfile.copy(QtCore.QRect(448,128,64,64))
 		icons['preferences-draft']=iconfile.copy(QtCore.QRect(384,0,64,64))
                 icons['Draft_Macro']=iconfile.copy(QtCore.QRect(384,128,64,64))
+                icons['Draft_polygon']=iconfile.copy(QtCore.QRect(0,192,64,64))
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()
 			bu = QtCore.QBuffer(ba)
