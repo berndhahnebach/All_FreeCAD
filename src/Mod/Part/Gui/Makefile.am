@@ -14,6 +14,7 @@ BUILT_SOURCES=\
 		ui_DlgPrimitives.h \
 		ui_DlgSettings3DViewPart.h \
 		ui_DlgSettingsGeneral.h \
+		ui_Mirroring.h \
 		moc_CrossSections.cpp \
 		moc_DlgBooleanOperation.cpp \
 		moc_DlgExtrusion.cpp \
@@ -26,6 +27,7 @@ BUILT_SOURCES=\
 		moc_DlgPrimitives.cpp \
 		moc_DlgSettings3DViewPartImp.cpp \
 		moc_DlgSettingsGeneral.cpp \
+		moc_Mirroring.cpp \
 		qrc_Part.cpp 
 
 libPartGui_la_SOURCES=\
@@ -56,6 +58,8 @@ libPartGui_la_SOURCES=\
 		DlgSettings3DViewPartImp.h \
 		DlgSettingsGeneral.cpp \
 		DlgSettingsGeneral.h \
+		Mirroring.cpp \
+		Mirroring.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		SoFCShapeObject.cpp \
@@ -188,6 +192,7 @@ EXTRA_DIST = \
 		DlgPrimitives.ui \
 		DlgSettings3DViewPart.ui \
 		DlgSettingsGeneral.ui \
+		Mirroring.ui \
 		Resources/Part.qrc \
 		Resources/translations/Part_de.qm \
 		Resources/translations/Part_es.qm \

@@ -61,6 +61,7 @@ endif(WIN32)
 
 set(PartGui_MOC_HDRS
 		 CrossSections.h
+		 Mirroring.h
 		 DlgBooleanOperation.h
 		 DlgExtrusion.h
 		 DlgFilletEdges.h
@@ -80,6 +81,7 @@ fc_add_resources(PartGui_QRC_SRCS Resources/Part.qrc)
 
 set(PartGui_UIC_SRCS
 		 CrossSections.ui
+		 Mirroring.ui
 		 DlgBooleanOperation.ui
 		 DlgExtrusion.ui
 		 DlgFilletEdges.ui
@@ -104,6 +106,9 @@ SET(PartGui_SRCS
 		 CrossSections.cpp
 		 CrossSections.h
 		 CrossSections.ui
+		 Mirroring.cpp
+		 Mirroring.h
+		 Mirroring.ui
 		 DlgBooleanOperation.cpp
 		 DlgBooleanOperation.h
 		 DlgBooleanOperation.ui
