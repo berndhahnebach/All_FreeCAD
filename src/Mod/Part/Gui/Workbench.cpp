@@ -55,7 +55,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *part << "Part_Primitives" << "Part_ShapeFromMesh"
           << "Part_MakeSolid" << "Part_ReverseShape" << "Separator"
           << "Part_Boolean" << "Part_CrossSections" << "Part_Extrude"
-          << "Part_Revolve" << "Part_Fillet"
+          << "Part_Revolve" << "Part_Mirror" << "Part_Fillet"
           << "Separator" << "Part_ShapeInfo";
 
     Gui::MenuItem* partSimple = new Gui::MenuItem;

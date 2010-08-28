@@ -55,6 +55,7 @@
 #include "DlgFilletEdges.h"
 #include "DlgPrimitives.h"
 #include "CrossSections.h"
+#include "Mirroring.h"
 #include "ViewProvider.h"
 
 
@@ -750,6 +751,34 @@ bool CmdPartFillet::isActive(void)
 }
 
 //===========================================================================
+// Part_Mirror
+//===========================================================================
+DEF_STD_CMD_A(CmdPartMirror);
+
+CmdPartMirror::CmdPartMirror()
+  :Command("Part_Mirror")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Mirroring...");
+    sToolTipText  = QT_TR_NOOP("Mirroring a selected shape");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    //sPixmap       = "Part_Mirror";
+    iAccel        = 0;
+}
+
+void CmdPartMirror::activated(int iMsg)
+{
+    Gui::Control().showDialog(new PartGui::TaskMirroring());
+}
+
+bool CmdPartMirror::isActive(void)
+{
+    return (hasActiveDocument() && !Gui::Control().activeDialog());
+}
+
+//===========================================================================
 // Part_CrossSections
 //===========================================================================
 DEF_STD_CMD_A(CmdPartCrossSections);
@@ -893,6 +922,7 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartReverseShape());
     rcCmdMgr.addCommand(new CmdPartBoolean());
     rcCmdMgr.addCommand(new CmdPartExtrude());
+    rcCmdMgr.addCommand(new CmdPartMirror());
     rcCmdMgr.addCommand(new CmdPartRevolve());
     rcCmdMgr.addCommand(new CmdPartCrossSections());
     rcCmdMgr.addCommand(new CmdPartFillet());

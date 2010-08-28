@@ -37,6 +37,7 @@
 #include "FeatureGeometrySet.h"
 #include "FeatureExtrusion.h"
 #include "FeatureFillet.h"
+#include "FeatureMirroring.h"
 #include "FeatureRevolution.h"
 #include "PrimitiveFeature.h"
 #include "Part2DObject.h"
@@ -144,6 +145,7 @@ void AppPartExport initPart()
     Part::Extrusion             ::init();
     Part::Fillet                ::init();
     Part::Revolution            ::init();
+    Part::Mirroring             ::init();
     Part::ImportStep            ::init();
     Part::ImportIges            ::init();
     Part::ImportBrep            ::init();

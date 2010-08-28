@@ -211,6 +211,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Part_Boolean"
           << "Part_Extrude"
           << "Part_Revolve"
+          << "Part_Mirror"
           << "Part_Fillet"
           << "Separator"
           << "Part_ShapeInfo";
