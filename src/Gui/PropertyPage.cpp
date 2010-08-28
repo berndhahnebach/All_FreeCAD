@@ -111,6 +111,9 @@ PreferenceUiForm::PreferenceUiForm(const QString& fn, QWidget* parent)
   : PreferencePage(parent), form(0)
 {
     UiLoader loader;
+#if QT_VERSION >= 0x040500
+    loader.setLanguageChangeEnabled(true);
+#endif
     QFile file(fn);
     if (file.open(QFile::ReadOnly))
         form = loader.load(&file, this);
