@@ -1345,7 +1345,192 @@ class Circle(Arc):
 			'MenuText': str(translate("draft", "Circle").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a circle. CTRL to snap, ALT to select tangent objects").toLatin1())}
 
-	
+
+class Polygon(Creator):
+	"the Draft_Polygon FreeCAD command definition"
+        
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_polygon',
+			'MenuText': str(translate("draft", "Polygon").toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a regular polygon. CTRL to snap, SHIFT to constrain").toLatin1())}
+
+	def Activated(self):
+		Creator.Activated(self,"Polygon")
+		if self.ui:
+			self.step = 0
+			self.center = None
+			self.rad = None
+			self.tangents = []
+			self.tanpoints = []
+			self.ui.pointUi()
+			self.altdown = False
+			self.ui.sourceCmd = self
+			self.snap = snapTracker()
+			self.linetrack = lineTracker(dotted=True)
+			self.constraintrack = lineTracker(dotted=True)
+			self.arctrack = arcTracker()
+			self.call = self.view.addEventCallback("SoEvent",self.action)
+			msg(translate("draft", "Pick center point:\n"))
+
+	def finish(self,closed=False):
+		"finishes the arc"
+		Creator.finish(self)
+		if self.ui:
+			if (self.rad == None): self.doc.undo()
+			self.snap.finalize()
+			self.linetrack.finalize()
+			self.constraintrack.finalize()
+			self.arctrack.finalize()
+			self.doc.recompute()
+
+	def action(self,arg):
+		"scene event handler"
+		if (arg["Type"] == "SoLocation2Event"):
+			point,ctrlPoint = getPoint(self,arg)
+			# this is to make sure radius is what you see on screen
+                        self.ui.cross(True)
+			if self.center and fcvec.dist(point,self.center) > 0:
+				viewdelta = fcvec.project(point.sub(self.center), plane.axis)
+				if not fcvec.isNull(viewdelta):
+					point = point.add(fcvec.neg(viewdelta))
+			if (self.step == 0): # choose center
+				if arg["AltDown"]:
+					if not self.altdown:
+						self.ui.cross(False)
+						self.altdown = True
+						self.ui.switchUi(True)
+				else:
+					if self.altdown:
+						self.ui.cross(True)
+						self.altdown = False
+						self.ui.switchUi(False)
+			else: # choose radius
+				if len(self.tangents) == 2:
+					cir = fcgeo.circleFrom2tan1pt(self.tangents[0], self.tangents[1], point)
+					self.center = fcgeo.findClosestCircle(point,cir).Center
+					self.arctrack.centerPoint(self.center)
+				elif self.tangents and self.tanpoints:
+					cir = fcgeo.circleFrom1tan2pt(self.tangents[0], self.tanpoints[0], point)
+					self.center = fcgeo.findClosestCircle(point,cir).Center
+					self.arctrack.centerPoint(self.center)
+				if arg["AltDown"]:
+					if not self.altdown:
+						self.ui.cross(False)
+						self.altdown = True
+					snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
+					if snapped:
+						ob = self.doc.getObject(snapped['Object'])
+						num = int(snapped['Component'].lstrip('Edge'))-1
+						ed = ob.Shape.Edges[num]
+						if len(self.tangents) == 2:
+							cir = fcgeo.circleFrom3tan(self.tangents[0], self.tangents[1], ed)
+							cl = fcgeo.findClosestCircle(point,cir)
+							self.center = cl.Center
+							self.rad = cl.Radius
+							self.arctrack.centerPoint(self.center)
+						else:
+							self.rad = self.center.add(fcgeo.findDistance(self.center,ed).sub(self.center)).Length
+					else:
+						self.rad = fcvec.dist(point,self.center)
+				else:
+					if self.altdown:
+						self.ui.cross(True)
+						self.altdown = False
+					self.rad = fcvec.dist(point,self.center)
+				self.ui.radiusValue.setText("%.2f" % self.rad)
+				self.arctrack.startPoint(point)
+				self.arctrack.changeRadius(self.rad)
+				self.arctrack.update(math.radians(360))
+				self.ui.radiusValue.setFocus()
+				self.ui.radiusValue.selectAll()
+				# Draw constraint tracker line.
+				if (arg["ShiftDown"]):
+					self.constraintrack.p1(point)
+					self.constraintrack.p2(ctrlPoint)
+					self.constraintrack.on()
+				else: self.constraintrack.off()
+				self.linetrack.p1(self.center)
+				self.linetrack.p2(point)
+				self.linetrack.on()
+
+		if (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+				point,ctrlPoint = getPoint(self,arg)
+				# this is to make sure radius is what you see on screen
+				if self.center and fcvec.dist(point,self.center) > 0:
+					viewdelta = fcvec.project(point.sub(self.center), plane.axis)
+					if not fcvec.isNull(viewdelta):
+						point = point.add(fcvec.neg(viewdelta))
+				if (self.step == 0): # choose center
+					if arg["AltDown"]:
+						snapped=self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
+						if snapped:
+							ob = self.doc.getObject(snapped['Object'])
+							num = int(snapped['Component'].lstrip('Edge'))-1
+							ed = ob.Shape.Edges[num]
+							self.tangents.append(ed)
+							if len(self.tangents) == 2:
+								self.arctrack.on()
+								self.ui.radiusUi()
+								self.step = 1
+								self.linetrack.on()
+								msg(translate("draft", "Pick radius:\n"))
+					else:
+						if len(self.tangents) == 1:
+							self.tanpoints.append(point)
+						else:
+							self.center = point
+							self.node = [point]
+							self.arctrack.centerPoint(self.center)
+							self.linetrack.p1(self.center)
+							self.linetrack.p2(self.view.getPoint(arg["Position"][0],arg["Position"][1]))
+						self.arctrack.on()
+						self.ui.radiusUi()
+                                                self.ui.numFaces.show()
+						self.step = 1
+						self.linetrack.on()
+						msg(translate("draft", "Pick radius:\n"))
+				elif (self.step == 1): # choose radius
+                                        self.ui.cross(False)
+                                        self.drawPolygon()
+
+	def drawPolygon(self):
+		"actually draws the FreeCAD object"
+                p = plane.getRotation()
+                p.move(self.center)
+                self.doc.openTransaction("Create Polygon")                     
+                Draft.makePolygon(self.ui.numFaces.value(),self.rad,True,p,face=self.ui.hasFill.isChecked())
+                self.doc.commitTransaction()
+                self.finish()
+
+	def numericInput(self,numx,numy,numz):
+		"this function gets called by the toolbar when valid x, y, and z have been entered there"
+		self.center = Vector(numx,numy,numz)
+		self.node = [self.center]
+		self.arctrack.centerPoint(self.center)
+		self.arctrack.on()
+		self.ui.radiusUi()
+		self.step = 1
+                self.ui.radiusValue.setFocus()
+		msg(translate("draft", "Pick radius:\n"))
+		
+	def numericRadius(self,rad):
+		"this function gets called by the toolbar when valid radius have been entered there"
+                self.rad = rad
+                if len(self.tangents) == 2:
+                        cir = fcgeo.circleFrom2tan1rad(self.tangents[0], self.tangents[1], rad)
+                        if self.center:
+                                self.center = fcgeo.findClosestCircle(self.center,cir).Center
+                        else:
+                                self.center = cir[-1].Center
+                elif self.tangents and self.tanpoints:
+                        cir = fcgeo.circleFrom1tan1pt1rad(self.tangents[0],self.tanpoints[0],rad)
+                        if self.center:
+                                self.center = fcgeo.findClosestCircle(self.center,cir).Center
+                        else:
+                                self.center = cir[-1].Center
+                self.drawPolygon()
+        
 class Text(Creator):
 	'''
 	This class creates an annotation feature.
@@ -3010,13 +3195,16 @@ class Edit(Creator):
                                         if "Points" in self.obj.PropertiesList:
                                                 for p in self.obj.Points:
                                                         self.editpoints.append(p)
-                                        elif "Radius" in self.obj.PropertiesList:
+                                        elif "StartAngle" in self.obj.PropertiesList:
                                                 self.editpoints.append(self.obj.Placement.Base)
                                                 if self.obj.StartAngle == self.obj.EndAngle:
                                                         self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
                                         elif "Length" in self.obj.PropertiesList:
                                                 self.editpoints.append(self.obj.Placement.Base)
                                                 self.editpoints.append(self.obj.Shape.Vertexes[2].Point)
+                                        elif "FacesNumber" in self.obj.PropertiesList:
+                                                self.editpoints.append(self.obj.Placement.Base)
+                                                self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
                                         self.trackers = []
                                         for ep in range(len(self.editpoints)):
                                                 self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
@@ -3075,7 +3263,7 @@ class Edit(Creator):
                         pts[self.editing] = v
                         self.obj.Points = pts
                         self.trackers[self.editing].set(pts[self.editing])
-                elif "Radius" in self.obj.PropertiesList:
+                elif "StartAngle" in self.obj.PropertiesList:
                         delta = v.sub(self.obj.Placement.Base)
                         if self.editing == 0:
                                 p = self.obj.Placement
@@ -3105,6 +3293,21 @@ class Edit(Creator):
                                 self.obj.Height = ay
                         self.trackers[0].set(self.obj.Placement.Base)
                         self.trackers[1].set(self.obj.Shape.Vertexes[2].Point)
+                elif "FacesNumber" in self.obj.PropertiesList:
+                        delta = v.sub(self.obj.Placement.Base)
+                        if self.editing == 0:
+                                p = self.obj.Placement
+                                p.move(delta)
+                                self.obj.Placement = p
+                                self.trackers[0].set(self.obj.Placement.Base)
+                        elif self.editing == 1:
+                                if self.obj.DrawMode == 'inscribed':
+                                        self.obj.Radius = delta.Length
+                                else:
+                                        halfangle = ((math.pi*2)/self.obj.FacesNumber)/2
+                                        rad = math.cos(halfangle)*delta.Length
+                                        self.obj.Radius = rad
+                        self.trackers[1].set(self.obj.Shape.Vertexes[0].Point)
 
 	def numericInput(self,v,numy=None,numz=None):
 		'''this function gets called by the toolbar
@@ -3133,6 +3336,7 @@ FreeCADGui.addCommand('Draft_Arc',Arc())
 FreeCADGui.addCommand('Draft_Text',Text())
 FreeCADGui.addCommand('Draft_Rectangle',Rectangle())
 FreeCADGui.addCommand('Draft_Dimension',Dimension())
+FreeCADGui.addCommand('Draft_Polygon',Polygon())
 
 # context commands
 FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
