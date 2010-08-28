@@ -216,6 +216,7 @@ App.addExportType("Autodesk DXF (*.dxf)","importDXF")
 App.addExportType("SVG (*.svg)","importSVG")
 App.addExportType("Open CAD Format (*.oca)","importOCA")
 Gui.addPreferencePage(draftpath+"userprefs.ui","Draft")
+Gui.addLanguagePath(App.getHomePath()+"Mod/Draft/Languages")
 Gui.addIconPath(draftpath)
 
 

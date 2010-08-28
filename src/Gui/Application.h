@@ -188,6 +188,8 @@ public:
     PYFUNCDEF_S(sGetWorkbenchHandler);      // retrieves the workbench handler
     PYFUNCDEF_S(sListWorkbenchHandlers);    // retrieves a list of all workbench handlers
     PYFUNCDEF_S(sActiveWorkbenchHandler);   // retrieves the active workbench object
+    PYFUNCDEF_S(sAddResPath);               // adds a path where to find resources
+    PYFUNCDEF_S(sAddLangPath);              // adds a path to a qm file
     PYFUNCDEF_S(sAddIconPath);              // adds a path to an icon file
     PYFUNCDEF_S(sAddIcon);                  // adds an icon to the cache
 

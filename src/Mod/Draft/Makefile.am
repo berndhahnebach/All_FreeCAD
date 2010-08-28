@@ -28,14 +28,14 @@ nobase_data_DATA = \
 		Languages/draft_es.qm \
 		Languages/draft_fr.qm \
 		Languages/draft_it.qm \
-		Languages/draft_se.qm \
+		Languages/draft_se.qm
+
+EXTRA_DIST = \
+		$(data_DATA) $(nobase_data_DATA) \
 		Languages/draft_de.ts \
 		Languages/draft_es.ts \
 		Languages/draft_fr.ts \
 		Languages/draft_it.ts \
-		Languages/draft_se.ts
-
-EXTRA_DIST = \
-		$(data_DATA) $(nobase_data_DATA) \
+		Languages/draft_se.ts \
 		CMakeLists.txt
 
