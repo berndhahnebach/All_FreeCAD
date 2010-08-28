@@ -25,6 +25,9 @@ __title__="FreeCAD Draft Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net>"
 __url__ = ["http://free-cad.sourceforge.net"]
 
+import os
+from Draft import getDraftPath
+
 class DraftWorkbench (Workbench):
 	"the Draft Workbench"
 	Icon = """
@@ -203,11 +206,6 @@ class DraftWorkbench (Workbench):
 		return "Gui::PythonWorkbench"
 
 # adding the Draft module scripts to FreeCAD
-import os
-path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft/"
-path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft/"
-if os.path.exists(path2): draftpath = path2
-else: draftpath =  path1
 Gui.addWorkbench(DraftWorkbench)
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
@@ -215,10 +213,6 @@ App.addImportType("Open CAD Format (*.oca *.gcad)","importOCA")
 App.addExportType("Autodesk DXF (*.dxf)","importDXF")
 App.addExportType("SVG (*.svg)","importSVG")
 App.addExportType("Open CAD Format (*.oca)","importOCA")
-Gui.addPreferencePage(draftpath+"userprefs.ui","Draft")
-Gui.addLanguagePath(App.getHomePath()+"Mod/Draft/Languages")
-Gui.addIconPath(draftpath)
-
-
-
-
+Gui.addPreferencePage(getDraftPath("userprefs.ui"),"Draft")
+Gui.addLanguagePath(getDraftPath("Languages"))
+Gui.addIconPath(getDraftPath())
