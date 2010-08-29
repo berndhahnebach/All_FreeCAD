@@ -102,7 +102,6 @@ bool Mirroring::accept()
         return false;
     }
 
-    Gui::WaitCursor wc;
     App::Document* activeDoc = App::GetApplication().getDocument((const char*)this->document.toAscii());
     if (!activeDoc) {
         QMessageBox::critical(this, windowTitle(),
@@ -110,6 +109,7 @@ bool Mirroring::accept()
         return false;
     }
 
+    Gui::WaitCursor wc;
     unsigned int count = activeDoc->countObjectsOfType(Base::Type::fromName("Part::Mirroring"));
     activeDoc->openTransaction("Mirroring");
 
