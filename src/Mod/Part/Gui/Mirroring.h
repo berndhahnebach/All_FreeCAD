@@ -66,7 +66,7 @@ public:
     virtual QDialogButtonBox::StandardButtons getStandardButtons() const
     { return QDialogButtonBox::Ok | QDialogButtonBox::Cancel; }
     virtual bool isAllowedAlterDocument(void) const
-    { return true; }
+    { return false; }
     virtual bool needsFullSpace() const
     { return true; }
 
