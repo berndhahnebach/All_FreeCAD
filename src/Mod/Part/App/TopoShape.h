@@ -30,6 +30,8 @@
 #include <TopTools_ListOfShape.hxx>
 #include <App/ComplexGeoData.h>
 
+class gp_Ax2;
+
 namespace Part
 {
 
@@ -140,6 +142,7 @@ public:
     //@{
     TopoDS_Shape transformGeometry(const Base::Matrix4D&) const;
     void transformShape(const Base::Matrix4D&);
+    TopoDS_Shape mirror(const gp_Ax2&) const;
     TopoDS_Shape toNurbs() const;
     void sewShape();
     //@}

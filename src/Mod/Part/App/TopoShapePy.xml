@@ -91,6 +91,12 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Sew the shape if there is a gap.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="mirror">
+      <Documentation>
+        <UserDocu>Mirror this shape on a given plane.
+The plane is given with its base point and its normal direction.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="transformGeometry">
       <Documentation>
         <UserDocu>Apply geometric transformation on a copy of the shape.

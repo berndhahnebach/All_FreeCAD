@@ -996,6 +996,17 @@ void TopoShape::transformShape(const Base::Matrix4D& rclTrf)
     this->_Shape = mkTrf.Shape();
 }
 
+TopoDS_Shape TopoShape::mirror(const gp_Ax2& ax2) const
+{
+    gp_Trsf mat;
+    mat.SetMirror(ax2);
+    TopLoc_Location loc = this->_Shape.Location();
+    gp_Trsf placement = loc.Transformation();
+    mat = placement * mat;
+    BRepBuilderAPI_Transform mkTrf(this->_Shape, mat);
+    return mkTrf.Shape();
+}
+
 TopoDS_Shape TopoShape::toNurbs() const
 {
     BRepBuilderAPI_NurbsConvert mkNurbs(this->_Shape);

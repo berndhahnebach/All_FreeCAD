@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMessageBox>
+# include <QRegExp>
 # include <QTreeWidget>
 # include <TopoDS_Shape.hxx>
 # include <TopExp_Explorer.hxx>
@@ -102,23 +103,45 @@ bool Mirroring::accept()
     }
 
     Gui::WaitCursor wc;
-    App::Document* activeDoc = App::GetApplication().getActiveDocument();
+    App::Document* activeDoc = App::GetApplication().getDocument((const char*)this->document.toAscii());
+    if (!activeDoc) {
+        QMessageBox::critical(this, windowTitle(),
+            tr("No such document '%1'.").arg(this->document));
+        return false;
+    }
+
+    unsigned int count = activeDoc->countObjectsOfType(Base::Type::fromName("Part::Mirroring"));
     activeDoc->openTransaction("Mirroring");
 
     QString shape, label;
+    QRegExp rx(QString::fromAscii(" \\(Mirror #\\d+\\)$"));
     QList<QTreeWidgetItem *> items = ui->shapes->selectedItems();
+    float normx=0, normy=0, normz=0;
+    int index = ui->comboBox->currentIndex();
+    if (index == 0)
+        normz = 1.0f;
+    else if (index == 1)
+        normy = 1.0f;
+    else
+        normx = 1.0f;
     for (QList<QTreeWidgetItem *>::iterator it = items.begin(); it != items.end(); ++it) {
         shape = (*it)->data(0, Qt::UserRole).toString();
-        label = (*it)->text(0) + QString::fromAscii(" (Mirror)");
+        label = (*it)->text(0);
+
+        // if we already have the suffix " (Mirror #<number>)" remove it
+        int pos = label.indexOf(rx);
+        if (pos > -1)
+            label = label.left(pos);
+        label.append(QString::fromAscii(" (Mirror #%1)").arg(++count));
 
         QString code = QString::fromAscii(
             "__doc__=FreeCAD.getDocument(\"%1\")\n"
             "__doc__.addObject(\"Part::Mirroring\")\n"
-            "__doc__.ActiveObject.Base=__doc__.getObject(\"%2\")\n"
+            "__doc__.ActiveObject.Source=__doc__.getObject(\"%2\")\n"
             "__doc__.ActiveObject.Label=\"%3\"\n"
-            "__doc__.ActiveObject.Plane=%4\n"
+            "__doc__.ActiveObject.Normal=(%4,%5,%6)\n"
             "del __doc__")
-            .arg(this->document).arg(shape).arg(label).arg(ui->comboBox->currentIndex());
+            .arg(this->document).arg(shape).arg(label).arg(normx).arg(normy).arg(normz);
         Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
     }
 
