@@ -700,6 +700,21 @@ AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 CXX=g++
 CXXFLAGS="$CXXFLAGS -Wno-deprecated -frtti"
 
+dnl doxygen
+dnl **************************************************************************
+AC_CHECK_PROG(HAVE_DOXYGEN, doxygen, true, false)
+AM_CONDITIONAL(HAVE_DOXYGEN,$HAVE_DOXYGEN)
+if test $HAVE_DOXYGEN = "false"; then
+        AC_MSG_WARN([doxygen not found])
+fi
+
+DOXYGEN_OUTPUT_DIR="."
+AC_SUBST(DOXYGEN_OUTPUT_DIR)
+
+DOXYGEN_INPUT_LIST="$srcdir/src/Base $srcdir/src/App $srcdir/src/Gui"
+AC_SUBST(DOXYGEN_INPUT_LIST)
+dnl **************************************************************************
+
 AC_CONFIG_FILES([Makefile 
 src/Makefile 
 src/3rdParty/Makefile 
@@ -713,6 +728,7 @@ src/Gui/iisTaskPanel/Makefile
 src/Gui/TaskView/Makefile 
 src/Main/Makefile
 src/Doc/Makefile
+src/Doc/BuildDevDoc.cfg
 src/Mod/Makefile
 src/Mod/Part/Makefile
 src/Mod/Part/App/Makefile

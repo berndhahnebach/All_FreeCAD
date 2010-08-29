@@ -29,3 +29,8 @@ EXTRA_DIST = \
 debian-package:
 	$(top_srcdir)/package/makedebian.sh
 
+if HAVE_DOXYGEN
+devdoc:
+	doxygen $(top_builddir)/src/Doc/BuildDevDoc.cfg
+endif
+
