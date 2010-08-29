@@ -12,6 +12,7 @@ BUILT_SOURCES=\
 		ui_TaskSketcherGeneral.h
 
 libSketcherGui_la_UI=\
+		InsertDatum.ui \
 		TaskSketcherConstrains.ui \
 		TaskSketcherGeneral.ui
 

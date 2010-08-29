@@ -101,6 +101,7 @@ data_DATA = SketcherTestsApp.py
 CLEANFILES = $(BUILT_SOURCES) $(libSketcher_la_BUILT)
 
 EXTRA_DIST = \
+		$(data_DATA) \
 		CMakeLists.txt \
 		ConstraintPy.xml \
 		SketchPy.xml \
