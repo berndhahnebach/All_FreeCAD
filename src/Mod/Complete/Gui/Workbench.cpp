@@ -376,6 +376,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
         << "Separator"
         << "Part_Extrude"
         << "Part_Revolve"
+        << "Part_Mirror"
         << "Part_Fillet"
     ;
 

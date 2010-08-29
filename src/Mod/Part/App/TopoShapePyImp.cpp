@@ -34,6 +34,9 @@
 # include <BRepOffsetAPI_MakePipeShell.hxx>
 # include <BRepTools.hxx>
 # include <gp_Ax1.hxx>
+# include <gp_Ax2.hxx>
+# include <gp_Dir.hxx>
+# include <gp_Pnt.hxx>
 # include <gp_Trsf.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS.hxx>
@@ -582,6 +585,28 @@ PyObject*  TopoShapePy::sewShape(PyObject *args)
     try {
         getTopoShapePtr()->sewShape();
         Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
+PyObject*  TopoShapePy::mirror(PyObject *args)
+{
+    PyObject *v1, *v2;
+    if (!PyArg_ParseTuple(args, "O!O!", &(Base::VectorPy::Type),&v1,
+                                        &(Base::VectorPy::Type),&v2))
+        return NULL;
+
+    Base::Vector3d base = Py::Vector(v1,false).toVector();
+    Base::Vector3d norm = Py::Vector(v2,false).toVector();
+
+    try {
+        gp_Ax2 ax2(gp_Pnt(base.x,base.y,base.z), gp_Dir(norm.x,norm.y,norm.z));
+        TopoDS_Shape shape = this->getTopoShapePtr()->mirror(ax2);
+        return new TopoShapePy(new TopoShape(shape));
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

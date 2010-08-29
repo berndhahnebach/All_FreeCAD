@@ -82,7 +82,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
     Gui::ToolBarItem* tool = new Gui::ToolBarItem(root);
     tool->setCommand(QT_TR_NOOP("Part tools"));
-    *tool << "Part_Extrude" << "Part_Revolve" << "Part_Fillet";
+    *tool << "Part_Extrude" << "Part_Revolve" << "Part_Mirror" << "Part_Fillet";
 
     Gui::ToolBarItem* boolop = new Gui::ToolBarItem(root);
     boolop->setCommand(QT_TR_NOOP("Boolean"));

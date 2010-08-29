@@ -38,8 +38,9 @@ class Mirroring : public Part::Feature
 public:
     Mirroring();
 
-    App::PropertyLink Base;
-    App::PropertyEnumeration Plane;
+    App::PropertyLink Source;
+    App::PropertyVector Base;
+    App::PropertyVector Normal;
 
     /** @name methods override feature */
     //@{
@@ -47,10 +48,6 @@ public:
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
     //@}
-
-private:
-    Base::Matrix4D getTransformation() const;
-    static const char* PlaneEnums[];
 };
 
 } //namespace Part

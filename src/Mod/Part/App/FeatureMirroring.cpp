@@ -24,6 +24,9 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <gp.hxx>
+# include <gp_Ax2.hxx>
+# include <gp_Dir.hxx>
+# include <gp_Pnt.hxx>
 # include <gp_Trsf.hxx>
 # include <BRepBuilderAPI_Transform.hxx>
 #endif
@@ -34,49 +37,42 @@
 
 using namespace Part;
 
-const char* Mirroring::PlaneEnums[]= {"XY","XZ","YZ",NULL};
-
 PROPERTY_SOURCE(Part::Mirroring, Part::Feature)
 
 Mirroring::Mirroring()
 {
-    ADD_PROPERTY(Base,(0));
-    ADD_PROPERTY(Plane,((long)0));
-    Plane.setEnums(PlaneEnums);
+    ADD_PROPERTY(Source,(0));
+    ADD_PROPERTY_TYPE(Base,(Base::Vector3f()),"Plane",App::Prop_None,"The base point of the plane");
+    ADD_PROPERTY_TYPE(Normal,(Base::Vector3f(0,0,1)),"Plane",App::Prop_None,"The normal of the plane");
 }
 
 short Mirroring::mustExecute() const
 {
-    if (Base.isTouched() ||
-        Plane.isTouched() )
+    if (Source.isTouched())
+        return 1;
+    if (Base.isTouched())
+        return 1;
+    if (Normal.isTouched())
         return 1;
     return 0;
 }
 
-Base::Matrix4D Mirroring::getTransformation() const
-{
-    return Base::Matrix4D();
-}
-
 App::DocumentObjectExecReturn *Mirroring::execute(void)
 {
-    App::DocumentObject* link = Base.getValue();
+    App::DocumentObject* link = Source.getValue();
     if (!link)
         return new App::DocumentObjectExecReturn("No object linked");
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         return new App::DocumentObjectExecReturn("Linked object is not a Part object");
-    Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
-    long planeenum = this->Plane.getValue();
+    Part::Feature *source = static_cast<Part::Feature*>(link);
+    Base::Vector3f base = Base.getValue();
+    Base::Vector3f norm = Normal.getValue();
 
     try {
+        gp_Ax2 ax2(gp_Pnt(base.x,base.y,base.z), gp_Dir(norm.x,norm.y,norm.z));
         gp_Trsf mat;
-        if (planeenum == 0)
-            mat.SetMirror(gp::XOY());
-        else if (planeenum == 1)
-            mat.SetMirror(gp::ZOX());
-        else
-            mat.SetMirror(gp::YOZ());
-        const TopoDS_Shape& shape = base->Shape.getValue();
+        mat.SetMirror(ax2);
+        const TopoDS_Shape& shape = source->Shape.getValue();
         TopLoc_Location loc = shape.Location();
         gp_Trsf placement = loc.Transformation();
         mat = placement * mat;
