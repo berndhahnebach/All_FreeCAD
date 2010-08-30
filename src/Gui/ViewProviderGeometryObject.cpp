@@ -257,7 +257,7 @@ bool ViewProviderGeometryObject::setEdit(int ModNum)
 
 }
 
-void ViewProviderGeometryObject::unsetEdit(void)
+void ViewProviderGeometryObject::unsetEdit(int ModNum)
 {
 # if 1
     SoSearchAction sa;

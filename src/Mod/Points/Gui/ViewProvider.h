@@ -92,9 +92,9 @@ public:
     virtual QIcon getIcon() const;
 
     /// Sets the edit mnode
-    bool setEdit(int ModNum=0);
+    bool setEdit(int ModNum);
     /// Unsets the edit mode
-    void unsetEdit(void);
+    void unsetEdit(int ModNum);
 
 public:
     static void clipPointsCallback(void * ud, SoEventCallback * n);
@@ -115,7 +115,6 @@ protected:
 
 private:
     static App::PropertyFloatConstraint::Constraints floatRange;
-    bool _bEdit;
 };
 
 typedef Gui::ViewProviderPythonFeatureT<ViewProviderPoints> ViewProviderPython;

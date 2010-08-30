@@ -122,12 +122,6 @@ public:
     //@{
     bool doubleClicked(void){return false;}
     void setupContextMenu(QMenu*, QObject*, const char*) {}
-    /// Sets the edit mode
-    bool setEdit(int ModNum=0);
-    /// Unsets the edit mode
-    void unsetEdit(void);
-    /// Returns the edit mode
-    const char* getEditModeName(void);
     void selectComponent(unsigned long facet);
     void deselectComponent(unsigned long facet);
     void selectFacet(unsigned long facet);
@@ -143,6 +137,10 @@ public:
     //@}
 
 protected:
+    /// Sets the edit mode
+    bool setEdit(int ModNum);
+    /// Unsets the edit mode
+    void unsetEdit(int ModNum);
     /// get called by the container whenever a property has been changed
     void onChanged(const App::Property* prop);
     virtual void showOpenEdges(bool);
@@ -180,8 +178,6 @@ protected:
     SoMaterialBinding   * pcMatBinding;
 
 private:
-    bool m_bEdit;
-
     static App::PropertyFloatConstraint::Constraints floatRange;
     static App::PropertyFloatConstraint::Constraints angleRange;
     static App::PropertyIntegerConstraint::Constraints intPercent;

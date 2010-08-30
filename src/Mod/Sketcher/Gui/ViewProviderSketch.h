@@ -133,8 +133,6 @@ public:
     virtual void attach(App::DocumentObject *);
     virtual void updateData(const App::Property*);
 
-    virtual bool setEdit(int ModNum=0);
-    virtual void unsetEdit(void);
     virtual void setupContextMenu(QMenu* menu, QObject* receiver, const char* member);
     /// Is called by the tree if the user double click on the object
     virtual bool doubleClicked(void);
@@ -158,6 +156,8 @@ public:
     void setGridSnap(int Type);
 
 protected:
+    virtual bool setEdit(int ModNum);
+    virtual void unsetEdit(int ModNum);
     /// helper to detect whether the picked point lies on the sketch
     bool isPointOnSketch(const SoPickedPoint* pp) const;
     /// get called by the container whenever a property has been changed

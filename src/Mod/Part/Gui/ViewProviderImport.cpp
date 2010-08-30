@@ -65,7 +65,7 @@ bool ViewProviderImport::setEdit(int ModNum)
     return ViewProviderPart::setEdit(ModNum);
 }
 
-void ViewProviderImport::unsetEdit(void)
+void ViewProviderImport::unsetEdit(int ModNum)
 {
-    ViewProviderPart::unsetEdit();
+    ViewProviderPart::unsetEdit(ModNum);
 }

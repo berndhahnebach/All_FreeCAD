@@ -719,7 +719,7 @@ void CmdMeshPolySegm::activated(int iMsg)
         }
 
         Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
-        pVP->setEdit();
+        pVP->startEditing();
     }
 }
 
@@ -772,7 +772,7 @@ void CmdMeshPolySelect::activated(int iMsg)
         }
 
         Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
-        pVP->setEdit();
+        pVP->startEditing();
     }
 }
 
@@ -827,7 +827,7 @@ void CmdMeshPolyCut::activated(int iMsg)
 
         Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
         if (pVP->isVisible())
-            pVP->setEdit();
+            pVP->startEditing();
     }
 }
 
@@ -880,7 +880,7 @@ void CmdMeshPolySplit::activated(int iMsg)
         }
 
         Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
-        pVP->setEdit();
+        pVP->startEditing();
     }
 }
 

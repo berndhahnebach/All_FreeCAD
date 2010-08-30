@@ -67,7 +67,7 @@ PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderGeometryObject)
 
 App::PropertyFloatConstraint::Constraints ViewProviderPoints::floatRange = {1.0f,64.0f,1.0f};
 
-ViewProviderPoints::ViewProviderPoints() : _bEdit(false)
+ViewProviderPoints::ViewProviderPoints()
 {
     ADD_PROPERTY(PointSize,(2.0f));
     PointSize.setConstraints(&floatRange);
@@ -349,14 +349,11 @@ QIcon ViewProviderPoints::getIcon() const
 
 bool ViewProviderPoints::setEdit(int)
 {
-    if ( _bEdit ) return true;
-    _bEdit = true;
     return true;
 }
 
-void ViewProviderPoints::unsetEdit(void)
+void ViewProviderPoints::unsetEdit(int)
 {
-    _bEdit = false;
 }
 
 void ViewProviderPoints::clipPointsCallback(void * ud, SoEventCallback * n)
@@ -376,8 +373,8 @@ void ViewProviderPoints::clipPointsCallback(void * ud, SoEventCallback * n)
     std::vector<Gui::ViewProvider*> views = view->getViewProvidersOfType(ViewProviderPoints::getClassTypeId());
     for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
         ViewProviderPoints* that = static_cast<ViewProviderPoints*>(*it);
-        if (that->_bEdit) {
-            that->unsetEdit();
+        if (that->getEditingMode() > -1) {
+            that->finishEditing();
             that->cut(clPoly, *view);
         }
     }

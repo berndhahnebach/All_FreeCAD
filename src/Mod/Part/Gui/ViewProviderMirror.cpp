@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2010 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,43 +21,54 @@
  ***************************************************************************/
 
 
-#ifndef PARTGUI_VIEVPROVIDERIMPORT_H
-#define PARTGUI_VIEVPROVIDERIMPORT_H
+#include "PreCompiled.h"
 
-#include "ViewProvider.h"
+#ifndef _PreComp_
+# include <QAction>
+# include <QMenu>
+#endif
+
+#include "ViewProviderMirror.h"
+
+using namespace PartGui;
 
 
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-class SoTransform;
+PROPERTY_SOURCE(PartGui::ViewProviderMirror, PartGui::ViewProviderPart)
 
-namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
+ViewProviderMirror::ViewProviderMirror()
+{
+    sPixmap = "Part_Mirror";
 }
 
-namespace PartGui {
-
-
-class AppPartGuiExport ViewProviderImport : public ViewProviderPart
+ViewProviderMirror::~ViewProviderMirror()
 {
-    PROPERTY_HEADER(PartGui::ViewProviderImport);
+}
 
-public:
-    /// constructor
-    ViewProviderImport();
-    /// destructor
-    virtual ~ViewProviderImport();
+void ViewProviderMirror::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+{
+    QAction* act;
+    act = menu->addAction(QObject::tr("Edit mirror plane"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Default));
+    act = menu->addAction(QObject::tr("Transform"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Transform));
+}
 
-protected:
-    virtual bool setEdit(int ModNum);
-    virtual void unsetEdit(int ModNum);
-};
+bool ViewProviderMirror::setEdit(int ModNum)
+{
+    if (ModNum == ViewProvider::Default) {
+    }
+    else {
+        ViewProviderPart::setEdit(ModNum);
+    }
 
-} // namespace PartGui
+    return true;
+}
 
-
-#endif // PARTGUI_VIEVPROVIDERIMPORT_H
-
+void ViewProviderMirror::unsetEdit(int ModNum)
+{
+    if (ModNum == ViewProvider::Default) {
+    }
+    else {
+        ViewProviderPart::unsetEdit(ModNum);
+    }
+}

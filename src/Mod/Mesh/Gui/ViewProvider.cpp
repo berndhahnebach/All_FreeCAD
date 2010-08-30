@@ -208,7 +208,7 @@ const char* ViewProviderMesh::LightingEnums[]= {"One side","Two side",NULL};
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderGeometryObject)
 
-ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0), m_bEdit(false)
+ViewProviderMesh::ViewProviderMesh() : pcOpenEdge(0)
 {
     ADD_PROPERTY(LineTransparency,(0));
     LineTransparency.setConstraints(&intPercent);
@@ -474,19 +474,11 @@ std::vector<std::string> ViewProviderMesh::getDisplayModes(void) const
 
 bool ViewProviderMesh::setEdit(int ModNum)
 {
-    if (m_bEdit) return true;
-    m_bEdit = true;
     return true;
 }
 
-void ViewProviderMesh::unsetEdit(void)
+void ViewProviderMesh::unsetEdit(int ModNum)
 {
-    m_bEdit = false;
-}
-
-const char* ViewProviderMesh::getEditModeName(void)
-{
-    return "Polygon picking";
 }
 
 bool ViewProviderMesh::createToolMesh(const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol,
@@ -598,8 +590,8 @@ void ViewProviderMesh::clipMeshCallback(void * ud, SoEventCallback * n)
         Gui::Application::Instance->activeDocument()->openCommand("Cut");
         for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
             ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
-            if (that->m_bEdit) {
-                that->unsetEdit();
+            if (that->getEditingMode() > -1) {
+                that->finishEditing();
                 that->cutMesh(clPoly, *view, clip_inner);
             }
         }
@@ -652,8 +644,8 @@ void ViewProviderMesh::partMeshCallback(void * ud, SoEventCallback * cb)
         std::vector<Gui::ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
         for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
             ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
-            if (that->m_bEdit) {
-                that->unsetEdit();
+            if (that->getEditingMode() > -1) {
+                that->finishEditing();
                 that->splitMesh(toolMesh, cNormal, clip_inner);
             }
         }
@@ -709,8 +701,8 @@ void ViewProviderMesh::segmMeshCallback(void * ud, SoEventCallback * cb)
         std::vector<Gui::ViewProvider*> views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
         for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
             ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
-            if (that->m_bEdit) {
-                that->unsetEdit();
+            if (that->getEditingMode() > -1) {
+                that->finishEditing();
                 that->segmentMesh(toolMesh, cNormal, clip_inner);
             }
         }
@@ -767,8 +759,8 @@ void ViewProviderMesh::selectGLCallback(void * ud, SoEventCallback * n)
     views = view->getViewProvidersOfType(ViewProviderMesh::getClassTypeId());
     for (std::vector<Gui::ViewProvider*>::iterator it = views.begin(); it != views.end(); ++it) {
         ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
-        if (that->m_bEdit) {
-            that->unsetEdit();
+        if (that->getEditingMode() > -1) {
+            that->finishEditing();
             that->selectArea(x, y, w, h);
         }
     }

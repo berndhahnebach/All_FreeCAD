@@ -161,6 +161,8 @@ SET(PartGui_SRCS
 		 ViewProviderExtrusion.h
 		 ViewProvider2DObject.cpp
 		 ViewProvider2DObject.h
+		 ViewProviderMirror.cpp
+		 ViewProviderMirror.h
 		 ViewProviderPython.cpp
 		 ViewProviderPython.h
 		 Workbench.cpp

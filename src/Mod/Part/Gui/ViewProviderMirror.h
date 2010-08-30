@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2010 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,43 +21,31 @@
  ***************************************************************************/
 
 
-#ifndef PARTGUI_VIEVPROVIDERIMPORT_H
-#define PARTGUI_VIEVPROVIDERIMPORT_H
+#ifndef PARTGUI_VIEWPROVIDERMIRROR_H
+#define PARTGUI_VIEWPROVIDERMIRROR_H
 
-#include "ViewProvider.h"
-
-
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-class SoTransform;
-
-namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
-}
+#include <Mod/Part/Gui/ViewProvider.h>
 
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderImport : public ViewProviderPart
+class AppPartGuiExport ViewProviderMirror : public ViewProviderPart
 {
-    PROPERTY_HEADER(PartGui::ViewProviderImport);
+    PROPERTY_HEADER(PartGui::ViewProviderMirror);
 
 public:
-    /// constructor
-    ViewProviderImport();
-    /// destructor
-    virtual ~ViewProviderImport();
-
+    ViewProviderMirror();
+    virtual ~ViewProviderMirror();
+    /** @name Edit methods */
+    //@{
+    void setupContextMenu(QMenu*, QObject*, const char*);
 protected:
-    virtual bool setEdit(int ModNum);
-    virtual void unsetEdit(int ModNum);
+    bool setEdit(int ModNum);
+    void unsetEdit(int ModNum);
+    //@}
 };
 
 } // namespace PartGui
 
 
-#endif // PARTGUI_VIEVPROVIDERIMPORT_H
-
+#endif // PARTGUI_VIEWPROVIDERMIRROR_H

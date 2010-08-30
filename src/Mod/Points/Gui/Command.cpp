@@ -211,7 +211,7 @@ void CmdPointsPolyCut::activated(int iMsg)
         }
 
         Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider( *it );
-        pVP->setEdit();
+        pVP->startEditing();
     }
 }
 

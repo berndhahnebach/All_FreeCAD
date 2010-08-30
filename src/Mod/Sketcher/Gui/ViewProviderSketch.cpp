@@ -1194,7 +1194,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
 }
 
-void ViewProviderSketch::unsetEdit(void)
+void ViewProviderSketch::unsetEdit(int ModNum)
 {
     ShowGrid.setValue(false);
  

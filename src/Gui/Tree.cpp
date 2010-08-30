@@ -78,6 +78,11 @@ TreeWidget::TreeWidget(QWidget* parent)
     this->relabelObjectAction->setShortcut(Qt::Key_F2);
     connect(this->relabelObjectAction, SIGNAL(triggered()),
             this, SLOT(onRelabelObject()));
+    this->finishEditingAction = new QAction(this);
+    this->finishEditingAction->setText(tr("Finish editing"));
+    this->finishEditingAction->setStatusTip(tr("Finish editing object"));
+    connect(this->finishEditingAction, SIGNAL(triggered()),
+            this, SLOT(onFinishEditing()));
 
     // Setup connections
     Application::Instance->signalNewDocument.connect(boost::bind(&TreeWidget::slotNewDocument, this, _1));
@@ -161,18 +166,17 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
 
         // if only one item is selected setup the edit menu
         if (this->selectedItems().size() == 1) {
-            objitem->object()->setupContextMenu(&editMenu, this, SLOT(onEditObject()));
+            objitem->object()->setupContextMenu(&editMenu, this, SLOT(onStartEditing()));
             QList<QAction*> editAct = editMenu.actions();
             if (!editAct.isEmpty()) {
                 QAction* topact = contextMenu.actions().front();
+                for (QList<QAction*>::iterator it = editAct.begin(); it != editAct.end(); ++it)
+                    contextMenu.insertAction(topact, *it);
                 QAction* first = editAct.front();
-                contextMenu.insertAction(topact, first);
                 contextMenu.setDefaultAction(first);
-                if (editAct.size() > 1) {
-                    editMenu.menuAction()->setText(tr("Edit modes"));
-                    contextMenu.insertAction(topact, editMenu.menuAction());
-                    contextMenu.insertSeparator(topact);
-                }
+                if (objitem->object()->isEditing())
+                    contextMenu.insertAction(topact, this->finishEditingAction);
+                contextMenu.insertSeparator(topact);
             }
         }
     }
@@ -238,7 +242,7 @@ void TreeWidget::onRelabelObject()
         editItem(item);
 }
 
-void TreeWidget::onEditObject()
+void TreeWidget::onStartEditing()
 {
     QAction* action = qobject_cast<QAction*>(sender());
     if (action) {
@@ -251,6 +255,19 @@ void TreeWidget::onEditObject()
             Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
             doc->setEdit(objitem->object(), edit);
         }
+    }
+}
+
+void TreeWidget::onFinishEditing()
+{
+    if (this->contextItem && this->contextItem->type() == ObjectType) {
+        DocumentObjectItem* objitem = static_cast<DocumentObjectItem*>
+            (this->contextItem);
+        App::DocumentObject* obj = objitem->object()->getObject();
+        if (!obj) return;
+        Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+        doc->resetEdit();
+        doc->getDocument()->recompute();
     }
 }
 

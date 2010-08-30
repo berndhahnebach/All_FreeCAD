@@ -106,8 +106,10 @@ public:
     /** @name Edit methods */
     //@{
     bool doubleClicked(void);
-    bool setEdit(int ModNum = 0);
-    void unsetEdit(void);
+    void setupContextMenu(QMenu*, QObject*, const char*);
+protected:
+    bool setEdit(int ModNum);
+    void unsetEdit(int ModNum);
     //@}
 
 protected:

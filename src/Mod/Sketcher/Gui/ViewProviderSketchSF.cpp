@@ -571,7 +571,7 @@ void ViewProviderSketchSF::createEditInventorNodes(void)
 	EditRoot->addChild( CurveSet );
 }
 
-void ViewProviderSketchSF::unsetEdit(void)
+void ViewProviderSketchSF::unsetEdit(int ModNum)
 {
 	//ShowGrid.setValue(false);
 

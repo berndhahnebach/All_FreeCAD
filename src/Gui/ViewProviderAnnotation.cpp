@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QAction>
+# include <QMenu>
 # include <QFont>
 # include <QFontMetrics>
 # include <QImage>
@@ -357,6 +359,12 @@ bool ViewProviderAnnotationLabel::doubleClicked(void)
     return true;
 }
 
+void ViewProviderAnnotationLabel::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+{
+    QAction* act = menu->addAction(QObject::tr("Move annotation"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Transform));
+}
+
 void ViewProviderAnnotationLabel::dragStartCallback(void *data, SoDragger *)
 {
     // This is called when a manipulator is about to manipulating
@@ -399,7 +407,7 @@ bool ViewProviderAnnotationLabel::setEdit(int ModNum)
     return false;
 }
 
-void ViewProviderAnnotationLabel::unsetEdit(void)
+void ViewProviderAnnotationLabel::unsetEdit(int ModNum)
 {
     SoSearchAction sa;
     sa.setType(TranslateManip::getClassTypeId());
