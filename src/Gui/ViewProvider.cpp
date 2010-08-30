@@ -61,7 +61,7 @@ using namespace Gui;
 PROPERTY_SOURCE_ABSTRACT(Gui::ViewProvider, App::PropertyContainer)
 
 ViewProvider::ViewProvider() 
-  : pcAnnotation(0), pyViewObject(0), _iActualMode(-1), _updateData(true)
+  : pcAnnotation(0), pyViewObject(0), _iActualMode(-1), _iEditMode(-1), _updateData(true)
 {
     pcRoot = new SoSeparator();
     pcRoot->ref();
@@ -89,12 +89,35 @@ ViewProvider::~ViewProvider()
         pcAnnotation->unref();
 }
 
+bool ViewProvider::startEditing(int ModNum)
+{
+    bool ok = setEdit(ModNum);
+    if (ok) _iEditMode = ModNum;
+    return ok;
+}
+
+int ViewProvider::getEditingMode() const
+{
+    return _iEditMode;
+}
+
+bool ViewProvider::isEditing() const
+{
+    return getEditingMode() > -1;
+}
+
+void ViewProvider::finishEditing()
+{
+    unsetEdit(_iEditMode);
+    _iEditMode = -1;
+}
+
 bool ViewProvider::setEdit(int ModNum)
 {
     return true;
 }
 
-void ViewProvider::unsetEdit(void)
+void ViewProvider::unsetEdit(int ModNum)
 {
 }
 

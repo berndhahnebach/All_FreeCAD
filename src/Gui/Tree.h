@@ -72,7 +72,8 @@ protected Q_SLOTS:
     void onCreateGroup();
     void onRelabelObject();
     void onActivateDocument(QAction*);
-    void onEditObject();
+    void onStartEditing();
+    void onFinishEditing();
 
 private Q_SLOTS:
     void onItemSelectionChanged(void);
@@ -91,6 +92,7 @@ private:
 private:
     QAction* createGroupAction;
     QAction* relabelObjectAction;
+    QAction* finishEditingAction;
     QTreeWidgetItem* contextItem;
 
     QTreeWidgetItem* rootItem;

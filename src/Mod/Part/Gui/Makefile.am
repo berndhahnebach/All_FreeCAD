@@ -69,6 +69,7 @@ libPartGui_la_SOURCES=\
 		ViewProviderCurveNet.cpp \
 		ViewProviderImport.cpp \
 		ViewProviderExtrusion.cpp \
+		ViewProviderMirror.cpp \
 		ViewProvider2DObject.cpp \
 		ViewProviderPython.cpp \
 		Workbench.cpp
@@ -81,6 +82,7 @@ include_HEADERS=\
 		ViewProviderCurveNet.h \
 		ViewProviderImport.h \
 		ViewProviderExtrusion.h \
+		ViewProviderMirror.h \
 		ViewProvider2DObject.h \
 		ViewProviderPython.h \
 		Workbench.h

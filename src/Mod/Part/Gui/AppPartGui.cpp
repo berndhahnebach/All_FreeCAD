@@ -32,6 +32,7 @@
 #include "ViewProviderImport.h"
 #include "ViewProviderExtrusion.h"
 #include "ViewProvider2DObject.h"
+#include "ViewProviderMirror.h"
 
 #include "DlgSettingsGeneral.h"
 #include "DlgSettings3DViewPartImp.h"
@@ -89,6 +90,7 @@ void AppPartGuiExport initPartGui()
     PartGui::ViewProviderCurveNet       ::init();
     PartGui::ViewProviderExtrusion      ::init();
     PartGui::ViewProvider2DObject       ::init();
+    PartGui::ViewProviderMirror         ::init();
     PartGui::ViewProviderCustom         ::init();
     PartGui::ViewProviderCustomPython   ::init();
 

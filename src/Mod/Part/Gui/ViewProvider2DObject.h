@@ -58,15 +58,12 @@ public:
   virtual void attach(App::DocumentObject *);
   virtual void updateData(const App::Property*);
 
-
-  virtual bool setEdit(int ModNum = 0);
-  virtual void unsetEdit(void);
-
   /// creats the grid
   SoSeparator* createGrid(void); 
 
-
 protected:
+  virtual bool setEdit(int ModNum);
+  virtual void unsetEdit(int ModNum);
   /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
 

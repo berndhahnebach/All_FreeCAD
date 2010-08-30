@@ -141,14 +141,21 @@ public:
      * you can handle most of the events in the viewer by yourself
      */
     //@{
+protected:
     enum EditMode {Default = 0,
                    Transform = 1
     };
-    //virtual bool edit(void){return false;}
     /// is called by the document when the provider goes in edit mode
-    virtual bool setEdit(int ModNum = 0);
+    virtual bool setEdit(int ModNum);
     /// is called when you loose the edit mode
-    virtual void unsetEdit(void);
+    virtual void unsetEdit(int ModNum);
+    /// return the edit mode or -1 if nothing is being edited
+    int getEditingMode() const;
+
+public:
+    bool startEditing(int ModNum = 0);
+    bool isEditing() const;
+    void finishEditing();
     //@}
 
     /** @name Task panel 
@@ -173,9 +180,6 @@ public:
     { return false; }
     /// set up the context-menu with the supported edit modes
     virtual void setupContextMenu(QMenu*, QObject*, const char*) {}
-
-    //virtual const char* getEditModeName(void){return 0;}
-
 
     /** @name direct handling methods
      *  This group of methods is to direct influence the 
@@ -231,6 +235,7 @@ protected:
 
 private:
     int _iActualMode;
+    int _iEditMode;
     std::string _sCurrentMode;
     std::map<std::string, int> _sDisplayMaskModes;
     bool _updateData;

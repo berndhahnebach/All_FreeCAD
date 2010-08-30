@@ -327,7 +327,7 @@ SbBool View3DInventorViewer::setEditingViewProvider(Gui::ViewProvider* p, int Mo
         return false;
     if (this->editViewProvider)
         return false; // only one view provider is editable at a time
-    bool ok = p->setEdit(ModNum);
+    bool ok = p->startEditing(ModNum);
     if (ok) {
         this->editViewProvider = p;
         addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->editViewProvider);
@@ -340,7 +340,7 @@ SbBool View3DInventorViewer::setEditingViewProvider(Gui::ViewProvider* p, int Mo
 void View3DInventorViewer::resetEditingViewProvider()
 {
     if (this->editViewProvider){
-        this->editViewProvider->unsetEdit();
+        this->editViewProvider->finishEditing();
         removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->editViewProvider);
         this->editViewProvider = 0;
     }

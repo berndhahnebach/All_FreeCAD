@@ -211,7 +211,7 @@ bool ViewProvider2DObject::setEdit(int)
     return false;
 }
 
-void ViewProvider2DObject::unsetEdit(void)
+void ViewProvider2DObject::unsetEdit(int)
 {
 
 }

@@ -59,12 +59,12 @@ public:
     /// Update the Part representation
     virtual void updateData(const App::Property*);
 
-    virtual bool setEdit(int ModNum = 0);
-    virtual void unsetEdit(void);
-
     virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
 
 protected:
+    virtual bool setEdit(int ModNum);
+    virtual void unsetEdit(int ModNum);
+
     struct Node {
         Gui::SoFCSelection  *pcHighlight;
         SoTransform    *pcTransform;

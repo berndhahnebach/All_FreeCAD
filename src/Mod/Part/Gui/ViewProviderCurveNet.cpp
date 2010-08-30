@@ -158,7 +158,7 @@ bool ViewProviderCurveNet::setEdit(int)
     //getWidget()->setCursor( QCursor( 13 /*ArrowCursor*/) )
 }
 
-void ViewProviderCurveNet::unsetEdit(void)
+void ViewProviderCurveNet::unsetEdit(int)
 {
     bInEdit = false;
 }

@@ -66,13 +66,6 @@ public:
      */
     void attach(App::DocumentObject *pcObject);
     void updateData(const App::Property*);
-    /** @name Edit methods */
-    //@{
-    bool doubleClicked(void);
-    void setupContextMenu(QMenu*, QObject*, const char*);
-    bool setEdit(int ModNum = 0);
-    void unsetEdit(void);
-    //@}
 
     SoFCSelection* getHighlightNode() const { return pcHighlight; }
     /**
@@ -87,6 +80,15 @@ public:
      * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
      */
     SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
+
+    /** @name Edit methods */
+    //@{
+    bool doubleClicked(void);
+    void setupContextMenu(QMenu*, QObject*, const char*);
+protected:
+    bool setEdit(int ModNum);
+    void unsetEdit(int ModNum);
+    //@}
 
 protected:
     void showBoundingBox(bool);
