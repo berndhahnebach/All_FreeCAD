@@ -11,6 +11,7 @@ set(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 # include local  modules
+include(AddFileDependencies)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cMake")
 
@@ -206,7 +207,6 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 		# It adds a reverse dependency to solve this
 		# This has the unfortunate side effect that some files are always rebuilt
 		# There is probably a cleaner solution than this
-		include(AddFileDependencies)
 		macro(fc_wrap_cpp outfiles )
 				 # get include dirs
 				 QT4_GET_MOC_FLAGS(moc_includes)
