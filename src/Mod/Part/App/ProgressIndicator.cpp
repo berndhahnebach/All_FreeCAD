@@ -51,7 +51,7 @@ using namespace Part;
   }
 
   pi->EndScope();
-  \encode
+  \endcode
  */
 
 ProgressIndicator::ProgressIndicator (int theMaxVal)

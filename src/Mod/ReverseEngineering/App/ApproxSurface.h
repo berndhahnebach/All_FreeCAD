@@ -47,19 +47,25 @@ class ReenExport SplineBasisfunction
 public:
   /**
    * Konstruktor
-   * @param Länge des Knotenvektors
+   * @param iSize Length of Knots vector
    */
   SplineBasisfunction(int iSize);
 
   /**
    * Konstruktor
-   * @param Knotenvektor
+   * @param vKnots Knotenvektor
+   * @param iOrder
+   * \todo undocumented parameter iOrder
    */
   SplineBasisfunction(TColStd_Array1OfReal& vKnots, int iOrder=1);
 
   /**
    * Konstruktor
-   * @param Knotenvektor der Form (Wert,Vielfachheit)
+   * @param vKnots Knotenvektor der Form (Wert,Vielfachheit)
+   * @param vMults
+   * @param iSize
+   * @param iOrder
+   * \todo undocumented parameters vMults, iSize, iOrder
    */
   SplineBasisfunction(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, int iOrder=1);
 
@@ -68,16 +74,24 @@ public:
   /**
    * Berechnet den Funktionswert Nik(t) an der Stelle fParam
    * (aus: Piegl/Tiller 96 The NURBS-Book)
-   * @param Index, Parameterwert
+   *
+   * @param iIndex Index
+   * @param fParam Parameterwert
    * @return Funktionswert Nik(t)
    */
   virtual double BasisFunction(int iIndex, double fParam)=0;
   /**
-   * Berechnet die Funktionswerte der ersten iMaxDer Ableitungen an der Stelle fParam
-   * (aus: Piegl/Tiller 96 The NURBS-Book)
-   * @param Index, max. Ableitung, Parameterwert. Die Liste muß für iMaxDer+1 Elemente
-   * ausreichen.
+   * Berechnet die Funktionswerte der ersten iMaxDer Ableitungen an der
+   * Stelle fParam (aus: Piegl/Tiller 96 The NURBS-Book)
+   *
+   * @param iIndex  Index
+   * @param iMaxDer max. Ableitung
+   * @param fParam  Parameterwert.
+   * @param Derivat
    * @return Liste der Funktionswerte
+   *
+   *  Die Liste muß für iMaxDer+1 Elemente ausreichen.
+   * \todo undocumented parameter Derivat
    */
   virtual void DerivativesOfBasisFunction(int iIndex, int iMaxDer, double fParam,
                                   TColStd_Array1OfReal& Derivat)=0;
@@ -117,25 +131,31 @@ public:
 
   /**
    * Konstruktor
-   * @param Länge des Knotenvektors
+   * @param iSize Länge des Knotenvektors
    */
   BSplineBasis(int iSize);
 
   /**
    * Konstruktor
-   * @param Knotenvektor
+   * @param vKnots Knotenvektor
+   * @param iOrder
+   * \todo undocumented parameter iOrder
    */
   BSplineBasis(TColStd_Array1OfReal& vKnots, int iOrder=1);
 
   /**
    * Konstruktor
-   * @param Knotenvektor der Form (Wert,Vielfachheit)
+   * @param vKnots Knotenvektor der Form (Wert,Vielfachheit)
+   * @param vMults
+   * @param iSize
+   * @param iOrder
+   * \todo undocumented parameters
    */
   BSplineBasis(TColStd_Array1OfReal& vKnots, TColStd_Array1OfInteger& vMults, int iSize, int iOrder=1);
 
   /**
    * Bestimmt den Knotenindex zum Parameterwert (aus: Piegl/Tiller 96 The NURBS-Book)
-   * @param  Parameterwert
+   * @param fParam Parameterwert
    * @return Knotenindex
    */
   virtual int FindSpan(double fParam);
@@ -145,15 +165,19 @@ public:
    * nicht verschwindenden Basisfunktionen. Es muß darauf geachtet werden, daß
    * die Liste für d(=Grad des B-Splines) Elemente (0,...,d-1) ausreicht.
    * (aus: Piegl/Tiller 96 The NURBS-Book)
-   * @param Index, Parameterwert
+   * @param fParam
+   * @param vFuncVals
+   * Index, Parameterwert
    * @return Liste der Funktionswerte
+   * \todo undocumented parameter
    */
   virtual void AllBasisFunctions(double fParam, TColStd_Array1OfReal& vFuncVals);
 
   /**
    * Berechnet den Funktionswert Nik(t) an der Stelle fParam
    * (aus: Piegl/Tiller 96 The NURBS-Book)
-   * @param Index, Parameterwert
+   * @param iIndex Index
+   * @param fParam Parameterwert
    * @return Funktionswert Nik(t)
    */
   virtual double BasisFunction(int iIndex, double fParam);
@@ -161,9 +185,13 @@ public:
   /**
    * Berechnet die Funktionswerte der ersten iMaxDer Ableitungen an der Stelle fParam
    * (aus: Piegl/Tiller 96 The NURBS-Book)
-   * @param Index, max. Ableitung, Parameterwert. Die Liste muß für iMaxDer+1 Elemente
-   * ausreichen.
+   * @param iIndex Index
+   * @param iMaxDer max. Ableitung
+   * @param fParam Parameterwert.
+   * @param Derivat
+   * Die Liste muß für iMaxDer+1 Elemente ausreichen.
    * @return Liste der Funktionswerte
+   * \todo undocumented parameter Derivat
    */
   virtual void DerivativesOfBasisFunction(int iIndex, int iMaxDer, double fParam,
                                   TColStd_Array1OfReal& Derivat);
