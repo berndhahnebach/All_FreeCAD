@@ -59,7 +59,7 @@ public:
   virtual void updateData(const App::Property*);
 
 
-  virtual void setEdit(void);
+  virtual bool setEdit(int ModNum = 0);
   virtual void unsetEdit(void);
 
   /// creats the grid

@@ -122,16 +122,17 @@ TreeWidget::~TreeWidget()
 void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
 {
     // ask workbenches and view provider, ...
-    MenuItem* view = new MenuItem;
-    Gui::Application::Instance->setupContextMenu("Tree", view);
+    MenuItem view;
+    Gui::Application::Instance->setupContextMenu("Tree", &view);
 
     QMenu contextMenu;
     QMenu subMenu;
+    QMenu editMenu;
     QActionGroup subMenuGroup(&subMenu);
     subMenuGroup.setExclusive(true);
     connect(&subMenuGroup, SIGNAL(triggered(QAction*)),
             this, SLOT(onActivateDocument(QAction*)));
-    MenuManager::getInstance()->setupContextMenu(view, contextMenu);
+    MenuManager::getInstance()->setupContextMenu(&view, contextMenu);
 
     // get the current item
     this->contextItem = itemAt(e->pos());
@@ -157,6 +158,23 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
         if (!contextMenu.actions().isEmpty())
             contextMenu.addSeparator();
         contextMenu.addAction(this->relabelObjectAction);
+
+        // if only one item is selected setup the edit menu
+        if (this->selectedItems().size() == 1) {
+            objitem->object()->setupContextMenu(&editMenu, this, SLOT(onEditObject()));
+            QList<QAction*> editAct = editMenu.actions();
+            if (!editAct.isEmpty()) {
+                QAction* topact = contextMenu.actions().front();
+                QAction* first = editAct.front();
+                contextMenu.insertAction(topact, first);
+                contextMenu.setDefaultAction(first);
+                if (editAct.size() > 1) {
+                    editMenu.menuAction()->setText(tr("Edit modes"));
+                    contextMenu.insertAction(topact, editMenu.menuAction());
+                    contextMenu.insertSeparator(topact);
+                }
+            }
+        }
     }
 
     // add a submenu to active a document if two or more exist
@@ -178,7 +196,6 @@ void TreeWidget::contextMenuEvent (QContextMenuEvent * e)
         active = subMenuGroup.checkedAction();
         subMenu.addActions(subMenuGroup.actions());
     }
-    delete view;
     if (contextMenu.actions().count() > 0)
         contextMenu.exec(QCursor::pos());
 }
@@ -221,6 +238,22 @@ void TreeWidget::onRelabelObject()
         editItem(item);
 }
 
+void TreeWidget::onEditObject()
+{
+    QAction* action = qobject_cast<QAction*>(sender());
+    if (action) {
+        if (this->contextItem && this->contextItem->type() == ObjectType) {
+            DocumentObjectItem* objitem = static_cast<DocumentObjectItem*>
+                (this->contextItem);
+            int edit = action->data().toInt();
+            App::DocumentObject* obj = objitem->object()->getObject();
+            if (!obj) return;
+            Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+            doc->setEdit(objitem->object(), edit);
+        }
+    }
+}
+
 void TreeWidget::onActivateDocument(QAction* active)
 {
     // activate the specified document
@@ -245,18 +278,18 @@ Qt::DropActions TreeWidget::supportedDropActions () const
 
 void TreeWidget::mouseDoubleClickEvent (QMouseEvent * event)
 {
-    QTreeWidgetItem* Item = itemAt(event->pos());
-    if (!Item) return;
-    if (Item->type() == TreeWidget::DocumentType) {
-        QTreeWidget::mouseDoubleClickEvent(event);
-        const Gui::Document* doc = static_cast<DocumentItem*>(Item)->document();
+    QTreeWidgetItem* item = itemAt(event->pos());
+    if (!item) return;
+    if (item->type() == TreeWidget::DocumentType) {
+        //QTreeWidget::mouseDoubleClickEvent(event);
+        const Gui::Document* doc = static_cast<DocumentItem*>(item)->document();
         if (!doc) return;
         MDIView *view = doc->getActiveView();
         if (!view) return;
         getMainWindow()->setActiveWindow(view);
     }
-    else if (Item->type() == TreeWidget::ObjectType) {
-        if (!(static_cast<DocumentObjectItem*>(Item)->object())->doubleClicked())
+    else if (item->type() == TreeWidget::ObjectType) {
+        if (!(static_cast<DocumentObjectItem*>(item)->object())->doubleClicked())
             QTreeWidget::mouseDoubleClickEvent(event);
     }
 }

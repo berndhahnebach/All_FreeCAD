@@ -70,6 +70,8 @@ void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
             dw->toggleViewAction()->setVisible(true);
         }
 
+        if (ActiveDialog == dlg)
+            return; // dialog is already defined
         ActiveDialog = dlg;
         connect(dlg, SIGNAL(destroyed()), this, SLOT(closedDialog()));
     }
@@ -119,7 +121,7 @@ void ControlSingleton::closedDialog()
         (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
     // should return the pointer to combo view
     assert(pcCombiView);
-    pcCombiView->closeDialog();
+    pcCombiView->closedDialog();
 }
 
 bool ControlSingleton::isAllowedAlterDocument(void) const

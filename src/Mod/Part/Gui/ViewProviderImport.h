@@ -51,7 +51,7 @@ public:
     /// destructor
     virtual ~ViewProviderImport();
 
-    virtual bool setEdit(int ModNum);
+    virtual bool setEdit(int ModNum=0);
     virtual void unsetEdit(void);
 
 protected:

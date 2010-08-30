@@ -121,6 +121,7 @@ public:
     /** @name Editing */
     //@{
     bool doubleClicked(void){return false;}
+    void setupContextMenu(QMenu*, QObject*, const char*) {}
     /// Sets the edit mode
     bool setEdit(int ModNum=0);
     /// Unsets the edit mode

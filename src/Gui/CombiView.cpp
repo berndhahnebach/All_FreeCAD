@@ -40,7 +40,7 @@ using namespace Gui::DockWnd;
 
 
 CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
-  : DockWindow(pcDocument,parent)
+  : DockWindow(pcDocument,parent), oldTabIndex(0)
 {
     setWindowTitle(tr("CombiView"));
 
@@ -91,18 +91,24 @@ void CombiView::showDialog(Gui::TaskView::TaskDialog *dlg)
 void CombiView::closeDialog()
 {
     // close the dialog
-    //taskPanel->removeDialog();
+    taskPanel->removeDialog();
+}
+
+void CombiView::closedDialog()
+{
+    // dialog has been closed
     tabs->setCurrentIndex(oldTabIndex);
 }
 
 void CombiView::showTreeView()
 {
-    // switch to the old tab
+    // switch to the tree view
     tabs->setCurrentIndex(0);
 }
+
 void CombiView::showTaskView()
 {
-    // switch to the old tab
+    // switch to the task view
     tabs->setCurrentIndex(1);
 }
 

@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QAction>
+# include <QMenu>
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/draggers/SoDragger.h>
 # include <Inventor/draggers/SoCenterballDragger.h>
@@ -185,6 +187,12 @@ bool ViewProviderGeometryObject::doubleClicked(void)
 {
     Gui::Application::Instance->activeDocument()->setEdit(this);
     return true;
+}
+
+void ViewProviderGeometryObject::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+{
+    QAction* act = menu->addAction(QObject::tr("Transform"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Transform));
 }
 
 bool ViewProviderGeometryObject::setEdit(int ModNum)

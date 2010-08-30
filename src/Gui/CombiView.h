@@ -88,6 +88,7 @@ public:
 protected:
     void showDialog(Gui::TaskView::TaskDialog *dlg);
     void closeDialog();
+    void closedDialog();
 
     int oldTabIndex;
 

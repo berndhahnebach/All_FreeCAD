@@ -41,6 +41,8 @@ class SketcherGuiExport TaskDlgEditSketch : public Gui::TaskView::TaskDialog
 public:
     TaskDlgEditSketch(ViewProviderSketch *sketchView);
     ~TaskDlgEditSketch();
+    ViewProviderSketch* getSketchView() const
+    { return sketchView; }
 
 public:
     /// is called the TaskView when the dialog is opened
@@ -59,9 +61,9 @@ public:
     { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
 
 protected:
-    ViewProviderSketch   *sketchView; 
+    ViewProviderSketch   *sketchView;
 
-    TaskSketcherConstrains  *Constrints ;
+    TaskSketcherConstrains  *Constrints;
     TaskSketcherGeneral     *General;
 
 };
