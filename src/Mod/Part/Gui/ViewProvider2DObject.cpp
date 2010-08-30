@@ -206,9 +206,9 @@ void ViewProvider2DObject::attach(App::DocumentObject *pcFeat)
 
 }
 
-void ViewProvider2DObject::setEdit(void)
+bool ViewProvider2DObject::setEdit(int)
 {
-
+    return false;
 }
 
 void ViewProvider2DObject::unsetEdit(void)

@@ -69,6 +69,7 @@ public:
     /** @name Edit methods */
     //@{
     bool doubleClicked(void);
+    void setupContextMenu(QMenu*, QObject*, const char*);
     bool setEdit(int ModNum = 0);
     void unsetEdit(void);
     //@}

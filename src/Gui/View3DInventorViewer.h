@@ -131,9 +131,11 @@ public:
     /// get all view providers of given type
     std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
     /// set the ViewProvider in special edit mode
-    bool setEdit(Gui::ViewProvider* p, int ModNum=0);
+    SbBool setEditingViewProvider(Gui::ViewProvider* p, int ModNum=0);
+    /// return whether a view provider is edited
+    SbBool isEditingViewProvider() const;
     /// reset from edit mode
-    void resetEdit(void);
+    void resetEditingViewProvider();
     //@}
 
     /** @name Making pictures */
@@ -280,7 +282,7 @@ private:
 
 private:
     std::set<ViewProvider*> _ViewProviderSet;
-    ViewProvider* inEdit;
+    ViewProvider* editViewProvider;
     SoFCBackgroundGradient *pcBackGround;
     SoSeparator * backgroundroot;
     SoSeparator * foregroundroot;

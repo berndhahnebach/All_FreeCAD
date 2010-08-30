@@ -129,7 +129,7 @@ SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, 
                                             SbBool embed, Type type, SbBool build) 
-  : inherited (parent, name, embed, type, build), inEdit(0),navigation(0),
+  : inherited (parent, name, embed, type, build), editViewProvider(0),navigation(0),
     editing(FALSE), redirected(FALSE)
 {
     Gui::Selection().Attach(this);
@@ -308,8 +308,8 @@ void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)
 
 void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 {
-    if (this->inEdit == pcProvider)
-        resetEdit();
+    if (this->editViewProvider == pcProvider)
+        resetEditingViewProvider();
 
     SoSeparator* root = pcProvider->getRoot();
     if (root) pcViewProviderRoot->removeChild(root);
@@ -321,29 +321,35 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
     _ViewProviderSet.erase(pcProvider);
 }
 
-bool View3DInventorViewer::setEdit(Gui::ViewProvider* p, int ModNum)
+SbBool View3DInventorViewer::setEditingViewProvider(Gui::ViewProvider* p, int ModNum)
 {
     if (_ViewProviderSet.find(p) == _ViewProviderSet.end())
         return false;
-    if (this->inEdit)
+    if (this->editViewProvider)
         return false; // only one view provider is editable at a time
     bool ok = p->setEdit(ModNum);
     if (ok) {
-        this->inEdit = p;
-        addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->inEdit);
+        this->editViewProvider = p;
+        addEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->editViewProvider);
     }
 
     return ok;
 }
 
 /// reset from edit mode
-void View3DInventorViewer::resetEdit(void)
+void View3DInventorViewer::resetEditingViewProvider()
 {
-    if (this->inEdit){
-        this->inEdit->unsetEdit();
-        removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->inEdit);
-        this->inEdit = 0;
+    if (this->editViewProvider){
+        this->editViewProvider->unsetEdit();
+        removeEventCallback(SoEvent::getClassTypeId(), Gui::ViewProvider::eventCallback,this->editViewProvider);
+        this->editViewProvider = 0;
     }
+}
+
+/// reset from edit mode
+SbBool View3DInventorViewer::isEditingViewProvider() const
+{
+    return this->editViewProvider ? true : false;
 }
 
 void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)

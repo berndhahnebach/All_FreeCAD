@@ -63,7 +63,7 @@ public:
 	virtual void attach(App::DocumentObject *);
 	virtual void updateData(const App::Property*);
 
-	virtual bool setEdit(int ModNum);
+	virtual bool setEdit(int ModNum=0);
 	virtual void unsetEdit(void);
 
 	/// Is called by the tree if the user double click on the object

@@ -347,10 +347,11 @@ QIcon ViewProviderPoints::getIcon() const
   return px;
 }
 
-void ViewProviderPoints::setEdit(void)
+bool ViewProviderPoints::setEdit(int)
 {
-    if ( _bEdit ) return;
+    if ( _bEdit ) return true;
     _bEdit = true;
+    return true;
 }
 
 void ViewProviderPoints::unsetEdit(void)

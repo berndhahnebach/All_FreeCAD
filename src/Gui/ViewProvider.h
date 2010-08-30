@@ -41,6 +41,8 @@ class SbMatrix;
 class SoEventCallback;
 class SoPickedPoint;
 class QString;
+class QMenu;
+class QObject;
 
 
 namespace Base {
@@ -139,6 +141,9 @@ public:
      * you can handle most of the events in the viewer by yourself
      */
     //@{
+    enum EditMode {Default = 0,
+                   Transform = 1
+    };
     //virtual bool edit(void){return false;}
     /// is called by the document when the provider goes in edit mode
     virtual bool setEdit(int ModNum = 0);
@@ -166,6 +171,8 @@ public:
     virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &pos,
                                     const SbVec3f &norm, const SoPickedPoint* pp)
     { return false; }
+    /// set up the context-menu with the supported edit modes
+    virtual void setupContextMenu(QMenu*, QObject*, const char*) {}
 
     //virtual const char* getEditModeName(void){return 0;}
 

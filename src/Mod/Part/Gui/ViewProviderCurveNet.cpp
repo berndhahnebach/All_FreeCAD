@@ -151,9 +151,10 @@ std::vector<std::string> ViewProviderCurveNet::getDisplayModes(void) const
 
 // **********************************************************************************
 
-void ViewProviderCurveNet::setEdit(void)
+bool ViewProviderCurveNet::setEdit(int)
 {
     bInEdit = true;
+    return true;
     //getWidget()->setCursor( QCursor( 13 /*ArrowCursor*/) )
 }
 

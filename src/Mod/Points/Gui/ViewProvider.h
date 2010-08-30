@@ -92,7 +92,7 @@ public:
     virtual QIcon getIcon() const;
 
     /// Sets the edit mnode
-    void setEdit(void);
+    bool setEdit(int ModNum=0);
     /// Unsets the edit mode
     void unsetEdit(void);
 

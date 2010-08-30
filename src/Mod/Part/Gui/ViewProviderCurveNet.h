@@ -59,7 +59,7 @@ public:
     /// Update the Part representation
     virtual void updateData(const App::Property*);
 
-    virtual void setEdit(void);
+    virtual bool setEdit(int ModNum = 0);
     virtual void unsetEdit(void);
 
     virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
