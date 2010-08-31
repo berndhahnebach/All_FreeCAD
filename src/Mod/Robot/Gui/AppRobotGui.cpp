@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "ViewProviderRobotObject.h"
@@ -55,11 +56,19 @@ extern struct PyMethodDef RobotGui_Import_methods[];
 extern "C" {
 void RobotGuiExport initRobotGui()  
 {
-    if (!Gui::Application::Instance) {
+     if (!Gui::Application::Instance) {
         PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
         return;
     }
-
+    try {
+        Base::Interpreter().runString("import PartGui");
+        Base::Interpreter().runString("import Part");
+        Base::Interpreter().runString("import Robot");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
     (void) Py_InitModule("RobotGui", RobotGui_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Robot module... done\n");
 

@@ -52,13 +52,13 @@ void AppRobotExport initRobot()
 {
     // load dependent module
     try {
-        Base::Interpreter().loadModule("Part");
-        //Base::Interpreter().loadModule("Mesh");
+        Base::Interpreter().runString("import Part");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
         return;
     }
+
     PyObject* robotModule = Py_InitModule3("Robot", Robot_methods, module_Robot_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading Robot module... done\n");
 
