@@ -748,6 +748,7 @@ src/Mod/PartDesign/Makefile
 src/Mod/PartDesign/App/Makefile
 src/Mod/PartDesign/Gui/Makefile
 src/Mod/PartDesign/Gui/Resources/Makefile
+src/Mod/PartDesign/Scripts/Makefile
 src/Mod/Sketcher/Makefile
 src/Mod/Sketcher/App/Makefile
 src/Mod/Sketcher/App/sketchsolve_cp/Makefile

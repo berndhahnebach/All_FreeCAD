@@ -701,6 +701,10 @@ class DistanceBolt:
 		obj.addProperty("App::PropertyLength","Height","Bolt","Height of the extrusion").Height=20.0
 		obj.Proxy = self
 
+	def onChanged(self, fp, prop):
+		if prop == "Edges" or prop == "Length" or prop == "Radius" or prop == "Height":
+			self.execute(fp)
+
 	def execute(self, fp):
 		edges = fp.Edges
 		if edges < 3:
