@@ -142,7 +142,7 @@ CmdRobotInsertWaypointPreselect::CmdRobotInsertWaypointPreselect()
     sAppModule      = "Robot";
     sGroup          = QT_TR_NOOP("Robot");
     sMenuText       = QT_TR_NOOP("Insert in trajectory");
-    sToolTipText    = QT_TR_NOOP("Insert robot TCP location into trajectory");
+    sToolTipText    = QT_TR_NOOP("Insert preselection position into trajectory");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_InsertWaypointPre";
@@ -191,7 +191,7 @@ void CmdRobotInsertWaypointPreselect::activated(int iMsg)
     }
 
     openCommand("Insert waypoint");
-    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoints(Robot.Waypoint(FreeCAD.Placement(FreeCAD.Vector(%f,%f,%f),FreeCAD.Vector(1,0,0),180),type='LIN',name='Pt',vel=1000.0,cont=True,tool=1))",TrakName.c_str(),TrakName.c_str(),x,y,z);
+    doCommand(Doc,"App.activeDocument().%s.Trajectory = App.activeDocument().%s.Trajectory.insertWaypoints(Robot.Waypoint(FreeCAD.Placement(FreeCAD.Vector(%f,%f,%f),FreeCAD.Vector(1,0,0),180),type='LIN',name='Pt',vel=100.0,cont=True,tool=1))",TrakName.c_str(),TrakName.c_str(),x,y,z);
     updateActive();
     commitCommand();
       
