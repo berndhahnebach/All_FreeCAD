@@ -28,6 +28,7 @@
 # include <QMenu>
 # include <Standard_math.hxx>
 # include <Inventor/actions/SoSearchAction.h>
+# include <Inventor/draggers/SoDragger.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoMaterial.h>
@@ -36,6 +37,8 @@
 #endif
 
 #include <Mod/Part/App/FeatureMirroring.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
 #include "ViewProviderMirror.h"
 
 using namespace PartGui;
@@ -112,6 +115,11 @@ bool ViewProviderMirror::setEdit(int ModNum)
         if (path) {
             SoCenterballManip * manip = new SoCenterballManip;
             manip->replaceNode(path);
+
+            SoDragger* dragger = manip->getDragger();
+            dragger->addStartCallback(dragStartCallback, this);
+            dragger->addFinishCallback(dragFinishCallback, this);
+            dragger->addMotionCallback(dragMotionCallback, this);
         }
         pcRoot->addChild(pcEditNode);
     }
@@ -151,4 +159,29 @@ void ViewProviderMirror::unsetEdit(int ModNum)
     else {
         ViewProviderPart::unsetEdit(ModNum);
     }
+}
+
+void ViewProviderMirror::dragStartCallback(void *data, SoDragger *)
+{
+    // This is called when a manipulator is about to manipulating
+    Gui::Application::Instance->activeDocument()->openCommand("Edit Mirror");
+}
+
+void ViewProviderMirror::dragFinishCallback(void *data, SoDragger *)
+{
+    // This is called when a manipulator has done manipulating
+    Gui::Application::Instance->activeDocument()->commitCommand();
+}
+
+void ViewProviderMirror::dragMotionCallback(void *data, SoDragger *drag)
+{
+    ViewProviderMirror* that = reinterpret_cast<ViewProviderMirror*>(data);
+    const SbMatrix& mat = drag->getMotionMatrix();
+    // the new axis of the plane
+    SbRotation rot(mat);
+    SbVec3f norm(0,0,1);
+    rot.multVec(norm,norm);
+    Part::Mirroring* mf = static_cast<Part::Mirroring*>(that->getObject());
+    mf->Base.setValue(mat[3][0],mat[3][1],mat[3][2]);
+    mf->Normal.setValue(norm[0],norm[1],norm[2]);
 }
