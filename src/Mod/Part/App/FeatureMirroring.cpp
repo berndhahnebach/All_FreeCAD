@@ -57,6 +57,21 @@ short Mirroring::mustExecute() const
     return 0;
 }
 
+void Mirroring::onChanged(const App::Property* prop)
+{
+    if (!isRestoring()) {
+        if (prop == &Base || prop == &Normal) {
+            try {
+                App::DocumentObjectExecReturn *ret = recompute();
+                delete ret;
+            }
+            catch (...) {
+            }
+        }
+    }
+    Part::Feature::onChanged(prop);
+}
+
 App::DocumentObjectExecReturn *Mirroring::execute(void)
 {
     App::DocumentObject* link = Source.getValue();

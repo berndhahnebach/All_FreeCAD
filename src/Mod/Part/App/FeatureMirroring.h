@@ -52,6 +52,9 @@ public:
         return "PartGui::ViewProviderMirror";
     }
     //@}
+
+protected:
+    void onChanged (const App::Property* prop);
 };
 
 } //namespace Part
