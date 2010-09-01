@@ -68,7 +68,7 @@ public:
     virtual bool isAllowedAlterDocument(void) const
     { return false; }
     virtual bool needsFullSpace() const
-    { return true; }
+    { return false; }
 
 private:
     Mirroring* widget;

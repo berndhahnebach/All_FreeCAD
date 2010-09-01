@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <QAction>
 # include <QMenu>
+# include <Standard_math.hxx>
+# include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoMaterial.h>
@@ -71,13 +73,16 @@ bool ViewProviderMirror::setEdit(int ModNum)
         float len = (float)bbox.CalcDiagonalLength();
         Base::Vector3f base = mf->Base.getValue();
         Base::Vector3f norm = mf->Normal.getValue();
+        Base::Vector3d cent = bbox.CalcCenter();
+        Base::Vector3f cbox((float)cent.x,(float)cent.y,(float)cent.z);
+        base = cbox.ProjToPlane(base, norm);
 
         // setup the graph for editing the mirror plane
-        SoCenterballManip* manip = new SoCenterballManip;
+        SoTransform* trans = new SoTransform;
         SbRotation rot(SbVec3f(0,0,1), SbVec3f(norm.x,norm.y,norm.z));
-        manip->rotation.setValue(rot);
-        manip->translation.setValue(base.x,base.y,base.z);
-        manip->center.setValue(0.0f,0.0f,0.0f);
+        trans->rotation.setValue(rot);
+        trans->translation.setValue(base.x,base.y,base.z);
+        trans->center.setValue(0.0f,0.0f,0.0f);
 
         SoMaterial* color = new SoMaterial();
         color->diffuseColor.setValue(0,0,1);
@@ -89,10 +94,25 @@ bool ViewProviderMirror::setEdit(int ModNum)
         points->point.set1Value(2,  len/2, len/2,0);
         points->point.set1Value(3, -len/2, len/2,0);
         SoFaceSet* face = new SoFaceSet();
-        pcEditNode->addChild(manip);
+        pcEditNode->addChild(trans);
         pcEditNode->addChild(color);
         pcEditNode->addChild(points);
         pcEditNode->addChild(face);
+
+        // Now we replace the SoTransform node by a manipulator
+        // Note: Even SoCenterballManip inherits from SoTransform
+        // we cannot use it directly (in above code) because the
+        // translation and center fields are overridden.
+        SoSearchAction sa;
+        sa.setInterest(SoSearchAction::FIRST);
+        sa.setSearchingAll(FALSE);
+        sa.setNode(trans);
+        sa.apply(pcEditNode);
+        SoPath * path = sa.getPath();
+        if (path) {
+            SoCenterballManip * manip = new SoCenterballManip;
+            manip->replaceNode(path);
+        }
         pcRoot->addChild(pcEditNode);
     }
     else {
