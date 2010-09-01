@@ -3060,7 +3060,7 @@ class SendToDrawing(Modifier):
                 if not template: template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
                 offsetx = self.ui.marginXValue.value()
                 offsety = self.ui.marginYValue.value()
-                scale = int(self.ui.scaleBox.currentText())
+                scale = float(self.ui.scaleBox.currentText())
                 if self.ui.pageBox.currentIndex() == 0:
                         pagename = str(self.ui.pageBox.itemText(0))
                         if pagename == 'Add New': pagename = 'Page'
