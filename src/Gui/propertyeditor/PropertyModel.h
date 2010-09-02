@@ -25,6 +25,7 @@
 #define PROPERTYMODEL_H
 
 #include <QAbstractItemModel>
+#include <QStringList>
 #include <vector>
 #include <map>
 
@@ -54,6 +55,8 @@ public:
     QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     bool setHeaderData (int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole);
     void buildUp(const std::map<std::string, std::vector<App::Property*> >& props);
+    QStringList propertyPathFromIndex(const QModelIndex&) const;
+    QModelIndex propertyIndexFromPath(const QStringList&) const;
 
 private:
     PropertyItem *rootItem;

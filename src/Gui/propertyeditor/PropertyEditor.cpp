@@ -89,7 +89,13 @@ void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QM
 
 void PropertyEditor::buildUp(const std::map<std::string, std::vector<App::Property*> >& props)
 {
+    QModelIndex index = this->currentIndex();
+    QStringList propertyPath = propertyModel->propertyPathFromIndex(index);
     propertyModel->buildUp(props);
+    if (!propertyPath.isEmpty()) {
+        QModelIndex index = propertyModel->propertyIndexFromPath(propertyPath);
+        this->setCurrentIndex(index);
+    }
 }
 
 #include "moc_PropertyEditor.cpp"
