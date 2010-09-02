@@ -83,7 +83,7 @@ def calcBulge(v1,bulge,v2):
 	chord = v2.sub(v1)
 	sagitta = (bulge * chord.Length)/2
 	startpoint = v1.add(fcvec.scale(chord,0.5))
-	perp = chord.cross(Vector(1,0,0))
+	perp = chord.cross(Vector(0,0,1))
 	if not fcvec.isNull(perp): perp.normalize()
 	endpoint = fcvec.scale(perp,sagitta)
 	return startpoint.add(endpoint)
