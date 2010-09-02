@@ -58,6 +58,8 @@ public:
     void addPath(const QString& path);
     /// Removes a path from the list of pixmap paths
     void removePath(const QString& path);
+    /// Returns the absolute file names of icons found in the given search paths
+    QStringList findIconFiles() const;
     /// Adds a build in XPM pixmap under a given name
     void addXPM(const char* name, const char** pXPM);
     /// Adds a build in XPM pixmap under a given name

@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QDir>
+# include <QFileInfo>
 # include <QHeaderView>
 # include <QMessageBox>
 #endif
@@ -405,11 +406,11 @@ void DlgCustomActionsImp::on_buttonChoosePixmap_clicked()
             &dlg, SLOT(accept()));
 
     QListWidgetItem* item;
-    QStringList names = BitmapFactory().pixmapNames();
+    QStringList names = BitmapFactory().findIconFiles();
     for (QStringList::Iterator it = names.begin(); it != names.end(); ++it) {
         item = new QListWidgetItem(ui.listWidget);
-        item->setIcon(BitmapFactory().pixmap((*it).toAscii()));
-        item->setText(*it);
+        item->setIcon(QIcon(*it));
+        item->setText(QFileInfo(*it).baseName());
         item->setToolTip(*it);
     }
 

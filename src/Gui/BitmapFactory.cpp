@@ -27,6 +27,7 @@
 # include <QBitmap>
 # include <QDir>
 # include <QFile>
+# include <QFileInfo>
 # include <QMap>
 # include <QImageReader>
 # include <QPainter>
@@ -103,6 +104,28 @@ void BitmapFactoryInst::removePath(const QString& path)
 {
     int pos = d->paths.indexOf(path);
     if (pos != -1) d->paths.removeAt(pos);
+}
+
+QStringList BitmapFactoryInst::findIconFiles() const
+{
+    QStringList files, filters;
+    QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    for (QList<QByteArray>::iterator it = formats.begin(); it != formats.end(); ++it)
+        filters << QString::fromAscii("*.%1").arg(QString::fromAscii(*it).toLower());
+
+    QStringList paths = d->paths;
+#if QT_VERSION >= 0x040500
+    paths.removeDuplicates();
+#endif
+    for (QStringList::ConstIterator pt = paths.begin(); pt != paths.end(); ++pt) {
+        QDir d(*pt);
+        d.setNameFilters(filters);
+        QFileInfoList fi = d.entryInfoList();
+        for (QFileInfoList::iterator it = fi.begin(); it != fi.end(); ++it)
+            files << it->absoluteFilePath();
+    }
+
+    return files;
 }
 
 void BitmapFactoryInst::addXPM(const char* name, const char** pXPM)
