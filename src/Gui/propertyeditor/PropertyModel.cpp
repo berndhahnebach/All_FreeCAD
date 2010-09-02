@@ -162,6 +162,42 @@ bool PropertyModel::setHeaderData (int, Qt::Orientation, const QVariant &, int)
     return false;
 }
 
+QStringList PropertyModel::propertyPathFromIndex(const QModelIndex& index) const
+{
+    QStringList path;
+    if (index.isValid()) {
+        PropertyItem* item = static_cast<PropertyItem*>(index.internalPointer());
+        if (!item->isSeparator()) {
+            do {
+                path.push_front(item->propertyName());
+                item = item->parent();
+            }
+            while (item != this->rootItem && item != 0);
+        }
+    }
+
+    return path;
+}
+
+QModelIndex PropertyModel::propertyIndexFromPath(const QStringList& path) const
+{
+    QModelIndex parent;
+    for (QStringList::const_iterator it = path.begin(); it != path.end(); ++it) {
+        int rows = this->rowCount(parent);
+        for (int i=0; i<rows; i++) {
+            QModelIndex index = this->index(i, 0, parent);
+            if (index.isValid()) {
+                PropertyItem* item = static_cast<PropertyItem*>(index.internalPointer());
+                if (item->propertyName() == *it) {
+                    parent = index;
+                    break;
+                }
+            }
+        }
+    }
+    return parent;
+}
+
 void PropertyModel::buildUp(const std::map<std::string, std::vector<App::Property*> >& props)
 {
     // fill up the listview with the properties
@@ -197,7 +233,8 @@ void PropertyModel::buildUp(const std::map<std::string, std::vector<App::Propert
                 try {
                     item = static_cast<Base::BaseClass*>(Base::Type::
                         createInstanceByName(prop->getEditorName(),true));
-                } catch (...) {
+                }
+                catch (...) {
                 }
                 if (!item) {
                     qWarning("No property item for type %s found\n", prop->getEditorName());
