@@ -81,7 +81,7 @@
     </message>
     <message>
         <source>Reference</source>
-        <translation>Riferimento</translation>
+        <translation type="obsolete">Riferimento</translation>
     </message>
     <message>
         <source>Apply</source>
@@ -119,11 +119,15 @@
     </message>
     <message>
         <source>Create box...</source>
-        <translation>Crea un prisma...</translation>
+        <translation type="obsolete">Crea un prisma...</translation>
     </message>
     <message>
         <source>Create a Box feature</source>
         <translation>Crea una feature prisma</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished">Prisma</translation>
     </message>
 </context>
 <context>
@@ -172,6 +176,36 @@
     </message>
 </context>
 <context>
+    <name>CmdPartCone</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Cone</source>
+        <translation type="unfinished">Cono</translation>
+    </message>
+    <message>
+        <source>Create a cone feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdPartCrossSections</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Cross-sections...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross-sections</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdPartCut</name>
     <message>
         <source>Part</source>
@@ -194,11 +228,15 @@
     </message>
     <message>
         <source>Create Cylinder...</source>
-        <translation>Crea un cilindro...</translation>
+        <translation type="obsolete">Crea un cilindro...</translation>
     </message>
     <message>
         <source>Create a Cylinder</source>
         <translation>Crea un cilindro</translation>
+    </message>
+    <message>
+        <source>Cylinder</source>
+        <translation type="unfinished">Cilindro</translation>
     </message>
 </context>
 <context>
@@ -217,18 +255,33 @@
     </message>
 </context>
 <context>
-    <name>CmdPartFilletEdges</name>
+    <name>CmdPartFillet</name>
     <message>
         <source>Part</source>
-        <translation>Parte</translation>
+        <translation type="unfinished">Parte</translation>
     </message>
     <message>
         <source>Fillet...</source>
-        <translation>Raccordo</translation>
+        <translation type="unfinished">Raccordo</translation>
     </message>
     <message>
         <source>Fillet the selected edges of a shape</source>
-        <translation>Raccorda gli spigoli di una figura selezionati</translation>
+        <translation type="unfinished">Raccorda gli spigoli di una figura selezionati</translation>
+    </message>
+</context>
+<context>
+    <name>CmdPartFilletEdges</name>
+    <message>
+        <source>Part</source>
+        <translation type="obsolete">Parte</translation>
+    </message>
+    <message>
+        <source>Fillet...</source>
+        <translation type="obsolete">Raccordo</translation>
+    </message>
+    <message>
+        <source>Fillet the selected edges of a shape</source>
+        <translation type="obsolete">Raccorda gli spigoli di una figura selezionati</translation>
     </message>
 </context>
 <context>
@@ -243,7 +296,11 @@
     </message>
     <message>
         <source>Make union of two shapes</source>
-        <translation>Unisce due figure</translation>
+        <translation type="obsolete">Unisce due figure</translation>
+    </message>
+    <message>
+        <source>Make union of several shapes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -277,6 +334,36 @@
     </message>
 </context>
 <context>
+    <name>CmdPartMakeSolid</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Convert to solid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create solid from a shell or compound</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdPartMirror</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Mirroring...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mirroring a selected shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdPartPickCurveNet</name>
     <message>
         <source>Part</source>
@@ -307,6 +394,36 @@
     </message>
 </context>
 <context>
+    <name>CmdPartReverseShape</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Reverse shapes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reverse orientation of shapes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdPartRevolve</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Revolve...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Revolve a selected shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdPartSection</name>
     <message>
         <source>Part</source>
@@ -319,6 +436,21 @@
     <message>
         <source>Make section of two shapes</source>
         <translation>Crea una sezione da due figure</translation>
+    </message>
+</context>
+<context>
+    <name>CmdPartShapeFromMesh</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Create shape from mesh...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create shape from selected mesh object</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -337,17 +469,90 @@
     </message>
 </context>
 <context>
+    <name>CmdPartSphere</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Sphere</source>
+        <translation type="unfinished">Sfera</translation>
+    </message>
+    <message>
+        <source>Create a sphere feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdPartTorus</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Parte</translation>
+    </message>
+    <message>
+        <source>Torus</source>
+        <translation type="unfinished">Toro</translation>
+    </message>
+    <message>
+        <source>Create a torus feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DlgPartImportIgesImp</name>
     <message>
         <source>IGES (*.igs *.iges);;All Files (*.*)</source>
-        <translation>IGES (*.igs *.iges);;Tutti i File (*.*)</translation>
+        <translation type="obsolete">IGES (*.igs *.iges);;Tutti i File (*.*)</translation>
     </message>
 </context>
 <context>
     <name>DlgPartImportStepImp</name>
     <message>
         <source>STEP (*.stp *.step);;All Files (*.*)</source>
-        <translation>STEP (*.stp *.step);;Tutti i File (*.*)</translation>
+        <translation type="obsolete">STEP (*.stp *.step);;Tutti i File (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>PartGui::CrossSections</name>
+    <message>
+        <source>Cross sections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Guiding plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position:</source>
+        <translation type="unfinished">Posizione:</translation>
+    </message>
+    <message>
+        <source>Sections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On both sides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -358,11 +563,11 @@
     </message>
     <message>
         <source>Shape</source>
-        <translation>Figura</translation>
+        <translation type="obsolete">Figura</translation>
     </message>
     <message>
         <source>No selection</source>
-        <translation>Nessuna selezione</translation>
+        <translation type="obsolete">Nessuna selezione</translation>
     </message>
     <message>
         <source>Second shape</source>
@@ -394,15 +599,63 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="obsolete">Annulla</translation>
     </message>
     <message>
         <source>Cannot perform a boolean operation with the same shape</source>
         <translation>Non è possibile effettuare una operazione booleana con la stessa figura</translation>
+    </message>
+    <message>
+        <source>Solids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swap selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a shape on the left side, first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a shape on the right side, first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active document available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>One of the selected objects doesn&apos;t exist anymore</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Performing union on non-solids is not possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Performing intersection on non-solids is not possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Performing difference on non-solids is not possible</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -421,15 +674,15 @@
     </message>
     <message>
         <source>x</source>
-        <translation>x</translation>
+        <translation type="obsolete">x</translation>
     </message>
     <message>
         <source>y</source>
-        <translation>y</translation>
+        <translation type="obsolete">y</translation>
     </message>
     <message>
         <source>z</source>
-        <translation>z</translation>
+        <translation type="obsolete">z</translation>
     </message>
     <message>
         <source>Length:</source>
@@ -441,23 +694,39 @@
     </message>
     <message>
         <source>Sketch:</source>
-        <translation>Schizzo:</translation>
+        <translation type="obsolete">Schizzo:</translation>
     </message>
     <message>
         <source>No selection</source>
-        <translation>Nessuna selezione</translation>
+        <translation type="obsolete">Nessuna selezione</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="obsolete">Annulla</translation>
     </message>
     <message>
         <source></source>
         <translation></translation>
+    </message>
+    <message>
+        <source>X:</source>
+        <translation type="unfinished">X:</translation>
+    </message>
+    <message>
+        <source>Z:</source>
+        <translation type="unfinished">Z:</translation>
+    </message>
+    <message>
+        <source>Y:</source>
+        <translation type="unfinished">Y:</translation>
+    </message>
+    <message>
+        <source>Select a shape for extrusion, first.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -488,11 +757,11 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="obsolete">Annulla</translation>
     </message>
     <message>
         <source>Shape</source>
@@ -520,7 +789,7 @@
     </message>
     <message>
         <source>Edge &lt;%1&gt;</source>
-        <translation>Spigolo &lt;%1&gt;</translation>
+        <translation type="obsolete">Spigolo &lt;%1&gt;</translation>
     </message>
     <message>
         <source>Radius</source>
@@ -535,6 +804,27 @@
 Please check one or more edge entities first.</source>
         <translation>Nessuna entità spigolo è stata assegnata da raccordare.
 Assegnare una o più entità raccordo prima.</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edge%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No shape selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No valid shape is selected.
+Please select a valid shape in the drop-down box first.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -585,19 +875,19 @@ Assegnare una o più entità raccordo prima.</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="obsolete">X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation>Y</translation>
+        <translation type="obsolete">Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation>Definito dall&apos;utente...</translation>
+        <translation type="obsolete">Definito dall&apos;utente...</translation>
     </message>
     <message>
         <source>Direction:</source>
@@ -628,19 +918,19 @@ Assegnare una o più entità raccordo prima.</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="obsolete">X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation>Y</translation>
+        <translation type="obsolete">Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation>Definito dall&apos;utente...</translation>
+        <translation type="obsolete">Definito dall&apos;utente...</translation>
     </message>
     <message>
         <source>Direction:</source>
@@ -695,6 +985,13 @@ Assegnare una o più entità raccordo prima.</translation>
     </message>
 </context>
 <context>
+    <name>PartGui::DlgPartImportIgesImp</name>
+    <message>
+        <source>IGES (*.igs *.iges);;All Files (*.*)</source>
+        <translation type="unfinished">IGES (*.igs *.iges);;Tutti i File (*.*)</translation>
+    </message>
+</context>
+<context>
     <name>PartGui::DlgPartImportStep</name>
     <message>
         <source>...</source>
@@ -719,6 +1016,13 @@ Assegnare una o più entità raccordo prima.</translation>
     <message>
         <source></source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PartGui::DlgPartImportStepImp</name>
+    <message>
+        <source>STEP (*.stp *.step);;All Files (*.*)</source>
+        <translation type="unfinished">STEP (*.stp *.step);;Tutti i File (*.*)</translation>
     </message>
 </context>
 <context>
@@ -753,19 +1057,19 @@ Assegnare una o più entità raccordo prima.</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="obsolete">X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation>Y</translation>
+        <translation type="obsolete">Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation>Definito dall&apos;utente......</translation>
+        <translation type="obsolete">Definito dall&apos;utente......</translation>
     </message>
     <message>
         <source>Plane</source>
@@ -859,6 +1163,53 @@ Assegnare una o più entità raccordo prima.</translation>
         <source>No active document</source>
         <translation>Nessun documento attivo</translation>
     </message>
+    <message>
+        <source>Pitch:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Helix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3D View</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PartGui::DlgRevolution</name>
+    <message>
+        <source>Revolve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y:</source>
+        <translation type="unfinished">Y:</translation>
+    </message>
+    <message>
+        <source>X:</source>
+        <translation type="unfinished">X:</translation>
+    </message>
+    <message>
+        <source>Angle:</source>
+        <translation type="unfinished">Angolo:</translation>
+    </message>
+    <message>
+        <source>Z:</source>
+        <translation type="unfinished">Z:</translation>
+    </message>
+    <message>
+        <source>Axis:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shape</source>
+        <translation type="unfinished">Figura</translation>
+    </message>
+    <message>
+        <source>Select a shape for revolution, first.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PartGui::DlgSettings3DViewPart</name>
@@ -908,7 +1259,7 @@ Assegnare una o più entità raccordo prima.</translation>
     </message>
     <message>
         <source>Maximum deviation of tessellated shapes</source>
-        <translation>Massima deviatione della figura tasselata</translation>
+        <translation type="obsolete">Massima deviatione della figura tasselata</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -917,6 +1268,110 @@ Assegnare una o più entità raccordo prima.</translation>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;High-quality normals&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This will slow down render speed but will lead to nicer results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Normali di alta qualità&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Questo rallenterà la velocità di render ma si otterranno risultati migliori.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Maximum deviation depending on the model bounding box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PartGui::DlgSettingsGeneral</name>
+    <message>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Units for export of STEP/IGES</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PartGui::Mirroring</name>
+    <message>
+        <source>Mirroring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shapes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mirror plane:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XY plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XZ plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YZ plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a shape for mirroring, first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No such document &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PartGui::TaskBoxFilletEdges</name>
+    <message>
+        <source>Fillet</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PartGui::Workbench</name>
+    <message>
+        <source>&amp;Part</source>
+        <translation type="unfinished">&amp;Parte</translation>
+    </message>
+    <message>
+        <source>&amp;Simple</source>
+        <translation type="unfinished">&amp;Semplice</translation>
+    </message>
+    <message>
+        <source>&amp;Parametric</source>
+        <translation type="unfinished">&amp;Parametrico</translation>
+    </message>
+    <message>
+        <source>Solids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Part tools</source>
+        <translation type="unfinished">Strumenti Parte</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -949,32 +1404,52 @@ Assegnare una o più entità raccordo prima.</translation>
         <source>All Files (*.*)</source>
         <translation>Tutti i File (*.*)</translation>
     </message>
+    <message>
+        <source>Select at least two shapes please.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sewing Tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter tolerance for sewing shape:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit mirror plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>&amp;Part</source>
-        <translation>&amp;Parte</translation>
+        <translation type="obsolete">&amp;Parte</translation>
     </message>
     <message>
         <source>&amp;Simple</source>
-        <translation>&amp;Semplice</translation>
+        <translation type="obsolete">&amp;Semplice</translation>
     </message>
     <message>
         <source>&amp;Parametric</source>
-        <translation>&amp;Parametrico</translation>
+        <translation type="obsolete">&amp;Parametrico</translation>
     </message>
     <message>
         <source>Part tools</source>
-        <translation>Strumenti Parte</translation>
+        <translation type="obsolete">Strumenti Parte</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importa</translation>
+        <translation type="obsolete">Importa</translation>
     </message>
     <message>
         <source>Boolean Operators</source>
-        <translation>Operatori boolenani</translation>
+        <translation type="obsolete">Operatori boolenani</translation>
     </message>
 </context>
 </TS>
