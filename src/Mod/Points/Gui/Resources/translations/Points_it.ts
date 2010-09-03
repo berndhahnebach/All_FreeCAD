@@ -164,8 +164,19 @@
         <translation>Numero di punti</translation>
     </message>
     <message>
-        <source>Number of previewd lines:</source>
-        <translation>Numero di linee in anteprima</translation>
+        <source>Number of previewed lines:</source>
+        <translation>Numero di linee in anteprima:</translation>
+    </message>
+</context>
+<context>
+    <name>PointsGui::Workbench</name>
+    <message>
+        <source>Points tools</source>
+        <translation>Strumenti Punti</translation>
+    </message>
+    <message>
+        <source>&amp;Points</source>
+        <translation>&amp;Punti</translation>
     </message>
 </context>
 <context>
@@ -179,11 +190,11 @@
     <name>Workbench</name>
     <message>
         <source>Points tools</source>
-        <translation>Strumenti Punti</translation>
+        <translation type="obsolete">Strumenti Punti</translation>
     </message>
     <message>
         <source>&amp;Points</source>
-        <translation>&amp;Punti</translation>
+        <translation type="obsolete">&amp;Punti</translation>
     </message>
 </context>
 </TS>

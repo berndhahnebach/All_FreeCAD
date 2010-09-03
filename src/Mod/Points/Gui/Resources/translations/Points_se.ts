@@ -164,8 +164,19 @@
         <translation>Antal punkter</translation>
     </message>
     <message>
-        <source>Number of previewd lines:</source>
+        <source>Number of previewed lines:</source>
         <translation>Antal förhandsvisade linjer:</translation>
+    </message>
+</context>
+<context>
+    <name>PointsGui::Workbench</name>
+    <message>
+        <source>Points tools</source>
+        <translation>Punktverktyg</translation>
+    </message>
+    <message>
+        <source>&amp;Points</source>
+        <translation>&amp;Punkter</translation>
     </message>
 </context>
 <context>
@@ -179,11 +190,11 @@
     <name>Workbench</name>
     <message>
         <source>Points tools</source>
-        <translation>Punktverktyg</translation>
+        <translation type="obsolete">Punktverktyg</translation>
     </message>
     <message>
         <source>&amp;Points</source>
-        <translation>&amp;Punkter</translation>
+        <translation type="obsolete">&amp;Punkter</translation>
     </message>
 </context>
 </TS>

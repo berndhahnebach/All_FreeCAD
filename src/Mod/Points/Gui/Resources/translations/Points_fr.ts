@@ -50,15 +50,15 @@
     <name>CmdPointsTransform</name>
     <message>
         <source>Points</source>
-        <translation type="unfinished">Points</translation>
+        <translation>Points</translation>
     </message>
     <message>
         <source>Transform Points</source>
-        <translation type="unfinished">Transformer les points</translation>
+        <translation>Transformer les points</translation>
     </message>
     <message>
         <source>Test to transform a point cloud</source>
-        <translation type="unfinished">Test de transformation d&apos;un nuage de points</translation>
+        <translation>Test de transformation d&apos;un nuage de points</translation>
     </message>
 </context>
 <context>
@@ -164,19 +164,12 @@
         <translation>Nombre de points</translation>
     </message>
     <message>
-        <source>Number of previewd lines:</source>
+        <source>Number of previewed lines:</source>
         <translation>Nombre de lignes prévisualisées:</translation>
     </message>
 </context>
 <context>
-    <name>QObject</name>
-    <message>
-        <source>Ascii Points (*.asc);;All Files (*.*)</source>
-        <translation type="unfinished">Points Ascii (*.asc);;Tous les fichiers (*.*)</translation>
-    </message>
-</context>
-<context>
-    <name>Workbench</name>
+    <name>PointsGui::Workbench</name>
     <message>
         <source>Points tools</source>
         <translation>Outils points</translation>
@@ -184,6 +177,24 @@
     <message>
         <source>&amp;Points</source>
         <translation>&amp;Points</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Ascii Points (*.asc);;All Files (*.*)</source>
+        <translation>Points Ascii (*.asc);;Tous les fichiers (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Points tools</source>
+        <translation type="obsolete">Outils points</translation>
+    </message>
+    <message>
+        <source>&amp;Points</source>
+        <translation type="obsolete">&amp;Points</translation>
     </message>
 </context>
 </TS>
