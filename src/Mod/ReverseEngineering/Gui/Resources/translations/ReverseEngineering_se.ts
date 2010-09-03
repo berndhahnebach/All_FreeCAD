@@ -18,11 +18,18 @@
     </message>
 </context>
 <context>
+    <name>ReverseEngineeringGui::Workbench</name>
+    <message>
+        <source>Reverse Engineering</source>
+        <translation>Reverse Engineering</translation>
+    </message>
+</context>
+<context>
     <name>Workbench</name>
     <message>
         <source>Reverse Engineering</source>
         <translatorcomment>The term &quot;Reverse engineering&quot; is also used in Sweden</translatorcomment>
-        <translation>Reverse Engineering</translation>
+        <translation type="obsolete">Reverse Engineering</translation>
     </message>
 </context>
 </TS>
