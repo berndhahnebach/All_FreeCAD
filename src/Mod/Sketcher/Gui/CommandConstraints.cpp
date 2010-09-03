@@ -212,7 +212,7 @@ CmdSketcherConstrainLock::CmdSketcherConstrainLock()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain Lock");
+    sMenuText       = QT_TR_NOOP("Constrain lock");
     sToolTipText    = QT_TR_NOOP("Create a lock constrain on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
@@ -238,8 +238,8 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain Lock");
-    sToolTipText    = QT_TR_NOOP("Create a lock constrain on the selected item");
+    sMenuText       = QT_TR_NOOP("Constrain coincident");
+    sToolTipText    = QT_TR_NOOP("Create a coincident constraint on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_PointOnPoint";
@@ -319,8 +319,8 @@ CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain Distance");
-    sToolTipText    = QT_TR_NOOP("fix a length of a line or the distance between a line and a vertex");
+    sMenuText       = QT_TR_NOOP("Constrain distance");
+    sToolTipText    = QT_TR_NOOP("Fix a length of a line or the distance between a line and a vertex");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_Length";
@@ -402,8 +402,8 @@ CmdSketcherConstrainParallel::CmdSketcherConstrainParallel()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain Parallel");
-    sToolTipText    = QT_TR_NOOP("create a parallel constraint between two lines");
+    sMenuText       = QT_TR_NOOP("Constrain parallel");
+    sToolTipText    = QT_TR_NOOP("Create a parallel constraint between two lines");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_Parallel";
