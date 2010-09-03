@@ -29,7 +29,13 @@
 			</Documentation>
 			<Parameter Name="Name" Type="String"/>
 		</Attribute>
-		<Attribute Name="State" ReadOnly="true">
+                <Attribute Name="Document" ReadOnly="true">
+                        <Documentation>
+                                <UserDocu>Return the document this object is part of</UserDocu>
+                        </Documentation>
+                        <Parameter Name="Document" Type="Object"/>
+                </Attribute>
+                <Attribute Name="State" ReadOnly="true">
 			<Documentation>
 				<UserDocu>State of the object in the document</UserDocu>
 			</Documentation>
