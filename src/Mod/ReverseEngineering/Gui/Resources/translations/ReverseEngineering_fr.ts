@@ -17,10 +17,17 @@
     </message>
 </context>
 <context>
-    <name>Workbench</name>
+    <name>ReverseEngineeringGui::Workbench</name>
     <message>
         <source>Reverse Engineering</source>
         <translation>Rétro-ingénierie</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Reverse Engineering</source>
+        <translation type="obsolete">Rétro-ingénierie</translation>
     </message>
 </context>
 </TS>
