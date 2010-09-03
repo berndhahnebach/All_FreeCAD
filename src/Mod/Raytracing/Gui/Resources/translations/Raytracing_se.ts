@@ -2,33 +2,78 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="sv_SE">
 <context>
+    <name>CmdRaytracingExportProject</name>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export the Povray project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRaytracingNewPartSegment</name>
+    <message>
+        <source>Raytracing</source>
+        <translation type="unfinished">Raytracing</translation>
+    </message>
+    <message>
+        <source>Insert part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a new part object into a Povray project</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRaytracingNewPovrayProject</name>
+    <message>
+        <source>Raytracing</source>
+        <translation type="unfinished">Raytracing</translation>
+    </message>
+    <message>
+        <source>New Povray project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert new Povray project into the document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdRaytracingNewProject</name>
     <message>
         <source>Raytracing</source>
-        <translation>Raytracing</translation>
+        <translation type="obsolete">Raytracing</translation>
     </message>
     <message>
         <source>New project</source>
-        <translation>Nytt projekt</translation>
+        <translation type="obsolete">Nytt projekt</translation>
     </message>
     <message>
         <source>Write the initial povray file to render a part</source>
-        <translation>Skriv startfilen för povray för att rendera en detalj</translation>
+        <translation type="obsolete">Skriv startfilen för povray för att rendera en detalj</translation>
     </message>
 </context>
 <context>
     <name>CmdRaytracingQuickRender</name>
     <message>
         <source>Raytracing</source>
-        <translation>Raytracing</translation>
+        <translation type="obsolete">Raytracing</translation>
     </message>
     <message>
         <source>Render</source>
-        <translation>Rendera</translation>
+        <translation type="obsolete">Rendera</translation>
     </message>
     <message>
         <source>Renders the actual view</source>
-        <translation>Renderar den aktuella vyn</translation>
+        <translation type="obsolete">Renderar den aktuella vyn</translation>
     </message>
 </context>
 <context>
@@ -39,11 +84,19 @@
     </message>
     <message>
         <source>Write camera position</source>
-        <translation>Skriv kameraposition</translation>
+        <translation type="obsolete">Skriv kameraposition</translation>
     </message>
     <message>
         <source>Write the camera positon of the active 3D view in PovRay format to a file</source>
-        <translation>Skriv kamerapositionen för den aktuella 3D vyn i povray format till en fil</translation>
+        <translation type="obsolete">Skriv kamerapositionen för den aktuella 3D vyn i povray format till en fil</translation>
+    </message>
+    <message>
+        <source>Export camera to povray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54,11 +107,69 @@
     </message>
     <message>
         <source>Write the part</source>
-        <translation>Skriv detaljen</translation>
+        <translation type="obsolete">Skriv detaljen</translation>
     </message>
     <message>
         <source>Write the Part (object) of the active 3D view in PovRay format to a file</source>
-        <translation>Skriv detaljen (objekt) för den aktuella 3D vyn i povray format till en fil</translation>
+        <translation type="obsolete">Skriv detaljen (objekt) för den aktuella 3D vyn i povray format till en fil</translation>
+    </message>
+    <message>
+        <source>Export part to povray...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write the selected Part (object) as a povray file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRaytracingWriteView</name>
+    <message>
+        <source>Raytracing</source>
+        <translation type="unfinished">Raytracing</translation>
+    </message>
+    <message>
+        <source>Export view to povray...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write the active 3D view with camera and all its content to a povray file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Povray(*.pov)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a Part object.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Povray project to insert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a Povray project to insert a view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select one Povray project object.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -109,10 +220,17 @@
     </message>
 </context>
 <context>
+    <name>RaytracingGui::Workbench</name>
+    <message>
+        <source>&amp;Raytracing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Workbench</name>
     <message>
         <source>Raytracing tools</source>
-        <translation>Raytracing verktyg</translation>
+        <translation type="obsolete">Raytracing verktyg</translation>
     </message>
 </context>
 </TS>

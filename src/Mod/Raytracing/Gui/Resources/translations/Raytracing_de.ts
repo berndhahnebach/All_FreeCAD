@@ -2,33 +2,62 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
-    <name>CmdRaytracingNewProject</name>
+    <name>CmdRaytracingExportProject</name>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export the Povray project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRaytracingNewPartSegment</name>
     <message>
         <source>Raytracing</source>
         <translation type="unfinished">Raytracing</translation>
     </message>
     <message>
-        <source>New project</source>
+        <source>Insert part</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Write the initial povray file to render a part</source>
+        <source>Insert a new part object into a Povray project</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRaytracingNewPovrayProject</name>
+    <message>
+        <source>Raytracing</source>
+        <translation type="unfinished">Raytracing</translation>
+    </message>
+    <message>
+        <source>New Povray project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert new Povray project into the document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRaytracingNewProject</name>
+    <message>
+        <source>Raytracing</source>
+        <translation type="obsolete">Raytracing</translation>
     </message>
 </context>
 <context>
     <name>CmdRaytracingQuickRender</name>
     <message>
         <source>Raytracing</source>
-        <translation type="unfinished">Raytracing</translation>
-    </message>
-    <message>
-        <source>Render</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Renders the actual view</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Raytracing</translation>
     </message>
 </context>
 <context>
@@ -38,11 +67,11 @@
         <translation type="unfinished">Raytracing</translation>
     </message>
     <message>
-        <source>Write camera position</source>
+        <source>Export camera to povray</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Write the camera positon of the active 3D view in PovRay format to a file</source>
+        <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -53,11 +82,61 @@
         <translation type="unfinished">Raytracing</translation>
     </message>
     <message>
-        <source>Write the part</source>
+        <source>Export part to povray...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Write the Part (object) of the active 3D view in PovRay format to a file</source>
+        <source>Write the selected Part (object) as a povray file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRaytracingWriteView</name>
+    <message>
+        <source>Raytracing</source>
+        <translation type="unfinished">Raytracing</translation>
+    </message>
+    <message>
+        <source>Export view to povray...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write the active 3D view with camera and all its content to a povray file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Povray(*.pov)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a Part object.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Povray project to insert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a Povray project to insert a view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select one Povray project object.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -109,9 +188,9 @@
     </message>
 </context>
 <context>
-    <name>Workbench</name>
+    <name>RaytracingGui::Workbench</name>
     <message>
-        <source>Raytracing tools</source>
+        <source>&amp;Raytracing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
