@@ -111,13 +111,13 @@ void DlgSettings3DViewImp::on_mouseButton_clicked()
     std::auto_ptr<UserNavigationStyle> ns(static_cast<UserNavigationStyle*>(instance));
     ui.groupBox->setTitle(ui.groupBox->title()+QString::fromAscii(" ")+comboNavigationStyle->currentText());
     QString descr;
-    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::SELECTION));
+    descr = qApp->translate((const char*)data.toByteArray(),ns->mouseButtons(NavigationStyle::SELECTION));
     ui.selectionLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
-    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::PANNING));
+    descr = qApp->translate((const char*)data.toByteArray(),ns->mouseButtons(NavigationStyle::PANNING));
     ui.panningLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
-    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::DRAGGING));
+    descr = qApp->translate((const char*)data.toByteArray(),ns->mouseButtons(NavigationStyle::DRAGGING));
     ui.rotationLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
-    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::ZOOMING));
+    descr = qApp->translate((const char*)data.toByteArray(),ns->mouseButtons(NavigationStyle::ZOOMING));
     ui.zoomingLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
     dlg.exec();
 }

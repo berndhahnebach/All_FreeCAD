@@ -47,6 +47,18 @@ Py::String DocumentObjectPy::getName(void) const
     return Py::String(std::string(internal));
 }
 
+Py::Object DocumentObjectPy::getDocument(void) const
+{
+    DocumentObject* object = this->getDocumentObjectPtr();
+    Document* doc = object->getDocument();
+    if (!doc) {
+        return Py::None();
+    }
+    else {
+        return Py::Object(doc->getPyObject(), true);
+    }
+}
+
 PyObject*  DocumentObjectPy::touch(PyObject * args)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
