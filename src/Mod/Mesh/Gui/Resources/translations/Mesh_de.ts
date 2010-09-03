@@ -91,11 +91,15 @@
     </message>
     <message>
         <source>Evaluate mesh...</source>
-        <translation>Netz auswerten...</translation>
+        <translation type="obsolete">Netz auswerten...</translation>
     </message>
     <message>
         <source>Opens a dialog to analyze and repair a mesh</source>
         <translation>Öffnet einen Dialog zum Analysieren und Reparieren eines Netzes</translation>
+    </message>
+    <message>
+        <source>Evaluate &amp;&amp; Repair mesh...</source>
+        <translation>Netz auswerten &amp;&amp; reparieren...</translation>
     </message>
 </context>
 <context>
@@ -180,60 +184,60 @@
     <name>CmdMeshFixDegenerations</name>
     <message>
         <source>Mesh</source>
-        <translation>Netz</translation>
+        <translation type="obsolete">Netz</translation>
     </message>
     <message>
         <source>Remove degenerated faces</source>
-        <translation>Entartete Facetten entfernen</translation>
+        <translation type="obsolete">Entartete Facetten entfernen</translation>
     </message>
     <message>
         <source>Remove degenerated faces from the mesh</source>
-        <translation>Entfernt entartete Facetten aus dem Netz</translation>
+        <translation type="obsolete">Entfernt entartete Facetten aus dem Netz</translation>
     </message>
 </context>
 <context>
     <name>CmdMeshFixDuplicateFaces</name>
     <message>
         <source>Mesh</source>
-        <translation>Netz</translation>
+        <translation type="obsolete">Netz</translation>
     </message>
     <message>
         <source>Remove duplicated faces</source>
-        <translation>Doppelte Facetten entfernen</translation>
+        <translation type="obsolete">Doppelte Facetten entfernen</translation>
     </message>
     <message>
         <source>Remove duplicated faces from the mesh</source>
-        <translation>Entfernt doppelte Facetten aus dem Netz</translation>
+        <translation type="obsolete">Entfernt doppelte Facetten aus dem Netz</translation>
     </message>
 </context>
 <context>
     <name>CmdMeshFixDuplicatePoints</name>
     <message>
         <source>Mesh</source>
-        <translation>Netz</translation>
+        <translation type="obsolete">Netz</translation>
     </message>
     <message>
         <source>Remove duplicated points</source>
-        <translation>Doppelte Punkte entfernen</translation>
+        <translation type="obsolete">Doppelte Punkte entfernen</translation>
     </message>
     <message>
         <source>Remove duplicated points from the mesh</source>
-        <translation>Entfernt doppelte Punkte aus dem Netz</translation>
+        <translation type="obsolete">Entfernt doppelte Punkte aus dem Netz</translation>
     </message>
 </context>
 <context>
     <name>CmdMeshFixIndices</name>
     <message>
         <source>Mesh</source>
-        <translation>Netz</translation>
+        <translation type="obsolete">Netz</translation>
     </message>
     <message>
         <source>Fix indices</source>
-        <translation>Indexe korrigieren</translation>
+        <translation type="obsolete">Indexe korrigieren</translation>
     </message>
     <message>
         <source>Fixes invalid indices in the mesh structure</source>
-        <translation>Korrigiert ungültige Indexe in der Netzstruktur</translation>
+        <translation type="obsolete">Korrigiert ungültige Indexe in der Netzstruktur</translation>
     </message>
 </context>
 <context>
@@ -335,6 +339,21 @@
     <message>
         <source>Creates a mesh segment</source>
         <translation>Erzeuge Netz-Segment</translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshPolySelect</name>
+    <message>
+        <source>Mesh</source>
+        <translation>Netz</translation>
+    </message>
+    <message>
+        <source>Select mesh</source>
+        <translation>Netz auswählen</translation>
+    </message>
+    <message>
+        <source>Select an area of the mesh</source>
+        <translation>Wähle einen Bereich des Netzes aus</translation>
     </message>
 </context>
 <context>
@@ -472,14 +491,14 @@
     <name>DockEvaluateMeshImp</name>
     <message>
         <source>Evaluate Mesh</source>
-        <translation>Netz auswerten</translation>
+        <translation type="obsolete">Netz auswerten</translation>
     </message>
 </context>
 <context>
     <name>MeshGui::DlgEvaluateMesh</name>
     <message>
         <source>Evaluate Mesh</source>
-        <translation>Netz auswerten</translation>
+        <translation type="obsolete">Netz auswerten</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -564,6 +583,14 @@
     <message>
         <source>Repetitive repair</source>
         <translation>Reparatur wiederholen</translation>
+    </message>
+    <message>
+        <source>Evaluate &amp; Repair Mesh</source>
+        <translation>Netz auswerten &amp; reparieren</translation>
+    </message>
+    <message>
+        <source>Folds on surface</source>
+        <translation>Oberflächenfalten</translation>
     </message>
 </context>
 <context>
@@ -672,6 +699,28 @@
         <source>Mesh repair</source>
         <translation>Netz reparieren</translation>
     </message>
+    <message>
+        <source>Flipped normals found</source>
+        <translation>Verdrehte Normalen gefunden</translation>
+    </message>
+    <message>
+        <source>Check failed due to folds on the surface.
+Please run the command to repair folds first</source>
+        <translation>Überprüfung wegen Falten in der Oberfläche fehlgeschlagen.
+Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
+    </message>
+    <message>
+        <source>No folds on surface</source>
+        <translation>Keine Oberflächenfalten</translation>
+    </message>
+    <message>
+        <source>%1 folds on surface</source>
+        <translation>%1 Oberflächenfalten</translation>
+    </message>
+    <message>
+        <source>Folds</source>
+        <translation>Falten</translation>
+    </message>
 </context>
 <context>
     <name>MeshGui::DlgRegularSolid</name>
@@ -779,11 +828,11 @@
     </message>
     <message>
         <source>Appearance</source>
-        <translation>Erscheinungsbild</translation>
+        <translation type="obsolete">Erscheinungsbild</translation>
     </message>
     <message>
         <source>Face color</source>
-        <translation>Dreiecksfarbe</translation>
+        <translation type="obsolete">Dreiecksfarbe</translation>
     </message>
     <message>
         <source>Two-side rendering</source>
@@ -821,6 +870,165 @@
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
+    <message>
+        <source>Default appearance for new meshes</source>
+        <translation>Standardmäßiges Erscheinungsbild für neue Netze</translation>
+    </message>
+    <message>
+        <source>Default line color</source>
+        <translation>Standard-Kantenfarbe</translation>
+    </message>
+    <message>
+        <source>Mesh transparency</source>
+        <translation>Transparenz des Netzes</translation>
+    </message>
+    <message>
+        <source>Default mesh color</source>
+        <translation>Standard-Flächenfarbe</translation>
+    </message>
+    <message>
+        <source>Show bounding-box for highlighted or selected meshes</source>
+        <translation>Bounding-Box für gehighlightete oder selekierte Netze anzeigen</translation>
+    </message>
+    <message>
+        <source>Line transparency</source>
+        <translation>Transparenz der Kanten</translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::DlgSmoothing</name>
+    <message>
+        <source>Smoothing</source>
+        <translation>Glättung</translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation>Methode</translation>
+    </message>
+    <message>
+        <source>Taubin</source>
+        <translation>Taubin</translation>
+    </message>
+    <message>
+        <source>Laplace</source>
+        <translation>Laplace</translation>
+    </message>
+    <message>
+        <source>Parameter</source>
+        <translation>Parameter</translation>
+    </message>
+    <message>
+        <source>Iterations:</source>
+        <translation>Iterationen:</translation>
+    </message>
+    <message>
+        <source>Lambda:</source>
+        <translation>Lambda:</translation>
+    </message>
+    <message>
+        <source>Mu:</source>
+        <translation>Mu:</translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::DockEvaluateMeshImp</name>
+    <message>
+        <source>Evaluate &amp; Repair Mesh</source>
+        <translation>Netz auswerten &amp; reparieren</translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::RemoveComponents</name>
+    <message>
+        <source>Remove components</source>
+        <translation>Komponenten entfernen</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Auswählen</translation>
+    </message>
+    <message>
+        <source>Select whole component</source>
+        <translation>Ganze Komponente auswählen</translation>
+    </message>
+    <message>
+        <source>Pick triangle</source>
+        <translation>Dreieck aufnehmen</translation>
+    </message>
+    <message>
+        <source>&lt; faces than</source>
+        <translation>&lt; Dreiecke als</translation>
+    </message>
+    <message>
+        <source>Region</source>
+        <translation>Bereich</translation>
+    </message>
+    <message>
+        <source>Components</source>
+        <translation>Komponenten</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Alles</translation>
+    </message>
+    <message>
+        <source>Deselect</source>
+        <translation>Auswahl aufheben</translation>
+    </message>
+    <message>
+        <source>Deselect whole component</source>
+        <translation>Ganze Komponente abwählen</translation>
+    </message>
+    <message>
+        <source>&gt; faces than</source>
+        <translation>&gt; Dreiecke als</translation>
+    </message>
+    <message>
+        <source>Region options</source>
+        <translation>Einstellungen</translation>
+    </message>
+    <message>
+        <source>Respect only front triangles</source>
+        <translation>Nur vordere Dreiecke beachten</translation>
+    </message>
+    <message>
+        <source>Respect only triangles with normals facing screen</source>
+        <translation>Nur Dreiecke mit Normalen beachten, die zum Bildschirm zeigen</translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::TaskRemoveComponents</name>
+    <message>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation>Umkehren</translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::Workbench</name>
+    <message>
+        <source>Analyze</source>
+        <translation>Analysieren</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Bool&apos;sche Operationen</translation>
+    </message>
+    <message>
+        <source>&amp;Meshes</source>
+        <translation>&amp;Netze</translation>
+    </message>
+    <message>
+        <source>Mesh tools</source>
+        <translation>Netz-Werkzeuge</translation>
+    </message>
+    <message>
+        <source>Mesh test suite</source>
+        <translation>Netz Testumgebung</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -850,15 +1058,15 @@
     </message>
     <message>
         <source>Remove components</source>
-        <translation>Komponenten entfernen</translation>
+        <translation type="obsolete">Komponenten entfernen</translation>
     </message>
     <message>
         <source>Removes components up to a maximum number of triangles:</source>
-        <translation>Komponenten entfernen mit bis maximal vorgegebener Anzahl Dreiecken:</translation>
+        <translation type="obsolete">Komponenten entfernen mit bis maximal vorgegebener Anzahl Dreiecken:</translation>
     </message>
     <message>
         <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
-        <translation>Alle Netz-Dateien (*.stl *.ast *.bms *.obj)</translation>
+        <translation type="obsolete">Alle Netz-Dateien (*.stl *.ast *.bms *.obj)</translation>
     </message>
     <message>
         <source>Binary STL (*.stl)</source>
@@ -948,28 +1156,56 @@ Max=&lt;%4,%5,%6&gt;</translation>
         <source>Leave removal mode</source>
         <translation>Entfernen-Modus verlassen</translation>
     </message>
+    <message>
+        <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
+        <translation>Alle Mesh Formate (*.stl *.ast *.bms *.obj *.ply)</translation>
+    </message>
+    <message>
+        <source>Stanford Polygon (*.ply)</source>
+        <translation>Stanford Polygon (*.ply)</translation>
+    </message>
+    <message>
+        <source>Object File Format (*.off)</source>
+        <translation>Object File Format (*.off)</translation>
+    </message>
+    <message>
+        <source>Standford Polygon (*.ply)</source>
+        <translation>Standford Polygon (*.ply)</translation>
+    </message>
+    <message>
+        <source>Delete selected faces</source>
+        <translation>Selektierte Dreiecke löschen</translation>
+    </message>
+    <message>
+        <source>Clear selected faces</source>
+        <translation>Auswahl aufheben</translation>
+    </message>
+    <message>
+        <source>Annotation</source>
+        <translation>Anmerkung</translation>
+    </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation>Analysieren</translation>
+        <translation type="obsolete">Analysieren</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation>Bool&apos;sche Operationen</translation>
+        <translation type="obsolete">Bool&apos;sche Operationen</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation>&amp;Netze</translation>
+        <translation type="obsolete">&amp;Netze</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation>Netz-Werkzeuge</translation>
+        <translation type="obsolete">Netz-Werkzeuge</translation>
     </message>
     <message>
         <source>Mesh test suite</source>
-        <translation>Netz Testumgebung</translation>
+        <translation type="obsolete">Netz Testumgebung</translation>
     </message>
 </context>
 </TS>
