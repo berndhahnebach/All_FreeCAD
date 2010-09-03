@@ -964,6 +964,22 @@ InventorNavigationStyle::~InventorNavigationStyle()
 {
 }
 
+const char* InventorNavigationStyle::mouseButtons(ViewerMode mode)
+{
+    switch (mode) {
+    case NavigationStyle::SELECTION:
+        return QT_TR_NOOP("Press CTRL and left mouse button");
+    case NavigationStyle::PANNING:
+        return QT_TR_NOOP("Press middle mouse button");
+    case NavigationStyle::DRAGGING:
+        return QT_TR_NOOP("Press left mouse button");
+    case NavigationStyle::ZOOMING:
+        return QT_TR_NOOP("Scroll middle mouse button");
+    default:
+        return "No description";
+    }
+}
+
 SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 {
     // Events when in "ready-to-seek" mode are ignored, except those
@@ -1261,6 +1277,22 @@ CADNavigationStyle::CADNavigationStyle() : lockButton1(FALSE)
 
 CADNavigationStyle::~CADNavigationStyle()
 {
+}
+
+const char* CADNavigationStyle::mouseButtons(ViewerMode mode)
+{
+    switch (mode) {
+    case NavigationStyle::SELECTION:
+        return QT_TR_NOOP("Press left mouse button");
+    case NavigationStyle::PANNING:
+        return QT_TR_NOOP("Press middle mouse button");
+    case NavigationStyle::DRAGGING:
+        return QT_TR_NOOP("Press left and middle mouse button");
+    case NavigationStyle::ZOOMING:
+        return QT_TR_NOOP("Scroll middle mouse button");
+    default:
+        return "No description";
+    }
 }
 
 SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
