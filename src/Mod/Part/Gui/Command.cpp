@@ -764,7 +764,7 @@ CmdPartMirror::CmdPartMirror()
     sToolTipText  = QT_TR_NOOP("Mirroring a selected shape");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    sPixmap       = "Part_Mirror";
+    sPixmap       = "Part_MirrorPNG";
     iAccel        = 0;
 }
 

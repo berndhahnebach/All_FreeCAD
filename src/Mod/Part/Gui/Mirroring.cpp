@@ -156,7 +156,7 @@ TaskMirroring::TaskMirroring()
 {
     widget = new Mirroring();
     taskbox = new Gui::TaskView::TaskBox(
-        Gui::BitmapFactory().pixmap("Part_Mirror"),
+        Gui::BitmapFactory().pixmap("Part_MirrorPNG"),
         widget->windowTitle(), false, 0);
     taskbox->groupLayout()->addWidget(widget);
     Content.push_back(taskbox);
