@@ -23,6 +23,7 @@
 		<file>icons/Part_Revolve.svg</file>
 		<file>icons/Part_Import.svg</file>
 		<file>icons/Part_Mirror.svg</file>
+		<file>icons/Part_MirrorPNG.png</file>
 		<file>icons/Tree_Part.svg</file>
 	</qresource>
 </RCC>
