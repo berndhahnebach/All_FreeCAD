@@ -65,39 +65,39 @@
     <name>PointsGui::DlgPointsRead</name>
     <message>
         <source>ASCII points import</source>
-        <translation type="unfinished"></translation>
+        <translation>ASCII-Punkteimport</translation>
     </message>
     <message>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schablone:</translation>
     </message>
     <message>
         <source>Special lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Spzielle Zeilen</translation>
     </message>
     <message>
         <source>First line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erste Zeile:</translation>
     </message>
     <message>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoriere</translation>
     </message>
     <message>
         <source>Cluster by lines starting with:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zusammenfassen von Zeilen, die beginnen mit:</translation>
     </message>
     <message>
         <source>Ignore lines starting with:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoriere Zeilen, die beginnen mit:</translation>
     </message>
     <message>
         <source>Point format</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkteformat</translation>
     </message>
     <message>
         <source>Number seperator:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimaltrenner:</translation>
     </message>
     <message>
         <source>Points format:</source>
@@ -105,67 +105,78 @@
     </message>
     <message>
         <source>Next block:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nächster Block:</translation>
     </message>
     <message>
         <source>,</source>
-        <translation type="unfinished"></translation>
+        <translation>,</translation>
     </message>
     <message>
         <source>;</source>
-        <translation type="unfinished"></translation>
+        <translation>;</translation>
     </message>
     <message>
         <source>\t</source>
-        <translation type="unfinished"></translation>
+        <translation>\t</translation>
     </message>
     <message>
         <source>\w</source>
-        <translation type="unfinished"></translation>
+        <translation>\w</translation>
     </message>
     <message>
         <source>X,Y,Z</source>
-        <translation type="unfinished"></translation>
+        <translation>X,Y,Z</translation>
     </message>
     <message>
         <source>X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>X,Y</translation>
     </message>
     <message>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>kein</translation>
     </message>
     <message>
         <source>I,J,K (normal vector)</source>
-        <translation type="unfinished"></translation>
+        <translation>I,J,K (Normalenvektor)</translation>
     </message>
     <message>
         <source>I,K (normal vector 2D)</source>
-        <translation type="unfinished"></translation>
+        <translation>I,K (Normalenvektor 2D)</translation>
     </message>
     <message>
         <source>R,G,B (color)</source>
-        <translation type="unfinished"></translation>
+        <translation>R,B,B (Farbe)</translation>
     </message>
     <message>
         <source>I (Gray value)</source>
-        <translation type="unfinished"></translation>
+        <translation>I (Grauwert)</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorschau</translation>
     </message>
     <message>
         <source>100</source>
-        <translation type="unfinished"></translation>
+        <translation>100</translation>
     </message>
     <message>
         <source>Number of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Punkte</translation>
     </message>
     <message>
-        <source>Number of previewd lines:</source>
-        <translation type="unfinished"></translation>
+        <source>Number of previewed lines:</source>
+        <translation>Anzahl der vorangezeigten Zeilen:</translation>
+    </message>
+</context>
+<context>
+    <name>PointsGui::Workbench</name>
+    <message>
+        <source>Points tools</source>
+        <translation>Punkte Werkzeuge</translation>
+    </message>
+    <message>
+        <source>&amp;Points</source>
+        <translation>&amp;Punktewolke</translation>
     </message>
 </context>
 <context>
@@ -179,11 +190,11 @@
     <name>Workbench</name>
     <message>
         <source>Points tools</source>
-        <translation>Punkte Werkzeuge</translation>
+        <translation type="obsolete">Punkte Werkzeuge</translation>
     </message>
     <message>
         <source>&amp;Points</source>
-        <translation>&amp;Punktewolke</translation>
+        <translation type="obsolete">&amp;Punktewolke</translation>
     </message>
 </context>
 </TS>
