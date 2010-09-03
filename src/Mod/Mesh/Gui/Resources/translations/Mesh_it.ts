@@ -91,11 +91,15 @@
     </message>
     <message>
         <source>Evaluate mesh...</source>
-        <translation>Analizza la mesh...</translation>
+        <translation type="obsolete">Analizza la mesh...</translation>
     </message>
     <message>
         <source>Opens a dialog to analyze and repair a mesh</source>
         <translation>Apre una finestra di dialogo per analizzare e riparare una mesh</translation>
+    </message>
+    <message>
+        <source>Evaluate &amp;&amp; Repair mesh...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -180,60 +184,60 @@
     <name>CmdMeshFixDegenerations</name>
     <message>
         <source>Mesh</source>
-        <translation>Mesh</translation>
+        <translation type="obsolete">Mesh</translation>
     </message>
     <message>
         <source>Remove degenerated faces</source>
-        <translation>Rimuovi le facce degenerate</translation>
+        <translation type="obsolete">Rimuovi le facce degenerate</translation>
     </message>
     <message>
         <source>Remove degenerated faces from the mesh</source>
-        <translation>Rimuovi le facce degenerate dalla mesh</translation>
+        <translation type="obsolete">Rimuovi le facce degenerate dalla mesh</translation>
     </message>
 </context>
 <context>
     <name>CmdMeshFixDuplicateFaces</name>
     <message>
         <source>Mesh</source>
-        <translation>Mesh</translation>
+        <translation type="obsolete">Mesh</translation>
     </message>
     <message>
         <source>Remove duplicated faces</source>
-        <translation>Rimuovi le facce duplicate</translation>
+        <translation type="obsolete">Rimuovi le facce duplicate</translation>
     </message>
     <message>
         <source>Remove duplicated faces from the mesh</source>
-        <translation>Rimuovi le facce duplicate dalla mesh</translation>
+        <translation type="obsolete">Rimuovi le facce duplicate dalla mesh</translation>
     </message>
 </context>
 <context>
     <name>CmdMeshFixDuplicatePoints</name>
     <message>
         <source>Mesh</source>
-        <translation>Mesh</translation>
+        <translation type="obsolete">Mesh</translation>
     </message>
     <message>
         <source>Remove duplicated points</source>
-        <translation>Rimuovi i punti duplicati</translation>
+        <translation type="obsolete">Rimuovi i punti duplicati</translation>
     </message>
     <message>
         <source>Remove duplicated points from the mesh</source>
-        <translation>Rimuovi i punti duplicati dalla mesh</translation>
+        <translation type="obsolete">Rimuovi i punti duplicati dalla mesh</translation>
     </message>
 </context>
 <context>
     <name>CmdMeshFixIndices</name>
     <message>
         <source>Mesh</source>
-        <translation>Mesh</translation>
+        <translation type="obsolete">Mesh</translation>
     </message>
     <message>
         <source>Fix indices</source>
-        <translation>Fissa gli indici</translation>
+        <translation type="obsolete">Fissa gli indici</translation>
     </message>
     <message>
         <source>Fixes invalid indices in the mesh structure</source>
-        <translation>Fissa gli indici non validi nella struttura della mesh</translation>
+        <translation type="obsolete">Fissa gli indici non validi nella struttura della mesh</translation>
     </message>
 </context>
 <context>
@@ -335,6 +339,21 @@
     <message>
         <source>Creates a mesh segment</source>
         <translation>Crea un segmento di mesh</translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshPolySelect</name>
+    <message>
+        <source>Mesh</source>
+        <translation type="unfinished">Mesh</translation>
+    </message>
+    <message>
+        <source>Select mesh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an area of the mesh</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -472,14 +491,14 @@
     <name>DockEvaluateMeshImp</name>
     <message>
         <source>Evaluate Mesh</source>
-        <translation>Analizza mesh</translation>
+        <translation type="obsolete">Analizza mesh</translation>
     </message>
 </context>
 <context>
     <name>MeshGui::DlgEvaluateMesh</name>
     <message>
         <source>Evaluate Mesh</source>
-        <translation>Analizza mesh</translation>
+        <translation type="obsolete">Analizza mesh</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -563,6 +582,14 @@
     </message>
     <message>
         <source>Repetitive repair</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Evaluate &amp; Repair Mesh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Folds on surface</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -672,6 +699,27 @@
         <source>Mesh repair</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Flipped normals found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check failed due to folds on the surface.
+Please run the command to repair folds first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No folds on surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 folds on surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Folds</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MeshGui::DlgRegularSolid</name>
@@ -778,14 +826,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Appearance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Face color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Two-side rendering</source>
         <translation type="unfinished"></translation>
     </message>
@@ -821,6 +861,165 @@
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Default appearance for new meshes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default line color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mesh transparency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default mesh color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding-box for highlighted or selected meshes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line transparency</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::DlgSmoothing</name>
+    <message>
+        <source>Smoothing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Taubin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Laplace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Iterations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lambda:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mu:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::DockEvaluateMeshImp</name>
+    <message>
+        <source>Evaluate &amp; Repair Mesh</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::RemoveComponents</name>
+    <message>
+        <source>Remove components</source>
+        <translation type="unfinished">Rimuovi componenti</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select whole component</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pick triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt; faces than</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect whole component</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&gt; faces than</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Region options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Respect only front triangles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Respect only triangles with normals facing screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::TaskRemoveComponents</name>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MeshGui::Workbench</name>
+    <message>
+        <source>Analyze</source>
+        <translation type="unfinished">Analizza</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation type="unfinished">Booleano</translation>
+    </message>
+    <message>
+        <source>&amp;Meshes</source>
+        <translation type="unfinished">&amp;Mesh</translation>
+    </message>
+    <message>
+        <source>Mesh tools</source>
+        <translation type="unfinished">Strumenti Mesh</translation>
+    </message>
+    <message>
+        <source>Mesh test suite</source>
+        <translation type="unfinished">Ambiente di test mesh</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -850,15 +1049,15 @@
     </message>
     <message>
         <source>Remove components</source>
-        <translation>Rimuovi componenti</translation>
+        <translation type="obsolete">Rimuovi componenti</translation>
     </message>
     <message>
         <source>Removes components up to a maximum number of triangles:</source>
-        <translation>Rimuovi componenti fino ad un numero massimo di triangoli:</translation>
+        <translation type="obsolete">Rimuovi componenti fino ad un numero massimo di triangoli:</translation>
     </message>
     <message>
         <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
-        <translation>Tutti i file mesh (*.stl *.ast *.bms *.obj)</translation>
+        <translation type="obsolete">Tutti i file mesh (*.stl *.ast *.bms *.obj)</translation>
     </message>
     <message>
         <source>Binary STL (*.stl)</source>
@@ -960,28 +1159,56 @@ Questo potrebbe indurre strani risultati.</translation>
         <source>Leave removal mode</source>
         <translation>permetti modo rimozione</translation>
     </message>
+    <message>
+        <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stanford Polygon (*.ply)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Object File Format (*.off)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standford Polygon (*.ply)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete selected faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear selected faces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation>Analizza</translation>
+        <translation type="obsolete">Analizza</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation>Booleano</translation>
+        <translation type="obsolete">Booleano</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation>&amp;Mesh</translation>
+        <translation type="obsolete">&amp;Mesh</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation>Strumenti Mesh</translation>
+        <translation type="obsolete">Strumenti Mesh</translation>
     </message>
     <message>
         <source>Mesh test suite</source>
-        <translation>Ambiente di test mesh</translation>
+        <translation type="obsolete">Ambiente di test mesh</translation>
     </message>
 </context>
 </TS>
