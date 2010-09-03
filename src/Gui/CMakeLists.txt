@@ -182,7 +182,8 @@ SET(Gui_UIC_SRCS
 		 DlgTreeWidget.ui
 		 DlgLocationAngle.ui
 		 DlgLocationPos.ui
-		 SceneInspector.ui
+                 MouseButtons.ui
+                 SceneInspector.ui
 		 InputVector.ui
 		 Placement.ui
 		 TextureMapping.ui
@@ -282,7 +283,8 @@ SET(Dialog_SRCS
 		 DlgProjectInformation.ui
 		 DlgTipOfTheDay.ui
 		 DlgTreeWidget.ui
-		 InputVector.ui
+                 MouseButtons.ui
+                 InputVector.ui
 		 Placement.ui
 		 SceneInspector.ui
 		 TextureMapping.ui

@@ -25,11 +25,13 @@
 
 #ifndef _PreComp_
 # include <QRegExp>
+# include <memory>
 #endif
 
 #include "DlgSettings3DViewImp.h"
 #include "NavigationStyle.h"
 #include "PrefWidgets.h"
+#include "ui_MouseButtons.h"
 #include <App/Application.h>
 #include <Base/Console.h>
 #include <Base/Parameter.h>
@@ -96,6 +98,28 @@ void DlgSettings3DViewImp::loadSettings()
     std::string model = hGrp->GetASCII("NavigationStyle",CADNavigationStyle::getClassTypeId().getName());
     int index = comboNavigationStyle->findData(QByteArray(model.c_str()));
     if (index > -1) comboNavigationStyle->setCurrentIndex(index);
+}
+
+void DlgSettings3DViewImp::on_mouseButton_clicked()
+{
+    QDialog dlg(this);
+    Ui_MouseButtons ui;
+    ui.setupUi(&dlg);
+
+    QVariant data = comboNavigationStyle->itemData(comboNavigationStyle->currentIndex(), Qt::UserRole);
+    void* instance = Base::Type::createInstanceByName((const char*)data.toByteArray());
+    std::auto_ptr<UserNavigationStyle> ns(static_cast<UserNavigationStyle*>(instance));
+    ui.groupBox->setTitle(ui.groupBox->title()+QString::fromAscii(" ")+comboNavigationStyle->currentText());
+    QString descr;
+    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::SELECTION));
+    ui.selectionLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
+    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::PANNING));
+    ui.panningLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
+    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::DRAGGING));
+    ui.rotationLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
+    descr = QString::fromAscii(ns->mouseButtons(NavigationStyle::ZOOMING));
+    ui.zoomingLabel->setText(QString::fromAscii("<b>%1</b>").arg(descr));
+    dlg.exec();
 }
 
 /**

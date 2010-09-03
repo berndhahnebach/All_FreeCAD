@@ -106,6 +106,7 @@ BUILT_SOURCES=\
 		ui_DlgLocationAngle.h \
 		ui_DlgLocationPos.h \
 		ui_SceneInspector.h \
+		ui_MouseButtons.h \
 		ui_InputVector.h \
 		ui_Placement.h \
 		ui_TextureMapping.h \
@@ -152,6 +153,7 @@ libFreeCADGui_la_UI=\
 		DlgLocationAngle.ui \
 		DlgLocationPos.ui \
 		DlgTreeWidget.ui \
+		MouseButtons.ui \
 		SceneInspector.ui \
 		InputVector.ui \
 		Placement.ui \

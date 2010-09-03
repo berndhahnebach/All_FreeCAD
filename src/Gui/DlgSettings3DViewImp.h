@@ -46,6 +46,9 @@ public:
     void saveSettings();
     void loadSettings();
 
+private Q_SLOTS:
+    void on_mouseButton_clicked();
+
 protected:
     void changeEvent(QEvent *e);
     void retranslate();

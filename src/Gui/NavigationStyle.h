@@ -213,6 +213,7 @@ class GuiExport UserNavigationStyle : public NavigationStyle {
 public:
     UserNavigationStyle(){}
     ~UserNavigationStyle(){}
+    virtual const char* mouseButtons(ViewerMode) = 0;
 };
 
 class GuiExport InventorNavigationStyle : public UserNavigationStyle {
@@ -223,6 +224,7 @@ class GuiExport InventorNavigationStyle : public UserNavigationStyle {
 public:
     InventorNavigationStyle();
     ~InventorNavigationStyle();
+    const char* mouseButtons(ViewerMode);
 
 protected:
     SbBool processSoEvent(const SoEvent * const ev);
@@ -236,6 +238,7 @@ class GuiExport CADNavigationStyle : public UserNavigationStyle {
 public:
     CADNavigationStyle();
     ~CADNavigationStyle();
+    const char* mouseButtons(ViewerMode);
 
 protected:
     SbBool processSoEvent(const SoEvent * const ev);
