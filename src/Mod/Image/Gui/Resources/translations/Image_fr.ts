@@ -83,6 +83,13 @@
     </message>
 </context>
 <context>
+    <name>ImageGui::Workbench</name>
+    <message>
+        <source>Image</source>
+        <translation>Image</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Image viewer</source>
@@ -101,7 +108,7 @@
     <name>Workbench</name>
     <message>
         <source>Image</source>
-        <translation>Image</translation>
+        <translation type="obsolete">Image</translation>
     </message>
 </context>
 </TS>

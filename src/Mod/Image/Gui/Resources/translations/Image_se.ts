@@ -5,15 +5,7 @@
     <name>CmdImageCapturerTest</name>
     <message>
         <source>Image</source>
-        <translation>Bild</translation>
-    </message>
-    <message>
-        <source>CapturerTest</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>test camara capturing</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Bild</translation>
     </message>
 </context>
 <context>
@@ -24,11 +16,19 @@
     </message>
     <message>
         <source>Open</source>
-        <translation>Öppna</translation>
+        <translation type="obsolete">Öppna</translation>
     </message>
     <message>
         <source>Image open image view function</source>
-        <translation>Öppna bildvy funktion</translation>
+        <translation type="obsolete">Öppna bildvy funktion</translation>
+    </message>
+    <message>
+        <source>Open...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open image view</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39,7 +39,11 @@
     </message>
     <message>
         <source>GLImageBox::getPixFormat</source>
-        <translation>Bildens pixelformat</translation>
+        <translation type="obsolete">Bildens pixelformat</translation>
+    </message>
+    <message>
+        <source>Image pixel format</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -98,6 +102,13 @@
     </message>
 </context>
 <context>
+    <name>ImageGui::Workbench</name>
+    <message>
+        <source>Image</source>
+        <translation type="unfinished">Bild</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Image viewer</source>
@@ -116,7 +127,7 @@
     <name>Workbench</name>
     <message>
         <source>Image</source>
-        <translation>Bild</translation>
+        <translation type="obsolete">Bild</translation>
     </message>
 </context>
 </TS>
