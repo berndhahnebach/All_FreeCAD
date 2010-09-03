@@ -2,18 +2,73 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="sv_SE">
 <context>
+    <name>Angle</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle Snap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>1 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>2 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>5 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>10 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>20 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>45 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>90 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>180 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CombiView</name>
     <message>
         <source>CombiView</source>
-        <translation>Kombivy</translation>
+        <translation type="obsolete">Kombivy</translation>
     </message>
     <message>
         <source>Project</source>
-        <translation>Projekt</translation>
+        <translation type="obsolete">Projekt</translation>
     </message>
     <message>
         <source>Tasks</source>
-        <translation>Uppgifter</translation>
+        <translation type="obsolete">Uppgifter</translation>
     </message>
 </context>
 <context>
@@ -21,6 +76,25 @@
     <message>
         <source>none</source>
         <translation>inget</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::CADNavigationStyle</name>
+    <message>
+        <source>Press left mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press left and middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scroll middle mouse button</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39,6 +113,13 @@
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Avbryt</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::ControlSingleton</name>
+    <message>
+        <source>Task panel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -74,6 +155,61 @@
     <message>
         <source>Release date</source>
         <translation>Släppdatum</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DemoMode</name>
+    <message>
+        <source>View Turntable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
+        <translation type="unfinished">Fullskärm</translation>
+    </message>
+    <message>
+        <source>Enable timer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>90°</source>
+        <translation type="unfinished">90°</translation>
+    </message>
+    <message utf8="true">
+        <source>-90°</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished">Stopp</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Stäng</translation>
     </message>
 </context>
 <context>
@@ -537,6 +673,18 @@ Definiera en annan genväg.</translation>
         <source></source>
         <translation></translation>
     </message>
+    <message>
+        <source>Line transparency:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shape color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgEditorSettings</name>
@@ -733,6 +881,14 @@ Denna fil finns redan.</translation>
         <source>Do you really want to delete the macro &apos;%1&apos;?</source>
         <translation>Vill du verkligen radera makrot &apos;%1&apos;?</translation>
     </message>
+    <message>
+        <source>Cannot create file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation of file &apos;%1&apos; failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgMacroRecord</name>
@@ -746,7 +902,7 @@ Denna fil finns redan.</translation>
     </message>
     <message>
         <source>Start</source>
-        <translation>Start</translation>
+        <translation type="obsolete">Start</translation>
     </message>
     <message>
         <source>Stop</source>
@@ -755,6 +911,18 @@ Denna fil finns redan.</translation>
     <message>
         <source>Cancel</source>
         <translation>Avbryt</translation>
+    </message>
+    <message>
+        <source>Macro path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Record</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -774,6 +942,14 @@ Denna fil finns redan.</translation>
     <message>
         <source>The macro &apos;%1&apos; already exists. Do you want to overwrite?</source>
         <translation>Makrot &apos;%1&apos; finns redan. Vill du skriva över den?</translation>
+    </message>
+    <message>
+        <source>The macro directory doesn&apos;t exist. Please, choose another one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose macro directory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -818,6 +994,10 @@ Denna fil finns redan.</translation>
         <source></source>
         <translation></translation>
     </message>
+    <message>
+        <source>Emissive color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelp</name>
@@ -827,27 +1007,27 @@ Denna fil finns redan.</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>Ladda ned</translation>
+        <translation type="obsolete">Ladda ned</translation>
     </message>
     <message>
         <source>Enable user authorization</source>
-        <translation>Aktivera användar auktorisering</translation>
+        <translation type="obsolete">Aktivera användar auktorisering</translation>
     </message>
     <message>
         <source>Download online help from:</source>
-        <translation>Ladda ned online hjälp från:</translation>
+        <translation type="obsolete">Ladda ned online hjälp från:</translation>
     </message>
     <message>
         <source>To:</source>
-        <translation>Till:</translation>
+        <translation type="obsolete">Till:</translation>
     </message>
     <message>
         <source>Proxy server:</source>
-        <translation>Proxy server:</translation>
+        <translation type="obsolete">Proxy server:</translation>
     </message>
     <message>
         <source>Use proxy</source>
-        <translation>Använd proxy</translation>
+        <translation type="obsolete">Använd proxy</translation>
     </message>
     <message>
         <source>Help viewer</source>
@@ -855,7 +1035,7 @@ Denna fil finns redan.</translation>
     </message>
     <message>
         <source>External browser</source>
-        <translation>Extern webbläsare</translation>
+        <translation type="obsolete">Extern webbläsare</translation>
     </message>
     <message>
         <source>Location of start page</source>
@@ -1078,6 +1258,60 @@ Ange en annan katalog.</translation>
         <source></source>
         <translation></translation>
     </message>
+    <message>
+        <source>Redirect internal Python errors to output window</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgReportViewImp</name>
+    <message>
+        <source>Redirect Python errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In order to take effect this change you must restart the application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgRunExternal</name>
+    <message>
+        <source>Running external program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced &gt;&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Accept changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Discard changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Hjälp</translation>
+    </message>
+    <message>
+        <source>Select a file</source>
+        <translation type="unfinished">Välj en fil</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettings3DView</name>
@@ -1103,15 +1337,15 @@ Ange en annan katalog.</translation>
     </message>
     <message>
         <source>3D Mouse Model</source>
-        <translation>#D musmodell</translation>
+        <translation type="obsolete">#D musmodell</translation>
     </message>
     <message>
         <source>Simple model</source>
-        <translation>Enkel modell</translation>
+        <translation type="obsolete">Enkel modell</translation>
     </message>
     <message>
         <source>Full model</source>
-        <translation>Full modell</translation>
+        <translation type="obsolete">Full modell</translation>
     </message>
     <message>
         <source>Enable anti-aliasing (slower)</source>
@@ -1123,23 +1357,23 @@ Ange en annan katalog.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>markering</translation>
+        <translation type="obsolete">markering</translation>
     </message>
     <message>
         <source>Enable pre-selection highlighting</source>
-        <translation>Aktivera förvalsmarkerring</translation>
+        <translation type="obsolete">Aktivera förvalsmarkerring</translation>
     </message>
     <message>
         <source>Selection color:</source>
-        <translation>Valfärg:</translation>
+        <translation type="obsolete">Valfärg:</translation>
     </message>
     <message>
         <source>Highlight color:</source>
-        <translation>Markeringsfärg:</translation>
+        <translation type="obsolete">Markeringsfärg:</translation>
     </message>
     <message>
         <source>Enable selection highlighting</source>
-        <translation>Aktivera valmarkering</translation>
+        <translation type="obsolete">Aktivera valmarkering</translation>
     </message>
     <message>
         <source>Camera type</source>
@@ -1155,15 +1389,15 @@ Ange en annan katalog.</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation>Bakgrundsfärg</translation>
+        <translation type="obsolete">Bakgrundsfärg</translation>
     </message>
     <message>
         <source>Color gradient</source>
-        <translation>Färggradient</translation>
+        <translation type="obsolete">Färggradient</translation>
     </message>
     <message>
         <source>Simple color</source>
-        <translation>Enkel färg</translation>
+        <translation type="obsolete">Enkel färg</translation>
     </message>
     <message>
         <source></source>
@@ -1171,14 +1405,37 @@ Ange en annan katalog.</translation>
     </message>
     <message>
         <source>Middle color</source>
-        <translation>Mellanfärg</translation>
+        <translation type="obsolete">Mellanfärg</translation>
+    </message>
+    <message>
+        <source>3D Navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mouse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intensity of backlight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable backlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgSettings3DViewImp</name>
+    <message>
+        <source>%1 navigation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
         <source>Color gradient settings</source>
-        <translation>Inställningar för färggradient</translation>
+        <translation type="obsolete">Inställningar för färggradient</translation>
     </message>
     <message>
         <source>Color model</source>
@@ -1276,6 +1533,10 @@ Ange en annan katalog.</translation>
         <source></source>
         <translation></translation>
     </message>
+    <message>
+        <source>Color-gradient settings</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradientImp</name>
@@ -1289,11 +1550,11 @@ Ange en annan katalog.</translation>
     </message>
     <message>
         <source>The maximum value must be higher than &apos;%1&apos;.</source>
-        <translation>Maximumvärdet måste vara större än &apos;%1&apos;.</translation>
+        <translation type="obsolete">Maximumvärdet måste vara större än &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>The minimum value must be lower than &apos;%1&apos;.</source>
-        <translation>Minimumvärdet måste vara mindre än &apos;%1&apos;.</translation>
+        <translation type="obsolete">Minimumvärdet måste vara mindre än &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1339,6 +1600,18 @@ Ange en annan katalog.</translation>
     <message>
         <source>Save thumbnail into project file when saving document</source>
         <translation>Spara minibild i projektfilen när dokumentet sparas</translation>
+    </message>
+    <message>
+        <source>Create up to backup files when resaving document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow duplicate object labels in one document</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1639,6 +1912,84 @@ Ange en annan katalog.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::Dialog::DlgSettingsUnits</name>
+    <message>
+        <source>Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Units settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User view system:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard (mm/kg/s/degree)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MKS (m/kg/s/degree)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imperial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User units:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgSettingsViewColor</name>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished">Färger</translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished">markering</translation>
+    </message>
+    <message>
+        <source>Enable selection highlighting</source>
+        <translation type="unfinished">Aktivera valmarkering</translation>
+    </message>
+    <message>
+        <source>Enable preselection highlighting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation type="unfinished">Bakgrundsfärg</translation>
+    </message>
+    <message>
+        <source>Middle color</source>
+        <translation type="unfinished">Mellanfärg</translation>
+    </message>
+    <message>
+        <source>Color gradient</source>
+        <translation type="unfinished">Färggradient</translation>
+    </message>
+    <message>
+        <source>Simple color</source>
+        <translation type="unfinished">Enkel färg</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::DlgTipOfTheDay</name>
     <message>
         <source>Tip of the day</source>
@@ -1691,6 +2042,13 @@ Ange en annan katalog.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::Dialog::DockablePlacement</name>
+    <message>
+        <source>Placement</source>
+        <translation type="unfinished">Placering</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::InputVector</name>
     <message>
         <source>Input vector</source>
@@ -1715,6 +2073,33 @@ Ange en annan katalog.</translation>
     <message>
         <source>OK</source>
         <translation>OK</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::MouseButtons</name>
+    <message>
+        <source>Mouse buttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Panning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation:</source>
+        <translation type="unfinished">Rotation:</translation>
+    </message>
+    <message>
+        <source>Zooming:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1839,7 +2224,7 @@ Ange en annan katalog.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Avbryt</translation>
+        <translation type="obsolete">Avbryt</translation>
     </message>
     <message>
         <source>Translation:</source>
@@ -1867,23 +2252,67 @@ Ange en annan katalog.</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="obsolete">X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation>Y</translation>
+        <translation type="obsolete">Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation>Användardefinierad...</translation>
+        <translation type="obsolete">Användardefinierad...</translation>
     </message>
     <message>
         <source>Axis:</source>
         <translation>Axel:</translation>
+    </message>
+    <message>
+        <source>Center:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pitch:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Roll:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yaw:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation axis wih angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Euler angles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply placement changes immediately</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply incremental changes to object placement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Stäng</translation>
     </message>
 </context>
 <context>
@@ -1896,6 +2325,10 @@ Ange en annan katalog.</translation>
         <source>Close</source>
         <translation>Stäng</translation>
     </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished">Uppdatera</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::SceneModel</name>
@@ -1906,6 +2339,56 @@ Ange en annan katalog.</translation>
     <message>
         <source>Nodes</source>
         <translation>Noder</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::TextureMapping</name>
+    <message>
+        <source>Texture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Texture mapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Global</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Environment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image files (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The specified file is not a valid image file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No 3d view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active 3d view found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::Transform</name>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Avbryt</translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1929,6 +2412,21 @@ Ange en annan katalog.</translation>
     <message>
         <source></source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::DockWnd::CombiView</name>
+    <message>
+        <source>CombiView</source>
+        <translation type="unfinished">Kombivy</translation>
+    </message>
+    <message>
+        <source>Project</source>
+        <translation type="unfinished">Projekt</translation>
+    </message>
+    <message>
+        <source>Tasks</source>
+        <translation type="unfinished">Uppgifter</translation>
     </message>
 </context>
 <context>
@@ -1981,11 +2479,11 @@ Ange en annan katalog.</translation>
     <name>Gui::DockWnd::PropertyView</name>
     <message>
         <source>View</source>
-        <translation>Vy</translation>
+        <translation type="obsolete">Vy</translation>
     </message>
     <message>
         <source>Data</source>
-        <translation>Data</translation>
+        <translation type="obsolete">Data</translation>
     </message>
 </context>
 <context>
@@ -2022,6 +2520,10 @@ Ange en annan katalog.</translation>
         <source>Plain Text Files (*.txt *.log)</source>
         <translation>Rena textfiler (*.txt *.log)</translation>
     </message>
+    <message>
+        <source>Go to end</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::DockWnd::ReportView</name>
@@ -2039,6 +2541,13 @@ Ange en annan katalog.</translation>
     <message>
         <source>Property View</source>
         <translation>Egenskapsvy</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::DockWnd::TaskPanelView</name>
+    <message>
+        <source>Task View</source>
+        <translation type="unfinished">Uppgiftsvy</translation>
     </message>
 </context>
 <context>
@@ -2094,6 +2603,17 @@ Ange en annan katalog.</translation>
     <message>
         <source>No description for</source>
         <translation>Ingen beskrivning för</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::DocumentModel</name>
+    <message>
+        <source>Application</source>
+        <translation type="unfinished">Applikation</translation>
+    </message>
+    <message>
+        <source>Labels &amp; Attributes</source>
+        <translation type="unfinished">Etiketter &amp; attribut</translation>
     </message>
 </context>
 <context>
@@ -2204,6 +2724,29 @@ Vill du spara ändringarna?</translation>
         <source>Bottom right</source>
         <translation>Botten höger</translation>
     </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">Ta bort</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::InventorNavigationStyle</name>
+    <message>
+        <source>Press CTRL and left mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press left mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scroll middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::LocationDialog</name>
@@ -2214,6 +2757,22 @@ Vill du spara ändringarna?</translation>
     <message>
         <source>Direction must not be the null vector</source>
         <translation>Riktningen får inte vara noll vektorn</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation type="unfinished">Z</translation>
+    </message>
+    <message>
+        <source>User defined...</source>
+        <translation type="unfinished">Användardefinierad...</translation>
     </message>
 </context>
 <context>
@@ -2240,6 +2799,10 @@ Vill du spara ändringarna?</translation>
     <message>
         <source>Toggles this dockable window</source>
         <translation>Växlar detta dockningsbara fönster</translation>
+    </message>
+    <message>
+        <source>Close All</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2289,6 +2852,17 @@ Vill du spara ändringarna?</translation>
     <message>
         <source>Value</source>
         <translation>Värde</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::PropertyView</name>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished">Data</translation>
     </message>
 </context>
 <context>
@@ -2357,7 +2931,11 @@ Vill du avsluta utan att spara din data?</translation>
     </message>
     <message>
         <source>Input for Python:</source>
-        <translation>Inmatning för Python:</translation>
+        <translation type="obsolete">Inmatning för Python:</translation>
+    </message>
+    <message>
+        <source>Unhandled std C++ exception.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2369,6 +2947,17 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
         <source>Uncomment</source>
         <translation>Bortkommentera</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::PythonInputField</name>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Rensa</translation>
     </message>
 </context>
 <context>
@@ -2417,6 +3006,49 @@ Vill du avsluta utan att spara din data?</translation>
     </message>
 </context>
 <context>
+    <name>Gui::StdCmdDownloadOnlineHelp</name>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Hjälp</translation>
+    </message>
+    <message>
+        <source>Download online help</source>
+        <translation type="unfinished">Ladda ned online hjälp</translation>
+    </message>
+    <message>
+        <source>Download %1&apos;s online help</source>
+        <translation type="unfinished">Ladda ned online hjälp för %1</translation>
+    </message>
+    <message>
+        <source>Non-existing directory</source>
+        <translation type="unfinished">Katalogen existerar inte</translation>
+    </message>
+    <message>
+        <source>The directory &apos;%1&apos; does not exist.
+
+Do you want to specify an existing directory?</source>
+        <translation type="unfinished">Katalogen &apos;%1&apos; existerar inte.
+
+Vill du ange en existerande katalog?</translation>
+    </message>
+    <message>
+        <source>Missing permission</source>
+        <translation type="unfinished">Behörighet saknas</translation>
+    </message>
+    <message>
+        <source>You don&apos;t have write permission to &apos;%1&apos;
+
+Do you want to specify another directory?</source>
+        <translation type="unfinished">Du har inte behörighet att skriva till &apos;%1&apos;
+
+Vill du ange en annan katalog?</translation>
+    </message>
+    <message>
+        <source>Stop downloading</source>
+        <translation type="unfinished">Stoppa nedladdning</translation>
+    </message>
+</context>
+<context>
     <name>Gui::StdCmdPythonHelp</name>
     <message>
         <source>Tools</source>
@@ -2435,63 +3067,77 @@ Vill du avsluta utan att spara din data?</translation>
     <name>Gui::StdWorkbench</name>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Arkiv</translation>
+        <translation type="obsolete">&amp;Arkiv</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>R&amp;edigera</translation>
+        <translation type="obsolete">R&amp;edigera</translation>
     </message>
     <message>
         <source>Standard views</source>
-        <translation>Standardvyer</translation>
+        <translation type="obsolete">Standardvyer</translation>
     </message>
     <message>
         <source>&amp;Stereo</source>
-        <translation>&amp;Stereo</translation>
+        <translation type="obsolete">&amp;Stereo</translation>
     </message>
     <message>
         <source>&amp;Zoom</source>
-        <translation>&amp;Zoom</translation>
+        <translation type="obsolete">&amp;Zoom</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation>Synlighet</translation>
+        <translation type="obsolete">Synlighet</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation>&amp;Visa</translation>
+        <translation type="obsolete">&amp;Visa</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation>Verk&amp;tyg</translation>
+        <translation type="obsolete">Verk&amp;tyg</translation>
     </message>
     <message>
         <source>&amp;Windows</source>
-        <translation>&amp;Fönster</translation>
+        <translation type="obsolete">&amp;Fönster</translation>
     </message>
     <message>
         <source>&amp;On-line help</source>
-        <translation>&amp;Online hjälp</translation>
+        <translation type="obsolete">&amp;Online hjälp</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Hjälp</translation>
+        <translation type="obsolete">&amp;Hjälp</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Fil</translation>
+        <translation type="obsolete">Fil</translation>
     </message>
     <message>
         <source>Macro</source>
-        <translation>Makro</translation>
+        <translation type="obsolete">Makro</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>Visa</translation>
+        <translation type="obsolete">Visa</translation>
     </message>
     <message>
         <source>Special Ops</source>
-        <translation>Special operationer</translation>
+        <translation type="obsolete">Special operationer</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::TaskBoxAngle</name>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::TaskBoxPosition</name>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2525,11 +3171,11 @@ Vill du avsluta utan att spara din data?</translation>
     <name>Gui::TaskView::TaskEditControl</name>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Avbryt</translation>
+        <translation type="obsolete">Avbryt</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -2561,6 +3207,22 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
         <source>Chinese</source>
         <translation>Kinesiska</translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swedish</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2600,6 +3262,33 @@ Vill du avsluta utan att spara din data?</translation>
         <source>Application</source>
         <translation>Applikation</translation>
     </message>
+    <message>
+        <source>Finish editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finish editing object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Activate document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Activate document %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::View3DInventor</name>
+    <message>
+        <source>Export PDF</source>
+        <translation type="unfinished">Exportera PDF</translation>
+    </message>
+    <message>
+        <source>PDF file (*.pdf)</source>
+        <translation type="unfinished">PDF fil (*.pdf)</translation>
+    </message>
 </context>
 <context>
     <name>Gui::WidgetFactorySupplier</name>
@@ -2617,6 +3306,85 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
         <translation>Välj arbetsbänken &apos;%1&apos;</translation>
+    </message>
+</context>
+<context>
+    <name>Position</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X:</source>
+        <translation type="unfinished">X:</translation>
+    </message>
+    <message>
+        <source>Y:</source>
+        <translation type="unfinished">Y:</translation>
+    </message>
+    <message>
+        <source>Z:</source>
+        <translation type="unfinished">Z:</translation>
+    </message>
+    <message>
+        <source>Grid Snap on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.1 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.5 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>10 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>20 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>50 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>100 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>200 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>500 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1 m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 m </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2645,6 +3413,14 @@ Vill du avsluta utan att spara din data?</translation>
         <source>Combo View</source>
         <translation>Kombinerad vy</translation>
     </message>
+    <message>
+        <source>Toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python console</source>
+        <translation type="unfinished">Python konsoll</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -2670,7 +3446,7 @@ Vill du avsluta utan att spara din data?</translation>
     </message>
     <message>
         <source>FreeCAD Help</source>
-        <translation>FreeCAD Hjälp</translation>
+        <translation type="obsolete">FreeCAD Hjälp</translation>
     </message>
     <message>
         <source>Unable to launch Qt Assistant (%1)</source>
@@ -2860,7 +3636,7 @@ vill du fortsätta?</translation>
     </message>
     <message>
         <source>Cannot open help file</source>
-        <translation>Kan inte öppna hjälpfil</translation>
+        <translation type="obsolete">Kan inte öppna hjälpfil</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -2951,6 +3727,65 @@ Vill du ersätta den?</translation>
     <message>
         <source>The document is not closable for the moment.</source>
         <translation>Dokumentet kan inte stängas för tillfället.</translation>
+    </message>
+    <message>
+        <source>No OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This system does not support OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Hjälp</translation>
+    </message>
+    <message>
+        <source>Unable to load documentation.
+In order to load it Qt 4.4 or higher is required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exporting PDF...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only one object selected. Please select two objects.
+Be aware the point where you click matters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select two objects.
+Be aware the point where you click matters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New boolean item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Navigation styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3134,6 +3969,21 @@ Vill du ersätta den?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdDDuplicateSelection</name>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Redigera</translation>
+    </message>
+    <message>
+        <source>Duplicate selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Put duplicates of the selected objects to the active document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdDelete</name>
     <message>
         <source>Edit</source>
@@ -3146,6 +3996,21 @@ Vill du ersätta den?</translation>
     <message>
         <source>Deletes the selected objects</source>
         <translation>Raderar de valda objekten</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdDemoMode</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished">Standardvy</translation>
+    </message>
+    <message>
+        <source>View turntable...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View turntable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3167,7 +4032,7 @@ Vill du ersätta den?</translation>
     <name>StdCmdDlgMacroExecute</name>
     <message>
         <source>Tools</source>
-        <translation>Verktyg</translation>
+        <translation type="obsolete">Verktyg</translation>
     </message>
     <message>
         <source>Macros ...</source>
@@ -3177,27 +4042,43 @@ Vill du ersätta den?</translation>
         <source>Opens a dialog to let you execute a recorded macro</source>
         <translation>Öppnar en dialog som låter dig utföra ett inspelat makro</translation>
     </message>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
 </context>
 <context>
     <name>StdCmdDlgMacroExecuteDirect</name>
     <message>
         <source>Tools</source>
-        <translation>Verktyg</translation>
+        <translation type="obsolete">Verktyg</translation>
     </message>
     <message>
         <source>Execute &amp;editor</source>
-        <translation>Starta r&amp;edigerare</translation>
+        <translation type="obsolete">Starta r&amp;edigerare</translation>
     </message>
     <message>
         <source>Execute the macro/script in the editor</source>
-        <translation>utför makrot/skriptet i redigeraren</translation>
+        <translation type="obsolete">utför makrot/skriptet i redigeraren</translation>
+    </message>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
+    <message>
+        <source>Execute macro</source>
+        <translation type="unfinished">Utför makro</translation>
+    </message>
+    <message>
+        <source>Execute the macro in the editor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>StdCmdDlgMacroRecord</name>
     <message>
         <source>Tools</source>
-        <translation>Verktyg</translation>
+        <translation type="obsolete">Verktyg</translation>
     </message>
     <message>
         <source>&amp;Macro recording ...</source>
@@ -3206,6 +4087,10 @@ Vill du ersätta den?</translation>
     <message>
         <source>Opens a dialog to record a macro</source>
         <translation>Öppnar en dialog för att spela in ett makro</translation>
+    </message>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
     </message>
 </context>
 <context>
@@ -3257,43 +4142,43 @@ Vill du ersätta den?</translation>
     <name>StdCmdDownloadOnlineHelp</name>
     <message>
         <source>Help</source>
-        <translation>Hjälp</translation>
+        <translation type="obsolete">Hjälp</translation>
     </message>
     <message>
         <source>Download online help</source>
-        <translation>Ladda ned online hjälp</translation>
+        <translation type="obsolete">Ladda ned online hjälp</translation>
     </message>
     <message>
         <source>Download %1&apos;s online help</source>
-        <translation>Ladda ned online hjälp för %1</translation>
+        <translation type="obsolete">Ladda ned online hjälp för %1</translation>
     </message>
     <message>
         <source>Non-existing directory</source>
-        <translation>Katalogen existerar inte</translation>
+        <translation type="obsolete">Katalogen existerar inte</translation>
     </message>
     <message>
         <source>The directory &apos;%1&apos; does not exist.
 
 Do you want to specify an existing directory?</source>
-        <translation>Katalogen &apos;%1&apos; existerar inte.
+        <translation type="obsolete">Katalogen &apos;%1&apos; existerar inte.
 
 Vill du ange en existerande katalog?</translation>
     </message>
     <message>
         <source>Missing permission</source>
-        <translation>Behörighet saknas</translation>
+        <translation type="obsolete">Behörighet saknas</translation>
     </message>
     <message>
         <source>You don&apos;t have write permission to &apos;%1&apos;
 
 Do you want to specify another directory?</source>
-        <translation>Du har inte behörighet att skriva till &apos;%1&apos;
+        <translation type="obsolete">Du har inte behörighet att skriva till &apos;%1&apos;
 
 Vill du ange en annan katalog?</translation>
     </message>
     <message>
         <source>Stop downloading</source>
-        <translation>Stoppa nedladdning</translation>
+        <translation type="obsolete">Stoppa nedladdning</translation>
     </message>
 </context>
 <context>
@@ -3414,18 +4299,74 @@ Vill du ange en annan katalog?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdMacroStartDebug</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
+    <message>
+        <source>Debug macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start debugging of macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMacroStepOver</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
+    <message>
+        <source>Step over</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdMacroStop</name>
     <message>
         <source>Tools</source>
-        <translation>Verktyg</translation>
+        <translation type="obsolete">Verktyg</translation>
     </message>
     <message>
         <source>S&amp;top macro recording</source>
-        <translation>S&amp;toppa makroinspelning</translation>
+        <translation type="obsolete">S&amp;toppa makroinspelning</translation>
     </message>
     <message>
         <source>Stop the macro recording session</source>
-        <translation>Stoppa makroinspelningssessionen</translation>
+        <translation type="obsolete">Stoppa makroinspelningssessionen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMacroStopDebug</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
+    <message>
+        <source>Stop debugging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop debugging of macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMacroStopRecord</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
+    <message>
+        <source>S&amp;top macro recording</source>
+        <translation type="unfinished">S&amp;toppa makroinspelning</translation>
+    </message>
+    <message>
+        <source>Stop the macro recording session</source>
+        <translation type="unfinished">Stoppa makroinspelningssessionen</translation>
     </message>
 </context>
 <context>
@@ -3437,6 +4378,21 @@ Vill du ange en annan katalog?</translation>
     <message>
         <source>Measure distance</source>
         <translation>Mät avstånd</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMeasurementSimple</name>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">Verktyg</translation>
+    </message>
+    <message>
+        <source>Mesure distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measures distance between two selected objects</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3531,6 +4487,21 @@ Vill du ange en annan katalog?</translation>
     <message>
         <source>Paste operation</source>
         <translation>Klistra in operation</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdPlacement</name>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Redigera</translation>
+    </message>
+    <message>
+        <source>Placement...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Place the selected objects</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3785,6 +4756,21 @@ Vill du ange en annan katalog?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdTextureMapping</name>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">Verktyg</translation>
+    </message>
+    <message>
+        <source>Texture mapping...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Texture mapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdTileWindows</name>
     <message>
         <source>Window</source>
@@ -3812,6 +4798,17 @@ Vill du ange en annan katalog?</translation>
     <message>
         <source>Tip of the day</source>
         <translation>Dagens tips</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdToggleBreakpoint</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
+    <message>
+        <source>Toggle breakpoint</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3845,6 +4842,21 @@ Vill du ange en annan katalog?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdToggleSelectability</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished">Standardvy</translation>
+    </message>
+    <message>
+        <source>Toggle selectability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggles the property of the objects to get selected in the 3D-View</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdToggleVisibility</name>
     <message>
         <source>Standard-View</source>
@@ -3872,6 +4884,21 @@ Vill du ange en annan katalog?</translation>
     <message>
         <source>Toggles this window</source>
         <translation>Växlar detta fönster</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdTransform</name>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Redigera</translation>
+    </message>
+    <message>
+        <source>Transform...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform the geometry of selected objects</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4357,14 +5384,81 @@ Vill du ange en annan katalog?</translation>
     <name>TaskAppearance</name>
     <message>
         <source>Appearance</source>
-        <translation>Utseende</translation>
+        <translation type="obsolete">Utseende</translation>
     </message>
 </context>
 <context>
     <name>TaskPanelView</name>
     <message>
         <source>Task View</source>
-        <translation>Uppgiftsvy</translation>
+        <translation type="obsolete">Uppgiftsvy</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>&amp;File</source>
+        <translation type="unfinished">&amp;Arkiv</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">R&amp;edigera</translation>
+    </message>
+    <message>
+        <source>Standard views</source>
+        <translation type="unfinished">Standardvyer</translation>
+    </message>
+    <message>
+        <source>&amp;Stereo</source>
+        <translation type="unfinished">&amp;Stereo</translation>
+    </message>
+    <message>
+        <source>&amp;Zoom</source>
+        <translation type="unfinished">&amp;Zoom</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation type="unfinished">Synlighet</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished">&amp;Visa</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation type="unfinished">Verk&amp;tyg</translation>
+    </message>
+    <message>
+        <source>&amp;Macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Windows</source>
+        <translation type="unfinished">&amp;Fönster</translation>
+    </message>
+    <message>
+        <source>&amp;On-line help</source>
+        <translation type="unfinished">&amp;Online hjälp</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="unfinished">&amp;Hjälp</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished">Fil</translation>
+    </message>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Makro</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Special Ops</source>
+        <translation type="unfinished">Special operationer</translation>
     </message>
 </context>
 <context>

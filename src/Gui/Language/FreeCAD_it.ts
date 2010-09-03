@@ -2,18 +2,73 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="it_IT">
 <context>
+    <name>Angle</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle Snap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>1 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>2 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>5 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>10 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>20 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>45 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>90 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>180 °</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CombiView</name>
     <message>
         <source>CombiView</source>
-        <translation>Vista combinata</translation>
+        <translation type="obsolete">Vista combinata</translation>
     </message>
     <message>
         <source>Project</source>
-        <translation>Progetto</translation>
+        <translation type="obsolete">Progetto</translation>
     </message>
     <message>
         <source>Tasks</source>
-        <translation>Azioni</translation>
+        <translation type="obsolete">Azioni</translation>
     </message>
 </context>
 <context>
@@ -21,6 +76,25 @@
     <message>
         <source>none</source>
         <translation>nessuno</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::CADNavigationStyle</name>
+    <message>
+        <source>Press left mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press left and middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scroll middle mouse button</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39,6 +113,13 @@
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Annulla</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::ControlSingleton</name>
+    <message>
+        <source>Task panel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -70,6 +151,61 @@
     <message>
         <source>Release date</source>
         <translation>Data revisione</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DemoMode</name>
+    <message>
+        <source>View Turntable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
+        <translation type="unfinished">Schermo intero</translation>
+    </message>
+    <message>
+        <source>Enable timer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>90°</source>
+        <translation type="unfinished">90°</translation>
+    </message>
+    <message utf8="true">
+        <source>-90°</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished">Ferma</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Chiudi</translation>
     </message>
 </context>
 <context>
@@ -509,6 +645,18 @@ Definire un&apos;altra scorciatoia.</translation>
         <source>Plot mode:</source>
         <translation>Modo di stampa:</translation>
     </message>
+    <message>
+        <source>Line transparency:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shape color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgEditorSettings</name>
@@ -697,6 +845,14 @@ Il file esiste già.</translation>
         <source>Do you really want to delete the macro &apos;%1&apos;?</source>
         <translation>Vuoi veramente cancellare la macro &apos;%1&apos;?</translation>
     </message>
+    <message>
+        <source>Cannot create file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation of file &apos;%1&apos; failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgMacroRecord</name>
@@ -710,7 +866,7 @@ Il file esiste già.</translation>
     </message>
     <message>
         <source>Start</source>
-        <translation>Inizia</translation>
+        <translation type="obsolete">Inizia</translation>
     </message>
     <message>
         <source>Stop</source>
@@ -719,6 +875,18 @@ Il file esiste già.</translation>
     <message>
         <source>Cancel</source>
         <translation>Annulla</translation>
+    </message>
+    <message>
+        <source>Macro path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Record</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -738,6 +906,14 @@ Il file esiste già.</translation>
     <message>
         <source>The macro &apos;%1&apos; already exists. Do you want to overwrite?</source>
         <translation>La macro &apos;%1&apos; esiste già. Vuoi sovrasciverla?</translation>
+    </message>
+    <message>
+        <source>The macro directory doesn&apos;t exist. Please, choose another one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose macro directory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -778,6 +954,10 @@ Il file esiste già.</translation>
         <source>Ambient color:</source>
         <translation>Colore ambiente:</translation>
     </message>
+    <message>
+        <source>Emissive color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelp</name>
@@ -787,27 +967,27 @@ Il file esiste già.</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>Download</translation>
+        <translation type="obsolete">Download</translation>
     </message>
     <message>
         <source>Enable user authorization</source>
-        <translation>Consenti autorizzazione utente</translation>
+        <translation type="obsolete">Consenti autorizzazione utente</translation>
     </message>
     <message>
         <source>Download online help from:</source>
-        <translation>Download aiuto in linea da:</translation>
+        <translation type="obsolete">Download aiuto in linea da:</translation>
     </message>
     <message>
         <source>To:</source>
-        <translation>A:</translation>
+        <translation type="obsolete">A:</translation>
     </message>
     <message>
         <source>Proxy server:</source>
-        <translation>Server proxy:</translation>
+        <translation type="obsolete">Server proxy:</translation>
     </message>
     <message>
         <source>Use proxy</source>
-        <translation>Utilizza un proxy</translation>
+        <translation type="obsolete">Utilizza un proxy</translation>
     </message>
     <message>
         <source>Help viewer</source>
@@ -815,7 +995,7 @@ Il file esiste già.</translation>
     </message>
     <message>
         <source>External browser</source>
-        <translation>Browser esterno</translation>
+        <translation type="obsolete">Browser esterno</translation>
     </message>
     <message>
         <source>Location of start page</source>
@@ -1026,6 +1206,60 @@ Specificare un&apos;altra cartella.</translation>
         <source>Errors:</source>
         <translation>Errori:</translation>
     </message>
+    <message>
+        <source>Redirect internal Python errors to output window</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgReportViewImp</name>
+    <message>
+        <source>Redirect Python errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In order to take effect this change you must restart the application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgRunExternal</name>
+    <message>
+        <source>Running external program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced &gt;&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Accept changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Discard changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Aiuto</translation>
+    </message>
+    <message>
+        <source>Select a file</source>
+        <translation type="unfinished">Seleziona un file</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettings3DView</name>
@@ -1051,15 +1285,15 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>3D Mouse Model</source>
-        <translation>Modello mouse 3D</translation>
+        <translation type="obsolete">Modello mouse 3D</translation>
     </message>
     <message>
         <source>Simple model</source>
-        <translation>Modello semplice</translation>
+        <translation type="obsolete">Modello semplice</translation>
     </message>
     <message>
         <source>Full model</source>
-        <translation>Modello completo</translation>
+        <translation type="obsolete">Modello completo</translation>
     </message>
     <message>
         <source>Enable anti-aliasing (slower)</source>
@@ -1071,23 +1305,23 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Selezione</translation>
+        <translation type="obsolete">Selezione</translation>
     </message>
     <message>
         <source>Enable pre-selection highlighting</source>
-        <translation>Attiva l&apos;evidenziamento di preselezione</translation>
+        <translation type="obsolete">Attiva l&apos;evidenziamento di preselezione</translation>
     </message>
     <message>
         <source>Selection color:</source>
-        <translation>Seleziona colore:</translation>
+        <translation type="obsolete">Seleziona colore:</translation>
     </message>
     <message>
         <source>Highlight color:</source>
-        <translation>Evidenzia colore:</translation>
+        <translation type="obsolete">Evidenzia colore:</translation>
     </message>
     <message>
         <source>Enable selection highlighting</source>
-        <translation>Attiva l&apos;evidenziamento di selezione</translation>
+        <translation type="obsolete">Attiva l&apos;evidenziamento di selezione</translation>
     </message>
     <message>
         <source>Camera type</source>
@@ -1103,26 +1337,49 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation>Colore dello sfondo</translation>
+        <translation type="obsolete">Colore dello sfondo</translation>
     </message>
     <message>
         <source>Color gradient</source>
-        <translation>Gradiente di colore</translation>
+        <translation type="obsolete">Gradiente di colore</translation>
     </message>
     <message>
         <source>Simple color</source>
-        <translation>Colore semplice</translation>
+        <translation type="obsolete">Colore semplice</translation>
     </message>
     <message>
         <source>Middle color</source>
-        <translation>Colore centrale</translation>
+        <translation type="obsolete">Colore centrale</translation>
+    </message>
+    <message>
+        <source>3D Navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mouse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intensity of backlight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable backlight color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgSettings3DViewImp</name>
+    <message>
+        <source>%1 navigation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
         <source>Color gradient settings</source>
-        <translation>Impostazioni gradiente di colore</translation>
+        <translation type="obsolete">Impostazioni gradiente di colore</translation>
     </message>
     <message>
         <source>Color model</source>
@@ -1216,6 +1473,10 @@ Specificare un&apos;altra cartella.</translation>
         <source>&amp;Decimals:</source>
         <translation>&amp;Decimali:</translation>
     </message>
+    <message>
+        <source>Color-gradient settings</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsColorGradientImp</name>
@@ -1229,11 +1490,11 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>The maximum value must be higher than &apos;%1&apos;.</source>
-        <translation>Il valore massimo deve essere maggiore di &apos;%1&apos;.</translation>
+        <translation type="obsolete">Il valore massimo deve essere maggiore di &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>The minimum value must be lower than &apos;%1&apos;.</source>
-        <translation>Il valore minimo deve essere minore di &apos;%1&apos;.</translation>
+        <translation type="obsolete">Il valore minimo deve essere minore di &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1279,6 +1540,18 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>Save thumbnail into project file when saving document</source>
         <translation>Salva la miniatura nel file del progetto insieme al documento</translation>
+    </message>
+    <message>
+        <source>Create up to backup files when resaving document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow duplicate object labels in one document</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1579,6 +1852,84 @@ Specificare un&apos;altra cartella.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::Dialog::DlgSettingsUnits</name>
+    <message>
+        <source>Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Units settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User view system:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard (mm/kg/s/degree)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MKS (m/kg/s/degree)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imperial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User units:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgSettingsViewColor</name>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished">Colori</translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished">Selezione</translation>
+    </message>
+    <message>
+        <source>Enable selection highlighting</source>
+        <translation type="unfinished">Attiva l&apos;evidenziamento di selezione</translation>
+    </message>
+    <message>
+        <source>Enable preselection highlighting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation type="unfinished">Colore dello sfondo</translation>
+    </message>
+    <message>
+        <source>Middle color</source>
+        <translation type="unfinished">Colore centrale</translation>
+    </message>
+    <message>
+        <source>Color gradient</source>
+        <translation type="unfinished">Gradiente di colore</translation>
+    </message>
+    <message>
+        <source>Simple color</source>
+        <translation type="unfinished">Colore semplice</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::DlgTipOfTheDay</name>
     <message>
         <source>Tip of the day</source>
@@ -1627,6 +1978,13 @@ Specificare un&apos;altra cartella.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::Dialog::DockablePlacement</name>
+    <message>
+        <source>Placement</source>
+        <translation type="unfinished">Disposizione</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::InputVector</name>
     <message>
         <source>Input vector</source>
@@ -1651,6 +2009,33 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>OK</source>
         <translation>OK</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::MouseButtons</name>
+    <message>
+        <source>Mouse buttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Panning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation:</source>
+        <translation type="unfinished">Rotazione:</translation>
+    </message>
+    <message>
+        <source>Zooming:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1775,7 +2160,7 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="obsolete">Annulla</translation>
     </message>
     <message>
         <source>Translation:</source>
@@ -1803,23 +2188,67 @@ Specificare un&apos;altra cartella.</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="obsolete">X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation>Y</translation>
+        <translation type="obsolete">Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
         <source>User defined...</source>
-        <translation>Definito dall&apos;utente...</translation>
+        <translation type="obsolete">Definito dall&apos;utente...</translation>
     </message>
     <message>
         <source>Axis:</source>
         <translation>Assi:</translation>
+    </message>
+    <message>
+        <source>Center:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pitch:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Roll:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yaw:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation axis wih angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Euler angles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply placement changes immediately</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply incremental changes to object placement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Chiudi</translation>
     </message>
 </context>
 <context>
@@ -1832,6 +2261,10 @@ Specificare un&apos;altra cartella.</translation>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished">Aggiorna</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::SceneModel</name>
@@ -1842,6 +2275,56 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>Nodes</source>
         <translation>Nodi</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::TextureMapping</name>
+    <message>
+        <source>Texture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Texture mapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Global</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Environment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image files (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The specified file is not a valid image file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No 3d view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active 3d view found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::Transform</name>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Annulla</translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1861,6 +2344,21 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>Cancel</source>
         <translation>Annulla</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::DockWnd::CombiView</name>
+    <message>
+        <source>CombiView</source>
+        <translation type="unfinished">Vista combinata</translation>
+    </message>
+    <message>
+        <source>Project</source>
+        <translation type="unfinished">Progetto</translation>
+    </message>
+    <message>
+        <source>Tasks</source>
+        <translation type="unfinished">Azioni</translation>
     </message>
 </context>
 <context>
@@ -1913,11 +2411,11 @@ Specificare un&apos;altra cartella.</translation>
     <name>Gui::DockWnd::PropertyView</name>
     <message>
         <source>View</source>
-        <translation>Visualizzazione</translation>
+        <translation type="obsolete">Visualizzazione</translation>
     </message>
     <message>
         <source>Data</source>
-        <translation>Data</translation>
+        <translation type="obsolete">Data</translation>
     </message>
 </context>
 <context>
@@ -1954,6 +2452,10 @@ Specificare un&apos;altra cartella.</translation>
         <source>Plain Text Files (*.txt *.log)</source>
         <translation>File di testo semplice (*.txt *.log)</translation>
     </message>
+    <message>
+        <source>Go to end</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::DockWnd::ReportView</name>
@@ -1971,6 +2473,13 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>Property View</source>
         <translation>Proprietà</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::DockWnd::TaskPanelView</name>
+    <message>
+        <source>Task View</source>
+        <translation type="unfinished">Vista azioni</translation>
     </message>
 </context>
 <context>
@@ -2026,6 +2535,17 @@ Specificare un&apos;altra cartella.</translation>
     <message>
         <source>No description for</source>
         <translation>Nessuna descrizione per</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::DocumentModel</name>
+    <message>
+        <source>Application</source>
+        <translation type="unfinished">Applicazione</translation>
+    </message>
+    <message>
+        <source>Labels &amp; Attributes</source>
+        <translation type="unfinished">Etichette &amp; Attributi</translation>
     </message>
 </context>
 <context>
@@ -2136,6 +2656,29 @@ Vuoi salvare le modifiche?</translation>
         <source>Bottom right</source>
         <translation>In basso a destra</translation>
     </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">Rimuovi</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::InventorNavigationStyle</name>
+    <message>
+        <source>Press CTRL and left mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press left mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scroll middle mouse button</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::LocationDialog</name>
@@ -2146,6 +2689,22 @@ Vuoi salvare le modifiche?</translation>
     <message>
         <source>Direction must not be the null vector</source>
         <translation>La direzione non può essere un vettore nullo</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation type="unfinished">Z</translation>
+    </message>
+    <message>
+        <source>User defined...</source>
+        <translation type="unfinished">Definito dall&apos;utente...</translation>
     </message>
 </context>
 <context>
@@ -2172,6 +2731,10 @@ Vuoi salvare le modifiche?</translation>
     <message>
         <source>Toggles this dockable window</source>
         <translation>Nascondi questa finestra</translation>
+    </message>
+    <message>
+        <source>Close All</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2222,6 +2785,17 @@ Vuoi salvare le modifiche?</translation>
     <message>
         <source>Value</source>
         <translation>Valore</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::PropertyView</name>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished">Data</translation>
     </message>
 </context>
 <context>
@@ -2290,7 +2864,11 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>Input for Python:</source>
-        <translation>Input per Python:</translation>
+        <translation type="obsolete">Input per Python:</translation>
+    </message>
+    <message>
+        <source>Unhandled std C++ exception.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2302,6 +2880,17 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     <message>
         <source>Uncomment</source>
         <translation>Rimuovi commento</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::PythonInputField</name>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Pulisci</translation>
     </message>
 </context>
 <context>
@@ -2350,6 +2939,49 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
 </context>
 <context>
+    <name>Gui::StdCmdDownloadOnlineHelp</name>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Aiuto</translation>
+    </message>
+    <message>
+        <source>Download online help</source>
+        <translation type="unfinished">Scarica l&apos;aiuto in linea</translation>
+    </message>
+    <message>
+        <source>Download %1&apos;s online help</source>
+        <translation type="unfinished">Scarica l&apos;aiuto in linea di %1</translation>
+    </message>
+    <message>
+        <source>Non-existing directory</source>
+        <translation type="unfinished">Cartella inesistente</translation>
+    </message>
+    <message>
+        <source>The directory &apos;%1&apos; does not exist.
+
+Do you want to specify an existing directory?</source>
+        <translation type="unfinished">La cartella &apos;%1&apos; non esiste.
+		
+Vuoi specificare una cartella esistente?</translation>
+    </message>
+    <message>
+        <source>Missing permission</source>
+        <translation type="unfinished">Permesso mancante</translation>
+    </message>
+    <message>
+        <source>You don&apos;t have write permission to &apos;%1&apos;
+
+Do you want to specify another directory?</source>
+        <translation type="unfinished">Non hai il permesso di scrittura in &apos;%1&apos;
+		
+Vuoi specificare un&apos;altra cartella?</translation>
+    </message>
+    <message>
+        <source>Stop downloading</source>
+        <translation type="unfinished">Interrompi il download</translation>
+    </message>
+</context>
+<context>
     <name>Gui::StdCmdPythonHelp</name>
     <message>
         <source>Tools</source>
@@ -2365,66 +2997,17 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
 </context>
 <context>
-    <name>Workbench</name>
+    <name>Gui::TaskBoxAngle</name>
     <message>
-        <source>&amp;File</source>
-        <translation>&amp;File</translation>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>Gui::TaskBoxPosition</name>
     <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Modifica</translation>
-    </message>
-    <message>
-        <source>Standard views</source>
-        <translation>Viste standard</translation>
-    </message>
-    <message>
-        <source>&amp;Stereo</source>
-        <translation>&amp;Stereo</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom</source>
-        <translation>&amp;Zoom</translation>
-    </message>
-    <message>
-        <source>Visibility</source>
-        <translation>Visibilità</translation>
-    </message>
-    <message>
-        <source>&amp;View</source>
-        <translation>&amp;Visualizza</translation>
-    </message>
-    <message>
-        <source>&amp;Tools</source>
-        <translation>&amp;Strumenti</translation>
-    </message>
-    <message>
-        <source>&amp;Windows</source>
-        <translation>&amp;Finestre</translation>
-    </message>
-    <message>
-        <source>&amp;On-line help</source>
-        <translation>&amp;Aiuto in linea</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation>&amp;Aiuto</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation>File</translation>
-    </message>
-    <message>
-        <source>Macro</source>
-        <translation>Macro</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation>Visualizza</translation>
-    </message>
-    <message>
-        <source>Special Ops</source>
-        <translation>Operazioni speciali</translation>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2458,11 +3041,11 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     <name>Gui::TaskView::TaskEditControl</name>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="obsolete">Annulla</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -2494,6 +3077,22 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     <message>
         <source>Chinese</source>
         <translation>Cinese</translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swedish</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2533,6 +3132,33 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
         <source>Application</source>
         <translation>Applicazione</translation>
     </message>
+    <message>
+        <source>Finish editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finish editing object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Activate document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Activate document %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::View3DInventor</name>
+    <message>
+        <source>Export PDF</source>
+        <translation type="unfinished">Esporta PDF</translation>
+    </message>
+    <message>
+        <source>PDF file (*.pdf)</source>
+        <translation type="unfinished">File PDF (*.pdf)</translation>
+    </message>
 </context>
 <context>
     <name>Gui::WidgetFactorySupplier</name>
@@ -2550,6 +3176,85 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
         <translation>Seleziona  l&apos;ambiente &apos;%1&apos;</translation>
+    </message>
+</context>
+<context>
+    <name>Position</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X:</source>
+        <translation type="unfinished">X:</translation>
+    </message>
+    <message>
+        <source>Y:</source>
+        <translation type="unfinished">Y:</translation>
+    </message>
+    <message>
+        <source>Z:</source>
+        <translation type="unfinished">Z:</translation>
+    </message>
+    <message>
+        <source>Grid Snap on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.1 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.5 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>10 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>20 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>50 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>100 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>200 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>500 mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1 m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5 m </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2578,6 +3283,14 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
         <source>Combo View</source>
         <translation>Vista combinata</translation>
     </message>
+    <message>
+        <source>Toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python console</source>
+        <translation type="unfinished">Console Python</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -2603,7 +3316,7 @@ Vuoi uscire senza salvare i tuoi dati?</translation>
     </message>
     <message>
         <source>FreeCAD Help</source>
-        <translation>Aiuto FreeCad</translation>
+        <translation type="obsolete">Aiuto FreeCad</translation>
     </message>
     <message>
         <source>Unable to launch Qt Assistant (%1)</source>
@@ -2793,7 +3506,7 @@ Vuoi continuare?</translation>
     </message>
     <message>
         <source>Cannot open help file</source>
-        <translation>Impossibile aprire il file di aiuto</translation>
+        <translation type="obsolete">Impossibile aprire il file di aiuto</translation>
     </message>
     <message>
         <source>Finish</source>
@@ -2884,6 +3597,65 @@ Vuoi sostituirlo?</translation>
     <message>
         <source>The document is not closable for the moment.</source>
         <translation>Impossibile chiudere il documento al momento.</translation>
+    </message>
+    <message>
+        <source>No OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This system does not support OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Aiuto</translation>
+    </message>
+    <message>
+        <source>Unable to load documentation.
+In order to load it Qt 4.4 or higher is required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exporting PDF...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only one object selected. Please select two objects.
+Be aware the point where you click matters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select two objects.
+Be aware the point where you click matters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New boolean item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Navigation styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3067,6 +3839,21 @@ Vuoi sostituirlo?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdDDuplicateSelection</name>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Modifica</translation>
+    </message>
+    <message>
+        <source>Duplicate selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Put duplicates of the selected objects to the active document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdDelete</name>
     <message>
         <source>Edit</source>
@@ -3079,6 +3866,21 @@ Vuoi sostituirlo?</translation>
     <message>
         <source>Deletes the selected objects</source>
         <translation>Elimina gli oggetti selezionati</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdDemoMode</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished">Vista standard</translation>
+    </message>
+    <message>
+        <source>View turntable...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View turntable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3100,7 +3902,7 @@ Vuoi sostituirlo?</translation>
     <name>StdCmdDlgMacroExecute</name>
     <message>
         <source>Tools</source>
-        <translation>Strumenti</translation>
+        <translation type="obsolete">Strumenti</translation>
     </message>
     <message>
         <source>Macros ...</source>
@@ -3110,27 +3912,43 @@ Vuoi sostituirlo?</translation>
         <source>Opens a dialog to let you execute a recorded macro</source>
         <translation>Apre una finestra di dialogo per eseguire una macro registrata</translation>
     </message>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
+    </message>
 </context>
 <context>
     <name>StdCmdDlgMacroExecuteDirect</name>
     <message>
         <source>Tools</source>
-        <translation>Strumenti</translation>
+        <translation type="obsolete">Strumenti</translation>
     </message>
     <message>
         <source>Execute &amp;editor</source>
-        <translation>Esegui &amp;editor</translation>
+        <translation type="obsolete">Esegui &amp;editor</translation>
     </message>
     <message>
         <source>Execute the macro/script in the editor</source>
-        <translation>Esegue la macro/script nell&apos;editor</translation>
+        <translation type="obsolete">Esegue la macro/script nell&apos;editor</translation>
+    </message>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
+    </message>
+    <message>
+        <source>Execute macro</source>
+        <translation type="unfinished">Esegui la macro</translation>
+    </message>
+    <message>
+        <source>Execute the macro in the editor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>StdCmdDlgMacroRecord</name>
     <message>
         <source>Tools</source>
-        <translation>Strumenti</translation>
+        <translation type="obsolete">Strumenti</translation>
     </message>
     <message>
         <source>&amp;Macro recording ...</source>
@@ -3139,6 +3957,10 @@ Vuoi sostituirlo?</translation>
     <message>
         <source>Opens a dialog to record a macro</source>
         <translation>Apre una finestra di dialogo per registrare una macro</translation>
+    </message>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
     </message>
 </context>
 <context>
@@ -3190,43 +4012,43 @@ Vuoi sostituirlo?</translation>
     <name>StdCmdDownloadOnlineHelp</name>
     <message>
         <source>Help</source>
-        <translation>Aiuto</translation>
+        <translation type="obsolete">Aiuto</translation>
     </message>
     <message>
         <source>Download online help</source>
-        <translation>Scarica l&apos;aiuto in linea</translation>
+        <translation type="obsolete">Scarica l&apos;aiuto in linea</translation>
     </message>
     <message>
         <source>Download %1&apos;s online help</source>
-        <translation>Scarica l&apos;aiuto in linea di %1</translation>
+        <translation type="obsolete">Scarica l&apos;aiuto in linea di %1</translation>
     </message>
     <message>
         <source>Non-existing directory</source>
-        <translation>Cartella inesistente</translation>
+        <translation type="obsolete">Cartella inesistente</translation>
     </message>
     <message>
         <source>The directory &apos;%1&apos; does not exist.
 
 Do you want to specify an existing directory?</source>
-        <translation>La cartella &apos;%1&apos; non esiste.
+        <translation type="obsolete">La cartella &apos;%1&apos; non esiste.
 		
 Vuoi specificare una cartella esistente?</translation>
     </message>
     <message>
         <source>Missing permission</source>
-        <translation>Permesso mancante</translation>
+        <translation type="obsolete">Permesso mancante</translation>
     </message>
     <message>
         <source>You don&apos;t have write permission to &apos;%1&apos;
 
 Do you want to specify another directory?</source>
-        <translation>Non hai il permesso di scrittura in &apos;%1&apos;
+        <translation type="obsolete">Non hai il permesso di scrittura in &apos;%1&apos;
 		
 Vuoi specificare un&apos;altra cartella?</translation>
     </message>
     <message>
         <source>Stop downloading</source>
-        <translation>Interrompi il download</translation>
+        <translation type="obsolete">Interrompi il download</translation>
     </message>
 </context>
 <context>
@@ -3347,18 +4169,74 @@ Vuoi specificare un&apos;altra cartella?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdMacroStartDebug</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
+    </message>
+    <message>
+        <source>Debug macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start debugging of macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMacroStepOver</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
+    </message>
+    <message>
+        <source>Step over</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdMacroStop</name>
     <message>
         <source>Tools</source>
-        <translation>Strumenti</translation>
+        <translation type="obsolete">Strumenti</translation>
     </message>
     <message>
         <source>S&amp;top macro recording</source>
-        <translation>I&amp;nterrompi la registrazione macro</translation>
+        <translation type="obsolete">I&amp;nterrompi la registrazione macro</translation>
     </message>
     <message>
         <source>Stop the macro recording session</source>
-        <translation>Interrompi la sessione di registrazione macro in corso</translation>
+        <translation type="obsolete">Interrompi la sessione di registrazione macro in corso</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMacroStopDebug</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
+    </message>
+    <message>
+        <source>Stop debugging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop debugging of macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMacroStopRecord</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
+    </message>
+    <message>
+        <source>S&amp;top macro recording</source>
+        <translation type="unfinished">I&amp;nterrompi la registrazione macro</translation>
+    </message>
+    <message>
+        <source>Stop the macro recording session</source>
+        <translation type="unfinished">Interrompi la sessione di registrazione macro in corso</translation>
     </message>
 </context>
 <context>
@@ -3370,6 +4248,21 @@ Vuoi specificare un&apos;altra cartella?</translation>
     <message>
         <source>Measure distance</source>
         <translation>Misura la distanza</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdMeasurementSimple</name>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">Strumenti</translation>
+    </message>
+    <message>
+        <source>Mesure distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measures distance between two selected objects</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3464,6 +4357,21 @@ Vuoi specificare un&apos;altra cartella?</translation>
     <message>
         <source>Paste operation</source>
         <translation>Incolla operazione</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdPlacement</name>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Modifica</translation>
+    </message>
+    <message>
+        <source>Placement...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Place the selected objects</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3718,6 +4626,21 @@ Vuoi specificare un&apos;altra cartella?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdTextureMapping</name>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">Strumenti</translation>
+    </message>
+    <message>
+        <source>Texture mapping...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Texture mapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdTileWindows</name>
     <message>
         <source>Window</source>
@@ -3745,6 +4668,17 @@ Vuoi specificare un&apos;altra cartella?</translation>
     <message>
         <source>Tip of the day</source>
         <translation>Consiglio del giorno</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdToggleBreakpoint</name>
+    <message>
+        <source>Macro</source>
+        <translation type="unfinished">Macro</translation>
+    </message>
+    <message>
+        <source>Toggle breakpoint</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3778,6 +4712,21 @@ Vuoi specificare un&apos;altra cartella?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdToggleSelectability</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished">Vista standard</translation>
+    </message>
+    <message>
+        <source>Toggle selectability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggles the property of the objects to get selected in the 3D-View</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdToggleVisibility</name>
     <message>
         <source>Standard-View</source>
@@ -3805,6 +4754,21 @@ Vuoi specificare un&apos;altra cartella?</translation>
     <message>
         <source>Toggles this window</source>
         <translation>Nasconde questa finestra</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdTransform</name>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Modifica</translation>
+    </message>
+    <message>
+        <source>Transform...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform the geometry of selected objects</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4290,14 +5254,81 @@ Vuoi specificare un&apos;altra cartella?</translation>
     <name>TaskAppearance</name>
     <message>
         <source>Appearance</source>
-        <translation>Aspetto</translation>
+        <translation type="obsolete">Aspetto</translation>
     </message>
 </context>
 <context>
     <name>TaskPanelView</name>
     <message>
         <source>Task View</source>
-        <translation>Vista azioni</translation>
+        <translation type="obsolete">Vista azioni</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>&amp;File</source>
+        <translation>&amp;File</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Modifica</translation>
+    </message>
+    <message>
+        <source>Standard views</source>
+        <translation>Viste standard</translation>
+    </message>
+    <message>
+        <source>&amp;Stereo</source>
+        <translation>&amp;Stereo</translation>
+    </message>
+    <message>
+        <source>&amp;Zoom</source>
+        <translation>&amp;Zoom</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation>Visibilità</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation>&amp;Visualizza</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation>&amp;Strumenti</translation>
+    </message>
+    <message>
+        <source>&amp;Windows</source>
+        <translation>&amp;Finestre</translation>
+    </message>
+    <message>
+        <source>&amp;On-line help</source>
+        <translation>&amp;Aiuto in linea</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;Aiuto</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation>File</translation>
+    </message>
+    <message>
+        <source>Macro</source>
+        <translation>Macro</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation>Visualizza</translation>
+    </message>
+    <message>
+        <source>Special Ops</source>
+        <translation>Operazioni speciali</translation>
+    </message>
+    <message>
+        <source>&amp;Macro</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
