@@ -17,10 +17,17 @@
     </message>
 </context>
 <context>
-    <name>Workbench</name>
+    <name>MeshPartGui::Workbench</name>
     <message>
         <source>MeshPart</source>
         <translation type="unfinished">Nätdetalj</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>MeshPart</source>
+        <translation type="obsolete">Nätdetalj</translation>
     </message>
 </context>
 </TS>
