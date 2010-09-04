@@ -5,7 +5,7 @@
     <name>CmdSketcherConstrainCoincident</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished">Sketcher</translation>
+        <translation>Sketcher</translation>
     </message>
     <message>
         <source>Constrain lock</source>
@@ -506,21 +506,6 @@
     <name>SketcherGui::Workbench</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished">Sketcher</translation>
-    </message>
-    <message>
-        <source>Sketcher geoms</source>
-        <translation type="unfinished">Geometrie dello Sketcher</translation>
-    </message>
-    <message>
-        <source>Sketcher constrains</source>
-        <translation type="unfinished">Vincoli dello Sketcher</translation>
-    </message>
-</context>
-<context>
-    <name>Workbench</name>
-    <message>
-        <source>Sketcher</source>
         <translation type="obsolete">Sketcher</translation>
     </message>
     <message>
@@ -528,8 +513,23 @@
         <translation type="obsolete">Geometrie dello Sketcher</translation>
     </message>
     <message>
-        <source>Sketcher constraints</source>
+        <source>Sketcher constrains</source>
         <translation type="obsolete">Vincoli dello Sketcher</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Sketcher</source>
+        <translation>Sketcher</translation>
+    </message>
+    <message>
+        <source>Sketcher geoms</source>
+        <translation>Geometrie dello Sketcher</translation>
+    </message>
+    <message>
+        <source>Sketcher constraints</source>
+        <translation>Vincoli dello Sketcher</translation>
     </message>
 </context>
 </TS>

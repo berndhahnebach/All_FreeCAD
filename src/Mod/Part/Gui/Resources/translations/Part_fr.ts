@@ -1351,27 +1351,19 @@ Please select a valid shape in the drop-down box first.</source>
     <name>PartGui::Workbench</name>
     <message>
         <source>&amp;Part</source>
-        <translation type="unfinished">&amp;Pièce</translation>
+        <translation type="obsolete">&amp;Pièce</translation>
     </message>
     <message>
         <source>&amp;Simple</source>
-        <translation type="unfinished">&amp;Simple</translation>
+        <translation type="obsolete">&amp;Simple</translation>
     </message>
     <message>
         <source>&amp;Parametric</source>
-        <translation type="unfinished">&amp;Parametrée</translation>
-    </message>
-    <message>
-        <source>Solids</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&amp;Parametrée</translation>
     </message>
     <message>
         <source>Part tools</source>
-        <translation type="unfinished">Outils Pièce</translation>
-    </message>
-    <message>
-        <source>Boolean</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Outils Pièce</translation>
     </message>
 </context>
 <context>
@@ -1433,19 +1425,19 @@ Please select a valid shape in the drop-down box first.</source>
     <name>Workbench</name>
     <message>
         <source>&amp;Part</source>
-        <translation type="obsolete">&amp;Pièce</translation>
+        <translation>&amp;Pièce</translation>
     </message>
     <message>
         <source>&amp;Simple</source>
-        <translation type="obsolete">&amp;Simple</translation>
+        <translation>&amp;Simple</translation>
     </message>
     <message>
         <source>&amp;Parametric</source>
-        <translation type="obsolete">&amp;Parametrée</translation>
+        <translation>&amp;Parametrée</translation>
     </message>
     <message>
         <source>Part tools</source>
-        <translation type="obsolete">Outils Pièce</translation>
+        <translation>Outils Pièce</translation>
     </message>
     <message>
         <source>Import</source>
@@ -1454,6 +1446,14 @@ Please select a valid shape in the drop-down box first.</source>
     <message>
         <source>Boolean Operators</source>
         <translation type="obsolete">Opérations booléennes</translation>
+    </message>
+    <message>
+        <source>Solids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

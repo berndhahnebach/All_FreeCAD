@@ -13,21 +13,21 @@
     </message>
     <message>
         <source>set a axle constraint between two objects</source>
-        <translation type="unfinished">Sätt en axelbegränsning mellan två objekt</translation>
+        <translation>Sätt en axelbegränsning mellan två objekt</translation>
     </message>
 </context>
 <context>
     <name>MeshPartGui::Workbench</name>
     <message>
         <source>MeshPart</source>
-        <translation type="unfinished">Nätdetalj</translation>
+        <translation type="obsolete">Nätdetalj</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>MeshPart</source>
-        <translation type="obsolete">Nätdetalj</translation>
+        <translation>Nätdetalj</translation>
     </message>
 </context>
 </TS>

@@ -172,11 +172,11 @@
     <name>PointsGui::Workbench</name>
     <message>
         <source>Points tools</source>
-        <translation>Herramientas de puntos</translation>
+        <translation type="obsolete">Herramientas de puntos</translation>
     </message>
     <message>
         <source>&amp;Points</source>
-        <translation>&amp;Puntos</translation>
+        <translation type="obsolete">&amp;Puntos</translation>
     </message>
 </context>
 <context>
@@ -190,11 +190,11 @@
     <name>Workbench</name>
     <message>
         <source>Points tools</source>
-        <translation type="obsolete">Herramientas de puntos</translation>
+        <translation>Herramientas de puntos</translation>
     </message>
     <message>
         <source>&amp;Points</source>
-        <translation type="obsolete">&amp;Puntos</translation>
+        <translation>&amp;Puntos</translation>
     </message>
 </context>
 </TS>

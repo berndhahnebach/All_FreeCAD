@@ -78,21 +78,6 @@
     </message>
 </context>
 <context>
-    <name>PartDesignGui::Workbench</name>
-    <message>
-        <source>PartDesign</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sketcher geoms</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sketcher constrains</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Wrong selection</source>
@@ -120,6 +105,13 @@
     </message>
     <message>
         <source>Fillet works only on parts</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Part Design</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

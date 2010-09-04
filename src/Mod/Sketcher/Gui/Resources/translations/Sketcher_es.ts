@@ -5,7 +5,7 @@
     <name>CmdSketcherConstrainCoincident</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished">Croquizador</translation>
+        <translation>Croquizador</translation>
     </message>
     <message>
         <source>Constrain lock</source>
@@ -506,21 +506,6 @@
     <name>SketcherGui::Workbench</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished">Croquizador</translation>
-    </message>
-    <message>
-        <source>Sketcher geoms</source>
-        <translation type="unfinished">Geometría del croquis</translation>
-    </message>
-    <message>
-        <source>Sketcher constrains</source>
-        <translation type="unfinished">Restricciones del croquis</translation>
-    </message>
-</context>
-<context>
-    <name>Workbench</name>
-    <message>
-        <source>Sketcher</source>
         <translation type="obsolete">Croquizador</translation>
     </message>
     <message>
@@ -528,8 +513,23 @@
         <translation type="obsolete">Geometría del croquis</translation>
     </message>
     <message>
-        <source>Sketcher constraints</source>
+        <source>Sketcher constrains</source>
         <translation type="obsolete">Restricciones del croquis</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Sketcher</source>
+        <translation>Croquizador</translation>
+    </message>
+    <message>
+        <source>Sketcher geoms</source>
+        <translation>Geometría del croquis</translation>
+    </message>
+    <message>
+        <source>Sketcher constraints</source>
+        <translation>Restricciones del croquis</translation>
     </message>
 </context>
 </TS>

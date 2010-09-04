@@ -112,19 +112,19 @@
     <name>DrawingGui::Workbench</name>
     <message>
         <source>Drawing</source>
-        <translation type="unfinished">Dibujo</translation>
+        <translation type="obsolete">Dibujo</translation>
     </message>
     <message>
         <source>I/O</source>
-        <translation type="unfinished">I/O</translation>
+        <translation type="obsolete">I/O</translation>
     </message>
     <message>
         <source>Drawing types</source>
-        <translation type="unfinished">Tipos de dibujos</translation>
+        <translation type="obsolete">Tipos de dibujos</translation>
     </message>
     <message>
         <source>Views</source>
-        <translation type="unfinished">Vistas</translation>
+        <translation type="obsolete">Vistas</translation>
     </message>
 </context>
 <context>
@@ -178,7 +178,7 @@
     <name>Workbench</name>
     <message>
         <source>Drawing</source>
-        <translation type="obsolete">Dibujo</translation>
+        <translation type="unfinished">Dibujo</translation>
     </message>
     <message>
         <source>I/O</source>

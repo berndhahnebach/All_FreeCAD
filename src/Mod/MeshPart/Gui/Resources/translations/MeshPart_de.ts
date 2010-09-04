@@ -17,7 +17,7 @@
     </message>
 </context>
 <context>
-    <name>MeshPartGui::Workbench</name>
+    <name>Workbench</name>
     <message>
         <source>MeshPart</source>
         <translation type="unfinished"></translation>

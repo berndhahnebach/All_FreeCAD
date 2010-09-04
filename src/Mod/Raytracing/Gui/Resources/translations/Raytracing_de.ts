@@ -188,10 +188,10 @@
     </message>
 </context>
 <context>
-    <name>RaytracingGui::Workbench</name>
+    <name>Workbench</name>
     <message>
         <source>&amp;Raytracing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Raytracing</translation>
     </message>
 </context>
 </TS>

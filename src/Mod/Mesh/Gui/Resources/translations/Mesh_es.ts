@@ -1010,23 +1010,23 @@ Please run the command to repair folds first</source>
     <name>MeshGui::Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="unfinished">Analizar</translation>
+        <translation type="obsolete">Analizar</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished">Booleano</translation>
+        <translation type="obsolete">Booleano</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="unfinished">&amp;Malla</translation>
+        <translation type="obsolete">&amp;Malla</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="unfinished">Herramientas de malla</translation>
+        <translation type="obsolete">Herramientas de malla</translation>
     </message>
     <message>
         <source>Mesh test suite</source>
-        <translation type="unfinished">Suite de test de malla</translation>
+        <translation type="obsolete">Suite de test de malla</translation>
     </message>
 </context>
 <context>
@@ -1200,19 +1200,19 @@ Questo potrebbe indurre strani risultati.</translation>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="obsolete">Analizar</translation>
+        <translation>Analizar</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="obsolete">Booleano</translation>
+        <translation>Booleano</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Malla</translation>
+        <translation>&amp;Malla</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="obsolete">Herramientas de malla</translation>
+        <translation>Herramientas de malla</translation>
     </message>
     <message>
         <source>Mesh test suite</source>

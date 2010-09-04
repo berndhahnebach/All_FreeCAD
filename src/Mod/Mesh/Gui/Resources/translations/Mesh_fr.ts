@@ -1010,23 +1010,23 @@ Please run the command to repair folds first</source>
     <name>MeshGui::Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="unfinished">Analyser</translation>
+        <translation type="obsolete">Analyser</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished">Opération booléenne</translation>
+        <translation type="obsolete">Opération booléenne</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="unfinished">&amp;Maillages</translation>
+        <translation type="obsolete">&amp;Maillages</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="unfinished">Outils de maillage</translation>
+        <translation type="obsolete">Outils de maillage</translation>
     </message>
     <message>
         <source>Mesh test suite</source>
-        <translation type="unfinished">Suite de test de maillage</translation>
+        <translation type="obsolete">Suite de test de maillage</translation>
     </message>
 </context>
 <context>
@@ -1188,19 +1188,19 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="obsolete">Analyser</translation>
+        <translation>Analyser</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="obsolete">Opération booléenne</translation>
+        <translation>Opération booléenne</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Maillages</translation>
+        <translation>&amp;Maillages</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="obsolete">Outils de maillage</translation>
+        <translation>Outils de maillage</translation>
     </message>
     <message>
         <source>Mesh test suite</source>

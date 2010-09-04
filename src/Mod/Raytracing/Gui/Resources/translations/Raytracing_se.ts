@@ -220,17 +220,14 @@
     </message>
 </context>
 <context>
-    <name>RaytracingGui::Workbench</name>
-    <message>
-        <source>&amp;Raytracing</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Workbench</name>
     <message>
         <source>Raytracing tools</source>
         <translation type="obsolete">Raytracing verktyg</translation>
+    </message>
+    <message>
+        <source>&amp;Raytracing</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
