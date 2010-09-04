@@ -177,5 +177,9 @@
         <source>Sketch based</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Parametric</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
