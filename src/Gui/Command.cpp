@@ -521,8 +521,6 @@ void Command::languageChange()
 // MacroCommand
 //===========================================================================
 
-/* TRANSLATOR Gui::MacroCommand */
-
 MacroCommand::MacroCommand(const char* name)
 #if defined (_MSC_VER)
         : Command( _strdup(name) )
