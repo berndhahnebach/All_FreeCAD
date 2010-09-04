@@ -69,7 +69,8 @@ char *QuantityNames[] = {
         "mass"        ,
         "temperature"
 };
-const QString  UnitsApi::getQuntityName(QuantityType t)
+
+const QString  UnitsApi::getQuantityName(QuantityType t)
 {
     // check limits
     assert(t<9);
@@ -101,14 +102,14 @@ UnitsApi::~UnitsApi()
 
 double UnitsApi::translateUnit(const char* str)
 {
-     bool temp;
-    return parse( str,temp ); 
+    bool temp;
+    return parse(str,temp );
 }
 
 double UnitsApi::translateUnit(const QString & str)
 {
-     bool temp;
-    return parse( str.toUtf8() ,temp);  
+    bool temp;
+    return parse(str.toUtf8() ,temp);
 }
 
 
@@ -140,7 +141,7 @@ double UnitsApi::toDblWithUserPrefs(QuantityType t,const char* Str)
     bool UsedUnit;
     double Value = parse( Str,UsedUnit ); 
 
-    if(UsedUnit)
+    if (UsedUnit)
         return Value;
     else
         return Value/UserPrefFactor[t];
@@ -243,7 +244,7 @@ double UnitsApi::parse(const char* buffer,bool &UsedUnit)
     // free the scan buffer
     UnitParser::UnitsApi_delete_buffer (my_string_buffer);
 
-    if(ScanResult == DOUBLE_MIN)
+    if (ScanResult == DOUBLE_MIN)
         throw Base::Exception("Unknown error in Unit expresion");
     return ScanResult;
 }

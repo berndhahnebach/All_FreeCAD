@@ -80,21 +80,21 @@ public:
     static double toDblWithUserPrefs(QuantityType t,double UserVal);
     /// generate a value for a quantity with default user prefered system
     static double toDblWithUserPrefs(QuantityType t,PyObject *ArgObj);
-   //@}
+    //@}
 
-   /** @name query and set the user preferences */
+    /** @name query and set the user preferences */
     //@{
     /// set the default unit of a quantity type (e.g. m/s)
     static void setPrefOf(QuantityType t,const char* Str);
     /// get the default unit of a quantity (e.g. m/s)
     static const QString & getPrefUnitOf(QuantityType t);
     /// get the name of a quantity (e.g. lenth)
-    static const QString getQuntityName(QuantityType t);
+    static const QString getQuantityName(QuantityType t);
     /// get the translation factor for the default unit of a quantity
     static const double getPrefFactorOf(QuantityType t);
     /// set the application defaults
     static void setDefaults(void);
-   //@}
+    //@}
 
     double Result;
 
@@ -103,7 +103,6 @@ public:
 
 
 protected:
-
     // not used at the moment
     static UnitsSchema *  UserPrefSystem;
 
@@ -118,11 +117,7 @@ protected:
 protected: // the python API wrapper methodes
     static PyObject *sTranslateUnit   (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject *sGetWithPrefs    (PyObject *self,PyObject *args,PyObject *kwd);
-
-
 };
-
-
 
 } // namespace Base
 

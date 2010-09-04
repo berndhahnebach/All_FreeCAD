@@ -53,15 +53,13 @@ DlgSettingsUnitsImp::DlgSettingsUnitsImp(QWidget* parent)
 
 
     tableWidget->setRowCount(10);
-    for(int i = 0 ; i<9;i++){
-        QTableWidgetItem *newItem = new QTableWidgetItem(UnitsApi::getQuntityName((Base::QuantityType)i));
+    for (int i = 0 ; i<9;i++) {
+        QTableWidgetItem *newItem = new QTableWidgetItem(UnitsApi::getQuantityName((Base::QuantityType)i));
         tableWidget->setItem(i, 0, newItem);
         
         newItem = new QTableWidgetItem(UnitsApi::getPrefUnitOf((Base::QuantityType)i));
         tableWidget->setItem(i, 1, newItem);
-
     }
-
 }
 
 /** 

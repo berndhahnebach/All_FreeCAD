@@ -21,7 +21,7 @@
     </message>
     <message>
         <source>Angle Snap</source>
-        <translation>Schnappwinkel</translation>
+        <translation>Einrastwinkel</translation>
     </message>
     <message utf8="true">
         <source>1 °</source>
@@ -1858,39 +1858,39 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <source>Units settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <source>User view system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Einheitensystem:</translation>
     </message>
     <message>
         <source>Standard (mm/kg/s/degree)</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard (mm/kg/s/Grad)</translation>
     </message>
     <message>
         <source>MKS (m/kg/s/degree)</source>
-        <translation type="unfinished"></translation>
+        <translation>MKS (m/kg/s/Grad)</translation>
     </message>
     <message>
         <source>Imperial</source>
-        <translation type="unfinished"></translation>
+        <translation>Imperiales System</translation>
     </message>
     <message>
         <source>User units:</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzereinheiten:</translation>
     </message>
     <message>
-        <source>magnitude</source>
-        <translation type="unfinished"></translation>
+        <source>Magnitude</source>
+        <translation>Größe</translation>
     </message>
     <message>
-        <source>unit</source>
-        <translation type="unfinished"></translation>
+        <source>Unit</source>
+        <translation>Einheit</translation>
     </message>
     <message>
         <source>set to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Setzen:</translation>
     </message>
 </context>
 <context>
@@ -2231,11 +2231,11 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <source>Apply placement changes immediately</source>
-        <translation type="unfinished"></translation>
+        <translation>Änderungen sofort übernehmen</translation>
     </message>
     <message>
         <source>Apply incremental changes to object placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Änderungen an Objektplatzierung inkrementell übernehmen</translation>
     </message>
     <message>
         <source>Apply</source>
@@ -3170,79 +3170,79 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <name>Position</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <source>X:</source>
-        <translation type="unfinished">X:</translation>
+        <translation>X:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation type="unfinished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>Z:</source>
-        <translation type="unfinished">Z:</translation>
+        <translation>Z:</translation>
     </message>
     <message>
         <source>Grid Snap on</source>
-        <translation type="unfinished"></translation>
+        <translation>Einrastgitter</translation>
     </message>
     <message>
         <source>0.1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>0.1 mm</translation>
     </message>
     <message>
         <source>0.5 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5 mm</translation>
     </message>
     <message>
         <source>1 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>1 mm</translation>
     </message>
     <message>
         <source>2 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>2 mm</translation>
     </message>
     <message>
         <source>5 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>5 mm</translation>
     </message>
     <message>
         <source>10 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>10 mm</translation>
     </message>
     <message>
         <source>20 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>20 mm</translation>
     </message>
     <message>
         <source>50 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>50 mm</translation>
     </message>
     <message>
         <source>100 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>100 mm</translation>
     </message>
     <message>
         <source>200 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>200 mm</translation>
     </message>
     <message>
         <source>500 mm</source>
-        <translation type="unfinished"></translation>
+        <translation>500 mm</translation>
     </message>
     <message>
         <source>1 m</source>
-        <translation type="unfinished"></translation>
+        <translation>1 m</translation>
     </message>
     <message>
         <source>2 m</source>
-        <translation type="unfinished"></translation>
+        <translation>2 m</translation>
     </message>
     <message>
         <source>5 m </source>
-        <translation type="unfinished"></translation>
+        <translation>5 m </translation>
     </message>
 </context>
 <context>
@@ -3613,33 +3613,36 @@ Möchten Sie sie ersetzen?</translation>
     <message>
         <source>Unable to load documentation.
 In order to load it Qt 4.4 or higher is required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation kann nicht geladen werden.
+Um diese zu laden ist Qt 4.4 oder höher erforderlich.</translation>
     </message>
     <message>
         <source>%1 Help</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Hilfe</translation>
     </message>
     <message>
         <source>Exporting PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF exportieren...</translation>
     </message>
     <message>
         <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Falsche Selektion</translation>
     </message>
     <message>
         <source>Only one object selected. Please select two objects.
 Be aware the point where you click matters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur ein Objekt selektiert. Bitte wählen Sie zwei Objekte aus.
+Vorsicht, der Punkt, auf den Sie klicken, ist von Bedeutung.</translation>
     </message>
     <message>
         <source>Please select two objects.
 Be aware the point where you click matters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie bitte zwei Objekte.
+Vorsicht, der Punkt, auf den Sie klicken, ist von Bedeutung.</translation>
     </message>
     <message>
         <source>New boolean item</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuer Bool&apos;scher Wert</translation>
     </message>
     <message>
         <source>Navigation styles</source>
@@ -3647,15 +3650,15 @@ Be aware the point where you click matters.</source>
     </message>
     <message>
         <source>%1 navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Navigation</translation>
     </message>
     <message>
         <source>Move annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftung verschieben</translation>
     </message>
     <message>
         <source>Transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformieren</translation>
     </message>
 </context>
 <context>
@@ -3846,11 +3849,11 @@ Be aware the point where you click matters.</source>
     </message>
     <message>
         <source>Duplicate selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selektion klonen</translation>
     </message>
     <message>
         <source>Put duplicates of the selected objects to the active document</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplikate der selektierten Objekte in aktives Dokument einfügen</translation>
     </message>
 </context>
 <context>
@@ -4180,7 +4183,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Start debugging of macro</source>
-        <translation type="unfinished"></translation>
+        <translation>Debuggen des Makros starten</translation>
     </message>
 </context>
 <context>
@@ -4191,7 +4194,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Step over</source>
-        <translation type="unfinished"></translation>
+        <translation>Einzelschritt über</translation>
     </message>
 </context>
 <context>
@@ -4217,11 +4220,11 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Stop debugging</source>
-        <translation type="unfinished"></translation>
+        <translation>Debugger anhalten</translation>
     </message>
     <message>
         <source>Stop debugging of macro</source>
-        <translation type="unfinished"></translation>
+        <translation>Debuggen des Makros anhalten</translation>
     </message>
 </context>
 <context>
