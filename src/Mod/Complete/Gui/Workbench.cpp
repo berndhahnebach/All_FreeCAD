@@ -50,6 +50,7 @@ using namespace CompleteGui;
     qApp->translate("Workbench", "&Raytracing");
     qApp->translate("Workbench", "&Drafting");
     qApp->translate("Workbench", "Sketch based");
+    qApp->translate("Workbench", "Parametric");
 #endif
 
 TYPESYSTEM_SOURCE(CompleteGui::Workbench, Gui::StdWorkbench)

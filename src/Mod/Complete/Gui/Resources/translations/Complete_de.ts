@@ -222,5 +222,9 @@
         <source>Sketch based</source>
         <translation>Skizzenbasiert</translation>
     </message>
+    <message>
+        <source>Parametric</source>
+        <translation>Parametrisch</translation>
+    </message>
 </context>
 </TS>
