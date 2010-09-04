@@ -3161,17 +3161,6 @@ Vuoi specificare un&apos;altra cartella?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::WidgetFactorySupplier</name>
-    <message>
-        <source>General</source>
-        <translation>Generale</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation>Visualizza</translation>
-    </message>
-</context>
-<context>
     <name>Gui::WorkbenchGroup</name>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
@@ -3294,6 +3283,14 @@ Vuoi specificare un&apos;altra cartella?</translation>
 </context>
 <context>
     <name>QObject</name>
+    <message>
+        <source>General</source>
+        <translation>Generale</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Visualizza</translation>
+    </message>
     <message>
         <source>Unknown filetype</source>
         <translation>Tipo di file sconosciuto</translation>

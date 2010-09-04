@@ -3063,17 +3063,6 @@ Do you want to specify another directory?</source>
     </message>
 </context>
 <context>
-    <name>Gui::WidgetFactorySupplier</name>
-    <message>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Gui::WorkbenchGroup</name>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
@@ -3196,6 +3185,14 @@ Do you want to specify another directory?</source>
 </context>
 <context>
     <name>QObject</name>
+    <message>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Unknown filetype</source>
         <translation type="unfinished"></translation>

@@ -63,8 +63,8 @@ class PartDesignWorkbench ( Workbench ):
                 " ......+++..    ",
                 "        ...     "};
 			"""
-	MenuText = "PartDesign"
-	ToolTip = "PartDesign workbench"
+        MenuText = "Part Design"
+        ToolTip = "Part Design workbench"
 
 	def Initialize(self):
 		# load the module

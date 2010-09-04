@@ -102,8 +102,8 @@ void AppPartGuiExport initPartGui()
     CreateParamPartCommands();
 
     // register preferences pages
-    (void)new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral>      ("Part design");
-    (void)new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPart>   ("Part design");
+    (void)new Gui::PrefPageProducer<PartGui::DlgSettingsGeneral>      ( QT_TRANSLATE_NOOP("QObject","Part design") );
+    (void)new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPart>   ( QT_TRANSLATE_NOOP("QObject","Part design") );
     Gui::ViewProviderBuilder::add(
         Part::PropertyPartShape::getClassTypeId(),
         PartGui::ViewProviderPart::getClassTypeId());

@@ -3291,17 +3291,6 @@ Vill du ange en annan katalog?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::WidgetFactorySupplier</name>
-    <message>
-        <source>General</source>
-        <translation>Allmänt</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation>Fönster</translation>
-    </message>
-</context>
-<context>
     <name>Gui::WorkbenchGroup</name>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
@@ -3424,6 +3413,14 @@ Vill du ange en annan katalog?</translation>
 </context>
 <context>
     <name>QObject</name>
+    <message>
+        <source>General</source>
+        <translation>Allmänt</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Fönster</translation>
+    </message>
     <message>
         <source>Unknown filetype</source>
         <translation>Okänd filtyp</translation>

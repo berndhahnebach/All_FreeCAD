@@ -48,7 +48,6 @@
 using namespace Gui;
 using namespace Gui::Dialog;
 
-/* TRANSLATOR Gui::WidgetFactorySupplier */
 /**
  * Registers all preference pages or widgets to create them dynamically at any later time.
  */
@@ -57,15 +56,15 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     // ADD YOUR PREFERENCE PAGES HERE 
     //
     //
-    new PrefPageProducer<DlgGeneralImp>         ( QT_TR_NOOP("General") );
-  //new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TR_NOOP("General") );
-    new PrefPageProducer<DlgSettingsDocumentImp>( QT_TR_NOOP("General") );
-    new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TR_NOOP("General") );
-    new PrefPageProducer<DlgReportViewImp>      ( QT_TR_NOOP("General") );
-    new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TR_NOOP("General") );
-    new PrefPageProducer<DlgSettingsUnitsImp>   ( QT_TR_NOOP("General") );
-    new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TR_NOOP("Display") );
-    new PrefPageProducer<DlgSettingsViewColor>  ( QT_TR_NOOP("Display") );
+    new PrefPageProducer<DlgGeneralImp>         ( QT_TRANSLATE_NOOP("QObject","General") );
+  //new PrefPageProducer<DlgOnlineHelpImp>      ( QT_TRANSLATE_NOOP("QObject","General") );
+    new PrefPageProducer<DlgSettingsDocumentImp>( QT_TRANSLATE_NOOP("QObject","General") );
+    new PrefPageProducer<DlgSettingsEditorImp>  ( QT_TRANSLATE_NOOP("QObject","General") );
+    new PrefPageProducer<DlgReportViewImp>      ( QT_TRANSLATE_NOOP("QObject","General") );
+    new PrefPageProducer<DlgSettingsMacroImp>   ( QT_TRANSLATE_NOOP("QObject","General") );
+    new PrefPageProducer<DlgSettingsUnitsImp>   ( QT_TRANSLATE_NOOP("QObject","General") );
+    new PrefPageProducer<DlgSettings3DViewImp>  ( QT_TRANSLATE_NOOP("QObject","Display") );
+    new PrefPageProducer<DlgSettingsViewColor>  ( QT_TRANSLATE_NOOP("QObject","Display") );
 
     // ADD YOUR CUSTOMIZE PAGES HERE
     //
