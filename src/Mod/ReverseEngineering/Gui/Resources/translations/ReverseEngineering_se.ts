@@ -21,7 +21,7 @@
     <name>ReverseEngineeringGui::Workbench</name>
     <message>
         <source>Reverse Engineering</source>
-        <translation>Reverse Engineering</translation>
+        <translation type="obsolete">Reverse Engineering</translation>
     </message>
 </context>
 <context>
@@ -29,7 +29,7 @@
     <message>
         <source>Reverse Engineering</source>
         <translatorcomment>The term &quot;Reverse engineering&quot; is also used in Sweden</translatorcomment>
-        <translation type="obsolete">Reverse Engineering</translation>
+        <translation>Reverse Engineering</translation>
     </message>
 </context>
 </TS>

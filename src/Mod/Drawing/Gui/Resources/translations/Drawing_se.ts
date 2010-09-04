@@ -112,19 +112,19 @@
     <name>DrawingGui::Workbench</name>
     <message>
         <source>Drawing</source>
-        <translation type="unfinished">Ritning</translation>
+        <translation type="obsolete">Ritning</translation>
     </message>
     <message>
         <source>I/O</source>
-        <translation type="unfinished">I/O</translation>
+        <translation type="obsolete">I/O</translation>
     </message>
     <message>
         <source>Drawing types</source>
-        <translation type="unfinished">Ritningstyper</translation>
+        <translation type="obsolete">Ritningstyper</translation>
     </message>
     <message>
         <source>Views</source>
-        <translation type="unfinished">Vyer</translation>
+        <translation type="obsolete">Vyer</translation>
     </message>
 </context>
 <context>
@@ -178,7 +178,7 @@
     <name>Workbench</name>
     <message>
         <source>Drawing</source>
-        <translation type="obsolete">Ritning</translation>
+        <translation type="unfinished">Ritning</translation>
     </message>
     <message>
         <source>I/O</source>

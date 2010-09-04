@@ -86,7 +86,7 @@
     <name>ImageGui::Workbench</name>
     <message>
         <source>Image</source>
-        <translation>Image</translation>
+        <translation type="obsolete">Image</translation>
     </message>
 </context>
 <context>
@@ -108,7 +108,7 @@
     <name>Workbench</name>
     <message>
         <source>Image</source>
-        <translation type="obsolete">Image</translation>
+        <translation>Image</translation>
     </message>
 </context>
 </TS>

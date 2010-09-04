@@ -5,7 +5,7 @@
     <name>CmdDrawingExportPage</name>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <source>&amp;Export page...</source>
@@ -112,19 +112,19 @@
     <name>DrawingGui::Workbench</name>
     <message>
         <source>Drawing</source>
-        <translation type="unfinished">Zeichnung</translation>
+        <translation type="obsolete">Zeichnung</translation>
     </message>
     <message>
         <source>I/O</source>
-        <translation type="unfinished">I/O</translation>
+        <translation type="obsolete">I/O</translation>
     </message>
     <message>
         <source>Drawing types</source>
-        <translation type="unfinished">Zeichnugstypen</translation>
+        <translation type="obsolete">Zeichnugstypen</translation>
     </message>
     <message>
         <source>Views</source>
-        <translation type="unfinished">Ansichten</translation>
+        <translation type="obsolete">Ansichten</translation>
     </message>
 </context>
 <context>
@@ -178,7 +178,7 @@
     <name>Workbench</name>
     <message>
         <source>Drawing</source>
-        <translation type="obsolete">Zeichnung</translation>
+        <translation>Zeichnung</translation>
     </message>
     <message>
         <source>I/O</source>

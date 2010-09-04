@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="de_DE">
 <context>
     <name>CmdRobotAddToolShape</name>
     <message>
@@ -446,25 +446,6 @@
     </message>
 </context>
 <context>
-    <name>RobotGui::Workbench</name>
-    <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Insert Robots</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export trajectory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Robot</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>TaskRobotControl</name>
     <message>
         <source>Form</source>
@@ -567,6 +548,25 @@
     </message>
     <message>
         <source>clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Robots</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export trajectory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

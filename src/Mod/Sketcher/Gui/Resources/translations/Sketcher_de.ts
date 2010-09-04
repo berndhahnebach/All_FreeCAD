@@ -505,31 +505,27 @@
 <context>
     <name>SketcherGui::Workbench</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Sketcher geoms</source>
-        <translation type="unfinished">Skizzierer geometrie</translation>
+        <translation type="obsolete">Skizzierer geometrie</translation>
     </message>
     <message>
         <source>Sketcher constrains</source>
-        <translation type="unfinished">Skizzierer Bedingungen</translation>
+        <translation type="obsolete">Skizzierer Bedingungen</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>Sketcher</source>
-        <translation type="obsolete">Skizze</translation>
+        <translation>Skizze</translation>
     </message>
     <message>
         <source>Sketcher geoms</source>
-        <translation type="obsolete">Geometrien</translation>
+        <translation>Geometrien</translation>
     </message>
     <message>
         <source>Sketcher constraints</source>
-        <translation type="obsolete">Bedingungen</translation>
+        <translation>Bedingungen</translation>
     </message>
 </context>
 </TS>

@@ -1010,23 +1010,23 @@ Please run the command to repair folds first</source>
     <name>MeshGui::Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="unfinished">Analysera</translation>
+        <translation type="obsolete">Analysera</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished">Boolesk</translation>
+        <translation type="obsolete">Boolesk</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="unfinished">&amp;Nät</translation>
+        <translation type="obsolete">&amp;Nät</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="unfinished">Nätverktyg</translation>
+        <translation type="obsolete">Nätverktyg</translation>
     </message>
     <message>
         <source>Mesh test suite</source>
-        <translation type="unfinished">Nät testsvit</translation>
+        <translation type="obsolete">Nät testsvit</translation>
     </message>
 </context>
 <context>
@@ -1188,19 +1188,19 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="obsolete">Analysera</translation>
+        <translation>Analysera</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="obsolete">Boolesk</translation>
+        <translation>Boolesk</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Nät</translation>
+        <translation>&amp;Nät</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="obsolete">Nätverktyg</translation>
+        <translation>Nätverktyg</translation>
     </message>
     <message>
         <source>Mesh test suite</source>

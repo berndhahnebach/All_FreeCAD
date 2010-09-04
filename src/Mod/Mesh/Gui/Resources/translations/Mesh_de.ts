@@ -1011,23 +1011,23 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
     <name>MeshGui::Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation>Analysieren</translation>
+        <translation type="obsolete">Analysieren</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation>Bool&apos;sche Operationen</translation>
+        <translation type="obsolete">Bool&apos;sche Operationen</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation>&amp;Netze</translation>
+        <translation type="obsolete">&amp;Netze</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation>Netz-Werkzeuge</translation>
+        <translation type="obsolete">Netz-Werkzeuge</translation>
     </message>
     <message>
         <source>Mesh test suite</source>
-        <translation>Netz Testumgebung</translation>
+        <translation type="obsolete">Netz Testumgebung</translation>
     </message>
 </context>
 <context>
@@ -1189,19 +1189,19 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="obsolete">Analysieren</translation>
+        <translation>Analysieren</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="obsolete">Bool&apos;sche Operationen</translation>
+        <translation>Bool&apos;sche Operationen</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Netze</translation>
+        <translation>&amp;Netze</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="obsolete">Netz-Werkzeuge</translation>
+        <translation>Netz-Werkzeuge</translation>
     </message>
     <message>
         <source>Mesh test suite</source>

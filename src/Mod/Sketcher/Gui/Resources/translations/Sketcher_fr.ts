@@ -5,7 +5,7 @@
     <name>CmdSketcherConstrainCoincident</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished">Esquisse</translation>
+        <translation>Esquisse</translation>
     </message>
     <message>
         <source>Constrain lock</source>
@@ -24,7 +24,7 @@
     <name>CmdSketcherConstrainDistance</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished">Esquisse</translation>
+        <translation>Esquisse</translation>
     </message>
     <message>
         <source>Constrain distance</source>
@@ -506,21 +506,6 @@
     <name>SketcherGui::Workbench</name>
     <message>
         <source>Sketcher</source>
-        <translation type="unfinished">Esquisse</translation>
-    </message>
-    <message>
-        <source>Sketcher geoms</source>
-        <translation type="unfinished">Géométries</translation>
-    </message>
-    <message>
-        <source>Sketcher constrains</source>
-        <translation type="unfinished">Contraintes</translation>
-    </message>
-</context>
-<context>
-    <name>Workbench</name>
-    <message>
-        <source>Sketcher</source>
         <translation type="obsolete">Esquisse</translation>
     </message>
     <message>
@@ -528,8 +513,23 @@
         <translation type="obsolete">Géométries</translation>
     </message>
     <message>
-        <source>Sketcher constraints</source>
+        <source>Sketcher constrains</source>
         <translation type="obsolete">Contraintes</translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Sketcher</source>
+        <translation>Esquisse</translation>
+    </message>
+    <message>
+        <source>Sketcher geoms</source>
+        <translation>Géométries</translation>
+    </message>
+    <message>
+        <source>Sketcher constraints</source>
+        <translation>Contraintes</translation>
     </message>
 </context>
 </TS>

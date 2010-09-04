@@ -1002,23 +1002,23 @@ Please run the command to repair folds first</source>
     <name>MeshGui::Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="unfinished">Analizza</translation>
+        <translation type="obsolete">Analizza</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished">Booleano</translation>
+        <translation type="obsolete">Booleano</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="unfinished">&amp;Mesh</translation>
+        <translation type="obsolete">&amp;Mesh</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="unfinished">Strumenti Mesh</translation>
+        <translation type="obsolete">Strumenti Mesh</translation>
     </message>
     <message>
         <source>Mesh test suite</source>
-        <translation type="unfinished">Ambiente di test mesh</translation>
+        <translation type="obsolete">Ambiente di test mesh</translation>
     </message>
 </context>
 <context>
@@ -1192,19 +1192,19 @@ Questo potrebbe indurre strani risultati.</translation>
     <name>Workbench</name>
     <message>
         <source>Analyze</source>
-        <translation type="obsolete">Analizza</translation>
+        <translation>Analizza</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="obsolete">Booleano</translation>
+        <translation>Booleano</translation>
     </message>
     <message>
         <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Mesh</translation>
+        <translation>&amp;Mesh</translation>
     </message>
     <message>
         <source>Mesh tools</source>
-        <translation type="obsolete">Strumenti Mesh</translation>
+        <translation>Strumenti Mesh</translation>
     </message>
     <message>
         <source>Mesh test suite</source>

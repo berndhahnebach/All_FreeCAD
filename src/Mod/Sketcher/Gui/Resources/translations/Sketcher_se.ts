@@ -505,31 +505,27 @@
 <context>
     <name>SketcherGui::Workbench</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Sketcher geoms</source>
-        <translation type="unfinished">Skissgeometrier</translation>
+        <translation type="obsolete">Skissgeometrier</translation>
     </message>
     <message>
         <source>Sketcher constrains</source>
-        <translation type="unfinished">Skissbegränsningar</translation>
+        <translation type="obsolete">Skissbegränsningar</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>Sketcher</source>
-        <translation type="obsolete">Skissare</translation>
+        <translation>Skissare</translation>
     </message>
     <message>
         <source>Sketcher geoms</source>
-        <translation type="obsolete">Skissgeometrier</translation>
+        <translation>Skissgeometrier</translation>
     </message>
     <message>
         <source>Sketcher constraints</source>
-        <translation type="obsolete">Skissbegränsningar</translation>
+        <translation>Skissbegränsningar</translation>
     </message>
 </context>
 </TS>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="de_DE">
 <context>
     <name>CmdPartDesignFillet</name>
     <message>
@@ -9,18 +9,18 @@
     </message>
     <message>
         <source>Fillet</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrundung</translation>
     </message>
     <message>
         <source>Make a fillet on an edge, face or body</source>
-        <translation type="unfinished"></translation>
+        <translation>Führe eine Verrundung an einer Kante, Fläche oder Körper</translation>
     </message>
 </context>
 <context>
     <name>CmdPartDesignNewSketch</name>
     <message>
         <source>PartDesign</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstruktion</translation>
     </message>
     <message>
         <source>Create sketch</source>
@@ -78,21 +78,6 @@
     </message>
 </context>
 <context>
-    <name>PartDesignGui::Workbench</name>
-    <message>
-        <source>PartDesign</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sketcher geoms</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sketcher constrains</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Wrong selection</source>
@@ -121,6 +106,13 @@
     <message>
         <source>Fillet works only on parts</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Workbench</name>
+    <message>
+        <source>Part Design</source>
+        <translation>Konstruktion</translation>
     </message>
 </context>
 </TS>

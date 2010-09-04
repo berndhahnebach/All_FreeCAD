@@ -20,14 +20,14 @@
     <name>MeshPartGui::Workbench</name>
     <message>
         <source>MeshPart</source>
-        <translation type="unfinished">MeshPart</translation>
+        <translation type="obsolete">MeshPart</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>MeshPart</source>
-        <translation type="obsolete">MeshPart</translation>
+        <translation>MeshPart</translation>
     </message>
 </context>
 </TS>

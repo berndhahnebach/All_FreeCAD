@@ -20,14 +20,14 @@
     <name>ReverseEngineeringGui::Workbench</name>
     <message>
         <source>Reverse Engineering</source>
-        <translation>Ingeniería inversa</translation>
+        <translation type="obsolete">Ingeniería inversa</translation>
     </message>
 </context>
 <context>
     <name>Workbench</name>
     <message>
         <source>Reverse Engineering</source>
-        <translation type="obsolete">Ingeniería inversa</translation>
+        <translation>Ingeniería inversa</translation>
     </message>
 </context>
 </TS>

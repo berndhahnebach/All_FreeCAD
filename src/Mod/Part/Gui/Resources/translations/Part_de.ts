@@ -1352,27 +1352,27 @@ Please select a valid shape in the drop-down box first.</source>
     <name>PartGui::Workbench</name>
     <message>
         <source>&amp;Part</source>
-        <translation>&amp;Bauteil</translation>
+        <translation type="obsolete">&amp;Bauteil</translation>
     </message>
     <message>
         <source>&amp;Simple</source>
-        <translation>&amp;Einfach</translation>
+        <translation type="obsolete">&amp;Einfach</translation>
     </message>
     <message>
         <source>&amp;Parametric</source>
-        <translation>&amp;Parametrisch</translation>
+        <translation type="obsolete">&amp;Parametrisch</translation>
     </message>
     <message>
         <source>Solids</source>
-        <translation>Festkörper</translation>
+        <translation type="obsolete">Festkörper</translation>
     </message>
     <message>
         <source>Part tools</source>
-        <translation>Part-Werkzeuge</translation>
+        <translation type="obsolete">Part-Werkzeuge</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation>Bool&apos;sche Operation</translation>
+        <translation type="obsolete">Bool&apos;sche Operation</translation>
     </message>
 </context>
 <context>
@@ -1434,19 +1434,19 @@ Please select a valid shape in the drop-down box first.</source>
     <name>Workbench</name>
     <message>
         <source>&amp;Part</source>
-        <translation type="obsolete">&amp;Part</translation>
+        <translation>&amp;Bauteil</translation>
     </message>
     <message>
         <source>&amp;Simple</source>
-        <translation type="obsolete">&amp;Simple</translation>
+        <translation>&amp;Einfach</translation>
     </message>
     <message>
         <source>&amp;Parametric</source>
-        <translation type="obsolete">&amp;Parametric</translation>
+        <translation>&amp;Parametrisch</translation>
     </message>
     <message>
         <source>Part tools</source>
-        <translation type="obsolete">Part-Werkzeuge</translation>
+        <translation>Part-Werkzeuge</translation>
     </message>
     <message>
         <source>Import</source>
@@ -1455,6 +1455,14 @@ Please select a valid shape in the drop-down box first.</source>
     <message>
         <source>Boolean Operators</source>
         <translation type="obsolete">Boolsche Operationen</translation>
+    </message>
+    <message>
+        <source>Solids</source>
+        <translation>Festkörper</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Bool&apos;sche Operation</translation>
     </message>
 </context>
 </TS>
