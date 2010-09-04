@@ -89,7 +89,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
 //    // File
 //    Gui::MenuItem* file = new Gui::MenuItem( menuBar );
-//    file->setCommand(QT_TR_NOOP("&File"));
+//    file->setCommand("&File");
 //    *file << "Std_New" << "Std_Open" << "Separator" << "Std_CloseActiveWindow"
 //          << "Std_CloseAllWindows" << "Separator" << "Std_Save" << "Std_SaveAs"
 //          << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
@@ -98,7 +98,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // Edit
 //    Gui::MenuItem* edit = new Gui::MenuItem( menuBar );
-//    edit->setCommand(QT_TR_NOOP("&Edit"));
+//    edit->setCommand("&Edit");
 //    *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy"
 //          << "Std_Paste" << "Std_DuplicateSelection" << "Separator"
 //          << "Std_Refresh" << "Std_SelectAll" << "Std_Delete" << "Std_Placement"
@@ -106,7 +106,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // Standard views
 //    Gui::MenuItem* stdviews = new Gui::MenuItem;
-//    stdviews->setCommand(QT_TR_NOOP("Standard views"));
+//    stdviews->setCommand("Standard views");
 //    *stdviews << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_ViewAxo"
 //              << "Separator" << "Std_ViewFront" << "Std_ViewRight"
 //              << "Std_ViewTop" << "Separator" << "Std_ViewRear" 
@@ -114,25 +114,25 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // stereo
 //    Gui::MenuItem* view3d = new Gui::MenuItem;
-//    view3d->setCommand(QT_TR_NOOP("&Stereo"));
+//    view3d->setCommand("&Stereo");
 //    *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" 
 //            << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" 
 //            << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewIvIssueCamPos";
 //
 //    // zoom
 //    Gui::MenuItem* zoom = new Gui::MenuItem;
-//    zoom->setCommand(QT_TR_NOOP("&Zoom"));
+//    zoom->setCommand("&Zoom");
 //    *zoom << "Std_ViewZoomIn" << "Std_ViewZoomOut" << "Separator" << "Std_ViewBoxZoom";
 //
 //    // Visibility
 //    Gui::MenuItem* visu = new Gui::MenuItem;
-//    visu->setCommand(QT_TR_NOOP("Visibility"));
+//    visu->setCommand("Visibility");
 //    *visu << "Std_ToggleVisibility" << "Std_ShowSelection" << "Std_HideSelection"
 //          << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects";
 //
 //    // View
 //    Gui::MenuItem* view = new Gui::MenuItem( menuBar );
-//    view->setCommand(QT_TR_NOOP("&View"));
+//    view->setCommand("&View");
 //    *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
 //          << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
 //          << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator" << visu
@@ -143,7 +143,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // Tools
 //    Gui::MenuItem* tool = new Gui::MenuItem( menuBar );
-//    tool->setCommand(QT_TR_NOOP("&Tools"));
+//    tool->setCommand("&Tools");
 //    *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
 //          << "Std_MacroStopRecord" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
 //          << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
@@ -153,7 +153,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // submenu analyze
 //    Gui::MenuItem* analyze = new Gui::MenuItem();
-//    analyze->setCommand(QT_TR_NOOP("Analyze"));
+//    analyze->setCommand("Analyze");
 //    *analyze << "Mesh_Evaluation" 
 //             << "Mesh_EvaluateFacet" 
 //             << "Mesh_CurvatureInfo" 
@@ -163,12 +163,12 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // submenu boolean
 //    Gui::MenuItem* boolean = new Gui::MenuItem();
-//    boolean->setCommand(QT_TR_NOOP("Boolean"));
+//    boolean->setCommand("Boolean");
 //    *boolean << "Mesh_Union" 
 //             << "Mesh_Intersection" 
 //             << "Mesh_Difference";
 //
-//    mesh->setCommand(QT_TR_NOOP("&Meshes"));
+//    mesh->setCommand("&Meshes");
 //    *mesh << "Mesh_Import" 
 //          << "Mesh_Export" 
 //          << "Mesh_FromGeometry" 
@@ -193,11 +193,11 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //    // Part ****************************************************************************************************
 //
 //    Gui::MenuItem* part = new Gui::MenuItem(menuBar);
-//    part->setCommand(QT_TR_NOOP("&Part"));
+//    part->setCommand("&Part");
 //
 //    // submenu boolean
 //    Gui::MenuItem* para = new Gui::MenuItem();
-//    para->setCommand(QT_TR_NOOP("Parametric"));
+//    para->setCommand("Parametric");
 //    *para << "Part_Box"
 //          << "Part_Cylinder"
 //          << "Part_Sphere"
@@ -215,7 +215,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //#   ifdef START_SHOW_SKETCHER
 //    if (mgr.getCommandByName("Sketcher_NewSketch")) {
 //        Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
-//        sketch->setCommand(QT_TR_NOOP("Ske&tch"));
+//        sketch->setCommand("Ske&tch");
 //        *sketch 
 //            << "Sketcher_NewSketch"
 //            << "Separator" 
@@ -229,7 +229,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    Gui::MenuItem* drawing = new Gui::MenuItem(menuBar);
 //
-//    drawing->setCommand(QT_TR_NOOP("&Drawing"));
+//    drawing->setCommand("&Drawing");
 //    *drawing
 //        << "Drawing_Open" 
 //        << "Separator" 
@@ -242,7 +242,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    Gui::MenuItem* raytracing = new Gui::MenuItem(menuBar);
 //
-//    raytracing->setCommand(QT_TR_NOOP("&Raytracing"));
+//    raytracing->setCommand("&Raytracing");
 //    *raytracing 
 //        << "Raytracing_WriteView" 
 //        << "Raytracing_WriteCamera" 
@@ -254,7 +254,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //    if (mgr.getCommandByName("Draft_Line")) {
 //        Gui::MenuItem* Drafting = new Gui::MenuItem(menuBar);
 //
-//        Drafting->setCommand(QT_TR_NOOP("&Drafting"));
+//        Drafting->setCommand("&Drafting");
 //        *Drafting 
 //            << "Draft_SelectPlane"
 //            << "Draft_Line"
@@ -283,7 +283,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // Windows
 //    Gui::MenuItem* wnd = new Gui::MenuItem( menuBar );
-//    wnd->setCommand(QT_TR_NOOP("&Windows"));
+//    wnd->setCommand("&Windows");
 //    *wnd << "Std_ActivateNextWindow" << "Std_ActivatePrevWindow" << "Separator"
 //         << "Std_TileWindows" << "Std_CascadeWindows"
 //         << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
@@ -295,13 +295,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //
 //    // Help
 //    Gui::MenuItem* helpWebsites = new Gui::MenuItem;
-//    helpWebsites->setCommand(QT_TR_NOOP("&Online-help"));
+//    helpWebsites->setCommand("&Online-help");
 //    *helpWebsites << "Std_OnlineHelpWebsite" 
 //                  << "Std_FreeCADWebsite" 
 //                  << "Std_PythonWebsite";
 //
 //    Gui::MenuItem* help = new Gui::MenuItem( menuBar );
-//    help->setCommand(QT_TR_NOOP("&Help"));
+//    help->setCommand("&Help");
 //    *help << "Std_OnlineHelp" 
 //          << "Std_OnlineHelpPython" 
 //          << "Std_PythonHelp"
@@ -327,7 +327,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //
 //    // File
 //    Gui::ToolBarItem* file = new Gui::ToolBarItem( root );
-//    file->setCommand(QT_TR_NOOP("File"));
+//    file->setCommand("File");
 //    *file << "Std_New" 
 //          << "Std_Open" 
 //          << "Std_Save" 
@@ -347,20 +347,20 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //
 //    // Macro
 //    Gui::ToolBarItem* macro = new Gui::ToolBarItem( root );
-//    macro->setCommand(QT_TR_NOOP("Macro"));
+//    macro->setCommand("Macro");
 //    *macro << "Std_DlgMacroRecord" << "Std_MacroStopRecord" << "Std_DlgMacroExecute"
 //           << "Std_DlgMacroExecuteDirect";
 //
 //    // View
 //    Gui::ToolBarItem* view = new Gui::ToolBarItem( root );
-//    view->setCommand(QT_TR_NOOP("View"));
+//    view->setCommand("View");
 //    *view << "Std_ViewFitAll" << "Separator" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" 
 //          << "Std_ViewRight" << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" 
 //          << "Std_ViewBottom";
 //
 //    // Part Design
 //    Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
-//    part_design->setCommand(QT_TR_NOOP("Part design"));
+//    part_design->setCommand("Part design");
 //    *part_design
 //        << "Part_Box"
 //        << "Part_Cylinder"
@@ -385,7 +385,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //#   ifdef START_SHOW_SKETCHER
 //    if (mgr.getCommandByName("Sketcher_NewSketch")) {
 //        Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
-//        sketch_based->setCommand(QT_TR_NOOP("Sketch based"));
+//        sketch_based->setCommand("Sketch based");
 //        *sketch_based 
 //            << "Sketcher_NewSketch"
 //            << "Separator"
@@ -397,7 +397,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //
 //    // Drawing
 //    Gui::ToolBarItem* drawing = new Gui::ToolBarItem( root );
-//    drawing->setCommand(QT_TR_NOOP("Drawings"));
+//    drawing->setCommand("Drawings");
 //    *drawing << "Drawing_Open" 
 //             << "Separator" 
 //             << "Drawing_NewA3Landscape"  
@@ -406,7 +406,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //
 //    // Raytracing
 //    Gui::ToolBarItem* raytracing = new Gui::ToolBarItem( root );
-//    raytracing->setCommand(QT_TR_NOOP("Raytracing"));
+//    raytracing->setCommand("Raytracing");
 //    *raytracing << "Raytracing_WriteView" 
 //                << "Raytracing_WriteCamera" 
 //                << "Raytracing_WritePart";
@@ -415,7 +415,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //#   ifdef START_USE_DRAFTING
 //    if (mgr.getCommandByName("Draft_Line")) {
 //        Gui::ToolBarItem* Drafting = new Gui::ToolBarItem( root );
-//        Drafting->setCommand(QT_TR_NOOP("Drafting"));
+//        Drafting->setCommand("Drafting");
 //        *Drafting
 //            << "Draft_SelectPlane"
 //            << "Draft_Line"

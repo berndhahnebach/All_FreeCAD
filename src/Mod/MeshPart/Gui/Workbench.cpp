@@ -32,6 +32,10 @@
 
 using namespace MeshPartGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "MeshPart");
+#endif
+
 TYPESYSTEM_SOURCE(MeshPartGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -46,7 +50,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("MeshPart"));
+    part->setCommand("MeshPart");
     *part << "MeshPart_ConstraintAxle";
      return root;
 }

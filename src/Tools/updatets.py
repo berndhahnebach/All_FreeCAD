@@ -21,7 +21,13 @@ DirFilter = ["^Attic$",
              "^CVS$",
              "^\\.svn$",
              "^\\.deps$",
-             "^\\.libs$"]
+             "^\\.libs$",
+             "src/Mod/Cam",
+             "src/Mod/Import",
+             "src/Mod/JtReader",
+             "src/Mod/Sandbox",
+             "src/Mod/TemplatePyMod",
+             "src/Mod/Draft"]
              
 QMAKE = ""
 LUPDATE = ""

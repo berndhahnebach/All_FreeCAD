@@ -34,6 +34,10 @@
 
 using namespace PartDesignGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "Part Design");
+#endif
+
 TYPESYSTEM_SOURCE(PartDesignGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -115,14 +119,14 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("PartDesign"));
+    part->setCommand("Part Design");
     *part << "PartDesign_NewSketch" 
           << "Separator" 
           << "PartDesign_Pad" 
           << "PartDesign_Fillet" ;
        
     part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Sketcher geoms"));
+    part->setCommand("Sketcher geoms");
     *part << "Sketcher_CreatePoint" 
 		  << "Sketcher_CreateArc"
 		  << "Sketcher_CreateCircle"
@@ -133,7 +137,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 		  << "Sketcher_CreateDraftLine";
 
     part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Sketcher constrains"));
+    part->setCommand("Sketcher constraints");
     *part << "Sketcher_ConstrainLock"
 		  << "Sketcher_ConstrainCoincident"
 		  << "Sketcher_ConstrainVertical"

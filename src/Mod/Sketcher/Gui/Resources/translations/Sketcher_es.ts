@@ -528,7 +528,7 @@
         <translation type="obsolete">Geometría del croquis</translation>
     </message>
     <message>
-        <source>Sketcher constrains</source>
+        <source>Sketcher constraints</source>
         <translation type="obsolete">Restricciones del croquis</translation>
     </message>
 </context>

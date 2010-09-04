@@ -32,6 +32,10 @@
 
 using namespace ImageGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "Image");
+#endif
+
 TYPESYSTEM_SOURCE(ImageGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -46,7 +50,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Image"));
+    part->setCommand("Image");
     *part << "Image_Open"/* << "Image_CapturerTest"*/;
     return root;
 }
@@ -56,7 +60,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
     // Part tools
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
     Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
-    img->setCommand(QT_TR_NOOP("Image"));
+    img->setCommand("Image");
     *img << "Image_Open"/* << "Image_CapturerTest"*/;
     return root;
 }

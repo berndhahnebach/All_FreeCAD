@@ -528,7 +528,7 @@
         <translation type="obsolete">Geometrie dello Sketcher</translation>
     </message>
     <message>
-        <source>Sketcher constrains</source>
+        <source>Sketcher constraints</source>
         <translation type="obsolete">Vincoli dello Sketcher</translation>
     </message>
 </context>

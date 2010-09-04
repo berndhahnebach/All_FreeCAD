@@ -1352,7 +1352,7 @@ Please select a valid shape in the drop-down box first.</source>
     <name>PartGui::Workbench</name>
     <message>
         <source>&amp;Part</source>
-        <translation>&amp;Part</translation>
+        <translation>&amp;Bauteil</translation>
     </message>
     <message>
         <source>&amp;Simple</source>

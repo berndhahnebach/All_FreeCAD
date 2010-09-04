@@ -528,7 +528,7 @@
         <translation type="obsolete">Skissgeometrier</translation>
     </message>
     <message>
-        <source>Sketcher constrains</source>
+        <source>Sketcher constraints</source>
         <translation type="obsolete">Skissbegränsningar</translation>
     </message>
 </context>
