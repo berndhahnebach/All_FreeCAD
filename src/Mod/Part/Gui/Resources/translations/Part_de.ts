@@ -76,12 +76,12 @@
         <translation>Richtung</translation>
     </message>
     <message>
-        <source>Perpendicular to scetch</source>
+        <source>Perpendicular to sketch</source>
         <translation>Senkrecht zur Skizze</translation>
     </message>
     <message>
         <source>Reference</source>
-        <translation type="obsolete">Referenz</translation>
+        <translation>Referenz</translation>
     </message>
     <message>
         <source>Apply</source>
@@ -1423,6 +1423,10 @@ Please select a valid shape in the drop-down box first.</source>
     </message>
     <message>
         <source>Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Part design</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

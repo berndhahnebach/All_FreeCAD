@@ -76,7 +76,7 @@
         <translation>Riktning</translation>
     </message>
     <message>
-        <source>Perpendicular to scetch</source>
+        <source>Perpendicular to sketch</source>
         <translation>Vinkelrät till skiss</translation>
     </message>
     <message>
@@ -1422,6 +1422,10 @@ Please select a valid shape in the drop-down box first.</source>
     </message>
     <message>
         <source>Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Part design</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
