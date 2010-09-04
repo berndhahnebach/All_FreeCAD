@@ -1882,15 +1882,15 @@ Specificare un&apos;altra cartella.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>magnitude</source>
+        <source>Magnitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>unit</source>
+        <source>Unit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>set to:</source>
+        <source>Set to:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

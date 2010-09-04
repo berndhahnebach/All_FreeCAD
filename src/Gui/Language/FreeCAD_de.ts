@@ -1889,7 +1889,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Einheit</translation>
     </message>
     <message>
-        <source>set to:</source>
+        <source>Set to:</source>
         <translation>Setzen:</translation>
     </message>
 </context>
