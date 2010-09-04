@@ -9,10 +9,14 @@
     </message>
     <message>
         <source>Constrain lock</source>
-        <translation>Bedingung gesperrt</translation>
+        <translation type="obsolete">Bedingung gesperrt</translation>
     </message>
     <message>
-        <source>Create a lock constrain on the selected item</source>
+        <source>Constrain coincident</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a coincident constraint on the selected item</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23,11 +27,11 @@
         <translation>Skizze</translation>
     </message>
     <message>
-        <source>Constrain Distance</source>
+        <source>Constrain distance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>fix a length of a line or the distance between a line and a vertex</source>
+        <source>Fix a length of a line or the distance between a line and a vertex</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -62,7 +66,7 @@
     </message>
     <message>
         <source>Constrain Lock</source>
-        <translation>Bedingung gesperrt</translation>
+        <translation type="obsolete">Bedingung gesperrt</translation>
     </message>
     <message>
         <source>Create a Lock constrain on the selcted item</source>
@@ -72,6 +76,10 @@
         <source>Create a lock constrain on the selected item</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Constrain lock</source>
+        <translation type="unfinished">Bedingung gesperrt</translation>
+    </message>
 </context>
 <context>
     <name>CmdSketcherConstrainParallel</name>
@@ -80,11 +88,11 @@
         <translation>Skizze</translation>
     </message>
     <message>
-        <source>Constrain Parallel</source>
+        <source>Constrain parallel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>create a parallel constraint between two lines</source>
+        <source>Create a parallel constraint between two lines</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
