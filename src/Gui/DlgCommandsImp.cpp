@@ -86,7 +86,7 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
     groupMap.push_back(std::make_pair(QLatin1String("Tools"), QString()));
     groupMap.push_back(std::make_pair(QLatin1String("Window"), QString()));
     groupMap.push_back(std::make_pair(QLatin1String("Help"), QString()));
-    groupMap.push_back(std::make_pair(QLatin1String("Macros"), qApp->translate("MacroCommand", "Macros")));
+    groupMap.push_back(std::make_pair(QLatin1String("Macros"), qApp->translate("Gui::MacroCommand", "Macros")));
 
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
         QLatin1String group(it->second->getGroupName());

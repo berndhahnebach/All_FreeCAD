@@ -372,7 +372,7 @@ public:
     /// Ignore when language has changed. 
     void languageChange() {}
     const char* className() const
-    { return "MacroCommand"; }
+    { return "Gui::MacroCommand"; }
  
     /** @name Methods to set the properties of the Script Command */
     //@{
