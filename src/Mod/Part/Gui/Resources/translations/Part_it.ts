@@ -76,12 +76,12 @@
         <translation>Direzione</translation>
     </message>
     <message>
-        <source>Perpendicular to scetch</source>
+        <source>Perpendicular to sketch</source>
         <translation>Perpendicolare allo schizzo</translation>
     </message>
     <message>
         <source>Reference</source>
-        <translation type="obsolete">Riferimento</translation>
+        <translation type="unfinished">Riferimento</translation>
     </message>
     <message>
         <source>Apply</source>
@@ -1422,6 +1422,10 @@ Please select a valid shape in the drop-down box first.</source>
     </message>
     <message>
         <source>Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Part design</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
