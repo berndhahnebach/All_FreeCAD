@@ -32,6 +32,10 @@
 
 using namespace ReverseEngineeringGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "Reverse Engineering");
+#endif
+
 TYPESYSTEM_SOURCE(ReverseEngineeringGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -46,7 +50,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Reverse Engineering"));
+    part->setCommand("Reverse Engineering");
     *part << "Reen_ApproxSurface";
      return root;
 }

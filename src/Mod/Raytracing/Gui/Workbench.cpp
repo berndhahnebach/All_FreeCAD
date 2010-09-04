@@ -33,6 +33,10 @@
 
 using namespace RaytracingGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "&Raytracing");
+#endif
+
 TYPESYSTEM_SOURCE(RaytracingGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -50,7 +54,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     Gui::MenuItem* ray = new Gui::MenuItem;
     root->insertItem(item, ray);
-    ray->setCommand(QT_TR_NOOP("&Raytracing"));
+    ray->setCommand("&Raytracing");
     *ray	
 			<< "Raytracing_WriteView" 
 			<< "Raytracing_WriteCamera" 
@@ -68,7 +72,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //{
 //    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
 //    Gui::ToolBarItem* ray = new Gui::ToolBarItem(root);
-//    ray->setCommand(QT_TR_NOOP("Raytracing tools"));
+//    ray->setCommand("Raytracing tools");
 //    *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
 //    return root;
 //}
@@ -78,7 +82,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //    // Part tools
 //    Gui::ToolBarItem* root = new Gui::ToolBarItem;
 //    Gui::ToolBarItem* ray = new Gui::ToolBarItem( root );
-//    ray->setCommand(QT_TR_NOOP("Raytracing tools"));
+//    ray->setCommand("Raytracing tools");
 //    *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
 //    return root;
 //}

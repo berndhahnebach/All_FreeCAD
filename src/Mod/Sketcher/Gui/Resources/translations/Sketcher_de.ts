@@ -521,15 +521,15 @@
     <name>Workbench</name>
     <message>
         <source>Sketcher</source>
-        <translation type="obsolete">Skizzierer</translation>
+        <translation type="obsolete">Skizze</translation>
     </message>
     <message>
         <source>Sketcher geoms</source>
-        <translation type="obsolete">Skizzierer geometrie</translation>
+        <translation type="obsolete">Geometrien</translation>
     </message>
     <message>
-        <source>Sketcher constrains</source>
-        <translation type="obsolete">Skizzierer Bedingungen</translation>
+        <source>Sketcher constraints</source>
+        <translation type="obsolete">Bedingungen</translation>
     </message>
 </context>
 </TS>

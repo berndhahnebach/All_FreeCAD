@@ -36,6 +36,13 @@
 
 using namespace MeshGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "Analyze");
+    qApp->translate("Workbench", "Boolean");
+    qApp->translate("Workbench", "&Meshes");
+    qApp->translate("Workbench", "Mesh tools");
+#endif
+
 TYPESYSTEM_SOURCE(MeshGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -64,16 +71,16 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     // analyze
     Gui::MenuItem* analyze = new Gui::MenuItem;
-    analyze->setCommand(QT_TR_NOOP("Analyze"));
+    analyze->setCommand("Analyze");
     *analyze << "Mesh_Evaluation" << "Mesh_EvaluateFacet" << "Mesh_CurvatureInfo" << "Separator" 
              << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
 
     // boolean
     Gui::MenuItem* boolean = new Gui::MenuItem;
-    boolean->setCommand(QT_TR_NOOP("Boolean"));
+    boolean->setCommand("Boolean");
     *boolean << "Mesh_Union" << "Mesh_Intersection" << "Mesh_Difference";
  
-    mesh->setCommand(QT_TR_NOOP("&Meshes"));
+    mesh->setCommand("&Meshes");
     *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_FromGeometry" << "Separator"
           << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" 
           << "Mesh_FillupHoles" << "Mesh_FillInteractiveHole" << "Mesh_RemoveComponents"
@@ -87,7 +94,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* mesh = new Gui::ToolBarItem(root);
-    mesh->setCommand(QT_TR_NOOP("Mesh tools"));
+    mesh->setCommand("Mesh tools");
     *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << "Mesh_PolyCut" << "Mesh_VertexCurvature";
     return root;
 }
@@ -99,11 +106,11 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
     Gui::ToolBarItem* mesh;
 
     mesh = new Gui::ToolBarItem( root );
-    mesh->setCommand(QT_TR_NOOP("Mesh tools"));
+    mesh->setCommand("Mesh tools");
     *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyCut";
 
     mesh = new Gui::ToolBarItem( root );
-    mesh->setCommand(QT_TR_NOOP("Mesh test suite"));
+    mesh->setCommand("Mesh test suite");
     *mesh << "Mesh_Demolding" << "Mesh_Transform" << "Separator" ;
 
     return root;

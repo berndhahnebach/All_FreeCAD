@@ -33,6 +33,11 @@
 
 using namespace PointsGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "Points tools");
+    qApp->translate("Workbench", "&Points");
+#endif
+
 TYPESYSTEM_SOURCE(PointsGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -47,7 +52,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-    pnt->setCommand(QT_TR_NOOP("Points tools"));
+    pnt->setCommand("Points tools");
     *pnt << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
     return root;
 }
@@ -57,7 +62,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
     // point tools
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
     Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-    pnt->setCommand(QT_TR_NOOP("Points tools"));
+    pnt->setCommand("Points tools");
     *pnt << "Points_Import" << "Points_Export";
     return root;
 }
@@ -73,7 +78,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     test->setCommand("Test");
     *test << "Points_Transform";
  
-    pnts->setCommand(QT_TR_NOOP("&Points"));
+    pnts->setCommand("&Points");
     *pnts << test << "Separator" << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
     return root;
 }

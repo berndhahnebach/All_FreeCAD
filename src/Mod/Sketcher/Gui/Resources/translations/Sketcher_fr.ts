@@ -528,7 +528,7 @@
         <translation type="obsolete">Géométries</translation>
     </message>
     <message>
-        <source>Sketcher constrains</source>
+        <source>Sketcher constraints</source>
         <translation type="obsolete">Contraintes</translation>
     </message>
 </context>

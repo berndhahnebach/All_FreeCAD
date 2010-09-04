@@ -33,6 +33,15 @@
 
 using namespace PartGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "&Part");
+    qApp->translate("Workbench", "&Simple");
+    qApp->translate("Workbench", "&Parametric");
+    qApp->translate("Workbench", "Solids");
+    qApp->translate("Workbench", "Part tools");
+    qApp->translate("Workbench", "Boolean");
+#endif
+
 TYPESYSTEM_SOURCE(PartGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -50,7 +59,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
-    part->setCommand(QT_TR_NOOP("&Part"));
+    part->setCommand("&Part");
     *part << "Part_Import" << "Separator";
     *part << "Part_Primitives" << "Part_ShapeFromMesh"
           << "Part_MakeSolid" << "Part_ReverseShape" << "Separator"
@@ -60,12 +69,12 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     Gui::MenuItem* partSimple = new Gui::MenuItem;
     root->insertItem(item, partSimple);
-    partSimple->setCommand(QT_TR_NOOP("&Simple"));
+    partSimple->setCommand("&Simple");
     *partSimple << "Part_SimpleCylinder";
 
     Gui::MenuItem* solids = new Gui::MenuItem;
     root->insertItem(item, solids);
-    solids->setCommand(QT_TR_NOOP("&Parametric"));
+    solids->setCommand("&Parametric");
     *solids << "Part_Box" << "Part_Cylinder" << "Part_Sphere" << "Part_Cone"
             << "Part_Torus" << "Separator" << "Part_Primitives";
 
@@ -77,15 +86,15 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
 
     Gui::ToolBarItem* solids = new Gui::ToolBarItem(root);
-    solids->setCommand(QT_TR_NOOP("Solids"));
+    solids->setCommand("Solids");
     *solids << "Part_Box" << "Part_Cylinder" << "Part_Sphere" << "Part_Cone" << "Part_Torus";
 
     Gui::ToolBarItem* tool = new Gui::ToolBarItem(root);
-    tool->setCommand(QT_TR_NOOP("Part tools"));
+    tool->setCommand("Part tools");
     *tool << "Part_Extrude" << "Part_Revolve" << "Part_Mirror" << "Part_Fillet";
 
     Gui::ToolBarItem* boolop = new Gui::ToolBarItem(root);
-    boolop->setCommand(QT_TR_NOOP("Boolean"));
+    boolop->setCommand("Boolean");
     *boolop << "Part_Boolean" << "Part_Cut" << "Part_Fuse" << "Part_Common" << "Part_Section";
 
     return root;

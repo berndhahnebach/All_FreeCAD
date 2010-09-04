@@ -41,6 +41,13 @@
 
 using namespace RobotGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "Robot");
+    qApp->translate("Workbench", "Insert Robots");
+    qApp->translate("Workbench", "&Robot");
+    qApp->translate("Workbench", "Export trajectory");
+#endif
+
 TYPESYSTEM_SOURCE(RobotGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -122,7 +129,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Robot"));
+    part->setCommand("Robot");
     *part << "Robot_Create";
     *part << "Separator";
     *part << "Robot_CreateTrajectory";
@@ -142,7 +149,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     // analyze
     Gui::MenuItem* insertRobots = new Gui::MenuItem;
-    insertRobots->setCommand(QT_TR_NOOP("Insert Robots"));
+    insertRobots->setCommand("Insert Robots");
     *insertRobots << "Robot_InsertKukaIR500" 
                   << "Robot_InsertKukaIR210" 
                   << "Robot_InsertKukaIR125" 
@@ -153,12 +160,12 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
     // boolean
     Gui::MenuItem* exportM = new Gui::MenuItem;
-    exportM->setCommand(QT_TR_NOOP("Export trajectory"));
+    exportM->setCommand("Export trajectory");
     *exportM << "Robot_ExportKukaCompact" 
              << "Robot_ExportKukaFull"
              ;
  
-    robot->setCommand(QT_TR_NOOP("&Robot"));
+    robot->setCommand("&Robot");
     *robot << insertRobots 
            << "Robot_CreateTrajectory"
            << "Separator"
