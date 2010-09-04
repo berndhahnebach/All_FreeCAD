@@ -3088,10 +3088,6 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Grid Snap on</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>0.1 mm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3145,6 +3141,10 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>5 m </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid Snap in</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

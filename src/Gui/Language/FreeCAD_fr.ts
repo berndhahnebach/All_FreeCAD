@@ -3317,10 +3317,6 @@ Voulez-vous indiquer un autre dossier?</translation>
         <translation type="unfinished">Z:</translation>
     </message>
     <message>
-        <source>Grid Snap on</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>0.1 mm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3374,6 +3370,10 @@ Voulez-vous indiquer un autre dossier?</translation>
     </message>
     <message>
         <source>5 m </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid Snap in</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>144</width>
-    <height>147</height>
+    <width>171</width>
+    <height>178</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,7 +83,7 @@
    <item>
     <widget class="QCheckBox" name="checkBox">
      <property name="text">
-      <string>Grid Snap on</string>
+      <string>Grid Snap in</string>
      </property>
     </widget>
    </item>

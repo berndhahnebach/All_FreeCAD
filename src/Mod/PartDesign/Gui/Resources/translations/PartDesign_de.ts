@@ -5,7 +5,7 @@
     <name>CmdPartDesignFillet</name>
     <message>
         <source>PartDesign</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konstruktion</translation>
     </message>
     <message>
         <source>Fillet</source>
@@ -35,7 +35,7 @@
     <name>CmdPartDesignPad</name>
     <message>
         <source>PartDesign</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konstruktion</translation>
     </message>
     <message>
         <source>Pad</source>

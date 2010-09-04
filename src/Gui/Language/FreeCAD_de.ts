@@ -3186,7 +3186,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Grid Snap on</source>
-        <translation>Einrastgitter</translation>
+        <translation type="obsolete">Einrastgitter</translation>
     </message>
     <message>
         <source>0.1 mm</source>
@@ -3243,6 +3243,10 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>5 m </source>
         <translation>5 m </translation>
+    </message>
+    <message>
+        <source>Grid Snap in</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
