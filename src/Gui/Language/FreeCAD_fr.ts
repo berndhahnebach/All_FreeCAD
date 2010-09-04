@@ -3292,17 +3292,6 @@ Voulez-vous indiquer un autre dossier?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::WidgetFactorySupplier</name>
-    <message>
-        <source>General</source>
-        <translation>Général</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation>Affichage</translation>
-    </message>
-</context>
-<context>
     <name>Gui::WorkbenchGroup</name>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
@@ -3425,6 +3414,14 @@ Voulez-vous indiquer un autre dossier?</translation>
 </context>
 <context>
     <name>QObject</name>
+    <message>
+        <source>General</source>
+        <translation>Général</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Affichage</translation>
+    </message>
     <message>
         <source>Unknown filetype</source>
         <translation>Type de fichier inconnu</translation>

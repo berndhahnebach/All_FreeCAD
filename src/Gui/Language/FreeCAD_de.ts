@@ -3160,17 +3160,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::WidgetFactorySupplier</name>
-    <message>
-        <source>General</source>
-        <translation>Allgemein</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation>Anzeige</translation>
-    </message>
-</context>
-<context>
     <name>Gui::WorkbenchGroup</name>
     <message>
         <source>Select the &apos;%1&apos; workbench</source>
@@ -3293,6 +3282,14 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 </context>
 <context>
     <name>QObject</name>
+    <message>
+        <source>General</source>
+        <translation>Allgemein</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Anzeige</translation>
+    </message>
     <message>
         <source>Save Macro</source>
         <translation>Makro speichern</translation>

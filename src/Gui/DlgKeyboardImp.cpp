@@ -173,8 +173,8 @@ void DlgCustomKeyboardImp::on_categoryBox_activated(int index)
     std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( group.toAscii() );
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it) {
         QTreeWidgetItem* item = new QTreeWidgetItem(commandTreeWidget);
-        item->setText(1, QObject::trUtf8((*it)->getMenuText()));
-        item->setToolTip(1, QObject::trUtf8((*it)->getToolTipText()));
+        item->setText(1, qApp->translate((*it)->className(), (*it)->getMenuText()));
+        item->setToolTip(1, qApp->translate((*it)->className(), (*it)->getToolTipText()));
         item->setData(1, Qt::UserRole, QByteArray((*it)->getName()));
         item->setSizeHint(0, QSize(32, 32));
         item->setBackgroundColor(0, Qt::lightGray);
@@ -278,11 +278,11 @@ void DlgCustomKeyboardImp::on_editShortcut_textChanged(const QString& sc)
             if ((*it)->getAction() && (*it)->getAction()->shortcut() == ks) {
                 ++countAmbiguous;
                 ambiguousCommand = QString::fromAscii((*it)->getName()); // store the last one
-                ambiguousMenu = QObject::trUtf8((*it)->getMenuText());
-        
+                ambiguousMenu = qApp->translate((*it)->className(), (*it)->getMenuText());
+
                 QTreeWidgetItem* item = new QTreeWidgetItem(assignedTreeWidget);
-                item->setText(1, QObject::trUtf8((*it)->getMenuText()));
-                item->setToolTip(1, QObject::trUtf8((*it)->getToolTipText()));
+                item->setText(1, qApp->translate((*it)->className(), (*it)->getMenuText()));
+                item->setToolTip(1, qApp->translate((*it)->className(), (*it)->getToolTipText()));
                 item->setData(1, Qt::UserRole, QByteArray((*it)->getName()));
                 item->setSizeHint(0, QSize(32, 32));
                 item->setBackgroundColor(0, Qt::lightGray);

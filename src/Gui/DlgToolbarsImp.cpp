@@ -190,8 +190,8 @@ void DlgCustomToolbars::on_categoryBox_activated(int index)
     sepitem->setBackgroundColor(0, Qt::lightGray);
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it) {
         QTreeWidgetItem* item = new QTreeWidgetItem(commandTreeWidget);
-        item->setText(1, QObject::trUtf8((*it)->getMenuText()));
-        item->setToolTip(1, QObject::trUtf8((*it)->getToolTipText()));
+        item->setText(1, qApp->translate((*it)->className(), (*it)->getMenuText()));
+        item->setToolTip(1, qApp->translate((*it)->className(), (*it)->getToolTipText()));
         item->setData(1, Qt::UserRole, QByteArray((*it)->getName()));
         item->setSizeHint(0, QSize(32, 32));
         item->setBackgroundColor(0, Qt::lightGray);
@@ -242,7 +242,7 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
                 if (pCmd) {
                     // command name
                     QTreeWidgetItem* item = new QTreeWidgetItem(toplevel);
-                    item->setText(0, QObject::trUtf8(pCmd->getMenuText()));
+                    item->setText(0, qApp->translate(pCmd->className(), pCmd->getMenuText()));
                     item->setData(0, Qt::UserRole, QByteArray(it2->first.c_str()));
                     if (pCmd->getPixmap())
                         item->setIcon(0, BitmapFactory().pixmap(pCmd->getPixmap()));
