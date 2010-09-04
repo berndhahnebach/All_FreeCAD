@@ -2707,7 +2707,7 @@ Sollen die Änderungen gespeichert werden?</translation>
     </message>
 </context>
 <context>
-    <name>MacroCommand</name>
+    <name>Gui::MacroCommand</name>
     <message>
         <source>Macros</source>
         <translation>Makros</translation>
