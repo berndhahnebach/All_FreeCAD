@@ -2628,7 +2628,7 @@ Do you want to save your changes?</source>
     </message>
 </context>
 <context>
-    <name>Gui::MacroCommand</name>
+    <name>MacroCommand</name>
     <message>
         <source>Macros</source>
         <translation type="unfinished"></translation>

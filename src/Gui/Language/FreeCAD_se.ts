@@ -2776,7 +2776,7 @@ Vill du spara ändringarna?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::MacroCommand</name>
+    <name>MacroCommand</name>
     <message>
         <source>Macros</source>
         <translation>Makron</translation>

@@ -39,6 +39,20 @@
 
 using namespace Gui::Dialog;
 
+namespace Gui { namespace Dialog {
+typedef std::vector< std::pair<QLatin1String, QString> > GroupMap;
+
+struct GroupMap_find {
+    const QLatin1String& item;
+    GroupMap_find(const QLatin1String& item) : item(item) {}
+    bool operator () (const std::pair<QLatin1String, QString>& elem) const
+    {
+        return elem.first == item;
+    }
+};
+}
+}
+
 /* TRANSLATOR Gui::Dialog::DlgCustomKeyboardImp */
 
 /**
@@ -56,22 +70,31 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent  )
     CommandManager & cCmdMgr = Application::Instance->commandManager();
     std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
-    // do a special sort before adding to the tree view
-    QStringList groups;
-    groups << QLatin1String("File") << QLatin1String("Edit")
-           << QLatin1String("View") << QLatin1String("Standard-View")
-           << QLatin1String("Tools") << QLatin1String("Window")
-           << QLatin1String("Help") << QLatin1String("Macros");
+    GroupMap groupMap;
+    groupMap.push_back(std::make_pair(QLatin1String("File"), QString()));
+    groupMap.push_back(std::make_pair(QLatin1String("Edit"), QString()));
+    groupMap.push_back(std::make_pair(QLatin1String("View"), QString()));
+    groupMap.push_back(std::make_pair(QLatin1String("Standard-View"), QString()));
+    groupMap.push_back(std::make_pair(QLatin1String("Tools"), QString()));
+    groupMap.push_back(std::make_pair(QLatin1String("Window"), QString()));
+    groupMap.push_back(std::make_pair(QLatin1String("Help"), QString()));
+    groupMap.push_back(std::make_pair(QLatin1String("Macros"), qApp->translate("MacroCommand", "Macros")));
+
     for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it) {
-        QString group = QLatin1String(it->second->getGroupName());
-        if (!groups.contains(group))
-            groups << group;
+        QLatin1String group(it->second->getGroupName());
+        QString text = qApp->translate(it->second->className(), it->second->getGroupName());
+        GroupMap::iterator jt;
+        jt = std::find_if(groupMap.begin(), groupMap.end(), GroupMap_find(group));
+        if (jt != groupMap.end())
+            jt->second = text;
+        else
+            groupMap.push_back(std::make_pair(group, text));
     }
 
     int index = 0;
-    for ( QStringList::Iterator It = groups.begin(); It != groups.end(); ++It, ++index ) {
-        categoryBox->addItem(QObject::tr((*It).toAscii()));
-        categoryBox->setItemData(index, QVariant(*It), Qt::UserRole);
+    for (GroupMap::iterator it = groupMap.begin(); it != groupMap.end(); ++it, ++index) {
+        categoryBox->addItem(it->second);
+        categoryBox->setItemData(index, QVariant(it->first), Qt::UserRole);
     }
 
     QStringList labels; 

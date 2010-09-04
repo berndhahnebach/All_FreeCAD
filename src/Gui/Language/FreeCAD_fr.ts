@@ -2776,7 +2776,7 @@ Voulez sauvez les modifications?</translation>
     </message>
 </context>
 <context>
-    <name>Gui::MacroCommand</name>
+    <name>MacroCommand</name>
     <message>
         <source>Macros</source>
         <translation>Macros</translation>
