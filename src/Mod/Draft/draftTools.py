@@ -504,7 +504,9 @@ class dimTracker(Tracker):
 		self.coords.point.setValues(0,4,[[0,0,0],[0,0,0],[0,0,0],[0,0,0]])
 		Tracker.__init__(self,dotted,scolor,swidth,[self.coords,line])
 
-	def update(self,pts):
+	def update(self,pts,p3=None):
+                if (len(pts) == 2) and p3:
+                        pts.append(p3)
 		if len(pts) == 2:
 			points = [fcvec.tup(pts[0],True),fcvec.tup(pts[0],True),\
 				fcvec.tup(pts[1],True),fcvec.tup(pts[1],True)]
@@ -512,8 +514,11 @@ class dimTracker(Tracker):
 		elif len(pts) == 3:
 			p1 = pts[0]
 			p4 = pts[1]
-			base = Part.Line(p1,p4).toShape()
-			proj = fcgeo.findDistance(pts[2],base)
+                        if fcvec.equals(p1,p4):
+                                proj = None
+                        else:
+                                base = Part.Line(p1,p4).toShape()
+                                proj = fcgeo.findDistance(pts[2],base)
 			if not proj:
 				p2 = p1
 				p3 = p4
@@ -1595,6 +1600,8 @@ class Dimension(Creator):
         
 	def __init__(self):
 		self.max=2
+                self.cont = None
+                self.dir = None
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_dimension',
@@ -1602,20 +1609,25 @@ class Dimension(Creator):
 			'ToolTip': str(translate("draft", "Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment").toLatin1())}
 
 	def Activated(self):
-		Creator.Activated(self,"Dimension")
-		if self.ui:
-			self.ui.pointUi()
-			self.altdown = False
-			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.snap = snapTracker()
-			self.dimtrack = dimTracker()
-                        self.link = None
-			self.constraintrack = lineTracker(dotted=True)
-			msg(translate("draft", "Pick first point:\n"))
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+                if self.cont: self.finish()
+                else:
+                        Creator.Activated(self,"Dimension")
+                        if self.ui:
+                                self.ui.pointUi()
+                                self.ui.continueCmd.show()
+                                self.altdown = False
+                                self.call = self.view.addEventCallback("SoEvent",self.action)
+                                self.snap = snapTracker()
+                                self.dimtrack = dimTracker()
+                                self.link = None
+                                self.constraintrack = lineTracker(dotted=True)
+                                msg(translate("draft", "Pick first point:\n"))
+                                FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
+                self.cont = None
+                self.dir = None
 		Creator.finish(self)
 		if self.ui:
 			self.dimtrack.finalize()
@@ -1630,6 +1642,17 @@ class Dimension(Creator):
                 else:
                         Draft.makeDimension(self.node[0],self.node[1],self.node[2])
 		self.doc.commitTransaction()
+                if self.ui.continueCmd.isChecked():
+                        self.cont = self.node[2]
+                        if not self.dir:
+                                if self.link:
+                                        v1 = self.link[0].Shape.Vertexes[self.link[1]].Point
+                                        v2 = self.link[0].Shape.Vertexes[self.link[2]].Point
+                                        self.dir = v2.sub(v1)
+                                else:
+                                        self.dir = self.node[1].sub(self.node[0])
+                        self.node = [self.node[1]]
+                self.link = None
 
 	def action(self,arg):
 		"scene event handler"
@@ -1649,13 +1672,15 @@ class Dimension(Creator):
                                                 ed = ob.Shape.Edges[num]
                                                 v1 = ed.Vertexes[0].Point
                                                 v2 = ed.Vertexes[-1].Point
-                                                self.dimtrack.update([v1,v2])
+                                                self.dimtrack.update([v1,v2],self.cont)
 			else:
 				if self.altdown:
 					self.ui.cross(True)
 					self.altdown = False
 					self.ui.switchUi(False)
-				self.dimtrack.update(self.node+[point])
+                                if self.dir:
+                                        point = self.node[0].add(fcvec.project(point.sub(self.node[0]),self.dir))
+				self.dimtrack.update(self.node+[point],self.cont)
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -1685,13 +1710,19 @@ class Dimension(Creator):
                                                                 self.link = [ob,i1,i2]
                                                         self.dimtrack.on()
 				else:
+                                        if self.dir:
+                                                point = self.node[0].add(fcvec.project(point.sub(self.node[0]),self.dir))
 					self.node.append(point)
 				self.dimtrack.update(self.node)
 				if (len(self.node) == 1):
 					self.dimtrack.on()
+                                elif (len(self.node) == 2) and self.cont:
+                                        self.node.append(self.cont)
+                                        self.createObject()
+                                        if not self.cont: self.finish()
 				elif (len(self.node) == 3):
 					self.createObject()
-					self.finish()
+					if not self.cont: self.finish()
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1702,7 +1733,7 @@ class Dimension(Creator):
 			self.dimtrack.on()
 		elif (len(self.node) == 3):
 			self.createObject()
-			self.finish()
+			if not self.cont: self.finish()
 
 
 
