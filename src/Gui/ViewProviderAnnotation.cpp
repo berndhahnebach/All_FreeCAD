@@ -432,14 +432,16 @@ void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
         return;
     }
 
-    QFont font(QString::fromAscii(this->FontName.getValue()), this->FontSize.getValue());
+    QFont font(QString::fromAscii(this->FontName.getValue()), (int)this->FontSize.getValue());
     QFontMetrics fm(font);
     int w = 0;
     int h = fm.height() * s.size();
     const App::Color& b = this->BackgroundColor.getValue();
-    QColor brush(255*b.r,255*b.g,255*b.b);
+    QColor brush;
+    brush.setRgbF(255*b.r,255*b.g,255*b.b);
     const App::Color& t = this->TextColor.getValue();
-    QColor front(255*t.r,255*t.g,255*t.b);
+    QColor front;
+    front.setRgbF(255*t.r,255*t.g,255*t.b);
 
     QStringList lines;
     for (std::vector<std::string>::const_iterator it = s.begin(); it != s.end(); ++it) {

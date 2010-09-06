@@ -115,12 +115,12 @@ void TaskAppearance::slotChangedObject(const Gui::ViewProvider& obj,
             float value = static_cast<const App::PropertyFloat&>(prop).getValue();
             if (prop_name == "PointSize") {
                 bool blocked = ui->spinPointSize->blockSignals(true);
-                ui->spinPointSize->setValue(value);
+                ui->spinPointSize->setValue((int)value);
                 ui->spinPointSize->blockSignals(blocked);
             }
             else if (prop_name == "LineWidth") {
                 bool blocked = ui->spinLineWidth->blockSignals(true);
-                ui->spinLineWidth->setValue(value);
+                ui->spinLineWidth->setValue((int)value);
                 ui->spinLineWidth->blockSignals(blocked);
             }
         }

@@ -176,12 +176,12 @@ void DlgDisplayPropertiesImp::slotChangedObject(const Gui::ViewProvider& obj,
             float value = static_cast<const App::PropertyFloat&>(prop).getValue();
             if (prop_name == "PointSize") {
                 bool blocked = spinPointSize->blockSignals(true);
-                spinPointSize->setValue(value);
+                spinPointSize->setValue((int)value);
                 spinPointSize->blockSignals(blocked);
             }
             else if (prop_name == "LineWidth") {
                 bool blocked = spinLineWidth->blockSignals(true);
-                spinLineWidth->setValue(value);
+                spinLineWidth->setValue((int)value);
                 spinLineWidth->blockSignals(blocked);
             }
         }
