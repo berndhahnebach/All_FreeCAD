@@ -32,6 +32,15 @@ if(MSVC)
         optimized MSVCPRT.LIB
 		Rpcrt4.lib
 		)
+elseif(MINGW)
+	set(FreeCADBase_LIBS
+		${PYTHON_LIBRARY}
+		${XERCESC_LIBRARIES}
+		${QT_QTCORE_LIBRARY}
+		${Boost_LIBRARIES}
+		${ZLIB_LIBRARIES}
+		Rpcrt4.lib
+)
 else(MSVC)
 	set(FreeCADBase_LIBS
 		${PYTHON_LIBRARY}

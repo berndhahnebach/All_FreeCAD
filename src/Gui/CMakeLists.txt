@@ -20,7 +20,7 @@ include_directories(
 		 ${QT_INCLUDE_DIR}
 		 ${ZLIB_INCLUDE_DIR})
 
-if(WIN32)
+if(MSVC)
 		 set(FreeCADGui_LIBS
 		 		 FreeCADApp
 		 		 debug ${COIN3D_LIBRARY_DEBUG}
@@ -31,7 +31,7 @@ if(WIN32)
 		 		 ${QT_LIBRARIES}
 				 QtUiTools.lib
 				 ${OPENGL_gl_LIBRARY})
-else(WIN32)
+else(MSVC)
 		 set(FreeCADGui_LIBS
 		 		 FreeCADBase
 		 		 FreeCADApp
@@ -40,7 +40,7 @@ else(WIN32)
 		 		 ${QT_LIBRARIES}
 		 		 ${Boost_LIBRARIES}
 				 ${OPENGL_gl_LIBRARY})
-endif(WIN32)
+endif(MSVC)
 
 generate_from_xml(DocumentPy)
 generate_from_xml(PythonWorkbenchPy)
