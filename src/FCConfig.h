@@ -51,14 +51,14 @@
 #	if HAVE_CONFIG_H
 #	include <config.h>
 #	endif // HAVE_CONFIG_H
-#	define HAVE_INT8_T
-#	define HAVE_UINT8_T
-#	define HAVE_INT16_T
-#	define HAVE_UINT16_T
-#	define HAVE_INT32_T
-#	define HAVE_UINT32_T
-#	define HAVE_INT64_T
-#	define HAVE_UINT64_T
+//#	define HAVE_INT8_T
+//#	define HAVE_UINT8_T
+//#	define HAVE_INT16_T
+//#	define HAVE_UINT16_T
+//#	define HAVE_INT32_T
+//#	define HAVE_UINT32_T
+//#	define HAVE_INT64_T
+//#	define HAVE_UINT64_T
 //#	define HAVE_INTPTR_T
 //#	define HAVE_UINTPTR_T
 #	endif
@@ -122,7 +122,9 @@
 //**************************************************************************
 // Standard types for Windows
 
-#if defined (FC_OS_WIN64) || defined (FC_OS_WIN32)
+#if defined(__MINGW32__)
+// nothing specific here
+#elif defined (FC_OS_WIN64) || defined (FC_OS_WIN32)
 
 #ifndef HAVE_INT8_T
 #define HAVE_INT8_T
