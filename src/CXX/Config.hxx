@@ -134,6 +134,8 @@ typedef int Py_ssize_t;
 // export macro
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4251 )
+#endif
+#if defined( _MSC_VER ) || defined( __MINGW32__ )
 #  ifdef PYCXX_DLL
 #    define PYCXX_EXPORT  __declspec(dllexport)
 #  else
