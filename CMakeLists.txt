@@ -61,13 +61,13 @@ endif(WIN32)
 
 # ================================================================================
 # == Win32 is default behaviour use the LibPack copied in Source tree ============
-if(WIN32)
+if(MSVC)
 		 OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." ON)
 		 set(FREECAD_LIBPACK_DIR ${CMAKE_SOURCE_DIR} CACHE PATH  "Directory of the FreeCAD LibPack")
-else(WIN32)
+else(MSVC)
 		 OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." OFF)
 		 set(FREECAD_LIBPACK_DIR ""  CACHE PATH  "Directory of the FreeCAD LibPack")
-endif(WIN32)
+endif(MSVC)
 
 # ================================================================================
 # == All the options for the build process    ============
@@ -134,7 +134,7 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 	    "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
 	    "1.33.1" "1.33.0" "1.33" )
 
-	find_package(Boost COMPONENTS filesystem program_options regex signals)
+	find_package(Boost COMPONENTS filesystem program_options regex signals system)
 
 # -------------------------------- XercesC --------------------------------
 
