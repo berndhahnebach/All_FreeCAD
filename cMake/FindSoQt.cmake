@@ -16,6 +16,16 @@
 IF(UNIX OR WIN32)
 
 IF(WIN32)
+  IF(MINGW)
+  FIND_LIBRARY(SOQT_LIBRARY
+    NAMES SoQt #only shared libraries under windows
+    PATHS
+    /usr/lib
+    /usr/local/lib
+    /lib
+    "$ENV{COINDIR}/lib"
+  )
+  ELSE(MINGW)
   FIND_LIBRARY(SOQT_LIBRARY_RELEASE
     #only shared libraries under windows
 	NAMES soqt1 
@@ -28,16 +38,16 @@ IF(WIN32)
     "$ENV{COINDIR}/lib"
     )
 
- FIND_PATH(SOQT_INCLUDE_PATH Inventor/Qt/SoQt.h
+  FIND_PATH(SOQT_INCLUDE_PATH Inventor/Qt/SoQt.h
     "$ENV{COINDIR}/include"
     "$ENV{INCLUDE}"
     )
- MARK_AS_ADVANCED(
+  MARK_AS_ADVANCED(
         SOQT_LIBRARY_DEBUG
         SOQT_LIBRARY_RELEASE
         SOQT_INCLUDE_PATH
- )
-
+  )
+  ENDIF(MINGW)
 ELSE(WIN32)
 FIND_LIBRARY(SOQT_LIBRARY
     NAMES SoQt #only shared libraries under windows
@@ -67,6 +77,13 @@ ENDIF(WIN32)
                          SET(SOQT_LIBRARY_RELEASE ${SOQT_LIBRARY_RELEASE})
                          SET(SOQT_LIBRARY_DEBUG ${SOQT_LIBRARY_DEBUG})
                 ENDIF(SOQT_LIBRARY_RELEASE AND SOQT_LIBRARY_DEBUG)
+				IF(MINGW)
+                SET(SOQT_LIBRARIES ${SOQT_LIBRARY})
+                MARK_AS_ADVANCED(
+                        SOQT_LIBRARIES
+                        SOQT_LIBRARY
+                )
+				ENDIF(MINGW)
         ELSE(WIN32)
                 SET(SOQT_LIBRARIES ${SOQT_LIBRARY})
                 MARK_AS_ADVANCED(
