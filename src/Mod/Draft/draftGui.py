@@ -204,6 +204,14 @@ class toolBar:
                                         self.layout.addWidget(cbox)
                                         return cbox
 
+                                def _checkbox (name, checked=True, hide=True):
+                                        chk = QtGui.QCheckBox(draftToolbar)
+                                        chk.setChecked(checked)
+                                        chk.setObjectName(name)
+                                        if hide: chk.hide()
+                                        self.layout.addWidget(chk)
+                                        return chk
+
                                 # command
 
                                 self.promptlabel = _label("promptlabel", hide=False)
@@ -237,18 +245,11 @@ class toolBar:
 				self.radiusValue = _lineedit("radiusValue", width=60)
 				self.radiusValue.setText("0.00")
 
-				self.isRelative = QtGui.QCheckBox(draftToolbar)
-				self.isRelative.setChecked(True)
-				self.isRelative.setObjectName("isRelative")
-                                self.layout.addWidget(self.isRelative)
-				self.isRelative.hide()
+				self.isRelative = _checkbox("isRelative",checked=True)
 
-                                self.hasFill = QtGui.QCheckBox(draftToolbar)
-				self.hasFill.setChecked(True)
-				self.hasFill.setObjectName("hasFill")
-                                self.hasFill.setChecked(self.params.GetBool("fillmode"))
-                                self.layout.addWidget(self.hasFill)
-				self.hasFill.hide()
+                                self.hasFill = _checkbox("hasFill",checked=self.params.GetBool("fillmode"))
+
+                                self.continueCmd = _checkbox("continueCmd",checked=False)
                                 
 				self.undoButton = _pushButton("undoButton", icon=(64,64))
 				self.finishButton = _pushButton("finishButton", icon=(448,64))
@@ -400,15 +401,15 @@ class toolBar:
 				self.zValue.setToolTip(translate("draft", "Z coordinate of next point"))
 				self.labelRadius.setText(translate("draft", "Radius"))
 				self.radiusValue.setToolTip(translate("draft", "Radius of Circle"))
-				self.isRelative.setText(translate("draft", "Relative"))
+				self.isRelative.setText(translate("draft", "&Relative"))
 				self.isRelative.setToolTip(translate("draft", "Coordinates relative to last point or absolute (SPACE)"))
-                                self.hasFill.setText(translate("draft", "Filled"))
-                                self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe"))
-				self.finishButton.setText(translate("draft", "Finish"))
+                                self.hasFill.setText(translate("draft", "&Filled"))
+                                self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe (F)"))
+				self.finishButton.setText(translate("draft", "&Finish"))
 				self.finishButton.setToolTip(translate("draft", "Finishes the current line without closing (F)"))
 				self.undoButton.setText(translate("draft", "Undo"))
 				self.undoButton.setToolTip(translate("draft", "Undo the last segment (CTRL+Z)"))
-				self.closeButton.setText(translate("draft", "Close"))
+				self.closeButton.setText(translate("draft", "&Close"))
 				self.closeButton.setToolTip(translate("draft", "Finishes and closes the current line (C)"))
                                 self.numFaces.setToolTip(translate("draft", "Number of sides"))
                                 self.offsetLabel.setText(translate("draft", "Offset"))
@@ -422,9 +423,11 @@ class toolBar:
 				self.currentViewButton.setToolTip(translate("draft", "Select plane perpendicular to the current view"))
 				self.resetPlaneButton.setText(translate("draft", "None"))
 				self.resetPlaneButton.setToolTip(translate("draft", "Do not project points to a drawing plane"))
-				self.isCopy.setText(translate("draft", "Copy"))
+				self.isCopy.setText(translate("draft", "&Copy"))
 				self.isCopy.setToolTip(translate("draft", "If checked, objects will be copied instead of moved (C)"))
 				self.colorButton.setToolTip(translate("draft", "Line Color"))
+                                self.continueCmd.setToolTip(translate("draft", "If checked, command will not finish until you press the command button again"))
+                                self.continueCmd.setText(translate("draft", "&Continue"))
                                 self.facecolorButton.setToolTip(translate("draft", "Face Color"))
 				self.widthButton.setToolTip(translate("draft", "Line Width"))
                                 self.fontsizeButton.setToolTip(translate("draft", "Font Size"))
@@ -532,6 +535,7 @@ class toolBar:
                                 self.labelTMod.hide()
                                 self.pageWpButton.hide()
                                 self.TModValue.hide()
+                                self.continueCmd.hide()
 
 			def radiusUi(self):
 				self.labelx.hide()
@@ -749,17 +753,23 @@ class toolBar:
 				checks for special characters in the entered coords that mut be
 				treated as shortcuts
 				'''
-				if txt.endsWith(" "):
+				if txt.endsWith(" ") or txt.endsWith("r"):
 					self.isRelative.setChecked(not self.isRelative.isChecked())
-					for i in [self.xValue,self.yValue,self.zValue]:
-						if (i.text() == txt): i.setText("")
 				if txt.endsWith("f"):
-					if self.finishButton.isVisible(): self.finish()
+					if self.finishButton.isVisible():
+                                                self.finish()
+                                        elif self.hasFill.isVisible():
+                                                self.hasFill.setChecked(not self.hasFill.isChecked())
 				if txt.endsWith("c"):
-					if self.closeButton.isVisible(): self.closeLine()
+					if self.closeButton.isVisible():
+                                                self.closeLine()
 					elif self.isCopy.isVisible():
 						self.isCopy.setChecked(not self.isCopy.isChecked())
-
+                                        elif self.continueCmd.isVisible():
+                                                self.continueCmd.setChecked(not self.continueCmd.isChecked())
+                                for i in [self.xValue,self.yValue,self.zValue]:
+                                        if (i.text() == txt): i.setText("")
+                                                
 			def sendText(self):
 				'''
 				this function sends the entered text to the active draft command
