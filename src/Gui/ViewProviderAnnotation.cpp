@@ -71,6 +71,7 @@ ViewProviderAnnotation::ViewProviderAnnotation()
     Justification.setEnums(JustificationEnums);
     ADD_PROPERTY(FontSize,(12));
     ADD_PROPERTY(FontName,("Arial"));
+    ADD_PROPERTY(LineSpacing,(1.0));
     ADD_PROPERTY(Rotation,(0));
     ADD_PROPERTY(RotationAxis,((long)2));
     RotationAxis.setEnums(RotationAxisEnums);
@@ -131,6 +132,10 @@ void ViewProviderAnnotation::onChanged(const App::Property* prop)
     }
     else if (prop == &FontName) {
         pFont->name = FontName.getValue();
+    }
+    else if (prop == &LineSpacing) {
+        pLabel->spacing = LineSpacing.getValue();
+        pLabel3d->spacing = LineSpacing.getValue();
     }
     else if (prop == &RotationAxis) {
         if (RotationAxis.getValue() == 0) {

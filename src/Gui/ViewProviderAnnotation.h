@@ -53,6 +53,7 @@ public:
     App::PropertyEnumeration    Justification;
     App::PropertyFloat          FontSize;
     App::PropertyString         FontName;
+    App::PropertyFloat          LineSpacing;
     App::PropertyAngle          Rotation;
     App::PropertyEnumeration    RotationAxis;
 
