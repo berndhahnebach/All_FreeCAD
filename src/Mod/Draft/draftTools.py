@@ -2731,19 +2731,16 @@ class Trimex(Modifier):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
                         self.ui.cross(True)
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
+                        self.point = getPoint(self,arg)[0]
 			self.shift = arg["ShiftDown"]
 			self.alt = arg["AltDown"]
 			if arg["CtrlDown"]: self.snapped = None
-			else: self.snapped = self.view.getObjectInfo((cursor[0],cursor[1]))
-			self.point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			if not self.ui.zValue.isEnabled(): self.point.z = float(self.ui.zValue.text())
+			else: self.snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 			if self.extrudeMode:
 				dist = self.extrude(self.point,self.shift)
 			else:
 				dist = self.redraw(self.point,self.snapped,self.shift,self.alt)
-			self.constraintrack.p1(point)
+			self.constraintrack.p1(self.point)
 			self.constraintrack.p2(self.newpoint)
 			self.constraintrack.on()
 			self.ui.radiusValue.setText("%.2f" % dist)
@@ -2769,6 +2766,9 @@ class Trimex(Modifier):
 		dvec = point.sub(self.newpoint)
 		if shift: delta = fcvec.project(dvec,self.normal)
 		else: delta = dvec
+                if self.force:
+                        ratio = self.force/delta.Length
+                        delta.multiply(ratio)
 		if real: return delta
 		self.ghost[0].trans.translation.setValue([delta.x,delta.y,delta.z])
 		for i in range(1,len(self.ghost)):
@@ -2907,6 +2907,7 @@ class Trimex(Modifier):
 
 	def finish(self,closed=False):		
 		Modifier.finish(self)
+                self.force = None
 		if self.ui:
 			self.ui.labelRadius.setText("Distance")
 			self.snap.finalize()
