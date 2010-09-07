@@ -403,6 +403,7 @@ def makeText(stringslist,point=Vector(0,0,0),screen=False):
         if screen: h = h*10
         obj.ViewObject.FontSize = h
         obj.ViewObject.FontName = params.GetString("textfont")
+        obj.ViewObject.LineSpacing = 0.6
         formatObject(obj)
         select(obj)
 	return obj
