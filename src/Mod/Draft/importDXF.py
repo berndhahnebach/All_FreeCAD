@@ -505,7 +505,7 @@ def processdxf(document,filename):
 				newob = doc.addObject("App::FeaturePython","Dimension")
 				lay.addObject(newob)
 				Dimension(newob)
-				DimensionViewProvider(newob.ViewObject)
+				ViewProviderDimension(newob.ViewObject)
 				newob.Start = p1
 				newob.End = p2
 				newob.Dimline = pt
