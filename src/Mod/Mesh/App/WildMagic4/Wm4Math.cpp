@@ -48,6 +48,7 @@ template<> const double Math<double>::LN_10 = Math<double>::Log(10.0);
 template<> const double Math<double>::INV_LN_2 = 1.0/Math<double>::LN_2;
 template<> const double Math<double>::INV_LN_10 = 1.0/Math<double>::LN_10;
 
+namespace Wm4 {
 //----------------------------------------------------------------------------
 //Does not compile with gcc 4.1.2
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
@@ -78,3 +79,4 @@ double Math<double>::FastInvSqrt (double dValue)
 }
 #endif
 //----------------------------------------------------------------------------
+}
