@@ -251,7 +251,7 @@ inline double Norm(double arg) {
     return fabs(  (double)arg );
 }
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 inline double hypot(double y,double x) { return ::_hypot(y,x);}
 inline double abs(double x) { return ::fabs(x);}
 #endif

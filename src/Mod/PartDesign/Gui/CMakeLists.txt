@@ -9,22 +9,18 @@ include_directories(
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
-		 ${COIN_INCLUDE_DIR}
+		 ${COIN3D_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(PartDesignGui_LIBS
-		 		 PartDesign
-		 		 FreeCADGui)
-else(WIN32)
-		 set(PartDesignGui_LIBS
-		 		 PartDesign
-		 		 FreeCADGui)
-endif(WIN32)
+set(PartDesignGui_LIBS
+	PartDesign
+	FreeCADGui
+)
 
 set(PartDesignGui_MOC_HDRS
 		 TaskPadParameters.h

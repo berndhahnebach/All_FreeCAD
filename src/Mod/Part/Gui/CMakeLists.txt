@@ -9,55 +9,19 @@ include_directories(
 		 ${CMAKE_BINARY_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
-		 ${COIN_INCLUDE_DIR}
+		 ${COIN3D_INCLUDE_DIR}
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
 		 ${XERCESC_INCLUDE_DIR}
 		 ${ZLIB_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(PartGui_LIBS
-		 		 Part
-		 		 TKernel
-		 		 TKG2d
-		 		 TKG3d
-		 		 TKMath
-		 		 TKSTEP
-		 		 TKIGES
-		 		 TKShHealing
-		 		 TKXSBase
-		 		 TKBool
-		 		 TKBO
-		 		 TKBRep
-		 		 TKTopAlgo
-		 		 TKGeomAlgo
-		 		 TKGeomBase
-		 		 TKPrim
-		 		 TKMesh
-		 		 FreeCADGui)
-else(WIN32)
-		 set(PartGui_LIBS
-		 		 Part
-		 		 TKernel
-		 		 TKG2d
-		 		 TKG3d
-		 		 TKMath
-		 		 TKSTEP
-		 		 TKIGES
-		 		 TKShHealing
-		 		 TKXSBase
-		 		 TKBool
-		 		 TKBO
-		 		 TKBRep
-		 		 TKTopAlgo
-		 		 TKGeomAlgo
-		 		 TKGeomBase
-		 		 TKPrim
-		 		 TKMesh
-		 		 FreeCADGui)
-endif(WIN32)
+set(PartGui_LIBS
+	Part
+	FreeCADGui
+)
 
 set(PartGui_MOC_HDRS
 		 CrossSections.h

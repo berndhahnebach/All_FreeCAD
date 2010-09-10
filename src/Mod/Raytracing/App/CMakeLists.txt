@@ -12,19 +12,14 @@ include_directories(
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCESC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
 
-if(WIN32)
-		 set(Raytracing_LIBS
-		 		 Part
-		 		 ${OCC_LIBRARIES}
-		 		 FreeCADApp)
-else(WIN32)
-		 set(Raytracing_LIBS
-		 		 Part
-		 		 ${OCC_LIBRARIES}
-		 		 FreeCADApp)
-endif(WIN32)
+set(Raytracing_LIBS
+	Part
+	${OCC_LIBRARIES}
+	FreeCADApp
+)
 
 macro(generate_from_py2 BASE_NAME OUTPUT_FILE)
 		 file(TO_NATIVE_PATH ${CMAKE_SOURCE_DIR}/src/Tools/PythonToCPP.py TOOL_PATH)

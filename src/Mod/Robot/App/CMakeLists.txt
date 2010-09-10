@@ -16,19 +16,20 @@ include_directories(
  		 ${ZLIB_INCLUDE_DIR}
 	     ${QT_INCLUDE_DIR}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(Robot_LIBS
-				 Part
-		         optimized QtCore4.lib
-		         debug QtCored4.lib
-		 		 FreeCADApp)
-else(WIN32)
-		 set(Robot_LIBS
-				 Part
-		         ${QT_LIBRARIES}
-		 		 FreeCADApp)
-endif(WIN32)
+if(MSVC)
+	set(Robot_LIBS
+		Part
+		${QT_QTCORE_LIBRARY}
+		${QT_QTCORE_LIBRARY_DEBUG}
+		FreeCADApp)
+else(MSVC)
+	set(Robot_LIBS
+		Part
+		${QT_QTCORE_LIBRARY}
+		FreeCADApp)
+endif(MSVC)
 
 FILE( GLOB KDL_SRCS kdl_cp/[^.]*.cpp )
 FILE( GLOB KDL_HPPS kdl_cp/[^.]*.hpp kdl_cp/[^.]*.inl)

@@ -18,6 +18,7 @@ include_directories(
 		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
 if(WIN32)
 		 set(RobotGui_LIBS
