@@ -9,23 +9,19 @@ include_directories(
 		 ${CMAKE_BINARY_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
-		 ${COIN_INCLUDE_DIR}
+		 ${COIN3D_INCLUDE_DIR}
 		 ${OCC_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(RaytracingGui_LIBS
-		 		 Raytracing
-		 		 FreeCADGui)
-else(WIN32)
-		 set(RaytracingGui_LIBS
-		 		 Raytracing
-		 		 FreeCADGui)
-endif(WIN32)
+set(RaytracingGui_LIBS
+	Raytracing
+	FreeCADGui
+)
 
 macro(generate_from_py2 BASE_NAME OUTPUT_FILE)
 		 file(TO_NATIVE_PATH ${CMAKE_SOURCE_DIR}/src/Tools/PythonToCPP.py TOOL_PATH)

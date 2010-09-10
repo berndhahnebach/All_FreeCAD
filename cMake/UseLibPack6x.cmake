@@ -63,7 +63,7 @@ set(SMESH_LIBRARIES
 set(SMESH_FOUND TRUE) 
 	
 # Coin3D
-set(COIN_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/coin)
+set(COIN3D_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/coin)
 set(COIN3D_LIBRARY_DEBUG  coin2d.lib)
 set(COIN3D_LIBRARY_RELEASE  coin2.lib)
 set(COIN3D_FOUND TRUE) 
@@ -278,24 +278,30 @@ set(ODE_FOUND TRUE)
 # OCC
 set(OCC_INCLUDE_DIR ${FREECAD_LIBPACK_DIR}/include/OpenCascade)
 set(OCC_LIBRARIES
-		 TKFillet
-		 TKMesh
- 		 TKernel
- 		 TKG2d
- 		 TKG3d
- 		 TKMath
- 		 TKSTEP
- 		 TKIGES
- 		 TKSTL
- 		 TKShHealing
- 		 TKXSBase
- 		 TKBool
- 		 TKBO
- 		 TKBRep
- 		 TKTopAlgo
- 		 TKGeomAlgo
- 		 TKGeomBase
- 		 TKOffset
- 		 TKPrim
+    TKFillet
+    TKMesh
+    TKernel
+    TKG2d
+    TKG3d
+    TKMath
+    TKIGES
+    TKSTL
+    TKShHealing
+    TKXSBase
+    TKBool
+    TKBO
+    TKBRep
+    TKTopAlgo
+    TKGeomAlgo
+    TKGeomBase
+    TKOffset
+    TKPrim
+    TKSTEP
+    TKSTEPBase
+    TKSTEPAttr
+    TKHLR
+)
+set(OCC_LIBRARY_DIR
+    ${FREECAD_LIBPACK_DIR}/lib
 )
 set(OCC_FOUND TRUE) 

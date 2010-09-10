@@ -166,6 +166,26 @@ Get a source archive from www.coin3d.org. Unpack the sources and run
 In case your Qt development files are not under /usr/local choose the correct directory there.
 Again a message dialog may pop up due to the missing cygwin1.dll.
 
+
+o PyQt
+
+sip:
+python configure.py --platform win32-g++ --destdir=/usr/local
+make
+edit makefile to find python include and lib
+sipconfig.py
+sipdistutils.py
+siputils.py
+
+PyQt:
+copy all include files of python and sip.h to QTDIR/include
+copy python26.dll.a to QTDIR/lib
+export PATH=/usr/local/lib/:$PATH
+python configure.py --destdir=/usr/local/lib/site-packages
+manually copy
+
+SWIG: Download from www.swig.org and extract e.g. to C:\MSYS\1.0\local\share
+
 TODO:
 
 o ODE (http://www.ode.org), >= 0.10.x
@@ -179,9 +199,16 @@ o OpenCASCADE
 + switch off OPENCASCADE_WRAPPERS, OPENCASCADE_VISUALISATION, OPENCASCADE_OCAF, OPENCASCADE_DRAW
 + add -DWNT=1 -DWIN32 -DCSFDB -DOCC_CONVERT_SIGNALS to all CXX/C flags
 ======================
-./configure CXXFLAGS="-mno-cygwin -DWNT=1 -DWIN32" CFLAGS="-mno-cygwin -DWNT=1 -DWIN32" \
+./configure CXXFLAGS="-mthreads -DWNT=1 -DWIN32" CFLAGS="-mthreads -DWNT=1 -DWIN32" \
 --prefix=/usr/local/opencascade --enable-debug=no --enable-production=yes \
---enable-static=no --enable-shared=yes --disable-dependency-tracking
+--enable-static=no --enable-shared=yes --disable-dependency-tracking \
+LDFLAGS="-mthreads -Wl,--export-all-symbols -ladvapi32 -lgdi32 -luser32 -lkernel32 -lopengl32 -lglu32 -lws2_32 -lvfw32 -lodbc32 -lodbccp32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32"
+
+
+./configure CXXFLAGS="-mthreads -DWNT=1 -DWIN32 -DHAVE_NO_DLL" CFLAGS="-mthreads -DWNT=1 -DWIN32 -DHAVE_NO_DLL" \
+--prefix=/usr/local/opencascade --enable-debug=no --enable-production=yes --enable-static=no --enable-shared=yes --disable-dependency-tracking \
+LDFLAGS="-mthreads -Wl,--export-all-symbols -ladvapi32 -lgdi32 -luser32 -lkernel32 -lopengl32 -lglu32 -lws2_32 -lvfw32 -lodbc32 -lodbccp32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32"
+
 
 Standard_math.hxx:
 #ifndef M_SQRT1_2
@@ -190,6 +217,25 @@ Standard_math.hxx:
 #ifndef M_PI_2
 # define M_PI_2     1.5707963267948966192E0
 #endif
+
+ros/src/ExprIntrp.tab.c:
+Remove the file of make an #if 0/#endif around its content
+
+Standard_CString.hxx:
+MOve the block 
+Standard_Integer HashCode (const Standard_CString Value, 
+                           const Standard_Integer Upper )
+{
+  Standard_Integer aLen ;
+  //#if OptJr
+  //STRINGLEN( Value , aLen ) ;
+  //#else
+  aLen = (Standard_Integer)strlen(Value);
+  //#endif
+  return HashCode ( HashCodes( Value , aLen ) , Upper ) ;
+}
+
+to another file, e.g. Message_MsgFile.cxx
 
 Standard_values.h:
 

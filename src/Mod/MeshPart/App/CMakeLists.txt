@@ -11,16 +11,12 @@ include_directories(
 		 ${ZLIB_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(MeshPart_LIBS
-		 		 Part
-		 		 Mesh)
-else(WIN32)
-		 set(MeshPart_LIBS
-		 		 Part
-		 		 Mesh)
-endif(WIN32)
+set(MeshPart_LIBS
+	Part
+	Mesh
+)
 
 SET(MeshPart_SRCS
 		 AppMeshPart.cpp

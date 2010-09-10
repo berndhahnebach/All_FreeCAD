@@ -12,18 +12,13 @@ include_directories(
 		 ${XERCESC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR})
 
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(Reen_LIBS
-		 		 Part
-				 Mesh
-		 		 FreeCADApp)
-else(WIN32)
-		 set(Reen_LIBS
-		 		 Part
-				 Mesh
-		 		 FreeCADApp)
-endif(WIN32)
+set(Reen_LIBS
+	Part
+	Mesh
+	FreeCADApp
+)
 
 SET(Reen_SRCS
 		 AppReverseEngineering.cpp

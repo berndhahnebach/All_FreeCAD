@@ -3,7 +3,7 @@
 
 include_directories(
 		 ${Boost_INCLUDE_DIRS}
-		 ${COIN_INCLUDE_DIR}
+		 ${COIN3D_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}

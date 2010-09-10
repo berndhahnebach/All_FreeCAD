@@ -10,24 +10,19 @@ include_directories(
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
 		 ${OCC_INCLUDE_DIR}
-		 ${COIN_INCLUDE_DIR}
+		 ${COIN3D_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(SketcherGui_LIBS
-		 		 Sketcher
-				 PartGui
-		 		 FreeCADGui)
-else(WIN32)
-		 set(SketcherGui_LIBS
-		 		 Sketcher
-				 PartGui
-		 		 FreeCADGui)
-endif(WIN32)
+set(SketcherGui_LIBS
+	Sketcher
+	PartGui
+	FreeCADGui
+)
 
 set(SketcherGui_MOC_HDRS
 		 TaskSketcherConstrains.h

@@ -7,23 +7,19 @@ endif(MSVC)
 include_directories(
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
-		 ${COIN_INCLUDE_DIR}
+		 ${COIN3D_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${QT_INCLUDE_DIR}
 		 ${OCC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(DrawingGui_LIBS
-		 		 Drawing
-		 		 FreeCADGui)
-else(WIN32)
-		 set(DrawingGui_LIBS
-		 		 Drawing
-		 		 FreeCADGui)
-endif(WIN32)
+set(DrawingGui_LIBS
+	Drawing
+	FreeCADGui
+)
 
 set(DrawingGui_MOC_HDRS
 		 DrawingView.h

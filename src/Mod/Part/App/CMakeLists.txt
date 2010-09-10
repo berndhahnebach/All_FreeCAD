@@ -15,11 +15,10 @@ include_directories(
 		 ${XERCESC_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR})
 
+link_directories(${OCC_LIBRARY_DIR})
 
 set(Part_LIBS 
 	${OCC_LIBRARIES}
-	TKSTEPAttr
-	TKSTEPBase
 	FreeCADApp
 )
 

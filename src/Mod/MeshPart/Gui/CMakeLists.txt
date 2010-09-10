@@ -2,22 +2,18 @@ include_directories(
 		 ${CMAKE_SOURCE_DIR}/src
 		 ${CMAKE_CURRENT_BINARY_DIR}
 		 ${Boost_INCLUDE_DIRS}
-		 ${COIN_INCLUDE_DIR}
+		 ${COIN3D_INCLUDE_DIR}
 		 ${QT_INCLUDE_DIR}
  		 ${ZLIB_INCLUDE_DIR}
 		 ${SOQT_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(MeshPartGui_LIBS
-		 		 MeshPart
-		 		 FreeCADGui)
-else(WIN32)
-		 set(MeshPartGui_LIBS
-		 		 MeshPart
-		 		 FreeCADGui)
-endif(WIN32)
+set(MeshPartGui_LIBS
+	MeshPart
+	FreeCADGui
+)
 
 qt4_add_resources(MeshPartGui_QRC_SRCS Resources/MeshPart.qrc)
 

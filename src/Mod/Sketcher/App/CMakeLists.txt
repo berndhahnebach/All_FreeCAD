@@ -15,18 +15,12 @@ include_directories(
  		 ${ZLIB_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(Sketcher_LIBS
-		 		 Part
-		 		 TKHLR
-		 		 FreeCADApp)
-else(WIN32)
-		 set(Sketcher_LIBS
-		 		 Part
-		 		 TKHLR
-		 		 FreeCADApp)
-endif(WIN32)
+set(Sketcher_LIBS
+	Part
+	FreeCADApp
+)
 
 generate_from_xml(SketchObjectSFPy)
 generate_from_xml(SketchObjectPy)

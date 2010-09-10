@@ -11,18 +11,12 @@ include_directories(
  		 ${ZLIB_INCLUDE_DIR}
 		 ${PYTHON_INCLUDE_PATH}
 		 ${XERCESC_INCLUDE_DIR})
+link_directories(${OCC_LIBRARY_DIR})
 
-if(WIN32)
-		 set(PartDesign_LIBS
-		 		 Part
-		 		 TKHLR
-		 		 FreeCADApp)
-else(WIN32)
-		 set(PartDesign_LIBS
-		 		 Part
-		 		 TKHLR
-		 		 FreeCADApp)
-endif(WIN32)
+set(PartDesign_LIBS
+	Part
+	FreeCADApp
+)
 
 SET(Features_SRCS
 		 FeatureFillet.cpp
