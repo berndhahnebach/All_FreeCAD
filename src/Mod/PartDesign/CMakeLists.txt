@@ -1,15 +1,13 @@
 
 add_subdirectory(App)
-fc_copy_to_mod_path("PartDesign" Init.py)
-
 if(FREECAD_BUILD_GUI)
-	add_subdirectory(Gui)
-	fc_copy_to_mod_path("PartDesign" InitGui.py)
+    add_subdirectory(Gui)
 endif(FREECAD_BUILD_GUI)
 
 install(
-		 FILES
-		 		 Init.py
-		 		 InitGui.py
-		 DESTINATION
-		 		 Mod/PartDesign)
+    FILES
+        Init.py
+        InitGui.py
+    DESTINATION
+        Mod/PartDesign
+)

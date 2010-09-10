@@ -1,56 +1,57 @@
 if(WIN32)
-		 add_definitions(-DFCBase)
-		 add_definitions(-DPYCXX_DLL)
-		 add_definitions(-DBOOST_DYN_LINK)
+    add_definitions(-DFCBase)
+    add_definitions(-DPYCXX_DLL)
+    add_definitions(-DBOOST_DYN_LINK)
 endif(WIN32)
 
 include_directories(
-	${CMAKE_BINARY_DIR}/src
-	${CMAKE_SOURCE_DIR}/src
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${Boost_INCLUDE_DIRS}
-	${PYTHON_INCLUDE_PATH}
-	${XERCESC_INCLUDE_DIR}
-	${QT_QTCORE_INCLUDE_DIR}
-	${ZLIB_INCLUDE_DIR})
+    ${CMAKE_BINARY_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${Boost_INCLUDE_DIRS}
+    ${PYTHON_INCLUDE_PATH}
+    ${XERCESC_INCLUDE_DIR}
+    ${QT_QTCORE_INCLUDE_DIR}
+    ${ZLIB_INCLUDE_DIR}
+)
 
 if(MSVC)
-	set(FreeCADBase_LIBS
- 		${Boost_LIBRARIES}
-		${Boost_DEBUG_LIBRARIES}
-		debug ${PYTHON_DEBUG_LIBRARY}
-		optimized ${PYTHON_LIBRARY}
-		debug ${XERCESC_DEBUG_LIBRARIES}
-		optimized ${XERCESC_LIBRARIES}
-		${QT_QTCORE_LIBRARY}
-		${QT_QTCORE_LIBRARY_DEBUG}
-		${ZLIB_LIBRARIES}
-		debug MSVCRTD.LIB
+    set(FreeCADBase_LIBS
+        ${Boost_LIBRARIES}
+        ${Boost_DEBUG_LIBRARIES}
+        debug ${PYTHON_DEBUG_LIBRARY}
+        optimized ${PYTHON_LIBRARY}
+        debug ${XERCESC_DEBUG_LIBRARIES}
+        optimized ${XERCESC_LIBRARIES}
+        ${QT_QTCORE_LIBRARY}
+        ${QT_QTCORE_LIBRARY_DEBUG}
+        ${ZLIB_LIBRARIES}
+        debug MSVCRTD.LIB
         debug MSVCPRTD.LIB
-		optimized MSVCRT.LIB
+        optimized MSVCRT.LIB
         optimized MSVCPRT.LIB
-		Rpcrt4.lib
-		)
+        Rpcrt4.lib
+    )
 elseif(MINGW)
-	set(FreeCADBase_LIBS
-		${PYTHON_LIBRARY}
-		${XERCESC_LIBRARIES}
-		${QT_QTCORE_LIBRARY}
-		${Boost_LIBRARIES}
-		${ZLIB_LIBRARIES}
-		Rpcrt4.lib
-)
+    set(FreeCADBase_LIBS
+        ${PYTHON_LIBRARY}
+        ${XERCESC_LIBRARIES}
+        ${QT_QTCORE_LIBRARY}
+        ${Boost_LIBRARIES}
+        ${ZLIB_LIBRARIES}
+        Rpcrt4.lib
+    )
 else(MSVC)
-	set(FreeCADBase_LIBS
-		${PYTHON_LIBRARY}
-		${XERCESC_LIBRARIES}
-		${QT_QTCORE_LIBRARY}
-		${Boost_LIBRARIES}
-		${ZLIB_LIBRARIES}
-		-lutil
-		-ldl
-)
+    set(FreeCADBase_LIBS
+        ${PYTHON_LIBRARY}
+        ${XERCESC_LIBRARIES}
+        ${QT_QTCORE_LIBRARY}
+        ${Boost_LIBRARIES}
+        ${ZLIB_LIBRARIES}
+        -lutil
+        -ldl
+    )
 endif(MSVC)
 
 generate_from_xml(BaseClassPy)
@@ -62,212 +63,212 @@ generate_from_xml(RotationPy)
 generate_from_xml(PlacementPy)
 
 if(SWIG_FOUND)
-	execute_process(COMMAND ${SWIG_EXECUTABLE} -python -external-runtime)
-	add_definitions(-DHAVE_SWIG=1)
+    execute_process(COMMAND ${SWIG_EXECUTABLE} -python -external-runtime)
+    add_definitions(-DHAVE_SWIG=1)
 endif(SWIG_FOUND)
 
 SET(zipios_SRCS
-	../zipios++/backbuffer.h
-	../zipios++/basicentry.cpp
-	../zipios++/basicentry.h
-	../zipios++/collcoll.cpp
-	../zipios++/collcoll.h
-	../zipios++/deflateoutputstreambuf.cpp
-	../zipios++/deflateoutputstreambuf.h
-	../zipios++/dircoll.cpp
-	../zipios++/dircoll.h
-	../zipios++/directory.cpp
-	../zipios++/directory.h
-	../zipios++/fcoll.cpp
-	../zipios++/fcoll.h
-	../zipios++/fcollexceptions.cpp
-	../zipios++/fcollexceptions.h
-	../zipios++/fileentry.cpp
-	../zipios++/fileentry.h
-	../zipios++/filepath.cpp
-	../zipios++/filepath.h
-	../zipios++/filterinputstreambuf.cpp
-	../zipios++/filterinputstreambuf.h
-	../zipios++/filteroutputstreambuf.cpp
-	../zipios++/filteroutputstreambuf.h
-	../zipios++/gzipoutputstream.cpp
-	../zipios++/gzipoutputstream.h
-	../zipios++/gzipoutputstreambuf.cpp
-	../zipios++/gzipoutputstreambuf.h
-	../zipios++/inflateinputstreambuf.cpp
-	../zipios++/inflateinputstreambuf.h
-	../zipios++/meta-iostreams.h
-	../zipios++/outputstringstream.h
-	../zipios++/simplesmartptr.h
-	../zipios++/virtualseeker.h
-	../zipios++/zipfile.cpp
-	../zipios++/zipfile.h
-	../zipios++/ziphead.cpp
-	../zipios++/ziphead.h
-	../zipios++/zipheadio.cpp
-	../zipios++/zipheadio.h
-	../zipios++/zipinputstream.cpp
-	../zipios++/zipinputstream.h
-	../zipios++/zipinputstreambuf.cpp
-	../zipios++/zipinputstreambuf.h
-	../zipios++/zipios_common.h
-	../zipios++/zipios-config.h
-	../zipios++/zipios_defs.h
-	../zipios++/zipoutputstreambuf.cpp
-	../zipios++/zipoutputstreambuf.h
-	../zipios++/zipoutputstream.cpp
-	../zipios++/zipoutputstream.h
+    ../zipios++/backbuffer.h
+    ../zipios++/basicentry.cpp
+    ../zipios++/basicentry.h
+    ../zipios++/collcoll.cpp
+    ../zipios++/collcoll.h
+    ../zipios++/deflateoutputstreambuf.cpp
+    ../zipios++/deflateoutputstreambuf.h
+    ../zipios++/dircoll.cpp
+    ../zipios++/dircoll.h
+    ../zipios++/directory.cpp
+    ../zipios++/directory.h
+    ../zipios++/fcoll.cpp
+    ../zipios++/fcoll.h
+    ../zipios++/fcollexceptions.cpp
+    ../zipios++/fcollexceptions.h
+    ../zipios++/fileentry.cpp
+    ../zipios++/fileentry.h
+    ../zipios++/filepath.cpp
+    ../zipios++/filepath.h
+    ../zipios++/filterinputstreambuf.cpp
+    ../zipios++/filterinputstreambuf.h
+    ../zipios++/filteroutputstreambuf.cpp
+    ../zipios++/filteroutputstreambuf.h
+    ../zipios++/gzipoutputstream.cpp
+    ../zipios++/gzipoutputstream.h
+    ../zipios++/gzipoutputstreambuf.cpp
+    ../zipios++/gzipoutputstreambuf.h
+    ../zipios++/inflateinputstreambuf.cpp
+    ../zipios++/inflateinputstreambuf.h
+    ../zipios++/meta-iostreams.h
+    ../zipios++/outputstringstream.h
+    ../zipios++/simplesmartptr.h
+    ../zipios++/virtualseeker.h
+    ../zipios++/zipfile.cpp
+    ../zipios++/zipfile.h
+    ../zipios++/ziphead.cpp
+    ../zipios++/ziphead.h
+    ../zipios++/zipheadio.cpp
+    ../zipios++/zipheadio.h
+    ../zipios++/zipinputstream.cpp
+    ../zipios++/zipinputstream.h
+    ../zipios++/zipinputstreambuf.cpp
+    ../zipios++/zipinputstreambuf.h
+    ../zipios++/zipios_common.h
+    ../zipios++/zipios-config.h
+    ../zipios++/zipios_defs.h
+    ../zipios++/zipoutputstreambuf.cpp
+    ../zipios++/zipoutputstreambuf.h
+    ../zipios++/zipoutputstream.cpp
+    ../zipios++/zipoutputstream.h
 )
 SOURCE_GROUP("zipios" FILES ${zipios_SRCS})
 
 SET(pycxx_SRCS
-	../CXX/Config.hxx
-	../CXX/cxxextensions.c
-	../CXX/cxx_extensions.cxx
-	../CXX/cxxsupport.cxx
-	../CXX/Exception.hxx
-	../CXX/Extensions.hxx
-	../CXX/IndirectPythonInterface.cxx
-	../CXX/IndirectPythonInterface.hxx
-	../CXX/Objects.hxx
-	../CXX/Version.hxx
-	../CXX/WrapPython.h
+    ../CXX/Config.hxx
+    ../CXX/cxxextensions.c
+    ../CXX/cxx_extensions.cxx
+    ../CXX/cxxsupport.cxx
+    ../CXX/Exception.hxx
+    ../CXX/Extensions.hxx
+    ../CXX/IndirectPythonInterface.cxx
+    ../CXX/IndirectPythonInterface.hxx
+    ../CXX/Objects.hxx
+    ../CXX/Version.hxx
+    ../CXX/WrapPython.h
 )
 SOURCE_GROUP("pycxx" FILES ${pycxx_SRCS})
 
 SET(FreeCADBase_XML_SRCS
-	BaseClassPy.xml
-	BoundBoxPy.xml
-	MatrixPy.xml
-	PersistencePy.xml
-	PlacementPy.xml
-	RotationPy.xml
-	VectorPy.xml
+    BaseClassPy.xml
+    BoundBoxPy.xml
+    MatrixPy.xml
+    PersistencePy.xml
+    PlacementPy.xml
+    RotationPy.xml
+    VectorPy.xml
 )
 SOURCE_GROUP("XML" FILES ${FreeCADBase_XML_SRCS})
 
 SET(FreeCADBase_UNITAPI_SRCS
-	UnitsApi.cpp
-	UnitsApiPy.cpp
-	UnitsApi.h
-	UnitsSchema.h
-	UnitsSchema.cpp
-	UnitsSchemaInternal.h
-	UnitsSchemaInternal.cpp
-	UnitsApi.y
-	UnitsApi.l
+    UnitsApi.cpp
+    UnitsApiPy.cpp
+    UnitsApi.h
+    UnitsSchema.h
+    UnitsSchema.cpp
+    UnitsSchemaInternal.h
+    UnitsSchemaInternal.cpp
+    UnitsApi.y
+    UnitsApi.l
 )
 SOURCE_GROUP("Units" FILES ${FreeCADBase_UNITAPI_SRCS})
 
 SET(FreeCADBase_CPP_SRCS
-	Base64.cpp
-	BaseClass.cpp
-	BaseClassPyImp.cpp
-	BoundBoxPyImp.cpp
-	Builder3D.cpp
-	Console.cpp
-	Exception.cpp
-	Factory.cpp
-	FileInfo.cpp
-	FileTemplate.cpp
-	gzstream.cpp
-	gzstream.h
-	GeometryPyCXX.cpp
-	Handle.cpp
-	InputSource.cpp
-	Interpreter.cpp
-	Matrix.cpp
-	MatrixPyImp.cpp
-	MemDebug.cpp
-	Parameter.cpp
-	ParameterPy.cpp
-	Persistence.cpp
-	PersistencePyImp.cpp
-	Placement.cpp
-	PlacementPyImp.cpp
-	PyExport.cpp
-	PyObjectBase.cpp
-	Reader.cpp
-	Rotation.cpp
-	RotationPyImp.cpp
-	Sequencer.cpp
-	Stream.cpp
-	Swap.cpp
-	swigpyrun_1.3.25.cpp
-	swigpyrun_1.3.33.cpp
-	swigpyrun_1.3.36.cpp
-	swigpyrun_1.3.38.cpp
-	swigpyrun_1.3.40.cpp
-	swigpyrun.cpp
-	TimeInfo.cpp
-	Tools.cpp
-	Tools2D.cpp
-	Type.cpp
-	Uuid.cpp
-	Vector3D.cpp
-	VectorPyImp.cpp
-	Writer.cpp
-	XMLTools.cpp
+    Base64.cpp
+    BaseClass.cpp
+    BaseClassPyImp.cpp
+    BoundBoxPyImp.cpp
+    Builder3D.cpp
+    Console.cpp
+    Exception.cpp
+    Factory.cpp
+    FileInfo.cpp
+    FileTemplate.cpp
+    gzstream.cpp
+    gzstream.h
+    GeometryPyCXX.cpp
+    Handle.cpp
+    InputSource.cpp
+    Interpreter.cpp
+    Matrix.cpp
+    MatrixPyImp.cpp
+    MemDebug.cpp
+    Parameter.cpp
+    ParameterPy.cpp
+    Persistence.cpp
+    PersistencePyImp.cpp
+    Placement.cpp
+    PlacementPyImp.cpp
+    PyExport.cpp
+    PyObjectBase.cpp
+    Reader.cpp
+    Rotation.cpp
+    RotationPyImp.cpp
+    Sequencer.cpp
+    Stream.cpp
+    Swap.cpp
+    swigpyrun_1.3.25.cpp
+    swigpyrun_1.3.33.cpp
+    swigpyrun_1.3.36.cpp
+    swigpyrun_1.3.38.cpp
+    swigpyrun_1.3.40.cpp
+    swigpyrun.cpp
+    TimeInfo.cpp
+    Tools.cpp
+    Tools2D.cpp
+    Type.cpp
+    Uuid.cpp
+    Vector3D.cpp
+    VectorPyImp.cpp
+    Writer.cpp
+    XMLTools.cpp
 )
 
 SET(FreeCADBase_HPP_SRCS
-	Base64.h
-	BaseClass.h
-	BoundBox.h
-	Builder3D.h
-	Console.h
-	Exception.h
-	Factory.h
-	FileInfo.h
-	FileTemplate.h
-	fdstream.hpp
-	gzstream.h
-	GeometryPyCXX.h
-	Handle.h
-	InputSource.h
-	Interpreter.h
-	Matrix.h
-	MemDebug.h
-	Observer.h
-	Parameter.h
-	Persistence.h
-	Placement.h
-	PyExport.h
-	PyObjectBase.h
-	Reader.h
-	Rotation.h
-	Sequencer.h
-	Stream.h
-	Swap.h
-	swigpyrun_1.3.25.h
-	swigpyrun_1.3.33.h
-	swigpyrun_1.3.36.h
-	swigpyrun_1.3.38.h
-	swigpyrun_1.3.40.h
-	swigpyrun.inl
-	TimeInfo.h
-	Tools.h
-	Tools2D.h
-	Type.h
-	Uuid.h
-	Vector3D.h
-	ViewProj.h
-	Writer.h
-	XMLTools.h
+    Base64.h
+    BaseClass.h
+    BoundBox.h
+    Builder3D.h
+    Console.h
+    Exception.h
+    Factory.h
+    FileInfo.h
+    FileTemplate.h
+    fdstream.hpp
+    gzstream.h
+    GeometryPyCXX.h
+    Handle.h
+    InputSource.h
+    Interpreter.h
+    Matrix.h
+    MemDebug.h
+    Observer.h
+    Parameter.h
+    Persistence.h
+    Placement.h
+    PyExport.h
+    PyObjectBase.h
+    Reader.h
+    Rotation.h
+    Sequencer.h
+    Stream.h
+    Swap.h
+    swigpyrun_1.3.25.h
+    swigpyrun_1.3.33.h
+    swigpyrun_1.3.36.h
+    swigpyrun_1.3.38.h
+    swigpyrun_1.3.40.h
+    swigpyrun.inl
+    TimeInfo.h
+    Tools.h
+    Tools2D.h
+    Type.h
+    Uuid.h
+    Vector3D.h
+    ViewProj.h
+    Writer.h
+    XMLTools.h
 )
 
 SET(FreeCADBase_SRCS
-	${zipios_SRCS}
-	${pycxx_SRCS}
-	${FreeCADBase_CPP_SRCS}
-	${FreeCADBase_HPP_SRCS}
-	${FreeCADBase_XML_SRCS}
-	${FreeCADBase_UNITAPI_SRCS}
-	Doxygen.cpp
-	PyTools.c
-	PyTools.h
-	PreCompiled.cpp
-	PreCompiled.h
+    ${zipios_SRCS}
+    ${pycxx_SRCS}
+    ${FreeCADBase_CPP_SRCS}
+    ${FreeCADBase_HPP_SRCS}
+    ${FreeCADBase_XML_SRCS}
+    ${FreeCADBase_UNITAPI_SRCS}
+    Doxygen.cpp
+    PyTools.c
+    PyTools.h
+    PreCompiled.cpp
+    PreCompiled.h
 )
 
 if(MSVC)
@@ -281,22 +282,24 @@ target_link_libraries(FreeCADBase ${FreeCADBase_LIBS})
 
 # Note this is IDE specific, not necessarily platform specific
 if(MSVC)
-	set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
-	set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-	# dirty hack to avoid Debug/Release subdirectory
-	set_target_properties(FreeCADBase PROPERTIES PREFIX "../")
+    set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
+    set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    # dirty hack to avoid Debug/Release subdirectory
+    set_target_properties(FreeCADBase PROPERTIES PREFIX "../")
+elseif(MINGW)
+    set_target_properties(FreeCADBase PROPERTIES DEBUG_OUTPUT_NAME "FreeCADBaseD")
+    set_target_properties(FreeCADBase PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 else(MSVC)
-	set_target_properties(FreeCADBase PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    set_target_properties(FreeCADBase PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif(MSVC)
 
 if(WIN32)
-	INSTALL(TARGETS FreeCADBase
-	  RUNTIME DESTINATION bin
-	  LIBRARY DESTINATION lib
-	)
+    INSTALL(TARGETS FreeCADBase
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+    )
 else(WIN32)
-	INSTALL(TARGETS FreeCADBase
-	  LIBRARY DESTINATION lib
-	)
+    INSTALL(TARGETS FreeCADBase
+        LIBRARY DESTINATION lib
+    )
 endif(WIN32)
-

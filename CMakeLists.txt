@@ -17,36 +17,36 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cMake")
 
 
 if(COMMAND cmake_policy)
-		 cmake_policy(SET CMP0003 NEW)
+     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
 #if(CMAKE_CFG_INTDIR STREQUAL .)
-		 # No Debug/Release output paths
-		 set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-		 set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+    # No Debug/Release output paths
+    set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+    set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 #else(CMAKE_CFG_INTDIR STREQUAL .)
-#		 set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Debug)
-#		 set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Release)
+#   set(DEBUG_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Debug)
+#   set(RELEASE_MAIN_OUTPUT_PATH ${CMAKE_BINARY_DIR}/src/Main/Release)
 #endif(CMAKE_CFG_INTDIR STREQUAL .)
 
 if(WIN32)
-		 set(PLATFORM_CP xcopy /Y /S)
-		 set(PLATFORM_MK mkdir)
+    set(PLATFORM_CP xcopy /Y /S)
+    set(PLATFORM_MK mkdir)
 else(WIN32)
-		 set(PLATFORM_CP cp)
-		 set(PLATFORM_MK mkdir -p)
+    set(PLATFORM_CP cp)
+    set(PLATFORM_MK mkdir -p)
 endif(WIN32)
 
 
 # ================================================================================
 
 if(CMAKE_COMPILER_IS_GNUCC)
-	include(cMake/ConfigureChecks.cmake)
-	configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-	add_definitions(-DHAVE_CONFIG_H)
-	add_definitions(-Wno-write-strings)
-	add_definitions(-Wno-deprecated)
-	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+    include(cMake/ConfigureChecks.cmake)
+    configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+    add_definitions(-DHAVE_CONFIG_H)
+    add_definitions(-Wno-write-strings)
+    add_definitions(-Wno-deprecated)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 endif(CMAKE_COMPILER_IS_GNUCC)
 
 
@@ -54,19 +54,19 @@ endif(CMAKE_COMPILER_IS_GNUCC)
 
 
 if(WIN32)
-		 SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
+    SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
 else(WIN32)
-		 SET(CMAKE_INSTALL_PREFIX "/usr/lib/freecad")
+    SET(CMAKE_INSTALL_PREFIX "/usr/lib/freecad")
 endif(WIN32)
 
 # ================================================================================
 # == Win32 is default behaviour use the LibPack copied in Source tree ============
 if(MSVC)
-		 OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." ON)
-		 set(FREECAD_LIBPACK_DIR ${CMAKE_SOURCE_DIR} CACHE PATH  "Directory of the FreeCAD LibPack")
+    OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." ON)
+    set(FREECAD_LIBPACK_DIR ${CMAKE_SOURCE_DIR} CACHE PATH  "Directory of the FreeCAD LibPack")
 else(MSVC)
-		 OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." OFF)
-		 set(FREECAD_LIBPACK_DIR ""  CACHE PATH  "Directory of the FreeCAD LibPack")
+    OPTION(FREECAD_LIBPACK_USE "Use the LibPack to Build FreeCAD (only Win32 so far)." OFF)
+    set(FREECAD_LIBPACK_DIR ""  CACHE PATH  "Directory of the FreeCAD LibPack")
 endif(MSVC)
 
 # ================================================================================
@@ -84,28 +84,28 @@ OPTION(FREECAD_BUILD_SANDBOX "Build the FreeCAD Sandbox module which is only for
 # ================================================================================
 
 if(FREECAD_LIBPACK_USE)
-	# checking for a unique file in LibPack location to make sure the right version of the LibPack is there
-	find_file(FREECAD_LIBPACK_CHECKFILE6X boost_program_options-vc80-mt-gd.lib ${FREECAD_LIBPACK_DIR}/lib )
-	find_file(FREECAD_LIBPACK_CHECKFILE7X boost_program_options-vc90-mt-gd-1_39.lib ${FREECAD_LIBPACK_DIR}/lib )
-	find_file(FREECAD_LIBPACK_CHECKCUSTOM boost_program_options-vc90-mt-gd-1_41.lib ${FREECAD_LIBPACK_DIR}/lib )
-	IF(FREECAD_LIBPACK_CHECKFILE6X)
-		include(cMake/UseLibPack6x.cmake)
-		set(FREECAD_LIBPACK6 FOUND CACHE STRING "Displays if the libpack has been found")
-		set(FREECAD_LIBPACK7 NOTFOUND CACHE STRING "Displays if the libpack has been found")
-		MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK7)
-	ELSEIF(FREECAD_LIBPACK_CHECKFILE7X)
-		include(cMake/UseLibPack7x.cmake)
-		set(FREECAD_LIBPACK6 NOTFOUND CACHE STRING "Displays if the libpack has been found")
-		MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK6)
-		set(FREECAD_LIBPACK7 FOUND CACHE STRING "Displays if the libpack has been found")	
-	ELSEIF(FREECAD_LIBPACK_CHECKCUSTOM)
-		include(cMake/UseLibPackCustom.cmake)
-		set(FREECAD_LIBPACKX FOUND CACHE STRING "Displays if the libpack has been found")	
-	ELSE(FREECAD_LIBPACK_CHECKFILE6X)
-		MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
-		message(SEND_ERROR  "Could not find neither LibPack 6.x nor 7.x in specified location:" ${FREECAD_LIBPACK_DIR})
-	ENDIF(FREECAD_LIBPACK_CHECKFILE6X)
-	
+    # checking for a unique file in LibPack location to make sure the right version of the LibPack is there
+    find_file(FREECAD_LIBPACK_CHECKFILE6X boost_program_options-vc80-mt-gd.lib ${FREECAD_LIBPACK_DIR}/lib )
+    find_file(FREECAD_LIBPACK_CHECKFILE7X boost_program_options-vc90-mt-gd-1_39.lib ${FREECAD_LIBPACK_DIR}/lib )
+    find_file(FREECAD_LIBPACK_CHECKCUSTOM boost_program_options-vc90-mt-gd-1_41.lib ${FREECAD_LIBPACK_DIR}/lib )
+    IF(FREECAD_LIBPACK_CHECKFILE6X)
+        include(cMake/UseLibPack6x.cmake)
+        set(FREECAD_LIBPACK6 FOUND CACHE STRING "Displays if the libpack has been found")
+        set(FREECAD_LIBPACK7 NOTFOUND CACHE STRING "Displays if the libpack has been found")
+        MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK7)
+    ELSEIF(FREECAD_LIBPACK_CHECKFILE7X)
+        include(cMake/UseLibPack7x.cmake)
+        set(FREECAD_LIBPACK6 NOTFOUND CACHE STRING "Displays if the libpack has been found")
+        MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK6)
+        set(FREECAD_LIBPACK7 FOUND CACHE STRING "Displays if the libpack has been found")	
+    ELSEIF(FREECAD_LIBPACK_CHECKCUSTOM)
+        include(cMake/UseLibPackCustom.cmake)
+        set(FREECAD_LIBPACKX FOUND CACHE STRING "Displays if the libpack has been found")	
+    ELSE(FREECAD_LIBPACK_CHECKFILE6X)
+        MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
+        message(SEND_ERROR  "Could not find neither LibPack 6.x nor 7.x in specified location:" ${FREECAD_LIBPACK_DIR})
+    ENDIF(FREECAD_LIBPACK_CHECKFILE6X)
+
 else(FREECAD_LIBPACK_USE)
 
 MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
@@ -119,126 +119,126 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 # -------------------------------- Python --------------------------------
 
 
-	find_package(PythonLibs REQUIRED)
-	find_package(PythonInterp REQUIRED)
+    find_package(PythonLibs REQUIRED)
+    find_package(PythonInterp REQUIRED)
 
-	IF(NOT PYTHONLIBS_FOUND)
-		MESSAGE("Python not found, install python!")
-	ENDIF(NOT PYTHONLIBS_FOUND)
+    IF(NOT PYTHONLIBS_FOUND)
+        MESSAGE("Python not found, install python!")
+    ENDIF(NOT PYTHONLIBS_FOUND)
 
 
 
 # -------------------------------- Boost --------------------------------
 
-	SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.41.0" "1.39.0" "1.38.0" "1.37.0"
-	    "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
-	    "1.33.1" "1.33.0" "1.33" )
+    SET( _boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS} "1.41.0" "1.39.0" "1.38.0" "1.37.0"
+        "1.36.1" "1.36.0" "1.35.1" "1.35.0" "1.35" "1.34.1" "1.34.0" "1.34"
+        "1.33.1" "1.33.0" "1.33" )
 
-	find_package(Boost COMPONENTS filesystem program_options regex signals system)
+    find_package(Boost COMPONENTS filesystem program_options regex signals system)
 
 # -------------------------------- XercesC --------------------------------
 
-	find_package(XercesC REQUIRED)
+    find_package(XercesC REQUIRED)
 
 # -------------------------------- ZLIB --------------------------------
 
-	find_package(ZLIB REQUIRED)
+    find_package(ZLIB REQUIRED)
 
 # -------------------------------- OpenCasCade --------------------------------
 
-	find_package(OpenCasCade)
+    find_package(OpenCasCade)
 
-	IF(NOT OCC_FOUND)
-		MESSAGE("OpenCasCade was not found, build no CAD modules!")
-	ENDIF(NOT OCC_FOUND)
+    IF(NOT OCC_FOUND)
+        MESSAGE("OpenCasCade was not found, build no CAD modules!")
+    ENDIF(NOT OCC_FOUND)
 
 # -------------------------------- OpenCV --------------------------------
 
-	# not needed at the moment
-	#find_package(OpenCV REQUIRED)
+    # not needed at the moment
+    #find_package(OpenCV REQUIRED)
 
 # -------------------------------- Swig ----------------------------------
 
-	find_package(SWIG)
+    find_package(SWIG)
 
-	IF(NOT SWIG_FOUND)
-		MESSAGE("SWIG was not found, build no SWIG binding for pivy")
-	ENDIF(NOT SWIG_FOUND)
-	
-	if(FREECAD_BUILD_GUI)	
+    IF(NOT SWIG_FOUND)
+        MESSAGE("SWIG was not found, build no SWIG binding for pivy")
+    ENDIF(NOT SWIG_FOUND)
+
+    if(FREECAD_BUILD_GUI)	
 # -------------------------------- OpenGL --------------------------------
 
-	find_package(OpenGL)
+    find_package(OpenGL)
 
 # -------------------------------- Eigen --------------------------------
 
-	find_package(Eigen2)
+    find_package(Eigen2)
 
 # -------------------------------- ODE ----------------------------------
 
-	find_package(ODE)
+    find_package(ODE)
 
 # -------------------------------- Qt --------------------------------
 
 # sets ${QT_LIBRARIES}
 
-		SET(QT_MIN_VERSION 4.1.4)
-		set(QT_USE_QTNETWORK TRUE)
-		set(QT_USE_QTOPENGL TRUE)
-		set(QT_USE_QTSVG TRUE)
-		set(QT_USE_QTUITOOLS TRUE)
-		set(QT_USE_QTXML TRUE)
-		set(QT_USE_QTWEBKIT TRUE)
-		find_package(Qt4)
+    SET(QT_MIN_VERSION 4.1.4)
+    set(QT_USE_QTNETWORK TRUE)
+    set(QT_USE_QTOPENGL TRUE)
+    set(QT_USE_QTSVG TRUE)
+    set(QT_USE_QTUITOOLS TRUE)
+    set(QT_USE_QTXML TRUE)
+    set(QT_USE_QTWEBKIT TRUE)
+    find_package(Qt4)
 
-		include(${QT_USE_FILE})
+    include(${QT_USE_FILE})
 
-		IF(NOT QT4_FOUND)
-			MESSAGE("Library qt-4.3 or above is not available, install QT or FreeCAD Gui version will not be built")
-		ENDIF(NOT QT4_FOUND)
+    IF(NOT QT4_FOUND)
+        MESSAGE("Library qt-4.3 or above is not available, install QT or FreeCAD Gui version will not be built")
+    ENDIF(NOT QT4_FOUND)
 
-		IF(NOT QT_QTWEBKIT_FOUND)
-			MESSAGE("QT Webkit not found, will not build browser integration!")
-		ENDIF(NOT QT_QTWEBKIT_FOUND)
+    IF(NOT QT_QTWEBKIT_FOUND)
+        MESSAGE("QT Webkit not found, will not build browser integration!")
+    ENDIF(NOT QT_QTWEBKIT_FOUND)
 
 
-		# This is a special version of the built in macro qt4_wrap_cpp
-		# It is required since moc'ed files are now included instead of being added to projects directly
-		# It adds a reverse dependency to solve this
-		# This has the unfortunate side effect that some files are always rebuilt
-		# There is probably a cleaner solution than this
-		macro(fc_wrap_cpp outfiles )
-				 # get include dirs
-				 QT4_GET_MOC_FLAGS(moc_includes)
-				 QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
+    # This is a special version of the built in macro qt4_wrap_cpp
+    # It is required since moc'ed files are now included instead of being added to projects directly
+    # It adds a reverse dependency to solve this
+    # This has the unfortunate side effect that some files are always rebuilt
+    # There is probably a cleaner solution than this
+    macro(fc_wrap_cpp outfiles )
+        # get include dirs
+        QT4_GET_MOC_FLAGS(moc_includes)
+        QT4_EXTRACT_OPTIONS(moc_files moc_options ${ARGN})
 
-				 foreach(it ${moc_files})
-						 get_filename_component(it ${it} ABSOLUTE)
-						 QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-						 QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
-						 set(${outfiles} ${${outfiles}} ${outfile})
-						 add_file_dependencies(${it} ${outfile})
-				 endforeach(it)
-		endmacro(fc_wrap_cpp)
+        foreach(it ${moc_files})
+            get_filename_component(it ${it} ABSOLUTE)
+            QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+            QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_includes}" "${moc_options}")
+            set(${outfiles} ${${outfiles}} ${outfile})
+            add_file_dependencies(${it} ${outfile})
+        endforeach(it)
+    endmacro(fc_wrap_cpp)
 
 # -------------------------------- Coin3D --------------------------------
 
-		find_package(Coin3D REQUIRED)
-		find_package(SoQt REQUIRED)
-		
-	endif(FREECAD_BUILD_GUI)
-	
+    find_package(Coin3D REQUIRED)
+    find_package(SoQt REQUIRED)
+
+    endif(FREECAD_BUILD_GUI)
+
 
 endif(FREECAD_LIBPACK_USE)
 
 if(FREECAD_MAINTAINERS_BUILD AND WIN32)
-	find_package(Wix REQUIRED)
+    find_package(Wix REQUIRED)
 endif(FREECAD_MAINTAINERS_BUILD AND WIN32)
 
 # copy build convenient files for M$
 if(WIN32)
-configure_file(BuildAll.bat ${CMAKE_BINARY_DIR}/BuildAll.bat COPYONLY)
-configure_file(BuildAllNice.bat ${CMAKE_BINARY_DIR}/BuildAllNice.bat COPYONLY)
+    configure_file(BuildAll.bat ${CMAKE_BINARY_DIR}/BuildAll.bat COPYONLY)
+    configure_file(BuildAllNice.bat ${CMAKE_BINARY_DIR}/BuildAllNice.bat COPYONLY)
 endif(WIN32)
 
 
