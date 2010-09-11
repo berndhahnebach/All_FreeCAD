@@ -31,8 +31,8 @@ SET(Reen_SRCS
 )
 
 add_library(ReverseEngineering SHARED ${Reen_SRCS})
-
 target_link_libraries(ReverseEngineering ${Reen_LIBS})
+fc_copy_script("Mod/ReverseEngineering" "ReverseEngineering" Init.py)
 
 if(MSVC)
     set_target_properties(ReverseEngineering PROPERTIES SUFFIX ".pyd")

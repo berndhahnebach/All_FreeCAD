@@ -64,8 +64,8 @@ if(MSVC)
 endif(MSVC)
 
 add_library(DrawingGui SHARED ${DrawingGui_SRCS} ${DrawingGuiView_SRCS} ${DrawingGuiViewProvider_SRCS})
-
 target_link_libraries(DrawingGui ${DrawingGui_LIBS})
+fc_copy_script("Mod/Drawing" "DrawingGui" InitGui.py)
 
 if(MSVC)
     set_target_properties(DrawingGui PROPERTIES SUFFIX ".pyd")

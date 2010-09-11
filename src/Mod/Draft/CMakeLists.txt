@@ -1,60 +1,63 @@
 
 SET(Draft_SRCS
-		Init.py
-		InitGui.py
-		Draft.py
-        draftTools.py
-		draftGui.py
-		WorkingPlane.py
-		importDXF.py
-		importOCA.py
-		importSVG.py
-        macros.py
-		icons.svg
-		preferences-draft.svg
-		userprefs.ui
+    Init.py
+    InitGui.py
+    Draft.py
+    draftTools.py
+    draftGui.py
+    WorkingPlane.py
+    importDXF.py
+    importOCA.py
+    importSVG.py
+    macros.py
+    icons.svg
+    preferences-draft.svg
+    userprefs.ui
 )
 SOURCE_GROUP("" FILES ${Draft_SRCS})
 
 SET(DraftLibs_SRCS
-		draftlibs/dxfColorMap.py
-		draftlibs/dxfImportObjects.py
-		draftlibs/dxfLibrary.py
-		draftlibs/dxfReader.py
-		draftlibs/fcgeo.py
-		draftlibs/fcvec.py
-		draftlibs/__init__.py
+    draftlibs/dxfColorMap.py
+    draftlibs/dxfImportObjects.py
+    draftlibs/dxfLibrary.py
+    draftlibs/dxfReader.py
+    draftlibs/fcgeo.py
+    draftlibs/fcvec.py
+    draftlibs/__init__.py
 )
 SOURCE_GROUP("draftlibs" FILES ${DraftLibs_SRCS})
 
 SET(DraftLang_SRCS
-		Languages/draft_de.qm
-		Languages/draft_fr.qm
-		Languages/draft_it.qm
+    Languages/draft_de.qm
+    Languages/draft_fr.qm
+    Languages/draft_it.qm
 )
 
 SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS} ${DraftLang_SRCS})
 
 ADD_CUSTOM_TARGET(Draft ALL
-		SOURCES ${all_files}
+    SOURCES ${all_files}
 )
 
 fc_copy_sources("Mod/Draft" "Draft" ${all_files})
 
 install(
-		FILES
-				${DraftLibs_SRCS}
-		DESTINATION
-		 		Mod/Draft/draftlibs)
+    FILES
+        ${DraftLibs_SRCS}
+    DESTINATION
+        Mod/Draft/draftlibs
+)
 
 install(
-		FILES
-				${DraftLang_SRCS}
-		DESTINATION
-		 		Mod/Draft/Languages)
+    FILES
+        ${DraftLang_SRCS}
+    DESTINATION
+        Mod/Draft/Languages
+)
 
 install(
-		FILES
-				${Draft_SRCS}
-		DESTINATION
-		 		Mod/Draft)
+    FILES
+        ${Draft_SRCS}
+    DESTINATION
+        Mod/Draft
+)

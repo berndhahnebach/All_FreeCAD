@@ -19,8 +19,8 @@ SET(Start_SRCS
 )
 
 add_library(Start SHARED ${Start_SRCS})
-
 target_link_libraries(Start ${Start_LIBS})
+fc_copy_script("Mod/Start" "Start" Init.py)
 
 if(MSVC)
     set_target_properties(Start PROPERTIES SUFFIX ".pyd")
