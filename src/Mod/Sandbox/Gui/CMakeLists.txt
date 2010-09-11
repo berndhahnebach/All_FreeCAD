@@ -31,9 +31,7 @@ SET(SandboxGui_SRCS
 )
 
 add_library(SandboxGui SHARED ${SandboxGui_SRCS})
-
 target_link_libraries(SandboxGui ${SandboxGui_LIBS})
-
 fc_copy_script("Mod/Sandbox" "SandboxGui" InitGui.py)
 
 if(MSVC)

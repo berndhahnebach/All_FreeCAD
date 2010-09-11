@@ -28,8 +28,8 @@ SET(StartGui_SRCS
 )
 
 add_library(StartGui SHARED ${StartGui_SRCS})
-
 target_link_libraries(StartGui ${StartGui_LIBS})
+fc_copy_script("Mod/Start" "StartGui" InitGui.py)
 
 if(MSVC)
     set_target_properties(StartGui PROPERTIES SUFFIX ".pyd")

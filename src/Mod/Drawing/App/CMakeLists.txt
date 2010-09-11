@@ -45,11 +45,10 @@ SOURCE_GROUP("Mod" FILES ${Drawing_SRCS})
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 SOURCE_GROUP("Algorithms" FILES ${DrawingAlgos_SRCS})
 
-SET(Drawing_Scripts
-    ../DrawingAlgos.py
+SET(Drawing_Templates
+    Templates/A3_Landscape.svg
+    Templates/A4_Simple.svg
 )
-
-COPY_IF_DIFFERENT( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/Mod/Drawing ${Drawing_Scripts} Drawing "DrawingScripts")
 
 if(MSVC)
     add_definitions(-D_PreComp_)
@@ -58,8 +57,10 @@ if(MSVC)
 endif(MSVC)
 
 add_library(Drawing SHARED ${Drawing_SRCS} ${Features_SRCS} ${DrawingAlgos_SRCS})
-
 target_link_libraries(Drawing ${Drawing_LIBS})
+fc_copy_script("Mod/Drawing" "Drawing" Init.py)
+fc_copy_script("Mod/Drawing" "Drawing" DrawingAlgos.py)
+fc_copy_script("Mod/Drawing" "Drawing" ${Drawing_Templates})
 
 if(MSVC)
     set_target_properties(Drawing PROPERTIES SUFFIX ".pyd")

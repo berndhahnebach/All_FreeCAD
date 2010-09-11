@@ -35,9 +35,17 @@ SET(PartDesign_SRCS
     PreCompiled.h
 )
 
+SET(PartDesign_Scripts
+    __init__.py
+    Scripts/__init__.py
+    Scripts/DistanceBolt.py
+    Scripts/RadialCopy.py
+)
+
 add_library(PartDesign SHARED ${PartDesign_SRCS})
 target_link_libraries(PartDesign ${PartDesign_LIBS})
 fc_copy_script("Mod/PartDesign" "PartDesign" Init.py)
+fc_copy_script("Mod/PartDesign" "PartDesign" ${PartDesign_Scripts})
 
 if(MSVC)
     set_target_properties(PartDesign PROPERTIES SUFFIX ".pyd")

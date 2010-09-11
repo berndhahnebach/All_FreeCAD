@@ -77,8 +77,8 @@ SET(SketcherGui_SRCS
 )
 
 add_library(SketcherGui SHARED ${SketcherGui_SRCS})
-
 target_link_libraries(SketcherGui ${SketcherGui_LIBS})
+fc_copy_script("Mod/Sketcher" "SketcherGui" InitGui.py)
 
 if(MSVC)
     set_target_properties(SketcherGui PROPERTIES SUFFIX ".pyd")

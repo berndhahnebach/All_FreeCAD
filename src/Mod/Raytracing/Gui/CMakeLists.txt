@@ -73,8 +73,8 @@ SET(RaytracingGui_SRCS
 )
 
 add_library(RaytracingGui SHARED ${RaytracingGui_SRCS})
-
 target_link_libraries(RaytracingGui ${RaytracingGui_LIBS})
+fc_copy_script("Mod/Raytracing" "RaytracingGui" InitGui.py)
 
 if(MSVC)
     set_target_properties(RaytracingGui PROPERTIES SUFFIX ".pyd")
