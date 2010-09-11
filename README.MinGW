@@ -36,6 +36,9 @@ Download the CMake utility from http://www.cmake.org/cmake/resources/software.ht
 Get the archive with the binaries for the Windows platform and unpack whereever you
 want. There is nothing further to do for this.
 
+o SWIG
+Download the SWIG utility from www.swig.org and extract it somewhere on your harddisk.
+
 
 Third party libraries
 ---------------------
@@ -167,24 +170,44 @@ In case your Qt development files are not under /usr/local choose the correct di
 Again a message dialog may pop up due to the missing cygwin1.dll.
 
 
-o PyQt
+o PyQt/sip
 
-sip:
-python configure.py --platform win32-g++ --destdir=/usr/local
-make
-edit makefile to find python include and lib
-sipconfig.py
-sipdistutils.py
-siputils.py
+Download the sources archives for sip and PyQt4 from www.riverbankcomputing.co.uk.
 
-PyQt:
-copy all include files of python and sip.h to QTDIR/include
-copy python26.dll.a to QTDIR/lib
-export PATH=/usr/local/lib/:$PATH
-python configure.py --destdir=/usr/local/lib/site-packages
-manually copy
+In order to build sip extract the archive and open a MSYS command line. From within
+its source archive call
 
-SWIG: Download from www.swig.org and extract e.g. to C:\MSYS\1.0\local\share
+  python configure.py --platform win32-g++ --destdir=/usr/local
+  make
+
+It may happen that this step aborts because the Python include headers cannot be found.
+In this case edit the Makefile and add the include path for the ython headers and also
+the path and filename of the Python library.
+
+Unfortunately, the 'make install' command doesn't work because the Makefile was generated
+to use Windows batch commands instead of bash commands. Thus, copy the following files to
+a path where Python can find it, e.g. /usr/local/bin.
+
+  sipconfig.py
+  sipdistutils.py
+  siputils.py
+  sip.pyd
+  sip.exe
+
+In order to build PyQt4 extract the source archive and open a MSYS command line. Go to the
+directory and start
+
+  export PATH=/usr/local/lib/:$PATH
+  python configure.py --destdir=/usr/local/lib/site-packages
+  make
+
+Since the Makefile doesn't find the Python header files copy them all and also the file sip.h
+to a directory where they can be found. A good place seems to be the directory of the Qt sources.
+There copy the files to $QTDIR/include. The Python library file python26.dll.a can go  $QTDIR/lib.
+
+After the build has finished you have to copy all files that end with .pyd to their destination,
+e.g. /usr/local/lib/site-packages/PyQt4. Lateron when you have built the FreeCAD sources you have
+to copy the PyQt4 directory and sip.pyd to the FreeCAD bin directory or set a symlink.
 
 TODO:
 
@@ -192,23 +215,35 @@ o ODE (http://www.ode.org), >= 0.10.x
 
 o OpenCASCADE
 ======================
-+ download http://opencascade-cmake.googlecode.com/svn/trunk/CMakeLists.txt
-+ download http://opencascade-cmake.googlecode.com/svn/trunk/occ_config.h.cmake
-+ copy files to opencascade_6.3.0/ros
-+ run cmake-gui started from within MSYS, select MSYS makefile
-+ switch off OPENCASCADE_WRAPPERS, OPENCASCADE_VISUALISATION, OPENCASCADE_OCAF, OPENCASCADE_DRAW
-+ add -DWNT=1 -DWIN32 -DCSFDB -DOCC_CONVERT_SIGNALS to all CXX/C flags
-======================
-./configure CXXFLAGS="-mthreads -DWNT=1 -DWIN32" CFLAGS="-mthreads -DWNT=1 -DWIN32" \
---prefix=/usr/local/opencascade --enable-debug=no --enable-production=yes \
---enable-static=no --enable-shared=yes --disable-dependency-tracking \
-LDFLAGS="-mthreads -Wl,--export-all-symbols -ladvapi32 -lgdi32 -luser32 -lkernel32 -lopengl32 -lglu32 -lws2_32 -lvfw32 -lodbc32 -lodbccp32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32"
 
+For the build of the OpenCASCADE libraries get the sources from www.opencascade.org or alternatively
+it is also possible to download a stripped source tarball from the Debian mirrors which don't include
+any fonts and other resource files.
 
-./configure CXXFLAGS="-mthreads -DWNT=1 -DWIN32 -DHAVE_NO_DLL" CFLAGS="-mthreads -DWNT=1 -DWIN32 -DHAVE_NO_DLL" \
---prefix=/usr/local/opencascade --enable-debug=no --enable-production=yes --enable-static=no --enable-shared=yes --disable-dependency-tracking \
-LDFLAGS="-mthreads -Wl,--export-all-symbols -ladvapi32 -lgdi32 -luser32 -lkernel32 -lopengl32 -lglu32 -lws2_32 -lvfw32 -lodbc32 -lodbccp32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32"
+Unpack the sources and download a CMake script from http://opencascade-cmake.googlecode.com/svn/trunk/
+and the file occ_config.h.cmake. Copy both files into the 'ros' directory, start cmake-gui from
+within a MSYS command line and select MSYS Makefiles. In the options  the following switches can be
+disabled:
 
+  OPENCASCADE_WRAPPERS
+  OPENCASCADE_VISUALISATION
+  OPENCASCADE_OCAF
+  OPENCASCADE_DRAW
+
+Now click the Configure button which takes a while and afterwards the Generate button.
+
+Note: The original sources includes also a configure script and the Makefile.am files.
+      But it appeared to be very hard to build the libraries this way. Thus, it highly
+	  recommended to do it the CMake way.
+
+Note: For a couple of libraries the arguments passed to the linker exceeds the number of
+      allowed characters and thus the linker stops with an error: "Bad file number".
+	  To solve this issue you can open the file build.make of the according library and
+      remove the common parts of the file paths and copy the .obj file also to the new
+	  path name. For instance, for TKGeomAlgo you will have this problem the first time.
+	  So, open build.make and remove the "CMakeFiles/TKGeomAlgo.dir" in the filenames
+	  stored in the variable TKGeomAlgo_OBJECTS. Then copy the real .obj files in the
+	  src and drv directories to level upwards.
 
 Standard_math.hxx:
 #ifndef M_SQRT1_2
@@ -285,39 +320,12 @@ inline int Standard_Atomic_DecrementTest (int volatile* var)
 ros/src/OSD/OSD_signal_WNT.cxx:
 make #ifdef's around STATUS_FLOAT_MULTIPLE_TRAPS and STATUS_FLOAT_MULTIPLE_FAULTS
 
-ros/adm/make/TKernel/Makefile:
-add 
--D__Standard_DLL 
--D__OSD_DLL 
--D__TColStd_DLL 
--D__FSD_DLL 
--D__MMgt_DLL 
--D__Plugin_DLL 
--D__Quantity_DLL
--D__Resource_DLL
--D__SortTools_DLL
--D__StdFail_DLL
--D__Storage_DLL
--D__TCollection_DLL
--D__TShort_DLL
--D__Units_DLL
--D__UnitsAPI_DLL
--D__Dico_DLL
--D__NCollection_DLL
--D__Message_DLL
- to CFLAGS and CXXFLAGS
-
-LIBS = -lpthread -lstdc++ -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lws2_32
-
-
-
-
 Building the FreeCAD sources
 ----------------------------
 
 In order build the FreeCAD sources either get the developer sources from the SVN repository
 or get one of the .tar.gz tarballs and extract it.
-Now start cmake-gui.exe from with in a MSYS command line window and browse to the FreeCAD
+Now start cmake-gui.exe from within a MSYS command line window and browse to the FreeCAD
 sources and also define the build directory. Now run Configure. It may happen that cmake
 complains about some not found libraries. In this case go through the listed libraries and
 choose the include directory and/or the path to the library where needed. Once Confgiure
