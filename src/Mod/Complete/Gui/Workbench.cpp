@@ -283,7 +283,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
             << "Draft_Trimex" 
             << "Draft_Upgrade" 
             << "Draft_Downgrade" 
-            << "Draft_Scale" 
+            << "Draft_Scale"
+            << "Draft_Edit"
+            << "Draft_PutOnSheet"
         ;
     }
 #   endif
@@ -440,7 +442,9 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
             << "Draft_Trimex" 
             << "Draft_Upgrade" 
             << "Draft_Downgrade" 
-            << "Draft_Scale" 
+            << "Draft_Scale"
+            << "Draft_Edit"
+            << "Draft_PutOnSheet"
         ;
     }
 #   endif
