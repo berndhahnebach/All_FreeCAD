@@ -3050,11 +3050,11 @@ class ToggleConstructionMode():
 		FreeCADGui.activeWorkbench().draftToolBar.ui.constrButton.toggle()
 
 
-class SendToDrawing(Modifier):
-        "The Draft_SendToDrawing FreeCAD command definition"
+class PutOnSheet(Modifier):
+        "The Draft_PutOnSheet FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_sendToDrawing',
+		return {'Pixmap'  : 'Draft_putOnSheet',
 			'MenuText': str(translate("draft", "Put on Sheet").toLatin1()),
 			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet.").toLatin1())}
 
@@ -3386,6 +3386,6 @@ FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
 FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
-FreeCADGui.addCommand('Draft_SendToDrawing',SendToDrawing())
+FreeCADGui.addCommand('Draft_PutOnSheet',PutOnSheet())
 FreeCADGui.addCommand('Draft_Edit',Edit())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
