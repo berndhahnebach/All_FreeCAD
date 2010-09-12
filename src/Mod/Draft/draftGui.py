@@ -902,7 +902,7 @@ class toolBar:
 		icons['Draft_lock']=iconfile.copy(QtCore.QRect(512,64,64,64))
 		icons['Draft_scale']=iconfile.copy(QtCore.QRect(576,64,64,64))
 		icons['Draft_selectPlane']=iconfile.copy(QtCore.QRect(576,0,64,64))
-                icons['Draft_sendToDrawing']=iconfile.copy(QtCore.QRect(640,0,64,64))
+                icons['Draft_putOnSheet']=iconfile.copy(QtCore.QRect(640,0,64,64))
                 icons['Draft_makeDraftWire']=iconfile.copy(QtCore.QRect(576,128,64,64))
                 icons['Draft_Edit']=iconfile.copy(QtCore.QRect(512,128,64,64))
                 icons['Draft_switchMode']=iconfile.copy(QtCore.QRect(448,128,64,64))
