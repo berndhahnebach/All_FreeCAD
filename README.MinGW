@@ -229,6 +229,8 @@ disabled:
   OPENCASCADE_VISUALISATION
   OPENCASCADE_OCAF
   OPENCASCADE_DRAW
+  
+Then specify for OPENCASCADE_INSTALL_PREFIX C:/MSYS/1.0/local as destination directory-
 
 Now click the Configure button which takes a while and afterwards the Generate button.
 
@@ -239,11 +241,21 @@ Note: The original sources includes also a configure script and the Makefile.am 
 Note: For a couple of libraries the arguments passed to the linker exceeds the number of
       allowed characters and thus the linker stops with an error: "Bad file number".
 	  To solve this issue you can open the file build.make of the according library and
-      remove the common parts of the file paths and copy the .obj file also to the new
-	  path name. For instance, for TKGeomAlgo you will have this problem the first time.
-	  So, open build.make and remove the "CMakeFiles/TKGeomAlgo.dir" in the filenames
-	  stored in the variable TKGeomAlgo_OBJECTS. Then copy the real .obj files in the
-	  src and drv directories to level upwards.
+	  split the block (e.g. TKGeomAlgo_OBJECTS) into several smaller ones and modify the
+	  build rule this way that you create first a static library, add the other object
+	  files to the group and then unpack the static archive into one directory. This
+	  trick solves the problem to reduce the whole number of characters.
+      Afterwards the shared library can be built out of these object files.
+      Example:
+      If the build.make file has a line of the form
+        g++ <options> -shared -o libOutput.dll $(TKGeomAlgo_OBJECTS)
+	  then change it into
+	    ar rcs dir/libTKGeomAlgo.a $(TKGeomAlgo_OBJECTS1)
+	    ar q dir/libTKGeomAlgo.a $(TKGeomAlgo_OBJECTS2)
+	    ...
+	    ar x dir/libTKGeomAlgo.a
+        g++ <options> -shared -o libOutput.dll dir/*.obj
+		rm -f dir
 
 Standard_math.hxx:
 #ifndef M_SQRT1_2
