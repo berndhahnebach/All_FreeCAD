@@ -355,4 +355,9 @@ find you have to extend your PATH environment variable with
 
 If no grave problems remains repeating ./FreeCAD should start the application now.
 
+Note: In order to let CMake detect the boost libraries you must make sure that the
+      DLLs are in the system path because the check builds some test applications
+      and tries to start them. If the DLLs are not in path CMake says that it cannot
+      find boost. In this case do a export PATH=/usr/local/lib:$PATH
+
 Have fun!
