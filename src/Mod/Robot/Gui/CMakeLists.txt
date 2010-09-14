@@ -94,6 +94,7 @@ SET(RobotGui_SRCS
 add_library(RobotGui SHARED ${RobotGui_SRCS})
 target_link_libraries(RobotGui ${RobotGui_LIBS})
 fc_copy_script("Mod/Robot" "RobotGui" InitGui.py)
+fc_copy_script("Mod/Robot" "RobotGui" MovieTool.py)
 
 if(MSVC)
     set_target_properties(RobotGui PROPERTIES SUFFIX ".pyd")
