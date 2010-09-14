@@ -67,6 +67,7 @@ void Path_RoundedComposite::Add(const Frame& F_base_point) {
 			Vector bc = F_base_point.p - F_base_via.p;
 			double abdist = ab.Normalize();
 			double alpha  = ::acos(dot(ab,bc)/(ab.Norm()*bc.Norm()));
+            //double alpha  = ::acos(dot(ab,bc));
 			double d      = radius/tan((PI-alpha)/2);
             double bcdist = bc.Normalize();
 			if (d >= abdist)

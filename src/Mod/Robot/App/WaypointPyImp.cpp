@@ -63,16 +63,17 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     PyObject *pos;
     char *name="P";
     char *type = "PTP";
-    float vel = -1.0;
+    float vel = 1000.0;
+    float acc = 100.0;
     int cont = 0;
     int tool=0;
     int base=0;
 
-    static char *kwlist[] = {"Pos", "type","name", "vel", "cont", "tool", "base",  NULL};
+    static char *kwlist[] = {"Pos", "type","name", "vel", "cont", "tool", "base", "acc" ,NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwd, "O!|ssfiii", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwd, "O!|ssfiiif", kwlist,
                                       &(Base::PlacementPy::Type), &pos, // the placement object
-                                      &type, &name, &vel, &cont, &tool, &base ))
+                                      &type, &name, &vel, &cont, &tool, &base, &acc ))
         return -1;
 
     Base::Placement TempPos = *static_cast<Base::PlacementPy*>(pos)->getPlacementPtr();
@@ -109,6 +110,7 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     getWaypointPtr()->Cont = cont?true:false;
     getWaypointPtr()->Tool = tool;
     getWaypointPtr()->Base = base;
+    getWaypointPtr()->Accelaration  = acc;
 
     return 0;
 }
