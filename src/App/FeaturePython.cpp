@@ -60,7 +60,9 @@ DocumentObjectExecReturn *FeaturePythonImp::execute()
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        return new App::DocumentObjectExecReturn(e.what());
+        std::stringstream str;
+        str << object->Label.getValue() << ": " << e.what();
+        return new App::DocumentObjectExecReturn(str.str());
     }
 
     return DocumentObject::StdReturn;
@@ -86,7 +88,8 @@ void FeaturePythonImp::onChanged(const Property* prop)
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        Base::Console().Error("FeaturePython::onChanged: %s\n", e.what());
+        Base::Console().Error("FeaturePython::onChanged (%s): %s\n",
+            object->Label.getValue(), e.what());
     }
 }
 
