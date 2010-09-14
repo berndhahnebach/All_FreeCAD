@@ -171,7 +171,6 @@ Again a message dialog may pop up due to the missing cygwin1.dll.
 
 
 o PyQt/sip
-
 Download the sources archives for sip and PyQt4 from www.riverbankcomputing.co.uk.
 
 In order to build sip extract the archive and open a MSYS command line. From within
@@ -209,13 +208,12 @@ After the build has finished you have to copy all files that end with .pyd to th
 e.g. /usr/local/lib/site-packages/PyQt4. Lateron when you have built the FreeCAD sources you have
 to copy the PyQt4 directory and sip.pyd to the FreeCAD bin directory or set a symlink.
 
-TODO:
 
-o ODE (http://www.ode.org), >= 0.10.x
+o ODE
+TODO: Still not clear if this will be used. (http://www.ode.org), >= 0.10.x
+
 
 o OpenCASCADE
-======================
-
 For the build of the OpenCASCADE libraries get the sources from www.opencascade.org or alternatively
 it is also possible to download a stripped source tarball from the Debian mirrors which don't include
 any fonts and other resource files.
@@ -234,6 +232,9 @@ Then specify for OPENCASCADE_INSTALL_PREFIX C:/MSYS/1.0/local as destination dir
 
 Now click the Configure button which takes a while and afterwards the Generate button.
 
+Note: The original sources don't completely compile with MinGW. Therefore you have to apply the patch
+      OpenCASCADE6.3.0-MinGW.patch from http://code.google.com/p/opencascade-cmake/source/browse/trunk
+
 Note: The original sources includes also a configure script and the Makefile.am files.
       But it appeared to be very hard to build the libraries this way. Thus, it highly
 	  recommended to do it the CMake way.
@@ -248,89 +249,15 @@ Note: For a couple of libraries the arguments passed to the linker exceeds the n
       Afterwards the shared library can be built out of these object files.
       Example:
       If the build.make file has a line of the form
-        g++ <options> -shared -o libOutput.dll $(TKGeomAlgo_OBJECTS)
+        g++ <options> -shared -o libTKGeomAlgo.dll $(TKGeomAlgo_OBJECTS) <libs>
 	  then change it into
-	    ar rcs dir/libTKGeomAlgo.a $(TKGeomAlgo_OBJECTS1)
-	    ar q dir/libTKGeomAlgo.a $(TKGeomAlgo_OBJECTS2)
+	    ar rcs win32/libTKGeomAlgo.a $(TKGeomAlgo_OBJECTS1)
+	    ar q win32/libTKGeomAlgo.a $(TKGeomAlgo_OBJECTS2)
 	    ...
-	    ar x dir/libTKGeomAlgo.a
-        g++ <options> -shared -o libOutput.dll dir/*.obj
-		rm -f dir
+	    ar x win32/libTKGeomAlgo.a
+        g++ <options> -shared -o libTKGeomAlgo.dll *.obj  <libs>
+		rm -f *.obj
 
-Standard_math.hxx:
-#ifndef M_SQRT1_2
-# define M_SQRT1_2  7.0710678118654752440E-1
-#endif
-#ifndef M_PI_2
-# define M_PI_2     1.5707963267948966192E0
-#endif
-
-ros/src/ExprIntrp.tab.c:
-Remove the file of make an #if 0/#endif around its content
-
-Standard_CString.hxx:
-MOve the block 
-Standard_Integer HashCode (const Standard_CString Value, 
-                           const Standard_Integer Upper )
-{
-  Standard_Integer aLen ;
-  //#if OptJr
-  //STRINGLEN( Value , aLen ) ;
-  //#else
-  aLen = (Standard_Integer)strlen(Value);
-  //#endif
-  return HashCode ( HashCodes( Value , aLen ) , Upper ) ;
-}
-
-to another file, e.g. Message_MsgFile.cxx
-
-Standard_values.h:
-
-#ifdef WNT
-# if defined(__MINGW32__)
-#  include <limits.h>
-# endif
-# include <limits>
-#endif
-
-Standard_Atomic.hxx:
-
-extern "C" {
-#if defined(__MINGW32__)
-__declspec(dllimport) long __stdcall InterlockedIncrement(long *);
-__declspec(dllimport) long __stdcall InterlockedDecrement(long *);
-#else
-long _InterlockedIncrement(long volatile* lpAddend);
-long _InterlockedDecrement(long volatile* lpAddend);
-#endif
-}
-
-#if !defined(__MINGW32__)
-#pragma intrinsic (_InterlockedIncrement)
-#pragma intrinsic (_InterlockedDecrement)
-#endif
-
-inline void Standard_Atomic_Increment (int volatile* var)
-{
-#if defined(__MINGW32__)
-  InterlockedIncrement(reinterpret_cast<long *>(const_cast<int *>(var)));
-#else
-  InterlockedIncrement (reinterpret_cast<long volatile*>(var));
-#endif
-}
-
-inline int Standard_Atomic_DecrementTest (int volatile* var)
-{
-#if defined(__MINGW32__)
-  return InterlockedDecrement(reinterpret_cast<long *>(const_cast<int *>(var))) == 0;
-#else
-  return InterlockedDecrement (reinterpret_cast<long volatile*>(var)) == 0;
-#endif
-}
-
-
-ros/src/OSD/OSD_signal_WNT.cxx:
-make #ifdef's around STATUS_FLOAT_MULTIPLE_TRAPS and STATUS_FLOAT_MULTIPLE_FAULTS
 
 Building the FreeCAD sources
 ----------------------------
