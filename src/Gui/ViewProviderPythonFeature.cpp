@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 # include <QPixmap>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
@@ -128,7 +129,8 @@ void ViewProviderPythonFeatureImp::attach(App::DocumentObject *pcObject)
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        Base::Console().Error("ViewProviderPythonFeature::attach: %s\n", e.what());
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::attach (%s): %s\n", name, e.what());
     }
 }
 
@@ -154,7 +156,8 @@ void ViewProviderPythonFeatureImp::updateData(const App::Property* prop)
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        Base::Console().Error("ViewProviderPythonFeature::updateData: %s\n", e.what());
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::updateData (%s): %s\n", name, e.what());
     }
 }
 
@@ -178,7 +181,8 @@ void ViewProviderPythonFeatureImp::onChanged(const App::Property* prop)
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        Base::Console().Error("ViewProviderPythonFeature::onChanged: %s\n", e.what());
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::onChanged (%s): %s\n", name, e.what());
     }
 }
 
@@ -202,7 +206,8 @@ const char* ViewProviderPythonFeatureImp::getDefaultDisplayMode() const
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        Base::Console().Error("ViewProviderPythonFeature::getDefaultDisplayMode: %s\n", e.what());
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::getDefaultDisplayMode (%s): %s\n", name, e.what());
     }
 
     return 0;
@@ -231,7 +236,8 @@ std::vector<std::string> ViewProviderPythonFeatureImp::getDisplayModes(void) con
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        Base::Console().Error("ViewProviderPythonFeature::getDisplayModes: %s\n", e.what());
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::getDisplayModes (%s): %s\n", name, e.what());
     }
 
     return modes;
@@ -256,7 +262,8 @@ std::string ViewProviderPythonFeatureImp::setDisplayMode(const char* ModeName)
     }
     catch (Py::Exception&) {
         Base::PyException e; // extract the Python error text
-        Base::Console().Error("ViewProviderPythonFeature::setDisplayMode: %s\n", e.what());
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::setDisplayMode (%s): %s\n", name, e.what());
     }
 
     return ModeName;
