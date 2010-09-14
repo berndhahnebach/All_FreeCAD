@@ -64,6 +64,13 @@ void RobotGuiExport initRobotGui()
         Base::Interpreter().runString("import PartGui");
         Base::Interpreter().runString("import Part");
         Base::Interpreter().runString("import Robot");
+        // set some default values
+        // default speed for trajectory is 1m/s
+        Base::Interpreter().runString("_DefSpeed = 1000.0");
+        // default Cintinuity is off
+        Base::Interpreter().runString("_DefCont = False");
+        // default Cintinuity is off
+        Base::Interpreter().runString("_DefAccelaration = 100.0");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

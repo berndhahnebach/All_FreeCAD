@@ -169,7 +169,7 @@ void Trajectory::generateTrajectory(void)
                                                         new KDL::RotationalInterpolation_SingleAxis()
                                                         );
                             // the velocity of the first waypoint is used
-                            pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
+                            pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Accelaration);
                             pcRoundComp->Add(Last);
                             pcRoundComp->Add(Next);
 
@@ -194,7 +194,7 @@ void Trajectory::generateTrajectory(void)
                                                         1.0,
                                                         true
                                                         );
-                            pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Velocity);
+                            pcVelPrf = new KDL::VelocityProfile_Trap((*it)->Velocity,(*it)->Accelaration);
                             pcVelPrf->SetProfile(0,pcPath->PathLength());
                             pcTrak = new KDL::Trajectory_Segment(pcPath,pcVelPrf);
                         }
