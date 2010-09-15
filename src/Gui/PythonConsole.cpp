@@ -980,34 +980,42 @@ void PythonConsole::overrideCursor(const QString& txt)
 
 void PythonConsole::contextMenuEvent ( QContextMenuEvent * e )
 {
-    QMenu* menu = new QMenu(this);
+    QMenu menu(this);
     QAction *a;
 
-    a = menu->addAction(QTextEdit::tr("&Copy"), this, SLOT(copy()), Qt::CTRL+Qt::Key_C);
+    a = menu.addAction(QTextEdit::tr("&Copy"), this, SLOT(copy()), Qt::CTRL+Qt::Key_C);
     a->setEnabled(textCursor().hasSelection());
 
-    a = menu->addAction(tr("&Copy command"), this, SLOT(onCopyCommand()));
+    a = menu.addAction(tr("&Copy command"), this, SLOT(onCopyCommand()));
     a->setEnabled(textCursor().hasSelection());
 
-    a = menu->addAction(tr("&Copy history"), this, SLOT(onCopyHistory()));
+    a = menu.addAction(tr("&Copy history"), this, SLOT(onCopyHistory()));
     a->setEnabled(!d->history.isEmpty());
 
-    a = menu->addAction( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
+    a = menu.addAction( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
     a->setEnabled(!d->history.isEmpty());
 
-    menu->addSeparator();
-    a = menu->addAction(QTextEdit::tr("&Paste"), this, SLOT(paste()), Qt::CTRL+Qt::Key_V);
+    menu.addSeparator();
+    a = menu.addAction(QTextEdit::tr("&Paste"), this, SLOT(paste()), Qt::CTRL+Qt::Key_V);
     const QMimeData *md = QApplication::clipboard()->mimeData();
     a->setEnabled(md && canInsertFromMimeData(md));
 
-    a = menu->addAction(QTextEdit::tr("Select All"), this, SLOT(selectAll()), Qt::CTRL+Qt::Key_A);
+    a = menu.addAction(QTextEdit::tr("Select All"), this, SLOT(selectAll()), Qt::CTRL+Qt::Key_A);
     a->setEnabled(!document()->isEmpty());
 
-    menu->addSeparator();
-    menu->addAction( tr("Insert file name..."), this, SLOT(onInsertFileName()));
+    menu.addSeparator();
+    menu.addAction( tr("Insert file name..."), this, SLOT(onInsertFileName()));
+    menu.addSeparator();
 
-    menu->exec(e->globalPos());
-    delete menu;
+    QAction* wrap = menu.addAction(tr("Word wrap"));
+    wrap->setCheckable(true);
+    wrap->setChecked(this->wordWrapMode() != QTextOption::NoWrap);
+
+    QAction* exec = menu.exec(e->globalPos());
+    if (exec == wrap) {
+        this->setWordWrapMode(wrap->isChecked()
+            ? QTextOption::WrapAtWordBoundaryOrAnywhere : QTextOption::NoWrap);
+    }
 }
 
 void PythonConsole::onSaveHistoryAs()
