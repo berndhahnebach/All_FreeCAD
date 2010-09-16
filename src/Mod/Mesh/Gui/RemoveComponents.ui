@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MeshGui::RemoveComponents</class>
- <widget class="QDialog" name="MeshGui::RemoveComponents">
+ <widget class="QWidget" name="MeshGui::RemoveComponents">
   <property name="geometry">
    <rect>
     <x>0</x>

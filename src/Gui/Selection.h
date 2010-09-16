@@ -225,6 +225,10 @@ public:
      * \a typeName must be a registered type otherwise an empty array is returned.
      */
     std::vector<App::DocumentObject*> getObjectsOfType(const char* typeName, const char* pDocName=0) const;
+    /**
+     * A convenience template-based method that returns an array with the correct types already.
+     */
+    template<typename T> inline std::vector<T*> getObjectsOfType(const char* pDocName=0) const;
 
     struct SelObj {
         const char* DocName;
@@ -312,6 +316,20 @@ protected:
     std::string SubName;
     float hx,hy,hz;
 };
+
+/**
+ * A convenience template-based method that returns an array with the correct types already.
+ */
+template<typename T>
+inline std::vector<T*> SelectionSingleton::getObjectsOfType(const char* pDocName) const
+{
+    std::vector<T*> type;
+    std::vector<App::DocumentObject*> obj = this->getObjectsOfType(T::getClassTypeId(), pDocName);
+    type.reserve(obj.size());
+    for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it)
+        type.push_back(static_cast<T*>(*it));
+    return type;
+}
 
 /// Get the global instance
 inline SelectionSingleton& Selection(void)

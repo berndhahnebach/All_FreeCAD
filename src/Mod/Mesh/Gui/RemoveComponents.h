@@ -34,6 +34,7 @@
 class SoEventCallback;
 namespace App { class DocumentObject; }
 namespace Gui { class View3DInventorViewer; }
+namespace Mesh { class Feature; }
 
 namespace MeshGui {
 class ViewProviderMesh;
@@ -44,7 +45,7 @@ class Ui_RemoveComponents;
  * of a mesh and delete them.
  * @author Werner Mayer
  */
-class MeshGuiExport RemoveComponents : public QDialog, public App::DocumentObjectObserver
+class MeshGuiExport RemoveComponents : public QWidget, public App::DocumentObjectObserver
 {
     Q_OBJECT
 
@@ -81,12 +82,35 @@ private:
     bool selectRegion;
 };
 
+/**
+ * Embed the panel into a dialog.
+ */
+class MeshGuiExport RemoveComponentsDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    RemoveComponentsDialog(const std::vector<Mesh::Feature*>& mesh,
+        QWidget* parent = 0, Qt::WFlags fl = 0);
+    ~RemoveComponentsDialog();
+    void reject();
+
+private Q_SLOTS:
+    void clicked(QAbstractButton* btn);
+
+private:
+    RemoveComponents* widget;
+};
+
+/**
+ * Embed the panel into a task dialog.
+ */
 class TaskRemoveComponents : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
 
 public:
-    TaskRemoveComponents();
+    TaskRemoveComponents(const std::vector<Mesh::Feature*>&);
     ~TaskRemoveComponents();
 
 public:
