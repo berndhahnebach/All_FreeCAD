@@ -74,7 +74,7 @@ static unsigned char cross_mask_bitmap[] = {
 };
 
 RemoveComponents::RemoveComponents(QWidget* parent, Qt::WFlags fl)
-  : QDialog(parent, fl),  _interactiveMode(0)
+  : QWidget(parent, fl),  _interactiveMode(0)
 {
     ui = new Ui_RemoveComponents;
     ui->setupUi(this);
@@ -82,13 +82,6 @@ RemoveComponents::RemoveComponents(QWidget* parent, Qt::WFlags fl)
     ui->spSelectComp->setValue(10);
     ui->spDeselectComp->setRange(1, INT_MAX);
     ui->spDeselectComp->setValue(10);
-
-    std::vector<App::DocumentObject*> meshes =
-    Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-
-    std::for_each(meshes.begin(), meshes.end(), 
-        boost::bind(&RemoveComponents::addToObservation, this, _1));
-    this->attachDocument(App::GetApplication().getActiveDocument());
 }
 
 RemoveComponents::~RemoveComponents()
@@ -492,13 +485,74 @@ void RemoveComponents::pickFaceCallback(void * ud, SoEventCallback * n)
 
 // ---------------------------------------
 
-TaskRemoveComponents::TaskRemoveComponents()
+RemoveComponentsDialog::RemoveComponentsDialog(const std::vector<Mesh::Feature*>& mesh,
+                                               QWidget* parent, Qt::WFlags fl)
+  : QDialog(parent, fl)
+{
+    widget = new RemoveComponents(this);
+    this->setWindowTitle(widget->windowTitle());
+
+    QVBoxLayout* hboxLayout = new QVBoxLayout(this);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
+    buttonBox->setStandardButtons(QDialogButtonBox::Close|QDialogButtonBox::Ok);
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setText(TaskRemoveComponents::tr("Delete"));
+    QPushButton* invertButton = buttonBox->addButton(TaskRemoveComponents::tr("Invert"),
+        QDialogButtonBox::ActionRole);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
+    connect(buttonBox, SIGNAL(clicked(QAbstractButton*)),
+            this, SLOT(clicked(QAbstractButton*)));
+
+    hboxLayout->addWidget(widget);
+    hboxLayout->addWidget(buttonBox);
+
+    //std::vector<App::DocumentObject*> meshes =
+    //Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+
+    std::for_each(mesh.begin(), mesh.end(), 
+        boost::bind(&RemoveComponents::addToObservation, widget, _1));
+    widget->attachDocument(App::GetApplication().getActiveDocument());
+}
+
+RemoveComponentsDialog::~RemoveComponentsDialog()
+{
+}
+
+void RemoveComponentsDialog::reject()
+{
+    widget->reject();
+    QDialog::reject();
+}
+
+void RemoveComponentsDialog::clicked(QAbstractButton* btn)
+{
+    QDialogButtonBox* buttonBox = qobject_cast<QDialogButtonBox*>(sender());
+    QDialogButtonBox::StandardButton id = buttonBox->standardButton(btn);
+    if (id == QDialogButtonBox::Ok) {
+        widget->deleteSelection();
+    }
+    else if (id == QDialogButtonBox::Close) {
+        this->reject();
+    }
+    else if (id == QDialogButtonBox::NoButton) {
+        widget->invertSelection();
+    }
+}
+
+// ---------------------------------------
+
+TaskRemoveComponents::TaskRemoveComponents(const std::vector<Mesh::Feature*>& mesh)
 {
     widget = new RemoveComponents();
     taskbox = new Gui::TaskView::TaskBox(
         QPixmap(), widget->windowTitle(), false, 0);
     taskbox->groupLayout()->addWidget(widget);
     Content.push_back(taskbox);
+
+    std::for_each(mesh.begin(), mesh.end(), 
+        boost::bind(&RemoveComponents::addToObservation, widget, _1));
+    widget->attachDocument(App::GetApplication().getActiveDocument());
 }
 
 TaskRemoveComponents::~TaskRemoveComponents()

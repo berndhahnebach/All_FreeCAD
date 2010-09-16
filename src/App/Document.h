@@ -161,6 +161,8 @@ public:
     /// Returns a list of all Objects
     std::vector<DocumentObject*> getObjects() const;
     std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
+    /// Returns an array with the correct types already.
+    template<typename T> inline std::vector<T*> getObjectsOfType() const;
     int countObjectsOfType(const Base::Type& typeId) const;
     /// get the number of objects in the document
     int countObjects(void) const;
@@ -275,6 +277,17 @@ private:
     Py::Object DocumentPythonObject;
     struct DocumentP* d;
 };
+
+template<typename T>
+inline std::vector<T*> Document::getObjectsOfType() const
+{
+    std::vector<T*> type;
+    std::vector<App::DocumentObject*> obj = this->getObjectsOfType(T::getClassTypeId());
+    type.reserve(obj.size());
+    for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it)
+        type.push_back(static_cast<T*>(*it));
+    return type;
+}
 
 
 } //namespace App
