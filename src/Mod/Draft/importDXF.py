@@ -126,6 +126,7 @@ class fcformat:
 		self.dxf = drawing
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		self.paramtext = params.GetBool("dxftext")
+                self.paramstarblocks = params.GetBool("dxfstarblocks")
 		self.paramlayouts = params.GetBool("dxflayouts")
 		self.paramstyle = params.GetInt("dxfstyle")
 		bparams = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View")
@@ -365,6 +366,10 @@ def drawInsert(insert):
 		for b in drawing.blocks.data:
 			if b.name == insert.block:
 				shape = drawBlock(b)
+        if fmt.paramtext:
+                attrs = attribs(insert)
+                for a in attrs:
+                        addText(a,attrib=True)
 	if shape:
 		pos = FreeCAD.Vector(insert.loc[0],insert.loc[1],insert.loc[2])
 		rot = math.radians(insert.rotation)
@@ -377,6 +382,26 @@ def drawInsert(insert):
 		return shape
 	return None
 
+def attribs(insert):
+        "checks if an insert has attributes, and returns the values if yes"
+        atts = []
+        if rawValue(insert,66) != 1: return []
+        index = None
+        for i in range(len(drawing.entities.data)):
+                if drawing.entities.data[i] == insert:
+                        index = i
+                        break
+        if index == None: return []
+        j = index+1
+        while True:
+                ent = drawing.entities.data[j]
+                print str(ent)
+                if str(ent) == 'seqend':
+                        return atts
+                elif str(ent) == 'attrib':
+                        atts.append(ent)
+                        j += 1
+
 def addObject(shape,name,layer):
 	"adds a new object to the document with passed arguments"
 	newob=doc.addObject("Part::Feature",name)
@@ -384,6 +409,28 @@ def addObject(shape,name,layer):
 	lay.addObject(newob)
 	newob.Shape = shape
 	return newob
+
+def addText(text,attrib=False):
+        "adds a new text to the document"
+        if attrib:
+                lay = locateLayer(rawValue(text,8))
+                val = rawValue(text,1)
+                pos = FreeCAD.Vector(rawValue(text,10),rawValue(text,20),rawValue(text,30))
+                hgt = rawValue(text,40)
+        else:
+                lay = locateLayer(text.layer)
+                val = text.value
+                pos = FreeCAD.Vector(text.loc[0],text.loc[1],text.loc[2])
+                hgt = text.height
+        if val:
+                newob=doc.addObject("App::Annotation","Text")
+                lay.addObject(newob)
+                newob.LabelText = re.sub('{([^!}]([^}]|\n)*)}', '', val) 
+                newob.Position = pos
+                if gui:
+                        newob.ViewObject.FontSize=float(hgt)
+                        newob.ViewObject.DisplayMode = "World"
+                        fmt.formatObject(newob,text,textmode=True)
 
 def processdxf(document,filename):
 	"this does the translation of the dxf contents into FreeCAD Part objects"
@@ -402,6 +449,7 @@ def processdxf(document,filename):
 
 	# getting config parameters
 
+        global fmt
 	fmt = fcformat(drawing)
 
 	# drawing lines
@@ -447,29 +495,19 @@ def processdxf(document,filename):
 
 	# drawing texts
 
-	print fmt.paramtext
-
 	if fmt.paramtext:
 		texts = drawing.entities.get_type("mtext")
 		texts.extend(drawing.entities.get_type("text"))
 		if texts: FreeCAD.Console.PrintMessage("drawing "+str(len(texts))+" texts...\n")
 		for text in texts:
-				lay=locateLayer(text.layer)
-				newob=doc.addObject("App::Annotation","Text")
-				lay.addObject(newob)
-				newob.LabelText = re.sub('{([^!}]([^}]|\n)*)}', '', text.value) 
-				newob.Position=FreeCAD.Vector(text.loc[0],text.loc[1],text.loc[2])
-				if gui:
-					newob.ViewObject.FontSize=float(text.height)
-					newob.ViewObject.DisplayMode = "World"
-					fmt.formatObject(newob,text,textmode=True)
+                        addText(text)
 					
 	else: FreeCAD.Console.PrintMessage("skipping texts...\n")
 
 	# drawing dims
 
-	dims = drawing.entities.get_type("dimension")
 	if fmt.paramtext:
+                dims = drawing.entities.get_type("dimension")
 		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" dimensions...\n")
 		for dim in dims:
 			try:
@@ -519,6 +557,13 @@ def processdxf(document,filename):
 	# drawing blocks
 
 	inserts = drawing.entities.get_type("insert")
+        if not fmt.paramstarblocks:
+                FreeCAD.Console.PrintMessage("skipping *blocks...\n")
+                newinserts = []
+                for i in inserts:
+                        if i.block[0] != '*':
+                                newinserts.append(i)
+                inserts = newinserts
 	if inserts:
 		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" blocks...\n")
 		blockrefs = drawing.blocks.data

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
+    <width>575</width>
     <height>629</height>
    </rect>
   </property>
@@ -467,6 +467,12 @@ such as &quot;Arial:Bold&quot;</string>
         </item>
         <item>
          <widget class="Gui::PrefFileChooser" name="gui::preffilechooser_3">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="toolTip">
            <string>This is the location of a SVG file containing &lt;pattern&gt; definitions that can be added to the standard Draft hatch patterns</string>
           </property>
@@ -504,6 +510,12 @@ such as &quot;Arial:Bold&quot;</string>
         </item>
         <item>
          <widget class="Gui::PrefFileChooser" name="gui::preffilechooser_2">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="toolTip">
            <string>The default template to use when creating a new drawing sheet</string>
           </property>
@@ -599,31 +611,28 @@ If color mapping is choosed, you must choose a color mapping file containing a t
          </spacer>
         </item>
         <item>
-         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_3">
-          <property name="toolTip">
-           <string>if this is checked, paper space objects will be imported too</string>
-          </property>
+         <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Import layouts</string>
-          </property>
-          <property name="prefEntry" stdset="0">
-           <cstring>dxflayout</cstring>
-          </property>
-          <property name="prefPath" stdset="0">
-           <cstring>Mod/Draft</cstring>
+           <string>Max Spline Segment</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_2">
-          <property name="toolTip">
-           <string>if this is unchecked, texts/mtexts won't be imported</string>
+         <widget class="Gui::PrefSpinBox" name="gui::prefspinbox_2">
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
           </property>
-          <property name="text">
-           <string>Import texts</string>
+          <property name="toolTip">
+           <string>When exporting splines to DXF, they are transformed in polylines. This value is the maximum length of each of the polyline segments. If 0, then the whole spline is treated as a straight segment.</string>
+          </property>
+          <property name="value">
+           <number>5</number>
           </property>
           <property name="prefEntry" stdset="0">
-           <cstring>dxftext</cstring>
+           <cstring>maxsplinesegment</cstring>
           </property>
           <property name="prefPath" stdset="0">
            <cstring>Mod/Draft</cstring>
@@ -656,6 +665,12 @@ If color mapping is choosed, you must choose a color mapping file containing a t
         </item>
         <item>
          <widget class="Gui::PrefFileChooser" name="gui::preffilechooser">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="toolTip">
            <string>The color mapping file for translating dxf colors into linewidths</string>
           </property>
@@ -672,35 +687,6 @@ If color mapping is choosed, you must choose a color mapping file containing a t
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Max Spline Segment</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Gui::PrefSpinBox" name="gui::prefspinbox_2">
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>When exporting splines to DXF, they are transformed in polylines. This value is the maximum length of each of the polyline segments. If 0, then the whole spline is treated as a straight segment.</string>
-          </property>
-          <property name="value">
-           <number>5</number>
-          </property>
-          <property name="prefEntry" stdset="0">
-           <cstring>maxsplinesegment</cstring>
-          </property>
-          <property name="prefPath" stdset="0">
-           <cstring>Mod/Draft</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
          <spacer name="horizontalSpacer_7">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -712,6 +698,54 @@ If color mapping is choosed, you must choose a color mapping file containing a t
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_2">
+          <property name="toolTip">
+           <string>if this is unchecked, texts/mtexts won't be imported</string>
+          </property>
+          <property name="text">
+           <string>Import texts</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>dxftext</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_3">
+          <property name="toolTip">
+           <string>if this is checked, paper space objects will be imported too</string>
+          </property>
+          <property name="text">
+           <string>Import layouts</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>dxflayout</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_7">
+          <property name="toolTip">
+           <string>Check this if you want the non-named blocks (beginning with a *) to be imported too</string>
+          </property>
+          <property name="text">
+           <string>Import *blocks</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>dxfstarblocks</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
