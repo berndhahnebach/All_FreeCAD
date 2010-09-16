@@ -405,9 +405,9 @@ class toolBar:
 				self.isRelative.setToolTip(translate("draft", "Coordinates relative to last point or absolute (SPACE)"))
                                 self.hasFill.setText(translate("draft", "&Filled"))
                                 self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe (F)"))
-				self.finishButton.setText(translate("draft", "&Finish"))
+				self.finishButton.setText(translate("draft", "F&inish"))
 				self.finishButton.setToolTip(translate("draft", "Finishes the current line without closing (F)"))
-				self.undoButton.setText(translate("draft", "Undo"))
+				self.undoButton.setText(translate("draft", "&Undo"))
 				self.undoButton.setToolTip(translate("draft", "Undo the last segment (CTRL+Z)"))
 				self.closeButton.setText(translate("draft", "&Close"))
 				self.closeButton.setToolTip(translate("draft", "Finishes and closes the current line (C)"))
@@ -753,13 +753,16 @@ class toolBar:
 				checks for special characters in the entered coords that mut be
 				treated as shortcuts
 				'''
+                                spec = False
 				if txt.endsWith(" ") or txt.endsWith("r"):
 					self.isRelative.setChecked(not self.isRelative.isChecked())
+                                        spec = True
 				if txt.endsWith("f"):
-					if self.finishButton.isVisible():
-                                                self.finish()
-                                        elif self.hasFill.isVisible():
+                                        if self.hasFill.isVisible():
                                                 self.hasFill.setChecked(not self.hasFill.isChecked())
+                                        elif self.finishButton.isVisible():
+                                                self.finish()
+                                        spec = True
 				if txt.endsWith("c"):
 					if self.closeButton.isVisible():
                                                 self.closeLine()
@@ -767,9 +770,10 @@ class toolBar:
 						self.isCopy.setChecked(not self.isCopy.isChecked())
                                         elif self.continueCmd.isVisible():
                                                 self.continueCmd.setChecked(not self.continueCmd.isChecked())
-                                for i in [self.xValue,self.yValue,self.zValue]:
-                                        if (i.text() == txt): i.setText("")
-                                                
+                                        spec = True
+                                if spec:
+                                        for i in [self.xValue,self.yValue,self.zValue]:
+                                                if (i.text() == txt): i.setText("")
 			def sendText(self):
 				'''
 				this function sends the entered text to the active draft command
