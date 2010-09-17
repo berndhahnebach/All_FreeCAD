@@ -67,6 +67,7 @@
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoPolygonOffset.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoSwitch.h>
 # include <Inventor/nodes/SoGroup.h>
@@ -250,10 +251,15 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
     pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
     pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
 
+    // Avoid any Z-buffer artefacts, so that the lines always appear on top of the faces
+    // The correct order is Edges, Polygon offset, Faces.
+    SoPolygonOffset* offset = new SoPolygonOffset();
+
     // normal viewing with edges and points
     pcNormalRoot->addChild(pShapeHints);
-    pcNormalRoot->addChild(FaceRoot);
     pcNormalRoot->addChild(EdgeRoot);
+    pcNormalRoot->addChild(offset);
+    pcNormalRoot->addChild(FaceRoot);
     pcNormalRoot->addChild(VertexRoot);
 
     // just faces with no edges or points
