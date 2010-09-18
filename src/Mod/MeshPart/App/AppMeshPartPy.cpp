@@ -115,7 +115,7 @@ wireFromSegment(PyObject *self, PyObject *args)
     try {
         for (bt = bounds.begin(); bt != bounds.end(); ++bt) {
             BRepBuilderAPI_MakePolygon mkPoly;
-            for (std::vector<Base::Vector3f>::const_reverse_iterator it = bt->rbegin(); it != bt->rend(); ++it) {
+            for (std::vector<Base::Vector3f>::reverse_iterator it = bt->rbegin(); it != bt->rend(); ++it) {
                 mkPoly.Add(gp_Pnt(it->x,it->y,it->z));
             }
             if (mkPoly.IsDone()) {
