@@ -179,6 +179,7 @@ EXTRA_DIST = \
 		Resources/icons/Part_Revolve.svg \
 		Resources/icons/Part_Import.svg \
 		Resources/icons/Part_Mirror.svg \
+		Resources/icons/Part_MirrorPNG.png \
 		Resources/icons/Tree_Part.svg \
 		Resources/icons/preferences-part_design.svg \
 		Resources/icons/PartFeature.xpm \
