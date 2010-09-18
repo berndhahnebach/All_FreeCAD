@@ -19,7 +19,7 @@
 REV_FILE=./revision.m4
 TMP_PATH=/tmp
 MAJ=0
-MIN=10
+MIN=11
 ALIAS="Dagoba"
 
 # go to root directory
