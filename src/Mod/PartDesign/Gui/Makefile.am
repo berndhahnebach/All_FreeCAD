@@ -3,10 +3,13 @@ SUBDIRS=Resources
 lib_LTLIBRARIES=libPartDesignGui.la PartDesignGui.la
 
 BUILT_SOURCES=\
+		moc_TaskChamfer.cpp \
 		moc_TaskPadParameters.cpp \
+		ui_TaskChamfer.h \
 		ui_TaskPadParameters.h
 
 libPartDesignGui_la_UI=\
+		TaskChamfer.ui \
 		TaskPadParameters.ui
 
 libPartDesignGui_la_SOURCES=\
@@ -14,6 +17,8 @@ libPartDesignGui_la_SOURCES=\
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		TaskChamfer.cpp \
+		TaskChamfer.h \
 		TaskPadParameters.cpp \
 		TaskPadParameters.h \
 		Workbench.cpp \
@@ -28,6 +33,7 @@ libPartDesignGui_la_CPPFLAGS = -DPartDesignAppExport= -DPartDesignGuiExport=
 
 libPartDesignGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
+		@BOOST_SIGNALS_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \

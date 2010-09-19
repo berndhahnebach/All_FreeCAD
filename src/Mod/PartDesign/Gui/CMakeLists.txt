@@ -24,6 +24,7 @@ set(PartDesignGui_LIBS
 )
 
 set(PartDesignGui_MOC_HDRS
+    TaskChamfer.h
     TaskPadParameters.h
 )
 fc_wrap_cpp(PartDesignGui_MOC_SRCS ${PartDesignGui_MOC_HDRS})
@@ -32,6 +33,7 @@ SOURCE_GROUP("Moc" FILES ${PartDesignGui_MOC_SRCS})
 qt4_add_resources(PartDesignGui_SRCS Resources/PartDesign.qrc)
 
 set(PartDesignGui_UIC_SRCS
+    TaskChamfer.ui
     TaskPadParameters.ui
 )
 qt4_wrap_ui(PartDesignGui_UIC_HDRS ${PartDesignGui_UIC_SRCS})
@@ -43,6 +45,9 @@ SET(PartDesignGui_SRCS
     AppPartDesignGuiPy.cpp
     Command.cpp
     Resources/PartDesign.qrc
+    TaskChamfer.ui
+    TaskChamfer.cpp
+    TaskChamfer.h
     TaskPadParameters.ui
     TaskPadParameters.cpp
     TaskPadParameters.h

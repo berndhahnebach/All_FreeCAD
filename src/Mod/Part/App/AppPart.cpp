@@ -35,6 +35,7 @@
 #include "FeaturePartCircle.h"
 #include "FeaturePartPolygon.h"
 #include "FeatureGeometrySet.h"
+#include "FeatureChamfer.h"
 #include "FeatureExtrusion.h"
 #include "FeatureFillet.h"
 #include "FeatureMirroring.h"
@@ -142,6 +143,7 @@ void AppPartExport initPart()
     Part::Fuse                  ::init();
     Part::MultiFuse             ::init();
     Part::Section               ::init();
+    Part::Chamfer               ::init();
     Part::Extrusion             ::init();
     Part::Fillet                ::init();
     Part::Revolution            ::init();

@@ -123,7 +123,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *part << "PartDesign_NewSketch" 
           << "Separator" 
           << "PartDesign_Pad" 
-          << "PartDesign_Fillet" ;
+          << "PartDesign_Fillet"
+          << "PartDesign_Chamfer";
        
     part = new Gui::ToolBarItem(root);
     part->setCommand("Sketcher geoms");

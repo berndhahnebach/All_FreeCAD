@@ -85,6 +85,8 @@ SET(Features_SRCS
     FeaturePartPolygon.h
     FeaturePartSection.cpp
     FeaturePartSection.h
+    FeatureChamfer.cpp
+    FeatureChamfer.h
     FeatureExtrusion.cpp
     FeatureExtrusion.h
     FeatureFillet.cpp
