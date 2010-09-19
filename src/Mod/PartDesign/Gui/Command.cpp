@@ -29,11 +29,13 @@
 
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+#include <Gui/Control.h>
 #include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
 
 #include <Mod/Part/App/Part2DObject.h>
+#include "TaskChamfer.h"
 
 
 using namespace std;
@@ -198,6 +200,34 @@ bool CmdPartDesignFillet::isActive(void)
     return hasActiveDocument();
 }
 
+//===========================================================================
+// PartDesign_Chamfer
+//===========================================================================
+DEF_STD_CMD_A(CmdPartDesignChamfer);
+
+CmdPartDesignChamfer::CmdPartDesignChamfer()
+  :Command("PartDesign_Chamfer")
+{
+    sAppModule    = "PartDesign";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Chamfer...");
+    sToolTipText  = QT_TR_NOOP("Chamfer the selected edges of a shape");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "PartDesign_Chamfer";
+    iAccel        = 0;
+}
+
+void CmdPartDesignChamfer::activated(int iMsg)
+{
+    Gui::Control().showDialog(new PartDesignGui::TaskChamfer());
+}
+
+bool CmdPartDesignChamfer::isActive(void)
+{
+    return (hasActiveDocument() && !Gui::Control().activeDialog());
+}
+
 
 void CreatePartDesignCommands(void)
 {
@@ -206,4 +236,5 @@ void CreatePartDesignCommands(void)
     rcCmdMgr.addCommand(new CmdPartDesignPad());
     rcCmdMgr.addCommand(new CmdPartDesignFillet());
     rcCmdMgr.addCommand(new CmdPartDesignNewSketch());
+    rcCmdMgr.addCommand(new CmdPartDesignChamfer());
  }

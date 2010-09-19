@@ -111,6 +111,7 @@ libPart_la_SOURCES=\
 		FeaturePartImportStep.cpp \
 		FeaturePartPolygon.cpp \
 		FeaturePartSection.cpp \
+		FeatureChamfer.cpp \
 		FeatureExtrusion.cpp \
 		FeatureFillet.cpp \
 		FeatureGeometrySet.cpp \
@@ -158,6 +159,7 @@ include_HEADERS=\
 		FeaturePartImportStep.h \
 		FeaturePartPolygon.h \
 		FeaturePartSection.h \
+		FeatureChamfer.h \
 		FeatureExtrusion.h \
 		FeatureFillet.h \
 		FeatureGeometrySet.h \
