@@ -170,6 +170,7 @@ EXTRA_DIST = \
 		Resources/icons/Part_Cone.svg \
 		Resources/icons/Part_Sphere.svg \
 		Resources/icons/Part_Booleans.svg \
+		Resources/icons/Part_Chamfer.svg \
 		Resources/icons/Part_Cut.svg \
 		Resources/icons/Part_Common.svg \
 		Resources/icons/Part_Fuse.svg \

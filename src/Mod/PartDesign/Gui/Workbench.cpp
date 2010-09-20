@@ -28,6 +28,7 @@
 #endif
 
 #include "Workbench.h"
+#include <Gui/MenuManager.h>
 #include <Gui/ToolBarManager.h>
 #include <Gui/CombiView.h>
 #include <Gui/DockWindowManager.h>
@@ -106,7 +107,6 @@ void Workbench::activated()
  
 }
 
-
 void Workbench::deactivated()
 {
     Gui::Workbench::deactivated();
@@ -114,6 +114,22 @@ void Workbench::deactivated()
 
 }
 
+Gui::MenuItem* Workbench::setupMenuBar() const
+{
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+
+    Gui::MenuItem* part = new Gui::MenuItem;
+    root->insertItem(item, part);
+    part->setCommand("&Part Design");
+    *part << "PartDesign_NewSketch" 
+          << "Separator" 
+          << "PartDesign_Pad" 
+          << "PartDesign_Fillet"
+          << "PartDesign_Chamfer";
+
+    return root;
+}
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
