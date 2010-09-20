@@ -89,12 +89,12 @@
        <widget class="QComboBox" name="chamferType">
         <item>
          <property name="text">
-          <string>Constant Radius</string>
+          <string>Constant Distance</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Variable Radius</string>
+          <string>Variable Distance</string>
          </property>
         </item>
        </widget>
@@ -113,12 +113,12 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Radius:</string>
+           <string>Distance:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="chamferStartRadius">
+         <widget class="QDoubleSpinBox" name="chamferStartDistance">
           <property name="singleStep">
            <double>0.100000000000000</double>
           </property>
@@ -128,7 +128,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="chamferEndRadius">
+         <widget class="QDoubleSpinBox" name="chamferEndDistance">
           <property name="singleStep">
            <double>0.100000000000000</double>
           </property>
@@ -164,8 +164,8 @@
   <tabstop>shapeObject</tabstop>
   <tabstop>chamferType</tabstop>
   <tabstop>treeView</tabstop>
-  <tabstop>chamferStartRadius</tabstop>
-  <tabstop>chamferEndRadius</tabstop>
+  <tabstop>chamferStartDistance</tabstop>
+  <tabstop>chamferEndDistance</tabstop>
  </tabstops>
  <resources/>
  <connections/>

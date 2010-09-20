@@ -32,12 +32,12 @@
 namespace PartDesignGui {
 
 class Ui_TaskChamfer;
-class ChamferRadiusDelegate : public QItemDelegate
+class ChamferDistanceDelegate : public QItemDelegate
 {
     Q_OBJECT
 
 public:
-    ChamferRadiusDelegate(QObject *parent = 0);
+    ChamferDistanceDelegate(QObject *parent = 0);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const;
@@ -50,12 +50,12 @@ public:
         const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-class ChamferRadiusModel : public QStandardItemModel
+class ChamferDistanceModel : public QStandardItemModel
 {
     Q_OBJECT
 
 public:
-    ChamferRadiusModel(QObject * parent = 0);
+    ChamferDistanceModel(QObject * parent = 0);
 
     Qt::ItemFlags flags (const QModelIndex & index) const;
     bool setData (const QModelIndex & index, const QVariant & value,
@@ -87,8 +87,8 @@ private Q_SLOTS:
     void on_selectAllButton_clicked();
     void on_selectNoneButton_clicked();
     void on_chamferType_activated(int);
-    void on_chamferStartRadius_valueChanged(double);
-    void on_chamferEndRadius_valueChanged(double);
+    void on_chamferStartDistance_valueChanged(double);
+    void on_chamferEndDistance_valueChanged(double);
     void toogleCheckState(const QModelIndex&);
 
 private:

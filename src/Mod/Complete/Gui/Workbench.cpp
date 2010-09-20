@@ -222,6 +222,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Part_Revolve"
           << "Part_Mirror"
           << "Part_Fillet"
+          << "PartDesign_Chamfer"
           << "Separator"
           << "Part_ShapeInfo";
 
@@ -389,6 +390,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
         << "Part_Revolve"
         << "Part_Mirror"
         << "Part_Fillet"
+        << "PartDesign_Chamfer"
     ;
 
     // Sketch based
