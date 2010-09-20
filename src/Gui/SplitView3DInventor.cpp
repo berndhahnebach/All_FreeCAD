@@ -301,7 +301,7 @@ bool SplitView3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     else if (strcmp("ViewLeft",pMsg) == 0) {
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it) {
             SoCamera* cam = (*it)->getCamera();
-            cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
+            cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
             (*it)->viewAll();
         }
         return true;
@@ -318,7 +318,7 @@ bool SplitView3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     else if (strcmp("ViewRight",pMsg) == 0) {
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it) {
             SoCamera* cam = (*it)->getCamera();
-            cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
+            cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
             (*it)->viewAll();
         }
         return true;

@@ -453,7 +453,7 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
         return true;
     }
     else if(strcmp("ViewLeft",pMsg) == 0 ) {
-        _viewer->setCameraOrientation(SbRotation(0.5, 0.5, 0.5, 0.5));
+        _viewer->setCameraOrientation(SbRotation(-0.5, 0.5, 0.5, -0.5));
         _viewer->viewAll();
         return true;
     }
@@ -464,7 +464,7 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
         return true;
     }
     else if(strcmp("ViewRight",pMsg) == 0 ) {
-        _viewer->setCameraOrientation(SbRotation(-0.5, 0.5, 0.5, -0.5));
+        _viewer->setCameraOrientation(SbRotation(0.5, 0.5, 0.5, 0.5));
         _viewer->viewAll();
         return true;
     }

@@ -57,11 +57,11 @@
 
 using namespace PartDesignGui;
 
-ChamferRadiusDelegate::ChamferRadiusDelegate(QObject *parent) : QItemDelegate(parent)
+ChamferDistanceDelegate::ChamferDistanceDelegate(QObject *parent) : QItemDelegate(parent)
 {
 }
 
-QWidget *ChamferRadiusDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */,
+QWidget *ChamferDistanceDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */,
                                             const QModelIndex & index) const
 {
     if (index.column() < 1)
@@ -75,7 +75,7 @@ QWidget *ChamferRadiusDelegate::createEditor(QWidget *parent, const QStyleOption
     return editor;
 }
 
-void ChamferRadiusDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void ChamferDistanceDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     double value = index.model()->data(index, Qt::EditRole).toDouble();
 
@@ -83,7 +83,7 @@ void ChamferRadiusDelegate::setEditorData(QWidget *editor, const QModelIndex &in
     spinBox->setValue(value);
 }
 
-void ChamferRadiusDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+void ChamferDistanceDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                         const QModelIndex &index) const
 {
     QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
@@ -95,7 +95,7 @@ void ChamferRadiusDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
     model->setData(index, value, Qt::EditRole);
 }
 
-void ChamferRadiusDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+void ChamferDistanceDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                                                 const QModelIndex &/* index */) const
 {
     editor->setGeometry(option.rect);
@@ -103,11 +103,11 @@ void ChamferRadiusDelegate::updateEditorGeometry(QWidget *editor, const QStyleOp
 
 // --------------------------------------------------------------
 
-ChamferRadiusModel::ChamferRadiusModel(QObject * parent) : QStandardItemModel(parent)
+ChamferDistanceModel::ChamferDistanceModel(QObject * parent) : QStandardItemModel(parent)
 {
 }
 
-Qt::ItemFlags ChamferRadiusModel::flags (const QModelIndex & index) const
+Qt::ItemFlags ChamferDistanceModel::flags (const QModelIndex & index) const
 {
     Qt::ItemFlags fl = QStandardItemModel::flags(index);
     if (index.column() == 0)
@@ -115,7 +115,7 @@ Qt::ItemFlags ChamferRadiusModel::flags (const QModelIndex & index) const
     return fl;
 }
 
-bool ChamferRadiusModel::setData (const QModelIndex & index, const QVariant & value, int role)
+bool ChamferDistanceModel::setData (const QModelIndex & index, const QVariant & value, int role)
 {
     bool ok = QStandardItemModel::setData(index, value, role);
     if (role == Qt::CheckStateRole) {
@@ -150,15 +150,15 @@ ChamferWidget::ChamferWidget(QWidget* parent, Qt::WFlags fl)
     d->connectApplicationDeletedDocument = App::GetApplication().signalDeleteDocument
         .connect(boost::bind(&ChamferWidget::onDeleteDocument, this, _1));
     // set tree view with three columns
-    QStandardItemModel* model = new ChamferRadiusModel(this);
+    QStandardItemModel* model = new ChamferDistanceModel(this);
     connect(model, SIGNAL(toogleCheckState(const QModelIndex&)),
             this, SLOT(toogleCheckState(const QModelIndex&)));
     model->insertColumns(0,3);
-    model->setHeaderData(0, Qt::Horizontal, tr("Edges to Chamfer"), Qt::DisplayRole);
-    model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
-    model->setHeaderData(2, Qt::Horizontal, tr("End radius"), Qt::DisplayRole);
+    model->setHeaderData(0, Qt::Horizontal, tr("Edges to chamfer"), Qt::DisplayRole);
+    model->setHeaderData(1, Qt::Horizontal, tr("Start distance"), Qt::DisplayRole);
+    model->setHeaderData(2, Qt::Horizontal, tr("End distance"), Qt::DisplayRole);
     ui->treeView->setRootIsDecorated(false);
-    ui->treeView->setItemDelegate(new ChamferRadiusDelegate(this));
+    ui->treeView->setItemDelegate(new ChamferDistanceDelegate(this));
     ui->treeView->setModel(model);
 
     QHeaderView* header = ui->treeView->header();
@@ -386,14 +386,14 @@ void ChamferWidget::on_chamferType_activated(int index)
 {
     QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->treeView->model());
     if (index == 0) {
-        model->setHeaderData(1, Qt::Horizontal, tr("Radius"), Qt::DisplayRole);
+        model->setHeaderData(1, Qt::Horizontal, tr("Distance"), Qt::DisplayRole);
         ui->treeView->hideColumn(2);
-        ui->chamferEndRadius->hide();
+        ui->chamferEndDistance->hide();
     }
     else {
-        model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
+        model->setHeaderData(1, Qt::Horizontal, tr("Start distance"), Qt::DisplayRole);
         ui->treeView->showColumn(2);
-        ui->chamferEndRadius->show();
+        ui->chamferEndDistance->show();
     }
 
     ui->treeView->resizeColumnToContents(0);
@@ -401,10 +401,10 @@ void ChamferWidget::on_chamferType_activated(int index)
     ui->treeView->resizeColumnToContents(2);
 }
 
-void ChamferWidget::on_chamferStartRadius_valueChanged(double radius)
+void ChamferWidget::on_chamferStartDistance_valueChanged(double distance)
 {
     QAbstractItemModel* model = ui->treeView->model();
-    QString text = QLocale::system().toString(radius,'f',2);
+    QString text = QLocale::system().toString(distance,'f',2);
     for (int i=0; i<model->rowCount(); ++i) {
         QVariant value = model->index(i,0).data(Qt::CheckStateRole);
         Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
@@ -416,10 +416,10 @@ void ChamferWidget::on_chamferStartRadius_valueChanged(double radius)
     }
 }
 
-void ChamferWidget::on_chamferEndRadius_valueChanged(double radius)
+void ChamferWidget::on_chamferEndDistance_valueChanged(double distance)
 {
     QAbstractItemModel* model = ui->treeView->model();
-    QString text = QLocale::system().toString(radius,'f',2);
+    QString text = QLocale::system().toString(distance,'f',2);
     for (int i=0; i<model->rowCount(); ++i) {
         QVariant value = model->index(i,0).data(Qt::CheckStateRole);
         Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
@@ -441,7 +441,7 @@ bool ChamferWidget::accept()
     }
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     QAbstractItemModel* model = ui->treeView->model();
-    bool end_radius = !ui->treeView->isColumnHidden(2);
+    bool end_distance = !ui->treeView->isColumnHidden(2);
     bool todo = false;
 
     QString shape, type, name;
@@ -466,7 +466,7 @@ bool ChamferWidget::accept()
             int id = model->index(i,0).data(Qt::UserRole).toInt();
             double r1 = model->index(i,1).data().toDouble();
             double r2 = r1;
-            if (end_radius)
+            if (end_distance)
                 r2 = model->index(i,2).data().toDouble();
             code += QString::fromAscii(
                 "__chamfers__.append((%1,%2,%3))\n")
