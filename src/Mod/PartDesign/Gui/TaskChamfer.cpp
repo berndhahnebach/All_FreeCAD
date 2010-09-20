@@ -496,27 +496,13 @@ bool ChamferWidget::accept()
 
 // ---------------------------------------
 
-TaskBoxChamfer::TaskBoxChamfer(QWidget* parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("Part_Chamfer"),
-        tr("Chamfer"),true, parent)
+TaskChamfer::TaskChamfer()
 {
-    widget = new ChamferWidget(this);
-    this->groupLayout()->addWidget(widget);
-}
-
-TaskBoxChamfer::~TaskBoxChamfer()
-{
-}
-
-bool TaskBoxChamfer::accept()
-{
-    return widget->accept();
-}
-
-// ---------------------------------------
-
-TaskChamfer::TaskChamfer() : taskbox(new TaskBoxChamfer)
-{
+    widget = new ChamferWidget();
+    Gui::TaskView::TaskBox* taskbox = new Gui::TaskView::TaskBox(
+        Gui::BitmapFactory().pixmap("Part_Chamfer"),
+        widget->windowTitle(), true, 0);
+    taskbox->groupLayout()->addWidget(widget);
     Content.push_back(taskbox);
 }
 
@@ -535,7 +521,7 @@ void TaskChamfer::clicked(int)
 
 bool TaskChamfer::accept()
 {
-    return taskbox->accept();
+    return widget->accept();
 }
 
 bool TaskChamfer::reject()

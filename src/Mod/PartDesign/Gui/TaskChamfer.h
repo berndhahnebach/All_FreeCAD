@@ -127,7 +127,7 @@ public:
     { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
 
 private:
-    TaskBoxChamfer* taskbox;
+    ChamferWidget* widget;
 };
 
 } // namespace PartDesignGui

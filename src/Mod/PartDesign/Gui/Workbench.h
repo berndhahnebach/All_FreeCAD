@@ -45,6 +45,7 @@ public:
     virtual void deactivated();
 
 protected:
+  Gui::MenuItem* setupMenuBar() const;
   Gui::ToolBarItem* setupToolBars() const;
   Gui::ToolBarItem* setupCommandBars() const;
 };
