@@ -293,6 +293,11 @@ void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCalle
     }
 }
 
+SbBool View3DInventorViewer::hasViewProvider(ViewProvider* pcProvider) const
+{
+    return _ViewProviderSet.find(pcProvider) != _ViewProviderSet.end();
+}
+
 /// adds an ViewProvider to the view, e.g. from a feature
 void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)
 {
