@@ -96,19 +96,6 @@ private:
     std::auto_ptr<ChamferWidgetP> d;
 };
 
-class TaskBoxChamfer : public Gui::TaskView::TaskBox
-{
-    Q_OBJECT
-
-public:
-    TaskBoxChamfer(QWidget *parent = 0);
-    ~TaskBoxChamfer();
-    bool accept();
-
-private:
-    ChamferWidget* widget;
-};
-
 class TaskChamfer : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
