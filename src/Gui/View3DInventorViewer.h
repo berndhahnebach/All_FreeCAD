@@ -122,6 +122,7 @@ public:
 
     /** @name Handling of view providers */
     //@{
+    SbBool hasViewProvider(ViewProvider*) const;
     /// adds an ViewProvider to the view, e.g. from a feature
     void addViewProvider(ViewProvider*);
     /// remove a ViewProvider

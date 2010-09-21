@@ -786,6 +786,8 @@ void Application::viewActivated(MDIView* pcView)
     Base::Console().Log("Active view is %s (at %p)\n",
                  (const char*)pcView->windowTitle().toUtf8(),pcView);
 
+    signalActivateView(pcView);
+
     // Set the new active document which is taken of the activated view. If, however,
     // this view is passive we let the currently active document unchanged as we would
     // have no document active which is causing a lot of trouble.

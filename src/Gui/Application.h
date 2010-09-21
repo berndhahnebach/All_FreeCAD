@@ -105,6 +105,8 @@ public:
     boost::signal<void (const char*)> signalAddWorkbench;
     /// signal on removed workbench
     boost::signal<void (const char*)> signalRemoveWorkbench;
+    /// signal on activating view
+    boost::signal<void (const Gui::MDIView*)> signalActivateView;
     //@}
 
     /** @name methods for Document handling */
