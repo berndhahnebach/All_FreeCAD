@@ -22,29 +22,7 @@
  ***************************************************************************/
 
 
-//Because we ommit the PreCompiled Header we have to define some stuff here
-#include <FCConfig.h>
-// Exporting of App classes
-#ifdef FC_OS_WIN32
-# define AppCamExport   __declspec(dllexport)
-# define CamExport      __declspec(dllexport)
-# define AppPartExport  __declspec(dllimport)
-# define PartExport     __declspec(dllimport)
-# define AppMeshExport  __declspec(dllimport)
-# define MeshExport     __declspec(dllimport)
-#else // for Linux
-# define AppCamExport
-# define CamExport
-# define AppPartExport
-# define PartExport
-# define AppMeshExport
-# define MeshExport
-#endif
-#ifdef _MSC_VER
-# pragma warning(disable : 4290)
-#endif
-
-
+#include "PreCompiled.h"
 
 //Mesh Stuff
 #include <Mod/Mesh/App/Core/MeshKernel.h>
