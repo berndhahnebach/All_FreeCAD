@@ -80,15 +80,15 @@ PyObject *RobotObject::getPyObject()
     return Py::new_reference_to(PythonObject); 
 }
 
+
 void RobotObject::onChanged(const Property* prop)
 {
-
+       
     if(prop == &RobotKinematicFile){
         // load the new kinematic
         robot.readKinematic(RobotKinematicFile.getValue());
     }
 
-    static bool block = false;
     if(prop == &Axis1 && !block){
         robot.setAxis(0,Axis1.getValue());
         block = true;
@@ -147,7 +147,19 @@ void RobotObject::Save (Base::Writer &writer) const
 
 void RobotObject::Restore(Base::XMLReader &reader)
 {
+    block = true;
     App::GeoFeature::Restore(reader);
     robot.Restore(reader);
+
+    // set up the robot with the loaded axis position 
+    robot.setAxis(0,Axis1.getValue());
+    robot.setAxis(1,Axis2.getValue());
+    robot.setAxis(2,Axis3.getValue());
+    robot.setAxis(3,Axis4.getValue());
+    robot.setAxis(4,Axis5.getValue());
+    robot.setAxis(5,Axis6.getValue());
+    robot.setTo(Tcp.getValue());
+    Tcp.setValue(robot.getTcp());
+    block = false;
 }
 

@@ -47,10 +47,14 @@ public:
     /// destructor.
     ~ViewProviderRobotObject();
 
+    App::PropertyBool Manipulator;
+
     void attach(App::DocumentObject *pcObject);
     void setDisplayMode(const char* ModeName);
     std::vector<std::string> getDisplayModes() const;
     void updateData(const App::Property*);
+
+    virtual void onChanged(const App::Property* prop);
 
     /// for simulation without changing the document:
     void setAxisTo(float A1,float A2,float A3,float A4,float A5,float A6,const Base::Placement &Tcp);
@@ -58,6 +62,9 @@ public:
 protected:
     static void sDraggerMotionCallback(void *data, SoDragger *dragger);
     void DraggerMotionCallback(SoDragger *dragger);
+
+    void setDragger(void);
+    void resetDragger(void);
 
     Gui::SoFCSelection    * pcRobotRoot;
     Gui::SoFCSelection    * pcSimpleRoot;

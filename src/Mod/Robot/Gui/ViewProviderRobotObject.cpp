@@ -56,9 +56,10 @@ using namespace RobotGui;
 PROPERTY_SOURCE(RobotGui::ViewProviderRobotObject, Gui::ViewProviderGeometryObject)
 
 ViewProviderRobotObject::ViewProviderRobotObject()
+:toolShape(0),pcDragger(0)
 {
-    toolShape = 0;
-    
+    ADD_PROPERTY(Manipulator,(0));   
+
 	pcRobotRoot = new Gui::SoFCSelection();
     pcRobotRoot->highlightMode = Gui::SoFCSelection::OFF;
     //pcRobotRoot->selectionMode = Gui::SoFCSelection::SEL_OFF;
@@ -73,33 +74,47 @@ ViewProviderRobotObject::ViewProviderRobotObject()
     pcOffRoot = new SoGroup();
     pcOffRoot->ref();
 
+    // set nodes for the manipulator outfit
     pcTcpRoot = new SoGroup();
-    //pcTcpTransform = new SoTransform();
-    //pcTcpTransform->scaleFactor = SbVec3f(150,150,150);
-    //pcTcpRoot->addChild(pcTcpTransform);
-    //SoSphere *sphere = new SoSphere();
-    //sphere->radius = 0.1f;
-    //SoRotation *rot = new SoRotation();
-    //rot->rotation.setValue(SbVec3f(0, 0, 1), 1.5707963f);
-
-    //pcDragger = new SoTrackballDragger();
-    pcDragger = new SoJackDragger();
-    pcDragger->addMotionCallback(sDraggerMotionCallback,this);
-    //pcTcpRoot->addChild(sphere);
-    //pcTcpRoot->addChild(rot);
-    pcTcpRoot->addChild(pcDragger);
     pcTcpRoot->ref();
-    //pcTcpTransform->ref();
 
 
     Axis1Node = Axis2Node = Axis3Node = Axis4Node = Axis5Node = Axis6Node = 0;
 }
+
+void ViewProviderRobotObject::setDragger()
+{
+    assert(pcDragger==0);
+    pcDragger = new SoJackDragger();
+    pcDragger->addMotionCallback(sDraggerMotionCallback,this);
+    pcTcpRoot->addChild(pcDragger);
+
+    // set the actual TCP position
+    Robot::RobotObject* robObj = static_cast<Robot::RobotObject*>(pcObject);
+    Base::Placement loc = robObj->Tcp.getValue();
+    SbMatrix  M;
+    M.setTransform(SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z),
+                   SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]),
+                   SbVec3f(150,150,150)
+                   );
+    pcDragger->setMotionMatrix(M);
+
+
+}
+void ViewProviderRobotObject::resetDragger()
+{
+    assert(pcDragger);
+    pcTcpRoot->removeAllChildren();
+    pcDragger = 0;
+
+ }
 
 ViewProviderRobotObject::~ViewProviderRobotObject()
 {
     pcRobotRoot->unref();
     pcSimpleRoot->unref();
     pcOffRoot->unref();
+
 }
 
 void ViewProviderRobotObject::attach(App::DocumentObject *pcObj)
@@ -142,6 +157,18 @@ std::vector<std::string> ViewProviderRobotObject::getDisplayModes(void) const
     StrList.push_back("Simple");
     StrList.push_back("Off");
     return StrList;
+}
+void ViewProviderRobotObject::onChanged(const App::Property* prop)
+{
+    if (prop == &Manipulator) {
+        if(Manipulator.getValue()){
+            if(!this->pcDragger)
+                this->setDragger();
+        }else{
+            if(this->pcDragger)
+                this->resetDragger();
+        }
+ 	}
 }
 
 void ViewProviderRobotObject::updateData(const App::Property* prop)
@@ -299,7 +326,10 @@ void ViewProviderRobotObject::updateData(const App::Property* prop)
                        SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]),
                        SbVec3f(150,150,150)
                        );
-        pcDragger->setMotionMatrix(M);
+        if(pcDragger)
+            pcDragger->setMotionMatrix(M);
+        if(toolShape)
+            toolShape->setTransformation((robObj->Tcp.getValue() * (robObj->ToolBase.getValue().inverse())).toMatrix());
 		//pcTcpTransform->translation = SbVec3f(loc.getPosition().x,loc.getPosition().y,loc.getPosition().z);
 		//pcTcpTransform->rotation = SbRotation(loc.getRotation()[0],loc.getRotation()[1],loc.getRotation()[2],loc.getRotation()[3]);
 	}else if (prop == &robObj->ToolShape) {
