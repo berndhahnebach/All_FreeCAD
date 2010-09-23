@@ -107,6 +107,14 @@ void Simulation::reset(void)
     Rob.setAxis(5,startAxis[5]);
 
     Base::Placement NeededPos = Trac.getPosition(0.0);
-    NeededPos *= Tool;
+    NeededPos =  NeededPos *Tool.inverse();
     Rob.setTo(NeededPos);
+
+    Axis[0] = Rob.getAxis(0);
+    Axis[1] = Rob.getAxis(1);
+    Axis[2] = Rob.getAxis(2);
+    Axis[3] = Rob.getAxis(3);
+    Axis[4] = Rob.getAxis(4);
+    Axis[5] = Rob.getAxis(5);
+
 }

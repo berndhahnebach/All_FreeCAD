@@ -37,6 +37,7 @@
 #include "kdl_cp/chainiksolvervel_pinv.hpp"
 #include "kdl_cp/chainjnttojacsolver.hpp"
 #include "kdl_cp/chainiksolverpos_nr.hpp"
+#include "kdl_cp/chainiksolverpos_nr_jl.hpp"
 
 #include "Robot6Axis.h"
 #include "RobotAlgos.h"
@@ -70,6 +71,13 @@ TYPESYSTEM_SOURCE(Robot::Robot6Axis , Base::Persistence);
 
 Robot6Axis::Robot6Axis()
 {
+    // create joint array for the min and max angel values of each joint
+    Min = JntArray(6);
+    Max = JntArray(6);
+
+	// Create joint array
+    Actuall = JntArray(6);
+
     // set to default kuka 500
     setKinematic(KukaIR500);
 }
@@ -83,20 +91,17 @@ void Robot6Axis::setKinematic(const AxisDefinition KinDef[6])
 {
 	Chain temp;
 
+
     for(int i=0 ; i<6 ;i++){
         temp.addSegment(Segment(Joint(Joint::RotZ),Frame::DH(KinDef[i].a  ,KinDef[i].alpha * (M_PI/180) ,KinDef[i].d ,KinDef[i].theta * (M_PI/180)      )));
         RotDir  [i] = KinDef[i].rotDir;
-        MaxAngle[i] = KinDef[i].maxAngle;
-        MinAngle[i] = KinDef[i].minAngle;
+        Max(i) = KinDef[i].maxAngle * (M_PI/180);
+        Min(i) = KinDef[i].minAngle * (M_PI/180);
         Velocity[i] = KinDef[i].velocity;
     }
 
 	// for now and testing
     Kinematic = temp;
-
-	// Create joint array
-    unsigned int nj = temp.getNrOfJoints();
-    Actuall = JntArray(nj);
 
 	// get the actuall TCP out of tha axis
 	calcTcp();
@@ -241,7 +246,7 @@ bool Robot6Axis::setTo(const Placement &To)
 	//Creation of the solvers:
 	ChainFkSolverPos_recursive fksolver1(Kinematic);//Forward position solver
 	ChainIkSolverVel_pinv iksolver1v(Kinematic);//Inverse velocity solver
-	ChainIkSolverPos_NR iksolver1(Kinematic,fksolver1,iksolver1v,100,1e-6);//Maximum 100 iterations, stop at accuracy 1e-6
+	ChainIkSolverPos_NR_JL iksolver1(Kinematic,Min,Max,fksolver1,iksolver1v,100,1e-6);//Maximum 100 iterations, stop at accuracy 1e-6
 	 
 	//Creation of jntarrays:
 	JntArray result(Kinematic.getNrOfJoints());

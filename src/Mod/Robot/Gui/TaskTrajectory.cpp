@@ -131,10 +131,11 @@ void TaskTrajectory::viewTool(const Base::Placement pos)
 
 void TaskTrajectory::setTo(void)
 {
+    sim.Tool = pcRobot->Tool.getValue();
+
     if(timePos < 0.0001)
         sim.reset();
     else{
-        sim.Tool = pcRobot->Tool.getValue();
         sim.setToTime(timePos);
     }
     ViewProv->setAxisTo(sim.Axis[0],sim.Axis[1],sim.Axis[2],sim.Axis[3],sim.Axis[4],sim.Axis[5],sim.Rob.getTcp());
