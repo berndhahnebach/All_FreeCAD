@@ -74,8 +74,8 @@ private:
     T* m_atElement;
 };
 
-#include "Wm4TSmallUnorderedSet.inl"
-
 }
+
+#include "Wm4TSmallUnorderedSet.inl"
 
 #endif

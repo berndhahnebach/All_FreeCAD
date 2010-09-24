@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class TKEY>
 THashSet<TKEY>::THashSet (int iTableSize)
@@ -214,3 +216,4 @@ int THashSet<TKEY>::HashFunction (const TKEY& rtKey) const
     return (int)floor(m_iTableSize*dFraction);
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

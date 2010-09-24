@@ -84,8 +84,8 @@ private:
     int* m_aiInToOutMapping;
 };
 
-#include "Wm4UniqueVerticesTriangles.inl"
-
 }
+
+#include "Wm4UniqueVerticesTriangles.inl"
 
 #endif

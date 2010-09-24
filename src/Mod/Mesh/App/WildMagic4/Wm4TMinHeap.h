@@ -90,8 +90,8 @@ private:
     TMinHeapRecord<Generator,Real>** m_apkRecords;
 };
 
-#include "Wm4TMinHeap.inl"
-
 }
+
+#include "Wm4TMinHeap.inl"
 
 #endif

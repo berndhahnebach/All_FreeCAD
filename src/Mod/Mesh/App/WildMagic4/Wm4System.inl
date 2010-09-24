@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class T>
 void Allocate (int iCols, int iRows, T**& raatArray)
@@ -66,3 +68,4 @@ void Deallocate (T***& raaatArray)
     }
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

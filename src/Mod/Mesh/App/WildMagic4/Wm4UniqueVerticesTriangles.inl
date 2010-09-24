@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <int N, class Real>
 UniqueVerticesTriangles<N,Real>::UniqueVerticesTriangles (int iTQuantity,
@@ -108,3 +110,4 @@ void UniqueVerticesTriangles<N,Real>::ConstructUniqueVertices (
     }
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

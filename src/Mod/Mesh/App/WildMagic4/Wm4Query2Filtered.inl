@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Query2Filtered<Real>::Query2Filtered (int iVQuantity,
@@ -100,3 +102,4 @@ int Query2Filtered<Real>::ToCircumcircle (const Vector2<Real>& rkP, int iV0,
     return m_kRQuery.ToCircumcircle(rkP,iV0,iV1,iV2);
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

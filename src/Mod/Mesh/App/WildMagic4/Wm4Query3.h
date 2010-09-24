@@ -83,8 +83,12 @@ protected:
         Real fX3, Real fY3, Real fZ3, Real fW3);
 };
 
+}
+
 #include "Wm4Query3.inl"
 
+namespace Wm4
+{
 typedef Query3<float> Query3f;
 typedef Query3<double> Query3d;
 

@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Query3<Real>::Query3 (int iVQuantity, const Vector3<Real>* akVertex)
@@ -199,3 +201,4 @@ Real Query3<Real>::Det4 (Real fX0, Real fY0, Real fZ0, Real fW0, Real fX1,
     return fA0*fB5-fA1*fB4+fA2*fB3+fA3*fB2-fA4*fB1+fA5*fB0;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

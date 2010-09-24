@@ -78,8 +78,12 @@ private:
         Rational& rkY2, Rational& rkZ2);
 };
 
+}
+
 #include "Wm4Query2TRational.inl"
 
+namespace Wm4
+{
 typedef Query2TRational<float> Query2TRationalf;
 typedef Query2TRational<double> Query2TRationald;
 

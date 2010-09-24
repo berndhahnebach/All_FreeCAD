@@ -44,8 +44,8 @@ protected:
     Query ();
 };
 
-#include "Wm4Query.inl"
-
 }
+
+#include "Wm4Query.inl"
 
 #endif

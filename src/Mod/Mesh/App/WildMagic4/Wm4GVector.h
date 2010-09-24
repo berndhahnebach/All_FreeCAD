@@ -82,11 +82,14 @@ protected:
 template <class Real>
 GVector<Real> operator* (Real fScalar, const GVector<Real>& rkV);
 
+} //namespace Wm4
+
 #include "Wm4GVector.inl"
 
+namespace Wm4
+{
 typedef GVector<float> GVectorf;
 typedef GVector<double> GVectord;
-
 }
 
 #endif

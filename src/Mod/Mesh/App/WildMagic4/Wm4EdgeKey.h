@@ -32,8 +32,8 @@ public:
     int V[2];
 };
 
-#include "Wm4EdgeKey.inl"
-
 }
+
+#include "Wm4EdgeKey.inl"
 
 #endif

@@ -95,11 +95,14 @@ private:
     Vector3<Real> m_akDirection[3];
 };
 
+} //namespace Wm4
+
 #include "Wm4Mapper3.inl"
 
+namespace Wm4
+{
 typedef Mapper3<float> Mapper3f;
 typedef Mapper3<double> Mapper3d;
-
 }
 
 #endif

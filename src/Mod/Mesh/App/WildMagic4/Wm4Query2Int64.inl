@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Query2Int64<Real>::Query2Int64 (int iVQuantity, const Vector2<Real>* akVertex)
@@ -101,3 +103,4 @@ Integer64 Query2Int64<Real>::Det3 (Integer64 iX0, Integer64 iY0,
     return iX0*iC00 + iX1*iC01 + iX2*iC02;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

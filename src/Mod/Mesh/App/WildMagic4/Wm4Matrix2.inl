@@ -14,6 +14,8 @@
 //
 // Version: 4.0.1 (2006/08/19)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Matrix2<Real>::Matrix2 (bool bZero)
@@ -587,3 +589,5 @@ Vector2<Real> operator* (const Vector2<Real>& rkV, const Matrix2<Real>& rkM)
         rkV[0]*rkM[0][1] + rkV[1]*rkM[1][1]);
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4
+

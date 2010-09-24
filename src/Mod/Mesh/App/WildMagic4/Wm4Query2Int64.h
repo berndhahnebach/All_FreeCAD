@@ -56,8 +56,12 @@ private:
         Integer64 iX2, Integer64 iY2, Integer64 iZ2);
 };
 
+}
+
 #include "Wm4Query2Int64.inl"
 
+namespace Wm4
+{
 typedef Query2Int64<float> Query2Int64f;
 typedef Query2Int64<double> Query2Int64d;
 

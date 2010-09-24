@@ -47,11 +47,14 @@ public:
     Real Extent[3];         // must be nonnegative
 };
 
+} //namespace Wm4
+
 #include "Wm4Box3.inl"
 
+namespace Wm4
+{
 typedef Box3<float> Box3f;
 typedef Box3<double> Box3d;
-
 }
 
 #endif

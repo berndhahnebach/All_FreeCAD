@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 inline const ETManifoldMesh::EMap& ETManifoldMesh::GetEdges () const
 {
@@ -25,3 +27,4 @@ inline const ETManifoldMesh::TMap& ETManifoldMesh::GetTriangles () const
     return m_kTMap;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

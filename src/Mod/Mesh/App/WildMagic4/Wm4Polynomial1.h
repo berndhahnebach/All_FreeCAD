@@ -94,11 +94,14 @@ protected:
 template <class Real>
 Polynomial1<Real> operator* (Real fScalar, const Polynomial1<Real>& rkPoly);
 
+} // namespace Wm4
+
 #include "Wm4Polynomial1.inl"
 
+namespace Wm4
+{
 typedef Polynomial1<float> Polynomial1f;
 typedef Polynomial1<double> Polynomial1d;
-
 }
 
 #endif

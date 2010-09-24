@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Segment3<Real>::Segment3 ()
@@ -43,3 +45,4 @@ Vector3<Real> Segment3<Real>::GetNegEnd () const
     return Origin - Extent*Direction;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

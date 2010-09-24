@@ -100,8 +100,12 @@ Vector4<Real> operator* (Real fScalar, const Vector4<Real>& rkV);
 template <class Real>
 std::ostream& operator<< (std::ostream& rkOStr, const Vector4<Real>& rkV);
 
+}
+
 #include "Wm4Vector4.inl"
 
+namespace Wm4
+{
 typedef Vector4<float> Vector4f;
 typedef Vector4<double> Vector4d;
 

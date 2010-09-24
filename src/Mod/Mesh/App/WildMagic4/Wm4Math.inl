@@ -14,6 +14,8 @@
 //
 // Version: 4.0.1 (2006/08/22)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Real Math<Real>::ACos (Real fValue)
@@ -515,3 +517,4 @@ Real Math<Real>::FastNegExp3 (Real fValue)
     return fResult;
 }
 //----------------------------------------------------------------------------
+} // namespace Wm4

@@ -363,6 +363,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libMesh_la_BUILT)
 
 EXTRA_DIST = \
 		$(data_DATA) \
+		WildMagic4/wildmagic4.dox \
 		CMakeLists.txt \
 		FacetPy.xml \
 		FeaturePythonPy.xml \

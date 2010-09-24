@@ -22,7 +22,6 @@
 
 namespace Wm4
 {
-
 template <class Real>
 class Vector2
 {
@@ -122,8 +121,12 @@ Vector2<Real> operator* (Real fScalar, const Vector2<Real>& rkV);
 template <class Real>
 std::ostream& operator<< (std::ostream& rkOStr, const Vector2<Real>& rkV);
 
+}
+
 #include "Wm4Vector2.inl"
 
+namespace Wm4
+{
 typedef Vector2<float> Vector2f;
 typedef Vector2<double> Vector2d;
 

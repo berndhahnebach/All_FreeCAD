@@ -48,8 +48,12 @@ public:
     Real Extent;
 };
 
+}
+
 #include "Wm4Segment3.inl"
 
+namespace Wm4
+{
 typedef Segment3<float> Segment3f;
 typedef Segment3<double> Segment3d;
 

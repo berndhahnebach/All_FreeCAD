@@ -14,6 +14,8 @@
 //
 // Version: 4.0.2 (2006/10/15)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <typename Generator, typename Real>
 TMinHeapRecord<Generator,Real>::TMinHeapRecord ()
@@ -366,3 +368,4 @@ void TMinHeap<Generator,Real>::Print (const char* acFilename)
     kOStr.close();
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

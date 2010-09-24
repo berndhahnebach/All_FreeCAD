@@ -76,8 +76,8 @@ template <int VSIZE, int ISIZE>
 TRVector<VSIZE,ISIZE> operator* (const TRational<ISIZE>& rkR,
     const TRVector<VSIZE,ISIZE>& rkV);
 
-#include "Wm4TRVector.inl"
-
 }
+
+#include "Wm4TRVector.inl"
 
 #endif

@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Query3TRational<Real>::Query3TRational (int iVQuantity,
@@ -254,3 +256,4 @@ typename Query3TRational<Real>::Rational Query3TRational<Real>::Det4 (
     return kA0*kB5-kA1*kB4+kA2*kB3+kA3*kB2-kA4*kB1+kA5*kB0;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

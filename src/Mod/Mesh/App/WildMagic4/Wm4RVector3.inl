@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <int ISIZE>
 RVector3<ISIZE>::RVector3 ()
@@ -127,3 +129,4 @@ TRational<ISIZE> RVector3<ISIZE>::TripleScalar (const RVector3& rkU,
     return Dot(rkU.Cross(rkV));
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

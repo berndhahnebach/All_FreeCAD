@@ -151,11 +151,14 @@ Matrix4<Real> operator* (Real fScalar, const Matrix4<Real>& rkM);
 template <class Real>
 Vector4<Real> operator* (const Vector4<Real>& rkV, const Matrix4<Real>& rkM);
 
+} //namespace Wm4
+
 #include "Wm4Matrix4.inl"
 
+namespace Wm4
+{
 typedef Matrix4<float> Matrix4f;
 typedef Matrix4<double> Matrix4d;
-
 }
 
 #endif

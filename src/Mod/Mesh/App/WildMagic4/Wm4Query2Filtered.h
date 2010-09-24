@@ -58,8 +58,12 @@ private:
     Real m_fUncertainty;
 };
 
+}
+
 #include "Wm4Query2Filtered.inl"
 
+namespace Wm4
+{
 typedef Query2Filtered<float> Query2Filteredf;
 typedef Query2Filtered<double> Query2Filteredd;
 

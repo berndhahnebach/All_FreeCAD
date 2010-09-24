@@ -42,8 +42,12 @@ public:
     Vector3<Real> V[3];
 };
 
+}
+
 #include "Wm4Triangle3.inl"
 
+namespace Wm4
+{
 typedef Triangle3<float> Triangle3f;
 typedef Triangle3<double> Triangle3d;
 

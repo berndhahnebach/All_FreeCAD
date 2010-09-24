@@ -111,11 +111,14 @@ protected:
     Real m_fMin, m_fMax;
 };
 
+} //namespace Wm4
+
 #include "Wm4LinComp.inl"
 
+namespace Wm4
+{
 typedef LinComp<float> LinCompf;
 typedef LinComp<double> LinCompd;
-
 }
 
 #endif

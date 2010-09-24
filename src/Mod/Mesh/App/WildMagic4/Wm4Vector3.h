@@ -134,8 +134,12 @@ Vector3<Real> operator* (Real fScalar, const Vector3<Real>& rkV);
 template <class Real>
 std::ostream& operator<< (std::ostream& rkOStr, const Vector3<Real>& rkV);
 
+}
+
 #include "Wm4Vector3.inl"
 
+namespace Wm4
+{
 typedef Vector3<float> Vector3f;
 typedef Vector3<double> Vector3d;
 

@@ -27,3 +27,4 @@ template<> const Vector2<double> Vector2<double>::ZERO(0.0,0.0);
 template<> const Vector2<double> Vector2<double>::UNIT_X(1.0,0.0);
 template<> const Vector2<double> Vector2<double>::UNIT_Y(0.0,1.0);
 template<> const Vector2<double> Vector2<double>::ONE(1.0,1.0);
+
