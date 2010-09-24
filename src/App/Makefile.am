@@ -36,7 +36,6 @@ libFreeCADApp_la_SOURCES=\
 		DocumentObserver.cpp \
 		DocumentObserverPython.cpp \
 		DocumentPyImp.cpp \
-		Doxygen.cpp \
 		DynamicProperty.cpp \
 		FeaturePython.cpp \
 		FeaturePythonPyImp.cpp \

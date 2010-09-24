@@ -706,7 +706,6 @@ SET(FreeCADGui_SRCS
     BitmapFactory.h
     Document.h
     DocumentModel.h
-    Doxygen.cpp
     FreeCADGuiInit.py
     GuiConsole.h
     InventorAll.h
