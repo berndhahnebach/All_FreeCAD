@@ -34,8 +34,12 @@ libkdl_la_SOURCES=\
 		kdl_cp/utilities/utility.h \
 		kdl_cp/utilities/utility_io.cxx \
 		kdl_cp/utilities/utility_io.h \
+		kdl_cp/articulatedbodyinertia.cpp \
+		kdl_cp/articulatedbodyinertia.hpp \
 		kdl_cp/chain.cpp \
 		kdl_cp/chain.hpp \
+		kdl_cp/chaindynparam.cpp \
+		kdl_cp/chaindynparam.hpp \
 		kdl_cp/chainfksolver.hpp \
 		kdl_cp/chainfksolverpos_recursive.cpp \
 		kdl_cp/chainfksolverpos_recursive.hpp \
@@ -53,6 +57,8 @@ libkdl_la_SOURCES=\
 		kdl_cp/chainiksolvervel_pinv_givens.cpp \
 		kdl_cp/chainiksolvervel_pinv_givens.hpp \
 		kdl_cp/chainiksolvervel_pinv.hpp \
+		kdl_cp/chainiksolvervel_pinv_nso.cpp \
+		kdl_cp/chainiksolvervel_pinv_nso.hpp \
 		kdl_cp/chainiksolvervel_wdls.cpp \
 		kdl_cp/chainiksolvervel_wdls.hpp \
 		kdl_cp/chainjnttojacsolver.cpp \
@@ -78,6 +84,8 @@ libkdl_la_SOURCES=\
 		kdl_cp/jntarray.hpp \
 		kdl_cp/jntarrayvel.cpp \
 		kdl_cp/jntarrayvel.hpp \
+		kdl_cp/jntspaceinertiamatrix.cpp \
+		kdl_cp/jntspaceinertiamatrix.hpp \
 		kdl_cp/joint.cpp \
 		kdl_cp/joint.hpp \
 		kdl_cp/kdl.hpp \
