@@ -147,7 +147,6 @@ SET(FreeCADApp_SRCS
     ${FreeCADApp_CPP_SRCS}
     ${FreeCADApp_HPP_SRCS}
     ${FreeCADApp_XML_SRCS}
-    Doxygen.cpp
     FreeCADInit.py
     FreeCADTest.py
     PreCompiled.cpp

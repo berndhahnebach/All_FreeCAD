@@ -253,7 +253,6 @@ libFreeCADGui_la_SOURCES=\
 		Document.cpp \
 		DocumentPyImp.cpp \
 		DocumentModel.cpp \
-		Doxygen.cpp \
 		FileDialog.cpp \
 		Flag.cpp \
 		GuiConsole.cpp \
