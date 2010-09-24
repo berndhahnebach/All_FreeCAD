@@ -41,8 +41,12 @@ public:
     Real Radius;
 };
 
+}
+
 #include "Wm4Sphere3.inl"
 
+namespace Wm4
+{
 typedef Sphere3<float> Sphere3f;
 typedef Sphere3<double> Sphere3d;
 

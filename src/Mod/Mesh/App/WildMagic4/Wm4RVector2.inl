@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <int ISIZE>
 RVector2<ISIZE>::RVector2 ()
@@ -105,3 +107,4 @@ TRational<ISIZE> RVector2<ISIZE>::DotPerp (const RVector2& rkV) const
     return m_akTuple[0]*rkV.m_akTuple[1] - m_akTuple[1]*rkV.m_akTuple[0];
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

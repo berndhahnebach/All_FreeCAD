@@ -196,9 +196,9 @@ template <class T> void Allocate (int iCols, int iRows, int iSlices,
     T***& raaatArray);
 template <class T> void Deallocate (T***& raaatArray);
 
-#include "Wm4System.inl"
-
 }
+
+#include "Wm4System.inl"
 
 // Miscellaneous support.  STL does not yet formally have hash structures.
 // The includes are placed here because the hash structures use System

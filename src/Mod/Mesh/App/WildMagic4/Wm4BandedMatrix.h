@@ -64,11 +64,14 @@ private:
     Real** m_aafUBand;
 };
 
+}
+
 #include "Wm4BandedMatrix.inl"
 
+namespace Wm4
+{
 typedef BandedMatrix<float> BandedMatrixf;
 typedef BandedMatrix<double> BandedMatrixd;
-
 }
 
 #endif

@@ -86,8 +86,12 @@ private:
         Rational& rkW3);
 };
 
+}
+
 #include "Wm4Query3TRational.inl"
 
+namespace Wm4
+{
 typedef Query3TRational<float> Query3TRationalf;
 typedef Query3TRational<double> Query3TRationald;
 

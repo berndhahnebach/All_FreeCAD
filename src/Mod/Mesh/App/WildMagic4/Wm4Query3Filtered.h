@@ -59,8 +59,12 @@ private:
     Real m_fUncertainty;
 };
 
+}
+
 #include "Wm4Query3Filtered.inl"
 
+namespace Wm4
+{
 typedef Query3Filtered<float> Query3Filteredf;
 typedef Query3Filtered<double> Query3Filteredd;
 

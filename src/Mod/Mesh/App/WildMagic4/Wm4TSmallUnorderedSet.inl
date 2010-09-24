@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class T>
 TSmallUnorderedSet<T>::TSmallUnorderedSet ()
@@ -259,3 +261,4 @@ void TSmallUnorderedSet<T>::Clear (int iMaxQuantity, int iGrowBy)
     m_atElement = WM4_NEW T[iMaxQuantity];
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

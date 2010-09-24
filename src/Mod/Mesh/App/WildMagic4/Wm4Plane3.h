@@ -66,11 +66,14 @@ public:
     Real Constant;
 };
 
+} //namespace Wm4
+
 #include "Wm4Plane3.inl"
 
+namespace Wm4
+{
 typedef Plane3<float> Plane3f;
 typedef Plane3<double> Plane3d;
-
 }
 
 #endif

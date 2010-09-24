@@ -136,11 +136,14 @@ GMatrix<Real> operator* (Real fScalar, const GMatrix<Real>& rkM);
 template <class Real>
 GVector<Real> operator* (const GVector<Real>& rkV, const GMatrix<Real>& rkM);
 
+} //namespace Wm4
+
 #include "Wm4GMatrix.inl"
 
+namespace Wm4
+{
 typedef GMatrix<float> GMatrixf;
 typedef GMatrix<double> GMatrixd;
-
 }
 
 #endif

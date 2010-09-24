@@ -141,7 +141,12 @@ public:
     WM4_FOUNDATION_ITEM static const Real INV_LN_10;
 };
 
+} //namespace Wm4
+
 #include "Wm4Math.inl"
+
+namespace Wm4
+{
 #include "Wm4MathMCR.h"
 
 typedef Math<float> Mathf;

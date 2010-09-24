@@ -106,8 +106,9 @@ protected:
     using TRVector<2,ISIZE>::m_akTuple;
 };
 
+}
+
 #include "Wm4RVector2.inl"
 
-}
 
 #endif

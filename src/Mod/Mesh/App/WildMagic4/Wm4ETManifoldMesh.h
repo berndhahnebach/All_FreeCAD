@@ -109,8 +109,8 @@ protected:
     TMap m_kTMap;
 };
 
-#include "Wm4ETManifoldMesh.inl"
+} //namespace Wm4
 
-}
+#include "Wm4ETManifoldMesh.inl"
 
 #endif

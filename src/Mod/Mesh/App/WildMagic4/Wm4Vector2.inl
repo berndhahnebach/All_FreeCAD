@@ -14,6 +14,8 @@
 //
 // Version: 4.0.2 (2006/08/19)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Vector2<Real>::Vector2 ()
@@ -470,3 +472,4 @@ std::ostream& operator<< (std::ostream& rkOStr, const Vector2<Real>& rkV)
      return rkOStr << rkV.X() << ' ' << rkV.Y();
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

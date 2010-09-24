@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Triangle3<Real>::Triangle3 ()
@@ -235,3 +237,4 @@ Real Triangle3<Real>::DistanceTo (const Vector3<Real>& rkQ) const
     return Math<Real>::Sqrt(Math<Real>::FAbs(fSqrDist));
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

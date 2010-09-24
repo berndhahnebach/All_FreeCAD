@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 GVector<Real>::GVector (int iSize)
@@ -377,3 +379,4 @@ Real GVector<Real>::Normalize ()
     return fLength;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

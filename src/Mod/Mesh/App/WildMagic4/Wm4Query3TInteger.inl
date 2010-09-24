@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Query3TInteger<Real>::Query3TInteger (int iVQuantity,
@@ -143,3 +145,4 @@ TInteger<6> Query3TInteger<Real>::Det4 (TInteger<6>& rkX0, TInteger<6>& rkY0,
     return kA0*kB5-kA1*kB4+kA2*kB3+kA3*kB2-kA4*kB1+kA5*kB0;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

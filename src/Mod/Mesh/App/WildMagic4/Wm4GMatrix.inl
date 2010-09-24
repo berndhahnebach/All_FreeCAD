@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 GMatrix<Real>::GMatrix (int iRows, int iCols)
@@ -717,3 +719,4 @@ bool GMatrix<Real>::GetInverse (GMatrix<Real>& rkInverse) const
     return true;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

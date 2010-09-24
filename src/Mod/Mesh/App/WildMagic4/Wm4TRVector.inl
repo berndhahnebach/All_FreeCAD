@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <int VSIZE, int ISIZE>
 TRVector<VSIZE,ISIZE>::TRVector ()
@@ -266,3 +268,4 @@ TRational<ISIZE> TRVector<VSIZE,ISIZE>::Dot (const TRVector& rkV) const
     return kDot;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

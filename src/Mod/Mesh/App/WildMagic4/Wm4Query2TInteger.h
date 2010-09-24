@@ -60,8 +60,12 @@ private:
         TInteger<4>& rkZ2);
 };
 
+}
+
 #include "Wm4Query2TInteger.inl"
 
+namespace Wm4
+{
 typedef Query2TInteger<float> Query2TIntegerf;
 typedef Query2TInteger<double> Query2TIntegerd;
 

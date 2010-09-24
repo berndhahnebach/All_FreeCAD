@@ -15,6 +15,9 @@
 // Version: 4.0.0 (2006/06/28)
 
 //----------------------------------------------------------------------------
+namespace Wm4
+{
+
 template <class Real>
 BandedMatrix<Real>::BandedMatrix (int iSize, int iLBands, int iUBands)
 {
@@ -329,3 +332,4 @@ void BandedMatrix<Real>::Deallocate ()
     }
 }
 //----------------------------------------------------------------------------
+} // namespace Wm4

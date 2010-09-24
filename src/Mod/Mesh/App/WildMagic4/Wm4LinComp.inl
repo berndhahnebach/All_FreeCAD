@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 LinComp<Real>::LinComp ()
@@ -136,3 +138,4 @@ bool LinComp<Real>::IsCanonical () const
     return true;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

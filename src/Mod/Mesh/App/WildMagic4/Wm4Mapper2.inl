@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Mapper2<Real>::Mapper2 (int iVQuantity, const Vector2<Real>* akVertex,
@@ -160,3 +162,5 @@ bool Mapper2<Real>::GetExtremeCCW () const
     return m_bExtremeCCW;
 }
 //----------------------------------------------------------------------------
+} // namespace Wm4
+

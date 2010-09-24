@@ -89,8 +89,8 @@ private:
     mutable HashItem* m_pkItem;
 };
 
-#include "Wm4THashSet.inl"
-
 }
+
+#include "Wm4THashSet.inl"
 
 #endif

@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Polynomial1<Real>::Polynomial1 (int iDegree)
@@ -473,3 +475,4 @@ void Polynomial1<Real>::Divide (const Polynomial1& rkDiv, Polynomial1& rkQuot,
     }
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Sphere3<Real>::Sphere3 ()
@@ -45,3 +47,4 @@ Sphere3<Real>& Sphere3<Real>::operator= (const Sphere3& rkSphere)
     return *this;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

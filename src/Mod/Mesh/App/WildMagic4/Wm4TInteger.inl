@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <int N>
 TInteger<N>::TInteger (int i)
@@ -1226,3 +1228,4 @@ int TInteger<N>::ToInt (int i) const
     return (int)(0x0000FFFF & (unsigned int)m_asBuffer[i]);
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

@@ -77,11 +77,14 @@ protected:
         Real iZ1, Real iX2, Real iY2, Real iZ2);
 };
 
+}
+
 #include "Wm4Query2.inl"
 
+namespace Wm4
+{
 typedef Query2<float> Query2f;
 typedef Query2<double> Query2d;
-
 }
 
 #endif

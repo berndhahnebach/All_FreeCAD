@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 inline size_t& Memory::MaxAllowedBytes ()
 {
@@ -75,3 +77,4 @@ inline const Memory::Block* Memory::GetTail ()
     return ms_pkTail;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

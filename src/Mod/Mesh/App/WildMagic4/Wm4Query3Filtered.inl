@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Query3Filtered<Real>::Query3Filtered (int iVQuantity,
@@ -124,3 +126,4 @@ int Query3Filtered<Real>::ToCircumsphere (const Vector3<Real>& rkP, int iV0,
     return m_kRQuery.ToCircumsphere(rkP,iV0,iV1,iV2,iV3);
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

@@ -247,11 +247,14 @@ Matrix3<Real> operator* (Real fScalar, const Matrix3<Real>& rkM);
 template <class Real>
 Vector3<Real> operator* (const Vector3<Real>& rkV, const Matrix3<Real>& rkM);
 
+} //namespace Wm4
+
 #include "Wm4Matrix3.inl"
 
+namespace Wm4
+{
 typedef Matrix3<float> Matrix3f;
 typedef Matrix3<double> Matrix3d;
-
 }
 
 #endif

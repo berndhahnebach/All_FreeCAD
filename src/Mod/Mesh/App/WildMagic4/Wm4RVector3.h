@@ -112,8 +112,9 @@ protected:
     using TRVector<3,ISIZE>::m_akTuple;
 };
 
+}
+
 #include "Wm4RVector3.inl"
 
-}
 
 #endif

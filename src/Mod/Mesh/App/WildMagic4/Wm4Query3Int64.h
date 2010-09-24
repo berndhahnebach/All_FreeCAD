@@ -60,8 +60,12 @@ private:
         Integer64 iW3);
 };
 
+}
+
 #include "Wm4Query3Int64.inl"
 
+namespace Wm4
+{
 typedef Query3Int64<float> Query3Int64f;
 typedef Query3Int64<double> Query3Int64d;
 

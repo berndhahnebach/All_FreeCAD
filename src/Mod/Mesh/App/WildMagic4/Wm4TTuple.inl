@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <int DIMENSION, class TYPE>
 TTuple<DIMENSION,TYPE>::TTuple ()
@@ -114,3 +116,4 @@ bool TTuple<DIMENSION,TYPE>::operator>= (const TTuple& rkT) const
     return memcmp(m_atTuple,rkT.m_atTuple,uiSize) >= 0;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

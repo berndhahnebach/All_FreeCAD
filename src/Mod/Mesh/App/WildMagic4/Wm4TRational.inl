@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <int N>
 TRational<N>::TRational ()
@@ -980,3 +982,4 @@ void TRational<N>::GetPositiveDouble (const TInteger<N>& rkDenom,
     }
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

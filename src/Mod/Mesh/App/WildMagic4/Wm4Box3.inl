@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Box3<Real>::Box3 ()
@@ -69,3 +71,4 @@ void Box3<Real>::ComputeVertices (Vector3<Real> akVertex[8]) const
     akVertex[7] = Center - akEAxis[0] + akEAxis[1] + akEAxis[2];
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

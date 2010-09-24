@@ -38,11 +38,14 @@ public:
     Vector3<Real> Origin, Direction;
 };
 
+} //namespace Wm4
+
 #include "Wm4Line3.inl"
 
+namespace Wm4
+{
 typedef Line3<float> Line3f;
 typedef Line3<double> Line3d;
-
 }
 
 #endif

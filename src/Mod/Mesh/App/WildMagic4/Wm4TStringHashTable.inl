@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class TVALUE>
 TStringHashTable<TVALUE>::TStringHashTable (int iTableSize)
@@ -219,3 +221,4 @@ int TStringHashTable<TVALUE>::HashFunction (const std::string& rkKey) const
     return abs(iLoKey * iHiKey) % m_iTableSize;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

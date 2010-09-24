@@ -66,8 +66,12 @@ private:
         TInteger<6>& rkZ3, TInteger<6>& rkW3);
 };
 
+}
+
 #include "Wm4Query3TInteger.inl"
 
+namespace Wm4
+{
 typedef Query3TInteger<float> Query3TIntegerf;
 typedef Query3TInteger<double> Query3TIntegerd;
 

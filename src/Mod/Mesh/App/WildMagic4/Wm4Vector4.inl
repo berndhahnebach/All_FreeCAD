@@ -14,6 +14,8 @@
 //
 // Version: 4.0.1 (2006/08/19)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Vector4<Real>::Vector4 ()
@@ -360,3 +362,4 @@ std::ostream& operator<< (std::ostream& rkOStr, const Vector4<Real>& rkV)
          << ' ' << rkV.W();
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

@@ -119,9 +119,9 @@ public:
     static void RemoveBlock (Block* pkBlock);
 };
 
-#include "Wm4Memory.inl"
+} //namespace Wm4
 
-}
+#include "Wm4Memory.inl"
 
 #define WM4_NEW new(__FILE__,__LINE__)
 #define WM4_DELETE delete

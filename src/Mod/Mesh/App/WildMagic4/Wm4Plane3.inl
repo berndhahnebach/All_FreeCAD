@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 template <class Real>
 Plane3<Real>::Plane3 ()
@@ -87,3 +89,5 @@ int Plane3<Real>::WhichSide (const Vector3<Real>& rkQ) const
     return 0;
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4
+

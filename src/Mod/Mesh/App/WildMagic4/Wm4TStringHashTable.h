@@ -78,8 +78,8 @@ private:
     mutable HashItem* m_pkItem;
 };
 
-#include "Wm4TStringHashTable.inl"
-
 }
+
+#include "Wm4TStringHashTable.inl"
 
 #endif

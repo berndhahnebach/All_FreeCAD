@@ -14,6 +14,8 @@
 //
 // Version: 4.0.0 (2006/06/28)
 
+namespace Wm4
+{
 //----------------------------------------------------------------------------
 inline TriangleKey::TriangleKey (int iV0, int iV1, int iV2)
 {
@@ -83,3 +85,4 @@ inline TriangleKey::operator size_t () const
     return V[0] | (V[1] << 10) | (V[2] << 20);
 }
 //----------------------------------------------------------------------------
+} //namespace Wm4

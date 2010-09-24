@@ -101,8 +101,8 @@ protected:
     EMap m_kEMap;
 };
 
-#include "Wm4VEManifoldMesh.inl"
-
 }
+
+#include "Wm4VEManifoldMesh.inl"
 
 #endif

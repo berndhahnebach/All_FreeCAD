@@ -32,8 +32,8 @@ public:
     int V[3];
 };
 
-#include "Wm4TriangleKey.inl"
-
 }
+
+#include "Wm4TriangleKey.inl"
 
 #endif

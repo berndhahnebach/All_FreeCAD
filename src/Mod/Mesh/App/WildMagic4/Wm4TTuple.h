@@ -63,8 +63,8 @@ private:
     TYPE m_atTuple[DIMENSION];
 };
 
-#include "Wm4TTuple.inl"
-
 }
+
+#include "Wm4TTuple.inl"
 
 #endif

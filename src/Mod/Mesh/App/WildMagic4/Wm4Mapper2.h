@@ -89,11 +89,14 @@ private:
     Vector2<Real> m_akDirection[2];
 };
 
+} //namespace Wm4
+
 #include "Wm4Mapper2.inl"
 
+namespace Wm4
+{
 typedef Mapper2<float> Mapper2f;
 typedef Mapper2<double> Mapper2d;
-
 }
 
 #endif
