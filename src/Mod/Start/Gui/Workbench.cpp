@@ -46,15 +46,15 @@ using namespace StartGui;
 
 TYPESYSTEM_SOURCE(StartGui::Workbench, Gui::StdWorkbench)
 
-Workbench::Workbench()
+StartGui::Workbench::Workbench()
 {
 }
 
-Workbench::~Workbench()
+StartGui::Workbench::~Workbench()
 {
 }
 
-void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
+void StartGui::Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
 {
     //if (strcmp(recipient,"View") == 0)
     //{
@@ -79,13 +79,13 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
     //}
 }
 
-Gui::MenuItem* Workbench::setupMenuBar() const
+Gui::MenuItem* StartGui::Workbench::setupMenuBar() const
 {
     return Gui::StdWorkbench::setupMenuBar();
 
-    Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
+//    Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
     // Setup the default menu bar
-    Gui::MenuItem* menuBar = new Gui::MenuItem;
+//    Gui::MenuItem* menuBar = new Gui::MenuItem;
 
 //    // File
 //    Gui::MenuItem* file = new Gui::MenuItem( menuBar );
@@ -181,6 +181,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //          << "Mesh_FillInteractiveHole" 
 //          << "Mesh_RemoveComponents"
 //          << "Mesh_RemoveCompByHand" 
+
 //          << "Separator" 
 //          << "Mesh_BuildRegularSolid" 
 //          << boolean << "Separator" 
@@ -315,15 +316,15 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 //          << "Separator" 
 //          << "Std_WhatsThis" ;
 //
-    return menuBar;
+//    return menuBar;
 }
 
-Gui::ToolBarItem* Workbench::setupToolBars() const
+Gui::ToolBarItem* StartGui::Workbench::setupToolBars() const
 {
     return Gui::StdWorkbench::setupToolBars();
 
-    Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
+//    Gui::CommandManager &mgr = Gui::Application::Instance->commandManager();
+//    Gui::ToolBarItem* root = new Gui::ToolBarItem;
 //
 //    // File
 //    Gui::ToolBarItem* file = new Gui::ToolBarItem( root );
@@ -418,6 +419,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //        Drafting->setCommand("Drafting");
 //        *Drafting
 //            << "Draft_SelectPlane"
+
 //            << "Draft_Line"
 //            << "Draft_Polyline"
 //            << "Draft_Circle"
@@ -439,16 +441,16 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 //    }
 //#   endif
 
-    return root;
+//    return root;
 }
 
-Gui::ToolBarItem* Workbench::setupCommandBars() const
+Gui::ToolBarItem* StartGui::Workbench::setupCommandBars() const
 {
     Gui::ToolBarItem* root = new Gui::ToolBarItem;
     return root;
 }
 
-Gui::DockWindowItems* Workbench::setupDockWindows() const
+Gui::DockWindowItems* StartGui::Workbench::setupDockWindows() const
 {
     Gui::DockWindowItems* root = Gui::StdWorkbench::setupDockWindows();
     root->setVisibility(false); // hide all dock windows by default
