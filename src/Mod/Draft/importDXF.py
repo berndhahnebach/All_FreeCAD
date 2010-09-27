@@ -129,6 +129,7 @@ class fcformat:
                 self.paramstarblocks = params.GetBool("dxfstarblocks")
 		self.paramlayouts = params.GetBool("dxflayouts")
 		self.paramstyle = params.GetInt("dxfstyle")
+                self.join = params.GetBool("joingeometry")
 		bparams = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View")
 
 		if self.paramstyle > 1:
@@ -402,11 +403,12 @@ def attribs(insert):
                         atts.append(ent)
                         j += 1
 
-def addObject(shape,name,layer):
+def addObject(shape,name="Shape",layer=None):
 	"adds a new object to the document with passed arguments"
 	newob=doc.addObject("Part::Feature",name)
-	lay=locateLayer(layer)
-	lay.addObject(newob)
+        if layer:
+                lay=locateLayer(layer)
+                lay.addObject(newob)
 	newob.Shape = shape
 	return newob
 
@@ -451,6 +453,7 @@ def processdxf(document,filename):
 
         global fmt
 	fmt = fcformat(drawing)
+        shapes = []
 
 	# drawing lines
 
@@ -459,8 +462,11 @@ def processdxf(document,filename):
 	for line in lines:
 		shape = drawLine(line)
 		if shape:
-			newob = addObject(shape,"Line",line.layer)
-			if gui: fmt.formatObject(newob,line)
+                        if fmt.join:
+                                shapes.append(shape)
+                        else:
+                                newob = addObject(shape,"Line",line.layer)
+                                if gui: fmt.formatObject(newob,line)
 						
 	# drawing polylines
 
@@ -470,8 +476,11 @@ def processdxf(document,filename):
 	for polyline in polylines:
 		shape = drawPolyline(polyline)
 		if shape:
-			newob = addObject(shape,"Polyline",polyline.layer)
-			if gui: fmt.formatObject(newob,polyline)
+                        if fmt.join:
+                                shapes.append(shape)
+                        else:
+                                newob = addObject(shape,"Polyline",polyline.layer)
+                                if gui: fmt.formatObject(newob,polyline)
 				
 	# drawing arcs
 
@@ -480,8 +489,22 @@ def processdxf(document,filename):
 	for arc in arcs:
 		shape = drawArc(arc)
 		if shape:
-			newob = addObject(shape,"Arc",arc.layer)
-			if gui: fmt.formatObject(newob,arc)
+                        if fmt.join:
+                                shapes.append(shape)
+                        else:
+                                newob = addObject(shape,"Arc",arc.layer)
+                                if gui: fmt.formatObject(newob,arc)
+
+        # joining lines, polylines and arcs if needed
+
+        if fmt.join and shapes:
+                FreeCAD.Console.PrintMessage("Joining geometry...\n")
+                edges = []
+                for s in shapes:
+                        edges.extend(s.Edges)
+                shapes = fcgeo.findWires2(edges)
+                for s in shapes:
+                        newob = addObject(s)
 
 	# drawing circles
 

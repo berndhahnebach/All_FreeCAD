@@ -49,7 +49,7 @@ def vec(edge):
 		return None
 
 def edg(p1,p2):
-	"edge(Vector,Vector) -- returns an edge from 2 vectors"
+	"edg(Vector,Vector) -- returns an edge from 2 vectors"
 	if isinstance(p1,FreeCAD.Vector) and isinstance(p2,FreeCAD.Vector):
 		if fcvec.equals(p1,p2): return None
 		else: return Part.Line(p1,p2).toShape()
@@ -59,7 +59,7 @@ def v1(edge):
 	return edge.Vertexes[0].Point
 
 def isPtOnEdge(pt,edge) :
-	''' Tests if a point is on an edge'''
+	'''isPtOnEdge(Vector,edge) -- Tests if a point is on an edge'''
 	if isinstance(edge.Curve,Part.Line) :
 		orig = edge.Vertexes[0].Point
 		if fcvec.isNull(pt.sub(orig).cross(vec(edge))) :
@@ -273,8 +273,6 @@ def mirror (point, edge):
 	else:
 		return None
 
-
-
 def findClosest(basepoint,pointslist):
 	'''
 	findClosest(vector,list)
@@ -319,7 +317,7 @@ def getBoundary(shape):
 	for e in shape.Edges:
 		if lut[e.hashCode()] == 1: bound.append(e)
 	return bound
-	
+
 def sortEdges(lEdges, aVertex=None):
 	"an alternative, more accurate version of Part.__sortEdges__"
 
@@ -569,7 +567,38 @@ def isCoplanar(faces):
                 if (normal.getAngle(base) > .0001) and (normal.getAngle(base) < 3.1415):
                         return False
         return True
-        
+
+def findWires(edges):
+        '''finds connected edges in the list, and returns a list of lists containing edges
+        that can be connected'''
+        def verts(shape):
+                return [shape.Vertexes[0].Point,shape.Vertexes[-1].Point]
+        def group(shapes):
+                shapesIn = shapes[:]
+                shapesOut = [shapesIn.pop()]
+                changed = False
+                for s in shapesIn:
+                        if len(s.Vertexes) < 2:
+                        else:
+                                clean = True
+                                for v in verts(s):
+                                        for i in range(len(shapesOut)):
+                                                if clean and (v in verts(shapesOut[i])):
+                                                        shapesOut[i] = Part.Wire(shapesOut[i].Edges+s.Edges)
+                                                        changed = True
+                                                        clean = False
+                                if clean:
+                                        shapesOut.append(s)
+                return(changed,shapesOut)
+        working = True
+        edgeSet = edges
+        while working:
+                result = group(edgeSet)
+                working = result[0]
+                edgeSet = result[1]
+        return result[1]
+
+   
 # circle functions *********************************************************
 
 

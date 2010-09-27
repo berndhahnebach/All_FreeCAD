@@ -747,6 +747,22 @@ If color mapping is choosed, you must choose a color mapping file containing a t
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_9">
+          <property name="toolTip">
+           <string>If checked, freecad will try to joint coincident objects into wires. Beware, this can take a while...</string>
+          </property>
+          <property name="text">
+           <string>Join geometry</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>joingeometry</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
