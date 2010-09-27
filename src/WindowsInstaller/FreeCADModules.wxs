@@ -24,6 +24,13 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment Id="FreeCADModules">
+		<!-- Add the 64-bit registry component to the 64-bit MSI, and add the 32-bit registry        -->
+		<!-- component to the 32-bit MSI.                                                            -->
+		<?if $(var.ProcessorArchitecture)=x64 ?>
+		<?define Win_64 = "yes" ?>
+		<?else ?>
+		<?define Win_64 = "no" ?>
+		<?endif ?>
         <DirectoryRef Id="ModDir">
             <?include ModMesh.wxi ?>
             <?include ModPart.wxi ?>

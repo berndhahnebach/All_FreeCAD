@@ -4,9 +4,9 @@
 #define FCVersionMinor "11"
 #define FCVersionName  "Dagoba"
 
-#define FCRevision      "3555"      //Highest committed revision number
+#define FCRevision      "3578"      //Highest committed revision number
 #define FCRevisionDate  "2010/09/14 22:54:59"     //Date of highest committed revision
-#define FCRevisionRange "3555"    //Update revision range
+#define FCRevisionRange "3578"    //Update revision range
 #define FCRepositoryURL "https://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk"      //Repository URL of the working copy
 #define FCCurrentDateT  "2010/09/14 23:13:59"      //Current system date & time
 
