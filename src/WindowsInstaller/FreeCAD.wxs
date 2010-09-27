@@ -44,7 +44,7 @@
 				InstallerVersion="300" 
 				Compressed="yes"
 				AdminImage='no'
-				Platform='x86'
+				Platform='$(var.ProcessorArchitecture)'
 				ReadOnly='yes'
 				Keywords='FreeCAD,Installer,MSI' />
 
@@ -74,10 +74,25 @@
 
 
         <Directory Id="TARGETDIR" Name="SourceDir">
- 			<!-- These installs the Visual C++ 8.0 Runtime Libraries -->
+ 			<!-- These installs the Visual C++ 9.0 Runtime Libraries -->
+			<?if $(var.ProcessorArchitecture)=x64 ?>
+			<Merge  Id="CRT" Language="0" SourceFile='$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC90_CRT_x86_x64.msm' DiskId="1"/>
+			<?else ?>
 			<Merge  Id="CRT" Language="0" SourceFile='Microsoft_VC90_CRT_x86.msm' DiskId="1"/>
-			<Merge  Id="CRT_Policy" Language="0" SourceFile='policy_9_0_Microsoft_VC90_CRT_x86.msm' DiskId="1"/>
+			<?endif ?>
 			
+			<?if $(var.ProcessorArchitecture)=x64 ?>
+			<Directory Id="ProgramFiles64Folder" Name="PFiles">
+                <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
+                    <Directory Id="BinDir" Name="bin" />
+                    <Directory Id="ModDir" Name="Mod" />
+                    <Directory Id="DocDir" Name="doc" />
+					<Directory Id="DataDir" Name="data" >
+						<Directory Id="ExamplesDir" Name="examples" />
+					</Directory>
+                </Directory>
+            </Directory>
+			<?else ?>
 			<Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
                     <Directory Id="BinDir" Name="bin" />
@@ -88,6 +103,7 @@
 					</Directory>
                 </Directory>
             </Directory>
+			<?endif ?>
             <Directory Id="ProgramMenuFolder">
                 <Directory Id="MenuDir" Name="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" />
             </Directory>
@@ -101,7 +117,6 @@
 				Absent="disallow" 
 				ConfigurableDirectory="INSTALLDIR">
             <MergeRef Id="CRT" />
-            <MergeRef Id="CRT_Policy" />
             <ComponentRef Id="Base" />
             <ComponentRef Id="BaseCmd" />
             <ComponentRef Id="BaseShortcuts" />
@@ -154,6 +169,7 @@
 						
         </Feature>
 
+		<Icon Id="FreeCADIcon" SourceFile="../../bin/FreeCAD.exe" />
         <Property Id="ARPPRODUCTICON">FreeCADIcon</Property>
         <UIRef Id="WixUI_Mondo" />
 		

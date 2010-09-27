@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModImage" Name="Image" FileSource="../../Mod/Image">
-        <Component Id="CompModImage" Guid="23FF207E-6D03-4273-8475-D0F675A3319C">
+        <Component Id="CompModImage" Guid="23FF207E-6D03-4273-8475-D0F675A3319C" Win64='$(var.Win_64)' KeyPath="yes">
             <File Id="ImageInitPy" Name="Init.py" DiskId="1" />
             <File Id="ImageInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="Imagepyd" Name="Image.pyd" DiskId="1" />

@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModRobot" Name="Robot" FileSource="../../Mod/Robot">
-        <Component Id="CompModRobot" Guid="5375c2e0-de75-11de-8a39-0800200c9a66">
+        <Component Id="CompModRobot" Guid="5375c2e0-de75-11de-8a39-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
             <File Id="RobotInitPy" Name="Init.py" DiskId="1" />
             <File Id="RobotInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="MovieToolPy" Name="MovieTool.py" DiskId="1" />
@@ -32,7 +32,7 @@
         </Component>
 		<Directory Id="ModRobotLib" Name="Lib" FileSource="../../Mod/Robot/Lib" >
 			<Directory Id="ModRobotLibKuka" Name="Kuka" FileSource="../../Mod/Robot/Lib/Kuka" >
-				<Component Id="CompModRobotLibKuka"  Guid="753d2cc0-02af-11df-8a39-0800200c9a66">
+				<Component Id="CompModRobotLibKuka"  Guid="753d2cc0-02af-11df-8a39-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
 					<File Id="Kuka1" Name="kr16.wrl"   />
 					<File Id="Kuka2" Name="kr210.WRL"   />
 					<File Id="Kuka3" Name="kr500_1.csv"   />

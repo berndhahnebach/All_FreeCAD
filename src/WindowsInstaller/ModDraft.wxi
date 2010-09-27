@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModDraft" Name="Draft" FileSource="../../Mod/Draft">
-        <Component Id="CompModDraft" Guid="a5baca60-076f-11de-8c30-0800200c9a66">
+        <Component Id="CompModDraft" Guid="a5baca60-076f-11de-8c30-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
             <File Id="DraftInitPy" Name="Init.py" DiskId="1" />
             <File Id="DraftInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="DraftPy" Name="Draft.py" DiskId="1" />
@@ -39,7 +39,7 @@
             <File Id="DraftPreferencesDraftSvg" Name="preferences-draft.svg" DiskId="1" />
         </Component>
 		<Directory Id="ModDraftLib" Name="draftlibs" FileSource="../../Mod/Draft/draftlibs">
-	        <Component Id="CompModDraftLib" Guid="d19c08b0-0747-11de-8c30-0800200c9a66">
+	        <Component Id="CompModDraftLib" Guid="d19c08b0-0747-11de-8c30-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
 	            <File Id="DraftLibInitPy" Name="__init__.py" DiskId="1" />
 	            <File Id="DraftLibColorMapPy" Name="dxfColorMap.py" DiskId="1" />
 	            <File Id="DraftLibdxfImportObjectsPy" Name="dxfImportObjects.py" DiskId="1" />

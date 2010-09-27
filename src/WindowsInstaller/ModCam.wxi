@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModCam" Name="Cam" FileSource="../../Mod/Cam">
-        <Component Id="CompModCam" Guid="1e198527-7b8c-4113-abd4-a116c8f8c849">
+        <Component Id="CompModCam" Guid="1e198527-7b8c-4113-abd4-a116c8f8c849" Win64='$(var.Win_64)' KeyPath="yes">
             <File Id="CamInitPy" Name="Init.py" DiskId="1" />
             <File Id="CamInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="Campyd" Name="Cam.pyd" DiskId="1" />

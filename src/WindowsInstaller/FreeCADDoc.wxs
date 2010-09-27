@@ -25,7 +25,14 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment Id="FreeCADDoc">
         <DirectoryRef Id="DocDir" FileSource="../../doc">
-            <Component Id="DocComp" Guid="8A17000C-47B0-46f7-9C17-10BC167580ED">
+			<!-- Add the 64-bit registry component to the 64-bit MSI, and add the 32-bit registry        -->
+			<!-- component to the 32-bit MSI.                                                            -->
+			<?if $(var.ProcessorArchitecture)=x64 ?>
+			<?define Win_64 = "yes" ?>
+			<?else ?>
+			<?define Win_64 = "no" ?>
+			<?endif ?>
+            <Component Id="DocComp" Guid="8A17000C-47B0-46f7-9C17-10BC167580ED" Win64='$(var.Win_64)' KeyPath="yes">
                 <File Id="DocFreeCAD" Name="FreeCAD.qch" DiskId="1" />
                 <File Id="DocFreeCADc" Name="freecad.qhc" DiskId="1" />
                 <File Id="DocStartPage" Name="Start_Page.html" DiskId="1"/>

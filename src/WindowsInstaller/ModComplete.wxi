@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModComplete" Name="Complete" FileSource="../../Mod/Complete">
-        <Component Id="CompModComplete" Guid="4f306f50-94a2-11dd-ad8b-0800200c9a66">
+        <Component Id="CompModComplete" Guid="4f306f50-94a2-11dd-ad8b-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
             <File Id="CompleteInitPy" Name="Init.py" DiskId="1" />
             <File Id="CompleteInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="Completepyd" Name="Complete.pyd" DiskId="1" />
