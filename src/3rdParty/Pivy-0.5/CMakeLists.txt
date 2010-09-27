@@ -2,7 +2,7 @@ add_definitions(-DSOQT_DLL -DCOIN_DLL)
 
 include_directories(
 		../include
-		${COIN_INCLUDE_DIR}
+		${COIN3D_INCLUDE_DIR}
 		${PYTHON_INCLUDE_PATH}
 		${SOQT_INCLUDE_DIR}
 		${QT_INCLUDE_DIR}
