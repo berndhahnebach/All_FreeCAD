@@ -28,6 +28,14 @@
             <File Id="PartDesignInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="PartDesignpyd" Name="PartDesign.pyd" DiskId="1" />
             <File Id="PartDesignGuipyd" Name="PartDesignGui.pyd" DiskId="1" />
+            <File Id="PartDesign__init__py" Name="__init__.py"  />
         </Component>
+        <Directory Id="ModPartDesignScripts" Name="Scripts" FileSource="../../Mod/PartDesign/Scripts">
+          <Component Id="CompModPartDesignScripts" Guid="1aeda5e4-a7f9-48b3-9952-838c796f7880" Win64='$(var.Win_64)' KeyPath="yes">
+              <File Id="PartDesignScripts__init__py" Name="__init__.py"  />
+              <File Id="DistanceBoltpy" Name="DistanceBolt.py"  />
+              <File Id="RadialCopypy" Name="RadialCopy.py"  />
+          </Component>
+        </Directory>
     </Directory>
 </Include>
