@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModTest" Name="Test" FileSource="../../Mod/Test">
-        <Component Id="CompModTest" Guid="f962974e-d693-4aeb-a542-87d47cef8461">
+        <Component Id="CompModTest" Guid="f962974e-d693-4aeb-a542-87d47cef8461" Win64='$(var.Win_64)' KeyPath="yes">
             <File Id="TestInitPy"    	Name="Init.py" DiskId="1" />
             <File Id="TestInitGuiPy" 	Name="InitGui.py" DiskId="1" />
             <File Id="TestApp" 			Name="TestApp.py" DiskId="1" />

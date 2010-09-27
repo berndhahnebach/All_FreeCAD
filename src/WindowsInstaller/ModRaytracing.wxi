@@ -23,7 +23,7 @@
 -->
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Directory Id="ModRaytracing" ShortName="Raytr" Name="Raytracing" FileSource="../../Mod/Raytracing">
-        <Component Id="CompModRaytracing" Guid="80A38BA9-B6BF-4909-94F8-221782DB7B4D">
+        <Component Id="CompModRaytracing" Guid="80A38BA9-B6BF-4909-94F8-221782DB7B4D" Win64='$(var.Win_64)' KeyPath="yes">
             <File Id="RaytracingInitPy" Name="Init.py" DiskId="1" />
             <File Id="RaytracingInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="Raytracingpyd" ShortName="Raytra.pyd" Name="Raytracing.pyd" DiskId="1" />

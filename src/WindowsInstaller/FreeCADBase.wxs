@@ -24,12 +24,19 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment Id="FreeCADBase">
+		<!-- Add the 64-bit registry component to the 64-bit MSI, and add the 32-bit registry        -->
+		<!-- component to the 32-bit MSI.                                                            -->
+		<?if $(var.ProcessorArchitecture)=x64 ?>
+		<?define Win_64 = "yes" ?>
+		<?else ?>
+		<?define Win_64 = "no" ?>
+		<?endif ?>
 		<DirectoryRef Id="BinDir" FileSource="../../bin/">
-			<Component Id="Base" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7">
+			<Component Id="Base" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7" Win64='$(var.Win_64)' KeyPath="yes">
 				<File Id="Exe" Name="FreeCAD.exe" />
 				<File Id="GuiDll"   Name="FreeCADGui.dll"  />
 			</Component>
-			<Component Id="BaseCmd" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F8">
+			<Component Id="BaseCmd" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F8" Win64='$(var.Win_64)' KeyPath="yes">
 				<File Id="CmdExe" Name="FreeCADCmd.exe"/>
 				<File Id="PyModule" Name="FreeCAD.pyd"     />
 				<File Id="AppDll"   Name="FreeCADApp.dll"  />
@@ -37,7 +44,7 @@
 			</Component>
 		</DirectoryRef>
 		<DirectoryRef Id="MenuDir" >
-			<Component Id="BaseShortcuts" Guid="06974300-02a5-11df-8a39-0800200c9a66">
+			<Component Id="BaseShortcuts" Guid="06974300-02a5-11df-8a39-0800200c9a66" Win64='$(var.Win_64)'>
 				<Shortcut Id="FCShortcut" 
 						Name="FreeCAD" 
 						Icon="FreeCADIcon.exe"
@@ -55,7 +62,7 @@
 					Value="1" 
 					KeyPath="yes"/>
 			</Component>
-			<Component Id="BaseCmdShortcuts" Guid="f29d51e0-02a5-11df-8a39-0800200c9a66">
+			<Component Id="BaseCmdShortcuts" Guid="f29d51e0-02a5-11df-8a39-0800200c9a66" Win64='$(var.Win_64)'>
 				<Shortcut Id="FCCmdShortcut" 
 						Name="command line" 
 						Icon="FreeCADCMDIcon.exe"
