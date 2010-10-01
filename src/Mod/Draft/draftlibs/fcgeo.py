@@ -579,6 +579,7 @@ def findWires(edges):
                 changed = False
                 for s in shapesIn:
                         if len(s.Vertexes) < 2:
+                                continue
                         else:
                                 clean = True
                                 for v in verts(s):
