@@ -77,7 +77,7 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
     // default icon
     static QPixmap px = BitmapFactory().pixmap("Tree_Python");
 
-    // Run the getDisplayModes method of the proxy object.
+    // Run the getIcon method of the proxy object.
     Base::PyGILStateLocker lock;
     try {
         App::Property* proxy = object->getPropertyByName("Proxy");
@@ -113,7 +113,7 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
 
 void ViewProviderPythonFeatureImp::attach(App::DocumentObject *pcObject)
 {
-    // Run the getDisplayModes method of the proxy object.
+    // Run the attach method of the proxy object.
     Base::PyGILStateLocker lock;
     try {
         App::Property* proxy = object->getPropertyByName("Proxy");
@@ -163,7 +163,7 @@ void ViewProviderPythonFeatureImp::updateData(const App::Property* prop)
 
 void ViewProviderPythonFeatureImp::onChanged(const App::Property* prop)
 {
-    // Run the execute method of the proxy object.
+    // Run the onChanged method of the proxy object.
     Base::PyGILStateLocker lock;
     try {
         App::Property* proxy = object->getPropertyByName("Proxy");
@@ -188,7 +188,7 @@ void ViewProviderPythonFeatureImp::onChanged(const App::Property* prop)
 
 const char* ViewProviderPythonFeatureImp::getDefaultDisplayMode() const
 {
-    // Run the getDisplayModes method of the proxy object.
+    // Run the getDefaultDisplayMode method of the proxy object.
     Base::PyGILStateLocker lock;
     static std::string mode;
     try {
@@ -245,7 +245,7 @@ std::vector<std::string> ViewProviderPythonFeatureImp::getDisplayModes(void) con
 
 std::string ViewProviderPythonFeatureImp::setDisplayMode(const char* ModeName)
 {
-    // Run the getDisplayModes method of the proxy object.
+    // Run the setDisplayMode method of the proxy object.
     Base::PyGILStateLocker lock;
     try {
         App::Property* proxy = object->getPropertyByName("Proxy");

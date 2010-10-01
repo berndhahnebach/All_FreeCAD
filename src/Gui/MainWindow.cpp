@@ -406,6 +406,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
         MainWindowTabBar* result = new MainWindowTabBar(this);
         result->setDrawBase(true);
         result->setElideMode(Qt::ElideRight);
+        result->hide(); // avoid to show horizontal bar in top left area
         //result->setDocumentMode(_documentMode);
         connect(result, SIGNAL(currentChanged(int)), l, SLOT(tabChanged()));
         l->unusedTabBars << result;
