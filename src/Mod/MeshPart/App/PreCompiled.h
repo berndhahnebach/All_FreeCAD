@@ -40,7 +40,8 @@
 #endif
 
 #ifdef _MSC_VER
-#   pragma warning(disable : 4275)
+# pragma warning(disable : 4275)
+# pragma warning(disable : 4290)
 #endif
 
 #ifdef _PreComp_
