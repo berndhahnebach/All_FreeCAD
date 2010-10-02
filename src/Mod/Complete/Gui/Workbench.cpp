@@ -180,6 +180,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *mesh << "Mesh_Import" 
           << "Mesh_Export" 
           << "Mesh_FromGeometry" 
+          << "MeshPart_Mesher"
           << "Separator"
           << analyze 
           << "Mesh_HarmonizeNormals" 

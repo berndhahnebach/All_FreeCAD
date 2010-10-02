@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2010 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,50 +21,51 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
+#ifndef MESHPARTGUI_TESSELLATION_H
+#define MESHPARTGUI_TESSELLATION_H
 
-#include <Gui/Application.h>
-#include <Gui/Command.h>
-#include <Gui/Control.h>
-#include <Gui/MainWindow.h>
-#include <Gui/FileDialog.h>
-#include "Tessellation.h"
+#include <Gui/TaskView/TaskDialog.h>
+#include <Gui/TaskView/TaskView.h>
+#include <Gui/Selection.h>
+#include <memory>
 
-using namespace std;
+namespace MeshPartGui {
 
-//===========================================================================
-// MeshPart_Mesher
-//===========================================================================
-DEF_STD_CMD_A(CmdMeshPartMesher);
-
-CmdMeshPartMesher::CmdMeshPartMesher()
-  : Command("MeshPart_Mesher")
+class Ui_Tessellation;
+class Tessellation : public QWidget
 {
-    sAppModule    = "MeshPart";
-    sGroup        = QT_TR_NOOP("Mesh");
-    sMenuText     = QT_TR_NOOP("Create mesh from shape...");
-    sToolTipText  = QT_TR_NOOP("Tessellate shape");
-    sWhatsThis    = sToolTipText;
-    sStatusTip    = sToolTipText;
-  //sPixmap       = "MeshPart_Mesher";
-    iAccel        = 0;
-}
+    Q_OBJECT
 
-void CmdMeshPartMesher::activated(int iMsg)
+public:
+    Tessellation(QWidget* parent = 0);
+    ~Tessellation();
+    bool accept();
+
+private:
+    std::auto_ptr<Ui_Tessellation> ui;
+};
+
+class TaskTessellation : public Gui::TaskView::TaskDialog
 {
-    Gui::Control().showDialog(new MeshPartGui::TaskTessellation());
-}
+    Q_OBJECT
 
-bool CmdMeshPartMesher::isActive(void)
-{
-    return (hasActiveDocument() && !Gui::Control().activeDialog());
-}
+public:
+    TaskTessellation();
+    ~TaskTessellation();
 
+public:
+    virtual void open();
+    virtual void clicked(int);
+    virtual bool accept();
+    virtual bool reject();
 
-void CreateMeshPartCommands(void)
-{
-    Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-    rcCmdMgr.addCommand(new CmdMeshPartMesher());
-}
+    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
+    { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
+
+private:
+    Tessellation* widget;
+};
+
+} // namespace MeshPartGui
+
+#endif // MESHPARTGUI_TESSELLATION_H
