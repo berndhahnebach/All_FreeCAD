@@ -4,6 +4,11 @@ else(MSVC)
     add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
 endif(MSVC)
 
+# At the moment we have SMESH only for MSVC on Win32
+if (MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+    add_definitions(-DHAVE_SMESH)
+endif(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${Boost_INCLUDE_DIRS}
@@ -11,13 +16,22 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
     ${PYTHON_INCLUDE_PATH}
     ${XERCESC_INCLUDE_DIR}
+    ${SMESH_INCLUDE_DIR}
 )
 link_directories(${OCC_LIBRARY_DIR})
 
+if(MSVC)
+set(MeshPart_LIBS
+    Part
+    Mesh
+    ${SMESH_LIBRARIES}
+)
+else(MSVC)
 set(MeshPart_LIBS
     Part
     Mesh
 )
+endif(MSVC)
 
 SET(MeshPart_SRCS
     AppMeshPart.cpp
@@ -26,6 +40,8 @@ SET(MeshPart_SRCS
     CurveProjector.h
     MeshAlgos.cpp
     MeshAlgos.h
+    Mesher.cpp
+    Mesher.h
     PreCompiled.cpp
     PreCompiled.h
 )

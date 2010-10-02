@@ -7,6 +7,8 @@ libMeshPart_la_SOURCES=\
 		CurveProjector.h \
 		MeshAlgos.cpp \
 		MeshAlgos.h \
+		Mesher.cpp \
+		Mesher.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 

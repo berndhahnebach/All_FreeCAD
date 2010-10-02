@@ -36,6 +36,7 @@
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/MeshPy.h>
 #include "MeshAlgos.h"
+#include "Mesher.h"
 
 static PyObject *                        
 loftOnCurve(PyObject *self, PyObject *args)
@@ -133,10 +134,39 @@ wireFromSegment(PyObject *self, PyObject *args)
     return Py::new_reference_to(wires);
 }
 
+static PyObject *
+meshFromShape(PyObject *self, PyObject *args)
+{
+    PyObject *shape;
+    float maxLength=1.0f/*0.5f*/;
+    float maxArea=0/*1.0f*/;
+    float localLen=0/*0.1f*/;
+    float deflection=0/*0.01f*/;
+    if (!PyArg_ParseTuple(args, "O!|ffff", &(Part::TopoShapePy::Type), &shape,
+                                           &maxLength,&maxArea,&localLen,&deflection))
+        return 0;
+
+    try {
+        MeshPart::Mesher mesher(static_cast<Part::TopoShapePy*>(shape)->getTopoShapePtr()->_Shape);
+        mesher.setMaxLength(maxLength);
+        mesher.setMaxArea(maxArea);
+        mesher.setLocalLength(localLen);
+        mesher.setDeflection(deflection);
+        mesher.setRegular(true);
+        return new Mesh::MeshPy(mesher.createMesh());
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+}
+
 /* registration table  */
 struct PyMethodDef MeshPart_methods[] = {
     {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
     {"wireFromSegment",wireFromSegment, METH_VARARGS,
      "Create wire(s) from boundary of segment"},
+    {"meshFromShape",meshFromShape, METH_VARARGS,
+     "Create mesh from shape"},
     {NULL, NULL}        /* end of table marker */
 };
