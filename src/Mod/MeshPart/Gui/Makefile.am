@@ -2,9 +2,18 @@ SUBDIRS=Resources
 
 lib_LTLIBRARIES=libMeshPartGui.la MeshPartGui.la
 
+BUILT_SOURCES=\
+		moc_Tessellation.cpp \
+		ui_Tessellation.h
+
+libMeshPartGui_la_UI=\
+		Tessellation.ui
+
 libMeshPartGui_la_SOURCES=\
 		AppMeshPartGuiPy.cpp \
 		Command.cpp \
+		Tessellation.cpp \
+		Tessellation.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Workbench.cpp \
@@ -72,5 +81,6 @@ libdir = $(prefix)/Mod/MeshPart
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		$(libMeshPartGui_la_UI) \
 		CMakeLists.txt
 

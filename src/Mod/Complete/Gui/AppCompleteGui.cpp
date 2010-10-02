@@ -63,6 +63,7 @@ void CompleteGuiExport initCompleteGui()
     try {
         Base::Interpreter().loadModule("PartGui");
         Base::Interpreter().loadModule("MeshGui");
+        Base::Interpreter().loadModule("MeshPartGui");
         Base::Interpreter().loadModule("PointsGui");
         //Base::Interpreter().loadModule("MeshPartGui");
         //Base::Interpreter().loadModule("AssemblyGui");

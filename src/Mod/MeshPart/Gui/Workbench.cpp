@@ -51,7 +51,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand("MeshPart");
-    *part << "MeshPart_ConstraintAxle";
+    *part << "MeshPart_Mesher";
      return root;
 }
 
