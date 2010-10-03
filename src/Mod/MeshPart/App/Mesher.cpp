@@ -137,13 +137,13 @@ Mesh::MeshObject* Mesher::createMesh() const
     faces.reserve(mesh->NbFaces());
 
     int index=0;
-    //std::map<const SMDS_MeshNode*, int> mapNodeIndex;
+    std::map<const SMDS_MeshNode*, int> mapNodeIndex;
     for (;aNodeIter->more();) {
         const SMDS_MeshNode* aNode = aNodeIter->next();
         MeshCore::MeshPoint p;
         p.Set((float)aNode->X(), (float)aNode->Y(), (float)aNode->Z());
         verts.push_back(p);
-        //mapNodeIndex[aNode] = index++;
+        mapNodeIndex[aNode] = index++;
     }
     for (;aFaceIter->more();) {
         const SMDS_MeshFace* aFace = aFaceIter->next();
@@ -151,7 +151,7 @@ Mesh::MeshObject* Mesher::createMesh() const
         for (int i=0; i<3;i++) {
             const SMDS_MeshNode* node = aFace->GetNode(i);
             int index = node->GetID() - 1;
-            f._aulPoints[i] = index/*mapNodeIndex[node]*/;
+            f._aulPoints[i] = /*index*/mapNodeIndex[node];
         }
 
         faces.push_back(f);
@@ -172,3 +172,13 @@ Mesh::MeshObject* Mesher::createMesh() const
     return meshdata;
 #endif // HAVE_SMESH
 }
+
+// Weird workaround needed to solve problem with libf2c
+#if defined (HAVE_SMESH) && defined(__GNUC__)
+extern "C" {
+int MAIN__( )
+{ return 0;}
+}
+#endif
+
+
