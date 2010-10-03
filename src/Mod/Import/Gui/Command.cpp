@@ -1,5 +1,5 @@
-/** \file CommandStd.h
- *  \brief The implementation of the standrd Commands
+/** \file Import/Gui/Command.cpp
+ *  \brief The implementation of the standard import Commands
  *  \author $Author: jriegel $
  *  \version $Revision: 2.6 $
  *  \date    $Date: 2006/04/11 19:48:29 $

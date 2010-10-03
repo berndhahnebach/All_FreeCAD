@@ -127,10 +127,14 @@ TopLoc_Location Feature::getLocation() const
 // ---------------------------------------------------------
 
 namespace App {
+/// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(Part::FeaturePython, Part::Feature)
 template<> const char* Part::FeaturePython::getViewProviderName(void) const {
     return "PartGui::ViewProviderPython";
 }
+/// @endcond
+
 // explicit template instantiation
-template class PartExport FeaturePythonT<Part::Feature>;}
+template class PartExport FeaturePythonT<Part::Feature>;
+}
 

@@ -84,10 +84,17 @@ void ViewProviderCustom::updateData(const App::Property* prop)
 // -----------------------------------------------------------------------
 
 namespace Gui {
+/// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(SketcherGui::ViewProviderPython, SketcherGui::ViewProviderSketch)
+/// @endcond
+
 // explicit template instantiation
 template class SketcherGuiExport ViewProviderPythonFeatureT<SketcherGui::ViewProviderSketch>;
+
+/// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(SketcherGui::ViewProviderCustomPython, SketcherGui::ViewProviderCustom)
+/// @endcond
+
 // explicit template instantiation
 template class SketcherGuiExport ViewProviderPythonFeatureT<SketcherGui::ViewProviderCustom>;
 }
