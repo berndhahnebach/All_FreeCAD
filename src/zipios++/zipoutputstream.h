@@ -19,12 +19,11 @@ class BaseExport ZipOutputStream : public std::ostream {
 public:
 
   /** ZipOutputStream constructor.
-      @param os ostream to which the compressed zip archive is written.
-      @param pos position to reposition the ostream to before reading.  */
+      @param os ostream to which the compressed zip archive is written. */
   explicit ZipOutputStream( std::ostream &os ) ;
 
   /** ZipOutputStream constructor.
-      @filename filename to write the zip archive to. */
+      @param filename filename to write the zip archive to. */
   explicit ZipOutputStream( const std::string &filename ) ;
   
   /** Closes the current entry updates its header with the relevant

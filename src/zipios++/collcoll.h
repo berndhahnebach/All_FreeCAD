@@ -52,13 +52,14 @@ public:
 
   /** Adds the collection pointed to by collection. The CollectionCollection
       will call delete on the pointer when it is destructed, so the caller
-      should make absolutely sure to only pass in a collection created with new
-      and be sure to leave it alone after adding it. If the collection is not
-      added false is returned and the caller remains responsible for the
+      should make absolutely sure to only pass in a collection created with
+      new and be sure to leave it alone after adding it. If the collection is
+      not added false is returned and the caller remains responsible for the
       collection pointed to by collection.
       @param collection A pointer to the collection to add.
       @return true if the collection was added succesfully and
-      the added collection is valid. */
+      the added collection is valid.
+   */
   bool addCollection( FileCollection *collection ) ;
 
   virtual void close() ;

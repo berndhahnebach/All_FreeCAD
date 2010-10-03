@@ -23,7 +23,8 @@ public:
   explicit GZIPOutputStream( std::ostream &os ) ;
 
   /** GZIPOutputStream constructor.
-      @filename filename to write the gzip archive to. */
+      @param filename filename to write the gzip archive to.
+   */
   explicit GZIPOutputStream( const std::string &filename ) ;
 
   void setFilename( const string &filename );

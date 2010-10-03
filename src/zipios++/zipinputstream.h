@@ -23,12 +23,13 @@ public:
   /** ZipInputStream constructor.
       @param is istream from which the compressed zip archive can be read.
       @param pos position to reposition the istream to before reading.  */
-  explicit ZipInputStream( istream &is, streampos pos = 0 ) ;
+  explicit ZipInputStream( std::istream &is, std::streampos pos = 0 ) ;
 
   /** ZipInputStream constructor.
-      @filename filename of a valid zip file.
-      @param pos position to reposition the istream to before reading.   */
-  explicit ZipInputStream( const string &filename, streampos pos = 0 ) ;
+      @param filename filename of a valid zip file.
+      @param pos position to reposition the istream to before reading.
+   */
+  explicit ZipInputStream( const std::string &filename, std::streampos pos = 0 ) ;
   
   int available() ;
   /** Closes the current entry, and positions the stream read pointer at 
