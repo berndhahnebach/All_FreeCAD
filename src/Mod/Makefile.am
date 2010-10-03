@@ -29,5 +29,6 @@ endif
 
 EXTRA_DIST = \
 		__init__.py \
-		CMakeLists.txt
+		CMakeLists.txt \
+		mod.dox
 

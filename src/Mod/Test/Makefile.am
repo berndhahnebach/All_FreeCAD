@@ -17,4 +17,5 @@ data_DATA = \
 EXTRA_DIST = \
 		$(data_DATA) \
 		unittestgui.py \
-		CMakeLists.txt
+		CMakeLists.txt \
+		test.dox

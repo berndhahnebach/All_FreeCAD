@@ -9,4 +9,5 @@ data_DATA = Init.py InitGui.py \
 
 EXTRA_DIST = \
 		$(data_DATA) \
+		robot.dox \
 		CMakeLists.txt

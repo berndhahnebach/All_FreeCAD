@@ -200,7 +200,7 @@ public:
     virtual ~QuadraticFit(){};
     /**
      * Übertragen der Quadric-Koeffizienten
-     * @param iCoeff Nummer des Koeffizienten (0..9)
+     * @param ulIndex Nummer des Koeffizienten (0..9)
      * @return float Wert des Koeffizienten
      */
     float GetCoeff(unsigned long ulIndex) const;
@@ -212,7 +212,7 @@ public:
     const float& GetCoeffArray() const;
     /**
      * Aufruf des Fit-Algorithmus
-     * @retrun float Qualität des Fits.
+     * @return float Qualität des Fits.
      */
     float Fit();
 
@@ -226,6 +226,7 @@ public:
      * @param rfCurv1 2. Hauptkrümmung
      * @param rkDir0  Richtung der 1. Hauptkrümmung
      * @param rkDir1  Richtung der 2. Hauptkrümmung
+     * @param dDistance
      * @return bool Fehlerfreie Ausfürhung = true, ansonsten false
      */
     bool GetCurvatureInfo(float x, float y, float z,

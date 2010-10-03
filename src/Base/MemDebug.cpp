@@ -23,6 +23,7 @@
  ***************************************************************************/
 
 /** \defgroup MemDebug Memory debugging
+ *  \ingroup BASE
  * \section Overview
  * In C++ applications there are a lot of ways to handle memory allocation and deallocation.
  * As many ways to do it wrong or simply forget to free memory. One way to overcome

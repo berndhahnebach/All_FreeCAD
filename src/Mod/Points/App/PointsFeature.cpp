@@ -135,10 +135,14 @@ App::DocumentObjectExecReturn *Export::execute(void)
 // ---------------------------------------------------------
 
 namespace App {
+/// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(Points::FeaturePython, Points::Feature)
 template<> const char* Points::FeaturePython::getViewProviderName(void) const {
     return "PointsGui::ViewProviderPython";
 }
+/// @endcond
+
 // explicit template instantiation
-template class PointsExport FeaturePythonT<Points::Feature>;}
+template class PointsExport FeaturePythonT<Points::Feature>;
+}
 

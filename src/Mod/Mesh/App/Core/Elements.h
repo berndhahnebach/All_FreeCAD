@@ -303,7 +303,7 @@ public:
 public:
   /**
    * Checks if the point is part of the facet. A point is regarded as part
-   * of a facet if the distance is lower \s fDistance and the projected point
+   * of a facet if the distance is lower \a fDistance and the projected point
    * in the facet normal direction is inside the triangle.
    */
   bool IsPointOf (const Base::Vector3f &rclPoint, float fDistance) const;
@@ -927,7 +927,7 @@ inline bool MeshFacet::IsEqual (const MeshFacet& rcFace) const
 }
 
 /**
- * Binary function to query the flags for use with generic STL functions..
+ * Binary function to query the flags for use with generic STL functions.
  */
 template <class TCLASS>
 class MeshIsFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
@@ -938,7 +938,7 @@ public:
 };
 
 /**
- * Binary function to query the flags for use with generic STL functions..
+ * Binary function to query the flags for use with generic STL functions.
  */
 template <class TCLASS>
 class MeshIsNotFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
@@ -949,7 +949,7 @@ public:
 };
 
 /**
- * Binary function to set the flags for use with generic STL functions..
+ * Binary function to set the flags for use with generic STL functions.
  */
 template <class TCLASS>
 class MeshSetFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
@@ -960,7 +960,7 @@ public:
 };
 
 /**
- * Binary function to reset the flags for use with generic STL functions..
+ * Binary function to reset the flags for use with generic STL functions.
  */
 template <class TCLASS>
 class MeshResetFlag : public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>

@@ -4,4 +4,8 @@ doc_DATA = \
 		Start_Page.html
 
 EXTRA_DIST = \
-		$(doc_DATA) 
+		$(doc_DATA) \
+		doctips.dox \
+		mainpage.dox \
+		primary-groups.dox \
+		FreecadDoxygenLayout.xml

@@ -173,7 +173,8 @@ EXTRA_DIST = \
 		lex.UnitsApi.c \
 		UnitsApi.tab.c \
 		UnitsApi.l \
-		UnitsApi.y
+		UnitsApi.y \
+		core-base.dox
 
 distclean-compile:
   # avoid to remove UnitsApi.tab.c

@@ -37,6 +37,7 @@
 using namespace Gui;
 
 /** \defgroup i18n Internationalization with FreeCAD
+ *  \ingroup GUI
  *
  * The internationalization of FreeCAD makes heavy use of the internationalization
  * support of Qt. For more details refer to your Qt documentation.

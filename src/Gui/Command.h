@@ -111,9 +111,10 @@ public:
     //@}
 
 protected:
-    /** @name Attributes 
-     *  Set by the inherited constructor to set up the most important properties 
-     *  of the command. In the constructor are set default values. 
+    /** @name Attributes set by the inherited constructor.
+     *
+     *  They set up the most important properties  of the command.
+     *  In the constructor are set default values. 
      *  The real values should be set in the constructor of the inheriting class.
      */
     //@{
@@ -128,14 +129,15 @@ protected:
     Action *_pcAction; /**< The Action item. */
 };
 
-/** The Command class
- * This class is mostly used for commands implemented directly in C++ (@see PythonCommand).
+/** The Command class.
+ *
+ * This class is mostly used for commands implemented directly in C++ (see PythonCommand).
  * It contains also a lot of helper methods to make implementing commands for FreeCAD as easy as possible.
  *
  * @note This class is intended to handle the GUI interaction like:
  * - starting a dialog
  * - doing view and window stuff
- * - anything else, especially altering the document must be done on application level @see doCommand() for details.
+ * - anything else, especially altering the document must be done on application level. See doCommand() for details.
  *
  * @see CommandManager
  * @author Jürgen Riegel
@@ -179,13 +181,13 @@ public:
     //@{
     /// Get pointer to the Application Window
     static Application*  getGuiApplication(void);   
-    /// Get a referenc to the selection 
+    /// Get a reference to the selection 
     Gui::SelectionSingleton&  getSelection(void);
     /// Get pointer to the active gui document
     Gui::Document*  getActiveGuiDocument(void) const;
     /** Get pointer to the named or active App document
-     *  Returns a pointer to the named docuement or the active
-     *  document when no name is given. NULL is returnd
+     *  Returns a pointer to the named document or the active
+     *  document when no name is given. NULL is returned
      *  when the name does not exist or no document is active!
      */
     App::Document*  getDocument(const char* Name=0) const;
@@ -265,10 +267,10 @@ public:
 
 protected:
     enum CmdType {
-        AlterDoc       = 1,  /// Command change the Document
-        Alter3DView    = 2,  /// Command change the Gui
-        AlterSelection = 4,  /// Command change the Selection
-        ForEdit        = 8   /// Command is in a special edit mode active
+        AlterDoc       = 1,  /**< Command change the Document */
+        Alter3DView    = 2,  /**< Command change the Gui */
+        AlterSelection = 4,  /**< Command change the Selection */
+        ForEdit        = 8   /**< Command is in a special edit mode active */
     };
 
     /** @name Attributes 
@@ -448,7 +450,7 @@ public:
 
     /// method is OBSOLET use GetModuleCommands() or GetAllCommands()
     const std::map<std::string, Command*>& getCommands() const { return _sCommands; }
-    /// get frequently called by the AppWnd to check the commands are active
+    /// get frequently called by the AppWnd to check the commands are active.
     void testActive(void);
 private:
     /// Destroys all commands in the manager and empties the list.

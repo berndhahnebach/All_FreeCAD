@@ -57,6 +57,7 @@ using namespace Gui::Dialog;
 using namespace Gui::DockWnd;
 
 /** \defgroup commands Command Framework
+    \ingroup GUI
  * \section Overview
  * In GUI applications many commands can be invoked via a menu item, a toolbar button or an accelerator key. The answer of Qt to master this
  * challenge is the class \a QAction. A QAction object can be added to a popup menu or a toolbar and keep the state of the menu item and

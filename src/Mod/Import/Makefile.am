@@ -7,4 +7,5 @@ data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
 		Init.py \
-		InitGui.py
+		InitGui.py \
+		import.dox

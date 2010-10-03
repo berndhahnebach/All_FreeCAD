@@ -15,5 +15,6 @@ data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
 		$(data_DATA) \
-		CMakeLists.txt
+		CMakeLists.txt \
+		partdesign.dox
 

@@ -62,29 +62,38 @@ public:
 
 public:
   /**
-   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
-   * the intersection point with the ray and the nearest facet with index \a rulFacet.
-   * \note This method tests all facets so it should only be used occassionally.
+   * Searches for the nearest facet to the ray defined by
+   * (\a rclPt, \a rclDir).
+   * The point \a rclRes holds the intersection point with the ray and the
+   * nearest facet with index \a rulFacet.
+   * \note This method tests all facets so it should only be used
+   * occassionally.
    */
   bool NearestFacetOnRay (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, Base::Vector3f &rclRes,
                           unsigned long &rulFacet) const;
   /**
-   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
-   * the intersection point with the ray and the nearest facet with index \a rulFacet.
-   * \note This method is optimized by using a grid. So this method can be used for a lot of tests.
+   * Searches for the nearest facet to the ray defined by
+   * (\a rclPt, \a rclDir).
+   * The point \a rclRes holds the intersection point with the ray and the
+   * nearest facet with index \a rulFacet.
+   * \note This method is optimized by using a grid. So this method can be
+   * used for a lot of tests.
    */
   bool NearestFacetOnRay (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, const MeshFacetGrid &rclGrid,
                           Base::Vector3f &rclRes, unsigned long &rulFacet) const;
   /**
-   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
-   * the intersection point with the ray and the nearest facet with index \a rulFacet.
-   * \note This method tests all facets taken from \a raulFacets instaed of the attached mesh. 
-   * So the caller must ensure that the indices are valid facets.
+   * Searches for the nearest facet to the ray defined by
+   * (\a rclPt, \a rclDir).
+   * The point \a rclRes holds the intersection point with the ray and the
+   * nearest facet with index \a rulFacet.
+   * \note This method tests all facets taken from \a raulFacets instead of
+   * the attached mesh. So the caller must ensure that the indices are valid
+   * facets.
    */
   bool NearestFacetOnRay (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, const std::vector<unsigned long> &raulFacets,
                           Base::Vector3f &rclRes, unsigned long &rulFacet) const;
   /**
-   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
+   * Searches for the nearest facet to the ray defined by (\a rclPt, \a  rclDir). The point \a rclRes holds
    * the intersection point with the ray and the nearest facet with index \a rulFacet.
    * More a search radius around the ray of \a fMaxSearchArea is defined.
    * \note This method is optimized by using a grid. So this method can be used for a lot of tests.
@@ -267,6 +276,7 @@ public:
    */
   void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Base::Vector3f& clNormal, float dist, 
       const Base::Vector3f &rclLeft, const Base::Vector3f &rclRight, std::vector<unsigned long> &rclRes) const;
+
   /** Returns true if the distance from the \a rclPt to the facet \a ulFacetIdx is less than \a fMaxDistance.
    * If this restriction is met \a rfDistance is set to the actual distance, otherwise false is returned.
    */
