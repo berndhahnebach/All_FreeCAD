@@ -207,10 +207,13 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
 // Python Drawing feature ---------------------------------------------------------
 
 namespace App {
+/// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(Drawing::FeatureViewPartPython, Drawing::FeatureViewPart)
 template<> const char* Drawing::FeatureViewPartPython::getViewProviderName(void) const {
     return "DrawingGui::ViewProviderDrawingView";
 }
+/// @endcond
+
 // explicit template instantiation
 template class AppDrawingExport FeaturePythonT<Drawing::FeatureViewPart>;
 }

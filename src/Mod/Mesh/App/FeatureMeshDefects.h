@@ -30,7 +30,7 @@
 namespace Mesh
 {
 
-/** .
+/**
  * The FixDefects class fixes defects in the attached mesh kernel.
  * @author Werner Mayer
  */
@@ -59,7 +59,7 @@ public:
 //  virtual const char* getViewProviderName(void) const {return "MeshGui::ViewProviderDefects";}
 };
 
-/** .
+/**
  * The HarmonizeNormals class harmonizes the normals of the faces.
  * @author Werner Mayer
  */
@@ -79,7 +79,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FlipNormals class flips the normals of all faces.
  * @author Werner Mayer
  */
@@ -99,7 +99,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FixNonManifolds class tries to fix edges with more than two faces attached.
  * @author Werner Mayer
  */
@@ -119,7 +119,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FixDuplicatedFaces class removes duplicated faces from the mesh.
  * @author Werner Mayer
  */
@@ -139,7 +139,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FixDuplicatedPoints class removes duplicated points from the mesh.
  * @author Werner Mayer
  */
@@ -159,7 +159,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FixDegenerations class removes degenerated faces from the mesh.
  * @author Werner Mayer
  */
@@ -179,7 +179,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FixDeformations class tries to repair deformed faces by swapping edge operations.
  * @author Werner Mayer
  */
@@ -203,7 +203,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FixIndices class tries to validate invalid indices of the internal mesh data structure.
  * @author Werner Mayer
  */
@@ -223,7 +223,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The FillHoles class tries to fill up holes in the internal mesh data structure.
  * @author Werner Mayer
  */
@@ -245,7 +245,7 @@ public:
   //@}
 };
 
-/** .
+/**
  * The RemoveComponents class removes topologic indepentent components up to a certain size from the mesh data structure.
  * @author Werner Mayer
  */
