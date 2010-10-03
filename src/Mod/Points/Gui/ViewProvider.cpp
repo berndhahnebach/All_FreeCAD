@@ -425,7 +425,10 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
 // -------------------------------------------------
 
 namespace Gui {
+/// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(PointsGui::ViewProviderPython, PointsGui::ViewProviderPoints)
+/// @endcond
+
 // explicit template instantiation
 template class PointsGuiExport ViewProviderPythonFeatureT<PointsGui::ViewProviderPoints>;
 }

@@ -128,6 +128,7 @@ EXTRA_DIST = \
 		DocumentPy.xml \
 		FeaturePythonPy.xml \
 		PropertyContainerPy.xml \
+		core-app.dox \
 		CMakeLists.txt \
 		FreeCADInit.py \
 		FreeCADTest.py

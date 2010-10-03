@@ -334,7 +334,8 @@ public:
 
   bool Evaluate();
   /** 
-   * Calculates the local coordinate system defined by \a u, \av, \a w and \a c. 
+   * Calculates the local coordinate system defined by \a u, \a v, \a w
+   * and \a c. 
    */
 protected:
   void CalculateLocalSystem();

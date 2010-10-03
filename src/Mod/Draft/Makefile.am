@@ -37,5 +37,6 @@ EXTRA_DIST = \
 		Languages/draft_fr.ts \
 		Languages/draft_it.ts \
 		Languages/draft_se.ts \
-		CMakeLists.txt
+		CMakeLists.txt \
+		draft.dox
 

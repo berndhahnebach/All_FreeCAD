@@ -66,5 +66,6 @@ EXTRA_DIST = \
 		res/FreeCADD.exe.manifest \
 		freecad.rc \
 		CMakeLists.txt \
+		core-main.dox \
 		icon.ico
 

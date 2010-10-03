@@ -7,4 +7,5 @@ data_DATA = Init.py InitGui.py DrawingAlgos.py DrawingExample.py DrawingTests.py
 
 EXTRA_DIST = \
 		$(data_DATA) \
-		CMakeLists.txt
+		CMakeLists.txt \
+		drawing.dox

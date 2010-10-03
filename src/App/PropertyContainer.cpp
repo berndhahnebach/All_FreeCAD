@@ -190,7 +190,7 @@ const PropertyData & PropertyContainer::getPropertyData(void) const{return prope
 PropertyData PropertyContainer::propertyData;
 
 /**
- * Binary function to query the flags for use with generic STL functions..
+ * Binary function to query the flags for use with generic STL functions.
  */
 template <class TCLASS>
 class PropertyAttribute : public std::binary_function<TCLASS, typename App::PropertyType, bool>
@@ -506,6 +506,7 @@ void PropertyData::getPropertyList(const PropertyContainer *container,std::vecto
 
 
 /** \defgroup PropFrame Property framework
+    \ingroup APP
 \section Introduction
 The property framework introduces the ability to access attributes (member variables) of a class by name without
 knowing the class type. It's like the reflection mechanism of Java or C#.

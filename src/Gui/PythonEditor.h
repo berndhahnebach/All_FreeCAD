@@ -34,7 +34,7 @@ class PythonSyntaxHighlighter;
 class PythonSyntaxHighlighterP;
 
 /**
- * Python text editor with syntax highlighting..
+ * Python text editor with syntax highlighting.
  * \author Werner Mayer
  */
 class GuiExport PythonEditor : public TextEditor

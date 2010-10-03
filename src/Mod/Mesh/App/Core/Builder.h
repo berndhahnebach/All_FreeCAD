@@ -121,32 +121,40 @@ public:
     void SetTolerance(float);
 
     /** Initializes the class. Must be done before adding facets 
-     * @param \a ctFacets count of facets. 
-     * @param \a deletion if true (default) the mesh-kernel will be cleared otherwise you can add new facets on an existing mesh-kernel
-     * @remark To be efficient you should add exactly \a ctFacets with AddFacet(), otherwise you'll possibly run into wastage of memory
+     * @param ctFacets count of facets. 
+     * @param deletion if true (default) the mesh-kernel will be cleared
+     *     otherwise you can add new facets on an existing mesh-kernel
+     * @remarks To be efficient you should add exactly \a ctFacets with
+     * AddFacet(), otherwise you'll possibly run into wastage of memory
      * and performance problems.
      */
     void Initialize (unsigned long ctFacets, bool deletion = true);
 
     /** adding facets */
     /** Add new facet
-     * facet \a the facet
-     * @param \a takeFlag if true the flag from the MeshGeomFacet will be taken
+     * @param facet \a the facet
+     * @param takeFlag if true the flag from the MeshGeomFacet will be taken
+     * @param takeProperty
      */
-    void AddFacet (const MeshGeomFacet& facet, bool takeFlag = false, bool takePropery = false);
+    void AddFacet (const MeshGeomFacet& facet, bool takeFlag = false, bool takeProperty = false);
     /** Add new facet
      */
     void AddFacet (const Base::Vector3f& pt1, const Base::Vector3f& pt2, const Base::Vector3f& pt3, const Base::Vector3f& normal, unsigned char flag = 0, unsigned long prop = 0);
     /** Add new facet
-     * @param facetPoints Array of vectors (size 4) in order of vec1, vec2, vec3, normal
+     * @param facetPoints Array of vectors (size 4) in order of vec1, vec2,
+     *                    vec3, normal
+     * @param flag
+     * @param prop
      */
     void AddFacet (Base::Vector3f* facetPoints, unsigned char flag = 0, unsigned long prop = 0);
 
     /** Finishes building up the mesh structure. Must be done after adding facets.
-     * @param \a freeMemory if false (default) only the memory of internal structures gets freed, otherwise 
-     * additional unneeded memory in the mesh structure is tried to be freed.
-     * @remark If you have called AddFacet() as many times as specified in Initialize() then absolutely no memory is wasted
-     * and you can leave the default value.
+     * @param freeMemory if false (default) only the memory of internal
+     * structures gets freed, otherwise  additional unneeded memory in the
+     * mesh structure is tried to be freed.
+     * @remarks If you have called AddFacet() as many times as specified in
+     * Initialize() then absolutely no memory is wasted and you can leave the
+     * default value.
      */
     void Finish (bool freeMemory=false);
 

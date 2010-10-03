@@ -88,6 +88,7 @@ void SceneModel::setNode(QModelIndex index, SoNode* node)
     this->setData(index, QVariant(QString::fromAscii(node->getTypeId().getName())));
     if (node->getTypeId().isDerivedFrom(SoGroup::getClassTypeId())) {
         SoGroup *group = static_cast<SoGroup*>(node);
+        // insert SoGroup icon
         this->insertColumns(0,1,index);
         this->insertRows(0,group->getNumChildren(), index);
         for (int i=0; i<group->getNumChildren();i++) {
@@ -95,6 +96,7 @@ void SceneModel::setNode(QModelIndex index, SoNode* node)
             setNode(this->index(i, 0, index), child);
         }
     }
+    // insert icon
 }
 
 // --------------------------------------------------------

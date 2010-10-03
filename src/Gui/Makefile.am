@@ -466,7 +466,8 @@ EXTRA_DIST = \
 		ViewProviderPy.xml \
 		ViewProviderDocumentObjectPy.xml \
 		ViewProviderPythonFeaturePy.xml \
-		CMakeLists.txt
+		CMakeLists.txt \
+		core-gui.dox
 
 distclean-compile:
   # avoid to remove SelectionFilter.tab.c

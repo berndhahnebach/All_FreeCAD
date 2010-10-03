@@ -225,7 +225,7 @@ public:
 
 /**
  * The widget factory supplier class registers all kinds of
- * preference pages and widgets..
+ * preference pages and widgets.
  * \author Werner Mayer
  */
 class WidgetFactorySupplier

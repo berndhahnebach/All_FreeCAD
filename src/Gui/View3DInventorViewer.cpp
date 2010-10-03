@@ -114,11 +114,13 @@
 using namespace Gui;
 
 /** \defgroup View3D 3D Viewer
+ *  \ingroup GUI
  *
  * The 3D Viewer is one of the major components in a CAD/CAE systems.
  * Therefore an overview and some remarks to the FreeCAD 3D viewing system.
  * 
  * \section overview Overview
+ * \todo Overview and complements for the 3D Viewer
  */
 
 // *************************************************************************
