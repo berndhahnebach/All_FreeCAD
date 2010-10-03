@@ -453,6 +453,55 @@ fi
 AM_CONDITIONAL(HAVE_OPENCASCADE, test x"$fc_cv_lib_occ_avail" = xyes)
 AM_CONDITIONAL(OCC_VERSION6, test x"$fc_cv_lib_occ_ver_6" = xyes)
 
+
+dnl checking for Salome SMESH
+dnl **************************************************************************
+AC_MSG_CHECKING([for Salome SMESH])
+AC_ARG_WITH(smesh-include,
+	AC_HELP_STRING([--with-smesh-include=DIR], [Path to the Salome SMESH header files]),
+	[fc_smesh_incs=$withval],
+	[fc_smesh_incs=/usr/include])
+
+AC_CHECK_FILE($fc_smesh_incs/SMESH_Gen.hxx,,
+	[AC_CHECK_FILE(/usr/local/include/smesh,[fc_smesh_incs=/usr/local/include])])
+
+AC_ARG_WITH(smesh-lib,
+	AC_HELP_STRING([--with-smesh-lib=DIR], [Path to the Salome SMESH library files]),
+	[fc_smesh_libs=$withval],
+	[fc_smesh_libs=/usr/lib])
+
+fc_smesh_ac_save_cppflags=$CPPFLAGS
+fc_smesh_ac_save_ldflags=$LDFLAGS
+fc_smesh_ac_save_libs=$LIBS
+CPPFLAGS="$CPPFLAGS -I$fc_smesh_incs -I$OCC_INC"
+LDFLAGS="$LDFLAGS -L$fc_smesh_libs"
+LIBS="-lSMESH"
+
+fc_cv_lib_smesh_avail=no
+AC_CHECK_HEADER(SMESH_Gen.hxx,[
+AC_MSG_CHECKING([whether SMESH lib is available])
+AC_TRY_LINK([#include <SMESH_Gen.hxx>],
+	[SMESH_Gen meshgen;],
+	[fc_cv_lib_smesh_avail=yes
+	AC_MSG_RESULT(yes)],
+	AC_MSG_RESULT(no))])
+
+CPPFLAGS=$fc_smesh_ac_save_cppflags
+LDFLAGS=$fc_smesh_ac_save_ldflags
+LIBS=$fc_smesh_ac_save_libs
+
+if test x"$fc_cv_lib_smesh_avail" = xyes; then
+	AC_SUBST([SMESH_INCLUDE], [$fc_smesh_incs])
+	AC_SUBST([SMESH_LIBRARY], [$fc_smesh_libs])
+else
+	AC_MSG_WARN([
+	**** Cannot find Salome SMESH devel files. ****
+   ])
+fi
+
+AM_CONDITIONAL(HAVE_SALOMESMESH, test x"$fc_cv_lib_smesh_avail" = xyes)
+
+
 #---------------------------------------------------------------------
 #
 # Check if 64-bit platform
