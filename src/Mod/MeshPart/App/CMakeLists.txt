@@ -5,9 +5,9 @@ else(MSVC)
 endif(MSVC)
 
 # At the moment we have SMESH only for MSVC on Win32
-if (MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+if (SMESH_FOUND)
     add_definitions(-DHAVE_SMESH)
-endif(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+endif(SMESH_FOUND)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
@@ -20,18 +20,18 @@ include_directories(
 )
 link_directories(${OCC_LIBRARY_DIR})
 
-if(MSVC)
+if(SMESH_FOUND)
 set(MeshPart_LIBS
     Part
     Mesh
     ${SMESH_LIBRARIES}
 )
-else(MSVC)
+else(SMESH_FOUND)
 set(MeshPart_LIBS
     Part
     Mesh
 )
-endif(MSVC)
+endif(SMESH_FOUND)
 
 SET(MeshPart_SRCS
     AppMeshPart.cpp

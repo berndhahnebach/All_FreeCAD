@@ -29,6 +29,7 @@
 #include <App/Document.h>
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/WaitCursor.h>
 #include <Mod/Part/App/PartFeature.h>
 
 using namespace MeshPartGui;
@@ -48,6 +49,7 @@ Tessellation::~Tessellation()
 bool Tessellation::accept()
 {
     try {
+        Gui::WaitCursor wc;
         std::vector<Part::Feature*> shapes = Gui::Selection().getObjectsOfType<Part::Feature>();
         for (std::vector<Part::Feature*>::iterator it = shapes.begin(); it != shapes.end(); ++it) {
             QString cmd = QString::fromAscii(

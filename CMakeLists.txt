@@ -152,6 +152,13 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
         MESSAGE("OpenCasCade was not found, build no CAD modules!")
     ENDIF(NOT OCC_FOUND)
 
+# -------------------------------- Salome SMESH --------------------------
+
+    find_package(SMESH REQUIRED)
+    IF(NOT SMESH_FOUND)
+        MESSAGE("Salome SMESH was not found!")
+    ENDIF(NOT SMESH_FOUND)
+
 # -------------------------------- OpenCV --------------------------------
 
     # not needed at the moment
