@@ -760,8 +760,22 @@ fi
 DOXYGEN_OUTPUT_DIR="."
 AC_SUBST(DOXYGEN_OUTPUT_DIR)
 
-DOXYGEN_INPUT_LIST="$srcdir/src/Base $srcdir/src/App $srcdir/src/Gui"
+DOXYGEN_INPUT_LIST="$srcdir/src/CXX $srcdir/src/zipios++ $srcdir/src/3rdParty $srcdir/src/Build $srcdir/src/Base $srcdir/src/App $srcdir/src/Gui $srcdir/src/Mod $srcdir/src/Main $srcdir/src/Doc"
 AC_SUBST(DOXYGEN_INPUT_LIST)
+
+DOXYGEN_EXCLUDE_LIST="$srcdir/src/Tools $srcdir/src/3rdParty/CxImage $srcdir/src/3rdParty/Pivy $srcdir/src/3rdParty/Pivy-0.5"
+AC_SUBST(DOXYGEN_EXCLUDE_LIST)
+
+DOXYGEN_IMAGE_PATH="$srcdir/src/Gui/Icons"
+AC_SUBST(DOXYGEN_IMAGE_PATH)
+
+DOXYGEN_INCLUDE_PATH="$srcdir/src/Doc/doxygen-headers"
+AC_SUBST(DOXYGEN_INCLUDE_PATH)
+
+AC_CONFIG_FILES([src/Doc/doxygen-headers/swigpyrun.h:swigpyrun.h])
+AC_CONFIG_FILES([src/Doc/doxygen-headers/FCConfig.h:src/FCConfig.h])
+AC_CONFIG_FILES([src/Doc/doxygen-headers/Inventor/fields/SoSubField.h:$sim_ac_coin_includedir/Inventor/fields/SoSubField.h])
+
 dnl **************************************************************************
 
 AC_CONFIG_FILES([Makefile 
