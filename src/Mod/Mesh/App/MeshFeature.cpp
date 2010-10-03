@@ -97,6 +97,7 @@ void Feature::onChanged(const App::Property* prop)
 // ---------------------------------------------------------
 
 namespace App {
+/// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(Mesh::FeaturePython, Mesh::Feature)
 template<> const char* Mesh::FeaturePython::getViewProviderName(void) const {
     return "MeshGui::ViewProviderPython";
@@ -108,7 +109,9 @@ template<> PyObject* Mesh::FeaturePython::getPyObject(void) {
     }
     return Py::new_reference_to(PythonObject);
 }
+/// @endcond
 
 // explicit template instantiation
-template class MeshExport FeaturePythonT<Mesh::Feature>;}
+template class MeshExport FeaturePythonT<Mesh::Feature>;
+}
 
