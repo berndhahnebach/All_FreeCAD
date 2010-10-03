@@ -63,7 +63,13 @@ void CompleteGuiExport initCompleteGui()
     try {
         Base::Interpreter().loadModule("PartGui");
         Base::Interpreter().loadModule("MeshGui");
-        Base::Interpreter().loadModule("MeshPartGui");
+        try {
+            Base::Interpreter().loadModule("MeshPartGui");
+        }
+        catch (const Base::Exception& e) {
+            Base::Console().Error("Failed to load MeshPartGui: %s\n", e.what());
+            PyErr_Clear();
+        }
         Base::Interpreter().loadModule("PointsGui");
         //Base::Interpreter().loadModule("MeshPartGui");
         //Base::Interpreter().loadModule("AssemblyGui");

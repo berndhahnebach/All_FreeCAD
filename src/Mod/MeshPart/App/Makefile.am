@@ -37,6 +37,14 @@ libMeshPart_la_LIBADD   = \
 		-lTKTopAlgo \
 		-lTKGeomAlgo \
 		-lTKGeomBase
+		
+if HAVE_SALOMESMESH
+libMeshPart_la_LDFLAGS += -L$(SMESH_LIBRARY)
+libMeshPart_la_LIBADD += \
+		-lSMESH \
+		-lSMDS \
+		-lStdMeshers
+endif
 
 #--------------------------------------------------------------------------------------
 # Loader of libMeshPart
@@ -58,6 +66,10 @@ MeshPart_la_DEPENDENCIES = libMeshPart.la
 
 # set the include path found by configure
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
+
+if HAVE_SALOMESMESH
+AM_CXXFLAGS += -I$(SMESH_INCLUDE) -DHAVE_SMESH
+endif
 
 
 libdir = $(prefix)/Mod/MeshPart
