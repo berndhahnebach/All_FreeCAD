@@ -264,7 +264,6 @@ SET(FreeCADBase_SRCS
     ${FreeCADBase_HPP_SRCS}
     ${FreeCADBase_XML_SRCS}
     ${FreeCADBase_UNITAPI_SRCS}
-    Doxygen.cpp
     PyTools.c
     PyTools.h
     PreCompiled.cpp

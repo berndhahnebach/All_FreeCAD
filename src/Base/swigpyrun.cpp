@@ -26,7 +26,7 @@
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
 namespace Swig_python {
 #define SWIG_PYTHON_NO_BUILD_NONE
-#include "swigpyrun.h"
+#include <swigpyrun.h>
 #include "swigpyrun.inl"
 }
 #endif
