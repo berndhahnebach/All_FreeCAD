@@ -47,6 +47,7 @@ namespace KDL {
          *
          * @param q_in input joint coordinates
          * @param p_out reference to output cartesian pose
+         * @param segmentNr default to -1
          *
          * @return if < 0 something went wrong
          */
@@ -68,6 +69,7 @@ namespace KDL {
          *
          * @param q_in input joint coordinates (position and velocity)
          * @param out output cartesian coordinates (position and velocity)
+         * @param segmentNr default to -1
          *
          * @return if < 0 something went wrong
          */
@@ -91,8 +93,9 @@ namespace KDL {
          *
          * @param q_in input joint coordinates (position, velocity and
          * acceleration
-         @param out output cartesian coordinates (position, velocity
+         * @param out output cartesian coordinates (position, velocity
          * and acceleration
+         * @param segmentNr default to -1
          *
          * @return if < 0 something went wrong
          */

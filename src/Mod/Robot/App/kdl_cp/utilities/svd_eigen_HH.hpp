@@ -63,6 +63,7 @@ namespace KDL
      * @param V matrix<double>(nxn)
      * @param tmp vector<double> n
      * @param maxiter defaults to 150
+     * @param epsilon defaults to 1e-300
      *
      * @return -2 if maxiter exceeded, 0 otherwise
      */

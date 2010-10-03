@@ -50,6 +50,7 @@ namespace KDL {
          *
          * @param q_in input joint coordinates
          * @param p_out reference to output cartesian pose
+         * @param segmentName 
          *
          * @return if < 0 something went wrong
          */

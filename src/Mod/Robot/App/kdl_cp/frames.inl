@@ -25,6 +25,8 @@
  *                                                                         *
  ***************************************************************************/
 
+namespace KDL {
+
 
 IMETHOD Vector::Vector(const Vector & arg)
 {
@@ -1124,8 +1126,8 @@ IMETHOD Vector diff(const Vector& a,const Vector& b,double dt) {
  * around a fixed axis for a certain angle.  For this representation you cannot use diff() but
  * have to use diff_displ().
  *
- * \TODO represent a displacement twist and displacement rotational velocity with another
- *       class, instead of Vector and Twist.
+ * \todo represent a displacement twist and displacement rotational velocity
+ *       with another class, instead of Vector and Twist.
  * \warning do not confuse displacement rotational velocities and velocities
  * \warning do not confuse displacement twist and twist.
  *
@@ -1192,7 +1194,7 @@ IMETHOD Wrench addDelta(const Wrench& a,const Wrench&da,double dt) {
 }
 
 
-/**
+/* Commented code section
  * \brief addDelta operator for displacement rotational velocity.
  *
  * The Vector arguments here represent a displacement rotational velocity.  i.e. a rotation
@@ -1210,7 +1212,7 @@ IMETHOD Vector addDelta_displ(const Vector& a,const Vector&da,double dt) {
     return getRot(addDelta(Rot(a),da,dt)); 
 }*/
 
-/**
+/* Commented code section
  * \brief addDelta operator for displacement twist.
  *
  * The Vector arguments here represent a displacement rotational velocity.  i.e. a rotation
@@ -1358,4 +1360,7 @@ IMETHOD bool operator==(const Vector2& a,const Vector2& b) {
 IMETHOD bool operator!=(const Vector2& a,const Vector2& b) {
     return !operator==(a,b);
 }
+
+} // namespace KDL
+
 

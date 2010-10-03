@@ -587,9 +587,9 @@ public:
      //! @return the identity transformation Frame(Rotation::Identity(),Vector::Zero()).
      inline static Frame Identity();
 
-     //! The twist <t_this> is expressed wrt the current
+     //! The twist \<t_this\> is expressed wrt the current
      //! frame.  This frame is integrated into an updated frame with
-     //! <samplefrequency>.  Very simple first order integration rule.
+     //! \<samplefrequency\>.  Very simple first order integration rule.
      inline void Integrate(const Twist& t_this,double frequency);
 
     /*
@@ -1088,6 +1088,9 @@ IMETHOD Rotation addDelta(const Rotation& a,const Vector&da,double dt=1);
 IMETHOD Frame addDelta(const Frame& a,const Twist& da,double dt=1);
 IMETHOD Twist addDelta(const Twist& a,const Twist&da,double dt=1);
 IMETHOD Wrench addDelta(const Wrench& a,const Wrench&da,double dt=1);
+
+} // namespace KDL
+
 #ifdef KDL_INLINE
 //    #include "vector.inl"
 //   #include "wrench.inl"
@@ -1100,9 +1103,6 @@ IMETHOD Wrench addDelta(const Wrench& a,const Wrench&da,double dt=1);
 #include "frames.inl"
 #endif
 
-
-
-}
 
 
 #endif
