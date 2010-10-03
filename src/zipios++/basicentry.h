@@ -20,6 +20,7 @@ public:
   /** Constructor.
       @param filename the filename of the entry.
       @param comment a comment for the entry.
+      @param basepath
    */
   explicit BasicEntry( const string &filename, const string &comment,
 		       const FilePath &basepath = FilePath() ) ;

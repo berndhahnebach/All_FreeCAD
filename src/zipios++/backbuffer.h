@@ -32,13 +32,14 @@ using std::endl ;
 class BackBuffer : public vector< unsigned char > {
 public:
   /** BackBuffer constructor.
-      @param is The istream to read the data from. The stream must be seekable,
-      as BackBuffer will reposition the file position to read chunks from the back
-      of the file.
-      @param chunk_size specifies the size of the chunks to read the file into 
-      the BackBuffer in.
-      @throw FCollException Thrown if the VirtualSeeker vs that has been specified is 
-      invalid for the istream is.  */
+      @param is The istream to read the data from. The stream must be
+                seekable, as BackBuffer will reposition the file position to
+                read chunks from the back of the file.
+      @param vs 
+      @param chunk_size specifies the size of the chunks to read the file
+                        into  the BackBuffer in.
+      @throw FCollException Thrown if the VirtualSeeker vs that has been
+      specified is  invalid for the istream is.  */
   inline explicit BackBuffer( istream &is, VirtualSeeker vs = VirtualSeeker(), 
 			      int chunk_size = 1024 ) ;
   /** Reads another chunk and returns the size of the chunk that has

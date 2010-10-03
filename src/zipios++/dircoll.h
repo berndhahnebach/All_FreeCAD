@@ -25,10 +25,11 @@ public:
 
 
   /** Constructor.
-      @param path A directory path name. If the name is not a valid
-      directory the created DirectoryCollection will be invalid.
+      @param path A directory path name. If the name is not a valid directory
+                  the created DirectoryCollection will be invalid.
+      @param recursive 
       @param load_now Load directory into memory now. Otherwise it will
-      be done when it is first needed.
+                      be done when it is first needed.
   */
   explicit DirectoryCollection( const string &path, 
 				bool recursive = true,

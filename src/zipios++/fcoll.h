@@ -70,15 +70,19 @@ public:
       heap and it is the users responsibility to delete it when he is done with it.
       @throw InvalidStateException Thrown if the collection is invalid. */
   virtual istream *getInputStream( const ConstEntryPointer &entry ) = 0 ;
-  /** Returns a pointer to an opened istream for the specified
-      entry name. It is the callers responsibility to delete the stream
-      when he is done with it. Returns 0, if there is no entry with the specified
-      name in the FileCollection.
+
+  /** Returns a pointer to an opened istream for the specified entry name.
+      It is the callers responsibility to delete the stream when he is done
+      with it. Returns 0, if there is no entry with the specified name in the
+      FileCollection.
+      @param entry_name
       @param matchpath Speficy MATCH, if the path should match as well, 
-      specify IGNORE, if the path should be ignored.
-      @return an open istream for the specified entry. The istream is allocated on
-      heap and it is the users responsibility to delete it when he is done with it.
-      @throw InvalidStateException Thrown if the collection is invalid. */
+                       specify IGNORE, if the path should be ignored.
+      @return an open istream for the specified entry. The istream is 
+      allocated on heap and it is the users responsibility to delete it when
+      he is done with it.
+      @throw InvalidStateException Thrown if the collection is invalid.
+   */
   virtual istream *getInputStream( const string &entry_name, 
 				     MatchPath matchpath = MATCH ) = 0 ;
   /** Returns the name of the FileCollection.
@@ -133,133 +137,6 @@ inline ostream & operator<< (ostream &os, const FileCollection& collection) {
 } // namespace
 
 #endif
-
-
-/**
-   \mainpage Zipios++
-
-   \image html   zipios++.jpg
-   \image latex  zipios++.eps width=10cm
-   
-   \section intro Introduction
-   
-   Zipios++ is a java.util.zip-like C++ library for reading and
-   writing Zip files. Access to individual entries is provided through
-   standard C++ iostreams. A simple read-only virtual file system that
-   mounts regular directories and zip files is also provided.
-   
-   The source code is released under the <A
-   HREF="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
-   License</A>.
-   
-   \section status Status
-
-   Spanned archives are not supported, and support is not planned.
-   
-
-   The library has been tested and appears to be working with
-   <UL>
-   <LI><A HREF="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</A></LI>
-   <LI>Red Hat Linux release 7.0  / gcc 2.96</LI>
-   <LI>Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66</LI>
-   <LI>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</LI>
-   <LI>SGI IRIX64 6.5 / gcc 2.95.2</LI>
-   <LI>SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30</LI>
-   </UL>
-
-   If you are aware of any other platforms that Zipios++ works on,
-   please let me know (thomass@deltadata.dk).
-
-   \section documentation Documentation 
-   This web page is the front page to the library documentation which
-   is generated from the source files using <A
-   HREF="http://www.stack.nl/~dimitri/doxygen/index.html">Doxygen</A>. Use
-   the links at the top of the page to browse the API
-   documentation. The documentation is also available in
-   a printer-friendly format <A HREF="refman.pdf">[pdf]</A>.
-   
-   \subsection zipfiles Zip file access
-   The two most important classes are \ref zipfile_anchor "ZipFile" and 
-   \ref ZipInputStream_anchor "ZipInputStream". ZipInputStream is an istream
-   for reading zipfiles. It can be instantiated directly, without the
-   use of ZipFile. A new ZipInputStream reads from the first entry, and
-   the user can skip to the next entry by calling
-   \ref ZipInputStream_getnextentry_anchor "ZipInputStream::getNextEntry()".
-   
-   ZipFile scans the central directory of a zipfile and provides an
-   interface to access that directory. The user may search for entries
-   with a particular filename using \ref fcoll_getentry_anchor "ZipFile::getEntry()", 
-   or simply get the complete list of entries
-   with \ref fcoll_entries_anchor "ZipFile::entries()". To get an
-   istream (ZipInputStream) to a particular entry simply use
-   \ref fcoll_getinputstream "ZipFile::getInputStream()".
-   
-   \ref example_zip_anchor "example_zip.cpp" demonstrates the central
-   elements of Zipios++.
-   
-   A Zip file appended to another file, e.g. a binary program, with the program
-   \ref appendzip_anchor "appendzip", can be read with 
-   \ref zipfile_openembeddedzipfile "ZipFile::openEmbeddedZipFile()".
-
-   \subsection filecollections FileCollections
-   
-   A ZipFile is actually just a special kind of 
-   \ref fcoll_anchor "FileCollection" that
-   obtains its entries from a .zip Zip archive. Zipios++ also implements
-   a \ref dircol_anchor "DirectoryCollection" that obtains its entries 
-   from a specified directory, and a \ref collcoll_anchor "CollectionCollection" 
-   that obtains its entries from
-   other collections. Using a single CollectionCollection any number of
-   other FileCollections can be placed under its control and accessed
-   through the same single interface that is used to access a ZipFile or
-   a DirectoryCollection. A singleton (a unique global instance)
-   CollectionCollection can be obtained through
-   
-   \ref collcoll_inst_anchor "CollectionCollection::inst()" ;
-
-   To save typing CollectionCollection has been typedef'ed to CColl. In
-   the initialization part of an application FileCollections can be
-   created, and placed under CColll::inst()'s control using
-   
-   \ref collcoll_addcoll_anchor "CColl::inst().addCollection()"
-   
-   and later an istream can be obtained using
-
-   \ref fcoll_getinputstream "CColl::inst().getInputStream()".
-   
-   \section download Download 
-   Go to Zipios++ project page on SourceForge for tar balls and ChangeLog.
-   <A HREF="http://sourceforge.net/project/?group_id=5418" >
-   http://sourceforge.net/project/?group_id=5418</A>
-   
-   \section links Links
-   <A HREF="ftp://ftp.freesoftware.com/pub/infozip/zlib/zlib.html">zlib</A>. 
-   The compression library that Zipios++ uses to perform the actual 
-   decompression.
-   
-   <A HREF="http://java.sun.com/products/jdk/1.3/docs/api/index.html">
-   Java 2 Platform, Standard Edition, v 1.3 API Specification
-   </A>. Zipios++ is heavily inspired by the java.util.zip package.
-   
-   <A
-   HREF="http://www.geocities.com/SiliconValley/Lakes/2160/fformats/files/zip.txt">
-   PKWARE zip format 
-   </A>. A description of the zip file format.
-   
-   \section bugs Bugs 
-   Submit bug reports and patches to thomass@deltadata.dk 
-   
-   
-   
-   \htmlonly
-   Project hosted by <A HREF="http://sourceforge.net">
-   <img src="http://sourceforge.net/sflogo.php?group_id=5418&type=1" >
-   </A><p>
-   Logo created with <A HREF="http://www.webgfx.ch/titlepic.htm">
-   <img src="webgfx.gif" >
-   </A>
-   \endhtmlonly */
-
 
 /** \file
     Header file that defines FileCollection.
