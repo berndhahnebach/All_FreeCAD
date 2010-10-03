@@ -97,6 +97,7 @@ namespace KDL
          * Adds a complete chain to the end of the segment with
          * hook_name as segment_name. 
          *
+         * @param chain the chain.
          * @param hook_name name of the segment to connect the chain with.
          *
          * @return false if hook_name could not be found.
