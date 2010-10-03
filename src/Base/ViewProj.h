@@ -52,7 +52,7 @@ protected:
 
 /**
  * The ViewProjMatrix class returns the result of the multiplication
- * of the 3D vector and the view transformation matrix..
+ * of the 3D vector and the view transformation matrix.
  */
 class BaseExport ViewProjMatrix : public ViewProjMethod
 {
