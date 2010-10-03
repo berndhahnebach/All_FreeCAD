@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 #include "Tessellation.h"
 #include "ui_Tessellation.h"
+#include <Base/Console.h>
+#include <Base/Exception.h>
 #include <App/Document.h>
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
@@ -45,18 +47,23 @@ Tessellation::~Tessellation()
 
 bool Tessellation::accept()
 {
-    std::vector<Part::Feature*> shapes = Gui::Selection().getObjectsOfType<Part::Feature>();
-    for (std::vector<Part::Feature*>::iterator it = shapes.begin(); it != shapes.end(); ++it) {
-        QString cmd = QString::fromAscii(
-            "__doc__=FreeCAD.getDocument(\"%1\")\n"
-            "__mesh__=__doc__.addObject(\"Mesh::Feature\",\"Mesh\")\n"
-            "__mesh__.Mesh=MeshPart.meshFromShape(__doc__.getObject(\"%2\").Shape,%3,0,0,%4)\n"
-            "del __doc__, __mesh__\n")
-            .arg(QLatin1String((*it)->getDocument()->getName()))
-            .arg(QLatin1String((*it)->getNameInDocument()))
-            .arg(ui->spinMaxEdgeLength->value())
-            .arg(ui->spinDeviation->value());
-        Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
+    try {
+        std::vector<Part::Feature*> shapes = Gui::Selection().getObjectsOfType<Part::Feature>();
+        for (std::vector<Part::Feature*>::iterator it = shapes.begin(); it != shapes.end(); ++it) {
+            QString cmd = QString::fromAscii(
+                "__doc__=FreeCAD.getDocument(\"%1\")\n"
+                "__mesh__=__doc__.addObject(\"Mesh::Feature\",\"Mesh\")\n"
+                "__mesh__.Mesh=MeshPart.meshFromShape(__doc__.getObject(\"%2\").Shape,%3,0,0,%4)\n"
+                "del __doc__, __mesh__\n")
+                .arg(QLatin1String((*it)->getDocument()->getName()))
+                .arg(QLatin1String((*it)->getNameInDocument()))
+                .arg(ui->spinMaxEdgeLength->value())
+                .arg(ui->spinDeviation->value());
+            Gui::Command::doCommand(Gui::Command::Doc, (const char*)cmd.toAscii());
+        }
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Error(e.what());
     }
 
     return true;
