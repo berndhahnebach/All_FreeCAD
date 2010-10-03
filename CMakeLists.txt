@@ -154,7 +154,7 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 # -------------------------------- Salome SMESH --------------------------
 
-    find_package(SMESH REQUIRED)
+    find_package(SMESH)
     IF(NOT SMESH_FOUND)
         MESSAGE("Salome SMESH was not found!")
     ENDIF(NOT SMESH_FOUND)
