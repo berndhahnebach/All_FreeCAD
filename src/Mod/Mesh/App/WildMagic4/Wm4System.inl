@@ -17,6 +17,7 @@
 namespace Wm4
 {
 //----------------------------------------------------------------------------
+/// @cond DOXERR
 template <class T>
 void Allocate (int iCols, int iRows, T**& raatArray)
 {
@@ -67,5 +68,6 @@ void Deallocate (T***& raaatArray)
         raaatArray = 0;
     }
 }
+/// @endcond
 //----------------------------------------------------------------------------
 } //namespace Wm4
