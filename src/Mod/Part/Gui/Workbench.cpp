@@ -42,6 +42,7 @@ using namespace PartGui;
     qApp->translate("Workbench", "Boolean");
 #endif
 
+/// @namespace PartGui @class Workbench
 TYPESYSTEM_SOURCE(PartGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

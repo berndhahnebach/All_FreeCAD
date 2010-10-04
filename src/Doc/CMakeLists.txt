@@ -14,16 +14,55 @@ if( DOXYGEN_FOUND)
         message("Note: Gui is not built. Documentation may lack some parts.")
     endif (NOT FREECAD_BUILD_GUI)
 
-    SET(DOXYGEN_SOURCE_DIR
-        ${CMAKE_SOURCE_DIR}/src/Base
-        ${CMAKE_SOURCE_DIR}/src/App
-        ${CMAKE_SOURCE_DIR}/src/Main
-        ${CMAKE_SOURCE_DIR}/src/Gui
+    # directory order seems important for correct macro expansion
+    # (at least Base before App)
+    SET(DOXYGEN_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src/CXX 
+                           ${CMAKE_SOURCE_DIR}/src/zipios++ 
+                           ${CMAKE_SOURCE_DIR}/src/3rdParty
+                           ${CMAKE_SOURCE_DIR}/src/Build 
+                           ${CMAKE_SOURCE_DIR}/src/Base 
+                           ${CMAKE_SOURCE_DIR}/src/App 
+                           ${CMAKE_SOURCE_DIR}/src/Gui 
+                           ${CMAKE_SOURCE_DIR}/src/Mod
+                           ${CMAKE_SOURCE_DIR}/src/Main 
+                           ${CMAKE_SOURCE_DIR}/src/Doc
     )
+    STRING(REGEX REPLACE ";" " " DOXYGEN_INPUT_LIST "${DOXYGEN_SOURCE_DIR}")
+
+    # exclude some subdirectories
+    # src/Tools : content not relevant ?
+    # src/3rdParty/CxImage : obsolete utility
+    # src/3rdParty/Pivy  
+    # src/3rdParty/Pivy-0.5 : huge python wrappers around Coin3D, not focused
+    #                         on FreeCAD properly
+    set(        DOXYGEN_EXCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/Tools)
+    list(APPEND DOXYGEN_EXCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/3rdParty/CxImage)
+    list(APPEND DOXYGEN_EXCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/3rdParty/Pivy)
+    list(APPEND DOXYGEN_EXCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/3rdParty/Pivy-0.5)
+
+    STRING(REGEX REPLACE ";" " " DOXYGEN_EXCLUDE_LIST "${DOXYGEN_EXCLUDE_DIR}")
 
     SET(DOXYGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Doc/SourceDocu)
+    SET(DOXYGEN_IMAGE_PATH ${CMAKE_SOURCE_DIR}/src/Gui/Icons)
+    SET(DOXYGEN_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/src/Doc/doxygen-headers)
 
-    STRING(REGEX REPLACE ";" " " DOXYGEN_INPUT_LIST "${DOXYGEN_SOURCE_DIR}")
+    # ToDo: with automake, reproduce these copy operations
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/swigpyrun.h
+                                                     ${DOXYGEN_INCLUDE_PATH})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/FCConfig.h
+                                                     ${DOXYGEN_INCLUDE_PATH})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${COIN3D_INCLUDE_DIR}/Inventor/fields/SoSubField.h
+                                                     ${DOXYGEN_INCLUDE_PATH}/Inventor/fields/})
+    # The file(COPY) command is not available in version 2.6
+    #file(COPY ${CMAKE_SOURCE_DIR}/swigpyrun.h
+    #     DESTINATION  ${DOXYGEN_INCLUDE_PATH}
+    #)
+    #file(COPY ${CMAKE_SOURCE_DIR}/src/FCConfig.h
+    #     DESTINATION  ${DOXYGEN_INCLUDE_PATH}
+    #)
+    #file(COPY ${COIN3D_INCLUDE_DIR}/Inventor/fields/SoSubField.h
+    #     DESTINATION  ${DOXYGEN_INCLUDE_PATH}/Inventor/fields/
+    #)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildDevDoc.cfg.in  
                    ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg @ONLY)

@@ -36,6 +36,7 @@ using namespace DrawingGui;
     qApp->translate("Workbench", "Drawing");
 #endif
 
+/// @namespace DrawingGui @class Workbench
 TYPESYSTEM_SOURCE(DrawingGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

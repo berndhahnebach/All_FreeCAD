@@ -39,6 +39,7 @@ using namespace PartDesignGui;
     qApp->translate("Workbench", "Part Design");
 #endif
 
+/// @namespace PartDesignGui @class Workbench
 TYPESYSTEM_SOURCE(PartDesignGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

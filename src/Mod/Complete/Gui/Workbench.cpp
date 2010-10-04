@@ -53,6 +53,7 @@ using namespace CompleteGui;
     qApp->translate("Workbench", "Parametric");
 #endif
 
+/// @namespace CompleteGui @class Workbench
 TYPESYSTEM_SOURCE(CompleteGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

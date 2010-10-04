@@ -39,6 +39,7 @@
 
 using namespace SandboxGui;
 
+/// @namespace SandboxGui @class Workbench
 TYPESYSTEM_SOURCE(SandboxGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

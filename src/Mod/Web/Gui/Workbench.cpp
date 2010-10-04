@@ -46,6 +46,7 @@ using namespace WebGui;
     qApp->translate("Workbench", "Navigation");
 #endif
 
+/// @namespace WebGui @class Workbench
 TYPESYSTEM_SOURCE(WebGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

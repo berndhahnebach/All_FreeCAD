@@ -32,6 +32,8 @@
 
 using namespace ImportGui;
 
+/// @namespace ImportGui @class Workbench
+
 Workbench::Workbench()
 {
 }

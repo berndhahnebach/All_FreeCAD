@@ -47,25 +47,21 @@
 using namespace Gui;
 
 /** \defgroup workbench Workbench Framework
- *
- * FreeCAD provides the possibility to have one or more workbenches for a module. A workbench changes the appearance of the main window
- * in that way that it defines toolbars, items in the toolbox, menus or the context menu and dockable windows that are shown to the user.
- *
- * The idea behind this concept is that the user should see only the functions that are required for the task that he is doing at this
- * moment and not to show dozens of unneeded functions which the user never uses.
- *
- * \section stepbystep Step by step
- * Here follows a short description of how an own workbench can be added to a module.
- *
- * \subsection newClass Inherit either from Workbench or StdWorkbench
- * First you have to subclass either Workbench or StdWorkbench and reimplement the methods setupMenuBar(), setupToolBars(), setupCommandBars()
- * and setupDockWindows().
- *
- * The difference between both classes is that these methods of Workbench are pure virtual while StdWorkbench defines already the standard menus and
- * toolbars, such as the 'File', 'Edit', ..., 'Help' menus with their common functions.
- *
- * If your class derives from Workbench then you have to define your menus, toolbars and toolbox items from scratch while deriving from StdWorkbench
- * you have the possibility to add your preferred functions or even remove some unneeded functions.
+    \ingroup GUI
+
+    FreeCAD provides the possibility to have one or more workbenches for a module.
+    A workbench changes the appearance of the main window in that way that it defines toolbars, items in the toolbox, menus or the context menu and dockable windows that are shown to the user.
+    The idea behind this concept is that the user should see only the functions that are required for the task that he is doing at this moment and not to show dozens of unneeded functions which the user never uses.
+
+    \section stepbystep Step by step
+    Here follows a short description of how an own workbench can be added to a module.
+
+    \subsection newClass Inherit either from Workbench or StdWorkbench
+    First you have to subclass either \ref Gui::Workbench "Workbench" or \ref Gui::StdWorkbench "StdWorkbench" and reimplement the methods \ref Gui::Workbench::setupMenuBar() "setupMenuBar()", \ref Gui::Workbench::setupToolBars() "setupToolBars()", \ref Gui::Workbench::setupCommandBars() "setupCommandBars()" and \ref Gui::Workbench::setupDockWindows() "setupDockWindows()".
+
+    The difference between both classes is that these methods of %Workbench are pure virtual while StdWorkbench defines already the standard menus and toolbars, such as the 'File', 'Edit', ..., 'Help' menus with their common functions.
+
+    If your class derives from %Workbench then you have to define your menus, toolbars and toolbox items from scratch while deriving from StdWorkbench you have the possibility to add your preferred functions or even remove some unneeded functions.
  * \code
  *
  * class MyWorkbench : public StdWorkbench
@@ -199,6 +195,7 @@ using namespace Gui;
  * \endcode
  */
 
+/// @namespace Gui @class Workbench
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::Workbench, Base::BaseClass)
 
 Workbench::Workbench()

@@ -36,6 +36,7 @@ using namespace ImageGui;
     qApp->translate("Workbench", "Image");
 #endif
 
+/// @namespace ImageGui @class Workbench
 TYPESYSTEM_SOURCE(ImageGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

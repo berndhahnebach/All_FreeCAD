@@ -43,6 +43,7 @@ using namespace MeshGui;
     qApp->translate("Workbench", "Mesh tools");
 #endif
 
+/// @namespace MeshGui @class Workbench
 TYPESYSTEM_SOURCE(MeshGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
