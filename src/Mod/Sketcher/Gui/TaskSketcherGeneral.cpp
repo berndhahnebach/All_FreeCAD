@@ -87,6 +87,7 @@ void TaskSketcherGeneral::changeEvent(QEvent *e)
     }
 }
 
+/// @cond DOXERR
 void TaskSketcherGeneral::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
@@ -96,6 +97,7 @@ void TaskSketcherGeneral::OnChange(Gui::SelectionSingleton::SubjectType &rCaller
     //    Reason.Type == SelectionChanges::ClrSelection) {
     //}
 }
+/// @endcond DOXERR
 
 
 

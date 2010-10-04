@@ -66,6 +66,7 @@ SelectionView::~SelectionView()
     Gui::Selection().Detach(this);
 }
 
+/// @cond DOXERR
 void SelectionView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                              Gui::SelectionSingleton::MessageType Reason)
 {
@@ -130,5 +131,6 @@ bool SelectionView::onMsg(const char* pMsg)
     // no messages yet
     return false;
 }
+/// @endcond
 
 #include "moc_SelectionView.cpp"

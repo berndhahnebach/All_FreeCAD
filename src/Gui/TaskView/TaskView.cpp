@@ -190,6 +190,7 @@ void TaskView::slotActiveDocument(const App::Document& doc)
 }
 
 
+/// @cond DOXERR
 void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                         Gui::SelectionSingleton::MessageType Reason)
 {
@@ -210,6 +211,7 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
         updateWatcher();
 
 }
+/// @endcond
 
 void TaskView::showDialog(TaskDialog *dlg)
 {

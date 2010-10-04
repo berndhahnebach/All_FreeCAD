@@ -283,6 +283,7 @@ void View3DInventorViewer::initialize()
     this->axiscrossSize = 10;
 }
 
+/// @cond DOXERR
 void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                                     Gui::SelectionSingleton::MessageType Reason)
 {
@@ -294,6 +295,7 @@ void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCalle
         cAct.apply(pcViewProviderRoot);
     }
 }
+/// @endcond
 
 SbBool View3DInventorViewer::hasViewProvider(ViewProvider* pcProvider) const
 {

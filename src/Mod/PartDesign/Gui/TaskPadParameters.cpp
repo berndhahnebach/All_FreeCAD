@@ -70,6 +70,7 @@ void TaskPadParameters::changeEvent(QEvent *e)
     }
 }
 
+/// @cond DOXERR
 void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
@@ -79,6 +80,7 @@ void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
         Reason.Type == SelectionChanges::ClrSelection) {
     }
 }
+/// @endcond
 
 
 
