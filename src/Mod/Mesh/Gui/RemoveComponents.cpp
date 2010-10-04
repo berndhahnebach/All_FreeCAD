@@ -497,10 +497,9 @@ RemoveComponentsDialog::RemoveComponentsDialog(const std::vector<Mesh::Feature*>
     buttonBox->setStandardButtons(QDialogButtonBox::Close|QDialogButtonBox::Ok);
     QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setText(TaskRemoveComponents::tr("Delete"));
-    QPushButton* invertButton = buttonBox->addButton(TaskRemoveComponents::tr("Invert"),
+    buttonBox->addButton(TaskRemoveComponents::tr("Invert"),
         QDialogButtonBox::ActionRole);
-    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
-
+    
     connect(buttonBox, SIGNAL(clicked(QAbstractButton*)),
             this, SLOT(clicked(QAbstractButton*)));
 
