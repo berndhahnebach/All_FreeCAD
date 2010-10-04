@@ -48,6 +48,7 @@ using namespace RobotGui;
     qApp->translate("Workbench", "Export trajectory");
 #endif
 
+/// @namespace RobotGui @class Workbench
 TYPESYSTEM_SOURCE(RobotGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

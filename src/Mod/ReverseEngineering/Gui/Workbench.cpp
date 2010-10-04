@@ -36,6 +36,7 @@ using namespace ReverseEngineeringGui;
     qApp->translate("Workbench", "Reverse Engineering");
 #endif
 
+/// @namespace ReverseEngineeringGui @class Workbench
 TYPESYSTEM_SOURCE(ReverseEngineeringGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

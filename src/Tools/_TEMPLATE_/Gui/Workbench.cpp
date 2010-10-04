@@ -32,6 +32,7 @@
 
 using namespace _TEMPLATE_Gui;
 
+/// @namespace _TEMPLATE_Gui @class Workbench
 TYPESYSTEM_SOURCE(_TEMPLATE_Gui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

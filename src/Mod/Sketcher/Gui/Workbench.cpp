@@ -38,6 +38,7 @@ using namespace SketcherGui;
     qApp->translate("Workbench", "Sketcher constraints");
 #endif
 
+/// @namespace SketcherGui @class Workbench
 TYPESYSTEM_SOURCE(SketcherGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

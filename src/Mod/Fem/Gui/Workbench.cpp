@@ -34,6 +34,7 @@
 
 using namespace FemGui;
 
+/// @namespace FemGui @class Workbench
 TYPESYSTEM_SOURCE(FemGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
@@ -49,13 +50,6 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand(QT_TR_NOOP("Fem"));
-    //*part << "Fem_Create";
-    //*part << "Separator";
-    //*part << "Fem_CreateTrajectory";
-    //*part << "Fem_InsertWaypoint";
-    //*part << "Fem_InsertWaypointPreselect";
-    //*part << "Separator";
-    //*part << "Fem_Simulate";
     return root;
 }
 
@@ -65,33 +59,5 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* item = root->findItem("&Windows");
     Gui::MenuItem* robot = new Gui::MenuItem;
     root->insertItem( item, robot );
-
-    //// analyze
-    //Gui::MenuItem* insertFems = new Gui::MenuItem;
-    //insertFems->setCommand(QT_TR_NOOP("Insert Fems"));
-    //*insertFems << "Fem_InsertKukaIR500" 
-    //              << "Fem_InsertKukaIR16" 
-    //              << "Separator"
-    //              << "Fem_AddToolShape"
-    //              ;
-
-    //// boolean
-    //Gui::MenuItem* exportM = new Gui::MenuItem;
-    //exportM->setCommand(QT_TR_NOOP("Export trajectory"));
-    //*exportM << "Fem_ExportKukaCompact" 
-    //         << "Fem_ExportKukaFull"
-    //         ;
- 
-    //robot->setCommand(QT_TR_NOOP("&Fem"));
-    //*robot << insertFems 
-    //       << "Fem_CreateTrajectory"
-    //       << "Separator"
-    //       << "Fem_CreateTrajectory"
-    //       << "Fem_InsertWaypoint"
-    //       << "Fem_InsertWaypointPreselect"
-    //       << "Separator"
-    //       << "Fem_Simulate"
-    //       << exportM
-    //       ;
     return root;
 }

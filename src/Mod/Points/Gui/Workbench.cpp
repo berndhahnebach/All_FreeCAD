@@ -38,6 +38,7 @@ using namespace PointsGui;
     qApp->translate("Workbench", "&Points");
 #endif
 
+/// @namespace PointsGui @class Workbench
 TYPESYSTEM_SOURCE(PointsGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

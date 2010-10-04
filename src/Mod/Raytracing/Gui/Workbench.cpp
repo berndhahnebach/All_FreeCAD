@@ -37,6 +37,7 @@ using namespace RaytracingGui;
     qApp->translate("Workbench", "&Raytracing");
 #endif
 
+/// @namespace RaytracingGui @class Workbench
 TYPESYSTEM_SOURCE(RaytracingGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

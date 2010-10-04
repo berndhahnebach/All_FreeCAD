@@ -33,6 +33,7 @@
 
 using namespace CamGui;
 
+/// @namespace CamGui @class Workbench
 TYPESYSTEM_SOURCE(CamGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()

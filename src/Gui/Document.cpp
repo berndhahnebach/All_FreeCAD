@@ -96,6 +96,8 @@ struct DocumentP
 
 /* TRANSLATOR Gui::Document */
 
+/// @namespace Gui @class Document
+
 int Document::_iDocCount = 0;
 
 Document::Document(App::Document* pcDocument,Application * app)

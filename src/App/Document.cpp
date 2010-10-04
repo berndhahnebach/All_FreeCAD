@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-/*! \class App::Document
-This is bisides the Application class the most importand class in FreeCAD
+/*! \namespace App \class App::Document
+This is besides the Application class the most important class in FreeCAD
 It contains all the data of the opened, saved or newly created FreeCAD Document.
 The Document manage the Undo and Redo mechanism and the linking of documents.
 
@@ -31,11 +31,11 @@ App::Application. Only the Application can Open or destroy a document.
 
 \section Exception Exception handling
 As the document is the main data structure of FreeCAD we have to take a close
-look on how Exceptions affect the integratie of the App::Document.
+look on how Exceptions affect the integrity of the App::Document.
 
 \section UndoRedo Undo Redo an Transactions
-Undo Redo handling is one of the major machanism of an document in terms of
-user friendlines and speed (no on will whait for Undo to long).
+Undo Redo handling is one of the major mechanism of an document in terms of
+user friendliness and speed (no one will wait for Undo too long).
 
 \section Dependency Graph and dependency handling
 The FreeCAD document handles the dependencies of its DocumentObjects with
@@ -98,7 +98,6 @@ using namespace App;
 using namespace std;
 using namespace boost;
 using namespace zipios;
-
 
 #ifdef MemDebugOn
 # define new DEBUG_CLIENTBLOCK
@@ -1107,7 +1106,7 @@ void Document::recompute()
     d->vertexMap.clear();
 }
 
-const char *Document::getErrorDescription(const App::DocumentObject*Obj) const
+const char * Document::getErrorDescription(const App::DocumentObject*Obj) const
 {
     for (std::vector<App::DocumentObjectExecReturn*>::const_iterator it=_RecomputeLog.begin();it!=_RecomputeLog.end();++it)
         if ((*it)->Which == Obj)
@@ -1182,7 +1181,7 @@ void Document::recomputeFeature(DocumentObject* Feat)
     _recomputeFeature(Feat);
 }
 
-DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
+DocumentObject * Document::addObject(const char* sType, const char* pObjectName)
 {
     Base::BaseClass* base = static_cast<Base::BaseClass*>(Base::Type::createInstanceByName(sType,true));
 
@@ -1491,12 +1490,12 @@ DocumentObject* Document::moveObject(DocumentObject* obj, bool recursive)
     return obj;
 }
 
-DocumentObject *Document::getActiveObject(void) const
+DocumentObject * Document::getActiveObject(void) const
 {
     return d->activeObject;
 }
 
-DocumentObject *Document::getObject(const char *Name) const
+DocumentObject * Document::getObject(const char *Name) const
 {
     std::map<std::string,DocumentObject*>::const_iterator pos;
 
@@ -1508,7 +1507,7 @@ DocumentObject *Document::getObject(const char *Name) const
         return 0;
 }
 
-const char *Document::getObjectName(DocumentObject *pFeat) const
+const char * Document::getObjectName(DocumentObject *pFeat) const
 {
     std::map<std::string,DocumentObject*>::const_iterator pos;
 

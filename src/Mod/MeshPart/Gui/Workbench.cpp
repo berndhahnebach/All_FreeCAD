@@ -36,6 +36,7 @@ using namespace MeshPartGui;
     qApp->translate("Workbench", "MeshPart");
 #endif
 
+/// @namespace MeshPartGui @class Workbench
 TYPESYSTEM_SOURCE(MeshPartGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
