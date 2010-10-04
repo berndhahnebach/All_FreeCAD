@@ -12,7 +12,9 @@ Below are a few remarks and notes about Doxygen usage for FreeCAD, gathered afte
 - As a general rule, doxygen parser tries to identify unique names in the
   whole project. In particular, if the same identifier is found in several 
   namespaces, you'll have to use full qualified names (with  
-  namespace_name:: prepended) to suppress warnings.
+  namespace_name:: prepended) to suppress warnings, in the code or with a 
+  header to the comment block. (see the various Workbenches classes as an 
+  example)
 
 - The parser tries to match declarations an definitions. You'll sometimes
   need to help a bit.
@@ -21,7 +23,6 @@ Below are a few remarks and notes about Doxygen usage for FreeCAD, gathered afte
   namespaces. Again you'll need to use fully qualified names.
 
 - The parsing is done on a file by file basis, and is not very happy with .inl files containing inline functions definitions, meant to be included from a header file inside a namespace block. 
-
 Fix: take the include directive out of the namespace block in .h or .hpp file and put the whole .inl content in a namespace block.
 
 - Watch out for macros:
@@ -31,7 +32,7 @@ Fix: take the include directive out of the namespace block in .h or .hpp file an
    - Doxygen seems sensitive to the order of directories in input list,
 regarding macro definitions which must appear before they are used.
 
-- Templates specializations are not really well documented for now and generate warnings. Better skip the specialized redefinitions enclosing them in a /// @cond DOXERR /// @endcond block.
+- Templates specializations are not really well documented for now and generate warnings. Better skip the specialized redefinitions enclosing them in a /// \@cond DOXERR /// \@endcond block.
 
 - JAVADOC_AUTOBRIEF is enabled, so more brief comments are generated, with or without explicit \\brief tag.
 
