@@ -635,6 +635,8 @@ EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       =*.moc.* \
                          moc_* \
                          *.ui.h \
+                         */swigpyrun*.* \
+                         */lex.*.c \
                          */.svn/* \
                          */CMakeFiles/*
 
