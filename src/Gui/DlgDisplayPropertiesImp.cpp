@@ -105,6 +105,7 @@ DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
     Gui::Selection().Detach(this);
 }
 
+/// @cond DOXERR
 void DlgDisplayPropertiesImp::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                                        Gui::SelectionSingleton::MessageType Reason)
 {
@@ -123,6 +124,7 @@ void DlgDisplayPropertiesImp::OnChange(Gui::SelectionSingleton::SubjectType &rCa
         setLineTransparency(views);
     }
 }
+/// @endcond
 
 void DlgDisplayPropertiesImp::slotChangedObject(const Gui::ViewProvider& obj,
                                                 const App::Property& prop)

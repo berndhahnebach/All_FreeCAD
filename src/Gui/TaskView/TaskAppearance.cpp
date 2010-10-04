@@ -73,6 +73,7 @@ void TaskAppearance::changeEvent(QEvent *e)
     }
 }
 
+/// @cond DOXERR
 void TaskAppearance::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
@@ -87,6 +88,7 @@ void TaskAppearance::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
         setTransparency(views);
     }
 }
+/// @endcond
 
 void TaskAppearance::slotChangedObject(const Gui::ViewProvider& obj,
                                        const App::Property& prop)

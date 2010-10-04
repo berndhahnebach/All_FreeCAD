@@ -103,6 +103,7 @@ TaskSketcherConstrains::~TaskSketcherConstrains()
     delete ui;
 }
 
+/// @cond DOXERR
 void TaskSketcherConstrains::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType msg)
 {
@@ -127,8 +128,7 @@ void TaskSketcherConstrains::OnChange(Gui::SelectionSingleton::SubjectType &rCal
     else if (msg.Type == Gui::SelectionChanges::RmvSelection) {}
     else if (msg.Type == Gui::SelectionChanges::SetSelection) {}       
 }
-
-
+/// @endcond DOXERR
 
 void TaskSketcherConstrains::on_comboBoxFilter_currentIndexChanged(int)
 {

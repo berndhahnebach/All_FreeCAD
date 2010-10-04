@@ -147,6 +147,7 @@ TaskPanelView::~TaskPanelView()
     Gui::Selection().Detach(this);
 }
 
+/// @cond DOXERR
 void TaskPanelView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                             Gui::SelectionSingleton::MessageType Reason)
 {
@@ -171,5 +172,6 @@ bool TaskPanelView::onMsg(const char* pMsg)
     // no messages yet
     return false;
 }
+/// @endcond
 
 #include "moc_TaskPanelView.cpp"
