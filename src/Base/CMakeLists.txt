@@ -63,7 +63,7 @@ generate_from_xml(RotationPy)
 generate_from_xml(PlacementPy)
 
 if(SWIG_FOUND)
-    execute_process(COMMAND ${SWIG_EXECUTABLE} -python -external-runtime)
+    execute_process(COMMAND ${SWIG_EXECUTABLE} -python -external-runtime ${CMAKE_CURRENT_BINARY_DIR}/swigpyrun.h)
     add_definitions(-DHAVE_SWIG=1)
 endif(SWIG_FOUND)
 

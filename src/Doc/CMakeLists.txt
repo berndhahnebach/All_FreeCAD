@@ -21,9 +21,13 @@ if( DOXYGEN_FOUND)
                            ${CMAKE_SOURCE_DIR}/src/3rdParty
                            ${CMAKE_SOURCE_DIR}/src/Build 
                            ${CMAKE_SOURCE_DIR}/src/Base 
+                           ${CMAKE_BINARY_DIR}/src/Base 
                            ${CMAKE_SOURCE_DIR}/src/App 
+                           ${CMAKE_BINARY_DIR}/src/App 
                            ${CMAKE_SOURCE_DIR}/src/Gui 
+                           ${CMAKE_BINARY_DIR}/src/Gui 
                            ${CMAKE_SOURCE_DIR}/src/Mod
+                           ${CMAKE_BINARY_DIR}/src/Mod
                            ${CMAKE_SOURCE_DIR}/src/Main 
                            ${CMAKE_SOURCE_DIR}/src/Doc
     )
@@ -44,15 +48,15 @@ if( DOXYGEN_FOUND)
 
     SET(DOXYGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Doc/SourceDocu)
     SET(DOXYGEN_IMAGE_PATH ${CMAKE_SOURCE_DIR}/src/Gui/Icons)
-    SET(DOXYGEN_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/src/Doc/doxygen-headers)
+    SET(DOXYGEN_INCLUDE_PATH ${CMAKE_BINARY_DIR}/Doc/doxygen-headers)
 
     # ToDo: with automake, reproduce these copy operations
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/swigpyrun.h
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/src/Base/swigpyrun.h
                                                      ${DOXYGEN_INCLUDE_PATH})
     execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/FCConfig.h
                                                      ${DOXYGEN_INCLUDE_PATH})
     execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${COIN3D_INCLUDE_DIR}/Inventor/fields/SoSubField.h
-                                                     ${DOXYGEN_INCLUDE_PATH}/Inventor/fields/})
+                                                     ${DOXYGEN_INCLUDE_PATH}/Inventor/fields/)
     # The file(COPY) command is not available in version 2.6
     #file(COPY ${CMAKE_SOURCE_DIR}/swigpyrun.h
     #     DESTINATION  ${DOXYGEN_INCLUDE_PATH}
