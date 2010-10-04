@@ -106,6 +106,14 @@ if(FREECAD_LIBPACK_USE)
         message(SEND_ERROR  "Could not find neither LibPack 6.x nor 7.x in specified location:" ${FREECAD_LIBPACK_DIR})
     ENDIF(FREECAD_LIBPACK_CHECKFILE6X)
 
+# -------------------------------- Swig ----------------------------------
+
+    find_package(SWIG)
+
+    IF(NOT SWIG_FOUND)
+        MESSAGE("SWIG was not found, build no SWIG binding for pivy")
+    ENDIF(NOT SWIG_FOUND)
+
 else(FREECAD_LIBPACK_USE)
 
 MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)

@@ -196,7 +196,8 @@ EXTRA_DIST += \
 		$(PYCXXSRC)/Objects.hxx \
 		$(PYCXXSRC)/Version.hxx \
 		$(PYCXXSRC)/WrapPython.h \
-		$(PYCXXSRC)/COPYRIGHT
+		$(PYCXXSRC)/COPYRIGHT \
+		$(PYCXXSRC)/pycxx.dox
 else
 PYCXXSRC=/usr/share/@PYTHON_LIB@/CXX
 endif
@@ -263,6 +264,7 @@ EXTRA_DIST += \
 		$(ZIPIOS_SRC)/zipios_defs.h \
 		$(ZIPIOS_SRC)/zipoutputstreambuf.h \
 		$(ZIPIOS_SRC)/zipoutputstream.h \
-		$(nodist_libFreeCADBase_la_SOURCES)
+		$(nodist_libFreeCADBase_la_SOURCES) \
+		$(ZIPIOS_SRC)/zipios.dox
 endif
 
