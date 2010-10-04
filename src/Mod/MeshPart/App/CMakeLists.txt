@@ -16,8 +16,12 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
     ${PYTHON_INCLUDE_PATH}
     ${XERCESC_INCLUDE_DIR}
+)
+if(SMESH_FOUND)
+include_directories(
     ${SMESH_INCLUDE_DIR}
 )
+endif(SMESH_FOUND)
 link_directories(${OCC_LIBRARY_DIR})
 
 if(SMESH_FOUND)

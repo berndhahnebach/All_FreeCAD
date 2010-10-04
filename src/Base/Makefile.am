@@ -31,7 +31,6 @@ libFreeCADBase_la_SOURCES=\
 		BoundBoxPyImp.cpp \
 		Builder3D.cpp \
 		Console.cpp \
-		Doxygen.cpp \
 		Exception.cpp \
 		Factory.cpp \
 		FileInfo.cpp \
