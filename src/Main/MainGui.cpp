@@ -38,6 +38,7 @@
 #include <cstdio>
 #include <QApplication>
 #include <QMessageBox>
+#include <QLocale>
 
 // FreeCAD header
 #include <Base/Console.h>
@@ -144,8 +145,12 @@ std::string ProgramOptions::err;
 
 int main( int argc, char ** argv )
 {
-    // Make sure that we use '.' as decimal point
 #if defined(FC_OS_LINUX)
+    // Make sure to setup the Qt locale system before setting LANG and LC_ALL to C.
+    // which is needed to use the system locale settings.
+    (void)QLocale::system();
+    // Make sure that we use '.' as decimal point. See also
+    // http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=559846
     putenv("LANG=C");
     putenv("LC_ALL=C");
 #else
