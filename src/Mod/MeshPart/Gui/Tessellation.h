@@ -42,6 +42,10 @@ public:
     bool accept();
 
 private:
+    void findShapes();
+
+private:
+    QString document;
     std::auto_ptr<Ui_Tessellation> ui;
 };
 
