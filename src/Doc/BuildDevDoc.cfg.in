@@ -1434,7 +1434,8 @@ PREDEFINED             = HAVE_SWIG \
                          COIN_INTERNAL \
                          PYCXX_EXPORT= \
                          KDL_INLINE \
-                         YY_NO_UNISTD_H
+                         YY_NO_UNISTD_H \
+                         DOXYGEN_SHOULD_SKIP_THIS
 
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then

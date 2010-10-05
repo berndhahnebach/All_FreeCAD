@@ -15,8 +15,9 @@ if( DOXYGEN_FOUND)
     endif (NOT FREECAD_BUILD_GUI)
 
     # directory order seems important for correct macro expansion
-    # (at least Base before App)
-    SET(DOXYGEN_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src/CXX 
+    # (files containing macros definitions must be parsed before the files using them)
+    SET(DOXYGEN_SOURCE_DIR ${COIN3D_INCLUDE_DIR}/Inventor/fields/SoSubField.h 
+                           ${CMAKE_SOURCE_DIR}/src/CXX 
                            ${CMAKE_SOURCE_DIR}/src/zipios++ 
                            ${CMAKE_SOURCE_DIR}/src/3rdParty
                            ${CMAKE_SOURCE_DIR}/src/Build 
@@ -29,7 +30,7 @@ if( DOXYGEN_FOUND)
                            ${CMAKE_SOURCE_DIR}/src/Mod
                            ${CMAKE_BINARY_DIR}/src/Mod
                            ${CMAKE_SOURCE_DIR}/src/Main 
-                           ${CMAKE_SOURCE_DIR}/src/Doc
+                           ${CMAKE_SOURCE_DIR}/src/Doc 
     )
     STRING(REGEX REPLACE ";" " " DOXYGEN_INPUT_LIST "${DOXYGEN_SOURCE_DIR}")
 
@@ -48,25 +49,6 @@ if( DOXYGEN_FOUND)
 
     SET(DOXYGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Doc/SourceDocu)
     SET(DOXYGEN_IMAGE_PATH ${CMAKE_SOURCE_DIR}/src/Gui/Icons)
-    SET(DOXYGEN_INCLUDE_PATH ${CMAKE_BINARY_DIR}/Doc/doxygen-headers)
-
-    # ToDo: with automake, reproduce these copy operations
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/src/Base/swigpyrun.h
-                                                     ${DOXYGEN_INCLUDE_PATH})
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/FCConfig.h
-                                                     ${DOXYGEN_INCLUDE_PATH})
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${COIN3D_INCLUDE_DIR}/Inventor/fields/SoSubField.h
-                                                     ${DOXYGEN_INCLUDE_PATH}/Inventor/fields/)
-    # The file(COPY) command is not available in version 2.6
-    #file(COPY ${CMAKE_SOURCE_DIR}/swigpyrun.h
-    #     DESTINATION  ${DOXYGEN_INCLUDE_PATH}
-    #)
-    #file(COPY ${CMAKE_SOURCE_DIR}/src/FCConfig.h
-    #     DESTINATION  ${DOXYGEN_INCLUDE_PATH}
-    #)
-    #file(COPY ${COIN3D_INCLUDE_DIR}/Inventor/fields/SoSubField.h
-    #     DESTINATION  ${DOXYGEN_INCLUDE_PATH}/Inventor/fields/
-    #)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildDevDoc.cfg.in  
                    ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg @ONLY)

@@ -139,9 +139,10 @@ int SelectionFilterlex(void);
 // Parser, defined in SelectionFilter.y
 #include "SelectionFilter.tab.c"
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 // Scanner, defined in SelectionFilter.l
 #include "lex.SelectionFilter.c"
-
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 }
 
 bool SelectionFilter::parse(void)

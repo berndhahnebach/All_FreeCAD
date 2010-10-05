@@ -225,9 +225,10 @@ int UnitsApilex(void);
 // Parser, defined in UnitsApi.y
 #include "UnitsApi.tab.c"
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 // Scanner, defined in UnitsApi.l
 #include "lex.UnitsApi.c"
-
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 }
 
 double UnitsApi::parse(const char* buffer,bool &UsedUnit)
