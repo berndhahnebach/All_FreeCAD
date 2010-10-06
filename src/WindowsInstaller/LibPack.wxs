@@ -122,11 +122,23 @@
 				<File Id="LibPack84" Name="TKTopAlgo.dll"   />
 				<File Id="LibPack85" Name="TKXSBase.dll"   />
 				<?if $(var.ProcessorArchitecture)=x64 ?>
-				<File Id="LibPack87" Name="xerces-c_3_1.dll"   />
+				<File Id="LibPack86" Name="xerces-c_3_1.dll"   />
 				<?else ?>
-				<File Id="LibPack87" Name="xerces-c_2_8.dll"   />
+				<File Id="LibPack86" Name="xerces-c_2_8.dll"   />
 				<?endif ?>
-				<File Id="LibPack88" Name="zlib1.dll"   />
+				<File Id="LibPack87" Name="zlib1.dll"   />
+				<File Id="LibPack88" Name="TKAdvTools.dll"   />
+				<File Id="LibPack89" Name="TKV2d.dll"   />
+				<File Id="LibPack90" Name="TKV3d.dll"   />
+				<File Id="LibPack91" Name="Driver.dll"   />
+				<File Id="LibPack92" Name="DriverDAT.dll"   />
+				<File Id="LibPack93" Name="DriverSTL.dll"   />
+				<File Id="LibPack94" Name="DriverUNV.dll"   />
+				<File Id="LibPack95" Name="MEFISTO2.dll"   />
+				<File Id="LibPack96" Name="SMDS.dll"   />
+				<File Id="LibPack97" Name="SMESH.dll"   />
+				<File Id="LibPack98" Name="SMESHDS.dll"   />
+				<File Id="LibPack99" Name="StdMeshers.dll"   />
 			</Component>
 			<Directory Id="ImageFormDir" Name="imageformats" FileSource="../../bin/imageformats" >
 				<Component Id="ImageForm"  Guid="2139da00-a109-11dd-ad8b-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">

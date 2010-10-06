@@ -180,7 +180,7 @@
     </message>
     <message>
         <source>&amp;Drawing</source>
-        <translation>Zei&amp;chnung</translation>
+        <translation>Zei&amp;chnungsableitung</translation>
     </message>
     <message>
         <source>&amp;Windows</source>
@@ -216,7 +216,7 @@
     </message>
     <message>
         <source>&amp;Drafting</source>
-        <translation>Zei&amp;chnungsableitung</translation>
+        <translation>Zei&amp;chnung</translation>
     </message>
     <message>
         <source>Sketch based</source>
