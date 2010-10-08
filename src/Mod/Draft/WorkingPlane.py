@@ -108,7 +108,7 @@ class plane:
 		self.position = point.add(offsetVector)
 		self.weak = False
 		# FreeCAD.Console.PrintMessage("(position = " + str(self.position) + ")\n")
-		FreeCAD.Console.PrintMessage("New workplane x="+str(self.u)+" y="+str(self.v)+"z="+str(self.axis)+"\n")
+		FreeCAD.Console.PrintMessage("Current workplane: x="+str(fcvec.rounded(self.u))+" y="+str(fcvec.rounded(self.v))+" z="+str(fcvec.rounded(self.axis))+"\n")
 
 	def alignToCurve(self, shape, offset):
 		if shape.ShapeType == 'Edge':

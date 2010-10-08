@@ -33,6 +33,7 @@ import FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft
 from draftlibs import fcvec,fcgeo
 from FreeCAD import Vector
 from draftGui import todo,QtCore,QtGui
+from pivy import coin
 
 # loads a translation engine
 locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
@@ -51,21 +52,6 @@ def msg(text=None):
         "prints the given message on the FreeCAD status bar"
         if not text: FreeCAD.Console.PrintMessage("")
         else: FreeCAD.Console.PrintMessage(str(text.toLatin1()))
-
-# run self-tests
-try:
-	from pivy import coin
-	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
-		raise AssertionError("FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.")
-except AssertionError:
-	msg(translate("draft", "Error: FreeCAD and Python-Pivy use different versions of Coin. This will lead to unexpected behaviour.", None, QtGui.QApplication.UnicodeUTF8))
-	raise
-except ImportError:
-	msg(translate("draft", "Error: The Python-Pivy package must be installed on your system to use the Draft module", None, QtGui.QApplication.UnicodeUTF8))
-	raise
-except:
-	msg(translate("draft", "Error: Unknown error while trying to load the Python-Pivy package", None, QtGui.QApplication.UnicodeUTF8))
-	raise
 
 # loads the fill patterns
 FreeCAD.svgpatterns = importSVG.getContents(Draft.getDraftPath('icons.svg'),'pattern')
