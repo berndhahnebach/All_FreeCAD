@@ -26,7 +26,26 @@ __author__ = "Yorik van Havre <yorik@uncreated.net>"
 __url__ = ["http://free-cad.sourceforge.net"]
 
 import os
-from Draft import getDraftPath
+
+# run self-tests
+depsOK = False
+try:
+	from pivy import coin
+	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
+		raise AssertionError("FreeCAD and Pivy use different versions of Coin. This will lead to unexpected behaviour.")
+except AssertionError:
+	FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy use different versions of Coin. This will lead to unexpected behaviour.\n")
+except ImportError:
+	FreeCAD.Console.PrintWarning("Error: Pivy not found, Draft workbench will be disabled.\n")
+except:
+	FreeCAD.Console.PrintWarning("Error: Unknown error while trying to load Pivy\n")
+else:
+        try:
+                import PyQt4
+        except ImportError:
+                FreeCAD.Console.PrintWarning("Error: PyQt4 not found, Draft workbench will be disabled.\n")
+        else:
+                depsOK = True
 
 class DraftWorkbench (Workbench):
 	"the Draft Workbench"
@@ -152,67 +171,60 @@ class DraftWorkbench (Workbench):
 	ToolTip = "The Draft module is used for basic 2D CAD Drafting"
 
 	def Initialize(self):
-		self.initialized = False
-		try:
-			import pivy, PyQt4
-		except:
-			FreeCAD.Console.PrintWarning("Pivy and PyQt4 python modules must be installed on your system to use the 2D Drafting module.")
-		else:
-			Log ('Loading Draft GUI...\n')
-			import draftTools
-			self.cmdList = ["Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc",
-                                        "Draft_Polygon","Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
-			self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
-					"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
-                                        "Draft_PutOnSheet","Draft_Edit"]
-			self.treecmdList = ["Draft_ApplyStyle","Draft_MakeDraftWire","Draft_ToggleDisplayMode"]
-			self.appendToolbar("Draft tools",self.cmdList+self.modList)
-			self.appendMenu("Draft",self.cmdList+self.modList+self.treecmdList)
-                        import macros
-                        self.appendMenu(["&Macro","Installed Macros"],macros.macrosList)
-			import draftGui
-			self.draftToolBar=draftGui.toolBar()
-			FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
-			self.initialized = True
- 
+                Log ('Loading Draft GUI...\n')
+                try:
+                        import draftTools,draftGui,macros
+                except:
+                        pass
+                self.appendMenu(["&Macro","Installed Macros"],macros.macrosList)
+                self.draftToolBar=draftGui.toolBar()
+                self.cmdList = ["Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc",
+                                "Draft_Polygon","Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
+                self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
+				"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
+                                "Draft_PutOnSheet","Draft_Edit"]
+                self.treecmdList = ["Draft_ApplyStyle","Draft_MakeDraftWire","Draft_ToggleDisplayMode"]
+                self.appendToolbar("Draft tools",self.cmdList+self.modList)
+                self.appendMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+                FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
+                        
 	def Activated(self):
-		if self.initialized:
-			self.draftToolBar.draftWidget.setVisible(True)
-			self.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
+                self.draftToolBar.draftWidget.setVisible(True)
+                self.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
 
 	def Deactivated(self):
-		if self.initialized:
-			if (FreeCAD.activeDraftCommand != None): FreeCAD.activeDraftCommand.finish()
-			self.draftToolBar.draftWidget.setVisible(False)
-			self.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
+                if (FreeCAD.activeDraftCommand != None): FreeCAD.activeDraftCommand.finish()
+                self.draftToolBar.draftWidget.setVisible(False)
+                self.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
 
 	def ContextMenu(self, recipient):
-		if self.initialized:
-			if (recipient == "View"):
-				if (FreeCAD.activeDraftCommand == None):
-					if (FreeCADGui.Selection.getSelection() != []):
-						self.appendContextMenu("Draft",self.cmdList+self.modList+self.treecmdList)
-					else:
-						self.appendContextMenu("Draft",self.cmdList)
-				else:
-					if (FreeCAD.activeDraftCommand.featureName == "Line"):
-						lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
-						self.appendContextMenu("",lineList)
-			else:
-				if (FreeCADGui.Selection.getSelection() != []):
-					self.appendContextMenu("",self.treecmdList)
+                if (recipient == "View"):
+                        if (FreeCAD.activeDraftCommand == None):
+                                if (FreeCADGui.Selection.getSelection() != []):
+                                        self.appendContextMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+                                else:
+                                        self.appendContextMenu("Draft",self.cmdList)
+                        else:
+                                if (FreeCAD.activeDraftCommand.featureName == "Line"):
+                                        lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
+                                        self.appendContextMenu("",lineList)
+                else:
+                        if (FreeCADGui.Selection.getSelection() != []):
+                                self.appendContextMenu("",self.treecmdList)
 
 	def GetClassName(self): 
 		return "Gui::PythonWorkbench"
 
-# adding the Draft module scripts to FreeCAD
-Gui.addWorkbench(DraftWorkbench)
+if depsOK:
+        from Draft import getDraftPath
+        Gui.addWorkbench(DraftWorkbench)
+        Gui.addPreferencePage(getDraftPath("userprefs.ui"),"Draft")
+        Gui.addLanguagePath(getDraftPath("Languages"))
+        Gui.addIconPath(getDraftPath())
+
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
 App.addImportType("Open CAD Format (*.oca *.gcad)","importOCA")
 App.addExportType("Autodesk DXF (*.dxf)","importDXF")
 App.addExportType("SVG (*.svg)","importSVG")
 App.addExportType("Open CAD Format (*.oca)","importOCA")
-Gui.addPreferencePage(getDraftPath("userprefs.ui"),"Draft")
-Gui.addLanguagePath(getDraftPath("Languages"))
-Gui.addIconPath(getDraftPath())

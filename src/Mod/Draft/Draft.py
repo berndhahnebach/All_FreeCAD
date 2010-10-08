@@ -881,9 +881,11 @@ class ViewProviderDimension:
                                         obj.LineColor[1],
                                         obj.LineColor[2])
 		self.font = coin.SoFont()
+                self.font3d = coin.SoFont()
 		self.text = coin.SoAsciiText()
-		self.text.justification = coin.SoAsciiText.CENTER
-		self.text.string = ("%.2f" % p3.sub(p2).Length)
+                self.text3d = coin.SoText2()
+		self.text.justification = self.text3d.justification = coin.SoAsciiText.CENTER
+		self.text.string = self.text3d.string = ("%.2f" % p3.sub(p2).Length)
 		self.textpos = coin.SoTransform()
 		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
                 tm = fcvec.getPlaneRotation(p3.sub(p2),norm)
@@ -894,6 +896,11 @@ class ViewProviderDimension:
 		label.addChild(self.color)
 		label.addChild(self.font)
 		label.addChild(self.text)
+                label3d = coin.SoSeparator()
+                label3d.addChild(self.textpos)
+		label3d.addChild(self.color)
+		label3d.addChild(self.font3d)
+		label3d.addChild(self.text3d)
 		marker = coin.SoMarkerSet()
 		marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_5_5
 		self.coord1 = coin.SoCoordinate3()
@@ -923,7 +930,15 @@ class ViewProviderDimension:
 		self.node.addChild(selnode)
 		self.node.addChild(marks)
 		self.node.addChild(label)
-		obj.addDisplayMode(self.node,"Wireframe")
+                self.node3d = coin.SoGroup()
+                self.node3d.addChild(self.color)
+                self.node3d.addChild(self.drawstyle)
+                self.node3d.addChild(self.coords)
+                self.node3d.addChild(selnode)
+                self.node3d.addChild(marks)
+                self.node3d.addChild(label3d)
+		obj.addDisplayMode(self.node,"2D")
+                obj.addDisplayMode(self.node3d,"3D")
 		self.onChanged(obj,"FontSize")
 		self.onChanged(obj,"FontName")
                 self.Object = obj.Object
@@ -936,8 +951,7 @@ class ViewProviderDimension:
                                 if v1 != obj.Start: obj.Start = v1
                                 if v2 != obj.End: obj.End = v2
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
-		self.text.string = ("%.2f" % p3.sub(p2).Length)
-		# self.textpos.rotation.setValue(coin.SbVec3f(norm.x,norm.y,norm.z),angle)
+		self.text.string = self.text3d.string = ("%.2f" % p3.sub(p2).Length)
                 u = p3.sub(p2)
                 v = p2.sub(p1)
                 u.normalize()
@@ -945,7 +959,6 @@ class ViewProviderDimension:
                 u = fcvec.reorient(u,"x")
                 v = fcvec.reorient(v,"y")
                 w = fcvec.reorient(u.cross(v),"z")
-                print "ViewProviderDimension:",u,v,w
                 tm = FreeCAD.Placement(fcvec.getPlaneRotation(u,v,w)).Rotation.Q
                 self.textpos.rotation = coin.SbRotation(tm[0],tm[1],tm[2],tm[3])
 		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],
@@ -959,23 +972,26 @@ class ViewProviderDimension:
 	def onChanged(self, vp, prop):
 		if prop == "FontSize":
 			self.font.size = vp.FontSize
+                        self.font3d.size = vp.FontSize*100
 		elif prop == "FontName":
-			self.font.name = str(vp.FontName)
+			self.font.name = self.font3d.name = str(vp.FontName)
 		elif prop == "LineColor":
 			c = vp.LineColor
 			self.color.rgb.setValue(c[0],c[1],c[2])
 		elif prop == "LineWidth":
 			self.drawstyle.lineWidth = vp.LineWidth
+                elif prop == "DisplayMode":
+                        pass
 		else:
 			self.updateData(vp.Object, None)
 
 	def getDisplayModes(self,obj):
 		modes=[]
-		modes.append("Wireframe")
+		modes.extend(["2D","3D"])
 		return modes
 
 	def getDefaultDisplayMode(self):
-		return "Wireframe"
+		return "2D"
 
 	def getIcon(self):
                 if self.Object.Base:
