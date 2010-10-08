@@ -50,14 +50,20 @@ public:
 
     /** Builds up the list view with the properties. */
     void buildUp(const std::map<std::string, std::vector<App::Property*> >& props);
+    void setAutomaticDocumentUpdate(bool);
+    bool isAutomaticDocumentUpdate(bool) const;
 
 protected:
+    virtual void closeEditor (QWidget * editor, QAbstractItemDelegate::EndEditHint hint);
+    virtual void commitData (QWidget * editor);
+    virtual void editorDestroyed (QObject * editor);
     virtual void currentChanged (const QModelIndex & current, const QModelIndex & previous);
     virtual void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
     virtual QStyleOptionViewItem viewOptions() const;
 
 private:
     PropertyModel* propertyModel;
+    bool autoupdate;
 };
 
 } //namespace PropertyEditor

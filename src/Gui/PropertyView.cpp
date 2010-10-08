@@ -67,8 +67,10 @@ PropertyView::PropertyView(QWidget *parent)
     pLayout->addWidget(tabs, 0, 0);
 
     propertyEditorView = new Gui::PropertyEditor::PropertyEditor();
+    propertyEditorView->setAutomaticDocumentUpdate(false);
     tabs->addTab(propertyEditorView, trUtf8("View"));
     propertyEditorData = new Gui::PropertyEditor::PropertyEditor();
+    propertyEditorData->setAutomaticDocumentUpdate(true);
     tabs->addTab(propertyEditorData, trUtf8("Data"));
 }
 

@@ -28,6 +28,8 @@
 # include <QPainter>
 #endif
 
+#include <App/Application.h>
+#include <App/Document.h>
 #include "PropertyEditor.h"
 #include "PropertyItemDelegate.h"
 #include "PropertyModel.h"
@@ -35,7 +37,7 @@
 using namespace Gui::PropertyEditor;
 
 PropertyEditor::PropertyEditor(QWidget *parent)
-    : QTreeView(parent)
+    : QTreeView(parent), autoupdate(false)
 {
     propertyModel = new PropertyModel(this);
     setModel(propertyModel);
@@ -52,11 +54,41 @@ PropertyEditor::~PropertyEditor()
 {
 }
 
+void PropertyEditor::setAutomaticDocumentUpdate(bool v)
+{
+    autoupdate = v;
+}
+
+bool PropertyEditor::isAutomaticDocumentUpdate(bool) const
+{
+    return autoupdate;
+}
+
 QStyleOptionViewItem PropertyEditor::viewOptions() const
 {
     QStyleOptionViewItem option = QTreeView::viewOptions();
     option.showDecorationSelected = true;
     return option;
+}
+
+void PropertyEditor::closeEditor (QWidget * editor, QAbstractItemDelegate::EndEditHint hint)
+{
+    if (autoupdate) {
+        App::Document* doc = App::GetApplication().getActiveDocument();
+        if (doc && doc->isTouched())
+            doc->recompute();
+    }
+    QTreeView::closeEditor(editor, hint);
+}
+
+void PropertyEditor::commitData (QWidget * editor)
+{
+    QTreeView::commitData(editor);
+}
+
+void PropertyEditor::editorDestroyed (QObject * editor)
+{
+    QTreeView::editorDestroyed(editor);
 }
 
 void PropertyEditor::currentChanged ( const QModelIndex & current, const QModelIndex & previous )
