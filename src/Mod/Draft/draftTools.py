@@ -638,6 +638,49 @@ class editTracker(Tracker):
 
         def move(self,delta):
                 self.set(self.get().add(delta))
+
+class PlaneTracker(Tracker):
+        "A working plane tracker"
+        def __init__(self):
+                self.trans = coin.SoTransform()
+		self.trans.translation.setValue([0,0,0])
+                m1 = coin.SoMaterial()
+                m1.transparency.setValue(0.8)
+                m1.diffuseColor.setValue([0.4,0.4,0.6])
+                c1 = coin.SoCoordinate3()
+                c1.point.setValues([[-1,-1,0],[1,-1,0],[1,1,0],[-1,1,0]])
+                f = coin.SoIndexedFaceSet()
+                f.coordIndex.setValues([0,1,2,3])
+                m2 = coin.SoMaterial()
+                m2.transparency.setValue(0.7)
+                m2.diffuseColor.setValue([0.2,0.2,0.3])
+                c2 = coin.SoCoordinate3()
+                c2.point.setValues([[0,1,0],[0,0,0],[1,0,0],[-.05,.95,0],[0,1,0],[.05,.95,0],[.95,.05,0],[1,0,0],[.95,-.05,0]])
+                l = coin.SoLineSet()
+                l.numVertices.setValues([3,3,3])
+                s = coin.SoSeparator()
+                s.addChild(self.trans)
+                s.addChild(m1)
+                s.addChild(c1)
+                s.addChild(f)
+                s.addChild(m2)
+                s.addChild(c2)
+                s.addChild(l)
+                Tracker.__init__(self,children=[s])
+
+        def set(self,pos=None):
+                if pos:                        
+                        Q = plane.getRotation().Rotation.Q
+                else:
+                        plm = plane.getPlacement()
+                        Q = plm.Rotation.Q
+                        pos = plm.Base
+                self.trans.translation.setValue([pos.x,pos.y,pos.z])
+                self.trans.rotation.setValue([Q[0],Q[1],Q[2],Q[3]])
+                self.on()
+                        
+                
+        
      
 #---------------------------------------------------------------------------
 # Helper tools
@@ -765,9 +808,11 @@ class Creator:
 			self.pos = []
 			self.constrain = None
 			self.obj = None
+                        self.planetrack = PlaneTracker()
 		
 	def finish(self):
 		self.node=[]
+                self.planetrack.finalize()
 		FreeCAD.activeDraftCommand = None
 		if self.ui:
 			self.ui.offUi()
@@ -863,6 +908,7 @@ class Line(Creator):
 		if (len(self.node) == 1):
 			self.linetrack.on()
 			msg(translate("draft", "Pick next point:\n"))
+                        self.planetrack.set(self.node[0])
 		elif (len(self.node) == 2):
 			self.createTempObject()
 			last = self.node[len(self.node)-2]
@@ -1018,6 +1064,7 @@ class Rectangle(Creator):
                         self.ui.isRelative.show()
 			self.rect.setorigin(point)
 			self.rect.on()
+                        self.planetrack.set(point)
 
 
 class Arc(Creator):
@@ -1224,6 +1271,8 @@ class Arc(Creator):
 						self.step = 1
 						self.linetrack.on()
 						msg(translate("draft", "Pick radius:\n"))
+                                                self.planetrack.set(point)
+                                                
 				elif (self.step == 1): # choose radius
 					if self.closedCircle:
 						self.ui.cross(False)
@@ -1481,6 +1530,7 @@ class Polygon(Creator):
 						self.step = 1
 						self.linetrack.on()
 						msg(translate("draft", "Pick radius:\n"))
+                                                self.planetrack.set(point)
 				elif (self.step == 1): # choose radius
                                         self.ui.cross(False)
                                         self.drawPolygon()
@@ -1702,6 +1752,7 @@ class Dimension(Creator):
 				self.dimtrack.update(self.node)
 				if (len(self.node) == 1):
 					self.dimtrack.on()
+                                        self.planetrack.set(self.node[0])
                                 elif (len(self.node) == 2) and self.cont:
                                         self.node.append(self.cont)
                                         self.createObject()
@@ -1750,6 +1801,7 @@ class Modifier:
 			self.extendedCopy = False
                         self.ui.cmdlabel.setText(name)
 			self.featureName = name
+                        self.planetrack = PlaneTracker()
 		
 	def finish(self):
 		self.node = []
@@ -1759,6 +1811,7 @@ class Modifier:
 			self.ui.sourceCmd=None
 			self.ui.cross(False)
                 msg("")
+                self.planetrack.finalize()
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
 			
@@ -1843,6 +1896,7 @@ class Move(Modifier):
 					self.ghost.on()
 					self.linetrack.p1(point)
 					msg(translate("draft", "Pick end point:\n"))
+                                        self.planetrack.set(point)
 				else:
 					last = self.node[0]
 					if self.ui.isCopy.isChecked() or arg["AltDown"]:
@@ -2027,6 +2081,7 @@ class Rotate(Modifier):
 					self.linetrack.on()
 					self.step = 1
 					msg(translate("draft", "Pick base angle:\n"))
+                                        self.planetrack.set(point)
 				elif (self.step == 1):
 					self.ui.labelRadius.setText("Rotation")
 					self.arctrack.startPoint(point)
@@ -3180,7 +3235,7 @@ class ToggleDisplayMode():
                                         obj.ViewObject.DisplayMode = "Flat Lines"
 
 
-class Edit(Creator):
+class Edit(Modifier):
 	"The Draft_Edit FreeCAD command definition"
 
 	def __init__(self):
@@ -3195,7 +3250,7 @@ class Edit(Creator):
                 if self.running:
                         self.finish()
                 else:
-                        Creator.Activated(self,"Edit")
+                        Modifier.Activated(self,"Edit")
                         if self.doc:
                                 self.obj = Draft.getSelection()
                                 if self.obj:
@@ -3224,6 +3279,7 @@ class Edit(Creator):
                                         self.running = True
                                         plane.save()
                                         plane.alignToFace(self.obj.Shape)
+                                        self.planetrack.set(self.editpoints[0])
                                 else:
                                         self.finish()
 
@@ -3233,7 +3289,7 @@ class Edit(Creator):
                         self.snap.finalize()
                         for t in self.trackers: t.finalize()
                         self.constraintrack.finalize()
-		Creator.finish(self)
+		Modifier.finish(self)
                 plane.restore()
                 self.running = False
 
