@@ -502,7 +502,7 @@ def processdxf(document,filename):
                 edges = []
                 for s in shapes:
                         edges.extend(s.Edges)
-                shapes = fcgeo.findWires2(edges)
+                shapes = fcgeo.findWires(edges)
                 for s in shapes:
                         newob = addObject(s)
 
