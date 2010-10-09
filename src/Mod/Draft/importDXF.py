@@ -127,7 +127,7 @@ class fcformat:
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		self.paramtext = params.GetBool("dxftext")
                 self.paramstarblocks = params.GetBool("dxfstarblocks")
-		self.paramlayouts = params.GetBool("dxflayouts")
+		self.dxflayout = params.GetBool("dxflayouts")
 		self.paramstyle = params.GetInt("dxfstyle")
                 self.join = params.GetBool("joingeometry")
 		bparams = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View")
@@ -460,13 +460,14 @@ def processdxf(document,filename):
 	lines = drawing.entities.get_type("line")
 	if lines: FreeCAD.Console.PrintMessage("drawing "+str(len(lines))+" lines...\n")
 	for line in lines:
-		shape = drawLine(line)
-		if shape:
-                        if fmt.join:
-                                shapes.append(shape)
-                        else:
-                                newob = addObject(shape,"Line",line.layer)
-                                if gui: fmt.formatObject(newob,line)
+                if fmt.dxflayout or (not rawValue(line,67)):
+                        shape = drawLine(line)
+                        if shape:
+                                if fmt.join:
+                                        shapes.append(shape)
+                                else:
+                                        newob = addObject(shape,"Line",line.layer)
+                                        if gui: fmt.formatObject(newob,line)
 						
 	# drawing polylines
 
@@ -474,26 +475,28 @@ def processdxf(document,filename):
 	polylines.extend(drawing.entities.get_type("polyline"))
 	if polylines: FreeCAD.Console.PrintMessage("drawing "+str(len(polylines))+" polylines...\n")
 	for polyline in polylines:
-		shape = drawPolyline(polyline)
-		if shape:
-                        if fmt.join:
-                                shapes.append(shape)
-                        else:
-                                newob = addObject(shape,"Polyline",polyline.layer)
-                                if gui: fmt.formatObject(newob,polyline)
+                if fmt.dxflayout or (not rawValue(polyline,67)):
+                        shape = drawPolyline(polyline)
+                        if shape:
+                                if fmt.join:
+                                        shapes.append(shape)
+                                else:
+                                        newob = addObject(shape,"Polyline",polyline.layer)
+                                        if gui: fmt.formatObject(newob,polyline)
 				
 	# drawing arcs
 
 	arcs = drawing.entities.get_type("arc")
 	if arcs: FreeCAD.Console.PrintMessage("drawing "+str(len(arcs))+" arcs...\n")
 	for arc in arcs:
-		shape = drawArc(arc)
-		if shape:
-                        if fmt.join:
-                                shapes.append(shape)
-                        else:
-                                newob = addObject(shape,"Arc",arc.layer)
-                                if gui: fmt.formatObject(newob,arc)
+                if fmt.dxflayout or (not rawValue(arc,67)):
+                        shape = drawArc(arc)
+                        if shape:
+                                if fmt.join:
+                                        shapes.append(shape)
+                                else:
+                                        newob = addObject(shape,"Arc",arc.layer)
+                                        if gui: fmt.formatObject(newob,arc)
 
         # joining lines, polylines and arcs if needed
 
@@ -511,10 +514,11 @@ def processdxf(document,filename):
 	circles = drawing.entities.get_type("circle")
 	if circles: FreeCAD.Console.PrintMessage("drawing "+str(len(circles))+" circles...\n")
 	for circle in circles:
-		shape = drawCircle(circle)
-		if shape:
-			newob = addObject(shape,"Circle",circle.layer)
-			if gui: fmt.formatObject(newob,circle)
+                if fmt.dxflayout or (not rawValue(circle,67)):
+                        shape = drawCircle(circle)
+                        if shape:
+                                newob = addObject(shape,"Circle",circle.layer)
+                                if gui: fmt.formatObject(newob,circle)
 
 	# drawing texts
 
@@ -523,7 +527,8 @@ def processdxf(document,filename):
 		texts.extend(drawing.entities.get_type("text"))
 		if texts: FreeCAD.Console.PrintMessage("drawing "+str(len(texts))+" texts...\n")
 		for text in texts:
-                        addText(text)
+                        if fmt.dxflayout or (not rawValue(text,67)):
+                                addText(text)
 					
 	else: FreeCAD.Console.PrintMessage("skipping texts...\n")
 
@@ -533,47 +538,48 @@ def processdxf(document,filename):
                 dims = drawing.entities.get_type("dimension")
 		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" dimensions...\n")
 		for dim in dims:
-			try:
-				layer = rawValue(dim,8)
-				x1 = float(rawValue(dim,10))
-				y1 = float(rawValue(dim,20))
-				z1 = float(rawValue(dim,30))
-				x2 = float(rawValue(dim,13))
-				y2 = float(rawValue(dim,23))
-				z2 = float(rawValue(dim,33))
-				x3 = float(rawValue(dim,14))
-				y3 = float(rawValue(dim,24))
-				z3 = float(rawValue(dim,34))
-				d = rawValue(dim,70)
-				if d: align = int(d)
-				else: align = 0
-				d = rawValue(dim,50)
-				if d: angle = float(d)
-				else: angle = 0
-			except:
-				warn(dim)
-			else:
-				lay=locateLayer(layer)
-				pt = FreeCAD.Vector(x1,y1,z1)
-				p1 = FreeCAD.Vector(x2,y2,z2)
-				p2 = FreeCAD.Vector(x3,y3,z3)
-				if align == 0:
-					if angle == 0:
-						p2 = FreeCAD.Vector(x3,y2,z2)
-					else:
-						p2 = FreeCAD.Vector(x2,y3,z2)
+                        if fmt.dxflayout or (not rawValue(dim,67)):
+                                try:
+                                        layer = rawValue(dim,8)
+                                        x1 = float(rawValue(dim,10))
+                                        y1 = float(rawValue(dim,20))
+                                        z1 = float(rawValue(dim,30))
+                                        x2 = float(rawValue(dim,13))
+                                        y2 = float(rawValue(dim,23))
+                                        z2 = float(rawValue(dim,33))
+                                        x3 = float(rawValue(dim,14))
+                                        y3 = float(rawValue(dim,24))
+                                        z3 = float(rawValue(dim,34))
+                                        d = rawValue(dim,70)
+                                        if d: align = int(d)
+                                        else: align = 0
+                                        d = rawValue(dim,50)
+                                        if d: angle = float(d)
+                                        else: angle = 0
+                                except:
+                                        warn(dim)
+                                else:
+                                        lay=locateLayer(layer)
+                                        pt = FreeCAD.Vector(x1,y1,z1)
+                                        p1 = FreeCAD.Vector(x2,y2,z2)
+                                        p2 = FreeCAD.Vector(x3,y3,z3)
+                                        if align == 0:
+                                                if angle == 0:
+                                                        p2 = FreeCAD.Vector(x3,y2,z2)
+                                                else:
+                                                        p2 = FreeCAD.Vector(x2,y3,z2)
 
-				newob = doc.addObject("App::FeaturePython","Dimension")
-				lay.addObject(newob)
-				Dimension(newob)
-				ViewProviderDimension(newob.ViewObject)
-				newob.Start = p1
-				newob.End = p2
-				newob.Dimline = pt
-				if gui:
-					dim.layer = layer
-					dim.color_index = 256
-					fmt.formatObject (newob,dim)
+                                        newob = doc.addObject("App::FeaturePython","Dimension")
+                                        lay.addObject(newob)
+                                        Dimension(newob)
+                                        ViewProviderDimension(newob.ViewObject)
+                                        newob.Start = p1
+                                        newob.End = p2
+                                        newob.Dimline = pt
+                                        if gui:
+                                                dim.layer = layer
+                                                dim.color_index = 256
+                                                fmt.formatObject (newob,dim)
 						
 	else: FreeCAD.Console.PrintMessage("skipping dimensions...\n")
 
@@ -584,8 +590,9 @@ def processdxf(document,filename):
                 FreeCAD.Console.PrintMessage("skipping *blocks...\n")
                 newinserts = []
                 for i in inserts:
-                        if i.block[0] != '*':
-                                newinserts.append(i)
+                        if fmt.dxflayout or (not rawValue(i,67)):
+                                if i.block[0] != '*':
+                                        newinserts.append(i)
                 inserts = newinserts
 	if inserts:
 		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" blocks...\n")
