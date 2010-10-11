@@ -74,6 +74,7 @@
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/VRMLnodes/SoVRMLGroup.h>
 # include <QEventLoop>
+# include <QKeyEvent>
 # include <QMessageBox>
 # include <QTimer>
 #endif
@@ -87,6 +88,7 @@
 #include <zipios++/gzipoutputstream.h>
 
 #include "View3DInventorViewer.h"
+#include "ViewProviderDocumentObject.h"
 #include "SoFCBackgroundGradient.h"
 #include "SoFCColorBar.h"
 #include "SoFCColorLegend.h"
@@ -978,6 +980,21 @@ void View3DInventorViewer::printDimension()
         getMainWindow()->setPaneText(2, QLatin1String(""));
 }
 
+void View3DInventorViewer::selectAll()
+{
+    std::vector<App::DocumentObject*> objs;
+    for (std::set<ViewProvider*>::iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); ++it) {
+         if ((*it)->getTypeId().isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) {
+             ViewProviderDocumentObject* vp = static_cast<ViewProviderDocumentObject*>(*it);
+             App::DocumentObject* obj = vp->getObject();
+             if (obj) objs.push_back(obj);
+         }
+    }
+
+    if (!objs.empty())
+        Gui::Selection().setSelection(objs.front()->getDocument()->getName(), objs);
+}
+
 /*!
   As ProgressBar has no chance to control the incoming Qt events of SoQt we need to override
   SoQtViewer::processEvent() to prevent the scenegraph from being selected or deselected
@@ -985,6 +1002,13 @@ void View3DInventorViewer::printDimension()
  */
 void View3DInventorViewer::processEvent(QEvent * event)
 {
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent* ke = static_cast<QKeyEvent*>(event);
+        if (ke->matches(QKeySequence::SelectAll)) {
+            selectAll();
+            return;
+        }
+    }
     if (!Base::Sequencer().isRunning() ||
         !Base::Sequencer().isBlocking())
         inherited::processEvent(event);
