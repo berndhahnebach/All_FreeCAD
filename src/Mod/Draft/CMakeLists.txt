@@ -12,7 +12,8 @@ SET(Draft_SRCS
     macros.py
     icons.svg
     preferences-draft.svg
-    userprefs.ui
+    userprefs-base.ui
+    userprefs-import.ui
 )
 SOURCE_GROUP("" FILES ${Draft_SRCS})
 
