@@ -268,6 +268,7 @@ protected:
     virtual SbBool processSoEvent(const SoEvent * const ev);
     SbBool processSoEventBase(const SoEvent * const ev);
     void printDimension();
+    void selectAll();
 
     static void clearBuffer(void * userdata, SoAction * action);
     static void setGLWidget(void * userdata, SoAction * action);
