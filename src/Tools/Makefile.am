@@ -5,8 +5,6 @@ endif
 
 EXTRA_DIST = \
 		fcbt/__init__.py \
-		fcbt/BuildDoc.py \
-		fcbt/BuildDocDoxy.cfg \
 		fcbt/CreateModule.py \
 		fcbt/DistBin.py \
 		fcbt/DistSetup.py \

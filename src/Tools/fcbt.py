@@ -15,7 +15,6 @@ possible commands are:
  - DistSetup       (DI)   Build a Setup Distr. of the current source tree
  - DistSetup       (DUI)  Build a User Setup Distr. of the current source tree
  - DistAll         (DA)   Run all three above modules
- - BuildDoc        (BD)   Create the documentation (source docs)
  - NextBuildNumber (NBN)  Increase the Build Number of this Version 
  - CreateModule    (CM)   Insert a new FreeCAD Module in the module directory
 
@@ -46,8 +45,6 @@ elif Cmd == "distall" or Cmd == "da":
 	import fcbt.DistSrc
 	import fcbt.DistBin
 	import fcbt.DistSetup
-elif Cmd == "builddoc" or Cmd == "bd":
-	import fcbt.BuildDoc
 elif Cmd == "nextbuildnumber" or Cmd == "nbn":
 	import fcbt.NextBuildNumber
 elif Cmd == "createmodule" or Cmd == "cm":
