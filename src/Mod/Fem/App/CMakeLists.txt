@@ -13,15 +13,18 @@ include_directories(
     ${OCC_INCLUDE_DIR}
     ${PYTHON_INCLUDE_PATH}
     ${ZLIB_INCLUDE_DIR}
-    ${SMESH_INCLUDE_DIR}
     ${XERCESC_INCLUDE_DIR}
 )
 
 set(Fem_LIBS
     Part
-    ${SMESH_LIBRARIES}
     FreeCADApp
 )
+
+if(SMESH_FOUND)
+    include_directories( ${SMESH_INCLUDE_DIR} )
+    list( APPEND Fem_LIBS ${SMESH_LIBRARIES} )
+endif(SMESH_FOUND)
 
 generate_from_xml(FemMeshPy)
 
