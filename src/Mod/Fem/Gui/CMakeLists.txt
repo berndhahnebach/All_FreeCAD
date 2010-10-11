@@ -14,16 +14,19 @@ include_directories(
     ${QT_INCLUDE_DIR}
     ${EIGEN2_INCLUDE_DIR}
     ${SOQT_INCLUDE_DIR}
-    ${SMESH_INCLUDE_DIR}
     ${PYTHON_INCLUDE_PATH}
     ${XERCESC_INCLUDE_DIR}
 )
 
 set(FemGui_LIBS
     Fem
-    ${SMESH_LIBRARIES}
     FreeCADGui
 )
+
+if(SMESH_FOUND)
+    include_directories( ${SMESH_INCLUDE_DIR} )
+    list( APPEND FemGui_LIBS ${SMESH_LIBRARIES} )
+endif(SMESH_FOUND)
 
 qt4_add_resources(FemResource_SRCS Resources/Fem.qrc)
 

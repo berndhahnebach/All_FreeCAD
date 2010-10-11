@@ -49,6 +49,7 @@ if( DOXYGEN_FOUND)
 
     SET(DOXYGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Doc/SourceDocu)
     SET(DOXYGEN_IMAGE_PATH ${CMAKE_SOURCE_DIR}/src/Gui/Icons)
+    SET(DOXYGEN_LAYOUT_FILE ${CMAKE_SOURCE_DIR}/src/Doc/FreecadDoxygenLayout.xml)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildDevDoc.cfg.in  
                    ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg @ONLY)
@@ -71,9 +72,15 @@ if( DOXYGEN_FOUND)
         )
 
     else( FREECAD_MAINTAINERS_BUILD )
+ 
+        # reconfigure to have all sources files generated from xml, whatever build options were
+        # generate source documentation
+        # delete CMakeCache to reset to default build options next time 
         ADD_CUSTOM_TARGET(DevDoc
-            ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg 
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_COMMAND} -D FREECAD_BUILD_GUI:BOOL=ON -D FREECAD_BUILD_FEM:BOOL=ON ${CMAKE_SOURCE_DIR}
+            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg
+            COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_BINARY_DIR}/CMakeCache.txt
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
 
     endif( FREECAD_MAINTAINERS_BUILD )
