@@ -176,6 +176,25 @@ def getTranslation(languagecode):
         else:
                 return None
 
+def dimSymbol():
+        "returns the current dim symbol from the preferences"
+        s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
+            GetInt("dimsymbol")
+        marker = coin.SoMarkerSet()
+        if s == 0: marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_5_5
+        elif s == 1: marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_7_7
+        elif s == 2: marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
+        elif s == 3: marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_5_5
+        elif s == 4: marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_7_7
+        elif s == 5: marker.markerIndex = coin.SoMarkerSet.CIRCLE_LINE_9_9
+        elif s == 6: marker.markerIndex = coin.SoMarkerSet.SLASH_5_5
+        elif s == 7: marker.markerIndex = coin.SoMarkerSet.SLASH_7_7
+        elif s == 8: marker.markerIndex = coin.SoMarkerSet.SLASH_9_9
+        elif s == 9: marker.markerIndex = coin.SoMarkerSet.BACKSLASH_5_5
+        elif s == 10: marker.markerIndex = coin.SoMarkerSet.BACKSLASH_7_7
+        elif s == 11: marker.markerIndex = coin.SoMarkerSet.BACKSLASH_9_9
+        return marker
+
 def shapify(obj):
         '''shapify(object): transforms a parametric shape object into
         non-parametric and returns the new object'''
@@ -901,8 +920,6 @@ class ViewProviderDimension:
 		label3d.addChild(self.color)
 		label3d.addChild(self.font3d)
 		label3d.addChild(self.text3d)
-		marker = coin.SoMarkerSet()
-		marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_5_5
 		self.coord1 = coin.SoCoordinate3()
 		self.coord1.point.setValue((p2.x,p2.y,p2.z))
 		self.coord2 = coin.SoCoordinate3()
@@ -910,9 +927,9 @@ class ViewProviderDimension:
 		marks = coin.SoAnnotation()
 		marks.addChild(self.color)
 		marks.addChild(self.coord1)
-		marks.addChild(marker)
+		marks.addChild(dimSymbol())
 		marks.addChild(self.coord2)
-		marks.addChild(marker)       
+		marks.addChild(dimSymbol())       
 		self.drawstyle = coin.SoDrawStyle()
 		self.drawstyle.lineWidth = 1       
 		line = coin.SoLineSet()
@@ -1196,7 +1213,6 @@ class Wire:
 
         def onChanged(self, fp, prop):
                 if prop in ["Points","Closed","Base","Tool"]:
-                        print "changed",prop
                         self.createGeometry(fp)
                         
         def createGeometry(self,fp):
@@ -1232,6 +1248,19 @@ class Wire:
 
 class ViewProviderWire(ViewProviderDraft):
         "A View Provider for the Wire object"
+        def __init__(self, obj):
+                ViewProviderDraft.__init__(self,obj)
+                obj.addProperty("App::PropertyBool","EndArrow",
+                                "Base","Displays a dim symbol at the end of the wire")
+                col = coin.SoBaseColor()
+                col.rgb.setValue(obj.LineColor[0],
+                                 obj.LineColor[1],
+                                 obj.LineColor[2])
+                self.coords = coin.SoCoordinate3()
+                self.pt = coin.SoAnnotation()
+                self.pt.addChild(col)
+                self.pt.addChild(self.coords)
+                self.pt.addChild(dimSymbol())
 
 	def getIcon(self):
 		return """
@@ -1260,6 +1289,22 @@ class ViewProviderWire(ViewProviderDraft):
                        "    .+++..      ",
                        "     ...        "};
 		       """
+        
+        def updateData(self, obj, prop):
+                if prop == "Points":
+                        if obj.Points:
+                                p = obj.Points[-1]
+                                self.coords.point.setValue((p.x,p.y,p.z))
+		return
+
+        def onChanged(self, vp, prop):
+                if prop == "EndArrow":
+                        rn = vp.RootNode
+                        if vp.EndArrow:
+                                rn.addChild(self.pt)
+                        else:
+                                rn.removeChild(self.pt)
+		return
 
 class Polygon:
         "The Polygon object"

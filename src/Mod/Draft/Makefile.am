@@ -14,7 +14,8 @@ data_DATA = \
 		icons.svg \
 		macros.py \
 		preferences-draft.svg \
-		userprefs.ui
+		userprefs-base.ui \
+        userprefs-import.ui
 
 nobase_data_DATA = \
 		draftlibs/dxfColorMap.py \

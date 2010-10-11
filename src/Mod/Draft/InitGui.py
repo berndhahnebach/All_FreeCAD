@@ -218,7 +218,8 @@ class DraftWorkbench (Workbench):
 if depsOK:
         from Draft import getDraftPath
         Gui.addWorkbench(DraftWorkbench)
-        Gui.addPreferencePage(getDraftPath("userprefs.ui"),"Draft")
+        Gui.addPreferencePage(getDraftPath("userprefs-base.ui"),"Draft")
+        Gui.addPreferencePage(getDraftPath("userprefs-import.ui"),"Draft")
         Gui.addLanguagePath(getDraftPath("Languages"))
         Gui.addIconPath(getDraftPath())
 

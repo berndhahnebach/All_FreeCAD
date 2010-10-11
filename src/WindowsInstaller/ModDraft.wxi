@@ -34,7 +34,8 @@
             <File Id="importSVGPy" Name="importSVG.py" DiskId="1" />
             <File Id="WorkingPlanePy" Name="WorkingPlane.py" DiskId="1" />
             <File Id="macrosPy" Name="macros.py" DiskId="1" />
-            <File Id="userprefsUi" Name="userprefs.ui" DiskId="1" />
+            <File Id="userprefsBaseUi" Name="userprefs-base.ui" DiskId="1" />
+            <File Id="userprefsImportUi" Name="userprefs-import.ui" DiskId="1" />
             <File Id="DraftIconsSvg" Name="icons.svg" DiskId="1" />
             <File Id="DraftPreferencesDraftSvg" Name="preferences-draft.svg" DiskId="1" />
         </Component>
