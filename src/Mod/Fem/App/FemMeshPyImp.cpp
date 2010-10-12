@@ -1,7 +1,7 @@
 
 #include "PreCompiled.h"
 
-#include <SMESH_GEN.hxx>
+#include <SMESH_Gen.hxx>
 #include <SMESH_Mesh.hxx>
 #include <SMDS_VolumeTool.hxx>
 
