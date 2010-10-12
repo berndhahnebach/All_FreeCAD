@@ -25,8 +25,7 @@
 
 #ifndef _PreComp_
 # include <cstdlib>
-#include <strstream>
-
+# include <strstream>
 #endif
 
 #include <Base/Writer.h>
@@ -38,7 +37,7 @@
 
 #include "FemMesh.h"
 
-#include <SMESH_GEN.hxx>
+#include <SMESH_Gen.hxx>
 #include <SMESH_Mesh.hxx>
 #include <SMDS_VolumeTool.hxx>
 
@@ -52,13 +51,12 @@ TYPESYSTEM_SOURCE(Fem::FemMesh , Base::Persistence);
 
 FemMesh::FemMesh()
 {
-	SMESH_Gen *aMeshGen = new SMESH_Gen();
-	myMesh = aMeshGen->CreateMesh(1,false);
+    SMESH_Gen *aMeshGen = new SMESH_Gen();
+    myMesh = aMeshGen->CreateMesh(1,false);
     //delete aMeshGen;
 }
 
 FemMesh::FemMesh(const FemMesh& Mesh)
-
 {
     delete myMesh;
 }
@@ -72,10 +70,6 @@ FemMesh &FemMesh::operator=(const FemMesh& Trac)
 {
     return *this;
 }
-
-
-
-
 
 void FemMesh::read(const char *FileName)
 {
@@ -137,7 +131,7 @@ void FemMesh::write(const char *FileName)
 
 unsigned int FemMesh::getMemSize (void) const
 {
-	return 0;
+    return 0;
 }
 
 void FemMesh::Save (Base::Writer &writer) const
@@ -206,11 +200,8 @@ void FemMesh::RestoreDocFile(Base::Reader &reader)
 
     // delete the temp file
     fi.deleteFile();
-
 }
 
-
- 
 void FemMesh::setTransform(const Base::Matrix4D& rclTrf)
 {
  /*   gp_Trsf mov;

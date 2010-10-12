@@ -40,6 +40,7 @@
 # include <QPainter>
 # include <Inventor/nodes/SoAnnotation.h>
 # include <Inventor/nodes/SoImage.h>
+# include <boost/thread/thread.hpp>
 # include <boost/thread/mutex.hpp>
 # include <boost/thread/condition_variable.hpp>
 # include <boost/thread/future.hpp>
