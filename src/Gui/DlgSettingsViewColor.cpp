@@ -41,6 +41,8 @@ DlgSettingsViewColor::DlgSettingsViewColor(QWidget* parent)
     : PreferencePage(parent)
 {
     this->setupUi(this);
+    this->HighlightColor->setEnabled(this->checkBoxPreselection->isChecked());
+    this->SelectionColor->setEnabled(this->checkBoxSelection->isChecked());
 }
 
 /** 
