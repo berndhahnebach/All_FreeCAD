@@ -6,21 +6,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-/**
- *
- * \brief Generates an M-by-N real matrix Q with orthonormal columns,
- * which is defined as the first N columns of a product of K elementary
- *	  reflectors of order M
- *        Q  =  H(1) H(2) . . . H(k)
- *
- * \warning 
- * \todo 
- * \date 2005
- * \author CEA/DRT/DTSI/SARC 
- * \author Q.C. PHAM
- *
- **/
-
 
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_ORGQR_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_ORGQR_HPP
@@ -55,7 +40,20 @@ namespace boost { namespace numeric { namespace bindings {
 	 ///////////////////////////////////////////////////////////////////
     namespace detail {
 
-
+      /**
+       *
+       * Generates an M-by-N real matrix Q with orthonormal columns,
+       * which is defined as the first N columns of a product of K elementary
+       *	  reflectors of order M
+       *        Q  =  H(1) H(2) . . . H(k)
+       *
+       * \warning 
+       * \todo 
+       * \date 2005
+       * \author CEA/DRT/DTSI/SARC 
+       * \author Q.C. PHAM
+       *
+       **/
       inline 
       void orgqr(int const m, int const n, int const k,
                  float* a, int const lda,
