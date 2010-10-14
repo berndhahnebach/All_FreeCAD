@@ -283,6 +283,45 @@ protected:
 private:
     QLabel* label;
 };
+
+// ----------------------------------------------------------------------
+
+class GuiExport LabelEditor : public QWidget
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QString  text        READ text        WRITE setText      )
+    Q_PROPERTY(QString  buttonText  READ buttonText  WRITE setButtonText)
+
+public:
+    LabelEditor (QWidget * parent = 0);
+    virtual ~LabelEditor();
+
+    /** 
+    * Returns the filename.
+    */
+    QString text() const;
+
+    /**
+    * Returns the button's text.
+    */
+    QString buttonText() const;
+
+public Q_SLOTS:
+    virtual void setText(const QString &);
+    virtual void setButtonText (const QString &);
+
+Q_SIGNALS:
+    void textChanged(const QString &);
+
+private Q_SLOTS:
+    void changeText();
+
+private:
+    QLineEdit *lineEdit;
+    QPushButton *button;
+};
+
 } // namespace Gui
 
 #endif // GUI_WIDGETS_H

@@ -351,8 +351,8 @@ FileChooser::FileChooser ( QWidget * parent )
     layout->setMargin( 0 );
     layout->setSpacing( 6 );
 
-        lineEdit = new QLineEdit( this );
-        layout->addWidget( lineEdit );
+    lineEdit = new QLineEdit( this );
+    layout->addWidget( lineEdit );
 
     connect(lineEdit, SIGNAL(textChanged(const QString &)),
             this, SIGNAL(fileNameChanged(const QString &)));

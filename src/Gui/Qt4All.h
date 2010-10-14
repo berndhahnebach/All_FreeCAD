@@ -65,7 +65,8 @@
 #if QT_VERSION >= 0x040200
 #include <QDesktopServices>
 #endif
-#include <QDesktopWidget> 
+#include <QDesktopWidget>
+#include <QDialogButtonBox>
 #include <QDockWidget>
 #include <qdrawutil.h>
 #include <qevent.h>
@@ -96,6 +97,7 @@
 #include <qpalette.h>
 #include <qpixmap.h>
 #include <QPixmapCache>
+#include <QPlainTextEdit>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QProgressBar>

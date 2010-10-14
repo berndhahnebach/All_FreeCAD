@@ -1286,27 +1286,26 @@ PropertyStringListItem::PropertyStringListItem()
 {
 }
 
-QWidget* PropertyStringListItem::createEditor(QWidget* parent, const QObject* /*receiver*/, const char* /*method*/) const
+QWidget* PropertyStringListItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
-    QComboBox *cb = new QComboBox(parent);
-    cb->setFrame(false);
-    return cb;
+    Gui::LabelEditor* le = new Gui::LabelEditor(parent);
+    le->setAutoFillBackground(true);
+    QObject::connect(le, SIGNAL(textChanged(const QString&)), receiver, method);
+    return le;
 }
 
 void PropertyStringListItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
-    QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    cb->setEditable(true);
-    cb->insertItems(0, data.toStringList());
-    cb->setCurrentIndex(0);
+    Gui::LabelEditor *le = qobject_cast<Gui::LabelEditor*>(editor);
+    QStringList list = data.toStringList();
+    le->setText(list.join(QChar::fromAscii('\n')));
 }
 
 QVariant PropertyStringListItem::editorData(QWidget *editor) const
 {
-    QComboBox *cb = qobject_cast<QComboBox*>(editor);
-    QStringList list;
-    for (int i=0; i<cb->count(); i++)
-        list << cb->itemText(i);
+    Gui::LabelEditor *le = qobject_cast<Gui::LabelEditor*>(editor);
+    QString complete = le->text();
+    QStringList list = complete.split(QChar::fromAscii('\n'));
     return QVariant(list);
 }
 
