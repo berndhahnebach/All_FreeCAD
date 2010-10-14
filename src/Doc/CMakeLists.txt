@@ -10,6 +10,7 @@ if( DOXYGEN_FOUND)
     SET(DOXYGEN_LANGUAGE "English" CACHE STRING "Language used by doxygen")
     MARK_AS_ADVANCED(DOXYGEN_LANGUAGE)
 
+# note: this test is obsolete if DevDoc target is used
     if (NOT FREECAD_BUILD_GUI)
         message("Note: Gui is not built. Documentation may lack some parts.")
     endif (NOT FREECAD_BUILD_GUI)
@@ -50,6 +51,13 @@ if( DOXYGEN_FOUND)
     SET(DOXYGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Doc/SourceDocu)
     SET(DOXYGEN_IMAGE_PATH ${CMAKE_SOURCE_DIR}/src/Gui/Icons)
     SET(DOXYGEN_LAYOUT_FILE ${CMAKE_SOURCE_DIR}/src/Doc/FreecadDoxygenLayout.xml)
+
+    find_package(Coin3DDoc)
+    if( COIN3D_DOC_FOUND )
+        SET(DOXYGEN_TAGFILES 
+            ${COIN3D_DOC_TAGFILE}=${COIN3D_DOC_PATH}
+        )
+    endif( COIN3D_DOC_FOUND )
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildDevDoc.cfg.in  
                    ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg @ONLY)
