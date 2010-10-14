@@ -1509,7 +1509,7 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = @DOXYGEN_TAGFILES@
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
@@ -1719,6 +1719,7 @@ DOT_TRANSPARENT        = NO
 # Set the DOT_MULTI_TARGETS tag to YES allow dot to generate multiple output
 # files in one run (i.e. multiple -o and -T options on the command line). This
 # makes dot run faster, but since only newer versions of dot (>1.8.10)
+
 # support this, this feature is disabled by default.
 
 DOT_MULTI_TARGETS      = YES
