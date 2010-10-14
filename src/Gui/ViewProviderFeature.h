@@ -25,6 +25,7 @@
 #define GUI_VIEWPROVIDER_FEATURE_H
 
 #include <Inventor/lists/SoPickedPointList.h> 
+#include <App/PropertyStandard.h>
 #include "ViewProviderDocumentObject.h"
 
 class SoPickedPointList;
@@ -45,6 +46,8 @@ public:
 
     /// destructor.
     virtual ~ViewProviderFeature();
+
+    App::PropertyColorList    ColourList;
 
     /**
      * Attaches the document object to this view provider.

@@ -248,7 +248,10 @@ std::string FileInfo::extension (bool complete) const
 {
     // complete not implemented
     assert(complete==false);
-    return FileName.substr(FileName.find_last_of('.')+1);
+    std::string::size_type pos = FileName.find_last_of('.');
+    if (pos == std::string::npos)
+        return std::string();
+    return FileName.substr(pos+1);
 }
 
 bool FileInfo::hasExtension (const char* Ext) const
