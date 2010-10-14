@@ -194,7 +194,7 @@ void ZipWriter::writeFiles(void)
 {
     // use a while loop because it is possible that while
     // processing the files new ones can be added
-    int index = 0;
+    size_t index = 0;
     while (index < FileList.size()) {
         FileEntry entry = FileList.begin()[index];
         ZipStream.putNextEntry(entry.FileName);
