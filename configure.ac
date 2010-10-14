@@ -772,9 +772,7 @@ AC_SUBST(DOXYGEN_IMAGE_PATH)
 DOXYGEN_INCLUDE_PATH="$srcdir/src/Doc/doxygen-headers"
 AC_SUBST(DOXYGEN_INCLUDE_PATH)
 
-AC_CONFIG_FILES([src/Doc/doxygen-headers/swigpyrun.h:swigpyrun.h])
-AC_CONFIG_FILES([src/Doc/doxygen-headers/FCConfig.h:src/FCConfig.h])
-AC_CONFIG_FILES([src/Doc/doxygen-headers/Inventor/fields/SoSubField.h:$sim_ac_coin_includedir/Inventor/fields/SoSubField.h])
+#AC_CONFIG_FILES([src/Doc/doxygen-headers/Inventor/fields/SoSubField.h:$sim_ac_coin_includedir/Inventor/fields/SoSubField.h])
 
 dnl **************************************************************************
 
