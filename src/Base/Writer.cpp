@@ -192,10 +192,14 @@ ZipWriter::ZipWriter(std::ostream& os)
 
 void ZipWriter::writeFiles(void)
 {
-    for (std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it)
-    {
-        ZipStream.putNextEntry(it->FileName);
-        it->Object->SaveDocFile( *this );
+    // use a while loop because it is possible that while
+    // processing the files new ones can be added
+    int index = 0;
+    while (index < FileList.size()) {
+        FileEntry entry = FileList.begin()[index];
+        ZipStream.putNextEntry(entry.FileName);
+        entry.Object->SaveDocFile(*this);
+        index++;
     }
 }
 

@@ -649,6 +649,10 @@ void Document::RestoreDocFile(Base::Reader &reader)
 
     xmlReader.readEndElement("Document");
 
+    // In the file GuiDocument.xml new data files might be added
+    if (!xmlReader.getFilenames().empty())
+        xmlReader.readFiles(static_cast<zipios::ZipInputStream&>(reader));
+
     // reset modifeid flag
     setModified(false);
 }
@@ -673,7 +677,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
                     << d->_ViewProviderMap.size() <<"\">" << std::endl;
 
     bool xml = writer.isForceXML();
-    writer.setForceXML(true);
+    //writer.setForceXML(true);
     writer.incInd(); // indention for 'ViewProvider name'
     for(it = d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it) {
         const App::DocumentObject* doc = it->first;
