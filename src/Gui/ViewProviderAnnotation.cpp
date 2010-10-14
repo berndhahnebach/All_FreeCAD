@@ -189,7 +189,7 @@ void ViewProviderAnnotation::attach(App::DocumentObject* f)
     textsep->addChild(pTranslation);
     textsep->addChild(pRotationXYZ);
     textsep->addChild(pColor);
-    textsep->addChild(pFont);
+    //textsep->addChild(pFont); // causes problems
     textsep->addChild(pLabel);
 
     SoFCSelection* textsep3d = new SoFCSelection();
@@ -218,8 +218,9 @@ void ViewProviderAnnotation::updateData(const App::Property* prop)
         pLabel->string.setNum((int)lines.size());
         pLabel3d->string.setNum((int)lines.size());
         for (std::vector<std::string>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
-            pLabel->string.set1Value(index++, SbString(it->c_str()));
-            pLabel3d->string.set1Value(index++, SbString(it->c_str()));
+            pLabel->string.set1Value(index, SbString(it->c_str()));
+            pLabel3d->string.set1Value(index, SbString(it->c_str()));
+            index++;
         }
     }
     else if (prop->getTypeId() == App::PropertyVector::getClassTypeId() &&

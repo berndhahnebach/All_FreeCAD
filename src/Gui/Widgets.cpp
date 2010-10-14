@@ -25,10 +25,12 @@
 #ifndef _PreComp_
 # include <QColorDialog>
 # include <QDesktopWidget>
+# include <QDialogButtonBox>
 # include <QDrag>
 # include <QKeyEvent>
 # include <QMimeData>
 # include <QPainter>
+# include <QPlainTextEdit>
 # include <QStylePainter>
 # include <QToolTip>
 #endif
@@ -708,6 +710,82 @@ void StatusWidget::adjustPosition(QWidget* w)
         p.setY(desk.y());
 
     move(p);
+}
+
+// --------------------------------------------------------------------
+
+LabelEditor::LabelEditor (QWidget * parent)
+  : QWidget(parent)
+{
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setMargin(0);
+    layout->setSpacing(2);
+
+    lineEdit = new QLineEdit(this);
+    layout->addWidget(lineEdit);
+
+    connect(lineEdit, SIGNAL(textChanged(const QString &)),
+            this, SIGNAL(textChanged(const QString &)));
+
+    button = new QPushButton(QLatin1String("..."), this);
+    button->setFixedWidth(2*button->fontMetrics().width(QLatin1String(" ... ")));
+    layout->addWidget(button);
+
+    connect(button, SIGNAL(clicked()), this, SLOT(changeText()));
+
+    setFocusProxy(lineEdit);
+}
+
+LabelEditor::~LabelEditor()
+{
+}
+
+QString LabelEditor::text() const
+{
+    return lineEdit->text();
+}
+
+void LabelEditor::setText(const QString& s)
+{
+    lineEdit->setText(s);
+}
+
+void LabelEditor::changeText()
+{
+    QDialog dlg(this);
+    QVBoxLayout* hboxLayout = new QVBoxLayout(&dlg);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(&dlg);
+    buttonBox->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Close);
+
+    QPlainTextEdit *edit = new QPlainTextEdit(&dlg);
+    edit->setPlainText(this->lineEdit->text());
+    
+    hboxLayout->addWidget(edit);
+    hboxLayout->addWidget(buttonBox);
+    connect(buttonBox, SIGNAL(accepted()), &dlg, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), &dlg, SLOT(reject()));
+    if (dlg.exec() == QDialog::Accepted) {
+        this->lineEdit->setText(edit->toPlainText());
+    }
+}
+
+/**
+ * Sets the browse button's text to \a txt.
+ */
+void LabelEditor::setButtonText(const QString& txt)
+{
+    button->setText(txt);
+    int w1 = 2*button->fontMetrics().width(txt);
+    int w2 = 2*button->fontMetrics().width(QLatin1String(" ... "));
+    button->setFixedWidth((w1 > w2 ? w1 : w2));
+}
+
+/**
+ * Returns the browse button's text.
+ */
+QString LabelEditor::buttonText() const
+{
+    return button->text();
 }
 
 #include "moc_Widgets.cpp"
