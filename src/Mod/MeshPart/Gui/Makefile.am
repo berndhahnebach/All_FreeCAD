@@ -35,7 +35,14 @@ libMeshPartGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lMesh \
 		-lPart \
-		-lMeshPart
+		-lMeshPart \
+		-lTKernel \
+		-lTKMath \
+		-lTKXSBase \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKGeomBase
 
 #--------------------------------------------------------------------------------------
 # Loader of libMeshPartGui
