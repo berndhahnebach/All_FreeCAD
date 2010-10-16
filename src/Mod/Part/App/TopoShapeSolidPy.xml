@@ -23,5 +23,13 @@ absolute Cartesian coordinate system.</UserDocu>
       </Documentation>
       <Parameter Name="CenterOfMass" Type="Object"/>
     </Attribute>
+    <Attribute Name="OuterShell" ReadOnly="true">
+      <Documentation>
+        <UserDocu>
+Returns the outer most shell of this solid or an null
+shape if the solid has no shells</UserDocu>
+      </Documentation>
+      <Parameter Name="OuterShell" Type="Object"/>
+    </Attribute>
   </PythonExport>
 </GenerateModel>

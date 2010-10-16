@@ -24,11 +24,13 @@
 #include "PreCompiled.h"
 
 #include <BRepGProp.hxx>
+#include <BRepTools.hxx>
 #include <GProp_GProps.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Shell.hxx>
 
 #include <Base/VectorPy.h>
 #include <Base/GeometryPyCXX.h>
@@ -36,6 +38,7 @@
 #include "Mod/Part/App/TopoShape.h"
 
 // inclusion of the generated files (generated out of TopoShapeSolidPy.xml)
+#include "TopoShapeShellPy.h"
 #include "TopoShapeSolidPy.h"
 #include "TopoShapeSolidPy.cpp"
 
@@ -94,6 +97,15 @@ Py::Object TopoShapeSolidPy::getCenterOfMass(void) const
     BRepGProp::VolumeProperties(getTopoShapePtr()->_Shape, props);
     gp_Pnt c = props.CentreOfMass();
     return Py::Vector(Base::Vector3d(c.X(),c.Y(),c.Z()));
+}
+
+Py::Object TopoShapeSolidPy::getOuterShell(void) const
+{
+    TopoDS_Shell shell;
+    const TopoDS_Shape& shape = getTopoShapePtr()->_Shape;
+    if (!shape.IsNull() && shape.ShapeType() == TopAbs_SOLID)
+        shell = BRepTools::OuterShell(TopoDS::Solid(shape));
+    return Py::Object(new TopoShapeShellPy(new TopoShape(shell)),true);
 }
 
 PyObject *TopoShapeSolidPy::getCustomAttributes(const char* /*attr*/) const
