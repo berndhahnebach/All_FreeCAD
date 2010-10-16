@@ -43,5 +43,4 @@ ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Fem")
 #ParGrp.SetString("WorkBenchModule",  "FemWorkbench.py")
 
 
-#FreeCAD.EndingAdd("SketchFlat files (*.skf)","Fem")
-
+FreeCAD.addExportType("TetGen file (*.poly)","convert2TetGen") 
