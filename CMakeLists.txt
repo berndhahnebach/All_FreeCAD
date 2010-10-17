@@ -1,6 +1,11 @@
 project(FreeCAD_trunk)
 set(FREECAD_VERSION "0.9")
 
+# Needed for salomesmesh
+if(CMAKE_COMPILER_IS_GNUCXX)
+ENABLE_LANGUAGE(Fortran)
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 set(PACKAGE_NAME "FreeCAD")
 set(PACKAGE_VERSION_MAJOR "0")
 set(PACKAGE_VERSION_MINOR "9")
@@ -40,14 +45,14 @@ endif(WIN32)
 
 # ================================================================================
 
-if(CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_COMPILER_IS_GNUCXX)
     include(cMake/ConfigureChecks.cmake)
     configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
     add_definitions(-DHAVE_CONFIG_H)
     add_definitions(-Wno-write-strings)
     add_definitions(-Wno-deprecated)
     INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-endif(CMAKE_COMPILER_IS_GNUCC)
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 
 # ================================================================================
