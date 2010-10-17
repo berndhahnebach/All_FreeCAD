@@ -29,7 +29,7 @@ elseif(FREECAD_BUILD_GUI)
 endif(FREECAD_BUILD_GUI AND FREECAD_LIBPACK_CHECKFILE6X)
 
 # For Windows we have all stuff in the LibPack
-if(CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_COMPILER_IS_GNUCXX)
     add_subdirectory(salomesmesh)
-endif(CMAKE_COMPILER_IS_GNUCC)
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
