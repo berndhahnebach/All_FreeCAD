@@ -162,10 +162,26 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 # -------------------------------- Salome SMESH --------------------------
 
-    find_package(SMESH)
-    IF(NOT SMESH_FOUND)
-        MESSAGE("Salome SMESH was not found!")
-    ENDIF(NOT SMESH_FOUND)
+    # Salome SMESH sources are under src/3rdParty now
+    IF(OCC_FOUND)
+    set(SMESH_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/3rdParty/salomesmesh/inc)
+    set(SMESH_LIBRARIES
+        StdMeshers
+        #MEFISTO2
+        SMESH
+        DriverUNV
+        SMESHDS
+        DriverSTL
+        DriverDAT
+        Driver
+        SMDS
+    )
+    set(SMESH_FOUND TRUE)
+    ENDIF(OCC_FOUND)
+    #find_package(SMESH)
+    #IF(NOT SMESH_FOUND)
+    #    MESSAGE("Salome SMESH was not found!")
+    #ENDIF(NOT SMESH_FOUND)
 
 # -------------------------------- OpenCV --------------------------------
 
