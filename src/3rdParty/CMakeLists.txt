@@ -31,17 +31,5 @@ endif(FREECAD_BUILD_GUI AND FREECAD_LIBPACK_CHECKFILE6X)
 # For Windows we have all stuff in the LibPack
 if(CMAKE_COMPILER_IS_GNUCC)
     add_subdirectory(salomesmesh)
-    set(SMESH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE}/include/salomesmesh/inc)
-    set(SMESH_LIBRARIES
-        StdMeshers
-        MEFISTO2
-        SMESH
-        DriverUNV
-        SMESHDS
-        DriverSTL
-        DriverDAT
-        Driver
-        SMDS
-    )
-    set(SMESH_FOUND TRUE) 
 endif(CMAKE_COMPILER_IS_GNUCC)
+
