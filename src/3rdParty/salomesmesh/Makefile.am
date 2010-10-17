@@ -4,10 +4,11 @@ smeshdir = ./
 # copy some files
 targetdir = $(prefix)
 #dist_target_DATA = LICENCE.lgpl
-EXTRA_DIST = LICENCE.lgpl
+EXTRA_DIST = LICENCE.lgpl.txt
 
 # set compiler flags and include directories, -fpermissive and -ffriend-injection not needed for occ6.3
 AM_CPPFLAGS = -I$(OCC_INC) -I$(srcdir)/$(smeshdir)inc/
+AM_CXXFLAGS = -Wno-sign-compare -Wno-switch -Wno-reorder -Wno-unused -Wno-parentheses -Wno-comment
 
 # set library names
 if NETGEN
@@ -21,20 +22,20 @@ AM_LDFLAGS = -version-info 1:0:0 -Wl,--no-undefined -L$(OCC_LIB) \
 		-lTKernel -lTKService -lTKMath -lTKBRep -lTKTopAlgo -lTKGeomAlgo \
 		-lTKGeomBase -lTKG3d -lTKG2d -lTKMeshVS -lTKShHealing -lTKPrim -lTKAdvTools
 
-uninstall-local:
-	-rm -rf $(DESTDIR)$(libdir)
-	-rm -rf $(DESTDIR)$(includedir)
-	-rm $(DESTDIR)$(prefix)/env_smesh.sh
-
-install-exec-local:
-	test -z "$(DESTDIR)$(prefix)" || $(mkdir_p) "$(DESTDIR)$(prefix)"
-	@echo "#!/bin/bash" 											> $(DESTDIR)$(prefix)/env_smesh.sh
-	@echo "export SMESHROOT="$(prefix) 								>> $(DESTDIR)$(prefix)/env_smesh.sh
-	@echo "if [ -z "LD_LIBRARY_PATH" ];" 							>> $(DESTDIR)$(prefix)/env_smesh.sh
-	@echo "then LD_LIBRARY_PATH="$(libdir)";" 						>> $(DESTDIR)$(prefix)/env_smesh.sh
-	@echo "else LD_LIBRARY_PATH="$(libdir)":\$$LD_LIBRARY_PATH;" 	>> $(DESTDIR)$(prefix)/env_smesh.sh 
-	@echo "fi" 														>> $(DESTDIR)$(prefix)/env_smesh.sh 
-	chmod a+x $(DESTDIR)$(prefix)/env_smesh.sh
+#uninstall-local:
+#	-rm -rf $(DESTDIR)$(libdir)
+#	-rm -rf $(DESTDIR)$(includedir)
+#	-rm $(DESTDIR)$(prefix)/env_smesh.sh
+#
+#install-exec-local:
+#	test -z "$(DESTDIR)$(prefix)" || $(mkdir_p) "$(DESTDIR)$(prefix)"
+#	@echo "#!/bin/bash" 											> $(DESTDIR)$(prefix)/env_smesh.sh
+#	@echo "export SMESHROOT="$(prefix) 								>> $(DESTDIR)$(prefix)/env_smesh.sh
+#	@echo "if [ -z "LD_LIBRARY_PATH" ];" 							>> $(DESTDIR)$(prefix)/env_smesh.sh
+#	@echo "then LD_LIBRARY_PATH="$(libdir)";" 						>> $(DESTDIR)$(prefix)/env_smesh.sh
+#	@echo "else LD_LIBRARY_PATH="$(libdir)":\$$LD_LIBRARY_PATH;" 	>> $(DESTDIR)$(prefix)/env_smesh.sh 
+#	@echo "fi" 														>> $(DESTDIR)$(prefix)/env_smesh.sh 
+#	chmod a+x $(DESTDIR)$(prefix)/env_smesh.sh
 
 # set SMDS sources
 libSMDS_la_SOURCES = $(srcdir)/$(smeshdir)src/SMDS/SMDS_EdgePosition.cpp \
@@ -201,8 +202,10 @@ $(srcdir)/$(smeshdir)src/NETGENPlugin/NETGENPlugin_SimpleHypothesis_2D.cpp \
 $(srcdir)/$(smeshdir)src/NETGENPlugin/NETGENPlugin_SimpleHypothesis_3D.cpp \
 $(srcdir)/$(smeshdir)src/NETGENPlugin/NETGENPlugin_NETGEN_3D.cpp
 
-# include files to be copied to installdir/inc
-include_HEADERS = $(srcdir)/$(smeshdir)inc/aptrte.h \
+# include files but do not install otherwise use include_HEADERS
+#includedir = @includedir@/salomesmesh
+noinst_HEADERS = \
+$(srcdir)/$(smeshdir)inc/aptrte.h \
 $(srcdir)/$(smeshdir)inc/DriverDAT_R_SMDS_Mesh.h \
 $(srcdir)/$(smeshdir)inc/DriverDAT_R_SMESHDS_Document.h \
 $(srcdir)/$(smeshdir)inc/DriverDAT_R_SMESHDS_Mesh.h \
@@ -275,6 +278,7 @@ $(srcdir)/$(smeshdir)inc/SMESH_1D_Algo.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_2D_Algo.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_3D_Algo.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_Algo.hxx \
+$(srcdir)/$(smeshdir)inc/SMESH_Array1.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_Array2.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_Block.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_Comment.hxx \
@@ -295,6 +299,10 @@ $(srcdir)/$(smeshdir)inc/SMESH_IndexedMap.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_Mesh.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_MeshEditor.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_MesherHelper.hxx \
+$(srcdir)/$(smeshdir)inc/SMESH_MeshVSLink.hxx \
+$(srcdir)/$(smeshdir)inc/SMESH_MeshVSLink.ixx \
+$(srcdir)/$(smeshdir)inc/SMESH_MeshVSLink.jxx \
+$(srcdir)/$(smeshdir)inc/Handle_SMESH_MeshVSLink.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_Octree.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_OctreeNode.hxx \
 $(srcdir)/$(smeshdir)inc/SMESH_Pattern.hxx \
