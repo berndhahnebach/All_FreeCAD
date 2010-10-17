@@ -2,7 +2,7 @@
 lib_LTLIBRARIES=libMeshPart.la MeshPart.la
 
 libMeshPart_la_SOURCES=\
-                AppMeshPartPy.cpp \
+		AppMeshPartPy.cpp \
 		CurveProjector.cpp \
 		CurveProjector.h \
 		MeshAlgos.cpp \
@@ -38,13 +38,14 @@ libMeshPart_la_LIBADD   = \
 		-lTKGeomAlgo \
 		-lTKGeomBase
 		
-if HAVE_SALOMESMESH
+#if HAVE_SALOMESMESH
+SMESH_LIBRARY = @top_builddir@/src/3rdParty/salomesmesh
 libMeshPart_la_LDFLAGS += -L$(SMESH_LIBRARY)
 libMeshPart_la_LIBADD += \
 		-lSMESH \
 		-lSMDS \
 		-lStdMeshers
-endif
+#endif
 
 #--------------------------------------------------------------------------------------
 # Loader of libMeshPart
@@ -67,9 +68,10 @@ MeshPart_la_DEPENDENCIES = libMeshPart.la
 # set the include path found by configure
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) -I$(OCC_INC)
 
-if HAVE_SALOMESMESH
+#if HAVE_SALOMESMESH
+SMESH_INCLUDE = @top_srcdir@/src/3rdParty/salomesmesh/inc
 AM_CXXFLAGS += -I$(SMESH_INCLUDE) -DHAVE_SMESH
-endif
+#endif
 
 
 libdir = $(prefix)/Mod/MeshPart

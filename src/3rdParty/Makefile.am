@@ -1,4 +1,5 @@
 #SUBDIRS=Pivy
+SUBDIRS=salomesmesh
 
 EXTRA_DIST = \
 		CMakeLists.txt \
