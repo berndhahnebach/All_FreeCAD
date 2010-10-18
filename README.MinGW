@@ -14,6 +14,8 @@ If not already installed get a MinGW installer from the Sourceforge page at
 http://sourceforge.net/projects/mingw. When writing this tutorial the latest
 version was mingw-get-inst-20100831.exe. Download and just double-click the
 excutable. This installs the compiler and a minimal Windows developer environment.
+Make sure to also install the Fortran compiler because there is a single Fortran
+file in the 3rd party folder of the FreeCAD sources.
 
 Then as second step MSYS needs to be installed to have an environment to run
 ./configure scripts which we make heavy use of in order to build all needed
@@ -74,6 +76,16 @@ utilities. Assuming the Python version is 2.6 do these two steps:
 The file libpython26.dll.a can now be moved to C:\MSYS\1.0\local\lib.
 
 
+o f2c
+For this library we don't need any header files but only the import library to build the
+Salome SMESH sources. The easiest way to build this file is:
+
+  pexports libgfortran-3.dll > f2c.def
+  dlltool -D libgfortran-3.dll -d f2c.def -l libf2c.dll.a
+
+The file libf2c.dll.a can now be moved to C:\MSYS\1.0\local\lib.
+
+  
 o xerces-c
 Download a source archive from http://xml.apache.org/dist/xerces-c/ and extract it.
 Open a MSYS command line window and change to the xerces-c sources. From there run
