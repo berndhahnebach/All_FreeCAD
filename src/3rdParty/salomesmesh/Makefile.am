@@ -78,6 +78,7 @@ libDriverSTL_la_SOURCES = $(srcdir)/$(smeshdir)src/DriverSTL/DriverSTL_R_SMDS_Me
 $(srcdir)/$(smeshdir)src/DriverSTL/DriverSTL_W_SMDS_Mesh.cpp
 
 libDriverSTL_la_LIBADD = -lSMDS -lDriver
+libDriverSTL_la_DEPENDENCIES = libSMDS.la libDriver.la
 
 # set DriverDAT sources
 libDriverDAT_la_SOURCES = $(srcdir)/$(smeshdir)src/DriverDAT/DriverDAT_R_SMDS_Mesh.cpp \
@@ -88,6 +89,7 @@ $(srcdir)/$(smeshdir)src/DriverDAT/DriverDAT_W_SMESHDS_Document.cpp \
 $(srcdir)/$(smeshdir)src/DriverDAT/DriverDAT_W_SMESHDS_Mesh.cpp
 
 libDriverDAT_la_LIBADD = -lSMDS -lDriver
+libDriverDAT_la_DEPENDENCIES = libSMDS.la libDriver.la
 
 # set DriverUNV sources
 libDriverUNV_la_SOURCES = $(srcdir)/$(smeshdir)src/DriverUNV/DriverUNV_R_SMDS_Mesh.cpp \
@@ -102,6 +104,7 @@ $(srcdir)/$(smeshdir)src/DriverUNV/UNV2417_Structure.cpp \
 $(srcdir)/$(smeshdir)src/DriverUNV/UNV_Utilities.cpp
 
 libDriverUNV_la_LIBADD = -lSMDS -lDriver
+libDriverUNV_la_DEPENDENCIES = libSMDS.la libDriver.la
 
 # set SMESHDS sources
 libSMESHDS_la_SOURCES = $(srcdir)/$(smeshdir)src/SMESHDS/SMESHDS_Command.cpp \
@@ -115,6 +118,7 @@ $(srcdir)/$(smeshdir)src/SMESHDS/SMESHDS_Script.cpp \
 $(srcdir)/$(smeshdir)src/SMESHDS/SMESHDS_SubMesh.cpp
 
 libSMESHDS_la_LIBADD = -lSMDS
+libSMESHDS_la_DEPENDENCIES = libSMDS.la
 
 # set SMESH sources
 libSMESH_la_SOURCES = $(srcdir)/$(smeshdir)src/SMESH/SMESH_0D_Algo.cpp \
@@ -140,6 +144,8 @@ $(srcdir)/$(smeshdir)src/Controls/SMESHControls.cpp \
 $(srcdir)/$(smeshdir)src/Controls/SMESH_Controls.cpp
 
 libSMESH_la_LIBADD = -lSMDS -lSMESHDS -lDriver -lDriverSTL -lDriverUNV -lDriverDAT
+libSMESH_la_DEPENDENCIES = libSMDS.la libSMESHDS.la libDriver.la \
+		libDriverSTL.la libDriverUNV.la libDriverDAT.la
 
 # set StdMeshers sources
 libStdMeshers_la_SOURCES = $(srcdir)/$(smeshdir)src/StdMeshers/StdMeshers_Arithmetic1D.cpp \
@@ -190,6 +196,10 @@ $(srcdir)/$(smeshdir)src/MEFISTO2/aptrte.cpp \
 $(srcdir)/$(smeshdir)src/MEFISTO2/trte.f
 
 libStdMeshers_la_LIBADD = $(FCLIBS) -lSMESH -lSMDS -lSMESHDS
+libStdMeshers_la_DEPENDENCIES = libSMESH.la libSMDS.la libSMESHDS.la
+if STDMESHERS64BIT
+libStdMeshers_la_CXXFLAGS = $(AM_CXXFLAGS) -DPCLINUX64
+endif
 
 # set NETGENPlugin sources
 libNETGENPlugin_la_SOURCES = $(srcdir)/$(smeshdir)src/NETGENPlugin/NETGENPlugin_Hypothesis.cpp \
