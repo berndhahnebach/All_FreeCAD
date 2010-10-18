@@ -518,6 +518,12 @@ if test "$enable_netgen" = "yes"; then
 fi
 AM_CONDITIONAL(NETGEN, test "$enable_netgen" = "yes")
 
+AC_TRY_COMPILE( [], 
+ [int array[((int)sizeof(void*))-6];],
+ [enable_stdmeshers_64bit="yes"],
+ [enable_stdmeshers_64bit="no"] )
+AM_CONDITIONAL(STDMESHERS64BIT, test "$enable_stdmeshers_64bit" = "yes")
+
 #---------------------------------------------------------------------
 #
 # Check if 64-bit platform
