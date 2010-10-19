@@ -357,7 +357,7 @@ _Precision Vector3<_Precision>::GetAngle (const Vector3 &rcVect) const
     if ((divid < -1e-10f) || (divid > 1e-10f)) {
         fNum = (*this * rcVect) / divid;
         if (fNum < -1)
-            return F_PI;
+            return (_Precision)D_PI;
         else if (fNum > 1)
             return 0.0F;
         else
