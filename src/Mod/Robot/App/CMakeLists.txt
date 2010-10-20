@@ -108,7 +108,7 @@ SET(Robot_Resources
     Lib/Kuka/kr125_3.wrl
     Lib/Kuka/kr_125.csv
     Lib/Kuka/kr125_2.pdf
-    Lib/Kuka/KukaExporter.py
+    KukaExporter.py
     RobotExample.py
     RobotExampleTrajectoryOutOfShapes.py
 )
