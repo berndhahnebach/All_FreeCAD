@@ -7,7 +7,6 @@ data_DATA = \
 		Kuka/kr500_1.wrl \
 		Kuka/kr_16.csv \
 		Kuka/kr_210_2.csv \
-		Kuka/KukaExporter.py \
 		Kuka/testprog.dat \
 		Kuka/testprog.src
 

@@ -4,6 +4,7 @@ SUBDIRS=App Gui Lib
 datadir = $(prefix)/Mod/Robot
 
 data_DATA = Init.py InitGui.py \
+		KukaExporter.py \
 		RobotExample.py \
 		RobotExampleTrajectoryOutOfShapes.py
 
