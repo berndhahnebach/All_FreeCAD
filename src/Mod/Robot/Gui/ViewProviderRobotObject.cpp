@@ -158,17 +158,22 @@ std::vector<std::string> ViewProviderRobotObject::getDisplayModes(void) const
     StrList.push_back("Off");
     return StrList;
 }
+
 void ViewProviderRobotObject::onChanged(const App::Property* prop)
 {
     if (prop == &Manipulator) {
-        if(Manipulator.getValue()){
-            if(!this->pcDragger)
+        if (Manipulator.getValue()) {
+            if (!this->pcDragger)
                 this->setDragger();
-        }else{
-            if(this->pcDragger)
+        }
+        else {
+            if (this->pcDragger)
                 this->resetDragger();
         }
- 	}
+    }
+    else {
+        ViewProviderGeometryObject::onChanged(prop);
+    }
 }
 
 void ViewProviderRobotObject::updateData(const App::Property* prop)
