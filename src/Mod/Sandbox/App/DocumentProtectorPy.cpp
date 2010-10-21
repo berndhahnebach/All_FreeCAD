@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <memory>
 #endif
 
 #include "DocumentProtectorPy.h"
@@ -74,7 +75,6 @@ DocumentProtectorPy::method_varargs_handler DocumentProtectorPy::pycxx_handler =
 
 PyObject *DocumentProtectorPy::method_varargs_ext_handler(PyObject *_self_and_name_tuple, PyObject *_args)
 {
-    Base::PyGILStateRelease unlock;
     try {
         return pycxx_handler(_self_and_name_tuple, _args);
     }
@@ -125,9 +125,12 @@ int DocumentProtectorPy::setattr(const char * attr, const Py::Object & value)
 Py::Object DocumentProtectorPy::addObject(const Py::Tuple& args)
 {
     char* type;
-    char* name="";
+    char* name=0;
     if (!PyArg_ParseTuple(args.ptr(), "s|s",&type, &name))
         throw Py::Exception();
+    Base::PyGILStateRelease unlock;
+    if (!name)
+        name = type;
     App::DocumentObject* obj = _dp->addObject(type, name);
     if (!obj) {
         std::string s;
@@ -135,13 +138,98 @@ Py::Object DocumentProtectorPy::addObject(const Py::Tuple& args)
         s_out << "Couldn't create an object of type '" << type << "'";
         throw Py::RuntimeError(s_out.str());
     }
-    return Py::asObject(obj->getPyObject());
+    //return Py::asObject(obj->getPyObject());
+    return Py::asObject(new DocumentObjectProtectorPy(obj));
 }
 
 Py::Object DocumentProtectorPy::recompute(const Py::Tuple& args)
 {
     if (!PyArg_ParseTuple(args.ptr(), ""))
         throw Py::Exception();
+    Base::PyGILStateRelease unlock;
     _dp->recompute();
     return Py::None();
+}
+
+// ----------------------------------------------------------------------------
+
+void DocumentObjectProtectorPy::init_type()
+{
+    behaviors().name("DocumentObjectProtectorPy");
+    behaviors().doc("Python binding class for the document object protector class");
+    // you must have overwritten the virtual functions
+    behaviors().supportRepr();
+    behaviors().supportGetattr();
+    behaviors().supportSetattr();
+}
+
+DocumentObjectProtectorPy::DocumentObjectProtectorPy(App::DocumentObject *obj)
+{
+    _dp = new DocumentObjectProtector(obj);
+}
+
+DocumentObjectProtectorPy::DocumentObjectProtectorPy(App::DocumentObjectPy *obj)
+{
+    _dp = new DocumentObjectProtector(obj->getDocumentObjectPtr());
+}
+
+DocumentObjectProtectorPy::~DocumentObjectProtectorPy()
+{
+    delete _dp;
+}
+
+Py::Object DocumentObjectProtectorPy::repr()
+{
+    std::string s;
+    std::ostringstream s_out;
+    if (!_dp)
+        throw Py::RuntimeError("Cannot print representation of deleted object");
+    s_out << "Document object protector";
+    return Py::String(s_out.str());
+}
+
+Py::Object DocumentObjectProtectorPy::getattr(const char * attr)
+{
+    if (!_dp) {
+        std::string s;
+        std::ostringstream s_out;
+        s_out << "Cannot access attribute '" << attr << "' of deleted object";
+        throw Py::RuntimeError(s_out.str());
+    }
+    else {
+        App::DocumentObject* obj = _dp->getObject();
+        App::Property* prop = obj->getPropertyByName(attr);
+        if (!prop) {
+            std::string s;
+            std::ostringstream s_out;
+            s_out << "No such attribute '" << attr << "'";
+            throw Py::AttributeError(s_out.str());
+        }
+
+        return Py::asObject(prop->getPyObject());
+    }
+}
+
+int DocumentObjectProtectorPy::setattr(const char * attr, const Py::Object & value)
+{
+    if (!_dp) {
+        std::string s;
+        std::ostringstream s_out;
+        s_out << "Cannot access attribute '" << attr << "' of deleted object";
+        throw Py::RuntimeError(s_out.str());
+    }
+    else {
+        App::DocumentObject* obj = _dp->getObject();
+        App::Property* prop = obj->getPropertyByName(attr);
+        if (!prop) {
+            std::string s;
+            std::ostringstream s_out;
+            s_out << "No such attribute '" << attr << "'";
+            throw Py::AttributeError(s_out.str());
+        }
+        std::auto_ptr<App::Property> copy(static_cast<App::Property*>
+            (prop->getTypeId().createInstance()));
+        copy->setPyObject(value.ptr());
+        return _dp->setProperty(attr, *copy) ? 0 : -1;
+    }
 }

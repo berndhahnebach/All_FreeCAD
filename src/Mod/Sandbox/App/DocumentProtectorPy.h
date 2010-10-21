@@ -28,6 +28,8 @@
 
 namespace App {
 class DocumentPy;
+class DocumentObject;
+class DocumentObjectPy;
 }
 
 namespace Sandbox {
@@ -56,6 +58,25 @@ private:
 private:
     DocumentProtector* _dp;
     friend class DocumentProtector;
+};
+
+class DocumentObjectProtector;
+class DocumentObjectProtectorPy : public Py::PythonExtension<DocumentObjectProtectorPy>
+{
+public:
+    static void init_type(void);    // announce properties and methods
+
+    DocumentObjectProtectorPy(App::DocumentObject *obj);
+    DocumentObjectProtectorPy(App::DocumentObjectPy *obj);
+    ~DocumentObjectProtectorPy();
+
+    Py::Object repr();
+    Py::Object getattr(const char *);
+    int setattr(const char *, const Py::Object &);
+
+private:
+    DocumentObjectProtector* _dp;
+    friend class DocumentObjectProtector;
 };
 
 }

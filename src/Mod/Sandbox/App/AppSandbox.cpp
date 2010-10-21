@@ -28,6 +28,7 @@
 
 #include <Base/Console.h>
 #include <App/DocumentPy.h>
+#include <App/DocumentObjectPy.h>
 #include <CXX/Extensions.hxx>
 #include <CXX/Objects.hxx>
 
@@ -45,7 +46,13 @@ public:
     SandboxModule() : Py::ExtensionModule<SandboxModule>("Sandbox")
     {
         Sandbox::DocumentProtectorPy::init_type();
-        add_varargs_method("DocumentProtector",&SandboxModule::new_DocumentProtector,"DocumentProtector(Document)");
+        add_varargs_method("DocumentProtector",
+            &SandboxModule::new_DocumentProtector,
+            "DocumentProtector(Document)");
+        Sandbox::DocumentObjectProtectorPy::init_type();
+        add_varargs_method("DocumentObjectProtector",
+            &SandboxModule::new_DocumentObjectProtector,
+            "DocumentObjectProtector(DocumentObject)");
         initialize("This module is the Sandbox module"); // register with Python
     }
     
@@ -59,6 +66,14 @@ private:
             throw Py::Exception();
         App::DocumentPy* doc = static_cast<App::DocumentPy*>(o);
         return Py::asObject(new Sandbox::DocumentProtectorPy(doc));
+    }
+    Py::Object new_DocumentObjectProtector(const Py::Tuple& args)
+    {
+        PyObject* o;
+        if (!PyArg_ParseTuple(args.ptr(), "O!",&(App::DocumentObjectPy::Type), &o))
+            throw Py::Exception();
+        App::DocumentObjectPy* obj = static_cast<App::DocumentObjectPy*>(o);
+        return Py::asObject(new Sandbox::DocumentObjectProtectorPy(obj));
     }
 };
 
