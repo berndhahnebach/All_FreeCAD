@@ -26,9 +26,8 @@
 #ifndef _PreComp_
 # include <cstdio>
 # include <algorithm>
-# include <QWriteLocker>
-# include <QReadLocker>
-# include <QReadWriteLock>
+# include <QMutex>
+# include <QMutexLocker>
 #endif
 
 #include "Sequencer.h"
@@ -42,7 +41,7 @@ namespace Base {
         // members
         static std::vector<SequencerBase*> _instances; /**< A vector of all created instances */
         static SequencerLauncher* _topLauncher; /**< The outermost launcher */
-        static QReadWriteLock rwlock; /**< A mutex-like read/write locker for the launcher */
+        static QMutex mutex; /**< A mutex-locker for the launcher */
         /** Sets a global sequencer object.
          * Access to the last registered object is performed by @see Sequencer().
          */
@@ -68,7 +67,7 @@ namespace Base {
      */
     std::vector<SequencerBase*> SequencerP::_instances;
     SequencerLauncher* SequencerP::_topLauncher = 0;
-    QReadWriteLock SequencerP::rwlock/*(QReadWriteLock::Recursive)*/;
+    QMutex SequencerP::mutex(QMutex::Recursive);
 };
 
 SequencerBase& SequencerBase::Instance ()
@@ -166,7 +165,7 @@ bool SequencerBase::isBlocking() const
 
 bool SequencerBase::setLocked(bool bLocked)
 {
-    QWriteLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     bool old = this->_bLocked;
     this->_bLocked = bLocked;
     return old;
@@ -174,19 +173,19 @@ bool SequencerBase::setLocked(bool bLocked)
 
 bool SequencerBase::isLocked() const
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     return this->_bLocked;
 }
 
 bool SequencerBase::isRunning() const
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     return (SequencerP::_topLauncher != 0);
 }
 
 bool SequencerBase::wasCanceled() const
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     return this->_bCanceled;
 }
 
@@ -261,7 +260,7 @@ void ConsoleSequencer::resetData()
 
 SequencerLauncher::SequencerLauncher(const char* pszStr, size_t steps)
 {
-    QWriteLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     // Have we already an instance of SequencerLauncher created?
     if (!SequencerP::_topLauncher) {
         SequencerBase::Instance().start(pszStr, steps);
@@ -271,11 +270,9 @@ SequencerLauncher::SequencerLauncher(const char* pszStr, size_t steps)
 
 SequencerLauncher::~SequencerLauncher()
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     if (SequencerP::_topLauncher == this)
         SequencerBase::Instance().stop();
-    locker.unlock();
-    QWriteLocker write_locker(&SequencerP::rwlock);
     if (SequencerP::_topLauncher == this) {
         SequencerP::_topLauncher = 0;
     }
@@ -283,13 +280,13 @@ SequencerLauncher::~SequencerLauncher()
 
 void SequencerLauncher::setText (const char* pszTxt)
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     SequencerBase::Instance().setText(pszTxt);
 }
 
 bool SequencerLauncher::next(bool canAbort)
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     if (SequencerP::_topLauncher != this)
         return true; // ignore
     return SequencerBase::Instance().next(canAbort);
@@ -297,13 +294,13 @@ bool SequencerLauncher::next(bool canAbort)
 
 void SequencerLauncher::setProgress(size_t pos)
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     SequencerBase::Instance().setProgress(pos);
 }
 
 size_t SequencerLauncher::numberOfSteps() const
 {
-    QReadLocker locker(&SequencerP::rwlock);
+    QMutexLocker locker(&SequencerP::mutex);
     return SequencerBase::Instance().numberOfSteps();
 }
 

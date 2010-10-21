@@ -110,6 +110,8 @@
 #include <QWriteLocker>
 #include <QReadLocker>
 #include <QReadWriteLock>
+#include <QMutex>
+#include <QMutexLocker>
 
 
 #endif //_PreComp_

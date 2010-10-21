@@ -200,9 +200,11 @@ void DocumentReceiver::postEventAndWait(QEvent* e)
         delete e;
     }
     else {
+        // NOTE: We send an event to this instance that's why it is important
+        // that this object is part of the main thread
         QSemaphore semaphore;
         static_cast<AbstractCustomProtectorEvent*>(e)->semaphore = &semaphore;
-        QCoreApplication::postEvent(DocumentReceiver::globalInstance(), e);
+        QCoreApplication::postEvent(this, e);
         // wait until the event has been processed
         semaphore.acquire();
     }
@@ -229,7 +231,8 @@ DocumentProtector::~DocumentProtector()
 void DocumentProtector::init()
 {
     // this method must be called somewhere from the main thread
-    (void)DocumentReceiver::globalInstance();
+    DocumentReceiver::globalInstance()->
+        moveToThread(QCoreApplication::instance()->thread());
 }
 
 void DocumentProtector::slotCreatedDocument(const App::Document& Doc)
