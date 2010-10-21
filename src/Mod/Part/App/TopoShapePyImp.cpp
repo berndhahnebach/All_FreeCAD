@@ -269,7 +269,7 @@ PyObject* TopoShapePy::extrude(PyObject *args)
             switch (type)
             {
             case TopAbs_COMPOUND:
-                break;
+                return new TopoShapeCompoundPy(new TopoShape(shape));
             case TopAbs_COMPSOLID:
                 return new TopoShapeCompSolidPy(new TopoShape(shape));
             case TopAbs_SOLID:

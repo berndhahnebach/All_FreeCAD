@@ -26,6 +26,8 @@
 #include <Gui/TaskView/TaskDialog.h>
 #include <Gui/TaskView/TaskView.h>
 
+class TopoDS_Shape;
+
 namespace PartGui {
 
 class Ui_DlgExtrusion;
@@ -40,6 +42,7 @@ public:
 
 protected:
     void findShapes();
+    bool canExtrude(const TopoDS_Shape&) const;
 
 private Q_SLOTS:
     void on_checkNormal_toggled(bool);

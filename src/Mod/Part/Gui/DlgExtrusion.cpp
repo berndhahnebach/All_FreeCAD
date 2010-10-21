@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <TopExp_Explorer.hxx>
 # include <QMessageBox>
 #endif
 
@@ -68,11 +69,8 @@ void DlgExtrusion::findShapes()
     std::vector<App::DocumentObject*> objs = activeDoc->getObjectsOfType
         (Part::Feature::getClassTypeId());
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it) {
-        TopoDS_Shape shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
-        TopAbs_ShapeEnum type = shape.ShapeType();
-        if (type == TopAbs_VERTEX || type == TopAbs_EDGE ||
-            type == TopAbs_WIRE || type == TopAbs_FACE ||
-            type == TopAbs_SHELL) {
+        const TopoDS_Shape& shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
+        if (canExtrude(shape)) {
             QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
             item->setText(0, QString::fromUtf8((*it)->Label.getValue()));
             item->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
@@ -81,6 +79,32 @@ void DlgExtrusion::findShapes()
                 item->setIcon(0, vp->getIcon());
         }
     }
+}
+
+bool DlgExtrusion::canExtrude(const TopoDS_Shape& shape) const
+{
+    if (shape.IsNull())
+        return false;
+    TopAbs_ShapeEnum type = shape.ShapeType();
+    if (type == TopAbs_VERTEX || type == TopAbs_EDGE ||
+        type == TopAbs_WIRE || type == TopAbs_FACE ||
+        type == TopAbs_SHELL)
+        return true;
+    if (type == TopAbs_COMPOUND) {
+        TopExp_Explorer xp;
+        xp.Init(shape,TopAbs_SOLID);
+        while (xp.More()) {
+            return false;
+        }
+        xp.Init(shape,TopAbs_COMPSOLID);
+        while (xp.More()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 void DlgExtrusion::accept()
