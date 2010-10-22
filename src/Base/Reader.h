@@ -161,7 +161,8 @@ public:
 
     /// Schema Version of the document
     int DocumentSchema;
-private:
+
+protected:
     /// read the next element
     bool read(void);
 

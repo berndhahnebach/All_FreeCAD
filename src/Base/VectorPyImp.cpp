@@ -127,12 +127,14 @@ PyObject* VectorPy::number_multiply_handler(PyObject *self, PyObject *other)
         Base::Vector3d b = static_cast<VectorPy*>(other)->value();
         Py::Float mult(a * b);
         return Py::new_reference_to(mult);
-    }else if (PyFloat_Check(other)) {
+    }
+    else if (PyFloat_Check(other)) {
         Base::Vector3d a = static_cast<VectorPy*>(self) ->value();
         double b = PyFloat_AsDouble(other);
         return new VectorPy(a * b);
-    }else {
-        PyErr_SetString(PyExc_TypeError, "A vector can only multiplied by another vector or a number");
+    }
+    else {
+        PyErr_SetString(PyExc_TypeError, "A Vector can only be multiplied by Vector or number");
         return 0;
     }
 }
