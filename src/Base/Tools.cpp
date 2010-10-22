@@ -91,6 +91,18 @@ std::string Base::Tools::getUniqueName(const std::string& name, const std::vecto
     return str.str();
 }
 
+std::string Base::Tools::addNumber(const std::string& name, unsigned int num, int d)
+{
+    std::stringstream str;
+    str << name;
+    if (d > 0) {
+        str.fill('0');
+        str.width(d);
+    }
+    str << num;
+    return str.str();
+}
+
 std::string Base::Tools::getIdentifier(const std::string& name)
 {
     // check for first character whether it's a digit

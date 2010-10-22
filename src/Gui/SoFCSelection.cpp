@@ -424,7 +424,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
             // If under the mouse, then highlight!
             if (underTheMouse) {
                 // draw this object highlighted
-                if(mymode != OFF)
+                if (mymode != OFF)
                     redrawHighlighted(action, TRUE);
                 const SoPickedPoint * pp = action->getPickedPoint();
                 Gui::Selection().setPreselect(documentName.getValue().getString()
