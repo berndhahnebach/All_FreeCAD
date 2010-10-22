@@ -107,6 +107,16 @@ void Robot6Axis::setKinematic(const AxisDefinition KinDef[6])
 	calcTcp();
 }
 
+double Robot6Axis::getMaxAngle(int Axis)
+{
+    return Max(Axis) * (180.0/M_PI);
+}
+
+double Robot6Axis::getMinAngle(int Axis)
+{
+    return Min(Axis) * (180.0/M_PI);
+}
+
 void split(std::string const& string, const char delemiter, std::vector<std::string>& destination)
 {
     std::string::size_type  last_position(0);
@@ -154,26 +164,6 @@ void Robot6Axis::readKinematic(const char * FileName)
 
 }
 
-
-//void Robot6Axis::setKinematik(const std::vector<std::vector<float> > &KinTable)
-//{
-//    Chain Temp;
-//
-//    // only 6-Axis are allowed
-//    assert(KinTable.size()==6);
-//
-//    int i=0;
-//    for(std::vector<std::vector<float> >::const_iterator Axis=KinTable.begin();Axis!=KinTable.end();++Axis,i++){
-//        // need at least the standard values as descriped in documentation
-//        assert(Axis->size() >= 7); 
-//      	Temp.addSegment(Segment(Joint(Joint::RotZ),Frame::DH((*Axis)[0], (*Axis)[1]*(M_PI/180), (*Axis)[2], (*Axis)[3])));
-//        MaxAngle[i]   = (*Axis)[4];
-//        MinAngle[i]   = (*Axis)[5];
-//        Acceration[i] = (*Axis)[6];    
-//    }
-//    Kinematic = Temp;
-//}
-
 unsigned int Robot6Axis::getMemSize (void) const
 {
 	return 0;
@@ -192,8 +182,8 @@ void Robot6Axis::Save (Writer &writer) const
                         << "Q2=\""          <<  Tip.getRotation()[2] << "\" "
                         << "Q3=\""          <<  Tip.getRotation()[3] << "\" "
                         << "rotDir=\""      <<  RotDir[i]		     << "\" "
-                        << "maxAngle=\""    <<  MaxAngle[i]		     << "\" "
-                        << "minAngle=\""    <<  MinAngle[i]			 << "\" "
+                        << "maxAngle=\""    <<  Max(i)*(180.0/M_PI)  << "\" "
+                        << "minAngle=\""    <<  Min(i)*(180.0/M_PI)  << "\" "
                         << "AxisVelocity=\""<<  Velocity[i]          << "\" "
                         << "Pos=\""         <<  Actuall(i)           << "\"/>"
 					                      
@@ -225,8 +215,9 @@ void Robot6Axis::Restore(XMLReader &reader)
             Velocity[i] = reader.getAttributeAsFloat("rotDir");
         else
             Velocity[i] = 1.0;
-        MaxAngle[i]   = reader.getAttributeAsFloat("maxAngle");
-        MinAngle[i]	  = reader.getAttributeAsFloat("minAngle");
+        // read the axis constraints
+        Min(i)  = reader.getAttributeAsFloat("maxAngle")* (M_PI/180);
+        Max(i)  = reader.getAttributeAsFloat("minAngle")* (M_PI/180);
         if(reader.hasAttribute("AxisVelocity"))
             Velocity[i] = reader.getAttributeAsFloat("AxisVelocity");
         else

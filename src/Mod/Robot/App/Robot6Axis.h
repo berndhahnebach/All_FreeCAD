@@ -71,8 +71,8 @@ public:
 	bool setTo(const Base::Placement &To);
 	bool setAxis(int Axis,double Value);
 	double getAxis(int Axis);
-    double getMaxAngle(int Axis){return MaxAngle[Axis];}
-    double getMinAngle(int Axis){return MinAngle[Axis];}
+    double getMaxAngle(int Axis);
+    double getMinAngle(int Axis);
 	/// calculate the new Tcp out of the Axis
 	bool calcTcp(void);
 	Base::Placement getTcp(void);
@@ -87,8 +87,6 @@ protected:
 	KDL::JntArray Max;
 	KDL::Frame Tcp;
 
-	double MaxAngle[6];
-	double MinAngle[6];
 	double Velocity[6];
 	double RotDir  [6];
 

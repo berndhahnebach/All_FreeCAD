@@ -121,15 +121,20 @@ PyObject* VectorPy::number_multiply_handler(PyObject *self, PyObject *other)
         PyErr_SetString(PyExc_TypeError, "First arg must be Vector");
         return 0;
     }
-    if (!PyObject_TypeCheck(other, &(VectorPy::Type))) {
-        PyErr_SetString(PyExc_TypeError, "Second arg must be Vector");
+
+    if (PyObject_TypeCheck(other, &(VectorPy::Type))) {
+        Base::Vector3d a = static_cast<VectorPy*>(self) ->value();
+        Base::Vector3d b = static_cast<VectorPy*>(other)->value();
+        Py::Float mult(a * b);
+        return Py::new_reference_to(mult);
+    }else if (PyFloat_Check(other)) {
+        Base::Vector3d a = static_cast<VectorPy*>(self) ->value();
+        double b = PyFloat_AsDouble(other);
+        return new VectorPy(a * b);
+    }else {
+        PyErr_SetString(PyExc_TypeError, "A vector can only multiplied by another vector or a number");
         return 0;
     }
-    Base::Vector3d a = static_cast<VectorPy*>(self)->value();
-    Base::Vector3d b = static_cast<VectorPy*>(other)->value();
-
-    Py::Float mult(a * b);
-    return Py::new_reference_to(mult);
 }
 
 Py_ssize_t VectorPy::sequence_length(PyObject *)
@@ -242,7 +247,8 @@ PyObject*  VectorPy::scale(PyObject *args)
         return 0;
     VectorPy::PointerType ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
     ptr->Scale(factorX, factorY, factorZ);
-    Py_Return;
+
+    return Py::new_reference_to(this);
 }
 
 PyObject*  VectorPy::multiply(PyObject *args)
@@ -252,7 +258,8 @@ PyObject*  VectorPy::multiply(PyObject *args)
         return 0;
     VectorPy::PointerType ptr = reinterpret_cast<VectorPy::PointerType>(_pcTwinPointer);
     ptr->Scale(factor, factor, factor);
-    Py_Return;
+
+    return Py::new_reference_to(this);
 }
 
 PyObject*  VectorPy::dot(PyObject *args)
@@ -311,7 +318,8 @@ PyObject*  VectorPy::normalize(PyObject *args)
     }
 
     ptr->Normalize();
-    Py_Return;
+
+    return Py::new_reference_to(this);
 }
 
 PyObject*  VectorPy::projectToLine(PyObject *args)
@@ -336,7 +344,8 @@ PyObject*  VectorPy::projectToLine(PyObject *args)
     VectorPy::PointerType line_ptr = reinterpret_cast<VectorPy::PointerType>(line_vec->_pcTwinPointer);
 
     this_ptr->ProjToLine(*base_ptr, *line_ptr);
-    Py_Return;
+
+    return Py::new_reference_to(this);
 }
 
 PyObject*  VectorPy::projectToPlane(PyObject *args)
@@ -361,7 +370,8 @@ PyObject*  VectorPy::projectToPlane(PyObject *args)
     VectorPy::PointerType line_ptr = reinterpret_cast<VectorPy::PointerType>(line_vec->_pcTwinPointer);
 
     this_ptr->ProjToPlane(*base_ptr, *line_ptr);
-    Py_Return;
+
+    return Py::new_reference_to(this);
 }
 
 PyObject*  VectorPy::distanceToLine(PyObject *args)

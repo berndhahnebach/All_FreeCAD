@@ -1433,13 +1433,13 @@ Transform
    children
    [
       Transform { rotation 1 0 0 1.570796 children [
-         DEF SENS_04_OBJ CylinderSensor
-         {
-            diskAngle 1.570796
-            minAngle  -3.228859
-            maxAngle  3.228859
-            offset    0.000000
-         }
+         #DEF SENS_04_OBJ CylinderSensor
+         #{
+         #   diskAngle 1.570796
+         #   minAngle  -3.228859
+         #   maxAngle  3.228859
+         #   offset    0.000000
+         #}
 		 DEF FREECAD_AXIS1 Transform { rotation 0 1 0 0 children [
 
       DEF AXIS_04_OBJ Transform
@@ -14931,13 +14931,13 @@ Transform
    children
    [
       Transform { rotation 1 0 0 1.570796 children [
-         DEF SENS_27_OBJ CylinderSensor
-         {
-            diskAngle 1.570796
-            minAngle  -2.268928
-            maxAngle  0.349066
-            offset    0.000000
-         }
+         #DEF SENS_27_OBJ CylinderSensor
+         #{
+         #   diskAngle 1.570796
+         #   minAngle  -2.268928
+         #   maxAngle  0.349066
+         #   offset    0.000000
+         #}
 		 DEF FREECAD_AXIS2 Transform { rotation 0 1 0 -1.57079632675 children [
       DEF AXIS_27_OBJ Transform
       {
@@ -18205,13 +18205,13 @@ Transform
    children
    [
       Transform { rotation 1 0 0 1.570796 children [
-         DEF SENS_32_OBJ CylinderSensor
-         {
-            diskAngle 1.570796
-            minAngle  -1.640609
-            maxAngle  2.617994
-            offset    0.000000
-         }
+         #DEF SENS_32_OBJ CylinderSensor
+         #{
+         #   diskAngle 1.570796
+         #   minAngle  -1.640609
+         #   maxAngle  2.617994
+         #   offset    0.000000
+         #}
       DEF FREECAD_AXIS3 Transform { rotation 0 1 0 1.57079632675 children [
 		DEF AXIS_32_OBJ Transform
       {
@@ -21898,13 +21898,13 @@ Transform
    children
    [
       Transform { rotation 1 0 0 1.570796 children [
-         DEF SENS_44_OBJ CylinderSensor
-         {
-            diskAngle 1.570796
-            minAngle  -6.108652
-            maxAngle  6.108652
-            offset    0.000000
-         }
+         #DEF SENS_44_OBJ CylinderSensor
+         #{
+         #   diskAngle 1.570796
+         #   minAngle  -6.108652
+         #   maxAngle  6.108652
+         #   offset    0.000000
+         #}
 		 DEF FREECAD_AXIS4 Transform { rotation 0 1 0 0 children [
 
       DEF AXIS_44_OBJ Transform
@@ -25220,13 +25220,13 @@ Transform
    children
    [
       Transform { rotation 1 0 0 1.570796 children [
-         DEF SENS_46_OBJ CylinderSensor
-         {
-            diskAngle 1.570796
-            minAngle  -2.094395
-            maxAngle  2.094395
-            offset    0.000000
-         }
+         #DEF SENS_46_OBJ CylinderSensor
+         #{
+         #   diskAngle 1.570796
+         #   minAngle  -2.094395
+         #   maxAngle  2.094395
+         #   offset    0.000000
+         #}
 		 DEF FREECAD_AXIS5 Transform { rotation 0 1 0 0 children [
 
       DEF AXIS_46_OBJ Transform
@@ -28461,13 +28461,13 @@ Transform
    children
    [
       Transform { rotation 1 0 0 1.570796 children [
-         DEF SENS_49_OBJ CylinderSensor
-         {
-            diskAngle 1.570796
-            minAngle  -6.108652
-            maxAngle  6.108652
-            offset    0.000000
-         }
+         #DEF SENS_49_OBJ CylinderSensor
+         #{
+         #   diskAngle 1.570796
+         #   minAngle  -6.108652
+         #   maxAngle  6.108652
+         #   offset    0.000000
+         #}
 		 DEF FREECAD_AXIS6 Transform { rotation 0 1 0 0 children [
 
       DEF AXIS_49_OBJ Transform
