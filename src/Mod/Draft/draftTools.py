@@ -2641,6 +2641,7 @@ class Downgrade(Modifier):
 		for ob in self.sel:
 			for e in ob.Shape.Edges:
 				edges.append(e)
+                        lastob = ob
 		# applying transformation
 		self.doc.openTransaction("Downgrade")
                 if len(self.sel) == 2:
@@ -2665,14 +2666,15 @@ class Downgrade(Modifier):
 					Draft.formatObject(newob,ob)
 					self.doc.removeObject(ob.Name)
 		elif (len(faces) > 0):
-                        # no faces: split wire into single edges
-			w=faces[0].Wires[0]
-			for ob in self.sel:
-				newob = self.doc.addObject("Part::Feature","Wire")
+                        # only one face: we extract its wires
+			for w in faces[0].Wires:
+                                newob = self.doc.addObject("Part::Feature","Wire")
 				newob.Shape = w
-				Draft.formatObject(newob,ob)
+                                Draft.formatObject(newob,lastob)
+			for ob in self.sel:
 				self.doc.removeObject(ob.Name)
 		else:
+                        # no faces: split wire into single edges
 			for ob in self.sel:
 				for e in edges:
 					newob = self.doc.addObject("Part::Feature","Edge")
