@@ -1,3 +1,25 @@
+/***************************************************************************
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2009     *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
 
 #include "PreCompiled.h"
 
@@ -26,13 +48,7 @@ using namespace Fem;
 std::string FemMeshPy::representation(void) const
 {
     std::stringstream str;
- /*   str.precision(5);
-    str << "FemMesh [";
-    str << "size:" << getFemMeshPtr()->getSize() << " ";
-    str << "length:" << getFemMeshPtr()->getLength() << " ";
-    str << "duration:" << getFemMeshPtr()->getDuration() << " ";
-    str << "]";*/
-
+    getFemMeshPtr()->getSMesh()->Dump(str);
     return str.str();
 }
 
@@ -45,21 +61,6 @@ PyObject *FemMeshPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Py
 // constructor method
 int FemMeshPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    //PyObject *pcObj=0;
-    //if (!PyArg_ParseTuple(args, "|O!", &(PyList_Type), &pcObj))
-    //    return -1;
-
-    //if (pcObj) {
-    //    Py::List list(pcObj);
-    //    bool first = true;
-    //    for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-    //        if (PyObject_TypeCheck((*it).ptr(), &(Fem::WaypointPy::Type))) {
-    //            Fem::Waypoint &wp = *static_cast<Fem::WaypointPy*>((*it).ptr())->getWaypointPtr();
-    //            getFemMeshPtr()->addWaypoint(wp);
-    //        }
-    //    }
-    //}
-    //getFemMeshPtr()->generateFemMesh();
     return 0;
 }
 
@@ -71,8 +72,29 @@ PyObject* FemMeshPy::setShape(PyObject *args)
    if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj))
         return NULL;
 
-    TopoDS_Shape shape = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
-    getFemMeshPtr()->myMesh->ShapeToMesh(shape);
+    try {
+        TopoDS_Shape shape = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+        getFemMeshPtr()->getSMesh()->ShapeToMesh(shape);
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+    Py_Return;
+}
+
+PyObject* FemMeshPy::compute(PyObject *args)
+{
+   if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    try {
+        getFemMeshPtr()->compute();
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
     Py_Return;
 }
 
@@ -82,7 +104,13 @@ PyObject* FemMeshPy::read(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    getFemMeshPtr()->read(filename);
+    try {
+        getFemMeshPtr()->read(filename);
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
     Py_Return;
 }
 
@@ -92,7 +120,13 @@ PyObject* FemMeshPy::write(PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    getFemMeshPtr()->write(filename);
+    try {
+        getFemMeshPtr()->write(filename);
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
     Py_Return;
 }
 
@@ -100,72 +134,72 @@ PyObject* FemMeshPy::write(PyObject *args)
 
 Py::Int FemMeshPy::getNodeCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbNodes());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbNodes());
 }
 
 Py::Int FemMeshPy::getEdgeCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbEdges());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbEdges());
 }
 
 Py::Int FemMeshPy::getFacesCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbFaces());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbFaces());
 }
 
 Py::Int FemMeshPy::getTriangleCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbTriangles());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbTriangles());
 }
 
 Py::Int FemMeshPy::getQuadrangleCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbQuadrangles());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbQuadrangles());
 }
 
 Py::Int FemMeshPy::getPolygonCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbPolygons());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbPolygons());
 }
 
 Py::Int FemMeshPy::getVolumeCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbVolumes());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbVolumes());
 }
 
 Py::Int FemMeshPy::getTetraCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbTetras());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbTetras());
 }
 
 Py::Int FemMeshPy::getHexaCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbHexas());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbHexas());
 }
 
 Py::Int FemMeshPy::getPyramidCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbPyramids());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbPyramids());
 }
 
 Py::Int FemMeshPy::getPrismCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbPrisms());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbPrisms());
 }
 
 Py::Int FemMeshPy::getPolyhedronCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbPolyhedrons());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbPolyhedrons());
 }
 
 Py::Int FemMeshPy::getSubMeshCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbSubMesh());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbSubMesh());
 }
 
 Py::Int FemMeshPy::getGroupCount(void) const
 {
-    return Py::Int(getFemMeshPtr()->myMesh->NbGroup());
+    return Py::Int(getFemMeshPtr()->getSMesh()->NbGroup());
 }
 
 // ===== custom attributes ============================================================
@@ -179,5 +213,3 @@ int FemMeshPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }
-
-

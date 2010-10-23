@@ -44,31 +44,46 @@
 
 using namespace Fem;
 using namespace Base;
-//using namespace KDL;
-
 
 TYPESYSTEM_SOURCE(Fem::FemMesh , Base::Persistence);
 
 FemMesh::FemMesh()
 {
-    SMESH_Gen *aMeshGen = new SMESH_Gen();
-    myMesh = aMeshGen->CreateMesh(1,false);
-    //delete aMeshGen;
+    myGen = new SMESH_Gen();
+    myMesh = myGen->CreateMesh(1,false);
 }
 
 FemMesh::FemMesh(const FemMesh& Mesh)
 {
-    delete myMesh;
+    myGen = new SMESH_Gen();
+    myMesh = myGen->CreateMesh(1,false);
+    myMesh->ShapeToMesh(Mesh.myMesh->GetShapeToMesh());
 }
 
 FemMesh::~FemMesh()
 {
-
+    delete myMesh;
+    //delete myGen; // crashes
 }
 
 FemMesh &FemMesh::operator=(const FemMesh& Trac)
 {
     return *this;
+}
+
+const SMESH_Mesh* FemMesh::getSMesh() const
+{
+    return myMesh;
+}
+
+SMESH_Mesh* FemMesh::getSMesh()
+{
+    return myMesh;
+}
+
+void FemMesh::compute()
+{
+    myGen->Compute(*myMesh, myMesh->GetShapeToMesh());
 }
 
 void FemMesh::read(const char *FileName)
@@ -81,10 +96,10 @@ void FemMesh::read(const char *FileName)
     
     if (File.hasExtension("unv") ) {
         // read UNV file
-         myMesh->UNVToMesh(File.filePath().c_str());
+        myMesh->UNVToMesh(File.filePath().c_str());
     }
     else if (File.hasExtension("med") ) {
-         myMesh->MEDToMesh(File.filePath().c_str(),File.fileNamePure().c_str());
+        myMesh->MEDToMesh(File.filePath().c_str(),File.fileNamePure().c_str());
     }
     else if (File.hasExtension("stl") ) {
         // read brep-file
@@ -99,14 +114,10 @@ void FemMesh::read(const char *FileName)
     }
 }
 
-void FemMesh::write(const char *FileName)
+void FemMesh::write(const char *FileName) const
 {
     Base::FileInfo File(FileName);
-  
-    // checking on the file
-    if (!File.isReadable())
-        throw Base::Exception("File to load not existing or not readable");
-    
+
     if (File.hasExtension("unv") ) {
         // read UNV file
          myMesh->ExportUNV(File.filePath().c_str());

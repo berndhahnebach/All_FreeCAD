@@ -28,43 +28,135 @@
 
 #include <Base/Console.h>
 #include <Base/VectorPy.h>
+#include <App/Application.h>
+#include <App/Document.h>
+#include <App/DocumentObject.h>
+#include <App/DocumentObjectPy.h>
 
+#include "FemMesh.h"
+#include "FemMeshObject.h"
 #include "FemMeshPy.h"
 
 using namespace Fem;
 
-static PyObject * 
-meshShape(PyObject *self, PyObject *args)
+
+/* module functions */
+static PyObject * read(PyObject *self, PyObject *args)
 {
- //   PyObject *pcRobObj;
- //   PyObject *pcTracObj;
- //   float tick;
- //   char* FileName;
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
 
-	//if (!PyArg_ParseTuple(args, "O!O!fs", &(Fem6AxisPy::Type), &pcRobObj,
- //                                         &(TrajectoryPy::Type), &pcTracObj,
- //                                         &tick,&FileName
- //                                         )  )  
- //       return NULL;                             // NULL triggers exception
+    PY_TRY {
+        std::auto_ptr<FemMesh> mesh(new FemMesh);
+        try {
+            mesh->read(Name);
+            return new FemMeshPy(mesh.release());
+        }
+        catch(...) {
+            PyErr_SetString(PyExc_Exception, "Loading of mesh was aborted");
+            return NULL;
+        }
+    } PY_CATCH;
 
- //   PY_TRY {
- //       Fem::Trajectory &Trac = * static_cast<TrajectoryPy*>(pcTracObj)->getTrajectoryPtr();
- //       Fem::Fem6Axis &Rob  = * static_cast<Fem6AxisPy*>(pcRobObj)->getFem6AxisPtr();
-	//	Simulation Sim(Trac,Rob);
-
-
-	//	
- //   } PY_CATCH;
-
-	return Py::new_reference_to(Py::Float(0.0));
-
+    Py_Return;
 }
 
+static PyObject * open(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    if (!PyArg_ParseTuple(args, "s",&Name))
+        return NULL;
+
+    PY_TRY {
+        FemMesh mesh;
+        mesh.read(Name);
+        Base::FileInfo file(Name);
+        // create new document and add Import feature
+        App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+        FemMeshObject *pcFeature = static_cast<FemMeshObject *>
+            (pcDoc->addObject("Fem::FemMeshObject", file.fileNamePure().c_str()));
+        pcFeature->Label.setValue(file.fileNamePure().c_str());
+        pcFeature->FemMesh.setValue(mesh);
+        pcFeature->purgeTouched();
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+static PyObject * importer(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    const char* DocName=0;
+
+    if (!PyArg_ParseTuple(args, "s|s",&Name,&DocName))
+        return NULL;
+
+    PY_TRY {
+        App::Document *pcDoc = 0;
+        if (DocName)
+            pcDoc = App::GetApplication().getDocument(DocName);
+        else
+            pcDoc = App::GetApplication().getActiveDocument();
+
+        if (!pcDoc) {
+            pcDoc = App::GetApplication().newDocument(DocName);
+        }
+
+        FemMesh mesh;
+        mesh.read(Name);
+        Base::FileInfo file(Name);
+        FemMeshObject *pcFeature = static_cast<FemMeshObject *>
+            (pcDoc->addObject("Fem::FemMeshObject", file.fileNamePure().c_str()));
+        pcFeature->Label.setValue(file.fileNamePure().c_str());
+        pcFeature->FemMesh.setValue(mesh);
+        pcFeature->purgeTouched();
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+static PyObject * exporter(PyObject *self, PyObject *args)
+{
+    PyObject* object;
+    const char* filename;
+    if (!PyArg_ParseTuple(args, "Os",&object,&filename))
+        return NULL;
+
+    PY_TRY {
+        Py::List list(object);
+        Base::Type meshId = Base::Type::fromName("Fem::FemMeshObject");
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            PyObject* item = (*it).ptr();
+            if (PyObject_TypeCheck(item, &(App::DocumentObjectPy::Type))) {
+                App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(item)->getDocumentObjectPtr();
+                if (obj->getTypeId().isDerivedFrom(meshId)) {
+                    static_cast<FemMeshObject*>(obj)->FemMesh.getValue().write(filename);
+                    break;
+                }
+            }
+        }
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+// ----------------------------------------------------------------------------
+
+PyDoc_STRVAR(open_doc,
+"open(string) -- Create a new document and a Mesh::Import feature to load the file into the document.");
+
+PyDoc_STRVAR(inst_doc,
+"insert(string|mesh,[string]) -- Load or insert a mesh into the given or active document.");
+
+PyDoc_STRVAR(export_doc,
+"export(list,string) -- Export a list of objects into a single file.");
 
 /* registration table  */
 struct PyMethodDef Fem_methods[] = {
-   {
-     "meshShape"       ,meshShape      ,METH_VARARGS,
-     "FemMesh meshShape(Shape) - Meshes a shape"},
-    {NULL, NULL}        /* end of table marker */
+    {"open"       ,open ,       METH_VARARGS, open_doc},
+    {"insert"     ,importer,    METH_VARARGS, inst_doc},
+    {"export"     ,exporter,    METH_VARARGS, export_doc},
+    {"read"       ,read,        Py_NEWARGS,   "Read a mesh from a file and returns a Mesh object."},
+    {NULL, NULL}  /* sentinel */
 };

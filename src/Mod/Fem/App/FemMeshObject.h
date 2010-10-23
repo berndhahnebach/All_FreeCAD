@@ -53,17 +53,15 @@ public:
     virtual short mustExecute(void) const;
     virtual PyObject *getPyObject(void);
 
-	App::PropertyPlacement Base;
-	PropertyFemMesh     FemMesh;
-
+    App::PropertyPlacement Base;
+    PropertyFemMesh     FemMesh;
 
 protected:
     /// get called by the container when a property has changed
     virtual void onChanged (const App::Property* prop);
-
 };
 
 } //namespace Fem
 
 
-#endif // ROBOT_ROBOTOBJECT_H
+#endif // Fem_FemMeshObject_H
