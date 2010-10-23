@@ -144,7 +144,10 @@ public:
     void transformShape(const Base::Matrix4D&);
     TopoDS_Shape mirror(const gp_Ax2&) const;
     TopoDS_Shape toNurbs() const;
+    TopoDS_Shape replaceShape(const std::vector< std::pair<TopoDS_Shape,TopoDS_Shape> >& s) const;
+    TopoDS_Shape removeShape(const std::vector<TopoDS_Shape>& s) const;
     void sewShape();
+    bool fix();
     //@}
 
     /** @name Getting basic geometric entities */
