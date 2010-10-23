@@ -31,6 +31,7 @@
 
 #include <vector>
 
+class SMESH_Gen;
 class SMESH_Mesh;
 
 namespace Fem
@@ -49,10 +50,13 @@ public:
     ~FemMesh();
 
     FemMesh &operator=(const FemMesh&);
+    const SMESH_Mesh* getSMesh() const;
+    SMESH_Mesh* getSMesh();
+    void compute();
 
-	// from base class
+    // from base class
     virtual unsigned int getMemSize (void) const;
-	virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
     void SaveDocFile (Base::Writer &writer) const;
     void RestoreDocFile(Base::Reader &reader);
@@ -81,11 +85,11 @@ public:
 
     /// import from files
     void read(const char *FileName);
-    void write(const char *FileName);
+    void write(const char *FileName) const;
 
-
+private:
+    SMESH_Gen  *myGen;
     SMESH_Mesh *myMesh;
-
 };
 
 } //namespace Part

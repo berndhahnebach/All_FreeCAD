@@ -66,9 +66,9 @@ void AppFemExport initFem()
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
  
-    Fem::FemMesh         ::init();
-    Fem::FemMeshObject        ::init();
-    Fem::PropertyFemMesh   ::init();
+    Fem::FemMesh            ::init();
+    Fem::FemMeshObject      ::init();
+    Fem::PropertyFemMesh    ::init();
 }
 
 } // extern "C"

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport 
-      Father="PersistencePy" 
+      Father="ComplexGeoDataPy" 
       Name="FemMeshPy" 
       Twin="FemMesh" 
       TwinPointer="FemMesh" 
       Include="Mod/Fem/App/FemMesh.h" 
       Namespace="Fem" 
-      FatherInclude="Base/PersistencePy.h" 
-      FatherNamespace="Base"
+      FatherInclude="App/ComplexGeoDataPy.h" 
+      FatherNamespace="Data"
       Constructor="true">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
@@ -19,7 +19,12 @@
 			  <UserDocu>set the Part shape to mesh</UserDocu>
 		  </Documentation>
 	  </Methode>
-	  <Methode Name="read">
+		<Methode Name="compute">
+			<Documentation>
+				<UserDocu>Update the internal mesh structure</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="read">
 		  <Documentation>
 			  <UserDocu>Read in an DAT, UNV, MED or STL file.</UserDocu>
 		  </Documentation>
