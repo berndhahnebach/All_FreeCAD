@@ -57,6 +57,7 @@
 #include <Base/MatrixPy.h>
 #include <Base/Vector3D.h>
 #include <Base/VectorPy.h>
+#include <CXX/Extensions.hxx>
 
 #include "TopoShape.h"
 #include "TopoShapePy.h"
@@ -82,6 +83,13 @@ using namespace Part;
     #define M_PI_2  1.57079632679489661923 /* pi/2 */
 #endif
 
+namespace Py {
+    typedef ExtensionObject<TopoShapePy> TopoShape;
+    bool TopoShape::accepts (PyObject *pyob) const
+    {
+        return (pyob && PyObject_TypeCheck(pyob, &(Part::TopoShapePy::Type)));
+    }
+}
 
 // returns a string which represents the object e.g. when printed in python
 std::string TopoShapePy::representation(void) const
@@ -153,6 +161,67 @@ PyObject* TopoShapePy::copy(PyObject *args)
 
     static_cast<TopoShapePy*>(cpy)->getTopoShapePtr()->_Shape = shape;
     return cpy;
+}
+
+PyObject* TopoShapePy::replaceShape(PyObject *args)
+{
+    PyObject *l;
+    if (!PyArg_ParseTuple(args, "O!",&PyList_Type,&l))
+        return NULL;
+
+    try {
+        Py::List list(l);
+        std::vector< std::pair<TopoDS_Shape, TopoDS_Shape> > shapes;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Py::Tuple tuple(*it);
+            Py::TopoShape sh1(tuple[0]);
+            Py::TopoShape sh2(tuple[1]);
+            shapes.push_back(std::make_pair(
+                sh1.extensionObject()->getTopoShapePtr()->_Shape,
+                sh2.extensionObject()->getTopoShapePtr()->_Shape)
+            );
+        }
+        PyTypeObject* type = this->GetType();
+        PyObject* inst = type->tp_new(type, this, 0);
+        static_cast<TopoShapePy*>(inst)->getTopoShapePtr()->_Shape = 
+            this->getTopoShapePtr()->replaceShape(shapes);
+        return inst;
+    }
+    catch (const Py::Exception&) {
+        return 0;
+    }
+    catch (...) {
+        PyErr_SetString(PyExc_Exception, "failed to replace shape");
+        return 0;
+    }
+}
+
+PyObject* TopoShapePy::removeShape(PyObject *args)
+{
+    PyObject *l;
+    if (!PyArg_ParseTuple(args, "O!",&PyList_Type,&l))
+        return NULL;
+
+    try {
+        Py::List list(l);
+        std::vector<TopoDS_Shape> shapes;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Py::Tuple tuple(*it);
+            Py::TopoShape sh(tuple[0]);
+            shapes.push_back(
+                sh.extensionObject()->getTopoShapePtr()->_Shape
+            );
+        }
+        PyTypeObject* type = this->GetType();
+        PyObject* inst = type->tp_new(type, this, 0);
+        static_cast<TopoShapePy*>(inst)->getTopoShapePtr()->_Shape = 
+            this->getTopoShapePtr()->removeShape(shapes);
+        return inst;
+    }
+    catch (...) {
+        PyErr_SetString(PyExc_Exception, "failed to remove shape");
+        return 0;
+    }
 }
 
 PyObject*  TopoShapePy::read(PyObject *args)

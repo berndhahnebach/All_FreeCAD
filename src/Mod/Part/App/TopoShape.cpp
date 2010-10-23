@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <cstdlib>
 # include <sstream>
+# include <Bnd_Box.hxx>
 # include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepAdaptor_Curve.hxx>
@@ -34,29 +35,30 @@
 # include <BRepAlgoAPI_Cut.hxx>
 # include <BRepAlgoAPI_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
+# include <BRepBndLib.hxx>
 # include <BRepBuilderAPI_GTransform.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepBuilderAPI_MakePolygon.hxx>
 # include <BRepBuilderAPI_MakeVertex.hxx>
 # include <BRepBuilderAPI_NurbsConvert.hxx>
-# include <BRepFilletAPI_MakeFillet.hxx>
-# include <BRepOffsetAPI_MakeThickSolid.hxx>
-# include <BRepOffsetAPI_MakePipe.hxx>
-# include <BRepOffsetAPI_MakePipeShell.hxx>
-# include <BRepPrimAPI_MakePrism.hxx>
-# include <BRepPrimAPI_MakeRevol.hxx>
+# include <BRepBuilderAPI_FaceError.hxx>
+# include <BRepBuilderAPI_Copy.hxx>
+# include <BRepBuilderAPI_Transform.hxx>
 # include <BRepCheck_Analyzer.hxx>
-# include <BRepBndLib.hxx>
+# include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepMesh.hxx>
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRepMesh_Triangle.hxx>
 # include <BRepMesh_Edge.hxx>
-# include <Bnd_Box.hxx>
+# include <BRepOffsetAPI_MakeThickSolid.hxx>
+# include <BRepOffsetAPI_MakePipe.hxx>
+# include <BRepOffsetAPI_MakePipeShell.hxx>
+# include <BRepOffsetAPI_Sewing.hxx>
+# include <BRepPrimAPI_MakePrism.hxx>
+# include <BRepPrimAPI_MakeRevol.hxx>
 # include <BRepTools.hxx>
+# include <BRepTools_ReShape.hxx>
 # include <BRepTools_ShapeSet.hxx>
-# include <BRepBuilderAPI_FaceError.hxx>
-# include <BRepBuilderAPI_Copy.hxx>
-# include <BRepBuilderAPI_Transform.hxx>
 # include <Handle_TopTools_HSequenceOfShape.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
 # include <Interface_Static.hxx>
@@ -95,6 +97,12 @@
 # include <StlAPI_Writer.hxx>
 # include <Standard_Failure.hxx>
 # include <gp_GTrsf.hxx>
+# include <ShapeAnalysis_Shell.hxx>
+# include <ShapeBuild_ReShape.hxx>
+# include <ShapeFix_Face.hxx>
+# include <ShapeFix_Shell.hxx>
+# include <ShapeFix_Solid.hxx>
+# include <ShapeUpgrade_ShellSewing.hxx>
 #endif
 # include <Poly_Polygon3D.hxx>
 # include <Poly_PolygonOnTriangulation.hxx>
@@ -1013,16 +1021,66 @@ TopoDS_Shape TopoShape::toNurbs() const
     return mkNurbs.Shape();
 }
 
+TopoDS_Shape TopoShape::replaceShape(const std::vector< std::pair<TopoDS_Shape,TopoDS_Shape> >& s) const
+{
+    BRepTools_ReShape reshape;
+    std::vector< std::pair<TopoDS_Shape,TopoDS_Shape> >::const_iterator it;
+    for (it = s.begin(); it != s.end(); ++it)
+        reshape.Replace(it->first, it->second);
+    return reshape.Apply(this->_Shape, TopAbs_SHAPE);
+}
+
+TopoDS_Shape TopoShape::removeShape(const std::vector<TopoDS_Shape>& s) const
+{
+    BRepTools_ReShape reshape;
+    for (std::vector<TopoDS_Shape>::const_iterator it = s.begin(); it != s.end(); ++it)
+        reshape.Remove(*it);
+    return reshape.Apply(this->_Shape, TopAbs_SHAPE);
+}
+
 void TopoShape::sewShape()
 {
-    ShapeFix_Shape fixer(this->_Shape);
-    fixer.Perform();
+    //ShapeFix_Shape fixer(this->_Shape);
+    //fixer.Perform();
 
     BRepBuilderAPI_Sewing sew;
-    sew.Add(fixer.Shape());
+    sew.Add(this->_Shape/*fixer.Shape()*/);
     sew.Perform();
 
+    //shape = ShapeUpgrade_ShellSewing().ApplySewing(shape);
     this->_Shape = sew.SewedShape();
+}
+
+bool TopoShape::fix()
+{
+    bool ret = false;
+    if (this->_Shape.IsNull())
+        return false;
+    TopAbs_ShapeEnum type = this->_Shape.ShapeType();
+    if (type == TopAbs_SOLID) {
+        ShapeFix_Solid fix(TopoDS::Solid(this->_Shape));
+        ret = fix.Perform() ? true : false;
+        this->_Shape = fix.Shape();
+    }
+    else if (type == TopAbs_SHELL) {
+        //ShapeAnalysis_Shell eval;
+        //eval.LoadShells(this->_Shape);
+        ShapeFix_Shell fix(TopoDS::Shell(this->_Shape));
+        ret = fix.Perform() ? true : false;
+        this->_Shape = fix.Shape();
+    }
+    else if (type == TopAbs_FACE) {
+        ShapeFix_Face fix(TopoDS::Face(this->_Shape));
+        ret = fix.Perform() ? true : false;
+        this->_Shape = fix.Result();
+    }
+    else {
+        ShapeFix_Shape fix(this->_Shape);
+        ret = fix.Perform() ? true : false;
+        this->_Shape = fix.Shape();
+    }
+
+    return ret;
 }
 
 namespace Part {
