@@ -63,7 +63,9 @@ FemMesh::FemMesh(const FemMesh& Mesh)
 FemMesh::~FemMesh()
 {
     delete myMesh;
-    //delete myGen; // crashes
+#if defined(__GNUC__)
+    delete myGen; // crashes with MSVC
+#endif
 }
 
 FemMesh &FemMesh::operator=(const FemMesh& Trac)

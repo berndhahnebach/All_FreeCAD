@@ -159,7 +159,9 @@ Mesh::MeshObject* Mesher::createMesh() const
 
     // clean up
     //FIXME: Why can't we delete this object?
-    // delete meshgen;
+#if defined(__GNUC__)
+    delete meshgen; // crashes with MSVC
+#endif
     delete mesh;
     for (std::list<SMESH_Hypothesis*>::iterator it = hypoth.begin(); it != hypoth.end(); ++it)
         delete *it;
