@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <BRepAdaptor_Curve.hxx>
+# include <Geom_Circle.hxx>
 #endif
 
 
@@ -108,7 +110,7 @@ void ProjectionAlgos::execute(void)
 
 }
 
-std::string  ProjectionAlgos::getSVG(SvgExtractionType type, float scale)
+std::string ProjectionAlgos::getSVG(SvgExtractionType type, float scale)
 {
     std::stringstream result;
     if (!H.IsNull() && type==WithHidden) {
@@ -179,20 +181,51 @@ std::string ProjectionAlgos::Edges2SVG(const TopoDS_Shape &Input)
 
     TopExp_Explorer edges( Input, TopAbs_EDGE );
     for (int i = 1 ; edges.More(); edges.Next(),i++ ) {
-        TopoDS_Edge edge = TopoDS::Edge( edges.Current() );
-        TopLoc_Location location;
-        Handle( Poly_Polygon3D ) polygon = BRep_Tool::Polygon3D( edge, location );
-        if (!polygon.IsNull()) {
-            const TColgp_Array1OfPnt& nodes = polygon->Nodes();
-            char c = 'M';
-            result << "<path id= \"" /*<< ViewName*/ << i << "\" d=\" "; 
-            for (int i = nodes.Lower(); i <= nodes.Upper(); i++){
-                result << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
-                c = 'L';
+        const TopoDS_Edge& edge = TopoDS::Edge(edges.Current());
+        BRepAdaptor_Curve adapt(edge);
+        if (adapt.GetType() == GeomAbs_Circle) {
+            printCircle(adapt, result);
+        }
+        // fallback
+        else {
+            TopLoc_Location location;
+            Handle(Poly_Polygon3D) polygon = BRep_Tool::Polygon3D(edge, location);
+            if (!polygon.IsNull()) {
+                const TColgp_Array1OfPnt& nodes = polygon->Nodes();
+                char c = 'M';
+                result << "<path id= \"" /*<< ViewName*/ << i << "\" d=\" "; 
+                for (int i = nodes.Lower(); i <= nodes.Upper(); i++){
+                    result << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
+                    c = 'L';
+                }
+                result << "\" />" << endl;
             }
-            result << "\" />" << endl;
         }
     }
 
     return result.str();
+}
+
+void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
+{
+    gp_Circ circ = c.Circle();
+    const gp_Pnt& p= circ.Location();
+    double r = circ.Radius();
+    double f = c.FirstParameter();
+    double l = c.LastParameter();
+    gp_Pnt s = c.Value(f);
+    gp_Pnt e = c.Value(l);
+
+    // a full circle
+    if (s.SquareDistance(e) < 0.001) {
+        out << "<circle cx =\"" << p.X() << "\" cy =\"" 
+            << p.Y() << "\" r =\"" << r << "\" />";
+    }
+    // arc of circle
+    else {
+        char arc = (l-f > D_PI) ? '1' : '0';
+        out << "<path d=\"M" << s.X() <<  "," << s.Y()
+            << " A" << r << "," << r << " 0 " << arc << ",1 "
+            << e.X() << "," << e.Y() << "\" />";
+    }
 }

@@ -20,8 +20,6 @@
  *                                                                         *
  ***************************************************************************/
 
- 
-
 
 #ifndef _ProjectionAlgos_h_
 #define _ProjectionAlgos_h_
@@ -30,33 +28,33 @@
 #include <Base/Vector3D.h>
 #include <string>
 
+class BRepAdaptor_Curve;
+
 namespace Drawing
 {
-
 
 /** Algo class for projecting shapes and creating SVG output of it
  */
 class AppDrawingExport ProjectionAlgos
 {
-
 public:
-	/// Constructor
-	ProjectionAlgos(const TopoDS_Shape &Input,const Base::Vector3f &Dir);
-	virtual ~ProjectionAlgos();
+    /// Constructor
+    ProjectionAlgos(const TopoDS_Shape &Input,const Base::Vector3f &Dir);
+    virtual ~ProjectionAlgos();
 
-	void execute(void);
+    void execute(void);
 
-	static std::string Edges2SVG(const TopoDS_Shape &);
+    std::string Edges2SVG(const TopoDS_Shape &);
 
-	enum SvgExtractionType { 
-		Plain,
-		WithHidden
+    enum SvgExtractionType { 
+        Plain,
+        WithHidden
     };
 
-	std::string getSVG(SvgExtractionType type, float scale);
+    std::string getSVG(SvgExtractionType type, float scale);
 
-	const TopoDS_Shape &Input;
-	const Base::Vector3f &Direction;
+    const TopoDS_Shape &Input;
+    const Base::Vector3f &Direction;
 
     TopoDS_Shape V ;// hard edge visibly
     TopoDS_Shape V1;// Smoth edges visibly
@@ -69,13 +67,11 @@ public:
     TopoDS_Shape HO;// contours apparents invisibly
     TopoDS_Shape HI;// isoparamtriques   invisibly
 
-
-
+private:
+    void printCircle(const BRepAdaptor_Curve&, std::ostream&);
 };
 
-
 } //namespace Drawing
-
 
 
 #endif
