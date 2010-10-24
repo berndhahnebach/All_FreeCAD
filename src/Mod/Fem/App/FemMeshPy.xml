@@ -24,6 +24,11 @@
 				<UserDocu>Update the internal mesh structure</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="setStanardHypotheses">
+			<Documentation>
+				<UserDocu>Set some standard hypotheses for the whole shape</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="read">
 		  <Documentation>
 			  <UserDocu>Read in an DAT, UNV, MED or STL file.</UserDocu>

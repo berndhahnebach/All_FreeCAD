@@ -25,7 +25,10 @@
 
 #ifndef _PreComp_
 # include <cstdlib>
+# include <memory>
 # include <strstream>
+# include <Bnd_Box.hxx>
+# include <BRepBndLib.hxx>
 #endif
 
 #include <Base/Writer.h>
@@ -40,6 +43,15 @@
 #include <SMESH_Gen.hxx>
 #include <SMESH_Mesh.hxx>
 #include <SMDS_VolumeTool.hxx>
+#include <StdMeshers_MaxLength.hxx>
+#include <StdMeshers_LocalLength.hxx>
+#include <StdMeshers_MaxElementArea.hxx>
+#include <StdMeshers_NumberOfSegments.hxx>
+#include <StdMeshers_Deflection1D.hxx>
+#include <StdMeshers_Regular_1D.hxx>
+#include <StdMeshers_StartEndLength.hxx>
+#include <StdMeshers_QuadranglePreference.hxx>
+#include <StdMeshers_Quadrangle_2D.hxx>
 
 
 using namespace Fem;
@@ -81,6 +93,49 @@ const SMESH_Mesh* FemMesh::getSMesh() const
 SMESH_Mesh* FemMesh::getSMesh()
 {
     return myMesh;
+}
+
+void FemMesh::setStanardHypotheses()
+{
+    if (!hypoth.empty())
+        return;
+    int hyp=0;
+    SMESH_HypothesisPtr len(new StdMeshers_MaxLength(hyp++, 1, myGen));
+    static_cast<StdMeshers_MaxLength*>(len.get())->SetLength(1.0);
+    hypoth.push_back(len);
+
+    SMESH_HypothesisPtr loc(new StdMeshers_LocalLength(hyp++, 1, myGen));
+    static_cast<StdMeshers_MaxLength*>(loc.get())->SetLength(1.0);
+    hypoth.push_back(loc);
+
+    SMESH_HypothesisPtr area(new StdMeshers_MaxElementArea(hyp++, 1, myGen));
+    static_cast<StdMeshers_MaxElementArea*>(area.get())->SetMaxArea(1.0);
+    hypoth.push_back(area);
+
+    SMESH_HypothesisPtr segm(new StdMeshers_NumberOfSegments(hyp++, 1, myGen));
+    static_cast<StdMeshers_NumberOfSegments*>(segm.get())->SetNumberOfSegments(1);
+    hypoth.push_back(segm);
+
+    SMESH_HypothesisPtr defl(new StdMeshers_Deflection1D(hyp++, 1, myGen));
+    static_cast<StdMeshers_Deflection1D*>(defl.get())->SetDeflection(0.01);
+    hypoth.push_back(defl);
+
+    SMESH_HypothesisPtr reg(new StdMeshers_Regular_1D(hyp++, 1, myGen));
+    hypoth.push_back(reg);
+
+    //SMESH_HypothesisPtr sel(new StdMeshers_StartEndLength(hyp++, 1, myGen));
+    //static_cast<StdMeshers_StartEndLength*>(sel.get())->SetLength(1.0, true);
+    //hypoth.push_back(sel);
+
+    SMESH_HypothesisPtr qdp(new StdMeshers_QuadranglePreference(hyp++,1,myGen));
+    hypoth.push_back(qdp);
+
+    SMESH_HypothesisPtr q2d(new StdMeshers_Quadrangle_2D(hyp++,1,myGen));
+    hypoth.push_back(q2d);
+
+    // Apply hypothesis
+    for (int i=0; i<hyp;i++)
+        myMesh->AddHypothesis(myMesh->GetShapeToMesh(), i);
 }
 
 void FemMesh::compute()
@@ -259,34 +314,34 @@ Base::Matrix4D FemMesh::getTransform(void) const
 Base::BoundBox3d FemMesh::getBoundBox(void) const
 {
     Base::BoundBox3d box;
-    //try {
-    //    // If the shape is empty an exception may be thrown
-    //    Bnd_Box bounds;
-    //    BRepBndLib::Add(_Shape, bounds);
-    //    bounds.SetGap(0.0);
-    //    Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
-    //    bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+    try {
+        // If the shape is empty an exception may be thrown
+        Bnd_Box bounds;
+        BRepBndLib::Add(myMesh->GetShapeToMesh(), bounds);
+        bounds.SetGap(0.0);
+        Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
+        bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
 
-    //    box.MinX = xMin;
-    //    box.MaxX = xMax;
-    //    box.MinY = yMin;
-    //    box.MaxY = yMax;
-    //    box.MinZ = zMin;
-    //    box.MaxZ = zMax;
-    //}
-    //catch (Standard_Failure) {
-    //}
+        box.MinX = xMin;
+        box.MaxX = xMax;
+        box.MinY = yMin;
+        box.MaxY = yMax;
+        box.MinZ = zMin;
+        box.MaxZ = zMax;
+    }
+    catch (Standard_Failure) {
+    }
 
     return box;
 }
 
 std::vector<const char*> FemMesh::getElementTypes(void) const
 {
-    // FIXME implement subelement interface 
     std::vector<const char*> temp;
-    //temp.push_back("Vertex");
-    //temp.push_back("Edge");
-    //temp.push_back("Face");
+    temp.push_back("Vertex");
+    temp.push_back("Edge");
+    temp.push_back("Face");
+    temp.push_back("Volume");
 
     return temp;
 }
