@@ -90,6 +90,7 @@ libdir = $(prefix)/Mod/Raytracing
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		Resources/icons/preferences-raytracing.svg \
 		Resources/icons/Raytrace_Camera.svg \
 		Resources/icons/Raytrace_Export.svg \
 		Resources/icons/Raytrace_New.svg \
