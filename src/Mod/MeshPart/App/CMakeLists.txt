@@ -4,9 +4,6 @@ else(MSVC)
     add_definitions(-DHAVE_LIMITS_H -DHAVE_CONFIG_H)
 endif(MSVC)
 
-# At the moment we have SMESH only for MSVC on Win32/Win64 and Linux 32.bit.
-# Building the SMESH libs for Linux 64 bit works out of the box but constantly
-# crashes at runtime.
 if (SMESH_FOUND)
     add_definitions(-DHAVE_SMESH)
 endif(SMESH_FOUND)
