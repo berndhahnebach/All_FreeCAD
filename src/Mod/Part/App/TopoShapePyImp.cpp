@@ -85,6 +85,7 @@ using namespace Part;
 
 namespace Py {
     typedef ExtensionObject<TopoShapePy> TopoShape;
+    template<>
     bool TopoShape::accepts (PyObject *pyob) const
     {
         return (pyob && PyObject_TypeCheck(pyob, &(Part::TopoShapePy::Type)));

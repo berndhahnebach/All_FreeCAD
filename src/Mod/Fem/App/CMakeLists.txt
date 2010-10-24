@@ -48,16 +48,10 @@ SET(Fem_SRCS
     FemMesh.h
     FemMeshProperty.cpp
     FemMeshProperty.h
-    ${KDL_SRCS}
-    ${KDL_HPPS}
-    ${UTIL_SRCS}
-    ${UTIL_HPPS}
     ${Mod_SRCS}
     ${Python_SRCS}
 )
 
-
-SOURCE_GROUP("KDL" FILES ${KDL_SRCS} ${KDL_HPPS} ${UTIL_SRCS} ${UTIL_HPPS} )
 
 SOURCE_GROUP("Python" FILES ${Python_SRCS})
 SOURCE_GROUP("Module" FILES ${Mod_SRCS})
