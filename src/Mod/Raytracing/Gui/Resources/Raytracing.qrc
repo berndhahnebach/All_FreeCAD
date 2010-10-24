@@ -7,6 +7,7 @@
         <file>translations/Raytracing_se.qm</file>
     </qresource>
     <qresource>
+		<file>icons/preferences-raytracing.svg</file>
 		<file>icons/Raytrace_Camera.svg</file>
 		<file>icons/Raytrace_Export.svg</file>
 		<file>icons/Raytrace_New.svg</file>
