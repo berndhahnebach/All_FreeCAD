@@ -30,9 +30,12 @@
 #include <Base/Placement.h>
 
 #include <vector>
+#include <list>
+#include <boost/shared_ptr.hpp>
 
 class SMESH_Gen;
 class SMESH_Mesh;
+class SMESH_Hypothesis;
 
 namespace Fem
 {
@@ -52,6 +55,7 @@ public:
     FemMesh &operator=(const FemMesh&);
     const SMESH_Mesh* getSMesh() const;
     SMESH_Mesh* getSMesh();
+    void setStanardHypotheses();
     void compute();
 
     // from base class
@@ -90,6 +94,9 @@ public:
 private:
     SMESH_Gen  *myGen;
     SMESH_Mesh *myMesh;
+
+    typedef boost::shared_ptr<SMESH_Hypothesis> SMESH_HypothesisPtr;
+    std::list<SMESH_HypothesisPtr> hypoth;
 };
 
 } //namespace Part

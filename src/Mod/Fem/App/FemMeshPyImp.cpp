@@ -83,6 +83,21 @@ PyObject* FemMeshPy::setShape(PyObject *args)
     Py_Return;
 }
 
+PyObject* FemMeshPy::setStanardHypotheses(PyObject *args)
+{
+   if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    try {
+        getFemMeshPtr()->setStanardHypotheses();
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+    Py_Return;
+}
+
 PyObject* FemMeshPy::compute(PyObject *args)
 {
    if (!PyArg_ParseTuple(args, ""))
