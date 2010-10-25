@@ -70,7 +70,7 @@ Waypoint::Waypoint(  const char* name,
 }
 
 Waypoint::Waypoint()
-:Cont(false),Tool(0),Base(0),Velocity(1000.0),Accelaration(100.0)
+:Velocity(1000.0),Accelaration(100.0),Cont(false),Tool(0),Base(0)
 {
 }
 

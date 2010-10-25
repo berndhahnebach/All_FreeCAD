@@ -150,7 +150,7 @@ Mesh::MeshObject* Mesher::createMesh() const
         MeshCore::MeshFacet f;
         for (int i=0; i<3;i++) {
             const SMDS_MeshNode* node = aFace->GetNode(i);
-            int index = node->GetID() - 1;
+            //int index = node->GetID() - 1;
             f._aulPoints[i] = /*index*/mapNodeIndex[node];
         }
 
