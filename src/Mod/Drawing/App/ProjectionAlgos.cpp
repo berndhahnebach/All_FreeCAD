@@ -27,6 +27,7 @@
 # include <sstream>
 # include <BRepAdaptor_Curve.hxx>
 # include <Geom_Circle.hxx>
+# include <gp_Circ.hxx>
 #endif
 
 

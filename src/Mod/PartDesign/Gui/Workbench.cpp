@@ -54,17 +54,6 @@ void Workbench::activated()
 {
     Gui::Workbench::activated();
 
-    const char* RobotAndTrac[] = {
-        "Robot_InsertWaypoint",
-        "Robot_InsertWaypointPreselect",
-        0};
-
-    const char* Robot[] = {
-        "Robot_AddToolShape",
-        "Robot_SetHomePos",
-        "Robot_RestoreHomePos",
-        0};
-
     const char* Empty[] = {
         "PartDesign_NewSketch",
         "Part_Box",
