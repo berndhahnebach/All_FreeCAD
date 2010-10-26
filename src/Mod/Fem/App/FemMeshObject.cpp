@@ -38,8 +38,7 @@ PROPERTY_SOURCE(Fem::FemMeshObject, App::GeoFeature)
 
 FemMeshObject::FemMeshObject()
 {
-    ADD_PROPERTY_TYPE( Base,   (Base::Placement())  , "FemMesh",Prop_None,"Actuall base frame of the trajectory");
-    ADD_PROPERTY_TYPE( FemMesh,(Fem::FemMesh()), "FemMesh",Prop_None,"FemMesh object");
+    ADD_PROPERTY_TYPE(FemMesh,(Fem::FemMesh()), "FEM Mesh",Prop_None,"FEM Mesh object");
 }
 
 FemMeshObject::~FemMeshObject()

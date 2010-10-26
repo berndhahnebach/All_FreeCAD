@@ -53,8 +53,7 @@ public:
     virtual short mustExecute(void) const;
     virtual PyObject *getPyObject(void);
 
-    App::PropertyPlacement Base;
-    PropertyFemMesh     FemMesh;
+    PropertyFemMesh FemMesh;
 
 protected:
     /// get called by the container when a property has changed

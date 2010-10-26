@@ -77,7 +77,6 @@ public:
 
 private:
     Base::Reference<FemMesh> _FemMesh;
-    //FemMesh _FemMesh;
 };
 
 
