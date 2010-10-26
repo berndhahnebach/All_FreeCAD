@@ -21,21 +21,29 @@
  ***************************************************************************/
 
 
-#ifndef ROBOT_ViewProviderFemMesh_H
-#define ROBOT_ViewProviderFemMesh_H
+#ifndef FEM_VIEWPROVIDERFEMMESH_H
+#define FEM_VIEWPROVIDERFEMMESH_H
 
-#include <Inventor/VRMLnodes/SoVRMLTransform.h>
 #include <Gui/ViewProviderGeometryObject.h>
-#include <Gui/SoFCSelection.h>
+#include <Gui/ViewProviderBuilder.h>
 
-class SoDragger;
-class SoJackDragger;
 class SoCoordinate3;
 class SoDrawStyle;  
-class SoLineSet; 
+class SoIndexedFaceSet; 
+class SoShapeHints;
+class SoMaterialBinding;
 
 namespace FemGui
 {
+
+class ViewProviderFEMMeshBuilder : public Gui::ViewProviderBuilder
+{
+public:
+    ViewProviderFEMMeshBuilder(){}
+    ~ViewProviderFEMMeshBuilder(){}
+    virtual void buildNodes(const App::Property*, std::vector<SoNode*>&) const;
+    void createMesh(const App::Property*, SoCoordinate3*, SoIndexedFaceSet*) const;
+};
 
 class FemGuiExport ViewProviderFemMesh : public Gui::ViewProviderGeometryObject
 {
@@ -54,15 +62,14 @@ public:
     void updateData(const App::Property*);
 
 protected:
- 
-    Gui::SoFCSelection    * pcFemMeshRoot;
-    SoCoordinate3         * pcCoords;
     SoDrawStyle           * pcDrawStyle;
-    SoLineSet             * pcLines;
-
- };
+    SoShapeHints          * pShapeHints;
+    SoMaterialBinding     * pcMatBinding;
+    SoCoordinate3         * pcCoords;
+    SoIndexedFaceSet      * pcFaces;
+};
 
 } //namespace FemGui
 
 
-#endif // ROBOT_VIEWPROVIDERROBOTOBJECT_H
+#endif // FEM_VIEWPROVIDERFEMMESH_H

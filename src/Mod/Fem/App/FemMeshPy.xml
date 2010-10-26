@@ -41,7 +41,7 @@
 	  </Methode>
 		<Methode Name="copy">
 			<Documentation>
-				<UserDocu>Make a copy of this FE mesh.</UserDocu>
+				<UserDocu>Make a copy of this FEM mesh.</UserDocu>
 			</Documentation>
 		</Methode>
 		<Attribute Name="NodeCount" ReadOnly="true">
