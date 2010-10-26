@@ -112,6 +112,15 @@ PyObject* TrajectoryPy::velocity(PyObject * args)
     return Py::new_reference_to(Py::Float(getTrajectoryPtr()->getVelocity(pos)));
 }
 
+PyObject* TrajectoryPy::deleteLast(PyObject *args)
+{
+    int n=1;
+    if (!PyArg_ParseTuple(args, "|i", &n))
+        return NULL;
+    getTrajectoryPtr()->deleteLast(n);
+    return new TrajectoryPy(new Robot::Trajectory(*getTrajectoryPtr()));
+ }
+
 
 
 Py::Float TrajectoryPy::getDuration(void) const

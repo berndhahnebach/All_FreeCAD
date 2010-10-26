@@ -155,6 +155,10 @@ SET(FreeCADBase_UNITAPI_SRCS
     UnitsSchema.cpp
     UnitsSchemaInternal.h
     UnitsSchemaInternal.cpp
+    UnitsSchemaMKS.h
+    UnitsSchemaMKS.cpp
+    UnitsSchemaImperial1.h
+    UnitsSchemaImperial1.cpp
     UnitsApi.y
     UnitsApi.l
 )

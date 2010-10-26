@@ -64,6 +64,8 @@ public:
     const Waypoint &getWaypoint(unsigned int pos)const {return *vpcWaypoints[pos];}
     std::string getUniqueWaypointName(const char *Name) const;
 
+    /// delete the last n waypoints
+    void deleteLast(unsigned int n=1);
     /// return the Length (mm) of the Trajectory if -1 or of the Waypoint with the given number
     double getLength(int n=-1) const;
     /// return the duration (s) of the Trajectory if -1 or of the Waypoint with the given number

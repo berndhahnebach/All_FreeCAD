@@ -512,7 +512,7 @@
      <item>
       <widget class="QCheckBox" name="checkBoxGridSnap">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>Grid Snap</string>
@@ -522,7 +522,7 @@
      <item>
       <widget class="QComboBox" name="comboBoxGridSize">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="currentIndex">
         <number>4</number>
@@ -619,10 +619,13 @@
    <item>
     <widget class="QCheckBox" name="checkBox_2">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="text">
-      <string>Geometrical constraints</string>
+      <string>auto constraints</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

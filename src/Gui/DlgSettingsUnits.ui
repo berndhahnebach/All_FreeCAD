@@ -25,7 +25,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>User view system:</string>
+           <string>User system:</string>
           </property>
          </widget>
         </item>
@@ -43,26 +43,12 @@
           </item>
           <item>
            <property name="text">
-            <string>Imperial</string>
+            <string>Imperial (in/lb)</string>
            </property>
           </item>
          </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>User units:</string>
-        </property>
-       </widget>
       </item>
       <item>
        <widget class="QTableWidget" name="tableWidget">
@@ -71,6 +57,9 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
         </property>
         <column>
          <property name="text">
@@ -83,36 +72,6 @@
          </property>
         </column>
        </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>Set to:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox_ResetSystem">
-          <item>
-           <property name="text">
-            <string>Standard (mm/kg/s/degree)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>MKS (m/kg/s/degree)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Imperial</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>

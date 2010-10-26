@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2009 Juergen Riegel (FreeCAD@juergen-riegel.net)        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,43 +21,40 @@
  ***************************************************************************/
 
 
-#ifndef GUI_DIALOG_DLGSETTINGSUnitsIMP_H
-#define GUI_DIALOG_DLGSETTINGSUnitsIMP_H
+#include "PreCompiled.h"
+#ifdef __GNUC__
+# include <unistd.h>
+#endif
 
-#include "ui_DlgSettingsUnits.h"
-#include "PropertyPage.h"
+#include <QString>
+#include "Exception.h"
+#include "UnitsApi.h"
+#include "UnitsSchemaImperial1.h"
 
-namespace Gui {
-namespace Dialog {
+using namespace Base;
 
-/**
- * The DlgSettingsUnitsImp class implements a preference page to change settings
- * for the Unit system.
- * \author Jürgen Riegel
- */
-class DlgSettingsUnitsImp : public PreferencePage, public Ui_DlgSettingsUnits
+
+void UnitsSchemaImperial1::setSchemaUnits(void)
 {
-    Q_OBJECT
+    UnitsApi::setPrefOf( Length       ,"in"       );
+    UnitsApi::setPrefOf( Area         ,"in^2"     );
+    UnitsApi::setPrefOf( Volume       ,"in^3"     );
+    UnitsApi::setPrefOf( Angle        ,"deg"      );
+    UnitsApi::setPrefOf( TimeSpan     ,"s"        );
+    UnitsApi::setPrefOf( Velocity     ,"in/s"     );
+    UnitsApi::setPrefOf( Acceleration ,"in/s^2"   );
+    UnitsApi::setPrefOf( Mass         ,"lb"       );
+    UnitsApi::setPrefOf( Temperature  ,"K"        );
+  
+}
 
-public:
-    DlgSettingsUnitsImp(QWidget* parent = 0);
-    ~DlgSettingsUnitsImp();
+void UnitsSchemaImperial1::toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit)
+{
+    double UnitValue = UnitsApi::toDblWithUserPrefs(t,Value);
+    outUnit = UnitsApi::getPrefUnitOf(t);
+    outValue = QString::fromAscii("%1").arg(UnitValue);
 
-    void saveSettings();
-    void loadSettings();
+}
 
-protected:
-    void changeEvent(QEvent *e);
-    void retranslate();
 
-    void fillUpListBox(void);
 
-public Q_SLOTS:
-    void currentIndexChanged(int index);
-
-};
-
-} // namespace Dialog
-} // namespace Gui
-
-#endif // GUI_DIALOG_DLGSETTINGS3DVIEWIMP_H
