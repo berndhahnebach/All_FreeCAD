@@ -30,6 +30,8 @@
 #include "Exception.h"
 #include "UnitsApi.h"
 #include "UnitsSchemaInternal.h"
+#include "UnitsSchemaImperial1.h"
+#include "UnitsSchemaMKS.h"
 //#include "UnitsApiPy.h"
 
 #ifndef M_PI
@@ -99,6 +101,18 @@ UnitsApi::UnitsApi(const std::string& filter)
 UnitsApi::~UnitsApi()
 {
 }
+
+void UnitsApi::setSchema(UnitSystem s)
+{
+    delete UserPrefSystem;
+    switch (s) {
+        case SI1      : UserPrefSystem = new UnitsSchemaInternal(); break;
+        case SI2      : UserPrefSystem = new UnitsSchemaMKS(); break;
+        case Imperial1: UserPrefSystem = new UnitsSchemaImperial1(); break;
+    }
+    UserPrefSystem->setSchemaUnits();
+}
+
 
 double UnitsApi::translateUnit(const char* str)
 {

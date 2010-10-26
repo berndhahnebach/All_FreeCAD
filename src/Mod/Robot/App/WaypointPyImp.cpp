@@ -5,6 +5,7 @@
 #include <Base/PlacementPy.h>
 #include <Base/Placement.h>
 #include <Base/Exception.h>
+#include <Base/UnitsApi.h>
 
 #include "Mod/Robot/App/Waypoint.h"
 
@@ -63,15 +64,15 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     PyObject *pos;
     char *name="P";
     char *type = "PTP";
-    float vel = 1000.0;
-    float acc = 100.0;
+    PyObject *vel = 0;
+    PyObject *acc = 0;
     int cont = 0;
     int tool=0;
     int base=0;
 
     static char *kwlist[] = {"Pos", "type","name", "vel", "cont", "tool", "base", "acc" ,NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwd, "O!|ssfiiif", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwd, "O!|ssOiiiO", kwlist,
                                       &(Base::PlacementPy::Type), &pos, // the placement object
                                       &type, &name, &vel, &cont, &tool, &base, &acc ))
         return -1;
@@ -91,7 +92,7 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
     else 
         getWaypointPtr()->Type = Waypoint::UNDEF;
 
-    if(vel == -1)
+    if(vel == 0)
         switch (getWaypointPtr()->Type){
             case Waypoint::PTP:
                 getWaypointPtr()->Velocity = 100;
@@ -106,11 +107,14 @@ int WaypointPy::PyInit(PyObject* args, PyObject* kwd)
                 getWaypointPtr()->Velocity = 0;
         }
     else
-        getWaypointPtr()->Velocity = vel;
+        getWaypointPtr()->Velocity = Base::UnitsApi::toDblWithUserPrefs(Base::Velocity,vel);
     getWaypointPtr()->Cont = cont?true:false;
     getWaypointPtr()->Tool = tool;
     getWaypointPtr()->Base = base;
-    getWaypointPtr()->Accelaration  = acc;
+    if(acc == 0)
+        getWaypointPtr()->Accelaration  = 100;
+    else
+        getWaypointPtr()->Accelaration  = Base::UnitsApi::toDblWithUserPrefs(Base::Acceleration,acc);;
 
     return 0;
 }

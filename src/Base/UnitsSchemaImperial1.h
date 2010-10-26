@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2009 Juergen Riegel  (FreeCAD@juergen-riegel.net>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,43 +21,29 @@
  ***************************************************************************/
 
 
-#ifndef GUI_DIALOG_DLGSETTINGSUnitsIMP_H
-#define GUI_DIALOG_DLGSETTINGSUnitsIMP_H
+#ifndef BASE_UNITSSCHEMAIMPERIAL1_H
+#define BASE_UNITSSCHEMAIMPERIAL1_H
 
-#include "ui_DlgSettingsUnits.h"
-#include "PropertyPage.h"
 
-namespace Gui {
-namespace Dialog {
+#include <string>
+#include <QString>
+#include "UnitsSchema.h"
+
+namespace Base {
+    
 
 /**
- * The DlgSettingsUnitsImp class implements a preference page to change settings
- * for the Unit system.
- * \author Jürgen Riegel
+ * The UnitSchema class
  */
-class DlgSettingsUnitsImp : public PreferencePage, public Ui_DlgSettingsUnits
+class UnitsSchemaImperial1: public UnitsSchema
 {
-    Q_OBJECT
-
 public:
-    DlgSettingsUnitsImp(QWidget* parent = 0);
-    ~DlgSettingsUnitsImp();
-
-    void saveSettings();
-    void loadSettings();
-
-protected:
-    void changeEvent(QEvent *e);
-    void retranslate();
-
-    void fillUpListBox(void);
-
-public Q_SLOTS:
-    void currentIndexChanged(int index);
-
+    void setSchemaUnits(void);
+    void toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit);
 };
 
-} // namespace Dialog
-} // namespace Gui
 
-#endif // GUI_DIALOG_DLGSETTINGS3DVIEWIMP_H
+} // namespace Base
+
+
+#endif // BASE_UNITSSCHEMAIMPERIAL1_H

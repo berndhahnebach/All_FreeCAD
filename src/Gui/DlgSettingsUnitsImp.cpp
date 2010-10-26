@@ -48,18 +48,13 @@ DlgSettingsUnitsImp::DlgSettingsUnitsImp(QWidget* parent)
     : PreferencePage( parent )
 {
     this->setupUi(this);
-    this->setEnabled(false);
+    //this->setEnabled(false);
     retranslate();
 
+    //fillUpListBox();
 
-    tableWidget->setRowCount(10);
-    for (int i = 0 ; i<9;i++) {
-        QTableWidgetItem *newItem = new QTableWidgetItem(UnitsApi::getQuantityName((Base::QuantityType)i));
-        tableWidget->setItem(i, 0, newItem);
-        
-        newItem = new QTableWidgetItem(UnitsApi::getPrefUnitOf((Base::QuantityType)i));
-        tableWidget->setItem(i, 1, newItem);
-    }
+    QObject::connect(comboBox_ViewSystem, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+
 }
 
 /** 
@@ -70,25 +65,42 @@ DlgSettingsUnitsImp::~DlgSettingsUnitsImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
+void DlgSettingsUnitsImp::fillUpListBox()
+{
+    tableWidget->setRowCount(10);
+    for (int i = 0 ; i<9;i++) {
+        QTableWidgetItem *newItem = new QTableWidgetItem(UnitsApi::getQuantityName((Base::QuantityType)i));
+        tableWidget->setItem(i, 0, newItem);
+        
+        newItem = new QTableWidgetItem(UnitsApi::getPrefUnitOf((Base::QuantityType)i));
+        tableWidget->setItem(i, 1, newItem);
+    }
+}
+
+void DlgSettingsUnitsImp::currentIndexChanged(int index)
+{
+    assert(index>-1 && index <3);
+
+    UnitsApi::setSchema((UnitSystem)index);
+
+    fillUpListBox();
+}
+
 void DlgSettingsUnitsImp::saveSettings()
 {
     // must be done as very first because we create a new instance of NavigatorStyle
     // where we set some attributes afterwards
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/Units");
-    //hGrp->SetASCII("NavigationStyle", "");
+    hGrp->SetInt("UserSchema", comboBox_ViewSystem->currentIndex());
 }
 
 void DlgSettingsUnitsImp::loadSettings()
 {
-    QString exe = QString::fromUtf8(App::GetApplication().getExecutableName());
-    QString viewtext = comboBox_ViewSystem->itemText(0);
-    comboBox_ViewSystem->setItemText(0, QString::fromAscii("%1 %2").arg(exe).arg(viewtext));
-    QString resettext = comboBox_ResetSystem->itemText(0);
-    comboBox_ResetSystem->setItemText(0, QString::fromAscii("%1 %2").arg(exe).arg(resettext));
+    
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/Units");
-    //std::string model = hGrp->GetASCII("NavigationStyle","");
+    comboBox_ViewSystem->setCurrentIndex(hGrp->GetInt("UserSchema",0));
 }
 
 /**

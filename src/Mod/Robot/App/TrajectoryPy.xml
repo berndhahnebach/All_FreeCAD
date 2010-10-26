@@ -28,14 +28,22 @@
 			  </UserDocu>
 		  </Documentation>
 	  </Methode>
-	  <Methode Name="velocity">
-		  <Documentation>
-			  <UserDocu>
-				  returns the velocity to a given time in the trajectory
-			  </UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Attribute Name="Duration" ReadOnly="true">
+    <Methode Name="velocity">
+      <Documentation>
+        <UserDocu>
+          returns the velocity to a given time in the trajectory
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="deleteLast">
+      <Documentation>
+        <UserDocu>
+          deleteLast(n) - delete n waypoints at the end
+          deleteLast()  - delete the last waypoint
+        </UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="Duration" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>duration of the trajectory</UserDocu>
 		  </Documentation>

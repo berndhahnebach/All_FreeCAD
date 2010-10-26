@@ -52,6 +52,15 @@ public:
     UnitsApi(const std::string& filter);
     virtual ~UnitsApi();
 
+    /** set Schema
+     * set the UnitsSchema of the Application
+     * this a represented by a class of type UnitSchema which
+     * defines a set of standard units for that schema and rules 
+     * for representative strings.
+     */
+    static void setSchema(UnitSystem s);
+
+
     /// raw parser interface to calculat units (only from and to internal)
     static double translateUnit(const char*);
     static double translateUnit(const QString &);
