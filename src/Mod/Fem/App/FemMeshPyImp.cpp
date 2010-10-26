@@ -113,6 +113,15 @@ PyObject* FemMeshPy::compute(PyObject *args)
     Py_Return;
 }
 
+PyObject* FemMeshPy::copy(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+
+    const FemMesh& mesh = *getFemMeshPtr();
+    return new FemMeshPy(new FemMesh(mesh));
+}
+
 PyObject* FemMeshPy::read(PyObject *args)
 {
     char* filename;

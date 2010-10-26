@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Python.h>
+# include <memory>
 #endif
 
 #include <Base/Console.h>
@@ -69,15 +70,16 @@ static PyObject * open(PyObject *self, PyObject *args)
         return NULL;
 
     PY_TRY {
-        FemMesh mesh;
-        mesh.read(Name);
+        std::auto_ptr<FemMesh> mesh(new FemMesh);
+        mesh->read(Name);
         Base::FileInfo file(Name);
         // create new document and add Import feature
         App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
         FemMeshObject *pcFeature = static_cast<FemMeshObject *>
             (pcDoc->addObject("Fem::FemMeshObject", file.fileNamePure().c_str()));
         pcFeature->Label.setValue(file.fileNamePure().c_str());
-        pcFeature->FemMesh.setValue(mesh);
+        pcFeature->FemMesh.setValuePtr(mesh.get());
+        (void)mesh.release();
         pcFeature->purgeTouched();
     } PY_CATCH;
 
@@ -103,13 +105,14 @@ static PyObject * importer(PyObject *self, PyObject *args)
             pcDoc = App::GetApplication().newDocument(DocName);
         }
 
-        FemMesh mesh;
-        mesh.read(Name);
+        std::auto_ptr<FemMesh> mesh(new FemMesh);
+        mesh->read(Name);
         Base::FileInfo file(Name);
         FemMeshObject *pcFeature = static_cast<FemMeshObject *>
             (pcDoc->addObject("Fem::FemMeshObject", file.fileNamePure().c_str()));
         pcFeature->Label.setValue(file.fileNamePure().c_str());
-        pcFeature->FemMesh.setValue(mesh);
+        pcFeature->FemMesh.setValuePtr(mesh.get());
+        (void)mesh.release();
         pcFeature->purgeTouched();
     } PY_CATCH;
 
