@@ -92,6 +92,9 @@ public:
     void write(const char *FileName) const;
 
 private:
+    void copyMeshData(const FemMesh&);
+
+private:
     SMESH_Gen  *myGen;
     SMESH_Mesh *myMesh;
 

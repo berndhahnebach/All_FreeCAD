@@ -39,7 +39,12 @@
 			  <UserDocu>write out an DAT, UNV, MED or STL file.</UserDocu>
 		  </Documentation>
 	  </Methode>
-	  <Attribute Name="NodeCount" ReadOnly="true">
+		<Methode Name="copy">
+			<Documentation>
+				<UserDocu>Make a copy of this FE mesh.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Attribute Name="NodeCount" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>Number of nodes in the Mesh.</UserDocu>
 		  </Documentation>

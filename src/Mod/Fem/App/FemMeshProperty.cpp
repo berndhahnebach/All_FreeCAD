@@ -43,7 +43,7 @@ using namespace Fem;
 
 TYPESYSTEM_SOURCE(Fem::PropertyFemMesh , App::Property);
 
-PropertyFemMesh::PropertyFemMesh()
+PropertyFemMesh::PropertyFemMesh() : _FemMesh(new FemMesh)
 {
 }
 
@@ -51,29 +51,38 @@ PropertyFemMesh::~PropertyFemMesh()
 {
 }
 
-void PropertyFemMesh::setValue(const FemMesh& sh)
+void PropertyFemMesh::setValuePtr(FemMesh* mesh)
 {
+    // use the tmp. object to guarantee that the referenced mesh is not destroyed
+    // before calling hasSetValue()
+    Base::Reference<FemMesh> tmp(_FemMesh);
     aboutToSetValue();
-    _FemMesh = sh;
+    _FemMesh = mesh;
     hasSetValue();
 }
 
+void PropertyFemMesh::setValue(const FemMesh& sh)
+{
+    aboutToSetValue();
+    *_FemMesh = sh;
+    hasSetValue();
+}
 
 const FemMesh &PropertyFemMesh::getValue(void)const 
 {
-    return _FemMesh;
+    return *_FemMesh;
 }
-
 
 Base::BoundBox3d PropertyFemMesh::getBoundingBox() const
 {
-    return _FemMesh.getBoundBox();
+    return _FemMesh->getBoundBox();
 }
-
 
 PyObject *PropertyFemMesh::getPyObject(void)
 {
-    return new FemMeshPy(new FemMesh(_FemMesh));
+    FemMeshPy* mesh = new FemMeshPy(&*_FemMesh);
+    mesh->setConst();
+    return mesh;
 }
 
 void PropertyFemMesh::setPyObject(PyObject *value)
@@ -93,7 +102,6 @@ App::Property *PropertyFemMesh::Copy(void) const
 {
     PropertyFemMesh *prop = new PropertyFemMesh();
     prop->_FemMesh = this->_FemMesh;
- 
     return prop;
 }
 
@@ -106,12 +114,12 @@ void PropertyFemMesh::Paste(const App::Property &from)
 
 unsigned int PropertyFemMesh::getMemSize (void) const
 {
-    return _FemMesh.getMemSize();
+    return _FemMesh->getMemSize();
 }
 
 void PropertyFemMesh::Save (Base::Writer &writer) const
 {
-    _FemMesh.Save(writer);
+    _FemMesh->Save(writer);
 }
 
 void PropertyFemMesh::Restore(Base::XMLReader &reader)
@@ -120,6 +128,3 @@ void PropertyFemMesh::Restore(Base::XMLReader &reader)
     temp.Restore(reader);
     setValue(temp);
 }
-
-
-

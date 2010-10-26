@@ -45,6 +45,7 @@ public:
 
     /** @name Getter/setter */
     //@{
+    void setValuePtr(FemMesh* mesh);
     /// set the FemMesh shape
     void setValue(const FemMesh&);
     /// get the FemMesh shape
@@ -75,7 +76,8 @@ public:
     //@}
 
 private:
-    FemMesh _FemMesh;
+    Base::Reference<FemMesh> _FemMesh;
+    //FemMesh _FemMesh;
 };
 
 
