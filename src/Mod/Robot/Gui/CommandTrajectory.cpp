@@ -239,6 +239,74 @@ bool CmdRobotSetDefaultOrientation::isActive(void)
 
 // #####################################################################################################
 
+DEF_STD_CMD_A(CmdRobotSetDefaultValues);
+
+CmdRobotSetDefaultValues::CmdRobotSetDefaultValues()
+	:Command("Robot_SetDefaultValues")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Set default values");
+    sToolTipText    = QT_TR_NOOP("set the default values for speed, acceleration and continuity for subsequent commands of waypoint creation");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = 0;
+    iAccel          = 0;
+
+}
+
+
+void CmdRobotSetDefaultValues::activated(int iMsg)
+{
+
+    bool ok;
+    QString text = QInputDialog::getText(0, QObject::tr("set default speed"),
+                                          QObject::tr("speed: (e.g. 1 m/s or 3 cm/s)"), QLineEdit::Normal,
+                                          QString::fromAscii("1 m/s"), &ok);
+    if ( ok && !text.isEmpty() ) {
+        doCommand(Doc,"_DefSpeed = '%s'",text.toAscii().constData());
+    } 
+
+    QStringList items;
+    items  << QString::fromAscii("False") << QString::fromAscii("True");
+
+    QString item = QInputDialog::getItem(0, QObject::tr("set default continuity"),
+                                          QObject::tr("continuous ?"), items, 0, false, &ok);
+    if (ok && !item.isEmpty())
+        doCommand(Doc,"_DefCont = %s",item.toAscii().constData());
+
+    text.clear();
+
+    text = QInputDialog::getText(0, QObject::tr("set default acceleration"),
+                                          QObject::tr("acceleration: (e.g. 1 m/s^2 or 3 cm/s^2)"), QLineEdit::Normal,
+                                          QString::fromAscii("1 m/s^2"), &ok);
+    if ( ok && !text.isEmpty() ) {
+        doCommand(Doc,"_DefAccelaration = '%s'",text.toAscii().constData());
+    } 
+
+
+    // create placement dialog 
+    //Gui::Dialog::Placement *Dlg = new Gui::Dialog::Placement();
+    //Base::Placement place;
+    //Dlg->setPlacement(place);
+    //if(Dlg->exec() == QDialog::Accepted ){
+    //    place = Dlg->getPlacement();
+    //    Base::Rotation rot = place.getRotation();
+    //    Base::Vector3d disp = place.getPosition();
+    //    doCommand(Doc,"_DefOrientation = FreeCAD.Rotation(%f,%f,%f,%f)",rot[0],rot[1],rot[2],rot[3]);
+    //    doCommand(Doc,"_DefDisplacement = FreeCAD.Vector(%f,%f,%f)",disp[0],disp[1],disp[2]);
+    //}
+      
+}
+
+bool CmdRobotSetDefaultValues::isActive(void)
+{
+    return true;
+}
+
+
+// #####################################################################################################
+
 
 
 void CreateRobotCommandsTrajectory(void)
@@ -249,4 +317,5 @@ void CreateRobotCommandsTrajectory(void)
     rcCmdMgr.addCommand(new CmdRobotInsertWaypoint());
     rcCmdMgr.addCommand(new CmdRobotInsertWaypointPreselect());
     rcCmdMgr.addCommand(new CmdRobotSetDefaultOrientation());
+    rcCmdMgr.addCommand(new CmdRobotSetDefaultValues());
  }

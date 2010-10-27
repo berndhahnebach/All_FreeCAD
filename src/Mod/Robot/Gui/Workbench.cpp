@@ -174,6 +174,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
            << "Robot_InsertWaypoint"
            << "Robot_InsertWaypointPreselect"
            << "Robot_SetDefaultOrientation"
+           << "Robot_SetDefaultValues"
            << "Separator"
            << "Robot_Simulate"
            << exportM
