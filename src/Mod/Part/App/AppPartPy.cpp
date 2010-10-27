@@ -244,7 +244,9 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                 App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(item)->getDocumentObjectPtr();
                 if (obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
                     Part::Feature* part = static_cast<Part::Feature*>(obj);
-                    builder.Add(comp, part->Shape.getValue());
+                    const TopoDS_Shape& shape = part->Shape.getValue();
+                    if (!shape.IsNull())
+                        builder.Add(comp, shape);
                 }
             }
         }
