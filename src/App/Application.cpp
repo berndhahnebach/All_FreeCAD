@@ -1115,8 +1115,6 @@ void Application::initApplication(void)
 
     // starting the init script
     Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
-
-
 }
 
 void Application::processCmdLineFiles(void)
@@ -1254,7 +1252,6 @@ void Application::LoadParameters(void)
                               e.what(), mConfig["UserParameter"].c_str());
         _pcUserParamMngr->CreateDocument();
     }
-
 }
 
 

@@ -87,6 +87,10 @@ libFreeCADBase_la_SOURCES=\
 		UnitsSchema.h \
 		UnitsSchemaInternal.cpp \
 		UnitsSchemaInternal.h \
+		UnitsSchemaImperial1.cpp \
+		UnitsSchemaImperial1.h \
+		UnitsSchemaMKS.cpp \
+		UnitsSchemaMKS.h \
 		VectorPyImp.cpp \
 		Vector3D.cpp \
 		Writer.cpp \

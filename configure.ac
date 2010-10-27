@@ -828,6 +828,10 @@ src/Mod/MeshPart/Makefile
 src/Mod/MeshPart/App/Makefile
 src/Mod/MeshPart/Gui/Makefile
 src/Mod/MeshPart/Gui/Resources/Makefile
+src/Mod/Fem/Makefile
+src/Mod/Fem/App/Makefile
+src/Mod/Fem/Gui/Makefile
+src/Mod/Fem/Gui/Resources/Makefile
 src/Mod/PartDesign/Makefile
 src/Mod/PartDesign/App/Makefile
 src/Mod/PartDesign/Gui/Makefile
