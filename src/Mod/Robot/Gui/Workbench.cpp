@@ -173,6 +173,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
            << "Robot_CreateTrajectory"
            << "Robot_InsertWaypoint"
            << "Robot_InsertWaypointPreselect"
+           << "Robot_SetDefaultOrientation"
            << "Separator"
            << "Robot_Simulate"
            << exportM

@@ -132,7 +132,7 @@ double Trajectory::getVelocity(double time)const
 
 void Trajectory::deleteLast(unsigned int n)
 {
-    for(int i=0;i<=n;i++){
+    for(unsigned int i=0;i<=n;i++){
         delete(*vpcWaypoints.rbegin());
         vpcWaypoints.pop_back();
     }
