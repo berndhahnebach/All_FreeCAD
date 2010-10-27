@@ -101,17 +101,18 @@ void FemMesh::copyMeshData(const FemMesh& mesh)
     int numHedr = info.NbPolyhedrons();
 
     SMESHDS_Mesh* meshds = this->myMesh->GetMeshDS();
+    meshds->ClearMesh();
 
     SMDS_NodeIteratorPtr aNodeIter = mesh.myMesh->GetMeshDS()->nodesIterator();
     for (;aNodeIter->more();) {
         const SMDS_MeshNode* aNode = aNodeIter->next();
-        meshds->AddNode(aNode->X(),aNode->Y(),aNode->Z());
+        meshds->AddNodeWithID(aNode->X(),aNode->Y(),aNode->Z(), aNode->GetID());
     }
 
     SMDS_EdgeIteratorPtr aEdgeIter = mesh.myMesh->GetMeshDS()->edgesIterator();
     for (;aEdgeIter->more();) {
         const SMDS_MeshEdge* aEdge = aEdgeIter->next();
-        meshds->AddEdge(aEdge->GetNode(0), aEdge->GetNode(1));
+        meshds->AddEdgeWithID(aEdge->GetNode(0), aEdge->GetNode(1), aEdge->GetID());
     }
 
     SMDS_FaceIteratorPtr aFaceIter = mesh.myMesh->GetMeshDS()->facesIterator();
@@ -119,40 +120,44 @@ void FemMesh::copyMeshData(const FemMesh& mesh)
         const SMDS_MeshFace* aFace = aFaceIter->next();
         switch (aFace->NbNodes()) {
             case 3:
-                meshds->AddFace(aFace->GetNode(0),
-                                aFace->GetNode(1),
-                                aFace->GetNode(2));
+                meshds->AddFaceWithID(aFace->GetNode(0),
+                                      aFace->GetNode(1),
+                                      aFace->GetNode(2),
+                                      aFace->GetID());
                 break;
             case 4:
-                meshds->AddFace(aFace->GetNode(0),
-                                aFace->GetNode(1),
-                                aFace->GetNode(2),
-                                aFace->GetNode(3));
+                meshds->AddFaceWithID(aFace->GetNode(0),
+                                      aFace->GetNode(1),
+                                      aFace->GetNode(2),
+                                      aFace->GetNode(3),
+                                      aFace->GetID());
                 break;
             case 6:
-                meshds->AddFace(aFace->GetNode(0),
-                                aFace->GetNode(1),
-                                aFace->GetNode(2),
-                                aFace->GetNode(3),
-                                aFace->GetNode(4),
-                                aFace->GetNode(5));
+                meshds->AddFaceWithID(aFace->GetNode(0),
+                                      aFace->GetNode(1),
+                                      aFace->GetNode(2),
+                                      aFace->GetNode(3),
+                                      aFace->GetNode(4),
+                                      aFace->GetNode(5),
+                                      aFace->GetID());
                 break;
             case 8:
-                meshds->AddFace(aFace->GetNode(0),
-                                aFace->GetNode(1),
-                                aFace->GetNode(2),
-                                aFace->GetNode(3),
-                                aFace->GetNode(4),
-                                aFace->GetNode(5),
-                                aFace->GetNode(6),
-                                aFace->GetNode(7));
+                meshds->AddFaceWithID(aFace->GetNode(0),
+                                      aFace->GetNode(1),
+                                      aFace->GetNode(2),
+                                      aFace->GetNode(3),
+                                      aFace->GetNode(4),
+                                      aFace->GetNode(5),
+                                      aFace->GetNode(6),
+                                      aFace->GetNode(7),
+                                      aFace->GetID());
                 break;
             default:
                 {
                     std::vector<const SMDS_MeshNode*> aNodes;
                     for (int i=0; aFace->NbNodes(); i++)
                         aNodes.push_back(aFace->GetNode(0));
-                    meshds->AddPolygonalFace(aNodes);
+                    meshds->AddPolygonalFaceWithID(aNodes, aFace->GetID());
                 }
                 break;
         }
@@ -163,101 +168,109 @@ void FemMesh::copyMeshData(const FemMesh& mesh)
         const SMDS_MeshVolume* aVol = aVolIter->next();
         switch (aVol->NbNodes()) {
             case 4:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetID());
                 break;
             case 5:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3),
-                                aVol->GetNode(4));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetNode(4),
+                                        aVol->GetID());
                 break;
             case 6:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3),
-                                aVol->GetNode(4),
-                                aVol->GetNode(5));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetNode(4),
+                                        aVol->GetNode(5),
+                                        aVol->GetID());
                 break;
             case 8:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3),
-                                aVol->GetNode(4),
-                                aVol->GetNode(5),
-                                aVol->GetNode(6),
-                                aVol->GetNode(7));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetNode(4),
+                                        aVol->GetNode(5),
+                                        aVol->GetNode(6),
+                                        aVol->GetNode(7),
+                                        aVol->GetID());
                 break;
             case 10:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3),
-                                aVol->GetNode(4),
-                                aVol->GetNode(5),
-                                aVol->GetNode(6),
-                                aVol->GetNode(7),
-                                aVol->GetNode(8),
-                                aVol->GetNode(9));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetNode(4),
+                                        aVol->GetNode(5),
+                                        aVol->GetNode(6),
+                                        aVol->GetNode(7),
+                                        aVol->GetNode(8),
+                                        aVol->GetNode(9),
+                                        aVol->GetID());
                 break;
             case 13:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3),
-                                aVol->GetNode(4),
-                                aVol->GetNode(5),
-                                aVol->GetNode(6),
-                                aVol->GetNode(7),
-                                aVol->GetNode(8),
-                                aVol->GetNode(9),
-                                aVol->GetNode(10),
-                                aVol->GetNode(11),
-                                aVol->GetNode(12));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetNode(4),
+                                        aVol->GetNode(5),
+                                        aVol->GetNode(6),
+                                        aVol->GetNode(7),
+                                        aVol->GetNode(8),
+                                        aVol->GetNode(9),
+                                        aVol->GetNode(10),
+                                        aVol->GetNode(11),
+                                        aVol->GetNode(12),
+                                        aVol->GetID());
                 break;
             case 15:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3),
-                                aVol->GetNode(4),
-                                aVol->GetNode(5),
-                                aVol->GetNode(6),
-                                aVol->GetNode(7),
-                                aVol->GetNode(8),
-                                aVol->GetNode(9),
-                                aVol->GetNode(10),
-                                aVol->GetNode(11),
-                                aVol->GetNode(12),
-                                aVol->GetNode(13),
-                                aVol->GetNode(14));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetNode(4),
+                                        aVol->GetNode(5),
+                                        aVol->GetNode(6),
+                                        aVol->GetNode(7),
+                                        aVol->GetNode(8),
+                                        aVol->GetNode(9),
+                                        aVol->GetNode(10),
+                                        aVol->GetNode(11),
+                                        aVol->GetNode(12),
+                                        aVol->GetNode(13),
+                                        aVol->GetNode(14),
+                                        aVol->GetID());
                 break;
             case 20:
-                meshds->AddVolume(aVol->GetNode(0),
-                                aVol->GetNode(1),
-                                aVol->GetNode(2),
-                                aVol->GetNode(3),
-                                aVol->GetNode(4),
-                                aVol->GetNode(5),
-                                aVol->GetNode(6),
-                                aVol->GetNode(7),
-                                aVol->GetNode(8),
-                                aVol->GetNode(9),
-                                aVol->GetNode(10),
-                                aVol->GetNode(11),
-                                aVol->GetNode(12),
-                                aVol->GetNode(13),
-                                aVol->GetNode(14),
-                                aVol->GetNode(15),
-                                aVol->GetNode(16),
-                                aVol->GetNode(17),
-                                aVol->GetNode(18),
-                                aVol->GetNode(19));
+                meshds->AddVolumeWithID(aVol->GetNode(0),
+                                        aVol->GetNode(1),
+                                        aVol->GetNode(2),
+                                        aVol->GetNode(3),
+                                        aVol->GetNode(4),
+                                        aVol->GetNode(5),
+                                        aVol->GetNode(6),
+                                        aVol->GetNode(7),
+                                        aVol->GetNode(8),
+                                        aVol->GetNode(9),
+                                        aVol->GetNode(10),
+                                        aVol->GetNode(11),
+                                        aVol->GetNode(12),
+                                        aVol->GetNode(13),
+                                        aVol->GetNode(14),
+                                        aVol->GetNode(15),
+                                        aVol->GetNode(16),
+                                        aVol->GetNode(17),
+                                        aVol->GetNode(18),
+                                        aVol->GetNode(19),
+                                        aVol->GetID());
                 break;
             default:
                 {
@@ -267,7 +280,8 @@ void FemMesh::copyMeshData(const FemMesh& mesh)
                         aNodes.push_back(aVol->GetNode(0));
                         quantities.push_back(1);
                     }
-                    meshds->AddPolyhedralVolume(aNodes, quantities);
+                    meshds->AddPolyhedralVolumeWithID(aNodes,
+                        quantities, aVol->GetID());
                 }
                 break;
         }
