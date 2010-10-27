@@ -21,10 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef FEM_FemMesh_H
-#define FEM_FemMesh_H
-
-
+#ifndef FEM_FEMMESH_H
+#define FEM_FEMMESH_H
 
 #include <App/ComplexGeoData.h>
 #include <Base/Placement.h>
@@ -86,7 +84,6 @@ public:
     Base::BoundBox3d getBoundBox(void)const;
     //@}
 
-
     /// import from files
     void read(const char *FileName);
     void write(const char *FileName) const;
@@ -105,4 +102,4 @@ private:
 } //namespace Part
 
 
-#endif // PART_TOPOSHAPE_H
+#endif // FEM_FEMMESH_H

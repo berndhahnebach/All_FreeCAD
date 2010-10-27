@@ -259,7 +259,9 @@ void StdCmdExport::activated(int iMsg)
 
 bool StdCmdExport::isActive(void)
 {
-    return (getActiveGuiDocument() ? true : false);
+    // at least one object should be selected otherwise it might be confusing to the user
+    return Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0;
+    //return (getActiveGuiDocument() ? true : false);
 }
 
 //===========================================================================
