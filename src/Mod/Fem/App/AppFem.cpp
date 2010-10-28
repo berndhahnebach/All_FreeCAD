@@ -57,10 +57,11 @@ void AppFemExport initFem()
     PyObject* femModule = Py_InitModule3("Fem", Fem_methods, module_Fem_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading Fem module... done\n");
 
-    Fem::StdMeshers_Arithmetic1DPy      ::init_type();
-    Fem::StdMeshers_AutomaticLengthPy   ::init_type();
-    Fem::StdMeshers_NotConformAllowedPy ::init_type();
-    Fem::StdMeshers_MaxLengthPy         ::init_type();
+    Fem::StdMeshers_Arithmetic1DPy          ::init_type();
+    Fem::StdMeshers_AutomaticLengthPy       ::init_type();
+    Fem::StdMeshers_NotConformAllowedPy     ::init_type();
+    Fem::StdMeshers_MaxLengthPy             ::init_type();
+    Fem::StdMeshers_QuadranglePreferencePy  ::init_type();
 
     // Add Types to module
     Base::Interpreter().addType(Fem::StdMeshers_Arithmetic1DPy::type_object(),
@@ -71,6 +72,8 @@ void AppFemExport initFem()
         femModule,"StdMeshers_NotConformAllowed");
     Base::Interpreter().addType(Fem::StdMeshers_MaxLengthPy::type_object(),
         femModule,"StdMeshers_MaxLength");
+    Base::Interpreter().addType(Fem::StdMeshers_QuadranglePreferencePy::type_object(),
+        femModule,"StdMeshers_QuadranglePreference");
     Base::Interpreter().addType(&Fem::FemMeshPy::Type,femModule,"FemMesh");
 
 

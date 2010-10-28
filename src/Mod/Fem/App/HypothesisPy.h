@@ -31,6 +31,21 @@ class SMESH_Gen;
 
 namespace Fem {
 
+class HypothesisPy : public Py::PythonExtension<HypothesisPy>
+{
+public:
+    typedef Py::PythonExtension<HypothesisPy> HypothesisPyBase;
+    HypothesisPy(SMESH_Hypothesis*);
+    virtual ~HypothesisPy();
+    SMESH_Hypothesis* getHypothesis() const
+    { return hyp; }
+
+private:
+    SMESH_Hypothesis* hyp;
+};
+
+typedef Py::ExtensionObject<HypothesisPy> Hypothesis;
+
 template <class T>
 class SMESH_HypothesisPy : public Py::PythonExtension<T>
 {
@@ -41,6 +56,7 @@ public:
     SMESH_HypothesisPy(SMESH_Hypothesis*);
     virtual ~SMESH_HypothesisPy();
 
+    Py::Object getattr(const char *name);
     Py::Object repr();
     SMESH_Hypothesis* getHypothesis() const
     { return hyp.get(); }
@@ -93,6 +109,14 @@ public:
     Py::Object setPreestimatedLength(const Py::Tuple& args);
     Py::Object setUsePreestimatedLength(const Py::Tuple& args);
     Py::Object getUsePreestimatedLength(const Py::Tuple& args);
+};
+
+class StdMeshers_QuadranglePreferencePy : public SMESH_HypothesisPy<StdMeshers_QuadranglePreferencePy>
+{
+public:
+    static void init_type(void);
+    StdMeshers_QuadranglePreferencePy(int hypId, int studyId, SMESH_Gen* gen);
+    ~StdMeshers_QuadranglePreferencePy();
 };
 
 } // namespace Fem

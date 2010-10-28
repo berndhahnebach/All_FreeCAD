@@ -303,6 +303,13 @@ SMESH_Gen * FemMesh::getGenerator()
     return myGen;
 }
 
+void FemMesh::addHypothesis(const TopoDS_Shape & aSubShape, SMESH_Hypothesis* hyp)
+{
+    myMesh->AddHypothesis(aSubShape, hyp->GetID());
+    SMESH_HypothesisPtr ptr(hyp);
+    hypoth.push_back(ptr);
+}
+
 void FemMesh::setStanardHypotheses()
 {
     if (!hypoth.empty())

@@ -34,6 +34,7 @@
 class SMESH_Gen;
 class SMESH_Mesh;
 class SMESH_Hypothesis;
+class TopoDS_Shape;
 
 namespace Fem
 {
@@ -54,6 +55,7 @@ public:
     const SMESH_Mesh* getSMesh() const;
     SMESH_Mesh* getSMesh();
     SMESH_Gen * getGenerator();
+    void addHypothesis(const TopoDS_Shape & aSubShape, SMESH_Hypothesis* hyp);
     void setStanardHypotheses();
     void compute();
 
