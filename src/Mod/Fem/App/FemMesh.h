@@ -53,6 +53,7 @@ public:
     FemMesh &operator=(const FemMesh&);
     const SMESH_Mesh* getSMesh() const;
     SMESH_Mesh* getSMesh();
+    SMESH_Gen * getGenerator();
     void setStanardHypotheses();
     void compute();
 

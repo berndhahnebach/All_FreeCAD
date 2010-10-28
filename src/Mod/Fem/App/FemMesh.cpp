@@ -298,6 +298,11 @@ SMESH_Mesh* FemMesh::getSMesh()
     return myMesh;
 }
 
+SMESH_Gen * FemMesh::getGenerator()
+{
+    return myGen;
+}
+
 void FemMesh::setStanardHypotheses()
 {
     if (!hypoth.empty())
