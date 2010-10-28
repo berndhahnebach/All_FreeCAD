@@ -28,18 +28,18 @@
 
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
-
+#include <CXX/Extensions.hxx>
 
 #include "FemMeshPy.h"
 #include "FemMesh.h"
 #include "FemMeshProperty.h"
 #include "FemMeshObject.h"
+#include "HypothesisPy.h"
 
 extern struct PyMethodDef Fem_methods[];
 
 PyDoc_STRVAR(module_Fem_doc,
 "This module is the FEM module.");
-
 
 /* Python entry */
 extern "C" {
@@ -57,9 +57,21 @@ void AppFemExport initFem()
     PyObject* femModule = Py_InitModule3("Fem", Fem_methods, module_Fem_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading Fem module... done\n");
 
+    Fem::StdMeshers_Arithmetic1DPy      ::init_type();
+    Fem::StdMeshers_AutomaticLengthPy   ::init_type();
+    Fem::StdMeshers_NotConformAllowedPy ::init_type();
+    Fem::StdMeshers_MaxLengthPy         ::init_type();
 
     // Add Types to module
-    Base::Interpreter().addType(&Fem::FemMeshPy          ::Type,femModule,"FemMesh");
+    Base::Interpreter().addType(Fem::StdMeshers_Arithmetic1DPy::type_object(),
+        femModule,"StdMeshers_Arithmetic1D");
+    Base::Interpreter().addType(Fem::StdMeshers_AutomaticLengthPy::type_object(),
+        femModule,"StdMeshers_AutomaticLength");
+    Base::Interpreter().addType(Fem::StdMeshers_NotConformAllowedPy::type_object(),
+        femModule,"StdMeshers_NotConformAllowed");
+    Base::Interpreter().addType(Fem::StdMeshers_MaxLengthPy::type_object(),
+        femModule,"StdMeshers_MaxLength");
+    Base::Interpreter().addType(&Fem::FemMeshPy::Type,femModule,"FemMesh");
 
 
     // NOTE: To finish the initialization of our own type objects we must

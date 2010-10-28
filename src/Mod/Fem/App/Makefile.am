@@ -13,6 +13,8 @@ libFem_la_SOURCES = \
 		FemMeshObject.h \
 		FemMeshProperty.cpp \
 		FemMeshProperty.h \
+		HypothesisPy.cpp \
+		HypothesisPy.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 

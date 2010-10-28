@@ -34,6 +34,8 @@ generate_from_xml(FemMeshPy)
 SET(Python_SRCS
     FemMeshPy.xml
     FemMeshPyImp.cpp
+    HypothesisPy.cpp
+    HypothesisPy.h
 )
 
 SET(Mod_SRCS
