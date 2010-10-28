@@ -63,7 +63,7 @@
 using namespace Fem;
 
 
-HypothesisPy::HypothesisPy(SMESH_Hypothesis* h)
+HypothesisPy::HypothesisPy(boost::shared_ptr<SMESH_Hypothesis> h)
   : hyp(h)
 {
 }
@@ -144,7 +144,7 @@ StdMeshers_Arithmetic1DPy::~StdMeshers_Arithmetic1DPy()
 
 Py::Object StdMeshers_Arithmetic1DPy::setLength(const Py::Tuple& args)
 {
-    static_cast<StdMeshers_Arithmetic1D*>(getHypothesis())->
+    static_cast<StdMeshers_Arithmetic1D*>(hypothesis())->
         SetLength((double)Py::Float(args[0]), (bool)Py::Boolean(args[1]));
     return Py::None();
 }
@@ -154,7 +154,7 @@ Py::Object StdMeshers_Arithmetic1DPy::getLength(const Py::Tuple& args)
     int start;
     if (!PyArg_ParseTuple(args.ptr(), "i",&start))
         throw Py::Exception();
-    return Py::Float(static_cast<StdMeshers_Arithmetic1D*>(getHypothesis())->
+    return Py::Float(static_cast<StdMeshers_Arithmetic1D*>(hypothesis())->
         GetLength(start ? true : false));
 }
 

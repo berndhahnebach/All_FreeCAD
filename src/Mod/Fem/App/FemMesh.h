@@ -39,6 +39,7 @@ class TopoDS_Shape;
 namespace Fem
 {
 
+typedef boost::shared_ptr<SMESH_Hypothesis> SMESH_HypothesisPtr;
 
 /** The representation of a FemMesh
  */
@@ -55,7 +56,7 @@ public:
     const SMESH_Mesh* getSMesh() const;
     SMESH_Mesh* getSMesh();
     SMESH_Gen * getGenerator();
-    void addHypothesis(const TopoDS_Shape & aSubShape, SMESH_Hypothesis* hyp);
+    void addHypothesis(const TopoDS_Shape & aSubShape, SMESH_HypothesisPtr hyp);
     void setStanardHypotheses();
     void compute();
 
@@ -98,7 +99,6 @@ private:
     SMESH_Gen  *myGen;
     SMESH_Mesh *myMesh;
 
-    typedef boost::shared_ptr<SMESH_Hypothesis> SMESH_HypothesisPtr;
     std::list<SMESH_HypothesisPtr> hypoth;
 };
 

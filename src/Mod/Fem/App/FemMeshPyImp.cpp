@@ -100,7 +100,7 @@ PyObject* FemMeshPy::addHypothesis(PyObject *args)
     try {
         Py::Object obj(hyp);
         Fem::Hypothesis attr(obj.getAttr("this"));
-        SMESH_Hypothesis* thesis = attr.extensionObject()->getHypothesis();
+        SMESH_HypothesisPtr thesis = attr.extensionObject()->getHypothesis();
         getFemMeshPtr()->addHypothesis(shape, thesis);
     }
     catch (const Py::Exception&) {
