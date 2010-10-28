@@ -35,13 +35,13 @@ class HypothesisPy : public Py::PythonExtension<HypothesisPy>
 {
 public:
     typedef Py::PythonExtension<HypothesisPy> HypothesisPyBase;
-    HypothesisPy(SMESH_Hypothesis*);
+    HypothesisPy(boost::shared_ptr<SMESH_Hypothesis>);
     virtual ~HypothesisPy();
-    SMESH_Hypothesis* getHypothesis() const
+    boost::shared_ptr<SMESH_Hypothesis> getHypothesis() const
     { return hyp; }
 
 private:
-    SMESH_Hypothesis* hyp;
+    boost::shared_ptr<SMESH_Hypothesis> hyp;
 };
 
 typedef Py::ExtensionObject<HypothesisPy> Hypothesis;
@@ -58,7 +58,11 @@ public:
 
     Py::Object getattr(const char *name);
     Py::Object repr();
-    SMESH_Hypothesis* getHypothesis() const
+    boost::shared_ptr<SMESH_Hypothesis> getHypothesis() const
+    { return hyp; }
+
+protected:
+    SMESH_Hypothesis* hypothesis() const
     { return hyp.get(); }
 
 private:

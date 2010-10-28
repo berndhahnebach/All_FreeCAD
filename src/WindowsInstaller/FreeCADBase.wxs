@@ -35,6 +35,7 @@
 			<Component Id="Base" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7" Win64='$(var.Win_64)' KeyPath="yes">
 				<File Id="Exe" Name="FreeCAD.exe" />
 				<File Id="GuiDll"   Name="FreeCADGui.dll"  />
+				<File Id="GuiPyd"   Name="FreeCADGui.pyd"  />
 			</Component>
 			<Component Id="BaseCmd" Guid="0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F8" Win64='$(var.Win_64)' KeyPath="yes">
 				<File Id="CmdExe" Name="FreeCADCmd.exe"/>
