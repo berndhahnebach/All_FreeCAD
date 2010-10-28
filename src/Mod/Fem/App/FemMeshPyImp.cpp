@@ -40,6 +40,7 @@
 // inclusion of the generated files (generated out of FemMeshPy.xml)
 #include "FemMeshPy.h"
 #include "FemMeshPy.cpp"
+#include "HypothesisPy.h"
 
 
 using namespace Fem;
@@ -68,8 +69,8 @@ int FemMeshPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
 PyObject* FemMeshPy::setShape(PyObject *args)
 {
-   PyObject *pcObj;
-   if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj))
+    PyObject *pcObj;
+    if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj))
         return NULL;
 
     try {
@@ -83,9 +84,38 @@ PyObject* FemMeshPy::setShape(PyObject *args)
     Py_Return;
 }
 
+PyObject* FemMeshPy::addHypothesis(PyObject *args)
+{
+    PyObject* hyp;
+    PyObject* shp=0;
+    if (!PyArg_ParseTuple(args, "O|O!",&hyp, &(Part::TopoShapePy::Type), &shp))
+        return NULL;
+
+    TopoDS_Shape shape;
+    if (shp == 0)
+        shape = getFemMeshPtr()->getSMesh()->GetShapeToMesh();
+    else
+        shape = static_cast<Part::TopoShapePy*>(shp)->getTopoShapePtr()->_Shape;
+
+    try {
+        Py::Object obj(hyp);
+        Fem::Hypothesis attr(obj.getAttr("this"));
+        SMESH_Hypothesis* thesis = attr.extensionObject()->getHypothesis();
+        getFemMeshPtr()->addHypothesis(shape, thesis);
+    }
+    catch (const Py::Exception&) {
+        return 0;
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+    Py_Return;
+}
+
 PyObject* FemMeshPy::setStanardHypotheses(PyObject *args)
 {
-   if (!PyArg_ParseTuple(args, ""))
+    if (!PyArg_ParseTuple(args, ""))
         return NULL;
 
     try {

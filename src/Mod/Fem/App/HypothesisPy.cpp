@@ -62,6 +62,18 @@
 
 using namespace Fem;
 
+
+HypothesisPy::HypothesisPy(SMESH_Hypothesis* h)
+  : hyp(h)
+{
+}
+
+HypothesisPy::~HypothesisPy()
+{
+}
+
+// ----------------------------------------------------------------------------
+
 template<class T>
 void SMESH_HypothesisPy<T>::init_type(void)
 {
@@ -83,6 +95,14 @@ SMESH_HypothesisPy<T>::~SMESH_HypothesisPy()
 }
 
 template<class T>
+Py::Object SMESH_HypothesisPy<T>::getattr(const char *name)
+{
+    if (strcmp(name,"this") == 0)
+        return Hypothesis(Py::asObject(new HypothesisPy(this->getHypothesis())));
+    return Py::PythonExtension<T>::getattr(name);
+}
+
+template<class T>
 Py::Object SMESH_HypothesisPy<T>::repr()
 {
     std::stringstream str;
@@ -93,12 +113,12 @@ Py::Object SMESH_HypothesisPy<T>::repr()
 template<class T>
 PyObject *SMESH_HypothesisPy<T>::PyMake(struct _typeobject *type, PyObject * args, PyObject * kwds)
 {
-    int hypId, studyId;
+    int hypId;
     PyObject* obj;
-    if (!PyArg_ParseTuple(args, "iiO!",&hypId,&studyId,&(FemMeshPy::Type),&obj))
+    if (!PyArg_ParseTuple(args, "iO!",&hypId,&(FemMeshPy::Type),&obj))
         return 0;
     FemMesh* mesh = static_cast<FemMeshPy*>(obj)->getFemMeshPtr();
-    return new T(hypId, studyId, mesh->getGenerator());
+    return new T(hypId, 1, mesh->getGenerator());
 }
 
 // ----------------------------------------------------------------------------
@@ -233,4 +253,22 @@ Py::Object StdMeshers_MaxLengthPy::setUsePreestimatedLength(const Py::Tuple& arg
 Py::Object StdMeshers_MaxLengthPy::getUsePreestimatedLength(const Py::Tuple& args)
 {
     return Py::None();
+}
+
+// ----------------------------------------------------------------------------
+
+void StdMeshers_QuadranglePreferencePy::init_type(void)
+{
+    SMESH_HypothesisPyBase::init_type();
+    behaviors().name("StdMeshers_QuadranglePreference");
+    behaviors().doc("StdMeshers_QuadranglePreference");
+}
+
+StdMeshers_QuadranglePreferencePy::StdMeshers_QuadranglePreferencePy(int hypId, int studyId, SMESH_Gen* gen)
+  : SMESH_HypothesisPyBase(new StdMeshers_QuadranglePreference(hypId, studyId, gen))
+{
+}
+
+StdMeshers_QuadranglePreferencePy::~StdMeshers_QuadranglePreferencePy()
+{
 }
