@@ -20,6 +20,7 @@ link_directories(${OCC_LIBRARY_DIR})
 
 set(Fem_LIBS
     Part
+	Mesh
     FreeCADApp
 )
 
