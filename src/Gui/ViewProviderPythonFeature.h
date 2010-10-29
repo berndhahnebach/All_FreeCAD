@@ -53,6 +53,8 @@ public:
     void attach(App::DocumentObject *pcObject);
     void updateData(const App::Property*);
     void onChanged(const App::Property* prop);
+    void startRestoring();
+    void finishRestoring();
     //@}
 
     /** @name Display methods */
@@ -102,6 +104,16 @@ public:
     virtual void updateData(const App::Property* prop) {
         imp->updateData(prop);
         ViewProviderT::updateData(prop);
+    }
+    //@}
+
+    /** @name Restoring view provider from document load */
+    //@{
+    virtual void startRestoring() {
+        imp->startRestoring();
+    }
+    virtual void finishRestoring() {
+        imp->finishRestoring();
     }
     //@}
 

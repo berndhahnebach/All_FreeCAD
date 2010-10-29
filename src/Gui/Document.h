@@ -71,6 +71,7 @@ protected:
     void slotChangedObject(const App::DocumentObject&, const App::Property&);
     void slotRenamedObject(const App::DocumentObject&);
     void slotActivatedObject(const App::DocumentObject&);
+    void slotRestoredDocument(const App::Document&);
     //@}
 
 public:

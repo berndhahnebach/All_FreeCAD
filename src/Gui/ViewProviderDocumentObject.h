@@ -80,6 +80,12 @@ public:
     /// Get the python wrapper for that ViewProvider
     PyObject* getPyObject();
 
+    /** @name Restoring view provider from document load */
+    //@{
+    virtual void startRestoring();
+    virtual void finishRestoring();
+    //@}
+
 protected:
     /// Gets called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);

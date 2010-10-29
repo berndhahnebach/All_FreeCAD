@@ -69,6 +69,14 @@ void ViewProviderDocumentObject::getTaskViewContent(std::vector<Gui::TaskView::T
     vec.push_back(new Gui::TaskView::TaskAppearance());
 }
 
+void ViewProviderDocumentObject::startRestoring()
+{
+}
+
+void ViewProviderDocumentObject::finishRestoring()
+{
+}
+
 void ViewProviderDocumentObject::onChanged(const App::Property* prop)
 {
     if (prop == &DisplayMode) {
