@@ -320,7 +320,7 @@ void FemMesh::setStanardHypotheses()
     hypoth.push_back(len);
 
     SMESH_HypothesisPtr loc(new StdMeshers_LocalLength(hyp++, 1, myGen));
-    static_cast<StdMeshers_MaxLength*>(loc.get())->SetLength(1.0);
+    static_cast<StdMeshers_LocalLength*>(loc.get())->SetLength(1.0);
     hypoth.push_back(loc);
 
     SMESH_HypothesisPtr area(new StdMeshers_MaxElementArea(hyp++, 1, myGen));

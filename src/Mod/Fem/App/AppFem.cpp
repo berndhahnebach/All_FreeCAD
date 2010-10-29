@@ -61,7 +61,11 @@ void AppFemExport initFem()
     Fem::StdMeshers_AutomaticLengthPy       ::init_type();
     Fem::StdMeshers_NotConformAllowedPy     ::init_type();
     Fem::StdMeshers_MaxLengthPy             ::init_type();
+    Fem::StdMeshers_LocalLengthPy           ::init_type();
     Fem::StdMeshers_QuadranglePreferencePy  ::init_type();
+    Fem::StdMeshers_Quadrangle_2DPy         ::init_type();
+    Fem::StdMeshers_MaxElementAreaPy        ::init_type();
+    Fem::StdMeshers_Regular_1DPy            ::init_type();
 
     // Add Types to module
     Base::Interpreter().addType(Fem::StdMeshers_Arithmetic1DPy::type_object(),
@@ -72,8 +76,16 @@ void AppFemExport initFem()
         femModule,"StdMeshers_NotConformAllowed");
     Base::Interpreter().addType(Fem::StdMeshers_MaxLengthPy::type_object(),
         femModule,"StdMeshers_MaxLength");
+    Base::Interpreter().addType(Fem::StdMeshers_LocalLengthPy::type_object(),
+        femModule,"StdMeshers_LocalLength");
+    Base::Interpreter().addType(Fem::StdMeshers_MaxElementAreaPy::type_object(),
+        femModule,"StdMeshers_MaxElementArea");
     Base::Interpreter().addType(Fem::StdMeshers_QuadranglePreferencePy::type_object(),
         femModule,"StdMeshers_QuadranglePreference");
+    Base::Interpreter().addType(Fem::StdMeshers_Quadrangle_2DPy::type_object(),
+        femModule,"StdMeshers_Quadrangle_2D");
+    Base::Interpreter().addType(Fem::StdMeshers_Regular_1DPy::type_object(),
+        femModule,"StdMeshers_Regular_1D");
     Base::Interpreter().addType(&Fem::FemMeshPy::Type,femModule,"FemMesh");
 
 

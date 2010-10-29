@@ -88,6 +88,8 @@ PyObject* FemMeshPy::addHypothesis(PyObject *args)
 {
     PyObject* hyp;
     PyObject* shp=0;
+    // Since we have not a common base class for the Python binding of the
+    // hypotheses classes we cannot pass a certain Python type
     if (!PyArg_ParseTuple(args, "O|O!",&hyp, &(Part::TopoShapePy::Type), &shp))
         return NULL;
 
