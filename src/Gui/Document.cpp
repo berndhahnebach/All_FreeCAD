@@ -90,6 +90,7 @@ struct DocumentP
     Connection connectActObject;
     Connection connectSaveDocument;
     Connection connectRestDocument;
+    Connection connectLoadDocument;
 };
 
 } // namespace Gui
@@ -127,6 +128,8 @@ Document::Document(App::Document* pcDocument,Application * app)
         (boost::bind(&Gui::Document::Save, this, _1));
     d->connectRestDocument = pcDocument->signalRestoreDocument.connect
         (boost::bind(&Gui::Document::Restore, this, _1));
+    d->connectLoadDocument = App::GetApplication().signalRestoreDocument.connect
+        (boost::bind(&Gui::Document::slotRestoredDocument, this, _1));
 
     // pointer to the python class
     // NOTE: As this Python object doesn't get returned to the interpreter we
@@ -149,6 +152,7 @@ Document::~Document()
     d->connectActObject.disconnect();
     d->connectSaveDocument.disconnect();
     d->connectRestDocument.disconnect();
+    d->connectLoadDocument.disconnect();
 
     // e.g. if document gets closed from within a Python command
     d->_isClosing = true;
@@ -594,6 +598,7 @@ void Document::Restore(Base::XMLReader &reader)
     std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
     for (it = d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it) {
         it->second->hide();
+        it->second->startRestoring();
     }
 }
 
@@ -647,6 +652,15 @@ void Document::RestoreDocFile(Base::Reader &reader)
 
     // reset modifeid flag
     setModified(false);
+}
+
+void Document::slotRestoredDocument(const App::Document&)
+{
+    // some post-processing of view providers
+    std::map<const App::DocumentObject*,ViewProviderDocumentObject*>::iterator it;
+    for (it = d->_ViewProviderMap.begin(); it != d->_ViewProviderMap.end(); ++it) {
+        it->second->finishRestoring();
+    }
 }
 
 /**

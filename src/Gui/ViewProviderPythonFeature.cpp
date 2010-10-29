@@ -186,6 +186,22 @@ void ViewProviderPythonFeatureImp::onChanged(const App::Property* prop)
     }
 }
 
+void ViewProviderPythonFeatureImp::startRestoring()
+{
+}
+
+void ViewProviderPythonFeatureImp::finishRestoring()
+{
+    App::Property* proxy = object->getPropertyByName("Proxy");
+    if (proxy && proxy->getTypeId() == App::PropertyPythonObject::getClassTypeId()) {
+        Py::Object vp = static_cast<App::PropertyPythonObject*>(proxy)->getValue();
+        if (vp.ptr() == Py::_None()) {
+            object->show();
+            static_cast<App::PropertyPythonObject*>(proxy)->setValue(Py::Int(1));
+        }
+    }
+}
+
 const char* ViewProviderPythonFeatureImp::getDefaultDisplayMode() const
 {
     // Run the getDefaultDisplayMode method of the proxy object.
