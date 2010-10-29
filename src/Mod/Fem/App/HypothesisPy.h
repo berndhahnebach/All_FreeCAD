@@ -58,6 +58,16 @@ public:
 
     Py::Object getattr(const char *name);
     Py::Object repr();
+    Py::Object getLibName(const Py::Tuple& args);
+    Py::Object setLibName(const Py::Tuple& args);
+    Py::Object setParameters(const Py::Tuple& args);
+    Py::Object getParameters(const Py::Tuple& args);
+    Py::Object setLastParameters(const Py::Tuple& args);
+    Py::Object getLastParameters(const Py::Tuple& args);
+    Py::Object clearParameters(const Py::Tuple& args);
+    Py::Object isAuxiliary(const Py::Tuple& args);
+    Py::Object setParametersByMesh(const Py::Tuple& args);
+
     boost::shared_ptr<SMESH_Hypothesis> getHypothesis() const
     { return hyp; }
 
@@ -90,6 +100,10 @@ public:
     static void init_type(void);
     StdMeshers_AutomaticLengthPy(int hypId, int studyId, SMESH_Gen* gen);
     ~StdMeshers_AutomaticLengthPy();
+
+    Py::Object setFineness(const Py::Tuple& args);
+    Py::Object getFineness(const Py::Tuple& args);
+    Py::Object getLength(const Py::Tuple& args);
 };
 
 class StdMeshers_NotConformAllowedPy : public SMESH_HypothesisPy<StdMeshers_NotConformAllowedPy>

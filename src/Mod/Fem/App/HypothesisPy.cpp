@@ -23,12 +23,19 @@
 #include "PreCompiled.h"
 #include "HypothesisPy.h"
 #include "FemMeshPy.h"
+#include <Mod/Part/App/TopoShapePy.h>
 
 #include <sstream>
 #include <StdMeshers_Arithmetic1D.hxx>
 #include <StdMeshers_AutomaticLength.hxx>
 #include <StdMeshers_MaxLength.hxx>
 #include <StdMeshers_LocalLength.hxx>
+#include <StdMeshers_MaxElementArea.hxx>
+#include <StdMeshers_NotConformAllowed.hxx>
+#include <StdMeshers_QuadranglePreference.hxx>
+#include <StdMeshers_Quadrangle_2D.hxx>
+#include <StdMeshers_Regular_1D.hxx>
+
 #include <StdMeshers_UseExisting_1D2D.hxx>
 #include <StdMeshers_CompositeSegment_1D.hxx>
 #include <StdMeshers_CompositeHexa_3D.hxx>
@@ -36,10 +43,8 @@
 #include <StdMeshers_Hexa_3D.hxx>
 #include <StdMeshers_LayerDistribution.hxx>
 #include <StdMeshers_LengthFromEdges.hxx>
-#include <StdMeshers_MaxElementArea.hxx>
 #include <StdMeshers_MaxElementVolume.hxx>
 #include <StdMeshers_MEFISTO_2D.hxx>
-#include <StdMeshers_NotConformAllowed.hxx>
 #include <StdMeshers_NumberOfLayers.hxx>
 #include <StdMeshers_NumberOfSegments.hxx>
 #include <StdMeshers_Prism_3D.hxx>
@@ -50,11 +55,8 @@
 #include <StdMeshers_ProjectionSource2D.hxx>
 #include <StdMeshers_ProjectionSource3D.hxx>
 //#include <StdMeshers_Propagation.hxx>
-#include <StdMeshers_QuadranglePreference.hxx>          // done
-#include <StdMeshers_Quadrangle_2D.hxx>                 // done
 #include <StdMeshers_QuadraticMesh.hxx>
 #include <StdMeshers_RadialPrism_3D.hxx>
-#include <StdMeshers_Regular_1D.hxx>
 #include <StdMeshers_SegmentAroundVertex_0D.hxx>
 #include <StdMeshers_SegmentLengthAroundVertex.hxx>
 #include <StdMeshers_StartEndLength.hxx>
@@ -82,6 +84,16 @@ void SMESH_HypothesisPy<T>::init_type(void)
     SMESH_HypothesisPy<T>::behaviors().supportGetattr();
     SMESH_HypothesisPy<T>::behaviors().supportSetattr();
     SMESH_HypothesisPy<T>::behaviors().type_object()->tp_new = &PyMake;
+
+    add_varargs_method("setLibName", &SMESH_HypothesisPy<T>::setLibName, "setLibName(String)");
+    add_varargs_method("getLibName", &SMESH_HypothesisPy<T>::getLibName, "String getLibName()");
+    add_varargs_method("setParameters", &SMESH_HypothesisPy<T>::setParameters, "setParameters(String)");
+    add_varargs_method("getParameters", &SMESH_HypothesisPy<T>::getParameters, "String getParameters()");
+    add_varargs_method("setLastParameters", &SMESH_HypothesisPy<T>::setLastParameters, "setLastParameters(String)");
+    add_varargs_method("getLastParameters", &SMESH_HypothesisPy<T>::getLastParameters, "String getLastParameters()");
+    add_varargs_method("clearParameters", &SMESH_HypothesisPy<T>::clearParameters, "clearParameters()");
+    add_varargs_method("isAuxiliary", &SMESH_HypothesisPy<T>::isAuxiliary, "Bool isAuxiliary()");
+    add_varargs_method("setParametersByMesh", &SMESH_HypothesisPy<T>::setParametersByMesh, "setParametersByMesh(Mesh,Shape)");
 }
 
 template<class T>
@@ -108,6 +120,74 @@ Py::Object SMESH_HypothesisPy<T>::repr()
     std::stringstream str;
     str << hyp->GetName() << ", " << hyp->GetID();
     return Py::String(str.str());
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::setLibName(const Py::Tuple& args)
+{
+    std::string libName = (std::string)Py::String(args[0]);
+    hypothesis<SMESH_Hypothesis>()->SetLibName(libName.c_str());
+    return Py::None();
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::getLibName(const Py::Tuple& args)
+{
+    return Py::String(hypothesis<SMESH_Hypothesis>()->GetLibName());
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::setParameters(const Py::Tuple& args)
+{
+    std::string paramName = (std::string)Py::String(args[0]);
+    hypothesis<SMESH_Hypothesis>()->SetParameters(paramName.c_str());
+    return Py::None();
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::getParameters(const Py::Tuple& args)
+{
+    return Py::String(hypothesis<SMESH_Hypothesis>()->GetParameters());
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::setLastParameters(const Py::Tuple& args)
+{
+    std::string paramName = (std::string)Py::String(args[0]);
+    hypothesis<SMESH_Hypothesis>()->SetLastParameters(paramName.c_str());
+    return Py::None();
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::getLastParameters(const Py::Tuple& args)
+{
+    return Py::String(hypothesis<SMESH_Hypothesis>()->GetLastParameters());
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::clearParameters(const Py::Tuple& args)
+{
+    hypothesis<SMESH_Hypothesis>()->ClearParameters();
+    return Py::None();
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::setParametersByMesh(const Py::Tuple& args)
+{
+    PyObject *mesh, *shape;
+    if (!PyArg_ParseTuple(args.ptr(), "O!O!",
+        &(Fem::FemMeshPy::Type), &mesh,
+        &(Part::TopoShapePy::Type), &shape))
+        throw Py::Exception();
+    Fem::FemMesh* m = static_cast<Fem::FemMeshPy*>(mesh)->getFemMeshPtr();
+    const TopoDS_Shape& s = static_cast<Part::TopoShapePy*>(shape)->getTopoShapePtr()->_Shape;
+    return Py::Boolean(hypothesis<SMESH_Hypothesis>()->SetParametersByMesh(m->getSMesh(), s));
+}
+
+template<class T>
+Py::Object SMESH_HypothesisPy<T>::isAuxiliary(const Py::Tuple& args)
+{
+    return Py::Boolean(hypothesis<SMESH_Hypothesis>()->IsAuxiliary());
 }
 
 template<class T>
@@ -165,6 +245,10 @@ void StdMeshers_AutomaticLengthPy::init_type(void)
     SMESH_HypothesisPyBase::init_type();
     behaviors().name("StdMeshers_AutomaticLength");
     behaviors().doc("StdMeshers_AutomaticLength");
+
+    add_varargs_method("setFineness", &StdMeshers_AutomaticLengthPy::setFineness, "setFineness()");
+    add_varargs_method("getFineness", &StdMeshers_AutomaticLengthPy::getFineness, "getFineness()");
+    add_varargs_method("getLength", &StdMeshers_AutomaticLengthPy::getLength, "getLength()");
 }
 
 StdMeshers_AutomaticLengthPy::StdMeshers_AutomaticLengthPy(int hypId, int studyId, SMESH_Gen* gen)
@@ -174,6 +258,50 @@ StdMeshers_AutomaticLengthPy::StdMeshers_AutomaticLengthPy(int hypId, int studyI
 
 StdMeshers_AutomaticLengthPy::~StdMeshers_AutomaticLengthPy()
 {
+}
+
+Py::Object StdMeshers_AutomaticLengthPy::setFineness(const Py::Tuple& args)
+{
+    double fine = (double)Py::Float(args[0]);
+    hypothesis<StdMeshers_AutomaticLength>()->SetFineness(fine);
+    return Py::None();
+}
+
+Py::Object StdMeshers_AutomaticLengthPy::getFineness(const Py::Tuple& args)
+{
+    return Py::Float(hypothesis<StdMeshers_AutomaticLength>()->GetFineness());
+}
+
+namespace Py {
+    typedef ExtensionObject<Fem::FemMeshPy>         FemMesh;
+    typedef ExtensionObject<Part::TopoShapePy>      TopoShape;
+    template<> bool FemMesh::accepts (PyObject *pyob) const
+    {
+        return (pyob && PyObject_TypeCheck(pyob, &(Fem::FemMeshPy::Type)));
+    }
+    template<> bool TopoShape::accepts (PyObject *pyob) const
+    {
+        return (pyob && PyObject_TypeCheck(pyob, &(Part::TopoShapePy::Type)));
+    }
+}
+
+Py::Object StdMeshers_AutomaticLengthPy::getLength(const Py::Tuple& args)
+{
+    Py::FemMesh mesh(args[0]);
+    Py::Object shape_or_double(args[1]);
+
+    Fem::FemMesh* m = mesh.extensionObject()->getFemMeshPtr();
+    if (shape_or_double.type() == Py::Float().type()) {
+        double len = (double)Py::Float(shape_or_double);
+        return Py::Float(hypothesis<StdMeshers_AutomaticLength>()->GetLength(m->getSMesh(),len));
+    }
+    else {
+        Py::TopoShape shape(shape_or_double);
+        const TopoDS_Shape& s = shape.extensionObject()->getTopoShapePtr()->_Shape;
+        return Py::Float(hypothesis<StdMeshers_AutomaticLength>()->GetLength(m->getSMesh(),s));
+    }
+
+    throw Py::Exception();
 }
 
 // ----------------------------------------------------------------------------
@@ -186,7 +314,7 @@ void StdMeshers_NotConformAllowedPy::init_type(void)
 }
 
 StdMeshers_NotConformAllowedPy::StdMeshers_NotConformAllowedPy(int hypId, int studyId, SMESH_Gen* gen)
-  : SMESH_HypothesisPyBase(0)
+  : SMESH_HypothesisPyBase(new StdMeshers_NotConformAllowed(hypId, studyId, gen))
 {
 }
 
@@ -222,37 +350,40 @@ StdMeshers_MaxLengthPy::~StdMeshers_MaxLengthPy()
 
 Py::Object StdMeshers_MaxLengthPy::setLength(const Py::Tuple& args)
 {
+    hypothesis<StdMeshers_MaxLength>()->SetLength((double)Py::Float(args[0]));
     return Py::None();
 }
 
 Py::Object StdMeshers_MaxLengthPy::getLength(const Py::Tuple& args)
 {
-    return Py::None();
+    return Py::Float(hypothesis<StdMeshers_MaxLength>()->GetLength());
 }
 
 Py::Object StdMeshers_MaxLengthPy::havePreestimatedLength(const Py::Tuple& args)
 {
-    return Py::None();
+    return Py::Boolean(hypothesis<StdMeshers_MaxLength>()->HavePreestimatedLength());
 }
 
 Py::Object StdMeshers_MaxLengthPy::getPreestimatedLength(const Py::Tuple& args)
 {
-    return Py::None();
+    return Py::Float(hypothesis<StdMeshers_MaxLength>()->GetPreestimatedLength());
 }
 
 Py::Object StdMeshers_MaxLengthPy::setPreestimatedLength(const Py::Tuple& args)
 {
+    hypothesis<StdMeshers_MaxLength>()->SetPreestimatedLength((double)Py::Float(args[0]));
     return Py::None();
 }
 
 Py::Object StdMeshers_MaxLengthPy::setUsePreestimatedLength(const Py::Tuple& args)
 {
+    hypothesis<StdMeshers_MaxLength>()->SetUsePreestimatedLength((bool)Py::Boolean(args[0]));
     return Py::None();
 }
 
 Py::Object StdMeshers_MaxLengthPy::getUsePreestimatedLength(const Py::Tuple& args)
 {
-    return Py::None();
+    return Py::Boolean(hypothesis<StdMeshers_MaxLength>()->GetUsePreestimatedLength());
 }
 
 // ----------------------------------------------------------------------------
