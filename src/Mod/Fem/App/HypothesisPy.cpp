@@ -50,8 +50,8 @@
 #include <StdMeshers_ProjectionSource2D.hxx>
 #include <StdMeshers_ProjectionSource3D.hxx>
 //#include <StdMeshers_Propagation.hxx>
-#include <StdMeshers_QuadranglePreference.hxx>
-#include <StdMeshers_Quadrangle_2D.hxx>
+#include <StdMeshers_QuadranglePreference.hxx>          // done
+#include <StdMeshers_Quadrangle_2D.hxx>                 // done
 #include <StdMeshers_QuadraticMesh.hxx>
 #include <StdMeshers_RadialPrism_3D.hxx>
 #include <StdMeshers_Regular_1D.hxx>
@@ -144,7 +144,7 @@ StdMeshers_Arithmetic1DPy::~StdMeshers_Arithmetic1DPy()
 
 Py::Object StdMeshers_Arithmetic1DPy::setLength(const Py::Tuple& args)
 {
-    static_cast<StdMeshers_Arithmetic1D*>(hypothesis())->
+    hypothesis<StdMeshers_Arithmetic1D>()->
         SetLength((double)Py::Float(args[0]), (bool)Py::Boolean(args[1]));
     return Py::None();
 }
@@ -154,7 +154,7 @@ Py::Object StdMeshers_Arithmetic1DPy::getLength(const Py::Tuple& args)
     int start;
     if (!PyArg_ParseTuple(args.ptr(), "i",&start))
         throw Py::Exception();
-    return Py::Float(static_cast<StdMeshers_Arithmetic1D*>(hypothesis())->
+    return Py::Float(hypothesis<StdMeshers_Arithmetic1D>()->
         GetLength(start ? true : false));
 }
 
@@ -257,6 +257,83 @@ Py::Object StdMeshers_MaxLengthPy::getUsePreestimatedLength(const Py::Tuple& arg
 
 // ----------------------------------------------------------------------------
 
+void StdMeshers_LocalLengthPy::init_type(void)
+{
+    SMESH_HypothesisPyBase::init_type();
+    behaviors().name("StdMeshers_LocalLength");
+    behaviors().doc("StdMeshers_LocalLength");
+
+    add_varargs_method("setLength", &StdMeshers_LocalLengthPy::setLength, "setLength()");
+    add_varargs_method("getLength", &StdMeshers_LocalLengthPy::getLength, "getLength()");
+    add_varargs_method("setPrecision", &StdMeshers_LocalLengthPy::setPrecision, "setPrecision()");
+    add_varargs_method("getPrecision", &StdMeshers_LocalLengthPy::getPrecision, "getPrecision()");
+}
+
+StdMeshers_LocalLengthPy::StdMeshers_LocalLengthPy(int hypId, int studyId, SMESH_Gen* gen)
+  : SMESH_HypothesisPyBase(new StdMeshers_LocalLength(hypId, studyId, gen))
+{
+}
+
+StdMeshers_LocalLengthPy::~StdMeshers_LocalLengthPy()
+{
+}
+
+Py::Object StdMeshers_LocalLengthPy::setLength(const Py::Tuple& args)
+{
+    hypothesis<StdMeshers_LocalLength>()->SetLength((double)Py::Float(args[0]));
+    return Py::None();
+}
+
+Py::Object StdMeshers_LocalLengthPy::getLength(const Py::Tuple& args)
+{
+    return Py::Float(hypothesis<StdMeshers_LocalLength>()->GetLength());
+}
+
+Py::Object StdMeshers_LocalLengthPy::setPrecision(const Py::Tuple& args)
+{
+    hypothesis<StdMeshers_LocalLength>()->SetPrecision((double)Py::Float(args[0]));
+    return Py::None();
+}
+
+Py::Object StdMeshers_LocalLengthPy::getPrecision(const Py::Tuple& args)
+{
+    return Py::Float(hypothesis<StdMeshers_LocalLength>()->GetPrecision());
+}
+
+// ----------------------------------------------------------------------------
+
+void StdMeshers_MaxElementAreaPy::init_type(void)
+{
+    SMESH_HypothesisPyBase::init_type();
+    behaviors().name("StdMeshers_MaxElementArea");
+    behaviors().doc("StdMeshers_MaxElementArea");
+
+    add_varargs_method("setMaxArea", &StdMeshers_MaxElementAreaPy::setMaxArea, "setMaxArea()");
+    add_varargs_method("getMaxArea", &StdMeshers_MaxElementAreaPy::getMaxArea, "getMaxArea()");
+}
+
+StdMeshers_MaxElementAreaPy::StdMeshers_MaxElementAreaPy(int hypId, int studyId, SMESH_Gen* gen)
+  : SMESH_HypothesisPyBase(new StdMeshers_MaxElementArea(hypId, studyId, gen))
+{
+}
+
+StdMeshers_MaxElementAreaPy::~StdMeshers_MaxElementAreaPy()
+{
+}
+
+Py::Object StdMeshers_MaxElementAreaPy::setMaxArea(const Py::Tuple& args)
+{
+    hypothesis<StdMeshers_MaxElementArea>()->SetMaxArea((double)Py::Float(args[0]));
+    return Py::None();
+}
+
+Py::Object StdMeshers_MaxElementAreaPy::getMaxArea(const Py::Tuple& args)
+{
+    return Py::Float(hypothesis<StdMeshers_MaxElementArea>()->GetMaxArea());
+}
+
+// ----------------------------------------------------------------------------
+
 void StdMeshers_QuadranglePreferencePy::init_type(void)
 {
     SMESH_HypothesisPyBase::init_type();
@@ -270,5 +347,41 @@ StdMeshers_QuadranglePreferencePy::StdMeshers_QuadranglePreferencePy(int hypId, 
 }
 
 StdMeshers_QuadranglePreferencePy::~StdMeshers_QuadranglePreferencePy()
+{
+}
+
+// ----------------------------------------------------------------------------
+
+void StdMeshers_Quadrangle_2DPy::init_type(void)
+{
+    SMESH_HypothesisPyBase::init_type();
+    behaviors().name("StdMeshers_Quadrangle_2D");
+    behaviors().doc("StdMeshers_Quadrangle_2D");
+}
+
+StdMeshers_Quadrangle_2DPy::StdMeshers_Quadrangle_2DPy(int hypId, int studyId, SMESH_Gen* gen)
+  : SMESH_HypothesisPyBase(new StdMeshers_Quadrangle_2D(hypId, studyId, gen))
+{
+}
+
+StdMeshers_Quadrangle_2DPy::~StdMeshers_Quadrangle_2DPy()
+{
+}
+
+// ----------------------------------------------------------------------------
+
+void StdMeshers_Regular_1DPy::init_type(void)
+{
+    SMESH_HypothesisPyBase::init_type();
+    behaviors().name("StdMeshers_Regular_1D");
+    behaviors().doc("StdMeshers_Regular_1D");
+}
+
+StdMeshers_Regular_1DPy::StdMeshers_Regular_1DPy(int hypId, int studyId, SMESH_Gen* gen)
+  : SMESH_HypothesisPyBase(new StdMeshers_Regular_1D(hypId, studyId, gen))
+{
+}
+
+StdMeshers_Regular_1DPy::~StdMeshers_Regular_1DPy()
 {
 }

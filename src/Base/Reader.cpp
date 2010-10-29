@@ -265,7 +265,15 @@ void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream) const
     // up. In this case the associated GUI document asks for its file which is not part of the ZIP
     // file, then.
     // In either case it's guaranteed that the order of the files is kept.
-    zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+    zipios::ConstEntryPointer entry;
+    try {
+        entry = zipstream.getNextEntry();
+    }
+    catch (const std::exception&) {
+        // There is no further file at all. This can happen if the
+        // project file was created without GUI
+        return;
+    }
     std::vector<FileEntry>::const_iterator it = FileList.begin();
     Base::SequencerLauncher seq("Importing project files...", FileList.size());
     while (entry->isValid() && it != FileList.end()) {

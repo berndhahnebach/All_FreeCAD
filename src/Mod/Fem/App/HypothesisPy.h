@@ -62,8 +62,9 @@ public:
     { return hyp; }
 
 protected:
-    SMESH_Hypothesis* hypothesis() const
-    { return hyp.get(); }
+    template<typename type>
+    type* hypothesis() const
+    { return static_cast<type*>(hyp.get()); }
 
 private:
     static PyObject *PyMake(struct _typeobject *, PyObject *, PyObject *);
@@ -115,12 +116,52 @@ public:
     Py::Object getUsePreestimatedLength(const Py::Tuple& args);
 };
 
+class StdMeshers_LocalLengthPy : public SMESH_HypothesisPy<StdMeshers_LocalLengthPy>
+{
+public:
+    static void init_type(void);
+    StdMeshers_LocalLengthPy(int hypId, int studyId, SMESH_Gen* gen);
+    ~StdMeshers_LocalLengthPy();
+
+    Py::Object setLength(const Py::Tuple& args);
+    Py::Object getLength(const Py::Tuple& args);
+    Py::Object setPrecision(const Py::Tuple& args);
+    Py::Object getPrecision(const Py::Tuple& args);
+};
+
+class StdMeshers_MaxElementAreaPy : public SMESH_HypothesisPy<StdMeshers_MaxElementAreaPy>
+{
+public:
+    static void init_type(void);
+    StdMeshers_MaxElementAreaPy(int hypId, int studyId, SMESH_Gen* gen);
+    ~StdMeshers_MaxElementAreaPy();
+
+    Py::Object setMaxArea(const Py::Tuple& args);
+    Py::Object getMaxArea(const Py::Tuple& args);
+};
+
 class StdMeshers_QuadranglePreferencePy : public SMESH_HypothesisPy<StdMeshers_QuadranglePreferencePy>
 {
 public:
     static void init_type(void);
     StdMeshers_QuadranglePreferencePy(int hypId, int studyId, SMESH_Gen* gen);
     ~StdMeshers_QuadranglePreferencePy();
+};
+
+class StdMeshers_Quadrangle_2DPy : public SMESH_HypothesisPy<StdMeshers_Quadrangle_2DPy>
+{
+public:
+    static void init_type(void);
+    StdMeshers_Quadrangle_2DPy(int hypId, int studyId, SMESH_Gen* gen);
+    ~StdMeshers_Quadrangle_2DPy();
+};
+
+class StdMeshers_Regular_1DPy : public SMESH_HypothesisPy<StdMeshers_Regular_1DPy>
+{
+public:
+    static void init_type(void);
+    StdMeshers_Regular_1DPy(int hypId, int studyId, SMESH_Gen* gen);
+    ~StdMeshers_Regular_1DPy();
 };
 
 } // namespace Fem

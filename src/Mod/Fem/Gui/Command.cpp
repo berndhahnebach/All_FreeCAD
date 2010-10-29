@@ -27,6 +27,8 @@
 #endif
 
 #include <App/Application.h>
+#include <App/Document.h>
+#include <App/DocumentObject.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
@@ -39,109 +41,69 @@
 
 using namespace std;
 
-//DEF_STD_CMD_A(CmdFemConstraintAxle);
-//
-//CmdFemConstraintAxle::CmdFemConstraintAxle()
-//	:Command("Fem_Create")
-//{
-//    sAppModule      = "Fem";
-//    sGroup          = QT_TR_NOOP("Fem");
-//    sMenuText       = QT_TR_NOOP("Place robot...");
-//    sToolTipText    = QT_TR_NOOP("Place a robot (experimental!)");
-//    sWhatsThis      = sToolTipText;
-//    sStatusTip      = sToolTipText;
-//    sPixmap         = "Fem_CreateFem";
-//}
-//
-//
-//void CmdFemConstraintAxle::activated(int iMsg)
-//{
-//    std::string FeatName = getUniqueObjectName("Fem");
-//    std::string FemPath = "Mod/Fem/Lib/Kuka/kr500_1.wrl";
-//    std::string KinematicPath = "Mod/Fem/Lib/Kuka/kr500_1.csv";
-//
-//    openCommand("Place robot");
-//    doCommand(Doc,"App.activeDocument().addObject(\"Fem::FemObject\",\"%s\")",FeatName.c_str());
-//    doCommand(Doc,"App.activeDocument().%s.FemVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),FemPath.c_str());
-//    doCommand(Doc,"App.activeDocument().%s.FemKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
-//    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
-//    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
-//    updateActive();
-//    commitCommand();
-//      
-//}
-//
-//bool CmdFemConstraintAxle::isActive(void)
-//{
-//    return hasActiveDocument();
-//}
-//
-//
-//// #####################################################################################################
-//
-//DEF_STD_CMD_A(CmdFemSimulate);
-//
-//CmdFemSimulate::CmdFemSimulate()
-//	:Command("Fem_Simulate")
-//{
-//    sAppModule      = "Fem";
-//    sGroup          = QT_TR_NOOP("Fem");
-//    sMenuText       = QT_TR_NOOP("Simulate a trajectory");
-//    sToolTipText    = QT_TR_NOOP("Run a simulation on a trajectory");
-//    sWhatsThis      = sToolTipText;
-//    sStatusTip      = sToolTipText;
-//    sPixmap         = "Fem_Simulate";
-//}
-//
-//
-//void CmdFemSimulate::activated(int iMsg)
-//{
-// 
-//    unsigned int n1 = getSelection().countObjectsOfType(Fem::FemObject::getClassTypeId());
-//    unsigned int n2 = getSelection().countObjectsOfType(Fem::TrajectoryObject::getClassTypeId());
-// 
-//    if (n1 != 1 || n2 != 1) {
-//        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-//            QObject::tr("Select one Fem and one Trajectory object."));
-//        return;
-//    }
-//
-//    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
-//
-//    Fem::FemObject *pcFemObject;
-//    if(Sel[0].pObject->getTypeId() == Fem::FemObject::getClassTypeId())
-//        pcFemObject = dynamic_cast<Fem::FemObject*>(Sel[0].pObject);
-//    else if(Sel[1].pObject->getTypeId() == Fem::FemObject::getClassTypeId())
-//        pcFemObject = dynamic_cast<Fem::FemObject*>(Sel[1].pObject);
-//    std::string RoboName = pcFemObject->getNameInDocument();
-//
-//    Fem::TrajectoryObject *pcTrajectoryObject;
-//    if(Sel[0].pObject->getTypeId() == Fem::TrajectoryObject::getClassTypeId())
-//        pcTrajectoryObject = dynamic_cast<Fem::TrajectoryObject*>(Sel[0].pObject);
-//    else if(Sel[1].pObject->getTypeId() == Fem::TrajectoryObject::getClassTypeId())
-//        pcTrajectoryObject = dynamic_cast<Fem::TrajectoryObject*>(Sel[1].pObject);
-//    std::string TrakName = pcTrajectoryObject->getNameInDocument();
-//
-//    FemGui::TrajectorySimulate dlg(pcFemObject,pcTrajectoryObject,Gui::getMainWindow());
-//    dlg.exec();
-//      
-//}
-//
-//bool CmdFemSimulate::isActive(void)
-//{
-//    return hasActiveDocument();
-//}
+DEF_STD_CMD_A(CmdFemCreateFromShape);
 
+CmdFemCreateFromShape::CmdFemCreateFromShape()
+  : Command("Fem_CreateFromShape")
+{
+    sAppModule      = "Fem";
+    sGroup          = QT_TR_NOOP("Fem");
+    sMenuText       = QT_TR_NOOP("Place robot...");
+    sToolTipText    = QT_TR_NOOP("Place a robot (experimental!)");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Fem_FemMesh";
+}
 
+void CmdFemCreateFromShape::activated(int iMsg)
+{
+    Base::Type type = Base::Type::fromName("Part::Feature");
+    std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(type);
 
-// #####################################################################################################
+    openCommand("Create FEM");
+    doCommand(Doc, "import Fem");
+    for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {
+        App::Document* doc = (*it)->getDocument();
+        QString name = QString::fromAscii((*it)->getNameInDocument());
+        QString cmd = QString::fromAscii(
+            "__fem__=Fem.FemMesh()\n"
+            "__fem__.setShape(FreeCAD.getDocument(\"%1\").%2.Shape)\n"
+            "h1=Fem.StdMeshers_MaxLength(0,__fem__)\n"
+            "h1.setLength(1.0)\n"
+            "h2=Fem.StdMeshers_LocalLength(1,__fem__)\n"
+            "h2.setLength(1.0)\n"
+            "h3=Fem.StdMeshers_QuadranglePreference(2,__fem__)\n"
+            "h4=Fem.StdMeshers_Quadrangle_2D(3,__fem__)\n"
+            "h5=Fem.StdMeshers_MaxElementArea(4,__fem__)\n"
+            "h5.setMaxArea(1.0)\n"
+            "h6=Fem.StdMeshers_Regular_1D(5,__fem__)\n"
+            "__fem__.addHypothesis(h1)\n"
+            "__fem__.addHypothesis(h2)\n"
+            "__fem__.addHypothesis(h3)\n"
+            "__fem__.addHypothesis(h4)\n"
+            "__fem__.addHypothesis(h5)\n"
+            "__fem__.addHypothesis(h6)\n"
+            "__fem__.compute()\n"
+            "FreeCAD.getDocument(\"%1\").addObject"
+            "(\"Fem::FemMeshObject\",\"%2\").FemMesh=__fem__\n"
+            "del __fem__,h1,h2,h3,h4,h5,h6\n"
+        )
+        .arg(QString::fromAscii(doc->getName()))
+        .arg(name);
+        doCommand(Doc, "%s", (const char*)cmd.toAscii());
+    }
+    commitCommand();
+}
 
+bool CmdFemCreateFromShape::isActive(void)
+{
+    Base::Type type = Base::Type::fromName("Part::Feature");
+    return Gui::Selection().countObjectsOfType(type) > 0;
+}
 
 
 void CreateFemCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-
-    //rcCmdMgr.addCommand(new CmdFemConstraintAxle());
-    //rcCmdMgr.addCommand(new CmdFemSimulate());
- }
+    rcCmdMgr.addCommand(new CmdFemCreateFromShape());
+}

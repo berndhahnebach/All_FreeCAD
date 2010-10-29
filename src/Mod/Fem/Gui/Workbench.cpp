@@ -34,6 +34,11 @@
 
 using namespace FemGui;
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("Workbench", "FEM");
+    qApp->translate("Workbench", "&FEM");
+#endif
+
 /// @namespace FemGui @class Workbench
 TYPESYSTEM_SOURCE(FemGui::Workbench, Gui::StdWorkbench)
 
@@ -48,8 +53,9 @@ Workbench::~Workbench()
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand(QT_TR_NOOP("Fem"));
+    Gui::ToolBarItem* fem = new Gui::ToolBarItem(root);
+    fem->setCommand("FEM");
+     *fem << "Fem_CreateFromShape";
     return root;
 }
 
@@ -57,7 +63,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 {
     Gui::MenuItem* root = StdWorkbench::setupMenuBar();
     Gui::MenuItem* item = root->findItem("&Windows");
-    Gui::MenuItem* robot = new Gui::MenuItem;
-    root->insertItem( item, robot );
+    Gui::MenuItem* fem = new Gui::MenuItem;
+    root->insertItem(item, fem);
+    fem->setCommand("&FEM");
+    *fem << "Fem_CreateFromShape";
     return root;
 }
