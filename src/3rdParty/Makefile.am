@@ -98,3 +98,33 @@ EXTRA_DIST = \
 		boost/numeric/bindings/traits/vector_raw.hpp \
 		boost/numeric/bindings/traits/vector_traits.hpp
 
+# For Debian based system we don't need these sources
+if ENABLE_PYCXX_ZIPIOS
+EXTRA_DIST += \
+		Pivy/gui/__init__.py \
+		Pivy/gui/soqt.py \
+		Pivy/AUTHORS \
+		Pivy/CMakeLists.txt \
+		Pivy/coin.py \
+		Pivy/coin_header_includes.h \
+		Pivy/coin_wrap.cpp \
+		Pivy/__init__.py \
+		Pivy/LICENSE \
+		Pivy/README \
+		Pivy/sogui.py \
+		Pivy/soqt_wrap.cpp \
+		Pivy-0.5/gui/__init__.py \
+		Pivy-0.5/gui/soqt.py \
+		Pivy-0.5/AUTHORS \
+		Pivy-0.5/CMakeLists.txt \
+		Pivy-0.5/coin.py \
+		Pivy-0.5/coin_header_includes.h \
+		Pivy-0.5/coin_wrap.cpp \
+		Pivy-0.5/__init__.py \
+		Pivy-0.5/LICENSE \
+		Pivy-0.5/README \
+		Pivy-0.5/sogui.py \
+		Pivy-0.5/soqt.py \
+		Pivy-0.5/soqt_wrap.cpp
+endif
+
