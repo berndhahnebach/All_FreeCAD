@@ -44,6 +44,7 @@ libFem_la_LIBADD   = \
 		-lTKGeomAlgo \
 		-lTKGeomBase \
 		-lSMESH \
+		-lSMESHDS \
 		-lSMDS \
 		-lStdMeshers
 
