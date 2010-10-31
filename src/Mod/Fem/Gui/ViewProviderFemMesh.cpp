@@ -214,20 +214,20 @@ void ViewProviderFEMMeshBuilder::createMesh(const App::Property* prop, SoCoordin
     coords->point.finishEditing();
 
     // set the face indices
-    i=0;
+    index=0;
     faces->coordIndex.setNum(4*numTria + 5*numQuad);
     int32_t* indices = faces->coordIndex.startEditing();
     SMDS_FaceIteratorPtr aFaceIter = data->facesIterator();
-    for (;aFaceIter->more();i++) {
+    for (;aFaceIter->more();) {
         const SMDS_MeshFace* aFace = aFaceIter->next();
         int num = aFace->NbNodes();
         if (num != 3 && num != 4)
             continue;
         for (int j=0; j<num;j++) {
             const SMDS_MeshNode* node = aFace->GetNode(j);
-            indices[(num+1)*i+j] = mapNodeIndex[node];
+            indices[index++] = mapNodeIndex[node];
         }
-        indices[(num+1)*i+num] = SO_END_FACE_INDEX;
+        indices[index++] = SO_END_FACE_INDEX;
     }
     faces->coordIndex.finishEditing();
 }
