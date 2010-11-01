@@ -53,7 +53,7 @@
 
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
-#include "../Build/Version.h"
+#include <Build/Version.h>
 
 void PrintInitHelp(void);
 
@@ -153,8 +153,10 @@ int main( int argc, char ** argv )
     // http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=559846
     putenv("LANG=C");
     putenv("LC_ALL=C");
+    putenv("PYTHONPATH=");
 #else
     setlocale(LC_NUMERIC, "C");
+    _putenv("PYTHONPATH=");
 #endif
 
     // Name and Version of the Application
