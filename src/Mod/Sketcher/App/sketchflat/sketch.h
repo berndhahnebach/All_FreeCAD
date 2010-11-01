@@ -55,7 +55,7 @@ typedef unsigned short   WORD;
 #define MAX_PATH         PATH_MAX
 #endif
 
-#if defined(FC_OS_LINUX)
+#if defined(FC_OS_LINUX) || defined(FC_OS_BSD)
 #include <sys/time.h>
 
 inline DWORD GetTickCount()

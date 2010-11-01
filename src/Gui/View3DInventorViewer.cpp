@@ -414,7 +414,7 @@ void View3DInventorViewer::setGradientBackgroudColor(const SbColor& fromColor,
 
 void View3DInventorViewer::setEnabledFPSCounter(bool on)
 {
-#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX) || defined(FC_OS_BSD)
     setenv("COIN_SHOW_FPS_COUNTER", (on?"1":"0"), 1);
 #else
     on ? _putenv ("COIN_SHOW_FPS_COUNTER=1") : _putenv ("COIN_SHOW_FPS_COUNTER=0");

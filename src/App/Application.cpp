@@ -30,7 +30,7 @@
 # include <iostream>
 # include <sstream>
 # include <exception>
-# if defined(FC_OS_LINUX) || defined(FC_OS_MACOSX)
+# if defined(FC_OS_LINUX) || defined(FC_OS_MACOSX) || defined(FC_OS_BSD)
 # include <unistd.h>
 # include <pwd.h>
 # include <sys/types.h>
@@ -1526,7 +1526,7 @@ void Application::ExtractUserPath()
     mConfig["BinPath"] = mConfig["AppHomePath"] + "bin" + PATHSEP;
     mConfig["DocPath"] = mConfig["AppHomePath"] + "doc" + PATHSEP;
 
-#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_BSD)
     // Default paths for the user depending stuff on the platform
     struct passwd *pwd = getpwuid(getuid());
     if (pwd == NULL)
@@ -1703,7 +1703,7 @@ void Application::ExtractUserPath()
 #endif
 }
 
-#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_BSD)
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/param.h>

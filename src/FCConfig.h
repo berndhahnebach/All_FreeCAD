@@ -74,6 +74,10 @@
 #	ifndef FC_OS_LINUX
 #	define FC_OS_LINUX
 #	endif
+#elif defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+#	ifndef FC_OS_BSD
+#	define FC_OS_BSD
+#	endif
 #elif defined(__CYGWIN__)
 #	ifndef FC_OS_CYGWIN
 #	define FC_OS_CYGWIN
