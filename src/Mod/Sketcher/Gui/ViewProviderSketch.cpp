@@ -101,8 +101,7 @@ struct EditData {
     CurveSet(0),
     LineSet(0),
     PointSet(0)
-{}
-
+    {}
 
     // pointer to the active handler for new sketch objects
     DrawSketchHandler *sketchHandler;
@@ -143,7 +142,6 @@ struct EditData {
     SoTranslation * textPos;
 
     SoGroup       * constrGroup;
-
 };
 
 
@@ -154,8 +152,7 @@ PROPERTY_SOURCE(SketcherGui::ViewProviderSketch, PartGui::ViewProvider2DObject)
 
 
 ViewProviderSketch::ViewProviderSketch()
-  : 
-    edit(0),
+  : edit(0),
     Mode(STATUS_NONE)
 {
     sPixmap = "Sketcher_NewSketch";
@@ -165,8 +162,8 @@ ViewProviderSketch::ViewProviderSketch()
 }
 
 ViewProviderSketch::~ViewProviderSketch()
-{}
-
+{
+}
 
 // handler management ***************************************************************
 void ViewProviderSketch::activateHandler(DrawSketchHandler *newHandler)
@@ -495,7 +492,6 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
     }
 }
 
-
 bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex, int &ConstrIndex)
 {
     assert(edit);
@@ -624,39 +620,39 @@ void ViewProviderSketch::updateColor(void)
     SbColor* color = edit->CurvesMaterials->diffuseColor.startEditing();
 
     // colors of the point set
-    for(int  i=0;i<PtNum;i++)
-        if(edit->SelPointSet.find(i) != edit->SelPointSet.end()){
+    for (int  i=0;i<PtNum;i++) {
+        if (edit->SelPointSet.find(i) != edit->SelPointSet.end())
             pcolor[i] = SelectColor;
-        }else if(edit->PreselectPoint==i){
+        else if(edit->PreselectPoint==i)
             pcolor[i] = PreselectColor;
-        }else
-             pcolor[i] = sPointColor;
+        else
+            pcolor[i] = sPointColor;
+    }
 
     // colors or the curves
-    for(int  i=0;i<CurvNum;i++)
-        if(edit->SelCurvSet.find(i) != edit->SelCurvSet.end()){
+    for (int  i=0;i<CurvNum;i++) {
+        if (edit->SelCurvSet.find(i) != edit->SelCurvSet.end())
             color[i] = SelectColor;
-        }else if(edit->PreselectCurve==i){
+        else if(edit->PreselectCurve==i)
             color[i] = PreselectColor;
-        }else
-             color[i] = sCurveColor;
-
+        else
+            color[i] = sCurveColor;
+    }
     // colors of the constraints
-    for(int i=0; i< edit->constrGroup->getNumChildren();i++){
+    for (int i=0; i< edit->constrGroup->getNumChildren();i++) {
         SoSeparator *s = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
         SoMaterial *m = dynamic_cast<SoMaterial *>(s->getChild(0));
-        if(edit->SelConstraintSet.find(i) != edit->SelConstraintSet.end()){
+        if (edit->SelConstraintSet.find(i) != edit->SelConstraintSet.end())
             m->diffuseColor = SelectColor;
-        }else if(edit->PreselectConstraint==i){
+        else if(edit->PreselectConstraint==i)
             m->diffuseColor = PreselectColor;
-        }else
+        else
             m->diffuseColor = sConstraintColor;
     }
 
     // end edeting
     edit->CurvesMaterials->diffuseColor.finishEditing();
     edit->PointsMaterials->diffuseColor.finishEditing();
-
 }
 
 bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint* pp) const
@@ -672,7 +668,6 @@ bool ViewProviderSketch::doubleClicked(void)
     return true;
 }
 
-
 void ViewProviderSketch::draw(bool temp)
 {
     assert(edit);
@@ -686,14 +681,15 @@ void ViewProviderSketch::draw(bool temp)
 
     const std::vector<Part::Geometry *> *geomlist;
     std::vector<Part::Geometry *> tempGeo;
-    if(temp){
+    if (temp) {
         tempGeo = edit->ActSketch.getGeometry();
         geomlist = &tempGeo;
-    }else
+    }
+    else
         geomlist = &getSketchObject()->Geometry.getValues();
 
-    for(std::vector<Part::Geometry *>::const_iterator it=geomlist->begin();it!=geomlist->end();++it){
-        if((*it)->getTypeId()== Part::GeomLineSegment::getClassTypeId()){ // add a line
+    for (std::vector<Part::Geometry *>::const_iterator it=geomlist->begin();it!=geomlist->end();++it) {
+        if ((*it)->getTypeId()== Part::GeomLineSegment::getClassTypeId()){ // add a line
             const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(*it);
             // create the definition struct for that geom
             Coords.push_back(lineSeg->getStartPoint());
@@ -707,8 +703,8 @@ void ViewProviderSketch::draw(bool temp)
         } else {
             ; 
         }
-
     }
+
     edit->CurveSet->numVertices.setNum(Index.size());
     edit->CurvesCoordinate->point.setNum(Coords.size());
     edit->CurvesMaterials->diffuseColor.setNum(Color.size());
@@ -757,7 +753,7 @@ void ViewProviderSketch::draw(bool temp)
 Restart:
     // check if a new constraint arrived
     if (ConStr.size() != edit->vConstrType.size())
-        rebuildConstriantsVisual();
+        rebuildConstraintsVisual();
     assert((int)ConStr.size()==edit->constrGroup->getNumChildren());
     assert((int)edit->vConstrType.size()==edit->constrGroup->getNumChildren());
     // go through the constraints and update the position 
@@ -860,14 +856,14 @@ Restart:
 
 }
 
-void ViewProviderSketch::rebuildConstriantsVisual(void)
+void ViewProviderSketch::rebuildConstraintsVisual(void)
 {
     const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
     // clean up 
     edit->constrGroup->removeAllChildren();
     edit->vConstrType.clear();
 
-    for(std::vector<Sketcher::Constraint*>::const_iterator it=ConStr.begin();it!=ConStr.end();++it){
+    for (std::vector<Sketcher::Constraint*>::const_iterator it=ConStr.begin();it!=ConStr.end();++it){
         // root separator for one constraint
         SoSeparator *sep = new SoSeparator();
         // no caching for fluctuand data structures
@@ -881,24 +877,24 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
         switch((*it)->Type) {
             case Horizontal: // add a Text node with the "H" for that constraint
                 {
-                sep->addChild(new SoTranslation());
-                SoText2 *text = new SoText2();
-                text->justification = SoText2::LEFT;
-                text->string = "H";
-                sep->addChild(text); 
-                // remeber the type of this constraint node
-                edit->vConstrType.push_back(Horizontal);
+                    sep->addChild(new SoTranslation());
+                    SoText2 *text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "H";
+                    sep->addChild(text); 
+                    // remeber the type of this constraint node
+                    edit->vConstrType.push_back(Horizontal);
                 }
                 break;
             case Vertical: // add a Text node with the "V" for that constraint
                 {
-                sep->addChild(new SoTranslation());
-                SoText2 *text = new SoText2();
-                text->justification = SoText2::LEFT;
-                text->string = "V";
-                sep->addChild(text); 
-                // remeber the type of this constraint node
-                edit->vConstrType.push_back(Vertical);
+                    sep->addChild(new SoTranslation());
+                    SoText2 *text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "V";
+                    sep->addChild(text); 
+                    // remeber the type of this constraint node
+                    edit->vConstrType.push_back(Vertical);
                  }
                 break;
             case Coincident: // no visual for coincident so far
@@ -944,14 +940,9 @@ void ViewProviderSketch::rebuildConstriantsVisual(void)
                 
         }
 
-
         edit->constrGroup->addChild(sep);
     }
-
-
-
 }
-
 
 void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)
 {
@@ -963,15 +954,13 @@ void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)
     int32_t* index = edit->EditCurveSet->numVertices.startEditing();
 
     int i=0; // setting up the line set
-    for(std::vector<Base::Vector2D>::const_iterator it=EditCurve.begin();it!=EditCurve.end();++it,i++)
+    for (std::vector<Base::Vector2D>::const_iterator it=EditCurve.begin();it!=EditCurve.end();++it,i++)
         verts[i].setValue(it->fX,it->fY,0.1f);
 
     index[0] = EditCurve.size();
     edit->EditCurvesCoordinate->point.finishEditing();
     edit->EditCurveSet->numVertices.finishEditing();
-
 }
-
 
 void ViewProviderSketch::updateData(const App::Property* prop)
 {
@@ -986,11 +975,10 @@ void ViewProviderSketch::updateData(const App::Property* prop)
             signalSolved(1,edit->ActSketch.SolveTime);*/
         draw(true);    
     }
-    if(edit && &(getSketchObject()->Constraints) ){
+    if (edit && &(getSketchObject()->Constraints) ){
         // send the signal for the TaskDlg.
         signalConstraintsChanged();
     }
-
 }
 
 void ViewProviderSketch::onChanged(const App::Property* prop)
@@ -1190,8 +1178,6 @@ void ViewProviderSketch::createEditInventorNodes(void)
     // add the group where all the constraints has its SoSeparator
     edit->constrGroup = new SoGroup();
     edit->EditRoot->addChild(edit->constrGroup);
-
-
 }
 
 void ViewProviderSketch::unsetEdit(int ModNum)
@@ -1201,10 +1187,19 @@ void ViewProviderSketch::unsetEdit(int ModNum)
     edit->EditRoot->removeAllChildren();
     pcRoot->removeChild(edit->EditRoot);
 
+    if (edit->sketchHandler) {
+        edit->sketchHandler->unsetCursor();
+        purgeHandler();
+    }
     delete edit;
     edit = 0;
  
     this->show();
+
+    // when pressing ESC make sure to close the dialog
+    // and update the sketch
+    getSketchObject()->getDocument()->recompute();
+    Gui::Control().closeDialog();
 }
 
 void ViewProviderSketch::setPositionText(const Base::Vector2D &Pos)
@@ -1213,8 +1208,8 @@ void ViewProviderSketch::setPositionText(const Base::Vector2D &Pos)
     sprintf( buf, " (%.1f,%.1f)", Pos.fX,Pos.fY );
     edit->textX->string = buf;
     edit->textPos->translation = SbVec3f(Pos.fX,Pos.fY,0.2f);
-
 }
+
 void ViewProviderSketch::resetPositionText(void)
 {
     edit->textX->string = "";
@@ -1222,20 +1217,20 @@ void ViewProviderSketch::resetPositionText(void)
 
 int ViewProviderSketch::getPreselectPoint(void)const
 {
-    if(edit)
+    if (edit)
         return edit->PreselectPoint;
     return -1;
 }
 int ViewProviderSketch::getPreselectCurve(void)const
 {
-    if(edit)
+    if (edit)
         return edit->PreselectCurve;
     return -1;
 }
 
 int ViewProviderSketch::getPreselectConstraint(void)const
 {
-    if(edit)
+    if (edit)
         return edit->PreselectConstraint;
     return -1;
 }

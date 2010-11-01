@@ -155,7 +155,7 @@ public:
             EditCurve.clear();
             resetPositionText();
             sketchgui->drawEdit(EditCurve);
-            Gui::Command::openCommand("add sketch line");
+            Gui::Command::openCommand("Add sketch line");
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
@@ -290,7 +290,7 @@ public:
             EditCurve.clear();
             resetPositionText();
             sketchgui->drawEdit(EditCurve);
-            Gui::Command::openCommand("add sketch line");
+            Gui::Command::openCommand("Add sketch box");
             int firstCurve = getHighestCurveIndex() + 1;
             // add the four line geos
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
@@ -351,20 +351,18 @@ CmdSketcherCreateBox::CmdSketcherCreateBox()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create line");
-    sToolTipText    = QT_TR_NOOP("Create a line in the sketch");
+    sMenuText       = QT_TR_NOOP("Create box");
+    sToolTipText    = QT_TR_NOOP("Create a box in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateRectangle";
     iAccel          = Qt::Key_B;
     eType           = ForEdit;
-
-
 }
 
 void CmdSketcherCreateBox::activated(int iMsg)
 {
-	ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerBox() );
+    ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerBox() );
 }
 
 bool CmdSketcherCreateBox::isActive(void)
@@ -432,7 +430,7 @@ public:
         setCursor(QPixmap(cursor_createlineset),4,4);
     } 
 
-   virtual void mouseMove(Base::Vector2D onSketchPos)
+    virtual void mouseMove(Base::Vector2D onSketchPos)
     {
         setPositionText(onSketchPos);
         if(Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
@@ -474,7 +472,7 @@ public:
     {
         if(Mode==STATUS_Do || Mode==STATUS_Close){
             // open the transaction 
-            Gui::Command::openCommand("add sketch line");
+            Gui::Command::openCommand("add sketch wire");
             // issue the geometry
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
