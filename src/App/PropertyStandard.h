@@ -211,7 +211,7 @@ public:
         long LowerBound, UpperBound, StepSize;
     };
     /** setting the boundaries
-     * This sets the constriant struct. It can be dynamcly 
+     * This sets the constraint struct. It can be dynamcly 
      * allocated or set as an static in the class the property
      * blongs to:
      * \code
@@ -219,7 +219,7 @@ public:
      * \endcode
      */
     void setConstraints(const Constraints* sConstraint);
-    /// get the constriant struct
+    /// get the constraint struct
     const Constraints*  getConstraints(void) const;
     //@}
 
@@ -368,7 +368,7 @@ public:
         float LowerBound, UpperBound, StepSize;
     };
     /** setting the boundaries
-     * This sets the constriant struct. It can be dynamcly 
+     * This sets the constraint struct. It can be dynamcly 
      * allocated or set as an static in the class the property
      * blongs to:
      * \code
@@ -376,7 +376,7 @@ public:
      * \endcode
      */
     void setConstraints(const Constraints* sConstrain);
-    /// get the constriant struct
+    /// get the constraint struct
     const Constraints*  getConstraints(void) const;
     //@}
 

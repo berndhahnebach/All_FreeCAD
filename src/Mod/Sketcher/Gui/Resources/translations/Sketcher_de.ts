@@ -47,7 +47,7 @@
     </message>
     <message>
         <source>Create a horizontal constrain on the selcted item</source>
-        <translation type="obsolete">Erzeugt eine horizontale Bedingung am selektierten Element</translation>
+        <translation type="obsolete">Erstellt eine horizontale Bedingung am selektierten Element</translation>
     </message>
     <message>
         <source>Constrain horizontally</source>
@@ -70,7 +70,7 @@
     </message>
     <message>
         <source>Create a Lock constrain on the selcted item</source>
-        <translation type="obsolete">Erzeugt eine gesperrte Bedingung am selektierten Element</translation>
+        <translation type="obsolete">Erstellt eine gesperrte Bedingung am selektierten Element</translation>
     </message>
     <message>
         <source>Create a lock constrain on the selected item</source>
@@ -108,7 +108,7 @@
     </message>
     <message>
         <source>Create a vertical constrain on the selcted item</source>
-        <translation type="obsolete">Erzeugt eine vertikale Bedingung am selektierten Element</translation>
+        <translation type="obsolete">Erstellt eine vertikale Bedingung am selektierten Element</translation>
     </message>
     <message>
         <source>Constrain vertically</source>
@@ -127,11 +127,11 @@
     </message>
     <message>
         <source>Create arc</source>
-        <translation>Erzeugt einen Bogen</translation>
+        <translation>Bogen erstellen</translation>
     </message>
     <message>
         <source>Create an arc in the sketch</source>
-        <translation>Erzeugt einen Kreisbogen in der Skizze</translation>
+        <translation>Erstellt einen Kreisbogen in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -141,12 +141,12 @@
         <translation>Skizze</translation>
     </message>
     <message>
-        <source>Create line</source>
-        <translation>Linie erzeugen</translation>
+        <source>Create box</source>
+        <translation>Rechteck erstellen</translation>
     </message>
     <message>
-        <source>Create a line in the sketch</source>
-        <translation>Erzeugt eine Linie in der Skizze</translation>
+        <source>Create a box in the sketch</source>
+        <translation>Erstellt eine Linie in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -157,11 +157,11 @@
     </message>
     <message>
         <source>Create circle</source>
-        <translation>Erzeugt einen Kreis</translation>
+        <translation> Kreis erstellen</translation>
     </message>
     <message>
         <source>Create a circle in the sketch</source>
-        <translation>Erzeugt einen Kreis in der Skizze</translation>
+        <translation>Erstellt einen Kreis in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -172,11 +172,11 @@
     </message>
     <message>
         <source>Create draft line</source>
-        <translation>Erzeugt eine Konstruktionslinie</translation>
+        <translation> Konstruktionslinie erstellen</translation>
     </message>
     <message>
         <source>Create a draft line in the sketch</source>
-        <translation>Erzeugt eine Konstruktionslinie in der Skizze</translation>
+        <translation>Erstellt eine Konstruktionslinie in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -187,11 +187,11 @@
     </message>
     <message>
         <source>Create line</source>
-        <translation>Erzeugt eine Linie</translation>
+        <translation>Linie erstellen</translation>
     </message>
     <message>
         <source>Create a line in the sketch</source>
-        <translation>Erzeugt eine Linie in der Skizze</translation>
+        <translation>Erstellt eine Linie in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -202,11 +202,11 @@
     </message>
     <message>
         <source>Create point</source>
-        <translation>Erzeugt einen Punkt</translation>
+        <translation>Punkt erstellen</translation>
     </message>
     <message>
         <source>Create a point in the sketch</source>
-        <translation>Erzeugt einen Punkt in der Skizze</translation>
+        <translation>Erstellt einen Punkt in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -217,11 +217,11 @@
     </message>
     <message>
         <source>Create polyline</source>
-        <translation>Erzeugt einen Polylinie</translation>
+        <translation> Polylinie erstellen</translation>
     </message>
     <message>
         <source>Create a polyline in the sketch</source>
-        <translation>Erzeugt eine Polylinie in der Skizze</translation>
+        <translation>Erstellt eine Polylinie in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -232,11 +232,11 @@
     </message>
     <message>
         <source>Create rectangle</source>
-        <translation type="obsolete">Erzeugt ein Rechteck</translation>
+        <translation type="obsolete">Erstellt ein Rechteck</translation>
     </message>
     <message>
         <source>Create a rectangle in the sketch</source>
-        <translation type="obsolete">Erzeugt ein Rechteck in der Skizze</translation>
+        <translation type="obsolete">Erstellt ein Rechteck in der Skizze</translation>
     </message>
 </context>
 <context>
@@ -247,11 +247,11 @@
     </message>
     <message>
         <source>Create text</source>
-        <translation>Erzeugt einen Text</translation>
+        <translation>Text erstellen</translation>
     </message>
     <message>
         <source>Create text in the scetch</source>
-        <translation type="obsolete">Erzeugt einen Text in der Skizze</translation>
+        <translation type="obsolete">Erstellt einen Text in der Skizze</translation>
     </message>
     <message>
         <source>Create text in the sketch</source>
@@ -281,7 +281,7 @@
     </message>
     <message>
         <source>Create sketch</source>
-        <translation>Erzeuge eine Skizze</translation>
+        <translation>Skizze erstellen</translation>
     </message>
     <message>
         <source>Create a new sketch</source>

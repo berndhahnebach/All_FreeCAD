@@ -158,7 +158,7 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated ( QListWidge
         ui.lineEdit->setText(QString::fromAscii("%1").arg(Datum)); 
         if(Dlg->exec()){
             double newDatum = ui.lineEdit->text().toDouble();
-            Gui::Command::openCommand("add sketch line");
+            Gui::Command::openCommand("Add sketch constraints");
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
                       sketchView->getObject()->getNameInDocument(),
                       newDatum,it->ConstraintNbr);
