@@ -1,10 +1,8 @@
-SUBDIRS=3rdParty Base App Gui Main Doc Mod Tools
+SUBDIRS=Build 3rdParty Base App Gui Main Doc Mod Tools
 
-include_HEADERS=\
-		Build/Version.h \
-		FCConfig.h
+include_HEADERS = \
+		FCConfig.h
+
 EXTRA_DIST = \
-		Build/BuildVersion.bat \
-		Build/Version.h.in \
 		CMakeLists.txt
 

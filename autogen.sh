@@ -58,3 +58,7 @@ autoconf
 
 echo "Done"
 echo "Please run configure."
+
+# touch file to update Version.h
+touch src/Build/Version.h.in
+
