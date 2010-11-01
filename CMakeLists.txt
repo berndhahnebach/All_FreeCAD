@@ -330,26 +330,6 @@ ENDIF(MINGW)
 add_subdirectory(src)
 
 # ================================================================================
-
-if (WIN32)
-    # TortoiseSVN
-    FIND_PROGRAM(Subversion_WCREF_EXECUTABLE SubWCRev)
-    if(Subversion_WCREF_EXECUTABLE)
-    EXECUTE_PROCESS(COMMAND ${Subversion_WCREF_EXECUTABLE} ${CMAKE_SOURCE_DIR}
-      ${CMAKE_SOURCE_DIR}/src/Build/Version.h.in ${CMAKE_SOURCE_DIR}/src/Build/Version.h
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    else(Subversion_WCREF_EXECUTABLE)
-    EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/Tools/SubWCRev.py
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    endif(Subversion_WCREF_EXECUTABLE)
-else (WIN32)
-    EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/Tools/SubWCRev.py
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-endif (WIN32)
-
-# ================================================================================
 # == Packaging ===================================================================
 if(FREECAD_MAINTAINERS_BUILD AND NOT WIN32)
 	set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An extensible Open Source CAx program")
