@@ -12,7 +12,7 @@
 # 3. dch -v X.Y.xyz-1hardy1 "New release for Ubuntu 8.04 (Hardy Heron)"
 # 4. debuild
 #
-# Example how to wirk with sed can be found here: 
+# Example how to work with sed can be found here: 
 # http://www.grymoire.com/Unix/Sed.html
 
 # global settings

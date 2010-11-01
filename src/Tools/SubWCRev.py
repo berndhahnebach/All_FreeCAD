@@ -28,7 +28,7 @@
 #***************************************************************************
 
 #!/usr/bin/python
-import os,sys,string,re,time
+import os,sys,string,re,time,getopt
 import xml.sax
 import xml.sax.handler
 import xml.sax.xmlreader
@@ -71,13 +71,26 @@ def main():
 	#if(len(sys.argv) != 2):
 	#    sys.stderr.write("Usage:  SubWCRev \"`svn info .. --xml`\"\n")
 
+	srcdir="."
+	bindir="."
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "sb:", ["srcdir=","bindir="])
+	except getopt.GetoptError:
+		pass
+
+	for o, a in opts:
+		if o in ("-s", "--srcdir"):
+			srcdir = a
+		if o in ("-b", "--bindir"):
+			bindir = a
+
 	parser=xml.sax.make_parser()
 	handler=SvnHandler()
 	parser.setContentHandler(handler)
 
 	#Create an XML stream with the required information and read in with a SAX parser
-	Ver=os.popen("svnversion . -n").read()
-	Info=os.popen("svn info . --xml").read()
+	Ver=os.popen("svnversion %s -n" % (srcdir)).read()
+	Info=os.popen("svn info %s --xml" % (srcdir)).read()
 	try:
 		inpsrc = xml.sax.InputSource()
 		strio=StringIO.StringIO(Info)
@@ -123,10 +136,10 @@ def main():
 	    Range = Ver[:r.end()]
 
 	# Open the template file and the version file
-	file = open("./src/Build/Version.h.in")
+	file = open("%s/src/Build/Version.h.in" % (srcdir))
 	lines = file.readlines()
 	file.close()
-	out  = open("./src/Build/Version.h","w");
+	out  = open("%s/src/Build/Version.h" % (bindir),"w");
 
 	for line in lines:
 	    line = string.replace(line,'$WCREV$',Rev)
@@ -140,5 +153,8 @@ def main():
 	    out.write(line)
 
 	out.write('\n')
+	out.close()
+	sys.stdout.write("%s/Version.h written\n" % (bindir))
 if __name__ == "__main__":
 	main()
+

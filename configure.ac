@@ -800,6 +800,7 @@ dnl **************************************************************************
 
 AC_CONFIG_FILES([Makefile 
 src/Makefile 
+src/Build/Makefile 
 src/3rdParty/Makefile 
 src/3rdParty/salomesmesh/Makefile 
 src/Base/Makefile 

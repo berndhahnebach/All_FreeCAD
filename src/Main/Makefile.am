@@ -58,7 +58,8 @@ FreeCADGui_la_LIBADD=\
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src $(QT_CXXFLAGS) $(all_includes) \
+AM_CXXFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src \
+		$(QT_CXXFLAGS) $(all_includes) \
 		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 EXTRA_DIST = \
