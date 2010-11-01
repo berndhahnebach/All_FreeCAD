@@ -18,12 +18,12 @@
 		<DeveloperDocu>This is the Vector export class</DeveloperDocu>
 		<UserDocu>This class represents a 3D float vector</UserDocu>
 	</Documentation>
-		<Methode Name="add">
+		<Methode Name="add" Const="true">
 			<Documentation>
 				<UserDocu>add(Vector) - return the sum of the two vectors</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="sub">
+		<Methode Name="sub" Const="true">
 			<Documentation>
 				<UserDocu>sub(Vector) - return the difference of the two vectors</UserDocu>
 			</Documentation>
@@ -38,17 +38,17 @@
 				<UserDocu>multiply(Float) - multiplies (scales) this vector by a single factor</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="dot">
+		<Methode Name="dot" Const="true">
 			<Documentation>
 				<UserDocu>dot(Vector) - return the dot product of the two vectors</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="cross">
+		<Methode Name="cross" Const="true">
 			<Documentation>
 				<UserDocu>cross(Vector) - return the cross product of the two vectors</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="getAngle">
+		<Methode Name="getAngle" Const="true">
 			<Documentation>
 				<UserDocu>getAngle(Vector) - return the angle in radians between the two vectors</UserDocu>
 			</Documentation>
@@ -68,12 +68,12 @@
 				<UserDocu>Deliver the projection point to a given plane</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="distanceToLine">
+		<Methode Name="distanceToLine" Const="true">
 			<Documentation>
 				<UserDocu>Deliver the distance of the point to a given line</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="distanceToPlane">
+		<Methode Name="distanceToPlane" Const="true">
 			<Documentation>
 				<UserDocu>Deliver the distance of the point to a given plane</UserDocu>
 			</Documentation>
