@@ -154,7 +154,7 @@ def main():
 
 	out.write('\n')
 	out.close()
-	sys.stdout.write("%s/Version.h written\n" % (bindir))
+	sys.stdout.write("%s/src/Build/Version.h written\n" % (bindir))
 if __name__ == "__main__":
 	main()
 
