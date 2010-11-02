@@ -215,6 +215,10 @@ void NavigationStyle::setCameraOrientation(const SbRotation& rot)
         PRIVATE(this)->focal2 = box.getCenter();
     }
 
+    // avoid to interfere with spinning (fixes #3101462)
+    if (this->isAnimating())
+        this->stopAnimating();
+
     if (PRIVATE(this)->animsensor->isScheduled()) {
         PRIVATE(this)->animsensor->unschedule();
     }
