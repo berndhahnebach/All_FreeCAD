@@ -169,13 +169,17 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		std::stringstream astream;
 		unsigned int nodeid;
 		std::vector<unsigned int> tetra_element;
+		std::vector<unsigned int> element_id;
+		element_id.clear();
 		std::vector<std::vector<unsigned int> > all_elements;
-		std::vector<std::vector<unsigned int> >::iterator an_element_iterator;
+		std::vector<std::vector<unsigned int> >::iterator all_element_iterator;
+		std::vector<unsigned int>::iterator one_element_iterator;
 		all_elements.clear();
 
 
 		MeshCore::MeshKernel aMesh;
 		MeshCore::MeshPointArray vertices;
+	 
 		
 		vertices.clear();
 		MeshCore::MeshFacetArray faces;
@@ -214,6 +218,9 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 				//we have to take care of that
 				//At a first step we only extract Quadratic Tetrahedral Elements
 				std::getline(inputfile,line2);
+				astream.str(line1.substr(8,16));
+				astream >> nodeid;element_id.push_back(nodeid);
+				astream.str("");astream.clear();
 				astream.str(line1.substr(24,32));
 				astream >> nodeid;tetra_element.push_back(nodeid);
 				astream.str("");astream.clear();
@@ -263,24 +270,33 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		
 
 		SMESHDS_Mesh* meshds = mesh->GetMeshDS();
+		int j=1;
+		for(int i=0;i<vertices.size();i++)
+		{
+			meshds->AddNodeWithID(vertices.at(i).x,vertices.at(i).y,vertices.at(i).z,j);
+			j++;
+		}
+
+		for(int i=106269;i<106270;i++)
+		{
+			meshds->AddVolumeWithID(
+			meshds->FindNode(all_elements[i][0]),
+			meshds->FindNode(all_elements[i][2]),
+			meshds->FindNode(all_elements[i][1]),
+			meshds->FindNode(all_elements[i][3]),
+			meshds->FindNode(all_elements[i][6]),
+			meshds->FindNode(all_elements[i][5]),
+			meshds->FindNode(all_elements[i][4]),
+			meshds->FindNode(all_elements[i][8]),
+			meshds->FindNode(all_elements[i][9]),
+			meshds->FindNode(all_elements[i][7]),
+			element_id[i]
+			);
+		}
 		
-		meshds->AddNodeWithID(23.0,23.66,11.99,0);
-		//(vertices[an_element_iterator->at(0)-1]).x,(vertices[an_element_iterator->at(0)-1]).y,(vertices[an_element_iterator->at(0)-1]).z);
-		mesh->ExportDAT("C:/test.dat");	
+		mesh->ExportUNV("C:/test.unv");	
 
-		/*for (iteriere ¸ber Punktliste)
-			meshds->AddNodeWithID(x,y,z,id++);
 
-		id=0
-			for (iteriere ¸ber Drei/Vierecke) {
-				if (dreieck)
-					meshds->AddFaceWithID(v1,v2,v3,id++)
-				else if (viereck)
-				meshds->AddFaceWithID(v1,v2,v3,4,id++)
-				else
-				Weiﬂ nicht, ob das vorkommt
-			}*/
-	
 
 	    aMesh.Adopt(vertices,faces);
 		//First lets get the COG and the principal axes
