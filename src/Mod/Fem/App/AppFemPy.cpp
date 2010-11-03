@@ -35,6 +35,7 @@
 #include <App/DocumentObjectPy.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Core/Evaluation.h>
+#include <Mod/Mesh/App/Core/Iterator.h>
 
 #include <SMESH_Gen.hxx>
 #include <SMESH_Group.hxx>
@@ -156,6 +157,12 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
         /* Extract Heading lines */
 		//Open the file and perform standard check for file
 		std::ifstream inputfile;
+
+		//Für Debugoutput
+		ofstream anOutput;
+		anOutput.open("c:/time_measurement.txt");
+		time_t seconds1,seconds2;
+		
 		inputfile.open(filename);
 		if (!inputfile.is_open())  //Exists...?
 		{
@@ -179,12 +186,15 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 
 		MeshCore::MeshKernel aMesh;
 		MeshCore::MeshPointArray vertices;
+
 	 
 		
 		vertices.clear();
 		MeshCore::MeshFacetArray faces;
 		faces.clear();
 		MeshCore::MeshPoint current_node;
+
+		seconds1 = time(NULL);
 		do
 		{
 			std::getline(inputfile,line1);
@@ -196,18 +206,12 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 				//take care of that as well
 				std::getline(inputfile,line2);
 				//Extract X Value
-				astream.str(line1.substr(40,56));
-				astream >> current_node.x;
-				astream.str("");astream.clear();
+				current_node.x = atof(line1.substr(40,56).c_str());
 				//Extract Y Value
-				astream.str(line1.substr(56,72));
-				astream >> current_node.y;
-				astream.str("");astream.clear();
+				current_node.y = atof(line1.substr(56,72).c_str());
 				//Extract Z Value
-				astream.str(line2.substr(8,24));
-				astream >> current_node.z;
-				astream.str("");astream.clear();
-
+				current_node.z = atof(line2.substr(8,24).c_str());
+				
 				vertices.push_back(current_node);
 			}
 			else if (line1.find("CTETRA")!= std::string::npos)
@@ -218,251 +222,253 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 				//we have to take care of that
 				//At a first step we only extract Quadratic Tetrahedral Elements
 				std::getline(inputfile,line2);
-				astream.str(line1.substr(8,16));
-				astream >> nodeid;element_id.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line1.substr(24,32));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line1.substr(32,40));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line1.substr(40,48));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line1.substr(48,56));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line1.substr(56,64));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line1.substr(64,72));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line2.substr(8,16));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line2.substr(16,24));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line2.substr(24,32));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-				astream.str("");astream.clear();
-				astream.str(line2.substr(32,40));
-				astream >> nodeid;tetra_element.push_back(nodeid);
-
+				element_id.push_back(atoi(line1.substr(8,16).c_str()));
+				tetra_element.push_back(atoi(line1.substr(24,32).c_str()));
+				tetra_element.push_back(atoi(line1.substr(32,40).c_str()));
+				tetra_element.push_back(atoi(line1.substr(40,48).c_str()));
+				tetra_element.push_back(atoi(line1.substr(48,56).c_str()));
+				tetra_element.push_back(atoi(line1.substr(56,64).c_str()));
+				tetra_element.push_back(atoi(line1.substr(64,72).c_str()));
+				tetra_element.push_back(atoi(line2.substr(8,16).c_str()));
+				tetra_element.push_back(atoi(line2.substr(16,24).c_str()));
+				tetra_element.push_back(atoi(line2.substr(24,32).c_str()));
+				tetra_element.push_back(atoi(line2.substr(32,40).c_str()));
+			
 				all_elements.push_back(tetra_element);
 			}
 			
 		}
 		while (inputfile.good());
 		inputfile.close();
+
+		seconds2 = time(NULL);
+
+		anOutput << seconds2-seconds1 <<" for Parsing the input file"<<std::endl;
 		//Now lets perform some minimization routines to min the bbox volume
 		//To evaluate the COG and principal axes we have to generate a "Mesh" out of the points
 		//therefore at least one face is required
 		MeshCore::MeshFacet aFacet;
 		aFacet._aulPoints[0] = 0;aFacet._aulPoints[1] = 1;aFacet._aulPoints[2] = 2;
 		faces.push_back(aFacet);
-
-		//Try to build up an own mesh kernel within SMESH
-		SMESH_Gen* meshgen = new SMESH_Gen();
-		SMESH_Mesh* mesh = meshgen->CreateMesh(1, true);
+		//Fill the Kernel with the structure
+	    aMesh.Assign(vertices,faces);
 		
-
-		SMESHDS_Mesh* meshds = mesh->GetMeshDS();
-		int j=1;
-		for(int i=0;i<vertices.size();i++)
-		{
-			meshds->AddNodeWithID(vertices.at(i).x,vertices.at(i).y,vertices.at(i).z,j);
-			j++;
-		}
-
-		for(int i=106269;i<106270;i++)
-		{
-			meshds->AddVolumeWithID(
-			meshds->FindNode(all_elements[i][0]),
-			meshds->FindNode(all_elements[i][2]),
-			meshds->FindNode(all_elements[i][1]),
-			meshds->FindNode(all_elements[i][3]),
-			meshds->FindNode(all_elements[i][6]),
-			meshds->FindNode(all_elements[i][5]),
-			meshds->FindNode(all_elements[i][4]),
-			meshds->FindNode(all_elements[i][8]),
-			meshds->FindNode(all_elements[i][9]),
-			meshds->FindNode(all_elements[i][7]),
-			element_id[i]
-			);
-		}
-		
-		mesh->ExportUNV("C:/test.unv");	
-
-
-
-	    aMesh.Adopt(vertices,faces);
-		//First lets get the COG and the principal axes
+		seconds1 = time(NULL);
+		//First lets get the COG and the principal axes and transfer the mesh there
 		MeshCore::MeshEigensystem pca(aMesh);
 		pca.Evaluate();
 		Base::Matrix4D Trafo =  pca.Transform();
 		aMesh.Transform(Trafo);
-		MeshCore::MeshKernel MeshatCOG;
-		MeshatCOG = aMesh;
+		///////////////////////////////////////////////////////////////////////////
+		//To get the center of gravity we have to build the inverse of the pca Matrix
 		pca.Evaluate();
 		Trafo =  pca.Transform();
 		Trafo.inverse();
 		Base::Vector3f cog;
 		cog.x = float(Trafo[0][3]);cog.y = float(Trafo[1][3]);cog.z = float(Trafo[2][3]);
+		///////////////////////////////////////////////////////////////////////////
 		//Now do Monte Carlo to minimize the BBox of the part
-		//Rotate 45°+/- around each axes and choose the settings for the min bbox
-		Base::Matrix4D trafo_xaxis,trafo_yaxis,trafo_zaxis;
-		double alpha_x=0.0,alpha_y=0.0,alpha_z=0.0,conversion_factor;
-		conversion_factor=2*PI/360.0;
-		//Fill the rotation matrices
-		trafo_xaxis[0][0]=1.0;trafo_xaxis[0][1]=0.0;trafo_xaxis[0][2]=0.0;trafo_xaxis[0][3]=0.0;
-		trafo_xaxis[1][0]=0.0;trafo_xaxis[1][1]=cos(alpha_x*conversion_factor);trafo_xaxis[1][2]=(-sin(alpha_x*conversion_factor));trafo_xaxis[1][3]=0.0;
-		trafo_xaxis[2][0]=0.0;trafo_xaxis[2][1]=sin(alpha_x*conversion_factor);trafo_xaxis[2][2]=cos(alpha_x*conversion_factor);trafo_xaxis[2][3]=0.0;
-		trafo_xaxis[3][0]=0.0;trafo_xaxis[3][1]=0.0;trafo_xaxis[3][2]=0.0;trafo_xaxis[3][3]=1.0;
-
-		trafo_yaxis[0][0]=cos(alpha_y*conversion_factor);trafo_yaxis[0][1]=0.0;trafo_yaxis[0][2]=sin(alpha_y*conversion_factor);trafo_yaxis[0][3]=0.0;
-		trafo_yaxis[1][0]=0.0;trafo_yaxis[1][1]=1.0;trafo_yaxis[1][2]=0.0;trafo_yaxis[1][3]=0.0;
-		trafo_yaxis[2][0]=(-sin(alpha_y*conversion_factor));trafo_yaxis[2][1]=0.0;trafo_yaxis[2][2]=cos(alpha_y*conversion_factor);trafo_yaxis[2][3]=0.0;
-		trafo_yaxis[3][0]=0.0;trafo_yaxis[3][1]=0.0;trafo_yaxis[3][2]=0.0;trafo_yaxis[3][3]=1.0;
+		//Use Quaternions for the rotation stuff
+		Base::Rotation rotatex,rotatey,rotatez;
+		const Base::Vector3d rotate_axis_x(1.0,0.0,0.0),rotate_axis_y(0.0,1.0,0.0),rotate_axis_z(0.0,0.0,1.0);
 		
-		trafo_zaxis[0][0]=cos(alpha_z*conversion_factor);trafo_zaxis[0][1]=(-sin(alpha_z*conversion_factor));trafo_zaxis[0][2]=0.0;trafo_zaxis[0][3]=0.0;
-		trafo_zaxis[1][0]=sin(alpha_z*conversion_factor);trafo_zaxis[1][1]=cos(alpha_z*conversion_factor);trafo_zaxis[1][2]=0.0;trafo_zaxis[1][3]=0.0;
-		trafo_zaxis[2][0]=0.0;trafo_zaxis[2][1]=0.0;trafo_zaxis[2][2]=1.0;trafo_zaxis[2][3]=0.0;
-		trafo_zaxis[3][0]=0.0;trafo_zaxis[3][1]=0.0;trafo_zaxis[3][2]=0.0;trafo_zaxis[3][3]=1.0;
-
-
+		//Rotate around each axes and choose the settings for the min bbox
+		Base::Matrix4D final_trafo;
 		Base::BoundBox3f aBBox,min_bbox;
-		unsigned int ix,iy,iz,perfect_ix,perfect_iy,perfect_iz;
-		float volumeBBOX,min_volumeBBOX;
-		aBBox = aMesh.GetBoundBox();
+
+		double alpha_x=0.0,alpha_y=0.0,alpha_z=0.0;
+		double perfect_ax=0.0,perfect_ay=0.0,perfect_az=0.0;
+		double perfect_ax_fine,perfect_ay_fine,perfect_az_fine,volumeBBOX,min_volumeBBOX;
+
 		//Get the current min_volumeBBOX and look if we find a lower one
-		min_volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
-		//as we would like to look at all possibilities for the bbox for a rotation around z-axis
-		//we start at z=-45°
-		alpha_x=-45.0;alpha_y=-45.0;alpha_z=-45.0;
-		//Fill the rotation matrices
-		trafo_xaxis[0][0]=1.0;trafo_xaxis[0][1]=0.0;trafo_xaxis[0][2]=0.0;trafo_xaxis[0][3]=0.0;
-		trafo_xaxis[1][0]=0.0;trafo_xaxis[1][1]=cos(alpha_x*conversion_factor);trafo_xaxis[1][2]=(-sin(alpha_x*conversion_factor));trafo_xaxis[1][3]=0.0;
-		trafo_xaxis[2][0]=0.0;trafo_xaxis[2][1]=sin(alpha_x*conversion_factor);trafo_xaxis[2][2]=cos(alpha_x*conversion_factor);trafo_xaxis[2][3]=0.0;
-		trafo_xaxis[3][0]=0.0;trafo_xaxis[3][1]=0.0;trafo_xaxis[3][2]=0.0;trafo_xaxis[3][3]=1.0;
-		trafo_yaxis[0][0]=cos(alpha_y*conversion_factor);trafo_yaxis[0][1]=0.0;trafo_yaxis[0][2]=sin(alpha_y*conversion_factor);trafo_yaxis[0][3]=0.0;
-		trafo_yaxis[1][0]=0.0;trafo_yaxis[1][1]=1.0;trafo_yaxis[1][2]=0.0;trafo_yaxis[1][3]=0.0;
-		trafo_yaxis[2][0]=(-sin(alpha_y*conversion_factor));trafo_yaxis[2][1]=0.0;trafo_yaxis[2][2]=cos(alpha_y*conversion_factor);trafo_yaxis[2][3]=0.0;
-		trafo_yaxis[3][0]=0.0;trafo_yaxis[3][1]=0.0;trafo_yaxis[3][2]=0.0;trafo_yaxis[3][3]=1.0;
-		trafo_zaxis[0][0]=cos(alpha_z*conversion_factor);trafo_zaxis[0][1]=(-sin(alpha_z*conversion_factor));trafo_zaxis[0][2]=0.0;trafo_zaxis[0][3]=0.0;
-		trafo_zaxis[1][0]=sin(alpha_z*conversion_factor);trafo_zaxis[1][1]=cos(alpha_z*conversion_factor);trafo_zaxis[1][2]=0.0;trafo_zaxis[1][3]=0.0;
-		trafo_zaxis[2][0]=0.0;trafo_zaxis[2][1]=0.0;trafo_zaxis[2][2]=1.0;trafo_zaxis[2][3]=0.0;
-		trafo_zaxis[3][0]=0.0;trafo_zaxis[3][1]=0.0;trafo_zaxis[3][2]=0.0;trafo_zaxis[3][3]=1.0;
-		//aMesh.Transform(trafo_xaxis);aMesh.Transform(trafo_yaxis);
-		aMesh.Transform(trafo_zaxis);
 		aBBox = aMesh.GetBoundBox();
-		volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
-		//Now lets go in 1° Steps and do the rotations
-		alpha_z=1.0;
-		//Update the rotation matrices
-		trafo_zaxis[0][0]=cos(alpha_z*conversion_factor);trafo_zaxis[0][1]=(-sin(alpha_z*conversion_factor));trafo_zaxis[0][2]=0.0;trafo_zaxis[0][3]=0.0;
-		trafo_zaxis[1][0]=sin(alpha_z*conversion_factor);trafo_zaxis[1][1]=cos(alpha_z*conversion_factor);trafo_zaxis[1][2]=0.0;trafo_zaxis[1][3]=0.0;
-		trafo_zaxis[2][0]=0.0;trafo_zaxis[2][1]=0.0;trafo_zaxis[2][2]=1.0;trafo_zaxis[2][3]=0.0;
-		trafo_zaxis[3][0]=0.0;trafo_zaxis[3][1]=0.0;trafo_zaxis[3][2]=0.0;trafo_zaxis[3][3]=1.0;
-		ix=1;iy=1;iz=1;
-		do 
+		min_volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
+
+	
+		MeshCore::MeshKernel atempkernel;
+		//rotate now each 20° then a minimum is found continue with 1°
+		double it_step_coarse = 2.0*PI/18.0;
+		double it_step_fine = 2.0*PI/360.0;
+		for(alpha_x=0.0;alpha_x<(2.0*PI);alpha_x=alpha_x+it_step_coarse)
 		{
-			aMesh.Transform(trafo_zaxis);
-			aBBox = aMesh.GetBoundBox();
-			volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
-			if (volumeBBOX < min_volumeBBOX)
-			{ 
-				min_volumeBBOX=volumeBBOX;
-				perfect_ix=ix;
-				perfect_iy=iy;
-				perfect_iz=iz;
+			rotatex.setValue(rotate_axis_x,alpha_x);
+			for(alpha_y=0.0;alpha_y<(2.0*PI);alpha_y=alpha_y+it_step_coarse)
+			{
+				rotatey.setValue(rotate_axis_y,alpha_y);
+				for(alpha_z=0.0;alpha_z<(2.0*PI);alpha_z=alpha_z+it_step_coarse)
+				{
+					rotatez.setValue(rotate_axis_z,alpha_z);
+					(rotatex*rotatey*rotatez).getValue(final_trafo);
+					atempkernel = aMesh;
+					atempkernel.Transform(final_trafo);
+					aBBox = atempkernel.GetBoundBox();
+					volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
+					if (volumeBBOX < min_volumeBBOX)
+					{ 
+						min_volumeBBOX=volumeBBOX;
+						perfect_ax=alpha_x;
+						perfect_ay=alpha_y;
+						perfect_az=alpha_z;
+					}
+				}
 			}
-			iz++;
-		} while (iz<=90);
-		//Transform Original Mesh to min BBOX position
-		alpha_z = -45.0 + perfect_iz;
-		trafo_zaxis[0][0]=cos(alpha_z*conversion_factor);trafo_zaxis[0][1]=(-sin(alpha_z*conversion_factor));trafo_zaxis[0][2]=0.0;trafo_zaxis[0][3]=0.0;
-		trafo_zaxis[1][0]=sin(alpha_z*conversion_factor);trafo_zaxis[1][1]=cos(alpha_z*conversion_factor);trafo_zaxis[1][2]=0.0;trafo_zaxis[1][3]=0.0;
-		trafo_zaxis[2][0]=0.0;trafo_zaxis[2][1]=0.0;trafo_zaxis[2][2]=1.0;trafo_zaxis[2][3]=0.0;
-		trafo_zaxis[3][0]=0.0;trafo_zaxis[3][1]=0.0;trafo_zaxis[3][2]=0.0;trafo_zaxis[3][3]=1.0;
-		MeshatCOG.Transform(trafo_zaxis);
+		}
+		//Now lets continue with the fine steps....
+		perfect_ax_fine=perfect_ax;perfect_ay_fine=perfect_ay,perfect_az_fine=perfect_az;
+
+		for(alpha_x=perfect_ax-it_step_coarse;alpha_x<(perfect_ax+it_step_coarse);alpha_x=alpha_x+it_step_fine)
+		{
+			rotatex.setValue(rotate_axis_x,alpha_x);
+			for(alpha_y=perfect_ay-it_step_coarse;alpha_y<(perfect_ay+it_step_coarse);alpha_y=alpha_y+it_step_fine)
+			{
+				rotatey.setValue(rotate_axis_y,alpha_y);
+				for(alpha_z=perfect_az-it_step_coarse;alpha_z<(perfect_az+it_step_coarse);alpha_z=alpha_z+it_step_fine)
+				{
+					rotatez.setValue(rotate_axis_z,alpha_z);
+					(rotatex*rotatey*rotatez).getValue(final_trafo);
+					atempkernel = aMesh;
+					atempkernel.Transform(final_trafo);
+					aBBox = atempkernel.GetBoundBox();
+					volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
+					if (volumeBBOX < min_volumeBBOX)
+					{ 
+						min_volumeBBOX=volumeBBOX;
+						perfect_ax_fine=alpha_x;
+						perfect_ay_fine=alpha_y;
+						perfect_az_fine=alpha_z;
+					}
+				}
+			}
+		}
+		//Free Memory
+		atempkernel.Clear();
+
+		//Transform the mesh to the perfect position right now
+		rotatex.setValue(rotate_axis_x,perfect_ax_fine);
+		rotatey.setValue(rotate_axis_y,perfect_ay_fine);
+		rotatez.setValue(rotate_axis_z,perfect_az_fine);
+		(rotatex*rotatey*rotatez).getValue(final_trafo);
+		aMesh.Transform(final_trafo);
+
+		anOutput << "perfect angles " << perfect_ax_fine << "," << perfect_ay_fine << "," << perfect_az_fine << std::endl;
+
 
 		//Move Mesh to stay fully in the positive octant
-		aBBox = MeshatCOG.GetBoundBox();
+		aBBox = aMesh.GetBoundBox();
 		//Get Distance vector from current lower left corner of BBox to origin
 		Base::Vector3f dist_vector;
 		dist_vector.x = -aBBox.MinX;dist_vector.y=-aBBox.MinY;dist_vector.z=-aBBox.MinZ;
-		Base::Matrix4D trans_matrix;
-		trans_matrix[0][0]=1.0;trans_matrix[0][1]=0.0;trans_matrix[0][2]=0.0;trans_matrix[0][3]=dist_vector.x;
-		trans_matrix[1][0]=0.0;trans_matrix[1][1]=1.0;trans_matrix[1][2]=0.0;trans_matrix[1][3]=dist_vector.y;
-		trans_matrix[2][0]=0.0;trans_matrix[2][1]=0.0;trans_matrix[2][2]=1.0;trans_matrix[2][3]=dist_vector.z;
-		trans_matrix[3][0]=0.0;trans_matrix[3][1]=0.0;trans_matrix[3][2]=0.0;trans_matrix[3][3]=1.0;
-		MeshatCOG.Transform(trans_matrix);
-
+		Base::Matrix4D trans_matrix(
+			float(1.0),float(0.0),float(0.0),dist_vector.x,
+			float(0.0),float(1.0),float(0.0),dist_vector.y,
+			float(0.0),float(0.0),float(1.0),dist_vector.z,
+			float(0.0),float(0.0),float(0.0),float(1.0));
+		aMesh.Transform(trans_matrix);
+		seconds2=time(NULL);
+		anOutput << seconds2-seconds1 << " seconds for the min bounding box stuff" << std::endl;
 		
+		seconds1 = time(NULL);
+		////Try to build up an own mesh kernel within SMESH to export the rotated
+		SMESH_Gen* meshgen = new SMESH_Gen();
+		SMESH_Mesh* mesh = meshgen->CreateMesh(1, true);
+		SMESHDS_Mesh* meshds = mesh->GetMeshDS();
+		
+		MeshCore::MeshPointIterator anodeiterator(aMesh);
+		int j=1;
+		for(anodeiterator.Begin(); anodeiterator.More(); anodeiterator.Next())
+		{
+			meshds->AddNodeWithID((*anodeiterator).x,(*anodeiterator).y,(*anodeiterator).z,j);
+			j++;
+		}
+
+		for(int i=0;i<all_elements.size();i++)
+		{
+			//Die Reihenfolge wie hier die Elemente hinzugefügt werden ist sehr wichtig. 
+			//Ansonsten ist eine konsistente Datenstruktur nicht möglich
+			meshds->AddVolumeWithID(
+				meshds->FindNode(all_elements[i][0]),
+				meshds->FindNode(all_elements[i][2]),
+				meshds->FindNode(all_elements[i][1]),
+				meshds->FindNode(all_elements[i][3]),
+				meshds->FindNode(all_elements[i][6]),
+				meshds->FindNode(all_elements[i][5]),
+				meshds->FindNode(all_elements[i][4]),
+				meshds->FindNode(all_elements[i][9]),
+				meshds->FindNode(all_elements[i][7]),
+				meshds->FindNode(all_elements[i][8]),
+				element_id[i]
+			);
+		}
+
+		mesh->ExportUNV("C:/test_after_fine_tuning.unv");	
+		seconds2 = time(NULL);
+		anOutput << seconds2-seconds1 << " seconds for the Mesh Export" << std::endl;
 
 		//Calculate Mesh Volume
 		//For an accurate Volume Calculation of a quadratic Tetrahedron
 		//we have to calculate the Volume of 8 Sub-Tetrahedrons
 		Base::Vector3f a,b,c,a_b_product;
 		double volume = 0.0;
-		//Calc Volume with 1/6 * |(a x b) * c|
-		//for(an_element_iterator = all_elements.begin();an_element_iterator != all_elements.end();an_element_iterator++)
-		//{
-		//	//1,5,8,7
-		//	a = vertices[an_element_iterator->at(4)-1]-vertices[an_element_iterator->at(0)-1];
-		//	b = vertices[an_element_iterator->at(7)-1]-vertices[an_element_iterator->at(0)-1];
-		//	c = vertices[an_element_iterator->at(6)-1]-vertices[an_element_iterator->at(0)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//	//5,9,8,7
-		//	a = vertices[an_element_iterator->at(8)-1]-vertices[an_element_iterator->at(4)-1];
-		//	b = vertices[an_element_iterator->at(7)-1]-vertices[an_element_iterator->at(4)-1];
-		//	c = vertices[an_element_iterator->at(6)-1]-vertices[an_element_iterator->at(4)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//	//5,2,9,7
-		//	a = vertices[an_element_iterator->at(1)-1]-vertices[an_element_iterator->at(4)-1];
-		//	b = vertices[an_element_iterator->at(8)-1]-vertices[an_element_iterator->at(4)-1];
-		//	c = vertices[an_element_iterator->at(6)-1]-vertices[an_element_iterator->at(4)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//	//2,6,9,7
-		//	a = vertices[an_element_iterator->at(5)-1]-vertices[an_element_iterator->at(1)-1];
-		//	b = vertices[an_element_iterator->at(8)-1]-vertices[an_element_iterator->at(1)-1];
-		//	c = vertices[an_element_iterator->at(6)-1]-vertices[an_element_iterator->at(1)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//	//9,6,10,7
-		//	a = vertices[an_element_iterator->at(5)-1]-vertices[an_element_iterator->at(8)-1];
-		//	b = vertices[an_element_iterator->at(9)-1]-vertices[an_element_iterator->at(8)-1];
-		//	c = vertices[an_element_iterator->at(6)-1]-vertices[an_element_iterator->at(8)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//	//6,3,10,7
-		//	a = vertices[an_element_iterator->at(2)-1]-vertices[an_element_iterator->at(5)-1];
-		//	b = vertices[an_element_iterator->at(9)-1]-vertices[an_element_iterator->at(5)-1];
-		//	c = vertices[an_element_iterator->at(6)-1]-vertices[an_element_iterator->at(5)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//	//8,9,10,7
-		//	a = vertices[an_element_iterator->at(8)-1]-vertices[an_element_iterator->at(7)-1];
-		//	b = vertices[an_element_iterator->at(9)-1]-vertices[an_element_iterator->at(7)-1];
-		//	c = vertices[an_element_iterator->at(6)-1]-vertices[an_element_iterator->at(7)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//	//8,9,10,4
-		//	a = vertices[an_element_iterator->at(8)-1]-vertices[an_element_iterator->at(7)-1];
-		//	b = vertices[an_element_iterator->at(9)-1]-vertices[an_element_iterator->at(7)-1];
-		//	c = vertices[an_element_iterator->at(3)-1]-vertices[an_element_iterator->at(7)-1];
-		//	a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-		//	volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-		//
-		//}
 
+		seconds1 = time(NULL);
+		//Calc Volume with 1/6 * |(a x b) * c|
+		for(all_element_iterator = all_elements.begin();all_element_iterator != all_elements.end();all_element_iterator++)
+		{
+			//1,5,8,7
+			a = vertices[all_element_iterator->at(4)-1]-vertices[all_element_iterator->at(0)-1];
+			b = vertices[all_element_iterator->at(7)-1]-vertices[all_element_iterator->at(0)-1];
+			c = vertices[all_element_iterator->at(6)-1]-vertices[all_element_iterator->at(0)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//5,9,8,7
+			a = vertices[all_element_iterator->at(8)-1]-vertices[all_element_iterator->at(4)-1];
+			b = vertices[all_element_iterator->at(7)-1]-vertices[all_element_iterator->at(4)-1];
+			c = vertices[all_element_iterator->at(6)-1]-vertices[all_element_iterator->at(4)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//5,2,9,7
+			a = vertices[all_element_iterator->at(1)-1]-vertices[all_element_iterator->at(4)-1];
+			b = vertices[all_element_iterator->at(8)-1]-vertices[all_element_iterator->at(4)-1];
+			c = vertices[all_element_iterator->at(6)-1]-vertices[all_element_iterator->at(4)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//2,6,9,7
+			a = vertices[all_element_iterator->at(5)-1]-vertices[all_element_iterator->at(1)-1];
+			b = vertices[all_element_iterator->at(8)-1]-vertices[all_element_iterator->at(1)-1];
+			c = vertices[all_element_iterator->at(6)-1]-vertices[all_element_iterator->at(1)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//9,6,10,7
+			a = vertices[all_element_iterator->at(5)-1]-vertices[all_element_iterator->at(8)-1];
+			b = vertices[all_element_iterator->at(9)-1]-vertices[all_element_iterator->at(8)-1];
+			c = vertices[all_element_iterator->at(6)-1]-vertices[all_element_iterator->at(8)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//6,3,10,7
+			a = vertices[all_element_iterator->at(2)-1]-vertices[all_element_iterator->at(5)-1];
+			b = vertices[all_element_iterator->at(9)-1]-vertices[all_element_iterator->at(5)-1];
+			c = vertices[all_element_iterator->at(6)-1]-vertices[all_element_iterator->at(5)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//8,9,10,7
+			a = vertices[all_element_iterator->at(8)-1]-vertices[all_element_iterator->at(7)-1];
+			b = vertices[all_element_iterator->at(9)-1]-vertices[all_element_iterator->at(7)-1];
+			c = vertices[all_element_iterator->at(6)-1]-vertices[all_element_iterator->at(7)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//8,9,10,4
+			a = vertices[all_element_iterator->at(8)-1]-vertices[all_element_iterator->at(7)-1];
+			b = vertices[all_element_iterator->at(9)-1]-vertices[all_element_iterator->at(7)-1];
+			c = vertices[all_element_iterator->at(3)-1]-vertices[all_element_iterator->at(7)-1];
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
 		
+		}
+		seconds2=time(NULL);
+		anOutput << seconds2-seconds1 << " seconds for Volume Calculation  " << "Volumen " << volume/1000.0/1000.0/1000.0 << " in m^3" << std::endl;
+		anOutput  << "Volumen der BBox" << min_volumeBBOX/1000.0/1000.0/1000.0 << std::endl;
+		anOutput << "Fly to Buy Ratio: " << min_volumeBBOX / volume << std::endl;
+		anOutput.close();
 		
 	} PY_CATCH;
 
