@@ -5,6 +5,16 @@
 #    MESSAGE(STATUS "Current revision is ${Project_WC_REVISION}")
 #ENDIF(Subversion_FOUND)
 
+
+#add_custom_target(Version ALL
+#        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/Tools/SubWCRev.py
+#          --srcdir=${CMAKE_SOURCE_DIR} --bindir=${CMAKE_BINARY_DIR}
+#          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#    DEPENDS Version.h.in
+#    COMMENT Building Version.h out of Version.h.in
+#)
+
+
 if (WIN32)
     # TortoiseSVN
     FIND_PROGRAM(Subversion_WCREF_EXECUTABLE SubWCRev)
