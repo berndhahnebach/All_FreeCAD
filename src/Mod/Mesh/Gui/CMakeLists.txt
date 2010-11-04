@@ -21,6 +21,7 @@ set(Mesh_MOC_HDRS
     DlgRegularSolidImp.h
     DlgSettingsMeshView.h
     DlgSmoothing.h
+	MeshEditor.h
     PropertyEditorMesh.h
     RemoveComponents.h
 )
@@ -98,6 +99,8 @@ SET(MeshGui_SRCS
     Doxygen.cpp
     PreCompiled.cpp
     PreCompiled.h
+	MeshEditor.cpp
+	MeshEditor.h
     PropertyEditorMesh.cpp
     PropertyEditorMesh.h
     Workbench.cpp

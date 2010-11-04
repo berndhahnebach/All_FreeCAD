@@ -271,16 +271,17 @@ void MeshObject::RestoreDocFile(Base::Reader &reader)
     load(reader);
 }
 
-void MeshObject::save(const char* file, MeshCore::MeshIO::Format f) const
+void MeshObject::save(const char* file, MeshCore::MeshIO::Format f,
+                      const MeshCore::Material* mat) const
 {
     if (this->_Mtrx != Base::Matrix4D()) {
         MeshCore::MeshKernel kernel(this->_kernel);
         kernel.Transform(this->_Mtrx);
-        MeshCore::MeshOutput aWriter(kernel);
+        MeshCore::MeshOutput aWriter(kernel, mat);
         aWriter.SaveAny(file, f);
     }
     else {
-        MeshCore::MeshOutput aWriter(this->_kernel);
+        MeshCore::MeshOutput aWriter(this->_kernel, mat);
         aWriter.SaveAny(file, f);
     }
 }
@@ -380,6 +381,11 @@ void MeshObject::addFacet(const MeshCore::MeshGeomFacet& facet)
 }
 
 void MeshObject::addFacets(const std::vector<MeshCore::MeshGeomFacet>& facets)
+{
+    _kernel.AddFacets(facets);
+}
+
+void MeshObject::addFacets(const std::vector<MeshCore::MeshFacet> &facets)
 {
     _kernel.AddFacets(facets);
 }

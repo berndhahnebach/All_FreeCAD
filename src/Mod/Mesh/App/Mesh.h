@@ -134,7 +134,8 @@ public:
     void SaveDocFile (Base::Writer &writer) const;
     void Restore(Base::XMLReader &reader);
     void RestoreDocFile(Base::Reader &reader);
-    void save(const char* file,MeshCore::MeshIO::Format f=MeshCore::MeshIO::Undefined) const;
+    void save(const char* file,MeshCore::MeshIO::Format f=MeshCore::MeshIO::Undefined,
+        const MeshCore::Material* mat = 0) const;
     void save(std::ostream&) const;
     bool load(const char* file);
     void load(std::istream&);
@@ -144,6 +145,7 @@ public:
     //@{
     void addFacet(const MeshCore::MeshGeomFacet& facet);
     void addFacets(const std::vector<MeshCore::MeshGeomFacet>& facets);
+    void addFacets(const std::vector<MeshCore::MeshFacet> &facets);
     void addFacets(const std::vector<MeshCore::MeshFacet> &facets,
                    const std::vector<Base::Vector3f>& points);
     void addFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
