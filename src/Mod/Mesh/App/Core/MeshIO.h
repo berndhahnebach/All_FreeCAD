@@ -52,7 +52,19 @@ namespace MeshIO {
         PLY,
         PY
     };
+    enum Binding {
+        OVERALL,
+        PER_VERTEX,
+        PER_FACE
+    };
 }
+
+struct MeshExport Material
+{
+    Material() : binding(MeshIO::OVERALL) {}
+    MeshIO::Binding binding;
+    std::vector<App::Color> diffuseColor;
+};
 
 /**
  * The MeshInput class is able to read a mesh object from a input stream
@@ -100,7 +112,9 @@ protected:
 class MeshExport MeshOutput
 {
 public:
-    MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
+    MeshOutput (const MeshKernel &rclM) : _rclMesh(rclM), _material(0){}
+    MeshOutput (const MeshKernel &rclM, const Material* m)
+        : _rclMesh(rclM), _material(m){}
     virtual ~MeshOutput (void) { }
     /** Set custom data to the header of a binary STL.
      * If the data exceeds 80 characters the the characters too much
@@ -138,6 +152,7 @@ public:
 
 protected:
     const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
+    const Material* _material;
     static std::string stl_header;
 };
 

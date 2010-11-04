@@ -62,7 +62,7 @@ namespace MeshGui {
 class SoFCMeshObjectNode;
 class SoFCMeshObjectShape;
 
-class ViewProviderMeshBuilder : public Gui::ViewProviderBuilder
+class MeshGuiExport ViewProviderMeshBuilder : public Gui::ViewProviderBuilder
 {
 public:
     ViewProviderMeshBuilder(){}

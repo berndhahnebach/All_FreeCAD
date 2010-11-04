@@ -11,6 +11,7 @@ BUILT_SOURCES=\
 		moc_DlgRegularSolidImp.cpp \
 		moc_DlgSettingsMeshView.cpp \
 		moc_DlgSmoothing.cpp \
+		moc_MeshEditor.cpp \
 		moc_PropertyEditorMesh.cpp \
 		moc_RemoveComponents.cpp \
 		qrc_Mesh.cpp 
@@ -26,6 +27,8 @@ libMeshGui_la_SOURCES=\
 		DlgSmoothing.cpp \
 		DlgSmoothing.h \
 		Doxygen.cpp \
+		MeshEditor.cpp \
+		MeshEditor.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PropertyEditorMesh.cpp \

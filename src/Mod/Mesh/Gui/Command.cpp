@@ -68,6 +68,7 @@
 #include "DlgSmoothing.h"
 #include "ViewProviderMeshFaceSet.h"
 #include "ViewProviderCurvature.h"
+#include "MeshEditor.h"
 
 using namespace Mesh;
 
@@ -793,6 +794,52 @@ bool CmdMeshPolySelect::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
+DEF_STD_CMD_A(CmdMeshAddFacet);
+
+CmdMeshAddFacet::CmdMeshAddFacet()
+  : Command("Mesh_AddFacet")
+{
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Add triangle");
+    sToolTipText  = QT_TR_NOOP("Add triangle manually to a mesh");
+    sWhatsThis    = "Mesh_AddFacet";
+    sStatusTip    = QT_TR_NOOP("Add triangle manually to a mesh");
+}
+
+void CmdMeshAddFacet::activated(int iMsg)
+{
+    std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it) {
+        Gui::Document* doc = Gui::Application::Instance->getDocument((*it)->getDocument());
+        Gui::MDIView* view = doc->getActiveView();
+        if (view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+            MeshGui::MeshFaceAddition* edit = new MeshGui::MeshFaceAddition
+                (static_cast<Gui::View3DInventor*>(view));
+            edit->startEditing(static_cast<MeshGui::ViewProviderMesh*>
+                (Gui::Application::Instance->getViewProvider(*it)));
+            break;
+        }
+    }
+}
+
+bool CmdMeshAddFacet::isActive(void)
+{
+    // Check for the selected mesh feature (all Mesh types)
+    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) != 1)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------
+
 DEF_STD_CMD_A(CmdMeshPolyCut);
 
 CmdMeshPolyCut::CmdMeshPolyCut()
@@ -1435,6 +1482,7 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshDemolding());
   rcCmdMgr.addCommand(new CmdMeshPolySegm());
   rcCmdMgr.addCommand(new CmdMeshPolySelect());
+  rcCmdMgr.addCommand(new CmdMeshAddFacet());
   rcCmdMgr.addCommand(new CmdMeshPolyCut());
   rcCmdMgr.addCommand(new CmdMeshPolySplit());
   rcCmdMgr.addCommand(new CmdMeshToolMesh());

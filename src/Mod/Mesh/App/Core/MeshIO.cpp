@@ -523,7 +523,7 @@ bool MeshInput::LoadPLY (std::istream &inp)
         return false; // wrong header
 
     std::string line, element;
-    bool xyz_float=false,xyz_double=false;
+    bool xyz_float=false,xyz_double=false,rgb_value=false;
     while (std::getline(inp, line)) {
         std::istringstream str(line);
         str.unsetf(std::ios_base::skipws);
@@ -599,6 +599,9 @@ bool MeshInput::LoadPLY (std::istream &inp)
                     else if (type == "double" || type == "float64")
                         xyz_double = true;
                 }
+                else if (name == "red") {
+                    rgb_value = true;
+                }
             }
             else if (element == "face") {
             }
@@ -642,17 +645,21 @@ bool MeshInput::LoadPLY (std::istream &inp)
             is.setByteOrder(Base::Stream::LittleEndian);
         else
             is.setByteOrder(Base::Stream::BigEndian);
+        int r,g,b;
         if (xyz_float) {
             Base::Vector3f pt;
             for (std::size_t i = 0; i < v_count; i++) {
                 is >> pt.x >> pt.y >> pt.z;
                 meshPoints.push_back(pt);
+                if (rgb_value)
+                    is >> r >> g >> b;
             }
         }
         else if (xyz_double) {
             Base::Vector3d pt;
             for (std::size_t i = 0; i < v_count; i++) {
                 is >> pt.x >> pt.y >> pt.z;
+                is >> r >> g >> b;
                 meshPoints.push_back(Base::Vector3f((float)pt.x,(float)pt.y,(float)pt.z));
             }
         }
@@ -1480,14 +1487,21 @@ bool MeshOutput::SavePLY (std::ostream &out) const
     std::size_t f_count = rFacets.size();
     if (!out || out.bad() == true)
         return false;
+    bool saveVertexColor = (_material && _material->binding == MeshIO::PER_VERTEX
+        && _material->diffuseColor.size() == rPoints.size());
     out << "ply" << std::endl
         << "format binary_little_endian 1.0" << std::endl
         << "comment Created by FreeCAD <http://free-cad.sourceforge.net>" << std::endl
         << "element vertex " << v_count << std::endl
         << "property float32 x" << std::endl
         << "property float32 y" << std::endl
-        << "property float32 z" << std::endl
-        << "element face " << f_count << std::endl
+        << "property float32 z" << std::endl;
+    if (saveVertexColor) {
+        out << "property uchar red" << std::endl
+            << "property uchar green" << std::endl
+            << "property uchar blue" << std::endl;
+    }
+    out << "element face " << f_count << std::endl
         << "property list uchar int vertex_index" << std::endl
         << "end_header" << std::endl;
 
@@ -1497,6 +1511,13 @@ bool MeshOutput::SavePLY (std::ostream &out) const
     for (std::size_t i = 0; i < v_count; i++) {
         const MeshPoint& p = rPoints[i];
         os << p.x << p.y << p.z;
+        if (saveVertexColor) {
+            const App::Color& c = _material->diffuseColor[i];
+            int r = (int)(255.0f * c.r);
+            int g = (int)(255.0f * c.g);
+            int b = (int)(255.0f * c.b);
+            os << r << g << b;
+        }
     }
     unsigned char n = 3;
     int f1, f2, f3;
