@@ -149,13 +149,12 @@ static PyObject * importer(PyObject *self, PyObject *args)
 
 static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 {
-	const char* filename;
-	if (!PyArg_ParseTuple(args, "s",&filename))
+	const char* filename_input, *filename_output;
+	if (!PyArg_ParseTuple(args, "ss",&filename_input,&filename_output))
 		return NULL;
 
 	PY_TRY {
-        /* Extract Heading lines */
-		//Open the file and perform standard check for file
+
 		std::ifstream inputfile;
 
 		//Für Debugoutput
@@ -163,7 +162,7 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		anOutput.open("c:/time_measurement.txt");
 		time_t seconds1,seconds2;
 		
-		inputfile.open(filename);
+		inputfile.open(filename_input);
 		if (!inputfile.is_open())  //Exists...?
 		{
 			std::cerr << "File not found. Exiting..." << std::endl;
@@ -182,13 +181,8 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		std::vector<std::vector<unsigned int> >::iterator all_element_iterator;
 		std::vector<unsigned int>::iterator one_element_iterator;
 		all_elements.clear();
-
-
 		MeshCore::MeshKernel aMesh;
 		MeshCore::MeshPointArray vertices;
-
-	 
-		
 		vertices.clear();
 		MeshCore::MeshFacetArray faces;
 		faces.clear();
@@ -276,9 +270,8 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		Base::Matrix4D final_trafo;
 		Base::BoundBox3f aBBox,min_bbox;
 
-		double alpha_x=0.0,alpha_y=0.0,alpha_z=0.0;
-		double perfect_ax=0.0,perfect_ay=0.0,perfect_az=0.0;
-		double perfect_ax_fine,perfect_ay_fine,perfect_az_fine,volumeBBOX,min_volumeBBOX;
+
+		double volumeBBOX,min_volumeBBOX;
 
 		//Get the current min_volumeBBOX and look if we find a lower one
 		aBBox = aMesh.GetBoundBox();
@@ -286,71 +279,69 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 
 	
 		MeshCore::MeshKernel atempkernel;
-		//rotate now each 20° then a minimum is found continue with 1°
-		double it_step_coarse = 2.0*PI/18.0;
-		double it_step_fine = 2.0*PI/360.0;
-		for(alpha_x=0.0;alpha_x<(2.0*PI);alpha_x=alpha_x+it_step_coarse)
-		{
-			rotatex.setValue(rotate_axis_x,alpha_x);
-			for(alpha_y=0.0;alpha_y<(2.0*PI);alpha_y=alpha_y+it_step_coarse)
-			{
-				rotatey.setValue(rotate_axis_y,alpha_y);
-				for(alpha_z=0.0;alpha_z<(2.0*PI);alpha_z=alpha_z+it_step_coarse)
-				{
-					rotatez.setValue(rotate_axis_z,alpha_z);
-					(rotatex*rotatey*rotatez).getValue(final_trafo);
-					atempkernel = aMesh;
-					atempkernel.Transform(final_trafo);
-					aBBox = atempkernel.GetBoundBox();
-					volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
-					if (volumeBBOX < min_volumeBBOX)
-					{ 
-						min_volumeBBOX=volumeBBOX;
-						perfect_ax=alpha_x;
-						perfect_ay=alpha_y;
-						perfect_az=alpha_z;
-					}
-				}
-			}
-		}
-		//Now lets continue with the fine steps....
-		perfect_ax_fine=perfect_ax;perfect_ay_fine=perfect_ay,perfect_az_fine=perfect_az;
 
-		for(alpha_x=perfect_ax-it_step_coarse;alpha_x<(perfect_ax+it_step_coarse);alpha_x=alpha_x+it_step_fine)
+		float it_steps=10.0;
+		bool minpositionfound=false,firstiteration=true;
+		double step_size;
+		double alpha_x=0.0,alpha_y=0.0,alpha_z=0.0;
+		double perfect_ax=0.0,perfect_ay=0.0,perfect_az=0.0;
+
+		//Do a Monte Carlo approach and start from the Principal Axis System
+		//and rotate +/- 60° around each axis in a first iteration
+		double	angle_range_min_x=-PI/3.0,angle_range_max_x=PI/3.0,
+				angle_range_min_y=-PI/3.0,angle_range_max_y=PI/3.0,
+				angle_range_min_z=-PI/3.0,angle_range_max_z=PI/3.0;
+		
+		for (step_size = (2.0*PI/it_steps);step_size>(2.0*PI/360.0);step_size=(2.0*PI/it_steps))
 		{
-			rotatex.setValue(rotate_axis_x,alpha_x);
-			for(alpha_y=perfect_ay-it_step_coarse;alpha_y<(perfect_ay+it_step_coarse);alpha_y=alpha_y+it_step_fine)
+			for(alpha_x=angle_range_min_x;alpha_x<angle_range_max_x;alpha_x=alpha_x+step_size)
 			{
-				rotatey.setValue(rotate_axis_y,alpha_y);
-				for(alpha_z=perfect_az-it_step_coarse;alpha_z<(perfect_az+it_step_coarse);alpha_z=alpha_z+it_step_fine)
+				rotatex.setValue(rotate_axis_x,alpha_x);
+				for(alpha_y=angle_range_min_y;alpha_y<angle_range_max_y;alpha_y=alpha_y+step_size)
 				{
-					rotatez.setValue(rotate_axis_z,alpha_z);
-					(rotatex*rotatey*rotatez).getValue(final_trafo);
-					atempkernel = aMesh;
-					atempkernel.Transform(final_trafo);
-					aBBox = atempkernel.GetBoundBox();
-					volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
-					if (volumeBBOX < min_volumeBBOX)
-					{ 
-						min_volumeBBOX=volumeBBOX;
-						perfect_ax_fine=alpha_x;
-						perfect_ay_fine=alpha_y;
-						perfect_az_fine=alpha_z;
+					rotatey.setValue(rotate_axis_y,alpha_y);
+					for(alpha_z=angle_range_min_z;alpha_z<angle_range_max_z;alpha_z=alpha_z+step_size)
+					{
+						rotatez.setValue(rotate_axis_z,alpha_z);
+						(rotatex*rotatey*rotatez).getValue(final_trafo);
+						atempkernel = aMesh;
+						atempkernel.Transform(final_trafo);
+						aBBox = atempkernel.GetBoundBox();
+						volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
+						if (volumeBBOX < min_volumeBBOX)
+						{ 
+							min_volumeBBOX=volumeBBOX;
+							perfect_ax=alpha_x;
+							perfect_ay=alpha_y;
+							perfect_az=alpha_z;
+						}
 					}
 				}
 			}
+			//We found a better position than the PAS, now lets fine tune this position
+			//and search only in the corridor +/- step_size for an even better one
+			angle_range_min_x = perfect_ax - step_size;
+			angle_range_max_x = perfect_ax + step_size;
+			angle_range_min_y = perfect_ay - step_size;
+			angle_range_max_y = perfect_ay + step_size;
+			angle_range_min_z = perfect_az - step_size;
+			angle_range_max_z = perfect_az + step_size;
+			it_steps = it_steps*5.0;
 		}
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		
 		//Free Memory
 		atempkernel.Clear();
 
-		//Transform the mesh to the perfect position right now
-		rotatex.setValue(rotate_axis_x,perfect_ax_fine);
-		rotatey.setValue(rotate_axis_y,perfect_ay_fine);
-		rotatez.setValue(rotate_axis_z,perfect_az_fine);
+		//Transform the mesh to the evaluated perfect position right now
+		rotatex.setValue(rotate_axis_x,perfect_ax);
+		rotatey.setValue(rotate_axis_y,perfect_ay);
+		rotatez.setValue(rotate_axis_z,perfect_az);
 		(rotatex*rotatey*rotatez).getValue(final_trafo);
 		aMesh.Transform(final_trafo);
 
-		anOutput << "perfect angles " << perfect_ax_fine << "," << perfect_ay_fine << "," << perfect_az_fine << std::endl;
+		anOutput << "perfect angles " << perfect_ax << "," << perfect_ay << "," << perfect_az << std::endl;
 
 
 		//Move Mesh to stay fully in the positive octant
@@ -364,11 +355,13 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 			float(0.0),float(0.0),float(1.0),dist_vector.z,
 			float(0.0),float(0.0),float(0.0),float(1.0));
 		aMesh.Transform(trans_matrix);
+		/////////////////////////////////////////////////////////////////////////////////
 		seconds2=time(NULL);
 		anOutput << seconds2-seconds1 << " seconds for the min bounding box stuff" << std::endl;
 		
 		seconds1 = time(NULL);
-		////Try to build up an own mesh kernel within SMESH to export the rotated
+		//Try to build up an own mesh kernel within SMESH to export the 
+		//perfect positioned mesh right now
 		SMESH_Gen* meshgen = new SMESH_Gen();
 		SMESH_Mesh* mesh = meshgen->CreateMesh(1, true);
 		SMESHDS_Mesh* meshds = mesh->GetMeshDS();
@@ -400,16 +393,52 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 			);
 		}
 
-		mesh->ExportUNV("C:/test_after_fine_tuning.unv");	
+		mesh->ExportUNV(filename_output);
+		//////////////////////////////////////////////////////////////////////////////////////////
 		seconds2 = time(NULL);
 		anOutput << seconds2-seconds1 << " seconds for the Mesh Export" << std::endl;
+
+		//Output also to ABAQUS Input Format
+		//ofstream anABAQUS_Output;
+		//anABAQUS_Output.open("c:/abaqus_output.inp");
+		//anABAQUS_Output << "*Node , NSET=Nall" << std::endl;
+		//j=1;
+		//for(anodeiterator.Begin(); anodeiterator.More(); anodeiterator.Next())
+		//{
+		//	anABAQUS_Output << j <<","
+		//   <<(*anodeiterator).x << "," 
+		//   <<(*anodeiterator).y << ","
+		//   <<(*anodeiterator).z << std::endl;
+		//	j++;
+		//}
+		//anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
+		//j=1;
+		//for(int i=0;i<all_elements.size();i++)
+		//{
+		//	//In ABAQUS input format a maximum of 15 Nodes per line is allowed
+		//	anABAQUS_Output 
+		//	<<j <<","
+		//	<<all_elements[i][0]<<","
+		//	<<all_elements[i][1]<<","
+		//	<<all_elements[i][2]<<","
+		//	<<all_elements[i][3]<<","
+		//	<<all_elements[i][4]<<","
+		//	<<all_elements[i][5]<<","
+		//	<<all_elements[i][6]<<","
+		//	<<all_elements[i][7]<<","
+		//	<<all_elements[i][8]<<","
+		//	<<all_elements[i][9]<<std::endl;
+		//	j++;
+		//}
+		//anABAQUS_Output.close();
+		/////////////////////////////////////////////////////////////////////////////
+
 
 		//Calculate Mesh Volume
 		//For an accurate Volume Calculation of a quadratic Tetrahedron
 		//we have to calculate the Volume of 8 Sub-Tetrahedrons
 		Base::Vector3f a,b,c,a_b_product;
 		double volume = 0.0;
-
 		seconds1 = time(NULL);
 		//Calc Volume with 1/6 * |(a x b) * c|
 		for(all_element_iterator = all_elements.begin();all_element_iterator != all_elements.end();all_element_iterator++)
