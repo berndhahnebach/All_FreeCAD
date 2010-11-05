@@ -27,6 +27,7 @@
 #endif
 
 #include "PropertyPythonObject.h"
+#include <Base/Base64.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Console.h>
@@ -153,8 +154,11 @@ std::string PropertyPythonObject::decodeValue(const std::string& str) const
 void PropertyPythonObject::Save (Base::Writer &writer) const
 {
     //if (writer.isForceXML()) {
-        std::string val = encodeValue(this->toString());
-        writer.Stream() << writer.ind() << "<Python value=\"" <<  val <<"\"/>" << std::endl;
+        std::string repr = this->toString();
+        repr = Base::base64_encode((const unsigned char*)repr.c_str(), repr.size());
+        std::string val = /*encodeValue*/(repr);
+        writer.Stream() << writer.ind() << "<Python value=\"" << val
+                        <<"\" encoded=\"yes\"/>" << std::endl;
     //}
     //else {
     //    writer.Stream() << writer.ind() << "<Python file=\"" << 
@@ -170,7 +174,15 @@ void PropertyPythonObject::Restore(Base::XMLReader &reader)
         reader.addFile(file.c_str(),this);
     }
     else {
-        std::string buffer = decodeValue(reader.getAttribute("value"));
+        std::string buffer = reader.getAttribute("value");
+        if (reader.hasAttribute("encoded") &&
+            strcmp(reader.getAttribute("encoded"),"yes") == 0) {
+            buffer = Base::base64_decode(buffer);
+        }
+        else {
+            buffer = decodeValue(buffer);
+        }
+
         aboutToSetValue();
         this->fromString(buffer);
         hasSetValue();
