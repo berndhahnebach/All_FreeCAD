@@ -1230,7 +1230,7 @@ class Wire:
                                         if fp.Points != p: fp.Points = p
                 elif fp.Points:
                         if fp.Points[0] == fp.Points[-1]:
-                                fp.Closed = True
+                                if not fp.Closed: fp.Closed = True
                                 fp.Points.pop()
                         if fp.Closed and (len(fp.Points) > 2):
                                 shape = Part.makePolygon(fp.Points+[fp.Points[0]])
