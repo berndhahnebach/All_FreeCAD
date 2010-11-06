@@ -226,6 +226,8 @@ if depsOK:
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
 App.addImportType("Open CAD Format (*.oca *.gcad)","importOCA")
+App.addImportType("Common airfoil data (*.dat)","importAirfoilDAT")
 App.addExportType("Autodesk DXF (*.dxf)","importDXF")
 App.addExportType("SVG (*.svg)","importSVG")
 App.addExportType("Open CAD Format (*.oca)","importOCA")
+
