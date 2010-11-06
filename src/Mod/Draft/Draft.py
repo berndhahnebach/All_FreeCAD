@@ -859,6 +859,7 @@ class ViewProviderDimension:
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
 		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
 		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines")
+                obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use <> to insert the actual length")
 		obj.Proxy = self
 		self.Object = obj.Object
                 obj.FontSize=prm.GetFloat("textheight")
@@ -904,7 +905,13 @@ class ViewProviderDimension:
 		self.text = coin.SoAsciiText()
                 self.text3d = coin.SoText2()
 		self.text.justification = self.text3d.justification = coin.SoAsciiText.CENTER
-		self.text.string = self.text3d.string = ("%.2f" % p3.sub(p2).Length)
+                text = str(obj.TextOverride)
+                dtext = ("%.2f" % p3.sub(p2).Length)
+                if text:
+                        text = text.replace("<>",dtext)
+                else:
+                        text = dtext
+		self.text.string = self.text3d.string = text
 		self.textpos = coin.SoTransform()
 		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
                 tm = fcvec.getPlaneRotation(p3.sub(p2),norm)
@@ -968,7 +975,14 @@ class ViewProviderDimension:
                                 if v1 != obj.Start: obj.Start = v1
                                 if v2 != obj.End: obj.End = v2
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
-		self.text.string = self.text3d.string = ("%.2f" % p3.sub(p2).Length)
+                text = str(obj.ViewObject.TextOverride)
+                dtext = ("%.2f" % p3.sub(p2).Length)
+                if text:
+                        text = text.replace("<>",dtext)
+                else:
+                        text = dtext
+                print type(dtext),text,type(text)
+		self.text.string = self.text3d.string = text
                 u = p3.sub(p2)
                 v = p2.sub(p1)
                 u.normalize()
