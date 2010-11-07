@@ -9,6 +9,7 @@ data_DATA = \
 		importOCA.py \
 		importDXF.py \
 		importSVG.py \
+		importAirfoilDAT.py \
 		Init.py \
 		InitGui.py \
 		icons.svg \
