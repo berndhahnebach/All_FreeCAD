@@ -324,6 +324,7 @@ def sortEdges(lEdges, aVertex=None):
         for e in lEdges:
                 if not isinstance(e.Curve,Part.Line):
                         print "Warning: sortedges cannot treat wired containing curves yet."
+                        return lEdges
 	
 	def isSameVertex(V1, V2):
 		''' Test if vertexes have same coordinates with precision 10E(-precision)'''

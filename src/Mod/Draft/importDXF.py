@@ -55,6 +55,7 @@ pythonopen = open # to distinguish python built-in open function from the one de
 def decodeName(name):
 	"decodes encoded strings"
 	try:
+                print "decoding",name
 		decodedName = (name.decode("utf8"))
 	except UnicodeDecodeError:
 		try:
@@ -62,6 +63,7 @@ def decodeName(name):
 		except UnicodeDecodeError:
 			print "dxf: error: couldn't determine character encoding"
 			decodedName = name
+        print decodedName
 	return decodedName
 
 def locateLayer(wantedLayer):
@@ -623,7 +625,7 @@ def open(filename):
 	"called when freecad opens a file"
 	docname = os.path.splitext(os.path.basename(filename))[0]
 	doc = FreeCAD.newDocument(docname)
-	doc.Label = decodeName(docname[:-4])
+	doc.Label = decodeName(docname)
 	processdxf(doc,filename)
 
 def insert(filename,docname):
@@ -693,8 +695,7 @@ def getWire(wire):
 def getBlock(obj):
 	"returns a dxf block with the contents of the object"
 	block = dxfLibrary.Block(name=obj.Name,layer=getGroup(obj,exportList))
-	writeShape(obj,block)
-	
+	writeShape(obj,block)	
 	return block
 
 def writeShape(ob,dxfobject):
@@ -702,9 +703,16 @@ def writeShape(ob,dxfobject):
 	processededges = []
 	for wire in ob.Shape.Wires: # polylines
 		for e in wire.Edges: processededges.append(e.hashCode())
-		dxfobject.append(dxfLibrary.PolyLine(getWire(wire), [0.0,0.0,0.0],
-					       int(wire.isClosed()), color=getACI(ob),
-					       layer=getGroup(ob,exportList)))
+                if len(wire.Edges) == 1:
+                        center = fcvec.tup(wire.Edges[0].Curve.Center)
+                        radius = wire.Edges[0].Curve.Radius
+                        dxfobject.append(dxfLibrary.Circle(center, radius,
+                                                           color=getACI(ob),
+                                                           layer=getGroup(ob,exportList)))
+                else:
+                        dxfobject.append(dxfLibrary.PolyLine(getWire(wire), [0.0,0.0,0.0],
+                                                             int(wire.isClosed()), color=getACI(ob),
+                                                             layer=getGroup(ob,exportList)))
 	if len(processededges) < len(ob.Shape.Edges): # lone edges
 		loneedges = []
 		for e in ob.Shape.Edges:
@@ -751,24 +759,19 @@ def export(objectslist,filename):
 	dxf = dxfLibrary.Drawing()
 	for ob in exportList:
 		print "processing ",ob.Name
-		if isinstance(ob,Part.Feature):
+		if ob.isDerivedFrom("Part::Feature"):
 			if ob.Shape.ShapeType == 'Compound':
 				if (len(ob.Shape.Wires) == 1):
-					print "open wire found"
+					# only one wire in this compound, no lone edge -> polyline
 					if (len(ob.Shape.Wires[0].Edges) == len(ob.Shape.Edges)):
-						wire = ob.Shape.Wires[0]
-						dxf.append(dxfLibrary.PolyLine(getWire(wire),
-									       [0.0,0.0,0.0],
-									       int(wire.isClosed()),
-									       color=getACI(ob),
-									       layer=getGroup(ob,exportList)))
+						writeShape(ob,dxf)
 					else:
-						print "creating block - 1 wire"
+						# 1 wire + lone edges -> block
 						block = getBlock(ob)
 						dxf.blocks.append(block)
 						dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
 				else:
-					print "creating block"
+					# all other cases: block
 					block = getBlock(ob)
 					dxf.blocks.append(block)
 					dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
@@ -792,18 +795,17 @@ def export(objectslist,filename):
 							   style='STANDARD',
 							   layer=getGroup(ob,exportList)))
 
-		elif (ob.Type == "App::FeaturePython"):
-			if 'Dimline' in ob.PropertiesList:
-				p1 = fcvec.tup(ob.Start)
-				p2 = fcvec.tup(ob.End)
-				base = Part.Line(ob.Start,ob.End).toShape()
-				proj = fcgeo.findDistance(ob.Dimline,base)
-				if not proj:
-					pbase = fcvec.tup(ob.End)
-				else:
-					pbase = fcvec.tup(ob.End.add(fcvec.neg(proj)))
-				dxf.append(dxfLibrary.Dimension(pbase,p1,p2,color=getACI(ob),
-								layer=getGroup(ob,exportList)))
+		elif 'Dimline' in ob.PropertiesList:
+                        p1 = fcvec.tup(ob.Start)
+                        p2 = fcvec.tup(ob.End)
+                        base = Part.Line(ob.Start,ob.End).toShape()
+                        proj = fcgeo.findDistance(ob.Dimline,base)
+                        if not proj:
+                                pbase = fcvec.tup(ob.End)
+                        else:
+                                pbase = fcvec.tup(ob.End.add(fcvec.neg(proj)))
+                        dxf.append(dxfLibrary.Dimension(pbase,p1,p2,color=getACI(ob),
+                                                        layer=getGroup(ob,exportList)))
 					
 	dxf.saveas(filename)
 	FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
