@@ -850,7 +850,7 @@ class Line(Creator):
                         old = self.obj.Name
                         self.doc.removeObject(old)
                         self.doc.openTransaction("Create "+self.featureName)
-                        Draft.makeWire(self.node,closed)
+                        Draft.makeWire(self.node,closed,face=self.ui.hasFill.isChecked())
                         self.doc.commitTransaction()
 		if self.ui:
 			self.linetrack.finalize()
