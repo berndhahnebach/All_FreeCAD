@@ -2216,6 +2216,21 @@ class Offset(Modifier):
 			self.constraintrack.finalize()
 			for g in self.ghost: g.finalize()
 
+        def getRect(self,p,obj):
+                "returns length,heigh,placement"
+                pl = obj.Placement
+                pl.Base = p[0]
+                diag = p[2].sub(p[0])
+                bb = p[1].sub(p[0])
+                bh = p[3].sub(p[0])
+                nb = fcvec.project(diag,bb)
+                nh = fcvec.project(diag,bh)
+                if obj.Length < 0: l = -nb.Length
+                else: l = nb.Length
+                if obj.Height < 0: h = -nh.Length
+                else: h = nh.Length
+                return l,h,pl
+
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
@@ -2269,12 +2284,23 @@ class Offset(Modifier):
                                         for v in Part.Wire(newedges).Vertexes: p.append(v.Point)
                                         self.doc.openTransaction("Offset")
                                         if arg["AltDown"] or self.ui.isCopy.isChecked():
-                                                obj = Draft.makeWire(p)
+                                                if "Points" in self.sel.PropertiesList:
+                                                        obj = Draft.makeWire(p)
+                                                elif "Length" in self.sel.PropertiesList:
+                                                        pl = FreeCAD.Placement()
+                                                        pl.Base = p[0]
+                                                        length,height,plac = self.getRect(p,self.sel)
+                                                        obj = Draft.makeRectangle(length,height,plac)
                                                 Draft.formatObject(obj,self.sel)
                                         else:
                                                 obj = self.sel
                                                 if "Points" in obj.PropertiesList:
                                                         obj.Points = p
+                                                elif "Length" in obj.PropertiesList:
+                                                        length,height,plac = self.getRect(p,obj)
+                                                        obj.Placement = plac
+                                                        obj.Length = length
+                                                        obj.Height = height
 					if self.faces:
                                                 if "Closed" in obj.PropertiesList:
                                                         obj.Closed = True
