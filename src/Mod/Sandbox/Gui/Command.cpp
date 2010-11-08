@@ -38,6 +38,7 @@
 # include <QImage>
 # include <QImageReader>
 # include <QPainter>
+# include <QThread>
 # include <Inventor/nodes/SoAnnotation.h>
 # include <Inventor/nodes/SoImage.h>
 # include <boost/thread/thread.hpp>
@@ -664,6 +665,141 @@ bool CmdSandboxMeshLoaderFuture::isActive(void)
     return hasActiveDocument();
 }
 
+namespace Mesh {
+typedef Base::Reference<const MeshObject> MeshObjectConstRef;
+typedef std::list<MeshObjectConstRef> MeshObjectConstRefList;
+typedef std::vector<MeshObjectConstRef> MeshObjectConstRefArray;
+}
+
+struct MeshObject_greater  : public std::binary_function<const Mesh::MeshObjectConstRef&, 
+                                                         const Mesh::MeshObjectConstRef&, bool>
+{
+    bool operator()(const Mesh::MeshObjectConstRef& x,
+                    const Mesh::MeshObjectConstRef& y) const
+    {
+        return x->countFacets() > y->countFacets();
+    }
+};
+
+class MeshTestJob
+{
+
+public:
+    MeshTestJob()
+    {
+    }
+    ~MeshTestJob()
+    {
+    }
+
+    Mesh::MeshObject* run(const std::vector<Mesh::MeshObjectConstRef>& meshdata)
+    {
+        std::vector<Mesh::MeshObjectConstRef> meshes = meshdata;
+        if (meshes.empty())
+            return 0; // nothing todo
+        Mesh::MeshObjectConstRef myMesh = 0;
+        std::sort(meshes.begin(), meshes.end(), MeshObject_greater());
+        myMesh = meshes.front();
+
+        if (meshes.size() > 1) {
+            MeshCore::MeshKernel kernel;
+
+            // copy the data of the first mesh, this will be the new model then
+            kernel = myMesh->getKernel();
+            for (std::vector<Mesh::MeshObjectConstRef>::iterator it = meshes.begin(); it != meshes.end(); ++it) {
+                if (*it != myMesh) {
+                    Base::Console().Message("MeshTestJob::run() in thread: %p\n", QThread::currentThreadId());
+                }
+            }
+
+            // avoid to copy the data
+            Mesh::MeshObject* mesh = new Mesh::MeshObject();
+            mesh->swap(kernel);
+            return mesh;
+        }
+        else {
+            Mesh::MeshObject* mesh = new Mesh::MeshObject();
+            mesh->setKernel(myMesh->getKernel());
+            return mesh;
+        }
+    }
+};
+
+DEF_STD_CMD_A(CmdSandboxMeshTestJob)
+
+CmdSandboxMeshTestJob::CmdSandboxMeshTestJob()
+  : Command("Sandbox_MeshTestJob")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Test mesh job");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+    sPixmap       = "Std_Tool7";
+}
+
+void CmdSandboxMeshTestJob::activated(int iMsg)
+{
+    Mesh::MeshObjectConstRefList meshes;
+    App::Document* app_doc = App::GetApplication().getActiveDocument();
+    std::vector<Mesh::Feature*> meshObj = Gui::Selection().getObjectsOfType<Mesh::Feature>(app_doc->getName());
+    for (std::vector<Mesh::Feature*>::iterator it = meshObj.begin(); it != meshObj.end(); ++it) {
+        meshes.push_back((*it)->Mesh.getValuePtr());
+    }
+
+    int iteration = 1;
+    while (meshes.size() > 1) {
+        int numJobs = QThread::idealThreadCount();
+        if (numJobs < 0) numJobs = 2;
+
+        while (numJobs > (int)(meshes.size()+1)/2)
+            numJobs /= 2;
+        numJobs = std::max<int>(1, numJobs);
+
+        // divide all meshes we have into several groups
+        std::vector<Mesh::MeshObjectConstRefArray> mesh_groups;
+        while (numJobs > 0) {
+            int size = (int)meshes.size();
+            int count = size / numJobs;
+            --numJobs;
+            Mesh::MeshObjectConstRefArray meshes_per_job;
+            for (int i=0; i<count; i++) {
+                meshes_per_job.push_back(meshes.front());
+                meshes.pop_front();
+            }
+            mesh_groups.push_back(meshes_per_job);
+        }
+
+        // run the actual multi-threaded mesh test
+        Base::Console().Message("Mesh test (step %d)...\n",iteration++);
+        MeshTestJob meshJob;
+        QFuture<Mesh::MeshObject*> mesh_future = QtConcurrent::mapped
+            (mesh_groups, boost::bind(&MeshTestJob::run, &meshJob, _1));
+
+        // keep it responsive during computation
+        QFutureWatcher<Mesh::MeshObject*> mesh_watcher;
+        mesh_watcher.setFuture(mesh_future);
+        QEventLoop loop;
+        QObject::connect(&mesh_watcher, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+
+        for (QFuture<Mesh::MeshObject*>::const_iterator it = mesh_future.begin(); it != mesh_future.end(); ++it) {
+            meshes.push_back(Mesh::MeshObjectConstRef(*it));
+        }
+    }
+
+    if (meshes.empty()) {
+        Base::Console().Error("The mesh test failed to create a valid mesh.\n");
+        return;
+    }
+}
+
+bool CmdSandboxMeshTestJob::isActive(void)
+{
+    return hasActiveDocument();
+}
+
 //===========================================================================
 // Std_GrabWidget
 //===========================================================================
@@ -992,6 +1128,7 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxMeshLoader);
     rcCmdMgr.addCommand(new CmdSandboxMeshLoaderBoost);
     rcCmdMgr.addCommand(new CmdSandboxMeshLoaderFuture);
+    rcCmdMgr.addCommand(new CmdSandboxMeshTestJob);
     rcCmdMgr.addCommand(new CmdTestGrabWidget());
     rcCmdMgr.addCommand(new CmdTestImageNode());
     rcCmdMgr.addCommand(new CmdTestWidgetShape());

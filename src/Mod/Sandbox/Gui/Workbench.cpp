@@ -70,6 +70,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *misc << "Sandbox_EventLoop" << "Sandbox_MeshLoad"
           << "Sandbox_MeshLoaderBoost"
           << "Sandbox_MeshLoaderFuture"
+          << "Sandbox_MeshTestJob"
           << "Sandbox_CryptographicHash";
 
     Gui::MenuItem* widg = new Gui::MenuItem;

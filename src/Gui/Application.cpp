@@ -1463,9 +1463,12 @@ void Application::runApplication(void)
     }
 
     QGLFormat::OpenGLVersionFlags version = QGLFormat::openGLVersionFlags ();
+#if QT_VERSION >= 0x040500
     if (version & QGLFormat::OpenGL_Version_3_0)
         Base::Console().Log("OpenGL version 3.0 or higher is present\n");
-    else if (version & QGLFormat::OpenGL_Version_2_1)
+    else
+#endif
+    if (version & QGLFormat::OpenGL_Version_2_1)
         Base::Console().Log("OpenGL version 2.1 or higher is present\n");
     else if (version & QGLFormat::OpenGL_Version_2_0)
         Base::Console().Log("OpenGL version 2.0 or higher is present\n");

@@ -419,6 +419,18 @@ Document* Application::getActiveDocument(void) const
 void Application::setActiveDocument(Document* pDoc)
 {
     _pActiveDoc = pDoc;
+
+    // make sure that the active document is set in case no GUI is up
+    if (pDoc) {
+        Base::PyGILStateLocker lock;
+        Py::Object active(pDoc->getPyObject(), true);
+        Py::Module("FreeCAD").setAttr(std::string("ActiveDocument"),active);
+    }
+    else {
+        Base::PyGILStateLocker lock;
+        Py::Module("FreeCAD").setAttr(std::string("ActiveDocument"),Py::None());
+    }
+
     if (pDoc)
         signalActiveDocument(*pDoc);
 }
