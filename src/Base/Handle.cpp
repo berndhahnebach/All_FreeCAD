@@ -29,6 +29,8 @@
 # include <assert.h>
 #endif
 
+#include <QAtomicInt>
+
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Handle.h"
 #include "Exception.h"
@@ -40,14 +42,15 @@ using namespace Base;
 
 // here the implemataion! description should take place in the header file!
 Handled::Handled()
-  : _lRefCount(0)
+  : _lRefCount(new QAtomicInt(0))
 {
 }
 
 Handled::~Handled()
 {
-    if (_lRefCount != 0)
-        throw Exception("handled deleted with Rerferences!!!!!\n");
+    if ((int)(*_lRefCount) != 0)
+        throw Exception("Reference counter of deleted object is not zero!!!!!\n");
+    delete _lRefCount;
 }
 
 
@@ -56,13 +59,13 @@ Handled::~Handled()
 
 void  Handled::ref() const
 {
-    const_cast<Handled*>(this)->_lRefCount++;
+    _lRefCount->ref();
 }
 
 void  Handled::unref() const
 {
     assert(_lRefCount > 0);
-    if (--const_cast<Handled*>(this)->_lRefCount == 0) {
+    if (!_lRefCount->deref()) {
         try {
             delete this;
         }
@@ -70,6 +73,11 @@ void  Handled::unref() const
             throw Exception("Base::Handled freed twice !!!!!\n");
         }
     }
+}
+
+int Handled::getRefCount(void) const
+{
+    return (int)(*_lRefCount);
 }
 
 const Handled& Handled::operator = (const Handled&)

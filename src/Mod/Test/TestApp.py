@@ -45,6 +45,7 @@ def All():
 
     
 def TestText(s):
+    s = unittest.defaultTestLoader.loadTestsFromName(s)
     r = unittest.TextTestRunner()
     r.run(s)
 

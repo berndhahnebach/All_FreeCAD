@@ -173,7 +173,6 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		inputfile.seekg(std::ifstream::beg);
 		std::string line1,line2,temp;
 		std::stringstream astream;
-		unsigned int nodeid;
 		std::vector<unsigned int> tetra_element;
 		std::vector<unsigned int> element_id;
 		element_id.clear();

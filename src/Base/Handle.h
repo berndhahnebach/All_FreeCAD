@@ -32,6 +32,7 @@
 #include <map>
 #include <typeinfo>
 
+class QAtomicInt;
 
 namespace Base
 {
@@ -155,7 +156,6 @@ private:
     T *_toHandle; /** the pointer to the handled object */
 };
 
-
 /** Handled class
  *  Implementation of the reference counting pattern.
  */
@@ -165,16 +165,14 @@ public:
     Handled();
     virtual ~Handled();
 
-    void  ref() const;
-    void  unref() const;
+    void ref() const;
+    void unref() const;
 
-    long getRefCount(void) const {
-        return _lRefCount;
-    }
+    int getRefCount(void) const;
     const Handled& operator = (const Handled&);
 
 private:
-    long _lRefCount;
+    QAtomicInt* _lRefCount;
 };
 
 } // namespace Base
