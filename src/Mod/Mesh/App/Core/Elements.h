@@ -269,6 +269,8 @@ public:
    * Therefore the two facets must be adjacent.
    */
   inline bool HasSameOrientation(const MeshFacet&) const;
+  /** Checks wether the facet is degenerated to a line of point. */
+  inline bool IsDegenerated() const;
   /** Flips the orientation of the facet. */
   void FlipNormal (void)
   {
@@ -860,6 +862,17 @@ inline bool MeshFacet::HasSameOrientation(const MeshFacet& f) const
     }
 
     return true;
+}
+
+inline bool MeshFacet::IsDegenerated() const
+{
+    if (_aulPoints[0] == _aulPoints[1])
+        return true;
+    if (_aulPoints[1] == _aulPoints[2])
+        return true;
+    if (_aulPoints[2] == _aulPoints[0])
+        return true;
+    return false;
 }
 
 inline unsigned short MeshFacet::Side (unsigned long ulNIndex) const
