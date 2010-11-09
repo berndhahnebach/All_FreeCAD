@@ -477,7 +477,7 @@ void TopoShape::exportStep(const char *filename) const
             throw Base::Exception("Error in transferring STEP");
 
         APIHeaderSection_MakeHeader makeHeader(aWriter.Model());
-        makeHeader.SetName(new TCollection_HAsciiString(filename));
+        makeHeader.SetName(new TCollection_HAsciiString((const Standard_CString)filename));
         makeHeader.SetAuthorValue (1, new TCollection_HAsciiString("FreeCAD"));
         makeHeader.SetOrganizationValue (1, new TCollection_HAsciiString("FreeCAD"));
         makeHeader.SetOriginatingSystem(new TCollection_HAsciiString("FreeCAD"));

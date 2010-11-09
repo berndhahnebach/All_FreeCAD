@@ -46,6 +46,7 @@
 # include <boost/thread/condition_variable.hpp>
 # include <boost/thread/future.hpp>
 # include <boost/bind.hpp>
+# include <boost/shared_ptr.hpp>
 #endif
 
 #include <Base/Console.h>
@@ -59,6 +60,7 @@
 #include <Gui/FileDialog.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
+#include <Gui/WaitCursor.h>
 
 #include <Mod/Sandbox/App/DocumentThread.h>
 #include <Mod/Sandbox/App/DocumentProtector.h>
@@ -800,6 +802,71 @@ bool CmdSandboxMeshTestJob::isActive(void)
     return hasActiveDocument();
 }
 
+class MeshThread : public QThread
+{
+public:
+    MeshThread(Base::Reference<Mesh::MeshObject> m, QObject* p=0)
+        : QThread(p), mesh(m)
+    {}
+
+protected:
+    void run()
+    {
+        for (int i=0; i<100;i++) {
+            Base::Reference<Mesh::MeshObject> new_ref;
+            new_ref = mesh;
+        }
+    }
+
+private:
+    Base::Reference<Mesh::MeshObject> mesh;
+};
+
+DEF_STD_CMD_A(CmdSandboxMeshTestRef)
+
+CmdSandboxMeshTestRef::CmdSandboxMeshTestRef()
+  : Command("Sandbox_MeshTestRef")
+{
+    sAppModule    = "Sandbox";
+    sGroup        = QT_TR_NOOP("Sandbox");
+    sMenuText     = QT_TR_NOOP("Test mesh reference");
+    sToolTipText  = QT_TR_NOOP("Sandbox Test function");
+    sWhatsThis    = QT_TR_NOOP("Sandbox Test function");
+    sStatusTip    = QT_TR_NOOP("Sandbox Test function");
+}
+
+void CmdSandboxMeshTestRef::activated(int iMsg)
+{
+    Gui::WaitCursor wc;
+    std::vector< boost::shared_ptr<QThread> > threads;
+    Base::Reference<Mesh::MeshObject> mesh(new Mesh::MeshObject);
+    int num = mesh.getRefCount();
+
+    for (int i=0; i<10; i++) {
+        boost::shared_ptr<QThread> trd(new MeshThread(mesh));
+        trd->start();
+        threads.push_back(trd);
+    }
+
+    QTimer timer;
+    QEventLoop loop;
+    QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    timer.start(2000);
+    loop.exec();
+    threads.clear();
+
+    Mesh::MeshObject* ptr = (Mesh::MeshObject*)mesh;
+    if (!ptr)
+        Base::Console().Error("Object deleted\n");
+    if (num != mesh.getRefCount())
+        Base::Console().Error("Reference count is %d\n",mesh.getRefCount());
+}
+
+bool CmdSandboxMeshTestRef::isActive(void)
+{
+    return true;
+}
+
 //===========================================================================
 // Std_GrabWidget
 //===========================================================================
@@ -1129,6 +1196,7 @@ void CreateSandboxCommands(void)
     rcCmdMgr.addCommand(new CmdSandboxMeshLoaderBoost);
     rcCmdMgr.addCommand(new CmdSandboxMeshLoaderFuture);
     rcCmdMgr.addCommand(new CmdSandboxMeshTestJob);
+    rcCmdMgr.addCommand(new CmdSandboxMeshTestRef);
     rcCmdMgr.addCommand(new CmdTestGrabWidget());
     rcCmdMgr.addCommand(new CmdTestImageNode());
     rcCmdMgr.addCommand(new CmdTestWidgetShape());
