@@ -31,7 +31,6 @@
 
 #include <QAtomicInt>
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Handle.h"
 #include "Exception.h"
 
@@ -40,7 +39,6 @@ using namespace Base;
 //**************************************************************************
 // Construction/Destruction
 
-// here the implemataion! description should take place in the header file!
 Handled::Handled()
   : _lRefCount(new QAtomicInt(0))
 {
@@ -53,25 +51,16 @@ Handled::~Handled()
     delete _lRefCount;
 }
 
-
-//**************************************************************************
-// separator for other implemetation aspects
-
-void  Handled::ref() const
+void Handled::ref() const
 {
     _lRefCount->ref();
 }
 
-void  Handled::unref() const
+void Handled::unref() const
 {
     assert(_lRefCount > 0);
     if (!_lRefCount->deref()) {
-        try {
-            delete this;
-        }
-        catch (...) {
-            throw Exception("Base::Handled freed twice !!!!!\n");
-        }
+        delete this;
     }
 }
 

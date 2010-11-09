@@ -146,7 +146,7 @@ public:
     }
 
     /// Get number of references on the object, including this one
-    long getRefCount(void) const {
+    int getRefCount(void) const {
         if (_toHandle)
             return _toHandle->getRefCount();
         return 0;
