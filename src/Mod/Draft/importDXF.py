@@ -631,7 +631,10 @@ def open(filename):
 def insert(filename,docname):
 	"called when freecad imports a file"
 	groupname = os.path.splitext(os.path.basename(filename))[0]
-	doc=FreeCAD.getDocument(docname)
+	try:
+		doc=FreeCAD.getDocument(docname)
+	except:
+		doc=FreeCAD.newDocument(docname)
 	importgroup = doc.addObject("App::DocumentObjectGroup",groupname)
 	importgroup.Label = decodeName(groupname)
 	processdxf(doc,filename)

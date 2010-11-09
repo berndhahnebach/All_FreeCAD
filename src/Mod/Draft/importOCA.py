@@ -224,8 +224,11 @@ def open(filename):
     parse(filename,doc)
     doc.recompute()
 
-def insert(filename):
-    doc = FreeCAD.ActiveDocument
+def insert(filename,docname):
+    try:
+        doc=FreeCAD.getDocument(docname)
+    except:
+        doc=FreeCAD.newDocument(docname)
     parse(filename,doc)
     doc.recompute()
             
