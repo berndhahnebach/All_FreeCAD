@@ -53,29 +53,17 @@ MeshOrientationVisitor::MeshOrientationVisitor() : _nonuniformOrientation(false)
 bool MeshOrientationVisitor::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, 
                                     unsigned long ulFInd, unsigned long ulLevel)
 {
-  // Normale an Vorgaenger-Facet angleichen => Umlaufrichtung gegenseitig
-  for (int i = 0; i < 2; i++)
-  {
-    for (int j = 0; j < 3; j++)
-    {
-      if (rclFrom._aulPoints[i] == rclFacet._aulPoints[j])
-      {  // gemeinsamer Punkt
-        if ((rclFrom._aulPoints[i+1]     == rclFacet._aulPoints[(j+1)%3]) ||
-            (rclFrom._aulPoints[(i+2)%3] == rclFacet._aulPoints[(j+2)%3]))
-        {
-          _nonuniformOrientation = true;
-          return false;
-        } 
-      }
+    if (!rclFrom.HasSameOrientation(rclFacet)) {
+        _nonuniformOrientation = true;
+        return false;
     }
-  }
 
-  return true;
+    return true;
 }
 
 bool MeshOrientationVisitor::HasNonUnifomOrientedFacets() const
 {
-  return _nonuniformOrientation;
+    return _nonuniformOrientation;
 }
 
 MeshOrientationCollector::MeshOrientationCollector(std::vector<unsigned long>& aulIndices, std::vector<unsigned long>& aulComplement)
