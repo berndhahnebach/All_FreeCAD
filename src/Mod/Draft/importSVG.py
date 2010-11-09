@@ -594,7 +594,10 @@ def open(filename):
 	doc.recompute()
 
 def insert(filename,docname):
-	doc=FreeCAD.getDocument(docname)
+	try:
+		doc=FreeCAD.getDocument(docname)
+	except:
+		doc=FreeCAD.newDocument(docname)
 	parser = xml.sax.make_parser()
 	parser.setContentHandler(svgHandler())
 	parser._cont_handler.doc = doc
