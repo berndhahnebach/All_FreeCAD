@@ -26,7 +26,7 @@
 # include <unistd.h>
 #endif
 
-#include <strstream>
+#include <sstream>
 
 #include <App/Application.h>
 #include <App/Document.h>
@@ -66,19 +66,21 @@ SelectionFilter::~SelectionFilter()
 {
 }
 
-
 bool SelectionFilter::match(void)
 {
-    assert(Ast);
+    if (!Ast)
+        return false;
+    Result.clear();
 
     for (std::vector< Node_Object *>::iterator it= Ast->Objects.begin();it!=Ast->Objects.end();++it){
         int min;
         int max;
 
-        if((*it)->Slice){
+        if ((*it)->Slice) {
             min          = (*it)->Slice->Min;
             max          = (*it)->Slice->Max;
-        }else{
+        }
+        else {
             min          = 1;
             max          = 1;
         }
@@ -90,7 +92,6 @@ bool SelectionFilter::match(void)
     }
     return true;
 }
-
 
 void SelectionFilter::addError(const char* e)
 {
@@ -109,6 +110,65 @@ void SelectionFilter::addError(const char* e)
 //	return 0;
 //}
 
+
+void SelectionFilterPy::init_type()
+{
+    behaviors().name("SelectionFilter");
+    behaviors().doc("Filter for certain selection");
+    // you must have overwritten the virtual functions
+    behaviors().supportRepr();
+    behaviors().supportGetattr();
+    behaviors().supportSetattr();
+    behaviors().type_object()->tp_new = &PyMake;
+    add_varargs_method("match",&SelectionFilterPy::match,"match()");
+    add_varargs_method("result",&SelectionFilterPy::result,"result()");
+}
+
+PyObject *SelectionFilterPy::PyMake(struct _typeobject *, PyObject *args, PyObject *)
+{
+    char* str;
+    if (!PyArg_ParseTuple(args, "s",&str))
+        return 0;
+    return new SelectionFilterPy(str);
+}
+
+SelectionFilterPy::SelectionFilterPy(const std::string& s)
+  : filter(s)
+{
+}
+
+SelectionFilterPy::~SelectionFilterPy()
+{
+}
+
+Py::Object SelectionFilterPy::repr()
+{
+    std::string s;
+    std::ostringstream s_out;
+    s_out << "SelectionFilter";
+    return Py::String(s_out.str());
+}
+
+Py::Object SelectionFilterPy::match(const Py::Tuple& args)
+{
+    return Py::Boolean(filter.match());
+}
+
+Py::Object SelectionFilterPy::result(const Py::Tuple&)
+{
+    Py::List list;
+    std::vector<std::vector<SelectionObject> >::iterator it;
+    for (it = filter.Result.begin(); it != filter.Result.end(); ++it) {
+        std::vector<SelectionObject>::iterator jt;
+        Py::Tuple tuple(it->size());
+        int index=0;
+        for (jt = it->begin(); jt != it->end(); ++jt) {
+            tuple[index++] = Py::asObject(jt->getObject()->getPyObject());
+        }
+        list.append(tuple);
+    }
+    return list;
+}
 
 
 

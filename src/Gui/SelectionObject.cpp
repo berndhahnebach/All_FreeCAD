@@ -90,26 +90,26 @@ bool SelectionObject::isObjectTypeOf(const Base::Type& typeId)const
 std::string SelectionObject::getAsPropertyLinkSubString(void)const
 {
     std::string buf;
-	buf += "(App.";
+    buf += "(App.";
     buf += "ActiveDocument";//getObject()->getDocument()->getName(); 
     buf += ".";
-	buf += getObject()->getNameInDocument(); 
+    buf += getObject()->getNameInDocument(); 
     buf += ",[";
     for(std::vector<std::string>::const_iterator it = SubNames.begin();it!=SubNames.end();++it){
-		buf += "\""; 
+        buf += "\""; 
         buf += *it; 
         buf += "\"";
         if(it != --SubNames.end())
             buf += ",";
     }
-	buf += "])";
+    buf += "])";
    
-	return buf;
+    return buf;
 }
 
 
 PyObject* SelectionObject::getPyObject()
 {
-    return new SelectionObjectPy(this);
+    return new SelectionObjectPy(new SelectionObject(*this));
 }
 
