@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel  (FreeCAD@juergen-riegel.net>              *
+ *   Copyright (c) 2009 Juergen Riegel  (FreeCAD@juergen-riegel.net>       *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -25,6 +25,7 @@
 #define GUI_SelectionFilter_H
 
 #include <string>
+#include <CXX/Extensions.hxx>
 
 namespace App {
     class DocumentObject;
@@ -62,6 +63,30 @@ protected:
 
     Node_Block *Ast;
 
+};
+
+/**
+ * Python binding for SelectionFilter class.
+ * @see SelectionFilter
+ * @author Werner Mayer
+ */
+class SelectionFilterPy : public Py::PythonExtension<SelectionFilterPy> 
+{
+private:
+    SelectionFilter filter;
+
+public:
+    static void init_type(void);    // announce properties and methods
+
+    SelectionFilterPy(const std::string&);
+    ~SelectionFilterPy();
+
+    Py::Object repr();
+    Py::Object match(const Py::Tuple&);
+    Py::Object result(const Py::Tuple&);
+
+private:
+    static PyObject *PyMake(struct _typeobject *, PyObject *, PyObject *);
 };
 
 // === Abstract syntax tree (AST) ===========================================

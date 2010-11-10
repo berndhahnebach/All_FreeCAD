@@ -339,6 +339,10 @@ Application::Application(bool GUIenabled)
             "Selection module");
         Py_INCREF(pSelectionModule);
         PyModule_AddObject(module, "Selection", pSelectionModule);
+
+        SelectionFilterPy::init_type();
+        Base::Interpreter().addType(SelectionFilterPy::type_object(),
+            pSelectionModule,"Filter");
     }
 
     Base::PyGILStateLocker lock;
