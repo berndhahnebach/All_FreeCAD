@@ -378,7 +378,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
         return NULL;
     }
 
-+	if (not i.Const):
++   if (not i.Const):
     // test if object is set Const
     if (((PyObjectBase*) self)->isConst()){
         PyErr_SetString(PyExc_ReferenceError, "This object is immutable, you can not set any attribute or call a non const method");
@@ -386,14 +386,18 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
     }
 -
 
-    try { // catches all exeptions coming up from c++ and generate a python exeption
+    try { // catches all exceptions coming up from c++ and generate a python exception
 + if i.Keyword:
-        return ((@self.export.Name@*)self)->@i.Name@(args, kwd);
+        PyObject* ret = ((@self.export.Name@*)self)->@i.Name@(args, kwd);
 = else:
-        return ((@self.export.Name@*)self)->@i.Name@(args);
+        PyObject* ret = ((@self.export.Name@*)self)->@i.Name@(args);
 -
++   if (not i.Const):
+        ((@self.export.Name@*)self)->startNotify();
+-
+        return ret;
     }
-    catch(Base::Exception &e) // catch the FreeCAD exeptions
+    catch(const Base::Exception& e) // catch the FreeCAD exceptions
     {
         std::string str;
         str += "FreeCAD exception thrown (";
@@ -403,10 +407,10 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
         PyErr_SetString(PyExc_Exception,str.c_str());
         return NULL;
     }
-    catch(boost::filesystem::filesystem_error &e) // catch boost filesystem exeption
+    catch(const boost::filesystem::filesystem_error& e) // catch boost filesystem exception
     {
         std::string str;
-        str += "File system exeption thrown (";
+        str += "File system exception thrown (";
         //str += e.who();
         //str += ", ";
         str += e.what();
@@ -420,7 +424,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
         // The exception text is already set
         return NULL;
     }
-    catch(const char *e) // catch simple string exceptions
+    catch(const char* e) // catch simple string exceptions
     {
         Base::Console().Error(e);
         PyErr_SetString(PyExc_Exception,e);
@@ -428,7 +432,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
     }
     // in debug not all exceptions will be catched to get the attention of the developer!
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
-    catch(std::exception &e) // catch other c++ exeptions
+    catch(const std::exception& e) // catch other c++ exceptions
     {
         std::string str;
         str += "FC++ exception thrown (";
@@ -574,7 +578,7 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
         if(r) return r;
     }
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
-    catch(Base::Exception &e) // catch the FreeCAD exeptions
+    catch(const Base::Exception& e) // catch the FreeCAD exceptions
     {
         std::string str;
         str += "FreeCAD exception thrown (";
@@ -584,7 +588,7 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
         PyErr_SetString(PyExc_Exception,str.c_str());
         return NULL;
     }
-    catch(std::exception &e) // catch other c++ exeptions
+    catch(const std::exception& e) // catch other c++ exceptions
     {
         std::string str;
         str += "FC++ exception thrown (";
@@ -605,7 +609,7 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
         return NULL;
     }
 #else  // DONT_CATCH_CXX_EXCEPTIONS  
-    catch(Base::Exception &e) // catch the FreeCAD exeptions
+    catch(const Base::Exception& e) // catch the FreeCAD exceptions
     {
         std::string str;
         str += "FreeCAD exception thrown (";
@@ -622,7 +626,16 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
     }
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
 
-    _getattr_up(@self.export.Father@);
+    PyObject *rvalue = Py_FindMethod(Methods, this, attr);
+    if (rvalue == NULL)
+    {
+        PyErr_Clear();
+        return @self.export.Father@::_getattr(attr);
+    }
+    else
+    {
+        return rvalue;
+    }
 }
 
 int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
@@ -633,7 +646,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
         if(r==1) return 0;
     }
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
-    catch(Base::Exception &e) // catch the FreeCAD exeptions
+    catch(const Base::Exception& e) // catch the FreeCAD exceptions
     {
         std::string str;
         str += "FreeCAD exception thrown (";
@@ -643,7 +656,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
         PyErr_SetString(PyExc_Exception,str.c_str());
         return -1;
     }
-    catch(std::exception &e) // catch other c++ exeptions
+    catch(const std::exception& e) // catch other c++ exceptions
     {
         std::string str;
         str += "FC++ exception thrown (";
@@ -664,7 +677,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
         return -1;
     }
 #else  // DONT_CATCH_CXX_EXCEPTIONS  
-    catch(Base::Exception &e) // catch the FreeCAD exeptions
+    catch(const Base::Exception& e) // catch the FreeCAD exceptions
     {
         std::string str;
         str += "FreeCAD exception thrown (";

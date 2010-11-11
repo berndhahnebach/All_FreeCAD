@@ -35,7 +35,7 @@ using namespace Base;
 
 // Constructor
 PyObjectBase::PyObjectBase(void* p,PyTypeObject *T)
-:_pcTwinPointer(p)
+  : _pcTwinPointer(p), parent(0), attribute(0)
 {
     this->ob_type = T;
     _Py_NewReference(this);
@@ -44,12 +44,17 @@ PyObjectBase::PyObjectBase(void* p,PyTypeObject *T)
 #endif
     StatusBits.set(0); // valid, the second bit is NOT set, i.e. it's mutable
 }
+
 /// destructor
 PyObjectBase::~PyObjectBase() 
 {
 #ifdef FC_LOGPYOBJECTS
     Base::Console().Log("PyO-: %s (%p)\n",this->ob_type->tp_name, this);
 #endif
+    if (this->parent)
+        this->parent->DecRef();
+    if (this->attribute)
+        free(this->attribute); /* it's a strdup */
 }
 
 /*------------------------------
@@ -130,6 +135,47 @@ PyMethodDef PyObjectBase::Methods[] = {
 ------------------------------*/
 PyParentObject PyObjectBase::Parents[] = {&PyObjectBase::Type, NULL};
 
+PyObject* PyObjectBase::__getattr(PyObject * obj, char *attr)
+{
+    // This should be the entry in Type
+    PyObjectBase* pyObj = static_cast<PyObjectBase*>(obj);
+    if (!pyObj->isValid()){
+        PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
+        return NULL;
+    }
+
+    PyObject* value = pyObj->_getattr(attr);
+#if 1
+    if (value && PyObject_TypeCheck(value, &(PyObjectBase::Type))) {
+        if (!static_cast<PyObjectBase*>(value)->isConst())
+            static_cast<PyObjectBase*>(value)->setAttributeOf(attr, pyObj);
+    }
+#endif
+    return value;
+}
+
+int PyObjectBase::__setattr(PyObject *obj, char *attr, PyObject *value)
+{
+    //FIXME: In general we don't allow to delete attributes (i.e. value=0). However, if we want to allow
+    //we must check then in _setattr() of all subclasses whether value is 0.
+    if ( value==0 ) {
+        PyErr_Format(PyExc_AttributeError, "Cannot delete attribute: '%s'", attr);
+        return -1;
+    }
+    else if (!static_cast<PyObjectBase*>(obj)->isValid()){
+        PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
+        return -1;
+    }
+
+    int ret = static_cast<PyObjectBase*>(obj)->_setattr(attr, value);
+#if 1
+    if (ret == 0) {
+        static_cast<PyObjectBase*>(obj)->startNotify();
+    }
+#endif
+    return ret;
+}
+
 /*------------------------------
  * PyObjectBase attributes	-- attributes
 ------------------------------*/
@@ -205,45 +251,38 @@ PyObject *PyObjectBase::_repr(void)
     return Py_BuildValue("s", a.str().c_str());
 }
 
-/*------------------------------
- * PyObjectBase isA    the isA functions
-------------------------------*/
-//bool PyObjectBase::IsA(PyTypeObject *T)		// if called with a Type, use "typename"
-//{
-//  return IsA(T->tp_name);
-//}
-//
-//bool PyObjectBase::IsA(const char *type_name)		// check typename of each parent
-//{
-//  int i;
-//  PyParentObject  P;
-//  PyParentObject *Ps = GetParents();
-//
-//  for (P = Ps[i=0]; P != NULL; P = Ps[i++])
-//      if (streq(P->tp_name, type_name))
-//	return true;
-//  return false;
-//}
-//
-//PYFUNCIMP_D(PyObjectBase,isA)
-//{
-//  char *type_name;
-//  Py_Try(PyArg_ParseTuple(args, "s", &type_name));
-//  if(IsA(type_name))
-//    {Py_INCREF(Py_True); return Py_True;}
-//  else
-//    {Py_INCREF(Py_False); return Py_False;};
-//}
-//
-//
-float PyObjectBase::getFloatFromPy(PyObject *value)
+void PyObjectBase::setAttributeOf(const char* attr, const PyObjectBase* par)
 {
-    if (PyFloat_Check(value)) {
-        return (float) PyFloat_AsDouble(value);
+    if (this->parent != par) {
+        Py_XDECREF(this->parent);
+        this->parent = const_cast<PyObjectBase*>(par);
+        Py_XINCREF(this->parent);
     }
-    else if (PyInt_Check(value)) {
-        return (float) PyInt_AsLong(value);
-    } else
-        throw Base::Exception("Not allowed type used (float or int expected)...");
+
+    if (this->attribute) {
+        if (strcmp(this->attribute, attr) != 0) {
+            free(this->attribute);
+#if defined (__GNUC__)
+            this->attribute =  strdup(attr);
+#else
+            this->attribute = _strdup(attr);
+#endif
+        }
+    }
+    else {
+#if defined (__GNUC__)
+        this->attribute =  strdup(attr);
+#else
+        this->attribute = _strdup(attr);
+#endif
+    }
 }
 
+void PyObjectBase::startNotify()
+{
+    if (this->attribute && this->parent) {
+        __setattr(this->parent, this->attribute, this);
+        if (PyErr_Occurred())
+            PyErr_Clear();
+    }
+}
