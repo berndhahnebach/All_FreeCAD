@@ -158,7 +158,7 @@ If color mapping is choosed, you must choose a color mapping file containing a t
            <string>if this is unchecked, texts/mtexts won't be imported</string>
           </property>
           <property name="text">
-           <string>Import texts</string>
+           <string>Import texts and dimensions</string>
           </property>
           <property name="prefEntry" stdset="0">
            <cstring>dxftext</cstring>

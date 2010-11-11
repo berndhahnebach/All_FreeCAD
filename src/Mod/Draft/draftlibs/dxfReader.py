@@ -224,7 +224,7 @@ def handleBlock(block, infile):
 	"""Special handler for dealing with nested table objects."""
 	item, name = get_name(block.data)
 	if name: # We should always find a name
-		block.data.remove(item)
+		# block.data.remove(item)
 		block.name = name
 	# This next bit is from handleObject
 	# handleObject should be generalized to work with any section like object

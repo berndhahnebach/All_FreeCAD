@@ -910,7 +910,11 @@ class Block:
         if self.name:
             self.name = self.name[0]
         else:
-            self.name = ''
+            self.name = obj.get_type(2)
+            if self.name:
+                self.name = self.name[0]
+            else:
+                self.name = 'blank'
             
         self.path = obj.get_type(1)
         if self.path:
