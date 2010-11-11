@@ -212,45 +212,25 @@ public:
     /** GetAttribute implementation
      *  This method implements the retriavel of object attributes.
      *  If you whant to implement attributes in your class, reimplement
-     *  this method, the FCDocument is a good expample.
+     *  this method.
      *  You have to call the method of the base class.
      *  Note: if you reimplement _gettattr() in a inheriting class you
      *  need to call the method of the base class! Otherwise even the 
      *  methods of the object will disapiear!
-     *  @see FCDocument
      */
     virtual PyObject *_getattr(char *attr);
     /// static wrapper for pythons _getattr()
-    static  PyObject *__getattr(PyObject * PyObj, char *attr) {     // This should be the entry in Type. 
-        if (!((PyObjectBase*) PyObj)->isValid()){
-            PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
-            return NULL;
-        }
-        return ((PyObjectBase*) PyObj)->_getattr(attr);
-    }
+    static  PyObject *__getattr(PyObject * PyObj, char *attr);
 
     /** SetAttribute implementation
      *  This method implements the seting of object attributes.
      *  If you whant to implement attributes in your class, reimplement
-     *  this method, the FCDocument is a good expample.
+     *  this method.
      *  You have to call the method of the base class.
-     *  @see FCDocument
      */
     virtual int _setattr(char *attr, PyObject *value);    // _setattr method
     /// static wrapper for pythons _setattr(). // This should be the entry in Type. 
-    static  int __setattr(PyObject *PyObj, char *attr, PyObject *value) { 
-        //FIXME: In general we don't allow to delete attributes (i.e. value=0). However, if we want to allow
-        //we must check then in _setattr() of all subclasses whether value is 0.
-        if ( value==0 ) {
-            PyErr_Format(PyExc_AttributeError, "Cannot delete attribute: '%s'", attr);
-            return -1;
-        }
-        else if (!((PyObjectBase*) PyObj)->isValid()){
-            PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
-            return -1;
-        }
-        return ((PyObjectBase*) PyObj)->_setattr(attr, value);
-    }
+    static  int __setattr(PyObject *PyObj, char *attr, PyObject *value);
 
     /** _repr method
     * Overide this method to return a string object with some
@@ -290,34 +270,13 @@ public:
         return ((PyObjectBase*) self)->PyInit(args, kwd);
     }
 
-
-    /** @name helper methods */
-    //@{
-    /// return a float from an int or float object, or throw.
-    static float getFloatFromPy(PyObject *value);
-  //@}
-//
-//	/// Type checking	
-//	bool IsA(PyTypeObject *T);
-//	/// Type checking
-//	bool IsA(const char *type_name);
-//
-//  /// Python type checking
-//	PyObject *isA(PyObject *args);
-//	/// static python wrapper
-//  
-//  static PyObject *sisA(PyObject *self, PyObject *args, PyObject *)
-//  {
-//    return ((PyObjectBase*)self)->isA(args);
-//  };
-
     void setInvalid() { 
         // first bit is not set, i.e. invalid
         StatusBits.reset(0);
         _pcTwinPointer = 0;
     }
 
-    bool isValid(void){
+    bool isValid() {
         return StatusBits.test(0);
     }
 
@@ -326,9 +285,12 @@ public:
         StatusBits.set(1);
     }
 
-    bool isConst(void){
+    bool isConst() {
         return StatusBits.test(1);
     }
+
+    void setAttributeOf(const char* attr, const PyObjectBase* par);
+    void startNotify();
 
     typedef void* PointerType ;
 
@@ -336,6 +298,8 @@ protected:
     std::bitset<32> StatusBits;
     /// pointer to the handled class
     void * _pcTwinPointer;
+    PyObjectBase* parent;
+    char* attribute;
 };
 
 
