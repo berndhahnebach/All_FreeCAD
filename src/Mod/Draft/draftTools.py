@@ -2508,6 +2508,7 @@ class Upgrade(Modifier):
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = Draft.getSelection()
+                newob = None
                 nodelete = False
 		edges = []
 		wires = []
@@ -2515,6 +2516,7 @@ class Upgrade(Modifier):
 		faces = []
                 groups = []
                 curves = []
+                facewires = []
 		# determining what we have in our selection
 		for ob in self.sel:
 			if ob.Type == "App::DocumentObjectGroup":
@@ -2523,6 +2525,7 @@ class Upgrade(Modifier):
                                 if ob.Shape.ShapeType == 'Edge': openwires.append(ob.Shape)
                                 for f in ob.Shape.Faces:
                                         faces.append(f)
+                                        facewires.extend(f.Wires)
                                 for w in ob.Shape.Wires:
                                         if w.isClosed():
                                                 wires.append(w)
@@ -2532,10 +2535,12 @@ class Upgrade(Modifier):
                                         if not isinstance(e.Curve,Part.Line):
                                                 curves.append(e)
                                 lastob = ob
+                # print "objects:",self.sel," edges:",edges," wires:",wires," openwires:",openwires," faces:",faces," groups:",groups," curves:",curves," facewires:",facewires
 		# applying transformation
 		self.doc.openTransaction("Upgrade")
                 if groups:
                         # if we have a group: turn each closed wire inside into a face
+                        msg(translate("draft", "Found groups: closing each open object inside\n"))
                         for grp in groups: 
                                 for ob in grp.Group:
                                         if not ob.Shape.Faces:
@@ -2543,15 +2548,14 @@ class Upgrade(Modifier):
                                                         newob = Draft.makeWire(w,closed=w.isClosed())
                                                         self.sel.append(ob)
                                                         grp.addObject(newob)
-                elif faces and (not openwires):
-                        # we have only faces
+                elif faces and (len(wires)+len(openwires)==len(facewires)):
+                        # we have exactly 2 objects: we fuse them
                         if (len(self.sel) == 2) and (not curves):
-                                # 2 objects: we fuse them
-                                if not curves:
-                                        newob = Draft.fuse(self.sel[0],self.sel[1])
-                                        nodelete = True
-                        else:
-                                # more than 2: we try the draft way: make one face out of them
+                                msg(translate("draft", "Found 2 objects: fusing them\n"))
+                                newob = Draft.fuse(self.sel[0],self.sel[1])
+                                nodelete = True
+                        elif (len(self.sel) > 2) or (len(faces) > 1):
+                                # more than 2 objects or faces: we try the draft way: make one face out of them
                                 u = faces.pop(0)
                                 for f in faces:
                                         u = u.fuse(f)
@@ -2562,31 +2566,48 @@ class Upgrade(Modifier):
                                                 f = True
                                         u = fcgeo.concatenate(u)
                                         if not curves:
+                                                msg(translate("draft", "Found 2 objects or faces: making a parametric face\n"))
                                                 newob = Draft.makeWire(u.Wires[0],closed=True,face=f)
                                                 Draft.formatObject(newob,lastob)
                                         else:
                                                 # if not possible, we do a non-parametric union
+                                                msg(translate("draft", "Found 2 objects containing curves: fusing them\n"))
                                                 newob = self.doc.addObject("Part::Feature","Union")
                                                 newob.Shape = u
                                                 Draft.formatObject(newob,lastob)
                                 else:
                                         # if not possible, we do a non-parametric union
+                                        msg(translate("draft", "Found 2 objects: fusing them\n"))
                                         newob = self.doc.addObject("Part::Feature","Union")
                                         newob.Shape = u
                                         Draft.formatObject(newob,lastob)
+                        elif len(self.sel) == 1:
+                                # only one object: if not parametric, we "draftify" it
+                                nodelete = True
+                                if (not("Base" in self.sel[0].PropertiesList)) and (not curves):
+                                        msg(translate("draft", "Found 1 non-parametric objects: draftifying it\n"))
+                                        Draft.draftify(self.sel[0])
+                                        
                 elif wires and (not faces) and (not openwires):
-                        # only closed wires
-                        for w in wires:
-                                f = Part.Face(w)
-                                faces.append(f)
-                        for f in faces:
-                                if not curves: 
-                                        newob = Draft.makeWire(f.Wire,closed=True)
-                                else:
-                                        # if there are curved segments, we do a non-parametric face
-                                        newob = self.doc.addObject("Part::Feature","Face")
-                                        newob.Shape = f
-                                        Draft.formatObject(newob,lastob)
+                        if (len(self.sel) == 1) and self.sel[0].isDerivedFrom("Sketcher::SketchObject") and (not curves):
+                                msg(translate("draft", "Found 1 closed sketch object: making a face from it\n"))
+                                newob = Draft.makeWire(self.sel[0].Shape.Wires[0],closed=True)
+                                self.sel[0].ViewObject.Visibility = False
+                                nodelete = True
+                        else:
+                                # only closed wires
+                                for w in wires:
+                                        f = Part.Face(w)
+                                        faces.append(f)
+                                for f in faces:
+                                        if not curves: 
+                                                newob = Draft.makeWire(f.Wire,closed=True)
+                                        else:
+                                                # if there are curved segments, we do a non-parametric face
+                                                msg(translate("draft", "Found closed wires: making faces\n"))
+                                                newob = self.doc.addObject("Part::Feature","Face")
+                                                newob.Shape = f
+                                                Draft.formatObject(newob,lastob)
                 elif (len(openwires) == 1) and (not faces) and (not wires):
                         # special case, we have only one open wire. We close it!"
                         p0 = openwires[0].Vertexes[0].Point
@@ -2594,6 +2615,7 @@ class Upgrade(Modifier):
                         edges = openwires[0].Edges
                         edges.append(Part.Line(p1,p0).toShape())
                         w = Part.Wire(fcgeo.sortEdges(edges))
+                        msg(translate("draft", "Found 1 open wire: closing it\n"))
                         if not curves:
                                 newob = Draft.makeWire(w,closed=True)
                         else:
@@ -2609,6 +2631,7 @@ class Upgrade(Modifier):
                         newob = None
                         w = Part.Wire(fcgeo.sortEdges(edges[:]))
                         if len(w.Edges) == len(edges):
+                                msg(translate("draft", "Found several edges: wiring them\n"))
                                 if not curves:
                                         newob = Draft.makeWire(w)
                                 else:
@@ -2617,17 +2640,19 @@ class Upgrade(Modifier):
                                         Draft.formatObject(newob,lastob)
                         if not newob:
                                 print "no new object found"
+                                msg(translate("draft", "Found several non-connected edges: making compound\n"))
                                 newob = self.compound()
                                 Draft.formatObject(newob,lastob)
                 else:
-                       newob = self.compound()
-                       Draft.formatObject(newob,lastob) 
+                        msg(translate("draft", "Found several non-treatable objects: making compound\n"))
+                        newob = self.compound()
+                        Draft.formatObject(newob,lastob) 
                 if not nodelete:
                         for ob in self.sel:
                                 if not ob.Type == "App::DocumentObjectGroup":
                                         self.doc.removeObject(ob.Name)
 		self.doc.commitTransaction()
-		Draft.select(newob)
+		if newob: Draft.select(newob)
 		Modifier.finish(self)
 				
 class Downgrade(Modifier):
@@ -2670,19 +2695,30 @@ class Downgrade(Modifier):
                         lastob = ob
 		# applying transformation
 		self.doc.openTransaction("Downgrade")
+                if len(self.sel) == 1:
+                        # special case, we have one parametric object: we "de-parametrize" it
+                        if (self.sel[0].isDerivedFrom("Part::Feature")) and ("Base" in self.sel[0].PropertiesList):
+                                msg(translate("draft", "Found 1 parametric object: breaking its dependencies\n"))
+                                Draft.shapify(self.sel[0])
+                                self.doc.commitTransaction()
+                                Modifier.finish(self)
+                                return
                 if len(self.sel) == 2:
                         # we have only 2 objects: cut 2nd from 1st
+                        msg(translate("draft", "Found 2 objects: subtracting them\n"))
                         newob = Draft.cut(self.sel[0],self.sel[1])
 		elif (len(faces) > 1):
 			if len(self.sel) == 1:
                                 # one object with several faces: split it
 				for f in faces:
+                                        msg(translate("draft", "Found several faces: splitting them\n"))
 					newob = self.doc.addObject("Part::Feature","Face")
 					newob.Shape = f
 					Draft.formatObject(newob,self.sel[0])
 				self.doc.removeObject(ob.Name)
 			else:
                                 # several objects: remove all the faces from the first one
+                                msg(translate("draft", "Found several objects: subtracting them from the first one\n"))
 				u = faces.pop(0)
 				for f in faces:
 					u = u.cut(f)
@@ -2693,6 +2729,7 @@ class Downgrade(Modifier):
 					self.doc.removeObject(ob.Name)
 		elif (len(faces) > 0):
                         # only one face: we extract its wires
+                        msg(translate("draft", "Found 1 face: extracting its wires\n"))
 			for w in faces[0].Wires:
                                 newob = self.doc.addObject("Part::Feature","Wire")
 				newob.Shape = w
@@ -2701,6 +2738,7 @@ class Downgrade(Modifier):
 				self.doc.removeObject(ob.Name)
 		else:
                         # no faces: split wire into single edges
+                        msg(translate("draft", "Found only wires: extracting their edges\n"))
 			for ob in self.sel:
 				for e in edges:
 					newob = self.doc.addObject("Part::Feature","Edge")
