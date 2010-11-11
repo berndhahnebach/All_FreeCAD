@@ -62,8 +62,8 @@ class FemWorkbench ( Workbench ):
 
 	def Initialize(self):
 		# load the module
-		import FemGui
 		import Fem
+		import FemGui
 	def GetClassName(self):
 		return "FemGui::Workbench"
 
