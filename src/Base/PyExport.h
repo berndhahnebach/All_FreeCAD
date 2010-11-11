@@ -111,7 +111,7 @@ class PyObjectBase;
  *  not destructed. That means a PyObjectBase derived object you can
  *  only destruct by destructing all FCPyHandle and all python
  *  references on it!
- *  @see PyObjectBase,FCDocument
+ *  @see PyObjectBase
  */
 template <class HandledType>
 class PyHandle

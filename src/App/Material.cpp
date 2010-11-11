@@ -28,7 +28,6 @@
 
 #include <Base/Exception.h>
 #include "Material.h"
-#include "MaterialPy.h"
 
 using namespace App;
 
@@ -36,29 +35,24 @@ using namespace App;
 //===========================================================================
 // Material
 //===========================================================================
-Material::Material(void) : _materialPy(0)
+Material::Material(void)
 {
   setType(STEEL);
   setType(USER_DEFINED);
 }
 
-Material::Material(const char* MatName) : _materialPy(0)
+Material::Material(const char* MatName)
 {
   set(MatName);
 }
 
-Material::Material(const MaterialType MatType) : _materialPy(0)
+Material::Material(const MaterialType MatType)
 {
   setType(MatType);
 }
 
 Material::~Material() 
 {
-  if ( _materialPy )
-  {
-    _materialPy->setInvalid();
-    _materialPy->DecRef();
-  }
 }
 
 void Material::set(const char* MatName)

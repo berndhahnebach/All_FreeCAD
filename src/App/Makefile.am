@@ -7,6 +7,7 @@ BUILT_SOURCES=\
 		DocumentObjectPy.cpp \
 		DocumentPy.cpp \
 		FeaturePythonPy.cpp \
+		MaterialPy.cpp \
 		PropertyContainerPy.cpp \
 		InitScript.h \
 		TestScript.h
@@ -17,6 +18,7 @@ libFreeCADApp_la_BUILT=\
 		DocumentObjectPy.h \
 		DocumentPy.h \
 		FeaturePythonPy.h \
+		MaterialPy.h \
 		PropertyContainerPy.h
 
 libFreeCADApp_la_SOURCES=\
@@ -44,7 +46,7 @@ libFreeCADApp_la_SOURCES=\
 		InventorObject.cpp \
 		VRMLObject.cpp \
 		Material.cpp \
-		MaterialPy.cpp \
+		MaterialPyImp.cpp \
 		MeasureDistance.cpp \
 		Placement.cpp \
 		PreCompiled.cpp \
@@ -81,7 +83,6 @@ include_HEADERS=\
 		InventorObject.h \
 		VRMLObject.h \
 		Material.h \
-		MaterialPy.h \
 		MeasureDistance.h \
 		Placement.h \
 		Property.h \
@@ -127,6 +128,7 @@ EXTRA_DIST = \
 		DocumentObjectPy.xml \
 		DocumentPy.xml \
 		FeaturePythonPy.xml \
+		MaterialPy.xml \
 		PropertyContainerPy.xml \
 		core-app.dox \
 		CMakeLists.txt \

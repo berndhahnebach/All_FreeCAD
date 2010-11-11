@@ -1794,14 +1794,13 @@ void PropertyMaterial::setTransparency(float val)
 
 PyObject *PropertyMaterial::getPyObject(void)
 {
-    return new MaterialPy(&_cMat);
+    return new MaterialPy(new Material(_cMat));
 }
 
 void PropertyMaterial::setPyObject(PyObject *value)
 {
     if (PyObject_TypeCheck(value, &(MaterialPy::Type))) {
-        MaterialPy  *pcObject = (MaterialPy*)value;
-        setValue( *pcObject->_pcMaterial );
+        setValue(*static_cast<MaterialPy*>(value)->getMaterialPtr());
     }
     else {
         std::string error = std::string("type must be 'Material', not ");

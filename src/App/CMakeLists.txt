@@ -33,6 +33,7 @@ generate_from_xml(DocumentObjectGroupPy)
 generate_from_xml(FeaturePythonPy)
 generate_from_xml(ComplexGeoDataPy)
 generate_from_xml(PropertyContainerPy)
+generate_from_xml(MaterialPy)
 
 generate_from_py(FreeCADInit InitScript.h)
 generate_from_py(FreeCADTest TestScript.h)
@@ -44,6 +45,7 @@ SET(FreeCADApp_XML_SRCS
     FeaturePythonPy.xml
     PropertyContainerPy.xml
     ComplexGeoDataPy.xml
+    MaterialPy.xml
 )
 SOURCE_GROUP("XML" FILES ${FreeCADApp_XML_SRCS})
 
@@ -130,7 +132,7 @@ SET(FreeCADApp_CPP_SRCS
     ComplexGeoData.cpp
     ComplexGeoDataPyImp.cpp
     Material.cpp
-    MaterialPy.cpp
+    MaterialPyImp.cpp
 )
 
 SET(FreeCADApp_HPP_SRCS
@@ -140,7 +142,6 @@ SET(FreeCADApp_HPP_SRCS
     ColorModel.h
     ComplexGeoData.h
     Material.h
-    MaterialPy.h
 )
 
 SET(FreeCADApp_SRCS
