@@ -48,8 +48,8 @@ CmdFemCreateFromShape::CmdFemCreateFromShape()
 {
     sAppModule      = "Fem";
     sGroup          = QT_TR_NOOP("Fem");
-    sMenuText       = QT_TR_NOOP("Place robot...");
-    sToolTipText    = QT_TR_NOOP("Place a robot (experimental!)");
+    sMenuText       = QT_TR_NOOP("Create FEM mesh");
+    sToolTipText    = QT_TR_NOOP("Create FEM mesh from shape");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Fem_FemMesh";
