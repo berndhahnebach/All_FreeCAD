@@ -32,6 +32,7 @@
             <File Id="importDXFPy" Name="importDXF.py" DiskId="1" />
             <File Id="importOCAPy" Name="importOCA.py" DiskId="1" />
             <File Id="importSVGPy" Name="importSVG.py" DiskId="1" />
+            <File Id="importAirfoilDATPy" Name="importAirfoilDAT.py" DiskId="1" />
             <File Id="WorkingPlanePy" Name="WorkingPlane.py" DiskId="1" />
             <File Id="macrosPy" Name="macros.py" DiskId="1" />
             <File Id="userprefsBaseUi" Name="userprefs-base.ui" DiskId="1" />
