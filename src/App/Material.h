@@ -32,7 +32,7 @@
 
 namespace Base
 {
-  class PyObjectBase;
+    class PyObjectBase;
 }
 
 namespace App
@@ -113,7 +113,6 @@ public:
 
 /** Material class
  */
-class MaterialPy;
 class AppExport Material
 {
 public:
@@ -211,7 +210,6 @@ public:
   //@}
 
 private:
-  MaterialPy* _materialPy;
   MaterialType _matType;
 };
 

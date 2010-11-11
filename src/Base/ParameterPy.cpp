@@ -121,7 +121,6 @@ public:
     PYFUNCDEF_D (ParameterGrpPy,exportTo);
 
 protected:
-    /// Pointer to the FCDocument where the label comes from 
     Base::Reference<ParameterGrp> _cParamGrp;
 };
 

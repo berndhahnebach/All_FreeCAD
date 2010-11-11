@@ -303,11 +303,6 @@ PyObject*  DocumentPy::supportedTypes(PyObject *args)
     return Py::new_reference_to(res);
 }
 
-void  DocumentPy::setActiveObject(Py::Object /*arg*/)
-{
-    throw Py::AttributeError("'Document' object attribute 'ActiveObject' is read-only");
-}
-
 Py::List DocumentPy::getObjects(void) const 
 {
     std::vector<DocumentObject*> objs = getDocumentPtr()->getObjects();
