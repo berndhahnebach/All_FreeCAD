@@ -412,7 +412,7 @@ def makeText(stringslist,point=Vector(0,0,0),screen=False):
         typecheck([(point,Vector)], "makeText")
         if not isinstance(stringslist,list): stringslist = [stringslist]
         textbuffer = []
-        for l in stringslist: textbuffer.append(str(l).encode('latin1'))
+        for l in stringslist: textbuffer.append(unicode(l).encode('latin1'))
         obj=FreeCAD.ActiveDocument.addObject("App::Annotation","Text")
         obj.LabelText=textbuffer
         obj.Position=point

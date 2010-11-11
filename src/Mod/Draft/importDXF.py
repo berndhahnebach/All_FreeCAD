@@ -1,4 +1,6 @@
 
+# -*- coding: utf8 -*-
+
 #***************************************************************************
 #*                                                                         *
 #*   Copyright (c) 2009 Yorik van Havre <yorik@gmx.fr>                     *
@@ -55,7 +57,6 @@ pythonopen = open # to distinguish python built-in open function from the one de
 def decodeName(name):
 	"decodes encoded strings"
 	try:
-                print "decoding",name
 		decodedName = (name.decode("utf8"))
 	except UnicodeDecodeError:
 		try:
@@ -63,7 +64,6 @@ def decodeName(name):
 		except UnicodeDecodeError:
 			print "dxf: error: couldn't determine character encoding"
 			decodedName = name
-        print decodedName
 	return decodedName
 
 def locateLayer(wantedLayer):
@@ -333,6 +333,37 @@ def drawCircle(circle):
 	except: warn(circle)
 	return None
 
+def drawSolid(solid):
+        "returns a Part shape from a dxf solid"
+        p4 = None
+        p1x = rawValue(solid,10)
+        p1y = rawValue(solid,20)
+        p1z = rawValue(solid,30) or 0
+        p2x = rawValue(solid,11)
+        p2y = rawValue(solid,21)
+        p2z = rawValue(solid,31) or p1z
+        p3x = rawValue(solid,12)
+        p3y = rawValue(solid,22)
+        p3z = rawValue(solid,32) or p1z
+        p4x = rawValue(solid,13)
+        p4y = rawValue(solid,23)
+        p4z = rawValue(solid,33) or p1z
+        p1 = FreeCAD.Vector(p1x,p1y,p1z)
+        p2 = FreeCAD.Vector(p2x,p2y,p2z)
+        p3 = FreeCAD.Vector(p3x,p3y,p3z)
+        if p4x != None: p4 = FreeCAD.Vector(p4x,p4y,p4z)
+        if p4 and (p4 != p3) and (p4 != p2) and (p4 != p1):
+                try:
+                        return Part.Face(Part.makePolygon([p1,p2,p3,p4,p1]))
+                except:
+                        warn(solid)
+        else:
+                try:
+                        return Part.Face(Part.makePolygon([p1,p2,p3,p1]))
+                except:
+                        warn(solid)
+        return None
+
 def drawBlock(blockref):
 	"returns a shape from a dxf block reference"
 	shapes = []
@@ -352,8 +383,18 @@ def drawBlock(blockref):
 		s = drawCircle(circle)
 		if s: shapes.append(s)
 	for insert in blockref.entities.get_type('insert'):
+                print "found insert ",insert.block
 		s = drawInsert(insert)
 		if s: shapes.append(s)
+        for solid in blockref.entities.get_type('solid'):
+		s = drawSolid(solid)
+		if s: shapes.append(s)
+        for text in blockref.entities.get_type('text'):
+                if fmt.dxflayout or (not rawValue(text,67)):
+                        addText(text)
+        for text in blockref.entities.get_type('mtext'):
+                if fmt.dxflayout or (not rawValue(text,67)):
+                        addText(text)
 	try: shape = Part.makeCompound(shapes)
 	except: warn(blockref)
 	if shape:
@@ -429,7 +470,11 @@ def addText(text,attrib=False):
         if val:
                 newob=doc.addObject("App::Annotation","Text")
                 lay.addObject(newob)
-                newob.LabelText = re.sub('{([^!}]([^}]|\n)*)}', '', val) 
+                val = re.sub('{([^!}]([^}]|\n)*)}', '', val)
+                val = re.sub('%%d','°',val)
+                val = re.sub('%%c','Ø',val)
+                val = val.decode("Latin1").encode("Latin1")
+                newob.LabelText = val
                 newob.Position = pos
                 if gui:
                         newob.ViewObject.FontSize=float(hgt)
@@ -522,6 +567,17 @@ def processdxf(document,filename):
                                 newob = addObject(shape,"Circle",circle.layer)
                                 if gui: fmt.formatObject(newob,circle)
 
+        # drawing solids
+
+	solids = drawing.entities.get_type("solid")
+	if solids: FreeCAD.Console.PrintMessage("drawing "+str(len(circles))+" solids...\n")
+	for solid in solids:
+                if fmt.dxflayout or (not rawValue(solid,67)):
+                        shape = drawSolid(solid)
+                        if shape:
+                                newob = addObject(shape,"Solid",solid.layer)
+                                if gui: fmt.formatObject(newob,solid)
+
 	# drawing texts
 
 	if fmt.paramtext:
@@ -597,14 +653,14 @@ def processdxf(document,filename):
                                         newinserts.append(i)
                 inserts = newinserts
 	if inserts:
-		FreeCAD.Console.PrintMessage("drawing "+str(len(dims))+" blocks...\n")
+		FreeCAD.Console.PrintMessage("drawing "+str(len(inserts))+" blocks...\n")
 		blockrefs = drawing.blocks.data
 		for ref in blockrefs:
 			drawBlock(ref)
 		for insert in inserts:
 			shape = drawInsert(insert)
 			if shape:
-				newob = addObject(shape,"Block",insert.layer)
+				newob = addObject(shape,"Block."+insert.block,insert.layer)
 				if gui: fmt.formatObject(newob,insert)
 
 	# finishing
