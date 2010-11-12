@@ -163,7 +163,7 @@ void MeshFaceAddition::startEditing(MeshGui::ViewProviderMesh* vp)
     faceView->attach(vp->getObject());
     viewer->addViewProvider(faceView);
     faceView->mesh->startEditing();
-    viewer->addEventCallback(SoEvent::getClassTypeId(),
+    viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(),
         MeshFaceAddition::addFacetCallback, this);
 }
 
@@ -176,7 +176,7 @@ void MeshFaceAddition::finishEditing()
 
     viewer->removeViewProvider(faceView);
     faceView->mesh->finishEditing();
-    viewer->removeEventCallback(SoEvent::getClassTypeId(),
+    viewer->removeEventCallback(SoMouseButtonEvent::getClassTypeId(),
         MeshFaceAddition::addFacetCallback, this);
     this->deleteLater();
 }
@@ -321,16 +321,6 @@ void MeshFaceAddition::addFacetCallback(void * ud, SoEventCallback * n)
             if (act == fin) {
                 QTimer::singleShot(300, that, SLOT(finishEditing()));
             }
-        }
-    }
-    // toogle between picking and navigation mode
-    else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-        const SoKeyboardEvent * const ke = static_cast<const SoKeyboardEvent *>(ev);
-        if (ke->getState() == SoButtonEvent::DOWN &&
-            ke->getKey() == SoKeyboardEvent::ESCAPE) {
-            SbBool toggle = view->isRedirectedToSceneGraph();
-            view->setRedirectToSceneGraph(!toggle);
-            n->setHandled();
         }
     }
 }

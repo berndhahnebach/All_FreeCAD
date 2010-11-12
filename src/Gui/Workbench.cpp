@@ -475,7 +475,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
           << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane"
           << "Std_TextureMapping" << "Separator" << visu
-          << "Std_ToggleVisibility" << "Std_SetAppearance" << "Std_RandomColor" << "Separator" 
+          << "Std_ToggleVisibility" << "Std_ToggleNavigation"
+          << "Std_SetAppearance" << "Std_RandomColor" << "Separator" 
           << "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
           << "Std_ViewStatusBar" << "Std_UserInterface";

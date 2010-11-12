@@ -551,16 +551,6 @@ void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback
             Gui::getMainWindow()->setPaneText(1,QString::fromAscii(info.c_str()));
         }
     }
-    // toogle between inspection and navigation mode
-    else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-        const SoKeyboardEvent * const ke = static_cast<const SoKeyboardEvent *>(ev);
-        if (ke->getState() == SoButtonEvent::DOWN &&
-            ke->getKey() == SoKeyboardEvent::ESCAPE) {
-            SbBool toggle = view->isRedirectedToSceneGraph();
-            view->setRedirectToSceneGraph(!toggle);
-            n->setHandled();
-        }
-    }
 }
 
 std::string ViewProviderMeshCurvature::curvatureInfo(bool detail, int index1, int index2, int index3) const

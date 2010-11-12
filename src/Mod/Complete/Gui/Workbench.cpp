@@ -101,7 +101,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *file << "Std_New" << "Std_Open" << "Separator" << "Std_CloseActiveWindow"
           << "Std_CloseAllWindows" << "Separator" << "Std_Save" << "Std_SaveAs"
           << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
-        //<< "Separator" << "Std_Print" << "Std_PrintPdf"
+          << "Separator" << "Std_Print" << "Std_PrintPdf"
           << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
 
     // Edit
@@ -136,7 +136,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* visu = new Gui::MenuItem;
     visu->setCommand("Visibility");
     *visu << "Std_ToggleVisibility" << "Std_ShowSelection" << "Std_HideSelection"
-          << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects";
+          << "Separator" << "Std_ToggleObjects" << "Std_ShowObjects" << "Std_HideObjects"
+          << "Separator" << "Std_ToggleSelectability";
 
     // View
     Gui::MenuItem* view = new Gui::MenuItem( menuBar );
@@ -145,17 +146,20 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
           << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane"
           << "Std_TextureMapping" << "Separator" << visu
-          << "Std_SetAppearance" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
-          //<< "Std_MeasureDistance" << "Separator" 
+          << "Std_ToggleVisibility" << "Std_ToggleNavigation"
+          << "Std_SetAppearance" << "Std_RandomColor" << "Separator" 
+          << "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
-          << "Std_ViewStatusBar" << "Std_UserInterface";
+          << "Std_ViewStatusBar";
 
     // Tools
     Gui::MenuItem* tool = new Gui::MenuItem( menuBar );
     tool->setCommand("&Tools");
-    *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
-          << "Std_MacroStopRecord" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
-          << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
+    *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator"
+          << "Std_DlgMacroRecord" << "Std_MacroStopRecord"
+          << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
+          << "Separator" << "Std_ViewScreenShot" << "Std_SceneInspector"
+          << "Std_DemoMode" << "Separator" << "Std_DlgCustomize";
 
     // Mesh ****************************************************************************************************
     Gui::MenuItem* mesh = new Gui::MenuItem( menuBar );
@@ -190,10 +194,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Mesh_FillupHoles" 
           << "Mesh_FillInteractiveHole" 
           << "Mesh_RemoveComponents"
-          << "Mesh_RemoveCompByHand" 
+          << "Mesh_RemoveCompByHand"
+          << "Mesh_AddFacet"
+          << "Mesh_Smoothing"
           << "Separator" 
           << "Mesh_BuildRegularSolid" 
           << boolean << "Separator" 
+          << "Mesh_PolySelect"
           << "Mesh_PolyCut"
           << "Mesh_PolySplit" 
           << "Mesh_PolySegm" 

@@ -1291,6 +1291,44 @@ bool StdCmdViewCreate::isActive(void)
 }
 
 //===========================================================================
+// Std_ToggleNavigation
+//===========================================================================
+DEF_STD_CMD_A(StdCmdToggleNavigation);
+
+StdCmdToggleNavigation::StdCmdToggleNavigation()
+  : Command("Std_ToggleNavigation")
+{
+    sGroup        = QT_TR_NOOP("Standard-View");
+    sMenuText     = QT_TR_NOOP("Toggle navigation/Edit mode");
+    sToolTipText  = QT_TR_NOOP("Toggle between navigation and edit mode");
+    sStatusTip    = QT_TR_NOOP("Toggle between navigation and edit mode");
+    sWhatsThis    = "Std_ToggleNavigation";
+  //iAccel        = Qt::SHIFT+Qt::Key_Space;
+    iAccel        = Qt::Key_Escape;
+    eType         = Alter3DView;
+}
+
+void StdCmdToggleNavigation::activated(int iMsg)
+{
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        SbBool toggle = viewer->isRedirectedToSceneGraph();
+        viewer->setRedirectToSceneGraph(!toggle);
+    }
+}
+
+bool StdCmdToggleNavigation::isActive(void)
+{
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return viewer->isEditing();
+    }
+    return false;
+}
+
+//===========================================================================
 // Std_ViewExample1
 //===========================================================================
 DEF_STD_CMD_A(StdCmdViewExample1);
@@ -1892,6 +1930,7 @@ void CreateViewStdCommands(void)
     rcCmdMgr.addCommand(new StdCmdSceneInspector());
     rcCmdMgr.addCommand(new StdCmdTextureMapping());
     rcCmdMgr.addCommand(new StdCmdDemoMode());
+    rcCmdMgr.addCommand(new StdCmdToggleNavigation());
 }
 
 } // namespace Gui
