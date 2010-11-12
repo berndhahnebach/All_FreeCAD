@@ -361,14 +361,14 @@ void FemMesh::compute()
     myGen->Compute(*myMesh, myMesh->GetShapeToMesh());
 }
 
-void FemMesh::readNastran(const std::string Filename)
+void FemMesh::readNastran(const std::string &Filename)
 {
 	std::ifstream inputfile;
 	inputfile.open(Filename.c_str());
 	inputfile.seekg(std::ifstream::beg);
 	std::string line1,line2,temp;
-	Base::Vector3f current_node;
-	std::vector<Base::Vector3f> vertices;
+	Base::Vector3d current_node;
+	std::vector<Base::Vector3d> vertices;
 	vertices.clear();
 	std::vector<unsigned int> tetra_element;
 	std::vector<std::vector<unsigned int> > all_elements;
@@ -421,7 +421,7 @@ void FemMesh::readNastran(const std::string Filename)
 	inputfile.close();
 
 	//Now fill the SMESH datastructure
-	std::vector<Base::Vector3f>::const_iterator anodeiterator;
+	std::vector<Base::Vector3d>::const_iterator anodeiterator;
 	SMESHDS_Mesh* meshds = this->myMesh->GetMeshDS();
 	meshds->ClearMesh();
 	int j=1;
@@ -482,7 +482,7 @@ void FemMesh::read(const char *FileName)
         throw Base::Exception("Unknown extension");
     }
 }
-void FemMesh::writeABAQUS(const std::string Filename)
+void FemMesh::writeABAQUS(const std::string &Filename) const
 {
 	std::ofstream anABAQUS_Output;
 	anABAQUS_Output.open(Filename.c_str());
@@ -500,12 +500,13 @@ void FemMesh::writeABAQUS(const std::string Filename)
 
 	anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
 	SMDS_VolumeIteratorPtr aVolIter = myMesh->GetMeshDS()->volumesIterator();
+	int j=1;
 	for (;aVolIter->more();) {
 		const SMDS_MeshVolume* aVol = aVolIter->next();
 		switch (aVol->NbNodes()) {
 			case 10:
 				anABAQUS_Output 
-					<<aVol->GetID()<<","
+					<<j<<","
 					<<aVol->GetNode(0)->GetID()<<","
 					<<aVol->GetNode(1)->GetID()<<","
 					<<aVol->GetNode(2)->GetID()<<","
@@ -516,6 +517,7 @@ void FemMesh::writeABAQUS(const std::string Filename)
 					<<aVol->GetNode(7)->GetID()<<","
 					<<aVol->GetNode(8)->GetID()<<","
 					<<aVol->GetNode(9)->GetID()<<std::endl;
+				j++;
 				break;
 		}
 	}
