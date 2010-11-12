@@ -398,38 +398,38 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		anOutput << seconds2-seconds1 << " seconds for the Mesh Export" << std::endl;
 
 		//Output also to ABAQUS Input Format
-		//ofstream anABAQUS_Output;
-		//anABAQUS_Output.open("c:/abaqus_output.inp");
-		//anABAQUS_Output << "*Node , NSET=Nall" << std::endl;
-		//j=1;
-		//for(anodeiterator.Begin(); anodeiterator.More(); anodeiterator.Next())
-		//{
-		//	anABAQUS_Output << j <<","
-		//   <<(*anodeiterator).x << "," 
-		//   <<(*anodeiterator).y << ","
-		//   <<(*anodeiterator).z << std::endl;
-		//	j++;
-		//}
-		//anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
-		//j=1;
-		//for(int i=0;i<all_elements.size();i++)
-		//{
-		//	//In ABAQUS input format a maximum of 15 Nodes per line is allowed
-		//	anABAQUS_Output 
-		//	<<j <<","
-		//	<<all_elements[i][0]<<","
-		//	<<all_elements[i][1]<<","
-		//	<<all_elements[i][2]<<","
-		//	<<all_elements[i][3]<<","
-		//	<<all_elements[i][4]<<","
-		//	<<all_elements[i][5]<<","
-		//	<<all_elements[i][6]<<","
-		//	<<all_elements[i][7]<<","
-		//	<<all_elements[i][8]<<","
-		//	<<all_elements[i][9]<<std::endl;
-		//	j++;
-		//}
-		//anABAQUS_Output.close();
+		ofstream anABAQUS_Output;
+		anABAQUS_Output.open("d:/abaqus_output.inp");
+		anABAQUS_Output << "*Node , NSET=Nall" << std::endl;
+		j=1;
+		for(anodeiterator.Begin(); anodeiterator.More(); anodeiterator.Next())
+		{
+			anABAQUS_Output << j <<","
+		   <<(*anodeiterator).x << "," 
+		   <<(*anodeiterator).y << ","
+		   <<(*anodeiterator).z << std::endl;
+			j++;
+		}
+		anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
+		j=1;
+		for(int i=0;i<all_elements.size();i++)
+		{
+			//In ABAQUS input format a maximum of 15 Nodes per line is allowed
+			anABAQUS_Output 
+			<<j <<","
+			<<all_elements[i][0]<<","
+			<<all_elements[i][1]<<","
+			<<all_elements[i][2]<<","
+			<<all_elements[i][3]<<","
+			<<all_elements[i][4]<<","
+			<<all_elements[i][5]<<","
+			<<all_elements[i][6]<<","
+			<<all_elements[i][7]<<","
+			<<all_elements[i][8]<<","
+			<<all_elements[i][9]<<std::endl;
+			j++;
+		}
+		anABAQUS_Output.close();
 		/////////////////////////////////////////////////////////////////////////////
 
 
