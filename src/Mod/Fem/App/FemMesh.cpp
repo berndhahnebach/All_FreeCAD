@@ -500,28 +500,24 @@ void FemMesh::writeABAQUS(const std::string &Filename) const
 
 	anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
 	SMDS_VolumeIteratorPtr aVolIter = myMesh->GetMeshDS()->volumesIterator();
-	int j=1;
+
 	for (;aVolIter->more();) {
 		const SMDS_MeshVolume* aVol = aVolIter->next();
-		switch (aVol->NbNodes()) {
-			case 10:
-				anABAQUS_Output 
-					<<j<<","
-					<<aVol->GetNode(0)->GetID()<<","
-					<<aVol->GetNode(1)->GetID()<<","
-					<<aVol->GetNode(2)->GetID()<<","
-					<<aVol->GetNode(3)->GetID()<<","
-					<<aVol->GetNode(4)->GetID()<<","
-					<<aVol->GetNode(5)->GetID()<<","
-					<<aVol->GetNode(6)->GetID()<<","
-					<<aVol->GetNode(7)->GetID()<<","
-					<<aVol->GetNode(8)->GetID()<<","
-					<<aVol->GetNode(9)->GetID()<<std::endl;
-				j++;
-				break;
-		}
+		//Dont ask about the order in which we have to output the SMESH structure
+		//I absolute dont understand the scheme behind it but somehow its working like this
+		anABAQUS_Output 
+		<<aVol->GetID()<<","
+		<<aVol->GetNode(0)->GetID()<<","
+		<<aVol->GetNode(2)->GetID()<<","
+		<<aVol->GetNode(1)->GetID()<<","
+		<<aVol->GetNode(3)->GetID()<<","
+		<<aVol->GetNode(6)->GetID()<<","
+		<<aVol->GetNode(5)->GetID()<<","
+		<<aVol->GetNode(4)->GetID()<<","
+		<<aVol->GetNode(8)->GetID()<<","
+		<<aVol->GetNode(9)->GetID()<<","
+		<<aVol->GetNode(7)->GetID()<<std::endl;
 	}
-
 	anABAQUS_Output.close();
 }
 
