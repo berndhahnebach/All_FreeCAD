@@ -36,6 +36,7 @@
 #include "Vector3D.h"
 #include "Matrix.h"
 #include "Console.h"
+#include "Tools.h"
 
 using namespace Base;
 
@@ -330,23 +331,35 @@ void Builder3D::saveToFile(const char* FileName)
 // -----------------------------------------------------------------------------
 
 InventorBuilder::InventorBuilder(std::ostream& output)
-  :result(output),bStartEndOpen(false),bClosed(false)
+  : result(output),bStartEndOpen(false),bClosed(false), indent(2)
 {
-  result << "#Inventor V2.1 ascii " << std::endl << std::endl;
-  result << "Separator { " << std::endl;
+    result << "#Inventor V2.1 ascii " << std::endl << std::endl;
+    result << "Separator { " << std::endl;
 }
 
 InventorBuilder:: ~InventorBuilder()
 {
-  close();
+    close();
 }
 
 void InventorBuilder::close()
 {
-  if (!bClosed) {
-    bClosed = true;
-    result <<   "} " << std::endl;
-  }
+    if (!bClosed) {
+        bClosed = true;
+        result <<   "} " << std::endl;
+    }
+}
+
+void InventorBuilder::beginSeparator()
+{
+    result << Base::blanks(indent) << "Separator { " << std::endl;
+    indent+=2;
+}
+
+void InventorBuilder::endSeparator()
+{
+    indent-=2;
+    result << Base::blanks(indent) << "}" << std::endl;
 }
 
 //**************************************************************************
@@ -721,6 +734,15 @@ void InventorBuilder::addNurbsSurface(const std::vector<Base::Vector3f>& control
     result << " ]" << std::endl
            << "    }" << std::endl
            << "  }" << std::endl;
+}
+
+void InventorBuilder::addCylinder(float radius, float height)
+{
+    result << "Cylinder {\n"
+           << "  radius " << radius << "\n"
+           << "  height " << height << "\n"
+           << "  parts (SIDES | TOP | BOTTOM)\n"
+           << "}\n";
 }
 
 void InventorBuilder::addBoundingBox(const Vector3f& pt1, const Vector3f& pt2, short lineWidth,

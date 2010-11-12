@@ -180,13 +180,13 @@ bool Vector3<_Precision>::operator != (const Vector3<_Precision>& rcVct) const
 { 
     return !((*this) == rcVct);
 }
- 
+
 template <class _Precision>
 bool Vector3<_Precision>::operator == (const Vector3<_Precision>& rcVct) const
 {
-    return (fabs (x - rcVct.x) <= FLOAT_EPS) &&
-           (fabs (y - rcVct.y) <= FLOAT_EPS) &&
-           (fabs (z - rcVct.z) <= FLOAT_EPS);
+    return (fabs (x - rcVct.x) <= traits_type::epsilon()) &&
+           (fabs (y - rcVct.y) <= traits_type::epsilon()) &&
+           (fabs (z - rcVct.z) <= traits_type::epsilon());
 }  
 
 template <class _Precision>
@@ -357,14 +357,14 @@ _Precision Vector3<_Precision>::GetAngle (const Vector3 &rcVect) const
     if ((divid < -1e-10f) || (divid > 1e-10f)) {
         fNum = (*this * rcVect) / divid;
         if (fNum < -1)
-            return (_Precision)D_PI;
+            return traits_type::pi();
         else if (fNum > 1)
             return 0.0F;
         else
             return _Precision(acos(fNum));
     }
     else
-        return (_Precision) FLOAT_MAX; // division by zero
+        return traits_type::maximum(); // division by zero
 }
 
 template <class _Precision>

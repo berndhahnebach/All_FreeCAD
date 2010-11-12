@@ -52,11 +52,34 @@
 
 namespace Base {
 
+template <class numT>
+struct float_traits { };
+
+template <>
+struct float_traits<float> {
+    typedef float float_type;
+    static inline float_type pi() { return F_PI; }
+    static inline float_type epsilon() { return FLOAT_EPS; }
+    static inline float_type maximum() { return FLOAT_MAX; }
+};
+
+template <>
+struct float_traits<double> {
+    typedef double float_type;
+    static inline float_type pi() { return D_PI; }
+    static inline float_type epsilon() { return FLOAT_EPS; }
+    static inline float_type maximum() { return FLOAT_MAX; }
+};
+
 /** The Vector Base class. */
 template <class _Precision>
 class Vector3
 {
 public:
+    typedef _Precision num_type;
+    typedef float_traits<num_type> traits_type;
+    static inline num_type epsilon() { return traits_type::epsilon(); }
+
     /** @name Public data members */
     //@{
     _Precision x; /**< x-coordinate */
@@ -185,6 +208,12 @@ inline Vector3<_Precision> operator * (_Precision fFac, const Vector3<_Precision
 {
     return Vector3<_Precision>(rcVct.x * fFac, rcVct.y * fFac, rcVct.z * fFac);
 }
+
+template <class _Pr1, class _Pr2>
+inline Vector3<_Pr1> toVector(const Vector3<_Pr2>& v)
+{
+    return Vector3<_Pr1>((_Pr1)v.x,(_Pr1)v.y,(_Pr1)v.z);
+};
 
 typedef Vector3<float>  Vector3f;
 typedef Vector3<double> Vector3d;

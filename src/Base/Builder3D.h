@@ -147,6 +147,9 @@ public:
     virtual ~InventorBuilder();
     void close();
 
+    void beginSeparator();
+    void endSeparator();
+
     /** @name Point set handling */
     //@{
     /// starts a point set
@@ -193,6 +196,7 @@ public:
     void addNurbsSurface(const std::vector<Base::Vector3f>& controlPoints,
         int numUControlPoints, int numVControlPoints,
         const std::vector<float>& uKnots, const std::vector<float>& vKnots);
+    void addCylinder(float radius, float height);
     //@}
 
     /** @name Bounding Box handling */
@@ -225,6 +229,7 @@ private:
     std::ostream& result;
     bool bStartEndOpen;
     bool bClosed;
+    int indent;
 };
 
 } //namespace Base

@@ -514,12 +514,12 @@ public:
   MeshPointArray& operator = (const MeshPointArray &rclPAry);
   /**
    * Searches for the first point index  Two points are equal if the distance is less
-   * than FLOAT_EPS. If no such points is found ULONG_MAX is returned. 
+   * than EPSILON. If no such points is found ULONG_MAX is returned. 
    */
   unsigned long Get (const MeshPoint &rclPoint);
   /**
    * Searches for the first point index  Two points are equal if the distance is less
-   * than FLOAT_EPS. If no such points is found the point is added to the array at end
+   * than EPSILON. If no such points is found the point is added to the array at end
    * and its index is returned. 
    */
   unsigned long GetOrAddIndex (const MeshPoint &rclPoint);
