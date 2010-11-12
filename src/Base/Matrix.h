@@ -39,6 +39,8 @@ namespace Base {
  */
 class BaseExport Matrix4D
 {
+  typedef float_traits<double> traits_type;
+
 public:
   /// default constructor
   Matrix4D(void);
@@ -270,7 +272,7 @@ inline bool Matrix4D::operator== (const Matrix4D& rclMtrx) const
 
   for (iz = 0; iz < 4; iz++)
     for (is = 0; is < 4; is++) 
-      if (fabs(dMtrx4D[iz][is] - rclMtrx.dMtrx4D[iz][is]) > FLOAT_EPS)
+      if (fabs(dMtrx4D[iz][is] - rclMtrx.dMtrx4D[iz][is]) > traits_type::epsilon())
         return false;
 
   return true;

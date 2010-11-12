@@ -41,6 +41,9 @@ template <class _Precision>
 class BoundBox3
 {
 public:
+  typedef _Precision num_type;
+  typedef float_traits<num_type> traits_type;
+
   /**  Public attributes */
   //@{
   _Precision MinX;
@@ -507,12 +510,12 @@ inline Vector3<_Precision> BoundBox3<_Precision>::IntersectionPoint (const Vecto
   Vector3<_Precision>   cVctRes;
 
   // Vergleichs-BB um REEN_EPS vergroessern
-  cCmpBound.MaxX += FLOAT_EPS;
-  cCmpBound.MaxY += FLOAT_EPS;
-  cCmpBound.MaxZ += FLOAT_EPS;
-  cCmpBound.MinX -= FLOAT_EPS;
-  cCmpBound.MinY -= FLOAT_EPS;
-  cCmpBound.MinZ -= FLOAT_EPS;
+  cCmpBound.MaxX += traits_type::epsilon();
+  cCmpBound.MaxY += traits_type::epsilon();
+  cCmpBound.MaxZ += traits_type::epsilon();
+  cCmpBound.MinX -= traits_type::epsilon();
+  cCmpBound.MinY -= traits_type::epsilon();
+  cCmpBound.MinZ -= traits_type::epsilon();
 
   // Liegt Punkt innerhalb ?
   if (cCmpBound.IsInBox (rcVct))

@@ -873,51 +873,44 @@ unsigned long MeshAlgorithm::CountPointFlag (MeshPoint::TFlagType tF) const
 
 void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Base::Vector3f& rcDir, std::vector<unsigned long> &raclCutted ) const
 {
-  MeshFacetIterator cFIt(_rclMesh);
-  MeshFacetIterator cTIt(rToolMesh);
+    MeshFacetIterator cFIt(_rclMesh);
+    MeshFacetIterator cTIt(rToolMesh);
 
-  BoundBox3f cBB = rToolMesh.GetBoundBox();
+    BoundBox3f cBB = rToolMesh.GetBoundBox();
 
-  Base::SequencerLauncher seq("Check facets...", _rclMesh.CountFacets());
+    Base::SequencerLauncher seq("Check facets...", _rclMesh.CountFacets());
 
-  // check all facets
-  Base::Vector3f tmp;
-  for ( cFIt.Init(); cFIt.More(); cFIt.Next() )
-  {
-    // check each point of each facet
-    for ( int i=0; i<3; i++ )
-    {
-      // at least the point must be inside the bounding box of the tool mesh
-      if ( cBB.IsInBox( cFIt->_aclPoints[i] ) )
-      {
-        // should not cause performance problems since the tool mesh is usually rather lightweight
-        int ct=0;
-        for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
-        {
-          if ( cTIt->IsPointOfFace( cFIt->_aclPoints[i], FLOAT_EPS ) )
-          {
-            ct=1;
-            break; // the point lies on the tool mesh
-          }
-          else if ( cTIt->Foraminate( cFIt->_aclPoints[i], rcDir, tmp ) )
-          {
-            // check if the intersection point lies in direction rcDir of the considered point
-            if ( (tmp - cFIt->_aclPoints[i]) * rcDir > 0 )
-              ct++;
-          }
+    // check all facets
+    Base::Vector3f tmp;
+    for (cFIt.Init(); cFIt.More(); cFIt.Next()) {
+        // check each point of each facet
+        for (int i=0; i<3; i++) {
+            // at least the point must be inside the bounding box of the tool mesh
+            if (cBB.IsInBox( cFIt->_aclPoints[i])) {
+                // should not cause performance problems since the tool mesh is usually rather lightweight
+                int ct=0;
+                for (cTIt.Init(); cTIt.More(); cTIt.Next()) {
+                    if (cTIt->IsPointOfFace( cFIt->_aclPoints[i], MeshPoint::epsilon())) {
+                        ct=1;
+                        break; // the point lies on the tool mesh
+                    }
+                    else if (cTIt->Foraminate( cFIt->_aclPoints[i], rcDir, tmp)) {
+                        // check if the intersection point lies in direction rcDir of the considered point
+                        if ((tmp - cFIt->_aclPoints[i]) * rcDir > 0)
+                            ct++;
+                    }
+                }
+
+                // odd number => point is inside the tool mesh
+                if (ct % 2 == 1) {
+                    raclCutted.push_back( cFIt.Position() );
+                    break;
+                }
+            }
         }
 
-        // odd number => point is inside the tool mesh
-        if ( ct % 2 == 1 )
-        {
-          raclCutted.push_back( cFIt.Position() );
-          break;
-        }
-      }
+        seq.next();
     }
-
-    seq.next();
-  }
 }
 
 void MeshAlgorithm::GetFacetsFromToolMesh(const MeshKernel& rToolMesh, const Base::Vector3f& rcDir,
@@ -980,7 +973,7 @@ void MeshAlgorithm::GetFacetsFromToolMesh(const MeshKernel& rToolMesh, const Bas
                 // should not cause performance problems since the tool mesh is usually rather lightweight
                 int ct=0;
                 for (cTIt.Init(); cTIt.More(); cTIt.Next()) {
-                    if (cTIt->IsPointOfFace(cFIt->_aclPoints[i], FLOAT_EPS)) {
+                    if (cTIt->IsPointOfFace(cFIt->_aclPoints[i], MeshPoint::epsilon())) {
                         ct=1;
                         break; // the point lies on the tool mesh
                     }
@@ -1057,7 +1050,7 @@ int MeshAlgorithm::Surround(const Base::BoundBox3f& rBox, const Base::Vector3f& 
         // whether it is inside or outside.
         int ct=0;
         for (cTIt.Init(); cTIt.More(); cTIt.Next()) {
-            if (cTIt->IsPointOfFace(cCorner[0], FLOAT_EPS)) {
+            if (cTIt->IsPointOfFace(cCorner[0], MeshPoint::epsilon())) {
                 ct=1;
                 break; // the point lies on the tool mesh
             }

@@ -70,9 +70,21 @@ inline std::ostream& tabsN(std::ostream& os, int n)
     return os;
 }
 
+inline std::ostream& blanksN(std::ostream& os, int n)
+{
+    for (int i=0;i<n;i++)
+        os << " ";
+    return os;
+}
+
 inline manipulator<int> tabs(int n)
 {
     return manipulator<int>(&tabsN, n);
+}
+
+inline manipulator<int> blanks(int n)
+{
+    return manipulator<int>(&blanksN, n);
 }
 
 // ----------------------------------------------------------------------------
