@@ -37,6 +37,9 @@
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 
+#include <Mod/Mesh/App/Core/MeshKernel.h>
+#include <Mod/Mesh/App/Core/Evaluation.h>
+#include <Mod/Mesh/App/Core/Iterator.h>
 
 #include "FemMesh.h"
 
@@ -358,6 +361,96 @@ void FemMesh::compute()
     myGen->Compute(*myMesh, myMesh->GetShapeToMesh());
 }
 
+void FemMesh::readNastran(const std::string Filename)
+{
+	std::ifstream inputfile;
+	inputfile.open(Filename.c_str());
+	inputfile.seekg(std::ifstream::beg);
+	std::string line1,line2,temp;
+	Base::Vector3f current_node;
+	std::vector<Base::Vector3f> vertices;
+	vertices.clear();
+	std::vector<unsigned int> tetra_element;
+	std::vector<std::vector<unsigned int> > all_elements;
+	std::vector<unsigned int> element_id;
+	element_id.clear();
+	do
+	{
+		std::getline(inputfile,line1);
+		if (line1.size() == 0) continue;
+		if (line1.find("GRID*")!= std::string::npos) //We found a Grid line
+		{
+			//Now lets extract the GRID Points = Nodes
+			//As each GRID Line consists of two subsequent lines we have to
+			//take care of that as well
+			std::getline(inputfile,line2);
+			//Extract X Value
+			current_node.x = atof(line1.substr(40,56).c_str());
+			//Extract Y Value
+			current_node.y = atof(line1.substr(56,72).c_str());
+			//Extract Z Value
+			current_node.z = atof(line2.substr(8,24).c_str());
+
+			vertices.push_back(current_node);
+		}
+		else if (line1.find("CTETRA")!= std::string::npos)
+		{
+			tetra_element.clear();
+			//Lets extract the elements
+			//As each Element Line consists of two subsequent lines as well 
+			//we have to take care of that
+			//At a first step we only extract Quadratic Tetrahedral Elements
+			std::getline(inputfile,line2);
+			element_id.push_back(atoi(line1.substr(8,16).c_str()));
+			tetra_element.push_back(atoi(line1.substr(24,32).c_str()));
+			tetra_element.push_back(atoi(line1.substr(32,40).c_str()));
+			tetra_element.push_back(atoi(line1.substr(40,48).c_str()));
+			tetra_element.push_back(atoi(line1.substr(48,56).c_str()));
+			tetra_element.push_back(atoi(line1.substr(56,64).c_str()));
+			tetra_element.push_back(atoi(line1.substr(64,72).c_str()));
+			tetra_element.push_back(atoi(line2.substr(8,16).c_str()));
+			tetra_element.push_back(atoi(line2.substr(16,24).c_str()));
+			tetra_element.push_back(atoi(line2.substr(24,32).c_str()));
+			tetra_element.push_back(atoi(line2.substr(32,40).c_str()));
+
+			all_elements.push_back(tetra_element);
+		}
+
+	}
+	while (inputfile.good());
+	inputfile.close();
+
+	//Now fill the SMESH datastructure
+	std::vector<Base::Vector3f>::const_iterator anodeiterator;
+	SMESHDS_Mesh* meshds = this->myMesh->GetMeshDS();
+	meshds->ClearMesh();
+	int j=1;
+	for(anodeiterator=vertices.begin(); anodeiterator!=vertices.end(); anodeiterator++)
+	{
+		meshds->AddNodeWithID((*anodeiterator).x,(*anodeiterator).y,(*anodeiterator).z,j);
+		j++;
+	}
+
+	for(int i=0;i<all_elements.size();i++)
+	{
+		//Die Reihenfolge wie hier die Elemente hinzugefügt werden ist sehr wichtig. 
+		//Ansonsten ist eine konsistente Datenstruktur nicht möglich
+		meshds->AddVolumeWithID(
+			meshds->FindNode(all_elements[i][0]),
+			meshds->FindNode(all_elements[i][2]),
+			meshds->FindNode(all_elements[i][1]),
+			meshds->FindNode(all_elements[i][3]),
+			meshds->FindNode(all_elements[i][6]),
+			meshds->FindNode(all_elements[i][5]),
+			meshds->FindNode(all_elements[i][4]),
+			meshds->FindNode(all_elements[i][9]),
+			meshds->FindNode(all_elements[i][7]),
+			meshds->FindNode(all_elements[i][8]),
+			element_id[i]
+		);
+	}
+}
+
 void FemMesh::read(const char *FileName)
 {
     Base::FileInfo File(FileName);
@@ -381,10 +474,55 @@ void FemMesh::read(const char *FileName)
         // read brep-file
         myMesh->DATToMesh(File.filePath().c_str());
     }
+	else if (File.hasExtension("bdf") ) {
+		// read Nastran-file
+		readNastran(File.filePath());
+	}
     else{
         throw Base::Exception("Unknown extension");
     }
 }
+void FemMesh::writeABAQUS(const std::string Filename)
+{
+	std::ofstream anABAQUS_Output;
+	anABAQUS_Output.open(Filename.c_str());
+	anABAQUS_Output << "*Node , NSET=Nall" << std::endl;
+
+	//Extract Nodes and Elements of the current SMESH datastructure
+	SMDS_NodeIteratorPtr aNodeIter = myMesh->GetMeshDS()->nodesIterator();
+	for (;aNodeIter->more();) {
+		const SMDS_MeshNode* aNode = aNodeIter->next();
+		anABAQUS_Output << aNode->GetID() << ","
+			<< aNode->X() << "," 
+			<< aNode->Y() << ","
+			<< aNode->Z() << std::endl;
+	}
+
+	anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
+	SMDS_VolumeIteratorPtr aVolIter = myMesh->GetMeshDS()->volumesIterator();
+	for (;aVolIter->more();) {
+		const SMDS_MeshVolume* aVol = aVolIter->next();
+		switch (aVol->NbNodes()) {
+			case 10:
+				anABAQUS_Output 
+					<<aVol->GetID()<<","
+					<<aVol->GetNode(0)->GetID()<<","
+					<<aVol->GetNode(1)->GetID()<<","
+					<<aVol->GetNode(2)->GetID()<<","
+					<<aVol->GetNode(3)->GetID()<<","
+					<<aVol->GetNode(4)->GetID()<<","
+					<<aVol->GetNode(5)->GetID()<<","
+					<<aVol->GetNode(6)->GetID()<<","
+					<<aVol->GetNode(7)->GetID()<<","
+					<<aVol->GetNode(8)->GetID()<<","
+					<<aVol->GetNode(9)->GetID()<<std::endl;
+				break;
+		}
+	}
+
+	anABAQUS_Output.close();
+}
+
 
 void FemMesh::write(const char *FileName) const
 {
@@ -405,6 +543,10 @@ void FemMesh::write(const char *FileName) const
         // read brep-file
         myMesh->ExportDAT(File.filePath().c_str());
     }
+	else if (File.hasExtension("inp") ) {
+		// write ABAQUS Output
+		writeABAQUS(File.filePath());
+	}
     else{
         throw Base::Exception("Unknown extension");
     }

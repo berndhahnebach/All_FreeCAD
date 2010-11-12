@@ -94,6 +94,8 @@ public:
 
 private:
     void copyMeshData(const FemMesh&);
+	void readNastran(const std::string Filename);
+	void writeABAQUS(const std::string Filename);
 
 private:
     SMESH_Gen  *myGen;
