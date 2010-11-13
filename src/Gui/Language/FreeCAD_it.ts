@@ -1207,7 +1207,7 @@ Specificare un&apos;altra cartella.</translation>
         <translation>Errori:</translation>
     </message>
     <message>
-        <source>Redirect internal Python errors to output window</source>
+        <source>Redirect internal Python errors to report view</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
