@@ -1206,7 +1206,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Fehlermeldungen:</translation>
     </message>
     <message>
-        <source>Redirect internal Python errors to output window</source>
+        <source>Redirect internal Python errors to report view</source>
         <translation>Interne Python-Fehlermeldungen auf Ausgabefenster umleiten</translation>
     </message>
 </context>
