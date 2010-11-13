@@ -160,13 +160,13 @@ public:
     {
         if (Mode==STATUS_End){
             unsetCursor();
-            EditCurve.clear();
             resetPositionText();
-            sketchgui->drawEdit(EditCurve);
             Gui::Command::openCommand("Add sketch line");
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+            EditCurve.clear();
+            sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
         }
         return true;
@@ -296,9 +296,7 @@ public:
     {
         if (Mode==STATUS_End){
             unsetCursor();
-            EditCurve.clear();
             resetPositionText();
-            sketchgui->drawEdit(EditCurve);
             Gui::Command::openCommand("Add sketch box");
             int firstCurve = getHighestCurveIndex() + 1;
             // add the four line geos
@@ -342,6 +340,8 @@ public:
                      ,sketchgui->getObject()->getNameInDocument()
                      ,firstCurve+3);
 
+            EditCurve.clear();
+            sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
         }
         return true;
@@ -652,7 +652,6 @@ public:
         if (Mode==STATUS_End) {
             unsetCursor();
             resetPositionText();
-            sketchgui->drawEdit(EditCurve);
             Gui::Command::openCommand("Add sketch arc");
             Gui::Command::doCommand(Gui::Command::Doc,
                 "App.ActiveDocument.%s.addGeometry(Part.Arc"
@@ -662,6 +661,7 @@ public:
                       EditCurve[1].fX,EditCurve[1].fY,
                       EditCurve[2].fX,EditCurve[2].fY);
             EditCurve.clear();
+            sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this arc, Handler get deleted in ViewProvider
         }
         return true;
@@ -693,8 +693,11 @@ void CmdSketcherCreateArc::activated(int iMsg)
 
 bool CmdSketcherCreateArc::isActive(void)
 {
-    return false;
+#ifdef FC_DEBUG
     return isCreateGeoActive(getActiveGuiDocument());
+#else
+    return false;
+#endif
 }
 
 // ======================================================================================
@@ -795,7 +798,6 @@ public:
         if (Mode==STATUS_Close) {
             unsetCursor();
             resetPositionText();
-            sketchgui->drawEdit(EditCurve);
             Gui::Command::openCommand("Add sketch circle");
             Gui::Command::doCommand(Gui::Command::Doc,
                 "App.ActiveDocument.%s.addGeometry(Part.Circle"
@@ -805,6 +807,7 @@ public:
                       EditCurve[1].fX,EditCurve[1].fY,
                       EditCurve[2].fX,EditCurve[2].fY);
             EditCurve.clear();
+            sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this arc, Handler get deleted in ViewProvider
         }
         return true;
@@ -836,8 +839,11 @@ void CmdSketcherCreateCircle::activated(int iMsg)
 
 bool CmdSketcherCreateCircle::isActive(void)
 {
-    return false;
+#ifdef FC_DEBUG
     return isCreateGeoActive(getActiveGuiDocument());
+#else
+    return false;
+#endif
 }
 
 // ======================================================================================
