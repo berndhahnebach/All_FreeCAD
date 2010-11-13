@@ -27,6 +27,8 @@
             <File Id="RobotInitPy" Name="Init.py" DiskId="1" />
             <File Id="RobotInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="MovieToolPy" Name="MovieTool.py" DiskId="1" />
+            <File Id="KukaExporterPy" Name="KukaExporter.py" DiskId="1" />
+            <File Id="RobotExamplePy" Name="RobotExample.py" DiskId="1" />
             <File Id="Robotpyd" Name="Robot.pyd" DiskId="1" />
             <File Id="RobotGuipyd" Name="RobotGui.pyd" DiskId="1" />
         </Component>
