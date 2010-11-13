@@ -108,12 +108,17 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
     clear();
 
     // pass 1: building up internel geo list ===========================================================
-    for(std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it){
-        if((*it)->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
+    for (std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it){
+        if ((*it)->getTypeId()== GeomLineSegment::getClassTypeId()) { // add a line
             const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>((*it));
             // create the definition struct for that geom
             addLineSegment(*lineSeg);
-        } else {
+        }
+        else if ((*it)->getTypeId()== GeomCircle::getClassTypeId()) {
+            const GeomCircle *circle = dynamic_cast<const GeomCircle*>((*it));
+            addCircle(*circle);
+        }
+        else {
             Base::Exception("Sketch::addGeometry(): Unknown or unsoported type added to a sketch");
         }
     }

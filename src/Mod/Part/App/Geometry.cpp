@@ -705,7 +705,7 @@ const Handle_Geom_Geometry& GeomTrimmedCurve::handle() const
 
 Geometry *GeomTrimmedCurve::clone(void)const
 {
-    return 0;
+    return new GeomTrimmedCurve(Handle_Geom_TrimmedCurve::DownCast(myCurve->Copy()));;
 }
 
 // Persistence implementer 

@@ -44,28 +44,35 @@ using namespace SketcherGui;
 
 void ActivateHandler(Gui::Document *doc,DrawSketchHandler *handler)
 {
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-			    ->activateHandler(handler);
+    if (doc) {
+        if (doc->getInEdit() && doc->getInEdit()->isDerivedFrom
+            (SketcherGui::ViewProviderSketch::getClassTypeId()))
+            dynamic_cast<SketcherGui::ViewProviderSketch*>
+            (doc->getInEdit())->activateHandler(handler);
+    }
 }
 
 bool isCreateGeoActive(Gui::Document *doc)
 {
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
-			return true;
-	return false;
+    if (doc) {
+        // checks if a Sketch Viewprovider is in Edit and is in no special mode
+        if (doc->getInEdit() && doc->getInEdit()->isDerivedFrom
+            (SketcherGui::ViewProviderSketch::getClassTypeId())) {
+            if (dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())->
+                getSketchMode() == ViewProviderSketch::STATUS_NONE)
+                return true;
+        }
+    }
+    return false;
 }
 
 SketcherGui::ViewProviderSketch* getSketchViewprovider(Gui::Document *doc)
 {
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketch::getClassTypeId()) )
-			return dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit());
+    if (doc) {
+        if (doc->getInEdit() && doc->getInEdit()->isDerivedFrom
+            (SketcherGui::ViewProviderSketch::getClassTypeId()) )
+            return dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit());
+    }
     return 0;
 }
 
@@ -115,21 +122,21 @@ public:
     DrawSketchHandlerLine():Mode(STATUS_SEEK_First),EditCurve(2){}
     virtual ~DrawSketchHandlerLine(){}
     /// mode table
-	enum LineMode{
-		STATUS_SEEK_First,      /**< enum value ----. */  
-		STATUS_SEEK_Second,     /**< enum value ----. */  
+    enum LineMode {
+        STATUS_SEEK_First,      /**< enum value ----. */  
+        STATUS_SEEK_Second,     /**< enum value ----. */  
         STATUS_End
-	};
+    };
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createline),4,4);
+        setCursor(QPixmap(cursor_createline),7,7);
     } 
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
     {
         setPositionText(onSketchPos);
-        if(Mode==STATUS_SEEK_Second){
+        if (Mode==STATUS_SEEK_Second){
             EditCurve[1] = onSketchPos; 
             sketchgui->drawEdit(EditCurve);
         }
@@ -137,10 +144,11 @@ public:
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_SEEK_First){
+        if (Mode==STATUS_SEEK_First){
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
-        }else{
+        }
+        else {
             EditCurve[1] = onSketchPos;
             sketchgui->drawEdit(EditCurve);
             Mode = STATUS_End;
@@ -150,7 +158,7 @@ public:
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_End){
+        if (Mode==STATUS_End){
             unsetCursor();
             EditCurve.clear();
             resetPositionText();
@@ -173,7 +181,7 @@ protected:
 DEF_STD_CMD_A(CmdSketcherCreateLine);
 
 CmdSketcherCreateLine::CmdSketcherCreateLine()
-	:Command("Sketcher_CreateLine")
+  : Command("Sketcher_CreateLine")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -190,12 +198,12 @@ CmdSketcherCreateLine::CmdSketcherCreateLine()
 
 void CmdSketcherCreateLine::activated(int iMsg)
 {
-	ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerLine() );
+    ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerLine() );
 }
 
 bool CmdSketcherCreateLine::isActive(void)
 {
-	return isCreateGeoActive(getActiveGuiDocument());
+    return isCreateGeoActive(getActiveGuiDocument());
 }
 
 
@@ -245,15 +253,15 @@ public:
     DrawSketchHandlerBox():Mode(STATUS_SEEK_First),EditCurve(5){}
     virtual ~DrawSketchHandlerBox(){}
     /// mode table
-	enum BoxMode{
-		STATUS_SEEK_First,      /**< enum value ----. */  
-		STATUS_SEEK_Second,     /**< enum value ----. */  
+    enum BoxMode {
+        STATUS_SEEK_First,      /**< enum value ----. */  
+        STATUS_SEEK_Second,     /**< enum value ----. */  
         STATUS_End
-	};
+    };
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createbox),4,4);
+        setCursor(QPixmap(cursor_createbox),7,7);
     } 
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
@@ -269,11 +277,12 @@ public:
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_SEEK_First){
+        if (Mode==STATUS_SEEK_First){
             EditCurve[0] = onSketchPos;
             EditCurve[4] = onSketchPos;
             Mode = STATUS_SEEK_Second;
-        }else{
+        }
+        else {
             EditCurve[2] = onSketchPos;
             EditCurve[1] = Base::Vector2D(onSketchPos.fX ,EditCurve[0].fY);
             EditCurve[3] = Base::Vector2D(EditCurve[0].fX,onSketchPos.fY);
@@ -285,7 +294,7 @@ public:
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_End){
+        if (Mode==STATUS_End){
             unsetCursor();
             EditCurve.clear();
             resetPositionText();
@@ -347,7 +356,7 @@ protected:
 DEF_STD_CMD_A(CmdSketcherCreateBox);
 
 CmdSketcherCreateBox::CmdSketcherCreateBox()
-	:Command("Sketcher_CreateBox")
+  : Command("Sketcher_CreateBox")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -367,7 +376,7 @@ void CmdSketcherCreateBox::activated(int iMsg)
 
 bool CmdSketcherCreateBox::isActive(void)
 {
-	return isCreateGeoActive(getActiveGuiDocument());
+    return isCreateGeoActive(getActiveGuiDocument());
 }
 
 
@@ -415,25 +424,25 @@ class DrawSketchHandlerLineSet: public DrawSketchHandler
 {
 public:
     DrawSketchHandlerLineSet()
-		:Mode(STATUS_SEEK_First),EditCurve(2),firstPoint(-1),previousCurve(-1){}
+      : Mode(STATUS_SEEK_First),EditCurve(2),firstPoint(-1),previousCurve(-1){}
     virtual ~DrawSketchHandlerLineSet(){}
     /// mode table
-	enum LineMode{
-		STATUS_SEEK_First,      /**< enum value ----. */  
-		STATUS_SEEK_Second,     /**< enum value ----. */  
+    enum LineMode {
+        STATUS_SEEK_First,      /**< enum value ----. */  
+        STATUS_SEEK_Second,     /**< enum value ----. */  
         STATUS_Do,
         STATUS_Close
-	};
+    };
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createlineset),4,4);
+        setCursor(QPixmap(cursor_createlineset),7,7);
     } 
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
     {
         setPositionText(onSketchPos);
-        if(Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
+        if (Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
             EditCurve[1] = onSketchPos; 
             sketchgui->drawEdit(EditCurve);
         }
@@ -441,36 +450,37 @@ public:
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_SEEK_First){
-			// remember our first point
-			firstPoint = getHighestVertexIndex() + 1;
-			firstCurve = getHighestCurveIndex() + 1;
+        if (Mode==STATUS_SEEK_First){
+            // remember our first point
+            firstPoint = getHighestVertexIndex() + 1;
+            firstCurve = getHighestCurveIndex() + 1;
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
-        }else{
+        }
+        else {
             EditCurve[1] = onSketchPos;
             sketchgui->drawEdit(EditCurve);
-			applyCursor();
-			if (EditCurve[1] == EditCurve[0]){
+            applyCursor();
+            if (EditCurve[1] == EditCurve[0]) {
                 // set the old cursor
-				unsetCursor();	
+                unsetCursor();	
                 // empty the edit draw
-	            EditCurve.clear();
+                EditCurve.clear();
                 resetPositionText();
-				sketchgui->drawEdit(EditCurve);
-				sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
-			}if(sketchgui->getPreselectPoint() == firstPoint){
-				Mode = STATUS_Close;
-
-			}else
-				Mode = STATUS_Do;
+                sketchgui->drawEdit(EditCurve);
+                sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+            }
+            if (sketchgui->getPreselectPoint() == firstPoint)
+                Mode = STATUS_Close;
+            else
+                Mode = STATUS_Do;
         }
         return true;
     }
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
-        if(Mode==STATUS_Do || Mode==STATUS_Close){
+        if (Mode==STATUS_Do || Mode==STATUS_Close){
             // open the transaction 
             Gui::Command::openCommand("add sketch wire");
             // issue the geometry
@@ -478,32 +488,33 @@ public:
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
             // issue the constraint
-            if(previousCurve != -1){
+            if (previousCurve != -1) {
                 Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
                           ,sketchgui->getObject()->getNameInDocument()
                           ,previousCurve-1,previousCurve
                           );
 
             }
-            if(Mode==STATUS_Do){
+            if (Mode==STATUS_Do) {
                 //remember the vertex for the next rounds constraint...
-			    previousCurve = getHighestCurveIndex() + 1;
+                previousCurve = getHighestCurveIndex() + 1;
                 // setup for the next line segment 
                 EditCurve[0] = onSketchPos;
-			    Mode = STATUS_SEEK_Second;
-			    applyCursor();
-            }else{ //Mode==STATUS_Close
+                Mode = STATUS_SEEK_Second;
+                applyCursor();
+            }
+            else { //Mode==STATUS_Close
                 // close the loop by constrain to the first curve point
                 Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
                           ,sketchgui->getObject()->getNameInDocument()
                           ,previousCurve,firstCurve
                           );
-			    unsetCursor();			
+                unsetCursor();
                 // empty the edit draw
-	            EditCurve.clear();
+                EditCurve.clear();
                 resetPositionText();
-			    sketchgui->drawEdit(EditCurve);
-			    sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+                sketchgui->drawEdit(EditCurve);
+                sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
             }
         } 
         return true;
@@ -521,7 +532,7 @@ protected:
 DEF_STD_CMD_A(CmdSketcherCreatePolyline);
 
 CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
-	:Command("Sketcher_CreatePolyline")
+  : Command("Sketcher_CreatePolyline")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -535,21 +546,135 @@ CmdSketcherCreatePolyline::CmdSketcherCreatePolyline()
 
 void CmdSketcherCreatePolyline::activated(int iMsg)
 {
- 	ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerLineSet() );
+    ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerLineSet() );
 }
 
 bool CmdSketcherCreatePolyline::isActive(void)
 {
-	return isCreateGeoActive(getActiveGuiDocument());
+    return isCreateGeoActive(getActiveGuiDocument());
 }
 
 // ======================================================================================
 
+/* XPM */
+static const char *cursor_createarc[]={
+"32 32 2 1",
+"# c #646464",
+". c None",
+"................................",
+"................................",
+".......#..........###...........",
+".......#..........#.#...........",
+".......#..........###...........",
+".....................##.........",
+".......#..............##........",
+"..###.###.###..........#........",
+".......#................#.......",
+"........................##......",
+".......#.................#......",
+".......#.................#......",
+".......#..................#.....",
+"..........................#.....",
+"..........................#.....",
+"..........................#.....",
+"..........................#.....",
+"..........................#.....",
+"..........................#.....",
+".........................#......",
+".........................#......",
+"........................#.......",
+"........................#.......",
+"...###.................#........",
+"...#.#................#.........",
+"...###...............#..........",
+"......##...........##...........",
+".......###.......##.............",
+"..........#######...............",
+"................................",
+"................................",
+"................................"};
+
+class DrawSketchHandlerArc : public DrawSketchHandler
+{
+public:
+    DrawSketchHandlerArc()
+      : Mode(STATUS_SEEK_First),EditCurve(2){}
+    virtual ~DrawSketchHandlerArc(){}
+    /// mode table
+    enum LineMode {
+        STATUS_SEEK_First,      /**< enum value ----. */
+        STATUS_SEEK_Second,     /**< enum value ----. */
+        STATUS_SEEK_Third,      /**< enum value ----. */
+        STATUS_End
+    };
+
+    virtual void activated(ViewProviderSketch *sketchgui)
+    {
+        setCursor(QPixmap(cursor_createarc),7,7);
+    }
+
+    virtual void mouseMove(Base::Vector2D onSketchPos)
+    {
+        setPositionText(onSketchPos);
+        if (Mode==STATUS_SEEK_Second) {
+            EditCurve[1] = onSketchPos; 
+            sketchgui->drawEdit(EditCurve);
+        }
+        else if (Mode==STATUS_SEEK_Third) {
+            EditCurve[2] = onSketchPos; 
+            sketchgui->drawEdit(EditCurve);
+        }
+    }
+
+    virtual bool pressButton(Base::Vector2D onSketchPos)
+    {
+        if (Mode==STATUS_SEEK_First){
+            EditCurve[0] = onSketchPos;
+            Mode = STATUS_SEEK_Second;
+        }
+        else if (Mode==STATUS_SEEK_Second){
+            EditCurve[1] = onSketchPos;
+            EditCurve.push_back(Base::Vector2D()); // add a new point
+            Mode = STATUS_SEEK_Third;
+        }
+        else {
+            EditCurve[2] = onSketchPos;
+            sketchgui->drawEdit(EditCurve);
+            applyCursor();
+            Mode = STATUS_End;
+        }
+
+        return true;
+    }
+
+    virtual bool releaseButton(Base::Vector2D onSketchPos)
+    {
+        if (Mode==STATUS_End) {
+            unsetCursor();
+            resetPositionText();
+            sketchgui->drawEdit(EditCurve);
+            Gui::Command::openCommand("Add sketch arc");
+            Gui::Command::doCommand(Gui::Command::Doc,
+                "App.ActiveDocument.%s.addGeometry(Part.Arc"
+                "(App.Vector(%f,%f,0),App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[0].fX,EditCurve[0].fY,
+                      EditCurve[1].fX,EditCurve[1].fY,
+                      EditCurve[2].fX,EditCurve[2].fY);
+            EditCurve.clear();
+            sketchgui->purgeHandler(); // no code after this arc, Handler get deleted in ViewProvider
+        }
+        return true;
+    }
+protected:
+    LineMode Mode;
+    std::vector<Base::Vector2D> EditCurve;
+};
 
 DEF_STD_CMD_A(CmdSketcherCreateArc);
 
 CmdSketcherCreateArc::CmdSketcherCreateArc()
-	:Command("Sketcher_CreateArc")
+  : Command("Sketcher_CreateArc")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -561,33 +686,138 @@ CmdSketcherCreateArc::CmdSketcherCreateArc()
     eType           = ForEdit;
 }
 
-
 void CmdSketcherCreateArc::activated(int iMsg)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()) )
-			dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())->setSketchMode(ViewProviderSketchSF::STATUS_SKETCH_CreateArc);
-      
+    ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerArc() );
 }
 
 bool CmdSketcherCreateArc::isActive(void)
 {
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	// checks if a Sketch Viewprovider is in Edit and is in no special mode
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		if(dynamic_cast<SketcherGui::ViewProviderSketchSF*>(doc->getInEdit())
-	//			->getSketchMode() == ViewProviderSketchSF::STATUS_NONE)
-	//		return true;
-	return false;
+    return false;
+    return isCreateGeoActive(getActiveGuiDocument());
 }
 
+// ======================================================================================
+
+/* XPM */
+static const char *cursor_createcircle[]={
+"32 32 2 1",
+"# c #646464",
+". c None",
+"................................",
+"................................",
+".......#........................",
+".......#........................",
+".......#........................",
+"................................",
+".......#........................",
+"..###.###.###...................",
+".......#.......#######..........",
+".............##.......##........",
+".......#....#...........#.......",
+".......#...#.............#......",
+".......#..#...............#.....",
+".........#.................#....",
+"........#...................#...",
+"........#...................#...",
+".......#.....................#..",
+".......#.....................#..",
+".......#.........###.........#..",
+".......#.........#.#.........#..",
+".......#.........###.........#..",
+".......#.....................#..",
+".......#.....................#..",
+"........#...................#...",
+"........#...................#...",
+".........#.................#....",
+"..........#...............#.....",
+"...........#.............#......",
+"............#...........#.......",
+".............##.......##........",
+"...............#######..........",
+"................................"};
+
+class DrawSketchHandlerCircle : public DrawSketchHandler
+{
+public:
+    DrawSketchHandlerCircle()
+      : Mode(STATUS_SEEK_First),EditCurve(2){}
+    virtual ~DrawSketchHandlerCircle(){}
+    /// mode table
+    enum LineMode {
+        STATUS_SEEK_First,      /**< enum value ----. */
+        STATUS_SEEK_Second,     /**< enum value ----. */
+        STATUS_SEEK_Third,      /**< enum value ----. */
+        STATUS_Close
+    };
+
+    virtual void activated(ViewProviderSketch *sketchgui)
+    {
+        setCursor(QPixmap(cursor_createcircle),7,7);
+    } 
+
+    virtual void mouseMove(Base::Vector2D onSketchPos)
+    {
+        setPositionText(onSketchPos);
+        if (Mode==STATUS_SEEK_Second) {
+            EditCurve[1] = onSketchPos; 
+            sketchgui->drawEdit(EditCurve);
+        }
+        else if (Mode==STATUS_SEEK_Third) {
+            EditCurve[2] = onSketchPos; 
+            sketchgui->drawEdit(EditCurve);
+        }
+    }
+
+    virtual bool pressButton(Base::Vector2D onSketchPos)
+    {
+        if (Mode==STATUS_SEEK_First){
+            EditCurve[0] = onSketchPos;
+            Mode = STATUS_SEEK_Second;
+        }
+        else if (Mode==STATUS_SEEK_Second){
+            EditCurve[1] = onSketchPos;
+            EditCurve.push_back(Base::Vector2D()); // add a new point
+            Mode = STATUS_SEEK_Third;
+        }
+        else {
+            EditCurve[2] = onSketchPos;
+            sketchgui->drawEdit(EditCurve);
+            applyCursor();
+            Mode = STATUS_Close;
+        }
+
+        return true;
+    }
+
+    virtual bool releaseButton(Base::Vector2D onSketchPos)
+    {
+        if (Mode==STATUS_Close) {
+            unsetCursor();
+            resetPositionText();
+            sketchgui->drawEdit(EditCurve);
+            Gui::Command::openCommand("Add sketch circle");
+            Gui::Command::doCommand(Gui::Command::Doc,
+                "App.ActiveDocument.%s.addGeometry(Part.Circle"
+                "(App.Vector(%f,%f,0),App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                      sketchgui->getObject()->getNameInDocument(),
+                      EditCurve[0].fX,EditCurve[0].fY,
+                      EditCurve[1].fX,EditCurve[1].fY,
+                      EditCurve[2].fX,EditCurve[2].fY);
+            EditCurve.clear();
+            sketchgui->purgeHandler(); // no code after this arc, Handler get deleted in ViewProvider
+        }
+        return true;
+    }
+protected:
+    LineMode Mode;
+    std::vector<Base::Vector2D> EditCurve;
+};
 
 DEF_STD_CMD_A(CmdSketcherCreateCircle);
 
 CmdSketcherCreateCircle::CmdSketcherCreateCircle()
-	:Command("Sketcher_CreateCircle")
+  : Command("Sketcher_CreateCircle")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -599,29 +829,23 @@ CmdSketcherCreateCircle::CmdSketcherCreateCircle()
     eType           = ForEdit;
 }
 
-
 void CmdSketcherCreateCircle::activated(int iMsg)
 {
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
+    ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerCircle() );
 }
 
 bool CmdSketcherCreateCircle::isActive(void)
 {
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
+    return false;
+    return isCreateGeoActive(getActiveGuiDocument());
 }
 
+// ======================================================================================
 
 DEF_STD_CMD_A(CmdSketcherCreatePoint);
 
 CmdSketcherCreatePoint::CmdSketcherCreatePoint()
-	:Command("Sketcher_CreatePoint")
+  : Command("Sketcher_CreatePoint")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -633,31 +857,21 @@ CmdSketcherCreatePoint::CmdSketcherCreatePoint()
     eType           = ForEdit;
 }
 
-
 void CmdSketcherCreatePoint::activated(int iMsg)
 {
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
 }
 
 bool CmdSketcherCreatePoint::isActive(void)
 {
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
+    return false;
 }
 
-
-
+// ======================================================================================
 
 DEF_STD_CMD_A(CmdSketcherCreateText);
 
 CmdSketcherCreateText::CmdSketcherCreateText()
-	:Command("Sketcher_CreateText")
+  : Command("Sketcher_CreateText")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -669,29 +883,21 @@ CmdSketcherCreateText::CmdSketcherCreateText()
     eType           = ForEdit;
 }
 
-
 void CmdSketcherCreateText::activated(int iMsg)
 {
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
 }
 
 bool CmdSketcherCreateText::isActive(void)
 {
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
+    return false;
 }
 
+// ======================================================================================
 
 DEF_STD_CMD_A(CmdSketcherCreateDraftLine);
 
 CmdSketcherCreateDraftLine::CmdSketcherCreateDraftLine()
-	:Command("Sketcher_CreateDraftLine")
+  : Command("Sketcher_CreateDraftLine")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -703,37 +909,26 @@ CmdSketcherCreateDraftLine::CmdSketcherCreateDraftLine()
     eType           = ForEdit;
 }
 
-
 void CmdSketcherCreateDraftLine::activated(int iMsg)
 {
-    //openCommand("Sketcher Create a new Sketch");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Sketcher::SketchObjectSF\",\"Sketch\")");
-    //commitCommand();
-      
 }
 
 bool CmdSketcherCreateDraftLine::isActive(void)
 {
-	//Gui::Document *doc = getActiveGuiDocument();
-	//if(doc)
-	//	if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(SketcherGui::ViewProviderSketchSF::getClassTypeId()))
-	//		return true;
-	return false;
+    return false;
 }
-
 
 
 void CreateSketcherCommandsCreateGeo(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
-	rcCmdMgr.addCommand(new CmdSketcherCreatePoint());
-	rcCmdMgr.addCommand(new CmdSketcherCreateArc());
-	rcCmdMgr.addCommand(new CmdSketcherCreateCircle());
-	rcCmdMgr.addCommand(new CmdSketcherCreateLine());
-	rcCmdMgr.addCommand(new CmdSketcherCreatePolyline());
-	rcCmdMgr.addCommand(new CmdSketcherCreateBox());
-	rcCmdMgr.addCommand(new CmdSketcherCreateText());
-	rcCmdMgr.addCommand(new CmdSketcherCreateDraftLine());
-
- }
+    //rcCmdMgr.addCommand(new CmdSketcherCreatePoint());
+    rcCmdMgr.addCommand(new CmdSketcherCreateArc());
+    rcCmdMgr.addCommand(new CmdSketcherCreateCircle());
+    rcCmdMgr.addCommand(new CmdSketcherCreateLine());
+    rcCmdMgr.addCommand(new CmdSketcherCreatePolyline());
+    rcCmdMgr.addCommand(new CmdSketcherCreateBox());
+    //rcCmdMgr.addCommand(new CmdSketcherCreateText());
+    //rcCmdMgr.addCommand(new CmdSketcherCreateDraftLine());
+}

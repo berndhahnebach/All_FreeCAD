@@ -157,7 +157,7 @@
     </message>
     <message>
         <source>Create circle</source>
-        <translation> Kreis erstellen</translation>
+        <translation>Kreis erstellen</translation>
     </message>
     <message>
         <source>Create a circle in the sketch</source>
@@ -172,7 +172,7 @@
     </message>
     <message>
         <source>Create draft line</source>
-        <translation> Konstruktionslinie erstellen</translation>
+        <translation>Konstruktionslinie erstellen</translation>
     </message>
     <message>
         <source>Create a draft line in the sketch</source>
@@ -217,7 +217,7 @@
     </message>
     <message>
         <source>Create polyline</source>
-        <translation> Polylinie erstellen</translation>
+        <translation>Polylinie erstellen</translation>
     </message>
     <message>
         <source>Create a polyline in the sketch</source>
