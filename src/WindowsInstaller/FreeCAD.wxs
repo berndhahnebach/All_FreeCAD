@@ -142,6 +142,7 @@
             <ComponentRef Id="CompModPoints" />
             <ComponentRef Id="CompModComplete" />
             <ComponentRef Id="CompModMeshPart" />
+            <ComponentRef Id="CompModFem" />
             <ComponentRef Id="CompModPartDesign" />
             <ComponentRef Id="CompModPartDesignScripts" />
             <ComponentRef Id="CompModSketcher" />
