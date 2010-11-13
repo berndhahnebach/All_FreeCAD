@@ -92,6 +92,18 @@ std::string& ltrim(std::string& str)
     return str;
 }
 
+int numDigits(int number)
+{
+    number = std::abs(number);
+    int digits = 1;
+    int step = 10;
+    while (step <= number) {
+        digits++;
+        step *= 10;
+    }
+    return digits;
+}
+
 /* Define a vector.  */
 typedef struct _Vector
 	{
@@ -1717,73 +1729,24 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
 
     MeshPointIterator clPIter(_rclMesh);
     MeshFacetIterator clTIter(_rclMesh);
-    int iIndx = 1, iDec, iSign, iCount = 0;
+    int iIndx = 1;
 
     Base::SequencerLauncher seq("Saving...", _rclMesh.CountFacets() + 1);
 
     rstrOut.precision(3);
     rstrOut.setf(std::ios::fixed | std::ios::showpoint);
     for (clPIter.Init(); clPIter.More(); clPIter.Next()) {
+        float x = clPIter->x;
+        float y = clPIter->y;
+        float z = clPIter->z;
+
         rstrOut << "GRID";
 
-#ifdef __GNUC__
-        fcvt ((float)iIndx, iCount, &iDec, &iSign);
-#else
-        _fcvt ((float)iIndx, iCount, &iDec, &iSign);
-#endif
-        for (int i = iDec; i <= 11; i++) {
-            rstrOut << " ";
-        }
-
-        rstrOut << iIndx;
-
-#ifdef __GNUC__
-        fcvt ((*clPIter).x, iCount, &iDec, &iSign);
-#else
-        _fcvt ((*clPIter).x, iCount, &iDec, &iSign);
-#endif
-        if (iSign == 0) {
-            rstrOut << " ";
-        }
-        if (fabs((*clPIter).x) < pow (10.0, (iDec-1))) iDec--;
-        if (iDec <= 0) iDec = 1;
-        for (int i = iDec; i <= 10; i++) {
-            rstrOut << " ";
-        }
-
-        rstrOut << clPIter->x;
-
-#ifdef __GNUC__
-        fcvt ((*clPIter).y, iCount, &iDec, &iSign);
-#else
-        _fcvt ((*clPIter).y, iCount, &iDec, &iSign);
-#endif
-        if (iSign == 0) {
-            rstrOut << " ";
-        }
-        if (fabs((*clPIter).y) < pow (10.0, (iDec-1))) iDec--;
-        if (iDec <= 0) iDec = 1;
-        for (int i = iDec; i <= 2; i++) {
-            rstrOut << " ";
-        }
-
-        rstrOut << clPIter->y;
-
-#ifdef __GNUC__
-        fcvt ((*clPIter).z, iCount, &iDec, &iSign);
-#else
-        _fcvt ((*clPIter).z, iCount, &iDec, &iSign);
-#endif
-        if (iSign == 0) {
-            rstrOut << " ";
-        }
-        if (fabs((*clPIter).z) < pow (10.0, (iDec-1))) iDec--;
-        if (iDec <= 0) iDec = 1;
-        for (int i = iDec; i <= 2; i++) {
-            rstrOut << " ";
-        }
-
-        rstrOut << clPIter->z << std::endl;
+        rstrOut << std::setfill(' ') << std::setw(12) << iIndx;
+        rstrOut << std::setfill(' ') << std::setw(16) << x;
+        rstrOut << std::setfill(' ') << std::setw(8)  << y;
+        rstrOut << std::setfill(' ') << std::setw(8)  << z;
+        rstrOut << std::endl;
 
         iIndx++;
         seq.next();
@@ -1793,52 +1756,13 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
     for (clTIter.Init(); clTIter.More(); clTIter.Next()) {
         rstrOut << "CTRIA3";
 
-#ifdef __GNUC__
-        fcvt ((float)iIndx, iCount, &iDec, &iSign);
-#else
-        _fcvt ((float)iIndx, iCount, &iDec, &iSign);
-#endif
-        for (int i = iDec; i <= 9; i++) {
-            rstrOut << " ";
-        }
+        rstrOut << std::setfill(' ') << std::setw(10) << iIndx;
+        rstrOut << std::setfill(' ') << std::setw(8) << (int)0;
+        rstrOut << std::setfill(' ') << std::setw(8) << clTIter.GetIndices()._aulPoints[1]+1;
+        rstrOut << std::setfill(' ') << std::setw(8) << clTIter.GetIndices()._aulPoints[0]+1;
+        rstrOut << std::setfill(' ') << std::setw(8) << clTIter.GetIndices()._aulPoints[2]+1;
+        rstrOut <<std::endl;
 
-        rstrOut << iIndx << "       0";
-
-#ifdef __GNUC__
-        fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
-#else
-        _fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
-#endif
-        for (int i = iDec; i <= 7; i++) {
-            rstrOut << " ";
-        }
-
-        rstrOut << clTIter.GetIndices()._aulPoints[1]+1;
-
-#ifdef __GNUC__
-        fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
-#else
-        _fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
-#endif
-        for (int i = iDec; i <= 7; i++) {
-            rstrOut << " ";
-        }
-
-        rstrOut << clTIter.GetIndices()._aulPoints[0]+1;
-
-#ifdef __GNUC__
-        fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
-#else
-        _fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
-#endif
-        for (int i = iDec; i <= 7; i++) {
-            rstrOut << " ";
-        }
-
-        rstrOut << clTIter.GetIndices()._aulPoints[2]+1 << std::endl;
-
-//    sprintf(szBuf, "CTRIA3 %d 0 %d %d %d\n", iIndx, clTIter.GetIndices()._aulPoints[0]+1, clTIter.GetIndices()._aulPoints[1]+1, clTIter.GetIndices()._aulPoints[2]+1);
-//    rstrOut.write(szBuf, strlen(szBuf));
         iIndx++;
         seq.next();
     }
