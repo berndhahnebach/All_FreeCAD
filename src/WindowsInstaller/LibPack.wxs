@@ -135,11 +135,12 @@
 				<File Id="LibPack93" Name="DriverSTL.dll"   />
 				<File Id="LibPack94" Name="DriverUNV.dll"   />
 				<File Id="LibPack95" Name="MEFISTO2.dll"   />
-				<File Id="LibPack96" Name="SMDS.dll"   />
-				<File Id="LibPack97" Name="SMESH.dll"   />
-				<File Id="LibPack98" Name="SMESHDS.dll"   />
-				<File Id="LibPack99" Name="StdMeshers.dll"   />
-			</Component>
+				<File Id="LibPack96" Name="MEFISTO2F.dll"   />
+				<File Id="LibPack97" Name="SMDS.dll"   />
+				<File Id="LibPack98" Name="SMESH.dll"   />
+				<File Id="LibPack99" Name="SMESHDS.dll"   />
+				<File Id="LibPack100" Name="StdMeshers.dll"   />
+            </Component>
 			<Directory Id="ImageFormDir" Name="imageformats" FileSource="../../bin/imageformats" >
 				<Component Id="ImageForm"  Guid="2139da00-a109-11dd-ad8b-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
 					<File Id="ImageForm1" Name="qgif4.dll"   />
