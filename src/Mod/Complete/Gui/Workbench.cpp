@@ -241,14 +241,14 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         sketch->setCommand("Ske&tch");
         Gui::MenuItem* geom = new Gui::MenuItem();
         geom->setCommand("Sketcher geoms");
-        *geom << "Sketcher_CreatePoint"
+        *geom /*<< "Sketcher_CreatePoint"*/
               << "Sketcher_CreateArc"
               << "Sketcher_CreateCircle"
               << "Sketcher_CreateLine"
               << "Sketcher_CreatePolyline"
               << "Sketcher_CreateBox"
-              << "Sketcher_CreateText"
-              << "Sketcher_CreateDraftLine";
+              /*<< "Sketcher_CreateText"*/
+              /*<< "Sketcher_CreateDraftLine"*/;
         Gui::MenuItem* cons = new Gui::MenuItem();
         cons->setCommand("Sketcher constraints");
         *cons << "Sketcher_ConstrainLock"

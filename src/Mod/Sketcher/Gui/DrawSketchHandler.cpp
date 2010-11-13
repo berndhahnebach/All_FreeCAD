@@ -86,27 +86,26 @@ Sketcher::SketchObject* DrawSketchHandler::getObject(void)
 
 int DrawSketchHandler::getHighestVertexIndex(void)
 {
-	return getObject()->Geometry.getSize()*2 - 1;
+    return getObject()->Geometry.getSize()*2 - 1;
 }
 
 int DrawSketchHandler::getHighestCurveIndex(void)
 {
-	return getObject()->Geometry.getSize() - 1;
+    return getObject()->Geometry.getSize() - 1;
 }
 
-void DrawSketchHandler::setCursor( const QPixmap &p,int x,int y )
+void DrawSketchHandler::setCursor(const QPixmap &p,int x,int y)
 {
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
     if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
  
         oldCursor = viewer->getWidget()->cursor();
-        QCursor cursor(p, 4, 4);
-		actCursor = cursor;
+        QCursor cursor(p, x, y);
+        actCursor = cursor;
 
         viewer->getWidget()->setCursor(cursor);
     }
-
 }
 
 void DrawSketchHandler::applyCursor(void )
@@ -130,8 +129,8 @@ void DrawSketchHandler::unsetCursor(void)
 void DrawSketchHandler::setPositionText(const Base::Vector2D &Pos)
 {
     sketchgui->setPositionText(Pos);
-
 }
+
 void DrawSketchHandler::resetPositionText(void)
 {
     sketchgui->resetPositionText();
