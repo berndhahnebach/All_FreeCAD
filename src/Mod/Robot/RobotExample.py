@@ -1,4 +1,4 @@
-# Example hwo to use the basic robot class Robot6Axis which represent a 6-Axis 
+# Example how to use the basic robot class Robot6Axis which represent a 6-Axis 
 # industrial robot. The Robot Module is  dependend on Part but nor on other Modules.
 # It works mostly with the basic types Placement, Vector and Matrix. So we need 
 # only:
