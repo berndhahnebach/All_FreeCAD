@@ -44,5 +44,5 @@ ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Fem")
 
 
 FreeCAD.addExportType("TetGen file (*.poly)","convert2TetGen") 
-FreeCAD.addImportType("FEM formats (*.unv *.med *.dat)","Fem")
+FreeCAD.addImportType("FEM formats (*.unv *.med *.dat *.bdf)","Fem")
 FreeCAD.addExportType("FEM formats (*.unv *.med *.dat)","Fem")
