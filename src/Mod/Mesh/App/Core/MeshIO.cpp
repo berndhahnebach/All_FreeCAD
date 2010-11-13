@@ -40,6 +40,7 @@
 
 #include <math.h>
 #include <sstream>
+#include <iomanip>
 #include <boost/regex.hpp>
 
 
