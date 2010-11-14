@@ -816,6 +816,9 @@ def export(objectslist,filename):
 	global exportList
 	exportList = objectslist
 	dxf = dxfLibrary.Drawing()
+        if (len(exportList) == 1) and (exportList[0].isDerivedFrom("Drawing::FeaturePage")):
+                exportPage(exportList[0],filename)
+                return
 	for ob in exportList:
 		print "processing ",ob.Name
 		if ob.isDerivedFrom("Part::Feature"):
@@ -868,6 +871,36 @@ def export(objectslist,filename):
 					
 	dxf.saveas(filename)
 	FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
+
+def exportPage(page,filename):
+        "special export for pages, using inkscape"
+        print "Exporting page object..."
+        import tempfile
+        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+        inkscapepath = params.GetString("inkscapepath")
+        ps2dxfpath = params.GetString("ps2dxfpath")
+        if not inkscapepath:
+                if os.name == "posix":
+                        p= "/usr/bin/inkscape"
+                        if os.path.exists(p):
+                                inkscapepath = p
+                        else:
+                                print "Inkscape not found! aborting..."
+        if not ps2dxfpath:
+                if os.name == "posix":
+                        p= "/usr/share/inkscape/extensions/ps2dxf.sh"
+                        if os.path.exists(p):
+                                ps2dxfpath = p
+                        else:
+                                print "Ps2dxf script not found! aborting..."
+        if inkscapepath and ps2dxfpath:
+                pst = tempfile.NamedTemporaryFile(suffix=".ps")
+                os.system(inkscapepath+" "+page.PageResult+" --export-ps="+pst.name)
+                os.system(ps2dxfpath+" "+pst.name+" > "+filename)
+                FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
+              
+        # inkscape test.svg --export-ps=test.ps | /usr/share/inkscape/extensips2dxf.sh test.ps > test.dxf
+        
 
 
 

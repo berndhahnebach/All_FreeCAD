@@ -981,7 +981,7 @@ class ViewProviderDimension:
                         text = text.replace("<>",dtext)
                 else:
                         text = dtext
-                print type(dtext),text,type(text)
+                print "debug: dimension: ",type(dtext),text,type(text)
 		self.text.string = self.text3d.string = text
                 u = p3.sub(p2)
                 v = p2.sub(p1)
