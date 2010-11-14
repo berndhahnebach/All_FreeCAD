@@ -1304,7 +1304,7 @@ class Arc(Creator):
 		else:
                         sta = math.degrees(self.firstangle)
                         end = math.degrees(self.firstangle+self.angle)
-                        print sta, end
+                        print "debug:",sta, end
                         if end < sta: sta,end = end,sta
                         Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked(),sta,end)
                 self.doc.commitTransaction()

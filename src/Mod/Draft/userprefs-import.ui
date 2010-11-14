@@ -351,6 +351,63 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Page to DXF export options</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Path to inkscape executable</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefFileChooser" name="gui::preffilechooser_2">
+          <property name="toolTip">
+           <string>This is the path to your inkscape executable, in case it differs from the standard (in that case, leave blank)</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>inkscapepath</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Path to inkscape ps2dxf script</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefFileChooser" name="gui::preffilechooser_3">
+          <property name="toolTip">
+           <string>This is the path to the ps2dxf (or ps2dxf.sh) script that is bundled with inkscape, in case you installed it in an unusual place. Otherwise, leave this blank.</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>ps2dxfpath</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
