@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 
+#include <QMessageBox>
 #include "DlgSettings3DViewPartImp.h"
 #include "ui_DlgSettings3DViewPart.h"
 
@@ -41,7 +42,7 @@ using namespace PartGui;
  *  name 'name' and widget flags set to 'f' 
  */
 DlgSettings3DViewPart::DlgSettings3DViewPart(QWidget* parent)
-  : PreferencePage(parent), ui(new Ui_DlgSettings3DViewPart)
+  : PreferencePage(parent), ui(new Ui_DlgSettings3DViewPart), checkValue(false)
 {
     ui->setupUi(this);
 }
@@ -54,9 +55,21 @@ DlgSettings3DViewPart::~DlgSettings3DViewPart()
     // no need to delete child widgets, Qt does it all for us
 }
 
+void DlgSettings3DViewPart::on_maxDeviation_valueChanged(double v)
+{
+    if (!this->isVisible())
+        return;
+    if (v < 0.01 && !checkValue) {
+        checkValue = true;
+        QMessageBox::warning(this, tr("Deviation"),
+            tr("Setting a too small deviation causes the tessellation to take longer"
+               "and thus freezes or slows down the GUI."));
+    }
+}
+
 void DlgSettings3DViewPart::saveSettings()
 {
-    ui->prefFloatSpinBox1->onSave();
+    ui->maxDeviation->onSave();
     ui->prefCheckBox8->onSave();
     ui->prefCheckBox3->onSave();
 
@@ -73,7 +86,7 @@ void DlgSettings3DViewPart::saveSettings()
 
 void DlgSettings3DViewPart::loadSettings()
 {
-    ui->prefFloatSpinBox1->onRestore();
+    ui->maxDeviation->onRestore();
     ui->prefCheckBox8->onRestore();
     ui->prefCheckBox3->onRestore();
 }

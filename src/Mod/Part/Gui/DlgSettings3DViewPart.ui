@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
+    <width>610</width>
     <height>339</height>
    </rect>
   </property>
@@ -100,7 +100,7 @@
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="Gui::PrefDoubleSpinBox" name="prefFloatSpinBox1">
+         <widget class="Gui::PrefDoubleSpinBox" name="maxDeviation">
           <property name="suffix">
            <string> %</string>
           </property>
@@ -202,13 +202,13 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Gui::PrefDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
    <header>Gui/PrefWidgets.h</header>
   </customwidget>
   <customwidget>
-   <class>Gui::PrefCheckBox</class>
-   <extends>QCheckBox</extends>
+   <class>Gui::PrefDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
    <header>Gui/PrefWidgets.h</header>
   </customwidget>
  </customwidgets>
