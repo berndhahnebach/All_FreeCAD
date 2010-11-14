@@ -79,6 +79,8 @@ void DlgSettingsUnitsImp::fillUpListBox()
 
 void DlgSettingsUnitsImp::currentIndexChanged(int index)
 {
+    if (index < 0)
+        return; // happens when clearing the combo box in retranslateUi()
     assert(index>-1 && index <3);
 
     UnitsApi::setSchema((UnitSystem)index);

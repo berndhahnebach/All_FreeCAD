@@ -47,8 +47,12 @@ protected:
     void loadSettings();
     void changeEvent(QEvent *e);
 
+private Q_SLOTS:
+    void on_maxDeviation_valueChanged(double);
+
 private:
     std::auto_ptr<Ui_DlgSettings3DViewPart> ui;
+    bool checkValue;
 };
 
 } // namespace Gui
