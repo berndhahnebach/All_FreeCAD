@@ -53,12 +53,13 @@ if [ "x$REV" != "x$OLD_REV" -o ! -r $REV_FILE ]; then
 	echo "m4_define([FREECAD_MINOR], $MIN)" >> $REV_FILE
 	echo "m4_define([FREECAD_MICRO], $REV)" >> $REV_FILE
 
-	echo "#define FCVersionMajor  \"$MAJ\""   >  src/Build/Version.h
-	echo "#define FCVersionMinor  \"$MIN\""   >> src/Build/Version.h
-	echo "#define FCVersionName   \"$ALIAS\"" >> src/Build/Version.h
-	echo "#define FCRevision      \"$REV\""   >> src/Build/Version.h
-	echo "#define FCRepositoryURL \"$URL\""   >> src/Build/Version.h
-	echo "#define FCCurrentDateT  \"$LCD\"\n" >> src/Build/Version.h
+	#echo "#define FCVersionMajor  \"$MAJ\""   >  src/Build/Version.h
+	#echo "#define FCVersionMinor  \"$MIN\""   >> src/Build/Version.h
+	#echo "#define FCVersionName   \"$ALIAS\"" >> src/Build/Version.h
+	#echo "#define FCRevision      \"$REV\""   >> src/Build/Version.h
+	#echo "#define FCRepositoryURL \"$URL\""   >> src/Build/Version.h
+	#echo "#define FCCurrentDateT  \"$LCD\"\n" >> src/Build/Version.h
+	touch src/Build/Version.h.in
 fi
 
 echo "OLD_REV=$REV" > ./.last_revision
