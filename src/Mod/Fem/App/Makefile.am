@@ -4,6 +4,9 @@ lib_LTLIBRARIES=libFem.la Fem.la
 BUILT_SOURCES=\
 		FemMeshPy.cpp 
 
+libFem_la_BUILT=\
+		FemMeshPy.h
+
 libFem_la_SOURCES = \
 		AppFemPy.cpp \
 		FemMesh.cpp \
@@ -74,6 +77,8 @@ AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/3rdP
 
 
 libdir = $(prefix)/Mod/Fem
+
+CLEANFILES = $(BUILT_SOURCES) $(libFem_la_BUILT)
 
 EXTRA_DIST = \
 		FemMeshPy.xml \
