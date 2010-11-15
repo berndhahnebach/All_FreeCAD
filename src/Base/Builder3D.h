@@ -149,11 +149,13 @@ public:
 
     void beginSeparator();
     void endSeparator();
+    void addMaterial(float color_r,float color_g,float color_b);
+    void addMaterialBinding(const char* = "OVERALL");
+    void addDrawStyle(short pointSize, short lineWidth,
+        unsigned short linePattern = 0xffff, const char* style="FILLED");
 
     /** @name Point set handling */
     //@{
-    /// starts a point set
-    void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
     /// starts a point set
     void beginPoints();
     /// insert a point in an point set
@@ -162,10 +164,6 @@ public:
     void addPoint(const Vector3f &vec);
     /// ends the points set operation
     void endPoints(void);
-    /// add a singular point (without startPoints() & endPoints() )
-    void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
-    /// add a singular point (without startPoints() & endPoints() )
-    void addSinglePoint(const Vector3f &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
     //@}
 
     /** @name Line/Direction handling */

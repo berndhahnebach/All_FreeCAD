@@ -331,10 +331,10 @@ void Builder3D::saveToFile(const char* FileName)
 // -----------------------------------------------------------------------------
 
 InventorBuilder::InventorBuilder(std::ostream& output)
-  : result(output),bStartEndOpen(false),bClosed(false), indent(2)
+  : result(output),bStartEndOpen(false),bClosed(false), indent(0)
 {
     result << "#Inventor V2.1 ascii " << std::endl << std::endl;
-    result << "Separator { " << std::endl;
+    beginSeparator();
 }
 
 InventorBuilder:: ~InventorBuilder()
@@ -346,7 +346,7 @@ void InventorBuilder::close()
 {
     if (!bClosed) {
         bClosed = true;
-        result <<   "} " << std::endl;
+        endSeparator();
     }
 }
 
@@ -362,31 +362,32 @@ void InventorBuilder::endSeparator()
     result << Base::blanks(indent) << "}" << std::endl;
 }
 
+void InventorBuilder::addMaterial(float color_r,float color_g,float color_b)
+{
+    result << Base::blanks(indent) << "Material { " << std::endl;
+    result << Base::blanks(indent) << "  diffuseColor "
+           << color_r << " "<< color_g << " "<< color_b << std::endl;
+    result << Base::blanks(indent) << "} " << std::endl;
+}
+
+void InventorBuilder::addMaterialBinding(const char* bind)
+{
+    result << Base::blanks(indent) << "MaterialBinding { value "
+           << bind << " } " << std::endl;
+}
+
+void InventorBuilder::addDrawStyle(short pointSize, short lineWidth, unsigned short linePattern, const char* style)
+{
+    result << Base::blanks(indent) << "DrawStyle {" << std::endl
+           << Base::blanks(indent) << "  style " << style << std::endl
+           << Base::blanks(indent) << "  pointSize " << pointSize << std::endl
+           << Base::blanks(indent) << "  lineWidth " << lineWidth << std::endl
+           << Base::blanks(indent) << "  linePattern " << linePattern << std::endl
+           << Base::blanks(indent) << "}" << std::endl;
+}
+
 //**************************************************************************
 // points handling
-
-/**
- * Starts the definition of point set with the given point size and color.
- * If posible make not too much startPoints() and endPoints() calls. Try to put all
- * points in one set. 
- * @see endPoints()
- * @param pointSize the point size in pixel the points are showed.
- * @param color_r red part of the point color (0.0 - 1.0).
- * @param color_g green part of the point color (0.0 - 1.0).
- * @param color_b blue part of the point color (0.0 - 1.0).
- */
-void InventorBuilder::startPoints(short pointSize, float color_r,float color_g,float color_b)
-{
-    bStartEndOpen = true;
-    result << "  Separator { " << std::endl;
-    result << "    Material { " << std::endl;
-    result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
-    result << "    } " << std::endl;
-    result << "    MaterialBinding { value PER_PART } " << std::endl;
-    result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
-    result << "    Coordinate3 { " << std::endl;
-    result << "      point [ ";
-}
 
 /**
  * Starts the definition of point set.
@@ -397,16 +398,16 @@ void InventorBuilder::startPoints(short pointSize, float color_r,float color_g,f
  */
 void InventorBuilder::beginPoints()
 {
-    bStartEndOpen = true;
-    result << "  Separator { " << std::endl;
-    result << "    Coordinate3 { " << std::endl;
-    result << "      point [ ";
+    result << Base::blanks(indent) << "Coordinate3 { " << std::endl;
+    indent += 2;
+    result << Base::blanks(indent) << "point [ ";
+    indent += 2;
 }
 
 /// insert a point in an point set
 void InventorBuilder::addPoint(float x, float y, float z)
 {
-    result << x << " " << y << " " << z << "," << std::endl;
+    result << Base::blanks(indent) << x << " " << y << " " << z << "," << std::endl;
 }
 
 /// add a vector to a point set
@@ -421,34 +422,11 @@ void InventorBuilder::addPoint(const Vector3f &vec)
  */
 void InventorBuilder::endPoints(void)
 {
-    result  << "] " << std::endl;
-    result  << "  } " << std::endl;
-    result  <<   "PointSet { } " << std::endl;
-    result  << "} " << std::endl;
-    bStartEndOpen = false;
-}
-
-void InventorBuilder::addSinglePoint(float x, float y, float z,short pointSize, float color_r,float color_g,float color_b)
-{
-    // addSinglePoint() not between startXXX() and endXXX() allowed
-    assert( bStartEndOpen == false );
-
-    result << "  Separator { " << std::endl;
-    result << "    Material { " << std::endl;
-    result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
-    result << "    } " << std::endl;
-    result << "    MaterialBinding { value PER_PART } " << std::endl;
-    result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
-    result << "    Coordinate3 { " << std::endl;
-    result << "      point [ " << x << " " << y << " " << z << " ] " << std::endl;
-    result << "    } " << std::endl;
-    result << "    PointSet { } " << std::endl;
-    result << "  } " << std::endl;
-}
-
-void InventorBuilder::addSinglePoint(const Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
-{
-  addSinglePoint(vec.x, vec.y , vec.z, pointSize, color_r, color_g, color_b);
+    indent -= 2;
+    result << Base::blanks(indent) << "]" << std::endl;
+    indent -= 2;
+    result << Base::blanks(indent) << "}" << std::endl;
+    result << Base::blanks(indent) << "PointSet { } " << std::endl;
 }
 
 //**************************************************************************
@@ -469,17 +447,19 @@ void InventorBuilder::addText(float pos_x, float pos_y , float pos_z,const char 
   // addSinglePoint() not between startXXX() and endXXX() allowed
   assert( bStartEndOpen == false );
 
-  result << "  Separator { "   << std::endl
-         << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
-         << "    Transform { translation " << pos_x << " "<< pos_y << " "<< pos_z << "} "  << std::endl
-         << "    Text2 { string \" " << text << "\" " << "} " << std::endl
-         << "  } " << std::endl;
+  result << Base::blanks(indent) << "Separator { "   << std::endl
+         << Base::blanks(indent) << "  Material { diffuseColor "
+         << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+         << Base::blanks(indent) << "  Transform { translation "
+         << pos_x << " "<< pos_y << " "<< pos_z << "} "  << std::endl
+         << Base::blanks(indent) << "  Text2 { string \" " << text << "\" " << "} " << std::endl
+         << Base::blanks(indent) << "}" << std::endl;
 
 }
 
 void InventorBuilder::addText(const Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
 {
-  addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
+    addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
 }
 
 //**************************************************************************
@@ -526,23 +506,26 @@ void InventorBuilder::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, s
     rot.Normalize();
     float a = Vector3f(0.0f, 1.0f, 0.0f).GetAngle(dir);
 
-    result << "  Separator { " << std::endl
-           << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
-           << "    DrawStyle { lineWidth " << lineSize << "} " << std::endl
-           << "    Coordinate3 { " << std::endl
-           << "      point [ "
+    result << Base::blanks(indent) << "Separator { " << std::endl
+           << Base::blanks(indent) << "  Material { diffuseColor "
+           << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+           << Base::blanks(indent) << "  DrawStyle { lineWidth "
+           << lineSize << "} " << std::endl
+           << Base::blanks(indent) << "  Coordinate3 { " << std::endl
+           << Base::blanks(indent) << "    point [ "
            <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
            <<        pt2s.x << " " << pt2s.y << " " << pt2s.z
            << " ] " << std::endl
-           << "    } " << std::endl
-           << "    LineSet { } " << std::endl
-           << "    Transform { " << std::endl
-           << "      translation " << cpt.x << " " << cpt.y << " " << cpt.z << " " << std::endl
-           << "      rotation " << rot.x << " " << rot.y << " " << rot.z << " " << a << std::endl
-           << "    } " << std::endl
-           << "    Cone { bottomRadius " << cr << " height " << cl << "} " << std::endl
-           << "  } " << std::endl;
-
+           << Base::blanks(indent) << "  } " << std::endl
+           << Base::blanks(indent) << "  LineSet { } " << std::endl
+           << Base::blanks(indent) << "  Transform { " << std::endl
+           << Base::blanks(indent) << "    translation "
+           << cpt.x << " " << cpt.y << " " << cpt.z << " " << std::endl
+           << Base::blanks(indent) << "    rotation "
+           << rot.x << " " << rot.y << " " << rot.z << " " << a << std::endl
+           << Base::blanks(indent) << "  } " << std::endl
+           << Base::blanks(indent) << "  Cone { bottomRadius " << cr << " height " << cl << "} " << std::endl
+           << Base::blanks(indent) << "} " << std::endl;
 }
 
 /** Add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
@@ -738,11 +721,11 @@ void InventorBuilder::addNurbsSurface(const std::vector<Base::Vector3f>& control
 
 void InventorBuilder::addCylinder(float radius, float height)
 {
-    result << "Cylinder {\n"
-           << "  radius " << radius << "\n"
-           << "  height " << height << "\n"
-           << "  parts (SIDES | TOP | BOTTOM)\n"
-           << "}\n";
+    result << Base::blanks(indent) << "Cylinder {\n"
+           << Base::blanks(indent) << "  radius " << radius << "\n"
+           << Base::blanks(indent) << "  height " << height << "\n"
+           << Base::blanks(indent) << "  parts (SIDES | TOP | BOTTOM)\n"
+           << Base::blanks(indent) << "}\n";
 }
 
 void InventorBuilder::addBoundingBox(const Vector3f& pt1, const Vector3f& pt2, short lineWidth,
@@ -784,23 +767,22 @@ void InventorBuilder::addBoundingBox(const Vector3f& pt1, const Vector3f& pt2, s
 
 void InventorBuilder::addTransformation(const Matrix4D& transform)
 {
-  Vector3f cAxis, cBase;
-  float fAngle, fTranslation;
-  transform.toAxisAngle(cBase, cAxis,fAngle,fTranslation);
-  cBase.x = (float)transform[0][3];
-  cBase.y = (float)transform[1][3];
-  cBase.z = (float)transform[2][3];
-  addTransformation(cBase,cAxis,fAngle);
+    Vector3f cAxis, cBase;
+    float fAngle, fTranslation;
+    transform.toAxisAngle(cBase, cAxis,fAngle,fTranslation);
+    cBase.x = (float)transform[0][3];
+    cBase.y = (float)transform[1][3];
+    cBase.z = (float)transform[2][3];
+    addTransformation(cBase,cAxis,fAngle);
 }
 
 void InventorBuilder::addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle)
 {
-  result << "  Transform {" << std::endl;
-  result << "    translation " 
+    result << Base::blanks(indent) << "Transform {" << std::endl;
+    result << Base::blanks(indent) << "  translation " 
          << translation.x << " " << translation.y << " " << translation.z << std::endl;
-  result << "    rotation " 
+    result << Base::blanks(indent) << "  rotation " 
          << rotationaxis.x << " " << rotationaxis.y << " " << rotationaxis.z 
          << " " << fAngle << std::endl;
-  result << "  }" << std::endl;
+    result << Base::blanks(indent) <<  "}" << std::endl;
 }
-
