@@ -898,6 +898,7 @@ def exportPage(page,filename):
                 os.system(inkscapepath+" "+page.PageResult+" --export-ps="+pst.name)
                 os.system(ps2dxfpath+" "+pst.name+" > "+filename)
                 FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
+                pst.close()
               
         # inkscape test.svg --export-ps=test.ps | /usr/share/inkscape/extensips2dxf.sh test.ps > test.dxf
         

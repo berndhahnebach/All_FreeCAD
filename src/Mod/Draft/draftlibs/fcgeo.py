@@ -27,7 +27,7 @@ __url__ = ["http://free-cad.sourceforge.net"]
 
 "this file contains generic geometry functions for manipulating Part shapes"
 
-import FreeCAD, Part, fcvec, math, cmath
+import FreeCAD, Part, fcvec, math, cmath, FreeCADGui
 from FreeCAD import Vector
 
 NORM = Vector(0,0,1) # provisory normal direction for all geometry ops.
@@ -467,6 +467,92 @@ def offset(edge,vector):
 		rad = edge.Vertexes[0].Point.sub(edge.Curve.Center)
 		newrad = Vector.add(rad,vector).Length
 		return Part.Circle(edge.Curve.Center,NORM,newrad).toShape()
+
+def isReallyClosed(wire):
+        "checks if a wire is really closed"
+        if len(wire.Edges) == len(wire.Vertexes): return True
+        v1 = wire.Vertexes[0].Point
+        v2 = wire.Vertexes[-1].Point
+        if fcvec.equals(v1,v2): return True
+        return False
+
+def getNormal(shape):
+        "finds the normal of a shape, if possible"
+        if shape.ShapeType == "Face":
+                return shape.normalAt(0.5,0.5)
+        elif shape.ShapeType == "Edge":
+                return None
+        else:
+                for e in shape.Edges:
+                        if isinstance(e.Curve,Part.Circle):
+                                return e.Curve.Axis
+                        e1 = vec(shape.Edges[0])
+                        for i in range(1,len(shape.Edges)):
+                                e2 = vec(shape.Edges[i])
+                                if 0.1 < abs(e1.getAngle(e2)) < 1.56:
+                                        return e1.cross(e2).normalize()
+
+def offsetWire(wire,dvec,bind=False):
+        '''offsetWire(wire,vector,[bind]): offsets the given wire along the
+        given vector. The vector will be applied at the first vertex of
+        the wire. If bind is True (and the shape is open), the original
+        wire and the offsetted one are bound by 2 edges, forming a face.'''
+        edges = sortEdges(wire.Edges)
+        norm = getNormal(wire)
+        if norm.getAngle(FreeCADGui.ActiveDocument.ActiveView.getViewDirection()) < 0.78: norm = fcvec.neg(norm)
+        print norm
+        nedges = []
+        for i in range(len(edges)):
+                curredge = edges[i]
+                delta = dvec
+                if i != 0:
+                        angle = fcvec.angle(vec(edges[0]),vec(curredge))
+                        delta = fcvec.rotate(delta,angle,norm)
+                nedge = offset(curredge,delta)
+                nedges.append(nedge)
+        print isReallyClosed(wire)
+        nedges = connect(nedges,isReallyClosed(wire))
+        if bind and not wire.isClosed():
+                e1 = Part.Line(edges[0].Vertexes[0].Point,nedges[0].Vertexes[0].Point).toShape()
+                e2 = Part.Line(edges[-1].Vertexes[-1].Point,nedges[-1].Vertexes[-1].Point).toShape()
+                alledges = edges.extend(nedges)
+                alledges = alledges.extend([e1,e2])
+                w = Part.Wire(alledges)
+                return w
+        else:
+                return nedges
+
+def connect(edges,closed=False):
+        '''connects the edges in the given list by their intersections'''
+        nedges = []
+        for i in range(len(edges)):
+                curr = edges[i]
+                if i > 0:
+                        prev = edges[i-1]
+                else:
+                        if closed:
+                                prev = edges[-1]
+                        else:
+                                prev = None
+                if i < (len(edges)-1):
+                        next = edges[i+1]
+                else:
+                        if closed: next = edges[0]
+                        else:
+                                next = None
+                if prev:
+                        v1 = findIntersection(curr,prev,True,True)[0]
+                else:
+                        v1 = curr.Vertexes[0].Point
+                if next:
+                        v2 = findIntersection(curr,next,True,True)[0]
+                else:
+                        v2 = curr.Vertexes[-1].Point
+                if isinstance(curr.Curve,Part.Line):
+                        nedges.append(Part.Line(v1,v2).toShape())
+                elif isinstance(curr.Curve,Part.Circle):
+                        nedges.append(Part.Arc(v1,findMidPoint(curr),v2))
+        return Part.Wire(nedges)
 
 def findDistance(point,edge,strict=False):
 	'''
