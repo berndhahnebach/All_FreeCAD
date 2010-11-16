@@ -1116,6 +1116,11 @@ class Rectangle:
 
 class ViewProviderRectangle(ViewProviderDraft):
         "A View Provider for the Rectangle object"
+        def __init__(self, obj):
+                ViewProviderDraft.__init__(self,obj)
+                obj.addProperty("App::PropertyFile","TextureImage",
+                                "Base","Uses an image as a texture map")
+                self.texture = None
 
 	def getIcon(self):
 		return """
@@ -1145,6 +1150,20 @@ class ViewProviderRectangle(ViewProviderDraft):
                         "                "};
 			"""
 
+        def onChanged(self, vp, prop):
+                if prop == "TextureImage":
+                        r = vp.RootNode
+                        if os.path.exists(vp.TextureImage):
+                                self.texture = coin.SoTexture2()
+                                self.texture.filename = str(vp.TextureImage)
+                                r.insertChild(self.texture,1)
+                        else:
+                                if self.texture:
+                                        r.removeChild(self.texture)
+                                        self.texture = None
+		return
+
+        
 class Circle:
         "The Circle object"
         
