@@ -867,16 +867,17 @@ class ViewProviderDimension:
 	def __init__(self, obj):
 		prm = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		obj.addProperty("App::PropertyLength","FontSize","Base","Font size")
-		obj.addProperty("App::PropertyString","FontName","Base","Font Name")
+		obj.addProperty("App::PropertyString","FontName","Base","Font name")
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
 		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
 		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines")
-                obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use <> to insert the actual length")
+                obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use <> to insert the dimension length")
 		obj.Proxy = self
 		self.Object = obj.Object
                 obj.FontSize=prm.GetFloat("textheight")
                 obj.FontName=prm.GetString("textfont")
                 obj.ExtLines=0.3
+                obj.TextOverride = ''
 
 	def calcGeom(self,obj):
 		p1 = obj.Start
@@ -917,13 +918,7 @@ class ViewProviderDimension:
 		self.text = coin.SoAsciiText()
                 self.text3d = coin.SoText2()
 		self.text.justification = self.text3d.justification = coin.SoAsciiText.CENTER
-                text = str(obj.TextOverride)
-                dtext = ("%.2f" % p3.sub(p2).Length)
-                if text:
-                        text = text.replace("<>",dtext)
-                else:
-                        text = dtext
-		self.text.string = self.text3d.string = text
+		self.text.string = self.text3d.string = ''
 		self.textpos = coin.SoTransform()
 		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
                 tm = fcvec.getPlaneRotation(p3.sub(p2),norm)
@@ -980,6 +975,7 @@ class ViewProviderDimension:
                 self.Object = obj.Object
 
 	def updateData(self, obj, prop):
+                text = None
                 if obj.Base and obj.LinkedVertices:
                         if "Shape" in obj.Base.PropertiesList:
                                 v1 = obj.Base.Shape.Vertexes[obj.LinkedVertices[0]].Point
@@ -987,13 +983,13 @@ class ViewProviderDimension:
                                 if v1 != obj.Start: obj.Start = v1
                                 if v2 != obj.End: obj.End = v2
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
-                text = str(obj.ViewObject.TextOverride)
+                if 'TextOverride' in obj.ViewObject.PropertiesList:
+                        text = str(obj.ViewObject.TextOverride)
                 dtext = ("%.2f" % p3.sub(p2).Length)
                 if text:
                         text = text.replace("<>",dtext)
                 else:
                         text = dtext
-                print "debug: dimension: ",type(dtext),text,type(text)
 		self.text.string = self.text3d.string = text
                 u = p3.sub(p2)
                 v = p2.sub(p1)
@@ -1132,6 +1128,8 @@ class ViewProviderRectangle(ViewProviderDraft):
                 ViewProviderDraft.__init__(self,obj)
                 obj.addProperty("App::PropertyFile","TextureImage",
                                 "Base","Uses an image as a texture map")
+
+        def attach(self,obj):
                 self.texture = None
 
 	def getIcon(self):
@@ -1180,13 +1178,13 @@ class Circle:
         "The Circle object"
         
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyDistance","Radius","Base","Radius of the circle")
-                obj.addProperty("App::PropertyAngle","StartAngle","Arc","Start angle of the arc")
+                obj.addProperty("App::PropertyAngle","StartAngle","Arc",
+                                "Start angle of the arc")
                 obj.addProperty("App::PropertyAngle","EndAngle","Arc",
                                 "End angle of the arc (for a full circle, give it same value as Start Angle)")
+                obj.addProperty("App::PropertyDistance","Radius","Base",
+                                "Radius of the circle")
 		obj.Proxy = self
-                obj.Radius = 1
-                obj.StartAngle = obj.EndAngle = 0
 
 	def execute(self, fp):
                 self.createGeometry(fp)
@@ -1197,13 +1195,11 @@ class Circle:
                         
         def createGeometry(self,fp):
                 plm = fp.Placement
+                shape = Part.makeCircle(fp.Radius,Vector(0,0,0),
+                                                Vector(0,0,1),fp.StartAngle,fp.EndAngle)
                 if fp.StartAngle == fp.EndAngle:
-                        shape = Part.Circle(Vector(0,0,0),Vector(0,0,1),fp.Radius).toShape()
                         shape = Part.Wire(shape)
                         shape = Part.Face(shape)
-                else:
-                        shape = Part.makeCircle(fp.Radius,Vector(0,0,0),
-                                                Vector(0,0,1),fp.StartAngle,fp.EndAngle)
 		fp.Shape = shape
                 fp.Placement = plm
 
@@ -1297,6 +1293,8 @@ class ViewProviderWire(ViewProviderDraft):
                 ViewProviderDraft.__init__(self,obj)
                 obj.addProperty("App::PropertyBool","EndArrow",
                                 "Base","Displays a dim symbol at the end of the wire")
+
+        def attach(self, obj):
                 col = coin.SoBaseColor()
                 col.rgb.setValue(obj.LineColor[0],
                                  obj.LineColor[1],
@@ -1350,7 +1348,7 @@ class ViewProviderWire(ViewProviderDraft):
                         else:
                                 rn.removeChild(self.pt)
 		return
-
+        
 class Polygon:
         "The Polygon object"
         
