@@ -805,26 +805,58 @@ static PyObject * makeRevolution(PyObject *self, PyObject *args)
     double vmin = DBL_MAX, vmax=-DBL_MAX;
     double angle=360;
     PyObject *pPnt=0, *pDir=0, *pCrv;
-    if (!PyArg_ParseTuple(args, "O!|dddO!O!", &(GeometryPy::Type), &pCrv,
-                                              &vmin, &vmax, &angle,
-                                              &(Base::VectorPy::Type), &pPnt,
-                                              &(Base::VectorPy::Type), &pDir))
-        return 0;
+    Handle_Geom_Curve curve;
+    if (PyArg_ParseTuple(args, "O!|dddO!O!", &(GeometryPy::Type), &pCrv,
+                                             &vmin, &vmax, &angle,
+                                             &(Base::VectorPy::Type), &pPnt,
+                                             &(Base::VectorPy::Type), &pDir)) {
+        GeometryPy* pcGeo = static_cast<GeometryPy*>(pCrv);
+        curve = Handle_Geom_Curve::DownCast
+            (pcGeo->getGeometryPtr()->handle());
+        if (curve.IsNull()) {
+            PyErr_SetString(PyExc_TypeError, "geometry is not a curve");
+            return 0;
+        }
+        if (vmin == DBL_MAX)
+            vmin = curve->FirstParameter();
 
-    GeometryPy* pcGeo = static_cast<GeometryPy*>(pCrv);
-    Handle_Geom_Curve curve = Handle_Geom_Curve::DownCast
-        (pcGeo->getGeometryPtr()->handle());
-    if (curve.IsNull()) {
-        PyErr_SetString(PyExc_TypeError, "geometry is not a curve");
-        return 0;
+        if (vmax == -DBL_MAX)
+            vmax = curve->LastParameter();
     }
+    else {
+        PyErr_Clear();
+        if (!PyArg_ParseTuple(args, "O!|dddO!O!", &(TopoShapePy::Type), &pCrv,
+            &vmin, &vmax, &angle, &(Base::VectorPy::Type), &pPnt,
+            &(Base::VectorPy::Type), &pDir)) {
+            return 0;
+        }
+        const TopoDS_Shape& shape = static_cast<TopoShapePy*>(pCrv)->getTopoShapePtr()->_Shape;
+        if (shape.IsNull()) {
+            PyErr_SetString(PyExc_Exception, "shape is empty");
+            return 0;
+        }
 
-    if (vmin == DBL_MAX) {
-        vmin = curve->FirstParameter();
-    }
+        if (shape.ShapeType() != TopAbs_EDGE) {
+            PyErr_SetString(PyExc_Exception, "shape is not an edge");
+            return 0;
+        }
 
-    if (vmax == -DBL_MAX) {
-        vmax = curve->LastParameter();
+        const TopoDS_Edge& edge = TopoDS::Edge(shape);
+        BRepAdaptor_Curve adapt(edge);
+
+        const Handle_Geom_Curve& hCurve = adapt.Curve().Curve();
+        // Apply placement of the shape to the curve
+        TopLoc_Location loc = edge.Location();
+        curve = Handle_Geom_Curve::DownCast(hCurve->Transformed(loc.Transformation()));
+        if (curve.IsNull()) {
+            PyErr_SetString(PyExc_Exception, "invalid curve in edge");
+            return 0;
+        }
+
+        if (vmin == DBL_MAX)
+            vmin = adapt.FirstParameter();
+        if (vmax == -DBL_MAX)
+            vmax = adapt.LastParameter();
     }
 
     try {
@@ -878,6 +910,81 @@ static PyObject * makeRuledSurface(PyObject *self, PyObject *args)
     }
 }
 
+static PyObject * makeSweepSurface(PyObject *self, PyObject *args)
+{
+    PyObject *path, *profile;
+    double tolerance=0.001;
+    int fillMode = 0;
+    if (!PyArg_ParseTuple(args, "O!O!|di", &(TopoShapePy::Type), &path,
+                                           &(TopoShapePy::Type), &profile,
+                                           &tolerance, &fillMode))
+        return 0;
+
+    const TopoDS_Shape& path_shape = static_cast<TopoShapePy*>(path)->getTopoShapePtr()->_Shape;
+    const TopoDS_Shape& profile_shape = static_cast<TopoShapePy*>(profile)->getTopoShapePtr()->_Shape;
+    if (path_shape.IsNull()) {
+        PyErr_SetString(PyExc_Exception, "path shape is empty");
+        return 0;
+    }
+    if (profile_shape.IsNull()) {
+        PyErr_SetString(PyExc_Exception, "profile shape is empty");
+        return 0;
+    }
+
+    try {
+        if (path_shape.ShapeType() == TopAbs_EDGE && 
+            profile_shape.ShapeType() == TopAbs_EDGE) {
+            const TopoDS_Edge& path_edge = TopoDS::Edge(path_shape);
+            BRepAdaptor_Curve path_adapt(path_edge);
+            double umin = path_adapt.FirstParameter();
+            double umax = path_adapt.LastParameter();
+            Handle_Geom_Curve hPath = path_adapt.Curve().Curve();
+
+            // Apply placement of the shape to the curve
+            TopLoc_Location loc1 = path_edge.Location();
+            hPath = Handle_Geom_Curve::DownCast(hPath->Transformed(loc1.Transformation()));
+
+            if (hPath.IsNull()) {
+                PyErr_SetString(PyExc_Exception, "invalid curve in path edge");
+                return 0;
+            }
+
+            const TopoDS_Edge& prof_edge = TopoDS::Edge(profile_shape);
+            BRepAdaptor_Curve prof_adapt(prof_edge);
+            double vmin = prof_adapt.FirstParameter();
+            double vmax = prof_adapt.LastParameter();
+            Handle_Geom_Curve hProfile = prof_adapt.Curve().Curve();
+
+            // Apply placement of the shape to the curve
+            TopLoc_Location loc2 = prof_edge.Location();
+            hProfile = Handle_Geom_Curve::DownCast(hProfile->Transformed(loc2.Transformation()));
+
+            if (hProfile.IsNull()) {
+                PyErr_SetString(PyExc_Exception, "invalid curve in profile edge");
+                return 0;
+            }
+
+            GeomFill_Pipe mkSweep(hPath, hProfile, (GeomFill_Trihedron)fillMode);
+            mkSweep.GenerateParticularCase(Standard_True);
+            mkSweep.Perform(tolerance, Standard_False, GeomAbs_C1, BSplCLib::MaxDegree(), 1000);
+
+            const Handle_Geom_Surface& surf = mkSweep.Surface();
+            BRepBuilderAPI_MakeFace mkBuilder(surf, umin, umax, vmin, vmax);
+            const TopoDS_Face& face = mkBuilder.Face();
+            return new TopoShapeFacePy(new TopoShape(face));
+        }
+        else {
+            PyErr_SetString(PyExc_Exception, "path and profile must be an edge");
+            return 0;
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
 static PyObject * makeTube(PyObject *self, PyObject *args)
 {
     PyObject *pshape;
@@ -886,6 +993,10 @@ static PyObject * makeTube(PyObject *self, PyObject *args)
         return 0;
 
     const TopoDS_Shape& shape = static_cast<TopoShapePy*>(pshape)->getTopoShapePtr()->_Shape;
+    if (shape.IsNull()) {
+        PyErr_SetString(PyExc_Exception, "path shape is empty");
+        return 0;
+    }
 
     try {
         if (shape.ShapeType() == TopAbs_EDGE) {
@@ -894,7 +1005,10 @@ static PyObject * makeTube(PyObject *self, PyObject *args)
             double umin = adapt.FirstParameter();
             double umax = adapt.LastParameter();
 
-            const Handle_Geom_Curve& hCurve = adapt.Curve().Curve();
+            Handle_Geom_Curve hCurve = adapt.Curve().Curve();
+            // Apply placement of the shape to the curve
+            TopLoc_Location loc = edge.Location();
+            hCurve = Handle_Geom_Curve::DownCast(hCurve->Transformed(loc.Transformation()));
             if (hCurve.IsNull()) {
                 PyErr_SetString(PyExc_Exception, "invalid curve in edge");
                 return 0;
@@ -1337,8 +1451,11 @@ struct PyMethodDef Part_methods[] = {
     {"makeTube" ,makeTube,METH_VARARGS,
      "makeTube(edge,float) -- Create a tube."},
 
+    {"makeSweepSurface" ,makeSweepSurface,METH_VARARGS,
+     "makeSweepSurface(edge(path),edge(profile),[float]) -- Create a profile along a path."},
+
     {"makeLoft" ,makeLoft,METH_VARARGS,
-     "makeLoft() -- Create a loft shape."},
+     "makeLoft(list of wires) -- Create a loft shape."},
 
     {"cast_to_shape" ,cast_to_shape,METH_VARARGS,
      "cast_to_shape(shape) -- Cast to the actual shape type"},
