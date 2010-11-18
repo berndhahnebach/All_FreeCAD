@@ -1004,13 +1004,16 @@ DocumentObjectItem::DocumentObjectItem(Gui::ViewProviderDocumentObject* pcViewPr
 {
     setFlags(flags()|Qt::ItemIsEditable);
     // Setup connections
-    pcViewProvider->signalChangeIcon.connect(boost::bind(&DocumentObjectItem::slotChangeIcon, this));
-    pcViewProvider->signalChangeToolTip.connect(boost::bind(&DocumentObjectItem::slotChangeToolTip, this, _1));
-    pcViewProvider->signalChangeStatusTip.connect(boost::bind(&DocumentObjectItem::slotChangeStatusTip, this, _1));
+    connectIcon = pcViewProvider->signalChangeIcon.connect(boost::bind(&DocumentObjectItem::slotChangeIcon, this));
+    connectTool = pcViewProvider->signalChangeToolTip.connect(boost::bind(&DocumentObjectItem::slotChangeToolTip, this, _1));
+    connectStat = pcViewProvider->signalChangeStatusTip.connect(boost::bind(&DocumentObjectItem::slotChangeStatusTip, this, _1));
 }
 
 DocumentObjectItem::~DocumentObjectItem()
 {
+    connectIcon.disconnect();
+    connectTool.disconnect();
+    connectStat.disconnect();
 }
 
 Gui::ViewProviderDocumentObject* DocumentObjectItem::object() const
