@@ -164,8 +164,12 @@ protected:
     void slotChangeStatusTip(const QString&);
 
 private:
+    typedef boost::BOOST_SIGNALS_NAMESPACE::connection Connection;
     int previousStatus;
     Gui::ViewProviderDocumentObject* viewObject;
+    Connection connectIcon;
+    Connection connectTool;
+    Connection connectStat;
 
     friend class TreeWidget;
 };

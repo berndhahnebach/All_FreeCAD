@@ -251,6 +251,27 @@ std::string DynamicProperty::getUniquePropertyName(const char *Name) const
     }
 }
 
+std::string DynamicProperty::encodeAttribute(const std::string& str) const
+{
+    std::string tmp;
+    for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+        if (*it == '<')
+            tmp += "&lt;";
+        else if (*it == '"')
+            tmp += "&quot;";
+        else if (*it == '&')
+            tmp += "&amp;";
+        else if (*it == '>')
+            tmp += "&gt;";
+        else if (*it == '\n')
+            tmp += " ";
+        else
+            tmp += *it;
+    }
+
+    return tmp;
+}
+
 void DynamicProperty::Save (Base::Writer &writer) const 
 {
     std::map<std::string,Property*> Map;
@@ -271,7 +292,8 @@ void DynamicProperty::Save (Base::Writer &writer) const
         else {
             writer.Stream() << writer.ind() << "<Property name=\"" << it->first
                             << "\" type=\"" << it->second->getTypeId().getName()
-                            << "\" group=\"" << pt->second.group << "\" doc=\"" << pt->second.doc
+                            << "\" group=\"" << encodeAttribute(pt->second.group)
+                            << "\" doc=\"" << encodeAttribute(pt->second.doc)
                             << "\" attr=\"" << pt->second.attr << "\" ro=\"" << pt->second.readonly
                             << "\" hide=\"" << pt->second.hidden << "\">" << std::endl;
         }
