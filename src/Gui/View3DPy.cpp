@@ -37,6 +37,7 @@
 #include "SoFCSelectionAction.h"
 #include "SoFCVectorizeSVGAction.h"
 #include "SoFCVectorizeU3DAction.h"
+#include "SoFCDB.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 
@@ -77,6 +78,7 @@ void View3DInventorPy::init_type()
     add_varargs_method("setAnimationEnabled",&View3DInventorPy::setAnimationEnabled,"setAnimationEnabled()");
     add_varargs_method("isAnimationEnabled",&View3DInventorPy::isAnimationEnabled,"isAnimationEnabled()");
     add_varargs_method("dump",&View3DInventorPy::dump,"dump()");
+    add_varargs_method("dumpNode",&View3DInventorPy::dumpNode,"dumpNode(node)");
     add_varargs_method("setStereoType",&View3DInventorPy::setStereoType,"setStereoType()");
     add_varargs_method("getStereoType",&View3DInventorPy::getStereoType,"getStereoType()");
     add_varargs_method("listStereoTypes",&View3DInventorPy::listStereoTypes,"listStereoTypes()");
@@ -720,6 +722,23 @@ Py::Object View3DInventorPy::dump(const Py::Tuple& args)
     catch(...) {
         throw Py::Exception("Unknown C++ exception");
     }
+}
+
+Py::Object View3DInventorPy::dumpNode(const Py::Tuple& args)
+{
+    PyObject* object;
+    if (!PyArg_ParseTuple(args.ptr(), "O", &object))     // convert args: Python->C 
+        throw Py::Exception();
+
+    void* ptr = 0;
+    try {
+        Base::Interpreter().convertSWIGPointerObj("pivy.coin", "SoNode *", object, &ptr, 0);
+    }
+    catch (const Base::Exception& e) {
+        throw Py::Exception(e.what());
+    }
+    SoNode* node = reinterpret_cast<SoNode*>(ptr);
+    return Py::String(SoFCDB::writeNodesToString(node));
 }
 
 //FIXME: Once View3DInventor inherits from PropertyContainer we can use PropertyEnumeration.
