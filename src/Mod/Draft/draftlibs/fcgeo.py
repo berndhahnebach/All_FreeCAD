@@ -500,7 +500,7 @@ def offsetWire(wire,dvec,bind=False):
         edges = sortEdges(wire.Edges)
         norm = getNormal(wire)
         if norm.getAngle(FreeCADGui.ActiveDocument.ActiveView.getViewDirection()) < 0.78: norm = fcvec.neg(norm)
-        print norm
+        print "norm",norm
         nedges = []
         for i in range(len(edges)):
                 curredge = edges[i]
