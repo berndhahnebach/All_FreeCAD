@@ -679,8 +679,27 @@ class PlaneTracker(Tracker):
                 self.trans.rotation.setValue([Q[0],Q[1],Q[2],Q[3]])
                 self.on()
                         
-                
-        
+class wireTracker(Tracker):                
+        "A wire tracker"
+	def __init__(self,wire):
+		line = coin.SoLineSet()
+                self.closed = fcgeo.isReallyClosed(wire):
+                if self.closed:
+                        line.numVertices.setValue(len(wire.Vertexes)+1)
+                else:
+                        line.numVertices.setValue(len(wire.Vertexes))
+		self.coords = coin.SoCoordinate3()
+                self.update(wire)
+		Tracker.__init__(self,children=[self.coords,line])
+
+        def update(self,wire):
+                for i in range(len(wire.Vertexes)):
+                        p=wire.Vertexes[i].Point
+                        self.coords.point.set1Value(i,[p.x,p.y,p.z])
+                if self.closed:
+                        t = len(wire.Vertexes)
+                        p = wire.Vertexes[0].Point
+                        self.coords.point.set1Value(t,[p.x,p.y,p.z])
      
 #---------------------------------------------------------------------------
 # Helper tools
@@ -2137,6 +2156,107 @@ class Rotate(Modifier):
 		else:
 			self.rot(math.radians(rad),self.ui.isCopy.isChecked())
 			self.finish()
+
+
+class Offset2(Modifier):
+	"The Draft_Offset FreeCAD command definition"
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_offset',
+			'MenuText': str(translate("draft", "Offset").toLatin1()),
+			'ToolTip': str(translate("draft", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
+
+	def Activated(self):
+		Modifier.Activated(self,"Offset")
+		if self.ui:
+			if not Draft.getSelection():
+				self.ghost = None
+				self.snap = None
+				self.linetrack = None
+				self.arctrack = None
+				self.constraintrack = None
+				self.ui.selectUi()
+				msg(translate("draft", "Select an object to offset\n"))
+				self.call = self.view.addEventCallback("SoEvent",selectObject)
+			elif len(Draft.getSelection()) > 1:
+				msg(translate("draft", "Offset only works on one object at a time\n"))
+			else:
+				self.proceed()
+
+	def proceed(self):
+		if self.call: self.view.removeEventCallback("SoEvent",self.call)
+		self.sel = Draft.getSelection()[0]
+                if not self.sel.isDerivedFrom("Part::Feature"): return
+		self.step = 0
+		self.constrainSeg = None
+		self.ui.radiusUi()
+		self.ui.isCopy.show()
+		self.ui.labelRadius.setText("Distance")
+		self.ui.cmdlabel.setText("Offset")
+		self.ui.radiusValue.setFocus()
+		self.ui.radiusValue.selectAll()
+		self.snap = snapTracker()
+		self.linetrack = lineTracker()
+		self.constraintrack = lineTracker(dotted=True)
+		self.faces = False
+		self.shape = self.sel.Shape
+                self.edges = self.shape.Edges
+                self.ghost = wireTracker(self.shape)
+                self.call = self.view.addEventCallback("SoEvent",self.action)
+		msg(translate("draft", "Pick distance:\n"))
+		self.ui.cross(True)
+
+	def action(self,arg):
+		"scene event handler"
+		if (arg["Type"] == "SoLocation2Event"):
+                        self.ui.cross(True)
+			cursor = arg["Position"]
+			point = self.view.getPoint(cursor[0],cursor[1])
+			point = snapPoint(self,point,cursor,arg["CtrlDown"])
+			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
+			self.node = [point]
+			if (arg["ShiftDown"]) and self.constrainSeg:
+				dist = fcgeo.findPerpendicular(point,self.edges,self.constrainSeg[1])
+				self.constraintrack.p1(self.edges[self.constrainSeg[1]].Vertexes[0].Point)
+				self.constraintrack.p2(Vector.add(point,dist[0]))
+				self.constraintrack.on()
+			else:
+				dist = fcgeo.findPerpendicular(point,self.edges)
+				self.constraintrack.off()
+                        print dist
+			if dist:
+                                self.dvec = fcvec.rotate(fcvec.neg(dist[0]),-fcvec.angle(fcgeo.vec(self.shape.Edges[0]),fcgeo.vec(self.shape.Edges[dist[1]])))
+                                self.ghost.on()
+                                self.ghost.update(fcgeo.offsetWire(self.shape,self.dvec))
+                                self.constrainSeg = dist
+				self.linetrack.on()
+				self.linetrack.p1(point)
+				self.linetrack.p2(point.add(dist[0]))
+				self.ui.radiusValue.setText("%.2f" % dist[0].Length)
+			else:
+                                self.dvec = None
+                                self.ghost.off()
+				self.constrainSeg = None
+				self.linetrack.off()
+				self.ui.radiusValue.setText("off")
+			self.ui.radiusValue.setFocus()
+			self.ui.radiusValue.selectAll()
+			if self.extendedCopy:
+				if not arg["AltDown"]: self.finish()
+                if (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+                                if self.dvec:
+                                        nwire = fcgeo.offsetWire(self.shape,self.dvec)
+                                        Part.show(nwire)
+                                self.finish()
+                                        
+	def finish(self,closed=False):
+		Modifier.finish(self)
+		if self.ui:
+			self.snap.finalize()
+			self.linetrack.finalize()
+			self.constraintrack.finalize()
+			self.ghost.finalize()
 
 
 
