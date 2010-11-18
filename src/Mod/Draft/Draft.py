@@ -294,8 +294,8 @@ def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
         if (startangle != None) and (endangle != None):
                 if startangle == -0: startangle = 0
-                obj.StartAngle = startangle
-                obj.EndAngle = endangle
+                obj.FirstAngle = startangle
+                obj.LastAngle = endangle
         if placement: obj.Placement = placement
         formatObject(obj)
         select(obj)
@@ -871,7 +871,7 @@ class ViewProviderDimension:
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
 		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
 		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines")
-                obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use <> to insert the dimension length")
+                obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use 'dim' to insert the dimension length")
 		obj.Proxy = self
 		self.Object = obj.Object
                 obj.FontSize=prm.GetFloat("textheight")
@@ -987,7 +987,7 @@ class ViewProviderDimension:
                         text = str(obj.ViewObject.TextOverride)
                 dtext = ("%.2f" % p3.sub(p2).Length)
                 if text:
-                        text = text.replace("<>",dtext)
+                        text = text.replace("dim",dtext)
                 else:
                         text = dtext
 		self.text.string = self.text3d.string = text
@@ -1178,10 +1178,10 @@ class Circle:
         "The Circle object"
         
 	def __init__(self, obj):
-                obj.addProperty("App::PropertyAngle","StartAngle","Arc",
+                obj.addProperty("App::PropertyAngle","FirstAngle","Arc",
                                 "Start angle of the arc")
-                obj.addProperty("App::PropertyAngle","EndAngle","Arc",
-                                "End angle of the arc (for a full circle, give it same value as Start Angle)")
+                obj.addProperty("App::PropertyAngle","LastAngle","Arc",
+                                "End angle of the arc (for a full circle, give it same value as First Angle)")
                 obj.addProperty("App::PropertyDistance","Radius","Base",
                                 "Radius of the circle")
 		obj.Proxy = self
@@ -1190,14 +1190,14 @@ class Circle:
                 self.createGeometry(fp)
 
         def onChanged(self, fp, prop):
-                if prop in ["Radius","StartAngle","EndAngle"]:
+                if prop in ["Radius","FirstAngle","LastAngle"]:
                         self.createGeometry(fp)
                         
         def createGeometry(self,fp):
                 plm = fp.Placement
                 shape = Part.makeCircle(fp.Radius,Vector(0,0,0),
-                                                Vector(0,0,1),fp.StartAngle,fp.EndAngle)
-                if fp.StartAngle == fp.EndAngle:
+                                                Vector(0,0,1),fp.FirstAngle,fp.LastAngle)
+                if fp.FirstAngle == fp.LastAngle:
                         shape = Part.Wire(shape)
                         shape = Part.Face(shape)
 		fp.Shape = shape
