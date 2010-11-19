@@ -28,7 +28,7 @@
 #include "best_fit.h"
 
 #include <Mod/Mesh/App/Core/Grid.h>
-#include <Base/Builder3d.h>
+#include <Base/Builder3D.h>
 
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>

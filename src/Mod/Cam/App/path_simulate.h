@@ -169,7 +169,7 @@ public:
         @param spiral    specifies the strategy (true: spiral-based,
                          false: feature-based)
     */
-    bool MakePathSimulate_Feat(std::vector<float> &flatAreas, bool spiral);
+    bool MakePathSimulate_Feat(const std::vector<float> &flatAreas, bool spiral);
 
     /** @brief Main function of the output-generation for the robot using the
                standard-strategy*/
@@ -178,7 +178,7 @@ public:
     /** @brief Main function of the output-generation for the robot using the
                feature-based-strategy
     */
-    bool MakePathRobot_Feat(std::vector<float> &flatAreas);
+    bool MakePathRobot_Feat(const std::vector<float> &flatAreas);
 
     /** @brief computes path-correction after a tool-path-run
  
@@ -258,21 +258,21 @@ private:
     bool m_dir;
     /** @brief vector in wich the lengths of the seperated curve-segments for
                the master-tool are stored*/
-    std::vector<std::vector<double>> m_length_ma;
+    std::vector<std::vector<double> > m_length_ma;
     /** @brief vector in wich the lengths of the seperated curve-segments for
                the slave-tool are stored*/
-    std::vector<std::vector<double>> m_length_sl;
+    std::vector<std::vector<double> > m_length_sl;
     /** @brief vector of acceleration-values regarding to the seperated curve
                segments for the master-tool*/
-    std::vector<std::vector<double>> m_accel_ma;
+    std::vector<std::vector<double> > m_accel_ma;
     /** @brief vector of acceleration-values regarding to the seperated curve
                segments for the slave-tool*/
-    std::vector<std::vector<double>> m_accel_sl;
+    std::vector<std::vector<double> > m_accel_sl;
 	/** @brief Matrix of three velocity-values regarding to the curves and curve-segments for the master-tool*/
-    std::vector<std::vector<std::vector<double>>> m_velocity_ma;
+    std::vector<std::vector<std::vector<double> > > m_velocity_ma;
     /** @brief Matrix of three velocity-values regarding to the curves and
                curve-segments for the slave-tool*/
-    std::vector<std::vector<std::vector<double>>> m_velocity_sl;
+    std::vector<std::vector<std::vector<double> > > m_velocity_sl;
     /** @brief maximum allowable resulting velocity of the tool*/
     double m_vmax;
     /** @brief maximum allowable resulting acceleration of the tool*/
