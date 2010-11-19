@@ -392,7 +392,7 @@
 + libboost-python-dev, python-dev, python-support,
 + libqt4-dev, libxt-dev, libxext-dev, libxmu-dev, libxi-dev, libx11-dev,
 + libcoin60-dev, libsoqt4-dev (>= 1.4.2~svn20090224), libgl1-mesa-dev,
-+ zlib1g-dev, libxerces-c2-dev,
++ zlib1g-dev, libxerces-c2-dev, libopencascade-visualization-dev,
 + libopencascade-foundation-dev, libopencascade-modeling-dev, python-cxx-dev,
 + libswscale-dev, libzipios++-dev, swig, libeigen2-dev
 +Standards-Version: 3.8.4
