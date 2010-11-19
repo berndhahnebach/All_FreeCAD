@@ -37,6 +37,9 @@
 # define AppCamExport     __declspec(dllimport)
 # define AppCamGuiExport  __declspec(dllexport)
 #else // for Linux
+# define MeshExport
+# define AppPartExport
+# define AppPartGuiExport
 # define AppCamExport
 # define AppCamGuiExport
 #endif

@@ -1249,7 +1249,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 
 	int    nb_knots;
 
-	std::vector<std::vector<double>> v_vec;
+	std::vector<std::vector<double> > v_vec;
 	std::vector<double> v(3), l_vec, a_vec;
 	
 	std::vector<Base::Vector3d> Pnt1Vec;
@@ -1308,7 +1308,7 @@ bool path_simulate::CompPath(bool tool) // tool = 0  -> Master
 		// *** Ende der Berechnung des Knotenvektors ***
 
 
-		std::vector<std::vector<double>> CriticalBounds = 
+		std::vector<std::vector<double> > CriticalBounds = 
 			                                CompBounds(tool, knot_vec); // Berechnet auf Basis der aktuellen Kurve, 
 																	    // die kritischen Bereiche im Parameterraum und 
 																	    // berechnet gleichzeitig die maximale Kurvenkrümmung <m_curMax>
@@ -2304,7 +2304,7 @@ bool path_simulate::TimeCorrection()
 }
 
 /* Hauptroutine zur Generierung des Simulationsoutputs für den feature-basierten und spiral-basierten beidseitigen Fall */
-bool path_simulate::MakePathSimulate_Feat(std::vector<float> &flatAreas, bool spiral)
+bool path_simulate::MakePathSimulate_Feat(const std::vector<float> &flatAreas, bool spiral)
 {
     m_Feat = true;
 	
@@ -2465,7 +2465,7 @@ bool path_simulate::MakePathSimulate_Feat(std::vector<float> &flatAreas, bool sp
 }
 
 /* Hauptroutine zur Generierung des Roboteroutputs für den feature-basierten und spiral-basierten beidseitigen Fall */
-bool path_simulate::MakePathRobot_Feat(std::vector<float> &flatAreas)
+bool path_simulate::MakePathRobot_Feat(const std::vector<float> &flatAreas)
 {
     m_Feat = true;
     int f = 0, run;
@@ -2642,6 +2642,7 @@ bool path_simulate::StartingTool()
        
         z0 = abs(pnt0.Z() - pnt1.Z());
     }
+
     else
         z0 = 1e+3;
 
@@ -3289,6 +3290,7 @@ bool path_simulate::WriteOutputDouble(ofstream &anOutputFile, ofstream &anOutput
             times.first  = (float) m_Output_time[0];
             times.second = (float) m_Output_time[n-1];
             m_PathTimes_Master.push_back(times);
+
 
 			
 			// SLAVE-Z

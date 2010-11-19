@@ -75,7 +75,7 @@
 #include "cutting_tools.h"
 #include "best_fit.h"
 #include "edgesort.h"
-#include "wireexplorer.h"
+#include "WireExplorer.h"
 #include "BRepAdaptor_CompCurve2.h"
 //#include "MeshInterface.h"
 

@@ -27,6 +27,7 @@
 #include <sstream>
 #include <vector>
 #include <fstream>
+#include <stdexcept>
 
 ChangeDyna::ChangeDyna()
 {
@@ -128,7 +129,7 @@ bool ChangeDyna::ReadCurve(std::ifstream &input,std::ofstream &output)
                         ReformatStream(astream2,subline1);
                         output << line.substr(0,66) << subline1 << line.substr(75,5) << std::endl;
                     }
-                    catch (std::out_of_range)
+                    catch (const std::out_of_range&)
                     {
                         output << line << std::endl;
                         return false;

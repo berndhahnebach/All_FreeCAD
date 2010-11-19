@@ -54,12 +54,12 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <GProp_PrincipalProps.hxx>
 
-#include <handle_poly_triangulation.hxx>
+#include <Handle_Poly_Triangulation.hxx>
 #include <Poly_Triangulation.hxx>
 
 #include <ANN/ANN.h> // ANN declarations
 
-#include <SMESH_GEN.hxx>
+#include <SMESH_Gen.hxx>
 
 
 best_fit::best_fit()
@@ -1030,7 +1030,7 @@ bool best_fit::Initialize_Mesh_Geometrie_2()
 	return true;
 }
 
-bool best_fit::PointTransform(std::vector<Base::Vector3f> &pnts, Base::Matrix4D &M)
+bool best_fit::PointTransform(std::vector<Base::Vector3f> &pnts, const Base::Matrix4D &M)
 {
     int m = pnts.size();
     Base::Vector3f pnt;

@@ -217,8 +217,7 @@ private:
         \param pnts point-vector to transform
         \param M    is the 4x4-input-matrix
     */
-    inline bool PointTransform(std::vector<Base::Vector3f> &pnts,
-                               Base::Matrix4D &M);
+    bool PointTransform(std::vector<Base::Vector3f> &pnts, const Base::Matrix4D &M);
 	
     /*! \brief Sets the weights for the ICP-Algorithm */
     bool Comp_Weights();

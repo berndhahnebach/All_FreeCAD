@@ -38,6 +38,11 @@ This is the place where all the prototypes are declared and the members are defi
 
 #include "stuff.h"
 
+namespace MeshCore {
+class MeshAlgorithm;
+class MeshFacetGrid;
+}
+
 /**\brief A Container to transfer the GUI settings
 
 This struct can be used to transfer the settings of the CAM-Workbench GUI to other functions if required.
