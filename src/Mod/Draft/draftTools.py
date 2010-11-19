@@ -683,7 +683,7 @@ class wireTracker(Tracker):
         "A wire tracker"
 	def __init__(self,wire):
 		line = coin.SoLineSet()
-                self.closed = fcgeo.isReallyClosed(wire):
+                self.closed = fcgeo.isReallyClosed(wire)
                 if self.closed:
                         line.numVertices.setValue(len(wire.Vertexes)+1)
                 else:
