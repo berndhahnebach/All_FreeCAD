@@ -184,7 +184,7 @@ class DraftWorkbench (Workbench):
                 self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
 				"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
                                 "Draft_PutOnSheet","Draft_Edit"]
-                self.treecmdList = ["Draft_ApplyStyle","Draft_MakeDraftWire","Draft_ToggleDisplayMode"]
+                self.treecmdList = ["Draft_ApplyStyle","Draft_Draftify","Draft_ToggleDisplayMode"]
                 self.appendToolbar("Draft tools",self.cmdList+self.modList)
                 self.appendMenu("Draft",self.cmdList+self.modList+self.treecmdList)
                 FreeCAD.activeDraftCommand = None # a global place to look for active draft Command

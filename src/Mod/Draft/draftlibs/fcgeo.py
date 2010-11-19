@@ -54,6 +54,13 @@ def edg(p1,p2):
 		if fcvec.equals(p1,p2): return None
 		else: return Part.Line(p1,p2).toShape()
 
+def getVerts(shape):
+        "getVerts(shape) -- returns a list containing vectors of each vertex of the shape"
+        p = []
+        for v in shape.Vertexes:
+                p.append(v.Point)
+        return p
+
 def v1(edge):
 	"v1(edge) -- returns the first point of an edge"
 	return edge.Vertexes[0].Point
@@ -481,7 +488,10 @@ def getNormal(shape):
         if shape.ShapeType == "Face":
                 return shape.normalAt(0.5,0.5)
         elif shape.ShapeType == "Edge":
-                return None
+                if isinstance(shape.Curve,Part.Circle):
+                        return shape.Curve.Axis
+                else:
+                        return Vector(0,0,1)
         else:
                 for e in shape.Edges:
                         if isinstance(e.Curve,Part.Circle):
@@ -493,26 +503,27 @@ def getNormal(shape):
                                         return e1.cross(e2).normalize()
 
 def offsetWire(wire,dvec,bind=False):
-        '''offsetWire(wire,vector,[bind]): offsets the given wire along the
+        '''
+        offsetWire(wire,vector,[bind]): offsets the given wire along the
         given vector. The vector will be applied at the first vertex of
         the wire. If bind is True (and the shape is open), the original
-        wire and the offsetted one are bound by 2 edges, forming a face.'''
+        wire and the offsetted one are bound by 2 edges, forming a face.
+        '''
         edges = sortEdges(wire.Edges)
         norm = getNormal(wire)
+        closed = isReallyClosed(wire)
         if norm.getAngle(FreeCADGui.ActiveDocument.ActiveView.getViewDirection()) < 0.78: norm = fcvec.neg(norm)
-        print "norm",norm
         nedges = []
         for i in range(len(edges)):
                 curredge = edges[i]
                 delta = dvec
                 if i != 0:
-                        angle = fcvec.angle(vec(edges[0]),vec(curredge))
+                        angle = fcvec.angle(vec(edges[0]),vec(curredge),norm)
                         delta = fcvec.rotate(delta,angle,norm)
                 nedge = offset(curredge,delta)
                 nedges.append(nedge)
-        print isReallyClosed(wire)
-        nedges = connect(nedges,isReallyClosed(wire))
-        if bind and not wire.isClosed():
+        nedges = connect(nedges,closed)
+        if bind and not closed:
                 e1 = Part.Line(edges[0].Vertexes[0].Point,nedges[0].Vertexes[0].Point).toShape()
                 e2 = Part.Line(edges[-1].Vertexes[-1].Point,nedges[-1].Vertexes[-1].Point).toShape()
                 alledges = edges.extend(nedges)

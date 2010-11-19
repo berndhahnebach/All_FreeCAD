@@ -79,9 +79,12 @@ def dist(u, v):
 	return u.sub(v).Length
 
 def angle(u,v=Vector(1,0,0),normal=Vector(0,0,1)):
-	'''angle(Vector,[Vector],[Vector]) - returns the angle in radians between the two vectors.
-	If only one is given, angle is between the vector and the horizontal East direction.
-	If a third vector is given, it is the normal used to determine the sign of the angle.
+	'''
+        angle(Vector,[Vector],[Vector]) - returns the angle
+        in radians between the two vectors. If only one is given,
+        angle is between the vector and the horizontal East direction.
+	If a third vector is given, it is the normal used to determine
+        the sign of the angle.
 	'''
 	typecheck ([(u,Vector), (v,Vector)], "angle")
 	ll = u.Length*v.Length

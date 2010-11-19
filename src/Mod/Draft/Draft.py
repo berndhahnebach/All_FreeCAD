@@ -573,6 +573,50 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
+def offset(obj,delta,copy=False):
+        '''offset(object,Vector,[copymode]): offsets the given wire by
+        applying the given Vector to its first vertex. If copymode is
+        True, another object is created, otherwise the same object gets
+        offsetted.'''
+
+        def getRect(p,obj):
+                "returns length,heigh,placement"
+                pl = obj.Placement
+                pl.Base = p[0]
+                diag = p[2].sub(p[0])
+                bb = p[1].sub(p[0])
+                bh = p[3].sub(p[0])
+                nb = fcvec.project(diag,bb)
+                nh = fcvec.project(diag,bh)
+                if obj.Length < 0: l = -nb.Length
+                else: l = nb.Length
+                if obj.Height < 0: h = -nh.Length
+                else: h = nh.Length
+                return l,h,pl
+        
+        newwire = fcgeo.offsetWire(obj.Shape,delta)
+        p = fcgeo.getVerts(newwire)
+        if copy:
+                if "Points" in obj.PropertiesList:
+                        newobj = makeWire(p)
+                        newobj.Closed = obj.Closed
+                elif "Length" in obj.PropertiesList:
+                        pl = FreeCAD.Placement()
+                        pl.Base = p[0]
+                        length,height,plac = getRect(p,obj)
+                        newobj = makeRectangle(length,height,plac)
+                formatObject(newobj,obj)
+        else:
+                if "Points" in obj.PropertiesList:
+                        obj.Points = p
+                elif "Length" in obj.PropertiesList:
+                        length,height,plac = getRect(p,obj)
+                        obj.Placement = plac
+                        obj.Length = length
+                        obj.Height = height
+                newobj = obj
+        return newobj
+
 def draftify(objectslist):
         '''draftify(objectslist): turns each object of the given list
         (objectslist can also be a single object) into a Draft parametric
