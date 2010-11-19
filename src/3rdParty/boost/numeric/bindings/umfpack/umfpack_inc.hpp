@@ -53,7 +53,8 @@
 #define BOOST_NUMERIC_BINDINGS_UMFPACK_INC_H
 
 extern "C" {
-#include <umfpack/umfpack.h> 
+//#include <umfpack/umfpack.h>
+#include <suitesparse/umfpack.h>
 }
 
 #endif 
