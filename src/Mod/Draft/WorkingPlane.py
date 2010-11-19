@@ -51,6 +51,9 @@ class plane:
                 # a placeholder for a stored state
                 self.stored = None
 
+        def __repr__(self):
+                return "Workplane x="+str(fcvec.rounded(self.u))+" y="+str(fcvec.rounded(self.v))+" z="+str(fcvec.rounded(self.axis))
+
 	def offsetToPoint(self, p, direction=None):
 		'''
 		Return the signed distance from p to the plane, such

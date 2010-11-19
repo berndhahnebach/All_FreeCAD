@@ -48,10 +48,16 @@ def translate(context,text):
                                             QtGui.QApplication.UnicodeUTF8)
 		
 
-def msg(text=None):
+def msg(text=None,mode=None):
         "prints the given message on the FreeCAD status bar"
         if not text: FreeCAD.Console.PrintMessage("")
-        else: FreeCAD.Console.PrintMessage(str(text.toLatin1()))
+        else:
+                if mode == 'warning':
+                        FreeCAD.Console.PrintWarning(str(text.toLatin1()))
+                elif mode == 'error':
+                        FreeCAD.Console.PrintError(str(text.toLatin1()))
+                else:
+                        FreeCAD.Console.PrintMessage(str(text.toLatin1()))
 
 # loads the fill patterns
 FreeCAD.svgpatterns = importSVG.getContents(Draft.getDraftPath('icons.svg'),'pattern')
@@ -2158,7 +2164,7 @@ class Rotate(Modifier):
 			self.finish()
 
 
-class Offset2(Modifier):
+class Offset(Modifier):
 	"The Draft_Offset FreeCAD command definition"
 
 	def GetResources(self):
@@ -2167,6 +2173,7 @@ class Offset2(Modifier):
 			'ToolTip': str(translate("draft", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
 
 	def Activated(self):
+                self.running = False
 		Modifier.Activated(self,"Offset")
 		if self.ui:
 			if not Draft.getSelection():
@@ -2179,53 +2186,57 @@ class Offset2(Modifier):
 				msg(translate("draft", "Select an object to offset\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
 			elif len(Draft.getSelection()) > 1:
-				msg(translate("draft", "Offset only works on one object at a time\n"))
+				msg(translate("draft", "Offset only works on one object at a time\n"),"warning")
 			else:
 				self.proceed()
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = Draft.getSelection()[0]
-                if not self.sel.isDerivedFrom("Part::Feature"): return
-		self.step = 0
-		self.constrainSeg = None
-		self.ui.radiusUi()
-		self.ui.isCopy.show()
-		self.ui.labelRadius.setText("Distance")
-		self.ui.cmdlabel.setText("Offset")
-		self.ui.radiusValue.setFocus()
-		self.ui.radiusValue.selectAll()
-		self.snap = snapTracker()
-		self.linetrack = lineTracker()
-		self.constraintrack = lineTracker(dotted=True)
-		self.faces = False
-		self.shape = self.sel.Shape
-                self.edges = self.shape.Edges
-                self.ghost = wireTracker(self.shape)
-                self.call = self.view.addEventCallback("SoEvent",self.action)
-		msg(translate("draft", "Pick distance:\n"))
-		self.ui.cross(True)
+                if not self.sel.isDerivedFrom("Part::Feature"):
+                        msg(translate("draft", "Cannot offset this object type\n"),"warning")
+                        self.finish()
+                else:
+                        self.step = 0
+                        self.constrainSeg = None
+                        self.ui.radiusUi()
+                        self.ui.isCopy.show()
+                        self.ui.labelRadius.setText("Distance")
+                        self.ui.cmdlabel.setText("Offset")
+                        self.ui.radiusValue.setFocus()
+                        self.ui.radiusValue.selectAll()
+                        self.snap = snapTracker()
+                        self.linetrack = lineTracker()
+                        self.constraintrack = lineTracker(dotted=True)
+                        self.faces = False
+                        self.shape = self.sel.Shape
+                        self.ghost = wireTracker(self.shape)
+                        self.call = self.view.addEventCallback("SoEvent",self.action)
+                        msg(translate("draft", "Pick distance:\n"))
+                        self.ui.cross(True)
+                        self.planetrack.set(self.shape.Vertexes[0].Point)
+                        self.running = True
 
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"):
                         self.ui.cross(True)
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-			self.node = [point]
+                        point,ctrlPoint = getPoint(self,arg)
 			if (arg["ShiftDown"]) and self.constrainSeg:
-				dist = fcgeo.findPerpendicular(point,self.edges,self.constrainSeg[1])
-				self.constraintrack.p1(self.edges[self.constrainSeg[1]].Vertexes[0].Point)
-				self.constraintrack.p2(Vector.add(point,dist[0]))
+				dist = fcgeo.findPerpendicular(point,self.shape,self.constrainSeg[1])
+                                e = self.shape.Edges[self.constrainSeg[1]]
+				self.constraintrack.p1(e.Vertexes[0].Point)
+				self.constraintrack.p2(point.add(dist[0]))
 				self.constraintrack.on()
 			else:
-				dist = fcgeo.findPerpendicular(point,self.edges)
+				dist = fcgeo.findPerpendicular(point,self.shape.Edges)
 				self.constraintrack.off()
-                        print dist
 			if dist:
-                                self.dvec = fcvec.rotate(fcvec.neg(dist[0]),-fcvec.angle(fcgeo.vec(self.shape.Edges[0]),fcgeo.vec(self.shape.Edges[dist[1]])))
+                                d = fcvec.neg(dist[0])
+                                v1 = fcgeo.vec(self.shape.Edges[0])
+                                v2 = fcgeo.vec(self.shape.Edges[dist[1]])
+                                a = -fcvec.angle(v1,v2)
+                                self.dvec = fcvec.rotate(d,a,plane.axis)
                                 self.ghost.on()
                                 self.ghost.update(fcgeo.offsetWire(self.shape,self.dvec))
                                 self.constrainSeg = dist
@@ -2245,14 +2256,20 @@ class Offset2(Modifier):
 				if not arg["AltDown"]: self.finish()
                 if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+                                copymode = False
+                                if arg["AltDown"] or self.ui.isCopy.isChecked(): copymode = True
                                 if self.dvec:
-                                        nwire = fcgeo.offsetWire(self.shape,self.dvec)
-                                        Part.show(nwire)
-                                self.finish()
+                                        self.doc.openTransaction("Offset")
+                                        nwire = Draft.offset(self.sel,self.dvec,copymode)
+                                        self.doc.commitTransaction()
+				if arg["AltDown"]:
+					self.extendedCopy = True
+				else:
+					self.finish()
                                         
 	def finish(self,closed=False):
 		Modifier.finish(self)
-		if self.ui:
+		if self.ui and self.running:
 			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
@@ -2260,7 +2277,7 @@ class Offset2(Modifier):
 
 
 
-class Offset(Modifier):
+class oldOffset(Modifier):
 	"The Draft_Offset FreeCAD command definition"
 
 	def GetResources(self):
@@ -3392,12 +3409,12 @@ class PutOnSheet(Modifier):
                 result += '</g>'
                 return result
 
-class MakeDraftWire():
-	"The MakeDraft FreeCAD command definition"
+class Draftify():
+	"The Draftify FreeCAD command definition"
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_makeDraftWire',
-                        'MenuText': str(translate("draft", "Turn to Draft").toLatin1()),
+                        'MenuText': str(translate("draft", "Draftify").toLatin1()),
 			'ToolTip': str(translate("draft", "Turns selected objects to Draft Wires").toLatin1())}
 
 	def Activated(self):
@@ -3595,13 +3612,13 @@ FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
 FreeCADGui.addCommand('Draft_CloseLine',CloseLine())
 FreeCADGui.addCommand('Draft_UndoLine',UndoLine())
 FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
-FreeCADGui.addCommand('Draft_MakeDraftWire',MakeDraftWire())
+FreeCADGui.addCommand('Draft_Draftify',Draftify())
 
 # modification commands
 FreeCADGui.addCommand('Draft_Move',Move())
 FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_Rotate',Rotate())
-FreeCADGui.addCommand('Draft_Offset',Offset())
+FreeCADGui.addCommand('Draft_Offset',oldOffset())
 FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
 FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
