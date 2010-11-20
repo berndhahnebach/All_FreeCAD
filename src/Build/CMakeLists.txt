@@ -35,3 +35,18 @@ else (WIN32)
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif (WIN32)
 
+# as fallback if Version.h isn't created for any reason
+if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/Version.h)
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/Version.h
+    "/// Version Number\n"
+    "#define FCVersionMajor \"0\"\n"
+    "#define FCVersionMinor \"11\"\n"
+    "#define FCVersionName  \"Dagoba\"\n"
+    "\n"
+    "#define FCRevision      \"unknown\"\n"
+    "#define FCRevisionDate  \"unknown\"\n"
+    "#define FCRevisionRange \"unknown\"\n"
+    "#define FCRepositoryURL \"https://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk\"\n"
+    "#define FCCurrentDateT  \"unknown\"\n"
+    )
+endif (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/Version.h)
