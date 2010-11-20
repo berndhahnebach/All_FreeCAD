@@ -762,6 +762,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                 svg += '</text>\n'
 
         elif obj.isDerivedFrom('Part::Feature'):
+                if obj.Shape.isNull(): return ''
                 color = getrgb(obj.ViewObject.LineColor)
                 if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
                         if 'FillStyle' in obj.ViewObject.PropertiesList:
