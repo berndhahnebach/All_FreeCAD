@@ -3368,7 +3368,7 @@ class PutOnSheet(Modifier):
 
         def insertPattern(self,obj,page):
                 "adds a given pattern to the page"
-                if "Shape" in obj.PropertiesList:
+                if obj.isDerivedFrom("Part::Feature"):
                         if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
                                 if 'FillStyle' in obj.ViewObject.PropertiesList:
                                         try:
