@@ -1234,10 +1234,13 @@ void Application::LoadParameters(void)
 
     try {
         if (_pcSysParamMngr->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict")) {
-            Console().Warning("   Parameter not existing, write initial one\n");
-            Console().Message("   This warning normally means that FreeCAD is running the first time\n"
-                              "   or the configuration was deleted or moved. Build up the standard\n"
-                              "   configuration.\n");
+            // Configuration file optional when using as Python module
+            if (!Py_IsInitialized()) {
+                Console().Warning("   Parameter not existing, write initial one\n");
+                Console().Message("   This warning normally means that FreeCAD is running the first time\n"
+                                  "   or the configuration was deleted or moved. Build up the standard\n"
+                                  "   configuration.\n");
+            }
         }
     }
     catch (const Base::Exception& e) {
@@ -1250,11 +1253,13 @@ void Application::LoadParameters(void)
 
     try {
         if (_pcUserParamMngr->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict")) {
-            Console().Warning("   User settings not existing, write initial one\n");
-            Console().Message("   This warning normally means that FreeCAD is running the first time\n"
-                              "   or your configuration was deleted or moved. The system defaults\n"
-                              "   will be reestablished for you.\n");
-
+            // Configuration file optional when using as Python module
+            if (!Py_IsInitialized()) {
+                Console().Warning("   User settings not existing, write initial one\n");
+                Console().Message("   This warning normally means that FreeCAD is running the first time\n"
+                                  "   or your configuration was deleted or moved. The system defaults\n"
+                                  "   will be reestablished for you.\n");
+            }
         }
     }
     catch (const Base::Exception& e) {
@@ -1561,7 +1566,7 @@ void Application::ExtractUserPath()
     if (mConfig.find("AppDataSkipVendor") == mConfig.end()) {
         appData += mConfig["ExeVendor"];
         fi.setFile(appData.c_str());
-        if (!fi.exists()) {
+        if (!fi.exists() && !Py_IsInitialized()) {
             if (!fi.createDirectory()) {
                 std::string error = "Cannot create directory ";
                 error += appData;
@@ -1575,7 +1580,7 @@ void Application::ExtractUserPath()
     
     appData += mConfig["ExeName"];
     fi.setFile(appData.c_str());
-    if (!fi.exists()) {
+    if (!fi.exists() && !Py_IsInitialized()) {
         if (!fi.createDirectory()) {
             std::string error = "Cannot create directory ";
             error += appData;
@@ -1616,7 +1621,7 @@ void Application::ExtractUserPath()
     if (mConfig.find("AppDataSkipVendor") == mConfig.end()) {
         appData += mConfig["ExeVendor"];
         fi.setFile(appData.c_str());
-        if (!fi.exists()) {
+        if (!fi.exists() && !Py_IsInitialized()) {
             if (!fi.createDirectory()) {
                 std::string error = "Cannot create directory ";
                 error += appData;
@@ -1630,7 +1635,7 @@ void Application::ExtractUserPath()
     
     appData += mConfig["ExeName"];
     fi.setFile(appData.c_str());
-    if (!fi.exists()) {
+    if (!fi.exists() && !Py_IsInitialized()) {
         if (!fi.createDirectory()) {
             std::string error = "Cannot create directory ";
             error += appData;
@@ -1681,7 +1686,7 @@ void Application::ExtractUserPath()
             appData += PATHSEP;
             appData += mConfig["ExeVendor"];
             fi.setFile(appData.c_str());
-            if (!fi.exists()) {
+            if (!fi.exists() && !Py_IsInitialized()) {
                 if (!fi.createDirectory()) {
                     std::string error = "Cannot create directory ";
                     error += appData;
@@ -1695,7 +1700,7 @@ void Application::ExtractUserPath()
         appData += PATHSEP;
         appData += mConfig["ExeName"];
         fi.setFile(appData.c_str());
-        if (!fi.exists()) {
+        if (!fi.exists() && !Py_IsInitialized()) {
             if (!fi.createDirectory()) {
                 std::string error = "Cannot create directory ";
                 error += appData;
