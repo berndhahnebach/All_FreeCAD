@@ -9,5 +9,5 @@ install(
         Init.py
         InitGui.py
     DESTINATION
-        Mod/Feam
+        Mod/Fem
 )

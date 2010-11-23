@@ -19,7 +19,7 @@ include_directories(
     ${SMESH_INCLUDE_DIR}
 )
 
-if(WIN32)
+if(MSVC)
     set(CamGui_LIBS
         Cam
         Mesh
@@ -31,12 +31,13 @@ if(WIN32)
         ${SMESH_LIBRARIES}
         #OCCAdaptMesh
     )
-else(WIN32)
+else(MSVC)
     set(CamGui_LIBS
         Cam
         PartGui
-        FreeCADGui)
-endif(WIN32)
+        FreeCADGui
+    )
+endif(MSVC)
 
 set(CamGui_MOC_HDRS
     Cutting.h
@@ -77,7 +78,7 @@ elseif(MINGW)
     set_target_properties(CamGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Cam)
     set_target_properties(CamGui PROPERTIES PREFIX "")
 else(MSVC)
-    set_target_properties(CamGui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Cam)
+    set_target_properties(CamGui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Mod/Cam)
     set_target_properties(CamGui PROPERTIES PREFIX "")
 endif(MSVC)
 

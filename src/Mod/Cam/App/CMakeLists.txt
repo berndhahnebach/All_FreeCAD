@@ -20,12 +20,12 @@ include_directories(
     ${SMESH_INCLUDE_DIR}
 )
 
-if(WIN32)
+if(MSVC)
     set(Cam_LIBS
         Mesh
         Part
-        ${QT_DEBUG_LIBRARIES}
-        ${QT_LIBRARIES}
+        ${QT_QTCORE_LIBRARY}
+        ${QT_QTCORE_LIBRARY_DEBUG}
         ANN
         #${ATLAS_LIBRARIES}
         importlib_atlas.lib 
@@ -33,33 +33,20 @@ if(WIN32)
         ${SMSH_LIBRARIES}
         ${SMESH_LIBRARIES}
     )
-else(WIN32)
-#    set(Cam_LIBS
-#        Mesh
-#        Part
-#		 		 -lTKernel \
-#		 		 -lTKG2d \
-#		 		 -lTKG3d \
-#		 		 -lTKMath \
-#		 		 -lTKSTEP \
-#		 		 -lTKIGES \
-#		 		 -lTKSTL \
-#		 		 -lTKShHealing \
-#		 		 -lTKXSBase \
-#		 		 -lTKBool \
-#		 		 -lTKBO \
-#		 		 -lTKBRep \
-#		 		 -lTKTopAlgo \
-#		 		 -lTKGeomAlgo \
-#		 		 -lTKGeomBase \
-#		 		 -lTKOffset \
-#		 		 -lTKPrim \
-#		 		 -lTKMesh \
-#		 		 -lblas \
-#		 		 -lumfpack \
-#		 		 -lamd
-#)
-endif(WIN32)
+else(MSVC)
+    set(Cam_LIBS
+        Mesh
+        Part
+        ${QT_QTCORE_LIBRARY}
+        ${SMESH_LIBRARIES}
+        ANN
+        atlas
+        blas
+        lapack
+        umfpack
+        amd
+    )
+endif(MSVC)
 
 SET(Cam_SRCS
     AppCamPy.cpp
