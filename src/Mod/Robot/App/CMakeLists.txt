@@ -69,6 +69,8 @@ SET(Robot_SRCS
     RobotObject.h
     TrajectoryObject.cpp
     TrajectoryObject.h
+    Edge2TracObject.cpp
+    Edge2TracObject.h
     PropertyTrajectory.cpp
     PropertyTrajectory.h
     RobotAlgos.cpp

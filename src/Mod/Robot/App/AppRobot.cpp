@@ -39,6 +39,7 @@
 #include "Waypoint.h"
 #include "RobotObject.h"
 #include "TrajectoryObject.h"
+#include "Edge2TracObject.h"
 
 extern struct PyMethodDef Robot_methods[];
 
@@ -76,6 +77,7 @@ void AppRobotExport initRobot()
     Robot::Robot6Axis         ::init();
     Robot::RobotObject        ::init();
     Robot::TrajectoryObject   ::init();
+    Robot::Edge2TracObject    ::init();
     Robot::Waypoint           ::init();
     Robot::Trajectory         ::init();
     Robot::PropertyTrajectory ::init();

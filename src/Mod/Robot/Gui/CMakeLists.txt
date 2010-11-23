@@ -36,6 +36,7 @@ set(RobotGui_UIC_SRCS
     TrajectorySimulate.ui
     TaskRobotMessages.ui
     TaskRobotControl.ui
+    TaskEdge2TracParameter.ui
 )
 
 qt4_wrap_ui(RobotGui_UIC_HDRS ${RobotGui_UIC_SRCS})
@@ -45,8 +46,10 @@ set(RobotGui_MOC_HDRS
     TaskRobot6Axis.h
     TrajectorySimulate.h
     TaskDlgSimulate.h
+    TaskDlgEdge2Trac.h
     TaskRobotMessages.h
     TaskRobotControl.h
+    TaskEdge2TracParameter.h
     TaskWatcher.h
 )
 fc_wrap_cpp(RobotGui_MOC_SRCS ${RobotGui_MOC_HDRS})
@@ -85,8 +88,13 @@ SET(RobotGui_SRCS
     TrajectorySimulate.ui
     TrajectorySimulate.cpp
     TrajectorySimulate.h
+    TaskEdge2TracParameter.ui
+    TaskEdge2TracParameter.cpp
+    TaskEdge2TracParameter.h
     TaskDlgSimulate.h
     TaskDlgSimulate.cpp
+    TaskDlgEdge2Trac.h
+    TaskDlgEdge2Trac.cpp
     TaskWatcher.h
     TaskWatcher.cpp
 )
