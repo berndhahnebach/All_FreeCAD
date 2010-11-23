@@ -44,6 +44,10 @@ public:
     Edge2TracObject(void);
     virtual ~Edge2TracObject();
 
+    App::PropertyLinkSub         Source;
+    App::PropertyFloatConstraint SegValue;
+
+
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {
         return "RobotGui::ViewProviderTrajectory";

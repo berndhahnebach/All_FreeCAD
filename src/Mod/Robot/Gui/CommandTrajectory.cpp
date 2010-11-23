@@ -34,14 +34,17 @@
 #include <Gui/Selection.h>
 #include <Gui/Document.h>
 #include <Gui/Placement.h>
+#include <Gui/Control.h>
+
 
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
+#include "TaskDlgEdge2Trac.h"
 
 #include "TrajectorySimulate.h"
 
 using namespace std;
-
+using namespace RobotGui;
 
 // #####################################################################################################
 
@@ -304,6 +307,38 @@ bool CmdRobotSetDefaultValues::isActive(void)
     return true;
 }
 
+// #####################################################################################################
+
+DEF_STD_CMD_A(CmdRobotEdge2Trac);
+
+CmdRobotEdge2Trac::CmdRobotEdge2Trac()
+	:Command("Robot_Edge2Trac")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Edge to Trajectory...");
+    sToolTipText    = QT_TR_NOOP("Generate a Trajectory from a set of edges");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_Edge2Trac";
+    iAccel          = 0;
+
+}
+
+
+void CmdRobotEdge2Trac::activated(int iMsg)
+{
+    Gui::TaskView::TaskDialog* dlg = new TaskDlgEdge2Trac();
+    Gui::Control().showDialog(dlg);
+
+
+}
+
+bool CmdRobotEdge2Trac::isActive(void)
+{
+    return true;
+}
+
 
 // #####################################################################################################
 
@@ -318,4 +353,5 @@ void CreateRobotCommandsTrajectory(void)
     rcCmdMgr.addCommand(new CmdRobotInsertWaypointPreselect());
     rcCmdMgr.addCommand(new CmdRobotSetDefaultOrientation());
     rcCmdMgr.addCommand(new CmdRobotSetDefaultValues());
+    rcCmdMgr.addCommand(new CmdRobotEdge2Trac());
  }

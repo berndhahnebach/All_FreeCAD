@@ -136,6 +136,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *part << "Robot_CreateTrajectory";
     *part << "Robot_InsertWaypoint";
     *part << "Robot_InsertWaypointPreselect";
+    *part << "Robot_Edge2Trac";
     *part << "Separator";
     *part << "Robot_Simulate";
     return root;
@@ -173,6 +174,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
            << "Robot_CreateTrajectory"
            << "Robot_InsertWaypoint"
            << "Robot_InsertWaypointPreselect"
+           << "Robot_Edge2Trac"
+           << "Separator"
            << "Robot_SetDefaultOrientation"
            << "Robot_SetDefaultValues"
            << "Separator"

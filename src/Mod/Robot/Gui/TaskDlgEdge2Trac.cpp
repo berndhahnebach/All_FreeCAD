@@ -36,23 +36,12 @@ using namespace RobotGui;
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskDlgEdge2Trac::TaskDlgEdge2Trac(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject)
+TaskDlgEdge2Trac::TaskDlgEdge2Trac(void)
     : TaskDialog()
 {
-    rob  = new TaskRobot6Axis(pcRobotObject);
-    ctr  = new TaskRobotControl(pcRobotObject);
-    
-    trac = new TaskTrajectory(pcRobotObject,pcTrajectoryObject);
-    msg  = new TaskRobotMessages(pcRobotObject);
-    
-    
-    QObject::connect(trac ,SIGNAL(axisChanged(float,float,float,float,float,float,const Base::Placement &)),
-                     rob  ,SLOT  (setAxis(float,float,float,float,float,float,const Base::Placement &)));
+    param  = new TaskEdge2TracParameter();
 
-    Content.push_back(rob);
-    Content.push_back(ctr);
-    Content.push_back(trac);
-    Content.push_back(msg);
+    Content.push_back(param);
 }
 
 TaskDlgEdge2Trac::~TaskDlgEdge2Trac()
@@ -65,8 +54,7 @@ TaskDlgEdge2Trac::~TaskDlgEdge2Trac()
 
 void TaskDlgEdge2Trac::open()
 {
-    msg->hideGroupBox();
-    ctr->hideGroupBox();
+
 }
 
 void TaskDlgEdge2Trac::clicked(int)

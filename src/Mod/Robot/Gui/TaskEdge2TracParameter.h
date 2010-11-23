@@ -50,7 +50,7 @@ class TaskEdge2TracParameter : public Gui::TaskView::TaskBox
     Q_OBJECT
 
 public:
-    TaskEdge2TracParameter(Robot::RobotObject *pcRobotObject,QWidget *parent = 0);
+    TaskEdge2TracParameter(QWidget *parent = 0);
     ~TaskEdge2TracParameter();
 
     void setRobot(Robot::RobotObject *pcRobotObject);
