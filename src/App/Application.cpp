@@ -1282,6 +1282,15 @@ namespace boost { namespace program_options {
 #endif
 #endif
 
+// reported for SUSE in issue #0000208
+#if defined(__GNUC__)
+#if BOOST_VERSION == 104400
+namespace boost { namespace filesystem { 
+    bool no_check( const std::string & ) { return true; }
+} }
+#endif
+#endif
+
 pair<string, string> customSyntax(const string& s)
 {
     if (s.find("-display") == 0)
