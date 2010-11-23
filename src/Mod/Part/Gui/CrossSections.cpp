@@ -356,7 +356,8 @@ void CrossSections::apply()
         for (ft = future.begin(); ft != future.end(); ++ft) {
             const std::list<TopoDS_Wire>& w = *ft;
             for (std::list<TopoDS_Wire>::const_iterator wt = w.begin(); wt != w.end(); ++wt) {
-                builder.Add(comp, *wt);
+                if (!wt->IsNull())
+                    builder.Add(comp, *wt);
             }
         }
 

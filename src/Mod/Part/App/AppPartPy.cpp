@@ -311,7 +311,8 @@ makeCompound(PyObject *self, PyObject *args)
                 if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
                     const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
                         getTopoShapePtr()->_Shape;
-                    builder.Add(Comp, sh);
+                    if (!sh.IsNull())
+                        builder.Add(Comp, sh);
                 }
             }
         }
@@ -344,7 +345,8 @@ static PyObject * makeShell(PyObject *self, PyObject *args)
                 if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapeFacePy::Type))) {
                     const TopoDS_Shape& sh = static_cast<TopoShapeFacePy*>((*it).ptr())->
                         getTopoShapePtr()->_Shape;
-                    builder.Add(shell, sh);
+                    if (!sh.IsNull())
+                        builder.Add(shell, sh);
                 }
             }
 

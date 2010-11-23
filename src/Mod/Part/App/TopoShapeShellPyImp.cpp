@@ -81,7 +81,8 @@ int TopoShapeShellPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapeFacePy::Type))) {
                 const TopoDS_Shape& sh = static_cast<TopoShapeFacePy*>((*it).ptr())->
                     getTopoShapePtr()->_Shape;
-                builder.Add(shell, sh);
+                if (!sh.IsNull())
+                    builder.Add(shell, sh);
             }
         }
 
@@ -114,11 +115,16 @@ PyObject*  TopoShapeShellPy::add(PyObject *args)
     try {
         const TopoDS_Shape& sh = static_cast<TopoShapeFacePy*>(obj)->
             getTopoShapePtr()->_Shape;
-        builder.Add(shell, sh);
-        BRepCheck_Analyzer check(shell);
-        if (!check.IsValid()) {
-            ShapeUpgrade_ShellSewing sewShell;
-            getTopoShapePtr()->_Shape = sewShell.ApplySewing(shell);
+        if (!sh.IsNull()) {
+            builder.Add(shell, sh);
+            BRepCheck_Analyzer check(shell);
+            if (!check.IsValid()) {
+                ShapeUpgrade_ShellSewing sewShell;
+                getTopoShapePtr()->_Shape = sewShell.ApplySewing(shell);
+            }
+        }
+        else {
+            Standard_Failure::Raise("cannot add empty shape");
         }
     }
     catch (Standard_Failure) {
