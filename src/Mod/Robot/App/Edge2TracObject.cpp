@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2010 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -39,8 +39,8 @@ PROPERTY_SOURCE(Robot::Edge2TracObject, Robot::TrajectoryObject)
 Edge2TracObject::Edge2TracObject()
 {
 
-    //ADD_PROPERTY_TYPE( Base,      (Base::Placement())  , "Trajectory",Prop_None,"Actuall base frame of the trajectory");
-    //ADD_PROPERTY_TYPE( Trajectory,(Robot::Trajectory()), "Trajectory",Prop_None,"Trajectory object");
+    ADD_PROPERTY_TYPE( Source,      (0)   , "Edge2Trac",Prop_None,"Edges to generate the Trajectory");
+    ADD_PROPERTY_TYPE( SegValue,    (0.5), "Edge2Trac",Prop_None,"Max deviation from original geometry");
 
 }
 

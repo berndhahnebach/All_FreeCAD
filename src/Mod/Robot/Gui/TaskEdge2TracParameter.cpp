@@ -42,9 +42,8 @@
 using namespace RobotGui;
 using namespace Gui;
 
-TaskEdge2TracParameter::TaskEdge2TracParameter(Robot::RobotObject *pcRobotObject,QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("Robot_CreateRobot"),tr("TaskEdge2TracParameter"),true, parent),
-    pcRobot(pcRobotObject)
+TaskEdge2TracParameter::TaskEdge2TracParameter(QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("Robot_Edge2Trac"),tr("TaskEdge2TracParameter"),true, parent)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -54,14 +53,11 @@ TaskEdge2TracParameter::TaskEdge2TracParameter(Robot::RobotObject *pcRobotObject
 
     this->groupLayout()->addWidget(proxy);
 
-    if(pcRobotObject)
-        setRobot(pcRobotObject);
-
 }
 
 void TaskEdge2TracParameter::setRobot(Robot::RobotObject *pcRobotObject)
 {
-    pcRobot = pcRobotObject;
+    
 }
 
 TaskEdge2TracParameter::~TaskEdge2TracParameter()

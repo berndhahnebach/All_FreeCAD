@@ -28,10 +28,7 @@
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
 
-#include "TaskRobot6Axis.h"
-#include "TaskTrajectory.h"
-#include "TaskRobotControl.h"
-#include "TaskRobotMessages.h"
+#include "TaskEdge2TracParameter.h"
 
 namespace RobotGui {
 
@@ -42,7 +39,7 @@ class RobotGuiExport TaskDlgEdge2Trac : public Gui::TaskView::TaskDialog
     Q_OBJECT
 
 public:
-    TaskDlgEdge2Trac(Robot::RobotObject *pcRobotObject,Robot::TrajectoryObject *pcTrajectoryObject);
+    TaskDlgEdge2Trac(void);
     ~TaskDlgEdge2Trac();
 
 public:
@@ -62,10 +59,7 @@ public:
     { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
 
 protected:
-    TaskRobot6Axis    *rob; 
-    TaskRobotControl  *ctr ;
-    TaskTrajectory    *trac;
-    TaskRobotMessages *msg ;
+    TaskEdge2TracParameter    *param; 
 
 };
 
