@@ -743,7 +743,7 @@ TopoShape Sketch::toShape(void) const
         TopoDS_Compound comp;
         builder.MakeCompound(comp);
         for (std::list<TopoDS_Wire>::iterator wt = wires.begin(); wt != wires.end(); ++wt)
-        builder.Add(comp, *wt);
+            builder.Add(comp, *wt);
         result._Shape = comp;
     }
     // FIXME: if free edges are left over its probably better to 

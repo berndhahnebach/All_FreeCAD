@@ -64,7 +64,8 @@ int TopoShapeCompSolidPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapeSolidPy::Type))) {
                 const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
                     getTopoShapePtr()->_Shape;
-                builder.Add(Comp, sh);
+                if (!sh.IsNull())
+                    builder.Add(Comp, sh);
             }
         }
     }
@@ -90,7 +91,10 @@ PyObject*  TopoShapeCompSolidPy::add(PyObject *args)
     try {
         const TopoDS_Shape& sh = static_cast<TopoShapePy*>(obj)->
             getTopoShapePtr()->_Shape;
-        builder.Add(comp, sh);
+        if (!sh.IsNull())
+            builder.Add(comp, sh);
+        else
+            Standard_Failure::Raise("Cannot empty shape to compound solid");
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

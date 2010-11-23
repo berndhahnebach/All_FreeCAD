@@ -90,7 +90,8 @@ PyObject*  TopoShapeCompoundPy::add(PyObject *args)
     try {
         const TopoDS_Shape& sh = static_cast<TopoShapePy*>(obj)->
             getTopoShapePtr()->_Shape;
-        builder.Add(comp, sh);
+        if (!sh.IsNull())
+            builder.Add(comp, sh);
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
