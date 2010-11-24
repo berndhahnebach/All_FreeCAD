@@ -806,9 +806,7 @@ void CmdPartCrossSections::activated(int iMsg)
         for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {
             bbox.Add(static_cast<Part::Feature*>(*it)->Shape.getBoundingBox());
         }
-        dlg = new PartGui::TaskCrossSections(Base::BoundBox3f(
-            (float)bbox.MinX, (float)bbox.MinY, (float)bbox.MinZ,
-            (float)bbox.MaxX, (float)bbox.MaxY, (float)bbox.MaxZ));
+        dlg = new PartGui::TaskCrossSections(bbox);
     }
     Gui::Control().showDialog(dlg);
 }

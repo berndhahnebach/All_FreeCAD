@@ -81,6 +81,16 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Section of this with a given topo shape.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="slices" Const="true">
+      <Documentation>
+        <UserDocu>Make slices of this shape.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="slice" Const="true">
+      <Documentation>
+        <UserDocu>Make single slice of this shape.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="cut">
       <Documentation>
         <UserDocu>Difference of this and a given topo shape.</UserDocu>

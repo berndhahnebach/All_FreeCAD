@@ -44,7 +44,7 @@ class CrossSections : public QDialog
     enum Plane { XY, XZ, YZ };
 
 public:
-    CrossSections(const Base::BoundBox3f& bb, QWidget* parent = 0, Qt::WFlags fl = 0);
+    CrossSections(const Base::BoundBox3d& bb, QWidget* parent = 0, Qt::WFlags fl = 0);
     ~CrossSections();
     void accept();
     void apply();
@@ -63,15 +63,15 @@ private Q_SLOTS:
     void on_sectionsBox_toggled(bool);
 
 private:
-    std::vector<float> getPlanes() const;
+    std::vector<double> getPlanes() const;
     void calcPlane(Plane, double);
     void calcPlanes(Plane/*, double, bool, int*/);
-    void makePlanes(Plane, const std::vector<float>&, float[4]);
+    void makePlanes(Plane, const std::vector<double>&, double[4]);
     Plane plane() const;
 
 private:
     Ui_CrossSections* ui;
-    Base::BoundBox3f bbox;
+    Base::BoundBox3d bbox;
     ViewProviderCrossSections* vp;
     QPointer<Gui::View3DInventor> view;
 };
@@ -81,7 +81,7 @@ class TaskCrossSections : public Gui::TaskView::TaskDialog
     Q_OBJECT
 
 public:
-    TaskCrossSections(const Base::BoundBox3f& bb);
+    TaskCrossSections(const Base::BoundBox3d& bb);
     ~TaskCrossSections();
 
 public:

@@ -118,6 +118,7 @@
 #include <Base/Exception.h>
 
 #include "TopoShape.h"
+#include "CrossSection.h"
 #include "TopoShapeFacePy.h"
 #include "TopoShapeEdgePy.h"
 #include "TopoShapeVertexPy.h"
@@ -878,6 +879,36 @@ TopoDS_Shape TopoShape::section(TopoDS_Shape shape) const
 {
     BRepAlgoAPI_Section mkSection(this->_Shape, shape);
     return mkSection.Shape();
+}
+
+std::list<TopoDS_Wire> TopoShape::slice(const Base::Vector3d& dir, double d) const
+{
+    CrossSection cs(dir.x, dir.y, dir.z, this->_Shape);
+    return cs.section(d);
+}
+
+TopoDS_Compound TopoShape::slices(const Base::Vector3d& dir, const std::vector<double>& d) const
+{
+    std::vector< std::list<TopoDS_Wire> > wire_list;
+    CrossSection cs(dir.x, dir.y, dir.z, this->_Shape);
+    for (std::vector<double>::const_iterator jt = d.begin(); jt != d.end(); ++jt) {
+        wire_list.push_back(cs.section(*jt));
+    }
+
+    std::vector< std::list<TopoDS_Wire> >::const_iterator ft;
+    TopoDS_Compound comp;
+    BRep_Builder builder;
+    builder.MakeCompound(comp);
+
+    for (ft = wire_list.begin(); ft != wire_list.end(); ++ft) {
+        const std::list<TopoDS_Wire>& w = *ft;
+        for (std::list<TopoDS_Wire>::const_iterator wt = w.begin(); wt != w.end(); ++wt) {
+            if (!wt->IsNull())
+                builder.Add(comp, *wt);
+        }
+    }
+
+    return comp;
 }
 
 TopoDS_Shape TopoShape::makePipe(const TopoDS_Shape& profile) const

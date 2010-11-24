@@ -47,6 +47,7 @@
 #include "ui_CrossSections.h"
 #include "CrossSections.h"
 #include <Mod/Part/App/PartFeature.h>
+#include <Mod/Part/App/CrossSection.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/Application.h>
@@ -115,138 +116,9 @@ private:
     SoCoordinate3* coords;
     SoLineSet* planes;
 };
-
-#if 0 // per shape
-class CrossSection
-{
-public:
-    CrossSection(float a, float b, float c, const std::vector<float>& d)
-        : a(a), b(b), c(c), d(d)
-    {
-    }
-
-    std::pair<std::string, Part::TopoShape> section(Part::Feature* o) const
-    {
-        TopoDS_Compound comp;
-        BRep_Builder builder;
-        builder.MakeCompound(comp);
-        for (std::vector<float>::const_iterator it = d.begin(); it != d.end(); ++it) {
-            BRepAlgoAPI_Section cs(o->Shape.getValue(), gp_Pln(-a,-b,-c,*it));
-            if (cs.IsDone()) {
-                std::list<TopoDS_Edge> edges;
-                TopExp_Explorer xp;
-                for (xp.Init(cs.Shape(), TopAbs_EDGE); xp.More(); xp.Next())
-                    edges.push_back(TopoDS::Edge(xp.Current()));
-                std::list<TopoDS_Wire> wires;
-                connectEdges(edges, wires);
-                for (std::list<TopoDS_Wire>::iterator wt = wires.begin(); wt != wires.end(); ++wt)
-                    builder.Add(comp, *wt);
-            }
-        }
-
-        Part::TopoShape s;
-        s._Shape = comp;
-        return std::make_pair<std::string, Part::TopoShape>
-            (o->getNameInDocument(), s);
-    }
-
-    void connectEdges (const std::list<TopoDS_Edge>& edges, std::list<TopoDS_Wire>& wires) const
-    {
-        std::list<TopoDS_Edge> edge_list = edges;
-        while (edge_list.size() > 0) {
-            BRepBuilderAPI_MakeWire mkWire;
-            // add and erase first edge
-            mkWire.Add(edge_list.front());
-            edge_list.erase(edge_list.begin());
-
-            TopoDS_Wire new_wire = mkWire.Wire();  // current new wire
-
-            // try to connect each edge to the wire, the wire is complete if no more egdes are connectible
-            bool found = false;
-            do {
-                found = false;
-                for (std::list<TopoDS_Edge>::iterator pE = edge_list.begin(); !found && pE != edge_list.end();++pE) {
-                    mkWire.Add(*pE);
-                    if (mkWire.Error() != BRepBuilderAPI_DisconnectedWire) {
-                        // edge added ==> remove it from list
-                        found = true;
-                        edge_list.erase(pE);
-                        new_wire = mkWire.Wire();
-                    }
-                }
-            }
-            while (found);
-            wires.push_back(new_wire);
-        }
-    }
-
-private:
-    float a,b,c;
-    const std::vector<float>& d;
-};
-#endif
-
-class CrossSection // per section
-{
-public:
-    CrossSection(float a, float b, float c, const TopoDS_Shape& s)
-        : a(a), b(b), c(c), s(s)
-    {
-    }
-
-    std::list<TopoDS_Wire> section(float d) const
-    {
-        std::list<TopoDS_Wire> wires;
-        BRepAlgoAPI_Section cs(s, gp_Pln(a,b,c,-d));
-        if (cs.IsDone()) {
-            std::list<TopoDS_Edge> edges;
-            TopExp_Explorer xp;
-            for (xp.Init(cs.Shape(), TopAbs_EDGE); xp.More(); xp.Next())
-                edges.push_back(TopoDS::Edge(xp.Current()));
-            connectEdges(edges, wires);
-        }
-
-        return wires;
-    }
-
-    void connectEdges (const std::list<TopoDS_Edge>& edges, std::list<TopoDS_Wire>& wires) const
-    {
-        std::list<TopoDS_Edge> edge_list = edges;
-        while (edge_list.size() > 0) {
-            BRepBuilderAPI_MakeWire mkWire;
-            // add and erase first edge
-            mkWire.Add(edge_list.front());
-            edge_list.erase(edge_list.begin());
-
-            TopoDS_Wire new_wire = mkWire.Wire();  // current new wire
-
-            // try to connect each edge to the wire, the wire is complete if no more egdes are connectible
-            bool found = false;
-            do {
-                found = false;
-                for (std::list<TopoDS_Edge>::iterator pE = edge_list.begin(); pE != edge_list.end();++pE) {
-                    mkWire.Add(*pE);
-                    if (mkWire.Error() != BRepBuilderAPI_DisconnectedWire) {
-                        // edge added ==> remove it from list
-                        found = true;
-                        edge_list.erase(pE);
-                        new_wire = mkWire.Wire();
-                        break;
-                    }
-                }
-            }
-            while (found);
-            wires.push_back(new_wire);
-        }
-    }
-
-private:
-    float a,b,c;
-    const TopoDS_Shape& s;
-};
 }
 
-CrossSections::CrossSections(const Base::BoundBox3f& bb, QWidget* parent, Qt::WFlags fl)
+CrossSections::CrossSections(const Base::BoundBox3d& bb, QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl), bbox(bb)
 {
     ui = new Ui_CrossSections();
@@ -254,7 +126,7 @@ CrossSections::CrossSections(const Base::BoundBox3f& bb, QWidget* parent, Qt::WF
     ui->position->setRange(-DBL_MAX, DBL_MAX);
     vp = new ViewProviderCrossSections();
 
-    Base::Vector3f c = bbox.CalcCenter();
+    Base::Vector3d c = bbox.CalcCenter();
     calcPlane(CrossSections::XY, c.z);
     ui->position->setValue(c.z);
 
@@ -306,16 +178,15 @@ void CrossSections::accept()
 
 void CrossSections::apply()
 {
-#if 1
     std::vector<App::DocumentObject*> obj = Gui::Selection().
         getObjectsOfType(Part::Feature::getClassTypeId());
 
-    std::vector<float> d;
+    std::vector<double> d;
     if (ui->sectionsBox->isChecked())
         d = getPlanes();
     else
-        d.push_back((float)ui->position->value());
-    float a=0,b=0,c=0;
+        d.push_back(ui->position->value());
+    double a=0,b=0,c=0;
     switch (plane()) {
         case CrossSections::XY:
             c = 1.0;
@@ -330,25 +201,12 @@ void CrossSections::apply()
 
 #ifdef CS_FUTURE
     Standard::SetReentrant(Standard_True);
-#endif
-
-    Base::SequencerLauncher seq("Cross-sections...", obj.size() * (d.size() +1));
     for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {
-        CrossSection cs(a,b,c,static_cast<Part::Feature*>(*it)->Shape.getValue());
-#ifdef CS_FUTURE
+        Part::CrossSection cs(a,b,c,static_cast<Part::Feature*>(*it)->Shape.getValue());
         QFuture< std::list<TopoDS_Wire> > future = QtConcurrent::mapped
-            (d, boost::bind(&CrossSection::section, &cs, _1));
+            (d, boost::bind(&Part::CrossSection::section, &cs, _1));
         future.waitForFinished();
         QFuture< std::list<TopoDS_Wire> >::const_iterator ft;
-#else
-        std::vector< std::list<TopoDS_Wire> > future;
-        for (std::vector<float>::iterator jt = d.begin(); jt != d.end(); ++jt) {
-            future.push_back(cs.section(*jt));
-            seq.next();
-        }
-        std::vector< std::list<TopoDS_Wire> >::const_iterator ft;
-#endif
-
         TopoDS_Compound comp;
         BRep_Builder builder;
         builder.MakeCompound(comp);
@@ -368,50 +226,53 @@ void CrossSections::apply()
             (doc->addObject("Part::Feature",s.c_str()));
         section->Shape.setValue(comp);
         section->purgeTouched();
+    }
+#else
+    Gui::Application* app = Gui::Application::Instance;
+    Base::SequencerLauncher seq("Cross-sections...", obj.size() * (d.size() +1));
+    app->runPythonCode("import Part\n");
+    app->runPythonCode("from FreeCAD import Base\n");
+    for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {
+        App::Document* doc = (*it)->getDocument();
+        std::string s = (*it)->getNameInDocument();
+        s += "_cs";
+        app->runPythonCode(QString::fromAscii(
+            "wires=list()\n"
+            "shape=FreeCAD.getDocument(\"%1\").%2.Shape\n")
+            .arg(QLatin1String(doc->getName()))
+            .arg(QLatin1String((*it)->getNameInDocument())).toAscii());
+
+        for (std::vector<double>::iterator jt = d.begin(); jt != d.end(); ++jt) {
+            app->runPythonCode(QString::fromAscii(
+                "for i in shape.slice(Base.Vector(%1,%2,%3),%4):\n"
+                "    wires.append(i)\n"
+                ).arg(a).arg(b).arg(c).arg(*jt).toAscii());
+            seq.next();
+        }
+
+        app->runPythonCode(QString::fromAscii(
+            "comp=Part.Compound(wires)\n"
+            "slice=FreeCAD.getDocument(\"%1\").addObject(\"Part::Feature\",\"%2\")\n"
+            "slice.Shape=comp\n"
+            "slice.purgeTouched()\n"
+            "del slice,comp,wires,shape")
+            .arg(QLatin1String(doc->getName()))
+            .arg(QLatin1String(s.c_str())).toAscii());
 
         seq.next();
-    }
-
-#else
-    std::vector<Part::Feature*> shapes;
-    for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it)
-        shapes.push_back(static_cast<Part::Feature*>(*it));
-
-    CrossSection cs(a,b,c,d);
-
-#if CS_FUTURE
-    Standard::SetReentrant(Standard_True);
-    QFuture< std::pair<std::string, Part::TopoShape> > future = QtConcurrent::mapped
-        (shapes, boost::bind(&CrossSection::section, &cs, _1));
-    future.waitForFinished();
-    QFuture< std::pair<std::string, Part::TopoShape> >::const_iterator ft;
-#else
-    std::vector< std::pair<std::string, Part::TopoShape> > future;
-    for (std::vector<Part::Feature*>::iterator it = shapes.begin(); it != shapes.end(); ++it)
-        future.push_back(cs.section(*it));
-    std::vector< std::pair<std::string, Part::TopoShape> >::const_iterator ft;
-#endif
-
-    App::Document* doc = App::GetApplication().getActiveDocument();
-    for (ft = future.begin(); ft != future.end(); ++ft) {
-        std::string s = ft->first + "_cs";
-        Part::Feature* shape = static_cast<Part::Feature*>
-            (doc->addObject("Part::Feature",s.c_str()));
-        shape->Shape.setValue(ft->second);
-        shape->purgeTouched();
     }
 #endif
 }
 
 void CrossSections::on_xyPlane_clicked()
 {
-    Base::Vector3f c = bbox.CalcCenter();
+    Base::Vector3d c = bbox.CalcCenter();
     ui->position->setValue(c.z);
     if (!ui->sectionsBox->isChecked()) {
         calcPlane(CrossSections::XY, c.z);
     }
     else {
-        float dist = bbox.LengthZ() / ui->countSections->value();
+        double dist = bbox.LengthZ() / ui->countSections->value();
         if (!ui->checkBothSides->isChecked())
             dist *= 0.5f;
         ui->distance->setValue(dist);
@@ -421,13 +282,13 @@ void CrossSections::on_xyPlane_clicked()
 
 void CrossSections::on_xzPlane_clicked()
 {
-    Base::Vector3f c = bbox.CalcCenter();
+    Base::Vector3d c = bbox.CalcCenter();
     ui->position->setValue(c.y);
     if (!ui->sectionsBox->isChecked()) {
         calcPlane(CrossSections::XZ, c.y);
     }
     else {
-        float dist = bbox.LengthY() / ui->countSections->value();
+        double dist = bbox.LengthY() / ui->countSections->value();
         if (!ui->checkBothSides->isChecked())
             dist *= 0.5f;
         ui->distance->setValue(dist);
@@ -437,13 +298,13 @@ void CrossSections::on_xzPlane_clicked()
 
 void CrossSections::on_yzPlane_clicked()
 {
-    Base::Vector3f c = bbox.CalcCenter();
+    Base::Vector3d c = bbox.CalcCenter();
     ui->position->setValue(c.x);
     if (!ui->sectionsBox->isChecked()) {
         calcPlane(CrossSections::YZ, c.x);
     }
     else {
-        float dist = bbox.LengthX() / ui->countSections->value();
+        double dist = bbox.LengthX() / ui->countSections->value();
         if (!ui->checkBothSides->isChecked())
             dist *= 0.5f;
         ui->distance->setValue(dist);
@@ -468,8 +329,8 @@ void CrossSections::on_sectionsBox_toggled(bool b)
     }
     else {
         CrossSections::Plane type = plane();
-        Base::Vector3f c = bbox.CalcCenter();
-        float value;
+        Base::Vector3d c = bbox.CalcCenter();
+        double value;
         switch (type) {
             case CrossSections::XY:
                 value = c.z;
@@ -498,7 +359,7 @@ void CrossSections::on_checkBothSides_toggled(bool b)
 void CrossSections::on_countSections_valueChanged(int v)
 {
     CrossSections::Plane type = plane();
-    float dist;
+    double dist;
     switch (type) {
         case CrossSections::XY:
             dist = bbox.LengthZ() / v;
@@ -523,7 +384,7 @@ void CrossSections::on_distance_valueChanged(double)
 
 void CrossSections::calcPlane(Plane type, double pos)
 {
-    float bound[4];
+    double bound[4];
     switch (type) {
         case XY:
             bound[0] = bbox.MinX;
@@ -545,14 +406,14 @@ void CrossSections::calcPlane(Plane type, double pos)
             break;
     }
 
-    std::vector<float> d;
+    std::vector<double> d;
     d.push_back(pos);
     makePlanes(type, d, bound);
 }
 
 void CrossSections::calcPlanes(Plane type)
 {
-    float bound[4];
+    double bound[4];
     switch (type) {
         case XY:
             bound[0] = bbox.MinX;
@@ -574,36 +435,36 @@ void CrossSections::calcPlanes(Plane type)
             break;
     }
 
-    std::vector<float> d = getPlanes();
+    std::vector<double> d = getPlanes();
     makePlanes(type, d, bound);
 }
 
-std::vector<float> CrossSections::getPlanes() const
+std::vector<double> CrossSections::getPlanes() const
 {
     int count = ui->countSections->value();
-    float pos = (float)ui->position->value();
-    float stp = (float)ui->distance->value();
+    double pos = ui->position->value();
+    double stp = ui->distance->value();
     bool both = ui->checkBothSides->isChecked();
 
-    std::vector<float> d;
+    std::vector<double> d;
     if (both) {
-        float start = pos-0.5f*(count-1)*stp;
+        double start = pos-0.5f*(count-1)*stp;
         for (int i=0; i<count; i++) {
-            d.push_back(start+(float)i*stp);
+            d.push_back(start+i*stp);
         }
     }
     else {
         for (int i=0; i<count; i++) {
-            d.push_back(pos+(float)i*stp);
+            d.push_back(pos+i*stp);
         }
     }
     return d;
 }
 
-void CrossSections::makePlanes(Plane type, const std::vector<float>& d, float bound[4])
+void CrossSections::makePlanes(Plane type, const std::vector<double>& d, double bound[4])
 {
     std::vector<Base::Vector3f> points;
-    for (std::vector<float>::const_iterator it = d.begin(); it != d.end(); ++it) {
+    for (std::vector<double>::const_iterator it = d.begin(); it != d.end(); ++it) {
         Base::Vector3f v[4];
         switch (type) {
             case XY:
@@ -637,7 +498,7 @@ void CrossSections::makePlanes(Plane type, const std::vector<float>& d, float bo
 
 // ---------------------------------------
 
-TaskCrossSections::TaskCrossSections(const Base::BoundBox3f& bb)
+TaskCrossSections::TaskCrossSections(const Base::BoundBox3d& bb)
 {
     widget = new CrossSections(bb);
     taskbox = new Gui::TaskView::TaskBox(
