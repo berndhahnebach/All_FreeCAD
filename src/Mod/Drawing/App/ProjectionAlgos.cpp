@@ -30,7 +30,9 @@
 # include <gp_Circ.hxx>
 #endif
 
-
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <HLRBRep_Algo.hxx>
 #include <TopoDS_Shape.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
@@ -88,7 +90,18 @@ ProjectionAlgos::~ProjectionAlgos()
 void ProjectionAlgos::execute(void)
 {
     Handle( HLRBRep_Algo ) brep_hlr = new HLRBRep_Algo;
-    brep_hlr->Add( Input );
+
+    // make sure to have the y coordinates inverted
+    gp_Trsf mat;
+    Bnd_Box bounds;
+    BRepBndLib::Add(Input, bounds);
+    bounds.SetGap(0.0);
+    Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
+    bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+    mat.SetMirror(gp_Ax2(gp_Pnt((xMin+xMax)/2,(yMin+yMax)/2,(zMin+zMax)/2), gp_Dir(0,1,0)));
+    BRepBuilderAPI_Transform mkTrf(Input, mat);
+    brep_hlr->Add(mkTrf.Shape());
+    //brep_hlr->Add(Input);
 
     gp_Ax2 transform(gp_Pnt(0,0,0),gp_Dir(Direction.x,Direction.y,Direction.z));
     HLRAlgo_Projector projector( transform );
