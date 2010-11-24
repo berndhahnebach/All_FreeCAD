@@ -41,6 +41,7 @@
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Vec.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
@@ -216,6 +217,10 @@ void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
     double l = c.LastParameter();
     gp_Pnt s = c.Value(f);
     gp_Pnt e = c.Value(l);
+    gp_Vec v1(p,s);
+    gp_Vec v2(p,e);
+    gp_Vec v3(0,0,1);
+    double a = v3.DotCross(v1,v2);
 
     // a full circle
     if (s.SquareDistance(e) < 0.001) {
@@ -224,9 +229,13 @@ void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
     }
     // arc of circle
     else {
-        char arc = (l-f > D_PI) ? '1' : '0';
-        out << "<path d=\"M" << s.X() <<  "," << s.Y()
-            << " A" << r << "," << r << " 0 " << arc << ",1 "
-            << e.X() << "," << e.Y() << "\" />";
+        // See also https://developer.mozilla.org/en/SVG/Tutorial/Paths
+        char xar = '0'; // x-axis-rotation
+        char las = (l-f > D_PI) ? '1' : '0'; // large-arc-flag
+        char swp = (a > 0) ? '1' : '0'; // sweep-flag, i.e. clockwise (0) or counter-clockwise (1)
+        out << "<path d=\"M" << s.X() <<  " " << s.Y()
+            << " A" << r << " " << r << " "
+            << xar << " " << las << " " << swp << " "
+            << e.X() << " " << e.Y() << "\" />";
     }
 }
