@@ -624,6 +624,62 @@ PyObject*  TopoShapePy::section(PyObject *args)
     }
 }
 
+PyObject*  TopoShapePy::slice(PyObject *args)
+{
+    PyObject *dir;
+    double d;
+    if (!PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type), &dir, &d))
+        return NULL;
+
+    try {
+        Base::Vector3d vec = Py::Vector(dir, false).toVector();
+        std::list<TopoDS_Wire> slice = this->getTopoShapePtr()->slice(vec, d);
+        Py::List wire;
+        for (std::list<TopoDS_Wire>::iterator it = slice.begin(); it != slice.end(); ++it) {
+            wire.append(Py::asObject(new TopoShapeWirePy(new TopoShape(*it))));
+        }
+
+        return Py::new_reference_to(wire);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
+}
+
+PyObject*  TopoShapePy::slices(PyObject *args)
+{
+    PyObject *dir, *dist;
+    if (!PyArg_ParseTuple(args, "O!O!", &(Base::VectorPy::Type), &dir,
+                                        &PyList_Type, &dist))
+        return NULL;
+
+    try {
+        Base::Vector3d vec = Py::Vector(dir, false).toVector();
+        Py::List list(dist);
+        std::vector<double> d;
+        d.reserve(list.size());
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it)
+            d.push_back((double)Py::Float(*it));
+        TopoDS_Compound slice = this->getTopoShapePtr()->slices(vec, d);
+        return new TopoShapeCompoundPy(new TopoShape(slice));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return NULL;
+    }
+}
+
 PyObject*  TopoShapePy::cut(PyObject *args)
 {
     PyObject *pcObj;

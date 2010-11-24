@@ -77,6 +77,7 @@ libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		ArcPyImp.cpp \
 		CirclePyImp.cpp \
+		CrossSection.cpp \
 		EllipsePyImp.cpp \
 		HyperbolaPyImp.cpp \
 		ParabolaPyImp.cpp \
@@ -146,6 +147,7 @@ nodist_include_HEADERS=\
 		$(libPart_la_BUILT)
 
 include_HEADERS=\
+		CrossSection.h \
 		edgecluster.h \
 		FeaturePartBoolean.h \
 		FeaturePartBox.h \

@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <gp_Vec.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <App/ComplexGeoData.h>
@@ -126,6 +127,8 @@ public:
     TopoDS_Shape common(TopoDS_Shape) const;
     TopoDS_Shape fuse(TopoDS_Shape) const;
     TopoDS_Shape section(TopoDS_Shape) const;
+    std::list<TopoDS_Wire> slice(const Base::Vector3d&, double) const;
+    TopoDS_Compound slices(const Base::Vector3d&, const std::vector<double>&) const;
     //@}
 
     /** Sweeping */
