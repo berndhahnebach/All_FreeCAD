@@ -151,6 +151,8 @@ libkdl_la_SOURCES=\
 
 libRobot_la_SOURCES=\
 		AppRobotPy.cpp \
+		Edge2TracObject.cpp \
+		Edge2TracObject.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PropertyTrajectory.cpp \
