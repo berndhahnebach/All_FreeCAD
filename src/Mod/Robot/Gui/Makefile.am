@@ -3,13 +3,16 @@ SUBDIRS=Resources
 lib_LTLIBRARIES=libRobotGui.la RobotGui.la
 
 BUILT_SOURCES=\
+		moc_TaskDlgEdge2Trac.cpp \
 		moc_TaskDlgSimulate.cpp \
+		moc_TaskEdge2TracParameter.cpp \
 		moc_TaskRobot6Axis.cpp \
 		moc_TaskRobotControl.cpp \
 		moc_TaskRobotMessages.cpp \
 		moc_TaskTrajectory.cpp \
 		moc_TrajectorySimulate.cpp \
 		moc_TaskWatcher.cpp \
+		ui_TaskEdge2TracParameter.h \
 		ui_TaskRobot6Axis.h \
 		ui_TaskRobotControl.h \
 		ui_TaskRobotMessages.h \
@@ -18,6 +21,7 @@ BUILT_SOURCES=\
 
 
 libRobotGui_la_UI=\
+		TaskEdge2TracParameter.ui \
 		TaskRobot6Axis.ui \
 		TaskRobotControl.ui \
 		TaskRobotMessages.ui \
@@ -32,8 +36,12 @@ libRobotGui_la_SOURCES=\
 		CommandTrajectory.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		TaskDlgEdge2Trac.cpp \
+		TaskDlgEdge2Trac.h \
 		TaskDlgSimulate.cpp \
 		TaskDlgSimulate.h \
+		TaskEdge2TracParameter.cpp \
+		TaskEdge2TracParameter.h \
 		TaskRobot6Axis.cpp \
 		TaskRobot6Axis.h \
 		TaskRobotControl.cpp \
